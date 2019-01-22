@@ -1,0 +1,91 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme"
+        parent="AppThemeBase">
+
+    </style>
+
+    <style name="AppThemeBase"
+        parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- 去掉actionbar-->
+        <item name="windowActionBar">false</item>
+        <!--Android冷启动白屏解析http://blog.csdn.net/guolin_blog/article/details/51019856-->
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="windowNoTitle">true</item>
+        <!-- 状态栏颜色-->
+        <item name="colorPrimaryDark">@color/colorPrimary</item>
+        <!-- actionbar颜色-->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:windowBackground">@color/font_main_79</item>
+        <!--<item name="actionMenuTextAppearance">@style/MenuTextStyle</item>-->
+    </style>
+
+    <!--有ActionBar的主题-->
+    <style name="AppThemeBar"
+        parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimary</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:textColorPrimary">@color/font_main_79</item>
+        <item name="android:actionBarSize">@dimen/nav_bar_height</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <!--<item name="android:actionBarSize">@dimen/nav_bar_height</item>-->
+        <!--<item name="actionMenuTextAppearance">@style/MenuTextStyle</item>-->
+    </style>
+
+    <!--Theme.AppCompat.Light.DarkActionBar.没有ActionBar的主题，这里可以直接改成Theme.AppCompat.Light.NoActionBar -->
+    <style name="AppThemes"
+        parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimary</item>
+        <item name="colorAccent">@color/app_color_theme_3</item>
+        <item name="android:textColorPrimary">@color/text_color_black</item>
+        <item name="android:actionBarSize">@dimen/nav_bar_height</item>
+        <item name="android:windowIsTranslucent">true</item>
+    </style>
+    <style name="AppTheme.NoActionBar" parent="AppBaseTheme.NoActionBar" />
+    <style name="AppBaseTheme.NoActionBar" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/app_color_theme_3</item>
+        <item name="android:buttonStyle">@style/Widget.AppCompat.Button.Borderless</item>
+    </style>
+    <!--登录输入框样式-->
+    <style name="login_editText_style">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:background">@null</item>
+        <item name="android:layout_centerVertical">true</item>
+        <item name="android:padding">16dp</item>
+        <item name="android:scrollHorizontally">true</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:textColorHint">@color/gray01</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+    <!--清空输入框样式-->
+    <style name="common_clear_input_imageView_style">
+        <item name="android:layout_width">40dp</item>
+        <item name="android:layout_height">35dp</item>
+        <item name="android:background">@null</item>
+        <item name="android:layout_alignParentRight">true</item>
+        <item name="android:layout_centerVertical">true</item>
+        <item name="android:scaleType">center</item>
+        <item name="android:src">@mipmap/delete_username</item>
+    </style>
+
+    <style name="ToolbarPopupTheme" parent="@style/ThemeOverlay.AppCompat.Dark">
+        <item name="android:colorBackground">@color/colorPrimary</item>
+        <item name="actionOverflowMenuStyle">@style/OverflowMenuStyle</item> <!--新增一个item，用于控制menu-->
+    </style>
+    <style name="OverflowMenuStyle" parent="Widget.AppCompat.Light.PopupMenu.Overflow">
+        <item name="overlapAnchor">false</item>  <!--把该属性改为false即可使menu位置位于toolbar之下-->
+    </style>
+
+    <style name="AppTheme.Dialog" parent="Theme.AppCompat.Dialog">
+        <item name="android:windowBackground">@android:color/transparent</item>
+    </style>
+</resources>

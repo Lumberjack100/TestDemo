@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">mCloudApp</string>
+    <string name="login_medo_copyright">©上海米度测控科技有限公司版权所有</string>
+    <string name="login_input_username_hint">请输入用户名</string>
+    <string name="login_input_password_hint">请输入密码</string>
+    <string name="login_input_phone_hint">请输入手机号</string>
+    <string name="login_input_code_hint">请输入验证码</string>
+    <string name="reSend">重新发送</string>
+    <string name="service_set_address">请输入服务器地址/域名：端口 \n 如：192.168.1.101:8081 \n mCloud.shmedo.cn:9901</string>
+    <string name="service_address">service_address</string>
+    <string name="agent_addr">地址：%1$s</string>
+
+    <string name="appbar_scrolling_view_behavior" translatable="false">android.support.design.widget.AppBarLayout$ScrollingViewBehavior</string>
+    <string name="bottom_sheet_behavior" translatable="false">android.support.design.widget.BottomSheetBehavior</string>
+    <string name="select_device">选择一个设备连接</string>
+</resources>

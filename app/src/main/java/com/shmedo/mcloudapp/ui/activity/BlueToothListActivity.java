@@ -1,0 +1,108 @@
+package com.shmedo.mcloudapp.ui.activity;
+
+import android.app.Activity;
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
+import android.content.Intent;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.Window;
+import com.shmedo.mcloudapp.R;
+import com.shmedo.mcloudapp.adapter.DevicesAdapter;
+import com.shmedo.mcloudapp.base.BaseActivity;
+import com.shmedo.mcloudapp.entity.ble.MDevice;
+import com.shmedo.mcloudapp.util.ToastUtil;
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * 项目名：  mCloudapp
+ * 包名：    com.shmedo.mcloudapp.ui.activity
+ * 文件名:   BlueToothListActivity
+ * 创建者:   dpc
+ * 创建时间:  2019/1/21 16:02
+ * 描述：    TODO
+ */
+public class BlueToothListActivity extends Activity {
+    private BluetoothAdapter mBluetoothAdapter;
+    // Debugg
+    private BluetoothAdapter mBtAdapter;
+
+
+    private RecyclerView recyclerView;
+    private DevicesAdapter adapter;
+    private List<MDevice> list = new ArrayList<>();
+    private boolean scaning;
+
+
+
+    @Override protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
+        setContentView(R.layout.device_list);
+        setResult(Activity.RESULT_CANCELED);
+        list= (ArrayList<MDevice>) getIntent().getSerializableExtra("devlist");
+        mBtAdapter = BluetoothAdapter.getDefaultAdapter();
+        initDevivce();
+    }
+
+    private void initDevivce() {
+
+        //获的recyclerView
+        recyclerView = (RecyclerView)findViewById(R.id.recycleviewble);
+        //给recyclerView   设置布局样式
+        LinearLayoutManager llm = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(llm);
+        //获取并设置设备适配器
+        if (list.size()>0){
+            adapter = new DevicesAdapter(list, this);
+            recyclerView.setAdapter(adapter);
+            //recyclerView  添加条目效果
+            recyclerView.addOnItemTouchListener(new RecyclerView.OnItemTouchListener() {
+                @Override public boolean onInterceptTouchEvent(RecyclerView rv, MotionEvent e) {
+                    adapter.setDelayStartAnimation(false);
+                    return false;
+                }
+                @Override public void onTouchEvent(RecyclerView rv, MotionEvent e) {
+
+                }
+                @Override public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
+
+                }
+            });
+            //adapter 点击事件
+            adapter.setOnItemClickListener(new DevicesAdapter.OnItemClickListener() {
+                @Override public void onItemClick(View itemView, int position) {
+                    if (!scaning) {
+                        //  mLoadingDialog.showNoCancelDialog("正在连接...");
+                        BluetoothDevice device = list.get(position).getDevice();
+                        Intent intent = new Intent();
+                        Bundle bundle = new Bundle();
+                        bundle.putParcelable("device", device);
+                        intent.putExtras(bundle);
+                        setResult(Activity.RESULT_OK, intent);
+                        finish();
+                    }
+
+                }
+            });
+        }else {
+            ToastUtil.showSToast("未发现设备，请尝试重新扫描");
+            finish();
+        }
+
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        if (mBtAdapter != null) {
+            mBtAdapter.cancelDiscovery();
+        }
+    }
+}

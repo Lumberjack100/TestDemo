@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:background="@color/white"
+    >
+
+    <LinearLayout
+
+        android:layout_width="match_parent"
+        android:layout_height="600px"
+        android:orientation="vertical"
+        android:layout_marginTop="30dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:padding="15px">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/service_set_address"
+            android:textColor="@color/app_color_blue_2"
+            android:textSize="40px" />
+
+
+        <com.shmedo.mcloudapp.views.ClearEditText
+            android:id="@+id/etServiceAddress"
+            android:singleLine="true"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="50px"
+            android:paddingLeft="15dp"
+            android:paddingRight="10dp"
+            android:gravity="center_vertical"
+            android:textColor="@color/text_color_black"
+            android:background="@drawable/edit_bg2"
+            android:hint="请输入服务器地址或域名端口" />
+
+        <Button
+            android:id="@+id/btnServiceTest"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="@drawable/btn_blue_selector"
+            android:layout_marginTop="30px"
+            android:textColor="@color/white"
+            android:textSize="35px"
+            android:text="测试连接"/>
+    </LinearLayout>
+</LinearLayout>
+
+
