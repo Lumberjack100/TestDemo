@@ -25,7 +25,9 @@
     <color name="app_color_blue_2">#31BDF3</color>
     <color name="app_color_blue_2_disabled">#7F31BDF3</color>
     <color name="app_color_blue_2_pressed">#7F31BDF3</color>
-
+    <color name="gray1">#F8F8F8</color>
+    <color name="gray_home">#909090</color>
+    <color name="homecolor1">#1a5cc0 </color>
     <color name="app_color_theme_1">#EF5362</color> <!-- Grapefruit -->
     <color name="app_color_theme_2">#FE6D4B</color> <!-- Bittersweet -->
     <color name="app_color_theme_3">#FFCF47</color> <!-- Sunflower -->

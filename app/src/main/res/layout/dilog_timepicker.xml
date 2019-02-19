@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <LinearLayout
+        android:id="@+id/datepickerLayout"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_alignParentBottom="true"
+        android:background="@color/white"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dp">
+
+
+            <TextView
+                android:id="@+id/datePickerCancel"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="30dp"
+                android:gravity="center"
+                android:text="取消"
+                android:tag="BaseDialogCancle"
+                android:textColor="@color/black_text"
+                android:textSize="18dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_centerInParent="true"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="30dp"
+                android:gravity="center"
+                android:text="请选择时间"
+                android:textColor="@color/black_text"
+                android:textSize="18dp" />
+
+            <TextView
+                android:id="@+id/datePickerOk"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="30dp"
+                android:gravity="center"
+                android:text="确定"
+                android:textColor="@color/black_text"
+                android:textSize="18dp" />
+
+
+        </RelativeLayout>
+
+
+        <top.defaults.view.DateTimePickerView
+            android:id="@+id/datePickerView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#e7e7e7"
+            app:curved="true"
+            app:date_textSize="18sp"
+            app:minutesInterval="one"
+            app:preferredMaxOffsetItemCount="3"
+            app:type="dateTime" />
+    </LinearLayout>
+</RelativeLayout>

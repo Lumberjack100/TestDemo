@@ -1,8 +1,7 @@
-package com.shmedo.mcloudapp.ui.activity;
+package com.shmedo.mcloudapp.ui.activity.device;
 
-import android.os.Build;
+import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
@@ -51,7 +50,6 @@ public class DeviceActivity extends BaseActivity {
 
 
     private void initView() {
-
         setSupportActionBar(mToolbar);
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("");
@@ -68,19 +66,37 @@ public class DeviceActivity extends BaseActivity {
         } else if (getIntent().getExtras().containsKey("inputDevice")) {
             deviceInfo = getIntent().getStringExtra("inputDevice");
             Log.i("adu", "手动输入-===" + deviceInfo);
+        } else if (getIntent().getExtras().containsKey("ScanDevice")){
+            deviceInfo = getIntent().getStringExtra("ScanDevice");
+            String[] scanData = deviceInfo.split(",");
+            scanResult(scanData);
         }
 
     }
 
 
+    private void scanResult(String[] scanData) {
+        mTvDeviceName.setText("");
+        mTvDeviceSn.setText(scanData[1]);
+        mTvDeviceModel.setText(scanData[2]);
+    }
+
+
     @OnClick({ R.id.Rl_device_config, R.id.Rl_device_query, R.id.Rl_device_details })
     public void onViewClicked(View view) {
+        Intent intent = null;
         switch (view.getId()) {
             case R.id.Rl_device_config:
+                intent = new Intent(DeviceActivity.this,ConfigDeviceParameterActivity.class);
+                startActivity(intent);
                 break;
             case R.id.Rl_device_query:
+                intent = new Intent(DeviceActivity.this,QueryDataRecordActivity.class);
+                startActivity(intent);
                 break;
             case R.id.Rl_device_details:
+                intent = new Intent(DeviceActivity.this,AccessDeviceDetailsActivity.class);
+                startActivity(intent);
                 break;
         }
     }
@@ -88,7 +104,6 @@ public class DeviceActivity extends BaseActivity {
 
     @Override public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.device_menu, menu);
-
         return super.onCreateOptionsMenu(menu);
     }
 

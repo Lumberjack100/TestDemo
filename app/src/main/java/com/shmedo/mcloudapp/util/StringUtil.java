@@ -2,6 +2,7 @@ package com.shmedo.mcloudapp.util;
 
 import android.text.TextUtils;
 import android.util.Log;
+import java.util.Collection;
 
 /**
  * 项目名：  CheckAndroid
@@ -17,7 +18,18 @@ public class StringUtil {
     public static boolean isNullOrEmpty(String s){
         return (s==null)||(s.length()==0);
     }
-
+    /**
+     * 判断集合是否为null或者0个元素
+     *
+     * @param c
+     * @return
+     */
+    public static boolean isNullOrEmpty(Collection c) {
+        if (null == c || c.isEmpty()) {
+            return true;
+        }
+        return false;
+    }
 
     /**
      * 判断字符串是否为空

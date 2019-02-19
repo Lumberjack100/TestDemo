@@ -78,7 +78,7 @@
             android:theme="@style/AppThemeBar"
             android:label="添加设备"
             />
-        <activity android:name=".ui.activity.DeviceActivity"
+        <activity android:name=".ui.activity.device.DeviceActivity"
             android:windowSoftInputMode="stateAlwaysHidden|adjustResize"
             android:theme="@style/AppTheme.NoActionBar"
             />
@@ -89,7 +89,42 @@
             android:configChanges="orientation|keyboardHidden"
             android:launchMode="singleInstance"
             />
+        <activity android:name=".ui.activity.WifiConnectionActivity"
+            android:label=""
+            android:theme="@style/AppTheme.Dialog"
+            android:configChanges="orientation|keyboardHidden"
+            android:launchMode="singleInstance"
+            />
+        <activity android:name=".ui.activity.device.AccessDeviceDetailsActivity"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustResize"
+            android:theme="@style/AppTheme.NoActionBar"
 
+            />
+        <activity android:name=".ui.activity.device.ConfigDeviceParameterActivity"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustResize"
+            android:theme="@style/AppTheme.NoActionBar"
+
+            />
+        <activity android:name=".ui.activity.device.QueryDataRecordActivity"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustResize"
+            android:theme="@style/AppTheme.NoActionBar"
+            />
+        <activity android:name=".ui.activity.device.config.SeniorSettingActivity"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustResize"
+            android:theme="@style/AppTheme.NoActionBar"
+            />
+        <activity android:name=".ui.activity.device.config.senior.ProductRegistrationActivity"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustResize"
+            android:theme="@style/AppTheme.NoActionBar"
+            />
+        <activity android:name=".ui.activity.device.config.senior.InstructionDebugActivity"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustResize"
+            android:theme="@style/AppTheme.NoActionBar"
+            />
+        <activity android:name=".ui.activity.device.config.GeneralSettingActivity"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustResize"
+            android:theme="@style/AppTheme.NoActionBar"
+            />
     </application>
 
 </manifest>

@@ -2,13 +2,11 @@ package com.shmedo.mcloudapp.ui.activity;
 
 import android.Manifest;
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothManager;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
@@ -17,7 +15,6 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -30,19 +27,21 @@ import com.amap.api.location.AMapLocation;
 import com.amap.api.location.AMapLocationClient;
 import com.amap.api.location.AMapLocationClientOption;
 import com.amap.api.location.AMapLocationListener;
-import com.amap.api.location.AMapLocationQualityReport;
 import com.amap.api.maps.AMap;
 import com.amap.api.maps.AMapOptions;
 import com.amap.api.maps.CameraUpdateFactory;
 import com.amap.api.maps.LocationSource;
 import com.amap.api.maps.MapView;
 import com.amap.api.maps.UiSettings;
-import com.amap.api.maps.model.BitmapDescriptorFactory;
 import com.amap.api.maps.model.LatLng;
 import com.amap.api.maps.model.Marker;
-import com.amap.api.maps.model.MarkerOptions;
 import com.amap.api.maps.model.MyLocationStyle;
 import com.github.clans.fab.FloatingActionButton;
+import com.shmedo.das.das.cmd.CommandManager;
+import com.shmedo.das.das.cmd.CommandType;
+import com.shmedo.das.utils.DesUtil;
+import com.shmedo.das.utils.OnBytePackage;
+import com.shmedo.das.utils.StringUtil;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.adapter.InfoWinAdapter;
 import com.shmedo.mcloudapp.base.BaseActivity;
@@ -52,24 +51,44 @@ import com.shmedo.mcloudapp.bluetooth.BluetoothEventHandler;
 import com.shmedo.mcloudapp.bluetooth.MdBluetoothManager;
 import com.shmedo.mcloudapp.bluetooth.Message;
 import com.shmedo.mcloudapp.entity.ble.MDevice;
+import com.shmedo.mcloudapp.entity.event.WifiEvent;
 import com.shmedo.mcloudapp.util.StartActivityUtil;
-import com.shmedo.mcloudapp.util.TimeUtil;
 import com.shmedo.mcloudapp.util.ToastUtil;
 import com.shmedo.mcloudapp.util.XPermissionUtils;
 import com.shmedo.mcloudapp.util.bleutil.ByteManagerUtil;
 import com.shmedo.mcloudapp.util.bleutil.LogTag;
+import com.shmedo.mcloudapp.util.common.MapManagerUtil;
 import com.shmedo.mcloudapp.views.LoadingDialog;
-import com.yzq.zxinglibrary.android.CaptureActivity;
-import com.yzq.zxinglibrary.bean.ZxingConfig;
-import com.yzq.zxinglibrary.common.Constant;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
-import static com.shmedo.mcloudapp.util.bleutil.Constants.*;
+import static com.shmedo.das.das.cmd.CommandType.GET_ALL_SENSOR_CONFIG;
+import static com.shmedo.das.das.cmd.CommandType.QUERY_OSMOMETER_PARAMETER;
+import static com.shmedo.das.das.cmd.CommandType.SYSTEM_RUN_STATE;
+import static com.shmedo.mcloudapp.util.bleutil.Constants.BT_CHARACTERISTICS_FIND_FAIL;
+import static com.shmedo.mcloudapp.util.bleutil.Constants.BT_CONNECT;
+import static com.shmedo.mcloudapp.util.bleutil.Constants.BT_DISCONNECTED;
+import static com.shmedo.mcloudapp.util.bleutil.Constants.BT_ENABLE_READ_FAIL;
+import static com.shmedo.mcloudapp.util.bleutil.Constants.BT_ENABLE_READ_SUCCESS;
+import static com.shmedo.mcloudapp.util.bleutil.Constants.BT_MESSAGE_WRITE_FAIL;
+import static com.shmedo.mcloudapp.util.bleutil.Constants.BT_MESSAGE_WRITE_SUCCESS;
+import static com.shmedo.mcloudapp.util.bleutil.Constants.BT_RECOVERY_SUCCESS;
+import static com.shmedo.mcloudapp.util.bleutil.Constants.BT_REQUEST_MTU_FAIL;
+import static com.shmedo.mcloudapp.util.bleutil.Constants.BT_SERVICE_FIND_FAIL;
+import static com.shmedo.mcloudapp.util.bleutil.Constants.BT_WRITE_TIME_OUT;
+import static com.shmedo.mcloudapp.util.bleutil.Constants.MESSAGE_RESPONSE_REBOOT_DEVICE;
+import static com.shmedo.mcloudapp.util.bleutil.Constants.MESSAGE_RESPONSE_SAVE_SETTINGS_SUCCESS;
+import static com.shmedo.mcloudapp.util.bleutil.Constants.MESSAGE_RESPONSE_TIME_OUT;
+import static com.shmedo.mcloudapp.util.bleutil.Constants.REFRESH_RUN_STATE;
+import static com.shmedo.mcloudapp.util.bleutil.Constants.VERIFY_RESULT;
 
-public class MainActivity extends BaseActivity implements AMap.OnMapClickListener, AMap.OnMarkerClickListener, AMapLocationListener,
+public class MainActivity extends BaseActivity
+    implements AMap.OnMapClickListener, AMap.OnMarkerClickListener, AMapLocationListener,
     LocationSource {
 
     @BindView(R.id.img_user) ImageView mImgUser;
@@ -82,6 +101,9 @@ public class MainActivity extends BaseActivity implements AMap.OnMapClickListene
     @BindView(R.id.fab_config) FloatingActionButton mFabConfig;
     @BindView(R.id.fab_location) FloatingActionButton mFabLocation;
     @BindView(R.id.fab_refresh) FloatingActionButton mFabRefresh;
+    @BindView(R.id.tv_connection) TextView mTvConnection;
+    @BindView(R.id.ll_connection) LinearLayout mLlConnection;
+    @BindView(R.id.img_scan) ImageView mImgScan;
 
     //初始化地图控制器对象
     private AMap aMap;
@@ -92,7 +114,7 @@ public class MainActivity extends BaseActivity implements AMap.OnMapClickListene
     public AMapLocationClientOption mLocationOption = null;
     private UiSettings mUiSettings;//定义一个UiSettings对象
     private boolean followMove = true;
-    private  LatLng myLatLng;
+    private LatLng myLatLng;
     private InfoWinAdapter adapter;
     private Marker oldMarker;
     private OnLocationChangedListener mListener;
@@ -106,10 +128,11 @@ public class MainActivity extends BaseActivity implements AMap.OnMapClickListene
     private List<MDevice> list = new ArrayList<>();
     private boolean isShowingDialog = false;
     private Handler hander;
-    private String currentMessageId ="";
+    private String currentMessageId = "";
     private String SN = "";
     private static final int REQUEST_CONNECT_DEVICE = 1;
     private static final int REQUEST_ENABLE_BT = 2;
+
     //当前模式是否是蓝牙模式
     private boolean isBluModle = true;
     //蓝牙是否已连接
@@ -136,6 +159,7 @@ public class MainActivity extends BaseActivity implements AMap.OnMapClickListene
         }
     };
 
+
     @Override protected int initContentView() {
         return R.layout.activity_main;
     }
@@ -146,7 +170,8 @@ public class MainActivity extends BaseActivity implements AMap.OnMapClickListene
         super.onCreate(savedInstanceState);
         //在activity执行onCreate时执行mMapView.onCreate(savedInstanceState)，创建地图
         mMapView.onCreate(savedInstanceState);
-
+        EventBus.getDefault().register(this);
+        hidingConnectionView();
         XPermissionUtils.requestPermissionsResult(this, 200, new String[] {
                 Manifest.permission.ACCESS_FINE_LOCATION,
                 Manifest.permission.ACCESS_COARSE_LOCATION },
@@ -161,7 +186,7 @@ public class MainActivity extends BaseActivity implements AMap.OnMapClickListene
                         "在设置-应用管理-米易通-权限中开启相机权限");
                 }
             });
-            initData();
+        initData();
     }
 
 
@@ -192,8 +217,10 @@ public class MainActivity extends BaseActivity implements AMap.OnMapClickListene
         myLocationStyle.strokeColor(getResources().getColor(R.color.app_color_blue_2));// 设置圆形的边框颜色
         myLocationStyle.radiusFillColor(Color.argb(100, 29, 161, 242));// 设置圆形的填充颜色
         myLocationStyle.strokeWidth(1.0f);// 设置圆形的边框粗细
-        myLocationStyle.myLocationType(MyLocationStyle.LOCATION_TYPE_FOLLOW_NO_CENTER);//定位一次，且将视角移动到地图中心点。
-        myLocationStyle.showMyLocation(true);//设置是否显示定位小蓝点，用于满足只想使用定位，不想使用定位小蓝点的场景，设置false以后图面上不再有定位蓝点的概念，但是会持续回调位置信息。
+        myLocationStyle.myLocationType(
+            MyLocationStyle.LOCATION_TYPE_FOLLOW_NO_CENTER);//定位一次，且将视角移动到地图中心点。
+        myLocationStyle.showMyLocation(
+            true);//设置是否显示定位小蓝点，用于满足只想使用定位，不想使用定位小蓝点的场景，设置false以后图面上不再有定位蓝点的概念，但是会持续回调位置信息。
         aMap.setMyLocationStyle(myLocationStyle);
         aMap.setLocationSource(this);// 设置定位资源。如果不设置此定位资源则定位按钮不可点击。并且实现activate激活定位,停止定位的回调方法
         aMap.setMyLocationEnabled(true);// 设置为true表示显示定位层并可触发定位，false表示隐藏定位层并不可触发定位，默认是false
@@ -203,9 +230,9 @@ public class MainActivity extends BaseActivity implements AMap.OnMapClickListene
             @Override public void onMyLocationChange(Location location) {
                 double latitude = location.getLatitude();
                 double longitude = location.getLongitude();
-                myLatLng =new LatLng(latitude,longitude);
-                if(followMove){
-                  aMap.animateCamera(CameraUpdateFactory.newLatLng(myLatLng));
+                myLatLng = new LatLng(latitude, longitude);
+                if (followMove) {
+                    aMap.animateCamera(CameraUpdateFactory.newLatLng(myLatLng));
                 }
             }
         });
@@ -214,43 +241,7 @@ public class MainActivity extends BaseActivity implements AMap.OnMapClickListene
                 followMove = false;
             }
         });
-        initMarker();
-    }
-
-
-
-
-    // 根据控件的选择，重新设置定位参数
-    private void resetOption() {
-            // 设置是否需要显示地址信息
-            mLocationOption.setNeedAddress(true);
-            /**
-             * 设置是否优先返回GPS定位结果，如果30秒内GPS没有返回定位结果则进行网络定位
-             * 注意：只有在高精度模式下的单次定位有效，其他方式无效
-             */
-            mLocationOption.setGpsFirst(true);
-            // 设置是否开启缓存
-            mLocationOption.setLocationCacheEnable(false);
-            // 设置是否单次定位
-            mLocationOption.setOnceLocation(true);
-            //设置是否等待设备wifi刷新，如果设置为true,会自动变为单次定位，持续定位时不要使用
-            mLocationOption.setOnceLocationLatest(true);
-            //设置是否使用传感器
-            mLocationOption.setSensorEnable(false);
-            //设置是否开启wifi扫描，如果设置为false时同时会停止主动刷新，停止以后完全依赖于系统刷新，定位位置可能存在误差
-
-            // 设置发送定位请求的时间间隔,最小值为1000，如果小于1000，按照1000算
-            mLocationOption.setInterval(10000);
-            // 设置网络请求超时时间
-            mLocationOption.setHttpTimeOut(1000);
-    }
-
-    private void initMarker(){
-        LatLng latLng = new LatLng(31.0964540159,121.591186523);
-        LatLng latLng2 = new LatLng(31.1718317,121.65444374);
-        addMarkerToMap(latLng,"das","DAS");
-        addMarkerToMap(latLng2,"上海","上海市浦东新区");
-
+        MapManagerUtil.initMarker(aMap, this);
         // 绑定 Marker 被点击事件
         //aMap.setOnMarkerClickListener(this);
         aMap.setOnMapClickListener(this);
@@ -259,7 +250,7 @@ public class MainActivity extends BaseActivity implements AMap.OnMapClickListene
 
     @Override public void onLocationChanged(AMapLocation aMapLocation) {
         if (aMapLocation != null) {
-            if(mListener != null){
+            if (mListener != null) {
                 //                aMap.clear();  清除之前的marker
                 mListener.onLocationChanged(aMapLocation);// 显示系统小蓝点-我的位置
             }
@@ -272,33 +263,36 @@ public class MainActivity extends BaseActivity implements AMap.OnMapClickListene
                 //                addMarkerToMap(latLng,city,address);
             } else {
                 //定位失败时，可通过ErrCode（错误码）信息来确定失败的原因，errInfo是错误信息，详见错误码表。
-                Log.e("AmapError", "location Error, ErrCode:" + aMapLocation.getErrorCode() + ", errInfo:"
-                    + aMapLocation.getErrorInfo());
+                Log.e("AmapError",
+                    "location Error, ErrCode:" + aMapLocation.getErrorCode() + ", errInfo:"
+                        + aMapLocation.getErrorInfo());
             }
         }
     }
 
+
     //地图的点击事件
     @Override public void onMapClick(LatLng latLng) {
-        Log.i("adu","地图的点击事件");
+        Log.i("adu", "地图的点击事件");
         //点击地图上没marker 的地方，隐藏inforwindow
         //if (oldMarker != null) {
-            oldMarker.hideInfoWindow();
-            //oldMarker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.marker_normal));
+        oldMarker.hideInfoWindow();
+        //oldMarker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.marker_normal));
         //}
     }
 
+
     // 定义 Marker 点击事件监听
     @Override public boolean onMarkerClick(Marker marker) {
-        Log.i("adu","--Marker 点击事件监听--"+marker.getPosition().equals(myLatLng));
-        if (!marker.getPosition().equals(myLatLng)){ //点击的marker不是自己位置的那个marker
+        Log.i("adu", "--Marker 点击事件监听--" + marker.getPosition().equals(myLatLng));
+        if (!marker.getPosition().equals(myLatLng)) { //点击的marker不是自己位置的那个marker
             if (oldMarker != null) {
                 //oldMarker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.marker_normal));
                 oldMarker.showInfoWindow();
             }
             //oldMarker = marker;
             //marker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.marker_selected));
-        }else {
+        } else {
             if (oldMarker != null) {
                 oldMarker.hideInfoWindow();
             }
@@ -306,6 +300,7 @@ public class MainActivity extends BaseActivity implements AMap.OnMapClickListene
 
         return false; //返回 “false”，除定义的操作之外，默认操作也将会被执行
     }
+
 
     //激活定位
     //记得注册定位
@@ -320,7 +315,8 @@ public class MainActivity extends BaseActivity implements AMap.OnMapClickListene
             //设置定位回调监听
             mLocationClient.setLocationListener(this);
             //设置为高精度定位模式
-            mLocationOption.setLocationMode(AMapLocationClientOption.AMapLocationMode.Hight_Accuracy);
+            mLocationOption.setLocationMode(
+                AMapLocationClientOption.AMapLocationMode.Hight_Accuracy);
             mLocationOption.setOnceLocation(true);
             //设置是否返回地址信息（默认返回地址信息）
             mLocationOption.setNeedAddress(true);
@@ -333,6 +329,7 @@ public class MainActivity extends BaseActivity implements AMap.OnMapClickListene
 
     }
 
+
     //停止定位
     @Override
     public void deactivate() {
@@ -344,18 +341,9 @@ public class MainActivity extends BaseActivity implements AMap.OnMapClickListene
         mLocationClient = null;
     }
 
-    //添加marker
-    private void addMarkerToMap(LatLng latLng, String title, String snippet) {
-        aMap.addMarker(new MarkerOptions().anchor(0.5f, 0.5f)
-            .position(latLng)
-            .title(title)
-            .snippet(snippet)
-            .icon(BitmapDescriptorFactory.fromResource(R.drawable.icon_marker))
-        );
-    }
 
     @OnClick({ R.id.img_user, R.id.img_equipment, R.id.RL_scan,
-                 R.id.fab_add, R.id.fab_config, R.id.fab_location, R.id.fab_refresh})
+                 R.id.fab_add, R.id.fab_config, R.id.fab_location, R.id.fab_refresh })
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.img_user:
@@ -365,16 +353,16 @@ public class MainActivity extends BaseActivity implements AMap.OnMapClickListene
                 ToastUtil.showSToast("设备");
                 break;
             case R.id.RL_scan:
-                StartActivityUtil.comeOnBaby(this,ScanAddDeviceActivity.class);
+                StartActivityUtil.comeOnBaby(this, ScanAddDeviceActivity.class);
                 break;
             case R.id.fab_add:
-                 chooseModel();
+                chooseModel();
                 break;
             case R.id.fab_config:
                 showResultDialog("米易通App远程配置功能开发中...");
                 break;
             case R.id.fab_location:
-                Log.i("adu","==="+myLatLng.latitude+"-"+myLatLng.longitude);
+                Log.i("adu", "===" + myLatLng.latitude + "-" + myLatLng.longitude);
                 aMap.moveCamera(CameraUpdateFactory.changeLatLng(myLatLng));
                 break;
             case R.id.fab_refresh:
@@ -383,53 +371,75 @@ public class MainActivity extends BaseActivity implements AMap.OnMapClickListene
         }
     }
 
+
     //搜索蓝牙或者搜索wifi
     private void chooseModel() {
-        View view =  getLayoutInflater().inflate(R.layout.choose_menu, null);
-        LinearLayout remove = view.findViewById(R.id.search_bluetooth);
-        LinearLayout author = view.findViewById(R.id.search_wifi);
-            final MaterialDialog mDialog = new MaterialDialog.Builder(this)
-                .cancelable(false)
-                .title("请选择")
-                .customView(view,true)
-                .show();
-            remove.setOnClickListener(new View.OnClickListener() {
-                @Override public void onClick(View v) {
-                    mDialog.dismiss();
-                    if (isBluModle && !isConneted) {
-                        disconnectDevice();
-                        initBluetooth();
-                        if (null != mBluetoothAdapter && mBluetoothAdapter.isEnabled()) {
+        View view = getLayoutInflater().inflate(R.layout.choose_menu, null);
+        LinearLayout bluetooth = view.findViewById(R.id.search_bluetooth);
+        LinearLayout wifi = view.findViewById(R.id.search_wifi);
+        LinearLayout cloud = view.findViewById(R.id.search_cloud);
+        final MaterialDialog mDialog = new MaterialDialog.Builder(this)
+            .cancelable(true)
+            .title("请选择")
+            .customView(view, true)
+            .show();
+        bluetooth.setOnClickListener(new View.OnClickListener() {
+            @Override public void onClick(View v) {
+                mDialog.dismiss();
+                if (isBluModle && !isConneted) {
+                    disconnectDevice();
+                    initBluetooth();
+                    if (null != mBluetoothAdapter && mBluetoothAdapter.isEnabled()) {
 
-                            if (null != list && list.size() > 0) {
-                                list.clear();
-                            }
-                            if (null == mLoadingDialog.getDialog() ||
-                                !mLoadingDialog.getDialog().isShowing()) {
-                                mLoadingDialog.showCancelDialog("正在获取附近的蓝牙设备...");
-                                hander.postDelayed(dismssDialogRunnable, 10000);
-                            }
-
-                        }
-                    } else if (isBluModle && isConneted) {
-                        //showChangeModle( getResources().getString(R.string.blue_model));
-                    } else {
                         if (null != list && list.size() > 0) {
                             list.clear();
                         }
-                        initBluetooth();
+                        if (null == mLoadingDialog.getDialog() ||
+                            !mLoadingDialog.getDialog().isShowing()) {
+                            mLoadingDialog.showCancelDialog("正在获取附近的蓝牙设备...");
+                            hander.postDelayed(dismssDialogRunnable, 10000);
+                        }
+
                     }
+                } else if (isBluModle && isConneted) {
+                    //showChangeModle( getResources().getString(R.string.blue_model));
+                } else {
+                    if (null != list && list.size() > 0) {
+                        list.clear();
+                    }
+                    initBluetooth();
                 }
-            });
-            author.setOnClickListener(new View.OnClickListener() {
-                @Override public void onClick(View v) {
-                    mDialog.dismiss();
-                    ToastUtil.showSToast("搜索wifi");
-                }
-            });
+            }
+        });
+        wifi.setOnClickListener(new View.OnClickListener() {
+            @Override public void onClick(View v) {
+                mDialog.dismiss();
+                XPermissionUtils.requestPermissionsResult(MainActivity.this, 200, new String[]{
+                        Manifest.permission.ACCESS_COARSE_LOCATION,
+                        Manifest.permission.ACCESS_FINE_LOCATION
+                    },
+                    new XPermissionUtils.OnPermissionListener() {
+                        @Override
+                        public void onPermissionGranted() {
+                            Intent intent = new Intent(MainActivity.this,WifiConnectionActivity.class);
+                            startActivity(intent);
+                        }
+                        @Override
+                        public void onPermissionDenied() {
+                            LoadingDialog.showRefusePermissionDialog(MainActivity.this,
+                                "在设置-应用管理-米易通-权限中开启定位权限");
+                        }
+                    });
+
+            }
+        });
+        cloud.setOnClickListener(new View.OnClickListener() {
+            @Override public void onClick(View view) {
+                ToastUtil.showSToast("云端数据");
+            }
+        });
 
     }
-
 
     /**
      * 初始化蓝牙
@@ -450,16 +460,17 @@ public class MainActivity extends BaseActivity implements AMap.OnMapClickListene
 
     }
 
+
     private void initBlueAdapter() {
         if (!autoOpenBt) {
             Intent serverIntent = new Intent(MainActivity.this, BlueToothListActivity.class);
             serverIntent.putExtra("devlist", (Serializable) list);
             startActivityForResult(serverIntent, REQUEST_ENABLE_BT);
-        }else {
+        } else {
             //自动连接
-            int temp=0;
+            int temp = 0;
             for (int i = 0; i < list.size(); i++) {
-                if ((list.get(i).getDevice().getName()).contains(SN)){
+                if ((list.get(i).getDevice().getName()).contains(SN)) {
                     mdBluetoothManager.connectDevice(list.get(i).getDevice(), MainActivity.this);
                     if (null != mLoadingDialog) {
                         mLoadingDialog.showNoCancelDialog("正在连接...");
@@ -467,11 +478,11 @@ public class MainActivity extends BaseActivity implements AMap.OnMapClickListene
                     hander.postDelayed(dismssConDialogRunnable, 20000);
                     break;
 
-                }else {
+                } else {
                     temp++;
                 }
             }
-            if (temp==list.size()){
+            if (temp == list.size()) {
                 Intent serverIntent = new Intent(MainActivity.this, BlueToothListActivity.class);
                 serverIntent.putExtra("devlist", (Serializable) list);
                 startActivityForResult(serverIntent, REQUEST_ENABLE_BT);
@@ -481,6 +492,8 @@ public class MainActivity extends BaseActivity implements AMap.OnMapClickListene
         mdBluetoothManager.stopScan();
 
     }
+
+
     private class MdBluetoothEventHandler implements BluetoothEventHandler {
         @Override
         public void handle(final BluetoothEvent event) {
@@ -489,7 +502,7 @@ public class MainActivity extends BaseActivity implements AMap.OnMapClickListene
                     handleDeviceFind((BluetoothDeviceFindEventData) event.getEventData());
                     break;
                 case CONNECTED: {
-                    //ByteManagerUtil.init(new MyOnBytePackage());
+                    ByteManagerUtil.init(new MyOnBytePackage());
                     mHandler.sendEmptyMessage(BT_CONNECT);
                     break;
                 }
@@ -532,9 +545,10 @@ public class MainActivity extends BaseActivity implements AMap.OnMapClickListene
                     Log.i(LogTag.INFO_TAG, "消息写入成功");
                     mHandler.sendEmptyMessage(BT_MESSAGE_WRITE_SUCCESS);
                     try {
-                        currentMessageId=((Message) event.getEventData()).getMessageID();
-                        Log.i(LogTag.INFO_TAG, "消息id===" + ((Message) event.getEventData()).getMessageID());
-                        String msg=((Message) event.getEventData()).getResponseMessage();
+                        currentMessageId = ((Message) event.getEventData()).getMessageID();
+                        Log.i(LogTag.INFO_TAG,
+                            "消息id===" + ((Message) event.getEventData()).getMessageID());
+                        String msg = ((Message) event.getEventData()).getResponseMessage();
                         byte[] data = (byte[]) msg.getBytes();
 
                         if (data != null && data.length > 0) {
@@ -557,11 +571,11 @@ public class MainActivity extends BaseActivity implements AMap.OnMapClickListene
                     mHandler.sendEmptyMessage(BT_MESSAGE_WRITE_FAIL);
                     break;
                 }
-                case  RESPONSE_WITH_NO_MESSAGE: {
+                case RESPONSE_WITH_NO_MESSAGE: {
                     try {
                         byte[] data = (byte[]) event.getEventData();
                         if (data != null && data.length > 0) {
-                            //ByteManagerUtil.getInstance().writeByte(data);
+                            ByteManagerUtil.getInstance().writeByte(data);
                         }
 
                     } catch (Exception ex) {
@@ -575,6 +589,7 @@ public class MainActivity extends BaseActivity implements AMap.OnMapClickListene
         }
     }
 
+
     public Handler mHandler = new Handler(new Handler.Callback() {
         @Override public boolean handleMessage(android.os.Message msg) {
             switch (msg.what) {
@@ -587,25 +602,25 @@ public class MainActivity extends BaseActivity implements AMap.OnMapClickListene
                     }
                     //isConneted = true;
                     ToastUtil.showSToast("蓝牙连接成功");
-                    //startBluAuthenticate();//蓝牙连接成功开始进行验证
+                    startBluAuthenticate();//蓝牙连接成功开始进行验证
                     hander.removeCallbacks(dismssDialogRunnable);
                     hander.removeCallbacks(dismssConDialogRunnable);
 
                     break;
                 case BT_DISCONNECTED:
-                    //if (isConneted) {
-                    //    isConneted = false;
-                    //    if (!isBluModle) {
-                    //        mMenu.findItem(R.id.current_blu)
-                    //            .setIcon(R.drawable.bar_item_offline);
-                    //    } else {
-                    //        mMenu.findItem(R.id.current_blu)
-                    //            .setIcon(R.drawable.bar_item_bt);
-                    //    }
-                    //    Log.i(LogTag.INFO_TAG, "蓝牙连接已断开");
-                    //    disconnectDevice();//非手动断开，清除蓝牙数据
-                    //    Toast.makeText(MainActivity.this,"蓝牙连接已断开!",Toast.LENGTH_SHORT).show();
-                    //}
+                    if (isConneted) {
+                        isConneted = false;
+                        if (!isBluModle) {
+                            //mMenu.findItem(R.id.current_blu)
+                            //    .setIcon(R.drawable.bar_item_offline);
+                        } else {
+                            //mMenu.findItem(R.id.current_blu)
+                            //    .setIcon(R.drawable.bar_item_bt);
+                        }
+                        Log.i(LogTag.INFO_TAG, "蓝牙连接已断开");
+                        disconnectDevice();//非手动断开，清除蓝牙数据
+                        Toast.makeText(MainActivity.this, "蓝牙连接已断开!", Toast.LENGTH_SHORT).show();
+                    }
                     break;
                 case BT_MESSAGE_WRITE_SUCCESS:
                     //  ToastUtils.showShort(MainActivity.this, "蓝牙发送指令成功");
@@ -617,11 +632,11 @@ public class MainActivity extends BaseActivity implements AMap.OnMapClickListene
                     ToastUtil.showSToast("蓝牙发送指令超时");
                     break;
                 case VERIFY_RESULT:
-                    if (msg.obj.equals("1")){
-                        Toast.makeText(MainActivity.this,"蓝牙认证通过!",Toast.LENGTH_SHORT).show();
+                    if (msg.obj.equals("1")) {
+                        Toast.makeText(MainActivity.this, "蓝牙认证通过!", Toast.LENGTH_SHORT).show();
                         //sendDeviceStateComd();
-                    }else {
-                        Toast.makeText(MainActivity.this,"蓝牙认证失败!",Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(MainActivity.this, "蓝牙认证失败!", Toast.LENGTH_SHORT).show();
                         try {
                             Thread.sleep(1000);
                             disconnectDevice();
@@ -654,10 +669,10 @@ public class MainActivity extends BaseActivity implements AMap.OnMapClickListene
                     ToastUtil.showSToast("设置读取Descriptor失败！");
                     break;
                 case BT_RECOVERY_SUCCESS:
-                    Toast.makeText(MainActivity.this,"恢复出厂设置成功！",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, "恢复出厂设置成功！", Toast.LENGTH_SHORT).show();
                     break;
                 case MESSAGE_RESPONSE_REBOOT_DEVICE:
-                    Toast.makeText(MainActivity.this,"重启系统成功！",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, "重启系统成功！", Toast.LENGTH_SHORT).show();
                     break;
                 default:
                     break;
@@ -667,10 +682,84 @@ public class MainActivity extends BaseActivity implements AMap.OnMapClickListene
         }
     });
 
+
+    private class MyOnBytePackage implements OnBytePackage {
+        @Override public void onPackageArrived(final byte[] data) {
+            try {
+                String str = new String(data, "utf-8");
+                String deskey = "12345678";
+                Log.i(LogTag.INFO_TAG, "反馈结果===" + str);
+                if (str.startsWith("$$224") && str.endsWith("\r\n")) {
+                    if (str.substring(0, str.length() - 2).equals("$$224ce")) {
+                        startBluAuthenticate();//重新 认证
+                    } else {
+                        String[] strs = str.substring(0, str.length() - 2).split(",");
+                        byte[] resultData = StringUtil.hexStringToBytes(strs[3]);
+                        try {
+                            String strdes = new String(DesUtil.decrypt(resultData, deskey),
+                                "utf-8");
+                            if (strdes.length() != 0) {
+                                String desStr = StringUtil.bytesToHexString(DesUtil.encrypt(
+                                    (StringUtil.reverseString(strdes.substring(0, 6)) +
+                                        deskey).getBytes(), deskey));
+                                String com = "##222," + SN + ",0," + desStr.toUpperCase() + "\r\n";
+                                Message msg = new Message(UUID.randomUUID().toString(), com, true);
+                                mdBluetoothManager.writeMessage(msg);
+                                Log.i(LogTag.INFO_TAG, "发送指令===" + com);
+                                return;
+                            }
+                        } catch (Exception e) {
+                            //CommonUtil.handlerException(MainActivity.this, e);
+                        }
+                    }
+                } else if (str.startsWith("$$223")) {
+                    String[] verifyReult = str.substring(0, str.length() - 2).split(",");
+                    android.os.Message message = new android.os.Message();
+                    message.what = VERIFY_RESULT;
+                    message.obj = verifyReult[1];
+                    mHandler.sendMessage(message);
+                    Log.i(LogTag.INFO_TAG, "认证结果===" + verifyReult[1]);
+                } else if (str.startsWith("$$119")) {
+
+                    mHandler.sendEmptyMessage(BT_RECOVERY_SUCCESS);
+                } else if (str.startsWith("$$0191")) {
+                    mHandler.sendEmptyMessage(MESSAGE_RESPONSE_SAVE_SETTINGS_SUCCESS);
+                } else {
+                    parserResult(str);
+                }
+
+            } catch (Exception ex) {
+                Log.e(LogTag.ERROR_TAG, ex.getMessage(), ex);
+            }
+
+        }
+    }
+
+
+    /**
+     * 得到数据，加载视图
+     */
+    private void parserResult(final String result) {
+
+    }
+
+
+    /**
+     * 蓝牙连接成功开始进行验证
+     */
+    private void startBluAuthenticate() {
+        String com = "##224," + SN + ",0\r\n";
+        Message msg = new Message(UUID.randomUUID().toString(), com, true);
+        mdBluetoothManager.writeMessage(msg);
+        Log.i(LogTag.INFO_TAG, "发送指令===" + com);
+
+    }
+
+
     /**
      * 发送蓝牙请求设备信息指令
      */
-    /*private void sendDeviceStateComd() {
+    private void sendDeviceStateComd() {
         if (isConneted) {
             //获取所有配置
             final String allInfoCommand = CommandManager.getInstance()
@@ -685,17 +774,20 @@ public class MainActivity extends BaseActivity implements AMap.OnMapClickListene
             String versionCommand = CommandManager.getInstance()
                 .getCommand(CommandType.VERSION_MESSAGE, null);
 
-
             String serverCommand = CommandManager.getInstance()
                 .getCommand(CommandType.SERVER_ADDRESS, null);
 
-            mdBluetoothManager.writeMessage(new Message(UUID.randomUUID().toString(), allInfoCommand, true));
+            mdBluetoothManager.writeMessage(
+                new Message(UUID.randomUUID().toString(), allInfoCommand, true));
             Log.i(LogTag.INFO_TAG, "发送指令===" + allInfoCommand);
-            mdBluetoothManager.writeMessage(new Message(UUID.randomUUID().toString(), runstateCommand, true));
+            mdBluetoothManager.writeMessage(
+                new Message(UUID.randomUUID().toString(), runstateCommand, true));
             Log.i(LogTag.INFO_TAG, "发送指令===" + runstateCommand);
-            mdBluetoothManager.writeMessage(new Message(UUID.randomUUID().toString(), shenyajiCommand, true));
+            mdBluetoothManager.writeMessage(
+                new Message(UUID.randomUUID().toString(), shenyajiCommand, true));
             Log.i(LogTag.INFO_TAG, "发送指令===" + shenyajiCommand);
-            mdBluetoothManager.writeMessage(new Message(UUID.randomUUID().toString(), versionCommand, true));
+            mdBluetoothManager.writeMessage(
+                new Message(UUID.randomUUID().toString(), versionCommand, true));
             Log.i(LogTag.INFO_TAG, "发送指令===" + versionCommand);
         } else {
             if (!isConneted) {
@@ -703,7 +795,8 @@ public class MainActivity extends BaseActivity implements AMap.OnMapClickListene
             }
         }
 
-    }*/
+    }
+
 
     private void handleDeviceFind(BluetoothDeviceFindEventData eventData) {
 
@@ -735,7 +828,7 @@ public class MainActivity extends BaseActivity implements AMap.OnMapClickListene
     }
 
 
-    private void showResultDialog(String content){
+    private void showResultDialog(String content) {
         mBuilder = new MaterialDialog.Builder(this);
         mBuilder.title("温馨提示：")
             .content(content)
@@ -748,7 +841,6 @@ public class MainActivity extends BaseActivity implements AMap.OnMapClickListene
     }
 
 
-
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -758,6 +850,7 @@ public class MainActivity extends BaseActivity implements AMap.OnMapClickListene
         if (null != mLocationClient) {
             mLocationClient.onDestroy();
         }
+        EventBus.getDefault().unregister(this);
     }
 
 
@@ -784,6 +877,7 @@ public class MainActivity extends BaseActivity implements AMap.OnMapClickListene
         mMapView.onSaveInstanceState(outState);
     }
 
+
     @Override public void onActivityResult(int requestCode, int resultCode, Intent data) {
         isShowingDialog = true;
         switch (requestCode) {
@@ -809,10 +903,32 @@ public class MainActivity extends BaseActivity implements AMap.OnMapClickListene
                     ToastUtil.showSToast("蓝牙未启用");
                 }
                 break;
+
             default:
                 break;
         }
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onMessageEvent(WifiEvent events) {
+        if (events.getMessage().equals("wifi")) {
+            if (events.getWifiBean() != null){
+                Log.i("adu","----wifi--------"+events.getWifiBean().getWifiName());
+                showConnectionView("已连接WIFI—"+events.getWifiBean().getWifiName());
+            }else {
+                hidingConnectionView();
+            }
+        }
+    }
 
+    public void showConnectionView(String str) {
+        Log.i("adu","visible"+str);
+        mLlConnection.setVisibility(View.VISIBLE);
+        mTvConnection.setText(str);
+    }
+
+    public void hidingConnectionView() {
+        Log.i("adu","gone");
+        mLlConnection.setVisibility(View.GONE);
+    }
 }

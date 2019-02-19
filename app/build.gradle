@@ -60,7 +60,7 @@ dependencies {
     //Material Dialog
     implementation 'com.afollestad.material-dialogs:core:0.9.3.0'
     //eventbus
-//    implementation 'org.greenrobot:eventbus:3.1.1'
+    implementation 'org.greenrobot:eventbus:3.1.1'
     //stetho
     implementation 'com.facebook.stetho:stetho:1.5.0'
     //zxing
@@ -69,5 +69,5 @@ dependencies {
     implementation 'com.github.clans:fab:1.6.4'
     //das-jar
     implementation 'cn.shmedo:das-config-base:3.1-SNAPSHOT'
-
+    implementation project(path: ':picker-view')
 }
