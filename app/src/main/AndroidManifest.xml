@@ -125,6 +125,18 @@
             android:windowSoftInputMode="stateAlwaysHidden|adjustResize"
             android:theme="@style/AppTheme.NoActionBar"
             />
+        <activity android:name=".ui.activity.device.config.DisplacementConfigActivity"
+            android:windowSoftInputMode="adjustPan|stateHidden"
+            android:theme="@style/AppTheme.NoActionBar"
+            />
+        <activity android:name=".ui.activity.device.config.OsmometerConfigActivity"
+            android:windowSoftInputMode="adjustPan|stateHidden"
+            android:theme="@style/AppTheme.NoActionBar"
+            />
+        <activity android:name=".ui.activity.device.config.RainConfigActivity"
+            android:windowSoftInputMode="adjustPan|stateHidden"
+            android:theme="@style/AppTheme.NoActionBar"
+            />
     </application>
 
 </manifest>

@@ -446,8 +446,7 @@ public class MainActivity extends BaseActivity
      */
     private void initBluetooth() {
 
-        final BluetoothManager bluetoothManager =
-            (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
+        final BluetoothManager bluetoothManager = (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
         mBluetoothAdapter = bluetoothManager.getAdapter();
         MdBluetoothManager.init(mBluetoothAdapter, bluetoothManager);
         mdBluetoothManager = MdBluetoothManager.getInstance();
@@ -600,7 +599,7 @@ public class MainActivity extends BaseActivity
                     if (mLoadingDialog != null) {
                         mLoadingDialog.dismiss();
                     }
-                    //isConneted = true;
+                    isConneted = true;
                     ToastUtil.showSToast("蓝牙连接成功");
                     startBluAuthenticate();//蓝牙连接成功开始进行验证
                     hander.removeCallbacks(dismssDialogRunnable);
@@ -623,7 +622,7 @@ public class MainActivity extends BaseActivity
                     }
                     break;
                 case BT_MESSAGE_WRITE_SUCCESS:
-                    //  ToastUtils.showShort(MainActivity.this, "蓝牙发送指令成功");
+                      ToastUtil.showSToast( "蓝牙发送指令成功");
                     break;
                 case BT_MESSAGE_WRITE_FAIL:
                     ToastUtil.showSToast("蓝牙发送指令失败");

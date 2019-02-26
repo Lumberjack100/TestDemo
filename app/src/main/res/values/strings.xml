@@ -13,4 +13,39 @@
     <string name="appbar_scrolling_view_behavior" translatable="false">android.support.design.widget.AppBarLayout$ScrollingViewBehavior</string>
     <string name="bottom_sheet_behavior" translatable="false">android.support.design.widget.BottomSheetBehavior</string>
     <string name="select_device">选择一个设备连接</string>
+    <string name="tv_prompt">1台DAS可支持8只拉线位移计接入，请根据实际接入的数量\n任意点击"启用"或"停用"，并对启用的拉线位移计配置相应的参数。</string>
+    <string name="collector_address">
+        采集器地址：当同一条RS485总线下，接入多个采集器时，区分每个采集器，采集器(DAS)可识别区分，可填入1-255任意数字。
+        这里说的采集器不是DAS，而是指支持Modbus RTU协议的传感器或采集器。
+        此处的场景是，DAS作为总的控制器，对接入的子采集器的协调控制。
+    </string>
+    <string name="calculating_time">
+        解算时间：是指DAS持续工作的时间，在这个时间段内，对采集到的数据进行解算处理(如剔除错误数据等)，提高数据精度和准确性。
+    </string>
+    <string name="standby_time">
+        待机时间：是指DAS休眠的时间，DAS休眠时功耗极底，休眠时间的设置一般推荐6小时(360秒)，具体设置多少根据情况而定。
+    </string>
+    <string name="collect_time">
+        采集时间：当DAS处于工作模式时，对外接的传感器/采集器发送采集指令，每次发送采集指令的时间间隔即为采集时间，采集时间间隔数值越小，
+        获取到的数据样本就越多，对提高数据精度和准确性有帮助，具体设置多少，要看外部传感器/采集器是否支持，以及对功耗的考量。
+    </string>
+
+    <string name="osmometer_address">
+        渗压计地址：当同一条RS485总线下，接入多个渗压计时，区分每个渗压计，采集器(DAS)可识别区分，可填入1-255任意数字。
+        这里说的渗压计是指数字式的，支持Modbus RTU协议。当接入振弦式渗压计时，需额外配置振弦数据采集器。
+    </string>
+
+    <string name="water_alarm_value">
+        水位报警值：当水位超过设定值时，自动报警。猪哥数值设定多少，需要跟业主、设计院等沟通，以便指定合理有效的报警值。
+    </string>
+    <string name="water_revised">
+        水位修正值：渗压计首次安装到现场时，需要和人工测量的水深校准，如果渗压计测量的水深和人工测量的有差值，那么将这个差值填入到"水深修正值"一栏，
+        后面自动测量的水深就校正过来了。
+    </string>
+    <string name="osmometer_cord">
+        渗压计绳长的作用：通过管口高程、渗压计绳长、渗压计测量水深三个数计算出水位高程。
+    </string>
+    <string name="nozzel_height">
+        管口高程数据来源：\n1、查阅图纸 \n 2、业主沟通 \n 3、设计院沟通 \n 4、自行测量
+    </string>
 </resources>

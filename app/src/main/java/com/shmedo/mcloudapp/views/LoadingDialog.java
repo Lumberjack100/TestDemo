@@ -122,4 +122,17 @@ public class LoadingDialog {
         MaterialDialog mMaterialDialog = mBuilder.build();
         mMaterialDialog.show();
     }
+    //private  void showStringsDialog(int strings, Context context){
+    //    MaterialDialog.Builder mBuilder;
+    //    MaterialDialog mMaterialDialog;
+    //    mBuilder = new MaterialDialog.Builder(context);
+    //    mBuilder.title("温馨提示：")
+    //        .content(getResources().getString(strings))
+    //        .contentColor(Color.parseColor("#000000"))
+    //        .canceledOnTouchOutside(false)
+    //        .positiveText("确定");
+    //    //.negativeText("取消");
+    //    mMaterialDialog = mBuilder.build();
+    //    mMaterialDialog.show();
+    //}
 }

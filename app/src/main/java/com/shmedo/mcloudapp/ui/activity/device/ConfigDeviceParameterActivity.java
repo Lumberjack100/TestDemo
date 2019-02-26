@@ -18,7 +18,10 @@ import butterknife.BindView;
 import butterknife.OnClick;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.base.BaseActivity;
+import com.shmedo.mcloudapp.ui.activity.device.config.DisplacementConfigActivity;
 import com.shmedo.mcloudapp.ui.activity.device.config.GeneralSettingActivity;
+import com.shmedo.mcloudapp.ui.activity.device.config.OsmometerConfigActivity;
+import com.shmedo.mcloudapp.ui.activity.device.config.RainConfigActivity;
 import com.shmedo.mcloudapp.ui.activity.device.config.SeniorSettingActivity;
 import com.shmedo.mcloudapp.util.StringUtil;
 import com.shmedo.mcloudapp.util.ToastUtil;
@@ -178,7 +181,9 @@ public class ConfigDeviceParameterActivity extends BaseActivity {
         if (mSwSimB.isChecked()){
             mTvRainConfig.setText("配置");
             mTvRainConfig.setClickable(true);
+            mTvRainConfig.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
         }else {
+            mTvRainConfig.setBackgroundColor(getResources().getColor(R.color.secondary_text));
             mTvRainConfig.setText("已停用");
             mTvRainConfig.setClickable(false);
         }
@@ -187,7 +192,9 @@ public class ConfigDeviceParameterActivity extends BaseActivity {
                 if (b){
                     mTvRainConfig.setText("配置");
                     mTvRainConfig.setClickable(true);
+                    mTvRainConfig.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
                 }else {
+                    mTvRainConfig.setBackgroundColor(getResources().getColor(R.color.secondary_text));
                     mTvRainConfig.setText("已停用");
                     mTvRainConfig.setClickable(false);
                 }
@@ -196,16 +203,20 @@ public class ConfigDeviceParameterActivity extends BaseActivity {
         if (mSwSimB.isChecked()){
             mTvOsmometerConfig.setText("配置");
             mTvOsmometerConfig.setClickable(true);
+            mTvOsmometerConfig.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
         }else {
+            mTvOsmometerConfig.setBackgroundColor(getResources().getColor(R.color.secondary_text));
             mTvOsmometerConfig.setText("已停用");
             mTvOsmometerConfig.setClickable(false);
         }
         mSwOsmometer.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 if (b){
+                    mTvOsmometerConfig.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
                     mTvOsmometerConfig.setText("配置");
                     mTvOsmometerConfig.setClickable(true);
                 }else {
+                    mTvOsmometerConfig.setBackgroundColor(getResources().getColor(R.color.secondary_text));
                     mTvOsmometerConfig.setText("已停用");
                     mTvOsmometerConfig.setClickable(false);
                 }
@@ -242,13 +253,16 @@ public class ConfigDeviceParameterActivity extends BaseActivity {
                 }
                 break;
             case R.id.tv_rain_config:
-                ToastUtil.showSToast("雨量计配置");
+                intent = new Intent(ConfigDeviceParameterActivity.this,RainConfigActivity.class);
+                startActivity(intent);
                 break;
             case R.id.tv_osmometer_config:
-                ToastUtil.showSToast("渗压计配置");
+                intent = new Intent(ConfigDeviceParameterActivity.this,OsmometerConfigActivity.class);
+                startActivity(intent);
                 break;
             case R.id.rl_sensor_setting:
-                ToastUtil.showSToast("传感器参数配置");
+                intent = new Intent(ConfigDeviceParameterActivity.this,DisplacementConfigActivity.class);
+                startActivity(intent);
                 break;
             case R.id.rl_general_setting:
                 intent = new Intent(ConfigDeviceParameterActivity.this,GeneralSettingActivity.class);

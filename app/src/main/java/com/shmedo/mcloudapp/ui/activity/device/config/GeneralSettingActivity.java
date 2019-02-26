@@ -1,5 +1,7 @@
 package com.shmedo.mcloudapp.ui.activity.device.config;
 
+import android.content.Context;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
@@ -10,8 +12,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import butterknife.BindView;
 import butterknife.OnClick;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.base.BaseActivity;
+import com.shmedo.mcloudapp.views.LoadingDialog;
 import java.util.Objects;
 
 /**
@@ -61,16 +65,23 @@ public class GeneralSettingActivity extends BaseActivity {
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.iv_collector_address:
+                LoadingDialog.showScanResultDialog(this,getResources().getString(R.string.collector_address));
                 break;
             case R.id.iv_calculating_time:
+                LoadingDialog.showScanResultDialog(this,getResources().getString(R.string.calculating_time));
                 break;
             case R.id.iv_standby_time:
+                LoadingDialog.showScanResultDialog(this,getResources().getString(R.string.standby_time));
                 break;
             case R.id.iv_collect_time:
+                LoadingDialog.showScanResultDialog(this,getResources().getString(R.string.collect_time));
                 break;
             case R.id.btn_confirm_complete:
                 finish();
                 break;
         }
     }
+
+
+
 }

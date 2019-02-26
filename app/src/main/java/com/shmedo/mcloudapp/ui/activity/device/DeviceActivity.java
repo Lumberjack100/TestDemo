@@ -1,5 +1,8 @@
 package com.shmedo.mcloudapp.ui.activity.device;
 
+import android.app.Activity;
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -13,6 +16,9 @@ import butterknife.BindView;
 import butterknife.OnClick;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.base.BaseActivity;
+import com.shmedo.mcloudapp.bluetooth.MdBluetoothManager;
+import com.shmedo.mcloudapp.ui.activity.MainActivity;
+import com.shmedo.mcloudapp.util.ToastUtil;
 import java.util.Objects;
 
 /**
@@ -36,6 +42,8 @@ public class DeviceActivity extends BaseActivity {
     @BindView(R.id.toolbar) Toolbar mToolbar;
     private String deviceInfo = null;
 
+    private MdBluetoothManager mdBluetoothManager;
+    private BluetoothAdapter mBluetoothAdapter;
 
     @Override protected int initContentView() {
         return R.layout.activity_device;
@@ -114,10 +122,24 @@ public class DeviceActivity extends BaseActivity {
         @Override public boolean onMenuItemClick(MenuItem menuItem) {
             switch (menuItem.getItemId()) {
                 case R.id.current_blu:
+                    mdBluetoothManager = MdBluetoothManager.getInstance();
+                    if (mdBluetoothManager.connected()){
+                        ToastUtil.showSToast("当前蓝牙已连接");
+                    }else {
+                        //if (mBluetoothAdapter == null || !mBluetoothAdapter.isEnabled()) {
+                        //        Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+                        //        startActivityForResult(enableBtIntent, 1);
+                        //}
+                        ToastUtil.showSToast("请在主页面连接蓝牙");
+                    }
+                    //mdBluetoothManager.setEventHandler(new  MdBluetoothEventHandler());
 
+                    //mdBluetoothManager.scanDevice(20, DeviceActivity.this);
                     break;
             }
             return true;
         }
     };
+
+
 }
