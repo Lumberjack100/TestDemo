@@ -9,6 +9,7 @@
     <string name="service_set_address">请输入服务器地址/域名：端口 \n 如：192.168.1.101:8081 \n mCloud.shmedo.cn:9901</string>
     <string name="service_address">service_address</string>
     <string name="agent_addr">地址：%1$s</string>
+    <string name="blue_model">当前设备处于蓝牙连接状态，是否要断开连接？</string>
 
     <string name="appbar_scrolling_view_behavior" translatable="false">android.support.design.widget.AppBarLayout$ScrollingViewBehavior</string>
     <string name="bottom_sheet_behavior" translatable="false">android.support.design.widget.BottomSheetBehavior</string>

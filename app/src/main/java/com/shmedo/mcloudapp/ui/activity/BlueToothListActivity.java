@@ -15,6 +15,8 @@ import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.adapter.DevicesAdapter;
 import com.shmedo.mcloudapp.base.BaseActivity;
 import com.shmedo.mcloudapp.entity.ble.MDevice;
+import com.shmedo.mcloudapp.ui.activity.device.ConfigDeviceParameterActivity;
+import com.shmedo.mcloudapp.ui.activity.device.DeviceActivity;
 import com.shmedo.mcloudapp.util.ToastUtil;
 import java.util.ArrayList;
 import java.util.List;
@@ -79,13 +81,13 @@ public class BlueToothListActivity extends Activity {
                 @Override public void onItemClick(View itemView, int position) {
                     if (!scaning) {
                         //  mLoadingDialog.showNoCancelDialog("正在连接...");
-                        BluetoothDevice device = list.get(position).getDevice();
-                        Intent intent = new Intent();
-                        Bundle bundle = new Bundle();
-                        bundle.putParcelable("device", device);
-                        intent.putExtras(bundle);
-                        setResult(Activity.RESULT_OK, intent);
-                        finish();
+                        //BluetoothDevice device = list.get(position).getDevice();
+                        String deviceName = list.get(position).getDevice().getName();
+                        Intent intent = new Intent(BlueToothListActivity.this,DeviceActivity.class);
+                        intent.putExtra("device",deviceName);
+                        //setResult(Activity.RESULT_OK, intent);
+                        //finish();
+                        startActivity(intent);
                     }
 
                 }

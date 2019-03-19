@@ -17,10 +17,10 @@ public class QueryOsmometerParameterSubInfo {
     private int temperatureTrigger; //温度触发
     private double depthCorrect; //深度修正
     private double temperatureCorrect; //温度修正
-    private double syCordLength;//绳长
+    private String syCordLength;//绳长
 
 
-    @JavascriptInterface
+    //@JavascriptInterface
     public String getOsmometerStatus() {
         return osmometerStatus;
     }
@@ -30,7 +30,7 @@ public class QueryOsmometerParameterSubInfo {
         this.osmometerStatus = osmometerStatus;
     }
 
-    @JavascriptInterface
+    //@JavascriptInterface
     public String getOsmometerAddress() {
         return osmometerAddress;
     }
@@ -40,7 +40,7 @@ public class QueryOsmometerParameterSubInfo {
         this.osmometerAddress = osmometerAddress;
     }
 
-    @JavascriptInterface
+    //@JavascriptInterface
     public int getDepthTrigger() {
         return depthTrigger;
     }
@@ -50,7 +50,7 @@ public class QueryOsmometerParameterSubInfo {
         this.depthTrigger = depthTrigger;
     }
 
-    @JavascriptInterface
+    //@JavascriptInterface
     public int getTemperatureTrigger() {
         return temperatureTrigger;
     }
@@ -60,7 +60,7 @@ public class QueryOsmometerParameterSubInfo {
         this.temperatureTrigger = temperatureTrigger;
     }
 
-    @JavascriptInterface
+    //@JavascriptInterface
     public double getDepthCorrect() {
         return depthCorrect;
     }
@@ -70,7 +70,7 @@ public class QueryOsmometerParameterSubInfo {
         this.depthCorrect = depthCorrect;
     }
 
-    @JavascriptInterface
+    //@JavascriptInterface
     public double getTemperatureCorrect() {
         return temperatureCorrect;
     }
@@ -80,13 +80,26 @@ public class QueryOsmometerParameterSubInfo {
         this.temperatureCorrect = temperatureCorrect;
     }
 
-    @JavascriptInterface
-    public double getSyCordLength() {
+    //@JavascriptInterface
+    public String getSyCordLength() {
         return syCordLength;
     }
 
 
-    public void setSyCordLength(double syCordLength) {
+    public void setSyCordLength(String syCordLength) {
         this.syCordLength = syCordLength;
+    }
+
+
+    @Override public String toString() {
+        return "QueryOsmometerParameterSubInfo{" +
+            "osmometerStatus='" + osmometerStatus + '\'' +
+            ", osmometerAddress='" + osmometerAddress + '\'' +
+            ", depthTrigger=" + depthTrigger +
+            ", temperatureTrigger=" + temperatureTrigger +
+            ", depthCorrect=" + depthCorrect +
+            ", temperatureCorrect=" + temperatureCorrect +
+            ", syCordLength='" + syCordLength + '\'' +
+            '}';
     }
 }

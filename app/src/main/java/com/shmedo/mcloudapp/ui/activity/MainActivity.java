@@ -11,6 +11,7 @@ import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -22,6 +23,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import butterknife.BindView;
 import butterknife.OnClick;
+import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amap.api.location.AMapLocation;
 import com.amap.api.location.AMapLocationClient;
@@ -123,8 +125,11 @@ public class MainActivity extends BaseActivity
     private MaterialDialog mMaterialDialog;
     private MaterialDialog.Builder mBuilder;
 
-    private BluetoothAdapter mBluetoothAdapter;
-    private MdBluetoothManager mdBluetoothManager;
+    public static BluetoothAdapter mBluetoothAdapter;
+    public static MdBluetoothManager mdBluetoothManager;
+    //蓝牙是否已连接
+    public static boolean isConneted = false;
+
     private List<MDevice> list = new ArrayList<>();
     private boolean isShowingDialog = false;
     private Handler hander;
@@ -135,9 +140,8 @@ public class MainActivity extends BaseActivity
 
     //当前模式是否是蓝牙模式
     private boolean isBluModle = true;
-    //蓝牙是否已连接
-    private boolean isConneted = false;
-    private boolean autoOpenBt;
+
+    public static boolean autoOpenBt;
 
     private Runnable dismssDialogRunnable = new Runnable() {
         @Override
@@ -402,7 +406,7 @@ public class MainActivity extends BaseActivity
 
                     }
                 } else if (isBluModle && isConneted) {
-                    //showChangeModle( getResources().getString(R.string.blue_model));
+                    showChangeModle(getResources().getString(R.string.blue_model));
                 } else {
                     if (null != list && list.size() > 0) {
                         list.clear();
@@ -464,15 +468,17 @@ public class MainActivity extends BaseActivity
         if (!autoOpenBt) {
             Intent serverIntent = new Intent(MainActivity.this, BlueToothListActivity.class);
             serverIntent.putExtra("devlist", (Serializable) list);
-            startActivityForResult(serverIntent, REQUEST_ENABLE_BT);
-        } else {
+            //startActivityForResult(serverIntent, REQUEST_ENABLE_BT);
+            startActivity(serverIntent);
+        }
+        /*else {
             //自动连接
             int temp = 0;
             for (int i = 0; i < list.size(); i++) {
                 if ((list.get(i).getDevice().getName()).contains(SN)) {
                     mdBluetoothManager.connectDevice(list.get(i).getDevice(), MainActivity.this);
                     if (null != mLoadingDialog) {
-                        mLoadingDialog.showNoCancelDialog("正在连接...");
+                        mLoadingDialog.showNoCancelDialog("正在连接....");
                     }
                     hander.postDelayed(dismssConDialogRunnable, 20000);
                     break;
@@ -487,7 +493,7 @@ public class MainActivity extends BaseActivity
                 startActivityForResult(serverIntent, REQUEST_ENABLE_BT);
             }
 
-        }
+        }*/
         mdBluetoothManager.stopScan();
 
     }
@@ -501,7 +507,7 @@ public class MainActivity extends BaseActivity
                     handleDeviceFind((BluetoothDeviceFindEventData) event.getEventData());
                     break;
                 case CONNECTED: {
-                    ByteManagerUtil.init(new MyOnBytePackage());
+                    //ByteManagerUtil.init(new MyOnBytePackage());
                     mHandler.sendEmptyMessage(BT_CONNECT);
                     break;
                 }
@@ -551,7 +557,7 @@ public class MainActivity extends BaseActivity
                         byte[] data = (byte[]) msg.getBytes();
 
                         if (data != null && data.length > 0) {
-                            //ByteManagerUtil.getInstance().writeByte(data);
+                            ByteManagerUtil.getInstance().writeByte(data);
                         }
 
                     } catch (Exception ex) {
@@ -601,7 +607,7 @@ public class MainActivity extends BaseActivity
                     }
                     isConneted = true;
                     ToastUtil.showSToast("蓝牙连接成功");
-                    startBluAuthenticate();//蓝牙连接成功开始进行验证
+                    //startBluAuthenticate();//蓝牙连接成功开始进行验证
                     hander.removeCallbacks(dismssDialogRunnable);
                     hander.removeCallbacks(dismssConDialogRunnable);
 
@@ -668,10 +674,10 @@ public class MainActivity extends BaseActivity
                     ToastUtil.showSToast("设置读取Descriptor失败！");
                     break;
                 case BT_RECOVERY_SUCCESS:
-                    Toast.makeText(MainActivity.this, "恢复出厂设置成功！", Toast.LENGTH_SHORT).show();
+                    ToastUtil.showSToast("恢复出厂设置成功！" );
                     break;
                 case MESSAGE_RESPONSE_REBOOT_DEVICE:
-                    Toast.makeText(MainActivity.this, "重启系统成功！", Toast.LENGTH_SHORT).show();
+                    ToastUtil.showSToast("重启系统成功！");
                     break;
                 default:
                     break;
@@ -724,7 +730,7 @@ public class MainActivity extends BaseActivity
                 } else if (str.startsWith("$$0191")) {
                     mHandler.sendEmptyMessage(MESSAGE_RESPONSE_SAVE_SETTINGS_SUCCESS);
                 } else {
-                    parserResult(str);
+                    //parserResult(str);
                 }
 
             } catch (Exception ex) {
@@ -735,12 +741,7 @@ public class MainActivity extends BaseActivity
     }
 
 
-    /**
-     * 得到数据，加载视图
-     */
-    private void parserResult(final String result) {
 
-    }
 
 
     /**
@@ -883,12 +884,15 @@ public class MainActivity extends BaseActivity
             case REQUEST_ENABLE_BT:
                 // 当DeviceListActivity返回与设备连接的消息
                 if (resultCode == Activity.RESULT_OK) {
-                    // 得到链接设备的MAC
-                    BluetoothDevice dev = (BluetoothDevice) data.getParcelableExtra("device");
-                    mdBluetoothManager.connectDevice(dev, MainActivity.this);
-                    if (null != mLoadingDialog) {
-                        mLoadingDialog.showNoCancelDialog("正在连接...");
-                    }
+                    Log.i(LogTag.INFO_TAG, "=======蓝牙data========" + data.getData());
+                    Log.i(LogTag.INFO_TAG, "=======蓝牙data========" + data.getType());
+                    Log.i(LogTag.INFO_TAG, "=======蓝牙data========" + data.getParcelableExtra("device"));
+                    //// 得到链接设备的MAC
+                    //BluetoothDevice dev = (BluetoothDevice) data.getParcelableExtra("device");
+                    //mdBluetoothManager.connectDevice(dev, MainActivity.this);
+                    //if (null != mLoadingDialog) {
+                    //    mLoadingDialog.showNoCancelDialog("正在连接...");
+                    //}
                     hander.postDelayed(dismssConDialogRunnable, 20000);
                 }
                 break;
@@ -929,5 +933,36 @@ public class MainActivity extends BaseActivity
     public void hidingConnectionView() {
         Log.i("adu","gone");
         mLlConnection.setVisibility(View.GONE);
+    }
+
+    /**
+     * 是否切换连接模式
+     */
+    private void showChangeModle( String content) {
+        mBuilder = new MaterialDialog.Builder(this);
+        mBuilder.title("温馨提示：")
+            .content(content)
+            .contentColor(Color.parseColor("#000000"))
+            .canceledOnTouchOutside(false)
+            .positiveText("确定")
+            .negativeText("取消");
+        mMaterialDialog = mBuilder.build();
+        mMaterialDialog.show();
+        mBuilder.onAny(new MaterialDialog.SingleButtonCallback() {
+            @Override
+            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                if (which == DialogAction.POSITIVE) {
+                    isConneted=false;
+                    disconnectDevice();
+                    //mMenu.findItem(R.id.current_blu).setIcon(R.drawable.bar_item_bt);
+                    mMaterialDialog.dismiss();
+                } else if (which == DialogAction.NEGATIVE) {
+                    if (mBluetoothAdapter != null) {
+                        mBluetoothAdapter.isEnabled();
+                    }
+                    mMaterialDialog.dismiss();
+                }
+            }
+        });
     }
 }

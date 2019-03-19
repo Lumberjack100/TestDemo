@@ -23,7 +23,9 @@ public class BaseConfigInfoSub {
     private String sensorInterfaceType;    //传感器接口类型
     private String serverAddressOne;
     private String serverAddressTwo;
-    @JavascriptInterface
+    private String simChoose; //SIM选择
+
+    //@JavascriptInterface
     public String getEquipmentStatus() {
         return equipmentStatus;
     }
@@ -33,7 +35,7 @@ public class BaseConfigInfoSub {
         this.equipmentStatus = equipmentStatus;
     }
 
-    @JavascriptInterface
+    //@JavascriptInterface
     public String getToken() {
         return token;
     }
@@ -43,7 +45,7 @@ public class BaseConfigInfoSub {
         this.token = token;
     }
 
-    @JavascriptInterface
+    //@JavascriptInterface
     public String getLocalBGNum() {
         return localBGNum;
     }
@@ -53,7 +55,7 @@ public class BaseConfigInfoSub {
         this.localBGNum = localBGNum;
     }
 
-    @JavascriptInterface
+    //@JavascriptInterface
     public String getTargetBGNum() {
         return targetBGNum;
     }
@@ -64,7 +66,7 @@ public class BaseConfigInfoSub {
     }
 
 
-    @JavascriptInterface
+    //@JavascriptInterface
     public String getDataCommunicateMode() {
         return dataCommunicateMode;
     }
@@ -74,7 +76,7 @@ public class BaseConfigInfoSub {
         this.dataCommunicateMode = dataCommunicateMode;
     }
 
-    @JavascriptInterface
+    //@JavascriptInterface
     public String getRainfallStation() {
         return rainfallStation;
     }
@@ -84,7 +86,7 @@ public class BaseConfigInfoSub {
         this.rainfallStation = rainfallStation;
     }
 
-    @JavascriptInterface
+    //@JavascriptInterface
     public String getCollectorModel() {
         return collectorModel;
     }
@@ -94,7 +96,7 @@ public class BaseConfigInfoSub {
         this.collectorModel = collectorModel;
     }
 
-    @JavascriptInterface
+    //@JavascriptInterface
     public String getDataReportInterval() {
         return dataReportInterval;
     }
@@ -104,7 +106,7 @@ public class BaseConfigInfoSub {
         this.dataReportInterval = dataReportInterval;
     }
 
-    @JavascriptInterface
+    //@JavascriptInterface
     public String getDebugModel() {
         return debugModel;
     }
@@ -114,7 +116,7 @@ public class BaseConfigInfoSub {
         this.debugModel = debugModel;
     }
 
-    @JavascriptInterface
+    //@JavascriptInterface
     public String getSensorInterfaceType() {
         return sensorInterfaceType;
     }
@@ -124,7 +126,7 @@ public class BaseConfigInfoSub {
         this.sensorInterfaceType = sensorInterfaceType;
     }
 
-    @JavascriptInterface
+    //@JavascriptInterface
     public String getServerAddressOne() {
         return serverAddressOne;
     }
@@ -134,7 +136,7 @@ public class BaseConfigInfoSub {
         this.serverAddressOne = serverAddressOne;
     }
 
-@JavascriptInterface
+//@JavascriptInterface
     public String getServerAddressTwo() {
         return serverAddressTwo;
     }
@@ -142,5 +144,34 @@ public class BaseConfigInfoSub {
 
     public void setServerAddressTwo(String serverAddressTwo) {
         this.serverAddressTwo = serverAddressTwo;
+    }
+
+
+    public String getSimChoose() {
+        return simChoose;
+    }
+
+
+    public void setSimChoose(String simChoose) {
+        this.simChoose = simChoose;
+    }
+
+
+    @Override public String toString() {
+        return "BaseConfigInfoSub{" +
+            "token='" + token + '\'' +
+            ", localBGNum='" + localBGNum + '\'' +
+            ", targetBGNum='" + targetBGNum + '\'' +
+            ", equipmentStatus='" + equipmentStatus + '\'' +
+            ", dataCommunicateMode='" + dataCommunicateMode + '\'' +
+            ", rainfallStation='" + rainfallStation + '\'' +
+            ", collectorModel='" + collectorModel + '\'' +
+            ", dataReportInterval='" + dataReportInterval + '\'' +
+            ", debugModel='" + debugModel + '\'' +
+            ", sensorInterfaceType='" + sensorInterfaceType + '\'' +
+            ", serverAddressOne='" + serverAddressOne + '\'' +
+            ", serverAddressTwo='" + serverAddressTwo + '\'' +
+            ", simChoose='" + simChoose + '\'' +
+            '}';
     }
 }

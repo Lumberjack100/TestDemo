@@ -184,6 +184,36 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
+                android:text="设备锁定状态"
+                android:layout_marginLeft="30dp"
+                android:gravity="center"
+                />
+            <Switch
+                android:id="@+id/sw_device_luck_state"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginRight="10dp"
+                android:layout_toLeftOf="@id/tv_device_luck_state"
+                android:gravity="center"/>
+            <TextView
+                android:id="@+id/tv_device_luck_state"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_alignParentRight="true"
+                android:gravity="center"
+                android:layout_marginRight="20dp"
+                android:textColor="@color/colorPrimary"
+                android:text="已锁定"/>
+        </RelativeLayout>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:background="@color/bg2_light_white"
+            android:layout_marginTop="1dp"
+            >
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
                 android:text="调试模式"
                 android:layout_marginLeft="30dp"
                 android:gravity="center"
@@ -193,17 +223,18 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_marginRight="10dp"
-                android:layout_toLeftOf="@id/tv_debug"
+                android:layout_toLeftOf="@id/sp_debug"
                 android:gravity="center"/>
-            <TextView
-                android:id="@+id/tv_debug"
+            <Spinner
+                android:id="@+id/sp_debug"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_alignParentRight="true"
                 android:gravity="center"
                 android:layout_marginRight="20dp"
                 android:textColor="@color/colorPrimary"
-                android:text="已开启"/>
+                android:background="@color/white"
+                 />
         </RelativeLayout>
         <RelativeLayout
             android:layout_width="match_parent"
@@ -217,6 +248,15 @@
                 android:text="SIM卡A功能"
                 android:layout_marginLeft="30dp"
                 android:gravity="center"
+                />
+            <TextView
+                android:id="@+id/tv_sim_1"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text=" "
+                android:gravity="center"
+                android:layout_marginRight="20dp"
+                android:layout_toLeftOf="@id/sw_sim_A"
                 />
             <Switch
                 android:id="@+id/sw_sim_A"
@@ -247,7 +287,15 @@
                 android:layout_marginLeft="30dp"
                 android:gravity="center"
                 />
-
+            <TextView
+                android:id="@+id/tv_sim_2"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text=" "
+                android:gravity="center"
+                android:layout_marginRight="20dp"
+                android:layout_toLeftOf="@id/sw_sim_B"
+                />
             <Switch
                 android:id="@+id/sw_sim_B"
                 android:layout_width="wrap_content"

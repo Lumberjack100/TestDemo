@@ -262,6 +262,12 @@ public class Constants {
     public static final int BT_RECOVERY_SUCCESS=15;
     public static final int ON_REFRESH_SUCCESS=16;
     public static final int MESSAGE_RESPONSE_REBOOT_DEVICE=17;
+    public static final int MESSAGE_LOCK_REBOOT_DEVICE=18;
+    public static final int BT_CONFIG_DEVICE=19;
+    public static final int MESSAGE_BASE_CONFIG=20;
+    public static final int MESSAGE_SYSTEM_RUN_STATE=21;
+    public static final int MESSAGE_VERSION_MESSAGE=22;
+    public static final int MESSAGE_GET_ALL_SENSOR_CONFIG=23;
     //蓝牙自动连接是否开启
     public static  boolean BLUETOOTH_CONNECT_AUTO=true;
 }

@@ -182,7 +182,11 @@ public class LoginActivity extends BaseActivity {
                 break;
             case R.id.btn_login_account:
                 //点击账号登录方式
-                isServerConfig();
+                if (StringUtil.isNullOrEmpty(CommonVariable.getServiceAddress())){
+                    ToastUtil.showLToast("请先配置服务地址");
+                    StartActivityUtil.comeOnBaby(this, ServiceConfigActivity.class);
+                    return;
+                }
                 if (prepareForLogin()) {
                     return;
                 }
@@ -196,7 +200,11 @@ public class LoginActivity extends BaseActivity {
                 break;
             case R.id.btn_login_phone:
                 //点击短信登录方式
-                isServerConfig();
+                if (StringUtil.isNullOrEmpty(CommonVariable.getServiceAddress())){
+                    ToastUtil.showLToast("请先配置服务地址");
+                    StartActivityUtil.comeOnBaby(this, ServiceConfigActivity.class);
+                    return;
+                }
                 String code = mLoginPhonePassword.getText().toString().trim();
                 String phoneNumber = mLoginEditTextIphone.getText().toString().trim();
                 if (StringUtil.isNullOrEmpty(code) && StringUtil.isNullOrEmpty(phoneNumber)){
@@ -344,12 +352,7 @@ public class LoginActivity extends BaseActivity {
             });
     }
 
-    private void isServerConfig(){
-        if (StringUtil.isNullOrEmpty(CommonVariable.getServiceAddress())) {
-            ToastUtil.showLToast("请先配置服务地址");
-            StartActivityUtil.comeOnBaby(this, ServiceConfigActivity.class);
-        }
-    }
+
 
     private boolean prepareForLogin() {
         if (mLoginEditTextAccount.length() == 0) {

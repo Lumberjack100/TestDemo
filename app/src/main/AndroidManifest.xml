@@ -137,6 +137,10 @@
             android:windowSoftInputMode="adjustPan|stateHidden"
             android:theme="@style/AppTheme.NoActionBar"
             />
+        <activity android:name=".ui.activity.tabdevice.AllDeviceActivity"
+            android:windowSoftInputMode="adjustPan|stateHidden"
+            android:theme="@style/AppTheme.NoActionBar"
+            />
     </application>
 
 </manifest>

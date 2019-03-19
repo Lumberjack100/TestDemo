@@ -15,7 +15,7 @@ public class VersionMessageSub {
     private String firmwareVersion; //固件版本号
     private String produceDate;     //生产日期
 
-    @JavascriptInterface
+    //@JavascriptInterface
     public String getProductID() {
         return productID;
     }
@@ -25,7 +25,7 @@ public class VersionMessageSub {
         this.productID = productID;
     }
 
-    @JavascriptInterface
+    //@JavascriptInterface
     public String getFirmwareVersion() {
         return firmwareVersion;
     }
@@ -35,7 +35,7 @@ public class VersionMessageSub {
         this.firmwareVersion = firmwareVersion;
     }
 
-    @JavascriptInterface
+    //@JavascriptInterface
     public String getProduceDate() {
         return produceDate;
     }
@@ -43,5 +43,14 @@ public class VersionMessageSub {
 
     public void setProduceDate(String produceDate) {
         this.produceDate = produceDate;
+    }
+
+
+    @Override public String toString() {
+        return "VersionMessageSub{" +
+            "productID='" + productID + '\'' +
+            ", firmwareVersion='" + firmwareVersion + '\'' +
+            ", produceDate='" + produceDate + '\'' +
+            '}';
     }
 }
