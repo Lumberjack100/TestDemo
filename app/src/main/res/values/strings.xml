@@ -10,6 +10,7 @@
     <string name="service_address">service_address</string>
     <string name="agent_addr">地址：%1$s</string>
     <string name="blue_model">当前设备处于蓝牙连接状态，是否要断开连接？</string>
+    <string name="finish">确定要退出该页面，并断开蓝牙连接吗？</string>
 
     <string name="appbar_scrolling_view_behavior" translatable="false">android.support.design.widget.AppBarLayout$ScrollingViewBehavior</string>
     <string name="bottom_sheet_behavior" translatable="false">android.support.design.widget.BottomSheetBehavior</string>
@@ -48,5 +49,8 @@
     </string>
     <string name="nozzel_height">
         管口高程数据来源：\n1、查阅图纸 \n 2、业主沟通 \n 3、设计院沟通 \n 4、自行测量
+    </string>
+    <string name="rain">
+        翻斗式雨量计：通过计算内置翻斗的反转次数，计算降雨量，翻斗的分辨力常用为0.1mm、0.2mm、0.5mm，这项参数和雨量计要一致，不能选错。
     </string>
 </resources>

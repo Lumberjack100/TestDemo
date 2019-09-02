@@ -30,7 +30,7 @@ public class BaseRetrofit {
             .addNetworkInterceptor(interceptor)
             .build();
 
-        Log.i("adu","=======fuwuqidizhi====="+CommonVariable.getServiceAddress());
+        Log.i("adu","=======getServiceAddress====="+CommonVariable.getServiceAddress());
         return new Retrofit.Builder()
             //设置网络请求的Url地址
             .baseUrl(CommonVariable.getServiceAddress())

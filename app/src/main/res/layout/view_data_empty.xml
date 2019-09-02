@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_horizontal"
+    android:background="@color/white"
+    android:orientation="vertical">
+
+    <ImageView
+        android:id="@+id/iv_view_data_empty"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:adjustViewBounds="true"
+        android:scaleType="center"
+        android:layout_marginTop="20dp"
+        android:src="@drawable/img_data_empty"
+        android:layout_centerInParent="true"
+        />
+
+    <TextView
+        android:id="@+id/tv_view_data_empty"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="-30dp"
+        android:layout_below="@id/iv_view_data_empty"
+         android:paddingBottom="20dp"
+        android:text="暂时没有数据"
+        android:textColor="@color/text4_dark_gray"
+        android:textSize="18sp"
+        android:gravity="center"
+        />
+
+</RelativeLayout>

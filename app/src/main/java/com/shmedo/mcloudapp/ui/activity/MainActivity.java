@@ -6,8 +6,10 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
@@ -36,14 +38,11 @@ import com.amap.api.maps.LocationSource;
 import com.amap.api.maps.MapView;
 import com.amap.api.maps.UiSettings;
 import com.amap.api.maps.model.LatLng;
+import com.amap.api.maps.model.LatLngBounds;
 import com.amap.api.maps.model.Marker;
 import com.amap.api.maps.model.MyLocationStyle;
 import com.github.clans.fab.FloatingActionButton;
-import com.shmedo.das.das.cmd.CommandManager;
-import com.shmedo.das.das.cmd.CommandType;
-import com.shmedo.das.utils.DesUtil;
-import com.shmedo.das.utils.OnBytePackage;
-import com.shmedo.das.utils.StringUtil;
+import com.google.gson.reflect.TypeToken;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.adapter.InfoWinAdapter;
 import com.shmedo.mcloudapp.base.BaseActivity;
@@ -52,26 +51,44 @@ import com.shmedo.mcloudapp.bluetooth.BluetoothEvent;
 import com.shmedo.mcloudapp.bluetooth.BluetoothEventHandler;
 import com.shmedo.mcloudapp.bluetooth.MdBluetoothManager;
 import com.shmedo.mcloudapp.bluetooth.Message;
+import com.shmedo.mcloudapp.entity.DeviceBasicInfoResult;
+import com.shmedo.mcloudapp.entity.DeviceBasicInfoResultDao;
+import com.shmedo.mcloudapp.entity.StatusInfoResult;
 import com.shmedo.mcloudapp.entity.ble.MDevice;
+import com.shmedo.mcloudapp.entity.cluster.ClusterAnotherClickListener;
+import com.shmedo.mcloudapp.entity.cluster.ClusterAnotherRender;
+import com.shmedo.mcloudapp.entity.cluster.ClusterItem;
+import com.shmedo.mcloudapp.entity.cluster.ClusterItemImp;
+import com.shmedo.mcloudapp.entity.cluster.ClusterOverlayMerchant;
+import com.shmedo.mcloudapp.entity.event.MapDeviceEvent;
 import com.shmedo.mcloudapp.entity.event.WifiEvent;
+import com.shmedo.mcloudapp.entity.parameter.LocationResult;
+import com.shmedo.mcloudapp.model.BaseObserver;
+import com.shmedo.mcloudapp.model.MDRetrofit;
+import com.shmedo.mcloudapp.model.common.CommonVariable;
+import com.shmedo.mcloudapp.util.DaoManager;
+import com.shmedo.mcloudapp.util.DensityUtil;
+import com.shmedo.mcloudapp.util.GsonFactory;
 import com.shmedo.mcloudapp.util.StartActivityUtil;
 import com.shmedo.mcloudapp.util.ToastUtil;
 import com.shmedo.mcloudapp.util.XPermissionUtils;
 import com.shmedo.mcloudapp.util.bleutil.ByteManagerUtil;
 import com.shmedo.mcloudapp.util.bleutil.LogTag;
 import com.shmedo.mcloudapp.util.common.MapManagerUtil;
+import com.shmedo.mcloudapp.views.HintDialog;
 import com.shmedo.mcloudapp.views.LoadingDialog;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-import java.util.UUID;
+import java.util.Map;
+
+import okhttp3.RequestBody;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
-
-import static com.shmedo.das.das.cmd.CommandType.GET_ALL_SENSOR_CONFIG;
-import static com.shmedo.das.das.cmd.CommandType.QUERY_OSMOMETER_PARAMETER;
-import static com.shmedo.das.das.cmd.CommandType.SYSTEM_RUN_STATE;
 import static com.shmedo.mcloudapp.util.bleutil.Constants.BT_CHARACTERISTICS_FIND_FAIL;
 import static com.shmedo.mcloudapp.util.bleutil.Constants.BT_CONNECT;
 import static com.shmedo.mcloudapp.util.bleutil.Constants.BT_DISCONNECTED;
@@ -89,9 +106,8 @@ import static com.shmedo.mcloudapp.util.bleutil.Constants.MESSAGE_RESPONSE_TIME_
 import static com.shmedo.mcloudapp.util.bleutil.Constants.REFRESH_RUN_STATE;
 import static com.shmedo.mcloudapp.util.bleutil.Constants.VERIFY_RESULT;
 
-public class MainActivity extends BaseActivity
-    implements AMap.OnMapClickListener, AMap.OnMarkerClickListener, AMapLocationListener,
-    LocationSource {
+public class MainActivity extends BaseActivity  implements
+    LocationSource,AMapLocationListener{
 
     @BindView(R.id.img_user) ImageView mImgUser;
     @BindView(R.id.main_titile) TextView mMainTitile;
@@ -110,20 +126,18 @@ public class MainActivity extends BaseActivity
     //初始化地图控制器对象
     private AMap aMap;
     private MyLocationStyle myLocationStyle;
-    //声明AMapLocationClient类对象
-    public AMapLocationClient mLocationClient = null;
-    //声明AMapLocationClientOption对象
-    public AMapLocationClientOption mLocationOption = null;
-    private UiSettings mUiSettings;//定义一个UiSettings对象
-    private boolean followMove = true;
-    private LatLng myLatLng;
     private InfoWinAdapter adapter;
-    private Marker oldMarker;
     private OnLocationChangedListener mListener;
+    private AMapLocationClient mLocationClient;
+    private AMapLocationClientOption mLocationOption;
+    private LatLng myLatLng;
+    private boolean followMove = true;
+    private UiSettings mUiSettings;//定义一个UiSettings对象
 
     private LoadingDialog mLoadingDialog;
     private MaterialDialog mMaterialDialog;
     private MaterialDialog.Builder mBuilder;
+    private DaoManager manager = DaoManager.getInstance();
 
     public static BluetoothAdapter mBluetoothAdapter;
     public static MdBluetoothManager mdBluetoothManager;
@@ -142,6 +156,11 @@ public class MainActivity extends BaseActivity
     private boolean isBluModle = true;
 
     public static boolean autoOpenBt;
+    private List<ClusterItem> clusterItemsMerchant = new ArrayList<>();
+    private ClusterOverlayMerchant clusterOverlayMerchant;
+
+    private Map<Integer, Drawable> mBackDrawAblesMerchant = new HashMap<Integer, Drawable>();
+    private int clusterRadius = 48;
 
     private Runnable dismssDialogRunnable = new Runnable() {
         @Override
@@ -175,7 +194,10 @@ public class MainActivity extends BaseActivity
         //在activity执行onCreate时执行mMapView.onCreate(savedInstanceState)，创建地图
         mMapView.onCreate(savedInstanceState);
         EventBus.getDefault().register(this);
+        manager.init(this);
         hidingConnectionView();
+        //获取地图要加载的数据
+        getDeviceBasicInfoList("1");
         XPermissionUtils.requestPermissionsResult(this, 200, new String[] {
                 Manifest.permission.ACCESS_FINE_LOCATION,
                 Manifest.permission.ACCESS_COARSE_LOCATION },
@@ -206,30 +228,23 @@ public class MainActivity extends BaseActivity
             aMap = mMapView.getMap();
             mUiSettings = aMap.getUiSettings();//实例化UiSettings类对象
         }
-        adapter = new InfoWinAdapter();
-        aMap.setInfoWindowAdapter(adapter);
         mUiSettings.setZoomControlsEnabled(false); //隐藏缩放控件
         mUiSettings.setMyLocationButtonEnabled(false);//设置默认定位按钮是否显示，非必需设置。
         mUiSettings.setLogoPosition(AMapOptions.LOGO_POSITION_BOTTOM_RIGHT);//设置logo位置
 
-        //设置地图的放缩级别
-        //aMap.moveCamera(CameraUpdateFactory.zoomTo(13));
-        myLocationStyle = new MyLocationStyle();
+        myLocationStyle = new MyLocationStyle();//初始化定位蓝点样式类myLocationStyle.myLocationType(MyLocationStyle.LOCATION_TYPE_LOCATION_ROTATE);//连续定位、且将视角移动到地图中心点，定位点依照设备方向旋转，并且会跟随设备移动。（1秒1次定位）如果不设置myLocationType，默认也会执行此种模式。
         //myLocationStyle.interval(2000); //设置连续定位模式下的定位间隔，只在连续定位模式下生效，单次定位模式下不会生效。单位为毫秒。
         //aMap.setMyLocationStyle(myLocationStyle);//设置定位蓝点的Style
-        //myLocationStyle.myLocationIcon(BitmapDescriptorFactory.fromResource(R.drawable.mylocation));// 设置小蓝点的图标
+        //aMap.getUiSettings().setMyLocationButtonEnabled(true);设置默认定位按钮是否显示，非必需设置。
         myLocationStyle.strokeColor(getResources().getColor(R.color.app_color_blue_2));// 设置圆形的边框颜色
         myLocationStyle.radiusFillColor(Color.argb(100, 29, 161, 242));// 设置圆形的填充颜色
         myLocationStyle.strokeWidth(1.0f);// 设置圆形的边框粗细
-        myLocationStyle.myLocationType(
-            MyLocationStyle.LOCATION_TYPE_FOLLOW_NO_CENTER);//定位一次，且将视角移动到地图中心点。
-        myLocationStyle.showMyLocation(
-            true);//设置是否显示定位小蓝点，用于满足只想使用定位，不想使用定位小蓝点的场景，设置false以后图面上不再有定位蓝点的概念，但是会持续回调位置信息。
-        aMap.setMyLocationStyle(myLocationStyle);
-        aMap.setLocationSource(this);// 设置定位资源。如果不设置此定位资源则定位按钮不可点击。并且实现activate激活定位,停止定位的回调方法
-        aMap.setMyLocationEnabled(true);// 设置为true表示显示定位层并可触发定位，false表示隐藏定位层并不可触发定位，默认是false
+        myLocationStyle.myLocationType(MyLocationStyle.LOCATION_TYPE_LOCATE) ;//定位一次，且将视角移动到地图中心点。
+        myLocationStyle.showMyLocation(true);
 
-        //myLocationStyle.anchor(0.0F,1.0F);
+        aMap.setMyLocationEnabled(true);// 设置为true表示启动显示定位蓝点，false表示隐藏定位蓝点并不进行定位，默认是false。
+        aMap.setMyLocationStyle(myLocationStyle);
+        //aMap.setLocationSource(this);// 设置定位资源。如果不设置此定位资源则定位按钮不可点击。并且实现activate激活定位,停止定位的回调方法
         aMap.setOnMyLocationChangeListener(new AMap.OnMyLocationChangeListener() {
             @Override public void onMyLocationChange(Location location) {
                 double latitude = location.getLatitude();
@@ -240,75 +255,21 @@ public class MainActivity extends BaseActivity
                 }
             }
         });
+
         aMap.setOnMapTouchListener(new AMap.OnMapTouchListener() {
             @Override public void onTouch(MotionEvent motionEvent) {
                 followMove = false;
             }
         });
-        MapManagerUtil.initMarker(aMap, this);
-        // 绑定 Marker 被点击事件
-        //aMap.setOnMarkerClickListener(this);
-        aMap.setOnMapClickListener(this);
+
+        addMerchantClustersToMap(queryDeviceInfoList(""));
     }
 
 
-    @Override public void onLocationChanged(AMapLocation aMapLocation) {
-        if (aMapLocation != null) {
-            if (mListener != null) {
-                //                aMap.clear();  清除之前的marker
-                mListener.onLocationChanged(aMapLocation);// 显示系统小蓝点-我的位置
-            }
-
-            if (aMapLocation.getErrorCode() == 0) {
-                myLatLng = new LatLng(aMapLocation.getLatitude(), aMapLocation.getLongitude());
-                aMap.moveCamera(CameraUpdateFactory.newLatLngZoom(myLatLng, 14));
-                String city = aMapLocation.getCity();
-                String address = aMapLocation.getAddress();
-                //                addMarkerToMap(latLng,city,address);
-            } else {
-                //定位失败时，可通过ErrCode（错误码）信息来确定失败的原因，errInfo是错误信息，详见错误码表。
-                Log.e("AmapError",
-                    "location Error, ErrCode:" + aMapLocation.getErrorCode() + ", errInfo:"
-                        + aMapLocation.getErrorInfo());
-            }
-        }
-    }
 
 
-    //地图的点击事件
-    @Override public void onMapClick(LatLng latLng) {
-        Log.i("adu", "地图的点击事件");
-        //点击地图上没marker 的地方，隐藏inforwindow
-        //if (oldMarker != null) {
-        oldMarker.hideInfoWindow();
-        //oldMarker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.marker_normal));
-        //}
-    }
 
 
-    // 定义 Marker 点击事件监听
-    @Override public boolean onMarkerClick(Marker marker) {
-        Log.i("adu", "--Marker 点击事件监听--" + marker.getPosition().equals(myLatLng));
-        if (!marker.getPosition().equals(myLatLng)) { //点击的marker不是自己位置的那个marker
-            if (oldMarker != null) {
-                //oldMarker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.marker_normal));
-                oldMarker.showInfoWindow();
-            }
-            //oldMarker = marker;
-            //marker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.marker_selected));
-        } else {
-            if (oldMarker != null) {
-                oldMarker.hideInfoWindow();
-            }
-        }
-
-        return false; //返回 “false”，除定义的操作之外，默认操作也将会被执行
-    }
-
-
-    //激活定位
-    //记得注册定位
-    //<service android:name="com.amap.api.location.APSService"/>
     @Override public void activate(OnLocationChangedListener onLocationChangedListener) {
         mListener = onLocationChangedListener;
         if (null == mLocationClient) {
@@ -332,11 +293,35 @@ public class MainActivity extends BaseActivity
         }
 
     }
-
-
-    //停止定位
+    /**
+     * 定位成功后回调函数
+     */
     @Override
-    public void deactivate() {
+    public void onLocationChanged(AMapLocation aMapLocation) {
+        if (aMapLocation != null) {
+            if (mListener != null) {
+                //                aMap.clear();  清除之前的marker
+                mListener.onLocationChanged(aMapLocation);// 显示系统小蓝点-我的位置
+            }
+
+            if (aMapLocation.getErrorCode() == 0) {
+                myLatLng = new LatLng(aMapLocation.getLatitude(), aMapLocation.getLongitude());
+                aMap.moveCamera(CameraUpdateFactory.newLatLngZoom(myLatLng, 8));
+                String city = aMapLocation.getCity();
+                String address = aMapLocation.getAddress();
+                //                addMarkerToMap(latLng,city,address);
+                Log.i("adu","=city="+city+"=address=="+address);
+            } else {
+                //定位失败时，可通过ErrCode（错误码）信息来确定失败的原因，errInfo是错误信息，详见错误码表。
+                Log.e("AmapError",
+                    "location Error, ErrCode:" + aMapLocation.getErrorCode() + ", errInfo:"
+                        + aMapLocation.getErrorInfo());
+            }
+        }
+
+    }
+
+    @Override public void deactivate() {
         mListener = null;
         if (mLocationClient != null) {
             mLocationClient.stopLocation();
@@ -346,6 +331,126 @@ public class MainActivity extends BaseActivity
     }
 
 
+
+    /**
+     *  获取设备信息列表
+     * @param currentCompanyID
+     */
+    private void getDeviceBasicInfoList(String currentCompanyID){
+        RequestBody body = RequestBody.create(CommonVariable.JSON_TYPE, currentCompanyID);
+        MDRetrofit.getInstance()
+            .createService()
+            .QueryDeviceBasicInfoList(CommonVariable.getAccessToken(), body)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(new BaseObserver<List<DeviceBasicInfoResult>>() {
+
+                @Override public void Success(List<DeviceBasicInfoResult> infoList, String message) {
+                    mLoadingDialog.dismiss();
+
+                    if (infoList.size() != 0) {
+                        Log.i("adu","---11--"+GsonFactory.getGson().toJson(infoList));
+
+                        manager.getDaoSession().getDeviceBasicInfoResultDao().insertOrReplaceInTx(infoList);
+                    }
+                }
+
+                @Override public void Failure(String message) {
+                    mLoadingDialog.dismiss();
+                    Log.i("adu", "服务器连接失败--" + message);
+                    ToastUtil.showSToast("服务器连接失败");
+                }
+            });
+    }
+
+
+    /**
+     * 查询位置信息不为空的设备
+     * @param gpsLocation
+     * @return
+     */
+    private List<DeviceBasicInfoResult> queryDeviceInfoList(String gpsLocation){
+        return manager.getDaoSession()
+            .getDeviceBasicInfoResultDao()
+            .queryBuilder()
+            .where(DeviceBasicInfoResultDao.Properties.GpsLocation.notEq(gpsLocation))
+            .list();
+    }
+
+    //添加设备的 marker 点
+    private void addMerchantClustersToMap(final List<DeviceBasicInfoResult> deviceList){
+        LatLng latLng = null;
+        for (int i = 0; i < deviceList.size(); i++) {
+            LocationResult location = GsonFactory.getGson()
+                .fromJson(deviceList.get(i).getInstallLocation(), new TypeToken<LocationResult>() {}.getType());
+             latLng = new LatLng(location.getLat(),location.getLng());
+            ClusterItemImp clusterImp = new ClusterItemImp(latLng,deviceList.get(i).getDeviceName());
+            clusterItemsMerchant.add(clusterImp);
+        }
+
+        if(clusterOverlayMerchant == null){
+            clusterOverlayMerchant = new ClusterOverlayMerchant(aMap,clusterItemsMerchant,
+                DensityUtil.Dp2Px(getApplicationContext(), clusterRadius),getApplicationContext());
+        }else {
+            clusterOverlayMerchant.onDestroy();
+            clusterOverlayMerchant = null;
+            clusterOverlayMerchant = new ClusterOverlayMerchant(aMap,clusterItemsMerchant,DensityUtil.Dp2Px(getApplicationContext(), clusterRadius),getApplicationContext());
+        }
+
+        clusterOverlayMerchant.setClusterAnotherRenderer(new ClusterAnotherRender() {
+            @Override
+            public Drawable getAnotherDrawAble(int clusterNum) {
+                if (clusterNum <= 5) {
+                    Drawable bitmapDrawable = mBackDrawAblesMerchant.get(2);
+                    if (bitmapDrawable == null) {
+                        //bitmapDrawable = getApplication().getResources().getDrawable(checkMarkerIcon(sensorType));
+                        bitmapDrawable = getApplication().getResources().getDrawable(R.drawable.icon_marker_das);
+                        mBackDrawAblesMerchant.put(2, bitmapDrawable);
+                    }
+                    return bitmapDrawable;
+                } else {
+                    Drawable bitmapDrawable = mBackDrawAblesMerchant.get(3);
+                    if (bitmapDrawable == null) {
+                        bitmapDrawable =
+                            getApplication().getResources().getDrawable(R.drawable.icon_marker_das);
+                        mBackDrawAblesMerchant.put(3, bitmapDrawable);
+                    }
+                    return bitmapDrawable;
+                }
+            }
+        });
+        clusterOverlayMerchant.setOnClusterAnotherClickListener(new ClusterAnotherClickListener() {
+            @Override
+            public void onAnotherClick(Marker marker, List<ClusterItem> clusterItems) {
+                Toast.makeText(MainActivity.this,">>>>>>>点击了商家聚合点",Toast.LENGTH_SHORT).show();
+                if(aMap.getCameraPosition().zoom<=18){
+                    LatLngBounds.Builder builder = new LatLngBounds.Builder();
+                    for (ClusterItem clusterItem : clusterItems) {
+                        builder.include(clusterItem.getPosition());
+                    }
+                    LatLngBounds latLngBounds = builder.build();
+                    aMap.animateCamera(CameraUpdateFactory.newLatLngBounds(latLngBounds,10 ));
+                }
+
+            }
+        });
+
+    }
+    private int checkMarkerIcon(String sensorType){
+        switch (sensorType){
+            case "DAS":
+                return R.drawable.icon_marker_das;
+            case "DAG":
+
+                return R.drawable.icon_marker_dag;
+            case "E60":
+
+                return R.drawable.icon_marker_e60;
+                default:
+                    return R.drawable.icon_marker;
+        }
+    }
+
     @OnClick({ R.id.img_user, R.id.img_equipment, R.id.RL_scan,
                  R.id.fab_add, R.id.fab_config, R.id.fab_location, R.id.fab_refresh })
     public void onViewClicked(View view) {
@@ -354,10 +459,14 @@ public class MainActivity extends BaseActivity
                 StartActivityUtil.comeOnBaby(this, UserInfoActivity.class);
                 break;
             case R.id.img_equipment:
-                ToastUtil.showSToast("设备");
+                StartActivityUtil.comeOnBaby(this, DeviceManageActivity.class);
                 break;
             case R.id.RL_scan:
-                StartActivityUtil.comeOnBaby(this, ScanAddDeviceActivity.class);
+                //扫一扫
+                Intent intent = new Intent(this, ScanAddDeviceActivity.class);
+                intent.putExtra("position",myLatLng);
+                startActivity(intent);
+                //StartActivityUtil.comeOnBaby(this, ScanAddDeviceActivity.class);
                 break;
             case R.id.fab_add:
                 chooseModel();
@@ -465,38 +574,19 @@ public class MainActivity extends BaseActivity
 
 
     private void initBlueAdapter() {
+        Log.i("adu","-----------------初始化蓝牙---------------");
         if (!autoOpenBt) {
             Intent serverIntent = new Intent(MainActivity.this, BlueToothListActivity.class);
             serverIntent.putExtra("devlist", (Serializable) list);
             //startActivityForResult(serverIntent, REQUEST_ENABLE_BT);
             startActivity(serverIntent);
         }
-        /*else {
-            //自动连接
-            int temp = 0;
-            for (int i = 0; i < list.size(); i++) {
-                if ((list.get(i).getDevice().getName()).contains(SN)) {
-                    mdBluetoothManager.connectDevice(list.get(i).getDevice(), MainActivity.this);
-                    if (null != mLoadingDialog) {
-                        mLoadingDialog.showNoCancelDialog("正在连接....");
-                    }
-                    hander.postDelayed(dismssConDialogRunnable, 20000);
-                    break;
 
-                } else {
-                    temp++;
-                }
-            }
-            if (temp == list.size()) {
-                Intent serverIntent = new Intent(MainActivity.this, BlueToothListActivity.class);
-                serverIntent.putExtra("devlist", (Serializable) list);
-                startActivityForResult(serverIntent, REQUEST_ENABLE_BT);
-            }
-
-        }*/
         mdBluetoothManager.stopScan();
 
     }
+
+
 
 
     private class MdBluetoothEventHandler implements BluetoothEventHandler {
@@ -688,114 +778,6 @@ public class MainActivity extends BaseActivity
     });
 
 
-    private class MyOnBytePackage implements OnBytePackage {
-        @Override public void onPackageArrived(final byte[] data) {
-            try {
-                String str = new String(data, "utf-8");
-                String deskey = "12345678";
-                Log.i(LogTag.INFO_TAG, "反馈结果===" + str);
-                if (str.startsWith("$$224") && str.endsWith("\r\n")) {
-                    if (str.substring(0, str.length() - 2).equals("$$224ce")) {
-                        startBluAuthenticate();//重新 认证
-                    } else {
-                        String[] strs = str.substring(0, str.length() - 2).split(",");
-                        byte[] resultData = StringUtil.hexStringToBytes(strs[3]);
-                        try {
-                            String strdes = new String(DesUtil.decrypt(resultData, deskey),
-                                "utf-8");
-                            if (strdes.length() != 0) {
-                                String desStr = StringUtil.bytesToHexString(DesUtil.encrypt(
-                                    (StringUtil.reverseString(strdes.substring(0, 6)) +
-                                        deskey).getBytes(), deskey));
-                                String com = "##222," + SN + ",0," + desStr.toUpperCase() + "\r\n";
-                                Message msg = new Message(UUID.randomUUID().toString(), com, true);
-                                mdBluetoothManager.writeMessage(msg);
-                                Log.i(LogTag.INFO_TAG, "发送指令===" + com);
-                                return;
-                            }
-                        } catch (Exception e) {
-                            //CommonUtil.handlerException(MainActivity.this, e);
-                        }
-                    }
-                } else if (str.startsWith("$$223")) {
-                    String[] verifyReult = str.substring(0, str.length() - 2).split(",");
-                    android.os.Message message = new android.os.Message();
-                    message.what = VERIFY_RESULT;
-                    message.obj = verifyReult[1];
-                    mHandler.sendMessage(message);
-                    Log.i(LogTag.INFO_TAG, "认证结果===" + verifyReult[1]);
-                } else if (str.startsWith("$$119")) {
-
-                    mHandler.sendEmptyMessage(BT_RECOVERY_SUCCESS);
-                } else if (str.startsWith("$$0191")) {
-                    mHandler.sendEmptyMessage(MESSAGE_RESPONSE_SAVE_SETTINGS_SUCCESS);
-                } else {
-                    //parserResult(str);
-                }
-
-            } catch (Exception ex) {
-                Log.e(LogTag.ERROR_TAG, ex.getMessage(), ex);
-            }
-
-        }
-    }
-
-
-
-
-
-    /**
-     * 蓝牙连接成功开始进行验证
-     */
-    private void startBluAuthenticate() {
-        String com = "##224," + SN + ",0\r\n";
-        Message msg = new Message(UUID.randomUUID().toString(), com, true);
-        mdBluetoothManager.writeMessage(msg);
-        Log.i(LogTag.INFO_TAG, "发送指令===" + com);
-
-    }
-
-
-    /**
-     * 发送蓝牙请求设备信息指令
-     */
-    private void sendDeviceStateComd() {
-        if (isConneted) {
-            //获取所有配置
-            final String allInfoCommand = CommandManager.getInstance()
-                .getCommand(GET_ALL_SENSOR_CONFIG, null);
-            //运行状态
-            String runstateCommand = CommandManager.getInstance()
-                .getCommand(SYSTEM_RUN_STATE, null);
-            //渗压计开关
-            String shenyajiCommand = CommandManager.getInstance()
-                .getCommand(QUERY_OSMOMETER_PARAMETER, null);
-            //版本信息
-            String versionCommand = CommandManager.getInstance()
-                .getCommand(CommandType.VERSION_MESSAGE, null);
-
-            String serverCommand = CommandManager.getInstance()
-                .getCommand(CommandType.SERVER_ADDRESS, null);
-
-            mdBluetoothManager.writeMessage(
-                new Message(UUID.randomUUID().toString(), allInfoCommand, true));
-            Log.i(LogTag.INFO_TAG, "发送指令===" + allInfoCommand);
-            mdBluetoothManager.writeMessage(
-                new Message(UUID.randomUUID().toString(), runstateCommand, true));
-            Log.i(LogTag.INFO_TAG, "发送指令===" + runstateCommand);
-            mdBluetoothManager.writeMessage(
-                new Message(UUID.randomUUID().toString(), shenyajiCommand, true));
-            Log.i(LogTag.INFO_TAG, "发送指令===" + shenyajiCommand);
-            mdBluetoothManager.writeMessage(
-                new Message(UUID.randomUUID().toString(), versionCommand, true));
-            Log.i(LogTag.INFO_TAG, "发送指令===" + versionCommand);
-        } else {
-            if (!isConneted) {
-                ToastUtil.showSToast("蓝牙未连接");
-            }
-        }
-
-    }
 
 
     private void handleDeviceFind(BluetoothDeviceFindEventData eventData) {
@@ -847,9 +829,7 @@ public class MainActivity extends BaseActivity
         //在activity执行onDestroy时执行mMapView.onDestroy()，销毁地图
         mMapView.onDestroy();
 
-        if (null != mLocationClient) {
-            mLocationClient.onDestroy();
-        }
+
         EventBus.getDefault().unregister(this);
     }
 
@@ -924,6 +904,81 @@ public class MainActivity extends BaseActivity
         }
     }
 
+
+    /**
+     * 获取设备信息，显示在地图中
+     * @param events
+     */
+    @Subscribe(threadMode = ThreadMode.BACKGROUND)
+    public void onMessageEvents(MapDeviceEvent events) {
+        if (events.getType().equals("mapDevice")) {
+            if (events.getDeviceName() != null){
+                Log.i("adu","----mapDeviceMap--------"+events.getDeviceName());
+                String [] device = events.getDeviceName().split(",");
+                addDeviceOnMap(device);
+            }
+        }
+    }
+
+    //添加设备名称
+    private void addDeviceOnMap(String [] device){
+        LatLng latLng = myLatLng;
+        String installLocation = GsonFactory.getGson().toJson(latLng);
+        MapManagerUtil.addMarkerToMap(aMap,latLng,device[2],device[1]);
+        DeviceBasicInfoResult result = new DeviceBasicInfoResult();
+        Long proId = System.currentTimeMillis();
+        result.setId(proId);
+        result.setDeviceName(device[1]);
+        result.setDeviceToken(device[1]);
+        result.setDeviceTypeID(0);
+        result.setDeviceTypeName(device[2]);
+        result.setGpsLocation(null);
+        result.setInstallLocation(installLocation);
+        result.setSecurityNO(null);
+        result.setLocal(true);
+
+        /**
+         * deviceID : 72
+         * deviceToken : 150009K
+         * deviceName : DAG
+         * deviceTypeID : 5
+         * deviceTypeName : null
+         * securityNO : 1.2345678E7
+         * sensorInfo : null
+         * voltage : 12.3
+         * gprs : 915143
+         * signal : 25
+         */
+        StatusInfoResult infoResult = new StatusInfoResult();
+        infoResult.setId(proId);
+        infoResult.setDeviceName(device[1]);
+        infoResult.setDeviceToken(device[1]);
+        infoResult.setDeviceTypeID(0);
+        infoResult.setDeviceTypeName(null);
+        infoResult.setSecurityNO(null);
+        infoResult.setSensorInfo(null);
+        infoResult.setVoltage(0);
+        infoResult.setGprs(0);
+        infoResult.setSignal(0);
+        infoResult.setLocal(true);
+
+
+        //返回的数据有这个值18A095L
+        if (null == queryDeviceInList(device[1])){
+            Log.i("adu","----添加了1个新设备---");
+            manager.getDaoSession().getDeviceBasicInfoResultDao().insertOrReplaceInTx(result);
+            manager.getDaoSession().getStatusInfoResultDao().insertOrReplaceInTx(infoResult);
+        }else {
+            ToastUtil.showSToast("此设备已存在！");
+        }
+    }
+    //查询设备列表中是否有这个设备
+    private DeviceBasicInfoResult queryDeviceInList(String deviceName){
+       return manager.getDaoSession().getDeviceBasicInfoResultDao()
+            .queryBuilder()
+            .where(DeviceBasicInfoResultDao.Properties.DeviceName.eq(deviceName))
+            .unique();
+    }
     public void showConnectionView(String str) {
         Log.i("adu","visible"+str);
         mLlConnection.setVisibility(View.VISIBLE);
@@ -964,5 +1019,21 @@ public class MainActivity extends BaseActivity
                 }
             }
         });
+    }
+
+    @Override
+    public void onBackPressed() {
+        //super.onBackPressed();
+        new HintDialog.Builder(this)
+            .setTitle("提示")
+            .setMessage("你确定要退出吗？")
+            .setConfirmBtnListener(new DialogInterface.OnClickListener() {
+                @Override public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                    //finish();
+                    System.exit(0);
+                    //Process.killProcess(Process.myPid());
+                }
+            }).onCreate().show();
     }
 }

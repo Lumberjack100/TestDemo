@@ -14,7 +14,7 @@ import okhttp3.MediaType;
  */
 public class CommonVariable {
 
-    private static String serviceAddress;
+    private static String serviceAddress = "mdnetservice.shmedo.cn";
     public static final String  USER_CONFIG_NAME="mcloudApp";
     public static final String SERVICE_ADDRESS="service_address";
     public static final String  ACCESS_TOKEN="access_token";
@@ -31,11 +31,13 @@ public class CommonVariable {
     private static String account;
     private static String password;
     private static boolean isNetworkConnected=true;
+    public static final String  OSMOMETER_NOTE="osmometer";
+    private static final String USER_HEAD_PHOTO_FILE_NAME="/mnt/sdcard/tupian.png";
 
     public static String getServiceAddress() {
         if(StringUtil.isNullOrEmpty(serviceAddress))
             return serviceAddress;
-        return "http://"+serviceAddress+"/api/v1/";
+        return "https://"+serviceAddress+"/api/v1/";
     }
 
 
@@ -83,5 +85,13 @@ public class CommonVariable {
 
     public static void setIsNetworkConnected(boolean isNetworkConnected) {
         CommonVariable.isNetworkConnected = isNetworkConnected;
+    }
+    public static String getUserHeadPhotoFileName()
+    {
+        UserInfo user=CommonVariable.getCurrentUserInfo();
+        if(user==null){
+            return null;
+        }
+        return USER_HEAD_PHOTO_FILE_NAME;
     }
 }

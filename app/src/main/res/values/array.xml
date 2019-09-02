@@ -16,4 +16,25 @@
         <item>DEBUG</item>
         <item>INFO</item>
     </string-array>
+    <string-array name="rain">
+        <item>0.1mm</item>
+        <item>0.2mm</item>
+        <item>0.5mm</item>
+    </string-array>
+    <string-array name="sensor">
+        <item>MPS-M-2000</item>
+        <item>TR-3000</item>
+        <item>I-P-I</item>
+        <item>HBRD908</item>
+        <item>MH-A15R</item>
+        <item>EP100G</item>
+        <item>CSW18</item>
+        <item>VWP-G</item>
+        <item>BGK-4500</item>
+        <item>VWP-03</item>
+        <item>VWE-0.6</item>
+        <item>VWS-15</item>
+        <item>VWS-15M</item>
+        <item>VWD-100</item>
+    </string-array>
 </resources>

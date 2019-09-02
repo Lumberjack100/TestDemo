@@ -1,6 +1,111 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/white">
 
-</android.support.constraint.ConstraintLayout>
+    <LinearLayout
+        android:id="@+id/ll_reset_data"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:orientation="horizontal"
+        android:background="@color/bg2_light_white"
+        android:layout_marginTop="1dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="恢复出厂设置"
+            android:layout_toRightOf="@id/iv_pro"
+            android:layout_marginLeft="25dp"
+            android:gravity="center_vertical"
+            />
+
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/ll_restart_system"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:orientation="horizontal"
+        android:background="@color/bg2_light_white"
+        android:layout_marginTop="1dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="重启系统"
+            android:layout_toRightOf="@id/iv_pro"
+            android:layout_marginLeft="25dp"
+            android:gravity="center_vertical"
+            />
+
+    </LinearLayout>
+    <RelativeLayout
+        android:id="@+id/rl_modify_authorization"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:background="@color/bg2_light_white"
+        android:layout_marginTop="1dp"
+        >
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="修改授权码"
+            android:layout_marginLeft="25dp"
+            android:gravity="center"
+            />
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginRight="20dp"
+            android:src="@drawable/icon_right"
+            android:layout_alignParentRight="true"
+            android:gravity="center"/>
+    </RelativeLayout>
+    <RelativeLayout
+        android:id="@+id/rl_product_register"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:background="@color/bg2_light_white"
+        android:layout_marginTop="1dp"
+        >
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="产品注册"
+            android:layout_marginLeft="25dp"
+            android:gravity="center"
+            />
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginRight="20dp"
+            android:src="@drawable/icon_right"
+            android:layout_alignParentRight="true"
+            android:gravity="center"/>
+    </RelativeLayout>
+    <RelativeLayout
+        android:id="@+id/rl_instruction_debug"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:background="@color/bg2_light_white"
+        android:layout_marginTop="1dp"
+        >
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="指令交互调试模式"
+            android:layout_marginLeft="25dp"
+            android:gravity="center"
+            />
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginRight="20dp"
+            android:src="@drawable/icon_right"
+            android:layout_alignParentRight="true"
+            android:gravity="center"/>
+    </RelativeLayout>
+</LinearLayout>

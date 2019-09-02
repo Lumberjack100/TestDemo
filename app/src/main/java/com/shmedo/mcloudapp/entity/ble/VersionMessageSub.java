@@ -1,13 +1,13 @@
 package com.shmedo.mcloudapp.entity.ble;
 
-import android.webkit.JavascriptInterface;
+
 
 /**
  * ProgramName:   das-config-app
  * PackageName:   com.example.medoDas.entity
  * Author:        社会小青年
  * Date:          2018/3/23 10:59
- * Description：
+ * Description：获取版本信息
  */
 
 public class VersionMessageSub {

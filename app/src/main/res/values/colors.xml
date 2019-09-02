@@ -9,6 +9,7 @@
     <color name="color_main">#2AA0F7</color>
     <color name="gray01">#80666666</color>
     <color name="bg2_light_white">#ebebeb</color>
+    <color name="main_bg">#e4eaeb</color>
     <color name="line_color_dddcdd">#dddcdd</color>
     <color name="bg_f6f7f9">#f6f7f9</color>
     <color name="text_color_818182">#818182</color>
@@ -17,6 +18,13 @@
     <color name="divider">#B6B6B6</color>
     <color name="secondary_text">#727272</color>
     <color name="grey_300">#E0E0E0</color>
+    <color name="font_black_6">#ffffff</color>
+    <color name="text4_dark_gray">#757575</color>
+    <color name="text6_blue">#1e78be</color>
+    <color name="menu_press_bg">#aaffffff</color>
+    <color name="menu_normal_bg">#ffffff</color>
+    <color name="vifrification">#00000000</color>
+    <color name="fragment_item">#9BE2FF</color>
     <!-- common -->
     <color name="app_color_blue">#00A8E1</color>
     <color name="app_color_blue_disabled">#8000A8E1</color>
@@ -37,8 +45,9 @@
     <color name="app_color_theme_7">#5A9AEF</color> <!-- Blue Jeans -->
     <color name="app_color_theme_8">#AC8FEF</color> <!-- Lavender -->
     <color name="app_color_theme_9">#EE85C1</color> <!-- Pink Rose -->
-
-
+    <color name="orange_700">#F57C00</color>translucent
+    <color name="confirm_btn">#ff7502</color>
+    <color name="delect">#fd1b1b</color>
 
     <color name="bar_divider">#D4D6D8</color>
     <color name="tab_panel_bg">#ffffff</color>

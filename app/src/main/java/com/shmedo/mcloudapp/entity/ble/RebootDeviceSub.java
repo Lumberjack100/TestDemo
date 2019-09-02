@@ -13,7 +13,7 @@ import android.webkit.JavascriptInterface;
 public class RebootDeviceSub {
     private int time;
 
-    @JavascriptInterface
+    //@JavascriptInterface
     public int getTime() {
         return time;
     }
@@ -21,5 +21,12 @@ public class RebootDeviceSub {
 
     public void setTime(int time) {
         this.time = time;
+    }
+
+
+    @Override public String toString() {
+        return "RebootDeviceSub{" +
+            "time=" + time +
+            '}';
     }
 }

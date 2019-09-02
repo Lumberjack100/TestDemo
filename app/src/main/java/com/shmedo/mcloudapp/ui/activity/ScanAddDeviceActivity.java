@@ -8,10 +8,11 @@ import android.view.View;
 import android.widget.Button;
 import butterknife.BindView;
 import butterknife.OnClick;
+import com.amap.api.maps.model.LatLng;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.base.BaseActivity;
 import com.shmedo.mcloudapp.entity.DeviceTypeEnum;
-import com.shmedo.mcloudapp.ui.activity.device.DeviceActivity;
+import com.shmedo.mcloudapp.entity.event.MapDeviceEvent;
 import com.shmedo.mcloudapp.util.StartActivityUtil;
 import com.shmedo.mcloudapp.util.StringUtil;
 import com.shmedo.mcloudapp.util.ToastUtil;
@@ -20,6 +21,7 @@ import com.shmedo.mcloudapp.views.LoadingDialog;
 import com.yzq.zxinglibrary.android.CaptureActivity;
 import com.yzq.zxinglibrary.bean.ZxingConfig;
 import com.yzq.zxinglibrary.common.Constant;
+import org.greenrobot.eventbus.EventBus;
 
 /**
  * 项目名：  mCloudapp
@@ -42,7 +44,14 @@ public class ScanAddDeviceActivity extends BaseActivity {
 
     @Override protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        initData();
+    }
 
+
+    private void initData() {
+
+        LatLng latLng = getIntent().getParcelableExtra("position");
+        Log.i("adu",latLng.longitude+"===="+latLng.latitude);
     }
 
 
@@ -138,7 +147,8 @@ public class ScanAddDeviceActivity extends BaseActivity {
                 return;
             }
             if (DeviceTypeEnum.value(localData[2])) {
-                Intent intent = new Intent(ScanAddDeviceActivity.this,DeviceActivity.class);
+                //Intent intent = new Intent(ScanAddDeviceActivity.this,DeviceActivity.class);
+                Intent intent = new Intent(ScanAddDeviceActivity.this,AllDeviceActivity.class);
                 intent.putExtra("ScanDevice",results);
                 startActivity(intent);
                 //先根据扫码到的tabName跳转到队应的页面
@@ -147,6 +157,11 @@ public class ScanAddDeviceActivity extends BaseActivity {
                 //event.setType("scan");
                 //event.setSearchName(results);
                 //EventBus.getDefault().post(event);
+                //将扫一扫的设备名称传递到MainActivity中
+                MapDeviceEvent event = new MapDeviceEvent();
+                event.setType("mapDevice");
+                event.setDeviceName(results);
+                EventBus.getDefault().post(event);
             } else {
                 LoadingDialog.showScanResultDialog(this,"此设备类型暂时不支持");
             }

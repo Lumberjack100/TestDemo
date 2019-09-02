@@ -1,19 +1,34 @@
 package com.shmedo.mcloudapp.util.bleutil;
 
+import android.graphics.SweepGradient;
 import android.util.Log;
 import com.shmedo.das.common.BaseConfigInfo;
+import com.shmedo.das.common.CollectorConfigInfo;
+import com.shmedo.das.common.CollectorSensorParamsInfo;
+import com.shmedo.das.common.DeviceLockStatusInfo;
+import com.shmedo.das.common.DigitalOsmometerFunctionInfo;
 import com.shmedo.das.common.GetAllSensorConfigInfo;
 import com.shmedo.das.common.QueryOsmometerParameterInfo;
+import com.shmedo.das.common.RainStationInfo;
+import com.shmedo.das.common.RebootDeviceInfo;
+import com.shmedo.das.common.SettingRainPrecisionInfo;
 import com.shmedo.das.common.SystemRunStateInfo;
 import com.shmedo.das.common.VersionMessageInfo;
+import com.shmedo.das.common.enumerate.SensorType;
 import com.shmedo.das.das.cmd.CommandResult;
 import com.shmedo.das.das.cmd.parser.GetAllSensorConfigParser;
 import com.shmedo.das.das.cmd.parser.ParseManager;
 import com.shmedo.mcloudapp.entity.ble.BaseConfigInfoSub;
 import com.shmedo.mcloudapp.entity.ble.CollectorInfoSub;
+import com.shmedo.mcloudapp.entity.ble.DeviceLockStatusSub;
+import com.shmedo.mcloudapp.entity.ble.DigitalOsmometerFunctionSub;
 import com.shmedo.mcloudapp.entity.ble.QueryOsmometerParameterSubInfo;
+import com.shmedo.mcloudapp.entity.ble.RainStationSub;
+import com.shmedo.mcloudapp.entity.ble.RebootDeviceSub;
+import com.shmedo.mcloudapp.entity.ble.SettingRainPrecisionSub;
 import com.shmedo.mcloudapp.entity.ble.SystemRunStateSub;
 import com.shmedo.mcloudapp.entity.ble.VersionMessageSub;
+import com.shmedo.mcloudapp.entity.ble.collector.CollectorSensorParamsInfoSub;
 
 /**
  * 项目名：  mCloudapp
@@ -71,7 +86,20 @@ public class BlueResultParserUtil {
                 infoSub.setRainfallStation("关闭");
                 break;
         }
-        infoSub.setDebugModel(info.getDebugModel().name());
+        switch (info.getDebugModel()){
+            case INITIALZE:
+                infoSub.setDebugModel("初始化");
+                break;
+            case CLOSE:
+                infoSub.setDebugModel("关闭");
+                break;
+            case INFO:
+                infoSub.setDebugModel("INFO");
+                break;
+            case DEBUG:
+                infoSub.setDebugModel("DEBUG");
+                break;
+        }
         infoSub.setCollectorModel(info.getCollectorModel().name());
         infoSub.setDataReportInterval(String.valueOf(info.getDataReportInterval()));
         infoSub.setDataCommunicateMode(info.getDataCommunicateMode().name());
@@ -140,6 +168,7 @@ public class BlueResultParserUtil {
      * @return
      */
     public static QueryOsmometerParameterSubInfo getQueryOsmometerParameter(String result) {
+
         CommandResult<QueryOsmometerParameterInfo> shenyaBean = ParseManager.getInstance().parse(result);
         QueryOsmometerParameterInfo digtalInfo = null;
         QueryOsmometerParameterSubInfo digitalOsFuncSubInfo=new QueryOsmometerParameterSubInfo();
@@ -152,8 +181,9 @@ public class BlueResultParserUtil {
             digitalOsFuncSubInfo.setTemperatureCorrect(digtalInfo.getDepthCorrect());
             digitalOsFuncSubInfo.setTemperatureTrigger(digtalInfo.getTemperatureTrigger());
             digitalOsFuncSubInfo.setTemperatureCorrect(digtalInfo.getTemperatureCorrect());
+
         } else {
-            Log.i("adu", shenyaBean.getMessage());
+            Log.i(LogTag.INFO_TAG,"解析渗压计信息="+ shenyaBean.getMessage());
             return digitalOsFuncSubInfo;
         }
         return  setDigtalInfo(digtalInfo, digitalOsFuncSubInfo);
@@ -167,7 +197,6 @@ public class BlueResultParserUtil {
         switch (digtalInfo.getOsmometerStatus()){
             case OSMOMETER_OPEN:
                 digitalOsFuncSubInfo.setOsmometerStatus("开启");
-
                 break;
             case OSMOMETER_CLOSE:
                 digitalOsFuncSubInfo.setOsmometerStatus("关闭");
@@ -223,7 +252,7 @@ public class BlueResultParserUtil {
      * @param result
      * @return
      */
-    public static CollectorInfoSub getCollectorInfo(GetAllSensorConfigInfo result) {
+    public static CollectorInfoSub getCollectorInfos(GetAllSensorConfigInfo result) {
         CollectorInfoSub collectorInfoSub = new CollectorInfoSub();
         collectorInfoSub.setCollectorAddress(result.getCollectorConfig().getCollectorAddress());
         collectorInfoSub.setStandbyTime(result.getCollectorConfig().getStandbyTime());
@@ -231,6 +260,30 @@ public class BlueResultParserUtil {
         collectorInfoSub.setCollectorInterval(result.getCollectorConfig().getCollectorInterval());
         return collectorInfoSub;
     }
+
+    public static CollectorInfoSub getCollectorInfo(String result) {
+        CommandResult<CollectorConfigInfo> commandResult = ParseManager.getInstance().parse(result);
+        CollectorConfigInfo info = null;
+        CollectorInfoSub infoSub = new CollectorInfoSub();
+        if (commandResult.isSuccess()){
+            info = commandResult.getResult();
+        }else {
+            return infoSub;
+        }
+        return setCollectorInfo(info,infoSub);
+
+    }
+
+
+    private static CollectorInfoSub setCollectorInfo(CollectorConfigInfo info, CollectorInfoSub collectorInfoSub) {
+        collectorInfoSub.setCollectorAddress(info.getCollectorAddress());
+        collectorInfoSub.setStandbyTime(info.getStandbyTime());
+        collectorInfoSub.setWorkTime(info.getWorkTime());
+        collectorInfoSub.setCollectorInterval(info.getCollectorInterval());
+        collectorInfoSub.setAccessSum(info.getAccessSum());
+        return collectorInfoSub;
+    }
+
 
     /**
      * 解析所有配置信息中的基础信息
@@ -247,5 +300,215 @@ public class BlueResultParserUtil {
         infoSub.setServerAddressTwo(allInfo.getServerAddressPortInfo2().getAddress()+" "+
             allInfo.getServerAddressPortInfo2().getPort());
         return  infoSub;
+    }
+
+    /**
+     * 获取重启设备信息
+     * @param result
+     * @return
+     */
+    public static RebootDeviceSub getRebootDeviceMessage(String result){
+        CommandResult<RebootDeviceInfo> bean = ParseManager.getInstance().parse(result);
+        RebootDeviceInfo info = null;
+        RebootDeviceSub deviceSub = new RebootDeviceSub();
+        if (bean.isSuccess()){
+            info = bean.getResult();
+        } else {
+            return deviceSub;
+        }
+        return setRebootDeviceInfo(info,deviceSub);
+    }
+    /**
+     *  得到设置激活设备等待的时间
+     * @param info
+     * @param deviceSub
+     * @return
+     */
+    private static RebootDeviceSub setRebootDeviceInfo(RebootDeviceInfo info, RebootDeviceSub deviceSub) {
+        deviceSub.setTime(info.getTime());
+        return deviceSub;
+    }
+
+
+    /**
+     * 获取雨量计开关
+     * @param result
+     * @return
+     */
+    public static RainStationSub getRainStationInfo(String result){
+        CommandResult<RainStationInfo> bean = ParseManager.getInstance().parse(result);
+        RainStationInfo info = null;
+        RainStationSub rainStationSub = new RainStationSub();
+        if (bean.isSuccess()){
+            info = bean.getResult();
+        } else {
+            return rainStationSub;
+        }
+        return setRainStationInfo(info,rainStationSub);
+    }
+    /**
+     * 设置雨量计开关
+     * @param info
+     * @param rainStationSub
+     * @return
+     */
+    private static RainStationSub setRainStationInfo(RainStationInfo info, RainStationSub rainStationSub) {
+        switch (info.getRainStation()){
+            case OPEN:{
+                rainStationSub.setRainStation("开启");
+                break;
+            }
+            case CLOSE:{
+                rainStationSub.setRainStation("关闭");
+                break;
+            }
+        }
+        return rainStationSub;
+    }
+
+
+    /**
+     * 设置雨量站精度
+     * @param result
+     * @return
+     */
+    public static SettingRainPrecisionSub getRainPrecisionInfo(String result){
+        CommandResult<SettingRainPrecisionInfo> bean = ParseManager.getInstance().parse(result);
+        SettingRainPrecisionInfo info = null;
+        SettingRainPrecisionSub rainPrecisionSub = new SettingRainPrecisionSub();
+        if (bean.isSuccess()){
+            info = bean.getResult();
+        } else {
+            return rainPrecisionSub;
+        }
+        return setRainPrecisionInfo(info,rainPrecisionSub);
+    }
+
+    private static SettingRainPrecisionSub setRainPrecisionInfo(SettingRainPrecisionInfo info, SettingRainPrecisionSub rainPrecisionSub) {
+        rainPrecisionSub.setPrecision(info.getPrecision());
+        return rainPrecisionSub;
+    }
+
+
+    /**
+     * 开启、关闭 数字渗压计功能
+     * @param result
+     * @return
+     */
+    public static DigitalOsmometerFunctionSub getOsmoeterFunctionInfo(String result) {
+        CommandResult<DigitalOsmometerFunctionInfo> bean = ParseManager.getInstance().parse(result);
+        DigitalOsmometerFunctionInfo info = null;
+        DigitalOsmometerFunctionSub functionSub = new DigitalOsmometerFunctionSub();
+        if (bean.isSuccess()){
+            info = bean.getResult();
+        } else {
+            return functionSub;
+        }
+        return setOsmoeterFunctionInfo(info,functionSub);
+    }
+    private static DigitalOsmometerFunctionSub setOsmoeterFunctionInfo(DigitalOsmometerFunctionInfo info, DigitalOsmometerFunctionSub functionSub) {
+        switch (info.getOsmometerStatus()){
+            case OSMOMETER_OPEN:
+                functionSub.setOsmometerStatus(1);
+                break;
+            case OSMOMETER_CLOSE:
+                functionSub.setOsmometerStatus(2);
+                break;
+        }
+        return functionSub;
+    }
+
+    //设备锁状态&&2250
+    public static DeviceLockStatusSub getDeviceLockStatusInfo(String result) {
+        CommandResult<DeviceLockStatusInfo> bean = ParseManager.getInstance().parse(result);
+        DeviceLockStatusInfo info = null;
+        DeviceLockStatusSub statusSub = new DeviceLockStatusSub();
+        if (bean.isSuccess()){
+            info = bean.getResult();
+        }else {
+            return statusSub;
+        }
+        return setDeviceLockStatusInfo(info,statusSub);
+    }
+
+
+    private static DeviceLockStatusSub setDeviceLockStatusInfo(DeviceLockStatusInfo info, DeviceLockStatusSub statusSub) {
+        switch (info.getStatus()){
+            case UNLOCK:
+                statusSub.setLockStatus(0);
+                break;
+            case LOCK:
+                statusSub.setLockStatus(1);
+                break;
+        }
+        return statusSub;
+    }
+
+    //"$$1010200,2,2,10,0.000000\r\n";
+    public static CollectorSensorParamsInfoSub setCollectorParams(String result){
+        CommandResult<CollectorSensorParamsInfo> bean = ParseManager.getInstance().parse(result);
+        CollectorSensorParamsInfo info = null;
+        CollectorSensorParamsInfoSub infoSub = new CollectorSensorParamsInfoSub();
+        if (bean.isSuccess()){
+           info = bean.getResult();
+           infoSub.setSensorAddress(info.getSensorAddress());
+           infoSub.setSensorData(info.getSensorData());
+           infoSub.setChannelNumber(info.getChannelNumber());
+           infoSub.setCollectorModel(info.getCollectorModel().toString());
+        }else {
+            return infoSub;
+        }
+       return setCollectorSeneorInfo(info,infoSub);
+    }
+
+
+    private static CollectorSensorParamsInfoSub setCollectorSeneorInfo(CollectorSensorParamsInfo info, CollectorSensorParamsInfoSub infoSub) {
+        switch (info.getSensorType()){
+            case WIRE_SHIFT:
+                infoSub.setSensorType("02");
+                break;
+            case SOIL_MOISTURE:
+                infoSub.setSensorType("03");
+                break;
+            case INCLINOMETER:
+                infoSub.setSensorType("04");
+                break;
+            case ULTRASONIC_LEVEL_GAUGE:
+                infoSub.setSensorType("06");
+                break;
+            case RADAR_LEVEL_GAUGE:
+                infoSub.setSensorType("07");
+                break;
+            case MOISTURE_METER:
+                infoSub.setSensorType("08");
+                break;
+            case TEMPERATURE_HUMIDITY_METER:
+                infoSub.setSensorType("12");
+                break;
+            case UPLIFT_PRESSURE_GAUGE:
+                infoSub.setSensorType("15");
+                break;
+            case KANG_PERCOLATE:
+                infoSub.setSensorType("50");
+                break;
+            case GUDAN_PERCOLATE:
+                infoSub.setSensorType("51");
+                break;
+            case GUDAN_SOIL_PRESSURE:
+                infoSub.setSensorType("52");
+                break;
+            case GUDAN_STRESS:
+                infoSub.setSensorType("53");
+                break;
+            case GUDAN_NOT_STRESS:
+                infoSub.setSensorType("54");
+                break;
+            case GUDAN_DISPLACEMENT_METER:
+                infoSub.setSensorType("55");
+                break;
+            default: return null;
+        }
+
+        return infoSub;
     }
 }

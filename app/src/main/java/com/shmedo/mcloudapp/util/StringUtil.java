@@ -1,8 +1,12 @@
 package com.shmedo.mcloudapp.util;
 
+import android.annotation.SuppressLint;
 import android.text.TextUtils;
 import android.util.Log;
+import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 /**
  * 项目名：  CheckAndroid
@@ -79,4 +83,93 @@ public class StringUtil {
         return true;
     }
 
+    public static String convertStringToHex(String str) {
+
+        char[] chars = str.toCharArray();
+
+        StringBuffer hex = new StringBuffer();
+        for (int i = 0; i < chars.length; i++) {
+            hex.append(Integer.toHexString((int) chars[i])+" ");
+        }
+
+        return hex.toString();
+    }
+
+    @SuppressLint("DefaultLocale")
+    public static String formatStringTwo(String str){
+        if (StringUtil.isEmpty(str)){
+            return "";
+        }else {
+            return String.format("%02d",Integer.valueOf(str));
+        }
+    }
+
+    @SuppressLint("DefaultLocale")
+    public static String formatStringFour(String str){
+        if (StringUtil.isEmpty(str)){
+            return "";
+        }else {
+            return String.format("%04d",Integer.valueOf(str));
+        }
+    }
+
+    public static String formatStringFive(String str){
+        if (StringUtil.isEmpty(str)){
+            return "";
+        }else {
+            return String.format("%05d",Integer.valueOf(str));
+        }
+    }
+
+    @SuppressLint("DefaultLocale")
+    public static String formatTwo(int accessSum){
+        if (accessSum==0){
+            return "00";
+        }else {
+            int sum = accessSum ;
+            return String.format("%02d",sum);
+        }
+    }
+
+    public static int formatNumber(String  accessSum){
+        if (accessSum != null){
+            return Integer.valueOf(accessSum);
+        }else {
+            return -1;
+        }
+    }
+
+    //public static List<String> getCmdResult(List<String> result){
+    //
+    //    StringBuffer buffer = new StringBuffer();
+    //    List<String> stringList = new ArrayList<>();
+    //    for (int i = 0;i<lists.get(0).getCommands().size();i++){
+    //        buffer.append(lists.get(0).getCommands().get(i).toString());
+    //    }
+    //    stringList.add(String.valueOf(buffer));
+    //
+    //    return stringList;
+    //}
+
+    public static String setSize(int size) {
+        //获取到的size为：1705230
+        int GB = 1024 * 1024 * 1024;//定义GB的计算常量
+        int MB = 1024 * 1024;//定义MB的计算常量
+        int KB = 1024;//定义KB的计算常量
+        DecimalFormat df = new DecimalFormat("0.00");//格式化小数
+        String resultSize = "";
+        if (size / GB >= 1) {
+            //如果当前Byte的值大于等于1GB
+            resultSize = df.format(size / (float) GB) + "GB   ";
+        } else if (size / MB >= 1) {
+            //如果当前Byte的值大于等于1MB
+            resultSize = df.format(size / (float) MB) + "MB   ";
+        } else if (size / KB >= 1) {
+            //如果当前Byte的值大于等于1KB
+            resultSize = df.format(size / (float) KB) + "KB   ";
+        } else {
+            resultSize = size + "B   ";
+        }
+        return resultSize;
+    }
 }

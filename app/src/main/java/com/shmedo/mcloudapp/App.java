@@ -2,6 +2,7 @@ package com.shmedo.mcloudapp;
 
 import android.app.Application;
 import android.content.Context;
+import com.tencent.mmkv.MMKV;
 
 /**
  * 项目名：  mCloudapp
@@ -21,9 +22,10 @@ public class App extends Application {
         mAppInstance = this;
         mContext = getApplicationContext();
         //初始化facebook.stetho
-        AppInit.init(this);
+        //AppInit.init(this);
         //初始化蒲公英
         //PgyCrashManager.register(this);
+        MMKV.initialize(this);
     }
 
 

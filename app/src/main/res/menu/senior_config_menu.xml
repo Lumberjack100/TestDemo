@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/systemResetFactory"
+        android:title="恢复出厂设置"/>
+    <item
+        android:id="@+id/systemRestart"
+        android:title="重启系统"/>
+
+    <item
+        android:id="@+id/modifyLiseceKey"
+        android:title="修改授权码"/>
+    <!--<item-->
+        <!--android:id="@+id/remoteUpdate"-->
+        <!--android:title="远程升级"/>-->
+
+    <!--<item-->
+        <!--android:id="@+id/activateDevice"-->
+        <!--android:title="重启系统"/>-->
+
+    <item
+        android:id="@+id/product_register"
+        android:title="产品注册"/>
+
+    <item
+        android:id="@+id/instruction_debug"
+        android:title="指令交互调试模式"/>
+
+</menu>

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:gravity="center"
+        android:background="@drawable/shape_menu_top_normal"
+        android:text="上传头像"
+        android:textSize="15sp"
+        android:textColor="@color/text4_dark_gray"
+        />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="#E4E4E4" />
+
+    <Button
+        android:id="@+id/item_1"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:background="@drawable/seletor_menu_middle"
+        android:textColor="@color/text6_blue"
+        android:textSize="16sp"
+        android:text="拍照" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="#E4E4E4" />
+
+    <Button
+        android:id="@+id/item_2"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:background="@drawable/select_menu_bottom_half_bg"
+        android:textColor="@color/text6_blue"
+        android:textSize="16sp"
+        android:text="从相册中选择" />
+
+    <Button
+        android:id="@+id/cancel"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/selector_menu_bottom"
+        android:textSize="16sp"
+        android:textColor="@color/text6_blue"
+        android:text="取消" />
+</LinearLayout>

@@ -1,6 +1,239 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical">
+    <include layout="@layout/activity_device_toolbar"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:orientation="horizontal"
+        android:background="@color/bg2_light_white"
+        android:layout_marginTop="5dp"
+        >
+        <ImageView
+            android:id="@+id/iv_osmometer_address"
+            android:layout_width="20dp"
+            android:layout_height="40dp"
+            android:src="@drawable/icon_queste"
+            android:layout_marginLeft="15dp"
+            />
+        <TextView
+            android:layout_width="0dp"
+            android:layout_weight="3"
+            android:layout_height="wrap_content"
+            android:text="渗压计地址(1~255)"
+            android:layout_gravity="center_vertical"
+            android:textSize="14sp"
+            android:layout_marginLeft="20dp"
+            />
+        <EditText
+            android:id="@+id/et_osmometer_address"
+            android:layout_width="0dp"
+            android:layout_weight="3"
+            android:layout_height="wrap_content"
+            android:inputType="number"
+            />
+    </LinearLayout>
+      <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:orientation="horizontal"
+        android:layout_marginTop="1dp"
+        android:background="@color/bg2_light_white"
+        >
+        <ImageView
+            android:id="@+id/iv_depth_trigger_value"
+            android:layout_width="20dp"
+            android:layout_height="40dp"
+            android:src="@drawable/icon_queste"
+            android:layout_marginLeft="15dp"
+            />
+        <TextView
+            android:layout_width="0dp"
+            android:layout_weight="3"
+            android:layout_height="wrap_content"
+            android:text="深度触发值(单位：mm)"
+            android:layout_gravity="center_vertical"
+            android:textSize="14sp"
+            android:layout_marginLeft="20dp"
+            />
+        <EditText
+            android:id="@+id/et_depth_trigger_value"
+            android:layout_width="0dp"
+            android:layout_weight="3"
+            android:layout_height="wrap_content"
+
+            />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:orientation="horizontal"
+        android:layout_marginTop="1dp"
+        android:background="@color/bg2_light_white"
+        >
+        <ImageView
+            android:id="@+id/iv_temper_trigger"
+            android:layout_width="20dp"
+            android:layout_height="40dp"
+            android:src="@drawable/icon_queste"
+            android:layout_marginLeft="15dp"
+            />
+        <TextView
+            android:layout_width="0dp"
+            android:layout_weight="3"
+            android:layout_height="wrap_content"
+            android:text="温度触发值(单位：℃)"
+            android:layout_gravity="center_vertical"
+            android:textSize="14sp"
+            android:layout_marginLeft="20dp"
+            />
+        <EditText
+            android:id="@+id/et_temper_trigger"
+            android:layout_width="0dp"
+            android:layout_weight="3"
+            android:layout_height="wrap_content"
+            />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:orientation="horizontal"
+        android:layout_marginTop="1dp"
+        android:background="@color/bg2_light_white"
+        >
+        <ImageView
+            android:id="@+id/iv_depth_correction"
+            android:layout_width="20dp"
+            android:layout_height="40dp"
+            android:src="@drawable/icon_queste"
+            android:layout_marginLeft="15dp"
+            />
+        <TextView
+            android:layout_width="0dp"
+            android:layout_weight="3"
+            android:layout_height="wrap_content"
+            android:text="深度修正值(单位：m)"
+            android:layout_gravity="center_vertical"
+            android:textSize="14sp"
+            android:layout_marginLeft="20dp"
+            />
+        <EditText
+            android:id="@+id/et_depth_correction"
+            android:layout_width="0dp"
+            android:layout_weight="3"
+            android:layout_height="wrap_content"
+            />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:orientation="horizontal"
+        android:layout_marginTop="1dp"
+        android:background="@color/bg2_light_white"
+        >
+        <ImageView
+            android:id="@+id/iv_temper_correction"
+            android:layout_width="20dp"
+            android:layout_height="40dp"
+            android:src="@drawable/icon_queste"
+            android:layout_marginLeft="15dp"
+            />
+        <TextView
+            android:layout_width="0dp"
+            android:layout_weight="3"
+            android:layout_height="wrap_content"
+            android:text="温度修正值(单位：℃)"
+            android:layout_gravity="center_vertical"
+            android:textSize="14sp"
+            android:layout_marginLeft="20dp"
+            />
+        <EditText
+            android:id="@+id/et_temper_correction"
+            android:layout_width="0dp"
+            android:layout_weight="3"
+            android:layout_height="wrap_content"
+            />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:orientation="horizontal"
+        android:layout_marginTop="1dp"
+        android:background="@color/bg2_light_white"
+        >
+        <ImageView
+            android:id="@+id/iv_osmometer_length"
+            android:layout_width="20dp"
+            android:layout_height="40dp"
+            android:src="@drawable/icon_queste"
+            android:layout_marginLeft="15dp"
+            />
+        <TextView
+            android:layout_width="0dp"
+            android:layout_weight="3"
+            android:layout_height="wrap_content"
+            android:text="渗压计绳长(单位：m)"
+            android:layout_gravity="center_vertical"
+            android:textSize="14sp"
+            android:layout_marginLeft="20dp"
+            />
+        <EditText
+            android:id="@+id/et_osmometer_length"
+            android:layout_width="0dp"
+            android:layout_weight="3"
+            android:layout_height="wrap_content"
+            />
+    </LinearLayout>
+    &lt;!&ndash;<LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:orientation="horizontal"
+        android:layout_marginTop="1dp"
+        android:background="@color/bg2_light_white"
+        >
+        <ImageView
+
+            android:layout_width="20dp"
+            android:layout_height="40dp"
+            android:layout_marginLeft="15dp"
+            />
+        <TextView
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="备注信息"
+            android:layout_gravity="center_vertical"
+            android:textSize="14sp"
+            android:layout_marginLeft="20dp"
+            />
+        <EditText
+            android:id="@+id/et_note"
+            android:layout_width="0dp"
+            android:layout_weight="3"
+            android:layout_height="wrap_content"
+            android:hint="随手一记，好记性不如烂笔头"
+            />
+    </LinearLayout>&ndash;&gt;
+    <Button
+        android:id="@+id/btn_confirm_complete"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:text="确定"
+        android:background="@drawable/scan_add_selector"
+        android:textColor="@color/white"
+        android:layout_marginTop="40dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        />
+</LinearLayout>-->
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
@@ -33,7 +266,8 @@
             android:id="@+id/et_osmometer_address"
             android:layout_width="0dp"
             android:layout_weight="3"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
+            android:singleLine="true"
             />
     </LinearLayout>
     <LinearLayout
@@ -63,8 +297,8 @@
             android:id="@+id/et_water_alarm_value"
             android:layout_width="0dp"
             android:layout_weight="3"
-            android:layout_height="wrap_content"
-
+            android:layout_height="match_parent"
+            android:singleLine="true"
             />
     </LinearLayout>
     <LinearLayout
@@ -94,7 +328,8 @@
             android:id="@+id/et_water_revised"
             android:layout_width="0dp"
             android:layout_weight="3"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
+            android:singleLine="true"
             />
     </LinearLayout>
     <LinearLayout
@@ -124,7 +359,8 @@
             android:id="@+id/et_osmometer_cord"
             android:layout_width="0dp"
             android:layout_weight="3"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
+            android:singleLine="true"
             />
     </LinearLayout>
     <LinearLayout
@@ -154,7 +390,8 @@
             android:id="@+id/et_nozzel_height"
             android:layout_width="0dp"
             android:layout_weight="3"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
+            android:singleLine="true"
             />
     </LinearLayout>
     <LinearLayout
@@ -183,8 +420,9 @@
             android:id="@+id/et_note"
             android:layout_width="0dp"
             android:layout_weight="3"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:hint="随手一记，好记性不如烂笔头"
+            android:singleLine="true"
             />
     </LinearLayout>
     <Button
@@ -197,5 +435,6 @@
         android:layout_marginTop="40dp"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
+        android:singleLine="true"
         />
 </LinearLayout>

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/scrollView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
@@ -12,7 +13,119 @@
         android:orientation="vertical"
         android:background="@color/white"
         >
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingTop="16dp"
+            android:paddingBottom="10dp"
+            android:background="@color/white"
+            >
+            <ImageView
+                android:layout_width="89dp"
+                android:layout_height="89dp"
+                android:src="@drawable/icon_device_logo"
+                android:layout_marginLeft="10dp"
+                />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:orientation="horizontal"
+                    android:layout_marginLeft="10dp"
+                    >
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="设备名称："
+                        android:textColor="@color/app_color_blue"
+                        android:textSize="14dp"
+                        />
+                    <TextView
+                        android:id="@+id/tv_device_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="物联网数据采集器"
+                        android:textColor="@color/app_color_blue"
+                        />
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:orientation="horizontal"
+                    android:layout_marginLeft="10dp"
+                    >
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="设备编号："
+                        android:textColor="@color/app_color_blue"
+                        />
+                    <TextView
+                        android:id="@+id/tv_device_sn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="183123R"
+                        android:textColor="@color/app_color_blue"
+                        />
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:orientation="horizontal"
+                    android:layout_marginLeft="10dp"
+                    >
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="功能型号："
+                        android:textColor="@color/app_color_blue"
+                        />
+                    <TextView
+                        android:id="@+id/tv_device_model"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="DAS"
+                        android:textColor="@color/app_color_blue"
+                        />
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:orientation="horizontal"
+                    android:layout_marginLeft="10dp"
+                    >
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="传感器类型："
+                        android:textColor="@color/app_color_blue"
+                        />
+                    <TextView
+                        android:id="@+id/tv_sensor_type"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="拉线位移计"
+                        android:textColor="@color/app_color_blue"
+                        />
+                </LinearLayout>
 
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:background="#a6a6a6" />
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="40dp"
@@ -116,7 +229,7 @@
                 />
 
         </LinearLayout>
-        <RelativeLayout
+       <!-- <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:background="@color/bg2_light_white"
@@ -128,23 +241,24 @@
                 android:layout_marginLeft="30dp"
                 android:gravity="center"
                 />
-            <Switch
-                android:id="@+id/sw_bluetooth"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_marginRight="10dp"
-                android:layout_toLeftOf="@id/tv_bluetooth"
-                android:gravity="center"/>
             <TextView
                 android:id="@+id/tv_bluetooth"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_alignParentRight="true"
                 android:gravity="center"
-                android:layout_marginRight="20dp"
+                android:layout_marginRight="10dp"
                 android:textColor="@color/colorPrimary"
+                android:layout_toLeftOf="@id/sw_bluetooth"
                 android:text="已连接"/>
-        </RelativeLayout>
+            <Switch
+                android:id="@+id/sw_bluetooth"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginRight="20dp"
+                android:layout_alignParentRight="true"
+                android:gravity="center"/>
+
+        </RelativeLayout>-->
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="40dp"
@@ -158,22 +272,24 @@
                 android:layout_marginLeft="30dp"
                 android:gravity="center"
                 />
-            <Switch
-                android:id="@+id/sw_device_state"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_marginRight="10dp"
-                android:layout_toLeftOf="@id/tv_device_state"
-                android:gravity="center"/>
             <TextView
                 android:id="@+id/tv_device_state"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_alignParentRight="true"
                 android:gravity="center"
-                android:layout_marginRight="20dp"
+                android:layout_marginRight="10dp"
+                android:layout_toLeftOf="@id/sw_device_state"
                 android:textColor="@color/colorPrimary"
                 android:text="已激活"/>
+            <ch.ielse.view.SwitchView
+                android:id="@+id/sw_device_state"
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:layout_marginRight="20dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:gravity="center"/>
+
         </RelativeLayout>
         <RelativeLayout
             android:layout_width="match_parent"
@@ -188,22 +304,24 @@
                 android:layout_marginLeft="30dp"
                 android:gravity="center"
                 />
-            <Switch
-                android:id="@+id/sw_device_luck_state"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_marginRight="10dp"
-                android:layout_toLeftOf="@id/tv_device_luck_state"
-                android:gravity="center"/>
+
             <TextView
                 android:id="@+id/tv_device_luck_state"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_alignParentRight="true"
+                android:layout_marginRight="10dp"
+                android:layout_toLeftOf="@id/sw_device_luck_state"
                 android:gravity="center"
-                android:layout_marginRight="20dp"
                 android:textColor="@color/colorPrimary"
                 android:text="已锁定"/>
+            <ch.ielse.view.SwitchView
+                android:id="@+id/sw_device_luck_state"
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="20dp"
+                android:layout_centerVertical="true"
+                android:gravity="center"/>
         </RelativeLayout>
         <RelativeLayout
             android:layout_width="match_parent"
@@ -218,23 +336,25 @@
                 android:layout_marginLeft="30dp"
                 android:gravity="center"
                 />
-            <Switch
-                android:id="@+id/sw_debug"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_marginRight="10dp"
-                android:layout_toLeftOf="@id/sp_debug"
-                android:gravity="center"/>
             <Spinner
                 android:id="@+id/sp_debug"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_alignParentRight="true"
+                android:layout_marginRight="10dp"
+                android:layout_toLeftOf="@id/sw_debug"
                 android:gravity="center"
-                android:layout_marginRight="20dp"
                 android:textColor="@color/colorPrimary"
                 android:background="@color/white"
-                 />
+                />
+            <ch.ielse.view.SwitchView
+                android:id="@+id/sw_debug"
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="20dp"
+                android:layout_centerVertical="true"
+                android:gravity="center"/>
+
         </RelativeLayout>
         <RelativeLayout
             android:layout_width="match_parent"
@@ -256,23 +376,25 @@
                 android:text=" "
                 android:gravity="center"
                 android:layout_marginRight="20dp"
-                android:layout_toLeftOf="@id/sw_sim_A"
-                />
-            <Switch
-                android:id="@+id/sw_sim_A"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_marginRight="10dp"
                 android:layout_toLeftOf="@id/tv_sim_A"
-                android:gravity="center"/>
+                />
+
             <TextView
                 android:id="@+id/tv_sim_A"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_alignParentRight="true"
+                android:layout_marginRight="10dp"
+                android:layout_toLeftOf="@id/sw_sim_A"
                 android:gravity="center"
-                android:layout_marginRight="20dp"
                 android:text="AUTO"/>
+            <ch.ielse.view.SwitchView
+                android:id="@+id/sw_sim_A"
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="20dp"
+                android:layout_centerVertical="true"
+                android:gravity="center"/>
         </RelativeLayout>
         <RelativeLayout
             android:layout_width="match_parent"
@@ -294,23 +416,25 @@
                 android:text=" "
                 android:gravity="center"
                 android:layout_marginRight="20dp"
-                android:layout_toLeftOf="@id/sw_sim_B"
-                />
-            <Switch
-                android:id="@+id/sw_sim_B"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_marginRight="10dp"
                 android:layout_toLeftOf="@id/tv_sim_B"
-                android:gravity="center"/>
+                />
+
             <TextView
                 android:id="@+id/tv_sim_B"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_alignParentRight="true"
+                android:layout_marginRight="10dp"
+                android:layout_toLeftOf="@id/sw_sim_B"
                 android:gravity="center"
-                android:layout_marginRight="20dp"
                 android:text="AUTO"/>
+            <ch.ielse.view.SwitchView
+                android:id="@+id/sw_sim_B"
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="20dp"
+                android:layout_centerVertical="true"
+                android:gravity="center"/>
         </RelativeLayout>
         <LinearLayout
             android:layout_width="match_parent"
@@ -336,73 +460,7 @@
 
         </LinearLayout>
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:background="@color/bg2_light_white"
-            android:layout_marginTop="1dp"
-            >
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:text="雨量计功能"
-                android:layout_marginLeft="30dp"
-                android:gravity="center"
-                />
-            <Switch
-                android:id="@+id/sw_rain"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_marginRight="10dp"
-                android:layout_toLeftOf="@id/tv_rain_config"
-                android:gravity="center"/>
-            <TextView
-                android:id="@+id/tv_rain_config"
-                android:layout_width="50dp"
-                android:layout_height="25dp"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:layout_marginRight="20dp"
-                android:background="@color/colorPrimary"
-                android:textColor="@color/white"
-                android:textSize="14sp"
-                android:gravity="center_vertical|center_horizontal"
-                android:text="配置"/>
 
-        </RelativeLayout>
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:background="@color/bg2_light_white"
-            android:layout_marginTop="1dp"
-            >
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:text="渗压计功能"
-                android:layout_marginLeft="30dp"
-                android:gravity="center"
-                />
-            <Switch
-                android:id="@+id/sw_osmometer"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_marginRight="10dp"
-                android:layout_toLeftOf="@id/tv_osmometer_config"
-                android:gravity="center"/>
-            <TextView
-                android:id="@+id/tv_osmometer_config"
-                android:layout_width="50dp"
-                android:layout_height="25dp"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:layout_marginRight="20dp"
-                android:background="@color/colorPrimary"
-                android:textColor="@color/white"
-                android:textSize="14sp"
-                android:gravity="center_vertical|center_horizontal"
-                android:text="配置"/>
-        </RelativeLayout>
         <RelativeLayout
             android:id="@+id/rl_sensor_setting"
             android:layout_width="match_parent"
@@ -459,36 +517,76 @@
                 android:gravity="center"/>
         </RelativeLayout>
         <RelativeLayout
-            android:id="@+id/rl_senior_setting"
             android:layout_width="match_parent"
             android:layout_height="40dp"
-            android:orientation="horizontal"
             android:background="@color/bg2_light_white"
-            android:layout_marginBottom="20dp"
-            android:layout_marginTop="1dp">
-            <ImageView
-                android:id="@+id/iv_senior_setting"
-                android:layout_width="30dp"
-                android:layout_height="40dp"
-                android:src="@drawable/icon_senior_setting"
-                android:layout_marginLeft="16dp"
-                />
+            android:layout_marginTop="1dp"
+            >
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:text="高级设置"
-                android:textSize="18sp"
-                android:layout_toRightOf="@id/iv_senior_setting"
-                android:layout_marginLeft="5dp"
-                android:gravity="center_vertical"
+                android:text="雨量计功能"
+                android:layout_marginLeft="30dp"
+                android:gravity="center"
                 />
-            <ImageView
+
+            <TextView
+                android:id="@+id/tv_rain_config"
+                android:layout_width="50dp"
+                android:layout_height="25dp"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="10dp"
+                android:layout_toLeftOf="@id/sw_rain"
+                android:background="@color/colorPrimary"
+                android:textColor="@color/white"
+                android:textSize="14sp"
+                android:gravity="center_vertical|center_horizontal"
+                android:text="配置"/>
+            <ch.ielse.view.SwitchView
+                android:id="@+id/sw_rain"
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="20dp"
+                android:layout_centerVertical="true"
+                android:gravity="center"/>
+
+        </RelativeLayout>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:background="@color/bg2_light_white"
+            android:layout_marginTop="1dp"
+            >
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_marginRight="20dp"
-                android:src="@drawable/icon_right"
+                android:text="渗压计功能"
+                android:layout_marginLeft="30dp"
+                android:gravity="center"
+                />
+
+            <TextView
+                android:id="@+id/tv_osmometer_config"
+                android:layout_width="50dp"
+                android:layout_height="25dp"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="10dp"
+                android:layout_toLeftOf="@id/sw_osmometer"
+                android:background="@color/colorPrimary"
+                android:textColor="@color/white"
+                android:textSize="14sp"
+                android:gravity="center_vertical|center_horizontal"
+                android:text="配置"/>
+            <ch.ielse.view.SwitchView
+                android:id="@+id/sw_osmometer"
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
                 android:layout_alignParentRight="true"
+                android:layout_marginRight="20dp"
+                android:layout_centerVertical="true"
                 android:gravity="center"/>
         </RelativeLayout>
+
     </LinearLayout>
 </ScrollView>

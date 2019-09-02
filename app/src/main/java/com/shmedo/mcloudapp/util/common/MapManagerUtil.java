@@ -27,7 +27,7 @@ public class MapManagerUtil {
     }
 
     //添加marker
-    private static void addMarkerToMap(AMap aMap,LatLng latLng, String title, String snippet) {
+    public static void addMarkerToMap(AMap aMap,LatLng latLng, String title, String snippet) {
         aMap.addMarker(new MarkerOptions().anchor(0.5f, 0.5f)
             .position(latLng)
             .title(title)

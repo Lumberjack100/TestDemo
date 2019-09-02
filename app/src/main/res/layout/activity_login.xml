@@ -291,7 +291,7 @@
                         android:layout_centerVertical="true"
                         android:background="@drawable/edit_bg2"
                         android:text="获取验证码"
-                        android:textColor="@color/text_color_black"
+                        android:textColor="@color/white"
                          android:layout_marginLeft="5dp"
                         />
                     <!--<ImageView
@@ -347,6 +347,15 @@
                 android:text="注册账户"
                 android:textColor="@color/app_color_blue_2"
                 android:textSize="14sp"
+                />
+            <TextView
+                android:id="@+id/tourists_login"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="游客登录"
+                android:textColor="@color/app_color_blue_2"
+                android:textSize="14sp"
+                android:layout_centerInParent="true"
                 />
             <TextView
                 android:id="@+id/tv_forgot_password"

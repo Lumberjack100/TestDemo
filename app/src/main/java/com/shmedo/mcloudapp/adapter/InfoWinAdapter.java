@@ -23,17 +23,15 @@ import com.shmedo.mcloudapp.util.NavigationUtils;
  * 创建时间:  2019/1/17 13:46
  * 描述：    TODO
  */
-public class InfoWinAdapter implements AMap.InfoWindowAdapter, View.OnClickListener {
+public class InfoWinAdapter implements AMap.InfoWindowAdapter {
     private Context mContext = App.getContext();
     private LatLng latLng;
-    private LinearLayout call;
-    private LinearLayout navigation;
-    private TextView nameTV;
-    private String agentName;
-    private TextView addrTV;
+    private TextView deviceTypeName;
+    private TextView deviceName;
     private String snippet;
+    private String agentName;
 
-    @Override public void onClick(View view) {
+    /*@Override public void onClick(View view) {
         int id = view.getId();
         switch (id){
             case R.id.navigation_LL:  //点击导航
@@ -48,7 +46,7 @@ public class InfoWinAdapter implements AMap.InfoWindowAdapter, View.OnClickListe
                 mContext.startActivity(intent);
                 break;
         }
-    }
+    }*/
 
 
     @Override public View getInfoWindow(Marker marker) {
@@ -64,16 +62,15 @@ public class InfoWinAdapter implements AMap.InfoWindowAdapter, View.OnClickListe
     @NonNull
     private View initView() {
         View view = LayoutInflater.from(mContext).inflate(R.layout.view_infowindow, null);
-        navigation = (LinearLayout) view.findViewById(R.id.navigation_LL);
-        call = (LinearLayout) view.findViewById(R.id.call_LL);
-        nameTV = (TextView) view.findViewById(R.id.name);
-        addrTV = (TextView) view.findViewById(R.id.addr);
 
-        nameTV.setText(agentName);
-        addrTV.setText(String.format(mContext.getString(R.string.agent_addr),snippet));
+        deviceTypeName = (TextView) view.findViewById(R.id.deviceTypeName);
+        deviceName = (TextView) view.findViewById(R.id.deviceName);
 
-        navigation.setOnClickListener(this);
-        call.setOnClickListener(this);
+        deviceTypeName.setText(agentName);
+        deviceName.setText(String.format(mContext.getString(R.string.agent_addr),snippet));
+
+        //navigation.setOnClickListener(this);
+        //call.setOnClickListener(this);
         return view;
     }
     @Override public View getInfoContents(Marker marker) {

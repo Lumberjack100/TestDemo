@@ -1,6 +1,7 @@
 package com.shmedo.mcloudapp;
 
 import android.content.Context;
+import com.facebook.stetho.Stetho;
 
 /**
  * 项目名：  mCloudapp
@@ -14,7 +15,7 @@ public class AppInit {
     public static final boolean DEG = true;
     public static void init(Context context){
         if (DEG){
-            //Stetho.initializeWithDefaults(context);
+            Stetho.initializeWithDefaults(context);
         }
     }
 }

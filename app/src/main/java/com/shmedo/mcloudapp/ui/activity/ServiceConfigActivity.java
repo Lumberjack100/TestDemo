@@ -32,7 +32,7 @@ public class ServiceConfigActivity extends BaseActivity {
     @BindView(R.id.btnServiceTest) Button mBtnServiceTest;
     private UserConfig userConfig;
     private LoadingDialog dialog;
-    private String config = "172.168.5.48:8089";
+    private String config = "mdnetservice.shmedo.cn";
 
     @Override protected int initContentView() {
         return R.layout.activity_service_config;

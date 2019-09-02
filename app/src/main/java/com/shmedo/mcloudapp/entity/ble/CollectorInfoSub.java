@@ -17,53 +17,54 @@ public class CollectorInfoSub {
     private String collectorInterval;   //采集频度
     private int accessSum;              //接入总数
 
-@JavascriptInterface
     public String getCollectorAddress() {
         return collectorAddress;
     }
-
 
     public void setCollectorAddress(String collectorAddress) {
         this.collectorAddress = collectorAddress;
     }
 
-    @JavascriptInterface
     public String getStandbyTime() {
         return standbyTime;
     }
-
 
     public void setStandbyTime(String standbyTime) {
         this.standbyTime = standbyTime;
     }
 
-    @JavascriptInterface
     public String getWorkTime() {
         return workTime;
     }
-
 
     public void setWorkTime(String workTime) {
         this.workTime = workTime;
     }
 
-    @JavascriptInterface
     public String getCollectorInterval() {
         return collectorInterval;
     }
-
 
     public void setCollectorInterval(String collectorInterval) {
         this.collectorInterval = collectorInterval;
     }
 
-    @JavascriptInterface
     public int getAccessSum() {
         return accessSum;
     }
 
-
     public void setAccessSum(int accessSum) {
         this.accessSum = accessSum;
+    }
+
+
+    @Override public String toString() {
+        return "CollectorInfoSub{" +
+            "collectorAddress='" + collectorAddress + '\'' +
+            ", standbyTime='" + standbyTime + '\'' +
+            ", workTime='" + workTime + '\'' +
+            ", collectorInterval='" + collectorInterval + '\'' +
+            ", accessSum=" + accessSum +
+            '}';
     }
 }

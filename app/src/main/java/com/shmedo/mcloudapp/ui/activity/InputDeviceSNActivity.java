@@ -2,14 +2,15 @@ package com.shmedo.mcloudapp.ui.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Button;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import butterknife.BindView;
 import butterknife.OnClick;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.base.BaseActivity;
 import com.shmedo.mcloudapp.entity.DeviceTypeEnum;
-import com.shmedo.mcloudapp.ui.activity.device.DeviceActivity;
-import com.shmedo.mcloudapp.ui.activity.tabdevice.AllDeviceActivity;
 import com.shmedo.mcloudapp.util.StringUtil;
 import com.shmedo.mcloudapp.util.ToastUtil;
 import com.shmedo.mcloudapp.views.ClearEditText;
@@ -26,7 +27,11 @@ import com.shmedo.mcloudapp.views.LoadingDialog;
 public class InputDeviceSNActivity extends BaseActivity {
     @BindView(R.id.input_sn) ClearEditText mInputSn;
     @BindView(R.id.add_device) Button mAddDevice;
-
+    //@BindView(R.id.rb_das) RadioButton mRbDas;
+    //@BindView(R.id.rb_e60) RadioButton mRbE60;
+    //@BindView(R.id.rb_pvs) RadioButton mRbPvs;
+    @BindView(R.id.rg_device) RadioGroup mRgDevice;
+    private String deviceType;
 
     @Override protected int initContentView() {
         return R.layout.activity_input_devicesn;
@@ -35,61 +40,67 @@ public class InputDeviceSNActivity extends BaseActivity {
 
     @Override protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        initData();
+    }
 
+
+    private void initData() {
+        mRgDevice.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override public void onCheckedChanged(RadioGroup radioGroup, int i) {
+                int id = radioGroup.getCheckedRadioButtonId();
+                RadioButton chose = findViewById(id);
+                deviceType = chose.getText().toString();
+
+            }
+        });
     }
 
 
     @OnClick(R.id.add_device)
     public void onViewClicked() {
-        String snNumber = mInputSn.getText()!=null?mInputSn.getText().toString().trim():"";
-        if (StringUtil.isNullOrEmpty(snNumber)){
+        String snNumber = mInputSn.getText() != null ? mInputSn.getText().toString().trim() : "";
+        if (StringUtil.isNullOrEmpty(snNumber)) {
             mInputSn.setError("请输入设备SN号");
             return;
+        }else if (StringUtil.isNullOrEmpty(deviceType)){
+            ToastUtil.showSToast("请选择设备类型");
+            return;
         }
-        ToastUtil.showSToast(snNumber);
-        scanResult(snNumber);
+        Log.i("adu","设备SN号"+snNumber+"-设备类型--"+deviceType);
+
+        scanResult(snNumber,deviceType);
 
     }
 
-    private void scanResult(String result) {
-        if (result.contains("=")) {
-            String results = result.substring(result.indexOf("=") + 1);
-            scan(results);
-        }else {
-            scan(result);
-            //showScanResultDialog("请扫码正确的设备二维码");
-        }
-    }
+
+
+
+
     //MEDO,189150L,DAS
-    private void scan(String results){
-        if (results.startsWith("MEDO")) {
-            String[] localData = results.split(",");
-            if (localData.length != 3) {
-                LoadingDialog.showScanResultDialog(this,"请扫码正确的设备二维码");
-                return;
-            }
-            if (StringUtil.isEmpty(localData[0]) || StringUtil.isEmpty(localData[1])
-                || StringUtil.isEmpty(localData[2])) {
-                LoadingDialog.showScanResultDialog(this,"二维码信息不能为空");
-                return;
-            }
-            if (localData[1].length() != 7) {
-                LoadingDialog.showScanResultDialog(this,"设备标识有误,请扫码正确的设备二维码");
-                return;
-            }
-            if (DeviceTypeEnum.value(localData[2])) {
-                Intent intent = new Intent(InputDeviceSNActivity.this,DeviceActivity.class);
-                intent.putExtra("inputDevice",results);
+    private void scanResult(String results,String deviceType) {
+
+        if (StringUtil.isEmpty(results) || StringUtil.isEmpty(deviceType)) {
+            LoadingDialog.showScanResultDialog(this, "二维码信息不能为空");
+            return;
+        }
+        if (results.length() != 7) {
+            LoadingDialog.showScanResultDialog(this, "设备标识有误,请扫码正确的设备二维码");
+            return;
+        }
+        if (DeviceTypeEnum.value(deviceType)) {
+            if (deviceType.equals("DAS")){
+                Intent intent = new Intent(InputDeviceSNActivity.this, AllDeviceActivity.class);
+                intent.putExtra("inputDevice", results);
+                intent.putExtra("deviceType",deviceType);
                 startActivity(intent);
-                //先根据扫码到的tabName跳转到队应的页面
-                //mTabViewPage.setCurrentItem(listTitle.indexOf(localData[2]));
-                //SearchEvent event = new SearchEvent();
-                //event.setType("scan");
-                //event.setSearchName(results);
-                //EventBus.getDefault().post(event);
-            } else {
-                LoadingDialog.showScanResultDialog(this,"此设备类型暂时不支持");
+            }else if (deviceType.equals("E60")){
+                ToastUtil.showSToast("e60=="+results+"=="+deviceType);
+            }else if (deviceType.equals("PVS")){
+                ToastUtil.showSToast("pvs=="+results+"=="+deviceType);
             }
+
+        } else {
+            LoadingDialog.showScanResultDialog(this, "此设备类型暂时不支持");
         }
     }
 }

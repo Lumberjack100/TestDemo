@@ -8,12 +8,10 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -70,6 +68,7 @@ public class LoginActivity extends BaseActivity {
     @BindView(R.id.tv_forgot_password) TextView mTvForgotPassword;
     @BindView(R.id.btn_login_account) Button mBtnLoginAccount;
     @BindView(R.id.btn_login_phone) Button mBtnLoginPhone;
+    @BindView(R.id.tourists_login) TextView mTouristsLogin;
     private int mSecCount;
     private DaoManager manager = DaoManager.getInstance();
     private LoadingDialog dialog;
@@ -93,6 +92,8 @@ public class LoginActivity extends BaseActivity {
         manager.init(this);
         dialog = new LoadingDialog(this);
     }
+
+
     public static String sHA1(Context context) {
         try {
             PackageInfo info = context.getPackageManager().getPackageInfo(
@@ -104,14 +105,15 @@ public class LoginActivity extends BaseActivity {
             for (int i = 0; i < publicKey.length; i++) {
                 String appendString = Integer.toHexString(0xFF & publicKey[i])
                     .toUpperCase(Locale.US);
-                if (appendString.length() == 1)
+                if (appendString.length() == 1) {
                     hexString.append("0");
+                }
                 hexString.append(appendString);
                 hexString.append(":");
             }
             String result = hexString.toString();
-            Log.i("adu","------"+result);
-            return result.substring(0, result.length()-1);
+            Log.i("adu", "------" + result);
+            return result.substring(0, result.length() - 1);
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         } catch (NoSuchAlgorithmException e) {
@@ -119,6 +121,7 @@ public class LoginActivity extends BaseActivity {
         }
         return null;
     }
+
 
     private void initServiceAddressAndUser() {
         uc = UserConfig.getConfig(this, CommonVariable.USER_CONFIG_NAME);
@@ -137,8 +140,9 @@ public class LoginActivity extends BaseActivity {
     }
 
 
-    @OnClick({ R.id.login_accountLogin, R.id.login_quickLogin, R.id.btn_getCode,R.id.server_config,
-                 R.id.btn_login_account,R.id.btn_login_phone, R.id.tv_registered, R.id.tv_forgot_password })
+    @OnClick({ R.id.login_accountLogin, R.id.login_quickLogin, R.id.btn_getCode, R.id.server_config,
+                 R.id.btn_login_account, R.id.btn_login_phone, R.id.tv_registered,
+                 R.id.tv_forgot_password,R.id.tourists_login })
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.login_accountLogin:
@@ -170,9 +174,9 @@ public class LoginActivity extends BaseActivity {
             case R.id.btn_getCode:
                 //获取验证码
                 String mPhoneNumber = mLoginEditTextIphone.getText().toString().trim();
-                if (StringUtil.isPhoneNumber(mPhoneNumber)){
+                if (StringUtil.isPhoneNumber(mPhoneNumber)) {
                     sendSmsCode(mPhoneNumber);
-                }else {
+                } else {
                     ToastUtil.showSToast("手机号输入格式错误");
                 }
                 break;
@@ -182,7 +186,7 @@ public class LoginActivity extends BaseActivity {
                 break;
             case R.id.btn_login_account:
                 //点击账号登录方式
-                if (StringUtil.isNullOrEmpty(CommonVariable.getServiceAddress())){
+                if (StringUtil.isNullOrEmpty(CommonVariable.getServiceAddress())) {
                     ToastUtil.showLToast("请先配置服务地址");
                     StartActivityUtil.comeOnBaby(this, ServiceConfigActivity.class);
                     return;
@@ -190,38 +194,49 @@ public class LoginActivity extends BaseActivity {
                 if (prepareForLogin()) {
                     return;
                 }
-                final String uid = mLoginEditTextAccount.getText()!=null ? mLoginEditTextAccount.getText().toString().trim():null;
-                final String pwd = mLoginAccountPassword.getText()!=null ?mLoginAccountPassword.getText().toString().trim():null;
+                final String uid = mLoginEditTextAccount.getText() != null
+                                   ? mLoginEditTextAccount.getText().toString().trim()
+                                   : null;
+                final String pwd = mLoginAccountPassword.getText() != null
+                                   ? mLoginAccountPassword.getText().toString().trim()
+                                   : null;
                 if (StringUtil.isNullOrEmpty(uid) || StringUtil.isNullOrEmpty(pwd)) {
-                    ToastUtil.showLToast( "用户名或密码不能为空！");
+                    ToastUtil.showLToast("用户名或密码不能为空！");
                     return;
                 }
-                accountSingIn(uid,pwd);
+                accountSingIn(uid, pwd);
                 break;
             case R.id.btn_login_phone:
                 //点击短信登录方式
-                if (StringUtil.isNullOrEmpty(CommonVariable.getServiceAddress())){
+                if (StringUtil.isNullOrEmpty(CommonVariable.getServiceAddress())) {
                     ToastUtil.showLToast("请先配置服务地址");
                     StartActivityUtil.comeOnBaby(this, ServiceConfigActivity.class);
                     return;
                 }
                 String code = mLoginPhonePassword.getText().toString().trim();
                 String phoneNumber = mLoginEditTextIphone.getText().toString().trim();
-                if (StringUtil.isNullOrEmpty(code) && StringUtil.isNullOrEmpty(phoneNumber)){
+                if (StringUtil.isNullOrEmpty(code) && StringUtil.isNullOrEmpty(phoneNumber)) {
                     ToastUtil.showSToast("不能为空");
                 }
                 if (StringUtil.isCodeCorrect(code) && StringUtil.isPhoneNumber(phoneNumber)) {
                     quickLogin(code, phoneNumber);
-                }else {
-                    ToastUtil.showLToast( "手机号或验证码输入格式有错误");
+                } else {
+                    ToastUtil.showLToast("手机号或验证码输入格式有错误");
                 }
 
                 break;
             case R.id.tv_registered:
                 //用户注册
+                ToastUtil.showLToast("用户注册");
                 break;
             case R.id.tv_forgot_password:
                 //忘记密码
+                ToastUtil.showLToast("忘记密码");
+                break;
+            case R.id.tourists_login:
+                //游客登录
+                Intent in = new Intent(LoginActivity.this, MainActivity.class);
+                startActivity(in);
                 break;
             default:
                 break;
@@ -230,23 +245,26 @@ public class LoginActivity extends BaseActivity {
 
 
     private void quickLogin(String code, String mPhoneNumber) {
-        SignInParameter parameter = new SignInParameter(mPhoneNumber,code);
+        SignInParameter parameter = new SignInParameter(mPhoneNumber, code);
         String json = GsonFactory.getGson().toJson(parameter);
-        RequestBody body = RequestBody.create(CommonVariable.JSON_TYPE,json);
+        RequestBody body = RequestBody.create(CommonVariable.JSON_TYPE, json);
         dialog.showNoCancelDialog("正在登录...");
         MDRetrofit.getInstance().createService().SmsLogin(body)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(new BaseObserver<String>() {
                 @Override public void Success(String s, String message) {
-                    if (s.contains("手机号对应的用户不存在")){
+                    dialog.dismiss();
+                    if (s.contains("手机号对应的用户不存在")) {
                         ToastUtil.showSToast("手机号对应的用户不存在");
-                    }else {
-                        getMyInfo(s,null,null);
+                        //TODO 手机号不存在设置为游客登录
+                    } else {
+                        getMyInfo(s, null, null);
                     }
                 }
                 @Override public void Failure(String message) {
-
+                    dialog.dismiss();
+                    ToastUtil.showSToast(message);
                 }
             });
     }
@@ -254,23 +272,30 @@ public class LoginActivity extends BaseActivity {
 
     /**
      * 发送验证码
-     * @param mPhoneNumber
      */
     private void sendSmsCode(String mPhoneNumber) {
+        String json = GsonFactory.getGson().toJson(mPhoneNumber);
+        RequestBody body = RequestBody.create(CommonVariable.JSON_TYPE, json);
         dialog.showNoCancelDialog("正在获取验证码...");
-        MDRetrofit.getInstance().createService().sendSmsCode(CommonVariable.APP_KEY,CommonVariable.APP_SECRET,mPhoneNumber)
+        MDRetrofit.getInstance()
+            .createService()
+            .sendSmsCode(CommonVariable.APP_KEY, CommonVariable.APP_SECRET, body)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(new BaseObserver<String>() {
                 @Override public void Success(String s, String message) {
-                    if (s.contains("已发送")){
+                    Log.i("adu", "----验证码已发送-----" + s);
+                    dialog.dismiss();
+                    if (s.contains("已发送")) {
                         MyCountDownTimer timer = new MyCountDownTimer(mBtnGetCode, 60000, 1000);
                         timer.start();
                     }
                 }
+
+
                 @Override public void Failure(String message) {
                     dialog.dismiss();
-                    Log.i("adu","---------"+message);
+                    Log.i("adu", "---------" + message);
                     ToastUtil.showLToast(message);
                 }
             });
@@ -279,14 +304,12 @@ public class LoginActivity extends BaseActivity {
 
     /**
      * 账户登录
-     * @param uid
-     * @param pwd
      */
     private void accountSingIn(final String uid, final String pwd) {
-        SignInParameter parameter = new SignInParameter(uid,pwd);
+        SignInParameter parameter = new SignInParameter(uid, pwd);
         parameter.setPassword(MD5Util.MD5(uid + pwd));
         String json = GsonFactory.getGson().toJson(parameter);
-        RequestBody body = RequestBody.create(CommonVariable.JSON_TYPE,json);
+        RequestBody body = RequestBody.create(CommonVariable.JSON_TYPE, json);
         dialog.showNoCancelDialog("正在登录...");
         MDRetrofit.getInstance().createService().getSingIn(body)
             .subscribeOn(Schedulers.io())
@@ -294,18 +317,23 @@ public class LoginActivity extends BaseActivity {
             .subscribe(new BaseObserver<String>() {
 
                 @Override public void Success(String s, String message) {
-                    getMyInfo(s,uid,pwd);
+                    dialog.dismiss();
+                    getMyInfo(s, uid, pwd);
 
                 }
+
+
                 @Override public void Failure(String message) {
                     dialog.dismiss();
-                    Log.i("adu","---------"+message);
-                    ToastUtil.showLToast("登录失败"+message);
+                    Log.i("adu", "---------" + message);
+                    ToastUtil.showLToast("登录失败" + message);
                 }
             });
 
     }
-    private void getMyInfo(final String token, final String uid, final String pwd){
+
+
+    private void getMyInfo(final String token, final String uid, final String pwd) {
         MDRetrofit.getInstance().createService().getMyInfo(token)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
@@ -314,29 +342,32 @@ public class LoginActivity extends BaseActivity {
                     Long id = Long.valueOf(userInfo.getUser().getId());
                     userInfoWrapper.setId(id);
                     userInfoWrapper.setUserInfo(GsonFactory.getGson().toJson(userInfo));
-                    manager.getDaoSession().getUserInfoWrapperDao().insertOrReplace(userInfoWrapper);
+                    manager.getDaoSession()
+                        .getUserInfoWrapperDao()
+                        .insertOrReplace(userInfoWrapper);
                     CommonVariable.setCurrentUserInfo(userInfo);
-                    uc.writeString(CommonVariable.ACCOUNT,userInfo.getUser().getAccount());
-                    uc.writeString(CommonVariable.USER_ID,String.valueOf(userInfo.getUser().getId()));
-                    if (userInfo.getUser().getHeadPhotoPath() != null){
-                        uc.writeString(CommonVariable.HEAD_PHOTO_PATH,userInfo.getUser().getHeadPhotoPath());
+                    uc.writeString(CommonVariable.ACCOUNT, userInfo.getUser().getAccount());
+                    uc.writeString(CommonVariable.USER_ID,
+                        String.valueOf(userInfo.getUser().getId()));
+                    if (userInfo.getUser().getHeadPhotoPath() != null) {
+                        uc.writeString(CommonVariable.HEAD_PHOTO_PATH,
+                            userInfo.getUser().getHeadPhotoPath());
+                        Log.i("adu", "---头像------" + userInfo.getUser().getHeadPhotoPath());
                     }
                     dialog.dismiss();
-                    Log.i("adu","---------"+token);
+                    Log.i("adu", "---------" + token);
                     ToastUtil.showLToast("登录成功");
                     //UserConfig uc = UserConfig.getConfig(LoginActivity.this, CommonVariable.USER_CONFIG_NAME);
                     //uc.writeString(CommonVariable.UID, "");
                     //uc.writeString(CommonVariable.PWD, "");
-                    if (uid != null && pwd!=null){
+                    if (uid != null && pwd != null) {
                         CommonVariable.setAccount(uid);
                         CommonVariable.setPassword(pwd);
                         CommonVariable.setAccessToken(token);
 
-                        uc.writeString(CommonVariable.UID,uid);
-                        uc.writeString(CommonVariable.PWD,pwd);
+                        uc.writeString(CommonVariable.UID, uid);
+                        uc.writeString(CommonVariable.PWD, pwd);
                     }
-
-
 
                     Intent in = new Intent(LoginActivity.this, MainActivity.class);
                     //Bundle bundle = new Bundle();
@@ -344,14 +375,15 @@ public class LoginActivity extends BaseActivity {
                     startActivity(in);
                     finish();
                 }
+
+
                 @Override public void Failure(String message) {
                     dialog.dismiss();
-                    Log.i("adu","---------"+message);
-                    ToastUtil.showLToast("登录失败"+message);
+                    Log.i("adu", "---------" + message);
+                    ToastUtil.showLToast("登录失败" + message);
                 }
             });
     }
-
 
 
     private boolean prepareForLogin() {

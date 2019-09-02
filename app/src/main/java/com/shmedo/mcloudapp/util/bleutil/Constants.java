@@ -268,6 +268,7 @@ public class Constants {
     public static final int MESSAGE_SYSTEM_RUN_STATE=21;
     public static final int MESSAGE_VERSION_MESSAGE=22;
     public static final int MESSAGE_GET_ALL_SENSOR_CONFIG=23;
+    public static final int MESSAGE_QUERY_OSMOMETER_PARAMETER=24;
     //蓝牙自动连接是否开启
     public static  boolean BLUETOOTH_CONNECT_AUTO=true;
 }

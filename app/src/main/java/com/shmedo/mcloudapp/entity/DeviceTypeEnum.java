@@ -11,7 +11,8 @@ package com.shmedo.mcloudapp.entity;
 public enum DeviceTypeEnum {
     DAS("DAS"),
     DAG("DAG"),
-    E60("E60");
+    E60("E60"),
+    PVS("PVS");
 
     private String type;
 
@@ -29,6 +30,7 @@ public enum DeviceTypeEnum {
             case "DAS": return true;
             case "DAG": return true;
             case "E60": return true;
+            case "PVS": return true;
             default:    return false;
         }
     }

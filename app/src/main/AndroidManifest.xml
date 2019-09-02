@@ -31,9 +31,9 @@
         android:icon="@mipmap/logo"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/logo"
-        android:supportsRtl="true"
+        android:hardwareAccelerated="true"
         android:theme="@style/AppTheme"
-        tools:ignore="GoogleAppIndexingWarning"
+        tools:ignore="AllowBackup,GoogleAppIndexingWarning"
         android:networkSecurityConfig="@xml/network_security_config"
         tools:targetApi="n">
         <activity android:name=".ui.activity.WelcomeActivity">
@@ -50,7 +50,16 @@
         <meta-data
             android:name="com.amap.api.v2.apikey"
             android:value="39792964d0530d89ac725edee4affdaf" />
-
+        <!--兼容7.0-->
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="com.shmedo.mcloudapp.FileProvider"
+            android:grantUriPermissions="true"
+            android:exported="false">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
         <activity android:name=".ui.activity.MainActivity"/>
         <activity
             android:name=".ui.activity.LoginActivity"
@@ -74,11 +83,21 @@
             android:label="添加设备"
             />
         <activity android:name=".ui.activity.InputDeviceSNActivity"
-            android:windowSoftInputMode="stateAlwaysHidden|adjustResize"
+            android:windowSoftInputMode="adjustPan|stateHidden"
             android:theme="@style/AppThemeBar"
             android:label="添加设备"
             />
-        <activity android:name=".ui.activity.device.DeviceActivity"
+        <activity android:name=".ui.activity.DeviceManageActivity"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustResize"
+            android:theme="@style/AppThemeBar"
+            android:label="设备管理"
+            />
+        <activity android:name=".ui.activity.SearchDeviceActivity"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustResize"
+            android:theme="@style/AppThemeBar"
+            android:label="搜索设备"
+            />
+        <activity android:name=".ui.activity.DeviceManageDetailActivity"
             android:windowSoftInputMode="stateAlwaysHidden|adjustResize"
             android:theme="@style/AppTheme.NoActionBar"
             />
@@ -100,47 +119,41 @@
             android:theme="@style/AppTheme.NoActionBar"
 
             />
-        <activity android:name=".ui.activity.device.ConfigDeviceParameterActivity"
-            android:windowSoftInputMode="stateAlwaysHidden|adjustResize"
-            android:theme="@style/AppTheme.NoActionBar"
 
-            />
-        <activity android:name=".ui.activity.device.QueryDataRecordActivity"
+        <activity android:name=".ui.activity.device.senior.ProductRegistrationActivity"
             android:windowSoftInputMode="stateAlwaysHidden|adjustResize"
             android:theme="@style/AppTheme.NoActionBar"
             />
-        <activity android:name=".ui.activity.device.config.SeniorSettingActivity"
+        <activity android:name=".ui.activity.device.senior.InstructionDebugActivity"
             android:windowSoftInputMode="stateAlwaysHidden|adjustResize"
             android:theme="@style/AppTheme.NoActionBar"
             />
-        <activity android:name=".ui.activity.device.config.senior.ProductRegistrationActivity"
+        <activity android:name=".ui.activity.device.GeneralSettingActivity"
             android:windowSoftInputMode="stateAlwaysHidden|adjustResize"
             android:theme="@style/AppTheme.NoActionBar"
             />
-        <activity android:name=".ui.activity.device.config.senior.InstructionDebugActivity"
-            android:windowSoftInputMode="stateAlwaysHidden|adjustResize"
-            android:theme="@style/AppTheme.NoActionBar"
-            />
-        <activity android:name=".ui.activity.device.config.GeneralSettingActivity"
-            android:windowSoftInputMode="stateAlwaysHidden|adjustResize"
-            android:theme="@style/AppTheme.NoActionBar"
-            />
-        <activity android:name=".ui.activity.device.config.DisplacementConfigActivity"
+        <activity android:name=".ui.activity.device.sensor.SenSorMPSConfigActivity"
             android:windowSoftInputMode="adjustPan|stateHidden"
             android:theme="@style/AppTheme.NoActionBar"
             />
-        <activity android:name=".ui.activity.device.config.OsmometerConfigActivity"
+        <activity android:name=".ui.activity.device.sensor.SenSorBGKConfigActivity"
             android:windowSoftInputMode="adjustPan|stateHidden"
             android:theme="@style/AppTheme.NoActionBar"
             />
-        <activity android:name=".ui.activity.device.config.RainConfigActivity"
+
+        <activity android:name=".ui.activity.device.OsmometerConfigActivity"
             android:windowSoftInputMode="adjustPan|stateHidden"
             android:theme="@style/AppTheme.NoActionBar"
             />
-        <activity android:name=".ui.activity.tabdevice.AllDeviceActivity"
+        <activity android:name=".ui.activity.device.RainConfigActivity"
             android:windowSoftInputMode="adjustPan|stateHidden"
             android:theme="@style/AppTheme.NoActionBar"
             />
+        <activity android:name=".ui.activity.AllDeviceActivity"
+            android:windowSoftInputMode="adjustPan|stateHidden"
+            android:theme="@style/AppTheme.NoActionBar"
+            />
+
     </application>
 
 </manifest>

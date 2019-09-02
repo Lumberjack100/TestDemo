@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     >
-
+    <include layout="@layout/toolbar_para_config"/>
     <FrameLayout
         android:id="@+id/sub_content"
         android:layout_width="match_parent"
