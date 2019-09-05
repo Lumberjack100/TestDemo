@@ -49,7 +49,7 @@
         </service>
         <meta-data
             android:name="com.amap.api.v2.apikey"
-            android:value="39792964d0530d89ac725edee4affdaf" />
+            android:value="31d7ee436c402270e11183ce1b5d01dc" />
         <!--兼容7.0-->
         <provider
             android:name="android.support.v4.content.FileProvider"

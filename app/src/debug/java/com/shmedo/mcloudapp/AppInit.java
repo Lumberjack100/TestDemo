@@ -12,9 +12,8 @@ import com.facebook.stetho.Stetho;
  * 描述：    TODO
  */
 public class AppInit {
-    public static final boolean DEG = true;
     public static void init(Context context){
-        if (DEG){
+        if (BuildConfig.DEBUG){
             Stetho.initializeWithDefaults(context);
         }
     }
