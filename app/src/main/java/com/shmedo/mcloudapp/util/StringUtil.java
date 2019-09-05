@@ -3,10 +3,9 @@ package com.shmedo.mcloudapp.util;
 import android.annotation.SuppressLint;
 import android.text.TextUtils;
 import android.util.Log;
+
 import java.text.DecimalFormat;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 /**
  * 项目名：  CheckAndroid
@@ -160,16 +159,20 @@ public class StringUtil {
         String resultSize = "";
         if (size / GB >= 1) {
             //如果当前Byte的值大于等于1GB
-            resultSize = df.format(size / (float) GB) + "GB   ";
+            resultSize = df.format(size / (float) GB) + "GB";
         } else if (size / MB >= 1) {
             //如果当前Byte的值大于等于1MB
-            resultSize = df.format(size / (float) MB) + "MB   ";
-        } else if (size / KB >= 1) {
-            //如果当前Byte的值大于等于1KB
-            resultSize = df.format(size / (float) KB) + "KB   ";
-        } else {
-            resultSize = size + "B   ";
+            resultSize = df.format(size / (float) MB) + "MB";
+        } else{
+            resultSize =  "< 1MB";
         }
+
+//        else if (size / KB >= 1) {
+//            //如果当前Byte的值大于等于1KB
+//            resultSize = df.format(size / (float) KB) + "KB   ";
+//        } else {
+//            resultSize = size + "B   ";
+//        }
         return resultSize;
     }
 }

@@ -2,7 +2,10 @@ package com.shmedo.mcloudapp.util;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+
 import com.shmedo.das.utils.StringUtil;
+import com.shmedo.mcloudapp.R;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -64,5 +67,45 @@ public class ImageUtil {
         } catch (FileNotFoundException ex) {
             throw new RuntimeException(ex);
         }
+    }
+
+
+    /**
+     * 根据传感器类型获取对应的本地图片资源
+     * @author：gonghe
+     * @time 2019-09-05
+     */
+    public static int getSensorResourceID(int type) {
+        String sensorType = com.shmedo.mcloudapp.util.StringUtil.formatStringTwo(String.valueOf(type));
+        switch (sensorType) {
+            case "02":
+                return R.drawable.medo_icon_sensortype_2;
+
+            case "04":
+                return R.drawable.medo_icon_sensortype_3;
+
+            case "06":
+                return R.drawable.medo_icon_sensortype_4;
+
+            case "08":
+                return R.drawable.medo_icon_sensortype_5;
+
+            case "12":
+                return R.drawable.medo_icon_sensortype_6;
+
+            case "15":
+                return R.drawable.medo_icon_sensortype_7;
+
+            case "50":
+                return R.drawable.medo_icon_sensortype_8;
+
+            case "51":
+                return R.drawable.medo_icon_sensortype_9;
+
+            case "53":
+                return R.drawable.medo_icon_sensortype_13;
+        }
+
+        return R.drawable.medo_icon_sensortype_0;
     }
 }

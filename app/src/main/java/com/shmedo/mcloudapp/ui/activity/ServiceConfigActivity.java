@@ -2,10 +2,8 @@ package com.shmedo.mcloudapp.ui.activity;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.widget.Button;
-import butterknife.BindView;
-import butterknife.OnClick;
+
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.base.BaseActivity;
 import com.shmedo.mcloudapp.model.BaseObserver;
@@ -16,8 +14,12 @@ import com.shmedo.mcloudapp.util.ToastUtil;
 import com.shmedo.mcloudapp.util.UserConfig;
 import com.shmedo.mcloudapp.views.ClearEditText;
 import com.shmedo.mcloudapp.views.LoadingDialog;
+
+import butterknife.BindView;
+import butterknife.OnClick;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
+import timber.log.Timber;
 
 /**
  * 项目名：  mCloudapp
@@ -28,23 +30,27 @@ import io.reactivex.schedulers.Schedulers;
  * 描述：    配置服务器
  */
 public class ServiceConfigActivity extends BaseActivity {
-    @BindView(R.id.etServiceAddress) ClearEditText mEtServiceAddress;
-    @BindView(R.id.btnServiceTest) Button mBtnServiceTest;
+    @BindView(R.id.etServiceAddress)
+    ClearEditText mEtServiceAddress;
+    @BindView(R.id.btnServiceTest)
+    Button mBtnServiceTest;
     private UserConfig userConfig;
     private LoadingDialog dialog;
     private String config = "mdnetservice.shmedo.cn";
 
-    @Override protected int initContentView() {
+    @Override
+    protected int initContentView() {
         return R.layout.activity_service_config;
     }
 
 
-    @Override protected void onCreate(@Nullable Bundle savedInstanceState) {
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //ActionBar上显示返回
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         initServiceAddress();
-        
+
     }
 
 
@@ -59,7 +65,8 @@ public class ServiceConfigActivity extends BaseActivity {
     }
 
 
-    @OnClick(R.id.btnServiceTest) public void onViewClicked() {
+    @OnClick(R.id.btnServiceTest)
+    public void onViewClicked() {
         final String service_text = mEtServiceAddress.getText().toString();
         if (StringUtil.isNullOrEmpty(service_text)) {
             mEtServiceAddress.setError("请输入配置服务器地址");
@@ -71,22 +78,24 @@ public class ServiceConfigActivity extends BaseActivity {
         CommonVariable.setServiceAddress(service_text);
         dialog.showCancelDialog("正在配置服务器...");
         MDRetrofit.getInstance().createService().getApiVerson()
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(new BaseObserver<String>() {
-                @Override public void Success(String s, String message) {
-                    Log.i("adu","---------"+s);
-                    dialog.dismiss();
-                    ToastUtil.showLToast("服务端连接成功，API版本为："+s);
-                    userConfig.writeString(CommonVariable.SERVICE_ADDRESS,mEtServiceAddress.getText().toString());
-                    finish();
-                }
-                @Override public void Failure(String message) {
-                    Log.i("adu","----=-----"+message);
-                    dialog.dismiss();
-                    ToastUtil.showLToast("服务端连接错误");
-                }
-            });
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new BaseObserver<String>() {
+                    @Override
+                    public void Success(String s, String message) {
+                        dialog.dismiss();
+                        ToastUtil.showLToast("服务端连接成功，API版本为：" + s);
+                        userConfig.writeString(CommonVariable.SERVICE_ADDRESS, mEtServiceAddress.getText().toString());
+                        finish();
+                    }
+
+                    @Override
+                    public void Failure(String message) {
+                        Timber.w("服务端连接错误: " + message);
+                        dialog.dismiss();
+                        ToastUtil.showLToast("服务端连接错误");
+                    }
+                });
     }
 
 }
