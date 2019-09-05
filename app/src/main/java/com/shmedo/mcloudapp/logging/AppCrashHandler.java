@@ -17,17 +17,13 @@ public class AppCrashHandler {
 
     private static AppCrashHandler instance;
 
-    private AppCrashHandler(Context context)
-    {
+    private AppCrashHandler(Context context) {
         this.context = context;
 
-        // install
-        Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler()
-        {
+        Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
             @Override
-            public void uncaughtException(Thread thread, final Throwable ex)
-            {
-                Timber.d(ex);
+            public void uncaughtException(Thread thread, final Throwable ex) {
+                Timber.e("异常退出：" + ex);
 
 //                CrashReport.postCatchedException(ex);
                 try {
@@ -42,10 +38,8 @@ public class AppCrashHandler {
         });
     }
 
-    public static AppCrashHandler getInstance(Context mContext)
-    {
-        if (instance == null)
-        {
+    public static AppCrashHandler getInstance(Context mContext) {
+        if (instance == null) {
             instance = new AppCrashHandler(mContext);
         }
 

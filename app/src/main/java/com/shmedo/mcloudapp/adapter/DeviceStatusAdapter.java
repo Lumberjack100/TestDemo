@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.entity.SensorAndCount;
 import com.shmedo.mcloudapp.entity.StatusInfoResult;
+import com.shmedo.mcloudapp.util.ImageUtil;
 import com.shmedo.mcloudapp.util.StringUtil;
 
 import java.util.ArrayList;
@@ -46,55 +47,52 @@ public class DeviceStatusAdapter extends RecyclerView.Adapter<DeviceStatusAdapte
 
 
     @Override
-    public void onBindViewHolder(@NonNull MyViewHolder holder, int i) {
+    public void onBindViewHolder(@NonNull MyViewHolder holder, final int position) {
 
-        holder.tv_deviceStatus.setText(data.get(i).getDeviceName());
-        if (data.get(i).getLocal()) {
-            holder.tv_deviceToken.setText(data.get(i).getDeviceToken() + "\n" + "本地设备");
+        holder.tv_deviceStatus.setText(data.get(position).getDeviceName());
+        if (data.get(position).getLocal()) {
+            holder.tv_deviceToken.setText(data.get(position).getDeviceToken() + "\n" + "本地设备");
         } else {
-            holder.tv_deviceToken.setText(data.get(i).getDeviceToken() + "\n" + "云端设备");
+            holder.tv_deviceToken.setText(data.get(position).getDeviceToken() + "\n" + "云端设备");
         }
 
-        holder.tv_electricity.setText(data.get(i).getVoltage() + "V");
-        holder.tv_gprs.setText(StringUtil.setSize(data.get(i).getGprs()));
-        holder.tv_signal.setText(data.get(i).getSignal() + "");
-        holder.ll_SensorType.setTag(i);
-        holder.itemView.setTag(i);
+        holder.tv_electricity.setText(data.get(position).getVoltage() + "V");
+        holder.tv_gprs.setText(StringUtil.setSize(data.get(position).getGprs()));
+        holder.tv_signal.setText(data.get(position).getSignal() + "");
+        holder.ll_SensorType.setTag(position);
+        holder.itemView.setTag(position);
 
-        sensorAndCountList = data.get(i).getSensorInfo();
+        sensorAndCountList = data.get(position).getSensorInfo();
         if (sensorAndCountList == null || sensorAndCountList.size() == 0) {
 
             holder.tv_sensorType1.setVisibility(View.GONE);
             holder.tv_sensorType2.setVisibility(View.GONE);
             holder.tv_sensorMore.setVisibility(View.GONE);
-            holder.ll_SensorType.setClickable(false);
             return;
         }
 
-        if (data.get(i).getSensorInfo().size() > 2) {
+        if (data.get(position).getSensorInfo().size() > 2) {
 
             holder.tv_sensorType1.setVisibility(View.VISIBLE);
             holder.tv_sensorType2.setVisibility(View.VISIBLE);
             holder.tv_sensorMore.setVisibility(View.VISIBLE);
-            holder.ll_SensorType.setClickable(true);
 
-            holder.tv_sensorType1.setCompoundDrawablesWithIntrinsicBounds(sensorAndCountList.get(0).getSensorType(), 0, 0, 0);
+            holder.tv_sensorType1.setCompoundDrawablesWithIntrinsicBounds(ImageUtil.getSensorResourceID(sensorAndCountList.get(0).getSensorType()), 0, 0, 0);
             holder.tv_sensorType1.setText("x" + sensorAndCountList.get(0).getSensorCount());
 
-            holder.tv_sensorType2.setCompoundDrawablesWithIntrinsicBounds(sensorAndCountList.get(1).getSensorType(), 0, 0, 0);
+            holder.tv_sensorType2.setCompoundDrawablesWithIntrinsicBounds(ImageUtil.getSensorResourceID(sensorAndCountList.get(1).getSensorType()), 0, 0, 0);
             holder.tv_sensorType2.setText("x" + sensorAndCountList.get(1).getSensorCount());
 
-        } else if (data.get(i).getSensorInfo().size() > 1) {
+        } else if (data.get(position).getSensorInfo().size() > 1) {
 
             holder.tv_sensorType1.setVisibility(View.VISIBLE);
             holder.tv_sensorType2.setVisibility(View.VISIBLE);
             holder.tv_sensorMore.setVisibility(View.GONE);
-            holder.ll_SensorType.setClickable(false);
 
-            holder.tv_sensorType1.setCompoundDrawablesWithIntrinsicBounds(sensorAndCountList.get(0).getSensorType(), 0, 0, 0);
+            holder.tv_sensorType1.setCompoundDrawablesWithIntrinsicBounds(ImageUtil.getSensorResourceID(sensorAndCountList.get(0).getSensorType()), 0, 0, 0);
             holder.tv_sensorType1.setText("x" + sensorAndCountList.get(0).getSensorCount());
 
-            holder.tv_sensorType2.setCompoundDrawablesWithIntrinsicBounds(sensorAndCountList.get(1).getSensorType(), 0, 0, 0);
+            holder.tv_sensorType2.setCompoundDrawablesWithIntrinsicBounds(ImageUtil.getSensorResourceID(sensorAndCountList.get(1).getSensorType()), 0, 0, 0);
             holder.tv_sensorType2.setText("x" + sensorAndCountList.get(1).getSensorCount());
 
         } else {
@@ -102,9 +100,8 @@ public class DeviceStatusAdapter extends RecyclerView.Adapter<DeviceStatusAdapte
             holder.tv_sensorType1.setVisibility(View.VISIBLE);
             holder.tv_sensorType2.setVisibility(View.GONE);
             holder.tv_sensorMore.setVisibility(View.GONE);
-            holder.ll_SensorType.setClickable(false);
 
-            holder.tv_sensorType1.setCompoundDrawablesWithIntrinsicBounds(sensorAndCountList.get(0).getSensorType(), 0, 0, 0);
+            holder.tv_sensorType1.setCompoundDrawablesWithIntrinsicBounds(ImageUtil.getSensorResourceID(sensorAndCountList.get(0).getSensorType()), 0, 0, 0);
             holder.tv_sensorType1.setText("x" + sensorAndCountList.get(0).getSensorCount());
         }
     }
@@ -156,7 +153,7 @@ public class DeviceStatusAdapter extends RecyclerView.Adapter<DeviceStatusAdapte
 
     //自定义一个回调接口来实现Click和LongClick事件
     public interface OnItemClickListener {
-        void onItemClick(View v, ViewName viewName, int position, List<SensorAndCount> list);
+        void onItemClick(View v, ViewName viewName, int position);
     }
 
     //定义方法并传给外面的使用者
@@ -170,10 +167,10 @@ public class DeviceStatusAdapter extends RecyclerView.Adapter<DeviceStatusAdapte
         if (mOnItemClickListener != null) {
             switch (view.getId()) {
                 case R.id.recycler_device:
-                    mOnItemClickListener.onItemClick(view, ViewName.PRACTISE, position, sensorAndCountList);
+                    mOnItemClickListener.onItemClick(view, ViewName.PRACTISE, position);
                     break;
                 default:
-                    mOnItemClickListener.onItemClick(view, ViewName.ITEM, position, sensorAndCountList);
+                    mOnItemClickListener.onItemClick(view, ViewName.ITEM, position);
                     break;
             }
         }

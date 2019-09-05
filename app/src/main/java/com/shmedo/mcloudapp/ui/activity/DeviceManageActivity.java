@@ -290,7 +290,10 @@ public class DeviceManageActivity extends BaseActivity implements OnRefreshListe
     private void queryDeviceStatusList() {
         List<StatusInfoResult> infoList = manager.getDaoSession().getStatusInfoResultDao().queryBuilder()
                 .list();
-        Log.i("adu", "----query status list ====" + infoList.size());
+
+        //添加测试数据
+        infoList.get(0).setSensorInfo(initTestData());
+
         statusInfoList.clear();
         statusInfoList.addAll(infoList);
         deviceStatusAdapter.notifyDataSetChanged();
@@ -299,19 +302,22 @@ public class DeviceManageActivity extends BaseActivity implements OnRefreshListe
     private DeviceSensorDialog deviceSensorDialog;
     private DeviceStatusAdapter.OnItemClickListener listener = new DeviceStatusAdapter.OnItemClickListener() {
         @Override
-        public void onItemClick(View v, DeviceStatusAdapter.ViewName viewName, int position, List<SensorAndCount> list) {
+        public void onItemClick(View v, DeviceStatusAdapter.ViewName viewName, int position) {
             switch (v.getId()) {
-                case R.id.ll_SensorType:
-                    ToastUtil.showSToast("这是传感器" + position);
+                case R.id.ll_SensorType://传感器类型 Layout 点击事件
                     Timber.d("----传感器---" + position);
 
-                    deviceSensorDialog = new DeviceSensorDialog(DeviceManageActivity.this,
-                            R.style.dialog_center_full, initTestData());
+                    List<SensorAndCount> data = statusInfoList.get(position).getSensorInfo();
+                    if (data == null || data.size() < 3)
+                        return;
+
+                    deviceSensorDialog = new DeviceSensorDialog(DeviceManageActivity.this, R.style.dialog_center_full, data);
                     if (!deviceSensorDialog.isShowing()) {
                         deviceSensorDialog.show();
                     }
                     break;
-                default:
+
+                default://整个 Item 点击事件
                     Timber.d("----传感器---" + position);
 
                     ToastUtil.showSToast("这是item" + position);
@@ -320,101 +326,100 @@ public class DeviceManageActivity extends BaseActivity implements OnRefreshListe
         }
     };
 
-    private List<SensorAndCount> initTestData()
-    {
-        List<SensorAndCount> list=new ArrayList<>();
+    private List<SensorAndCount> initTestData() {
+        List<SensorAndCount> list = new ArrayList<>();
 
-        SensorAndCount sensorAndCount=new SensorAndCount();
+        SensorAndCount sensorAndCount = new SensorAndCount();
         sensorAndCount.setSensorCount(3);
         sensorAndCount.setSensorType(2);
         list.add(sensorAndCount);
 
-        sensorAndCount=new SensorAndCount();
+        sensorAndCount = new SensorAndCount();
         sensorAndCount.setSensorCount(3);
         sensorAndCount.setSensorType(4);
         list.add(sensorAndCount);
 
-        sensorAndCount=new SensorAndCount();
+        sensorAndCount = new SensorAndCount();
         sensorAndCount.setSensorCount(3);
         sensorAndCount.setSensorType(6);
         list.add(sensorAndCount);
 
-        sensorAndCount=new SensorAndCount();
+        sensorAndCount = new SensorAndCount();
         sensorAndCount.setSensorCount(3);
         sensorAndCount.setSensorType(8);
         list.add(sensorAndCount);
 
-        sensorAndCount=new SensorAndCount();
+        sensorAndCount = new SensorAndCount();
         sensorAndCount.setSensorCount(3);
         sensorAndCount.setSensorType(12);
         list.add(sensorAndCount);
 
-        sensorAndCount=new SensorAndCount();
+        sensorAndCount = new SensorAndCount();
         sensorAndCount.setSensorCount(3);
         sensorAndCount.setSensorType(15);
         list.add(sensorAndCount);
 
-        sensorAndCount=new SensorAndCount();
+        sensorAndCount = new SensorAndCount();
         sensorAndCount.setSensorCount(3);
         sensorAndCount.setSensorType(15);
         list.add(sensorAndCount);
 
-        sensorAndCount=new SensorAndCount();
+        sensorAndCount = new SensorAndCount();
         sensorAndCount.setSensorCount(3);
         sensorAndCount.setSensorType(15);
         list.add(sensorAndCount);
 
-        sensorAndCount=new SensorAndCount();
+        sensorAndCount = new SensorAndCount();
         sensorAndCount.setSensorCount(3);
         sensorAndCount.setSensorType(15);
         list.add(sensorAndCount);
 
-        sensorAndCount=new SensorAndCount();
+        sensorAndCount = new SensorAndCount();
         sensorAndCount.setSensorCount(3);
         sensorAndCount.setSensorType(15);
         list.add(sensorAndCount);
 
-        sensorAndCount=new SensorAndCount();
+        sensorAndCount = new SensorAndCount();
         sensorAndCount.setSensorCount(3);
         sensorAndCount.setSensorType(15);
         list.add(sensorAndCount);
 
-        sensorAndCount=new SensorAndCount();
+        sensorAndCount = new SensorAndCount();
         sensorAndCount.setSensorCount(3);
         sensorAndCount.setSensorType(15);
         list.add(sensorAndCount);
 
-        sensorAndCount=new SensorAndCount();
+        sensorAndCount = new SensorAndCount();
         sensorAndCount.setSensorCount(3);
         sensorAndCount.setSensorType(15);
         list.add(sensorAndCount);
 
-        sensorAndCount=new SensorAndCount();
+        sensorAndCount = new SensorAndCount();
         sensorAndCount.setSensorCount(3);
         sensorAndCount.setSensorType(50);
         list.add(sensorAndCount);
 
-        sensorAndCount=new SensorAndCount();
+        sensorAndCount = new SensorAndCount();
         sensorAndCount.setSensorCount(3);
         sensorAndCount.setSensorType(51);
         list.add(sensorAndCount);
 
-        sensorAndCount=new SensorAndCount();
+        sensorAndCount = new SensorAndCount();
         sensorAndCount.setSensorCount(3);
         sensorAndCount.setSensorType(51);
         list.add(sensorAndCount);
 
-        sensorAndCount=new SensorAndCount();
+        sensorAndCount = new SensorAndCount();
         sensorAndCount.setSensorCount(3);
         sensorAndCount.setSensorType(51);
         list.add(sensorAndCount);
 
-        sensorAndCount=new SensorAndCount();
+        sensorAndCount = new SensorAndCount();
         sensorAndCount.setSensorCount(3);
         sensorAndCount.setSensorType(51);
         list.add(sensorAndCount);
 
-        sensorAndCount=new SensorAndCount();
+        sensorAndCount = new SensorAndCount();
         sensorAndCount.setSensorCount(3);
         sensorAndCount.setSensorType(53);
         list.add(sensorAndCount);
