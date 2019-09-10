@@ -6,8 +6,11 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
-import butterknife.ButterKnife;
+
 import com.shmedo.mcloudapp.util.XPermissionUtils;
+
+import butterknife.ButterKnife;
+import timber.log.Timber;
 
 /**
  * 项目名：  mCloudapp
@@ -20,7 +23,8 @@ import com.shmedo.mcloudapp.util.XPermissionUtils;
 public abstract class BaseActivity extends AppCompatActivity {
 
 
-    @Override protected void onCreate(@Nullable Bundle savedInstanceState) {
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //StatusUtil.StatusBarLightMode(this);
         setContentView(initContentView());
@@ -28,21 +32,42 @@ public abstract class BaseActivity extends AppCompatActivity {
         ButterKnife.bind(this);
     }
 
-    @Override public boolean onOptionsItemSelected(MenuItem item) {
-        if(item.getItemId() == android.R.id.home){
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        String name = getClass().getName();
+        Timber.d("startPage,activity=" + name);
+    }
+
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        String name = getClass().getName();
+        Timber.d("endPage,activity=" + name);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
             finish();
             return true;
         }
         return super.onOptionsItemSelected(item);
     }
+
     protected abstract int initContentView();
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull
-        int[] grantResults) {
+            int[] grantResults) {
         XPermissionUtils.onRequestPermissionsResult(requestCode, permissions, grantResults);
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();

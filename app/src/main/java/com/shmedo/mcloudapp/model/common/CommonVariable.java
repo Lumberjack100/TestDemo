@@ -37,7 +37,7 @@ public class CommonVariable {
     public static String getServiceAddress() {
         if(StringUtil.isNullOrEmpty(serviceAddress))
             return serviceAddress;
-        return "http://"+serviceAddress+"/api/v1/";//因为域名没有备案，暂时用 http 加端口号访问服务 https
+        return "https://"+serviceAddress+"/api/v1/";// https://mdnetservice.shmedo.cn/api/v1/
     }
 
 

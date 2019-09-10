@@ -39,7 +39,6 @@ import com.shmedo.mcloudapp.views.DividerItemDecoration;
 import com.shmedo.mcloudapp.views.EmptyDataView;
 import com.shmedo.mcloudapp.views.LoadingDialog;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -107,18 +106,20 @@ public class DeviceManageActivity extends BaseActivity implements OnRefreshListe
         deviceStatusAdapter = new DeviceStatusAdapter(this, statusInfoList);
         mRecyclerDevice.setLayoutManager(new LinearLayoutManager(this));
         mRecyclerDevice.addItemDecoration(new DividerItemDecoration());
+        mRecyclerDevice.setAdapter(deviceStatusAdapter);
+        deviceStatusAdapter.setOnItemClickListener(listener);
 
         //mRefreshLayout.setEnableAutoLoadMore(true);
         mRefreshLayout.setEnableRefresh(true);
-        mRefreshLayout.setOnRefreshListener(this);
         mRefreshLayout.setOnRefreshLoadMoreListener(this);
         mRefreshLayout.setRefreshHeader(new ClassicsHeader(this));
         //mRefreshLayout.setRefreshFooter(new ClassicsFooter(this));
-        mRecyclerDevice.setAdapter(deviceStatusAdapter);
-        deviceStatusAdapter.setOnItemClickListener(listener);
     }
 
 
+    /**
+     * 获取当前用户的项目列表
+     */
     private void initData() {
         mLoadingDialog.showNoCancelDialog("加载数据中...");
         //获取系统
@@ -159,13 +160,9 @@ public class DeviceManageActivity extends BaseActivity implements OnRefreshListe
         systemAdapter.setOnItemClickLitener(new SystemAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View itemView, int position) {
-                ToastUtil.showSToast("==" + systemAdapter.getDataList().get(position).getProID());
-                Intent intent = new Intent(DeviceManageActivity.this,
-                        DeviceManageDetailActivity.class);
-                Bundle bundle = new Bundle();
-                bundle.putSerializable("queryProjectDevice", (Serializable) systemAdapter.getDataList().get(position));
-                intent.putExtras(bundle);
-                startActivity(intent);
+//                ToastUtil.showSToast("==" + systemAdapter.getDataList().get(position).getProID());
+
+                DeviceManageDetailActivity.startActivity(DeviceManageActivity.this,systemAdapter.getDataList().get(position));
             }
         });
         systemAdapter.setOnItemMapClickListener(new SystemAdapter.OnItemMapClickListener() {
@@ -264,9 +261,6 @@ public class DeviceManageActivity extends BaseActivity implements OnRefreshListe
                         if (infoList.size() != 0) {
                             Timber.d(" 电量--" + infoList.get(0).getSignal());
 
-                            //statusInfoList.clear();
-                            //statusInfoList.addAll(infoList);
-                            //deviceStatusAdapter.notifyDataSetChanged();
                             manager.getDaoSession().getStatusInfoResultDao().insertOrReplaceInTx(infoList);
                             //数据存到数据库，查出云端设备和本地设备显示
                             queryDeviceStatusList();

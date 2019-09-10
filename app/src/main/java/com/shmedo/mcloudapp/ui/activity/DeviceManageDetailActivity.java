@@ -1,16 +1,15 @@
 package com.shmedo.mcloudapp.ui.activity;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
+
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.footer.ClassicsFooter;
@@ -25,19 +24,26 @@ import com.shmedo.mcloudapp.entity.ProjectDeviceInfo;
 import com.shmedo.mcloudapp.entity.SystemDataInfo;
 import com.shmedo.mcloudapp.entity.parameter.QueryProjectDeviceParamter;
 import com.shmedo.mcloudapp.model.BaseObserver;
+import com.shmedo.mcloudapp.model.Extras;
 import com.shmedo.mcloudapp.model.MDRetrofit;
 import com.shmedo.mcloudapp.model.common.CommonVariable;
 import com.shmedo.mcloudapp.util.GsonFactory;
 import com.shmedo.mcloudapp.util.ToastUtil;
 import com.shmedo.mcloudapp.views.ClearEditText;
 import com.shmedo.mcloudapp.views.DividerItemDecoration;
+import com.shmedo.mcloudapp.views.EmptyDataView;
 import com.shmedo.mcloudapp.views.LoadingDialog;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.schedulers.Schedulers;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+
+import butterknife.BindView;
+import butterknife.OnClick;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
 import okhttp3.RequestBody;
+import timber.log.Timber;
 
 /**
  * 项目名：  mCloudapp
@@ -48,16 +54,35 @@ import okhttp3.RequestBody;
  * 描述：    设备管理详情页面
  */
 public class DeviceManageDetailActivity extends BaseActivity implements OnRefreshListener,
-    OnRefreshLoadMoreListener {
+        OnRefreshLoadMoreListener {
 
-    @BindView(R.id.toolbar_title) TextView mToolbarTitle;
-    @BindView(R.id.toolbar) Toolbar mToolbar;
-    @BindView(R.id.ce_find_sn) ClearEditText mCeFindSn;
-    @BindView(R.id.btn_find) Button mBtnFind;
-    @BindView(R.id.tv_update_time) TextView mTvUpdateTime;
-    @BindView(R.id.btn_update) Button mBtnUpdate;
-    @BindView(R.id.recyclerDevice) RecyclerView mRecyclerDevice;
-    @BindView(R.id.refreshLayout) SmartRefreshLayout mRefreshLayout;
+    @BindView(R.id.toolbar_title)
+    TextView mToolbarTitle;
+
+    @BindView(R.id.toolbar)
+    Toolbar mToolbar;
+
+    @BindView(R.id.ce_find_sn)
+    ClearEditText mCeFindSn;
+
+    @BindView(R.id.btn_find)
+    Button mBtnFind;
+
+    @BindView(R.id.tv_update_time)
+    TextView mTvUpdateTime;
+
+    @BindView(R.id.btn_update)
+    Button mBtnUpdate;
+
+    @BindView(R.id.empty_data)
+    EmptyDataView mEmptyData;
+
+    @BindView(R.id.recyclerDevice)
+    RecyclerView mRecyclerDevice;
+
+    @BindView(R.id.refreshLayout)
+    SmartRefreshLayout mRefreshLayout;
+
     private LoadingDialog mLoadingDialog;
     private List<ProjectDeviceInfo> deviceInfoList = new ArrayList<>();
     private QueryProjectDeviceAdapter deviceAdapter;
@@ -65,14 +90,31 @@ public class DeviceManageDetailActivity extends BaseActivity implements OnRefres
     private int pageNo = 1;
     private int projID;
 
-    @Override protected int initContentView() {
+
+    /**
+     * 说明：启动Activity
+     * <p>
+     * 注意：这里使用到了Intent的Flag属性singleTop。singleTop模式下，在同一个task中，如果存在该Activity的实例，
+     * 并且该Activity实例位于栈顶(即，该Activity位于前端)，则调用startActivity()时，不再创建该Activity的示例；
+     * 而仅仅只是调用Activity的onNewIntent()。否则的话，则新建该Activity的实例，并将其置于栈顶。
+     * </p>
+     */
+    public static void startActivity(Context context, SystemDataInfo systemDataInfo) {
+        Intent intent = new Intent(context, DeviceManageDetailActivity.class);
+        intent.putExtra(Extras.QUERY_PROJECT_DEVICE, systemDataInfo);
+        intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        context.startActivity(intent);
+    }
+
+    @Override
+    protected int initContentView() {
         return R.layout.activity_device_manage_detail;
     }
 
 
-    @Override protected void onCreate(Bundle savedInstanceState) {
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ButterKnife.bind(this);
         initView();
         initData();
     }
@@ -84,24 +126,34 @@ public class DeviceManageDetailActivity extends BaseActivity implements OnRefres
         getSupportActionBar().setTitle("");
 
         mLoadingDialog = new LoadingDialog(this);
-        mRefreshLayout.setEnableAutoLoadMore(true);
+        mRefreshLayout.setEnableAutoLoadMore(false);
+        mRefreshLayout.setEnableRefresh(true);
         mRefreshLayout.setOnRefreshLoadMoreListener(this);
         mRefreshLayout.setRefreshHeader(new ClassicsHeader(this));
         mRefreshLayout.setRefreshFooter(new ClassicsFooter(this));
+
         deviceAdapter = new QueryProjectDeviceAdapter(this, deviceInfoList);
         mRecyclerDevice.setLayoutManager(new LinearLayoutManager(this));
         mRecyclerDevice.addItemDecoration(new DividerItemDecoration());
         mRecyclerDevice.setAdapter(deviceAdapter);
+
     }
 
 
     private void initData() {
 
-        projID = ((SystemDataInfo) getIntent().getSerializableExtra("queryProjectDevice")).getProID();
-        Log.i("adu", "====projid===" + projID);
-        mToolbarTitle.setText(((SystemDataInfo) getIntent().getSerializableExtra("queryProjectDevice")).getProjName());
-        queryProjectDevice(projID, "", 5, pageNo);
+        Intent intent = getIntent();
+        if (intent != null) {
+            SystemDataInfo systemDataInfo = (SystemDataInfo) intent.getSerializableExtra(Extras.QUERY_PROJECT_DEVICE);
+            if (systemDataInfo == null) {
+                Timber.w("传递的参数 SystemDataInfo 值为 NULL!");
+                return;
+            }
 
+            projID = systemDataInfo.getProID();
+            mToolbarTitle.setText(systemDataInfo.getProjName());
+            queryProjectDevice(projID, "", 5, pageNo);
+        }
     }
 
 
@@ -116,86 +168,101 @@ public class DeviceManageDetailActivity extends BaseActivity implements OnRefres
         paramter.setPageSize(pageSize);
         paramter.setCurrentPage(currentPage);
         String json = GsonFactory.getGson().toJson(paramter);
-        Log.i("adu","====json===="+json);
         RequestBody body = RequestBody.create(CommonVariable.JSON_TYPE, json);
         MDRetrofit.getInstance()
-            .createService()
-            .QueryProjectDevice(CommonVariable.getAccessToken(), body)
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(new BaseObserver<PageResult<ProjectDeviceInfo>>() {
+                .createService()
+                .QueryProjectDevice(CommonVariable.getAccessToken(), body)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new BaseObserver<PageResult<ProjectDeviceInfo>>() {
 
-                @Override
-                public void Success(PageResult<ProjectDeviceInfo> infoList, String message) {
-                    mLoadingDialog.dismiss();
-                    if (infoList != null) {
-                        List<ProjectDeviceInfo> list = infoList.getCurrentPageData();
-                        if (list.size() != 0){
-                            deviceInfoList.clear();
-                            deviceInfoList.addAll(list);
-                            deviceAdapter.notifyDataSetChanged();
-                        }else {
-                            ToastUtil.showSToast("没有更多数据了");
-                            mRefreshLayout.finishLoadMoreWithNoMoreData();
-                            //
-                            //if (projID!=0){
-                            //    queryProjectDevice(projID, "", 5, 1);
-                            //}
+                    @Override
+                    public void Success(PageResult<ProjectDeviceInfo> infoList, String message) {
+                        mLoadingDialog.dismiss();
+                        if (infoList != null) {
+                            List<ProjectDeviceInfo> list = infoList.getCurrentPageData();
+                            if (list.size() != 0) {
+                                deviceInfoList.addAll(list);
+                                deviceAdapter.notifyDataSetChanged();
+                            } else {
+                                ToastUtil.showSToast("没有更多数据了");
+                                mRefreshLayout.finishLoadMoreWithNoMoreData();
+                            }
+                        } else {
+                            mRefreshLayout.finishRefresh();
                         }
-                    }else {
-                        ToastUtil.showSToast("没有了没有了");
-                        mRefreshLayout.finishRefresh();
+
+
                     }
-                }
-                @Override public void Failure(String message) {
-                    mLoadingDialog.dismiss();
-                    Log.i("adu", "服务器连接失败--" + message);
-                    ToastUtil.showSToast("服务器连接失败");
-                }
-            });
+
+                    @Override
+                    public void Failure(String message) {
+                        mLoadingDialog.dismiss();
+
+                        Timber.w("服务器连接失败--" + message);
+                        ToastUtil.showSToast("服务器连接失败");
+                    }
+                });
     }
 
 
-
-    @OnClick({ R.id.btn_find, R.id.btn_update })
+    @OnClick({R.id.iv_scan_device, R.id.btn_find, R.id.btn_update})
     public void onViewClicked(View view) {
         switch (view.getId()) {
+            case R.id.iv_scan_device:
+                //扫描按钮
+
+                break;
+
             case R.id.btn_find:
                 //搜索按钮
 
                 break;
+
             case R.id.btn_update:
                 //更新
                 break;
         }
     }
 
-    //上拉加载更多
-    @Override public void onLoadMore(RefreshLayout refreshLayout) {
-        pageNo++;
+
+    /**
+     * 上拉加载更多
+     *
+     * @param refreshLayout
+     */
+    @Override
+    public void onLoadMore(RefreshLayout refreshLayout) {
         if (CommonVariable.isNetworkConnected()) {
-            if (projID!=0){
-                Log.i("adu","===pageNo上拉加载====="+pageNo);
+            if (projID != 0) {
+                Timber.d("上拉加载,pageNo=" + pageNo);
+
+                pageNo++;
                 queryProjectDevice(projID, "", 5, pageNo);
             }
             refreshLayout.finishRefresh();
-        }else {
+        } else {
             refreshLayout.finishRefresh();
             refreshLayout.setNoMoreData(true);
             ToastUtil.showSToast("请检查网络连接");
         }
-
-
     }
 
-    //下拉刷新
-    @Override public void onRefresh(RefreshLayout refreshLayout) {
+    /**
+     * 下拉刷新
+     *
+     * @param refreshLayout
+     */
+    @Override
+    public void onRefresh(RefreshLayout refreshLayout) {
         if (CommonVariable.isNetworkConnected()) {
-            pageNo = 1;
-          if (projID!=0){
-              Log.i("adu","===pageNo下拉刷新====="+pageNo);
-              queryProjectDevice(projID, "", 5, pageNo);
-          }
+            if (projID != 0) {
+                Timber.d("下拉刷新,pageNo=" + pageNo);
+
+                pageNo = 1;
+                deviceInfoList.clear();
+                queryProjectDevice(projID, "", 5, pageNo);
+            }
             refreshLayout.finishRefresh();
             refreshLayout.setNoMoreData(false);
         } else {
