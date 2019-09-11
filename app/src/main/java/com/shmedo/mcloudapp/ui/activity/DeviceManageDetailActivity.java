@@ -86,9 +86,12 @@ public class DeviceManageDetailActivity extends BaseActivity implements OnRefres
     private LoadingDialog mLoadingDialog;
     private List<ProjectDeviceInfo> deviceInfoList = new ArrayList<>();
     private QueryProjectDeviceAdapter deviceAdapter;
-    //private PageResult<ProjectDeviceInfo> pageResult;
+
+    private static final int PAGE_SIZE = 5;//每页请求数据大小
     private int pageNo = 1;
     private int projID;
+
+    private boolean isRefreshOrLoad = true;//true:代表下拉刷新请求  false:代表上拉加载请求
 
 
     /**
@@ -136,7 +139,6 @@ public class DeviceManageDetailActivity extends BaseActivity implements OnRefres
         mRecyclerDevice.setLayoutManager(new LinearLayoutManager(this));
         mRecyclerDevice.addItemDecoration(new DividerItemDecoration());
         mRecyclerDevice.setAdapter(deviceAdapter);
-
     }
 
 
@@ -152,7 +154,9 @@ public class DeviceManageDetailActivity extends BaseActivity implements OnRefres
 
             projID = systemDataInfo.getProID();
             mToolbarTitle.setText(systemDataInfo.getProjName());
-            queryProjectDevice(projID, "", 5, pageNo);
+//            queryProjectDevice(projID, "", 5, pageNo);
+            //自动刷新
+            mRefreshLayout.autoRefresh();
         }
     }
 
@@ -179,25 +183,57 @@ public class DeviceManageDetailActivity extends BaseActivity implements OnRefres
                     @Override
                     public void Success(PageResult<ProjectDeviceInfo> infoList, String message) {
                         mLoadingDialog.dismiss();
-                        if (infoList != null) {
-                            List<ProjectDeviceInfo> list = infoList.getCurrentPageData();
-                            if (list.size() != 0) {
-                                deviceInfoList.addAll(list);
-                                deviceAdapter.notifyDataSetChanged();
+                        //下拉刷新
+                        if (isRefreshOrLoad) {
+
+                            if (infoList == null || infoList.getCurrentPageData() == null || infoList.getCurrentPageData().size() == 0) {
+                                mRefreshLayout.finishRefresh(false);
+                                mRefreshLayout.finishRefreshWithNoMoreData();//完成刷新并标记没有更多数据
+
                             } else {
-                                ToastUtil.showSToast("没有更多数据了");
-                                mRefreshLayout.finishLoadMoreWithNoMoreData();
+                                deviceInfoList.clear();
+                                deviceInfoList.addAll(infoList.getCurrentPageData());
+                                deviceAdapter.notifyDataSetChanged();
+
+                                mRefreshLayout.finishRefresh();
+                                if (infoList.getCurrentPageData().size() < PAGE_SIZE) {
+                                    mRefreshLayout.finishRefreshWithNoMoreData();//完成刷新并标记没有更多数据
+                                }
                             }
-                        } else {
-                            mRefreshLayout.finishRefresh();
+
+                        } else {//上拉加载
+
+                            if (infoList == null || infoList.getCurrentPageData() == null || infoList.getCurrentPageData().size() == 0) {
+                                mRefreshLayout.finishLoadMoreWithNoMoreData();//完成加载并标记没有更多数据
+
+                            } else {
+                                int oldItemCount = deviceInfoList.size();
+                                deviceInfoList.addAll(infoList.getCurrentPageData());
+                                deviceAdapter.notifyItemRangeInserted(oldItemCount, infoList.getCurrentPageData().size());
+
+                                if (infoList.getCurrentPageData().size() < PAGE_SIZE) {
+                                    mRefreshLayout.finishLoadMoreWithNoMoreData();//完成加载并标记没有更多数据
+
+                                } else {
+                                    mRefreshLayout.finishLoadMore();
+                                }
+                            }
                         }
 
-
+                        mEmptyData.setVisibility(deviceInfoList.size() == 0 ? View.VISIBLE : View.GONE);
+                        mRefreshLayout.setVisibility(deviceInfoList.size() == 0 ? View.GONE : View.VISIBLE);
                     }
 
                     @Override
                     public void Failure(String message) {
                         mLoadingDialog.dismiss();
+
+                        if (isRefreshOrLoad) {
+                            mRefreshLayout.finishRefresh(false);//表示刷新失败（不会更新时间）
+                            mRefreshLayout.finishLoadMoreWithNoMoreData();
+                        } else {
+                            mRefreshLayout.finishLoadMore(false);//表示加载失败
+                        }
 
                         Timber.w("服务器连接失败--" + message);
                         ToastUtil.showSToast("服务器连接失败");
@@ -227,25 +263,25 @@ public class DeviceManageDetailActivity extends BaseActivity implements OnRefres
 
 
     /**
-     * 上拉加载更多
+     * 上拉加载
      *
      * @param refreshLayout
      */
     @Override
     public void onLoadMore(RefreshLayout refreshLayout) {
-        if (CommonVariable.isNetworkConnected()) {
-            if (projID != 0) {
-                Timber.d("上拉加载,pageNo=" + pageNo);
+//        if (CommonVariable.isNetworkConnected()) {
+        if (projID != 0) {
+            Timber.d("上拉加载,pageNo=" + pageNo);
 
-                pageNo++;
-                queryProjectDevice(projID, "", 5, pageNo);
-            }
-            refreshLayout.finishRefresh();
-        } else {
-            refreshLayout.finishRefresh();
-            refreshLayout.setNoMoreData(true);
-            ToastUtil.showSToast("请检查网络连接");
+            isRefreshOrLoad = false;
+            pageNo++;
+            queryProjectDevice(projID, "", PAGE_SIZE, pageNo);
         }
+//        } else {
+//            refreshLayout.finishRefresh();
+//            refreshLayout.setNoMoreData(true);
+//            ToastUtil.showSToast("请检查网络连接");
+//        }
     }
 
     /**
@@ -255,20 +291,19 @@ public class DeviceManageDetailActivity extends BaseActivity implements OnRefres
      */
     @Override
     public void onRefresh(RefreshLayout refreshLayout) {
-        if (CommonVariable.isNetworkConnected()) {
-            if (projID != 0) {
-                Timber.d("下拉刷新,pageNo=" + pageNo);
+//        if (CommonVariable.isNetworkConnected()) {
+        if (projID != 0) {
+            Timber.d("下拉刷新,pageNo=" + pageNo);
 
-                pageNo = 1;
-                deviceInfoList.clear();
-                queryProjectDevice(projID, "", 5, pageNo);
-            }
-            refreshLayout.finishRefresh();
-            refreshLayout.setNoMoreData(false);
-        } else {
-            refreshLayout.finishRefresh();
-            refreshLayout.setNoMoreData(true);
-            ToastUtil.showSToast("请检查网络连接");
+            isRefreshOrLoad = true;
+            pageNo = 1;
+            queryProjectDevice(projID, "", PAGE_SIZE, pageNo);
         }
+
+//        } else {
+//            refreshLayout.finishRefresh();
+//            refreshLayout.setNoMoreData(true);
+//            ToastUtil.showSToast("请检查网络连接");
+//        }
     }
 }
