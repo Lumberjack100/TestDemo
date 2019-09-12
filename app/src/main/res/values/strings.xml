@@ -12,6 +12,12 @@
     <string name="blue_model">当前设备处于蓝牙连接状态，是否要断开连接？</string>
     <string name="finish">确定要退出该页面，并断开蓝牙连接吗？</string>
 
+
+    <!-- 权限申请-->
+    <string name="permission_request_camera_external_storage">您已经拒绝米易通使用相机权限和存储卡权限 请前往设置页面授予权限</string>
+    <string name="permission_request_location">您已经拒绝米易通使用定位权限 请前往设置页面授予权限</string>
+
+
     <string name="appbar_scrolling_view_behavior" translatable="false">android.support.design.widget.AppBarLayout$ScrollingViewBehavior</string>
     <string name="bottom_sheet_behavior" translatable="false">android.support.design.widget.BottomSheetBehavior</string>
     <string name="select_device">选择一个设备连接</string>

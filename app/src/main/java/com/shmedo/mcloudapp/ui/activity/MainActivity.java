@@ -3,7 +3,6 @@ package com.shmedo.mcloudapp.ui.activity;
 import android.Manifest;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothManager;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -23,8 +22,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-import butterknife.BindView;
-import butterknife.OnClick;
+
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amap.api.location.AMapLocation;
@@ -77,18 +75,23 @@ import com.shmedo.mcloudapp.util.bleutil.LogTag;
 import com.shmedo.mcloudapp.util.common.MapManagerUtil;
 import com.shmedo.mcloudapp.views.HintDialog;
 import com.shmedo.mcloudapp.views.LoadingDialog;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.schedulers.Schedulers;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import butterknife.BindView;
+import butterknife.OnClick;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
 import okhttp3.RequestBody;
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
+
 import static com.shmedo.mcloudapp.util.bleutil.Constants.BT_CHARACTERISTICS_FIND_FAIL;
 import static com.shmedo.mcloudapp.util.bleutil.Constants.BT_CONNECT;
 import static com.shmedo.mcloudapp.util.bleutil.Constants.BT_DISCONNECTED;
@@ -208,7 +211,7 @@ public class MainActivity extends BaseActivity  implements
                 }
                 @Override
                 public void onPermissionDenied() {
-                    LoadingDialog.showRefusePermissionDialog(MainActivity.this,
+                    XPermissionUtils.showRefusePermissionDialog(MainActivity.this,
                         "在设置-应用管理-米易通-权限中开启相机权限");
                 }
             });
@@ -539,8 +542,8 @@ public class MainActivity extends BaseActivity  implements
                         }
                         @Override
                         public void onPermissionDenied() {
-                            LoadingDialog.showRefusePermissionDialog(MainActivity.this,
-                                "在设置-应用管理-米易通-权限中开启定位权限");
+                            XPermissionUtils.showRefusePermissionDialog(MainActivity.this,
+                                    getResources().getString(R.string.permission_request_location));
                         }
                     });
 

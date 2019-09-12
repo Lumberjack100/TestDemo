@@ -157,7 +157,8 @@ public class UserInfoActivity extends BaseActivity {
 
                     @Override
                     public void onPermissionDenied() {
-
+                        XPermissionUtils.showRefusePermissionDialog(UserInfoActivity.this,
+                                getResources().getString(R.string.permission_request_camera_external_storage));
                     }
                 });
     }

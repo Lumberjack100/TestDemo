@@ -6,8 +6,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import butterknife.BindView;
-import butterknife.OnClick;
+
 import com.amap.api.maps.model.LatLng;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.base.BaseActivity;
@@ -21,7 +20,11 @@ import com.shmedo.mcloudapp.views.LoadingDialog;
 import com.yzq.zxinglibrary.android.CaptureActivity;
 import com.yzq.zxinglibrary.bean.ZxingConfig;
 import com.yzq.zxinglibrary.common.Constant;
+
 import org.greenrobot.eventbus.EventBus;
+
+import butterknife.BindView;
+import butterknife.OnClick;
 
 /**
  * 项目名：  mCloudapp
@@ -69,8 +72,8 @@ public class ScanAddDeviceActivity extends BaseActivity {
                         }
                         @Override
                         public void onPermissionDenied() {
-                            LoadingDialog.showRefusePermissionDialog(ScanAddDeviceActivity.this,
-                                "在设置-应用管理-米易通-权限中开启相机权限");
+                            XPermissionUtils.showRefusePermissionDialog(ScanAddDeviceActivity.this,
+                                    getResources().getString(R.string.permission_request_camera_external_storage));
                         }
                     });
                 break;

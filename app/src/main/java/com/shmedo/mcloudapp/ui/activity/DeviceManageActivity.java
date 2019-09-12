@@ -194,8 +194,8 @@ public class DeviceManageActivity extends BaseActivity implements OnRefreshListe
 
                     @Override
                     public void onPermissionDenied() {
-                        LoadingDialog.showRefusePermissionDialog(DeviceManageActivity.this,
-                                "在设置-应用管理-米易通-权限中开启相机权限");
+                        XPermissionUtils.showRefusePermissionDialog(DeviceManageActivity.this,
+                                getResources().getString(R.string.permission_request_location));
                     }
                 });
 
