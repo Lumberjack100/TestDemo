@@ -236,6 +236,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:background="@drawable/edit_bg"
+                        android:inputType="phone"
                         android:layout_centerVertical="true"
                         android:padding="16dp"
                         android:scrollHorizontally="true"
@@ -270,7 +271,7 @@
 
                     <com.shmedo.mcloudapp.views.ClearEditText
                         android:id="@+id/login_phone_password"
-                        android:inputType="textPassword"
+                        android:inputType="numberPassword"
                         android:layout_width="0dp"
                         android:layout_weight="7"
                         android:layout_height="wrap_content"

@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 
 import com.google.gson.reflect.TypeToken;
@@ -89,7 +88,7 @@ public class DeviceManageActivity extends BaseActivity implements OnRefreshListe
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initView();
-        initData();
+        getProjectList();
         //获取设备列表
         getDeviceList("1");
     }
@@ -120,7 +119,7 @@ public class DeviceManageActivity extends BaseActivity implements OnRefreshListe
     /**
      * 获取当前用户的项目列表
      */
-    private void initData() {
+    private void getProjectList() {
         mLoadingDialog.showNoCancelDialog("加载数据中...");
         //获取系统
         SystemParameter parameter = new SystemParameter(null);
@@ -135,7 +134,6 @@ public class DeviceManageActivity extends BaseActivity implements OnRefreshListe
                     @Override
                     public void Success(List<SystemDataInfo> infoList, String message) {
                         mLoadingDialog.dismiss();
-                        Log.i("adu", message + "===" + GsonFactory.getGson().toJson(infoList));
                         //setDeviceDetail(deviceDetailInfo);
                         if (infoList.size() != 0) {
                             systemList.clear();
@@ -144,14 +142,15 @@ public class DeviceManageActivity extends BaseActivity implements OnRefreshListe
                         }
                     }
 
-
                     @Override
                     public void Failure(String message) {
                         mLoadingDialog.dismiss();
-                        Log.i("adu", "服务器连接失败--" + message);
+
+                        Timber.w("服务器连接失败--" + message);
                         ToastUtil.showSToast("服务器连接失败");
                     }
                 });
+
         setSystemAdapterClick();
     }
 
@@ -162,7 +161,7 @@ public class DeviceManageActivity extends BaseActivity implements OnRefreshListe
             public void onItemClick(View itemView, int position) {
 //                ToastUtil.showSToast("==" + systemAdapter.getDataList().get(position).getProID());
 
-                DeviceManageDetailActivity.startActivity(DeviceManageActivity.this,systemAdapter.getDataList().get(position));
+                DeviceManageDetailActivity.startActivity(DeviceManageActivity.this, systemAdapter.getDataList().get(position));
             }
         });
         systemAdapter.setOnItemMapClickListener(new SystemAdapter.OnItemMapClickListener() {
@@ -178,7 +177,6 @@ public class DeviceManageActivity extends BaseActivity implements OnRefreshListe
      * 获取地图权限，点击展示地图
      */
     private void getLocationPermission(final int position) {
-
         XPermissionUtils.requestPermissionsResult(this, 200, new String[]{
                         Manifest.permission.ACCESS_FINE_LOCATION},
                 new XPermissionUtils.OnPermissionListener() {
@@ -186,13 +184,10 @@ public class DeviceManageActivity extends BaseActivity implements OnRefreshListe
                     public void onPermissionGranted() {
                         if (systemList != null) {
                             LocationResult location = GsonFactory.getGson()
-                                    .fromJson(systemList.get(position).getCenterPoint(),
-                                            new TypeToken<LocationResult>() {
-                                            }.getType());
-                            Log.i("adu", "===map===" + location.toString());
-                            openGuideMap(String.valueOf(location.getLat()), String.valueOf(location.getLng()),
-                                    systemList.get(position).getProjName());
+                                    .fromJson(systemList.get(position).getCenterPoint(),new TypeToken<LocationResult>() {}.getType());
 
+                            Timber.d("map===" + location.toString());
+                            openGuideMap(String.valueOf(location.getLat()), String.valueOf(location.getLng()), systemList.get(position).getProjName());
                         }
                     }
 
@@ -244,8 +239,6 @@ public class DeviceManageActivity extends BaseActivity implements OnRefreshListe
      * @param currentCompanyID
      */
     private void getDeviceList(String currentCompanyID) {
-
-
         RequestBody body = RequestBody.create(CommonVariable.JSON_TYPE, currentCompanyID);
         MDRetrofit.getInstance()
                 .createService()
@@ -445,7 +438,7 @@ public class DeviceManageActivity extends BaseActivity implements OnRefreshListe
             refreshLayout.finishRefresh();
             refreshLayout.setNoMoreData(true);
             ToastUtil.showSToast("请检查网络连接");
-            //initData();
+            //getProjectList();
         }
     }
 

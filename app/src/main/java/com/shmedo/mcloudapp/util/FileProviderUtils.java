@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.support.v4.content.FileProvider;
+
 import java.io.File;
 
 /**
@@ -20,8 +21,9 @@ public class FileProviderUtils {
 
     /**
      * 从文件获得URI
+     *
      * @param activity 上下文
-     * @param file 文件
+     * @param file     文件
      * @return 文件对应的URI
      */
     public static Uri uriFromFile(Activity activity, File file) {
@@ -29,10 +31,7 @@ public class FileProviderUtils {
         //7.0以上进行适配
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             String p = activity.getPackageName() + ".FileProvider";
-            fileUri = FileProvider.getUriForFile(
-                activity,
-                p,
-                file);
+            fileUri = FileProvider.getUriForFile(activity, p, file);
         } else {
             fileUri = Uri.fromFile(file);
         }
@@ -40,13 +39,13 @@ public class FileProviderUtils {
     }
 
 
-
     /**
      * 设置Intent的data和类型，并赋予目标程序临时的URI读写权限
-     * @param activity 上下文
-     * @param intent 意图
-     * @param type 类型
-     * @param file 文件
+     *
+     * @param activity  上下文
+     * @param intent    意图
+     * @param type      类型
+     * @param file      文件
      * @param writeAble 是否赋予可写URI的权限
      */
     public static void setIntentDataAndType(Activity activity,
@@ -69,10 +68,11 @@ public class FileProviderUtils {
 
     /**
      * 设置Intent的data和类型，并赋予目标程序临时的URI读写权限
-     * @param context 上下文
-     * @param intent 意图
-     * @param type 类型
-     * @param fileUri 文件uri
+     *
+     * @param context   上下文
+     * @param intent    意图
+     * @param type      类型
+     * @param fileUri   文件uri
      * @param writeAble 是否赋予可写URI的权限
      */
     public static void setIntentDataAndType(Context context,

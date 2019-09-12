@@ -2,6 +2,7 @@ package com.shmedo.mcloudapp.util;
 
 import android.os.Environment;
 import android.util.Base64;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
@@ -19,69 +20,60 @@ import java.util.Date;
  */
 
 public class FileUtil {
-    public static String toString(String filePath)
-    {
+    public static String toString(String filePath) {
         try {
-            File f=new File(filePath);
-            if(!f.exists())
+            File f = new File(filePath);
+            if (!f.exists())
                 return null;
             InputStream is = new FileInputStream(f);
-            byte[]bs=new byte[is.available()];
+            byte[] bs = new byte[is.available()];
             is.read(bs);
-            String fileContent= Base64.encodeToString(bs, Base64.DEFAULT);
+            String fileContent = Base64.encodeToString(bs, Base64.DEFAULT);
             return fileContent;
+        } catch (Exception ex) {
+            throw new RuntimeException(ex);
         }
-        catch (Exception ex)
-        {throw new RuntimeException(ex);}
     }
 
-    public static String getFileName(String filePath)
-    {
-        int index=filePath.lastIndexOf("/");
-        return filePath.substring(index+1);
+    public static String getFileName(String filePath) {
+        int index = filePath.lastIndexOf("/");
+        return filePath.substring(index + 1);
     }
 
     /**
      * 返回文件大小，单位MB
+     *
      * @param filePath
      * @return
      */
-    public static long getFileSize(String filePath)
-    {
-        File f=new File(filePath);
-        if(!f.exists())
+    public static long getFileSize(String filePath) {
+        File f = new File(filePath);
+        if (!f.exists())
             return 0;
         return f.length();
     }
 
-    public static String getFileSizeString(String filePath)
-    {
-        double fileSize=(double)getFileSize(filePath);
+    public static String getFileSizeString(String filePath) {
+        double fileSize = (double) getFileSize(filePath);
         return getFileSizeString(fileSize);
     }
 
-    public static String getFileSizeString(double fileSize)
-    {
-        double fileSizeDouble=0;
-        String unit="B";
-        if(fileSize<=1024)
-        {
-            fileSizeDouble=fileSize;
-            unit="B";
+    public static String getFileSizeString(double fileSize) {
+        double fileSizeDouble = 0;
+        String unit = "B";
+        if (fileSize <= 1024) {
+            fileSizeDouble = fileSize;
+            unit = "B";
+        } else if (fileSize <= 1024 * 1024) {
+            fileSizeDouble = fileSize / 1024;
+            unit = "KB";
+        } else {
+            fileSizeDouble = fileSize / (1024 * 1024);
+            unit = "MB";
         }
-        else if(fileSize<=1024*1024)
-        {
-            fileSizeDouble=fileSize/1024;
-            unit="KB";
-        }
-        else
-        {
-            fileSizeDouble=fileSize/(1024*1024);
-            unit="MB";
-        }
-        NumberFormat nf=NumberFormat.getInstance();
+        NumberFormat nf = NumberFormat.getInstance();
         nf.setMaximumFractionDigits(1);
-        String result=nf.format(fileSizeDouble)+unit;
+        String result = nf.format(fileSizeDouble) + unit;
         return result;
     }
 
@@ -89,8 +81,8 @@ public class FileUtil {
         File mediaStorageDir = null;
         try {
             mediaStorageDir = new File(
-                Environment
-                    .getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)+File.separator+"NetMonitor/");
+                    Environment
+                            .getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) + File.separator + "NetMonitor/");
         } catch (Exception e) {
             //Log.e(ErrCode.ERROR_TAG, e.getMessage(), e);
         }
@@ -103,14 +95,14 @@ public class FileUtil {
 
         // Create a media file name
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss")
-            .format(new Date());
+                .format(new Date());
         File mediaFile;
         if (uploadMediaType == UploadMediaType.MEDIA_TYPE_IMAGE) {
             mediaFile = new File(mediaStorageDir.getPath() + File.separator
-                + "IMG_" + timeStamp + ".jpg");
+                    + "IMG_" + timeStamp + ".jpg");
         } else if (uploadMediaType == UploadMediaType.MEDIA_TYPE_VIDEO) {
             mediaFile = new File(mediaStorageDir.getPath() + File.separator
-                + "VID_" + timeStamp + ".mp4");
+                    + "VID_" + timeStamp + ".mp4");
         } else {
             return null;
         }
