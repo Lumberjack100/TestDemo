@@ -22,6 +22,7 @@ import timber.log.Timber;
  */
 public abstract class BaseActivity extends AppCompatActivity {
 
+    protected abstract int initContentView();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -30,6 +31,26 @@ public abstract class BaseActivity extends AppCompatActivity {
         setContentView(initContentView());
         initState();
         ButterKnife.bind(this);
+    }
+
+
+    /**
+     * 沉浸式状态栏
+     */
+    public void initState() {
+        //ActionBar上显示返回
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            if (Build.VERSION.SDK_INT >= 21) {
+                getSupportActionBar().setElevation(0);
+            }
+        }
+        /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            //透明状态栏
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+            //透明导航栏
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
+        }*/
     }
 
 
@@ -59,7 +80,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    protected abstract int initContentView();
+
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull
@@ -71,25 +92,6 @@ public abstract class BaseActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-    }
-
-    /**
-     * 沉浸式状态栏
-     */
-    public void initState() {
-        //ActionBar上显示返回
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            if (Build.VERSION.SDK_INT >= 21) {
-                getSupportActionBar().setElevation(0);
-            }
-        }
-        /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            //透明状态栏
-            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-            //透明导航栏
-            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
-        }*/
     }
 
 }
