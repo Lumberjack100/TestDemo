@@ -20,19 +20,12 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
-import butterknife.Unbinder;
+
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.shmedo.das.common.CollectorSensorParamsInfo;
 import com.shmedo.das.common.GetAllSensorConfigInfo;
-import com.shmedo.das.common.QueryOsmometerParameterInfo;
 import com.shmedo.das.das.cmd.CommandManager;
-import com.shmedo.das.das.cmd.CommandResult;
 import com.shmedo.das.das.cmd.CommandType;
-import com.shmedo.das.das.cmd.parser.ParseManager;
 import com.shmedo.das.utils.DesUtil;
 import com.shmedo.das.utils.OnBytePackage;
 import com.shmedo.das.utils.StringUtil;
@@ -63,15 +56,21 @@ import com.shmedo.mcloudapp.util.bleutil.LogTag;
 import com.shmedo.mcloudapp.util.page.model.SetRainAccuryPage;
 import com.shmedo.mcloudapp.util.page.model.SetRainSelectPage;
 import com.shmedo.mcloudapp.views.LoadingDialog;
+
+import org.greenrobot.eventbus.EventBus;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
-import org.greenrobot.eventbus.EventBus;
 
-import static com.shmedo.das.common.enumerate.RainfallStation.RAIN_CLOSE;
-import static com.shmedo.das.common.enumerate.RainfallStation.RAIN_OPEN;
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+import butterknife.Unbinder;
+import timber.log.Timber;
+
 import static com.shmedo.das.das.cmd.CommandType.GET_ALL_SENSOR_CONFIG;
 import static com.shmedo.das.das.cmd.CommandType.QUERY_OSMOMETER_PARAMETER;
 import static com.shmedo.das.das.cmd.CommandType.SYSTEM_RUN_STATE;
@@ -105,19 +104,28 @@ import static com.shmedo.mcloudapp.util.bleutil.Constants.VERIFY_RESULT;
  */
 public class DeviceFragment extends BaseFragment implements View.OnClickListener {
 
-    @BindView(R.id.sub_content) FrameLayout mSubContent;
-    @BindView(R.id.tv_parameter) TextView mTvParameter;
-    @BindView(R.id.tv_highsetting) TextView mTvHighsetting;
-    @BindView(R.id.tv_query_data) TextView mTvQueryData;
-    @BindView(R.id.tv_device_details) TextView mTvDeviceDetails;
+    @BindView(R.id.back)
+    ImageView mBack;
+    @BindView(R.id.tv_title)
+    TextView mTvTitle;
+    @BindView(R.id.img_bluetooth)
+    ImageView mImgBluetooth;
+    @BindView(R.id.sub_content)
+    FrameLayout mSubContent;
+    @BindView(R.id.tv_parameter)
+    TextView mTvParameter;
+    @BindView(R.id.tv_query_data)
+    TextView mTvQueryData;
+    @BindView(R.id.tv_device_details)
+    TextView mTvDeviceDetails;
+    @BindView(R.id.tv_highsetting)
+    TextView mTvHighsetting;
 
     ParameterConfigFragment parameterConfigFragment;//参数配置
     QueryDataFragment queryDataFragment;        //查询数据
     DeviceDetailsFragment deviceDetailsFragment;//设备详情
     AdvanceSetFragment advanceSetFragment;      //高级设置
-    @BindView(R.id.back) ImageView mBack;
-    @BindView(R.id.tv_title) TextView mTvTitle;
-    @BindView(R.id.img_bluetooth) ImageView mImgBluetooth;
+
     Unbinder unbinder;
     private LoadingDialog mLoadingDialog;
     private Handler hander;
@@ -145,34 +153,35 @@ public class DeviceFragment extends BaseFragment implements View.OnClickListener
     public static GetAllSensorConfigInfo mAllSensorConfigInfo;
     public static BaseConfigInfoSub mInfoSub;
     public static VersionMessageSub versionMessageSub;
-    public static SetRainAccuryPage.SetRianAccuryParameter rainPage=new SetRainAccuryPage.SetRianAccuryParameter();
+    public static SetRainAccuryPage.SetRianAccuryParameter rainPage = new SetRainAccuryPage.SetRianAccuryParameter();
     public static SetRainSelectPage.SetSelectRainParameter setRainSelect = new SetRainSelectPage.SetSelectRainParameter();
     public static DeviceLockStatusSub deviceLockStatusSub;
-    public static String collectorType ="";
+    public static String collectorType = "";
     public static String lockStatus = "";
     private boolean deviceTrue;
-
 
 
     private static final int REQUEST_CONNECT_DEVICE = 1;
     private static final int REQUEST_ENABLE_BT = 2;
 
-    @Override protected int initContentView() {
+    @Override
+    protected int initContentView() {
         return R.layout.fragment_device;
     }
 
 
-    @Nullable @Override
+    @Nullable
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = super.onCreateView(inflater, container, savedInstanceState);
         unbinder = ButterKnife.bind(this, view);
-        initData();
+        initView();
         getIntentData();
         return view;
     }
 
 
-    private void initData() {
+    private void initView() {
         mLoadingDialog = new LoadingDialog(getActivity());
         hander = new Handler();
         mTvParameter.setOnClickListener(this);
@@ -187,24 +196,25 @@ public class DeviceFragment extends BaseFragment implements View.OnClickListener
         if (Objects.requireNonNull(getActivity()).getIntent().getExtras().containsKey("device")) {
             //从MainActivity蓝牙列表跳转
             String name = getActivity().getIntent().getStringExtra("device");
-            deviceTrue = getActivity().getIntent().getBooleanExtra("deviceTrue",false);
+            deviceTrue = getActivity().getIntent().getBooleanExtra("deviceTrue", false);
             String deviceName = name.substring(3, name.length());
             deviceInfo = "MEDO," + deviceName + ",DAS";
-            Log.i("adu", deviceTrue+"从蓝牙列表跳转===" + deviceInfo);
+            Timber.d("从蓝牙列表跳转,deviceTrue=" + deviceTrue + ", deviceInfo=" + deviceInfo);
+
         } else if (getActivity().getIntent().getExtras().containsKey("inputDevice")) {
             String deviceName = getActivity().getIntent().getStringExtra("inputDevice");
             String deviceType = getActivity().getIntent().getStringExtra("deviceType");
             deviceInfo = "MEDO," + deviceName + "," + deviceType;
+            Timber.d("手动输入, deviceInfo=" + deviceInfo);
 
-            Log.i("adu", "手动输入-===" + deviceInfo);
         } else if (getActivity().getIntent().getExtras().containsKey("ScanDevice")) {
             deviceInfo = getActivity().getIntent().getStringExtra("ScanDevice");
-            Log.i("adu", "扫一扫-===" + deviceInfo);
+            Timber.d("扫一扫, deviceInfo=" + deviceInfo);
         }
+
         String[] scanData = deviceInfo.split(",");
         SN = scanData[1];
         connectBluetooth();
-
     }
 
     /**
@@ -277,12 +287,11 @@ public class DeviceFragment extends BaseFragment implements View.OnClickListener
      * set the tab state of bottom navigation bar
      *
      * @param textView the text to be shown
-     * @param image the image
-     * @param color the text color
+     * @param image    the image
+     * @param color    the text color
      */
     private void setTabState(TextView textView, int image, int color) {
-        textView.setCompoundDrawablesRelativeWithIntrinsicBounds(0, image, 0,
-            0);//Call requires API level 17
+        textView.setCompoundDrawablesRelativeWithIntrinsicBounds(0, image, 0, 0);//Call requires API level 17
         textView.setTextColor(color);
     }
 
@@ -308,25 +317,26 @@ public class DeviceFragment extends BaseFragment implements View.OnClickListener
     }
 
 
-    @Override public void onDestroyView() {
+    @Override
+    public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
     }
 
 
-    @OnClick({ R.id.back, R.id.img_bluetooth })
+    @OnClick({R.id.back, R.id.img_bluetooth})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.back:
                 if (isConneted) {
-                    showChangeModle(getResources().getString(R.string.finish),"1");
-                }else {
+                    showChangeModle(getResources().getString(R.string.finish), "1");
+                } else {
                     getActivity().finish();
                 }
                 break;
             case R.id.img_bluetooth:
                 if (isConneted) {
-                    showChangeModle(getResources().getString(R.string.blue_model),"2");
+                    showChangeModle(getResources().getString(R.string.blue_model), "2");
                 } else {
                     connectBluetooth();
                 }
@@ -344,12 +354,12 @@ public class DeviceFragment extends BaseFragment implements View.OnClickListener
                     list.clear();
                 }
                 //deviceTrue为true，说明是从MainActivity中传过来的
-                if (deviceTrue){
+                if (deviceTrue) {
                     if (null == mLoadingDialog.getDialog() || !mLoadingDialog.getDialog().isShowing()) {
                         mLoadingDialog.showCancelDialog("正在连接蓝牙：" + SN);
                         hander.postDelayed(dismssDialogRunnable, 5000);
                     }
-                }else {
+                } else {
                     if (null == mLoadingDialog.getDialog() || !mLoadingDialog.getDialog().isShowing()) {
                         mLoadingDialog.showCancelDialog("正在获取附近的蓝牙设备...");
                         hander.postDelayed(dismssDialogRunnable, 10000);
@@ -358,7 +368,7 @@ public class DeviceFragment extends BaseFragment implements View.OnClickListener
 
             }
         } else if (isBluModle && isConneted) {
-            showChangeModle(getResources().getString(R.string.blue_model),"2");
+            showChangeModle(getResources().getString(R.string.blue_model), "2");
         } else {
             if (null != list && list.size() > 0) {
                 list.clear();
@@ -369,7 +379,7 @@ public class DeviceFragment extends BaseFragment implements View.OnClickListener
 
     private void initBluetooth() {
         final BluetoothManager bluetoothManager = (BluetoothManager) getActivity().getSystemService(
-            Context.BLUETOOTH_SERVICE);
+                Context.BLUETOOTH_SERVICE);
         mBluetoothAdapter = Objects.requireNonNull(bluetoothManager).getAdapter();
         MdBluetoothManager.init(mBluetoothAdapter, bluetoothManager);
         mdBluetoothManager = MdBluetoothManager.getInstance();
@@ -377,6 +387,7 @@ public class DeviceFragment extends BaseFragment implements View.OnClickListener
 
         mdBluetoothManager.scanDevice(20, getActivity());
     }
+
     //自动连接蓝牙
     private void initBluetoothAdapter() {
         //if (!autoOpenBt) {
@@ -384,35 +395,35 @@ public class DeviceFragment extends BaseFragment implements View.OnClickListener
         //    serverIntent.putExtra("devlist", (Serializable) list);
         //    startActivityForResult(serverIntent, REQUEST_ENABLE_BT);
         //} else {
-            //自动连接
-            int temp = 0;
-            for (int i = 0; i < list.size(); i++) {
-                if ((list.get(i).getDevice().getName()).contains(SN)) {
-                    //如果是连接状态，断开，重新连接
+        //自动连接
+        int temp = 0;
+        for (int i = 0; i < list.size(); i++) {
+            if ((list.get(i).getDevice().getName()).contains(SN)) {
+                //如果是连接状态，断开，重新连接
 
-                    mdBluetoothManager.connectDevice(list.get(i).getDevice(), getActivity());
-                    if (null != mLoadingDialog) {
-                        mLoadingDialog.showNoCancelDialog("正在连接...");
-                    }
-                    hander.postDelayed(dismssConDialogRunnable, 10000);
-                    break;
-
-                } else {
-                    temp++;
+                mdBluetoothManager.connectDevice(list.get(i).getDevice(), getActivity());
+                if (null != mLoadingDialog) {
+                    mLoadingDialog.showNoCancelDialog("正在连接...");
                 }
+                hander.postDelayed(dismssConDialogRunnable, 10000);
+                break;
+
+            } else {
+                temp++;
             }
-            if (temp == list.size()) {
-                Intent serverIntent = new Intent(getActivity(), BlueToothListActivity.class);
-                serverIntent.putExtra("devlist", (Serializable) list);
-                startActivityForResult(serverIntent, REQUEST_ENABLE_BT);
-            }
+        }
+        if (temp == list.size()) {
+            Intent serverIntent = new Intent(getActivity(), BlueToothListActivity.class);
+            serverIntent.putExtra("devlist", (Serializable) list);
+            startActivityForResult(serverIntent, REQUEST_ENABLE_BT);
+        }
 
         mdBluetoothManager.stopScan();
 
         //自动连接
         //int temp = 0;
         for (int i = 0; i < list.size(); i++) {
-            Log.i("adu",SN+"===sn-name==="+list.get(i).getDevice().getName());
+            Log.i("adu", SN + "===sn-name===" + list.get(i).getDevice().getName());
             if ((list.get(i).getDevice().getName()).contains(SN)) {
                 mdBluetoothManager.connectDevice(list.get(i).getDevice(), getActivity());
                 if (null != mLoadingDialog) {
@@ -427,6 +438,7 @@ public class DeviceFragment extends BaseFragment implements View.OnClickListener
         //getActivity().finish();
         mdBluetoothManager.stopScan();
     }
+
     private Runnable dismssDialogRunnable = new Runnable() {
         @Override
         public void run() {
@@ -462,18 +474,18 @@ public class DeviceFragment extends BaseFragment implements View.OnClickListener
     public void showChangeModle(String content, final String index) {
         mBuilder = new MaterialDialog.Builder(getActivity());
         mBuilder.title("温馨提示：")
-            .content(content)
-            .contentColor(Color.parseColor("#000000"))
-            .canceledOnTouchOutside(false)
-            .positiveText("确定")
-            .negativeText("取消");
+                .content(content)
+                .contentColor(Color.parseColor("#000000"))
+                .canceledOnTouchOutside(false)
+                .positiveText("确定")
+                .negativeText("取消");
         mMaterialDialog = mBuilder.build();
         mMaterialDialog.show();
         mBuilder.onAny(new MaterialDialog.SingleButtonCallback() {
             @Override
             public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                 if (which == DialogAction.POSITIVE) {
-                    switch (index){
+                    switch (index) {
                         case "1":
                             getActivity().finish();
                             break;
@@ -481,7 +493,7 @@ public class DeviceFragment extends BaseFragment implements View.OnClickListener
                             isConneted = false;
                             disconnectDevice();
                             mImgBluetooth.setImageDrawable(
-                                getResources().getDrawable(R.drawable.bar_item_bt));
+                                    getResources().getDrawable(R.drawable.bar_item_bt));
                             mMaterialDialog.dismiss();
                             break;
                     }
@@ -504,7 +516,7 @@ public class DeviceFragment extends BaseFragment implements View.OnClickListener
                     handleDeviceFind((BluetoothDeviceFindEventData) event.getEventData());
                     break;
                 case CONNECTED: {
-                    ByteManagerUtil.init(new  MyOnBytePackage());
+                    ByteManagerUtil.init(new MyOnBytePackage());
                     mHandler.sendEmptyMessage(BT_CONNECT);
                     break;
                 }
@@ -591,7 +603,8 @@ public class DeviceFragment extends BaseFragment implements View.OnClickListener
     }
 
     private class MyOnBytePackage implements OnBytePackage {
-        @Override public void onPackageArrived(final byte[] data) {
+        @Override
+        public void onPackageArrived(final byte[] data) {
             try {
                 String str = new String(data, "utf-8");
 
@@ -609,55 +622,55 @@ public class DeviceFragment extends BaseFragment implements View.OnClickListener
                     message.what = MESSAGE_LOCK_REBOOT_DEVICE;
                     mHandler.sendMessage(message);
                     return;
-                }else if (str.equals("Equipment Verify OK.\r\n")) {
+                } else if (str.equals("Equipment Verify OK.\r\n")) {
                     android.os.Message message = new android.os.Message();
                     message.what = MESSAGE_LOCK_REBOOT_DEVICE;
                     mHandler.sendMessage(message);
                     return;
-                }else if (str.startsWith("$$224") && str.endsWith("\r\n")) {
-                        if (str.substring(0, str.length() - 2).equals("$$224ce")) {
-                            startBluAuthenticate();//重新 认证
-                        } else {
-                            String[] strs = str.substring(0, str.length() - 2).split(",");
-                            byte[] resultData = StringUtil.hexStringToBytes(strs[3]);
-                            try {
-                                String deskey = "12345678";
-                                String strdes = new String(DesUtil.decrypt(resultData, deskey), "utf-8");
-                                if (strdes.length() != 0) {
-                                    String desStr = StringUtil.bytesToHexString(DesUtil.encrypt(
-                                        (StringUtil.reverseString(strdes.substring(0, 6)) +
-                                            deskey).getBytes(), deskey));
-                                    String com = "##222," + SN + ",0," + desStr.toUpperCase() + "\r\n";
-                                    Message msg = new Message(UUID.randomUUID().toString(), com, true);
-                                    mdBluetoothManager.writeMessage(msg);
-                                    Log.i(LogTag.INFO_TAG, "===-发送指令===" + com);
-                                    return;
-                                }
-                            } catch (Exception e) {
-                                //CommonUtil.handlerException(MainActivity.this, e);
-                            }
-                        }
-                    } else if (str.startsWith("$$223")) {
-                        String[] verifyReult = str.substring(0, str.length() - 2).split(",");
-                        android.os.Message message = new android.os.Message();
-                        message.what = VERIFY_RESULT;
-                        message.obj = verifyReult[1];
-                        mHandler.sendMessage(message);
-                        Log.i(LogTag.INFO_TAG, "认证结果===" + verifyReult[1]);
-                    }else if (str.startsWith("$$225") && str.endsWith("\r\n")){
-                        deviceLockStatusSub = BlueResultParserUtil.getDeviceLockStatusInfo(str);
-                        if (deviceLockStatusSub.getLockStatus() == 0){
-                            lockStatus = "unlock";
-                        }else {
-                            lockStatus = "lock";
-                        }
+                } else if (str.startsWith("$$224") && str.endsWith("\r\n")) {
+                    if (str.substring(0, str.length() - 2).equals("$$224ce")) {
+                        startBluAuthenticate();//重新 认证
                     } else {
-                        //android.os.Message message = new android.os.Message();
-                        //message.what = MESSAGE_QUERY_OSMOMETER_PARAMETER;
-                        //message.obj = str;
-                        //mHandler.sendMessage(message);
-                        parserResult(str);
+                        String[] strs = str.substring(0, str.length() - 2).split(",");
+                        byte[] resultData = StringUtil.hexStringToBytes(strs[3]);
+                        try {
+                            String deskey = "12345678";
+                            String strdes = new String(DesUtil.decrypt(resultData, deskey), "utf-8");
+                            if (strdes.length() != 0) {
+                                String desStr = StringUtil.bytesToHexString(DesUtil.encrypt(
+                                        (StringUtil.reverseString(strdes.substring(0, 6)) +
+                                                deskey).getBytes(), deskey));
+                                String com = "##222," + SN + ",0," + desStr.toUpperCase() + "\r\n";
+                                Message msg = new Message(UUID.randomUUID().toString(), com, true);
+                                mdBluetoothManager.writeMessage(msg);
+                                Log.i(LogTag.INFO_TAG, "===-发送指令===" + com);
+                                return;
+                            }
+                        } catch (Exception e) {
+                            //CommonUtil.handlerException(MainActivity.this, e);
+                        }
                     }
+                } else if (str.startsWith("$$223")) {
+                    String[] verifyReult = str.substring(0, str.length() - 2).split(",");
+                    android.os.Message message = new android.os.Message();
+                    message.what = VERIFY_RESULT;
+                    message.obj = verifyReult[1];
+                    mHandler.sendMessage(message);
+                    Log.i(LogTag.INFO_TAG, "认证结果===" + verifyReult[1]);
+                } else if (str.startsWith("$$225") && str.endsWith("\r\n")) {
+                    deviceLockStatusSub = BlueResultParserUtil.getDeviceLockStatusInfo(str);
+                    if (deviceLockStatusSub.getLockStatus() == 0) {
+                        lockStatus = "unlock";
+                    } else {
+                        lockStatus = "lock";
+                    }
+                } else {
+                    //android.os.Message message = new android.os.Message();
+                    //message.what = MESSAGE_QUERY_OSMOMETER_PARAMETER;
+                    //message.obj = str;
+                    //mHandler.sendMessage(message);
+                    parserResult(str);
+                }
 
                 //else if (str.startsWith("$$119")) {
                 //    mHandler.sendEmptyMessage(BT_RECOVERY_SUCCESS);
@@ -676,20 +689,20 @@ public class DeviceFragment extends BaseFragment implements View.OnClickListener
 
 
     private void parserResult(String result) {
-         if (result.equals("Please verify the equipment.\r\n")){
-            android.os.Message message=new android.os.Message();
-            message.what=VERIFY_RESULT;
-            message.obj="0";
+        if (result.equals("Please verify the equipment.\r\n")) {
+            android.os.Message message = new android.os.Message();
+            message.what = VERIFY_RESULT;
+            message.obj = "0";
             mHandler.sendMessage(message);
-        }else {
+        } else {
             try {
                 CommandType type = StringUtil.extractCommandType(result);
-                Log.i(LogTag.INFO_TAG,"--------返回指令结果-------"+result);
-                switch (type){
-                    case SYSTEM_RUN_STATE:{  //014
+                Log.i(LogTag.INFO_TAG, "--------返回指令结果-------" + result);
+                switch (type) {
+                    case SYSTEM_RUN_STATE: {  //014
                         //运行系统状态
                         mSystemRunStateSub = BlueResultParserUtil.getSystemRunState(result);
-                        Log.i(LogTag.INFO_TAG,"--------运行系统状态-------"+mSystemRunStateSub.toString());
+                        Log.i(LogTag.INFO_TAG, "--------运行系统状态-------" + mSystemRunStateSub.toString());
                         break;
                     }
                     case SETTING_RAIN_PRECISION: {  //121
@@ -699,13 +712,13 @@ public class DeviceFragment extends BaseFragment implements View.OnClickListener
                         rainPage.setRainAccury(String.valueOf(settingRainPrecisionSub.getPrecision()));
                         break;
                     }
-                    case RAIN_STATION:{ //005
+                    case RAIN_STATION: { //005
                         //雨量计开关
                         mRainStationSub = BlueResultParserUtil.getRainStationInfo(result);
-                        Log.i(LogTag.INFO_TAG, "--------设置雨量计精度-------"+mRainStationSub.getRainStation());
-                        if (mRainStationSub.getRainStation().equals("关闭")){
+                        Log.i(LogTag.INFO_TAG, "--------设置雨量计精度-------" + mRainStationSub.getRainStation());
+                        if (mRainStationSub.getRainStation().equals("关闭")) {
                             setRainSelect.setRainSelect(false);
-                        }else if (mRainStationSub.getRainStation().equals("开启")){
+                        } else if (mRainStationSub.getRainStation().equals("开启")) {
                             setRainSelect.setRainSelect(true);
                         }
                         break;
@@ -719,29 +732,29 @@ public class DeviceFragment extends BaseFragment implements View.OnClickListener
                     case DIGITAL_OSMOMETER_FUNCTION: //401
                         //开启/关闭数字式渗压计功能
                         mOsmometerFunctionSub = BlueResultParserUtil.getOsmoeterFunctionInfo(result);
-                        Log.i(LogTag.INFO_TAG,"--------开启/关闭数字式渗压计功能-------"+mOsmometerFunctionSub.toString());
-                        if (mOsmometerFunctionSub.getOsmometerStatus() == 1){
+                        Log.i(LogTag.INFO_TAG, "--------开启/关闭数字式渗压计功能-------" + mOsmometerFunctionSub.toString());
+                        if (mOsmometerFunctionSub.getOsmometerStatus() == 1) {
                             mFuncSubInfo.setOsmometerStatus("开启");
-                        }else if (mOsmometerFunctionSub.getOsmometerStatus() == 2){
+                        } else if (mOsmometerFunctionSub.getOsmometerStatus() == 2) {
                             mFuncSubInfo.setOsmometerStatus("关闭");
                         }
                         break;
                     case COLLECTOR_CONFIG:  //100
                         //获取采集器配置
                         mCollectorInfoSub = BlueResultParserUtil.getCollectorInfo(result);
-                        Log.i(LogTag.INFO_TAG,"--------获取采集器配置-------"+mCollectorInfoSub.toString());
+                        Log.i(LogTag.INFO_TAG, "--------获取采集器配置-------" + mCollectorInfoSub.toString());
                         send101Instruction(mCollectorInfoSub); //发送101指令
                         break;
                     case COLLECTOR_CHANNEL_SENSOR_PARAMETER: //101
-                        Log.i(LogTag.INFO_TAG,"--------101指令-------"+result);
+                        Log.i(LogTag.INFO_TAG, "--------101指令-------" + result);
                         mCollectorParamsInfoSub = BlueResultParserUtil.setCollectorParams(result);
                         mCollectorParamsInfoSubList.add(mCollectorParamsInfoSub);
-                        Log.i(LogTag.INFO_TAG,"size="+mCollectorParamsInfoSubList.size()+"--------获取XX采集器YY通道的传感器参数-------"+mCollectorParamsInfoSub.toString());
+                        Log.i(LogTag.INFO_TAG, "size=" + mCollectorParamsInfoSubList.size() + "--------获取XX采集器YY通道的传感器参数-------" + mCollectorParamsInfoSub.toString());
                         break;
                     case RESTORE_FACTORY_SETTING:  //119
                         //恢复出厂设置
                         mHandler.sendEmptyMessage(BT_RECOVERY_SUCCESS);
-                        Log.i(LogTag.INFO_TAG,"--------恢复出厂设置-------"+type);
+                        Log.i(LogTag.INFO_TAG, "--------恢复出厂设置-------" + type);
                         break;
                     case REBOOT_DEVICE: { //008
                         //重启设备
@@ -753,14 +766,13 @@ public class DeviceFragment extends BaseFragment implements View.OnClickListener
                     case GET_ALL_SENSOR_CONFIG: {   //333
                         //所有配置信息
                         mAllSensorConfigInfo = BlueResultParserUtil.getAllBlueMessage(result);
-                        Log.i(LogTag.INFO_TAG,"--------所有配置信息-------"+mAllSensorConfigInfo.toString());
+                        Log.i(LogTag.INFO_TAG, "--------所有配置信息-------" + mAllSensorConfigInfo.toString());
                         if (mAllSensorConfigInfo != null) {
                             mCollectorInfoSub = BlueResultParserUtil.getCollectorInfos(mAllSensorConfigInfo);
                         }
                         mInfoSub = BlueResultParserUtil.getBasicFromAllBlueMessage(result);
                         if (mAllSensorConfigInfo != null) {
-                            switch (mAllSensorConfigInfo.getBaseConfig().getRainfallStation())
-                            {
+                            switch (mAllSensorConfigInfo.getBaseConfig().getRainfallStation()) {
                                 case RAIN_OPEN:
                                     setRainSelect.setRainSelect(true);
                                     break;
@@ -768,27 +780,27 @@ public class DeviceFragment extends BaseFragment implements View.OnClickListener
                                     setRainSelect.setRainSelect(false);
                                     break;
                             }
-                            rainPage.setRainAccury(String.valueOf(mAllSensorConfigInfo.getBaseConfig().getRainAccuracy()/100));
+                            rainPage.setRainAccury(String.valueOf(mAllSensorConfigInfo.getBaseConfig().getRainAccuracy() / 100));
                         }
                         switch (mAllSensorConfigInfo.getBaseConfig().getCollectorModel().name()) {
                             case "DS08":
                                 collectorType = "02";
                                 break;
                         }
-                        if (!collectorType.equals("")){
-                            if (isConneted){
+                        if (!collectorType.equals("")) {
+                            if (isConneted) {
                                 //根据采集器型号获取采集器配置 ##100 02
-                                String collectorCommand = CommandManager.getInstance().getCommand(CommandType.COLLECTOR_CONFIG,null);
-                                String collectorResult = collectorCommand.replace("\r\n","")+collectorType+"\r\n";
+                                String collectorCommand = CommandManager.getInstance().getCommand(CommandType.COLLECTOR_CONFIG, null);
+                                String collectorResult = collectorCommand.replace("\r\n", "") + collectorType + "\r\n";
                                 Log.i(LogTag.INFO_TAG, "发送采集器配置指令===" + collectorResult);
                                 mdBluetoothManager.writeMessage(new Message(UUID.randomUUID().toString(), collectorResult, true));
-                            }else {
+                            } else {
                                 ToastUtil.showSToast("蓝牙未连接");
                             }
                         }
                         break;
                     }
-                    case VERSION_MESSAGE:{  //040
+                    case VERSION_MESSAGE: {  //040
                         //获取版本信息
                         versionMessageSub = BlueResultParserUtil.getVersionMessage(result);
                         Log.i(LogTag.INFO_TAG, "获取版本信息===" + versionMessageSub.toString());
@@ -805,7 +817,8 @@ public class DeviceFragment extends BaseFragment implements View.OnClickListener
     }
 
 
-    @Override public void onPause() {
+    @Override
+    public void onPause() {
         super.onPause();
         if (mLoadingDialog != null) {
             mLoadingDialog.dismiss();
@@ -814,12 +827,13 @@ public class DeviceFragment extends BaseFragment implements View.OnClickListener
 
 
     public Handler mHandler = new Handler(new Handler.Callback() {
-        @Override public boolean handleMessage(android.os.Message msg) {
+        @Override
+        public boolean handleMessage(android.os.Message msg) {
             switch (msg.what) {
                 case BT_CONNECT:
-                    if (isAdded()){
+                    if (isAdded()) {
                         mImgBluetooth.setImageDrawable(
-                            getResources().getDrawable(R.drawable.bar_item_blu_connect_yellow));
+                                getResources().getDrawable(R.drawable.bar_item_blu_connect_yellow));
                     }
                     Log.i(LogTag.INFO_TAG, "蓝牙连接成功");
                     if (mLoadingDialog != null) {
@@ -837,14 +851,14 @@ public class DeviceFragment extends BaseFragment implements View.OnClickListener
                     if (isConneted) {
                         isConneted = false;
                         if (!isBluModle) {
-                            if (isAdded()){
+                            if (isAdded()) {
                                 mImgBluetooth.setImageDrawable(
-                                    getResources().getDrawable(R.drawable.bar_item_offline));
+                                        getResources().getDrawable(R.drawable.bar_item_offline));
                             }
                         } else {
-                            if (isAdded()){
+                            if (isAdded()) {
                                 mImgBluetooth.setImageDrawable(
-                                    getResources().getDrawable(R.drawable.bar_item_bt));
+                                        getResources().getDrawable(R.drawable.bar_item_bt));
                             }
                         }
                         Log.i(LogTag.INFO_TAG, "蓝牙连接已断开");
@@ -974,15 +988,15 @@ public class DeviceFragment extends BaseFragment implements View.OnClickListener
     //}
     private void handleDeviceFind(BluetoothDeviceFindEventData eventData) {
         if (list.contains(eventData.getNewDevice()) ||
-            eventData.getNewDevice().getDevice().getName() == null) {
+                eventData.getNewDevice().getDevice().getName() == null) {
             return;
         }
         if (null != list && list.size() > 0) {
             for (MDevice mDevice : list) {
                 if (eventData.getNewDevice()
-                    .getDevice()
-                    .getName()
-                    .equals(mDevice.getDevice().getName())) {
+                        .getDevice()
+                        .getName()
+                        .equals(mDevice.getDevice().getName())) {
                     return;
                 }
             }
@@ -993,19 +1007,20 @@ public class DeviceFragment extends BaseFragment implements View.OnClickListener
 
     /**
      * 发送101指令
+     *
      * @param collectorInfoSub
      */
-    private void send101Instruction(CollectorInfoSub collectorInfoSub){
+    private void send101Instruction(CollectorInfoSub collectorInfoSub) {
 
         for (int i = 0; i < collectorInfoSub.getAccessSum(); i++) {
-            if (isConneted){
+            if (isConneted) {
                 //##101XXYY\r\n：获取XX采集器YY通道的传感器参数
-                String collectorCommand = CommandManager.getInstance().getCommand(CommandType.COLLECTOR_CHANNEL_SENSOR_PARAMETER,null);
-                String count  = com.shmedo.mcloudapp.util.StringUtil.formatTwo(i);
-                String collectorResult = collectorCommand.replace("\r\n","")+collectorType+count+"\r\n";
+                String collectorCommand = CommandManager.getInstance().getCommand(CommandType.COLLECTOR_CHANNEL_SENSOR_PARAMETER, null);
+                String count = com.shmedo.mcloudapp.util.StringUtil.formatTwo(i);
+                String collectorResult = collectorCommand.replace("\r\n", "") + collectorType + count + "\r\n";
                 Log.i(LogTag.INFO_TAG, "发送101采集器配置指令===" + collectorResult);
                 mdBluetoothManager.writeMessage(new Message(UUID.randomUUID().toString(), collectorResult, true));
-            }else {
+            } else {
                 ToastUtil.showSToast("蓝牙未连接");
             }
         }
@@ -1013,7 +1028,8 @@ public class DeviceFragment extends BaseFragment implements View.OnClickListener
     }
 
 
-    @Override public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
             case REQUEST_ENABLE_BT:
                 // 当DeviceListActivity返回与设备连接的消息

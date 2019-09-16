@@ -91,6 +91,7 @@ import butterknife.OnClick;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.RequestBody;
+import timber.log.Timber;
 
 import static com.shmedo.mcloudapp.util.bleutil.Constants.BT_CHARACTERISTICS_FIND_FAIL;
 import static com.shmedo.mcloudapp.util.bleutil.Constants.BT_CONNECT;
@@ -109,22 +110,35 @@ import static com.shmedo.mcloudapp.util.bleutil.Constants.MESSAGE_RESPONSE_TIME_
 import static com.shmedo.mcloudapp.util.bleutil.Constants.REFRESH_RUN_STATE;
 import static com.shmedo.mcloudapp.util.bleutil.Constants.VERIFY_RESULT;
 
-public class MainActivity extends BaseActivity  implements
-    LocationSource,AMapLocationListener{
+public class MainActivity extends BaseActivity implements
+        LocationSource, AMapLocationListener {
 
-    @BindView(R.id.img_user) ImageView mImgUser;
-    @BindView(R.id.main_titile) TextView mMainTitile;
-    @BindView(R.id.img_equipment) ImageView mImgEquipment;
-    @BindView(R.id.toolbar) Toolbar mToolbar;
-    @BindView(R.id.map) MapView mMapView;
-    @BindView(R.id.RL_scan) RelativeLayout mRLScan;
-    @BindView(R.id.fab_add) FloatingActionButton mFabAdd;
-    @BindView(R.id.fab_config) FloatingActionButton mFabConfig;
-    @BindView(R.id.fab_location) FloatingActionButton mFabLocation;
-    @BindView(R.id.fab_refresh) FloatingActionButton mFabRefresh;
-    @BindView(R.id.tv_connection) TextView mTvConnection;
-    @BindView(R.id.ll_connection) LinearLayout mLlConnection;
-    @BindView(R.id.img_scan) ImageView mImgScan;
+    @BindView(R.id.img_user)
+    ImageView mImgUser;
+    @BindView(R.id.main_titile)
+    TextView mMainTitile;
+    @BindView(R.id.img_equipment)
+    ImageView mImgEquipment;
+    @BindView(R.id.toolbar)
+    Toolbar mToolbar;
+    @BindView(R.id.map)
+    MapView mMapView;
+    @BindView(R.id.RL_scan)
+    RelativeLayout mRLScan;
+    @BindView(R.id.fab_add)
+    FloatingActionButton mFabAdd;
+    @BindView(R.id.fab_config)
+    FloatingActionButton mFabConfig;
+    @BindView(R.id.fab_location)
+    FloatingActionButton mFabLocation;
+    @BindView(R.id.fab_refresh)
+    FloatingActionButton mFabRefresh;
+    @BindView(R.id.tv_connection)
+    TextView mTvConnection;
+    @BindView(R.id.ll_connection)
+    LinearLayout mLlConnection;
+    @BindView(R.id.img_scan)
+    ImageView mImgScan;
 
     //初始化地图控制器对象
     private AMap aMap;
@@ -186,7 +200,8 @@ public class MainActivity extends BaseActivity  implements
     };
 
 
-    @Override protected int initContentView() {
+    @Override
+    protected int initContentView() {
         return R.layout.activity_main;
     }
 
@@ -201,20 +216,21 @@ public class MainActivity extends BaseActivity  implements
         hidingConnectionView();
         //获取地图要加载的数据
         getDeviceBasicInfoList("1");
-        XPermissionUtils.requestPermissionsResult(this, 200, new String[] {
-                Manifest.permission.ACCESS_FINE_LOCATION,
-                Manifest.permission.ACCESS_COARSE_LOCATION },
-            new XPermissionUtils.OnPermissionListener() {
-                @Override
-                public void onPermissionGranted() {
-                    initMap();
-                }
-                @Override
-                public void onPermissionDenied() {
-                    XPermissionUtils.showRefusePermissionDialog(MainActivity.this,
-                        "在设置-应用管理-米易通-权限中开启相机权限");
-                }
-            });
+        XPermissionUtils.requestPermissionsResult(this, 200, new String[]{
+                        Manifest.permission.ACCESS_FINE_LOCATION,
+                        Manifest.permission.ACCESS_COARSE_LOCATION},
+                new XPermissionUtils.OnPermissionListener() {
+                    @Override
+                    public void onPermissionGranted() {
+                        initMap();
+                    }
+
+                    @Override
+                    public void onPermissionDenied() {
+                        XPermissionUtils.showRefusePermissionDialog(MainActivity.this,
+                                "在设置-应用管理-米易通-权限中开启相机权限");
+                    }
+                });
         initData();
     }
 
@@ -242,14 +258,15 @@ public class MainActivity extends BaseActivity  implements
         myLocationStyle.strokeColor(getResources().getColor(R.color.app_color_blue_2));// 设置圆形的边框颜色
         myLocationStyle.radiusFillColor(Color.argb(100, 29, 161, 242));// 设置圆形的填充颜色
         myLocationStyle.strokeWidth(1.0f);// 设置圆形的边框粗细
-        myLocationStyle.myLocationType(MyLocationStyle.LOCATION_TYPE_LOCATE) ;//定位一次，且将视角移动到地图中心点。
+        myLocationStyle.myLocationType(MyLocationStyle.LOCATION_TYPE_LOCATE);//定位一次，且将视角移动到地图中心点。
         myLocationStyle.showMyLocation(true);
 
         aMap.setMyLocationEnabled(true);// 设置为true表示启动显示定位蓝点，false表示隐藏定位蓝点并不进行定位，默认是false。
         aMap.setMyLocationStyle(myLocationStyle);
         //aMap.setLocationSource(this);// 设置定位资源。如果不设置此定位资源则定位按钮不可点击。并且实现activate激活定位,停止定位的回调方法
         aMap.setOnMyLocationChangeListener(new AMap.OnMyLocationChangeListener() {
-            @Override public void onMyLocationChange(Location location) {
+            @Override
+            public void onMyLocationChange(Location location) {
                 double latitude = location.getLatitude();
                 double longitude = location.getLongitude();
                 myLatLng = new LatLng(latitude, longitude);
@@ -260,7 +277,8 @@ public class MainActivity extends BaseActivity  implements
         });
 
         aMap.setOnMapTouchListener(new AMap.OnMapTouchListener() {
-            @Override public void onTouch(MotionEvent motionEvent) {
+            @Override
+            public void onTouch(MotionEvent motionEvent) {
                 followMove = false;
             }
         });
@@ -269,11 +287,8 @@ public class MainActivity extends BaseActivity  implements
     }
 
 
-
-
-
-
-    @Override public void activate(OnLocationChangedListener onLocationChangedListener) {
+    @Override
+    public void activate(OnLocationChangedListener onLocationChangedListener) {
         mListener = onLocationChangedListener;
         if (null == mLocationClient) {
             //初始化定位
@@ -284,7 +299,7 @@ public class MainActivity extends BaseActivity  implements
             mLocationClient.setLocationListener(this);
             //设置为高精度定位模式
             mLocationOption.setLocationMode(
-                AMapLocationClientOption.AMapLocationMode.Hight_Accuracy);
+                    AMapLocationClientOption.AMapLocationMode.Hight_Accuracy);
             mLocationOption.setOnceLocation(true);
             //设置是否返回地址信息（默认返回地址信息）
             mLocationOption.setNeedAddress(true);
@@ -296,6 +311,7 @@ public class MainActivity extends BaseActivity  implements
         }
 
     }
+
     /**
      * 定位成功后回调函数
      */
@@ -313,18 +329,19 @@ public class MainActivity extends BaseActivity  implements
                 String city = aMapLocation.getCity();
                 String address = aMapLocation.getAddress();
                 //                addMarkerToMap(latLng,city,address);
-                Log.i("adu","=city="+city+"=address=="+address);
+                Log.i("adu", "=city=" + city + "=address==" + address);
             } else {
                 //定位失败时，可通过ErrCode（错误码）信息来确定失败的原因，errInfo是错误信息，详见错误码表。
                 Log.e("AmapError",
-                    "location Error, ErrCode:" + aMapLocation.getErrorCode() + ", errInfo:"
-                        + aMapLocation.getErrorInfo());
+                        "location Error, ErrCode:" + aMapLocation.getErrorCode() + ", errInfo:"
+                                + aMapLocation.getErrorInfo());
             }
         }
 
     }
 
-    @Override public void deactivate() {
+    @Override
+    public void deactivate() {
         mListener = null;
         if (mLocationClient != null) {
             mLocationClient.stopLocation();
@@ -334,70 +351,74 @@ public class MainActivity extends BaseActivity  implements
     }
 
 
-
     /**
-     *  获取设备信息列表
+     * 获取设备信息列表
+     *
      * @param currentCompanyID
      */
-    private void getDeviceBasicInfoList(String currentCompanyID){
+    private void getDeviceBasicInfoList(String currentCompanyID) {
         RequestBody body = RequestBody.create(CommonVariable.JSON_TYPE, currentCompanyID);
         MDRetrofit.getInstance()
-            .createService()
-            .QueryDeviceBasicInfoList(CommonVariable.getAccessToken(), body)
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(new BaseObserver<List<DeviceBasicInfoResult>>() {
+                .createService()
+                .QueryDeviceBasicInfoList(CommonVariable.getAccessToken(), body)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new BaseObserver<List<DeviceBasicInfoResult>>() {
 
-                @Override public void Success(List<DeviceBasicInfoResult> infoList, String message) {
-                    mLoadingDialog.dismiss();
+                    @Override
+                    public void Success(List<DeviceBasicInfoResult> infoList, String message) {
+                        mLoadingDialog.dismiss();
 
-                    if (infoList.size() != 0) {
-                        Log.i("adu","---11--"+GsonFactory.getGson().toJson(infoList));
+                        if (infoList.size() != 0) {
+                            Log.i("adu", "---11--" + GsonFactory.getGson().toJson(infoList));
 
-                        manager.getDaoSession().getDeviceBasicInfoResultDao().insertOrReplaceInTx(infoList);
+                            manager.getDaoSession().getDeviceBasicInfoResultDao().insertOrReplaceInTx(infoList);
+                        }
                     }
-                }
 
-                @Override public void Failure(String message) {
-                    mLoadingDialog.dismiss();
-                    Log.i("adu", "服务器连接失败--" + message);
-                    ToastUtil.showSToast("服务器连接失败");
-                }
-            });
+                    @Override
+                    public void Failure(String message) {
+                        mLoadingDialog.dismiss();
+                        Log.i("adu", "服务器连接失败--" + message);
+                        ToastUtil.showSToast("服务器连接失败");
+                    }
+                });
     }
 
 
     /**
      * 查询位置信息不为空的设备
+     *
      * @param gpsLocation
      * @return
      */
-    private List<DeviceBasicInfoResult> queryDeviceInfoList(String gpsLocation){
+    private List<DeviceBasicInfoResult> queryDeviceInfoList(String gpsLocation) {
         return manager.getDaoSession()
-            .getDeviceBasicInfoResultDao()
-            .queryBuilder()
-            .where(DeviceBasicInfoResultDao.Properties.GpsLocation.notEq(gpsLocation))
-            .list();
+                .getDeviceBasicInfoResultDao()
+                .queryBuilder()
+                .where(DeviceBasicInfoResultDao.Properties.GpsLocation.notEq(gpsLocation))
+                .list();
     }
 
     //添加设备的 marker 点
-    private void addMerchantClustersToMap(final List<DeviceBasicInfoResult> deviceList){
+    private void addMerchantClustersToMap(final List<DeviceBasicInfoResult> deviceList) {
         LatLng latLng = null;
         for (int i = 0; i < deviceList.size(); i++) {
             LocationResult location = GsonFactory.getGson()
-                .fromJson(deviceList.get(i).getInstallLocation(), new TypeToken<LocationResult>() {}.getType());
-             latLng = new LatLng(location.getLat(),location.getLng());
-            ClusterItemImp clusterImp = new ClusterItemImp(latLng,deviceList.get(i).getDeviceName());
+                    .fromJson(deviceList.get(i).getInstallLocation(), new TypeToken<LocationResult>() {
+                    }.getType());
+            latLng = new LatLng(location.getLat(), location.getLng());
+            ClusterItemImp clusterImp = new ClusterItemImp(latLng, deviceList.get(i).getDeviceName());
             clusterItemsMerchant.add(clusterImp);
         }
 
-        if(clusterOverlayMerchant == null){
-            clusterOverlayMerchant = new ClusterOverlayMerchant(aMap,clusterItemsMerchant,
-                DensityUtil.Dp2Px(getApplicationContext(), clusterRadius),getApplicationContext());
-        }else {
+        if (clusterOverlayMerchant == null) {
+            clusterOverlayMerchant = new ClusterOverlayMerchant(aMap, clusterItemsMerchant,
+                    DensityUtil.Dp2Px(getApplicationContext(), clusterRadius), getApplicationContext());
+        } else {
             clusterOverlayMerchant.onDestroy();
             clusterOverlayMerchant = null;
-            clusterOverlayMerchant = new ClusterOverlayMerchant(aMap,clusterItemsMerchant,DensityUtil.Dp2Px(getApplicationContext(), clusterRadius),getApplicationContext());
+            clusterOverlayMerchant = new ClusterOverlayMerchant(aMap, clusterItemsMerchant, DensityUtil.Dp2Px(getApplicationContext(), clusterRadius), getApplicationContext());
         }
 
         clusterOverlayMerchant.setClusterAnotherRenderer(new ClusterAnotherRender() {
@@ -415,7 +436,7 @@ public class MainActivity extends BaseActivity  implements
                     Drawable bitmapDrawable = mBackDrawAblesMerchant.get(3);
                     if (bitmapDrawable == null) {
                         bitmapDrawable =
-                            getApplication().getResources().getDrawable(R.drawable.icon_marker_das);
+                                getApplication().getResources().getDrawable(R.drawable.icon_marker_das);
                         mBackDrawAblesMerchant.put(3, bitmapDrawable);
                     }
                     return bitmapDrawable;
@@ -425,22 +446,23 @@ public class MainActivity extends BaseActivity  implements
         clusterOverlayMerchant.setOnClusterAnotherClickListener(new ClusterAnotherClickListener() {
             @Override
             public void onAnotherClick(Marker marker, List<ClusterItem> clusterItems) {
-                Toast.makeText(MainActivity.this,">>>>>>>点击了商家聚合点",Toast.LENGTH_SHORT).show();
-                if(aMap.getCameraPosition().zoom<=18){
+                Toast.makeText(MainActivity.this, ">>>>>>>点击了商家聚合点", Toast.LENGTH_SHORT).show();
+                if (aMap.getCameraPosition().zoom <= 18) {
                     LatLngBounds.Builder builder = new LatLngBounds.Builder();
                     for (ClusterItem clusterItem : clusterItems) {
                         builder.include(clusterItem.getPosition());
                     }
                     LatLngBounds latLngBounds = builder.build();
-                    aMap.animateCamera(CameraUpdateFactory.newLatLngBounds(latLngBounds,10 ));
+                    aMap.animateCamera(CameraUpdateFactory.newLatLngBounds(latLngBounds, 10));
                 }
 
             }
         });
 
     }
-    private int checkMarkerIcon(String sensorType){
-        switch (sensorType){
+
+    private int checkMarkerIcon(String sensorType) {
+        switch (sensorType) {
             case "DAS":
                 return R.drawable.icon_marker_das;
             case "DAG":
@@ -449,13 +471,13 @@ public class MainActivity extends BaseActivity  implements
             case "E60":
 
                 return R.drawable.icon_marker_e60;
-                default:
-                    return R.drawable.icon_marker;
+            default:
+                return R.drawable.icon_marker;
         }
     }
 
-    @OnClick({ R.id.img_user, R.id.img_equipment, R.id.RL_scan,
-                 R.id.fab_add, R.id.fab_config, R.id.fab_location, R.id.fab_refresh })
+    @OnClick({R.id.img_user, R.id.img_equipment, R.id.RL_scan,
+            R.id.fab_add, R.id.fab_config, R.id.fab_location, R.id.fab_refresh})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.img_user:
@@ -467,7 +489,7 @@ public class MainActivity extends BaseActivity  implements
             case R.id.RL_scan:
                 //扫一扫
                 Intent intent = new Intent(this, ScanAddDeviceActivity.class);
-                intent.putExtra("position",myLatLng);
+                intent.putExtra("position", myLatLng);
                 startActivity(intent);
                 //StartActivityUtil.comeOnBaby(this, ScanAddDeviceActivity.class);
                 break;
@@ -495,12 +517,13 @@ public class MainActivity extends BaseActivity  implements
         LinearLayout wifi = view.findViewById(R.id.search_wifi);
         LinearLayout cloud = view.findViewById(R.id.search_cloud);
         final MaterialDialog mDialog = new MaterialDialog.Builder(this)
-            .cancelable(true)
-            .title("请选择")
-            .customView(view, true)
-            .show();
+                .cancelable(true)
+                .title("请选择")
+                .customView(view, true)
+                .show();
         bluetooth.setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View v) {
+            @Override
+            public void onClick(View v) {
                 mDialog.dismiss();
                 if (isBluModle && !isConneted) {
                     disconnectDevice();
@@ -511,7 +534,7 @@ public class MainActivity extends BaseActivity  implements
                             list.clear();
                         }
                         if (null == mLoadingDialog.getDialog() ||
-                            !mLoadingDialog.getDialog().isShowing()) {
+                                !mLoadingDialog.getDialog().isShowing()) {
                             mLoadingDialog.showCancelDialog("正在获取附近的蓝牙设备...");
                             hander.postDelayed(dismssDialogRunnable, 10000);
                         }
@@ -528,29 +551,32 @@ public class MainActivity extends BaseActivity  implements
             }
         });
         wifi.setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View v) {
+            @Override
+            public void onClick(View v) {
                 mDialog.dismiss();
                 XPermissionUtils.requestPermissionsResult(MainActivity.this, 200, new String[]{
-                        Manifest.permission.ACCESS_COARSE_LOCATION,
-                        Manifest.permission.ACCESS_FINE_LOCATION
-                    },
-                    new XPermissionUtils.OnPermissionListener() {
-                        @Override
-                        public void onPermissionGranted() {
-                            Intent intent = new Intent(MainActivity.this,WifiConnectionActivity.class);
-                            startActivity(intent);
-                        }
-                        @Override
-                        public void onPermissionDenied() {
-                            XPermissionUtils.showRefusePermissionDialog(MainActivity.this,
-                                    getResources().getString(R.string.permission_request_location));
-                        }
-                    });
+                                Manifest.permission.ACCESS_COARSE_LOCATION,
+                                Manifest.permission.ACCESS_FINE_LOCATION
+                        },
+                        new XPermissionUtils.OnPermissionListener() {
+                            @Override
+                            public void onPermissionGranted() {
+                                Intent intent = new Intent(MainActivity.this, WifiConnectionActivity.class);
+                                startActivity(intent);
+                            }
+
+                            @Override
+                            public void onPermissionDenied() {
+                                XPermissionUtils.showRefusePermissionDialog(MainActivity.this,
+                                        getResources().getString(R.string.permission_request_location));
+                            }
+                        });
 
             }
         });
         cloud.setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View view) {
+            @Override
+            public void onClick(View view) {
                 ToastUtil.showSToast("云端数据");
             }
         });
@@ -577,7 +603,7 @@ public class MainActivity extends BaseActivity  implements
 
 
     private void initBlueAdapter() {
-        Log.i("adu","-----------------初始化蓝牙---------------");
+        Log.i("adu", "-----------------初始化蓝牙---------------");
         if (!autoOpenBt) {
             Intent serverIntent = new Intent(MainActivity.this, BlueToothListActivity.class);
             serverIntent.putExtra("devlist", (Serializable) list);
@@ -588,8 +614,6 @@ public class MainActivity extends BaseActivity  implements
         mdBluetoothManager.stopScan();
 
     }
-
-
 
 
     private class MdBluetoothEventHandler implements BluetoothEventHandler {
@@ -645,7 +669,7 @@ public class MainActivity extends BaseActivity  implements
                     try {
                         currentMessageId = ((Message) event.getEventData()).getMessageID();
                         Log.i(LogTag.INFO_TAG,
-                            "消息id===" + ((Message) event.getEventData()).getMessageID());
+                                "消息id===" + ((Message) event.getEventData()).getMessageID());
                         String msg = ((Message) event.getEventData()).getResponseMessage();
                         byte[] data = (byte[]) msg.getBytes();
 
@@ -689,7 +713,8 @@ public class MainActivity extends BaseActivity  implements
 
 
     public Handler mHandler = new Handler(new Handler.Callback() {
-        @Override public boolean handleMessage(android.os.Message msg) {
+        @Override
+        public boolean handleMessage(android.os.Message msg) {
             switch (msg.what) {
                 case BT_CONNECT:
                     //mMenu.findItem(R.id.current_blu)
@@ -721,7 +746,7 @@ public class MainActivity extends BaseActivity  implements
                     }
                     break;
                 case BT_MESSAGE_WRITE_SUCCESS:
-                      ToastUtil.showSToast( "蓝牙发送指令成功");
+                    ToastUtil.showSToast("蓝牙发送指令成功");
                     break;
                 case BT_MESSAGE_WRITE_FAIL:
                     ToastUtil.showSToast("蓝牙发送指令失败");
@@ -767,7 +792,7 @@ public class MainActivity extends BaseActivity  implements
                     ToastUtil.showSToast("设置读取Descriptor失败！");
                     break;
                 case BT_RECOVERY_SUCCESS:
-                    ToastUtil.showSToast("恢复出厂设置成功！" );
+                    ToastUtil.showSToast("恢复出厂设置成功！");
                     break;
                 case MESSAGE_RESPONSE_REBOOT_DEVICE:
                     ToastUtil.showSToast("重启系统成功！");
@@ -781,20 +806,18 @@ public class MainActivity extends BaseActivity  implements
     });
 
 
-
-
     private void handleDeviceFind(BluetoothDeviceFindEventData eventData) {
 
         if (list.contains(eventData.getNewDevice()) ||
-            eventData.getNewDevice().getDevice().getName() == null) {
+                eventData.getNewDevice().getDevice().getName() == null) {
             return;
         }
         if (null != list && list.size() > 0) {
             for (MDevice mDevice : list) {
                 if (eventData.getNewDevice()
-                    .getDevice()
-                    .getName()
-                    .equals(mDevice.getDevice().getName())) {
+                        .getDevice()
+                        .getName()
+                        .equals(mDevice.getDevice().getName())) {
                     return;
                 }
             }
@@ -816,10 +839,10 @@ public class MainActivity extends BaseActivity  implements
     private void showResultDialog(String content) {
         mBuilder = new MaterialDialog.Builder(this);
         mBuilder.title("温馨提示：")
-            .content(content)
-            .contentColor(Color.parseColor("#000000"))
-            .canceledOnTouchOutside(false)
-            .positiveText("确定");
+                .content(content)
+                .contentColor(Color.parseColor("#000000"))
+                .canceledOnTouchOutside(false)
+                .positiveText("确定");
         //.negativeText("取消");
         mMaterialDialog = mBuilder.build();
         mMaterialDialog.show();
@@ -861,7 +884,8 @@ public class MainActivity extends BaseActivity  implements
     }
 
 
-    @Override public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
         isShowingDialog = true;
         switch (requestCode) {
             case REQUEST_ENABLE_BT:
@@ -898,10 +922,10 @@ public class MainActivity extends BaseActivity  implements
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(WifiEvent events) {
         if (events.getMessage().equals("wifi")) {
-            if (events.getWifiBean() != null){
-                Log.i("adu","----wifi--------"+events.getWifiBean().getWifiName());
-                showConnectionView("已连接WIFI—"+events.getWifiBean().getWifiName());
-            }else {
+            if (events.getWifiBean() != null) {
+                Log.i("adu", "----wifi--------" + events.getWifiBean().getWifiName());
+                showConnectionView("已连接WIFI—" + events.getWifiBean().getWifiName());
+            } else {
                 hidingConnectionView();
             }
         }
@@ -910,24 +934,25 @@ public class MainActivity extends BaseActivity  implements
 
     /**
      * 获取设备信息，显示在地图中
+     *
      * @param events
      */
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
     public void onMessageEvents(MapDeviceEvent events) {
         if (events.getType().equals("mapDevice")) {
-            if (events.getDeviceName() != null){
-                Log.i("adu","----mapDeviceMap--------"+events.getDeviceName());
-                String [] device = events.getDeviceName().split(",");
+            if (events.getDeviceName() != null) {
+                Timber.d("DeviceName from scan : " + events.getDeviceName());
+                String[] device = events.getDeviceName().split(",");
                 addDeviceOnMap(device);
             }
         }
     }
 
     //添加设备名称
-    private void addDeviceOnMap(String [] device){
+    private void addDeviceOnMap(String[] device) {
         LatLng latLng = myLatLng;
         String installLocation = GsonFactory.getGson().toJson(latLng);
-        MapManagerUtil.addMarkerToMap(aMap,latLng,device[2],device[1]);
+        MapManagerUtil.addMarkerToMap(aMap, latLng, device[2], device[1]);
         DeviceBasicInfoResult result = new DeviceBasicInfoResult();
         Long proId = System.currentTimeMillis();
         result.setId(proId);
@@ -957,7 +982,7 @@ public class MainActivity extends BaseActivity  implements
         infoResult.setDeviceName(device[1]);
         infoResult.setDeviceToken(device[1]);
         infoResult.setDeviceTypeID(0);
-        infoResult.setDeviceTypeName(null);
+        infoResult.setDeviceTypeName(device[2]);
         infoResult.setSecurityNO(null);
         infoResult.setSensorInfo(null);
         infoResult.setVoltage(0);
@@ -967,50 +992,49 @@ public class MainActivity extends BaseActivity  implements
 
 
         //返回的数据有这个值18A095L
-        if (null == queryDeviceInList(device[1])){
-            Log.i("adu","----添加了1个新设备---");
+        if (null == queryDeviceInList(device[1])) {
             manager.getDaoSession().getDeviceBasicInfoResultDao().insertOrReplaceInTx(result);
             manager.getDaoSession().getStatusInfoResultDao().insertOrReplaceInTx(infoResult);
-        }else {
+        } else {
             ToastUtil.showSToast("此设备已存在！");
         }
     }
+
     //查询设备列表中是否有这个设备
-    private DeviceBasicInfoResult queryDeviceInList(String deviceName){
-       return manager.getDaoSession().getDeviceBasicInfoResultDao()
-            .queryBuilder()
-            .where(DeviceBasicInfoResultDao.Properties.DeviceName.eq(deviceName))
-            .unique();
+    private DeviceBasicInfoResult queryDeviceInList(String deviceName) {
+        return manager.getDaoSession().getDeviceBasicInfoResultDao()
+                .queryBuilder()
+                .where(DeviceBasicInfoResultDao.Properties.DeviceName.eq(deviceName))
+                .unique();
     }
+
     public void showConnectionView(String str) {
-        Log.i("adu","visible"+str);
         mLlConnection.setVisibility(View.VISIBLE);
         mTvConnection.setText(str);
     }
 
     public void hidingConnectionView() {
-        Log.i("adu","gone");
         mLlConnection.setVisibility(View.GONE);
     }
 
     /**
      * 是否切换连接模式
      */
-    private void showChangeModle( String content) {
+    private void showChangeModle(String content) {
         mBuilder = new MaterialDialog.Builder(this);
         mBuilder.title("温馨提示：")
-            .content(content)
-            .contentColor(Color.parseColor("#000000"))
-            .canceledOnTouchOutside(false)
-            .positiveText("确定")
-            .negativeText("取消");
+                .content(content)
+                .contentColor(Color.parseColor("#000000"))
+                .canceledOnTouchOutside(false)
+                .positiveText("确定")
+                .negativeText("取消");
         mMaterialDialog = mBuilder.build();
         mMaterialDialog.show();
         mBuilder.onAny(new MaterialDialog.SingleButtonCallback() {
             @Override
             public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                 if (which == DialogAction.POSITIVE) {
-                    isConneted=false;
+                    isConneted = false;
                     disconnectDevice();
                     //mMenu.findItem(R.id.current_blu).setIcon(R.drawable.bar_item_bt);
                     mMaterialDialog.dismiss();
@@ -1028,15 +1052,16 @@ public class MainActivity extends BaseActivity  implements
     public void onBackPressed() {
         //super.onBackPressed();
         new HintDialog.Builder(this)
-            .setTitle("提示")
-            .setMessage("你确定要退出吗？")
-            .setConfirmBtnListener(new DialogInterface.OnClickListener() {
-                @Override public void onClick(DialogInterface dialog, int which) {
-                    dialog.dismiss();
-                    //finish();
-                    System.exit(0);
-                    //Process.killProcess(Process.myPid());
-                }
-            }).onCreate().show();
+                .setTitle("提示")
+                .setMessage("你确定要退出吗？")
+                .setConfirmBtnListener(new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                        //finish();
+                        System.exit(0);
+                        //Process.killProcess(Process.myPid());
+                    }
+                }).onCreate().show();
     }
 }

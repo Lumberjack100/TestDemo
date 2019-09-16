@@ -25,6 +25,7 @@ import org.greenrobot.eventbus.EventBus;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import timber.log.Timber;
 
 /**
  * 项目名：  mCloudapp
@@ -35,17 +36,21 @@ import butterknife.OnClick;
  * 描述：    扫码配置页面
  */
 public class ScanAddDeviceActivity extends BaseActivity {
-    @BindView(R.id.scan_config) Button mScanConfig;
-    @BindView(R.id.input_config) Button mInputConfig;
+    @BindView(R.id.scan_config)
+    Button mScanConfig;
+    @BindView(R.id.input_config)
+    Button mInputConfig;
     private static final int REQUEST_CODE_SCAN = 1;
 
 
-    @Override protected int initContentView() {
+    @Override
+    protected int initContentView() {
         return R.layout.activity_scanadd_device;
     }
 
 
-    @Override protected void onCreate(Bundle savedInstanceState) {
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initData();
     }
@@ -54,31 +59,32 @@ public class ScanAddDeviceActivity extends BaseActivity {
     private void initData() {
 
         LatLng latLng = getIntent().getParcelableExtra("position");
-        Log.i("adu",latLng.longitude+"===="+latLng.latitude);
+        Log.i("adu", latLng.longitude + "====" + latLng.latitude);
     }
 
 
-    @OnClick({ R.id.scan_config, R.id.input_config })
+    @OnClick({R.id.scan_config, R.id.input_config})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.scan_config:
-                XPermissionUtils.requestPermissionsResult(this, 200, new String[] {
-                        Manifest.permission.CAMERA,
-                        Manifest.permission.READ_EXTERNAL_STORAGE },
-                    new XPermissionUtils.OnPermissionListener() {
-                        @Override
-                        public void onPermissionGranted() {
-                            starScan();
-                        }
-                        @Override
-                        public void onPermissionDenied() {
-                            XPermissionUtils.showRefusePermissionDialog(ScanAddDeviceActivity.this,
-                                    getResources().getString(R.string.permission_request_camera_external_storage));
-                        }
-                    });
+                XPermissionUtils.requestPermissionsResult(this, 200, new String[]{
+                                Manifest.permission.CAMERA,
+                                Manifest.permission.READ_EXTERNAL_STORAGE},
+                        new XPermissionUtils.OnPermissionListener() {
+                            @Override
+                            public void onPermissionGranted() {
+                                starScan();
+                            }
+
+                            @Override
+                            public void onPermissionDenied() {
+                                XPermissionUtils.showRefusePermissionDialog(ScanAddDeviceActivity.this,
+                                        getResources().getString(R.string.permission_request_camera_external_storage));
+                            }
+                        });
                 break;
             case R.id.input_config:
-                StartActivityUtil.comeOnBaby(this,InputDeviceSNActivity.class);
+                StartActivityUtil.comeOnBaby(this, InputDeviceSNActivity.class);
                 break;
         }
     }
@@ -117,7 +123,7 @@ public class ScanAddDeviceActivity extends BaseActivity {
 
                 String content = data.getStringExtra(Constant.CODED_CONTENT);
                 ToastUtil.showSToast("扫描结果为：" + content);
-                Log.i("adu", "扫描结果为：" + content);
+                Timber.d("扫描结果为：" + content);
                 scanResult(content);
             }
         }
@@ -127,32 +133,33 @@ public class ScanAddDeviceActivity extends BaseActivity {
         if (result.contains("=")) {
             String results = result.substring(result.indexOf("=") + 1);
             scan(results);
-        }else {
+        } else {
             scan(result);
             //showScanResultDialog("请扫码正确的设备二维码");
         }
     }
+
     //MEDO,189150L,DAS
-    private void scan(String results){
+    private void scan(String results) {
         if (results.startsWith("MEDO")) {
             String[] localData = results.split(",");
             if (localData.length != 3) {
-                LoadingDialog.showScanResultDialog(this,"请扫码正确的设备二维码");
+                LoadingDialog.showScanResultDialog(this, "请扫码正确的设备二维码");
                 return;
             }
             if (StringUtil.isEmpty(localData[0]) || StringUtil.isEmpty(localData[1])
-                || StringUtil.isEmpty(localData[2])) {
-                LoadingDialog.showScanResultDialog(this,"二维码信息不能为空");
+                    || StringUtil.isEmpty(localData[2])) {
+                LoadingDialog.showScanResultDialog(this, "二维码信息不能为空");
                 return;
             }
             if (localData[1].length() != 7) {
-                LoadingDialog.showScanResultDialog(this,"设备标识有误,请扫码正确的设备二维码");
+                LoadingDialog.showScanResultDialog(this, "设备标识有误,请扫码正确的设备二维码");
                 return;
             }
             if (DeviceTypeEnum.value(localData[2])) {
                 //Intent intent = new Intent(ScanAddDeviceActivity.this,DeviceActivity.class);
-                Intent intent = new Intent(ScanAddDeviceActivity.this,AllDeviceActivity.class);
-                intent.putExtra("ScanDevice",results);
+                Intent intent = new Intent(ScanAddDeviceActivity.this, AllDeviceActivity.class);
+                intent.putExtra("ScanDevice", results);
                 startActivity(intent);
                 //先根据扫码到的tabName跳转到队应的页面
                 //mTabViewPage.setCurrentItem(listTitle.indexOf(localData[2]));
@@ -166,7 +173,7 @@ public class ScanAddDeviceActivity extends BaseActivity {
                 event.setDeviceName(results);
                 EventBus.getDefault().post(event);
             } else {
-                LoadingDialog.showScanResultDialog(this,"此设备类型暂时不支持");
+                LoadingDialog.showScanResultDialog(this, "此设备类型暂时不支持");
             }
         }
     }

@@ -2,9 +2,10 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    >
-    <include layout="@layout/toolbar_para_config"/>
+    android:orientation="vertical">
+
+    <include layout="@layout/toolbar_para_config" />
+
     <FrameLayout
         android:id="@+id/sub_content"
         android:layout_width="match_parent"
@@ -16,8 +17,8 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1px"
-        android:background="@color/grey_300"/>
+        android:background="@color/grey_300" />
 
-    <include layout="@layout/tab_layout_for_bottom"/>
+    <include layout="@layout/tab_layout_for_bottom" />
 
 </LinearLayout>
