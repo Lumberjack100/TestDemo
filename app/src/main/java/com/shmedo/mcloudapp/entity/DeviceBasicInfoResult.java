@@ -30,15 +30,14 @@ public class DeviceBasicInfoResult {
     @Unique
     @Id(autoincrement = false)
     @SerializedName("deviceID")
-    private Long id;    //设备编号deviceID
-
-    private String deviceToken;
-    private String deviceName;
-    private int deviceTypeID;
-    private String deviceTypeName;
-    private String gpsLocation;
-    private String installLocation;
-    private String securityNO;
+    private Long id;    //设备编号
+    private String deviceToken;//设备Token
+    private String deviceName;//设备名称
+    private int deviceTypeID;//设备类型ID
+    private String deviceTypeName;//设备类型名称
+    private String gpsLocation;//设备GPS位置
+    private String installLocation;//设备安装位置说明
+    private String securityNO;//设备解密后的安全码
     private boolean local;  //本地添加数据存储的标记
 
 
@@ -67,6 +66,7 @@ public class DeviceBasicInfoResult {
     public void setId(Long id) {
         this.id = id;
     }
+
     public String getDeviceToken() { return deviceToken;}
 
 
@@ -120,6 +120,9 @@ public class DeviceBasicInfoResult {
         this.local = local;
     }
 
+    public boolean getLocal() {
+        return this.local;
+    }
 
     @Override public String toString() {
         return "DeviceBasicInfoResult{" +
@@ -134,7 +137,5 @@ public class DeviceBasicInfoResult {
             ", local=" + local +
             '}';
     }
-    public boolean getLocal() {
-        return this.local;
-    }
+
 }

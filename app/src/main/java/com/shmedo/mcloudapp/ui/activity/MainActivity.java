@@ -113,35 +113,47 @@ import static com.shmedo.mcloudapp.util.bleutil.Constants.VERIFY_RESULT;
 public class MainActivity extends BaseActivity implements
         LocationSource, AMapLocationListener {
 
-    @BindView(R.id.img_user)
-    ImageView mImgUser;
-    @BindView(R.id.main_titile)
-    TextView mMainTitile;
-    @BindView(R.id.img_equipment)
-    ImageView mImgEquipment;
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
+
+    @BindView(R.id.img_user)
+    ImageView mImgUser;
+
+    @BindView(R.id.main_titile)
+    TextView mMainTitile;
+
+    @BindView(R.id.img_equipment)
+    ImageView mImgEquipment;
+
     @BindView(R.id.map)
     MapView mMapView;
-    @BindView(R.id.RL_scan)
-    RelativeLayout mRLScan;
+
     @BindView(R.id.fab_add)
     FloatingActionButton mFabAdd;
+
     @BindView(R.id.fab_config)
     FloatingActionButton mFabConfig;
+
     @BindView(R.id.fab_location)
     FloatingActionButton mFabLocation;
+
     @BindView(R.id.fab_refresh)
     FloatingActionButton mFabRefresh;
+
     @BindView(R.id.tv_connection)
     TextView mTvConnection;
+
     @BindView(R.id.ll_connection)
     LinearLayout mLlConnection;
+
+    @BindView(R.id.RL_scan)
+    RelativeLayout mRLScan;
+
     @BindView(R.id.img_scan)
     ImageView mImgScan;
 
-    //初始化地图控制器对象
-    private AMap aMap;
+    private AMap aMap; //初始化地图控制器对象
+    private UiSettings mUiSettings;//定义一个UiSettings对象
     private MyLocationStyle myLocationStyle;
     private InfoWinAdapter adapter;
     private OnLocationChangedListener mListener;
@@ -149,7 +161,6 @@ public class MainActivity extends BaseActivity implements
     private AMapLocationClientOption mLocationOption;
     private LatLng myLatLng;
     private boolean followMove = true;
-    private UiSettings mUiSettings;//定义一个UiSettings对象
 
     private LoadingDialog mLoadingDialog;
     private MaterialDialog mMaterialDialog;
@@ -158,8 +169,6 @@ public class MainActivity extends BaseActivity implements
 
     public static BluetoothAdapter mBluetoothAdapter;
     public static MdBluetoothManager mdBluetoothManager;
-    //蓝牙是否已连接
-    public static boolean isConneted = false;
 
     private List<MDevice> list = new ArrayList<>();
     private boolean isShowingDialog = false;
@@ -171,11 +180,11 @@ public class MainActivity extends BaseActivity implements
 
     //当前模式是否是蓝牙模式
     private boolean isBluModle = true;
-
+    //蓝牙是否已连接
+    public static boolean isConneted = false;
     public static boolean autoOpenBt;
     private List<ClusterItem> clusterItemsMerchant = new ArrayList<>();
     private ClusterOverlayMerchant clusterOverlayMerchant;
-
     private Map<Integer, Drawable> mBackDrawAblesMerchant = new HashMap<Integer, Drawable>();
     private int clusterRadius = 48;
 
@@ -212,8 +221,10 @@ public class MainActivity extends BaseActivity implements
         //在activity执行onCreate时执行mMapView.onCreate(savedInstanceState)，创建地图
         mMapView.onCreate(savedInstanceState);
         EventBus.getDefault().register(this);
-        manager.init(this);
+
+        initData();
         hidingConnectionView();
+
         //获取地图要加载的数据
         getDeviceBasicInfoList("1");
         XPermissionUtils.requestPermissionsResult(this, 200, new String[]{
@@ -228,15 +239,15 @@ public class MainActivity extends BaseActivity implements
                     @Override
                     public void onPermissionDenied() {
                         XPermissionUtils.showRefusePermissionDialog(MainActivity.this,
-                                "在设置-应用管理-米易通-权限中开启相机权限");
+                                getResources().getString(R.string.permission_request_location));
                     }
                 });
-        initData();
     }
 
 
     private void initData() {
         mLoadingDialog = new LoadingDialog(this);
+        manager.init(this);
         hander = new Handler();
     }
 
@@ -251,18 +262,17 @@ public class MainActivity extends BaseActivity implements
         mUiSettings.setMyLocationButtonEnabled(false);//设置默认定位按钮是否显示，非必需设置。
         mUiSettings.setLogoPosition(AMapOptions.LOGO_POSITION_BOTTOM_RIGHT);//设置logo位置
 
-        myLocationStyle = new MyLocationStyle();//初始化定位蓝点样式类myLocationStyle.myLocationType(MyLocationStyle.LOCATION_TYPE_LOCATION_ROTATE);//连续定位、且将视角移动到地图中心点，定位点依照设备方向旋转，并且会跟随设备移动。（1秒1次定位）如果不设置myLocationType，默认也会执行此种模式。
+        myLocationStyle = new MyLocationStyle();//初始化定位蓝点样式类
         //myLocationStyle.interval(2000); //设置连续定位模式下的定位间隔，只在连续定位模式下生效，单次定位模式下不会生效。单位为毫秒。
-        //aMap.setMyLocationStyle(myLocationStyle);//设置定位蓝点的Style
-        //aMap.getUiSettings().setMyLocationButtonEnabled(true);设置默认定位按钮是否显示，非必需设置。
         myLocationStyle.strokeColor(getResources().getColor(R.color.app_color_blue_2));// 设置圆形的边框颜色
         myLocationStyle.radiusFillColor(Color.argb(100, 29, 161, 242));// 设置圆形的填充颜色
         myLocationStyle.strokeWidth(1.0f);// 设置圆形的边框粗细
         myLocationStyle.myLocationType(MyLocationStyle.LOCATION_TYPE_LOCATE);//定位一次，且将视角移动到地图中心点。
+        // myLocationStyle.myLocationType(MyLocationStyle.LOCATION_TYPE_LOCATION_ROTATE);//连续定位、且将视角移动到地图中心点，定位点依照设备方向旋转，并且会跟随设备移动。（1秒1次定位）如果不设置myLocationType，默认也会执行此种模式。
         myLocationStyle.showMyLocation(true);
 
         aMap.setMyLocationEnabled(true);// 设置为true表示启动显示定位蓝点，false表示隐藏定位蓝点并不进行定位，默认是false。
-        aMap.setMyLocationStyle(myLocationStyle);
+        aMap.setMyLocationStyle(myLocationStyle);//设置定位蓝点的Style
         //aMap.setLocationSource(this);// 设置定位资源。如果不设置此定位资源则定位按钮不可点击。并且实现activate激活定位,停止定位的回调方法
         aMap.setOnMyLocationChangeListener(new AMap.OnMyLocationChangeListener() {
             @Override
@@ -319,7 +329,7 @@ public class MainActivity extends BaseActivity implements
     public void onLocationChanged(AMapLocation aMapLocation) {
         if (aMapLocation != null) {
             if (mListener != null) {
-                //                aMap.clear();  清除之前的marker
+                // aMap.clear();  清除之前的marker
                 mListener.onLocationChanged(aMapLocation);// 显示系统小蓝点-我的位置
             }
 
@@ -328,13 +338,12 @@ public class MainActivity extends BaseActivity implements
                 aMap.moveCamera(CameraUpdateFactory.newLatLngZoom(myLatLng, 8));
                 String city = aMapLocation.getCity();
                 String address = aMapLocation.getAddress();
-                //                addMarkerToMap(latLng,city,address);
-                Log.i("adu", "=city=" + city + "=address==" + address);
+                //addMarkerToMap(latLng,city,address);
+                Timber.d("city=" + city + ",address=" + address);
             } else {
                 //定位失败时，可通过ErrCode（错误码）信息来确定失败的原因，errInfo是错误信息，详见错误码表。
-                Log.e("AmapError",
-                        "location Error, ErrCode:" + aMapLocation.getErrorCode() + ", errInfo:"
-                                + aMapLocation.getErrorInfo());
+                Timber.e("location Error, ErrCode:" + aMapLocation.getErrorCode() + ", errInfo:"
+                        + aMapLocation.getErrorInfo());
             }
         }
 
@@ -370,8 +379,6 @@ public class MainActivity extends BaseActivity implements
                         mLoadingDialog.dismiss();
 
                         if (infoList.size() != 0) {
-                            Log.i("adu", "---11--" + GsonFactory.getGson().toJson(infoList));
-
                             manager.getDaoSession().getDeviceBasicInfoResultDao().insertOrReplaceInTx(infoList);
                         }
                     }
@@ -379,7 +386,7 @@ public class MainActivity extends BaseActivity implements
                     @Override
                     public void Failure(String message) {
                         mLoadingDialog.dismiss();
-                        Log.i("adu", "服务器连接失败--" + message);
+                        Timber.w("服务器连接失败--" + message);
                         ToastUtil.showSToast("服务器连接失败");
                     }
                 });
@@ -465,12 +472,13 @@ public class MainActivity extends BaseActivity implements
         switch (sensorType) {
             case "DAS":
                 return R.drawable.icon_marker_das;
+
             case "DAG":
-
                 return R.drawable.icon_marker_dag;
-            case "E60":
 
+            case "E60":
                 return R.drawable.icon_marker_e60;
+
             default:
                 return R.drawable.icon_marker;
         }
@@ -480,29 +488,35 @@ public class MainActivity extends BaseActivity implements
             R.id.fab_add, R.id.fab_config, R.id.fab_location, R.id.fab_refresh})
     public void onViewClicked(View view) {
         switch (view.getId()) {
-            case R.id.img_user:
+            case R.id.img_user://用户信息
                 StartActivityUtil.comeOnBaby(this, UserInfoActivity.class);
                 break;
-            case R.id.img_equipment:
+
+            case R.id.img_equipment://设备管理
                 StartActivityUtil.comeOnBaby(this, DeviceManageActivity.class);
                 break;
-            case R.id.RL_scan:
-                //扫一扫
-                Intent intent = new Intent(this, ScanAddDeviceActivity.class);
-                intent.putExtra("position", myLatLng);
-                startActivity(intent);
-                //StartActivityUtil.comeOnBaby(this, ScanAddDeviceActivity.class);
+
+            case R.id.RL_scan: //扫一扫
+                ScanAddDeviceActivity.startActivity(this, myLatLng);
                 break;
-            case R.id.fab_add:
+
+            case R.id.fab_add://添加
                 chooseModel();
                 break;
-            case R.id.fab_config:
+
+            case R.id.fab_config://配置
                 showResultDialog("米易通App远程配置功能开发中...");
                 break;
-            case R.id.fab_location:
-                Log.i("adu", "===" + myLatLng.latitude + "-" + myLatLng.longitude);
-                aMap.moveCamera(CameraUpdateFactory.changeLatLng(myLatLng));
+
+            case R.id.fab_location://定位
+
+                if (myLatLng != null) {
+
+                    Timber.d("latitude=" + myLatLng.latitude + ",longitude=" + myLatLng.longitude);
+                    aMap.moveCamera(CameraUpdateFactory.changeLatLng(myLatLng));
+                }
                 break;
+
             case R.id.fab_refresh:
                 ToastUtil.showSToast("===fab_refresh");
                 break;
@@ -854,7 +868,6 @@ public class MainActivity extends BaseActivity implements
         super.onDestroy();
         //在activity执行onDestroy时执行mMapView.onDestroy()，销毁地图
         mMapView.onDestroy();
-
 
         EventBus.getDefault().unregister(this);
     }

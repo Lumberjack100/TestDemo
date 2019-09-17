@@ -26,18 +26,18 @@ public class App extends Application {
         super.onCreate();
         mAppInstance = this;
         mContext = getApplicationContext();
-        //初始化facebook.stetho
-        AppInit.init(this);
 
         //初始化蒲公英
         //PgyCrashManager.register(this);
+
+        // crash handler
+        AppCrashHandler.getInstance(this);
+
+        //基于 mmap 的高性能通用 key-value 组件
         MMKV.initialize(this);
 
         //日志输出
         initTimber();
-
-        // crash handler
-        AppCrashHandler.getInstance(this);
     }
 
 

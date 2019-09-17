@@ -1,12 +1,18 @@
 package com.shmedo.mcloudapp.util;
 
 import android.content.Context;
+import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
+import android.provider.Settings;
 import android.text.TextUtils;
+
 import com.shmedo.mcloudapp.entity.WifiBean;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,14 +34,59 @@ public class WifiSupport {
     public WifiSupport() {
     }
 
+
+    /**
+     * 打开WIFI
+     *
+     * @param context
+     */
+    public static void openWifi(Context context) {
+        WifiManager wifimanager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+        if (!wifimanager.isWifiEnabled()) {
+            wifimanager.setWifiEnabled(true);
+        }
+    }
+
+    /**
+     * 关闭WIFI
+     *
+     * @param context
+     */
+    public static void closeWifi(Context context) {
+        WifiManager wifimanager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+        if (wifimanager.isWifiEnabled()) {
+            wifimanager.setWifiEnabled(false);
+        }
+    }
+
+    /**
+     * 判断WIFI是否打开
+     *
+     * @param context
+     */
+    public static boolean isOpenWifi(Context context) {
+        WifiManager wifimanager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+        boolean b = wifimanager.isWifiEnabled();
+        return b;
+    }
+
+
+    /**
+     *  检查wifi是否处于连接状态
+     *
+     * @param context
+     */
+    public static boolean isWifiConnected(Context context) {
+        ConnectivityManager connectivityManager = (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo wifiNetworkInfo = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+        return wifiNetworkInfo.isConnected();
+    }
+
     public static List<ScanResult> getWifiScanResult(Context context) {
         boolean b = context == null;
         return ((WifiManager) context.getSystemService(Context.WIFI_SERVICE)).getScanResults();
     }
 
-    public static boolean isWifiEnable(Context context) {
-        return ((WifiManager) context.getSystemService(Context.WIFI_SERVICE)).isWifiEnabled();
-    }
 
     public static WifiInfo getConnectedWifiInfo(Context context) {
         return ((WifiManager) context.getSystemService(Context.WIFI_SERVICE)).getConnectionInfo();
@@ -43,6 +94,13 @@ public class WifiSupport {
 
     public static List getConfigurations(Context context) {
         return ((WifiManager) context.getSystemService(Context.WIFI_SERVICE)).getConfiguredNetworks();
+    }
+
+
+    public static void goWifiSetting(Context context){
+        Intent intent = new Intent(Settings.ACTION_WIFI_SETTINGS);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        context.startActivity(intent);
     }
 
 
@@ -96,7 +154,7 @@ public class WifiSupport {
      */
     public static boolean addNetWork(WifiConfiguration config, Context context) {
 
-        WifiManager wifimanager = (WifiManager)context.getSystemService(Context.WIFI_SERVICE);
+        WifiManager wifimanager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
 
         WifiInfo wifiinfo = wifimanager.getConnectionInfo();
 
@@ -153,27 +211,6 @@ public class WifiSupport {
         return null;
     }
 
-    // 打开WIFI
-    public static void openWifi(Context context) {
-        WifiManager wifimanager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
-        if (!wifimanager.isWifiEnabled()) {
-            wifimanager.setWifiEnabled(true);
-        }
-    }
-
-    // 关闭WIFI
-    public static void closeWifi(Context context) {
-        WifiManager wifimanager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
-        if (wifimanager.isWifiEnabled()) {
-            wifimanager.setWifiEnabled(false);
-        }
-    }
-
-    public static boolean isOpenWifi(Context context){
-        WifiManager wifimanager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
-        boolean b = wifimanager.isWifiEnabled();
-        return b;
-    }
 
     /**
      * 将idAddress转化成string类型的Id字符串
@@ -194,26 +231,6 @@ public class WifiSupport {
         return sb.toString();
     }
 
-    /**
-     * 设置安全性
-     *
-     * @param capabilities
-     * @return
-     */
-    public static String getCapabilitiesString(String capabilities) {
-        if (capabilities.contains("WEP")) {
-            return "WEP";
-        } else if (capabilities.contains("WPA") || capabilities.contains("WPA2") || capabilities.contains("WPS")) {
-            return "WPA/WPA2";
-        } else {
-            return "OPEN";
-        }
-    }
-
-    public static boolean getIsWifiEnabled(Context context) {
-        WifiManager wifimanager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
-        return wifimanager.isWifiEnabled();
-    }
 
     public static void getReplace(Context context, List<WifiBean> list) {
         WifiInfo wifi = WifiSupport.getConnectedWifiInfo(context);
@@ -229,32 +246,31 @@ public class WifiSupport {
         list.clear();
         list.addAll(listCopy);
     }
+
     /**
      * 去除同名WIFI
      *
      * @param oldSr 需要去除同名的列表
      * @return 返回不包含同命的列表
      */
-    public static List<ScanResult> noSameName(List<ScanResult> oldSr)
-    {
+    public static List<ScanResult> noSameName(List<ScanResult> oldSr) {
         List<ScanResult> newSr = new ArrayList<ScanResult>();
-        for (ScanResult result : oldSr)
-        {
+        for (ScanResult result : oldSr) {
             if (!TextUtils.isEmpty(result.SSID) && !containName(newSr, result.SSID))
                 newSr.add(result);
         }
         return newSr;
     }
+
     /**
      * 判断一个扫描结果中，是否包含了某个名称的WIFI
-     * @param sr 扫描结果
+     *
+     * @param sr   扫描结果
      * @param name 要查询的名称
      * @return 返回true表示包含了该名称的WIFI，返回false表示不包含
      */
-    public static boolean containName(List<ScanResult> sr, String name)
-    {
-        for (ScanResult result : sr)
-        {
+    public static boolean containName(List<ScanResult> sr, String name) {
+        for (ScanResult result : sr) {
             if (!TextUtils.isEmpty(result.SSID) && result.SSID.equals(name))
                 return true;
         }
@@ -264,7 +280,7 @@ public class WifiSupport {
     /**
      * 返回level 等级
      */
-    public static int getLevel(int level){
+    public static int getLevel(int level) {
         if (Math.abs(level) < 50) {
             return 1;
         } else if (Math.abs(level) < 75) {

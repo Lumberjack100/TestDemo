@@ -10,15 +10,17 @@ import com.shmedo.mcloudapp.entity.SystemDataInfo;
 import com.shmedo.mcloudapp.entity.UserInfo;
 import com.shmedo.mcloudapp.model.common.CommonVariable;
 import com.shmedo.mcloudapp.util.ApiName;
-import io.reactivex.Observable;
+
 import java.util.List;
+
+import io.reactivex.Observable;
 import okhttp3.RequestBody;
 import retrofit2.http.Body;
-import retrofit2.http.Field;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.Headers;
 import retrofit2.http.POST;
+import retrofit2.http.Url;
 
 /**
  * 项目名：  mCloudapp
@@ -83,6 +85,6 @@ public interface ApiService {
     @POST(ApiName.QUERY_PROJECT_DEVICE)
     Observable<ResultWrapper<PageResult<ProjectDeviceInfo>>> QueryProjectDevice(@Header(CommonVariable.ACCESS_TOKEN)String token, @Body RequestBody parameter);
 
-
-
+    @GET
+    Observable<ResultWrapper<String>> ValidateDeviceE60(@Url String url);
 }

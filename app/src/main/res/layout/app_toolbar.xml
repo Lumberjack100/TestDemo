@@ -1,58 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.Toolbar
+<android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/toolbar"
-    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_gravity="top"
     android:layout_height="50dp"
-    android:background="?attr/colorPrimary"
-    >
+    android:layout_gravity="top"
+    android:background="?attr/colorPrimary">
 
     <RelativeLayout
-
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        >
+        android:layout_height="match_parent">
 
-    <ImageView
-        android:id="@+id/img_user"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:layout_alignParentLeft="true"
-         android:layout_centerVertical="true"
-        android:textColor="@color/white"
-        android:src="@drawable/icon_users"/>
-
-
-      <!--  <ImageView
-            android:id="@+id/no_upload_location"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_marginRight="30dp"
-             android:layout_marginTop="20dp"
-            android:src="@mipmap/location_error"
-
-            />
         <ImageView
-            android:id="@+id/uploadgif"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_alignParentRight="true"
-            android:layout_marginRight="20dp"
-            android:layout_marginTop="20dp"
-            android:visibility="gone"
-            />-->
+            android:id="@+id/img_user"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:src="@drawable/icon_users"
+            android:textColor="@color/white" />
+
+
+        <!--  <ImageView
+              android:id="@+id/no_upload_location"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:layout_alignParentRight="true"
+              android:layout_marginRight="30dp"
+               android:layout_marginTop="20dp"
+              android:src="@mipmap/location_error"
+
+              />
+          <ImageView
+              android:id="@+id/uploadgif"
+              android:layout_width="50dp"
+              android:layout_height="50dp"
+              android:layout_alignParentRight="true"
+              android:layout_marginRight="20dp"
+              android:layout_marginTop="20dp"
+              android:visibility="gone"
+              />-->
 
         <TextView
             android:id="@+id/main_titile"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:gravity="center_vertical"
             android:layout_centerHorizontal="true"
-            android:textColor="@color/white"
+            android:gravity="center_vertical"
             android:text="米易通"
-            android:textSize="20sp"/>
+            android:textColor="@color/white"
+            android:textSize="20sp" />
+
         <!--<ImageView
             android:id="@+id/deleteall"
             android:layout_width="wrap_content"
@@ -78,14 +75,12 @@
             android:id="@+id/img_equipment"
             android:layout_width="30dp"
             android:layout_height="30dp"
+            android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:layout_marginRight="8dp"
-            android:layout_alignParentRight="true"
-            android:src="@drawable/icon_equipment"
-            />
+            android:src="@drawable/icon_equipment" />
 
     </RelativeLayout>
-
 
 
 </android.support.v7.widget.Toolbar>

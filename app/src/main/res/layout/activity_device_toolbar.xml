@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/mainll"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="?attr/colorPrimary"
-    android:id="@+id/mainll"
-
     android:fitsSystemWindows="true"
     android:orientation="vertical">
+
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="?attr/colorPrimary"
-        app:popupTheme="@style/ToolbarPopupTheme"
         android:navigationIcon="@drawable/ic_arrow_back"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-        >
+        app:popupTheme="@style/ToolbarPopupTheme">
+
         <TextView
             android:id="@+id/toolbar_title"
             android:layout_width="wrap_content"

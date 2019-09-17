@@ -10,4 +10,7 @@ package com.shmedo.mcloudapp.model;
 public interface Extras {
 
      String QUERY_PROJECT_DEVICE = "queryProjectDevice";
+
+     String DEVICE_LATLNG = "device_latlng";
+
 }

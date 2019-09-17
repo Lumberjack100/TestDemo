@@ -1,9 +1,9 @@
 package com.shmedo.mcloudapp.ui.activity;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
@@ -12,6 +12,7 @@ import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.base.BaseActivity;
 import com.shmedo.mcloudapp.entity.DeviceTypeEnum;
 import com.shmedo.mcloudapp.entity.event.MapDeviceEvent;
+import com.shmedo.mcloudapp.model.Extras;
 import com.shmedo.mcloudapp.util.StartActivityUtil;
 import com.shmedo.mcloudapp.util.StringUtil;
 import com.shmedo.mcloudapp.util.ToastUtil;
@@ -36,12 +37,30 @@ import timber.log.Timber;
  * 描述：    扫码配置页面
  */
 public class ScanAddDeviceActivity extends BaseActivity {
-    @BindView(R.id.scan_config)
-    Button mScanConfig;
-    @BindView(R.id.input_config)
-    Button mInputConfig;
     private static final int REQUEST_CODE_SCAN = 1;
 
+    @BindView(R.id.scan_config)
+    Button mScanConfig;
+
+    @BindView(R.id.input_config)
+    Button mInputConfig;
+
+
+
+    /**
+     * 说明：启动Activity
+     * <p>
+     * 注意：这里使用到了Intent的Flag属性singleTop。singleTop模式下，在同一个task中，如果存在该Activity的实例，
+     * 并且该Activity实例位于栈顶(即，该Activity位于前端)，则调用startActivity()时，不再创建该Activity的示例；
+     * 而仅仅只是调用Activity的onNewIntent()。否则的话，则新建该Activity的实例，并将其置于栈顶。
+     * </p>
+     */
+    public static void startActivity(Context context, LatLng myLatLng) {
+        Intent intent = new Intent(context, ScanAddDeviceActivity.class);
+        intent.putExtra(Extras.DEVICE_LATLNG, myLatLng);
+        intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        context.startActivity(intent);
+    }
 
     @Override
     protected int initContentView() {
@@ -58,8 +77,10 @@ public class ScanAddDeviceActivity extends BaseActivity {
 
     private void initData() {
 
-        LatLng latLng = getIntent().getParcelableExtra("position");
-        Log.i("adu", latLng.longitude + "====" + latLng.latitude);
+        LatLng latLng = getIntent().getParcelableExtra(Extras.DEVICE_LATLNG);
+        if (latLng != null) {
+            Timber.d("latitude=" + latLng.latitude + ",longitude=" + latLng.longitude);
+        }
     }
 
 
@@ -83,6 +104,7 @@ public class ScanAddDeviceActivity extends BaseActivity {
                             }
                         });
                 break;
+
             case R.id.input_config:
                 StartActivityUtil.comeOnBaby(this, InputDeviceSNActivity.class);
                 break;
