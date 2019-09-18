@@ -44,4 +44,9 @@ public class AllDeviceActivity extends BaseActivity {
         super.onActivityResult(requestCode, resultCode, data);
 
     }
+
+
+    @Override public void onBackPressed() {
+        super.onBackPressed();
+    }
 }

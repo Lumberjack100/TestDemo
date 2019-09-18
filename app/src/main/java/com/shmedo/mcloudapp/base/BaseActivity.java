@@ -10,6 +10,7 @@ import android.view.MenuItem;
 import com.shmedo.mcloudapp.util.XPermissionUtils;
 
 import butterknife.ButterKnife;
+import com.shmedo.mcloudapp.util.common.HandleBackUtil;
 import timber.log.Timber;
 
 /**
@@ -94,4 +95,10 @@ public abstract class BaseActivity extends AppCompatActivity {
         super.onDestroy();
     }
 
+
+    @Override public void onBackPressed() {
+        if (!HandleBackUtil.handleBackPress(this)) {
+            super.onBackPressed();
+        }
+    }
 }

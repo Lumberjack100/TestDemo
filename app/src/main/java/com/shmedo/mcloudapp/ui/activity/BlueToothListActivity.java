@@ -83,7 +83,7 @@ public class BlueToothListActivity extends Activity {
                             //Intent intent = new Intent(BlueToothListActivity.this,DeviceActivity.class);
                             Intent intent = new Intent(BlueToothListActivity.this,AllDeviceActivity.class);
                             intent.putExtra("device",deviceName);
-                            intent.putExtra("deviceTrue",true);
+                            //intent.putExtra("deviceTrue",true);
                             //setResult(Activity.RESULT_OK, intent);
                             //finish();
                             startActivity(intent);

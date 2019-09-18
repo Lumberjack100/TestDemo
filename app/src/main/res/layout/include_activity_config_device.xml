@@ -537,11 +537,11 @@
                 android:layout_centerVertical="true"
                 android:layout_marginRight="10dp"
                 android:layout_toLeftOf="@id/sw_rain"
-                android:background="@color/colorPrimary"
+
                 android:textColor="@color/white"
                 android:textSize="14sp"
                 android:gravity="center_vertical|center_horizontal"
-                android:text="配置"/>
+                 />
             <ch.ielse.view.SwitchView
                 android:id="@+id/sw_rain"
                 android:layout_width="wrap_content"
@@ -573,11 +573,9 @@
                 android:layout_centerVertical="true"
                 android:layout_marginRight="10dp"
                 android:layout_toLeftOf="@id/sw_osmometer"
-                android:background="@color/colorPrimary"
                 android:textColor="@color/white"
                 android:textSize="14sp"
-                android:gravity="center_vertical|center_horizontal"
-                android:text="配置"/>
+                android:gravity="center_vertical|center_horizontal"/>
             <ch.ielse.view.SwitchView
                 android:id="@+id/sw_osmometer"
                 android:layout_width="wrap_content"
