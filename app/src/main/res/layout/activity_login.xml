@@ -2,16 +2,16 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
-     >
+    android:orientation="vertical">
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="0.4"
-        >
+        android:layout_weight="0.4">
+
         <RelativeLayout
             android:id="@+id/rrl"
             android:layout_width="wrap_content"
@@ -25,28 +25,29 @@
                 android:layout_height="120dp"
                 android:src="@drawable/userphoto"
                 app:civ_border_color="@color/color_main"
-                app:civ_border_width="2dp"/>
+                app:civ_border_width="2dp" />
+
         </RelativeLayout>
+
         <TextView
-            android:layout_below="@+id/rrl"
-            android:text="米易通"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/color_main"
-            android:textSize="20sp"
-            android:layout_marginTop="8dp"
+            android:layout_below="@+id/rrl"
             android:layout_centerInParent="true"
-            />
+            android:layout_marginTop="8dp"
+            android:text="米易通"
+            android:textColor="@color/color_main"
+            android:textSize="20sp" />
+
         <ImageView
             android:id="@+id/server_config"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_alignParentRight="true"
+            android:layout_marginTop="30dp"
             android:layout_marginRight="20dp"
             android:gravity="center"
-            android:layout_marginTop="30dp"
-            android:src="@drawable/server_config"
-            />
+            android:src="@drawable/server_config" />
         <!--<ImageView
             android:id="@+id/setImageViewGif"
             android:layout_width="40dp"
@@ -61,48 +62,49 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_weight="0.6"
         android:layout_height="0dp"
+        android:layout_weight="0.6"
         android:background="@color/white"
         android:orientation="vertical">
+
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="60dp"
             android:layout_marginLeft="45dp"
-            android:layout_marginRight="45dp"
-            >
+            android:layout_marginRight="45dp">
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
+
                 <TextView
                     android:id="@+id/login_accountLogin"
                     android:layout_width="0dp"
-                    android:layout_weight="1"
                     android:layout_height="match_parent"
+                    android:layout_weight="1"
                     android:background="@color/white"
                     android:gravity="center"
                     android:padding="16dp"
+                    android:text="账号登录"
                     android:textColor="@color/app_color_blue_2"
                     android:textSize="18sp"
-                    android:textStyle="bold"
-                    android:text="账号登录"
-                    />
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/login_quickLogin"
                     android:layout_width="0dp"
-                    android:layout_weight="1"
                     android:layout_height="match_parent"
+                    android:layout_weight="1"
                     android:background="@color/white"
                     android:gravity="center"
                     android:padding="16dp"
+                    android:text="快速登录"
                     android:textColor="@color/font_main_79"
                     android:textSize="18sp"
-                    android:textStyle="bold"
-                    android:text="快速登录"
-                    />
+                    android:textStyle="bold" />
             </LinearLayout>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -114,48 +116,46 @@
                     android:layout_width="0dp"
                     android:layout_height="3dp"
                     android:layout_weight="1"
-                    android:background="@color/app_color_blue_2"/>
+                    android:background="@color/app_color_blue_2" />
 
                 <TextView
                     android:id="@+id/login_select_right_line"
                     android:layout_width="0dp"
                     android:layout_height="3dp"
                     android:layout_weight="1"
-                    android:background="@color/font_main_79"
-                     />
+                    android:background="@color/font_main_79" />
             </LinearLayout>
         </RelativeLayout>
+
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
+
             <LinearLayout
                 android:id="@+id/ll_account_login"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:background="@color/white"
                 android:layout_marginLeft="45dp"
                 android:layout_marginRight="45dp"
-                 >
+                android:background="@color/white"
+                android:orientation="vertical">
 
                 <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    >
+                    android:layout_height="wrap_content">
 
                     <com.shmedo.mcloudapp.views.ClearEditText
                         android:id="@+id/login_editText_account"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:background="@drawable/edit_bg"
                         android:layout_centerVertical="true"
+                        android:background="@drawable/edit_bg"
+                        android:hint="@string/login_input_username_hint"
                         android:padding="16dp"
                         android:scrollHorizontally="true"
                         android:singleLine="true"
                         android:textColorHint="@color/gray01"
-                        android:textSize="14sp"
-                        android:hint="@string/login_input_username_hint"
-                        />
+                        android:textSize="14sp" />
 
                     <!--<ImageView
                         android:id="@+id/login_img_clear_username"
@@ -172,8 +172,7 @@
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
-                    android:background="#50666666"
-                    />
+                    android:background="#50666666" />
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -181,17 +180,17 @@
 
                     <com.shmedo.mcloudapp.views.ClearEditText
                         android:id="@+id/login_account_password"
-                        android:inputType="textPassword"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:background="@drawable/edit_bg"
                         android:layout_centerVertical="true"
+                        android:background="@drawable/edit_bg"
+                        android:hint="@string/login_input_password_hint"
+                        android:inputType="textPassword"
                         android:padding="16dp"
                         android:scrollHorizontally="true"
                         android:singleLine="true"
                         android:textColorHint="@color/gray01"
-                        android:textSize="14sp"
-                        android:hint="@string/login_input_password_hint"/>
+                        android:textSize="14sp" />
 
                     <!--<ImageView
                         android:id="@+id/login_account_clear_password"
@@ -204,47 +203,45 @@
                         android:src="@mipmap/delete_username"
                         android:visibility="gone"/>-->
                 </RelativeLayout>
+
                 <Button
                     android:id="@+id/btn_login_account"
                     android:layout_width="match_parent"
                     android:layout_height="45dp"
-                    android:background="@drawable/btn_blue_selector"
                     android:layout_marginTop="20dp"
+                    android:background="@drawable/btn_blue_selector"
+                    android:text="登 录"
                     android:textColor="@color/white"
-                    android:textSize="16dp"
-                    android:text="登 录" />
+                    android:textSize="16dp" />
             </LinearLayout>
 
             <LinearLayout
                 android:id="@+id/ll_phone_login"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:background="@color/white"
                 android:layout_marginLeft="45dp"
                 android:layout_marginRight="45dp"
-                android:visibility="gone"
-                 >
+                android:background="@color/white"
+                android:orientation="vertical"
+                android:visibility="gone">
 
                 <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    >
+                    android:layout_height="wrap_content">
 
                     <com.shmedo.mcloudapp.views.ClearEditText
                         android:id="@+id/login_editText_iphone"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:background="@drawable/edit_bg"
-                        android:inputType="phone"
                         android:layout_centerVertical="true"
+                        android:background="@drawable/edit_bg"
+                        android:hint="@string/login_input_phone_hint"
+                        android:inputType="phone"
                         android:padding="16dp"
                         android:scrollHorizontally="true"
                         android:singleLine="true"
                         android:textColorHint="@color/gray01"
-                        android:textSize="14sp"
-                        android:hint="@string/login_input_phone_hint"
-                        />
+                        android:textSize="14sp" />
 
                     <!--<ImageView
                         android:id="@+id/login_clear_img_phone"
@@ -261,8 +258,7 @@
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="0.5dp"
-                    android:background="#50666666"
-                    />
+                    android:background="#50666666" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -271,30 +267,30 @@
 
                     <com.shmedo.mcloudapp.views.ClearEditText
                         android:id="@+id/login_phone_password"
-                        android:inputType="numberPassword"
                         android:layout_width="0dp"
-                        android:layout_weight="7"
                         android:layout_height="wrap_content"
-                        android:background="@drawable/edit_bg"
                         android:layout_centerVertical="true"
+                        android:layout_weight="7"
+                        android:background="@drawable/edit_bg"
+                        android:hint="@string/login_input_code_hint"
+                        android:inputType="numberPassword"
                         android:padding="16dp"
                         android:scrollHorizontally="true"
                         android:singleLine="true"
                         android:textColorHint="@color/gray01"
-                        android:textSize="14sp"
-                        android:hint="@string/login_input_code_hint"/>
+                        android:textSize="14sp" />
+
                     <Button
                         android:id="@+id/btn_getCode"
                         android:layout_width="0dp"
-                        android:layout_weight="3"
                         android:layout_height="50dp"
                         android:layout_alignParentRight="true"
                         android:layout_centerVertical="true"
+                        android:layout_marginLeft="5dp"
+                        android:layout_weight="3"
                         android:background="@drawable/edit_bg2"
                         android:text="获取验证码"
-                        android:textColor="@color/white"
-                         android:layout_marginLeft="5dp"
-                        />
+                        android:textColor="@color/white" />
                     <!--<ImageView
                         android:id="@+id/login_clear_img_phone_pwd"
                         android:layout_width="40dp"
@@ -309,15 +305,16 @@
                          />-->
 
                 </LinearLayout>
+
                 <Button
                     android:id="@+id/btn_login_phone"
                     android:layout_width="match_parent"
                     android:layout_height="45dp"
-                    android:background="@drawable/btn_blue_selector"
                     android:layout_marginTop="20dp"
+                    android:background="@drawable/btn_blue_selector"
+                    android:text="登 录"
                     android:textColor="@color/white"
-                    android:textSize="16dp"
-                    android:text="登 录" />
+                    android:textSize="16dp" />
             </LinearLayout>
 
         </RelativeLayout>
@@ -326,47 +323,47 @@
 
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginRight="45dp"
             android:layout_marginLeft="45dp"
-            >
-
+            android:layout_marginRight="45dp"
+            android:orientation="horizontal">
 
 
         </LinearLayout>
+
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
+            android:layout_marginLeft="45dp"
             android:layout_marginTop="20dp"
             android:layout_marginRight="45dp"
-            android:layout_marginLeft="45dp">
+            android:orientation="horizontal">
+
             <TextView
                 android:id="@+id/tv_registered"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="注册账户"
                 android:textColor="@color/app_color_blue_2"
-                android:textSize="14sp"
-                />
+                android:textSize="14sp" />
+
             <TextView
                 android:id="@+id/tourists_login"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:visibility="invisible"
                 android:text="游客登录"
                 android:textColor="@color/app_color_blue_2"
-                android:textSize="14sp"
-                android:layout_centerInParent="true"
-                />
+                android:textSize="14sp" />
+
             <TextView
                 android:id="@+id/tv_forgot_password"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
                 android:text="忘记密码"
                 android:textColor="@color/app_color_blue_2"
-                android:textSize="14sp"
-                android:layout_alignParentRight="true"
-                />
+                android:textSize="14sp" />
         </RelativeLayout>
     </LinearLayout>
 
@@ -374,8 +371,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:gravity="bottom|center">
+        android:gravity="bottom|center"
+        android:orientation="vertical">
 
         <TextView
             android:layout_width="match_parent"

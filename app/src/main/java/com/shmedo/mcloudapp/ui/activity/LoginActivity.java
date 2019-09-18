@@ -405,7 +405,6 @@ public class LoginActivity extends BaseActivity {
                     @Override
                     public void Success(UserInfo userInfo, String message) {
                         dialog.dismiss();
-                        ToastUtil.showLToast("登录成功");
 
                         Long id = Long.valueOf(userInfo.getUser().getId());
                         userInfoWrapper.setId(id);
