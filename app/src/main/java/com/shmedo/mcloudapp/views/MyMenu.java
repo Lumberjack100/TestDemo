@@ -4,7 +4,6 @@ import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
@@ -12,6 +11,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
+
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.util.DensityUtil;
 
@@ -48,7 +48,6 @@ public class MyMenu extends Dialog implements View.OnClickListener{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.i("111","MyMenu ------------onCreate()");
         setFullScreen();
         setContentView(R.layout.ac_menu);
         windowDeploy(0, 0);

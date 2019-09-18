@@ -1,8 +1,9 @@
 package com.shmedo.mcloudapp.entity;
 
 import org.greenrobot.greendao.annotation.Entity;
-import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Generated;
+import org.greenrobot.greendao.annotation.Id;
+import org.greenrobot.greendao.annotation.Unique;
 
 /**
  * 项目名：  mCloudapp
@@ -14,7 +15,8 @@ import org.greenrobot.greendao.annotation.Generated;
  */
 @Entity
 public class UserInfoWrapper {
-    @Id(autoincrement = true)
+    @Unique
+    @Id
     private Long id;
     private String userInfo;
 

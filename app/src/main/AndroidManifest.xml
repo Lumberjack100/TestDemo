@@ -61,12 +61,16 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity> <!-- 定位需要的服务 使用2.0的定位需要加上这个 -->
+        </activity>
+
+        <!-- 定位需要的服务 使用2.0的定位需要加上这个 -->
         <service android:name="com.amap.api.location.APSService" />
 
         <meta-data
             android:name="com.amap.api.v2.apikey"
-            android:value="31d7ee436c402270e11183ce1b5d01dc" /> <!-- 兼容7.0 -->
+            android:value="31d7ee436c402270e11183ce1b5d01dc" />
+
+        <!-- 兼容7.0 -->
         <provider
             android:name="android.support.v4.content.FileProvider"
             android:authorities="com.shmedo.mcloudapp.FileProvider"
@@ -75,9 +79,12 @@
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths" />
+
         </provider>
 
-        <activity android:name=".ui.activity.MainActivity" />
+        <activity android:name=".ui.activity.MainActivity"
+            android:label="主页面"/>
+
         <activity
             android:name=".ui.activity.LoginActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"

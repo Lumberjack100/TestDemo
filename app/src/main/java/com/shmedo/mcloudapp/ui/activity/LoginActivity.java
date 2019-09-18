@@ -58,41 +58,58 @@ public class LoginActivity extends BaseActivity {
 
     @BindView(R.id.user_image)
     CircleImageView mUserImage;
+
     @BindView(R.id.login_accountLogin)
     TextView mLoginAccountLogin;
+
     @BindView(R.id.login_quickLogin)
     TextView mLoginQuickLogin;
+
     @BindView(R.id.login_select_left_line)
     TextView mLoginSelectLeftLine;
+
     @BindView(R.id.login_select_right_line)
     TextView mLoginSelectRightLine;
+
     @BindView(R.id.ll_account_login)
     LinearLayout mLlAccountLogin;
+
     @BindView(R.id.ll_phone_login)
     LinearLayout mLlPhoneLogin;
+
     @BindView(R.id.login_editText_account)
     ClearEditText mLoginEditTextAccount;
+
     @BindView(R.id.login_account_password)
     ClearEditText mLoginAccountPassword;
+
     @BindView(R.id.login_editText_iphone)
     ClearEditText mLoginEditTextIphone;
+
     @BindView(R.id.login_phone_password)
     ClearEditText mLoginPhonePassword;
+
     @BindView(R.id.btn_getCode)
     Button mBtnGetCode;
+
     @BindView(R.id.server_config)
     ImageView mServerConfig;
-    @BindView(R.id.tv_registered)
-    TextView mTvRegistered;
-    @BindView(R.id.tv_forgot_password)
-    TextView mTvForgotPassword;
+
     @BindView(R.id.btn_login_account)
     Button mBtnLoginAccount;
+
     @BindView(R.id.btn_login_phone)
     Button mBtnLoginPhone;
+
+    @BindView(R.id.tv_registered)
+    TextView mTvRegistered;
+
+    @BindView(R.id.tv_forgot_password)
+    TextView mTvForgotPassword;
+
     @BindView(R.id.tourists_login)
     TextView mTouristsLogin;
-    private int mSecCount;
+
     private DaoManager manager = DaoManager.getInstance();
     private LoadingDialog dialog;
     private UserInfoWrapper userInfoWrapper = new UserInfoWrapper();
@@ -180,13 +197,10 @@ public class LoginActivity extends BaseActivity {
         switch (view.getId()) {
             case R.id.login_accountLogin:
                 //账号登录
-                mLoginAccountLogin.setTextColor(
-                        ContextCompat.getColor(this, R.color.app_color_blue_2));
+                mLoginAccountLogin.setTextColor(ContextCompat.getColor(this, R.color.app_color_blue_2));
                 mLoginQuickLogin.setTextColor(ContextCompat.getColor(this, R.color.font_main_79));
-                mLoginSelectLeftLine.setBackgroundColor(
-                        ContextCompat.getColor(this, R.color.app_color_blue_2));
-                mLoginSelectRightLine.setBackgroundColor(
-                        ContextCompat.getColor(this, R.color.font_main_79));
+                mLoginSelectLeftLine.setBackgroundColor(ContextCompat.getColor(this, R.color.app_color_blue_2));
+                mLoginSelectRightLine.setBackgroundColor(ContextCompat.getColor(this, R.color.font_main_79));
                 mLlAccountLogin.setVisibility(View.VISIBLE);
                 mLlPhoneLogin.setVisibility(View.GONE);
                 mTvForgotPassword.setVisibility(View.VISIBLE);
@@ -195,12 +209,9 @@ public class LoginActivity extends BaseActivity {
             case R.id.login_quickLogin:
                 //手机快速登录
                 mLoginAccountLogin.setTextColor(ContextCompat.getColor(this, R.color.font_main_79));
-                mLoginQuickLogin.setTextColor(
-                        ContextCompat.getColor(this, R.color.app_color_blue_2));
-                mLoginSelectLeftLine.setBackgroundColor(
-                        ContextCompat.getColor(this, R.color.font_main_79));
-                mLoginSelectRightLine.setBackgroundColor(
-                        ContextCompat.getColor(this, R.color.app_color_blue_2));
+                mLoginQuickLogin.setTextColor(ContextCompat.getColor(this, R.color.app_color_blue_2));
+                mLoginSelectLeftLine.setBackgroundColor(ContextCompat.getColor(this, R.color.font_main_79));
+                mLoginSelectRightLine.setBackgroundColor(ContextCompat.getColor(this, R.color.app_color_blue_2));
                 mLlAccountLogin.setVisibility(View.GONE);
                 mLlPhoneLogin.setVisibility(View.VISIBLE);
                 mTvForgotPassword.setVisibility(View.GONE);
@@ -377,9 +388,9 @@ public class LoginActivity extends BaseActivity {
                 .subscribe(new BaseObserver<String>() {
 
                     @Override
-                    public void Success(String s, String message) {
+                    public void Success(String token, String message) {
                         dialog.dismiss();
-                        getMyInfo(s, uid, pwd);
+                        getMyInfo(token, uid, pwd);
                     }
 
                     @Override
@@ -393,6 +404,7 @@ public class LoginActivity extends BaseActivity {
 
     /**
      * 获取用户信息
+     *
      * @param token
      * @param uid
      * @param pwd
@@ -406,13 +418,14 @@ public class LoginActivity extends BaseActivity {
                     public void Success(UserInfo userInfo, String message) {
                         dialog.dismiss();
 
+                        CommonVariable.setAccessToken(token);
+                        CommonVariable.setCurrentUserInfo(userInfo);
+
                         Long id = Long.valueOf(userInfo.getUser().getId());
                         userInfoWrapper.setId(id);
                         userInfoWrapper.setUserInfo(GsonFactory.getGson().toJson(userInfo));
-                        manager.getDaoSession()
-                                .getUserInfoWrapperDao()
-                                .insertOrReplace(userInfoWrapper);
-                        CommonVariable.setCurrentUserInfo(userInfo);
+                        manager.getDaoSession().getUserInfoWrapperDao().insertOrReplace(userInfoWrapper);
+
                         userConfig.writeString(CommonVariable.ACCOUNT, userInfo.getUser().getAccount());
                         userConfig.writeString(CommonVariable.USER_ID, String.valueOf(userInfo.getUser().getId()));
                         if (userInfo.getUser().getHeadPhotoPath() != null) {
@@ -421,17 +434,11 @@ public class LoginActivity extends BaseActivity {
                         }
 
                         if (uid != null && pwd != null) {
-                            CommonVariable.setAccount(uid);
-                            CommonVariable.setPassword(pwd);
-                            CommonVariable.setAccessToken(token);
-
                             userConfig.writeString(CommonVariable.UID, uid);
                             userConfig.writeString(CommonVariable.PWD, pwd);
                         }
 
                         Intent in = new Intent(LoginActivity.this, MainActivity.class);
-                        //Bundle bundle = new Bundle();
-                        //in.putExtra("isAutoLogin", isAutoLogin);
                         startActivity(in);
                         finish();
                     }

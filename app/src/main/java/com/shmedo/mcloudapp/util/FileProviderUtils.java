@@ -22,16 +22,16 @@ public class FileProviderUtils {
     /**
      * 从文件获得URI
      *
-     * @param activity 上下文
-     * @param file     文件
+     * @param context 上下文
+     * @param file    文件
      * @return 文件对应的URI
      */
-    public static Uri uriFromFile(Activity activity, File file) {
+    public static Uri uriFromFile(Context context, File file) {
         Uri fileUri;
         //7.0以上进行适配
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            String p = activity.getPackageName() + ".FileProvider";
-            fileUri = FileProvider.getUriForFile(activity, p, file);
+            String p = context.getPackageName() + ".FileProvider";
+            fileUri = FileProvider.getUriForFile(context, p, file);
         } else {
             fileUri = Uri.fromFile(file);
         }
@@ -48,11 +48,7 @@ public class FileProviderUtils {
      * @param file      文件
      * @param writeAble 是否赋予可写URI的权限
      */
-    public static void setIntentDataAndType(Activity activity,
-                                            Intent intent,
-                                            String type,
-                                            File file,
-                                            boolean writeAble) {
+    public static void setIntentDataAndType(Activity activity, Intent intent, String type, File file, boolean writeAble) {
         //7.0以上进行适配
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             intent.setDataAndType(uriFromFile(activity, file), type);
@@ -75,11 +71,7 @@ public class FileProviderUtils {
      * @param fileUri   文件uri
      * @param writeAble 是否赋予可写URI的权限
      */
-    public static void setIntentDataAndType(Context context,
-                                            Intent intent,
-                                            String type,
-                                            Uri fileUri,
-                                            boolean writeAble) {
+    public static void setIntentDataAndType(Context context, Intent intent, String type, Uri fileUri, boolean writeAble) {
         //7.0以上进行适配
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             intent.setDataAndType(fileUri, type);

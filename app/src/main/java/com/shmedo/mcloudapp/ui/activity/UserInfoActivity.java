@@ -10,13 +10,9 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.facebook.stetho.common.LogUtil;
-import com.google.gson.reflect.TypeToken;
 import com.shmedo.das.utils.StringUtil;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.base.BaseActivity;
@@ -60,30 +56,33 @@ public class UserInfoActivity extends BaseActivity {
 
     @BindView(R.id.circle_image)
     CircleImageView mCircleImage;
-    @BindView(R.id.ll_change_photo)
-    LinearLayout mLlChangePhoto;
+
     @BindView(R.id.tv_account)
     TextView mTvAccount;
-    @BindView(R.id.tv_phone)
-    TextView mTvPhone;
+
     @BindView(R.id.tv_name)
     TextView mTvName;
+
+    @BindView(R.id.tv_phone)
+    TextView mTvPhone;
+
     @BindView(R.id.tv_company)
     TextView mTvCompany;
+
     @BindView(R.id.tv_department)
     TextView mTvDepartment;
+
     @BindView(R.id.RL_advice)
     RelativeLayout mRLAdvice;
-    @BindView(R.id.btn_exit)
-    Button mBtnExit;
+
     private DaoManager manager = DaoManager.getInstance();
     private UserInfoWrapper userInfoWrapper;
     private UserInfo userInfo;
     private UserInfo.UserBean user;
     private InputMethodManager imm;
+    private LoadingDialog mLoadingDialog;
     private MyMenu myMenu;
     private boolean isCamera = false;
-    private LoadingDialog mLoadingDialog;
 
     @Override
     protected int initContentView() {
@@ -101,19 +100,17 @@ public class UserInfoActivity extends BaseActivity {
 
     private void initData() {
         manager.init(this);
-        userInfoWrapper = manager.getDaoSession().getUserInfoWrapperDao().queryBuilder().unique();
-        userInfo = GsonFactory.getGson().fromJson(userInfoWrapper.getUserInfo(), new TypeToken<UserInfo>() {
-        }.getType());
 
+        userInfo = CommonVariable.getCurrentUserInfo();
         if (userInfo != null && userInfo.getUser() != null) {
             user = userInfo.getUser();
             if (user.getHeadPhotoPath() != null) {
                 GlideUtils.loadImage(this, user.getHeadPhotoPath(), mCircleImage, R.drawable.userphoto);
             }
             mTvAccount.setText(user.getAccount() != null ? user.getAccount() : "");
-            mTvPhone.setText(user.getCellPhone() != null ? user.getCellPhone() : "");
             mTvName.setText(user.getName() != null ? user.getName() : "");
-            mTvCompany.setText(user.getPosition() != null ? user.getPosition() : "");
+            mTvPhone.setText(user.getCellPhone() != null ? user.getCellPhone() : "");
+            mTvCompany.setText("");
             mTvDepartment.setText("");
         }
     }
@@ -285,13 +282,11 @@ public class UserInfoActivity extends BaseActivity {
         }
 
         File f = new File(userPhotFileName);
-        LogUtil.i("adu", userPhotFileName + "tbUser.getHeadPhotoPath()===22==" + f.getName());
         if (f.exists()) {
             Bitmap bitmap = ImageUtil.getLocalImage(userPhotFileName);
             if (bitmap != null) {
                 mCircleImage.setImageBitmap(bitmap);
             }
-            LogUtil.d("adu", "tbUser.getHeadPhotoPath()===222222==" + f.exists());
         } else {
             userInfo = CommonVariable.getCurrentUserInfo();
             if (userInfo == null) {
