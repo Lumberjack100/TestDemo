@@ -11,6 +11,8 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import butterknife.ButterKnife;
 import com.shmedo.mcloudapp.util.XPermissionUtils;
+import com.shmedo.mcloudapp.util.common.HandleBackInterface;
+import com.shmedo.mcloudapp.util.common.HandleBackUtil;
 
 /**
  * 项目名：  eMeasApp
@@ -21,7 +23,7 @@ import com.shmedo.mcloudapp.util.XPermissionUtils;
  * 描述：    TODO
  */
 
-public abstract class BaseFragment extends Fragment {
+public abstract class BaseFragment extends Fragment implements HandleBackInterface {
 
     @Nullable @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -63,5 +65,10 @@ public abstract class BaseFragment extends Fragment {
     @Override public void onPause() {
         super.onPause();
 
+    }
+
+
+    @Override public boolean onBackPressed() {
+        return HandleBackUtil.handleBackPress(this);
     }
 }
