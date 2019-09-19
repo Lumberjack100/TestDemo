@@ -609,7 +609,7 @@ public class MainActivity extends BaseActivity implements
         mdBluetoothManager.setEventHandler(new MdBluetoothEventHandler());
         if (mBluetoothAdapter == null || !mBluetoothAdapter.isEnabled()) {
             Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-            startActivityForResult(enableBtIntent, 1);
+            startActivityForResult(enableBtIntent, REQUEST_CONNECT_DEVICE);
         }
         mdBluetoothManager.scanDevice(20, this);
 

@@ -194,9 +194,11 @@ public class UserInfoActivity extends BaseActivity {
         if (resultCode != RESULT_OK) {
             return;
         }
+
         Uri fileUri;
         //裁切后输出的图片
         File outputFile = new File("/mnt/sdcard/tupian.png");
+
         switch (requestCode) {
             case SystemProgramUtils.REQUEST_CODE_PAIZHAO:
                 //拍照完成，进行图片裁切
@@ -219,7 +221,8 @@ public class UserInfoActivity extends BaseActivity {
                 try {
                     Uri uri = Uri.fromFile(outputFile);
                     Bitmap bitmap = BitmapFactory.decodeStream(getContentResolver().openInputStream(uri));
-                    mCircleImage.setImageBitmap(bitmap);
+//                    mCircleImage.setImageBitmap(bitmap);
+                    //压缩后保存，等待上传到服务器
                     ImageUtil.saveImageToFile(bitmap, CommonVariable.getUserHeadPhotoFileName());
                     //上传用户头像
                     SetUserHeadPhotoTask();

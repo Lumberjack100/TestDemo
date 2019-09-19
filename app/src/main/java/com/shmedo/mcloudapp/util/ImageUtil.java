@@ -24,34 +24,28 @@ import java.io.IOException;
 public class ImageUtil {
 
 
-    public static void saveImageToFile(Bitmap img, String fileName) {
-        if (img == null)
+    public static void saveImageToFile(Bitmap bmp, String fileName) {
+        if (bmp == null)
             return;
+
         if (StringUtil.isNullOrEmpty(fileName))
             return;
-        File f = new File(fileName);
+
+        File file = new File(fileName);
         try {
-            if (!f.exists())
-                f.createNewFile();
+            if (!file.exists())
+                file.createNewFile();
         } catch (Exception ex) {
             throw new RuntimeException(ex);
         }
-        FileOutputStream fOut = null;
+
         try {
-            fOut = new FileOutputStream(f);
-        } catch (FileNotFoundException e) {
-            //Log.e(ErrCode.ERROR_TAG, e.getMessage(), e);
-        }
-        img.compress(Bitmap.CompressFormat.JPEG, 100, fOut);
-        try {
-            fOut.flush();
+            FileOutputStream fos = new FileOutputStream(file);
+            bmp.compress(Bitmap.CompressFormat.JPEG, 100, fos);
+            fos.flush();
+            fos.close();
         } catch (IOException e) {
-            //Log.e(ErrCode.ERROR_TAG, e.getMessage(), e);
-        }
-        try {
-            fOut.close();
-        } catch (IOException e) {
-            //Log.e(ErrCode.ERROR_TAG, e.getMessage(), e);
+            e.printStackTrace();
         }
     }
 
@@ -72,6 +66,7 @@ public class ImageUtil {
 
     /**
      * 根据传感器类型获取对应的本地图片资源
+     *
      * @author：gonghe
      * @time 2019-09-05
      */

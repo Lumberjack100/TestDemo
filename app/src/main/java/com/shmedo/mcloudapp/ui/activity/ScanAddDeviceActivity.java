@@ -157,7 +157,6 @@ public class ScanAddDeviceActivity extends BaseActivity {
             scan(results);
         } else {
             scan(result);
-            //showScanResultDialog("请扫码正确的设备二维码");
         }
     }
 
@@ -179,7 +178,6 @@ public class ScanAddDeviceActivity extends BaseActivity {
                 return;
             }
             if (DeviceTypeEnum.value(localData[2])) {
-                //Intent intent = new Intent(ScanAddDeviceActivity.this,DeviceActivity.class);
                 Intent intent = new Intent(ScanAddDeviceActivity.this, AllDeviceActivity.class);
                 intent.putExtra("ScanDevice", results);
                 startActivity(intent);
