@@ -1,7 +1,6 @@
 package com.shmedo.mcloudapp.util.page.model;
 
 import com.shmedo.mcloudapp.ui.fragment.DeviceFragment;
-import com.shmedo.mcloudapp.ui.fragment.ParameterConfigFragment;
 import com.shmedo.mcloudapp.util.GsonFactory;
 import com.shmedo.mcloudapp.util.StringUtil;
 import com.shmedo.mcloudapp.util.page.BasePage;

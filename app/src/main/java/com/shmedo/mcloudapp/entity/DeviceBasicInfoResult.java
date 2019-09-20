@@ -39,12 +39,14 @@ public class DeviceBasicInfoResult {
     private String installLocation;//设备安装位置说明
     private String securityNO;//设备解密后的安全码
     private boolean local;  //本地添加数据存储的标记
+    private String account;     //用户账号
 
 
-    @Generated(hash = 754972352)
+
+    @Generated(hash = 1369667473)
     public DeviceBasicInfoResult(Long id, String deviceToken, String deviceName, int deviceTypeID,
             String deviceTypeName, String gpsLocation, String installLocation, String securityNO,
-            boolean local) {
+            boolean local, String account) {
         this.id = id;
         this.deviceToken = deviceToken;
         this.deviceName = deviceName;
@@ -54,6 +56,7 @@ public class DeviceBasicInfoResult {
         this.installLocation = installLocation;
         this.securityNO = securityNO;
         this.local = local;
+        this.account = account;
     }
     @Generated(hash = 1939211013)
     public DeviceBasicInfoResult() {
@@ -136,6 +139,12 @@ public class DeviceBasicInfoResult {
             ", securityNO='" + securityNO + '\'' +
             ", local=" + local +
             '}';
+    }
+    public String getAccount() {
+        return this.account;
+    }
+    public void setAccount(String account) {
+        this.account = account;
     }
 
 }

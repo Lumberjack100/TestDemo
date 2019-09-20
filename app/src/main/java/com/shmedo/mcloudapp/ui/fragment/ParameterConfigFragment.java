@@ -14,38 +14,40 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.Spinner;
-import android.widget.Switch;
 import android.widget.TextView;
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
-import butterknife.Unbinder;
-import ch.ielse.view.SwitchView;
+
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.base.BaseFragment;
 import com.shmedo.mcloudapp.bluetooth.Message;
-import com.shmedo.mcloudapp.ui.activity.device.sensor.SenSorBGKConfigActivity;
+import com.shmedo.mcloudapp.model.Extras;
 import com.shmedo.mcloudapp.ui.activity.device.GeneralSettingActivity;
 import com.shmedo.mcloudapp.ui.activity.device.OsmometerConfigActivity;
 import com.shmedo.mcloudapp.ui.activity.device.RainConfigActivity;
+import com.shmedo.mcloudapp.ui.activity.device.sensor.SenSorBGKConfigActivity;
 import com.shmedo.mcloudapp.util.StringUtil;
 import com.shmedo.mcloudapp.util.ToastUtil;
 import com.shmedo.mcloudapp.util.bleutil.LogTag;
 import com.shmedo.mcloudapp.views.LoadingDialog;
 import com.shmedo.mcloudapp.views.VerticalSwipeRefreshLayout;
-import java.util.Date;
-import java.util.Objects;
+
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+
+import java.util.Date;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+import butterknife.Unbinder;
+import ch.ielse.view.SwitchView;
 
 /**
  * 项目名：  mCloudapp
@@ -423,27 +425,15 @@ public class ParameterConfigFragment extends BaseFragment
 
 
     private void getIntentData() {
-        if (Objects.requireNonNull(getActivity()).getIntent().getExtras().containsKey("device")) {
-            String name = getActivity().getIntent().getStringExtra("device");
-            String deviceName = name.substring(3, name.length());
-            deviceInfo = "MEDO," + deviceName + ",DAS";
-            Log.i("adu", "从蓝牙列表跳转===" + deviceInfo);
-        } else if (getActivity().getIntent().getExtras().containsKey("inputDevice")) {
-            String deviceName = getActivity().getIntent().getStringExtra("inputDevice");
-            String deviceType = getActivity().getIntent().getStringExtra("deviceType");
-            deviceInfo = "MEDO," + deviceName + "," + deviceType;
+        Intent intent = getActivity().getIntent();
+        if (intent.getExtras().containsKey(Extras.CUR_DEVICE)) {
+            deviceInfo = intent.getStringExtra(Extras.CUR_DEVICE);
 
-            Log.i("adu", "手动输入-===" + deviceInfo);
-        } else if (getActivity().getIntent().getExtras().containsKey("ScanDevice")) {
-            deviceInfo = getActivity().getIntent().getStringExtra("ScanDevice");
-            Log.i("adu", "扫一扫-===" + deviceInfo);
+            String[] scanData = deviceInfo.split(",");
+            mTvDeviceName.setText("物联网数据采集器");
+            mTvDeviceSn.setText(scanData[1]);//设备编号
+            mTvDeviceModel.setText(scanData[2]);//功能型号
         }
-
-        String[] scanData = deviceInfo.split(",");
-        //设置设备编号
-        mTvDeviceName.setText("物联网数据采集器");
-        mTvDeviceSn.setText(scanData[1]);//设备编号
-        mTvDeviceModel.setText(scanData[2]);//功能型号
     }
 
     /**

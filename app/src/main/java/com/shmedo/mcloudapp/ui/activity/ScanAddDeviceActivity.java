@@ -46,7 +46,6 @@ public class ScanAddDeviceActivity extends BaseActivity {
     Button mInputConfig;
 
 
-
     /**
      * 说明：启动Activity
      * <p>
@@ -168,30 +167,27 @@ public class ScanAddDeviceActivity extends BaseActivity {
                 LoadingDialog.showScanResultDialog(this, "请扫码正确的设备二维码");
                 return;
             }
-            if (StringUtil.isEmpty(localData[0]) || StringUtil.isEmpty(localData[1])
-                    || StringUtil.isEmpty(localData[2])) {
+
+            if (StringUtil.isEmpty(localData[0]) || StringUtil.isEmpty(localData[1]) || StringUtil.isEmpty(localData[2])) {
                 LoadingDialog.showScanResultDialog(this, "二维码信息不能为空");
                 return;
             }
+
             if (localData[1].length() != 7) {
                 LoadingDialog.showScanResultDialog(this, "设备标识有误,请扫码正确的设备二维码");
                 return;
             }
+
             if (DeviceTypeEnum.value(localData[2])) {
-                Intent intent = new Intent(ScanAddDeviceActivity.this, AllDeviceActivity.class);
-                intent.putExtra("ScanDevice", results);
-                startActivity(intent);
-                //先根据扫码到的tabName跳转到队应的页面
-                //mTabViewPage.setCurrentItem(listTitle.indexOf(localData[2]));
-                //SearchEvent event = new SearchEvent();
-                //event.setType("scan");
-                //event.setSearchName(results);
-                //EventBus.getDefault().post(event);
+                //跳转到设备配置页面
+                AllDeviceActivity.startActivity(ScanAddDeviceActivity.this, results);
+
                 //将扫一扫的设备名称传递到MainActivity中
                 MapDeviceEvent event = new MapDeviceEvent();
                 event.setType("mapDevice");
                 event.setDeviceName(results);
                 EventBus.getDefault().post(event);
+
             } else {
                 LoadingDialog.showScanResultDialog(this, "此设备类型暂时不支持");
             }

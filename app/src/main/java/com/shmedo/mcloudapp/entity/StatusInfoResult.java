@@ -1,15 +1,17 @@
 package com.shmedo.mcloudapp.entity;
 
 import com.google.gson.annotations.SerializedName;
-import java.io.Serializable;
-import java.util.List;
+
+import org.greenrobot.greendao.DaoException;
 import org.greenrobot.greendao.annotation.Entity;
+import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Keep;
 import org.greenrobot.greendao.annotation.ToMany;
 import org.greenrobot.greendao.annotation.Unique;
-import org.greenrobot.greendao.annotation.Generated;
-import org.greenrobot.greendao.DaoException;
+
+import java.io.Serializable;
+import java.util.List;
 
 /**
  * 项目名：  mCloudapp
@@ -37,17 +39,18 @@ public class StatusInfoResult implements Serializable {
     @Unique
     @Id(autoincrement = false)
     @SerializedName("deviceID")
-    private Long id;
-    private String deviceToken;
-    private String deviceName;
-    private int deviceTypeID;
-    private String deviceTypeName;
-    private String securityNO;
+    private Long id;//设备ID
+    private String deviceToken;//设备Token
+    private String deviceName;//设备名称
+    private int deviceTypeID;//设备类型ID
+    private String deviceTypeName;//设备类型名称
+    private String securityNO;//设备授权码
     @ToMany(referencedJoinProperty = "ownerId")
-    private List<SensorAndCount> sensorInfo;
-    private double voltage;
-    private int gprs;
-    private int signal;
+    private List<SensorAndCount> sensorInfo;//设备下的传感器信息
+    private double voltage;//设备电压
+    private int gprs;//设备剩余流量 单位字节
+    private int signal;//设备信号强度
+    private String account;     //用户账号
     private boolean local;  //本地添加数据存储的标记
     /** Used to resolve relations */
     @Generated(hash = 2040040024)
@@ -56,10 +59,10 @@ public class StatusInfoResult implements Serializable {
     @Generated(hash = 2049396227)
     private transient StatusInfoResultDao myDao;
 
-    @Generated(hash = 821511393)
+    @Generated(hash = 1595360082)
     public StatusInfoResult(Long id, String deviceToken, String deviceName, int deviceTypeID,
             String deviceTypeName, String securityNO, double voltage, int gprs, int signal,
-            boolean local) {
+            String account, boolean local) {
         this.id = id;
         this.deviceToken = deviceToken;
         this.deviceName = deviceName;
@@ -69,6 +72,7 @@ public class StatusInfoResult implements Serializable {
         this.voltage = voltage;
         this.gprs = gprs;
         this.signal = signal;
+        this.account = account;
         this.local = local;
     }
 
@@ -191,6 +195,14 @@ public class StatusInfoResult implements Serializable {
             throw new DaoException("Entity is detached from DAO context");
         }
         myDao.update(this);
+    }
+
+    public String getAccount() {
+        return this.account;
+    }
+
+    public void setAccount(String account) {
+        this.account = account;
     }
 
     /** called by internal mechanisms, do not call yourself. */

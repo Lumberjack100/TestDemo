@@ -8,6 +8,7 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.RelativeLayout;
@@ -17,7 +18,6 @@ import com.shmedo.das.utils.StringUtil;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.base.BaseActivity;
 import com.shmedo.mcloudapp.entity.UserInfo;
-import com.shmedo.mcloudapp.entity.UserInfoWrapper;
 import com.shmedo.mcloudapp.entity.parameter.SetUserHeadPhotoParameter;
 import com.shmedo.mcloudapp.model.BaseObserver;
 import com.shmedo.mcloudapp.model.MDRetrofit;
@@ -36,6 +36,7 @@ import com.shmedo.mcloudapp.views.LoadingDialog;
 import com.shmedo.mcloudapp.views.MyMenu;
 
 import java.io.File;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -76,7 +77,6 @@ public class UserInfoActivity extends BaseActivity {
     RelativeLayout mRLAdvice;
 
     private DaoManager manager = DaoManager.getInstance();
-    private UserInfoWrapper userInfoWrapper;
     private UserInfo userInfo;
     private UserInfo.UserBean user;
     private InputMethodManager imm;
@@ -111,7 +111,12 @@ public class UserInfoActivity extends BaseActivity {
             mTvName.setText(user.getName() != null ? user.getName() : "");
             mTvPhone.setText(user.getCellPhone() != null ? user.getCellPhone() : "");
             mTvCompany.setText("");
-            mTvDepartment.setText("");
+
+            List<UserInfo.DepartmentsBean> departments = userInfo.getDepartments();
+            if (null != departments && !departments.isEmpty()) {
+                UserInfo.DepartmentsBean departmentsBean = departments.get(0);
+                mTvDepartment.setText(TextUtils.isEmpty(departmentsBean.getName()) ? "" : departmentsBean.getName());
+            }
         }
     }
 

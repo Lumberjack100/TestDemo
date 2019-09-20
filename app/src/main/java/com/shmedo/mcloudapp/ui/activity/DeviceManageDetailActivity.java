@@ -154,8 +154,7 @@ public class DeviceManageDetailActivity extends BaseActivity implements OnRefres
 
             projID = systemDataInfo.getProID();
             mToolbarTitle.setText(systemDataInfo.getProjName());
-//            queryProjectDevice(projID, "", 5, pageNo);
-            //自动刷新
+            //自动刷新，会调用queryProjectDevice(projID, "", 5, pageNo);
             mRefreshLayout.autoRefresh();
         }
     }

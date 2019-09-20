@@ -2,10 +2,10 @@ package com.shmedo.mcloudapp.util;
 
 import android.annotation.SuppressLint;
 import android.text.TextUtils;
-import android.util.Log;
 
 import java.text.DecimalFormat;
 import java.util.Collection;
+import java.util.regex.Pattern;
 
 /**
  * 项目名：  CheckAndroid
@@ -17,10 +17,23 @@ import java.util.Collection;
  */
 
 public class StringUtil {
-    private static final String TAG = StringUtil.class.getSimpleName();
-    public static boolean isNullOrEmpty(String s){
-        return (s==null)||(s.length()==0);
+
+    /**
+     * 正则表达式：验证手机号
+     */
+    public static final String REGEX_MOBILE = "^(1[3-9])\\d{9}$";//"^1\\d{10}$"
+
+    /**
+     * 正则表达式：数字验证码
+     */
+    public static final String REGEX_VERIFICATION_CODE = "^[0-9]*$";
+
+
+    public static boolean isNullOrEmpty(String s) {
+        return (s == null) || (s.length() == 0);
     }
+
+
     /**
      * 判断集合是否为null或者0个元素
      *
@@ -43,32 +56,25 @@ public class StringUtil {
     public static boolean isEmpty(String str) {
         return str == null || str.length() == 0 || str.equalsIgnoreCase("null");
     }
+
     /**
      * 手机号输入是否正确
+     *
      * @param phoneNumber
-     * @return
+     * @return 校验通过返回true，否则返回false
      */
     public static boolean isPhoneNumber(String phoneNumber) {
         if (TextUtils.isEmpty(phoneNumber)) {
             return false;
         }
-        if (!phoneNumber.matches("^[0-9]*$")) {
-            Log.i(TAG, "isPhoneNumber: match error--"+phoneNumber);
-            return false;
-        }
-        if (phoneNumber.length() != 11) {
-            Log.i(TAG, "isPhoneNumber: length error--"+phoneNumber);
-            return false;
-        }
-        if (phoneNumber.indexOf(0) == '1') {
-            Log.i(TAG, "isPhoneNumber: start error--"+phoneNumber);
-            return false;
-        }
-        return true;
+
+        return Pattern.matches(REGEX_MOBILE, phoneNumber);
     }
+
 
     /**
      * 验证码输入是否正确
+     *
      * @param code
      * @return
      */
@@ -76,10 +82,8 @@ public class StringUtil {
         if (TextUtils.isEmpty(code)) {
             return false;
         }
-        if (!code.matches("^[0-9]*$")) {
-            return false;
-        }
-        return true;
+
+        return Pattern.matches(REGEX_VERIFICATION_CODE, code);
     }
 
     public static String convertStringToHex(String str) {
@@ -88,52 +92,52 @@ public class StringUtil {
 
         StringBuffer hex = new StringBuffer();
         for (int i = 0; i < chars.length; i++) {
-            hex.append(Integer.toHexString((int) chars[i])+" ");
+            hex.append(Integer.toHexString((int) chars[i]) + " ");
         }
 
         return hex.toString();
     }
 
     @SuppressLint("DefaultLocale")
-    public static String formatStringTwo(String str){
-        if (StringUtil.isEmpty(str)){
+    public static String formatStringTwo(String str) {
+        if (StringUtil.isEmpty(str)) {
             return "";
-        }else {
-            return String.format("%02d",Integer.valueOf(str));
+        } else {
+            return String.format("%02d", Integer.valueOf(str));
         }
     }
 
     @SuppressLint("DefaultLocale")
-    public static String formatStringFour(String str){
-        if (StringUtil.isEmpty(str)){
+    public static String formatStringFour(String str) {
+        if (StringUtil.isEmpty(str)) {
             return "";
-        }else {
-            return String.format("%04d",Integer.valueOf(str));
+        } else {
+            return String.format("%04d", Integer.valueOf(str));
         }
     }
 
-    public static String formatStringFive(String str){
-        if (StringUtil.isEmpty(str)){
+    public static String formatStringFive(String str) {
+        if (StringUtil.isEmpty(str)) {
             return "";
-        }else {
-            return String.format("%05d",Integer.valueOf(str));
+        } else {
+            return String.format("%05d", Integer.valueOf(str));
         }
     }
 
     @SuppressLint("DefaultLocale")
-    public static String formatTwo(int accessSum){
-        if (accessSum==0){
+    public static String formatTwo(int accessSum) {
+        if (accessSum == 0) {
             return "00";
-        }else {
-            int sum = accessSum ;
-            return String.format("%02d",sum);
+        } else {
+            int sum = accessSum;
+            return String.format("%02d", sum);
         }
     }
 
-    public static int formatNumber(String  accessSum){
-        if (accessSum != null){
+    public static int formatNumber(String accessSum) {
+        if (accessSum != null) {
             return Integer.valueOf(accessSum);
-        }else {
+        } else {
             return -1;
         }
     }
@@ -163,8 +167,8 @@ public class StringUtil {
         } else if (size / MB >= 1) {
             //如果当前Byte的值大于等于1MB
             resultSize = df.format(size / (float) MB) + "MB";
-        } else{
-            resultSize =  "< 1MB";
+        } else {
+            resultSize = "< 1MB";
         }
 
 //        else if (size / KB >= 1) {

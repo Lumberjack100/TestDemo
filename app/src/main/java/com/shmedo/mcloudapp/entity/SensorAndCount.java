@@ -1,9 +1,10 @@
 package com.shmedo.mcloudapp.entity;
 
-import java.io.Serializable;
 import org.greenrobot.greendao.annotation.Entity;
-import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Generated;
+import org.greenrobot.greendao.annotation.Id;
+
+import java.io.Serializable;
 
 /**
  * 项目名：  mCloudapp
@@ -20,8 +21,8 @@ public class SensorAndCount implements Serializable {
     @Id(autoincrement = true)
     private Long id;
     private Long ownerId;
-    private int sensorType;
-    private int sensorCount;
+    private int sensorType;//传感器类型
+    private int sensorCount;//传感器数量
 
 
     @Generated(hash = 163766939)

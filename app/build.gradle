@@ -29,9 +29,13 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+}
 
 
-
+//greendao配置
+greendao {
+    //数据库版本号，升级时修改
+    schemaVersion 3
 }
 
 dependencies {

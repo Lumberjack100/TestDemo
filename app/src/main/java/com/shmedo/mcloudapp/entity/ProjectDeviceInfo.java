@@ -10,16 +10,16 @@ package com.shmedo.mcloudapp.entity;
  */
 public class ProjectDeviceInfo {
 
-    private int ID;
-    private String uniqueToken;
-    private int deviceID;
-    private String deviceToken;
-    private String deviceName;
-    private int deviceTypeID;
-    private String deviceTypeName;
-    private String deviceStatus;
-    private String deviceDesc;
-    private String createTime;
+    private int ID;//关联ID
+    private String uniqueToken;//唯一标识
+    private int deviceID;//设备ID
+    private String deviceToken;//设备标识
+    private String deviceName;//设备名称
+    private int deviceTypeID;//设备类型ID
+    private String deviceTypeName;//设备类型名称
+    private String deviceStatus;//设备状态
+    private String deviceDesc;//设备描述
+    private String createTime;//添加时间
 
 
     public int getID() {

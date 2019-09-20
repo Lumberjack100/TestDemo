@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.text.InputFilter;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -44,7 +45,6 @@ import de.hdodenhof.circleimageview.CircleImageView;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.RequestBody;
-import timber.log.Timber;
 
 /**
  * 项目名：  mCloudapp
@@ -146,15 +146,13 @@ public class LoginActivity extends BaseActivity {
 
     public static String sHA1(Context context) {
         try {
-            PackageInfo info = context.getPackageManager().getPackageInfo(
-                    context.getPackageName(), PackageManager.GET_SIGNATURES);
+            PackageInfo info = context.getPackageManager().getPackageInfo(context.getPackageName(), PackageManager.GET_SIGNATURES);
             byte[] cert = info.signatures[0].toByteArray();
             MessageDigest md = MessageDigest.getInstance("SHA1");
             byte[] publicKey = md.digest(cert);
             StringBuffer hexString = new StringBuffer();
             for (int i = 0; i < publicKey.length; i++) {
-                String appendString = Integer.toHexString(0xFF & publicKey[i])
-                        .toUpperCase(Locale.US);
+                String appendString = Integer.toHexString(0xFF & publicKey[i]).toUpperCase(Locale.US);
                 if (appendString.length() == 1) {
                     hexString.append("0");
                 }
@@ -176,12 +174,13 @@ public class LoginActivity extends BaseActivity {
     private void initServiceAddressAndUser() {
         userConfig = UserConfig.getConfig(this, CommonVariable.USER_CONFIG_NAME);
         String addr = userConfig.readString(CommonVariable.SERVICE_ADDRESS);
-        if (!StringUtil.isNullOrEmpty(addr)) {
+        if (!TextUtils.isEmpty(addr)) {
             CommonVariable.setServiceAddress(addr);
         }
+
         String uid = userConfig.readString(CommonVariable.UID);
         String pwd = userConfig.readString(CommonVariable.PWD);
-        if ((!StringUtil.isNullOrEmpty(uid)) && (!StringUtil.isNullOrEmpty(pwd))) {
+        if ((!TextUtils.isEmpty(uid)) && (!TextUtils.isEmpty(pwd))) {
             mLoginEditTextAccount.setText(uid);
             mLoginEditTextAccount.setSelection(uid.length());
             mLoginAccountPassword.setText(pwd);
@@ -234,7 +233,7 @@ public class LoginActivity extends BaseActivity {
 
             case R.id.btn_login_account:
                 //点击账号登录方式
-                if (StringUtil.isNullOrEmpty(CommonVariable.getServiceAddress())) {
+                if (TextUtils.isEmpty(CommonVariable.getServiceAddress())) {
                     ToastUtil.showLToast("请先配置服务地址！");
                     StartActivityUtil.comeOnBaby(this, ServiceConfigActivity.class);
                     return;
@@ -244,13 +243,9 @@ public class LoginActivity extends BaseActivity {
                     return;
                 }
 
-                final String uid = mLoginEditTextAccount.getText() != null
-                        ? mLoginEditTextAccount.getText().toString().trim()
-                        : null;
-                final String pwd = mLoginAccountPassword.getText() != null
-                        ? mLoginAccountPassword.getText().toString().trim()
-                        : null;
-                if (StringUtil.isNullOrEmpty(uid) || StringUtil.isNullOrEmpty(pwd)) {
+                final String uid = mLoginEditTextAccount.getText() != null ? mLoginEditTextAccount.getText().toString().trim() : null;
+                final String pwd = mLoginAccountPassword.getText() != null ? mLoginAccountPassword.getText().toString().trim() : null;
+                if (TextUtils.isEmpty(uid) || TextUtils.isEmpty(pwd)) {
                     ToastUtil.showLToast("用户名或密码不能为空！");
                     return;
                 }
@@ -259,7 +254,7 @@ public class LoginActivity extends BaseActivity {
 
             case R.id.btn_login_phone:
                 //点击短信登录方式
-                if (StringUtil.isNullOrEmpty(CommonVariable.getServiceAddress())) {
+                if (TextUtils.isEmpty(CommonVariable.getServiceAddress())) {
                     ToastUtil.showLToast("请先配置服务地址！");
                     StartActivityUtil.comeOnBaby(this, ServiceConfigActivity.class);
                     return;
@@ -269,13 +264,9 @@ public class LoginActivity extends BaseActivity {
                     return;
                 }
 
-                String code = mLoginPhonePassword.getText() != null
-                        ? mLoginPhonePassword.getText().toString().trim()
-                        : null;
-                String phoneNumber = mLoginEditTextIphone.getText() != null
-                        ? mLoginEditTextIphone.getText().toString().trim()
-                        : null;
-                if (StringUtil.isNullOrEmpty(code) && StringUtil.isNullOrEmpty(phoneNumber)) {
+                String code = mLoginPhonePassword.getText() != null ? mLoginPhonePassword.getText().toString().trim() : null;
+                String phoneNumber = mLoginEditTextIphone.getText() != null ? mLoginEditTextIphone.getText().toString().trim() : null;
+                if (TextUtils.isEmpty(code) && TextUtils.isEmpty(phoneNumber)) {
                     ToastUtil.showSToast("手机号或验证码不能为空！");
                     return;
                 }
@@ -363,7 +354,6 @@ public class LoginActivity extends BaseActivity {
                         }
                     }
 
-
                     @Override
                     public void Failure(String message) {
                         dialog.dismiss();
@@ -419,19 +409,13 @@ public class LoginActivity extends BaseActivity {
                         dialog.dismiss();
 
                         CommonVariable.setAccessToken(token);
+                        CommonVariable.setAccount(userInfo.getUser().getAccount());
                         CommonVariable.setCurrentUserInfo(userInfo);
 
                         Long id = Long.valueOf(userInfo.getUser().getId());
                         userInfoWrapper.setId(id);
                         userInfoWrapper.setUserInfo(GsonFactory.getGson().toJson(userInfo));
                         manager.getDaoSession().getUserInfoWrapperDao().insertOrReplace(userInfoWrapper);
-
-                        userConfig.writeString(CommonVariable.ACCOUNT, userInfo.getUser().getAccount());
-                        userConfig.writeString(CommonVariable.USER_ID, String.valueOf(userInfo.getUser().getId()));
-                        if (userInfo.getUser().getHeadPhotoPath() != null) {
-                            userConfig.writeString(CommonVariable.HEAD_PHOTO_PATH, userInfo.getUser().getHeadPhotoPath());
-                            Timber.d("头像路径------" + userInfo.getUser().getHeadPhotoPath());
-                        }
 
                         if (uid != null && pwd != null) {
                             userConfig.writeString(CommonVariable.UID, uid);

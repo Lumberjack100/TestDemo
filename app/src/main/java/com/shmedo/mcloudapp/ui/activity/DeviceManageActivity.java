@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.View;
 
 import com.google.gson.reflect.TypeToken;
@@ -21,6 +22,7 @@ import com.shmedo.mcloudapp.adapter.SystemAdapter;
 import com.shmedo.mcloudapp.base.BaseActivity;
 import com.shmedo.mcloudapp.entity.SensorAndCount;
 import com.shmedo.mcloudapp.entity.StatusInfoResult;
+import com.shmedo.mcloudapp.entity.StatusInfoResultDao;
 import com.shmedo.mcloudapp.entity.SystemDataInfo;
 import com.shmedo.mcloudapp.entity.parameter.LocationResult;
 import com.shmedo.mcloudapp.entity.parameter.SystemParameter;
@@ -184,7 +186,8 @@ public class DeviceManageActivity extends BaseActivity implements OnRefreshListe
                     public void onPermissionGranted() {
                         if (systemList != null) {
                             LocationResult location = GsonFactory.getGson()
-                                    .fromJson(systemList.get(position).getCenterPoint(),new TypeToken<LocationResult>() {}.getType());
+                                    .fromJson(systemList.get(position).getCenterPoint(), new TypeToken<LocationResult>() {
+                                    }.getType());
 
                             Timber.d("map===" + location.toString());
                             openGuideMap(String.valueOf(location.getLat()), String.valueOf(location.getLng()), systemList.get(position).getProjName());
@@ -251,12 +254,15 @@ public class DeviceManageActivity extends BaseActivity implements OnRefreshListe
                     public void Success(List<StatusInfoResult> infoList, String message) {
                         mLoadingDialog.dismiss();
 
-                        if (infoList.size() != 0) {
-                            Timber.d(" 电量--" + infoList.get(0).getSignal());
-
+                        if (null != infoList && infoList.size() != 0) {
+                            for (StatusInfoResult statusInfoResult : infoList) {
+                                statusInfoResult.setAccount(CommonVariable.getAccount());
+                            }
                             manager.getDaoSession().getStatusInfoResultDao().insertOrReplaceInTx(infoList);
-                            //数据存到数据库，查出云端设备和本地设备显示
+
+                            //从本地数据库查出云端设备和本地设备显示
                             queryDeviceStatusList();
+
                         } else {
                             //mEmptyData.setVisibility(View.VISIBLE);
                         }
@@ -276,14 +282,17 @@ public class DeviceManageActivity extends BaseActivity implements OnRefreshListe
 
     private void queryDeviceStatusList() {
         List<StatusInfoResult> infoList = manager.getDaoSession().getStatusInfoResultDao().queryBuilder()
+                .where(StatusInfoResultDao.Properties.Account.isNotNull(), StatusInfoResultDao.Properties.Account.eq(CommonVariable.getAccount()))
                 .list();
 
-        //添加测试数据
-        infoList.get(0).setSensorInfo(initTestData());
+        if (null != infoList && infoList.size() > 0) {
+            //添加测试数据
+            infoList.get(0).setSensorInfo(initTestData());
 
-        statusInfoList.clear();
-        statusInfoList.addAll(infoList);
-        deviceStatusAdapter.notifyDataSetChanged();
+            statusInfoList.clear();
+            statusInfoList.addAll(infoList);
+            deviceStatusAdapter.notifyDataSetChanged();
+        }
     }
 
     private DeviceSensorDialog deviceSensorDialog;
@@ -305,9 +314,12 @@ public class DeviceManageActivity extends BaseActivity implements OnRefreshListe
                     break;
 
                 default://整个 Item 点击事件
-                    Timber.d("----传感器---" + position);
 
-                    ToastUtil.showSToast("这是item" + position);
+                    StatusInfoResult statusInfoResult = statusInfoList.get(position);
+                    if (!TextUtils.isEmpty(statusInfoResult.getDeviceTypeName()) && statusInfoResult.getDeviceTypeName().toUpperCase().contains("DAS")) {
+                        String deviceInfo = "MEDO," + statusInfoResult.getDeviceToken() + "," + statusInfoResult.getDeviceTypeName();
+                        AllDeviceActivity.startActivity(DeviceManageActivity.this, deviceInfo);
+                    }
                     break;
             }
         }

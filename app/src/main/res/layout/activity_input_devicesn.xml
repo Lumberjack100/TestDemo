@@ -1,94 +1,97 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/bg2_light_white">
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_marginTop="50dp"
         android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp">
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="输入设备SN号"
-        android:textSize="26dp"
-        android:textColor="@color/black_text"
-        android:textStyle="bold"
-        />
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="SN号一般位于设备正面、底部标签位置"
-        android:textSize="14sp"
-        android:layout_marginTop="15dp"
-        />
+        android:layout_marginTop="50dp"
+        android:layout_marginRight="16dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="输入设备SN号"
+            android:textColor="@color/black_text"
+            android:textSize="26dp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:text="SN号一般位于设备正面、底部标签位置"
+            android:textSize="14sp" />
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
             android:layout_marginTop="20dp"
-             >
+            android:orientation="vertical">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="请选择设备类型："
-                android:textSize="16dp"
                 android:textColor="@color/app_color_blue_2"
-                />
+                android:textSize="16dp" />
+
             <RadioGroup
                 android:id="@+id/rg_device"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:orientation="horizontal">
+
                 <RadioButton
                     android:id="@+id/rb_das"
                     android:layout_width="0dp"
-                    android:layout_weight="1"
                     android:layout_height="wrap_content"
+                    android:layout_weight="1"
                     android:checked="false"
-                    android:text="DAS"/>
+                    android:text="DAS" />
+
                 <RadioButton
                     android:id="@+id/rb_e60"
                     android:layout_width="0dp"
-                    android:layout_weight="1"
                     android:layout_height="wrap_content"
+                    android:layout_weight="1"
                     android:checked="false"
-                    android:text="E60"/>
+                    android:text="E60" />
+
                 <RadioButton
                     android:id="@+id/rb_pvs"
                     android:layout_width="0dp"
-                    android:layout_weight="1"
                     android:layout_height="wrap_content"
+                    android:layout_weight="1"
                     android:checked="false"
-                    android:text="PVS"/>
+                    android:text="PVS" />
             </RadioGroup>
 
 
         </LinearLayout>
+
         <com.shmedo.mcloudapp.views.ClearEditText
             android:id="@+id/input_sn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="请输入设备SN号"
             android:layout_marginTop="40dp"
-            android:paddingLeft="10dp"
-            />
+            android:hint="请输入设备SN号"
+            android:paddingLeft="10dp" />
+
         <Button
             android:id="@+id/add_device"
             android:layout_width="match_parent"
             android:layout_height="45dp"
-            android:text="立即添加"
-            android:background="@drawable/scan_add_selector"
-            android:textColor="@color/white"
-            android:layout_marginTop="30dp"
             android:layout_marginLeft="10dp"
+            android:layout_marginTop="30dp"
             android:layout_marginRight="10dp"
-            />
+            android:background="@drawable/scan_add_selector"
+            android:text="立即添加"
+            android:textColor="@color/white" />
     </LinearLayout>
 </LinearLayout>

@@ -1,57 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-    <TextView android:id="@+id/title_paired_devices"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/title_paired_devices"
         android:layout_width="match_parent"
         android:layout_height="30dp"
-        android:text="配对的设备"
         android:background="@color/colorPrimary"
-        android:textColor="#fff"
-        android:visibility="gone"
-        android:textSize="20sp"
         android:paddingLeft="5dp"
-    />
-    <!--<ListView android:id="@+id/recycleviewble"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:stackFromBottom="true"
-        android:layout_weight="1"
-    />-->
+        android:text="配对的设备"
+        android:textColor="#fff"
+        android:textSize="20sp"
+        android:visibility="gone" />
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycleviewble"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:stackFromBottom="true"
         android:layout_weight="0.1"
         android:background="@color/white"
+        android:stackFromBottom="true"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
-    <TextView android:id="@+id/title_new_devices"
+    <TextView
+        android:id="@+id/title_new_devices"
         android:layout_width="match_parent"
         android:layout_height="30dp"
-        android:text="其他可用的设备"
-        android:visibility="gone"
         android:background="@color/colorPrimary"
+        android:paddingLeft="5dp"
+        android:text="其他可用的设备"
         android:textColor="#fff"
         android:textSize="20sp"
-        android:paddingLeft="5dp"
-    />
-    <ListView android:id="@+id/new_devices"
+        android:visibility="gone" />
+
+    <ListView
+        android:id="@+id/new_devices"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:stackFromBottom="true"
         android:layout_weight="1"
-    />
-   <!-- <Button android:id="@+id/button_scan"
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:background="@drawable/searchbluetooth_btn"
-        android:text="@string/button_scan"
-        android:textSize="24sp"
-        android:layout_marginTop="20dp"
-        android:textColor="@color/white"-->
+        android:stackFromBottom="true" />
+    <!-- <Button android:id="@+id/button_scan"
+         android:layout_width="match_parent"
+         android:layout_height="40dp"
+         android:background="@drawable/searchbluetooth_btn"
+         android:text="@string/button_scan"
+         android:textSize="24sp"
+         android:layout_marginTop="20dp"
+         android:textColor="@color/white"-->
     />
 </LinearLayout>

@@ -47,6 +47,7 @@ import com.shmedo.mcloudapp.entity.ble.SettingRainPrecisionSub;
 import com.shmedo.mcloudapp.entity.ble.SystemRunStateSub;
 import com.shmedo.mcloudapp.entity.ble.VersionMessageSub;
 import com.shmedo.mcloudapp.entity.ble.collector.CollectorSensorParamsInfoSub;
+import com.shmedo.mcloudapp.model.Extras;
 import com.shmedo.mcloudapp.util.ToastUtil;
 import com.shmedo.mcloudapp.util.bleutil.BlueResultParserUtil;
 import com.shmedo.mcloudapp.util.bleutil.ByteManagerUtil;
@@ -122,10 +123,10 @@ public class DeviceFragment extends BaseFragment implements View.OnClickListener
     @BindView(R.id.tv_highsetting)
     TextView mTvHighsetting;
 
-    ParameterConfigFragment parameterConfigFragment;//参数配置
-    QueryDataFragment queryDataFragment;        //查询数据
-    DeviceDetailsFragment deviceDetailsFragment;//设备详情
-    AdvanceSetFragment advanceSetFragment;      //高级设置
+    private ParameterConfigFragment parameterConfigFragment;//参数配置
+    private QueryDataFragment queryDataFragment;        //查询数据
+    private DeviceDetailsFragment deviceDetailsFragment;//设备详情
+    private AdvanceSetFragment advanceSetFragment;      //高级设置
 
     private Unbinder unbinder;
     private LoadingDialog mLoadingDialog;
@@ -193,30 +194,16 @@ public class DeviceFragment extends BaseFragment implements View.OnClickListener
     }
 
     private void getIntentData() {
+        Intent intent = getActivity().getIntent();
+        if (intent.getExtras().containsKey(Extras.CUR_DEVICE)) {
+            deviceInfo = intent.getStringExtra(Extras.CUR_DEVICE);
+            Timber.d("deviceInfo=" + deviceInfo);
 
-        if (Objects.requireNonNull(getActivity()).getIntent().getExtras().containsKey("device")) {
-            //从MainActivity蓝牙列表跳转
-            String name = getActivity().getIntent().getStringExtra("device");
-            //deviceTrue = getActivity().getIntent().getBooleanExtra("deviceTrue", false);
-            String deviceName = name.substring(3, name.length());
-            deviceInfo = "MEDO," + deviceName + ",DAS";
-            Timber.d("从蓝牙列表跳转,deviceInfo=" + deviceInfo);
+            String[] scanData = deviceInfo.split(",");
+            SN = scanData[1];
 
-        } else if (getActivity().getIntent().getExtras().containsKey("inputDevice")) {
-            String deviceName = getActivity().getIntent().getStringExtra("inputDevice");
-            String deviceType = getActivity().getIntent().getStringExtra("deviceType");
-            deviceInfo = "MEDO," + deviceName + "," + deviceType;
-            Timber.d("手动输入, deviceInfo=" + deviceInfo);
-
-        } else if (getActivity().getIntent().getExtras().containsKey("ScanDevice")) {
-            deviceInfo = getActivity().getIntent().getStringExtra("ScanDevice");
-            Timber.d("扫一扫, deviceInfo=" + deviceInfo);
+            connectBluetooth();
         }
-
-        String[] scanData = deviceInfo.split(",");
-        SN = scanData[1];
-
-        connectBluetooth();
     }
 
     /**

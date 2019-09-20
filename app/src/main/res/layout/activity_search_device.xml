@@ -1,41 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="@color/white">
+    android:background="@color/white"
+    android:orientation="vertical">
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="35dp"
         android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
         android:layout_marginTop="10dp"
+        android:layout_marginRight="8dp"
         android:background="@drawable/search_edittext_shape"
         android:orientation="horizontal">
+
         <com.shmedo.mcloudapp.views.ClearEditText
             android:id="@+id/ce_search"
-            android:layout_weight="8"
             android:layout_width="0dp"
             android:layout_height="match_parent"
+            android:layout_weight="8"
             android:background="@null"
+            android:hint="请输入设备号"
             android:paddingLeft="9dp"
             android:paddingRight="8dp"
-            android:singleLine="true"
-            android:hint="请输入设备号"/>
+            android:singleLine="true" />
+
         <Button
             android:id="@+id/btn_search"
-            android:layout_weight="2"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="搜索"
-            android:textColor="@color/white"
+            android:layout_weight="2"
             android:background="@drawable/search_button_shape"
-            />
+            android:text="搜索"
+            android:textColor="@color/white" />
     </LinearLayout>
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler_device"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="10dp"/>
+        android:layout_marginTop="10dp" />
 </LinearLayout>

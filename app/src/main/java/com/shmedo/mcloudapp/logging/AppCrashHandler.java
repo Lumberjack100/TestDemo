@@ -40,21 +40,25 @@ public class AppCrashHandler {
             public void uncaughtException(Thread thread, final Throwable ex) {
                 Timber.e(ex, "米易通异常退出：" + ex.getMessage());
 
-                if (!handleException(ex) && uncaughtExceptionHandler != null) {
-                    //如果用户没有处理则让系统默认的异常处理器来处理
-                    uncaughtExceptionHandler.uncaughtException(thread, ex);
+                //如果用户没有处理则让系统默认的异常处理器来处理
+                uncaughtExceptionHandler.uncaughtException(thread, ex);
 
-                } else {
 
-                    try {
-                        Thread.sleep(3000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    android.os.Process.killProcess(android.os.Process.myPid());
-                    System.exit(1);
-                    System.gc();
-                }
+//                if (!handleException(ex) && uncaughtExceptionHandler != null) {
+//                    //如果用户没有处理则让系统默认的异常处理器来处理
+//                    uncaughtExceptionHandler.uncaughtException(thread, ex);
+//
+//                } else {
+//
+//                    try {
+//                        Thread.sleep(2000);
+//                    } catch (InterruptedException e) {
+//                        e.printStackTrace();
+//                    }
+//                    android.os.Process.killProcess(android.os.Process.myPid());
+//                    System.exit(1);
+//                    System.gc();
+//                }
             }
         });
     }

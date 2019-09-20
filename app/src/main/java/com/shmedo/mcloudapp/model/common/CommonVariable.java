@@ -15,7 +15,8 @@ import okhttp3.MediaType;
  */
 public class CommonVariable {
 
-    private static String serviceAddress = "mdnetservice.shmedo.cn";
+    public static final String OSMOMETER_NOTE = "osmometer";
+    private static final String USER_HEAD_PHOTO_FILE_NAME = "/mnt/sdcard/tupian.png";
     public static final String USER_CONFIG_NAME = "mcloudApp";
     public static final String SERVICE_ADDRESS = "service_address";
     public static final String ACCESS_TOKEN = "access_token";
@@ -24,14 +25,12 @@ public class CommonVariable {
     public static final String UID = "uid";
     public static final String PWD = "pwd";
     public static final MediaType JSON_TYPE = MediaType.parse("application/json; charset=UTF-8");
+    private static String serviceAddress = "mdnetservice.shmedo.cn";
     private static UserInfo currentUserInfo;
-    public static final String ACCOUNT = "account";
-    public static final String USER_ID = "userID";
-    public static final String HEAD_PHOTO_PATH = "headPhotoPath";
     private static String accessToken;
+    private static String account;
     private static boolean isNetworkConnected = true;
-    public static final String OSMOMETER_NOTE = "osmometer";
-    private static final String USER_HEAD_PHOTO_FILE_NAME = "/mnt/sdcard/tupian.png";
+
 
     public static String getServiceAddress() {
         if (StringUtil.isNullOrEmpty(serviceAddress))
@@ -49,10 +48,10 @@ public class CommonVariable {
         return currentUserInfo;
     }
 
-
     public static void setCurrentUserInfo(UserInfo currentUserInfo) {
         CommonVariable.currentUserInfo = currentUserInfo;
     }
+
 
     public static String getAccessToken() {
         return accessToken;
@@ -62,12 +61,21 @@ public class CommonVariable {
         CommonVariable.accessToken = accessToken;
     }
 
+
     public static boolean isNetworkConnected() {
         return isNetworkConnected;
     }
 
     public static void setIsNetworkConnected(boolean isNetworkConnected) {
         CommonVariable.isNetworkConnected = isNetworkConnected;
+    }
+
+    public static String getAccount() {
+        return account;
+    }
+
+    public static void setAccount(String account) {
+        CommonVariable.account = account;
     }
 
     public static String getUserHeadPhotoFileName() {

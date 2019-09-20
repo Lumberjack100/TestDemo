@@ -80,7 +80,6 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -182,7 +181,7 @@ public class MainActivity extends BaseActivity implements
     private boolean isBluModle = true;
     //蓝牙是否已连接
     public static boolean isConneted = false;
-    public static boolean autoOpenBt;
+    public static boolean autoOpenBt = false;
     private List<ClusterItem> clusterItemsMerchant = new ArrayList<>();
     private ClusterOverlayMerchant clusterOverlayMerchant;
     private Map<Integer, Drawable> mBackDrawAblesMerchant = new HashMap<Integer, Drawable>();
@@ -308,8 +307,7 @@ public class MainActivity extends BaseActivity implements
             //设置定位回调监听
             mLocationClient.setLocationListener(this);
             //设置为高精度定位模式
-            mLocationOption.setLocationMode(
-                    AMapLocationClientOption.AMapLocationMode.Hight_Accuracy);
+            mLocationOption.setLocationMode(AMapLocationClientOption.AMapLocationMode.Hight_Accuracy);
             mLocationOption.setOnceLocation(true);
             //设置是否返回地址信息（默认返回地址信息）
             mLocationOption.setNeedAddress(true);
@@ -378,7 +376,10 @@ public class MainActivity extends BaseActivity implements
                     public void Success(List<DeviceBasicInfoResult> infoList, String message) {
                         mLoadingDialog.dismiss();
 
-                        if (infoList.size() != 0) {
+                        if (null != infoList && infoList.size() != 0) {
+                            for (DeviceBasicInfoResult deviceBasicInfoResult : infoList) {
+                                deviceBasicInfoResult.setAccount(CommonVariable.getAccount());
+                            }
                             manager.getDaoSession().getDeviceBasicInfoResultDao().insertOrReplaceInTx(infoList);
                         }
                     }
@@ -403,7 +404,7 @@ public class MainActivity extends BaseActivity implements
         return manager.getDaoSession()
                 .getDeviceBasicInfoResultDao()
                 .queryBuilder()
-                .where(DeviceBasicInfoResultDao.Properties.GpsLocation.notEq(gpsLocation))
+                .where(DeviceBasicInfoResultDao.Properties.GpsLocation.notEq(gpsLocation), DeviceBasicInfoResultDao.Properties.Account.eq(CommonVariable.getAccount()))
                 .list();
     }
 
@@ -511,7 +512,6 @@ public class MainActivity extends BaseActivity implements
             case R.id.fab_location://定位
 
                 if (myLatLng != null) {
-
                     Timber.d("latitude=" + myLatLng.latitude + ",longitude=" + myLatLng.longitude);
                     aMap.moveCamera(CameraUpdateFactory.changeLatLng(myLatLng));
                 }
@@ -547,12 +547,10 @@ public class MainActivity extends BaseActivity implements
                         if (null != list && list.size() > 0) {
                             list.clear();
                         }
-                        if (null == mLoadingDialog.getDialog() ||
-                                !mLoadingDialog.getDialog().isShowing()) {
+                        if (null == mLoadingDialog.getDialog() || !mLoadingDialog.getDialog().isShowing()) {
                             mLoadingDialog.showCancelDialog("正在获取附近的蓝牙设备...");
                             hander.postDelayed(dismssDialogRunnable, 10000);
                         }
-
                     }
                 } else if (isBluModle && isConneted) {
                     showChangeModle(getResources().getString(R.string.blue_model));
@@ -609,24 +607,19 @@ public class MainActivity extends BaseActivity implements
         mdBluetoothManager.setEventHandler(new MdBluetoothEventHandler());
         if (mBluetoothAdapter == null || !mBluetoothAdapter.isEnabled()) {
             Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-            startActivityForResult(enableBtIntent, REQUEST_CONNECT_DEVICE);
+            startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
+        } else {
+            mdBluetoothManager.scanDevice(20, this);
         }
-        mdBluetoothManager.scanDevice(20, this);
-
     }
 
 
     private void initBlueAdapter() {
-        Log.i("adu", "-----------------初始化蓝牙---------------");
         if (!autoOpenBt) {
-            Intent serverIntent = new Intent(MainActivity.this, BlueToothListActivity.class);
-            serverIntent.putExtra("devlist", (Serializable) list);
-            //startActivityForResult(serverIntent, REQUEST_ENABLE_BT);
-            startActivity(serverIntent);
+            BlueToothListActivity.startActivity(MainActivity.this, list);
         }
 
         mdBluetoothManager.stopScan();
-
     }
 
 
@@ -822,10 +815,10 @@ public class MainActivity extends BaseActivity implements
 
     private void handleDeviceFind(BluetoothDeviceFindEventData eventData) {
 
-        if (list.contains(eventData.getNewDevice()) ||
-                eventData.getNewDevice().getDevice().getName() == null) {
+        if (list.contains(eventData.getNewDevice()) || eventData.getNewDevice().getDevice().getName() == null) {
             return;
         }
+
         if (null != list && list.size() > 0) {
             for (MDevice mDevice : list) {
                 if (eventData.getNewDevice()
@@ -901,7 +894,7 @@ public class MainActivity extends BaseActivity implements
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         isShowingDialog = true;
         switch (requestCode) {
-            case REQUEST_ENABLE_BT:
+            case REQUEST_CONNECT_DEVICE:
                 // 当DeviceListActivity返回与设备连接的消息
                 if (resultCode == Activity.RESULT_OK) {
                     Log.i(LogTag.INFO_TAG, "=======蓝牙data========" + data.getData());
@@ -916,12 +909,11 @@ public class MainActivity extends BaseActivity implements
                     hander.postDelayed(dismssConDialogRunnable, 20000);
                 }
                 break;
-            case REQUEST_CONNECT_DEVICE:
-
+            case REQUEST_ENABLE_BT:
                 // 判断蓝牙是否启用
                 if (resultCode == Activity.RESULT_OK) {
-                    // 开启蓝牙
-                    initBluetooth();
+                    // 开启蓝牙扫描
+                    mdBluetoothManager.scanDevice(20, this);
                 } else {
                     ToastUtil.showSToast("蓝牙未启用");
                 }
@@ -936,8 +928,9 @@ public class MainActivity extends BaseActivity implements
     public void onMessageEvent(WifiEvent events) {
         if (events.getMessage().equals("wifi")) {
             if (events.getWifiBean() != null) {
-                Log.i("adu", "----wifi--------" + events.getWifiBean().getWifiName());
+                Timber.d("wifi--------" + events.getWifiBean().getWifiName());
                 showConnectionView("已连接WIFI—" + events.getWifiBean().getWifiName());
+
             } else {
                 hidingConnectionView();
             }
@@ -963,6 +956,13 @@ public class MainActivity extends BaseActivity implements
 
     //添加设备名称
     private void addDeviceOnMap(String[] device) {
+
+        //返回的数据有这个值18A095L
+        if (null != queryDeviceInList(device[1])) {
+            ToastUtil.showSToast("此设备已存在！");
+            return;
+        }
+
         LatLng latLng = myLatLng;
         String installLocation = GsonFactory.getGson().toJson(latLng);
         MapManagerUtil.addMarkerToMap(aMap, latLng, device[2], device[1]);
@@ -976,20 +976,9 @@ public class MainActivity extends BaseActivity implements
         result.setGpsLocation(null);
         result.setInstallLocation(installLocation);
         result.setSecurityNO(null);
+        result.setAccount(CommonVariable.getAccount());
         result.setLocal(true);
 
-        /**
-         * deviceID : 72
-         * deviceToken : 150009K
-         * deviceName : DAG
-         * deviceTypeID : 5
-         * deviceTypeName : null
-         * securityNO : 1.2345678E7
-         * sensorInfo : null
-         * voltage : 12.3
-         * gprs : 915143
-         * signal : 25
-         */
         StatusInfoResult infoResult = new StatusInfoResult();
         infoResult.setId(proId);
         infoResult.setDeviceName(device[1]);
@@ -1001,16 +990,11 @@ public class MainActivity extends BaseActivity implements
         infoResult.setVoltage(0);
         infoResult.setGprs(0);
         infoResult.setSignal(0);
+        infoResult.setAccount(CommonVariable.getAccount());
         infoResult.setLocal(true);
 
-
-        //返回的数据有这个值18A095L
-        if (null == queryDeviceInList(device[1])) {
-            manager.getDaoSession().getDeviceBasicInfoResultDao().insertOrReplaceInTx(result);
-            manager.getDaoSession().getStatusInfoResultDao().insertOrReplaceInTx(infoResult);
-        } else {
-            ToastUtil.showSToast("此设备已存在！");
-        }
+        manager.getDaoSession().getDeviceBasicInfoResultDao().insertOrReplaceInTx(result);
+        manager.getDaoSession().getStatusInfoResultDao().insertOrReplaceInTx(infoResult);
     }
 
     //查询设备列表中是否有这个设备
