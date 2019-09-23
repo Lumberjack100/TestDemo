@@ -52,11 +52,11 @@ public class WifiListAdapter extends RecyclerView.Adapter<WifiListAdapter.MyView
 
         //可以传递给adapter的数据都是经过处理的，已连接或者正在连接状态的wifi都是处于集合中的首位，所以可以写出如下判断
         if(position == 0  && (AppContants.WIFI_STATE_ON_CONNECTING.equals(bean.getState()) || AppContants.WIFI_STATE_CONNECT.equals(bean.getState()))){
-            holder.tvItemWifiName.setTextColor(mContext.getResources().getColor(R.color.homecolor1));
-            holder.tvItemWifiStatus.setTextColor(mContext.getResources().getColor(R.color.homecolor1));
+            holder.tvItemWifiName.setTextColor(mContext.getResources().getColor(R.color.app_color_blue));
+            holder.tvItemWifiStatus.setTextColor(mContext.getResources().getColor(R.color.app_color_blue));
         }else{
-            holder.tvItemWifiName.setTextColor(mContext.getResources().getColor(R.color.gray_home));
-            holder.tvItemWifiStatus.setTextColor(mContext.getResources().getColor(R.color.gray_home));
+            holder.tvItemWifiName.setTextColor(mContext.getResources().getColor(R.color.gray_909090));
+            holder.tvItemWifiStatus.setTextColor(mContext.getResources().getColor(R.color.gray_909090));
         }
 
         if (WifiSupport.getWifiCipher(bean.getCapabilities()) == WifiSupport.WifiCipherType.WIFICIPHER_NOPASS){

@@ -1,11 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <item
-        android:state_pressed="true"
-        android:drawable="@color/fragment_item">
+    <item android:drawable="@color/gray_f6f7f9" android:state_pressed="true" />
 
-    </item>
+    <item android:drawable="@color/white" />
 
-
-    <item android:drawable="@color/white"></item>
 </selector>

@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:orientation="horizontal"
-        android:background="@color/bg2_light_white"
+        android:background="@color/bg_main_light_white"
         android:layout_marginTop="5dp"
         >
         <ImageView
@@ -42,7 +42,7 @@
         android:layout_height="40dp"
         android:orientation="horizontal"
         android:layout_marginTop="1dp"
-        android:background="@color/bg2_light_white"
+        android:background="@color/bg_main_light_white"
         >
         <ImageView
             android:id="@+id/iv_calculating_time"
@@ -73,7 +73,7 @@
         android:layout_height="40dp"
         android:orientation="horizontal"
         android:layout_marginTop="1dp"
-        android:background="@color/bg2_light_white"
+        android:background="@color/bg_main_light_white"
         >
         <ImageView
             android:id="@+id/iv_standby_time"
@@ -104,7 +104,7 @@
         android:layout_height="40dp"
         android:orientation="horizontal"
         android:layout_marginTop="1dp"
-        android:background="@color/bg2_light_white"
+        android:background="@color/bg_main_light_white"
         >
         <ImageView
             android:id="@+id/iv_collect_time"

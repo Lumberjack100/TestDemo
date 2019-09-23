@@ -7,12 +7,12 @@
 
     <RelativeLayout
         android:id="@+id/rl_bar"
-        android:background="@color/gray1"
+        android:background="@color/gray_F8F8F8"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
         <TextView
-            android:textColor="@color/gray_home"
+            android:textColor="@color/gray_909090"
             android:layout_marginTop="9dp"
             android:layout_marginBottom="9dp"
             android:layout_alignParentLeft="true"

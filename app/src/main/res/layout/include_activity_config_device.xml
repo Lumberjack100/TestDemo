@@ -131,7 +131,7 @@
             android:layout_height="40dp"
             android:orientation="horizontal"
             android:gravity="center"
-            android:background="@color/bg2_light_white"
+            android:background="@color/bg_main_light_white"
             android:layout_gravity="center_vertical"
             >
             <ImageView
@@ -175,7 +175,7 @@
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:layout_marginTop="1dp"
-            android:background="@color/bg2_light_white"
+            android:background="@color/bg_main_light_white"
             android:orientation="horizontal"
             >
             <EditText
@@ -210,7 +210,7 @@
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:orientation="horizontal"
-            android:background="@color/bg2_light_white"
+            android:background="@color/bg_main_light_white"
             android:layout_marginTop="1dp">
             <ImageView
                 android:layout_width="30dp"
@@ -262,7 +262,7 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="40dp"
-            android:background="@color/bg2_light_white"
+            android:background="@color/bg_main_light_white"
             android:layout_marginTop="1dp"
             >
             <TextView
@@ -294,7 +294,7 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="40dp"
-            android:background="@color/bg2_light_white"
+            android:background="@color/bg_main_light_white"
             android:layout_marginTop="1dp"
             >
             <TextView
@@ -326,7 +326,7 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="40dp"
-            android:background="@color/bg2_light_white"
+            android:background="@color/bg_main_light_white"
             android:layout_marginTop="1dp"
             >
             <TextView
@@ -359,7 +359,7 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="40dp"
-            android:background="@color/bg2_light_white"
+            android:background="@color/bg_main_light_white"
             android:layout_marginTop="1dp"
             >
             <TextView
@@ -399,7 +399,7 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="40dp"
-            android:background="@color/bg2_light_white"
+            android:background="@color/bg_main_light_white"
             android:layout_marginTop="1dp"
             >
             <TextView
@@ -440,7 +440,7 @@
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:orientation="horizontal"
-            android:background="@color/bg2_light_white"
+            android:background="@color/bg_main_light_white"
             android:layout_marginTop="1dp">
             <ImageView
                 android:layout_width="30dp"
@@ -465,7 +465,7 @@
             android:id="@+id/rl_sensor_setting"
             android:layout_width="match_parent"
             android:layout_height="40dp"
-            android:background="@color/bg2_light_white"
+            android:background="@color/bg_main_light_white"
             android:layout_marginTop="1dp"
             >
             <TextView
@@ -490,7 +490,7 @@
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:orientation="horizontal"
-            android:background="@color/bg2_light_white"
+            android:background="@color/bg_main_light_white"
             android:layout_marginTop="1dp">
             <ImageView
                 android:id="@+id/iv_general_setting"
@@ -519,7 +519,7 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="40dp"
-            android:background="@color/bg2_light_white"
+            android:background="@color/bg_main_light_white"
             android:layout_marginTop="1dp"
             >
             <TextView
@@ -555,7 +555,7 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="40dp"
-            android:background="@color/bg2_light_white"
+            android:background="@color/bg_main_light_white"
             android:layout_marginTop="1dp"
             >
             <TextView

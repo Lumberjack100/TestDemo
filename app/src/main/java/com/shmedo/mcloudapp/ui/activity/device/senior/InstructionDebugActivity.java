@@ -14,21 +14,25 @@ import android.widget.Button;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
-import butterknife.BindView;
-import butterknife.OnClick;
+
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.base.BaseActivity;
 import com.shmedo.mcloudapp.ui.fragment.DeviceFragment;
 import com.shmedo.mcloudapp.util.StringUtil;
 import com.shmedo.mcloudapp.util.TimeUtil;
 import com.shmedo.mcloudapp.util.ToastUtil;
-import java.util.Objects;
-import java.util.Random;
-import jp.bassaer.chatmessageview.models.Message;
-import jp.bassaer.chatmessageview.views.ChatView;
+
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+
+import java.util.Objects;
+import java.util.Random;
+
+import butterknife.BindView;
+import butterknife.OnClick;
+import jp.bassaer.chatmessageview.models.Message;
+import jp.bassaer.chatmessageview.views.ChatView;
 
 /**
  * 项目名：  mCloudapp
@@ -80,7 +84,7 @@ public class InstructionDebugActivity extends BaseActivity {
 
     private void initData() {
         //Set UI options
-        mChatView.setRightBubbleColor(ContextCompat.getColor(this, R.color.orange_700));
+        mChatView.setRightBubbleColor(ContextCompat.getColor(this, R.color.orange_FF7502));
         mChatView.setLeftBubbleColor(Color.WHITE);
         mChatView.setBackgroundColor(ContextCompat.getColor(this, R.color.gray200));
         mChatView.setSendButtonColor(ContextCompat.getColor(this, R.color.cyan900));

@@ -100,7 +100,7 @@
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:text="授权码查看：进入配置页面首页,看出设置详情"
-        android:background="@color/bg2_light_white"
+        android:background="@color/bg_main_light_white"
         android:textSize="15sp"
         android:gravity="center_vertical|center_horizontal"
         android:layout_marginTop="1dp"

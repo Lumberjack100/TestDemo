@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:orientation="horizontal"
-        android:background="@color/bg2_light_white"
+        android:background="@color/bg_main_light_white"
         android:layout_marginTop="1dp">
 
         <TextView
@@ -29,7 +29,7 @@
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:orientation="horizontal"
-        android:background="@color/bg2_light_white"
+        android:background="@color/bg_main_light_white"
         android:layout_marginTop="1dp">
 
         <TextView
@@ -46,7 +46,7 @@
         android:id="@+id/rl_modify_authorization"
         android:layout_width="match_parent"
         android:layout_height="40dp"
-        android:background="@color/bg2_light_white"
+        android:background="@color/bg_main_light_white"
         android:layout_marginTop="1dp"
         >
         <TextView
@@ -68,7 +68,7 @@
         android:id="@+id/rl_product_register"
         android:layout_width="match_parent"
         android:layout_height="40dp"
-        android:background="@color/bg2_light_white"
+        android:background="@color/bg_main_light_white"
         android:layout_marginTop="1dp"
         >
         <TextView
@@ -90,7 +90,7 @@
         android:id="@+id/rl_instruction_debug"
         android:layout_width="match_parent"
         android:layout_height="40dp"
-        android:background="@color/bg2_light_white"
+        android:background="@color/bg_main_light_white"
         android:layout_marginTop="1dp"
         >
         <TextView

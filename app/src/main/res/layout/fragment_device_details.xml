@@ -18,7 +18,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="30dp"
                 android:text="基本信息"
-                android:background="@color/bg2_light_white"
+                android:background="@color/bg_main_light_white"
                 android:gravity="center_vertical"
                 android:paddingLeft="16dp"
                 />
@@ -273,7 +273,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="30dp"
                 android:text="通信参数"
-                android:background="@color/bg2_light_white"
+                android:background="@color/bg_main_light_white"
                 android:gravity="center_vertical"
                 android:paddingLeft="16dp"
                 />
@@ -529,7 +529,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="30dp"
                 android:text="运行参数"
-                android:background="@color/bg2_light_white"
+                android:background="@color/bg_main_light_white"
                 android:gravity="center_vertical"
                 android:paddingLeft="16dp"
                 />

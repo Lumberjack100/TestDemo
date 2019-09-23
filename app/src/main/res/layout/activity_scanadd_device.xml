@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@color/bg2_light_white"
+    android:background="@color/bg_main_light_white"
     android:gravity="center">
 
     <LinearLayout
@@ -18,7 +18,7 @@
             android:layout_height="wrap_content"
             android:text="欢迎使用米易通"
             android:textSize="26dp"
-            android:textColor="@color/black_text"
+            android:textColor="@color/black_333333"
             android:textStyle="bold"
             />
         <TextView
@@ -45,7 +45,7 @@
             android:layout_height="45dp"
             android:text="手动输入设备SN号"
             android:background="@drawable/scan_selector"
-            android:textColor="@color/font_main_79"
+            android:textColor="@color/font_main"
             android:layout_margin="20dp"
             />
     </LinearLayout>

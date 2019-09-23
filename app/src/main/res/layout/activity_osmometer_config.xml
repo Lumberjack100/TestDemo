@@ -243,7 +243,7 @@
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:orientation="horizontal"
-        android:background="@color/bg2_light_white"
+        android:background="@color/bg_main_light_white"
         android:layout_marginTop="5dp"
         >
         <ImageView
@@ -275,7 +275,7 @@
         android:layout_height="40dp"
         android:orientation="horizontal"
         android:layout_marginTop="1dp"
-        android:background="@color/bg2_light_white"
+        android:background="@color/bg_main_light_white"
         >
         <ImageView
             android:id="@+id/iv_water_alarm_value"
@@ -306,7 +306,7 @@
         android:layout_height="40dp"
         android:orientation="horizontal"
         android:layout_marginTop="1dp"
-        android:background="@color/bg2_light_white"
+        android:background="@color/bg_main_light_white"
         >
         <ImageView
             android:id="@+id/iv_water_revised"
@@ -337,7 +337,7 @@
         android:layout_height="40dp"
         android:orientation="horizontal"
         android:layout_marginTop="1dp"
-        android:background="@color/bg2_light_white"
+        android:background="@color/bg_main_light_white"
         >
         <ImageView
             android:id="@+id/iv_osmometer_cord"
@@ -368,7 +368,7 @@
         android:layout_height="40dp"
         android:orientation="horizontal"
         android:layout_marginTop="1dp"
-        android:background="@color/bg2_light_white"
+        android:background="@color/bg_main_light_white"
         >
         <ImageView
             android:id="@+id/iv_nozzel_height"
@@ -399,7 +399,7 @@
         android:layout_height="40dp"
         android:orientation="horizontal"
         android:layout_marginTop="1dp"
-        android:background="@color/bg2_light_white"
+        android:background="@color/bg_main_light_white"
         >
         <ImageView
 

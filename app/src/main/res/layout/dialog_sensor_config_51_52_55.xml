@@ -9,7 +9,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="40dp"
-        android:background="@color/bg2_light_white"
+        android:background="@color/bg_main_light_white"
         >
         <TextView
             android:id="@+id/tv_save"

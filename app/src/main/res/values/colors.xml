@@ -3,42 +3,23 @@
     <color name="colorPrimary">#00b3fb</color>
     <color name="colorPrimaryDark">#00b3fb</color>
     <color name="colorAccent">#D81B60</color>
-    <color name="text_color_black">#000000</color>
-    <color name="font_main_79">#797979</color>
     <color name="white">#ffffff</color>
-    <color name="black">@android:color/black</color>
-    <color name="color_main">#2AA0F7</color>
-    <color name="gray01">#80666666</color>
-    <color name="bg2_light_white">#ebebeb</color>
-    <color name="main_bg">#e4eaeb</color>
-    <color name="line_color_dddcdd">#dddcdd</color>
-    <color name="bg_f6f7f9">#f6f7f9</color>
-    <color name="text_color_818182">#818182</color>
-    <color name="line_color_e2e1e1">#e2e1e1</color>
-    <color name="black_text">#333333</color>
-    <color name="divider">#B6B6B6</color>
+    <color name="black">#ff000000</color>
+
+    <color name="font_main">@color/gray_797979</color>
     <color name="secondary_text">#727272</color>
-    <color name="grey_300">#E0E0E0</color>
-    <color name="font_black_6">#ffffff</color>
-    <color name="text4_dark_gray">#757575</color>
-    <color name="text6_blue">#1e78be</color>
+    <color name="bg_main_light_white">#ebebeb</color>
+    <color name="bg_shadow">#00000000</color>
+    <color name="divide_line_color">#e2e1e1</color>
+    <color name="divider">#B6B6B6</color>
     <color name="menu_press_bg">#aaffffff</color>
     <color name="menu_normal_bg">#ffffff</color>
-    <color name="vifrification">#00000000</color>
-    <color name="fragment_item">#9BE2FF</color>
 
     <!-- common -->
     <color name="app_color_blue">#00A8E1</color>
+    <color name="app_color_blue_2">#31BDF3</color>
     <color name="app_color_blue_disabled">#8000A8E1</color>
     <color name="app_color_blue_pressed">#c000A8E1</color>
-    <color name="app_color_blue_2">#31BDF3</color>
-    <color name="app_color_blue_2_disabled">#7F31BDF3</color>
-    <color name="app_color_blue_2_pressed">#7F31BDF3</color>
-
-
-    <color name="gray1">#F8F8F8</color>
-    <color name="gray_home">#909090</color>
-    <color name="homecolor1">#1a5cc0 </color>
     <color name="app_color_theme_1">#EF5362</color> <!-- Grapefruit -->
     <color name="app_color_theme_2">#FE6D4B</color> <!-- Bittersweet -->
     <color name="app_color_theme_3">#FFCF47</color> <!-- Sunflower -->
@@ -48,28 +29,23 @@
     <color name="app_color_theme_7">#5A9AEF</color> <!-- Blue Jeans -->
     <color name="app_color_theme_8">#AC8FEF</color> <!-- Lavender -->
     <color name="app_color_theme_9">#EE85C1</color> <!-- Pink Rose -->
-    <color name="orange_700">#F57C00</color>translucent
-    <color name="confirm_btn">#ff7502</color>
     <color name="delect">#fd1b1b</color>
+    <color name="orange_FF7502">#ff7502</color>
 
-    <color name="bar_divider">#D4D6D8</color>
-    <color name="tab_panel_bg">#ffffff</color>
-    <color name="tab_panel_divider">@color/bar_divider</color>
+    <color name="black_333333">#333333</color>
+    <color name="black_444444">#444444</color>
 
-    <!-- Components 组件 -->
-    <color name="radiusImageView_border_color">@color/app_color_theme_2</color>
-    <color name="radiusImageView_selected_border_color">@color/app_color_theme_1</color>
-    <color name="radiusImageView_selected_mask_color">#7FEF5362</color>
-
-    <!-- Helper 系列界面 -->
-
-    <!-- ColorHelper 颜色工具 -->
-    <color name="colorHelper_square_alpha_background">@color/app_color_theme_4</color>
-    <color name="colorHelper_square_from_ratio_background">@color/app_color_blue</color>
-    <color name="colorHelper_square_to_ratio_background">@color/app_color_theme_3</color>
-
-    <color name="color_gray_444444">#444444</color>
-    <color name="color_gray_9e9e9e">#9e9e9e</color>
+    <color name="gray_80666666">#80666666</color>
+    <color name="gray_f6f7f9">#f6f7f9</color>
+    <color name="gray_757575">#757575</color>
+    <color name="gray_797979">#797979</color>
+    <color name="gray_818182">#818182</color>
+    <color name="gray_9e9e9e">#9e9e9e</color>
+    <color name="gray_909090">#909090</color>
+    <color name="gray_F8F8F8">#F8F8F8</color>
+    <color name="gray_D4D6D8">#D4D6D8</color>
+    <color name="gray_DDDCDD">#DDDCDD</color>
+    <color name="gray_E0E0E0">#E0E0E0</color>
 
 
 </resources>

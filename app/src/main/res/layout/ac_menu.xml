@@ -11,7 +11,7 @@
         android:background="@drawable/shape_menu_top_normal"
         android:text="上传头像"
         android:textSize="15sp"
-        android:textColor="@color/text4_dark_gray"
+        android:textColor="@color/gray_757575"
         />
 
     <View
@@ -24,7 +24,7 @@
         android:layout_width="match_parent"
         android:layout_height="45dp"
         android:background="@drawable/seletor_menu_middle"
-        android:textColor="@color/text6_blue"
+        android:textColor="@color/app_color_blue"
         android:textSize="16sp"
         android:text="拍照" />
 
@@ -38,7 +38,7 @@
         android:layout_width="match_parent"
         android:layout_height="45dp"
         android:background="@drawable/select_menu_bottom_half_bg"
-        android:textColor="@color/text6_blue"
+        android:textColor="@color/app_color_blue"
         android:textSize="16sp"
         android:text="从相册中选择" />
 
@@ -49,6 +49,6 @@
         android:layout_marginTop="10dp"
         android:background="@drawable/selector_menu_bottom"
         android:textSize="16sp"
-        android:textColor="@color/text6_blue"
+        android:textColor="@color/app_color_blue"
         android:text="取消" />
 </LinearLayout>

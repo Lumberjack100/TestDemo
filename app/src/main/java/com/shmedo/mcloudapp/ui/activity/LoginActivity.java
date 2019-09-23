@@ -197,9 +197,9 @@ public class LoginActivity extends BaseActivity {
             case R.id.login_accountLogin:
                 //账号登录
                 mLoginAccountLogin.setTextColor(ContextCompat.getColor(this, R.color.app_color_blue_2));
-                mLoginQuickLogin.setTextColor(ContextCompat.getColor(this, R.color.font_main_79));
+                mLoginQuickLogin.setTextColor(ContextCompat.getColor(this, R.color.font_main));
                 mLoginSelectLeftLine.setBackgroundColor(ContextCompat.getColor(this, R.color.app_color_blue_2));
-                mLoginSelectRightLine.setBackgroundColor(ContextCompat.getColor(this, R.color.font_main_79));
+                mLoginSelectRightLine.setBackgroundColor(ContextCompat.getColor(this, R.color.font_main));
                 mLlAccountLogin.setVisibility(View.VISIBLE);
                 mLlPhoneLogin.setVisibility(View.GONE);
                 mTvForgotPassword.setVisibility(View.VISIBLE);
@@ -207,9 +207,9 @@ public class LoginActivity extends BaseActivity {
 
             case R.id.login_quickLogin:
                 //手机快速登录
-                mLoginAccountLogin.setTextColor(ContextCompat.getColor(this, R.color.font_main_79));
+                mLoginAccountLogin.setTextColor(ContextCompat.getColor(this, R.color.font_main));
                 mLoginQuickLogin.setTextColor(ContextCompat.getColor(this, R.color.app_color_blue_2));
-                mLoginSelectLeftLine.setBackgroundColor(ContextCompat.getColor(this, R.color.font_main_79));
+                mLoginSelectLeftLine.setBackgroundColor(ContextCompat.getColor(this, R.color.font_main));
                 mLoginSelectRightLine.setBackgroundColor(ContextCompat.getColor(this, R.color.app_color_blue_2));
                 mLlAccountLogin.setVisibility(View.GONE);
                 mLlPhoneLogin.setVisibility(View.VISIBLE);

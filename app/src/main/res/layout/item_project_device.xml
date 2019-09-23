@@ -31,7 +31,7 @@
                 android:layout_marginTop="5dp"
                 android:gravity="center"
                 android:text="12122222222"
-                android:textColor="@color/text_color_black"
+                android:textColor="@color/black"
                 android:textSize="20sp" />
 
             <LinearLayout
@@ -45,7 +45,7 @@
                     android:layout_height="wrap_content"
                     android:gravity="center_vertical"
                     android:text="描述就奥术大师大"
-                    android:textColor="@color/text_color_black"
+                    android:textColor="@color/black"
                     android:textSize="14sp" />
 
                 <TextView
@@ -55,7 +55,7 @@
                     android:layout_marginLeft="20dp"
                     android:gravity="center_vertical"
                     android:text="2018-12-28 19:13:19"
-                    android:textColor="@color/font_main_79"
+                    android:textColor="@color/font_main"
                     android:textSize="14sp" />
             </LinearLayout>
 

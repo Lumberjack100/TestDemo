@@ -111,8 +111,8 @@ public class GlideUtils {
             .load(resourceIdToUri(context, resId))
             .apply(new RequestOptions()
                 .centerCrop()
-                .error(R.color.font_black_6)
-                .placeholder(R.color.font_black_6)
+                .error(R.color.white)
+                .placeholder(R.color.white)
                 .diskCacheStrategy(DiskCacheStrategy.ALL))
             .transition(new DrawableTransitionOptions().crossFade(300)) //使用变换效果
             .into(imageView);

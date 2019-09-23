@@ -6,6 +6,6 @@
         android:bottomRightRadius="30dp"
         />
     <!--中间颜色-->
-    <solid android:color="@color/color_main"/>
+    <solid android:color="@color/app_color_blue"/>
 
 </shape>

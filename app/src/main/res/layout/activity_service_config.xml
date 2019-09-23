@@ -33,7 +33,7 @@
             android:paddingLeft="15dp"
             android:paddingRight="10dp"
             android:gravity="center_vertical"
-            android:textColor="@color/text_color_black"
+            android:textColor="@color/black"
             android:background="@drawable/edit_bg2"
             android:hint="请输入服务器地址或域名端口" />
 

@@ -24,7 +24,7 @@
         android:layout_below="@id/iv_view_data_empty"
         android:layout_marginTop="-30dp"
         android:text="暂时没有数据"
-        android:textColor="@color/text4_dark_gray"
+        android:textColor="@color/gray_757575"
         android:textSize="18sp" />
 
 </RelativeLayout>

@@ -12,7 +12,7 @@
         android:layout_width="25dp"
         android:layout_height="20dp"
         android:layout_marginLeft="8dp"
-        android:background="@color/bg2_light_white"
+        android:background="@color/bg_main_light_white"
         android:gravity="center"
         tools:text="E60"
         android:textSize="@dimen/text_size_12" />

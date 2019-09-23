@@ -2,30 +2,19 @@ package com.shmedo.mcloudapp.ui.activity.device.sensor;
 
 import android.app.Dialog;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.Spinner;
 import android.widget.TextView;
-import butterknife.BindView;
-import butterknife.OnClick;
-import ch.ielse.view.SwitchView;
+
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.shmedo.das.common.CollectorSensorParamsInfo;
 import com.shmedo.das.common.SensorGudanDisplacementInfo;
 import com.shmedo.das.common.SensorGudanNotStressInfo;
 import com.shmedo.das.common.SensorGudanPercolateInfo;
@@ -45,34 +34,20 @@ import com.shmedo.mcloudapp.base.BaseActivity;
 import com.shmedo.mcloudapp.bluetooth.Message;
 import com.shmedo.mcloudapp.entity.ble.CollectorInfoSub;
 import com.shmedo.mcloudapp.entity.ble.collector.CollectorSensorParamsInfoSub;
-import com.shmedo.mcloudapp.entity.event.SensorDataEvent;
-import com.shmedo.mcloudapp.entity.event.WifiEvent;
-import com.shmedo.mcloudapp.entity.parameter.BaseSensorParameter;
-import com.shmedo.mcloudapp.entity.parameter.SetDsSensorPageParameter;
-import com.shmedo.mcloudapp.ui.activity.MainActivity;
 import com.shmedo.mcloudapp.ui.activity.device.sensor.dialog.DialogFactory;
-import com.shmedo.mcloudapp.ui.activity.device.sensor.dialog.IDialogOpt;
 import com.shmedo.mcloudapp.ui.fragment.DeviceFragment;
-import com.shmedo.mcloudapp.util.GsonFactory;
-import com.shmedo.mcloudapp.util.StartActivityUtil;
 import com.shmedo.mcloudapp.util.StringUtil;
 import com.shmedo.mcloudapp.util.ToastUtil;
-import com.shmedo.mcloudapp.util.UserConfig;
 import com.shmedo.mcloudapp.util.bleutil.LogTag;
-import com.shmedo.mcloudapp.util.page.model.SetSensorPage;
-import com.tencent.mmkv.MMKV;
+
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
 
-import static com.shmedo.mcloudapp.ui.fragment.DeviceFragment.isConneted;
-import static com.shmedo.mcloudapp.ui.fragment.DeviceFragment.mdBluetoothManager;
+import butterknife.BindView;
+import butterknife.OnClick;
+import ch.ielse.view.SwitchView;
 
 /**
  * 项目名：  mCloudapp
@@ -711,9 +686,9 @@ public class SenSorBGKConfigActivity extends BaseActivity {
             }
             String result = String.valueOf(builderFirst);
             Log.i("adu","==result=="+result);
-            if (isConneted){
+            if (DeviceFragment.isConneted){
                 Message msg = new Message(UUID.randomUUID().toString(), result, true);
-                mdBluetoothManager.writeMessage(msg);
+                DeviceFragment.mdBluetoothManager.writeMessage(msg);
                 Log.i(LogTag.INFO_TAG, "发送result指令===" + result);
                 finish();
             }else {

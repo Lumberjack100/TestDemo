@@ -27,7 +27,7 @@
             android:layout_marginLeft="10dp"
             android:text="慈溪梅湖水库"
             android:textSize="20sp"
-            android:textColor="@color/black_text"
+            android:textColor="@color/black_333333"
             android:gravity="center_vertical"
             android:singleLine="true"
             />

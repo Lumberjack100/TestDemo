@@ -14,7 +14,7 @@
         android:layout_width="match_parent"
         android:layout_height="20dp"
         android:layout_marginTop="50dp"
-        android:background="@color/tab_panel_divider"
+        android:background="@color/gray_D4D6D8"
         android:gravity="center">
 
         <TextView

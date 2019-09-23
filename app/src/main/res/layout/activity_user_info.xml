@@ -1,86 +1,82 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
-    android:background="@color/bg2_light_white">
+    android:background="@color/bg_main_light_white"
+    android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
+
         <LinearLayout
+            android:id="@+id/ll_change_photo"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="70dp"
             android:layout_marginTop="10dp"
-            android:background="@drawable/view_shape"
-            android:orientation="vertical">
+            android:background="@drawable/selector_view"
+            android:clickable="true"
+            android:orientation="horizontal"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp">
 
-            <LinearLayout
-                android:id="@+id/ll_change_photo"
-                android:layout_width="match_parent"
-                android:layout_height="70dp"
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/circle_image"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
                 android:layout_gravity="center_vertical"
-                android:background="@drawable/selector_view"
-                android:clickable="true"
-                android:orientation="horizontal"
-                android:paddingLeft="15dp"
-                android:paddingRight="15dp">
+                android:src="@drawable/icon_users"
+                app:civ_border_color="@color/white"
+                app:civ_border_overlay="true"
+                app:civ_border_width="1dp" />
 
-                <de.hdodenhof.circleimageview.CircleImageView
-                    android:id="@+id/circle_image"
-                    android:layout_width="45dp"
-                    android:layout_height="45dp"
-                    android:layout_gravity="center_vertical"
-                    app:civ_border_width="1dp"
-                    app:civ_border_color="@color/white"
-                    app:civ_border_overlay="true"
-                    android:src="@drawable/icon_users" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="13dp"
+                android:text="点击头像修改"
+                android:textColor="@color/gray_818182"
+                android:textSize="14sp" />
 
-                <TextView
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_alignParentRight="true"
+                android:background="@drawable/selector_view">
+
+                <ImageView
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginLeft="13dp"
-                    android:text="点击头像修改"
-                    android:textColor="@color/text_color_818182"
-                    android:textSize="14sp" />
-
-                <RelativeLayout
-                    android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_alignParentRight="true"
-                    android:background="@drawable/selector_view">
+                    android:layout_centerVertical="true"
+                    android:src="@drawable/icon_right" />
 
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_alignParentRight="true"
-                        android:layout_centerVertical="true"
-                        android:src="@drawable/icon_right" />
-                </RelativeLayout>
+            </RelativeLayout>
 
-            </LinearLayout>
         </LinearLayout>
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="30dp"
             android:gravity="center_vertical"
             android:orientation="horizontal">
+
             <ImageView
                 android:layout_width="25dp"
                 android:layout_height="25dp"
-                android:src="@drawable/icon_base_data"
                 android:layout_marginLeft="16dp"
-                />
+                android:src="@drawable/icon_base_data" />
+
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="25dp"
                 android:layout_marginLeft="5dp"
                 android:gravity="center_vertical"
                 android:text="基本资料"
-                android:textColor="@color/font_main_79"
+                android:textColor="@color/font_main"
                 android:textSize="14sp" />
 
         </LinearLayout>
@@ -88,8 +84,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-             >
+            android:orientation="vertical">
 
             <LinearLayout
                 android:id="@+id/ll_account"
@@ -106,7 +101,7 @@
                     android:layout_weight="1.3"
                     android:gravity="center_vertical"
                     android:text="账户"
-                    android:textColor="@color/text_color_818182"
+                    android:textColor="@color/gray_818182"
                     android:textSize="14sp" />
 
                 <LinearLayout
@@ -123,10 +118,10 @@
                         android:layout_weight="1"
                         android:background="@color/white"
                         android:gravity="center_vertical"
-                        android:singleLine="true"
                         android:imeOptions="actionDone"
+                        android:singleLine="true"
                         android:text="账户"
-                        android:textColor="@color/text_color_818182"
+                        android:textColor="@color/gray_818182"
                         android:textCursorDrawable="@null"
                         android:textSize="14sp" />
                 </LinearLayout>
@@ -137,8 +132,9 @@
                 android:layout_height="0.5dp"
                 android:layout_marginLeft="15dp"
                 android:layout_marginRight="15dp"
-                android:background="@color/line_color_e2e1e1" />
+                android:background="@color/divide_line_color" />
         </LinearLayout>
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -159,7 +155,7 @@
                     android:layout_weight="1.3"
                     android:gravity="center_vertical"
                     android:text="昵称"
-                    android:textColor="@color/text_color_818182"
+                    android:textColor="@color/gray_818182"
                     android:textSize="14sp" />
 
                 <LinearLayout
@@ -176,22 +172,24 @@
                         android:layout_weight="1"
                         android:background="@color/white"
                         android:gravity="center_vertical"
-                        android:singleLine="true"
                         android:imeOptions="actionDone"
+                        android:singleLine="true"
                         android:text="昵称"
-                        android:textColor="@color/text_color_818182"
+                        android:textColor="@color/gray_818182"
                         android:textCursorDrawable="@null"
-                        android:textSize="14sp"/>
+                        android:textSize="14sp" />
                 </LinearLayout>
             </LinearLayout>
+
             <View
                 android:layout_width="match_parent"
                 android:layout_height="0.5dp"
                 android:layout_marginLeft="15dp"
                 android:layout_marginRight="15dp"
-                android:background="@color/line_color_e2e1e1" />
+                android:background="@color/divide_line_color" />
 
         </LinearLayout>
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -212,7 +210,7 @@
                     android:layout_weight="1.3"
                     android:gravity="center_vertical"
                     android:text="手机"
-                    android:textColor="@color/text_color_818182"
+                    android:textColor="@color/gray_818182"
                     android:textSize="14sp" />
 
                 <LinearLayout
@@ -229,12 +227,12 @@
                         android:layout_weight="1"
                         android:background="@color/white"
                         android:gravity="center_vertical"
-                        android:singleLine="true"
                         android:imeOptions="actionDone"
+                        android:singleLine="true"
                         android:text="手机"
-                        android:textColor="@color/text_color_818182"
+                        android:textColor="@color/gray_818182"
                         android:textCursorDrawable="@null"
-                        android:textSize="14sp"/>
+                        android:textSize="14sp" />
                 </LinearLayout>
             </LinearLayout>
 
@@ -243,8 +241,9 @@
                 android:layout_height="0.5dp"
                 android:layout_marginLeft="15dp"
                 android:layout_marginRight="15dp"
-                android:background="@color/line_color_e2e1e1" />
+                android:background="@color/divide_line_color" />
         </LinearLayout>
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -265,7 +264,7 @@
                     android:layout_weight="1.3"
                     android:gravity="center_vertical"
                     android:text="公司"
-                    android:textColor="@color/text_color_818182"
+                    android:textColor="@color/gray_818182"
                     android:textSize="14sp" />
 
                 <LinearLayout
@@ -282,12 +281,12 @@
                         android:layout_weight="1"
                         android:background="@color/white"
                         android:gravity="center_vertical"
-                        android:singleLine="true"
                         android:imeOptions="actionDone"
+                        android:singleLine="true"
                         android:text="公司"
-                        android:textColor="@color/text_color_818182"
+                        android:textColor="@color/gray_818182"
                         android:textCursorDrawable="@null"
-                        android:textSize="14sp"/>
+                        android:textSize="14sp" />
                 </LinearLayout>
             </LinearLayout>
 
@@ -296,8 +295,9 @@
                 android:layout_height="0.5dp"
                 android:layout_marginLeft="15dp"
                 android:layout_marginRight="15dp"
-                android:background="@color/line_color_e2e1e1" />
+                android:background="@color/divide_line_color" />
         </LinearLayout>
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -318,7 +318,7 @@
                     android:layout_weight="1.3"
                     android:gravity="center_vertical"
                     android:text="部门"
-                    android:textColor="@color/text_color_818182"
+                    android:textColor="@color/gray_818182"
                     android:textSize="14sp" />
 
                 <LinearLayout
@@ -335,12 +335,12 @@
                         android:layout_weight="1"
                         android:background="@color/white"
                         android:gravity="center_vertical"
-                        android:singleLine="true"
                         android:imeOptions="actionDone"
+                        android:singleLine="true"
                         android:text="部门"
-                        android:textColor="@color/text_color_818182"
+                        android:textColor="@color/gray_818182"
                         android:textCursorDrawable="@null"
-                        android:textSize="14sp"/>
+                        android:textSize="14sp" />
                 </LinearLayout>
             </LinearLayout>
 
@@ -349,35 +349,36 @@
                 android:layout_height="0.5dp"
                 android:layout_marginLeft="15dp"
                 android:layout_marginRight="15dp"
-                android:background="@color/line_color_e2e1e1" />
+                android:background="@color/divide_line_color" />
         </LinearLayout>
 
         <RelativeLayout
             android:id="@+id/RL_advice"
             android:layout_width="match_parent"
             android:layout_height="40dp"
+            android:background="@color/white"
             android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:background="@color/white">
+            android:orientation="horizontal">
+
             <ImageView
                 android:id="@+id/advice"
                 android:layout_width="25dp"
                 android:layout_height="wrap_content"
-                android:src="@drawable/icon_advice"
-                android:layout_marginLeft="25dp"
                 android:layout_centerVertical="true"
-                />
+                android:layout_marginLeft="25dp"
+                android:src="@drawable/icon_advice" />
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
                 android:layout_marginLeft="10dp"
+                android:layout_toRightOf="@id/advice"
                 android:gravity="center_vertical"
                 android:text="基本资料"
-                android:textColor="@color/font_main_79"
-                android:textSize="14sp"
-                android:layout_toRightOf="@id/advice"
-                android:layout_centerVertical="true"
-                />
+                android:textColor="@color/font_main"
+                android:textSize="14sp" />
+
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
@@ -386,17 +387,19 @@
                 android:layout_marginRight="15dp"
                 android:src="@drawable/icon_right" />
         </RelativeLayout>
+
         <Button
             android:id="@+id/btn_exit"
             android:layout_width="match_parent"
             android:layout_height="45dp"
-            android:background="@drawable/btn_select"
-            android:layout_marginTop="30dp"
-            android:textColor="@color/white"
             android:layout_marginLeft="16dp"
+            android:layout_marginTop="30dp"
             android:layout_marginRight="16dp"
-            android:textSize="16dp"
-            android:text="退出登录"/>
+            android:background="@drawable/btn_select"
+            android:text="退出登录"
+            android:textColor="@color/white"
+            android:textSize="16dp" />
 
     </LinearLayout>
+
 </LinearLayout>

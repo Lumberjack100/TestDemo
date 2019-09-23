@@ -71,7 +71,7 @@ public class MyMenu extends Dialog implements View.OnClickListener{
     public void windowDeploy(int x, int y) {
         window = getWindow();
         window.setWindowAnimations(R.style.dialogWindowAnim);
-        window.setBackgroundDrawableResource(R.color.vifrification);
+        window.setBackgroundDrawableResource(R.color.bg_shadow);
         WindowManager.LayoutParams wl = window.getAttributes();
         DisplayMetrics dm = context.getResources().getDisplayMetrics();
         int width = dm.widthPixels;
