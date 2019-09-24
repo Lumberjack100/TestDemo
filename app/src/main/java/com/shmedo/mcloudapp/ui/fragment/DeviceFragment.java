@@ -2,6 +2,7 @@ package com.shmedo.mcloudapp.ui.fragment;
 
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothManager;
 import android.content.Context;
 import android.content.Intent;
@@ -154,6 +155,7 @@ public class DeviceFragment extends BaseFragment implements View.OnClickListener
         View view = super.onCreateView(inflater, container, savedInstanceState);
         unbinder = ButterKnife.bind(this, view);
         initView();
+        initBluetooth();
         getIntentData();
         return view;
     }
@@ -289,6 +291,32 @@ public class DeviceFragment extends BaseFragment implements View.OnClickListener
     }
 
 
+    private void initBluetooth() {
+        final BluetoothManager bluetoothManager = (BluetoothManager) getActivity().getSystemService(Context.BLUETOOTH_SERVICE);
+        mBluetoothAdapter = Objects.requireNonNull(bluetoothManager).getAdapter();
+        MdBluetoothManager.init(mBluetoothAdapter, bluetoothManager);
+        mdBluetoothManager = MdBluetoothManager.getInstance();
+        mdBluetoothManager.setEventHandler(new MdBluetoothEventHandler());
+    }
+
+    /**
+     * 扫描蓝牙设备，主要用来判断要连接的设备是否能被搜索到
+     */
+    private void startDiscoveryDevice() {
+        //未打开蓝牙
+        if (!mBluetoothAdapter.isEnabled()) {
+            Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+            startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
+            return;
+        }
+
+        if (null != list && list.size() > 0) {
+            list.clear();
+        }
+        mdBluetoothManager.scanDevice(20, getActivity());
+    }
+
+
     @OnClick({R.id.back, R.id.img_bluetooth})
     public void onViewClicked(View view) {
         switch (view.getId()) {
@@ -306,79 +334,27 @@ public class DeviceFragment extends BaseFragment implements View.OnClickListener
         }
     }
 
+
+    /**
+     * 连接蓝牙设备
+     */
     private void connectBluetooth() {
         if (isBluMode && !isConnected) {
-            initBluetooth();
+            startDiscoveryDevice();
+
             if (null != mBluetoothAdapter && mBluetoothAdapter.isEnabled()) {
 
-                if (null != list && list.size() > 0) {
-                    list.clear();
-                }
-                //deviceTrue为true，说明是从MainActivity中传过来的
                 if (null == mLoadingDialog.getDialog() || !mLoadingDialog.getDialog().isShowing()) {
-                    mLoadingDialog.showCancelDialog("正在连接蓝牙：" + SN);
-                    hander.postDelayed(dismssDialogRunnable, 5000);
+                    mLoadingDialog.showCancelDialog("正在搜索设备：" + SN);
+                    hander.postDelayed(dismssConDialogRunnable, 10000);
                 }
-
             }
         } else if (isBluMode && isConnected) {
             showChangeModle(getResources().getString(R.string.disconnect_bluetooth_device), "2");
-        } else {
-            if (null != list && list.size() > 0) {
-                list.clear();
-            }
-            initBluetooth();
         }
     }
 
-    private void initBluetooth() {
-        final BluetoothManager bluetoothManager = (BluetoothManager) getActivity().getSystemService(Context.BLUETOOTH_SERVICE);
-        mBluetoothAdapter = Objects.requireNonNull(bluetoothManager).getAdapter();
-        MdBluetoothManager.init(mBluetoothAdapter, bluetoothManager);
-        mdBluetoothManager = MdBluetoothManager.getInstance();
-        mdBluetoothManager.setEventHandler(new MdBluetoothEventHandler());
 
-        if (!mBluetoothAdapter.isEnabled()) {
-            Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-            startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
-
-        } else {
-            mdBluetoothManager.scanDevice(20, getActivity());
-        }
-    }
-
-    //自动连接蓝牙
-    private void initBluetoothAdapter() {
-
-        for (int i = 0; i < list.size(); i++) {
-            if ((list.get(i).getDevice().getName()).contains(SN)) {
-                //如果是连接状态，断开，重新连接
-                mdBluetoothManager.connectDevice(list.get(i).getDevice(), getActivity());
-                if (null != mLoadingDialog) {
-                    if (getActivity().hasWindowFocus()) {
-                        mLoadingDialog.showNoCancelDialog("正在连接..." + SN);
-                    }
-                }
-                hander.postDelayed(dismssConDialogRunnable, 10000);
-                break;
-            }
-        }
-
-        if (mdBluetoothManager.connected()) {
-            mdBluetoothManager.stopScan();
-        }
-    }
-
-    private Runnable dismssDialogRunnable = new Runnable() {
-        @Override
-        public void run() {
-            if (mLoadingDialog != null) {
-                mLoadingDialog.dismiss();
-                initBluetoothAdapter();
-            }
-            // disconnectDevice();
-        }
-    };
     private Runnable dismssConDialogRunnable = new Runnable() {
         @Override
         public void run() {
@@ -397,7 +373,6 @@ public class DeviceFragment extends BaseFragment implements View.OnClickListener
             MdBluetoothManager.getInstance().disconnect();
         }
     }
-
 
 
     private class MdBluetoothEventHandler implements BluetoothEventHandler {
@@ -747,14 +722,12 @@ public class DeviceFragment extends BaseFragment implements View.OnClickListener
                     stopBluetooth = false;
                     //isLockStatus();
                     startBluAuthenticate();//蓝牙连接成功开始进行验证
-                    hander.removeCallbacks(dismssDialogRunnable);
                     hander.removeCallbacks(dismssConDialogRunnable);
                     mdBluetoothManager.stopScan();
                     break;
 
                 case Constants.BT_DISCONNECTED:
                     if (isConnected) {
-                        isConnected = false;
                         if (!isBluMode) {
                             if (isAdded()) {
                                 mImgBluetooth.setImageDrawable(getResources().getDrawable(R.drawable.bar_item_offline));
@@ -764,10 +737,14 @@ public class DeviceFragment extends BaseFragment implements View.OnClickListener
                                 mImgBluetooth.setImageDrawable(getResources().getDrawable(R.drawable.bar_item_bt));
                             }
                         }
+
+                        if (mLoadingDialog != null) {
+                            mLoadingDialog.dismiss();
+                        }
                         Timber.d("蓝牙连接已断开");
                         ToastUtil.showSToast("蓝牙连接已断开!");
 
-                        hander.removeCallbacks(dismssDialogRunnable);
+                        isConnected = false;
                         hander.removeCallbacks(dismssConDialogRunnable);
                         mdBluetoothManager.stopScan();
                         if (!stopBluetooth) {
@@ -775,11 +752,7 @@ public class DeviceFragment extends BaseFragment implements View.OnClickListener
                             disconnectDevice();
                             //clearLocalStorage();
                             //断开蓝牙后重新连接
-                            reStartBluetooth();
-                        }
-
-                        if (mLoadingDialog != null) {
-                            mLoadingDialog.dismiss();
+                            connectBluetooth();
                         }
                     }
                     break;
@@ -865,27 +838,6 @@ public class DeviceFragment extends BaseFragment implements View.OnClickListener
         }
     });
 
-    /**
-     * 重新开启蓝牙
-     */
-    private void reStartBluetooth() {
-        if (!isConnected) {
-            initBluetooth();
-            if (null != mBluetoothAdapter && mBluetoothAdapter.isEnabled()) {
-                if (null != list && list.size() > 0) {
-                    list.clear();
-                }
-
-                if (null == mLoadingDialog.getDialog() || !mLoadingDialog.getDialog().isShowing()) {
-                    if (getActivity().hasWindowFocus()) {
-                        mLoadingDialog.showNoCancelDialog("正在连接蓝牙...");
-                    }
-                    hander.postDelayed(dismssDialogRunnable, 5000);
-                }
-            }
-        }
-        initBluetoothAdapter();
-    }
 
     /**
      * 发送蓝牙请求设备信息指令
@@ -942,20 +894,26 @@ public class DeviceFragment extends BaseFragment implements View.OnClickListener
     //    mdBluetoothManager.writeMessage(msg);
     //}
     private void handleDeviceFind(BluetoothDeviceFindEventData eventData) {
-        if (list.contains(eventData.getNewDevice()) ||
-                eventData.getNewDevice().getDevice().getName() == null) {
+
+        BluetoothDevice device = eventData.getNewDevice().getDevice();
+        if (device.getName() == null)
+            return;
+
+        if (isConnected) {
+            mdBluetoothManager.stopScan();
             return;
         }
 
-        if (null != list && list.size() > 0) {
-            for (MDevice mDevice : list) {
-                if (eventData.getNewDevice().getDevice().getName().equals(mDevice.getDevice().getName())) {
-                    return;
-                }
+        if (device.getName().contains(SN)) {
+            hander.removeCallbacks(dismssConDialogRunnable);
+            mLoadingDialog.dismiss();
+            mdBluetoothManager.stopScan();
+            mdBluetoothManager.connectDevice(device, getActivity());
+            if (null == mLoadingDialog.getDialog() || !mLoadingDialog.getDialog().isShowing()) {
+                mLoadingDialog.showNoCancelDialog("正在连接设备：" + SN);
+                hander.postDelayed(dismssConDialogRunnable, 10000);
             }
         }
-
-        list.add(eventData.getNewDevice());
     }
 
 
@@ -979,7 +937,6 @@ public class DeviceFragment extends BaseFragment implements View.OnClickListener
                 ToastUtil.showSToast("蓝牙未连接");
             }
         }
-
     }
 
 
@@ -989,7 +946,7 @@ public class DeviceFragment extends BaseFragment implements View.OnClickListener
             case REQUEST_ENABLE_BT:
                 // 蓝牙已经开启
                 if (resultCode == Activity.RESULT_OK) {
-                    mdBluetoothManager.scanDevice(20, getActivity());
+                    connectBluetooth();
 
                 } else {
                     ToastUtil.showSToast("蓝牙未启用");
@@ -1049,7 +1006,6 @@ public class DeviceFragment extends BaseFragment implements View.OnClickListener
         } else {
             isConnected = false;
             stopBluetooth = true;
-            hander.removeCallbacks(dismssDialogRunnable);
             hander.removeCallbacks(dismssConDialogRunnable);
             mdBluetoothManager.stopScan();
 //            disconnectDevice();
