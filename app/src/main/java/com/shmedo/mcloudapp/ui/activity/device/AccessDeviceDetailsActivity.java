@@ -4,10 +4,13 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
 import android.widget.TextView;
-import butterknife.BindView;
+
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.base.BaseActivity;
+
 import java.util.Objects;
+
+import butterknife.BindView;
 
 /**
  * 项目名：  mCloudapp

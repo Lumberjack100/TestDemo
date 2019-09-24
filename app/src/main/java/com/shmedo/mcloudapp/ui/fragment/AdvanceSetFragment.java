@@ -18,8 +18,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import butterknife.BindView;
-import butterknife.OnClick;
+
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.shmedo.das.das.cmd.CommandManager;
@@ -29,7 +28,11 @@ import com.shmedo.mcloudapp.ui.activity.device.senior.InstructionDebugActivity;
 import com.shmedo.mcloudapp.ui.activity.device.senior.ProductRegistrationActivity;
 import com.shmedo.mcloudapp.util.StringUtil;
 import com.shmedo.mcloudapp.util.ToastUtil;
+
 import java.util.UUID;
+
+import butterknife.BindView;
+import butterknife.OnClick;
 
 import static com.shmedo.das.das.cmd.CommandType.RESTORE_FACTORY_SETTING;
 
@@ -82,7 +85,7 @@ public class AdvanceSetFragment extends BaseFragment {
                 mBuilder.onPositive(new MaterialDialog.SingleButtonCallback() {
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        if (DeviceFragment.isConneted) {
+                        if (DeviceFragment.isConnected) {
                             String baseInfoCommand = CommandManager.getInstance().getCommand(RESTORE_FACTORY_SETTING, null);
                             com.shmedo.mcloudapp.bluetooth.Message msg = new com.shmedo.mcloudapp.bluetooth.Message(UUID
                                 .randomUUID().toString(), baseInfoCommand, true);
@@ -122,7 +125,7 @@ public class AdvanceSetFragment extends BaseFragment {
                         }else if (!StringUtil.isCodeCorrect(time)){
                             ToastUtil.showSToast("重启时间格式不正确");
                         } else {
-                            if (DeviceFragment.isConneted) {
+                            if (DeviceFragment.isConnected) {
                                 //恢复出厂设置
                                 com.shmedo.mcloudapp.bluetooth.Message msg = new com.shmedo.mcloudapp.bluetooth.Message("##008",
                                     "##008"+time+"\r\n", true);
@@ -223,5 +226,10 @@ public class AdvanceSetFragment extends BaseFragment {
         AbsoluteSizeSpan ass = new AbsoluteSizeSpan(13,true);
         ss.setSpan(ass, 0, ss.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         editText.setHint(new SpannedString(ss));
+    }
+
+    @Override
+    public boolean onBackPressed() {
+        return true;
     }
 }

@@ -4,8 +4,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.widget.Toast;
+
 import com.amap.api.maps.model.LatLng;
 import com.shmedo.mcloudapp.App;
+
 import java.io.File;
 
 /**

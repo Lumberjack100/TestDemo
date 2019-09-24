@@ -8,9 +8,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 
 import com.shmedo.mcloudapp.util.XPermissionUtils;
+import com.shmedo.mcloudapp.util.common.HandleBackUtil;
 
 import butterknife.ButterKnife;
-import com.shmedo.mcloudapp.util.common.HandleBackUtil;
 import timber.log.Timber;
 
 /**

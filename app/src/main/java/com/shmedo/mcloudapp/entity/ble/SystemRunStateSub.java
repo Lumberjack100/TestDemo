@@ -1,7 +1,5 @@
 package com.shmedo.mcloudapp.entity.ble;
 
-import android.webkit.JavascriptInterface;
-
 /**
  * 项目名：  mCloudapp
  * 包名：    com.shmedo.mcloudapp.entity.ble

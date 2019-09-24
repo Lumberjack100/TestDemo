@@ -12,7 +12,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -51,7 +50,7 @@ import com.shmedo.mcloudapp.model.Extras;
 import com.shmedo.mcloudapp.util.ToastUtil;
 import com.shmedo.mcloudapp.util.bleutil.BlueResultParserUtil;
 import com.shmedo.mcloudapp.util.bleutil.ByteManagerUtil;
-import com.shmedo.mcloudapp.util.bleutil.LogTag;
+import com.shmedo.mcloudapp.util.bleutil.Constants;
 import com.shmedo.mcloudapp.util.page.model.SetRainAccuryPage;
 import com.shmedo.mcloudapp.util.page.model.SetRainSelectPage;
 import com.shmedo.mcloudapp.views.LoadingDialog;
@@ -68,29 +67,6 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
 import timber.log.Timber;
-
-import static com.shmedo.das.das.cmd.CommandType.GET_ALL_SENSOR_CONFIG;
-import static com.shmedo.das.das.cmd.CommandType.QUERY_OSMOMETER_PARAMETER;
-import static com.shmedo.das.das.cmd.CommandType.SYSTEM_RUN_STATE;
-import static com.shmedo.das.das.cmd.CommandType.VERSION_MESSAGE;
-import static com.shmedo.mcloudapp.util.bleutil.Constants.BT_CHARACTERISTICS_FIND_FAIL;
-import static com.shmedo.mcloudapp.util.bleutil.Constants.BT_CONNECT;
-import static com.shmedo.mcloudapp.util.bleutil.Constants.BT_DISCONNECTED;
-import static com.shmedo.mcloudapp.util.bleutil.Constants.BT_ENABLE_READ_FAIL;
-import static com.shmedo.mcloudapp.util.bleutil.Constants.BT_ENABLE_READ_SUCCESS;
-import static com.shmedo.mcloudapp.util.bleutil.Constants.BT_MESSAGE_WRITE_FAIL;
-import static com.shmedo.mcloudapp.util.bleutil.Constants.BT_MESSAGE_WRITE_SUCCESS;
-import static com.shmedo.mcloudapp.util.bleutil.Constants.BT_RECOVERY_SUCCESS;
-import static com.shmedo.mcloudapp.util.bleutil.Constants.BT_REQUEST_MTU_FAIL;
-import static com.shmedo.mcloudapp.util.bleutil.Constants.BT_SERVICE_FIND_FAIL;
-import static com.shmedo.mcloudapp.util.bleutil.Constants.BT_WRITE_TIME_OUT;
-import static com.shmedo.mcloudapp.util.bleutil.Constants.MESSAGE_LOCK_REBOOT_DEVICE;
-import static com.shmedo.mcloudapp.util.bleutil.Constants.MESSAGE_QUERY_OSMOMETER_PARAMETER;
-import static com.shmedo.mcloudapp.util.bleutil.Constants.MESSAGE_RESPONSE_REBOOT_DEVICE;
-import static com.shmedo.mcloudapp.util.bleutil.Constants.MESSAGE_RESPONSE_SAVE_SETTINGS_SUCCESS;
-import static com.shmedo.mcloudapp.util.bleutil.Constants.MESSAGE_RESPONSE_TIME_OUT;
-import static com.shmedo.mcloudapp.util.bleutil.Constants.REFRESH_RUN_STATE;
-import static com.shmedo.mcloudapp.util.bleutil.Constants.VERIFY_RESULT;
 
 /**
  * 项目名：  mCloudapp
@@ -131,9 +107,9 @@ public class DeviceFragment extends BaseFragment implements View.OnClickListener
     private Unbinder unbinder;
     private LoadingDialog mLoadingDialog;
     private Handler hander;
-    //当前模式是否是蓝牙模式
-    private boolean isBluMode = true;
-    public static boolean isConneted = false;
+
+    public static boolean isConnected = false;
+    private boolean isBluMode = true;//当前模式是否是蓝牙模式
     private boolean stopBluetooth = false;
     public static MdBluetoothManager mdBluetoothManager;
     public static BluetoothAdapter mBluetoothAdapter;
@@ -317,21 +293,12 @@ public class DeviceFragment extends BaseFragment implements View.OnClickListener
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.back:
-                if (isConneted) {
-                    showChangeModle(getResources().getString(R.string.finish), "1");
-                } else {
-                    stopBluetooth = true;
-                    hander.removeCallbacks(dismssDialogRunnable);
-                    hander.removeCallbacks(dismssConDialogRunnable);
-                    mdBluetoothManager.stopScan();
-                    disconnectDevice();
-                    getActivity().finish();
-                }
+                onBackPressed();
                 break;
 
             case R.id.img_bluetooth:
-                if (isConneted) {
-                    showChangeModle(getResources().getString(R.string.blue_model), "2");
+                if (isConnected) {
+                    showChangeModle(getResources().getString(R.string.disconnect_bluetooth_device), "2");
                 } else {
                     connectBluetooth();
                 }
@@ -340,7 +307,7 @@ public class DeviceFragment extends BaseFragment implements View.OnClickListener
     }
 
     private void connectBluetooth() {
-        if (isBluMode && !isConneted) {
+        if (isBluMode && !isConnected) {
             initBluetooth();
             if (null != mBluetoothAdapter && mBluetoothAdapter.isEnabled()) {
 
@@ -354,8 +321,8 @@ public class DeviceFragment extends BaseFragment implements View.OnClickListener
                 }
 
             }
-        } else if (isBluMode && isConneted) {
-            showChangeModle(getResources().getString(R.string.blue_model), "2");
+        } else if (isBluMode && isConnected) {
+            showChangeModle(getResources().getString(R.string.disconnect_bluetooth_device), "2");
         } else {
             if (null != list && list.size() > 0) {
                 list.clear();
@@ -386,7 +353,6 @@ public class DeviceFragment extends BaseFragment implements View.OnClickListener
         for (int i = 0; i < list.size(); i++) {
             if ((list.get(i).getDevice().getName()).contains(SN)) {
                 //如果是连接状态，断开，重新连接
-
                 mdBluetoothManager.connectDevice(list.get(i).getDevice(), getActivity());
                 if (null != mLoadingDialog) {
                     if (getActivity().hasWindowFocus()) {
@@ -395,9 +361,9 @@ public class DeviceFragment extends BaseFragment implements View.OnClickListener
                 }
                 hander.postDelayed(dismssConDialogRunnable, 10000);
                 break;
-
             }
         }
+
         if (mdBluetoothManager.connected()) {
             mdBluetoothManager.stopScan();
         }
@@ -432,101 +398,60 @@ public class DeviceFragment extends BaseFragment implements View.OnClickListener
         }
     }
 
-    /**
-     * 是否切换连接模式
-     */
-    public void showChangeModle(String content, final String index) {
-        mBuilder = new MaterialDialog.Builder(getActivity());
-        mBuilder.title("温馨提示：")
-                .content(content)
-                .contentColor(Color.parseColor("#000000"))
-                .canceledOnTouchOutside(false)
-                .positiveText("确定")
-                .negativeText("取消");
-        mMaterialDialog = mBuilder.build();
-        mMaterialDialog.show();
-        mBuilder.onAny(new MaterialDialog.SingleButtonCallback() {
-            @Override
-            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                if (which == DialogAction.POSITIVE) {
-                    switch (index) {
-                        case "1":
-                            isConneted = false;
-                            stopBluetooth = true;
-                            disconnectDevice();
-                            getActivity().finish();
-                            break;
-                        case "2":
-                            isConneted = false;
-                            stopBluetooth = true;
-                            disconnectDevice();
-                            mImgBluetooth.setImageDrawable(getResources().getDrawable(R.drawable.bar_item_bt));
-                            mMaterialDialog.dismiss();
-                            break;
-                    }
 
-                } else if (which == DialogAction.NEGATIVE) {
-                    if (mBluetoothAdapter != null) {
-                        mBluetoothAdapter.isEnabled();
-                    }
-                    mMaterialDialog.dismiss();
-                }
-            }
-        });
-    }
 
     private class MdBluetoothEventHandler implements BluetoothEventHandler {
         @Override
         public void handle(final BluetoothEvent event) {
             switch (event.getEventType()) {
                 case DEVICE_FIND:
-                    Timber.d("==DEVICE_FIND===" + ((BluetoothDeviceFindEventData) event.getEventData()).getNewDevice().getDevice().getName());
+                    Timber.d("DEVICE_FIND===" + ((BluetoothDeviceFindEventData) event.getEventData()).getNewDevice().getDevice().getName());
                     handleDeviceFind((BluetoothDeviceFindEventData) event.getEventData());
                     break;
 
                 case CONNECTED:
                     ByteManagerUtil.init(new MyOnBytePackage());
-                    mHandler.sendEmptyMessage(BT_CONNECT);
+                    mHandler.sendEmptyMessage(Constants.BT_CONNECT);
                     break;
 
                 case DISCONNECTED:
-                    mHandler.sendEmptyMessage(BT_DISCONNECTED);
+                    mHandler.sendEmptyMessage(Constants.BT_DISCONNECTED);
                     break;
 
                 case REQUEST_MTU_FAIL:
-                    Log.e(LogTag.ERROR_TAG, "MTU请求设置失败");
+                    Timber.d("MTU请求设置失败");
                     //mHandler.sendEmptyMessage(BT_REQUEST_MTU_FAIL);
                     break;
 
                 case SERVICE_FIND_FAIL:
-                    Log.e(LogTag.ERROR_TAG, "蓝牙服务发现失败");
-                    mHandler.sendEmptyMessage(BT_SERVICE_FIND_FAIL);
+                    Timber.d("蓝牙服务发现失败");
+                    mHandler.sendEmptyMessage(Constants.BT_SERVICE_FIND_FAIL);
                     break;
 
                 case CHARACTERISTICS_FIND_FAIL:
-                    Log.e(LogTag.ERROR_TAG, "特征读取失败");
-                    mHandler.sendEmptyMessage(BT_CHARACTERISTICS_FIND_FAIL);
+                    Timber.d("特征读取失败");
+                    mHandler.sendEmptyMessage(Constants.BT_CHARACTERISTICS_FIND_FAIL);
                     break;
 
                 case ENABLE_READ_SUCCESS:
-                    Log.i(LogTag.INFO_TAG, "设置读取Descriptor成功");
-                    mHandler.sendEmptyMessage(BT_ENABLE_READ_SUCCESS);
+                    Timber.d("设置读取Descriptor成功");
+                    mHandler.sendEmptyMessage(Constants.BT_ENABLE_READ_SUCCESS);
                     break;
 
                 case ENABLE_READ_FAIL:
-                    Log.e(LogTag.ERROR_TAG, "设置读取Descriptor失败");
-                    mHandler.sendEmptyMessage(BT_ENABLE_READ_FAIL);
+                    Timber.d("设置读取Descriptor失败");
+                    mHandler.sendEmptyMessage(Constants.BT_ENABLE_READ_FAIL);
                     break;
 
                 case WRITE_TIME_OUT:
-                    Log.e(LogTag.ERROR_TAG, "写入等待超时");
+                    Timber.d("写入等待超时");
                     disconnectDevice();
-                    mHandler.sendEmptyMessage(BT_WRITE_TIME_OUT);
+                    mHandler.sendEmptyMessage(Constants.BT_WRITE_TIME_OUT);
                     break;
 
                 case MESSAGE_WRITE_SUCCESS: {
                     //Log.i(LogTag.INFO_TAG, "消息写入成功");
-                    mHandler.sendEmptyMessage(BT_MESSAGE_WRITE_SUCCESS);
+                    mHandler.sendEmptyMessage(Constants.BT_MESSAGE_WRITE_SUCCESS);
                     try {
                         currentMessageId = ((Message) event.getEventData()).getMessageID();
                         //Log.i(LogTag.INFO_TAG, "消息id===" + ((Message) event.getEventData()).getMessageID());
@@ -538,20 +463,20 @@ public class DeviceFragment extends BaseFragment implements View.OnClickListener
                         }
 
                     } catch (Exception ex) {
-                        Log.e(LogTag.ERROR_TAG, ex.getMessage(), ex);
+                        Timber.e(ex);
                     }
 
                     break;
                 }
                 case MESSAGE_RESPONSE_TIME_OUT:
-                    Log.e(LogTag.ERROR_TAG, "消息等待响应超时");
-                    mHandler.sendEmptyMessage(MESSAGE_RESPONSE_TIME_OUT);
+                    Timber.d("消息等待响应超时");
+                    mHandler.sendEmptyMessage(Constants.MESSAGE_RESPONSE_TIME_OUT);
                     disconnectDevice();
                     break;
 
                 case MESSAGE_WRITE_FAIL:
-                    Log.e(LogTag.ERROR_TAG, "消息写入失败");
-                    mHandler.sendEmptyMessage(BT_MESSAGE_WRITE_FAIL);
+                    Timber.d("消息写入失败");
+                    mHandler.sendEmptyMessage(Constants.BT_MESSAGE_WRITE_FAIL);
                     break;
 
                 case RESPONSE_WITH_NO_MESSAGE:
@@ -562,7 +487,7 @@ public class DeviceFragment extends BaseFragment implements View.OnClickListener
                         }
 
                     } catch (Exception ex) {
-                        Log.e(LogTag.ERROR_TAG, ex.getMessage(), ex);
+                        Timber.e(ex);
                     }
                     break;
 
@@ -589,12 +514,12 @@ public class DeviceFragment extends BaseFragment implements View.OnClickListener
                 } else if (result[result.length - 1].equals("unlock")) {
                     lockStatus = "unlock";
                     android.os.Message message = new android.os.Message();
-                    message.what = MESSAGE_LOCK_REBOOT_DEVICE;
+                    message.what = Constants.MESSAGE_LOCK_REBOOT_DEVICE;
                     mHandler.sendMessage(message);
                     return;
                 } else if (str.equals("Equipment Verify OK.\r\n")) {
                     android.os.Message message = new android.os.Message();
-                    message.what = MESSAGE_LOCK_REBOOT_DEVICE;
+                    message.what = Constants.MESSAGE_LOCK_REBOOT_DEVICE;
                     mHandler.sendMessage(message);
                     return;
                 } else if (str.startsWith("$$224") && str.endsWith("\r\n")) {
@@ -613,7 +538,7 @@ public class DeviceFragment extends BaseFragment implements View.OnClickListener
                                 String com = "##222," + SN + ",0," + desStr.toUpperCase() + "\r\n";
                                 Message msg = new Message(UUID.randomUUID().toString(), com, true);
                                 mdBluetoothManager.writeMessage(msg);
-                                Log.i(LogTag.INFO_TAG, "===-发送指令===" + com);
+                                Timber.d("===-发送指令===" + com);
                                 return;
                             }
                         } catch (Exception e) {
@@ -623,10 +548,11 @@ public class DeviceFragment extends BaseFragment implements View.OnClickListener
                 } else if (str.startsWith("$$223")) {
                     String[] verifyReult = str.substring(0, str.length() - 2).split(",");
                     android.os.Message message = new android.os.Message();
-                    message.what = VERIFY_RESULT;
+                    message.what = Constants.VERIFY_RESULT;
                     message.obj = verifyReult[1];
                     mHandler.sendMessage(message);
-                    Log.i(LogTag.INFO_TAG, "认证结果===" + verifyReult[1]);
+                    Timber.d("认证结果===" + verifyReult[1]);
+
                 } else if (str.startsWith("$$225") && str.endsWith("\r\n")) {
                     deviceLockStatusSub = BlueResultParserUtil.getDeviceLockStatusInfo(str);
                     if (deviceLockStatusSub.getLockStatus() == 0) {
@@ -651,9 +577,8 @@ public class DeviceFragment extends BaseFragment implements View.OnClickListener
                 //}
 
             } catch (Exception ex) {
-                Log.e(LogTag.INFO_TAG, ex.getMessage(), ex);
+                Timber.e(ex);
             }
-
         }
     }
 
@@ -661,7 +586,7 @@ public class DeviceFragment extends BaseFragment implements View.OnClickListener
     private void parserResult(String result) {
         if (result.equals("Please verify the equipment.\r\n")) {
             android.os.Message message = new android.os.Message();
-            message.what = VERIFY_RESULT;
+            message.what = Constants.VERIFY_RESULT;
             message.obj = "0";
             mHandler.sendMessage(message);
 
@@ -723,7 +648,7 @@ public class DeviceFragment extends BaseFragment implements View.OnClickListener
 
                     case RESTORE_FACTORY_SETTING:  //119
                         //恢复出厂设置
-                        mHandler.sendEmptyMessage(BT_RECOVERY_SUCCESS);
+                        mHandler.sendEmptyMessage(Constants.BT_RECOVERY_SUCCESS);
                         Timber.d("--------恢复出厂设置-------" + type);
                         break;
 
@@ -731,7 +656,7 @@ public class DeviceFragment extends BaseFragment implements View.OnClickListener
                         //重启设备
                         mRebootDeviceSub = BlueResultParserUtil.getRebootDeviceMessage(result);
                         Timber.d("--------重启设备-------" + mRebootDeviceSub.toString());
-                        mHandler.sendEmptyMessage(MESSAGE_RESPONSE_REBOOT_DEVICE);
+                        mHandler.sendEmptyMessage(Constants.MESSAGE_RESPONSE_REBOOT_DEVICE);
                         break;
 
                     case GET_ALL_SENSOR_CONFIG: {  //333
@@ -762,7 +687,7 @@ public class DeviceFragment extends BaseFragment implements View.OnClickListener
                         }
 
                         if (!collectorType.equals("")) {
-                            if (isConneted) {
+                            if (isConnected) {
                                 //根据采集器型号获取采集器配置 ##100 02
                                 String collectorCommand = CommandManager.getInstance().getCommand(CommandType.COLLECTOR_CONFIG, null);
                                 String collectorResult = collectorCommand.replace("\r\n", "") + collectorType + "\r\n";
@@ -807,7 +732,7 @@ public class DeviceFragment extends BaseFragment implements View.OnClickListener
         @Override
         public boolean handleMessage(android.os.Message msg) {
             switch (msg.what) {
-                case BT_CONNECT:
+                case Constants.BT_CONNECT:
                     if (isAdded()) {
                         mImgBluetooth.setImageDrawable(getResources().getDrawable(R.drawable.bar_item_blu_connect_yellow));
                     }
@@ -818,7 +743,7 @@ public class DeviceFragment extends BaseFragment implements View.OnClickListener
                     Timber.d("蓝牙连接成功");
                     ToastUtil.showSToast("蓝牙连接成功");
 
-                    isConneted = true;
+                    isConnected = true;
                     stopBluetooth = false;
                     //isLockStatus();
                     startBluAuthenticate();//蓝牙连接成功开始进行验证
@@ -827,9 +752,9 @@ public class DeviceFragment extends BaseFragment implements View.OnClickListener
                     mdBluetoothManager.stopScan();
                     break;
 
-                case BT_DISCONNECTED:
-                    if (isConneted) {
-                        isConneted = false;
+                case Constants.BT_DISCONNECTED:
+                    if (isConnected) {
+                        isConnected = false;
                         if (!isBluMode) {
                             if (isAdded()) {
                                 mImgBluetooth.setImageDrawable(getResources().getDrawable(R.drawable.bar_item_offline));
@@ -859,19 +784,19 @@ public class DeviceFragment extends BaseFragment implements View.OnClickListener
                     }
                     break;
 
-                case BT_MESSAGE_WRITE_SUCCESS:
+                case Constants.BT_MESSAGE_WRITE_SUCCESS:
                     ToastUtil.showSToast("蓝牙发送指令成功");
                     break;
 
-                case BT_MESSAGE_WRITE_FAIL:
+                case Constants.BT_MESSAGE_WRITE_FAIL:
                     ToastUtil.showSToast("蓝牙发送指令失败");
                     break;
 
-                case BT_WRITE_TIME_OUT:
+                case Constants.BT_WRITE_TIME_OUT:
                     ToastUtil.showSToast("蓝牙发送指令超时");
                     break;
 
-                case VERIFY_RESULT:
+                case Constants.VERIFY_RESULT:
                     if (msg.obj.equals("1")) {
                         ToastUtil.showSToast("蓝牙认证通过!");
                         sendDeviceStateComd();
@@ -886,49 +811,49 @@ public class DeviceFragment extends BaseFragment implements View.OnClickListener
                     }
                     break;
 
-                case MESSAGE_RESPONSE_TIME_OUT:
+                case Constants.MESSAGE_RESPONSE_TIME_OUT:
                     ToastUtil.showSToast("消息等待响应超时！");
                     break;
 
-                case REFRESH_RUN_STATE:
+                case Constants.REFRESH_RUN_STATE:
                     //loadWebView(runState);
                     break;
 
-                case MESSAGE_RESPONSE_SAVE_SETTINGS_SUCCESS:
+                case Constants.MESSAGE_RESPONSE_SAVE_SETTINGS_SUCCESS:
                     ToastUtil.showSToast("保存设置信息成功！");
                     //mWebView.loadUrl("javascript:restart()");
                     break;
 
-                case BT_REQUEST_MTU_FAIL:
+                case Constants.BT_REQUEST_MTU_FAIL:
                     ToastUtil.showSToast("MTU请求设置失败！");
                     break;
 
-                case BT_SERVICE_FIND_FAIL:
+                case Constants.BT_SERVICE_FIND_FAIL:
                     ToastUtil.showSToast("蓝牙服务发现失败！");
                     break;
 
-                case BT_CHARACTERISTICS_FIND_FAIL:
+                case Constants.BT_CHARACTERISTICS_FIND_FAIL:
                     ToastUtil.showSToast("蓝牙特征读取失败！");
                     break;
 
-                case BT_ENABLE_READ_FAIL:
+                case Constants.BT_ENABLE_READ_FAIL:
                     ToastUtil.showSToast("设置读取Descriptor失败！");
                     break;
 
-                case BT_RECOVERY_SUCCESS:
+                case Constants.BT_RECOVERY_SUCCESS:
                     ToastUtil.showSToast("恢复出厂设置成功！");
                     break;
 
-                case MESSAGE_RESPONSE_REBOOT_DEVICE:
+                case Constants.MESSAGE_RESPONSE_REBOOT_DEVICE:
                     ToastUtil.showSToast("重启系统成功！");
                     break;
 
-                case MESSAGE_LOCK_REBOOT_DEVICE:
+                case Constants.MESSAGE_LOCK_REBOOT_DEVICE:
                     ToastUtil.showSToast("蓝牙通讯已就绪！");
                     sendDeviceStateComd();//unlock后发送指令
                     break;
 
-                case MESSAGE_QUERY_OSMOMETER_PARAMETER:
+                case Constants.MESSAGE_QUERY_OSMOMETER_PARAMETER:
                     //String result = (String) msg.obj;
                     //parserResult(result);
                     break;
@@ -944,7 +869,7 @@ public class DeviceFragment extends BaseFragment implements View.OnClickListener
      * 重新开启蓝牙
      */
     private void reStartBluetooth() {
-        if (!isConneted) {
+        if (!isConnected) {
             initBluetooth();
             if (null != mBluetoothAdapter && mBluetoothAdapter.isEnabled()) {
                 if (null != list && list.size() > 0) {
@@ -966,15 +891,15 @@ public class DeviceFragment extends BaseFragment implements View.OnClickListener
      * 发送蓝牙请求设备信息指令
      */
     public static void sendDeviceStateComd() {
-        if (isConneted) {
+        if (isConnected) {
             //获取所有配置  ##333
-            final String allInfoCommand = CommandManager.getInstance().getCommand(GET_ALL_SENSOR_CONFIG, null);
+            final String allInfoCommand = CommandManager.getInstance().getCommand(CommandType.GET_ALL_SENSOR_CONFIG, null);
             //系统运行状态 ##014
-            String runstateCommand = CommandManager.getInstance().getCommand(SYSTEM_RUN_STATE, null);
+            String runstateCommand = CommandManager.getInstance().getCommand(CommandType.SYSTEM_RUN_STATE, null);
             //查询数字式渗压计参数 ##400
-            String shenyajiCommand = CommandManager.getInstance().getCommand(QUERY_OSMOMETER_PARAMETER, null);
+            String shenyajiCommand = CommandManager.getInstance().getCommand(CommandType.QUERY_OSMOMETER_PARAMETER, null);
             //版本信息 ##040
-            String versionCommand = CommandManager.getInstance().getCommand(VERSION_MESSAGE, null);
+            String versionCommand = CommandManager.getInstance().getCommand(CommandType.VERSION_MESSAGE, null);
             //获取服务器地址 ##200
             String serverCommand = CommandManager.getInstance().getCommand(CommandType.SERVER_ADDRESS, null);
 
@@ -991,7 +916,7 @@ public class DeviceFragment extends BaseFragment implements View.OnClickListener
             Timber.d("发送版本信息指令===" + versionCommand);
 
         } else {
-            if (!isConneted) {
+            if (!isConnected) {
                 ToastUtil.showSToast("蓝牙未连接");
             }
         }
@@ -1042,7 +967,7 @@ public class DeviceFragment extends BaseFragment implements View.OnClickListener
     private void send101Instruction(CollectorInfoSub collectorInfoSub) {
 
         for (int i = 0; i < collectorInfoSub.getAccessSum(); i++) {
-            if (isConneted) {
+            if (isConnected) {
                 //##101XXYY\r\n：获取XX采集器YY通道的传感器参数
                 String collectorCommand = CommandManager.getInstance().getCommand(CommandType.COLLECTOR_CHANNEL_SENSOR_PARAMETER, null);
                 String count = com.shmedo.mcloudapp.util.StringUtil.formatTwo(i);
@@ -1068,7 +993,6 @@ public class DeviceFragment extends BaseFragment implements View.OnClickListener
 
                 } else {
                     ToastUtil.showSToast("蓝牙未启用");
-                    onBackPressed();
                 }
                 break;
 
@@ -1077,43 +1001,61 @@ public class DeviceFragment extends BaseFragment implements View.OnClickListener
         }
     }
 
+    /**
+     * 是否切换连接模式
+     */
+    public void showChangeModle(String content, final String index) {
+        mBuilder = new MaterialDialog.Builder(getActivity());
+        mBuilder.title("温馨提示：")
+                .content(content)
+                .contentColor(Color.parseColor("#000000"))
+                .canceledOnTouchOutside(false)
+                .positiveText("确定")
+                .negativeText("取消");
+        mMaterialDialog = mBuilder.build();
+        mMaterialDialog.show();
+        mBuilder.onAny(new MaterialDialog.SingleButtonCallback() {
+            @Override
+            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                if (which == DialogAction.POSITIVE) {
+                    switch (index) {
+                        case "1":
+                            isConnected = false;
+                            stopBluetooth = true;
+                            disconnectDevice();
+                            getActivity().finish();
+                            break;
+                        case "2":
+                            isConnected = false;
+                            stopBluetooth = true;
+                            disconnectDevice();
+                            mImgBluetooth.setImageDrawable(getResources().getDrawable(R.drawable.bar_item_bt));
+                            mMaterialDialog.dismiss();
+                            break;
+                    }
+
+                } else if (which == DialogAction.NEGATIVE) {
+                    mMaterialDialog.dismiss();
+                }
+            }
+        });
+    }
 
     @Override
     public boolean onBackPressed() {
-        if (isConneted) {
-            mBuilder = new MaterialDialog.Builder(getActivity());
-            mBuilder.title("温馨提示：")
-                    .content("当前设备正处于蓝牙交互中，是否确认退出？")
-                    .contentColor(Color.parseColor("#000000"))
-                    .canceledOnTouchOutside(false)
-                    .positiveText("确定")
-                    .negativeText("取消");
-            mMaterialDialog = mBuilder.build();
-            mMaterialDialog.show();
-            mBuilder.onAny(new MaterialDialog.SingleButtonCallback() {
-                @Override
-                public void onClick(
-                        @NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                    if (which == DialogAction.POSITIVE) {
-                        stopBluetooth = true;
-
-                        disconnectDevice();
-                        getActivity().finish();
-                    } else if (which == DialogAction.NEGATIVE) {
-
-                        mMaterialDialog.dismiss();
-                    }
-                }
-            });
+        if (isConnected) {
+            showChangeModle(getResources().getString(R.string.finish_activity_disconnect_bluetooth_device), "1");
 
         } else {
+            isConnected = false;
             stopBluetooth = true;
             hander.removeCallbacks(dismssDialogRunnable);
             hander.removeCallbacks(dismssConDialogRunnable);
             mdBluetoothManager.stopScan();
-            disconnectDevice();
+//            disconnectDevice();
             getActivity().finish();
         }
+
         return super.onBackPressed();
     }
 }

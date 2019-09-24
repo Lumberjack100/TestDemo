@@ -1,6 +1,7 @@
 package com.shmedo.mcloudapp.util.common;
 
 import android.content.Context;
+
 import com.amap.api.maps.AMap;
 import com.amap.api.maps.model.BitmapDescriptorFactory;
 import com.amap.api.maps.model.LatLng;

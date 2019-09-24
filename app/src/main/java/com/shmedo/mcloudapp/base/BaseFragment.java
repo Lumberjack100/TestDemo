@@ -9,10 +9,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import butterknife.ButterKnife;
+
 import com.shmedo.mcloudapp.util.XPermissionUtils;
 import com.shmedo.mcloudapp.util.common.HandleBackInterface;
 import com.shmedo.mcloudapp.util.common.HandleBackUtil;
+
+import butterknife.ButterKnife;
 
 /**
  * 项目名：  eMeasApp

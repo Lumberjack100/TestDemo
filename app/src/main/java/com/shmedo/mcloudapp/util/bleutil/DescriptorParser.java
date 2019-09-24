@@ -32,6 +32,7 @@
 package com.shmedo.mcloudapp.util.bleutil;
 
 import android.bluetooth.BluetoothGattDescriptor;
+
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashMap;

@@ -7,10 +7,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.entity.WifiBean;
 import com.shmedo.mcloudapp.util.AppContants;
 import com.shmedo.mcloudapp.util.WifiSupport;
+
 import java.util.List;
 
 /**

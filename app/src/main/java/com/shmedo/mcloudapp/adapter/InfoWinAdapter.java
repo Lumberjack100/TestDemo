@@ -1,19 +1,16 @@
 package com.shmedo.mcloudapp.adapter;
 
 import android.content.Context;
-import android.content.Intent;
-import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.LinearLayout;
 import android.widget.TextView;
+
 import com.amap.api.maps.AMap;
 import com.amap.api.maps.model.LatLng;
 import com.amap.api.maps.model.Marker;
 import com.shmedo.mcloudapp.App;
 import com.shmedo.mcloudapp.R;
-import com.shmedo.mcloudapp.util.NavigationUtils;
 
 /**
  * 项目名：  mCloudapp

@@ -1,10 +1,11 @@
 package com.shmedo.mcloudapp.entity;
 
 import com.google.gson.annotations.SerializedName;
+
 import org.greenrobot.greendao.annotation.Entity;
+import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Unique;
-import org.greenrobot.greendao.annotation.Generated;
 
 /**
  * 项目名：  mCloudapp

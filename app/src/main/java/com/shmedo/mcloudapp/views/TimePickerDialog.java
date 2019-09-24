@@ -5,13 +5,13 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.view.View;
 import android.widget.TextView;
-import com.shmedo.mcloudapp.R;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
 
+import com.shmedo.mcloudapp.R;
+
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.Locale;
+
 import top.defaults.view.DateTimePickerView;
 
 import static top.defaults.view.DateTimePickerView.TYPE_YEAR_MONTH_DAY_HOUR_MINUTE;

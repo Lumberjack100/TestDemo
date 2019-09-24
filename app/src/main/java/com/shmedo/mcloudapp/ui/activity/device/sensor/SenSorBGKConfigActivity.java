@@ -686,7 +686,7 @@ public class SenSorBGKConfigActivity extends BaseActivity {
             }
             String result = String.valueOf(builderFirst);
             Log.i("adu","==result=="+result);
-            if (DeviceFragment.isConneted){
+            if (DeviceFragment.isConnected){
                 Message msg = new Message(UUID.randomUUID().toString(), result, true);
                 DeviceFragment.mdBluetoothManager.writeMessage(msg);
                 Log.i(LogTag.INFO_TAG, "发送result指令===" + result);

@@ -1,6 +1,7 @@
 package com.shmedo.mcloudapp.entity.cluster;
 
 import com.amap.api.maps.model.Marker;
+
 import java.util.List;
 
 /**

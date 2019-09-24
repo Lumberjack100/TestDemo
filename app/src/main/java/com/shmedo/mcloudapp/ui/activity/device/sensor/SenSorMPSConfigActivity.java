@@ -1,44 +1,28 @@
 package com.shmedo.mcloudapp.ui.activity.device.sensor;
 
 import android.app.Dialog;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
-import android.view.Gravity;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.Spinner;
 import android.widget.TextView;
-import butterknife.BindView;
-import butterknife.OnClick;
-import ch.ielse.view.SwitchView;
-import com.afollestad.materialdialogs.DialogAction;
+
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.shmedo.das.common.SensorWireShiftInfo;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.base.BaseActivity;
 import com.shmedo.mcloudapp.entity.ble.collector.CollectorSensorParamsInfoSub;
-import com.shmedo.mcloudapp.entity.ble.collector.SensorWireShiftInfoSub;
-import com.shmedo.mcloudapp.model.common.CommonVariable;
 import com.shmedo.mcloudapp.ui.fragment.DeviceFragment;
-import com.shmedo.mcloudapp.util.StartActivityUtil;
-import com.shmedo.mcloudapp.util.StringUtil;
-import com.shmedo.mcloudapp.util.ToastUtil;
-import com.shmedo.mcloudapp.util.UserConfig;
-import com.shmedo.mcloudapp.util.bleutil.LogTag;
 import com.tencent.mmkv.MMKV;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+
+import butterknife.BindView;
+import butterknife.OnClick;
+import ch.ielse.view.SwitchView;
 
 /**
  * 项目名：  mCloudapp

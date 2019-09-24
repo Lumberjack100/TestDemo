@@ -181,7 +181,7 @@ public class ParameterConfigFragment extends BaseFragment
             }
         });
 
-        if (DeviceFragment.isConneted){
+        if (DeviceFragment.isConnected){
             DeviceFragment.sendDeviceStateComd();
         }
 
@@ -394,7 +394,7 @@ public class ParameterConfigFragment extends BaseFragment
      * 雨量计开关
      */
     private void rainSelect(String parameter) {
-        if (DeviceFragment.isConneted) {
+        if (DeviceFragment.isConnected) {
             //雨量站开关
             Message msg = new Message("##005",
                 "##005" + parameter + "\r\n", true);
@@ -411,7 +411,7 @@ public class ParameterConfigFragment extends BaseFragment
      * 渗压计开关
      */
     private void osmometerSelect(String parameter) {
-        if (DeviceFragment.isConneted) {
+        if (DeviceFragment.isConnected) {
             //渗压计开关
             Message msg = new Message("##401",
                 "##401" + parameter + "\r\n", true);
@@ -553,7 +553,7 @@ public class ParameterConfigFragment extends BaseFragment
                 break;
             case R.id.rl_sensor_setting:
                 //传感器参数配置   根据传感器的类型来进行
-                if (DeviceFragment.isConneted){
+                if (DeviceFragment.isConnected){
                     //intent = new Intent(getActivity(), SenSorMPSConfigActivity.class);
                     intent = new Intent(getActivity(), SenSorBGKConfigActivity.class);
                     startActivity(intent);
@@ -612,7 +612,7 @@ public class ParameterConfigFragment extends BaseFragment
             }
         }
 
-        if (!DeviceFragment.isConneted){
+        if (!DeviceFragment.isConnected){
             mRefreshLayout.setRefreshing(false);
         }
     }
@@ -630,5 +630,10 @@ public class ParameterConfigFragment extends BaseFragment
         super.onDestroy();
         EventBus.getDefault().unregister(this);
 
+    }
+
+    @Override
+    public boolean onBackPressed() {
+        return true;
     }
 }

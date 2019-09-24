@@ -553,7 +553,7 @@ public class MainActivity extends BaseActivity implements
                         }
                     }
                 } else if (isBluModle && isConneted) {
-                    showChangeModle(getResources().getString(R.string.blue_model));
+                    showChangeModle(getResources().getString(R.string.disconnect_bluetooth_device));
                 } else {
                     if (null != list && list.size() > 0) {
                         list.clear();

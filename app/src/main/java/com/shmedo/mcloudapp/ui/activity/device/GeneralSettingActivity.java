@@ -9,19 +9,21 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import butterknife.BindView;
-import butterknife.OnClick;
+
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.base.BaseActivity;
 import com.shmedo.mcloudapp.ui.fragment.DeviceFragment;
 import com.shmedo.mcloudapp.util.StringUtil;
 import com.shmedo.mcloudapp.util.ToastUtil;
 import com.shmedo.mcloudapp.util.bleutil.LogTag;
-import com.shmedo.mcloudapp.util.page.model.SetCollectorPage;
 import com.shmedo.mcloudapp.views.LoadingDialog;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+
+import butterknife.BindView;
+import butterknife.OnClick;
 
 /**
  * 项目名：  mCloudapp
@@ -141,7 +143,7 @@ public class GeneralSettingActivity extends BaseActivity {
             list.add(String.valueOf(result3));
             list.add(String.valueOf(result4));
             for (int i = 0; i < list.size(); i++) {
-                if (DeviceFragment.isConneted) {
+                if (DeviceFragment.isConnected) {
                     Log.i(LogTag.INFO_TAG, "==采集器指令=========" + list.get(i).toString());
                     //采集器
                     com.shmedo.mcloudapp.bluetooth.Message msg

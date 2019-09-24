@@ -1,6 +1,7 @@
 package com.shmedo.mcloudapp.util;
 
 import android.widget.Toast;
+
 import com.shmedo.mcloudapp.App;
 
 /**

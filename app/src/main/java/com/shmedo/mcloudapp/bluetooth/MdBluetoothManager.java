@@ -17,6 +17,7 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+
 import com.shmedo.das.utils.ByteManager;
 import com.shmedo.das.utils.OnBytePackage;
 import com.shmedo.mcloudapp.bluetooth.exception.ScanAlreadyStartException;
@@ -29,6 +30,7 @@ import com.shmedo.mcloudapp.util.bleutil.GattAttributes;
 import com.shmedo.mcloudapp.util.bleutil.LogTag;
 import com.shmedo.mcloudapp.util.bleutil.ThreadUtil;
 import com.shmedo.mcloudapp.util.bleutil.UUIDDatabase;
+
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.sql.Timestamp;

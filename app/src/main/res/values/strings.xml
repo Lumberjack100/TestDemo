@@ -9,8 +9,8 @@
     <string name="service_set_address">请输入服务器地址/域名：端口 \n 如：192.168.1.101:8081 \n mCloud.shmedo.cn:9901</string>
     <string name="service_address">service_address</string>
     <string name="agent_addr">地址：%1$s</string>
-    <string name="blue_model">当前设备处于蓝牙连接状态，是否要断开连接？</string>
-    <string name="finish">确定要退出该页面，并断开蓝牙连接吗？</string>
+    <string name="disconnect_bluetooth_device">当前设备处于蓝牙连接状态，是否要断开连接？</string>
+    <string name="finish_activity_disconnect_bluetooth_device">确定要退出该页面，并断开蓝牙连接吗？</string>
 
     <!-- 权限申请-->
     <string name="permission_request_camera_external_storage">您已经拒绝米易通使用相机权限和存储卡权限 请前往设置页面授予权限</string>

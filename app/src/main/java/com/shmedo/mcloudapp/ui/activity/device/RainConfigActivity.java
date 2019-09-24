@@ -11,15 +11,18 @@ import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
 import android.widget.TextView;
-import butterknife.BindView;
-import butterknife.OnClick;
+
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.base.BaseActivity;
 import com.shmedo.mcloudapp.ui.fragment.DeviceFragment;
 import com.shmedo.mcloudapp.util.ToastUtil;
 import com.shmedo.mcloudapp.util.bleutil.LogTag;
+
 import java.text.DecimalFormat;
 import java.util.Objects;
+
+import butterknife.BindView;
+import butterknife.OnClick;
 
 /**
  * 项目名：  mCloudapp
@@ -100,7 +103,7 @@ public class RainConfigActivity extends BaseActivity {
             return;
         }
         Log.e(LogTag.INFO_TAG, "====雨量站spinner==="+rainResult);
-        if (DeviceFragment.isConneted) {
+        if (DeviceFragment.isConnected) {
             //恢复出厂设置
             com.shmedo.mcloudapp.bluetooth.Message msg = new com.shmedo.mcloudapp.bluetooth.Message("##121",
                 "##121"+rainResult+"\r\n", true);

@@ -1,7 +1,5 @@
 package com.shmedo.mcloudapp.entity.ble;
 
-import android.webkit.JavascriptInterface;
-
 /**
  * ProgramName:   das-config-app
  * PackageName:   com.example.medoDas.entity

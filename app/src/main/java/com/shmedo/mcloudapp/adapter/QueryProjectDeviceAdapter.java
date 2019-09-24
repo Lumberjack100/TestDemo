@@ -7,16 +7,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
+
 import com.shmedo.mcloudapp.R;
-import com.shmedo.mcloudapp.entity.PageResult;
 import com.shmedo.mcloudapp.entity.ProjectDeviceInfo;
-import com.shmedo.mcloudapp.entity.SensorAndCount;
-import com.shmedo.mcloudapp.entity.StatusInfoResult;
 import com.shmedo.mcloudapp.util.GlideUtils;
-import com.shmedo.mcloudapp.util.StringUtil;
-import java.util.ArrayList;
+
 import java.util.List;
 
 /**

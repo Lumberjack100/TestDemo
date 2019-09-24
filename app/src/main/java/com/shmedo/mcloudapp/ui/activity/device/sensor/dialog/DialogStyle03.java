@@ -8,12 +8,13 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.TextView;
+
 import com.shmedo.das.common.SensorSoilMoistureInfo;
-import com.shmedo.das.common.SensorWireShiftInfo;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.entity.ble.collector.CollectorSensorParamsInfoSub;
 import com.shmedo.mcloudapp.entity.event.SensorDataEvent;
 import com.shmedo.mcloudapp.util.GsonFactory;
+
 import org.greenrobot.eventbus.EventBus;
 
 /**

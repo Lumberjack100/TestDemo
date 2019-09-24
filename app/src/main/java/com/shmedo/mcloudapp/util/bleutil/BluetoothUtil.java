@@ -1,11 +1,8 @@
 package com.shmedo.mcloudapp.util.bleutil;
 
 import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothManager;
-import android.content.Context;
-import android.content.Intent;
+
 import com.shmedo.mcloudapp.bluetooth.MdBluetoothManager;
-import com.shmedo.mcloudapp.ui.activity.MainActivity;
 
 /**
  * 项目名：  mCloudapp

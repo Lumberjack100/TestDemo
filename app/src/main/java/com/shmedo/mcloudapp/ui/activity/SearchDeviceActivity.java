@@ -5,8 +5,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.widget.Button;
-import butterknife.BindView;
-import butterknife.OnClick;
+
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.adapter.DeviceStatusAdapter;
 import com.shmedo.mcloudapp.base.BaseActivity;
@@ -18,8 +17,12 @@ import com.shmedo.mcloudapp.util.StringUtil;
 import com.shmedo.mcloudapp.util.ToastUtil;
 import com.shmedo.mcloudapp.views.ClearEditText;
 import com.shmedo.mcloudapp.views.DividerItemDecoration;
+
 import java.util.ArrayList;
 import java.util.List;
+
+import butterknife.BindView;
+import butterknife.OnClick;
 
 /**
  * 项目名：  mCloudapp

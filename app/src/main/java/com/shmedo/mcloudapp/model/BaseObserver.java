@@ -1,6 +1,7 @@
 package com.shmedo.mcloudapp.model;
 
 import com.shmedo.mcloudapp.entity.ResultWrapper;
+
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
 

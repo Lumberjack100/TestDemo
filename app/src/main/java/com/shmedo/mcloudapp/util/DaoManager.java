@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.shmedo.mcloudapp.entity.DaoMaster;
 import com.shmedo.mcloudapp.entity.DaoSession;
+
 import org.greenrobot.greendao.query.QueryBuilder;
 
 /**

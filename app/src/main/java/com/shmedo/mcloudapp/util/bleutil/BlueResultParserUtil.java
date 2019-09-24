@@ -1,7 +1,7 @@
 package com.shmedo.mcloudapp.util.bleutil;
 
-import android.graphics.SweepGradient;
 import android.util.Log;
+
 import com.shmedo.das.common.BaseConfigInfo;
 import com.shmedo.das.common.CollectorConfigInfo;
 import com.shmedo.das.common.CollectorSensorParamsInfo;
@@ -14,7 +14,6 @@ import com.shmedo.das.common.RebootDeviceInfo;
 import com.shmedo.das.common.SettingRainPrecisionInfo;
 import com.shmedo.das.common.SystemRunStateInfo;
 import com.shmedo.das.common.VersionMessageInfo;
-import com.shmedo.das.common.enumerate.SensorType;
 import com.shmedo.das.das.cmd.CommandResult;
 import com.shmedo.das.das.cmd.parser.GetAllSensorConfigParser;
 import com.shmedo.das.das.cmd.parser.ParseManager;

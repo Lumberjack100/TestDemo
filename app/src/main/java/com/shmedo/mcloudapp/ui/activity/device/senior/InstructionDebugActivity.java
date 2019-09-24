@@ -98,7 +98,7 @@ public class InstructionDebugActivity extends BaseActivity {
 
         mChatView.setOnClickSendButtonListener(new View.OnClickListener() {
             @Override public void onClick(View view) {
-                if (DeviceFragment.isConneted) {
+                if (DeviceFragment.isConnected) {
                     final Bitmap myIcon = BitmapFactory.decodeResource(getResources(),
                         R.mipmap.logo);
                     //User name
@@ -218,7 +218,7 @@ public class InstructionDebugActivity extends BaseActivity {
     private void setSysTime(){
         final Bitmap myIcon = BitmapFactory.decodeResource(getResources(),
             R.mipmap.logo);
-        if (DeviceFragment.isConneted) {
+        if (DeviceFragment.isConnected) {
 
             //new message
             Message message = new Message.Builder()
@@ -253,7 +253,7 @@ public class InstructionDebugActivity extends BaseActivity {
         final Bitmap myIcon = BitmapFactory.decodeResource(getResources(),
             R.mipmap.logo);
         //User name
-        if (DeviceFragment.isConneted) {
+        if (DeviceFragment.isConnected) {
 
             //new message
             Message message = new Message.Builder()
