@@ -64,7 +64,7 @@ public class BlueToothListActivity extends Activity {
     }
 
     private void getIntentData() {
-        List<MDevice> tempList = (List<MDevice>) getIntent().getSerializableExtra("devlist");
+        List<MDevice> tempList = (List<MDevice>) getIntent().getSerializableExtra(Extras.SCAN_DEVICE_LIST);
         if (tempList != null)
             deviceList.addAll(tempList);
 

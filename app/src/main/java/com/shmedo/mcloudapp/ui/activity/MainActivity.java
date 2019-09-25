@@ -14,7 +14,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
@@ -71,7 +70,6 @@ import com.shmedo.mcloudapp.util.StartActivityUtil;
 import com.shmedo.mcloudapp.util.ToastUtil;
 import com.shmedo.mcloudapp.util.XPermissionUtils;
 import com.shmedo.mcloudapp.util.bleutil.ByteManagerUtil;
-import com.shmedo.mcloudapp.util.bleutil.LogTag;
 import com.shmedo.mcloudapp.util.common.MapManagerUtil;
 import com.shmedo.mcloudapp.views.HintDialog;
 import com.shmedo.mcloudapp.views.LoadingDialog;
@@ -166,15 +164,12 @@ public class MainActivity extends BaseActivity implements
     private MaterialDialog.Builder mBuilder;
     private DaoManager manager = DaoManager.getInstance();
 
-    public static BluetoothAdapter mBluetoothAdapter;
-    public static MdBluetoothManager mdBluetoothManager;
+    private static BluetoothAdapter mBluetoothAdapter;
+    private static MdBluetoothManager mdBluetoothManager;
 
     private List<MDevice> list = new ArrayList<>();
-    private boolean isShowingDialog = false;
     private Handler hander;
     private String currentMessageId = "";
-    private String SN = "";
-    private static final int REQUEST_CONNECT_DEVICE = 1;
     private static final int REQUEST_ENABLE_BT = 2;
 
     //当前模式是否是蓝牙模式
@@ -193,19 +188,19 @@ public class MainActivity extends BaseActivity implements
             if (mLoadingDialog != null) {
                 mLoadingDialog.dismiss();
 
-                initBlueAdapter();
+                mdBluetoothManager.stopScan();
+                if(list.isEmpty()){
+                    ToastUtil.showSToast("未发现设备，请尝试重新扫描");
+                    return;
+                }
+
+                if (!autoOpenBt) {
+                    BlueToothListActivity.startActivity(MainActivity.this, list);
+                }
             }
-            // disconnectDevice();
         }
     };
-    private Runnable dismssConDialogRunnable = new Runnable() {
-        @Override
-        public void run() {
-            if (mLoadingDialog != null) {
-                mLoadingDialog.dismiss();
-            }
-        }
-    };
+
 
 
     @Override
@@ -223,9 +218,11 @@ public class MainActivity extends BaseActivity implements
 
         initData();
         hidingConnectionView();
+        initBluetooth();
 
         //获取地图要加载的数据
         getDeviceBasicInfoList("1");
+
         XPermissionUtils.requestPermissionsResult(this, 200, new String[]{
                         Manifest.permission.ACCESS_FINE_LOCATION,
                         Manifest.permission.ACCESS_COARSE_LOCATION},
@@ -541,12 +538,10 @@ public class MainActivity extends BaseActivity implements
                 mDialog.dismiss();
                 if (isBluModle && !isConneted) {
                     disconnectDevice();
-                    initBluetooth();
+                    startDiscoveryDevice();
+
                     if (null != mBluetoothAdapter && mBluetoothAdapter.isEnabled()) {
 
-                        if (null != list && list.size() > 0) {
-                            list.clear();
-                        }
                         if (null == mLoadingDialog.getDialog() || !mLoadingDialog.getDialog().isShowing()) {
                             mLoadingDialog.showCancelDialog("正在获取附近的蓝牙设备...");
                             hander.postDelayed(dismssDialogRunnable, 10000);
@@ -554,11 +549,6 @@ public class MainActivity extends BaseActivity implements
                     }
                 } else if (isBluModle && isConneted) {
                     showChangeModle(getResources().getString(R.string.disconnect_bluetooth_device));
-                } else {
-                    if (null != list && list.size() > 0) {
-                        list.clear();
-                    }
-                    initBluetooth();
                 }
             }
         });
@@ -605,22 +595,26 @@ public class MainActivity extends BaseActivity implements
         MdBluetoothManager.init(mBluetoothAdapter, bluetoothManager);
         mdBluetoothManager = MdBluetoothManager.getInstance();
         mdBluetoothManager.setEventHandler(new MdBluetoothEventHandler());
-        if (mBluetoothAdapter == null || !mBluetoothAdapter.isEnabled()) {
+    }
+
+
+    /**
+     * 扫描蓝牙设备，主要用来判断要连接的设备是否能被搜索到
+     */
+    private void startDiscoveryDevice() {
+        //未打开蓝牙
+        if (!mBluetoothAdapter.isEnabled()) {
             Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
-        } else {
-            mdBluetoothManager.scanDevice(20, this);
-        }
-    }
-
-
-    private void initBlueAdapter() {
-        if (!autoOpenBt) {
-            BlueToothListActivity.startActivity(MainActivity.this, list);
+            return;
         }
 
-        mdBluetoothManager.stopScan();
+        if (null != list && list.size() > 0) {
+            list.clear();
+        }
+        mdBluetoothManager.scanDevice(20, this);
     }
+
 
 
     private class MdBluetoothEventHandler implements BluetoothEventHandler {
@@ -640,43 +634,42 @@ public class MainActivity extends BaseActivity implements
 
                     break;
                 case REQUEST_MTU_FAIL: {
-                    Log.e(LogTag.ERROR_TAG, "MTU请求设置失败");
+                    Timber.d("MTU请求设置失败");
                     mHandler.sendEmptyMessage(BT_REQUEST_MTU_FAIL);
                     break;
                 }
                 case SERVICE_FIND_FAIL: {
-                    Log.e(LogTag.ERROR_TAG, "蓝牙服务发现失败");
+                    Timber.d("蓝牙服务发现失败");
                     mHandler.sendEmptyMessage(BT_SERVICE_FIND_FAIL);
                     break;
                 }
                 case CHARACTERISTICS_FIND_FAIL: {
-                    Log.e(LogTag.ERROR_TAG, "特征读取失败");
+                    Timber.d("特征读取失败");
                     mHandler.sendEmptyMessage(BT_CHARACTERISTICS_FIND_FAIL);
                     break;
                 }
                 case ENABLE_READ_SUCCESS: {
-                    Log.i(LogTag.INFO_TAG, "设置读取Descriptor成功");
+                    Timber.d("设置读取Descriptor成功");
                     mHandler.sendEmptyMessage(BT_ENABLE_READ_SUCCESS);
                     break;
                 }
                 case ENABLE_READ_FAIL: {
-                    Log.e(LogTag.ERROR_TAG, "设置读取Descriptor失败");
+                    Timber.d("设置读取Descriptor失败");
                     mHandler.sendEmptyMessage(BT_ENABLE_READ_FAIL);
                     break;
                 }
                 case WRITE_TIME_OUT: {
-                    Log.e(LogTag.ERROR_TAG, "写入等待超时");
+                    Timber.d("写入等待超时");
                     disconnectDevice();
                     mHandler.sendEmptyMessage(BT_WRITE_TIME_OUT);
                     break;
                 }
                 case MESSAGE_WRITE_SUCCESS: {
-                    Log.i(LogTag.INFO_TAG, "消息写入成功");
+                    Timber.d("消息写入成功");
                     mHandler.sendEmptyMessage(BT_MESSAGE_WRITE_SUCCESS);
                     try {
                         currentMessageId = ((Message) event.getEventData()).getMessageID();
-                        Log.i(LogTag.INFO_TAG,
-                                "消息id===" + ((Message) event.getEventData()).getMessageID());
+                        Timber.d("消息id===" + currentMessageId);
                         String msg = ((Message) event.getEventData()).getResponseMessage();
                         byte[] data = (byte[]) msg.getBytes();
 
@@ -685,18 +678,18 @@ public class MainActivity extends BaseActivity implements
                         }
 
                     } catch (Exception ex) {
-                        Log.e(LogTag.ERROR_TAG, ex.getMessage(), ex);
+                        Timber.e(ex);
                     }
 
                     break;
                 }
                 case MESSAGE_RESPONSE_TIME_OUT:
-                    Log.e(LogTag.ERROR_TAG, "消息等待响应超时");
+                    Timber.w("消息等待响应超时");
                     mHandler.sendEmptyMessage(MESSAGE_RESPONSE_TIME_OUT);
                     disconnectDevice();
                     break;
                 case MESSAGE_WRITE_FAIL: {
-                    Log.e(LogTag.ERROR_TAG, "消息写入失败");
+                    Timber.w("消息写入失败");
                     mHandler.sendEmptyMessage(BT_MESSAGE_WRITE_FAIL);
                     break;
                 }
@@ -708,7 +701,7 @@ public class MainActivity extends BaseActivity implements
                         }
 
                     } catch (Exception ex) {
-                        Log.e(LogTag.ERROR_TAG, ex.getMessage(), ex);
+                        Timber.e(ex);
                     }
                     break;
                 }
@@ -724,19 +717,18 @@ public class MainActivity extends BaseActivity implements
         public boolean handleMessage(android.os.Message msg) {
             switch (msg.what) {
                 case BT_CONNECT:
-                    //mMenu.findItem(R.id.current_blu)
-                    //    .setIcon(R.drawable.bar_item_blu_connect_yellow);
-                    Log.i(LogTag.INFO_TAG, "蓝牙连接成功");
+
+                    Timber.d("蓝牙连接成功");
+                    ToastUtil.showSToast("蓝牙连接成功");
+
                     if (mLoadingDialog != null) {
                         mLoadingDialog.dismiss();
                     }
                     isConneted = true;
-                    ToastUtil.showSToast("蓝牙连接成功");
                     //startBluAuthenticate();//蓝牙连接成功开始进行验证
                     hander.removeCallbacks(dismssDialogRunnable);
-                    hander.removeCallbacks(dismssConDialogRunnable);
-
                     break;
+
                 case BT_DISCONNECTED:
                     if (isConneted) {
                         isConneted = false;
@@ -747,26 +739,33 @@ public class MainActivity extends BaseActivity implements
                             //mMenu.findItem(R.id.current_blu)
                             //    .setIcon(R.drawable.bar_item_bt);
                         }
-                        Log.i(LogTag.INFO_TAG, "蓝牙连接已断开");
+                        Timber.d("蓝牙连接已断开");
+                        ToastUtil.showSToast("蓝牙连接已断开!");
+
                         disconnectDevice();//非手动断开，清除蓝牙数据
-                        Toast.makeText(MainActivity.this, "蓝牙连接已断开!", Toast.LENGTH_SHORT).show();
                     }
                     break;
+
                 case BT_MESSAGE_WRITE_SUCCESS:
                     ToastUtil.showSToast("蓝牙发送指令成功");
                     break;
+
                 case BT_MESSAGE_WRITE_FAIL:
                     ToastUtil.showSToast("蓝牙发送指令失败");
                     break;
+
                 case BT_WRITE_TIME_OUT:
                     ToastUtil.showSToast("蓝牙发送指令超时");
                     break;
+
                 case VERIFY_RESULT:
                     if (msg.obj.equals("1")) {
-                        Toast.makeText(MainActivity.this, "蓝牙认证通过!", Toast.LENGTH_SHORT).show();
+                        ToastUtil.showSToast("蓝牙认证通过!");
+
                         //sendDeviceStateComd();
                     } else {
-                        Toast.makeText(MainActivity.this, "蓝牙认证失败!", Toast.LENGTH_SHORT).show();
+                        ToastUtil.showSToast("蓝牙认证失败!");
+
                         try {
                             Thread.sleep(1000);
                             disconnectDevice();
@@ -776,34 +775,44 @@ public class MainActivity extends BaseActivity implements
 
                     }
                     break;
+
                 case MESSAGE_RESPONSE_TIME_OUT:
                     ToastUtil.showSToast("消息等待响应超时！");
                     break;
+
                 case REFRESH_RUN_STATE:
                     //loadWebView(runState);
                     break;
+
                 case MESSAGE_RESPONSE_SAVE_SETTINGS_SUCCESS:
                     ToastUtil.showSToast("保存设置信息成功！");
                     //mWebView.loadUrl("javascript:restart()");
                     break;
+
                 case BT_REQUEST_MTU_FAIL:
                     ToastUtil.showSToast("MTU请求设置失败！");
                     break;
+
                 case BT_SERVICE_FIND_FAIL:
                     ToastUtil.showSToast("蓝牙服务发现失败！");
                     break;
+
                 case BT_CHARACTERISTICS_FIND_FAIL:
                     ToastUtil.showSToast("蓝牙特征读取失败！");
                     break;
+
                 case BT_ENABLE_READ_FAIL:
                     ToastUtil.showSToast("设置读取Descriptor失败！");
                     break;
+
                 case BT_RECOVERY_SUCCESS:
                     ToastUtil.showSToast("恢复出厂设置成功！");
                     break;
+
                 case MESSAGE_RESPONSE_REBOOT_DEVICE:
                     ToastUtil.showSToast("重启系统成功！");
                     break;
+
                 default:
                     break;
             }
@@ -836,7 +845,6 @@ public class MainActivity extends BaseActivity implements
      * ble 取消连接
      */
     private void disconnectDevice() {
-        isShowingDialog = false;
         if (null != MdBluetoothManager.getInstance()) {
             MdBluetoothManager.getInstance().disconnect();
         }
@@ -892,28 +900,13 @@ public class MainActivity extends BaseActivity implements
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        isShowingDialog = true;
         switch (requestCode) {
-            case REQUEST_CONNECT_DEVICE:
-                // 当DeviceListActivity返回与设备连接的消息
-                if (resultCode == Activity.RESULT_OK) {
-                    Log.i(LogTag.INFO_TAG, "=======蓝牙data========" + data.getData());
-                    Log.i(LogTag.INFO_TAG, "=======蓝牙data========" + data.getType());
-                    Log.i(LogTag.INFO_TAG, "=======蓝牙data========" + data.getParcelableExtra("device"));
-                    //// 得到链接设备的MAC
-                    //BluetoothDevice dev = (BluetoothDevice) data.getParcelableExtra("device");
-                    //mdBluetoothManager.connectDevice(dev, MainActivity.this);
-                    //if (null != mLoadingDialog) {
-                    //    mLoadingDialog.showNoCancelDialog("正在连接...");
-                    //}
-                    hander.postDelayed(dismssConDialogRunnable, 20000);
-                }
-                break;
             case REQUEST_ENABLE_BT:
                 // 判断蓝牙是否启用
                 if (resultCode == Activity.RESULT_OK) {
-                    // 开启蓝牙扫描
-                    mdBluetoothManager.scanDevice(20, this);
+
+                    startDiscoveryDevice();
+
                 } else {
                     ToastUtil.showSToast("蓝牙未启用");
                 }
@@ -1033,12 +1026,9 @@ public class MainActivity extends BaseActivity implements
                 if (which == DialogAction.POSITIVE) {
                     isConneted = false;
                     disconnectDevice();
-                    //mMenu.findItem(R.id.current_blu).setIcon(R.drawable.bar_item_bt);
                     mMaterialDialog.dismiss();
+
                 } else if (which == DialogAction.NEGATIVE) {
-                    if (mBluetoothAdapter != null) {
-                        mBluetoothAdapter.isEnabled();
-                    }
                     mMaterialDialog.dismiss();
                 }
             }
