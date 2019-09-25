@@ -269,7 +269,7 @@ public class UserInfoActivity extends BaseActivity {
                     @Override
                     public void Success(String s, String message) {
                         mLoadingDialog.dismiss();
-                        ToastUtil.showLToast("上传头像成功");
+                        ToastUtil.showLToast("头像已上传");
 
                         initUserInfo();
                     }

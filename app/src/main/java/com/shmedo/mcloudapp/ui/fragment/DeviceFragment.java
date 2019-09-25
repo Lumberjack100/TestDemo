@@ -727,8 +727,8 @@ public class DeviceFragment extends BaseFragment implements View.OnClickListener
                     if (mLoadingDialog != null) {
                         mLoadingDialog.dismiss();
                     }
-                    Timber.d("蓝牙连接成功");
-                    ToastUtil.showSToast("蓝牙连接成功");
+                    Timber.d("蓝牙已连接");
+                    ToastUtil.showSToast("蓝牙已连接");
 
                     isConnected = true;
                     stopBluetooth = false;
@@ -770,15 +770,15 @@ public class DeviceFragment extends BaseFragment implements View.OnClickListener
                     break;
 
                 case Constants.BT_MESSAGE_WRITE_SUCCESS:
-                    ToastUtil.showSToast("蓝牙发送指令成功");
+                    ToastUtil.showSToast("指令已发送");
                     break;
 
                 case Constants.BT_MESSAGE_WRITE_FAIL:
-                    ToastUtil.showSToast("蓝牙发送指令失败");
+                    ToastUtil.showSToast("指令发送失败");
                     break;
 
                 case Constants.BT_WRITE_TIME_OUT:
-                    ToastUtil.showSToast("蓝牙发送指令超时");
+                    ToastUtil.showSToast("指令发送超时");
                     break;
 
                 case Constants.VERIFY_RESULT:
@@ -805,7 +805,7 @@ public class DeviceFragment extends BaseFragment implements View.OnClickListener
                     break;
 
                 case Constants.MESSAGE_RESPONSE_SAVE_SETTINGS_SUCCESS:
-                    ToastUtil.showSToast("保存设置信息成功！");
+                    ToastUtil.showSToast("设置信息已保存！");
                     //mWebView.loadUrl("javascript:restart()");
                     break;
 
@@ -826,11 +826,11 @@ public class DeviceFragment extends BaseFragment implements View.OnClickListener
                     break;
 
                 case Constants.BT_RECOVERY_SUCCESS:
-                    ToastUtil.showSToast("恢复出厂设置成功！");
+                    ToastUtil.showSToast("已恢复出厂设置！");
                     break;
 
                 case Constants.MESSAGE_RESPONSE_REBOOT_DEVICE:
-                    ToastUtil.showSToast("重启系统成功！");
+                    ToastUtil.showSToast("系统已重启！");
                     break;
 
                 case Constants.MESSAGE_LOCK_REBOOT_DEVICE:

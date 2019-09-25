@@ -604,7 +604,7 @@ public class ParameterConfigFragment extends BaseFragment
             //如果下拉刷新超过10s再次发送指令
             if (tenTime >= 10000) {
                 DeviceFragment.sendDeviceStateComd();
-                ToastUtil.showSToast("重新发送指令成功");
+                ToastUtil.showSToast("已重新发送指令");
                 //loadWebView(runState);
                 prelongTim = 0;
             } else {

@@ -34,29 +34,42 @@ import butterknife.OnClick;
  * 描述：    通用配置页面——采集器配置
  */
 public class GeneralSettingActivity extends BaseActivity {
-    @BindView(R.id.toolbar_title) TextView mToolbarTitle;
-    @BindView(R.id.toolbar) Toolbar mToolbar;
-    @BindView(R.id.iv_collector_address) ImageView mIvCollectorAddress;
-    @BindView(R.id.et_collector_address) EditText mEtCollectorAddress;
-    @BindView(R.id.iv_calculating_time) ImageView mIvCalculatingTime;
-    @BindView(R.id.et_calculating_time) EditText mEtCalculatingTime;
-    @BindView(R.id.iv_standby_time) ImageView mIvStandbyTime;
-    @BindView(R.id.et_standby_time) EditText mEtStandbyTime;
-    @BindView(R.id.iv_collect_time) ImageView mIvCollectTime;
-    @BindView(R.id.et_collect_time) EditText mEtCollectTime;
-    @BindView(R.id.btn_confirm_complete) Button mBtnConfirmComplete;
+    @BindView(R.id.toolbar_title)
+    TextView mToolbarTitle;
+    @BindView(R.id.toolbar)
+    Toolbar mToolbar;
+    @BindView(R.id.iv_collector_address)
+    ImageView mIvCollectorAddress;
+    @BindView(R.id.et_collector_address)
+    EditText mEtCollectorAddress;
+    @BindView(R.id.iv_calculating_time)
+    ImageView mIvCalculatingTime;
+    @BindView(R.id.et_calculating_time)
+    EditText mEtCalculatingTime;
+    @BindView(R.id.iv_standby_time)
+    ImageView mIvStandbyTime;
+    @BindView(R.id.et_standby_time)
+    EditText mEtStandbyTime;
+    @BindView(R.id.iv_collect_time)
+    ImageView mIvCollectTime;
+    @BindView(R.id.et_collect_time)
+    EditText mEtCollectTime;
+    @BindView(R.id.btn_confirm_complete)
+    Button mBtnConfirmComplete;
 
     private String collectorAddress;
     private String calculatTime;
     private String standbyTime;
     private String collectTime;
 
-    @Override protected int initContentView() {
+    @Override
+    protected int initContentView() {
         return R.layout.activity_general_setting;
     }
 
 
-    @Override protected void onCreate(@Nullable Bundle savedInstanceState) {
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initView();
         initData();
@@ -64,7 +77,7 @@ public class GeneralSettingActivity extends BaseActivity {
 
 
     private void initData() {
-        if (DeviceFragment.mCollectorInfoSub!=null){
+        if (DeviceFragment.mCollectorInfoSub != null) {
             mEtCollectorAddress.setText(DeviceFragment.mCollectorInfoSub.getCollectorAddress());
             mEtCalculatingTime.setText(DeviceFragment.mCollectorInfoSub.getWorkTime());
             mEtStandbyTime.setText(DeviceFragment.mCollectorInfoSub.getStandbyTime());
@@ -82,24 +95,23 @@ public class GeneralSettingActivity extends BaseActivity {
     }
 
 
-    @OnClick({ R.id.iv_collector_address, R.id.iv_calculating_time, R.id.iv_standby_time,
-                 R.id.iv_collect_time, R.id.btn_confirm_complete })
+    @OnClick({R.id.iv_collector_address, R.id.iv_calculating_time, R.id.iv_standby_time, R.id.iv_collect_time, R.id.btn_confirm_complete})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.iv_collector_address:
-                LoadingDialog.showScanResultDialog(this,getResources().getString(R.string.collector_address));
+                LoadingDialog.showScanResultDialog(this, getResources().getString(R.string.collector_address));
                 break;
             case R.id.iv_calculating_time:
-                LoadingDialog.showScanResultDialog(this,getResources().getString(R.string.calculating_time));
+                LoadingDialog.showScanResultDialog(this, getResources().getString(R.string.calculating_time));
                 break;
             case R.id.iv_standby_time:
-                LoadingDialog.showScanResultDialog(this,getResources().getString(R.string.standby_time));
+                LoadingDialog.showScanResultDialog(this, getResources().getString(R.string.standby_time));
                 break;
             case R.id.iv_collect_time:
-                LoadingDialog.showScanResultDialog(this,getResources().getString(R.string.collect_time));
+                LoadingDialog.showScanResultDialog(this, getResources().getString(R.string.collect_time));
                 break;
             case R.id.btn_confirm_complete:
-                 sendCollector();
+                sendCollector();
                 break;
         }
     }
@@ -125,9 +137,6 @@ public class GeneralSettingActivity extends BaseActivity {
             ToastUtil.showSToast("采集时间不能为空");
         } else {
             //这里需要判断采集器的型号，去确定##100后面的数字是否是01
-
-
-
             List<String> list = new ArrayList<>();
             StringBuilder result1 = new StringBuilder();
             StringBuilder result2 = new StringBuilder();
@@ -147,7 +156,7 @@ public class GeneralSettingActivity extends BaseActivity {
                     Log.i(LogTag.INFO_TAG, "==采集器指令=========" + list.get(i).toString());
                     //采集器
                     com.shmedo.mcloudapp.bluetooth.Message msg
-                        = new com.shmedo.mcloudapp.bluetooth.Message("collector", list.get(i).toString(), true);
+                            = new com.shmedo.mcloudapp.bluetooth.Message("collector", list.get(i).toString(), true);
                     if (DeviceFragment.mdBluetoothManager != null) {
                         DeviceFragment.mdBluetoothManager.writeMessage(msg);
                     }
@@ -155,10 +164,7 @@ public class GeneralSettingActivity extends BaseActivity {
                     ToastUtil.showSToast("蓝牙未连接");
                 }
             }
-
         }
     }
-
-
 
 }

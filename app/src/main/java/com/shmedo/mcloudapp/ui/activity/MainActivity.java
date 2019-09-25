@@ -718,7 +718,7 @@ public class MainActivity extends BaseActivity implements
                 case BT_CONNECT:
 
                     Timber.d("蓝牙连接成功");
-                    ToastUtil.showSToast("蓝牙连接成功");
+                    ToastUtil.showSToast("蓝牙已连接");
 
                     if (mLoadingDialog != null) {
                         mLoadingDialog.dismiss();
@@ -746,15 +746,15 @@ public class MainActivity extends BaseActivity implements
                     break;
 
                 case BT_MESSAGE_WRITE_SUCCESS:
-                    ToastUtil.showSToast("蓝牙发送指令成功");
+                    ToastUtil.showSToast("已发送指令");
                     break;
 
                 case BT_MESSAGE_WRITE_FAIL:
-                    ToastUtil.showSToast("蓝牙发送指令失败");
+                    ToastUtil.showSToast("发送指令失败");
                     break;
 
                 case BT_WRITE_TIME_OUT:
-                    ToastUtil.showSToast("蓝牙发送指令超时");
+                    ToastUtil.showSToast("发送指令超时");
                     break;
 
                 case VERIFY_RESULT:
@@ -784,7 +784,7 @@ public class MainActivity extends BaseActivity implements
                     break;
 
                 case MESSAGE_RESPONSE_SAVE_SETTINGS_SUCCESS:
-                    ToastUtil.showSToast("保存设置信息成功！");
+                    ToastUtil.showSToast("设置信息已保存！");
                     //mWebView.loadUrl("javascript:restart()");
                     break;
 
@@ -805,11 +805,11 @@ public class MainActivity extends BaseActivity implements
                     break;
 
                 case BT_RECOVERY_SUCCESS:
-                    ToastUtil.showSToast("恢复出厂设置成功！");
+                    ToastUtil.showSToast("已恢复出厂设置！");
                     break;
 
                 case MESSAGE_RESPONSE_REBOOT_DEVICE:
-                    ToastUtil.showSToast("重启系统成功！");
+                    ToastUtil.showSToast("已重启系统！");
                     break;
 
                 default:

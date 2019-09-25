@@ -84,7 +84,7 @@ public class ServiceConfigActivity extends BaseActivity {
                     @Override
                     public void Success(String s, String message) {
                         dialog.dismiss();
-                        ToastUtil.showLToast("服务端连接成功，API版本为：" + s);
+                        ToastUtil.showLToast("服务端已连接，API版本为：" + s);
                         userConfig.writeString(CommonVariable.SERVICE_ADDRESS, mEtServiceAddress.getText().toString());
                         finish();
                     }
