@@ -13,7 +13,9 @@ public interface Extras {
 
      String DEVICE_LATLNG = "device_latlng";
 
-     String CUR_DEVICE = "cur_device";
+     String CUR_DEVICE_NAME = "cur_device_name";
+
+     String DEVICE_MAC_ADDRESS = "cur_device_mac_address";
 
      String SCAN_DEVICE_LIST = "scan_device_list";
 

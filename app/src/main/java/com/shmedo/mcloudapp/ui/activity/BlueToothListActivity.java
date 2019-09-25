@@ -105,10 +105,11 @@ public class BlueToothListActivity extends Activity {
             @Override
             public void onItemClick(View itemView, int position) {
                 if (!mBtAdapter.isDiscovering()) {
+                    String macAddress=deviceList.get(position).getDevice().getAddress();
                     String deviceName = deviceList.get(position).getDevice().getName();
                     deviceName = deviceName.substring(3);
                     String deviceInfo = "MEDO," + deviceName + ",DAS";
-                    AllDeviceActivity.startActivity(BlueToothListActivity.this, deviceInfo);
+                    AllDeviceActivity.startActivity(BlueToothListActivity.this, deviceInfo, macAddress);
                     finish();
                 }
             }

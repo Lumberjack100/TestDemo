@@ -13,6 +13,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,7 +40,6 @@ import com.shmedo.mcloudapp.entity.ble.BaseConfigInfoSub;
 import com.shmedo.mcloudapp.entity.ble.CollectorInfoSub;
 import com.shmedo.mcloudapp.entity.ble.DeviceLockStatusSub;
 import com.shmedo.mcloudapp.entity.ble.DigitalOsmometerFunctionSub;
-import com.shmedo.mcloudapp.entity.ble.MDevice;
 import com.shmedo.mcloudapp.entity.ble.QueryOsmometerParameterSubInfo;
 import com.shmedo.mcloudapp.entity.ble.RainStationSub;
 import com.shmedo.mcloudapp.entity.ble.RebootDeviceSub;
@@ -110,16 +110,15 @@ public class DeviceFragment extends BaseFragment implements View.OnClickListener
     private Handler hander;
 
     public static boolean isConnected = false;
-    private boolean isBluMode = true;//当前模式是否是蓝牙模式
+    private boolean isBlueMode = true;//当前模式是否是蓝牙模式
     private boolean stopBluetooth = false;
     public static MdBluetoothManager mdBluetoothManager;
-    public static BluetoothAdapter mBluetoothAdapter;
-    private List<MDevice> list = new ArrayList<>();
+    private BluetoothAdapter mBluetoothAdapter;
     private MaterialDialog mMaterialDialog;
     private MaterialDialog.Builder mBuilder;
     private String SN = "";
-    private String currentMessageId = "";
     private String deviceInfo;
+    private String macAddress;
 
     public static QueryOsmometerParameterSubInfo mFuncSubInfo;
     public static SystemRunStateSub mSystemRunStateSub;
@@ -138,7 +137,7 @@ public class DeviceFragment extends BaseFragment implements View.OnClickListener
     public static DeviceLockStatusSub deviceLockStatusSub;
     public static String collectorType = "";
     public static String lockStatus = "";
-    //private boolean deviceTrue;
+
 
     private static final int REQUEST_ENABLE_BT = 0x001;
 
@@ -173,10 +172,13 @@ public class DeviceFragment extends BaseFragment implements View.OnClickListener
 
     private void getIntentData() {
         Intent intent = getActivity().getIntent();
-        if (intent.getExtras().containsKey(Extras.CUR_DEVICE)) {
-            deviceInfo = intent.getStringExtra(Extras.CUR_DEVICE);
-            Timber.d("deviceInfo=" + deviceInfo);
+        if (intent.getExtras().containsKey(Extras.DEVICE_MAC_ADDRESS)) {
+            macAddress = intent.getStringExtra(Extras.DEVICE_MAC_ADDRESS);
+        }
 
+        if (intent.getExtras().containsKey(Extras.CUR_DEVICE_NAME)) {
+            deviceInfo = intent.getStringExtra(Extras.CUR_DEVICE_NAME);
+            Timber.d("deviceInfo=" + deviceInfo);
             String[] scanData = deviceInfo.split(",");
             SN = scanData[1];
 
@@ -310,9 +312,6 @@ public class DeviceFragment extends BaseFragment implements View.OnClickListener
             return;
         }
 
-        if (null != list && list.size() > 0) {
-            list.clear();
-        }
         mdBluetoothManager.scanDevice(20, getActivity());
     }
 
@@ -339,17 +338,32 @@ public class DeviceFragment extends BaseFragment implements View.OnClickListener
      * 连接蓝牙设备
      */
     private void connectBluetooth() {
-        if (isBluMode && !isConnected) {
+        if (isBlueMode && !isConnected) {
+
+            //通过蓝牙设备列表页面跳转过来时，不需要开启蓝牙搜索，直接连击设备
+            if (!TextUtils.isEmpty(macAddress)) {
+                BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(macAddress);
+                if (device != null) {
+                    mdBluetoothManager.stopScan();
+                    mdBluetoothManager.connectDevice(device, getActivity());
+                    if (null == mLoadingDialog.getDialog() || !mLoadingDialog.getDialog().isShowing()) {
+                        mLoadingDialog.showNoCancelDialog("正在连接设备：" + SN);
+                        hander.postDelayed(dismssConDialogRunnable, 10000);
+                    }
+                }
+                return;
+            }
+
+            //搜索附近蓝牙设备
             startDiscoveryDevice();
-
             if (null != mBluetoothAdapter && mBluetoothAdapter.isEnabled()) {
-
                 if (null == mLoadingDialog.getDialog() || !mLoadingDialog.getDialog().isShowing()) {
                     mLoadingDialog.showCancelDialog("正在搜索设备：" + SN);
                     hander.postDelayed(dismssConDialogRunnable, 10000);
                 }
             }
-        } else if (isBluMode && isConnected) {
+
+        } else if (isBlueMode && isConnected) {
             showChangeModle(getResources().getString(R.string.disconnect_bluetooth_device), "2");
         }
     }
@@ -428,8 +442,6 @@ public class DeviceFragment extends BaseFragment implements View.OnClickListener
                     //Log.i(LogTag.INFO_TAG, "消息写入成功");
                     mHandler.sendEmptyMessage(Constants.BT_MESSAGE_WRITE_SUCCESS);
                     try {
-                        currentMessageId = ((Message) event.getEventData()).getMessageID();
-                        //Log.i(LogTag.INFO_TAG, "消息id===" + ((Message) event.getEventData()).getMessageID());
                         String msg = ((Message) event.getEventData()).getResponseMessage();
                         byte[] data = (byte[]) msg.getBytes();
 
@@ -728,7 +740,7 @@ public class DeviceFragment extends BaseFragment implements View.OnClickListener
 
                 case Constants.BT_DISCONNECTED:
                     if (isConnected) {
-                        if (!isBluMode) {
+                        if (!isBlueMode) {
                             if (isAdded()) {
                                 mImgBluetooth.setImageDrawable(getResources().getDrawable(R.drawable.bar_item_offline));
                             }
@@ -899,14 +911,11 @@ public class DeviceFragment extends BaseFragment implements View.OnClickListener
         if (device.getName() == null)
             return;
 
-        if (isConnected) {
-            mdBluetoothManager.stopScan();
-            return;
-        }
-
         if (device.getName().contains(SN)) {
+            if (mLoadingDialog != null) {
+                mLoadingDialog.dismiss();
+            }
             hander.removeCallbacks(dismssConDialogRunnable);
-            mLoadingDialog.dismiss();
             mdBluetoothManager.stopScan();
             mdBluetoothManager.connectDevice(device, getActivity());
             if (null == mLoadingDialog.getDialog() || !mLoadingDialog.getDialog().isShowing()) {
@@ -1006,9 +1015,11 @@ public class DeviceFragment extends BaseFragment implements View.OnClickListener
         } else {
             isConnected = false;
             stopBluetooth = true;
+            if (mLoadingDialog != null) {
+                mLoadingDialog.dismiss();
+            }
             hander.removeCallbacks(dismssConDialogRunnable);
             mdBluetoothManager.stopScan();
-//            disconnectDevice();
             getActivity().finish();
         }
 

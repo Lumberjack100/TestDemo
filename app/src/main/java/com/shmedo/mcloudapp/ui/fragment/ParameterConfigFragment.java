@@ -426,13 +426,14 @@ public class ParameterConfigFragment extends BaseFragment
 
     private void getIntentData() {
         Intent intent = getActivity().getIntent();
-        if (intent.getExtras().containsKey(Extras.CUR_DEVICE)) {
-            deviceInfo = intent.getStringExtra(Extras.CUR_DEVICE);
+        if (intent.getExtras().containsKey(Extras.CUR_DEVICE_NAME)) {
+            deviceInfo = intent.getStringExtra(Extras.CUR_DEVICE_NAME);
 
             String[] scanData = deviceInfo.split(",");
             mTvDeviceName.setText("物联网数据采集器");
             mTvDeviceSn.setText(scanData[1]);//设备编号
             mTvDeviceModel.setText(scanData[2]);//功能型号
+            mTvSensorType.setText("拉线位移计");
         }
     }
 

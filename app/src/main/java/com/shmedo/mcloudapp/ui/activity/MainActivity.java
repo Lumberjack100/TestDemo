@@ -164,23 +164,24 @@ public class MainActivity extends BaseActivity implements
     private MaterialDialog.Builder mBuilder;
     private DaoManager manager = DaoManager.getInstance();
 
-    private static BluetoothAdapter mBluetoothAdapter;
-    private static MdBluetoothManager mdBluetoothManager;
+    private BluetoothAdapter mBluetoothAdapter;
+    private MdBluetoothManager mdBluetoothManager;
 
     private List<MDevice> list = new ArrayList<>();
     private Handler hander;
     private String currentMessageId = "";
-    private static final int REQUEST_ENABLE_BT = 2;
 
-    //当前模式是否是蓝牙模式
-    private boolean isBluModle = true;
-    //蓝牙是否已连接
-    public static boolean isConneted = false;
-    public static boolean autoOpenBt = false;
+    private boolean isBlueModle = true;//当前模式是否是蓝牙模式
+    private static boolean isConneted = false;//蓝牙是否已连接
+    private static boolean autoOpenBt = false;
     private List<ClusterItem> clusterItemsMerchant = new ArrayList<>();
     private ClusterOverlayMerchant clusterOverlayMerchant;
     private Map<Integer, Drawable> mBackDrawAblesMerchant = new HashMap<Integer, Drawable>();
     private int clusterRadius = 48;
+
+    private static final int REQUEST_ENABLE_BT = 2;
+
+
 
     private Runnable dismssDialogRunnable = new Runnable() {
         @Override
@@ -189,7 +190,7 @@ public class MainActivity extends BaseActivity implements
                 mLoadingDialog.dismiss();
 
                 mdBluetoothManager.stopScan();
-                if(list.isEmpty()){
+                if (list.isEmpty()) {
                     ToastUtil.showSToast("未发现设备，请尝试重新扫描");
                     return;
                 }
@@ -200,7 +201,6 @@ public class MainActivity extends BaseActivity implements
             }
         }
     };
-
 
 
     @Override
@@ -536,7 +536,7 @@ public class MainActivity extends BaseActivity implements
             @Override
             public void onClick(View v) {
                 mDialog.dismiss();
-                if (isBluModle && !isConneted) {
+                if (isBlueModle && !isConneted) {
                     disconnectDevice();
                     startDiscoveryDevice();
 
@@ -547,7 +547,7 @@ public class MainActivity extends BaseActivity implements
                             hander.postDelayed(dismssDialogRunnable, 10000);
                         }
                     }
-                } else if (isBluModle && isConneted) {
+                } else if (isBlueModle && isConneted) {
                     showChangeModle(getResources().getString(R.string.disconnect_bluetooth_device));
                 }
             }
@@ -614,7 +614,6 @@ public class MainActivity extends BaseActivity implements
         }
         mdBluetoothManager.scanDevice(20, this);
     }
-
 
 
     private class MdBluetoothEventHandler implements BluetoothEventHandler {
@@ -732,7 +731,7 @@ public class MainActivity extends BaseActivity implements
                 case BT_DISCONNECTED:
                     if (isConneted) {
                         isConneted = false;
-                        if (!isBluModle) {
+                        if (!isBlueModle) {
                             //mMenu.findItem(R.id.current_blu)
                             //    .setIcon(R.drawable.bar_item_offline);
                         } else {

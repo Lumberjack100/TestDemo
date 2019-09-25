@@ -34,17 +34,27 @@ public class AllDeviceActivity extends BaseActivity {
      */
     public static void startActivity(Context context, String deviceInfo) {
         Intent intent = new Intent(context, AllDeviceActivity.class);
-        intent.putExtra(Extras.CUR_DEVICE, deviceInfo);
+        intent.putExtra(Extras.CUR_DEVICE_NAME, deviceInfo);
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         context.startActivity(intent);
     }
 
-    @Override protected int initContentView() {
+    public static void startActivity(Context context, String deviceInfo, String macAddress) {
+        Intent intent = new Intent(context, AllDeviceActivity.class);
+        intent.putExtra(Extras.CUR_DEVICE_NAME, deviceInfo);
+        intent.putExtra(Extras.DEVICE_MAC_ADDRESS, macAddress);
+        intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        context.startActivity(intent);
+    }
+
+    @Override
+    protected int initContentView() {
         return R.layout.activity_all_device;
     }
 
 
-    @Override protected void onCreate(@Nullable Bundle savedInstanceState) {
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initData();
     }
@@ -53,7 +63,7 @@ public class AllDeviceActivity extends BaseActivity {
     private void initData() {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         deviceFragment = new DeviceFragment();
-        transaction.replace(R.id.frame_content,deviceFragment);
+        transaction.replace(R.id.frame_content, deviceFragment);
         transaction.commit();
     }
 
@@ -65,7 +75,8 @@ public class AllDeviceActivity extends BaseActivity {
     }
 
 
-    @Override public void onBackPressed() {
+    @Override
+    public void onBackPressed() {
         super.onBackPressed();
     }
 }
