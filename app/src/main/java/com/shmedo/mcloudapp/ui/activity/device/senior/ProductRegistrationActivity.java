@@ -3,7 +3,6 @@ package com.shmedo.mcloudapp.ui.activity.device.senior;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -15,8 +14,6 @@ import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.base.BaseActivity;
 import com.shmedo.mcloudapp.util.StringUtil;
 import com.shmedo.mcloudapp.util.ToastUtil;
-
-import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -33,45 +30,52 @@ import static com.shmedo.mcloudapp.ui.fragment.AdvanceSetFragment.modityHint;
  */
 public class ProductRegistrationActivity extends BaseActivity {
 
-    @BindView(R.id.toolbar_title) TextView mToolbarTitle;
-    @BindView(R.id.toolbar) Toolbar mToolbar;
-    @BindView(R.id.tv_date) TextView mTvDate;
-    @BindView(R.id.et_origin_author) EditText mEtOriginAuthor;
-    @BindView(R.id.et_new_author) EditText mEtNewAuthor;
-    @BindView(R.id.btn_confirm_registered) Button mBtnConfirmRegistered;
-    @BindView(R.id.iv_question) ImageView mIvQuestion;
+    @BindView(R.id.toolbar_title)
+    TextView mToolbarTitle;
+
+    @BindView(R.id.tv_date)
+    TextView mTvDate;
+    @BindView(R.id.et_origin_author)
+    EditText mEtOriginAuthor;
+    @BindView(R.id.et_new_author)
+    EditText mEtNewAuthor;
+    @BindView(R.id.btn_confirm_registered)
+    Button mBtnConfirmRegistered;
+    @BindView(R.id.iv_question)
+    ImageView mIvQuestion;
     private MaterialDialog.Builder mBuilder;
     private MaterialDialog mMaterialDialog;
 
 
-    @Override protected int initContentView() {
+    @Override
+    protected int initContentView() {
         return R.layout.activity_product_registration;
     }
 
 
-    @Override protected void onCreate(@Nullable Bundle savedInstanceState) {
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setToolBar(R.id.toolbar);
         initView();
     }
 
 
     private void initView() {
-        setSupportActionBar(mToolbar);
-        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle("");
+
         mToolbarTitle.setText("产品注册");
     }
 
 
-    @OnClick({ R.id.iv_question, R.id.btn_confirm_registered })
+    @OnClick({R.id.iv_question, R.id.btn_confirm_registered})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.iv_question:
                 mBuilder = new MaterialDialog.Builder(this);
-                mBuilder.customView(R.layout.dialog_registered_apply,false)
-                    .title("注册码申请表：")
-                    .contentColor(Color.parseColor("#000000"))
-                    .canceledOnTouchOutside(false);
+                mBuilder.customView(R.layout.dialog_registered_apply, false)
+                        .title("注册码申请表：")
+                        .contentColor(Color.parseColor("#000000"))
+                        .canceledOnTouchOutside(false);
                 mMaterialDialog = mBuilder.build();
                 mMaterialDialog.show();
 
@@ -82,28 +86,30 @@ public class ProductRegistrationActivity extends BaseActivity {
 
                 Button btnCancel = (Button) mMaterialDialog.findViewById(R.id.btn_cancel);
                 Button btnConfirmSend = (Button) mMaterialDialog.findViewById(R.id.btn_confirm_send);
-                modityHint("请输入单位名称",etEntityName);
-                modityHint("请输入设备SN号",etDeviceSN);
-                modityHint("请输入姓名",etName);
-                modityHint("请输入联系电话",etContactPhone);
+                modityHint("请输入单位名称", etEntityName);
+                modityHint("请输入设备SN号", etDeviceSN);
+                modityHint("请输入姓名", etName);
+                modityHint("请输入联系电话", etContactPhone);
 
                 btnConfirmSend.setOnClickListener(new View.OnClickListener() {
-                    @Override public void onClick(View view) {
-                        if (StringUtil.isNullOrEmpty(etEntityName.getText().toString().trim())){
+                    @Override
+                    public void onClick(View view) {
+                        if (StringUtil.isNullOrEmpty(etEntityName.getText().toString().trim())) {
                             ToastUtil.showSToast("单位名称不能为空");
-                        }else if (StringUtil.isNullOrEmpty(etDeviceSN.getText().toString().trim())){
+                        } else if (StringUtil.isNullOrEmpty(etDeviceSN.getText().toString().trim())) {
                             ToastUtil.showSToast("设备SN号不能为空");
-                        }else if (StringUtil.isNullOrEmpty(etName.getText().toString().trim())){
+                        } else if (StringUtil.isNullOrEmpty(etName.getText().toString().trim())) {
                             ToastUtil.showSToast("姓名不能为空");
-                        }else if (StringUtil.isNullOrEmpty(etContactPhone.getText().toString().trim())){
+                        } else if (StringUtil.isNullOrEmpty(etContactPhone.getText().toString().trim())) {
                             ToastUtil.showSToast("联系电话不能为空");
-                        }else {
+                        } else {
                             ToastUtil.showSToast("确认发送");
                         }
                     }
                 });
                 btnCancel.setOnClickListener(new View.OnClickListener() {
-                    @Override public void onClick(View view) {
+                    @Override
+                    public void onClick(View view) {
                         mMaterialDialog.dismiss();
                     }
                 });
@@ -115,8 +121,8 @@ public class ProductRegistrationActivity extends BaseActivity {
                     ToastUtil.showSToast("确认注册码不能为空");
                 } else {
                     if (mEtNewAuthor.getText()
-                        .toString().trim().equals(mEtOriginAuthor.getText().toString().trim())) {
-                            finish();
+                            .toString().trim().equals(mEtOriginAuthor.getText().toString().trim())) {
+                        finish();
                     } else {
                         ToastUtil.showSToast("输入的两次注册码不一样");
                     }

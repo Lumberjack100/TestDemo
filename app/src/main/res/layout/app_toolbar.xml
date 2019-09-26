@@ -2,7 +2,7 @@
 <android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/toolbar"
     android:layout_width="match_parent"
-    android:layout_height="50dp"
+    android:layout_height="?attr/actionBarSize"
     android:layout_gravity="top"
     android:background="?attr/colorPrimary">
 
@@ -19,27 +19,6 @@
             android:src="@drawable/icon_users"
             android:textColor="@color/white" />
 
-
-        <!--  <ImageView
-              android:id="@+id/no_upload_location"
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:layout_alignParentRight="true"
-              android:layout_marginRight="30dp"
-               android:layout_marginTop="20dp"
-              android:src="@mipmap/location_error"
-
-              />
-          <ImageView
-              android:id="@+id/uploadgif"
-              android:layout_width="50dp"
-              android:layout_height="50dp"
-              android:layout_alignParentRight="true"
-              android:layout_marginRight="20dp"
-              android:layout_marginTop="20dp"
-              android:visibility="gone"
-              />-->
-
         <TextView
             android:id="@+id/main_titile"
             android:layout_width="wrap_content"
@@ -48,28 +27,7 @@
             android:gravity="center_vertical"
             android:text="米易通"
             android:textColor="@color/white"
-            android:textSize="20sp" />
-
-        <!--<ImageView
-            android:id="@+id/deleteall"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/deleteall"
-            android:layout_centerVertical="true"
-            android:layout_toLeftOf="@+id/delete"
-            />
-
-        <TextView
-            android:id="@+id/delete"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:text="一键删除已上传"
-            android:gravity="center_vertical"
-            android:layout_centerVertical="true"
-            android:layout_toLeftOf="@+id/btn_search"
-            android:textColor="@color/white"
-            android:layout_marginRight="10dp"
-            android:textSize="10dp"/>-->
+            android:textSize="@dimen/text_size_20" />
 
         <ImageView
             android:id="@+id/img_equipment"
@@ -81,6 +39,5 @@
             android:src="@drawable/icon_equipment" />
 
     </RelativeLayout>
-
 
 </android.support.v7.widget.Toolbar>

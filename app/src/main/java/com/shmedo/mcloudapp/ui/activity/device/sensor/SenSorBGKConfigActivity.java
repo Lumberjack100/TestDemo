@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -41,7 +40,6 @@ import com.shmedo.mcloudapp.util.bleutil.LogTag;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.UUID;
 
 import butterknife.BindView;
@@ -60,8 +58,7 @@ public class SenSorBGKConfigActivity extends BaseActivity {
 
     @BindView(R.id.toolbar_title)
     TextView mToolbarTitle;
-    @BindView(R.id.toolbar)
-    Toolbar mToolbar;
+
     @BindView(R.id.iv_stay1)
     ImageView mIvStay1;
     @BindView(R.id.sw_stay1)
@@ -149,15 +146,12 @@ public class SenSorBGKConfigActivity extends BaseActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        setToolBar(R.id.toolbar);
         initView();
         initData();
     }
 
     private void initView() {
-        setSupportActionBar(mToolbar);
-        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle("");
         mToolbarTitle.setText("拉线位移计配置");
     }
 

@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -26,7 +25,6 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import java.util.Objects;
 import java.util.Random;
 
 import butterknife.BindView;
@@ -44,40 +42,50 @@ import jp.bassaer.chatmessageview.views.ChatView;
  */
 public class InstructionDebugActivity extends BaseActivity {
 
-    @BindView(R.id.toolbar_title) TextView mToolbarTitle;
-    @BindView(R.id.toolbar) Toolbar mToolbar;
-    @BindView(R.id.send_ascii_id) RadioButton mSendAsciiId;
-    @BindView(R.id.send_hex_id) RadioButton mSendHexId;
-    @BindView(R.id.send_rg) RadioGroup mSendRg;
-    @BindView(R.id.receive_ascii_id) RadioButton mReceiveAsciiId;
-    @BindView(R.id.receive_hex_id) RadioButton mReceiveHexId;
-    @BindView(R.id.receive_rg) RadioGroup mReceiveRg;
-    @BindView(R.id.setSysTimeBT) Button mSetSysTimeBT;
-    @BindView(R.id.getDataBt) Button mGetDataBt;
-    @BindView(R.id.chat_view) ChatView mChatView;
+    @BindView(R.id.toolbar_title)
+    TextView mToolbarTitle;
+
+    @BindView(R.id.send_ascii_id)
+    RadioButton mSendAsciiId;
+    @BindView(R.id.send_hex_id)
+    RadioButton mSendHexId;
+    @BindView(R.id.send_rg)
+    RadioGroup mSendRg;
+    @BindView(R.id.receive_ascii_id)
+    RadioButton mReceiveAsciiId;
+    @BindView(R.id.receive_hex_id)
+    RadioButton mReceiveHexId;
+    @BindView(R.id.receive_rg)
+    RadioGroup mReceiveRg;
+    @BindView(R.id.setSysTimeBT)
+    Button mSetSysTimeBT;
+    @BindView(R.id.getDataBt)
+    Button mGetDataBt;
+    @BindView(R.id.chat_view)
+    ChatView mChatView;
     //0 ASCII，1 HEX
     public static int send_model = 0;
     public static int receive_model = 0;
     final String myName = "发送";
     final String yourName = "接收";
 
-    @Override protected int initContentView() {
+    @Override
+    protected int initContentView() {
         return R.layout.activity_instruction_debug;
     }
 
 
-    @Override protected void onCreate(@Nullable Bundle savedInstanceState) {
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EventBus.getDefault().register(this);
+        setToolBar(R.id.toolbar);
         initView();
         initData();
     }
 
 
     private void initView() {
-        setSupportActionBar(mToolbar);
-        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle("");
         mToolbarTitle.setText("指令交互调试模式");
     }
 
@@ -97,31 +105,32 @@ public class InstructionDebugActivity extends BaseActivity {
         mChatView.setInputTextHint("new message...");
 
         mChatView.setOnClickSendButtonListener(new View.OnClickListener() {
-            @Override public void onClick(View view) {
+            @Override
+            public void onClick(View view) {
                 if (DeviceFragment.isConnected) {
                     final Bitmap myIcon = BitmapFactory.decodeResource(getResources(),
-                        R.mipmap.logo);
+                            R.mipmap.logo);
                     //User name
                     final String myName = "发送";
                     //new message
                     Message message = new Message.Builder()
-                        .setUserName(myName)
-                        .setUserIcon(myIcon)
-                        .setRightMessage(true)
-                        .build();
+                            .setUserName(myName)
+                            .setUserIcon(myIcon)
+                            .setRightMessage(true)
+                            .build();
                     if (send_model == 0) {
                         message.setMessageText(mChatView.getInputText());
                     } else {
                         message.setMessageText(
-                            StringUtil.convertStringToHex(
-                                mChatView.getInputText().trim() + "\r\n"));
+                                StringUtil.convertStringToHex(
+                                        mChatView.getInputText().trim() + "\r\n"));
                     }
                     //Set to chat view
                     mChatView.send(message);
                     com.shmedo.mcloudapp.bluetooth.Message msg
-                        = new com.shmedo.mcloudapp.bluetooth.Message(
-                        "chat",
-                        mChatView.getInputText().trim() + "\r\n", true);
+                            = new com.shmedo.mcloudapp.bluetooth.Message(
+                            "chat",
+                            mChatView.getInputText().trim() + "\r\n", true);
                     if (DeviceFragment.mdBluetoothManager != null) {
                         DeviceFragment.mdBluetoothManager.writeMessage(msg);
                     }
@@ -134,7 +143,8 @@ public class InstructionDebugActivity extends BaseActivity {
         });
 
         mSendRg.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-            @Override public void onCheckedChanged(RadioGroup group, int checkedId) {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
                 switch (checkedId) {
                     case R.id.send_ascii_id:
                         mSendAsciiId.setChecked(true);
@@ -151,7 +161,8 @@ public class InstructionDebugActivity extends BaseActivity {
             }
         });
         mReceiveRg.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-            @Override public void onCheckedChanged(RadioGroup group, int checkedId) {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
                 switch (checkedId) {
                     case R.id.receive_ascii_id:
                         mReceiveAsciiId.setChecked(true);
@@ -168,6 +179,7 @@ public class InstructionDebugActivity extends BaseActivity {
             }
         });
     }
+
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEventMain(String msg) {
         Log.i("yc", "onMessageEventMain(), current thread is " + msg);
@@ -179,11 +191,11 @@ public class InstructionDebugActivity extends BaseActivity {
 
 
         final Message receivedMessage = new Message.Builder()
-            .setUserName(yourName)
-            .setUserIcon(yourIcon)
-            .setRightMessage(false)
-            .setMessageText(msg)
-            .build();
+                .setUserName(yourName)
+                .setUserIcon(yourIcon)
+                .setRightMessage(false)
+                .setMessageText(msg)
+                .build();
 
         // This is a demo bot
         // Return within 3 seconds
@@ -196,11 +208,14 @@ public class InstructionDebugActivity extends BaseActivity {
         }, sendDelay);
 
     }
-    @Override protected void onDestroy() {
+
+    @Override
+    protected void onDestroy() {
         super.onDestroy();
         EventBus.getDefault().unregister(this);
     }
-    @OnClick({ R.id.setSysTimeBT, R.id.getDataBt })
+
+    @OnClick({R.id.setSysTimeBT, R.id.getDataBt})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.setSysTimeBT:
@@ -213,30 +228,30 @@ public class InstructionDebugActivity extends BaseActivity {
     }
 
     /**
-     *  系统授时
+     * 系统授时
      */
-    private void setSysTime(){
+    private void setSysTime() {
         final Bitmap myIcon = BitmapFactory.decodeResource(getResources(),
-            R.mipmap.logo);
+                R.mipmap.logo);
         if (DeviceFragment.isConnected) {
 
             //new message
             Message message = new Message.Builder()
-                .setUserName(myName)
-                .setUserIcon(myIcon)
-                .setRightMessage(true)
-                .build();
+                    .setUserName(myName)
+                    .setUserIcon(myIcon)
+                    .setRightMessage(true)
+                    .build();
 
-            String sysTime=getSysTime();
+            String sysTime = getSysTime();
             if (send_model == 0) {
-                message.setMessageText("##010"+sysTime+"\r\n");
+                message.setMessageText("##010" + sysTime + "\r\n");
             } else {
-                message.setMessageText(StringUtil.convertStringToHex("##010"+sysTime+"\r\n"));
+                message.setMessageText(StringUtil.convertStringToHex("##010" + sysTime + "\r\n"));
             }
             //Set to chat view
             mChatView.send(message);
             com.shmedo.mcloudapp.bluetooth.Message msg = new com.shmedo.mcloudapp.bluetooth.Message("chat",
-                "##010"+sysTime+"\r\n", true);
+                    "##010" + sysTime + "\r\n", true);
             if (DeviceFragment.mdBluetoothManager != null) {
                 DeviceFragment.mdBluetoothManager.writeMessage(msg);
             }
@@ -249,18 +264,18 @@ public class InstructionDebugActivity extends BaseActivity {
     }
 
     //获取数据
-    public void getData(){
+    public void getData() {
         final Bitmap myIcon = BitmapFactory.decodeResource(getResources(),
-            R.mipmap.logo);
+                R.mipmap.logo);
         //User name
         if (DeviceFragment.isConnected) {
 
             //new message
             Message message = new Message.Builder()
-                .setUserName(myName)
-                .setUserIcon(myIcon)
-                .setRightMessage(true)
-                .build();
+                    .setUserName(myName)
+                    .setUserIcon(myIcon)
+                    .setRightMessage(true)
+                    .build();
 
             if (send_model == 0) {
                 message.setMessageText("##110\r\n");
@@ -270,7 +285,7 @@ public class InstructionDebugActivity extends BaseActivity {
             //Set to chat view
             mChatView.send(message);
             com.shmedo.mcloudapp.bluetooth.Message msg = new com.shmedo.mcloudapp.bluetooth.Message("chat",
-                "##110\r\n", true);
+                    "##110\r\n", true);
             if (DeviceFragment.mdBluetoothManager != null) {
                 DeviceFragment.mdBluetoothManager.writeMessage(msg);
             }
@@ -286,9 +301,10 @@ public class InstructionDebugActivity extends BaseActivity {
      * 例如：设置本地时间为2015/5/26 10:22:1
      * 设置举例：##010150526102201
      * 返回信息：$$010150526102201
+     *
      * @return
      */
-    public String getSysTime(){
+    public String getSysTime() {
         return TimeUtil.getSysTimeStr();
     }
 }

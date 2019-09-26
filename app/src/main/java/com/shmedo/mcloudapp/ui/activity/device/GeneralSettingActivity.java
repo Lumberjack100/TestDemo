@@ -2,7 +2,6 @@ package com.shmedo.mcloudapp.ui.activity.device;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -20,7 +19,6 @@ import com.shmedo.mcloudapp.views.LoadingDialog;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -36,8 +34,7 @@ import butterknife.OnClick;
 public class GeneralSettingActivity extends BaseActivity {
     @BindView(R.id.toolbar_title)
     TextView mToolbarTitle;
-    @BindView(R.id.toolbar)
-    Toolbar mToolbar;
+
     @BindView(R.id.iv_collector_address)
     ImageView mIvCollectorAddress;
     @BindView(R.id.et_collector_address)
@@ -71,6 +68,7 @@ public class GeneralSettingActivity extends BaseActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setToolBar(R.id.toolbar);
         initView();
         initData();
     }
@@ -87,11 +85,7 @@ public class GeneralSettingActivity extends BaseActivity {
 
 
     private void initView() {
-        setSupportActionBar(mToolbar);
-        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle("");
         mToolbarTitle.setText("通用设置");
-
     }
 
 

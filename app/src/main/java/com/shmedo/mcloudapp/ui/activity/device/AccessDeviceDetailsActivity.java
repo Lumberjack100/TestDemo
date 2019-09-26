@@ -2,13 +2,10 @@ package com.shmedo.mcloudapp.ui.activity.device;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.Toolbar;
 import android.widget.TextView;
 
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.base.BaseActivity;
-
-import java.util.Objects;
 
 import butterknife.BindView;
 
@@ -22,25 +19,25 @@ import butterknife.BindView;
  */
 public class AccessDeviceDetailsActivity extends BaseActivity {
 
-    @BindView(R.id.toolbar_title) TextView mToolbarTitle;
-    @BindView(R.id.toolbar) Toolbar mToolbar;
+    @BindView(R.id.toolbar_title)
+    TextView mToolbarTitle;
 
 
-    @Override protected int initContentView() {
+    @Override
+    protected int initContentView() {
         return R.layout.activity_access_device_details;
     }
 
 
-    @Override protected void onCreate(@Nullable Bundle savedInstanceState) {
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setToolBar(R.id.toolbar);
         initView();
     }
 
 
     private void initView() {
-        setSupportActionBar(mToolbar);
-        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle("");
         mToolbarTitle.setText("设备详情");
     }
 }

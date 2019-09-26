@@ -24,7 +24,7 @@
             android:layout_centerInParent="true"
             android:text="参数配置"
             android:textColor="@color/white"
-            android:textSize="18sp" />
+            android:textSize="@dimen/text_size_20" />
 
         <ImageView
             android:id="@+id/img_bluetooth"
@@ -35,15 +35,7 @@
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
             android:src="@drawable/bar_item_bt" />
-        <!--<ImageView
-            android:id="@+id/img_transfer"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
-            android:src="@drawable/bar_item_blu_connect_yellow"
-            android:layout_centerVertical="true"
-            android:layout_toLeftOf="@+id/img_bluetooth"
-            />-->
-    </RelativeLayout>
 
+    </RelativeLayout>
 
 </android.support.v7.widget.Toolbar>

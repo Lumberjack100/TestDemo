@@ -3,7 +3,6 @@ package com.shmedo.mcloudapp.ui.activity.device.sensor;
 import android.app.Dialog;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -18,7 +17,6 @@ import com.tencent.mmkv.MMKV;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -33,25 +31,43 @@ import ch.ielse.view.SwitchView;
  * 描述：    拉线位移  参数配置 02
  */
 public class SenSorMPSConfigActivity extends BaseActivity {
-    @BindView(R.id.toolbar_title) TextView mToolbarTitle;
-    @BindView(R.id.toolbar) Toolbar mToolbar;
-    @BindView(R.id.sw_stay1) SwitchView mSwStay1;
-    @BindView(R.id.tv_stay1) TextView mTvStay1;
-    @BindView(R.id.sw_stay2) SwitchView mSwStay2;
-    @BindView(R.id.tv_stay2) TextView mTvStay2;
-    @BindView(R.id.sw_stay3) SwitchView mSwStay3;
-    @BindView(R.id.tv_stay3) TextView mTvStay3;
-    @BindView(R.id.sw_stay4) SwitchView mSwStay4;
-    @BindView(R.id.tv_stay4) TextView mTvStay4;
-    @BindView(R.id.sw_stay5) SwitchView mSwStay5;
-    @BindView(R.id.tv_stay5) TextView mTvStay5;
-    @BindView(R.id.sw_stay6) SwitchView mSwStay6;
-    @BindView(R.id.tv_stay6) TextView mTvStay6;
-    @BindView(R.id.sw_stay7) SwitchView mSwStay7;
-    @BindView(R.id.tv_stay7) TextView mTvStay7;
-    @BindView(R.id.sw_stay8) SwitchView mSwStay8;
-    @BindView(R.id.tv_stay8) TextView mTvStay8;
-    @BindView(R.id.btn_confirm) Button mBtnConfirm;
+    @BindView(R.id.toolbar_title)
+    TextView mToolbarTitle;
+
+    @BindView(R.id.sw_stay1)
+    SwitchView mSwStay1;
+    @BindView(R.id.tv_stay1)
+    TextView mTvStay1;
+    @BindView(R.id.sw_stay2)
+    SwitchView mSwStay2;
+    @BindView(R.id.tv_stay2)
+    TextView mTvStay2;
+    @BindView(R.id.sw_stay3)
+    SwitchView mSwStay3;
+    @BindView(R.id.tv_stay3)
+    TextView mTvStay3;
+    @BindView(R.id.sw_stay4)
+    SwitchView mSwStay4;
+    @BindView(R.id.tv_stay4)
+    TextView mTvStay4;
+    @BindView(R.id.sw_stay5)
+    SwitchView mSwStay5;
+    @BindView(R.id.tv_stay5)
+    TextView mTvStay5;
+    @BindView(R.id.sw_stay6)
+    SwitchView mSwStay6;
+    @BindView(R.id.tv_stay6)
+    TextView mTvStay6;
+    @BindView(R.id.sw_stay7)
+    SwitchView mSwStay7;
+    @BindView(R.id.tv_stay7)
+    TextView mTvStay7;
+    @BindView(R.id.sw_stay8)
+    SwitchView mSwStay8;
+    @BindView(R.id.tv_stay8)
+    TextView mTvStay8;
+    @BindView(R.id.btn_confirm)
+    Button mBtnConfirm;
     private MaterialDialog.Builder mBuilder;
     private MaterialDialog mMaterialDialog;
     private Dialog mDialog;
@@ -60,38 +76,35 @@ public class SenSorMPSConfigActivity extends BaseActivity {
     private SensorWireShiftInfo sensorWireShiftInfo;
 
     private List<CollectorSensorParamsInfoSub> mCollectorParamsInfoSubList = new ArrayList<>();
-    @Override protected int initContentView() {
+
+    @Override
+    protected int initContentView() {
         return R.layout.activity_sensor_mps_config;
     }
 
 
-    @Override protected void onCreate(@Nullable Bundle savedInstanceState) {
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setToolBar(R.id.toolbar);
         initView();
         initData();
     }
 
 
     private void initView() {
-        setSupportActionBar(mToolbar);
-        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle("");
         mToolbarTitle.setText("拉线位移计配置");
         mmkv = MMKV.defaultMMKV();
-
     }
 
 
     private void initData() {
         mCollectorParamsInfoSubList = DeviceFragment.mCollectorParamsInfoSubList;
-
-
-
     }
 
 
-    @OnClick({R.id.sw_stay1,   R.id.sw_stay2, R.id.sw_stay3,   R.id.sw_stay4,   R.id.sw_stay5,
-                   R.id.sw_stay6,   R.id.sw_stay7, R.id.sw_stay8, R.id.btn_confirm})
+    @OnClick({R.id.sw_stay1, R.id.sw_stay2, R.id.sw_stay3, R.id.sw_stay4, R.id.sw_stay5,
+            R.id.sw_stay6, R.id.sw_stay7, R.id.sw_stay8, R.id.btn_confirm})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.sw_stay1:
@@ -123,11 +136,6 @@ public class SenSorMPSConfigActivity extends BaseActivity {
                 break;
         }
     }
-
-
-
-
-
 
 
 }

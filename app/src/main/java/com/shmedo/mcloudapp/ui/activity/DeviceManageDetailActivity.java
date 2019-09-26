@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -36,7 +35,6 @@ import com.shmedo.mcloudapp.views.LoadingDialog;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -58,9 +56,6 @@ public class DeviceManageDetailActivity extends BaseActivity implements OnRefres
 
     @BindView(R.id.toolbar_title)
     TextView mToolbarTitle;
-
-    @BindView(R.id.toolbar)
-    Toolbar mToolbar;
 
     @BindView(R.id.ce_find_sn)
     ClearEditText mCeFindSn;
@@ -118,16 +113,13 @@ public class DeviceManageDetailActivity extends BaseActivity implements OnRefres
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setToolBar(R.id.toolbar);
         initView();
         initData();
     }
 
 
     private void initView() {
-        setSupportActionBar(mToolbar);
-        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle("");
-
         mLoadingDialog = new LoadingDialog(this);
         mRefreshLayout.setEnableAutoLoadMore(false);
         mRefreshLayout.setEnableRefresh(true);

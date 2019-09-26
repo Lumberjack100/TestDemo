@@ -7,7 +7,6 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.View;
 import android.webkit.DownloadListener;
@@ -33,17 +32,12 @@ import com.shmedo.mcloudapp.util.WifiSupport;
 import com.shmedo.mcloudapp.views.LoadingDialog;
 import com.shmedo.mcloudapp.views.MyWebView;
 
-import java.util.Objects;
-
 import butterknife.BindView;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 import timber.log.Timber;
 
 public class ConfigE60Activity extends BaseActivity {
-
-    @BindView(R.id.toolbar)
-    Toolbar mToolbar;
 
     @BindView(R.id.toolbar_title)
     TextView mToolbarTitle;
@@ -69,16 +63,13 @@ public class ConfigE60Activity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setToolBar(R.id.toolbar);
         initView();
         initData();
     }
 
 
     private void initView() {
-        setSupportActionBar(mToolbar);
-        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle("");
-
         mLoadingDialog = new LoadingDialog(this);
 
         DeviceBasicInfoResult deviceBasicInfoResult = (DeviceBasicInfoResult) (getIntent().getSerializableExtra("device"));

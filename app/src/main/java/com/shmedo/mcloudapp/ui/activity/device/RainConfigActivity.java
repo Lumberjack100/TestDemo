@@ -2,7 +2,6 @@ package com.shmedo.mcloudapp.ui.activity.device;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -19,7 +18,6 @@ import com.shmedo.mcloudapp.util.ToastUtil;
 import com.shmedo.mcloudapp.util.bleutil.LogTag;
 
 import java.text.DecimalFormat;
-import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -33,48 +31,53 @@ import butterknife.OnClick;
  * 描述：   配置雨量计
  */
 public class RainConfigActivity extends BaseActivity {
-    @BindView(R.id.toolbar_title) TextView mToolbarTitle;
-    @BindView(R.id.toolbar) Toolbar mToolbar;
-    @BindView(R.id.sp_rain) Spinner mSpRain;
-    @BindView(R.id.btn_confirm_complete) Button mBtnConfirmComplete;
+    @BindView(R.id.toolbar_title)
+    TextView mToolbarTitle;
+
+    @BindView(R.id.sp_rain)
+    Spinner mSpRain;
+    @BindView(R.id.btn_confirm_complete)
+    Button mBtnConfirmComplete;
 
     private String rainResult;
     private ArrayAdapter<String> dataAdapter;
 
-    @Override protected int initContentView() {
+    @Override
+    protected int initContentView() {
         return R.layout.activity_rain_config;
     }
 
 
-    @Override protected void onCreate(@Nullable Bundle savedInstanceState) {
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setToolBar(R.id.toolbar);
         initView();
         initData();
     }
 
 
     private void initView() {
-        setSupportActionBar(mToolbar);
-        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle("");
         mToolbarTitle.setText("配置雨量计");
 
         String[] debugData = getResources().getStringArray(R.array.rain);
-         dataAdapter = new ArrayAdapter<>(this, R.layout.spinner_item,
-            debugData);
+        dataAdapter = new ArrayAdapter<>(this, R.layout.spinner_item,
+                debugData);
         mSpRain.setAdapter(dataAdapter);
         mSpRain.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
-                String result = mSpRain.getSelectedItem().toString().replace("mm","");
+                String result = mSpRain.getSelectedItem().toString().replace("mm", "");
 
                 DecimalFormat df = new DecimalFormat("0");
-                rainResult =  df.format(Double.valueOf(result)*100);
+                rainResult = df.format(Double.valueOf(result) * 100);
 
-                Log.e(LogTag.INFO_TAG, "====雨量站spinner==="+rainResult);
+                Log.e(LogTag.INFO_TAG, "====雨量站spinner===" + rainResult);
 
             }
-            @Override public void onNothingSelected(AdapterView<?> adapterView) {
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
 
             }
         });
@@ -82,13 +85,13 @@ public class RainConfigActivity extends BaseActivity {
 
 
     private void initData() {
-        if (DeviceFragment.rainPage != null){
-            Log.e(LogTag.INFO_TAG, "====雨量站==="+DeviceFragment.rainPage.getRainAccury());
-            String result = Double.valueOf(DeviceFragment.rainPage.getRainAccury())/100 +"mm";
-            SpinnerAdapter  spinnerAdapter = mSpRain.getAdapter();
+        if (DeviceFragment.rainPage != null) {
+            Log.e(LogTag.INFO_TAG, "====雨量站===" + DeviceFragment.rainPage.getRainAccury());
+            String result = Double.valueOf(DeviceFragment.rainPage.getRainAccury()) / 100 + "mm";
+            SpinnerAdapter spinnerAdapter = mSpRain.getAdapter();
             int count = spinnerAdapter.getCount();
             for (int i = 0; i < count; i++) {
-                if (result.equals(spinnerAdapter.getItem(i).toString())){
+                if (result.equals(spinnerAdapter.getItem(i).toString())) {
                     mSpRain.setSelection(i);
                     break;
                 }
@@ -97,21 +100,22 @@ public class RainConfigActivity extends BaseActivity {
     }
 
 
-    @OnClick(R.id.btn_confirm_complete) public void onViewClicked() {
-        if (rainResult == null){
+    @OnClick(R.id.btn_confirm_complete)
+    public void onViewClicked() {
+        if (rainResult == null) {
             ToastUtil.showSToast("未获取到选中的值");
             return;
         }
-        Log.e(LogTag.INFO_TAG, "====雨量站spinner==="+rainResult);
+        Log.e(LogTag.INFO_TAG, "====雨量站spinner===" + rainResult);
         if (DeviceFragment.isConnected) {
             //恢复出厂设置
             com.shmedo.mcloudapp.bluetooth.Message msg = new com.shmedo.mcloudapp.bluetooth.Message("##121",
-                "##121"+rainResult+"\r\n", true);
+                    "##121" + rainResult + "\r\n", true);
             if (DeviceFragment.mdBluetoothManager != null) {
                 DeviceFragment.mdBluetoothManager.writeMessage(msg);
             }
             finish();
-        }else {
+        } else {
             ToastUtil.showSToast("蓝牙未连接");
         }
     }
