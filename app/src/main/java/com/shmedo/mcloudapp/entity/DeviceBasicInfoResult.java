@@ -7,6 +7,8 @@ import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Unique;
 
+import java.io.Serializable;
+
 /**
  * 项目名：  mCloudapp
  * 包名：    com.shmedo.mcloudapp.entity
@@ -16,7 +18,9 @@ import org.greenrobot.greendao.annotation.Unique;
  * 描述：    4.2 查询设备基础信息列表 地图展示
  */
 @Entity
-public class DeviceBasicInfoResult {
+public class DeviceBasicInfoResult  implements Serializable {
+
+    private static final long serialVersionUID = -4354247480033168035L;
 
     /**
      * deviceID : 72

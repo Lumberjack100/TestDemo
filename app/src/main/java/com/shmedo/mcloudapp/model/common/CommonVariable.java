@@ -71,7 +71,7 @@ public class CommonVariable {
     }
 
     public static String getAccount() {
-        return account;
+        return account == null ? "" : account;
     }
 
     public static void setAccount(String account) {

@@ -39,7 +39,7 @@ public abstract class BaseActivity extends AppCompatActivity {
      * 沉浸式状态栏
      */
     public void initState() {
-        //ActionBar上显示返回
+        //设置了Theme带ActionBar的Activity，左上角显示返回按钮
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             if (Build.VERSION.SDK_INT >= 21) {

@@ -20,6 +20,7 @@ import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.adapter.DeviceStatusAdapter;
 import com.shmedo.mcloudapp.adapter.SystemAdapter;
 import com.shmedo.mcloudapp.base.BaseActivity;
+import com.shmedo.mcloudapp.entity.DeviceBasicInfoResult;
 import com.shmedo.mcloudapp.entity.SensorAndCount;
 import com.shmedo.mcloudapp.entity.StatusInfoResult;
 import com.shmedo.mcloudapp.entity.StatusInfoResultDao;
@@ -40,6 +41,7 @@ import com.shmedo.mcloudapp.views.DividerItemDecoration;
 import com.shmedo.mcloudapp.views.EmptyDataView;
 import com.shmedo.mcloudapp.views.LoadingDialog;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -320,6 +322,19 @@ public class DeviceManageActivity extends BaseActivity implements OnRefreshListe
                         String deviceInfo = "MEDO," + statusInfoResult.getDeviceToken() + "," + statusInfoResult.getDeviceTypeName();
                         AllDeviceActivity.startActivity(DeviceManageActivity.this, deviceInfo);
                     }
+
+                    if (!TextUtils.isEmpty(statusInfoResult.getDeviceName()) && statusInfoResult.getDeviceName().toUpperCase().contains("E60")) {
+
+                        DeviceBasicInfoResult deviceBasicInfoResult=new DeviceBasicInfoResult();
+                        deviceBasicInfoResult.setDeviceToken(statusInfoResult.getDeviceToken());
+                        deviceBasicInfoResult.setDeviceTypeName(statusInfoResult.getDeviceName());
+                        Intent intent = new Intent(DeviceManageActivity.this, ConfigE60Activity.class);
+                        Bundle bundle = new Bundle();
+                        bundle.putSerializable("device", (Serializable) deviceBasicInfoResult);
+                        intent.putExtras(bundle);
+                        startActivity(intent);
+                    }
+
                     break;
             }
         }

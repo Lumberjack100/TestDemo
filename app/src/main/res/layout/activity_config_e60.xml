@@ -3,11 +3,12 @@
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
     android:orientation="vertical">
 
     <include layout="@layout/activity_device_toolbar" />
 
-    <com.shmedo.mcloudapp.MyWebView
+    <com.shmedo.mcloudapp.views.MyWebView
         android:id="@+id/mWebView"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
