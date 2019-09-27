@@ -1,6 +1,7 @@
 package com.shmedo.mcloudapp.ui.activity;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
@@ -25,6 +26,7 @@ import com.shmedo.mcloudapp.base.BaseActivity;
 import com.shmedo.mcloudapp.entity.DeviceBasicInfoResult;
 import com.shmedo.mcloudapp.entity.DeviceBasicInfoResultDao;
 import com.shmedo.mcloudapp.model.BaseObserver;
+import com.shmedo.mcloudapp.model.Extras;
 import com.shmedo.mcloudapp.model.MDRetrofit;
 import com.shmedo.mcloudapp.util.DaoManager;
 import com.shmedo.mcloudapp.util.ToastUtil;
@@ -55,6 +57,16 @@ public class ConfigE60Activity extends BaseActivity {
     private DaoManager manager = DaoManager.getInstance();
     private String securityNo;
 
+
+
+    public static void startActivity(Context context,  DeviceBasicInfoResult deviceBasicInfoResult) {
+        Intent intent = new Intent(context, ConfigE60Activity.class);
+        intent.putExtra(Extras.DEVICE_E60, deviceBasicInfoResult);
+        intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        context.startActivity(intent);
+    }
+
+
     @Override
     protected int initContentView() {
         return R.layout.activity_config_e60;
@@ -72,7 +84,7 @@ public class ConfigE60Activity extends BaseActivity {
     private void initView() {
         mLoadingDialog = new LoadingDialog(this);
 
-        DeviceBasicInfoResult deviceBasicInfoResult = (DeviceBasicInfoResult) (getIntent().getSerializableExtra("device"));
+        DeviceBasicInfoResult deviceBasicInfoResult = (DeviceBasicInfoResult) (getIntent().getSerializableExtra(Extras.DEVICE_E60));
         if (deviceBasicInfoResult != null) {
             deviceToken = deviceBasicInfoResult.getDeviceToken() != null ? deviceBasicInfoResult.getDeviceToken() : "";
             deviceTypeName = deviceBasicInfoResult.getDeviceTypeName() != null ? deviceBasicInfoResult.getDeviceTypeName() : "";
@@ -87,12 +99,12 @@ public class ConfigE60Activity extends BaseActivity {
                 getDeviceJson(ipAddress);
 
             } else {
-                ToastUtil.showSToast("请打开连接正确的WIFI");
+                ToastUtil.showShortToast("请打开连接正确的WIFI");
                 WifiSupport.goWifiSetting(this);
             }
 
         } else {
-            ToastUtil.showSToast("请打开WIFI连接");
+            ToastUtil.showShortToast("请打开WIFI连接");
             WifiSupport.goWifiSetting(this);
         }
     }
@@ -152,8 +164,9 @@ public class ConfigE60Activity extends BaseActivity {
 
                     @Override
                     public void Failure(String message) {
+                        Timber.w(message);
                         mLoadingDialog.dismiss();
-                        ToastUtil.showLToast("设备验证失败," + message);
+                        showPopWindow();
                     }
                 });
     }
@@ -222,7 +235,7 @@ public class ConfigE60Activity extends BaseActivity {
                     public void onClick(View v) {
                         String content = editText.getText().toString();
                         if (TextUtils.isEmpty(content)) {
-                            ToastUtil.showSToast("ip地址不能为空");
+                            ToastUtil.showShortToast("ip地址不能为空");
                             return;
                         }
                         //if (!DisposeUtil.isRegex(content)){

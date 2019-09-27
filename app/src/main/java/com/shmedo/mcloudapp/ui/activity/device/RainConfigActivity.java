@@ -103,7 +103,7 @@ public class RainConfigActivity extends BaseActivity {
     @OnClick(R.id.btn_confirm_complete)
     public void onViewClicked() {
         if (rainResult == null) {
-            ToastUtil.showSToast("未获取到选中的值");
+            ToastUtil.showShortToast("未获取到选中的值");
             return;
         }
         Log.e(LogTag.INFO_TAG, "====雨量站spinner===" + rainResult);
@@ -116,7 +116,7 @@ public class RainConfigActivity extends BaseActivity {
             }
             finish();
         } else {
-            ToastUtil.showSToast("蓝牙未连接");
+            ToastUtil.showShortToast("蓝牙未连接");
         }
     }
 }

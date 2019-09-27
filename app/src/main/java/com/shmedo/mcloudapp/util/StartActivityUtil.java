@@ -18,11 +18,11 @@ import android.view.inputmethod.InputMethodManager;
 public class StartActivityUtil {
     public static void comeOnBaby(Context context, Class<?> cls){
         if(null == context){
-            ToastUtil.showSToast("context is null");
+            ToastUtil.showShortToast("context is null");
             return;
         }
         if(null == cls){
-            ToastUtil.showSToast("cls is null");
+            ToastUtil.showShortToast("cls is null");
             return;
         }
         context.startActivity(new Intent(context,cls));

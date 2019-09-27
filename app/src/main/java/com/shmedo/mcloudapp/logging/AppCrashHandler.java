@@ -80,7 +80,7 @@ public class AppCrashHandler {
             @Override
             public void run() {
                 Looper.prepare();
-                ToastUtil.showSToast("很抱歉！米易通出现异常，即将退出。");
+                ToastUtil.showShortToast("很抱歉！米易通出现异常，即将退出。");
                 Looper.loop();
             }
         }.start();

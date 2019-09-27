@@ -26,7 +26,7 @@ public class StringUtil {
     /**
      * 正则表达式：数字验证码
      */
-    public static final String REGEX_VERIFICATION_CODE = "^[0-9]*$";
+    public static final String REGEX_NUMERIC = "^[0-9]*$";
 
 
     public static boolean isNullOrEmpty(String s) {
@@ -73,17 +73,17 @@ public class StringUtil {
 
 
     /**
-     * 验证码输入是否正确
+     * 是否数字
      *
      * @param code
      * @return
      */
-    public static boolean isCodeCorrect(String code) {
+    public static boolean isNumeric(String code) {
         if (TextUtils.isEmpty(code)) {
             return false;
         }
 
-        return Pattern.matches(REGEX_VERIFICATION_CODE, code);
+        return Pattern.matches(REGEX_NUMERIC, code);
     }
 
     public static String convertStringToHex(String str) {

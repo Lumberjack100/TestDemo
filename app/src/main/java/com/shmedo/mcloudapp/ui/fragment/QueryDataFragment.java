@@ -51,7 +51,7 @@ public class QueryDataFragment extends BaseFragment {
         @Override public void handleMessage(Message msg) {
             super.handleMessage(msg);
             if (msg.what==0){
-                ToastUtil.showSToast("当前网络不可用");
+                ToastUtil.showShortToast("当前网络不可用");
                 if (mLoadingDialog.isShowing()){
                     mLoadingDialog.dismiss();
                 }
@@ -79,7 +79,7 @@ public class QueryDataFragment extends BaseFragment {
         if(CommonVariable.isNetworkConnected()){
             initWebView();
         }else{
-            ToastUtil.showSToast("当前网络不可用");
+            ToastUtil.showShortToast("当前网络不可用");
         }
     }
 

@@ -91,7 +91,7 @@ public class OsmometerConfigActivity extends BaseActivity {
     private void initView() {
 
         mToolbarTitle.setText("配置渗压计");
-        AdvanceSetFragment.modityHint("随手一记，好记性不如烂笔头", mEtNote);
+        AdvanceSetFragment.modifyHintText("随手一记，好记性不如烂笔头", mEtNote);
     }
 
 
@@ -145,7 +145,7 @@ public class OsmometerConfigActivity extends BaseActivity {
         if (osAddress > 0 && osAddress < 255) {
             osmometerAddress = String.valueOf(osAddress);
         } else {
-            ToastUtil.showSToast("渗压计地址输入有误");
+            ToastUtil.showShortToast("渗压计地址输入有误");
             return;
         }
         depthTriggerValue = mEtWaterAlarmValue.getText().toString().trim();
@@ -158,13 +158,13 @@ public class OsmometerConfigActivity extends BaseActivity {
         String note = mEtNote.getText().toString().trim();
         uc.writeString(CommonVariable.OSMOMETER_NOTE, note);
         if (StringUtil.isNullOrEmpty(depthTriggerValue)) {
-            ToastUtil.showSToast("水位报警值不能为空");
+            ToastUtil.showShortToast("水位报警值不能为空");
         } else if (StringUtil.isNullOrEmpty(depthCorrection)) {
-            ToastUtil.showSToast("水深修正值不能为空");
+            ToastUtil.showShortToast("水深修正值不能为空");
         } else if (StringUtil.isNullOrEmpty(osmometerLength)) {
-            ToastUtil.showSToast("渗压计绳长不能为空");
+            ToastUtil.showShortToast("渗压计绳长不能为空");
         } else if (StringUtil.isNullOrEmpty(nozzelHeight)) {
-            ToastUtil.showSToast("管口高程值不能为空");
+            ToastUtil.showShortToast("管口高程值不能为空");
         } else {
             List<String> list = new ArrayList<>();
             StringBuilder result1 = new StringBuilder();
@@ -194,7 +194,7 @@ public class OsmometerConfigActivity extends BaseActivity {
                     }
                     finish();
                 } else {
-                    ToastUtil.showSToast("蓝牙未连接");
+                    ToastUtil.showShortToast("蓝牙未连接");
                 }
             }
         }

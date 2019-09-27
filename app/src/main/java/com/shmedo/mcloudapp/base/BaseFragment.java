@@ -15,6 +15,7 @@ import com.shmedo.mcloudapp.util.common.HandleBackInterface;
 import com.shmedo.mcloudapp.util.common.HandleBackUtil;
 
 import butterknife.ButterKnife;
+import timber.log.Timber;
 
 /**
  * 项目名：  eMeasApp
@@ -27,7 +28,8 @@ import butterknife.ButterKnife;
 
 public abstract class BaseFragment extends Fragment implements HandleBackInterface {
 
-    @Nullable @Override
+    @Nullable
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(initContentView(), container, false);
         ButterKnife.bind(this, view);
@@ -40,7 +42,7 @@ public abstract class BaseFragment extends Fragment implements HandleBackInterfa
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull
-        int[] grantResults) {
+            int[] grantResults) {
         XPermissionUtils.onRequestPermissionsResult(requestCode, permissions, grantResults);
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
@@ -58,19 +60,26 @@ public abstract class BaseFragment extends Fragment implements HandleBackInterfa
     }
 
 
-    @Override public void onResume() {
+    @Override
+    public void onResume() {
         super.onResume();
 
+        String name = getClass().getName();
+        Timber.d("startPage,Fragment=" + name);
     }
 
 
-    @Override public void onPause() {
+    @Override
+    public void onPause() {
         super.onPause();
 
+        String name = getClass().getName();
+        Timber.d("endPage,Fragment=" + name);
     }
 
 
-    @Override public boolean onBackPressed() {
+    @Override
+    public boolean onBackPressed() {
         return HandleBackUtil.handleBackPress(this);
     }
 }

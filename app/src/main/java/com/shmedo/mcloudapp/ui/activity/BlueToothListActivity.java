@@ -69,7 +69,7 @@ public class BlueToothListActivity extends Activity {
             deviceList.addAll(tempList);
 
         if (deviceList.size() == 0) {
-            ToastUtil.showSToast("未发现设备，请尝试重新扫描");
+            ToastUtil.showShortToast("未发现设备，请尝试重新扫描");
             finish();
         }
     }

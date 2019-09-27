@@ -375,7 +375,7 @@ public class SenSorBGKConfigActivity extends BaseActivity {
                 if (channelNumber0 != -1) {
                     showDialog("0", channelNumber0);
                 } else {
-                    ToastUtil.showSToast("此传感器为空");
+                    ToastUtil.showShortToast("此传感器为空");
                     return;
                 }
 
@@ -384,7 +384,7 @@ public class SenSorBGKConfigActivity extends BaseActivity {
                 if (channelNumber1 != -1) {
                     showDialog("1", channelNumber1);
                 } else {
-                    ToastUtil.showSToast("此传感器为空");
+                    ToastUtil.showShortToast("此传感器为空");
                     return;
                 }
                 break;
@@ -392,7 +392,7 @@ public class SenSorBGKConfigActivity extends BaseActivity {
                 if (channelNumber2 != -1) {
                     showDialog("2", channelNumber2);
                 } else {
-                    ToastUtil.showSToast("此传感器为空");
+                    ToastUtil.showShortToast("此传感器为空");
                     return;
                 }
                 break;
@@ -400,7 +400,7 @@ public class SenSorBGKConfigActivity extends BaseActivity {
                 if (channelNumber3 != -1) {
                     showDialog("3", channelNumber3);
                 } else {
-                    ToastUtil.showSToast("此传感器为空");
+                    ToastUtil.showShortToast("此传感器为空");
                     return;
                 }
                 break;
@@ -408,7 +408,7 @@ public class SenSorBGKConfigActivity extends BaseActivity {
                 if (channelNumber4 != -1) {
                     showDialog("4", channelNumber4);
                 } else {
-                    ToastUtil.showSToast("此传感器为空");
+                    ToastUtil.showShortToast("此传感器为空");
                     return;
                 }
                 break;
@@ -416,7 +416,7 @@ public class SenSorBGKConfigActivity extends BaseActivity {
                 if (channelNumber5 != -1) {
                     showDialog("5", channelNumber5);
                 } else {
-                    ToastUtil.showSToast("此传感器为空");
+                    ToastUtil.showShortToast("此传感器为空");
                     return;
                 }
                 break;
@@ -424,7 +424,7 @@ public class SenSorBGKConfigActivity extends BaseActivity {
                 if (channelNumber6 != -1) {
                     showDialog("6", channelNumber6);
                 } else {
-                    ToastUtil.showSToast("此传感器为空");
+                    ToastUtil.showShortToast("此传感器为空");
                     return;
                 }
                 break;
@@ -432,7 +432,7 @@ public class SenSorBGKConfigActivity extends BaseActivity {
                 if (channelNumber7 != -1) {
                     showDialog("7", channelNumber7);
                 } else {
-                    ToastUtil.showSToast("此传感器为空");
+                    ToastUtil.showShortToast("此传感器为空");
                     return;
                 }
                 break;
@@ -680,7 +680,7 @@ public class SenSorBGKConfigActivity extends BaseActivity {
             for (int j = k + 1; j < list.size(); j++) {
                 if (list.get(k).getSensorAddress().equals(list.get(j).getSensorAddress())) {
                     Log.i("adu", list.size() + "--" + list.get(k).getSensorAddress() + "====" + list.get(j).getSensorAddress());
-                    ToastUtil.showSToast("Modbus地址不能重复");
+                    ToastUtil.showShortToast("Modbus地址不能重复");
                     return;
                 }
             }
@@ -712,7 +712,7 @@ public class SenSorBGKConfigActivity extends BaseActivity {
                 Log.i(LogTag.INFO_TAG, "发送result指令===" + result);
                 finish();
             } else {
-                ToastUtil.showSToast("蓝牙未连接");
+                ToastUtil.showShortToast("蓝牙未连接");
                 finish();
             }
 

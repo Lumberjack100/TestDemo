@@ -116,7 +116,7 @@ public class GeneralSettingActivity extends BaseActivity {
         if (address > 0 && address < 255) {
             collectorAddress = String.valueOf(address);
         } else {
-            ToastUtil.showSToast("采集器地址输入有误");
+            ToastUtil.showShortToast("采集器地址输入有误");
             return;
         }
 
@@ -124,11 +124,11 @@ public class GeneralSettingActivity extends BaseActivity {
         standbyTime = mEtStandbyTime.getText().toString().trim();
         collectTime = mEtCollectTime.getText().toString().trim();
         if (StringUtil.isNullOrEmpty(calculatTime)) {
-            ToastUtil.showSToast("解算时间不能为空");
+            ToastUtil.showShortToast("解算时间不能为空");
         } else if (StringUtil.isNullOrEmpty(standbyTime)) {
-            ToastUtil.showSToast("待机时间不能为空");
+            ToastUtil.showShortToast("待机时间不能为空");
         } else if (StringUtil.isNullOrEmpty(collectTime)) {
-            ToastUtil.showSToast("采集时间不能为空");
+            ToastUtil.showShortToast("采集时间不能为空");
         } else {
             //这里需要判断采集器的型号，去确定##100后面的数字是否是01
             List<String> list = new ArrayList<>();
@@ -155,7 +155,7 @@ public class GeneralSettingActivity extends BaseActivity {
                         DeviceFragment.mdBluetoothManager.writeMessage(msg);
                     }
                 } else {
-                    ToastUtil.showSToast("蓝牙未连接");
+                    ToastUtil.showShortToast("蓝牙未连接");
                 }
             }
         }

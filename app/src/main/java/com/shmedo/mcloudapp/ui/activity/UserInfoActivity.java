@@ -269,7 +269,7 @@ public class UserInfoActivity extends BaseActivity {
                     @Override
                     public void Success(String s, String message) {
                         mLoadingDialog.dismiss();
-                        ToastUtil.showLToast("头像已上传");
+                        ToastUtil.showLongToast("头像已上传");
 
                         initUserInfo();
                     }
@@ -277,7 +277,7 @@ public class UserInfoActivity extends BaseActivity {
                     @Override
                     public void Failure(String message) {
                         mLoadingDialog.dismiss();
-                        ToastUtil.showLToast("上传头像失败," + message);
+                        ToastUtil.showLongToast("上传头像失败," + message);
                     }
                 });
     }

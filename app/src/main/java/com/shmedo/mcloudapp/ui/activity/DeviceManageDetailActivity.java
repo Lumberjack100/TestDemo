@@ -227,7 +227,7 @@ public class DeviceManageDetailActivity extends BaseActivity implements OnRefres
                         }
 
                         Timber.w("服务器连接失败--" + message);
-                        ToastUtil.showSToast("服务器连接失败");
+                        ToastUtil.showShortToast("服务器连接失败");
                     }
                 });
     }
@@ -271,7 +271,7 @@ public class DeviceManageDetailActivity extends BaseActivity implements OnRefres
 //        } else {
 //            refreshLayout.finishRefresh();
 //            refreshLayout.setNoMoreData(true);
-//            ToastUtil.showSToast("请检查网络连接");
+//            ToastUtil.showShortToast("请检查网络连接");
 //        }
     }
 
@@ -294,7 +294,7 @@ public class DeviceManageDetailActivity extends BaseActivity implements OnRefres
 //        } else {
 //            refreshLayout.finishRefresh();
 //            refreshLayout.setNoMoreData(true);
-//            ToastUtil.showSToast("请检查网络连接");
+//            ToastUtil.showShortToast("请检查网络连接");
 //        }
     }
 }

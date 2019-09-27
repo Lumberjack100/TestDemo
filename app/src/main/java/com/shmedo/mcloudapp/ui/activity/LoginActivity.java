@@ -222,7 +222,7 @@ public class LoginActivity extends BaseActivity {
                 if (StringUtil.isPhoneNumber(mPhoneNumber)) {
                     sendSmsCode(mPhoneNumber);
                 } else {
-                    ToastUtil.showSToast("手机号输入格式错误！");
+                    ToastUtil.showShortToast("手机号输入格式错误！");
                 }
                 break;
 
@@ -234,7 +234,7 @@ public class LoginActivity extends BaseActivity {
             case R.id.btn_login_account:
                 //点击账号登录方式
                 if (TextUtils.isEmpty(CommonVariable.getServiceAddress())) {
-                    ToastUtil.showLToast("请先配置服务地址！");
+                    ToastUtil.showLongToast("请先配置服务地址！");
                     StartActivityUtil.comeOnBaby(this, ServiceConfigActivity.class);
                     return;
                 }
@@ -246,7 +246,7 @@ public class LoginActivity extends BaseActivity {
                 final String uid = mLoginEditTextAccount.getText() != null ? mLoginEditTextAccount.getText().toString().trim() : null;
                 final String pwd = mLoginAccountPassword.getText() != null ? mLoginAccountPassword.getText().toString().trim() : null;
                 if (TextUtils.isEmpty(uid) || TextUtils.isEmpty(pwd)) {
-                    ToastUtil.showLToast("用户名或密码不能为空！");
+                    ToastUtil.showLongToast("用户名或密码不能为空！");
                     return;
                 }
                 accountSingIn(uid, pwd);
@@ -255,7 +255,7 @@ public class LoginActivity extends BaseActivity {
             case R.id.btn_login_phone:
                 //点击短信登录方式
                 if (TextUtils.isEmpty(CommonVariable.getServiceAddress())) {
-                    ToastUtil.showLToast("请先配置服务地址！");
+                    ToastUtil.showLongToast("请先配置服务地址！");
                     StartActivityUtil.comeOnBaby(this, ServiceConfigActivity.class);
                     return;
                 }
@@ -267,25 +267,25 @@ public class LoginActivity extends BaseActivity {
                 String code = mLoginPhonePassword.getText() != null ? mLoginPhonePassword.getText().toString().trim() : null;
                 String phoneNumber = mLoginEditTextIphone.getText() != null ? mLoginEditTextIphone.getText().toString().trim() : null;
                 if (TextUtils.isEmpty(code) && TextUtils.isEmpty(phoneNumber)) {
-                    ToastUtil.showSToast("手机号或验证码不能为空！");
+                    ToastUtil.showShortToast("手机号或验证码不能为空！");
                     return;
                 }
 
-                if (StringUtil.isCodeCorrect(code) && StringUtil.isPhoneNumber(phoneNumber)) {
+                if (StringUtil.isNumeric(code) && StringUtil.isPhoneNumber(phoneNumber)) {
                     quickLogin(code, phoneNumber);
                 } else {
-                    ToastUtil.showLToast("手机号或验证码输入格式错误！");
+                    ToastUtil.showLongToast("手机号或验证码输入格式错误！");
                 }
                 break;
 
             case R.id.tv_registered:
                 //用户注册
-                ToastUtil.showLToast("用户注册");
+                ToastUtil.showLongToast("用户注册");
                 break;
 
             case R.id.tv_forgot_password:
                 //忘记密码
-                ToastUtil.showLToast("忘记密码");
+                ToastUtil.showLongToast("忘记密码");
                 break;
 
             case R.id.tourists_login:
@@ -316,7 +316,7 @@ public class LoginActivity extends BaseActivity {
                     public void Success(String s, String message) {
                         dialog.dismiss();
                         if (s.contains("手机号对应的用户不存在")) {
-                            ToastUtil.showSToast("手机号对应的用户不存在");
+                            ToastUtil.showShortToast("手机号对应的用户不存在");
                             //TODO 手机号不存在设置为游客登录
                         } else {
                             getMyInfo(s, null, null);
@@ -326,7 +326,7 @@ public class LoginActivity extends BaseActivity {
                     @Override
                     public void Failure(String message) {
                         dialog.dismiss();
-                        ToastUtil.showSToast(message);
+                        ToastUtil.showShortToast(message);
                     }
                 });
     }
@@ -357,7 +357,7 @@ public class LoginActivity extends BaseActivity {
                     @Override
                     public void Failure(String message) {
                         dialog.dismiss();
-                        ToastUtil.showLToast(message);
+                        ToastUtil.showLongToast(message);
                     }
                 });
     }
@@ -386,7 +386,7 @@ public class LoginActivity extends BaseActivity {
                     @Override
                     public void Failure(String message) {
                         dialog.dismiss();
-                        ToastUtil.showLToast("登录失败" + message);
+                        ToastUtil.showLongToast("登录失败" + message);
                     }
                 });
     }
@@ -431,7 +431,7 @@ public class LoginActivity extends BaseActivity {
                     @Override
                     public void Failure(String message) {
                         dialog.dismiss();
-                        ToastUtil.showLToast("登录失败" + message);
+                        ToastUtil.showLongToast("登录失败" + message);
                     }
                 });
     }

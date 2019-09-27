@@ -174,7 +174,7 @@ public class ParameterConfigFragment extends BaseFragment
         mSpDebug.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
-                //ToastUtil.showSToast("" + adapterView.getSelectedItem().toString());
+                //ToastUtil.showShortToast("" + adapterView.getSelectedItem().toString());
             }
             @Override public void onNothingSelected(AdapterView<?> adapterView) {
 
@@ -402,7 +402,7 @@ public class ParameterConfigFragment extends BaseFragment
                 DeviceFragment.mdBluetoothManager.writeMessage(msg);
             }
         } else {
-            ToastUtil.showSToast("蓝牙未连接");
+            ToastUtil.showShortToast("蓝牙未连接");
         }
     }
 
@@ -419,7 +419,7 @@ public class ParameterConfigFragment extends BaseFragment
                 DeviceFragment.mdBluetoothManager.writeMessage(msg);
             }
         } else {
-            ToastUtil.showSToast("蓝牙未连接");
+            ToastUtil.showShortToast("蓝牙未连接");
         }
     }
 
@@ -547,9 +547,9 @@ public class ParameterConfigFragment extends BaseFragment
                 break;
             case R.id.tv_query:
                 if (StringUtil.isNullOrEmpty(mEtQuery.getText().toString().trim())) {
-                    ToastUtil.showSToast("" + mEtQuery.getText().toString());
+                    ToastUtil.showShortToast("" + mEtQuery.getText().toString());
                 } else {
-                    ToastUtil.showSToast("搜索的内容不能为空");
+                    ToastUtil.showShortToast("搜索的内容不能为空");
                 }
                 break;
             case R.id.rl_sensor_setting:
@@ -559,7 +559,7 @@ public class ParameterConfigFragment extends BaseFragment
                     intent = new Intent(getActivity(), SenSorBGKConfigActivity.class);
                     startActivity(intent);
                 }else {
-                    ToastUtil.showSToast("蓝牙未连接");
+                    ToastUtil.showShortToast("蓝牙未连接");
                 }
 
                 break;
@@ -604,11 +604,11 @@ public class ParameterConfigFragment extends BaseFragment
             //如果下拉刷新超过10s再次发送指令
             if (tenTime >= 10000) {
                 DeviceFragment.sendDeviceStateComd();
-                ToastUtil.showSToast("已重新发送指令");
+                ToastUtil.showShortToast("已重新发送指令");
                 //loadWebView(runState);
                 prelongTim = 0;
             } else {
-                ToastUtil.showSToast("发送指令间隔需超过10s");
+                ToastUtil.showShortToast("发送指令间隔需超过10s");
                 mRefreshLayout.setRefreshing(false);
             }
         }

@@ -94,7 +94,7 @@ public class WifiConnectionActivity extends AppCompatActivity {
         if (WifiSupport.isOpenWifi(WifiConnectionActivity.this)) {
             sortScaResult();
         } else {
-            //ToastUtil.showSToast("WIFI处于关闭状态或权限获取失败");
+            //ToastUtil.showShortToast("WIFI处于关闭状态或权限获取失败");
             WifiSupport.openWifi(WifiConnectionActivity.this);
         }
         adapter.setOnItemClickListener(new WifiListAdapter.onItemClickListener() {
@@ -203,7 +203,7 @@ public class WifiConnectionActivity extends AppCompatActivity {
                      */
                     case WifiManager.WIFI_STATE_DISABLED: {
                         Log.d(TAG, "已经关闭");
-                        ToastUtil.showSToast("WIFI处于关闭状态");
+                        ToastUtil.showShortToast("WIFI处于关闭状态");
                         break;
                     }
                     case WifiManager.WIFI_STATE_DISABLING: {
@@ -242,7 +242,7 @@ public class WifiConnectionActivity extends AppCompatActivity {
                         WifiConnectionActivity.this);
 
                     //连接成功 跳转界面 传递ip地址
-                    ToastUtil.showSToast("WIFI连接上了");
+                    ToastUtil.showShortToast("WIFI连接上了");
 
                     //thisToMain();
                     connectType = 1;
@@ -331,6 +331,6 @@ public class WifiConnectionActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        ToastUtil.showSToast("请点击关闭按钮关闭此页面");
+        ToastUtil.showShortToast("请点击关闭按钮关闭此页面");
     }
 }

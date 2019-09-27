@@ -16,7 +16,7 @@ import com.shmedo.mcloudapp.App;
 public class ToastUtil {
 
     private static Toast toast;
-    public static void showLToast( String content) {
+    public static void showLongToast(String content) {
         if (toast == null) {  //判断Toast对象是否为空
             toast = Toast.makeText(App.getContext(), content, Toast.LENGTH_LONG);
         } else {
@@ -24,7 +24,7 @@ public class ToastUtil {
         }
         toast.show();
     }
-    public static void showSToast( String content) {
+    public static void showShortToast(String content) {
         if (toast == null) {  //判断Toast对象是否为空
             toast = Toast.makeText(App.getContext(), content, Toast.LENGTH_SHORT);
         } else {

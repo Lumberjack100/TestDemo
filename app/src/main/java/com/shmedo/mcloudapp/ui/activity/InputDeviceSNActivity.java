@@ -8,6 +8,7 @@ import android.widget.RadioGroup;
 
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.base.BaseActivity;
+import com.shmedo.mcloudapp.entity.DeviceBasicInfoResult;
 import com.shmedo.mcloudapp.entity.DeviceTypeEnum;
 import com.shmedo.mcloudapp.entity.event.MapDeviceEvent;
 import com.shmedo.mcloudapp.util.ToastUtil;
@@ -73,7 +74,7 @@ public class InputDeviceSNActivity extends BaseActivity {
             return;
 
         } else if (TextUtils.isEmpty(deviceType)) {
-            ToastUtil.showSToast("请选择设备类型");
+            ToastUtil.showShortToast("请选择设备类型");
             return;
         }
 
@@ -88,26 +89,37 @@ public class InputDeviceSNActivity extends BaseActivity {
             return;
         }
 
-        if (DeviceTypeEnum.value(deviceType)) {
-            if (deviceType.equals("DAS")) {
-                String deviceInfo = "MEDO," + snNumber + "," + deviceType;
-                AllDeviceActivity.startActivity(InputDeviceSNActivity.this, deviceInfo);
-
-                //将设备信息传递到MainActivity中
-                MapDeviceEvent event = new MapDeviceEvent();
-                event.setType("mapDevice");
-                event.setDeviceName(deviceInfo);
-                EventBus.getDefault().post(event);
-
-            } else if (deviceType.equals("E60")) {
-                ToastUtil.showSToast("e60==" + snNumber + "==" + deviceType);
-
-            } else if (deviceType.equals("PVS")) {
-                ToastUtil.showSToast("pvs==" + snNumber + "==" + deviceType);
-            }
-
-        } else {
+        if (!DeviceTypeEnum.value(deviceType)) {
             LoadingDialog.showScanResultDialog(this, "此设备类型暂时不支持");
+            return;
+        }
+
+        String deviceInfo = "";
+        if (deviceType.equals("DAS")) {
+            deviceInfo = "MEDO," + snNumber + "," + deviceType;
+            AllDeviceActivity.startActivity(InputDeviceSNActivity.this, deviceInfo);
+
+        } else if (deviceType.equals("E60")) {
+            deviceInfo = "MEDO," + snNumber + "," + deviceType;
+
+            DeviceBasicInfoResult deviceBasicInfoResult = new DeviceBasicInfoResult();
+            deviceBasicInfoResult.setDeviceToken(snNumber);
+            deviceBasicInfoResult.setDeviceTypeName(deviceType);
+
+            ConfigE60Activity.startActivity(InputDeviceSNActivity.this, deviceBasicInfoResult);
+
+        } else if (deviceType.equals("PVS")) {
+            ToastUtil.showShortToast("pvs==" + snNumber + "==" + deviceType);
+        }
+
+
+        if (!TextUtils.isEmpty(deviceInfo) && deviceInfo.split(",").length > 0) {
+
+            //将设备信息传递到MainActivity中
+            MapDeviceEvent event = new MapDeviceEvent();
+            event.setType("mapDevice");
+            event.setDeviceName(deviceInfo);
+            EventBus.getDefault().post(event);
         }
     }
 }

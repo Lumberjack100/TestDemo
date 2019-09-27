@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
+import com.shmedo.mcloudapp.util.KeyBordUtils;
 import com.shmedo.mcloudapp.util.XPermissionUtils;
 import com.shmedo.mcloudapp.util.common.HandleBackUtil;
 
@@ -91,7 +92,8 @@ public abstract class BaseActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         //ActionBar Home按钮返回事件
         if (item.getItemId() == android.R.id.home) {
-            finish();
+            KeyBordUtils.hideSoftKeyboard(this.getWindow().getDecorView());
+            onBackPressed();
             return true;
         }
         return super.onOptionsItemSelected(item);

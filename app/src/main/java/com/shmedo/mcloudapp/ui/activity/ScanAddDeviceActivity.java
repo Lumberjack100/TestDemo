@@ -4,17 +4,18 @@ import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 
 import com.amap.api.maps.model.LatLng;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.base.BaseActivity;
+import com.shmedo.mcloudapp.entity.DeviceBasicInfoResult;
 import com.shmedo.mcloudapp.entity.DeviceTypeEnum;
 import com.shmedo.mcloudapp.entity.event.MapDeviceEvent;
 import com.shmedo.mcloudapp.model.Extras;
 import com.shmedo.mcloudapp.util.StartActivityUtil;
-import com.shmedo.mcloudapp.util.StringUtil;
 import com.shmedo.mcloudapp.util.ToastUtil;
 import com.shmedo.mcloudapp.util.XPermissionUtils;
 import com.shmedo.mcloudapp.views.LoadingDialog;
@@ -143,7 +144,7 @@ public class ScanAddDeviceActivity extends BaseActivity {
             if (data != null) {
 
                 String content = data.getStringExtra(Constant.CODED_CONTENT);
-                ToastUtil.showSToast("扫描结果为：" + content);
+                ToastUtil.showShortToast("扫描结果为：" + content);
                 Timber.d("扫描结果为：" + content);
                 scanResult(content);
             }
@@ -161,6 +162,7 @@ public class ScanAddDeviceActivity extends BaseActivity {
 
     //MEDO,189150L,DAS
     private void scan(String results) {
+        
         if (results.startsWith("MEDO")) {
             String[] localData = results.split(",");
             if (localData.length != 3) {
@@ -168,7 +170,7 @@ public class ScanAddDeviceActivity extends BaseActivity {
                 return;
             }
 
-            if (StringUtil.isEmpty(localData[0]) || StringUtil.isEmpty(localData[1]) || StringUtil.isEmpty(localData[2])) {
+            if (TextUtils.isEmpty(localData[0]) || TextUtils.isEmpty(localData[1]) || TextUtils.isEmpty(localData[2])) {
                 LoadingDialog.showScanResultDialog(this, "二维码信息不能为空");
                 return;
             }
@@ -178,19 +180,29 @@ public class ScanAddDeviceActivity extends BaseActivity {
                 return;
             }
 
-            if (DeviceTypeEnum.value(localData[2])) {
+            if (!DeviceTypeEnum.value(localData[2])) {
+                LoadingDialog.showScanResultDialog(this, "此设备类型暂时不支持");
+                return;
+            }
+
+            if (localData[2].equals("DAS")) {
                 //跳转到设备配置页面
                 AllDeviceActivity.startActivity(ScanAddDeviceActivity.this, results);
+                
+            } else if (localData[2].equals("E60")) {
 
-                //将扫一扫的设备名称传递到MainActivity中
-                MapDeviceEvent event = new MapDeviceEvent();
-                event.setType("mapDevice");
-                event.setDeviceName(results);
-                EventBus.getDefault().post(event);
+                DeviceBasicInfoResult deviceBasicInfoResult = new DeviceBasicInfoResult();
+                deviceBasicInfoResult.setDeviceToken(localData[2]);
+                deviceBasicInfoResult.setDeviceTypeName(localData[1]);
 
-            } else {
-                LoadingDialog.showScanResultDialog(this, "此设备类型暂时不支持");
+                ConfigE60Activity.startActivity(ScanAddDeviceActivity.this, deviceBasicInfoResult);
             }
+
+            //将扫一扫的设备名称传递到MainActivity中
+            MapDeviceEvent event = new MapDeviceEvent();
+            event.setType("mapDevice");
+            event.setDeviceName(results);
+            EventBus.getDefault().post(event);
         }
     }
 }

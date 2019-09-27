@@ -17,6 +17,8 @@ public interface Extras {
 
      String DEVICE_MAC_ADDRESS = "cur_device_mac_address";
 
+     String DEVICE_E60 = "DEVICE_E60";
+
      String SCAN_DEVICE_LIST = "scan_device_list";
 
 }

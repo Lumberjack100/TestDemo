@@ -90,93 +90,99 @@
             android:name=".ui.activity.LoginActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:windowSoftInputMode="stateAlwaysHidden|adjustResize" />
+
         <activity
             android:name=".ui.activity.ServiceConfigActivity"
             android:label="配置服务器"
             android:theme="@style/AppThemeBar"
             android:windowSoftInputMode="stateAlwaysHidden|adjustResize" />
+
         <activity
             android:name=".ui.activity.UserInfoActivity"
             android:label="我的"
             android:theme="@style/AppThemeBar"
             android:windowSoftInputMode="stateAlwaysHidden|adjustResize" />
+
         <activity
             android:name=".ui.activity.ScanAddDeviceActivity"
             android:label="添加设备"
             android:theme="@style/AppThemeBar"
             android:windowSoftInputMode="stateAlwaysHidden|adjustResize" />
+
         <activity
             android:name=".ui.activity.InputDeviceSNActivity"
             android:label="添加设备"
             android:theme="@style/AppThemeBar"
             android:windowSoftInputMode="adjustPan|stateHidden" />
+
         <activity
             android:name=".ui.activity.DeviceManageActivity"
             android:label="设备管理"
             android:theme="@style/AppThemeBar"
             android:windowSoftInputMode="stateAlwaysHidden|adjustResize" />
+
         <activity
             android:name=".ui.activity.SearchDeviceActivity"
             android:label="搜索设备"
             android:theme="@style/AppThemeBar"
             android:windowSoftInputMode="stateAlwaysHidden|adjustResize" />
+
         <activity
             android:name=".ui.activity.DeviceManageDetailActivity"
-            android:theme="@style/AppThemeNoActionBar"
             android:windowSoftInputMode="stateAlwaysHidden|adjustResize" />
+
         <activity
             android:name=".ui.activity.BlueToothListActivity"
             android:configChanges="orientation|keyboardHidden"
             android:label="@string/select_device"
             android:launchMode="singleInstance"
             android:theme="@style/AppTheme.Dialog" />
+
         <activity
             android:name=".ui.activity.WifiConnectionActivity"
             android:configChanges="orientation|keyboardHidden"
-            android:label=""
             android:launchMode="singleInstance"
             android:theme="@style/AppTheme.Dialog" />
+
         <activity
             android:name=".ui.activity.device.AccessDeviceDetailsActivity"
-            android:theme="@style/AppThemeNoActionBar"
             android:windowSoftInputMode="stateAlwaysHidden|adjustResize" />
+
         <activity
             android:name=".ui.activity.device.senior.ProductRegistrationActivity"
-            android:theme="@style/AppThemeNoActionBar"
             android:windowSoftInputMode="stateAlwaysHidden|adjustResize" />
+
         <activity
             android:name=".ui.activity.device.senior.InstructionDebugActivity"
-            android:theme="@style/AppThemeNoActionBar"
             android:windowSoftInputMode="stateAlwaysHidden|adjustResize" />
+
         <activity
             android:name=".ui.activity.device.GeneralSettingActivity"
-            android:theme="@style/AppThemeNoActionBar"
             android:windowSoftInputMode="stateAlwaysHidden|adjustResize" />
+
         <activity
             android:name=".ui.activity.device.sensor.SenSorMPSConfigActivity"
-            android:theme="@style/AppThemeNoActionBar"
             android:windowSoftInputMode="adjustPan|stateHidden" />
+
         <activity
             android:name=".ui.activity.device.sensor.SenSorBGKConfigActivity"
-            android:theme="@style/AppThemeNoActionBar"
             android:windowSoftInputMode="adjustPan|stateHidden" />
+
         <activity
             android:name=".ui.activity.device.OsmometerConfigActivity"
-            android:theme="@style/AppThemeNoActionBar"
             android:windowSoftInputMode="adjustPan|stateHidden" />
+
         <activity
             android:name=".ui.activity.device.RainConfigActivity"
-            android:theme="@style/AppThemeNoActionBar"
             android:windowSoftInputMode="adjustPan|stateHidden" />
+
         <activity
             android:name=".ui.activity.AllDeviceActivity"
-            android:theme="@style/AppThemeNoActionBar"
             android:windowSoftInputMode="adjustPan|stateHidden" />
 
         <activity
             android:name=".ui.activity.ConfigE60Activity"
             android:label="E60设备配置页面"
-            android:theme="@style/AppThemeNoActionBar"
             android:windowSoftInputMode="adjustPan|stateHidden" />
 
     </application>

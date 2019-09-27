@@ -41,7 +41,6 @@ import com.shmedo.mcloudapp.views.DividerItemDecoration;
 import com.shmedo.mcloudapp.views.EmptyDataView;
 import com.shmedo.mcloudapp.views.LoadingDialog;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -151,7 +150,7 @@ public class DeviceManageActivity extends BaseActivity implements OnRefreshListe
                         mLoadingDialog.dismiss();
 
                         Timber.w("服务器连接失败--" + message);
-                        ToastUtil.showSToast("服务器连接失败");
+                        ToastUtil.showShortToast("服务器连接失败");
                     }
                 });
 
@@ -163,7 +162,7 @@ public class DeviceManageActivity extends BaseActivity implements OnRefreshListe
         systemAdapter.setOnItemClickLitener(new SystemAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View itemView, int position) {
-//                ToastUtil.showSToast("==" + systemAdapter.getDataList().get(position).getProID());
+//                ToastUtil.showShortToast("==" + systemAdapter.getDataList().get(position).getProID());
 
                 DeviceManageDetailActivity.startActivity(DeviceManageActivity.this, systemAdapter.getDataList().get(position));
             }
@@ -219,7 +218,7 @@ public class DeviceManageActivity extends BaseActivity implements OnRefreshListe
             intent.setPackage("com.autonavi.minimap");
             startActivity(intent);
         } else {
-            ToastUtil.showSToast("您尚未安装高德地图，我们将为您打开网页版");
+            ToastUtil.showShortToast("您尚未安装高德地图，我们将为您打开网页版");
             String mark = "设备:" + deviceName + "位置";
             Uri uri = Uri.parse(
                     "http://uri.amap.com/marker?position=" + latitude + "," + longitude + "&name=" +
@@ -276,7 +275,7 @@ public class DeviceManageActivity extends BaseActivity implements OnRefreshListe
                         mLoadingDialog.dismiss();
 
                         Timber.w("服务器连接失败--" + message);
-                        ToastUtil.showSToast("服务器连接失败");
+                        ToastUtil.showShortToast("服务器连接失败");
                     }
                 });
 
@@ -325,14 +324,11 @@ public class DeviceManageActivity extends BaseActivity implements OnRefreshListe
 
                     if (!TextUtils.isEmpty(statusInfoResult.getDeviceName()) && statusInfoResult.getDeviceName().toUpperCase().contains("E60")) {
 
-                        DeviceBasicInfoResult deviceBasicInfoResult=new DeviceBasicInfoResult();
+                        DeviceBasicInfoResult deviceBasicInfoResult = new DeviceBasicInfoResult();
                         deviceBasicInfoResult.setDeviceToken(statusInfoResult.getDeviceToken());
                         deviceBasicInfoResult.setDeviceTypeName(statusInfoResult.getDeviceName());
-                        Intent intent = new Intent(DeviceManageActivity.this, ConfigE60Activity.class);
-                        Bundle bundle = new Bundle();
-                        bundle.putSerializable("device", (Serializable) deviceBasicInfoResult);
-                        intent.putExtras(bundle);
-                        startActivity(intent);
+
+                        ConfigE60Activity.startActivity(DeviceManageActivity.this, deviceBasicInfoResult);
                     }
 
                     break;
@@ -464,7 +460,7 @@ public class DeviceManageActivity extends BaseActivity implements OnRefreshListe
         } else {
             refreshLayout.finishRefresh();
             refreshLayout.setNoMoreData(true);
-            ToastUtil.showSToast("请检查网络连接");
+            ToastUtil.showShortToast("请检查网络连接");
             //getProjectList();
         }
     }

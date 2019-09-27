@@ -191,7 +191,7 @@ public class MainActivity extends BaseActivity implements
 
                 mdBluetoothManager.stopScan();
                 if (list.isEmpty()) {
-                    ToastUtil.showSToast("未发现设备，请尝试重新扫描");
+                    ToastUtil.showShortToast("未发现设备，请尝试重新扫描");
                     return;
                 }
 
@@ -385,7 +385,7 @@ public class MainActivity extends BaseActivity implements
                     public void Failure(String message) {
                         mLoadingDialog.dismiss();
                         Timber.w("服务器连接失败--" + message);
-                        ToastUtil.showSToast("服务器连接失败");
+                        ToastUtil.showShortToast("服务器连接失败");
                     }
                 });
     }
@@ -515,7 +515,7 @@ public class MainActivity extends BaseActivity implements
                 break;
 
             case R.id.fab_refresh:
-                ToastUtil.showSToast("===fab_refresh");
+                ToastUtil.showShortToast("===fab_refresh");
                 break;
         }
     }
@@ -579,7 +579,7 @@ public class MainActivity extends BaseActivity implements
         cloud.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ToastUtil.showSToast("云端数据");
+                ToastUtil.showShortToast("云端数据");
             }
         });
 
@@ -718,7 +718,7 @@ public class MainActivity extends BaseActivity implements
                 case BT_CONNECT:
 
                     Timber.d("蓝牙连接成功");
-                    ToastUtil.showSToast("蓝牙已连接");
+                    ToastUtil.showShortToast("蓝牙已连接");
 
                     if (mLoadingDialog != null) {
                         mLoadingDialog.dismiss();
@@ -739,31 +739,31 @@ public class MainActivity extends BaseActivity implements
                             //    .setIcon(R.drawable.bar_item_bt);
                         }
                         Timber.d("蓝牙连接已断开");
-                        ToastUtil.showSToast("蓝牙连接已断开!");
+                        ToastUtil.showShortToast("蓝牙连接已断开!");
 
                         disconnectDevice();//非手动断开，清除蓝牙数据
                     }
                     break;
 
                 case BT_MESSAGE_WRITE_SUCCESS:
-                    ToastUtil.showSToast("已发送指令");
+                    ToastUtil.showShortToast("已发送指令");
                     break;
 
                 case BT_MESSAGE_WRITE_FAIL:
-                    ToastUtil.showSToast("发送指令失败");
+                    ToastUtil.showShortToast("发送指令失败");
                     break;
 
                 case BT_WRITE_TIME_OUT:
-                    ToastUtil.showSToast("发送指令超时");
+                    ToastUtil.showShortToast("发送指令超时");
                     break;
 
                 case VERIFY_RESULT:
                     if (msg.obj.equals("1")) {
-                        ToastUtil.showSToast("蓝牙认证通过!");
+                        ToastUtil.showShortToast("蓝牙认证通过!");
 
                         //sendDeviceStateComd();
                     } else {
-                        ToastUtil.showSToast("蓝牙认证失败!");
+                        ToastUtil.showShortToast("蓝牙认证失败!");
 
                         try {
                             Thread.sleep(1000);
@@ -776,7 +776,7 @@ public class MainActivity extends BaseActivity implements
                     break;
 
                 case MESSAGE_RESPONSE_TIME_OUT:
-                    ToastUtil.showSToast("消息等待响应超时！");
+                    ToastUtil.showShortToast("消息等待响应超时！");
                     break;
 
                 case REFRESH_RUN_STATE:
@@ -784,32 +784,32 @@ public class MainActivity extends BaseActivity implements
                     break;
 
                 case MESSAGE_RESPONSE_SAVE_SETTINGS_SUCCESS:
-                    ToastUtil.showSToast("设置信息已保存！");
+                    ToastUtil.showShortToast("设置信息已保存！");
                     //mWebView.loadUrl("javascript:restart()");
                     break;
 
                 case BT_REQUEST_MTU_FAIL:
-                    ToastUtil.showSToast("MTU请求设置失败！");
+                    ToastUtil.showShortToast("MTU请求设置失败！");
                     break;
 
                 case BT_SERVICE_FIND_FAIL:
-                    ToastUtil.showSToast("蓝牙服务发现失败！");
+                    ToastUtil.showShortToast("蓝牙服务发现失败！");
                     break;
 
                 case BT_CHARACTERISTICS_FIND_FAIL:
-                    ToastUtil.showSToast("蓝牙特征读取失败！");
+                    ToastUtil.showShortToast("蓝牙特征读取失败！");
                     break;
 
                 case BT_ENABLE_READ_FAIL:
-                    ToastUtil.showSToast("设置读取Descriptor失败！");
+                    ToastUtil.showShortToast("设置读取Descriptor失败！");
                     break;
 
                 case BT_RECOVERY_SUCCESS:
-                    ToastUtil.showSToast("已恢复出厂设置！");
+                    ToastUtil.showShortToast("已恢复出厂设置！");
                     break;
 
                 case MESSAGE_RESPONSE_REBOOT_DEVICE:
-                    ToastUtil.showSToast("已重启系统！");
+                    ToastUtil.showShortToast("已重启系统！");
                     break;
 
                 default:
@@ -907,7 +907,7 @@ public class MainActivity extends BaseActivity implements
                     startDiscoveryDevice();
 
                 } else {
-                    ToastUtil.showSToast("蓝牙未启用");
+                    ToastUtil.showShortToast("蓝牙未启用");
                 }
                 break;
 
@@ -951,7 +951,7 @@ public class MainActivity extends BaseActivity implements
 
         //返回的数据有这个值18A095L
         if (null != queryDeviceInList(device[1])) {
-            ToastUtil.showSToast("此设备已存在！");
+            ToastUtil.showShortToast("此设备已存在！");
             return;
         }
 

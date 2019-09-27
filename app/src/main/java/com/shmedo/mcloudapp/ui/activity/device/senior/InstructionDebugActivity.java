@@ -137,7 +137,7 @@ public class InstructionDebugActivity extends BaseActivity {
                     //Reset edit text
                     mChatView.setInputText("");
                 } else {
-                    ToastUtil.showSToast("蓝牙未连接");
+                    ToastUtil.showShortToast("蓝牙未连接");
                 }
             }
         });
@@ -258,7 +258,7 @@ public class InstructionDebugActivity extends BaseActivity {
             //Reset edit text
             mChatView.setInputText("");
         } else {
-            ToastUtil.showSToast("蓝牙未连接");
+            ToastUtil.showShortToast("蓝牙未连接");
         }
 
     }
@@ -292,7 +292,7 @@ public class InstructionDebugActivity extends BaseActivity {
             //Reset edit text
             mChatView.setInputText("");
         } else {
-            ToastUtil.showSToast("蓝牙未连接");
+            ToastUtil.showShortToast("蓝牙未连接");
         }
     }
 

@@ -64,7 +64,7 @@ public class SearchDeviceActivity extends BaseActivity {
     @OnClick(R.id.btn_search) public void onViewClicked() {
         String snName = mCeSearch.getText().toString();
         if (StringUtil.isEmpty(snName)){
-            ToastUtil.showSToast("设备的SN号不能为空");
+            ToastUtil.showShortToast("设备的SN号不能为空");
             return;
         }
         KeyBordUtils.hideSoftKeyboard(mBtnSearch);
