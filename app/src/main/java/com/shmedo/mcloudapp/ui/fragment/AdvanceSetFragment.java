@@ -120,6 +120,10 @@ public class AdvanceSetFragment extends BaseFragment {
                     DeviceFragment.mdBluetoothManager.writeMessage(msg);
                     ToastUtil.showLongToast("指令已发送，设备即将恢复出厂设置");
                 }
+
+                mMaterialDialog.dismiss();
+                mMaterialDialog = null;
+                mBuilder = null;
             }
         });
         mBuilder.onNegative(new MaterialDialog.SingleButtonCallback() {
@@ -148,7 +152,7 @@ public class AdvanceSetFragment extends BaseFragment {
         final EditText etRestartTime = (EditText) mMaterialDialog.findViewById(R.id.et_restart_time);
         Button btnCancelRestart = (Button) mMaterialDialog.findViewById(R.id.btn_cancel_restart);
         Button btnRestartSystem = (Button) mMaterialDialog.findViewById(R.id.btn_restart_system);
-        modifyHintText("最多四位", etRestartTime);
+        modifyHintText("最大四位数", etRestartTime);
         //设置最大长度
         etRestartTime.setFilters(new InputFilter[]{new InputFilter.LengthFilter(4)});
 
@@ -179,6 +183,11 @@ public class AdvanceSetFragment extends BaseFragment {
                     DeviceFragment.mdBluetoothManager.writeMessage(msg);
                     ToastUtil.showLongToast("指令已发送，设备将在 " + time + "s 后重启");
                 }
+
+                KeyBordUtils.hideSoftKeyboard(etRestartTime);
+                mMaterialDialog.dismiss();
+                mMaterialDialog = null;
+                mBuilder = null;
             }
         });
         btnCancelRestart.setOnClickListener(new View.OnClickListener() {

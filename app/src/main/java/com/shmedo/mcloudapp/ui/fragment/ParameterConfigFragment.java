@@ -58,46 +58,78 @@ import ch.ielse.view.SwitchView;
  * 描述：    参数配置页面
  */
 public class ParameterConfigFragment extends BaseFragment
-    implements SwipeRefreshLayout.OnRefreshListener {
+        implements SwipeRefreshLayout.OnRefreshListener {
 
-    @BindView(R.id.tv_device_name) TextView mTvDeviceName;
-    @BindView(R.id.tv_device_sn) TextView mTvDeviceSn;
-    @BindView(R.id.tv_device_model) TextView mTvDeviceModel;
-    @BindView(R.id.tv_sensor_type) TextView mTvSensorType;
+    @BindView(R.id.tv_device_name)
+    TextView mTvDeviceName;
+    @BindView(R.id.tv_device_sn)
+    TextView mTvDeviceSn;
+    @BindView(R.id.tv_device_model)
+    TextView mTvDeviceModel;
+    @BindView(R.id.tv_sensor_type)
+    TextView mTvSensorType;
     //@BindView(R.id.back) ImageView mBack;
     //@BindView(R.id.tv_title) TextView mTvTitle;
     //@BindView(R.id.img_bluetooth) ImageView mImgBluetooth;
 
-    @BindView(R.id.iv_pro) ImageView mIvPro;
-    @BindView(R.id.iv_lock) ImageView mIvLock;
-    @BindView(R.id.tv_lock) TextView mTvLock;
-    @BindView(R.id.et_query) EditText mEtQuery;
-    @BindView(R.id.tv_query) TextView mTvQuery;
-    @BindView(R.id.sp_project_name) Spinner mSpProjectName;
+    @BindView(R.id.iv_pro)
+    ImageView mIvPro;
+    @BindView(R.id.iv_lock)
+    ImageView mIvLock;
+    @BindView(R.id.tv_lock)
+    TextView mTvLock;
+    @BindView(R.id.et_query)
+    EditText mEtQuery;
+    @BindView(R.id.tv_query)
+    TextView mTvQuery;
+    @BindView(R.id.sp_project_name)
+    Spinner mSpProjectName;
     //@BindView(R.id.sw_bluetooth) Switch mSwBluetooth;
     //@BindView(R.id.tv_bluetooth) TextView mTvBluetooth;
-    @BindView(R.id.sw_device_state) SwitchView mSwDeviceState;
-    @BindView(R.id.tv_device_state) TextView mTvDeviceState;
-    @BindView(R.id.sw_device_luck_state) SwitchView mSwDeviceLuckState;
-    @BindView(R.id.tv_device_luck_state) TextView mTvDeviceLuckState;
-    @BindView(R.id.sw_debug) SwitchView mSwDebug;
-    @BindView(R.id.sp_debug) Spinner mSpDebug;
-    @BindView(R.id.tv_sim_1) TextView mTvSim1;
-    @BindView(R.id.sw_sim_A) SwitchView mSwSimA;
-    @BindView(R.id.tv_sim_A) TextView mTvSimA;
-    @BindView(R.id.tv_sim_2) TextView mTvSim2;
-    @BindView(R.id.sw_sim_B) SwitchView mSwSimB;
-    @BindView(R.id.tv_sim_B) TextView mTvSimB;
-    @BindView(R.id.sw_rain) SwitchView mSwRain;
-    @BindView(R.id.tv_rain_config) TextView mTvRainConfig;
-    @BindView(R.id.sw_osmometer) SwitchView mSwOsmometer;
-    @BindView(R.id.tv_osmometer_config) TextView mTvOsmometerConfig;
-    @BindView(R.id.sw_sensor) ImageView mSwSensor;
-    @BindView(R.id.rl_sensor_setting) RelativeLayout mRlSensorSetting;
-    @BindView(R.id.iv_general_setting) ImageView mIvGeneralSetting;
-    @BindView(R.id.rl_general_setting) RelativeLayout mRlGeneralSetting;
-    @BindView(R.id.refresh) VerticalSwipeRefreshLayout mRefreshLayout;
-    @BindView(R.id.scrollView) ScrollView mScrollView;
+    @BindView(R.id.sw_device_state)
+    SwitchView mSwDeviceState;
+    @BindView(R.id.tv_device_state)
+    TextView mTvDeviceState;
+    @BindView(R.id.sw_device_luck_state)
+    SwitchView mSwDeviceLuckState;
+    @BindView(R.id.tv_device_luck_state)
+    TextView mTvDeviceLuckState;
+    @BindView(R.id.sw_debug)
+    SwitchView mSwDebug;
+    @BindView(R.id.sp_debug)
+    Spinner mSpDebug;
+    @BindView(R.id.tv_sim_1)
+    TextView mTvSim1;
+    @BindView(R.id.sw_sim_A)
+    SwitchView mSwSimA;
+    @BindView(R.id.tv_sim_A)
+    TextView mTvSimA;
+    @BindView(R.id.tv_sim_2)
+    TextView mTvSim2;
+    @BindView(R.id.sw_sim_B)
+    SwitchView mSwSimB;
+    @BindView(R.id.tv_sim_B)
+    TextView mTvSimB;
+    @BindView(R.id.sw_rain)
+    SwitchView mSwRain;
+    @BindView(R.id.tv_rain_config)
+    TextView mTvRainConfig;
+    @BindView(R.id.sw_osmometer)
+    SwitchView mSwOsmometer;
+    @BindView(R.id.tv_osmometer_config)
+    TextView mTvOsmometerConfig;
+    @BindView(R.id.sw_sensor)
+    ImageView mSwSensor;
+    @BindView(R.id.rl_sensor_setting)
+    RelativeLayout mRlSensorSetting;
+    @BindView(R.id.iv_general_setting)
+    ImageView mIvGeneralSetting;
+    @BindView(R.id.rl_general_setting)
+    RelativeLayout mRlGeneralSetting;
+    @BindView(R.id.refresh)
+    VerticalSwipeRefreshLayout mRefreshLayout;
+    @BindView(R.id.scrollView)
+    ScrollView mScrollView;
 
     Unbinder unbinder;
     private String deviceInfo;
@@ -129,12 +161,14 @@ public class ParameterConfigFragment extends BaseFragment
     };
 
 
-    @Override protected int initContentView() {
+    @Override
+    protected int initContentView() {
         return R.layout.fragment_parameter_config;
     }
 
 
-    @Nullable @Override
+    @Nullable
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = super.onCreateView(inflater, container, savedInstanceState);
         unbinder = ButterKnife.bind(this, view);
@@ -150,8 +184,8 @@ public class ParameterConfigFragment extends BaseFragment
     private void initData() {
         mLoadingDialog = new LoadingDialog(getActivity());
         mRefreshLayout.setColorSchemeResources(android.R.color.holo_blue_light,
-            android.R.color.holo_red_light, android.R.color.holo_orange_light,
-            android.R.color.holo_green_light);
+                android.R.color.holo_red_light, android.R.color.holo_orange_light,
+                android.R.color.holo_green_light);
         mRefreshLayout.setSize(SwipeRefreshLayout.LARGE);
         mRefreshLayout.setScrollUpChild(mScrollView);
         mRefreshLayout.setOnRefreshListener(this);
@@ -176,12 +210,14 @@ public class ParameterConfigFragment extends BaseFragment
             public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
                 //ToastUtil.showShortToast("" + adapterView.getSelectedItem().toString());
             }
-            @Override public void onNothingSelected(AdapterView<?> adapterView) {
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
 
             }
         });
 
-        if (DeviceFragment.isConnected){
+        if (DeviceFragment.isConnected) {
             DeviceFragment.sendDeviceStateComd();
         }
 
@@ -223,13 +259,14 @@ public class ParameterConfigFragment extends BaseFragment
     /**
      * switch按钮点击事件
      */
-    private void initSwitchData(){
+    private void initSwitchData() {
         Log.i(LogTag.INFO_TAG, "=======switch按钮点击事件======");
 
 
         //设备启用状态
         mSwDeviceState.setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View view) {
+            @Override
+            public void onClick(View view) {
                 if (mSwDeviceState.isOpened()) {
                     //发送激活指令
                     Message msg = new Message("chat", "##0182\r\n", true);
@@ -241,17 +278,17 @@ public class ParameterConfigFragment extends BaseFragment
                 } else {
                     mBuilder = new MaterialDialog.Builder(mContext);
                     mBuilder.title("温馨提示：")
-                        .content("关闭系统激活状态，将导致设备自动关机进入休眠状态。请确认是否关闭【激活状态】")
-                        .contentColor(Color.parseColor("#000000"))
-                        .canceledOnTouchOutside(false)
-                        .positiveText("确定")
-                        .negativeText("取消");
+                            .content("关闭系统激活状态，将导致设备自动关机进入休眠状态。请确认是否关闭【激活状态】")
+                            .contentColor(Color.parseColor("#000000"))
+                            .canceledOnTouchOutside(false)
+                            .positiveText("确定")
+                            .negativeText("取消");
                     mMaterialDialog = mBuilder.build();
                     mMaterialDialog.show();
                     mBuilder.onPositive(new MaterialDialog.SingleButtonCallback() {
                         @Override
                         public void onClick(
-                            @NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                                @NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                             //发送待机指令
                             Message msg = new Message("chat", "##0181\r\n", true);
                             if (DeviceFragment.mdBluetoothManager != null) {
@@ -265,7 +302,7 @@ public class ParameterConfigFragment extends BaseFragment
                     mBuilder.onNegative(new MaterialDialog.SingleButtonCallback() {
                         @Override
                         public void onClick(
-                            @NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                                @NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                             mTvDeviceState.setText("已激活");
                             mSwDeviceState.setOpened(true);
                         }
@@ -277,7 +314,8 @@ public class ParameterConfigFragment extends BaseFragment
 
         //设备锁定状态
         mSwDeviceLuckState.setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View view) {
+            @Override
+            public void onClick(View view) {
                 if (mSwDeviceLuckState.isOpened()) {
                     //发送激活指令
                     Message msg = new Message("chat", "##2250\r\n", true);
@@ -299,7 +337,8 @@ public class ParameterConfigFragment extends BaseFragment
         });
         //雨量计功能。
         mSwRain.setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View view) {
+            @Override
+            public void onClick(View view) {
                 if (mSwRain.isOpened()) {
                     mTvRainConfig.setText("配置");
                     mTvRainConfig.setClickable(true);
@@ -309,19 +348,19 @@ public class ParameterConfigFragment extends BaseFragment
                 } else {
                     mBuilder = new MaterialDialog.Builder(getActivity());
                     mBuilder.title("温馨提示：")
-                        .content("确认要关闭雨量站？")
-                        .contentColor(Color.parseColor("#000000"))
-                        .canceledOnTouchOutside(false)
-                        .positiveText("确定")
-                        .negativeText("取消");
+                            .content("确认要关闭雨量站？")
+                            .contentColor(Color.parseColor("#000000"))
+                            .canceledOnTouchOutside(false)
+                            .positiveText("确定")
+                            .negativeText("取消");
                     mMaterialDialog = mBuilder.build();
                     mMaterialDialog.show();
                     mBuilder.onPositive(new MaterialDialog.SingleButtonCallback() {
                         @Override
                         public void onClick(
-                            @NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                                @NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                             mTvRainConfig.setBackgroundColor(
-                                getResources().getColor(R.color.secondary_text));
+                                    getResources().getColor(R.color.secondary_text));
                             mTvRainConfig.setText("已停用");
                             mTvRainConfig.setClickable(false);
                             mSwRain.setOpened(false);
@@ -332,7 +371,7 @@ public class ParameterConfigFragment extends BaseFragment
                     mBuilder.onNegative(new MaterialDialog.SingleButtonCallback() {
                         @Override
                         public void onClick(
-                            @NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                                @NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                             mTvRainConfig.setText("配置");
                             mTvRainConfig.setClickable(true);
                             mSwRain.setOpened(true);
@@ -345,7 +384,8 @@ public class ParameterConfigFragment extends BaseFragment
         });
         //渗压计功能
         mSwOsmometer.setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View view) {
+            @Override
+            public void onClick(View view) {
                 if (mSwOsmometer.isOpened()) {
                     mTvOsmometerConfig.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
                     mTvOsmometerConfig.setText("配置");
@@ -355,19 +395,19 @@ public class ParameterConfigFragment extends BaseFragment
                 } else {
                     mBuilder = new MaterialDialog.Builder(getActivity());
                     mBuilder.title("温馨提示：")
-                        .content("关闭系统激活状态，将导致设备自动关机进入休眠状态。请确认是否关闭【激活状态】")
-                        .contentColor(Color.parseColor("#000000"))
-                        .canceledOnTouchOutside(false)
-                        .positiveText("确定")
-                        .negativeText("取消");
+                            .content("关闭系统激活状态，将导致设备自动关机进入休眠状态。请确认是否关闭【激活状态】")
+                            .contentColor(Color.parseColor("#000000"))
+                            .canceledOnTouchOutside(false)
+                            .positiveText("确定")
+                            .negativeText("取消");
                     mMaterialDialog = mBuilder.build();
                     mMaterialDialog.show();
                     mBuilder.onPositive(new MaterialDialog.SingleButtonCallback() {
                         @Override
                         public void onClick(
-                            @NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                                @NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                             mTvOsmometerConfig.setBackgroundColor(
-                                getResources().getColor(R.color.secondary_text));
+                                    getResources().getColor(R.color.secondary_text));
                             mTvOsmometerConfig.setText("已停用");
                             mSwOsmometer.setOpened(false);
                             mTvOsmometerConfig.setClickable(false);
@@ -377,7 +417,7 @@ public class ParameterConfigFragment extends BaseFragment
                     mBuilder.onNegative(new MaterialDialog.SingleButtonCallback() {
                         @Override
                         public void onClick(
-                            @NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                                @NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                             mTvOsmometerConfig.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
                             mTvOsmometerConfig.setText("配置");
                             mTvOsmometerConfig.setClickable(true);
@@ -397,7 +437,7 @@ public class ParameterConfigFragment extends BaseFragment
         if (DeviceFragment.isConnected) {
             //雨量站开关
             Message msg = new Message("##005",
-                "##005" + parameter + "\r\n", true);
+                    "##005" + parameter + "\r\n", true);
             if (DeviceFragment.mdBluetoothManager != null) {
                 DeviceFragment.mdBluetoothManager.writeMessage(msg);
             }
@@ -414,7 +454,7 @@ public class ParameterConfigFragment extends BaseFragment
         if (DeviceFragment.isConnected) {
             //渗压计开关
             Message msg = new Message("##401",
-                "##401" + parameter + "\r\n", true);
+                    "##401" + parameter + "\r\n", true);
             if (DeviceFragment.mdBluetoothManager != null) {
                 DeviceFragment.mdBluetoothManager.writeMessage(msg);
             }
@@ -452,14 +492,16 @@ public class ParameterConfigFragment extends BaseFragment
                 mSwDeviceState.setOpened(true);
                 mTvDeviceState.setText("已激活");
             }
+
             //设备锁定状态
-            if (DeviceFragment.lockStatus.equals("unlock")){
+            if (DeviceFragment.lockStatus.equals("unlock")) {
                 mSwDeviceLuckState.setOpened(true);
                 mTvDeviceLuckState.setText("未锁定");
-            }else if (DeviceFragment.lockStatus.equals("lock")){
+            } else if (DeviceFragment.lockStatus.equals("lock")) {
                 mSwDeviceLuckState.setOpened(false);
                 mTvDeviceLuckState.setText("锁定");
             }
+
             //设备调试模式
             if (DeviceFragment.mInfoSub.getDebugModel().equals("DEBUG")) {
                 mSpDebug.setSelection(0);
@@ -467,11 +509,12 @@ public class ParameterConfigFragment extends BaseFragment
             } else if (DeviceFragment.mInfoSub.getDebugModel().equals("INFO")) {
                 mSpDebug.setSelection(1);
                 mSwDebug.setOpened(true);
-            } else if (DeviceFragment.mInfoSub.getDebugModel().equals("初始化")){
+            } else if (DeviceFragment.mInfoSub.getDebugModel().equals("初始化")) {
                 mSwDebug.setOpened(true);
-            }else if (DeviceFragment.mInfoSub.getDebugModel().equals("关闭")){
+            } else if (DeviceFragment.mInfoSub.getDebugModel().equals("关闭")) {
                 mSwDebug.setOpened(false);
             }
+
             //选择SIM卡功能
             if (DeviceFragment.mInfoSub.getSimChoose().equals("选择sim卡1")) {
                 mSwSimA.setOpened(true);
@@ -498,6 +541,7 @@ public class ParameterConfigFragment extends BaseFragment
             }
             initBluetooth = true;
         }
+
         //渗压计开关
         if (DeviceFragment.mFuncSubInfo != null) {
             if (DeviceFragment.mFuncSubInfo.getOsmometerStatus().equals("开启")) {
@@ -505,7 +549,7 @@ public class ParameterConfigFragment extends BaseFragment
                 mTvOsmometerConfig.setText("配置");
                 mTvOsmometerConfig.setClickable(true);
                 mTvOsmometerConfig.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
-            } else if (DeviceFragment.mFuncSubInfo.getOsmometerStatus().equals("关闭")){
+            } else if (DeviceFragment.mFuncSubInfo.getOsmometerStatus().equals("关闭")) {
                 mTvOsmometerConfig.setBackgroundColor(getResources().getColor(R.color.secondary_text));
                 mTvOsmometerConfig.setText("已停用");
                 mTvOsmometerConfig.setClickable(false);
@@ -513,20 +557,22 @@ public class ParameterConfigFragment extends BaseFragment
             }
             initBluetooth = true;
         }
-        if (initBluetooth){
+
+        if (initBluetooth) {
             initSwitchData();
         }
     }
 
 
-    @Override public void onDestroyView() {
+    @Override
+    public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
     }
 
 
-    @OnClick({ R.id.iv_lock, R.id.tv_query, R.id.rl_sensor_setting, R.id.rl_general_setting,
-                 R.id.tv_rain_config, R.id.tv_osmometer_config })
+    @OnClick({R.id.iv_lock, R.id.tv_query, R.id.rl_sensor_setting, R.id.rl_general_setting,
+            R.id.tv_rain_config, R.id.tv_osmometer_config})
     public void onViewClicked(View view) {
         Intent intent = null;
         switch (view.getId()) {
@@ -554,11 +600,11 @@ public class ParameterConfigFragment extends BaseFragment
                 break;
             case R.id.rl_sensor_setting:
                 //传感器参数配置   根据传感器的类型来进行
-                if (DeviceFragment.isConnected){
+                if (DeviceFragment.isConnected) {
                     //intent = new Intent(getActivity(), SenSorMPSConfigActivity.class);
                     intent = new Intent(getActivity(), SenSorBGKConfigActivity.class);
                     startActivity(intent);
-                }else {
+                } else {
                     ToastUtil.showShortToast("蓝牙未连接");
                 }
 
@@ -584,11 +630,11 @@ public class ParameterConfigFragment extends BaseFragment
     }
 
 
-
     /**
      * 下拉刷新
      */
-    @Override public void onRefresh() {
+    @Override
+    public void onRefresh() {
         if (!onRefreshFirst) {
             DeviceFragment.sendDeviceStateComd();
             //loadWebView(runState);
@@ -613,7 +659,7 @@ public class ParameterConfigFragment extends BaseFragment
             }
         }
 
-        if (!DeviceFragment.isConnected){
+        if (!DeviceFragment.isConnected) {
             mRefreshLayout.setRefreshing(false);
         }
     }
@@ -627,7 +673,8 @@ public class ParameterConfigFragment extends BaseFragment
     }
 
 
-    @Override public void onDestroy() {
+    @Override
+    public void onDestroy() {
         super.onDestroy();
         EventBus.getDefault().unregister(this);
 

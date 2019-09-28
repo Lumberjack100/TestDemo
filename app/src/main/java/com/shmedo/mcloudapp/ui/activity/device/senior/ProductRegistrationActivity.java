@@ -16,6 +16,7 @@ import android.widget.TextView;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.base.BaseActivity;
+import com.shmedo.mcloudapp.util.KeyBordUtils;
 import com.shmedo.mcloudapp.util.ToastUtil;
 
 import butterknife.BindView;
@@ -153,7 +154,11 @@ public class ProductRegistrationActivity extends BaseActivity {
         btnCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                KeyBordUtils.hideSoftKeyboard(etEntityName);
                 mMaterialDialog.dismiss();
+                mMaterialDialog = null;
+                mBuilder = null;
             }
         });
     }

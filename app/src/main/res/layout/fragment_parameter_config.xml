@@ -1,21 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.shmedo.mcloudapp.views.VerticalSwipeRefreshLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<com.shmedo.mcloudapp.views.VerticalSwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/refresh"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    >
+    android:layout_height="match_parent">
 
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/bg_main_light_white"
-    android:orientation="vertical"
-    android:fitsSystemWindows="true">
-    <!--<include layout="@layout/toolbar_para_config"/>-->
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/bg_main_light_white"
+        android:fitsSystemWindows="true"
+        android:orientation="vertical">
+        <!--<include layout="@layout/toolbar_para_config"/>-->
 
+        <include layout="@layout/include_activity_config_device" />
 
-    <include layout="@layout/include_activity_config_device"/>
-</LinearLayout>
+    </LinearLayout>
 </com.shmedo.mcloudapp.views.VerticalSwipeRefreshLayout>
