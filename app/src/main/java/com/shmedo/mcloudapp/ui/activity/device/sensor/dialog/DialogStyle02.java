@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.shmedo.das.common.SensorWireShiftInfo;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.entity.ble.collector.CollectorSensorParamsInfoSub;
+import com.shmedo.mcloudapp.inter.MyOnClickListener;
 import com.shmedo.mcloudapp.util.UserConfig;
 
 /**
@@ -22,18 +23,19 @@ import com.shmedo.mcloudapp.util.UserConfig;
  * 创建时间:  2019/6/14 09:47
  * 描述：    0203dialog
  */
-public class DialogStyle02 implements IDialogOpt<CollectorSensorParamsInfoSub>{
+public class DialogStyle02 implements IDialogOpt<CollectorSensorParamsInfoSub> {
 
     private View contentView;
-    private CollectorSensorParamsInfoSub data;
-    private SensorWireShiftInfo infoSub = new SensorWireShiftInfo();
+    private CollectorSensorParamsInfoSub collectorSensorParamsInfoSub;
+    private SensorWireShiftInfo sensorWireShiftInfo = new SensorWireShiftInfo();
     private Dialog dialog;
-    private View.OnClickListener sureClickListener, cancelClickListener;
+    private View.OnClickListener cancelClickListener;
+    private MyOnClickListener sureClickListener;
     private Context mContext;
-    private UserConfig uc ;
+    private UserConfig uc;
     private int channelNumber;
 
-    public DialogStyle02(Context context,int channelNumber) {
+    public DialogStyle02(Context context, int channelNumber) {
         this.mContext = context;
         this.channelNumber = channelNumber;
     }
@@ -56,53 +58,58 @@ public class DialogStyle02 implements IDialogOpt<CollectorSensorParamsInfoSub>{
 
     @Override
     public void initData(final CollectorSensorParamsInfoSub info) {
-        data = info;
-        SensorWireShiftInfo sensorWireShiftInfo = (SensorWireShiftInfo)data.getSensorData();
+
         TextView cancel = contentView.findViewById(R.id.tv_cancel);
         final TextView save = contentView.findViewById(R.id.tv_save);
         final EditText modbusAddress = contentView.findViewById(R.id.et_modbus_address);
         final EditText triggerThreshold = contentView.findViewById(R.id.et_trigger_threshold);
         final EditText revised = contentView.findViewById(R.id.et_revised);
         final EditText note = contentView.findViewById(R.id.et_note);
-        modbusAddress.setText(data.getSensorAddress());
-        triggerThreshold.setText(sensorWireShiftInfo.getTriggerThreshold()+"");
-        revised.setText(String.valueOf(sensorWireShiftInfo.getCorrectionValue()));
-        uc = UserConfig.getConfig(mContext,String.valueOf(channelNumber));
 
+        collectorSensorParamsInfoSub = info;
+        sensorWireShiftInfo = (SensorWireShiftInfo) collectorSensorParamsInfoSub.getSensorData();
+
+        modbusAddress.setText(collectorSensorParamsInfoSub.getSensorAddress());
+        triggerThreshold.setText(sensorWireShiftInfo.getTriggerThreshold() + "");
+        revised.setText(String.valueOf(sensorWireShiftInfo.getCorrectionValue()));
+        uc = UserConfig.getConfig(mContext, String.valueOf(channelNumber));
         note.setText(uc.readString(String.valueOf(channelNumber)));
 
-        if (sureClickListener != null){
+        if (sureClickListener != null) {
             save.setOnClickListener(new View.OnClickListener() {
-                @Override public void onClick(View view) {
-                    infoSub.setTriggerThreshold(Integer.parseInt(triggerThreshold.getText().toString()));
-                    infoSub.setCorrectionValue(Double.valueOf(revised.getText().toString()));
-                    data.setSensorData(infoSub);
-                    data.setSensorAddress(modbusAddress.getText().toString());
-                    data.setSensorType(info.getSensorType());
-                    data.setChannelNumber(info.getChannelNumber());
-                    data.setCollectorModel(info.getCollectorModel());
-                    uc.writeString(String.valueOf(channelNumber),note.getText().toString().trim());
+                @Override
+                public void onClick(View view) {
+                    sensorWireShiftInfo.setTriggerThreshold(Integer.parseInt(triggerThreshold.getText().toString()));
+                    sensorWireShiftInfo.setCorrectionValue(Double.valueOf(revised.getText().toString()));
+                    collectorSensorParamsInfoSub.setSensorData(sensorWireShiftInfo);
+                    collectorSensorParamsInfoSub.setSensorAddress(modbusAddress.getText().toString());
 
-                    sureClickListener.onClick(view);
-                    dialog.dismiss();
+                    uc.writeString(String.valueOf(channelNumber), note.getText().toString().trim());
+
+                    if(sureClickListener.onClick(view)){
+                        dialog.dismiss();
+                    }
                 }
             });
         }
-        if (cancelClickListener != null){
+
+        if (cancelClickListener != null) {
             cancel.setOnClickListener(new View.OnClickListener() {
-                @Override public void onClick(View view) {
+                @Override
+                public void onClick(View view) {
                     cancelClickListener.onClick(view);
                     dialog.dismiss();
                 }
             });
         }
-
     }
-    public DialogStyle02 setSureonClickListener(View.OnClickListener listener){
+
+    public DialogStyle02 setSureonClickListener(MyOnClickListener listener) {
         this.sureClickListener = listener;
         return this;
     }
-    public DialogStyle02 setCancelOnClickListener(View.OnClickListener listener){
+
+    public DialogStyle02 setCancelOnClickListener(View.OnClickListener listener) {
         this.cancelClickListener = listener;
         return this;
     }
@@ -110,8 +117,7 @@ public class DialogStyle02 implements IDialogOpt<CollectorSensorParamsInfoSub>{
 
     @Override
     public CollectorSensorParamsInfoSub getData() {
-        return data;
+        return collectorSensorParamsInfoSub;
     }
-
 
 }

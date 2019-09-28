@@ -13,6 +13,7 @@ import com.shmedo.das.common.SensorRadarLevelInfo;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.entity.ble.collector.CollectorSensorParamsInfoSub;
 import com.shmedo.mcloudapp.entity.event.SensorDataEvent;
+import com.shmedo.mcloudapp.inter.MyOnClickListener;
 import com.shmedo.mcloudapp.util.GsonFactory;
 
 import org.greenrobot.eventbus.EventBus;
@@ -25,12 +26,13 @@ import org.greenrobot.eventbus.EventBus;
  * 创建时间:  2019/6/14 09:47
  * 描述：      雷达物位计  07
  */
-public class DialogStyle07 implements IDialogOpt<CollectorSensorParamsInfoSub>{
-    private View contentView;
-    private CollectorSensorParamsInfoSub data;
+public class DialogStyle07 implements IDialogOpt<CollectorSensorParamsInfoSub> {
     private Context mContext;
-    private SensorRadarLevelInfo infoSub = new SensorRadarLevelInfo();
-    private View.OnClickListener sureClickListener, cancelClickListener;
+    private View contentView;
+    private CollectorSensorParamsInfoSub collectorSensorParamsInfoSub;
+    private SensorRadarLevelInfo sensorRadarLevelInfo = new SensorRadarLevelInfo();
+    private View.OnClickListener cancelClickListener;
+    private MyOnClickListener sureClickListener;
     private SensorDataEvent event = new SensorDataEvent();
     private Dialog dialog;
 
@@ -39,19 +41,9 @@ public class DialogStyle07 implements IDialogOpt<CollectorSensorParamsInfoSub>{
     }
 
 
-    public void setSureClickListener(View.OnClickListener sureClickListener) {
-        this.sureClickListener = sureClickListener;
-    }
-
-
-    public void setCancelClickListener(View.OnClickListener cancelClickListener) {
-        this.cancelClickListener = cancelClickListener;
-    }
-
-
     @Override
     public Dialog getDialog() {
-        dialog = new Dialog(mContext,R.style.dialog_bottom_full);
+        dialog = new Dialog(mContext, R.style.dialog_bottom_full);
         dialog.setCanceledOnTouchOutside(true);
         dialog.setCancelable(false);
         Window window = dialog.getWindow();
@@ -66,8 +58,9 @@ public class DialogStyle07 implements IDialogOpt<CollectorSensorParamsInfoSub>{
 
     @Override
     public void initData(final CollectorSensorParamsInfoSub info) {
-        data = info;
-        SensorRadarLevelInfo sensorRadarLevelInfo = (SensorRadarLevelInfo) info.getSensorData();
+        collectorSensorParamsInfoSub = info;
+        sensorRadarLevelInfo = (SensorRadarLevelInfo) info.getSensorData();
+
         TextView cancel = contentView.findViewById(R.id.tv_cancel);
         final TextView save = contentView.findViewById(R.id.tv_save);
         final EditText modbusAddress = contentView.findViewById(R.id.et_modbus_address);
@@ -75,35 +68,38 @@ public class DialogStyle07 implements IDialogOpt<CollectorSensorParamsInfoSub>{
         final EditText revised = contentView.findViewById(R.id.et_revised);
         final EditText measureLong = contentView.findViewById(R.id.et_measure_long);
         EditText note = contentView.findViewById(R.id.et_note);
-        modbusAddress.setText(data.getSensorAddress());
+
+        modbusAddress.setText(collectorSensorParamsInfoSub.getSensorAddress());
         triggerThreshold.setText(String.valueOf(sensorRadarLevelInfo.getTriggerThreshold()));
         revised.setText(String.valueOf(sensorRadarLevelInfo.getRevised()));
         measureLong.setText(String.valueOf(sensorRadarLevelInfo.getProbeElevation()));
-        if (sureClickListener != null){
+
+        if (sureClickListener != null) {
             save.setOnClickListener(new View.OnClickListener() {
-                @Override public void onClick(View view) {
-                    infoSub.setTriggerThreshold(triggerThreshold.getText().toString());
-                    infoSub.setRevised(Double.valueOf(revised.getText().toString()));
-                    infoSub.setProbeElevation(measureLong.getText().toString());
-                    data.setSensorData(infoSub);
-                    data.setSensorAddress(modbusAddress.getText().toString());
-                    data.setSensorType(info.getSensorType());
-                    data.setChannelNumber(info.getChannelNumber());
-                    data.setCollectorModel(info.getCollectorModel());
-                    String json = GsonFactory.getGson().toJson(data);
+                @Override
+                public void onClick(View view) {
+                    sensorRadarLevelInfo.setTriggerThreshold(triggerThreshold.getText().toString());
+                    sensorRadarLevelInfo.setRevised(Double.valueOf(revised.getText().toString()));
+                    sensorRadarLevelInfo.setProbeElevation(measureLong.getText().toString());
+                    collectorSensorParamsInfoSub.setSensorData(sensorRadarLevelInfo);
+                    collectorSensorParamsInfoSub.setSensorAddress(modbusAddress.getText().toString());
 
-                    event.setType("07");
-                    event.setMessage(json);
-                    EventBus.getDefault().post(event);
+                    if (sureClickListener.onClick(view)) {
+                        String json = GsonFactory.getGson().toJson(collectorSensorParamsInfoSub);
+                        event.setType("07");
+                        event.setMessage(json);
+                        EventBus.getDefault().post(event);
 
-                    sureClickListener.onClick(view);
-                    dialog.dismiss();
+                        dialog.dismiss();
+                    }
                 }
             });
         }
-        if (cancelClickListener != null){
+
+        if (cancelClickListener != null) {
             cancel.setOnClickListener(new View.OnClickListener() {
-                @Override public void onClick(View view) {
+                @Override
+                public void onClick(View view) {
                     cancelClickListener.onClick(view);
                     dialog.dismiss();
                 }
@@ -112,8 +108,18 @@ public class DialogStyle07 implements IDialogOpt<CollectorSensorParamsInfoSub>{
     }
 
 
+    public void setSureClickListener(MyOnClickListener sureClickListener) {
+        this.sureClickListener = sureClickListener;
+    }
+
+
+    public void setCancelClickListener(View.OnClickListener cancelClickListener) {
+        this.cancelClickListener = cancelClickListener;
+    }
+
+
     @Override
     public CollectorSensorParamsInfoSub getData() {
-        return data;
+        return collectorSensorParamsInfoSub;
     }
 }

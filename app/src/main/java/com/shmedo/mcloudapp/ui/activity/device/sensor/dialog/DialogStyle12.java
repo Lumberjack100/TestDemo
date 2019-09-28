@@ -13,6 +13,7 @@ import com.shmedo.das.common.SensorTemperHumidityInfo;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.entity.ble.collector.CollectorSensorParamsInfoSub;
 import com.shmedo.mcloudapp.entity.event.SensorDataEvent;
+import com.shmedo.mcloudapp.inter.MyOnClickListener;
 import com.shmedo.mcloudapp.util.GsonFactory;
 
 import org.greenrobot.eventbus.EventBus;
@@ -26,27 +27,19 @@ import org.greenrobot.eventbus.EventBus;
  * 描述：    TODO
  */
 public class DialogStyle12 implements IDialogOpt<CollectorSensorParamsInfoSub>{
-    private View contentView;
-    private CollectorSensorParamsInfoSub data;
     private Context mContext;
-    private SensorTemperHumidityInfo infoSub = new SensorTemperHumidityInfo();
-    private View.OnClickListener sureClickListener, cancelClickListener;
+    private View contentView;
+    private CollectorSensorParamsInfoSub collectorSensorParamsInfoSub;
+    private SensorTemperHumidityInfo sensorTemperHumidityInfo = new SensorTemperHumidityInfo();
+    private View.OnClickListener cancelClickListener;
+    private MyOnClickListener sureClickListener;
     private SensorDataEvent event = new SensorDataEvent();
     private Dialog dialog;
 
     public DialogStyle12(Context context) {
         this.mContext = context;
     }
-
-
-    public void setSureClickListener(View.OnClickListener sureClickListener) {
-        this.sureClickListener = sureClickListener;
-    }
-
-
-    public void setCancelClickListener(View.OnClickListener cancelClickListener) {
-        this.cancelClickListener = cancelClickListener;
-    }
+    
 
 
     @Override
@@ -66,38 +59,36 @@ public class DialogStyle12 implements IDialogOpt<CollectorSensorParamsInfoSub>{
 
     @Override
     public void initData(final CollectorSensorParamsInfoSub info) {
-        data = info;
-        SensorTemperHumidityInfo temperHumidityInfo = (SensorTemperHumidityInfo) info.getSensorData();
+        collectorSensorParamsInfoSub = info;
+         sensorTemperHumidityInfo = (SensorTemperHumidityInfo) info.getSensorData();
+         
         TextView cancel = contentView.findViewById(R.id.tv_cancel);
         final TextView save = contentView.findViewById(R.id.tv_save);
         final EditText modbusAddress = contentView.findViewById(R.id.et_modbus_address);
         final EditText temperatureTriggerThreshold = contentView.findViewById(R.id.temperatureTriggerThreshold);
         final EditText humidityTriggerThreshold = contentView.findViewById(R.id.humidityTriggerThreshold);
-
-        EditText note = contentView.findViewById(R.id.et_note);
-        modbusAddress.setText(data.getSensorAddress());
-        temperatureTriggerThreshold.setText(temperHumidityInfo.getTemperatureTriggerThreshold());
-        humidityTriggerThreshold.setText(temperHumidityInfo.getHumidityTriggerThreshold());
+        final EditText note = contentView.findViewById(R.id.et_note);
+        
+        modbusAddress.setText(collectorSensorParamsInfoSub.getSensorAddress());
+        temperatureTriggerThreshold.setText(sensorTemperHumidityInfo.getTemperatureTriggerThreshold());
+        humidityTriggerThreshold.setText(sensorTemperHumidityInfo.getHumidityTriggerThreshold());
 
         if (sureClickListener != null){
             save.setOnClickListener(new View.OnClickListener() {
                 @Override public void onClick(View view) {
-                    infoSub.setTemperatureTriggerThreshold(temperatureTriggerThreshold.getText().toString());
-                    infoSub.setHumidityTriggerThreshold(humidityTriggerThreshold.getText().toString());
+                    sensorTemperHumidityInfo.setTemperatureTriggerThreshold(temperatureTriggerThreshold.getText().toString());
+                    sensorTemperHumidityInfo.setHumidityTriggerThreshold(humidityTriggerThreshold.getText().toString());
+                    collectorSensorParamsInfoSub.setSensorData(sensorTemperHumidityInfo);
+                    collectorSensorParamsInfoSub.setSensorAddress(modbusAddress.getText().toString());
 
-                    data.setSensorData(infoSub);
-                    data.setSensorAddress(modbusAddress.getText().toString());
-                    data.setSensorType(info.getSensorType());
-                    data.setChannelNumber(info.getChannelNumber());
-                    data.setCollectorModel(info.getCollectorModel());
-                    String json = GsonFactory.getGson().toJson(data);
+                    if(sureClickListener.onClick(view)){
+                        String json = GsonFactory.getGson().toJson(collectorSensorParamsInfoSub);
+                        event.setType("12");
+                        event.setMessage(json);
+                        EventBus.getDefault().post(event);
 
-                    event.setType("12");
-                    event.setMessage(json);
-                    EventBus.getDefault().post(event);
-
-                    sureClickListener.onClick(view);
-                    dialog.dismiss();
+                        dialog.dismiss();
+                    }
                 }
             });
         }
@@ -112,8 +103,18 @@ public class DialogStyle12 implements IDialogOpt<CollectorSensorParamsInfoSub>{
     }
 
 
+    public void setSureClickListener(MyOnClickListener sureClickListener) {
+        this.sureClickListener = sureClickListener;
+    }
+
+
+    public void setCancelClickListener(View.OnClickListener cancelClickListener) {
+        this.cancelClickListener = cancelClickListener;
+    }
+    
+
     @Override
     public CollectorSensorParamsInfoSub getData() {
-        return data;
+        return collectorSensorParamsInfoSub;
     }
 }

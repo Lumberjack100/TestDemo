@@ -135,7 +135,8 @@ public class DeviceFragment extends BaseFragment implements View.OnClickListener
     public static SetRainAccuryPage.SetRianAccuryParameter rainPage = new SetRainAccuryPage.SetRianAccuryParameter();
     public static SetRainSelectPage.SetSelectRainParameter setRainSelect = new SetRainSelectPage.SetSelectRainParameter();
     public static DeviceLockStatusSub deviceLockStatusSub;
-    public static String collectorType = "";
+
+    public static String collectorType = "";//采集器编号
     public static String lockStatus = "";
 
 
@@ -619,12 +620,12 @@ public class DeviceFragment extends BaseFragment implements View.OnClickListener
                         }
                         break;
 
-                    case COLLECTOR_CONFIG:  //100
-                        //获取采集器配置
-                        mCollectorInfoSub = BlueResultParserUtil.getCollectorInfo(result);
-                        Timber.d("--------获取采集器配置-------" + mCollectorInfoSub.toString());
-                        send101Instruction(mCollectorInfoSub); //发送101指令
-                        break;
+                    case COLLECTOR_CONFIG://100
+                            //获取采集器配置
+                            mCollectorInfoSub = BlueResultParserUtil.getCollectorInfo(result);
+                    Timber.d("--------获取采集器配置-------" + mCollectorInfoSub.toString());
+                    send101Instruction(mCollectorInfoSub); //发送101指令
+                    break;
 
                     case COLLECTOR_CHANNEL_SENSOR_PARAMETER: //101
                         Timber.d("--------101指令-------" + result);
@@ -673,16 +674,17 @@ public class DeviceFragment extends BaseFragment implements View.OnClickListener
                                 break;
                         }
 
-                        if (!collectorType.equals("")) {
-                            if (isConnected) {
-                                //根据采集器型号获取采集器配置 ##100 02
-                                String collectorCommand = CommandManager.getInstance().getCommand(CommandType.COLLECTOR_CONFIG, null);
-                                String collectorResult = collectorCommand.replace("\r\n", "") + collectorType + "\r\n";
-                                Timber.d("发送采集器配置指令===" + collectorResult);
-                                mdBluetoothManager.writeMessage(new Message(UUID.randomUUID().toString(), collectorResult, true));
-                            } else {
+                        if (!TextUtils.isEmpty(collectorType)) {
+                            if (!isConnected) {
                                 ToastUtil.showShortToast("蓝牙未连接");
+                                return;
                             }
+
+                            //根据采集器型号获取采集器配置 ##100 02
+                            String collectorCommand = CommandManager.getInstance().getCommand(CommandType.COLLECTOR_CONFIG, null);
+                            String collectorResult = collectorCommand.replace("\r\n", "") + collectorType + "\r\n";
+                            Timber.d("发送获取采集器配置信息指令===" + collectorResult);
+                            mdBluetoothManager.writeMessage(new Message(UUID.randomUUID().toString(), collectorResult, true));
                         }
                         break;
                     }

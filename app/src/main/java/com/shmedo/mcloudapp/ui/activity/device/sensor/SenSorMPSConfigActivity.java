@@ -108,28 +108,28 @@ public class SenSorMPSConfigActivity extends BaseActivity {
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.sw_stay1:
-                //checkSwitchColor(mTvStay1, mSwStay1,"stay1");
+                //checkSwitchColor(textView1, switchView1,"stay1");
                 break;
             case R.id.sw_stay2:
-                //checkSwitchColor(mTvStay2, mSwStay2,"stay2");
+                //checkSwitchColor(textView2, switchView2,"stay2");
                 break;
             case R.id.sw_stay3:
-                //checkSwitchColor(mTvStay3, mSwStay3,"stay3");
+                //checkSwitchColor(textView3, switchView3,"stay3");
                 break;
             case R.id.sw_stay4:
-                //checkSwitchColor(mTvStay4, mSwStay4,"stay4");
+                //checkSwitchColor(textView4, switchView4,"stay4");
                 break;
             case R.id.sw_stay5:
-                //checkSwitchColor(mTvStay5, mSwStay5,"stay5");
+                //checkSwitchColor(textView5, switchView5,"stay5");
                 break;
             case R.id.sw_stay6:
-                //checkSwitchColor(mTvStay6, mSwStay6,"stay6");
+                //checkSwitchColor(textView6, switchView6,"stay6");
                 break;
             case R.id.sw_stay7:
-                //checkSwitchColor(mTvStay7, mSwStay7,"stay7");
+                //checkSwitchColor(textView7, switchView7,"stay7");
                 break;
             case R.id.sw_stay8:
-                //checkSwitchColor(mTvStay8, mSwStay8,"stay8");
+                //checkSwitchColor(textView8, switchView8,"stay8");
                 break;
             case R.id.btn_confirm:
 

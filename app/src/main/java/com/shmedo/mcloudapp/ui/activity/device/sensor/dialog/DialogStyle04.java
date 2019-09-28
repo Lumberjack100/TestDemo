@@ -13,6 +13,7 @@ import com.shmedo.das.common.SensorInclinometerInfo;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.entity.ble.collector.CollectorSensorParamsInfoSub;
 import com.shmedo.mcloudapp.entity.event.SensorDataEvent;
+import com.shmedo.mcloudapp.inter.MyOnClickListener;
 import com.shmedo.mcloudapp.util.GsonFactory;
 
 import org.greenrobot.eventbus.EventBus;
@@ -25,33 +26,26 @@ import org.greenrobot.eventbus.EventBus;
  * 创建时间:  2019/6/14 09:47
  * 描述：    传感器测斜仪  04
  */
-public class DialogStyle04 implements IDialogOpt<CollectorSensorParamsInfoSub>{
+public class DialogStyle04 implements IDialogOpt<CollectorSensorParamsInfoSub> {
 
-    private View contentView;
-    private CollectorSensorParamsInfoSub data;
     private Context mContext;
-    private SensorInclinometerInfo infoSub = new SensorInclinometerInfo();
-    private View.OnClickListener sureClickListener, cancelClickListener;
+    private View contentView;
+    private CollectorSensorParamsInfoSub collectorSensorParamsInfoSub;
+    private SensorInclinometerInfo sensorInclinometerInfo = new SensorInclinometerInfo();
+    private View.OnClickListener cancelClickListener;
+    private MyOnClickListener sureClickListener;
     private SensorDataEvent event = new SensorDataEvent();
     private Dialog dialog;
+
+
     public DialogStyle04(Context context) {
         this.mContext = context;
     }
 
 
-    public void setSureClickListener(View.OnClickListener sureClickListener) {
-        this.sureClickListener = sureClickListener;
-    }
-
-
-    public void setCancelClickListener(View.OnClickListener cancelClickListener) {
-        this.cancelClickListener = cancelClickListener;
-    }
-
-
     @Override
     public Dialog getDialog() {
-        dialog = new Dialog(mContext,R.style.dialog_bottom_full);
+        dialog = new Dialog(mContext, R.style.dialog_bottom_full);
         dialog.setCanceledOnTouchOutside(true);
         dialog.setCancelable(false);
         Window window = dialog.getWindow();
@@ -66,8 +60,9 @@ public class DialogStyle04 implements IDialogOpt<CollectorSensorParamsInfoSub>{
 
     @Override
     public void initData(final CollectorSensorParamsInfoSub info) {
-        data = info;
-        SensorInclinometerInfo sensorInclinometerInfo = (SensorInclinometerInfo) info.getSensorData();
+        collectorSensorParamsInfoSub = info;
+        sensorInclinometerInfo = (SensorInclinometerInfo) info.getSensorData();
+
         TextView cancel = contentView.findViewById(R.id.tv_cancel);
         final TextView save = contentView.findViewById(R.id.tv_save);
         final EditText modbusAddress = contentView.findViewById(R.id.et_modbus_address);
@@ -75,35 +70,39 @@ public class DialogStyle04 implements IDialogOpt<CollectorSensorParamsInfoSub>{
         final EditText revised = contentView.findViewById(R.id.et_revised);
         final EditText measureLong = contentView.findViewById(R.id.et_measure_long);
         EditText note = contentView.findViewById(R.id.et_note);
-        modbusAddress.setText(data.getSensorAddress());
+
+        modbusAddress.setText(collectorSensorParamsInfoSub.getSensorAddress());
         triggerThreshold.setText(String.valueOf(sensorInclinometerInfo.getTriggerThreshold()));
         revised.setText(String.valueOf(sensorInclinometerInfo.getCorrectionValue()));
         measureLong.setText(String.valueOf(sensorInclinometerInfo.getMeasureLength()));
-        if (sureClickListener != null){
+
+        if (sureClickListener != null) {
             save.setOnClickListener(new View.OnClickListener() {
-                @Override public void onClick(View view) {
-                    infoSub.setTriggerThreshold(Integer.parseInt(triggerThreshold.getText().toString()));
-                    infoSub.setCorrectionValue(Double.valueOf(revised.getText().toString()));
-                    infoSub.setMeasureLength(Integer.parseInt(measureLong.getText().toString()));
-                    data.setSensorData(infoSub);
-                    data.setSensorAddress(modbusAddress.getText().toString());
-                    data.setSensorType(info.getSensorType());
-                    data.setChannelNumber(info.getChannelNumber());
-                    data.setCollectorModel(info.getCollectorModel());
-                    String json = GsonFactory.getGson().toJson(data);
+                @Override
+                public void onClick(View view) {
+                    sensorInclinometerInfo.setTriggerThreshold(Integer.parseInt(triggerThreshold.getText().toString()));
+                    sensorInclinometerInfo.setCorrectionValue(Double.valueOf(revised.getText().toString()));
+                    sensorInclinometerInfo.setMeasureLength(Integer.parseInt(measureLong.getText().toString()));
 
-                    event.setType("04");
-                    event.setMessage(json);
-                    EventBus.getDefault().post(event);
+                    collectorSensorParamsInfoSub.setSensorData(sensorInclinometerInfo);
+                    collectorSensorParamsInfoSub.setSensorAddress(modbusAddress.getText().toString());
 
-                    sureClickListener.onClick(view);
-                    dialog.dismiss();
+                    if (sureClickListener.onClick(view)) {
+                        String json = GsonFactory.getGson().toJson(collectorSensorParamsInfoSub);
+                        event.setType("04");
+                        event.setMessage(json);
+                        EventBus.getDefault().post(event);
+
+                        dialog.dismiss();
+                    }
                 }
             });
         }
-        if (cancelClickListener != null){
+
+        if (cancelClickListener != null) {
             cancel.setOnClickListener(new View.OnClickListener() {
-                @Override public void onClick(View view) {
+                @Override
+                public void onClick(View view) {
                     cancelClickListener.onClick(view);
                     dialog.dismiss();
                 }
@@ -112,8 +111,18 @@ public class DialogStyle04 implements IDialogOpt<CollectorSensorParamsInfoSub>{
     }
 
 
+    public void setSureClickListener(MyOnClickListener sureClickListener) {
+        this.sureClickListener = sureClickListener;
+    }
+
+
+    public void setCancelClickListener(View.OnClickListener cancelClickListener) {
+        this.cancelClickListener = cancelClickListener;
+    }
+
+
     @Override
     public CollectorSensorParamsInfoSub getData() {
-        return data;
+        return collectorSensorParamsInfoSub;
     }
 }

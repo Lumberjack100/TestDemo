@@ -13,6 +13,7 @@ import com.shmedo.das.common.SensorKangPercolateInfo;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.entity.ble.collector.CollectorSensorParamsInfoSub;
 import com.shmedo.mcloudapp.entity.event.SensorDataEvent;
+import com.shmedo.mcloudapp.inter.MyOnClickListener;
 import com.shmedo.mcloudapp.util.GsonFactory;
 
 import org.greenrobot.eventbus.EventBus;
@@ -26,26 +27,17 @@ import org.greenrobot.eventbus.EventBus;
  * 描述：    基康渗压计  50
  */
 public class DialogStyle50 implements IDialogOpt<CollectorSensorParamsInfoSub>{
-    private View contentView;
-    private CollectorSensorParamsInfoSub data;
     private Context mContext;
-    private SensorKangPercolateInfo infoSub = new SensorKangPercolateInfo();
-    private View.OnClickListener sureClickListener, cancelClickListener;
+    private View contentView;
+    private CollectorSensorParamsInfoSub collectorSensorParamsInfoSub;
+    private SensorKangPercolateInfo sensorKangPercolateInfo = new SensorKangPercolateInfo();
+    private View.OnClickListener cancelClickListener;
+    private MyOnClickListener sureClickListener;
     private SensorDataEvent event = new SensorDataEvent();
     private Dialog dialog;
 
     public DialogStyle50(Context context) {
         this.mContext = context;
-    }
-
-
-    public void setSureClickListener(View.OnClickListener sureClickListener) {
-        this.sureClickListener = sureClickListener;
-    }
-
-
-    public void setCancelClickListener(View.OnClickListener cancelClickListener) {
-        this.cancelClickListener = cancelClickListener;
     }
 
 
@@ -66,8 +58,9 @@ public class DialogStyle50 implements IDialogOpt<CollectorSensorParamsInfoSub>{
 
     @Override
     public void initData(final CollectorSensorParamsInfoSub info) {
-        data = info;
-        SensorKangPercolateInfo kangPercolateInfo = (SensorKangPercolateInfo) info.getSensorData();
+        collectorSensorParamsInfoSub = info;
+        sensorKangPercolateInfo = (SensorKangPercolateInfo) info.getSensorData();
+
         TextView cancel = contentView.findViewById(R.id.tv_cancel);
         final TextView save = contentView.findViewById(R.id.tv_save);
         final EditText modbusAddress = contentView.findViewById(R.id.et_modbus_address);
@@ -78,42 +71,39 @@ public class DialogStyle50 implements IDialogOpt<CollectorSensorParamsInfoSub>{
         final EditText temperatureCoefficientK = contentView.findViewById(R.id.temperatureCoefficientK);
         final EditText createTemperature = contentView.findViewById(R.id.createTemperature);
         final EditText manualCorrection = contentView.findViewById(R.id.manualCorrection);
-        EditText note = contentView.findViewById(R.id.et_note);
+        final EditText note = contentView.findViewById(R.id.et_note);
 
-        modbusAddress.setText(data.getSensorAddress());
-        triggerThreshold.setText(String.valueOf(kangPercolateInfo.getTriggerThreshold()));
-        polynomialRatioA.setText(kangPercolateInfo.getPolynomialRatioA());
-        polynomialRatioB.setText(kangPercolateInfo.getPolynomialRatioB());
-        polynomialRatioC.setText(kangPercolateInfo.getPolynomialRatioC());
-        temperatureCoefficientK.setText(String.valueOf(kangPercolateInfo.getTemperatureCoefficientK()));
-        createTemperature.setText(String.valueOf(kangPercolateInfo.getCreateTemperature()));
-        manualCorrection.setText(String.valueOf(kangPercolateInfo.getManualCorrection()));
+        modbusAddress.setText(collectorSensorParamsInfoSub.getSensorAddress());
+        triggerThreshold.setText(String.valueOf(sensorKangPercolateInfo.getTriggerThreshold()));
+        polynomialRatioA.setText(sensorKangPercolateInfo.getPolynomialRatioA());
+        polynomialRatioB.setText(sensorKangPercolateInfo.getPolynomialRatioB());
+        polynomialRatioC.setText(sensorKangPercolateInfo.getPolynomialRatioC());
+        temperatureCoefficientK.setText(String.valueOf(sensorKangPercolateInfo.getTemperatureCoefficientK()));
+        createTemperature.setText(String.valueOf(sensorKangPercolateInfo.getCreateTemperature()));
+        manualCorrection.setText(String.valueOf(sensorKangPercolateInfo.getManualCorrection()));
 
         if (sureClickListener != null){
             save.setOnClickListener(new View.OnClickListener() {
                 @Override public void onClick(View view) {
 
-                    infoSub.setTriggerThreshold(Integer.parseInt(triggerThreshold.getText().toString()));
-                    infoSub.setPolynomialRatioA(polynomialRatioA.getText().toString());
-                    infoSub.setPolynomialRatioB(polynomialRatioB.getText().toString());
-                    infoSub.setPolynomialRatioC(polynomialRatioC.getText().toString());
-                    infoSub.setTemperatureCoefficientK(Double.parseDouble(temperatureCoefficientK.getText().toString()));
-                    infoSub.setCreateTemperature(Double.parseDouble(createTemperature.getText().toString()));
-                    infoSub.setManualCorrection(manualCorrection.getText().toString());
+                    sensorKangPercolateInfo.setTriggerThreshold(Integer.parseInt(triggerThreshold.getText().toString()));
+                    sensorKangPercolateInfo.setPolynomialRatioA(polynomialRatioA.getText().toString());
+                    sensorKangPercolateInfo.setPolynomialRatioB(polynomialRatioB.getText().toString());
+                    sensorKangPercolateInfo.setPolynomialRatioC(polynomialRatioC.getText().toString());
+                    sensorKangPercolateInfo.setTemperatureCoefficientK(Double.parseDouble(temperatureCoefficientK.getText().toString()));
+                    sensorKangPercolateInfo.setCreateTemperature(Double.parseDouble(createTemperature.getText().toString()));
+                    sensorKangPercolateInfo.setManualCorrection(manualCorrection.getText().toString());
+                    collectorSensorParamsInfoSub.setSensorData(sensorKangPercolateInfo);
+                    collectorSensorParamsInfoSub.setSensorAddress(modbusAddress.getText().toString());
 
-                    data.setSensorData(infoSub);
-                    data.setSensorAddress(modbusAddress.getText().toString());
-                    data.setSensorType(info.getSensorType());
-                    data.setChannelNumber(info.getChannelNumber());
-                    data.setCollectorModel(info.getCollectorModel());
-                    String json = GsonFactory.getGson().toJson(data);
+                    if(sureClickListener.onClick(view)){
+                        String json = GsonFactory.getGson().toJson(collectorSensorParamsInfoSub);
+                        event.setType("50");
+                        event.setMessage(json);
+                        EventBus.getDefault().post(event);
 
-                    event.setType("50");
-                    event.setMessage(json);
-                    EventBus.getDefault().post(event);
-
-                    sureClickListener.onClick(view);
-                    dialog.dismiss();
+                        dialog.dismiss();
+                    }
                 }
             });
         }
@@ -128,8 +118,17 @@ public class DialogStyle50 implements IDialogOpt<CollectorSensorParamsInfoSub>{
     }
 
 
+    public void setSureClickListener(MyOnClickListener sureClickListener) {
+        this.sureClickListener = sureClickListener;
+    }
+
+
+    public void setCancelClickListener(View.OnClickListener cancelClickListener) {
+        this.cancelClickListener = cancelClickListener;
+    }
+
     @Override
     public CollectorSensorParamsInfoSub getData() {
-        return data;
+        return collectorSensorParamsInfoSub;
     }
 }
