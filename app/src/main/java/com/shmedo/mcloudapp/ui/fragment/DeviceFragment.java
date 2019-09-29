@@ -120,21 +120,22 @@ public class DeviceFragment extends BaseFragment implements View.OnClickListener
     private String deviceInfo;
     private String macAddress;
 
-    public static QueryOsmometerParameterSubInfo mFuncSubInfo;
-    public static SystemRunStateSub mSystemRunStateSub;
-    public static DigitalOsmometerFunctionSub mOsmometerFunctionSub;
-    public static RainStationSub mRainStationSub;
+    public static QueryOsmometerParameterSubInfo queryOsmometerParameterSubInfo;
+    public static SystemRunStateSub systemRunStateSub;
+    public static DigitalOsmometerFunctionSub digitalOsmometerFunctionSub;
+    public static RainStationSub rainStationSub;
     public static SettingRainPrecisionSub settingRainPrecisionSub;
-    public static RebootDeviceSub mRebootDeviceSub;
-    public static CollectorInfoSub mCollectorInfoSub;
+    public static RebootDeviceSub rebootDeviceSub;
+    public static CollectorInfoSub collectorInfoSub;
+    public static GetAllSensorConfigInfo getAllSensorConfigInfo;
+    public static BaseConfigInfoSub baseConfigInfoSub;
+    public static VersionMessageSub versionMessageSub;
+    public static SetRainAccuryPage.SetRianAccuryParameter setRianAccuryParameter = new SetRainAccuryPage.SetRianAccuryParameter();
+    public static SetRainSelectPage.SetSelectRainParameter setSelectRainParameter = new SetRainSelectPage.SetSelectRainParameter();
+    public static DeviceLockStatusSub deviceLockStatusSub;
+
     public static List<CollectorSensorParamsInfoSub> mCollectorParamsInfoSubList = new ArrayList<>();
     public static CollectorSensorParamsInfoSub mCollectorParamsInfoSub;
-    public static GetAllSensorConfigInfo mAllSensorConfigInfo;
-    public static BaseConfigInfoSub mInfoSub;
-    public static VersionMessageSub versionMessageSub;
-    public static SetRainAccuryPage.SetRianAccuryParameter rainPage = new SetRainAccuryPage.SetRianAccuryParameter();
-    public static SetRainSelectPage.SetSelectRainParameter setRainSelect = new SetRainSelectPage.SetSelectRainParameter();
-    public static DeviceLockStatusSub deviceLockStatusSub;
 
     public static String collectorType = "";//采集器编号
     public static String lockStatus = "";
@@ -585,47 +586,47 @@ public class DeviceFragment extends BaseFragment implements View.OnClickListener
                 switch (type) {
                     case SYSTEM_RUN_STATE:  //014
                         //运行系统状态
-                        mSystemRunStateSub = BlueResultParserUtil.getSystemRunState(result);
-                        Timber.d("--------运行系统状态-------" + mSystemRunStateSub.toString());
+                        systemRunStateSub = BlueResultParserUtil.getSystemRunState(result);
+                        Timber.d("--------运行系统状态-------" + systemRunStateSub.toString());
                         break;
 
                     case SETTING_RAIN_PRECISION:  //121
                         //设置雨量计精度
                         settingRainPrecisionSub = BlueResultParserUtil.getRainPrecisionInfo(result);
                         Timber.d("--------设置雨量计精度-------" + settingRainPrecisionSub.toString());
-                        rainPage.setRainAccury(String.valueOf(settingRainPrecisionSub.getPrecision()));
+                        setRianAccuryParameter.setRainAccury(String.valueOf(settingRainPrecisionSub.getPrecision()));
                         break;
 
                     case RAIN_STATION: //005
                         //雨量计开关
-                        mRainStationSub = BlueResultParserUtil.getRainStationInfo(result);
-                        Timber.d("--------雨量计开关状态-------" + mRainStationSub.getRainStation());
-                        setRainSelect.setRainSelect(mRainStationSub.getRainStation().equals("开启"));
+                        rainStationSub = BlueResultParserUtil.getRainStationInfo(result);
+                        Timber.d("--------雨量计开关状态-------" + rainStationSub.getRainStation());
+                        setSelectRainParameter.setRainSelect(rainStationSub.getRainStation().equals("开启"));
                         break;
 
                     case QUERY_OSMOMETER_PARAMETER:  //400
                         //查询数字式渗压计参数
-                        mFuncSubInfo = BlueResultParserUtil.getQueryOsmometerParameter(result);
-                        Timber.d("--------查询数字式渗压计参数-------" + mFuncSubInfo.toString());
+                        queryOsmometerParameterSubInfo = BlueResultParserUtil.getQueryOsmometerParameter(result);
+                        Timber.d("--------查询数字式渗压计参数-------" + queryOsmometerParameterSubInfo.toString());
                         break;
 
                     case DIGITAL_OSMOMETER_FUNCTION: //401
                         //开启/关闭数字式渗压计功能
-                        mOsmometerFunctionSub = BlueResultParserUtil.getOsmoeterFunctionInfo(result);
-                        Timber.d("--------开启/关闭数字式渗压计功能-------" + mOsmometerFunctionSub.toString());
-                        if (mOsmometerFunctionSub.getOsmometerStatus() == 1) {
-                            mFuncSubInfo.setOsmometerStatus("开启");
-                        } else if (mOsmometerFunctionSub.getOsmometerStatus() == 2) {
-                            mFuncSubInfo.setOsmometerStatus("关闭");
+                        digitalOsmometerFunctionSub = BlueResultParserUtil.getOsmoeterFunctionInfo(result);
+                        Timber.d("--------开启/关闭数字式渗压计功能-------" + digitalOsmometerFunctionSub.toString());
+                        if (digitalOsmometerFunctionSub.getOsmometerStatus() == 1) {
+                            queryOsmometerParameterSubInfo.setOsmometerStatus("开启");
+                        } else if (digitalOsmometerFunctionSub.getOsmometerStatus() == 2) {
+                            queryOsmometerParameterSubInfo.setOsmometerStatus("关闭");
                         }
                         break;
 
                     case COLLECTOR_CONFIG://100
-                            //获取采集器配置
-                            mCollectorInfoSub = BlueResultParserUtil.getCollectorInfo(result);
-                    Timber.d("--------获取采集器配置-------" + mCollectorInfoSub.toString());
-                    send101Instruction(mCollectorInfoSub); //发送101指令
-                    break;
+                        //获取采集器配置
+                        collectorInfoSub = BlueResultParserUtil.getCollectorInfo(result);
+                        Timber.d("--------获取采集器配置-------" + collectorInfoSub.toString());
+                        send101Instruction(collectorInfoSub); //发送101指令
+                        break;
 
                     case COLLECTOR_CHANNEL_SENSOR_PARAMETER: //101
                         Timber.d("--------101指令-------" + result);
@@ -642,33 +643,33 @@ public class DeviceFragment extends BaseFragment implements View.OnClickListener
 
                     case REBOOT_DEVICE:  //008
                         //重启设备
-                        mRebootDeviceSub = BlueResultParserUtil.getRebootDeviceMessage(result);
-                        Timber.d("--------重启设备-------" + mRebootDeviceSub.toString());
+                        rebootDeviceSub = BlueResultParserUtil.getRebootDeviceMessage(result);
+                        Timber.d("--------重启设备-------" + rebootDeviceSub.toString());
                         mHandler.sendEmptyMessage(Constants.MESSAGE_RESPONSE_REBOOT_DEVICE);
                         break;
 
                     case GET_ALL_SENSOR_CONFIG: {  //333
                         //所有配置信息
-                        mAllSensorConfigInfo = BlueResultParserUtil.getAllBlueMessage(result);
-                        Timber.d("--------所有配置信息-------" + mAllSensorConfigInfo.toString());
+                        getAllSensorConfigInfo = BlueResultParserUtil.getAllBlueMessage(result);
+                        Timber.d("--------所有配置信息-------" + getAllSensorConfigInfo.toString());
 
-                        if (mAllSensorConfigInfo != null) {
-                            mCollectorInfoSub = BlueResultParserUtil.getCollectorInfos(mAllSensorConfigInfo);
+                        if (getAllSensorConfigInfo != null) {
+                            collectorInfoSub = BlueResultParserUtil.getCollectorInfos(getAllSensorConfigInfo);
                         }
-                        mInfoSub = BlueResultParserUtil.getBasicFromAllBlueMessage(result);
-                        if (mAllSensorConfigInfo != null) {
-                            switch (mAllSensorConfigInfo.getBaseConfig().getRainfallStation()) {
+                        baseConfigInfoSub = BlueResultParserUtil.getBasicFromAllBlueMessage(result);
+                        if (getAllSensorConfigInfo != null) {
+                            switch (getAllSensorConfigInfo.getBaseConfig().getRainfallStation()) {
                                 case RAIN_OPEN:
-                                    setRainSelect.setRainSelect(true);
+                                    setSelectRainParameter.setRainSelect(true);
                                     break;
                                 case RAIN_CLOSE:
-                                    setRainSelect.setRainSelect(false);
+                                    setSelectRainParameter.setRainSelect(false);
                                     break;
                             }
-                            rainPage.setRainAccury(String.valueOf(mAllSensorConfigInfo.getBaseConfig().getRainAccuracy() / 100));
+                            setRianAccuryParameter.setRainAccury(String.valueOf(getAllSensorConfigInfo.getBaseConfig().getRainAccuracy() / 100));
                         }
 
-                        switch (mAllSensorConfigInfo.getBaseConfig().getCollectorModel().name()) {
+                        switch (getAllSensorConfigInfo.getBaseConfig().getCollectorModel().name()) {
                             case "DS08":
                                 collectorType = "02";
                                 break;

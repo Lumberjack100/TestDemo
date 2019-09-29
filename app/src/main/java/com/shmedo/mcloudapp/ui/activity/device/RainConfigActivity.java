@@ -85,9 +85,9 @@ public class RainConfigActivity extends BaseActivity {
 
 
     private void initData() {
-        if (DeviceFragment.rainPage != null) {
-            Log.e(LogTag.INFO_TAG, "====雨量站===" + DeviceFragment.rainPage.getRainAccury());
-            String result = Double.valueOf(DeviceFragment.rainPage.getRainAccury()) / 100 + "mm";
+        if (DeviceFragment.setRianAccuryParameter != null) {
+            Log.e(LogTag.INFO_TAG, "====雨量站===" + DeviceFragment.setRianAccuryParameter.getRainAccury());
+            String result = Double.valueOf(DeviceFragment.setRianAccuryParameter.getRainAccury()) / 100 + "mm";
             SpinnerAdapter spinnerAdapter = mSpRain.getAdapter();
             int count = spinnerAdapter.getCount();
             for (int i = 0; i < count; i++) {

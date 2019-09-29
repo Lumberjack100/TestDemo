@@ -42,6 +42,7 @@ public class BlueResultParserUtil {
 
     /**
      * 解析基础配置信息
+     *
      * @param result
      * @return
      */
@@ -56,16 +57,17 @@ public class BlueResultParserUtil {
             return infoSub;
         }
 
-        return  setBaseConfiginfoSub(info,infoSub);
+        return setBaseConfiginfoSub(info, infoSub);
     }
 
     /**
      * 获取基础配置信息
+     *
      * @param info
      * @param infoSub
      */
     public static BaseConfigInfoSub setBaseConfiginfoSub(BaseConfigInfo info, BaseConfigInfoSub
-        infoSub) {
+            infoSub) {
         infoSub.setToken(info.getToken());//设备序列号
         switch (info.getEquipmentStatus()) {
             case STANDBY:
@@ -77,7 +79,7 @@ public class BlueResultParserUtil {
             default:
                 break;
         }
-        switch (info.getRainfallStation()){
+        switch (info.getRainfallStation()) {
             case RAIN_OPEN:
                 infoSub.setRainfallStation("开启");
                 break;
@@ -85,7 +87,7 @@ public class BlueResultParserUtil {
                 infoSub.setRainfallStation("关闭");
                 break;
         }
-        switch (info.getDebugModel()){
+        switch (info.getDebugModel()) {
             case INITIALZE:
                 infoSub.setDebugModel("初始化");
                 break;
@@ -104,7 +106,7 @@ public class BlueResultParserUtil {
         infoSub.setDataCommunicateMode(info.getDataCommunicateMode().name());
         infoSub.setSensorInterfaceType(info.getSensorInterfaceType().name());
         infoSub.setSimChoose(info.getSIMChoose().name());
-        switch (info.getSIMChoose()){
+        switch (info.getSIMChoose()) {
             case SIM1:
                 infoSub.setSimChoose("选择sim卡1");
                 break;
@@ -117,6 +119,7 @@ public class BlueResultParserUtil {
 
     /**
      * 解析系统运行状态信息
+     *
      * @param result
      * @return
      */
@@ -130,20 +133,22 @@ public class BlueResultParserUtil {
             Log.i("adu", singalBean.getMessage());
             return stateInfoSub;
         }
-        return setStateInfoSub(stateInfo,stateInfoSub);
+        return setStateInfoSub(stateInfo, stateInfoSub);
     }
+
     /**
      * 获取系统运行状态信息
+     *
      * @param stateInfo
      * @param stateInfoSub
      */
     public static SystemRunStateSub setStateInfoSub(SystemRunStateInfo stateInfo, SystemRunStateSub stateInfoSub) {
         stateInfoSub.setGprsSignal(stateInfo.getGprsSignal());
         stateInfoSub.setBatteryVoltage(stateInfo.getBatteryVoltage());
-        stateInfoSub.setSimCCID(stateInfo.getSimCCID().equals("")?"无":stateInfo.getSimCCID());
-        if (stateInfo.getOperator().equals("")){
+        stateInfoSub.setSimCCID(stateInfo.getSimCCID().equals("") ? "无" : stateInfo.getSimCCID());
+        if (stateInfo.getOperator().equals("")) {
             stateInfoSub.setOperator("未插卡");
-        }else {
+        } else {
             switch (stateInfo.getOperator()) {
                 case "CMCC":
                     stateInfoSub.setOperator("中国移动");
@@ -163,6 +168,7 @@ public class BlueResultParserUtil {
 
     /**
      * 解析渗压计信息
+     *
      * @param result
      * @return
      */
@@ -170,7 +176,7 @@ public class BlueResultParserUtil {
 
         CommandResult<QueryOsmometerParameterInfo> shenyaBean = ParseManager.getInstance().parse(result);
         QueryOsmometerParameterInfo digtalInfo = null;
-        QueryOsmometerParameterSubInfo digitalOsFuncSubInfo=new QueryOsmometerParameterSubInfo();
+        QueryOsmometerParameterSubInfo digitalOsFuncSubInfo = new QueryOsmometerParameterSubInfo();
         if (shenyaBean.isSuccess()) {
             digtalInfo = shenyaBean.getResult();
             digitalOsFuncSubInfo.setDepthCorrect(digtalInfo.getDepthCorrect());
@@ -182,18 +188,20 @@ public class BlueResultParserUtil {
             digitalOsFuncSubInfo.setTemperatureCorrect(digtalInfo.getTemperatureCorrect());
 
         } else {
-            Log.i(LogTag.INFO_TAG,"解析渗压计信息="+ shenyaBean.getMessage());
+            Log.i(LogTag.INFO_TAG, "解析渗压计信息=" + shenyaBean.getMessage());
             return digitalOsFuncSubInfo;
         }
-        return  setDigtalInfo(digtalInfo, digitalOsFuncSubInfo);
+        return setDigtalInfo(digtalInfo, digitalOsFuncSubInfo);
     }
+
     /**
      * 获取渗压计状态信息
+     *
      * @param digtalInfo
      * @param digitalOsFuncSubInfo
      */
     public static QueryOsmometerParameterSubInfo setDigtalInfo(QueryOsmometerParameterInfo digtalInfo, QueryOsmometerParameterSubInfo digitalOsFuncSubInfo) {
-        switch (digtalInfo.getOsmometerStatus()){
+        switch (digtalInfo.getOsmometerStatus()) {
             case OSMOMETER_OPEN:
                 digitalOsFuncSubInfo.setOsmometerStatus("开启");
                 break;
@@ -206,6 +214,7 @@ public class BlueResultParserUtil {
 
     /**
      * 解析版本信息
+     *
      * @param result
      * @return
      */
@@ -219,10 +228,12 @@ public class BlueResultParserUtil {
             Log.i("adu", versionBean.getMessage());
             return versionSub;
         }
-        return  setVersionInfo(versionInfo, versionSub);
+        return setVersionInfo(versionInfo, versionSub);
     }
+
     /**
      * 获取版本信息
+     *
      * @param versionInfo
      * @param versionSub
      */
@@ -235,6 +246,7 @@ public class BlueResultParserUtil {
 
     /**
      * 解析所有配置信息
+     *
      * @param result
      * @return
      */
@@ -242,12 +254,13 @@ public class BlueResultParserUtil {
         GetAllSensorConfigParser allParser = new GetAllSensorConfigParser();
         GetAllSensorConfigInfo allInfo = allParser.parse(result);
         BaseConfigInfoSub infoSub = new BaseConfigInfoSub();
-        setBaseConfiginfoSub(allInfo.getBaseConfig(),infoSub);
-        return  allInfo;
+        setBaseConfiginfoSub(allInfo.getBaseConfig(), infoSub);
+        return allInfo;
     }
 
     /**
      * 解析获取采集器的信息
+     *
      * @param result
      * @return
      */
@@ -261,31 +274,34 @@ public class BlueResultParserUtil {
     }
 
     public static CollectorInfoSub getCollectorInfo(String result) {
+        CollectorInfoSub collectorInfoSub = new CollectorInfoSub();
         CommandResult<CollectorConfigInfo> commandResult = ParseManager.getInstance().parse(result);
-        CollectorConfigInfo info = null;
-        CollectorInfoSub infoSub = new CollectorInfoSub();
-        if (commandResult.isSuccess()){
-            info = commandResult.getResult();
-        }else {
-            return infoSub;
-        }
-        return setCollectorInfo(info,infoSub);
+        CollectorConfigInfo collectorConfigInfo = null;
 
+        if (commandResult.isSuccess()) {
+            collectorConfigInfo = commandResult.getResult();
+            return setCollectorInfo(collectorConfigInfo, collectorInfoSub);
+
+        } else {
+
+            return collectorInfoSub;
+        }
     }
 
 
-    private static CollectorInfoSub setCollectorInfo(CollectorConfigInfo info, CollectorInfoSub collectorInfoSub) {
-        collectorInfoSub.setCollectorAddress(info.getCollectorAddress());
-        collectorInfoSub.setStandbyTime(info.getStandbyTime());
-        collectorInfoSub.setWorkTime(info.getWorkTime());
-        collectorInfoSub.setCollectorInterval(info.getCollectorInterval());
-        collectorInfoSub.setAccessSum(info.getAccessSum());
+    private static CollectorInfoSub setCollectorInfo(CollectorConfigInfo collectorConfigInfo, CollectorInfoSub collectorInfoSub) {
+        collectorInfoSub.setCollectorAddress(collectorConfigInfo.getCollectorAddress());
+        collectorInfoSub.setStandbyTime(collectorConfigInfo.getStandbyTime());
+        collectorInfoSub.setWorkTime(collectorConfigInfo.getWorkTime());
+        collectorInfoSub.setCollectorInterval(collectorConfigInfo.getCollectorInterval());
+        collectorInfoSub.setAccessSum(collectorConfigInfo.getAccessSum());
         return collectorInfoSub;
     }
 
 
     /**
      * 解析所有配置信息中的基础信息
+     *
      * @param result
      * @return
      */
@@ -293,32 +309,35 @@ public class BlueResultParserUtil {
         GetAllSensorConfigParser allParser = new GetAllSensorConfigParser();
         GetAllSensorConfigInfo allInfo = allParser.parse(result);
         BaseConfigInfoSub infoSub = new BaseConfigInfoSub();
-        setBaseConfiginfoSub(allInfo.getBaseConfig(),infoSub);
-        infoSub.setServerAddressOne(allInfo.getServerAddressPortInfo1().getAddress()+" "+
-            allInfo.getServerAddressPortInfo1().getPort());
-        infoSub.setServerAddressTwo(allInfo.getServerAddressPortInfo2().getAddress()+" "+
-            allInfo.getServerAddressPortInfo2().getPort());
-        return  infoSub;
+        setBaseConfiginfoSub(allInfo.getBaseConfig(), infoSub);
+        infoSub.setServerAddressOne(allInfo.getServerAddressPortInfo1().getAddress() + " " +
+                allInfo.getServerAddressPortInfo1().getPort());
+        infoSub.setServerAddressTwo(allInfo.getServerAddressPortInfo2().getAddress() + " " +
+                allInfo.getServerAddressPortInfo2().getPort());
+        return infoSub;
     }
 
     /**
      * 获取重启设备信息
+     *
      * @param result
      * @return
      */
-    public static RebootDeviceSub getRebootDeviceMessage(String result){
+    public static RebootDeviceSub getRebootDeviceMessage(String result) {
         CommandResult<RebootDeviceInfo> bean = ParseManager.getInstance().parse(result);
         RebootDeviceInfo info = null;
         RebootDeviceSub deviceSub = new RebootDeviceSub();
-        if (bean.isSuccess()){
+        if (bean.isSuccess()) {
             info = bean.getResult();
         } else {
             return deviceSub;
         }
-        return setRebootDeviceInfo(info,deviceSub);
+        return setRebootDeviceInfo(info, deviceSub);
     }
+
     /**
-     *  得到设置激活设备等待的时间
+     * 得到设置激活设备等待的时间
+     *
      * @param info
      * @param deviceSub
      * @return
@@ -331,33 +350,36 @@ public class BlueResultParserUtil {
 
     /**
      * 获取雨量计开关
+     *
      * @param result
      * @return
      */
-    public static RainStationSub getRainStationInfo(String result){
+    public static RainStationSub getRainStationInfo(String result) {
         CommandResult<RainStationInfo> bean = ParseManager.getInstance().parse(result);
         RainStationInfo info = null;
         RainStationSub rainStationSub = new RainStationSub();
-        if (bean.isSuccess()){
+        if (bean.isSuccess()) {
             info = bean.getResult();
         } else {
             return rainStationSub;
         }
-        return setRainStationInfo(info,rainStationSub);
+        return setRainStationInfo(info, rainStationSub);
     }
+
     /**
      * 设置雨量计开关
+     *
      * @param info
      * @param rainStationSub
      * @return
      */
     private static RainStationSub setRainStationInfo(RainStationInfo info, RainStationSub rainStationSub) {
-        switch (info.getRainStation()){
-            case OPEN:{
+        switch (info.getRainStation()) {
+            case OPEN: {
                 rainStationSub.setRainStation("开启");
                 break;
             }
-            case CLOSE:{
+            case CLOSE: {
                 rainStationSub.setRainStation("关闭");
                 break;
             }
@@ -368,19 +390,20 @@ public class BlueResultParserUtil {
 
     /**
      * 设置雨量站精度
+     *
      * @param result
      * @return
      */
-    public static SettingRainPrecisionSub getRainPrecisionInfo(String result){
+    public static SettingRainPrecisionSub getRainPrecisionInfo(String result) {
         CommandResult<SettingRainPrecisionInfo> bean = ParseManager.getInstance().parse(result);
         SettingRainPrecisionInfo info = null;
         SettingRainPrecisionSub rainPrecisionSub = new SettingRainPrecisionSub();
-        if (bean.isSuccess()){
+        if (bean.isSuccess()) {
             info = bean.getResult();
         } else {
             return rainPrecisionSub;
         }
-        return setRainPrecisionInfo(info,rainPrecisionSub);
+        return setRainPrecisionInfo(info, rainPrecisionSub);
     }
 
     private static SettingRainPrecisionSub setRainPrecisionInfo(SettingRainPrecisionInfo info, SettingRainPrecisionSub rainPrecisionSub) {
@@ -391,6 +414,7 @@ public class BlueResultParserUtil {
 
     /**
      * 开启、关闭 数字渗压计功能
+     *
      * @param result
      * @return
      */
@@ -398,15 +422,16 @@ public class BlueResultParserUtil {
         CommandResult<DigitalOsmometerFunctionInfo> bean = ParseManager.getInstance().parse(result);
         DigitalOsmometerFunctionInfo info = null;
         DigitalOsmometerFunctionSub functionSub = new DigitalOsmometerFunctionSub();
-        if (bean.isSuccess()){
+        if (bean.isSuccess()) {
             info = bean.getResult();
         } else {
             return functionSub;
         }
-        return setOsmoeterFunctionInfo(info,functionSub);
+        return setOsmoeterFunctionInfo(info, functionSub);
     }
+
     private static DigitalOsmometerFunctionSub setOsmoeterFunctionInfo(DigitalOsmometerFunctionInfo info, DigitalOsmometerFunctionSub functionSub) {
-        switch (info.getOsmometerStatus()){
+        switch (info.getOsmometerStatus()) {
             case OSMOMETER_OPEN:
                 functionSub.setOsmometerStatus(1);
                 break;
@@ -422,17 +447,17 @@ public class BlueResultParserUtil {
         CommandResult<DeviceLockStatusInfo> bean = ParseManager.getInstance().parse(result);
         DeviceLockStatusInfo info = null;
         DeviceLockStatusSub statusSub = new DeviceLockStatusSub();
-        if (bean.isSuccess()){
+        if (bean.isSuccess()) {
             info = bean.getResult();
-        }else {
+        } else {
             return statusSub;
         }
-        return setDeviceLockStatusInfo(info,statusSub);
+        return setDeviceLockStatusInfo(info, statusSub);
     }
 
 
     private static DeviceLockStatusSub setDeviceLockStatusInfo(DeviceLockStatusInfo info, DeviceLockStatusSub statusSub) {
-        switch (info.getStatus()){
+        switch (info.getStatus()) {
             case UNLOCK:
                 statusSub.setLockStatus(0);
                 break;
@@ -444,25 +469,29 @@ public class BlueResultParserUtil {
     }
 
     //"$$1010200,2,2,10,0.000000\r\n";
-    public static CollectorSensorParamsInfoSub setCollectorParams(String result){
+    public static CollectorSensorParamsInfoSub setCollectorParams(String result) {
+        CollectorSensorParamsInfoSub collectorSensorParamsInfoSub = new CollectorSensorParamsInfoSub();
         CommandResult<CollectorSensorParamsInfo> bean = ParseManager.getInstance().parse(result);
-        CollectorSensorParamsInfo info = null;
-        CollectorSensorParamsInfoSub infoSub = new CollectorSensorParamsInfoSub();
-        if (bean.isSuccess()){
-           info = bean.getResult();
-           infoSub.setSensorAddress(info.getSensorAddress());
-           infoSub.setSensorData(info.getSensorData());
-           infoSub.setChannelNumber(info.getChannelNumber());
-           infoSub.setCollectorModel(info.getCollectorModel().toString());
-        }else {
-            return infoSub;
+        CollectorSensorParamsInfo collectorSensorParamsInfo = null;
+
+        if (bean.isSuccess()) {
+            collectorSensorParamsInfo = bean.getResult();
+            collectorSensorParamsInfoSub.setSensorAddress(collectorSensorParamsInfo.getSensorAddress());
+            collectorSensorParamsInfoSub.setSensorData(collectorSensorParamsInfo.getSensorData());
+            collectorSensorParamsInfoSub.setChannelNumber(collectorSensorParamsInfo.getChannelNumber());
+            collectorSensorParamsInfoSub.setCollectorModel(collectorSensorParamsInfo.getCollectorModel().toString());
+
+            return setCollectorSeneorInfo(collectorSensorParamsInfo, collectorSensorParamsInfoSub);
+
+        } else {
+
+            return collectorSensorParamsInfoSub;
         }
-       return setCollectorSeneorInfo(info,infoSub);
     }
 
 
     private static CollectorSensorParamsInfoSub setCollectorSeneorInfo(CollectorSensorParamsInfo info, CollectorSensorParamsInfoSub infoSub) {
-        switch (info.getSensorType()){
+        switch (info.getSensorType()) {
             case WIRE_SHIFT:
                 infoSub.setSensorType("02");
                 break;
@@ -505,7 +534,8 @@ public class BlueResultParserUtil {
             case GUDAN_DISPLACEMENT_METER:
                 infoSub.setSensorType("55");
                 break;
-            default: return null;
+            default:
+                return null;
         }
 
         return infoSub;

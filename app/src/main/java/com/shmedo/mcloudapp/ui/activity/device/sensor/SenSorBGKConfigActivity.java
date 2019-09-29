@@ -223,34 +223,37 @@ public class SenSorBGKConfigActivity extends BaseActivity {
                 channelNumber2 = StringUtil.formatNumber(mCollectorParamsInfoSub.getChannelNumber());
                 getTypeSetSensor(mCollectorParamsInfoSub, 2);
                 break;
+
             case 3:
                 setSwitchState(true, textView4, switchView4);
                 channelNumber3 = StringUtil.formatNumber(mCollectorParamsInfoSub.getChannelNumber());
                 getTypeSetSensor(mCollectorParamsInfoSub, 3);
                 break;
+
             case 4:
                 setSwitchState(true, textView5, switchView5);
                 channelNumber4 = StringUtil.formatNumber(mCollectorParamsInfoSub.getChannelNumber());
                 getTypeSetSensor(mCollectorParamsInfoSub, 4);
                 break;
+
             case 5:
                 setSwitchState(true, textView6, switchView6);
                 channelNumber5 = StringUtil.formatNumber(mCollectorParamsInfoSub.getChannelNumber());
                 getTypeSetSensor(mCollectorParamsInfoSub, 5);
                 break;
+
             case 6:
                 setSwitchState(true, textView7, switchView7);
                 channelNumber6 = StringUtil.formatNumber(mCollectorParamsInfoSub.getChannelNumber());
                 getTypeSetSensor(mCollectorParamsInfoSub, 6);
                 break;
+
             case 7:
                 setSwitchState(true, textView8, switchView8);
                 channelNumber7 = StringUtil.formatNumber(mCollectorParamsInfoSub.getChannelNumber());
                 getTypeSetSensor(mCollectorParamsInfoSub, 7);
                 break;
-
         }
-
     }
 
     //根据type的值设置图标

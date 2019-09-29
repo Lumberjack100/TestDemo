@@ -75,11 +75,11 @@ public class GeneralSettingActivity extends BaseActivity {
 
 
     private void initData() {
-        if (DeviceFragment.mCollectorInfoSub != null) {
-            mEtCollectorAddress.setText(DeviceFragment.mCollectorInfoSub.getCollectorAddress());
-            mEtCalculatingTime.setText(DeviceFragment.mCollectorInfoSub.getWorkTime());
-            mEtStandbyTime.setText(DeviceFragment.mCollectorInfoSub.getStandbyTime());
-            mEtCollectTime.setText(DeviceFragment.mCollectorInfoSub.getCollectorInterval());
+        if (DeviceFragment.collectorInfoSub != null) {
+            mEtCollectorAddress.setText(DeviceFragment.collectorInfoSub.getCollectorAddress());
+            mEtCalculatingTime.setText(DeviceFragment.collectorInfoSub.getWorkTime());
+            mEtStandbyTime.setText(DeviceFragment.collectorInfoSub.getStandbyTime());
+            mEtCollectTime.setText(DeviceFragment.collectorInfoSub.getCollectorInterval());
         }
     }
 

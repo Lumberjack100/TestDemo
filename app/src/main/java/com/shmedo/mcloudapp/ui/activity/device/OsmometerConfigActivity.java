@@ -96,13 +96,13 @@ public class OsmometerConfigActivity extends BaseActivity {
 
 
     private void initData() {
-        if (DeviceFragment.mFuncSubInfo != null) {
-            Log.e(LogTag.INFO_TAG, "====渗压计页面参数===" + DeviceFragment.mFuncSubInfo.toString());
-            mEtOsmometerAddress.setText(DeviceFragment.mFuncSubInfo.getOsmometerAddress());
-            mEtWaterAlarmValue.setText(String.valueOf(DeviceFragment.mFuncSubInfo.getDepthTrigger()));
-            mEtWaterRevised.setText(String.valueOf(DeviceFragment.mFuncSubInfo.getDepthCorrect()));
-            mEtOsmometerCord.setText(DeviceFragment.mFuncSubInfo.getSyCordLength());
-            mEtNozzelHeight.setText(String.valueOf(DeviceFragment.mFuncSubInfo.getTemperatureCorrect()));
+        if (DeviceFragment.queryOsmometerParameterSubInfo != null) {
+            Log.e(LogTag.INFO_TAG, "====渗压计页面参数===" + DeviceFragment.queryOsmometerParameterSubInfo.toString());
+            mEtOsmometerAddress.setText(DeviceFragment.queryOsmometerParameterSubInfo.getOsmometerAddress());
+            mEtWaterAlarmValue.setText(String.valueOf(DeviceFragment.queryOsmometerParameterSubInfo.getDepthTrigger()));
+            mEtWaterRevised.setText(String.valueOf(DeviceFragment.queryOsmometerParameterSubInfo.getDepthCorrect()));
+            mEtOsmometerCord.setText(DeviceFragment.queryOsmometerParameterSubInfo.getSyCordLength());
+            mEtNozzelHeight.setText(String.valueOf(DeviceFragment.queryOsmometerParameterSubInfo.getTemperatureCorrect()));
         }
         uc = UserConfig.getConfig(this, CommonVariable.OSMOMETER_NOTE);
         mEtNote.setText(uc.readString(CommonVariable.OSMOMETER_NOTE));

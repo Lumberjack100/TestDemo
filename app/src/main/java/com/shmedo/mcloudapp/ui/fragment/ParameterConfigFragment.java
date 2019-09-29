@@ -133,12 +133,12 @@ public class ParameterConfigFragment extends BaseFragment
 
     Unbinder unbinder;
     private String deviceInfo;
-    //private BaseConfigInfoSub mInfoSub;
+    //private BaseConfigInfoSub baseConfigInfoSub;
     //private SystemRunStateSub mStateInfoSub;
-    //private QueryOsmometerParameterSubInfo mFuncSubInfo;
+    //private QueryOsmometerParameterSubInfo queryOsmometerParameterSubInfo;
     //private VersionMessageSub mVersionSub;
-    //private GetAllSensorConfigInfo mAllSensorConfigInfo;
-    //private CollectorInfoSub mCollectorInfoSub;
+    //private GetAllSensorConfigInfo getAllSensorConfigInfo;
+    //private CollectorInfoSub collectorInfoSub;
     //public static String collectorType = "";
 
     private LoadingDialog mLoadingDialog;
@@ -483,12 +483,12 @@ public class ParameterConfigFragment extends BaseFragment
     private void setResultData() {
         Log.i(LogTag.INFO_TAG, "=======从devicefragment过来的eventbus数据======");
 
-        if (DeviceFragment.mInfoSub != null) {
+        if (DeviceFragment.baseConfigInfoSub != null) {
             //  设备启用状态
-            if (DeviceFragment.mInfoSub.getEquipmentStatus().equals("待机")) {
+            if (DeviceFragment.baseConfigInfoSub.getEquipmentStatus().equals("待机")) {
                 mSwDeviceState.setOpened(false);
                 mTvDeviceState.setText("已待机");
-            } else if (DeviceFragment.mInfoSub.getEquipmentStatus().equals("激活")) {
+            } else if (DeviceFragment.baseConfigInfoSub.getEquipmentStatus().equals("激活")) {
                 mSwDeviceState.setOpened(true);
                 mTvDeviceState.setText("已激活");
             }
@@ -503,23 +503,23 @@ public class ParameterConfigFragment extends BaseFragment
             }
 
             //设备调试模式
-            if (DeviceFragment.mInfoSub.getDebugModel().equals("DEBUG")) {
+            if (DeviceFragment.baseConfigInfoSub.getDebugModel().equals("DEBUG")) {
                 mSpDebug.setSelection(0);
                 mSwDebug.setOpened(true);
-            } else if (DeviceFragment.mInfoSub.getDebugModel().equals("INFO")) {
+            } else if (DeviceFragment.baseConfigInfoSub.getDebugModel().equals("INFO")) {
                 mSpDebug.setSelection(1);
                 mSwDebug.setOpened(true);
-            } else if (DeviceFragment.mInfoSub.getDebugModel().equals("初始化")) {
+            } else if (DeviceFragment.baseConfigInfoSub.getDebugModel().equals("初始化")) {
                 mSwDebug.setOpened(true);
-            } else if (DeviceFragment.mInfoSub.getDebugModel().equals("关闭")) {
+            } else if (DeviceFragment.baseConfigInfoSub.getDebugModel().equals("关闭")) {
                 mSwDebug.setOpened(false);
             }
 
             //选择SIM卡功能
-            if (DeviceFragment.mInfoSub.getSimChoose().equals("选择sim卡1")) {
+            if (DeviceFragment.baseConfigInfoSub.getSimChoose().equals("选择sim卡1")) {
                 mSwSimA.setOpened(true);
                 mSwSimB.setOpened(false);
-            } else if (DeviceFragment.mInfoSub.getSimChoose().equals("选择sim卡2")) {
+            } else if (DeviceFragment.baseConfigInfoSub.getSimChoose().equals("选择sim卡2")) {
                 mSwSimA.setOpened(false);
                 mSwSimB.setOpened(true);
             }
@@ -527,8 +527,8 @@ public class ParameterConfigFragment extends BaseFragment
         }
 
         //雨量计开关
-        if (DeviceFragment.setRainSelect != null) {
-            if (DeviceFragment.setRainSelect.isRainSelect()) {
+        if (DeviceFragment.setSelectRainParameter != null) {
+            if (DeviceFragment.setSelectRainParameter.isRainSelect()) {
                 mSwRain.setOpened(true);
                 mTvRainConfig.setText("配置");
                 mTvRainConfig.setClickable(true);
@@ -543,13 +543,13 @@ public class ParameterConfigFragment extends BaseFragment
         }
 
         //渗压计开关
-        if (DeviceFragment.mFuncSubInfo != null) {
-            if (DeviceFragment.mFuncSubInfo.getOsmometerStatus().equals("开启")) {
+        if (DeviceFragment.queryOsmometerParameterSubInfo != null) {
+            if (DeviceFragment.queryOsmometerParameterSubInfo.getOsmometerStatus().equals("开启")) {
                 mSwOsmometer.setOpened(true);
                 mTvOsmometerConfig.setText("配置");
                 mTvOsmometerConfig.setClickable(true);
                 mTvOsmometerConfig.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
-            } else if (DeviceFragment.mFuncSubInfo.getOsmometerStatus().equals("关闭")) {
+            } else if (DeviceFragment.queryOsmometerParameterSubInfo.getOsmometerStatus().equals("关闭")) {
                 mTvOsmometerConfig.setBackgroundColor(getResources().getColor(R.color.secondary_text));
                 mTvOsmometerConfig.setText("已停用");
                 mTvOsmometerConfig.setClickable(false);
