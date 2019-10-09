@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/scrollView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -295,7 +296,8 @@
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:layout_marginRight="20dp"
-                android:gravity="center" />
+                android:gravity="center"
+                app:primaryColor="@color/colorPrimary"/>
 
         </RelativeLayout>
 
@@ -329,7 +331,8 @@
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:layout_marginRight="20dp"
-                android:gravity="center" />
+                android:gravity="center"
+                app:primaryColor="@color/colorPrimary"/>
         </RelativeLayout>
 
         <RelativeLayout
@@ -362,7 +365,8 @@
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:layout_marginRight="20dp"
-                android:gravity="center" />
+                android:gravity="center"
+                app:primaryColor="@color/colorPrimary"/>
 
         </RelativeLayout>
 
@@ -404,7 +408,8 @@
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:layout_marginRight="20dp"
-                android:gravity="center" />
+                android:gravity="center"
+                app:primaryColor="@color/colorPrimary"/>
         </RelativeLayout>
 
         <RelativeLayout
@@ -445,7 +450,8 @@
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:layout_marginRight="20dp"
-                android:gravity="center" />
+                android:gravity="center"
+                app:primaryColor="@color/colorPrimary"/>
         </RelativeLayout>
 
         <LinearLayout
@@ -472,64 +478,6 @@
 
         </LinearLayout>
 
-
-        <RelativeLayout
-            android:id="@+id/rl_sensor_setting"
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:layout_marginTop="1dp"
-            android:background="@color/bg_main_light_white">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_marginLeft="30dp"
-                android:gravity="center"
-                android:text="传感器参数配置" />
-
-            <ImageView
-                android:id="@+id/sw_sensor"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_alignParentRight="true"
-                android:layout_marginRight="20dp"
-                android:gravity="center"
-                android:src="@drawable/icon_right" />
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:id="@+id/rl_general_setting"
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:layout_marginTop="1dp"
-            android:background="@color/bg_main_light_white"
-            android:orientation="horizontal">
-
-            <ImageView
-                android:id="@+id/iv_general_setting"
-                android:layout_width="30dp"
-                android:layout_height="40dp"
-                android:layout_marginLeft="16dp"
-                android:src="@drawable/icon_general_setting" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_marginLeft="5dp"
-                android:layout_toRightOf="@id/iv_general_setting"
-                android:gravity="center_vertical"
-                android:text="通用设置"
-                android:textSize="18sp" />
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_alignParentRight="true"
-                android:layout_marginRight="20dp"
-                android:gravity="center"
-                android:src="@drawable/icon_right" />
-        </RelativeLayout>
-
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="40dp"
@@ -550,7 +498,6 @@
                 android:layout_centerVertical="true"
                 android:layout_marginRight="10dp"
                 android:layout_toLeftOf="@id/sw_rain"
-
                 android:gravity="center_vertical|center_horizontal"
                 android:textColor="@color/white"
                 android:textSize="14sp" />
@@ -562,7 +509,8 @@
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:layout_marginRight="20dp"
-                android:gravity="center" />
+                android:gravity="center"
+                app:primaryColor="@color/colorPrimary"/>
 
         </RelativeLayout>
 
@@ -597,8 +545,70 @@
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:layout_marginRight="20dp"
-                android:gravity="center" />
+                android:gravity="center"
+                app:primaryColor="@color/colorPrimary"/>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/rl_sensor_setting"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginTop="1dp"
+            android:background="@color/bg_main_light_white">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="30dp"
+                android:gravity="center"
+                android:text="传感器参数配置" />
+
+            <ImageView
+                android:id="@+id/sw_sensor"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="20dp"
+                android:gravity="center"
+                android:src="@drawable/icon_right" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/rl_general_setting"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginTop="1dp"
+            android:background="@color/bg_main_light_white"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/iv_general_setting"
+                android:layout_width="30dp"
+                android:layout_height="40dp"
+                android:layout_marginLeft="16dp"
+                android:src="@drawable/icon_general_setting" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="5dp"
+                android:layout_toRightOf="@id/iv_general_setting"
+                android:gravity="center_vertical"
+                android:text="通用设置"
+                android:textSize="18sp" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="20dp"
+                android:gravity="center"
+                android:src="@drawable/icon_right" />
+
         </RelativeLayout>
 
     </LinearLayout>
+
 </ScrollView>

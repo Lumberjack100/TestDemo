@@ -385,7 +385,6 @@ public class MainActivity extends BaseActivity implements
                     public void Failure(String message) {
                         mLoadingDialog.dismiss();
                         Timber.w("服务器连接失败--" + message);
-                        ToastUtil.showShortToast("服务器连接失败");
                     }
                 });
     }
@@ -716,7 +715,6 @@ public class MainActivity extends BaseActivity implements
         public boolean handleMessage(android.os.Message msg) {
             switch (msg.what) {
                 case BT_CONNECT:
-
                     Timber.d("蓝牙连接成功");
                     ToastUtil.showShortToast("蓝牙已连接");
 

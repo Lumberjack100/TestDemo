@@ -441,7 +441,7 @@ public class DeviceFragment extends BaseFragment implements View.OnClickListener
                     break;
 
                 case MESSAGE_WRITE_SUCCESS: {
-                    //Log.i(LogTag.INFO_TAG, "消息写入成功");
+                    Timber.d("消息写入成功");
                     mHandler.sendEmptyMessage(Constants.BT_MESSAGE_WRITE_SUCCESS);
                     try {
                         String msg = ((Message) event.getEventData()).getResponseMessage();
@@ -723,6 +723,9 @@ public class DeviceFragment extends BaseFragment implements View.OnClickListener
         public boolean handleMessage(android.os.Message msg) {
             switch (msg.what) {
                 case Constants.BT_CONNECT:
+                    Timber.d("蓝牙已连接");
+                    ToastUtil.showShortToast("蓝牙已连接");
+
                     if (isAdded()) {
                         mImgBluetooth.setImageDrawable(getResources().getDrawable(R.drawable.bar_item_blu_connect_yellow));
                     }
@@ -730,8 +733,6 @@ public class DeviceFragment extends BaseFragment implements View.OnClickListener
                     if (mLoadingDialog != null) {
                         mLoadingDialog.dismiss();
                     }
-                    Timber.d("蓝牙已连接");
-                    ToastUtil.showShortToast("蓝牙已连接");
 
                     isConnected = true;
                     stopBluetooth = false;
@@ -829,11 +830,11 @@ public class DeviceFragment extends BaseFragment implements View.OnClickListener
                     break;
 
                 case Constants.BT_RECOVERY_SUCCESS:
-//                    ToastUtil.showShortToast("已恢复出厂设置！");
+                    ToastUtil.showShortToast("已恢复出厂设置！");
                     break;
 
                 case Constants.MESSAGE_RESPONSE_REBOOT_DEVICE:
-//                    ToastUtil.showShortToast("系统已重启！");
+                    ToastUtil.showShortToast("已重启系统！");
                     break;
 
                 case Constants.MESSAGE_LOCK_REBOOT_DEVICE:
