@@ -500,7 +500,7 @@
                 android:layout_toLeftOf="@id/sw_rain"
                 android:gravity="center_vertical|center_horizontal"
                 android:textColor="@color/white"
-                android:textSize="14sp" />
+                android:textSize="15sp" />
 
             <ch.ielse.view.SwitchView
                 android:id="@+id/sw_rain"
@@ -536,7 +536,7 @@
                 android:layout_toLeftOf="@id/sw_osmometer"
                 android:gravity="center_vertical|center_horizontal"
                 android:textColor="@color/white"
-                android:textSize="14sp" />
+                android:textSize="15sp" />
 
             <ch.ielse.view.SwitchView
                 android:id="@+id/sw_osmometer"

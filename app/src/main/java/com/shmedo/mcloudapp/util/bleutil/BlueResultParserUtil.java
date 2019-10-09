@@ -482,7 +482,6 @@ public class BlueResultParserUtil {
             collectorSensorParamsInfoSub.setCollectorModel(collectorSensorParamsInfo.getCollectorModel().toString());
 
             return setCollectorSeneorInfo(collectorSensorParamsInfo, collectorSensorParamsInfoSub);
-
         } else {
 
             return collectorSensorParamsInfoSub;
@@ -490,6 +489,9 @@ public class BlueResultParserUtil {
     }
 
 
+    /**
+     * 设置传感器类型
+     */
     private static CollectorSensorParamsInfoSub setCollectorSeneorInfo(CollectorSensorParamsInfo info, CollectorSensorParamsInfoSub infoSub) {
         switch (info.getSensorType()) {
             case WIRE_SHIFT:

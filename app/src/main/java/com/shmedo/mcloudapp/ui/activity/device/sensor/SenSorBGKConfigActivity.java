@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -180,7 +179,6 @@ public class SenSorBGKConfigActivity extends BaseActivity {
 
 
     private void initData() {
-
         collectorSensorParamsInfoSubs = DeviceFragment.mCollectorParamsInfoSubList;
         openCount = collectorSensorParamsInfoSubs.size();
         if (openCount == 0) {
@@ -256,62 +254,71 @@ public class SenSorBGKConfigActivity extends BaseActivity {
         }
     }
 
-    //根据type的值设置图标
+
+    /**
+     * 根据type的值设置各种传感器的图标
+     * @param mCollectorParamsInfoSub
+     * @param number
+     */
     private void getTypeSetSensor(CollectorSensorParamsInfoSub mCollectorParamsInfoSub, int number) {
         switch (mCollectorParamsInfoSub.getSensorType()) {
-            case "02":
+            case "02"://拉线位移计 MPS-M-2000
                 setImageIcon(R.drawable.icon_one, number);
                 break;
 
-            case "03":
+            case "03"://土壤含水率 TR-3000
                 setImageIcon(R.drawable.icon_two, number);
                 break;
 
-            case "04":
+            case "04"://测斜仪 I-P-I
                 setImageIcon(R.drawable.icon_three, number);
                 break;
 
-            case "06":
+            case "06"://超声波物位计 HBRD908
                 setImageIcon(R.drawable.icon_four, number);
                 break;
 
-            case "07":
+            case "07"://雷达物位计 MH-A15R
                 setImageIcon(R.drawable.icon_five, number);
                 break;
 
-            case "08":
+            case "08"://墒情计 EP100G
                 setImageIcon(R.drawable.icon_six, number);
                 break;
 
-            case "12":
+            case "12"://温湿度计 CSW18
                 setImageIcon(R.drawable.icon_seven, number);
                 break;
 
-            case "15":
+            case "15"://扬压力计 VWP-G
                 setImageIcon(R.drawable.icon_eight, number);
                 break;
 
-            case "50":
+            case "16"://陆岩倾角仪 LY215
                 setImageIcon(R.drawable.icon_eight, number);
                 break;
 
-            case "51":
+            case "50"://基康渗压计 BGK-4500
                 setImageIcon(R.drawable.icon_eight, number);
                 break;
 
-            case "52":
+            case "51"://葛南渗压计 VWP-03
                 setImageIcon(R.drawable.icon_eight, number);
                 break;
 
-            case "53":
+            case "52"://葛南土压力盒 VWE-0.6
                 setImageIcon(R.drawable.icon_eight, number);
                 break;
 
-            case "54":
+            case "53"://葛南应力计 VWS-15
                 setImageIcon(R.drawable.icon_eight, number);
                 break;
 
-            case "55":
+            case "54"://葛南无应力计 VWS-15M
+                setImageIcon(R.drawable.icon_eight, number);
+                break;
+
+            case "55"://葛南位移计 VWD-100
                 setImageIcon(R.drawable.icon_eight, number);
                 break;
 
@@ -479,7 +486,6 @@ public class SenSorBGKConfigActivity extends BaseActivity {
 
 
     private void setSwitchState(boolean isOpen, TextView mTvStay, SwitchView mSwStay) {
-
         mSwStay.setOpened(isOpen);
         mTvStay.setText(isOpen ? "已启用" : "已停用");
         mTvStay.setBackgroundColor(getResources().getColor(isOpen ? R.color.colorPrimaryDark : R.color.secondary_text));
@@ -546,13 +552,11 @@ public class SenSorBGKConfigActivity extends BaseActivity {
      */
     private void openSwitchColorbg(final TextView textView, final SwitchView switchView, String tag) {
         setSwitchState(true, textView, switchView);
-
         setOpenSwitchDialog(tag);
     }
 
     private void setOpenSwitchDialog(String tag) {
         if (collectorSensorParamsInfoSubs.size() == 0) {
-            Log.i("adu", "集合等于空");
             return;
         }
 
@@ -709,7 +713,6 @@ public class SenSorBGKConfigActivity extends BaseActivity {
                 }
             }
 
-
             return true;
         }
     };
@@ -727,7 +730,6 @@ public class SenSorBGKConfigActivity extends BaseActivity {
      * 该指令不定长，根据接入传感器的个数而定，地址为01~99,通道为00~07
      */
     private void sendInstruction() {
-
         List<CollectorSensorParamsInfoSub> paramsInfoSubList = collectorSensorParamsInfoSubs;
         if (paramsInfoSubList == null || paramsInfoSubList.isEmpty()) {
             return;
