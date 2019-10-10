@@ -2,7 +2,6 @@ package com.shmedo.mcloudapp.ui.activity.device;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -15,7 +14,6 @@ import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.base.BaseActivity;
 import com.shmedo.mcloudapp.ui.fragment.DeviceFragment;
 import com.shmedo.mcloudapp.util.ToastUtil;
-import com.shmedo.mcloudapp.util.bleutil.LogTag;
 
 import java.text.DecimalFormat;
 
@@ -61,8 +59,7 @@ public class RainConfigActivity extends BaseActivity {
         mToolbarTitle.setText("配置雨量计");
 
         String[] debugData = getResources().getStringArray(R.array.rain);
-        dataAdapter = new ArrayAdapter<>(this, R.layout.spinner_item,
-                debugData);
+        dataAdapter = new ArrayAdapter<>(this, R.layout.spinner_item, debugData);
         mSpRain.setAdapter(dataAdapter);
         mSpRain.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -71,9 +68,6 @@ public class RainConfigActivity extends BaseActivity {
 
                 DecimalFormat df = new DecimalFormat("0");
                 rainResult = df.format(Double.valueOf(result) * 100);
-
-                Log.e(LogTag.INFO_TAG, "====雨量站spinner===" + rainResult);
-
             }
 
             @Override
@@ -86,7 +80,6 @@ public class RainConfigActivity extends BaseActivity {
 
     private void initData() {
         if (DeviceFragment.setRianAccuryParameter != null) {
-            Log.e(LogTag.INFO_TAG, "====雨量站===" + DeviceFragment.setRianAccuryParameter.getRainAccury());
             String result = Double.valueOf(DeviceFragment.setRianAccuryParameter.getRainAccury()) / 100 + "mm";
             SpinnerAdapter spinnerAdapter = mSpRain.getAdapter();
             int count = spinnerAdapter.getCount();
@@ -106,7 +99,7 @@ public class RainConfigActivity extends BaseActivity {
             ToastUtil.showShortToast("未获取到选中的值");
             return;
         }
-        Log.e(LogTag.INFO_TAG, "====雨量站spinner===" + rainResult);
+
         if (DeviceFragment.isConnected) {
             //恢复出厂设置
             com.shmedo.mcloudapp.bluetooth.Message msg = new com.shmedo.mcloudapp.bluetooth.Message("##121",
@@ -115,6 +108,7 @@ public class RainConfigActivity extends BaseActivity {
                 DeviceFragment.mdBluetoothManager.writeMessage(msg);
             }
             finish();
+
         } else {
             ToastUtil.showShortToast("蓝牙未连接");
         }

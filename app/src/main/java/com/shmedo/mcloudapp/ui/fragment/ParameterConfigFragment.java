@@ -190,6 +190,7 @@ public class ParameterConfigFragment extends BaseFragment
         mRefreshLayout.setScrollUpChild(mScrollView);
         mRefreshLayout.setOnRefreshListener(this);
         handler = new Handler();
+
         if (mTvLock.getText().equals("已锁定")) {
             mIvLock.setBackground(getResources().getDrawable(R.drawable.icon_close_lock));
             //mSpProjectName.setClickable(false);
@@ -257,12 +258,9 @@ public class ParameterConfigFragment extends BaseFragment
 
 
     /**
-     * switch按钮点击事件
+     * switch按钮事件
      */
     private void initSwitchData() {
-        Log.i(LogTag.INFO_TAG, "=======switch按钮点击事件======");
-
-
         //设备启用状态
         mSwDeviceState.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -273,8 +271,11 @@ public class ParameterConfigFragment extends BaseFragment
                     if (DeviceFragment.mdBluetoothManager != null) {
                         DeviceFragment.mdBluetoothManager.writeMessage(msg);
                     }
-                    mTvDeviceState.setText("已激活");
+
                     mSwDeviceState.setOpened(true);
+                    mTvDeviceState.setText("已激活");
+                    mTvDeviceState.setTextColor(getResources().getColor(R.color.colorPrimary));
+
                 } else {
                     mBuilder = new MaterialDialog.Builder(mContext);
                     mBuilder.title("温馨提示：")
@@ -282,7 +283,8 @@ public class ParameterConfigFragment extends BaseFragment
                             .contentColor(Color.parseColor("#000000"))
                             .canceledOnTouchOutside(false)
                             .positiveText("确定")
-                            .negativeText("取消");
+                            .negativeText("取消")
+                            .negativeColor(Color.parseColor("#807B7B"));
                     mMaterialDialog = mBuilder.build();
                     mMaterialDialog.show();
                     mBuilder.onPositive(new MaterialDialog.SingleButtonCallback() {
@@ -294,17 +296,20 @@ public class ParameterConfigFragment extends BaseFragment
                             if (DeviceFragment.mdBluetoothManager != null) {
                                 DeviceFragment.mdBluetoothManager.writeMessage(msg);
                             }
-                            mTvDeviceState.setText("已待机");
-                            mSwDeviceState.setOpened(false);
 
+                            mSwDeviceState.setOpened(false);
+                            mTvDeviceState.setText("已待机");
+                            mTvDeviceState.setTextColor(getResources().getColor(R.color.gray_807B7B));
                         }
                     });
                     mBuilder.onNegative(new MaterialDialog.SingleButtonCallback() {
                         @Override
                         public void onClick(
                                 @NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                            mTvDeviceState.setText("已激活");
+
                             mSwDeviceState.setOpened(true);
+                            mTvDeviceState.setText("已激活");
+                            mTvDeviceState.setTextColor(getResources().getColor(R.color.colorPrimary));
                         }
                     });
                 }
@@ -330,21 +335,20 @@ public class ParameterConfigFragment extends BaseFragment
                     if (DeviceFragment.mdBluetoothManager != null) {
                         DeviceFragment.mdBluetoothManager.writeMessage(msg);
                     }
-                    mTvDeviceLuckState.setText("锁定");
+                    mTvDeviceLuckState.setText("已锁定");
                     mSwDeviceLuckState.setOpened(false);
                 }
             }
         });
+
         //雨量计功能。
         mSwRain.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (mSwRain.isOpened()) {
-                    mTvRainConfig.setText("配置");
-                    mTvRainConfig.setClickable(true);
-                    mSwRain.setOpened(true);
-                    mTvRainConfig.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
+                    setSwitchViewState(true, mSwRain, mTvRainConfig);
                     rainSelect("1");//打开雨量站
+
                 } else {
                     mBuilder = new MaterialDialog.Builder(getActivity());
                     mBuilder.title("温馨提示：")
@@ -352,46 +356,37 @@ public class ParameterConfigFragment extends BaseFragment
                             .contentColor(Color.parseColor("#000000"))
                             .canceledOnTouchOutside(false)
                             .positiveText("确定")
-                            .negativeText("取消");
+                            .negativeText("取消")
+                            .negativeColor(Color.parseColor("#807B7B"));
                     mMaterialDialog = mBuilder.build();
                     mMaterialDialog.show();
                     mBuilder.onPositive(new MaterialDialog.SingleButtonCallback() {
                         @Override
                         public void onClick(
                                 @NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                            mTvRainConfig.setBackgroundColor(
-                                    getResources().getColor(R.color.secondary_text));
-                            mTvRainConfig.setText("已停用");
-                            mTvRainConfig.setClickable(false);
-                            mSwRain.setOpened(false);
+                            setSwitchViewState(false, mSwRain, mTvRainConfig);
                             rainSelect("2");//关闭雨量站
-
                         }
                     });
                     mBuilder.onNegative(new MaterialDialog.SingleButtonCallback() {
                         @Override
                         public void onClick(
                                 @NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                            mTvRainConfig.setText("配置");
-                            mTvRainConfig.setClickable(true);
-                            mSwRain.setOpened(true);
-                            mTvRainConfig.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
+                            setSwitchViewState(true, mSwRain, mTvRainConfig);
                         }
                     });
-
                 }
             }
         });
+
         //渗压计功能
         mSwOsmometer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (mSwOsmometer.isOpened()) {
-                    mTvOsmometerConfig.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
-                    mTvOsmometerConfig.setText("配置");
-                    mTvOsmometerConfig.setClickable(true);
-                    mSwOsmometer.setOpened(true);
+                    setSwitchViewState(true, mSwOsmometer, mTvOsmometerConfig);
                     osmometerSelect("1"); //打开渗压计
+
                 } else {
                     mBuilder = new MaterialDialog.Builder(getActivity());
                     mBuilder.title("温馨提示：")
@@ -399,18 +394,16 @@ public class ParameterConfigFragment extends BaseFragment
                             .contentColor(Color.parseColor("#000000"))
                             .canceledOnTouchOutside(false)
                             .positiveText("确定")
-                            .negativeText("取消");
+                            .negativeText("取消")
+                            .negativeColor(Color.parseColor("#807B7B"));
                     mMaterialDialog = mBuilder.build();
                     mMaterialDialog.show();
                     mBuilder.onPositive(new MaterialDialog.SingleButtonCallback() {
                         @Override
                         public void onClick(
                                 @NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                            mTvOsmometerConfig.setBackgroundColor(
-                                    getResources().getColor(R.color.secondary_text));
-                            mTvOsmometerConfig.setText("已停用");
-                            mSwOsmometer.setOpened(false);
-                            mTvOsmometerConfig.setClickable(false);
+
+                            setSwitchViewState(false, mSwOsmometer, mTvOsmometerConfig);
                             osmometerSelect("2");//关闭渗压计
                         }
                     });
@@ -418,13 +411,10 @@ public class ParameterConfigFragment extends BaseFragment
                         @Override
                         public void onClick(
                                 @NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                            mTvOsmometerConfig.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
-                            mTvOsmometerConfig.setText("配置");
-                            mTvOsmometerConfig.setClickable(true);
-                            mSwOsmometer.setOpened(true);
+
+                            setSwitchViewState(true, mSwOsmometer, mTvOsmometerConfig);
                         }
                     });
-
                 }
             }
         });
@@ -463,6 +453,26 @@ public class ParameterConfigFragment extends BaseFragment
         }
     }
 
+    private void setSwitchViewState(boolean isOpen, SwitchView switchView, TextView textView) {
+
+        if (isOpen) {
+
+            switchView.setOpened(true);
+            textView.setClickable(true);
+            textView.setText("配置");
+            textView.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+            textView.setTextColor(getResources().getColor(R.color.white));
+
+        } else {
+
+            switchView.setOpened(false);
+            textView.setClickable(false);
+            textView.setText("已停用");
+            textView.setBackgroundColor(getResources().getColor(android.R.color.transparent));
+            textView.setTextColor(getResources().getColor(R.color.gray_807B7B));
+        }
+    }
+
 
     private void getIntentData() {
         Intent intent = getActivity().getIntent();
@@ -488,9 +498,12 @@ public class ParameterConfigFragment extends BaseFragment
             if (DeviceFragment.baseConfigInfoSub.getEquipmentStatus().equals("待机")) {
                 mSwDeviceState.setOpened(false);
                 mTvDeviceState.setText("已待机");
+                mTvDeviceState.setTextColor(getResources().getColor(R.color.gray_807B7B));
+
             } else if (DeviceFragment.baseConfigInfoSub.getEquipmentStatus().equals("激活")) {
                 mSwDeviceState.setOpened(true);
                 mTvDeviceState.setText("已激活");
+                mTvDeviceState.setTextColor(getResources().getColor(R.color.colorPrimary));
             }
 
             //设备锁定状态
@@ -499,7 +512,7 @@ public class ParameterConfigFragment extends BaseFragment
                 mTvDeviceLuckState.setText("未锁定");
             } else if (DeviceFragment.lockStatus.equals("lock")) {
                 mSwDeviceLuckState.setOpened(false);
-                mTvDeviceLuckState.setText("锁定");
+                mTvDeviceLuckState.setText("已锁定");
             }
 
             //设备调试模式
@@ -529,15 +542,9 @@ public class ParameterConfigFragment extends BaseFragment
         //雨量计开关
         if (DeviceFragment.setSelectRainParameter != null) {
             if (DeviceFragment.setSelectRainParameter.isRainSelect()) {
-                mSwRain.setOpened(true);
-                mTvRainConfig.setText("配置");
-                mTvRainConfig.setClickable(true);
-                mTvRainConfig.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
+                setSwitchViewState(true, mSwRain, mTvRainConfig);
             } else {
-                mTvRainConfig.setBackgroundColor(getResources().getColor(R.color.secondary_text));
-                mTvRainConfig.setText("已停用");
-                mTvRainConfig.setClickable(false);
-                mSwRain.setOpened(false);
+                setSwitchViewState(false, mSwRain, mTvRainConfig);
             }
             initBluetooth = true;
         }
@@ -545,29 +552,17 @@ public class ParameterConfigFragment extends BaseFragment
         //渗压计开关
         if (DeviceFragment.queryOsmometerParameterSubInfo != null) {
             if (DeviceFragment.queryOsmometerParameterSubInfo.getOsmometerStatus().equals("开启")) {
-                mSwOsmometer.setOpened(true);
-                mTvOsmometerConfig.setText("配置");
-                mTvOsmometerConfig.setClickable(true);
-                mTvOsmometerConfig.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
+                setSwitchViewState(true, mSwOsmometer, mTvOsmometerConfig);
             } else if (DeviceFragment.queryOsmometerParameterSubInfo.getOsmometerStatus().equals("关闭")) {
-                mTvOsmometerConfig.setBackgroundColor(getResources().getColor(R.color.secondary_text));
-                mTvOsmometerConfig.setText("已停用");
-                mTvOsmometerConfig.setClickable(false);
-                mSwOsmometer.setOpened(false);
+                setSwitchViewState(false, mSwOsmometer, mTvOsmometerConfig);
             }
+
             initBluetooth = true;
         }
 
         if (initBluetooth) {
             initSwitchData();
         }
-    }
-
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        unbinder.unbind();
     }
 
 
@@ -591,15 +586,18 @@ public class ParameterConfigFragment extends BaseFragment
                     //mSpProjectName.setFocusableInTouchMode(false);
                 }
                 break;
+
             case R.id.tv_query:
+
                 if (StringUtil.isNullOrEmpty(mEtQuery.getText().toString().trim())) {
                     ToastUtil.showShortToast("" + mEtQuery.getText().toString());
                 } else {
                     ToastUtil.showShortToast("搜索的内容不能为空");
                 }
                 break;
+
             case R.id.rl_sensor_setting:
-                //传感器参数配置   根据传感器的类型来进行
+                //采集器的传感器参数配置   根据传感器的类型来进行
                 if (DeviceFragment.isConnected) {
                     //intent = new Intent(getActivity(), SenSorMPSConfigActivity.class);
                     intent = new Intent(getActivity(), SenSorBGKConfigActivity.class);
@@ -607,25 +605,25 @@ public class ParameterConfigFragment extends BaseFragment
                 } else {
                     ToastUtil.showShortToast("蓝牙未连接");
                 }
-
                 break;
+
             case R.id.rl_general_setting:
                 //通用设置--采集器
-
                 intent = new Intent(getActivity(), GeneralSettingActivity.class);
                 startActivity(intent);
                 break;
+
             case R.id.tv_rain_config:
-                //雨量计功能
+                //雨量计配置
                 intent = new Intent(getActivity(), RainConfigActivity.class);
                 startActivity(intent);
                 break;
+
             case R.id.tv_osmometer_config:
-                //渗压计功能
+                //渗压计配置
                 intent = new Intent(getActivity(), OsmometerConfigActivity.class);
                 startActivity(intent);
                 break;
-
         }
     }
 
@@ -674,10 +672,16 @@ public class ParameterConfigFragment extends BaseFragment
 
 
     @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        unbinder.unbind();
+    }
+
+
+    @Override
     public void onDestroy() {
         super.onDestroy();
         EventBus.getDefault().unregister(this);
-
     }
 
     @Override

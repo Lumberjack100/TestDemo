@@ -31,13 +31,15 @@ public class DialogStyle5354 implements IDialogOpt<CollectorSensorParamsInfoSub>
     private View contentView;
     private CollectorSensorParamsInfoSub collectorSensorParamsInfoSub;
     private SensorGudanStressInfo sensorGudanStressInfo = new SensorGudanStressInfo();
-    private View.OnClickListener  cancelClickListener;
-    private MyOnClickListener sureClickListener;
+    private MyOnClickListener myOnClickListener;
     private SensorDataEvent event = new SensorDataEvent();
     private Dialog dialog;
+    private int channelNumber;
 
-    public DialogStyle5354(Context context) {
+
+    public DialogStyle5354(Context context, int channelNumber) {
         this.mContext = context;
+        this.channelNumber = channelNumber;
     }
 
 
@@ -84,7 +86,7 @@ public class DialogStyle5354 implements IDialogOpt<CollectorSensorParamsInfoSub>
         createTemperature.setText(String.valueOf(sensorGudanStressInfo.getCreateTemperature()));
         manualCorrection.setText(String.valueOf(sensorGudanStressInfo.getManualCorrection()));
 
-        if (sureClickListener != null){
+        if (myOnClickListener != null){
             save.setOnClickListener(new View.OnClickListener() {
                 @Override public void onClick(View view) {
 
@@ -97,7 +99,7 @@ public class DialogStyle5354 implements IDialogOpt<CollectorSensorParamsInfoSub>
                     collectorSensorParamsInfoSub.setSensorData(sensorGudanStressInfo);
                     collectorSensorParamsInfoSub.setSensorAddress(modbusAddress.getText().toString());
 
-                    if(sureClickListener.onClick(view)){
+                    if(myOnClickListener.onSureClick(view)){
                         String json = GsonFactory.getGson().toJson(collectorSensorParamsInfoSub);
                         event.setType("5354");
                         event.setMessage(json);
@@ -107,11 +109,11 @@ public class DialogStyle5354 implements IDialogOpt<CollectorSensorParamsInfoSub>
                     }
                 }
             });
-        }
-        if (cancelClickListener != null){
+
             cancel.setOnClickListener(new View.OnClickListener() {
-                @Override public void onClick(View view) {
-                    cancelClickListener.onClick(view);
+                @Override
+                public void onClick(View view) {
+                    myOnClickListener.onCancelClick(view, channelNumber);
                     dialog.dismiss();
                 }
             });
@@ -120,14 +122,10 @@ public class DialogStyle5354 implements IDialogOpt<CollectorSensorParamsInfoSub>
 
 
 
-    public void setSureClickListener(MyOnClickListener sureClickListener) {
-        this.sureClickListener = sureClickListener;
+    public void setMyOnClickListener(MyOnClickListener myOnClickListener) {
+        this.myOnClickListener = myOnClickListener;
     }
 
-
-    public void setCancelClickListener(View.OnClickListener cancelClickListener) {
-        this.cancelClickListener = cancelClickListener;
-    }
     
     @Override
     public CollectorSensorParamsInfoSub getData() {

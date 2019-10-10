@@ -1,53 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
     android:orientation="vertical">
-    <include layout="@layout/activity_device_toolbar"/>
+
+    <include layout="@layout/activity_device_toolbar" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
+
         <TextView
             android:layout_width="0dp"
-            android:layout_weight="7"
             android:layout_height="45dp"
-            android:text="雨量计分辨力"
-            android:gravity="center_vertical"
+            android:layout_weight="7"
             android:background="@color/bg_main_light_white"
+            android:gravity="center_vertical"
             android:paddingLeft="20dp"
+            android:text="雨量计分辨力" />
 
-            />
         <Spinner
             android:id="@+id/sp_rain"
             android:layout_width="0dp"
-            android:layout_weight="3"
             android:layout_height="45dp"
-            android:layout_marginRight="20dp"/>
+            android:layout_marginRight="20dp"
+            android:layout_weight="3" />
 
     </LinearLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp">
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/app_color_blue"
             android:padding="15dp"
-            android:text="@string/rain"/>
+            android:text="@string/rain"
+            android:textColor="@color/app_color_blue" />
     </LinearLayout>
+
     <Button
         android:id="@+id/btn_confirm_complete"
         android:layout_width="match_parent"
         android:layout_height="45dp"
-        android:text="完成"
-        android:background="@drawable/scan_add_selector"
-        android:textColor="@color/white"
-        android:layout_marginTop="40dp"
         android:layout_marginLeft="20dp"
+        android:layout_marginTop="40dp"
         android:layout_marginRight="20dp"
-        />
+        android:background="@drawable/scan_add_selector"
+        android:text="完成"
+        android:textColor="@color/white" />
+
 </LinearLayout>

@@ -48,18 +48,18 @@
             android:textSize="14sp"
             android:layout_marginLeft="20dp"
             />
+
         <EditText
             android:id="@+id/et_modbus_address"
             android:layout_width="0dp"
-            android:layout_weight="3"
             android:layout_height="wrap_content"
-            android:hint="1~255"
-            android:singleLine="true"
-            android:background="@drawable/icon_dialog_input"
             android:layout_gravity="center_vertical"
             android:layout_marginRight="10dp"
+            android:layout_weight="3"
+            android:background="@drawable/icon_dialog_input"
+            android:hint="1~99"
             android:paddingLeft="10dp"
-            />
+            android:singleLine="true" />
     </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"

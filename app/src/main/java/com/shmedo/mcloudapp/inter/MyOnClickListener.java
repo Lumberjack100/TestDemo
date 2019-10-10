@@ -16,5 +16,7 @@ public interface MyOnClickListener {
      *
      * @param v The view that was clicked.
      */
-    boolean onClick(View v);
+    boolean onSureClick(View v);
+
+    void onCancelClick(View view, int channelNumber);
 }

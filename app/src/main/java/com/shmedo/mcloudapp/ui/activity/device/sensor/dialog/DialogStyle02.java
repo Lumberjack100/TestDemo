@@ -29,8 +29,7 @@ public class DialogStyle02 implements IDialogOpt<CollectorSensorParamsInfoSub> {
     private CollectorSensorParamsInfoSub collectorSensorParamsInfoSub;
     private SensorWireShiftInfo sensorWireShiftInfo = new SensorWireShiftInfo();
     private Dialog dialog;
-    private View.OnClickListener cancelClickListener;
-    private MyOnClickListener sureClickListener;
+    private MyOnClickListener myOnClickListener;
     private Context mContext;
     private UserConfig uc;
     private int channelNumber;
@@ -75,7 +74,7 @@ public class DialogStyle02 implements IDialogOpt<CollectorSensorParamsInfoSub> {
         uc = UserConfig.getConfig(mContext, String.valueOf(channelNumber));
         note.setText(uc.readString(String.valueOf(channelNumber)));
 
-        if (sureClickListener != null) {
+        if (myOnClickListener != null) {
             save.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -86,31 +85,24 @@ public class DialogStyle02 implements IDialogOpt<CollectorSensorParamsInfoSub> {
 
                     uc.writeString(String.valueOf(channelNumber), note.getText().toString().trim());
 
-                    if(sureClickListener.onClick(view)){
+                    if (myOnClickListener.onSureClick(view)) {
                         dialog.dismiss();
                     }
                 }
             });
-        }
 
-        if (cancelClickListener != null) {
             cancel.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    cancelClickListener.onClick(view);
+                    myOnClickListener.onCancelClick(view, channelNumber);
                     dialog.dismiss();
                 }
             });
         }
     }
 
-    public DialogStyle02 setSureonClickListener(MyOnClickListener listener) {
-        this.sureClickListener = listener;
-        return this;
-    }
-
-    public DialogStyle02 setCancelOnClickListener(View.OnClickListener listener) {
-        this.cancelClickListener = listener;
+    public DialogStyle02 setMyOnClickListener(MyOnClickListener listener) {
+        this.myOnClickListener = listener;
         return this;
     }
 
