@@ -121,4 +121,13 @@
         <item name="android:windowExitAnimation">@anim/anim_dialog_exit</item>
     </style>
 
+
+    <!--EditSpinner控件样式-->
+    <style name="edit_main_bg">
+        <item name="android:background">@drawable/bg_view_frame</item>
+        <item name="android:textColor">@android:color/black</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:padding">10dp</item>
+    </style>
+
 </resources>

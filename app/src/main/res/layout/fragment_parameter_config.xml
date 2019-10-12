@@ -11,8 +11,6 @@
         android:fitsSystemWindows="true"
         android:orientation="vertical">
 
-    <!--    <include layout="@layout/toolbar_para_config"/>-->
-
         <include layout="@layout/include_activity_config_device" />
 
     </LinearLayout>

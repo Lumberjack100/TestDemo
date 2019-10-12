@@ -104,6 +104,7 @@ public class DeviceManageActivity extends BaseActivity implements OnRefreshListe
         mRecyclerSystem.setLayoutManager(new LinearLayoutManager(this));
         mRecyclerSystem.addItemDecoration(new DividerItemDecoration());
         mRecyclerSystem.setAdapter(systemAdapter);
+        setSystemAdapterClick();
 
         deviceStatusAdapter = new DeviceStatusAdapter(this, statusInfoList);
         mRecyclerDevice.setLayoutManager(new LinearLayoutManager(this));
@@ -137,8 +138,13 @@ public class DeviceManageActivity extends BaseActivity implements OnRefreshListe
                     @Override
                     public void Success(List<SystemDataInfo> infoList, String message) {
                         mLoadingDialog.dismiss();
-                        //setDeviceDetail(deviceDetailInfo);
-                        if (infoList.size() != 0) {
+
+                        if (null != infoList && infoList.size() != 0) {
+                            for(SystemDataInfo systemDataInfo : infoList){
+                                systemDataInfo.setAccount(CommonVariable.getAccount());
+                            }
+                            manager.getDaoSession().getSystemDataInfoDao().insertOrReplaceInTx(infoList);
+
                             systemList.clear();
                             systemList.addAll(infoList);
                             systemAdapter.notifyDataSetChanged();
@@ -150,11 +156,9 @@ public class DeviceManageActivity extends BaseActivity implements OnRefreshListe
                         mLoadingDialog.dismiss();
 
                         Timber.w("服务器连接失败--" + message);
-                        ToastUtil.showShortToast("服务器连接失败");
                     }
                 });
 
-        setSystemAdapterClick();
     }
 
 
@@ -162,7 +166,6 @@ public class DeviceManageActivity extends BaseActivity implements OnRefreshListe
         systemAdapter.setOnItemClickLitener(new SystemAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View itemView, int position) {
-//                ToastUtil.showShortToast("==" + systemAdapter.getDataList().get(position).getProID());
 
                 DeviceManageDetailActivity.startActivity(DeviceManageActivity.this, systemAdapter.getDataList().get(position));
             }
@@ -287,7 +290,7 @@ public class DeviceManageActivity extends BaseActivity implements OnRefreshListe
                 .list();
 
         if (null != infoList && infoList.size() > 0) {
-            //添加测试数据
+            //TODO 添加测试数据,测试后需要删除
             infoList.get(0).setSensorInfo(initTestData());
 
             statusInfoList.clear();

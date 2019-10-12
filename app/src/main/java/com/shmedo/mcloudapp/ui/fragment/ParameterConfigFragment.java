@@ -8,15 +8,12 @@ import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -26,28 +23,35 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.base.BaseFragment;
 import com.shmedo.mcloudapp.bluetooth.Message;
+import com.shmedo.mcloudapp.entity.SystemDataInfo;
+import com.shmedo.mcloudapp.entity.SystemDataInfoDao;
 import com.shmedo.mcloudapp.model.Extras;
+import com.shmedo.mcloudapp.model.common.CommonVariable;
 import com.shmedo.mcloudapp.ui.activity.device.GeneralSettingActivity;
 import com.shmedo.mcloudapp.ui.activity.device.OsmometerConfigActivity;
 import com.shmedo.mcloudapp.ui.activity.device.RainConfigActivity;
 import com.shmedo.mcloudapp.ui.activity.device.sensor.SenSorBGKConfigActivity;
-import com.shmedo.mcloudapp.util.StringUtil;
+import com.shmedo.mcloudapp.util.DaoManager;
 import com.shmedo.mcloudapp.util.ToastUtil;
-import com.shmedo.mcloudapp.util.bleutil.LogTag;
 import com.shmedo.mcloudapp.views.LoadingDialog;
 import com.shmedo.mcloudapp.views.VerticalSwipeRefreshLayout;
+import com.shmedo.mcloudapp.views.editspinner.EditSpinner;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
 import ch.ielse.view.SwitchView;
+import timber.log.Timber;
 
 /**
  * 项目名：  mCloudapp
@@ -62,76 +66,86 @@ public class ParameterConfigFragment extends BaseFragment
 
     @BindView(R.id.tv_device_name)
     TextView mTvDeviceName;
+
     @BindView(R.id.tv_device_sn)
     TextView mTvDeviceSn;
+
     @BindView(R.id.tv_device_model)
     TextView mTvDeviceModel;
+
     @BindView(R.id.tv_sensor_type)
     TextView mTvSensorType;
-    //@BindView(R.id.back) ImageView mBack;
-    //@BindView(R.id.tv_title) TextView mTvTitle;
-    //@BindView(R.id.img_bluetooth) ImageView mImgBluetooth;
 
     @BindView(R.id.iv_pro)
     ImageView mIvPro;
+
     @BindView(R.id.iv_lock)
     ImageView mIvLock;
+
     @BindView(R.id.tv_lock)
     TextView mTvLock;
-    @BindView(R.id.et_query)
-    EditText mEtQuery;
-    @BindView(R.id.tv_query)
-    TextView mTvQuery;
+
     @BindView(R.id.sp_project_name)
     Spinner mSpProjectName;
-    //@BindView(R.id.sw_bluetooth) Switch mSwBluetooth;
-    //@BindView(R.id.tv_bluetooth) TextView mTvBluetooth;
+
+    @BindView(R.id.editSpinner1)
+    EditSpinner spinnerProjectName;
+
     @BindView(R.id.sw_device_state)
     SwitchView mSwDeviceState;
+
     @BindView(R.id.tv_device_state)
     TextView mTvDeviceState;
+
     @BindView(R.id.sw_device_luck_state)
     SwitchView mSwDeviceLuckState;
+
     @BindView(R.id.tv_device_luck_state)
     TextView mTvDeviceLuckState;
+
     @BindView(R.id.sw_debug)
     SwitchView mSwDebug;
+
     @BindView(R.id.sp_debug)
     Spinner mSpDebug;
+
     @BindView(R.id.tv_sim_1)
     TextView mTvSim1;
+
     @BindView(R.id.sw_sim_A)
     SwitchView mSwSimA;
+
     @BindView(R.id.tv_sim_A)
     TextView mTvSimA;
+
     @BindView(R.id.tv_sim_2)
     TextView mTvSim2;
+
     @BindView(R.id.sw_sim_B)
     SwitchView mSwSimB;
+
     @BindView(R.id.tv_sim_B)
     TextView mTvSimB;
+
     @BindView(R.id.sw_rain)
     SwitchView mSwRain;
+
     @BindView(R.id.tv_rain_config)
     TextView mTvRainConfig;
+
     @BindView(R.id.sw_osmometer)
     SwitchView mSwOsmometer;
+
     @BindView(R.id.tv_osmometer_config)
     TextView mTvOsmometerConfig;
-    @BindView(R.id.sw_sensor)
-    ImageView mSwSensor;
-    @BindView(R.id.rl_sensor_setting)
-    RelativeLayout mRlSensorSetting;
-    @BindView(R.id.iv_general_setting)
-    ImageView mIvGeneralSetting;
-    @BindView(R.id.rl_general_setting)
-    RelativeLayout mRlGeneralSetting;
+
     @BindView(R.id.refresh)
     VerticalSwipeRefreshLayout mRefreshLayout;
+
     @BindView(R.id.scrollView)
     ScrollView mScrollView;
 
-    Unbinder unbinder;
+    private Unbinder unbinder;
     private String deviceInfo;
     //private BaseConfigInfoSub baseConfigInfoSub;
     //private SystemRunStateSub mStateInfoSub;
@@ -149,17 +163,9 @@ public class ParameterConfigFragment extends BaseFragment
     private boolean initBluetooth = false;
     private long prelongTim = 0;
     private Context mContext;
-
-    private Runnable dismssConDialogRunnable = new Runnable() {
-        @Override
-        public void run() {
-            if (mLoadingDialog != null) {
-                mLoadingDialog.dismiss();
-            }
-            //setResultData();
-        }
-    };
-
+    private DaoManager manager = DaoManager.getInstance();
+    private List<String> systemDataInfoList = new ArrayList<>();//项目信息列表
+    private HashMap<String, SystemDataInfo> systemDataInfoHashMap = new HashMap<>();
 
     @Override
     protected int initContentView() {
@@ -174,14 +180,28 @@ public class ParameterConfigFragment extends BaseFragment
         unbinder = ButterKnife.bind(this, view);
         EventBus.getDefault().register(this);
         mContext = getActivity();
-        initData();
+
         getIntentData();
+        queryProjectList();
+        initView();
 
         return view;
     }
 
+    private void getIntentData() {
+        Intent intent = getActivity().getIntent();
+        if (intent.getExtras().containsKey(Extras.CUR_DEVICE_NAME)) {
+            deviceInfo = intent.getStringExtra(Extras.CUR_DEVICE_NAME);
 
-    private void initData() {
+            String[] scanData = deviceInfo.split(",");
+            mTvDeviceName.setText("物联网数据采集器");
+            mTvDeviceSn.setText(scanData[1]);//设备编号
+            mTvDeviceModel.setText(scanData[2]);//功能型号
+            mTvSensorType.setText("拉线位移计");
+        }
+    }
+
+    private void initView() {
         mLoadingDialog = new LoadingDialog(getActivity());
         mRefreshLayout.setColorSchemeResources(android.R.color.holo_blue_light,
                 android.R.color.holo_red_light, android.R.color.holo_orange_light,
@@ -201,6 +221,20 @@ public class ParameterConfigFragment extends BaseFragment
             //mSpProjectName.setFocusableInTouchMode(true);
             mIvLock.setBackground(getResources().getDrawable(R.drawable.icon_open_lock));
         }
+
+
+        spinnerProjectName.setItemData(systemDataInfoList);
+        spinnerProjectName.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                if (null != parent.getAdapter()) {
+
+                    String projectName = systemDataInfoList.get(position);
+                    ToastUtil.showLongToast(projectName);
+                }
+            }
+        });
 
         //调试模式
         String[] debugData = getResources().getStringArray(R.array.bluetooth_debug);
@@ -222,38 +256,62 @@ public class ParameterConfigFragment extends BaseFragment
             DeviceFragment.sendDeviceStateComd();
         }
 
-        //TODO SIM卡A功能
-        //mSwSimA.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-        //    @Override public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-        //        if (b) {
-        //            mTvSimA.setText("已开启");
-        //        } else {
-        //            mTvSimA.setText("已关闭");
-        //        }
-        //    }
-        //});
-        // TODO SIM卡B功能
-        //mSwSimB.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-        //    @Override public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-        //        if (b) {
-        //            mTvSimB.setText("已开启");
-        //        } else {
-        //            mTvSimB.setText("已关闭");
-        //        }
-        //    }
-        //});
+//        TODO SIM卡A功能
+//        mSwSimA.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+//            @Override public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+//                if (b) {
+//                    mTvSimA.setText("已开启");
+//                } else {
+//                    mTvSimA.setText("已关闭");
+//                }
+//            }
+//        });
+//         TODO SIM卡B功能
+//        mSwSimB.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+//            @Override public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+//                if (b) {
+//                    mTvSimB.setText("已开启");
+//                } else {
+//                    mTvSimB.setText("已关闭");
+//                }
+//            }
+//        });
+//        TODO 写在查询调试结果后 解析数据后根据结果来
+//        if (mSwRain.isChecked()) {
+//            mTvRainConfig.setText("配置");
+//            mTvRainConfig.setClickable(true);
+//            mTvRainConfig.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
+//        } else {
+//            mTvRainConfig.setBackgroundColor(getResources().getColor(R.color.secondary_text));
+//            mTvRainConfig.setText("已停用");
+//            mTvRainConfig.setClickable(false);
+//        }
 
-        //TODO **写在查询调试结果后 解析数据后根据结果来
-        /*if (mSwRain.isChecked()) {
-            mTvRainConfig.setText("配置");
-            mTvRainConfig.setClickable(true);
-            mTvRainConfig.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
-        } else {
-            mTvRainConfig.setBackgroundColor(getResources().getColor(R.color.secondary_text));
-            mTvRainConfig.setText("已停用");
-            mTvRainConfig.setClickable(false);
-        }*/
+    }
 
+
+    /**
+     * 查询本地数据库中项目信息
+     */
+    private void queryProjectList() {
+        List<SystemDataInfo> infoList = manager.getDaoSession().getSystemDataInfoDao().queryBuilder()
+                .where(SystemDataInfoDao.Properties.Account.isNotNull(), SystemDataInfoDao.Properties.Account.eq(CommonVariable.getAccount()))
+                .list();
+
+        systemDataInfoList.clear();
+        systemDataInfoHashMap.clear();
+        if (null != infoList && infoList.size() > 0) {
+            for (SystemDataInfo systemDataInfo : infoList) {
+                systemDataInfoList.add(systemDataInfo.getProjName());
+                systemDataInfoHashMap.put(systemDataInfo.getProjName(), systemDataInfo);
+            }
+
+
+            for(int i=1;i<35;i++){
+
+                systemDataInfoList.add(i+" 测试项目");
+            }
+        }
     }
 
 
@@ -327,16 +385,21 @@ public class ParameterConfigFragment extends BaseFragment
                     if (DeviceFragment.mdBluetoothManager != null) {
                         DeviceFragment.mdBluetoothManager.writeMessage(msg);
                     }
-                    mTvDeviceLuckState.setText("未锁定");
+
                     mSwDeviceLuckState.setOpened(true);
+                    mTvDeviceLuckState.setText("未锁定");
+                    mTvDeviceLuckState.setTextColor(getResources().getColor(R.color.colorPrimary));
+
                 } else {
                     //发送激活指令
                     Message msg = new Message("chat", "##2251\r\n", true);
                     if (DeviceFragment.mdBluetoothManager != null) {
                         DeviceFragment.mdBluetoothManager.writeMessage(msg);
                     }
-                    mTvDeviceLuckState.setText("已锁定");
+
                     mSwDeviceLuckState.setOpened(false);
+                    mTvDeviceLuckState.setText("锁定");
+                    mTvDeviceLuckState.setTextColor(getResources().getColor(R.color.gray_807B7B));
                 }
             }
         });
@@ -474,24 +537,11 @@ public class ParameterConfigFragment extends BaseFragment
     }
 
 
-    private void getIntentData() {
-        Intent intent = getActivity().getIntent();
-        if (intent.getExtras().containsKey(Extras.CUR_DEVICE_NAME)) {
-            deviceInfo = intent.getStringExtra(Extras.CUR_DEVICE_NAME);
-
-            String[] scanData = deviceInfo.split(",");
-            mTvDeviceName.setText("物联网数据采集器");
-            mTvDeviceSn.setText(scanData[1]);//设备编号
-            mTvDeviceModel.setText(scanData[2]);//功能型号
-            mTvSensorType.setText("拉线位移计");
-        }
-    }
-
     /**
      * 设置显示数据
      */
     private void setResultData() {
-        Log.i(LogTag.INFO_TAG, "=======从devicefragment过来的eventbus数据======");
+        Timber.d("=======从devicefragment过来的eventbus数据======");
 
         if (DeviceFragment.baseConfigInfoSub != null) {
             //  设备启用状态
@@ -510,9 +560,12 @@ public class ParameterConfigFragment extends BaseFragment
             if (DeviceFragment.lockStatus.equals("unlock")) {
                 mSwDeviceLuckState.setOpened(true);
                 mTvDeviceLuckState.setText("未锁定");
+                mTvDeviceLuckState.setTextColor(getResources().getColor(R.color.colorPrimary));
+
             } else if (DeviceFragment.lockStatus.equals("lock")) {
                 mSwDeviceLuckState.setOpened(false);
-                mTvDeviceLuckState.setText("已锁定");
+                mTvDeviceLuckState.setText("锁定");
+                mTvDeviceLuckState.setTextColor(getResources().getColor(R.color.gray_807B7B));
             }
 
             //设备调试模式
@@ -566,7 +619,7 @@ public class ParameterConfigFragment extends BaseFragment
     }
 
 
-    @OnClick({R.id.iv_lock, R.id.tv_query, R.id.rl_sensor_setting, R.id.rl_general_setting,
+    @OnClick({R.id.iv_lock,  R.id.rl_sensor_setting, R.id.rl_general_setting,
             R.id.tv_rain_config, R.id.tv_osmometer_config})
     public void onViewClicked(View view) {
         Intent intent = null;
@@ -584,15 +637,6 @@ public class ParameterConfigFragment extends BaseFragment
                     mIvLock.setBackground(getResources().getDrawable(R.drawable.icon_close_lock));
                     //mSpProjectName.setFocusable(false);
                     //mSpProjectName.setFocusableInTouchMode(false);
-                }
-                break;
-
-            case R.id.tv_query:
-
-                if (StringUtil.isNullOrEmpty(mEtQuery.getText().toString().trim())) {
-                    ToastUtil.showShortToast("" + mEtQuery.getText().toString());
-                } else {
-                    ToastUtil.showShortToast("搜索的内容不能为空");
                 }
                 break;
 

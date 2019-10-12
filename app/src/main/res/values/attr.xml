@@ -2,4 +2,14 @@
 <resources>
     <attr name="app_primary_color" format="color"/> <!-- topbar -->
     <attr name="app_content_bg_color" format="color"/> <!-- content-->
+
+
+    <!--EditSpinner控件-->
+    <declare-styleable name="EditSpinner">
+        <attr name="hint" format="string"/>
+        <attr name="rightImage" format="reference"/>
+        <attr name="Background" format="reference"/>
+        <attr name="maxLine" format="integer"/>
+    </declare-styleable>
+
 </resources>
