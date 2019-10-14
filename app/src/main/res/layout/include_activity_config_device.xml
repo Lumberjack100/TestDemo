@@ -177,36 +177,37 @@
 
         </RelativeLayout>
 
-
-        <LinearLayout
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="40dp"
+            android:layout_height="wrap_content"
             android:layout_marginTop="1dp"
             android:background="@color/bg_main_light_white"
-            android:paddingLeft="15dp"
-            android:paddingRight="15dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
             android:gravity="center_vertical">
 
             <com.shmedo.mcloudapp.views.editspinner.EditSpinner
                 android:id="@+id/editSpinner1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="16sp"
                 app:Background="@drawable/bg_view_frame"
-                app:hint="请输入工程项目名称关键字"
-                app:rightImage="@drawable/ic_expand_more_black" />
+                app:maxLine="2"
+                app:hint="请输入工程项目名称关键字" />
 
-        </LinearLayout>
+            <TextView
+                android:id="@+id/tv_projectName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="5dp"
+                android:maxLines="2"
+                android:visibility="gone"
+                android:textColor="@color/gray_807B7B"
+                android:textSize="@dimen/text_size_15"/>
 
-        <Spinner
-            android:id="@+id/sp_project_name"
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:layout_marginTop="5dp"
-            android:gravity="center_vertical"
-            android:paddingLeft="15dp"
-            android:textSize="16sp"
-            android:visibility="gone" />
+        </FrameLayout>
+
 
         <LinearLayout
             android:layout_width="match_parent"

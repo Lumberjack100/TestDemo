@@ -124,10 +124,10 @@
 
     <!--EditSpinner控件样式-->
     <style name="edit_main_bg">
-        <item name="android:background">@drawable/bg_view_frame</item>
-        <item name="android:textColor">@android:color/black</item>
+        <item name="android:background">@null</item>
+        <item name="android:textColor">@color/gray_807B7B</item>
         <item name="android:textSize">15sp</item>
-        <item name="android:padding">10dp</item>
+        <item name="android:padding">5dp</item>
     </style>
 
 </resources>

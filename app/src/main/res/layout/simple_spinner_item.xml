@@ -1,8 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TextView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@android:id/text1"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="50dp"
-    android:singleLine="true"
-    android:ellipsize="marquee"
-    android:textAlignment="inherit"/>
+    android:layout_height="wrap_content"
+    android:background="?attr/selectableItemBackground"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/tv_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="40dp"
+        android:ellipsize="marquee"
+        android:gravity="center_vertical"
+        android:maxLines="2"
+        android:padding="10dp"
+        android:textColor="@color/gray_807B7B"
+        android:textSize="@dimen/text_size_15"
+        tools:text="贵阳项目" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="@color/gray_DADADA" />
+
+</LinearLayout>
+
+

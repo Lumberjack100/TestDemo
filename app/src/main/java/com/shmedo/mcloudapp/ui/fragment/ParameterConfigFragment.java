@@ -85,11 +85,11 @@ public class ParameterConfigFragment extends BaseFragment
     @BindView(R.id.tv_lock)
     TextView mTvLock;
 
-    @BindView(R.id.sp_project_name)
-    Spinner mSpProjectName;
-
     @BindView(R.id.editSpinner1)
     EditSpinner spinnerProjectName;
+
+    @BindView(R.id.tv_projectName)
+    TextView mTvProName;
 
     @BindView(R.id.sw_device_state)
     SwitchView mSwDeviceState;
@@ -212,14 +212,14 @@ public class ParameterConfigFragment extends BaseFragment
         handler = new Handler();
 
         if (mTvLock.getText().equals("已锁定")) {
-            mIvLock.setBackground(getResources().getDrawable(R.drawable.icon_close_lock));
-            //mSpProjectName.setClickable(false);
-            //mSpProjectName.setFocusable(false);
-            //mSpProjectName.setFocusableInTouchMode(false);
+            mIvLock.setImageResource(R.drawable.icon_close_lock);
+            mTvProName.setVisibility(View.VISIBLE);
+            spinnerProjectName.setVisibility(View.GONE);
+
         } else if (mTvLock.getText().equals("已解锁")) {
-            //mSpProjectName.setFocusable(true);
-            //mSpProjectName.setFocusableInTouchMode(true);
-            mIvLock.setBackground(getResources().getDrawable(R.drawable.icon_open_lock));
+            mIvLock.setImageResource(R.drawable.icon_open_lock);
+            mTvProName.setVisibility(View.GONE);
+            spinnerProjectName.setVisibility(View.VISIBLE);
         }
 
 
@@ -230,8 +230,8 @@ public class ParameterConfigFragment extends BaseFragment
 
                 if (null != parent.getAdapter()) {
 
-                    String projectName = systemDataInfoList.get(position);
-                    ToastUtil.showLongToast(projectName);
+                    String projectName = spinnerProjectName.getText();
+                    mTvProName.setText(projectName);
                 }
             }
         });
@@ -306,10 +306,10 @@ public class ParameterConfigFragment extends BaseFragment
                 systemDataInfoHashMap.put(systemDataInfo.getProjName(), systemDataInfo);
             }
 
+            systemDataInfoList.add("最近项目的需求，频繁使用远程桌面控制远程服务器，开始一直使用TeamViewer，但因为是使用免费版，被检测出商业用途，后面每次只能连接一分钟，严重影响工作。通过度娘了解到Anydesk这个远程控制软件免费使用，于是果断下载安装体验.");
+            for (int i = 1; i < 35; i++) {
 
-            for(int i=1;i<35;i++){
-
-                systemDataInfoList.add(i+" 测试项目");
+                systemDataInfoList.add(i + " 测试项目");
             }
         }
     }
@@ -619,7 +619,7 @@ public class ParameterConfigFragment extends BaseFragment
     }
 
 
-    @OnClick({R.id.iv_lock,  R.id.rl_sensor_setting, R.id.rl_general_setting,
+    @OnClick({R.id.iv_lock, R.id.rl_sensor_setting, R.id.rl_general_setting,
             R.id.tv_rain_config, R.id.tv_osmometer_config})
     public void onViewClicked(View view) {
         Intent intent = null;
@@ -627,16 +627,15 @@ public class ParameterConfigFragment extends BaseFragment
             case R.id.iv_lock:
                 if (mTvLock.getText().equals("已锁定")) {
                     mTvLock.setText("已解锁");
-                    //mSpProjectName.setClickable(true);
-                    mIvLock.setBackground(getResources().getDrawable(R.drawable.icon_open_lock));
-                    //mSpProjectName.setFocusable(true);
-                    //mSpProjectName.setFocusableInTouchMode(true);
+                    mIvLock.setImageResource(R.drawable.icon_open_lock);
+                    mTvProName.setVisibility(View.GONE);
+                    spinnerProjectName.setVisibility(View.VISIBLE);
+
                 } else if (mTvLock.getText().equals("已解锁")) {
-                    //mSpProjectName.setClickable(false);
                     mTvLock.setText("已锁定");
-                    mIvLock.setBackground(getResources().getDrawable(R.drawable.icon_close_lock));
-                    //mSpProjectName.setFocusable(false);
-                    //mSpProjectName.setFocusableInTouchMode(false);
+                    mIvLock.setImageResource(R.drawable.icon_close_lock);
+                    mTvProName.setVisibility(View.VISIBLE);
+                    spinnerProjectName.setVisibility(View.GONE);
                 }
                 break;
 

@@ -61,13 +61,13 @@ public class SimpleAdapter extends BaseEditSpinnerAdapter implements EditSpinner
     public View getView(int position, View convertView, ViewGroup parent) {
         TextView textView = null;
         if (convertView == null) {
-            textView = (TextView) LayoutInflater.from(mContext).inflate(R.layout.simple_spinner_item, null);
-        } else {
-            textView = (TextView) convertView;
+            convertView =  LayoutInflater.from(mContext).inflate(R.layout.simple_spinner_item, null);
         }
+
+        textView = (TextView)convertView.findViewById(R.id.tv_name);
         textView.setText(Html.fromHtml(getItem(position)));
 
-        return textView;
+        return convertView;
     }
 
     @Override

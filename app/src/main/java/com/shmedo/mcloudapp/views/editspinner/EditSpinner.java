@@ -31,12 +31,13 @@ import java.util.List;
  * Created by WrBug on 2017/2/26 0026.
  */
 public class EditSpinner extends RelativeLayout implements View.OnClickListener, AdapterView.OnItemClickListener, TextWatcher {
+
+    private Context mContext;
+    private View rootView;
     private EditText editText;
     private ImageView mRightIv;
-    private View mRightImageTopView;
-    private Context mContext;
     private ListPopupWindow popupWindow;
-    BaseEditSpinnerAdapter adapter;
+    private BaseEditSpinnerAdapter adapter;
     private long popupWindowHideTime;
     private Animation mAnimation;
     private Animation mResetAnimation;
@@ -104,26 +105,25 @@ public class EditSpinner extends RelativeLayout implements View.OnClickListener,
     }
 
     private void initView(AttributeSet attrs) {
-        LayoutInflater.from(mContext).inflate(R.layout.edit_spinner, this);
+        rootView= LayoutInflater.from(mContext).inflate(R.layout.edit_spinner, this);
         editText = (EditText) findViewById(R.id.edit_sipnner_edit);
         mRightIv = (ImageView) findViewById(R.id.edit_spinner_expand);
-        mRightImageTopView = findViewById(R.id.edit_spinner_expand_above);
-        mRightImageTopView.setOnClickListener(this);
-        mRightImageTopView.setClickable(false);
         mRightIv.setOnClickListener(this);
         mRightIv.setRotation(90);
         editText.addTextChangedListener(this);
-        TypedArray tArray = mContext.obtainStyledAttributes(attrs,
-                R.styleable.EditSpinner);
+        TypedArray tArray = mContext.obtainStyledAttributes(attrs, R.styleable.EditSpinner);
         editText.setHint(tArray.getString(R.styleable.EditSpinner_hint));
+
         int imageId = tArray.getResourceId(R.styleable.EditSpinner_rightImage, 0);
         if (imageId != 0) {
             mRightIv.setImageResource(imageId);
         }
+
         int bg = tArray.getResourceId(R.styleable.EditSpinner_Background, 0);
         if (bg != 0) {
-            editText.setBackgroundResource(bg);
+            rootView.setBackgroundResource(bg);
         }
+
         maxLine = tArray.getInt(R.styleable.EditSpinner_maxLine, 1);
         editText.setMaxLines(maxLine);
         tArray.recycle();
@@ -142,7 +142,6 @@ public class EditSpinner extends RelativeLayout implements View.OnClickListener,
             @Override
             public void show() {
                 super.show();
-                mRightImageTopView.setClickable(true);
                 mRightIv.startAnimation(mAnimation);
             }
 
@@ -157,7 +156,8 @@ public class EditSpinner extends RelativeLayout implements View.OnClickListener,
         popupWindow.setPromptPosition(ListPopupWindow.POSITION_PROMPT_BELOW);
         popupWindow.setWidth(ViewGroup.LayoutParams.WRAP_CONTENT);
         popupWindow.setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
-        popupWindow.setAnchorView(editText);
+        popupWindow.setAnchorView(rootView);
+
         popupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
             @Override
             public void onDismiss() {
@@ -185,7 +185,6 @@ public class EditSpinner extends RelativeLayout implements View.OnClickListener,
     @Override
     public final void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         editText.setText(((BaseEditSpinnerAdapter) parent.getAdapter()).getItemString(position));
-        mRightImageTopView.setClickable(false);
         popupWindow.dismiss();
         if (mOnItemClickListener != null) {
             mOnItemClickListener.onItemClick(parent, view, position, id);
