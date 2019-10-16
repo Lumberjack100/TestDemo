@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
+import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 
 import com.afollestad.materialdialogs.DialogAction;
@@ -28,55 +29,58 @@ import java.util.List;
 
 public class XPermissionUtils {
 
+    public static final int CODE_REQUEST_PERMISSIONS = 0x001;
+
     private static int mRequestCode = -1;
 
     public static void requestPermissionsResult(Activity activity, int requestCode
-        , String[] permission, OnPermissionListener callback){
+            , String[] permission, OnPermissionListener callback) {
         requestPermissions(activity, requestCode, permission, callback);
     }
 
     public static void requestPermissionsResult(android.app.Fragment fragment, int requestCode
-        , String[] permission, OnPermissionListener callback){
+            , String[] permission, OnPermissionListener callback) {
         requestPermissions(fragment, requestCode, permission, callback);
     }
 
     public static void requestPermissionsResult(android.support.v4.app.Fragment fragment, int requestCode
-        , String[] permission, OnPermissionListener callback){
+            , String[] permission, OnPermissionListener callback) {
         requestPermissions(fragment, requestCode, permission, callback);
     }
 
     /**
      * 请求权限处理
-     * @param object        activity or fragment
-     * @param requestCode   请求码
-     * @param permissions   需要请求的权限
-     * @param callback      结果回调
+     *
+     * @param object      activity or fragment
+     * @param requestCode 请求码
+     * @param permissions 需要请求的权限
+     * @param callback    结果回调
      */
     @TargetApi(Build.VERSION_CODES.M)
     private static void requestPermissions(Object object, int requestCode
-        , String[] permissions, OnPermissionListener callback){
+            , String[] permissions, OnPermissionListener callback) {
 
         checkCallingObjectSuitability(object);
         mOnPermissionListener = callback;
 
         //已经授予所有权限
-        if(checkPermissions(getContext(object), permissions)){
-            if(mOnPermissionListener != null)
+        if (checkPermissions(getContext(object), permissions)) {
+            if (mOnPermissionListener != null)
                 mOnPermissionListener.onPermissionGranted();
-        }else{
+        } else {
             List<String> deniedPermissions = getDeniedPermissions(getContext(object), permissions);
-            if(deniedPermissions.size() > 0){
+            if (deniedPermissions.size() > 0) {
                 mRequestCode = requestCode;
-                if(object instanceof Activity){
+                if (object instanceof Activity) {
                     ((Activity) object).requestPermissions(deniedPermissions
-                        .toArray(new String[deniedPermissions.size()]), requestCode);
-                }else if(object instanceof android.app.Fragment){
+                            .toArray(new String[deniedPermissions.size()]), requestCode);
+                } else if (object instanceof android.app.Fragment) {
                     ((android.app.Fragment) object).requestPermissions(deniedPermissions
-                        .toArray(new String[deniedPermissions.size()]), requestCode);
-                }else if(object instanceof android.support.v4.app.Fragment){
+                            .toArray(new String[deniedPermissions.size()]), requestCode);
+                } else if (object instanceof android.support.v4.app.Fragment) {
                     ((android.support.v4.app.Fragment) object).requestPermissions(deniedPermissions
-                        .toArray(new String[deniedPermissions.size()]), requestCode);
-                }else{
+                            .toArray(new String[deniedPermissions.size()]), requestCode);
+                } else {
                     mRequestCode = -1;
                 }
             }
@@ -88,11 +92,11 @@ public class XPermissionUtils {
      */
     private static Context getContext(Object object) {
         Context context;
-        if(object instanceof android.app.Fragment){
+        if (object instanceof android.app.Fragment) {
             context = ((android.app.Fragment) object).getActivity();
-        }else if(object instanceof android.support.v4.app.Fragment){
+        } else if (object instanceof android.support.v4.app.Fragment) {
             context = ((android.support.v4.app.Fragment) object).getActivity();
-        }else{
+        } else {
             context = (Activity) object;
         }
         return context;
@@ -102,29 +106,95 @@ public class XPermissionUtils {
      * 请求权限结果，对应onRequestPermissionsResult()方法。
      */
     public static void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        if(mRequestCode != -1 && requestCode == mRequestCode){
-            if(verifyPermissions(grantResults)){
-                if(mOnPermissionListener != null)
+        if (mRequestCode != -1 && requestCode == mRequestCode) {
+            if (verifyPermissions(grantResults)) {
+                if (mOnPermissionListener != null)
                     mOnPermissionListener.onPermissionGranted();
-            }else{
-                if(mOnPermissionListener != null)
+            } else {
+                if (mOnPermissionListener != null)
                     mOnPermissionListener.onPermissionDenied();
             }
         }
     }
 
+
+    /**
+     * 验证权限是否都已经授权
+     */
+    private static boolean verifyPermissions(int[] grantResults) {
+        for (int grantResult : grantResults) {
+            if (grantResult != PackageManager.PERMISSION_GRANTED) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * 获取权限列表中所有需要授权的权限
+     *
+     * @param context     上下文
+     * @param permissions 权限列表
+     * @return
+     */
+    private static List<String> getDeniedPermissions(Context context, String... permissions) {
+        List<String> deniedPermissions = new ArrayList<>();
+        for (String permission : permissions) {
+            if (ContextCompat.checkSelfPermission(context, permission) == PackageManager.PERMISSION_DENIED) {
+                deniedPermissions.add(permission);
+            }
+        }
+        return deniedPermissions;
+    }
+
+    /**
+     * 检查所传递对象的正确性
+     *
+     * @param object 必须为 activity or fragment
+     */
+    private static void checkCallingObjectSuitability(Object object) {
+        if (object == null) {
+            throw new NullPointerException("Activity or Fragment should not be null");
+        }
+
+        boolean isActivity = object instanceof Activity;
+        boolean isSupportFragment = object instanceof android.support.v4.app.Fragment;
+        boolean isAppFragment = object instanceof android.app.Fragment;
+
+        if (!(isActivity || isSupportFragment || isAppFragment)) {
+            throw new IllegalArgumentException(
+                    "Caller must be an Activity or a Fragment");
+        }
+    }
+
+    /**
+     * 检查所有的权限是否已经被授权
+     *
+     * @param permissions 权限列表
+     * @return
+     */
+    private static boolean checkPermissions(Context context, String... permissions) {
+        if (isOverMarshmallow()) {
+            for (String permission : permissions) {
+                if (ContextCompat.checkSelfPermission(context, permission) == PackageManager.PERMISSION_DENIED) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+
     /**
      * 显示提示对话框
      */
     public static void showRefusePermissionDialog(final Context context, String message) {
-
         MaterialDialog.Builder builderRefuse = new MaterialDialog.Builder(context)
                 .title("权限申请").content(message).negativeText("稍后再试").positiveText("现在设置")
                 .onPositive(new MaterialDialog.SingleButtonCallback() {
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                         dialog.dismiss();
-
                         startAppSettings(context);
                     }
                 });
@@ -142,66 +212,22 @@ public class XPermissionUtils {
     }
 
     /**
-     * 验证权限是否都已经授权
+     * 启动当前应用设置页面
      */
-    private static boolean verifyPermissions(int[] grantResults) {
-        for (int grantResult : grantResults) {
-            if (grantResult != PackageManager.PERMISSION_GRANTED) {
-                return false;
-            }
-        }
-        return true;
+    public static void startAppSettings(Activity activity) {
+        Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+        intent.setData(Uri.parse("package:" + activity.getPackageName()));
+        activity.startActivityForResult(intent, CODE_REQUEST_PERMISSIONS);
     }
 
-    /**
-     * 获取权限列表中所有需要授权的权限
-     * @param context       上下文
-     * @param permissions   权限列表
-     * @return
-     */
-    private static List<String> getDeniedPermissions(Context context, String... permissions){
-        List<String> deniedPermissions = new ArrayList<>();
-        for (String permission : permissions) {
-            if(ContextCompat.checkSelfPermission(context, permission) == PackageManager.PERMISSION_DENIED){
-                deniedPermissions.add(permission);
-            }
-        }
-        return deniedPermissions;
-    }
 
     /**
-     * 检查所传递对象的正确性
-     * @param object 必须为 activity or fragment
+     * 启动当前应用设置页面
      */
-    private static void checkCallingObjectSuitability(Object object) {
-        if (object == null) {
-            throw new NullPointerException("Activity or Fragment should not be null");
-        }
-
-        boolean isActivity = object instanceof Activity;
-        boolean isSupportFragment = object instanceof android.support.v4.app.Fragment;
-        boolean isAppFragment = object instanceof android.app.Fragment;
-
-        if(!(isActivity || isSupportFragment || isAppFragment)){
-            throw new IllegalArgumentException(
-                "Caller must be an Activity or a Fragment");
-        }
-    }
-
-    /**
-     * 检查所有的权限是否已经被授权
-     * @param permissions 权限列表
-     * @return
-     */
-    private static boolean checkPermissions(Context context, String... permissions){
-        if(isOverMarshmallow()){
-            for (String permission : permissions) {
-                if(ContextCompat.checkSelfPermission(context, permission) == PackageManager.PERMISSION_DENIED){
-                    return false;
-                }
-            }
-        }
-        return true;
+    public static void startAppSettings(Fragment fragment) {
+        Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+        intent.setData(Uri.parse("package:" + fragment.getContext().getPackageName()));
+        fragment.startActivityForResult(intent, CODE_REQUEST_PERMISSIONS);
     }
 
     /**
@@ -211,8 +237,9 @@ public class XPermissionUtils {
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.M;
     }
 
-    public interface OnPermissionListener{
+    public interface OnPermissionListener {
         void onPermissionGranted();
+
         void onPermissionDenied();
     }
 

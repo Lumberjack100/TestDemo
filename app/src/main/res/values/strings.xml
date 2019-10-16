@@ -13,8 +13,8 @@
     <string name="finish_activity_disconnect_bluetooth_device">确定要退出该页面，并断开蓝牙连接吗？</string>
 
     <!-- 权限申请-->
-    <string name="permission_request_camera_external_storage">您已经拒绝米易通使用相机权限和存储卡权限 请前往设置页面授予权限</string>
-    <string name="permission_request_location">您已经拒绝米易通使用定位权限 请前往设置页面授予权限</string>
+    <string name="permission_request_camera_external_storage">米易通需要使用相机权限和存储卡权限，请前往设置页面授予权限</string>
+    <string name="permission_request_location">米易通需要使用定位权限，请前往设置页面授予权限</string>
 
 
     <string name="appbar_scrolling_view_behavior" translatable="false">android.support.design.widget.AppBarLayout$ScrollingViewBehavior</string>

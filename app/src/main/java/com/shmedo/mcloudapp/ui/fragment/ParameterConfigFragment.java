@@ -306,7 +306,6 @@ public class ParameterConfigFragment extends BaseFragment
                 systemDataInfoHashMap.put(systemDataInfo.getProjName(), systemDataInfo);
             }
 
-            systemDataInfoList.add("最近项目的需求，频繁使用远程桌面控制远程服务器，开始一直使用TeamViewer，但因为是使用免费版，被检测出商业用途，后面每次只能连接一分钟，严重影响工作。通过度娘了解到Anydesk这个远程控制软件免费使用，于是果断下载安装体验.");
             for (int i = 1; i < 35; i++) {
 
                 systemDataInfoList.add(i + " 测试项目");

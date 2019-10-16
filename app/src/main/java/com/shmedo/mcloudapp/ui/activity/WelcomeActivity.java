@@ -1,14 +1,20 @@
 package com.shmedo.mcloudapp.ui.activity;
 
+import android.Manifest;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.WindowManager;
 
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.base.BaseActivity;
 import com.shmedo.mcloudapp.util.StartActivityUtil;
+import com.shmedo.mcloudapp.util.XPermissionUtils;
 
 /**
  * 项目名：  mCloudapp
@@ -19,25 +25,15 @@ import com.shmedo.mcloudapp.util.StartActivityUtil;
  * 描述：    TODO
  */
 public class WelcomeActivity extends BaseActivity {
-    @Override protected int initContentView() {
+
+    private MaterialDialog mMaterialDialog;
+
+    @Override
+    protected int initContentView() {
         return R.layout.activity_welcome;
     }
 
 
-    @Override protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        initStates();
-        initView();
-    }
-
-    private void initView() {
-        new Handler().postDelayed(new Runnable() {
-            @Override public void run() {
-                StartActivityUtil.comeOnBaby(WelcomeActivity.this,LoginActivity.class);
-                finish();
-            }
-        },2000);
-    }
     /**
      * 沉浸式状态栏
      */
@@ -49,4 +45,83 @@ public class WelcomeActivity extends BaseActivity {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
         }
     }
+
+
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        initStates();
+        checkPermission();
+    }
+
+
+    private void checkPermission() {
+        XPermissionUtils.requestPermissionsResult(this, 200, new String[]{
+                        Manifest.permission.ACCESS_FINE_LOCATION,
+                        Manifest.permission.ACCESS_COARSE_LOCATION},
+                new XPermissionUtils.OnPermissionListener() {
+                    @Override
+                    public void onPermissionGranted() {
+                        initView();
+                    }
+
+                    @Override
+                    public void onPermissionDenied() {
+                        if (mMaterialDialog != null && !mMaterialDialog.isShowing()) {
+                            mMaterialDialog.show();
+
+                        } else {
+                            showRefusePermissionDialog();
+                        }
+                    }
+                });
+    }
+
+    private void initView() {
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                StartActivityUtil.comeOnBaby(WelcomeActivity.this, LoginActivity.class);
+                finish();
+            }
+        }, 2000);
+    }
+
+    private void showRefusePermissionDialog() {
+        MaterialDialog.Builder mBuilder = new MaterialDialog.Builder(WelcomeActivity.this)
+                .title("权限申请").content(getResources().getString(R.string.permission_request_location))
+                .negativeText("退出")
+                .positiveText("去设置")
+                .negativeColor(getResources().getColor(R.color.font_main))
+                .positiveColor(getResources().getColor(R.color.colorPrimary))
+                .cancelable(false)
+                .onPositive(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        dialog.dismiss();
+                        XPermissionUtils.startAppSettings(WelcomeActivity.this);
+                    }
+                })
+                .onNegative(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        dialog.dismiss();
+                        WelcomeActivity.this.finish();
+                    }
+                });
+
+        mMaterialDialog = mBuilder.build();
+        mMaterialDialog.show();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        super.onActivityResult(requestCode, resultCode, intent);
+
+        if (requestCode == XPermissionUtils.CODE_REQUEST_PERMISSIONS) {
+            checkPermission();
+        }
+    }
+
 }
