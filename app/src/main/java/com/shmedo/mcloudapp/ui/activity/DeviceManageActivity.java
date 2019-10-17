@@ -35,7 +35,6 @@ import com.shmedo.mcloudapp.util.DaoManager;
 import com.shmedo.mcloudapp.util.GsonFactory;
 import com.shmedo.mcloudapp.util.ToastUtil;
 import com.shmedo.mcloudapp.util.XPermissionUtils;
-import com.shmedo.mcloudapp.views.ClearEditText;
 import com.shmedo.mcloudapp.views.DeviceSensorDialog;
 import com.shmedo.mcloudapp.views.DividerItemDecoration;
 import com.shmedo.mcloudapp.views.EmptyDataView;
@@ -61,20 +60,19 @@ import timber.log.Timber;
  */
 public class DeviceManageActivity extends BaseActivity implements OnRefreshListener, OnRefreshLoadMoreListener {
 
-    @BindView(R.id.ce_search)
-    ClearEditText mCeSearch;
-
     @BindView(R.id.recycler_system)
     RecyclerView mRecyclerSystem;
+
     @BindView(R.id.recycler_device)
     RecyclerView mRecyclerDevice;
+
     @BindView(R.id.smartRefreshLayout)
     SmartRefreshLayout mRefreshLayout;
+
     @BindView(R.id.empty_data)
     EmptyDataView mEmptyData;
 
     private List<SystemDataInfo> systemList = new ArrayList<>();
-    //private List<AllDeviceParameter> allDeviceList = new ArrayList<>();
     private List<StatusInfoResult> statusInfoList = new ArrayList<>();
     private DeviceStatusAdapter deviceStatusAdapter;
     private LoadingDialog mLoadingDialog;
@@ -90,6 +88,7 @@ public class DeviceManageActivity extends BaseActivity implements OnRefreshListe
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         initView();
         getProjectList();
         //获取设备列表
@@ -233,7 +232,7 @@ public class DeviceManageActivity extends BaseActivity implements OnRefreshListe
     }
 
 
-    @OnClick(R.id.ce_search)//点击跳转搜索页面
+    @OnClick(R.id.ll_search)//点击跳转搜索页面
     public void onViewClicked() {
         Intent intent = new Intent(this, SearchDeviceActivity.class);
         startActivity(intent);

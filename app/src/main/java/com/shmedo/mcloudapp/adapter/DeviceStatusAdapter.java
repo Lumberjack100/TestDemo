@@ -71,27 +71,14 @@ public class DeviceStatusAdapter extends RecyclerView.Adapter<DeviceStatusAdapte
             return;
         }
 
-        if (data.get(position).getSensorInfo().size() > 2) {
+        if (sensorAndCountList.size() > 1) {
 
             holder.tv_sensorType1.setVisibility(View.VISIBLE);
             holder.tv_sensorType2.setVisibility(View.VISIBLE);
-            holder.tv_sensorMore.setVisibility(View.VISIBLE);
+            holder.tv_sensorMore.setVisibility(sensorAndCountList.size() > 2 ? View.VISIBLE : View.GONE);
 
             holder.tv_sensorType1.setCompoundDrawablesWithIntrinsicBounds(ImageUtil.getSensorResourceID(sensorAndCountList.get(0).getSensorType()), 0, 0, 0);
             holder.tv_sensorType1.setText("x" + sensorAndCountList.get(0).getSensorCount());
-
-            holder.tv_sensorType2.setCompoundDrawablesWithIntrinsicBounds(ImageUtil.getSensorResourceID(sensorAndCountList.get(1).getSensorType()), 0, 0, 0);
-            holder.tv_sensorType2.setText("x" + sensorAndCountList.get(1).getSensorCount());
-
-        } else if (data.get(position).getSensorInfo().size() > 1) {
-
-            holder.tv_sensorType1.setVisibility(View.VISIBLE);
-            holder.tv_sensorType2.setVisibility(View.VISIBLE);
-            holder.tv_sensorMore.setVisibility(View.GONE);
-
-            holder.tv_sensorType1.setCompoundDrawablesWithIntrinsicBounds(ImageUtil.getSensorResourceID(sensorAndCountList.get(0).getSensorType()), 0, 0, 0);
-            holder.tv_sensorType1.setText("x" + sensorAndCountList.get(0).getSensorCount());
-
             holder.tv_sensorType2.setCompoundDrawablesWithIntrinsicBounds(ImageUtil.getSensorResourceID(sensorAndCountList.get(1).getSensorType()), 0, 0, 0);
             holder.tv_sensorType2.setText("x" + sensorAndCountList.get(1).getSensorCount());
 

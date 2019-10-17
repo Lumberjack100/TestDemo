@@ -12,13 +12,12 @@ public class KeyBordUtils {
     /**
      * 显示和隐藏软键盘 View ： EditText、TextView isShow : true = show , false = hide
      *
-     * @param context
      * @param view
      * @param isShow
      */
-    public static void popSoftKeyboard(Context context, View view, boolean isShow) {
-        InputMethodManager imm = (InputMethodManager) context
-                .getSystemService(Context.INPUT_METHOD_SERVICE);
+    public static void popSoftKeyboard(View view, boolean isShow) {
+        Context context = view.getContext();
+        InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
         if (isShow) {
             view.requestFocus();
             imm.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT);
@@ -34,8 +33,7 @@ public class KeyBordUtils {
      */
     public static void showSoftKeyboard(View view) {
         Context context = view.getContext();
-        InputMethodManager imm = (InputMethodManager) context
-                .getSystemService(Context.INPUT_METHOD_SERVICE);
+        InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
         view.setFocusable(true);
         view.setFocusableInTouchMode(true);
         view.requestFocus();

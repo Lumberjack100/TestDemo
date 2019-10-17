@@ -56,20 +56,12 @@
         tools:ignore="AllowBackup,GoogleAppIndexingWarning"
         tools:targetApi="n">
 
-
-        <activity android:name=".ui.activity.WelcomeActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-
-        <!-- 定位需要的服务 使用2.0的定位需要加上这个 -->
-        <service android:name="com.amap.api.location.APSService" />
-
         <meta-data
             android:name="com.amap.api.v2.apikey"
             android:value="31d7ee436c402270e11183ce1b5d01dc" />
+
+        <!-- 定位需要的服务 使用2.0的定位需要加上这个 -->
+        <service android:name="com.amap.api.location.APSService" />
 
         <!-- 兼容7.0 -->
         <provider
@@ -83,13 +75,20 @@
 
         </provider>
 
-        <activity android:name=".ui.activity.MainActivity"
-            android:label="主页面"/>
+        <activity android:name=".ui.activity.WelcomeActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
 
         <activity
             android:name=".ui.activity.LoginActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:windowSoftInputMode="stateAlwaysHidden|adjustResize" />
+
+        <activity android:name=".ui.activity.MainActivity"
+            android:label="主页面"/>
 
         <activity
             android:name=".ui.activity.ServiceConfigActivity"
@@ -124,8 +123,7 @@
         <activity
             android:name=".ui.activity.SearchDeviceActivity"
             android:label="搜索设备"
-            android:theme="@style/AppThemeBar"
-            android:windowSoftInputMode="stateAlwaysHidden|adjustResize" />
+            android:theme="@style/AppThemeBar" />
 
         <activity
             android:name=".ui.activity.DeviceManageDetailActivity"

@@ -7,24 +7,34 @@
     android:orientation="vertical">
 
     <LinearLayout
+        android:id="@+id/ll_search"
         android:layout_width="match_parent"
         android:layout_height="35dp"
         android:layout_marginLeft="8dp"
-        android:layout_marginTop="5dp"
+        android:layout_marginTop="10dp"
         android:layout_marginRight="8dp"
+        android:clickable="true"
+        android:gravity="center_vertical"
         android:background="@drawable/search_edittext_shape"
         android:orientation="horizontal">
 
-        <com.shmedo.mcloudapp.views.ClearEditText
-            android:id="@+id/ce_search"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@null"
-            android:focusable="false"
-            android:hint="请输入设备号"
-            android:paddingLeft="9dp"
-            android:paddingRight="8dp"
-            android:singleLine="true" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:text="请输入设备号"
+            android:textSize="@dimen/text_size_16" />
+
+        <!--<com.shmedo.mcloudapp.views.ClearEditText-->
+            <!--android:id="@+id/ce_search"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:background="@null"-->
+            <!--android:focusable="false"-->
+            <!--android:hint="请输入设备号"-->
+            <!--android:paddingLeft="9dp"-->
+            <!--android:paddingRight="8dp"-->
+            <!--android:singleLine="true" />-->
     </LinearLayout>
 
     <LinearLayout

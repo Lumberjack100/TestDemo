@@ -4,7 +4,7 @@
     android:id="@+id/sensor_item"
     android:layout_width="match_parent"
     android:layout_height="50dp"
-    android:background="@drawable/device_item_selector"
+    android:background="?attr/selectableItemBackground"
     android:orientation="horizontal">
 
     <TextView
