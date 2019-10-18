@@ -1,17 +1,10 @@
 package com.shmedo.mcloudapp.views;
 
 import android.content.Context;
-import android.content.Intent;
-import android.content.pm.PackageInfo;
 import android.graphics.Color;
-import android.net.Uri;
-import android.provider.Settings;
-import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
-import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.shmedo.mcloudapp.util.SystemUtils;
 
 /**
  * 项目名：  das-config-app
@@ -101,29 +94,6 @@ public class LoadingDialog {
         return dialog.isShowing();
     }
 
-    public static void showRefusePermissionDialog(final Context context, String message) {
-        MaterialDialog.Builder builderRefuse = new MaterialDialog.Builder(context)
-                .title("权限申请").content(message).negativeText("稍后再试").positiveText("现在设置")
-                .onPositive(new MaterialDialog.SingleButtonCallback() {
-                    @Override
-                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        dialog.dismiss();
-
-                        PackageInfo pi = SystemUtils.getPackageInfo(context);
-                        Intent intent;
-                         //根据包名跳转到当前应用程序信息界面
-                        if (pi != null) {
-                            Uri packageURI = Uri.parse("package:" + pi.packageName);
-                            intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, packageURI);
-                        } else {// 跳转到应用程序界面【所有的】
-                            intent = new Intent(Settings.ACTION_MANAGE_ALL_APPLICATIONS_SETTINGS);
-                        }
-
-                        context.startActivity(intent);
-                    }
-                });
-        builderRefuse.show();
-    }
 
     public static void showScanResultDialog(Context context, String content) {
         MaterialDialog.Builder mBuilder = new MaterialDialog.Builder(context);
@@ -136,17 +106,4 @@ public class LoadingDialog {
         MaterialDialog mMaterialDialog = mBuilder.build();
         mMaterialDialog.show();
     }
-    //private  void showStringsDialog(int strings, Context context){
-    //    MaterialDialog.Builder mBuilder;
-    //    MaterialDialog mMaterialDialog;
-    //    mBuilder = new MaterialDialog.Builder(context);
-    //    mBuilder.title("温馨提示：")
-    //        .content(getResources().getString(strings))
-    //        .contentColor(Color.parseColor("#000000"))
-    //        .canceledOnTouchOutside(false)
-    //        .positiveText("确定");
-    //    //.negativeText("取消");
-    //    mMaterialDialog = mBuilder.build();
-    //    mMaterialDialog.show();
-    //}
 }

@@ -6,8 +6,10 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.MenuItem;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.shmedo.mcloudapp.util.KeyBordUtils;
 import com.shmedo.mcloudapp.util.XPermissionUtils;
 import com.shmedo.mcloudapp.util.common.HandleBackUtil;
@@ -26,6 +28,8 @@ import timber.log.Timber;
  * 描述：    TODO
  */
 public abstract class BaseActivity extends AppCompatActivity {
+
+    protected MaterialDialog loadingDialog = null;
 
     protected abstract int initContentView();
 
@@ -106,6 +110,30 @@ public abstract class BaseActivity extends AppCompatActivity {
         XPermissionUtils.onRequestPermissionsResult(requestCode, permissions, grantResults);
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
+
+
+    protected void showLoadingDialog(String tip) {
+        if (loadingDialog != null && loadingDialog.isShowing()) {
+            return;
+        }
+
+        loadingDialog = new MaterialDialog.Builder(this)
+                .content(TextUtils.isEmpty(tip) ? "正在加载..." : tip)
+                .progress(true, 0)
+                .progressIndeterminateStyle(false)
+                .build();
+        loadingDialog.setCancelable(false);
+        loadingDialog.setCanceledOnTouchOutside(false);
+        loadingDialog.show();
+    }
+
+    protected void dismissLoadingDialog() {
+        if (loadingDialog != null && loadingDialog.isShowing()) {
+            loadingDialog.dismiss();
+            loadingDialog = null;
+        }
+    }
+
 
     @Override
     protected void onDestroy() {

@@ -1,15 +1,11 @@
 package com.shmedo.mcloudapp.ui.activity;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.text.InputFilter;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -33,11 +29,6 @@ import com.shmedo.mcloudapp.util.StringUtil;
 import com.shmedo.mcloudapp.util.ToastUtil;
 import com.shmedo.mcloudapp.util.UserConfig;
 import com.shmedo.mcloudapp.views.ClearEditText;
-import com.shmedo.mcloudapp.views.LoadingDialog;
-
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -111,7 +102,6 @@ public class LoginActivity extends BaseActivity {
     TextView mTouristsLogin;
 
     private DaoManager manager = DaoManager.getInstance();
-    private LoadingDialog dialog;
     private UserInfoWrapper userInfoWrapper = new UserInfoWrapper();
     private UserConfig userConfig;
 
@@ -133,7 +123,6 @@ public class LoginActivity extends BaseActivity {
 
     private void initDialog() {
         manager.init(this);
-        dialog = new LoadingDialog(this);
     }
 
     private void initView() {
@@ -143,32 +132,6 @@ public class LoginActivity extends BaseActivity {
         mLoginPhonePassword.setFilters(new InputFilter[]{new InputFilter.LengthFilter(6)});
     }
 
-
-    public static String sHA1(Context context) {
-        try {
-            PackageInfo info = context.getPackageManager().getPackageInfo(context.getPackageName(), PackageManager.GET_SIGNATURES);
-            byte[] cert = info.signatures[0].toByteArray();
-            MessageDigest md = MessageDigest.getInstance("SHA1");
-            byte[] publicKey = md.digest(cert);
-            StringBuffer hexString = new StringBuffer();
-            for (int i = 0; i < publicKey.length; i++) {
-                String appendString = Integer.toHexString(0xFF & publicKey[i]).toUpperCase(Locale.US);
-                if (appendString.length() == 1) {
-                    hexString.append("0");
-                }
-                hexString.append(appendString);
-                hexString.append(":");
-            }
-            String result = hexString.toString();
-            Log.i("adu", "------" + result);
-            return result.substring(0, result.length() - 1);
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
 
 
     private void initServiceAddressAndUser() {
@@ -307,14 +270,15 @@ public class LoginActivity extends BaseActivity {
         SignInParameter parameter = new SignInParameter(mPhoneNumber, code);
         String json = GsonFactory.getGson().toJson(parameter);
         RequestBody body = RequestBody.create(CommonVariable.JSON_TYPE, json);
-        dialog.showNoCancelDialog("正在登录...");
+
+        showLoadingDialog("正在登录...");
         MDRetrofit.getInstance().createService().SmsLogin(body)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new BaseObserver<String>() {
                     @Override
                     public void Success(String s, String message) {
-                        dialog.dismiss();
+                        dismissLoadingDialog();
                         if (s.contains("手机号对应的用户不存在")) {
                             ToastUtil.showShortToast("手机号对应的用户不存在");
                             //TODO 手机号不存在设置为游客登录
@@ -325,7 +289,7 @@ public class LoginActivity extends BaseActivity {
 
                     @Override
                     public void Failure(String message) {
-                        dialog.dismiss();
+                        dismissLoadingDialog();
                         ToastUtil.showShortToast(message);
                     }
                 });
@@ -338,7 +302,8 @@ public class LoginActivity extends BaseActivity {
     private void sendSmsCode(String mPhoneNumber) {
         String json = GsonFactory.getGson().toJson(mPhoneNumber);
         RequestBody body = RequestBody.create(CommonVariable.JSON_TYPE, json);
-        dialog.showNoCancelDialog("正在获取验证码...");
+
+        showLoadingDialog("正在获取验证码...");
         MDRetrofit.getInstance()
                 .createService()
                 .sendSmsCode(CommonVariable.APP_KEY, CommonVariable.APP_SECRET, body)
@@ -347,7 +312,8 @@ public class LoginActivity extends BaseActivity {
                 .subscribe(new BaseObserver<String>() {
                     @Override
                     public void Success(String s, String message) {
-                        dialog.dismiss();
+                        dismissLoadingDialog();
+
                         if (s.contains("已发送")) {
                             MyCountDownTimer timer = new MyCountDownTimer(mBtnGetCode, 60000, 1000);
                             timer.start();
@@ -356,7 +322,7 @@ public class LoginActivity extends BaseActivity {
 
                     @Override
                     public void Failure(String message) {
-                        dialog.dismiss();
+                        dismissLoadingDialog();
                         ToastUtil.showLongToast(message);
                     }
                 });
@@ -371,7 +337,8 @@ public class LoginActivity extends BaseActivity {
         parameter.setPassword(MD5Util.MD5(uid + pwd));
         String json = GsonFactory.getGson().toJson(parameter);
         RequestBody body = RequestBody.create(CommonVariable.JSON_TYPE, json);
-        dialog.showNoCancelDialog("正在登录...");
+
+        showLoadingDialog("正在登录...");
         MDRetrofit.getInstance().createService().getSingIn(body)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -379,13 +346,12 @@ public class LoginActivity extends BaseActivity {
 
                     @Override
                     public void Success(String token, String message) {
-                        dialog.dismiss();
                         getMyInfo(token, uid, pwd);
                     }
 
                     @Override
                     public void Failure(String message) {
-                        dialog.dismiss();
+                        dismissLoadingDialog();
                         ToastUtil.showLongToast("登录失败" + message);
                     }
                 });
@@ -406,7 +372,7 @@ public class LoginActivity extends BaseActivity {
                 .subscribe(new BaseObserver<UserInfo>() {
                     @Override
                     public void Success(UserInfo userInfo, String message) {
-                        dialog.dismiss();
+                        dismissLoadingDialog();
 
                         CommonVariable.setAccessToken(token);
                         CommonVariable.setAccount(userInfo.getUser().getAccount());
@@ -430,7 +396,7 @@ public class LoginActivity extends BaseActivity {
 
                     @Override
                     public void Failure(String message) {
-                        dialog.dismiss();
+                       dismissLoadingDialog();
                         ToastUtil.showLongToast("登录失败" + message);
                     }
                 });

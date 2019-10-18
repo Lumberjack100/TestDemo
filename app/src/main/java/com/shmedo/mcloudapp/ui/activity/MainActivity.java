@@ -1,6 +1,5 @@
 package com.shmedo.mcloudapp.ui.activity;
 
-import android.Manifest;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothManager;
@@ -68,7 +67,6 @@ import com.shmedo.mcloudapp.util.DensityUtil;
 import com.shmedo.mcloudapp.util.GsonFactory;
 import com.shmedo.mcloudapp.util.StartActivityUtil;
 import com.shmedo.mcloudapp.util.ToastUtil;
-import com.shmedo.mcloudapp.util.XPermissionUtils;
 import com.shmedo.mcloudapp.util.bleutil.ByteManagerUtil;
 import com.shmedo.mcloudapp.util.common.MapManagerUtil;
 import com.shmedo.mcloudapp.views.HintDialog;
@@ -163,7 +161,6 @@ public class MainActivity extends BaseActivity implements
     private MaterialDialog mMaterialDialog;
     private MaterialDialog.Builder mBuilder;
     private DaoManager manager = DaoManager.getInstance();
-
     private BluetoothAdapter mBluetoothAdapter;
     private MdBluetoothManager mdBluetoothManager;
 
@@ -182,6 +179,12 @@ public class MainActivity extends BaseActivity implements
     private static final int REQUEST_ENABLE_BT = 2;
 
 
+    public static void start(Context context) {
+        Intent intent = new Intent();
+        intent.setClass(context, MainActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        context.startActivity(intent);
+    }
 
     private Runnable dismssDialogRunnable = new Runnable() {
         @Override
@@ -218,26 +221,11 @@ public class MainActivity extends BaseActivity implements
 
         initData();
         hidingConnectionView();
+        initMap();
         initBluetooth();
 
         //获取地图要加载的数据
         getDeviceBasicInfoList("1");
-
-        XPermissionUtils.requestPermissionsResult(this, 200, new String[]{
-                        Manifest.permission.ACCESS_FINE_LOCATION,
-                        Manifest.permission.ACCESS_COARSE_LOCATION},
-                new XPermissionUtils.OnPermissionListener() {
-                    @Override
-                    public void onPermissionGranted() {
-                        initMap();
-                    }
-
-                    @Override
-                    public void onPermissionDenied() {
-                        XPermissionUtils.showRefusePermissionDialog(MainActivity.this,
-                                getResources().getString(R.string.permission_request_location));
-                    }
-                });
     }
 
 
@@ -289,7 +277,7 @@ public class MainActivity extends BaseActivity implements
             }
         });
 
-        addMerchantClustersToMap(queryDeviceInfoList(""));
+//        addMerchantClustersToMap(queryDeviceInfoList());
     }
 
 
@@ -314,7 +302,6 @@ public class MainActivity extends BaseActivity implements
             //mLocationClient.stopLocation();
             mLocationClient.startLocation();
         }
-
     }
 
     /**
@@ -356,7 +343,7 @@ public class MainActivity extends BaseActivity implements
 
 
     /**
-     * 获取设备信息列表
+     * 获取用户在当前公司的设备列表信息
      *
      * @param currentCompanyID
      */
@@ -368,7 +355,6 @@ public class MainActivity extends BaseActivity implements
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new BaseObserver<List<DeviceBasicInfoResult>>() {
-
                     @Override
                     public void Success(List<DeviceBasicInfoResult> infoList, String message) {
                         mLoadingDialog.dismiss();
@@ -379,6 +365,8 @@ public class MainActivity extends BaseActivity implements
                             }
                             manager.getDaoSession().getDeviceBasicInfoResultDao().insertOrReplaceInTx(infoList);
                         }
+
+                        addMerchantClustersToMap(queryDeviceInfoList());
                     }
 
                     @Override
@@ -392,15 +380,12 @@ public class MainActivity extends BaseActivity implements
 
     /**
      * 查询位置信息不为空的设备
-     *
-     * @param gpsLocation
-     * @return
      */
-    private List<DeviceBasicInfoResult> queryDeviceInfoList(String gpsLocation) {
+    private List<DeviceBasicInfoResult> queryDeviceInfoList() {
         return manager.getDaoSession()
                 .getDeviceBasicInfoResultDao()
                 .queryBuilder()
-                .where(DeviceBasicInfoResultDao.Properties.GpsLocation.notEq(gpsLocation), DeviceBasicInfoResultDao.Properties.Account.eq(CommonVariable.getAccount()))
+                .where(DeviceBasicInfoResultDao.Properties.GpsLocation.notEq(""), DeviceBasicInfoResultDao.Properties.Account.eq(CommonVariable.getAccount()))
                 .list();
     }
 
@@ -555,24 +540,9 @@ public class MainActivity extends BaseActivity implements
             @Override
             public void onClick(View v) {
                 mDialog.dismiss();
-                XPermissionUtils.requestPermissionsResult(MainActivity.this, 200, new String[]{
-                                Manifest.permission.ACCESS_COARSE_LOCATION,
-                                Manifest.permission.ACCESS_FINE_LOCATION
-                        },
-                        new XPermissionUtils.OnPermissionListener() {
-                            @Override
-                            public void onPermissionGranted() {
-                                Intent intent = new Intent(MainActivity.this, WifiConnectionActivity.class);
-                                startActivity(intent);
-                            }
 
-                            @Override
-                            public void onPermissionDenied() {
-                                XPermissionUtils.showRefusePermissionDialog(MainActivity.this,
-                                        getResources().getString(R.string.permission_request_location));
-                            }
-                        });
-
+                Intent intent = new Intent(MainActivity.this, WifiConnectionActivity.class);
+                startActivity(intent);
             }
         });
         cloud.setOnClickListener(new View.OnClickListener() {
@@ -581,14 +551,12 @@ public class MainActivity extends BaseActivity implements
                 ToastUtil.showShortToast("云端数据");
             }
         });
-
     }
 
     /**
      * 初始化蓝牙
      */
     private void initBluetooth() {
-
         final BluetoothManager bluetoothManager = (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
         mBluetoothAdapter = bluetoothManager.getAdapter();
         MdBluetoothManager.init(mBluetoothAdapter, bluetoothManager);
@@ -963,7 +931,7 @@ public class MainActivity extends BaseActivity implements
         result.setDeviceToken(device[1]);
         result.setDeviceTypeID(0);
         result.setDeviceTypeName(device[2]);
-        result.setGpsLocation(null);
+        result.setGpsLocation(installLocation);
         result.setInstallLocation(installLocation);
         result.setSecurityNO(null);
         result.setAccount(CommonVariable.getAccount());

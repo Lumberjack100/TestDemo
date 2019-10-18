@@ -7,13 +7,17 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.view.WindowManager;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.base.BaseActivity;
+import com.shmedo.mcloudapp.model.common.CommonVariable;
+import com.shmedo.mcloudapp.util.LoginManager;
 import com.shmedo.mcloudapp.util.StartActivityUtil;
+import com.shmedo.mcloudapp.util.UserConfig;
 import com.shmedo.mcloudapp.util.XPermissionUtils;
 
 /**
@@ -24,9 +28,16 @@ import com.shmedo.mcloudapp.util.XPermissionUtils;
  * 创建时间:  2019/1/8 09:17
  * 描述：    TODO
  */
-public class WelcomeActivity extends BaseActivity {
+public class WelcomeActivity extends BaseActivity implements LoginManager.LoginCallback {
 
     private MaterialDialog mMaterialDialog;
+
+    private UserConfig userConfig;
+
+    private String mAccount = null;
+
+    private String mPassword = null;
+
 
     @Override
     protected int initContentView() {
@@ -50,9 +61,60 @@ public class WelcomeActivity extends BaseActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         initStates();
+        initViewAndData();
         checkPermission();
+    }
+
+    private void initViewAndData() {
+        userConfig = UserConfig.getConfig(this, CommonVariable.USER_CONFIG_NAME);
+        mAccount = userConfig.readString(CommonVariable.UID);
+        mPassword = userConfig.readString(CommonVariable.PWD);
+    }
+
+
+    private void makeAutoLogin(String account, String password) {
+//        showLoadingDialog("正在登录...");
+        LoginManager.getInstance().login(account, password, this);
+    }
+
+
+    @Override
+    public void callback(int code, Object data) {
+//        dismissLoadingDialog();
+        if (LoginManager.LOGIN_CODE_SUCCESS == code) {
+            redirectToMainActivity();
+
+        } else {
+            redirectToLoginActivity();
+        }
+    }
+
+
+    /**
+     * 跳转到登录界面
+     */
+    private void redirectToLoginActivity() {
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                StartActivityUtil.comeOnBaby(WelcomeActivity.this, LoginActivity.class);
+                finish();
+            }
+        }, 2000);
+    }
+
+    /**
+     * 跳转到主界面
+     */
+    private void redirectToMainActivity() {
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                MainActivity.start(WelcomeActivity.this);
+                finish();
+            }
+        }, 2000);
     }
 
 
@@ -63,7 +125,12 @@ public class WelcomeActivity extends BaseActivity {
                 new XPermissionUtils.OnPermissionListener() {
                     @Override
                     public void onPermissionGranted() {
-                        initView();
+                        //自动登录
+                        if (!TextUtils.isEmpty(mAccount) && !TextUtils.isEmpty(mPassword)) {
+                            makeAutoLogin(mAccount, mPassword);
+                        } else {
+                            redirectToLoginActivity();
+                        }
                     }
 
                     @Override
@@ -78,20 +145,11 @@ public class WelcomeActivity extends BaseActivity {
                 });
     }
 
-    private void initView() {
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                StartActivityUtil.comeOnBaby(WelcomeActivity.this, LoginActivity.class);
-                finish();
-            }
-        }, 2000);
-    }
 
     private void showRefusePermissionDialog() {
         MaterialDialog.Builder mBuilder = new MaterialDialog.Builder(WelcomeActivity.this)
                 .title("权限申请").content(getResources().getString(R.string.permission_request_location))
-                .negativeText("退出")
+                .negativeText("取消")
                 .positiveText("去设置")
                 .negativeColor(getResources().getColor(R.color.font_main))
                 .positiveColor(getResources().getColor(R.color.colorPrimary))
@@ -107,7 +165,7 @@ public class WelcomeActivity extends BaseActivity {
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                         dialog.dismiss();
-                        WelcomeActivity.this.finish();
+                        redirectToLoginActivity();
                     }
                 });
 
