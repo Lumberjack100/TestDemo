@@ -11,13 +11,13 @@ import java.io.File;
 /**
  * 项目名：  das-config-app
  * 包名：    com.example.medoDas.Utils
- * 文件名:   SystemProgramUtils
+ * 文件名:   PhotoUtil
  * 创建者:   dpc
  * 创建时间:  2018/4/18 09:10
  * 描述：    TODO
  * @author adu
  */
-public class SystemProgramUtils {
+public class PhotoUtil {
     public static final int REQUEST_CODE_PAIZHAO = 1;
     public static final int REQUEST_CODE_ZHAOPIAN = 2;
     public static final int REQUEST_CODE_CAIQIE = 3;

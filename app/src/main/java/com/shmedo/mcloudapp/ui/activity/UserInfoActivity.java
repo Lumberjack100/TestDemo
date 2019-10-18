@@ -28,7 +28,7 @@ import com.shmedo.mcloudapp.util.FileUtil;
 import com.shmedo.mcloudapp.util.GlideUtils;
 import com.shmedo.mcloudapp.util.GsonFactory;
 import com.shmedo.mcloudapp.util.ImageUtil;
-import com.shmedo.mcloudapp.util.SystemProgramUtils;
+import com.shmedo.mcloudapp.util.PhotoUtil;
 import com.shmedo.mcloudapp.util.ToastUtil;
 import com.shmedo.mcloudapp.util.XPermissionUtils;
 import com.shmedo.mcloudapp.views.HintDialog;
@@ -168,10 +168,10 @@ public class UserInfoActivity extends BaseActivity {
     private void cameraOrAlbum() {
         if (isCamera) {
             //调用系统相机进行拍照
-            SystemProgramUtils.paizhao(this, new File("/mnt/sdcard/tupian.png"));
+            PhotoUtil.paizhao(this, new File("/mnt/sdcard/tupian.png"));
         } else {
             //调用系统相册选择照片
-            SystemProgramUtils.zhaopian(this);
+            PhotoUtil.zhaopian(this);
         }
     }
 
@@ -205,23 +205,23 @@ public class UserInfoActivity extends BaseActivity {
         File outputFile = new File("/mnt/sdcard/tupian.png");
 
         switch (requestCode) {
-            case SystemProgramUtils.REQUEST_CODE_PAIZHAO:
+            case PhotoUtil.REQUEST_CODE_PAIZHAO:
                 //拍照完成，进行图片裁切
                 File file = new File("/mnt/sdcard/tupian.png");
                 fileUri = FileProviderUtils.uriFromFile(this, file);
-                SystemProgramUtils.Caiqie(this, fileUri, outputFile);
+                PhotoUtil.Caiqie(this, fileUri, outputFile);
                 break;
 
-            case SystemProgramUtils.REQUEST_CODE_ZHAOPIAN:
+            case PhotoUtil.REQUEST_CODE_ZHAOPIAN:
                 //相册选择图片完毕，进行图片裁切
                 if (data == null || data.getData() == null) {
                     return;
                 }
                 fileUri = data.getData();
-                SystemProgramUtils.Caiqie(this, fileUri, outputFile);
+                PhotoUtil.Caiqie(this, fileUri, outputFile);
                 break;
 
-            case SystemProgramUtils.REQUEST_CODE_CAIQIE:
+            case PhotoUtil.REQUEST_CODE_CAIQIE:
                 //图片裁切完成，显示裁切后的图片
                 try {
                     Uri uri = Uri.fromFile(outputFile);

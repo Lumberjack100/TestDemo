@@ -13,22 +13,22 @@ import com.google.gson.GsonBuilder;
  */
 public class GsonFactory {
     private static GsonBuilder gsonBuilder;
-    static
-    {
-        gsonBuilder=new GsonBuilder();
+
+    static {
+        gsonBuilder = new GsonBuilder();
         gsonBuilder.serializeNulls();
         gsonBuilder.setDateFormat("yyyy-MM-dd HH:mm:ss");
         //gsonBuilder.setFieldNamingPolicy(FieldNamingPolicy.UPPER_CAMEL_CASE);
     }
-    public static Gson getGson()
-    {
+
+
+    public static Gson getGson() {
         return gsonBuilder.create();
     }
 
 
-    public static  Gson getLowerCaseGson()
-    {
-        GsonBuilder gb=new GsonBuilder();
+    public static Gson getLowerCaseGson() {
+        GsonBuilder gb = new GsonBuilder();
         gb.serializeNulls();
         gb.setDateFormat("yyyy-MM-dd HH:mm:ss");
 //        gb.setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES);
