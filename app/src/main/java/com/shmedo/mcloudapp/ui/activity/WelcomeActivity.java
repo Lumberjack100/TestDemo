@@ -62,6 +62,7 @@ public class WelcomeActivity extends BaseActivity implements LoginManager.LoginC
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initStates();
+        setCheckNetWork(false);
         initViewAndData();
         checkPermission();
     }

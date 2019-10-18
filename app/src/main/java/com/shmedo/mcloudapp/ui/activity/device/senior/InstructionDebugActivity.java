@@ -13,24 +13,21 @@ import android.widget.Button;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
-
+import butterknife.BindView;
+import butterknife.OnClick;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.base.BaseActivity;
 import com.shmedo.mcloudapp.ui.fragment.DeviceFragment;
 import com.shmedo.mcloudapp.util.StringUtil;
 import com.shmedo.mcloudapp.util.TimeUtil;
 import com.shmedo.mcloudapp.util.ToastUtil;
-
+import jp.bassaer.chatmessageview.models.Message;
+import jp.bassaer.chatmessageview.views.ChatView;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.Random;
-
-import butterknife.BindView;
-import butterknife.OnClick;
-import jp.bassaer.chatmessageview.models.Message;
-import jp.bassaer.chatmessageview.views.ChatView;
 
 /**
  * 项目名：  mCloudapp
@@ -78,9 +75,12 @@ public class InstructionDebugActivity extends BaseActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EventBus.getDefault().register(this);
         setToolBar(R.id.toolbar);
         initView();
+
+        if (!EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().register(this);
+        }
         initData();
     }
 

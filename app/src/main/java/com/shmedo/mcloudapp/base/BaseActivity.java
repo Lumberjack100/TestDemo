@@ -1,5 +1,9 @@
 package com.shmedo.mcloudapp.base;
 
+import android.content.Context;
+import android.content.IntentFilter;
+import android.graphics.PixelFormat;
+import android.net.ConnectivityManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -7,17 +11,22 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
-import android.view.MenuItem;
-
+import android.view.*;
+import butterknife.ButterKnife;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.shmedo.mcloudapp.R;
+import com.shmedo.mcloudapp.entity.NetworkChangeEvent;
+import com.shmedo.mcloudapp.receiver.NetworkConnectChangedReceiver;
 import com.shmedo.mcloudapp.util.KeyBordUtils;
+import com.shmedo.mcloudapp.util.NetworkUtils;
 import com.shmedo.mcloudapp.util.XPermissionUtils;
 import com.shmedo.mcloudapp.util.common.HandleBackUtil;
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+import timber.log.Timber;
 
 import java.util.Objects;
-
-import butterknife.ButterKnife;
-import timber.log.Timber;
 
 /**
  * 项目名：  mCloudapp
@@ -30,8 +39,17 @@ import timber.log.Timber;
 public abstract class BaseActivity extends AppCompatActivity {
 
     protected MaterialDialog loadingDialog = null;
+    protected boolean mCheckNetwork = false;/*默认检查网络状态*/
+    protected boolean mNetConnected;/*网络连接的状态，true表示有网络，flase表示无网络连接*/
+    private NetworkConnectChangedReceiver mNetWorkChangReceiver;/*网络状态变化的广播接收器*/
+    private View mTipView;
+    private WindowManager mWindowManager;
+    private WindowManager.LayoutParams mLayoutParams;
+
+
 
     protected abstract int initContentView();
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -40,6 +58,10 @@ public abstract class BaseActivity extends AppCompatActivity {
         setContentView(initContentView());
         initState();
         ButterKnife.bind(this);
+
+        initTipView();//初始化提示View
+        EventBus.getDefault().register(this);
+        registerNetWorkChangReceiver();
     }
 
 
@@ -64,8 +86,6 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     /**
      * Use a Toolbar as an Action Bar
-     *
-     * @param toolbarId
      */
     protected void setToolBar(int toolbarId) {
         Toolbar toolbar = (Toolbar) findViewById(toolbarId);
@@ -78,16 +98,17 @@ public abstract class BaseActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-
         String name = getClass().getName();
         Timber.d("startPage,activity=" + name);
+
+        //在无网络情况下打开APP时，系统不会发送网络状况变更的Intent，需要自己手动检查
+        netStateChangedUI(NetworkUtils.isConnected());
     }
 
 
     @Override
     protected void onPause() {
         super.onPause();
-
         String name = getClass().getName();
         Timber.d("endPage,activity=" + name);
     }
@@ -135,9 +156,85 @@ public abstract class BaseActivity extends AppCompatActivity {
     }
 
 
+    private void registerNetWorkChangReceiver() {
+        //注册网络状态监听广播
+        mNetWorkChangReceiver = new NetworkConnectChangedReceiver();
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
+        registerReceiver(mNetWorkChangReceiver, filter);
+    }
+
+
+    private void initTipView() {
+        LayoutInflater inflater = getLayoutInflater();
+        mTipView = inflater.inflate(R.layout.layout_network_tip, null); //提示View布局
+        mWindowManager = (WindowManager) this.getSystemService(Context.WINDOW_SERVICE);
+        mLayoutParams = new WindowManager.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT,
+                WindowManager.LayoutParams.TYPE_APPLICATION,
+                WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+                PixelFormat.TRANSLUCENT);
+        //使用非CENTER时，可以通过设置XY的值来改变View的位置
+        mLayoutParams.gravity = Gravity.TOP;
+        mLayoutParams.x = 0;
+        mLayoutParams.y = 0;
+    }
+
+
+    /**
+     * 根据网络状态显示或者隐藏提示对话框
+     *
+     * @param isConnected
+     */
+    private void netStateChangedUI(boolean isConnected) {
+        if (mCheckNetwork) {
+            if (isConnected) {
+                if (mTipView != null && mTipView.getParent() != null) {
+                    mWindowManager.removeView(mTipView);
+                }
+            } else {
+                if (mTipView.getParent() == null) {
+                    mWindowManager.addView(mTipView, mLayoutParams);
+
+                }
+            }
+        }
+    }
+
+
+    /**
+     * 网络状态发生变化时的处理
+     *
+     * @param event
+     */
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onNetworkChangeEvent(NetworkChangeEvent event) {
+        Timber.d("网络发生变化:" + event.toString());
+
+        mNetConnected = event.isConnected;
+        netStateChangedUI(event.isConnected);
+    }
+
+    public void setCheckNetWork(boolean checkNetWork) {
+        mCheckNetwork = checkNetWork;
+    }
+
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        EventBus.getDefault().unregister(this);
+        unregisterReceiver(mNetWorkChangReceiver);
+    }
+
+
+    @Override
+    public void finish() {
+        super.finish();
+        //当提示View被动态添加后直接关闭页面会导致该View内存溢出，所以需要在finish时移除
+        if (mTipView != null && mTipView.getParent() != null) {
+            mWindowManager.removeView(mTipView);
+        }
     }
 
 

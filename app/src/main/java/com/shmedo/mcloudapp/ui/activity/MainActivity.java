@@ -15,24 +15,16 @@ import android.support.annotation.NonNull;
 import android.support.v7.widget.Toolbar;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
-import android.widget.Toast;
-
+import android.widget.*;
+import butterknife.BindView;
+import butterknife.OnClick;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amap.api.location.AMapLocation;
 import com.amap.api.location.AMapLocationClient;
 import com.amap.api.location.AMapLocationClientOption;
 import com.amap.api.location.AMapLocationListener;
-import com.amap.api.maps.AMap;
-import com.amap.api.maps.AMapOptions;
-import com.amap.api.maps.CameraUpdateFactory;
-import com.amap.api.maps.LocationSource;
-import com.amap.api.maps.MapView;
-import com.amap.api.maps.UiSettings;
+import com.amap.api.maps.*;
 import com.amap.api.maps.model.LatLng;
 import com.amap.api.maps.model.LatLngBounds;
 import com.amap.api.maps.model.Marker;
@@ -42,68 +34,37 @@ import com.google.gson.reflect.TypeToken;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.adapter.InfoWinAdapter;
 import com.shmedo.mcloudapp.base.BaseActivity;
-import com.shmedo.mcloudapp.bluetooth.BluetoothDeviceFindEventData;
-import com.shmedo.mcloudapp.bluetooth.BluetoothEvent;
-import com.shmedo.mcloudapp.bluetooth.BluetoothEventHandler;
-import com.shmedo.mcloudapp.bluetooth.MdBluetoothManager;
-import com.shmedo.mcloudapp.bluetooth.Message;
+import com.shmedo.mcloudapp.bluetooth.*;
 import com.shmedo.mcloudapp.entity.DeviceBasicInfoResult;
 import com.shmedo.mcloudapp.entity.DeviceBasicInfoResultDao;
 import com.shmedo.mcloudapp.entity.StatusInfoResult;
 import com.shmedo.mcloudapp.entity.ble.MDevice;
-import com.shmedo.mcloudapp.entity.cluster.ClusterAnotherClickListener;
-import com.shmedo.mcloudapp.entity.cluster.ClusterAnotherRender;
-import com.shmedo.mcloudapp.entity.cluster.ClusterItem;
-import com.shmedo.mcloudapp.entity.cluster.ClusterItemImp;
-import com.shmedo.mcloudapp.entity.cluster.ClusterOverlayMerchant;
+import com.shmedo.mcloudapp.entity.cluster.*;
 import com.shmedo.mcloudapp.entity.event.MapDeviceEvent;
 import com.shmedo.mcloudapp.entity.event.WifiEvent;
 import com.shmedo.mcloudapp.entity.parameter.LocationResult;
 import com.shmedo.mcloudapp.model.BaseObserver;
 import com.shmedo.mcloudapp.model.MDRetrofit;
 import com.shmedo.mcloudapp.model.common.CommonVariable;
-import com.shmedo.mcloudapp.util.DaoManager;
-import com.shmedo.mcloudapp.util.DensityUtil;
-import com.shmedo.mcloudapp.util.GsonFactory;
-import com.shmedo.mcloudapp.util.StartActivityUtil;
-import com.shmedo.mcloudapp.util.ToastUtil;
+import com.shmedo.mcloudapp.util.*;
 import com.shmedo.mcloudapp.util.bleutil.ByteManagerUtil;
 import com.shmedo.mcloudapp.util.common.MapManagerUtil;
 import com.shmedo.mcloudapp.views.HintDialog;
 import com.shmedo.mcloudapp.views.LoadingDialog;
-
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
+import okhttp3.RequestBody;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+import timber.log.Timber;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import butterknife.BindView;
-import butterknife.OnClick;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.schedulers.Schedulers;
-import okhttp3.RequestBody;
-import timber.log.Timber;
-
-import static com.shmedo.mcloudapp.util.bleutil.Constants.BT_CHARACTERISTICS_FIND_FAIL;
-import static com.shmedo.mcloudapp.util.bleutil.Constants.BT_CONNECT;
-import static com.shmedo.mcloudapp.util.bleutil.Constants.BT_DISCONNECTED;
-import static com.shmedo.mcloudapp.util.bleutil.Constants.BT_ENABLE_READ_FAIL;
-import static com.shmedo.mcloudapp.util.bleutil.Constants.BT_ENABLE_READ_SUCCESS;
-import static com.shmedo.mcloudapp.util.bleutil.Constants.BT_MESSAGE_WRITE_FAIL;
-import static com.shmedo.mcloudapp.util.bleutil.Constants.BT_MESSAGE_WRITE_SUCCESS;
-import static com.shmedo.mcloudapp.util.bleutil.Constants.BT_RECOVERY_SUCCESS;
-import static com.shmedo.mcloudapp.util.bleutil.Constants.BT_REQUEST_MTU_FAIL;
-import static com.shmedo.mcloudapp.util.bleutil.Constants.BT_SERVICE_FIND_FAIL;
-import static com.shmedo.mcloudapp.util.bleutil.Constants.BT_WRITE_TIME_OUT;
-import static com.shmedo.mcloudapp.util.bleutil.Constants.MESSAGE_RESPONSE_REBOOT_DEVICE;
-import static com.shmedo.mcloudapp.util.bleutil.Constants.MESSAGE_RESPONSE_SAVE_SETTINGS_SUCCESS;
-import static com.shmedo.mcloudapp.util.bleutil.Constants.MESSAGE_RESPONSE_TIME_OUT;
-import static com.shmedo.mcloudapp.util.bleutil.Constants.REFRESH_RUN_STATE;
-import static com.shmedo.mcloudapp.util.bleutil.Constants.VERIFY_RESULT;
+import static com.shmedo.mcloudapp.util.bleutil.Constants.*;
 
 public class MainActivity extends BaseActivity implements
         LocationSource, AMapLocationListener {
@@ -217,7 +178,10 @@ public class MainActivity extends BaseActivity implements
         super.onCreate(savedInstanceState);
         //在activity执行onCreate时执行mMapView.onCreate(savedInstanceState)，创建地图
         mMapView.onCreate(savedInstanceState);
-        EventBus.getDefault().register(this);
+
+        if (!EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().register(this);
+        }
 
         initData();
         hidingConnectionView();

@@ -5,7 +5,7 @@
     <color name="colorAccent">#D81B60</color>
     <color name="white">#ffffff</color>
     <color name="black">#ff000000</color>
-
+    <color name="red">#fd1b1b</color>
     <color name="font_main">@color/gray_797979</color>
     <color name="secondary_text">#727272</color>
     <color name="bg_main_light_white">#ebebeb</color>
@@ -30,6 +30,7 @@
     <color name="app_color_theme_8">#AC8FEF</color> <!-- Lavender -->
     <color name="app_color_theme_9">#EE85C1</color> <!-- Pink Rose -->
     <color name="delect">#fd1b1b</color>
+    <color name="bg_color_warn">#eb5677</color>
     <color name="orange_FF7502">#ff7502</color>
 
     <color name="black_333333">#333333</color>

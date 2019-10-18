@@ -1,6 +1,5 @@
 package com.shmedo.mcloudapp.base;
 
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -8,7 +7,6 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 
 import com.shmedo.mcloudapp.util.XPermissionUtils;
 import com.shmedo.mcloudapp.util.common.HandleBackInterface;
@@ -40,6 +38,7 @@ public abstract class BaseFragment extends Fragment implements HandleBackInterfa
 
     protected abstract int initContentView();
 
+
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull
             int[] grantResults) {
@@ -47,23 +46,11 @@ public abstract class BaseFragment extends Fragment implements HandleBackInterfa
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
-    /**
-     * 沉浸式状态栏
-     */
-    private void initState() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            //透明状态栏
-            getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-            //透明导航栏
-            //getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
-        }
-    }
 
 
     @Override
     public void onResume() {
         super.onResume();
-
         String name = getClass().getName();
         Timber.d("startPage,Fragment=" + name);
     }
@@ -72,7 +59,6 @@ public abstract class BaseFragment extends Fragment implements HandleBackInterfa
     @Override
     public void onPause() {
         super.onPause();
-
         String name = getClass().getName();
         Timber.d("endPage,Fragment=" + name);
     }
