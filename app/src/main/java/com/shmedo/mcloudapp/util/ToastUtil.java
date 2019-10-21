@@ -2,7 +2,7 @@ package com.shmedo.mcloudapp.util;
 
 import android.widget.Toast;
 
-import com.shmedo.mcloudapp.App;
+import com.shmedo.mcloudapp.MCloudApp;
 
 /**
  * 项目名：  eMeas
@@ -18,7 +18,7 @@ public class ToastUtil {
     private static Toast toast;
     public static void showLongToast(String content) {
         if (toast == null) {  //判断Toast对象是否为空
-            toast = Toast.makeText(App.getContext(), content, Toast.LENGTH_LONG);
+            toast = Toast.makeText(MCloudApp.getContext(), content, Toast.LENGTH_LONG);
         } else {
             toast.setText(content);
         }
@@ -26,7 +26,7 @@ public class ToastUtil {
     }
     public static void showShortToast(String content) {
         if (toast == null) {  //判断Toast对象是否为空
-            toast = Toast.makeText(App.getContext(), content, Toast.LENGTH_SHORT);
+            toast = Toast.makeText(MCloudApp.getContext(), content, Toast.LENGTH_SHORT);
         } else {
             toast.setText(content);
         }

@@ -58,7 +58,6 @@ public class ScanAddDeviceActivity extends BaseActivity {
     public static void startActivity(Context context, LatLng myLatLng) {
         Intent intent = new Intent(context, ScanAddDeviceActivity.class);
         intent.putExtra(Extras.DEVICE_LATLNG, myLatLng);
-        intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         context.startActivity(intent);
     }
 

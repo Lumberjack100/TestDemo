@@ -1,5 +1,6 @@
 package com.shmedo.mcloudapp.base;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.IntentFilter;
 import android.graphics.PixelFormat;
@@ -11,22 +12,33 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
-import android.view.*;
-import butterknife.ButterKnife;
+import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.WindowManager;
+
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.shmedo.mcloudapp.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.entity.NetworkChangeEvent;
 import com.shmedo.mcloudapp.receiver.NetworkConnectChangedReceiver;
+import com.shmedo.mcloudapp.util.ActivityCollector;
 import com.shmedo.mcloudapp.util.KeyBordUtils;
 import com.shmedo.mcloudapp.util.NetworkUtils;
 import com.shmedo.mcloudapp.util.XPermissionUtils;
 import com.shmedo.mcloudapp.util.common.HandleBackUtil;
+
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
-import timber.log.Timber;
 
+import java.lang.ref.WeakReference;
 import java.util.Objects;
+
+import butterknife.ButterKnife;
+import timber.log.Timber;
 
 /**
  * 项目名：  mCloudapp
@@ -39,13 +51,19 @@ import java.util.Objects;
 public abstract class BaseActivity extends AppCompatActivity {
 
     protected MaterialDialog loadingDialog = null;
+
     protected boolean mCheckNetwork = false;/*默认检查网络状态*/
+
     protected boolean mNetConnected;/*网络连接的状态，true表示有网络，flase表示无网络连接*/
+
     private NetworkConnectChangedReceiver mNetWorkChangReceiver;/*网络状态变化的广播接收器*/
+
     private View mTipView;
+
     private WindowManager mWindowManager;
     private WindowManager.LayoutParams mLayoutParams;
 
+    private WeakReference<Activity> weakRefActivity=null;
 
 
     protected abstract int initContentView();
@@ -54,6 +72,9 @@ public abstract class BaseActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        weakRefActivity=new WeakReference<Activity>(this);
+        ActivityCollector.add(weakRefActivity);
         //StatusUtil.StatusBarLightMode(this);
         setContentView(initContentView());
         initState();
@@ -195,7 +216,6 @@ public abstract class BaseActivity extends AppCompatActivity {
             } else {
                 if (mTipView.getParent() == null) {
                     mWindowManager.addView(mTipView, mLayoutParams);
-
                 }
             }
         }
@@ -212,6 +232,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         Timber.d("网络发生变化:" + event.toString());
 
         mNetConnected = event.isConnected;
+        MCloudApp.setIsNetworkConnected(mNetConnected);
         netStateChangedUI(event.isConnected);
     }
 
@@ -223,6 +244,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        ActivityCollector.remove(weakRefActivity);
         EventBus.getDefault().unregister(this);
         unregisterReceiver(mNetWorkChangReceiver);
     }

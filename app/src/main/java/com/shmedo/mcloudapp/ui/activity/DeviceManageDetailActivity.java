@@ -15,6 +15,7 @@ import com.scwang.smartrefresh.layout.footer.ClassicsFooter;
 import com.scwang.smartrefresh.layout.header.ClassicsHeader;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 import com.scwang.smartrefresh.layout.listener.OnRefreshLoadMoreListener;
+import com.shmedo.mcloudapp.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.adapter.QueryProjectDeviceAdapter;
 import com.shmedo.mcloudapp.base.BaseActivity;
@@ -100,7 +101,6 @@ public class DeviceManageDetailActivity extends BaseActivity implements OnRefres
     public static void startActivity(Context context, SystemDataInfo systemDataInfo) {
         Intent intent = new Intent(context, DeviceManageDetailActivity.class);
         intent.putExtra(Extras.QUERY_PROJECT_DEVICE, systemDataInfo);
-        intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         context.startActivity(intent);
     }
 
@@ -166,7 +166,7 @@ public class DeviceManageDetailActivity extends BaseActivity implements OnRefres
         RequestBody body = RequestBody.create(CommonVariable.JSON_TYPE, json);
         MDRetrofit.getInstance()
                 .createService()
-                .QueryProjectDevice(CommonVariable.getAccessToken(), body)
+                .QueryProjectDevice(MCloudApp.getAccessToken(), body)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new BaseObserver<PageResult<ProjectDeviceInfo>>() {

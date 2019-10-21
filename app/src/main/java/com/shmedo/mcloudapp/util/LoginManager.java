@@ -2,7 +2,7 @@ package com.shmedo.mcloudapp.util;
 
 import android.os.Handler;
 
-import com.shmedo.mcloudapp.App;
+import com.shmedo.mcloudapp.MCloudApp;
 import com.shmedo.mcloudapp.entity.UserInfo;
 import com.shmedo.mcloudapp.entity.UserInfoWrapper;
 import com.shmedo.mcloudapp.entity.parameter.SignInParameter;
@@ -104,9 +104,9 @@ public class LoginManager {
                 .subscribe(new BaseObserver<UserInfo>() {
                     @Override
                     public void Success(UserInfo userInfo, String message) {
-                        CommonVariable.setAccessToken(token);
-                        CommonVariable.setAccount(userInfo.getUser().getAccount());
-                        CommonVariable.setCurrentUserInfo(userInfo);
+                        MCloudApp.setAccessToken(token);
+                        MCloudApp.setAccount(userInfo.getUser().getAccount());
+                        MCloudApp.setCurrentUserInfo(userInfo);
 
                         Long id = Long.valueOf(userInfo.getUser().getId());
                         UserInfoWrapper userInfoWrapper = new UserInfoWrapper();
@@ -114,10 +114,10 @@ public class LoginManager {
                         userInfoWrapper.setUserInfo(GsonFactory.getGson().toJson(userInfo));
 
                         DaoManager manager = DaoManager.getInstance();
-                        manager.init(App.getInstance());
+                        manager.init(MCloudApp.getContext());
                         manager.getDaoSession().getUserInfoWrapperDao().insertOrReplace(userInfoWrapper);
 
-                        UserConfig userConfig = UserConfig.getConfig(App.getInstance(), CommonVariable.USER_CONFIG_NAME);
+                        UserConfig userConfig = UserConfig.getConfig(MCloudApp.getContext(), CommonVariable.USER_CONFIG_NAME);
                         if (mAccount != null && mPassword != null) {
                             userConfig.writeString(CommonVariable.UID, mAccount);
                             userConfig.writeString(CommonVariable.PWD, mPassword);

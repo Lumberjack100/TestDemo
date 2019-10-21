@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothManager;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
@@ -13,58 +12,99 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.Toolbar;
+import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.*;
-import butterknife.BindView;
-import butterknife.OnClick;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+import android.widget.Toast;
+
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amap.api.location.AMapLocation;
 import com.amap.api.location.AMapLocationClient;
 import com.amap.api.location.AMapLocationClientOption;
 import com.amap.api.location.AMapLocationListener;
-import com.amap.api.maps.*;
+import com.amap.api.maps.AMap;
+import com.amap.api.maps.AMapOptions;
+import com.amap.api.maps.CameraUpdateFactory;
+import com.amap.api.maps.LocationSource;
+import com.amap.api.maps.MapView;
+import com.amap.api.maps.UiSettings;
 import com.amap.api.maps.model.LatLng;
 import com.amap.api.maps.model.LatLngBounds;
 import com.amap.api.maps.model.Marker;
 import com.amap.api.maps.model.MyLocationStyle;
 import com.github.clans.fab.FloatingActionButton;
 import com.google.gson.reflect.TypeToken;
+import com.shmedo.mcloudapp.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.adapter.InfoWinAdapter;
 import com.shmedo.mcloudapp.base.BaseActivity;
-import com.shmedo.mcloudapp.bluetooth.*;
+import com.shmedo.mcloudapp.bluetooth.BluetoothDeviceFindEventData;
+import com.shmedo.mcloudapp.bluetooth.BluetoothEvent;
+import com.shmedo.mcloudapp.bluetooth.BluetoothEventHandler;
+import com.shmedo.mcloudapp.bluetooth.MdBluetoothManager;
+import com.shmedo.mcloudapp.bluetooth.Message;
 import com.shmedo.mcloudapp.entity.DeviceBasicInfoResult;
 import com.shmedo.mcloudapp.entity.DeviceBasicInfoResultDao;
 import com.shmedo.mcloudapp.entity.StatusInfoResult;
 import com.shmedo.mcloudapp.entity.ble.MDevice;
-import com.shmedo.mcloudapp.entity.cluster.*;
+import com.shmedo.mcloudapp.entity.cluster.ClusterAnotherClickListener;
+import com.shmedo.mcloudapp.entity.cluster.ClusterAnotherRender;
+import com.shmedo.mcloudapp.entity.cluster.ClusterItem;
+import com.shmedo.mcloudapp.entity.cluster.ClusterItemImp;
+import com.shmedo.mcloudapp.entity.cluster.ClusterOverlayMerchant;
 import com.shmedo.mcloudapp.entity.event.MapDeviceEvent;
 import com.shmedo.mcloudapp.entity.event.WifiEvent;
 import com.shmedo.mcloudapp.entity.parameter.LocationResult;
 import com.shmedo.mcloudapp.model.BaseObserver;
 import com.shmedo.mcloudapp.model.MDRetrofit;
 import com.shmedo.mcloudapp.model.common.CommonVariable;
-import com.shmedo.mcloudapp.util.*;
+import com.shmedo.mcloudapp.util.DaoManager;
+import com.shmedo.mcloudapp.util.DensityUtil;
+import com.shmedo.mcloudapp.util.GsonFactory;
+import com.shmedo.mcloudapp.util.StartActivityUtil;
+import com.shmedo.mcloudapp.util.ToastUtil;
 import com.shmedo.mcloudapp.util.bleutil.ByteManagerUtil;
 import com.shmedo.mcloudapp.util.common.MapManagerUtil;
-import com.shmedo.mcloudapp.views.HintDialog;
 import com.shmedo.mcloudapp.views.LoadingDialog;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.schedulers.Schedulers;
-import okhttp3.RequestBody;
+
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
-import timber.log.Timber;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.shmedo.mcloudapp.util.bleutil.Constants.*;
+import butterknife.BindView;
+import butterknife.OnClick;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
+import okhttp3.RequestBody;
+import timber.log.Timber;
+
+import static com.shmedo.mcloudapp.util.bleutil.Constants.BT_CHARACTERISTICS_FIND_FAIL;
+import static com.shmedo.mcloudapp.util.bleutil.Constants.BT_CONNECT;
+import static com.shmedo.mcloudapp.util.bleutil.Constants.BT_DISCONNECTED;
+import static com.shmedo.mcloudapp.util.bleutil.Constants.BT_ENABLE_READ_FAIL;
+import static com.shmedo.mcloudapp.util.bleutil.Constants.BT_ENABLE_READ_SUCCESS;
+import static com.shmedo.mcloudapp.util.bleutil.Constants.BT_MESSAGE_WRITE_FAIL;
+import static com.shmedo.mcloudapp.util.bleutil.Constants.BT_MESSAGE_WRITE_SUCCESS;
+import static com.shmedo.mcloudapp.util.bleutil.Constants.BT_RECOVERY_SUCCESS;
+import static com.shmedo.mcloudapp.util.bleutil.Constants.BT_REQUEST_MTU_FAIL;
+import static com.shmedo.mcloudapp.util.bleutil.Constants.BT_SERVICE_FIND_FAIL;
+import static com.shmedo.mcloudapp.util.bleutil.Constants.BT_WRITE_TIME_OUT;
+import static com.shmedo.mcloudapp.util.bleutil.Constants.MESSAGE_RESPONSE_REBOOT_DEVICE;
+import static com.shmedo.mcloudapp.util.bleutil.Constants.MESSAGE_RESPONSE_SAVE_SETTINGS_SUCCESS;
+import static com.shmedo.mcloudapp.util.bleutil.Constants.MESSAGE_RESPONSE_TIME_OUT;
+import static com.shmedo.mcloudapp.util.bleutil.Constants.REFRESH_RUN_STATE;
+import static com.shmedo.mcloudapp.util.bleutil.Constants.VERIFY_RESULT;
 
 public class MainActivity extends BaseActivity implements
         LocationSource, AMapLocationListener {
@@ -315,7 +355,7 @@ public class MainActivity extends BaseActivity implements
         RequestBody body = RequestBody.create(CommonVariable.JSON_TYPE, currentCompanyID);
         MDRetrofit.getInstance()
                 .createService()
-                .QueryDeviceBasicInfoList(CommonVariable.getAccessToken(), body)
+                .QueryDeviceBasicInfoList(MCloudApp.getAccessToken(), body)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new BaseObserver<List<DeviceBasicInfoResult>>() {
@@ -325,7 +365,7 @@ public class MainActivity extends BaseActivity implements
 
                         if (null != infoList && infoList.size() != 0) {
                             for (DeviceBasicInfoResult deviceBasicInfoResult : infoList) {
-                                deviceBasicInfoResult.setAccount(CommonVariable.getAccount());
+                                deviceBasicInfoResult.setAccount(MCloudApp.getAccount());
                             }
                             manager.getDaoSession().getDeviceBasicInfoResultDao().insertOrReplaceInTx(infoList);
                         }
@@ -349,7 +389,7 @@ public class MainActivity extends BaseActivity implements
         return manager.getDaoSession()
                 .getDeviceBasicInfoResultDao()
                 .queryBuilder()
-                .where(DeviceBasicInfoResultDao.Properties.GpsLocation.notEq(""), DeviceBasicInfoResultDao.Properties.Account.eq(CommonVariable.getAccount()))
+                .where(DeviceBasicInfoResultDao.Properties.GpsLocation.notEq(""), DeviceBasicInfoResultDao.Properties.Account.eq(MCloudApp.getAccount()))
                 .list();
     }
 
@@ -898,7 +938,7 @@ public class MainActivity extends BaseActivity implements
         result.setGpsLocation(installLocation);
         result.setInstallLocation(installLocation);
         result.setSecurityNO(null);
-        result.setAccount(CommonVariable.getAccount());
+        result.setAccount(MCloudApp.getAccount());
         result.setLocal(true);
 
         StatusInfoResult infoResult = new StatusInfoResult();
@@ -912,7 +952,7 @@ public class MainActivity extends BaseActivity implements
         infoResult.setVoltage(0);
         infoResult.setGprs(0);
         infoResult.setSignal(0);
-        infoResult.setAccount(CommonVariable.getAccount());
+        infoResult.setAccount(MCloudApp.getAccount());
         infoResult.setLocal(true);
 
         manager.getDaoSession().getDeviceBasicInfoResultDao().insertOrReplaceInTx(result);
@@ -964,20 +1004,29 @@ public class MainActivity extends BaseActivity implements
         });
     }
 
+
+    //声明一个long类型变量：用于存放上一点击“返回键”的时刻
+    private long mExitTime = 0;
+
     @Override
-    public void onBackPressed() {
-        //super.onBackPressed();
-        new HintDialog.Builder(this)
-                .setTitle("提示")
-                .setMessage("你确定要退出吗？")
-                .setConfirmBtnListener(new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                        //finish();
-                        System.exit(0);
-                        //Process.killProcess(Process.myPid());
-                    }
-                }).onCreate().show();
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        //判断用户是否点击了“返回键”
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            //与上次点击返回键时刻作差
+            if ((System.currentTimeMillis() - mExitTime) > 2000) {
+                //大于2000ms则认为是误操作，使用Toast进行提示
+                Toast toast = Toast.makeText(MainActivity.this, "再按一次退出程序", Toast.LENGTH_SHORT);
+                toast.setGravity(Gravity.CENTER, 0, 0);
+                toast.show();
+                //并记录下本次点击“返回键”的时刻，以便下次进行判断
+                mExitTime = System.currentTimeMillis();
+            } else {
+                //小于2000ms则认为是用户确实希望退出程序-调用System.exit()方法进行退出
+                System.exit(0);
+            }
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
     }
+
 }

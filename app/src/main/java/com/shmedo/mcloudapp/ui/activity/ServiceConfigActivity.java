@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.widget.Button;
 
+import com.shmedo.mcloudapp.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.base.BaseActivity;
 import com.shmedo.mcloudapp.model.BaseObserver;
@@ -75,7 +76,7 @@ public class ServiceConfigActivity extends BaseActivity {
         }
         final UserConfig uc = UserConfig.getConfig(this, CommonVariable.USER_CONFIG_NAME);
         uc.writeString(getResources().getString(R.string.service_address), service_text);
-        CommonVariable.setServiceAddress(service_text);
+        MCloudApp.setServiceAddress(service_text);
         dialog.showCancelDialog("正在配置服务器...");
         MDRetrofit.getInstance().createService().getApiVerson()
                 .subscribeOn(Schedulers.io())

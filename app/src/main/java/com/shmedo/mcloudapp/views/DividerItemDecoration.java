@@ -6,7 +6,7 @@ import android.graphics.drawable.Drawable;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
-import com.shmedo.mcloudapp.App;
+import com.shmedo.mcloudapp.MCloudApp;
 import com.shmedo.mcloudapp.R;
 
 /**
@@ -23,7 +23,7 @@ public class DividerItemDecoration extends RecyclerView.ItemDecoration {
     private Drawable mDrawable;
 
     public DividerItemDecoration() {
-        mDrawable = ResCompat.getDrawable(App.getInstance(), R.drawable.divider_recycleview);
+        mDrawable = ResCompat.getDrawable(MCloudApp.getContext(), R.drawable.divider_recycleview);
     }
 
     @Override

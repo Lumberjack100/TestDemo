@@ -14,7 +14,7 @@ import timber.log.Timber;
  * 创建时间:  2019-09-16
  * 描述：    TODO
  */
-public class DebugApplication extends App {
+public class DebugApplication extends MCloudApplication {
 
     @Override
     public void onCreate() {

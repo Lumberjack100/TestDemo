@@ -1,7 +1,6 @@
 package com.shmedo.mcloudapp;
 
 import android.app.Application;
-import android.content.Context;
 
 import com.shmedo.mcloudapp.logging.AppCrashHandler;
 import com.shmedo.mcloudapp.logging.CrashReportingTree;
@@ -17,21 +16,17 @@ import timber.log.Timber;
  * 创建时间:  2019/1/8 09:16
  * 描述：    TODO
  */
-public class App extends Application {
-    private static App mAppInstance;
-    private static Context mContext;
+public class MCloudApplication extends Application {
 
     @Override
     public void onCreate() {
         super.onCreate();
-        mAppInstance = this;
-        mContext = getApplicationContext();
+        MCloudApp.initialize(this);
 
         //初始化蒲公英
         //PgyCrashManager.register(this);
 
-        // crash handler
-        AppCrashHandler.getInstance(this);
+        AppCrashHandler.getInstance(this);// crash handler
 
         //基于 mmap 的高性能通用 key-value 组件
         MMKV.initialize(this);
@@ -53,13 +48,5 @@ public class App extends Application {
         }
     }
 
-
-    public static Context getContext() {
-        return mContext;
-    }
-
-    public static App getInstance() {
-        return mAppInstance;
-    }
 }
 

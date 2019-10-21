@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.shmedo.mcloudapp.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.base.BaseActivity;
 import com.shmedo.mcloudapp.entity.UserInfo;
@@ -45,7 +46,8 @@ import okhttp3.RequestBody;
  * 创建时间:  2019/1/8 10:09
  * 描述：    TODO
  */
-public class LoginActivity extends BaseActivity {
+public class LoginActivity extends BaseActivity
+{
 
     @BindView(R.id.user_image)
     CircleImageView mUserImage;
@@ -107,13 +109,15 @@ public class LoginActivity extends BaseActivity {
 
 
     @Override
-    protected int initContentView() {
+    protected int initContentView()
+    {
         return R.layout.activity_login;
     }
 
 
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         setCheckNetWork(true);
         initDialog();
@@ -122,11 +126,13 @@ public class LoginActivity extends BaseActivity {
     }
 
 
-    private void initDialog() {
+    private void initDialog()
+    {
         manager.init(this);
     }
 
-    private void initView() {
+    private void initView()
+    {
         //设置手机号码最大长度
         mLoginEditTextIphone.setFilters(new InputFilter[]{new InputFilter.LengthFilter(11)});
         //设置手机验证码最大长度
@@ -134,30 +140,35 @@ public class LoginActivity extends BaseActivity {
     }
 
 
-
-    private void initServiceAddressAndUser() {
+    private void initServiceAddressAndUser()
+    {
         userConfig = UserConfig.getConfig(this, CommonVariable.USER_CONFIG_NAME);
         String addr = userConfig.readString(CommonVariable.SERVICE_ADDRESS);
-        if (!TextUtils.isEmpty(addr)) {
-            CommonVariable.setServiceAddress(addr);
+        if (!TextUtils.isEmpty(addr))
+        {
+            MCloudApp.setServiceAddress(addr);
         }
 
         String uid = userConfig.readString(CommonVariable.UID);
         String pwd = userConfig.readString(CommonVariable.PWD);
-        if ((!TextUtils.isEmpty(uid)) && (!TextUtils.isEmpty(pwd))) {
+        if (!TextUtils.isEmpty(uid))
+        {
             mLoginEditTextAccount.setText(uid);
             mLoginEditTextAccount.setSelection(uid.length());
+        }
+
+        if (!TextUtils.isEmpty(pwd))
+        {
             mLoginAccountPassword.setText(pwd);
-            //isAutoLogin = true;
         }
     }
 
 
-    @OnClick({R.id.login_accountLogin, R.id.login_quickLogin, R.id.btn_getCode, R.id.server_config,
-            R.id.btn_login_account, R.id.btn_login_phone, R.id.tv_registered,
-            R.id.tv_forgot_password, R.id.tourists_login})
-    public void onViewClicked(View view) {
-        switch (view.getId()) {
+    @OnClick({R.id.login_accountLogin, R.id.login_quickLogin, R.id.btn_getCode, R.id.server_config, R.id.btn_login_account, R.id.btn_login_phone, R.id.tv_registered, R.id.tv_forgot_password, R.id.tourists_login})
+    public void onViewClicked(View view)
+    {
+        switch (view.getId())
+        {
             case R.id.login_accountLogin:
                 //账号登录
                 mLoginAccountLogin.setTextColor(ContextCompat.getColor(this, R.color.app_color_blue_2));
@@ -183,9 +194,12 @@ public class LoginActivity extends BaseActivity {
             case R.id.btn_getCode:
                 //获取验证码
                 String mPhoneNumber = mLoginEditTextIphone.getText().toString().trim();
-                if (StringUtil.isPhoneNumber(mPhoneNumber)) {
+                if (StringUtil.isPhoneNumber(mPhoneNumber))
+                {
                     sendSmsCode(mPhoneNumber);
-                } else {
+                }
+                else
+                {
                     ToastUtil.showShortToast("手机号输入格式错误！");
                 }
                 break;
@@ -197,19 +211,22 @@ public class LoginActivity extends BaseActivity {
 
             case R.id.btn_login_account:
                 //点击账号登录方式
-                if (TextUtils.isEmpty(CommonVariable.getServiceAddress())) {
+                if (TextUtils.isEmpty(MCloudApp.getServiceAddress()))
+                {
                     ToastUtil.showLongToast("请先配置服务地址！");
                     StartActivityUtil.comeOnBaby(this, ServiceConfigActivity.class);
                     return;
                 }
 
-                if (prepareForLogin(false)) {
+                if (prepareForLogin(false))
+                {
                     return;
                 }
 
                 final String uid = mLoginEditTextAccount.getText() != null ? mLoginEditTextAccount.getText().toString().trim() : null;
                 final String pwd = mLoginAccountPassword.getText() != null ? mLoginAccountPassword.getText().toString().trim() : null;
-                if (TextUtils.isEmpty(uid) || TextUtils.isEmpty(pwd)) {
+                if (TextUtils.isEmpty(uid) || TextUtils.isEmpty(pwd))
+                {
                     ToastUtil.showLongToast("用户名或密码不能为空！");
                     return;
                 }
@@ -218,26 +235,32 @@ public class LoginActivity extends BaseActivity {
 
             case R.id.btn_login_phone:
                 //点击短信登录方式
-                if (TextUtils.isEmpty(CommonVariable.getServiceAddress())) {
+                if (TextUtils.isEmpty(MCloudApp.getServiceAddress()))
+                {
                     ToastUtil.showLongToast("请先配置服务地址！");
                     StartActivityUtil.comeOnBaby(this, ServiceConfigActivity.class);
                     return;
                 }
 
-                if (prepareForLogin(true)) {
+                if (prepareForLogin(true))
+                {
                     return;
                 }
 
                 String code = mLoginPhonePassword.getText() != null ? mLoginPhonePassword.getText().toString().trim() : null;
                 String phoneNumber = mLoginEditTextIphone.getText() != null ? mLoginEditTextIphone.getText().toString().trim() : null;
-                if (TextUtils.isEmpty(code) && TextUtils.isEmpty(phoneNumber)) {
+                if (TextUtils.isEmpty(code) && TextUtils.isEmpty(phoneNumber))
+                {
                     ToastUtil.showShortToast("手机号或验证码不能为空！");
                     return;
                 }
 
-                if (StringUtil.isNumeric(code) && StringUtil.isPhoneNumber(phoneNumber)) {
+                if (StringUtil.isNumeric(code) && StringUtil.isPhoneNumber(phoneNumber))
+                {
                     quickLogin(code, phoneNumber);
-                } else {
+                }
+                else
+                {
                     ToastUtil.showLongToast("手机号或验证码输入格式错误！");
                 }
                 break;
@@ -267,95 +290,100 @@ public class LoginActivity extends BaseActivity {
     /**
      * 快速登录
      */
-    private void quickLogin(String code, String mPhoneNumber) {
+    private void quickLogin(String code, String mPhoneNumber)
+    {
         SignInParameter parameter = new SignInParameter(mPhoneNumber, code);
         String json = GsonFactory.getGson().toJson(parameter);
         RequestBody body = RequestBody.create(CommonVariable.JSON_TYPE, json);
 
         showLoadingDialog("正在登录...");
-        MDRetrofit.getInstance().createService().SmsLogin(body)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new BaseObserver<String>() {
-                    @Override
-                    public void Success(String s, String message) {
-                        dismissLoadingDialog();
-                        if (s.contains("手机号对应的用户不存在")) {
-                            ToastUtil.showShortToast("手机号对应的用户不存在");
-                            //TODO 手机号不存在设置为游客登录
-                        } else {
-                            getMyInfo(s, null, null);
-                        }
-                    }
+        MDRetrofit.getInstance().createService().SmsLogin(body).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new BaseObserver<String>()
+        {
+            @Override
+            public void Success(String s, String message)
+            {
+                dismissLoadingDialog();
+                if (s.contains("手机号对应的用户不存在"))
+                {
+                    ToastUtil.showShortToast("手机号对应的用户不存在");
+                    //TODO 手机号不存在设置为游客登录
+                }
+                else
+                {
+                    getMyInfo(s, null, null);
+                }
+            }
 
-                    @Override
-                    public void Failure(String message) {
-                        dismissLoadingDialog();
-                        ToastUtil.showShortToast(message);
-                    }
-                });
+            @Override
+            public void Failure(String message)
+            {
+                dismissLoadingDialog();
+                ToastUtil.showShortToast(message);
+            }
+        });
     }
 
 
     /**
      * 发送验证码
      */
-    private void sendSmsCode(String mPhoneNumber) {
+    private void sendSmsCode(String mPhoneNumber)
+    {
         String json = GsonFactory.getGson().toJson(mPhoneNumber);
         RequestBody body = RequestBody.create(CommonVariable.JSON_TYPE, json);
 
         showLoadingDialog("正在获取验证码...");
-        MDRetrofit.getInstance()
-                .createService()
-                .sendSmsCode(CommonVariable.APP_KEY, CommonVariable.APP_SECRET, body)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new BaseObserver<String>() {
-                    @Override
-                    public void Success(String s, String message) {
-                        dismissLoadingDialog();
+        MDRetrofit.getInstance().createService().sendSmsCode(CommonVariable.APP_KEY, CommonVariable.APP_SECRET, body).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new BaseObserver<String>()
+        {
+            @Override
+            public void Success(String s, String message)
+            {
+                dismissLoadingDialog();
 
-                        if (s.contains("已发送")) {
-                            MyCountDownTimer timer = new MyCountDownTimer(mBtnGetCode, 60000, 1000);
-                            timer.start();
-                        }
-                    }
+                if (s.contains("已发送"))
+                {
+                    MyCountDownTimer timer = new MyCountDownTimer(mBtnGetCode, 60000, 1000);
+                    timer.start();
+                }
+            }
 
-                    @Override
-                    public void Failure(String message) {
-                        dismissLoadingDialog();
-                        ToastUtil.showLongToast(message);
-                    }
-                });
+            @Override
+            public void Failure(String message)
+            {
+                dismissLoadingDialog();
+                ToastUtil.showLongToast(message);
+            }
+        });
     }
 
 
     /**
      * 账户登录
      */
-    private void accountSingIn(final String uid, final String pwd) {
+    private void accountSingIn(final String uid, final String pwd)
+    {
         SignInParameter parameter = new SignInParameter(uid, pwd);
         parameter.setPassword(MD5Util.MD5(uid + pwd));
         String json = GsonFactory.getGson().toJson(parameter);
         RequestBody body = RequestBody.create(CommonVariable.JSON_TYPE, json);
 
         showLoadingDialog("正在登录...");
-        MDRetrofit.getInstance().createService().getSingIn(body)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new BaseObserver<String>() {
+        MDRetrofit.getInstance().createService().getSingIn(body).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new BaseObserver<String>()
+        {
 
-                    @Override
-                    public void Success(String token, String message) {
-                        getMyInfo(token, uid, pwd);
-                    }
+            @Override
+            public void Success(String token, String message)
+            {
+                getMyInfo(token, uid, pwd);
+            }
 
-                    @Override
-                    public void Failure(String message) {
-                        dismissLoadingDialog();
-                        ToastUtil.showLongToast("登录失败" + message);
-                    }
-                });
+            @Override
+            public void Failure(String message)
+            {
+                dismissLoadingDialog();
+                ToastUtil.showLongToast("登录失败" + message);
+            }
+        });
     }
 
 
@@ -366,66 +394,76 @@ public class LoginActivity extends BaseActivity {
      * @param uid
      * @param pwd
      */
-    private void getMyInfo(final String token, final String uid, final String pwd) {
-        MDRetrofit.getInstance().createService().getMyInfo(token)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new BaseObserver<UserInfo>() {
-                    @Override
-                    public void Success(UserInfo userInfo, String message) {
-                        dismissLoadingDialog();
+    private void getMyInfo(final String token, final String uid, final String pwd)
+    {
+        MDRetrofit.getInstance().createService().getMyInfo(token).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new BaseObserver<UserInfo>()
+        {
+            @Override
+            public void Success(UserInfo userInfo, String message)
+            {
+                dismissLoadingDialog();
 
-                        CommonVariable.setAccessToken(token);
-                        CommonVariable.setAccount(userInfo.getUser().getAccount());
-                        CommonVariable.setCurrentUserInfo(userInfo);
+                MCloudApp.setAccessToken(token);
+                MCloudApp.setAccount(userInfo.getUser().getAccount());
+                MCloudApp.setCurrentUserInfo(userInfo);
 
-                        Long id = Long.valueOf(userInfo.getUser().getId());
-                        userInfoWrapper.setId(id);
-                        userInfoWrapper.setUserInfo(GsonFactory.getGson().toJson(userInfo));
-                        manager.getDaoSession().getUserInfoWrapperDao().insertOrReplace(userInfoWrapper);
+                Long id = Long.valueOf(userInfo.getUser().getId());
+                userInfoWrapper.setId(id);
+                userInfoWrapper.setUserInfo(GsonFactory.getGson().toJson(userInfo));
+                manager.getDaoSession().getUserInfoWrapperDao().insertOrReplace(userInfoWrapper);
 
-                        if (uid != null && pwd != null) {
-                            userConfig.writeString(CommonVariable.UID, uid);
-                            userConfig.writeString(CommonVariable.PWD, pwd);
-                        }
+                if (uid != null && pwd != null)
+                {
+                    userConfig.writeString(CommonVariable.UID, uid);
+                    userConfig.writeString(CommonVariable.PWD, pwd);
+                }
 
-                        Intent in = new Intent(LoginActivity.this, MainActivity.class);
-                        startActivity(in);
-                        finish();
-                    }
+                Intent in = new Intent(LoginActivity.this, MainActivity.class);
+                startActivity(in);
+                finish();
+            }
 
 
-                    @Override
-                    public void Failure(String message) {
-                       dismissLoadingDialog();
-                        ToastUtil.showLongToast("登录失败" + message);
-                    }
-                });
+            @Override
+            public void Failure(String message)
+            {
+                dismissLoadingDialog();
+                ToastUtil.showLongToast("登录失败" + message);
+            }
+        });
     }
 
 
-    private boolean prepareForLogin(boolean isQuicklyLogin) {
+    private boolean prepareForLogin(boolean isQuicklyLogin)
+    {
 
-        if (!isQuicklyLogin) {
-            if (mLoginEditTextAccount.length() == 0) {
+        if (!isQuicklyLogin)
+        {
+            if (mLoginEditTextAccount.length() == 0)
+            {
                 mLoginEditTextAccount.setError("请输入用户名");
                 mLoginEditTextAccount.requestFocus();
                 return true;
             }
-            if (mLoginAccountPassword.length() == 0) {
+            if (mLoginAccountPassword.length() == 0)
+            {
                 mLoginAccountPassword.setError("请输入密码");
                 mLoginAccountPassword.requestFocus();
                 return true;
             }
 
-        } else {
+        }
+        else
+        {
 
-            if (mLoginEditTextIphone.length() == 0) {
+            if (mLoginEditTextIphone.length() == 0)
+            {
                 mLoginEditTextIphone.setError("请输入手机号");
                 mLoginEditTextIphone.requestFocus();
                 return true;
             }
-            if (mLoginPhonePassword.length() == 0) {
+            if (mLoginPhonePassword.length() == 0)
+            {
                 mLoginPhonePassword.setError("请输入验证码");
                 mLoginPhonePassword.requestFocus();
                 return true;

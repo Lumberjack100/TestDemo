@@ -8,7 +8,7 @@ import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.WindowManager;
 
-import com.shmedo.mcloudapp.App;
+import com.shmedo.mcloudapp.MCloudApp;
 
 /**
  * 项目名：  das-config-app
@@ -104,8 +104,8 @@ public class DensityUtil {
     public static boolean isTablet() {
         if (isTablet == false) {
             boolean flag;
-            if (App.getInstance() != null) {
-                flag = (0xf & App.getInstance().getResources()
+            if (MCloudApp.getContext() != null) {
+                flag = (0xf & MCloudApp.getContext().getResources()
                     .getConfiguration().screenLayout) >= 3;
                 isTablet = Boolean.valueOf(flag);
             }
@@ -119,7 +119,7 @@ public class DensityUtil {
 
     public static DisplayMetrics getDisplayMetrics() {
         DisplayMetrics displaymetrics = new DisplayMetrics();
-        ((WindowManager) App.getInstance().getSystemService(
+        ((WindowManager) MCloudApp.getContext().getSystemService(
             Context.WINDOW_SERVICE)).getDefaultDisplay().getMetrics(
             displaymetrics);
         return displaymetrics;

@@ -15,9 +15,9 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
+import com.shmedo.mcloudapp.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.base.BaseFragment;
-import com.shmedo.mcloudapp.model.common.CommonVariable;
 import com.shmedo.mcloudapp.util.ToastUtil;
 import com.shmedo.mcloudapp.views.LoadingDialog;
 import com.shmedo.mcloudapp.views.MyWebView;
@@ -76,7 +76,7 @@ public class QueryDataFragment extends BaseFragment {
     }
 
     private void initData() {
-        if(CommonVariable.isNetworkConnected()){
+        if(MCloudApp.isIsNetworkConnected()){
             initWebView();
         }else{
             ToastUtil.showShortToast("当前网络不可用");

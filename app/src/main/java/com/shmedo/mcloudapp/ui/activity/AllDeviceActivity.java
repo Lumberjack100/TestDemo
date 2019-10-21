@@ -35,7 +35,6 @@ public class AllDeviceActivity extends BaseActivity {
     public static void startActivity(Context context, String deviceInfo) {
         Intent intent = new Intent(context, AllDeviceActivity.class);
         intent.putExtra(Extras.CUR_DEVICE_NAME, deviceInfo);
-        intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         context.startActivity(intent);
     }
 
@@ -43,7 +42,6 @@ public class AllDeviceActivity extends BaseActivity {
         Intent intent = new Intent(context, AllDeviceActivity.class);
         intent.putExtra(Extras.CUR_DEVICE_NAME, deviceInfo);
         intent.putExtra(Extras.DEVICE_MAC_ADDRESS, macAddress);
-        intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         context.startActivity(intent);
     }
 

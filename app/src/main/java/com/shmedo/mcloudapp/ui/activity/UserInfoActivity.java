@@ -1,12 +1,12 @@
 package com.shmedo.mcloudapp.ui.activity;
 
 import android.Manifest;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.View;
@@ -14,7 +14,10 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.shmedo.das.utils.StringUtil;
+import com.shmedo.mcloudapp.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.base.BaseActivity;
 import com.shmedo.mcloudapp.entity.UserInfo;
@@ -22,6 +25,7 @@ import com.shmedo.mcloudapp.entity.parameter.SetUserHeadPhotoParameter;
 import com.shmedo.mcloudapp.model.BaseObserver;
 import com.shmedo.mcloudapp.model.MDRetrofit;
 import com.shmedo.mcloudapp.model.common.CommonVariable;
+import com.shmedo.mcloudapp.util.ActivityCollector;
 import com.shmedo.mcloudapp.util.DaoManager;
 import com.shmedo.mcloudapp.util.FileProviderUtils;
 import com.shmedo.mcloudapp.util.FileUtil;
@@ -31,7 +35,6 @@ import com.shmedo.mcloudapp.util.ImageUtil;
 import com.shmedo.mcloudapp.util.PhotoUtil;
 import com.shmedo.mcloudapp.util.ToastUtil;
 import com.shmedo.mcloudapp.util.XPermissionUtils;
-import com.shmedo.mcloudapp.views.HintDialog;
 import com.shmedo.mcloudapp.views.LoadingDialog;
 import com.shmedo.mcloudapp.views.MyMenu;
 
@@ -101,7 +104,7 @@ public class UserInfoActivity extends BaseActivity {
     private void initData() {
         manager.init(this);
 
-        userInfo = CommonVariable.getCurrentUserInfo();
+        userInfo = MCloudApp.getCurrentUserInfo();
         if (userInfo != null && userInfo.getUser() != null) {
             user = userInfo.getUser();
             if (user.getHeadPhotoPath() != null) {
@@ -147,22 +150,17 @@ public class UserInfoActivity extends BaseActivity {
      * 获取SD卡、相机权限
      */
     private void getSDPermission() {
-        XPermissionUtils.requestPermissionsResult(this, 200, new String[]{
-                        Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                        Manifest.permission.CAMERA,
-                        Manifest.permission.READ_EXTERNAL_STORAGE},
-                new XPermissionUtils.OnPermissionListener() {
-                    @Override
-                    public void onPermissionGranted() {
-                        cameraOrAlbum();
-                    }
+        XPermissionUtils.requestPermissionsResult(this, 200, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE}, new XPermissionUtils.OnPermissionListener() {
+            @Override
+            public void onPermissionGranted() {
+                cameraOrAlbum();
+            }
 
-                    @Override
-                    public void onPermissionDenied() {
-                        XPermissionUtils.showRefusePermissionDialog(UserInfoActivity.this,
-                                getResources().getString(R.string.permission_request_camera_external_storage));
-                    }
-                });
+            @Override
+            public void onPermissionDenied() {
+                XPermissionUtils.showRefusePermissionDialog(UserInfoActivity.this, getResources().getString(R.string.permission_request_camera_external_storage));
+            }
+        });
     }
 
     private void cameraOrAlbum() {
@@ -228,7 +226,7 @@ public class UserInfoActivity extends BaseActivity {
                     Bitmap bitmap = BitmapFactory.decodeStream(getContentResolver().openInputStream(uri));
 //                    mCircleImage.setImageBitmap(bitmap);
                     //压缩后保存，等待上传到服务器
-                    ImageUtil.saveImageToFile(bitmap, CommonVariable.getUserHeadPhotoFileName());
+                    ImageUtil.saveImageToFile(bitmap, MCloudApp.getUserHeadPhotoFileName());
                     //上传用户头像
                     SetUserHeadPhotoTask();
 
@@ -247,7 +245,7 @@ public class UserInfoActivity extends BaseActivity {
      * 上传用户头像
      */
     private void SetUserHeadPhotoTask() {
-        String filePath = CommonVariable.getUserHeadPhotoFileName();
+        String filePath = MCloudApp.getUserHeadPhotoFileName();
         if (StringUtil.isNullOrEmpty(filePath)) {
             return;
         }
@@ -262,29 +260,25 @@ public class UserInfoActivity extends BaseActivity {
         String json = GsonFactory.getGson().toJson(parameter);
         RequestBody body = RequestBody.create(CommonVariable.JSON_TYPE, json);
         mLoadingDialog.showNoCancelDialog("正在上传...");
-        MDRetrofit.getInstance().createService().setUserHeadPhoto(body)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new BaseObserver<String>() {
-                    @Override
-                    public void Success(String s, String message) {
-                        mLoadingDialog.dismiss();
-                        ToastUtil.showLongToast("头像已上传");
+        MDRetrofit.getInstance().createService().setUserHeadPhoto(body).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new BaseObserver<String>() {
+            @Override
+            public void Success(String s, String message) {
+                mLoadingDialog.dismiss();
+                ToastUtil.showLongToast("头像已上传");
 
-                        initUserInfo();
-                    }
+                initUserInfo();
+            }
 
-                    @Override
-                    public void Failure(String message) {
-                        mLoadingDialog.dismiss();
-                        ToastUtil.showLongToast("上传头像失败," + message);
-                    }
-                });
+            @Override
+            public void Failure(String message) {
+                mLoadingDialog.dismiss();
+                ToastUtil.showLongToast("上传头像失败," + message);
+            }
+        });
     }
 
     private void initUserInfo() {
-
-        String userPhotFileName = CommonVariable.getUserHeadPhotoFileName();
+        String userPhotFileName = MCloudApp.getUserHeadPhotoFileName();
         if (StringUtil.isNullOrEmpty(userPhotFileName)) {
             return;
         }
@@ -296,7 +290,7 @@ public class UserInfoActivity extends BaseActivity {
                 mCircleImage.setImageBitmap(bitmap);
             }
         } else {
-            userInfo = CommonVariable.getCurrentUserInfo();
+            userInfo = MCloudApp.getCurrentUserInfo();
             if (userInfo == null) {
                 return;
             }
@@ -313,22 +307,33 @@ public class UserInfoActivity extends BaseActivity {
      * 退出app
      */
     private void exitApp() {
-        new HintDialog.Builder(this)
-                .setMessage("确定注销并退出吗?")
-                .setCancelBtnListener(null)
-                .setConfirmBtnListener(new DialogInterface.OnClickListener() {
+        MaterialDialog.Builder mBuilder = new MaterialDialog.Builder(UserInfoActivity.this)
+                .title("提示")
+                .content(getResources().getString(R.string.exit_login_tip))
+                .negativeText("取消")
+                .positiveText("确定")
+                .negativeColor(getResources().getColor(R.color.font_main))
+                .positiveColor(getResources().getColor(R.color.colorPrimary))
+                .onPositive(new MaterialDialog.SingleButtonCallback() {
                     @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        if (which == -1) {
-                            dialog.cancel();
-                            exitLogin();   //注销账号
-                        }
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        dialog.dismiss();
+
+                        MCloudApp.logout();
+                        ActivityCollector.finishAll();
+                        exitLogin();   //注销账号
                     }
-                })
-                .onCreate().show();
+                });
+
+        MaterialDialog mMaterialDialog = mBuilder.build();
+        mMaterialDialog.show();
     }
 
 
+
+    /**
+     * 跳转到登录页面
+     */
     private void exitLogin() {
         Intent in = new Intent(this, LoginActivity.class);
         in.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);

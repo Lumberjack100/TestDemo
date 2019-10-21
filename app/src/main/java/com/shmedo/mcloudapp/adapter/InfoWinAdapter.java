@@ -9,7 +9,7 @@ import android.widget.TextView;
 import com.amap.api.maps.AMap;
 import com.amap.api.maps.model.LatLng;
 import com.amap.api.maps.model.Marker;
-import com.shmedo.mcloudapp.App;
+import com.shmedo.mcloudapp.MCloudApp;
 import com.shmedo.mcloudapp.R;
 
 /**
@@ -21,7 +21,7 @@ import com.shmedo.mcloudapp.R;
  * 描述：    TODO
  */
 public class InfoWinAdapter implements AMap.InfoWindowAdapter {
-    private Context mContext = App.getContext();
+    private Context mContext = MCloudApp.getContext();
     private LatLng latLng;
     private TextView deviceTypeName;
     private TextView deviceName;

@@ -6,7 +6,7 @@ import android.net.Uri;
 import android.widget.Toast;
 
 import com.amap.api.maps.model.LatLng;
-import com.shmedo.mcloudapp.App;
+import com.shmedo.mcloudapp.MCloudApp;
 
 import java.io.File;
 
@@ -22,7 +22,7 @@ public class NavigationUtils {
     private static Context mContext;
 
     public static void Navigation(LatLng latLng){
-        mContext = App.getContext();
+        mContext = MCloudApp.getContext();
 
 
         if(isInstallPackage("com.autonavi.minimap")){

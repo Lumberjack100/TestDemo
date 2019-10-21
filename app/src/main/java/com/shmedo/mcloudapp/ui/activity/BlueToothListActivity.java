@@ -47,7 +47,6 @@ public class BlueToothListActivity extends Activity {
     public static void startActivity(Context context, List<MDevice> tempList) {
         Intent intent = new Intent(context, BlueToothListActivity.class);
         intent.putExtra(Extras.SCAN_DEVICE_LIST, (Serializable) tempList);
-        intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         context.startActivity(intent);
     }
 

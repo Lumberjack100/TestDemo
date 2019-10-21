@@ -1,6 +1,6 @@
 package com.shmedo.mcloudapp.model;
 
-import com.shmedo.mcloudapp.model.common.CommonVariable;
+import com.shmedo.mcloudapp.MCloudApp;
 
 import java.util.concurrent.TimeUnit;
 
@@ -33,12 +33,12 @@ public class BaseRetrofit {
                 .build();
 
         Timber.i("-----------------------------------------------------");
-        Timber.i("ServiceAddress= " + CommonVariable.getServiceAddress());
+        Timber.i("ServiceAddress= " + MCloudApp.getServiceAddress());
         Timber.i("-----------------------------------------------------");
 
         return new Retrofit.Builder()
                 //设置网络请求的Url地址
-                .baseUrl(CommonVariable.getServiceAddress())
+                .baseUrl(MCloudApp.getServiceAddress())
                 .client(client)
                 //设置数据解析器
                 .addConverterFactory(GsonConverterFactory.create())

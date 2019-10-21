@@ -45,7 +45,7 @@
         android:required="true" />
 
     <application
-        android:name=".App"
+        android:name=".MCloudApplication"
         android:allowBackup="true"
         android:hardwareAccelerated="true"
         android:icon="@mipmap/logo"

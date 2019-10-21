@@ -62,7 +62,6 @@ public class ConfigE60Activity extends BaseActivity {
     public static void startActivity(Context context,  DeviceBasicInfoResult deviceBasicInfoResult) {
         Intent intent = new Intent(context, ConfigE60Activity.class);
         intent.putExtra(Extras.DEVICE_E60, deviceBasicInfoResult);
-        intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         context.startActivity(intent);
     }
 

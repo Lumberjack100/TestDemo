@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.shmedo.mcloudapp.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.base.BaseFragment;
 import com.shmedo.mcloudapp.entity.BasicInfoResult;
@@ -137,7 +138,7 @@ public class DeviceDetailsFragment extends BaseFragment {
 
         String json = GsonFactory.getGson().toJson(deviceId);
         RequestBody body = RequestBody.create(CommonVariable.JSON_TYPE, json);
-        MDRetrofit.getInstance().createService().GetDeviceDetailInfo(CommonVariable.getAccessToken(), body)
+        MDRetrofit.getInstance().createService().GetDeviceDetailInfo(MCloudApp.getAccessToken(), body)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new BaseObserver<DeviceDetailInfo>() {

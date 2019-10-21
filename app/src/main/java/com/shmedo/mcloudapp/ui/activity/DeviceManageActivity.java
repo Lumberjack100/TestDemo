@@ -16,6 +16,7 @@ import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.header.ClassicsHeader;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 import com.scwang.smartrefresh.layout.listener.OnRefreshLoadMoreListener;
+import com.shmedo.mcloudapp.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.adapter.DeviceStatusAdapter;
 import com.shmedo.mcloudapp.adapter.SystemAdapter;
@@ -130,7 +131,7 @@ public class DeviceManageActivity extends BaseActivity implements OnRefreshListe
         RequestBody body = RequestBody.create(CommonVariable.JSON_TYPE, json);
         MDRetrofit.getInstance()
                 .createService()
-                .QueryUserListProject(CommonVariable.getAccessToken(), body)
+                .QueryUserListProject(MCloudApp.getAccessToken(), body)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new BaseObserver<List<SystemDataInfo>>() {
@@ -140,7 +141,7 @@ public class DeviceManageActivity extends BaseActivity implements OnRefreshListe
 
                         if (null != infoList && infoList.size() != 0) {
                             for(SystemDataInfo systemDataInfo : infoList){
-                                systemDataInfo.setAccount(CommonVariable.getAccount());
+                                systemDataInfo.setAccount(MCloudApp.getAccount());
                             }
                             manager.getDaoSession().getSystemDataInfoDao().insertOrReplaceInTx(infoList);
 
@@ -248,7 +249,7 @@ public class DeviceManageActivity extends BaseActivity implements OnRefreshListe
         RequestBody body = RequestBody.create(CommonVariable.JSON_TYPE, currentCompanyID);
         MDRetrofit.getInstance()
                 .createService()
-                .QueryDeviceStatusInfoList(CommonVariable.getAccessToken(), body)
+                .QueryDeviceStatusInfoList(MCloudApp.getAccessToken(), body)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new BaseObserver<List<StatusInfoResult>>() {
@@ -259,7 +260,7 @@ public class DeviceManageActivity extends BaseActivity implements OnRefreshListe
 
                         if (null != infoList && infoList.size() != 0) {
                             for (StatusInfoResult statusInfoResult : infoList) {
-                                statusInfoResult.setAccount(CommonVariable.getAccount());
+                                statusInfoResult.setAccount(MCloudApp.getAccount());
                             }
                             manager.getDaoSession().getStatusInfoResultDao().insertOrReplaceInTx(infoList);
 
@@ -285,7 +286,7 @@ public class DeviceManageActivity extends BaseActivity implements OnRefreshListe
 
     private void queryDeviceStatusList() {
         List<StatusInfoResult> infoList = manager.getDaoSession().getStatusInfoResultDao().queryBuilder()
-                .where(StatusInfoResultDao.Properties.Account.isNotNull(), StatusInfoResultDao.Properties.Account.eq(CommonVariable.getAccount()))
+                .where(StatusInfoResultDao.Properties.Account.isNotNull(), StatusInfoResultDao.Properties.Account.eq(MCloudApp.getAccount()))
                 .list();
 
         if (null != infoList && infoList.size() > 0) {
@@ -454,7 +455,7 @@ public class DeviceManageActivity extends BaseActivity implements OnRefreshListe
      */
     @Override
     public void onRefresh(RefreshLayout refreshLayout) {
-        if (CommonVariable.isNetworkConnected()) {
+        if (MCloudApp.isIsNetworkConnected()) {
             statusInfoList.clear();
             getDeviceList("1");
             refreshLayout.finishRefresh();
