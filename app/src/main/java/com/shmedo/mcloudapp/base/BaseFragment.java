@@ -4,10 +4,12 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.shmedo.mcloudapp.util.XPermissionUtils;
 import com.shmedo.mcloudapp.util.common.HandleBackInterface;
 import com.shmedo.mcloudapp.util.common.HandleBackUtil;
@@ -26,6 +28,11 @@ import timber.log.Timber;
 
 public abstract class BaseFragment extends Fragment implements HandleBackInterface {
 
+    protected MaterialDialog loadingDialog = null;
+
+    protected abstract int initContentView();
+
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -36,16 +43,12 @@ public abstract class BaseFragment extends Fragment implements HandleBackInterfa
     }
 
 
-    protected abstract int initContentView();
-
-
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull
             int[] grantResults) {
         XPermissionUtils.onRequestPermissionsResult(requestCode, permissions, grantResults);
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
-
 
 
     @Override
@@ -61,6 +64,34 @@ public abstract class BaseFragment extends Fragment implements HandleBackInterfa
         super.onPause();
         String name = getClass().getName();
         Timber.d("endPage,Fragment=" + name);
+    }
+
+
+    protected void showLoadingDialog(String tip) {
+        if (loadingDialog != null && loadingDialog.isShowing()) {
+            return;
+        }
+
+        if (loadingDialog == null) {
+            loadingDialog = new MaterialDialog.Builder(getActivity())
+                    .content(TextUtils.isEmpty(tip) ? "正在加载..." : tip)
+                    .progress(true, 0)
+                    .progressIndeterminateStyle(false)
+                    .build();
+            loadingDialog.setCancelable(false);
+            loadingDialog.setCanceledOnTouchOutside(false);
+        }
+
+        if (!loadingDialog.isShowing()) {
+            loadingDialog.show();
+        }
+    }
+
+    protected void dismissLoadingDialog() {
+        if (loadingDialog != null && loadingDialog.isShowing()) {
+            loadingDialog.dismiss();
+            loadingDialog = null;
+        }
     }
 
 

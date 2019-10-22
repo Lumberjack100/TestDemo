@@ -20,7 +20,6 @@ import com.shmedo.mcloudapp.model.MDRetrofit;
 import com.shmedo.mcloudapp.model.common.CommonVariable;
 import com.shmedo.mcloudapp.util.GsonFactory;
 import com.shmedo.mcloudapp.util.ToastUtil;
-import com.shmedo.mcloudapp.views.LoadingDialog;
 
 import java.util.List;
 
@@ -44,72 +43,102 @@ public class DeviceDetailsFragment extends BaseFragment {
 
     @BindView(R.id.name)
     TextView mName;
+
     @BindView(R.id.device_type)
     TextView mDeviceType;
+
     @BindView(R.id.function_model)
     TextView mFunctionModel;
+
     @BindView(R.id.authorization_code)
     TextView mAuthorizationCode;
+
     @BindView(R.id.device_number)
     TextView mDeviceNumber;
+
     @BindView(R.id.production_date)
     TextView mProductionDate;
+
     @BindView(R.id.the_project)
     TextView mTheProject;
+
     @BindView(R.id.cpu_id)
     TextView mCpuId;
+
     @BindView(R.id.firmware_version)
     TextView mFirmwareVersion;
+
     @BindView(R.id.hardware_version)
     TextView mHardwareVersion;
+
     @BindView(R.id.operator_one)
     TextView mOperatorOne;
+
     @BindView(R.id.sim_number_one)
     TextView mSimNumberOne;
+
     @BindView(R.id.port_one)
     TextView mPortOne;
+
     @BindView(R.id.signal_strength_one)
     TextView mSignalStrengthOne;
+
     @BindView(R.id.data_amount_one)
     TextView mDataAmountOne;
+
     @BindView(R.id.operator_two)
     TextView mOperatorTwo;
+
     @BindView(R.id.sim_number_two)
     TextView mSimNumberTwo;
+
     @BindView(R.id.port_two)
     TextView mPortTwo;
+
     @BindView(R.id.signal_strength_two)
     TextView mSignalStrengthTwo;
+
     @BindView(R.id.data_amount_two)
     TextView mDataAmountTwo;
+
     @BindView(R.id.device_status)
     TextView mDeviceStatus;
+
     @BindView(R.id.rain_function)
     TextView mRainFunction;
+
     @BindView(R.id.osmometer_function)
     TextView mOsmometerFunction;
+
     @BindView(R.id.debug_model)
     TextView mDebugModel;
+
     @BindView(R.id.data_interval)
     TextView mDataInterval;
+
     @BindView(R.id.data_communication)
     TextView mDataCommunication;
+
     @BindView(R.id.sensor_type)
     TextView mSensorType;
+
     @BindView(R.id.external_voltage)
     TextView mExternalVoltage;
+
     @BindView(R.id.register_deadline)
     TextView mRegisterDeadline;
+
     @BindView(R.id.internal_temperature)
     TextView mInternalTemperature;
+
     @BindView(R.id.device_position)
     TextView mDevicePosition;
+
     @BindView(R.id.data_center)
     TextView mDataCenter;
 
     private Unbinder unbinder;
 
-    private LoadingDialog mLoadingDialog;
 
     @Override
     protected int initContentView() {
@@ -122,19 +151,13 @@ public class DeviceDetailsFragment extends BaseFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = super.onCreateView(inflater, container, savedInstanceState);
         unbinder = ButterKnife.bind(this, view);
-        initView();
         initData(65);
         return view;
     }
 
 
-    private void initView() {
-        mLoadingDialog = new LoadingDialog(getActivity());
-    }
-
-
     private void initData(int deviceId) {
-        mLoadingDialog.showNoCancelDialog("正在加载。。");
+        showLoadingDialog("正在加载...");
 
         String json = GsonFactory.getGson().toJson(deviceId);
         RequestBody body = RequestBody.create(CommonVariable.JSON_TYPE, json);
@@ -145,14 +168,15 @@ public class DeviceDetailsFragment extends BaseFragment {
 
                     @Override
                     public void Success(DeviceDetailInfo deviceDetailInfo, String message) {
-                        mLoadingDialog.dismiss();
+                        dismissLoadingDialog();
                         setDeviceDetail(deviceDetailInfo);
                     }
 
 
                     @Override
                     public void Failure(String message) {
-                        mLoadingDialog.dismiss();
+                        dismissLoadingDialog();
+
                         Timber.w("服务器连接失败--" + message);
                         ToastUtil.showShortToast("服务器连接失败");
                     }

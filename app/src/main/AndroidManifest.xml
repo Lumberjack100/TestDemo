@@ -2,40 +2,23 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.shmedo.mcloudapp">
-
     <!-- 允许程序打开网络套接字 -->
-    <uses-permission android:name="android.permission.INTERNET" />
-    <!-- 允许程序访问CellID或WiFi热点来获取粗略的位置 -->
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <!-- 允许程序访问精良位置(如GPS) -->
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <!-- 允许程序改变Wi-Fi连接状态 -->
-    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
-    <!-- 允许程序访问Wi-Fi网络状态信息 -->
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-    <!-- 允许程序获取网络状态 -->
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <!-- 允许应用程序访问额外的位置提供命令 -->
-    <uses-permission android:name="android.permission.ACCESS_LOCATION_EXTRA_COMMANDS" />
-    <!-- 允许程序设置内置sd卡的读权限 -->
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <!-- 允许程序设置内置sd卡的写权限 -->
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <!-- 允许程序连接到已配对的蓝牙设备 -->
-    <uses-permission android:name="android.permission.BLUETOOTH" />
-    <!-- 允许程序发现和配对蓝牙设备 -->
-    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
-    <!-- 用于读取手机当前的状态 -->
-    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
-    <!-- 请求访问使用照相设备 -->
-    <uses-permission android:name="android.permission.CAMERA" />
-    <!-- 允许程序录制音频 -->
-    <uses-permission android:name="android.permission.RECORD_AUDIO" />
-    <!-- 用WakeLock使Android应用程序保持后台唤醒 -->
-    <uses-permission android:name="android.permission.WAKE_LOCK" />
-    <!-- 访问闪光灯 -->
-    <uses-permission android:name="android.permission.FLASHLIGHT" />
-    <!-- 允许访问振动设备 -->
+    <uses-permission android:name="android.permission.INTERNET" /> <!-- 允许程序访问CellID或WiFi热点来获取粗略的位置 -->
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" /> <!-- 允许程序访问精良位置(如GPS) -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" /> <!-- 允许程序改变Wi-Fi连接状态 -->
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" /> <!-- 允许程序访问Wi-Fi网络状态信息 -->
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" /> <!-- 允许程序获取网络状态 -->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" /> <!-- 允许应用程序访问额外的位置提供命令 -->
+    <uses-permission android:name="android.permission.ACCESS_LOCATION_EXTRA_COMMANDS" /> <!-- 允许程序设置内置sd卡的读权限 -->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" /> <!-- 允许程序设置内置sd卡的写权限 -->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" /> <!-- 允许程序连接到已配对的蓝牙设备 -->
+    <uses-permission android:name="android.permission.BLUETOOTH" /> <!-- 允许程序发现和配对蓝牙设备 -->
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" /> <!-- 用于读取手机当前的状态 -->
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" /> <!-- 请求访问使用照相设备 -->
+    <uses-permission android:name="android.permission.CAMERA" /> <!-- 允许程序录制音频 -->
+    <uses-permission android:name="android.permission.RECORD_AUDIO" /> <!-- 用WakeLock使Android应用程序保持后台唤醒 -->
+    <uses-permission android:name="android.permission.WAKE_LOCK" /> <!-- 访问闪光灯 -->
+    <uses-permission android:name="android.permission.FLASHLIGHT" /> <!-- 允许访问振动设备 -->
     <uses-permission android:name="android.permission.VIBRATE" />
 
     <uses-feature android:name="android.hardware.camera" />
@@ -58,12 +41,8 @@
 
         <meta-data
             android:name="com.amap.api.v2.apikey"
-            android:value="31d7ee436c402270e11183ce1b5d01dc" />
-
-        <!-- 定位需要的服务 使用2.0的定位需要加上这个 -->
-        <service android:name="com.amap.api.location.APSService" />
-
-        <!-- 兼容7.0 -->
+            android:value="31d7ee436c402270e11183ce1b5d01dc" /> <!-- 定位需要的服务 使用2.0的定位需要加上这个 -->
+        <service android:name="com.amap.api.location.APSService" /> <!-- 兼容7.0 -->
         <provider
             android:name="android.support.v4.content.FileProvider"
             android:authorities="com.shmedo.mcloudapp.FileProvider"
@@ -72,116 +51,98 @@
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths" />
-
         </provider>
 
         <activity android:name=".ui.activity.WelcomeActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".ui.activity.LoginActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:windowSoftInputMode="stateAlwaysHidden|adjustResize" />
-
-        <activity android:name=".ui.activity.MainActivity"
-            android:label="主页面"/>
-
+        <activity
+            android:name=".ui.activity.MainActivity"
+            android:label="主页面" />
         <activity
             android:name=".ui.activity.ServiceConfigActivity"
             android:label="配置服务器"
             android:theme="@style/AppThemeBar"
             android:windowSoftInputMode="stateAlwaysHidden|adjustResize" />
-
         <activity
             android:name=".ui.activity.UserInfoActivity"
             android:label="我的"
             android:theme="@style/AppThemeBar"
             android:windowSoftInputMode="stateAlwaysHidden|adjustResize" />
-
         <activity
             android:name=".ui.activity.ScanAddDeviceActivity"
             android:label="添加设备"
             android:theme="@style/AppThemeBar"
             android:windowSoftInputMode="stateAlwaysHidden|adjustResize" />
-
         <activity
             android:name=".ui.activity.InputDeviceSNActivity"
             android:label="添加设备"
             android:theme="@style/AppThemeBar"
             android:windowSoftInputMode="adjustPan|stateHidden" />
-
         <activity
             android:name=".ui.activity.DeviceManageActivity"
             android:label="设备管理"
             android:theme="@style/AppThemeBar"
             android:windowSoftInputMode="stateAlwaysHidden|adjustResize" />
-
         <activity
             android:name=".ui.activity.SearchDeviceActivity"
             android:label="搜索设备"
             android:theme="@style/AppThemeBar" />
-
         <activity
             android:name=".ui.activity.DeviceManageDetailActivity"
             android:windowSoftInputMode="stateAlwaysHidden|adjustResize" />
-
         <activity
             android:name=".ui.activity.BlueToothListActivity"
             android:configChanges="orientation|keyboardHidden"
             android:label="@string/select_device"
             android:launchMode="singleInstance"
             android:theme="@style/AppTheme.Dialog" />
-
         <activity
             android:name=".ui.activity.WifiConnectionActivity"
             android:configChanges="orientation|keyboardHidden"
             android:launchMode="singleInstance"
             android:theme="@style/AppTheme.Dialog" />
-
         <activity
             android:name=".ui.activity.device.AccessDeviceDetailsActivity"
             android:windowSoftInputMode="stateAlwaysHidden|adjustResize" />
-
         <activity
             android:name=".ui.activity.device.senior.ProductRegistrationActivity"
             android:windowSoftInputMode="stateAlwaysHidden|adjustResize" />
-
         <activity
             android:name=".ui.activity.device.senior.InstructionDebugActivity"
             android:windowSoftInputMode="stateAlwaysHidden|adjustResize" />
-
         <activity
             android:name=".ui.activity.device.GeneralSettingActivity"
             android:windowSoftInputMode="stateAlwaysHidden|adjustResize" />
-
         <activity
             android:name=".ui.activity.device.sensor.SenSorMPSConfigActivity"
             android:windowSoftInputMode="adjustPan|stateHidden" />
-
         <activity
             android:name=".ui.activity.device.sensor.SenSorBGKConfigActivity"
             android:windowSoftInputMode="adjustPan|stateHidden" />
-
         <activity
             android:name=".ui.activity.device.OsmometerConfigActivity"
             android:windowSoftInputMode="adjustPan|stateHidden" />
-
         <activity
             android:name=".ui.activity.device.RainConfigActivity"
             android:windowSoftInputMode="adjustPan|stateHidden" />
-
         <activity
             android:name=".ui.activity.AllDeviceActivity"
             android:windowSoftInputMode="adjustPan|stateHidden" />
-
         <activity
             android:name=".ui.activity.ConfigE60Activity"
             android:label="E60设备配置页面"
             android:windowSoftInputMode="adjustPan|stateHidden" />
+
+        <activity android:name=".ui.activity.ConfigADMEActivity" />
 
     </application>
 

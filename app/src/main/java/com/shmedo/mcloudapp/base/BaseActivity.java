@@ -61,9 +61,11 @@ public abstract class BaseActivity extends AppCompatActivity {
     private View mTipView;
 
     private WindowManager mWindowManager;
+
     private WindowManager.LayoutParams mLayoutParams;
 
     private WeakReference<Activity> weakRefActivity=null;
+
 
 
     protected abstract int initContentView();
@@ -159,14 +161,19 @@ public abstract class BaseActivity extends AppCompatActivity {
             return;
         }
 
-        loadingDialog = new MaterialDialog.Builder(this)
-                .content(TextUtils.isEmpty(tip) ? "正在加载..." : tip)
-                .progress(true, 0)
-                .progressIndeterminateStyle(false)
-                .build();
-        loadingDialog.setCancelable(false);
-        loadingDialog.setCanceledOnTouchOutside(false);
-        loadingDialog.show();
+        if (loadingDialog == null) {
+            loadingDialog = new MaterialDialog.Builder(this)
+                    .content(TextUtils.isEmpty(tip) ? "正在加载..." : tip)
+                    .progress(true, 0)
+                    .progressIndeterminateStyle(false)
+                    .build();
+            loadingDialog.setCancelable(false);
+            loadingDialog.setCanceledOnTouchOutside(false);
+        }
+
+        if (!loadingDialog.isShowing()) {
+            loadingDialog.show();
+        }
     }
 
     protected void dismissLoadingDialog() {

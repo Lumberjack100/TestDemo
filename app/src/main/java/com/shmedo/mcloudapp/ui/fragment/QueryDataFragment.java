@@ -19,7 +19,6 @@ import com.shmedo.mcloudapp.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.base.BaseFragment;
 import com.shmedo.mcloudapp.util.ToastUtil;
-import com.shmedo.mcloudapp.views.LoadingDialog;
 import com.shmedo.mcloudapp.views.MyWebView;
 
 import java.util.Timer;
@@ -39,53 +38,56 @@ import butterknife.Unbinder;
  */
 public class QueryDataFragment extends BaseFragment {
 
-    @BindView(R.id.webView) MyWebView mWebView;
-    Unbinder unbinder;
+    @BindView(R.id.webView)
+    MyWebView mWebView;
 
-    private LoadingDialog mLoadingDialog;
+    private Unbinder unbinder;
+
     private Timer mTimer;
-    private String SENSORDATA_URL="http://chaxun.shmedo.cn";
+
+    private String SENSORDATA_URL = "http://chaxun.shmedo.cn";
     //private String SENSORDATA_URL="http://172.168.5.37:8030/demopage/wode_cexieyi.html";
+
+
     @SuppressLint("HandlerLeak")
-    private Handler mHandler=new Handler(){
-        @Override public void handleMessage(Message msg) {
+    private Handler mHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            if (msg.what==0){
+            if (msg.what == 0) {
                 ToastUtil.showShortToast("当前网络不可用");
-                if (mLoadingDialog.isShowing()){
-                    mLoadingDialog.dismiss();
-                }
+                dismissLoadingDialog();
             }
         }
     };
-    @Override protected int initContentView() {
+
+    @Override
+    protected int initContentView() {
         return R.layout.fragment_query_data;
     }
 
 
-    @Nullable @Override
+    @Nullable
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view =super.onCreateView(inflater, container, savedInstanceState);
-        unbinder = ButterKnife.bind(this,view);
+        View view = super.onCreateView(inflater, container, savedInstanceState);
+        unbinder = ButterKnife.bind(this, view);
         initData();
         return view;
     }
 
-    private void initView() {
-
-    }
 
     private void initData() {
-        if(MCloudApp.isIsNetworkConnected()){
+        if (MCloudApp.isIsNetworkConnected()) {
             initWebView();
-        }else{
+        } else {
             ToastUtil.showShortToast("当前网络不可用");
         }
     }
 
     private void initWebView() {
-        mLoadingDialog = new LoadingDialog(getActivity());
-        mLoadingDialog.showNoCancelDialog("正在加载...");
+        showLoadingDialog("正在加载...");
+
         mWebView.loadUrl(SENSORDATA_URL);
         WebSettings webSettings = mWebView.getSettings();
         webSettings.setJavaScriptCanOpenWindowsAutomatically(true);
@@ -124,33 +126,39 @@ public class QueryDataFragment extends BaseFragment {
             }
 
 
-            @Override public void onLoadResource(WebView view, String url) {
+            @Override
+            public void onLoadResource(WebView view, String url) {
                 super.onLoadResource(view, url);
-                if (url!=null&& url.equals(SENSORDATA_URL)){
+                if (url != null && url.equals(SENSORDATA_URL)) {
                     //startTime();
                 }
             }
 
 
-            @Override public void onPageFinished(WebView view, String url) {
+            @Override
+            public void onPageFinished(WebView view, String url) {
                 super.onPageFinished(view, url);
-                mLoadingDialog.dismiss();
+                dismissLoadingDialog();
             }
         });
 
     }
+
     /**
      * 开启计时
      */
     private void startTime() {
-        TimerTask timerTask=new TimerTask() {
-            @Override public void run() {
+        TimerTask timerTask = new TimerTask() {
+            @Override
+            public void run() {
                 mHandler.sendEmptyMessage(0);
             }
         };
-        mTimer.schedule(timerTask,20000);
+        mTimer.schedule(timerTask, 20000);
     }
-    @Override public void onDestroyView() {
+
+    @Override
+    public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
     }
