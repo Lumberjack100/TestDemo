@@ -33,7 +33,6 @@ import com.shmedo.mcloudapp.ui.activity.device.RainConfigActivity;
 import com.shmedo.mcloudapp.ui.activity.device.sensor.SenSorBGKConfigActivity;
 import com.shmedo.mcloudapp.util.DaoManager;
 import com.shmedo.mcloudapp.util.ToastUtil;
-import com.shmedo.mcloudapp.views.LoadingDialog;
 import com.shmedo.mcloudapp.views.VerticalSwipeRefreshLayout;
 import com.shmedo.mcloudapp.views.editspinner.EditSpinner;
 
@@ -147,15 +146,7 @@ public class ParameterConfigFragment extends BaseFragment
 
     private Unbinder unbinder;
     private String deviceInfo;
-    //private BaseConfigInfoSub baseConfigInfoSub;
-    //private SystemRunStateSub mStateInfoSub;
-    //private QueryOsmometerParameterSubInfo queryOsmometerParameterSubInfo;
-    //private VersionMessageSub mVersionSub;
-    //private GetAllSensorConfigInfo getAllSensorConfigInfo;
-    //private CollectorInfoSub collectorInfoSub;
-    //public static String collectorType = "";
 
-    private LoadingDialog mLoadingDialog;
     private MaterialDialog.Builder mBuilder;
     private MaterialDialog mMaterialDialog;
     private Handler handler;
@@ -204,7 +195,6 @@ public class ParameterConfigFragment extends BaseFragment
     }
 
     private void initView() {
-        mLoadingDialog = new LoadingDialog(getActivity());
         mRefreshLayout.setColorSchemeResources(android.R.color.holo_blue_light,
                 android.R.color.holo_red_light, android.R.color.holo_orange_light,
                 android.R.color.holo_green_light);
@@ -213,6 +203,8 @@ public class ParameterConfigFragment extends BaseFragment
         mRefreshLayout.setOnRefreshListener(this);
         handler = new Handler();
 
+        //TODO 需要查询接口确定设备所属项目
+        mTvProName.setText("xxxx 项目");
         if (mTvLock.getText().equals("已锁定")) {
             mIvLock.setImageResource(R.drawable.icon_close_lock);
             mTvProName.setVisibility(View.VISIBLE);
@@ -224,14 +216,12 @@ public class ParameterConfigFragment extends BaseFragment
             spinnerProjectName.setVisibility(View.VISIBLE);
         }
 
-
         spinnerProjectName.setItemData(systemDataInfoList);
         spinnerProjectName.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
                 if (null != parent.getAdapter()) {
-
                     String projectName = spinnerProjectName.getText();
                     mTvProName.setText(projectName);
                 }
@@ -306,11 +296,6 @@ public class ParameterConfigFragment extends BaseFragment
             for (SystemDataInfo systemDataInfo : infoList) {
                 systemDataInfoList.add(systemDataInfo.getProjName());
                 systemDataInfoHashMap.put(systemDataInfo.getProjName(), systemDataInfo);
-            }
-
-            for (int i = 1; i < 35; i++) {
-
-                systemDataInfoList.add(i + " 测试项目");
             }
         }
     }
@@ -518,7 +503,6 @@ public class ParameterConfigFragment extends BaseFragment
     }
 
     private void setSwitchViewState(boolean isOpen, SwitchView switchView, TextView textView) {
-
         if (isOpen) {
 
             switchView.setOpened(true);

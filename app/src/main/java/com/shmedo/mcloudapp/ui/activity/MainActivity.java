@@ -71,9 +71,7 @@ import com.shmedo.mcloudapp.util.StartActivityUtil;
 import com.shmedo.mcloudapp.util.ToastUtil;
 import com.shmedo.mcloudapp.util.bleutil.ByteManagerUtil;
 import com.shmedo.mcloudapp.util.common.MapManagerUtil;
-import com.shmedo.mcloudapp.views.LoadingDialog;
 
-import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
@@ -158,7 +156,6 @@ public class MainActivity extends BaseActivity implements
     private LatLng myLatLng;
     private boolean followMove = true;
 
-    private LoadingDialog mLoadingDialog;
     private MaterialDialog mMaterialDialog;
     private MaterialDialog.Builder mBuilder;
     private DaoManager manager = DaoManager.getInstance();
@@ -171,7 +168,6 @@ public class MainActivity extends BaseActivity implements
 
     private boolean isBlueModle = true;//当前模式是否是蓝牙模式
     private static boolean isConneted = false;//蓝牙是否已连接
-    private static boolean autoOpenBt = false;
     private List<ClusterItem> clusterItemsMerchant = new ArrayList<>();
     private ClusterOverlayMerchant clusterOverlayMerchant;
     private Map<Integer, Drawable> mBackDrawAblesMerchant = new HashMap<Integer, Drawable>();
@@ -190,19 +186,14 @@ public class MainActivity extends BaseActivity implements
     private Runnable dismssDialogRunnable = new Runnable() {
         @Override
         public void run() {
-            if (mLoadingDialog != null) {
-                mLoadingDialog.dismiss();
-
-                mdBluetoothManager.stopScan();
-                if (list.isEmpty()) {
-                    ToastUtil.showShortToast("未发现设备，请尝试重新扫描");
-                    return;
-                }
-
-                if (!autoOpenBt) {
-                    BlueToothListActivity.startActivity(MainActivity.this, list);
-                }
+            dismissLoadingDialog();
+            mdBluetoothManager.stopScan();
+            if (list.isEmpty()) {
+                ToastUtil.showShortToast("未发现设备，请尝试重新扫描");
+                return;
             }
+
+            BlueToothListActivity.startActivity(MainActivity.this, list);
         }
     };
 
@@ -219,10 +210,6 @@ public class MainActivity extends BaseActivity implements
         //在activity执行onCreate时执行mMapView.onCreate(savedInstanceState)，创建地图
         mMapView.onCreate(savedInstanceState);
 
-        if (!EventBus.getDefault().isRegistered(this)) {
-            EventBus.getDefault().register(this);
-        }
-
         initData();
         hidingConnectionView();
         initMap();
@@ -234,7 +221,6 @@ public class MainActivity extends BaseActivity implements
 
 
     private void initData() {
-        mLoadingDialog = new LoadingDialog(this);
         manager.init(this);
         hander = new Handler();
     }
@@ -332,7 +318,6 @@ public class MainActivity extends BaseActivity implements
                         + aMapLocation.getErrorInfo());
             }
         }
-
     }
 
     @Override
@@ -361,7 +346,6 @@ public class MainActivity extends BaseActivity implements
                 .subscribe(new BaseObserver<List<DeviceBasicInfoResult>>() {
                     @Override
                     public void Success(List<DeviceBasicInfoResult> infoList, String message) {
-                        mLoadingDialog.dismiss();
 
                         if (null != infoList && infoList.size() != 0) {
                             for (DeviceBasicInfoResult deviceBasicInfoResult : infoList) {
@@ -375,7 +359,6 @@ public class MainActivity extends BaseActivity implements
 
                     @Override
                     public void Failure(String message) {
-                        mLoadingDialog.dismiss();
                         Timber.w("服务器连接失败--" + message);
                     }
                 });
@@ -503,7 +486,7 @@ public class MainActivity extends BaseActivity implements
                 break;
 
             case R.id.fab_refresh:
-                ToastUtil.showShortToast("===fab_refresh");
+                ToastUtil.showShortToast("功能开发中...");
                 break;
         }
     }
@@ -525,16 +508,13 @@ public class MainActivity extends BaseActivity implements
             public void onClick(View v) {
                 mDialog.dismiss();
                 if (isBlueModle && !isConneted) {
-                    disconnectDevice();
+                    //搜索附近蓝牙设备
                     startDiscoveryDevice();
-
                     if (null != mBluetoothAdapter && mBluetoothAdapter.isEnabled()) {
-
-                        if (null == mLoadingDialog.getDialog() || !mLoadingDialog.getDialog().isShowing()) {
-                            mLoadingDialog.showCancelDialog("正在获取附近的蓝牙设备...");
-                            hander.postDelayed(dismssDialogRunnable, 10000);
-                        }
+                        showLoadingDialog("正在获取附近的蓝牙设备...");
+                        hander.postDelayed(dismssDialogRunnable, 10000);
                     }
+
                 } else if (isBlueModle && isConneted) {
                     showChangeModle(getResources().getString(R.string.disconnect_bluetooth_device));
                 }
@@ -544,7 +524,6 @@ public class MainActivity extends BaseActivity implements
             @Override
             public void onClick(View v) {
                 mDialog.dismiss();
-
                 Intent intent = new Intent(MainActivity.this, WifiConnectionActivity.class);
                 startActivity(intent);
             }
@@ -556,7 +535,6 @@ public class MainActivity extends BaseActivity implements
             }
         });
     }
-
     /**
      * 初始化蓝牙
      */
@@ -567,6 +545,7 @@ public class MainActivity extends BaseActivity implements
         mdBluetoothManager = MdBluetoothManager.getInstance();
         mdBluetoothManager.setEventHandler(new MdBluetoothEventHandler());
     }
+
 
 
     /**
@@ -687,32 +666,18 @@ public class MainActivity extends BaseActivity implements
         public boolean handleMessage(android.os.Message msg) {
             switch (msg.what) {
                 case BT_CONNECT:
-                    Timber.d("蓝牙连接成功");
                     ToastUtil.showShortToast("蓝牙已连接");
-
-                    if (mLoadingDialog != null) {
-                        mLoadingDialog.dismiss();
-                    }
+                    dismissLoadingDialog();
                     isConneted = true;
                     //startBluAuthenticate();//蓝牙连接成功开始进行验证
                     hander.removeCallbacks(dismssDialogRunnable);
+                    mdBluetoothManager.stopScan();
                     break;
 
                 case BT_DISCONNECTED:
-                    if (isConneted) {
-                        isConneted = false;
-                        if (!isBlueModle) {
-                            //mMenu.findItem(R.id.current_blu)
-                            //    .setIcon(R.drawable.bar_item_offline);
-                        } else {
-                            //mMenu.findItem(R.id.current_blu)
-                            //    .setIcon(R.drawable.bar_item_bt);
-                        }
-                        Timber.d("蓝牙连接已断开");
-                        ToastUtil.showShortToast("蓝牙连接已断开!");
-
-                        disconnectDevice();//非手动断开，清除蓝牙数据
-                    }
+                    ToastUtil.showShortToast("蓝牙连接已断开!");
+                    dismissLoadingDialog();
+                    isConneted = false;
                     break;
 
                 case BT_MESSAGE_WRITE_SUCCESS:
@@ -730,8 +695,6 @@ public class MainActivity extends BaseActivity implements
                 case VERIFY_RESULT:
                     if (msg.obj.equals("1")) {
                         ToastUtil.showShortToast("蓝牙认证通过!");
-
-                        //sendDeviceStateComd();
                     } else {
                         ToastUtil.showShortToast("蓝牙认证失败!");
 
@@ -741,7 +704,6 @@ public class MainActivity extends BaseActivity implements
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
-
                     }
                     break;
 
@@ -750,12 +712,10 @@ public class MainActivity extends BaseActivity implements
                     break;
 
                 case REFRESH_RUN_STATE:
-                    //loadWebView(runState);
                     break;
 
                 case MESSAGE_RESPONSE_SAVE_SETTINGS_SUCCESS:
                     ToastUtil.showShortToast("设置信息已保存！");
-                    //mWebView.loadUrl("javascript:restart()");
                     break;
 
                 case BT_REQUEST_MTU_FAIL:
@@ -792,7 +752,6 @@ public class MainActivity extends BaseActivity implements
 
 
     private void handleDeviceFind(BluetoothDeviceFindEventData eventData) {
-
         if (list.contains(eventData.getNewDevice()) || eventData.getNewDevice().getDevice().getName() == null) {
             return;
         }
@@ -834,16 +793,6 @@ public class MainActivity extends BaseActivity implements
 
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        //在activity执行onDestroy时执行mMapView.onDestroy()，销毁地图
-        mMapView.onDestroy();
-
-        EventBus.getDefault().unregister(this);
-    }
-
-
-    @Override
     protected void onResume() {
         super.onResume();
         //在activity执行onResume时执行mMapView.onResume ()，重新绘制加载地图
@@ -856,6 +805,13 @@ public class MainActivity extends BaseActivity implements
         super.onPause();
         //在activity执行onPause时执行mMapView.onPause ()，暂停地图的绘制
         mMapView.onPause();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        //在activity执行onDestroy时执行mMapView.onDestroy()，销毁地图
+        mMapView.onDestroy();
     }
 
 
@@ -872,19 +828,18 @@ public class MainActivity extends BaseActivity implements
         switch (requestCode) {
             case REQUEST_ENABLE_BT:
                 // 判断蓝牙是否启用
-                if (resultCode == Activity.RESULT_OK) {
-
-                    startDiscoveryDevice();
-
-                } else {
+                if (resultCode != Activity.RESULT_OK) {
                     ToastUtil.showShortToast("蓝牙未启用");
+                    return;
                 }
+                startDiscoveryDevice();
                 break;
 
             default:
                 break;
         }
     }
+
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(WifiEvent events) {
@@ -918,7 +873,6 @@ public class MainActivity extends BaseActivity implements
 
     //添加设备名称
     private void addDeviceOnMap(String[] device) {
-
         //返回的数据有这个值18A095L
         if (null != queryDeviceInList(device[1])) {
             ToastUtil.showShortToast("此设备已存在！");
@@ -928,6 +882,7 @@ public class MainActivity extends BaseActivity implements
         LatLng latLng = myLatLng;
         String installLocation = GsonFactory.getGson().toJson(latLng);
         MapManagerUtil.addMarkerToMap(aMap, latLng, device[2], device[1]);
+
         DeviceBasicInfoResult result = new DeviceBasicInfoResult();
         Long proId = System.currentTimeMillis();
         result.setId(proId);
@@ -1028,5 +983,4 @@ public class MainActivity extends BaseActivity implements
         }
         return super.onKeyDown(keyCode, event);
     }
-
 }

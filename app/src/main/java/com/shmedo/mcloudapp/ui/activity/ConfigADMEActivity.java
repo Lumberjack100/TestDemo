@@ -43,8 +43,8 @@ import com.shmedo.mcloudapp.entity.ble.SystemRunStateSub;
 import com.shmedo.mcloudapp.entity.ble.VersionMessageSub;
 import com.shmedo.mcloudapp.entity.ble.collector.CollectorSensorParamsInfoSub;
 import com.shmedo.mcloudapp.model.Extras;
+import com.shmedo.mcloudapp.ui.fragment.ADMEHomeFragment;
 import com.shmedo.mcloudapp.ui.fragment.DeviceDetailsFragment;
-import com.shmedo.mcloudapp.ui.fragment.ParameterConfigFragment;
 import com.shmedo.mcloudapp.ui.fragment.QueryDataFragment;
 import com.shmedo.mcloudapp.util.ToastUtil;
 import com.shmedo.mcloudapp.util.bleutil.BlueResultParserUtil;
@@ -91,20 +91,13 @@ public class ConfigADMEActivity extends BaseActivity {
     @BindView(R.id.tv_highsetting)
     TextView mTvHighsetting;
 
-    private ParameterConfigFragment parameterConfigFragment;//参数配置
+    private ADMEHomeFragment admeHomeFragment;
     private QueryDataFragment queryDataFragment;        //查询数据
     private DeviceDetailsFragment deviceDetailsFragment;//设备详情
 
-
-    public static boolean isConnected = false;
-    private boolean stopBluetooth = false;
     public static MdBluetoothManager mdBluetoothManager;
     private BluetoothAdapter mBluetoothAdapter;
-
     private Handler hander;
-    private String SN = "";
-    private String deviceInfo;
-    private String macAddress;
 
     public static QueryOsmometerParameterSubInfo queryOsmometerParameterSubInfo;
     public static SystemRunStateSub systemRunStateSub;
@@ -119,12 +112,15 @@ public class ConfigADMEActivity extends BaseActivity {
     public static SetRainAccuryPage.SetRianAccuryParameter setRianAccuryParameter = new SetRainAccuryPage.SetRianAccuryParameter();
     public static SetRainSelectPage.SetSelectRainParameter setSelectRainParameter = new SetRainSelectPage.SetSelectRainParameter();
     public static DeviceLockStatusSub deviceLockStatusSub;
-
     public static List<CollectorSensorParamsInfoSub> mCollectorParamsInfoSubList = new ArrayList<>();
     public static CollectorSensorParamsInfoSub mCollectorParamsInfoSub;
-
     public static String collectorType = "";//采集器编号
     public static String lockStatus = "";
+    public static boolean isBlueConnected = false;//蓝牙设备是否连接
+    private boolean isAutoConnectBlue = true;//是否自动连接蓝牙
+    private String SN = "";
+    private String deviceInfo;
+    private String macAddress;
 
 
     public static void startActivity(Context context, String deviceInfo) {
@@ -207,7 +203,7 @@ public class ConfigADMEActivity extends BaseActivity {
                 break;
 
             case R.id.img_bluetooth:
-                if (isConnected) {
+                if (isBlueConnected) {
                     showChangeModle(getResources().getString(R.string.disconnect_bluetooth_device), "2");
                 } else {
                     connectBluetooth();
@@ -233,8 +229,6 @@ public class ConfigADMEActivity extends BaseActivity {
                 break;
         }
     }
-
-
 
 
     /**
@@ -388,6 +382,7 @@ public class ConfigADMEActivity extends BaseActivity {
 
                 String temp = str.replace("\r\n", "");
                 String result[] = temp.split(",");
+
                 if (result[result.length - 1].equals("lock")) {
                     lockStatus = "lock";
                     startBluAuthenticate();
@@ -396,13 +391,6 @@ public class ConfigADMEActivity extends BaseActivity {
 
                 if (result[result.length - 1].equals("unlock")) {
                     lockStatus = "unlock";
-                    android.os.Message message = new android.os.Message();
-                    message.what = Constants.MESSAGE_LOCK_REBOOT_DEVICE;
-                    mHandler.sendMessage(message);
-                    return;
-                }
-
-                if (str.equals("Equipment Verify OK.\r\n")) {
                     android.os.Message message = new android.os.Message();
                     message.what = Constants.MESSAGE_LOCK_REBOOT_DEVICE;
                     mHandler.sendMessage(message);
@@ -466,6 +454,13 @@ public class ConfigADMEActivity extends BaseActivity {
             android.os.Message message = new android.os.Message();
             message.what = Constants.VERIFY_RESULT;
             message.obj = "0";
+            mHandler.sendMessage(message);
+            return;
+        }
+
+        if (result.equals("Equipment Verify OK.\r\n")) {
+            android.os.Message message = new android.os.Message();
+            message.what = Constants.MESSAGE_LOCK_REBOOT_DEVICE;
             mHandler.sendMessage(message);
             return;
         }
@@ -566,7 +561,7 @@ public class ConfigADMEActivity extends BaseActivity {
                     }
 
                     if (!TextUtils.isEmpty(collectorType)) {
-                        if (!isConnected) {
+                        if (!isBlueConnected) {
                             ToastUtil.showShortToast("蓝牙未连接");
                             return;
                         }
@@ -590,6 +585,7 @@ public class ConfigADMEActivity extends BaseActivity {
                     break;
             }
 
+            //TODO  此处传递的参数待确认，因为InstructionDebugActivity 页面也需要接收事件通知
             EventBus.getDefault().post("ParameterConfigFragment");
 
         } catch (Exception e) {
@@ -603,34 +599,28 @@ public class ConfigADMEActivity extends BaseActivity {
             switch (msg.what) {
                 case Constants.BT_CONNECT:
                     ToastUtil.showShortToast("蓝牙已连接");
-
                     dismissLoadingDialog();
                     mImgBluetooth.setImageDrawable(getResources().getDrawable(R.drawable.bar_item_blu_connect_yellow));
-                    isConnected = true;
-                    stopBluetooth = false;
-                    //isLockStatus();
-                    startBluAuthenticate();//蓝牙连接成功开始进行验证
+                    isBlueConnected = true;
+                    isAutoConnectBlue = true;
                     hander.removeCallbacks(dismssConDialogRunnable);
                     mdBluetoothManager.stopScan();
+                    //isLockStatus();
+                    startBluAuthenticate();//蓝牙连接成功开始进行验证
                     break;
 
                 case Constants.BT_DISCONNECTED:
-                    if (isConnected) {
                         ToastUtil.showShortToast("蓝牙连接已断开!");
-
                         dismissLoadingDialog();
                         mImgBluetooth.setImageDrawable(getResources().getDrawable(R.drawable.bar_item_bt));
-                        isConnected = false;
-                        hander.removeCallbacks(dismssConDialogRunnable);
-                        mdBluetoothManager.stopScan();
-                        if (!stopBluetooth) {
-                            Timber.d("ble 取消连接");
-                            disconnectDevice();
-                            //clearLocalStorage();
-                            //断开蓝牙后重新连接
-                            connectBluetooth();
-                        }
-                    }
+                        isBlueConnected = false;
+//                        if (isAutoConnectBlue) {
+//                            Timber.d("ble 取消连接");
+//                            disconnectDevice();
+//                            //clearLocalStorage();
+//                            //断开蓝牙后重新连接
+//                            connectBluetooth();
+//                        }
                     break;
 
                 case Constants.BT_MESSAGE_WRITE_SUCCESS:
@@ -690,11 +680,9 @@ public class ConfigADMEActivity extends BaseActivity {
                     break;
 
                 case Constants.BT_RECOVERY_SUCCESS:
-                    ToastUtil.showShortToast("已恢复出厂设置！");
                     break;
 
                 case Constants.MESSAGE_RESPONSE_REBOOT_DEVICE:
-                    ToastUtil.showShortToast("已重启系统！");
                     break;
 
                 case Constants.MESSAGE_LOCK_REBOOT_DEVICE:
@@ -719,33 +707,34 @@ public class ConfigADMEActivity extends BaseActivity {
      * 发送蓝牙请求设备信息指令
      */
     public static void sendDeviceStateComd() {
-        if (isConnected) {
-            //获取所有配置  ##333
-            final String allInfoCommand = CommandManager.getInstance().getCommand(CommandType.GET_ALL_SENSOR_CONFIG, null);
-            //系统运行状态 ##014
-            String runstateCommand = CommandManager.getInstance().getCommand(CommandType.SYSTEM_RUN_STATE, null);
-            //查询数字式渗压计参数 ##400
-            String shenyajiCommand = CommandManager.getInstance().getCommand(CommandType.QUERY_OSMOMETER_PARAMETER, null);
-            //版本信息 ##040
-            String versionCommand = CommandManager.getInstance().getCommand(CommandType.VERSION_MESSAGE, null);
-            //获取服务器地址 ##200
-            String serverCommand = CommandManager.getInstance().getCommand(CommandType.SERVER_ADDRESS, null);
-
-            mdBluetoothManager.writeMessage(new Message(UUID.randomUUID().toString(), allInfoCommand, true));
-            Timber.d("发送所有配置指令===" + allInfoCommand);
-
-            mdBluetoothManager.writeMessage(new Message(UUID.randomUUID().toString(), runstateCommand, true));
-            Timber.d("发送系统运行状态指令===" + runstateCommand);
-
-            mdBluetoothManager.writeMessage(new Message(UUID.randomUUID().toString(), shenyajiCommand, true));
-            Timber.d("发送查询渗压计指令===" + shenyajiCommand);
-
-            mdBluetoothManager.writeMessage(new Message(UUID.randomUUID().toString(), versionCommand, true));
-            Timber.d("发送版本信息指令===" + versionCommand);
-
-        } else {
+        if (!isBlueConnected) {
             ToastUtil.showShortToast("蓝牙未连接");
+            return;
         }
+
+
+        //获取所有配置  ##333
+        String allInfoCommand = CommandManager.getInstance().getCommand(CommandType.GET_ALL_SENSOR_CONFIG, null);
+        mdBluetoothManager.writeMessage(new Message(UUID.randomUUID().toString(), allInfoCommand, true));
+        Timber.d("发送所有配置指令===" + allInfoCommand);
+
+        //系统运行状态 ##014
+        String runstateCommand = CommandManager.getInstance().getCommand(CommandType.SYSTEM_RUN_STATE, null);
+        mdBluetoothManager.writeMessage(new Message(UUID.randomUUID().toString(), runstateCommand, true));
+        Timber.d("发送系统运行状态指令===" + runstateCommand);
+
+        //查询数字式渗压计参数 ##400
+        String shenyajiCommand = CommandManager.getInstance().getCommand(CommandType.QUERY_OSMOMETER_PARAMETER, null);
+        mdBluetoothManager.writeMessage(new Message(UUID.randomUUID().toString(), shenyajiCommand, true));
+        Timber.d("发送查询渗压计指令===" + shenyajiCommand);
+
+        //版本信息 ##040
+        String versionCommand = CommandManager.getInstance().getCommand(CommandType.VERSION_MESSAGE, null);
+        mdBluetoothManager.writeMessage(new Message(UUID.randomUUID().toString(), versionCommand, true));
+        Timber.d("发送版本信息指令===" + versionCommand);
+
+        //获取服务器地址 ##200
+        String serverCommand = CommandManager.getInstance().getCommand(CommandType.SERVER_ADDRESS, null);
     }
 
     /**
@@ -782,18 +771,18 @@ public class ConfigADMEActivity extends BaseActivity {
      * @param collectorInfoSub
      */
     private void send101Instruction(CollectorInfoSub collectorInfoSub) {
-        for (int i = 0; i < collectorInfoSub.getAccessSum(); i++) {
-            if (isConnected) {
-                //##101XXYY\r\n：获取XX采集器YY通道的传感器参数
-                String collectorCommand = CommandManager.getInstance().getCommand(CommandType.COLLECTOR_CHANNEL_SENSOR_PARAMETER, null);
-                String count = com.shmedo.mcloudapp.util.StringUtil.formatTwo(i);
-                String collectorResult = collectorCommand.replace("\r\n", "") + collectorType + count + "\r\n";
-                mdBluetoothManager.writeMessage(new Message(UUID.randomUUID().toString(), collectorResult, true));
-                Timber.d("发送101采集器配置指令===" + collectorResult);
+        if (!isBlueConnected) {
+            ToastUtil.showShortToast("蓝牙未连接");
+            return;
+        }
 
-            } else {
-                ToastUtil.showShortToast("蓝牙未连接");
-            }
+        for (int i = 0; i < collectorInfoSub.getAccessSum(); i++) {
+            //##101XXYY\r\n：获取XX采集器YY通道的传感器参数
+            String collectorCommand = CommandManager.getInstance().getCommand(CommandType.COLLECTOR_CHANNEL_SENSOR_PARAMETER, null);
+            String count = com.shmedo.mcloudapp.util.StringUtil.formatTwo(i);
+            String collectorResult = collectorCommand.replace("\r\n", "") + collectorType + count + "\r\n";
+            mdBluetoothManager.writeMessage(new Message(UUID.randomUUID().toString(), collectorResult, true));
+            Timber.d("发送101采集器配置指令===" + collectorResult);
         }
     }
 
@@ -803,12 +792,11 @@ public class ConfigADMEActivity extends BaseActivity {
         switch (requestCode) {
             case REQUEST_ENABLE_BT:
                 // 蓝牙已经开启
-                if (resultCode == Activity.RESULT_OK) {
-                    connectBluetooth();
-
-                } else {
+                if (resultCode != Activity.RESULT_OK) {
                     ToastUtil.showShortToast("蓝牙未启用");
+                    return;
                 }
+                connectBluetooth();
                 break;
 
             default:
@@ -832,8 +820,8 @@ public class ConfigADMEActivity extends BaseActivity {
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                         dialog.dismiss();
-                        isConnected = false;
-                        stopBluetooth = true;
+                        isBlueConnected = false;
+                        isAutoConnectBlue = false;
                         disconnectDevice();
 
                         switch (index) {
@@ -881,13 +869,15 @@ public class ConfigADMEActivity extends BaseActivity {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         switch (i) {
             case 0:
-                parameterConfigFragment = new ParameterConfigFragment();
-                transaction.replace(R.id.sub_content, parameterConfigFragment);
+                admeHomeFragment=new ADMEHomeFragment();
+                transaction.replace(R.id.sub_content, admeHomeFragment);
                 break;
+
             case 1:
                 queryDataFragment = new QueryDataFragment();
                 transaction.replace(R.id.sub_content, queryDataFragment);
                 break;
+
             case 2:
                 deviceDetailsFragment = new DeviceDetailsFragment();
                 transaction.replace(R.id.sub_content, deviceDetailsFragment);
@@ -907,12 +897,12 @@ public class ConfigADMEActivity extends BaseActivity {
 
     @Override
     public void onBackPressed() {
-        if (isConnected) {
+        if (isBlueConnected) {
             showChangeModle(getResources().getString(R.string.finish_activity_disconnect_bluetooth_device), "1");
 
         } else {
-            isConnected = false;
-            stopBluetooth = true;
+            isBlueConnected = false;
+            isAutoConnectBlue = false;
             dismissLoadingDialog();
             hander.removeCallbacks(dismssConDialogRunnable);
             mdBluetoothManager.stopScan();
