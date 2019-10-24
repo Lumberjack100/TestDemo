@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@android:id/text1"
-    android:paddingLeft="35px"
-    android:textColor="@color/font_main"
-    android:textSize="40px"
-    android:singleLine="true"
-    android:text="asdasd"
     android:layout_width="match_parent"
-    android:layout_height="100px"
-    android:gravity="center"
+    android:layout_height="wrap_content"
+    android:minHeight="40dp"
+    android:background="?attr/selectableItemBackground"
     android:ellipsize="marquee"
-    android:background="@color/white"/>
+    android:gravity="center"
+    android:singleLine="true"
+    android:textColor="@color/gray_807B7B"
+    android:textSize="@dimen/text_size_14"
+    tools:text="asdasd" />

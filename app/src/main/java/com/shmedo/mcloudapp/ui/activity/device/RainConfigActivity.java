@@ -34,10 +34,12 @@ public class RainConfigActivity extends BaseActivity {
 
     @BindView(R.id.sp_rain)
     Spinner mSpRain;
+
     @BindView(R.id.btn_confirm_complete)
     Button mBtnConfirmComplete;
 
     private String rainResult;
+
     private ArrayAdapter<String> dataAdapter;
 
     @Override

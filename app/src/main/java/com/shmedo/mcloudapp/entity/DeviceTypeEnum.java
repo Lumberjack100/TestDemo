@@ -12,6 +12,7 @@ public enum DeviceTypeEnum {
     DAS("DAS"),
     DAG("DAG"),
     E60("E60"),
+    ADME("ADME"),
     PVS("PVS");
 
     private String type;
@@ -22,16 +23,30 @@ public enum DeviceTypeEnum {
     }
 
 
-    @Override public String toString() {
+    @Override
+    public String toString() {
         return this.type;
     }
-    public static boolean  value(String type) {
-        switch (type){
-            case "DAS": return true;
-            case "DAG": return true;
-            case "E60": return true;
-            case "PVS": return true;
-            default:    return false;
+
+    public static boolean value(String type) {
+        switch (type) {
+            case "DAS":
+                return true;
+
+            case "DAG":
+                return true;
+
+            case "E60":
+                return true;
+
+            case "PVS":
+                return true;
+
+            case "ADME":
+                return true;
+
+            default:
+                return false;
         }
     }
 }

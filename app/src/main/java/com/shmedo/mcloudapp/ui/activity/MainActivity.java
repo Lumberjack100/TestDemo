@@ -356,8 +356,6 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
     }
 
 
-
-
     //添加设备的 marker 点
     private void addMerchantClustersToMap(final List<DeviceBasicInfoResult> deviceList) {
         LatLng latLng = null;
@@ -787,14 +785,14 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
     }
 
 
-    private void doScanButtonClick(){
+    private void doScanButtonClick() {
         XPermissionUtils.requestPermissionsResult(this, 200, new String[]{
                         Manifest.permission.CAMERA,
                         Manifest.permission.READ_EXTERNAL_STORAGE},
                 new XPermissionUtils.OnPermissionListener() {
                     @Override
                     public void onPermissionGranted() {
-                        ScanActivity.startActivityForResult(MainActivity.this,REQUEST_CODE_SCAN);
+                        ScanActivity.startActivityForResult(MainActivity.this, REQUEST_CODE_SCAN);
                     }
 
                     @Override
@@ -845,7 +843,10 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
 
         if (localData[2].equals("DAS")) {
             //跳转到设备配置页面
-//                AllDeviceActivity.startActivity(ScanAddDeviceActivity.this, results);
+            AllDeviceActivity.startActivity(MainActivity.this, deviceInfo);
+
+        } else if (localData[2].equals("ADME")) {
+            //跳转到设备配置页面
             ConfigADMEActivity.startActivity(MainActivity.this, deviceInfo);
 
         } else if (localData[2].equals("E60")) {

@@ -1,26 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
     <string-array name="data_size">
         <item>无限制</item>
         <item>10条</item>
         <item>30条</item>
         <item>100条</item>
     </string-array>
-    <string-array name="project_name">
-        <item>浙江慈溪梅湖水库大坝在线监测系统</item>
-        <item>云南德宏州S318芒那线公路边坡监测系统</item>
-        <item>贵州瓮福马场平磷石膏库在线安全监测系统</item>
-    </string-array>
+
     <string-array name="bluetooth_debug">
         <item>DEBUG</item>
         <item>INFO</item>
     </string-array>
+
     <string-array name="rain">
         <item>0.1mm</item>
         <item>0.2mm</item>
         <item>0.5mm</item>
     </string-array>
+
+    <string-array name="collector_channel">
+        <item>7</item>
+        <item>8</item>
+        <item>9</item>
+        <item>10</item>
+    </string-array>
+
     <string-array name="sensor">
         <item>MPS-M-2000</item>
         <item>TR-3000</item>
@@ -37,4 +41,5 @@
         <item>VWS-15M</item>
         <item>VWD-100</item>
     </string-array>
+
 </resources>

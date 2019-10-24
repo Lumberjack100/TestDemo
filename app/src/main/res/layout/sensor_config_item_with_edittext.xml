@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="40dp"
+    android:background="@color/bg_main_light_white"
+    android:gravity="center_vertical"
+    android:paddingLeft="15dp"
+    android:paddingRight="15dp">
+
+    <ImageView
+        android:id="@+id/itemTipIV"
+        android:layout_width="20dp"
+        android:layout_height="40dp"
+        android:src="@drawable/icon_queste" />
+
+    <TextView
+        android:id="@+id/itemNameTV"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_weight="3"
+        android:textColor="@color/gray_807B7B"
+        android:textSize="@dimen/text_size_14"
+        tools:text="解算时间(单位：秒)" />
+
+    <EditText
+        android:id="@+id/itemValueET"
+        android:layout_width="0dp"
+        android:layout_height="35dp"
+        android:layout_weight="3"
+        android:background="@drawable/shape_edittext_bg_white"
+        android:paddingStart="10dp"
+        android:singleLine="true"
+        android:textColor="@color/gray_807B7B"
+        android:textColorHint="@color/gray_807B7B"
+        android:textSize="@dimen/text_size_14" />
+
+</LinearLayout>

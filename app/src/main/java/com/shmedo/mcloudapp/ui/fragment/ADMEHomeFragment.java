@@ -26,6 +26,7 @@ import com.shmedo.mcloudapp.entity.SystemDataInfoDao;
 import com.shmedo.mcloudapp.model.Extras;
 import com.shmedo.mcloudapp.ui.activity.ConfigADMEActivity;
 import com.shmedo.mcloudapp.ui.activity.device.GeneralSettingActivity;
+import com.shmedo.mcloudapp.ui.activity.device.sensor.SensorADMEConfigActivity;
 import com.shmedo.mcloudapp.util.DaoManager;
 import com.shmedo.mcloudapp.util.ToastUtil;
 import com.shmedo.mcloudapp.views.editspinner.EditSpinner;
@@ -309,6 +310,7 @@ public class ADMEHomeFragment extends BaseFragment {
 
             case R.id.sensor_param_layout:
 
+                SensorADMEConfigActivity.startActivity(getActivity());
                 break;
 
             case R.id.rl_general_setting:
