@@ -75,7 +75,6 @@ public class ConfigADMEActivity extends BaseActivity {
 
     private static final int REQUEST_ENABLE_BT = 0x001;
 
-
     @BindView(R.id.img_bluetooth)
     ImageView mImgBluetooth;
 
@@ -130,7 +129,7 @@ public class ConfigADMEActivity extends BaseActivity {
     }
 
 
-    private Runnable dismssConDialogRunnable = new Runnable() {
+    private Runnable dismssDialogRunnable = new Runnable() {
         @Override
         public void run() {
             dismissLoadingDialog();
@@ -146,7 +145,6 @@ public class ConfigADMEActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         initView();
         initBluetooth();
         getIntentData();
@@ -164,7 +162,7 @@ public class ConfigADMEActivity extends BaseActivity {
             String[] scanData = deviceInfo.split(",");
             SN = scanData[1];
 
-            connectBluetooth();
+            findAndConnectBleDevice();
         }
     }
 
@@ -197,7 +195,6 @@ public class ConfigADMEActivity extends BaseActivity {
     public void onClick(View v) {
 
         switch (v.getId()) {
-
             case R.id.back:
                 onBackPressed();
                 break;
@@ -206,7 +203,7 @@ public class ConfigADMEActivity extends BaseActivity {
                 if (isBlueConnected) {
                     showChangeModle(getResources().getString(R.string.disconnect_bluetooth_device), "2");
                 } else {
-                    connectBluetooth();
+                    findAndConnectBleDevice();
                 }
                 break;
 
@@ -244,32 +241,54 @@ public class ConfigADMEActivity extends BaseActivity {
 
         //蓝牙已打开时，开始扫描蓝牙设备
         mdBluetoothManager.scanDevice(20, this);
+        if (null != mBluetoothAdapter && mBluetoothAdapter.isEnabled()) {
+            showLoadingDialog("正在搜索设备：" + SN);
+            hander.postDelayed(dismssDialogRunnable, 10000);
+        }
     }
 
     /**
-     * 连接蓝牙设备
+     * 搜索并连接指定的蓝牙设备
      */
-    private void connectBluetooth() {
+    private void findAndConnectBleDevice() {
         //通过蓝牙设备列表页面跳转过来时，直接连接设备
         if (!TextUtils.isEmpty(macAddress)) {
             BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(macAddress);
             if (device != null) {
-                mdBluetoothManager.stopScan();
-                mdBluetoothManager.connectDevice(device, this);
-                showLoadingDialog("正在连接设备：" + SN);
-                hander.postDelayed(dismssConDialogRunnable, 10000);
+                doConnect(device);
             }
             return;
         }
 
-        //搜索附近蓝牙设备
+        //搜索附近蓝牙设备，避免指定的设备不在蓝牙范围内
         startDiscoveryDevice();
-        if (null != mBluetoothAdapter && mBluetoothAdapter.isEnabled()) {
-            showLoadingDialog("正在搜索设备：" + SN);
-            hander.postDelayed(dismssConDialogRunnable, 10000);
+    }
+
+
+    /**
+     * 处理发现的蓝牙设备
+     */
+    private void handleDeviceFind(BluetoothDeviceFindEventData eventData) {
+        BluetoothDevice device = eventData.getNewDevice().getDevice();
+        if (device.getName() == null)
+            return;
+
+        if (device.getName().contains(SN)) {
+            dismissLoadingDialog();
+            hander.removeCallbacks(dismssDialogRunnable);
+            doConnect(device);
         }
     }
 
+    /**
+     * ble 建立连接
+     */
+    private void doConnect(BluetoothDevice device) {
+        mdBluetoothManager.stopScan();
+        mdBluetoothManager.connectDevice(device, this);
+        showLoadingDialog("正在连接设备：" + SN);
+        hander.postDelayed(dismssDialogRunnable, 10000);
+    }
 
     /**
      * ble 取消连接
@@ -301,7 +320,7 @@ public class ConfigADMEActivity extends BaseActivity {
 
                 case REQUEST_MTU_FAIL:
                     Timber.d("MTU请求设置失败");
-                    //mHandler.sendEmptyMessage(BT_REQUEST_MTU_FAIL);
+                    mHandler.sendEmptyMessage(Constants.BT_REQUEST_MTU_FAIL);
                     break;
 
                 case SERVICE_FIND_FAIL:
@@ -339,7 +358,6 @@ public class ConfigADMEActivity extends BaseActivity {
                         if (data != null && data.length > 0) {
                             ByteManagerUtil.getInstance().writeByte(data);
                         }
-
                     } catch (Exception ex) {
                         Timber.e(ex);
                     }
@@ -373,48 +391,143 @@ public class ConfigADMEActivity extends BaseActivity {
         }
     }
 
+    public Handler mHandler = new Handler(new Handler.Callback() {
+        @Override
+        public boolean handleMessage(android.os.Message msg) {
+            switch (msg.what) {
+                case Constants.BT_CONNECT:
+                    ToastUtil.showShortToast("蓝牙已连接");
+                    dismissLoadingDialog();
+                    mImgBluetooth.setImageDrawable(getResources().getDrawable(R.drawable.bar_item_blu_connect_yellow));
+                    isBlueConnected = true;
+                    isAutoConnectBlue = true;
+                    hander.removeCallbacks(dismssDialogRunnable);
+                    //isLockStatus();
+                    startBluAuthenticate();//蓝牙连接成功开始进行验证
+                    break;
+
+                case Constants.BT_DISCONNECTED:
+                    ToastUtil.showShortToast("蓝牙连接已断开!");
+                    dismissLoadingDialog();
+                    mImgBluetooth.setImageDrawable(getResources().getDrawable(R.drawable.bar_item_bt));
+                    isBlueConnected = false;
+//                        if (isAutoConnectBlue) {
+//                            //clearLocalStorage();
+//                            //断开蓝牙后重新连接
+//                            findAndConnectBleDevice();
+//                        }
+                    break;
+
+                case Constants.BT_MESSAGE_WRITE_SUCCESS:
+                    ToastUtil.showShortToast("指令已发送");
+                    break;
+
+                case Constants.BT_MESSAGE_WRITE_FAIL:
+                    ToastUtil.showShortToast("指令发送失败");
+                    break;
+
+                case Constants.BT_WRITE_TIME_OUT:
+                    ToastUtil.showShortToast("指令发送超时");
+                    break;
+
+                case Constants.VERIFY_RESULT:
+                    if (msg.obj.equals("1")) {
+                        ToastUtil.showShortToast("蓝牙认证通过!");
+                        sendDeviceStateComd();
+                    } else {
+                        ToastUtil.showShortToast("蓝牙认证失败!");
+                        try {
+                            Thread.sleep(1000);
+                            disconnectDevice();
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    break;
+
+                case Constants.MESSAGE_RESPONSE_TIME_OUT:
+                    ToastUtil.showShortToast("消息等待响应超时！");
+                    break;
+
+                case Constants.REFRESH_RUN_STATE:
+                    break;
+
+                case Constants.MESSAGE_RESPONSE_SAVE_SETTINGS_SUCCESS:
+                    ToastUtil.showShortToast("设置信息已保存！");
+                    break;
+
+                case Constants.BT_REQUEST_MTU_FAIL:
+                    ToastUtil.showShortToast("MTU请求设置失败！");
+                    break;
+
+                case Constants.BT_SERVICE_FIND_FAIL:
+                    ToastUtil.showShortToast("蓝牙服务发现失败！");
+                    break;
+
+                case Constants.BT_CHARACTERISTICS_FIND_FAIL:
+                    ToastUtil.showShortToast("蓝牙特征读取失败！");
+                    break;
+
+                case Constants.BT_ENABLE_READ_FAIL:
+                    ToastUtil.showShortToast("设置读取Descriptor失败！");
+                    break;
+
+                case Constants.BT_RECOVERY_SUCCESS:
+                    break;
+
+                case Constants.MESSAGE_RESPONSE_REBOOT_DEVICE:
+                    break;
+
+                case Constants.MESSAGE_LOCK_REBOOT_DEVICE:
+                    ToastUtil.showShortToast("蓝牙通讯已就绪！");
+                    sendDeviceStateComd();//unlock后发送指令
+                    break;
+
+                default:
+                    break;
+            }
+
+            return false;
+        }
+    });
+
+
     private class MyOnBytePackage implements OnBytePackage {
         @Override
         public void onPackageArrived(final byte[] data) {
             try {
-                String str = new String(data, "utf-8");
-                Timber.d("反馈结果===" + str);
+                String cmdStr = new String(data, "utf-8");
+                Timber.d("应答指令===" + cmdStr);
 
-                String temp = str.replace("\r\n", "");
-                String result[] = temp.split(",");
-
-                if (result[result.length - 1].equals("lock")) {
+                String cmdArray[] = cmdStr.replace("\r\n", "").split(",");
+                if (cmdArray[cmdArray.length - 1].equals("lock")) {
                     lockStatus = "lock";
                     startBluAuthenticate();
                     return;
                 }
 
-                if (result[result.length - 1].equals("unlock")) {
+                if (cmdArray[cmdArray.length - 1].equals("unlock")) {
                     lockStatus = "unlock";
-                    android.os.Message message = new android.os.Message();
-                    message.what = Constants.MESSAGE_LOCK_REBOOT_DEVICE;
-                    mHandler.sendMessage(message);
+                    sendHandleMessage(Constants.MESSAGE_LOCK_REBOOT_DEVICE, null);
                     return;
                 }
 
-                if (str.startsWith("$$224") && str.endsWith("\r\n")) {
-                    if (str.substring(0, str.length() - 2).equals("$$224ce")) {
-                        startBluAuthenticate();//重新 认证
+                if (cmdStr.startsWith("$$224") && cmdStr.endsWith("\r\n")) {
+                    if (cmdStr.equals("$$224ce\r\n")) {
+                        startBluAuthenticate();//重新认证
                         return;
                     }
 
-                    String[] strs = str.substring(0, str.length() - 2).split(",");
-                    byte[] resultData = StringUtil.hexStringToBytes(strs[3]);
+                    byte[] resultData = StringUtil.hexStringToBytes(cmdArray[3]);
                     try {
                         String deskey = "12345678";
                         String strdes = new String(DesUtil.decrypt(resultData, deskey), "utf-8");
                         if (strdes.length() != 0) {
-                            String desStr = StringUtil.bytesToHexString(DesUtil.encrypt(
-                                    (StringUtil.reverseString(strdes.substring(0, 6)) + deskey).getBytes(), deskey));
+                            String desStr = StringUtil.bytesToHexString(DesUtil.encrypt((StringUtil.reverseString(strdes.substring(0, 6)) + deskey).getBytes(), deskey));
                             String cmd = "##222," + SN + ",0," + desStr.toUpperCase() + "\r\n";
                             Message msg = new Message(UUID.randomUUID().toString(), cmd, true);
                             mdBluetoothManager.writeMessage(msg);
-                            Timber.d("===-发送指令===" + cmd);
+                            Timber.d("发送指令===" + cmd);
                             return;
                         }
                     } catch (Exception e) {
@@ -423,23 +536,20 @@ public class ConfigADMEActivity extends BaseActivity {
                     }
                 }
 
-                if (str.startsWith("$$223")) {
-                    String[] verifyReult = str.substring(0, str.length() - 2).split(",");
-                    android.os.Message message = new android.os.Message();
-                    message.what = Constants.VERIFY_RESULT;
-                    message.obj = verifyReult[1];
-                    mHandler.sendMessage(message);
-                    Timber.d("认证结果===" + verifyReult[1]);
+                //设备登录验证结果指令
+                if (cmdStr.startsWith("$$223")&& cmdStr.endsWith("\r\n")) {
+                    sendHandleMessage(Constants.VERIFY_RESULT, cmdArray[1]);
+                    Timber.d("认证结果===" + cmdArray[1]);
                     return;
                 }
 
-                if (str.startsWith("$$225") && str.endsWith("\r\n")) {
-                    deviceLockStatusSub = BlueResultParserUtil.getDeviceLockStatusInfo(str);
+                if (cmdStr.startsWith("$$225") && cmdStr.endsWith("\r\n")) {
+                    deviceLockStatusSub = BlueResultParserUtil.getDeviceLockStatusInfo(cmdStr);
                     lockStatus = (deviceLockStatusSub.getLockStatus() == 0) ? "unlock" : "lock";
                     return;
                 }
 
-                parserResult(str);
+                parserResult(cmdStr);
 
             } catch (Exception ex) {
                 Timber.e(ex);
@@ -451,22 +561,16 @@ public class ConfigADMEActivity extends BaseActivity {
     private void parserResult(String result) {
         //需要验证设备
         if (result.equals("Please verify the equipment.\r\n")) {
-            android.os.Message message = new android.os.Message();
-            message.what = Constants.VERIFY_RESULT;
-            message.obj = "0";
-            mHandler.sendMessage(message);
+            sendHandleMessage(Constants.VERIFY_RESULT, "0");
             return;
         }
 
         if (result.equals("Equipment Verify OK.\r\n")) {
-            android.os.Message message = new android.os.Message();
-            message.what = Constants.MESSAGE_LOCK_REBOOT_DEVICE;
-            mHandler.sendMessage(message);
+            sendHandleMessage(Constants.MESSAGE_LOCK_REBOOT_DEVICE, null);
             return;
         }
 
         try {
-            Timber.d("--------返回指令结果-------" + result);
             CommandType type = StringUtil.extractCommandType(result);
             switch (type) {
                 case SYSTEM_RUN_STATE:  //014
@@ -593,115 +697,15 @@ public class ConfigADMEActivity extends BaseActivity {
         }
     }
 
-    public Handler mHandler = new Handler(new Handler.Callback() {
-        @Override
-        public boolean handleMessage(android.os.Message msg) {
-            switch (msg.what) {
-                case Constants.BT_CONNECT:
-                    ToastUtil.showShortToast("蓝牙已连接");
-                    dismissLoadingDialog();
-                    mImgBluetooth.setImageDrawable(getResources().getDrawable(R.drawable.bar_item_blu_connect_yellow));
-                    isBlueConnected = true;
-                    isAutoConnectBlue = true;
-                    hander.removeCallbacks(dismssConDialogRunnable);
-                    mdBluetoothManager.stopScan();
-                    //isLockStatus();
-                    startBluAuthenticate();//蓝牙连接成功开始进行验证
-                    break;
 
-                case Constants.BT_DISCONNECTED:
-                    ToastUtil.showShortToast("蓝牙连接已断开!");
-                    dismissLoadingDialog();
-                    mImgBluetooth.setImageDrawable(getResources().getDrawable(R.drawable.bar_item_bt));
-                    isBlueConnected = false;
-//                        if (isAutoConnectBlue) {
-//                            Timber.d("ble 取消连接");
-//                            disconnectDevice();
-//                            //clearLocalStorage();
-//                            //断开蓝牙后重新连接
-//                            connectBluetooth();
-//                        }
-                    break;
-
-                case Constants.BT_MESSAGE_WRITE_SUCCESS:
-                    ToastUtil.showShortToast("指令已发送");
-                    break;
-
-                case Constants.BT_MESSAGE_WRITE_FAIL:
-                    ToastUtil.showShortToast("指令发送失败");
-                    break;
-
-                case Constants.BT_WRITE_TIME_OUT:
-                    ToastUtil.showShortToast("指令发送超时");
-                    break;
-
-                case Constants.VERIFY_RESULT:
-                    if (msg.obj.equals("1")) {
-                        ToastUtil.showShortToast("蓝牙认证通过!");
-                        sendDeviceStateComd();
-                    } else {
-                        ToastUtil.showShortToast("蓝牙认证失败!");
-                        try {
-                            Thread.sleep(1000);
-                            disconnectDevice();
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                    break;
-
-                case Constants.MESSAGE_RESPONSE_TIME_OUT:
-                    ToastUtil.showShortToast("消息等待响应超时！");
-                    break;
-
-                case Constants.REFRESH_RUN_STATE:
-                    //loadWebView(runState);
-                    break;
-
-                case Constants.MESSAGE_RESPONSE_SAVE_SETTINGS_SUCCESS:
-                    ToastUtil.showShortToast("设置信息已保存！");
-                    //mWebView.loadUrl("javascript:restart()");
-                    break;
-
-                case Constants.BT_REQUEST_MTU_FAIL:
-                    ToastUtil.showShortToast("MTU请求设置失败！");
-                    break;
-
-                case Constants.BT_SERVICE_FIND_FAIL:
-                    ToastUtil.showShortToast("蓝牙服务发现失败！");
-                    break;
-
-                case Constants.BT_CHARACTERISTICS_FIND_FAIL:
-                    ToastUtil.showShortToast("蓝牙特征读取失败！");
-                    break;
-
-                case Constants.BT_ENABLE_READ_FAIL:
-                    ToastUtil.showShortToast("设置读取Descriptor失败！");
-                    break;
-
-                case Constants.BT_RECOVERY_SUCCESS:
-                    break;
-
-                case Constants.MESSAGE_RESPONSE_REBOOT_DEVICE:
-                    break;
-
-                case Constants.MESSAGE_LOCK_REBOOT_DEVICE:
-                    ToastUtil.showShortToast("蓝牙通讯已就绪！");
-                    sendDeviceStateComd();//unlock后发送指令
-                    break;
-
-                case Constants.MESSAGE_QUERY_OSMOMETER_PARAMETER:
-                    //String result = (String) msg.obj;
-                    //parserResult(result);
-                    break;
-                default:
-                    break;
-            }
-
-            return false;
+    private void sendHandleMessage(int what, Object obj) {
+        android.os.Message message = new android.os.Message();
+        message.what = what;
+        if (obj != null) {
+            message.obj = obj;
         }
-    });
-
+        mHandler.sendMessage(message);
+    }
 
     /**
      * 发送蓝牙请求设备信息指令
@@ -711,7 +715,6 @@ public class ConfigADMEActivity extends BaseActivity {
             ToastUtil.showShortToast("蓝牙未连接");
             return;
         }
-
 
         //获取所有配置  ##333
         String allInfoCommand = CommandManager.getInstance().getCommand(CommandType.GET_ALL_SENSOR_CONFIG, null);
@@ -747,23 +750,6 @@ public class ConfigADMEActivity extends BaseActivity {
         Timber.d("发送指令===" + com);
     }
 
-    /**
-     * 处理发现的蓝牙设备
-     */
-    private void handleDeviceFind(BluetoothDeviceFindEventData eventData) {
-        BluetoothDevice device = eventData.getNewDevice().getDevice();
-        if (device.getName() == null)
-            return;
-
-        if (device.getName().contains(SN)) {
-            dismissLoadingDialog();
-            hander.removeCallbacks(dismssConDialogRunnable);
-            mdBluetoothManager.stopScan();
-            mdBluetoothManager.connectDevice(device, this);
-            showLoadingDialog("正在连接设备：" + SN);
-            hander.postDelayed(dismssConDialogRunnable, 10000);
-        }
-    }
 
     /**
      * 发送101指令
@@ -796,7 +782,7 @@ public class ConfigADMEActivity extends BaseActivity {
                     ToastUtil.showShortToast("蓝牙未启用");
                     return;
                 }
-                connectBluetooth();
+                findAndConnectBleDevice();
                 break;
 
             default:
@@ -904,7 +890,7 @@ public class ConfigADMEActivity extends BaseActivity {
             isBlueConnected = false;
             isAutoConnectBlue = false;
             dismissLoadingDialog();
-            hander.removeCallbacks(dismssConDialogRunnable);
+            hander.removeCallbacks(dismssDialogRunnable);
             mdBluetoothManager.stopScan();
             this.finish();
         }

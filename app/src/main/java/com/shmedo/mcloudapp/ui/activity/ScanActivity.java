@@ -12,7 +12,6 @@ import android.widget.TextView;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.base.BaseActivity;
 import com.shmedo.mcloudapp.util.StartActivityUtil;
-import com.shmedo.mcloudapp.util.ToastUtil;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -89,8 +88,7 @@ public class ScanActivity extends BaseActivity implements QRCodeView.Delegate {
 
     @Override
     public void onScanQRCodeSuccess(String result) {
-        Timber.i("result:" + result);
-        ToastUtil.showShortToast(result);
+        Timber.i("Scan Code result: " + result);
         vibrate();
 
         Intent intent = getIntent();
