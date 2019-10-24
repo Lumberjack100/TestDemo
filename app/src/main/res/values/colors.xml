@@ -3,8 +3,8 @@
     <color name="colorPrimary">#00b3fb</color>
     <color name="colorPrimaryDark">#00b3fb</color>
     <color name="colorAccent">#D81B60</color>
-    <color name="white">#ffffff</color>
-    <color name="black">#ff000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="black">#FF000000</color>
     <color name="red">#fd1b1b</color>
     <color name="font_main">@color/gray_797979</color>
     <color name="secondary_text">#727272</color>
@@ -12,8 +12,8 @@
     <color name="bg_shadow">#00000000</color>
     <color name="divide_line_color">#e2e1e1</color>
     <color name="divider">#B6B6B6</color>
-    <color name="menu_press_bg">#aaffffff</color>
-    <color name="menu_normal_bg">#ffffff</color>
+    <color name="menu_press_bg">#AAFFFFFF</color>
+    <color name="menu_normal_bg">#FFFFFFFF</color>
 
     <!-- common -->
     <color name="app_color_blue">#00A8E1</color>

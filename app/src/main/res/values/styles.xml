@@ -130,4 +130,10 @@
         <item name="android:padding">5dp</item>
     </style>
 
+    <!-- ScanActivity 用到的 theme. -->
+    <style name="ScanActivityTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">#2d2e2a</item>
+        <item name="colorPrimaryDark">#2d2e2a</item>
+    </style>
+
 </resources>

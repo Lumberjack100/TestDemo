@@ -1,5 +1,6 @@
 package com.shmedo.mcloudapp.ui.activity;
 
+import android.Manifest;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothManager;
@@ -12,6 +13,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -48,9 +50,9 @@ import com.shmedo.mcloudapp.bluetooth.BluetoothDeviceFindEventData;
 import com.shmedo.mcloudapp.bluetooth.BluetoothEvent;
 import com.shmedo.mcloudapp.bluetooth.BluetoothEventHandler;
 import com.shmedo.mcloudapp.bluetooth.MdBluetoothManager;
-import com.shmedo.mcloudapp.bluetooth.Message;
 import com.shmedo.mcloudapp.entity.DeviceBasicInfoResult;
 import com.shmedo.mcloudapp.entity.DeviceBasicInfoResultDao;
+import com.shmedo.mcloudapp.entity.DeviceTypeEnum;
 import com.shmedo.mcloudapp.entity.StatusInfoResult;
 import com.shmedo.mcloudapp.entity.ble.MDevice;
 import com.shmedo.mcloudapp.entity.cluster.ClusterAnotherClickListener;
@@ -69,8 +71,10 @@ import com.shmedo.mcloudapp.util.DensityUtil;
 import com.shmedo.mcloudapp.util.GsonFactory;
 import com.shmedo.mcloudapp.util.StartActivityUtil;
 import com.shmedo.mcloudapp.util.ToastUtil;
-import com.shmedo.mcloudapp.util.bleutil.ByteManagerUtil;
+import com.shmedo.mcloudapp.util.XPermissionUtils;
 import com.shmedo.mcloudapp.util.common.MapManagerUtil;
+import com.shmedo.mcloudapp.views.LoadingDialog;
+
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -87,25 +91,14 @@ import io.reactivex.schedulers.Schedulers;
 import okhttp3.RequestBody;
 import timber.log.Timber;
 
-import static com.shmedo.mcloudapp.util.bleutil.Constants.BT_CHARACTERISTICS_FIND_FAIL;
 import static com.shmedo.mcloudapp.util.bleutil.Constants.BT_CONNECT;
 import static com.shmedo.mcloudapp.util.bleutil.Constants.BT_DISCONNECTED;
-import static com.shmedo.mcloudapp.util.bleutil.Constants.BT_ENABLE_READ_FAIL;
-import static com.shmedo.mcloudapp.util.bleutil.Constants.BT_ENABLE_READ_SUCCESS;
-import static com.shmedo.mcloudapp.util.bleutil.Constants.BT_MESSAGE_WRITE_FAIL;
-import static com.shmedo.mcloudapp.util.bleutil.Constants.BT_MESSAGE_WRITE_SUCCESS;
-import static com.shmedo.mcloudapp.util.bleutil.Constants.BT_RECOVERY_SUCCESS;
-import static com.shmedo.mcloudapp.util.bleutil.Constants.BT_REQUEST_MTU_FAIL;
-import static com.shmedo.mcloudapp.util.bleutil.Constants.BT_SERVICE_FIND_FAIL;
-import static com.shmedo.mcloudapp.util.bleutil.Constants.BT_WRITE_TIME_OUT;
-import static com.shmedo.mcloudapp.util.bleutil.Constants.MESSAGE_RESPONSE_REBOOT_DEVICE;
-import static com.shmedo.mcloudapp.util.bleutil.Constants.MESSAGE_RESPONSE_SAVE_SETTINGS_SUCCESS;
-import static com.shmedo.mcloudapp.util.bleutil.Constants.MESSAGE_RESPONSE_TIME_OUT;
-import static com.shmedo.mcloudapp.util.bleutil.Constants.REFRESH_RUN_STATE;
-import static com.shmedo.mcloudapp.util.bleutil.Constants.VERIFY_RESULT;
 
-public class MainActivity extends BaseActivity implements
-        LocationSource, AMapLocationListener {
+public class MainActivity extends BaseActivity implements LocationSource, AMapLocationListener {
+
+    private static final int REQUEST_ENABLE_BT = 0x002;
+
+    private static final int REQUEST_CODE_SCAN = 0x001;
 
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
@@ -172,8 +165,6 @@ public class MainActivity extends BaseActivity implements
     private ClusterOverlayMerchant clusterOverlayMerchant;
     private Map<Integer, Drawable> mBackDrawAblesMerchant = new HashMap<Integer, Drawable>();
     private int clusterRadius = 48;
-
-    private static final int REQUEST_ENABLE_BT = 2;
 
 
     public static void start(Context context) {
@@ -267,7 +258,7 @@ public class MainActivity extends BaseActivity implements
             }
         });
 
-//        addMerchantClustersToMap(queryDeviceInfoList());
+//        addMerchantClustersToMap(queryLocalDeviceList());
     }
 
 
@@ -354,7 +345,7 @@ public class MainActivity extends BaseActivity implements
                             manager.getDaoSession().getDeviceBasicInfoResultDao().insertOrReplaceInTx(infoList);
                         }
 
-                        addMerchantClustersToMap(queryDeviceInfoList());
+                        addMerchantClustersToMap(queryLocalDeviceList());
                     }
 
                     @Override
@@ -365,16 +356,7 @@ public class MainActivity extends BaseActivity implements
     }
 
 
-    /**
-     * 查询位置信息不为空的设备
-     */
-    private List<DeviceBasicInfoResult> queryDeviceInfoList() {
-        return manager.getDaoSession()
-                .getDeviceBasicInfoResultDao()
-                .queryBuilder()
-                .where(DeviceBasicInfoResultDao.Properties.GpsLocation.notEq(""), DeviceBasicInfoResultDao.Properties.Account.eq(MCloudApp.getAccount()))
-                .list();
-    }
+
 
     //添加设备的 marker 点
     private void addMerchantClustersToMap(final List<DeviceBasicInfoResult> deviceList) {
@@ -466,7 +448,7 @@ public class MainActivity extends BaseActivity implements
                 break;
 
             case R.id.RL_scan: //扫一扫
-                ScanAddDeviceActivity.startActivity(this, myLatLng);
+                doScanButtonClick();
                 break;
 
             case R.id.fab_add://添加
@@ -474,7 +456,7 @@ public class MainActivity extends BaseActivity implements
                 break;
 
             case R.id.fab_config://配置
-                showResultDialog("米易通App远程配置功能开发中...");
+                LoadingDialog.showScanResultDialog(this, "米易通App远程配置功能开发中...");
                 break;
 
             case R.id.fab_location://定位
@@ -535,6 +517,7 @@ public class MainActivity extends BaseActivity implements
             }
         });
     }
+
     /**
      * 初始化蓝牙
      */
@@ -545,7 +528,6 @@ public class MainActivity extends BaseActivity implements
         mdBluetoothManager = MdBluetoothManager.getInstance();
         mdBluetoothManager.setEventHandler(new MdBluetoothEventHandler());
     }
-
 
 
     /**
@@ -573,88 +555,14 @@ public class MainActivity extends BaseActivity implements
                 case DEVICE_FIND:
                     handleDeviceFind((BluetoothDeviceFindEventData) event.getEventData());
                     break;
-                case CONNECTED: {
+
+                case CONNECTED:
                     //ByteManagerUtil.init(new MyOnBytePackage());
                     mHandler.sendEmptyMessage(BT_CONNECT);
                     break;
-                }
+
                 case DISCONNECTED:
                     mHandler.sendEmptyMessage(BT_DISCONNECTED);
-
-                    break;
-                case REQUEST_MTU_FAIL: {
-                    Timber.d("MTU请求设置失败");
-                    mHandler.sendEmptyMessage(BT_REQUEST_MTU_FAIL);
-                    break;
-                }
-                case SERVICE_FIND_FAIL: {
-                    Timber.d("蓝牙服务发现失败");
-                    mHandler.sendEmptyMessage(BT_SERVICE_FIND_FAIL);
-                    break;
-                }
-                case CHARACTERISTICS_FIND_FAIL: {
-                    Timber.d("特征读取失败");
-                    mHandler.sendEmptyMessage(BT_CHARACTERISTICS_FIND_FAIL);
-                    break;
-                }
-                case ENABLE_READ_SUCCESS: {
-                    Timber.d("设置读取Descriptor成功");
-                    mHandler.sendEmptyMessage(BT_ENABLE_READ_SUCCESS);
-                    break;
-                }
-                case ENABLE_READ_FAIL: {
-                    Timber.d("设置读取Descriptor失败");
-                    mHandler.sendEmptyMessage(BT_ENABLE_READ_FAIL);
-                    break;
-                }
-                case WRITE_TIME_OUT: {
-                    Timber.d("写入等待超时");
-                    disconnectDevice();
-                    mHandler.sendEmptyMessage(BT_WRITE_TIME_OUT);
-                    break;
-                }
-                case MESSAGE_WRITE_SUCCESS: {
-                    Timber.d("消息写入成功");
-                    mHandler.sendEmptyMessage(BT_MESSAGE_WRITE_SUCCESS);
-                    try {
-                        currentMessageId = ((Message) event.getEventData()).getMessageID();
-                        Timber.d("消息id===" + currentMessageId);
-                        String msg = ((Message) event.getEventData()).getResponseMessage();
-                        byte[] data = (byte[]) msg.getBytes();
-
-                        if (data != null && data.length > 0) {
-                            ByteManagerUtil.getInstance().writeByte(data);
-                        }
-
-                    } catch (Exception ex) {
-                        Timber.e(ex);
-                    }
-
-                    break;
-                }
-                case MESSAGE_RESPONSE_TIME_OUT:
-                    Timber.w("消息等待响应超时");
-                    mHandler.sendEmptyMessage(MESSAGE_RESPONSE_TIME_OUT);
-                    disconnectDevice();
-                    break;
-                case MESSAGE_WRITE_FAIL: {
-                    Timber.w("消息写入失败");
-                    mHandler.sendEmptyMessage(BT_MESSAGE_WRITE_FAIL);
-                    break;
-                }
-                case RESPONSE_WITH_NO_MESSAGE: {
-                    try {
-                        byte[] data = (byte[]) event.getEventData();
-                        if (data != null && data.length > 0) {
-                            ByteManagerUtil.getInstance().writeByte(data);
-                        }
-
-                    } catch (Exception ex) {
-                        Timber.e(ex);
-                    }
-                    break;
-                }
-                default:
                     break;
             }
         }
@@ -678,71 +586,6 @@ public class MainActivity extends BaseActivity implements
                     ToastUtil.showShortToast("蓝牙连接已断开!");
                     dismissLoadingDialog();
                     isConneted = false;
-                    break;
-
-                case BT_MESSAGE_WRITE_SUCCESS:
-                    ToastUtil.showShortToast("已发送指令");
-                    break;
-
-                case BT_MESSAGE_WRITE_FAIL:
-                    ToastUtil.showShortToast("发送指令失败");
-                    break;
-
-                case BT_WRITE_TIME_OUT:
-                    ToastUtil.showShortToast("发送指令超时");
-                    break;
-
-                case VERIFY_RESULT:
-                    if (msg.obj.equals("1")) {
-                        ToastUtil.showShortToast("蓝牙认证通过!");
-                    } else {
-                        ToastUtil.showShortToast("蓝牙认证失败!");
-
-                        try {
-                            Thread.sleep(1000);
-                            disconnectDevice();
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                    break;
-
-                case MESSAGE_RESPONSE_TIME_OUT:
-                    ToastUtil.showShortToast("消息等待响应超时！");
-                    break;
-
-                case REFRESH_RUN_STATE:
-                    break;
-
-                case MESSAGE_RESPONSE_SAVE_SETTINGS_SUCCESS:
-                    ToastUtil.showShortToast("设置信息已保存！");
-                    break;
-
-                case BT_REQUEST_MTU_FAIL:
-                    ToastUtil.showShortToast("MTU请求设置失败！");
-                    break;
-
-                case BT_SERVICE_FIND_FAIL:
-                    ToastUtil.showShortToast("蓝牙服务发现失败！");
-                    break;
-
-                case BT_CHARACTERISTICS_FIND_FAIL:
-                    ToastUtil.showShortToast("蓝牙特征读取失败！");
-                    break;
-
-                case BT_ENABLE_READ_FAIL:
-                    ToastUtil.showShortToast("设置读取Descriptor失败！");
-                    break;
-
-                case BT_RECOVERY_SUCCESS:
-                    ToastUtil.showShortToast("已恢复出厂设置！");
-                    break;
-
-                case MESSAGE_RESPONSE_REBOOT_DEVICE:
-                    ToastUtil.showShortToast("已重启系统！");
-                    break;
-
-                default:
                     break;
             }
 
@@ -779,19 +622,6 @@ public class MainActivity extends BaseActivity implements
     }
 
 
-    private void showResultDialog(String content) {
-        mBuilder = new MaterialDialog.Builder(this);
-        mBuilder.title("温馨提示：")
-                .content(content)
-                .contentColor(Color.parseColor("#000000"))
-                .canceledOnTouchOutside(false)
-                .positiveText("确定");
-        //.negativeText("取消");
-        mMaterialDialog = mBuilder.build();
-        mMaterialDialog.show();
-    }
-
-
     @Override
     protected void onResume() {
         super.onResume();
@@ -820,24 +650,6 @@ public class MainActivity extends BaseActivity implements
         super.onSaveInstanceState(outState);
         //在activity执行onSaveInstanceState时执行mMapView.onSaveInstanceState (outState)，保存地图当前的状态
         mMapView.onSaveInstanceState(outState);
-    }
-
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        switch (requestCode) {
-            case REQUEST_ENABLE_BT:
-                // 判断蓝牙是否启用
-                if (resultCode != Activity.RESULT_OK) {
-                    ToastUtil.showShortToast("蓝牙未启用");
-                    return;
-                }
-                startDiscoveryDevice();
-                break;
-
-            default:
-                break;
-        }
     }
 
 
@@ -871,18 +683,20 @@ public class MainActivity extends BaseActivity implements
         }
     }
 
-    //添加设备名称
+
+    /**
+     * 添加新设备到本地数据库，并且在地图上标记设备
+     */
     private void addDeviceOnMap(String[] device) {
-        //返回的数据有这个值18A095L
-        if (null != queryDeviceInList(device[1])) {
-            ToastUtil.showShortToast("此设备已存在！");
+        if (null != queryExistDevice(device[1])) {
+            Timber.d("此设备已存在本地数据库中！");
             return;
         }
 
         LatLng latLng = myLatLng;
-        String installLocation = GsonFactory.getGson().toJson(latLng);
         MapManagerUtil.addMarkerToMap(aMap, latLng, device[2], device[1]);
 
+        String installLocation = GsonFactory.getGson().toJson(latLng);
         DeviceBasicInfoResult result = new DeviceBasicInfoResult();
         Long proId = System.currentTimeMillis();
         result.setId(proId);
@@ -914,12 +728,25 @@ public class MainActivity extends BaseActivity implements
         manager.getDaoSession().getStatusInfoResultDao().insertOrReplaceInTx(infoResult);
     }
 
-    //查询设备列表中是否有这个设备
-    private DeviceBasicInfoResult queryDeviceInList(String deviceName) {
+    /**
+     * 查询设备列表中是否有这个设备
+     */
+    private DeviceBasicInfoResult queryExistDevice(String deviceName) {
         return manager.getDaoSession().getDeviceBasicInfoResultDao()
                 .queryBuilder()
                 .where(DeviceBasicInfoResultDao.Properties.DeviceName.eq(deviceName))
                 .unique();
+    }
+
+    /**
+     * 查询位置信息不为空的设备
+     */
+    private List<DeviceBasicInfoResult> queryLocalDeviceList() {
+        return manager.getDaoSession()
+                .getDeviceBasicInfoResultDao()
+                .queryBuilder()
+                .where(DeviceBasicInfoResultDao.Properties.GpsLocation.notEq(""), DeviceBasicInfoResultDao.Properties.Account.eq(MCloudApp.getAccount()))
+                .list();
     }
 
     public void showConnectionView(String str) {
@@ -957,6 +784,104 @@ public class MainActivity extends BaseActivity implements
                 }
             }
         });
+    }
+
+
+    private void doScanButtonClick(){
+        XPermissionUtils.requestPermissionsResult(this, 200, new String[]{
+                        Manifest.permission.CAMERA,
+                        Manifest.permission.READ_EXTERNAL_STORAGE},
+                new XPermissionUtils.OnPermissionListener() {
+                    @Override
+                    public void onPermissionGranted() {
+                        ScanActivity.startActivityForResult(MainActivity.this,REQUEST_CODE_SCAN);
+                    }
+
+                    @Override
+                    public void onPermissionDenied() {
+                        XPermissionUtils.showRefusePermissionDialog(MainActivity.this,
+                                getResources().getString(R.string.permission_request_camera_external_storage));
+                    }
+                });
+    }
+
+
+    private void scanResult(String result) {
+        if (result.contains("=")) {
+            String results = result.substring(result.indexOf("=") + 1);
+            scan(results);
+        } else {
+            scan(result);
+        }
+    }
+
+    //MEDO,189150L,DAS
+    private void scan(String deviceInfo) {
+        if (!deviceInfo.startsWith("MEDO")) {
+            LoadingDialog.showScanResultDialog(this, "请扫码正确的设备二维码");
+            return;
+        }
+
+        String[] localData = deviceInfo.split(",");
+        if (localData.length != 3) {
+            LoadingDialog.showScanResultDialog(this, "请扫码正确的设备二维码");
+            return;
+        }
+
+        if (TextUtils.isEmpty(localData[0]) || TextUtils.isEmpty(localData[1]) || TextUtils.isEmpty(localData[2])) {
+            LoadingDialog.showScanResultDialog(this, "二维码信息不能为空");
+            return;
+        }
+
+        if (localData[1].length() != 7) {
+            LoadingDialog.showScanResultDialog(this, "设备标识有误,请扫码正确的设备二维码");
+            return;
+        }
+
+        if (!DeviceTypeEnum.value(localData[2])) {
+            LoadingDialog.showScanResultDialog(this, "此设备类型暂时不支持");
+            return;
+        }
+
+        if (localData[2].equals("DAS")) {
+            //跳转到设备配置页面
+//                AllDeviceActivity.startActivity(ScanAddDeviceActivity.this, results);
+            ConfigADMEActivity.startActivity(MainActivity.this, deviceInfo);
+
+        } else if (localData[2].equals("E60")) {
+            DeviceBasicInfoResult deviceBasicInfoResult = new DeviceBasicInfoResult();
+            deviceBasicInfoResult.setDeviceToken(localData[2]);
+            deviceBasicInfoResult.setDeviceTypeName(localData[1]);
+            ConfigE60Activity.startActivity(MainActivity.this, deviceBasicInfoResult);
+        }
+
+        //如果是新设备，添加到本地数据库并标记在地图上
+        String[] device = deviceInfo.split(",");
+        addDeviceOnMap(device);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            case REQUEST_ENABLE_BT:
+                // 判断蓝牙是否启用
+                if (resultCode != Activity.RESULT_OK) {
+                    ToastUtil.showShortToast("蓝牙未启用");
+                    return;
+                }
+                startDiscoveryDevice();
+                break;
+
+            case REQUEST_CODE_SCAN:
+                if (resultCode == Activity.RESULT_OK) {
+                    if (data != null) {
+                        String content = data.getStringExtra(ScanActivity.CODED_CONTENT);
+                        Timber.d("扫描结果为：" + content);
+                        scanResult(content);
+                    }
+                }
+                break;
+        }
     }
 
 

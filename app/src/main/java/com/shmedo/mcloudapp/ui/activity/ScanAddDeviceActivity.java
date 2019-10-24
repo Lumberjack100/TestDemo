@@ -16,12 +16,8 @@ import com.shmedo.mcloudapp.entity.DeviceTypeEnum;
 import com.shmedo.mcloudapp.entity.event.MapDeviceEvent;
 import com.shmedo.mcloudapp.model.Extras;
 import com.shmedo.mcloudapp.util.StartActivityUtil;
-import com.shmedo.mcloudapp.util.ToastUtil;
 import com.shmedo.mcloudapp.util.XPermissionUtils;
 import com.shmedo.mcloudapp.views.LoadingDialog;
-import com.yzq.zxinglibrary.android.CaptureActivity;
-import com.yzq.zxinglibrary.bean.ZxingConfig;
-import com.yzq.zxinglibrary.common.Constant;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -114,23 +110,23 @@ public class ScanAddDeviceActivity extends BaseActivity {
      * 扫一扫
      */
     private void starScan() {
-        Intent intent = new Intent(ScanAddDeviceActivity.this, CaptureActivity.class);
-        /*ZxingConfig是配置类
-         *可以设置是否显示底部布局，闪光灯，相册，
-         * 是否播放提示音  震动
-         * 设置扫描框颜色等
-         * 也可以不传这个参数
-         * */
-        ZxingConfig config = new ZxingConfig();
-        config.setPlayBeep(true);//是否播放扫描声音 默认为true
-        config.setShake(true);//是否震动  默认为true
-        config.setDecodeBarCode(false);//是否扫描条形码 默认为true
-        config.setReactColor(R.color.app_color_blue_2);//设置扫描框四个角的颜色 默认为白色
-        config.setFrameLineColor(R.color.app_color_blue_2);//设置扫描框边框颜色 默认无色
-        config.setScanLineColor(R.color.app_color_blue_2);//设置扫描线的颜色 默认白色
-        config.setFullScreenScan(false);//是否全屏扫描  默认为true  设为false则只会在扫描框中扫描
-        intent.putExtra(Constant.INTENT_ZXING_CONFIG, config);
-        startActivityForResult(intent, REQUEST_CODE_SCAN);
+//        Intent intent = new Intent(ScanAddDeviceActivity.this, CaptureActivity.class);
+//        /*ZxingConfig是配置类
+//         *可以设置是否显示底部布局，闪光灯，相册，
+//         * 是否播放提示音  震动
+//         * 设置扫描框颜色等
+//         * 也可以不传这个参数
+//         * */
+//        ZxingConfig config = new ZxingConfig();
+//        config.setPlayBeep(true);//是否播放扫描声音 默认为true
+//        config.setShake(true);//是否震动  默认为true
+//        config.setDecodeBarCode(false);//是否扫描条形码 默认为true
+//        config.setReactColor(R.color.app_color_blue_2);//设置扫描框四个角的颜色 默认为白色
+//        config.setFrameLineColor(R.color.app_color_blue_2);//设置扫描框边框颜色 默认无色
+//        config.setScanLineColor(R.color.app_color_blue_2);//设置扫描线的颜色 默认白色
+//        config.setFullScreenScan(false);//是否全屏扫描  默认为true  设为false则只会在扫描框中扫描
+//        intent.putExtra(Constant.INTENT_ZXING_CONFIG, config);
+//        startActivityForResult(intent, REQUEST_CODE_SCAN);
     }
 
 
@@ -142,10 +138,10 @@ public class ScanAddDeviceActivity extends BaseActivity {
         if (requestCode == REQUEST_CODE_SCAN && resultCode == RESULT_OK) {
             if (data != null) {
 
-                String content = data.getStringExtra(Constant.CODED_CONTENT);
-                ToastUtil.showShortToast("扫描结果为：" + content);
-                Timber.d("扫描结果为：" + content);
-                scanResult(content);
+//                String content = data.getStringExtra(Constant.CODED_CONTENT);
+//                ToastUtil.showShortToast("扫描结果为：" + content);
+//                Timber.d("扫描结果为：" + content);
+//                scanResult(content);
             }
         }
     }
@@ -186,8 +182,11 @@ public class ScanAddDeviceActivity extends BaseActivity {
 
             if (localData[2].equals("DAS")) {
                 //跳转到设备配置页面
-                AllDeviceActivity.startActivity(ScanAddDeviceActivity.this, results);
-                
+//                AllDeviceActivity.startActivity(ScanAddDeviceActivity.this, results);
+
+                ConfigADMEActivity.startActivity(ScanAddDeviceActivity.this, results);
+
+
             } else if (localData[2].equals("E60")) {
 
                 DeviceBasicInfoResult deviceBasicInfoResult = new DeviceBasicInfoResult();

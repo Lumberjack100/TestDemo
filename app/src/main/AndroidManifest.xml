@@ -55,6 +55,7 @@
         tools:ignore="AllowBackup,GoogleAppIndexingWarning"
         tools:targetApi="n">
 
+
         <meta-data
             android:name="com.amap.api.v2.apikey"
             android:value="31d7ee436c402270e11183ce1b5d01dc" />
@@ -163,6 +164,9 @@
             android:windowSoftInputMode="adjustPan|stateHidden" />
 
         <activity android:name=".ui.activity.ConfigADMEActivity" />
+
+        <activity android:name=".ui.activity.ScanActivity"
+            android:theme="@style/ScanActivityTheme" />
 
     </application>
 

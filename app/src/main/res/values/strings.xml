@@ -13,7 +13,6 @@
     <string name="finish_activity_disconnect_bluetooth_device">确定要退出该页面，并断开蓝牙连接吗？</string>
     <string name="exit_login_tip">确定退出登录吗？</string>
 
-
     <!-- 权限申请-->
     <string name="permission_request_camera_external_storage">米易通需要使用相机权限和存储卡权限，请前往设置页面授予权限</string>
     <string name="permission_request_location">米易通需要使用定位权限，请前往设置页面授予权限</string>
@@ -22,6 +21,10 @@
     <string name="appbar_scrolling_view_behavior" translatable="false">android.support.design.widget.AppBarLayout$ScrollingViewBehavior</string>
     <string name="bottom_sheet_behavior" translatable="false">android.support.design.widget.BottomSheetBehavior</string>
     <string name="network_error_tip">网络不给力，请稍后再试！</string>
+    <string name="open_flash">打开闪光灯</string>
+    <string name="close_flash">关闭闪光灯</string>
+    <string name="gallery">相册</string>
+    <string name="input_sn"> 手动输入</string>
 
 
     <string name="securityNo">请输入新的设备授权码</string>
