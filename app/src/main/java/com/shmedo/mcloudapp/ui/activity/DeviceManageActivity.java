@@ -322,7 +322,7 @@ public class DeviceManageActivity extends BaseActivity implements OnRefreshListe
                     StatusInfoResult statusInfoResult = statusInfoList.get(position);
                     if (!TextUtils.isEmpty(statusInfoResult.getDeviceTypeName()) && statusInfoResult.getDeviceTypeName().toUpperCase().contains("DAS")) {
                         String deviceInfo = "MEDO," + statusInfoResult.getDeviceToken() + "," + statusInfoResult.getDeviceTypeName();
-                        AllDeviceActivity.startActivity(DeviceManageActivity.this, deviceInfo);
+                        ConfigDASActivity.startActivity(DeviceManageActivity.this, deviceInfo);
                     }
 
                     if (!TextUtils.isEmpty(statusInfoResult.getDeviceName()) && statusInfoResult.getDeviceName().toUpperCase().contains("E60")) {

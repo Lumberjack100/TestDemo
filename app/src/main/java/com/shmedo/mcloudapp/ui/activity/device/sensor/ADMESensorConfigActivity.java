@@ -1,0 +1,263 @@
+package com.shmedo.mcloudapp.ui.activity.device.sensor;
+
+import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
+import android.text.InputType;
+import android.text.TextUtils;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import com.shmedo.mcloudapp.R;
+import com.shmedo.mcloudapp.base.BaseActivity;
+import com.shmedo.mcloudapp.bluetooth.Message;
+import com.shmedo.mcloudapp.ui.activity.ConfigADMEActivity;
+import com.shmedo.mcloudapp.ui.fragment.DeviceFragment;
+import com.shmedo.mcloudapp.util.ToastUtil;
+
+import java.util.UUID;
+
+import butterknife.BindView;
+import timber.log.Timber;
+
+public class ADMESensorConfigActivity extends BaseActivity implements View.OnClickListener {
+
+    @BindView(R.id.toolbar_title)
+    TextView mToolbarTitle;
+
+    @BindView(R.id.collector_address_layout)
+    View collectorAddressLayout;
+
+    @BindView(R.id.collector_collect_interval_layout)
+    View collectorCollectIntervalLayout;
+
+    @BindView(R.id.collector_solution_interval_layout)
+    View collectorSolutionIntervalLayout;
+
+    @BindView(R.id.communication_module_sleep_interval_layout)
+    View communicationModuleSleepIntervalLayout;
+
+    @BindView(R.id.sensor_type_layout)
+    View sensorTypeLayout;
+
+    @BindView(R.id.sensor_address_layout)
+    View sensorAddressLayout;
+
+    @BindView(R.id.sensor_correction_value_layout)
+    View sensorCorrectionValueLayout;
+
+    @BindView(R.id.btn_confirm_complete)
+    Button btnConfirm;
+
+    private ImageView mIvCollectorAddress, mIvCollectorCollectInterval, mIvCollectorSolutionInterval, mIvCommunicationModuleSleepInterval, mIvSensorType, mIvSensorAddress, mIvSensorCorrectionValue;
+
+    private EditText mEtCollectorAddress, mEtCollectorCollectInterval, mEtCollectorSolutionInterval, mEtCommunicationModuleSleepInterval, mEtSensorType, mEtSensorAddress, mEtSensorCorrectionValue;
+
+    private String collectorAddress, collectorCollectInterval, collectorSolutionInterval, communicationModuleSleepInterval, sensorType, sensorAddress, sensorCorrectionValue;
+
+
+    public static void startActivity(Context context) {
+        Intent intent = new Intent(context, ADMESensorConfigActivity.class);
+        context.startActivity(intent);
+    }
+
+
+    @Override
+    protected int initContentView() {
+        return R.layout.activity_adme_sensor_config;
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setToolBar(R.id.toolbar);
+        initView();
+        initData();
+    }
+
+
+    private void initView() {
+        mToolbarTitle.setText("DAG设置");
+
+        ((TextView) collectorAddressLayout.findViewById(R.id.itemNameTV)).setText("采集器地址");
+        mIvCollectorAddress = collectorAddressLayout.findViewById(R.id.itemTipIV);
+        mEtCollectorAddress = collectorAddressLayout.findViewById(R.id.itemValueET);
+        mEtCollectorAddress.setInputType(InputType.TYPE_CLASS_NUMBER);
+        mEtCollectorAddress.setHint("请输入...");
+
+        ((TextView) collectorCollectIntervalLayout.findViewById(R.id.itemNameTV)).setText("采集器采集间隔（s）");
+        mIvCollectorCollectInterval = collectorCollectIntervalLayout.findViewById(R.id.itemTipIV);
+        mEtCollectorCollectInterval = collectorCollectIntervalLayout.findViewById(R.id.itemValueET);
+        mEtCollectorCollectInterval.setInputType(InputType.TYPE_CLASS_NUMBER);
+        mEtCollectorCollectInterval.setHint("请输入...");
+
+        ((TextView) collectorSolutionIntervalLayout.findViewById(R.id.itemNameTV)).setText("采集器解算间隔（s）");
+        mIvCollectorSolutionInterval = collectorSolutionIntervalLayout.findViewById(R.id.itemTipIV);
+        mEtCollectorSolutionInterval = collectorSolutionIntervalLayout.findViewById(R.id.itemValueET);
+        mEtCollectorSolutionInterval.setInputType(InputType.TYPE_CLASS_NUMBER);
+        mEtCollectorSolutionInterval.setHint("请输入...");
+
+        ((TextView) communicationModuleSleepIntervalLayout.findViewById(R.id.itemNameTV)).setText("通讯模块休眠间隔（s）");
+        mIvCommunicationModuleSleepInterval = communicationModuleSleepIntervalLayout.findViewById(R.id.itemTipIV);
+        mEtCommunicationModuleSleepInterval = communicationModuleSleepIntervalLayout.findViewById(R.id.itemValueET);
+        mEtCommunicationModuleSleepInterval.setInputType(InputType.TYPE_CLASS_NUMBER);
+        mEtCommunicationModuleSleepInterval.setHint("请输入...");
+
+        ((TextView) sensorTypeLayout.findViewById(R.id.itemNameTV)).setText("传感器类型");
+        mIvSensorType = sensorTypeLayout.findViewById(R.id.itemTipIV);
+        mEtSensorType = sensorTypeLayout.findViewById(R.id.itemValueET);
+        mEtSensorType.setInputType(InputType.TYPE_CLASS_NUMBER);
+        mEtSensorType.setHint("请输入...");
+
+        ((TextView) sensorAddressLayout.findViewById(R.id.itemNameTV)).setText("传感器地址");
+        mIvSensorAddress = sensorAddressLayout.findViewById(R.id.itemTipIV);
+        mEtSensorAddress = sensorAddressLayout.findViewById(R.id.itemValueET);
+        mEtSensorAddress.setInputType(InputType.TYPE_CLASS_NUMBER);
+        mEtSensorAddress.setHint("请输入...");
+
+        ((TextView) sensorCorrectionValueLayout.findViewById(R.id.itemNameTV)).setText("传感器修正值（mm）");
+        mIvSensorCorrectionValue = sensorCorrectionValueLayout.findViewById(R.id.itemTipIV);
+        mEtSensorCorrectionValue = sensorCorrectionValueLayout.findViewById(R.id.itemValueET);
+        mEtSensorCorrectionValue.setInputType(InputType.TYPE_CLASS_NUMBER);
+        mEtSensorCorrectionValue.setHint("请输入...");
+
+        mIvCollectorAddress.setId(R.id.collector_address);
+        mIvCollectorCollectInterval.setId(R.id.collector_collect_interval);
+        mIvCollectorSolutionInterval.setId(R.id.collector_solution_interval);
+        mIvCommunicationModuleSleepInterval.setId(R.id.communication_module_sleep_interval);
+        mIvSensorType.setId(R.id.sensor_type);
+        mIvSensorAddress.setId(R.id.sensor_address);
+        mIvSensorCorrectionValue.setId(R.id.sensor_correction_value);
+
+        mIvCollectorAddress.setOnClickListener(this);
+        mIvCollectorCollectInterval.setOnClickListener(this);
+        mIvCollectorSolutionInterval.setOnClickListener(this);
+        mIvCommunicationModuleSleepInterval.setOnClickListener(this);
+        mIvSensorType.setOnClickListener(this);
+        mIvSensorAddress.setOnClickListener(this);
+        mIvSensorCorrectionValue.setOnClickListener(this);
+
+        btnConfirm.setOnClickListener(this);
+    }
+
+
+    private void initData() {
+
+    }
+
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.collector_address:
+                showTipDialog(getResources().getString(R.string.collector_address));
+                break;
+
+            case R.id.collector_collect_interval:
+                showTipDialog(getResources().getString(R.string.collector_address));
+                break;
+
+            case R.id.collector_solution_interval:
+                showTipDialog(getResources().getString(R.string.collector_address));
+                break;
+
+            case R.id.communication_module_sleep_interval:
+                showTipDialog(getResources().getString(R.string.collector_address));
+                break;
+
+            case R.id.sensor_type:
+                showTipDialog(getResources().getString(R.string.collector_address));
+                break;
+
+            case R.id.sensor_address:
+                showTipDialog(getResources().getString(R.string.collector_address));
+                break;
+
+            case R.id.sensor_correction_value:
+                showTipDialog(getResources().getString(R.string.collector_address));
+                break;
+
+            case R.id.btn_confirm_complete:
+                doConfirm();
+                break;
+
+        }
+    }
+
+
+    private void doConfirm() {
+        collectorAddress = mEtCollectorAddress.getText().toString().trim();
+        collectorCollectInterval = mEtCollectorCollectInterval.getText().toString().trim();
+        collectorSolutionInterval = mEtCollectorSolutionInterval.getText().toString().trim();
+        communicationModuleSleepInterval = mEtCommunicationModuleSleepInterval.getText().toString().trim();
+        sensorType = mEtSensorType.getText().toString().trim();
+        sensorAddress = mEtSensorAddress.getText().toString().trim();
+        sensorCorrectionValue = mEtSensorCorrectionValue.getText().toString().trim();
+
+        if (TextUtils.isEmpty(collectorAddress)) {
+            ToastUtil.showShortToast("采集器地址不能为空");
+            return;
+        }
+
+        if (TextUtils.isEmpty(collectorCollectInterval)) {
+            ToastUtil.showShortToast("采集器采集间隔不能为空");
+            return;
+        }
+
+        if (TextUtils.isEmpty(collectorSolutionInterval)) {
+            ToastUtil.showShortToast("采集器解算间隔不能为空");
+            return;
+        }
+
+        if (TextUtils.isEmpty(communicationModuleSleepInterval)) {
+            ToastUtil.showShortToast("通讯模块休眠间隔不能为空");
+            return;
+        }
+
+        if (TextUtils.isEmpty(sensorType)) {
+            ToastUtil.showShortToast("传感器类型不能为空");
+            return;
+        }
+
+        if (TextUtils.isEmpty(sensorAddress)) {
+            ToastUtil.showShortToast("传感器地址不能为空");
+            return;
+        }
+
+        if (TextUtils.isEmpty(sensorCorrectionValue)) {
+            ToastUtil.showShortToast("传感器修正值不能为空");
+            return;
+        }
+
+        int address = Integer.parseInt(collectorAddress);
+        if (address <= 0 || address >= 255) {
+            ToastUtil.showShortToast("采集器地址输入有误");
+            return;
+        }
+
+        address = Integer.parseInt(sensorAddress);
+        if (address <= 0 || address >= 255) {
+            ToastUtil.showShortToast("传感器地址输入有误");
+            return;
+        }
+
+
+        StringBuilder stringBuilder = new StringBuilder();
+
+
+        String cmdStr = String.valueOf(stringBuilder);
+        if (!ConfigADMEActivity.isBlueConnected) {
+            ToastUtil.showShortToast("蓝牙未连接");
+            finish();
+            return;
+        }
+
+        Message msg = new Message(UUID.randomUUID().toString(), cmdStr, true);
+        DeviceFragment.mdBluetoothManager.writeMessage(msg);
+        Timber.d("发送DAG 配置指令===" + cmdStr);
+        finish();
+    }
+}

@@ -182,7 +182,7 @@ public class ScanAddDeviceActivity extends BaseActivity {
 
             if (localData[2].equals("DAS")) {
                 //跳转到设备配置页面
-//                AllDeviceActivity.startActivity(ScanAddDeviceActivity.this, results);
+//                ConfigDASActivity.startActivity(ScanAddDeviceActivity.this, results);
 
                 ConfigADMEActivity.startActivity(ScanAddDeviceActivity.this, results);
 

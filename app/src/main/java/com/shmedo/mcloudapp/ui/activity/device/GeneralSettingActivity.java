@@ -15,7 +15,6 @@ import com.shmedo.mcloudapp.ui.fragment.DeviceFragment;
 import com.shmedo.mcloudapp.util.StringUtil;
 import com.shmedo.mcloudapp.util.ToastUtil;
 import com.shmedo.mcloudapp.util.bleutil.LogTag;
-import com.shmedo.mcloudapp.views.LoadingDialog;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -93,17 +92,21 @@ public class GeneralSettingActivity extends BaseActivity {
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.iv_collector_address:
-                LoadingDialog.showScanResultDialog(this, getResources().getString(R.string.collector_address));
+                showTipDialog(getResources().getString(R.string.collector_address));
                 break;
+
             case R.id.iv_calculating_time:
-                LoadingDialog.showScanResultDialog(this, getResources().getString(R.string.calculating_time));
+                showTipDialog(getResources().getString(R.string.calculating_time));
                 break;
+
             case R.id.iv_standby_time:
-                LoadingDialog.showScanResultDialog(this, getResources().getString(R.string.standby_time));
+                showTipDialog(getResources().getString(R.string.standby_time));
                 break;
+
             case R.id.iv_collect_time:
-                LoadingDialog.showScanResultDialog(this, getResources().getString(R.string.collect_time));
+                showTipDialog(getResources().getString(R.string.collect_time));
                 break;
+
             case R.id.btn_confirm_complete:
                 sendCollector();
                 break;

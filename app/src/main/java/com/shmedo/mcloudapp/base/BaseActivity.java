@@ -3,6 +3,7 @@ package com.shmedo.mcloudapp.base;
 import android.app.Activity;
 import android.content.Context;
 import android.content.IntentFilter;
+import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.net.ConnectivityManager;
 import android.os.Build;
@@ -64,8 +65,7 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     private WindowManager.LayoutParams mLayoutParams;
 
-    private WeakReference<Activity> weakRefActivity=null;
-
+    private WeakReference<Activity> weakRefActivity = null;
 
 
     protected abstract int initContentView();
@@ -75,7 +75,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        weakRefActivity=new WeakReference<Activity>(this);
+        weakRefActivity = new WeakReference<Activity>(this);
         ActivityCollector.add(weakRefActivity);
         //StatusUtil.StatusBarLightMode(this);
         setContentView(initContentView());
@@ -184,93 +184,105 @@ public abstract class BaseActivity extends AppCompatActivity {
     }
 
 
-    private void registerNetWorkChangReceiver() {
-        //注册网络状态监听广播
-        mNetWorkChangReceiver = new NetworkConnectChangedReceiver();
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
-        registerReceiver(mNetWorkChangReceiver, filter);
+    protected void showTipDialog(String content) {
+        MaterialDialog.Builder mBuilder = new MaterialDialog.Builder(this);
+        mBuilder.title("温馨提示：")
+                .content(content)
+                .contentColor(Color.parseColor("#000000"))
+                .canceledOnTouchOutside(false)
+                .positiveText("确定");
+        MaterialDialog mMaterialDialog = mBuilder.build();
+        mMaterialDialog.show();
     }
 
 
-    private void initTipView() {
-        LayoutInflater inflater = getLayoutInflater();
-        mTipView = inflater.inflate(R.layout.layout_network_tip, null); //提示View布局
-        mWindowManager = (WindowManager) this.getSystemService(Context.WINDOW_SERVICE);
-        mLayoutParams = new WindowManager.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT,
-                WindowManager.LayoutParams.TYPE_APPLICATION,
-                WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
-                PixelFormat.TRANSLUCENT);
-        //使用非CENTER时，可以通过设置XY的值来改变View的位置
-        mLayoutParams.gravity = Gravity.TOP;
-        mLayoutParams.x = 0;
-        mLayoutParams.y = 0;
-    }
+        private void registerNetWorkChangReceiver () {
+            //注册网络状态监听广播
+            mNetWorkChangReceiver = new NetworkConnectChangedReceiver();
+            IntentFilter filter = new IntentFilter();
+            filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
+            registerReceiver(mNetWorkChangReceiver, filter);
+        }
 
 
-    /**
-     * 根据网络状态显示或者隐藏提示对话框
-     *
-     * @param isConnected
-     */
-    private void netStateChangedUI(boolean isConnected) {
-        if (mCheckNetwork) {
-            if (isConnected) {
-                if (mTipView != null && mTipView.getParent() != null) {
-                    mWindowManager.removeView(mTipView);
-                }
-            } else {
-                if (mTipView.getParent() == null) {
-                    mWindowManager.addView(mTipView, mLayoutParams);
+        private void initTipView () {
+            LayoutInflater inflater = getLayoutInflater();
+            mTipView = inflater.inflate(R.layout.layout_network_tip, null); //提示View布局
+            mWindowManager = (WindowManager) this.getSystemService(Context.WINDOW_SERVICE);
+            mLayoutParams = new WindowManager.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT,
+                    WindowManager.LayoutParams.TYPE_APPLICATION,
+                    WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+                    PixelFormat.TRANSLUCENT);
+            //使用非CENTER时，可以通过设置XY的值来改变View的位置
+            mLayoutParams.gravity = Gravity.TOP;
+            mLayoutParams.x = 0;
+            mLayoutParams.y = 0;
+        }
+
+
+        /**
+         * 根据网络状态显示或者隐藏提示对话框
+         *
+         * @param isConnected
+         */
+        private void netStateChangedUI ( boolean isConnected){
+            if (mCheckNetwork) {
+                if (isConnected) {
+                    if (mTipView != null && mTipView.getParent() != null) {
+                        mWindowManager.removeView(mTipView);
+                    }
+                } else {
+                    if (mTipView.getParent() == null) {
+                        mWindowManager.addView(mTipView, mLayoutParams);
+                    }
                 }
             }
         }
-    }
 
 
-    /**
-     * 网络状态发生变化时的处理
-     *
-     * @param event
-     */
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onNetworkChangeEvent(NetworkChangeEvent event) {
-        Timber.d("网络发生变化:" + event.toString());
+        /**
+         * 网络状态发生变化时的处理
+         *
+         * @param event
+         */
+        @Subscribe(threadMode = ThreadMode.MAIN)
+        public void onNetworkChangeEvent (NetworkChangeEvent event){
+            Timber.d("网络发生变化:" + event.toString());
 
-        mNetConnected = event.isConnected;
-        MCloudApp.setIsNetworkConnected(mNetConnected);
-        netStateChangedUI(event.isConnected);
-    }
+            mNetConnected = event.isConnected;
+            MCloudApp.setIsNetworkConnected(mNetConnected);
+            netStateChangedUI(event.isConnected);
+        }
 
-    public void setCheckNetWork(boolean checkNetWork) {
-        mCheckNetwork = checkNetWork;
-    }
-
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        ActivityCollector.remove(weakRefActivity);
-        EventBus.getDefault().unregister(this);
-        unregisterReceiver(mNetWorkChangReceiver);
-    }
+        public void setCheckNetWork ( boolean checkNetWork){
+            mCheckNetwork = checkNetWork;
+        }
 
 
-    @Override
-    public void finish() {
-        super.finish();
-        //当提示View被动态添加后直接关闭页面会导致该View内存溢出，所以需要在finish时移除
-        if (mTipView != null && mTipView.getParent() != null) {
-            mWindowManager.removeView(mTipView);
+        @Override
+        protected void onDestroy () {
+            super.onDestroy();
+            ActivityCollector.remove(weakRefActivity);
+            EventBus.getDefault().unregister(this);
+            unregisterReceiver(mNetWorkChangReceiver);
+        }
+
+
+        @Override
+        public void finish () {
+            super.finish();
+            //当提示View被动态添加后直接关闭页面会导致该View内存溢出，所以需要在finish时移除
+            if (mTipView != null && mTipView.getParent() != null) {
+                mWindowManager.removeView(mTipView);
+            }
+        }
+
+
+        @Override
+        public void onBackPressed () {
+            if (!HandleBackUtil.handleBackPress(this)) {
+                super.onBackPressed();
+            }
         }
     }
-
-
-    @Override
-    public void onBackPressed() {
-        if (!HandleBackUtil.handleBackPress(this)) {
-            super.onBackPressed();
-        }
-    }
-}

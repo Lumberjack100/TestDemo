@@ -12,6 +12,8 @@
         android:layout_height="match_parent"
         android:layout_marginLeft="30dp"
         android:gravity="center"
+        android:textColor="@color/gray_807B7B"
+        android:textSize="@dimen/text_size_14"
         tools:text="传感器参数配置" />
 
     <ImageView

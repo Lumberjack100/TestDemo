@@ -15,8 +15,24 @@
  limitations under the License.
  -->
 <resources>
-  <item type="id" name="collector_channel"/>
-  <item type="id" name="sensor_calibration_value"/>
-  <item type="id" name="collector_standby_suration"/>
+  <item type="id" name="collector_address"/>
+  <item type="id" name="collector_collect_interval"/>
+  <item type="id" name="collector_solution_interval"/>
+  <item type="id" name="communication_module_sleep_interval"/>
+  <item type="id" name="sensor_type"/>
+  <item type="id" name="sensor_address"/>
+  <item type="id" name="sensor_correction_value"/>
+
+  <item type="id" name="data_settlement_method"/>
+  <item type="id" name="data_response"/>
+  <item type="id" name="waiting_interval_per_round"/>
+  <item type="id" name="log_output_mode"/>
+  <item type="id" name="motor_drive_address"/>
+  <item type="id" name="motor_movement_time"/>
+  <item type="id" name="motor_pull_up_speed"/>
+  <item type="id" name="motor_pull_down_speed"/>
+  <item type="id" name="traction_line_length"/>
+  <item type="id" name="hole_depth"/>
+  <item type="id" name="measuring_pitch"/>
 
 </resources>

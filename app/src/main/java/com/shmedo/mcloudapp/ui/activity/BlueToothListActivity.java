@@ -108,7 +108,7 @@ public class BlueToothListActivity extends Activity {
                     String deviceName = deviceList.get(position).getDevice().getName();
                     deviceName = deviceName.substring(3);
                     String deviceInfo = "MEDO," + deviceName + ",DAS";
-                    AllDeviceActivity.startActivity(BlueToothListActivity.this, deviceInfo, macAddress);
+                    ConfigDASActivity.startActivity(BlueToothListActivity.this, deviceInfo, macAddress);
                     finish();
                 }
             }

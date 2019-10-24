@@ -14,12 +14,12 @@ import com.shmedo.mcloudapp.ui.fragment.DeviceFragment;
 /**
  * 项目名：  mCloudapp
  * 包名：    com.shmedo.mcloudapp.ui.activity.tabdevice
- * 文件名:   AllDeviceActivity
+ * 文件名:   ConfigDASActivity
  * 创建者:   dpc
  * 创建时间:  2019/3/12 15:00
  * 描述：    tab-设备
  */
-public class AllDeviceActivity extends BaseActivity {
+public class ConfigDASActivity extends BaseActivity {
 
     private DeviceFragment deviceFragment;
 
@@ -33,13 +33,13 @@ public class AllDeviceActivity extends BaseActivity {
      * </p>
      */
     public static void startActivity(Context context, String deviceInfo) {
-        Intent intent = new Intent(context, AllDeviceActivity.class);
+        Intent intent = new Intent(context, ConfigDASActivity.class);
         intent.putExtra(Extras.CUR_DEVICE_NAME, deviceInfo);
         context.startActivity(intent);
     }
 
     public static void startActivity(Context context, String deviceInfo, String macAddress) {
-        Intent intent = new Intent(context, AllDeviceActivity.class);
+        Intent intent = new Intent(context, ConfigDASActivity.class);
         intent.putExtra(Extras.CUR_DEVICE_NAME, deviceInfo);
         intent.putExtra(Extras.DEVICE_MAC_ADDRESS, macAddress);
         context.startActivity(intent);
@@ -47,7 +47,7 @@ public class AllDeviceActivity extends BaseActivity {
 
     @Override
     protected int initContentView() {
-        return R.layout.activity_all_device;
+        return R.layout.activity_das_config;
     }
 
 

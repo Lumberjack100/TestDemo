@@ -25,8 +25,8 @@ import com.shmedo.mcloudapp.entity.SystemDataInfo;
 import com.shmedo.mcloudapp.entity.SystemDataInfoDao;
 import com.shmedo.mcloudapp.model.Extras;
 import com.shmedo.mcloudapp.ui.activity.ConfigADMEActivity;
-import com.shmedo.mcloudapp.ui.activity.device.GeneralSettingActivity;
-import com.shmedo.mcloudapp.ui.activity.device.sensor.SensorADMEConfigActivity;
+import com.shmedo.mcloudapp.ui.activity.device.ADMEExecutiveAgencyConfigActivity;
+import com.shmedo.mcloudapp.ui.activity.device.sensor.ADMESensorConfigActivity;
 import com.shmedo.mcloudapp.util.DaoManager;
 import com.shmedo.mcloudapp.util.ToastUtil;
 import com.shmedo.mcloudapp.views.editspinner.EditSpinner;
@@ -82,11 +82,17 @@ public class ADMEHomeFragment extends BaseFragment {
     @BindView(R.id.debug_model_layout)
     View debugModelLayout;
 
+    @BindView(R.id.platform_server_config_layout)
+    View platformServerConfigLayout;
+
+    @BindView(R.id.dag_config_layout)
+    View dagConfigLayout;
+
     @BindView(R.id.executive_agency_param_layout)
     View executiveAgencyParamLayout;
 
-    @BindView(R.id.sensor_param_layout)
-    View sensorParamLayout;
+    @BindView(R.id.custom_command_test_layout)
+    View customCommandTestLayout;
 
     private TextView tvAutoMonitorState, tvDebugMode;
 
@@ -150,8 +156,10 @@ public class ADMEHomeFragment extends BaseFragment {
         tvDebugMode = debugModelLayout.findViewById(R.id.tv_device_state);
         svDebugMode = debugModelLayout.findViewById(R.id.switchview);
 
+        ((TextView) platformServerConfigLayout.findViewById(R.id.tv_config_name)).setText("云平台服务器设置");
+        ((TextView) dagConfigLayout.findViewById(R.id.tv_config_name)).setText("DAG设置");
         ((TextView) executiveAgencyParamLayout.findViewById(R.id.tv_config_name)).setText("执行机构参数配置");
-        ((TextView) sensorParamLayout.findViewById(R.id.tv_config_name)).setText("传感器参数配置");
+        ((TextView) customCommandTestLayout.findViewById(R.id.tv_config_name)).setText("自定义指令输入");
 
         //TODO 需要查询接口确定设备所属项目
         mTvProName.setText("xxxx 项目");
@@ -176,7 +184,6 @@ public class ADMEHomeFragment extends BaseFragment {
                 }
             }
         });
-
 
         //发送查询设备状态命令
         if (ConfigADMEActivity.isBlueConnected) {
@@ -284,7 +291,7 @@ public class ADMEHomeFragment extends BaseFragment {
     }
 
 
-    @OnClick({R.id.iv_lock, R.id.executive_agency_param_layout, R.id.sensor_param_layout, R.id.rl_general_setting})
+    @OnClick({R.id.iv_lock, R.id.platform_server_config_layout, R.id.dag_config_layout, R.id.executive_agency_param_layout, R.id.custom_command_test_layout, R.id.firmware_upgrade_layout})
     public void onClick(View v) {
         Intent intent = null;
 
@@ -304,19 +311,24 @@ public class ADMEHomeFragment extends BaseFragment {
                 }
                 break;
 
+            case R.id.platform_server_config_layout:
+
+                break;
+
+            case R.id.dag_config_layout:
+                ADMESensorConfigActivity.startActivity(getActivity());
+                break;
+
             case R.id.executive_agency_param_layout:
-
+                ADMEExecutiveAgencyConfigActivity.startActivity(getActivity());
                 break;
 
-            case R.id.sensor_param_layout:
-
-                SensorADMEConfigActivity.startActivity(getActivity());
+            case R.id.custom_command_test_layout:
                 break;
 
-            case R.id.rl_general_setting:
-                //通用设置--采集器
-                intent = new Intent(getActivity(), GeneralSettingActivity.class);
-                startActivity(intent);
+            case R.id.firmware_upgrade_layout:
+                //固件升级
+                ToastUtil.showShortToast("功能开发中...");
                 break;
         }
     }
@@ -371,7 +383,6 @@ public class ADMEHomeFragment extends BaseFragment {
             }
 
             for (int i = 1; i < 35; i++) {
-
                 systemDataInfoList.add(i + " 测试项目");
             }
         }
