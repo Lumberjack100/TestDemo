@@ -610,10 +610,10 @@ public class ConfigADMEActivity extends BaseActivity {
                     break;
 
                 case Constants.BT_DISCONNECTED:
-                        ToastUtil.showShortToast("蓝牙连接已断开!");
-                        dismissLoadingDialog();
-                        mImgBluetooth.setImageDrawable(getResources().getDrawable(R.drawable.bar_item_bt));
-                        isBlueConnected = false;
+                    ToastUtil.showShortToast("蓝牙连接已断开!");
+                    dismissLoadingDialog();
+                    mImgBluetooth.setImageDrawable(getResources().getDrawable(R.drawable.bar_item_bt));
+                    isBlueConnected = false;
 //                        if (isAutoConnectBlue) {
 //                            Timber.d("ble 取消连接");
 //                            disconnectDevice();
@@ -869,7 +869,7 @@ public class ConfigADMEActivity extends BaseActivity {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         switch (i) {
             case 0:
-                admeHomeFragment=new ADMEHomeFragment();
+                admeHomeFragment = new ADMEHomeFragment();
                 transaction.replace(R.id.sub_content, admeHomeFragment);
                 break;
 
