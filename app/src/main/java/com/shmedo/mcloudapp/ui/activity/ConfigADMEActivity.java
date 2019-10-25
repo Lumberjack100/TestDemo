@@ -128,6 +128,13 @@ public class ConfigADMEActivity extends BaseActivity {
         context.startActivity(intent);
     }
 
+    public static void startActivity(Context context, String deviceInfo, String macAddress) {
+        Intent intent = new Intent(context, ConfigADMEActivity.class);
+        intent.putExtra(Extras.CUR_DEVICE_NAME, deviceInfo);
+        intent.putExtra(Extras.DEVICE_MAC_ADDRESS, macAddress);
+        context.startActivity(intent);
+    }
+
 
     private Runnable dismssDialogRunnable = new Runnable() {
         @Override

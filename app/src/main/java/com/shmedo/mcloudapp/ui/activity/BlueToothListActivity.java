@@ -1,7 +1,6 @@
 package com.shmedo.mcloudapp.ui.activity;
 
 import android.app.Activity;
-import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -31,9 +30,10 @@ import java.util.List;
  * 描述：    TODO
  */
 public class BlueToothListActivity extends Activity {
-    private BluetoothAdapter mBtAdapter;
     private RecyclerView mRecyclerView;
+
     private BluetoothDevicesAdapter adapter;
+
     private List<MDevice> deviceList = new ArrayList<>();
 
     /**
@@ -56,7 +56,6 @@ public class BlueToothListActivity extends Activity {
         requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
         setContentView(R.layout.device_list);
         setResult(Activity.RESULT_CANCELED);
-        mBtAdapter = BluetoothAdapter.getDefaultAdapter();
 
         getIntentData();
         initDevivce();
@@ -103,14 +102,16 @@ public class BlueToothListActivity extends Activity {
         adapter.setOnItemClickListener(new BluetoothDevicesAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View itemView, int position) {
-                if (!mBtAdapter.isDiscovering()) {
-                    String macAddress = deviceList.get(position).getDevice().getAddress();
-                    String deviceName = deviceList.get(position).getDevice().getName();
-                    deviceName = deviceName.substring(3);
-                    String deviceInfo = "MEDO," + deviceName + ",DAS";
+                String macAddress = deviceList.get(position).getDevice().getAddress();
+                String deviceName = deviceList.get(position).getDevice().getName();
+                if (deviceName.contains("MD-180600L")) {
+                    String deviceInfo = "MEDO," + deviceName.substring(3) + ",ADME";
+                    ConfigADMEActivity.startActivity(BlueToothListActivity.this, deviceInfo, macAddress);
+                } else {
+                    String deviceInfo = "MEDO," + deviceName.substring(3) + ",DAS";
                     ConfigDASActivity.startActivity(BlueToothListActivity.this, deviceInfo, macAddress);
-                    finish();
                 }
+                finish();
             }
         });
     }
@@ -118,9 +119,5 @@ public class BlueToothListActivity extends Activity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-
-        if (mBtAdapter != null) {
-            mBtAdapter.cancelDiscovery();
-        }
     }
 }

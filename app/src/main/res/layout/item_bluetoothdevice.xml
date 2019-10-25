@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@android:color/white">
+    android:background="@drawable/bg_setting_list_item">
 
 
     <ImageView
@@ -20,13 +21,12 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:layout_toRightOf="@id/iv_device_icon"
-        android:layout_weight="1"
         android:maxLines="2"
         android:paddingLeft="16dp"
         android:paddingRight="16dp"
-        android:text="test-name"
         android:textColor="#424242"
-        android:textSize="20sp" />
+        android:textSize="20sp"
+        tools:text="test-name" />
 
 
     <LinearLayout
@@ -43,21 +43,22 @@
 
         <TextView
             android:id="@+id/tv_dev_mac"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="FF-FF-FF-FF-FF-FF"
             android:textColor="@color/secondary_text"
-            android:textSize="16sp" />
+            android:textSize="16sp"
+            tools:text="FF-FF-FF-FF-FF-FF" />
 
         <TextView
             android:id="@+id/tv_dev_signal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="right"
-            android:text="100 dBm"
             android:textColor="@color/secondary_text"
-            android:textSize="20sp" />
+            android:textSize="20sp"
+            tools:text="100 dBm" />
+
     </LinearLayout>
 
     <View
