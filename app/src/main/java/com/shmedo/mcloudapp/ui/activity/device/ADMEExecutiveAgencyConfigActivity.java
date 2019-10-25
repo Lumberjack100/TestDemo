@@ -14,10 +14,10 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.shmedo.mcloudapp.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.base.BaseActivity;
 import com.shmedo.mcloudapp.bluetooth.Message;
-import com.shmedo.mcloudapp.ui.activity.ConfigADMEActivity;
 import com.shmedo.mcloudapp.ui.fragment.DeviceFragment;
 import com.shmedo.mcloudapp.util.ToastUtil;
 
@@ -334,7 +334,7 @@ public class ADMEExecutiveAgencyConfigActivity extends BaseActivity implements V
 
 
         String cmdStr = String.valueOf(stringBuilder);
-        if (!ConfigADMEActivity.isBlueConnected) {
+        if (!MCloudApp.isIsBluetoothDeviceConnected()) {
             ToastUtil.showShortToast("蓝牙未连接");
             finish();
             return;

@@ -26,6 +26,7 @@ import com.shmedo.mcloudapp.entity.SystemDataInfoDao;
 import com.shmedo.mcloudapp.model.Extras;
 import com.shmedo.mcloudapp.ui.activity.ConfigADMEActivity;
 import com.shmedo.mcloudapp.ui.activity.device.ADMEExecutiveAgencyConfigActivity;
+import com.shmedo.mcloudapp.ui.activity.device.senior.InstructionDebugActivity;
 import com.shmedo.mcloudapp.ui.activity.device.sensor.ADMESensorConfigActivity;
 import com.shmedo.mcloudapp.util.DaoManager;
 import com.shmedo.mcloudapp.util.ToastUtil;
@@ -186,7 +187,7 @@ public class ADMEHomeFragment extends BaseFragment {
         });
 
         //发送查询设备状态命令
-        if (ConfigADMEActivity.isBlueConnected) {
+        if (MCloudApp.isIsBluetoothDeviceConnected()) {
             ConfigADMEActivity.sendDeviceStateComd();
         }
     }
@@ -200,7 +201,7 @@ public class ADMEHomeFragment extends BaseFragment {
         svAutoMonitorState.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (!ConfigADMEActivity.isBlueConnected) {
+                if (!MCloudApp.isIsBluetoothDeviceConnected()) {
                     ToastUtil.showShortToast("设备已断开连接，暂无法进行设置");
                     return;
                 }
@@ -247,7 +248,7 @@ public class ADMEHomeFragment extends BaseFragment {
         svDebugMode.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (!ConfigADMEActivity.isBlueConnected) {
+                if (!MCloudApp.isIsBluetoothDeviceConnected()) {
                     ToastUtil.showShortToast("设备已断开连接，暂无法进行设置");
                     return;
                 }
@@ -324,6 +325,7 @@ public class ADMEHomeFragment extends BaseFragment {
                 break;
 
             case R.id.custom_command_test_layout:
+                InstructionDebugActivity.startActivity(getActivity());
                 break;
 
             case R.id.firmware_upgrade_layout:

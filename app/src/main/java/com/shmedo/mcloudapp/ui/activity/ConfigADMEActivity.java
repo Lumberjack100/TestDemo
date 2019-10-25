@@ -24,6 +24,7 @@ import com.shmedo.das.das.cmd.CommandType;
 import com.shmedo.das.utils.DesUtil;
 import com.shmedo.das.utils.OnBytePackage;
 import com.shmedo.das.utils.StringUtil;
+import com.shmedo.mcloudapp.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.base.BaseActivity;
 import com.shmedo.mcloudapp.bluetooth.BluetoothDeviceFindEventData;
@@ -115,7 +116,7 @@ public class ConfigADMEActivity extends BaseActivity {
     public static CollectorSensorParamsInfoSub mCollectorParamsInfoSub;
     public static String collectorType = "";//采集器编号
     public static String lockStatus = "";
-    public static boolean isBlueConnected = false;//蓝牙设备是否连接
+    private static boolean isBlueConnected = false;//蓝牙设备是否连接
     private boolean isAutoConnectBlue = true;//是否自动连接蓝牙
     private String SN = "";
     private String deviceInfo;
@@ -408,6 +409,7 @@ public class ConfigADMEActivity extends BaseActivity {
                     mImgBluetooth.setImageDrawable(getResources().getDrawable(R.drawable.bar_item_blu_connect_yellow));
                     isBlueConnected = true;
                     isAutoConnectBlue = true;
+                    MCloudApp.setIsBluetoothDeviceConnected(true);
                     hander.removeCallbacks(dismssDialogRunnable);
                     //isLockStatus();
                     startBluAuthenticate();//蓝牙连接成功开始进行验证
@@ -417,6 +419,7 @@ public class ConfigADMEActivity extends BaseActivity {
                     ToastUtil.showShortToast("蓝牙连接已断开!");
                     dismissLoadingDialog();
                     mImgBluetooth.setImageDrawable(getResources().getDrawable(R.drawable.bar_item_bt));
+                    MCloudApp.setIsBluetoothDeviceConnected(false);
                     isBlueConnected = false;
 //                        if (isAutoConnectBlue) {
 //                            //clearLocalStorage();
@@ -544,7 +547,7 @@ public class ConfigADMEActivity extends BaseActivity {
                 }
 
                 //设备登录验证结果指令
-                if (cmdStr.startsWith("$$223")&& cmdStr.endsWith("\r\n")) {
+                if (cmdStr.startsWith("$$223") && cmdStr.endsWith("\r\n")) {
                     sendHandleMessage(Constants.VERIFY_RESULT, cmdArray[1]);
                     Timber.d("认证结果===" + cmdArray[1]);
                     return;
@@ -698,6 +701,7 @@ public class ConfigADMEActivity extends BaseActivity {
 
             //TODO  此处传递的参数待确认，因为InstructionDebugActivity 页面也需要接收事件通知
             EventBus.getDefault().post("ParameterConfigFragment");
+            EventBus.getDefault().post(result);
 
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -815,6 +819,7 @@ public class ConfigADMEActivity extends BaseActivity {
                         dialog.dismiss();
                         isBlueConnected = false;
                         isAutoConnectBlue = false;
+                        MCloudApp.setIsBluetoothDeviceConnected(false);
                         disconnectDevice();
 
                         switch (index) {
@@ -888,6 +893,7 @@ public class ConfigADMEActivity extends BaseActivity {
         dismissLoadingDialog();
     }
 
+
     @Override
     public void onBackPressed() {
         if (isBlueConnected) {
@@ -896,6 +902,7 @@ public class ConfigADMEActivity extends BaseActivity {
         } else {
             isBlueConnected = false;
             isAutoConnectBlue = false;
+            MCloudApp.setIsBluetoothDeviceConnected(false);
             dismissLoadingDialog();
             hander.removeCallbacks(dismssDialogRunnable);
             mdBluetoothManager.stopScan();

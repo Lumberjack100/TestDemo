@@ -26,6 +26,7 @@ import com.shmedo.das.common.SensorTemperHumidityInfo;
 import com.shmedo.das.common.SensorUltrasonicLevelInfo;
 import com.shmedo.das.common.SensorUpliftPressureInfo;
 import com.shmedo.das.common.SensorWireShiftInfo;
+import com.shmedo.mcloudapp.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.base.BaseActivity;
 import com.shmedo.mcloudapp.bluetooth.Message;
@@ -863,7 +864,7 @@ public class SenSorBGKConfigActivity extends BaseActivity {
         }
 
         String result = String.valueOf(builderFirst);
-        if (!DeviceFragment.isConnected) {
+        if (!MCloudApp.isIsBluetoothDeviceConnected()) {
             ToastUtil.showShortToast("蓝牙未连接");
             finish();
             return;

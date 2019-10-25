@@ -32,15 +32,15 @@ public class MCloudApp {
 
     private static boolean isNetworkConnected = true;
 
-    private static String serviceAddress = "mdnetservice.shmedo.cn";
+    private static boolean isBluetoothDeviceConnected = false;
 
+    private static String serviceAddress = "mdnetservice.shmedo.cn";
 
 
     /**
      * 初始化接口。这里会进行应用程序的初始化操作，一定要在代码执行的最开始调用。
      *
-     * @param c
-     *          Context参数，注意这里要传入的是Application的Context，千万不能传入Activity或者Service的Context。
+     * @param c Context参数，注意这里要传入的是Application的Context，千万不能传入Activity或者Service的Context。
      */
     public static void initialize(Context c) {
         mContext = c;
@@ -67,7 +67,6 @@ public class MCloudApp {
     }
 
 
-
     public static String getServiceAddress() {
         if (StringUtil.isNullOrEmpty(serviceAddress))
             return serviceAddress;
@@ -79,7 +78,6 @@ public class MCloudApp {
     }
 
 
-
     public static UserInfo getCurrentUserInfo() {
         return currentUserInfo;
     }
@@ -87,7 +85,6 @@ public class MCloudApp {
     public static void setCurrentUserInfo(UserInfo currentUserInfo) {
         MCloudApp.currentUserInfo = currentUserInfo;
     }
-
 
 
     public static String getAccessToken() {
@@ -99,7 +96,6 @@ public class MCloudApp {
     }
 
 
-
     public static String getAccount() {
         return account;
     }
@@ -107,7 +103,6 @@ public class MCloudApp {
     public static void setAccount(String account) {
         MCloudApp.account = account;
     }
-
 
 
     public static boolean isIsNetworkConnected() {
@@ -119,13 +114,21 @@ public class MCloudApp {
     }
 
 
+    public static boolean isIsBluetoothDeviceConnected() {
+        return isBluetoothDeviceConnected;
+    }
+
+    public static void setIsBluetoothDeviceConnected(boolean isBluetoothDeviceConnected) {
+        MCloudApp.isBluetoothDeviceConnected = isBluetoothDeviceConnected;
+    }
+
     /**
      * 注销用户登录。
      */
     public static void logout() {
-        accessToken=null;
-        account=null;
-        currentUserInfo=null;
+        accessToken = null;
+        account = null;
+        currentUserInfo = null;
 
         UserConfig userConfig = UserConfig.getConfig(mContext, CommonVariable.USER_CONFIG_NAME);
         userConfig.remove(CommonVariable.PWD);

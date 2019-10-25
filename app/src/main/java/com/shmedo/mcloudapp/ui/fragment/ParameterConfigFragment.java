@@ -244,7 +244,7 @@ public class ParameterConfigFragment extends BaseFragment
             }
         });
 
-        if (DeviceFragment.isConnected) {
+        if (MCloudApp.isIsBluetoothDeviceConnected()) {
             DeviceFragment.sendDeviceStateComd();
         }
 
@@ -473,7 +473,7 @@ public class ParameterConfigFragment extends BaseFragment
      * 雨量计开关
      */
     private void rainSelect(String parameter) {
-        if (DeviceFragment.isConnected) {
+        if (MCloudApp.isIsBluetoothDeviceConnected()) {
             //雨量站开关
             Message msg = new Message("##005",
                     "##005" + parameter + "\r\n", true);
@@ -490,7 +490,7 @@ public class ParameterConfigFragment extends BaseFragment
      * 渗压计开关
      */
     private void osmometerSelect(String parameter) {
-        if (DeviceFragment.isConnected) {
+        if (MCloudApp.isIsBluetoothDeviceConnected()) {
             //渗压计开关
             Message msg = new Message("##401",
                     "##401" + parameter + "\r\n", true);
@@ -626,7 +626,7 @@ public class ParameterConfigFragment extends BaseFragment
 
             case R.id.rl_sensor_setting:
                 //采集器的传感器参数配置   根据传感器的类型来进行
-                if (DeviceFragment.isConnected) {
+                if (MCloudApp.isIsBluetoothDeviceConnected()) {
                     //intent = new Intent(getActivity(), SenSorMPSConfigActivity.class);
                     intent = new Intent(getActivity(), SenSorBGKConfigActivity.class);
                     startActivity(intent);
@@ -685,7 +685,7 @@ public class ParameterConfigFragment extends BaseFragment
             }
         }
 
-        if (!DeviceFragment.isConnected) {
+        if (!MCloudApp.isIsBluetoothDeviceConnected()) {
             mRefreshLayout.setRefreshing(false);
         }
     }

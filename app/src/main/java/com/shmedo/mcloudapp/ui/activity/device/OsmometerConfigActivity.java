@@ -9,6 +9,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.shmedo.mcloudapp.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.base.BaseActivity;
 import com.shmedo.mcloudapp.bluetooth.Message;
@@ -185,7 +186,7 @@ public class OsmometerConfigActivity extends BaseActivity {
             list.add(String.valueOf(result4));
             list.add(String.valueOf(result5));
             for (int i = 0; i < list.size(); i++) {
-                if (DeviceFragment.isConnected) {
+                if (MCloudApp.isIsBluetoothDeviceConnected()) {
                     Log.i(LogTag.INFO_TAG, "==渗压计指令==" + list.get(i));
                     //渗压计
                     Message msg = new Message("osmometer", list.get(i).toString(), true);

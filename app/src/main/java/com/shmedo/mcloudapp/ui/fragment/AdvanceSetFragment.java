@@ -24,6 +24,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.shmedo.das.das.cmd.CommandManager;
 import com.shmedo.das.das.cmd.CommandType;
 import com.shmedo.das.das.cmd.entity.RebootDeviceEntity;
+import com.shmedo.mcloudapp.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.base.BaseFragment;
 import com.shmedo.mcloudapp.bluetooth.Message;
@@ -86,8 +87,7 @@ public class AdvanceSetFragment extends BaseFragment {
                 break;
 
             case R.id.rl_instruction_debug://指令交互调试模式
-                Intent in = new Intent(getActivity(), InstructionDebugActivity.class);
-                startActivity(in);
+                InstructionDebugActivity.startActivity(getActivity());
                 break;
         }
     }
@@ -109,7 +109,7 @@ public class AdvanceSetFragment extends BaseFragment {
         mBuilder.onPositive(new MaterialDialog.SingleButtonCallback() {
             @Override
             public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                if (!DeviceFragment.isConnected) {
+                if (!MCloudApp.isIsBluetoothDeviceConnected()) {
                     ToastUtil.showShortToast("蓝牙未连接");
                     return;
                 }
@@ -170,7 +170,7 @@ public class AdvanceSetFragment extends BaseFragment {
                     return;
                 }
 
-                if (!DeviceFragment.isConnected) {
+                if (!MCloudApp.isIsBluetoothDeviceConnected()) {
                     ToastUtil.showShortToast("蓝牙未连接");
                     return;
                 }

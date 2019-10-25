@@ -10,6 +10,7 @@ import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 
+import com.shmedo.mcloudapp.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.base.BaseActivity;
 import com.shmedo.mcloudapp.ui.fragment.DeviceFragment;
@@ -102,7 +103,7 @@ public class RainConfigActivity extends BaseActivity {
             return;
         }
 
-        if (DeviceFragment.isConnected) {
+        if (MCloudApp.isIsBluetoothDeviceConnected()) {
             //恢复出厂设置
             com.shmedo.mcloudapp.bluetooth.Message msg = new com.shmedo.mcloudapp.bluetooth.Message("##121",
                     "##121" + rainResult + "\r\n", true);

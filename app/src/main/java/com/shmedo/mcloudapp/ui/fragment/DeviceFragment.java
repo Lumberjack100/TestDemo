@@ -29,6 +29,7 @@ import com.shmedo.das.das.cmd.CommandType;
 import com.shmedo.das.utils.DesUtil;
 import com.shmedo.das.utils.OnBytePackage;
 import com.shmedo.das.utils.StringUtil;
+import com.shmedo.mcloudapp.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.base.BaseFragment;
 import com.shmedo.mcloudapp.bluetooth.BluetoothDeviceFindEventData;
@@ -109,9 +110,10 @@ public class DeviceFragment extends BaseFragment implements View.OnClickListener
     private LoadingDialog mLoadingDialog;
     private Handler hander;
 
-    public static boolean isConnected = false;
+    private static boolean isConnected = false;
     private boolean isBlueMode = true;//当前模式是否是蓝牙模式
     private boolean stopBluetooth = false;
+
     public static MdBluetoothManager mdBluetoothManager;
     private BluetoothAdapter mBluetoothAdapter;
     private String SN = "";
@@ -735,6 +737,7 @@ public class DeviceFragment extends BaseFragment implements View.OnClickListener
 
                     isConnected = true;
                     stopBluetooth = false;
+                    MCloudApp.setIsBluetoothDeviceConnected(true);
                     //isLockStatus();
                     startBluAuthenticate();//蓝牙连接成功开始进行验证
                     hander.removeCallbacks(dismssConDialogRunnable);
@@ -760,6 +763,7 @@ public class DeviceFragment extends BaseFragment implements View.OnClickListener
                         ToastUtil.showShortToast("蓝牙连接已断开!");
 
                         isConnected = false;
+                        MCloudApp.setIsBluetoothDeviceConnected(false);
                         hander.removeCallbacks(dismssConDialogRunnable);
                         mdBluetoothManager.stopScan();
                         if (!stopBluetooth) {
@@ -978,6 +982,7 @@ public class DeviceFragment extends BaseFragment implements View.OnClickListener
                         dialog.dismiss();
                         isConnected = false;
                         stopBluetooth = true;
+                        MCloudApp.setIsBluetoothDeviceConnected(false);
                         disconnectDevice();
 
                         switch (index) {
@@ -1003,6 +1008,7 @@ public class DeviceFragment extends BaseFragment implements View.OnClickListener
         } else {
             isConnected = false;
             stopBluetooth = true;
+            MCloudApp.setIsBluetoothDeviceConnected(false);
             if (mLoadingDialog != null) {
                 mLoadingDialog.dismiss();
             }

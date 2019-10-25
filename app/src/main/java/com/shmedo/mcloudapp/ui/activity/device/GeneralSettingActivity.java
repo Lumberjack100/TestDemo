@@ -9,6 +9,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.shmedo.mcloudapp.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.base.BaseActivity;
 import com.shmedo.mcloudapp.ui.fragment.DeviceFragment;
@@ -149,7 +150,7 @@ public class GeneralSettingActivity extends BaseActivity {
             list.add(String.valueOf(result3));
             list.add(String.valueOf(result4));
             for (int i = 0; i < list.size(); i++) {
-                if (DeviceFragment.isConnected) {
+                if (MCloudApp.isIsBluetoothDeviceConnected()) {
                     Log.i(LogTag.INFO_TAG, "==采集器指令=========" + list.get(i).toString());
                     //采集器
                     com.shmedo.mcloudapp.bluetooth.Message msg
