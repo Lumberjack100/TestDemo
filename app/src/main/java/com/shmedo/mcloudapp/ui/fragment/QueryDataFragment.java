@@ -78,11 +78,12 @@ public class QueryDataFragment extends BaseFragment {
 
 
     private void initData() {
-        if (MCloudApp.isIsNetworkConnected()) {
-            initWebView();
-        } else {
+        if (!MCloudApp.isIsNetworkConnected()) {
             ToastUtil.showShortToast("当前网络不可用");
+            return;
         }
+
+        initWebView();
     }
 
     private void initWebView() {

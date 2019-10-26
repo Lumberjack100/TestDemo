@@ -205,7 +205,7 @@ public class MdBluetoothManager {
         if (gatt == null) {
             return;
         }
-        gatt.close();
+        gatt.disconnect();
         currentDevice = null;
 
 
@@ -244,7 +244,7 @@ public class MdBluetoothManager {
         isReadable = false;
         lastWriteTime = null;
         isWritable = true;
-        //byteManager.clear();
+        byteManager.clear();
     }
 
     private void initCheck() {
@@ -419,6 +419,7 @@ public class MdBluetoothManager {
             } else if (newState == BluetoothProfile.STATE_DISCONNECTED ||
                 newState == BluetoothProfile.STATE_DISCONNECTING) {
                 eventType = BluetoothEventType.DISCONNECTED;
+                gatt.close();
             }
             if (eventHandler == null || eventType == null)
                 return;
@@ -435,7 +436,8 @@ public class MdBluetoothManager {
 
         @Override
         public void onMtuChanged(BluetoothGatt gatt, int mtu, int status) {
-            if (status == BluetoothGatt.GATT_SUCCESS && mtu == PACKAGE_SIZE) {
+            // && mtu == PACKAGE_SIZE
+            if (status == BluetoothGatt.GATT_SUCCESS ) {
                 gatt.discoverServices();
             } else {
                 Log.w(LogTag.WARN_TAG, "MTU设置失败");

@@ -11,7 +11,11 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.LinearInterpolator;
+import android.view.animation.RotateAnimation;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -30,6 +34,7 @@ import com.shmedo.mcloudapp.ui.activity.device.senior.InstructionDebugActivity;
 import com.shmedo.mcloudapp.ui.activity.device.sensor.ADMESensorConfigActivity;
 import com.shmedo.mcloudapp.util.DaoManager;
 import com.shmedo.mcloudapp.util.ToastUtil;
+import com.shmedo.mcloudapp.views.ClearEditText;
 import com.shmedo.mcloudapp.views.editspinner.EditSpinner;
 
 import org.greenrobot.eventbus.EventBus;
@@ -86,6 +91,9 @@ public class ADMEHomeFragment extends BaseFragment {
     @BindView(R.id.platform_server_config_layout)
     View platformServerConfigLayout;
 
+    @BindView(R.id.server_address_layout)
+    View serverAddressLayout;
+
     @BindView(R.id.dag_config_layout)
     View dagConfigLayout;
 
@@ -98,6 +106,18 @@ public class ADMEHomeFragment extends BaseFragment {
     private TextView tvAutoMonitorState, tvDebugMode;
 
     private SwitchView svAutoMonitorState, svDebugMode;
+
+    private ClearEditText mEtAddress1, mEtAddress2;
+
+    private ImageView mIvExpandAddress, mIvRefreshAddr1, mIvRefreshAddr2;
+
+    private Button mBtnEdit1, mBtnEdit2;
+
+    private Animation mExpandAnimation;
+
+    private Animation mFoldResetAnimation;
+
+    private RotateAnimation mRefreshAnimation;
 
     private Unbinder unbinder;
     private String deviceInfo;
@@ -128,6 +148,7 @@ public class ADMEHomeFragment extends BaseFragment {
         getIntentData();
         queryProjectList();
         initView();
+        initAnimation();
         setSwitchViewListener();
 
         return view;
@@ -139,10 +160,10 @@ public class ADMEHomeFragment extends BaseFragment {
             deviceInfo = intent.getStringExtra(Extras.CUR_DEVICE_NAME);
 
             String[] scanData = deviceInfo.split(",");
-            mTvDeviceName.setText("物联网数据采集器");
+            mTvDeviceName.setText("自动化深层水平位移监测装置");
             mTvDeviceSn.setText(scanData[1]);//设备编号
             mTvDeviceModel.setText(scanData[2]);//功能型号
-            mTvSensorType.setText("拉线位移计");
+            mTvSensorType.setText("S0260");
         }
     }
 
@@ -158,6 +179,21 @@ public class ADMEHomeFragment extends BaseFragment {
         svDebugMode = debugModelLayout.findViewById(R.id.switchview);
 
         ((TextView) platformServerConfigLayout.findViewById(R.id.tv_config_name)).setText("云平台服务器设置");
+        mIvExpandAddress = platformServerConfigLayout.findViewById(R.id.iv_arrow);
+        mIvExpandAddress.setImageResource(R.drawable.ic_expand_more_black_24dp);
+
+        serverAddressLayout.setVisibility(View.GONE);
+
+        mEtAddress1 = serverAddressLayout.findViewById(R.id.addressET1);
+        mIvRefreshAddr1 = serverAddressLayout.findViewById(R.id.refreshIV1);
+        mBtnEdit1 = serverAddressLayout.findViewById(R.id.editBtn1);
+        mEtAddress1.setEnabled(false);
+
+        mEtAddress2 = serverAddressLayout.findViewById(R.id.addressET2);
+        mIvRefreshAddr2 = serverAddressLayout.findViewById(R.id.refreshIV2);
+        mBtnEdit2 = serverAddressLayout.findViewById(R.id.editBtn2);
+        mEtAddress2.setEnabled(false);
+
         ((TextView) dagConfigLayout.findViewById(R.id.tv_config_name)).setText("DAG设置");
         ((TextView) executiveAgencyParamLayout.findViewById(R.id.tv_config_name)).setText("执行机构参数配置");
         ((TextView) customCommandTestLayout.findViewById(R.id.tv_config_name)).setText("自定义指令输入");
@@ -190,6 +226,44 @@ public class ADMEHomeFragment extends BaseFragment {
         if (MCloudApp.isIsBluetoothDeviceConnected()) {
             ConfigADMEActivity.sendDeviceStateComd();
         }
+    }
+
+
+    private void initAnimation() {
+        mExpandAnimation = new RotateAnimation(0, -180, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+        mExpandAnimation.setDuration(300);
+        mExpandAnimation.setFillAfter(true);
+
+        mFoldResetAnimation = new RotateAnimation(-180, 0, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+        mFoldResetAnimation.setDuration(300);
+        mFoldResetAnimation.setFillAfter(true);
+
+        mRefreshAnimation = new RotateAnimation(0f, 360f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+        LinearInterpolator interpolator = new LinearInterpolator();
+        mRefreshAnimation.setInterpolator(interpolator);
+        mRefreshAnimation.setDuration(1200);//设置动画持续周期
+        mRefreshAnimation.setRepeatCount(Animation.INFINITE);//设置重复次数,一直重复下去
+        mRefreshAnimation.setAnimationListener(new Animation.AnimationListener()
+        {
+            @Override
+            public void onAnimationStart(Animation animation)
+            {
+                mIvRefreshAddr1.setClickable(false);
+                mIvRefreshAddr2.setClickable(false);
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation)
+            {
+                mIvRefreshAddr1.setClickable(true);
+                mIvRefreshAddr2.setClickable(true);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation)
+            {
+            }
+        });
     }
 
 
@@ -292,7 +366,7 @@ public class ADMEHomeFragment extends BaseFragment {
     }
 
 
-    @OnClick({R.id.iv_lock, R.id.platform_server_config_layout, R.id.dag_config_layout, R.id.executive_agency_param_layout, R.id.custom_command_test_layout, R.id.firmware_upgrade_layout})
+    @OnClick({R.id.iv_lock, R.id.platform_server_config_layout, R.id.refreshIV1, R.id.editBtn1, R.id.refreshIV2, R.id.editBtn2, R.id.dag_config_layout, R.id.executive_agency_param_layout, R.id.custom_command_test_layout, R.id.firmware_upgrade_layout})
     public void onClick(View v) {
         Intent intent = null;
 
@@ -312,8 +386,44 @@ public class ADMEHomeFragment extends BaseFragment {
                 }
                 break;
 
-            case R.id.platform_server_config_layout:
+            case R.id.platform_server_config_layout://展开或折叠服务器地址配置
 
+                doExpandOrFoldServerConfig();
+                break;
+
+            case R.id.refreshIV1:
+                mIvRefreshAddr1.startAnimation(mRefreshAnimation);
+                break;
+
+            case R.id.editBtn1:
+
+                if (mBtnEdit1.getText().toString().contains("编辑")) {
+                    mBtnEdit1.setText("确定");
+                    mEtAddress1.setEnabled(true);
+                    mEtAddress1.requestFocus();
+                } else {
+                    mBtnEdit1.setText("编辑");
+                    mEtAddress1.clearFocus();
+
+                    //TODO 发送服务器地址设置指令
+                }
+                break;
+
+            case R.id.refreshIV2:
+                mIvRefreshAddr2.startAnimation(mRefreshAnimation);
+                break;
+
+            case R.id.editBtn2:
+                if (mBtnEdit2.getText().toString().contains("编辑")) {
+                    mBtnEdit2.setText("确定");
+                    mEtAddress2.setEnabled(true);
+                    mEtAddress2.requestFocus();
+                } else {
+                    mBtnEdit2.setText("编辑");
+                    mEtAddress2.clearFocus();
+                    //TODO 发送服务器地址设置指令
+
+                }
                 break;
 
             case R.id.dag_config_layout:
@@ -333,6 +443,20 @@ public class ADMEHomeFragment extends BaseFragment {
                 ToastUtil.showShortToast("功能开发中...");
                 break;
         }
+    }
+
+    private void doExpandOrFoldServerConfig() {
+        if (serverAddressLayout.getVisibility() == View.GONE) {
+            mIvExpandAddress.startAnimation(mExpandAnimation);
+            serverAddressLayout.setVisibility(View.VISIBLE);
+        } else {
+            mIvExpandAddress.startAnimation(mFoldResetAnimation);
+            serverAddressLayout.setVisibility(View.GONE);
+        }
+    }
+
+    private void doEditButtonClick(Button button) {
+
     }
 
 

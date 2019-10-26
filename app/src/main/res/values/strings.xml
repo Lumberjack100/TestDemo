@@ -12,12 +12,6 @@
     <string name="disconnect_bluetooth_device">当前设备处于蓝牙连接状态，是否要断开连接？</string>
     <string name="finish_activity_disconnect_bluetooth_device">确定要退出该页面，并断开蓝牙连接吗？</string>
     <string name="exit_login_tip">确定退出登录吗？</string>
-
-    <!-- 权限申请-->
-    <string name="permission_request_camera_external_storage">米易通需要使用相机权限和存储卡权限，请前往设置页面授予权限</string>
-    <string name="permission_request_location">米易通需要使用定位权限，请前往设置页面授予权限</string>
-
-
     <string name="appbar_scrolling_view_behavior" translatable="false">android.support.design.widget.AppBarLayout$ScrollingViewBehavior</string>
     <string name="bottom_sheet_behavior" translatable="false">android.support.design.widget.BottomSheetBehavior</string>
     <string name="network_error_tip">网络不给力，请稍后再试！</string>
@@ -26,10 +20,21 @@
     <string name="gallery">相册</string>
     <string name="input_sn"> 手动输入</string>
 
+    <!-- 权限申请-->
+    <string name="permission_request_camera_external_storage">米易通需要使用相机权限和存储卡权限，请前往设置页面授予权限</string>
+    <string name="permission_request_location">米易通需要使用定位权限，请前往设置页面授予权限</string>
+
 
     <string name="securityNo">请输入新的设备授权码</string>
     <string name="select_device">选择一个设备连接</string>
     <string name="tv_prompt">1台DAS可支持8只拉线位移计接入，请根据实际接入的数量\n任意点击"启用"或"停用"，并对启用的拉线位移计配置相应的参数。</string>
+    <string name="service_address_note1">MD-NET服务器地址：端口</string>
+    <string name="service_address_note2">mCloud服务器地址：端口</string>
+    <string name="input_server_address_hint">请输入地址</string>
+
+
+
+    <!-- 采集器、传感器参数说明-->
     <string name="collector_address">
         采集器地址：当同一条RS485总线下，接入多个采集器时，区分每个采集器，采集器(DAS)可识别区分，可填入1-255任意数字。
         这里说的采集器不是DAS，而是指支持Modbus RTU协议的传感器或采集器。
@@ -67,6 +72,7 @@
     <string name="rain">
         翻斗式雨量计：通过计算内置翻斗的反转次数，计算降雨量，翻斗的分辨力常用为0.1mm、0.2mm、0.5mm，这项参数和雨量计要一致，不能选错。
     </string>
+
 
 
 </resources>

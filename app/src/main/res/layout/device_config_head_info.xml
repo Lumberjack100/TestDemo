@@ -78,9 +78,9 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="功能型号："
+                android:text="产品型号："
                 android:textColor="@color/app_color_blue"
-                android:textSize="@dimen/text_size_14"/>
+                android:textSize="@dimen/text_size_14" />
 
             <TextView
                 android:id="@+id/tv_device_model"
@@ -102,9 +102,9 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="传感器类型："
+                android:text="传感器型号："
                 android:textColor="@color/app_color_blue"
-                android:textSize="@dimen/text_size_14"/>
+                android:textSize="@dimen/text_size_14" />
 
             <TextView
                 android:id="@+id/tv_sensor_type"

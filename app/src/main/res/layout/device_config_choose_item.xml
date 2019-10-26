@@ -17,7 +17,7 @@
         tools:text="传感器参数配置" />
 
     <ImageView
-        android:id="@+id/iv_sensor"
+        android:id="@+id/iv_arrow"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_alignParentRight="true"
