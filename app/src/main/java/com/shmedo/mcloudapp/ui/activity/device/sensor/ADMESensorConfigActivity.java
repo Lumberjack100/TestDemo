@@ -7,16 +7,18 @@ import android.text.InputType;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.shmedo.das.das.cmd.CommandResult;
 import com.shmedo.mcloudapp.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.base.BaseActivity;
+import com.shmedo.mcloudapp.bluetooth.MdBluetoothManager;
 import com.shmedo.mcloudapp.bluetooth.Message;
-import com.shmedo.mcloudapp.ui.fragment.DeviceFragment;
+import com.shmedo.mcloudapp.model.Extras;
 import com.shmedo.mcloudapp.util.ToastUtil;
+import com.shmedo.mcloudapp.views.ClearEditText;
 
 import java.util.UUID;
 
@@ -54,13 +56,18 @@ public class ADMESensorConfigActivity extends BaseActivity implements View.OnCli
 
     private ImageView mIvCollectorAddress, mIvCollectorCollectInterval, mIvCollectorSolutionInterval, mIvCommunicationModuleSleepInterval, mIvSensorType, mIvSensorAddress, mIvSensorCorrectionValue;
 
-    private EditText mEtCollectorAddress, mEtCollectorCollectInterval, mEtCollectorSolutionInterval, mEtCommunicationModuleSleepInterval, mEtSensorType, mEtSensorAddress, mEtSensorCorrectionValue;
+    private ClearEditText mEtCollectorAddress, mEtCollectorCollectInterval, mEtCollectorSolutionInterval, mEtCommunicationModuleSleepInterval, mEtSensorType, mEtSensorAddress, mEtSensorCorrectionValue;
 
     private String collectorAddress, collectorCollectInterval, collectorSolutionInterval, communicationModuleSleepInterval, sensorType, sensorAddress, sensorCorrectionValue;
 
+    private MdBluetoothManager mdBluetoothManager;
 
-    public static void startActivity(Context context) {
+    private String dagConfigInfo;//DAG 采集器配置指令
+
+
+    public static void startActivity(Context context, String configInfo) {
         Intent intent = new Intent(context, ADMESensorConfigActivity.class);
+        intent.putExtra(Extras.ADME_SENSOR_CONFIG_INFO, configInfo);
         context.startActivity(intent);
     }
 
@@ -75,6 +82,7 @@ public class ADMESensorConfigActivity extends BaseActivity implements View.OnCli
         super.onCreate(savedInstanceState);
         setToolBar(R.id.toolbar);
         initView();
+        parseIntent();
         initData();
     }
 
@@ -144,8 +152,45 @@ public class ADMESensorConfigActivity extends BaseActivity implements View.OnCli
     }
 
 
-    private void initData() {
+    private void parseIntent() {
+        mdBluetoothManager = MdBluetoothManager.getInstance();
 
+        Intent intent = getIntent();
+        if (intent.getExtras().containsKey(Extras.ADME_SENSOR_CONFIG_INFO)) {
+            dagConfigInfo = intent.getStringExtra(Extras.ADME_SENSOR_CONFIG_INFO);
+        }
+    }
+
+
+    private void initData() {
+        if (TextUtils.isEmpty(dagConfigInfo)) {
+            Timber.e("dagConfigInfo 为空或者null");
+            return;
+        }
+
+        if (dagConfigInfo.length() < CommandResult.RESULT_MIN_LENGTH) {
+            Timber.e("dagConfigInfo 长度过短:" + dagConfigInfo);
+            return;
+        }
+
+        if (!dagConfigInfo.startsWith(CommandResult.COMMAND_RESULT_HEADER)) {
+            Timber.e("dagConfigInfo 格式错误:" + dagConfigInfo);
+            return;
+        }
+
+        String[] strs = dagConfigInfo.split(",");
+        if (strs.length < 8) {
+            Timber.e("dagConfigInfo 格式错误:" + dagConfigInfo);
+            return;
+        }
+
+        mEtCollectorAddress.setText(strs[1]);
+        mEtCollectorCollectInterval.setText(strs[2]);
+        mEtCollectorSolutionInterval.setText(strs[3]);
+        mEtCommunicationModuleSleepInterval.setText(strs[4]);
+        mEtSensorType.setText(strs[5]);
+        mEtSensorAddress.setText(strs[6]);
+        mEtSensorCorrectionValue.setText(strs[7]);
     }
 
 
@@ -183,7 +228,6 @@ public class ADMESensorConfigActivity extends BaseActivity implements View.OnCli
             case R.id.btn_confirm_complete:
                 doConfirm();
                 break;
-
         }
     }
 
@@ -246,7 +290,14 @@ public class ADMESensorConfigActivity extends BaseActivity implements View.OnCli
 
 
         StringBuilder stringBuilder = new StringBuilder();
-
+        stringBuilder.append("##7001,");
+        stringBuilder.append(collectorAddress + ",");
+        stringBuilder.append(collectorCollectInterval + ",");
+        stringBuilder.append(collectorSolutionInterval + ",");
+        stringBuilder.append(communicationModuleSleepInterval + ",");
+        stringBuilder.append(sensorType + ",");
+        stringBuilder.append(sensorAddress + ",");
+        stringBuilder.append(sensorCorrectionValue + "\r\n");
 
         String cmdStr = String.valueOf(stringBuilder);
         if (!MCloudApp.isIsBluetoothDeviceConnected()) {
@@ -256,8 +307,8 @@ public class ADMESensorConfigActivity extends BaseActivity implements View.OnCli
         }
 
         Message msg = new Message(UUID.randomUUID().toString(), cmdStr, true);
-        DeviceFragment.mdBluetoothManager.writeMessage(msg);
+        mdBluetoothManager.writeMessage(msg);
         Timber.d("发送DAG 配置指令===" + cmdStr);
-        finish();
+//        finish();
     }
 }

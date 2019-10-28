@@ -18,9 +18,6 @@ import android.widget.TextView;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.shmedo.das.common.GetAllSensorConfigInfo;
-import com.shmedo.das.das.cmd.CommandManager;
-import com.shmedo.das.das.cmd.CommandType;
 import com.shmedo.das.utils.DesUtil;
 import com.shmedo.das.utils.OnBytePackage;
 import com.shmedo.das.utils.StringUtil;
@@ -32,32 +29,16 @@ import com.shmedo.mcloudapp.bluetooth.BluetoothEvent;
 import com.shmedo.mcloudapp.bluetooth.BluetoothEventHandler;
 import com.shmedo.mcloudapp.bluetooth.MdBluetoothManager;
 import com.shmedo.mcloudapp.bluetooth.Message;
-import com.shmedo.mcloudapp.entity.ble.BaseConfigInfoSub;
-import com.shmedo.mcloudapp.entity.ble.CollectorInfoSub;
-import com.shmedo.mcloudapp.entity.ble.DeviceLockStatusSub;
-import com.shmedo.mcloudapp.entity.ble.DigitalOsmometerFunctionSub;
-import com.shmedo.mcloudapp.entity.ble.QueryOsmometerParameterSubInfo;
-import com.shmedo.mcloudapp.entity.ble.RainStationSub;
-import com.shmedo.mcloudapp.entity.ble.RebootDeviceSub;
-import com.shmedo.mcloudapp.entity.ble.SettingRainPrecisionSub;
-import com.shmedo.mcloudapp.entity.ble.SystemRunStateSub;
-import com.shmedo.mcloudapp.entity.ble.VersionMessageSub;
-import com.shmedo.mcloudapp.entity.ble.collector.CollectorSensorParamsInfoSub;
 import com.shmedo.mcloudapp.model.Extras;
 import com.shmedo.mcloudapp.ui.fragment.ADMEHomeFragment;
 import com.shmedo.mcloudapp.ui.fragment.DeviceDetailsFragment;
 import com.shmedo.mcloudapp.ui.fragment.QueryDataFragment;
 import com.shmedo.mcloudapp.util.ToastUtil;
-import com.shmedo.mcloudapp.util.bleutil.BlueResultParserUtil;
 import com.shmedo.mcloudapp.util.bleutil.ByteManagerUtil;
 import com.shmedo.mcloudapp.util.bleutil.Constants;
-import com.shmedo.mcloudapp.util.page.model.SetRainAccuryPage;
-import com.shmedo.mcloudapp.util.page.model.SetRainSelectPage;
 
 import org.greenrobot.eventbus.EventBus;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -95,28 +76,11 @@ public class ConfigADMEActivity extends BaseActivity {
     private QueryDataFragment queryDataFragment;        //查询数据
     private DeviceDetailsFragment deviceDetailsFragment;//设备详情
 
-    public static MdBluetoothManager mdBluetoothManager;
+    private MdBluetoothManager mdBluetoothManager;
     private BluetoothAdapter mBluetoothAdapter;
     private Handler hander;
 
-    public static QueryOsmometerParameterSubInfo queryOsmometerParameterSubInfo;
-    public static SystemRunStateSub systemRunStateSub;
-    public static DigitalOsmometerFunctionSub digitalOsmometerFunctionSub;
-    public static RainStationSub rainStationSub;
-    public static SettingRainPrecisionSub settingRainPrecisionSub;
-    public static RebootDeviceSub rebootDeviceSub;
-    public static CollectorInfoSub collectorInfoSub;
-    public static GetAllSensorConfigInfo getAllSensorConfigInfo;
-    public static BaseConfigInfoSub baseConfigInfoSub;
-    public static VersionMessageSub versionMessageSub;
-    public static SetRainAccuryPage.SetRianAccuryParameter setRianAccuryParameter = new SetRainAccuryPage.SetRianAccuryParameter();
-    public static SetRainSelectPage.SetSelectRainParameter setSelectRainParameter = new SetRainSelectPage.SetSelectRainParameter();
-    public static DeviceLockStatusSub deviceLockStatusSub;
-    public static List<CollectorSensorParamsInfoSub> mCollectorParamsInfoSubList = new ArrayList<>();
-    public static CollectorSensorParamsInfoSub mCollectorParamsInfoSub;
-    public static String collectorType = "";//采集器编号
-    public static String lockStatus = "";
-    private static boolean isBlueConnected = false;//蓝牙设备是否连接
+    private boolean isBlueConnected = false;//蓝牙设备是否连接
     private boolean isAutoConnectBlue = true;//是否自动连接蓝牙
     private String SN = "";
     private String deviceInfo;
@@ -384,7 +348,8 @@ public class ConfigADMEActivity extends BaseActivity {
 
                 case RESPONSE_WITH_NO_MESSAGE:
                     try {
-                        byte[] data = (byte[]) event.getEventData();
+//                        byte[] data = (byte[]) event.getEventData();
+                        byte[] data = ((String) event.getEventData()).getBytes();
                         if (data != null && data.length > 0) {
                             ByteManagerUtil.getInstance().writeByte(data);
                         }
@@ -510,17 +475,6 @@ public class ConfigADMEActivity extends BaseActivity {
                 Timber.d("应答指令===" + cmdStr);
 
                 String cmdArray[] = cmdStr.replace("\r\n", "").split(",");
-                if (cmdArray[cmdArray.length - 1].equals("lock")) {
-                    lockStatus = "lock";
-                    startBluAuthenticate();
-                    return;
-                }
-
-                if (cmdArray[cmdArray.length - 1].equals("unlock")) {
-                    lockStatus = "unlock";
-                    sendHandleMessage(Constants.MESSAGE_LOCK_REBOOT_DEVICE, null);
-                    return;
-                }
 
                 if (cmdStr.startsWith("$$224") && cmdStr.endsWith("\r\n")) {
                     if (cmdStr.equals("$$224ce\r\n")) {
@@ -553,9 +507,14 @@ public class ConfigADMEActivity extends BaseActivity {
                     return;
                 }
 
-                if (cmdStr.startsWith("$$225") && cmdStr.endsWith("\r\n")) {
-                    deviceLockStatusSub = BlueResultParserUtil.getDeviceLockStatusInfo(cmdStr);
-                    lockStatus = (deviceLockStatusSub.getLockStatus() == 0) ? "unlock" : "lock";
+                //需要验证设备
+                if (cmdStr.equals("Please verify the equipment.\r\n")) {
+                    sendHandleMessage(Constants.VERIFY_RESULT, "0");
+                    return;
+                }
+
+                if (cmdStr.equals("Equipment Verify OK.\r\n")) {
+                    sendHandleMessage(Constants.MESSAGE_LOCK_REBOOT_DEVICE, null);
                     return;
                 }
 
@@ -567,145 +526,18 @@ public class ConfigADMEActivity extends BaseActivity {
         }
     }
 
+    private void parserResult(String cmdStr) {
 
-    private void parserResult(String result) {
-        //需要验证设备
-        if (result.equals("Please verify the equipment.\r\n")) {
-            sendHandleMessage(Constants.VERIFY_RESULT, "0");
-            return;
-        }
+        EventBus.getDefault().post(cmdStr);
+    }
 
-        if (result.equals("Equipment Verify OK.\r\n")) {
-            sendHandleMessage(Constants.MESSAGE_LOCK_REBOOT_DEVICE, null);
-            return;
-        }
-
-        try {
-            CommandType type = StringUtil.extractCommandType(result);
-            switch (type) {
-                case SYSTEM_RUN_STATE:  //014
-                    //运行系统状态
-                    systemRunStateSub = BlueResultParserUtil.getSystemRunState(result);
-                    Timber.d("--------运行系统状态-------" + systemRunStateSub.toString());
-                    break;
-
-                case SETTING_RAIN_PRECISION:  //121
-                    //设置雨量计精度
-                    settingRainPrecisionSub = BlueResultParserUtil.getRainPrecisionInfo(result);
-                    Timber.d("--------设置雨量计精度-------" + settingRainPrecisionSub.toString());
-                    setRianAccuryParameter.setRainAccury(String.valueOf(settingRainPrecisionSub.getPrecision()));
-                    break;
-
-                case RAIN_STATION: //005
-                    //雨量计开关
-                    rainStationSub = BlueResultParserUtil.getRainStationInfo(result);
-                    Timber.d("--------雨量计开关状态-------" + rainStationSub.getRainStation());
-                    setSelectRainParameter.setRainSelect(rainStationSub.getRainStation().equals("开启"));
-                    break;
-
-                case QUERY_OSMOMETER_PARAMETER:  //400
-                    //查询数字式渗压计参数
-                    queryOsmometerParameterSubInfo = BlueResultParserUtil.getQueryOsmometerParameter(result);
-                    Timber.d("--------查询数字式渗压计参数-------" + queryOsmometerParameterSubInfo.toString());
-                    break;
-
-                case DIGITAL_OSMOMETER_FUNCTION: //401
-                    //开启/关闭数字式渗压计功能
-                    digitalOsmometerFunctionSub = BlueResultParserUtil.getOsmoeterFunctionInfo(result);
-                    Timber.d("--------开启/关闭数字式渗压计功能-------" + digitalOsmometerFunctionSub.toString());
-                    if (digitalOsmometerFunctionSub.getOsmometerStatus() == 1) {
-                        queryOsmometerParameterSubInfo.setOsmometerStatus("开启");
-                    } else if (digitalOsmometerFunctionSub.getOsmometerStatus() == 2) {
-                        queryOsmometerParameterSubInfo.setOsmometerStatus("关闭");
-                    }
-                    break;
-
-                case COLLECTOR_CONFIG://100
-                    //获取采集器配置
-                    collectorInfoSub = BlueResultParserUtil.getCollectorInfo(result);
-                    Timber.d("--------获取采集器配置-------" + collectorInfoSub.toString());
-                    send101Instruction(collectorInfoSub); //发送101指令
-                    break;
-
-                case COLLECTOR_CHANNEL_SENSOR_PARAMETER: //101
-                    Timber.d("--------101指令-------" + result);
-                    mCollectorParamsInfoSub = BlueResultParserUtil.setCollectorParams(result);
-                    mCollectorParamsInfoSubList.add(mCollectorParamsInfoSub);
-                    Timber.d("size=" + mCollectorParamsInfoSubList.size() + "--------获取XX采集器YY通道的传感器参数-------" + mCollectorParamsInfoSub.toString());
-                    break;
-
-                case RESTORE_FACTORY_SETTING:  //119
-                    //恢复出厂设置
-                    mHandler.sendEmptyMessage(Constants.BT_RECOVERY_SUCCESS);
-                    Timber.d("--------恢复出厂设置-------" + type);
-                    break;
-
-                case REBOOT_DEVICE:  //008
-                    //重启设备
-                    rebootDeviceSub = BlueResultParserUtil.getRebootDeviceMessage(result);
-                    Timber.d("--------重启设备-------" + rebootDeviceSub.toString());
-                    mHandler.sendEmptyMessage(Constants.MESSAGE_RESPONSE_REBOOT_DEVICE);
-                    break;
-
-                case GET_ALL_SENSOR_CONFIG: {  //333
-                    //所有配置信息
-                    getAllSensorConfigInfo = BlueResultParserUtil.getAllBlueMessage(result);
-                    Timber.d("--------所有配置信息-------" + getAllSensorConfigInfo.toString());
-
-                    if (getAllSensorConfigInfo != null) {
-                        collectorInfoSub = BlueResultParserUtil.getCollectorInfos(getAllSensorConfigInfo);
-                    }
-                    baseConfigInfoSub = BlueResultParserUtil.getBasicFromAllBlueMessage(result);
-                    if (getAllSensorConfigInfo != null) {
-                        switch (getAllSensorConfigInfo.getBaseConfig().getRainfallStation()) {
-                            case RAIN_OPEN:
-                                setSelectRainParameter.setRainSelect(true);
-                                break;
-                            case RAIN_CLOSE:
-                                setSelectRainParameter.setRainSelect(false);
-                                break;
-                        }
-                        setRianAccuryParameter.setRainAccury(String.valueOf(getAllSensorConfigInfo.getBaseConfig().getRainAccuracy() / 100));
-                    }
-
-                    switch (getAllSensorConfigInfo.getBaseConfig().getCollectorModel().name()) {
-                        case "DS08":
-                            collectorType = "02";
-                            break;
-                    }
-
-                    if (!TextUtils.isEmpty(collectorType)) {
-                        if (!isBlueConnected) {
-                            ToastUtil.showShortToast("蓝牙未连接");
-                            return;
-                        }
-
-                        //根据采集器型号获取采集器配置 ##100 02
-                        String collectorCommand = CommandManager.getInstance().getCommand(CommandType.COLLECTOR_CONFIG, null);
-                        String collectorResult = collectorCommand.replace("\r\n", "") + collectorType + "\r\n";
-                        Timber.d("发送获取采集器配置信息指令===" + collectorResult);
-                        mdBluetoothManager.writeMessage(new Message(UUID.randomUUID().toString(), collectorResult, true));
-                    }
-                    break;
-                }
-
-                case VERSION_MESSAGE:   //040
-                    //获取版本信息
-                    versionMessageSub = BlueResultParserUtil.getVersionMessage(result);
-                    Timber.d("获取版本信息===" + versionMessageSub.toString());
-                    break;
-
-                default:
-                    break;
+    private void showToastOnUiThread(final String msg) {
+        MCloudApp.getHandler().post(new Runnable() {
+            @Override
+            public void run() {
+                ToastUtil.showShortToast(msg);
             }
-
-            //TODO  此处传递的参数待确认，因为InstructionDebugActivity 页面也需要接收事件通知
-            EventBus.getDefault().post("ParameterConfigFragment");
-            EventBus.getDefault().post(result);
-
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        });
     }
 
 
@@ -721,34 +553,31 @@ public class ConfigADMEActivity extends BaseActivity {
     /**
      * 发送蓝牙请求设备信息指令
      */
-    public static void sendDeviceStateComd() {
+    public void sendDeviceStateComd() {
         if (!isBlueConnected) {
             ToastUtil.showShortToast("蓝牙未连接");
             return;
         }
 
-        //获取所有配置  ##333
-        String allInfoCommand = CommandManager.getInstance().getCommand(CommandType.GET_ALL_SENSOR_CONFIG, null);
-        mdBluetoothManager.writeMessage(new Message(UUID.randomUUID().toString(), allInfoCommand, true));
-        Timber.d("发送所有配置指令===" + allInfoCommand);
+        //##7010，查询工作模式
+        mdBluetoothManager.writeMessage(new Message(UUID.randomUUID().toString(), "##7010\r\n", true));
+        Timber.d("发送查询工作模式指令===" + "##7010");
 
-        //系统运行状态 ##014
-        String runstateCommand = CommandManager.getInstance().getCommand(CommandType.SYSTEM_RUN_STATE, null);
-        mdBluetoothManager.writeMessage(new Message(UUID.randomUUID().toString(), runstateCommand, true));
-        Timber.d("发送系统运行状态指令===" + runstateCommand);
+        //##2001，查询服务器地址1
+        mdBluetoothManager.writeMessage(new Message(UUID.randomUUID().toString(), "##2001\r\n", true));
+        Timber.d("发送查询服务器地址1指令===" + "##2001");
 
-        //查询数字式渗压计参数 ##400
-        String shenyajiCommand = CommandManager.getInstance().getCommand(CommandType.QUERY_OSMOMETER_PARAMETER, null);
-        mdBluetoothManager.writeMessage(new Message(UUID.randomUUID().toString(), shenyajiCommand, true));
-        Timber.d("发送查询渗压计指令===" + shenyajiCommand);
+        //##2002，查询服务器地址2
+        mdBluetoothManager.writeMessage(new Message(UUID.randomUUID().toString(), "##2002\r\n", true));
+        Timber.d("发送查询服务器地址2指令===" + "##2002");
 
-        //版本信息 ##040
-        String versionCommand = CommandManager.getInstance().getCommand(CommandType.VERSION_MESSAGE, null);
-        mdBluetoothManager.writeMessage(new Message(UUID.randomUUID().toString(), versionCommand, true));
-        Timber.d("发送版本信息指令===" + versionCommand);
+        //##7000，查询采集器参数
+        mdBluetoothManager.writeMessage(new Message(UUID.randomUUID().toString(), "##7000\r\n", true));
+        Timber.d("发送查询采集器参数指令===" + "##7000");
 
-        //获取服务器地址 ##200
-        String serverCommand = CommandManager.getInstance().getCommand(CommandType.SERVER_ADDRESS, null);
+        //##7002，查询执行机构参数
+        mdBluetoothManager.writeMessage(new Message(UUID.randomUUID().toString(), "##7002\r\n", true));
+        Timber.d("发送查询执行机构参数指令===" + "##7002");
     }
 
     /**
@@ -759,28 +588,6 @@ public class ConfigADMEActivity extends BaseActivity {
         Message msg = new Message(UUID.randomUUID().toString(), com, true);
         mdBluetoothManager.writeMessage(msg);
         Timber.d("发送指令===" + com);
-    }
-
-
-    /**
-     * 发送101指令
-     *
-     * @param collectorInfoSub
-     */
-    private void send101Instruction(CollectorInfoSub collectorInfoSub) {
-        if (!isBlueConnected) {
-            ToastUtil.showShortToast("蓝牙未连接");
-            return;
-        }
-
-        for (int i = 0; i < collectorInfoSub.getAccessSum(); i++) {
-            //##101XXYY\r\n：获取XX采集器YY通道的传感器参数
-            String collectorCommand = CommandManager.getInstance().getCommand(CommandType.COLLECTOR_CHANNEL_SENSOR_PARAMETER, null);
-            String count = com.shmedo.mcloudapp.util.StringUtil.formatTwo(i);
-            String collectorResult = collectorCommand.replace("\r\n", "") + collectorType + count + "\r\n";
-            mdBluetoothManager.writeMessage(new Message(UUID.randomUUID().toString(), collectorResult, true));
-            Timber.d("发送101采集器配置指令===" + collectorResult);
-        }
     }
 
 

@@ -144,15 +144,21 @@
             android:label="E60设备配置页面"
             android:windowSoftInputMode="adjustPan|stateHidden" />
 
-        <activity android:name=".ui.activity.ConfigADMEActivity" />
+        <activity
+            android:name=".ui.activity.ConfigADMEActivity"
+            android:windowSoftInputMode="adjustPan|stateHidden" />
 
         <activity
             android:name=".ui.activity.ScanActivity"
             android:theme="@style/ScanActivityTheme" />
 
-        <activity android:name=".ui.activity.device.sensor.ADMESensorConfigActivity" />
+        <activity
+            android:name=".ui.activity.device.sensor.ADMESensorConfigActivity"
+            android:windowSoftInputMode="adjustPan|stateHidden" />
 
-        <activity android:name=".ui.activity.device.ADMEExecutiveAgencyConfigActivity" />
+        <activity
+            android:name=".ui.activity.device.ADMEExecutiveAgencyConfigActivity"
+            android:windowSoftInputMode="adjustPan|stateHidden" />
 
     </application>
 

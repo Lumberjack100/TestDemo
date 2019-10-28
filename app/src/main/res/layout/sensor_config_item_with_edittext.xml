@@ -24,7 +24,7 @@
         android:textSize="@dimen/text_size_14"
         tools:text="解算时间(单位：秒)" />
 
-    <EditText
+    <com.shmedo.mcloudapp.views.ClearEditText
         android:id="@+id/itemValueET"
         android:layout_width="0dp"
         android:layout_height="35dp"

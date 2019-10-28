@@ -9,16 +9,24 @@ package com.shmedo.mcloudapp.model;
  */
 public interface Extras {
 
-     String QUERY_PROJECT_DEVICE = "queryProjectDevice";
+    String QUERY_PROJECT_DEVICE = "queryProjectDevice";
 
-     String DEVICE_LATLNG = "device_latlng";
+    String DEVICE_LATLNG = "device_latlng";
 
-     String CUR_DEVICE_NAME = "cur_device_name";
+    String CUR_DEVICE_NAME = "cur_device_name";
 
-     String DEVICE_MAC_ADDRESS = "cur_device_mac_address";
+    String DEVICE_MAC_ADDRESS = "cur_device_mac_address";
 
-     String DEVICE_E60 = "DEVICE_E60";
+    String DEVICE_E60 = "device_e60";
 
-     String SCAN_DEVICE_LIST = "scan_device_list";
+    String SCAN_DEVICE_LIST = "scan_device_list";
+
+
+    //ADME 的 DAG 采集器配置
+    String ADME_SENSOR_CONFIG_INFO = "adme_sensor_config_info";
+
+    //ADME 的执行机构配置
+    String ADME_EXECUTIVE_AGENCY_CONFIG_INFO = "adme_executive_agency_config_info";
+
 
 }
