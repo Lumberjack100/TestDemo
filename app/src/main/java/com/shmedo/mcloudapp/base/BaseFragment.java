@@ -14,6 +14,8 @@ import com.shmedo.mcloudapp.util.XPermissionUtils;
 import com.shmedo.mcloudapp.util.common.HandleBackInterface;
 import com.shmedo.mcloudapp.util.common.HandleBackUtil;
 
+import org.greenrobot.eventbus.EventBus;
+
 import butterknife.ButterKnife;
 import timber.log.Timber;
 
@@ -52,6 +54,12 @@ public abstract class BaseFragment extends Fragment implements HandleBackInterfa
 
 
     @Override
+    public void onStart() {
+        super.onStart();
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
         String name = getClass().getName();
@@ -64,6 +72,13 @@ public abstract class BaseFragment extends Fragment implements HandleBackInterfa
         super.onPause();
         String name = getClass().getName();
         Timber.d("endPage,Fragment=" + name);
+    }
+
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        EventBus.getDefault().unregister(this);
     }
 
 

@@ -183,16 +183,11 @@ public class ScanAddDeviceActivity extends BaseActivity {
             if (localData[2].equals("DAS")) {
                 //跳转到设备配置页面
 //                ConfigDASActivity.startActivity(ScanAddDeviceActivity.this, results);
-
-                ConfigADMEActivity.startActivity(ScanAddDeviceActivity.this, results);
-
-
             } else if (localData[2].equals("E60")) {
 
                 DeviceBasicInfoResult deviceBasicInfoResult = new DeviceBasicInfoResult();
                 deviceBasicInfoResult.setDeviceToken(localData[2]);
                 deviceBasicInfoResult.setDeviceTypeName(localData[1]);
-
                 ConfigE60Activity.startActivity(ScanAddDeviceActivity.this, deviceBasicInfoResult);
             }
 

@@ -36,7 +36,6 @@ import com.shmedo.mcloudapp.util.ToastUtil;
 import com.shmedo.mcloudapp.views.VerticalSwipeRefreshLayout;
 import com.shmedo.mcloudapp.views.editspinner.EditSpinner;
 
-import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
@@ -169,9 +168,6 @@ public class ParameterConfigFragment extends BaseFragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = super.onCreateView(inflater, container, savedInstanceState);
         unbinder = ButterKnife.bind(this, view);
-        if (!EventBus.getDefault().isRegistered(this)) {
-            EventBus.getDefault().register(this);
-        }
         mContext = getActivity();
 
         getIntentData();
@@ -706,11 +702,6 @@ public class ParameterConfigFragment extends BaseFragment
     }
 
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        EventBus.getDefault().unregister(this);
-    }
 
     @Override
     public boolean onBackPressed() {

@@ -29,6 +29,7 @@ import com.shmedo.mcloudapp.bluetooth.BluetoothEvent;
 import com.shmedo.mcloudapp.bluetooth.BluetoothEventHandler;
 import com.shmedo.mcloudapp.bluetooth.MdBluetoothManager;
 import com.shmedo.mcloudapp.bluetooth.Message;
+import com.shmedo.mcloudapp.entity.event.BluetoothStateEvent;
 import com.shmedo.mcloudapp.model.Extras;
 import com.shmedo.mcloudapp.ui.fragment.ADMEHomeFragment;
 import com.shmedo.mcloudapp.ui.fragment.DeviceDetailsFragment;
@@ -59,6 +60,9 @@ public class ConfigADMEActivity extends BaseActivity {
 
     @BindView(R.id.img_bluetooth)
     ImageView mImgBluetooth;
+
+    @BindView(R.id.tv_save)
+    TextView mTvSave;
 
     @BindView(R.id.tv_parameter)
     TextView mTvParameter;
@@ -163,12 +167,16 @@ public class ConfigADMEActivity extends BaseActivity {
     }
 
 
-    @OnClick({R.id.back, R.id.img_bluetooth, R.id.tv_parameter, R.id.tv_query_data, R.id.tv_device_details})
+    @OnClick({R.id.back, R.id.tv_save, R.id.img_bluetooth, R.id.tv_parameter, R.id.tv_query_data, R.id.tv_device_details})
     public void onClick(View v) {
 
         switch (v.getId()) {
             case R.id.back:
                 onBackPressed();
+                break;
+
+            case R.id.tv_save:
+                sendSaveConfigCommand();
                 break;
 
             case R.id.img_bluetooth:
@@ -376,6 +384,8 @@ public class ConfigADMEActivity extends BaseActivity {
                     isAutoConnectBlue = true;
                     MCloudApp.setIsBluetoothDeviceConnected(true);
                     hander.removeCallbacks(dismssDialogRunnable);
+                    EventBus.getDefault().post(new BluetoothStateEvent(true));
+
                     //isLockStatus();
                     startBluAuthenticate();//蓝牙连接成功开始进行验证
                     break;
@@ -384,8 +394,10 @@ public class ConfigADMEActivity extends BaseActivity {
                     ToastUtil.showShortToast("蓝牙连接已断开!");
                     dismissLoadingDialog();
                     mImgBluetooth.setImageDrawable(getResources().getDrawable(R.drawable.bar_item_bt));
-                    MCloudApp.setIsBluetoothDeviceConnected(false);
                     isBlueConnected = false;
+                    MCloudApp.setIsBluetoothDeviceConnected(false);
+                    EventBus.getDefault().post(new BluetoothStateEvent(false));
+
 //                        if (isAutoConnectBlue) {
 //                            //clearLocalStorage();
 //                            //断开蓝牙后重新连接
@@ -531,15 +543,6 @@ public class ConfigADMEActivity extends BaseActivity {
         EventBus.getDefault().post(cmdStr);
     }
 
-    private void showToastOnUiThread(final String msg) {
-        MCloudApp.getHandler().post(new Runnable() {
-            @Override
-            public void run() {
-                ToastUtil.showShortToast(msg);
-            }
-        });
-    }
-
 
     private void sendHandleMessage(int what, Object obj) {
         android.os.Message message = new android.os.Message();
@@ -588,6 +591,20 @@ public class ConfigADMEActivity extends BaseActivity {
         Message msg = new Message(UUID.randomUUID().toString(), com, true);
         mdBluetoothManager.writeMessage(msg);
         Timber.d("发送指令===" + com);
+    }
+
+
+    /**
+     * 发送保存命令，让设备将配置参数写入存储器
+     */
+    private void sendSaveConfigCommand() {
+        if (!isBlueConnected) {
+            ToastUtil.showShortToast("蓝牙未连接");
+            return;
+        }
+
+        Message msg = new Message(UUID.randomUUID().toString(), "##0191\n", true);
+        mdBluetoothManager.writeMessage(msg);
     }
 
 

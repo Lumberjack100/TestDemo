@@ -134,6 +134,14 @@
             android:layout_height="1dp" />
 
         <include
+            android:id="@+id/bluetooth_switch_layout"
+            layout="@layout/device_config_switchview_item" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp" />
+
+        <include
             android:id="@+id/auto_monitor_layout"
             layout="@layout/device_config_switchview_item" />
 

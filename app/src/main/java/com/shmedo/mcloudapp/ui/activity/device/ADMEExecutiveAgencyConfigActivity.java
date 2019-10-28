@@ -20,8 +20,12 @@ import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.base.BaseActivity;
 import com.shmedo.mcloudapp.bluetooth.MdBluetoothManager;
 import com.shmedo.mcloudapp.bluetooth.Message;
+import com.shmedo.mcloudapp.entity.event.BluetoothStateEvent;
 import com.shmedo.mcloudapp.model.Extras;
 import com.shmedo.mcloudapp.util.ToastUtil;
+
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.UUID;
 
@@ -483,6 +487,16 @@ public class ADMEExecutiveAgencyConfigActivity extends BaseActivity implements V
         mdBluetoothManager.writeMessage(msg);
         Timber.d("发送执行机构参数配置指令===" + cmdStr);
 //        finish();
+    }
+
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onMessageEvent(BluetoothStateEvent bluetoothStateEvent) {
+        if (bluetoothStateEvent.isConnected) {
+
+        } else {
+
+        }
     }
 
 }
