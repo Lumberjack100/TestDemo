@@ -584,7 +584,7 @@ public class ConfigADMEActivity extends BaseActivity {
      * 蓝牙连接成功开始进行验证  lock
      */
     private void startBluAuthenticate() {
-        String com = "##224," + SN + ",2\r\n";
+        String com = "##224," + SN + ",0\r\n";
         Message msg = new Message(UUID.randomUUID().toString(), com, true);
         mdBluetoothManager.writeMessage(msg);
         Timber.d("发送指令===" + com);

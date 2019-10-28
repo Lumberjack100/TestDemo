@@ -331,47 +331,47 @@ public class ADMEExecutiveAgencyConfigActivity extends BaseActivity implements V
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.data_settlement_method:
-                showTipDialog(getResources().getString(R.string.collector_address));
+                showTipDialog(getResources().getString(R.string.adme_data_settlement_method));
                 break;
 
             case R.id.data_response:
-                showTipDialog(getResources().getString(R.string.collector_address));
+                showTipDialog(getResources().getString(R.string.adme_data_response));
                 break;
 
             case R.id.waiting_interval_per_round:
-                showTipDialog(getResources().getString(R.string.collector_address));
+                showTipDialog(getResources().getString(R.string.adme_waiting_interval_per_round));
                 break;
 
             case R.id.log_output_mode:
-                showTipDialog(getResources().getString(R.string.collector_address));
+                showTipDialog(getResources().getString(R.string.adme_log_output_mode));
                 break;
 
             case R.id.motor_drive_address:
-                showTipDialog(getResources().getString(R.string.collector_address));
+                showTipDialog(getResources().getString(R.string.adme_motor_drive_address));
                 break;
 
             case R.id.motor_movement_time:
-                showTipDialog(getResources().getString(R.string.collector_address));
+                showTipDialog(getResources().getString(R.string.adme_motor_movement_time));
                 break;
 
             case R.id.motor_pull_up_speed:
-                showTipDialog(getResources().getString(R.string.collector_address));
+                showTipDialog(getResources().getString(R.string.adme_motor_pull_up_speed));
                 break;
 
             case R.id.motor_pull_down_speed:
-                showTipDialog(getResources().getString(R.string.collector_address));
+                showTipDialog(getResources().getString(R.string.adme_motor_pull_down_speed));
                 break;
 
             case R.id.traction_line_length:
-                showTipDialog(getResources().getString(R.string.collector_address));
+                showTipDialog(getResources().getString(R.string.adme_traction_line_length));
                 break;
 
             case R.id.hole_depth:
-                showTipDialog(getResources().getString(R.string.collector_address));
+                showTipDialog(getResources().getString(R.string.adme_hole_depth));
                 break;
 
             case R.id.measuring_pitch:
-                showTipDialog(getResources().getString(R.string.collector_address));
+                showTipDialog(getResources().getString(R.string.adme_measuring_pitch));
                 break;
 
             case R.id.btn_confirm_complete:

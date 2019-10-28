@@ -198,31 +198,31 @@ public class ADMESensorConfigActivity extends BaseActivity implements View.OnCli
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.collector_address:
-                showTipDialog(getResources().getString(R.string.collector_address));
+                showTipDialog(getResources().getString(R.string.dag_collector_addres));
                 break;
 
             case R.id.collector_collect_interval:
-                showTipDialog(getResources().getString(R.string.collector_address));
+                showTipDialog(getResources().getString(R.string.dag_collector_collect_interval));
                 break;
 
             case R.id.collector_solution_interval:
-                showTipDialog(getResources().getString(R.string.collector_address));
+                showTipDialog(getResources().getString(R.string.dag_collector_solution_interval));
                 break;
 
             case R.id.communication_module_sleep_interval:
-                showTipDialog(getResources().getString(R.string.collector_address));
+                showTipDialog(getResources().getString(R.string.dag_communication_module_sleep_interval));
                 break;
 
             case R.id.sensor_type:
-                showTipDialog(getResources().getString(R.string.collector_address));
+                showTipDialog(getResources().getString(R.string.dag_sensor_type));
                 break;
 
             case R.id.sensor_address:
-                showTipDialog(getResources().getString(R.string.collector_address));
+                showTipDialog(getResources().getString(R.string.dag_sensor_address));
                 break;
 
             case R.id.sensor_correction_value:
-                showTipDialog(getResources().getString(R.string.collector_address));
+                showTipDialog(getResources().getString(R.string.dag_sensor_correction_value));
                 break;
 
             case R.id.btn_confirm_complete:

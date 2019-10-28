@@ -260,7 +260,6 @@ public class InstructionDebugActivity extends BaseActivity {
                 .setRightMessage(true)
                 .build();
 
-        String sysTime = getSysTime();
         if (send_model == 0) {
             message.setMessageText(messageText);
         } else {
