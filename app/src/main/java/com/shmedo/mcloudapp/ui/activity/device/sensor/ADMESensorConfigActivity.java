@@ -178,19 +178,19 @@ public class ADMESensorConfigActivity extends BaseActivity implements View.OnCli
             return;
         }
 
-        String[] strs = dagConfigInfo.split(",");
-        if (strs.length < 8) {
+        String[] cmdArray = dagConfigInfo.replace("\r\n", "").split(",");
+        if (cmdArray.length < 8) {
             Timber.e("dagConfigInfo 格式错误:" + dagConfigInfo);
             return;
         }
 
-        mEtCollectorAddress.setText(strs[1]);
-        mEtCollectorCollectInterval.setText(strs[2]);
-        mEtCollectorSolutionInterval.setText(strs[3]);
-        mEtCommunicationModuleSleepInterval.setText(strs[4]);
-        mEtSensorType.setText(strs[5]);
-        mEtSensorAddress.setText(strs[6]);
-        mEtSensorCorrectionValue.setText(strs[7]);
+        mEtCollectorAddress.setText(cmdArray[1]);
+        mEtCollectorCollectInterval.setText(cmdArray[2]);
+        mEtCollectorSolutionInterval.setText(cmdArray[3]);
+        mEtCommunicationModuleSleepInterval.setText(cmdArray[4]);
+        mEtSensorType.setText(cmdArray[5]);
+        mEtSensorAddress.setText(cmdArray[6]);
+        mEtSensorCorrectionValue.setText(cmdArray[7]);
     }
 
 

@@ -14,16 +14,19 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.shmedo.das.das.cmd.CommandResult;
 import com.shmedo.mcloudapp.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.base.BaseActivity;
+import com.shmedo.mcloudapp.bluetooth.MdBluetoothManager;
 import com.shmedo.mcloudapp.bluetooth.Message;
-import com.shmedo.mcloudapp.ui.fragment.DeviceFragment;
+import com.shmedo.mcloudapp.model.Extras;
 import com.shmedo.mcloudapp.util.ToastUtil;
 
 import java.util.UUID;
 
 import butterknife.BindView;
+import ch.ielse.view.SwitchView;
 import timber.log.Timber;
 
 public class ADMEExecutiveAgencyConfigActivity extends BaseActivity implements View.OnClickListener {
@@ -70,17 +73,24 @@ public class ADMEExecutiveAgencyConfigActivity extends BaseActivity implements V
 
     private EditText mEtWaitingIntervalPerRound, mEtMotorDriveAddress, mEtMotorMovementTime, mEtMotorPullUpSpeed, mEtMotorPullDownSpeed, mEtTractionLineLength, mEtHoleDepth, mEtMeasuringPitch;
 
+    private SwitchView mSvDataResponse;
+
     private TextView mTvDataResponse;
 
-    private String strDataSettlementMethod, strDataResponse, strWaitingIntervalPerRound, strLogOutputMode, strMotorDriveAddress, strMotorMovementTime, strMotorPullUpSpeed, strMotorPullDownSpeed, strTractionLineLength, strHoleDepth, strMeasuringPitch;
+    private String strWaitingIntervalPerRound, strMotorDriveAddress, strMotorMovementTime, strMotorPullUpSpeed, strMotorPullDownSpeed, strTractionLineLength, strHoleDepth, strMeasuringPitch;
 
     private Spinner mSpDataSettlementMethod, mSpLogOutputMode;
 
-    private ArrayAdapter<String> dataAdapter;
+    private ArrayAdapter<String> dataSettlementAdapter, logOutputModeAdapter;
+
+    private MdBluetoothManager mdBluetoothManager;
+
+    private String executiveAgencyConfigInfo;//执行机构配置指令
 
 
-    public static void startActivity(Context context) {
+    public static void startActivity(Context context, String configInfo) {
         Intent intent = new Intent(context, ADMEExecutiveAgencyConfigActivity.class);
+        intent.putExtra(Extras.ADME_EXECUTIVE_AGENCY_CONFIG_INFO, configInfo);
         context.startActivity(intent);
     }
 
@@ -96,6 +106,7 @@ public class ADMEExecutiveAgencyConfigActivity extends BaseActivity implements V
         super.onCreate(savedInstanceState);
         setToolBar(R.id.toolbar);
         initView();
+        parseIntent();
         initAdapter();
         initData();
     }
@@ -110,6 +121,7 @@ public class ADMEExecutiveAgencyConfigActivity extends BaseActivity implements V
         ((TextView) dataResponseLayout.findViewById(R.id.itemNameTV)).setText("数据应答");
         mIvDataResponse = dataResponseLayout.findViewById(R.id.itemTipIV);
         mTvDataResponse = dataResponseLayout.findViewById(R.id.tv_switch_state);
+        mSvDataResponse = dataResponseLayout.findViewById(R.id.switchview);
 
         ((TextView) waitingIntervalPerRoundLayout.findViewById(R.id.itemNameTV)).setText("每轮等待间隔（min）");
         mIvWaitingIntervalPerRound = waitingIntervalPerRoundLayout.findViewById(R.id.itemTipIV);
@@ -191,13 +203,21 @@ public class ADMEExecutiveAgencyConfigActivity extends BaseActivity implements V
         btnConfirm.setOnClickListener(this);
     }
 
+    private void parseIntent() {
+        mdBluetoothManager = MdBluetoothManager.getInstance();
+
+        Intent intent = getIntent();
+        if (intent.getExtras().containsKey(Extras.ADME_EXECUTIVE_AGENCY_CONFIG_INFO)) {
+            executiveAgencyConfigInfo = intent.getStringExtra(Extras.ADME_EXECUTIVE_AGENCY_CONFIG_INFO);
+        }
+    }
 
     private void initAdapter() {
-        String[] debugData = getResources().getStringArray(R.array.collector_channel);
-//        dataAdapter = new ArrayAdapter<>(this, R.layout.spinner_item, debugData);
-        dataAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, debugData);
-        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        mSpDataSettlementMethod.setAdapter(dataAdapter);
+        String[] dataSettlementData = getResources().getStringArray(R.array.adme_executive_agency_data_settlement);
+//        dataSettlementAdapter = new ArrayAdapter<>(this, R.layout.spinner_item, debugData);
+        dataSettlementAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, dataSettlementData);
+        dataSettlementAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mSpDataSettlementMethod.setAdapter(dataSettlementAdapter);
         mSpDataSettlementMethod.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
@@ -211,11 +231,99 @@ public class ADMEExecutiveAgencyConfigActivity extends BaseActivity implements V
 
             }
         });
+
+
+        String[] logOutputData = getResources().getStringArray(R.array.adme_executive_agency_log_output);
+        logOutputModeAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, logOutputData);
+        logOutputModeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mSpLogOutputMode.setAdapter(logOutputModeAdapter);
+        mSpLogOutputMode.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
+                String result = mSpLogOutputMode.getSelectedItem().toString().replace("mm", "");
+
+                ToastUtil.showShortToast(result);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
     }
 
 
     private void initData() {
+        if (TextUtils.isEmpty(executiveAgencyConfigInfo)) {
+            Timber.e("executiveAgencyConfigInfo 为空或者null");
+            return;
+        }
 
+        if (executiveAgencyConfigInfo.length() < CommandResult.RESULT_MIN_LENGTH) {
+            Timber.e("executiveAgencyConfigInfo 长度过短:" + executiveAgencyConfigInfo);
+            return;
+        }
+
+        if (!executiveAgencyConfigInfo.startsWith(CommandResult.COMMAND_RESULT_HEADER)) {
+            Timber.e("executiveAgencyConfigInfo 格式错误:" + executiveAgencyConfigInfo);
+            return;
+        }
+
+        String[] cmdArray = executiveAgencyConfigInfo.replace("\r\n", "").split(",");
+        if (cmdArray.length < 12) {
+            Timber.e("executiveAgencyConfigInfo 格式错误:" + executiveAgencyConfigInfo);
+            return;
+        }
+
+        if (cmdArray[1].equals("1")) {
+            mSpDataSettlementMethod.setSelection(0);
+        } else if (cmdArray[1].equals("2")) {
+            mSpDataSettlementMethod.setSelection(1);
+        }
+
+        if (cmdArray[2].equals("1")) {
+            setSwitchViewState(true);
+        } else if (cmdArray[2].equals("2")) {
+            setSwitchViewState(false);
+        }
+
+        mEtWaitingIntervalPerRound.setText(cmdArray[3]);
+
+        if (cmdArray[4].equals("1")) {
+            mSpLogOutputMode.setSelection(0);
+        } else if (cmdArray[4].equals("2")) {
+            mSpLogOutputMode.setSelection(1);
+        } else if (cmdArray[4].equals("3")) {
+            mSpLogOutputMode.setSelection(2);
+        } else if (cmdArray[4].equals("4")) {
+            mSpLogOutputMode.setSelection(3);
+        }
+
+        mEtMotorDriveAddress.setText(cmdArray[5]);
+        mEtMotorMovementTime.setText(cmdArray[6]);
+        mEtMotorPullUpSpeed.setText(cmdArray[7]);
+        mEtMotorPullDownSpeed.setText(cmdArray[8]);
+        mEtTractionLineLength.setText(cmdArray[9]);
+        mEtHoleDepth.setText(cmdArray[10]);
+        mEtMeasuringPitch.setText(cmdArray[11]);
+    }
+
+
+    private void setSwitchViewState(boolean isOpen) {
+        if (isOpen) {
+            mSvDataResponse.setOpened(true);
+            mTvDataResponse.setClickable(true);
+            mTvDataResponse.setText("已启用");
+            mTvDataResponse.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+            mTvDataResponse.setTextColor(getResources().getColor(R.color.white));
+
+        } else {
+            mSvDataResponse.setOpened(false);
+            mTvDataResponse.setClickable(false);
+            mTvDataResponse.setText("已停用");
+            mTvDataResponse.setBackgroundColor(getResources().getColor(android.R.color.transparent));
+            mTvDataResponse.setTextColor(getResources().getColor(R.color.gray_807B7B));
+        }
     }
 
 
@@ -322,7 +430,6 @@ public class ADMEExecutiveAgencyConfigActivity extends BaseActivity implements V
             return;
         }
 
-
         int address = Integer.parseInt(strMotorDriveAddress);
         if (address <= 0 || address >= 255) {
             ToastUtil.showShortToast("电机驱动器地址输入有误");
@@ -331,7 +438,39 @@ public class ADMEExecutiveAgencyConfigActivity extends BaseActivity implements V
 
 
         StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("##7003,");
+        if (mSpDataSettlementMethod.getSelectedItemPosition() == 0) {
+            stringBuilder.append("1,");
+        } else if (mSpDataSettlementMethod.getSelectedItemPosition() == 0) {
+            stringBuilder.append("2,");
+        }
 
+        if (mSvDataResponse.isOpened()) {
+            stringBuilder.append("1,");
+        } else {
+            stringBuilder.append("2,");
+        }
+
+        stringBuilder.append(strWaitingIntervalPerRound + ",");
+
+        if (mSpLogOutputMode.getSelectedItemPosition() == 0) {
+            stringBuilder.append("1,");
+        } else if (mSpLogOutputMode.getSelectedItemPosition() == 1) {
+            stringBuilder.append("2,");
+        } else if (mSpLogOutputMode.getSelectedItemPosition() == 2) {
+            stringBuilder.append("3,");
+        } else if (mSpLogOutputMode.getSelectedItemPosition() == 3) {
+            stringBuilder.append("4,");
+        }
+
+        stringBuilder.append(strWaitingIntervalPerRound + ",");
+        stringBuilder.append(strMotorDriveAddress + ",");
+        stringBuilder.append(strMotorMovementTime + ",");
+        stringBuilder.append(strMotorPullUpSpeed + ",");
+        stringBuilder.append(strMotorPullDownSpeed + ",");
+        stringBuilder.append(strTractionLineLength + ",");
+        stringBuilder.append(strHoleDepth + ",");
+        stringBuilder.append(strMeasuringPitch + "\r\n");
 
         String cmdStr = String.valueOf(stringBuilder);
         if (!MCloudApp.isIsBluetoothDeviceConnected()) {
@@ -341,9 +480,9 @@ public class ADMEExecutiveAgencyConfigActivity extends BaseActivity implements V
         }
 
         Message msg = new Message(UUID.randomUUID().toString(), cmdStr, true);
-        DeviceFragment.mdBluetoothManager.writeMessage(msg);
+        mdBluetoothManager.writeMessage(msg);
         Timber.d("发送执行机构参数配置指令===" + cmdStr);
-        finish();
+//        finish();
     }
 
 }

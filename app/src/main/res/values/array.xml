@@ -42,4 +42,18 @@
         <item>VWD-100</item>
     </string-array>
 
+    <!--  ADME 执行结构数据解算方式-->
+    <string-array name="adme_executive_agency_data_settlement">
+        <item>顶固定法</item>
+        <item>底固定法</item>
+    </string-array>
+
+    <!--  ADME 执行结构日志输出方式-->
+    <string-array name="adme_executive_agency_log_output">
+        <item>关闭</item>
+        <item>串口</item>
+        <item>网络</item>
+        <item>蓝牙</item>
+    </string-array>
+
 </resources>

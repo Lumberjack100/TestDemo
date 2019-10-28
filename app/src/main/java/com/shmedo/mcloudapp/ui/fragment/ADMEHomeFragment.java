@@ -442,7 +442,7 @@ public class ADMEHomeFragment extends BaseFragment {
                 break;
 
             case R.id.executive_agency_param_layout:
-                ADMEExecutiveAgencyConfigActivity.startActivity(getActivity());
+                ADMEExecutiveAgencyConfigActivity.startActivity(getActivity(), executiveAgencyConfigInfo);
                 break;
 
             case R.id.custom_command_test_layout:
@@ -507,7 +507,7 @@ public class ADMEHomeFragment extends BaseFragment {
     private void setResultData(String cmdStr) {
         Timber.d("=======从 ConfigADMEActivity 过来的eventbus数据======" + cmdStr);
 
-        String cmdArray[] = cmdStr.replace("\r\n", "").split(",");
+        String[] cmdArray = cmdStr.replace("\r\n", "").split(",");
 
         //查询工作模式应答
         if (cmdStr.startsWith("$$7010") && cmdStr.endsWith("\r\n")) {
