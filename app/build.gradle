@@ -73,15 +73,16 @@ dependencies {
     implementation 'cn.shmedo:das-config-base:3.8-SNAPSHOT'
 
     implementation 'jp.bassaer:chatmessageview:1.2.0'
-    //switchView
-    implementation 'ch.ielse:switchbutton:1.0.1'
+
     //mmkv
     implementation 'com.tencent:mmkv:1.0.19'
     //下拉刷新
     implementation 'com.scwang.smartrefresh:SmartRefreshLayout:1.1.0'
     //日志输出
     implementation 'com.jakewharton.timber:timber:4.7.1'
-
+    //switchView 准备废弃
+    implementation 'ch.ielse:switchbutton:1.0.1'
+    implementation 'com.kyleduo.switchbutton:library:2.0.0'
     //zxing 扫码，暂停用
 //    implementation 'com.github.yuzhiqiang1993:zxing:2.2.5'
     //新的zxing 扫码

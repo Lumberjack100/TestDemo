@@ -104,7 +104,8 @@ public class BlueToothListActivity extends Activity {
             public void onItemClick(View itemView, int position) {
                 String macAddress = deviceList.get(position).getDevice().getAddress();
                 String deviceName = deviceList.get(position).getDevice().getName();
-                if (deviceName.contains("MD-180600L")) {
+
+                if (deviceName.endsWith("T")) {
                     String deviceInfo = "MEDO," + deviceName.substring(3) + ",ADME";
                     ConfigADMEActivity.startActivity(BlueToothListActivity.this, deviceInfo, macAddress);
                 } else {

@@ -14,23 +14,19 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.kyleduo.switchbutton.SwitchButton;
 import com.shmedo.das.das.cmd.CommandResult;
 import com.shmedo.mcloudapp.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.base.BaseActivity;
 import com.shmedo.mcloudapp.bluetooth.MdBluetoothManager;
 import com.shmedo.mcloudapp.bluetooth.Message;
-import com.shmedo.mcloudapp.entity.event.BluetoothStateEvent;
 import com.shmedo.mcloudapp.model.Extras;
 import com.shmedo.mcloudapp.util.ToastUtil;
-
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.UUID;
 
 import butterknife.BindView;
-import ch.ielse.view.SwitchView;
 import timber.log.Timber;
 
 public class ADMEExecutiveAgencyConfigActivity extends BaseActivity implements View.OnClickListener {
@@ -77,7 +73,7 @@ public class ADMEExecutiveAgencyConfigActivity extends BaseActivity implements V
 
     private EditText mEtWaitingIntervalPerRound, mEtMotorDriveAddress, mEtMotorMovementTime, mEtMotorPullUpSpeed, mEtMotorPullDownSpeed, mEtTractionLineLength, mEtHoleDepth, mEtMeasuringPitch;
 
-    private SwitchView mSvDataResponse;
+    private SwitchButton mSvDataResponse;
 
     private TextView mTvDataResponse;
 
@@ -125,7 +121,7 @@ public class ADMEExecutiveAgencyConfigActivity extends BaseActivity implements V
         ((TextView) dataResponseLayout.findViewById(R.id.itemNameTV)).setText("数据应答");
         mIvDataResponse = dataResponseLayout.findViewById(R.id.itemTipIV);
         mTvDataResponse = dataResponseLayout.findViewById(R.id.tv_switch_state);
-        mSvDataResponse = dataResponseLayout.findViewById(R.id.switchview);
+        mSvDataResponse = dataResponseLayout.findViewById(R.id.switchButton);
 
         ((TextView) waitingIntervalPerRoundLayout.findViewById(R.id.itemNameTV)).setText("每轮等待间隔（min）");
         mIvWaitingIntervalPerRound = waitingIntervalPerRoundLayout.findViewById(R.id.itemTipIV);
@@ -315,14 +311,14 @@ public class ADMEExecutiveAgencyConfigActivity extends BaseActivity implements V
 
     private void setSwitchViewState(boolean isOpen) {
         if (isOpen) {
-            mSvDataResponse.setOpened(true);
+            mSvDataResponse.setCheckedImmediatelyNoEvent(true);
             mTvDataResponse.setClickable(true);
             mTvDataResponse.setText("已启用");
             mTvDataResponse.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
             mTvDataResponse.setTextColor(getResources().getColor(R.color.white));
 
         } else {
-            mSvDataResponse.setOpened(false);
+            mSvDataResponse.setCheckedImmediatelyNoEvent(false);
             mTvDataResponse.setClickable(false);
             mTvDataResponse.setText("已停用");
             mTvDataResponse.setBackgroundColor(getResources().getColor(android.R.color.transparent));
@@ -379,6 +375,10 @@ public class ADMEExecutiveAgencyConfigActivity extends BaseActivity implements V
                 break;
 
             case R.id.btn_confirm_complete:
+                if (!MCloudApp.isIsBluetoothDeviceConnected()) {
+                    ToastUtil.showShortToast("设备已断开连接，暂无法进行设置");
+                    return;
+                }
                 doConfirm();
                 break;
         }
@@ -449,7 +449,7 @@ public class ADMEExecutiveAgencyConfigActivity extends BaseActivity implements V
             stringBuilder.append("2,");
         }
 
-        if (mSvDataResponse.isOpened()) {
+        if (mSvDataResponse.isChecked()) {
             stringBuilder.append("1,");
         } else {
             stringBuilder.append("2,");
@@ -477,26 +477,9 @@ public class ADMEExecutiveAgencyConfigActivity extends BaseActivity implements V
         stringBuilder.append(strMeasuringPitch + "\r\n");
 
         String cmdStr = String.valueOf(stringBuilder);
-        if (!MCloudApp.isIsBluetoothDeviceConnected()) {
-            ToastUtil.showShortToast("蓝牙未连接");
-            finish();
-            return;
-        }
-
         Message msg = new Message(UUID.randomUUID().toString(), cmdStr, true);
         mdBluetoothManager.writeMessage(msg);
         Timber.d("发送执行机构参数配置指令===" + cmdStr);
 //        finish();
     }
-
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onMessageEvent(BluetoothStateEvent bluetoothStateEvent) {
-        if (bluetoothStateEvent.isConnected) {
-
-        } else {
-
-        }
-    }
-
 }

@@ -62,7 +62,7 @@ public class MCloudApp {
      *
      * @return 创建在主线程上的Handler对象。
      */
-    public static Handler getHandler() {
+    public static Handler getMainHandler() {
         return handler;
     }
 

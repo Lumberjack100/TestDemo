@@ -13,7 +13,6 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentTransaction;
 import android.text.TextUtils;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.DialogAction;
@@ -58,9 +57,6 @@ public class ConfigADMEActivity extends BaseActivity {
 
     private static final int REQUEST_ENABLE_BT = 0x001;
 
-    @BindView(R.id.img_bluetooth)
-    ImageView mImgBluetooth;
-
     @BindView(R.id.tv_save)
     TextView mTvSave;
 
@@ -86,6 +82,8 @@ public class ConfigADMEActivity extends BaseActivity {
 
     private boolean isBlueConnected = false;//蓝牙设备是否连接
     private boolean isAutoConnectBlue = true;//是否自动连接蓝牙
+    public boolean isNeedSaveConfig = false;//如果对设备进行了设置，需要在用户退出页面前，提醒用户进行保存操作
+
     private String SN = "";
     private String deviceInfo;
     private String macAddress;
@@ -167,7 +165,7 @@ public class ConfigADMEActivity extends BaseActivity {
     }
 
 
-    @OnClick({R.id.back, R.id.tv_save, R.id.img_bluetooth, R.id.tv_parameter, R.id.tv_query_data, R.id.tv_device_details})
+    @OnClick({R.id.back, R.id.tv_save, R.id.tv_parameter, R.id.tv_query_data, R.id.tv_device_details})
     public void onClick(View v) {
 
         switch (v.getId()) {
@@ -179,13 +177,13 @@ public class ConfigADMEActivity extends BaseActivity {
                 sendSaveConfigCommand();
                 break;
 
-            case R.id.img_bluetooth:
-                if (isBlueConnected) {
-                    showChangeModle(getResources().getString(R.string.disconnect_bluetooth_device), "2");
-                } else {
-                    findAndConnectBleDevice();
-                }
-                break;
+//            case R.id.img_bluetooth:
+//                if (isBlueConnected) {
+//                    showChangeModle(getResources().getString(R.string.disconnect_bluetooth_device), "2");
+//                } else {
+//                    findAndConnectBleDevice();
+//                }
+//                break;
 
             case R.id.tv_parameter:
                 resetTabState();//reset the tab state
@@ -230,7 +228,7 @@ public class ConfigADMEActivity extends BaseActivity {
     /**
      * 搜索并连接指定的蓝牙设备
      */
-    private void findAndConnectBleDevice() {
+    public void findAndConnectBleDevice() {
         //通过蓝牙设备列表页面跳转过来时，直接连接设备
         if (!TextUtils.isEmpty(macAddress)) {
             BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(macAddress);
@@ -274,8 +272,8 @@ public class ConfigADMEActivity extends BaseActivity {
      * ble 取消连接
      */
     private void disconnectDevice() {
-        if (null != MdBluetoothManager.getInstance()) {
-            MdBluetoothManager.getInstance().disconnect();
+        if (null != mdBluetoothManager) {
+            mdBluetoothManager.disconnect();
         }
     }
 
@@ -356,7 +354,6 @@ public class ConfigADMEActivity extends BaseActivity {
 
                 case RESPONSE_WITH_NO_MESSAGE:
                     try {
-//                        byte[] data = (byte[]) event.getEventData();
                         byte[] data = ((String) event.getEventData()).getBytes();
                         if (data != null && data.length > 0) {
                             ByteManagerUtil.getInstance().writeByte(data);
@@ -379,25 +376,20 @@ public class ConfigADMEActivity extends BaseActivity {
                 case Constants.BT_CONNECT:
                     ToastUtil.showShortToast("蓝牙已连接");
                     dismissLoadingDialog();
-                    mImgBluetooth.setImageDrawable(getResources().getDrawable(R.drawable.bar_item_blu_connect_yellow));
+                    hander.removeCallbacks(dismssDialogRunnable);
                     isBlueConnected = true;
                     isAutoConnectBlue = true;
                     MCloudApp.setIsBluetoothDeviceConnected(true);
-                    hander.removeCallbacks(dismssDialogRunnable);
                     EventBus.getDefault().post(new BluetoothStateEvent(true));
-
-                    //isLockStatus();
                     startBluAuthenticate();//蓝牙连接成功开始进行验证
                     break;
 
                 case Constants.BT_DISCONNECTED:
                     ToastUtil.showShortToast("蓝牙连接已断开!");
                     dismissLoadingDialog();
-                    mImgBluetooth.setImageDrawable(getResources().getDrawable(R.drawable.bar_item_bt));
                     isBlueConnected = false;
                     MCloudApp.setIsBluetoothDeviceConnected(false);
                     EventBus.getDefault().post(new BluetoothStateEvent(false));
-
 //                        if (isAutoConnectBlue) {
 //                            //clearLocalStorage();
 //                            //断开蓝牙后重新连接
@@ -485,7 +477,6 @@ public class ConfigADMEActivity extends BaseActivity {
             try {
                 String cmdStr = new String(data, "utf-8");
                 Timber.d("应答指令===" + cmdStr);
-
                 String cmdArray[] = cmdStr.replace("\r\n", "").split(",");
 
                 if (cmdStr.startsWith("$$224") && cmdStr.endsWith("\r\n")) {
@@ -530,6 +521,12 @@ public class ConfigADMEActivity extends BaseActivity {
                     return;
                 }
 
+                if (cmdStr.startsWith("$$019e")) {
+                    mHandler.sendEmptyMessage(Constants.MESSAGE_RESPONSE_SAVE_SETTINGS_SUCCESS);
+                    isNeedSaveConfig = false;
+                    return;
+                }
+
                 parserResult(cmdStr);
 
             } catch (Exception ex) {
@@ -539,6 +536,10 @@ public class ConfigADMEActivity extends BaseActivity {
     }
 
     private void parserResult(String cmdStr) {
+        //设置自动测量模式应答
+        if (cmdStr.startsWith("$$7011") || cmdStr.startsWith("$$7012") || cmdStr.startsWith("$$2011") || cmdStr.startsWith("$$2012") || cmdStr.startsWith("$$7001") || cmdStr.startsWith("$$7003")) {
+            isNeedSaveConfig = true;
+        }
 
         EventBus.getDefault().post(cmdStr);
     }
@@ -557,11 +558,6 @@ public class ConfigADMEActivity extends BaseActivity {
      * 发送蓝牙请求设备信息指令
      */
     public void sendDeviceStateComd() {
-        if (!isBlueConnected) {
-            ToastUtil.showShortToast("蓝牙未连接");
-            return;
-        }
-
         //##7010，查询工作模式
         mdBluetoothManager.writeMessage(new Message(UUID.randomUUID().toString(), "##7010\r\n", true));
         Timber.d("发送查询工作模式指令===" + "##7010");
@@ -599,7 +595,7 @@ public class ConfigADMEActivity extends BaseActivity {
      */
     private void sendSaveConfigCommand() {
         if (!isBlueConnected) {
-            ToastUtil.showShortToast("蓝牙未连接");
+            ToastUtil.showShortToast("设备已断开连接,无法发送保存命令");
             return;
         }
 
@@ -645,16 +641,8 @@ public class ConfigADMEActivity extends BaseActivity {
                         isAutoConnectBlue = false;
                         MCloudApp.setIsBluetoothDeviceConnected(false);
                         disconnectDevice();
+                        ConfigADMEActivity.this.finish();
 
-                        switch (index) {
-                            case "1":
-                                ConfigADMEActivity.this.finish();
-                                break;
-
-                            case "2":
-                                mImgBluetooth.setImageDrawable(getResources().getDrawable(R.drawable.bar_item_bt));
-                                break;
-                        }
                     }
                 });
         MaterialDialog mMaterialDialog = mBuilder.build();
@@ -717,18 +705,28 @@ public class ConfigADMEActivity extends BaseActivity {
         dismissLoadingDialog();
     }
 
+    private boolean doSaveConfigBeforeLeave() {
+        if (!isNeedSaveConfig) {
+            return true;
+        }
+
+        showTipDialog("您还没有对设备的配置进行保存操作，请点击右上角保存按钮进行保存！");
+        return false;
+    }
 
     @Override
     public void onBackPressed() {
         if (isBlueConnected) {
-            showChangeModle(getResources().getString(R.string.finish_activity_disconnect_bluetooth_device), "1");
+            if (doSaveConfigBeforeLeave()) {
+                showChangeModle(getResources().getString(R.string.finish_activity_disconnect_bluetooth_device), "1");
+            }
 
         } else {
+            dismissLoadingDialog();
+            hander.removeCallbacks(dismssDialogRunnable);
             isBlueConnected = false;
             isAutoConnectBlue = false;
             MCloudApp.setIsBluetoothDeviceConnected(false);
-            dismissLoadingDialog();
-            hander.removeCallbacks(dismssDialogRunnable);
             mdBluetoothManager.stopScan();
             this.finish();
         }

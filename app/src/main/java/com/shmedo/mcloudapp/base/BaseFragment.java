@@ -1,5 +1,6 @@
 package com.shmedo.mcloudapp.base;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -13,8 +14,6 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.shmedo.mcloudapp.util.XPermissionUtils;
 import com.shmedo.mcloudapp.util.common.HandleBackInterface;
 import com.shmedo.mcloudapp.util.common.HandleBackUtil;
-
-import org.greenrobot.eventbus.EventBus;
 
 import butterknife.ButterKnife;
 import timber.log.Timber;
@@ -54,12 +53,6 @@ public abstract class BaseFragment extends Fragment implements HandleBackInterfa
 
 
     @Override
-    public void onStart() {
-        super.onStart();
-        EventBus.getDefault().register(this);
-    }
-
-    @Override
     public void onResume() {
         super.onResume();
         String name = getClass().getName();
@@ -75,12 +68,16 @@ public abstract class BaseFragment extends Fragment implements HandleBackInterfa
     }
 
 
-    @Override
-    public void onStop() {
-        super.onStop();
-        EventBus.getDefault().unregister(this);
+    protected void showTipDialog(String content) {
+        MaterialDialog.Builder mBuilder = new MaterialDialog.Builder(getActivity());
+        mBuilder.title("温馨提示：")
+                .content(content)
+                .contentColor(Color.parseColor("#000000"))
+                .canceledOnTouchOutside(false)
+                .positiveText("确定");
+        MaterialDialog mMaterialDialog = mBuilder.build();
+        mMaterialDialog.show();
     }
-
 
     protected void showLoadingDialog(String tip) {
         if (loadingDialog != null && loadingDialog.isShowing()) {

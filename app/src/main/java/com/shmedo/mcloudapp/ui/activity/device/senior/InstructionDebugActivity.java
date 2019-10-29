@@ -6,7 +6,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
@@ -133,7 +132,7 @@ public class InstructionDebugActivity extends BaseActivity {
             @Override
             public void onClick(View view) {
                 if (!MCloudApp.isIsBluetoothDeviceConnected()) {
-                    ToastUtil.showShortToast("蓝牙未连接");
+                    ToastUtil.showShortToast("设备已断开连接，暂无法进行指令调试");
                     return;
                 }
 
@@ -183,8 +182,8 @@ public class InstructionDebugActivity extends BaseActivity {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onMessageEventMain(String msg) {
-        Timber.i("onMessageEventMain(), current msg is " + msg);
+    public void onMessageEvent(String msg) {
+        Timber.i("onMessageEvent(), current msg is " + msg);
         //Receive message
         if (receive_model == 1) {
             msg = StringUtil.convertStringToHex(msg);
@@ -200,7 +199,8 @@ public class InstructionDebugActivity extends BaseActivity {
         // This is a demo bot
         // Return within 3 seconds
         int sendDelay = (new Random().nextInt(4) + 1) * 1000;
-        new Handler().postDelayed(new Runnable() {
+
+        MCloudApp.getMainHandler().postDelayed(new Runnable() {
             @Override
             public void run() {
                 mChatView.receive(receivedMessage);
@@ -227,7 +227,7 @@ public class InstructionDebugActivity extends BaseActivity {
      */
     private void setSysTime() {
         if (!MCloudApp.isIsBluetoothDeviceConnected()) {
-            ToastUtil.showShortToast("蓝牙未连接");
+            ToastUtil.showShortToast("设备已断开连接，无法获取授时");
             return;
         }
 
@@ -238,10 +238,12 @@ public class InstructionDebugActivity extends BaseActivity {
         mChatView.setInputText("");
     }
 
-    //获取数据
+    /**
+     * 获取数据
+     */
     public void getData() {
         if (!MCloudApp.isIsBluetoothDeviceConnected()) {
-            ToastUtil.showShortToast("蓝牙未连接");
+            ToastUtil.showShortToast("设备已断开连接，无法获取数据");
             return;
         }
 
@@ -253,7 +255,6 @@ public class InstructionDebugActivity extends BaseActivity {
 
     private void sendMessage(String messageText){
         final Bitmap myIcon = BitmapFactory.decodeResource(getResources(), R.mipmap.logo);
-        //new message
         Message message = new Message.Builder()
                 .setUserName(myName)
                 .setUserIcon(myIcon)

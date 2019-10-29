@@ -16,13 +16,9 @@ import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.base.BaseActivity;
 import com.shmedo.mcloudapp.bluetooth.MdBluetoothManager;
 import com.shmedo.mcloudapp.bluetooth.Message;
-import com.shmedo.mcloudapp.entity.event.BluetoothStateEvent;
 import com.shmedo.mcloudapp.model.Extras;
 import com.shmedo.mcloudapp.util.ToastUtil;
 import com.shmedo.mcloudapp.views.ClearEditText;
-
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.UUID;
 
@@ -230,6 +226,10 @@ public class ADMESensorConfigActivity extends BaseActivity implements View.OnCli
                 break;
 
             case R.id.btn_confirm_complete:
+                if (!MCloudApp.isIsBluetoothDeviceConnected()) {
+                    ToastUtil.showShortToast("设备已断开连接，暂无法进行设置");
+                    return;
+                }
                 doConfirm();
                 break;
         }
@@ -281,13 +281,13 @@ public class ADMESensorConfigActivity extends BaseActivity implements View.OnCli
         }
 
         int address = Integer.parseInt(collectorAddress);
-        if (address <= 0 || address >= 255) {
+        if (address <= 0) {
             ToastUtil.showShortToast("采集器地址输入有误");
             return;
         }
 
         address = Integer.parseInt(sensorAddress);
-        if (address <= 0 || address >= 255) {
+        if (address <= 0) {
             ToastUtil.showShortToast("传感器地址输入有误");
             return;
         }
@@ -304,25 +304,9 @@ public class ADMESensorConfigActivity extends BaseActivity implements View.OnCli
         stringBuilder.append(sensorCorrectionValue + "\r\n");
 
         String cmdStr = String.valueOf(stringBuilder);
-        if (!MCloudApp.isIsBluetoothDeviceConnected()) {
-            ToastUtil.showShortToast("蓝牙未连接");
-            finish();
-            return;
-        }
-
         Message msg = new Message(UUID.randomUUID().toString(), cmdStr, true);
         mdBluetoothManager.writeMessage(msg);
         Timber.d("发送DAG 配置指令===" + cmdStr);
 //        finish();
-    }
-
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onMessageEvent(BluetoothStateEvent bluetoothStateEvent) {
-        if (bluetoothStateEvent.isConnected) {
-
-        } else {
-
-        }
     }
 }

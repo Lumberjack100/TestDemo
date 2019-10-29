@@ -96,7 +96,6 @@ public class AdvanceSetFragment extends BaseFragment {
      * 恢复出厂设置
      */
     private void showResetDataDialog() {
-
         mBuilder = new MaterialDialog.Builder(getActivity());
         mBuilder.title("温馨提示：")
                 .content("产品将恢复出厂设置状态，请确认是否继续？")
@@ -140,7 +139,6 @@ public class AdvanceSetFragment extends BaseFragment {
      * 重启系统
      */
     private void showReStartDialog() {
-
         mBuilder = new MaterialDialog.Builder(getActivity());
         mBuilder.customView(R.layout.dialog_restart_system, false)
                 .title("重启系统")
@@ -207,7 +205,6 @@ public class AdvanceSetFragment extends BaseFragment {
      * 修改授权码
      */
     private void showModifyAuthorizationDialog() {
-
         mBuilder = new MaterialDialog.Builder(getActivity());
         mBuilder.customView(R.layout.dialog_modify_authorization, false)
                 .title("修改授权码")

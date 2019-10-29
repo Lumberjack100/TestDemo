@@ -36,6 +36,7 @@ import com.shmedo.mcloudapp.util.ToastUtil;
 import com.shmedo.mcloudapp.views.VerticalSwipeRefreshLayout;
 import com.shmedo.mcloudapp.views.editspinner.EditSpinner;
 
+import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
@@ -692,6 +693,19 @@ public class ParameterConfigFragment extends BaseFragment
         if (messageEvent.equals("ParameterConfigFragment")) {
             setResultData();
         }
+    }
+
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        EventBus.getDefault().unregister(this);
     }
 
 
