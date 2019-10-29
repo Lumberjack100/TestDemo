@@ -140,7 +140,7 @@ public class DeviceManageActivity extends BaseActivity implements OnRefreshListe
                         mLoadingDialog.dismiss();
 
                         if (null != infoList && infoList.size() != 0) {
-                            for(SystemDataInfo systemDataInfo : infoList){
+                            for (SystemDataInfo systemDataInfo : infoList) {
                                 systemDataInfo.setAccount(MCloudApp.getAccount());
                             }
                             manager.getDaoSession().getSystemDataInfoDao().insertOrReplaceInTx(infoList);
@@ -318,22 +318,28 @@ public class DeviceManageActivity extends BaseActivity implements OnRefreshListe
                     break;
 
                 default://整个 Item 点击事件
-
                     StatusInfoResult statusInfoResult = statusInfoList.get(position);
+                    MCloudApp.setDeviceId(statusInfoResult.getId());
+
+                    if (!TextUtils.isEmpty(statusInfoResult.getDeviceTypeName()) && statusInfoResult.getDeviceTypeName().toUpperCase().contains("ADME")) {
+                        String deviceInfo = "MEDO," + statusInfoResult.getDeviceToken() + "," + statusInfoResult.getDeviceTypeName();
+                        ConfigADMEActivity.startActivity(DeviceManageActivity.this, deviceInfo);
+                        return;
+                    }
+
                     if (!TextUtils.isEmpty(statusInfoResult.getDeviceTypeName()) && statusInfoResult.getDeviceTypeName().toUpperCase().contains("DAS")) {
                         String deviceInfo = "MEDO," + statusInfoResult.getDeviceToken() + "," + statusInfoResult.getDeviceTypeName();
                         ConfigDASActivity.startActivity(DeviceManageActivity.this, deviceInfo);
+                        return;
                     }
 
                     if (!TextUtils.isEmpty(statusInfoResult.getDeviceName()) && statusInfoResult.getDeviceName().toUpperCase().contains("E60")) {
-
                         DeviceBasicInfoResult deviceBasicInfoResult = new DeviceBasicInfoResult();
                         deviceBasicInfoResult.setDeviceToken(statusInfoResult.getDeviceToken());
                         deviceBasicInfoResult.setDeviceTypeName(statusInfoResult.getDeviceName());
-
                         ConfigE60Activity.startActivity(DeviceManageActivity.this, deviceBasicInfoResult);
+                        return;
                     }
-
                     break;
             }
         }

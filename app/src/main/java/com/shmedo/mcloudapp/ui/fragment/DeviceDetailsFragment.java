@@ -151,12 +151,14 @@ public class DeviceDetailsFragment extends BaseFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = super.onCreateView(inflater, container, savedInstanceState);
         unbinder = ButterKnife.bind(this, view);
-        getDeviceDetailInfo(65);
+
+        getDeviceDetailInfo(MCloudApp.getDeviceId());
+
         return view;
     }
 
 
-    private void getDeviceDetailInfo(int deviceId) {
+    private void getDeviceDetailInfo(Long deviceId) {
         showLoadingDialog("正在加载...");
 
         String json = GsonFactory.getGson().toJson(deviceId);

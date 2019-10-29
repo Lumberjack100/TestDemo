@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
@@ -144,9 +145,22 @@ public class ADMEHomeFragment extends BaseFragment {
 
     private String executiveAgencyConfigInfo;//执行机构配置指令
 
-    private boolean isBlueConnected = false;//蓝牙设备是否连接
-
     private DaoManager manager = DaoManager.getInstance();
+
+    private Handler hander;
+
+    private boolean isRefreshingAddress = false;
+
+
+    private Runnable clearAnimationRunnable = new Runnable() {
+        @Override
+        public void run() {
+
+            ToastUtil.showShortToast("刷新地址超时，请稍候再试");
+            mIvRefreshAddr1.clearAnimation();
+            mIvRefreshAddr2.clearAnimation();
+        }
+    };
 
 
     @Override
@@ -185,6 +199,7 @@ public class ADMEHomeFragment extends BaseFragment {
             configADMEActivity = (ConfigADMEActivity) getActivity();
         }
 
+        hander = new Handler();
         mdBluetoothManager = MdBluetoothManager.getInstance();
     }
 
@@ -245,8 +260,11 @@ public class ADMEHomeFragment extends BaseFragment {
             }
         });
 
+        //TODO 暂时禁止设置测试模式，后期当设置为蓝牙模式时，与指令调试界面联动
+        sbDebugMode.setEnabled(false);
+
         //发送查询设备状态命令
-        if (isBlueConnected) {
+        if (MCloudApp.isIsBluetoothDeviceConnected()) {
             Objects.requireNonNull(configADMEActivity).sendDeviceStateComd();
         }
     }
@@ -313,7 +331,7 @@ public class ADMEHomeFragment extends BaseFragment {
         sbAutoMonitorState.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, final boolean isChecked) {
-                if (!isBlueConnected) {
+                if (!MCloudApp.isIsBluetoothDeviceConnected()) {
                     ToastUtil.showShortToast("设备已断开连接，暂无法进行设置");
                     sbAutoMonitorState.setCheckedImmediatelyNoEvent(!isChecked);
                     return;
@@ -358,7 +376,7 @@ public class ADMEHomeFragment extends BaseFragment {
         sbDebugMode.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, final boolean isChecked) {
-                if (!isBlueConnected) {
+                if (!MCloudApp.isIsBluetoothDeviceConnected()) {
                     ToastUtil.showShortToast("设备已断开连接，暂无法进行设置");
                     sbDebugMode.setCheckedImmediatelyNoEvent(!isChecked);
                     return;
@@ -434,10 +452,14 @@ public class ADMEHomeFragment extends BaseFragment {
                 break;
 
             case R.id.refreshIV1:
-                mIvRefreshAddr1.startAnimation(mRefreshAnimation);
+                doRefreshAddress(1);
                 break;
 
             case R.id.editBtn1:
+                if (!MCloudApp.isIsBluetoothDeviceConnected()) {
+                    ToastUtil.showShortToast("设备已断开连接，暂无法进行设置");
+                    return;
+                }
                 if (mBtnEdit1.getText().toString().contains("编辑")) {
                     mBtnEdit1.setText("确定");
                     mEtAddress1.setEnabled(true);
@@ -446,16 +468,20 @@ public class ADMEHomeFragment extends BaseFragment {
                 } else {
                     mBtnEdit1.setText("编辑");
                     mEtAddress1.clearFocus();
-
                     doServerAddress1Config();
                 }
                 break;
 
             case R.id.refreshIV2:
-                mIvRefreshAddr2.startAnimation(mRefreshAnimation);
+                doRefreshAddress(2);
                 break;
 
             case R.id.editBtn2:
+                if (!MCloudApp.isIsBluetoothDeviceConnected()) {
+                    ToastUtil.showShortToast("设备已断开连接，暂无法进行设置");
+                    return;
+                }
+
                 if (mBtnEdit2.getText().toString().contains("编辑")) {
                     mBtnEdit2.setText("确定");
                     mEtAddress2.setEnabled(true);
@@ -464,7 +490,6 @@ public class ADMEHomeFragment extends BaseFragment {
                 } else {
                     mBtnEdit2.setText("编辑");
                     mEtAddress2.clearFocus();
-
                     doServerAddress2Config();
                 }
                 break;
@@ -496,6 +521,28 @@ public class ADMEHomeFragment extends BaseFragment {
             mIvExpandAddress.startAnimation(mFoldResetAnimation);
             serverAddressLayout.setVisibility(View.GONE);
         }
+    }
+
+
+    private void doRefreshAddress(int index) {
+        if (!MCloudApp.isIsBluetoothDeviceConnected()) {
+            ToastUtil.showShortToast("设备已断开连接，无法刷新");
+            return;
+        }
+        String cmdStr = "";
+        if (index == 1) {
+            cmdStr = "##2001\r\n";
+            mIvRefreshAddr1.startAnimation(mRefreshAnimation);
+        } else {
+            cmdStr = "##2002\r\n";
+            mIvRefreshAddr2.startAnimation(mRefreshAnimation);
+        }
+
+        isRefreshingAddress = true;
+        hander.postDelayed(clearAnimationRunnable, 6000);
+
+        //##2001，查询服务器地址1
+        mdBluetoothManager.writeMessage(new Message(UUID.randomUUID().toString(), cmdStr, true));
     }
 
 
@@ -584,6 +631,12 @@ public class ADMEHomeFragment extends BaseFragment {
                 return;
             }
 
+            if (isRefreshingAddress) {
+                isRefreshingAddress = false;
+                hander.removeCallbacks(clearAnimationRunnable);
+                mIvRefreshAddr1.clearAnimation();
+                showToastOnUiThread("地址已刷新");
+            }
             mEtAddress1.setText(cmdArray[1] + ":" + cmdArray[2]);
             return;
         }
@@ -606,6 +659,12 @@ public class ADMEHomeFragment extends BaseFragment {
                 return;
             }
 
+            if (isRefreshingAddress) {
+                isRefreshingAddress = false;
+                hander.removeCallbacks(clearAnimationRunnable);
+                mIvRefreshAddr2.clearAnimation();
+                showToastOnUiThread("地址已刷新");
+            }
             mEtAddress2.setText(cmdArray[1] + ":" + cmdArray[2]);
             return;
         }
@@ -674,8 +733,6 @@ public class ADMEHomeFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(BluetoothStateEvent bluetoothStateEvent) {
-        isBlueConnected = bluetoothStateEvent.isConnected;
-
         if (bluetoothStateEvent.isConnected) {
             sbBluetoothState.setCheckedImmediatelyNoEvent(true);
             setSwitchViewState(true, tvBluetoothState, "已连接");

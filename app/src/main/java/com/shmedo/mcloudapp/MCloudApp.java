@@ -36,6 +36,8 @@ public class MCloudApp {
 
     private static String serviceAddress = "mdnetservice.shmedo.cn";
 
+    private static Long deviceId;
+
 
     /**
      * 初始化接口。这里会进行应用程序的初始化操作，一定要在代码执行的最开始调用。
@@ -120,6 +122,15 @@ public class MCloudApp {
 
     public static void setIsBluetoothDeviceConnected(boolean isBluetoothDeviceConnected) {
         MCloudApp.isBluetoothDeviceConnected = isBluetoothDeviceConnected;
+    }
+
+
+    public static Long getDeviceId() {
+        return deviceId;
+    }
+
+    public static void setDeviceId(Long deviceId) {
+        MCloudApp.deviceId = deviceId;
     }
 
     /**

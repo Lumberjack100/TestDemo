@@ -2,7 +2,7 @@
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:state_enabled="false" android:state_checked="true">
         <shape>
-            <solid android:color="#b3ecbc"/>
+            <solid android:color="@color/app_color_blue_disabled"/>
             <corners android:radius="99dp"/>
         </shape>
     </item>
