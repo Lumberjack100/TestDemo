@@ -94,43 +94,43 @@ public class ADMESensorConfigActivity extends BaseActivity implements View.OnCli
         mIvCollectorAddress = collectorAddressLayout.findViewById(R.id.itemTipIV);
         mEtCollectorAddress = collectorAddressLayout.findViewById(R.id.itemValueET);
         mEtCollectorAddress.setInputType(InputType.TYPE_CLASS_NUMBER);
-        mEtCollectorAddress.setHint("请输入...");
+        mEtCollectorAddress.setHint("请输入正整数...");
 
         ((TextView) collectorCollectIntervalLayout.findViewById(R.id.itemNameTV)).setText("采集器采集间隔（s）");
         mIvCollectorCollectInterval = collectorCollectIntervalLayout.findViewById(R.id.itemTipIV);
         mEtCollectorCollectInterval = collectorCollectIntervalLayout.findViewById(R.id.itemValueET);
         mEtCollectorCollectInterval.setInputType(InputType.TYPE_CLASS_NUMBER);
-        mEtCollectorCollectInterval.setHint("请输入...");
+        mEtCollectorCollectInterval.setHint("请输入正整数...");
 
         ((TextView) collectorSolutionIntervalLayout.findViewById(R.id.itemNameTV)).setText("采集器解算间隔（s）");
         mIvCollectorSolutionInterval = collectorSolutionIntervalLayout.findViewById(R.id.itemTipIV);
         mEtCollectorSolutionInterval = collectorSolutionIntervalLayout.findViewById(R.id.itemValueET);
         mEtCollectorSolutionInterval.setInputType(InputType.TYPE_CLASS_NUMBER);
-        mEtCollectorSolutionInterval.setHint("请输入...");
+        mEtCollectorSolutionInterval.setHint("请输入正整数...");
 
         ((TextView) communicationModuleSleepIntervalLayout.findViewById(R.id.itemNameTV)).setText("通讯模块休眠间隔（s）");
         mIvCommunicationModuleSleepInterval = communicationModuleSleepIntervalLayout.findViewById(R.id.itemTipIV);
         mEtCommunicationModuleSleepInterval = communicationModuleSleepIntervalLayout.findViewById(R.id.itemValueET);
         mEtCommunicationModuleSleepInterval.setInputType(InputType.TYPE_CLASS_NUMBER);
-        mEtCommunicationModuleSleepInterval.setHint("请输入...");
+        mEtCommunicationModuleSleepInterval.setHint("请输入正整数...");
 
         ((TextView) sensorTypeLayout.findViewById(R.id.itemNameTV)).setText("传感器类型");
         mIvSensorType = sensorTypeLayout.findViewById(R.id.itemTipIV);
         mEtSensorType = sensorTypeLayout.findViewById(R.id.itemValueET);
         mEtSensorType.setInputType(InputType.TYPE_CLASS_NUMBER);
-        mEtSensorType.setHint("请输入...");
+        mEtSensorType.setHint("请输入正整数...");
 
         ((TextView) sensorAddressLayout.findViewById(R.id.itemNameTV)).setText("传感器地址");
         mIvSensorAddress = sensorAddressLayout.findViewById(R.id.itemTipIV);
         mEtSensorAddress = sensorAddressLayout.findViewById(R.id.itemValueET);
         mEtSensorAddress.setInputType(InputType.TYPE_CLASS_NUMBER);
-        mEtSensorAddress.setHint("请输入...");
+        mEtSensorAddress.setHint("请输入正整数...");
 
         ((TextView) sensorCorrectionValueLayout.findViewById(R.id.itemNameTV)).setText("传感器修正值（mm）");
         mIvSensorCorrectionValue = sensorCorrectionValueLayout.findViewById(R.id.itemTipIV);
         mEtSensorCorrectionValue = sensorCorrectionValueLayout.findViewById(R.id.itemValueET);
         mEtSensorCorrectionValue.setInputType(InputType.TYPE_CLASS_NUMBER);
-        mEtSensorCorrectionValue.setHint("请输入...");
+        mEtSensorCorrectionValue.setHint("请输入两位正小数...");
 
         mIvCollectorAddress.setId(R.id.collector_address);
         mIvCollectorCollectInterval.setId(R.id.collector_collect_interval);

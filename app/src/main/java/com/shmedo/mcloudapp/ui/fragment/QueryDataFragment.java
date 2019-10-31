@@ -1,19 +1,20 @@
 package com.shmedo.mcloudapp.ui.fragment;
 
-import android.annotation.SuppressLint;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Message;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.JsPromptResult;
+import android.webkit.JsResult;
 import android.webkit.WebChromeClient;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.ProgressBar;
 
 import com.shmedo.mcloudapp.MCloudApp;
 import com.shmedo.mcloudapp.R;
@@ -21,12 +22,10 @@ import com.shmedo.mcloudapp.base.BaseFragment;
 import com.shmedo.mcloudapp.util.ToastUtil;
 import com.shmedo.mcloudapp.views.MyWebView;
 
-import java.util.Timer;
-import java.util.TimerTask;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import timber.log.Timber;
 
 /**
  * 项目名：  mCloudapp
@@ -41,23 +40,25 @@ public class QueryDataFragment extends BaseFragment {
     @BindView(R.id.webView)
     MyWebView mWebView;
 
+    @BindView(R.id.pbar_more)
+    ProgressBar progressBar;
+
     private Unbinder unbinder;
 
-    private Timer mTimer;
-
-    private String SENSORDATA_URL = "http://chaxun.shmedo.cn";
+//    private String SENSORDATA_URL = "http://chaxun.shmedo.cn";
     //private String SENSORDATA_URL="http://172.168.5.37:8030/demopage/wode_cexieyi.html";
 
+    private String SENSORDATA_URL = "https://www.ifeng.com/";
 
-    @SuppressLint("HandlerLeak")
-    private Handler mHandler = new Handler() {
+
+    private Handler mHandler;
+
+
+    private Runnable dismssDialogRunnable = new Runnable() {
         @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-            if (msg.what == 0) {
-                ToastUtil.showShortToast("当前网络不可用");
-                dismissLoadingDialog();
-            }
+        public void run() {
+            ToastUtil.showShortToast("加载失败");
+            dismissLoadingDialog();
         }
     };
 
@@ -72,6 +73,8 @@ public class QueryDataFragment extends BaseFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = super.onCreateView(inflater, container, savedInstanceState);
         unbinder = ButterKnife.bind(this, view);
+        mHandler = new Handler();
+        initWebView();
         initData();
         return view;
     }
@@ -83,79 +86,94 @@ public class QueryDataFragment extends BaseFragment {
             return;
         }
 
-        initWebView();
+        mWebView.loadUrl(SENSORDATA_URL);
+        showLoadingDialog("正在加载...");
+        mHandler.postDelayed(dismssDialogRunnable, 15000);
     }
 
     private void initWebView() {
-        showLoadingDialog("正在加载...");
-
-        mWebView.loadUrl(SENSORDATA_URL);
         WebSettings webSettings = mWebView.getSettings();
+        // 设置字符编码
+        webSettings.setDefaultTextEncodingName("utf-8");
         webSettings.setJavaScriptCanOpenWindowsAutomatically(true);
         webSettings.setJavaScriptEnabled(true);
+        webSettings.setAllowFileAccess(true);
         webSettings.setDomStorageEnabled(true);
         webSettings.setDatabaseEnabled(true);
         webSettings.setUseWideViewPort(true);
         webSettings.setLoadWithOverviewMode(true);
         mWebView.setVerticalScrollBarEnabled(true);
-        webSettings.setAllowFileAccess(true);
-        mWebView.setWebChromeClient(new WebChromeClient());
-        mWebView.setWebViewClient(new WebViewClient() {
-            @Override
-            public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
-                //return super.shouldOverrideUrlLoading(view, url);
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    view.loadUrl(request.getUrl().toString());
-                } else {
-                    view.loadUrl(request.toString());
-                }
-                return true;
-                //try {
-                //    if (url.startsWith("http:") || url.startsWith("https:") || url.startsWith("tbopen:")) {
-                //        view.loadUrl(url);
-                //        Log.i("adu","--------------url--------------");
-                //    } else {
-                //        Log.i("adu","--------------intent--------------");
-                //        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-                //        intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                //        startActivity(intent);
-                //    }
-                //    return true;
-                //} catch (Exception e){
-                //    return false;
-                //}
-            }
-
-
-            @Override
-            public void onLoadResource(WebView view, String url) {
-                super.onLoadResource(view, url);
-                if (url != null && url.equals(SENSORDATA_URL)) {
-                    //startTime();
-                }
-            }
-
-
-            @Override
-            public void onPageFinished(WebView view, String url) {
-                super.onPageFinished(view, url);
-                dismissLoadingDialog();
-            }
-        });
-
+        mWebView.setWebChromeClient(new MyWebChromeClient());
+        mWebView.setWebViewClient(new MyWebViewClient());
     }
 
-    /**
-     * 开启计时
-     */
-    private void startTime() {
-        TimerTask timerTask = new TimerTask() {
-            @Override
-            public void run() {
-                mHandler.sendEmptyMessage(0);
+
+    public class MyWebViewClient extends WebViewClient {
+        @Override
+        public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                view.loadUrl(request.getUrl().toString());
+            } else {
+                view.loadUrl(request.toString());
             }
-        };
-        mTimer.schedule(timerTask, 20000);
+            return true;
+        }
+
+
+        @Override
+        public void onLoadResource(WebView view, String url) {
+            super.onLoadResource(view, url);
+            if (url != null && url.equals(SENSORDATA_URL)) {
+                //startTime();
+            }
+        }
+
+
+        @Override
+        public void onPageFinished(WebView view, String url) {
+            super.onPageFinished(view, url);
+            dismissLoadingDialog();
+        }
+    }
+
+
+    public class MyWebChromeClient extends WebChromeClient {
+        @Override
+        public boolean onJsAlert(WebView view, String url, String message, JsResult result) {
+            Timber.d("onJsAlert: " + message);
+            return super.onJsAlert(view, url, message, result);
+        }
+
+        @Override
+        public boolean onJsConfirm(WebView view, String url, String message, JsResult result) {
+            Timber.d("onJsConfirm: " + message);
+            return super.onJsConfirm(view, url, message, result);
+        }
+
+        @Override
+        public boolean onJsPrompt(WebView view, String url, String message, String defaultValue, JsPromptResult result) {
+            Timber.d("onJsPrompt: " + message);
+            return super.onJsPrompt(view, url, message, defaultValue, result);
+        }
+
+        @Override
+        public void onReceivedTitle(WebView view, String title) {
+            super.onReceivedTitle(view, title);
+        }
+
+        @Override
+        public void onProgressChanged(WebView view, int newProgress) {
+            if (newProgress == 100) {
+                progressBar.setVisibility(View.GONE);
+            } else {
+                if (progressBar.getVisibility() == View.GONE)
+                    progressBar.setVisibility(View.VISIBLE);
+
+                progressBar.setProgress(newProgress);
+            }
+
+            super.onProgressChanged(view, newProgress);
+        }
     }
 
     @Override
@@ -166,6 +184,13 @@ public class QueryDataFragment extends BaseFragment {
 
     @Override
     public boolean onBackPressed() {
-        return true;
+        return false;
+
+//        if (mWebView.canGoBack()) {
+//            mWebView.goBack();
+//            return true;
+//        } else {
+//            return super.onBackPressed();
+//        }
     }
 }

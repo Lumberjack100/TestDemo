@@ -127,7 +127,7 @@ public class ADMEExecutiveAgencyConfigActivity extends BaseActivity implements V
         mIvWaitingIntervalPerRound = waitingIntervalPerRoundLayout.findViewById(R.id.itemTipIV);
         mEtWaitingIntervalPerRound = waitingIntervalPerRoundLayout.findViewById(R.id.itemValueET);
         mEtWaitingIntervalPerRound.setInputType(InputType.TYPE_CLASS_NUMBER);
-        mEtWaitingIntervalPerRound.setHint("请输入...");
+        mEtWaitingIntervalPerRound.setHint("请输入正整数...");
 
         ((TextView) logOutputModeLayout.findViewById(R.id.itemNameTV)).setText("日志输出方式");
         mIvLogOutputMode = logOutputModeLayout.findViewById(R.id.itemTipIV);
@@ -137,43 +137,43 @@ public class ADMEExecutiveAgencyConfigActivity extends BaseActivity implements V
         mIvMotorDriveAddress = motorDriveAddressLayout.findViewById(R.id.itemTipIV);
         mEtMotorDriveAddress = motorDriveAddressLayout.findViewById(R.id.itemValueET);
         mEtMotorDriveAddress.setInputType(InputType.TYPE_CLASS_NUMBER);
-        mEtMotorDriveAddress.setHint("请输入...");
+        mEtMotorDriveAddress.setHint("请输入正整数...");
 
         ((TextView) motorMovementTimeLayout.findViewById(R.id.itemNameTV)).setText("电机运动时间（s）");
         mIvMotorMovementTime = motorMovementTimeLayout.findViewById(R.id.itemTipIV);
         mEtMotorMovementTime = motorMovementTimeLayout.findViewById(R.id.itemValueET);
         mEtMotorMovementTime.setInputType(InputType.TYPE_CLASS_NUMBER);
-        mEtMotorMovementTime.setHint("请输入...");
+        mEtMotorMovementTime.setHint("请输入正整数...");
 
         ((TextView) motorPullUpSpeedLayout.findViewById(R.id.itemNameTV)).setText("电机上拉速度（r/s）");
         mIvMotorPullUpSpeed = motorPullUpSpeedLayout.findViewById(R.id.itemTipIV);
         mEtMotorPullUpSpeed = motorPullUpSpeedLayout.findViewById(R.id.itemValueET);
         mEtMotorPullUpSpeed.setInputType(InputType.TYPE_CLASS_NUMBER);
-        mEtMotorPullUpSpeed.setHint("请输入...");
+        mEtMotorPullUpSpeed.setHint("请输入正整数...");
 
         ((TextView) motorPullDownSpeedLayout.findViewById(R.id.itemNameTV)).setText("电机下拉速度（r/s）");
         mIvMotorPullDownSpeed = motorPullDownSpeedLayout.findViewById(R.id.itemTipIV);
         mEtMotorPullDownSpeed = motorPullDownSpeedLayout.findViewById(R.id.itemValueET);
         mEtMotorPullDownSpeed.setInputType(InputType.TYPE_CLASS_NUMBER);
-        mEtMotorPullDownSpeed.setHint("请输入...");
+        mEtMotorPullDownSpeed.setHint("请输入正整数...");
 
         ((TextView) tractionLineLengthLayout.findViewById(R.id.itemNameTV)).setText("牵引线长（m）");
         mIvTractionLineLength = tractionLineLengthLayout.findViewById(R.id.itemTipIV);
         mEtTractionLineLength = tractionLineLengthLayout.findViewById(R.id.itemValueET);
         mEtTractionLineLength.setInputType(InputType.TYPE_CLASS_NUMBER);
-        mEtTractionLineLength.setHint("请输入...");
+        mEtTractionLineLength.setHint("请输入1位正小数...");
 
         ((TextView) holeDepthLayout.findViewById(R.id.itemNameTV)).setText("测孔深（m）");
         mIvHoleDepth = holeDepthLayout.findViewById(R.id.itemTipIV);
         mEtHoleDepth = holeDepthLayout.findViewById(R.id.itemValueET);
         mEtHoleDepth.setInputType(InputType.TYPE_CLASS_NUMBER);
-        mEtHoleDepth.setHint("请输入...");
+        mEtHoleDepth.setHint("请输入1位正小数...");
 
         ((TextView) measuringPitchLayout.findViewById(R.id.itemNameTV)).setText("测量间距（mm）");
         mIvMeasuringPitch = measuringPitchLayout.findViewById(R.id.itemTipIV);
         mEtMeasuringPitch = measuringPitchLayout.findViewById(R.id.itemValueET);
         mEtMeasuringPitch.setInputType(InputType.TYPE_CLASS_NUMBER);
-        mEtMeasuringPitch.setHint("请输入...");
+        mEtMeasuringPitch.setHint("请输入正整数...");
 
 
         mIvDataSettlementMethod.setId(R.id.data_settlement_method);
@@ -222,8 +222,6 @@ public class ADMEExecutiveAgencyConfigActivity extends BaseActivity implements V
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
                 String result = mSpDataSettlementMethod.getSelectedItem().toString().replace("mm", "");
-
-                ToastUtil.showShortToast(result);
             }
 
             @Override
@@ -241,8 +239,6 @@ public class ADMEExecutiveAgencyConfigActivity extends BaseActivity implements V
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
                 String result = mSpLogOutputMode.getSelectedItem().toString().replace("mm", "");
-
-                ToastUtil.showShortToast(result);
             }
 
             @Override
@@ -435,7 +431,7 @@ public class ADMEExecutiveAgencyConfigActivity extends BaseActivity implements V
         }
 
         int address = Integer.parseInt(strMotorDriveAddress);
-        if (address <= 0 || address >= 255) {
+        if (address <= 0) {
             ToastUtil.showShortToast("电机驱动器地址输入有误");
             return;
         }

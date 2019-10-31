@@ -53,6 +53,7 @@ import com.shmedo.mcloudapp.util.ToastUtil;
 import com.shmedo.mcloudapp.util.bleutil.BlueResultParserUtil;
 import com.shmedo.mcloudapp.util.bleutil.ByteManagerUtil;
 import com.shmedo.mcloudapp.util.bleutil.Constants;
+import com.shmedo.mcloudapp.util.common.HandleBackUtil;
 import com.shmedo.mcloudapp.util.page.model.SetRainAccuryPage;
 import com.shmedo.mcloudapp.util.page.model.SetRainSelectPage;
 import com.shmedo.mcloudapp.views.LoadingDialog;
@@ -904,7 +905,6 @@ public class DeviceFragment extends BaseFragment implements View.OnClickListener
     }
 
 
-
     private void handleDeviceFind(BluetoothDeviceFindEventData eventData) {
         BluetoothDevice device = eventData.getNewDevice().getDevice();
         if (device.getName() == null)
@@ -969,7 +969,7 @@ public class DeviceFragment extends BaseFragment implements View.OnClickListener
      * 是否切换连接模式
      */
     public void showChangeModle(String content, final String index) {
-        MaterialDialog.Builder mBuilder = new MaterialDialog.Builder( getActivity())
+        MaterialDialog.Builder mBuilder = new MaterialDialog.Builder(getActivity())
                 .title("温馨提示：")
                 .content(content)
                 .contentColor(Color.parseColor("#000000"))
@@ -1002,21 +1002,27 @@ public class DeviceFragment extends BaseFragment implements View.OnClickListener
 
     @Override
     public boolean onBackPressed() {
-        if (isConnected) {
-            showChangeModle(getResources().getString(R.string.finish_activity_disconnect_bluetooth_device), "1");
+        if (!HandleBackUtil.handleBackPress(this)) {
+            if (isConnected) {
+                showChangeModle(getResources().getString(R.string.finish_activity_disconnect_bluetooth_device), "1");
 
-        } else {
-            isConnected = false;
-            stopBluetooth = true;
-            MCloudApp.setIsBluetoothDeviceConnected(false);
-            if (mLoadingDialog != null) {
-                mLoadingDialog.dismiss();
+            } else {
+                isConnected = false;
+                stopBluetooth = true;
+                MCloudApp.setIsBluetoothDeviceConnected(false);
+                if (mLoadingDialog != null) {
+                    mLoadingDialog.dismiss();
+                }
+                hander.removeCallbacks(dismssConDialogRunnable);
+                mdBluetoothManager.stopScan();
+                getActivity().finish();
             }
-            hander.removeCallbacks(dismssConDialogRunnable);
-            mdBluetoothManager.stopScan();
-            getActivity().finish();
+
+            return super.onBackPressed();
         }
 
-        return super.onBackPressed();
+
+        return false;
     }
+
 }

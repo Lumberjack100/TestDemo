@@ -36,6 +36,7 @@ import com.shmedo.mcloudapp.ui.fragment.QueryDataFragment;
 import com.shmedo.mcloudapp.util.ToastUtil;
 import com.shmedo.mcloudapp.util.bleutil.ByteManagerUtil;
 import com.shmedo.mcloudapp.util.bleutil.Constants;
+import com.shmedo.mcloudapp.util.common.HandleBackUtil;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -716,21 +717,21 @@ public class ConfigADMEActivity extends BaseActivity {
 
     @Override
     public void onBackPressed() {
-        if (isBlueConnected) {
-            if (doSaveConfigBeforeLeave()) {
-                showChangeModle(getResources().getString(R.string.finish_activity_disconnect_bluetooth_device), "1");
+        if (!HandleBackUtil.handleBackPress(this)) {
+            if (isBlueConnected) {
+                if (doSaveConfigBeforeLeave()) {
+                    showChangeModle(getResources().getString(R.string.finish_activity_disconnect_bluetooth_device), "1");
+                }
+
+            } else {
+                dismissLoadingDialog();
+                hander.removeCallbacks(dismssDialogRunnable);
+                isBlueConnected = false;
+                isAutoConnectBlue = false;
+                MCloudApp.setIsBluetoothDeviceConnected(false);
+                mdBluetoothManager.stopScan();
+                this.finish();
             }
-
-        } else {
-            dismissLoadingDialog();
-            hander.removeCallbacks(dismssDialogRunnable);
-            isBlueConnected = false;
-            isAutoConnectBlue = false;
-            MCloudApp.setIsBluetoothDeviceConnected(false);
-            mdBluetoothManager.stopScan();
-            this.finish();
         }
-
-        super.onBackPressed();
     }
 }
