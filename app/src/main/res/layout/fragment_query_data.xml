@@ -2,17 +2,17 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="@color/white">
+    android:background="@color/white"
+    android:orientation="vertical">
 
     <ProgressBar
         android:id="@+id/pbar_more"
-        style="?android:attr/progressBarStyleHorizontal"
+        style="@android:style/Widget.ProgressBar.Horizontal"
         android:layout_width="fill_parent"
-        android:layout_height="3dip"
+        android:layout_height="4dp"
         android:indeterminateOnly="false"
         android:max="100"
-        android:progressDrawable="@drawable/progress_bar_states"/>
+        android:progressDrawable="@drawable/progress_bar_states" />
 
     <com.shmedo.mcloudapp.views.MyWebView
         android:id="@+id/webView"

@@ -1,6 +1,5 @@
 package com.shmedo.mcloudapp.ui.fragment;
 
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
@@ -45,11 +44,8 @@ public class QueryDataFragment extends BaseFragment {
 
     private Unbinder unbinder;
 
-//    private String SENSORDATA_URL = "http://chaxun.shmedo.cn";
+    private String SENSORDATA_URL = "http://chaxun.shmedo.cn";
     //private String SENSORDATA_URL="http://172.168.5.37:8030/demopage/wode_cexieyi.html";
-
-    private String SENSORDATA_URL = "https://www.ifeng.com/";
-
 
     private Handler mHandler;
 
@@ -58,7 +54,6 @@ public class QueryDataFragment extends BaseFragment {
         @Override
         public void run() {
             ToastUtil.showShortToast("加载失败");
-            dismissLoadingDialog();
         }
     };
 
@@ -87,7 +82,6 @@ public class QueryDataFragment extends BaseFragment {
         }
 
         mWebView.loadUrl(SENSORDATA_URL);
-        showLoadingDialog("正在加载...");
         mHandler.postDelayed(dismssDialogRunnable, 15000);
     }
 
@@ -95,13 +89,17 @@ public class QueryDataFragment extends BaseFragment {
         WebSettings webSettings = mWebView.getSettings();
         // 设置字符编码
         webSettings.setDefaultTextEncodingName("utf-8");
+        //支持通过JS打开新窗口
         webSettings.setJavaScriptCanOpenWindowsAutomatically(true);
         webSettings.setJavaScriptEnabled(true);
-        webSettings.setAllowFileAccess(true);
-        webSettings.setDomStorageEnabled(true);
-        webSettings.setDatabaseEnabled(true);
-        webSettings.setUseWideViewPort(true);
-        webSettings.setLoadWithOverviewMode(true);
+        webSettings.setAllowFileAccess(true);//设置可以访问文件
+        webSettings.setDomStorageEnabled(true);//允许SessionStorage/LocalStorage存储
+        webSettings.setDatabaseEnabled(true); //开启 database storage API 功能
+
+        //设置自适应屏幕，两者合用
+        webSettings.setUseWideViewPort(true);//将图片调整到适合webview的大小
+        webSettings.setLoadWithOverviewMode(true);//缩放至屏幕的大小
+
         mWebView.setVerticalScrollBarEnabled(true);
         mWebView.setWebChromeClient(new MyWebChromeClient());
         mWebView.setWebViewClient(new MyWebViewClient());
@@ -111,11 +109,7 @@ public class QueryDataFragment extends BaseFragment {
     public class MyWebViewClient extends WebViewClient {
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                view.loadUrl(request.getUrl().toString());
-            } else {
-                view.loadUrl(request.toString());
-            }
+            view.loadUrl(request.getUrl().toString());
             return true;
         }
 
@@ -132,7 +126,6 @@ public class QueryDataFragment extends BaseFragment {
         @Override
         public void onPageFinished(WebView view, String url) {
             super.onPageFinished(view, url);
-            dismissLoadingDialog();
         }
     }
 

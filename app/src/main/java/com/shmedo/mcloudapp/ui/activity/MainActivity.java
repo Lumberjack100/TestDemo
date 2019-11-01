@@ -805,6 +805,11 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
 
 
     private void scanResult(String result) {
+        if (TextUtils.isEmpty(result)) {
+            LoadingDialog.showScanResultDialog(this, "请扫码正确的设备二维码");
+            return;
+        }
+
         if (result.contains("=")) {
             String results = result.substring(result.indexOf("=") + 1);
             scan(results);
@@ -813,7 +818,10 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
         }
     }
 
-    //MEDO,189150L,DAS
+
+    /**
+     * 处理扫描结果，例如：MEDO,189150L,DAS
+     */
     private void scan(String deviceInfo) {
         if (!deviceInfo.startsWith("MEDO")) {
             LoadingDialog.showScanResultDialog(this, "请扫码正确的设备二维码");
