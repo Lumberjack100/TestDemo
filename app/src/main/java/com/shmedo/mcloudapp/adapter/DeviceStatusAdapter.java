@@ -49,11 +49,11 @@ public class DeviceStatusAdapter extends RecyclerView.Adapter<DeviceStatusAdapte
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, final int position) {
 
-        holder.tv_deviceStatus.setText(data.get(position).getDeviceName());
+        holder.tv_deviceStatus.setText(data.get(position).getDeviceTypeName());
         if (data.get(position).getLocal()) {
-            holder.tv_deviceToken.setText(data.get(position).getDeviceToken() + "\n" + "本地设备");
+            holder.tv_deviceToken.setText(data.get(position).getDeviceName() + "\n" + "本地设备");
         } else {
-            holder.tv_deviceToken.setText(data.get(position).getDeviceToken() + "\n" + "云端设备");
+            holder.tv_deviceToken.setText(data.get(position).getDeviceName() + "\n" + "云端设备");
         }
 
         holder.tv_electricity.setText(data.get(position).getVoltage() + "V");

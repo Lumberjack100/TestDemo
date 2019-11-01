@@ -265,7 +265,12 @@ public class ADMEHomeFragment extends BaseFragment {
 
         //发送查询设备状态命令
         if (MCloudApp.isIsBluetoothDeviceConnected()) {
+            sbBluetoothState.setCheckedImmediatelyNoEvent(true);
+            setSwitchViewState(true, tvBluetoothState, "已连接");
             Objects.requireNonNull(configADMEActivity).sendDeviceStateComd();
+        } else {
+            sbBluetoothState.setCheckedImmediatelyNoEvent(false);
+            setSwitchViewState(true, tvBluetoothState, "已断开");
         }
     }
 

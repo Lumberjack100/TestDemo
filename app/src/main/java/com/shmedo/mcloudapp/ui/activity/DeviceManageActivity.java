@@ -322,13 +322,13 @@ public class DeviceManageActivity extends BaseActivity implements OnRefreshListe
                     MCloudApp.setDeviceId(statusInfoResult.getId());
 
                     if (!TextUtils.isEmpty(statusInfoResult.getDeviceTypeName()) && statusInfoResult.getDeviceTypeName().toUpperCase().contains("ADME")) {
-                        String deviceInfo = "MEDO," + statusInfoResult.getDeviceToken() + "," + statusInfoResult.getDeviceTypeName();
+                        String deviceInfo = "MEDO," + statusInfoResult.getDeviceName() + "," + statusInfoResult.getDeviceTypeName();
                         ConfigADMEActivity.startActivity(DeviceManageActivity.this, deviceInfo);
                         return;
                     }
 
                     if (!TextUtils.isEmpty(statusInfoResult.getDeviceTypeName()) && statusInfoResult.getDeviceTypeName().toUpperCase().contains("DAS")) {
-                        String deviceInfo = "MEDO," + statusInfoResult.getDeviceToken() + "," + statusInfoResult.getDeviceTypeName();
+                        String deviceInfo = "MEDO," + statusInfoResult.getDeviceName() + "," + statusInfoResult.getDeviceTypeName();
                         ConfigDASActivity.startActivity(DeviceManageActivity.this, deviceInfo);
                         return;
                     }
@@ -336,7 +336,7 @@ public class DeviceManageActivity extends BaseActivity implements OnRefreshListe
                     if (!TextUtils.isEmpty(statusInfoResult.getDeviceName()) && statusInfoResult.getDeviceName().toUpperCase().contains("E60")) {
                         DeviceBasicInfoResult deviceBasicInfoResult = new DeviceBasicInfoResult();
                         deviceBasicInfoResult.setDeviceToken(statusInfoResult.getDeviceToken());
-                        deviceBasicInfoResult.setDeviceTypeName(statusInfoResult.getDeviceName());
+                        deviceBasicInfoResult.setDeviceName(statusInfoResult.getDeviceName());
                         ConfigE60Activity.startActivity(DeviceManageActivity.this, deviceBasicInfoResult);
                         return;
                     }

@@ -141,7 +141,6 @@ public class SearchDeviceActivity extends BaseActivity implements MultiItemTypeA
     public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
 
         StatusInfoResult statusInfoResult = statusInfoList.get(position);
-        ToastUtil.showLongToast(statusInfoResult.getDeviceName()+statusInfoResult.getDeviceToken());
 
         if (!TextUtils.isEmpty(statusInfoResult.getDeviceTypeName()) && statusInfoResult.getDeviceTypeName().toUpperCase().contains("DAS")) {
             String deviceInfo = "MEDO," + statusInfoResult.getDeviceToken() + "," + statusInfoResult.getDeviceTypeName();
