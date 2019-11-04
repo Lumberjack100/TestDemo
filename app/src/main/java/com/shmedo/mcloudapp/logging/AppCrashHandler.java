@@ -3,7 +3,7 @@ package com.shmedo.mcloudapp.logging;
 import android.content.Context;
 import android.os.Looper;
 
-import com.shmedo.mcloudapp.util.ToastUtil;
+import com.hjq.toast.ToastUtils;
 
 import timber.log.Timber;
 
@@ -80,7 +80,7 @@ public class AppCrashHandler {
             @Override
             public void run() {
                 Looper.prepare();
-                ToastUtil.showShortToast("很抱歉！米易通出现异常，即将退出。");
+                ToastUtils.show("很抱歉！米易通出现异常，即将退出。");
                 Looper.loop();
             }
         }.start();

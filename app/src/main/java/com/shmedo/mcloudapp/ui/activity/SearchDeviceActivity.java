@@ -8,6 +8,7 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 
+import com.hjq.toast.ToastUtils;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.adapter.recyclerviewbaseadapter.CommonAdapter;
 import com.shmedo.mcloudapp.adapter.recyclerviewbaseadapter.MultiItemTypeAdapter;
@@ -21,7 +22,6 @@ import com.shmedo.mcloudapp.util.DaoManager;
 import com.shmedo.mcloudapp.util.ImageUtil;
 import com.shmedo.mcloudapp.util.KeyBordUtils;
 import com.shmedo.mcloudapp.util.StringUtil;
-import com.shmedo.mcloudapp.util.ToastUtil;
 import com.shmedo.mcloudapp.views.ClearEditText;
 import com.shmedo.mcloudapp.views.DeviceSensorDialog;
 import com.shmedo.mcloudapp.views.DividerItemDecoration;
@@ -169,7 +169,7 @@ public class SearchDeviceActivity extends BaseActivity implements MultiItemTypeA
     public void onViewClicked() {
         String snName = mCeSearch.getText().toString();
         if (StringUtil.isEmpty(snName)) {
-            ToastUtil.showShortToast("设备的SN号不能为空");
+            ToastUtils.show("设备的SN号不能为空");
             return;
         }
         KeyBordUtils.hideSoftKeyboard(mBtnSearch);

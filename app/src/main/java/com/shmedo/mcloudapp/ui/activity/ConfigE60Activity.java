@@ -21,6 +21,7 @@ import android.widget.TextView;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.hjq.toast.ToastUtils;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.base.BaseActivity;
 import com.shmedo.mcloudapp.entity.DeviceBasicInfoResult;
@@ -29,7 +30,6 @@ import com.shmedo.mcloudapp.model.BaseObserver;
 import com.shmedo.mcloudapp.model.Extras;
 import com.shmedo.mcloudapp.model.MDRetrofit;
 import com.shmedo.mcloudapp.util.DaoManager;
-import com.shmedo.mcloudapp.util.ToastUtil;
 import com.shmedo.mcloudapp.util.WifiSupport;
 import com.shmedo.mcloudapp.views.LoadingDialog;
 import com.shmedo.mcloudapp.views.MyWebView;
@@ -98,12 +98,12 @@ public class ConfigE60Activity extends BaseActivity {
                 getDeviceJson(ipAddress);
 
             } else {
-                ToastUtil.showShortToast("请打开连接正确的WIFI");
+                ToastUtils.show("请打开连接正确的WIFI");
                 WifiSupport.goWifiSetting(this);
             }
 
         } else {
-            ToastUtil.showShortToast("请打开WIFI连接");
+            ToastUtils.show("请打开WIFI连接");
             WifiSupport.goWifiSetting(this);
         }
     }
@@ -234,7 +234,7 @@ public class ConfigE60Activity extends BaseActivity {
                     public void onClick(View v) {
                         String content = editText.getText().toString();
                         if (TextUtils.isEmpty(content)) {
-                            ToastUtil.showShortToast("ip地址不能为空");
+                            ToastUtils.show("ip地址不能为空");
                             return;
                         }
                         //if (!DisposeUtil.isRegex(content)){

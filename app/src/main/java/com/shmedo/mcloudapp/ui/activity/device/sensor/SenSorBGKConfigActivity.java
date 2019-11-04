@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.hjq.toast.ToastUtils;
 import com.shmedo.das.common.SensorGudanDisplacementInfo;
 import com.shmedo.das.common.SensorGudanNotStressInfo;
 import com.shmedo.das.common.SensorGudanPercolateInfo;
@@ -35,7 +36,6 @@ import com.shmedo.mcloudapp.inter.MyOnClickListener;
 import com.shmedo.mcloudapp.ui.activity.device.sensor.dialog.DialogFactory;
 import com.shmedo.mcloudapp.ui.fragment.DeviceFragment;
 import com.shmedo.mcloudapp.util.StringUtil;
-import com.shmedo.mcloudapp.util.ToastUtil;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -427,7 +427,7 @@ public class SenSorBGKConfigActivity extends BaseActivity {
 
             case R.id.iv_stay1://弹框
                 if (channelNumber0 == -1) {
-                    ToastUtil.showShortToast("此传感器为空");
+                    ToastUtils.show("此传感器为空");
                     return;
                 }
                 showBottomDialog(channelNumber0);
@@ -435,7 +435,7 @@ public class SenSorBGKConfigActivity extends BaseActivity {
 
             case R.id.iv_stay2:
                 if (channelNumber1 == -1) {
-                    ToastUtil.showShortToast("此传感器为空");
+                    ToastUtils.show("此传感器为空");
                     return;
                 }
                 showBottomDialog(channelNumber1);
@@ -443,7 +443,7 @@ public class SenSorBGKConfigActivity extends BaseActivity {
 
             case R.id.iv_stay3:
                 if (channelNumber2 == -1) {
-                    ToastUtil.showShortToast("此传感器为空");
+                    ToastUtils.show("此传感器为空");
                     return;
                 }
                 showBottomDialog(channelNumber2);
@@ -451,7 +451,7 @@ public class SenSorBGKConfigActivity extends BaseActivity {
 
             case R.id.iv_stay4:
                 if (channelNumber3 == -1) {
-                    ToastUtil.showShortToast("此传感器为空");
+                    ToastUtils.show("此传感器为空");
                     return;
                 }
                 showBottomDialog(channelNumber3);
@@ -459,7 +459,7 @@ public class SenSorBGKConfigActivity extends BaseActivity {
 
             case R.id.iv_stay5:
                 if (channelNumber4 == -1) {
-                    ToastUtil.showShortToast("此传感器为空");
+                    ToastUtils.show("此传感器为空");
                     return;
                 }
                 showBottomDialog(channelNumber4);
@@ -467,7 +467,7 @@ public class SenSorBGKConfigActivity extends BaseActivity {
 
             case R.id.iv_stay6:
                 if (channelNumber5 == -1) {
-                    ToastUtil.showShortToast("此传感器为空");
+                    ToastUtils.show("此传感器为空");
                     return;
                 }
                 showBottomDialog(channelNumber5);
@@ -475,7 +475,7 @@ public class SenSorBGKConfigActivity extends BaseActivity {
 
             case R.id.iv_stay7:
                 if (channelNumber6 == -1) {
-                    ToastUtil.showShortToast("此传感器为空");
+                    ToastUtils.show("此传感器为空");
                     return;
                 }
                 showBottomDialog(channelNumber6);
@@ -483,7 +483,7 @@ public class SenSorBGKConfigActivity extends BaseActivity {
 
             case R.id.iv_stay8:
                 if (channelNumber7 == -1) {
-                    ToastUtil.showShortToast("此传感器为空");
+                    ToastUtils.show("此传感器为空");
                     return;
                 }
                 showBottomDialog(channelNumber7);
@@ -761,7 +761,7 @@ public class SenSorBGKConfigActivity extends BaseActivity {
             for (int k = 0; k < paramsInfoSubList.size() - 1; k++) {
                 for (int j = k + 1; j < paramsInfoSubList.size(); j++) {
                     if (paramsInfoSubList.get(k).getSensorAddress().equals(paramsInfoSubList.get(j).getSensorAddress())) {
-                        ToastUtil.showShortToast("Modbus地址不能重复");
+                        ToastUtils.show("Modbus地址不能重复");
                         return false;
                     }
                 }
@@ -865,7 +865,7 @@ public class SenSorBGKConfigActivity extends BaseActivity {
 
         String result = String.valueOf(builderFirst);
         if (!MCloudApp.isIsBluetoothDeviceConnected()) {
-            ToastUtil.showShortToast("蓝牙未连接");
+            ToastUtils.show("蓝牙未连接");
             finish();
             return;
         }

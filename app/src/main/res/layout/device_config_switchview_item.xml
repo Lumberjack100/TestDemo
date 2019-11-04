@@ -22,18 +22,7 @@
         android:layout_toLeftOf="@id/switchButton"
         android:gravity="center"
         tools:text="已激活"
-        android:textColor="@color/colorPrimary" />
-
-    <ch.ielse.view.SwitchView
-        android:id="@+id/switchview"
-        android:layout_width="wrap_content"
-        android:layout_height="30dp"
-        android:visibility="gone"
-        android:layout_alignParentRight="true"
-        android:layout_centerVertical="true"
-        android:layout_marginRight="20dp"
-        android:gravity="center"
-        app:primaryColor="@color/colorPrimary" />
+        android:textColor="@color/gray_807B7B" />
 
 
     <com.kyleduo.switchbutton.SwitchButton

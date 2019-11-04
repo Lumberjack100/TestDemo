@@ -5,6 +5,7 @@ import android.bluetooth.BluetoothManager;
 import android.content.Context;
 import android.os.Handler;
 
+import com.hjq.toast.ToastUtils;
 import com.shmedo.mcloudapp.MCloudApp;
 import com.shmedo.mcloudapp.bluetooth.BluetoothDeviceFindEventData;
 import com.shmedo.mcloudapp.bluetooth.BluetoothEvent;
@@ -12,7 +13,6 @@ import com.shmedo.mcloudapp.bluetooth.BluetoothEventHandler;
 import com.shmedo.mcloudapp.bluetooth.MdBluetoothManager;
 import com.shmedo.mcloudapp.bluetooth.Message;
 import com.shmedo.mcloudapp.entity.ble.MDevice;
-import com.shmedo.mcloudapp.util.ToastUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -184,7 +184,7 @@ public class BleDeviceHelpUtil {
         public boolean handleMessage(android.os.Message msg) {
             switch (msg.what) {
                 case BT_CONNECT:
-                    ToastUtil.showShortToast("蓝牙已连接");
+                    ToastUtils.show("蓝牙已连接");
 //                    dismissLoadingDialog();
 //                    isConneted = true;
 //                    //startBluAuthenticate();//蓝牙连接成功开始进行验证
@@ -193,28 +193,28 @@ public class BleDeviceHelpUtil {
                     break;
 
                 case BT_DISCONNECTED:
-                    ToastUtil.showShortToast("蓝牙连接已断开!");
+                    ToastUtils.show("蓝牙连接已断开!");
 //                    dismissLoadingDialog();
 //                    isConneted = false;
                     break;
 
                 case BT_MESSAGE_WRITE_SUCCESS:
-                    ToastUtil.showShortToast("已发送指令");
+                    ToastUtils.show("已发送指令");
                     break;
 
                 case BT_MESSAGE_WRITE_FAIL:
-                    ToastUtil.showShortToast("发送指令失败");
+                    ToastUtils.show("发送指令失败");
                     break;
 
                 case BT_WRITE_TIME_OUT:
-                    ToastUtil.showShortToast("发送指令超时");
+                    ToastUtils.show("发送指令超时");
                     break;
 
                 case VERIFY_RESULT:
                     if (msg.obj.equals("1")) {
-                        ToastUtil.showShortToast("蓝牙认证通过!");
+                        ToastUtils.show("蓝牙认证通过!");
                     } else {
-                        ToastUtil.showShortToast("蓝牙认证失败!");
+                        ToastUtils.show("蓝牙认证失败!");
 
                         try {
                             Thread.sleep(1000);
@@ -226,38 +226,38 @@ public class BleDeviceHelpUtil {
                     break;
 
                 case MESSAGE_RESPONSE_TIME_OUT:
-                    ToastUtil.showShortToast("消息等待响应超时！");
+                    ToastUtils.show("消息等待响应超时！");
                     break;
 
                 case REFRESH_RUN_STATE:
                     break;
 
                 case MESSAGE_RESPONSE_SAVE_SETTINGS_SUCCESS:
-                    ToastUtil.showShortToast("设置信息已保存！");
+                    ToastUtils.show("设置信息已保存！");
                     break;
 
                 case BT_REQUEST_MTU_FAIL:
-                    ToastUtil.showShortToast("MTU请求设置失败！");
+                    ToastUtils.show("MTU请求设置失败！");
                     break;
 
                 case BT_SERVICE_FIND_FAIL:
-                    ToastUtil.showShortToast("蓝牙服务发现失败！");
+                    ToastUtils.show("蓝牙服务发现失败！");
                     break;
 
                 case BT_CHARACTERISTICS_FIND_FAIL:
-                    ToastUtil.showShortToast("蓝牙特征读取失败！");
+                    ToastUtils.show("蓝牙特征读取失败！");
                     break;
 
                 case BT_ENABLE_READ_FAIL:
-                    ToastUtil.showShortToast("设置读取Descriptor失败！");
+                    ToastUtils.show("设置读取Descriptor失败！");
                     break;
 
                 case BT_RECOVERY_SUCCESS:
-                    ToastUtil.showShortToast("已恢复出厂设置！");
+                    ToastUtils.show("已恢复出厂设置！");
                     break;
 
                 case MESSAGE_RESPONSE_REBOOT_DEVICE:
-                    ToastUtil.showShortToast("已重启系统！");
+                    ToastUtils.show("已重启系统！");
                     break;
 
                 default:

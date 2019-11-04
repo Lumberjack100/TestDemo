@@ -23,6 +23,7 @@ import android.widget.TextView;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.hjq.toast.ToastUtils;
 import com.shmedo.das.common.GetAllSensorConfigInfo;
 import com.shmedo.das.das.cmd.CommandManager;
 import com.shmedo.das.das.cmd.CommandType;
@@ -49,7 +50,6 @@ import com.shmedo.mcloudapp.entity.ble.SystemRunStateSub;
 import com.shmedo.mcloudapp.entity.ble.VersionMessageSub;
 import com.shmedo.mcloudapp.entity.ble.collector.CollectorSensorParamsInfoSub;
 import com.shmedo.mcloudapp.model.Extras;
-import com.shmedo.mcloudapp.util.ToastUtil;
 import com.shmedo.mcloudapp.util.bleutil.BlueResultParserUtil;
 import com.shmedo.mcloudapp.util.bleutil.ByteManagerUtil;
 import com.shmedo.mcloudapp.util.bleutil.Constants;
@@ -679,7 +679,7 @@ public class DeviceFragment extends BaseFragment implements View.OnClickListener
 
                         if (!TextUtils.isEmpty(collectorType)) {
                             if (!isConnected) {
-                                ToastUtil.showShortToast("蓝牙未连接");
+                                ToastUtils.show("蓝牙未连接");
                                 return;
                             }
 
@@ -726,7 +726,7 @@ public class DeviceFragment extends BaseFragment implements View.OnClickListener
             switch (msg.what) {
                 case Constants.BT_CONNECT:
                     Timber.d("蓝牙已连接");
-                    ToastUtil.showShortToast("蓝牙已连接");
+                    ToastUtils.show("蓝牙已连接");
 
                     if (isAdded()) {
                         mImgBluetooth.setImageDrawable(getResources().getDrawable(R.drawable.bar_item_blu_connect_yellow));
@@ -761,7 +761,7 @@ public class DeviceFragment extends BaseFragment implements View.OnClickListener
                             mLoadingDialog.dismiss();
                         }
                         Timber.d("蓝牙连接已断开");
-                        ToastUtil.showShortToast("蓝牙连接已断开!");
+                        ToastUtils.show("蓝牙连接已断开!");
 
                         isConnected = false;
                         MCloudApp.setIsBluetoothDeviceConnected(false);
@@ -778,23 +778,23 @@ public class DeviceFragment extends BaseFragment implements View.OnClickListener
                     break;
 
                 case Constants.BT_MESSAGE_WRITE_SUCCESS:
-                    ToastUtil.showShortToast("指令已发送");
+                    ToastUtils.show("指令已发送");
                     break;
 
                 case Constants.BT_MESSAGE_WRITE_FAIL:
-                    ToastUtil.showShortToast("指令发送失败");
+                    ToastUtils.show("指令发送失败");
                     break;
 
                 case Constants.BT_WRITE_TIME_OUT:
-                    ToastUtil.showShortToast("指令发送超时");
+                    ToastUtils.show("指令发送超时");
                     break;
 
                 case Constants.VERIFY_RESULT:
                     if (msg.obj.equals("1")) {
-                        ToastUtil.showShortToast("蓝牙认证通过!");
+                        ToastUtils.show("蓝牙认证通过!");
                         sendDeviceStateComd();
                     } else {
-                        ToastUtil.showShortToast("蓝牙认证失败!");
+                        ToastUtils.show("蓝牙认证失败!");
                         try {
                             Thread.sleep(1000);
                             disconnectDevice();
@@ -805,7 +805,7 @@ public class DeviceFragment extends BaseFragment implements View.OnClickListener
                     break;
 
                 case Constants.MESSAGE_RESPONSE_TIME_OUT:
-                    ToastUtil.showShortToast("消息等待响应超时！");
+                    ToastUtils.show("消息等待响应超时！");
                     break;
 
                 case Constants.REFRESH_RUN_STATE:
@@ -813,36 +813,36 @@ public class DeviceFragment extends BaseFragment implements View.OnClickListener
                     break;
 
                 case Constants.MESSAGE_RESPONSE_SAVE_SETTINGS_SUCCESS:
-                    ToastUtil.showShortToast("设置信息已保存！");
+                    ToastUtils.show("设置信息已保存！");
                     //mWebView.loadUrl("javascript:restart()");
                     break;
 
                 case Constants.BT_REQUEST_MTU_FAIL:
-                    ToastUtil.showShortToast("MTU请求设置失败！");
+                    ToastUtils.show("MTU请求设置失败！");
                     break;
 
                 case Constants.BT_SERVICE_FIND_FAIL:
-                    ToastUtil.showShortToast("蓝牙服务发现失败！");
+                    ToastUtils.show("蓝牙服务发现失败！");
                     break;
 
                 case Constants.BT_CHARACTERISTICS_FIND_FAIL:
-                    ToastUtil.showShortToast("蓝牙特征读取失败！");
+                    ToastUtils.show("蓝牙特征读取失败！");
                     break;
 
                 case Constants.BT_ENABLE_READ_FAIL:
-                    ToastUtil.showShortToast("设置读取Descriptor失败！");
+                    ToastUtils.show("设置读取Descriptor失败！");
                     break;
 
                 case Constants.BT_RECOVERY_SUCCESS:
-                    ToastUtil.showShortToast("已恢复出厂设置！");
+                    ToastUtils.show("已恢复出厂设置！");
                     break;
 
                 case Constants.MESSAGE_RESPONSE_REBOOT_DEVICE:
-                    ToastUtil.showShortToast("已重启系统！");
+                    ToastUtils.show("已重启系统！");
                     break;
 
                 case Constants.MESSAGE_LOCK_REBOOT_DEVICE:
-                    ToastUtil.showShortToast("蓝牙通讯已就绪！");
+                    ToastUtils.show("蓝牙通讯已就绪！");
                     sendDeviceStateComd();//unlock后发送指令
                     break;
 
@@ -889,7 +889,7 @@ public class DeviceFragment extends BaseFragment implements View.OnClickListener
 
         } else {
             if (!isConnected) {
-                ToastUtil.showShortToast("蓝牙未连接");
+                ToastUtils.show("蓝牙未连接");
             }
         }
     }
@@ -941,7 +941,7 @@ public class DeviceFragment extends BaseFragment implements View.OnClickListener
                 Timber.d("发送101采集器配置指令===" + collectorResult);
 
             } else {
-                ToastUtil.showShortToast("蓝牙未连接");
+                ToastUtils.show("蓝牙未连接");
             }
         }
     }
@@ -956,7 +956,7 @@ public class DeviceFragment extends BaseFragment implements View.OnClickListener
                     connectBluetooth();
 
                 } else {
-                    ToastUtil.showShortToast("蓝牙未启用");
+                    ToastUtils.show("蓝牙未启用");
                 }
                 break;
 

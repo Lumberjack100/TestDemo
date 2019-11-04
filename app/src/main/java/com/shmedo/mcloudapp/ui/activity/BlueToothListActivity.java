@@ -11,11 +11,12 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 
+import com.hjq.toast.ToastUtils;
+import com.shmedo.mcloudapp.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.adapter.BluetoothDevicesAdapter;
 import com.shmedo.mcloudapp.entity.ble.MDevice;
 import com.shmedo.mcloudapp.model.Extras;
-import com.shmedo.mcloudapp.util.ToastUtil;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -67,7 +68,7 @@ public class BlueToothListActivity extends Activity {
             deviceList.addAll(tempList);
 
         if (deviceList.size() == 0) {
-            ToastUtil.showShortToast("未发现设备，请尝试重新扫描");
+            ToastUtils.show("未发现设备，请尝试重新扫描");
             finish();
         }
     }
@@ -104,6 +105,8 @@ public class BlueToothListActivity extends Activity {
             public void onItemClick(View itemView, int position) {
                 String macAddress = deviceList.get(position).getDevice().getAddress();
                 String deviceName = deviceList.get(position).getDevice().getName();
+                MCloudApp.setDeviceName(deviceName);
+
 
                 if (deviceName.endsWith("T")) {
                     String deviceInfo = "MEDO," + deviceName.substring(3) + ",ADME";

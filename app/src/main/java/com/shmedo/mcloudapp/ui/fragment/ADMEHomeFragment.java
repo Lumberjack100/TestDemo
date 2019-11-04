@@ -23,6 +23,7 @@ import android.widget.TextView;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.hjq.toast.ToastUtils;
 import com.kyleduo.switchbutton.SwitchButton;
 import com.shmedo.mcloudapp.MCloudApp;
 import com.shmedo.mcloudapp.R;
@@ -38,7 +39,6 @@ import com.shmedo.mcloudapp.ui.activity.device.ADMEExecutiveAgencyConfigActivity
 import com.shmedo.mcloudapp.ui.activity.device.senior.InstructionDebugActivity;
 import com.shmedo.mcloudapp.ui.activity.device.sensor.ADMESensorConfigActivity;
 import com.shmedo.mcloudapp.util.DaoManager;
-import com.shmedo.mcloudapp.util.ToastUtil;
 import com.shmedo.mcloudapp.views.ClearEditText;
 import com.shmedo.mcloudapp.views.editspinner.EditSpinner;
 
@@ -156,7 +156,7 @@ public class ADMEHomeFragment extends BaseFragment {
         @Override
         public void run() {
 
-            ToastUtil.showShortToast("刷新地址超时，请稍候再试");
+            ToastUtils.show("刷新地址超时，请稍候再试");
             mIvRefreshAddr1.clearAnimation();
             mIvRefreshAddr2.clearAnimation();
         }
@@ -262,6 +262,8 @@ public class ADMEHomeFragment extends BaseFragment {
 
         //TODO 暂时禁止设置测试模式，后期当设置为蓝牙模式时，与指令调试界面联动
         sbDebugMode.setEnabled(false);
+        setSwitchViewState(false, tvDebugMode, "已禁用");
+
 
         //发送查询设备状态命令
         if (MCloudApp.isIsBluetoothDeviceConnected()) {
@@ -270,7 +272,7 @@ public class ADMEHomeFragment extends BaseFragment {
             Objects.requireNonNull(configADMEActivity).sendDeviceStateComd();
         } else {
             sbBluetoothState.setCheckedImmediatelyNoEvent(false);
-            setSwitchViewState(true, tvBluetoothState, "已断开");
+            setSwitchViewState(false, tvBluetoothState, "已断开");
         }
     }
 
@@ -337,7 +339,7 @@ public class ADMEHomeFragment extends BaseFragment {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, final boolean isChecked) {
                 if (!MCloudApp.isIsBluetoothDeviceConnected()) {
-                    ToastUtil.showShortToast("设备已断开连接，暂无法进行设置");
+                    ToastUtils.show("设备已断开连接，暂无法进行设置");
                     sbAutoMonitorState.setCheckedImmediatelyNoEvent(!isChecked);
                     return;
                 }
@@ -382,7 +384,7 @@ public class ADMEHomeFragment extends BaseFragment {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, final boolean isChecked) {
                 if (!MCloudApp.isIsBluetoothDeviceConnected()) {
-                    ToastUtil.showShortToast("设备已断开连接，暂无法进行设置");
+                    ToastUtils.show("设备已断开连接，暂无法进行设置");
                     sbDebugMode.setCheckedImmediatelyNoEvent(!isChecked);
                     return;
                 }
@@ -462,7 +464,7 @@ public class ADMEHomeFragment extends BaseFragment {
 
             case R.id.editBtn1:
                 if (!MCloudApp.isIsBluetoothDeviceConnected()) {
-                    ToastUtil.showShortToast("设备已断开连接，暂无法进行设置");
+                    ToastUtils.show("设备已断开连接，暂无法进行设置");
                     return;
                 }
                 if (mBtnEdit1.getText().toString().contains("编辑")) {
@@ -483,7 +485,7 @@ public class ADMEHomeFragment extends BaseFragment {
 
             case R.id.editBtn2:
                 if (!MCloudApp.isIsBluetoothDeviceConnected()) {
-                    ToastUtil.showShortToast("设备已断开连接，暂无法进行设置");
+                    ToastUtils.show("设备已断开连接，暂无法进行设置");
                     return;
                 }
 
@@ -513,7 +515,7 @@ public class ADMEHomeFragment extends BaseFragment {
 
             case R.id.firmware_upgrade_layout:
                 //固件升级
-                ToastUtil.showShortToast("功能开发中...");
+                ToastUtils.show("功能开发中...");
                 break;
         }
     }
@@ -531,7 +533,7 @@ public class ADMEHomeFragment extends BaseFragment {
 
     private void doRefreshAddress(int index) {
         if (!MCloudApp.isIsBluetoothDeviceConnected()) {
-            ToastUtil.showShortToast("设备已断开连接，无法刷新");
+            ToastUtils.show("设备已断开连接，无法刷新");
             return;
         }
         String cmdStr = "";
@@ -554,12 +556,12 @@ public class ADMEHomeFragment extends BaseFragment {
     private void doServerAddress1Config() {
         String address = mEtAddress1.getText().toString().trim();
         if (TextUtils.isEmpty(address)) {
-            ToastUtil.showShortToast("地址不能为空");
+            ToastUtils.show("地址不能为空");
             return;
         }
 
         if (!address.contains(".") || !address.contains(":")) {
-            ToastUtil.showShortToast("地址格式不正确");
+            ToastUtils.show("地址格式不正确");
             return;
         }
 
@@ -571,12 +573,12 @@ public class ADMEHomeFragment extends BaseFragment {
     private void doServerAddress2Config() {
         String address = mEtAddress2.getText().toString().trim();
         if (TextUtils.isEmpty(address)) {
-            ToastUtil.showShortToast("地址不能为空");
+            ToastUtils.show("地址不能为空");
             return;
         }
 
         if (!address.contains(".") || !address.contains(":")) {
-            ToastUtil.showShortToast("地址格式不正确");
+            ToastUtils.show("地址格式不正确");
             return;
         }
 
@@ -613,8 +615,9 @@ public class ADMEHomeFragment extends BaseFragment {
             sbAutoMonitorState.setCheckedImmediatelyNoEvent(cmdArray[1].trim().equals("1"));
             setSwitchViewState(cmdArray[1].trim().equals("1"), tvAutoMonitorState, cmdArray[1].trim().equals("1") ? "已启用" : "已关闭");
 
-            sbDebugMode.setCheckedImmediatelyNoEvent(cmdArray[1].trim().equals("1"));
-            setSwitchViewState(cmdArray[2].trim().equals("1"), tvDebugMode, cmdArray[2].trim().equals("1") ? "已打开" : "已关闭");
+            //TODO 暂时禁止设置测试模式，后期当设置为蓝牙模式时，与指令调试界面联动
+//            sbDebugMode.setCheckedImmediatelyNoEvent(cmdArray[1].trim().equals("1"));
+//            setSwitchViewState(cmdArray[2].trim().equals("1"), tvDebugMode, cmdArray[2].trim().equals("1") ? "已打开" : "已关闭");
             return;
         }
 
@@ -760,7 +763,7 @@ public class ADMEHomeFragment extends BaseFragment {
         MCloudApp.getMainHandler().post(new Runnable() {
             @Override
             public void run() {
-                ToastUtil.showShortToast(msg);
+                ToastUtils.show(msg);
             }
         });
     }

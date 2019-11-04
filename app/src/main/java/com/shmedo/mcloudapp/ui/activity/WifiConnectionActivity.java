@@ -20,13 +20,13 @@ import android.view.Window;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
+import com.hjq.toast.ToastUtils;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.adapter.WifiListAdapter;
 import com.shmedo.mcloudapp.entity.WifiBean;
 import com.shmedo.mcloudapp.entity.event.WifiEvent;
 import com.shmedo.mcloudapp.util.AppContants;
 import com.shmedo.mcloudapp.util.StringUtil;
-import com.shmedo.mcloudapp.util.ToastUtil;
 import com.shmedo.mcloudapp.util.WifiSupport;
 import com.shmedo.mcloudapp.views.WifiLinkDialog;
 
@@ -94,7 +94,7 @@ public class WifiConnectionActivity extends AppCompatActivity {
         if (WifiSupport.isOpenWifi(WifiConnectionActivity.this)) {
             sortScaResult();
         } else {
-            //ToastUtil.showShortToast("WIFI处于关闭状态或权限获取失败");
+            //ToastUtils.show("WIFI处于关闭状态或权限获取失败");
             WifiSupport.openWifi(WifiConnectionActivity.this);
         }
         adapter.setOnItemClickListener(new WifiListAdapter.onItemClickListener() {
@@ -203,7 +203,7 @@ public class WifiConnectionActivity extends AppCompatActivity {
                      */
                     case WifiManager.WIFI_STATE_DISABLED: {
                         Log.d(TAG, "已经关闭");
-                        ToastUtil.showShortToast("WIFI处于关闭状态");
+                        ToastUtils.show("WIFI处于关闭状态");
                         break;
                     }
                     case WifiManager.WIFI_STATE_DISABLING: {
@@ -242,7 +242,7 @@ public class WifiConnectionActivity extends AppCompatActivity {
                         WifiConnectionActivity.this);
 
                     //连接成功 跳转界面 传递ip地址
-                    ToastUtil.showShortToast("WIFI连接上了");
+                    ToastUtils.show("WIFI连接上了");
 
                     //thisToMain();
                     connectType = 1;
@@ -331,6 +331,6 @@ public class WifiConnectionActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        ToastUtil.showShortToast("请点击关闭按钮关闭此页面");
+        ToastUtils.show("请点击关闭按钮关闭此页面");
     }
 }

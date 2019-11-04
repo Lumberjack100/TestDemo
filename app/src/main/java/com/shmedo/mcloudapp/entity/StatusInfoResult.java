@@ -27,9 +27,9 @@ public class StatusInfoResult implements Serializable {
     /**
      * deviceID : 72
      * deviceToken : 150009K
-     * deviceName : DAG
+     * deviceName : 150009K
      * deviceTypeID : 5
-     * deviceTypeName : null
+     * deviceTypeName : DAG
      * securityNO : 1.2345678E7
      * sensorInfo : null
      * voltage : 12.3

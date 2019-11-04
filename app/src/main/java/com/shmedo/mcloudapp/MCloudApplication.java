@@ -1,7 +1,11 @@
 package com.shmedo.mcloudapp;
 
 import android.app.Application;
+import android.widget.Toast;
 
+import com.hjq.toast.ToastInterceptor;
+import com.hjq.toast.ToastUtils;
+import com.hjq.toast.style.ToastBlackStyle;
 import com.shmedo.mcloudapp.logging.AppCrashHandler;
 import com.shmedo.mcloudapp.logging.CrashReportingTree;
 import com.tencent.mmkv.MMKV;
@@ -33,6 +37,8 @@ public class MCloudApplication extends Application {
 
         //日志输出
         initTimber();
+
+        initToastUtil();
     }
 
 
@@ -46,6 +52,29 @@ public class MCloudApplication extends Application {
         } else {
             Timber.plant(new CrashReportingTree());
         }
+    }
+
+
+    /**
+     * 初始化 Toast 工具类
+     * https://github.com/getActivity/ToastUtils
+     */
+    private void initToastUtil() {
+        // 设置 Toast 拦截器
+        ToastUtils.setToastInterceptor(new ToastInterceptor() {
+            @Override
+            public boolean intercept(Toast toast, CharSequence text) {
+                boolean intercept = super.intercept(toast, text);
+                if (intercept) {
+                    Timber.e("空 Toast");
+                } else {
+                    Timber.i(text.toString());
+                }
+                return intercept;
+            }
+        });
+        // 初始化吐司工具类
+        ToastUtils.init(this, new ToastBlackStyle(this));
     }
 
 }

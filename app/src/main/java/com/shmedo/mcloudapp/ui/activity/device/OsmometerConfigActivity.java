@@ -9,6 +9,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.hjq.toast.ToastUtils;
 import com.shmedo.mcloudapp.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.base.BaseActivity;
@@ -17,7 +18,6 @@ import com.shmedo.mcloudapp.model.common.CommonVariable;
 import com.shmedo.mcloudapp.ui.fragment.AdvanceSetFragment;
 import com.shmedo.mcloudapp.ui.fragment.DeviceFragment;
 import com.shmedo.mcloudapp.util.StringUtil;
-import com.shmedo.mcloudapp.util.ToastUtil;
 import com.shmedo.mcloudapp.util.UserConfig;
 import com.shmedo.mcloudapp.util.bleutil.LogTag;
 import com.shmedo.mcloudapp.views.LoadingDialog;
@@ -146,7 +146,7 @@ public class OsmometerConfigActivity extends BaseActivity {
         if (osAddress > 0 && osAddress < 255) {
             osmometerAddress = String.valueOf(osAddress);
         } else {
-            ToastUtil.showShortToast("渗压计地址输入有误");
+            ToastUtils.show("渗压计地址输入有误");
             return;
         }
         depthTriggerValue = mEtWaterAlarmValue.getText().toString().trim();
@@ -159,13 +159,13 @@ public class OsmometerConfigActivity extends BaseActivity {
         String note = mEtNote.getText().toString().trim();
         uc.writeString(CommonVariable.OSMOMETER_NOTE, note);
         if (StringUtil.isNullOrEmpty(depthTriggerValue)) {
-            ToastUtil.showShortToast("水位报警值不能为空");
+            ToastUtils.show("水位报警值不能为空");
         } else if (StringUtil.isNullOrEmpty(depthCorrection)) {
-            ToastUtil.showShortToast("水深修正值不能为空");
+            ToastUtils.show("水深修正值不能为空");
         } else if (StringUtil.isNullOrEmpty(osmometerLength)) {
-            ToastUtil.showShortToast("渗压计绳长不能为空");
+            ToastUtils.show("渗压计绳长不能为空");
         } else if (StringUtil.isNullOrEmpty(nozzelHeight)) {
-            ToastUtil.showShortToast("管口高程值不能为空");
+            ToastUtils.show("管口高程值不能为空");
         } else {
             List<String> list = new ArrayList<>();
             StringBuilder result1 = new StringBuilder();
@@ -195,7 +195,7 @@ public class OsmometerConfigActivity extends BaseActivity {
                     }
                     finish();
                 } else {
-                    ToastUtil.showShortToast("蓝牙未连接");
+                    ToastUtils.show("蓝牙未连接");
                 }
             }
         }

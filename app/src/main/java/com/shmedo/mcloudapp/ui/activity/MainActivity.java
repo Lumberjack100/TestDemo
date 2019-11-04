@@ -42,6 +42,7 @@ import com.amap.api.maps.model.Marker;
 import com.amap.api.maps.model.MyLocationStyle;
 import com.github.clans.fab.FloatingActionButton;
 import com.google.gson.reflect.TypeToken;
+import com.hjq.toast.ToastUtils;
 import com.shmedo.mcloudapp.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.adapter.InfoWinAdapter;
@@ -70,11 +71,9 @@ import com.shmedo.mcloudapp.util.DaoManager;
 import com.shmedo.mcloudapp.util.DensityUtil;
 import com.shmedo.mcloudapp.util.GsonFactory;
 import com.shmedo.mcloudapp.util.StartActivityUtil;
-import com.shmedo.mcloudapp.util.ToastUtil;
 import com.shmedo.mcloudapp.util.XPermissionUtils;
 import com.shmedo.mcloudapp.util.common.MapManagerUtil;
 import com.shmedo.mcloudapp.views.LoadingDialog;
-
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -180,7 +179,7 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
             dismissLoadingDialog();
             mdBluetoothManager.stopScan();
             if (list.isEmpty()) {
-                ToastUtil.showShortToast("未发现设备，请尝试重新扫描");
+                ToastUtils.show("未发现设备，请尝试重新扫描");
                 return;
             }
 
@@ -466,7 +465,7 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
                 break;
 
             case R.id.fab_refresh:
-                ToastUtil.showShortToast("功能开发中...");
+                ToastUtils.show("功能开发中...");
                 break;
         }
     }
@@ -511,7 +510,7 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
         cloud.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ToastUtil.showShortToast("云端数据");
+                ToastUtils.show("云端数据");
             }
         });
     }
@@ -572,7 +571,7 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
         public boolean handleMessage(android.os.Message msg) {
             switch (msg.what) {
                 case BT_CONNECT:
-                    ToastUtil.showShortToast("蓝牙已连接");
+                    ToastUtils.show("蓝牙已连接");
                     dismissLoadingDialog();
                     isConneted = true;
                     //startBluAuthenticate();//蓝牙连接成功开始进行验证
@@ -581,7 +580,7 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
                     break;
 
                 case BT_DISCONNECTED:
-                    ToastUtil.showShortToast("蓝牙连接已断开!");
+                    ToastUtils.show("蓝牙连接已断开!");
                     dismissLoadingDialog();
                     isConneted = false;
                     break;
@@ -849,6 +848,7 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
             return;
         }
 
+        MCloudApp.setDeviceName(localData[2]);
         if (localData[2].equals("DAS")) {
             //跳转到设备配置页面
             ConfigDASActivity.startActivity(MainActivity.this, deviceInfo);
@@ -875,7 +875,7 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
             case REQUEST_ENABLE_BT:
                 // 判断蓝牙是否启用
                 if (resultCode != Activity.RESULT_OK) {
-                    ToastUtil.showShortToast("蓝牙未启用");
+                    ToastUtils.show("蓝牙未启用");
                     return;
                 }
                 startDiscoveryDevice();

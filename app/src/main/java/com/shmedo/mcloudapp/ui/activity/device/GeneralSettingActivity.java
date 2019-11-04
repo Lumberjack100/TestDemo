@@ -9,12 +9,12 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.hjq.toast.ToastUtils;
 import com.shmedo.mcloudapp.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.base.BaseActivity;
 import com.shmedo.mcloudapp.ui.fragment.DeviceFragment;
 import com.shmedo.mcloudapp.util.StringUtil;
-import com.shmedo.mcloudapp.util.ToastUtil;
 import com.shmedo.mcloudapp.util.bleutil.LogTag;
 
 import java.util.ArrayList;
@@ -120,7 +120,7 @@ public class GeneralSettingActivity extends BaseActivity {
         if (address > 0 && address < 255) {
             collectorAddress = String.valueOf(address);
         } else {
-            ToastUtil.showShortToast("采集器地址输入有误");
+            ToastUtils.show("采集器地址输入有误");
             return;
         }
 
@@ -128,11 +128,11 @@ public class GeneralSettingActivity extends BaseActivity {
         standbyTime = mEtStandbyTime.getText().toString().trim();
         collectTime = mEtCollectTime.getText().toString().trim();
         if (StringUtil.isNullOrEmpty(calculatTime)) {
-            ToastUtil.showShortToast("解算时间不能为空");
+            ToastUtils.show("解算时间不能为空");
         } else if (StringUtil.isNullOrEmpty(standbyTime)) {
-            ToastUtil.showShortToast("待机时间不能为空");
+            ToastUtils.show("待机时间不能为空");
         } else if (StringUtil.isNullOrEmpty(collectTime)) {
-            ToastUtil.showShortToast("采集时间不能为空");
+            ToastUtils.show("采集时间不能为空");
         } else {
             //这里需要判断采集器的型号，去确定##100后面的数字是否是01
             List<String> list = new ArrayList<>();
@@ -159,7 +159,7 @@ public class GeneralSettingActivity extends BaseActivity {
                         DeviceFragment.mdBluetoothManager.writeMessage(msg);
                     }
                 } else {
-                    ToastUtil.showShortToast("蓝牙未连接");
+                    ToastUtils.show("蓝牙未连接");
                 }
             }
         }

@@ -6,16 +6,12 @@ import com.shmedo.das.das.cmd.parser.ParseManager;
 import com.shmedo.mcloudapp.entity.ble.BaseConfigInfoSub;
 import com.shmedo.mcloudapp.entity.ble.DigitalOsmometerFunctionSub;
 import com.shmedo.mcloudapp.entity.ble.QueryOsmometerParameterSubInfo;
-import com.shmedo.mcloudapp.entity.ble.RainStationSub;
 import com.shmedo.mcloudapp.entity.ble.SettingRainPrecisionSub;
 import com.shmedo.mcloudapp.entity.ble.collector.CollectorSensorParamsInfoSub;
-import com.shmedo.mcloudapp.ui.fragment.DeviceFragment;
 import com.shmedo.mcloudapp.util.StringUtil;
 import com.shmedo.mcloudapp.util.bleutil.BlueResultParserUtil;
-import java.text.DecimalFormat;
-import org.junit.Test;
 
-import static org.junit.Assert.*;
+import org.junit.Test;
 
 /**
  * Example local unit test, which will execute on the development machine (host).

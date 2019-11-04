@@ -21,6 +21,7 @@ import android.widget.TextView;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.hjq.toast.ToastUtils;
 import com.shmedo.das.das.cmd.CommandManager;
 import com.shmedo.das.das.cmd.CommandType;
 import com.shmedo.das.das.cmd.entity.RebootDeviceEntity;
@@ -32,7 +33,6 @@ import com.shmedo.mcloudapp.ui.activity.device.senior.InstructionDebugActivity;
 import com.shmedo.mcloudapp.ui.activity.device.senior.ProductRegistrationActivity;
 import com.shmedo.mcloudapp.util.KeyBordUtils;
 import com.shmedo.mcloudapp.util.StringUtil;
-import com.shmedo.mcloudapp.util.ToastUtil;
 
 import java.util.UUID;
 
@@ -109,7 +109,7 @@ public class AdvanceSetFragment extends BaseFragment {
             @Override
             public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                 if (!MCloudApp.isIsBluetoothDeviceConnected()) {
-                    ToastUtil.showShortToast("蓝牙未连接");
+                    ToastUtils.show("蓝牙未连接");
                     return;
                 }
 
@@ -117,7 +117,7 @@ public class AdvanceSetFragment extends BaseFragment {
                 Message msg = new Message(UUID.randomUUID().toString(), baseInfoCommand, true);
                 if (DeviceFragment.mdBluetoothManager != null) {
                     DeviceFragment.mdBluetoothManager.writeMessage(msg);
-                    ToastUtil.showLongToast("指令已发送，设备即将恢复出厂设置");
+                    ToastUtils.show("指令已发送，设备即将恢复出厂设置");
                 }
 
                 mMaterialDialog.dismiss();
@@ -159,17 +159,17 @@ public class AdvanceSetFragment extends BaseFragment {
             public void onClick(View view) {
                 String time = etRestartTime.getText().toString().trim();
                 if (TextUtils.isEmpty(time)) {
-                    ToastUtil.showShortToast("重启时间不能为空");
+                    ToastUtils.show("重启时间不能为空");
                     return;
                 }
 
                 if (!StringUtil.isNumeric(time)) {
-                    ToastUtil.showShortToast("重启时间格式不正确");
+                    ToastUtils.show("重启时间格式不正确");
                     return;
                 }
 
                 if (!MCloudApp.isIsBluetoothDeviceConnected()) {
-                    ToastUtil.showShortToast("蓝牙未连接");
+                    ToastUtils.show("蓝牙未连接");
                     return;
                 }
 
@@ -179,7 +179,7 @@ public class AdvanceSetFragment extends BaseFragment {
                 Message msg = new Message(UUID.randomUUID().toString(), command, true);
                 if (DeviceFragment.mdBluetoothManager != null) {
                     DeviceFragment.mdBluetoothManager.writeMessage(msg);
-                    ToastUtil.showLongToast("指令已发送，设备将在 " + time + "s 后重启");
+                    ToastUtils.show("指令已发送，设备将在 " + time + "s 后重启");
                 }
 
                 KeyBordUtils.hideSoftKeyboard(etRestartTime);
@@ -235,17 +235,17 @@ public class AdvanceSetFragment extends BaseFragment {
             @Override
             public void onClick(View view) {
                 if (TextUtils.isEmpty(etOriginAuthor.getText().toString().trim())) {
-                    ToastUtil.showShortToast("原授权码不能为空");
+                    ToastUtils.show("原授权码不能为空");
                     return;
                 }
 
                 if (TextUtils.isEmpty(etNewAuthor.getText().toString().trim())) {
-                    ToastUtil.showShortToast("新的授权码不能为空");
+                    ToastUtils.show("新的授权码不能为空");
                     return;
                 }
 
                 if (TextUtils.isEmpty(etConfirmAuthor.getText().toString().trim())) {
-                    ToastUtil.showShortToast("确认的授权码不能为空");
+                    ToastUtils.show("确认的授权码不能为空");
                     return;
                 }
 

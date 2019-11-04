@@ -3,6 +3,8 @@ package com.shmedo.mcloudapp.util;
 import android.content.Context;
 import android.content.Intent;
 
+import com.hjq.toast.ToastUtils;
+
 /**
  * 项目名：  eMeas
  * 包名：    com.shmedo.emeas.util
@@ -15,11 +17,11 @@ import android.content.Intent;
 public class StartActivityUtil {
     public static void comeOnBaby(Context context, Class<?> cls){
         if(null == context){
-            ToastUtil.showShortToast("context is null");
+            ToastUtils.show("context is null");
             return;
         }
         if(null == cls){
-            ToastUtil.showShortToast("cls is null");
+            ToastUtils.show("cls is null");
             return;
         }
         context.startActivity(new Intent(context,cls));

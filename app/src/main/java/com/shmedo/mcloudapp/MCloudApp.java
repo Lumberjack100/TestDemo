@@ -30,13 +30,13 @@ public class MCloudApp {
 
     private static String account;
 
+    private static String serviceAddress = "mdnetservice.shmedo.cn";
+
     private static boolean isNetworkConnected = true;
 
     private static boolean isBluetoothDeviceConnected = false;
 
-    private static String serviceAddress = "mdnetservice.shmedo.cn";
-
-    private static Long deviceId;
+    private static String deviceName;//设备名称
 
 
     /**
@@ -125,12 +125,13 @@ public class MCloudApp {
     }
 
 
-    public static Long getDeviceId() {
-        return deviceId;
+
+    public static String getDeviceName() {
+        return deviceName;
     }
 
-    public static void setDeviceId(Long deviceId) {
-        MCloudApp.deviceId = deviceId;
+    public static void setDeviceName(String deviceName) {
+        MCloudApp.deviceName = deviceName;
     }
 
     /**

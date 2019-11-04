@@ -17,6 +17,7 @@ import android.widget.TextView;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.hjq.toast.ToastUtils;
 import com.shmedo.das.utils.DesUtil;
 import com.shmedo.das.utils.OnBytePackage;
 import com.shmedo.das.utils.StringUtil;
@@ -33,7 +34,6 @@ import com.shmedo.mcloudapp.model.Extras;
 import com.shmedo.mcloudapp.ui.fragment.ADMEHomeFragment;
 import com.shmedo.mcloudapp.ui.fragment.DeviceDetailsFragment;
 import com.shmedo.mcloudapp.ui.fragment.QueryDataFragment;
-import com.shmedo.mcloudapp.util.ToastUtil;
 import com.shmedo.mcloudapp.util.bleutil.ByteManagerUtil;
 import com.shmedo.mcloudapp.util.bleutil.Constants;
 import com.shmedo.mcloudapp.util.common.HandleBackUtil;
@@ -294,6 +294,7 @@ public class ConfigADMEActivity extends BaseActivity {
                     break;
 
                 case DISCONNECTED:
+                    Timber.d("蓝牙连接断开");
                     mHandler.sendEmptyMessage(Constants.BT_DISCONNECTED);
                     break;
 
@@ -375,7 +376,7 @@ public class ConfigADMEActivity extends BaseActivity {
         public boolean handleMessage(android.os.Message msg) {
             switch (msg.what) {
                 case Constants.BT_CONNECT:
-                    ToastUtil.showShortToast("蓝牙已连接");
+                    ToastUtils.show("蓝牙已连接");
                     dismissLoadingDialog();
                     hander.removeCallbacks(dismssDialogRunnable);
                     isBlueConnected = true;
@@ -386,7 +387,7 @@ public class ConfigADMEActivity extends BaseActivity {
                     break;
 
                 case Constants.BT_DISCONNECTED:
-                    ToastUtil.showShortToast("蓝牙连接已断开!");
+                    ToastUtils.show("蓝牙连接已断开!");
                     dismissLoadingDialog();
                     isBlueConnected = false;
                     MCloudApp.setIsBluetoothDeviceConnected(false);
@@ -399,23 +400,23 @@ public class ConfigADMEActivity extends BaseActivity {
                     break;
 
                 case Constants.BT_MESSAGE_WRITE_SUCCESS:
-                    ToastUtil.showShortToast("指令已发送");
+                    ToastUtils.show("指令已发送");
                     break;
 
                 case Constants.BT_MESSAGE_WRITE_FAIL:
-                    ToastUtil.showShortToast("指令发送失败");
+                    ToastUtils.show("指令发送失败");
                     break;
 
                 case Constants.BT_WRITE_TIME_OUT:
-                    ToastUtil.showShortToast("指令发送超时");
+                    ToastUtils.show("指令发送超时");
                     break;
 
                 case Constants.VERIFY_RESULT:
                     if (msg.obj.equals("1")) {
-                        ToastUtil.showShortToast("蓝牙认证通过!");
+                        ToastUtils.show("蓝牙认证通过!");
                         sendDeviceStateComd();
                     } else {
-                        ToastUtil.showShortToast("蓝牙认证失败!");
+                        ToastUtils.show("蓝牙认证失败!");
                         try {
                             Thread.sleep(1000);
                             disconnectDevice();
@@ -426,30 +427,30 @@ public class ConfigADMEActivity extends BaseActivity {
                     break;
 
                 case Constants.MESSAGE_RESPONSE_TIME_OUT:
-                    ToastUtil.showShortToast("消息等待响应超时！");
+                    ToastUtils.show("消息等待响应超时！");
                     break;
 
                 case Constants.REFRESH_RUN_STATE:
                     break;
 
                 case Constants.MESSAGE_RESPONSE_SAVE_SETTINGS_SUCCESS:
-                    ToastUtil.showShortToast("设置信息已保存！");
+                    ToastUtils.show("设置信息已保存！");
                     break;
 
                 case Constants.BT_REQUEST_MTU_FAIL:
-                    ToastUtil.showShortToast("MTU请求设置失败！");
+                    ToastUtils.show("MTU请求设置失败！");
                     break;
 
                 case Constants.BT_SERVICE_FIND_FAIL:
-                    ToastUtil.showShortToast("蓝牙服务发现失败！");
+                    ToastUtils.show("蓝牙服务发现失败！");
                     break;
 
                 case Constants.BT_CHARACTERISTICS_FIND_FAIL:
-                    ToastUtil.showShortToast("蓝牙特征读取失败！");
+                    ToastUtils.show("蓝牙特征读取失败！");
                     break;
 
                 case Constants.BT_ENABLE_READ_FAIL:
-                    ToastUtil.showShortToast("设置读取Descriptor失败！");
+                    ToastUtils.show("设置读取Descriptor失败！");
                     break;
 
                 case Constants.BT_RECOVERY_SUCCESS:
@@ -459,7 +460,7 @@ public class ConfigADMEActivity extends BaseActivity {
                     break;
 
                 case Constants.MESSAGE_LOCK_REBOOT_DEVICE:
-                    ToastUtil.showShortToast("蓝牙通讯已就绪！");
+                    ToastUtils.show("蓝牙通讯已就绪！");
                     sendDeviceStateComd();//unlock后发送指令
                     break;
 
@@ -596,7 +597,7 @@ public class ConfigADMEActivity extends BaseActivity {
      */
     private void sendSaveConfigCommand() {
         if (!isBlueConnected) {
-            ToastUtil.showShortToast("设备已断开连接,无法发送保存命令");
+            ToastUtils.show("设备已断开连接,无法发送保存命令");
             return;
         }
 
@@ -611,7 +612,7 @@ public class ConfigADMEActivity extends BaseActivity {
             case REQUEST_ENABLE_BT:
                 // 蓝牙已经开启
                 if (resultCode != Activity.RESULT_OK) {
-                    ToastUtil.showShortToast("蓝牙未启用");
+                    ToastUtils.show("蓝牙未启用");
                     return;
                 }
                 findAndConnectBleDevice();

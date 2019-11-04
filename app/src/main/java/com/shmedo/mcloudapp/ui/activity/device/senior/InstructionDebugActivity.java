@@ -14,13 +14,13 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
+import com.hjq.toast.ToastUtils;
 import com.shmedo.mcloudapp.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.base.BaseActivity;
 import com.shmedo.mcloudapp.bluetooth.MdBluetoothManager;
 import com.shmedo.mcloudapp.util.StringUtil;
 import com.shmedo.mcloudapp.util.TimeUtil;
-import com.shmedo.mcloudapp.util.ToastUtil;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -132,7 +132,7 @@ public class InstructionDebugActivity extends BaseActivity {
             @Override
             public void onClick(View view) {
                 if (!MCloudApp.isIsBluetoothDeviceConnected()) {
-                    ToastUtil.showShortToast("设备已断开连接，暂无法进行指令调试");
+                    ToastUtils.show("设备已断开连接，暂无法进行指令调试");
                     return;
                 }
 
@@ -227,7 +227,7 @@ public class InstructionDebugActivity extends BaseActivity {
      */
     private void setSysTime() {
         if (!MCloudApp.isIsBluetoothDeviceConnected()) {
-            ToastUtil.showShortToast("设备已断开连接，无法获取授时");
+            ToastUtils.show("设备已断开连接，无法获取授时");
             return;
         }
 
@@ -243,7 +243,7 @@ public class InstructionDebugActivity extends BaseActivity {
      */
     public void getData() {
         if (!MCloudApp.isIsBluetoothDeviceConnected()) {
-            ToastUtil.showShortToast("设备已断开连接，无法获取数据");
+            ToastUtils.show("设备已断开连接，无法获取数据");
             return;
         }
 

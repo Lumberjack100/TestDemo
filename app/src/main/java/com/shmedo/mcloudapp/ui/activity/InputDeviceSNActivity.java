@@ -6,12 +6,12 @@ import android.widget.Button;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
+import com.hjq.toast.ToastUtils;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.base.BaseActivity;
 import com.shmedo.mcloudapp.entity.DeviceBasicInfoResult;
 import com.shmedo.mcloudapp.entity.DeviceTypeEnum;
 import com.shmedo.mcloudapp.entity.event.MapDeviceEvent;
-import com.shmedo.mcloudapp.util.ToastUtil;
 import com.shmedo.mcloudapp.views.ClearEditText;
 import com.shmedo.mcloudapp.views.LoadingDialog;
 
@@ -74,7 +74,7 @@ public class InputDeviceSNActivity extends BaseActivity {
             return;
 
         } else if (TextUtils.isEmpty(deviceType)) {
-            ToastUtil.showShortToast("请选择设备类型");
+            ToastUtils.show("请选择设备类型");
             return;
         }
 
@@ -109,7 +109,7 @@ public class InputDeviceSNActivity extends BaseActivity {
             ConfigE60Activity.startActivity(InputDeviceSNActivity.this, deviceBasicInfoResult);
 
         } else if (deviceType.equals("PVS")) {
-            ToastUtil.showShortToast("pvs==" + snNumber + "==" + deviceType);
+            ToastUtils.show("pvs==" + snNumber + "==" + deviceType);
         }
 
 

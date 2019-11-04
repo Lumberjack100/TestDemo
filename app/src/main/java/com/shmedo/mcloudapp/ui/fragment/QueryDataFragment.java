@@ -15,15 +15,14 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 
+import com.hjq.toast.ToastUtils;
 import com.shmedo.mcloudapp.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.base.BaseFragment;
-import com.shmedo.mcloudapp.util.ToastUtil;
 import com.shmedo.mcloudapp.views.MyWebView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.Unbinder;
 import timber.log.Timber;
 
 /**
@@ -42,8 +41,6 @@ public class QueryDataFragment extends BaseFragment {
     @BindView(R.id.pbar_more)
     ProgressBar progressBar;
 
-    private Unbinder unbinder;
-
     private String SENSORDATA_URL = "http://chaxun.shmedo.cn";
     //private String SENSORDATA_URL="http://172.168.5.37:8030/demopage/wode_cexieyi.html";
 
@@ -53,7 +50,7 @@ public class QueryDataFragment extends BaseFragment {
     private Runnable dismssDialogRunnable = new Runnable() {
         @Override
         public void run() {
-            ToastUtil.showShortToast("加载失败");
+            Timber.e("加载查询设备网页失败");
         }
     };
 
@@ -67,7 +64,7 @@ public class QueryDataFragment extends BaseFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = super.onCreateView(inflater, container, savedInstanceState);
-        unbinder = ButterKnife.bind(this, view);
+        ButterKnife.bind(this, view);
         mHandler = new Handler();
         initWebView();
         initData();
@@ -77,7 +74,7 @@ public class QueryDataFragment extends BaseFragment {
 
     private void initData() {
         if (!MCloudApp.isIsNetworkConnected()) {
-            ToastUtil.showShortToast("当前网络不可用");
+            ToastUtils.show("当前网络不可用");
             return;
         }
 
@@ -156,13 +153,15 @@ public class QueryDataFragment extends BaseFragment {
 
         @Override
         public void onProgressChanged(WebView view, int newProgress) {
-            if (newProgress == 100) {
-                progressBar.setVisibility(View.GONE);
-            } else {
-                if (progressBar.getVisibility() == View.GONE)
-                    progressBar.setVisibility(View.VISIBLE);
+            if (progressBar != null) {
+                if (newProgress == 100) {
+                    progressBar.setVisibility(View.GONE);
+                } else {
+                    if (progressBar.getVisibility() == View.GONE)
+                        progressBar.setVisibility(View.VISIBLE);
 
-                progressBar.setProgress(newProgress);
+                    progressBar.setProgress(newProgress);
+                }
             }
 
             super.onProgressChanged(view, newProgress);
@@ -172,7 +171,6 @@ public class QueryDataFragment extends BaseFragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        unbinder.unbind();
     }
 
     @Override

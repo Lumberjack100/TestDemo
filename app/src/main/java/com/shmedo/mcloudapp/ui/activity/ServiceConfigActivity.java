@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.widget.Button;
 
+import com.hjq.toast.ToastUtils;
 import com.shmedo.mcloudapp.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.base.BaseActivity;
@@ -11,7 +12,6 @@ import com.shmedo.mcloudapp.model.BaseObserver;
 import com.shmedo.mcloudapp.model.MDRetrofit;
 import com.shmedo.mcloudapp.model.common.CommonVariable;
 import com.shmedo.mcloudapp.util.StringUtil;
-import com.shmedo.mcloudapp.util.ToastUtil;
 import com.shmedo.mcloudapp.util.UserConfig;
 import com.shmedo.mcloudapp.views.ClearEditText;
 import com.shmedo.mcloudapp.views.LoadingDialog;
@@ -85,7 +85,7 @@ public class ServiceConfigActivity extends BaseActivity {
                     @Override
                     public void Success(String s, String message) {
                         dialog.dismiss();
-                        ToastUtil.showLongToast("服务端已连接，API版本为：" + s);
+                        ToastUtils.show("服务端已连接，API版本为：" + s);
                         userConfig.writeString(CommonVariable.SERVICE_ADDRESS, mEtServiceAddress.getText().toString());
                         finish();
                     }
@@ -94,7 +94,7 @@ public class ServiceConfigActivity extends BaseActivity {
                     public void Failure(String message) {
                         Timber.w("服务端连接错误: " + message);
                         dialog.dismiss();
-                        ToastUtil.showLongToast("服务端连接错误");
+                        ToastUtils.show("服务端连接错误");
                     }
                 });
     }

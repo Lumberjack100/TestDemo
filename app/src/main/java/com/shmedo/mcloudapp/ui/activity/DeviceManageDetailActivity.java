@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.hjq.toast.ToastUtils;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.footer.ClassicsFooter;
@@ -28,7 +29,6 @@ import com.shmedo.mcloudapp.model.Extras;
 import com.shmedo.mcloudapp.model.MDRetrofit;
 import com.shmedo.mcloudapp.model.common.CommonVariable;
 import com.shmedo.mcloudapp.util.GsonFactory;
-import com.shmedo.mcloudapp.util.ToastUtil;
 import com.shmedo.mcloudapp.views.ClearEditText;
 import com.shmedo.mcloudapp.views.DividerItemDecoration;
 import com.shmedo.mcloudapp.views.EmptyDataView;
@@ -227,7 +227,7 @@ public class DeviceManageDetailActivity extends BaseActivity implements OnRefres
                         }
 
                         Timber.w("服务器连接失败--" + message);
-                        ToastUtil.showShortToast("服务器连接失败");
+                        ToastUtils.show("服务器连接失败");
                     }
                 });
     }
@@ -271,7 +271,7 @@ public class DeviceManageDetailActivity extends BaseActivity implements OnRefres
 //        } else {
 //            refreshLayout.finishRefresh();
 //            refreshLayout.setNoMoreData(true);
-//            ToastUtil.showShortToast("请检查网络连接");
+//            ToastUtils.show("请检查网络连接");
 //        }
     }
 
@@ -294,7 +294,7 @@ public class DeviceManageDetailActivity extends BaseActivity implements OnRefres
 //        } else {
 //            refreshLayout.finishRefresh();
 //            refreshLayout.setNoMoreData(true);
-//            ToastUtil.showShortToast("请检查网络连接");
+//            ToastUtils.show("请检查网络连接");
 //        }
     }
 }

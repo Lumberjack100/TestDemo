@@ -11,6 +11,7 @@ import android.text.TextUtils;
 import android.view.View;
 
 import com.google.gson.reflect.TypeToken;
+import com.hjq.toast.ToastUtils;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.header.ClassicsHeader;
@@ -34,7 +35,6 @@ import com.shmedo.mcloudapp.model.common.CommonVariable;
 import com.shmedo.mcloudapp.util.AmapUtil;
 import com.shmedo.mcloudapp.util.DaoManager;
 import com.shmedo.mcloudapp.util.GsonFactory;
-import com.shmedo.mcloudapp.util.ToastUtil;
 import com.shmedo.mcloudapp.util.XPermissionUtils;
 import com.shmedo.mcloudapp.views.DeviceSensorDialog;
 import com.shmedo.mcloudapp.views.DividerItemDecoration;
@@ -221,7 +221,7 @@ public class DeviceManageActivity extends BaseActivity implements OnRefreshListe
             intent.setPackage("com.autonavi.minimap");
             startActivity(intent);
         } else {
-            ToastUtil.showShortToast("您尚未安装高德地图，我们将为您打开网页版");
+            ToastUtils.show("您尚未安装高德地图，我们将为您打开网页版");
             String mark = "设备:" + deviceName + "位置";
             Uri uri = Uri.parse(
                     "http://uri.amap.com/marker?position=" + latitude + "," + longitude + "&name=" +
@@ -278,7 +278,7 @@ public class DeviceManageActivity extends BaseActivity implements OnRefreshListe
                         mLoadingDialog.dismiss();
 
                         Timber.w("服务器连接失败--" + message);
-                        ToastUtil.showShortToast("服务器连接失败");
+                        ToastUtils.show("服务器连接失败");
                     }
                 });
 
@@ -319,7 +319,7 @@ public class DeviceManageActivity extends BaseActivity implements OnRefreshListe
 
                 default://整个 Item 点击事件
                     StatusInfoResult statusInfoResult = statusInfoList.get(position);
-                    MCloudApp.setDeviceId(statusInfoResult.getId());
+                    MCloudApp.setDeviceName(statusInfoResult.getDeviceName());
 
                     if (!TextUtils.isEmpty(statusInfoResult.getDeviceTypeName()) && statusInfoResult.getDeviceTypeName().toUpperCase().contains("ADME")) {
                         String deviceInfo = "MEDO," + statusInfoResult.getDeviceName() + "," + statusInfoResult.getDeviceTypeName();
@@ -469,7 +469,7 @@ public class DeviceManageActivity extends BaseActivity implements OnRefreshListe
         } else {
             refreshLayout.finishRefresh();
             refreshLayout.setNoMoreData(true);
-            ToastUtil.showShortToast("请检查网络连接");
+            ToastUtils.show("请检查网络连接");
             //getProjectList();
         }
     }

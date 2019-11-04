@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.hjq.toast.ToastUtils;
 import com.shmedo.mcloudapp.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.base.BaseFragment;
@@ -15,11 +16,13 @@ import com.shmedo.mcloudapp.entity.ConfigParameterResult;
 import com.shmedo.mcloudapp.entity.DetailInfoResult;
 import com.shmedo.mcloudapp.entity.DeviceDetailInfo;
 import com.shmedo.mcloudapp.entity.DeviceSensorResult;
+import com.shmedo.mcloudapp.entity.StatusInfoResult;
+import com.shmedo.mcloudapp.entity.StatusInfoResultDao;
 import com.shmedo.mcloudapp.model.BaseObserver;
 import com.shmedo.mcloudapp.model.MDRetrofit;
 import com.shmedo.mcloudapp.model.common.CommonVariable;
+import com.shmedo.mcloudapp.util.DaoManager;
 import com.shmedo.mcloudapp.util.GsonFactory;
-import com.shmedo.mcloudapp.util.ToastUtil;
 
 import java.util.List;
 
@@ -139,6 +142,8 @@ public class DeviceDetailsFragment extends BaseFragment {
 
     private Unbinder unbinder;
 
+    private DaoManager manager = DaoManager.getInstance();
+
 
     @Override
     protected int initContentView() {
@@ -152,7 +157,7 @@ public class DeviceDetailsFragment extends BaseFragment {
         View view = super.onCreateView(inflater, container, savedInstanceState);
         unbinder = ButterKnife.bind(this, view);
 
-        getDeviceDetailInfo(MCloudApp.getDeviceId());
+        getDeviceDetailInfo(getCurrentDeviceId());
 
         return view;
     }
@@ -180,7 +185,7 @@ public class DeviceDetailsFragment extends BaseFragment {
                         dismissLoadingDialog();
 
                         Timber.w("服务器连接失败--" + message);
-                        ToastUtil.showShortToast("服务器连接失败");
+                        ToastUtils.show("服务器连接失败");
                     }
                 });
     }
@@ -230,6 +235,17 @@ public class DeviceDetailsFragment extends BaseFragment {
         mDataCenter.setText("");
     }
 
+
+    private long getCurrentDeviceId() {
+        StatusInfoResult statusInfoResult = manager.getDaoSession().getStatusInfoResultDao().queryBuilder()
+                .where(StatusInfoResultDao.Properties.DeviceName.eq(MCloudApp.getDeviceName()))
+                .unique();
+
+        if (statusInfoResult != null)
+            return statusInfoResult.getId();
+        else
+            return -1;
+    }
 
     @Override
     public void onDestroyView() {

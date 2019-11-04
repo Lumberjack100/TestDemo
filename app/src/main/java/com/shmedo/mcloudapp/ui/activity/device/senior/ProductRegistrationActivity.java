@@ -14,10 +14,10 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.hjq.toast.ToastUtils;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.base.BaseActivity;
 import com.shmedo.mcloudapp.util.KeyBordUtils;
-import com.shmedo.mcloudapp.util.ToastUtil;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -128,22 +128,22 @@ public class ProductRegistrationActivity extends BaseActivity {
             public void onClick(View view) {
 
                 if (TextUtils.isEmpty(etEntityName.getText().toString().trim())) {
-                    ToastUtil.showShortToast("单位名称不能为空");
+                    ToastUtils.show("单位名称不能为空");
                     return;
                 }
 
                 if (TextUtils.isEmpty(etDeviceSN.getText().toString().trim())) {
-                    ToastUtil.showShortToast("设备SN号不能为空");
+                    ToastUtils.show("设备SN号不能为空");
                     return;
                 }
 
                 if (TextUtils.isEmpty(etName.getText().toString().trim())) {
-                    ToastUtil.showShortToast("姓名不能为空");
+                    ToastUtils.show("姓名不能为空");
                     return;
                 }
 
                 if (TextUtils.isEmpty(etContactPhone.getText().toString().trim())) {
-                    ToastUtil.showShortToast("联系电话不能为空");
+                    ToastUtils.show("联系电话不能为空");
                     return;
                 }
 
@@ -165,17 +165,17 @@ public class ProductRegistrationActivity extends BaseActivity {
 
     private void processRegister() {
         if (TextUtils.isEmpty(mEtNewAuthor.getText().toString().trim())) {
-            ToastUtil.showShortToast("注册码不能为空");
+            ToastUtils.show("注册码不能为空");
             return;
         }
 
         if (TextUtils.isEmpty(mEtOriginAuthor.getText().toString().trim())) {
-            ToastUtil.showShortToast("确认注册码不能为空");
+            ToastUtils.show("确认注册码不能为空");
             return;
         }
 
         if (!mEtNewAuthor.getText().toString().trim().equals(mEtOriginAuthor.getText().toString().trim())) {
-            ToastUtil.showShortToast("输入的两次注册码不一样");
+            ToastUtils.show("输入的两次注册码不一样");
             return;
         }
 

@@ -16,6 +16,7 @@ import android.widget.TextView;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.hjq.toast.ToastUtils;
 import com.shmedo.das.utils.StringUtil;
 import com.shmedo.mcloudapp.MCloudApp;
 import com.shmedo.mcloudapp.R;
@@ -33,7 +34,6 @@ import com.shmedo.mcloudapp.util.GlideUtils;
 import com.shmedo.mcloudapp.util.GsonFactory;
 import com.shmedo.mcloudapp.util.ImageUtil;
 import com.shmedo.mcloudapp.util.PhotoUtil;
-import com.shmedo.mcloudapp.util.ToastUtil;
 import com.shmedo.mcloudapp.util.XPermissionUtils;
 import com.shmedo.mcloudapp.views.LoadingDialog;
 import com.shmedo.mcloudapp.views.MyMenu;
@@ -264,7 +264,7 @@ public class UserInfoActivity extends BaseActivity {
             @Override
             public void Success(String s, String message) {
                 mLoadingDialog.dismiss();
-                ToastUtil.showLongToast("头像已上传");
+                ToastUtils.show("头像已上传");
 
                 initUserInfo();
             }
@@ -272,7 +272,7 @@ public class UserInfoActivity extends BaseActivity {
             @Override
             public void Failure(String message) {
                 mLoadingDialog.dismiss();
-                ToastUtil.showLongToast("上传头像失败," + message);
+                ToastUtils.show("上传头像失败," + message);
             }
         });
     }

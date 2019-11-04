@@ -10,11 +10,11 @@ import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 
+import com.hjq.toast.ToastUtils;
 import com.shmedo.mcloudapp.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.base.BaseActivity;
 import com.shmedo.mcloudapp.ui.fragment.DeviceFragment;
-import com.shmedo.mcloudapp.util.ToastUtil;
 
 import java.text.DecimalFormat;
 
@@ -99,7 +99,7 @@ public class RainConfigActivity extends BaseActivity {
     @OnClick(R.id.btn_confirm_complete)
     public void onViewClicked() {
         if (rainResult == null) {
-            ToastUtil.showShortToast("未获取到选中的值");
+            ToastUtils.show("未获取到选中的值");
             return;
         }
 
@@ -113,7 +113,7 @@ public class RainConfigActivity extends BaseActivity {
             finish();
 
         } else {
-            ToastUtil.showShortToast("蓝牙未连接");
+            ToastUtils.show("蓝牙未连接");
         }
     }
 }

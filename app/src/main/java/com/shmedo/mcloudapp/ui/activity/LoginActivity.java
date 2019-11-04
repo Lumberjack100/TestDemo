@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.hjq.toast.ToastUtils;
 import com.shmedo.mcloudapp.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.base.BaseActivity;
@@ -27,7 +28,6 @@ import com.shmedo.mcloudapp.util.MD5Util;
 import com.shmedo.mcloudapp.util.MyCountDownTimer;
 import com.shmedo.mcloudapp.util.StartActivityUtil;
 import com.shmedo.mcloudapp.util.StringUtil;
-import com.shmedo.mcloudapp.util.ToastUtil;
 import com.shmedo.mcloudapp.util.UserConfig;
 import com.shmedo.mcloudapp.views.ClearEditText;
 
@@ -200,7 +200,7 @@ public class LoginActivity extends BaseActivity
                 }
                 else
                 {
-                    ToastUtil.showShortToast("手机号输入格式错误！");
+                    ToastUtils.show("手机号输入格式错误！");
                 }
                 break;
 
@@ -213,7 +213,7 @@ public class LoginActivity extends BaseActivity
                 //点击账号登录方式
                 if (TextUtils.isEmpty(MCloudApp.getServiceAddress()))
                 {
-                    ToastUtil.showLongToast("请先配置服务地址！");
+                    ToastUtils.show("请先配置服务地址！");
                     StartActivityUtil.comeOnBaby(this, ServiceConfigActivity.class);
                     return;
                 }
@@ -227,7 +227,7 @@ public class LoginActivity extends BaseActivity
                 final String pwd = mLoginAccountPassword.getText() != null ? mLoginAccountPassword.getText().toString().trim() : null;
                 if (TextUtils.isEmpty(uid) || TextUtils.isEmpty(pwd))
                 {
-                    ToastUtil.showLongToast("用户名或密码不能为空！");
+                    ToastUtils.show("用户名或密码不能为空！");
                     return;
                 }
                 accountSingIn(uid, pwd);
@@ -237,7 +237,7 @@ public class LoginActivity extends BaseActivity
                 //点击短信登录方式
                 if (TextUtils.isEmpty(MCloudApp.getServiceAddress()))
                 {
-                    ToastUtil.showLongToast("请先配置服务地址！");
+                    ToastUtils.show("请先配置服务地址！");
                     StartActivityUtil.comeOnBaby(this, ServiceConfigActivity.class);
                     return;
                 }
@@ -251,7 +251,7 @@ public class LoginActivity extends BaseActivity
                 String phoneNumber = mLoginEditTextIphone.getText() != null ? mLoginEditTextIphone.getText().toString().trim() : null;
                 if (TextUtils.isEmpty(code) && TextUtils.isEmpty(phoneNumber))
                 {
-                    ToastUtil.showShortToast("手机号或验证码不能为空！");
+                    ToastUtils.show("手机号或验证码不能为空！");
                     return;
                 }
 
@@ -261,18 +261,18 @@ public class LoginActivity extends BaseActivity
                 }
                 else
                 {
-                    ToastUtil.showLongToast("手机号或验证码输入格式错误！");
+                    ToastUtils.show("手机号或验证码输入格式错误！");
                 }
                 break;
 
             case R.id.tv_registered:
                 //用户注册
-                ToastUtil.showLongToast("用户注册");
+                ToastUtils.show("用户注册");
                 break;
 
             case R.id.tv_forgot_password:
                 //忘记密码
-                ToastUtil.showLongToast("忘记密码");
+                ToastUtils.show("忘记密码");
                 break;
 
             case R.id.tourists_login:
@@ -305,7 +305,7 @@ public class LoginActivity extends BaseActivity
                 dismissLoadingDialog();
                 if (s.contains("手机号对应的用户不存在"))
                 {
-                    ToastUtil.showShortToast("手机号对应的用户不存在");
+                    ToastUtils.show("手机号对应的用户不存在");
                     //TODO 手机号不存在设置为游客登录
                 }
                 else
@@ -318,7 +318,7 @@ public class LoginActivity extends BaseActivity
             public void Failure(String message)
             {
                 dismissLoadingDialog();
-                ToastUtil.showShortToast(message);
+                ToastUtils.show(message);
             }
         });
     }
@@ -351,7 +351,7 @@ public class LoginActivity extends BaseActivity
             public void Failure(String message)
             {
                 dismissLoadingDialog();
-                ToastUtil.showLongToast(message);
+                ToastUtils.show(message);
             }
         });
     }
@@ -381,7 +381,7 @@ public class LoginActivity extends BaseActivity
             public void Failure(String message)
             {
                 dismissLoadingDialog();
-                ToastUtil.showLongToast("登录失败" + message);
+                ToastUtils.show("登录失败" + message);
             }
         });
     }
@@ -428,7 +428,7 @@ public class LoginActivity extends BaseActivity
             public void Failure(String message)
             {
                 dismissLoadingDialog();
-                ToastUtil.showLongToast("登录失败" + message);
+                ToastUtils.show("登录失败" + message);
             }
         });
     }

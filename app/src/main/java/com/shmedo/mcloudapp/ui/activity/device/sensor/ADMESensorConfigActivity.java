@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.hjq.toast.ToastUtils;
 import com.shmedo.das.das.cmd.CommandResult;
 import com.shmedo.mcloudapp.MCloudApp;
 import com.shmedo.mcloudapp.R;
@@ -17,7 +18,6 @@ import com.shmedo.mcloudapp.base.BaseActivity;
 import com.shmedo.mcloudapp.bluetooth.MdBluetoothManager;
 import com.shmedo.mcloudapp.bluetooth.Message;
 import com.shmedo.mcloudapp.model.Extras;
-import com.shmedo.mcloudapp.util.ToastUtil;
 import com.shmedo.mcloudapp.views.ClearEditText;
 
 import java.util.UUID;
@@ -227,7 +227,7 @@ public class ADMESensorConfigActivity extends BaseActivity implements View.OnCli
 
             case R.id.btn_confirm_complete:
                 if (!MCloudApp.isIsBluetoothDeviceConnected()) {
-                    ToastUtil.showShortToast("设备已断开连接，暂无法进行设置");
+                    ToastUtils.show("设备已断开连接，暂无法进行设置");
                     return;
                 }
                 doConfirm();
@@ -246,49 +246,49 @@ public class ADMESensorConfigActivity extends BaseActivity implements View.OnCli
         sensorCorrectionValue = mEtSensorCorrectionValue.getText().toString().trim();
 
         if (TextUtils.isEmpty(collectorAddress)) {
-            ToastUtil.showShortToast("采集器地址不能为空");
+            ToastUtils.show("采集器地址不能为空");
             return;
         }
 
         if (TextUtils.isEmpty(collectorCollectInterval)) {
-            ToastUtil.showShortToast("采集器采集间隔不能为空");
+            ToastUtils.show("采集器采集间隔不能为空");
             return;
         }
 
         if (TextUtils.isEmpty(collectorSolutionInterval)) {
-            ToastUtil.showShortToast("采集器解算间隔不能为空");
+            ToastUtils.show("采集器解算间隔不能为空");
             return;
         }
 
         if (TextUtils.isEmpty(communicationModuleSleepInterval)) {
-            ToastUtil.showShortToast("通讯模块休眠间隔不能为空");
+            ToastUtils.show("通讯模块休眠间隔不能为空");
             return;
         }
 
         if (TextUtils.isEmpty(sensorType)) {
-            ToastUtil.showShortToast("传感器类型不能为空");
+            ToastUtils.show("传感器类型不能为空");
             return;
         }
 
         if (TextUtils.isEmpty(sensorAddress)) {
-            ToastUtil.showShortToast("传感器地址不能为空");
+            ToastUtils.show("传感器地址不能为空");
             return;
         }
 
         if (TextUtils.isEmpty(sensorCorrectionValue)) {
-            ToastUtil.showShortToast("传感器修正值不能为空");
+            ToastUtils.show("传感器修正值不能为空");
             return;
         }
 
         int address = Integer.parseInt(collectorAddress);
         if (address <= 0) {
-            ToastUtil.showShortToast("采集器地址输入有误");
+            ToastUtils.show("采集器地址输入有误");
             return;
         }
 
         address = Integer.parseInt(sensorAddress);
         if (address <= 0) {
-            ToastUtil.showShortToast("传感器地址输入有误");
+            ToastUtils.show("传感器地址输入有误");
             return;
         }
 

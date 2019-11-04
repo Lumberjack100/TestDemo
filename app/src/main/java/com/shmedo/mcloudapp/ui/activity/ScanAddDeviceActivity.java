@@ -139,7 +139,7 @@ public class ScanAddDeviceActivity extends BaseActivity {
             if (data != null) {
 
 //                String content = data.getStringExtra(Constant.CODED_CONTENT);
-//                ToastUtil.showShortToast("扫描结果为：" + content);
+//                ToastUtils.show("扫描结果为：" + content);
 //                Timber.d("扫描结果为：" + content);
 //                scanResult(content);
             }

@@ -14,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.hjq.toast.ToastUtils;
 import com.kyleduo.switchbutton.SwitchButton;
 import com.shmedo.das.das.cmd.CommandResult;
 import com.shmedo.mcloudapp.MCloudApp;
@@ -22,7 +23,6 @@ import com.shmedo.mcloudapp.base.BaseActivity;
 import com.shmedo.mcloudapp.bluetooth.MdBluetoothManager;
 import com.shmedo.mcloudapp.bluetooth.Message;
 import com.shmedo.mcloudapp.model.Extras;
-import com.shmedo.mcloudapp.util.ToastUtil;
 
 import java.util.UUID;
 
@@ -372,7 +372,7 @@ public class ADMEExecutiveAgencyConfigActivity extends BaseActivity implements V
 
             case R.id.btn_confirm_complete:
                 if (!MCloudApp.isIsBluetoothDeviceConnected()) {
-                    ToastUtil.showShortToast("设备已断开连接，暂无法进行设置");
+                    ToastUtils.show("设备已断开连接，暂无法进行设置");
                     return;
                 }
                 doConfirm();
@@ -391,48 +391,48 @@ public class ADMEExecutiveAgencyConfigActivity extends BaseActivity implements V
         strMeasuringPitch = mEtMeasuringPitch.getText().toString().trim();
 
         if (TextUtils.isEmpty(strWaitingIntervalPerRound)) {
-            ToastUtil.showShortToast("每轮等待间隔不能为空");
+            ToastUtils.show("每轮等待间隔不能为空");
             return;
         }
 
         if (TextUtils.isEmpty(strMotorDriveAddress)) {
-            ToastUtil.showShortToast("电机驱动器地址不能为空");
+            ToastUtils.show("电机驱动器地址不能为空");
             return;
         }
 
         if (TextUtils.isEmpty(strMotorMovementTime)) {
-            ToastUtil.showShortToast("电机运动时间不能为空");
+            ToastUtils.show("电机运动时间不能为空");
             return;
         }
 
         if (TextUtils.isEmpty(strMotorPullUpSpeed)) {
-            ToastUtil.showShortToast("电机上拉速度不能为空");
+            ToastUtils.show("电机上拉速度不能为空");
             return;
         }
 
         if (TextUtils.isEmpty(strMotorPullDownSpeed)) {
-            ToastUtil.showShortToast("电机下拉速度不能为空");
+            ToastUtils.show("电机下拉速度不能为空");
             return;
         }
 
         if (TextUtils.isEmpty(strTractionLineLength)) {
-            ToastUtil.showShortToast("牵引线长不能为空");
+            ToastUtils.show("牵引线长不能为空");
             return;
         }
 
         if (TextUtils.isEmpty(strHoleDepth)) {
-            ToastUtil.showShortToast("测孔深不能为空");
+            ToastUtils.show("测孔深不能为空");
             return;
         }
 
         if (TextUtils.isEmpty(strMeasuringPitch)) {
-            ToastUtil.showShortToast("测量间距不能为空");
+            ToastUtils.show("测量间距不能为空");
             return;
         }
 
         int address = Integer.parseInt(strMotorDriveAddress);
         if (address <= 0) {
-            ToastUtil.showShortToast("电机驱动器地址输入有误");
+            ToastUtils.show("电机驱动器地址输入有误");
             return;
         }
 

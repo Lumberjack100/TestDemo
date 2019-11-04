@@ -32,7 +32,7 @@
         android:layout_marginRight="5dp"
         android:gravity="center"
         tools:text="已激活"
-        android:textColor="@color/colorPrimary" />
+        android:textColor="@color/gray_807B7B" />
 
     <com.kyleduo.switchbutton.SwitchButton
         android:id="@+id/switchButton"

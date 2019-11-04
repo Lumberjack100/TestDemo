@@ -83,13 +83,11 @@ dependencies {
     //switchView 准备废弃
     implementation 'ch.ielse:switchbutton:1.0.1'
     implementation 'com.kyleduo.switchbutton:library:2.0.0'
-    //zxing 扫码，暂停用
-//    implementation 'com.github.yuzhiqiang1993:zxing:2.2.5'
     //新的zxing 扫码
     implementation 'cn.bingoogolapple:bga-qrcode-zxing:1.3.6'
     implementation 'cn.bingoogolapple:bga-photopicker:1.2.8@aar'
     implementation 'cn.bingoogolapple:bga-baseadapter:1.2.9@aar'
-
+    implementation 'com.hjq:toast:8.0'//https://github.com/getActivity/ToastUtils
 
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
