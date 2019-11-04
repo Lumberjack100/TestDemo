@@ -71,9 +71,10 @@
         android:layout_marginLeft="20dp"
         android:layout_marginTop="40dp"
         android:layout_marginRight="20dp"
-        android:background="@drawable/scan_add_selector"
+        android:background="@drawable/btn_select"
         android:text="完成"
-        android:textColor="@color/white" />
+        android:textColor="@color/white"
+        android:textSize="@dimen/text_size_16"/>
 
 
 </LinearLayout>

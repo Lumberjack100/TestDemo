@@ -3,6 +3,7 @@ package com.shmedo.mcloudapp.ui.activity.device;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.InputFilter;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.view.View;
@@ -128,6 +129,7 @@ public class ADMEExecutiveAgencyConfigActivity extends BaseActivity implements V
         mEtWaitingIntervalPerRound = waitingIntervalPerRoundLayout.findViewById(R.id.itemValueET);
         mEtWaitingIntervalPerRound.setInputType(InputType.TYPE_CLASS_NUMBER);
         mEtWaitingIntervalPerRound.setHint("请输入正整数...");
+        mEtWaitingIntervalPerRound.setFilters(new InputFilter[]{new InputFilter.LengthFilter(4)});
 
         ((TextView) logOutputModeLayout.findViewById(R.id.itemNameTV)).setText("日志输出方式");
         mIvLogOutputMode = logOutputModeLayout.findViewById(R.id.itemTipIV);
@@ -138,35 +140,43 @@ public class ADMEExecutiveAgencyConfigActivity extends BaseActivity implements V
         mEtMotorDriveAddress = motorDriveAddressLayout.findViewById(R.id.itemValueET);
         mEtMotorDriveAddress.setInputType(InputType.TYPE_CLASS_NUMBER);
         mEtMotorDriveAddress.setHint("请输入正整数...");
+        mEtMotorDriveAddress.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
+
 
         ((TextView) motorMovementTimeLayout.findViewById(R.id.itemNameTV)).setText("电机运动时间（s）");
         mIvMotorMovementTime = motorMovementTimeLayout.findViewById(R.id.itemTipIV);
         mEtMotorMovementTime = motorMovementTimeLayout.findViewById(R.id.itemValueET);
         mEtMotorMovementTime.setInputType(InputType.TYPE_CLASS_NUMBER);
         mEtMotorMovementTime.setHint("请输入正整数...");
+        mEtWaitingIntervalPerRound.setFilters(new InputFilter[]{new InputFilter.LengthFilter(5)});
+
 
         ((TextView) motorPullUpSpeedLayout.findViewById(R.id.itemNameTV)).setText("电机上拉速度（r/s）");
         mIvMotorPullUpSpeed = motorPullUpSpeedLayout.findViewById(R.id.itemTipIV);
         mEtMotorPullUpSpeed = motorPullUpSpeedLayout.findViewById(R.id.itemValueET);
         mEtMotorPullUpSpeed.setInputType(InputType.TYPE_CLASS_NUMBER);
         mEtMotorPullUpSpeed.setHint("请输入正整数...");
+        mEtMotorPullUpSpeed.setFilters(new InputFilter[]{new InputFilter.LengthFilter(5)});
+
 
         ((TextView) motorPullDownSpeedLayout.findViewById(R.id.itemNameTV)).setText("电机下拉速度（r/s）");
         mIvMotorPullDownSpeed = motorPullDownSpeedLayout.findViewById(R.id.itemTipIV);
         mEtMotorPullDownSpeed = motorPullDownSpeedLayout.findViewById(R.id.itemValueET);
         mEtMotorPullDownSpeed.setInputType(InputType.TYPE_CLASS_NUMBER);
         mEtMotorPullDownSpeed.setHint("请输入正整数...");
+        mEtMotorPullDownSpeed.setFilters(new InputFilter[]{new InputFilter.LengthFilter(5)});
+
 
         ((TextView) tractionLineLengthLayout.findViewById(R.id.itemNameTV)).setText("牵引线长（m）");
         mIvTractionLineLength = tractionLineLengthLayout.findViewById(R.id.itemTipIV);
         mEtTractionLineLength = tractionLineLengthLayout.findViewById(R.id.itemValueET);
-        mEtTractionLineLength.setInputType(InputType.TYPE_CLASS_NUMBER);
+        mEtTractionLineLength.setInputType(InputType.TYPE_NUMBER_FLAG_DECIMAL);
         mEtTractionLineLength.setHint("请输入1位正小数...");
 
         ((TextView) holeDepthLayout.findViewById(R.id.itemNameTV)).setText("测孔深（m）");
         mIvHoleDepth = holeDepthLayout.findViewById(R.id.itemTipIV);
         mEtHoleDepth = holeDepthLayout.findViewById(R.id.itemValueET);
-        mEtHoleDepth.setInputType(InputType.TYPE_CLASS_NUMBER);
+        mEtHoleDepth.setInputType(InputType.TYPE_NUMBER_FLAG_DECIMAL);
         mEtHoleDepth.setHint("请输入1位正小数...");
 
         ((TextView) measuringPitchLayout.findViewById(R.id.itemNameTV)).setText("测量间距（mm）");
@@ -174,6 +184,7 @@ public class ADMEExecutiveAgencyConfigActivity extends BaseActivity implements V
         mEtMeasuringPitch = measuringPitchLayout.findViewById(R.id.itemValueET);
         mEtMeasuringPitch.setInputType(InputType.TYPE_CLASS_NUMBER);
         mEtMeasuringPitch.setHint("请输入正整数...");
+        mEtWaitingIntervalPerRound.setFilters(new InputFilter[]{new InputFilter.LengthFilter(5)});
 
 
         mIvDataSettlementMethod.setId(R.id.data_settlement_method);

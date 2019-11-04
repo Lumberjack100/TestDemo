@@ -103,7 +103,7 @@
         数据应答：开启数据应答后，平台会给予数据是否完整的反馈，如数据不完整则进行数据重发
     </string>
     <string name="adme_waiting_interval_per_round">
-        每轮等待间隔：两轮测量的等待间隔时间这个值可以是0，稍微修改一下
+        每轮等待间隔：两轮测量的等待间隔时间这个值可以是0
     </string>
     <string name="adme_log_output_mode">
         日志输出方式：日志只能以一种方式进行输出

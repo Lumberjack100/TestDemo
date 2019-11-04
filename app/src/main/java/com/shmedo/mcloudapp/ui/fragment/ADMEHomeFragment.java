@@ -234,7 +234,7 @@ public class ADMEHomeFragment extends BaseFragment {
         mBtnEdit2 = serverAddressLayout.findViewById(R.id.editBtn2);
         mEtAddress2.setEnabled(false);
 
-        ((TextView) dagConfigLayout.findViewById(R.id.tv_config_name)).setText("DAG设置");
+        ((TextView) dagConfigLayout.findViewById(R.id.tv_config_name)).setText("采集器参数设置");
         ((TextView) executiveAgencyParamLayout.findViewById(R.id.tv_config_name)).setText("执行机构参数配置");
         ((TextView) customCommandTestLayout.findViewById(R.id.tv_config_name)).setText("自定义指令输入");
 
