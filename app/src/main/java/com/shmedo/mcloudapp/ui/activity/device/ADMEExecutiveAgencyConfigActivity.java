@@ -170,13 +170,13 @@ public class ADMEExecutiveAgencyConfigActivity extends BaseActivity implements V
         ((TextView) tractionLineLengthLayout.findViewById(R.id.itemNameTV)).setText("牵引线长（m）");
         mIvTractionLineLength = tractionLineLengthLayout.findViewById(R.id.itemTipIV);
         mEtTractionLineLength = tractionLineLengthLayout.findViewById(R.id.itemValueET);
-        mEtTractionLineLength.setInputType(InputType.TYPE_NUMBER_FLAG_DECIMAL);
+        mEtTractionLineLength.setInputType(InputType.TYPE_CLASS_PHONE);
         mEtTractionLineLength.setHint("请输入1位正小数...");
 
         ((TextView) holeDepthLayout.findViewById(R.id.itemNameTV)).setText("测孔深（m）");
         mIvHoleDepth = holeDepthLayout.findViewById(R.id.itemTipIV);
         mEtHoleDepth = holeDepthLayout.findViewById(R.id.itemValueET);
-        mEtHoleDepth.setInputType(InputType.TYPE_NUMBER_FLAG_DECIMAL);
+        mEtHoleDepth.setInputType(InputType.TYPE_CLASS_PHONE);
         mEtHoleDepth.setHint("请输入1位正小数...");
 
         ((TextView) measuringPitchLayout.findViewById(R.id.itemNameTV)).setText("测量间距（mm）");
@@ -441,9 +441,50 @@ public class ADMEExecutiveAgencyConfigActivity extends BaseActivity implements V
             return;
         }
 
+        if (Integer.parseInt(strWaitingIntervalPerRound) <= 0) {
+            ToastUtils.show("采集器采集间隔必须输入正整数");
+            return;
+        }
+
+
+        if (Integer.parseInt(strWaitingIntervalPerRound) <= 0) {
+            ToastUtils.show("每轮等待间隔必须输入正整数");
+            return;
+        }
+
         int address = Integer.parseInt(strMotorDriveAddress);
-        if (address <= 0) {
+        if (address <= 0 || address >= 255) {
             ToastUtils.show("电机驱动器地址输入有误");
+            return;
+        }
+
+        if (Integer.parseInt(strMotorMovementTime) <= 0) {
+            ToastUtils.show("电机运动时间必须输入正整数");
+            return;
+        }
+
+        if (Integer.parseInt(strMotorPullUpSpeed) <= 0) {
+            ToastUtils.show("电机上拉速度必须输入正整数");
+            return;
+        }
+
+        if (Integer.parseInt(strMotorPullDownSpeed) <= 0) {
+            ToastUtils.show("电机下放速度必须输入正整数");
+            return;
+        }
+
+        if (Integer.parseInt(strTractionLineLength) <= 0) {
+            ToastUtils.show("牵引线长必须输入正数");
+            return;
+        }
+
+        if (Integer.parseInt(strHoleDepth) <= 0) {
+            ToastUtils.show("测孔深度必须输入正数");
+            return;
+        }
+
+        if (Integer.parseInt(strMeasuringPitch) <= 0) {
+            ToastUtils.show("测量间距必须输入正整数");
             return;
         }
 
