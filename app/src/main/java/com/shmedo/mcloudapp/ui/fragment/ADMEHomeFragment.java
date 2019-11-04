@@ -206,17 +206,14 @@ public class ADMEHomeFragment extends BaseFragment {
         ((TextView) bluetoothSwitchLayout.findViewById(R.id.tv_config_name)).setText("蓝牙连接");
         tvBluetoothState = bluetoothSwitchLayout.findViewById(R.id.tv_device_state);
         sbBluetoothState = bluetoothSwitchLayout.findViewById(R.id.switchButton);
-        setSwitchViewState(false, tvBluetoothState, "已断开");
 
         ((TextView) autoMonitorLayout.findViewById(R.id.tv_config_name)).setText("自动监测启用");
         tvAutoMonitorState = autoMonitorLayout.findViewById(R.id.tv_device_state);
         sbAutoMonitorState = autoMonitorLayout.findViewById(R.id.switchButton);
-        setSwitchViewState(false, tvAutoMonitorState, "已关闭");
 
         ((TextView) debugModelLayout.findViewById(R.id.tv_config_name)).setText("测试模式");
         tvDebugMode = debugModelLayout.findViewById(R.id.tv_device_state);
         sbDebugMode = debugModelLayout.findViewById(R.id.switchButton);
-        setSwitchViewState(false, tvDebugMode, "已关闭");
 
         ((TextView) platformServerConfigLayout.findViewById(R.id.tv_config_name)).setText("云平台服务器设置");
         mIvExpandAddress = platformServerConfigLayout.findViewById(R.id.iv_arrow);
@@ -275,6 +272,7 @@ public class ADMEHomeFragment extends BaseFragment {
         } else {
             sbBluetoothState.setCheckedImmediatelyNoEvent(false);
             setSwitchViewState(false, tvBluetoothState, "已断开");
+            setSwitchViewState(false, tvAutoMonitorState, "已关闭");
         }
     }
 
