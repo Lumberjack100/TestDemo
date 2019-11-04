@@ -49,7 +49,6 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Objects;
 import java.util.UUID;
 
 import butterknife.BindView;
@@ -269,13 +268,17 @@ public class ADMEHomeFragment extends BaseFragment {
         if (MCloudApp.isIsBluetoothDeviceConnected()) {
             sbBluetoothState.setCheckedImmediatelyNoEvent(true);
             setSwitchViewState(true, tvBluetoothState, "已连接");
-            Objects.requireNonNull(configADMEActivity).sendDeviceStateComd();
+//            Objects.requireNonNull(configADMEActivity).sendDeviceStateComd();
         } else {
             sbBluetoothState.setCheckedImmediatelyNoEvent(false);
             setSwitchViewState(false, tvBluetoothState, "已断开");
         }
     }
 
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+    }
 
     private void initAnimation() {
         mExpandAnimation = new RotateAnimation(0, -180, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
@@ -474,6 +477,7 @@ public class ADMEHomeFragment extends BaseFragment {
                     mEtAddress1.setSelection(mEtAddress1.getText().length());
                 } else {
                     mBtnEdit1.setText("编辑");
+                    mEtAddress1.setEnabled(false);
                     mEtAddress1.clearFocus();
                     doServerAddress1Config();
                 }
@@ -496,6 +500,7 @@ public class ADMEHomeFragment extends BaseFragment {
                     mEtAddress2.setSelection(mEtAddress2.getText().length());
                 } else {
                     mBtnEdit2.setText("编辑");
+                    mEtAddress2.setEnabled(false);
                     mEtAddress2.clearFocus();
                     doServerAddress2Config();
                 }

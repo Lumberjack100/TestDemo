@@ -376,7 +376,7 @@ public class ConfigADMEActivity extends BaseActivity {
         public boolean handleMessage(android.os.Message msg) {
             switch (msg.what) {
                 case Constants.BT_CONNECT:
-                    ToastUtils.show("蓝牙已连接");
+                    ToastUtils.show("设备已连接");
                     dismissLoadingDialog();
                     hander.removeCallbacks(dismssDialogRunnable);
                     isBlueConnected = true;
@@ -387,7 +387,7 @@ public class ConfigADMEActivity extends BaseActivity {
                     break;
 
                 case Constants.BT_DISCONNECTED:
-                    ToastUtils.show("蓝牙连接已断开!");
+                    ToastUtils.show("设备断开连接");
                     dismissLoadingDialog();
                     isBlueConnected = false;
                     MCloudApp.setIsBluetoothDeviceConnected(false);
@@ -601,7 +601,7 @@ public class ConfigADMEActivity extends BaseActivity {
             return;
         }
 
-        Message msg = new Message(UUID.randomUUID().toString(), "##0191\n", true);
+        Message msg = new Message(UUID.randomUUID().toString(), "##0191\r\n", true);
         mdBluetoothManager.writeMessage(msg);
     }
 
