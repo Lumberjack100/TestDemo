@@ -326,7 +326,7 @@ public class ADMESensorConfigActivity extends BaseActivity implements View.OnCli
             return;
         }
 
-        if (Integer.parseInt(sensorCorrectionValue) <= 0) {
+        if (Double.parseDouble(sensorCorrectionValue) <= 0) {
             ToastUtils.show("传感器修正值必须输入正数");
             return;
         }

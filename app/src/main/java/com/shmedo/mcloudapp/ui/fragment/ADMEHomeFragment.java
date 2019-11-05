@@ -282,7 +282,6 @@ public class ADMEHomeFragment extends BaseFragment {
     }
 
 
-
     private void initAnimation() {
         mExpandAnimation = new RotateAnimation(0, -180, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
         mExpandAnimation.setDuration(300);
@@ -801,6 +800,17 @@ public class ADMEHomeFragment extends BaseFragment {
                 systemDataInfoList.add(systemDataInfo.getProjName());
                 systemDataInfoHashMap.put(systemDataInfo.getProjName(), systemDataInfo);
             }
+        }
+    }
+
+
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        if (hidden) {   // 不在最前端显示 相当于调用了onPause();
+            return;
+        } else {  // 在最前端显示 相当于调用了onResume();
+            //网络数据刷新
         }
     }
 

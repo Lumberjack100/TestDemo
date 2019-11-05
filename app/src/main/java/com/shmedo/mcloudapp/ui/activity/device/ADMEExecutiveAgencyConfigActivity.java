@@ -148,7 +148,7 @@ public class ADMEExecutiveAgencyConfigActivity extends BaseActivity implements V
         mEtMotorMovementTime = motorMovementTimeLayout.findViewById(R.id.itemValueET);
         mEtMotorMovementTime.setInputType(InputType.TYPE_CLASS_NUMBER);
         mEtMotorMovementTime.setHint("请输入正整数...");
-        mEtWaitingIntervalPerRound.setFilters(new InputFilter[]{new InputFilter.LengthFilter(5)});
+        mEtMotorMovementTime.setFilters(new InputFilter[]{new InputFilter.LengthFilter(5)});
 
 
         ((TextView) motorPullUpSpeedLayout.findViewById(R.id.itemNameTV)).setText("电机上拉速度（r/s）");
@@ -184,7 +184,7 @@ public class ADMEExecutiveAgencyConfigActivity extends BaseActivity implements V
         mEtMeasuringPitch = measuringPitchLayout.findViewById(R.id.itemValueET);
         mEtMeasuringPitch.setInputType(InputType.TYPE_CLASS_NUMBER);
         mEtMeasuringPitch.setHint("请输入正整数...");
-        mEtWaitingIntervalPerRound.setFilters(new InputFilter[]{new InputFilter.LengthFilter(5)});
+        mEtMeasuringPitch.setFilters(new InputFilter[]{new InputFilter.LengthFilter(5)});
 
 
         mIvDataSettlementMethod.setId(R.id.data_settlement_method);
@@ -473,12 +473,12 @@ public class ADMEExecutiveAgencyConfigActivity extends BaseActivity implements V
             return;
         }
 
-        if (Integer.parseInt(strTractionLineLength) <= 0) {
+        if (Double.parseDouble(strTractionLineLength) <= 0) {
             ToastUtils.show("牵引线长必须输入正数");
             return;
         }
 
-        if (Integer.parseInt(strHoleDepth) <= 0) {
+        if (Double.parseDouble(strHoleDepth) <= 0) {
             ToastUtils.show("测孔深度必须输入正数");
             return;
         }

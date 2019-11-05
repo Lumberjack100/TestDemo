@@ -10,6 +10,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.text.TextUtils;
 import android.view.View;
@@ -76,6 +77,7 @@ public class ConfigADMEActivity extends BaseActivity {
     private ADMEHomeFragment admeHomeFragment;
     private QueryDataFragment queryDataFragment;        //查询数据
     private DeviceDetailsFragment deviceDetailsFragment;//设备详情
+    private Fragment currentFragment;
 
     private MdBluetoothManager mdBluetoothManager;
     private BluetoothAdapter mBluetoothAdapter;
@@ -118,11 +120,54 @@ public class ConfigADMEActivity extends BaseActivity {
     }
 
     @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        outState.putString("CurrentFragment", currentFragment.getClass().getName());
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        initView();
+        initView(savedInstanceState);
         initBluetooth();
         getIntentData();
+    }
+
+
+    private void initView(Bundle savedInstanceState) {
+        hander = new Handler();
+        mTvHighsetting.setVisibility(View.GONE);
+
+        if (savedInstanceState != null) {  // “内存重启”时调用
+            String curTag = savedInstanceState.getString("CurrentFragment");
+            currentFragment = getSupportFragmentManager().findFragmentByTag(curTag);
+            admeHomeFragment = (ADMEHomeFragment) getSupportFragmentManager().findFragmentByTag(ADMEHomeFragment.class.getName());
+            queryDataFragment = (QueryDataFragment) getSupportFragmentManager().findFragmentByTag(QueryDataFragment.class.getName());
+            deviceDetailsFragment = (DeviceDetailsFragment) getSupportFragmentManager().findFragmentByTag(DeviceDetailsFragment.class.getName());
+
+            // 解决重叠问题
+            getSupportFragmentManager().beginTransaction()
+                    .hide(admeHomeFragment)
+                    .hide(queryDataFragment)
+                    .hide(deviceDetailsFragment)
+                    .show(currentFragment)
+                    .commit();
+        } else {
+            admeHomeFragment = new ADMEHomeFragment();
+            queryDataFragment = new QueryDataFragment();
+            deviceDetailsFragment = new DeviceDetailsFragment();
+            setDefaultFragment();
+        }
+    }
+
+
+    private void initBluetooth() {
+        final BluetoothManager bluetoothManager = (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
+        mBluetoothAdapter = Objects.requireNonNull(bluetoothManager).getAdapter();
+        MdBluetoothManager.init(mBluetoothAdapter, bluetoothManager);
+        mdBluetoothManager = MdBluetoothManager.getInstance();
+        mdBluetoothManager.setEventHandler(new MdBluetoothEventHandler());
     }
 
 
@@ -141,20 +186,6 @@ public class ConfigADMEActivity extends BaseActivity {
         }
     }
 
-    private void initBluetooth() {
-        final BluetoothManager bluetoothManager = (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
-        mBluetoothAdapter = Objects.requireNonNull(bluetoothManager).getAdapter();
-        MdBluetoothManager.init(mBluetoothAdapter, bluetoothManager);
-        mdBluetoothManager = MdBluetoothManager.getInstance();
-        mdBluetoothManager.setEventHandler(new MdBluetoothEventHandler());
-    }
-
-
-    private void initView() {
-        hander = new Handler();
-        mTvHighsetting.setVisibility(View.GONE);
-        setDefaultFragment();
-    }
 
     /**
      * set the default Fragment
@@ -678,26 +709,36 @@ public class ConfigADMEActivity extends BaseActivity {
      * switch the fragment accordting to id
      */
     private void switchFrgment(int i) {
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         switch (i) {
             case 0:
-                admeHomeFragment = new ADMEHomeFragment();
-                transaction.replace(R.id.sub_content, admeHomeFragment);
+                showFragment(admeHomeFragment);
                 break;
 
             case 1:
-                queryDataFragment = new QueryDataFragment();
-                transaction.replace(R.id.sub_content, queryDataFragment);
+                showFragment(queryDataFragment);
                 break;
 
             case 2:
-                deviceDetailsFragment = new DeviceDetailsFragment();
-                transaction.replace(R.id.sub_content, deviceDetailsFragment);
+                showFragment(deviceDetailsFragment);
                 break;
-
-            default:
         }
-        transaction.commit();
+    }
+
+    private void showFragment(Fragment fragment) {
+        if (currentFragment != fragment) {//  判断传入的fragment是不是当前的currentFragmentgit
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            if (!fragment.isAdded()) { //  判断传入的fragment是否已经被add()过
+                transaction.add(R.id.content_frame, fragment, fragment.getClass().getName());
+                if (currentFragment != null) {
+                    transaction.hide(currentFragment);
+                }
+            } else {
+                transaction.hide(currentFragment).show(fragment);
+            }
+
+            currentFragment = fragment;  //  然后将传入的fragment赋值给currentFragment
+            transaction.commit();
+        }
     }
 
 
