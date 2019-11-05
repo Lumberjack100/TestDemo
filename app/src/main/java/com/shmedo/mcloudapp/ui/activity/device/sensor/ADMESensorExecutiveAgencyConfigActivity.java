@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.text.InputFilter;
 import android.text.InputType;
@@ -11,6 +12,7 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
@@ -28,6 +30,9 @@ import com.shmedo.mcloudapp.bluetooth.MdBluetoothManager;
 import com.shmedo.mcloudapp.bluetooth.Message;
 import com.shmedo.mcloudapp.model.Extras;
 import com.shmedo.mcloudapp.views.ClearEditText;
+
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.UUID;
 
@@ -116,6 +121,7 @@ public class ADMESensorExecutiveAgencyConfigActivity extends BaseActivity implem
 
     private ArrayAdapter<String> dataSettlementAdapter, logOutputModeAdapter;
 
+    private Handler hander;
 
     private MdBluetoothManager mdBluetoothManager;
 
@@ -130,6 +136,14 @@ public class ADMESensorExecutiveAgencyConfigActivity extends BaseActivity implem
         intent.putExtra(Extras.ADME_EXECUTIVE_AGENCY_CONFIG_INFO, executiveAgencyInfo);
         context.startActivity(intent);
     }
+
+
+    private Runnable dismssDialogRunnable = new Runnable() {
+        @Override
+        public void run() {
+            dismissLoadingDialog();
+        }
+    };
 
 
     @Override
@@ -152,6 +166,7 @@ public class ADMESensorExecutiveAgencyConfigActivity extends BaseActivity implem
 
 
     private void initSensorView() {
+        hander = new Handler();
         mToolbarTitle.setText("采集器参数设置");
 
         ((TextView) collectorAddressLayout.findViewById(R.id.itemNameTV)).setText("采集器地址");
@@ -325,6 +340,13 @@ public class ADMESensorExecutiveAgencyConfigActivity extends BaseActivity implem
         mIvTractionLineLength.setOnClickListener(this);
         mIvHoleDepth.setOnClickListener(this);
         mIvMeasuringPitch.setOnClickListener(this);
+
+        mSvDataResponse.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                setSwitchViewState(isChecked, mTvDataResponse, isChecked ? "已启用" : "已停用");
+            }
+        });
     }
 
 
@@ -420,9 +442,12 @@ public class ADMESensorExecutiveAgencyConfigActivity extends BaseActivity implem
         }
 
         if (cmdArray[2].equals("1")) {
-            setSwitchViewState(true);
+            mSvDataResponse.setCheckedImmediatelyNoEvent(true);
+            setSwitchViewState(true, mTvDataResponse, "已启用");
+
         } else if (cmdArray[2].equals("2")) {
-            setSwitchViewState(false);
+            mSvDataResponse.setCheckedImmediatelyNoEvent(false);
+            setSwitchViewState(false, mTvDataResponse, "已停用");
         }
 
         mEtWaitingIntervalPerRound.setText(cmdArray[3]);
@@ -454,21 +479,9 @@ public class ADMESensorExecutiveAgencyConfigActivity extends BaseActivity implem
     }
 
 
-    private void setSwitchViewState(boolean isOpen) {
-        if (isOpen) {
-            mSvDataResponse.setCheckedImmediatelyNoEvent(true);
-            mTvDataResponse.setClickable(true);
-            mTvDataResponse.setText("已启用");
-            mTvDataResponse.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
-            mTvDataResponse.setTextColor(getResources().getColor(R.color.white));
-
-        } else {
-            mSvDataResponse.setCheckedImmediatelyNoEvent(false);
-            mTvDataResponse.setClickable(false);
-            mTvDataResponse.setText("已停用");
-            mTvDataResponse.setBackgroundColor(getResources().getColor(android.R.color.transparent));
-            mTvDataResponse.setTextColor(getResources().getColor(R.color.gray_807B7B));
-        }
+    private void setSwitchViewState(boolean isOpen, TextView textView, String content) {
+        textView.setText(content);
+        textView.setTextColor(isOpen ? getResources().getColor(R.color.colorPrimary) : getResources().getColor(R.color.gray_807B7B));
     }
 
 
@@ -607,7 +620,6 @@ public class ADMESensorExecutiveAgencyConfigActivity extends BaseActivity implem
             sbExecutiveAgency.append("4,");
         }
 
-        sbExecutiveAgency.append(strWaitingIntervalPerRound + ",");
         sbExecutiveAgency.append(strMotorDriveAddress + ",");
         sbExecutiveAgency.append(strMotorMovementTime + ",");
         sbExecutiveAgency.append(strMotorPullUpSpeed + ",");
@@ -615,22 +627,20 @@ public class ADMESensorExecutiveAgencyConfigActivity extends BaseActivity implem
         sbExecutiveAgency.append(strTractionLineLength + ",");
         sbExecutiveAgency.append(strHoleDepth + ",");
         sbExecutiveAgency.append(strMeasuringPitch + "\r\n");
+        executiveAgencyConfigInfo = String.valueOf(sbExecutiveAgency);
 
         String cmdStr = String.valueOf(stringBuilder);
         sendCommand(cmdStr);
 
-        cmdStr = String.valueOf(sbExecutiveAgency);
-        sendCommand(cmdStr);
-
-
-        ToastUtils.show("正在发送配置指令...");
+        showLoadingDialog("正在发送配置指令...");
+        hander.postDelayed(dismssDialogRunnable, 5000);
     }
 
 
     private void showSaveDialog() {
         MaterialDialog.Builder mBuilder = new MaterialDialog.Builder(ADMESensorExecutiveAgencyConfigActivity.this);
         mBuilder.title("温馨提示：")
-                .content("关闭自动监测，将导致设备自动关机进入休眠状态。请确认是否关闭")
+                .content("已发送配置指令，是否保存参数配置重启设备？")
                 .contentColor(Color.parseColor("#000000"))
                 .canceledOnTouchOutside(false)
                 .positiveText("确定")
@@ -644,6 +654,14 @@ public class ADMESensorExecutiveAgencyConfigActivity extends BaseActivity implem
                     @NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                 //发送关闭测试模式命令
                 sendCommand("##0191\r\n");
+                ToastUtils.show("正在发送保存命令,设备即将重启并断开连接");
+
+                hander.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        ADMESensorExecutiveAgencyConfigActivity.this.finish();
+                    }
+                }, 5000);
             }
         });
         mBuilder.onNegative(new MaterialDialog.SingleButtonCallback() {
@@ -659,6 +677,32 @@ public class ADMESensorExecutiveAgencyConfigActivity extends BaseActivity implem
         Message msg = new Message(UUID.randomUUID().toString(), cmd, true);
         if (mdBluetoothManager != null) {
             mdBluetoothManager.writeMessage(msg);
+        }
+    }
+
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void getConfig(String messageEvent) {
+        if (!TextUtils.isEmpty(messageEvent) && messageEvent.startsWith("$$")) {
+            setResultData(messageEvent);
+        }
+    }
+
+    /**
+     * 设置显示数据
+     */
+    private void setResultData(String cmdStr) {
+        //设置执行机构参数应答
+        if (cmdStr.startsWith("$$7001") && cmdStr.endsWith("\r\n")) {
+            sendCommand(executiveAgencyConfigInfo);
+            return;
+        }
+
+        //设置执行机构参数应答
+        if (cmdStr.startsWith("$$7003") && cmdStr.endsWith("\r\n")) {
+            dismissLoadingDialog();
+            showSaveDialog();
+            return;
         }
     }
 
@@ -754,7 +798,6 @@ public class ADMESensorExecutiveAgencyConfigActivity extends BaseActivity implem
 
 
     private boolean checkExecutiveAgencyInput() {
-
         strWaitingIntervalPerRound = mEtWaitingIntervalPerRound.getText().toString().trim();
         strMotorDriveAddress = mEtMotorDriveAddress.getText().toString().trim();
         strMotorMovementTime = mEtMotorMovementTime.getText().toString().trim();

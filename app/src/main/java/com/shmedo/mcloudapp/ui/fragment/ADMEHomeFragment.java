@@ -330,13 +330,8 @@ public class ADMEHomeFragment extends BaseFragment {
                     return;
                 }
 
-                //手动断开连接前提醒
-                if (doSaveConfigBeforeLeave()) {
-                    if (mdBluetoothManager != null) {
-                        mdBluetoothManager.disconnect();
-                    }
-                } else {
-                    sbBluetoothState.setCheckedImmediatelyNoEvent(!isChecked);
+                if (mdBluetoothManager != null) {
+                    mdBluetoothManager.disconnect();
                 }
             }
         });
@@ -373,7 +368,7 @@ public class ADMEHomeFragment extends BaseFragment {
                             @NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                         //发送关闭测试模式命令
                         sendCommand("##70112\r\n");
-                        setSwitchViewState(false, tvDebugMode, "已关闭");
+                        setSwitchViewState(false, tvAutoMonitorState, "已关闭");
                     }
                 });
                 mBuilder.onNegative(new MaterialDialog.SingleButtonCallback() {
@@ -429,16 +424,6 @@ public class ADMEHomeFragment extends BaseFragment {
                 });
             }
         });
-    }
-
-
-    private boolean doSaveConfigBeforeLeave() {
-        if (!configADMEActivity.isNeedSaveConfig) {
-            return true;
-        }
-
-        showTipDialog("您还没有对设备的配置进行保存操作，请点击右上角保存按钮进行保存！");
-        return false;
     }
 
 
@@ -601,8 +586,6 @@ public class ADMEHomeFragment extends BaseFragment {
      * 设置显示数据
      */
     private void setResultData(String cmdStr) {
-        Timber.d("=======从 ConfigADMEActivity 过来的eventbus数据======" + cmdStr);
-
         String[] cmdArray = cmdStr.replace("\r\n", "").split(",");
 
         //查询工作模式应答
@@ -727,16 +710,12 @@ public class ADMEHomeFragment extends BaseFragment {
 
         //设置采集器参数应答
         if (cmdStr.startsWith("$$7001") && cmdStr.endsWith("\r\n")) {
-            ToastUtils.show("设置采集器参数完成");
             dagConfigInfo = cmdStr;
-            return;
         }
 
         //设置执行机构参数应答
         if (cmdStr.startsWith("$$7003") && cmdStr.endsWith("\r\n")) {
-            ToastUtils.show("设置执行机构参数完成");
             executiveAgencyConfigInfo = cmdStr;
-            return;
         }
     }
 
