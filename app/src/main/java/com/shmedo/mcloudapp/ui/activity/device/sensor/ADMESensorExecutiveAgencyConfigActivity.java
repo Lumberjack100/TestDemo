@@ -1,13 +1,14 @@
-package com.shmedo.mcloudapp.ui.activity.device;
+package com.shmedo.mcloudapp.ui.activity.device.sensor;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.text.InputFilter;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -15,6 +16,8 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.hjq.toast.ToastUtils;
 import com.kyleduo.switchbutton.SwitchButton;
 import com.shmedo.das.das.cmd.CommandResult;
@@ -24,15 +27,47 @@ import com.shmedo.mcloudapp.base.BaseActivity;
 import com.shmedo.mcloudapp.bluetooth.MdBluetoothManager;
 import com.shmedo.mcloudapp.bluetooth.Message;
 import com.shmedo.mcloudapp.model.Extras;
+import com.shmedo.mcloudapp.views.ClearEditText;
 
 import java.util.UUID;
 
 import butterknife.BindView;
 import timber.log.Timber;
 
-public class ADMEExecutiveAgencyConfigActivity extends BaseActivity implements View.OnClickListener {
+public class ADMESensorExecutiveAgencyConfigActivity extends BaseActivity implements View.OnClickListener {
     @BindView(R.id.toolbar_title)
     TextView mToolbarTitle;
+
+    @BindView(R.id.collector_address_layout)
+    View collectorAddressLayout;
+
+    @BindView(R.id.collector_collect_interval_layout)
+    View collectorCollectIntervalLayout;
+
+    @BindView(R.id.collector_solution_interval_layout)
+    View collectorSolutionIntervalLayout;
+
+    @BindView(R.id.communication_module_sleep_interval_layout)
+    View communicationModuleSleepIntervalLayout;
+
+    @BindView(R.id.sensor_type_layout)
+    View sensorTypeLayout;
+
+    @BindView(R.id.sensor_address_layout)
+    View sensorAddressLayout;
+
+    @BindView(R.id.sensor_correction_value_layout)
+    View sensorCorrectionValueLayout;
+
+    @BindView(R.id.btn_confirm_complete)
+    Button btnConfirm;
+
+    private ImageView mIvCollectorAddress, mIvCollectorCollectInterval, mIvCollectorSolutionInterval, mIvCommunicationModuleSleepInterval, mIvSensorType, mIvSensorAddress, mIvSensorCorrectionValue;
+
+    private ClearEditText mEtCollectorAddress, mEtCollectorCollectInterval, mEtCollectorSolutionInterval, mEtCommunicationModuleSleepInterval, mEtSensorType, mEtSensorAddress, mEtSensorCorrectionValue;
+
+    private String collectorAddress, collectorCollectInterval, collectorSolutionInterval, communicationModuleSleepInterval, sensorType, sensorAddress, sensorCorrectionValue;
+
 
     @BindView(R.id.data_settlement_method_layout)
     View dataSettlementMethodLayout;
@@ -67,9 +102,6 @@ public class ADMEExecutiveAgencyConfigActivity extends BaseActivity implements V
     @BindView(R.id.measuring_pitch_layout)
     View measuringPitchLayout;
 
-    @BindView(R.id.btn_confirm_complete)
-    Button btnConfirm;
-
     private ImageView mIvDataSettlementMethod, mIvDataResponse, mIvWaitingIntervalPerRound, mIvLogOutputMode, mIvMotorDriveAddress, mIvMotorMovementTime, mIvMotorPullUpSpeed, mIvMotorPullDownSpeed, mIvTractionLineLength, mIvHoleDepth, mIvMeasuringPitch;
 
     private EditText mEtWaitingIntervalPerRound, mEtMotorDriveAddress, mEtMotorMovementTime, mEtMotorPullUpSpeed, mEtMotorPullDownSpeed, mEtTractionLineLength, mEtHoleDepth, mEtMeasuringPitch;
@@ -84,21 +116,25 @@ public class ADMEExecutiveAgencyConfigActivity extends BaseActivity implements V
 
     private ArrayAdapter<String> dataSettlementAdapter, logOutputModeAdapter;
 
+
     private MdBluetoothManager mdBluetoothManager;
+
+    private String dagConfigInfo;//DAG 采集器配置指令
 
     private String executiveAgencyConfigInfo;//执行机构配置指令
 
 
-    public static void startActivity(Context context, String configInfo) {
-        Intent intent = new Intent(context, ADMEExecutiveAgencyConfigActivity.class);
-        intent.putExtra(Extras.ADME_EXECUTIVE_AGENCY_CONFIG_INFO, configInfo);
+    public static void startActivity(Context context, String sensorInfo, String executiveAgencyInfo) {
+        Intent intent = new Intent(context, ADMESensorExecutiveAgencyConfigActivity.class);
+        intent.putExtra(Extras.ADME_SENSOR_CONFIG_INFO, sensorInfo);
+        intent.putExtra(Extras.ADME_EXECUTIVE_AGENCY_CONFIG_INFO, executiveAgencyInfo);
         context.startActivity(intent);
     }
 
 
     @Override
     protected int initContentView() {
-        return R.layout.activity_admeexecutive_agency_config;
+        return R.layout.activity_admesensor_executive_agency_config;
     }
 
 
@@ -106,15 +142,90 @@ public class ADMEExecutiveAgencyConfigActivity extends BaseActivity implements V
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setToolBar(R.id.toolbar);
-        initView();
+        initSensorView();
+        initExecutiveAgencyView();
         parseIntent();
         initAdapter();
-        initData();
+        initSensorData();
+        initExecutiveAgencyData();
     }
 
-    private void initView() {
-        mToolbarTitle.setText("执行机构参数配置");
 
+    private void initSensorView() {
+        mToolbarTitle.setText("采集器参数设置");
+
+        ((TextView) collectorAddressLayout.findViewById(R.id.itemNameTV)).setText("采集器地址");
+        mIvCollectorAddress = collectorAddressLayout.findViewById(R.id.itemTipIV);
+        mEtCollectorAddress = collectorAddressLayout.findViewById(R.id.itemValueET);
+        mEtCollectorAddress.setInputType(InputType.TYPE_CLASS_NUMBER);
+        mEtCollectorAddress.setHint("请输入正数...");
+        mEtCollectorAddress.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
+
+        ((TextView) collectorCollectIntervalLayout.findViewById(R.id.itemNameTV)).setText("采集器采集间隔（s）");
+        mIvCollectorCollectInterval = collectorCollectIntervalLayout.findViewById(R.id.itemTipIV);
+        mEtCollectorCollectInterval = collectorCollectIntervalLayout.findViewById(R.id.itemValueET);
+        mEtCollectorCollectInterval.setInputType(InputType.TYPE_CLASS_NUMBER);
+        mEtCollectorCollectInterval.setHint("请输入正数...");
+        mEtCollectorCollectInterval.setFilters(new InputFilter[]{new InputFilter.LengthFilter(5)});
+
+        ((TextView) collectorSolutionIntervalLayout.findViewById(R.id.itemNameTV)).setText("采集器解算间隔（s）");
+        mIvCollectorSolutionInterval = collectorSolutionIntervalLayout.findViewById(R.id.itemTipIV);
+        mEtCollectorSolutionInterval = collectorSolutionIntervalLayout.findViewById(R.id.itemValueET);
+        mEtCollectorSolutionInterval.setInputType(InputType.TYPE_CLASS_NUMBER);
+        mEtCollectorSolutionInterval.setHint("请输入正数...");
+        mEtCollectorSolutionInterval.setFilters(new InputFilter[]{new InputFilter.LengthFilter(5)});
+
+        ((TextView) communicationModuleSleepIntervalLayout.findViewById(R.id.itemNameTV)).setText("通讯模块休眠间隔（s）");
+        mIvCommunicationModuleSleepInterval = communicationModuleSleepIntervalLayout.findViewById(R.id.itemTipIV);
+        mEtCommunicationModuleSleepInterval = communicationModuleSleepIntervalLayout.findViewById(R.id.itemValueET);
+        mEtCommunicationModuleSleepInterval.setInputType(InputType.TYPE_CLASS_NUMBER);
+        mEtCommunicationModuleSleepInterval.setHint("请输入正数...");
+        mEtCommunicationModuleSleepInterval.setFilters(new InputFilter[]{new InputFilter.LengthFilter(5)});
+        mEtCommunicationModuleSleepInterval.setText("5");
+
+        ((TextView) sensorTypeLayout.findViewById(R.id.itemNameTV)).setText("传感器类型");
+        mIvSensorType = sensorTypeLayout.findViewById(R.id.itemTipIV);
+        mEtSensorType = sensorTypeLayout.findViewById(R.id.itemValueET);
+        mEtSensorType.setInputType(InputType.TYPE_CLASS_NUMBER);
+        mEtSensorType.setHint("请输入正数...");
+        mEtSensorType.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
+
+        ((TextView) sensorAddressLayout.findViewById(R.id.itemNameTV)).setText("传感器地址");
+        mIvSensorAddress = sensorAddressLayout.findViewById(R.id.itemTipIV);
+        mEtSensorAddress = sensorAddressLayout.findViewById(R.id.itemValueET);
+        mEtSensorAddress.setInputType(InputType.TYPE_CLASS_NUMBER);
+        mEtSensorAddress.setHint("请输入正数...");
+        mEtSensorAddress.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
+
+        ((TextView) sensorCorrectionValueLayout.findViewById(R.id.itemNameTV)).setText("传感器修正值（mm）");
+        mIvSensorCorrectionValue = sensorCorrectionValueLayout.findViewById(R.id.itemTipIV);
+        mEtSensorCorrectionValue = sensorCorrectionValueLayout.findViewById(R.id.itemValueET);
+        mEtSensorCorrectionValue.setInputType(InputType.TYPE_CLASS_PHONE);
+        mEtSensorCorrectionValue.setHint("请输入两位正小数...");
+        mEtSensorCorrectionValue.setText("0.00");
+        mEtSensorCorrectionValue.setFilters(new InputFilter[]{new InputFilter.LengthFilter(6)});
+
+
+        mIvCollectorAddress.setId(R.id.collector_address);
+        mIvCollectorCollectInterval.setId(R.id.collector_collect_interval);
+        mIvCollectorSolutionInterval.setId(R.id.collector_solution_interval);
+        mIvCommunicationModuleSleepInterval.setId(R.id.communication_module_sleep_interval);
+        mIvSensorType.setId(R.id.sensor_type);
+        mIvSensorAddress.setId(R.id.sensor_address);
+        mIvSensorCorrectionValue.setId(R.id.sensor_correction_value);
+
+        mIvCollectorAddress.setOnClickListener(this);
+        mIvCollectorCollectInterval.setOnClickListener(this);
+        mIvCollectorSolutionInterval.setOnClickListener(this);
+        mIvCommunicationModuleSleepInterval.setOnClickListener(this);
+        mIvSensorType.setOnClickListener(this);
+        mIvSensorAddress.setOnClickListener(this);
+        mIvSensorCorrectionValue.setOnClickListener(this);
+        btnConfirm.setOnClickListener(this);
+    }
+
+
+    private void initExecutiveAgencyView() {
         ((TextView) dataSettlementMethodLayout.findViewById(R.id.itemNameTV)).setText("数据结算方式");
         mIvDataSettlementMethod = dataSettlementMethodLayout.findViewById(R.id.itemTipIV);
         mSpDataSettlementMethod = dataSettlementMethodLayout.findViewById(R.id.spinner);
@@ -214,14 +325,17 @@ public class ADMEExecutiveAgencyConfigActivity extends BaseActivity implements V
         mIvTractionLineLength.setOnClickListener(this);
         mIvHoleDepth.setOnClickListener(this);
         mIvMeasuringPitch.setOnClickListener(this);
-
-        btnConfirm.setOnClickListener(this);
     }
+
 
     private void parseIntent() {
         mdBluetoothManager = MdBluetoothManager.getInstance();
 
         Intent intent = getIntent();
+        if (intent.getExtras().containsKey(Extras.ADME_SENSOR_CONFIG_INFO)) {
+            dagConfigInfo = intent.getStringExtra(Extras.ADME_SENSOR_CONFIG_INFO);
+        }
+
         if (intent.getExtras().containsKey(Extras.ADME_EXECUTIVE_AGENCY_CONFIG_INFO)) {
             executiveAgencyConfigInfo = intent.getStringExtra(Extras.ADME_EXECUTIVE_AGENCY_CONFIG_INFO);
         }
@@ -229,42 +343,55 @@ public class ADMEExecutiveAgencyConfigActivity extends BaseActivity implements V
 
     private void initAdapter() {
         String[] dataSettlementData = getResources().getStringArray(R.array.adme_executive_agency_data_settlement);
-//        dataSettlementAdapter = new ArrayAdapter<>(this, R.layout.spinner_item, debugData);
         dataSettlementAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, dataSettlementData);
         dataSettlementAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mSpDataSettlementMethod.setAdapter(dataSettlementAdapter);
-        mSpDataSettlementMethod.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
-                String result = mSpDataSettlementMethod.getSelectedItem().toString().replace("mm", "");
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
-            }
-        });
-
 
         String[] logOutputData = getResources().getStringArray(R.array.adme_executive_agency_log_output);
         logOutputModeAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, logOutputData);
         logOutputModeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mSpLogOutputMode.setAdapter(logOutputModeAdapter);
-        mSpLogOutputMode.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
-                String result = mSpLogOutputMode.getSelectedItem().toString().replace("mm", "");
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
-            }
-        });
     }
 
 
-    private void initData() {
+    private void initSensorData() {
+        if (TextUtils.isEmpty(dagConfigInfo)) {
+            Timber.e("dagConfigInfo 为空或者null");
+            return;
+        }
+
+        if (dagConfigInfo.length() < CommandResult.RESULT_MIN_LENGTH) {
+            Timber.e("dagConfigInfo 长度过短:" + dagConfigInfo);
+            return;
+        }
+
+        if (!dagConfigInfo.startsWith(CommandResult.COMMAND_RESULT_HEADER)) {
+            Timber.e("dagConfigInfo 格式错误:" + dagConfigInfo);
+            return;
+        }
+
+        String[] cmdArray = dagConfigInfo.replace("\r\n", "").split(",");
+        if (cmdArray.length < 8) {
+            Timber.e("dagConfigInfo 格式错误:" + dagConfigInfo);
+            return;
+        }
+
+        mEtCollectorAddress.setText(cmdArray[1]);
+        mEtCollectorCollectInterval.setText(cmdArray[2]);
+        mEtCollectorSolutionInterval.setText(cmdArray[3]);
+        mEtCommunicationModuleSleepInterval.setText(cmdArray[4]);
+        mEtSensorType.setText(cmdArray[5]);
+        mEtSensorAddress.setText(cmdArray[6]);
+
+        try {
+            mEtSensorCorrectionValue.setText(String.format("%.2f", cmdArray[7]));
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
+
+    private void initExecutiveAgencyData() {
         if (TextUtils.isEmpty(executiveAgencyConfigInfo)) {
             Timber.e("executiveAgencyConfigInfo 为空或者null");
             return;
@@ -348,6 +475,35 @@ public class ADMEExecutiveAgencyConfigActivity extends BaseActivity implements V
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
+            case R.id.collector_address:
+                showTipDialog(getResources().getString(R.string.dag_collector_addres));
+                break;
+
+            case R.id.collector_collect_interval:
+                showTipDialog(getResources().getString(R.string.dag_collector_collect_interval));
+                break;
+
+            case R.id.collector_solution_interval:
+                showTipDialog(getResources().getString(R.string.dag_collector_solution_interval));
+                break;
+
+            case R.id.communication_module_sleep_interval:
+                showTipDialog(getResources().getString(R.string.dag_communication_module_sleep_interval));
+                break;
+
+            case R.id.sensor_type:
+                showTipDialog(getResources().getString(R.string.dag_sensor_type));
+                break;
+
+            case R.id.sensor_address:
+                showTipDialog(getResources().getString(R.string.dag_sensor_address));
+                break;
+
+            case R.id.sensor_correction_value:
+                showTipDialog(getResources().getString(R.string.dag_sensor_correction_value));
+                break;
+
+
             case R.id.data_settlement_method:
                 showTipDialog(getResources().getString(R.string.adme_data_settlement_method));
                 break;
@@ -392,6 +548,7 @@ public class ADMEExecutiveAgencyConfigActivity extends BaseActivity implements V
                 showTipDialog(getResources().getString(R.string.adme_measuring_pitch));
                 break;
 
+
             case R.id.btn_confirm_complete:
                 if (!MCloudApp.isIsBluetoothDeviceConnected()) {
                     ToastUtils.show("设备已断开连接，暂无法进行设置");
@@ -402,104 +559,28 @@ public class ADMEExecutiveAgencyConfigActivity extends BaseActivity implements V
         }
     }
 
+
     private void doConfirm() {
-        strWaitingIntervalPerRound = mEtWaitingIntervalPerRound.getText().toString().trim();
-        strMotorDriveAddress = mEtMotorDriveAddress.getText().toString().trim();
-        strMotorMovementTime = mEtMotorMovementTime.getText().toString().trim();
-        strMotorPullUpSpeed = mEtMotorPullUpSpeed.getText().toString().trim();
-        strMotorPullDownSpeed = mEtMotorPullDownSpeed.getText().toString().trim();
-        strTractionLineLength = mEtTractionLineLength.getText().toString().trim();
-        strHoleDepth = mEtHoleDepth.getText().toString().trim();
-        strMeasuringPitch = mEtMeasuringPitch.getText().toString().trim();
-
-        if (TextUtils.isEmpty(strWaitingIntervalPerRound)) {
-            ToastUtils.show("每轮等待间隔不能为空");
+        if (!checkSensorInput()) {
             return;
         }
 
-        if (TextUtils.isEmpty(strMotorDriveAddress)) {
-            ToastUtils.show("电机驱动器地址不能为空");
+        if (!checkExecutiveAgencyInput()) {
             return;
         }
 
-        if (TextUtils.isEmpty(strMotorMovementTime)) {
-            ToastUtils.show("电机运动时间不能为空");
-            return;
-        }
+        //拼接传感器参数配置指令
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("##7001,");
+        stringBuilder.append(collectorAddress + ",");
+        stringBuilder.append(collectorCollectInterval + ",");
+        stringBuilder.append(collectorSolutionInterval + ",");
+        stringBuilder.append(communicationModuleSleepInterval + ",");
+        stringBuilder.append(sensorType + ",");
+        stringBuilder.append(sensorAddress + ",");
+        stringBuilder.append(sensorCorrectionValue + "\r\n");
 
-        if (TextUtils.isEmpty(strMotorPullUpSpeed)) {
-            ToastUtils.show("电机上拉速度不能为空");
-            return;
-        }
-
-        if (TextUtils.isEmpty(strMotorPullDownSpeed)) {
-            ToastUtils.show("电机下拉速度不能为空");
-            return;
-        }
-
-        if (TextUtils.isEmpty(strTractionLineLength)) {
-            ToastUtils.show("牵引线长不能为空");
-            return;
-        }
-
-        if (TextUtils.isEmpty(strHoleDepth)) {
-            ToastUtils.show("测孔深不能为空");
-            return;
-        }
-
-        if (TextUtils.isEmpty(strMeasuringPitch)) {
-            ToastUtils.show("测量间距不能为空");
-            return;
-        }
-
-        if (Integer.parseInt(strWaitingIntervalPerRound) < 0) {
-            ToastUtils.show("采集器采集间隔必须输入正数");
-            return;
-        }
-
-
-        if (Integer.parseInt(strWaitingIntervalPerRound) < 0) {
-            ToastUtils.show("每轮等待间隔必须输入正数");
-            return;
-        }
-
-        int address = Integer.parseInt(strMotorDriveAddress);
-        if (address < 0 || address >= 255) {
-            ToastUtils.show("电机驱动器地址输入有误");
-            return;
-        }
-
-        if (Integer.parseInt(strMotorMovementTime) < 0) {
-            ToastUtils.show("电机运动时间必须输入正数");
-            return;
-        }
-
-        if (Integer.parseInt(strMotorPullUpSpeed) < 0) {
-            ToastUtils.show("电机上拉速度必须输入正数");
-            return;
-        }
-
-        if (Integer.parseInt(strMotorPullDownSpeed) < 0) {
-            ToastUtils.show("电机下放速度必须输入正数");
-            return;
-        }
-
-        if (Double.parseDouble(strTractionLineLength) < 0) {
-            ToastUtils.show("牵引线长必须输入正数");
-            return;
-        }
-
-        if (Double.parseDouble(strHoleDepth) < 0) {
-            ToastUtils.show("测孔深度必须输入正数");
-            return;
-        }
-
-        if (Integer.parseInt(strMeasuringPitch) < 0) {
-            ToastUtils.show("测量间距必须输入正数");
-            return;
-        }
-
-
+        //拼接执行机构参数配置指令
         StringBuilder sbExecutiveAgency = new StringBuilder();
         sbExecutiveAgency.append("##7003,");
         if (mSpDataSettlementMethod.getSelectedItemPosition() == 0) {
@@ -535,10 +616,244 @@ public class ADMEExecutiveAgencyConfigActivity extends BaseActivity implements V
         sbExecutiveAgency.append(strHoleDepth + ",");
         sbExecutiveAgency.append(strMeasuringPitch + "\r\n");
 
-        String cmdStr = String.valueOf(sbExecutiveAgency);
-        Message msg = new Message(UUID.randomUUID().toString(), cmdStr, true);
-        mdBluetoothManager.writeMessage(msg);
-        Timber.d("发送执行机构参数配置指令===" + cmdStr);
-//        finish();
+        String cmdStr = String.valueOf(stringBuilder);
+        sendCommand(cmdStr);
+
+        cmdStr = String.valueOf(sbExecutiveAgency);
+        sendCommand(cmdStr);
+
+
+        ToastUtils.show("正在发送配置指令...");
+    }
+
+
+    private void showSaveDialog() {
+        MaterialDialog.Builder mBuilder = new MaterialDialog.Builder(ADMESensorExecutiveAgencyConfigActivity.this);
+        mBuilder.title("温馨提示：")
+                .content("关闭自动监测，将导致设备自动关机进入休眠状态。请确认是否关闭")
+                .contentColor(Color.parseColor("#000000"))
+                .canceledOnTouchOutside(false)
+                .positiveText("确定")
+                .negativeText("取消")
+                .negativeColor(Color.parseColor("#807B7B"));
+        MaterialDialog mMaterialDialog = mBuilder.build();
+        mMaterialDialog.show();
+        mBuilder.onPositive(new MaterialDialog.SingleButtonCallback() {
+            @Override
+            public void onClick(
+                    @NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                //发送关闭测试模式命令
+                sendCommand("##0191\r\n");
+            }
+        });
+        mBuilder.onNegative(new MaterialDialog.SingleButtonCallback() {
+            @Override
+            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                ADMESensorExecutiveAgencyConfigActivity.this.finish();
+            }
+        });
+    }
+
+
+    private void sendCommand(String cmd) {
+        Message msg = new Message(UUID.randomUUID().toString(), cmd, true);
+        if (mdBluetoothManager != null) {
+            mdBluetoothManager.writeMessage(msg);
+        }
+    }
+
+
+    private boolean checkSensorInput() {
+        collectorAddress = mEtCollectorAddress.getText().toString().trim();
+        collectorCollectInterval = mEtCollectorCollectInterval.getText().toString().trim();
+        collectorSolutionInterval = mEtCollectorSolutionInterval.getText().toString().trim();
+        communicationModuleSleepInterval = mEtCommunicationModuleSleepInterval.getText().toString().trim();
+        sensorType = mEtSensorType.getText().toString().trim();
+        sensorAddress = mEtSensorAddress.getText().toString().trim();
+        sensorCorrectionValue = mEtSensorCorrectionValue.getText().toString().trim();
+
+        if (TextUtils.isEmpty(collectorAddress)) {
+            ToastUtils.show("采集器地址不能为空");
+            return false;
+        }
+
+        if (TextUtils.isEmpty(collectorCollectInterval)) {
+            ToastUtils.show("采集器采集间隔不能为空");
+            return false;
+        }
+
+        if (TextUtils.isEmpty(collectorSolutionInterval)) {
+            ToastUtils.show("采集器解算间隔不能为空");
+            return false;
+        }
+
+        if (TextUtils.isEmpty(communicationModuleSleepInterval)) {
+            ToastUtils.show("通讯模块休眠间隔不能为空");
+            return false;
+        }
+
+        if (TextUtils.isEmpty(sensorType)) {
+            ToastUtils.show("传感器类型不能为空");
+            return false;
+        }
+
+        if (TextUtils.isEmpty(sensorAddress)) {
+            ToastUtils.show("传感器地址不能为空");
+            return false;
+        }
+
+        if (TextUtils.isEmpty(sensorCorrectionValue)) {
+            ToastUtils.show("传感器修正值不能为空");
+            return false;
+        }
+
+        int address = Integer.parseInt(collectorAddress);
+        if (address < 0 || address >= 255) {
+            ToastUtils.show("采集器地址输入有误");
+            return false;
+        }
+
+        if (Integer.parseInt(collectorCollectInterval) < 0) {
+            ToastUtils.show("采集器采集间隔必须输入正数");
+            return false;
+        }
+
+        if (Integer.parseInt(collectorSolutionInterval) < 0) {
+            ToastUtils.show("采集器解算间隔必须输入正数");
+            return false;
+        }
+
+        if (Integer.parseInt(collectorSolutionInterval) < Integer.parseInt(collectorCollectInterval)) {
+            ToastUtils.show("采集器解算间隔必须大于等于采集间隔");
+            return false;
+        }
+
+        if (Integer.parseInt(communicationModuleSleepInterval) < 0) {
+            ToastUtils.show("通讯模块休眠间隔必须输入正数");
+            return false;
+        }
+
+        if (Integer.parseInt(sensorType) < 0) {
+            ToastUtils.show("传感器类型编号必须输入正数");
+            return false;
+        }
+
+        address = Integer.parseInt(sensorAddress);
+        if (address < 0 || address >= 255) {
+            ToastUtils.show("传感器地址输入有误");
+            return false;
+        }
+
+        if (Double.parseDouble(sensorCorrectionValue) < 0) {
+            ToastUtils.show("传感器修正值必须输入正数");
+            return false;
+        }
+
+        return true;
+    }
+
+
+    private boolean checkExecutiveAgencyInput() {
+
+        strWaitingIntervalPerRound = mEtWaitingIntervalPerRound.getText().toString().trim();
+        strMotorDriveAddress = mEtMotorDriveAddress.getText().toString().trim();
+        strMotorMovementTime = mEtMotorMovementTime.getText().toString().trim();
+        strMotorPullUpSpeed = mEtMotorPullUpSpeed.getText().toString().trim();
+        strMotorPullDownSpeed = mEtMotorPullDownSpeed.getText().toString().trim();
+        strTractionLineLength = mEtTractionLineLength.getText().toString().trim();
+        strHoleDepth = mEtHoleDepth.getText().toString().trim();
+        strMeasuringPitch = mEtMeasuringPitch.getText().toString().trim();
+
+        if (TextUtils.isEmpty(strWaitingIntervalPerRound)) {
+            ToastUtils.show("每轮等待间隔不能为空");
+            return false;
+        }
+
+        if (TextUtils.isEmpty(strMotorDriveAddress)) {
+            ToastUtils.show("电机驱动器地址不能为空");
+            return false;
+        }
+
+        if (TextUtils.isEmpty(strMotorMovementTime)) {
+            ToastUtils.show("电机运动时间不能为空");
+            return false;
+
+        }
+
+        if (TextUtils.isEmpty(strMotorPullUpSpeed)) {
+            ToastUtils.show("电机上拉速度不能为空");
+            return false;
+        }
+
+        if (TextUtils.isEmpty(strMotorPullDownSpeed)) {
+            ToastUtils.show("电机下拉速度不能为空");
+            return false;
+        }
+
+        if (TextUtils.isEmpty(strTractionLineLength)) {
+            ToastUtils.show("牵引线长不能为空");
+            return false;
+        }
+
+        if (TextUtils.isEmpty(strHoleDepth)) {
+            ToastUtils.show("测孔深不能为空");
+            return false;
+        }
+
+        if (TextUtils.isEmpty(strMeasuringPitch)) {
+            ToastUtils.show("测量间距不能为空");
+            return false;
+        }
+
+        if (Integer.parseInt(strWaitingIntervalPerRound) < 0) {
+            ToastUtils.show("采集器采集间隔必须输入正数");
+            return false;
+        }
+
+
+        if (Integer.parseInt(strWaitingIntervalPerRound) < 0) {
+            ToastUtils.show("每轮等待间隔必须输入正数");
+            return false;
+        }
+
+        int address = Integer.parseInt(strMotorDriveAddress);
+        if (address < 0 || address >= 255) {
+            ToastUtils.show("电机驱动器地址输入有误");
+            return false;
+        }
+
+        if (Integer.parseInt(strMotorMovementTime) < 0) {
+            ToastUtils.show("电机运动时间必须输入正数");
+            return false;
+
+        }
+
+        if (Integer.parseInt(strMotorPullUpSpeed) < 0) {
+            ToastUtils.show("电机上拉速度必须输入正数");
+            return false;
+
+        }
+
+        if (Integer.parseInt(strMotorPullDownSpeed) < 0) {
+            ToastUtils.show("电机下放速度必须输入正数");
+            return false;
+        }
+
+        if (Double.parseDouble(strTractionLineLength) < 0) {
+            ToastUtils.show("牵引线长必须输入正数");
+            return false;
+        }
+
+        if (Double.parseDouble(strHoleDepth) < 0) {
+            ToastUtils.show("测孔深度必须输入正数");
+            return false;
+        }
+
+        if (Integer.parseInt(strMeasuringPitch) < 0) {
+            ToastUtils.show("测量间距必须输入正数");
+            return false;
+        }
+
+        return true;
     }
 }

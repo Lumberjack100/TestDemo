@@ -51,6 +51,7 @@
                         android:id="@+id/tv_device_name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:singleLine="true"
                         android:textColor="@color/app_color_blue"
                         tools:text="物联网数据采集器" />
 

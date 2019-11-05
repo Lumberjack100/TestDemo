@@ -134,31 +134,29 @@
         <activity
             android:name=".ui.activity.device.RainConfigActivity"
             android:windowSoftInputMode="adjustPan|stateHidden" />
-
         <activity
             android:name=".ui.activity.ConfigDASActivity"
             android:windowSoftInputMode="adjustPan|stateHidden" />
-
         <activity
             android:name=".ui.activity.ConfigE60Activity"
             android:label="E60设备配置页面"
             android:windowSoftInputMode="adjustPan|stateHidden" />
-
         <activity
             android:name=".ui.activity.ConfigADMEActivity"
             android:windowSoftInputMode="adjustPan|stateHidden" />
-
         <activity
             android:name=".ui.activity.ScanActivity"
             android:theme="@style/ScanActivityTheme" />
-
         <activity
             android:name=".ui.activity.device.sensor.ADMESensorConfigActivity"
             android:windowSoftInputMode="adjustPan|stateHidden" />
-
         <activity
             android:name=".ui.activity.device.ADMEExecutiveAgencyConfigActivity"
             android:windowSoftInputMode="adjustPan|stateHidden" />
+
+        <activity android:name=".ui.activity.device.sensor.ADMESensorExecutiveAgencyConfigActivity"
+            android:windowSoftInputMode="adjustPan|stateHidden"/>
+
 
     </application>
 

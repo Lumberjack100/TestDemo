@@ -326,11 +326,13 @@
 
         <View
             android:layout_width="match_parent"
-            android:layout_height="1dp" />
+            android:layout_height="1dp"
+            android:visibility="gone" />
 
         <include
             android:id="@+id/executive_agency_param_layout"
-            layout="@layout/device_config_choose_item" />
+            layout="@layout/device_config_choose_item"
+            android:visibility="gone" />
 
         <View
             android:layout_width="match_parent"

@@ -430,7 +430,7 @@ public class ConfigADMEActivity extends BaseActivity {
                     break;
 
                 case Constants.BT_MESSAGE_WRITE_SUCCESS:
-                    ToastUtils.show("指令已发送");
+//                    ToastUtils.show("指令已发送");
                     break;
 
                 case Constants.BT_MESSAGE_WRITE_FAIL:
@@ -456,14 +456,14 @@ public class ConfigADMEActivity extends BaseActivity {
                     break;
 
                 case Constants.MESSAGE_RESPONSE_TIME_OUT:
-                    ToastUtils.show("消息等待响应超时！");
+//                    ToastUtils.show("消息等待响应超时！");
                     break;
 
                 case Constants.REFRESH_RUN_STATE:
                     break;
 
                 case Constants.MESSAGE_RESPONSE_SAVE_SETTINGS_SUCCESS:
-                    ToastUtils.show("设置信息已保存！");
+//                    ToastUtils.show("设置信息已保存！");
                     break;
 
                 case Constants.BT_REQUEST_MTU_FAIL:
@@ -489,7 +489,7 @@ public class ConfigADMEActivity extends BaseActivity {
                     break;
 
                 case Constants.MESSAGE_LOCK_REBOOT_DEVICE:
-                    ToastUtils.show("蓝牙通讯已就绪！");
+//                    ToastUtils.show("蓝牙通讯已就绪！");
                     sendDeviceStateComd();//unlock后发送指令
                     break;
 

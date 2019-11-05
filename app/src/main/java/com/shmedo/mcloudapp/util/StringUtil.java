@@ -32,7 +32,7 @@ public class StringUtil {
     /**
      * 正则表达式：URL
      */
-    public static final String REGEX_URL = "(https?|ftp|file)://[-A-Za-z0-9+&@#/%?=~_|!:,.;]+[-A-Za-z0-9+&@#/%=~_|]";
+    public static final String REGEX_URL = "[-A-Za-z0-9+&@#/%?=~_|!:,.;]+[-A-Za-z0-9+&@#/%=~_|]";
 
 
     public static boolean isNullOrEmpty(String s) {

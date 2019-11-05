@@ -37,7 +37,7 @@ import com.shmedo.mcloudapp.model.Extras;
 import com.shmedo.mcloudapp.ui.activity.ConfigADMEActivity;
 import com.shmedo.mcloudapp.ui.activity.device.ADMEExecutiveAgencyConfigActivity;
 import com.shmedo.mcloudapp.ui.activity.device.senior.InstructionDebugActivity;
-import com.shmedo.mcloudapp.ui.activity.device.sensor.ADMESensorConfigActivity;
+import com.shmedo.mcloudapp.ui.activity.device.sensor.ADMESensorExecutiveAgencyConfigActivity;
 import com.shmedo.mcloudapp.util.DaoManager;
 import com.shmedo.mcloudapp.util.StringUtil;
 import com.shmedo.mcloudapp.views.ClearEditText;
@@ -232,7 +232,7 @@ public class ADMEHomeFragment extends BaseFragment {
         mBtnEdit2 = serverAddressLayout.findViewById(R.id.editBtn2);
         mEtAddress2.setEnabled(false);
 
-        ((TextView) dagConfigLayout.findViewById(R.id.tv_config_name)).setText("采集器参数设置");
+        ((TextView) dagConfigLayout.findViewById(R.id.tv_config_name)).setText("采集器和执行机构参数设置");
         ((TextView) executiveAgencyParamLayout.findViewById(R.id.tv_config_name)).setText("执行机构参数配置");
         ((TextView) customCommandTestLayout.findViewById(R.id.tv_config_name)).setText("自定义指令输入");
 
@@ -510,7 +510,9 @@ public class ADMEHomeFragment extends BaseFragment {
                 break;
 
             case R.id.dag_config_layout:
-                ADMESensorConfigActivity.startActivity(getActivity(), dagConfigInfo);
+//                ADMESensorConfigActivity.startActivity(getActivity(), dagConfigInfo);
+
+                ADMESensorExecutiveAgencyConfigActivity.startActivity(getActivity(), dagConfigInfo, executiveAgencyConfigInfo);
                 break;
 
             case R.id.executive_agency_param_layout:

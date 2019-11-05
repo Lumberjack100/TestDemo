@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/scrollview"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:fadingEdge="none">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <include layout="@layout/activity_device_toolbar" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="5dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:minHeight="35dp"
+            android:paddingLeft="15dp">
+
+            <View
+                android:layout_width="7dp"
+                android:layout_height="20dp"
+                android:layout_marginRight="15dp"
+                android:background="@color/app_color_theme_6" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="采集器参数配置"
+                android:textColor="@color/black"
+                android:textSize="@dimen/text_size_16" />
+
+        </LinearLayout>
+
+        <include
+            android:id="@+id/collector_address_layout"
+            layout="@layout/sensor_config_item_with_edittext"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"/>
+
+        <include
+            android:id="@+id/collector_collect_interval_layout"
+            layout="@layout/sensor_config_item_with_edittext"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"/>
+
+        <include
+            android:id="@+id/collector_solution_interval_layout"
+            layout="@layout/sensor_config_item_with_edittext"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"/>
+
+        <include
+            android:id="@+id/communication_module_sleep_interval_layout"
+            layout="@layout/sensor_config_item_with_edittext"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"/>
+
+        <include
+            android:id="@+id/sensor_type_layout"
+            layout="@layout/sensor_config_item_with_edittext"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"/>
+
+        <include
+            android:id="@+id/sensor_address_layout"
+            layout="@layout/sensor_config_item_with_edittext"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"/>
+
+        <include
+            android:id="@+id/sensor_correction_value_layout"
+            layout="@layout/sensor_config_item_with_edittext"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:minHeight="35dp"
+            android:paddingLeft="15dp">
+
+            <View
+                android:layout_width="7dp"
+                android:layout_height="20dp"
+                android:layout_marginRight="15dp"
+                android:background="@color/app_color_theme_6" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="执行机构参数配置"
+                android:textColor="@color/black"
+                android:textSize="@dimen/text_size_16" />
+
+        </LinearLayout>
+
+        <include
+            android:id="@+id/data_settlement_method_layout"
+            layout="@layout/sensor_config_item_with_spinner" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp" />
+
+        <include
+            android:id="@+id/data_response_layout"
+            layout="@layout/device_config_switchview_item2" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp" />
+
+        <include
+            android:id="@+id/waiting_interval_per_round_layout"
+            layout="@layout/sensor_config_item_with_edittext" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp" />
+
+        <include
+            android:id="@+id/log_output_mode_layout"
+            layout="@layout/sensor_config_item_with_spinner" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp" />
+
+        <include
+            android:id="@+id/motor_drive_address_layout"
+            layout="@layout/sensor_config_item_with_edittext" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp" />
+
+        <include
+            android:id="@+id/motor_movement_time_layout"
+            layout="@layout/sensor_config_item_with_edittext" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp" />
+
+        <include
+            android:id="@+id/motor_pull_up_speed_layout"
+            layout="@layout/sensor_config_item_with_edittext" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp" />
+
+        <include
+            android:id="@+id/motor_pull_down_speed_layout"
+            layout="@layout/sensor_config_item_with_edittext" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp" />
+
+        <include
+            android:id="@+id/traction_line_length_layout"
+            layout="@layout/sensor_config_item_with_edittext" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp" />
+
+        <include
+            android:id="@+id/hole_depth_layout"
+            layout="@layout/sensor_config_item_with_edittext" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp" />
+
+        <include
+            android:id="@+id/measuring_pitch_layout"
+            layout="@layout/sensor_config_item_with_edittext" />
+
+
+        <Button
+            android:id="@+id/btn_confirm_complete"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="40dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginBottom="40dp"
+            android:background="@drawable/btn_select"
+            android:text="完成"
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_size_16" />
+
+    </LinearLayout>
+
+</ScrollView>
