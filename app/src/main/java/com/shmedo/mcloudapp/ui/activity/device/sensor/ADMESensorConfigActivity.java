@@ -21,7 +21,6 @@ import com.shmedo.mcloudapp.bluetooth.Message;
 import com.shmedo.mcloudapp.model.Extras;
 import com.shmedo.mcloudapp.views.ClearEditText;
 
-import java.text.DecimalFormat;
 import java.util.UUID;
 
 import butterknife.BindView;
@@ -202,9 +201,11 @@ public class ADMESensorConfigActivity extends BaseActivity implements View.OnCli
         mEtSensorType.setText(cmdArray[5]);
         mEtSensorAddress.setText(cmdArray[6]);
 
-
-        DecimalFormat df = new DecimalFormat("#.00");
-        mEtSensorCorrectionValue.setText(df.format(cmdArray[7]));
+        try {
+            mEtSensorCorrectionValue.setText( String.format("%.2f", cmdArray[7]));
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 
 

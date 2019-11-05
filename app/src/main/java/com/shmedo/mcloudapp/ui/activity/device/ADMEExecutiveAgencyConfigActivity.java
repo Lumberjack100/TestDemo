@@ -25,7 +25,6 @@ import com.shmedo.mcloudapp.bluetooth.MdBluetoothManager;
 import com.shmedo.mcloudapp.bluetooth.Message;
 import com.shmedo.mcloudapp.model.Extras;
 
-import java.text.DecimalFormat;
 import java.util.UUID;
 
 import butterknife.BindView;
@@ -316,9 +315,13 @@ public class ADMEExecutiveAgencyConfigActivity extends BaseActivity implements V
         mEtMotorPullUpSpeed.setText(cmdArray[7]);
         mEtMotorPullDownSpeed.setText(cmdArray[8]);
 
-        DecimalFormat df = new DecimalFormat("#.0");
-        mEtTractionLineLength.setText(df.format(cmdArray[9]));
-        mEtHoleDepth.setText(df.format(cmdArray[10]));
+        try {
+            mEtTractionLineLength.setText(String.format("%.1f", cmdArray[9]));
+            mEtHoleDepth.setText(String.format("%.1f", cmdArray[10]));
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
 
         mEtMeasuringPitch.setText(cmdArray[11]);
     }
