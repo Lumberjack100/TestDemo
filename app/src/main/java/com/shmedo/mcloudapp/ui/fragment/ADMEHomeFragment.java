@@ -39,6 +39,7 @@ import com.shmedo.mcloudapp.ui.activity.device.ADMEExecutiveAgencyConfigActivity
 import com.shmedo.mcloudapp.ui.activity.device.senior.InstructionDebugActivity;
 import com.shmedo.mcloudapp.ui.activity.device.sensor.ADMESensorConfigActivity;
 import com.shmedo.mcloudapp.util.DaoManager;
+import com.shmedo.mcloudapp.util.StringUtil;
 import com.shmedo.mcloudapp.views.ClearEditText;
 import com.shmedo.mcloudapp.views.editspinner.EditSpinner;
 
@@ -567,7 +568,7 @@ public class ADMEHomeFragment extends BaseFragment {
             return;
         }
 
-        if (!address.contains(".") || !address.contains(":")) {
+        if (!StringUtil.isUrl(address)) {
             ToastUtils.show("地址格式不正确");
             return;
         }
@@ -584,7 +585,7 @@ public class ADMEHomeFragment extends BaseFragment {
             return;
         }
 
-        if (!address.contains(".") || !address.contains(":")) {
+        if (!StringUtil.isUrl(address)) {
             ToastUtils.show("地址格式不正确");
             return;
         }
@@ -650,7 +651,7 @@ public class ADMEHomeFragment extends BaseFragment {
                 isRefreshingAddress = false;
                 hander.removeCallbacks(clearAnimationRunnable);
                 mIvRefreshAddr1.clearAnimation();
-                showToastOnUiThread("地址已刷新");
+                ToastUtils.show("地址已刷新");
             }
             mEtAddress1.setText(cmdArray[1] + ":" + cmdArray[2]);
             return;
@@ -678,7 +679,7 @@ public class ADMEHomeFragment extends BaseFragment {
                 isRefreshingAddress = false;
                 hander.removeCallbacks(clearAnimationRunnable);
                 mIvRefreshAddr2.clearAnimation();
-                showToastOnUiThread("地址已刷新");
+                ToastUtils.show("地址已刷新");
             }
             mEtAddress2.setText(cmdArray[1] + ":" + cmdArray[2]);
             return;
@@ -700,38 +701,38 @@ public class ADMEHomeFragment extends BaseFragment {
 
         //设置自动测量模式应答
         if (cmdStr.startsWith("$$7011") && cmdStr.endsWith("\r\n")) {
-            showToastOnUiThread("设置自动测量模式完成");
+            ToastUtils.show("设置自动测量模式完成");
             return;
         }
 
         //设置测试模式应答
         if (cmdStr.startsWith("$$7012") && cmdStr.endsWith("\r\n")) {
-            showToastOnUiThread("设置测试模式完成");
+            ToastUtils.show("设置测试模式完成");
             return;
         }
 
         //设置服务器地址1应答
         if (cmdStr.startsWith("$$2011") && cmdStr.endsWith("\r\n")) {
-            showToastOnUiThread("设置MD-NET服务器地址完成");
+            ToastUtils.show("设置MD-NET服务器地址完成");
             return;
         }
 
         //设置服务器地址2应答
         if (cmdStr.startsWith("$$2012") && cmdStr.endsWith("\r\n")) {
-            showToastOnUiThread("设置mCloud服务器地址完成");
+            ToastUtils.show("设置mCloud服务器地址完成");
             return;
         }
 
         //设置采集器参数应答
         if (cmdStr.startsWith("$$7001") && cmdStr.endsWith("\r\n")) {
-            showToastOnUiThread("设置采集器参数完成");
+            ToastUtils.show("设置采集器参数完成");
             dagConfigInfo = cmdStr;
             return;
         }
 
         //设置执行机构参数应答
         if (cmdStr.startsWith("$$7003") && cmdStr.endsWith("\r\n")) {
-            showToastOnUiThread("设置执行机构参数完成");
+            ToastUtils.show("设置执行机构参数完成");
             executiveAgencyConfigInfo = cmdStr;
             return;
         }
@@ -766,16 +767,6 @@ public class ADMEHomeFragment extends BaseFragment {
         if (mdBluetoothManager != null) {
             mdBluetoothManager.writeMessage(msg);
         }
-    }
-
-
-    private void showToastOnUiThread(final String msg) {
-        MCloudApp.getMainHandler().post(new Runnable() {
-            @Override
-            public void run() {
-                ToastUtils.show(msg);
-            }
-        });
     }
 
 

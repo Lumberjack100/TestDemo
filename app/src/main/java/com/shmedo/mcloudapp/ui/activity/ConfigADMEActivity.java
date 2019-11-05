@@ -407,7 +407,6 @@ public class ConfigADMEActivity extends BaseActivity {
         public boolean handleMessage(android.os.Message msg) {
             switch (msg.what) {
                 case Constants.BT_CONNECT:
-                    ToastUtils.show("设备已连接");
                     dismissLoadingDialog();
                     hander.removeCallbacks(dismssDialogRunnable);
                     isBlueConnected = true;
@@ -444,7 +443,6 @@ public class ConfigADMEActivity extends BaseActivity {
 
                 case Constants.VERIFY_RESULT:
                     if (msg.obj.equals("1")) {
-                        ToastUtils.show("蓝牙认证通过!");
                         sendDeviceStateComd();
                     } else {
                         ToastUtils.show("蓝牙认证失败!");

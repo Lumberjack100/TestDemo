@@ -29,6 +29,12 @@ public class StringUtil {
     public static final String REGEX_NUMERIC = "^[0-9]*$";
 
 
+    /**
+     * 正则表达式：URL
+     */
+    public static final String REGEX_URL = "(https?|ftp|file)://[-A-Za-z0-9+&@#/%?=~_|!:,.;]+[-A-Za-z0-9+&@#/%=~_|]";
+
+
     public static boolean isNullOrEmpty(String s) {
         return (s == null) || (s.length() == 0);
     }
@@ -84,6 +90,21 @@ public class StringUtil {
         }
 
         return Pattern.matches(REGEX_NUMERIC, code);
+    }
+
+
+    /**
+     * 是否URL
+     *
+     * @param url
+     * @return
+     */
+    public static boolean isUrl(String url) {
+        if (TextUtils.isEmpty(url)) {
+            return false;
+        }
+
+        return Pattern.matches(REGEX_URL, url);
     }
 
     public static String convertStringToHex(String str) {

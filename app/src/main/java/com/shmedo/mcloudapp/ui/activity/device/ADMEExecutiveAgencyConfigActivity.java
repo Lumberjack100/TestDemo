@@ -25,6 +25,7 @@ import com.shmedo.mcloudapp.bluetooth.MdBluetoothManager;
 import com.shmedo.mcloudapp.bluetooth.Message;
 import com.shmedo.mcloudapp.model.Extras;
 
+import java.text.DecimalFormat;
 import java.util.UUID;
 
 import butterknife.BindView;
@@ -128,7 +129,7 @@ public class ADMEExecutiveAgencyConfigActivity extends BaseActivity implements V
         mIvWaitingIntervalPerRound = waitingIntervalPerRoundLayout.findViewById(R.id.itemTipIV);
         mEtWaitingIntervalPerRound = waitingIntervalPerRoundLayout.findViewById(R.id.itemValueET);
         mEtWaitingIntervalPerRound.setInputType(InputType.TYPE_CLASS_NUMBER);
-        mEtWaitingIntervalPerRound.setHint("请输入正整数...");
+        mEtWaitingIntervalPerRound.setHint("请输入正数...");
         mEtWaitingIntervalPerRound.setFilters(new InputFilter[]{new InputFilter.LengthFilter(4)});
 
         ((TextView) logOutputModeLayout.findViewById(R.id.itemNameTV)).setText("日志输出方式");
@@ -139,7 +140,7 @@ public class ADMEExecutiveAgencyConfigActivity extends BaseActivity implements V
         mIvMotorDriveAddress = motorDriveAddressLayout.findViewById(R.id.itemTipIV);
         mEtMotorDriveAddress = motorDriveAddressLayout.findViewById(R.id.itemValueET);
         mEtMotorDriveAddress.setInputType(InputType.TYPE_CLASS_NUMBER);
-        mEtMotorDriveAddress.setHint("请输入正整数...");
+        mEtMotorDriveAddress.setHint("请输入正数...");
         mEtMotorDriveAddress.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
 
 
@@ -147,7 +148,7 @@ public class ADMEExecutiveAgencyConfigActivity extends BaseActivity implements V
         mIvMotorMovementTime = motorMovementTimeLayout.findViewById(R.id.itemTipIV);
         mEtMotorMovementTime = motorMovementTimeLayout.findViewById(R.id.itemValueET);
         mEtMotorMovementTime.setInputType(InputType.TYPE_CLASS_NUMBER);
-        mEtMotorMovementTime.setHint("请输入正整数...");
+        mEtMotorMovementTime.setHint("请输入正数...");
         mEtMotorMovementTime.setFilters(new InputFilter[]{new InputFilter.LengthFilter(5)});
 
 
@@ -155,7 +156,7 @@ public class ADMEExecutiveAgencyConfigActivity extends BaseActivity implements V
         mIvMotorPullUpSpeed = motorPullUpSpeedLayout.findViewById(R.id.itemTipIV);
         mEtMotorPullUpSpeed = motorPullUpSpeedLayout.findViewById(R.id.itemValueET);
         mEtMotorPullUpSpeed.setInputType(InputType.TYPE_CLASS_NUMBER);
-        mEtMotorPullUpSpeed.setHint("请输入正整数...");
+        mEtMotorPullUpSpeed.setHint("请输入正数...");
         mEtMotorPullUpSpeed.setFilters(new InputFilter[]{new InputFilter.LengthFilter(5)});
 
 
@@ -163,7 +164,7 @@ public class ADMEExecutiveAgencyConfigActivity extends BaseActivity implements V
         mIvMotorPullDownSpeed = motorPullDownSpeedLayout.findViewById(R.id.itemTipIV);
         mEtMotorPullDownSpeed = motorPullDownSpeedLayout.findViewById(R.id.itemValueET);
         mEtMotorPullDownSpeed.setInputType(InputType.TYPE_CLASS_NUMBER);
-        mEtMotorPullDownSpeed.setHint("请输入正整数...");
+        mEtMotorPullDownSpeed.setHint("请输入正数...");
         mEtMotorPullDownSpeed.setFilters(new InputFilter[]{new InputFilter.LengthFilter(5)});
 
 
@@ -172,18 +173,22 @@ public class ADMEExecutiveAgencyConfigActivity extends BaseActivity implements V
         mEtTractionLineLength = tractionLineLengthLayout.findViewById(R.id.itemValueET);
         mEtTractionLineLength.setInputType(InputType.TYPE_CLASS_PHONE);
         mEtTractionLineLength.setHint("请输入1位正小数...");
+        mEtTractionLineLength.setFilters(new InputFilter[]{new InputFilter.LengthFilter(6)});
+
 
         ((TextView) holeDepthLayout.findViewById(R.id.itemNameTV)).setText("测孔深（m）");
         mIvHoleDepth = holeDepthLayout.findViewById(R.id.itemTipIV);
         mEtHoleDepth = holeDepthLayout.findViewById(R.id.itemValueET);
         mEtHoleDepth.setInputType(InputType.TYPE_CLASS_PHONE);
         mEtHoleDepth.setHint("请输入1位正小数...");
+        mEtHoleDepth.setFilters(new InputFilter[]{new InputFilter.LengthFilter(6)});
+
 
         ((TextView) measuringPitchLayout.findViewById(R.id.itemNameTV)).setText("测量间距（mm）");
         mIvMeasuringPitch = measuringPitchLayout.findViewById(R.id.itemTipIV);
         mEtMeasuringPitch = measuringPitchLayout.findViewById(R.id.itemValueET);
         mEtMeasuringPitch.setInputType(InputType.TYPE_CLASS_NUMBER);
-        mEtMeasuringPitch.setHint("请输入正整数...");
+        mEtMeasuringPitch.setHint("请输入正数...");
         mEtMeasuringPitch.setFilters(new InputFilter[]{new InputFilter.LengthFilter(5)});
 
 
@@ -310,8 +315,11 @@ public class ADMEExecutiveAgencyConfigActivity extends BaseActivity implements V
         mEtMotorMovementTime.setText(cmdArray[6]);
         mEtMotorPullUpSpeed.setText(cmdArray[7]);
         mEtMotorPullDownSpeed.setText(cmdArray[8]);
-        mEtTractionLineLength.setText(cmdArray[9]);
-        mEtHoleDepth.setText(cmdArray[10]);
+
+        DecimalFormat df = new DecimalFormat("#.0");
+        mEtTractionLineLength.setText(df.format(cmdArray[9]));
+        mEtHoleDepth.setText(df.format(cmdArray[10]));
+
         mEtMeasuringPitch.setText(cmdArray[11]);
     }
 
@@ -441,50 +449,50 @@ public class ADMEExecutiveAgencyConfigActivity extends BaseActivity implements V
             return;
         }
 
-        if (Integer.parseInt(strWaitingIntervalPerRound) <= 0) {
-            ToastUtils.show("采集器采集间隔必须输入正整数");
+        if (Integer.parseInt(strWaitingIntervalPerRound) < 0) {
+            ToastUtils.show("采集器采集间隔必须输入正数");
             return;
         }
 
 
-        if (Integer.parseInt(strWaitingIntervalPerRound) <= 0) {
-            ToastUtils.show("每轮等待间隔必须输入正整数");
+        if (Integer.parseInt(strWaitingIntervalPerRound) < 0) {
+            ToastUtils.show("每轮等待间隔必须输入正数");
             return;
         }
 
         int address = Integer.parseInt(strMotorDriveAddress);
-        if (address <= 0 || address >= 255) {
+        if (address < 0 || address >= 255) {
             ToastUtils.show("电机驱动器地址输入有误");
             return;
         }
 
-        if (Integer.parseInt(strMotorMovementTime) <= 0) {
-            ToastUtils.show("电机运动时间必须输入正整数");
+        if (Integer.parseInt(strMotorMovementTime) < 0) {
+            ToastUtils.show("电机运动时间必须输入正数");
             return;
         }
 
-        if (Integer.parseInt(strMotorPullUpSpeed) <= 0) {
-            ToastUtils.show("电机上拉速度必须输入正整数");
+        if (Integer.parseInt(strMotorPullUpSpeed) < 0) {
+            ToastUtils.show("电机上拉速度必须输入正数");
             return;
         }
 
-        if (Integer.parseInt(strMotorPullDownSpeed) <= 0) {
-            ToastUtils.show("电机下放速度必须输入正整数");
+        if (Integer.parseInt(strMotorPullDownSpeed) < 0) {
+            ToastUtils.show("电机下放速度必须输入正数");
             return;
         }
 
-        if (Double.parseDouble(strTractionLineLength) <= 0) {
+        if (Double.parseDouble(strTractionLineLength) < 0) {
             ToastUtils.show("牵引线长必须输入正数");
             return;
         }
 
-        if (Double.parseDouble(strHoleDepth) <= 0) {
+        if (Double.parseDouble(strHoleDepth) < 0) {
             ToastUtils.show("测孔深度必须输入正数");
             return;
         }
 
-        if (Integer.parseInt(strMeasuringPitch) <= 0) {
-            ToastUtils.show("测量间距必须输入正整数");
+        if (Integer.parseInt(strMeasuringPitch) < 0) {
+            ToastUtils.show("测量间距必须输入正数");
             return;
         }
 

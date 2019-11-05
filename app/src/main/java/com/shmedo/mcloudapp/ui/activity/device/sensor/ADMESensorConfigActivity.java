@@ -21,6 +21,7 @@ import com.shmedo.mcloudapp.bluetooth.Message;
 import com.shmedo.mcloudapp.model.Extras;
 import com.shmedo.mcloudapp.views.ClearEditText;
 
+import java.text.DecimalFormat;
 import java.util.UUID;
 
 import butterknife.BindView;
@@ -95,28 +96,28 @@ public class ADMESensorConfigActivity extends BaseActivity implements View.OnCli
         mIvCollectorAddress = collectorAddressLayout.findViewById(R.id.itemTipIV);
         mEtCollectorAddress = collectorAddressLayout.findViewById(R.id.itemValueET);
         mEtCollectorAddress.setInputType(InputType.TYPE_CLASS_NUMBER);
-        mEtCollectorAddress.setHint("请输入正整数...");
+        mEtCollectorAddress.setHint("请输入正数...");
         mEtCollectorAddress.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
 
         ((TextView) collectorCollectIntervalLayout.findViewById(R.id.itemNameTV)).setText("采集器采集间隔（s）");
         mIvCollectorCollectInterval = collectorCollectIntervalLayout.findViewById(R.id.itemTipIV);
         mEtCollectorCollectInterval = collectorCollectIntervalLayout.findViewById(R.id.itemValueET);
         mEtCollectorCollectInterval.setInputType(InputType.TYPE_CLASS_NUMBER);
-        mEtCollectorCollectInterval.setHint("请输入正整数...");
+        mEtCollectorCollectInterval.setHint("请输入正数...");
         mEtCollectorCollectInterval.setFilters(new InputFilter[]{new InputFilter.LengthFilter(5)});
 
         ((TextView) collectorSolutionIntervalLayout.findViewById(R.id.itemNameTV)).setText("采集器解算间隔（s）");
         mIvCollectorSolutionInterval = collectorSolutionIntervalLayout.findViewById(R.id.itemTipIV);
         mEtCollectorSolutionInterval = collectorSolutionIntervalLayout.findViewById(R.id.itemValueET);
         mEtCollectorSolutionInterval.setInputType(InputType.TYPE_CLASS_NUMBER);
-        mEtCollectorSolutionInterval.setHint("请输入正整数...");
+        mEtCollectorSolutionInterval.setHint("请输入正数...");
         mEtCollectorSolutionInterval.setFilters(new InputFilter[]{new InputFilter.LengthFilter(5)});
 
         ((TextView) communicationModuleSleepIntervalLayout.findViewById(R.id.itemNameTV)).setText("通讯模块休眠间隔（s）");
         mIvCommunicationModuleSleepInterval = communicationModuleSleepIntervalLayout.findViewById(R.id.itemTipIV);
         mEtCommunicationModuleSleepInterval = communicationModuleSleepIntervalLayout.findViewById(R.id.itemValueET);
         mEtCommunicationModuleSleepInterval.setInputType(InputType.TYPE_CLASS_NUMBER);
-        mEtCommunicationModuleSleepInterval.setHint("请输入正整数...");
+        mEtCommunicationModuleSleepInterval.setHint("请输入正数...");
         mEtCommunicationModuleSleepInterval.setFilters(new InputFilter[]{new InputFilter.LengthFilter(5)});
         mEtCommunicationModuleSleepInterval.setText("5");
 
@@ -124,14 +125,14 @@ public class ADMESensorConfigActivity extends BaseActivity implements View.OnCli
         mIvSensorType = sensorTypeLayout.findViewById(R.id.itemTipIV);
         mEtSensorType = sensorTypeLayout.findViewById(R.id.itemValueET);
         mEtSensorType.setInputType(InputType.TYPE_CLASS_NUMBER);
-        mEtSensorType.setHint("请输入正整数...");
+        mEtSensorType.setHint("请输入正数...");
         mEtSensorType.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
 
         ((TextView) sensorAddressLayout.findViewById(R.id.itemNameTV)).setText("传感器地址");
         mIvSensorAddress = sensorAddressLayout.findViewById(R.id.itemTipIV);
         mEtSensorAddress = sensorAddressLayout.findViewById(R.id.itemValueET);
         mEtSensorAddress.setInputType(InputType.TYPE_CLASS_NUMBER);
-        mEtSensorAddress.setHint("请输入正整数...");
+        mEtSensorAddress.setHint("请输入正数...");
         mEtSensorAddress.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
 
         ((TextView) sensorCorrectionValueLayout.findViewById(R.id.itemNameTV)).setText("传感器修正值（mm）");
@@ -140,6 +141,7 @@ public class ADMESensorConfigActivity extends BaseActivity implements View.OnCli
         mEtSensorCorrectionValue.setInputType(InputType.TYPE_CLASS_PHONE);
         mEtSensorCorrectionValue.setHint("请输入两位正小数...");
         mEtSensorCorrectionValue.setText("0.00");
+        mEtSensorCorrectionValue.setFilters(new InputFilter[]{new InputFilter.LengthFilter(6)});
 
 
         mIvCollectorAddress.setId(R.id.collector_address);
@@ -199,7 +201,10 @@ public class ADMESensorConfigActivity extends BaseActivity implements View.OnCli
         mEtCommunicationModuleSleepInterval.setText(cmdArray[4]);
         mEtSensorType.setText(cmdArray[5]);
         mEtSensorAddress.setText(cmdArray[6]);
-        mEtSensorCorrectionValue.setText(cmdArray[7]);
+
+
+        DecimalFormat df = new DecimalFormat("#.00");
+        mEtSensorCorrectionValue.setText(df.format(cmdArray[7]));
     }
 
 
@@ -290,43 +295,43 @@ public class ADMESensorConfigActivity extends BaseActivity implements View.OnCli
         }
 
         int address = Integer.parseInt(collectorAddress);
-        if (address <= 0 || address >= 255) {
+        if (address < 0 || address >= 255) {
             ToastUtils.show("采集器地址输入有误");
             return;
         }
 
-        if (Integer.parseInt(collectorCollectInterval) <= 0) {
-            ToastUtils.show("采集器采集间隔必须输入正整数");
+        if (Integer.parseInt(collectorCollectInterval) < 0) {
+            ToastUtils.show("采集器采集间隔必须输入正数");
             return;
         }
 
-        if (Integer.parseInt(collectorSolutionInterval) <= 0) {
-            ToastUtils.show("采集器解算间隔必须输入正整数");
+        if (Integer.parseInt(collectorSolutionInterval) < 0) {
+            ToastUtils.show("采集器解算间隔必须输入正数");
             return;
         }
 
-        if (Integer.parseInt(collectorSolutionInterval) <= Integer.parseInt(collectorCollectInterval)) {
-            ToastUtils.show("采集器解算间隔必须大于采集间隔");
+        if (Integer.parseInt(collectorSolutionInterval) < Integer.parseInt(collectorCollectInterval)) {
+            ToastUtils.show("采集器解算间隔必须大于等于采集间隔");
             return;
         }
 
-        if (Integer.parseInt(communicationModuleSleepInterval) <= 0) {
-            ToastUtils.show("通讯模块休眠间隔必须输入正整数");
+        if (Integer.parseInt(communicationModuleSleepInterval) < 0) {
+            ToastUtils.show("通讯模块休眠间隔必须输入正数");
             return;
         }
 
-        if (Integer.parseInt(sensorType) <= 0) {
-            ToastUtils.show("传感器类型编号必须输入正整数");
+        if (Integer.parseInt(sensorType) < 0) {
+            ToastUtils.show("传感器类型编号必须输入正数");
             return;
         }
 
         address = Integer.parseInt(sensorAddress);
-        if (address <= 0 || address >= 255) {
+        if (address < 0 || address >= 255) {
             ToastUtils.show("传感器地址输入有误");
             return;
         }
 
-        if (Double.parseDouble(sensorCorrectionValue) <= 0) {
+        if (Double.parseDouble(sensorCorrectionValue) < 0) {
             ToastUtils.show("传感器修正值必须输入正数");
             return;
         }
