@@ -439,6 +439,9 @@ public class ConfigADMEActivity extends BaseActivity {
                     hander.removeCallbacks(dismssConnectDialogRunnable);
 
                     if (msg.obj.equals("1")) {
+                        showLoadingDialog("查询设备配置参数...");
+                        hander.postDelayed(dismssDialogRunnable, 5000);
+
                         sendDeviceStateComd();
                     } else {
                         ToastUtils.show("蓝牙认证失败!");
@@ -548,10 +551,10 @@ public class ConfigADMEActivity extends BaseActivity {
                     return;
                 }
 
-                if (cmdStr.startsWith("$$0191")) {
-                    mHandler.sendEmptyMessage(Constants.MESSAGE_RESPONSE_SAVE_SETTINGS_SUCCESS);
-                    return;
-                }
+//                if (cmdStr.startsWith("$$0191")) {
+//                    mHandler.sendEmptyMessage(Constants.MESSAGE_RESPONSE_SAVE_SETTINGS_SUCCESS);
+//                    return;
+//                }
 
                 parserResult(cmdStr);
 
@@ -562,6 +565,12 @@ public class ConfigADMEActivity extends BaseActivity {
     }
 
     private void parserResult(String cmdStr) {
+        //查询执行机构参数应答
+        if (cmdStr.startsWith("$$7002") && cmdStr.endsWith("\r\n")) {
+            dismissLoadingDialog();
+            hander.removeCallbacks(dismssDialogRunnable);
+        }
+
 
         EventBus.getDefault().post(cmdStr);
     }

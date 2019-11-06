@@ -654,18 +654,9 @@ public class ADMESensorExecutiveAgencyConfigActivity extends BaseActivity implem
                     @NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                 //发送关闭测试模式命令
                 sendCommand("##0191\r\n");
-                ToastUtils.show("正在发送保存命令,设备即将重启并断开连接");
 
-                hander.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (mdBluetoothManager != null) {
-                            mdBluetoothManager.disconnect();
-                        }
-                        MCloudApp.setIsBluetoothDeviceConnected(false);
-                        ADMESensorExecutiveAgencyConfigActivity.this.finish();
-                    }
-                }, 5000);
+                showLoadingDialog("正在发送保存命令...");
+                hander.postDelayed(dismssDialogRunnable, 5000);
             }
         });
         mBuilder.onNegative(new MaterialDialog.SingleButtonCallback() {
@@ -704,9 +695,28 @@ public class ADMESensorExecutiveAgencyConfigActivity extends BaseActivity implem
 
         //设置执行机构参数应答
         if (cmdStr.startsWith("$$7003") && cmdStr.endsWith("\r\n")) {
+            hander.removeCallbacks(dismssDialogRunnable);
             dismissLoadingDialog();
             showSaveDialog();
             return;
+        }
+
+        //设置保存参数应答
+        if (cmdStr.startsWith("$$0191") && cmdStr.endsWith("\r\n")) {
+            hander.removeCallbacks(dismssDialogRunnable);
+            dismissLoadingDialog();
+            ToastUtils.show("已发送保存命令,设备即将重启并断开连接");
+
+            hander.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    if (mdBluetoothManager != null) {
+                        mdBluetoothManager.disconnect();
+                    }
+                    MCloudApp.setIsBluetoothDeviceConnected(false);
+                    ADMESensorExecutiveAgencyConfigActivity.this.finish();
+                }
+            }, 3000);
         }
     }
 
