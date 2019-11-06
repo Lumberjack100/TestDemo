@@ -406,7 +406,7 @@ public class ADMESensorExecutiveAgencyConfigActivity extends BaseActivity implem
         mEtSensorAddress.setText(cmdArray[6]);
 
         try {
-            mEtSensorCorrectionValue.setText(String.format("%.2f", cmdArray[7]));
+            mEtSensorCorrectionValue.setText(String.format("%.2f", Double.parseDouble(cmdArray[7])));
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -468,8 +468,8 @@ public class ADMESensorExecutiveAgencyConfigActivity extends BaseActivity implem
         mEtMotorPullDownSpeed.setText(cmdArray[8]);
 
         try {
-            mEtTractionLineLength.setText(String.format("%.1f", cmdArray[9]));
-            mEtHoleDepth.setText(String.format("%.1f", cmdArray[10]));
+            mEtTractionLineLength.setText(String.format("%.1f", Double.parseDouble(cmdArray[9])));
+            mEtHoleDepth.setText(String.format("%.1f", Double.parseDouble(cmdArray[10])));
 
         } catch (Exception ex) {
             ex.printStackTrace();

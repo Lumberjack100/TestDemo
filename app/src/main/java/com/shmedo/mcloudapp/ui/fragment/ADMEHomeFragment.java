@@ -332,6 +332,7 @@ public class ADMEHomeFragment extends BaseFragment {
                 }
 
                 if (mdBluetoothManager != null) {
+                    configADMEActivity.isAutoConnectBlue = false;
                     mdBluetoothManager.disconnect();
                     MCloudApp.setIsBluetoothDeviceConnected(false);
                 }

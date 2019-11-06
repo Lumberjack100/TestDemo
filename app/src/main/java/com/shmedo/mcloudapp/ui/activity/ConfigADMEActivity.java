@@ -84,7 +84,7 @@ public class ConfigADMEActivity extends BaseActivity {
     private Handler hander;
 
     private boolean isBlueConnected = false;//蓝牙设备是否连接
-    private boolean isAutoConnectBlue = true;//是否自动连接蓝牙
+    public boolean isAutoConnectBlue = true;//是否自动连接蓝牙
 
     private String SN = "";
     private String deviceInfo;
@@ -106,6 +106,13 @@ public class ConfigADMEActivity extends BaseActivity {
 
 
     private Runnable dismssDialogRunnable = new Runnable() {
+        @Override
+        public void run() {
+            dismissLoadingDialog();
+        }
+    };
+
+    private Runnable dismssConnectDialogRunnable = new Runnable() {
         @Override
         public void run() {
             dismissLoadingDialog();
@@ -285,7 +292,7 @@ public class ConfigADMEActivity extends BaseActivity {
         mdBluetoothManager.stopScan();
         mdBluetoothManager.connectDevice(device, this);
         showLoadingDialog("正在连接设备：" + SN);
-        hander.postDelayed(dismssDialogRunnable, 15000);
+        hander.postDelayed(dismssConnectDialogRunnable, 15000);
     }
 
     /**
@@ -395,8 +402,6 @@ public class ConfigADMEActivity extends BaseActivity {
         public boolean handleMessage(android.os.Message msg) {
             switch (msg.what) {
                 case Constants.BT_CONNECT:
-//                    dismissLoadingDialog();
-                    hander.removeCallbacks(dismssDialogRunnable);
                     isBlueConnected = true;
                     isAutoConnectBlue = true;
                     MCloudApp.setIsBluetoothDeviceConnected(true);
@@ -407,14 +412,14 @@ public class ConfigADMEActivity extends BaseActivity {
                 case Constants.BT_DISCONNECTED:
                     ToastUtils.show("设备断开连接");
                     dismissLoadingDialog();
+                    hander.removeCallbacks(dismssConnectDialogRunnable);
                     isBlueConnected = false;
                     MCloudApp.setIsBluetoothDeviceConnected(false);
                     EventBus.getDefault().post(new BluetoothStateEvent(false));
-//                        if (isAutoConnectBlue) {
-//                            //clearLocalStorage();
-//                            //断开蓝牙后重新连接
-//                            findAndConnectBleDevice();
-//                        }
+//                    if (isAutoConnectBlue) {
+//                        //断开蓝牙后重新连接
+//                        findAndConnectBleDevice();
+//                    }
                     break;
 
                 case Constants.BT_MESSAGE_WRITE_SUCCESS:
@@ -430,8 +435,10 @@ public class ConfigADMEActivity extends BaseActivity {
                     break;
 
                 case Constants.VERIFY_RESULT:
+                    dismissLoadingDialog();
+                    hander.removeCallbacks(dismssConnectDialogRunnable);
+
                     if (msg.obj.equals("1")) {
-                        dismissLoadingDialog();
                         sendDeviceStateComd();
                     } else {
                         ToastUtils.show("蓝牙认证失败!");
@@ -479,7 +486,7 @@ public class ConfigADMEActivity extends BaseActivity {
 
                 case Constants.MESSAGE_LOCK_REBOOT_DEVICE:
 //                    ToastUtils.show("蓝牙通讯已就绪！");
-                    sendDeviceStateComd();//unlock后发送指令
+//                    sendDeviceStateComd();//unlock后发送指令
                     break;
 
                 default:
@@ -711,24 +718,15 @@ public class ConfigADMEActivity extends BaseActivity {
 
 
     @Override
-    public void onPause() {
-        super.onPause();
-        dismissLoadingDialog();
-    }
-
-
-    @Override
     public void onBackPressed() {
         if (!HandleBackUtil.handleBackPress(this)) {
             if (isBlueConnected) {
                 showChangeModle(getResources().getString(R.string.finish_activity_disconnect_bluetooth_device), "1");
             } else {
                 dismissLoadingDialog();
-                hander.removeCallbacks(dismssDialogRunnable);
                 isBlueConnected = false;
                 isAutoConnectBlue = false;
                 MCloudApp.setIsBluetoothDeviceConnected(false);
-                mdBluetoothManager.stopScan();
                 disconnectDevice();
                 this.finish();
             }
