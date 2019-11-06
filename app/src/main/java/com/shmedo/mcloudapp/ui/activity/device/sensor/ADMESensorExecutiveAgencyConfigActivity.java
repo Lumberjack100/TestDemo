@@ -659,6 +659,10 @@ public class ADMESensorExecutiveAgencyConfigActivity extends BaseActivity implem
                 hander.postDelayed(new Runnable() {
                     @Override
                     public void run() {
+                        if (mdBluetoothManager != null) {
+                            mdBluetoothManager.disconnect();
+                        }
+                        MCloudApp.setIsBluetoothDeviceConnected(false);
                         ADMESensorExecutiveAgencyConfigActivity.this.finish();
                     }
                 }, 5000);

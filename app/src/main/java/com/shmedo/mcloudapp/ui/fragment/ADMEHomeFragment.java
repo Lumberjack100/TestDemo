@@ -321,6 +321,7 @@ public class ADMEHomeFragment extends BaseFragment {
      * switch按钮事件
      */
     private void setSwitchViewListener() {
+        //连接蓝牙开关
         sbBluetoothState.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, final boolean isChecked) {
@@ -332,6 +333,7 @@ public class ADMEHomeFragment extends BaseFragment {
 
                 if (mdBluetoothManager != null) {
                     mdBluetoothManager.disconnect();
+                    MCloudApp.setIsBluetoothDeviceConnected(false);
                 }
             }
         });
