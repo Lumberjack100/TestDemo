@@ -1,47 +1,31 @@
 package com.shmedo.mcloudapp.ui.activity;
 
 import android.app.Activity;
-import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothDevice;
-import android.bluetooth.BluetoothManager;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.hjq.toast.ToastUtils;
-import com.shmedo.das.utils.DesUtil;
-import com.shmedo.das.utils.OnBytePackage;
-import com.shmedo.das.utils.StringUtil;
 import com.shmedo.mcloudapp.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.base.BaseActivity;
-import com.shmedo.mcloudapp.bluetooth.BluetoothDeviceFindEventData;
-import com.shmedo.mcloudapp.bluetooth.BluetoothEvent;
-import com.shmedo.mcloudapp.bluetooth.BluetoothEventHandler;
 import com.shmedo.mcloudapp.bluetooth.MdBluetoothManager;
 import com.shmedo.mcloudapp.bluetooth.Message;
-import com.shmedo.mcloudapp.entity.event.BluetoothStateEvent;
 import com.shmedo.mcloudapp.model.Extras;
 import com.shmedo.mcloudapp.ui.fragment.ADMEHomeFragment;
 import com.shmedo.mcloudapp.ui.fragment.DeviceDetailsFragment;
 import com.shmedo.mcloudapp.ui.fragment.QueryDataFragment;
-import com.shmedo.mcloudapp.util.bleutil.ByteManagerUtil;
-import com.shmedo.mcloudapp.util.bleutil.Constants;
+import com.shmedo.mcloudapp.util.bleutil.BlueDeviceCommunicateUtil;
 import com.shmedo.mcloudapp.util.common.HandleBackUtil;
 
-import org.greenrobot.eventbus.EventBus;
-
-import java.util.Objects;
 import java.util.UUID;
 
 import butterknife.BindView;
@@ -55,12 +39,7 @@ import timber.log.Timber;
  * 创建时间:  2019-10-21
  * 描述：   ADME 设备配置页面
  */
-public class ConfigADMEActivity extends BaseActivity {
-
-    private static final int REQUEST_ENABLE_BT = 0x001;
-
-    @BindView(R.id.tv_save)
-    TextView mTvSave;
+public class ConfigADMEActivity extends BaseActivity implements BlueDeviceCommunicateUtil.ObtainDeviceStateCmdCallback {
 
     @BindView(R.id.tv_parameter)
     TextView mTvParameter;
@@ -79,12 +58,7 @@ public class ConfigADMEActivity extends BaseActivity {
     private DeviceDetailsFragment deviceDetailsFragment;//设备详情
     private Fragment currentFragment;
 
-    private MdBluetoothManager mdBluetoothManager;
-    private BluetoothAdapter mBluetoothAdapter;
-    private Handler hander;
-
-    private boolean isBlueConnected = false;//蓝牙设备是否连接
-    public boolean isAutoConnectBlue = true;//是否自动连接蓝牙
+    private BlueDeviceCommunicateUtil blueDeviceCommunicateUtil;
 
     private String SN = "";
     private String deviceInfo;
@@ -105,21 +79,6 @@ public class ConfigADMEActivity extends BaseActivity {
     }
 
 
-    private Runnable dismssDialogRunnable = new Runnable() {
-        @Override
-        public void run() {
-            dismissLoadingDialog();
-        }
-    };
-
-    private Runnable dismssConnectDialogRunnable = new Runnable() {
-        @Override
-        public void run() {
-            dismissLoadingDialog();
-        }
-    };
-
-
     @Override
     protected int initContentView() {
         return R.layout.activity_config_adme;
@@ -128,7 +87,6 @@ public class ConfigADMEActivity extends BaseActivity {
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-
         outState.putString("CurrentFragment", currentFragment.getClass().getName());
     }
 
@@ -136,14 +94,15 @@ public class ConfigADMEActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initView(savedInstanceState);
-        initBluetooth();
         getIntentData();
+
+        blueDeviceCommunicateUtil = BlueDeviceCommunicateUtil.getInstance();
+        blueDeviceCommunicateUtil.init(this, SN, macAddress, this);
+        blueDeviceCommunicateUtil.findAndConnectBleDevice();
     }
 
 
     private void initView(Bundle savedInstanceState) {
-        hander = new Handler();
-        mTvSave.setVisibility(View.GONE);
         mTvHighsetting.setVisibility(View.GONE);
 
         if (savedInstanceState != null) {  // “内存重启”时调用
@@ -169,15 +128,6 @@ public class ConfigADMEActivity extends BaseActivity {
     }
 
 
-    private void initBluetooth() {
-        final BluetoothManager bluetoothManager = (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
-        mBluetoothAdapter = Objects.requireNonNull(bluetoothManager).getAdapter();
-        MdBluetoothManager.init(mBluetoothAdapter, bluetoothManager);
-        mdBluetoothManager = MdBluetoothManager.getInstance();
-        mdBluetoothManager.setEventHandler(new MdBluetoothEventHandler());
-    }
-
-
     private void getIntentData() {
         Intent intent = getIntent();
         if (intent.getExtras().containsKey(Extras.DEVICE_MAC_ADDRESS)) {
@@ -188,8 +138,6 @@ public class ConfigADMEActivity extends BaseActivity {
             deviceInfo = intent.getStringExtra(Extras.CUR_DEVICE_NAME);
             String[] scanData = deviceInfo.split(",");
             SN = scanData[1];
-
-            findAndConnectBleDevice();
         }
     }
 
@@ -206,7 +154,6 @@ public class ConfigADMEActivity extends BaseActivity {
 
     @OnClick({R.id.back, R.id.tv_parameter, R.id.tv_query_data, R.id.tv_device_details})
     public void onClick(View v) {
-
         switch (v.getId()) {
             case R.id.back:
                 onBackPressed();
@@ -233,407 +180,42 @@ public class ConfigADMEActivity extends BaseActivity {
     }
 
 
-    /**
-     * 扫描蓝牙设备，主要用来判断要连接的设备是否能被搜索到
-     */
-    private void startDiscoveryDevice() {
-        //蓝牙未打开
-        if (!mBluetoothAdapter.isEnabled()) {
-            Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-            startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
-            return;
-        }
-
-        //蓝牙已打开时，开始扫描蓝牙设备
-        mdBluetoothManager.scanDevice(20, this);
-        if (null != mBluetoothAdapter && mBluetoothAdapter.isEnabled()) {
-            showLoadingDialog("正在搜索设备：" + SN);
-            hander.postDelayed(dismssDialogRunnable, 10000);
-        }
-    }
-
-    /**
-     * 搜索并连接指定的蓝牙设备
-     */
-    public void findAndConnectBleDevice() {
-        //通过蓝牙设备列表页面跳转过来时，直接连接设备
-        if (!TextUtils.isEmpty(macAddress)) {
-            BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(macAddress);
-            if (device != null) {
-                doConnect(device);
-            }
-            return;
-        }
-
-        //搜索附近蓝牙设备，避免指定的设备不在蓝牙范围内
-        startDiscoveryDevice();
-    }
-
-
-    /**
-     * 处理发现的蓝牙设备
-     */
-    private void handleDeviceFind(BluetoothDeviceFindEventData eventData) {
-        BluetoothDevice device = eventData.getNewDevice().getDevice();
-        if (device.getName() == null)
+    @Override
+    public void obtainDeviceStateCmd() {
+        if (MdBluetoothManager.getInstance() == null)
             return;
 
-        if (device.getName().contains(SN)) {
-            dismissLoadingDialog();
-            hander.removeCallbacks(dismssDialogRunnable);
-            doConnect(device);
-        }
-    }
-
-    /**
-     * ble 建立连接
-     */
-    private void doConnect(BluetoothDevice device) {
-        mdBluetoothManager.stopScan();
-        mdBluetoothManager.connectDevice(device, this);
-        showLoadingDialog("正在连接设备：" + SN);
-        hander.postDelayed(dismssConnectDialogRunnable, 15000);
-    }
-
-    /**
-     * ble 取消连接
-     */
-    private void disconnectDevice() {
-        if (null != mdBluetoothManager) {
-            mdBluetoothManager.disconnect();
-        }
-    }
-
-
-    private class MdBluetoothEventHandler implements BluetoothEventHandler {
-        @Override
-        public void handle(final BluetoothEvent event) {
-            switch (event.getEventType()) {
-                case DEVICE_FIND:
-                    Timber.d("DEVICE_FIND===" + ((BluetoothDeviceFindEventData) event.getEventData()).getNewDevice().getDevice().getName());
-                    handleDeviceFind((BluetoothDeviceFindEventData) event.getEventData());
-                    break;
-
-                case CONNECTED:
-                    ByteManagerUtil.init(new MyOnBytePackage());
-                    mHandler.sendEmptyMessage(Constants.BT_CONNECT);
-                    break;
-
-                case DISCONNECTED:
-                    Timber.d("蓝牙连接断开");
-                    mHandler.sendEmptyMessage(Constants.BT_DISCONNECTED);
-                    break;
-
-                case REQUEST_MTU_FAIL:
-                    Timber.d("MTU请求设置失败");
-                    mHandler.sendEmptyMessage(Constants.BT_REQUEST_MTU_FAIL);
-                    break;
-
-                case SERVICE_FIND_FAIL:
-                    Timber.d("蓝牙服务发现失败");
-                    mHandler.sendEmptyMessage(Constants.BT_SERVICE_FIND_FAIL);
-                    break;
-
-                case CHARACTERISTICS_FIND_FAIL:
-                    Timber.d("特征读取失败");
-                    mHandler.sendEmptyMessage(Constants.BT_CHARACTERISTICS_FIND_FAIL);
-                    break;
-
-                case ENABLE_READ_SUCCESS:
-                    Timber.d("设置读取Descriptor成功");
-                    mHandler.sendEmptyMessage(Constants.BT_ENABLE_READ_SUCCESS);
-                    break;
-
-                case ENABLE_READ_FAIL:
-                    Timber.d("设置读取Descriptor失败");
-                    mHandler.sendEmptyMessage(Constants.BT_ENABLE_READ_FAIL);
-                    break;
-
-                case WRITE_TIME_OUT:
-                    Timber.d("写入等待超时");
-                    disconnectDevice();
-                    mHandler.sendEmptyMessage(Constants.BT_WRITE_TIME_OUT);
-                    break;
-
-                case MESSAGE_WRITE_SUCCESS:
-                    Timber.d("消息写入成功");
-                    mHandler.sendEmptyMessage(Constants.BT_MESSAGE_WRITE_SUCCESS);
-                    try {
-                        String msg = ((Message) event.getEventData()).getResponseMessage();
-                        byte[] data = (byte[]) msg.getBytes();
-                        if (data != null && data.length > 0) {
-                            ByteManagerUtil.getInstance().writeByte(data);
-                        }
-                    } catch (Exception ex) {
-                        Timber.e(ex);
-                    }
-                    break;
-
-                case MESSAGE_RESPONSE_TIME_OUT:
-                    Timber.d("消息等待响应超时");
-                    mHandler.sendEmptyMessage(Constants.MESSAGE_RESPONSE_TIME_OUT);
-                    disconnectDevice();
-                    break;
-
-                case MESSAGE_WRITE_FAIL:
-                    Timber.d("消息写入失败");
-                    mHandler.sendEmptyMessage(Constants.BT_MESSAGE_WRITE_FAIL);
-                    break;
-
-                case RESPONSE_WITH_NO_MESSAGE:
-                    try {
-                        byte[] data = ((String) event.getEventData()).getBytes();
-                        if (data != null && data.length > 0) {
-                            ByteManagerUtil.getInstance().writeByte(data);
-                        }
-                    } catch (Exception ex) {
-                        Timber.e(ex);
-                    }
-                    break;
-
-                default:
-                    break;
-            }
-        }
-    }
-
-    public Handler mHandler = new Handler(new Handler.Callback() {
-        @Override
-        public boolean handleMessage(android.os.Message msg) {
-            switch (msg.what) {
-                case Constants.BT_CONNECT:
-                    isBlueConnected = true;
-                    isAutoConnectBlue = true;
-                    MCloudApp.setIsBluetoothDeviceConnected(true);
-                    EventBus.getDefault().post(new BluetoothStateEvent(true));
-                    startBluAuthenticate();//蓝牙连接成功开始进行验证
-                    break;
-
-                case Constants.BT_DISCONNECTED:
-                    ToastUtils.show("设备断开连接");
-                    dismissLoadingDialog();
-                    hander.removeCallbacks(dismssConnectDialogRunnable);
-                    isBlueConnected = false;
-                    MCloudApp.setIsBluetoothDeviceConnected(false);
-                    EventBus.getDefault().post(new BluetoothStateEvent(false));
-//                    if (isAutoConnectBlue) {
-//                        //断开蓝牙后重新连接
-//                        findAndConnectBleDevice();
-//                    }
-                    break;
-
-                case Constants.BT_MESSAGE_WRITE_SUCCESS:
-//                    ToastUtils.show("指令已发送");
-                    break;
-
-                case Constants.BT_MESSAGE_WRITE_FAIL:
-                    ToastUtils.show("指令发送失败");
-                    break;
-
-                case Constants.BT_WRITE_TIME_OUT:
-                    ToastUtils.show("指令发送超时");
-                    break;
-
-                case Constants.VERIFY_RESULT:
-                    dismissLoadingDialog();
-                    hander.removeCallbacks(dismssConnectDialogRunnable);
-
-                    if (msg.obj.equals("1")) {
-                        showLoadingDialog("查询设备配置参数...");
-                        hander.postDelayed(dismssDialogRunnable, 5000);
-
-                        sendDeviceStateComd();
-                    } else {
-                        ToastUtils.show("蓝牙认证失败!");
-                        try {
-                            Thread.sleep(1000);
-                            disconnectDevice();
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                    break;
-
-                case Constants.MESSAGE_RESPONSE_TIME_OUT:
-//                    ToastUtils.show("消息等待响应超时！");
-                    break;
-
-                case Constants.REFRESH_RUN_STATE:
-                    break;
-
-                case Constants.MESSAGE_RESPONSE_SAVE_SETTINGS_SUCCESS:
-//                    ToastUtils.show("设置信息已保存！");
-                    break;
-
-                case Constants.BT_REQUEST_MTU_FAIL:
-                    ToastUtils.show("MTU请求设置失败！");
-                    break;
-
-                case Constants.BT_SERVICE_FIND_FAIL:
-                    ToastUtils.show("蓝牙服务发现失败！");
-                    break;
-
-                case Constants.BT_CHARACTERISTICS_FIND_FAIL:
-                    ToastUtils.show("蓝牙特征读取失败！");
-                    break;
-
-                case Constants.BT_ENABLE_READ_FAIL:
-                    ToastUtils.show("设置读取Descriptor失败！");
-                    break;
-
-                case Constants.BT_RECOVERY_SUCCESS:
-                    break;
-
-                case Constants.MESSAGE_RESPONSE_REBOOT_DEVICE:
-                    break;
-
-                case Constants.MESSAGE_LOCK_REBOOT_DEVICE:
-//                    ToastUtils.show("蓝牙通讯已就绪！");
-//                    sendDeviceStateComd();//unlock后发送指令
-                    break;
-
-                default:
-                    break;
-            }
-
-            return false;
-        }
-    });
-
-
-    private class MyOnBytePackage implements OnBytePackage {
-        @Override
-        public void onPackageArrived(final byte[] data) {
-            try {
-                String cmdStr = new String(data, "utf-8");
-                Timber.d("应答指令===" + cmdStr);
-                String cmdArray[] = cmdStr.replace("\r\n", "").split(",");
-
-                if (cmdStr.startsWith("$$224") && cmdStr.endsWith("\r\n")) {
-                    if (cmdStr.equals("$$224ce\r\n")) {
-                        startBluAuthenticate();//重新认证
-                        return;
-                    }
-
-                    byte[] resultData = StringUtil.hexStringToBytes(cmdArray[3]);
-                    try {
-                        String deskey = "12345678";
-                        String strdes = new String(DesUtil.decrypt(resultData, deskey), "utf-8");
-                        if (strdes.length() != 0) {
-                            String desStr = StringUtil.bytesToHexString(DesUtil.encrypt((StringUtil.reverseString(strdes.substring(0, 6)) + deskey).getBytes(), deskey));
-                            String cmd = "##222," + SN + ",0," + desStr.toUpperCase() + "\r\n";
-                            Message msg = new Message(UUID.randomUUID().toString(), cmd, true);
-                            mdBluetoothManager.writeMessage(msg);
-                            Timber.d("发送指令===" + cmd);
-                            return;
-                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        return;
-                    }
-                }
-
-                //设备登录验证结果指令
-                if (cmdStr.startsWith("$$223") && cmdStr.endsWith("\r\n")) {
-                    sendHandleMessage(Constants.VERIFY_RESULT, cmdArray[1]);
-                    Timber.d("认证结果===" + cmdArray[1]);
-                    return;
-                }
-
-                //需要验证设备
-                if (cmdStr.equals("Please verify the equipment.\r\n")) {
-                    sendHandleMessage(Constants.VERIFY_RESULT, "0");
-                    return;
-                }
-
-                if (cmdStr.equals("Equipment Verify OK.\r\n")) {
-                    sendHandleMessage(Constants.MESSAGE_LOCK_REBOOT_DEVICE, null);
-                    return;
-                }
-
-//                if (cmdStr.startsWith("$$0191")) {
-//                    mHandler.sendEmptyMessage(Constants.MESSAGE_RESPONSE_SAVE_SETTINGS_SUCCESS);
-//                    return;
-//                }
-
-                parserResult(cmdStr);
-
-            } catch (Exception ex) {
-                Timber.e(ex);
-            }
-        }
-    }
-
-    private void parserResult(String cmdStr) {
-        //查询执行机构参数应答
-        if (cmdStr.startsWith("$$7002") && cmdStr.endsWith("\r\n")) {
-            dismissLoadingDialog();
-            hander.removeCallbacks(dismssDialogRunnable);
-        }
-
-
-        EventBus.getDefault().post(cmdStr);
-    }
-
-
-    private void sendHandleMessage(int what, Object obj) {
-        android.os.Message message = new android.os.Message();
-        message.what = what;
-        if (obj != null) {
-            message.obj = obj;
-        }
-        mHandler.sendMessage(message);
-    }
-
-    /**
-     * 发送蓝牙请求设备信息指令
-     */
-    public void sendDeviceStateComd() {
         //##7010，查询工作模式
-        mdBluetoothManager.writeMessage(new Message(UUID.randomUUID().toString(), "##7010\r\n", true));
+        MdBluetoothManager.getInstance().writeMessage(new Message(UUID.randomUUID().toString(), "##7010\r\n", true));
         Timber.d("发送查询工作模式指令===" + "##7010");
 
         //##2001，查询服务器地址1
-        mdBluetoothManager.writeMessage(new Message(UUID.randomUUID().toString(), "##2001\r\n", true));
+        MdBluetoothManager.getInstance().writeMessage(new Message(UUID.randomUUID().toString(), "##2001\r\n", true));
         Timber.d("发送查询服务器地址1指令===" + "##2001");
 
         //##2002，查询服务器地址2
-        mdBluetoothManager.writeMessage(new Message(UUID.randomUUID().toString(), "##2002\r\n", true));
+        MdBluetoothManager.getInstance().writeMessage(new Message(UUID.randomUUID().toString(), "##2002\r\n", true));
         Timber.d("发送查询服务器地址2指令===" + "##2002");
 
         //##7000，查询采集器参数
-        mdBluetoothManager.writeMessage(new Message(UUID.randomUUID().toString(), "##7000\r\n", true));
+        MdBluetoothManager.getInstance().writeMessage(new Message(UUID.randomUUID().toString(), "##7000\r\n", true));
         Timber.d("发送查询采集器参数指令===" + "##7000");
 
         //##7002，查询执行机构参数
-        mdBluetoothManager.writeMessage(new Message(UUID.randomUUID().toString(), "##7002\r\n", true));
+        MdBluetoothManager.getInstance().writeMessage(new Message(UUID.randomUUID().toString(), "##7002\r\n", true));
         Timber.d("发送查询执行机构参数指令===" + "##7002");
     }
-
-    /**
-     * 蓝牙连接成功开始进行验证  lock
-     */
-    private void startBluAuthenticate() {
-        String com = "##224," + SN + ",0\r\n";
-        Message msg = new Message(UUID.randomUUID().toString(), com, true);
-        mdBluetoothManager.writeMessage(msg);
-        Timber.d("发送指令===" + com);
-    }
-
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
-            case REQUEST_ENABLE_BT:
+            case BlueDeviceCommunicateUtil.REQUEST_ENABLE_BT:
                 // 蓝牙已经开启
                 if (resultCode != Activity.RESULT_OK) {
                     ToastUtils.show("蓝牙未启用");
                     return;
                 }
-                findAndConnectBleDevice();
-                break;
-
-            default:
+                blueDeviceCommunicateUtil.findAndConnectBleDevice();
                 break;
         }
     }
@@ -642,7 +224,7 @@ public class ConfigADMEActivity extends BaseActivity {
     /**
      * 是否切换连接模式
      */
-    public void showChangeModle(String content, final String index) {
+    public void showChangeModle(String content) {
         MaterialDialog.Builder mBuilder = new MaterialDialog.Builder(this)
                 .title("温馨提示：")
                 .content(content)
@@ -654,12 +236,8 @@ public class ConfigADMEActivity extends BaseActivity {
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                         dialog.dismiss();
-                        isBlueConnected = false;
-                        isAutoConnectBlue = false;
-                        MCloudApp.setIsBluetoothDeviceConnected(false);
-                        disconnectDevice();
+                        blueDeviceCommunicateUtil.disconnectDevice();
                         ConfigADMEActivity.this.finish();
-
                     }
                 });
         MaterialDialog mMaterialDialog = mBuilder.build();
@@ -729,14 +307,14 @@ public class ConfigADMEActivity extends BaseActivity {
     @Override
     public void onBackPressed() {
         if (!HandleBackUtil.handleBackPress(this)) {
-            if (isBlueConnected) {
-                showChangeModle(getResources().getString(R.string.finish_activity_disconnect_bluetooth_device), "1");
+            if (MCloudApp.isIsBluetoothDeviceConnected()) {
+                showChangeModle(getResources().getString(R.string.finish_activity_disconnect_bluetooth_device));
+
             } else {
-                dismissLoadingDialog();
-                isBlueConnected = false;
-                isAutoConnectBlue = false;
-                MCloudApp.setIsBluetoothDeviceConnected(false);
-                disconnectDevice();
+//                dismissLoadingDialog();
+//                blueDeviceCommunicateUtil.disconnectDevice();
+//                blueDeviceCommunicateUtil.isAutoConnectBlue = false;
+//                MCloudApp.setIsBluetoothDeviceConnected(false);
                 this.finish();
             }
         }

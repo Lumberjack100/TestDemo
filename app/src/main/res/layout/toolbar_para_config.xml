@@ -31,24 +31,12 @@
             android:id="@+id/img_bluetooth"
             android:layout_width="25dp"
             android:layout_height="25dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
             android:visibility="gone"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
-            android:src="@drawable/bar_item_bt" />
-
-        <TextView
-            android:id="@+id/tv_save"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
-            android:text="保存"
-            android:textColor="@color/white"
-            android:textSize="@dimen/text_size_18" />
+            android:src="@drawable/ic_bluetooth" />
 
     </RelativeLayout>
 

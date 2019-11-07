@@ -9,7 +9,7 @@
     <string name="service_set_address">请输入服务器地址/域名：端口 \n 如：192.168.1.101:8081 \n mCloud.shmedo.cn:9901</string>
     <string name="service_address">service_address</string>
     <string name="agent_addr">地址：%1$s</string>
-    <string name="disconnect_bluetooth_device">当前设备处于蓝牙连接状态，是否要断开连接？</string>
+    <string name="disconnect_bluetooth_device">当前设备处于蓝牙连接状态，确定要断开连接？</string>
     <string name="finish_activity_disconnect_bluetooth_device">确定要退出该页面，并断开蓝牙连接吗？</string>
     <string name="exit_login_tip">确定退出登录吗？</string>
     <string name="appbar_scrolling_view_behavior" translatable="false">android.support.design.widget.AppBarLayout$ScrollingViewBehavior</string>
@@ -19,18 +19,13 @@
     <string name="close_flash">关闭闪光灯</string>
     <string name="gallery">相册</string>
     <string name="input_sn"> 手动输入</string>
-
-    <!-- 权限申请-->
-    <string name="permission_request_camera_external_storage">米易通需要使用相机权限和存储卡权限，请前往设置页面授予权限</string>
-    <string name="permission_request_location">米易通需要使用定位权限，请前往设置页面授予权限</string>
-
-
     <string name="securityNo">请输入新的设备授权码</string>
     <string name="select_device">选择一个设备连接</string>
     <string name="tv_prompt">1台DAS可支持8只拉线位移计接入，请根据实际接入的数量\n任意点击"启用"或"停用"，并对启用的拉线位移计配置相应的参数。</string>
     <string name="service_address_note1">MD-NET服务器地址：端口</string>
     <string name="service_address_note2">mCloud服务器地址：端口</string>
     <string name="input_server_address_hint">请输入地址</string>
+    <string name="param_config_bluetooth_disconnect_warn">设备已断开连接，暂无法进行设置</string>
 
 
     <!-- 采集器、传感器参数说明-->
@@ -129,4 +124,10 @@
     <string name="adme_measuring_pitch">
         测量间距：每个测点的深度间隔
     </string>
+
+
+    <!-- 权限申请-->
+    <string name="permission_request_camera_external_storage">米易通需要使用相机权限和存储卡权限，请前往设置页面授予权限</string>
+    <string name="permission_request_location">米易通需要使用定位权限，请前往设置页面授予权限</string>
+
 </resources>

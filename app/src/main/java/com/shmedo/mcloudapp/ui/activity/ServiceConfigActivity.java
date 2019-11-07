@@ -32,9 +32,12 @@ import timber.log.Timber;
 public class ServiceConfigActivity extends BaseActivity {
     @BindView(R.id.etServiceAddress)
     ClearEditText mEtServiceAddress;
+
     @BindView(R.id.btnServiceTest)
     Button mBtnServiceTest;
+
     private UserConfig userConfig;
+
     private String config = "mdnetservice.shmedo.cn";
 
     @Override
@@ -46,10 +49,8 @@ public class ServiceConfigActivity extends BaseActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //ActionBar上显示返回
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        initServiceAddress();
 
+        initServiceAddress();
     }
 
 

@@ -26,22 +26,26 @@ import com.shmedo.das.das.cmd.CommandResult;
 import com.shmedo.mcloudapp.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.base.BaseActivity;
-import com.shmedo.mcloudapp.bluetooth.MdBluetoothManager;
-import com.shmedo.mcloudapp.bluetooth.Message;
+import com.shmedo.mcloudapp.entity.event.BluetoothStateEvent;
 import com.shmedo.mcloudapp.model.Extras;
+import com.shmedo.mcloudapp.util.bleutil.BlueDeviceCommunicateUtil;
 import com.shmedo.mcloudapp.views.ClearEditText;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import java.util.UUID;
-
 import butterknife.BindView;
 import timber.log.Timber;
 
 public class ADMESensorExecutiveAgencyConfigActivity extends BaseActivity implements View.OnClickListener {
-    @BindView(R.id.toolbar_title)
+    @BindView(R.id.back)
+    ImageView mIvBack;
+
+    @BindView(R.id.tv_title)
     TextView mToolbarTitle;
+
+    @BindView(R.id.img_bluetooth)
+    ImageView mIvBluetooth;
 
     @BindView(R.id.collector_address_layout)
     View collectorAddressLayout;
@@ -123,7 +127,7 @@ public class ADMESensorExecutiveAgencyConfigActivity extends BaseActivity implem
 
     private Handler hander;
 
-    private MdBluetoothManager mdBluetoothManager;
+    private BlueDeviceCommunicateUtil blueDeviceCommunicateUtil;
 
     private String dagConfigInfo;//DAG 采集器配置指令
 
@@ -155,7 +159,7 @@ public class ADMESensorExecutiveAgencyConfigActivity extends BaseActivity implem
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setToolBar(R.id.toolbar);
+        initHeadView();
         initSensorView();
         initExecutiveAgencyView();
         parseIntent();
@@ -164,11 +168,23 @@ public class ADMESensorExecutiveAgencyConfigActivity extends BaseActivity implem
         initExecutiveAgencyData();
     }
 
-
-    private void initSensorView() {
+    private void initHeadView() {
         hander = new Handler();
         mToolbarTitle.setText("采集器参数设置");
+        mIvBluetooth.setVisibility(View.VISIBLE);
+        mIvBack.setOnClickListener(this);
+        mIvBluetooth.setOnClickListener(this);
+        blueDeviceCommunicateUtil = BlueDeviceCommunicateUtil.getInstance();
 
+        if (MCloudApp.isIsBluetoothDeviceConnected()) {
+            mIvBluetooth.setImageResource(R.drawable.ic_bluetooth_connected);
+        } else {
+            mIvBluetooth.setImageResource(R.drawable.ic_bluetooth);
+        }
+    }
+
+
+    private void initSensorView() {
         ((TextView) collectorAddressLayout.findViewById(R.id.itemNameTV)).setText("采集器地址");
         mIvCollectorAddress = collectorAddressLayout.findViewById(R.id.itemTipIV);
         mEtCollectorAddress = collectorAddressLayout.findViewById(R.id.itemValueET);
@@ -351,8 +367,6 @@ public class ADMESensorExecutiveAgencyConfigActivity extends BaseActivity implem
 
 
     private void parseIntent() {
-        mdBluetoothManager = MdBluetoothManager.getInstance();
-
         Intent intent = getIntent();
         if (intent.getExtras().containsKey(Extras.ADME_SENSOR_CONFIG_INFO)) {
             dagConfigInfo = intent.getStringExtra(Extras.ADME_SENSOR_CONFIG_INFO);
@@ -488,6 +502,19 @@ public class ADMESensorExecutiveAgencyConfigActivity extends BaseActivity implem
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
+            case R.id.back:
+                finish();
+                break;
+
+            case R.id.img_bluetooth:
+
+                if (MCloudApp.isIsBluetoothDeviceConnected()) {
+                    blueDeviceCommunicateUtil.showDisconnectDialog(getResources().getString(R.string.disconnect_bluetooth_device));
+                } else {
+                    blueDeviceCommunicateUtil.findAndConnectBleDevice();
+                }
+                break;
+
             case R.id.collector_address:
                 showTipDialog(getResources().getString(R.string.dag_collector_addres));
                 break;
@@ -515,7 +542,6 @@ public class ADMESensorExecutiveAgencyConfigActivity extends BaseActivity implem
             case R.id.sensor_correction_value:
                 showTipDialog(getResources().getString(R.string.dag_sensor_correction_value));
                 break;
-
 
             case R.id.data_settlement_method:
                 showTipDialog(getResources().getString(R.string.adme_data_settlement_method));
@@ -564,7 +590,7 @@ public class ADMESensorExecutiveAgencyConfigActivity extends BaseActivity implem
 
             case R.id.btn_confirm_complete:
                 if (!MCloudApp.isIsBluetoothDeviceConnected()) {
-                    ToastUtils.show("设备已断开连接，暂无法进行设置");
+                    ToastUtils.show(getString(R.string.param_config_bluetooth_disconnect_warn));
                     return;
                 }
                 doConfirm();
@@ -630,7 +656,7 @@ public class ADMESensorExecutiveAgencyConfigActivity extends BaseActivity implem
         executiveAgencyConfigInfo = String.valueOf(sbExecutiveAgency);
 
         String cmdStr = String.valueOf(stringBuilder);
-        sendCommand(cmdStr);
+        blueDeviceCommunicateUtil.sendCommand(cmdStr);
 
         showLoadingDialog("正在发送配置指令...");
         hander.postDelayed(dismssDialogRunnable, 5000);
@@ -653,7 +679,7 @@ public class ADMESensorExecutiveAgencyConfigActivity extends BaseActivity implem
             public void onClick(
                     @NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                 //发送关闭测试模式命令
-                sendCommand("##0191\r\n");
+                blueDeviceCommunicateUtil.sendCommand("##0191\r\n");
 
                 showLoadingDialog("正在发送保存命令...");
                 hander.postDelayed(dismssDialogRunnable, 5000);
@@ -668,20 +694,6 @@ public class ADMESensorExecutiveAgencyConfigActivity extends BaseActivity implem
     }
 
 
-    private void sendCommand(String cmd) {
-        Message msg = new Message(UUID.randomUUID().toString(), cmd, true);
-        if (mdBluetoothManager != null) {
-            mdBluetoothManager.writeMessage(msg);
-        }
-    }
-
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void getConfig(String messageEvent) {
-        if (!TextUtils.isEmpty(messageEvent) && messageEvent.startsWith("$$")) {
-            setResultData(messageEvent);
-        }
-    }
 
     /**
      * 设置显示数据
@@ -689,7 +701,7 @@ public class ADMESensorExecutiveAgencyConfigActivity extends BaseActivity implem
     private void setResultData(String cmdStr) {
         //设置执行机构参数应答
         if (cmdStr.startsWith("$$7001") && cmdStr.endsWith("\r\n")) {
-            sendCommand(executiveAgencyConfigInfo);
+            blueDeviceCommunicateUtil.sendCommand(executiveAgencyConfigInfo);
             return;
         }
 
@@ -710,14 +722,26 @@ public class ADMESensorExecutiveAgencyConfigActivity extends BaseActivity implem
             hander.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    if (mdBluetoothManager != null) {
-                        mdBluetoothManager.disconnect();
-                    }
-                    MCloudApp.setIsBluetoothDeviceConnected(false);
+                    blueDeviceCommunicateUtil.disconnectDevice();
                     ADMESensorExecutiveAgencyConfigActivity.this.finish();
                 }
             }, 3000);
         }
+    }
+
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void getConfig(String messageEvent) {
+        if (!TextUtils.isEmpty(messageEvent) && messageEvent.startsWith("$$")) {
+            setResultData(messageEvent);
+        }
+    }
+
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onMessageEvent(BluetoothStateEvent bluetoothStateEvent) {
+
+        mIvBluetooth.setImageResource(bluetoothStateEvent.isConnected ? R.drawable.ic_bluetooth_connected : R.drawable.ic_bluetooth);
     }
 
 

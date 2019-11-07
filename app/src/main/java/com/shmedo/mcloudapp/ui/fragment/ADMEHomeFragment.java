@@ -1,7 +1,6 @@
 package com.shmedo.mcloudapp.ui.fragment;
 
 
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -28,17 +27,15 @@ import com.kyleduo.switchbutton.SwitchButton;
 import com.shmedo.mcloudapp.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.base.BaseFragment;
-import com.shmedo.mcloudapp.bluetooth.MdBluetoothManager;
-import com.shmedo.mcloudapp.bluetooth.Message;
 import com.shmedo.mcloudapp.entity.SystemDataInfo;
 import com.shmedo.mcloudapp.entity.SystemDataInfoDao;
 import com.shmedo.mcloudapp.entity.event.BluetoothStateEvent;
 import com.shmedo.mcloudapp.model.Extras;
-import com.shmedo.mcloudapp.ui.activity.ConfigADMEActivity;
 import com.shmedo.mcloudapp.ui.activity.device.senior.InstructionDebugActivity;
 import com.shmedo.mcloudapp.ui.activity.device.sensor.ADMESensorExecutiveAgencyConfigActivity;
 import com.shmedo.mcloudapp.util.DaoManager;
 import com.shmedo.mcloudapp.util.StringUtil;
+import com.shmedo.mcloudapp.util.bleutil.BlueDeviceCommunicateUtil;
 import com.shmedo.mcloudapp.views.ClearEditText;
 import com.shmedo.mcloudapp.views.editspinner.EditSpinner;
 
@@ -49,7 +46,6 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.UUID;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -125,11 +121,7 @@ public class ADMEHomeFragment extends BaseFragment {
 
     private Unbinder unbinder;
 
-    private Context mContext;
-
-    private ConfigADMEActivity configADMEActivity;
-
-    private MdBluetoothManager mdBluetoothManager;
+    private BlueDeviceCommunicateUtil blueDeviceCommunicateUtil;
 
     private List<String> systemDataInfoList = new ArrayList<>();//项目信息列表
 
@@ -168,7 +160,6 @@ public class ADMEHomeFragment extends BaseFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = super.onCreateView(inflater, container, savedInstanceState);
         unbinder = ButterKnife.bind(this, view);
-        mContext = getActivity();
 
         getIntentData();
         queryProjectList();
@@ -191,12 +182,8 @@ public class ADMEHomeFragment extends BaseFragment {
             mTvSensorType.setText("S0260");
         }
 
-        if (getActivity() instanceof ConfigADMEActivity) {
-            configADMEActivity = (ConfigADMEActivity) getActivity();
-        }
-
         hander = new Handler();
-        mdBluetoothManager = MdBluetoothManager.getInstance();
+        blueDeviceCommunicateUtil = BlueDeviceCommunicateUtil.getInstance();
     }
 
     private void initView() {
@@ -260,11 +247,9 @@ public class ADMEHomeFragment extends BaseFragment {
         setSwitchViewState(false, tvDebugMode, "已禁用");
 
 
-        //发送查询设备状态命令
         if (MCloudApp.isIsBluetoothDeviceConnected()) {
             sbBluetoothState.setCheckedImmediatelyNoEvent(true);
             setSwitchViewState(true, tvBluetoothState, "已连接");
-//            Objects.requireNonNull(configADMEActivity).sendDeviceStateComd();
         } else {
             sbBluetoothState.setCheckedImmediatelyNoEvent(false);
             setSwitchViewState(false, tvBluetoothState, "已断开");
@@ -272,10 +257,6 @@ public class ADMEHomeFragment extends BaseFragment {
         }
     }
 
-    @Override
-    public void onSaveInstanceState(@NonNull Bundle outState) {
-        super.onSaveInstanceState(outState);
-    }
 
 
     private void initAnimation() {
@@ -322,14 +303,10 @@ public class ADMEHomeFragment extends BaseFragment {
             public void onCheckedChanged(CompoundButton buttonView, final boolean isChecked) {
                 //未连接时，直接打开连接
                 if (isChecked) {
-                    configADMEActivity.findAndConnectBleDevice();
-                    return;
-                }
+                    blueDeviceCommunicateUtil.findAndConnectBleDevice();
 
-                if (mdBluetoothManager != null) {
-                    configADMEActivity.isAutoConnectBlue = false;
-                    mdBluetoothManager.disconnect();
-                    MCloudApp.setIsBluetoothDeviceConnected(false);
+                } else {
+                    showCloseSwitchButtonDialog(getResources().getString(R.string.disconnect_bluetooth_device), 1);
                 }
             }
         });
@@ -338,43 +315,19 @@ public class ADMEHomeFragment extends BaseFragment {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, final boolean isChecked) {
                 if (!MCloudApp.isIsBluetoothDeviceConnected()) {
-                    ToastUtils.show("设备已断开连接，暂无法进行设置");
+                    ToastUtils.show(getString(R.string.param_config_bluetooth_disconnect_warn));
                     sbAutoMonitorState.setCheckedImmediatelyNoEvent(!isChecked);
                     return;
                 }
 
                 if (isChecked) {
                     //发送打开自动测量模式命令
-                    sendCommand("##70111\r\n");
+                    blueDeviceCommunicateUtil.sendCommand("##70111\r\n");
                     setSwitchViewState(true, tvAutoMonitorState, "已启用");
-                    return;
-                }
 
-                MaterialDialog.Builder mBuilder = new MaterialDialog.Builder(mContext);
-                mBuilder.title("温馨提示：")
-                        .content("关闭自动监测，将导致设备自动关机进入休眠状态。请确认是否关闭")
-                        .contentColor(Color.parseColor("#000000"))
-                        .canceledOnTouchOutside(false)
-                        .positiveText("确定")
-                        .negativeText("取消")
-                        .negativeColor(Color.parseColor("#807B7B"));
-                MaterialDialog mMaterialDialog = mBuilder.build();
-                mMaterialDialog.show();
-                mBuilder.onPositive(new MaterialDialog.SingleButtonCallback() {
-                    @Override
-                    public void onClick(
-                            @NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        //发送关闭测试模式命令
-                        sendCommand("##70112\r\n");
-                        setSwitchViewState(false, tvAutoMonitorState, "已关闭");
-                    }
-                });
-                mBuilder.onNegative(new MaterialDialog.SingleButtonCallback() {
-                    @Override
-                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        sbAutoMonitorState.setCheckedImmediatelyNoEvent(!isChecked);
-                    }
-                });
+                } else {
+                    showCloseSwitchButtonDialog("关闭自动监测，将导致设备自动关机进入休眠状态。请确认是否关闭", 2);
+                }
             }
         });
 
@@ -383,49 +336,25 @@ public class ADMEHomeFragment extends BaseFragment {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, final boolean isChecked) {
                 if (!MCloudApp.isIsBluetoothDeviceConnected()) {
-                    ToastUtils.show("设备已断开连接，暂无法进行设置");
+                    ToastUtils.show(getString(R.string.param_config_bluetooth_disconnect_warn));
                     sbDebugMode.setCheckedImmediatelyNoEvent(!isChecked);
                     return;
                 }
 
                 if (isChecked) {
                     //发送打开测试模式命令
-                    sendCommand("##70121\r\n");
+                    blueDeviceCommunicateUtil.sendCommand("##70121\r\n");
                     setSwitchViewState(true, tvDebugMode, "已打开");
-                    return;
-                }
 
-                MaterialDialog.Builder mBuilder = new MaterialDialog.Builder(mContext);
-                mBuilder.title("温馨提示：")
-                        .content("关闭自动监测，将导致设备自动关机进入休眠状态。请确认是否关闭")
-                        .contentColor(Color.parseColor("#000000"))
-                        .canceledOnTouchOutside(false)
-                        .positiveText("确定")
-                        .negativeText("取消")
-                        .negativeColor(Color.parseColor("#807B7B"));
-                MaterialDialog mMaterialDialog = mBuilder.build();
-                mMaterialDialog.show();
-                mBuilder.onPositive(new MaterialDialog.SingleButtonCallback() {
-                    @Override
-                    public void onClick(
-                            @NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        //发送关闭测试模式命令
-                        sendCommand("##70122\r\n");
-                        setSwitchViewState(false, tvDebugMode, "已关闭");
-                    }
-                });
-                mBuilder.onNegative(new MaterialDialog.SingleButtonCallback() {
-                    @Override
-                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        sbDebugMode.setCheckedImmediatelyNoEvent(!isChecked);
-                    }
-                });
+                } else {
+                    showCloseSwitchButtonDialog("关闭自动监测，将导致设备自动关机进入休眠状态。请确认是否关闭", 3);
+                }
             }
         });
     }
 
 
-    @OnClick({R.id.iv_lock, R.id.platform_server_config_layout, R.id.refreshIV1, R.id.editBtn1, R.id.refreshIV2, R.id.editBtn2, R.id.dag_config_layout,  R.id.custom_command_test_layout, R.id.firmware_upgrade_layout})
+    @OnClick({R.id.iv_lock, R.id.platform_server_config_layout, R.id.refreshIV1, R.id.editBtn1, R.id.refreshIV2, R.id.editBtn2, R.id.dag_config_layout, R.id.custom_command_test_layout, R.id.firmware_upgrade_layout})
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.iv_lock:
@@ -453,9 +382,10 @@ public class ADMEHomeFragment extends BaseFragment {
 
             case R.id.editBtn1:
                 if (!MCloudApp.isIsBluetoothDeviceConnected()) {
-                    ToastUtils.show("设备已断开连接，暂无法进行设置");
+                    ToastUtils.show(getString(R.string.param_config_bluetooth_disconnect_warn));
                     return;
                 }
+
                 if (mBtnEdit1.getText().toString().contains("编辑")) {
                     mBtnEdit1.setText("确定");
                     mEtAddress1.setEnabled(true);
@@ -475,7 +405,7 @@ public class ADMEHomeFragment extends BaseFragment {
 
             case R.id.editBtn2:
                 if (!MCloudApp.isIsBluetoothDeviceConnected()) {
-                    ToastUtils.show("设备已断开连接，暂无法进行设置");
+                    ToastUtils.show(getString(R.string.param_config_bluetooth_disconnect_warn));
                     return;
                 }
 
@@ -523,6 +453,7 @@ public class ADMEHomeFragment extends BaseFragment {
             ToastUtils.show("设备已断开连接，无法刷新");
             return;
         }
+
         String cmdStr = "";
         if (index == 1) {
             cmdStr = "##2001\r\n";
@@ -534,9 +465,8 @@ public class ADMEHomeFragment extends BaseFragment {
 
         isRefreshingAddress = true;
         hander.postDelayed(clearAnimationRunnable, 6000);
-
-        //##2001，查询服务器地址1
-        mdBluetoothManager.writeMessage(new Message(UUID.randomUUID().toString(), cmdStr, true));
+        //查询服务器地址
+        blueDeviceCommunicateUtil.sendCommand(cmdStr);
     }
 
 
@@ -554,7 +484,7 @@ public class ADMEHomeFragment extends BaseFragment {
 
         String addrArray[] = address.split(":");
         String cmdStr = "##2011 " + addrArray[0] + " " + addrArray[1] + "\r\n";
-        sendCommand(cmdStr);
+        blueDeviceCommunicateUtil.sendCommand(cmdStr);
     }
 
     private void doServerAddress2Config() {
@@ -571,7 +501,7 @@ public class ADMEHomeFragment extends BaseFragment {
 
         String addrArray[] = address.split(":");
         String cmdStr = "##2012 " + addrArray[0] + " " + addrArray[1] + "\r\n";
-        sendCommand(cmdStr);
+        blueDeviceCommunicateUtil.sendCommand(cmdStr);
     }
 
     /**
@@ -662,7 +592,6 @@ public class ADMEHomeFragment extends BaseFragment {
             return;
         }
 
-
         //查询采集器参数应答
         if (cmdStr.startsWith("$$7000") && cmdStr.endsWith("\r\n")) {
             dagConfigInfo = cmdStr;
@@ -674,7 +603,6 @@ public class ADMEHomeFragment extends BaseFragment {
             executiveAgencyConfigInfo = cmdStr;
             return;
         }
-
 
         //设置自动测量模式应答
         if (cmdStr.startsWith("$$7011") && cmdStr.endsWith("\r\n")) {
@@ -735,17 +663,68 @@ public class ADMEHomeFragment extends BaseFragment {
     }
 
 
-    private void sendCommand(String cmd) {
-        Message msg = new Message(UUID.randomUUID().toString(), cmd, true);
-        if (mdBluetoothManager != null) {
-            mdBluetoothManager.writeMessage(msg);
-        }
-    }
-
-
     private void setSwitchViewState(boolean isOpen, TextView textView, String content) {
         textView.setText(content);
         textView.setTextColor(isOpen ? getResources().getColor(R.color.colorPrimary) : getResources().getColor(R.color.gray_807B7B));
+    }
+
+
+    /**
+     * 关闭SwitchButton
+     */
+    public void showCloseSwitchButtonDialog(String content, final int index) {
+        MaterialDialog.Builder mBuilder = new MaterialDialog.Builder(getActivity())
+                .title("温馨提示：")
+                .content(content)
+                .contentColor(Color.parseColor("#000000"))
+                .canceledOnTouchOutside(false)
+                .positiveText("确定")
+                .negativeText("取消")
+                .onPositive(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        dialog.dismiss();
+
+                        switch (index) {
+                            case 1:
+                                blueDeviceCommunicateUtil.disconnectDevice();
+                                break;
+
+                            case 2:
+                                //发送关闭测试模式命令
+                                blueDeviceCommunicateUtil.sendCommand("##70112\r\n");
+                                setSwitchViewState(false, tvAutoMonitorState, "已关闭");
+                                break;
+
+                            case 3:
+                                //发送关闭测试模式命令
+                                blueDeviceCommunicateUtil.sendCommand("##70122\r\n");
+                                setSwitchViewState(false, tvDebugMode, "已关闭");
+                                break;
+                        }
+                    }
+                }).onNegative(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        dialog.dismiss();
+
+                        switch (index) {
+                            case 1:
+                                sbBluetoothState.setCheckedImmediatelyNoEvent(true);
+                                break;
+
+                            case 2:
+                                sbAutoMonitorState.setCheckedImmediatelyNoEvent(true);
+                                break;
+
+                            case 3:
+                                sbDebugMode.setCheckedImmediatelyNoEvent(true);
+                                break;
+                        }
+                    }
+                });
+        MaterialDialog mMaterialDialog = mBuilder.build();
+        mMaterialDialog.show();
     }
 
 
@@ -773,6 +752,7 @@ public class ADMEHomeFragment extends BaseFragment {
         super.onHiddenChanged(hidden);
         if (hidden) {   // 不在最前端显示 相当于调用了onPause();
             return;
+
         } else {  // 在最前端显示 相当于调用了onResume();
             //网络数据刷新
         }
