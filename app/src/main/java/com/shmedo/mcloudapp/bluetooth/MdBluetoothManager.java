@@ -77,7 +77,9 @@ public class MdBluetoothManager {
     }
 
     public static void init(BluetoothAdapter bluetoothAdapter, BluetoothManager androidBluetoothManager) {
-        bluetoothManager = new MdBluetoothManager(bluetoothAdapter, androidBluetoothManager);
+        if (bluetoothManager == null) {
+            bluetoothManager = new MdBluetoothManager(bluetoothAdapter, androidBluetoothManager);
+        }
         bluetoothManager.initCheck();
     }
 
@@ -129,7 +131,7 @@ public class MdBluetoothManager {
             return false;
         }
         return androidBluetoothManager.getConnectionState(currentDevice, BluetoothGatt.GATT)
-            == BluetoothProfile.STATE_CONNECTED;
+                == BluetoothProfile.STATE_CONNECTED;
     }
 
     /**
@@ -149,24 +151,24 @@ public class MdBluetoothManager {
         scan = true;
         bluetoothAdapter.startLeScan(leScanCallback);
         Executors.newScheduledThreadPool(1)
-            .schedule(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        activity.runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                if (scan) {
-                                    scan = false;
-                                    bluetoothAdapter.stopLeScan(leScanCallback);
+                .schedule(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            activity.runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    if (scan) {
+                                        scan = false;
+                                        bluetoothAdapter.stopLeScan(leScanCallback);
+                                    }
                                 }
-                            }
-                        });
-                    } catch (Exception ex) {
-                        Log.e(LogTag.ERROR_TAG, ex.getMessage(), ex);
+                            });
+                        } catch (Exception ex) {
+                            Log.e(LogTag.ERROR_TAG, ex.getMessage(), ex);
+                        }
                     }
-                }
-            }, maxScanSecond, TimeUnit.SECONDS);
+                }, maxScanSecond, TimeUnit.SECONDS);
     }
 
     /**
@@ -212,8 +214,8 @@ public class MdBluetoothManager {
         if (eventHandler == null)
             return;
         BluetoothEvent event = BluetoothEvent.builder()
-            .setEventType(BluetoothEventType.DISCONNECTED)
-            .build();
+                .setEventType(BluetoothEventType.DISCONNECTED)
+                .build();
         eventHandler.handle(event);
     }
 
@@ -229,7 +231,7 @@ public class MdBluetoothManager {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             // Android M Permission check
             if ((context.checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) ||
-                (context.checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED)) {
+                    (context.checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED)) {
                 context.requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, ENABLE_PERMISSION);
                 context.requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, ENABLE_PERMISSION);
             }
@@ -289,8 +291,8 @@ public class MdBluetoothManager {
                 } else {
                     if (!StringUtil.isEmpty(msg.getResponseMessage())) {
                         event = BluetoothEvent.builder().setEventType(BluetoothEventType.MESSAGE_WRITE_SUCCESS)
-                            .setEventData(msg)
-                            .build();
+                                .setEventData(msg)
+                                .build();
                         writeMessageManager.removeFront();
                     }
                 }
@@ -392,9 +394,9 @@ public class MdBluetoothManager {
             if (eventHandler == null)
                 return;
             BluetoothEvent event = BluetoothEvent.builder()
-                .setEventType(BluetoothEventType.DEVICE_FIND)
-                .setEventData(new BluetoothDeviceFindEventData(mDev, devices))
-                .build();
+                    .setEventType(BluetoothEventType.DEVICE_FIND)
+                    .setEventData(new BluetoothDeviceFindEventData(mDev, devices))
+                    .build();
             eventHandler.handle(event);
         }
     }
@@ -417,15 +419,15 @@ public class MdBluetoothManager {
                 }
                 eventType = BluetoothEventType.CONNECTED;
             } else if (newState == BluetoothProfile.STATE_DISCONNECTED ||
-                newState == BluetoothProfile.STATE_DISCONNECTING) {
+                    newState == BluetoothProfile.STATE_DISCONNECTING) {
                 eventType = BluetoothEventType.DISCONNECTED;
                 gatt.close();
             }
             if (eventHandler == null || eventType == null)
                 return;
             BluetoothEvent event = BluetoothEvent.builder()
-                .setEventType(eventType)
-                .build();
+                    .setEventType(eventType)
+                    .build();
             eventHandler.handle(event);
         }
 
@@ -437,15 +439,15 @@ public class MdBluetoothManager {
         @Override
         public void onMtuChanged(BluetoothGatt gatt, int mtu, int status) {
             // && mtu == PACKAGE_SIZE
-            if (status == BluetoothGatt.GATT_SUCCESS ) {
+            if (status == BluetoothGatt.GATT_SUCCESS) {
                 gatt.discoverServices();
             } else {
                 Log.w(LogTag.WARN_TAG, "MTU设置失败");
                 if (eventHandler == null)
                     return;
                 BluetoothEvent event = BluetoothEvent.builder()
-                    .setEventType(BluetoothEventType.REQUEST_MTU_FAIL)
-                    .build();
+                        .setEventType(BluetoothEventType.REQUEST_MTU_FAIL)
+                        .build();
                 eventHandler.handle(event);
             }
         }
@@ -454,8 +456,8 @@ public class MdBluetoothManager {
         public void onServicesDiscovered(BluetoothGatt gatt, int status) {
             if (status != BluetoothGatt.GATT_SUCCESS) {
                 BluetoothEvent event = BluetoothEvent.builder()
-                    .setEventType(BluetoothEventType.SERVICE_FIND_FAIL)
-                    .build();
+                        .setEventType(BluetoothEventType.SERVICE_FIND_FAIL)
+                        .build();
                 if (eventHandler != null) {
                     eventHandler.handle(event);
                 }
@@ -474,8 +476,8 @@ public class MdBluetoothManager {
             }
             if (usrGattService == null) {
                 BluetoothEvent event = BluetoothEvent.builder()
-                    .setEventType(BluetoothEventType.SERVICE_FIND_FAIL)
-                    .build();
+                        .setEventType(BluetoothEventType.SERVICE_FIND_FAIL)
+                        .build();
                 if (eventHandler != null) {
                     eventHandler.handle(event);
                 }
@@ -484,7 +486,7 @@ public class MdBluetoothManager {
             List<BluetoothGattCharacteristic> characteristicList = usrGattService.getCharacteristics();
             if (characteristicList == null || characteristicList.size() != 2) {
                 BluetoothEvent event = BluetoothEvent
-                    .withEventType(BluetoothEventType.CHARACTERISTICS_FIND_FAIL);
+                        .withEventType(BluetoothEventType.CHARACTERISTICS_FIND_FAIL);
                 if (eventHandler != null) {
                     eventHandler.handle(event);
                 }
@@ -497,7 +499,7 @@ public class MdBluetoothManager {
 
         private void enableRead(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic) {
             BluetoothGattDescriptor descriptor = characteristic.getDescriptor(UUID
-                .fromString(GattAttributes.CLIENT_CHARACTERISTIC_CONFIG));
+                    .fromString(GattAttributes.CLIENT_CHARACTERISTIC_CONFIG));
             descriptor.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);
             gatt.writeDescriptor(descriptor);
             gatt.setCharacteristicNotification(characteristic, true);
@@ -539,9 +541,9 @@ public class MdBluetoothManager {
                 } catch (Exception ex) {
                     //消息达到最大的字节数，仍然没有遇到完整包
                     BluetoothEvent event = BluetoothEvent.builder()
-                        .setEventData(ex)
-                        .setEventType(BluetoothEventType.STATE_EXCEPTION)
-                        .build();
+                            .setEventData(ex)
+                            .setEventType(BluetoothEventType.STATE_EXCEPTION)
+                            .build();
                     fireEvent(event);
                 }
             }
@@ -557,34 +559,34 @@ public class MdBluetoothManager {
                 Bundle mBundle = new Bundle();
                 // Putting the byte value read for GATT Db
                 mBundle.putByteArray(Constants.EXTRA_DESCRIPTOR_BYTE_VALUE,
-                    descriptor.getValue());
+                        descriptor.getValue());
 
 
                 mBundle.putString(Constants.EXTRA_DESCRIPTOR_BYTE_VALUE_UUID,
-                    descriptor.getUuid().toString());
+                        descriptor.getUuid().toString());
                 mBundle.putString(Constants.EXTRA_DESCRIPTOR_BYTE_VALUE_CHARACTERISTIC_UUID,
-                    descriptor.getCharacteristic().getUuid().toString());
+                        descriptor.getCharacteristic().getUuid().toString());
                 if (descriptorUUID.equals(UUIDDatabase.UUID_CLIENT_CHARACTERISTIC_CONFIG)) {
                     String valueReceived = DescriptorParser
-                        .getClientCharacteristicConfiguration(descriptor);
+                            .getClientCharacteristicConfiguration(descriptor);
                     mBundle.putString(Constants.EXTRA_DESCRIPTOR_VALUE, valueReceived);
                 }
                 if (descriptorUUID.equals(UUIDDatabase.UUID_CHARACTERISTIC_EXTENDED_PROPERTIES)) {
                     HashMap<String, String> receivedValuesMap = DescriptorParser
-                        .getCharacteristicExtendedProperties(descriptor);
+                            .getCharacteristicExtendedProperties(descriptor);
                     String reliableWriteStatus = receivedValuesMap.get(Constants.firstBitValueKey);
                     String writeAuxillaryStatus = receivedValuesMap.get(Constants.secondBitValueKey);
                     mBundle.putString(Constants.EXTRA_DESCRIPTOR_VALUE, reliableWriteStatus + "\n"
-                        + writeAuxillaryStatus);
+                            + writeAuxillaryStatus);
                 }
                 if (descriptorUUID.equals(UUIDDatabase.UUID_CHARACTERISTIC_USER_DESCRIPTION)) {
                     String description = DescriptorParser
-                        .getCharacteristicUserDescription(descriptor);
+                            .getCharacteristicUserDescription(descriptor);
                     mBundle.putString(Constants.EXTRA_DESCRIPTOR_VALUE, description);
                 }
                 if (descriptorUUID.equals(UUIDDatabase.UUID_SERVER_CHARACTERISTIC_CONFIGURATION)) {
                     String broadcastStatus = DescriptorParser.
-                        getServerCharacteristicConfiguration(descriptor);
+                            getServerCharacteristicConfiguration(descriptor);
                     mBundle.putString(Constants.EXTRA_DESCRIPTOR_VALUE, broadcastStatus);
                 }
                 if (descriptorUUID.equals(UUIDDatabase.UUID_REPORT_REFERENCE)) {
@@ -597,14 +599,14 @@ public class MdBluetoothManager {
                         mBundle.putString(Constants.EXTRA_DESCRIPTOR_REPORT_REFERENCE_ID, reportReference);
                         mBundle.putString(Constants.EXTRA_DESCRIPTOR_REPORT_REFERENCE_TYPE, reportReferenceType);
                         mBundle.putString(Constants.EXTRA_DESCRIPTOR_VALUE, reportReference + "\n" +
-                            reportReferenceType);
+                                reportReferenceType);
                     }
 
                 }
                 if (descriptorUUID.equals(UUIDDatabase.UUID_CHARACTERISTIC_PRESENTATION_FORMAT)) {
                     String value = DescriptorParser.getCharacteristicPresentationFormat(descriptor);
                     mBundle.putString(Constants.EXTRA_DESCRIPTOR_VALUE,
-                        value);
+                            value);
                 }
                 String str = "";
             } else {
@@ -659,9 +661,9 @@ public class MdBluetoothManager {
             } else {
                 //响应来了，但是队列里没有消息
                 BluetoothEvent bluetoothEvent = BluetoothEvent.builder()
-                    .setEventData(result)
-                    .setEventType(BluetoothEventType.RESPONSE_WITH_NO_MESSAGE)
-                    .build();
+                        .setEventData(result)
+                        .setEventType(BluetoothEventType.RESPONSE_WITH_NO_MESSAGE)
+                        .build();
                 MdBluetoothManager.this.fireEvent(bluetoothEvent);
             }
         }

@@ -6,13 +6,9 @@ import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothManager;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Handler;
-import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
-import com.afollestad.materialdialogs.DialogAction;
-import com.afollestad.materialdialogs.MaterialDialog;
 import com.hjq.toast.ToastUtils;
 import com.shmedo.das.utils.DesUtil;
 import com.shmedo.das.utils.OnBytePackage;
@@ -48,17 +44,21 @@ public class BlueDeviceCommunicateUtil {
 
     private Activity mActivity;
 
+    private Context mContext = MCloudApp.getContext();
+
     private LoadingDialog mLoadingDialog;
 
     private MdBluetoothManager mdBluetoothManager;
 
     private BluetoothAdapter mBluetoothAdapter;
 
-    private Handler hander;
+    private MdBluetoothEventHandler mdBluetoothEventHandler = new MdBluetoothEventHandler();
+
+    private Handler hander = MCloudApp.getMainHandler();
 
     private boolean isAutoConnectBlue = true;//是否自动连接蓝牙
 
-    private ObtainDeviceStateCmdCallback obtainDeviceStateCmdCallback=null;
+    private ObtainDeviceStateCmdCallback obtainDeviceStateCmdCallback = null;
 
     private String SN = "";
 
@@ -92,25 +92,32 @@ public class BlueDeviceCommunicateUtil {
         }
     };
 
+    public BlueDeviceCommunicateUtil() {
 
+    }
 
-    public void init(Activity activity, String deviceName, String address,ObtainDeviceStateCmdCallback callback) {
+    public void init(Activity activity) {
         mActivity = activity;
+        mLoadingDialog = new LoadingDialog(activity);
+    }
+
+
+    public void init(Activity activity, String deviceName, String address, ObtainDeviceStateCmdCallback callback) {
         SN = deviceName;
         macAddress = address;
-        obtainDeviceStateCmdCallback=callback;
-
+        obtainDeviceStateCmdCallback = callback;
+        mActivity = activity;
         mLoadingDialog = new LoadingDialog(activity);
-        hander = new Handler();
+
         initBluetooth();
     }
 
     private void initBluetooth() {
-        final BluetoothManager bluetoothManager = (BluetoothManager) mActivity.getSystemService(Context.BLUETOOTH_SERVICE);
+        final BluetoothManager bluetoothManager = (BluetoothManager) mContext.getSystemService(Context.BLUETOOTH_SERVICE);
         mBluetoothAdapter = Objects.requireNonNull(bluetoothManager).getAdapter();
         MdBluetoothManager.init(mBluetoothAdapter, bluetoothManager);
         mdBluetoothManager = MdBluetoothManager.getInstance();
-        mdBluetoothManager.setEventHandler(new MdBluetoothEventHandler());
+        mdBluetoothManager.setEventHandler(mdBluetoothEventHandler);
     }
 
 
@@ -328,7 +335,10 @@ public class BlueDeviceCommunicateUtil {
                     if (msg.obj.equals("1")) {
                         mLoadingDialog.showNoCancelDialog("查询设备配置参数...");
                         hander.postDelayed(dismssDialogRunnable, 5000);
-                        Objects.requireNonNull(obtainDeviceStateCmdCallback).obtainDeviceStateCmd();
+                        if (obtainDeviceStateCmdCallback == null)
+                            obtainDeviceStateCmd();
+                        else
+                            obtainDeviceStateCmdCallback.obtainDeviceStateCmd();
                     } else {
                         ToastUtils.show("蓝牙认证失败!");
                         try {
@@ -489,29 +499,32 @@ public class BlueDeviceCommunicateUtil {
         Timber.d("发送指令===" + com);
     }
 
-    /**
-     * 是否切换连接模式
-     */
-    public void showDisconnectDialog(String content) {
-        MaterialDialog.Builder mBuilder = new MaterialDialog.Builder(mActivity)
-                .title("温馨提示：")
-                .content(content)
-                .contentColor(Color.parseColor("#000000"))
-                .canceledOnTouchOutside(false)
-                .positiveText("确定")
-                .negativeText("取消")
-                .onPositive(new MaterialDialog.SingleButtonCallback() {
-                    @Override
-                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        dialog.dismiss();
-                        mdBluetoothManager.disconnect();
-                        isAutoConnectBlue = false;
-                        MCloudApp.setIsBluetoothDeviceConnected(false);
-                    }
-                });
-        MaterialDialog mMaterialDialog = mBuilder.build();
-        mMaterialDialog.show();
+
+    public void obtainDeviceStateCmd() {
+        if (mdBluetoothManager == null)
+            return;
+
+        //##7010，查询工作模式
+        mdBluetoothManager.writeMessage(new Message(UUID.randomUUID().toString(), "##7010\r\n", true));
+        Timber.d("发送查询工作模式指令===" + "##7010");
+
+        //##2001，查询服务器地址1
+        mdBluetoothManager.writeMessage(new Message(UUID.randomUUID().toString(), "##2001\r\n", true));
+        Timber.d("发送查询服务器地址1指令===" + "##2001");
+
+        //##2002，查询服务器地址2
+        mdBluetoothManager.writeMessage(new Message(UUID.randomUUID().toString(), "##2002\r\n", true));
+        Timber.d("发送查询服务器地址2指令===" + "##2002");
+
+        //##7000，查询采集器参数
+        mdBluetoothManager.writeMessage(new Message(UUID.randomUUID().toString(), "##7000\r\n", true));
+        Timber.d("发送查询采集器参数指令===" + "##7000");
+
+        //##7002，查询执行机构参数
+        mdBluetoothManager.writeMessage(new Message(UUID.randomUUID().toString(), "##7002\r\n", true));
+        Timber.d("发送查询执行机构参数指令===" + "##7002");
     }
+
 
     public interface ObtainDeviceStateCmdCallback {
         void obtainDeviceStateCmd();

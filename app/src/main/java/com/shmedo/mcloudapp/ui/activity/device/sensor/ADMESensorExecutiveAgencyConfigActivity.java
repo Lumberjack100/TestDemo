@@ -176,7 +176,7 @@ public class ADMESensorExecutiveAgencyConfigActivity extends BaseActivity implem
         mIvBack.setOnClickListener(this);
         mIvBluetooth.setOnClickListener(this);
         blueDeviceCommunicateUtil = BlueDeviceCommunicateUtil.getInstance();
-        blueDeviceCommunicateUtil.updateLoadingDiaologContext(this);
+        blueDeviceCommunicateUtil.init(this);
 
         if (MCloudApp.isIsBluetoothDeviceConnected()) {
             mIvBluetooth.setImageResource(R.drawable.ic_bluetooth_connected);

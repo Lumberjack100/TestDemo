@@ -60,6 +60,8 @@ public class ConfigADMEActivity extends BaseActivity implements BlueDeviceCommun
 
     private BlueDeviceCommunicateUtil blueDeviceCommunicateUtil;
 
+    private boolean isFirstEnter = true;
+
     private String SN = "";
     private String deviceInfo;
     private String macAddress;
@@ -95,12 +97,32 @@ public class ConfigADMEActivity extends BaseActivity implements BlueDeviceCommun
         super.onCreate(savedInstanceState);
         initView(savedInstanceState);
         getIntentData();
-
         blueDeviceCommunicateUtil = BlueDeviceCommunicateUtil.getInstance();
         blueDeviceCommunicateUtil.init(this, SN, macAddress, this);
         blueDeviceCommunicateUtil.findAndConnectBleDevice();
     }
 
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        if (!isFirstEnter) {
+            blueDeviceCommunicateUtil.init(this);
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        isFirstEnter = false;
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        isFirstEnter = false;
+    }
 
     private void initView(Bundle savedInstanceState) {
         mTvHighsetting.setVisibility(View.GONE);
