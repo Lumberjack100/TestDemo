@@ -35,7 +35,6 @@ import com.shmedo.mcloudapp.entity.SystemDataInfoDao;
 import com.shmedo.mcloudapp.entity.event.BluetoothStateEvent;
 import com.shmedo.mcloudapp.model.Extras;
 import com.shmedo.mcloudapp.ui.activity.ConfigADMEActivity;
-import com.shmedo.mcloudapp.ui.activity.device.ADMEExecutiveAgencyConfigActivity;
 import com.shmedo.mcloudapp.ui.activity.device.senior.InstructionDebugActivity;
 import com.shmedo.mcloudapp.ui.activity.device.sensor.ADMESensorExecutiveAgencyConfigActivity;
 import com.shmedo.mcloudapp.util.DaoManager;
@@ -104,9 +103,6 @@ public class ADMEHomeFragment extends BaseFragment {
 
     @BindView(R.id.dag_config_layout)
     View dagConfigLayout;
-
-    @BindView(R.id.executive_agency_param_layout)
-    View executiveAgencyParamLayout;
 
     @BindView(R.id.custom_command_test_layout)
     View customCommandTestLayout;
@@ -233,7 +229,6 @@ public class ADMEHomeFragment extends BaseFragment {
         mEtAddress2.setEnabled(false);
 
         ((TextView) dagConfigLayout.findViewById(R.id.tv_config_name)).setText("采集器和执行机构参数设置");
-        ((TextView) executiveAgencyParamLayout.findViewById(R.id.tv_config_name)).setText("执行机构参数配置");
         ((TextView) customCommandTestLayout.findViewById(R.id.tv_config_name)).setText("自定义指令输入");
 
         //TODO 需要查询接口确定设备所属项目
@@ -430,7 +425,7 @@ public class ADMEHomeFragment extends BaseFragment {
     }
 
 
-    @OnClick({R.id.iv_lock, R.id.platform_server_config_layout, R.id.refreshIV1, R.id.editBtn1, R.id.refreshIV2, R.id.editBtn2, R.id.dag_config_layout, R.id.executive_agency_param_layout, R.id.custom_command_test_layout, R.id.firmware_upgrade_layout})
+    @OnClick({R.id.iv_lock, R.id.platform_server_config_layout, R.id.refreshIV1, R.id.editBtn1, R.id.refreshIV2, R.id.editBtn2, R.id.dag_config_layout,  R.id.custom_command_test_layout, R.id.firmware_upgrade_layout})
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.iv_lock:
@@ -498,13 +493,7 @@ public class ADMEHomeFragment extends BaseFragment {
                 break;
 
             case R.id.dag_config_layout:
-//                ADMESensorConfigActivity.startActivity(getActivity(), dagConfigInfo);
-
                 ADMESensorExecutiveAgencyConfigActivity.startActivity(getActivity(), dagConfigInfo, executiveAgencyConfigInfo);
-                break;
-
-            case R.id.executive_agency_param_layout:
-                ADMEExecutiveAgencyConfigActivity.startActivity(getActivity(), executiveAgencyConfigInfo);
                 break;
 
             case R.id.custom_command_test_layout:
