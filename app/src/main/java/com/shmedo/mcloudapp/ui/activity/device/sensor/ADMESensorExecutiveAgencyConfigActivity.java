@@ -146,6 +146,7 @@ public class ADMESensorExecutiveAgencyConfigActivity extends BaseActivity implem
         @Override
         public void run() {
             dismissLoadingDialog();
+            ToastUtils.show("发送命令超时,请重新尝试");
         }
     };
 
@@ -175,6 +176,7 @@ public class ADMESensorExecutiveAgencyConfigActivity extends BaseActivity implem
         mIvBack.setOnClickListener(this);
         mIvBluetooth.setOnClickListener(this);
         blueDeviceCommunicateUtil = BlueDeviceCommunicateUtil.getInstance();
+        blueDeviceCommunicateUtil.updateLoadingDiaologContext(this);
 
         if (MCloudApp.isIsBluetoothDeviceConnected()) {
             mIvBluetooth.setImageResource(R.drawable.ic_bluetooth_connected);
@@ -509,7 +511,7 @@ public class ADMESensorExecutiveAgencyConfigActivity extends BaseActivity implem
             case R.id.img_bluetooth:
 
                 if (MCloudApp.isIsBluetoothDeviceConnected()) {
-                    blueDeviceCommunicateUtil.showDisconnectDialog(getResources().getString(R.string.disconnect_bluetooth_device));
+                    showDisconnectDialog(getResources().getString(R.string.disconnect_bluetooth_device));
                 } else {
                     blueDeviceCommunicateUtil.findAndConnectBleDevice();
                 }
@@ -678,9 +680,9 @@ public class ADMESensorExecutiveAgencyConfigActivity extends BaseActivity implem
             @Override
             public void onClick(
                     @NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                dialog.dismiss();
                 //发送关闭测试模式命令
                 blueDeviceCommunicateUtil.sendCommand("##0191\r\n");
-
                 showLoadingDialog("正在发送保存命令...");
                 hander.postDelayed(dismssDialogRunnable, 5000);
             }
@@ -688,11 +690,32 @@ public class ADMESensorExecutiveAgencyConfigActivity extends BaseActivity implem
         mBuilder.onNegative(new MaterialDialog.SingleButtonCallback() {
             @Override
             public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                ADMESensorExecutiveAgencyConfigActivity.this.finish();
+                dialog.dismiss();
             }
         });
     }
 
+    /**
+     * 是否切换连接模式
+     */
+    private void showDisconnectDialog(String content) {
+        MaterialDialog.Builder mBuilder = new MaterialDialog.Builder(this)
+                .title("温馨提示：")
+                .content(content)
+                .contentColor(Color.parseColor("#000000"))
+                .canceledOnTouchOutside(false)
+                .positiveText("确定")
+                .negativeText("取消")
+                .onPositive(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        dialog.dismiss();
+                        blueDeviceCommunicateUtil.disconnectDevice();
+                    }
+                });
+        MaterialDialog mMaterialDialog = mBuilder.build();
+        mMaterialDialog.show();
+    }
 
 
     /**
