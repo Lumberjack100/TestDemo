@@ -350,7 +350,7 @@ public class DeviceFragment extends BaseFragment implements View.OnClickListener
                 if (device != null) {
                     mdBluetoothManager.stopScan();
                     mdBluetoothManager.connectDevice(device, getActivity());
-                    if (null == mLoadingDialog.getDialog() || !mLoadingDialog.getDialog().isShowing()) {
+                    if (null == mLoadingDialog.getLoadingDialog() || !mLoadingDialog.getLoadingDialog().isShowing()) {
                         mLoadingDialog.showNoCancelDialog("正在连接设备：" + SN);
                         hander.postDelayed(dismssConDialogRunnable, 10000);
                     }
@@ -361,8 +361,8 @@ public class DeviceFragment extends BaseFragment implements View.OnClickListener
             //搜索附近蓝牙设备
             startDiscoveryDevice();
             if (null != mBluetoothAdapter && mBluetoothAdapter.isEnabled()) {
-                if (null == mLoadingDialog.getDialog() || !mLoadingDialog.getDialog().isShowing()) {
-                    mLoadingDialog.showCancelDialog("正在搜索设备：" + SN);
+                if (null == mLoadingDialog.getLoadingDialog() || !mLoadingDialog.getLoadingDialog().isShowing()) {
+                    mLoadingDialog.showNoCancelDialog("正在搜索设备：" + SN);
                     hander.postDelayed(dismssConDialogRunnable, 10000);
                 }
             }
@@ -917,7 +917,7 @@ public class DeviceFragment extends BaseFragment implements View.OnClickListener
             hander.removeCallbacks(dismssConDialogRunnable);
             mdBluetoothManager.stopScan();
             mdBluetoothManager.connectDevice(device, getActivity());
-            if (null == mLoadingDialog.getDialog() || !mLoadingDialog.getDialog().isShowing()) {
+            if (null == mLoadingDialog.getLoadingDialog() || !mLoadingDialog.getLoadingDialog().isShowing()) {
                 mLoadingDialog.showNoCancelDialog("正在连接设备：" + SN);
                 hander.postDelayed(dismssConDialogRunnable, 10000);
             }

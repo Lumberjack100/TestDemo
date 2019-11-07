@@ -17,81 +17,78 @@ import com.afollestad.materialdialogs.MaterialDialog;
 
 public class LoadingDialog {
     private Context mContext;
-    private MaterialDialog dialog;
+    private MaterialDialog loadingDialog = null;
 
     public LoadingDialog(Context context) {
         this.mContext = context;
     }
 
-    public MaterialDialog getDialog() {
-        return dialog;
+    public MaterialDialog getLoadingDialog() {
+        return loadingDialog;
     }
 
-    public void show(String tip) {
-        if (dialog == null) {
-            dialog = new MaterialDialog.Builder(mContext)
-                    .content(TextUtils.isEmpty(tip) ? "正在加载..." : tip)
-                    .progress(true, 0)
-                    .progressIndeterminateStyle(false)
-                    .build();
-            dialog.setCanceledOnTouchOutside(true);
-        }
-        if (!dialog.isShowing()) {
-            dialog.show();
-        }
-    }
 
     public void show() {
         show(null);
     }
 
-    public void showCancelDialog(String tip) {
-        if (dialog == null) {
-            dialog = new MaterialDialog.Builder(mContext)
-                    .content(TextUtils.isEmpty(tip) ? "正在加载..." : tip)
-                    .progress(true, 0)
-                    .progressIndeterminateStyle(false)
-                    .build();
-            dialog.setCanceledOnTouchOutside(false);
-        }
-        if (!dialog.isShowing()) {
-            dialog.show();
-        }
-    }
-
-    public void showNoCancelDialog(String tip) {
-        if (dialog == null) {
-            dialog = new MaterialDialog.Builder(mContext)
-                    .content(TextUtils.isEmpty(tip) ? "正在加载..." : tip)
-                    .progress(true, 0)
-                    .progressIndeterminateStyle(false)
-                    .build();
-            dialog.setCancelable(false);
-            dialog.setCanceledOnTouchOutside(false);
-        }
-        if (!dialog.isShowing()) {
-            dialog.show();
-        }
-    }
-
-    public void showNoCancel() {
+    public void showNoCancelDialog() {
         showNoCancelDialog(null);
     }
 
 
-    public void showCancelDialog() {
-        showCancelDialog(null);
+
+    public void show(String tip) {
+        if (loadingDialog != null && loadingDialog.isShowing()) {
+            return;
+        }
+
+        if (loadingDialog == null) {
+            loadingDialog = new MaterialDialog.Builder(mContext)
+                    .content(TextUtils.isEmpty(tip) ? "正在加载..." : tip)
+                    .progress(true, 0)
+                    .progressIndeterminateStyle(false)
+                    .build();
+            loadingDialog.setCanceledOnTouchOutside(true);
+        }
+
+        if (!loadingDialog.isShowing()) {
+            loadingDialog.show();
+        }
     }
 
+
+    public void showNoCancelDialog(String tip) {
+        if (loadingDialog != null && loadingDialog.isShowing()) {
+            return;
+        }
+
+        if (loadingDialog == null) {
+            loadingDialog = new MaterialDialog.Builder(mContext)
+                    .content(TextUtils.isEmpty(tip) ? "正在加载..." : tip)
+                    .progress(true, 0)
+                    .progressIndeterminateStyle(false)
+                    .build();
+            loadingDialog.setCancelable(false);
+            loadingDialog.setCanceledOnTouchOutside(false);
+        }
+
+        if (!loadingDialog.isShowing()) {
+            loadingDialog.show();
+        }
+    }
+
+
+
     public void dismiss() {
-        if (dialog != null && dialog.isShowing()) {
-            dialog.dismiss();
-            dialog = null;
+        if (loadingDialog != null && loadingDialog.isShowing()) {
+            loadingDialog.dismiss();
+            loadingDialog = null;
         }
     }
 
     public boolean isShowing() {
-        return dialog.isShowing();
+        return loadingDialog.isShowing();
     }
 
 
@@ -102,7 +99,6 @@ public class LoadingDialog {
                 .contentColor(Color.parseColor("#000000"))
                 .canceledOnTouchOutside(false)
                 .positiveText("确定");
-        //.negativeText("取消");
         MaterialDialog mMaterialDialog = mBuilder.build();
         mMaterialDialog.show();
     }

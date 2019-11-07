@@ -14,7 +14,6 @@ import com.shmedo.mcloudapp.model.common.CommonVariable;
 import com.shmedo.mcloudapp.util.StringUtil;
 import com.shmedo.mcloudapp.util.UserConfig;
 import com.shmedo.mcloudapp.views.ClearEditText;
-import com.shmedo.mcloudapp.views.LoadingDialog;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -36,7 +35,6 @@ public class ServiceConfigActivity extends BaseActivity {
     @BindView(R.id.btnServiceTest)
     Button mBtnServiceTest;
     private UserConfig userConfig;
-    private LoadingDialog dialog;
     private String config = "mdnetservice.shmedo.cn";
 
     @Override
@@ -56,7 +54,6 @@ public class ServiceConfigActivity extends BaseActivity {
 
 
     private void initServiceAddress() {
-        dialog = new LoadingDialog(this);
         mEtServiceAddress.setText(config);
         userConfig = UserConfig.getConfig(this, CommonVariable.USER_CONFIG_NAME);
         String address = userConfig.readString(CommonVariable.SERVICE_ADDRESS);
@@ -77,14 +74,16 @@ public class ServiceConfigActivity extends BaseActivity {
         final UserConfig uc = UserConfig.getConfig(this, CommonVariable.USER_CONFIG_NAME);
         uc.writeString(getResources().getString(R.string.service_address), service_text);
         MCloudApp.setServiceAddress(service_text);
-        dialog.showCancelDialog("正在配置服务器...");
+
+        showLoadingDialog("正在配置服务器...");
         MDRetrofit.getInstance().createService().getApiVerson()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new BaseObserver<String>() {
                     @Override
                     public void Success(String s, String message) {
-                        dialog.dismiss();
+                        dismissLoadingDialog();
+
                         ToastUtils.show("服务端已连接，API版本为：" + s);
                         userConfig.writeString(CommonVariable.SERVICE_ADDRESS, mEtServiceAddress.getText().toString());
                         finish();
@@ -93,7 +92,8 @@ public class ServiceConfigActivity extends BaseActivity {
                     @Override
                     public void Failure(String message) {
                         Timber.w("服务端连接错误: " + message);
-                        dialog.dismiss();
+                        dismissLoadingDialog();
+
                         ToastUtils.show("服务端连接错误");
                     }
                 });
