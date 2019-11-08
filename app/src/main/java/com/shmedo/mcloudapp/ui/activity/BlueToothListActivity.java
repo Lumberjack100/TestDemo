@@ -108,7 +108,7 @@ public class BlueToothListActivity extends Activity {
                 MCloudApp.setDeviceName(deviceName);
 
 
-                if (deviceName.endsWith("T")) {
+                if (deviceName.endsWith("T")||deviceName.contains("18A095L")) {
                     String deviceInfo = "MEDO," + deviceName.substring(3) + ",ADME";
                     ConfigADMEActivity.startActivity(BlueToothListActivity.this, deviceInfo, macAddress);
                 } else {

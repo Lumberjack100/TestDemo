@@ -879,6 +879,10 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
                     return;
                 }
                 startDiscoveryDevice();
+                if (null != mBluetoothAdapter && mBluetoothAdapter.isEnabled()) {
+                    showLoadingDialog("正在获取附近的蓝牙设备...");
+                    hander.postDelayed(dismssDialogRunnable, 10000);
+                }
                 break;
 
             case REQUEST_CODE_SCAN:
