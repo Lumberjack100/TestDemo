@@ -57,6 +57,7 @@ public class MdBluetoothManager {
      * 响应包的拆分方式
      */
     private static final byte[] DEFAULT_SPLIT_BYTES = "\r\n".getBytes(StandardCharsets.UTF_8);
+
     private static final int ENABLE_PERMISSION = 1;
     /**
      * 50毫秒检查一次
@@ -70,6 +71,7 @@ public class MdBluetoothManager {
      * 等待消息响应的超时时间
      */
     private static final int WAIT_FOR_RESPONSE_TIME_OUT_SECOND = 60;
+
     private static MdBluetoothManager bluetoothManager;
 
     public static MdBluetoothManager getInstance() {
@@ -80,6 +82,7 @@ public class MdBluetoothManager {
         if (bluetoothManager == null) {
             bluetoothManager = new MdBluetoothManager(bluetoothAdapter, androidBluetoothManager);
         }
+
         bluetoothManager.initCheck();
     }
 

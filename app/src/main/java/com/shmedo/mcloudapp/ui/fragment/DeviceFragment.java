@@ -50,7 +50,6 @@ import com.shmedo.mcloudapp.entity.ble.SystemRunStateSub;
 import com.shmedo.mcloudapp.entity.ble.VersionMessageSub;
 import com.shmedo.mcloudapp.entity.ble.collector.CollectorSensorParamsInfoSub;
 import com.shmedo.mcloudapp.model.Extras;
-import com.shmedo.mcloudapp.util.bleutil.BlueDeviceCommunicateUtil;
 import com.shmedo.mcloudapp.util.bleutil.BlueResultParserUtil;
 import com.shmedo.mcloudapp.util.bleutil.ByteManagerUtil;
 import com.shmedo.mcloudapp.util.bleutil.Constants;
@@ -115,8 +114,6 @@ public class DeviceFragment extends BaseFragment implements View.OnClickListener
     private static boolean isConnected = false;
     private boolean isBlueMode = true;//当前模式是否是蓝牙模式
     private boolean stopBluetooth = false;
-
-    private BlueDeviceCommunicateUtil blueDeviceCommunicateUtil = BlueDeviceCommunicateUtil.getInstance();
 
     public static MdBluetoothManager mdBluetoothManager;
     private BluetoothAdapter mBluetoothAdapter;

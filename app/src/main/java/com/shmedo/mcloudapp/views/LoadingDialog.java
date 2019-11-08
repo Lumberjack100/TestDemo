@@ -17,14 +17,14 @@ import com.afollestad.materialdialogs.MaterialDialog;
 
 public class LoadingDialog {
     private Context mContext;
-    private MaterialDialog loadingDialog = null;
+    private MaterialDialog materialDialog = null;
 
     public LoadingDialog(Context context) {
         this.mContext = context;
     }
 
     public MaterialDialog getLoadingDialog() {
-        return loadingDialog;
+        return materialDialog;
     }
 
 
@@ -39,56 +39,56 @@ public class LoadingDialog {
 
 
     public void show(String tip) {
-        if (loadingDialog != null && loadingDialog.isShowing()) {
+        if (materialDialog != null && materialDialog.isShowing()) {
             return;
         }
 
-        if (loadingDialog == null) {
-            loadingDialog = new MaterialDialog.Builder(mContext)
+        if (materialDialog == null) {
+            materialDialog = new MaterialDialog.Builder(mContext)
                     .content(TextUtils.isEmpty(tip) ? "正在加载..." : tip)
                     .progress(true, 0)
                     .progressIndeterminateStyle(false)
                     .build();
-            loadingDialog.setCanceledOnTouchOutside(true);
+            materialDialog.setCanceledOnTouchOutside(true);
         }
 
-        if (!loadingDialog.isShowing()) {
-            loadingDialog.show();
+        if (!materialDialog.isShowing()) {
+            materialDialog.show();
         }
     }
 
 
     public void showNoCancelDialog(String tip) {
-        if (loadingDialog != null && loadingDialog.isShowing()) {
+        if (materialDialog != null && materialDialog.isShowing()) {
             return;
         }
 
-        if (loadingDialog == null) {
-            loadingDialog = new MaterialDialog.Builder(mContext)
+        if (materialDialog == null) {
+            materialDialog = new MaterialDialog.Builder(mContext)
                     .content(TextUtils.isEmpty(tip) ? "正在加载..." : tip)
                     .progress(true, 0)
                     .progressIndeterminateStyle(false)
                     .build();
-            loadingDialog.setCancelable(false);
-            loadingDialog.setCanceledOnTouchOutside(false);
+            materialDialog.setCancelable(false);
+            materialDialog.setCanceledOnTouchOutside(false);
         }
 
-        if (!loadingDialog.isShowing()) {
-            loadingDialog.show();
+        if (!materialDialog.isShowing()) {
+            materialDialog.show();
         }
     }
 
 
 
     public void dismiss() {
-        if (loadingDialog != null && loadingDialog.isShowing()) {
-            loadingDialog.dismiss();
-            loadingDialog = null;
+        if (materialDialog != null && materialDialog.isShowing()) {
+            materialDialog.dismiss();
+            materialDialog = null;
         }
     }
 
     public boolean isShowing() {
-        return loadingDialog.isShowing();
+        return materialDialog.isShowing();
     }
 
 
