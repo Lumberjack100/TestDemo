@@ -848,7 +848,7 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
             return;
         }
 
-        MCloudApp.setCurDeviceToken(localData[2]);
+        MCloudApp.setCurDeviceToken(localData[1]);
         MCloudApp.setCurDeviceMacAddr(null);
 
         if (localData[2].equals("DAS")) {

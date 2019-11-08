@@ -105,12 +105,12 @@ public class BlueToothListActivity extends Activity {
             public void onItemClick(View itemView, int position) {
                 String macAddress = deviceList.get(position).getDevice().getAddress();
                 String deviceName = deviceList.get(position).getDevice().getName();
-                MCloudApp.setCurDeviceToken(deviceName);
+                MCloudApp.setCurDeviceToken(deviceName.substring(3));
                 MCloudApp.setCurDeviceMacAddr(macAddress);
 
                 if (deviceName.endsWith("T") || deviceName.contains("18A095L")) {
                     String deviceInfo = "MEDO," + deviceName.substring(3) + ",ADME";
-                    ConfigADMEActivity.startActivity(BlueToothListActivity.this, deviceInfo, macAddress);
+                    ConfigADMEActivity.startActivity(BlueToothListActivity.this, deviceInfo);
                 } else {
                     String deviceInfo = "MEDO," + deviceName.substring(3) + ",DAS";
                     ConfigDASActivity.startActivity(BlueToothListActivity.this, deviceInfo, macAddress);

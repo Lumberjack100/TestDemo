@@ -65,7 +65,7 @@
             android:layout_below="@id/fab_add"
             android:layout_gravity="bottom|right"
             android:src="@drawable/icon_config"
-            app:fab_colorNormal="@color/app_color_theme_4"
+            app:fab_colorNormal="@color/white"
             app:fab_colorPressed="@color/app_color_blue_pressed"
             app:fab_colorRipple="@color/app_color_blue_pressed"
             app:fab_size="mini" />
@@ -89,7 +89,7 @@
             android:layout_below="@id/fab_location"
             android:layout_gravity="bottom|right"
             android:src="@drawable/icon_refresh"
-            app:fab_colorNormal="@color/app_color_theme_3"
+            app:fab_colorNormal="@color/white"
             app:fab_colorPressed="@color/app_color_blue_pressed"
             app:fab_colorRipple="@color/app_color_blue_pressed"
             app:fab_size="mini" />
