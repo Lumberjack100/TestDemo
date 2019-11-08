@@ -43,6 +43,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import timber.log.Timber;
+
 
 /**
  * Created by Liudongdong on 18/1/31.
@@ -79,10 +81,11 @@ public class MdBluetoothManager {
     }
 
     public static void init(BluetoothAdapter bluetoothAdapter, BluetoothManager androidBluetoothManager) {
-        if (bluetoothManager == null) {
-            bluetoothManager = new MdBluetoothManager(bluetoothAdapter, androidBluetoothManager);
-        }
+//        if (bluetoothManager == null) {
+//            bluetoothManager = new MdBluetoothManager(bluetoothAdapter, androidBluetoothManager);
+//        }
 
+        bluetoothManager = new MdBluetoothManager(bluetoothAdapter, androidBluetoothManager);
         bluetoothManager.initCheck();
     }
 
@@ -213,13 +216,7 @@ public class MdBluetoothManager {
         gatt.disconnect();
         currentDevice = null;
 
-
-        if (eventHandler == null)
-            return;
-        BluetoothEvent event = BluetoothEvent.builder()
-                .setEventType(BluetoothEventType.DISCONNECTED)
-                .build();
-        eventHandler.handle(event);
+        handleBluetoothEvent(BluetoothEventType.DISCONNECTED, null);
     }
 
     public void writeMessage(Message msg) {
@@ -271,16 +268,17 @@ public class MdBluetoothManager {
         if ((!isReadable) || writeMessageManager.size() <= 0) {
             return;
         }
+
         if (checkWriteTimeout()) {
-            BluetoothEvent event = BluetoothEvent.withEventType(BluetoothEventType.WRITE_TIME_OUT);
-            fireEvent(event);
+            handleBluetoothEvent(BluetoothEventType.WRITE_TIME_OUT, null);
             return;
         }
+
         if (checkResponseTimeout()) {
-            BluetoothEvent event = BluetoothEvent.withEventType(BluetoothEventType.MESSAGE_RESPONSE_TIME_OUT);
-            fireEvent(event);
+            handleBluetoothEvent(BluetoothEventType.MESSAGE_RESPONSE_TIME_OUT, null);
             return;
         }
+
         Message msg = null;
         BluetoothEvent event = null;
         byte[] writeBytes = null;
@@ -349,8 +347,9 @@ public class MdBluetoothManager {
                 }
             }
         }
+
         if (eventType != null) {
-            fireEvent(BluetoothEvent.withEventType(eventType));
+            handleBluetoothEvent(eventType, null);
         }
         return result;
     }
@@ -365,8 +364,7 @@ public class MdBluetoothManager {
         }
         //消息写完了，最后的写入时间却为null
         if (lastWriteTime == null) {
-            BluetoothEvent bluetoothEvent = BluetoothEvent.withEventType(BluetoothEventType.STATE_EXCEPTION);
-            fireEvent(bluetoothEvent);
+            handleBluetoothEvent(BluetoothEventType.STATE_EXCEPTION, null);
             return false;
         }
         Timestamp now = new Timestamp(System.currentTimeMillis());
@@ -378,12 +376,24 @@ public class MdBluetoothManager {
         }
     }
 
-    private void fireEvent(final BluetoothEvent event) {
-        if (eventHandler != null) {
-            eventHandler.handle(event);
-        } else {
-            Log.w(LogTag.WARN_TAG, "事件处理程序为NULL");
+    private void handleBluetoothEvent(BluetoothEventType eventType, Object eventData) {
+        if (eventHandler == null) {
+            Timber.e("eventHandler 事件处理程序为NULL");
+            return;
         }
+        BluetoothEvent event = BluetoothEvent.builder()
+                .setEventType(eventType)
+                .setEventData(eventData)
+                .build();
+        eventHandler.handle(event);
+    }
+
+    private void fireEvent(final BluetoothEvent event) {
+        if (eventHandler == null) {
+            Timber.e("eventHandler 事件处理程序为NULL");
+            return;
+        }
+        eventHandler.handle(event);
     }
 
 
@@ -394,13 +404,7 @@ public class MdBluetoothManager {
             if (devices.contains(mDev))
                 return;
             devices.add(mDev);
-            if (eventHandler == null)
-                return;
-            BluetoothEvent event = BluetoothEvent.builder()
-                    .setEventType(BluetoothEventType.DEVICE_FIND)
-                    .setEventData(new BluetoothDeviceFindEventData(mDev, devices))
-                    .build();
-            eventHandler.handle(event);
+            handleBluetoothEvent(BluetoothEventType.DEVICE_FIND, new BluetoothDeviceFindEventData(mDev, devices));
         }
     }
 
@@ -421,17 +425,12 @@ public class MdBluetoothManager {
                     throw new RuntimeException("运行版本太低");
                 }
                 eventType = BluetoothEventType.CONNECTED;
-            } else if (newState == BluetoothProfile.STATE_DISCONNECTED ||
-                    newState == BluetoothProfile.STATE_DISCONNECTING) {
+            } else if (newState == BluetoothProfile.STATE_DISCONNECTED || newState == BluetoothProfile.STATE_DISCONNECTING) {
                 eventType = BluetoothEventType.DISCONNECTED;
                 gatt.close();
             }
-            if (eventHandler == null || eventType == null)
-                return;
-            BluetoothEvent event = BluetoothEvent.builder()
-                    .setEventType(eventType)
-                    .build();
-            eventHandler.handle(event);
+
+            handleBluetoothEvent(eventType, null);
         }
 
         @TargetApi(Build.VERSION_CODES.LOLLIPOP)
@@ -445,27 +444,18 @@ public class MdBluetoothManager {
             if (status == BluetoothGatt.GATT_SUCCESS) {
                 gatt.discoverServices();
             } else {
-                Log.w(LogTag.WARN_TAG, "MTU设置失败");
-                if (eventHandler == null)
-                    return;
-                BluetoothEvent event = BluetoothEvent.builder()
-                        .setEventType(BluetoothEventType.REQUEST_MTU_FAIL)
-                        .build();
-                eventHandler.handle(event);
+                Timber.e("MTU设置失败");
+                handleBluetoothEvent(BluetoothEventType.REQUEST_MTU_FAIL, null);
             }
         }
 
         @Override
         public void onServicesDiscovered(BluetoothGatt gatt, int status) {
             if (status != BluetoothGatt.GATT_SUCCESS) {
-                BluetoothEvent event = BluetoothEvent.builder()
-                        .setEventType(BluetoothEventType.SERVICE_FIND_FAIL)
-                        .build();
-                if (eventHandler != null) {
-                    eventHandler.handle(event);
-                }
+                handleBluetoothEvent(BluetoothEventType.SERVICE_FIND_FAIL, null);
                 return;
             }
+
             List<BluetoothGattService> serviceList = gatt.getServices();
             BluetoothGattService usrGattService = null;
             for (BluetoothGattService gattService : serviceList) {
@@ -478,21 +468,13 @@ public class MdBluetoothManager {
                 }
             }
             if (usrGattService == null) {
-                BluetoothEvent event = BluetoothEvent.builder()
-                        .setEventType(BluetoothEventType.SERVICE_FIND_FAIL)
-                        .build();
-                if (eventHandler != null) {
-                    eventHandler.handle(event);
-                }
+                handleBluetoothEvent(BluetoothEventType.SERVICE_FIND_FAIL, null);
                 return;
             }
+
             List<BluetoothGattCharacteristic> characteristicList = usrGattService.getCharacteristics();
             if (characteristicList == null || characteristicList.size() != 2) {
-                BluetoothEvent event = BluetoothEvent
-                        .withEventType(BluetoothEventType.CHARACTERISTICS_FIND_FAIL);
-                if (eventHandler != null) {
-                    eventHandler.handle(event);
-                }
+                handleBluetoothEvent(BluetoothEventType.CHARACTERISTICS_FIND_FAIL, null);
                 return;
             }
             readCharacteristic = characteristicList.get(0);
@@ -543,11 +525,7 @@ public class MdBluetoothManager {
                     byteManager.writeByte(value);
                 } catch (Exception ex) {
                     //消息达到最大的字节数，仍然没有遇到完整包
-                    BluetoothEvent event = BluetoothEvent.builder()
-                            .setEventData(ex)
-                            .setEventType(BluetoothEventType.STATE_EXCEPTION)
-                            .build();
-                    fireEvent(event);
+                    handleBluetoothEvent(BluetoothEventType.STATE_EXCEPTION, ex);
                 }
             }
         }
@@ -628,9 +606,8 @@ public class MdBluetoothManager {
             } else {
                 eventType = BluetoothEventType.ENABLE_READ_FAIL;
             }
-            if (eventHandler == null)
-                return;
-            eventHandler.handle(BluetoothEvent.withEventType(eventType));
+
+            handleBluetoothEvent(eventType, null);
         }
 
         public void writeData(byte[] data) {
@@ -655,19 +632,14 @@ public class MdBluetoothManager {
             if (message != null) {
                 //消息还没发完，但是响应已经来了
                 if (!message.isDone()) {
-                    BluetoothEvent event = BluetoothEvent.withEventType(BluetoothEventType.STATE_EXCEPTION);
-                    MdBluetoothManager.this.fireEvent(event);
+                    handleBluetoothEvent(BluetoothEventType.STATE_EXCEPTION, null);
                 } else {
                     //消息已经发完
                     message.setResponseMessage(result);
                 }
             } else {
                 //响应来了，但是队列里没有消息
-                BluetoothEvent bluetoothEvent = BluetoothEvent.builder()
-                        .setEventData(result)
-                        .setEventType(BluetoothEventType.RESPONSE_WITH_NO_MESSAGE)
-                        .build();
-                MdBluetoothManager.this.fireEvent(bluetoothEvent);
+                handleBluetoothEvent(BluetoothEventType.RESPONSE_WITH_NO_MESSAGE, result);
             }
         }
     }
