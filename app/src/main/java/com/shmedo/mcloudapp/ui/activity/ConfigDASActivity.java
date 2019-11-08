@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentTransaction;
 
+import com.shmedo.mcloudapp.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.base.BaseActivity;
 import com.shmedo.mcloudapp.model.Extras;
@@ -69,9 +70,16 @@ public class ConfigDASActivity extends BaseActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
     }
 
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        MCloudApp.setCurDeviceToken(null);
+        MCloudApp.setCurDeviceMacAddr(null);
+    }
 
     @Override
     public void onBackPressed() {

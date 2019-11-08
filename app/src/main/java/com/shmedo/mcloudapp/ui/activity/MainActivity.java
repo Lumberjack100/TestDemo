@@ -848,13 +848,13 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
             return;
         }
 
-        MCloudApp.setDeviceName(localData[2]);
+        MCloudApp.setCurDeviceToken(localData[2]);
+        MCloudApp.setCurDeviceMacAddr(null);
+
         if (localData[2].equals("DAS")) {
-            //跳转到设备配置页面
             ConfigDASActivity.startActivity(MainActivity.this, deviceInfo);
 
         } else if (localData[2].equals("ADME")) {
-            //跳转到设备配置页面
             ConfigADMEActivity.startActivity(MainActivity.this, deviceInfo);
 
         } else if (localData[2].equals("E60")) {

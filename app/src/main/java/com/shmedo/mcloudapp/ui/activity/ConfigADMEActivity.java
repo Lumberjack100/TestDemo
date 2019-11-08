@@ -327,6 +327,13 @@ public class ConfigADMEActivity extends BaseActivity implements BlueDeviceCommun
 
 
     @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        MCloudApp.setCurDeviceToken(null);
+        MCloudApp.setCurDeviceMacAddr(null);
+    }
+
+    @Override
     public void onBackPressed() {
         if (!HandleBackUtil.handleBackPress(this)) {
             if (MCloudApp.isIsBluetoothDeviceConnected()) {

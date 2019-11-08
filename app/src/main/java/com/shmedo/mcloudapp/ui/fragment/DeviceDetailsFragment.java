@@ -238,7 +238,7 @@ public class DeviceDetailsFragment extends BaseFragment {
 
     private long getCurrentDeviceId() {
         StatusInfoResult statusInfoResult = manager.getDaoSession().getStatusInfoResultDao().queryBuilder()
-                .where(StatusInfoResultDao.Properties.DeviceName.eq(MCloudApp.getDeviceName()))
+                .where(StatusInfoResultDao.Properties.DeviceName.eq(MCloudApp.getCurDeviceToken()))
                 .unique();
 
         if (statusInfoResult != null)

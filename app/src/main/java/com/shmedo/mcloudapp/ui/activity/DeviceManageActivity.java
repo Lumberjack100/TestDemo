@@ -319,7 +319,8 @@ public class DeviceManageActivity extends BaseActivity implements OnRefreshListe
 
                 default://整个 Item 点击事件
                     StatusInfoResult statusInfoResult = statusInfoList.get(position);
-                    MCloudApp.setDeviceName(statusInfoResult.getDeviceName());
+                    MCloudApp.setCurDeviceToken(statusInfoResult.getDeviceName());
+                    MCloudApp.setCurDeviceMacAddr(null);
 
                     if (!TextUtils.isEmpty(statusInfoResult.getDeviceTypeName()) && statusInfoResult.getDeviceTypeName().toUpperCase().contains("ADME")) {
                         String deviceInfo = "MEDO," + statusInfoResult.getDeviceName() + "," + statusInfoResult.getDeviceTypeName();

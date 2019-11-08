@@ -36,7 +36,10 @@ public class MCloudApp {
 
     private static boolean isBluetoothDeviceConnected = false;
 
-    private static String deviceName;//设备名称
+    private static String curDeviceToken;//设备名称
+
+    private static String curDeviceMacAddr;//设备名称
+
 
 
     /**
@@ -126,12 +129,20 @@ public class MCloudApp {
 
 
 
-    public static String getDeviceName() {
-        return deviceName;
+    public static String getCurDeviceToken() {
+        return curDeviceToken;
     }
 
-    public static void setDeviceName(String deviceName) {
-        MCloudApp.deviceName = deviceName;
+    public static void setCurDeviceToken(String curDeviceToken) {
+        MCloudApp.curDeviceToken = curDeviceToken;
+    }
+
+    public static String getCurDeviceMacAddr() {
+        return curDeviceMacAddr;
+    }
+
+    public static void setCurDeviceMacAddr(String curDeviceMacAddr) {
+        MCloudApp.curDeviceMacAddr = curDeviceMacAddr;
     }
 
     /**
