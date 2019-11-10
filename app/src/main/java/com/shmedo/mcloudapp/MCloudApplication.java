@@ -1,14 +1,20 @@
 package com.shmedo.mcloudapp;
 
 import android.app.Application;
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothManager;
+import android.content.Context;
 import android.widget.Toast;
 
 import com.hjq.toast.ToastInterceptor;
 import com.hjq.toast.ToastUtils;
 import com.hjq.toast.style.ToastBlackStyle;
+import com.shmedo.mcloudapp.bluetooth.MdBluetoothManager;
 import com.shmedo.mcloudapp.logging.AppCrashHandler;
 import com.shmedo.mcloudapp.logging.CrashReportingTree;
 import com.tencent.mmkv.MMKV;
+
+import java.util.Objects;
 
 import timber.log.Timber;
 
@@ -26,7 +32,6 @@ public class MCloudApplication extends Application {
     public void onCreate() {
         super.onCreate();
         MCloudApp.initialize(this);
-
         //初始化蒲公英
         //PgyCrashManager.register(this);
 
@@ -39,6 +44,8 @@ public class MCloudApplication extends Application {
         initTimber();
 
         initToastUtil();
+
+        initMdBluetoothManager();
     }
 
 
@@ -75,6 +82,12 @@ public class MCloudApplication extends Application {
         });
         // 初始化吐司工具类
         ToastUtils.init(this, new ToastBlackStyle(this));
+    }
+
+    private void initMdBluetoothManager() {
+        BluetoothManager bluetoothManager = (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
+        BluetoothAdapter mBluetoothAdapter = Objects.requireNonNull(bluetoothManager).getAdapter();
+        MdBluetoothManager.init(mBluetoothAdapter, bluetoothManager);
     }
 
 }

@@ -1,11 +1,9 @@
-package com.shmedo.mcloudapp.util.bleutil;
+package com.shmedo.mcloudapp.ui.activity.device;
 
-import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
-import android.bluetooth.BluetoothManager;
-import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
 
@@ -14,108 +12,66 @@ import com.shmedo.das.utils.DesUtil;
 import com.shmedo.das.utils.OnBytePackage;
 import com.shmedo.das.utils.StringUtil;
 import com.shmedo.mcloudapp.MCloudApp;
+import com.shmedo.mcloudapp.base.BaseActivity;
 import com.shmedo.mcloudapp.bluetooth.BluetoothDeviceFindEventData;
 import com.shmedo.mcloudapp.bluetooth.BluetoothEvent;
 import com.shmedo.mcloudapp.bluetooth.BluetoothEventHandler;
 import com.shmedo.mcloudapp.bluetooth.MdBluetoothManager;
 import com.shmedo.mcloudapp.bluetooth.Message;
 import com.shmedo.mcloudapp.entity.event.BluetoothStateEvent;
-import com.shmedo.mcloudapp.views.LoadingDialog;
+import com.shmedo.mcloudapp.util.bleutil.ByteManagerUtil;
+import com.shmedo.mcloudapp.util.bleutil.Constants;
 
 import org.greenrobot.eventbus.EventBus;
 
-import java.util.Objects;
 import java.util.UUID;
 
 import timber.log.Timber;
 
 /**
  * 项目名：  mCloudapp
- * 包名：    com.shmedo.mcloudapp.util.bleutil
+ * 包名：    com.shmedo.mcloudapp.ui.activity.device
  * 创建者:   gonghe
- * 创建时间:  2019-11-07
+ * 创建时间:  2019-11-08
  * 描述：    TODO
  */
-public class BlueDeviceCommunicateUtil {
+public abstract class BaseDeviceConnectActivity extends BaseActivity {
 
     public static final int REQUEST_ENABLE_BT = 0x001;
 
-    private static BlueDeviceCommunicateUtil instance;
-
-    private Activity mActivity;
-
-    private Context mContext = MCloudApp.getContext();
-
-    private LoadingDialog mLoadingDialog;
-
-    private MdBluetoothManager mdBluetoothManager;
+    protected MdBluetoothManager mdBluetoothManager;
 
     private BluetoothAdapter mBluetoothAdapter;
 
     private MdBluetoothEventHandler mdBluetoothEventHandler = new MdBluetoothEventHandler();
 
-    private Handler hander = MCloudApp.getMainHandler();
+    private Handler hander = new Handler();
 
     private boolean isAutoConnectBlue = true;//是否自动连接蓝牙
 
-    private ObtainDeviceStateCmdCallback obtainDeviceStateCmdCallback = null;
+    private String SN = MCloudApp.getCurDeviceToken();
 
-    private String SN = "";
-
-    private String macAddress;
-
-
-    public static BlueDeviceCommunicateUtil getInstance() {
-        if (instance == null) {
-            instance = new BlueDeviceCommunicateUtil();
-        }
-
-        return instance;
-    }
+    private String macAddress = MCloudApp.getCurDeviceMacAddr();
 
 
     private Runnable dismssDialogRunnable = new Runnable() {
         @Override
         public void run() {
-            if (mLoadingDialog != null) {
-                mLoadingDialog.dismiss();
-            }
+            dismissLoadingDialog();
         }
     };
 
     private Runnable dismssConnectDialogRunnable = new Runnable() {
         @Override
         public void run() {
-            if (mLoadingDialog != null) {
-                mLoadingDialog.dismiss();
-            }
+            dismissLoadingDialog();
         }
     };
 
-    public BlueDeviceCommunicateUtil() {
-
-    }
-
-    public void init(Activity activity) {
-        mActivity = activity;
-        mLoadingDialog = new LoadingDialog(activity);
-    }
-
-
-    public void init(Activity activity, String deviceName, String address, ObtainDeviceStateCmdCallback callback) {
-        SN = deviceName;
-        macAddress = address;
-        obtainDeviceStateCmdCallback = callback;
-        mActivity = activity;
-        mLoadingDialog = new LoadingDialog(activity);
-
-        initBluetooth();
-    }
-
-    private void initBluetooth() {
-        final BluetoothManager bluetoothManager = (BluetoothManager) mContext.getSystemService(Context.BLUETOOTH_SERVICE);
-        mBluetoothAdapter = Objects.requireNonNull(bluetoothManager).getAdapter();
-        MdBluetoothManager.init(mBluetoothAdapter, bluetoothManager);
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         mdBluetoothManager = MdBluetoothManager.getInstance();
         mdBluetoothManager.setEventHandler(mdBluetoothEventHandler);
     }
@@ -124,21 +80,22 @@ public class BlueDeviceCommunicateUtil {
     /**
      * 扫描蓝牙设备，主要用来判断要连接的设备是否能被搜索到
      */
-    private void startDiscoveryDevice() {
+    protected void startDiscoveryDevice() {
         //蓝牙未打开
         if (!mBluetoothAdapter.isEnabled()) {
             Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-            mActivity.startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
+            startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
             return;
         }
 
         //蓝牙已打开时，开始扫描蓝牙设备
-        mdBluetoothManager.scanDevice(20, mActivity);
+        mdBluetoothManager.scanDevice(20, this);
         if (null != mBluetoothAdapter && mBluetoothAdapter.isEnabled()) {
-            mLoadingDialog.showNoCancelDialog("正在搜索设备：" + SN);
+            showLoadingDialog("正在搜索设备：" + SN);
             hander.postDelayed(dismssDialogRunnable, 10000);
         }
     }
+
 
     /**
      * 搜索并连接指定的蓝牙设备
@@ -157,7 +114,6 @@ public class BlueDeviceCommunicateUtil {
         startDiscoveryDevice();
     }
 
-
     /**
      * 处理发现的蓝牙设备
      */
@@ -167,9 +123,7 @@ public class BlueDeviceCommunicateUtil {
             return;
 
         if (device.getName().contains(SN)) {
-            if (mLoadingDialog != null) {
-                mLoadingDialog.dismiss();
-            }
+            dismissLoadingDialog();
             hander.removeCallbacks(dismssDialogRunnable);
             doConnect(device);
         }
@@ -180,8 +134,8 @@ public class BlueDeviceCommunicateUtil {
      */
     private void doConnect(BluetoothDevice device) {
         mdBluetoothManager.stopScan();
-        mdBluetoothManager.connectDevice(device, mActivity);
-        mLoadingDialog.showNoCancelDialog("正在连接设备：" + SN);
+        mdBluetoothManager.connectDevice(device, this);
+        showLoadingDialog("正在连接设备：" + SN);
         hander.postDelayed(dismssConnectDialogRunnable, 15000);
     }
 
@@ -196,13 +150,11 @@ public class BlueDeviceCommunicateUtil {
         }
     }
 
-
     private class MdBluetoothEventHandler implements BluetoothEventHandler {
         @Override
         public void handle(final BluetoothEvent event) {
             switch (event.getEventType()) {
                 case DEVICE_FIND:
-                    Timber.d("DEVICE_FIND===" + ((BluetoothDeviceFindEventData) event.getEventData()).getNewDevice().getDevice().getName());
                     handleDeviceFind((BluetoothDeviceFindEventData) event.getEventData());
                     break;
 
@@ -289,7 +241,7 @@ public class BlueDeviceCommunicateUtil {
         }
     }
 
-    public Handler mHandler = new Handler(new Handler.Callback() {
+    private Handler mHandler = new Handler(new Handler.Callback() {
         @Override
         public boolean handleMessage(android.os.Message msg) {
             switch (msg.what) {
@@ -302,9 +254,7 @@ public class BlueDeviceCommunicateUtil {
 
                 case Constants.BT_DISCONNECTED:
                     ToastUtils.show("设备断开连接");
-                    if (mLoadingDialog != null) {
-                        mLoadingDialog.dismiss();
-                    }
+                    dismissLoadingDialog();
                     hander.removeCallbacks(dismssConnectDialogRunnable);
                     MCloudApp.setIsBluetoothDeviceConnected(false);
                     EventBus.getDefault().post(new BluetoothStateEvent(false));
@@ -327,18 +277,14 @@ public class BlueDeviceCommunicateUtil {
                     break;
 
                 case Constants.VERIFY_RESULT:
-                    if (mLoadingDialog != null) {
-                        mLoadingDialog.dismiss();
-                    }
+                    dismissLoadingDialog();
                     hander.removeCallbacks(dismssConnectDialogRunnable);
 
                     if (msg.obj.equals("1")) {
-                        mLoadingDialog.showNoCancelDialog("查询设备配置参数...");
+                        showLoadingDialog("查询设备配置参数...");
                         hander.postDelayed(dismssDialogRunnable, 5000);
-                        if (obtainDeviceStateCmdCallback == null)
-                            obtainDeviceStateCmd();
-                        else
-                            obtainDeviceStateCmdCallback.obtainDeviceStateCmd();
+                        obtainDeviceStateCmd();
+
                     } else {
                         ToastUtils.show("蓝牙认证失败!");
                         try {
@@ -462,9 +408,7 @@ public class BlueDeviceCommunicateUtil {
     private void parserResult(String cmdStr) {
         //查询执行机构参数应答
         if (cmdStr.startsWith("$$7002") && cmdStr.endsWith("\r\n")) {
-            if (mLoadingDialog != null) {
-                mLoadingDialog.dismiss();
-            }
+            dismissLoadingDialog();
             hander.removeCallbacks(dismssDialogRunnable);
         }
 
@@ -500,7 +444,7 @@ public class BlueDeviceCommunicateUtil {
     }
 
 
-    public void obtainDeviceStateCmd() {
+    protected void obtainDeviceStateCmd() {
         if (mdBluetoothManager == null)
             return;
 
@@ -526,8 +470,14 @@ public class BlueDeviceCommunicateUtil {
     }
 
 
-    public interface ObtainDeviceStateCmdCallback {
-        void obtainDeviceStateCmd();
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        mdBluetoothManager.setEventHandler(mdBluetoothEventHandler);
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+    }
 }

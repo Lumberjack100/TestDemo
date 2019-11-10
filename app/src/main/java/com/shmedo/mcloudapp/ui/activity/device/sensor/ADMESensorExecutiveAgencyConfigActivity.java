@@ -25,10 +25,9 @@ import com.kyleduo.switchbutton.SwitchButton;
 import com.shmedo.das.das.cmd.CommandResult;
 import com.shmedo.mcloudapp.MCloudApp;
 import com.shmedo.mcloudapp.R;
-import com.shmedo.mcloudapp.base.BaseActivity;
 import com.shmedo.mcloudapp.entity.event.BluetoothStateEvent;
 import com.shmedo.mcloudapp.model.Extras;
-import com.shmedo.mcloudapp.util.bleutil.BlueDeviceCommunicateUtil;
+import com.shmedo.mcloudapp.ui.activity.device.BaseDeviceConnectActivity;
 import com.shmedo.mcloudapp.views.ClearEditText;
 
 import org.greenrobot.eventbus.Subscribe;
@@ -37,7 +36,7 @@ import org.greenrobot.eventbus.ThreadMode;
 import butterknife.BindView;
 import timber.log.Timber;
 
-public class ADMESensorExecutiveAgencyConfigActivity extends BaseActivity implements View.OnClickListener {
+public class ADMESensorExecutiveAgencyConfigActivity extends BaseDeviceConnectActivity implements View.OnClickListener {
     @BindView(R.id.back)
     ImageView mIvBack;
 
@@ -126,9 +125,7 @@ public class ADMESensorExecutiveAgencyConfigActivity extends BaseActivity implem
     private ArrayAdapter<String> dataSettlementAdapter, logOutputModeAdapter;
 
     private Handler hander;
-
-    private BlueDeviceCommunicateUtil blueDeviceCommunicateUtil;
-
+    
     private String dagConfigInfo;//DAG 采集器配置指令
 
     private String executiveAgencyConfigInfo;//执行机构配置指令
@@ -175,9 +172,7 @@ public class ADMESensorExecutiveAgencyConfigActivity extends BaseActivity implem
         mIvBluetooth.setVisibility(View.VISIBLE);
         mIvBack.setOnClickListener(this);
         mIvBluetooth.setOnClickListener(this);
-        blueDeviceCommunicateUtil = BlueDeviceCommunicateUtil.getInstance();
-        blueDeviceCommunicateUtil.init(this);
-
+        
         if (MCloudApp.isIsBluetoothDeviceConnected()) {
             mIvBluetooth.setImageResource(R.drawable.ic_bluetooth_connected);
         } else {
@@ -509,11 +504,10 @@ public class ADMESensorExecutiveAgencyConfigActivity extends BaseActivity implem
                 break;
 
             case R.id.img_bluetooth:
-
                 if (MCloudApp.isIsBluetoothDeviceConnected()) {
                     showDisconnectDialog(getResources().getString(R.string.disconnect_bluetooth_device));
                 } else {
-                    blueDeviceCommunicateUtil.findAndConnectBleDevice();
+                    findAndConnectBleDevice();
                 }
                 break;
 
@@ -658,7 +652,7 @@ public class ADMESensorExecutiveAgencyConfigActivity extends BaseActivity implem
         executiveAgencyConfigInfo = String.valueOf(sbExecutiveAgency);
 
         String cmdStr = String.valueOf(stringBuilder);
-        blueDeviceCommunicateUtil.sendCommand(cmdStr);
+        sendCommand(cmdStr);
 
         showLoadingDialog("正在发送配置指令...");
         hander.postDelayed(dismssDialogRunnable, 5000);
@@ -682,7 +676,7 @@ public class ADMESensorExecutiveAgencyConfigActivity extends BaseActivity implem
                     @NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                 dialog.dismiss();
                 //发送关闭测试模式命令
-                blueDeviceCommunicateUtil.sendCommand("##0191\r\n");
+                sendCommand("##0191\r\n");
                 showLoadingDialog("正在发送保存命令...");
                 hander.postDelayed(dismssDialogRunnable, 5000);
             }
@@ -710,7 +704,7 @@ public class ADMESensorExecutiveAgencyConfigActivity extends BaseActivity implem
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                         dialog.dismiss();
-                        blueDeviceCommunicateUtil.disconnectDevice();
+                        disconnectDevice();
                     }
                 });
         MaterialDialog mMaterialDialog = mBuilder.build();
@@ -724,7 +718,7 @@ public class ADMESensorExecutiveAgencyConfigActivity extends BaseActivity implem
     private void setResultData(String cmdStr) {
         //设置执行机构参数应答
         if (cmdStr.startsWith("$$7001") && cmdStr.endsWith("\r\n")) {
-            blueDeviceCommunicateUtil.sendCommand(executiveAgencyConfigInfo);
+            sendCommand(executiveAgencyConfigInfo);
             return;
         }
 
@@ -745,7 +739,7 @@ public class ADMESensorExecutiveAgencyConfigActivity extends BaseActivity implem
             hander.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    blueDeviceCommunicateUtil.disconnectDevice();
+                    disconnectDevice();
                     ADMESensorExecutiveAgencyConfigActivity.this.finish();
                 }
             }, 3000);

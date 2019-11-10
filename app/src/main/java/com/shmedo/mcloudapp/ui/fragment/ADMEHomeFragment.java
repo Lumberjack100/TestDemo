@@ -31,11 +31,11 @@ import com.shmedo.mcloudapp.entity.SystemDataInfo;
 import com.shmedo.mcloudapp.entity.SystemDataInfoDao;
 import com.shmedo.mcloudapp.entity.event.BluetoothStateEvent;
 import com.shmedo.mcloudapp.model.Extras;
+import com.shmedo.mcloudapp.ui.activity.ConfigADMEActivity;
 import com.shmedo.mcloudapp.ui.activity.device.senior.InstructionDebugActivity;
 import com.shmedo.mcloudapp.ui.activity.device.sensor.ADMESensorExecutiveAgencyConfigActivity;
 import com.shmedo.mcloudapp.util.DaoManager;
 import com.shmedo.mcloudapp.util.StringUtil;
-import com.shmedo.mcloudapp.util.bleutil.BlueDeviceCommunicateUtil;
 import com.shmedo.mcloudapp.views.ClearEditText;
 import com.shmedo.mcloudapp.views.editspinner.EditSpinner;
 
@@ -121,7 +121,7 @@ public class ADMEHomeFragment extends BaseFragment {
 
     private Unbinder unbinder;
 
-    private BlueDeviceCommunicateUtil blueDeviceCommunicateUtil;
+    private ConfigADMEActivity configADMEActivity;
 
     private List<String> systemDataInfoList = new ArrayList<>();//项目信息列表
 
@@ -143,7 +143,6 @@ public class ADMEHomeFragment extends BaseFragment {
     private Runnable clearAnimationRunnable = new Runnable() {
         @Override
         public void run() {
-
             ToastUtils.show("刷新地址超时，请稍候再试");
             mIvRefreshAddr1.clearAnimation();
             mIvRefreshAddr2.clearAnimation();
@@ -154,6 +153,19 @@ public class ADMEHomeFragment extends BaseFragment {
     @Override
     protected int initContentView() {
         return R.layout.fragment_admehome;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (MCloudApp.isIsBluetoothDeviceConnected()) {
+            sbBluetoothState.setCheckedImmediatelyNoEvent(true);
+            setSwitchViewState(true, tvBluetoothState, "已连接");
+        } else {
+            sbBluetoothState.setCheckedImmediatelyNoEvent(false);
+            setSwitchViewState(false, tvBluetoothState, "已断开");
+            setSwitchViewState(false, tvAutoMonitorState, "已关闭");
+        }
     }
 
     @Override
@@ -182,8 +194,8 @@ public class ADMEHomeFragment extends BaseFragment {
             mTvSensorType.setText("S0260");
         }
 
+        configADMEActivity = (ConfigADMEActivity) getActivity();
         hander = new Handler();
-        blueDeviceCommunicateUtil = BlueDeviceCommunicateUtil.getInstance();
     }
 
     private void initView() {
@@ -245,18 +257,7 @@ public class ADMEHomeFragment extends BaseFragment {
         //TODO 暂时禁止设置测试模式，后期当设置为蓝牙模式时，与指令调试界面联动
         sbDebugMode.setEnabled(false);
         setSwitchViewState(false, tvDebugMode, "已禁用");
-
-
-        if (MCloudApp.isIsBluetoothDeviceConnected()) {
-            sbBluetoothState.setCheckedImmediatelyNoEvent(true);
-            setSwitchViewState(true, tvBluetoothState, "已连接");
-        } else {
-            sbBluetoothState.setCheckedImmediatelyNoEvent(false);
-            setSwitchViewState(false, tvBluetoothState, "已断开");
-            setSwitchViewState(false, tvAutoMonitorState, "已关闭");
-        }
     }
-
 
 
     private void initAnimation() {
@@ -303,7 +304,7 @@ public class ADMEHomeFragment extends BaseFragment {
             public void onCheckedChanged(CompoundButton buttonView, final boolean isChecked) {
                 //未连接时，直接打开连接
                 if (isChecked) {
-                    blueDeviceCommunicateUtil.findAndConnectBleDevice();
+                    configADMEActivity.findAndConnectBleDevice();
 
                 } else {
                     showCloseSwitchButtonDialog(getResources().getString(R.string.disconnect_bluetooth_device), 1);
@@ -322,7 +323,7 @@ public class ADMEHomeFragment extends BaseFragment {
 
                 if (isChecked) {
                     //发送打开自动测量模式命令
-                    blueDeviceCommunicateUtil.sendCommand("##70111\r\n");
+                    configADMEActivity.sendCommand("##70111\r\n");
                     setSwitchViewState(true, tvAutoMonitorState, "已启用");
 
                 } else {
@@ -343,7 +344,7 @@ public class ADMEHomeFragment extends BaseFragment {
 
                 if (isChecked) {
                     //发送打开测试模式命令
-                    blueDeviceCommunicateUtil.sendCommand("##70121\r\n");
+                    configADMEActivity.sendCommand("##70121\r\n");
                     setSwitchViewState(true, tvDebugMode, "已打开");
 
                 } else {
@@ -466,7 +467,7 @@ public class ADMEHomeFragment extends BaseFragment {
         isRefreshingAddress = true;
         hander.postDelayed(clearAnimationRunnable, 6000);
         //查询服务器地址
-        blueDeviceCommunicateUtil.sendCommand(cmdStr);
+        configADMEActivity.sendCommand(cmdStr);
     }
 
 
@@ -484,7 +485,7 @@ public class ADMEHomeFragment extends BaseFragment {
 
         String addrArray[] = address.split(":");
         String cmdStr = "##2011 " + addrArray[0] + " " + addrArray[1] + "\r\n";
-        blueDeviceCommunicateUtil.sendCommand(cmdStr);
+        configADMEActivity.sendCommand(cmdStr);
     }
 
     private void doServerAddress2Config() {
@@ -501,7 +502,7 @@ public class ADMEHomeFragment extends BaseFragment {
 
         String addrArray[] = address.split(":");
         String cmdStr = "##2012 " + addrArray[0] + " " + addrArray[1] + "\r\n";
-        blueDeviceCommunicateUtil.sendCommand(cmdStr);
+        configADMEActivity.sendCommand(cmdStr);
     }
 
     /**
@@ -687,18 +688,18 @@ public class ADMEHomeFragment extends BaseFragment {
 
                         switch (index) {
                             case 1:
-                                blueDeviceCommunicateUtil.disconnectDevice();
+                                configADMEActivity.disconnectDevice();
                                 break;
 
                             case 2:
                                 //发送关闭测试模式命令
-                                blueDeviceCommunicateUtil.sendCommand("##70112\r\n");
+                                configADMEActivity.sendCommand("##70112\r\n");
                                 setSwitchViewState(false, tvAutoMonitorState, "已关闭");
                                 break;
 
                             case 3:
                                 //发送关闭测试模式命令
-                                blueDeviceCommunicateUtil.sendCommand("##70122\r\n");
+                                configADMEActivity.sendCommand("##70122\r\n");
                                 setSwitchViewState(false, tvDebugMode, "已关闭");
                                 break;
                         }
@@ -750,11 +751,8 @@ public class ADMEHomeFragment extends BaseFragment {
     @Override
     public void onHiddenChanged(boolean hidden) {
         super.onHiddenChanged(hidden);
-        if (hidden) {   // 不在最前端显示 相当于调用了onPause();
-            return;
+        if (!hidden) {
 
-        } else {  // 在最前端显示 相当于调用了onResume();
-            //网络数据刷新
         }
     }
 

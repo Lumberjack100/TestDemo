@@ -16,21 +16,15 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.hjq.toast.ToastUtils;
 import com.shmedo.mcloudapp.MCloudApp;
 import com.shmedo.mcloudapp.R;
-import com.shmedo.mcloudapp.base.BaseActivity;
-import com.shmedo.mcloudapp.bluetooth.MdBluetoothManager;
-import com.shmedo.mcloudapp.bluetooth.Message;
 import com.shmedo.mcloudapp.model.Extras;
+import com.shmedo.mcloudapp.ui.activity.device.BaseDeviceConnectActivity;
 import com.shmedo.mcloudapp.ui.fragment.ADMEHomeFragment;
 import com.shmedo.mcloudapp.ui.fragment.DeviceDetailsFragment;
 import com.shmedo.mcloudapp.ui.fragment.QueryDataFragment;
-import com.shmedo.mcloudapp.util.bleutil.BlueDeviceCommunicateUtil;
 import com.shmedo.mcloudapp.util.common.HandleBackUtil;
-
-import java.util.UUID;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-import timber.log.Timber;
 
 /**
  * 项目名：  mCloudapp
@@ -39,7 +33,7 @@ import timber.log.Timber;
  * 创建时间:  2019-10-21
  * 描述：   ADME 设备配置页面
  */
-public class ConfigADMEActivity extends BaseActivity implements BlueDeviceCommunicateUtil.ObtainDeviceStateCmdCallback {
+public class ConfigADMEActivity extends BaseDeviceConnectActivity {
 
     @BindView(R.id.tv_parameter)
     TextView mTvParameter;
@@ -58,25 +52,10 @@ public class ConfigADMEActivity extends BaseActivity implements BlueDeviceCommun
     private DeviceDetailsFragment deviceDetailsFragment;//设备详情
     private Fragment currentFragment;
 
-    private BlueDeviceCommunicateUtil blueDeviceCommunicateUtil;
-
-    private boolean isFirstEnter = true;
-
-    private String SN = "";
-    private String deviceInfo;
-    private String macAddress;
-
 
     public static void startActivity(Context context, String deviceInfo) {
         Intent intent = new Intent(context, ConfigADMEActivity.class);
         intent.putExtra(Extras.CUR_DEVICE_NAME, deviceInfo);
-        context.startActivity(intent);
-    }
-
-    public static void startActivity(Context context, String deviceInfo, String macAddress) {
-        Intent intent = new Intent(context, ConfigADMEActivity.class);
-        intent.putExtra(Extras.CUR_DEVICE_NAME, deviceInfo);
-        intent.putExtra(Extras.DEVICE_MAC_ADDRESS, macAddress);
         context.startActivity(intent);
     }
 
@@ -96,33 +75,9 @@ public class ConfigADMEActivity extends BaseActivity implements BlueDeviceCommun
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initView(savedInstanceState);
-        getIntentData();
-        blueDeviceCommunicateUtil = BlueDeviceCommunicateUtil.getInstance();
-        blueDeviceCommunicateUtil.init(this, SN, macAddress, this);
-        blueDeviceCommunicateUtil.findAndConnectBleDevice();
+        findAndConnectBleDevice();
     }
 
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-
-        if (!isFirstEnter) {
-            blueDeviceCommunicateUtil.init(this);
-        }
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        isFirstEnter = false;
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        isFirstEnter = false;
-    }
 
     private void initView(Bundle savedInstanceState) {
         mTvHighsetting.setVisibility(View.GONE);
@@ -146,20 +101,6 @@ public class ConfigADMEActivity extends BaseActivity implements BlueDeviceCommun
             queryDataFragment = new QueryDataFragment();
             deviceDetailsFragment = new DeviceDetailsFragment();
             setDefaultFragment();
-        }
-    }
-
-
-    private void getIntentData() {
-        Intent intent = getIntent();
-        if (intent.getExtras().containsKey(Extras.DEVICE_MAC_ADDRESS)) {
-            macAddress = intent.getStringExtra(Extras.DEVICE_MAC_ADDRESS);
-        }
-
-        if (intent.getExtras().containsKey(Extras.CUR_DEVICE_NAME)) {
-            deviceInfo = intent.getStringExtra(Extras.CUR_DEVICE_NAME);
-            String[] scanData = deviceInfo.split(",");
-            SN = scanData[1];
         }
     }
 
@@ -203,32 +144,6 @@ public class ConfigADMEActivity extends BaseActivity implements BlueDeviceCommun
 
 
     @Override
-    public void obtainDeviceStateCmd() {
-        if (MdBluetoothManager.getInstance() == null)
-            return;
-
-        //##7010，查询工作模式
-        MdBluetoothManager.getInstance().writeMessage(new Message(UUID.randomUUID().toString(), "##7010\r\n", true));
-        Timber.d("发送查询工作模式指令===" + "##7010");
-
-        //##2001，查询服务器地址1
-        MdBluetoothManager.getInstance().writeMessage(new Message(UUID.randomUUID().toString(), "##2001\r\n", true));
-        Timber.d("发送查询服务器地址1指令===" + "##2001");
-
-        //##2002，查询服务器地址2
-        MdBluetoothManager.getInstance().writeMessage(new Message(UUID.randomUUID().toString(), "##2002\r\n", true));
-        Timber.d("发送查询服务器地址2指令===" + "##2002");
-
-        //##7000，查询采集器参数
-        MdBluetoothManager.getInstance().writeMessage(new Message(UUID.randomUUID().toString(), "##7000\r\n", true));
-        Timber.d("发送查询采集器参数指令===" + "##7000");
-
-        //##7002，查询执行机构参数
-        MdBluetoothManager.getInstance().writeMessage(new Message(UUID.randomUUID().toString(), "##7002\r\n", true));
-        Timber.d("发送查询执行机构参数指令===" + "##7002");
-    }
-
-    @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
             case BlueDeviceCommunicateUtil.REQUEST_ENABLE_BT:
@@ -237,7 +152,7 @@ public class ConfigADMEActivity extends BaseActivity implements BlueDeviceCommun
                     ToastUtils.show("蓝牙未启用");
                     return;
                 }
-                blueDeviceCommunicateUtil.findAndConnectBleDevice();
+                findAndConnectBleDevice();
                 break;
         }
     }
@@ -258,7 +173,7 @@ public class ConfigADMEActivity extends BaseActivity implements BlueDeviceCommun
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                         dialog.dismiss();
-                        blueDeviceCommunicateUtil.disconnectDevice();
+                        disconnectDevice();
                         ConfigADMEActivity.this.finish();
                     }
                 });
@@ -340,11 +255,7 @@ public class ConfigADMEActivity extends BaseActivity implements BlueDeviceCommun
                 showChangeModle(getResources().getString(R.string.finish_activity_disconnect_bluetooth_device));
 
             } else {
-//                dismissLoadingDialog();
-//                blueDeviceCommunicateUtil.disconnectDevice();
-//                blueDeviceCommunicateUtil.isAutoConnectBlue = false;
-//                MCloudApp.setIsBluetoothDeviceConnected(false);
-                this.finish();
+                finish();
             }
         }
     }

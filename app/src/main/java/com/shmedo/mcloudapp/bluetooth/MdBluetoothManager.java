@@ -81,11 +81,11 @@ public class MdBluetoothManager {
     }
 
     public static void init(BluetoothAdapter bluetoothAdapter, BluetoothManager androidBluetoothManager) {
-//        if (bluetoothManager == null) {
-//            bluetoothManager = new MdBluetoothManager(bluetoothAdapter, androidBluetoothManager);
-//        }
+        if (bluetoothManager == null) {
+            bluetoothManager = new MdBluetoothManager(bluetoothAdapter, androidBluetoothManager);
+        }
 
-        bluetoothManager = new MdBluetoothManager(bluetoothAdapter, androidBluetoothManager);
+//        bluetoothManager = new MdBluetoothManager(bluetoothAdapter, androidBluetoothManager);
         bluetoothManager.initCheck();
     }
 

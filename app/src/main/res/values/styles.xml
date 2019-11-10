@@ -15,7 +15,7 @@
         <item name="android:windowIsTranslucent">true</item>
     </style>
 
-    <!--有ActionBar的主题-->
+    <!--有ActionBar、Title的主题-->
     <style name="AppThemeBar" parent="Theme.AppCompat.Light.DarkActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
@@ -23,8 +23,12 @@
         <item name="colorAccent">@color/colorPrimary</item>
         <item name="android:textColorPrimary">@color/font_main</item>
         <item name="android:actionBarSize">@dimen/nav_bar_height</item>
-        <item name="android:windowIsTranslucent">true</item>
-        <!--<item name="actionMenuTextAppearance">@style/MenuTextStyle</item>-->
+        <item name="android:windowIsTranslucent">true
+        </item>   <!-- 注意：设置为true时,Activity A 启动 Activity B 时,A 的 onStop方法不会回调-->
+    </style>
+
+    <style name="AppThemeNoTitle" parent="AppThemeBase">
+        <item name="android:windowIsTranslucent">false</item>
     </style>
 
 
@@ -55,7 +59,8 @@
 
     <style name="ToolbarPopupTheme" parent="@style/ThemeOverlay.AppCompat.Dark">
         <item name="android:colorBackground">@color/colorPrimary</item>
-        <item name="actionOverflowMenuStyle">@style/OverflowMenuStyle</item> <!--新增一个item，用于控制menu-->
+        <item name="actionOverflowMenuStyle">@style/OverflowMenuStyle
+        </item> <!--新增一个item，用于控制menu-->
     </style>
 
     <style name="OverflowMenuStyle" parent="Widget.AppCompat.Light.PopupMenu.Overflow">
@@ -106,8 +111,7 @@
         <item name="android:textColor">@color/font_main</item>
     </style>
 
-    <style name="hintDialog"
-        parent="@android:style/Theme.Dialog">
+    <style name="hintDialog" parent="@android:style/Theme.Dialog">
         <item name="android:windowFrame">@null</item>
         <item name="android:windowIsFloating">true</item>
         <item name="android:windowIsTranslucent">false</item>
