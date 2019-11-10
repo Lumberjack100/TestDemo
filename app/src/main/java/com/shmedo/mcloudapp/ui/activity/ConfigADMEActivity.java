@@ -146,7 +146,7 @@ public class ConfigADMEActivity extends BaseDeviceConnectActivity {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
-            case BlueDeviceCommunicateUtil.REQUEST_ENABLE_BT:
+            case REQUEST_ENABLE_BT:
                 // 蓝牙已经开启
                 if (resultCode != Activity.RESULT_OK) {
                     ToastUtils.show("蓝牙未启用");

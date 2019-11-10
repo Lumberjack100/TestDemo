@@ -153,6 +153,7 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
     private DaoManager manager = DaoManager.getInstance();
     private BluetoothAdapter mBluetoothAdapter;
     private MdBluetoothManager mdBluetoothManager;
+    private MdBluetoothEventHandler mdBluetoothEventHandler = new MdBluetoothEventHandler();
 
     private List<MDevice> list = new ArrayList<>();
     private Handler hander;
@@ -521,9 +522,8 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
     private void initBluetooth() {
         final BluetoothManager bluetoothManager = (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
         mBluetoothAdapter = bluetoothManager.getAdapter();
-        MdBluetoothManager.init(mBluetoothAdapter, bluetoothManager);
         mdBluetoothManager = MdBluetoothManager.getInstance();
-        mdBluetoothManager.setEventHandler(new MdBluetoothEventHandler());
+        mdBluetoothManager.setEventHandler(mdBluetoothEventHandler);
     }
 
 
@@ -895,6 +895,12 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
                 }
                 break;
         }
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        mdBluetoothManager.setEventHandler(mdBluetoothEventHandler);
     }
 
 

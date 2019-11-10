@@ -2,6 +2,8 @@ package com.shmedo.mcloudapp.ui.activity.device;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothManager;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -71,7 +73,8 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        BluetoothManager bluetoothManager = (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
+        mBluetoothAdapter = bluetoothManager.getAdapter();
         mdBluetoothManager = MdBluetoothManager.getInstance();
         mdBluetoothManager.setEventHandler(mdBluetoothEventHandler);
     }
