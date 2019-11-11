@@ -473,35 +473,35 @@ public class ADMEHomeFragment extends BaseFragment {
 
     private void doServerAddress1Config() {
         String address = mEtAddress1.getText().toString().trim();
-        if (TextUtils.isEmpty(address)) {
-            ToastUtils.show("地址不能为空");
-            return;
-        }
-
-        if (!StringUtil.isUrl(address)) {
+        if (!StringUtil.checkServerAddress(address)) {
             ToastUtils.show("地址格式不正确");
             return;
         }
 
-        String addrArray[] = address.split(":");
-        String cmdStr = "##2011 " + addrArray[0] + " " + addrArray[1] + "\r\n";
+        String cmdStr;
+        if (TextUtils.isEmpty(address)) {
+            cmdStr = "##2011\r\n";
+        } else {
+            String addrArray[] = address.split(":");
+            cmdStr = "##2011 " + addrArray[0] + " " + addrArray[1] + "\r\n";
+        }
         configADMEActivity.sendCommand(cmdStr);
     }
 
     private void doServerAddress2Config() {
         String address = mEtAddress2.getText().toString().trim();
-        if (TextUtils.isEmpty(address)) {
-            ToastUtils.show("地址不能为空");
-            return;
-        }
-
-        if (!StringUtil.isUrl(address)) {
+        if (!StringUtil.checkServerAddress(address)) {
             ToastUtils.show("地址格式不正确");
             return;
         }
 
-        String addrArray[] = address.split(":");
-        String cmdStr = "##2012 " + addrArray[0] + " " + addrArray[1] + "\r\n";
+        String cmdStr;
+        if (TextUtils.isEmpty(address)) {
+            cmdStr = "##2012\r\n";
+        } else {
+            String addrArray[] = address.split(":");
+            cmdStr = "##2012 " + addrArray[0] + " " + addrArray[1] + "\r\n";
+        }
         configADMEActivity.sendCommand(cmdStr);
     }
 

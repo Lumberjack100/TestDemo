@@ -94,17 +94,17 @@ public class StringUtil {
 
 
     /**
-     * 是否URL
+     * 检查采集器地址是否合法；地址可以为空
      *
-     * @param url
+     * @param address
      * @return
      */
-    public static boolean isUrl(String url) {
-        if (TextUtils.isEmpty(url)) {
-            return false;
+    public static boolean checkServerAddress(String address) {
+        if (TextUtils.isEmpty(address)) {
+            return true;
         }
 
-        return Pattern.matches(REGEX_URL, url);
+        return Pattern.matches(REGEX_URL, address);
     }
 
     public static String convertStringToHex(String str) {
