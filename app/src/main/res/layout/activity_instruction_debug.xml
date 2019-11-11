@@ -16,6 +16,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
+            android:baselineAligned="false"
             android:orientation="horizontal">
 
             <LinearLayout
@@ -109,19 +110,22 @@
                 android:id="@+id/setSysTimeBT"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/btn_blue_selector"
+                android:background="@drawable/selector_button_bg"
+                android:gravity="center"
                 android:text="系统授时"
-                android:textColor="@color/white" />
+                android:textColor="@color/selector_button_textcolor"
+                android:textSize="@dimen/text_size_14" />
 
             <Button
                 android:id="@+id/getDataBt"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
-                android:background="@drawable/btn_blue_selector"
+                android:layout_marginStart="5dp"
+                android:background="@drawable/selector_button_bg"
+                android:gravity="center"
                 android:text="获取数据"
-                android:textColor="@color/white" />
-
+                android:textColor="@color/selector_button_textcolor"
+                android:textSize="@dimen/text_size_14" />
         </LinearLayout>
 
         <jp.bassaer.chatmessageview.views.ChatView

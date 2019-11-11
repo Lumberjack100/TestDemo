@@ -666,6 +666,7 @@ public class ADMEHomeFragment extends BaseFragment {
         } else {
             sbBluetoothState.setCheckedImmediatelyNoEvent(false);
             setSwitchViewState(false, tvBluetoothState, "已断开");
+
             sbAutoMonitorState.setCheckedImmediatelyNoEvent(false);
             setSwitchViewState(false, tvAutoMonitorState, "已关闭");
 
@@ -759,7 +760,7 @@ public class ADMEHomeFragment extends BaseFragment {
     public void onHiddenChanged(boolean hidden) {
         super.onHiddenChanged(hidden);
         if (!hidden) {
-
+         //TODO  fragment  显示或隐藏时会触发此事件
         }
     }
 

@@ -104,17 +104,25 @@ public class InstructionDebugActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setToolBar(R.id.toolbar);
         initView();
-        initData();
+        setChatView();
     }
 
 
     private void initView() {
         mToolbarTitle.setText("指令交互调试模式");
         mdBluetoothManager = MdBluetoothManager.getInstance();
+
+        mSetSysTimeBT.setEnabled(MCloudApp.isIsBluetoothDeviceConnected());
+        mGetDataBt.setEnabled(MCloudApp.isIsBluetoothDeviceConnected());
+        if (MCloudApp.getCurDeviceToken() != null && MCloudApp.getCurDeviceToken().endsWith("T")) {
+            mGetDataBt.setEnabled(false);
+        }
+
+        mChatView.setEnabled(false);
     }
 
 
-    private void initData() {
+    private void setChatView() {
         //Set UI options
         mChatView.setRightBubbleColor(ContextCompat.getColor(this, R.color.orange_FF7502));
         mChatView.setLeftBubbleColor(Color.WHITE);
@@ -253,7 +261,7 @@ public class InstructionDebugActivity extends BaseActivity {
         mChatView.setInputText("");
     }
 
-    private void sendMessage(String messageText){
+    private void sendMessage(String messageText) {
         final Bitmap myIcon = BitmapFactory.decodeResource(getResources(), R.mipmap.logo);
         Message message = new Message.Builder()
                 .setUserName(myName)
