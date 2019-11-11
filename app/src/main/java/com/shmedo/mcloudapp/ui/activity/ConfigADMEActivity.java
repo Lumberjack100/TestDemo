@@ -52,6 +52,8 @@ public class ConfigADMEActivity extends BaseDeviceConnectActivity {
     private DeviceDetailsFragment deviceDetailsFragment;//设备详情
     private Fragment currentFragment;
 
+    private boolean isFirstCall = true;
+
 
     public static void startActivity(Context context, String deviceInfo) {
         Intent intent = new Intent(context, ConfigADMEActivity.class);
@@ -75,9 +77,21 @@ public class ConfigADMEActivity extends BaseDeviceConnectActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initView(savedInstanceState);
-        findAndConnectBleDevice();
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (isFirstCall) {
+            findAndConnectBleDevice();
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        isFirstCall = false;
+    }
 
     private void initView(Bundle savedInstanceState) {
         mTvHighsetting.setVisibility(View.GONE);

@@ -82,6 +82,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -208,6 +209,46 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
 
         //获取地图要加载的数据
         getDeviceBasicInfoList("1");
+    }
+
+
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mdBluetoothManager.addBluetoothEventHandler(mdBluetoothEventHandler);
+    }
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        //在activity执行onResume时执行mMapView.onResume ()，重新绘制加载地图
+        mMapView.onResume();
+    }
+
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        //在activity执行onPause时执行mMapView.onPause ()，暂停地图的绘制
+        mMapView.onPause();
+        mdBluetoothManager.removeBluetoothEventHandler(mdBluetoothEventHandler);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        //在activity执行onDestroy时执行mMapView.onDestroy()，销毁地图
+        mMapView.onDestroy();
+    }
+
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        //在activity执行onSaveInstanceState时执行mMapView.onSaveInstanceState (outState)，保存地图当前的状态
+        mMapView.onSaveInstanceState(outState);
     }
 
 
@@ -521,9 +562,8 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
      */
     private void initBluetooth() {
         final BluetoothManager bluetoothManager = (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
-        mBluetoothAdapter = bluetoothManager.getAdapter();
+        mBluetoothAdapter = Objects.requireNonNull(bluetoothManager).getAdapter();
         mdBluetoothManager = MdBluetoothManager.getInstance();
-        mdBluetoothManager.setEventHandler(mdBluetoothEventHandler);
     }
 
 
@@ -618,36 +658,6 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
         }
     }
 
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        //在activity执行onResume时执行mMapView.onResume ()，重新绘制加载地图
-        mMapView.onResume();
-    }
-
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        //在activity执行onPause时执行mMapView.onPause ()，暂停地图的绘制
-        mMapView.onPause();
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        //在activity执行onDestroy时执行mMapView.onDestroy()，销毁地图
-        mMapView.onDestroy();
-    }
-
-
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        //在activity执行onSaveInstanceState时执行mMapView.onSaveInstanceState (outState)，保存地图当前的状态
-        mMapView.onSaveInstanceState(outState);
-    }
 
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -895,12 +905,6 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
                 }
                 break;
         }
-    }
-
-    @Override
-    protected void onRestart() {
-        super.onRestart();
-        mdBluetoothManager.setEventHandler(mdBluetoothEventHandler);
     }
 
 

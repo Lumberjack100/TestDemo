@@ -74,6 +74,7 @@ public class MdBluetoothManager {
      */
     private static final int WAIT_FOR_RESPONSE_TIME_OUT_SECOND = 60;
 
+
     private static MdBluetoothManager bluetoothManager;
 
     public static MdBluetoothManager getInstance() {
@@ -91,7 +92,7 @@ public class MdBluetoothManager {
 
     private BluetoothAdapter bluetoothAdapter;
     private BluetoothManager androidBluetoothManager;
-    private BluetoothEventHandler eventHandler;
+    private List<BluetoothEventHandler> bluetoothEventHandlerList = null;
     private volatile boolean scan = false;
     private BluetoothAdapter.LeScanCallback leScanCallback = new MdLeScanCallback();
     private List<MDevice> devices;
@@ -114,14 +115,7 @@ public class MdBluetoothManager {
         this.androidBluetoothManager = androidBluetoothManager;
     }
 
-    /**
-     * 关联蓝牙事件处理程序
-     *
-     * @param eventHandler
-     */
-    public void setEventHandler(BluetoothEventHandler eventHandler) {
-        this.eventHandler = eventHandler;
-    }
+
 
     public boolean isBluetoothEnable() {
         return this.bluetoothAdapter.enable();
@@ -377,23 +371,16 @@ public class MdBluetoothManager {
     }
 
     private void handleBluetoothEvent(BluetoothEventType eventType, Object eventData) {
-        if (eventHandler == null) {
-            Timber.e("eventHandler 事件处理程序为NULL");
-            return;
-        }
         BluetoothEvent event = BluetoothEvent.builder()
                 .setEventType(eventType)
                 .setEventData(eventData)
                 .build();
-        eventHandler.handle(event);
+
+        notifyBluetoothEvent(event);
     }
 
     private void fireEvent(final BluetoothEvent event) {
-        if (eventHandler == null) {
-            Timber.e("eventHandler 事件处理程序为NULL");
-            return;
-        }
-        eventHandler.handle(event);
+        notifyBluetoothEvent(event);
     }
 
 
@@ -641,6 +628,39 @@ public class MdBluetoothManager {
                 //响应来了，但是队列里没有消息
                 handleBluetoothEvent(BluetoothEventType.RESPONSE_WITH_NO_MESSAGE, result);
             }
+        }
+    }
+
+
+    public void addBluetoothEventHandler(BluetoothEventHandler bluetoothEventHandler) {
+        if (bluetoothEventHandlerList == null) {
+            bluetoothEventHandlerList = new ArrayList<>();
+        }
+
+        bluetoothEventHandlerList.add(bluetoothEventHandler);
+    }
+
+    public boolean removeBluetoothEventHandler(BluetoothEventHandler bluetoothEventHandler) {
+        if (bluetoothEventHandlerList != null) {
+            return bluetoothEventHandlerList.remove(bluetoothEventHandler);
+        }
+
+        return false;
+    }
+
+
+    private void notifyBluetoothEvent(final BluetoothEvent event) {
+        if (bluetoothEventHandlerList != null) {
+            for (BluetoothEventHandler bluetoothEventHandler : bluetoothEventHandlerList) {
+                bluetoothEventHandler.handle(event);
+            }
+        }
+    }
+
+    public void clearBluetoothEventHandler() {
+        if (bluetoothEventHandlerList == null) {
+            bluetoothEventHandlerList.clear();
+            bluetoothEventHandlerList = null;
         }
     }
 }

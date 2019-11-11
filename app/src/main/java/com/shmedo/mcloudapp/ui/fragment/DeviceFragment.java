@@ -115,8 +115,10 @@ public class DeviceFragment extends BaseFragment implements View.OnClickListener
     private boolean isBlueMode = true;//当前模式是否是蓝牙模式
     private boolean stopBluetooth = false;
 
-    public static MdBluetoothManager mdBluetoothManager;
     private BluetoothAdapter mBluetoothAdapter;
+    public static MdBluetoothManager mdBluetoothManager;
+    private MdBluetoothEventHandler mdBluetoothEventHandler = new MdBluetoothEventHandler();
+
     private String SN = "";
     private String deviceInfo;
     private String macAddress;
@@ -160,6 +162,22 @@ public class DeviceFragment extends BaseFragment implements View.OnClickListener
         initBluetooth();
         getIntentData();
         return view;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        mdBluetoothManager.addBluetoothEventHandler(mdBluetoothEventHandler);
+    }
+
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        mdBluetoothManager.removeBluetoothEventHandler(mdBluetoothEventHandler);
+        if (mLoadingDialog != null) {
+            mLoadingDialog.dismiss();
+        }
     }
 
 
@@ -299,9 +317,7 @@ public class DeviceFragment extends BaseFragment implements View.OnClickListener
     private void initBluetooth() {
         final BluetoothManager bluetoothManager = (BluetoothManager) getActivity().getSystemService(Context.BLUETOOTH_SERVICE);
         mBluetoothAdapter = Objects.requireNonNull(bluetoothManager).getAdapter();
-        MdBluetoothManager.init(mBluetoothAdapter, bluetoothManager);
         mdBluetoothManager = MdBluetoothManager.getInstance();
-        mdBluetoothManager.setEventHandler(new MdBluetoothEventHandler());
     }
 
     /**
@@ -711,13 +727,6 @@ public class DeviceFragment extends BaseFragment implements View.OnClickListener
     }
 
 
-    @Override
-    public void onPause() {
-        super.onPause();
-        if (mLoadingDialog != null) {
-            mLoadingDialog.dismiss();
-        }
-    }
 
 
     public Handler mHandler = new Handler(new Handler.Callback() {

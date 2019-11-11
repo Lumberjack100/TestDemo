@@ -26,6 +26,7 @@ import com.shmedo.mcloudapp.util.bleutil.Constants;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.util.Objects;
 import java.util.UUID;
 
 import timber.log.Timber;
@@ -74,9 +75,21 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         BluetoothManager bluetoothManager = (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
-        mBluetoothAdapter = bluetoothManager.getAdapter();
+        mBluetoothAdapter = Objects.requireNonNull(bluetoothManager).getAdapter();
         mdBluetoothManager = MdBluetoothManager.getInstance();
-        mdBluetoothManager.setEventHandler(mdBluetoothEventHandler);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mdBluetoothManager.addBluetoothEventHandler(mdBluetoothEventHandler);
+    }
+
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mdBluetoothManager.removeBluetoothEventHandler(mdBluetoothEventHandler);
     }
 
 
@@ -470,17 +483,5 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
         //##7002，查询执行机构参数
         mdBluetoothManager.writeMessage(new Message(UUID.randomUUID().toString(), "##7002\r\n", true));
         Timber.d("发送查询执行机构参数指令===" + "##7002");
-    }
-
-
-    @Override
-    protected void onRestart() {
-        super.onRestart();
-        mdBluetoothManager.setEventHandler(mdBluetoothEventHandler);
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
     }
 }
