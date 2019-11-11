@@ -125,7 +125,7 @@ public class ADMESensorExecutiveAgencyConfigActivity extends BaseDeviceConnectAc
     private ArrayAdapter<String> dataSettlementAdapter, logOutputModeAdapter;
 
     private Handler hander;
-    
+
     private String dagConfigInfo;//DAG 采集器配置指令
 
     private String executiveAgencyConfigInfo;//执行机构配置指令
@@ -172,7 +172,7 @@ public class ADMESensorExecutiveAgencyConfigActivity extends BaseDeviceConnectAc
         mIvBluetooth.setVisibility(View.VISIBLE);
         mIvBack.setOnClickListener(this);
         mIvBluetooth.setOnClickListener(this);
-        
+
         if (MCloudApp.isIsBluetoothDeviceConnected()) {
             mIvBluetooth.setImageResource(R.drawable.ic_bluetooth_connected);
         } else {
@@ -620,7 +620,7 @@ public class ADMESensorExecutiveAgencyConfigActivity extends BaseDeviceConnectAc
         sbExecutiveAgency.append("##7003,");
         if (mSpDataSettlementMethod.getSelectedItemPosition() == 0) {
             sbExecutiveAgency.append("1,");
-        } else if (mSpDataSettlementMethod.getSelectedItemPosition() == 0) {
+        } else {
             sbExecutiveAgency.append("2,");
         }
 
