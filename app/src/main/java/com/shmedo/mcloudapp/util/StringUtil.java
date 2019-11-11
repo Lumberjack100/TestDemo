@@ -104,6 +104,10 @@ public class StringUtil {
             return true;
         }
 
+        if(!address.contains(":")){
+            return false;
+        }
+
         return Pattern.matches(REGEX_URL, address);
     }
 

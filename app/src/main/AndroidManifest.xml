@@ -145,7 +145,7 @@
         <activity
             android:name=".ui.activity.ConfigADMEActivity"
             android:theme="@style/AppThemeNoTitle"
-            android:windowSoftInputMode="adjustPan|stateHidden" />
+            android:windowSoftInputMode="stateHidden|adjustResize" />
         <activity
             android:name=".ui.activity.ScanActivity"
             android:theme="@style/ScanActivityTheme" />
@@ -153,7 +153,7 @@
         <activity
             android:name=".ui.activity.device.sensor.ADMESensorExecutiveAgencyConfigActivity"
             android:theme="@style/AppThemeNoTitle"
-            android:windowSoftInputMode="adjustPan|stateHidden" />
+            android:windowSoftInputMode="stateHidden|adjustResize" />
 
 
     </application>

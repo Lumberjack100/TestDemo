@@ -164,6 +164,8 @@ public class ADMEHomeFragment extends BaseFragment {
         } else {
             sbBluetoothState.setCheckedImmediatelyNoEvent(false);
             setSwitchViewState(false, tvBluetoothState, "已断开");
+
+            sbAutoMonitorState.setCheckedImmediatelyNoEvent(false);
             setSwitchViewState(false, tvAutoMonitorState, "已关闭");
         }
     }
