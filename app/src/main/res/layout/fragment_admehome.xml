@@ -245,17 +245,16 @@
                     android:layout_height="30dp"
                     android:layout_marginStart="10dp"
                     android:layout_marginEnd="10dp"
-                    android:src="@drawable/ic_autorenew"
-                    android:tint="@color/colorPrimary" />
+                    android:src="@drawable/selector_refresh_view" />
 
                 <Button
                     android:id="@+id/editBtn1"
                     android:layout_width="50dp"
                     android:layout_height="30dp"
-                    android:background="@drawable/shape_textview_bg"
+                    android:background="@drawable/selector_button_bg"
                     android:gravity="center"
                     android:text="编辑"
-                    android:textColor="@color/white"
+                    android:textColor="@color/selector_button_textcolor"
                     android:textSize="@dimen/text_size_14" />
 
             </LinearLayout>
@@ -299,17 +298,16 @@
                     android:layout_height="30dp"
                     android:layout_marginStart="10dp"
                     android:layout_marginEnd="10dp"
-                    android:src="@drawable/ic_autorenew"
-                    android:tint="@color/colorPrimary" />
+                    android:src="@drawable/selector_refresh_view" />
 
                 <Button
                     android:id="@+id/editBtn2"
                     android:layout_width="50dp"
                     android:layout_height="30dp"
-                    android:background="@drawable/shape_textview_bg"
+                    android:background="@drawable/selector_button_bg"
                     android:gravity="center"
                     android:text="编辑"
-                    android:textColor="@color/white"
+                    android:textColor="@color/selector_button_textcolor"
                     android:textSize="@dimen/text_size_14" />
 
             </LinearLayout>

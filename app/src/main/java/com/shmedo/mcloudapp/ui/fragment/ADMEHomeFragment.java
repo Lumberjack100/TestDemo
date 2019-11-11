@@ -158,16 +158,7 @@ public class ADMEHomeFragment extends BaseFragment {
     @Override
     public void onResume() {
         super.onResume();
-        if (MCloudApp.isIsBluetoothDeviceConnected()) {
-            sbBluetoothState.setCheckedImmediatelyNoEvent(true);
-            setSwitchViewState(true, tvBluetoothState, "已连接");
-        } else {
-            sbBluetoothState.setCheckedImmediatelyNoEvent(false);
-            setSwitchViewState(false, tvBluetoothState, "已断开");
-
-            sbAutoMonitorState.setCheckedImmediatelyNoEvent(false);
-            setSwitchViewState(false, tvAutoMonitorState, "已关闭");
-        }
+        setViewStateByConnectState(MCloudApp.isIsBluetoothDeviceConnected());
     }
 
     @Override
@@ -653,22 +644,36 @@ public class ADMEHomeFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(BluetoothStateEvent bluetoothStateEvent) {
-        if (bluetoothStateEvent.isConnected) {
-            sbBluetoothState.setCheckedImmediatelyNoEvent(true);
-            setSwitchViewState(true, tvBluetoothState, "已连接");
-        } else {
-            sbBluetoothState.setCheckedImmediatelyNoEvent(false);
-            setSwitchViewState(false, tvBluetoothState, "已断开");
-
-            sbAutoMonitorState.setCheckedImmediatelyNoEvent(false);
-            setSwitchViewState(false, tvAutoMonitorState, "已关闭");
-        }
+        setViewStateByConnectState(bluetoothStateEvent.isConnected);
     }
 
 
     private void setSwitchViewState(boolean isOpen, TextView textView, String content) {
         textView.setText(content);
         textView.setTextColor(isOpen ? getResources().getColor(R.color.colorPrimary) : getResources().getColor(R.color.gray_807B7B));
+    }
+
+    private void setViewStateByConnectState(boolean isConnected) {
+        if (isConnected) {
+            sbBluetoothState.setCheckedImmediatelyNoEvent(true);
+            setSwitchViewState(true, tvBluetoothState, "已连接");
+
+            mBtnEdit1.setEnabled(true);
+            mBtnEdit2.setEnabled(true);
+            mIvRefreshAddr1.setEnabled(true);
+            mIvRefreshAddr2.setEnabled(true);
+
+        } else {
+            sbBluetoothState.setCheckedImmediatelyNoEvent(false);
+            setSwitchViewState(false, tvBluetoothState, "已断开");
+            sbAutoMonitorState.setCheckedImmediatelyNoEvent(false);
+            setSwitchViewState(false, tvAutoMonitorState, "已关闭");
+
+            mBtnEdit1.setEnabled(false);
+            mBtnEdit2.setEnabled(false);
+            mIvRefreshAddr1.setEnabled(false);
+            mIvRefreshAddr2.setEnabled(false);
+        }
     }
 
 
