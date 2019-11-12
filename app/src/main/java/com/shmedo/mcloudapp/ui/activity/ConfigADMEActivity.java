@@ -30,6 +30,12 @@ import butterknife.OnClick;
  */
 public class ConfigADMEActivity extends BaseDeviceConnectActivity {
 
+    @BindView(R.id.tv_title)
+    TextView mToolbarTitle;
+
+    @BindView(R.id.tv_save)
+    TextView mTvSave;
+
     @BindView(R.id.tv_parameter)
     TextView mTvParameter;
 
@@ -89,6 +95,8 @@ public class ConfigADMEActivity extends BaseDeviceConnectActivity {
     }
 
     private void initView(Bundle savedInstanceState) {
+        mToolbarTitle.setText("参数设置");
+        mTvSave.setVisibility(View.VISIBLE);
         mTvHighsetting.setVisibility(View.GONE);
 
         if (savedInstanceState != null) {  // “内存重启”时调用
@@ -124,11 +132,19 @@ public class ConfigADMEActivity extends BaseDeviceConnectActivity {
     }
 
 
-    @OnClick({R.id.back, R.id.tv_parameter, R.id.tv_query_data, R.id.tv_device_details})
+    @OnClick({R.id.back, R.id.tv_save, R.id.tv_parameter, R.id.tv_query_data, R.id.tv_device_details})
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.back:
                 onBackPressed();
+                break;
+
+            case R.id.tv_save:
+                if (!MCloudApp.isIsBluetoothDeviceConnected()) {
+                    ToastUtils.show(getString(R.string.param_config_bluetooth_disconnect_warn));
+                    return;
+                }
+                sendSaveParamCommand();
                 break;
 
             case R.id.tv_parameter:

@@ -149,6 +149,14 @@ public class ADMEHomeFragment extends BaseFragment {
         }
     };
 
+    private Runnable dismssDialogRunnable = new Runnable() {
+        @Override
+        public void run() {
+            dismissLoadingDialog();
+            ToastUtils.show("发送指令超时,请稍后尝试");
+        }
+    };
+
 
     @Override
     protected int initContentView() {
@@ -322,7 +330,7 @@ public class ADMEHomeFragment extends BaseFragment {
 
                 if (isChecked) {
                     //发送打开自动测量模式命令
-                    configADMEActivity.sendCommand("##70111\r\n");
+                    configADMEActivity.sendCommonCommand("##70111\r\n");
                     setSwitchViewState(true, tvAutoMonitorState, "已启用");
 
                 } else {
@@ -343,7 +351,7 @@ public class ADMEHomeFragment extends BaseFragment {
 
                 if (isChecked) {
                     //发送打开测试模式命令
-                    configADMEActivity.sendCommand("##70121\r\n");
+                    configADMEActivity.sendCommonCommand("##70121\r\n");
                     setSwitchViewState(true, tvDebugMode, "已打开");
 
                 } else {
@@ -466,7 +474,7 @@ public class ADMEHomeFragment extends BaseFragment {
         isRefreshingAddress = true;
         hander.postDelayed(clearAnimationRunnable, 6000);
         //查询服务器地址
-        configADMEActivity.sendCommand(cmdStr);
+        configADMEActivity.sendCommonCommand(cmdStr);
     }
 
 
@@ -484,7 +492,9 @@ public class ADMEHomeFragment extends BaseFragment {
             String addrArray[] = address.split(":");
             cmdStr = "##2011 " + addrArray[0] + " " + addrArray[1] + "\r\n";
         }
-        configADMEActivity.sendCommand(cmdStr);
+        configADMEActivity.sendCommonCommand(cmdStr);
+        showLoadingDialog("正在发送配置指令...");
+        hander.postDelayed(dismssDialogRunnable, 5000);
     }
 
     private void doServerAddress2Config() {
@@ -501,7 +511,9 @@ public class ADMEHomeFragment extends BaseFragment {
             String addrArray[] = address.split(":");
             cmdStr = "##2012 " + addrArray[0] + " " + addrArray[1] + "\r\n";
         }
-        configADMEActivity.sendCommand(cmdStr);
+        configADMEActivity.sendCommonCommand(cmdStr);
+        showLoadingDialog("正在发送配置指令...");
+        hander.postDelayed(dismssDialogRunnable, 5000);
     }
 
     /**
@@ -619,12 +631,16 @@ public class ADMEHomeFragment extends BaseFragment {
         //设置服务器地址1应答
         if (cmdStr.startsWith("$$2011") && cmdStr.endsWith("\r\n")) {
             ToastUtils.show("设置MD-NET服务器地址完成");
+            dismissLoadingDialog();
+            hander.removeCallbacks(dismssDialogRunnable);
             return;
         }
 
         //设置服务器地址2应答
         if (cmdStr.startsWith("$$2012") && cmdStr.endsWith("\r\n")) {
             ToastUtils.show("设置mCloud服务器地址完成");
+            dismissLoadingDialog();
+            hander.removeCallbacks(dismssDialogRunnable);
             return;
         }
 
@@ -708,13 +724,13 @@ public class ADMEHomeFragment extends BaseFragment {
 
                             case 2:
                                 //发送关闭测试模式命令
-                                configADMEActivity.sendCommand("##70112\r\n");
+                                configADMEActivity.sendCommonCommand("##70112\r\n");
                                 setSwitchViewState(false, tvAutoMonitorState, "已关闭");
                                 break;
 
                             case 3:
                                 //发送关闭测试模式命令
-                                configADMEActivity.sendCommand("##70122\r\n");
+                                configADMEActivity.sendCommonCommand("##70122\r\n");
                                 setSwitchViewState(false, tvDebugMode, "已关闭");
                                 break;
                         }

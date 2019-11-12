@@ -284,7 +284,6 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
                 case Constants.BT_DISCONNECTED:
                     ToastUtils.show("设备断开连接");
                     dismissLoadingDialog();
-                    hander.removeCallbacks(dismssDialogRunnable);
                     hander.removeCallbacks(dismssConnectDialogRunnable);
                     MCloudApp.setIsBluetoothDeviceConnected(false);
                     EventBus.getDefault().post(new BluetoothStateEvent(false));
@@ -407,19 +406,19 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
 
                 //设备登录验证结果指令
                 if (cmdStr.startsWith("$$223") && cmdStr.endsWith("\r\n")) {
-                    sendHandleMessage(Constants.VERIFY_RESULT, cmdArray[1]);
+                    sendCommonMessage(Constants.VERIFY_RESULT, cmdArray[1]);
                     Timber.d("认证结果===" + cmdArray[1]);
                     return;
                 }
 
                 //需要验证设备
                 if (cmdStr.equals("Please verify the equipment.\r\n")) {
-                    sendHandleMessage(Constants.VERIFY_RESULT, "0");
+                    sendCommonMessage(Constants.VERIFY_RESULT, "0");
                     return;
                 }
 
                 if (cmdStr.equals("Equipment Verify OK.\r\n")) {
-                    sendHandleMessage(Constants.MESSAGE_LOCK_REBOOT_DEVICE, null);
+                    sendCommonMessage(Constants.MESSAGE_LOCK_REBOOT_DEVICE, null);
                     return;
                 }
 
@@ -474,7 +473,7 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
     }
 
 
-    private void sendHandleMessage(int what, Object obj) {
+    private void sendCommonMessage(int what, Object obj) {
         android.os.Message message = new android.os.Message();
         message.what = what;
         if (obj != null) {
@@ -484,7 +483,7 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
     }
 
 
-    public void sendCommand(String cmdStr) {
+    public void sendCommonCommand(String cmdStr) {
         Message msg = new Message(UUID.randomUUID().toString(), cmdStr, true);
         if (mdBluetoothManager != null) {
             mdBluetoothManager.writeMessage(msg);
@@ -527,6 +526,12 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
         Timber.d("发送查询执行机构参数指令===" + "##7002");
     }
 
+    protected void sendSaveParamCommand() {
+        sendCommonCommand("##0191\r\n");
+        showLoadingDialog("正在发送保存命令...");
+        hander.postDelayed(dismssDialogRunnable, 5000);
+    }
+
 
     public void showSaveDialog(String content) {
         MaterialDialog.Builder mBuilder = new MaterialDialog.Builder(this)
@@ -541,10 +546,7 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                         dialog.dismiss();
-                        //发送关闭测试模式命令
-                        sendCommand("##0191\r\n");
-                        showLoadingDialog("正在发送保存命令...");
-                        hander.postDelayed(dismssDialogRunnable, 5000);
+                        sendSaveParamCommand();
                     }
                 }).onNegative(new MaterialDialog.SingleButtonCallback() {
                     @Override

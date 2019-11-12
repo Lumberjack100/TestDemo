@@ -150,7 +150,7 @@ public class ADMESensorExecutiveAgencyConfigActivity extends BaseDeviceConnectAc
     }
 
     private void initHeadView() {
-        mToolbarTitle.setText("采集器参数设置");
+        mToolbarTitle.setText("参数设置");
         mIvBluetooth.setVisibility(View.VISIBLE);
         mIvBack.setOnClickListener(this);
         mIvBluetooth.setOnClickListener(this);
@@ -636,7 +636,7 @@ public class ADMESensorExecutiveAgencyConfigActivity extends BaseDeviceConnectAc
 
         //先发送采集器配置指令,收到配置完成应答时再发送执行结构配置指令
         String cmdStr = String.valueOf(sbCollector);
-        sendCommand(cmdStr);
+        sendCommonCommand(cmdStr);
 
         showLoadingDialog("正在发送配置指令...");
         hander.postDelayed(dismssDialogRunnable, 5000);
@@ -649,7 +649,7 @@ public class ADMESensorExecutiveAgencyConfigActivity extends BaseDeviceConnectAc
     private void setResultData(String cmdStr) {
         //采集器参数配置后应答
         if (cmdStr.startsWith("$$7001") && cmdStr.endsWith("\r\n")) {
-            sendCommand(executiveAgencyConfigInfo);
+            sendCommonCommand(executiveAgencyConfigInfo);
             return;
         }
 
@@ -868,5 +868,20 @@ public class ADMESensorExecutiveAgencyConfigActivity extends BaseDeviceConnectAc
         }
 
         return true;
+    }
+
+
+    @Override
+    public void onBackPressed() {
+        if (MCloudApp.isIsBluetoothDeviceConnected()) {
+            if (isConfigChange) {
+                isExitMode = true;
+                showSaveDialog(getResources().getString(R.string.disconnect_bluetooth_device_save_param_warn));
+            } else {
+                finish();
+            }
+        } else {
+            finish();
+        }
     }
 }
