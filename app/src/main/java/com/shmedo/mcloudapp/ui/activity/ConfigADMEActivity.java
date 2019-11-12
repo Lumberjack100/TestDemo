@@ -3,16 +3,12 @@ package com.shmedo.mcloudapp.ui.activity;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.view.View;
 import android.widget.TextView;
 
-import com.afollestad.materialdialogs.DialogAction;
-import com.afollestad.materialdialogs.MaterialDialog;
 import com.hjq.toast.ToastUtils;
 import com.shmedo.mcloudapp.MCloudApp;
 import com.shmedo.mcloudapp.R;
@@ -21,7 +17,6 @@ import com.shmedo.mcloudapp.ui.activity.device.BaseDeviceConnectActivity;
 import com.shmedo.mcloudapp.ui.fragment.ADMEHomeFragment;
 import com.shmedo.mcloudapp.ui.fragment.DeviceDetailsFragment;
 import com.shmedo.mcloudapp.ui.fragment.QueryDataFragment;
-import com.shmedo.mcloudapp.util.common.HandleBackUtil;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -173,30 +168,6 @@ public class ConfigADMEActivity extends BaseDeviceConnectActivity {
 
 
     /**
-     * 是否切换连接模式
-     */
-    public void showChangeModle(String content) {
-        MaterialDialog.Builder mBuilder = new MaterialDialog.Builder(this)
-                .title("温馨提示：")
-                .content(content)
-                .contentColor(Color.parseColor("#000000"))
-                .canceledOnTouchOutside(false)
-                .positiveText("确定")
-                .negativeText("取消")
-                .onPositive(new MaterialDialog.SingleButtonCallback() {
-                    @Override
-                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        dialog.dismiss();
-                        disconnectDevice();
-                        ConfigADMEActivity.this.finish();
-                    }
-                });
-        MaterialDialog mMaterialDialog = mBuilder.build();
-        mMaterialDialog.show();
-    }
-
-
-    /**
      * revert the image color and text color to black
      */
     private void resetTabState() {
@@ -262,15 +233,4 @@ public class ConfigADMEActivity extends BaseDeviceConnectActivity {
         MCloudApp.setCurDeviceMacAddr(null);
     }
 
-    @Override
-    public void onBackPressed() {
-        if (!HandleBackUtil.handleBackPress(this)) {
-            if (MCloudApp.isIsBluetoothDeviceConnected()) {
-                showChangeModle(getResources().getString(R.string.finish_activity_disconnect_bluetooth_device));
-
-            } else {
-                finish();
-            }
-        }
-    }
 }

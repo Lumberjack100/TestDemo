@@ -299,8 +299,14 @@ public class ADMEHomeFragment extends BaseFragment {
                 if (isChecked) {
                     configADMEActivity.findAndConnectBleDevice();
 
-                } else {
-                    showCloseSwitchButtonDialog(getResources().getString(R.string.disconnect_bluetooth_device), 1);
+                } else {//断开连接处理
+                    if (configADMEActivity.isConfigChange) {
+                        configADMEActivity.isExitMode = false;
+                        configADMEActivity.showSaveDialog(getResources().getString(R.string.disconnect_bluetooth_device_save_param_warn));
+
+                    } else {
+                        configADMEActivity.disconnectDevice();
+                    }
                 }
             }
         });
@@ -625,11 +631,13 @@ public class ADMEHomeFragment extends BaseFragment {
         //设置采集器参数应答
         if (cmdStr.startsWith("$$7001") && cmdStr.endsWith("\r\n")) {
             dagConfigInfo = cmdStr;
+            return;
         }
 
         //设置执行机构参数应答
         if (cmdStr.startsWith("$$7003") && cmdStr.endsWith("\r\n")) {
             executiveAgencyConfigInfo = cmdStr;
+            return;
         }
     }
 
@@ -693,7 +701,6 @@ public class ADMEHomeFragment extends BaseFragment {
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                         dialog.dismiss();
-
                         switch (index) {
                             case 1:
                                 configADMEActivity.disconnectDevice();
@@ -716,7 +723,6 @@ public class ADMEHomeFragment extends BaseFragment {
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                         dialog.dismiss();
-
                         switch (index) {
                             case 1:
                                 sbBluetoothState.setCheckedImmediatelyNoEvent(true);
@@ -760,7 +766,7 @@ public class ADMEHomeFragment extends BaseFragment {
     public void onHiddenChanged(boolean hidden) {
         super.onHiddenChanged(hidden);
         if (!hidden) {
-         //TODO  fragment  显示或隐藏时会触发此事件
+            //TODO  fragment  显示或隐藏时会触发此事件
         }
     }
 

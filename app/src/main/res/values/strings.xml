@@ -9,8 +9,6 @@
     <string name="service_set_address">请输入服务器地址/域名：端口 \n 如：192.168.1.101:8081 \n mCloud.shmedo.cn:9901</string>
     <string name="service_address">service_address</string>
     <string name="agent_addr">地址：%1$s</string>
-    <string name="disconnect_bluetooth_device">当前设备处于蓝牙连接状态，确定要断开连接？</string>
-    <string name="finish_activity_disconnect_bluetooth_device">确定要退出该页面，并断开蓝牙连接吗？</string>
     <string name="exit_login_tip">确定退出登录吗？</string>
     <string name="appbar_scrolling_view_behavior" translatable="false">android.support.design.widget.AppBarLayout$ScrollingViewBehavior</string>
     <string name="bottom_sheet_behavior" translatable="false">android.support.design.widget.BottomSheetBehavior</string>
@@ -26,6 +24,9 @@
     <string name="service_address_note2">mCloud服务器地址：端口</string>
     <string name="input_server_address_hint">请输入地址</string>
     <string name="param_config_bluetooth_disconnect_warn">设备已断开连接，暂无法进行设置</string>
+    <string name="disconnect_bluetooth_device">当前设备处于蓝牙连接状态，确定要断开连接？</string>
+    <string name="finish_activity_disconnect_bluetooth_device">确定要退出该页面，并断开蓝牙连接吗？</string>
+    <string name="disconnect_bluetooth_device_save_param_warn">您还没有保存设备的配置信息，是否保存？</string>
 
 
     <!-- 采集器、传感器参数说明-->

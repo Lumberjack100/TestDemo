@@ -14,28 +14,23 @@ import java.nio.charset.StandardCharsets;
  * 描述：    TODO
  */
 public class ByteManagerUtil {
-    private static final int MAX_LENGTH=1024;
-    private static final byte[]DEFAULT_SPLIT_BYTES= "\r\n".getBytes(StandardCharsets.UTF_8);
-    private static  ByteManager instance;
+    private static final int MAX_LENGTH = 1024;
+    private static final byte[] DEFAULT_SPLIT_BYTES = "\r\n".getBytes(StandardCharsets.UTF_8);
+    private static ByteManager instance;
 
-    public static void init(OnBytePackage onBytePackage)
-    {
-        instance=new ByteManager(DEFAULT_SPLIT_BYTES,onBytePackage,MAX_LENGTH);
+    public static void init(OnBytePackage onBytePackage) {
+        instance = new ByteManager(DEFAULT_SPLIT_BYTES, onBytePackage, MAX_LENGTH);
     }
 
-    public static void clear()
-    {
-        if(instance==null)
-        {
+    public static void clear() {
+        if (instance == null) {
             throw new RuntimeException("字节管理器尚未初始化");
         }
         instance.clear();
     }
 
-    public static ByteManager getInstance()
-    {
-        if(instance==null)
-        {
+    public static ByteManager getInstance() {
+        if (instance == null) {
             throw new RuntimeException("字节管理器尚未初始化");
         }
         return instance;

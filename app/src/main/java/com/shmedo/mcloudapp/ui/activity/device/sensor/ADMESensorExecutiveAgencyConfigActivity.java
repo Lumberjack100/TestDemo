@@ -2,10 +2,7 @@ package com.shmedo.mcloudapp.ui.activity.device.sensor;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.os.Handler;
-import android.support.annotation.NonNull;
 import android.text.InputFilter;
 import android.text.InputType;
 import android.text.TextUtils;
@@ -18,8 +15,6 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.afollestad.materialdialogs.DialogAction;
-import com.afollestad.materialdialogs.MaterialDialog;
 import com.hjq.toast.ToastUtils;
 import com.kyleduo.switchbutton.SwitchButton;
 import com.shmedo.das.das.cmd.CommandResult;
@@ -123,8 +118,6 @@ public class ADMESensorExecutiveAgencyConfigActivity extends BaseDeviceConnectAc
 
     private ArrayAdapter<String> dataSettlementAdapter, logOutputModeAdapter;
 
-    private Handler hander;
-
     private String dagConfigInfo;//DAG 采集器配置指令
 
     private String executiveAgencyConfigInfo;//执行机构配置指令
@@ -136,15 +129,6 @@ public class ADMESensorExecutiveAgencyConfigActivity extends BaseDeviceConnectAc
         intent.putExtra(Extras.ADME_EXECUTIVE_AGENCY_CONFIG_INFO, executiveAgencyInfo);
         context.startActivity(intent);
     }
-
-
-    private Runnable dismssDialogRunnable = new Runnable() {
-        @Override
-        public void run() {
-            dismissLoadingDialog();
-            ToastUtils.show("发送命令超时,请重新尝试");
-        }
-    };
 
 
     @Override
@@ -166,7 +150,6 @@ public class ADMESensorExecutiveAgencyConfigActivity extends BaseDeviceConnectAc
     }
 
     private void initHeadView() {
-        hander = new Handler();
         mToolbarTitle.setText("采集器参数设置");
         mIvBluetooth.setVisibility(View.VISIBLE);
         mIvBack.setOnClickListener(this);
@@ -250,7 +233,6 @@ public class ADMESensorExecutiveAgencyConfigActivity extends BaseDeviceConnectAc
         mIvSensorCorrectionValue.setOnClickListener(this);
         btnConfirm.setOnClickListener(this);
     }
-
 
     private void initExecutiveAgencyView() {
         ((TextView) dataSettlementMethodLayout.findViewById(R.id.itemNameTV)).setText("数据结算方式");
@@ -361,7 +343,6 @@ public class ADMESensorExecutiveAgencyConfigActivity extends BaseDeviceConnectAc
         });
     }
 
-
     private void parseIntent() {
         Intent intent = getIntent();
         if (intent.getExtras().containsKey(Extras.ADME_SENSOR_CONFIG_INFO)) {
@@ -384,7 +365,6 @@ public class ADMESensorExecutiveAgencyConfigActivity extends BaseDeviceConnectAc
         logOutputModeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mSpLogOutputMode.setAdapter(logOutputModeAdapter);
     }
-
 
     private void initSensorData() {
         if (TextUtils.isEmpty(dagConfigInfo)) {
@@ -421,7 +401,6 @@ public class ADMESensorExecutiveAgencyConfigActivity extends BaseDeviceConnectAc
             ex.printStackTrace();
         }
     }
-
 
     private void initExecutiveAgencyData() {
         if (TextUtils.isEmpty(executiveAgencyConfigInfo)) {
@@ -488,7 +467,6 @@ public class ADMESensorExecutiveAgencyConfigActivity extends BaseDeviceConnectAc
         mEtMeasuringPitch.setText(cmdArray[11]);
     }
 
-
     private void setSwitchViewState(boolean isOpen, TextView textView, String content) {
         textView.setText(content);
         textView.setTextColor(isOpen ? getResources().getColor(R.color.colorPrimary) : getResources().getColor(R.color.gray_807B7B));
@@ -499,12 +477,19 @@ public class ADMESensorExecutiveAgencyConfigActivity extends BaseDeviceConnectAc
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.back:
-                finish();
+                onBackPressed();
                 break;
 
             case R.id.img_bluetooth:
                 if (MCloudApp.isIsBluetoothDeviceConnected()) {
-                    showDisconnectDialog(getResources().getString(R.string.disconnect_bluetooth_device));
+                    if (isConfigChange) {
+                        isExitMode = false;
+                        showSaveDialog(getResources().getString(R.string.disconnect_bluetooth_device_save_param_warn));
+
+                    } else {
+                        disconnectDevice();
+                    }
+
                 } else {
                     findAndConnectBleDevice();
                 }
@@ -582,7 +567,6 @@ public class ADMESensorExecutiveAgencyConfigActivity extends BaseDeviceConnectAc
                 showTipDialog(getResources().getString(R.string.adme_measuring_pitch));
                 break;
 
-
             case R.id.btn_confirm_complete:
                 if (!MCloudApp.isIsBluetoothDeviceConnected()) {
                     ToastUtils.show(getString(R.string.param_config_bluetooth_disconnect_warn));
@@ -604,15 +588,15 @@ public class ADMESensorExecutiveAgencyConfigActivity extends BaseDeviceConnectAc
         }
 
         //拼接传感器参数配置指令
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("##7001,");
-        stringBuilder.append(collectorAddress + ",");
-        stringBuilder.append(collectorCollectInterval + ",");
-        stringBuilder.append(collectorSolutionInterval + ",");
-        stringBuilder.append(communicationModuleSleepInterval + ",");
-        stringBuilder.append(sensorType + ",");
-        stringBuilder.append(sensorAddress + ",");
-        stringBuilder.append(sensorCorrectionValue + "\r\n");
+        StringBuilder sbCollector = new StringBuilder();
+        sbCollector.append("##7001,");
+        sbCollector.append(collectorAddress + ",");
+        sbCollector.append(collectorCollectInterval + ",");
+        sbCollector.append(collectorSolutionInterval + ",");
+        sbCollector.append(communicationModuleSleepInterval + ",");
+        sbCollector.append(sensorType + ",");
+        sbCollector.append(sensorAddress + ",");
+        sbCollector.append(sensorCorrectionValue + "\r\n");
 
         //拼接执行机构参数配置指令
         StringBuilder sbExecutiveAgency = new StringBuilder();
@@ -650,7 +634,8 @@ public class ADMESensorExecutiveAgencyConfigActivity extends BaseDeviceConnectAc
         sbExecutiveAgency.append(strMeasuringPitch + "\r\n");
         executiveAgencyConfigInfo = String.valueOf(sbExecutiveAgency);
 
-        String cmdStr = String.valueOf(stringBuilder);
+        //先发送采集器配置指令,收到配置完成应答时再发送执行结构配置指令
+        String cmdStr = String.valueOf(sbCollector);
         sendCommand(cmdStr);
 
         showLoadingDialog("正在发送配置指令...");
@@ -658,90 +643,22 @@ public class ADMESensorExecutiveAgencyConfigActivity extends BaseDeviceConnectAc
     }
 
 
-    private void showSaveDialog() {
-        MaterialDialog.Builder mBuilder = new MaterialDialog.Builder(ADMESensorExecutiveAgencyConfigActivity.this);
-        mBuilder.title("温馨提示：")
-                .content("已发送配置指令，是否保存参数配置重启设备？")
-                .contentColor(Color.parseColor("#000000"))
-                .canceledOnTouchOutside(false)
-                .positiveText("确定")
-                .negativeText("取消")
-                .negativeColor(Color.parseColor("#807B7B"));
-        MaterialDialog mMaterialDialog = mBuilder.build();
-        mMaterialDialog.show();
-        mBuilder.onPositive(new MaterialDialog.SingleButtonCallback() {
-            @Override
-            public void onClick(
-                    @NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                dialog.dismiss();
-                //发送关闭测试模式命令
-                sendCommand("##0191\r\n");
-                showLoadingDialog("正在发送保存命令...");
-                hander.postDelayed(dismssDialogRunnable, 5000);
-            }
-        });
-        mBuilder.onNegative(new MaterialDialog.SingleButtonCallback() {
-            @Override
-            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                dialog.dismiss();
-            }
-        });
-    }
-
-    /**
-     * 是否切换连接模式
-     */
-    private void showDisconnectDialog(String content) {
-        MaterialDialog.Builder mBuilder = new MaterialDialog.Builder(this)
-                .title("温馨提示：")
-                .content(content)
-                .contentColor(Color.parseColor("#000000"))
-                .canceledOnTouchOutside(false)
-                .positiveText("确定")
-                .negativeText("取消")
-                .onPositive(new MaterialDialog.SingleButtonCallback() {
-                    @Override
-                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        dialog.dismiss();
-                        disconnectDevice();
-                    }
-                });
-        MaterialDialog mMaterialDialog = mBuilder.build();
-        mMaterialDialog.show();
-    }
-
-
     /**
      * 设置显示数据
      */
     private void setResultData(String cmdStr) {
-        //设置执行机构参数应答
+        //采集器参数配置后应答
         if (cmdStr.startsWith("$$7001") && cmdStr.endsWith("\r\n")) {
             sendCommand(executiveAgencyConfigInfo);
             return;
         }
 
-        //设置执行机构参数应答
+        //执行机构参数配置后应答
         if (cmdStr.startsWith("$$7003") && cmdStr.endsWith("\r\n")) {
-            hander.removeCallbacks(dismssDialogRunnable);
             dismissLoadingDialog();
-            showSaveDialog();
-            return;
-        }
-
-        //设置保存参数应答
-        if (cmdStr.startsWith("$$0191") && cmdStr.endsWith("\r\n")) {
             hander.removeCallbacks(dismssDialogRunnable);
-            dismissLoadingDialog();
-            ToastUtils.show("已发送保存命令,设备即将重启并断开连接");
-
-            hander.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    disconnectDevice();
-                    ADMESensorExecutiveAgencyConfigActivity.this.finish();
-                }
-            }, 3000);
+            isExitMode = true;
+            showSaveDialog("是否保存设备配置参数？");
         }
     }
 
@@ -756,7 +673,6 @@ public class ADMESensorExecutiveAgencyConfigActivity extends BaseDeviceConnectAc
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(BluetoothStateEvent bluetoothStateEvent) {
-
         mIvBluetooth.setImageResource(bluetoothStateEvent.isConnected ? R.drawable.ic_bluetooth_connected : R.drawable.ic_bluetooth);
     }
 

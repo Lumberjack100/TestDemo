@@ -5,15 +5,20 @@ import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothManager;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.hjq.toast.ToastUtils;
 import com.shmedo.das.utils.DesUtil;
 import com.shmedo.das.utils.OnBytePackage;
 import com.shmedo.das.utils.StringUtil;
 import com.shmedo.mcloudapp.MCloudApp;
+import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.base.BaseActivity;
 import com.shmedo.mcloudapp.bluetooth.BluetoothDeviceFindEventData;
 import com.shmedo.mcloudapp.bluetooth.BluetoothEvent;
@@ -23,6 +28,7 @@ import com.shmedo.mcloudapp.bluetooth.Message;
 import com.shmedo.mcloudapp.entity.event.BluetoothStateEvent;
 import com.shmedo.mcloudapp.util.bleutil.ByteManagerUtil;
 import com.shmedo.mcloudapp.util.bleutil.Constants;
+import com.shmedo.mcloudapp.util.common.HandleBackUtil;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -42,32 +48,38 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
 
     public static final int REQUEST_ENABLE_BT = 0x001;
 
-    protected MdBluetoothManager mdBluetoothManager;
+    private MdBluetoothManager mdBluetoothManager;
 
     private BluetoothAdapter mBluetoothAdapter;
 
     private MdBluetoothEventHandler mdBluetoothEventHandler = new MdBluetoothEventHandler();
 
-    private Handler hander = new Handler();
+    protected Handler hander = new Handler();
 
     private boolean isAutoConnectBlue = true;//是否自动连接蓝牙
+
+    public boolean isConfigChange = false;
+
+    public boolean isExitMode = false;
 
     private String SN = MCloudApp.getCurDeviceToken();
 
     private String macAddress = MCloudApp.getCurDeviceMacAddr();
 
 
-    private Runnable dismssDialogRunnable = new Runnable() {
+    protected Runnable dismssDialogRunnable = new Runnable() {
         @Override
         public void run() {
             dismissLoadingDialog();
+            ToastUtils.show("发送指令超时,请稍后尝试");
         }
     };
 
-    private Runnable dismssConnectDialogRunnable = new Runnable() {
+    protected Runnable dismssConnectDialogRunnable = new Runnable() {
         @Override
         public void run() {
             dismissLoadingDialog();
+            ToastUtils.show("连接超时,请稍后尝试");
         }
     };
 
@@ -83,6 +95,7 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
     protected void onStart() {
         super.onStart();
         mdBluetoothManager.addBluetoothEventHandler(mdBluetoothEventHandler);
+        ByteManagerUtil.init(new MyOnBytePackage());
     }
 
 
@@ -175,7 +188,7 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
                     break;
 
                 case CONNECTED:
-                    ByteManagerUtil.init(new MyOnBytePackage());
+//                    ByteManagerUtil.init(new MyOnBytePackage());
                     mHandler.sendEmptyMessage(Constants.BT_CONNECT);
                     break;
 
@@ -271,6 +284,7 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
                 case Constants.BT_DISCONNECTED:
                     ToastUtils.show("设备断开连接");
                     dismissLoadingDialog();
+                    hander.removeCallbacks(dismssDialogRunnable);
                     hander.removeCallbacks(dismssConnectDialogRunnable);
                     MCloudApp.setIsBluetoothDeviceConnected(false);
                     EventBus.getDefault().post(new BluetoothStateEvent(false));
@@ -363,7 +377,7 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
         @Override
         public void onPackageArrived(final byte[] data) {
             try {
-                String cmdStr = new String(data, "utf-8");
+                final String cmdStr = new String(data, "utf-8");
                 Timber.d("应答指令===" + cmdStr);
                 String cmdArray[] = cmdStr.replace("\r\n", "").split(",");
 
@@ -409,11 +423,12 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
                     return;
                 }
 
-                if (cmdStr.startsWith("$$0191")) {
-                    mHandler.sendEmptyMessage(Constants.MESSAGE_RESPONSE_SAVE_SETTINGS_SUCCESS);
-                }
-
-                parserResult(cmdStr);
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        parserResult(cmdStr);
+                    }
+                });
 
             } catch (Exception ex) {
                 Timber.e(ex);
@@ -426,6 +441,33 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
         if (cmdStr.startsWith("$$7002") && cmdStr.endsWith("\r\n")) {
             dismissLoadingDialog();
             hander.removeCallbacks(dismssDialogRunnable);
+        }
+
+        if ((cmdStr.startsWith("$$7011")
+                || cmdStr.startsWith("$$7012")
+                || cmdStr.startsWith("$$2011")
+                || cmdStr.startsWith("$$2012")
+                || cmdStr.startsWith("$$7001")
+                || cmdStr.startsWith("$$7003")) && cmdStr.endsWith("\r\n")) {
+            isConfigChange = true;
+        }
+
+        //设置保存参数应答
+        if (cmdStr.startsWith("$$0191") && cmdStr.endsWith("\r\n")) {
+            ToastUtils.show("已发送保存命令,设备即将断开连接重启");
+            isConfigChange = false;
+            hander.removeCallbacks(dismssDialogRunnable);
+            dismissLoadingDialog();
+            disconnectDevice();
+
+            if (isExitMode) {
+                hander.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        BaseDeviceConnectActivity.this.finish();
+                    }
+                }, 3000);
+            }
         }
 
         EventBus.getDefault().post(cmdStr);
@@ -483,5 +525,78 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
         //##7002，查询执行机构参数
         mdBluetoothManager.writeMessage(new Message(UUID.randomUUID().toString(), "##7002\r\n", true));
         Timber.d("发送查询执行机构参数指令===" + "##7002");
+    }
+
+
+    public void showSaveDialog(String content) {
+        MaterialDialog.Builder mBuilder = new MaterialDialog.Builder(this)
+                .title("温馨提示：")
+                .content(content)
+                .contentColor(Color.parseColor("#000000"))
+                .canceledOnTouchOutside(false)
+                .positiveText("保存")
+                .negativeText("不保存")
+                .negativeColor(Color.parseColor("#807B7B"))
+                .onPositive(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        dialog.dismiss();
+                        //发送关闭测试模式命令
+                        sendCommand("##0191\r\n");
+                        showLoadingDialog("正在发送保存命令...");
+                        hander.postDelayed(dismssDialogRunnable, 5000);
+                    }
+                }).onNegative(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        dialog.dismiss();
+                        isConfigChange = false;
+                        disconnectDevice();
+                        if (isExitMode) {
+                            BaseDeviceConnectActivity.this.finish();
+                        }
+                    }
+                });
+        MaterialDialog mMaterialDialog = mBuilder.build();
+        mMaterialDialog.show();
+    }
+
+
+    private void showDisconnectDialog(String content) {
+        MaterialDialog.Builder mBuilder = new MaterialDialog.Builder(this)
+                .title("温馨提示：")
+                .content(content)
+                .contentColor(Color.parseColor("#000000"))
+                .canceledOnTouchOutside(false)
+                .positiveText("确定")
+                .negativeText("取消")
+                .negativeColor(Color.parseColor("#807B7B"))
+                .onPositive(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        dialog.dismiss();
+                        disconnectDevice();
+                        BaseDeviceConnectActivity.this.finish();
+                    }
+                });
+        MaterialDialog mMaterialDialog = mBuilder.build();
+        mMaterialDialog.show();
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (!HandleBackUtil.handleBackPress(this)) {
+            if (MCloudApp.isIsBluetoothDeviceConnected()) {
+                if (isConfigChange) {
+                    isExitMode = true;
+                    showSaveDialog(getResources().getString(R.string.disconnect_bluetooth_device_save_param_warn));
+
+                } else {
+                    showDisconnectDialog(getResources().getString(R.string.finish_activity_disconnect_bluetooth_device));
+                }
+            } else {
+                finish();
+            }
+        }
     }
 }
