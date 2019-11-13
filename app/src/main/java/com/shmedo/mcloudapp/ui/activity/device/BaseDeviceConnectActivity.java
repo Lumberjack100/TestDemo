@@ -62,6 +62,8 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
 
     public boolean isExitMode = false;
 
+    private String errMsg = "";
+
     private String SN = MCloudApp.getCurDeviceToken();
 
     private String macAddress = MCloudApp.getCurDeviceMacAddr();
@@ -71,17 +73,11 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
         @Override
         public void run() {
             dismissLoadingDialog();
-            ToastUtils.show("发送指令超时,请稍后尝试");
+            if (!TextUtils.isEmpty(errMsg))
+                ToastUtils.show(errMsg);
         }
     };
 
-    protected Runnable dismssConnectDialogRunnable = new Runnable() {
-        @Override
-        public void run() {
-            dismissLoadingDialog();
-            ToastUtils.show("连接超时,请稍后尝试");
-        }
-    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -118,9 +114,10 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
         }
 
         //蓝牙已打开时，开始扫描蓝牙设备
-        mdBluetoothManager.scanDevice(20, this);
+        mdBluetoothManager.scanDevice(10, this);
         if (null != mBluetoothAdapter && mBluetoothAdapter.isEnabled()) {
             showLoadingDialog("正在搜索设备：" + SN);
+            errMsg = "扫描超时，请稍后尝试";
             hander.postDelayed(dismssDialogRunnable, 10000);
         }
     }
@@ -165,7 +162,8 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
         mdBluetoothManager.stopScan();
         mdBluetoothManager.connectDevice(device, this);
         showLoadingDialog("正在连接设备：" + SN);
-        hander.postDelayed(dismssConnectDialogRunnable, 15000);
+        errMsg = "连接超时,请稍后尝试";
+        hander.postDelayed(dismssDialogRunnable, 15000);
     }
 
     /**
@@ -284,7 +282,7 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
                 case Constants.BT_DISCONNECTED:
                     ToastUtils.show("设备断开连接");
                     dismissLoadingDialog();
-                    hander.removeCallbacks(dismssConnectDialogRunnable);
+                    hander.removeCallbacks(dismssDialogRunnable);
                     MCloudApp.setIsBluetoothDeviceConnected(false);
                     EventBus.getDefault().post(new BluetoothStateEvent(false));
 //                    if (isAutoConnectBlue) {
@@ -307,10 +305,11 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
 
                 case Constants.VERIFY_RESULT:
                     dismissLoadingDialog();
-                    hander.removeCallbacks(dismssConnectDialogRunnable);
+                    hander.removeCallbacks(dismssDialogRunnable);
 
                     if (msg.obj.equals("1")) {
                         showLoadingDialog("查询设备配置参数...");
+                        errMsg = "查询设备参数超时，请尝试重新连接";
                         hander.postDelayed(dismssDialogRunnable, 5000);
                         obtainDeviceStateCmd();
 
@@ -529,6 +528,7 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
     protected void sendSaveParamCommand() {
         sendCommonCommand("##0191\r\n");
         showLoadingDialog("正在发送保存命令...");
+        errMsg = "发送指令超时,请稍后尝试";
         hander.postDelayed(dismssDialogRunnable, 5000);
     }
 

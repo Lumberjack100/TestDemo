@@ -332,7 +332,7 @@ public class DeviceFragment extends BaseFragment implements View.OnClickListener
         }
 
         //蓝牙已打开时，开始扫描蓝牙设备
-        mdBluetoothManager.scanDevice(20, getActivity());
+        mdBluetoothManager.scanDevice(10, getActivity());
     }
 
 

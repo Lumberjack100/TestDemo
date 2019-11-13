@@ -581,7 +581,7 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
         if (null != list && list.size() > 0) {
             list.clear();
         }
-        mdBluetoothManager.scanDevice(20, this);
+        mdBluetoothManager.scanDevice(10, this);
     }
 
 
