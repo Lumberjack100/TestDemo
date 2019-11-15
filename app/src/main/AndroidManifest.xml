@@ -60,98 +60,144 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".ui.activity.LoginActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden|adjustResize" />
+
         <activity
             android:name=".ui.activity.MainActivity"
             android:label="主页面"
+            android:screenOrientation="portrait"
             android:theme="@style/AppThemeNoTitle" />
+
         <activity
             android:name=".ui.activity.ServiceConfigActivity"
             android:label="配置服务器"
+            android:screenOrientation="portrait"
             android:theme="@style/AppThemeBar"
             android:windowSoftInputMode="stateAlwaysHidden|adjustResize" />
+
         <activity
             android:name=".ui.activity.UserInfoActivity"
             android:label="我的"
             android:theme="@style/AppThemeBar"
             android:windowSoftInputMode="stateAlwaysHidden|adjustResize" />
+
         <activity
             android:name=".ui.activity.ScanAddDeviceActivity"
             android:label="添加设备"
+            android:screenOrientation="portrait"
             android:theme="@style/AppThemeBar"
             android:windowSoftInputMode="stateAlwaysHidden|adjustResize" />
+
         <activity
             android:name=".ui.activity.InputDeviceSNActivity"
             android:label="添加设备"
+            android:screenOrientation="portrait"
             android:theme="@style/AppThemeBar"
             android:windowSoftInputMode="adjustPan|stateHidden" />
+
         <activity
             android:name=".ui.activity.DeviceManageActivity"
             android:label="设备管理"
+            android:screenOrientation="portrait"
             android:theme="@style/AppThemeBar"
             android:windowSoftInputMode="stateAlwaysHidden|adjustResize" />
+
         <activity
             android:name=".ui.activity.SearchDeviceActivity"
             android:label="搜索设备"
+            android:screenOrientation="portrait"
             android:theme="@style/AppThemeBar" />
+
         <activity
             android:name=".ui.activity.DeviceManageDetailActivity"
+            android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden|adjustResize" />
+
         <activity
             android:name=".ui.activity.BlueToothListActivity"
             android:configChanges="orientation|keyboardHidden"
             android:label="@string/select_device"
             android:launchMode="singleInstance"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.Dialog" />
+
         <activity
             android:name=".ui.activity.WifiConnectionActivity"
             android:configChanges="orientation|keyboardHidden"
             android:launchMode="singleInstance"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.Dialog" />
+
         <activity
             android:name=".ui.activity.device.AccessDeviceDetailsActivity"
+            android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden|adjustResize" />
+
         <activity
             android:name=".ui.activity.device.senior.ProductRegistrationActivity"
+            android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden|adjustResize" />
+
         <activity
             android:name=".ui.activity.device.senior.InstructionDebugActivity"
+            android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden|adjustResize" />
+
         <activity
             android:name=".ui.activity.device.GeneralSettingActivity"
+            android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden|adjustResize" />
+
         <activity
             android:name=".ui.activity.device.sensor.SenSorMPSConfigActivity"
+            android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan|stateHidden" />
+
         <activity
             android:name=".ui.activity.device.sensor.SenSorBGKConfigActivity"
+            android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan|stateHidden" />
+
         <activity
             android:name=".ui.activity.device.OsmometerConfigActivity"
+            android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan|stateHidden" />
+
         <activity
             android:name=".ui.activity.device.RainConfigActivity"
+            android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan|stateHidden" />
+
         <activity
             android:name=".ui.activity.ConfigDASActivity"
+            android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan|stateHidden" />
+
         <activity
             android:name=".ui.activity.ConfigE60Activity"
             android:label="E60设备配置页面"
+            android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan|stateHidden" />
+
         <activity
             android:name=".ui.activity.ConfigADMEActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/AppThemeNoTitle"
             android:windowSoftInputMode="stateHidden|adjustResize" />
+
         <activity
             android:name=".ui.activity.ScanActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/ScanActivityTheme" />
 
         <activity
             android:name=".ui.activity.device.sensor.ADMESensorExecutiveAgencyConfigActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/AppThemeNoTitle"
             android:windowSoftInputMode="stateHidden|adjustResize" />
 
