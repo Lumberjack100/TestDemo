@@ -17,15 +17,14 @@ import android.widget.TextView;
 import com.hjq.toast.ToastUtils;
 import com.shmedo.mcloudapp.MCloudApp;
 import com.shmedo.mcloudapp.R;
-import com.shmedo.mcloudapp.base.BaseActivity;
 import com.shmedo.mcloudapp.bluetooth.MdBluetoothManager;
+import com.shmedo.mcloudapp.ui.activity.device.BaseDeviceConnectActivity;
 import com.shmedo.mcloudapp.util.StringUtil;
 import com.shmedo.mcloudapp.util.TimeUtil;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import java.util.Random;
 import java.util.UUID;
 
 import butterknife.BindView;
@@ -42,7 +41,7 @@ import timber.log.Timber;
  * 创建时间:  2019/2/19 13:59
  * 描述：    指令交互调试模式
  */
-public class InstructionDebugActivity extends BaseActivity {
+public class InstructionDebugActivity extends BaseDeviceConnectActivity {
 
     @BindView(R.id.toolbar_title)
     TextView mToolbarTitle;
@@ -204,16 +203,7 @@ public class InstructionDebugActivity extends BaseActivity {
                 .setMessageText(msg)
                 .build();
 
-        // This is a demo bot
-        // Return within 3 seconds
-        int sendDelay = (new Random().nextInt(4) + 1) * 1000;
-
-        MCloudApp.getMainHandler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                mChatView.receive(receivedMessage);
-            }
-        }, sendDelay);
+        mChatView.receive(receivedMessage);
     }
 
 
@@ -298,5 +288,10 @@ public class InstructionDebugActivity extends BaseActivity {
      */
     public String getSysTime() {
         return TimeUtil.getSysTimeStr();
+    }
+
+    @Override
+    public void onBackPressed() {
+        finish();
     }
 }

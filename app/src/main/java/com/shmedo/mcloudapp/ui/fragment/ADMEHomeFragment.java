@@ -314,6 +314,9 @@ public class ADMEHomeFragment extends BaseFragment {
 
                     } else {
                         configADMEActivity.disconnectDevice();
+
+//                        MCloudApp.setIsBluetoothDeviceConnected(false);
+//                        setViewStateByConnectState(MCloudApp.isIsBluetoothDeviceConnected());
                     }
                 }
             }
