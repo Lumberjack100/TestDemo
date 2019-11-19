@@ -30,7 +30,6 @@ import timber.log.Timber;
  * 描述：   ADME 设备配置页面
  */
 public class ConfigADMEActivity extends BaseDeviceConnectActivity {
-
     @BindView(R.id.tv_title)
     TextView mToolbarTitle;
 

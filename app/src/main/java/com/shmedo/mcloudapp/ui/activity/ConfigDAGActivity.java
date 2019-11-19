@@ -46,11 +46,9 @@ public class ConfigDAGActivity extends BaseDeviceConnectActivity {
     private QueryDataFragment queryDataFragment;        //查询数据
     private DeviceDetailsFragment deviceDetailsFragment;//设备详情
     private AdvanceSetFragment advanceSetFragment;      //高级设置
-
     private Fragment currentFragment;
 
     private boolean isFirstCall = true;
-
 
 
     public static void startActivity(Context context, String deviceInfo) {
@@ -102,7 +100,7 @@ public class ConfigDAGActivity extends BaseDeviceConnectActivity {
             dagHomeFragment = (DAGHomeFragment) getSupportFragmentManager().findFragmentByTag(DAGHomeFragment.class.getName());
             queryDataFragment = (QueryDataFragment) getSupportFragmentManager().findFragmentByTag(QueryDataFragment.class.getName());
             deviceDetailsFragment = (DeviceDetailsFragment) getSupportFragmentManager().findFragmentByTag(DeviceDetailsFragment.class.getName());
-            advanceSetFragment= (AdvanceSetFragment) getSupportFragmentManager().findFragmentByTag(AdvanceSetFragment.class.getName());
+            advanceSetFragment = (AdvanceSetFragment) getSupportFragmentManager().findFragmentByTag(AdvanceSetFragment.class.getName());
 
             // 解决重叠问题
             getSupportFragmentManager().beginTransaction()
@@ -116,7 +114,7 @@ public class ConfigDAGActivity extends BaseDeviceConnectActivity {
             dagHomeFragment = new DAGHomeFragment();
             queryDataFragment = new QueryDataFragment();
             deviceDetailsFragment = new DeviceDetailsFragment();
-            advanceSetFragment=new AdvanceSetFragment();
+            advanceSetFragment = new AdvanceSetFragment();
             setDefaultFragment();
         }
     }

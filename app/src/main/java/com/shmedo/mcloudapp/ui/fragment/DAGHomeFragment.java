@@ -1,7 +1,6 @@
 package com.shmedo.mcloudapp.ui.fragment;
 
 
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -153,21 +152,17 @@ public class DAGHomeFragment extends BaseFragment {
 
     private Unbinder unbinder;
 
-    private Context mContext;
-
     private ConfigDAGActivity configDAGActivity;
 
-    private ArrayAdapter<String> debugModeAdapter;
+    private DaoManager manager = DaoManager.getInstance();
+
+    private Handler hander;
 
     private List<String> systemDataInfoList = new ArrayList<>();//项目信息列表
 
     private HashMap<String, SystemDataInfo> systemDataInfoHashMap = new HashMap<>();
 
-    private String deviceInfo;
-
-    private DaoManager manager = DaoManager.getInstance();
-
-    private Handler hander;
+    private ArrayAdapter<String> debugModeAdapter;
 
     private String collectorType = "";//采集器编号
 
@@ -176,7 +171,6 @@ public class DAGHomeFragment extends BaseFragment {
     private SetRainAccuryPage.SetRianAccuryParameter setRianAccuryParameter = new SetRainAccuryPage.SetRianAccuryParameter();
     private SetRainSelectPage.SetSelectRainParameter setSelectRainParameter = new SetRainSelectPage.SetSelectRainParameter();
     private List<CollectorSensorParamsInfoSub> mCollectorParamsInfoSubList = new ArrayList<>();
-
     private CollectorConfigInfo collectorConfigInfo;
     private BaseConfigInfo baseConfigInfo;
     private QueryOsmometerParameterInfo queryOsmometerParameterInfo;
@@ -206,7 +200,6 @@ public class DAGHomeFragment extends BaseFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = super.onCreateView(inflater, container, savedInstanceState);
         unbinder = ButterKnife.bind(this, view);
-        mContext = getActivity();
 
         getIntentData();
         queryProjectList();
@@ -219,16 +212,14 @@ public class DAGHomeFragment extends BaseFragment {
 
     private void getIntentData() {
         Intent intent = getActivity().getIntent();
-        if (intent.getExtras().containsKey(Extras.CUR_DEVICE_NAME)) {
-            deviceInfo = intent.getStringExtra(Extras.CUR_DEVICE_NAME);
-
+        if (intent.getExtras() != null && intent.getExtras().containsKey(Extras.CUR_DEVICE_NAME)) {
+            String deviceInfo = intent.getStringExtra(Extras.CUR_DEVICE_NAME);
             String[] scanData = deviceInfo.split(",");
             mTvDeviceName.setText("物联网数据采集器");
             mTvDeviceSn.setText(scanData[1]);//设备编号
             mTvDeviceModel.setText(scanData[2]);//功能型号
             mTvSensorType.setText("拉线位移计");
         }
-
         configDAGActivity = (ConfigDAGActivity) getActivity();
         hander = new Handler();
     }
@@ -270,7 +261,6 @@ public class DAGHomeFragment extends BaseFragment {
 
         ((TextView) sensorSettingLayout.findViewById(R.id.tv_config_name)).setText("传感器参数配置");
 
-
         //TODO 需要查询接口确定设备所属项目
         mTvProName.setText("xxxx 项目");
         if (mTvLock.getText().equals("已锁定")) {
@@ -288,14 +278,14 @@ public class DAGHomeFragment extends BaseFragment {
         mBtnRainGauge.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                RainConfigActivity.startActivity(mContext);
+                RainConfigActivity.startActivity(configDAGActivity);
             }
         });
 
         mBtnOsmometer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                OsmometerConfigActivity.startActivity(mContext);
+                OsmometerConfigActivity.startActivity(configDAGActivity);
             }
         });
     }
@@ -461,7 +451,7 @@ public class DAGHomeFragment extends BaseFragment {
 
         //调试模式
         String[] debugData = getResources().getStringArray(R.array.bluetooth_debug);
-        debugModeAdapter = new ArrayAdapter<>(mContext, android.R.layout.simple_spinner_item, debugData);
+        debugModeAdapter = new ArrayAdapter<>(configDAGActivity, android.R.layout.simple_spinner_item, debugData);
         debugModeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mSpDebugMode.setAdapter(debugModeAdapter);
     }
@@ -527,11 +517,11 @@ public class DAGHomeFragment extends BaseFragment {
                 break;
 
             case R.id.sensor_setting_layout:
-                SenSorBGKConfigActivity.startActivity(mContext);
+                SenSorBGKConfigActivity.startActivity(configDAGActivity);
                 break;
 
             case R.id.rl_general_setting:
-                GeneralSettingActivity.startActivity(mContext);
+                GeneralSettingActivity.startActivity(configDAGActivity);
                 break;
         }
     }
@@ -545,41 +535,35 @@ public class DAGHomeFragment extends BaseFragment {
 
         CommandType type = StringUtil.extractCommandType(cmdStr);
         switch (type) {
-            case SYSTEM_RUN_STATE:  //014
-                //运行系统状态
-//                systemRunStateSub = BlueResultParserUtil.getSystemRunState(cmdStr);
+            case SYSTEM_RUN_STATE://运行系统状态 014
+                //systemRunStateSub = BlueResultParserUtil.getSystemRunState(cmdStr);
                 break;
 
-            case SETTING_RAIN_PRECISION:  //121
-                //设置雨量计精度
+            case SETTING_RAIN_PRECISION://设置雨量计精度 121
                 SettingRainPrecisionSub settingRainPrecisionSub = BlueResultParserUtil.getRainPrecisionInfo(cmdStr);
                 setRianAccuryParameter.setRainAccury(String.valueOf(settingRainPrecisionSub.getPrecision()));
                 break;
 
-            case RAIN_STATION: //005
-                //雨量计开关
+            case RAIN_STATION://雨量计开关 005
                 RainStationSub rainStationSub = BlueResultParserUtil.getRainStationInfo(cmdStr);
                 setSelectRainParameter.setRainSelect(rainStationSub.getRainStation().equals("开启"));
                 break;
 
-            case QUERY_OSMOMETER_PARAMETER:  //400
-                //查询数字式渗压计参数
+            case QUERY_OSMOMETER_PARAMETER://查询数字式渗压计参数 400
                 queryOsmometerParameterInfo = BlueResultParserUtil.getQueryOsmometerParameterInfo(cmdStr);
                 //渗压计开关
                 mSbOsmometer.setCheckedImmediatelyNoEvent(queryOsmometerParameterInfo.getOsmometerStatus() == OsmometerStatus.OSMOMETER_OPEN);
                 setSwitchViewState(queryOsmometerParameterInfo.getOsmometerStatus() == OsmometerStatus.OSMOMETER_OPEN, mBtnOsmometer, queryOsmometerParameterInfo.getOsmometerStatus() == OsmometerStatus.OSMOMETER_OPEN ? "配置" : "已停用");
                 break;
 
-            case DIGITAL_OSMOMETER_FUNCTION: //401
-                //开启/关闭数字式渗压计功能
+            case DIGITAL_OSMOMETER_FUNCTION://开启/关闭数字式渗压计功能 401
                 DigitalOsmometerFunctionSub digitalOsmometerFunctionSub = BlueResultParserUtil.getOsmoeterFunctionInfo(cmdStr);
                 queryOsmometerParameterInfo.setOsmometerStatus(OsmometerStatus.valueOf(digitalOsmometerFunctionSub.getOsmometerStatus()));
                 break;
 
-            case COLLECTOR_CONFIG://100
-                //获取采集器配置
+            case COLLECTOR_CONFIG://获取采集器配置 100
                 collectorConfigInfo = BlueResultParserUtil.getCollectorConfigInfo(cmdStr);
-                send101Instruction(collectorConfigInfo); //发送101指令
+                send101Instruction(collectorConfigInfo);//发送101指令
                 break;
 
             case COLLECTOR_CHANNEL_SENSOR_PARAMETER: //101
@@ -588,13 +572,11 @@ public class DAGHomeFragment extends BaseFragment {
                 Timber.d("size=" + mCollectorParamsInfoSubList.size() + "--------获取XX采集器YY通道的传感器参数-------" + mCollectorParamsInfoSub.toString());
                 break;
 
-            case GET_ALL_SENSOR_CONFIG: {  //333
-                //所有配置信息
+            case GET_ALL_SENSOR_CONFIG://所有配置信息 333
                 GetAllSensorConfigInfo getAllSensorConfigInfo = BlueResultParserUtil.getAllBlueMessage(cmdStr);
                 processGetAllSensorConfig(getAllSensorConfigInfo);
                 updateView();
                 break;
-            }
         }
     }
 
@@ -639,7 +621,6 @@ public class DAGHomeFragment extends BaseFragment {
 
     /**
      * 发送101指令
-     *
      * @param collectorInfoSub
      */
     private void send101Instruction(CollectorConfigInfo collectorInfoSub) {

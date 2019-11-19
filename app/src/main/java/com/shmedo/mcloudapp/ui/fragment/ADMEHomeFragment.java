@@ -123,19 +123,17 @@ public class ADMEHomeFragment extends BaseFragment {
 
     private ConfigADMEActivity configADMEActivity;
 
+    private DaoManager manager = DaoManager.getInstance();
+
+    private Handler hander;
+
     private List<String> systemDataInfoList = new ArrayList<>();//项目信息列表
 
     private HashMap<String, SystemDataInfo> systemDataInfoHashMap = new HashMap<>();
 
-    private String deviceInfo;
-
     private String dagConfigInfo;//DAG 采集器配置指令
 
     private String executiveAgencyConfigInfo;//执行机构配置指令
-
-    private DaoManager manager = DaoManager.getInstance();
-
-    private Handler hander;
 
     private boolean isRefreshingAddress = false;
 
@@ -179,22 +177,21 @@ public class ADMEHomeFragment extends BaseFragment {
         initView();
         initAnimation();
         setSwitchViewListener();
+        initAdapter();
 
         return view;
     }
 
     private void getIntentData() {
         Intent intent = getActivity().getIntent();
-        if (intent.getExtras().containsKey(Extras.CUR_DEVICE_NAME)) {
-            deviceInfo = intent.getStringExtra(Extras.CUR_DEVICE_NAME);
-
+        if (intent.getExtras() != null && intent.getExtras().containsKey(Extras.CUR_DEVICE_NAME)) {
+            String deviceInfo = intent.getStringExtra(Extras.CUR_DEVICE_NAME);
             String[] scanData = deviceInfo.split(",");
             mTvDeviceName.setText("自动化深层水平位移监测装置");
             mTvDeviceSn.setText(scanData[1]);//设备编号
             mTvDeviceModel.setText(scanData[2]);//功能型号
             mTvSensorType.setText("S0260");
         }
-
         configADMEActivity = (ConfigADMEActivity) getActivity();
         hander = new Handler();
     }
@@ -243,17 +240,6 @@ public class ADMEHomeFragment extends BaseFragment {
             mTvProName.setVisibility(View.GONE);
             spinnerProjectName.setVisibility(View.VISIBLE);
         }
-
-        spinnerProjectName.setItemData(systemDataInfoList);
-        spinnerProjectName.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if (null != parent.getAdapter()) {
-                    String projectName = spinnerProjectName.getText();
-                    mTvProName.setText(projectName);
-                }
-            }
-        });
 
         //TODO 暂时禁止设置测试模式，后期当设置为蓝牙模式时，与指令调试界面联动
         sbDebugMode.setEnabled(false);
@@ -359,6 +345,19 @@ public class ADMEHomeFragment extends BaseFragment {
 
                 } else {
                     showCloseSwitchButtonDialog("关闭自动监测，将导致设备自动关机进入休眠状态。请确认是否关闭", 3);
+                }
+            }
+        });
+    }
+
+    private void initAdapter() {
+        spinnerProjectName.setItemData(systemDataInfoList);
+        spinnerProjectName.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                if (null != parent.getAdapter()) {
+                    String projectName = spinnerProjectName.getText();
+                    mTvProName.setText(projectName);
                 }
             }
         });
