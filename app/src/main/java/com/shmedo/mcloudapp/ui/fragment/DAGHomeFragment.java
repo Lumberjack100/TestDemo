@@ -407,9 +407,9 @@ public class DAGHomeFragment extends BaseFragment {
                     return;
                 }
                 if (isChecked) {
-                    //发送打开自动测量模式命令
                     configDAGActivity.sendCommonCommand("##0051\r\n");
-                    setSwitchViewState(true, mBtnRainGauge, "配置");
+                    mBtnRainGauge.setEnabled(true);
+                    mBtnRainGauge.setText("配置");
                 } else {
                     showCloseSwitchButtonDialog("确认要关闭雨量计？", RAIN_GAUGE);
                 }
@@ -429,7 +429,8 @@ public class DAGHomeFragment extends BaseFragment {
                 if (isChecked) {
                     //发送打开自动测量模式命令
                     configDAGActivity.sendCommonCommand("##4011\r\n");
-                    setSwitchViewState(true, mBtnOsmometer, "配置");
+                    mBtnOsmometer.setEnabled(true);
+                    mBtnOsmometer.setText("配置");
                 } else {
                     showCloseSwitchButtonDialog("确认要关闭渗压计？", OSMOMETER_CONFIG);
                 }
@@ -493,8 +494,8 @@ public class DAGHomeFragment extends BaseFragment {
 
         //雨量计开关
         mSbRainGauge.setCheckedImmediatelyNoEvent(baseConfigInfo.getRainfallStation() == RainfallStation.RAIN_OPEN);
-        setSwitchViewState(baseConfigInfo.getRainfallStation() == RainfallStation.RAIN_OPEN, mBtnRainGauge, baseConfigInfo.getRainfallStation() == RainfallStation.RAIN_OPEN ? "配置" : "已停用");
-
+        mBtnRainGauge.setEnabled(baseConfigInfo.getRainfallStation() == RainfallStation.RAIN_OPEN);
+        mBtnRainGauge.setText(baseConfigInfo.getRainfallStation() == RainfallStation.RAIN_OPEN ? "配置" : "已停用");
     }
 
 
@@ -541,39 +542,51 @@ public class DAGHomeFragment extends BaseFragment {
 
             case SETTING_RAIN_PRECISION://设置雨量计精度 121
                 SettingRainPrecisionSub settingRainPrecisionSub = BlueResultParserUtil.getRainPrecisionInfo(cmdStr);
+                Timber.d("--------设置雨量计精度-------" + settingRainPrecisionSub.toString());
                 setRianAccuryParameter.setRainAccury(String.valueOf(settingRainPrecisionSub.getPrecision()));
                 break;
 
             case RAIN_STATION://雨量计开关 005
                 RainStationSub rainStationSub = BlueResultParserUtil.getRainStationInfo(cmdStr);
+                Timber.d("--------雨量计开关状态-------" + rainStationSub.getRainStation());
                 setSelectRainParameter.setRainSelect(rainStationSub.getRainStation().equals("开启"));
                 break;
 
             case QUERY_OSMOMETER_PARAMETER://查询数字式渗压计参数 400
                 queryOsmometerParameterInfo = BlueResultParserUtil.getQueryOsmometerParameterInfo(cmdStr);
+                Timber.d("--------查询数字式渗压计参数-------" + queryOsmometerParameterInfo.toString());
+
                 //渗压计开关
                 mSbOsmometer.setCheckedImmediatelyNoEvent(queryOsmometerParameterInfo.getOsmometerStatus() == OsmometerStatus.OSMOMETER_OPEN);
-                setSwitchViewState(queryOsmometerParameterInfo.getOsmometerStatus() == OsmometerStatus.OSMOMETER_OPEN, mBtnOsmometer, queryOsmometerParameterInfo.getOsmometerStatus() == OsmometerStatus.OSMOMETER_OPEN ? "配置" : "已停用");
+                mBtnOsmometer.setEnabled(queryOsmometerParameterInfo.getOsmometerStatus() == OsmometerStatus.OSMOMETER_OPEN);
+                mBtnOsmometer.setText(queryOsmometerParameterInfo.getOsmometerStatus() == OsmometerStatus.OSMOMETER_OPEN ? "配置" : "已停用");
                 break;
 
             case DIGITAL_OSMOMETER_FUNCTION://开启/关闭数字式渗压计功能 401
                 DigitalOsmometerFunctionSub digitalOsmometerFunctionSub = BlueResultParserUtil.getOsmoeterFunctionInfo(cmdStr);
+                Timber.d("--------开启/关闭数字式渗压计功能-------" + digitalOsmometerFunctionSub.toString());
+
                 queryOsmometerParameterInfo.setOsmometerStatus(OsmometerStatus.valueOf(digitalOsmometerFunctionSub.getOsmometerStatus()));
                 break;
 
             case COLLECTOR_CONFIG://获取采集器配置 100
                 collectorConfigInfo = BlueResultParserUtil.getCollectorConfigInfo(cmdStr);
+                Timber.d("--------获取采集器配置-------" + collectorConfigInfo.toString());
+
                 send101Instruction(collectorConfigInfo);//发送101指令
                 break;
 
             case COLLECTOR_CHANNEL_SENSOR_PARAMETER: //101
                 CollectorSensorParamsInfoSub mCollectorParamsInfoSub = BlueResultParserUtil.setCollectorParams(cmdStr);
+                Timber.d("--------101指令-------" + mCollectorParamsInfoSub.toString());
                 mCollectorParamsInfoSubList.add(mCollectorParamsInfoSub);
                 Timber.d("size=" + mCollectorParamsInfoSubList.size() + "--------获取XX采集器YY通道的传感器参数-------" + mCollectorParamsInfoSub.toString());
                 break;
 
             case GET_ALL_SENSOR_CONFIG://所有配置信息 333
                 GetAllSensorConfigInfo getAllSensorConfigInfo = BlueResultParserUtil.getAllBlueMessage(cmdStr);
+                Timber.d("--------所有配置信息-------" + getAllSensorConfigInfo.toString());
+
                 processGetAllSensorConfig(getAllSensorConfigInfo);
                 updateView();
                 break;
@@ -621,6 +634,7 @@ public class DAGHomeFragment extends BaseFragment {
 
     /**
      * 发送101指令
+     *
      * @param collectorInfoSub
      */
     private void send101Instruction(CollectorConfigInfo collectorInfoSub) {
@@ -636,7 +650,6 @@ public class DAGHomeFragment extends BaseFragment {
 
 
     private void setSwitchViewState(boolean isOpen, TextView textView, String content) {
-        textView.setEnabled(isOpen);
         textView.setText(content);
         textView.setTextColor(isOpen ? getResources().getColor(R.color.colorPrimary) : getResources().getColor(R.color.gray_807B7B));
     }
@@ -697,13 +710,15 @@ public class DAGHomeFragment extends BaseFragment {
                             case RAIN_GAUGE:
                                 //发送关闭雨量计命令
                                 configDAGActivity.sendCommonCommand("##0052\r\n");
-                                setSwitchViewState(false, mBtnRainGauge, "已停用");
+                                mBtnRainGauge.setEnabled(false);
+                                mBtnRainGauge.setText("已停用");
                                 break;
 
                             case OSMOMETER_CONFIG:
                                 //发送关闭渗压计命令
                                 configDAGActivity.sendCommonCommand("##4012\r\n");
-                                setSwitchViewState(false, mBtnOsmometer, "已停用");
+                                mBtnOsmometer.setEnabled(false);
+                                mBtnOsmometer.setText("已停用");
                                 break;
                         }
                     }
