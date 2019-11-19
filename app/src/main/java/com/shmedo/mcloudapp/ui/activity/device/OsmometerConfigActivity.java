@@ -1,5 +1,7 @@
 package com.shmedo.mcloudapp.ui.activity.device;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -42,26 +44,37 @@ public class OsmometerConfigActivity extends BaseActivity {
 
     @BindView(R.id.iv_osmometer_address)
     ImageView mIvOsmometerAddress;
+
     @BindView(R.id.et_osmometer_address)
     EditText mEtOsmometerAddress;
+
     @BindView(R.id.iv_water_alarm_value)
     ImageView mIvWaterAlarmValue;
+
     @BindView(R.id.et_water_alarm_value)
     EditText mEtWaterAlarmValue;
+
     @BindView(R.id.iv_water_revised)
     ImageView mIvWaterRevised;
+
     @BindView(R.id.et_water_revised)
     EditText mEtWaterRevised;
+
     @BindView(R.id.iv_osmometer_cord)
     ImageView mIvOsmometerCord;
+
     @BindView(R.id.et_osmometer_cord)
     EditText mEtOsmometerCord;
+
     @BindView(R.id.iv_nozzel_height)
     ImageView mIvNozzelHeight;
+
     @BindView(R.id.et_nozzel_height)
     EditText mEtNozzelHeight;
+
     @BindView(R.id.et_note)
     EditText mEtNote;
+
     @BindView(R.id.btn_confirm_complete)
     Button mBtnConfirmComplete;
 
@@ -73,6 +86,11 @@ public class OsmometerConfigActivity extends BaseActivity {
     private String nozzelHeight;    //管口高程
 
     private UserConfig uc;
+
+    public static void startActivity(Context context) {
+        Intent intent = new Intent(context, OsmometerConfigActivity.class);
+        context.startActivity(intent);
+    }
 
     @Override
     protected int initContentView() {

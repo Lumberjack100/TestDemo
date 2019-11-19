@@ -1,5 +1,7 @@
 package com.shmedo.mcloudapp.ui.activity.device;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.View;
@@ -42,6 +44,12 @@ public class RainConfigActivity extends BaseActivity {
     private String rainResult;
 
     private ArrayAdapter<String> dataAdapter;
+
+
+    public static void startActivity(Context context) {
+        Intent intent = new Intent(context, RainConfigActivity.class);
+        context.startActivity(intent);
+    }
 
     @Override
     protected int initContentView() {

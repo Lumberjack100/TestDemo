@@ -14,7 +14,8 @@ import com.shmedo.mcloudapp.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.model.Extras;
 import com.shmedo.mcloudapp.ui.activity.device.BaseDeviceConnectActivity;
-import com.shmedo.mcloudapp.ui.fragment.ADMEHomeFragment;
+import com.shmedo.mcloudapp.ui.fragment.AdvanceSetFragment;
+import com.shmedo.mcloudapp.ui.fragment.DAGHomeFragment;
 import com.shmedo.mcloudapp.ui.fragment.DeviceDetailsFragment;
 import com.shmedo.mcloudapp.ui.fragment.QueryDataFragment;
 
@@ -22,15 +23,7 @@ import butterknife.BindView;
 import butterknife.OnClick;
 import timber.log.Timber;
 
-/**
- * 项目名：  mCloudapp
- * 包名：    com.shmedo.mcloudapp
- * 创建者:   gonghe
- * 创建时间:  2019-10-21
- * 描述：   ADME 设备配置页面
- */
-public class ConfigADMEActivity extends BaseDeviceConnectActivity {
-
+public class ConfigDAGActivity extends BaseDeviceConnectActivity {
     @BindView(R.id.tv_title)
     TextView mToolbarTitle;
 
@@ -49,16 +42,19 @@ public class ConfigADMEActivity extends BaseDeviceConnectActivity {
     @BindView(R.id.tv_highsetting)
     TextView mTvHighsetting;
 
-    private ADMEHomeFragment admeHomeFragment;
+    private DAGHomeFragment dagHomeFragment;
     private QueryDataFragment queryDataFragment;        //查询数据
     private DeviceDetailsFragment deviceDetailsFragment;//设备详情
+    private AdvanceSetFragment advanceSetFragment;      //高级设置
+
     private Fragment currentFragment;
 
     private boolean isFirstCall = true;
 
 
+
     public static void startActivity(Context context, String deviceInfo) {
-        Intent intent = new Intent(context, ConfigADMEActivity.class);
+        Intent intent = new Intent(context, ConfigDAGActivity.class);
         intent.putExtra(Extras.CUR_DEVICE_NAME, deviceInfo);
         context.startActivity(intent);
     }
@@ -66,8 +62,9 @@ public class ConfigADMEActivity extends BaseDeviceConnectActivity {
 
     @Override
     protected int initContentView() {
-        return R.layout.activity_config_adme;
+        return R.layout.activity_config_dag;
     }
+
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
@@ -98,30 +95,31 @@ public class ConfigADMEActivity extends BaseDeviceConnectActivity {
     private void initView(Bundle savedInstanceState) {
         mToolbarTitle.setText("参数设置");
         mTvSave.setVisibility(View.VISIBLE);
-        mTvHighsetting.setVisibility(View.GONE);
 
         if (savedInstanceState != null) {  // “内存重启”时调用
             String curTag = savedInstanceState.getString("CurrentFragment");
             currentFragment = getSupportFragmentManager().findFragmentByTag(curTag);
-            admeHomeFragment = (ADMEHomeFragment) getSupportFragmentManager().findFragmentByTag(ADMEHomeFragment.class.getName());
+            dagHomeFragment = (DAGHomeFragment) getSupportFragmentManager().findFragmentByTag(DAGHomeFragment.class.getName());
             queryDataFragment = (QueryDataFragment) getSupportFragmentManager().findFragmentByTag(QueryDataFragment.class.getName());
             deviceDetailsFragment = (DeviceDetailsFragment) getSupportFragmentManager().findFragmentByTag(DeviceDetailsFragment.class.getName());
+            advanceSetFragment= (AdvanceSetFragment) getSupportFragmentManager().findFragmentByTag(AdvanceSetFragment.class.getName());
 
             // 解决重叠问题
             getSupportFragmentManager().beginTransaction()
-                    .hide(admeHomeFragment)
+                    .hide(dagHomeFragment)
                     .hide(queryDataFragment)
                     .hide(deviceDetailsFragment)
+                    .hide(advanceSetFragment)
                     .show(currentFragment)
                     .commit();
         } else {
-            admeHomeFragment = new ADMEHomeFragment();
+            dagHomeFragment = new DAGHomeFragment();
             queryDataFragment = new QueryDataFragment();
             deviceDetailsFragment = new DeviceDetailsFragment();
+            advanceSetFragment=new AdvanceSetFragment();
             setDefaultFragment();
         }
     }
-
 
     /**
      * set the default Fragment
@@ -164,6 +162,11 @@ public class ConfigADMEActivity extends BaseDeviceConnectActivity {
                 resetTabState();//reset the tab state
                 setTabState(mTvDeviceDetails, R.drawable.xtgj, getResources().getColor(R.color.colorPrimary));
                 switchFrgment(2);
+                break;
+
+            case R.id.tv_highsetting:
+                setTabState(mTvHighsetting, R.drawable.gjpz, getResources().getColor(R.color.colorPrimary));
+                switchFrgment(3);
                 break;
         }
     }
@@ -212,7 +215,7 @@ public class ConfigADMEActivity extends BaseDeviceConnectActivity {
     private void switchFrgment(int i) {
         switch (i) {
             case 0:
-                showFragment(admeHomeFragment);
+                showFragment(dagHomeFragment);
                 break;
 
             case 1:
@@ -221,6 +224,10 @@ public class ConfigADMEActivity extends BaseDeviceConnectActivity {
 
             case 2:
                 showFragment(deviceDetailsFragment);
+                break;
+
+            case 4:
+                showFragment(advanceSetFragment);
                 break;
         }
     }
@@ -245,26 +252,19 @@ public class ConfigADMEActivity extends BaseDeviceConnectActivity {
 
     @Override
     protected void obtainDeviceStateCmd() {
-        //##7010，查询工作模式
-        sendCommonCommand("##7010\r\n");
-        Timber.d("发送查询工作模式指令===" + "##7010");
+        sendCommonCommand("##333\r\n");
+        Timber.d("发送获取所有配置指令===" + "##333");
 
-        //##2001，查询服务器地址1
-        sendCommonCommand("##2001\r\n");
-        Timber.d("发送查询服务器地址1指令===" + "##2001");
+        sendCommonCommand("##014\r\n");
+        Timber.d("发送系统运行状态指令===" + "##014");
 
-        //##2002，查询服务器地址2
-        sendCommonCommand("##2002\r\n");
-        Timber.d("发送查询服务器地址2指令===" + "##2002");
+        sendCommonCommand("##400\r\n");
+        Timber.d("发送查询渗压计指令===" + "##400");
 
-        //##7000，查询采集器参数
-        sendCommonCommand("##7000\r\n");
-        Timber.d("发送查询采集器参数指令===" + "##7000");
-
-        //##7002，查询执行机构参数
-        sendCommonCommand("##7002\r\n");
-        Timber.d("发送查询执行机构参数指令===" + "##7002");
+        sendCommonCommand("##040\r\n");
+        Timber.d("发送版本信息指令===" + "##040");
     }
+
 
     @Override
     protected void onDestroy() {
@@ -272,5 +272,4 @@ public class ConfigADMEActivity extends BaseDeviceConnectActivity {
         MCloudApp.setCurDeviceToken(null);
         MCloudApp.setCurDeviceMacAddr(null);
     }
-
 }

@@ -78,6 +78,10 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
         }
     };
 
+    protected void obtainDeviceStateCmd() {
+
+    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -500,30 +504,30 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
     }
 
 
-    protected void obtainDeviceStateCmd() {
-        if (mdBluetoothManager == null)
-            return;
-
-        //##7010，查询工作模式
-        mdBluetoothManager.writeMessage(new Message(UUID.randomUUID().toString(), "##7010\r\n", true));
-        Timber.d("发送查询工作模式指令===" + "##7010");
-
-        //##2001，查询服务器地址1
-        mdBluetoothManager.writeMessage(new Message(UUID.randomUUID().toString(), "##2001\r\n", true));
-        Timber.d("发送查询服务器地址1指令===" + "##2001");
-
-        //##2002，查询服务器地址2
-        mdBluetoothManager.writeMessage(new Message(UUID.randomUUID().toString(), "##2002\r\n", true));
-        Timber.d("发送查询服务器地址2指令===" + "##2002");
-
-        //##7000，查询采集器参数
-        mdBluetoothManager.writeMessage(new Message(UUID.randomUUID().toString(), "##7000\r\n", true));
-        Timber.d("发送查询采集器参数指令===" + "##7000");
-
-        //##7002，查询执行机构参数
-        mdBluetoothManager.writeMessage(new Message(UUID.randomUUID().toString(), "##7002\r\n", true));
-        Timber.d("发送查询执行机构参数指令===" + "##7002");
-    }
+//    protected void obtainDeviceStateCmd() {
+//        if (mdBluetoothManager == null)
+//            return;
+//
+//        //##7010，查询工作模式
+//        mdBluetoothManager.writeMessage(new Message(UUID.randomUUID().toString(), "##7010\r\n", true));
+//        Timber.d("发送查询工作模式指令===" + "##7010");
+//
+//        //##2001，查询服务器地址1
+//        mdBluetoothManager.writeMessage(new Message(UUID.randomUUID().toString(), "##2001\r\n", true));
+//        Timber.d("发送查询服务器地址1指令===" + "##2001");
+//
+//        //##2002，查询服务器地址2
+//        mdBluetoothManager.writeMessage(new Message(UUID.randomUUID().toString(), "##2002\r\n", true));
+//        Timber.d("发送查询服务器地址2指令===" + "##2002");
+//
+//        //##7000，查询采集器参数
+//        mdBluetoothManager.writeMessage(new Message(UUID.randomUUID().toString(), "##7000\r\n", true));
+//        Timber.d("发送查询采集器参数指令===" + "##7000");
+//
+//        //##7002，查询执行机构参数
+//        mdBluetoothManager.writeMessage(new Message(UUID.randomUUID().toString(), "##7002\r\n", true));
+//        Timber.d("发送查询执行机构参数指令===" + "##7002");
+//    }
 
     protected void sendSaveParamCommand() {
         sendCommonCommand("##0191\r\n");

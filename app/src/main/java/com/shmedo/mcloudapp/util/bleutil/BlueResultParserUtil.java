@@ -542,4 +542,41 @@ public class BlueResultParserUtil {
 
         return infoSub;
     }
+
+
+    /**
+     * 解析采集器的信息
+     *
+     * @param result
+     * @return
+     */
+    public static CollectorConfigInfo getCollectorConfigInfo(String result) {
+        CommandResult<CollectorConfigInfo> commandResult = ParseManager.getInstance().parse(result);
+        CollectorConfigInfo collectorConfigInfo = null;
+        if (commandResult.isSuccess()) {
+            collectorConfigInfo = commandResult.getResult();
+        } else {
+            collectorConfigInfo = new CollectorConfigInfo();
+        }
+
+        return collectorConfigInfo;
+    }
+
+    /**
+     * 解析渗压计信息
+     *
+     * @param result
+     * @return
+     */
+    public static QueryOsmometerParameterInfo getQueryOsmometerParameterInfo(String result) {
+        CommandResult<QueryOsmometerParameterInfo> shenyaBean = ParseManager.getInstance().parse(result);
+        QueryOsmometerParameterInfo digtalInfo = null;
+        if (shenyaBean.isSuccess()) {
+            digtalInfo = shenyaBean.getResult();
+        } else {
+            digtalInfo = new QueryOsmometerParameterInfo();
+        }
+
+        return digtalInfo;
+    }
 }

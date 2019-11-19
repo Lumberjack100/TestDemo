@@ -20,11 +20,12 @@ public class SetRainAccuryPage extends BasePage<SetRainAccuryPage.SetRianAccuryP
     /**
      * 设置雨量计精度
      */
-    @Override protected List<String> generate() {
+    @Override
+    protected List<String> generate() {
         List<String> list = new ArrayList<>();
-        StringBuilder result=new StringBuilder();
+        StringBuilder result = new StringBuilder();
         result.append("##121");
-        result.append(parameter.getRainAccury()+"\r\n");
+        result.append(parameter.getRainAccury() + "\r\n");
         list.add(String.valueOf(result));
         return list;
     }
@@ -35,15 +36,18 @@ public class SetRainAccuryPage extends BasePage<SetRainAccuryPage.SetRianAccuryP
          * 雨量站精度
          */
         private String rainAccury;
+
         public String getRainAccury() {
             return rainAccury;
         }
+
         public void setRainAccury(String rainAccury) {
             this.rainAccury = rainAccury;
         }
 
 
-        @Override public void validate() {
+        @Override
+        public void validate() {
 
         }
     }

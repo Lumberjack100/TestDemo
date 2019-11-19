@@ -27,6 +27,7 @@
     <string name="disconnect_bluetooth_device">当前设备处于蓝牙连接状态，确定要断开连接？</string>
     <string name="finish_activity_disconnect_bluetooth_device">确定要退出该页面，并断开蓝牙连接吗？</string>
     <string name="disconnect_bluetooth_device_save_param_warn">您还没有保存设备的配置信息，是否保存？</string>
+    <string name="device_enable_state_close_warn">关闭系统激活状态，将导致设备自动关机进入休眠状态。请确认是否关闭【激活状态】？</string>
 
 
     <!-- 采集器、传感器参数说明-->
@@ -130,5 +131,8 @@
     <!-- 权限申请-->
     <string name="permission_request_camera_external_storage">米易通需要使用相机权限和存储卡权限，请前往设置页面授予权限</string>
     <string name="permission_request_location">米易通需要使用定位权限，请前往设置页面授予权限</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

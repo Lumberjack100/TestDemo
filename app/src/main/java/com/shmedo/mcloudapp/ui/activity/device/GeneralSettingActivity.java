@@ -1,5 +1,7 @@
 package com.shmedo.mcloudapp.ui.activity.device;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -37,20 +39,28 @@ public class GeneralSettingActivity extends BaseActivity {
 
     @BindView(R.id.iv_collector_address)
     ImageView mIvCollectorAddress;
+
     @BindView(R.id.et_collector_address)
     EditText mEtCollectorAddress;
+
     @BindView(R.id.iv_calculating_time)
     ImageView mIvCalculatingTime;
+
     @BindView(R.id.et_calculating_time)
     EditText mEtCalculatingTime;
+
     @BindView(R.id.iv_standby_time)
     ImageView mIvStandbyTime;
+
     @BindView(R.id.et_standby_time)
     EditText mEtStandbyTime;
+
     @BindView(R.id.iv_collect_time)
     ImageView mIvCollectTime;
+
     @BindView(R.id.et_collect_time)
     EditText mEtCollectTime;
+
     @BindView(R.id.btn_confirm_complete)
     Button mBtnConfirmComplete;
 
@@ -58,6 +68,12 @@ public class GeneralSettingActivity extends BaseActivity {
     private String calculatTime;
     private String standbyTime;
     private String collectTime;
+
+
+    public static void startActivity(Context context) {
+        Intent intent = new Intent(context, GeneralSettingActivity.class);
+        context.startActivity(intent);
+    }
 
     @Override
     protected int initContentView() {

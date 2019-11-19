@@ -108,13 +108,16 @@ public class BlueToothListActivity extends Activity {
                 MCloudApp.setCurDeviceToken(deviceName.substring(3));
                 MCloudApp.setCurDeviceMacAddr(macAddress);
 
-                if (deviceName.endsWith("T") || deviceName.contains("18A095L")) {
+                if (deviceName.endsWith("T")) {
                     String deviceInfo = "MEDO," + deviceName.substring(3) + ",ADME";
                     ConfigADMEActivity.startActivity(BlueToothListActivity.this, deviceInfo);
-                } else {
+
+                } else if (deviceName.endsWith("L")) {
                     String deviceInfo = "MEDO," + deviceName.substring(3) + ",DAS";
-                    ConfigDASActivity.startActivity(BlueToothListActivity.this, deviceInfo, macAddress);
+//                    ConfigDASActivity.startActivity(BlueToothListActivity.this, deviceInfo, macAddress);
+                    ConfigDAGActivity.startActivity(BlueToothListActivity.this, deviceInfo);
                 }
+
                 finish();
             }
         });

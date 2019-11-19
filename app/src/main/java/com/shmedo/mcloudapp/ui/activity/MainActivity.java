@@ -212,7 +212,6 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
     }
 
 
-
     @Override
     protected void onStart() {
         super.onStart();
@@ -659,7 +658,6 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
     }
 
 
-
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(WifiEvent events) {
         if (events.getMessage().equals("wifi")) {
@@ -862,7 +860,8 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
         MCloudApp.setCurDeviceMacAddr(null);
 
         if (localData[2].equals("DAS")) {
-            ConfigDASActivity.startActivity(MainActivity.this, deviceInfo);
+//            ConfigDASActivity.startActivity(MainActivity.this, deviceInfo);
+            ConfigDAGActivity.startActivity(MainActivity.this, deviceInfo);
 
         } else if (localData[2].equals("ADME")) {
             ConfigADMEActivity.startActivity(MainActivity.this, deviceInfo);

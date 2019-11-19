@@ -1,5 +1,7 @@
 package com.shmedo.mcloudapp.ui.activity.device.sensor;
 
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -161,6 +163,12 @@ public class SenSorBGKConfigActivity extends BaseActivity {
     private HashMap<String, CollectorSensorParamsInfoSub> collectorSensorHashMap = new HashMap<>();
     private int openCount = 0;//采集器接入的传感器打开的数量
     private DialogFactory factory = new DialogFactory();
+
+
+    public static void startActivity(Context context) {
+        Intent intent = new Intent(context, SenSorBGKConfigActivity.class);
+        context.startActivity(intent);
+    }
 
     @Override
     protected int initContentView() {
