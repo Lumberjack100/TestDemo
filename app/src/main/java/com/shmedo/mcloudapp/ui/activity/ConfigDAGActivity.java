@@ -255,14 +255,29 @@ public class ConfigDAGActivity extends BaseDeviceConnectActivity {
         sendCommonCommand("##333\r\n");
         Timber.d("发送获取所有配置指令===" + "##333");
 
-        sendCommonCommand("##014\r\n");
-        Timber.d("发送系统运行状态指令===" + "##014");
+        hander.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                sendCommonCommand("##014\r\n");
+                Timber.d("发送系统运行状态指令===" + "##014");
+            }
+        }, 200);
 
-        sendCommonCommand("##400\r\n");
-        Timber.d("发送查询渗压计指令===" + "##400");
+        hander.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                sendCommonCommand("##400\r\n");
+                Timber.d("发送查询渗压计指令===" + "##400");
+            }
+        }, 200);
 
-        sendCommonCommand("##040\r\n");
-        Timber.d("发送版本信息指令===" + "##040");
+        hander.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                sendCommonCommand("##040\r\n");
+                Timber.d("发送版本信息指令===" + "##040");
+            }
+        }, 200);
     }
 
 

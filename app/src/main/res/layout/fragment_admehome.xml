@@ -152,6 +152,47 @@
             android:id="@+id/debug_model_layout"
             layout="@layout/device_config_switchview_item" />
 
+        <LinearLayout
+            android:id="@+id/debug_item_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/bg_main_light_white"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/white" />
+
+            <TextView
+                android:id="@+id/tv_motor_control"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:gravity="center_vertical"
+                android:paddingLeft="50dp"
+                android:text="电机控制"
+                android:textColor="@color/gray_807B7B"
+                android:textSize="@dimen/text_size_14" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/white" />
+
+            <TextView
+                android:id="@+id/tv_count_meter_wheel"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:gravity="center_vertical"
+                android:paddingLeft="50dp"
+                android:text="计米轮参数配置"
+                android:textColor="@color/gray_807B7B"
+                android:textSize="@dimen/text_size_14" />
+
+        </LinearLayout>
+
+
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp" />

@@ -308,8 +308,8 @@ public class DAGHomeFragment extends BaseFragment {
                         configDAGActivity.showSaveDialog(getResources().getString(R.string.disconnect_bluetooth_device_save_param_warn));
                     } else {
                         configDAGActivity.disconnectDevice();
-//                        MCloudApp.setIsBluetoothDeviceConnected(false);
-//                        setViewStateByConnectState(MCloudApp.isIsBluetoothDeviceConnected());
+                        MCloudApp.setIsBluetoothDeviceConnected(false);
+                        setViewStateByConnectState(MCloudApp.isIsBluetoothDeviceConnected());
                     }
                 }
             }

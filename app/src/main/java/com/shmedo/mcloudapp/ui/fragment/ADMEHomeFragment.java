@@ -32,8 +32,10 @@ import com.shmedo.mcloudapp.entity.SystemDataInfoDao;
 import com.shmedo.mcloudapp.entity.event.BluetoothStateEvent;
 import com.shmedo.mcloudapp.model.Extras;
 import com.shmedo.mcloudapp.ui.activity.ConfigADMEActivity;
+import com.shmedo.mcloudapp.ui.activity.device.ADMEMotorControlActivity;
+import com.shmedo.mcloudapp.ui.activity.device.ADMESensorExecutiveAgencyConfigActivity;
+import com.shmedo.mcloudapp.ui.activity.device.CountMeterWheelActivity;
 import com.shmedo.mcloudapp.ui.activity.device.senior.InstructionDebugActivity;
-import com.shmedo.mcloudapp.ui.activity.device.sensor.ADMESensorExecutiveAgencyConfigActivity;
 import com.shmedo.mcloudapp.util.DaoManager;
 import com.shmedo.mcloudapp.util.StringUtil;
 import com.shmedo.mcloudapp.views.ClearEditText;
@@ -57,6 +59,9 @@ import timber.log.Timber;
  * A simple {@link Fragment} subclass.
  */
 public class ADMEHomeFragment extends BaseFragment {
+    private static final int AUTO_MONITOR = 0x0001;
+
+    private static final int DEBUG_MODEL = 0x0002;
 
     @BindView(R.id.tv_device_name)
     TextView mTvDeviceName;
@@ -90,6 +95,9 @@ public class ADMEHomeFragment extends BaseFragment {
 
     @BindView(R.id.debug_model_layout)
     View debugModelLayout;
+
+    @BindView(R.id.debug_item_layout)
+    View debugItemLayout;
 
     @BindView(R.id.platform_server_config_layout)
     View platformServerConfigLayout;
@@ -134,6 +142,11 @@ public class ADMEHomeFragment extends BaseFragment {
     private String dagConfigInfo;//DAG 采集器配置指令
 
     private String executiveAgencyConfigInfo;//执行机构配置指令
+
+    private String motorControl;//控制电机指令
+
+    private String countMeterWheel;//设置计米轮指令
+
 
     private boolean isRefreshingAddress = false;
 
@@ -240,10 +253,6 @@ public class ADMEHomeFragment extends BaseFragment {
             mTvProName.setVisibility(View.GONE);
             spinnerProjectName.setVisibility(View.VISIBLE);
         }
-
-        //TODO 暂时禁止设置测试模式，后期当设置为蓝牙模式时，与指令调试界面联动
-        sbDebugMode.setEnabled(false);
-        setSwitchViewState(false, tvDebugMode, "已禁用");
     }
 
 
@@ -300,9 +309,8 @@ public class ADMEHomeFragment extends BaseFragment {
 
                     } else {
                         configADMEActivity.disconnectDevice();
-
-//                        MCloudApp.setIsBluetoothDeviceConnected(false);
-//                        setViewStateByConnectState(MCloudApp.isIsBluetoothDeviceConnected());
+                        MCloudApp.setIsBluetoothDeviceConnected(false);
+                        setViewStateByConnectState(MCloudApp.isIsBluetoothDeviceConnected());
                     }
                 }
             }
@@ -318,12 +326,13 @@ public class ADMEHomeFragment extends BaseFragment {
                 }
 
                 if (isChecked) {
-                    //发送打开自动测量模式命令
-                    configADMEActivity.sendCommonCommand("##70111\r\n");
-                    setSwitchViewState(true, tvAutoMonitorState, "已启用");
-
+                    if (checkAutoMonitorAndDebugMode(AUTO_MONITOR)) {
+                        //打开自动监测模式命令
+                        configADMEActivity.sendCommonCommand("##70111\r\n");
+                        setSwitchViewState(true, tvAutoMonitorState, "已启用");
+                    }
                 } else {
-                    showCloseSwitchButtonDialog("关闭自动监测，将导致设备自动关机进入休眠状态。请确认是否关闭", 2);
+                    showCloseSwitchButtonDialog("关闭自动监测，将导致设备自动关机进入休眠状态。请确认是否关闭", AUTO_MONITOR);
                 }
             }
         });
@@ -339,12 +348,18 @@ public class ADMEHomeFragment extends BaseFragment {
                 }
 
                 if (isChecked) {
-                    //发送打开测试模式命令
-                    configADMEActivity.sendCommonCommand("##70121\r\n");
-                    setSwitchViewState(true, tvDebugMode, "已打开");
-
+                    if (checkAutoMonitorAndDebugMode(DEBUG_MODEL)) {
+                        //打开测试模式命令
+                        configADMEActivity.sendCommonCommand("##70121\r\n");
+                        setSwitchViewState(true, tvDebugMode, "已打开");
+                        debugItemLayout.setVisibility(View.VISIBLE);
+                    }
                 } else {
-                    showCloseSwitchButtonDialog("关闭自动监测，将导致设备自动关机进入休眠状态。请确认是否关闭", 3);
+//                    showCloseSwitchButtonDialog("关闭自动监测，将导致设备自动关机进入休眠状态。请确认是否关闭", DEBUG_MODEL);
+                    //关闭测试模式命令
+                    configADMEActivity.sendCommonCommand("##70122\r\n");
+                    setSwitchViewState(false, tvDebugMode, "已关闭");
+                    debugItemLayout.setVisibility(View.GONE);
                 }
             }
         });
@@ -364,7 +379,7 @@ public class ADMEHomeFragment extends BaseFragment {
     }
 
 
-    @OnClick({R.id.iv_lock, R.id.platform_server_config_layout, R.id.refreshIV1, R.id.editBtn1, R.id.refreshIV2, R.id.editBtn2, R.id.dag_config_layout, R.id.custom_command_test_layout, R.id.firmware_upgrade_layout})
+    @OnClick({R.id.iv_lock, R.id.tv_motor_control, R.id.tv_count_meter_wheel, R.id.platform_server_config_layout, R.id.refreshIV1, R.id.editBtn1, R.id.refreshIV2, R.id.editBtn2, R.id.dag_config_layout, R.id.custom_command_test_layout, R.id.firmware_upgrade_layout})
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.iv_lock:
@@ -380,6 +395,14 @@ public class ADMEHomeFragment extends BaseFragment {
                     mTvProName.setVisibility(View.VISIBLE);
                     spinnerProjectName.setVisibility(View.GONE);
                 }
+                break;
+
+            case R.id.tv_motor_control:
+                ADMEMotorControlActivity.startActivity(getActivity(), motorControl);
+                break;
+
+            case R.id.tv_count_meter_wheel:
+                CountMeterWheelActivity.startActivity(getActivity(), countMeterWheel);
                 break;
 
             case R.id.platform_server_config_layout://展开或折叠服务器地址配置
@@ -544,9 +567,10 @@ public class ADMEHomeFragment extends BaseFragment {
             sbAutoMonitorState.setCheckedImmediatelyNoEvent(cmdArray[1].trim().equals("1"));
             setSwitchViewState(cmdArray[1].trim().equals("1"), tvAutoMonitorState, cmdArray[1].trim().equals("1") ? "已启用" : "已关闭");
 
-            //TODO 暂时禁止设置测试模式，后期当设置为蓝牙模式时，与指令调试界面联动
-//            sbDebugMode.setCheckedImmediatelyNoEvent(cmdArray[1].trim().equals("1"));
-//            setSwitchViewState(cmdArray[2].trim().equals("1"), tvDebugMode, cmdArray[2].trim().equals("1") ? "已打开" : "已关闭");
+            //TODO 后期当设置为蓝牙模式时，与指令调试界面联动
+            sbDebugMode.setCheckedImmediatelyNoEvent(cmdArray[2].trim().equals("1"));
+            setSwitchViewState(cmdArray[2].trim().equals("1"), tvDebugMode, cmdArray[2].trim().equals("1") ? "已打开" : "已关闭");
+            debugItemLayout.setVisibility(cmdArray[2].trim().equals("1") ? View.VISIBLE : View.GONE);
             return;
         }
 
@@ -618,17 +642,29 @@ public class ADMEHomeFragment extends BaseFragment {
             return;
         }
 
-        //设置自动测量模式应答
-        if (cmdStr.startsWith("$$7011") && cmdStr.endsWith("\r\n")) {
-            ToastUtils.show("设置自动测量模式完成");
+        //查询控制电机参数应答
+        if (cmdStr.startsWith("$$7020") && cmdStr.endsWith("\r\n")) {
+            motorControl = cmdStr;
             return;
         }
 
-        //设置测试模式应答
-        if (cmdStr.startsWith("$$7012") && cmdStr.endsWith("\r\n")) {
-            ToastUtils.show("设置测试模式完成");
+        //查询计米轮参数应答
+        if (cmdStr.startsWith("$$7022") && cmdStr.endsWith("\r\n")) {
+            countMeterWheel = cmdStr;
             return;
         }
+
+//        //设置自动测量模式应答
+//        if (cmdStr.startsWith("$$7011") && cmdStr.endsWith("\r\n")) {
+//            ToastUtils.show("设置自动测量模式完成");
+//            return;
+//        }
+//
+//        //设置测试模式应答
+//        if (cmdStr.startsWith("$$7012") && cmdStr.endsWith("\r\n")) {
+//            ToastUtils.show("设置测试模式完成");
+//            return;
+//        }
 
         //设置服务器地址1应答
         if (cmdStr.startsWith("$$2011") && cmdStr.endsWith("\r\n")) {
@@ -655,6 +691,18 @@ public class ADMEHomeFragment extends BaseFragment {
         //设置执行机构参数应答
         if (cmdStr.startsWith("$$7003") && cmdStr.endsWith("\r\n")) {
             executiveAgencyConfigInfo = cmdStr;
+            return;
+        }
+
+        //设置测试控制电机指令应答
+        if (cmdStr.startsWith("$$7021") && cmdStr.endsWith("\r\n")) {
+            motorControl = cmdStr;
+            return;
+        }
+
+        //设置计米轮参数应答
+        if (cmdStr.startsWith("$$7023") && cmdStr.endsWith("\r\n")) {
+            countMeterWheel = cmdStr;
             return;
         }
     }
@@ -705,6 +753,88 @@ public class ADMEHomeFragment extends BaseFragment {
 
 
     /**
+     * 自动监测模式与测试模式不可以同时开启，此处进行检查
+     *
+     * @param tag
+     * @return
+     */
+    private boolean checkAutoMonitorAndDebugMode(final int tag) {
+        String msg = "";
+
+        switch (tag) {
+            case AUTO_MONITOR:
+                if (!sbDebugMode.isChecked()) {
+                    return true;
+                }
+                msg = "您已开启测试模式，是否关闭测试模式以打开自动监测模式？";
+                break;
+
+            case DEBUG_MODEL:
+                if (!sbAutoMonitorState.isChecked()) {
+                    return true;
+                }
+                msg = "您已开启自动监测模式，是否关闭自动监测以打开测试模式？";
+                break;
+        }
+        MaterialDialog.Builder mBuilder = new MaterialDialog.Builder(getActivity())
+                .title("温馨提示：")
+                .content(msg)
+                .contentColor(Color.parseColor("#000000"))
+                .canceledOnTouchOutside(false)
+                .positiveText("确定")
+                .negativeText("取消")
+                .onPositive(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        dialog.dismiss();
+                        switch (tag) {
+                            case AUTO_MONITOR:
+                                //关闭测试模式命令
+                                configADMEActivity.sendCommonCommand("##70122\r\n");
+                                sbDebugMode.setCheckedImmediatelyNoEvent(false);
+                                setSwitchViewState(false, tvDebugMode, "已关闭");
+                                debugItemLayout.setVisibility(View.GONE);
+
+                                //打开自动监测模式命令
+                                configADMEActivity.sendCommonCommand("##70111\r\n");
+                                setSwitchViewState(true, tvAutoMonitorState, "已启用");
+                                break;
+
+                            case DEBUG_MODEL:
+                                //关闭自动监测模式命令
+                                configADMEActivity.sendCommonCommand("##70112\r\n");
+                                sbAutoMonitorState.setCheckedImmediatelyNoEvent(false);
+                                setSwitchViewState(false, tvAutoMonitorState, "已关闭");
+
+                                //打开测试模式命令
+                                configADMEActivity.sendCommonCommand("##70121\r\n");
+                                setSwitchViewState(true, tvDebugMode, "已打开");
+                                debugItemLayout.setVisibility(View.VISIBLE);
+                                break;
+                        }
+                    }
+                }).onNegative(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        dialog.dismiss();
+                        switch (tag) {
+                            case AUTO_MONITOR:
+                                sbAutoMonitorState.setCheckedImmediatelyNoEvent(false);
+                                break;
+
+                            case DEBUG_MODEL:
+                                sbDebugMode.setCheckedImmediatelyNoEvent(false);
+                                break;
+                        }
+                    }
+                });
+        MaterialDialog mMaterialDialog = mBuilder.build();
+        mMaterialDialog.show();
+
+        return false;
+    }
+
+    /**
      * 关闭SwitchButton
      */
     public void showCloseSwitchButtonDialog(String content, final int index) {
@@ -720,20 +850,17 @@ public class ADMEHomeFragment extends BaseFragment {
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                         dialog.dismiss();
                         switch (index) {
-                            case 1:
-                                configADMEActivity.disconnectDevice();
-                                break;
-
-                            case 2:
-                                //发送关闭测试模式命令
+                            case AUTO_MONITOR:
+                                //关闭自动监测模式命令
                                 configADMEActivity.sendCommonCommand("##70112\r\n");
                                 setSwitchViewState(false, tvAutoMonitorState, "已关闭");
                                 break;
 
-                            case 3:
-                                //发送关闭测试模式命令
+                            case DEBUG_MODEL:
+                                //关闭测试模式命令
                                 configADMEActivity.sendCommonCommand("##70122\r\n");
                                 setSwitchViewState(false, tvDebugMode, "已关闭");
+                                debugItemLayout.setVisibility(View.GONE);
                                 break;
                         }
                     }
@@ -742,15 +869,11 @@ public class ADMEHomeFragment extends BaseFragment {
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                         dialog.dismiss();
                         switch (index) {
-                            case 1:
-                                sbBluetoothState.setCheckedImmediatelyNoEvent(true);
-                                break;
-
-                            case 2:
+                            case AUTO_MONITOR:
                                 sbAutoMonitorState.setCheckedImmediatelyNoEvent(true);
                                 break;
 
-                            case 3:
+                            case DEBUG_MODEL:
                                 sbDebugMode.setCheckedImmediatelyNoEvent(true);
                                 break;
                         }

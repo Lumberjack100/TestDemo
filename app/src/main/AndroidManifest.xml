@@ -37,6 +37,7 @@
         android:theme="@style/AppThemeBase"
         tools:ignore="AllowBackup,GoogleAppIndexingWarning"
         tools:targetApi="n">
+        <activity android:name=".ui.activity.device.ADMEMotorControlActivity"></activity>
 
         <meta-data
             android:name="com.amap.api.v2.apikey"
@@ -171,17 +172,20 @@
             android:screenOrientation="portrait"
             android:theme="@style/ScanActivityTheme" />
         <activity
-            android:name=".ui.activity.device.sensor.ADMESensorExecutiveAgencyConfigActivity"
+            android:name=".ui.activity.device.ADMESensorExecutiveAgencyConfigActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppThemeNoTitle"
             android:windowSoftInputMode="stateHidden|adjustResize" />
-
+        <activity
+            android:name=".ui.activity.device.CountMeterWheelActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppThemeNoTitle"
+            android:windowSoftInputMode="stateHidden|adjustResize" />
         <activity
             android:name=".ui.activity.ConfigDAGActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppThemeNoTitle"
             android:windowSoftInputMode="stateHidden|adjustResize" />
-
     </application>
 
 </manifest>

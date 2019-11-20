@@ -242,17 +242,6 @@ public class ConfigADMEActivity extends BaseDeviceConnectActivity {
 
 
     @Override
-    protected void obtainDeviceStateCmd() {
-        super.obtainDeviceStateCmd();
-    }
-
-    @Override
-    protected void parserResult(String cmdStr) {
-        super.parserResult(cmdStr);
-    }
-
-
-    @Override
     protected void onDestroy() {
         super.onDestroy();
         MCloudApp.setCurDeviceToken(null);

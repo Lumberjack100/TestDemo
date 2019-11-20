@@ -22,11 +22,15 @@ public interface Extras {
     String SCAN_DEVICE_LIST = "scan_device_list";
 
 
-    //ADME 的 DAG 采集器配置
+    //ADME的 DAG 采集器配置
     String ADME_SENSOR_CONFIG_INFO = "adme_sensor_config_info";
 
-    //ADME 的执行机构配置
+    //ADME的执行机构配置
     String ADME_EXECUTIVE_AGENCY_CONFIG_INFO = "adme_executive_agency_config_info";
 
+    //ADME的控制电机配置
+    String ADME_MOTOR_CONTROL_CONFIG_INFO = "adme_motor_control_config_info";
 
+    //ADME的计米轮参数配置
+    String ADME_COUNT_METER_WHEEL_CONFIG_INFO = "adme_count_meter_wheel_config_info";
 }
