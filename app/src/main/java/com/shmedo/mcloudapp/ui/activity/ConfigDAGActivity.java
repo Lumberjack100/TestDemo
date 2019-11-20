@@ -19,6 +19,8 @@ import com.shmedo.mcloudapp.ui.fragment.DAGHomeFragment;
 import com.shmedo.mcloudapp.ui.fragment.DeviceDetailsFragment;
 import com.shmedo.mcloudapp.ui.fragment.QueryDataFragment;
 
+import org.greenrobot.eventbus.EventBus;
+
 import butterknife.BindView;
 import butterknife.OnClick;
 import timber.log.Timber;
@@ -261,6 +263,46 @@ public class ConfigDAGActivity extends BaseDeviceConnectActivity {
 
         sendCommonCommand("##040\r\n");
         Timber.d("发送版本信息指令===" + "##040");
+    }
+
+
+    @Override
+    protected void parserResult(String cmdStr) {
+        //查询版本信息应答
+        if (cmdStr.startsWith("$$040") && cmdStr.endsWith("\r\n")) {
+            dismissLoadingDialog();
+            hander.removeCallbacks(dismssDialogRunnable);
+        }
+
+        //TODO  此处是各个配置指令应答，表示已经更改配置了
+//        if ((cmdStr.startsWith("$$7011")
+//                || cmdStr.startsWith("$$7012")
+//                || cmdStr.startsWith("$$2011")
+//                || cmdStr.startsWith("$$2012")
+//                || cmdStr.startsWith("$$7001")
+//                || cmdStr.startsWith("$$7003")) && cmdStr.endsWith("\r\n")) {
+//            isConfigChange = true;
+//        }
+
+        //设置保存参数应答
+        if (cmdStr.startsWith("$$0191") && cmdStr.endsWith("\r\n")) {
+            ToastUtils.show("已发送保存命令,设备即将断开连接重启");
+            isConfigChange = false;
+            hander.removeCallbacks(dismssDialogRunnable);
+            dismissLoadingDialog();
+            disconnectDevice();
+
+            if (isExitMode) {
+                hander.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        ConfigDAGActivity.this.finish();
+                    }
+                }, 3000);
+            }
+        }
+
+        EventBus.getDefault().post(cmdStr);
     }
 
 

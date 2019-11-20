@@ -78,9 +78,6 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
         }
     };
 
-    protected void obtainDeviceStateCmd() {
-
-    }
 
 
     @Override
@@ -438,7 +435,29 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
         }
     }
 
-    private void parserResult(String cmdStr) {
+    protected void obtainDeviceStateCmd() {
+        //##7010，查询工作模式
+        sendCommonCommand("##7010\r\n");
+        Timber.d("发送查询工作模式指令===" + "##7010");
+
+        //##2001，查询服务器地址1
+        sendCommonCommand("##2001\r\n");
+        Timber.d("发送查询服务器地址1指令===" + "##2001");
+
+        //##2002，查询服务器地址2
+        sendCommonCommand("##2002\r\n");
+        Timber.d("发送查询服务器地址2指令===" + "##2002");
+
+        //##7000，查询采集器参数
+        sendCommonCommand("##7000\r\n");
+        Timber.d("发送查询采集器参数指令===" + "##7000");
+
+        //##7002，查询执行机构参数
+        sendCommonCommand("##7002\r\n");
+        Timber.d("发送查询执行机构参数指令===" + "##7002");
+    }
+
+    protected void parserResult(String cmdStr) {
         //查询执行机构参数应答
         if (cmdStr.startsWith("$$7002") && cmdStr.endsWith("\r\n")) {
             dismissLoadingDialog();
