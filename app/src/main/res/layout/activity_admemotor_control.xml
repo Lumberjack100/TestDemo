@@ -1,9 +1,104 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.activity.device.ADMEMotorControlActivity">
+    android:background="@color/white"
+    android:orientation="vertical">
 
-</android.support.constraint.ConstraintLayout>
+    <include layout="@layout/toolbar_para_config" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:gravity="center_vertical"
+        android:background="@color/bg_main_light_white"
+        android:paddingStart="20dp"
+        android:textStyle="bold"
+        android:text="电机控制"
+        android:textColor="@color/font_main"
+        android:textSize="@dimen/text_size_14" />
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:background="@color/white"
+        android:gravity="center_vertical"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp">
+
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:layout_marginEnd="10dp"
+            android:background="@drawable/shape_edittext_bg_gray">
+
+            <Spinner
+                android:id="@+id/spinner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:dropDownVerticalOffset="36dp"/>
+
+        </LinearLayout>
+
+
+        <EditText
+            android:id="@+id/et_distance"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:background="@drawable/shape_edittext_bg_gray"
+            android:paddingStart="10dp"
+            android:singleLine="true"
+            android:hint="默认100"
+            android:textColor="@color/gray_807B7B"
+            android:textColorHint="@color/gray_807B7B"
+            android:textSize="@dimen/text_size_14" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:textColor="@color/black"
+            android:textSize="@dimen/text_size_14"
+            android:text="单位：mm" />
+
+
+        <Button
+            android:id="@+id/btn_confirm"
+            android:layout_width="wrap_content"
+            android:layout_height="35dp"
+            android:layout_marginStart="10dp"
+            android:background="@drawable/shape_edittext_bg_gray"
+            android:text="完成"
+            android:textColor="@color/gray_807B7B"
+            android:textSize="@dimen/text_size_15" />
+
+
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:gravity="center_vertical"
+        android:background="@color/bg_main_light_white"
+        android:paddingStart="20dp"
+        android:textStyle="bold"
+        android:text="手动控制"
+        android:textColor="@color/font_main"
+        android:textSize="@dimen/text_size_14" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:background="@color/white">
+
+
+    </FrameLayout>
+
+</LinearLayout>

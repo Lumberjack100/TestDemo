@@ -5,7 +5,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.hjq.toast.ToastUtils;
@@ -29,6 +31,12 @@ public class ADMEMotorControlActivity extends BaseDeviceConnectActivity {
 
     @BindView(R.id.img_bluetooth)
     ImageView mIvBluetooth;
+
+    @BindView(R.id.spinner)
+    Spinner mSpinner;
+
+    @BindView(R.id.et_distance)
+    EditText mEtDistance;
 
     public static void startActivity(Context context, String configInfo) {
         Intent intent = new Intent(context, ADMEMotorControlActivity.class);
@@ -64,7 +72,7 @@ public class ADMEMotorControlActivity extends BaseDeviceConnectActivity {
     }
 
 
-    @OnClick({R.id.back, R.id.img_bluetooth, R.id.btn_confirm_complete})
+    @OnClick({R.id.back, R.id.img_bluetooth, R.id.btn_confirm})
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.back:
@@ -84,7 +92,7 @@ public class ADMEMotorControlActivity extends BaseDeviceConnectActivity {
                 }
                 break;
 
-            case R.id.btn_confirm_complete:
+            case R.id.btn_confirm:
                 if (!MCloudApp.isIsBluetoothDeviceConnected()) {
                     ToastUtils.show(getString(R.string.param_config_bluetooth_disconnect_warn));
                     return;
