@@ -77,22 +77,39 @@ public class PlayPauseView extends View {
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        //TODO  宫贺：下面注释的代码，mHeight设置的是具体的 dp 值，不知为什么heightMode是MeasureSpec.AT_MOST
+//        mWidth = MeasureSpec.getSize(widthMeasureSpec);
+//        mHeight = MeasureSpec.getSize(heightMeasureSpec);
+//        int widthMode = MeasureSpec.getMode(widthMeasureSpec);
+//        int heightMode = MeasureSpec.getMode(heightMeasureSpec);
+//        if (widthMode == MeasureSpec.EXACTLY) {
+//            mWidth = Math.min(mWidth, mHeight);
+//        } else {
+//            mWidth = dp2px(getContext(), 50);
+//        }
+//        if (heightMode == MeasureSpec.EXACTLY) {
+//            mHeight = Math.min(mWidth, mHeight);
+//        } else {
+//            mHeight = dp2px(getContext(), 50);
+//        }
+//        mWidth = mHeight = Math.min(mWidth, mHeight);
+//        setMeasuredDimension(mWidth, mHeight);
+
         mWidth = MeasureSpec.getSize(widthMeasureSpec);
         mHeight = MeasureSpec.getSize(heightMeasureSpec);
         int widthMode = MeasureSpec.getMode(widthMeasureSpec);
         int heightMode = MeasureSpec.getMode(heightMeasureSpec);
-        if (widthMode == MeasureSpec.EXACTLY) {
-            mWidth = Math.min(mWidth, mHeight);
-        } else {
-            mWidth = dp2px(getContext(), 50);
+        switch (widthMode) {
+            case MeasureSpec.EXACTLY:
+                mWidth = mHeight = Math.min(mWidth, mHeight);
+                setMeasuredDimension(mWidth, mHeight);
+                break;
+            case MeasureSpec.AT_MOST:
+                float density = getResources().getDisplayMetrics().density;
+                mWidth = mHeight = (int) (50 * density); //默认50dp
+                setMeasuredDimension(mWidth, mHeight);
+                break;
         }
-        if (heightMode == MeasureSpec.EXACTLY) {
-            mHeight = Math.min(mWidth, mHeight);
-        } else {
-            mHeight = dp2px(getContext(), 50);
-        }
-        mWidth = mHeight = Math.min(mWidth, mHeight);
-        setMeasuredDimension(mWidth, mHeight);
     }
 
     @Override
