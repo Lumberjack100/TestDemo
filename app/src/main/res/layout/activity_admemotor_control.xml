@@ -17,7 +17,7 @@
         android:paddingStart="20dp"
         android:text="电机控制"
         android:textColor="@color/font_main"
-        android:textSize="@dimen/text_size_14"
+        android:textSize="@dimen/text_size_15"
         android:textStyle="bold" />
 
 
@@ -29,12 +29,11 @@
         android:paddingLeft="15dp"
         android:paddingRight="15dp">
 
-
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="40dp"
             android:layout_marginEnd="10dp"
-            android:layout_weight="1"
+            android:layout_weight="1.5"
             android:background="@drawable/shape_edittext_bg_gray"
             android:gravity="center">
 
@@ -42,11 +41,10 @@
                 android:id="@+id/spinner"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:dropDownVerticalOffset="36dp"
+                android:dropDownVerticalOffset="40dp"
                 android:gravity="center" />
 
         </LinearLayout>
-
 
         <EditText
             android:id="@+id/et_distance"
@@ -54,9 +52,8 @@
             android:layout_height="40dp"
             android:layout_weight="1"
             android:background="@drawable/shape_edittext_bg_gray"
+            android:gravity="center"
             android:hint="默认100"
-            android:paddingStart="10dp"
-            android:singleLine="true"
             android:textColor="@color/gray_807B7B"
             android:textColorHint="@color/gray_807B7B"
             android:textSize="@dimen/text_size_14" />
@@ -69,7 +66,6 @@
             android:textColor="@color/black"
             android:textSize="@dimen/text_size_14" />
 
-
         <Button
             android:id="@+id/btn_confirm"
             android:layout_width="wrap_content"
@@ -78,8 +74,7 @@
             android:background="@drawable/shape_edittext_bg_gray"
             android:text="确定"
             android:textColor="@color/black"
-            android:textSize="@dimen/text_size_15" />
-
+            android:textSize="@dimen/text_size_14" />
 
     </LinearLayout>
 
@@ -91,7 +86,7 @@
         android:paddingStart="20dp"
         android:text="手动控制"
         android:textColor="@color/font_main"
-        android:textSize="@dimen/text_size_14"
+        android:textSize="@dimen/text_size_15"
         android:textStyle="bold" />
 
     <FrameLayout
@@ -127,7 +122,7 @@
                 android:layout_centerVertical="true"
                 android:background="@drawable/round_button"
                 android:gravity="center"
-                android:text="下拉"
+                android:text="下降"
                 android:textColor="@color/white" />
 
         </RelativeLayout>
@@ -148,7 +143,7 @@
                 android:layout_height="70dp"
                 android:layout_alignParentStart="true"
                 android:layout_centerVertical="true"
-                android:background="@drawable/shape_oval_bg_gray"
+                android:background="@drawable/selector_circle_view_bg"
                 android:gravity="center"
                 android:text="清空"
                 android:textColor="@color/white" />
@@ -170,7 +165,7 @@
                 android:layout_height="70dp"
                 android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
-                android:background="@drawable/round_button"
+                android:background="@drawable/selector_circle_view_bg"
                 android:gravity="center"
                 android:text="计数"
                 android:textColor="@color/white" />

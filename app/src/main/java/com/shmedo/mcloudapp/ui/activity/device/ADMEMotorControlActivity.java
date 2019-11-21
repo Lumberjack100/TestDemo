@@ -9,12 +9,12 @@ import android.text.InputFilter;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.hjq.toast.ToastUtils;
 import com.shmedo.mcloudapp.MCloudApp;
@@ -24,7 +24,6 @@ import com.shmedo.mcloudapp.adapter.recyclerviewbaseadapter.ViewHolder;
 import com.shmedo.mcloudapp.entity.event.BluetoothStateEvent;
 import com.shmedo.mcloudapp.model.Extras;
 import com.shmedo.mcloudapp.views.PlayPauseView;
-import com.shmedo.mcloudapp.views.recycleviewitemdivider.RecycleViewDivider;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -36,6 +35,10 @@ import butterknife.BindView;
 import butterknife.OnClick;
 
 public class ADMEMotorControlActivity extends BaseDeviceConnectActivity {
+    private static final int PULL_UP = 0x0002;
+
+    private static final int PULL_DOWN = 0x0003;
+
     @BindView(R.id.back)
     ImageView mIvBack;
 
@@ -66,6 +69,12 @@ public class ADMEMotorControlActivity extends BaseDeviceConnectActivity {
     @BindView(R.id.btn_count)
     Button mBtnCount;
 
+    @BindView(R.id.rl_choose_run_mode)
+    View chooseRunModeView;
+
+    @BindView(R.id.rl_control_pull)
+    View controlPullView;
+
     @BindView(R.id.tv_distance)
     TextView mTvDistance;
 
@@ -81,6 +90,7 @@ public class ADMEMotorControlActivity extends BaseDeviceConnectActivity {
 
     private int countNum = 0;
 
+    private int runMode = PULL_UP;//默认值：上拉
 
     public static void startActivity(Context context, String configInfo) {
         Intent intent = new Intent(context, ADMEMotorControlActivity.class);
@@ -99,9 +109,6 @@ public class ADMEMotorControlActivity extends BaseDeviceConnectActivity {
         initView();
         initAdapter();
         initPlayPauseListener();
-
-
-        testData();
     }
 
     private void initView() {
@@ -120,8 +127,13 @@ public class ADMEMotorControlActivity extends BaseDeviceConnectActivity {
     }
 
     private void initAdapter() {
+        String[] datas = getResources().getStringArray(R.array.pull_mode);
+        ArrayAdapter<String> pullModeAdapter = new ArrayAdapter<>(this,R.layout.spinner_item , datas);//android.R.layout.simple_spinner_item
+        pullModeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mSpinner.setAdapter(pullModeAdapter);
+
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        mRecyclerView.addItemDecoration(new RecycleViewDivider(this, LinearLayoutManager.VERTICAL));
+//        mRecyclerView.addItemDecoration(new RecycleViewDivider(this, LinearLayoutManager.VERTICAL));
         adapter = new CommonAdapter<String>(this, R.layout.listitem_motor_distance, distanceList) {
             @Override
             protected void convert(ViewHolder holder, final String distance, final int position) {
@@ -138,14 +150,24 @@ public class ADMEMotorControlActivity extends BaseDeviceConnectActivity {
         playPauseView.setPlayPauseListener(new PlayPauseView.PlayPauseListener() {
             @Override
             public void play() {
-                // do something
-                Toast.makeText(ADMEMotorControlActivity.this, "Play", Toast.LENGTH_SHORT).show();
+                mBtnClear.setEnabled(false);
+                mBtnCount.setEnabled(true);
+
+                if (runMode == PULL_UP) {
+                    //发送上拉指令
+                    sendCommonCommand("##7021,2,0\r\n");
+                } else {
+                    //发送下降指令
+                    sendCommonCommand("##7021,3,0\r\n");
+                }
             }
 
             @Override
             public void pause() {
-                // do something
-                Toast.makeText(ADMEMotorControlActivity.this, "Pause", Toast.LENGTH_SHORT).show();
+                mBtnClear.setEnabled(true);
+                mBtnCount.setEnabled(false);
+                //发送停止指令
+                sendCommonCommand("##7021,1,0\r\n");
             }
         });
     }
@@ -180,15 +202,39 @@ public class ADMEMotorControlActivity extends BaseDeviceConnectActivity {
                 break;
 
             case R.id.btn_pull_up:
+                if (!MCloudApp.isIsBluetoothDeviceConnected()) {
+                    ToastUtils.show(getString(R.string.param_config_bluetooth_disconnect_warn));
+                    return;
+                }
+                chooseRunModeView.setVisibility(View.VISIBLE);
+                controlPullView.setVisibility(View.GONE);
+                runMode = PULL_UP;
+                //发送上拉指令
+                sendCommonCommand("##7021,2,0\r\n");
                 break;
 
             case R.id.btn_pull_down:
+                if (!MCloudApp.isIsBluetoothDeviceConnected()) {
+                    ToastUtils.show(getString(R.string.param_config_bluetooth_disconnect_warn));
+                    return;
+                }
+                chooseRunModeView.setVisibility(View.VISIBLE);
+                controlPullView.setVisibility(View.GONE);
+                runMode = PULL_DOWN;
+                //发送下降指令
+                sendCommonCommand("##7021,3,0\r\n");
                 break;
 
             case R.id.btn_clear:
+                chooseRunModeView.setVisibility(View.GONE);
+                controlPullView.setVisibility(View.VISIBLE);
+                distanceList.clear();
+                adapter.notifyDataSetChanged();
                 break;
 
             case R.id.btn_count:
+
+                adapter.addItem("166", 0);
                 break;
         }
     }
@@ -240,13 +286,13 @@ public class ADMEMotorControlActivity extends BaseDeviceConnectActivity {
     }
 
 
-    private void testData(){
+    private void testData() {
 
         distanceList.add("150");
-        distanceList.add("200");
-        distanceList.add("350");
-        distanceList.add("400");
-        distanceList.add("550");
+//        distanceList.add("200");
+//        distanceList.add("350");
+//        distanceList.add("400");
+//        distanceList.add("550");
         adapter.notifyDataSetChanged();
     }
 
