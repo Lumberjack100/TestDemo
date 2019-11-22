@@ -23,7 +23,7 @@
     <string name="service_address_note1">MD-NET服务器地址：端口</string>
     <string name="service_address_note2">mCloud服务器地址：端口</string>
     <string name="input_server_address_hint">请输入地址</string>
-    <string name="param_config_bluetooth_disconnect_warn">设备已断开连接，暂无法进行设置</string>
+    <string name="param_config_bluetooth_disconnect_warn">设备已断开连接，暂无法进行操作</string>
     <string name="disconnect_bluetooth_device">当前设备处于蓝牙连接状态，确定要断开连接？</string>
     <string name="finish_activity_disconnect_bluetooth_device">确定要退出该页面，并断开蓝牙连接吗？</string>
     <string name="disconnect_bluetooth_device_save_param_warn">您还没有保存设备的配置信息，是否保存？</string>
