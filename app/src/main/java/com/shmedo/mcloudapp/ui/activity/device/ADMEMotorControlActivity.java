@@ -120,6 +120,8 @@ public class ADMEMotorControlActivity extends BaseDeviceConnectActivity {
 
     private String speedPullDown;//下降速度
 
+    private static boolean isStop = false;
+
 
     public static void startActivity(Context context, String configInfo) {
         Intent intent = new Intent(context, ADMEMotorControlActivity.class);
@@ -131,9 +133,12 @@ public class ADMEMotorControlActivity extends BaseDeviceConnectActivity {
     private Runnable queryRunnable = new Runnable() {
         @Override
         public void run() {
-            sendCommonCommand("##7024\r\n");
+            if (isStop) {
+                return;
+            }
 
-            MCloudApp.getMainHandler().postDelayed(queryRunnable, 1000);
+            sendCommonCommand("##7024\r\n");
+            MCloudApp.getMainHandler().postDelayed(this, 300);
         }
     };
 
@@ -343,11 +348,12 @@ public class ADMEMotorControlActivity extends BaseDeviceConnectActivity {
                 if (runMode == HAND_PULL_UP) {
                     //发送上拉指令
                     sendCommonCommand("##7021,2,0\r\n");
-                } else {
+                } else if (runMode == HAND_PULL_DOWN) {
                     //发送下降指令
                     sendCommonCommand("##7021,3,0\r\n");
                 }
                 MCloudApp.getMainHandler().postDelayed(queryRunnable, 0);
+                isStop = false;
                 break;
 
             case STATE_PAUSE:
@@ -356,7 +362,6 @@ public class ADMEMotorControlActivity extends BaseDeviceConnectActivity {
                 mBtnClear.setEnabled(true);
                 mBtnCount.setEnabled(false);
                 mBtnConfirm.setEnabled(false);
-
                 //发送停止指令
                 sendCommonCommand("##7021,1,0\r\n");
                 break;
@@ -429,10 +434,14 @@ public class ADMEMotorControlActivity extends BaseDeviceConnectActivity {
         stringBuilder.append(speedPullDown + "\r\n");
 
         String cmdStr = String.valueOf(stringBuilder);
-        sendCommonCommand(cmdStr);
 
         showLoadingDialog("正在发送配置指令...");
         hander.postDelayed(dismssDialogRunnable, 5000);
+        sendCommonCommand(cmdStr);
+
+        //轮询查询电机状态
+        MCloudApp.getMainHandler().postDelayed(queryRunnable, 0);
+        isStop = false;
     }
 
 
@@ -450,14 +459,13 @@ public class ADMEMotorControlActivity extends BaseDeviceConnectActivity {
                 ToastUtils.show("已设置控制电机指令");
                 mBtnConfirm.setText("停止");
             }
-            //轮询查询电机状态
-            MCloudApp.getMainHandler().postDelayed(queryRunnable, 0);
             return;
         }
 
         //停止电机指令应答
         if (cmdStr.startsWith("$$7021,1")) {
             ToastUtils.show("电机已停止");
+            isStop = true;
             return;
         }
 
@@ -471,7 +479,9 @@ public class ADMEMotorControlActivity extends BaseDeviceConnectActivity {
 
             //电机已经停止，不用再轮询电子状态
             if (!TextUtils.isEmpty(pulseNumber) && pulseNumber.equals(cmdArray[1])) {
+                //轮询查询电机状态
                 MCloudApp.getMainHandler().removeCallbacks(queryRunnable);
+                isStop = true;
                 mBtnConfirm.setText("确定");
                 return;
             }
