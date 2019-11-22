@@ -9,31 +9,62 @@
 
     <include layout="@layout/toolbar_para_config" />
 
-    <TextView
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:background="@color/bg_main_light_white"
-        android:gravity="center_vertical"
-        android:paddingStart="20dp"
-        android:text="电机控制"
-        android:textColor="@color/font_main"
-        android:textSize="@dimen/text_size_15"
-        android:textStyle="bold" />
+        android:layout_height="45dp"
+        android:background="@color/bg_main_light_white">
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="20dp"
+            android:text="电机控制"
+            android:textColor="@color/font_main"
+            android:textSize="@dimen/text_size_15"
+            android:textStyle="bold" />
 
-    <LinearLayout
+        <Button
+            android:id="@+id/btn_confirm"
+            android:layout_width="wrap_content"
+            android:layout_height="35dp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="15dp"
+            android:background="@drawable/selector_button_bg"
+            android:gravity="center"
+            android:text="确定"
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_size_14" />
+
+    </RelativeLayout>
+
+    <View
         android:layout_width="match_parent"
-        android:layout_height="80dp"
-        android:background="@color/white"
-        android:gravity="center_vertical"
-        android:paddingLeft="15dp"
-        android:paddingRight="15dp">
+        android:layout_height="1dp" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:background="@color/bg_main_light_white">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="30dp"
+            android:text="运动方式"
+            android:textColor="@color/font_main"
+            android:textSize="@dimen/text_size_15" />
 
         <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="40dp"
-            android:layout_marginEnd="10dp"
-            android:layout_weight="1.2"
+            android:layout_width="150dp"
+            android:layout_height="35dp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="30dp"
             android:background="@drawable/shape_edittext_bg_gray"
             android:gravity="center">
 
@@ -41,16 +72,75 @@
                 android:id="@+id/spinner"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:dropDownVerticalOffset="40dp"
+                android:dropDownVerticalOffset="35dp"
                 android:gravity="center" />
 
         </LinearLayout>
 
+    </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:background="@color/bg_main_light_white">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="30dp"
+            android:text="电机速度"
+            android:textColor="@color/font_main"
+            android:textSize="@dimen/text_size_15" />
+
+
+        <EditText
+            android:id="@+id/et_speed"
+            android:layout_width="150dp"
+            android:layout_height="35dp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="30dp"
+            android:background="@drawable/shape_edittext_bg_gray"
+            android:gravity="center"
+            android:hint="无"
+            android:textColor="@color/gray_807B7B"
+            android:textColorHint="@color/gray_807B7B"
+            android:textSize="@dimen/text_size_14" />
+
+    </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:background="@color/bg_main_light_white">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="30dp"
+            android:text="运动距离"
+            android:textColor="@color/font_main"
+            android:textSize="@dimen/text_size_15" />
+
         <EditText
             android:id="@+id/et_distance"
-            android:layout_width="0dp"
-            android:layout_height="40dp"
-            android:layout_weight="1"
+            android:layout_width="150dp"
+            android:layout_height="35dp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="30dp"
             android:background="@drawable/shape_edittext_bg_gray"
             android:gravity="center"
             android:hint="默认100"
@@ -58,26 +148,11 @@
             android:textColorHint="@color/gray_807B7B"
             android:textSize="@dimen/text_size_14" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="5dp"
-            android:layout_marginEnd="10dp"
-            android:text="单位：mm"
-            android:textColor="@color/black"
-            android:textSize="@dimen/text_size_14" />
+    </RelativeLayout>
 
-        <Button
-            android:id="@+id/btn_confirm"
-            android:layout_width="60dp"
-            android:layout_height="35dp"
-            android:background="@drawable/shape_edittext_bg_gray"
-            android:gravity="center"
-            android:text="确定"
-            android:textColor="@color/black"
-            android:textSize="@dimen/text_size_14" />
-
-    </LinearLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp" />
 
     <TextView
         android:layout_width="match_parent"
@@ -178,8 +253,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingStart="50dp"
-        android:layout_marginBottom="10dp">
+        android:layout_marginBottom="10dp"
+        android:paddingStart="50dp">
 
         <TextView
             android:layout_width="wrap_content"
@@ -200,8 +275,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingStart="50dp"
-        android:layout_marginBottom="20dp">
+        android:layout_marginBottom="20dp"
+        android:paddingStart="50dp">
 
         <TextView
             android:layout_width="wrap_content"

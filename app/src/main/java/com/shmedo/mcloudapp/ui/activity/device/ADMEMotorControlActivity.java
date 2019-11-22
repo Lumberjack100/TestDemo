@@ -63,6 +63,9 @@ public class ADMEMotorControlActivity extends BaseDeviceConnectActivity {
     @BindView(R.id.spinner)
     Spinner mSpinner;
 
+    @BindView(R.id.et_speed)
+    EditText mEtSpeed;
+
     @BindView(R.id.et_distance)
     EditText mEtDistance;
 
@@ -100,15 +103,17 @@ public class ADMEMotorControlActivity extends BaseDeviceConnectActivity {
 
     private List<String> distanceList = new ArrayList<>();
 
-    private int countNum = 0;//计数次数
-
     private int runMode = PULL_UP;//默认值：上拉
 
-    private String configInfo;//
+    private String configInfo;//查询测试控制电机指令
 
-    private String pulseNumber;
+    private String pulseNumber;//脉冲数
 
-    private String distance;
+    private String distance;//距离
+
+    private String speedPullUp;//上拉速度
+
+    private String speedPullDown;//下降速度
 
 
     public static void startActivity(Context context, String configInfo) {
@@ -146,6 +151,10 @@ public class ADMEMotorControlActivity extends BaseDeviceConnectActivity {
         mToolbarTitle.setText("参数设置");
         mIvBluetooth.setVisibility(View.VISIBLE);
 
+        mEtSpeed.setInputType(InputType.TYPE_CLASS_NUMBER);
+        mEtSpeed.setHint("0-99");
+        mEtSpeed.setFilters(new InputFilter[]{new InputFilter.LengthFilter(2)});
+
         mEtDistance.setInputType(InputType.TYPE_CLASS_NUMBER);
         mEtDistance.setHint("默认100");
         mEtDistance.setFilters(new InputFilter[]{new InputFilter.LengthFilter(4)});
@@ -165,6 +174,9 @@ public class ADMEMotorControlActivity extends BaseDeviceConnectActivity {
             configInfo = intent.getStringExtra(Extras.ADME_MOTOR_CONTROL_CONFIG_INFO);
         }
 
+
+        //##7020,电机测试状态（1：停止，2：上拉，3：下降）,电机测试距离（0：一直持续，其他数值为设定的运动距离单位：mm）,上拉速度,下降速度
+        //$$7020,2,500,5,15
         if (TextUtils.isEmpty(configInfo)) {
             Timber.e("configInfo 为空或者null");
             return;
@@ -176,15 +188,22 @@ public class ADMEMotorControlActivity extends BaseDeviceConnectActivity {
         }
 
         String[] cmdArray = configInfo.replace("\r\n", "").split(",");
-        if (cmdArray.length < 3) {
+        if (cmdArray.length < 5) {
             Timber.e("configInfo 格式错误:" + configInfo);
             return;
         }
 
-        if (cmdArray[1].equals("2")) {
+        speedPullUp = cmdArray[3];
+        speedPullDown = cmdArray[4];
+        if (cmdArray[1].equals("2")) {//上拉
             mSpinner.setSelection(0);
-        } else if (cmdArray[1].equals("3")) {
+            mEtSpeed.setText(speedPullUp);
+        } else if (cmdArray[1].equals("3")) {//下降
             mSpinner.setSelection(1);
+            mEtSpeed.setText(speedPullDown);
+        } else {//停止
+            mSpinner.setSelection(0);
+            mEtSpeed.setText(speedPullUp);
         }
 
         mEtDistance.setText(cmdArray[2]);
@@ -289,7 +308,6 @@ public class ADMEMotorControlActivity extends BaseDeviceConnectActivity {
                 }
 
                 if (!TextUtils.isEmpty(distance)) {
-                    countNum++;
                     adapter.addItem(distance, 0);
                     mRecyclerView.scrollToPosition(0);
                 }
@@ -325,7 +343,7 @@ public class ADMEMotorControlActivity extends BaseDeviceConnectActivity {
                 controlPullView.setVisibility(View.VISIBLE);
                 mBtnClear.setEnabled(true);
                 mBtnCount.setEnabled(false);
-                MCloudApp.getMainHandler().removeCallbacks(queryRunnable);
+//                MCloudApp.getMainHandler().removeCallbacks(queryRunnable);
                 //发送停止指令
                 sendCommonCommand("##7021,1,0\r\n");
                 break;
@@ -335,12 +353,10 @@ public class ADMEMotorControlActivity extends BaseDeviceConnectActivity {
                 controlPullView.setVisibility(View.GONE);
                 mBtnClear.setEnabled(false);
                 mBtnCount.setEnabled(true);
-                countNum = 0;
+                MCloudApp.getMainHandler().removeCallbacks(queryRunnable);
+
                 pulseNumber = "0";
                 distance = "0";
-                MCloudApp.getMainHandler().removeCallbacks(queryRunnable);
-                //发送停止指令
-//                sendCommonCommand("##7021,1,0\r\n");
                 updateDistanceAndPulseNumber(distance, pulseNumber);
                 distanceList.clear();
                 adapter.notifyDataSetChanged();
@@ -363,9 +379,20 @@ public class ADMEMotorControlActivity extends BaseDeviceConnectActivity {
 
 
     private void doConfirm() {
+        String speed = mEtSpeed.getText().toString().trim();
         String distance = mEtDistance.getText().toString().trim();
+        if (TextUtils.isEmpty(speed)) {
+            ToastUtils.show("速度不能为空");
+            return;
+        }
+
         if (TextUtils.isEmpty(distance)) {
             ToastUtils.show("距离不能为空");
+            return;
+        }
+
+        if (Integer.parseInt(distance) <= 0) {
+            ToastUtils.show("距离请输入正整数");
             return;
         }
 
@@ -374,10 +401,19 @@ public class ADMEMotorControlActivity extends BaseDeviceConnectActivity {
         stringBuilder.append("##7021,");
         if (mSpinner.getSelectedItemPosition() == 0) {
             stringBuilder.append("2,");
+            speedPullUp = speed;
+            runMode = PULL_UP;
         } else {
             stringBuilder.append("3,");
+            speedPullDown = speed;
+            runMode = PULL_DOWN;
         }
-        stringBuilder.append(distance + "\r\n");
+        speedPullUp = TextUtils.isEmpty(speedPullUp) ? "0" : speedPullUp;
+        speedPullDown = TextUtils.isEmpty(speedPullDown) ? "0" : speedPullDown;
+
+        stringBuilder.append(distance + ",");
+        stringBuilder.append(speedPullUp + ",");
+        stringBuilder.append(speedPullDown + "\r\n");
 
         String cmdStr = String.valueOf(stringBuilder);
         sendCommonCommand(cmdStr);
@@ -392,11 +428,14 @@ public class ADMEMotorControlActivity extends BaseDeviceConnectActivity {
      */
     private void setResultData(String cmdStr) {
         //控制电机上拉、下降指令应答
-        if (!cmdStr.endsWith("0\r\n")
+        if (!cmdStr.startsWith("$$7021,1")
                 && (cmdStr.startsWith("$$7021,2") || cmdStr.startsWith("$$7021,3"))) {
             ToastUtils.show("已设置测试控制电机指令");
             dismissLoadingDialog();
             hander.removeCallbacks(dismssDialogRunnable);
+
+            //轮询查询电机状态
+            MCloudApp.getMainHandler().postDelayed(queryRunnable, 1000);
             return;
         }
 
@@ -413,6 +452,13 @@ public class ADMEMotorControlActivity extends BaseDeviceConnectActivity {
                 Timber.d("查询脉冲数，距离应答指令错误");
                 return;
             }
+
+            //电机已经停止，不用再轮询电子状态
+            if (!TextUtils.isEmpty(pulseNumber) && pulseNumber.equals(cmdArray[1])) {
+                MCloudApp.getMainHandler().removeCallbacks(queryRunnable);
+                return;
+            }
+
             distance = cmdArray[2];
             pulseNumber = cmdArray[1];
 
@@ -455,6 +501,4 @@ public class ADMEMotorControlActivity extends BaseDeviceConnectActivity {
             finish();
         }
     }
-
-
 }

@@ -441,7 +441,6 @@ public class ADMEHomeFragment extends BaseFragment {
                     ToastUtils.show(getString(R.string.param_config_bluetooth_disconnect_warn));
                     return;
                 }
-
                 if (mBtnEdit2.getText().toString().contains("编辑")) {
                     mBtnEdit2.setText("确定");
                     mEtAddress2.setEnabled(true);
@@ -563,8 +562,8 @@ public class ADMEHomeFragment extends BaseFragment {
 
             //测试模式打开时，查询电机和计米轮相关参数
             if(cmdArray[2].trim().equals("3")){
-//                configADMEActivity.sendCommonCommand("##7020\r\n");
-//                Timber.d("发送查询控制电机参数指令===" + "##7020");
+                configADMEActivity.sendCommonCommand("##7020\r\n");
+                Timber.d("发送查询控制电机参数指令===" + "##7020");
 
                 configADMEActivity.sendCommonCommand("##7022\r\n");
                 Timber.d("发送查询计米轮参数指令===" + "##7022");
@@ -639,8 +638,8 @@ public class ADMEHomeFragment extends BaseFragment {
         //设置测试模式应答
         if (cmdStr.startsWith("$$70123") && cmdStr.endsWith("\r\n")) {
             Timber.d("测试模式已打开");
-//            configADMEActivity.sendCommonCommand("##7020\r\n");
-//            Timber.d("发送查询控制电机参数指令===" + "##7020");
+            configADMEActivity.sendCommonCommand("##7020\r\n");
+            Timber.d("发送查询控制电机参数指令===" + "##7020");
 
             configADMEActivity.sendCommonCommand("##7022\r\n");
             Timber.d("发送查询计米轮参数指令===" + "##7022");
