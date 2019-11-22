@@ -436,8 +436,8 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
 
 
     protected void parserResult(String cmdStr) {
-        //查询执行机构参数应答
-        if (cmdStr.startsWith("$$7002") && cmdStr.endsWith("\r\n")) {
+        //查询计米轮参数应答
+        if (cmdStr.startsWith("$$7022") && cmdStr.endsWith("\r\n")) {
             dismissLoadingDialog();
             hander.removeCallbacks(dismssDialogRunnable);
         }

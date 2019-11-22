@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.hjq.toast.ToastUtils;
+import com.shmedo.das.das.cmd.CommandResult;
 import com.shmedo.mcloudapp.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.entity.event.BluetoothStateEvent;
@@ -22,6 +23,7 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import timber.log.Timber;
 
 public class CountMeterWheelActivity extends BaseDeviceConnectActivity {
     @BindView(R.id.back)
@@ -38,6 +40,8 @@ public class CountMeterWheelActivity extends BaseDeviceConnectActivity {
 
     @BindView(R.id.et_wheel_diameter)
     EditText mEtWheelDiameter;
+
+    private String configInfo;
 
 
     public static void startActivity(Context context, String configInfo) {
@@ -56,6 +60,7 @@ public class CountMeterWheelActivity extends BaseDeviceConnectActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initView();
+        parseIntent();
     }
 
     private void initView() {
@@ -75,6 +80,32 @@ public class CountMeterWheelActivity extends BaseDeviceConnectActivity {
         } else {
             mIvBluetooth.setImageResource(R.drawable.ic_bluetooth);
         }
+    }
+
+    private void parseIntent() {
+        Intent intent = getIntent();
+        if (intent.getExtras().containsKey(Extras.ADME_COUNT_METER_WHEEL_CONFIG_INFO)) {
+            configInfo = intent.getStringExtra(Extras.ADME_COUNT_METER_WHEEL_CONFIG_INFO);
+        }
+
+        if (TextUtils.isEmpty(configInfo)) {
+            Timber.e("configInfo 为空或者null");
+            return;
+        }
+
+        if (!configInfo.startsWith(CommandResult.COMMAND_RESULT_HEADER)) {
+            Timber.e("configInfo 格式错误:" + configInfo);
+            return;
+        }
+
+        String[] cmdArray = configInfo.replace("\r\n", "").split(",");
+        if (cmdArray.length < 3) {
+            Timber.e("configInfo 格式错误:" + configInfo);
+            return;
+        }
+
+        mEtPulsesNumber.setText(cmdArray[1]);
+        mEtWheelDiameter.setText(cmdArray[2]);
     }
 
 
@@ -128,7 +159,6 @@ public class CountMeterWheelActivity extends BaseDeviceConnectActivity {
         sbCollector.append(pulsesNumber + ",");
         sbCollector.append(wheelDiameter + "\r\n");
 
-        //先发送采集器配置指令,收到配置完成应答时再发送执行结构配置指令
         String cmdStr = String.valueOf(sbCollector);
         sendCommonCommand(cmdStr);
 

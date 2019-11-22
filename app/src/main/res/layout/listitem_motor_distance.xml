@@ -21,17 +21,17 @@
             android:id="@+id/tv_number"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            tools:text="计次 3"
             android:textColor="@color/black"
-            android:textSize="@dimen/text_size_16" />
+            android:textSize="@dimen/text_size_16"
+            tools:text="计次 3" />
 
         <TextView
             android:id="@+id/tv_interval"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            tools:text="间隔：50mm"
             android:textColor="@color/black"
-            android:textSize="@dimen/text_size_14" />
+            android:textSize="@dimen/text_size_14"
+            tools:text="间隔：50mm" />
 
     </LinearLayout>
 
@@ -40,8 +40,8 @@
         android:id="@+id/tv_distance"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        tools:text="400mm"
         android:textColor="@color/black"
-        android:textSize="@dimen/text_size_16" />
+        android:textSize="@dimen/text_size_16"
+        tools:text="400mm" />
 
 </LinearLayout>
