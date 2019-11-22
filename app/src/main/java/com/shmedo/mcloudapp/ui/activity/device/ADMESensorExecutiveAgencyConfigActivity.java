@@ -363,11 +363,6 @@ public class ADMESensorExecutiveAgencyConfigActivity extends BaseDeviceConnectAc
             return;
         }
 
-        if (dagConfigInfo.length() < CommandResult.RESULT_MIN_LENGTH) {
-            Timber.e("dagConfigInfo 长度过短:" + dagConfigInfo);
-            return;
-        }
-
         if (!dagConfigInfo.startsWith(CommandResult.COMMAND_RESULT_HEADER)) {
             Timber.e("dagConfigInfo 格式错误:" + dagConfigInfo);
             return;
