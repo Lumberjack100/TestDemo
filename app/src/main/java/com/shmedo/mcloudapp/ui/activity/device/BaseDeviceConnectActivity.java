@@ -442,8 +442,7 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
             hander.removeCallbacks(dismssDialogRunnable);
         }
 
-        if ((cmdStr.startsWith("$$7011")
-                || cmdStr.startsWith("$$2011")
+        if ((cmdStr.startsWith("$$2011")
                 || cmdStr.startsWith("$$2012")
                 || cmdStr.startsWith("$$7001")
                 || cmdStr.startsWith("$$7003")) && cmdStr.endsWith("\r\n")) {
@@ -482,11 +481,22 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
     }
 
 
+    /**
+     * 发送蓝牙指令,延迟200ms 后发送，以免同时发送多条指令带来问题
+     *
+     * @param cmdStr
+     */
     public void sendCommonCommand(String cmdStr) {
-        Message msg = new Message(UUID.randomUUID().toString(), cmdStr, true);
-        if (mdBluetoothManager != null) {
-            mdBluetoothManager.writeMessage(msg);
-        }
+        final Message msg = new Message(UUID.randomUUID().toString(), cmdStr, true);
+
+        hander.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (mdBluetoothManager != null) {
+                    mdBluetoothManager.writeMessage(msg);
+                }
+            }
+        }, 200);
     }
 
     /**
@@ -507,53 +517,23 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
         sendCommonCommand("##7010\r\n");
         Timber.d("发送查询工作模式指令===" + "##7010");
 
-        hander.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                sendCommonCommand("##2001\r\n");
-                Timber.d("发送查询服务器地址1指令===" + "##2001");
-            }
-        }, 200);
+        sendCommonCommand("##2001\r\n");
+        Timber.d("发送查询服务器地址1指令===" + "##2001");
 
-        hander.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                sendCommonCommand("##2002\r\n");
-                Timber.d("发送查询服务器地址2指令===" + "##2002");
-            }
-        }, 200);
+        sendCommonCommand("##2002\r\n");
+        Timber.d("发送查询服务器地址2指令===" + "##2002");
 
-        hander.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                sendCommonCommand("##7000\r\n");
-                Timber.d("发送查询采集器参数指令===" + "##7000");
-            }
-        }, 200);
+        sendCommonCommand("##7000\r\n");
+        Timber.d("发送查询采集器参数指令===" + "##7000");
 
-        hander.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                sendCommonCommand("##7002\r\n");
-                Timber.d("发送查询执行机构参数指令===" + "##7002");
-            }
-        }, 200);
+        sendCommonCommand("##7002\r\n");
+        Timber.d("发送查询执行机构参数指令===" + "##7002");
 
-        hander.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                sendCommonCommand("##7020\r\n");
-                Timber.d("发送查询控制电机参数指令===" + "##7020");
-            }
-        }, 200);
+        sendCommonCommand("##7020\r\n");
+        Timber.d("发送查询控制电机参数指令===" + "##7020");
 
-        hander.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                sendCommonCommand("##7022\r\n");
-                Timber.d("发送查询计米轮参数指令===" + "##7022");
-            }
-        }, 200);
+        sendCommonCommand("##7022\r\n");
+        Timber.d("发送查询计米轮参数指令===" + "##7022");
     }
 
 

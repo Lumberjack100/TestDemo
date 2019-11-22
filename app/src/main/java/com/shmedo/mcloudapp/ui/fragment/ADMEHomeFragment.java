@@ -660,11 +660,14 @@ public class ADMEHomeFragment extends BaseFragment {
 //            return;
 //        }
 //
-//        //设置测试模式应答
-//        if (cmdStr.startsWith("$$7012") && cmdStr.endsWith("\r\n")) {
+        //设置测试模式应答
+        if (cmdStr.startsWith("$$70121") && cmdStr.endsWith("\r\n")) {
 //            ToastUtils.show("设置测试模式完成");
-//            return;
-//        }
+            Timber.d("测试模式已打开");
+            configADMEActivity.sendCommonCommand("##7020\r\n");
+            Timber.d("发送查询控制电机参数指令===" + "##7020");
+            return;
+        }
 
         //设置服务器地址1应答
         if (cmdStr.startsWith("$$2011") && cmdStr.endsWith("\r\n")) {
@@ -743,6 +746,9 @@ public class ADMEHomeFragment extends BaseFragment {
 
             sbAutoMonitorState.setCheckedImmediatelyNoEvent(false);
             setSwitchViewState(false, tvAutoMonitorState, "已关闭");
+
+            sbDebugMode.setCheckedImmediatelyNoEvent(false);
+            setSwitchViewState(false, tvDebugMode, "已关闭");
 
             mBtnEdit1.setEnabled(false);
             mBtnEdit2.setEnabled(false);
