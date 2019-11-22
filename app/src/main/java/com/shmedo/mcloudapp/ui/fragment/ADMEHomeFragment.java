@@ -350,7 +350,7 @@ public class ADMEHomeFragment extends BaseFragment {
                 if (isChecked) {
                     if (checkAutoMonitorAndDebugMode(DEBUG_MODEL)) {
                         //打开测试模式命令
-                        configADMEActivity.sendCommonCommand("##70121\r\n");
+                        configADMEActivity.sendCommonCommand("##70123\r\n");
                         setSwitchViewState(true, tvDebugMode, "已打开");
                         debugItemLayout.setVisibility(View.VISIBLE);
                     }
@@ -549,49 +549,36 @@ public class ADMEHomeFragment extends BaseFragment {
 
         //查询工作模式应答
         if (cmdStr.startsWith("$$7010") && cmdStr.endsWith("\r\n")) {
-            if (cmdArray.length < 3) {
+            if (cmdArray.length < 3 || TextUtils.isEmpty(cmdArray[1].trim()) || TextUtils.isEmpty(cmdArray[2].trim())) {
                 Timber.d("查询工作模式应答指令错误");
                 return;
             }
-
-            if (TextUtils.isEmpty(cmdArray[1].trim())) {
-                Timber.d("查询工作模式应答指令错误");
-                return;
-            }
-
-            if (TextUtils.isEmpty(cmdArray[2].trim())) {
-                Timber.d("查询工作模式应答指令错误");
-                return;
-            }
-
             sbAutoMonitorState.setCheckedImmediatelyNoEvent(cmdArray[1].trim().equals("1"));
             setSwitchViewState(cmdArray[1].trim().equals("1"), tvAutoMonitorState, cmdArray[1].trim().equals("1") ? "已启用" : "已关闭");
 
             //TODO 后期当设置为蓝牙模式时，与指令调试界面联动
-            sbDebugMode.setCheckedImmediatelyNoEvent(cmdArray[2].trim().equals("1"));
-            setSwitchViewState(cmdArray[2].trim().equals("1"), tvDebugMode, cmdArray[2].trim().equals("1") ? "已打开" : "已关闭");
-            debugItemLayout.setVisibility(cmdArray[2].trim().equals("1") ? View.VISIBLE : View.GONE);
+            sbDebugMode.setCheckedImmediatelyNoEvent(cmdArray[2].trim().equals("3"));
+            setSwitchViewState(cmdArray[2].trim().equals("3"), tvDebugMode, cmdArray[2].trim().equals("3") ? "已打开" : "已关闭");
+            debugItemLayout.setVisibility(cmdArray[2].trim().equals("3") ? View.VISIBLE : View.GONE);
+
+            //测试模式打开时，查询电机和计米轮相关参数
+            if(cmdArray[2].trim().equals("3")){
+//                configADMEActivity.sendCommonCommand("##7020\r\n");
+//                Timber.d("发送查询控制电机参数指令===" + "##7020");
+
+                configADMEActivity.sendCommonCommand("##7022\r\n");
+                Timber.d("发送查询计米轮参数指令===" + "##7022");
+            }
             return;
         }
 
         //查询服务器地址1应答
         if (cmdStr.startsWith("$$2001") && cmdStr.endsWith("\r\n")) {
             cmdArray = cmdStr.replace("\r\n", "").split(" ");
-            if (cmdArray.length < 3) {
+            if (cmdArray.length < 3 || TextUtils.isEmpty(cmdArray[1].trim()) || TextUtils.isEmpty(cmdArray[2].trim())) {
                 Timber.d("查询服务器地址1应答指令错误");
                 return;
             }
-
-            if (TextUtils.isEmpty(cmdArray[1].trim())) {
-                Timber.d("查询服务器地址1应答指令错误");
-                return;
-            }
-
-            if (TextUtils.isEmpty(cmdArray[2].trim())) {
-                Timber.d("查询服务器地址1应答指令错误");
-                return;
-            }
-
             if (isRefreshingAddress) {
                 isRefreshingAddress = false;
                 hander.removeCallbacks(clearAnimationRunnable);
@@ -605,21 +592,10 @@ public class ADMEHomeFragment extends BaseFragment {
         //查询服务器地址2应答
         if (cmdStr.startsWith("$$2002") && cmdStr.endsWith("\r\n")) {
             cmdArray = cmdStr.replace("\r\n", "").split(" ");
-            if (cmdArray.length < 3) {
+            if (cmdArray.length < 3 || TextUtils.isEmpty(cmdArray[1].trim()) || TextUtils.isEmpty(cmdArray[2].trim())) {
                 Timber.d("查询服务器地址2应答指令错误");
                 return;
             }
-
-            if (TextUtils.isEmpty(cmdArray[1].trim())) {
-                Timber.d("查询服务器地址2应答指令错误");
-                return;
-            }
-
-            if (TextUtils.isEmpty(cmdArray[2].trim())) {
-                Timber.d("查询服务器地址2应答指令错误");
-                return;
-            }
-
             if (isRefreshingAddress) {
                 isRefreshingAddress = false;
                 hander.removeCallbacks(clearAnimationRunnable);
@@ -661,11 +637,13 @@ public class ADMEHomeFragment extends BaseFragment {
 //        }
 //
         //设置测试模式应答
-        if (cmdStr.startsWith("$$70121") && cmdStr.endsWith("\r\n")) {
-//            ToastUtils.show("设置测试模式完成");
+        if (cmdStr.startsWith("$$70123") && cmdStr.endsWith("\r\n")) {
             Timber.d("测试模式已打开");
-            configADMEActivity.sendCommonCommand("##7020\r\n");
-            Timber.d("发送查询控制电机参数指令===" + "##7020");
+//            configADMEActivity.sendCommonCommand("##7020\r\n");
+//            Timber.d("发送查询控制电机参数指令===" + "##7020");
+
+            configADMEActivity.sendCommonCommand("##7022\r\n");
+            Timber.d("发送查询计米轮参数指令===" + "##7022");
             return;
         }
 
@@ -766,7 +744,6 @@ public class ADMEHomeFragment extends BaseFragment {
      */
     private boolean checkAutoMonitorAndDebugMode(final int tag) {
         String msg = "";
-
         switch (tag) {
             case AUTO_MONITOR:
                 if (!sbDebugMode.isChecked()) {
@@ -813,7 +790,7 @@ public class ADMEHomeFragment extends BaseFragment {
                                 setSwitchViewState(false, tvAutoMonitorState, "已关闭");
 
                                 //打开测试模式命令
-                                configADMEActivity.sendCommonCommand("##70121\r\n");
+                                configADMEActivity.sendCommonCommand("##70123\r\n");
                                 setSwitchViewState(true, tvDebugMode, "已打开");
                                 debugItemLayout.setVisibility(View.VISIBLE);
                                 break;

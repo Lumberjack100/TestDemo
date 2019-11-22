@@ -197,13 +197,26 @@ public class ADMEMotorControlActivity extends BaseDeviceConnectActivity {
         mSpinner.setAdapter(pullModeAdapter);
 
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-//        mRecyclerView.addItemDecoration(new RecycleViewDivider(this, LinearLayoutManager.VERTICAL));
         adapter = new CommonAdapter<String>(this, R.layout.listitem_motor_distance, distanceList) {
             @Override
             protected void convert(ViewHolder holder, final String distance, final int position) {
-                holder.setText(R.id.tv_number, "计次 " + countNum);
-                holder.setText(R.id.tv_interval, "间隔：" + 100 + " mm");
+                holder.setText(R.id.tv_number, "计次 " + (distanceList.size() - position));
                 holder.setText(R.id.tv_distance, distance + " mm");
+
+                try {
+                    double interval;
+                    double curDistance = Double.parseDouble(distance);
+                    if (position + 1 < distanceList.size()) {
+                        double lastDistance = Double.parseDouble(distanceList.get(position + 1));
+                        interval = curDistance - lastDistance;
+                    } else {
+                        interval = curDistance;
+                    }
+
+                    holder.setText(R.id.tv_interval, "间隔：" + String.format("%.3f", interval) + " mm");
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
             }
         };
         mRecyclerView.setAdapter(adapter);
@@ -327,7 +340,7 @@ public class ADMEMotorControlActivity extends BaseDeviceConnectActivity {
                 distance = "0";
                 MCloudApp.getMainHandler().removeCallbacks(queryRunnable);
                 //发送停止指令
-                sendCommonCommand("##7021,1,0\r\n");
+//                sendCommonCommand("##7021,1,0\r\n");
                 updateDistanceAndPulseNumber(distance, pulseNumber);
                 distanceList.clear();
                 adapter.notifyDataSetChanged();
@@ -351,7 +364,6 @@ public class ADMEMotorControlActivity extends BaseDeviceConnectActivity {
 
     private void doConfirm() {
         String distance = mEtDistance.getText().toString().trim();
-
         if (TextUtils.isEmpty(distance)) {
             ToastUtils.show("距离不能为空");
             return;
@@ -380,8 +392,9 @@ public class ADMEMotorControlActivity extends BaseDeviceConnectActivity {
      */
     private void setResultData(String cmdStr) {
         //控制电机上拉、下降指令应答
-        if (cmdStr.startsWith("$$7021,2") || cmdStr.startsWith("$$7021,3")) {
-            ToastUtils.show("设置测试模式完成");
+        if (!cmdStr.endsWith("0\r\n")
+                && (cmdStr.startsWith("$$7021,2") || cmdStr.startsWith("$$7021,3"))) {
+            ToastUtils.show("已设置测试控制电机指令");
             dismissLoadingDialog();
             hander.removeCallbacks(dismssDialogRunnable);
             return;
@@ -396,23 +409,19 @@ public class ADMEMotorControlActivity extends BaseDeviceConnectActivity {
         //查询脉冲数，距离应答
         if (cmdStr.startsWith("$$7024") && cmdStr.endsWith("\r\n")) {
             String[] cmdArray = cmdStr.replace("\r\n", "").split(",");
-            if (cmdArray.length < 3) {
+            if (cmdArray.length < 3 || TextUtils.isEmpty(cmdArray[1].trim()) || TextUtils.isEmpty(cmdArray[2].trim())) {
                 Timber.d("查询脉冲数，距离应答指令错误");
                 return;
             }
-
-            if (TextUtils.isEmpty(cmdArray[1].trim())) {
-                Timber.d("查询脉冲数，距离应答指令错误");
-                return;
-            }
-
-            if (TextUtils.isEmpty(cmdArray[2].trim())) {
-                Timber.d("查询脉冲数，距离应答指令错误");
-                return;
-            }
-
             distance = cmdArray[2];
             pulseNumber = cmdArray[1];
+
+            try {
+                distance = String.format("%.3f", Double.parseDouble(cmdArray[2]));
+            } catch (Exception ex) {
+                distance = cmdArray[2];
+                ex.printStackTrace();
+            }
             updateDistanceAndPulseNumber(distance, pulseNumber);
             return;
         }
@@ -429,6 +438,7 @@ public class ADMEMotorControlActivity extends BaseDeviceConnectActivity {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(BluetoothStateEvent bluetoothStateEvent) {
         mIvBluetooth.setImageResource(bluetoothStateEvent.isConnected ? R.drawable.ic_bluetooth_connected : R.drawable.ic_bluetooth);
+        playPauseView.setEnabled(bluetoothStateEvent.isConnected);
     }
 
 

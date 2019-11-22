@@ -227,7 +227,7 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
                     break;
 
                 case MESSAGE_WRITE_SUCCESS:
-                    Timber.d("消息写入成功");
+//                    Timber.d("消息写入成功");
                     mHandler.sendEmptyMessage(Constants.BT_MESSAGE_WRITE_SUCCESS);
                     try {
                         String msg = ((Message) event.getEventData()).getResponseMessage();
@@ -436,8 +436,8 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
 
 
     protected void parserResult(String cmdStr) {
-        //查询计米轮参数应答
-        if (cmdStr.startsWith("$$7022") && cmdStr.endsWith("\r\n")) {
+        //查询执行机构参数应答
+        if (cmdStr.startsWith("$$7002") && cmdStr.endsWith("\r\n")) {
             dismissLoadingDialog();
             hander.removeCallbacks(dismssDialogRunnable);
         }
@@ -528,12 +528,6 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
 
         sendCommonCommand("##7002\r\n");
         Timber.d("发送查询执行机构参数指令===" + "##7002");
-
-        sendCommonCommand("##7020\r\n");
-        Timber.d("发送查询控制电机参数指令===" + "##7020");
-
-        sendCommonCommand("##7022\r\n");
-        Timber.d("发送查询计米轮参数指令===" + "##7022");
     }
 
 
