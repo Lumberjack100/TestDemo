@@ -332,7 +332,9 @@ public class ADMEHomeFragment extends BaseFragment {
                         setSwitchViewState(true, tvAutoMonitorState, "已启用");
                     }
                 } else {
-                    showCloseSwitchButtonDialog("关闭自动监测，将导致设备自动关机进入休眠状态。请确认是否关闭", AUTO_MONITOR);
+                    //关闭自动监测模式命令
+                    configADMEActivity.sendCommonCommand("##70112\r\n");
+                    setSwitchViewState(false, tvAutoMonitorState, "已关闭");
                 }
             }
         });

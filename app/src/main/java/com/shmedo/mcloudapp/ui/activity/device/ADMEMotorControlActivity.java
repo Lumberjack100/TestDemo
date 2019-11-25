@@ -352,8 +352,8 @@ public class ADMEMotorControlActivity extends BaseDeviceConnectActivity {
                     //发送下降指令
                     sendCommonCommand("##7021,3,0\r\n");
                 }
-                MCloudApp.getMainHandler().postDelayed(queryRunnable, 0);
                 isStop = false;
+                MCloudApp.getMainHandler().postDelayed(queryRunnable, 0);
                 break;
 
             case STATE_PAUSE:
@@ -361,7 +361,9 @@ public class ADMEMotorControlActivity extends BaseDeviceConnectActivity {
                 controlPullView.setVisibility(View.VISIBLE);
                 mBtnClear.setEnabled(true);
                 mBtnCount.setEnabled(false);
-                mBtnConfirm.setEnabled(false);
+                mBtnConfirm.setEnabled(true);
+//                isStop = true;
+//                MCloudApp.getMainHandler().removeCallbacks(queryRunnable);
                 //发送停止指令
                 sendCommonCommand("##7021,1,0\r\n");
                 break;
@@ -439,9 +441,9 @@ public class ADMEMotorControlActivity extends BaseDeviceConnectActivity {
         hander.postDelayed(dismssDialogRunnable, 5000);
         sendCommonCommand(cmdStr);
 
+        isStop = false;
         //轮询查询电机状态
         MCloudApp.getMainHandler().postDelayed(queryRunnable, 0);
-        isStop = false;
     }
 
 
@@ -479,10 +481,12 @@ public class ADMEMotorControlActivity extends BaseDeviceConnectActivity {
 
             //电机已经停止，不用再轮询电子状态
             if (!TextUtils.isEmpty(pulseNumber) && pulseNumber.equals(cmdArray[1])) {
+                isStop = true;
                 //轮询查询电机状态
                 MCloudApp.getMainHandler().removeCallbacks(queryRunnable);
-                isStop = true;
+                playPauseView.pause();
                 mBtnConfirm.setText("确定");
+                mBtnConfirm.setEnabled(true);
                 return;
             }
 
