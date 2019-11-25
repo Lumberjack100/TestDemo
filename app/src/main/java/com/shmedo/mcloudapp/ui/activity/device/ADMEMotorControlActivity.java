@@ -440,6 +440,7 @@ public class ADMEMotorControlActivity extends BaseDeviceConnectActivity {
         showLoadingDialog("正在发送配置指令...");
         hander.postDelayed(dismssDialogRunnable, 5000);
         sendCommonCommand(cmdStr);
+        Timber.d("控制电机" + (mSpinner.getSelectedItemPosition() == 0 ? "上拉" : "下降") + "指令==" + cmdStr);
 
         isStop = false;
         //轮询查询电机状态
