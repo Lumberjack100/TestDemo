@@ -295,6 +295,7 @@ public class ADMEMotorControlActivity extends BaseDeviceConnectActivity {
                 if (mBtnConfirm.getText().toString().equals("确定")) {
                     doConfirm();
                 } else {
+                    MCloudApp.getMainHandler().removeCallbacks(queryRunnable);
                     //发送停止指令
                     sendCommonCommand("##7021,1,0\r\n");
                     mBtnConfirm.setText("确定");
@@ -363,7 +364,7 @@ public class ADMEMotorControlActivity extends BaseDeviceConnectActivity {
                 mBtnCount.setEnabled(false);
                 mBtnConfirm.setEnabled(true);
 //                isStop = true;
-//                MCloudApp.getMainHandler().removeCallbacks(queryRunnable);
+                MCloudApp.getMainHandler().removeCallbacks(queryRunnable);
                 //发送停止指令
                 sendCommonCommand("##7021,1,0\r\n");
                 break;
@@ -374,8 +375,7 @@ public class ADMEMotorControlActivity extends BaseDeviceConnectActivity {
                 mBtnClear.setEnabled(false);
                 mBtnCount.setEnabled(true);
                 mBtnConfirm.setEnabled(true);
-                MCloudApp.getMainHandler().removeCallbacks(queryRunnable);
-
+                isStop = true;
                 pulseNumber = "0";
                 distance = "0";
                 updateDistanceAndPulseNumber(distance, pulseNumber);
