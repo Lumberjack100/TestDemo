@@ -235,6 +235,7 @@
             android:id="@+id/rl_general_setting"
             android:layout_width="match_parent"
             android:layout_height="40dp"
+            android:layout_marginBottom="20dp"
             android:background="@color/bg_main_light_white">
 
             <ImageView

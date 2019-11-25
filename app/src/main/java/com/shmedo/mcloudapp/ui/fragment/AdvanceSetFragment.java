@@ -28,13 +28,11 @@ import com.shmedo.das.das.cmd.entity.RebootDeviceEntity;
 import com.shmedo.mcloudapp.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.base.BaseFragment;
-import com.shmedo.mcloudapp.bluetooth.Message;
+import com.shmedo.mcloudapp.ui.activity.ConfigDAGActivity;
 import com.shmedo.mcloudapp.ui.activity.device.senior.InstructionDebugActivity;
 import com.shmedo.mcloudapp.ui.activity.device.senior.ProductRegistrationActivity;
 import com.shmedo.mcloudapp.util.KeyBordUtils;
 import com.shmedo.mcloudapp.util.StringUtil;
-
-import java.util.UUID;
 
 import butterknife.OnClick;
 
@@ -47,6 +45,8 @@ import butterknife.OnClick;
  * 描述：   高级设置
  */
 public class AdvanceSetFragment extends BaseFragment {
+
+    private ConfigDAGActivity configDAGActivity;
 
     private MaterialDialog.Builder mBuilder;
     private MaterialDialog mMaterialDialog;
@@ -63,31 +63,43 @@ public class AdvanceSetFragment extends BaseFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = super.onCreateView(inflater, container, savedInstanceState);
+        configDAGActivity = (ConfigDAGActivity) getActivity();
+
         return view;
     }
 
     @OnClick({R.id.ll_reset_data, R.id.ll_restart_system, R.id.rl_modify_authorization, R.id.rl_product_register, R.id.rl_instruction_debug})
     public void onViewClicked(View view) {
         switch (view.getId()) {
-            case R.id.ll_reset_data:  //恢复出厂设置
-                showResetDataDialog();
+            case R.id.ll_reset_data://恢复出厂设置
+                if (checkIsBluetoothConnected()) {
+                    showResetDataDialog();
+                }
                 break;
 
             case R.id.ll_restart_system://重启系统
-                showReStartDialog();
+                if (checkIsBluetoothConnected()) {
+                    showReStartDialog();
+                }
                 break;
 
             case R.id.rl_modify_authorization: //修改授权码
-                showModifyAuthorizationDialog();
+                if (checkIsBluetoothConnected()) {
+                    showModifyAuthorizationDialog();
+                }
                 break;
 
             case R.id.rl_product_register://产品注册
-                Intent intent = new Intent(getActivity(), ProductRegistrationActivity.class);
-                startActivity(intent);
+                if (checkIsBluetoothConnected()) {
+                    Intent intent = new Intent(getActivity(), ProductRegistrationActivity.class);
+                    startActivity(intent);
+                }
                 break;
 
             case R.id.rl_instruction_debug://指令交互调试模式
-                InstructionDebugActivity.startActivity(getActivity());
+                if (checkIsBluetoothConnected()) {
+                    InstructionDebugActivity.startActivity(getActivity());
+                }
                 break;
         }
     }
@@ -108,17 +120,9 @@ public class AdvanceSetFragment extends BaseFragment {
         mBuilder.onPositive(new MaterialDialog.SingleButtonCallback() {
             @Override
             public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                if (!MCloudApp.isIsBluetoothDeviceConnected()) {
-                    ToastUtils.show("蓝牙未连接");
-                    return;
-                }
-
                 String baseInfoCommand = CommandManager.getInstance().getCommand(CommandType.RESTORE_FACTORY_SETTING, null);
-                Message msg = new Message(UUID.randomUUID().toString(), baseInfoCommand, true);
-                if (DeviceFragment.mdBluetoothManager != null) {
-                    DeviceFragment.mdBluetoothManager.writeMessage(msg);
-                    ToastUtils.show("指令已发送，设备即将恢复出厂设置");
-                }
+                configDAGActivity.sendCommonCommand(baseInfoCommand);
+                ToastUtils.show("指令已发送，设备即将恢复出厂设置");
 
                 mMaterialDialog.dismiss();
                 mMaterialDialog = null;
@@ -168,19 +172,10 @@ public class AdvanceSetFragment extends BaseFragment {
                     return;
                 }
 
-                if (!MCloudApp.isIsBluetoothDeviceConnected()) {
-                    ToastUtils.show("蓝牙未连接");
-                    return;
-                }
-
                 RebootDeviceEntity rebootDeviceEntity = new RebootDeviceEntity(Integer.valueOf(time));
                 String command = CommandManager.getInstance().getCommand(CommandType.REBOOT_DEVICE, rebootDeviceEntity);
-
-                Message msg = new Message(UUID.randomUUID().toString(), command, true);
-                if (DeviceFragment.mdBluetoothManager != null) {
-                    DeviceFragment.mdBluetoothManager.writeMessage(msg);
-                    ToastUtils.show("指令已发送，设备将在 " + time + "s 后重启");
-                }
+                configDAGActivity.sendCommonCommand(command);
+                ToastUtils.show("指令已发送，设备将在 " + time + "s 后重启");
 
                 KeyBordUtils.hideSoftKeyboard(etRestartTime);
                 mMaterialDialog.dismiss();
@@ -255,7 +250,6 @@ public class AdvanceSetFragment extends BaseFragment {
         btnCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 KeyBordUtils.hideSoftKeyboard(etOriginAuthor);
                 mMaterialDialog.dismiss();
                 mMaterialDialog = null;
@@ -279,6 +273,15 @@ public class AdvanceSetFragment extends BaseFragment {
         AbsoluteSizeSpan absoluteSizeSpan = new AbsoluteSizeSpan(13, true);
         spannableString.setSpan(absoluteSizeSpan, 0, spannableString.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         editText.setHint(new SpannedString(spannableString));
+    }
+
+    private boolean checkIsBluetoothConnected() {
+        if (!MCloudApp.isIsBluetoothDeviceConnected()) {
+            ToastUtils.show(getString(R.string.param_config_bluetooth_disconnect_warn));
+            return false;
+        }
+
+        return true;
     }
 
 

@@ -485,7 +485,6 @@ public class ADMEMotorControlActivity extends BaseDeviceConnectActivity {
                 isStop = true;
                 //轮询查询电机状态
                 MCloudApp.getMainHandler().removeCallbacks(queryRunnable);
-                playPauseView.pause();
                 mBtnConfirm.setText("确定");
                 mBtnConfirm.setEnabled(true);
                 return;

@@ -131,7 +131,7 @@ public class ConfigDAGActivity extends BaseDeviceConnectActivity {
     }
 
 
-    @OnClick({R.id.back, R.id.tv_save, R.id.tv_parameter, R.id.tv_query_data, R.id.tv_device_details})
+    @OnClick({R.id.back, R.id.tv_save, R.id.tv_parameter, R.id.tv_query_data, R.id.tv_device_details, R.id.tv_highsetting})
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.back:
