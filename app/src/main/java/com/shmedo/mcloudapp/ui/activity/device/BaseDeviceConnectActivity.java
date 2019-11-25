@@ -173,7 +173,7 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
         if (null != mdBluetoothManager) {
             mdBluetoothManager.disconnect();
             isAutoConnectBlue = false;
-            MCloudApp.setIsBluetoothDeviceConnected(false);
+//            MCloudApp.setIsBluetoothDeviceConnected(false);
         }
     }
 

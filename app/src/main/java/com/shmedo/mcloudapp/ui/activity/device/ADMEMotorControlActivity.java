@@ -3,6 +3,7 @@ package com.shmedo.mcloudapp.ui.activity.device;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.InputFilter;
@@ -120,7 +121,9 @@ public class ADMEMotorControlActivity extends BaseDeviceConnectActivity {
 
     private String speedPullDown;//下降速度
 
-    private static boolean isStop = false;
+    private Handler UIHandler;
+
+    private MyRunnable mRunnable;
 
 
     public static void startActivity(Context context, String configInfo) {
@@ -129,18 +132,30 @@ public class ADMEMotorControlActivity extends BaseDeviceConnectActivity {
         context.startActivity(intent);
     }
 
-
-    private Runnable queryRunnable = new Runnable() {
+    private class MyRunnable implements Runnable {
         @Override
         public void run() {
-            if (isStop) {
-                return;
-            }
-
             sendCommonCommand("##7024\r\n");
-            MCloudApp.getMainHandler().postDelayed(this, 300);
+            UIHandler.postDelayed(this, 1000);
         }
-    };
+    }
+
+    private void startRunnable() {
+        if (mRunnable == null) {
+            mRunnable = new MyRunnable();
+            UIHandler.postDelayed(mRunnable, 0);
+        }
+    }
+
+    private void stopRunnable() {
+        UIHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                UIHandler.removeCallbacks(mRunnable);
+                mRunnable = null;
+            }
+        }, 3000);
+    }
 
 
     @Override
@@ -162,7 +177,7 @@ public class ADMEMotorControlActivity extends BaseDeviceConnectActivity {
         mIvBluetooth.setVisibility(View.VISIBLE);
 
         mEtSpeed.setInputType(InputType.TYPE_CLASS_NUMBER);
-        mEtSpeed.setHint("0-99");
+        mEtSpeed.setHint("请输入0--99");
         mEtSpeed.setFilters(new InputFilter[]{new InputFilter.LengthFilter(2)});
 
         mEtDistance.setInputType(InputType.TYPE_CLASS_NUMBER);
@@ -179,6 +194,8 @@ public class ADMEMotorControlActivity extends BaseDeviceConnectActivity {
     }
 
     private void parseIntent() {
+        UIHandler = new Handler();
+
         Intent intent = getIntent();
         if (intent.getExtras().containsKey(Extras.ADME_MOTOR_CONTROL_CONFIG_INFO)) {
             configInfo = intent.getStringExtra(Extras.ADME_MOTOR_CONTROL_CONFIG_INFO);
@@ -295,22 +312,20 @@ public class ADMEMotorControlActivity extends BaseDeviceConnectActivity {
                 if (mBtnConfirm.getText().toString().equals("确定")) {
                     doConfirm();
                 } else {
-                    MCloudApp.getMainHandler().removeCallbacks(queryRunnable);
                     //发送停止指令
                     sendCommonCommand("##7021,1,0\r\n");
-                    mBtnConfirm.setText("确定");
+//                    stopRunnable();
+//                    mBtnConfirm.setText("确定");
                 }
                 break;
 
             case R.id.btn_pull_up://上拉
                 runMode = HAND_PULL_UP;
-                playPauseView.play();
                 setPlayPauseState(STATE_PLAY);
                 break;
 
             case R.id.btn_pull_down://下降
                 runMode = HAND_PULL_DOWN;
-                playPauseView.play();
                 setPlayPauseState(STATE_PLAY);
                 break;
 
@@ -323,7 +338,6 @@ public class ADMEMotorControlActivity extends BaseDeviceConnectActivity {
                     ToastUtils.show(getString(R.string.param_config_bluetooth_disconnect_warn));
                     return;
                 }
-
                 if (!TextUtils.isEmpty(distance)) {
                     adapter.addItem(distance, 0);
                     mRecyclerView.scrollToPosition(0);
@@ -343,6 +357,7 @@ public class ADMEMotorControlActivity extends BaseDeviceConnectActivity {
             case STATE_PLAY:
                 chooseRunModeView.setVisibility(View.GONE);
                 controlPullView.setVisibility(View.VISIBLE);
+                playPauseView.play();
                 mBtnClear.setEnabled(false);
                 mBtnCount.setEnabled(true);
                 mBtnConfirm.setEnabled(false);
@@ -353,8 +368,7 @@ public class ADMEMotorControlActivity extends BaseDeviceConnectActivity {
                     //发送下降指令
                     sendCommonCommand("##7021,3,0\r\n");
                 }
-                isStop = false;
-                MCloudApp.getMainHandler().postDelayed(queryRunnable, 0);
+                startRunnable();
                 break;
 
             case STATE_PAUSE:
@@ -363,10 +377,9 @@ public class ADMEMotorControlActivity extends BaseDeviceConnectActivity {
                 mBtnClear.setEnabled(true);
                 mBtnCount.setEnabled(false);
                 mBtnConfirm.setEnabled(true);
-//                isStop = true;
-                MCloudApp.getMainHandler().removeCallbacks(queryRunnable);
                 //发送停止指令
                 sendCommonCommand("##7021,1,0\r\n");
+//                stopRunnable();
                 break;
 
             case STATE_CLEAR:
@@ -375,7 +388,6 @@ public class ADMEMotorControlActivity extends BaseDeviceConnectActivity {
                 mBtnClear.setEnabled(false);
                 mBtnCount.setEnabled(true);
                 mBtnConfirm.setEnabled(true);
-                isStop = true;
                 pulseNumber = "0";
                 distance = "0";
                 updateDistanceAndPulseNumber(distance, pulseNumber);
@@ -383,19 +395,6 @@ public class ADMEMotorControlActivity extends BaseDeviceConnectActivity {
                 adapter.notifyDataSetChanged();
                 break;
         }
-    }
-
-    private void updateDistanceAndPulseNumber(String distance, String number) {
-        SpannableStringBuilder builder = new SpannableStringBuilder(distance);
-        AbsoluteSizeSpan span = new AbsoluteSizeSpan(22, true);
-        builder.setSpan(span, 0, builder.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-        builder.append("   mm");
-        mTvDistance.setText(builder);
-
-        builder = new SpannableStringBuilder(number);
-        builder.setSpan(span, 0, builder.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-        builder.append("   个");
-        mTvPulseNumber.setText(builder);
     }
 
 
@@ -434,17 +433,14 @@ public class ADMEMotorControlActivity extends BaseDeviceConnectActivity {
         stringBuilder.append(distance + ",");
         stringBuilder.append(speedPullUp + ",");
         stringBuilder.append(speedPullDown + "\r\n");
-
         String cmdStr = String.valueOf(stringBuilder);
 
         showLoadingDialog("正在发送配置指令...");
         hander.postDelayed(dismssDialogRunnable, 5000);
         sendCommonCommand(cmdStr);
         Timber.d("控制电机" + (mSpinner.getSelectedItemPosition() == 0 ? "上拉" : "下降") + "指令==" + cmdStr);
-
-        isStop = false;
         //轮询查询电机状态
-        MCloudApp.getMainHandler().postDelayed(queryRunnable, 0);
+        startRunnable();
     }
 
 
@@ -467,8 +463,9 @@ public class ADMEMotorControlActivity extends BaseDeviceConnectActivity {
 
         //停止电机指令应答
         if (cmdStr.startsWith("$$7021,1")) {
-            ToastUtils.show("电机已停止");
-            isStop = true;
+            ToastUtils.show("电机停止");
+            mBtnConfirm.setText("确定");
+            stopRunnable();
             return;
         }
 
@@ -481,14 +478,12 @@ public class ADMEMotorControlActivity extends BaseDeviceConnectActivity {
             }
 
             //电机已经停止，不用再轮询电子状态
-            if (!TextUtils.isEmpty(pulseNumber) && pulseNumber.equals(cmdArray[1])) {
-                isStop = true;
-                //轮询查询电机状态
-                MCloudApp.getMainHandler().removeCallbacks(queryRunnable);
-                mBtnConfirm.setText("确定");
-                mBtnConfirm.setEnabled(true);
-                return;
-            }
+//            if (!TextUtils.isEmpty(pulseNumber) && pulseNumber.equals(cmdArray[1])) {
+//                stopRunnable();
+//                mBtnConfirm.setText("确定");
+//                mBtnConfirm.setEnabled(true);
+//                return;
+//            }
 
             distance = cmdArray[2];
             pulseNumber = cmdArray[1];
@@ -516,6 +511,20 @@ public class ADMEMotorControlActivity extends BaseDeviceConnectActivity {
     public void onMessageEvent(BluetoothStateEvent bluetoothStateEvent) {
         mIvBluetooth.setImageResource(bluetoothStateEvent.isConnected ? R.drawable.ic_bluetooth_connected : R.drawable.ic_bluetooth);
         playPauseView.setEnabled(bluetoothStateEvent.isConnected);
+    }
+
+
+    private void updateDistanceAndPulseNumber(String distance, String number) {
+        SpannableStringBuilder builder = new SpannableStringBuilder(distance);
+        AbsoluteSizeSpan span = new AbsoluteSizeSpan(22, true);
+        builder.setSpan(span, 0, builder.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        builder.append("   mm");
+        mTvDistance.setText(builder);
+
+        builder = new SpannableStringBuilder(number);
+        builder.setSpan(span, 0, builder.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        builder.append("   个");
+        mTvPulseNumber.setText(builder);
     }
 
 

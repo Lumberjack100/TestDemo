@@ -16,7 +16,6 @@ import com.shmedo.das.common.CollectorConfigInfo;
 import com.shmedo.mcloudapp.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.model.Extras;
-import com.shmedo.mcloudapp.ui.fragment.DeviceFragment;
 import com.shmedo.mcloudapp.util.StringUtil;
 
 import butterknife.BindView;
@@ -67,10 +66,14 @@ public class GeneralSettingActivity extends BaseDeviceConnectActivity {
     private String standbyTime;
     private String collectTime;
 
+    private String collectorType;
 
-    public static void startActivity(Context context, CollectorConfigInfo collectorConfigInfo) {
+
+    public static void startActivity(Context context, CollectorConfigInfo collectorConfigInfo, String collectorType) {
         Intent intent = new Intent(context, GeneralSettingActivity.class);
         intent.putExtra(Extras.PARAM_CONFIG_INFO, collectorConfigInfo);
+        intent.putExtra(Extras.COLLECTOR_TYPE, collectorType);
+
         context.startActivity(intent);
     }
 
@@ -100,6 +103,10 @@ public class GeneralSettingActivity extends BaseDeviceConnectActivity {
                 mEtStandbyTime.setText(collectorConfigInfo.getStandbyTime());
                 mEtCollectTime.setText(collectorConfigInfo.getCollectorInterval());
             }
+        }
+
+        if (intent.getExtras().containsKey(Extras.COLLECTOR_TYPE)) {
+            collectorType = intent.getStringExtra(Extras.COLLECTOR_TYPE);
         }
     }
 
@@ -162,9 +169,9 @@ public class GeneralSettingActivity extends BaseDeviceConnectActivity {
         }
 
         String cmdCollectorAddress = "##147" + collectorAddress + "\r\n";
-        String cmdCollectTime = "##161" + DeviceFragment.collectorType + StringUtil.formatStringFive(collectTime) + "\r\n";
-        String cmdStandbyTime = "##160" + DeviceFragment.collectorType + StringUtil.formatStringFour(standbyTime) + "\r\n";
-        String cmdCalculatTime = "##163" + DeviceFragment.collectorType + StringUtil.formatStringFour(calculatTime) + "\r\n";
+        String cmdCollectTime = "##161" + collectorType + StringUtil.formatStringFive(collectTime) + "\r\n";
+        String cmdStandbyTime = "##160" + collectorType + StringUtil.formatStringFour(standbyTime) + "\r\n";
+        String cmdCalculatTime = "##163" + collectorType + StringUtil.formatStringFour(calculatTime) + "\r\n";
 
         sendCommonCommand(cmdCollectorAddress);
         Timber.d("发送设置采集器地址指令===" + cmdCollectorAddress);

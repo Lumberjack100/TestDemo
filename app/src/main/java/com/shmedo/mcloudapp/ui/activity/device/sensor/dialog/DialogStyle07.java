@@ -74,7 +74,7 @@ public class DialogStyle07 implements IDialogOpt<CollectorSensorParamsInfoSub> {
         modbusAddress.setText(collectorSensorParamsInfoSub.getSensorAddress());
         triggerThreshold.setText(String.valueOf(sensorRadarLevelInfo.getTriggerThreshold()));
         revised.setText(String.valueOf(sensorRadarLevelInfo.getRevised()));
-        measureLong.setText(String.valueOf(sensorRadarLevelInfo.getProbeElevation()));
+//        measureLong.setText(String.valueOf(sensorRadarLevelInfo.getProbeElevation()));
 
         if (myOnClickListener != null) {
             save.setOnClickListener(new View.OnClickListener() {
@@ -82,7 +82,7 @@ public class DialogStyle07 implements IDialogOpt<CollectorSensorParamsInfoSub> {
                 public void onClick(View view) {
                     sensorRadarLevelInfo.setTriggerThreshold(triggerThreshold.getText().toString());
                     sensorRadarLevelInfo.setRevised(Double.valueOf(revised.getText().toString()));
-                    sensorRadarLevelInfo.setProbeElevation(measureLong.getText().toString());
+//                    sensorRadarLevelInfo.setProbeElevation(measureLong.getText().toString());
                     collectorSensorParamsInfoSub.setSensorData(sensorRadarLevelInfo);
                     collectorSensorParamsInfoSub.setSensorAddress(modbusAddress.getText().toString());
 
