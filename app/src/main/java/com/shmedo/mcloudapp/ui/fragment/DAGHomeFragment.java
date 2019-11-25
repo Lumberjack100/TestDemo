@@ -133,6 +133,9 @@ public class DAGHomeFragment extends BaseFragment {
     @BindView(R.id.sim_B_layout)
     View simBLayout;
 
+    @BindView(R.id.break_alarm_layout)
+    View breakAlarmLayout;
+
     @BindView(R.id.rain_gauge_layout)
     View rainGaugeLayout;
 
@@ -142,11 +145,12 @@ public class DAGHomeFragment extends BaseFragment {
     @BindView(R.id.sensor_setting_layout)
     View sensorSettingLayout;
 
-    private TextView mTvBluetoothConnect, mTvDeviceEnable, mTvDeviceLock, mTvDebugMode, mTvSimA, mTvSimB;
+    private TextView mTvBluetoothConnect, mTvDeviceEnable, mTvDeviceLock, mTvDebugMode, mTvSimA, mTvSimB,mTvOftenStatus;
 
-    private SwitchButton mSbBluetoothConnect, mSbDeviceEnable, mSbDeviceLock, mSbDebugMode, mSbSimA, mSbSimB, mSbRainGauge, mSbOsmometer;
+    private SwitchButton mSbBluetoothConnect, mSbDeviceEnable, mSbDeviceLock, mSbDebugMode, mSbSimA, mSbSimB,
+            mSbRainGauge, mSbOsmometer,mSbBleakAlarm;
 
-    private Spinner mSpDebugMode;
+    private Spinner mSpDebugMode,mSpOftenStatus;
 
     private Button mBtnRainGauge, mBtnOsmometer;
 
@@ -163,6 +167,7 @@ public class DAGHomeFragment extends BaseFragment {
     private HashMap<String, SystemDataInfo> systemDataInfoHashMap = new HashMap<>();
 
     private ArrayAdapter<String> debugModeAdapter;
+    private ArrayAdapter<String> oftenStatusAdapter;
 
     private String collectorType = "";//采集器编号
 
@@ -258,6 +263,11 @@ public class DAGHomeFragment extends BaseFragment {
         ((TextView) osmometerConfigLayout.findViewById(R.id.tv_config_name)).setText("渗压计功能");
         mBtnOsmometer = osmometerConfigLayout.findViewById(R.id.btn_config);
         mSbOsmometer = osmometerConfigLayout.findViewById(R.id.switchButton);
+
+        ((TextView) breakAlarmLayout.findViewById(R.id.tv_config_name)).setText("断线报警器");
+        mTvOftenStatus = breakAlarmLayout.findViewById(R.id.tv_device_state);
+        mSbBleakAlarm = breakAlarmLayout.findViewById(R.id.switchButton);
+        mSpOftenStatus = breakAlarmLayout.findViewById(R.id.spinner);
 
         ((TextView) sensorSettingLayout.findViewById(R.id.tv_config_name)).setText("传感器参数配置");
 
@@ -436,6 +446,25 @@ public class DAGHomeFragment extends BaseFragment {
                 }
             }
         });
+
+        //断线报警器开关
+        mSbBleakAlarm.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (!MCloudApp.isIsBluetoothDeviceConnected()) {
+                    ToastUtils.show(getString(R.string.param_config_bluetooth_disconnect_warn));
+                    mSbBleakAlarm.setCheckedImmediatelyNoEvent(!isChecked);
+                    return;
+                }
+                if (isChecked) {
+                    //发送打开
+                    configDAGActivity.sendCommonCommand("##70111\r\n");
+                    setSwitchViewState(true, mTvOftenStatus, "已启用");
+                } else {
+                    showCloseSwitchButtonDialog("关闭自动监测，将导致设备自动关机进入休眠状态。请确认是否关闭", DEBUG_MODEL);
+                }
+            }
+        });
     }
 
     private void initAdapter() {
@@ -455,6 +484,12 @@ public class DAGHomeFragment extends BaseFragment {
         debugModeAdapter = new ArrayAdapter<>(configDAGActivity, android.R.layout.simple_spinner_item, debugData);
         debugModeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mSpDebugMode.setAdapter(debugModeAdapter);
+
+        //断线报警器状态
+        String[] alarmData = getResources().getStringArray(R.array.break_alarm_status);
+        oftenStatusAdapter = new ArrayAdapter<>(configDAGActivity, android.R.layout.simple_spinner_item, alarmData);
+        oftenStatusAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mSpOftenStatus.setAdapter(oftenStatusAdapter);
     }
 
     private void updateView() {
@@ -590,6 +625,10 @@ public class DAGHomeFragment extends BaseFragment {
                 processGetAllSensorConfig(getAllSensorConfigInfo);
                 updateView();
                 break;
+//            case BREAK_ALARM_STATUS:
+//            case "":
+
+//                break;
         }
     }
 
