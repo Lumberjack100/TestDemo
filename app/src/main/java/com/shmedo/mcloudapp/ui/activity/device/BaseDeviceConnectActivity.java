@@ -73,8 +73,14 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
         @Override
         public void run() {
             dismissLoadingDialog();
-            if (!TextUtils.isEmpty(errMsg))
+            if (!TextUtils.isEmpty(errMsg)) {
                 ToastUtils.show(errMsg);
+
+                if(errMsg.contains("连接超时")){
+                    MCloudApp.setIsBluetoothDeviceConnected(false);
+                    EventBus.getDefault().post(new BluetoothStateEvent(false));
+                }
+            }
         }
     };
 
@@ -163,7 +169,7 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
         mdBluetoothManager.connectDevice(device, this);
         showLoadingDialog("正在连接设备：" + SN);
         errMsg = "连接超时,请稍后尝试";
-        hander.postDelayed(dismssDialogRunnable, 20000);
+        hander.postDelayed(dismssDialogRunnable, 15000);
     }
 
     /**

@@ -125,6 +125,8 @@ public class ADMEMotorControlActivity extends BaseDeviceConnectActivity {
 
     private MyRunnable mRunnable;
 
+    private static int repeatNum = 0;//当查询电机脉冲数重复超过一定次数(3次)时，判定电机停止
+
 
     public static void startActivity(Context context, String configInfo) {
         Intent intent = new Intent(context, ADMEMotorControlActivity.class);
@@ -148,13 +150,16 @@ public class ADMEMotorControlActivity extends BaseDeviceConnectActivity {
     }
 
     private void stopRunnable() {
-        UIHandler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                UIHandler.removeCallbacks(mRunnable);
-                mRunnable = null;
-            }
-        }, 3000);
+//        UIHandler.postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                UIHandler.removeCallbacks(mRunnable);
+//                mRunnable = null;
+//            }
+//        }, 3000);
+
+        UIHandler.removeCallbacks(mRunnable);
+        mRunnable = null;
     }
 
 
@@ -463,9 +468,10 @@ public class ADMEMotorControlActivity extends BaseDeviceConnectActivity {
 
         //停止电机指令应答
         if (cmdStr.startsWith("$$7021,1")) {
-            ToastUtils.show("电机停止");
-            mBtnConfirm.setText("确定");
-            stopRunnable();
+//            ToastUtils.show("电机停止");
+//            mBtnConfirm.setText("确定");
+            repeatNum = 0;
+//            stopRunnable();
             return;
         }
 
@@ -478,12 +484,16 @@ public class ADMEMotorControlActivity extends BaseDeviceConnectActivity {
             }
 
             //电机已经停止，不用再轮询电子状态
-//            if (!TextUtils.isEmpty(pulseNumber) && pulseNumber.equals(cmdArray[1])) {
-//                stopRunnable();
-//                mBtnConfirm.setText("确定");
-//                mBtnConfirm.setEnabled(true);
-//                return;
-//            }
+            if (!TextUtils.isEmpty(pulseNumber) && pulseNumber.equals(cmdArray[1])) {
+                repeatNum++;
+                if (repeatNum >= 3) {
+                    ToastUtils.show("电机停止");
+                    stopRunnable();
+                    mBtnConfirm.setText("确定");
+                    mBtnConfirm.setEnabled(true);
+                    return;
+                }
+            }
 
             distance = cmdArray[2];
             pulseNumber = cmdArray[1];

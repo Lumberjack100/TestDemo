@@ -7,11 +7,17 @@
         </shape>
     </item>
 
+    <item android:state_pressed="true">
+        <shape android:shape="oval">
+            <solid android:color="@color/colorPrimaryDark"/>
+        </shape>
+    </item>
+
     <item>
-        <shape>
-            <corners android:radius="3dp" />
+        <shape android:shape="oval">
             <solid android:color="@color/colorPrimary" />
         </shape>
     </item>
+
 
 </selector>
