@@ -163,7 +163,7 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
         mdBluetoothManager.connectDevice(device, this);
         showLoadingDialog("正在连接设备：" + SN);
         errMsg = "连接超时,请稍后尝试";
-        hander.postDelayed(dismssDialogRunnable, 15000);
+        hander.postDelayed(dismssDialogRunnable, 20000);
     }
 
     /**

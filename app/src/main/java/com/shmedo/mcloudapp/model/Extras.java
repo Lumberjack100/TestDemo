@@ -22,6 +22,8 @@ public interface Extras {
     String SCAN_DEVICE_LIST = "scan_device_list";
 
 
+    String PARAM_CONFIG_INFO = "param_config_info";
+
     //ADME的 DAG 采集器配置
     String ADME_SENSOR_CONFIG_INFO = "adme_sensor_config_info";
 

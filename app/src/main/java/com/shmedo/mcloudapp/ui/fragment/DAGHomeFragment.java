@@ -275,10 +275,12 @@ public class DAGHomeFragment extends BaseFragment {
         }
 
 
+        mBtnRainGauge.setEnabled(false);
+        mBtnOsmometer.setEnabled(false);
         mBtnRainGauge.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                RainConfigActivity.startActivity(configDAGActivity);
+                RainConfigActivity.startActivity(configDAGActivity,setRianAccuryParameter.getRainAccury());
             }
         });
 
