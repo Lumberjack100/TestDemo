@@ -22,7 +22,7 @@ allprojects {
         google()
         jcenter()
         maven { url 'https://jitpack.io' }
-//        maven {url "http://172.168.5.46:9760/nexus/content/repositories/snapshots/"}
+        maven {url "http://172.168.5.46:9760/nexus/content/repositories/snapshots/"}
     }
 }
 

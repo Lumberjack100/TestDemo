@@ -70,7 +70,7 @@ public class GeneralSettingActivity extends BaseDeviceConnectActivity {
 
     public static void startActivity(Context context, CollectorConfigInfo collectorConfigInfo) {
         Intent intent = new Intent(context, GeneralSettingActivity.class);
-//        intent.putExtra(Extras.PARAM_CONFIG_INFO, collectorConfigInfo);
+        intent.putExtra(Extras.PARAM_CONFIG_INFO, collectorConfigInfo);
         context.startActivity(intent);
     }
 
