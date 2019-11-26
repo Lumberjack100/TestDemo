@@ -36,4 +36,8 @@ public interface Extras {
 
     //ADME的计米轮参数配置
     String ADME_COUNT_METER_WHEEL_CONFIG_INFO = "adme_count_meter_wheel_config_info";
+
+    //编码器修正参数
+    String ENCODER_CORRECTION_PARAMETERS = "encoder_correction_parameters";
+
 }

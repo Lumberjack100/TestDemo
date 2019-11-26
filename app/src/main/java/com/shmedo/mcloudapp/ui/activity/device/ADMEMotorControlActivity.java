@@ -179,7 +179,7 @@ public class ADMEMotorControlActivity extends BaseDeviceConnectActivity {
 
     private void initView() {
         mToolbarTitle.setText("参数设置");
-        mIvBluetooth.setVisibility(View.VISIBLE);
+        mIvBluetooth.setVisibility(View.GONE);
 
         mEtSpeed.setInputType(InputType.TYPE_CLASS_NUMBER);
         mEtSpeed.setHint("请输入0--99");
