@@ -265,7 +265,7 @@ public class ConfigDAGActivity extends BaseDeviceConnectActivity {
         Timber.d("发送版本信息指令===" + "##040");
 
         sendCommonCommand("##2270\r\n");
-        Timber.d("发送获取断线报警器状态指令===" + "##040");
+        Timber.d("发送获取断线报警器状态指令===" + "##2270");
     }
 
 

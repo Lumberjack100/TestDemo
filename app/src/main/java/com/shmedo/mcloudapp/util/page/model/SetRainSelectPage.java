@@ -25,16 +25,18 @@ public class SetRainSelectPage extends BasePage<SetRainSelectPage.SetSelectRainP
 
         //"##0051/r/n" +          //雨量站
     /**
-     * 开启/关闭 雨量站
+     * 开启/关闭 雨量站   3断线报警器开启3
      */
     @Override protected List<String> generate() {
         List<String> list = new ArrayList<>();
         StringBuilder result=new StringBuilder();
         result.append("##005");
-        if (parameter.isRainSelect()){
+        if (parameter.getRainSelect().equals("1")){
             result.append("1\r\n");
-        }else {
+        }else if (parameter.getRainSelect().equals("2")){
             result.append("2\r\n");
+        }else if (parameter.getRainSelect().equals("3")){
+            result.append("3\r\n");
         }
         list.add(String.valueOf(result));
         return list;
@@ -45,11 +47,13 @@ public class SetRainSelectPage extends BasePage<SetRainSelectPage.SetSelectRainP
         /**
          * 开启或者关闭雨量站
          */
-        private boolean rainSelect;
-        public boolean isRainSelect() {
+        private String rainSelect;
+
+        public String getRainSelect() {
             return rainSelect;
         }
-        public void setRainSelect(boolean rainSelect) {
+
+        public void setRainSelect(String rainSelect) {
             this.rainSelect = rainSelect;
         }
 

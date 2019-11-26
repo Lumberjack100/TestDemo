@@ -619,7 +619,7 @@ public class DeviceFragment extends BaseFragment implements View.OnClickListener
                         //雨量计开关
                         rainStationSub = BlueResultParserUtil.getRainStationInfo(result);
                         Timber.d("--------雨量计开关状态-------" + rainStationSub.getRainStation());
-                        setSelectRainParameter.setRainSelect(rainStationSub.getRainStation().equals("开启"));
+                        setSelectRainParameter.setRainSelect(rainStationSub.getRainStation());
                         break;
 
                     case QUERY_OSMOMETER_PARAMETER:  //400
@@ -678,10 +678,13 @@ public class DeviceFragment extends BaseFragment implements View.OnClickListener
                         if (getAllSensorConfigInfo != null) {
                             switch (getAllSensorConfigInfo.getBaseConfig().getRainfallStation()) {
                                 case RAIN_OPEN:
-                                    setSelectRainParameter.setRainSelect(true);
+                                    setSelectRainParameter.setRainSelect("1");
                                     break;
                                 case RAIN_CLOSE:
-                                    setSelectRainParameter.setRainSelect(false);
+                                    setSelectRainParameter.setRainSelect("2");
+                                    break;
+                                case ALARM_OPEN:
+                                    setSelectRainParameter.setRainSelect("3");
                                     break;
                             }
                             setRianAccuryParameter.setRainAccury(String.valueOf(getAllSensorConfigInfo.getBaseConfig().getRainAccuracy() / 100));

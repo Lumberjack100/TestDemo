@@ -23,14 +23,8 @@ import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.hjq.toast.ToastUtils;
 import com.kyleduo.switchbutton.SwitchButton;
-import com.shmedo.das.common.BaseConfigInfo;
-import com.shmedo.das.common.CollectorConfigInfo;
-import com.shmedo.das.common.GetAllSensorConfigInfo;
-import com.shmedo.das.common.QueryOsmometerParameterInfo;
-import com.shmedo.das.common.enumerate.EquipmentStatus;
-import com.shmedo.das.common.enumerate.OsmometerStatus;
-import com.shmedo.das.common.enumerate.RainfallStation;
-import com.shmedo.das.common.enumerate.SIMChoose;
+import com.shmedo.das.common.*;
+import com.shmedo.das.common.enumerate.*;
 import com.shmedo.das.das.cmd.CommandManager;
 import com.shmedo.das.das.cmd.CommandType;
 import com.shmedo.das.utils.StringUtil;
@@ -39,6 +33,7 @@ import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.base.BaseFragment;
 import com.shmedo.mcloudapp.entity.SystemDataInfo;
 import com.shmedo.mcloudapp.entity.SystemDataInfoDao;
+import com.shmedo.mcloudapp.entity.ble.BreakAlarmStatusSub;
 import com.shmedo.mcloudapp.entity.ble.DigitalOsmometerFunctionSub;
 import com.shmedo.mcloudapp.entity.ble.RainStationSub;
 import com.shmedo.mcloudapp.entity.ble.SettingRainPrecisionSub;
@@ -90,6 +85,7 @@ public class DAGHomeFragment extends BaseFragment {
 
     private static final int OSMOMETER_CONFIG = 0x0008;
 
+    private static final int BREAK_ALARM = 0x0009;
 
     @BindView(R.id.tv_device_name)
     TextView mTvDeviceName;
@@ -179,6 +175,7 @@ public class DAGHomeFragment extends BaseFragment {
     private CollectorConfigInfo collectorConfigInfo;
     private BaseConfigInfo baseConfigInfo;
     private QueryOsmometerParameterInfo queryOsmometerParameterInfo;
+    private BreakAlarmStatusInfo breakAlarmStatusInfo = new BreakAlarmStatusInfo();
 
 
     private Runnable dismssDialogRunnable = new Runnable() {
@@ -458,10 +455,10 @@ public class DAGHomeFragment extends BaseFragment {
                 }
                 if (isChecked) {
                     //发送打开
-                    configDAGActivity.sendCommonCommand("##70111\r\n");
+                    configDAGActivity.sendCommonCommand("##0053\r\n");
                     setSwitchViewState(true, mTvOftenStatus, "已启用");
                 } else {
-                    showCloseSwitchButtonDialog("关闭自动监测，将导致设备自动关机进入休眠状态。请确认是否关闭", DEBUG_MODEL);
+                    showCloseSwitchButtonDialog("请确认是否关闭断线报警器？", BREAK_ALARM);
                 }
             }
         });
@@ -490,6 +487,28 @@ public class DAGHomeFragment extends BaseFragment {
         oftenStatusAdapter = new ArrayAdapter<>(configDAGActivity, android.R.layout.simple_spinner_item, alarmData);
         oftenStatusAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mSpOftenStatus.setAdapter(oftenStatusAdapter);
+
+        //禁止OnItemSelectedListener默认自动调用一次
+        mSpOftenStatus.setSelection(0, true);
+        mSpOftenStatus.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String status = parent.getSelectedItem().toString();
+                if (status.equals("常开")){
+                    //发送断线报警器常开指令
+                    configDAGActivity.sendCommonCommand("##2271\r\n");
+                    Timber.i( "发送断线报警器常开指令==##2271");
+                }else if (status.equals("常闭")){
+                    //发送断线报警器常闭指令
+                    configDAGActivity.sendCommonCommand("##2272\r\n");
+                    Timber.i("发送断线报警器常闭指令==##2272");
+                }
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
     }
 
     private void updateView() {
@@ -584,7 +603,7 @@ public class DAGHomeFragment extends BaseFragment {
             case RAIN_STATION://雨量计开关 005
                 RainStationSub rainStationSub = BlueResultParserUtil.getRainStationInfo(cmdStr);
                 Timber.d("--------雨量计开关状态-------" + rainStationSub.getRainStation());
-                setSelectRainParameter.setRainSelect(rainStationSub.getRainStation().equals("开启"));
+                setSelectRainParameter.setRainSelect(rainStationSub.getRainStation());
                 break;
 
             case QUERY_OSMOMETER_PARAMETER://查询数字式渗压计参数 400
@@ -625,10 +644,19 @@ public class DAGHomeFragment extends BaseFragment {
                 processGetAllSensorConfig(getAllSensorConfigInfo);
                 updateView();
                 break;
-//            case BREAK_ALARM_STATUS:
-//            case "":
-
-//                break;
+            case BREAK_ALARM_STATUS: //断线报警器状态 227
+                BreakAlarmStatusSub breakAlarmStatusSub = BlueResultParserUtil.getBreakAlarmStatus(cmdStr);
+                Timber.d("--------断线报警器状态-------" +breakAlarmStatusSub.getAlarmStatus());
+                breakAlarmStatusInfo.setStatus(BreakAlarmStatus.valueOf(breakAlarmStatusSub.getAlarmStatus()));
+                switch (breakAlarmStatusInfo.getStatus()){
+                    case OPEN:
+                        mSpOftenStatus.setSelection(0);
+                        break;
+                    case CLOSE:
+                        mSpOftenStatus.setSelection(1);
+                        break;
+                }
+                break;
         }
     }
 
@@ -642,7 +670,17 @@ public class DAGHomeFragment extends BaseFragment {
         collectorConfigInfo = getAllSensorConfigInfo.getCollectorConfig();
         baseConfigInfo = getAllSensorConfigInfo.getBaseConfig();
         if (baseConfigInfo != null) {
-            setSelectRainParameter.setRainSelect(baseConfigInfo.getRainfallStation() == RainfallStation.RAIN_OPEN);
+            switch (baseConfigInfo.getRainfallStation()) {
+                case RAIN_OPEN:
+                    setSelectRainParameter.setRainSelect("1");
+                    break;
+                case RAIN_CLOSE:
+                    setSelectRainParameter.setRainSelect("2");
+                    break;
+                case ALARM_OPEN:
+                    setSelectRainParameter.setRainSelect("3");
+                    break;
+            }
             setRianAccuryParameter.setRainAccury(String.valueOf(baseConfigInfo.getRainAccuracy() / 100));
             collectorType = baseConfigInfo.getCollectorModel().toString();
         }
@@ -758,6 +796,10 @@ public class DAGHomeFragment extends BaseFragment {
                                 configDAGActivity.sendCommonCommand("##4012\r\n");
                                 mBtnOsmometer.setEnabled(false);
                                 mBtnOsmometer.setText("已停用");
+                                break;
+                            case BREAK_ALARM:
+                                configDAGActivity.sendCommonCommand("##0052\r\n");
+                                setSwitchViewState(true, mTvOftenStatus, "已关闭");
                                 break;
                         }
                     }

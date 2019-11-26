@@ -8,6 +8,7 @@ import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -576,10 +577,13 @@ public class ParameterConfigFragment extends BaseFragment
 
         //雨量计开关
         if (DeviceFragment.setSelectRainParameter != null) {
-            if (DeviceFragment.setSelectRainParameter.isRainSelect()) {
+            if (DeviceFragment.setSelectRainParameter.getRainSelect().equals("1")) {
                 setSwitchViewState(true, mSwRain, mTvRainConfig);
-            } else {
+            } else if (DeviceFragment.setSelectRainParameter.getRainSelect().equals("2")){
                 setSwitchViewState(false, mSwRain, mTvRainConfig);
+
+            }else if (DeviceFragment.setSelectRainParameter.getRainSelect().equals("3")){
+                Log.i("adu","getRainSelect  333");
             }
             initBluetooth = true;
         }

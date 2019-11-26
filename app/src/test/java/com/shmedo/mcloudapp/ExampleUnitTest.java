@@ -3,10 +3,7 @@ package com.shmedo.mcloudapp;
 import com.shmedo.das.common.BaseConfigInfo;
 import com.shmedo.das.das.cmd.CommandResult;
 import com.shmedo.das.das.cmd.parser.ParseManager;
-import com.shmedo.mcloudapp.entity.ble.BaseConfigInfoSub;
-import com.shmedo.mcloudapp.entity.ble.DigitalOsmometerFunctionSub;
-import com.shmedo.mcloudapp.entity.ble.QueryOsmometerParameterSubInfo;
-import com.shmedo.mcloudapp.entity.ble.SettingRainPrecisionSub;
+import com.shmedo.mcloudapp.entity.ble.*;
 import com.shmedo.mcloudapp.entity.ble.collector.CollectorSensorParamsInfoSub;
 import com.shmedo.mcloudapp.util.StringUtil;
 import com.shmedo.mcloudapp.util.bleutil.BlueResultParserUtil;
@@ -24,7 +21,7 @@ public class ExampleUnitTest {
     //    assertEquals(4, 2 + 2);
     //}
 
-    @Test
+
     public void parse() {
         StringUtil.setSize(646456);
         String data  = "$$000,18A095-L,0,455872,2,1,1,5400,10,100,0,9600,9600,02,3,6,3,1,2,1\r\n";
@@ -80,5 +77,12 @@ public class ExampleUnitTest {
                 System.out.println("1111");
                 break;
         }
+    }
+
+    @Test
+    public void testRain(){
+        String str = "$$0053";
+        RainStationSub rainStationSub = BlueResultParserUtil.getRainStationInfo(str);
+        System.out.println(rainStationSub.getRainStation());
     }
 }
