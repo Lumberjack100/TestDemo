@@ -21,6 +21,8 @@ import com.shmedo.mcloudapp.model.Extras;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.util.Locale;
+
 import butterknife.BindView;
 import butterknife.OnClick;
 import timber.log.Timber;
@@ -41,12 +43,27 @@ public class CountMeterWheelActivity extends BaseDeviceConnectActivity {
     @BindView(R.id.et_wheel_diameter)
     EditText mEtWheelDiameter;
 
-    private String configInfo;
+    @BindView(R.id.et_secondary_correction_factor)
+    EditText mEtSecondaryCorrectionFactor;
+
+    @BindView(R.id.et_first_correction_factor)
+    EditText mEtFirstCorrectionFactor;
+
+    @BindView(R.id.et_constant)
+    EditText mEtConstant;
+
+    @BindView(R.id.et_filter_coefficient)
+    EditText mEtFilterCoefficient;
+
+    private String countMeterParam;//计米轮参数
+
+    private String correctionParam;//编码器修正参数
 
 
-    public static void startActivity(Context context, String configInfo) {
+    public static void startActivity(Context context, String countMeterParam, String correctionParam) {
         Intent intent = new Intent(context, CountMeterWheelActivity.class);
-        intent.putExtra(Extras.ADME_COUNT_METER_WHEEL_CONFIG_INFO, configInfo);
+        intent.putExtra(Extras.ADME_COUNT_METER_WHEEL_CONFIG_INFO, countMeterParam);
+        intent.putExtra(Extras.ENCODER_CORRECTION_PARAMETERS, correctionParam);
         context.startActivity(intent);
     }
 
@@ -69,11 +86,27 @@ public class CountMeterWheelActivity extends BaseDeviceConnectActivity {
 
         mEtPulsesNumber.setInputType(InputType.TYPE_CLASS_NUMBER);
         mEtPulsesNumber.setHint("默认值：400个");
-        mEtPulsesNumber.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
+        mEtPulsesNumber.setFilters(new InputFilter[]{new InputFilter.LengthFilter(7)});
 
         mEtWheelDiameter.setInputType(InputType.TYPE_CLASS_NUMBER);
         mEtWheelDiameter.setHint("默认值：30mm");
-        mEtWheelDiameter.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
+        mEtWheelDiameter.setFilters(new InputFilter[]{new InputFilter.LengthFilter(6)});
+
+        mEtSecondaryCorrectionFactor.setInputType(InputType.TYPE_CLASS_PHONE);
+        mEtSecondaryCorrectionFactor.setHint("请输入修正参数");
+        mEtSecondaryCorrectionFactor.setFilters(new InputFilter[]{new InputFilter.LengthFilter(7)});
+
+        mEtFirstCorrectionFactor.setInputType(InputType.TYPE_CLASS_PHONE);
+        mEtFirstCorrectionFactor.setHint("请输入一次修正参数");
+        mEtFirstCorrectionFactor.setFilters(new InputFilter[]{new InputFilter.LengthFilter(7)});
+
+        mEtConstant.setInputType(InputType.TYPE_CLASS_PHONE);
+        mEtConstant.setHint("请输入常数");
+        mEtConstant.setFilters(new InputFilter[]{new InputFilter.LengthFilter(7)});
+
+        mEtFilterCoefficient.setInputType(InputType.TYPE_CLASS_PHONE);
+        mEtFilterCoefficient.setHint("请输入滤波器系数(0-9)");
+        mEtFilterCoefficient.setFilters(new InputFilter[]{new InputFilter.LengthFilter(1)});
 
         if (MCloudApp.isIsBluetoothDeviceConnected()) {
             mIvBluetooth.setImageResource(R.drawable.ic_bluetooth_connected);
@@ -85,27 +118,55 @@ public class CountMeterWheelActivity extends BaseDeviceConnectActivity {
     private void parseIntent() {
         Intent intent = getIntent();
         if (intent.getExtras().containsKey(Extras.ADME_COUNT_METER_WHEEL_CONFIG_INFO)) {
-            configInfo = intent.getStringExtra(Extras.ADME_COUNT_METER_WHEEL_CONFIG_INFO);
+            countMeterParam = intent.getStringExtra(Extras.ADME_COUNT_METER_WHEEL_CONFIG_INFO);
+            if (TextUtils.isEmpty(countMeterParam)) {
+                Timber.e("countMeterParam 为空或者null");
+                return;
+            }
+
+            if (!countMeterParam.startsWith(CommandResult.COMMAND_RESULT_HEADER)) {
+                Timber.e("countMeterParam 格式错误:" + countMeterParam);
+                return;
+            }
+
+            String[] cmdArray = countMeterParam.replace("\r\n", "").split(",");
+            if (cmdArray.length < 3) {
+                Timber.e("countMeterParam 格式错误:" + countMeterParam);
+                return;
+            }
+
+            mEtPulsesNumber.setText(cmdArray[1]);
+            mEtWheelDiameter.setText(cmdArray[2]);
         }
 
-        if (TextUtils.isEmpty(configInfo)) {
-            Timber.e("configInfo 为空或者null");
-            return;
-        }
+        if (intent.getExtras().containsKey(Extras.ENCODER_CORRECTION_PARAMETERS)) {
+            correctionParam = intent.getStringExtra(Extras.ENCODER_CORRECTION_PARAMETERS);
+            if (TextUtils.isEmpty(correctionParam)) {
+                Timber.e("correctionParam 为空或者null");
+                return;
+            }
 
-        if (!configInfo.startsWith(CommandResult.COMMAND_RESULT_HEADER)) {
-            Timber.e("configInfo 格式错误:" + configInfo);
-            return;
-        }
+            if (!correctionParam.startsWith(CommandResult.COMMAND_RESULT_HEADER)) {
+                Timber.e("correctionParam 格式错误:" + correctionParam);
+                return;
+            }
 
-        String[] cmdArray = configInfo.replace("\r\n", "").split(",");
-        if (cmdArray.length < 3) {
-            Timber.e("configInfo 格式错误:" + configInfo);
-            return;
-        }
+            String[] cmdArray = correctionParam.replace("\r\n", "").split(",");
+            if (cmdArray.length < 5) {
+                Timber.e("correctionParam 格式错误:" + correctionParam);
+                return;
+            }
 
-        mEtPulsesNumber.setText(cmdArray[1]);
-        mEtWheelDiameter.setText(cmdArray[2]);
+            try {
+                mEtSecondaryCorrectionFactor.setText(String.format(Locale.getDefault(), "%.3f", Double.parseDouble(cmdArray[1])));
+                mEtFirstCorrectionFactor.setText(String.format(Locale.getDefault(), "%.3f", Double.parseDouble(cmdArray[2])));
+                mEtConstant.setText(String.format(Locale.getDefault(), "%.3f", Double.parseDouble(cmdArray[3])));
+                mEtFilterCoefficient.setText(cmdArray[4]);
+
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
     }
 
 
@@ -142,24 +203,52 @@ public class CountMeterWheelActivity extends BaseDeviceConnectActivity {
     private void doConfirm() {
         String pulsesNumber = mEtPulsesNumber.getText().toString().trim();
         String wheelDiameter = mEtWheelDiameter.getText().toString().trim();
+        String secondaryCorrectionFactor = mEtSecondaryCorrectionFactor.getText().toString().trim();
+        String firstCorrectionFactor = mEtFirstCorrectionFactor.getText().toString().trim();
+        String constant = mEtConstant.getText().toString().trim();
+        String filterCoefficient = mEtFilterCoefficient.getText().toString().trim();
 
-        if (TextUtils.isEmpty(pulsesNumber)) {
-            ToastUtils.show("脉冲数不能为空");
+        if (TextUtils.isEmpty(pulsesNumber) || Integer.parseInt(secondaryCorrectionFactor) < 0) {
+            ToastUtils.show("请输入正确的脉冲数");
             return;
         }
-
-        if (TextUtils.isEmpty(wheelDiameter)) {
-            ToastUtils.show("轮直径不能为空");
+        if (TextUtils.isEmpty(wheelDiameter) || Integer.parseInt(secondaryCorrectionFactor) <= 0) {
+            ToastUtils.show("请输入正确的轮直径");
+            return;
+        }
+        if (TextUtils.isEmpty(secondaryCorrectionFactor) || Double.parseDouble(secondaryCorrectionFactor) < 0) {
+            ToastUtils.show("请输入正确的二次修正参数");
+            return;
+        }
+        if (TextUtils.isEmpty(firstCorrectionFactor) || Double.parseDouble(secondaryCorrectionFactor) < 0) {
+            ToastUtils.show("请输入正确的一次修正参数");
+            return;
+        }
+        if (TextUtils.isEmpty(constant) || Double.parseDouble(secondaryCorrectionFactor) < 0) {
+            ToastUtils.show("请输入正确的常数");
+            return;
+        }
+        if (TextUtils.isEmpty(filterCoefficient) || Integer.parseInt(secondaryCorrectionFactor) < 0) {
+            ToastUtils.show("请输入正确的滤波器系数");
             return;
         }
 
         //拼接计米轮参数指令
-        StringBuilder sbCollector = new StringBuilder();
-        sbCollector.append("##7023,");
-        sbCollector.append(pulsesNumber + ",");
-        sbCollector.append(wheelDiameter + "\r\n");
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("##7023,");
+        stringBuilder.append(pulsesNumber + ",");
+        stringBuilder.append(wheelDiameter + "\r\n");
+        String cmdStr = String.valueOf(stringBuilder);
+        sendCommonCommand(cmdStr);
 
-        String cmdStr = String.valueOf(sbCollector);
+        //拼接编码器修正参数指令
+        stringBuilder = new StringBuilder();
+        stringBuilder.append("##7030,");
+        stringBuilder.append(secondaryCorrectionFactor + ",");
+        stringBuilder.append(firstCorrectionFactor + ",");
+        stringBuilder.append(constant + ",");
+        stringBuilder.append(filterCoefficient + "\r\n");
+        cmdStr = String.valueOf(stringBuilder);
         sendCommonCommand(cmdStr);
 
         showLoadingDialog("正在发送配置指令...");

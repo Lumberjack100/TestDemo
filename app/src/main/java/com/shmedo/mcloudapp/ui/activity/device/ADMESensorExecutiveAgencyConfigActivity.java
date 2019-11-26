@@ -26,6 +26,8 @@ import com.shmedo.mcloudapp.model.Extras;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.util.Locale;
+
 import butterknife.BindView;
 import timber.log.Timber;
 
@@ -382,7 +384,7 @@ public class ADMESensorExecutiveAgencyConfigActivity extends BaseDeviceConnectAc
         mEtSensorAddress.setText(cmdArray[6]);
 
         try {
-            mEtSensorCorrectionValue.setText(String.format("%.2f", Double.parseDouble(cmdArray[7])));
+            mEtSensorCorrectionValue.setText(String.format(Locale.getDefault(),"%.2f", Double.parseDouble(cmdArray[7])));
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -443,8 +445,8 @@ public class ADMESensorExecutiveAgencyConfigActivity extends BaseDeviceConnectAc
         mEtMotorPullDownSpeed.setText(cmdArray[8]);
 
         try {
-            mEtTractionLineLength.setText(String.format("%.1f", Double.parseDouble(cmdArray[9])));
-            mEtHoleDepth.setText(String.format("%.1f", Double.parseDouble(cmdArray[10])));
+            mEtTractionLineLength.setText(String.format(Locale.getDefault(),"%.1f", Double.parseDouble(cmdArray[9])));
+            mEtHoleDepth.setText(String.format(Locale.getDefault(),"%.1f", Double.parseDouble(cmdArray[10])));
 
         } catch (Exception ex) {
             ex.printStackTrace();

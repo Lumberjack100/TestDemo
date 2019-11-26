@@ -109,7 +109,7 @@
             android:background="@drawable/shape_edittext_bg_gray"
             android:gravity="center"
             android:hint="无"
-            android:textColor="@color/gray_807B7B"
+            android:textColor="@color/black"
             android:textColorHint="@color/gray_807B7B"
             android:textSize="@dimen/text_size_14" />
 
@@ -144,7 +144,7 @@
             android:background="@drawable/shape_edittext_bg_gray"
             android:gravity="center"
             android:hint="默认100"
-            android:textColor="@color/gray_807B7B"
+            android:textColor="@color/black"
             android:textColorHint="@color/gray_807B7B"
             android:textSize="@dimen/text_size_14" />
 

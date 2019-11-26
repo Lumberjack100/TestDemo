@@ -4,7 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.util.Log;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -12,18 +12,15 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.hjq.toast.ToastUtils;
+import com.shmedo.das.common.CollectorConfigInfo;
 import com.shmedo.mcloudapp.MCloudApp;
 import com.shmedo.mcloudapp.R;
-import com.shmedo.mcloudapp.base.BaseActivity;
-import com.shmedo.mcloudapp.ui.fragment.DeviceFragment;
+import com.shmedo.mcloudapp.model.Extras;
 import com.shmedo.mcloudapp.util.StringUtil;
-import com.shmedo.mcloudapp.util.bleutil.LogTag;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import timber.log.Timber;
 
 /**
  * 项目名：  mCloudapp
@@ -33,7 +30,7 @@ import butterknife.OnClick;
  * 创建时间:  2019/2/15 15:23
  * 描述：    通用配置页面——采集器配置
  */
-public class GeneralSettingActivity extends BaseActivity {
+public class GeneralSettingActivity extends BaseDeviceConnectActivity {
     @BindView(R.id.toolbar_title)
     TextView mToolbarTitle;
 
@@ -69,9 +66,14 @@ public class GeneralSettingActivity extends BaseActivity {
     private String standbyTime;
     private String collectTime;
 
+    private String collectorType;
 
-    public static void startActivity(Context context) {
+
+    public static void startActivity(Context context, CollectorConfigInfo collectorConfigInfo, String collectorType) {
         Intent intent = new Intent(context, GeneralSettingActivity.class);
+        intent.putExtra(Extras.PARAM_CONFIG_INFO, collectorConfigInfo);
+        intent.putExtra(Extras.COLLECTOR_TYPE, collectorType);
+
         context.startActivity(intent);
     }
 
@@ -85,23 +87,27 @@ public class GeneralSettingActivity extends BaseActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setToolBar(R.id.toolbar);
-        initView();
-        initData();
+        parseIntent();
     }
 
 
-    private void initData() {
-        if (DeviceFragment.collectorInfoSub != null) {
-            mEtCollectorAddress.setText(DeviceFragment.collectorInfoSub.getCollectorAddress());
-            mEtCalculatingTime.setText(DeviceFragment.collectorInfoSub.getWorkTime());
-            mEtStandbyTime.setText(DeviceFragment.collectorInfoSub.getStandbyTime());
-            mEtCollectTime.setText(DeviceFragment.collectorInfoSub.getCollectorInterval());
-        }
-    }
-
-
-    private void initView() {
+    private void parseIntent() {
         mToolbarTitle.setText("通用设置");
+
+        Intent intent = getIntent();
+        if (intent.getExtras().containsKey(Extras.PARAM_CONFIG_INFO)) {
+            CollectorConfigInfo collectorConfigInfo = (CollectorConfigInfo) intent.getSerializableExtra(Extras.PARAM_CONFIG_INFO);
+            if (collectorConfigInfo != null) {
+                mEtCollectorAddress.setText(collectorConfigInfo.getCollectorAddress());
+                mEtCalculatingTime.setText(collectorConfigInfo.getWorkTime());
+                mEtStandbyTime.setText(collectorConfigInfo.getStandbyTime());
+                mEtCollectTime.setText(collectorConfigInfo.getCollectorInterval());
+            }
+        }
+
+        if (intent.getExtras().containsKey(Extras.COLLECTOR_TYPE)) {
+            collectorType = intent.getStringExtra(Extras.COLLECTOR_TYPE);
+        }
     }
 
 
@@ -125,6 +131,10 @@ public class GeneralSettingActivity extends BaseActivity {
                 break;
 
             case R.id.btn_confirm_complete:
+                if (!MCloudApp.isIsBluetoothDeviceConnected()) {
+                    ToastUtils.show(getString(R.string.param_config_bluetooth_disconnect_warn));
+                    return;
+                }
                 sendCollector();
                 break;
         }
@@ -132,53 +142,48 @@ public class GeneralSettingActivity extends BaseActivity {
 
 
     private void sendCollector() {
-        int address = Integer.parseInt(mEtCollectorAddress.getText().toString().trim());
-        if (address > 0 && address < 255) {
-            collectorAddress = String.valueOf(address);
-        } else {
+        collectorAddress = mEtCollectorAddress.getText().toString().trim();
+        calculatTime = mEtCalculatingTime.getText().toString().trim();
+        standbyTime = mEtStandbyTime.getText().toString().trim();
+        collectTime = mEtCollectTime.getText().toString().trim();
+
+        int address = Integer.parseInt(collectorAddress);
+        if (address < 0 || address >= 255) {
             ToastUtils.show("采集器地址输入有误");
             return;
         }
 
-        calculatTime = mEtCalculatingTime.getText().toString().trim();
-        standbyTime = mEtStandbyTime.getText().toString().trim();
-        collectTime = mEtCollectTime.getText().toString().trim();
-        if (StringUtil.isNullOrEmpty(calculatTime)) {
+        if (TextUtils.isEmpty(calculatTime)) {
             ToastUtils.show("解算时间不能为空");
-        } else if (StringUtil.isNullOrEmpty(standbyTime)) {
-            ToastUtils.show("待机时间不能为空");
-        } else if (StringUtil.isNullOrEmpty(collectTime)) {
-            ToastUtils.show("采集时间不能为空");
-        } else {
-            //这里需要判断采集器的型号，去确定##100后面的数字是否是01
-            List<String> list = new ArrayList<>();
-            StringBuilder result1 = new StringBuilder();
-            StringBuilder result2 = new StringBuilder();
-            StringBuilder result3 = new StringBuilder();
-            StringBuilder result4 = new StringBuilder();
-
-            result1.append("##147" + collectorAddress + "\r\n");
-            result3.append("##161" + DeviceFragment.collectorType + StringUtil.formatStringFive(calculatTime) + "\r\n");
-            result2.append("##160" + DeviceFragment.collectorType + StringUtil.formatStringFour(standbyTime) + "\r\n");
-            result4.append("##163" + DeviceFragment.collectorType + StringUtil.formatStringFour(collectTime) + "\r\n");
-            list.add(String.valueOf(result1));
-            list.add(String.valueOf(result2));
-            list.add(String.valueOf(result3));
-            list.add(String.valueOf(result4));
-            for (int i = 0; i < list.size(); i++) {
-                if (MCloudApp.isIsBluetoothDeviceConnected()) {
-                    Log.i(LogTag.INFO_TAG, "==采集器指令=========" + list.get(i).toString());
-                    //采集器
-                    com.shmedo.mcloudapp.bluetooth.Message msg
-                            = new com.shmedo.mcloudapp.bluetooth.Message("collector", list.get(i).toString(), true);
-                    if (DeviceFragment.mdBluetoothManager != null) {
-                        DeviceFragment.mdBluetoothManager.writeMessage(msg);
-                    }
-                } else {
-                    ToastUtils.show("蓝牙未连接");
-                }
-            }
+            return;
         }
+
+        if (TextUtils.isEmpty(standbyTime)) {
+            ToastUtils.show("待机时间不能为空");
+            return;
+        }
+
+        if (TextUtils.isEmpty(collectTime)) {
+            ToastUtils.show("采集时间不能为空");
+            return;
+        }
+
+        String cmdCollectorAddress = "##147" + collectorAddress + "\r\n";
+        String cmdCollectTime = "##161" + collectorType + StringUtil.formatStringFive(collectTime) + "\r\n";
+        String cmdStandbyTime = "##160" + collectorType + StringUtil.formatStringFour(standbyTime) + "\r\n";
+        String cmdCalculatTime = "##163" + collectorType + StringUtil.formatStringFour(calculatTime) + "\r\n";
+
+        sendCommonCommand(cmdCollectorAddress);
+        Timber.d("发送设置采集器地址指令===" + cmdCollectorAddress);
+
+        sendCommonCommand(cmdCollectTime);
+        Timber.d("发送设置采集器采集频度指令===" + cmdCollectTime);
+
+        sendCommonCommand(cmdStandbyTime);
+        Timber.d("发送设置采集器待机时长指令===" + cmdStandbyTime);
+
+        sendCommonCommand(cmdCalculatTime);
+        Timber.d("发送设置采集器解算频度指令===" + cmdCalculatTime);
     }
 
 }

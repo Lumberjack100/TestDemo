@@ -73,8 +73,14 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
         @Override
         public void run() {
             dismissLoadingDialog();
-            if (!TextUtils.isEmpty(errMsg))
+            if (!TextUtils.isEmpty(errMsg)) {
                 ToastUtils.show(errMsg);
+
+                if(errMsg.contains("连接超时")){
+                    MCloudApp.setIsBluetoothDeviceConnected(false);
+                    EventBus.getDefault().post(new BluetoothStateEvent(false));
+                }
+            }
         }
     };
 
@@ -173,7 +179,7 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
         if (null != mdBluetoothManager) {
             mdBluetoothManager.disconnect();
             isAutoConnectBlue = false;
-            MCloudApp.setIsBluetoothDeviceConnected(false);
+//            MCloudApp.setIsBluetoothDeviceConnected(false);
         }
     }
 

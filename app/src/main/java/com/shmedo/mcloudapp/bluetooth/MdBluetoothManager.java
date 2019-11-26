@@ -116,7 +116,6 @@ public class MdBluetoothManager {
     }
 
 
-
     public boolean isBluetoothEnable() {
         return this.bluetoothAdapter.enable();
     }
@@ -207,10 +206,14 @@ public class MdBluetoothManager {
         if (gatt == null) {
             return;
         }
-        gatt.disconnect();
-        currentDevice = null;
 
-        handleBluetoothEvent(BluetoothEventType.DISCONNECTED, null);
+        if (connected()) {
+            gatt.disconnect();
+            gatt.close();
+            currentDevice = null;
+
+            handleBluetoothEvent(BluetoothEventType.DISCONNECTED, null);
+        }
     }
 
     public void writeMessage(Message msg) {
@@ -235,7 +238,7 @@ public class MdBluetoothManager {
     private void clearData() {
         scan = false;
         devices = new LinkedList<>();
-        currentDevice = null;
+//        currentDevice = null;
         writeMessageManager.clear();
         isReadable = false;
         lastWriteTime = null;

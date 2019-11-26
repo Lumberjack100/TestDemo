@@ -141,12 +141,12 @@ public class DAGHomeFragment extends BaseFragment {
     @BindView(R.id.sensor_setting_layout)
     View sensorSettingLayout;
 
-    private TextView mTvBluetoothConnect, mTvDeviceEnable, mTvDeviceLock, mTvDebugMode, mTvSimA, mTvSimB,mTvOftenStatus;
+    private TextView mTvBluetoothConnect, mTvDeviceEnable, mTvDeviceLock, mTvDebugMode, mTvSimA, mTvSimB, mTvOftenStatus;
 
     private SwitchButton mSbBluetoothConnect, mSbDeviceEnable, mSbDeviceLock, mSbDebugMode, mSbSimA, mSbSimB,
-            mSbRainGauge, mSbOsmometer,mSbBleakAlarm;
+            mSbRainGauge, mSbOsmometer, mSbBleakAlarm;
 
-    private Spinner mSpDebugMode,mSpOftenStatus;
+    private Spinner mSpDebugMode, mSpOftenStatus;
 
     private Button mBtnRainGauge, mBtnOsmometer;
 
@@ -282,10 +282,12 @@ public class DAGHomeFragment extends BaseFragment {
         }
 
 
+        mBtnRainGauge.setEnabled(false);
+        mBtnOsmometer.setEnabled(false);
         mBtnRainGauge.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                RainConfigActivity.startActivity(configDAGActivity);
+                RainConfigActivity.startActivity(configDAGActivity, setRianAccuryParameter.getRainAccury());
             }
         });
 
@@ -315,8 +317,8 @@ public class DAGHomeFragment extends BaseFragment {
                         configDAGActivity.showSaveDialog(getResources().getString(R.string.disconnect_bluetooth_device_save_param_warn));
                     } else {
                         configDAGActivity.disconnectDevice();
-                        MCloudApp.setIsBluetoothDeviceConnected(false);
-                        setViewStateByConnectState(MCloudApp.isIsBluetoothDeviceConnected());
+//                        MCloudApp.setIsBluetoothDeviceConnected(false);
+                        setViewStateByConnectState(false);
                     }
                 }
             }
@@ -576,7 +578,7 @@ public class DAGHomeFragment extends BaseFragment {
                 break;
 
             case R.id.rl_general_setting:
-                GeneralSettingActivity.startActivity(configDAGActivity);
+                GeneralSettingActivity.startActivity(configDAGActivity, collectorConfigInfo, collectorType);
                 break;
         }
     }

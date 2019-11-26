@@ -147,6 +147,8 @@ public class ADMEHomeFragment extends BaseFragment {
 
     private String countMeterWheel;//设置计米轮指令
 
+    private String correctionParam;//编码器修正参数
+
 
     private boolean isRefreshingAddress = false;
 
@@ -309,8 +311,8 @@ public class ADMEHomeFragment extends BaseFragment {
 
                     } else {
                         configADMEActivity.disconnectDevice();
-                        MCloudApp.setIsBluetoothDeviceConnected(false);
-                        setViewStateByConnectState(MCloudApp.isIsBluetoothDeviceConnected());
+//                        MCloudApp.setIsBluetoothDeviceConnected(false);
+                        setViewStateByConnectState(false);
                     }
                 }
             }
@@ -332,7 +334,9 @@ public class ADMEHomeFragment extends BaseFragment {
                         setSwitchViewState(true, tvAutoMonitorState, "已启用");
                     }
                 } else {
-                    showCloseSwitchButtonDialog("关闭自动监测，将导致设备自动关机进入休眠状态。请确认是否关闭", AUTO_MONITOR);
+                    //关闭自动监测模式命令
+                    configADMEActivity.sendCommonCommand("##70112\r\n");
+                    setSwitchViewState(false, tvAutoMonitorState, "已关闭");
                 }
             }
         });
@@ -402,7 +406,7 @@ public class ADMEHomeFragment extends BaseFragment {
                 break;
 
             case R.id.tv_count_meter_wheel:
-                CountMeterWheelActivity.startActivity(getActivity(), countMeterWheel);
+                CountMeterWheelActivity.startActivity(getActivity(), countMeterWheel, correctionParam);
                 break;
 
             case R.id.platform_server_config_layout://展开或折叠服务器地址配置
@@ -561,7 +565,7 @@ public class ADMEHomeFragment extends BaseFragment {
             debugItemLayout.setVisibility(cmdArray[2].trim().equals("3") ? View.VISIBLE : View.GONE);
 
             //测试模式打开时，查询电机和计米轮相关参数
-            if(cmdArray[2].trim().equals("3")){
+            if (cmdArray[2].trim().equals("3")) {
                 configADMEActivity.sendCommonCommand("##7020\r\n");
                 Timber.d("发送查询控制电机参数指令===" + "##7020");
 
@@ -629,6 +633,12 @@ public class ADMEHomeFragment extends BaseFragment {
             return;
         }
 
+        //查询编码器修正参数应答
+        if (cmdStr.startsWith("$$7030") && cmdStr.endsWith("\r\n")) {
+            correctionParam = cmdStr;
+            return;
+        }
+
 //        //设置自动测量模式应答
 //        if (cmdStr.startsWith("$$7011") && cmdStr.endsWith("\r\n")) {
 //            ToastUtils.show("设置自动测量模式完成");
@@ -643,6 +653,9 @@ public class ADMEHomeFragment extends BaseFragment {
 
             configADMEActivity.sendCommonCommand("##7022\r\n");
             Timber.d("发送查询计米轮参数指令===" + "##7022");
+
+            configADMEActivity.sendCommonCommand("##7030\r\n");
+            Timber.d("发送查询编码器修正参数指令===" + "##7030");
             return;
         }
 
@@ -683,6 +696,12 @@ public class ADMEHomeFragment extends BaseFragment {
         //设置计米轮参数应答
         if (cmdStr.startsWith("$$7023") && cmdStr.endsWith("\r\n")) {
             countMeterWheel = cmdStr;
+            return;
+        }
+
+        //设置编码器修正参数应答
+        if (cmdStr.startsWith("$$7031") && cmdStr.endsWith("\r\n")) {
+            correctionParam = cmdStr;
             return;
         }
     }

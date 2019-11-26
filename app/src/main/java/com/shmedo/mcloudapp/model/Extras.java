@@ -21,6 +21,9 @@ public interface Extras {
 
     String SCAN_DEVICE_LIST = "scan_device_list";
 
+    String PARAM_CONFIG_INFO = "param_config_info";
+
+    String COLLECTOR_TYPE = "collector_type";
 
     //ADME的 DAG 采集器配置
     String ADME_SENSOR_CONFIG_INFO = "adme_sensor_config_info";
@@ -33,4 +36,8 @@ public interface Extras {
 
     //ADME的计米轮参数配置
     String ADME_COUNT_METER_WHEEL_CONFIG_INFO = "adme_count_meter_wheel_config_info";
+
+    //编码器修正参数
+    String ENCODER_CORRECTION_PARAMETERS = "encoder_correction_parameters";
+
 }

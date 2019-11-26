@@ -9,6 +9,6 @@
     android:ellipsize="marquee"
     android:gravity="center"
     android:singleLine="true"
-    android:textColor="@color/gray_807B7B"
+    android:textColor="@color/black"
     android:textSize="@dimen/text_size_14"
     tools:text="asdasd" />
