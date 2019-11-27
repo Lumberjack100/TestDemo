@@ -302,6 +302,7 @@ public class ADMEHomeFragment extends BaseFragment {
             public void onCheckedChanged(CompoundButton buttonView, final boolean isChecked) {
                 //未连接时，直接打开连接
                 if (isChecked) {
+                    sbBluetoothState.setCheckedImmediatelyNoEvent(!isChecked);
                     configADMEActivity.findAndConnectBleDevice();
 
                 } else {//断开连接处理

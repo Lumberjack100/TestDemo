@@ -189,11 +189,11 @@ public class MdBluetoothManager {
      * @param context Activity上下文
      */
     public void connectDevice(BluetoothDevice device, Context context) {
-        if (gatt != null && connected()) {
+        if (gatt != null && currentDevice != null && !currentDevice.getAddress().equals(device.getAddress())) {
             try {
                 gatt.close();
             } catch (Exception ex) {
-                Log.e(LogTag.ERROR_TAG, ex.getMessage(), ex);
+                Timber.e(ex);
             }
         }
         isReadable = false;
@@ -210,7 +210,6 @@ public class MdBluetoothManager {
         if (connected()) {
             gatt.disconnect();
             currentDevice = null;
-
             handleBluetoothEvent(BluetoothEventType.DISCONNECTED, null);
         }
     }
