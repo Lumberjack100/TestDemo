@@ -213,17 +213,11 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
 
 
     @Override
-    protected void onStart() {
-        super.onStart();
-        mdBluetoothManager.addBluetoothEventHandler(mdBluetoothEventHandler);
-    }
-
-
-    @Override
     protected void onResume() {
         super.onResume();
         //在activity执行onResume时执行mMapView.onResume ()，重新绘制加载地图
         mMapView.onResume();
+        mdBluetoothManager.addBluetoothEventHandler(mdBluetoothEventHandler);
     }
 
 

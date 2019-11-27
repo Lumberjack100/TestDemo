@@ -76,7 +76,7 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
             if (!TextUtils.isEmpty(errMsg)) {
                 ToastUtils.show(errMsg);
 
-                if(errMsg.contains("连接超时")){
+                if (errMsg.contains("连接超时")) {
                     MCloudApp.setIsBluetoothDeviceConnected(false);
                     EventBus.getDefault().post(new BluetoothStateEvent(false));
                 }
@@ -138,6 +138,8 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
             BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(macAddress);
             if (device != null) {
                 doConnect(device);
+            } else {
+                Timber.w("Device not found.  Unable to connect.");
             }
             return;
         }
