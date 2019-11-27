@@ -499,12 +499,12 @@ public class DAGHomeFragment extends BaseFragment {
                 String status = parent.getSelectedItem().toString();
                 if (status.equals("常开")){
                     //发送断线报警器常开指令
-                    configDAGActivity.sendCommonCommand("##2271\r\n");
-                    Timber.i( "发送断线报警器常开指令==##2271");
+                    configDAGActivity.sendCommonCommand("\r\n##2271\r\n");
+                    Timber.d( "发送断线报警器常开指令==##2271");
                 }else if (status.equals("常闭")){
                     //发送断线报警器常闭指令
                     configDAGActivity.sendCommonCommand("##2272\r\n");
-                    Timber.i("发送断线报警器常闭指令==##2272");
+                    Timber.d("发送断线报警器常闭指令==##2272");
                 }
             }
             @Override
