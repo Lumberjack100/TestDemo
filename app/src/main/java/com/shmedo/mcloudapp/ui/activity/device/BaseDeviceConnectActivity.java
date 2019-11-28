@@ -76,7 +76,7 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
             if (!TextUtils.isEmpty(errMsg)) {
                 ToastUtils.show(errMsg);
 
-                if(errMsg.contains("连接超时")){
+                if (errMsg.contains("连接超时")) {
                     MCloudApp.setIsBluetoothDeviceConnected(false);
                     EventBus.getDefault().post(new BluetoothStateEvent(false));
                 }
@@ -138,6 +138,8 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
             BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(macAddress);
             if (device != null) {
                 doConnect(device);
+            } else {
+                Timber.w("Device not found.  Unable to connect.");
             }
             return;
         }
@@ -365,7 +367,7 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
 
                 case Constants.MESSAGE_LOCK_REBOOT_DEVICE:
 //                    ToastUtils.show("蓝牙通讯已就绪！");
-//                    Objects.requireNonNull(obtainDeviceStateCmdCallback).obtainDeviceStateCmd();
+                    obtainDeviceStateCmd();
                     break;
 
                 default:
@@ -492,7 +494,7 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
      *
      * @param cmdStr
      */
-    public void sendCommonCommand(String cmdStr) {
+    public void sendCommonCommand(final String cmdStr) {
         final Message msg = new Message(UUID.randomUUID().toString(), cmdStr, true);
 
         hander.postDelayed(new Runnable() {
@@ -509,7 +511,7 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
      * 蓝牙连接成功开始进行验证  lock
      */
     private void startBluAuthenticate() {
-        String com = "##224," + SN + ",0\r\n";
+        String com = "\r\n##224," + SN + ",0\r\n";
         Message msg = new Message(UUID.randomUUID().toString(), com, true);
         mdBluetoothManager.writeMessage(msg);
         Timber.d("发送指令===" + com);

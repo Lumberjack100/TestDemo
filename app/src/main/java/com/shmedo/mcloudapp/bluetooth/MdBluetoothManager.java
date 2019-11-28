@@ -193,7 +193,7 @@ public class MdBluetoothManager {
             try {
                 gatt.close();
             } catch (Exception ex) {
-                Log.e(LogTag.ERROR_TAG, ex.getMessage(), ex);
+                Timber.e(ex);
             }
         }
         isReadable = false;
@@ -207,13 +207,9 @@ public class MdBluetoothManager {
             return;
         }
 
-        if (connected()) {
-            gatt.disconnect();
-            gatt.close();
-            currentDevice = null;
-
-            handleBluetoothEvent(BluetoothEventType.DISCONNECTED, null);
-        }
+        gatt.close();
+        currentDevice = null;
+        handleBluetoothEvent(BluetoothEventType.DISCONNECTED, null);
     }
 
     public void writeMessage(Message msg) {

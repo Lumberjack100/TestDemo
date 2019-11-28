@@ -111,13 +111,11 @@
             android:name=".ui.activity.BlueToothListActivity"
             android:configChanges="orientation|keyboardHidden"
             android:label="@string/select_device"
-            android:launchMode="singleInstance"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.Dialog" />
         <activity
             android:name=".ui.activity.WifiConnectionActivity"
             android:configChanges="orientation|keyboardHidden"
-            android:launchMode="singleInstance"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.Dialog" />
         <activity

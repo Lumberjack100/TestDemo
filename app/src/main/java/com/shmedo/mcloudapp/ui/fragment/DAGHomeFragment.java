@@ -172,11 +172,13 @@ public class DAGHomeFragment extends BaseFragment {
 
     private SetRainAccuryPage.SetRianAccuryParameter setRianAccuryParameter = new SetRainAccuryPage.SetRianAccuryParameter();
     private SetRainSelectPage.SetSelectRainParameter setSelectRainParameter = new SetRainSelectPage.SetSelectRainParameter();
-    private List<CollectorSensorParamsInfoSub> mCollectorParamsInfoSubList = new ArrayList<>();
+    public static List<CollectorSensorParamsInfoSub> mCollectorParamsInfoSubList = new ArrayList<>();
     private CollectorConfigInfo collectorConfigInfo;
     private BaseConfigInfo baseConfigInfo;
     private QueryOsmometerParameterInfo queryOsmometerParameterInfo;
     private BreakAlarmStatusInfo breakAlarmStatusInfo = new BreakAlarmStatusInfo();
+
+    private int check = 0;
 
 
     private Runnable dismssDialogRunnable = new Runnable() {
@@ -310,6 +312,7 @@ public class DAGHomeFragment extends BaseFragment {
             public void onCheckedChanged(CompoundButton buttonView, final boolean isChecked) {
                 //未连接时，直接打开连接
                 if (isChecked) {
+                    mSbBluetoothConnect.setCheckedImmediatelyNoEvent(!isChecked);
                     configDAGActivity.findAndConnectBleDevice();
 
                 } else {//断开连接处理
@@ -496,17 +499,20 @@ public class DAGHomeFragment extends BaseFragment {
         mSpOftenStatus.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                String status = parent.getSelectedItem().toString();
-                if (status.equals("常开")){
-                    //发送断线报警器常开指令
-                    configDAGActivity.sendCommonCommand("##2271\r\n");
-                    Timber.i( "发送断线报警器常开指令==##2271");
-                }else if (status.equals("常闭")){
-                    //发送断线报警器常闭指令
-                    configDAGActivity.sendCommonCommand("##2272\r\n");
-                    Timber.i("发送断线报警器常闭指令==##2272");
+                if (++check > 1) {
+                    String status = parent.getSelectedItem().toString();
+                    if (status.equals("常开")) {
+                        //发送断线报警器常开指令
+                        configDAGActivity.sendCommonCommand("\r\n##2271\r\n");
+                        Timber.d("发送断线报警器常开指令==##2271");
+                    } else if (status.equals("常闭")) {
+                        //发送断线报警器常闭指令
+                        configDAGActivity.sendCommonCommand("##2272\r\n");
+                        Timber.d("发送断线报警器常闭指令==##2272");
+                    }
                 }
             }
+
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
 
@@ -652,9 +658,9 @@ public class DAGHomeFragment extends BaseFragment {
                 break;
             case BREAK_ALARM_STATUS: //断线报警器状态 227
                 BreakAlarmStatusSub breakAlarmStatusSub = BlueResultParserUtil.getBreakAlarmStatus(cmdStr);
-                Timber.d("--------断线报警器状态-------" +breakAlarmStatusSub.getAlarmStatus());
+                Timber.d("--------断线报警器状态-------" + breakAlarmStatusSub.getAlarmStatus());
                 breakAlarmStatusInfo.setStatus(BreakAlarmStatus.valueOf(breakAlarmStatusSub.getAlarmStatus()));
-                switch (breakAlarmStatusInfo.getStatus()){
+                switch (breakAlarmStatusInfo.getStatus()) {
                     case OPEN:
                         mSpOftenStatus.setSelection(0);
                         break;

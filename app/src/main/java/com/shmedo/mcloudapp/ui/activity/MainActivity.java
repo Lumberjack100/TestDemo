@@ -213,17 +213,11 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
 
 
     @Override
-    protected void onStart() {
-        super.onStart();
-        mdBluetoothManager.addBluetoothEventHandler(mdBluetoothEventHandler);
-    }
-
-
-    @Override
     protected void onResume() {
         super.onResume();
         //在activity执行onResume时执行mMapView.onResume ()，重新绘制加载地图
         mMapView.onResume();
+        mdBluetoothManager.addBluetoothEventHandler(mdBluetoothEventHandler);
     }
 
 
@@ -532,7 +526,7 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
                     startDiscoveryDevice();
                     if (null != mBluetoothAdapter && mBluetoothAdapter.isEnabled()) {
                         showLoadingDialog("正在获取附近的蓝牙设备...");
-                        hander.postDelayed(dismssDialogRunnable, 10000);
+                        hander.postDelayed(dismssDialogRunnable, 5000);
                     }
 
                 } else if (isBlueModle && isConneted) {
