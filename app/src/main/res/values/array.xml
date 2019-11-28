@@ -12,9 +12,32 @@
         <item>INFO</item>
     </string-array>
 
+    //断线报警器状态
     <string-array name="break_alarm_status">
         <item>常开</item>
         <item>常闭</item>
+    </string-array>
+
+    //通讯方式
+    <string-array name="communication_method">
+        <item>4G</item>
+        <item>BD</item>
+        <item>SMS</item>
+        <item>BD+4G</item>
+    </string-array>
+
+    //通讯协议
+    <string-array name="communication_protocol">
+        <item>MQTT自动注册</item>
+        <item>MQTT手动注册</item>
+        <item>MDM协议</item>
+    </string-array>
+
+    //注册平台
+    <string-array name="register">
+        <item>地大平台</item>
+        <item>米度平台</item>
+        <item>成都理工平台</item>
     </string-array>
 
     <string-array name="rain">

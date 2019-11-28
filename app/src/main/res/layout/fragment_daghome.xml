@@ -234,7 +234,41 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp" />
+        <RelativeLayout
+                android:id="@+id/rl_mqtt_setting"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:background="@color/bg_main_light_white">
 
+            <ImageView
+                    android:id="@+id/iv_mqtt_setting"
+                    android:layout_width="30dp"
+                    android:layout_height="40dp"
+                    android:layout_marginStart="16dp"
+                    android:src="@drawable/icon_general_setting" />
+
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="5dp"
+                    android:layout_toRightOf="@id/iv_mqtt_setting"
+                    android:gravity="center_vertical"
+                    android:text="MQTT设置"
+                    android:textColor="@color/gray_807B7B"
+                    android:textSize="@dimen/text_size_18" />
+
+            <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginEnd="20dp"
+                    android:gravity="center"
+                    android:src="@drawable/icon_right" />
+
+        </RelativeLayout>
+        <View
+             android:layout_width="match_parent"
+             android:layout_height="1dp" />
         <RelativeLayout
             android:id="@+id/rl_general_setting"
             android:layout_width="match_parent"

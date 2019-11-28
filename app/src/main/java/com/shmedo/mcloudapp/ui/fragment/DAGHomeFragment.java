@@ -41,6 +41,7 @@ import com.shmedo.mcloudapp.entity.ble.collector.CollectorSensorParamsInfoSub;
 import com.shmedo.mcloudapp.entity.event.BluetoothStateEvent;
 import com.shmedo.mcloudapp.model.Extras;
 import com.shmedo.mcloudapp.ui.activity.ConfigDAGActivity;
+import com.shmedo.mcloudapp.ui.activity.MqttSettingActivity;
 import com.shmedo.mcloudapp.ui.activity.device.GeneralSettingActivity;
 import com.shmedo.mcloudapp.ui.activity.device.OsmometerConfigActivity;
 import com.shmedo.mcloudapp.ui.activity.device.RainConfigActivity;
@@ -555,7 +556,7 @@ public class DAGHomeFragment extends BaseFragment {
     }
 
 
-    @OnClick({R.id.iv_lock, R.id.sensor_setting_layout, R.id.rl_general_setting})
+    @OnClick({R.id.iv_lock, R.id.sensor_setting_layout, R.id.rl_general_setting,R.id.rl_mqtt_setting})
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.iv_lock:
@@ -574,11 +575,14 @@ public class DAGHomeFragment extends BaseFragment {
                 break;
 
             case R.id.sensor_setting_layout:
-                SenSorBGKConfigActivity.startActivity(configDAGActivity);
+                SenSorBGKConfigActivity.startActivity(configDAGActivity,mCollectorParamsInfoSubList);
                 break;
 
             case R.id.rl_general_setting:
                 GeneralSettingActivity.startActivity(configDAGActivity, collectorConfigInfo, collectorType);
+                break;
+            case R.id.rl_mqtt_setting:
+                MqttSettingActivity.startActivity(configDAGActivity);
                 break;
         }
     }

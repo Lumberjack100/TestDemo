@@ -35,10 +35,12 @@ import com.shmedo.mcloudapp.base.BaseActivity;
 import com.shmedo.mcloudapp.bluetooth.Message;
 import com.shmedo.mcloudapp.entity.ble.collector.CollectorSensorParamsInfoSub;
 import com.shmedo.mcloudapp.inter.MyOnClickListener;
+import com.shmedo.mcloudapp.model.Extras;
 import com.shmedo.mcloudapp.ui.activity.device.sensor.dialog.DialogFactory;
 import com.shmedo.mcloudapp.ui.fragment.DeviceFragment;
 import com.shmedo.mcloudapp.util.StringUtil;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -165,8 +167,11 @@ public class SenSorBGKConfigActivity extends BaseActivity {
     private DialogFactory factory = new DialogFactory();
 
 
-    public static void startActivity(Context context) {
+    public static void startActivity(Context context,List<CollectorSensorParamsInfoSub> mCollectorParamsInfoSubList) {
         Intent intent = new Intent(context, SenSorBGKConfigActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(Extras.SENSOR_PARAMS,(Serializable)mCollectorParamsInfoSubList);
+        intent.putExtras(bundle);
         context.startActivity(intent);
     }
 
@@ -190,7 +195,14 @@ public class SenSorBGKConfigActivity extends BaseActivity {
 
 
     private void initData() {
-        collectorSensorParamsInfoSubs = DeviceFragment.mCollectorParamsInfoSubList;
+       Bundle bundle = getIntent().getExtras();
+       collectorSensorParamsInfoSubs = (List<CollectorSensorParamsInfoSub>) bundle.getSerializable(Extras.SENSOR_PARAMS);
+        Timber.d("size=" + collectorSensorParamsInfoSubs.size() + "--------获取XX采集器YY通道的传感器参数-------" + collectorSensorParamsInfoSubs.toString());
+
+        if (collectorSensorParamsInfoSubs == null){
+           return;
+       }
+//        collectorSensorParamsInfoSubs = DeviceFragment.mCollectorParamsInfoSubList;
         openCount = collectorSensorParamsInfoSubs.size();
         if (openCount == 0) {
             return;
@@ -316,7 +328,9 @@ public class SenSorBGKConfigActivity extends BaseActivity {
             case "16"://陆岩倾角仪 LY215
                 setImageIcon(R.drawable.icon_eight, number);
                 break;
-
+            case "21"://21次声传感器
+                setImageIcon(R.drawable.icon_eight, number);
+                break;
             case "50"://基康渗压计 BGK-4500
                 setImageIcon(R.drawable.icon_eight, number);
                 break;
@@ -940,7 +954,9 @@ public class SenSorBGKConfigActivity extends BaseActivity {
                 list.add(String.valueOf(result1));
                 list.add(String.valueOf(result2));
                 break;
+            case "21":
 
+                break;
             default:
                 break;
         }

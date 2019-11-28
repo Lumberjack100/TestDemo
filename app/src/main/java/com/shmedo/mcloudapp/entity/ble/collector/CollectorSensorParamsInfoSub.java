@@ -1,5 +1,7 @@
 package com.shmedo.mcloudapp.entity.ble.collector;
 
+import java.io.Serializable;
+
 /**
  * 项目名：  mCloudapp
  * 包名：    com.shmedo.mcloudapp.entity.ble.collector
@@ -8,7 +10,7 @@ package com.shmedo.mcloudapp.entity.ble.collector;
  * 创建时间:  2019/5/9 14:31
  * 描述：    XX采集器YY通道的传感器参数
  */
-public class CollectorSensorParamsInfoSub<T> {
+public class CollectorSensorParamsInfoSub<T> implements Serializable {
     private String sensorAddress;   //传感器通道号
     private T sensorData;
     private String sensorType;//传感器类型
