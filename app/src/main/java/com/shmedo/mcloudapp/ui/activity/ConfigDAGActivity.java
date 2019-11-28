@@ -226,7 +226,7 @@ public class ConfigDAGActivity extends BaseDeviceConnectActivity {
                 showFragment(deviceDetailsFragment);
                 break;
 
-            case 4:
+            case 3:
                 showFragment(advanceSetFragment);
                 break;
         }

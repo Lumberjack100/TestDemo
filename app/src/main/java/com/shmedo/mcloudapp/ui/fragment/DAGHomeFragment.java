@@ -172,13 +172,13 @@ public class DAGHomeFragment extends BaseFragment {
 
     private SetRainAccuryPage.SetRianAccuryParameter setRianAccuryParameter = new SetRainAccuryPage.SetRianAccuryParameter();
     private SetRainSelectPage.SetSelectRainParameter setSelectRainParameter = new SetRainSelectPage.SetSelectRainParameter();
-    public static List<CollectorSensorParamsInfoSub> mCollectorParamsInfoSubList = new ArrayList<>();
+    private List<CollectorSensorParamsInfoSub> mCollectorParamsInfoSubList = new ArrayList<>();
     private CollectorConfigInfo collectorConfigInfo;
     private BaseConfigInfo baseConfigInfo;
     private QueryOsmometerParameterInfo queryOsmometerParameterInfo;
     private BreakAlarmStatusInfo breakAlarmStatusInfo = new BreakAlarmStatusInfo();
 
-    private int check = 0;
+    private int check = 0;//标志位，Avoid onItemSelected calls during initialization
 
 
     private Runnable dismssDialogRunnable = new Runnable() {
