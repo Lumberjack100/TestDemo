@@ -6,7 +6,6 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -14,6 +13,7 @@ import android.widget.TextView;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.hjq.toast.ToastUtils;
+import com.kyleduo.switchbutton.SwitchButton;
 import com.shmedo.das.common.SensorInclinometerInfo;
 import com.shmedo.das.common.SensorRadarLevelInfo;
 import com.shmedo.das.common.SensorSoilMoistureInfo;
@@ -53,8 +53,8 @@ public class SenSorBGKConfigActivity extends BaseDeviceConnectActivity {
     @BindView(R.id.iv_stay1)
     ImageView imageView1;
 
-    @BindView(R.id.sw_stay1)
-    SwitchView switchView1;
+    @BindView(R.id.switchButton)
+    SwitchButton switchView1;
 
     @BindView(R.id.tv_stay1)
     TextView textView1;
@@ -191,50 +191,50 @@ public class SenSorBGKConfigActivity extends BaseDeviceConnectActivity {
         switch (number) {
             case 0:
                 channelNumber0 = 0;
-                setSwitchViewState(true, textView1, switchView1);
-                setSensorIconByType(sensorType, 0);
+//                setSwitchViewState(true, textView1, switchView1);
+                setSensorIconByType(sensorType, imageView1);
                 break;
 
             case 1:
                 channelNumber1 = 1;
                 setSwitchViewState(true, textView2, switchView2);
-                setSensorIconByType(sensorType, 1);
+                setSensorIconByType(sensorType, imageView2);
                 break;
 
             case 2:
                 channelNumber2 = 2;
                 setSwitchViewState(true, textView3, switchView3);
-                setSensorIconByType(sensorType, 2);
+                setSensorIconByType(sensorType, imageView3);
                 break;
 
             case 3:
                 channelNumber3 = 3;
                 setSwitchViewState(true, textView4, switchView4);
-                setSensorIconByType(sensorType, 3);
+                setSensorIconByType(sensorType, imageView4);
                 break;
 
             case 4:
                 channelNumber4 = 4;
                 setSwitchViewState(true, textView5, switchView5);
-                setSensorIconByType(sensorType, 4);
+                setSensorIconByType(sensorType, imageView5);
                 break;
 
             case 5:
                 channelNumber5 = 5;
                 setSwitchViewState(true, textView6, switchView6);
-                setSensorIconByType(sensorType, 5);
+                setSensorIconByType(sensorType, imageView6);
                 break;
 
             case 6:
                 channelNumber6 = 6;
                 setSwitchViewState(true, textView7, switchView7);
-                setSensorIconByType(sensorType, 6);
+                setSensorIconByType(sensorType, imageView7);
                 break;
 
             case 7:
                 channelNumber7 = 7;
                 setSwitchViewState(true, textView8, switchView8);
-                setSensorIconByType(sensorType, 7);
+                setSensorIconByType(sensorType, imageView8);
                 break;
         }
     }
@@ -243,68 +243,70 @@ public class SenSorBGKConfigActivity extends BaseDeviceConnectActivity {
     /**
      * 根据type的值设置不同类型传感器的图标
      */
-    private void setSensorIconByType(String sensorType, int number) {
+    private void setSensorIconByType(String sensorType, ImageView imageView) {
         switch (sensorType) {
             case "02"://拉线位移计 MPS-M-2000
-                setImageIcon(R.drawable.icon_one, number);
+                imageView.setImageResource(R.drawable.icon_one);
                 break;
 
             case "03"://土壤含水率 TR-3000
-                setImageIcon(R.drawable.icon_two, number);
+                imageView.setImageResource(R.drawable.icon_two);
                 break;
 
             case "04"://测斜仪 I-P-I
-                setImageIcon(R.drawable.icon_three, number);
+                imageView.setImageResource(R.drawable.icon_three);
                 break;
 
             case "06"://超声波物位计 HBRD908
-                setImageIcon(R.drawable.icon_four, number);
+                imageView.setImageResource(R.drawable.icon_four);
                 break;
 
             case "07"://雷达物位计 MH-A15R
-                setImageIcon(R.drawable.icon_five, number);
+                imageView.setImageResource(R.drawable.icon_five);
                 break;
 
             case "08"://墒情计 EP100G
-                setImageIcon(R.drawable.icon_six, number);
+                imageView.setImageResource(R.drawable.icon_six);
                 break;
 
             case "12"://温湿度计 CSW18
-                setImageIcon(R.drawable.icon_seven, number);
+                imageView.setImageResource(R.drawable.icon_seven);
                 break;
 
             case "15"://扬压力计 VWP-G
-                setImageIcon(R.drawable.icon_eight, number);
+                imageView.setImageResource(R.drawable.icon_eight);
                 break;
 
             case "16"://陆岩倾角仪 LY215
-                setImageIcon(R.drawable.icon_eight, number);
+                imageView.setImageResource(R.drawable.icon_eight);
                 break;
+
             case "21"://21次声传感器
-                setImageIcon(R.drawable.icon_eight, number);
+                imageView.setImageResource(R.drawable.icon_eight);
                 break;
+
             case "50"://基康渗压计 BGK-4500
-                setImageIcon(R.drawable.icon_eight, number);
+                imageView.setImageResource(R.drawable.icon_eight);
                 break;
 
             case "51"://葛南渗压计 VWP-03
-                setImageIcon(R.drawable.icon_eight, number);
+                imageView.setImageResource(R.drawable.icon_eight);
                 break;
 
             case "52"://葛南土压力盒 VWE-0.6
-                setImageIcon(R.drawable.icon_eight, number);
+                imageView.setImageResource(R.drawable.icon_eight);
                 break;
 
             case "53"://葛南应力计 VWS-15
-                setImageIcon(R.drawable.icon_eight, number);
+                imageView.setImageResource(R.drawable.icon_eight);
                 break;
 
             case "54"://葛南无应力计 VWS-15M
-                setImageIcon(R.drawable.icon_eight, number);
+                imageView.setImageResource(R.drawable.icon_eight);
                 break;
 
             case "55"://葛南位移计 VWD-100
-                setImageIcon(R.drawable.icon_eight, number);
+                imageView.setImageResource(R.drawable.icon_eight);
                 break;
 
             default:
@@ -313,47 +315,6 @@ public class SenSorBGKConfigActivity extends BaseDeviceConnectActivity {
     }
 
 
-    /**
-     * 设置传感器图标
-     *
-     * @param resourceId
-     * @param number
-     */
-    private void setImageIcon(int resourceId, int number) {
-        switch (number) {
-            case 0:
-                imageView1.setImageDrawable(ContextCompat.getDrawable(this, resourceId));
-                break;
-
-            case 1:
-                imageView2.setImageDrawable(ContextCompat.getDrawable(this, resourceId));
-                break;
-
-            case 2:
-                imageView3.setImageDrawable(ContextCompat.getDrawable(this, resourceId));
-                break;
-
-            case 3:
-                imageView4.setImageDrawable(ContextCompat.getDrawable(this, resourceId));
-                break;
-
-            case 4:
-                imageView5.setImageDrawable(ContextCompat.getDrawable(this, resourceId));
-                break;
-
-            case 5:
-                imageView6.setImageDrawable(ContextCompat.getDrawable(this, resourceId));
-                break;
-
-            case 6:
-                imageView7.setImageDrawable(ContextCompat.getDrawable(this, resourceId));
-                break;
-
-            case 7:
-                imageView8.setImageDrawable(ContextCompat.getDrawable(this, resourceId));
-                break;
-        }
-    }
 
 
     /**
@@ -362,13 +323,13 @@ public class SenSorBGKConfigActivity extends BaseDeviceConnectActivity {
      *
      * @param view
      */
-    @OnClick({R.id.sw_stay1, R.id.sw_stay2, R.id.sw_stay3, R.id.sw_stay4, R.id.sw_stay5,
+    @OnClick({R.id.switchButton, R.id.sw_stay2, R.id.sw_stay3, R.id.sw_stay4, R.id.sw_stay5,
             R.id.sw_stay6, R.id.sw_stay7, R.id.sw_stay8, R.id.iv_stay1, R.id.iv_stay2, R.id.iv_stay3,
             R.id.iv_stay4, R.id.iv_stay5, R.id.iv_stay6, R.id.iv_stay7, R.id.iv_stay8, R.id.btn_confirm})
     public void onViewClicked(View view) {
         switch (view.getId()) {
-            case R.id.sw_stay1:
-                toggleSwitchView(textView1, switchView1, "0");
+            case R.id.switchButton:
+//                toggleSwitchView(textView1, switchView1, "0");
                 break;
 
             case R.id.sw_stay2:
@@ -753,7 +714,7 @@ public class SenSorBGKConfigActivity extends BaseDeviceConnectActivity {
         public void onCancelClick(View view, int channelNumber) {
             switch (channelNumber) {
                 case 0:
-                    setSwitchViewState(false, textView1, switchView1);
+//                    setSwitchViewState(false, textView1, switchView1);
                     channelNumber0 = -1;
                     collectorSensorHashMap.remove("00");
                     break;

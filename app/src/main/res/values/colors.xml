@@ -47,12 +47,14 @@
     <color name="gray_807B7B">#807B7B</color>
     <color name="gray_9e9e9e">#9e9e9e</color>
     <color name="gray_909090">#909090</color>
-    <color name="gray_F8F8F8">#F8F8F8</color>
+    <color name="gray_BABABA">#BABABA</color>
     <color name="gray_D4D6D8">#D4D6D8</color>
     <color name="gray_DADADA">#DADADA</color>
     <color name="gray_DDDCDD">#DDDCDD</color>
     <color name="gray_E0E0E0">#E0E0E0</color>
     <color name="gray_EBEBEB">#EBEBEB</color>
+    <color name="gray_F8F8F8">#F8F8F8</color>
+    <color name="gray_FEFEFE">#FEFEFE</color>
 
 
 </resources>

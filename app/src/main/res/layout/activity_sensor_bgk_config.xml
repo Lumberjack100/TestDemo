@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
@@ -18,8 +19,8 @@
             android:layout_height="130dp"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="2dp"
-            android:layout_weight="3"
-            android:gravity="center_horizontal|center_vertical"
+            android:layout_weight="1"
+            android:gravity="center"
             android:orientation="vertical">
 
             <ImageView
@@ -34,24 +35,29 @@
                 android:layout_marginTop="5dp"
                 android:orientation="horizontal">
 
-                <ch.ielse.view.SwitchView
+                <com.kyleduo.switchbutton.SwitchButton
                     android:id="@+id/sw_stay1"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="0.8" />
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:kswAnimationDuration="100"
+                    app:kswBackDrawable="@drawable/sl_switchbutton_back"
+                    app:kswThumbDrawable="@drawable/shape_switchbutton_thumb"
+                    app:kswThumbHeight="16dp"
+                    app:kswThumbRangeRatio="2.2"
+                    app:kswThumbWidth="16dp" />
 
                 <TextView
                     android:id="@+id/tv_stay1"
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_marginLeft="10dp"
-                    android:layout_weight="0.8"
                     android:background="@color/secondary_text"
-                    android:gravity="center_horizontal|center_vertical"
+                    android:gravity="center"
                     android:padding="2dp"
                     android:text="已停用"
                     android:textColor="@color/white"
                     android:textSize="10sp" />
+
             </LinearLayout>
 
         </LinearLayout>
@@ -61,8 +67,8 @@
             android:layout_height="130dp"
             android:layout_marginLeft="2dp"
             android:layout_marginRight="2dp"
-            android:layout_weight="3"
-            android:gravity="center_horizontal|center_vertical"
+            android:layout_weight="1"
+            android:gravity="center"
             android:orientation="vertical">
 
             <ImageView
@@ -77,24 +83,29 @@
                 android:layout_marginTop="5dp"
                 android:orientation="horizontal">
 
-                <ch.ielse.view.SwitchView
+                <com.kyleduo.switchbutton.SwitchButton
                     android:id="@+id/sw_stay2"
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="0.8" />
+                    app:kswAnimationDuration="100"
+                    app:kswBackDrawable="@drawable/sl_switchbutton_back"
+                    app:kswThumbDrawable="@drawable/shape_switchbutton_thumb"
+                    app:kswThumbHeight="16dp"
+                    app:kswThumbRangeRatio="2.2"
+                    app:kswThumbWidth="16dp" />
 
                 <TextView
                     android:id="@+id/tv_stay2"
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_marginLeft="10dp"
-                    android:layout_weight="0.8"
                     android:background="@color/secondary_text"
-                    android:gravity="center_horizontal|center_vertical"
+                    android:gravity="center"
                     android:padding="2dp"
                     android:text="已停用"
                     android:textColor="@color/white"
                     android:textSize="10sp" />
+
             </LinearLayout>
 
         </LinearLayout>
@@ -104,8 +115,8 @@
             android:layout_height="130dp"
             android:layout_marginLeft="2dp"
             android:layout_marginRight="2dp"
-            android:layout_weight="3"
-            android:gravity="center_horizontal|center_vertical"
+            android:layout_weight="1"
+            android:gravity="center"
             android:orientation="vertical">
 
             <ImageView
@@ -120,20 +131,24 @@
                 android:layout_marginTop="5dp"
                 android:orientation="horizontal">
 
-                <ch.ielse.view.SwitchView
+                <com.kyleduo.switchbutton.SwitchButton
                     android:id="@+id/sw_stay3"
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="0.8" />
+                    app:kswAnimationDuration="100"
+                    app:kswBackDrawable="@drawable/sl_switchbutton_back"
+                    app:kswThumbDrawable="@drawable/shape_switchbutton_thumb"
+                    app:kswThumbHeight="16dp"
+                    app:kswThumbRangeRatio="2.2"
+                    app:kswThumbWidth="16dp" />
 
                 <TextView
                     android:id="@+id/tv_stay3"
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_marginLeft="10dp"
-                    android:layout_weight="0.8"
                     android:background="@color/secondary_text"
-                    android:gravity="center_horizontal|center_vertical"
+                    android:gravity="center"
                     android:padding="2dp"
                     android:text="已停用"
                     android:textColor="@color/white"
@@ -147,8 +162,8 @@
             android:layout_height="130dp"
             android:layout_marginLeft="2dp"
             android:layout_marginRight="10dp"
-            android:layout_weight="3"
-            android:gravity="center_horizontal|center_vertical"
+            android:layout_weight="1"
+            android:gravity="center"
             android:orientation="vertical">
 
             <ImageView
@@ -163,27 +178,33 @@
                 android:layout_marginTop="5dp"
                 android:orientation="horizontal">
 
-                <ch.ielse.view.SwitchView
+                <com.kyleduo.switchbutton.SwitchButton
                     android:id="@+id/sw_stay4"
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="0.8" />
+                    app:kswAnimationDuration="100"
+                    app:kswBackDrawable="@drawable/sl_switchbutton_back"
+                    app:kswThumbDrawable="@drawable/shape_switchbutton_thumb"
+                    app:kswThumbHeight="16dp"
+                    app:kswThumbRangeRatio="2.2"
+                    app:kswThumbWidth="16dp" />
 
                 <TextView
                     android:id="@+id/tv_stay4"
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_marginLeft="10dp"
-                    android:layout_weight="0.8"
                     android:background="@color/secondary_text"
-                    android:gravity="center_horizontal|center_vertical"
+                    android:gravity="center"
                     android:padding="2dp"
                     android:text="已停用"
                     android:textColor="@color/white"
                     android:textSize="10sp" />
+
             </LinearLayout>
 
         </LinearLayout>
+
     </LinearLayout>
 
     <LinearLayout
@@ -197,8 +218,8 @@
             android:layout_height="130dp"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="2dp"
-            android:layout_weight="3"
-            android:gravity="center_horizontal|center_vertical"
+            android:layout_weight="1"
+            android:gravity="center"
             android:orientation="vertical">
 
             <ImageView
@@ -213,24 +234,29 @@
                 android:layout_marginTop="5dp"
                 android:orientation="horizontal">
 
-                <ch.ielse.view.SwitchView
+                <com.kyleduo.switchbutton.SwitchButton
                     android:id="@+id/sw_stay5"
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="0.8" />
+                    app:kswAnimationDuration="100"
+                    app:kswBackDrawable="@drawable/sl_switchbutton_back"
+                    app:kswThumbDrawable="@drawable/shape_switchbutton_thumb"
+                    app:kswThumbHeight="16dp"
+                    app:kswThumbRangeRatio="2.2"
+                    app:kswThumbWidth="16dp" />
 
                 <TextView
                     android:id="@+id/tv_stay5"
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_marginLeft="10dp"
-                    android:layout_weight="0.8"
                     android:background="@color/secondary_text"
-                    android:gravity="center_horizontal|center_vertical"
+                    android:gravity="center"
                     android:padding="2dp"
                     android:text="已停用"
                     android:textColor="@color/white"
                     android:textSize="10sp" />
+
             </LinearLayout>
 
         </LinearLayout>
@@ -240,8 +266,8 @@
             android:layout_height="130dp"
             android:layout_marginLeft="2dp"
             android:layout_marginRight="2dp"
-            android:layout_weight="3"
-            android:gravity="center_horizontal|center_vertical"
+            android:layout_weight="1"
+            android:gravity="center"
             android:orientation="vertical">
 
             <ImageView
@@ -256,24 +282,29 @@
                 android:layout_marginTop="5dp"
                 android:orientation="horizontal">
 
-                <ch.ielse.view.SwitchView
+                <com.kyleduo.switchbutton.SwitchButton
                     android:id="@+id/sw_stay6"
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="0.8" />
+                    app:kswAnimationDuration="100"
+                    app:kswBackDrawable="@drawable/sl_switchbutton_back"
+                    app:kswThumbDrawable="@drawable/shape_switchbutton_thumb"
+                    app:kswThumbHeight="16dp"
+                    app:kswThumbRangeRatio="2.2"
+                    app:kswThumbWidth="16dp" />
 
                 <TextView
                     android:id="@+id/tv_stay6"
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_marginLeft="10dp"
-                    android:layout_weight="0.8"
                     android:background="@color/secondary_text"
-                    android:gravity="center_horizontal|center_vertical"
+                    android:gravity="center"
                     android:padding="2dp"
                     android:text="已停用"
                     android:textColor="@color/white"
                     android:textSize="10sp" />
+
             </LinearLayout>
 
         </LinearLayout>
@@ -283,8 +314,8 @@
             android:layout_height="130dp"
             android:layout_marginLeft="2dp"
             android:layout_marginRight="2dp"
-            android:layout_weight="3"
-            android:gravity="center_horizontal|center_vertical"
+            android:layout_weight="1"
+            android:gravity="center"
             android:orientation="vertical">
 
             <ImageView
@@ -299,24 +330,29 @@
                 android:layout_marginTop="5dp"
                 android:orientation="horizontal">
 
-                <ch.ielse.view.SwitchView
+                <com.kyleduo.switchbutton.SwitchButton
                     android:id="@+id/sw_stay7"
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="0.8" />
+                    app:kswAnimationDuration="100"
+                    app:kswBackDrawable="@drawable/sl_switchbutton_back"
+                    app:kswThumbDrawable="@drawable/shape_switchbutton_thumb"
+                    app:kswThumbHeight="16dp"
+                    app:kswThumbRangeRatio="2.2"
+                    app:kswThumbWidth="16dp" />
 
                 <TextView
                     android:id="@+id/tv_stay7"
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_marginLeft="10dp"
-                    android:layout_weight="0.8"
                     android:background="@color/secondary_text"
-                    android:gravity="center_horizontal|center_vertical"
+                    android:gravity="center"
                     android:padding="2dp"
                     android:text="已停用"
                     android:textColor="@color/white"
                     android:textSize="10sp" />
+
             </LinearLayout>
 
         </LinearLayout>
@@ -326,8 +362,8 @@
             android:layout_height="130dp"
             android:layout_marginLeft="2dp"
             android:layout_marginRight="10dp"
-            android:layout_weight="3"
-            android:gravity="center_horizontal|center_vertical"
+            android:layout_weight="1"
+            android:gravity="center"
             android:orientation="vertical">
 
             <ImageView
@@ -342,84 +378,82 @@
                 android:layout_marginTop="5dp"
                 android:orientation="horizontal">
 
-                <ch.ielse.view.SwitchView
+                <com.kyleduo.switchbutton.SwitchButton
                     android:id="@+id/sw_stay8"
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="0.8" />
+                    app:kswAnimationDuration="100"
+                    app:kswBackDrawable="@drawable/sl_switchbutton_back"
+                    app:kswThumbDrawable="@drawable/shape_switchbutton_thumb"
+                    app:kswThumbHeight="16dp"
+                    app:kswThumbRangeRatio="2.2"
+                    app:kswThumbWidth="16dp" />
 
                 <TextView
                     android:id="@+id/tv_stay8"
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_marginLeft="10dp"
-                    android:layout_weight="0.8"
                     android:background="@color/secondary_text"
-                    android:gravity="center_horizontal|center_vertical"
+                    android:gravity="center"
                     android:padding="2dp"
                     android:text="已停用"
                     android:textColor="@color/white"
                     android:textSize="10sp" />
+
             </LinearLayout>
 
         </LinearLayout>
 
     </LinearLayout>
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/white">
+        android:layout_height="match_parent">
 
-        <RelativeLayout
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content"
+            android:layout_above="@id/tv_prompt"
+            android:layout_marginLeft="16dp"
+            android:gravity="center_vertical">
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_above="@id/tv_prompt"
-                android:layout_marginLeft="16dp"
-                android:gravity="center_vertical">
-
-                <ImageView
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:src="@drawable/icon_prompt" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:text="提示"
-                    android:textColor="#ffbd47"
-                    android:textSize="20sp"
-                    android:textStyle="bold" />
-            </LinearLayout>
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:src="@drawable/icon_prompt" />
 
             <TextView
-                android:id="@+id/tv_prompt"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_above="@id/btn_confirm"
-                android:padding="16dp"
-                android:text="@string/tv_prompt"
-                android:textColor="@color/colorPrimaryDark" />
+                android:layout_marginLeft="10dp"
+                android:text="提示"
+                android:textColor="#ffbd47"
+                android:textSize="20sp"
+                android:textStyle="bold" />
 
-            <Button
-                android:id="@+id/btn_confirm"
-                android:layout_width="match_parent"
-                android:layout_height="45dp"
-                android:layout_alignParentBottom="true"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
-                android:layout_marginBottom="20dp"
-                android:background="@drawable/scan_add_selector"
-                android:text="确定"
-                android:textColor="@color/white" />
-        </RelativeLayout>
+        </LinearLayout>
 
-    </LinearLayout>
+        <TextView
+            android:id="@+id/tv_prompt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@id/btn_confirm"
+            android:padding="16dp"
+            android:text="@string/tv_prompt"
+            android:textColor="@color/colorPrimaryDark" />
 
+        <Button
+            android:id="@+id/btn_confirm"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:layout_alignParentBottom="true"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginBottom="20dp"
+            android:background="@drawable/btn_select"
+            android:text="确定"
+            android:textColor="@color/white" />
+    </RelativeLayout>
 
 </LinearLayout>
