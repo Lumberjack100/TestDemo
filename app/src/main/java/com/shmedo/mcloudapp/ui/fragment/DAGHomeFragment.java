@@ -170,6 +170,8 @@ public class DAGHomeFragment extends BaseFragment {
 
     private String lockStatus = "";
 
+    private StringBuilder sbcollectorSensor;//采集器上传感器配置信息
+
     private SetRainAccuryPage.SetRianAccuryParameter setRianAccuryParameter = new SetRainAccuryPage.SetRianAccuryParameter();
     private SetRainSelectPage.SetSelectRainParameter setSelectRainParameter = new SetRainSelectPage.SetSelectRainParameter();
     private List<CollectorSensorParamsInfoSub> mCollectorParamsInfoSubList = new ArrayList<>();
@@ -562,7 +564,7 @@ public class DAGHomeFragment extends BaseFragment {
     }
 
 
-    @OnClick({R.id.iv_lock, R.id.sensor_setting_layout, R.id.rl_general_setting,R.id.rl_mqtt_setting})
+    @OnClick({R.id.iv_lock, R.id.sensor_setting_layout, R.id.rl_general_setting, R.id.rl_mqtt_setting})
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.iv_lock:
@@ -581,7 +583,7 @@ public class DAGHomeFragment extends BaseFragment {
                 break;
 
             case R.id.sensor_setting_layout:
-                SenSorBGKConfigActivity.startActivity(configDAGActivity,mCollectorParamsInfoSubList);
+                SenSorBGKConfigActivity.startActivity(configDAGActivity, sbcollectorSensor.toString());
                 break;
 
             case R.id.rl_general_setting:
@@ -621,7 +623,6 @@ public class DAGHomeFragment extends BaseFragment {
             case QUERY_OSMOMETER_PARAMETER://查询数字式渗压计参数 400
                 queryOsmometerParameterInfo = BlueResultParserUtil.getQueryOsmometerParameterInfo(cmdStr);
                 Timber.d("--------查询数字式渗压计参数-------" + queryOsmometerParameterInfo.toString());
-
                 //渗压计开关
                 mSbOsmometer.setCheckedImmediatelyNoEvent(queryOsmometerParameterInfo.getOsmometerStatus() == OsmometerStatus.OSMOMETER_OPEN);
                 mBtnOsmometer.setEnabled(queryOsmometerParameterInfo.getOsmometerStatus() == OsmometerStatus.OSMOMETER_OPEN);
@@ -631,31 +632,28 @@ public class DAGHomeFragment extends BaseFragment {
             case DIGITAL_OSMOMETER_FUNCTION://开启/关闭数字式渗压计功能 401
                 DigitalOsmometerFunctionSub digitalOsmometerFunctionSub = BlueResultParserUtil.getOsmoeterFunctionInfo(cmdStr);
                 Timber.d("--------开启/关闭数字式渗压计功能-------" + digitalOsmometerFunctionSub.toString());
-
                 queryOsmometerParameterInfo.setOsmometerStatus(OsmometerStatus.valueOf(digitalOsmometerFunctionSub.getOsmometerStatus()));
                 break;
 
             case COLLECTOR_CONFIG://获取采集器配置 100
                 collectorConfigInfo = BlueResultParserUtil.getCollectorConfigInfo(cmdStr);
                 Timber.d("--------获取采集器配置-------" + collectorConfigInfo.toString());
-
+                sbcollectorSensor = new StringBuilder();
                 send101Instruction(collectorConfigInfo);//发送101指令
                 break;
 
             case COLLECTOR_CHANNEL_SENSOR_PARAMETER: //101
-                CollectorSensorParamsInfoSub mCollectorParamsInfoSub = BlueResultParserUtil.setCollectorParams(cmdStr);
-                Timber.d("--------101指令-------" + mCollectorParamsInfoSub.toString());
-                mCollectorParamsInfoSubList.add(mCollectorParamsInfoSub);
-                Timber.d("size=" + mCollectorParamsInfoSubList.size() + "--------获取XX采集器YY通道的传感器参数-------" + mCollectorParamsInfoSub.toString());
+                sbcollectorSensor.append(cmdStr + "&&");
+                Timber.d("--------101指令-------" + cmdStr);
                 break;
 
             case GET_ALL_SENSOR_CONFIG://所有配置信息 333
                 GetAllSensorConfigInfo getAllSensorConfigInfo = BlueResultParserUtil.getAllBlueMessage(cmdStr);
                 Timber.d("--------所有配置信息-------" + getAllSensorConfigInfo.toString());
-
                 processGetAllSensorConfig(getAllSensorConfigInfo);
                 updateView();
                 break;
+
             case BREAK_ALARM_STATUS: //断线报警器状态 227
                 BreakAlarmStatusSub breakAlarmStatusSub = BlueResultParserUtil.getBreakAlarmStatus(cmdStr);
                 Timber.d("--------断线报警器状态-------" + breakAlarmStatusSub.getAlarmStatus());

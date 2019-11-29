@@ -27,7 +27,7 @@
                 android:id="@+id/iv_stay1"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
-                android:src="@mipmap/ic_launcher" />
+                android:src="@drawable/das" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -43,14 +43,14 @@
                     app:kswBackDrawable="@drawable/sl_switchbutton_back"
                     app:kswThumbDrawable="@drawable/shape_switchbutton_thumb"
                     app:kswThumbHeight="16dp"
-                    app:kswThumbRangeRatio="2.2"
+                    app:kswThumbRangeRatio="2"
                     app:kswThumbWidth="16dp" />
 
                 <TextView
                     android:id="@+id/tv_stay1"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:layout_marginLeft="10dp"
+                    android:layout_marginLeft="5dp"
                     android:background="@color/secondary_text"
                     android:gravity="center"
                     android:padding="2dp"
@@ -75,7 +75,7 @@
                 android:id="@+id/iv_stay2"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
-                android:src="@mipmap/ic_launcher" />
+                android:src="@drawable/das" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -91,14 +91,14 @@
                     app:kswBackDrawable="@drawable/sl_switchbutton_back"
                     app:kswThumbDrawable="@drawable/shape_switchbutton_thumb"
                     app:kswThumbHeight="16dp"
-                    app:kswThumbRangeRatio="2.2"
+                    app:kswThumbRangeRatio="2"
                     app:kswThumbWidth="16dp" />
 
                 <TextView
                     android:id="@+id/tv_stay2"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:layout_marginLeft="10dp"
+                    android:layout_marginLeft="5dp"
                     android:background="@color/secondary_text"
                     android:gravity="center"
                     android:padding="2dp"
@@ -123,7 +123,7 @@
                 android:id="@+id/iv_stay3"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
-                android:src="@mipmap/ic_launcher" />
+                android:src="@drawable/das" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -139,14 +139,14 @@
                     app:kswBackDrawable="@drawable/sl_switchbutton_back"
                     app:kswThumbDrawable="@drawable/shape_switchbutton_thumb"
                     app:kswThumbHeight="16dp"
-                    app:kswThumbRangeRatio="2.2"
+                    app:kswThumbRangeRatio="2"
                     app:kswThumbWidth="16dp" />
 
                 <TextView
                     android:id="@+id/tv_stay3"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:layout_marginLeft="10dp"
+                    android:layout_marginLeft="5dp"
                     android:background="@color/secondary_text"
                     android:gravity="center"
                     android:padding="2dp"
@@ -170,7 +170,7 @@
                 android:id="@+id/iv_stay4"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
-                android:src="@mipmap/ic_launcher" />
+                android:src="@drawable/das" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -186,14 +186,14 @@
                     app:kswBackDrawable="@drawable/sl_switchbutton_back"
                     app:kswThumbDrawable="@drawable/shape_switchbutton_thumb"
                     app:kswThumbHeight="16dp"
-                    app:kswThumbRangeRatio="2.2"
+                    app:kswThumbRangeRatio="2"
                     app:kswThumbWidth="16dp" />
 
                 <TextView
                     android:id="@+id/tv_stay4"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:layout_marginLeft="10dp"
+                    android:layout_marginLeft="5dp"
                     android:background="@color/secondary_text"
                     android:gravity="center"
                     android:padding="2dp"
@@ -226,7 +226,7 @@
                 android:id="@+id/iv_stay5"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
-                android:src="@mipmap/ic_launcher" />
+                android:src="@drawable/das" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -242,14 +242,14 @@
                     app:kswBackDrawable="@drawable/sl_switchbutton_back"
                     app:kswThumbDrawable="@drawable/shape_switchbutton_thumb"
                     app:kswThumbHeight="16dp"
-                    app:kswThumbRangeRatio="2.2"
+                    app:kswThumbRangeRatio="2"
                     app:kswThumbWidth="16dp" />
 
                 <TextView
                     android:id="@+id/tv_stay5"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:layout_marginLeft="10dp"
+                    android:layout_marginLeft="5dp"
                     android:background="@color/secondary_text"
                     android:gravity="center"
                     android:padding="2dp"
@@ -274,7 +274,7 @@
                 android:id="@+id/iv_stay6"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
-                android:src="@mipmap/ic_launcher" />
+                android:src="@drawable/das" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -290,14 +290,14 @@
                     app:kswBackDrawable="@drawable/sl_switchbutton_back"
                     app:kswThumbDrawable="@drawable/shape_switchbutton_thumb"
                     app:kswThumbHeight="16dp"
-                    app:kswThumbRangeRatio="2.2"
+                    app:kswThumbRangeRatio="2"
                     app:kswThumbWidth="16dp" />
 
                 <TextView
                     android:id="@+id/tv_stay6"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:layout_marginLeft="10dp"
+                    android:layout_marginLeft="5dp"
                     android:background="@color/secondary_text"
                     android:gravity="center"
                     android:padding="2dp"
@@ -322,7 +322,7 @@
                 android:id="@+id/iv_stay7"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
-                android:src="@mipmap/ic_launcher" />
+                android:src="@drawable/das" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -338,14 +338,14 @@
                     app:kswBackDrawable="@drawable/sl_switchbutton_back"
                     app:kswThumbDrawable="@drawable/shape_switchbutton_thumb"
                     app:kswThumbHeight="16dp"
-                    app:kswThumbRangeRatio="2.2"
+                    app:kswThumbRangeRatio="2"
                     app:kswThumbWidth="16dp" />
 
                 <TextView
                     android:id="@+id/tv_stay7"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:layout_marginLeft="10dp"
+                    android:layout_marginLeft="5dp"
                     android:background="@color/secondary_text"
                     android:gravity="center"
                     android:padding="2dp"
@@ -370,7 +370,7 @@
                 android:id="@+id/iv_stay8"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
-                android:src="@mipmap/ic_launcher" />
+                android:src="@drawable/das" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -386,14 +386,14 @@
                     app:kswBackDrawable="@drawable/sl_switchbutton_back"
                     app:kswThumbDrawable="@drawable/shape_switchbutton_thumb"
                     app:kswThumbHeight="16dp"
-                    app:kswThumbRangeRatio="2.2"
+                    app:kswThumbRangeRatio="2"
                     app:kswThumbWidth="16dp" />
 
                 <TextView
                     android:id="@+id/tv_stay8"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:layout_marginLeft="10dp"
+                    android:layout_marginLeft="5dp"
                     android:background="@color/secondary_text"
                     android:gravity="center"
                     android:padding="2dp"
