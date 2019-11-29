@@ -2,6 +2,8 @@ package com.shmedo.mcloudapp.util;
 
 import android.annotation.SuppressLint;
 import android.text.TextUtils;
+import com.shmedo.das.das.cmd.CommandResult;
+import com.shmedo.mcloudapp.entity.ble.collector.MqttConfigInfoSub;
 
 import java.text.DecimalFormat;
 import java.util.Collection;
@@ -204,4 +206,75 @@ public class StringUtil {
 //        }
         return resultSize;
     }
+
+    /**
+     * 提取指令类型
+     * @param result
+     * @return
+     */
+    public static String extractCommandType(String result){
+        if (com.shmedo.das.utils.StringUtil.isNullOrEmpty(result) || result.length() < CommandResult.RESULT_MIN_LENGTH)
+            throw new IllegalArgumentException("指令结果格式错误:" + result);
+        String cmd = result.replace(CommandResult.COMMAND_RESULT_HEADER, "").substring(0, 3);
+        return cmd;
+    }
+
+    /**
+     * 判断链路是否开启
+     * @param result 蓝牙指令返回参数
+     * @return 返回是否开启
+     */
+    public static boolean isOpenLink(String result){
+        if (isNullOrEmpty(result) ||  result.length() < CommandResult.RESULT_MIN_LENGTH)
+            throw new IllegalArgumentException("指令结果格式错误:" + result);
+        String[] cmd = result.split(" ");
+        if (cmd[1].equals("0.0.0.0")){
+            return false;
+        }else {
+            return true;
+        }
+    }
+
+    /**
+     * 获取链路序号
+     * @param result
+     * @return
+     */
+    public static String linkNumber(String result){
+        if (isNullOrEmpty(result) ||  result.length() < CommandResult.RESULT_MIN_LENGTH)
+            throw new IllegalArgumentException("指令结果格式错误:" + result);
+        String[] cmd = result.split(" ");
+        String number = cmd[0].replace(CommandResult.COMMAND_RESULT_HEADER, "").substring(3,4);
+        return number;
+    }
+
+    /**
+     * 解析mqtt config
+     * @param result
+     * @return
+     *
+     * $$8893,1,4,mqtt.shmedo.com 6883,300,150000L,150000L,a84b42b1-cb30-410f-8285-5f4de6f9d319,
+     * 2,mqtt.shmedo.com 80,fXQQROerSlJ0bqTPCoMnyqgR-2dzhytztk3eYV6nuA0OBQljkqG_exXYtNfr,,,
+     */
+    public static MqttConfigInfoSub parserMqttConfig(String result){
+        if (isNullOrEmpty(result) ||  result.length() < CommandResult.RESULT_MIN_LENGTH)
+            throw new IllegalArgumentException("指令结果格式错误:" + result);
+        MqttConfigInfoSub mqttConfigInfoSub = new MqttConfigInfoSub();
+        String[] cmd = result.replace("\r\n", "").split(",");
+        mqttConfigInfoSub.setDataCenterSwitch(Integer.parseInt(cmd[1]));
+        mqttConfigInfoSub.setCommunicationProtocol(Integer.parseInt(cmd[2]));
+        mqttConfigInfoSub.setDataPlatformAddress(cmd[3]);
+        mqttConfigInfoSub.setKeepAliveValue(cmd[4]);
+        mqttConfigInfoSub.setDeviceSn(cmd[5]);
+        mqttConfigInfoSub.setProductId(cmd[6]);
+        mqttConfigInfoSub.setRegistrationCode(cmd[7]);
+        mqttConfigInfoSub.setRegistrationPlatform(Integer.parseInt(cmd[8]));
+        mqttConfigInfoSub.setAppKey(cmd[9]);
+        mqttConfigInfoSub.setMqttDeviceId(cmd[10]);
+        mqttConfigInfoSub.setMqttUsername(cmd[11]);
+        mqttConfigInfoSub.setMqttPassword(cmd[12]);
+        return mqttConfigInfoSub;
+    }
+
+
 }
