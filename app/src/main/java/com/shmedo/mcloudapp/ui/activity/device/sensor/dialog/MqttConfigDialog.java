@@ -50,10 +50,10 @@ public class MqttConfigDialog implements IDialogOpt<MqttConfigInfoSub>{
 
     @Override
     public void initData(MqttConfigInfoSub info) {
-//        mqttConfigInfoSub = info;
+        mqttConfigInfoSub = info;
         TextView tvTitle = contentView.findViewById(R.id.tv_title);
         Spinner communicationProtocol = contentView.findViewById(R.id.communication_protocol);
-        ClearEditText cetServiceAddress = contentView.findViewById(R.id.cet_service_address);
+        ClearEditText dataPlatformAddress = contentView.findViewById(R.id.cet_service_address);
         Spinner spRegistrationPlatform = contentView.findViewById(R.id.sp_registration_platform);
         LinearLayout llRegisterPlatform = contentView.findViewById(R.id.ll_register_platform);
         ClearEditText cetAppKey = contentView.findViewById(R.id.cet_app_Key);
@@ -72,6 +72,8 @@ public class MqttConfigDialog implements IDialogOpt<MqttConfigInfoSub>{
         LinearLayout llMqttConfig = contentView.findViewById(R.id.ll_mqtt_config);
         TextView mqttCancel = contentView.findViewById(R.id.mqtt_cancel);
         TextView mqttSave = contentView.findViewById(R.id.mqtt_save);
+        tvTitle.setText(link);
+
 
 
         if (mQttOnClickListener != null) {

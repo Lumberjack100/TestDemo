@@ -3,28 +3,48 @@ package com.shmedo.mcloudapp.entity.ble.collector;
 
 /**
  * mqtt配置实体类
+ *
+ *      $$8893,1,4,mqtt.shmedo.com 6883,300,150000L,150000L,a84b42b1-cb30-410f-8285-5f4de6f9d319,
+ *       2,mqtt.shmedo.com 80,fXQQROerSlJ0bqTPCoMnyqgR-2dzhytztk3eYV6nuA0OBQljkqG_exXYtNfr,,,
+ * 9.查询数据中心参数
+ * （1）查询：##889n\r\n，其中
+ *   n：表示链路编号，取值1，2，3
+ *   (2）返回参数：##889n,(1),(2),(3),(4),(5),(6),(7),(8),(9),(10),(11),(12)\r\n
+ *   (1):数据中心开关，0：关闭，1：打开
+ *   (2):通讯协议，2：MDM协议，4：MQTT自动注册，5：MQTT手动注册
+ *   (3):数据平台地址
+ *   (4):keepAlive
+ *   (5):设备SN号
+ *   (6):产品ID
+ *   (7):注册码
+ *   (8):注册平台类型，0：地大平台，1：成都理工平台，2：米度平台
+ *   (9):APPKey
+ *   (10):MQTT设备ID
+ *   (11):MQTT用户名
+ *   (12):MQTT密码
+ *   注：不同通讯协议下的参数不一致，不存在的参数，逗号之间为空
  */
 public class MqttConfigInfoSub {
-    private String tvTitle;
+    private int dataCenterSwitch;
     private int communicationProtocol;
-    private String cetServiceAddress;
-    private int spRegistrationPlatform;
-    private String cetAppKey;
-    private String cetRegisterAddress;
-    private String cetKeepAliveValue;
-    private String cetDeviceSn;
-    private String cetProductId;
-    private String cetRegistrationCode;
-    private String cetMqttDeviceId;
-    private String cetMqttUsername;
-    private String cetMqttPassword;
+    private String dataPlatformAddress;
+    private String keepAliveValue;
+    private String deviceSn;
+    private String productId;
+    private String registrationCode;
+    private int registrationPlatform;
+    private String appKey;
+    private String mqttDeviceId;
+    private String mqttUsername;
+    private String mqttPassword;
 
-    public String getTvTitle() {
-        return tvTitle;
+
+    public int getDataCenterSwitch() {
+        return dataCenterSwitch;
     }
 
-    public void setTvTitle(String tvTitle) {
-        this.tvTitle = tvTitle;
+    public void setDataCenterSwitch(int dataCenterSwitch) {
+        this.dataCenterSwitch = dataCenterSwitch;
     }
 
     public int getCommunicationProtocol() {
@@ -35,91 +55,83 @@ public class MqttConfigInfoSub {
         this.communicationProtocol = communicationProtocol;
     }
 
-    public String getCetServiceAddress() {
-        return cetServiceAddress;
+    public String getDataPlatformAddress() {
+        return dataPlatformAddress;
     }
 
-    public void setCetServiceAddress(String cetServiceAddress) {
-        this.cetServiceAddress = cetServiceAddress;
+    public void setDataPlatformAddress(String dataPlatformAddress) {
+        this.dataPlatformAddress = dataPlatformAddress;
     }
 
-    public int getSpRegistrationPlatform() {
-        return spRegistrationPlatform;
+    public String getKeepAliveValue() {
+        return keepAliveValue;
     }
 
-    public void setSpRegistrationPlatform(int spRegistrationPlatform) {
-        this.spRegistrationPlatform = spRegistrationPlatform;
+    public void setKeepAliveValue(String keepAliveValue) {
+        this.keepAliveValue = keepAliveValue;
     }
 
-    public String getCetAppKey() {
-        return cetAppKey;
+    public String getDeviceSn() {
+        return deviceSn;
     }
 
-    public void setCetAppKey(String cetAppKey) {
-        this.cetAppKey = cetAppKey;
+    public void setDeviceSn(String deviceSn) {
+        this.deviceSn = deviceSn;
     }
 
-    public String getCetRegisterAddress() {
-        return cetRegisterAddress;
+    public String getProductId() {
+        return productId;
     }
 
-    public void setCetRegisterAddress(String cetRegisterAddress) {
-        this.cetRegisterAddress = cetRegisterAddress;
+    public void setProductId(String productId) {
+        this.productId = productId;
     }
 
-    public String getCetKeepAliveValue() {
-        return cetKeepAliveValue;
+    public String getRegistrationCode() {
+        return registrationCode;
     }
 
-    public void setCetKeepAliveValue(String cetKeepAliveValue) {
-        this.cetKeepAliveValue = cetKeepAliveValue;
+    public void setRegistrationCode(String registrationCode) {
+        this.registrationCode = registrationCode;
     }
 
-    public String getCetDeviceSn() {
-        return cetDeviceSn;
+    public int getRegistrationPlatform() {
+        return registrationPlatform;
     }
 
-    public void setCetDeviceSn(String cetDeviceSn) {
-        this.cetDeviceSn = cetDeviceSn;
+    public void setRegistrationPlatform(int registrationPlatform) {
+        this.registrationPlatform = registrationPlatform;
     }
 
-    public String getCetProductId() {
-        return cetProductId;
+    public String getAppKey() {
+        return appKey;
     }
 
-    public void setCetProductId(String cetProductId) {
-        this.cetProductId = cetProductId;
+    public void setAppKey(String appKey) {
+        this.appKey = appKey;
     }
 
-    public String getCetRegistrationCode() {
-        return cetRegistrationCode;
+    public String getMqttDeviceId() {
+        return mqttDeviceId;
     }
 
-    public void setCetRegistrationCode(String cetRegistrationCode) {
-        this.cetRegistrationCode = cetRegistrationCode;
+    public void setMqttDeviceId(String mqttDeviceId) {
+        this.mqttDeviceId = mqttDeviceId;
     }
 
-    public String getCetMqttDeviceId() {
-        return cetMqttDeviceId;
+    public String getMqttUsername() {
+        return mqttUsername;
     }
 
-    public void setCetMqttDeviceId(String cetMqttDeviceId) {
-        this.cetMqttDeviceId = cetMqttDeviceId;
+    public void setMqttUsername(String mqttUsername) {
+        this.mqttUsername = mqttUsername;
     }
 
-    public String getCetMqttUsername() {
-        return cetMqttUsername;
+    public String getMqttPassword() {
+        return mqttPassword;
     }
 
-    public void setCetMqttUsername(String cetMqttUsername) {
-        this.cetMqttUsername = cetMqttUsername;
-    }
-
-    public String getCetMqttPassword() {
-        return cetMqttPassword;
-    }
-
-    public void setCetMqttPassword(String cetMqttPassword) {
-        this.cetMqttPassword = cetMqttPassword;
+    public void setMqttPassword(String mqttPassword) {
+        this.mqttPassword = mqttPassword;
     }
 }

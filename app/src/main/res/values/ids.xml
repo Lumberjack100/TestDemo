@@ -35,4 +35,7 @@
   <item type="id" name="hole_depth"/>
   <item type="id" name="measuring_pitch"/>
 
+  <item type="id" name="tv_link_one"/>
+  <item type="id" name="tv_link_two"/>
+  <item type="id" name="tv_link_three"/>
 </resources>
