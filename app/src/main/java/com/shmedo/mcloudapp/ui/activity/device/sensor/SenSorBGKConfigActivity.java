@@ -8,43 +8,29 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.hjq.toast.ToastUtils;
-import com.shmedo.das.common.SensorGudanDisplacementInfo;
-import com.shmedo.das.common.SensorGudanNotStressInfo;
-import com.shmedo.das.common.SensorGudanPercolateInfo;
-import com.shmedo.das.common.SensorGudanSoilPressureInfo;
-import com.shmedo.das.common.SensorGudanStressInfo;
 import com.shmedo.das.common.SensorInclinometerInfo;
-import com.shmedo.das.common.SensorKangPercolateInfo;
-import com.shmedo.das.common.SensorMoistureMeterInfo;
 import com.shmedo.das.common.SensorRadarLevelInfo;
 import com.shmedo.das.common.SensorSoilMoistureInfo;
-import com.shmedo.das.common.SensorTemperHumidityInfo;
-import com.shmedo.das.common.SensorUltrasonicLevelInfo;
-import com.shmedo.das.common.SensorUpliftPressureInfo;
 import com.shmedo.das.common.SensorWireShiftInfo;
 import com.shmedo.mcloudapp.MCloudApp;
 import com.shmedo.mcloudapp.R;
-import com.shmedo.mcloudapp.base.BaseActivity;
-import com.shmedo.mcloudapp.bluetooth.Message;
 import com.shmedo.mcloudapp.entity.ble.collector.CollectorSensorParamsInfoSub;
 import com.shmedo.mcloudapp.inter.MyOnClickListener;
 import com.shmedo.mcloudapp.model.Extras;
+import com.shmedo.mcloudapp.ui.activity.device.BaseDeviceConnectActivity;
 import com.shmedo.mcloudapp.ui.activity.device.sensor.dialog.DialogFactory;
-import com.shmedo.mcloudapp.ui.fragment.DeviceFragment;
 import com.shmedo.mcloudapp.util.StringUtil;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.UUID;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -59,7 +45,7 @@ import timber.log.Timber;
  * 创建时间:  2019/4/24 14:44
  * 描述：    基康渗压计 参数配置 50
  */
-public class SenSorBGKConfigActivity extends BaseActivity {
+public class SenSorBGKConfigActivity extends BaseDeviceConnectActivity {
 
     @BindView(R.id.toolbar_title)
     TextView mToolbarTitle;
@@ -136,29 +122,8 @@ public class SenSorBGKConfigActivity extends BaseActivity {
     @BindView(R.id.tv_stay8)
     TextView textView8;
 
-    @BindView(R.id.tv_prompt)
-    TextView mTvPrompt;
-
-    @BindView(R.id.btn_confirm)
-    Button mBtnConfirm;
-
     private MaterialDialog.Builder mBuilder;
     private MaterialDialog mMaterialDialog;
-
-    private CollectorSensorParamsInfoSub<SensorWireShiftInfo> sensorWireShiftInfo;
-    private CollectorSensorParamsInfoSub<SensorSoilMoistureInfo> sensorSoilMoistureInfo;
-    private CollectorSensorParamsInfoSub<SensorInclinometerInfo> sensorInclinometerInfo;
-    private CollectorSensorParamsInfoSub<SensorUltrasonicLevelInfo> sensorUltrasonicLevelInfo;
-    private CollectorSensorParamsInfoSub<SensorRadarLevelInfo> sensorRadarLevelInfo;
-    private CollectorSensorParamsInfoSub<SensorMoistureMeterInfo> sensorMoistureMeterInfo;
-    private CollectorSensorParamsInfoSub<SensorTemperHumidityInfo> sensorTemperHumidityInfo;
-    private CollectorSensorParamsInfoSub<SensorUpliftPressureInfo> sensorUpliftPressureInfo;
-    private CollectorSensorParamsInfoSub<SensorKangPercolateInfo> sensorKangPercolateInfo;
-    private CollectorSensorParamsInfoSub<SensorGudanPercolateInfo> sensorGudanPercolateInfo;
-    private CollectorSensorParamsInfoSub<SensorGudanSoilPressureInfo> sensorGudanSoilPressureInfo;
-    private CollectorSensorParamsInfoSub<SensorGudanStressInfo> sensorGudanStressInfo;
-    private CollectorSensorParamsInfoSub<SensorGudanNotStressInfo> sensorGudanNotStressInfo;
-    private CollectorSensorParamsInfoSub<SensorGudanDisplacementInfo> sensorGudanDisplacementInfo;
 
     private List<CollectorSensorParamsInfoSub> collectorSensorParamsInfoSubs = new ArrayList<>();
     //以传感器的通道号为 Key,CollectorSensorParamsInfoSub 对象为 Value
@@ -167,10 +132,10 @@ public class SenSorBGKConfigActivity extends BaseActivity {
     private DialogFactory factory = new DialogFactory();
 
 
-    public static void startActivity(Context context,List<CollectorSensorParamsInfoSub> mCollectorParamsInfoSubList) {
+    public static void startActivity(Context context, List<CollectorSensorParamsInfoSub> mCollectorParamsInfoSubList) {
         Intent intent = new Intent(context, SenSorBGKConfigActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putSerializable(Extras.SENSOR_PARAMS,(Serializable)mCollectorParamsInfoSubList);
+        bundle.putSerializable(Extras.SENSOR_PARAMS, (Serializable) mCollectorParamsInfoSubList);
         intent.putExtras(bundle);
         context.startActivity(intent);
     }
@@ -185,24 +150,18 @@ public class SenSorBGKConfigActivity extends BaseActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setToolBar(R.id.toolbar);
-        initView();
-        initData();
-    }
-
-    private void initView() {
         mToolbarTitle.setText("拉线位移计配置");
+        initData();
     }
 
 
     private void initData() {
-       Bundle bundle = getIntent().getExtras();
-       collectorSensorParamsInfoSubs = (List<CollectorSensorParamsInfoSub>) bundle.getSerializable(Extras.SENSOR_PARAMS);
-        Timber.d("size=" + collectorSensorParamsInfoSubs.size() + "--------获取XX采集器YY通道的传感器参数-------" + collectorSensorParamsInfoSubs.toString());
+        Bundle bundle = getIntent().getExtras();
+        collectorSensorParamsInfoSubs = (List<CollectorSensorParamsInfoSub>) bundle.getSerializable(Extras.SENSOR_PARAMS);
+        if (collectorSensorParamsInfoSubs == null) {
+            return;
+        }
 
-        if (collectorSensorParamsInfoSubs == null){
-           return;
-       }
-//        collectorSensorParamsInfoSubs = DeviceFragment.mCollectorParamsInfoSubList;
         openCount = collectorSensorParamsInfoSubs.size();
         if (openCount == 0) {
             return;
@@ -213,13 +172,6 @@ public class SenSorBGKConfigActivity extends BaseActivity {
             collectorSensorHashMap.put(mCollectorParamsInfoSub.getChannelNumber(), mCollectorParamsInfoSub);
             openSwitch(mCollectorParamsInfoSub);
         }
-
-
-//        //根据list的大小设置需要打开几个传感器
-//        for (int i = 0; i < collectorSensorParamsInfoSubs.size(); i++) {
-//            CollectorSensorParamsInfoSub mCollectorParamsInfoSub = collectorSensorParamsInfoSubs.get(i);
-//            openSwitch(mCollectorParamsInfoSub);
-//        }
     }
 
     private int channelNumber0 = -1;
@@ -512,6 +464,11 @@ public class SenSorBGKConfigActivity extends BaseActivity {
                 break;
 
             case R.id.btn_confirm://确定发送指令
+                if (!MCloudApp.isIsBluetoothDeviceConnected()) {
+                    ToastUtils.show(getString(R.string.param_config_bluetooth_disconnect_warn));
+                    finish();
+                    return;
+                }
                 sendInstruction();
                 break;
         }
@@ -882,19 +839,12 @@ public class SenSorBGKConfigActivity extends BaseActivity {
         }
 
         for (int i = 0; i < cmdList.size(); i++) {
-            builderFirst.append(cmdList.get(i).toString());
+            builderFirst.append(cmdList.get(i));
         }
 
         String result = String.valueOf(builderFirst);
-        if (!MCloudApp.isIsBluetoothDeviceConnected()) {
-            ToastUtils.show("蓝牙未连接");
-            finish();
-            return;
-        }
-
-        Message msg = new Message(UUID.randomUUID().toString(), result, true);
-        DeviceFragment.mdBluetoothManager.writeMessage(msg);
-        Timber.d("发送result指令===" + result);
+        sendCommonCommand(result);
+        Timber.d("发送设置传感器指令===" + result);
         finish();
     }
 
