@@ -18,5 +18,5 @@ public interface MyOnClickListener {
      */
     boolean onSureClick(View v);
 
-    void onCancelClick(View view, int channelNumber);
+    void onCancelClick(View view, String channelNumber);
 }

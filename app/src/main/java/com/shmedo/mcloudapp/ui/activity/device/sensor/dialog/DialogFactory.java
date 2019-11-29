@@ -14,7 +14,7 @@ import com.shmedo.mcloudapp.inter.MyOnClickListener;
  */
 public class DialogFactory {
 
-    public <T> IDialogOpt<T> createDialog(final Context context, String type, T data, int channelNumber, MyOnClickListener onClickListener) {
+    public <T> IDialogOpt<T> createDialog(final Context context, String type, T data, String channelNumber, MyOnClickListener onClickListener) {
         IDialogOpt opt = null;
 
         switch (type) {

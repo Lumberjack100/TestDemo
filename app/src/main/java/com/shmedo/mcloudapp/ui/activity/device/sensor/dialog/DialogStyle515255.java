@@ -34,10 +34,10 @@ public class DialogStyle515255 implements IDialogOpt<CollectorSensorParamsInfoSu
     private MyOnClickListener myOnClickListener;
     private SensorDataEvent event = new SensorDataEvent();
     private Dialog dialog;
-    private int channelNumber;
+    private String channelNumber;
 
 
-    public DialogStyle515255(Context context, int channelNumber) {
+    public DialogStyle515255(Context context, String channelNumber) {
         this.mContext = context;
         this.channelNumber = channelNumber;
     }

@@ -32,9 +32,9 @@ public class DialogStyle02 implements IDialogOpt<CollectorSensorParamsInfoSub> {
     private MyOnClickListener myOnClickListener;
     private Context mContext;
     private UserConfig uc;
-    private int channelNumber;
+    private String channelNumber;
 
-    public DialogStyle02(Context context, int channelNumber) {
+    public DialogStyle02(Context context, String channelNumber) {
         this.mContext = context;
         this.channelNumber = channelNumber;
     }

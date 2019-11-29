@@ -30,6 +30,9 @@ import com.shmedo.mcloudapp.ui.activity.device.sensor.dialog.DialogFactory;
 import com.shmedo.mcloudapp.util.StringUtil;
 import com.shmedo.mcloudapp.util.bleutil.BlueResultParserUtil;
 
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -164,7 +167,7 @@ public class SenSorBGKConfigActivity extends BaseDeviceConnectActivity {
         String[] sensorConfigs = collectorSensorConfig.split("&&");
         for (String sensorConfig : sensorConfigs) {
             CollectorSensorParamsInfoSub mCollectorParamsInfoSub = BlueResultParserUtil.setCollectorParams(sensorConfig);
-            Timber.d("--------获取XX采集器YY通道的传感器参数-------" + mCollectorParamsInfoSub.toString());
+            Timber.d("--------XX采集器YY通道的传感器参数-------" + mCollectorParamsInfoSub.toString());
 
             collectorSensorParamsInfoSubs.add(mCollectorParamsInfoSub);
             collectorSensorHashMap.put(mCollectorParamsInfoSub.getChannelNumber(), mCollectorParamsInfoSub);
@@ -172,14 +175,14 @@ public class SenSorBGKConfigActivity extends BaseDeviceConnectActivity {
         }
     }
 
-    private int channelNumber0 = -1;
-    private int channelNumber1 = -1;
-    private int channelNumber2 = -1;
-    private int channelNumber3 = -1;
-    private int channelNumber4 = -1;
-    private int channelNumber5 = -1;
-    private int channelNumber6 = -1;
-    private int channelNumber7 = -1;
+    private String channelNumber0 = "-1";
+    private String channelNumber1 = "-1";
+    private String channelNumber2 = "-1";
+    private String channelNumber3 = "-1";
+    private String channelNumber4 = "-1";
+    private String channelNumber5 = "-1";
+    private String channelNumber6 = "-1";
+    private String channelNumber7 = "-1";
 
     /**
      * 初始化传感器
@@ -191,56 +194,56 @@ public class SenSorBGKConfigActivity extends BaseDeviceConnectActivity {
         int number = StringUtil.formatNumber(mCollectorParamsInfoSub.getChannelNumber());
         switch (number) {
             case 0:
-                channelNumber0 = 0;
+                channelNumber0 = "00";
                 switchButton1.setCheckedImmediatelyNoEvent(true);
                 setSwitchViewState(true, textView1);
                 setSensorIconByType(sensorType, imageView1);
                 break;
 
             case 1:
-                channelNumber1 = 1;
+                channelNumber1 = "01";
                 switchButton2.setCheckedImmediatelyNoEvent(true);
                 setSwitchViewState(true, textView2);
                 setSensorIconByType(sensorType, imageView2);
                 break;
 
             case 2:
-                channelNumber2 = 2;
+                channelNumber2 = "02";
                 switchButton3.setCheckedImmediatelyNoEvent(true);
                 setSwitchViewState(true, textView3);
                 setSensorIconByType(sensorType, imageView3);
                 break;
 
             case 3:
-                channelNumber3 = 3;
+                channelNumber3 = "03";
                 switchButton4.setCheckedImmediatelyNoEvent(true);
                 setSwitchViewState(true, textView4);
                 setSensorIconByType(sensorType, imageView4);
                 break;
 
             case 4:
-                channelNumber4 = 4;
+                channelNumber4 = "04";
                 switchButton5.setCheckedImmediatelyNoEvent(true);
                 setSwitchViewState(true, textView5);
                 setSensorIconByType(sensorType, imageView5);
                 break;
 
             case 5:
-                channelNumber5 = 5;
+                channelNumber5 = "05";
                 switchButton6.setCheckedImmediatelyNoEvent(true);
                 setSwitchViewState(true, textView6);
                 setSensorIconByType(sensorType, imageView6);
                 break;
 
             case 6:
-                channelNumber6 = 6;
+                channelNumber6 = "06";
                 switchButton7.setCheckedImmediatelyNoEvent(true);
                 setSwitchViewState(true, textView7);
                 setSensorIconByType(sensorType, imageView7);
                 break;
 
             case 7:
-                channelNumber7 = 7;
+                channelNumber7 = "07";
                 switchButton8.setCheckedImmediatelyNoEvent(true);
                 setSwitchViewState(true, textView8);
                 setSensorIconByType(sensorType, imageView8);
@@ -328,37 +331,36 @@ public class SenSorBGKConfigActivity extends BaseDeviceConnectActivity {
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
         switch (buttonView.getId()) {
             case R.id.sw_stay1:
-                toggleSwitchView(textView1, switchButton1, "0");
+                toggleSwitchView(textView1, switchButton1, "00");
                 break;
 
             case R.id.sw_stay2:
-                toggleSwitchView(textView2, switchButton2, "1");
+                toggleSwitchView(textView2, switchButton2, "01");
                 break;
 
             case R.id.sw_stay3:
-                toggleSwitchView(textView3, switchButton3, "2");
+                toggleSwitchView(textView3, switchButton3, "02");
                 break;
 
             case R.id.sw_stay4:
-                toggleSwitchView(textView4, switchButton4, "3");
+                toggleSwitchView(textView4, switchButton4, "03");
                 break;
 
             case R.id.sw_stay5:
-                toggleSwitchView(textView5, switchButton5, "4");
+                toggleSwitchView(textView5, switchButton5, "04");
                 break;
 
             case R.id.sw_stay6:
-                toggleSwitchView(textView6, switchButton6, "5");
+                toggleSwitchView(textView6, switchButton6, "05");
                 break;
 
             case R.id.sw_stay7:
-                toggleSwitchView(textView7, switchButton7, "6");
+                toggleSwitchView(textView7, switchButton7, "06");
                 break;
 
             case R.id.sw_stay8:
-                toggleSwitchView(textView8, switchButton8, "7");
+                toggleSwitchView(textView8, switchButton8, "07");
                 break;
-
         }
     }
 
@@ -373,7 +375,7 @@ public class SenSorBGKConfigActivity extends BaseDeviceConnectActivity {
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.iv_stay1://弹框
-                if (channelNumber0 == -1) {
+                if (channelNumber0.equals("-1")) {
                     ToastUtils.show("此传感器为空");
                     return;
                 }
@@ -381,7 +383,7 @@ public class SenSorBGKConfigActivity extends BaseDeviceConnectActivity {
                 break;
 
             case R.id.iv_stay2:
-                if (channelNumber1 == -1) {
+                if (channelNumber1.equals("-1")) {
                     ToastUtils.show("此传感器为空");
                     return;
                 }
@@ -389,7 +391,7 @@ public class SenSorBGKConfigActivity extends BaseDeviceConnectActivity {
                 break;
 
             case R.id.iv_stay3:
-                if (channelNumber2 == -1) {
+                if (channelNumber2.equals("-1")) {
                     ToastUtils.show("此传感器为空");
                     return;
                 }
@@ -397,7 +399,7 @@ public class SenSorBGKConfigActivity extends BaseDeviceConnectActivity {
                 break;
 
             case R.id.iv_stay4:
-                if (channelNumber3 == -1) {
+                if (channelNumber3.equals("-1")) {
                     ToastUtils.show("此传感器为空");
                     return;
                 }
@@ -405,7 +407,7 @@ public class SenSorBGKConfigActivity extends BaseDeviceConnectActivity {
                 break;
 
             case R.id.iv_stay5:
-                if (channelNumber4 == -1) {
+                if (channelNumber4.equals("-1")) {
                     ToastUtils.show("此传感器为空");
                     return;
                 }
@@ -413,7 +415,7 @@ public class SenSorBGKConfigActivity extends BaseDeviceConnectActivity {
                 break;
 
             case R.id.iv_stay6:
-                if (channelNumber5 == -1) {
+                if (channelNumber5.equals("-1")) {
                     ToastUtils.show("此传感器为空");
                     return;
                 }
@@ -421,7 +423,7 @@ public class SenSorBGKConfigActivity extends BaseDeviceConnectActivity {
                 break;
 
             case R.id.iv_stay7:
-                if (channelNumber6 == -1) {
+                if (channelNumber6.equals("-1")) {
                     ToastUtils.show("此传感器为空");
                     return;
                 }
@@ -429,7 +431,7 @@ public class SenSorBGKConfigActivity extends BaseDeviceConnectActivity {
                 break;
 
             case R.id.iv_stay8:
-                if (channelNumber7 == -1) {
+                if (channelNumber7.equals("-1")) {
                     ToastUtils.show("此传感器为空");
                     return;
                 }
@@ -453,12 +455,12 @@ public class SenSorBGKConfigActivity extends BaseDeviceConnectActivity {
         mTvStay.setBackgroundColor(getResources().getColor(isOpen ? R.color.colorPrimaryDark : R.color.secondary_text));
     }
 
-    private void toggleSwitchView(TextView textView, SwitchButton switchButton, String tag) {
+    private void toggleSwitchView(TextView textView, SwitchButton switchButton, String channelNumber) {
         if (switchButton.isChecked()) {
             setSwitchViewState(true, textView);
-            setOpenSwitchDialog(tag);
+            setOpenSwitchDialog(channelNumber);
         } else {
-            closeSwitchColorbg(textView, switchButton, tag);
+            closeSwitchColorbg(textView, switchButton, channelNumber);
         }
     }
 
@@ -466,7 +468,7 @@ public class SenSorBGKConfigActivity extends BaseDeviceConnectActivity {
     /**
      * 关闭采集器设备  确定后停用6226560118056462
      */
-    private void closeSwitchColorbg(final TextView textView, final SwitchButton switchButton, final String tag) {
+    private void closeSwitchColorbg(final TextView textView, final SwitchButton switchButton, final String channelNumber) {
         mBuilder = new MaterialDialog.Builder(this);
         mBuilder.title("温馨提示：")
                 .content("确认要停用该传感器吗？")
@@ -490,45 +492,45 @@ public class SenSorBGKConfigActivity extends BaseDeviceConnectActivity {
                 setSwitchViewState(false, textView);
 
                 //停用后停止
-                switch (tag) {
-                    case "0":
-                        channelNumber0 = -1;
-                        collectorSensorHashMap.remove("00");
+                switch (channelNumber) {
+                    case "00":
+                        channelNumber0 = "-1";
+                        collectorSensorHashMap.remove(channelNumber);
                         break;
 
-                    case "1":
-                        channelNumber1 = -1;
-                        collectorSensorHashMap.remove("01");
+                    case "01":
+                        channelNumber1 = "-1";
+                        collectorSensorHashMap.remove(channelNumber);
                         break;
 
-                    case "2":
-                        channelNumber2 = -1;
-                        collectorSensorHashMap.remove("02");
+                    case "02":
+                        channelNumber2 = "-1";
+                        collectorSensorHashMap.remove(channelNumber);
                         break;
 
-                    case "3":
-                        channelNumber3 = -1;
-                        collectorSensorHashMap.remove("03");
+                    case "03":
+                        channelNumber3 = "-1";
+                        collectorSensorHashMap.remove(channelNumber);
                         break;
 
-                    case "4":
-                        channelNumber4 = -1;
-                        collectorSensorHashMap.remove("04");
+                    case "04":
+                        channelNumber4 = "-1";
+                        collectorSensorHashMap.remove(channelNumber);
                         break;
 
-                    case "5":
-                        channelNumber5 = -1;
-                        collectorSensorHashMap.remove("05");
+                    case "05":
+                        channelNumber5 = "-1";
+                        collectorSensorHashMap.remove(channelNumber);
                         break;
 
-                    case "6":
-                        channelNumber6 = -1;
-                        collectorSensorHashMap.remove("06");
+                    case "06":
+                        channelNumber6 = "-1";
+                        collectorSensorHashMap.remove(channelNumber);
                         break;
 
-                    case "7":
-                        channelNumber7 = -1;
-                        collectorSensorHashMap.remove("07");
+                    case "07":
+                        channelNumber7 = "-1";
+                        collectorSensorHashMap.remove(channelNumber);
                         break;
                 }
             }
@@ -536,116 +538,116 @@ public class SenSorBGKConfigActivity extends BaseDeviceConnectActivity {
     }
 
 
-    private void setOpenSwitchDialog(String tag) {
-        switch (tag) {
-            case "0":
-                channelNumber0 = 0;
-                if (!collectorSensorHashMap.containsKey("00")) {
+    private void setOpenSwitchDialog(String channelNumber) {
+        switch (channelNumber) {
+            case "00":
+                channelNumber0 = channelNumber;
+                if (!collectorSensorHashMap.containsKey(channelNumber)) {
                     CollectorSensorParamsInfoSub collectorSensorParamsInfoSub = new CollectorSensorParamsInfoSub();
                     collectorSensorParamsInfoSub.setCollectorModel(collectorSensorParamsInfoSubs.get(0).getCollectorModel());
-                    collectorSensorParamsInfoSub.setChannelNumber("00");
+                    collectorSensorParamsInfoSub.setChannelNumber(channelNumber);
                     collectorSensorParamsInfoSub.setSensorType(collectorSensorParamsInfoSubs.get(0).getSensorType());
                     collectorSensorParamsInfoSub.setSensorAddress(collectorSensorParamsInfoSubs.get(0).getSensorAddress());
                     collectorSensorParamsInfoSub.setSensorData(collectorSensorParamsInfoSubs.get(0).getSensorData());
-                    collectorSensorHashMap.put("00", collectorSensorParamsInfoSub);
+                    collectorSensorHashMap.put(channelNumber, collectorSensorParamsInfoSub);
                 }
                 showBottomDialog(channelNumber0);
                 break;
 
-            case "1":
-                channelNumber1 = 1;
-                if (!collectorSensorHashMap.containsKey("01")) {
+            case "01":
+                channelNumber1 = channelNumber;
+                if (!collectorSensorHashMap.containsKey(channelNumber)) {
                     CollectorSensorParamsInfoSub collectorSensorParamsInfoSub = new CollectorSensorParamsInfoSub();
                     collectorSensorParamsInfoSub.setCollectorModel(collectorSensorParamsInfoSubs.get(0).getCollectorModel());
-                    collectorSensorParamsInfoSub.setChannelNumber("01");
+                    collectorSensorParamsInfoSub.setChannelNumber(channelNumber);
                     collectorSensorParamsInfoSub.setSensorType(collectorSensorParamsInfoSubs.get(0).getSensorType());
-                    collectorSensorParamsInfoSub.setSensorAddress("1");
+                    collectorSensorParamsInfoSub.setSensorAddress(channelNumber);
                     collectorSensorParamsInfoSub.setSensorData(collectorSensorParamsInfoSubs.get(0).getSensorData());
-                    collectorSensorHashMap.put("01", collectorSensorParamsInfoSub);
+                    collectorSensorHashMap.put(channelNumber, collectorSensorParamsInfoSub);
                 }
                 showBottomDialog(channelNumber1);
                 break;
 
-            case "2":
-                channelNumber2 = 2;
-                if (!collectorSensorHashMap.containsKey("02")) {
+            case "02":
+                channelNumber2 = channelNumber;
+                if (!collectorSensorHashMap.containsKey(channelNumber)) {
                     CollectorSensorParamsInfoSub collectorSensorParamsInfoSub = new CollectorSensorParamsInfoSub();
                     collectorSensorParamsInfoSub.setCollectorModel(collectorSensorParamsInfoSubs.get(0).getCollectorModel());
-                    collectorSensorParamsInfoSub.setChannelNumber("02");
+                    collectorSensorParamsInfoSub.setChannelNumber(channelNumber);
                     collectorSensorParamsInfoSub.setSensorType(collectorSensorParamsInfoSubs.get(0).getSensorType());
-                    collectorSensorParamsInfoSub.setSensorAddress("2");
+                    collectorSensorParamsInfoSub.setSensorAddress(channelNumber);
                     collectorSensorParamsInfoSub.setSensorData(collectorSensorParamsInfoSubs.get(0).getSensorData());
-                    collectorSensorHashMap.put("02", collectorSensorParamsInfoSub);
+                    collectorSensorHashMap.put(channelNumber, collectorSensorParamsInfoSub);
                 }
                 showBottomDialog(channelNumber2);
                 break;
 
-            case "3":
-                channelNumber3 = 3;
-                if (!collectorSensorHashMap.containsKey("03")) {
+            case "03":
+                channelNumber3 = channelNumber;
+                if (!collectorSensorHashMap.containsKey(channelNumber)) {
                     CollectorSensorParamsInfoSub collectorSensorParamsInfoSub = new CollectorSensorParamsInfoSub();
                     collectorSensorParamsInfoSub.setCollectorModel(collectorSensorParamsInfoSubs.get(0).getCollectorModel());
-                    collectorSensorParamsInfoSub.setChannelNumber("03");
+                    collectorSensorParamsInfoSub.setChannelNumber(channelNumber);
                     collectorSensorParamsInfoSub.setSensorType(collectorSensorParamsInfoSubs.get(0).getSensorType());
-                    collectorSensorParamsInfoSub.setSensorAddress("3");
+                    collectorSensorParamsInfoSub.setSensorAddress(channelNumber);
                     collectorSensorParamsInfoSub.setSensorData(collectorSensorParamsInfoSubs.get(0).getSensorData());
-                    collectorSensorHashMap.put("03", collectorSensorParamsInfoSub);
+                    collectorSensorHashMap.put(channelNumber, collectorSensorParamsInfoSub);
                 }
                 showBottomDialog(channelNumber3);
                 break;
 
-            case "4":
-                channelNumber4 = 4;
-                if (!collectorSensorHashMap.containsKey("04")) {
+            case "04":
+                channelNumber4 = channelNumber;
+                if (!collectorSensorHashMap.containsKey(channelNumber)) {
                     CollectorSensorParamsInfoSub collectorSensorParamsInfoSub = new CollectorSensorParamsInfoSub();
                     collectorSensorParamsInfoSub.setCollectorModel(collectorSensorParamsInfoSubs.get(0).getCollectorModel());
-                    collectorSensorParamsInfoSub.setChannelNumber("04");
+                    collectorSensorParamsInfoSub.setChannelNumber(channelNumber);
                     collectorSensorParamsInfoSub.setSensorType(collectorSensorParamsInfoSubs.get(0).getSensorType());
-                    collectorSensorParamsInfoSub.setSensorAddress("4");
+                    collectorSensorParamsInfoSub.setSensorAddress(channelNumber);
                     collectorSensorParamsInfoSub.setSensorData(collectorSensorParamsInfoSubs.get(0).getSensorData());
-                    collectorSensorHashMap.put("04", collectorSensorParamsInfoSub);
+                    collectorSensorHashMap.put(channelNumber, collectorSensorParamsInfoSub);
                 }
                 showBottomDialog(channelNumber4);
                 break;
 
-            case "5":
-                channelNumber5 = 5;
-                if (!collectorSensorHashMap.containsKey("05")) {
+            case "05":
+                channelNumber5 = channelNumber;
+                if (!collectorSensorHashMap.containsKey(channelNumber)) {
                     CollectorSensorParamsInfoSub collectorSensorParamsInfoSub = new CollectorSensorParamsInfoSub();
                     collectorSensorParamsInfoSub.setCollectorModel(collectorSensorParamsInfoSubs.get(0).getCollectorModel());
-                    collectorSensorParamsInfoSub.setChannelNumber("05");
+                    collectorSensorParamsInfoSub.setChannelNumber(channelNumber);
                     collectorSensorParamsInfoSub.setSensorType(collectorSensorParamsInfoSubs.get(0).getSensorType());
-                    collectorSensorParamsInfoSub.setSensorAddress("5");
+                    collectorSensorParamsInfoSub.setSensorAddress(channelNumber);
                     collectorSensorParamsInfoSub.setSensorData(collectorSensorParamsInfoSubs.get(0).getSensorData());
-                    collectorSensorHashMap.put("05", collectorSensorParamsInfoSub);
+                    collectorSensorHashMap.put(channelNumber, collectorSensorParamsInfoSub);
                 }
                 showBottomDialog(channelNumber5);
                 break;
 
-            case "6":
-                channelNumber6 = 6;
-                if (!collectorSensorHashMap.containsKey("06")) {
+            case "06":
+                channelNumber6 = channelNumber;
+                if (!collectorSensorHashMap.containsKey(channelNumber)) {
                     CollectorSensorParamsInfoSub collectorSensorParamsInfoSub = new CollectorSensorParamsInfoSub();
                     collectorSensorParamsInfoSub.setCollectorModel(collectorSensorParamsInfoSubs.get(0).getCollectorModel());
-                    collectorSensorParamsInfoSub.setChannelNumber("06");
+                    collectorSensorParamsInfoSub.setChannelNumber(channelNumber);
                     collectorSensorParamsInfoSub.setSensorType(collectorSensorParamsInfoSubs.get(0).getSensorType());
-                    collectorSensorParamsInfoSub.setSensorAddress("6");
+                    collectorSensorParamsInfoSub.setSensorAddress(channelNumber);
                     collectorSensorParamsInfoSub.setSensorData(collectorSensorParamsInfoSubs.get(0).getSensorData());
-                    collectorSensorHashMap.put("06", collectorSensorParamsInfoSub);
+                    collectorSensorHashMap.put(channelNumber, collectorSensorParamsInfoSub);
                 }
                 showBottomDialog(channelNumber6);
                 break;
 
-            case "7":
-                channelNumber7 = 7;
-                if (!collectorSensorHashMap.containsKey("07")) {
+            case "07":
+                channelNumber7 = channelNumber;
+                if (!collectorSensorHashMap.containsKey(channelNumber)) {
                     CollectorSensorParamsInfoSub collectorSensorParamsInfoSub = new CollectorSensorParamsInfoSub();
                     collectorSensorParamsInfoSub.setCollectorModel(collectorSensorParamsInfoSubs.get(0).getCollectorModel());
-                    collectorSensorParamsInfoSub.setChannelNumber("07");
+                    collectorSensorParamsInfoSub.setChannelNumber(channelNumber);
                     collectorSensorParamsInfoSub.setSensorType(collectorSensorParamsInfoSubs.get(0).getSensorType());
-                    collectorSensorParamsInfoSub.setSensorAddress("7");
+                    collectorSensorParamsInfoSub.setSensorAddress(channelNumber);
                     collectorSensorParamsInfoSub.setSensorData(collectorSensorParamsInfoSubs.get(0).getSensorData());
-                    collectorSensorHashMap.put("07", collectorSensorParamsInfoSub);
+                    collectorSensorHashMap.put(channelNumber, collectorSensorParamsInfoSub);
                 }
                 showBottomDialog(channelNumber7);
                 break;
@@ -656,45 +658,10 @@ public class SenSorBGKConfigActivity extends BaseDeviceConnectActivity {
 
     /**
      * 弹框
-     *
      * @param
      */
-    private void showBottomDialog(int channelNumber) {
-        switch (channelNumber) {
-            case 0:
-                factory.createDialog(this, collectorSensorHashMap.get("00").getSensorType(), collectorSensorHashMap.get("00"), channelNumber, onSureClickListener);
-                break;
-
-            case 1:
-                factory.createDialog(this, collectorSensorHashMap.get("01").getSensorType(), collectorSensorHashMap.get("01"), channelNumber, onSureClickListener);
-                break;
-
-            case 2:
-                factory.createDialog(this, collectorSensorHashMap.get("02").getSensorType(), collectorSensorHashMap.get("02"), channelNumber, onSureClickListener);
-                break;
-
-            case 3:
-                factory.createDialog(this, collectorSensorHashMap.get("03").getSensorType(), collectorSensorHashMap.get("03"), channelNumber, onSureClickListener);
-                break;
-
-            case 4:
-                factory.createDialog(this, collectorSensorHashMap.get("04").getSensorType(), collectorSensorHashMap.get("04"), channelNumber, onSureClickListener);
-                break;
-
-            case 5:
-                factory.createDialog(this, collectorSensorHashMap.get("05").getSensorType(), collectorSensorHashMap.get("05"), channelNumber, onSureClickListener);
-                break;
-
-            case 6:
-                factory.createDialog(this, collectorSensorHashMap.get("06").getSensorType(), collectorSensorHashMap.get("06"), channelNumber, onSureClickListener);
-                break;
-
-            case 7:
-                factory.createDialog(this, collectorSensorHashMap.get("07").getSensorType(), collectorSensorHashMap.get("07"), channelNumber, onSureClickListener);
-                break;
-
-            default:
-        }
+    private void showBottomDialog(String channelNumber) {
+        factory.createDialog(this, collectorSensorHashMap.get(channelNumber).getSensorType(), collectorSensorHashMap.get(channelNumber), channelNumber, onSureClickListener);
     }
 
     private MyOnClickListener onSureClickListener = new MyOnClickListener() {
@@ -714,74 +681,72 @@ public class SenSorBGKConfigActivity extends BaseDeviceConnectActivity {
                     }
                 }
             }
-
             return true;
         }
 
         @Override
-        public void onCancelClick(View view, int channelNumber) {
+        public void onCancelClick(View view, String channelNumber) {
             switch (channelNumber) {
-                case 0:
+                case "00":
                     switchButton1.setCheckedImmediatelyNoEvent(false);
                     setSwitchViewState(false, textView1);
-                    channelNumber0 = -1;
-                    collectorSensorHashMap.remove("00");
+                    channelNumber0 = "-1";
+                    collectorSensorHashMap.remove(channelNumber);
                     break;
 
-                case 1:
+                case "01":
                     switchButton2.setCheckedImmediatelyNoEvent(false);
                     setSwitchViewState(false, textView2);
-                    channelNumber1 = -1;
-                    collectorSensorHashMap.remove("01");
+                    channelNumber1 = "-1";
+                    collectorSensorHashMap.remove(channelNumber);
                     break;
 
-                case 2:
+                case "02":
                     switchButton3.setCheckedImmediatelyNoEvent(false);
                     setSwitchViewState(false, textView3);
-                    channelNumber2 = -1;
-                    collectorSensorHashMap.remove("02");
+                    channelNumber2 = "-1";
+                    collectorSensorHashMap.remove(channelNumber);
                     break;
 
-                case 3:
+                case "03":
                     switchButton4.setCheckedImmediatelyNoEvent(false);
                     setSwitchViewState(false, textView4);
-                    channelNumber3 = -1;
-                    collectorSensorHashMap.remove("03");
+                    channelNumber3 = "-1";
+                    collectorSensorHashMap.remove(channelNumber);
                     break;
 
-                case 4:
+                case "04":
                     switchButton5.setCheckedImmediatelyNoEvent(false);
                     setSwitchViewState(false, textView5);
-                    channelNumber4 = -1;
-                    collectorSensorHashMap.remove("04");
+                    channelNumber4 = "-1";
+                    collectorSensorHashMap.remove(channelNumber);
                     break;
 
-                case 5:
+                case "05":
                     switchButton6.setCheckedImmediatelyNoEvent(false);
                     setSwitchViewState(false, textView6);
-                    channelNumber5 = -1;
-                    collectorSensorHashMap.remove("05");
+                    channelNumber5 = "-1";
+                    collectorSensorHashMap.remove(channelNumber);
                     break;
 
-                case 6:
+                case "06":
                     switchButton7.setCheckedImmediatelyNoEvent(false);
                     setSwitchViewState(false, textView7);
-                    channelNumber6 = -1;
-                    collectorSensorHashMap.remove("06");
+                    channelNumber6 = "-1";
+                    collectorSensorHashMap.remove(channelNumber);
                     break;
 
-                case 7:
+                case "07":
                     switchButton8.setCheckedImmediatelyNoEvent(false);
                     setSwitchViewState(false, textView8);
-                    channelNumber7 = -1;
-                    collectorSensorHashMap.remove("07");
+                    channelNumber7 = "-1";
+                    collectorSensorHashMap.remove(channelNumber);
                     break;
 
                 default:
             }
         }
     };
-
 
 
     /**
@@ -810,74 +775,69 @@ public class SenSorBGKConfigActivity extends BaseDeviceConnectActivity {
         builderFirst.append("\r\n");
         String result = String.valueOf(builderFirst);
         sendCommonCommand(result);
-
+        Timber.d("设置采集器接入的传感器指令===" + result);
 
         List<String> cmdList = new ArrayList<>();
-        for (int j = 0; j < collectorSensorParamsInfoSubs.size(); j++) {
-            cmdList.addAll(serData(collectorSensorParamsInfoSubs.get(j), j));
+        for(CollectorSensorParamsInfoSub collectorSensorParamsInfoSub :collectorSensorParamsInfoSubs){
+            cmdList.addAll(serData(collectorSensorParamsInfoSub));
         }
 
+        for (String cmd : cmdList) {
+            sendCommonCommand(cmd);
+            Timber.d("发送指令===" + cmd);
+        }
 
-        Timber.d("发送设置传感器指令===" + result);
-        finish();
+//        finish();
     }
 
-    private List<String> serData(CollectorSensorParamsInfoSub paramsInfoSub, int channelNumber) {
-        List<String> list = new ArrayList<>();
-        StringBuilder result1 = new StringBuilder();
-        StringBuilder result2 = new StringBuilder();
+    private List<String> serData(CollectorSensorParamsInfoSub paramsInfoSub) {
+        List<String> arrayList = new ArrayList<>();
+        StringBuilder stringBuilder1 = new StringBuilder();
+        StringBuilder stringBuilder2 = new StringBuilder();
 
         switch (paramsInfoSub.getCollectorModel()) {
             case "02":
                 //裂缝计采集器
                 SensorWireShiftInfo info = (SensorWireShiftInfo) paramsInfoSub.getSensorData();
-                result1.append("##168" + StringUtil.formatStringTwo(paramsInfoSub.getCollectorModel()) +
-                        StringUtil.formatStringTwo(paramsInfoSub.getSensorAddress()) +
-                        info.getTriggerThreshold() + "\r\n");
-                result2.append("##165" + StringUtil.formatStringTwo(paramsInfoSub.getCollectorModel()) +
-                        StringUtil.formatStringTwo(paramsInfoSub.getSensorAddress()) +
-                        info.getCorrectionValue() + "\r\n");
-                list.add(String.valueOf(result1));
-                list.add(String.valueOf(result2));
+                stringBuilder1.append("##168" + StringUtil.formatStringTwo(paramsInfoSub.getCollectorModel()) +
+                        StringUtil.formatStringTwo(paramsInfoSub.getSensorAddress()) + info.getTriggerThreshold() + "\r\n");
+                stringBuilder2.append("##165" + StringUtil.formatStringTwo(paramsInfoSub.getCollectorModel()) +
+                        StringUtil.formatStringTwo(paramsInfoSub.getSensorAddress()) + info.getCorrectionValue() + "\r\n");
+                arrayList.add(String.valueOf(stringBuilder1));
+                arrayList.add(String.valueOf(stringBuilder2));
                 break;
 
             case "03":
                 //土壤湿度采集器
                 SensorSoilMoistureInfo moistureInfo = (SensorSoilMoistureInfo) paramsInfoSub.getSensorData();
-                result1.append("##168" + StringUtil.formatStringTwo(paramsInfoSub.getCollectorModel()) +
-                        StringUtil.formatStringTwo(String.valueOf(channelNumber + 1)) +
-                        moistureInfo.getTriggerThreshold() + "\r\n");
-                result2.append("##165" + StringUtil.formatStringTwo(paramsInfoSub.getCollectorModel()) +
-                        StringUtil.formatStringTwo(String.valueOf(channelNumber + 1)) +
-                        moistureInfo.getRevised() + "\r\n");
-                list.add(String.valueOf(result1));
-                list.add(String.valueOf(result2));
+                stringBuilder1.append("##168" + StringUtil.formatStringTwo(paramsInfoSub.getCollectorModel()) +
+                        StringUtil.formatStringTwo(paramsInfoSub.getSensorAddress()) + moistureInfo.getTriggerThreshold() + "\r\n");
+                stringBuilder2.append("##165" + StringUtil.formatStringTwo(paramsInfoSub.getCollectorModel()) +
+                        StringUtil.formatStringTwo(paramsInfoSub.getSensorAddress()) + moistureInfo.getRevised() + "\r\n");
+                arrayList.add(String.valueOf(stringBuilder1));
+                arrayList.add(String.valueOf(stringBuilder2));
                 break;
 
             case "04":
                 //测斜仪采集器
                 SensorInclinometerInfo inclinometerInfo = (SensorInclinometerInfo) paramsInfoSub.getSensorData();
-                result1.append("##168" + StringUtil.formatStringTwo(paramsInfoSub.getCollectorModel()) +
-                        StringUtil.formatStringTwo(String.valueOf(channelNumber + 1)) +
-                        inclinometerInfo.getTriggerThreshold() + "\r\n");
-                result2.append("##165" + StringUtil.formatStringTwo(paramsInfoSub.getCollectorModel()) +
-                        StringUtil.formatStringTwo(String.valueOf(channelNumber + 1)) +
-                        inclinometerInfo.getCorrectionValue() + "\r\n");
-                list.add(String.valueOf(result1));
-                list.add(String.valueOf(result2));
+                stringBuilder1.append("##168" + StringUtil.formatStringTwo(paramsInfoSub.getCollectorModel()) +
+                        StringUtil.formatStringTwo(paramsInfoSub.getSensorAddress()) + inclinometerInfo.getTriggerThreshold() + "\r\n");
+                stringBuilder2.append("##165" + StringUtil.formatStringTwo(paramsInfoSub.getCollectorModel()) +
+                        StringUtil.formatStringTwo(paramsInfoSub.getSensorAddress()) + inclinometerInfo.getCorrectionValue() + "\r\n");
+                arrayList.add(String.valueOf(stringBuilder1));
+                arrayList.add(String.valueOf(stringBuilder2));
                 break;
 
             case "07":
                 //雷达采集器
                 SensorRadarLevelInfo levelInfo = (SensorRadarLevelInfo) paramsInfoSub.getSensorData();
-                result1.append("##168" + StringUtil.formatStringTwo(paramsInfoSub.getCollectorModel()) +
-                        StringUtil.formatStringTwo(String.valueOf(channelNumber + 1)) +
-                        levelInfo.getTriggerThreshold() + "\r\n");
-                result2.append("##165" + StringUtil.formatStringTwo(paramsInfoSub.getCollectorModel()) +
-                        StringUtil.formatStringTwo(String.valueOf(channelNumber + 1)) +
-                        levelInfo.getRevised() + "\r\n");
-                list.add(String.valueOf(result1));
-                list.add(String.valueOf(result2));
+                stringBuilder1.append("##168" + StringUtil.formatStringTwo(paramsInfoSub.getCollectorModel()) +
+                        StringUtil.formatStringTwo(paramsInfoSub.getSensorAddress()) + levelInfo.getTriggerThreshold() + "\r\n");
+                stringBuilder2.append("##165" + StringUtil.formatStringTwo(paramsInfoSub.getCollectorModel()) +
+                        StringUtil.formatStringTwo(paramsInfoSub.getSensorAddress()) + levelInfo.getRevised() + "\r\n");
+                arrayList.add(String.valueOf(stringBuilder1));
+                arrayList.add(String.valueOf(stringBuilder2));
                 break;
 
             case "21":
@@ -887,7 +847,15 @@ public class SenSorBGKConfigActivity extends BaseDeviceConnectActivity {
                 break;
         }
 
-        return list;
+        return arrayList;
+    }
+
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void getConfig(String messageEvent) {
+        if (!TextUtils.isEmpty(messageEvent) && messageEvent.startsWith("$$")) {
+          Timber.d(messageEvent);
+        }
     }
 
     @Override

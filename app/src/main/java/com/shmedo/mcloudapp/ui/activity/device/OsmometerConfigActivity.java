@@ -22,7 +22,6 @@ import com.shmedo.mcloudapp.ui.fragment.DeviceFragment;
 import com.shmedo.mcloudapp.util.StringUtil;
 import com.shmedo.mcloudapp.util.UserConfig;
 import com.shmedo.mcloudapp.util.bleutil.LogTag;
-import com.shmedo.mcloudapp.views.LoadingDialog;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -103,12 +102,11 @@ public class OsmometerConfigActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setToolBar(R.id.toolbar);
         initView();
-        initData();
+//        initData();
     }
 
 
     private void initView() {
-
         mToolbarTitle.setText("配置渗压计");
         AdvanceSetFragment.modifyHintText("随手一记，好记性不如烂笔头", mEtNote);
     }
@@ -133,25 +131,25 @@ public class OsmometerConfigActivity extends BaseActivity {
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.iv_osmometer_address:
-                LoadingDialog.showScanResultDialog(this,
-                        getResources().getString(R.string.osmometer_address));
+                showTipDialog(getResources().getString(R.string.osmometer_address));
                 break;
+
             case R.id.iv_water_alarm_value:
-                LoadingDialog.showScanResultDialog(this,
-                        getResources().getString(R.string.water_alarm_value));
+                showTipDialog(getResources().getString(R.string.water_alarm_value));
                 break;
+
             case R.id.iv_water_revised:
-                LoadingDialog.showScanResultDialog(this,
-                        getResources().getString(R.string.water_revised));
+                showTipDialog(getResources().getString(R.string.water_revised));
                 break;
+
             case R.id.iv_osmometer_cord:
-                LoadingDialog.showScanResultDialog(this,
-                        getResources().getString(R.string.osmometer_cord));
+                showTipDialog(getResources().getString(R.string.osmometer_cord));
                 break;
+
             case R.id.iv_nozzel_height:
-                LoadingDialog.showScanResultDialog(this,
-                        getResources().getString(R.string.nozzel_height));
+                showTipDialog(getResources().getString(R.string.nozzel_height));
                 break;
+
             case R.id.btn_confirm_complete:
                 sendOsmometerConfig();
                 break;

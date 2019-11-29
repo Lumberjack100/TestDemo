@@ -34,10 +34,10 @@ public class DialogStyle12 implements IDialogOpt<CollectorSensorParamsInfoSub>{
     private MyOnClickListener myOnClickListener;
     private SensorDataEvent event = new SensorDataEvent();
     private Dialog dialog;
-    private int channelNumber;
+    private String channelNumber;
 
 
-    public DialogStyle12(Context context, int channelNumber) {
+    public DialogStyle12(Context context, String channelNumber) {
         this.mContext = context;
         this.channelNumber = channelNumber;
     }

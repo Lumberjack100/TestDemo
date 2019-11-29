@@ -7,197 +7,260 @@
 
     <include layout="@layout/activity_device_toolbar" />
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="5dp" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="40dp"
-        android:layout_marginTop="5dp"
         android:background="@color/bg_main_light_white"
-        android:orientation="horizontal">
+        android:gravity="center_vertical"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp">
 
         <ImageView
             android:id="@+id/iv_osmometer_address"
             android:layout_width="20dp"
             android:layout_height="40dp"
-            android:layout_marginLeft="15dp"
             android:src="@drawable/icon_queste" />
 
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_marginLeft="20dp"
+            android:layout_marginStart="20dp"
             android:layout_weight="3"
             android:text="渗压计地址"
-            android:textSize="14sp" />
+            android:textColor="@color/gray_807B7B"
+            android:textSize="@dimen/text_size_14" />
 
         <EditText
             android:id="@+id/et_osmometer_address"
             android:layout_width="0dp"
-            android:layout_height="match_parent"
+            android:layout_height="35dp"
             android:layout_weight="3"
+            android:background="@drawable/shape_edittext_bg_white"
+            android:inputType="number"
+            android:paddingStart="10dp"
             android:singleLine="true"
-            android:inputType="number"/>
+            android:textColor="@color/gray_807B7B"
+            android:textColorHint="@color/gray_807B7B"
+            android:textSize="@dimen/text_size_14" />
 
     </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="40dp"
-        android:layout_marginTop="1dp"
         android:background="@color/bg_main_light_white"
-        android:orientation="horizontal">
+        android:gravity="center_vertical"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp">
 
         <ImageView
             android:id="@+id/iv_water_alarm_value"
             android:layout_width="20dp"
             android:layout_height="40dp"
-            android:layout_marginLeft="15dp"
             android:src="@drawable/icon_queste" />
 
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_marginLeft="20dp"
+            android:layout_marginStart="20dp"
             android:layout_weight="3"
             android:text="水位报警值(单位：毫米)"
-            android:textSize="14sp" />
+            android:textColor="@color/gray_807B7B"
+            android:textSize="@dimen/text_size_14" />
 
         <EditText
             android:id="@+id/et_water_alarm_value"
             android:layout_width="0dp"
-            android:layout_height="match_parent"
+            android:layout_height="35dp"
             android:layout_weight="3"
+            android:background="@drawable/shape_edittext_bg_white"
+            android:inputType="number"
+            android:paddingStart="10dp"
             android:singleLine="true"
-            android:inputType="number"/>
+            android:textColor="@color/gray_807B7B"
+            android:textColorHint="@color/gray_807B7B"
+            android:textSize="@dimen/text_size_14" />
+
     </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="40dp"
-        android:layout_marginTop="1dp"
         android:background="@color/bg_main_light_white"
-        android:orientation="horizontal">
+        android:gravity="center_vertical"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp">
 
         <ImageView
             android:id="@+id/iv_water_revised"
             android:layout_width="20dp"
             android:layout_height="40dp"
-            android:layout_marginLeft="15dp"
             android:src="@drawable/icon_queste" />
 
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_marginLeft="20dp"
+            android:layout_marginStart="20dp"
             android:layout_weight="3"
             android:text="水深修正值(单位：米)"
-            android:textSize="14sp" />
+            android:textColor="@color/gray_807B7B"
+            android:textSize="@dimen/text_size_14" />
 
         <EditText
             android:id="@+id/et_water_revised"
             android:layout_width="0dp"
-            android:layout_height="match_parent"
+            android:layout_height="35dp"
             android:layout_weight="3"
+            android:background="@drawable/shape_edittext_bg_white"
+            android:inputType="number"
+            android:paddingStart="10dp"
             android:singleLine="true"
-            android:inputType="number"/>
+            android:textColor="@color/gray_807B7B"
+            android:textColorHint="@color/gray_807B7B"
+            android:textSize="@dimen/text_size_14" />
+
     </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="40dp"
-        android:layout_marginTop="1dp"
         android:background="@color/bg_main_light_white"
-        android:orientation="horizontal">
+        android:gravity="center_vertical"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp">
 
         <ImageView
             android:id="@+id/iv_osmometer_cord"
             android:layout_width="20dp"
             android:layout_height="40dp"
-            android:layout_marginLeft="15dp"
             android:src="@drawable/icon_queste" />
 
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_marginLeft="20dp"
+            android:layout_marginStart="20dp"
             android:layout_weight="3"
             android:text="渗压计绳长(单位：米)"
-            android:textSize="14sp" />
+            android:textColor="@color/gray_807B7B"
+            android:textSize="@dimen/text_size_14" />
 
         <EditText
             android:id="@+id/et_osmometer_cord"
             android:layout_width="0dp"
-            android:layout_height="match_parent"
+            android:layout_height="35dp"
             android:layout_weight="3"
+            android:background="@drawable/shape_edittext_bg_white"
+            android:inputType="number"
+            android:paddingStart="10dp"
             android:singleLine="true"
-            android:inputType="number"/>
+            android:textColor="@color/gray_807B7B"
+            android:textColorHint="@color/gray_807B7B"
+            android:textSize="@dimen/text_size_14" />
+
     </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="40dp"
-        android:layout_marginTop="1dp"
         android:background="@color/bg_main_light_white"
-        android:orientation="horizontal">
+        android:gravity="center_vertical"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp">
 
         <ImageView
             android:id="@+id/iv_nozzel_height"
             android:layout_width="20dp"
             android:layout_height="40dp"
-            android:layout_marginLeft="15dp"
             android:src="@drawable/icon_queste" />
 
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_marginLeft="20dp"
+            android:layout_marginStart="20dp"
             android:layout_weight="3"
             android:text="管口高程值(单位：米)"
-            android:textSize="14sp" />
+            android:textColor="@color/gray_807B7B"
+            android:textSize="@dimen/text_size_14" />
 
         <EditText
             android:id="@+id/et_nozzel_height"
             android:layout_width="0dp"
-            android:layout_height="match_parent"
+            android:layout_height="35dp"
             android:layout_weight="3"
+            android:background="@drawable/shape_edittext_bg_white"
+            android:inputType="number"
+            android:paddingStart="10dp"
             android:singleLine="true"
-            android:inputType="number"/>
+            android:textColor="@color/gray_807B7B"
+            android:textColorHint="@color/gray_807B7B"
+            android:textSize="@dimen/text_size_14" />
+
     </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="40dp"
-        android:layout_marginTop="1dp"
         android:background="@color/bg_main_light_white"
-        android:orientation="horizontal">
+        android:gravity="center_vertical"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp">
 
         <ImageView
-
             android:layout_width="20dp"
-            android:layout_height="40dp"
-            android:layout_marginLeft="15dp" />
+            android:layout_height="40dp" />
 
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_marginLeft="20dp"
+            android:layout_marginStart="20dp"
             android:layout_weight="1"
             android:text="备注信息"
-            android:textSize="14sp" />
+            android:textColor="@color/gray_807B7B"
+            android:textSize="@dimen/text_size_14" />
 
         <EditText
             android:id="@+id/et_note"
             android:layout_width="0dp"
-            android:layout_height="match_parent"
+            android:layout_height="35dp"
             android:layout_weight="3"
+            android:background="@drawable/shape_edittext_bg_white"
             android:hint="随手一记，好记性不如烂笔头"
-            android:singleLine="true" />
+            android:inputType="number"
+            android:paddingStart="10dp"
+            android:singleLine="true"
+            android:textColor="@color/gray_807B7B"
+            android:textColorHint="@color/gray_807B7B"
+            android:textSize="@dimen/text_size_14" />
+
     </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp" />
 
     <Button
         android:id="@+id/btn_confirm_complete"
@@ -206,9 +269,10 @@
         android:layout_marginLeft="20dp"
         android:layout_marginTop="40dp"
         android:layout_marginRight="20dp"
-        android:background="@drawable/scan_add_selector"
-        android:singleLine="true"
+        android:layout_marginBottom="40dp"
+        android:background="@drawable/btn_select"
         android:text="确定"
-        android:textColor="@color/white" />
+        android:textColor="@color/white"
+        android:textSize="@dimen/text_size_16" />
 
 </LinearLayout>

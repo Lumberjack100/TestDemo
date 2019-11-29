@@ -35,10 +35,10 @@ public class DialogStyle03 implements IDialogOpt<CollectorSensorParamsInfoSub> {
     private MyOnClickListener myOnClickListener;
     private Context mContext;
     private SensorDataEvent event = new SensorDataEvent();
-    private int channelNumber;
+    private String channelNumber;
 
 
-    public DialogStyle03(Context context, int channelNumber) {
+    public DialogStyle03(Context context, String channelNumber) {
         this.mContext = context;
         this.channelNumber = channelNumber;
     }
