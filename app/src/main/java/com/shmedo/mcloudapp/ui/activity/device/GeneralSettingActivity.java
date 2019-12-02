@@ -186,4 +186,18 @@ public class GeneralSettingActivity extends BaseDeviceConnectActivity {
         Timber.d("发送设置采集器解算频度指令===" + cmdCalculatTime);
     }
 
+    @Override
+    public void onBackPressed() {
+        if (MCloudApp.isIsBluetoothDeviceConnected()) {
+            if (isConfigChange) {
+                isExitMode = true;
+                showSaveDialog(getResources().getString(R.string.disconnect_bluetooth_device_save_param_warn));
+            } else {
+                finish();
+            }
+        } else {
+            finish();
+        }
+    }
+
 }

@@ -836,55 +836,6 @@ public class ADMEHomeFragment extends BaseFragment {
         return false;
     }
 
-    /**
-     * 关闭SwitchButton
-     */
-    public void showCloseSwitchButtonDialog(String content, final int index) {
-        MaterialDialog.Builder mBuilder = new MaterialDialog.Builder(getActivity())
-                .title("温馨提示：")
-                .content(content)
-                .contentColor(Color.parseColor("#000000"))
-                .canceledOnTouchOutside(false)
-                .positiveText("确定")
-                .negativeText("取消")
-                .onPositive(new MaterialDialog.SingleButtonCallback() {
-                    @Override
-                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        dialog.dismiss();
-                        switch (index) {
-                            case AUTO_MONITOR:
-                                //关闭自动监测模式命令
-                                configADMEActivity.sendCommonCommand("##70112\r\n");
-                                setSwitchViewState(false, tvAutoMonitorState, "已关闭");
-                                break;
-
-                            case DEBUG_MODEL:
-                                //关闭测试模式命令
-                                configADMEActivity.sendCommonCommand("##70122\r\n");
-                                setSwitchViewState(false, tvDebugMode, "已关闭");
-                                debugItemLayout.setVisibility(View.GONE);
-                                break;
-                        }
-                    }
-                }).onNegative(new MaterialDialog.SingleButtonCallback() {
-                    @Override
-                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        dialog.dismiss();
-                        switch (index) {
-                            case AUTO_MONITOR:
-                                sbAutoMonitorState.setCheckedImmediatelyNoEvent(true);
-                                break;
-
-                            case DEBUG_MODEL:
-                                sbDebugMode.setCheckedImmediatelyNoEvent(true);
-                                break;
-                        }
-                    }
-                });
-        MaterialDialog mMaterialDialog = mBuilder.build();
-        mMaterialDialog.show();
-    }
-
 
     /**
      * 查询本地数据库中项目信息

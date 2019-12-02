@@ -227,7 +227,7 @@ public class ParameterConfigFragment extends BaseFragment
         });
 
         //调试模式
-        String[] debugData = getResources().getStringArray(R.array.bluetooth_debug);
+        String[] debugData = getResources().getStringArray(R.array.das_debug_mode);
         ArrayAdapter<String> debugDataAdapter = new ArrayAdapter<>(mContext, R.layout.spinner_item, debugData);
         mSpDebug.setAdapter(debugDataAdapter);
         mSpDebug.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {

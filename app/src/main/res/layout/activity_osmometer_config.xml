@@ -198,7 +198,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
             android:layout_weight="3"
-            android:text="管口高程值(单位：米)"
+            android:text="安装高程值(单位：米)"
             android:textColor="@color/gray_807B7B"
             android:textSize="@dimen/text_size_14" />
 

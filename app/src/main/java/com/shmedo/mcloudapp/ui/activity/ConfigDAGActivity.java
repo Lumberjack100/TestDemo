@@ -10,6 +10,8 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.hjq.toast.ToastUtils;
+import com.shmedo.das.das.cmd.CommandManager;
+import com.shmedo.das.das.cmd.CommandType;
 import com.shmedo.mcloudapp.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.model.Extras;
@@ -252,17 +254,25 @@ public class ConfigDAGActivity extends BaseDeviceConnectActivity {
 
     @Override
     protected void obtainDeviceStateCmd() {
-        sendCommonCommand("##333\r\n");
-        Timber.d("发送获取所有配置指令===" + "##333");
+        //获取所有配置  ##333
+        String allInfoCommand = CommandManager.getInstance().getCommand(CommandType.GET_ALL_SENSOR_CONFIG, null);
+        sendCommonCommand(allInfoCommand);
+        Timber.d("发送获取所有配置指令===" + allInfoCommand);
 
-        sendCommonCommand("##014\r\n");
-        Timber.d("发送系统运行状态指令===" + "##014");
+        //系统运行状态 ##014
+//        String runstateCommand = CommandManager.getInstance().getCommand(CommandType.SYSTEM_RUN_STATE, null);
+//        sendCommonCommand(runstateCommand);
+//        Timber.d("发送系统运行状态指令===" + runstateCommand);
 
-        sendCommonCommand("##400\r\n");
-        Timber.d("发送查询渗压计指令===" + "##400");
+        //查询数字式渗压计参数 ##400
+        String shenyajiCommand = CommandManager.getInstance().getCommand(CommandType.QUERY_OSMOMETER_PARAMETER, null);
+        sendCommonCommand(shenyajiCommand);
+        Timber.d("发送查询渗压计指令===" + shenyajiCommand);
 
-        sendCommonCommand("##040\r\n");
-        Timber.d("发送版本信息指令===" + "##040");
+        //版本信息 ##040
+//        String versionCommand = CommandManager.getInstance().getCommand(CommandType.VERSION_MESSAGE, null);
+//        sendCommonCommand(versionCommand);
+//        Timber.d("发送版本信息指令===" + versionCommand);
 
         sendCommonCommand("##2270\r\n");
         Timber.d("发送获取断线报警器状态指令===" + "##2270");
@@ -271,21 +281,21 @@ public class ConfigDAGActivity extends BaseDeviceConnectActivity {
 
     @Override
     protected void parserResult(String cmdStr) {
-        //查询版本信息应答
-        if (cmdStr.startsWith("$$040") && cmdStr.endsWith("\r\n")) {
+        //查询断线报警器状态应答
+        if (cmdStr.startsWith("$$2270") && cmdStr.endsWith("\r\n")) {
             dismissLoadingDialog();
             hander.removeCallbacks(dismssDialogRunnable);
         }
 
-        //TODO  此处是各个配置指令应答，表示已经更改配置了
-//        if ((cmdStr.startsWith("$$7011")
-//                || cmdStr.startsWith("$$7012")
-//                || cmdStr.startsWith("$$2011")
-//                || cmdStr.startsWith("$$2012")
-//                || cmdStr.startsWith("$$7001")
-//                || cmdStr.startsWith("$$7003")) && cmdStr.endsWith("\r\n")) {
-//            isConfigChange = true;
-//        }
+        //此处是各个配置指令应答，表示已经更改配置了
+        if ((cmdStr.startsWith("$$005")
+                || cmdStr.startsWith("$$401")
+                || cmdStr.startsWith("$$2011")
+                || cmdStr.startsWith("$$2012")
+                || cmdStr.startsWith("$$7001")
+                || cmdStr.startsWith("$$7003")) && cmdStr.endsWith("\r\n")) {
+            isConfigChange = true;
+        }
 
         //设置保存参数应答
         if (cmdStr.startsWith("$$0191") && cmdStr.endsWith("\r\n")) {
