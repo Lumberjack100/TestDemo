@@ -367,6 +367,7 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
 
                 case Constants.MESSAGE_LOCK_REBOOT_DEVICE:
 //                    ToastUtils.show("蓝牙通讯已就绪！");
+                    Timber.d("蓝牙通讯已就绪");
                     obtainDeviceStateCmd();
                     break;
 
@@ -397,12 +398,11 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
                     try {
                         String deskey = "12345678";
                         String strdes = new String(DesUtil.decrypt(resultData, deskey), "utf-8");
-                        if (strdes.length() != 0) {
+                        if (!TextUtils.isEmpty(strdes)) {
                             String desStr = StringUtil.bytesToHexString(DesUtil.encrypt((StringUtil.reverseString(strdes.substring(0, 6)) + deskey).getBytes(), deskey));
                             String cmd = "##222," + SN + ",0," + desStr.toUpperCase() + "\r\n";
-                            Message msg = new Message(UUID.randomUUID().toString(), cmd, true);
-                            mdBluetoothManager.writeMessage(msg);
-                            Timber.d("发送指令===" + cmd);
+                            sendCommonCommand(cmd);
+                            Timber.d("发送设备登录验证指令===" + cmd);
                             return;
                         }
                     } catch (Exception e) {
@@ -414,7 +414,7 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
                 //设备登录验证结果指令
                 if (cmdStr.startsWith("$$223") && cmdStr.endsWith("\r\n")) {
                     sendCommonMessage(Constants.VERIFY_RESULT, cmdArray[1]);
-                    Timber.d("认证结果===" + cmdArray[1]);
+                    Timber.d("设备登录验证状态===" + cmdArray[1]);
                     return;
                 }
 
@@ -443,6 +443,12 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
     }
 
 
+    /**
+     * 此方法处理具体蓝牙设备的参数指令应答，可以在子类中重载
+     * <br/>此处默认实现的是 ADME 的参数指令
+     *
+     * @param cmdStr
+     */
     protected void parserResult(String cmdStr) {
         //查询执行机构参数应答
         if (cmdStr.startsWith("$$7002") && cmdStr.endsWith("\r\n")) {
@@ -517,9 +523,10 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
         Timber.d("发送指令===" + com);
     }
 
+
     /**
-     * 蓝牙设备连接时,发送查询设备参数指令
-     * 集成类可以重载覆盖父类的既有指令
+     * 此方法是查询具体蓝牙设备的配置参数指令，可以在子类中重载覆盖
+     * <br/>此处默认实现的是查询 ADME 的参数信息指令
      */
     protected void obtainDeviceStateCmd() {
         sendCommonCommand("##7010\r\n");
@@ -568,6 +575,34 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
                         dialog.dismiss();
                         isConfigChange = false;
                         disconnectDevice();
+                        if (isExitMode) {
+                            BaseDeviceConnectActivity.this.finish();
+                        }
+                    }
+                });
+        MaterialDialog mMaterialDialog = mBuilder.build();
+        mMaterialDialog.show();
+    }
+
+    public void showSaveDialogNoDisconnect(String content) {
+        final MaterialDialog.Builder mBuilder = new MaterialDialog.Builder(this)
+                .title("温馨提示：")
+                .content(content)
+                .contentColor(Color.parseColor("#000000"))
+                .canceledOnTouchOutside(false)
+                .positiveText("确定")
+                .negativeText("稍后")
+                .negativeColor(Color.parseColor("#807B7B"))
+                .onPositive(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        dialog.dismiss();
+                        sendSaveParamCommand();
+                    }
+                }).onNegative(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        dialog.dismiss();
                         if (isExitMode) {
                             BaseDeviceConnectActivity.this.finish();
                         }

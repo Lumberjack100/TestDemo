@@ -39,7 +39,7 @@ import timber.log.Timber;
  * 描述：   渗压计功能配置
  */
 public class OsmometerConfigActivity extends BaseDeviceConnectActivity {
-    @BindView(R.id.toolbar_title)
+    @BindView(R.id.tv_title)
     TextView mToolbarTitle;
 
     @BindView(R.id.iv_osmometer_address)
@@ -102,7 +102,6 @@ public class OsmometerConfigActivity extends BaseDeviceConnectActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setToolBar(R.id.toolbar);
         parseIntent();
     }
 
@@ -132,10 +131,14 @@ public class OsmometerConfigActivity extends BaseDeviceConnectActivity {
     }
 
 
-    @OnClick({R.id.iv_osmometer_address, R.id.iv_water_alarm_value, R.id.iv_water_revised,
+    @OnClick({R.id.back,R.id.iv_osmometer_address, R.id.iv_water_alarm_value, R.id.iv_water_revised,
             R.id.iv_osmometer_cord, R.id.iv_nozzel_height, R.id.btn_confirm_complete})
     public void onViewClicked(View view) {
         switch (view.getId()) {
+            case R.id.back:
+                onBackPressed();
+                break;
+
             case R.id.iv_osmometer_address:
                 showTipDialog(getResources().getString(R.string.osmometer_address));
                 break;

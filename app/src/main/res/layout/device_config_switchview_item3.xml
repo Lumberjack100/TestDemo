@@ -11,7 +11,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="30dp"
-        android:layout_weight="3"
+        android:layout_weight="1"
         android:textColor="@color/gray_807B7B"
         android:textSize="@dimen/text_size_14"
         tools:text="解算时间(单位：秒)" />
@@ -19,7 +19,7 @@
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="30dp"
-        android:layout_weight="2"
+        android:layout_weight="1"
         android:layout_marginEnd="20dp"
         android:background="@color/white">
 

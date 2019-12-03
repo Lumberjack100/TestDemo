@@ -5,133 +5,174 @@
     android:background="@color/white"
     android:orientation="vertical">
 
-    <include layout="@layout/activity_device_toolbar" />
+    <include layout="@layout/toolbar_para_config" />
+
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="5dp" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="40dp"
-        android:layout_marginTop="5dp"
         android:background="@color/bg_main_light_white"
-        android:orientation="horizontal">
+        android:gravity="center_vertical"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp">
 
         <ImageView
             android:id="@+id/iv_collector_address"
             android:layout_width="20dp"
             android:layout_height="40dp"
-            android:layout_marginLeft="15dp"
             android:src="@drawable/icon_queste" />
 
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_marginLeft="20dp"
-            android:layout_weight="3"
+            android:layout_marginStart="20dp"
+            android:layout_weight="1"
             android:text="采集器地址(1~255)"
-            android:textSize="14sp" />
+            android:textColor="@color/gray_807B7B"
+            android:textSize="@dimen/text_size_14" />
 
         <EditText
             android:id="@+id/et_collector_address"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="3"
-            android:inputType="number" />
+            android:layout_height="32dp"
+            android:layout_weight="1"
+            android:background="@drawable/shape_edittext_bg_white"
+            android:inputType="number"
+            android:paddingStart="10dp"
+            android:singleLine="true"
+            android:textColor="@color/gray_807B7B"
+            android:textColorHint="@color/gray_807B7B"
+            android:textSize="@dimen/text_size_14" />
 
     </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="40dp"
-        android:layout_marginTop="1dp"
         android:background="@color/bg_main_light_white"
-        android:orientation="horizontal">
+        android:gravity="center_vertical"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp">
 
         <ImageView
             android:id="@+id/iv_calculating_time"
             android:layout_width="20dp"
             android:layout_height="40dp"
-            android:layout_marginLeft="15dp"
             android:src="@drawable/icon_queste" />
 
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_marginLeft="20dp"
-            android:layout_weight="3"
+            android:layout_marginStart="20dp"
+            android:layout_weight="1"
             android:text="解算时间(单位：秒)"
-            android:textSize="14sp" />
+            android:textColor="@color/gray_807B7B"
+            android:textSize="@dimen/text_size_14" />
 
         <EditText
             android:id="@+id/et_calculating_time"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="3"
-            android:inputType="number"/>
+            android:layout_height="32dp"
+            android:layout_weight="1"
+            android:background="@drawable/shape_edittext_bg_white"
+            android:inputType="number"
+            android:paddingStart="10dp"
+            android:singleLine="true"
+            android:textColor="@color/gray_807B7B"
+            android:textColorHint="@color/gray_807B7B"
+            android:textSize="@dimen/text_size_14" />
 
     </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="40dp"
-        android:layout_marginTop="1dp"
         android:background="@color/bg_main_light_white"
-        android:orientation="horizontal">
+        android:gravity="center_vertical"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp">
 
         <ImageView
             android:id="@+id/iv_standby_time"
             android:layout_width="20dp"
             android:layout_height="40dp"
-            android:layout_marginLeft="15dp"
             android:src="@drawable/icon_queste" />
 
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_marginLeft="20dp"
-            android:layout_weight="3"
+            android:layout_marginStart="20dp"
+            android:layout_weight="1"
             android:text="待机时间(单位：秒)"
-            android:textSize="14sp" />
+            android:textColor="@color/gray_807B7B"
+            android:textSize="@dimen/text_size_14" />
 
         <EditText
             android:id="@+id/et_standby_time"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="3"
-            android:inputType="number"/>
+            android:layout_height="32dp"
+            android:layout_weight="1"
+            android:background="@drawable/shape_edittext_bg_white"
+            android:inputType="number"
+            android:paddingStart="10dp"
+            android:singleLine="true"
+            android:textColor="@color/gray_807B7B"
+            android:textColorHint="@color/gray_807B7B"
+            android:textSize="@dimen/text_size_14" />
 
     </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="40dp"
-        android:layout_marginTop="1dp"
         android:background="@color/bg_main_light_white"
-        android:orientation="horizontal">
+        android:gravity="center_vertical"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp">
 
         <ImageView
             android:id="@+id/iv_collect_time"
             android:layout_width="20dp"
             android:layout_height="40dp"
-            android:layout_marginLeft="15dp"
             android:src="@drawable/icon_queste" />
 
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_marginLeft="20dp"
-            android:layout_weight="3"
+            android:layout_marginStart="20dp"
+            android:layout_weight="1"
             android:text="采集时间(单位：毫秒)"
-            android:textSize="14sp" />
+            android:textColor="@color/gray_807B7B"
+            android:textSize="@dimen/text_size_14" />
 
         <EditText
             android:id="@+id/et_collect_time"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="3"
-            android:inputType="number"/>
+            android:layout_height="32dp"
+            android:layout_weight="1"
+            android:background="@drawable/shape_edittext_bg_white"
+            android:inputType="number"
+            android:paddingStart="10dp"
+            android:singleLine="true"
+            android:textColor="@color/gray_807B7B"
+            android:textColorHint="@color/gray_807B7B"
+            android:textSize="@dimen/text_size_14" />
 
     </LinearLayout>
 

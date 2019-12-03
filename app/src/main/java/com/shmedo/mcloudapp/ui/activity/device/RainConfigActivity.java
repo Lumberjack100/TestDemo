@@ -35,7 +35,7 @@ import butterknife.OnClick;
  * 描述：   配置雨量计
  */
 public class RainConfigActivity extends BaseDeviceConnectActivity {
-    @BindView(R.id.toolbar_title)
+    @BindView(R.id.tv_title)
     TextView mToolbarTitle;
 
     @BindView(R.id.sp_rain)
@@ -66,7 +66,6 @@ public class RainConfigActivity extends BaseDeviceConnectActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setToolBar(R.id.toolbar);
         initView();
         parseIntent();
     }
@@ -115,21 +114,31 @@ public class RainConfigActivity extends BaseDeviceConnectActivity {
     }
 
 
+    @OnClick({R.id.back, R.id.btn_confirm_complete})
+    public void onClick(View v) {
 
-    @OnClick(R.id.btn_confirm_complete)
-    public void onViewClicked() {
-        if (!MCloudApp.isIsBluetoothDeviceConnected()) {
-            ToastUtils.show(getString(R.string.param_config_bluetooth_disconnect_warn));
-            return;
+        switch (v.getId()) {
+            case R.id.back:
+                onBackPressed();
+                break;
+
+            case R.id.btn_confirm_complete:
+                if (!MCloudApp.isIsBluetoothDeviceConnected()) {
+                    ToastUtils.show(getString(R.string.param_config_bluetooth_disconnect_warn));
+                    return;
+                }
+
+                doConfirm();
+                break;
         }
+    }
 
-
+    private void doConfirm() {
         if (rainResult == null) {
             ToastUtils.show("未获取到选中的值");
             return;
         }
-
-        String cmdStr="##121" + rainResult + "\r\n";
+        String cmdStr = "##121" + rainResult + "\r\n";
         sendCommonCommand(cmdStr);
         showLoadingDialog("正在发送配置指令...");
         hander.postDelayed(dismssDialogRunnable, 5000);

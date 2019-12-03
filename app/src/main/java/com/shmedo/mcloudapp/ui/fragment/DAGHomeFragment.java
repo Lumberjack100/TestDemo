@@ -38,6 +38,7 @@ import com.shmedo.mcloudapp.base.BaseFragment;
 import com.shmedo.mcloudapp.entity.SystemDataInfo;
 import com.shmedo.mcloudapp.entity.SystemDataInfoDao;
 import com.shmedo.mcloudapp.entity.ble.BreakAlarmStatusSub;
+import com.shmedo.mcloudapp.entity.ble.DeviceLockStatusSub;
 import com.shmedo.mcloudapp.entity.ble.SettingRainPrecisionSub;
 import com.shmedo.mcloudapp.entity.event.BluetoothStateEvent;
 import com.shmedo.mcloudapp.model.Extras;
@@ -300,9 +301,10 @@ public class DAGHomeFragment extends BaseFragment {
         mSbBluetoothConnect.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, final boolean isChecked) {
+                mSbBluetoothConnect.setCheckedImmediatelyNoEvent(!isChecked);
+
                 //未连接时，直接打开连接
                 if (isChecked) {
-                    mSbBluetoothConnect.setCheckedImmediatelyNoEvent(!isChecked);
                     configDAGActivity.findAndConnectBleDevice();
 
                 } else {//断开连接处理
@@ -448,7 +450,7 @@ public class DAGHomeFragment extends BaseFragment {
         mSpDebugMode.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (++debugModeCheck > 2) {
+                if (++debugModeCheck > 1) {
                     String status = parent.getSelectedItem().toString();
                     String smdStr;
                     switch (status) {
@@ -484,7 +486,7 @@ public class DAGHomeFragment extends BaseFragment {
         });
 
 
-        //断线报警器状态
+        //开关量
         String[] switchData = getResources().getStringArray(R.array.das_switch);
         switchAdapter = new ArrayAdapter<>(configDAGActivity, android.R.layout.simple_spinner_item, switchData);
         switchAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -518,6 +520,11 @@ public class DAGHomeFragment extends BaseFragment {
 
                     configDAGActivity.sendCommonCommand(smdStr);
                     Timber.d("设置开关量指令==" + smdStr);
+
+                    if (value.equals("断线报警器")) {
+                        configDAGActivity.sendCommonCommand("##2270\r\n");
+                        Timber.d("查询断线报警器参数指令==##2270");
+                    }
                 }
             }
 
@@ -629,15 +636,43 @@ public class DAGHomeFragment extends BaseFragment {
 //            mSbSimA.setCheckedImmediatelyNoEvent(true);
 //            mSbSimB.setCheckedImmediatelyNoEvent(false);
 //        }
+
+        //设备雨量站开关量
+        switch (baseConfigInfo.getRainfallStation()) {
+            case RAIN_CLOSE:
+                mSpSwitch.setSelection(0);
+                rainBreakAlarmLayout.setVisibility(View.GONE);
+                break;
+
+            case RAIN_OPEN://雨量站开启
+                mSpSwitch.setSelection(1);
+                rainBreakAlarmLayout.setVisibility(View.VISIBLE);
+                mTvRainGauge.setVisibility(View.VISIBLE);
+                breakAlarmLayout.setVisibility(View.GONE);
+                break;
+
+            case ALARM_OPEN://短线报警器开启
+                mSpSwitch.setSelection(2);
+                rainBreakAlarmLayout.setVisibility(View.VISIBLE);
+                mTvRainGauge.setVisibility(View.GONE);
+                breakAlarmLayout.setVisibility(View.VISIBLE);
+
+                configDAGActivity.sendCommonCommand("##2270\r\n");
+                Timber.d("查询断线报警器参数指令==##2270");
+                break;
+        }
     }
 
     /**
      * 设置显示数据
      */
     private void setResultData(String cmdStr) {
-        //TODO  锁定状态应答指令处理
-        //
-        //
+        //锁定状态应答指令处理
+        if (cmdStr.startsWith("$$225") && cmdStr.endsWith("\r\n")) {
+            DeviceLockStatusSub deviceLockStatusSub = BlueResultParserUtil.getDeviceLockStatusInfo(cmdStr);
+            lockStatus = (deviceLockStatusSub.getLockStatus() == 0) ? "unlock" : "lock";
+            return;
+        }
 
         CommandType type = StringUtil.extractCommandType(cmdStr);
         switch (type) {
@@ -698,12 +733,12 @@ public class DAGHomeFragment extends BaseFragment {
                 breakAlarmStatusInfo.setStatus(BreakAlarmStatus.valueOf(breakAlarmStatusSub.getAlarmStatus()));
                 switch (breakAlarmStatusInfo.getStatus()) {
                     case OPEN:
-//                        mSbBleakAlarm.setCheckedImmediatelyNoEvent(true);
-//                        mSpOftenStatus.setSelection(0);
+                        mSbBleakAlarm.setCheckedImmediatelyNoEvent(true);
+                        setSwitchViewState(true, mTvBreakAlarm, "常开");
                         break;
                     case CLOSE:
-//                        mSbBleakAlarm.setCheckedImmediatelyNoEvent(false);
-//                        mSpOftenStatus.setSelection(1);
+                        mSbBleakAlarm.setCheckedImmediatelyNoEvent(false);
+                        setSwitchViewState(false, mTvBreakAlarm, "常闭");
                         break;
                 }
                 break;

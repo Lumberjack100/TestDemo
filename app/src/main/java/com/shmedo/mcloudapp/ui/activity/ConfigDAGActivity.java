@@ -80,9 +80,10 @@ public class ConfigDAGActivity extends BaseDeviceConnectActivity {
         initView(savedInstanceState);
     }
 
+
     @Override
-    protected void onStart() {
-        super.onStart();
+    protected void onResume() {
+        super.onResume();
         if (isFirstCall) {
             findAndConnectBleDevice();
         }
@@ -274,9 +275,6 @@ public class ConfigDAGActivity extends BaseDeviceConnectActivity {
 //        String versionCommand = CommandManager.getInstance().getCommand(CommandType.VERSION_MESSAGE, null);
 //        sendCommonCommand(versionCommand);
 //        Timber.d("发送版本信息指令===" + versionCommand);
-
-//        sendCommonCommand("##2270\r\n");
-//        Timber.d("发送获取断线报警器状态指令===" + "##2270");
     }
 
 

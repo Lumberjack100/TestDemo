@@ -52,7 +52,7 @@ import timber.log.Timber;
  */
 public class SenSorBGKConfigActivity extends BaseDeviceConnectActivity {
 
-    @BindView(R.id.toolbar_title)
+    @BindView(R.id.tv_title)
     TextView mToolbarTitle;
 
     @BindView(R.id.iv_stay1)
@@ -137,6 +137,8 @@ public class SenSorBGKConfigActivity extends BaseDeviceConnectActivity {
 
     private DialogFactory factory = new DialogFactory();
 
+    private int cmdNum = 0;
+
 
     public static void startActivity(Context context, String collectorSensorConfig) {
         Intent intent = new Intent(context, SenSorBGKConfigActivity.class);
@@ -153,7 +155,6 @@ public class SenSorBGKConfigActivity extends BaseDeviceConnectActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setToolBar(R.id.toolbar);
         mToolbarTitle.setText("拉线位移计配置");
         initData();
     }
@@ -371,9 +372,13 @@ public class SenSorBGKConfigActivity extends BaseDeviceConnectActivity {
      *
      * @param view
      */
-    @OnClick({R.id.iv_stay1, R.id.iv_stay2, R.id.iv_stay3, R.id.iv_stay4, R.id.iv_stay5, R.id.iv_stay6, R.id.iv_stay7, R.id.iv_stay8, R.id.btn_confirm})
+    @OnClick({R.id.back, R.id.iv_stay1, R.id.iv_stay2, R.id.iv_stay3, R.id.iv_stay4, R.id.iv_stay5, R.id.iv_stay6, R.id.iv_stay7, R.id.iv_stay8, R.id.btn_confirm})
     public void onViewClicked(View view) {
         switch (view.getId()) {
+            case R.id.back:
+                onBackPressed();
+                break;
+
             case R.id.iv_stay1://弹框
                 if (channelNumber0.equals("-1")) {
                     ToastUtils.show("此传感器为空");
@@ -658,6 +663,7 @@ public class SenSorBGKConfigActivity extends BaseDeviceConnectActivity {
 
     /**
      * 弹框
+     *
      * @param
      */
     private void showBottomDialog(String channelNumber) {
@@ -773,103 +779,158 @@ public class SenSorBGKConfigActivity extends BaseDeviceConnectActivity {
             builderFirst.append(StringUtil.formatStringTwo(paramsInfoSub.getSensorAddress()) + StringUtil.formatStringTwo(paramsInfoSub.getSensorType()));
         }
         builderFirst.append("\r\n");
+
         String result = String.valueOf(builderFirst);
         sendCommonCommand(result);
         Timber.d("设置采集器接入的传感器指令===" + result);
+        showLoadingDialog("正在发送配置指令...");
+        hander.postDelayed(dismssDialogRunnable, 10000);
 
-        List<String> cmdList = new ArrayList<>();
-        for(CollectorSensorParamsInfoSub collectorSensorParamsInfoSub :collectorSensorParamsInfoSubs){
-            cmdList.addAll(serData(collectorSensorParamsInfoSub));
+        cmdNum = 0;
+        for (int i = 0; i < collectorSensorParamsInfoSubs.size(); i++) {
+            setSensorValue(collectorSensorParamsInfoSubs.get(i));
         }
-
-        for (String cmd : cmdList) {
-            sendCommonCommand(cmd);
-            Timber.d("发送指令===" + cmd);
-        }
-
-//        finish();
     }
 
-    private List<String> serData(CollectorSensorParamsInfoSub paramsInfoSub) {
-        List<String> arrayList = new ArrayList<>();
-        StringBuilder stringBuilder1 = new StringBuilder();
-        StringBuilder stringBuilder2 = new StringBuilder();
+    private void setSensorValue(CollectorSensorParamsInfoSub paramsInfoSub) {
+        String cmdTriggerThreshold = "";
+        String cmdCorrectionValue = "";
 
         switch (paramsInfoSub.getCollectorModel()) {
             case "02":
                 //裂缝计采集器
-                SensorWireShiftInfo info = (SensorWireShiftInfo) paramsInfoSub.getSensorData();
-                stringBuilder1.append("##168" + StringUtil.formatStringTwo(paramsInfoSub.getCollectorModel()) +
-                        StringUtil.formatStringTwo(paramsInfoSub.getSensorAddress()) + info.getTriggerThreshold() + "\r\n");
-                stringBuilder2.append("##165" + StringUtil.formatStringTwo(paramsInfoSub.getCollectorModel()) +
-                        StringUtil.formatStringTwo(paramsInfoSub.getSensorAddress()) + info.getCorrectionValue() + "\r\n");
-                arrayList.add(String.valueOf(stringBuilder1));
-                arrayList.add(String.valueOf(stringBuilder2));
+                SensorWireShiftInfo sensorWireShiftInfo = (SensorWireShiftInfo) paramsInfoSub.getSensorData();
+                cmdTriggerThreshold = "##168" +
+                        StringUtil.formatStringTwo(paramsInfoSub.getCollectorModel()) +
+                        StringUtil.formatStringTwo(paramsInfoSub.getSensorAddress()) +
+                        sensorWireShiftInfo.getTriggerThreshold() + "\r\n";
+
+                cmdCorrectionValue = "##165" +
+                        StringUtil.formatStringTwo(paramsInfoSub.getCollectorModel()) +
+                        StringUtil.formatStringTwo(paramsInfoSub.getSensorAddress()) +
+                        sensorWireShiftInfo.getCorrectionValue() + "\r\n";
+
+                Timber.d("设置裂缝计采集器接入传感器触发阈值指令===" + cmdTriggerThreshold);
+                Timber.d("设置裂缝计采集器接入传感器修正值指令===" + cmdCorrectionValue);
                 break;
 
             case "03":
                 //土壤湿度采集器
-                SensorSoilMoistureInfo moistureInfo = (SensorSoilMoistureInfo) paramsInfoSub.getSensorData();
-                stringBuilder1.append("##168" + StringUtil.formatStringTwo(paramsInfoSub.getCollectorModel()) +
-                        StringUtil.formatStringTwo(paramsInfoSub.getSensorAddress()) + moistureInfo.getTriggerThreshold() + "\r\n");
-                stringBuilder2.append("##165" + StringUtil.formatStringTwo(paramsInfoSub.getCollectorModel()) +
-                        StringUtil.formatStringTwo(paramsInfoSub.getSensorAddress()) + moistureInfo.getRevised() + "\r\n");
-                arrayList.add(String.valueOf(stringBuilder1));
-                arrayList.add(String.valueOf(stringBuilder2));
+                SensorSoilMoistureInfo sensorSoilMoistureInfo = (SensorSoilMoistureInfo) paramsInfoSub.getSensorData();
+                cmdTriggerThreshold = "##168" +
+                        StringUtil.formatStringTwo(paramsInfoSub.getCollectorModel()) +
+                        StringUtil.formatStringTwo(paramsInfoSub.getSensorAddress()) +
+                        sensorSoilMoistureInfo.getTriggerThreshold() + "\r\n";
+
+                cmdCorrectionValue = "##165" +
+                        StringUtil.formatStringTwo(paramsInfoSub.getCollectorModel()) +
+                        StringUtil.formatStringTwo(paramsInfoSub.getSensorAddress()) +
+                        sensorSoilMoistureInfo.getRevised() + "\r\n";
+
+                Timber.d("设置土壤湿度采集器接入传感器触发阈值指令===" + cmdTriggerThreshold);
+                Timber.d("设置土壤湿度采集器接入传感器修正值指令===" + cmdCorrectionValue);
                 break;
 
             case "04":
                 //测斜仪采集器
-                SensorInclinometerInfo inclinometerInfo = (SensorInclinometerInfo) paramsInfoSub.getSensorData();
-                stringBuilder1.append("##168" + StringUtil.formatStringTwo(paramsInfoSub.getCollectorModel()) +
-                        StringUtil.formatStringTwo(paramsInfoSub.getSensorAddress()) + inclinometerInfo.getTriggerThreshold() + "\r\n");
-                stringBuilder2.append("##165" + StringUtil.formatStringTwo(paramsInfoSub.getCollectorModel()) +
-                        StringUtil.formatStringTwo(paramsInfoSub.getSensorAddress()) + inclinometerInfo.getCorrectionValue() + "\r\n");
-                arrayList.add(String.valueOf(stringBuilder1));
-                arrayList.add(String.valueOf(stringBuilder2));
+                SensorInclinometerInfo sensorInclinometerInfo = (SensorInclinometerInfo) paramsInfoSub.getSensorData();
+                cmdTriggerThreshold = "##168" +
+                        StringUtil.formatStringTwo(paramsInfoSub.getCollectorModel()) +
+                        StringUtil.formatStringTwo(paramsInfoSub.getSensorAddress()) +
+                        sensorInclinometerInfo.getTriggerThreshold() + "\r\n";
+
+                cmdCorrectionValue = "##165" +
+                        StringUtil.formatStringTwo(paramsInfoSub.getCollectorModel()) +
+                        StringUtil.formatStringTwo(paramsInfoSub.getSensorAddress()) +
+                        sensorInclinometerInfo.getCorrectionValue() + "\r\n";
+
+                Timber.d("设置测斜仪采集器接入传感器触发阈值指令===" + cmdTriggerThreshold);
+                Timber.d("设置测斜仪采集器接入传感器修正值指令===" + cmdCorrectionValue);
                 break;
 
             case "07":
                 //雷达采集器
-                SensorRadarLevelInfo levelInfo = (SensorRadarLevelInfo) paramsInfoSub.getSensorData();
-                stringBuilder1.append("##168" + StringUtil.formatStringTwo(paramsInfoSub.getCollectorModel()) +
-                        StringUtil.formatStringTwo(paramsInfoSub.getSensorAddress()) + levelInfo.getTriggerThreshold() + "\r\n");
-                stringBuilder2.append("##165" + StringUtil.formatStringTwo(paramsInfoSub.getCollectorModel()) +
-                        StringUtil.formatStringTwo(paramsInfoSub.getSensorAddress()) + levelInfo.getRevised() + "\r\n");
-                arrayList.add(String.valueOf(stringBuilder1));
-                arrayList.add(String.valueOf(stringBuilder2));
-                break;
+                SensorRadarLevelInfo sensorRadarLevelInfo = (SensorRadarLevelInfo) paramsInfoSub.getSensorData();
+                cmdTriggerThreshold = "##168" +
+                        StringUtil.formatStringTwo(paramsInfoSub.getCollectorModel()) +
+                        StringUtil.formatStringTwo(paramsInfoSub.getSensorAddress()) +
+                        sensorRadarLevelInfo.getTriggerThreshold() + "\r\n";
 
-            case "21":
+                cmdCorrectionValue = "##165" +
+                        StringUtil.formatStringTwo(paramsInfoSub.getCollectorModel()) +
+                        StringUtil.formatStringTwo(paramsInfoSub.getSensorAddress()) +
+                        sensorRadarLevelInfo.getRevised() + "\r\n";
+
+                Timber.d("设置雷达采集器接入传感器触发阈值指令===" + cmdTriggerThreshold);
+                Timber.d("设置雷达采集器接入传感器修正值指令===" + cmdCorrectionValue);
                 break;
 
             default:
                 break;
         }
 
-        return arrayList;
+        sendCommonCommand(cmdTriggerThreshold);
+        sendCommonCommand(cmdCorrectionValue);
+    }
+
+
+    /**
+     * 设置显示数据
+     */
+    private void setResultData(String cmdStr) {
+        //最后一个传感器参数设置指令
+        if (cmdStr.startsWith("$$165") && cmdStr.endsWith("\r\n")) {
+            cmdNum++;
+
+            if (cmdNum == collectorSensorParamsInfoSubs.size() - 1) {
+                dismissLoadingDialog();
+                hander.removeCallbacks(dismssDialogRunnable);
+                isExitMode = true;
+                showSaveDialogNoDisconnect("是否现在保存设备配置参数？");
+            }
+        }
+
+        //设置保存参数应答
+        if (cmdStr.startsWith("$$0191") && cmdStr.endsWith("\r\n")) {
+            ToastUtils.show("已发送保存命令,设备即将断开连接重启");
+            isConfigChange = false;
+            hander.removeCallbacks(dismssDialogRunnable);
+            dismissLoadingDialog();
+            disconnectDevice();
+
+            if (isExitMode) {
+                hander.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        finish();
+                    }
+                }, 3000);
+            }
+        }
     }
 
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void getConfig(String messageEvent) {
         if (!TextUtils.isEmpty(messageEvent) && messageEvent.startsWith("$$")) {
-          Timber.d(messageEvent);
+            setResultData(messageEvent);
         }
     }
 
     @Override
     public void onBackPressed() {
-        if (MCloudApp.isIsBluetoothDeviceConnected()) {
-            if (isConfigChange) {
-                isExitMode = true;
-                showSaveDialog(getResources().getString(R.string.disconnect_bluetooth_device_save_param_warn));
-            } else {
-                finish();
-            }
-        } else {
-            finish();
-        }
+//        if (MCloudApp.isIsBluetoothDeviceConnected()) {
+//            if (isConfigChange) {
+//                isExitMode = true;
+//                showSaveDialog(getResources().getString(R.string.disconnect_bluetooth_device_save_param_warn));
+//            } else {
+//                finish();
+//            }
+//        } else {
+//            finish();
+//        }
+
+        finish();
     }
 
 }

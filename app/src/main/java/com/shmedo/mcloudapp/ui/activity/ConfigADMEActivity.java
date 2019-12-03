@@ -79,9 +79,10 @@ public class ConfigADMEActivity extends BaseDeviceConnectActivity {
         initView(savedInstanceState);
     }
 
+
     @Override
-    protected void onStart() {
-        super.onStart();
+    protected void onResume() {
+        super.onResume();
         if (isFirstCall) {
             findAndConnectBleDevice();
         }

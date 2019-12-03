@@ -5,7 +5,8 @@
     android:background="@color/white"
     android:orientation="vertical">
 
-    <include layout="@layout/activity_device_toolbar" />
+    <include layout="@layout/toolbar_para_config" />
+
 
     <View
         android:layout_width="match_parent"
