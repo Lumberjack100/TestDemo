@@ -18,6 +18,7 @@ package com.shmedo.mcloudapp.entity.ble.collector;
  *   (6):产品ID
  *   (7):注册码
  *   (8):注册平台类型，0：地大平台，1：成都理工平台，2：米度平台
+ *   (9):注册平台地址
  *   (9):APPKey
  *   (10):MQTT设备ID
  *   (11):MQTT用户名
@@ -26,13 +27,14 @@ package com.shmedo.mcloudapp.entity.ble.collector;
  */
 public class MqttConfigInfoSub {
     private int dataCenterSwitch;
-    private int communicationProtocol;
+    private String communicationProtocol;
     private String dataPlatformAddress;
     private String keepAliveValue;
     private String deviceSn;
     private String productId;
     private String registrationCode;
-    private int registrationPlatform;
+    private String registrationPlatform;
+    private String registrationPlatformAddress;
     private String appKey;
     private String mqttDeviceId;
     private String mqttUsername;
@@ -47,11 +49,11 @@ public class MqttConfigInfoSub {
         this.dataCenterSwitch = dataCenterSwitch;
     }
 
-    public int getCommunicationProtocol() {
+    public String getCommunicationProtocol() {
         return communicationProtocol;
     }
 
-    public void setCommunicationProtocol(int communicationProtocol) {
+    public void setCommunicationProtocol(String communicationProtocol) {
         this.communicationProtocol = communicationProtocol;
     }
 
@@ -95,12 +97,20 @@ public class MqttConfigInfoSub {
         this.registrationCode = registrationCode;
     }
 
-    public int getRegistrationPlatform() {
+    public String getRegistrationPlatform() {
         return registrationPlatform;
     }
 
-    public void setRegistrationPlatform(int registrationPlatform) {
+    public void setRegistrationPlatform(String registrationPlatform) {
         this.registrationPlatform = registrationPlatform;
+    }
+
+    public String getRegistrationPlatformAddress() {
+        return registrationPlatformAddress;
+    }
+
+    public void setRegistrationPlatformAddress(String registrationPlatformAddress) {
+        this.registrationPlatformAddress = registrationPlatformAddress;
     }
 
     public String getAppKey() {
@@ -133,5 +143,24 @@ public class MqttConfigInfoSub {
 
     public void setMqttPassword(String mqttPassword) {
         this.mqttPassword = mqttPassword;
+    }
+
+    @Override
+    public String toString() {
+        return "MqttConfigInfoSub{" +
+                "dataCenterSwitch=" + dataCenterSwitch +
+                ", communicationProtocol=" + communicationProtocol +
+                ", dataPlatformAddress='" + dataPlatformAddress + '\'' +
+                ", keepAliveValue='" + keepAliveValue + '\'' +
+                ", deviceSn='" + deviceSn + '\'' +
+                ", productId='" + productId + '\'' +
+                ", registrationCode='" + registrationCode + '\'' +
+                ", registrationPlatform=" + registrationPlatform +
+                ", registrationPlatformAddress='" + registrationPlatformAddress + '\'' +
+                ", appKey='" + appKey + '\'' +
+                ", mqttDeviceId='" + mqttDeviceId + '\'' +
+                ", mqttUsername='" + mqttUsername + '\'' +
+                ", mqttPassword='" + mqttPassword + '\'' +
+                '}';
     }
 }

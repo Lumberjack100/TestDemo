@@ -40,16 +40,16 @@
 
     //通讯协议
     <string-array name="communication_protocol">
+        <item>MDM协议</item>
         <item>MQTT自动注册</item>
         <item>MQTT手动注册</item>
-        <item>MDM协议</item>
     </string-array>
 
     //注册平台
     <string-array name="register">
         <item>地大平台</item>
-        <item>米度平台</item>
         <item>成都理工平台</item>
+        <item>米度平台</item>
     </string-array>
 
     <string-array name="rain">

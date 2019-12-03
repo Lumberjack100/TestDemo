@@ -253,26 +253,30 @@ public class StringUtil {
      * @param result
      * @return
      *
-     * $$8893,1,4,mqtt.shmedo.com 6883,300,150000L,150000L,a84b42b1-cb30-410f-8285-5f4de6f9d319,
+     *
+     * $$8893,1,4,mqtt.shmedo.com 6883,300,18A092L,18A092L,a84b42b1-cb30-410f-8285-5f4de6f9d319,
      * 2,mqtt.shmedo.com 80,fXQQROerSlJ0bqTPCoMnyqgR-2dzhytztk3eYV6nuA0OBQljkqG_exXYtNfr,,,
+     *
+     * $$8891,0,2,0.0.0.0 9001,,,,,,,,,,
      */
     public static MqttConfigInfoSub parserMqttConfig(String result){
         if (isNullOrEmpty(result) ||  result.length() < CommandResult.RESULT_MIN_LENGTH)
             throw new IllegalArgumentException("指令结果格式错误:" + result);
         MqttConfigInfoSub mqttConfigInfoSub = new MqttConfigInfoSub();
-        String[] cmd = result.replace("\r\n", "").split(",");
+        String[] cmd = result.replace("\r\n", "").split(",",-1);
         mqttConfigInfoSub.setDataCenterSwitch(Integer.parseInt(cmd[1]));
-        mqttConfigInfoSub.setCommunicationProtocol(Integer.parseInt(cmd[2]));
+        mqttConfigInfoSub.setCommunicationProtocol(cmd[2]);
         mqttConfigInfoSub.setDataPlatformAddress(cmd[3]);
         mqttConfigInfoSub.setKeepAliveValue(cmd[4]);
         mqttConfigInfoSub.setDeviceSn(cmd[5]);
         mqttConfigInfoSub.setProductId(cmd[6]);
         mqttConfigInfoSub.setRegistrationCode(cmd[7]);
-        mqttConfigInfoSub.setRegistrationPlatform(Integer.parseInt(cmd[8]));
-        mqttConfigInfoSub.setAppKey(cmd[9]);
-        mqttConfigInfoSub.setMqttDeviceId(cmd[10]);
-        mqttConfigInfoSub.setMqttUsername(cmd[11]);
-        mqttConfigInfoSub.setMqttPassword(cmd[12]);
+        mqttConfigInfoSub.setRegistrationPlatform(cmd[8]);
+        mqttConfigInfoSub.setRegistrationPlatformAddress(cmd[9]);
+        mqttConfigInfoSub.setAppKey(cmd[10]);
+        mqttConfigInfoSub.setMqttDeviceId(cmd[11]);
+        mqttConfigInfoSub.setMqttUsername(cmd[12]);
+        mqttConfigInfoSub.setMqttPassword(cmd[13]);
         return mqttConfigInfoSub;
     }
 

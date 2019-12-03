@@ -124,4 +124,16 @@
             android:id="@+id/link_three"
             layout="@layout/device_config_switchview_item" />
 
+    <Button
+            android:id="@+id/btn_confirm"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:layout_marginTop="50dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginBottom="20dp"
+            android:background="@drawable/btn_select"
+            android:text="发送指令"
+            android:textColor="@color/white" />
+
 </LinearLayout>

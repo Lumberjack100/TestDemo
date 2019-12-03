@@ -1,6 +1,7 @@
 package com.shmedo.mcloudapp.inter;
 
 import android.view.View;
+import com.shmedo.mcloudapp.entity.ble.collector.MqttConfigInfoSub;
 
 /**
  * 项目名：  mCloudapp
@@ -16,7 +17,7 @@ public interface MQttOnClickListener {
      *
      * @param v The view that was clicked.
      */
-    boolean onSureClick(View v);
+    boolean onSureClick(View v, MqttConfigInfoSub mqttConfigInfoSub,String linkNumber);
 
     void onCancelClick(View view);
 }

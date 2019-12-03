@@ -138,12 +138,32 @@ public class MqttSettingActivity extends BaseDeviceConnectActivity implements Vi
         mSbLinkThree = linkThree.findViewById(R.id.switchButton);
         mLinkThreeStatus.setId(R.id.tv_link_three);
 
-        //断线报警器状态
+        //通讯方式
         String[] cmData = getResources().getStringArray(R.array.communication_method);
         CommunicationMethodAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, cmData);
         CommunicationMethodAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spCommunicationmethod.setAdapter(CommunicationMethodAdapter);
+        spCommunicationmethod.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String item = parent.getSelectedItem().toString();
+                switch (item){
+                    case "4G":
+                    case "SMS":
+                        llBd.setVisibility(View.GONE);
+                        break;
+                    case "BD":
+                    case "BD+4G":
+                        llBd.setVisibility(View.VISIBLE);
+                        break;
+                }
+            }
 
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
         mLinkOneStatus.setOnClickListener(this);
         mLinkTwoStatus.setOnClickListener(this);
         mLinkThreeStatus.setOnClickListener(this);
@@ -162,7 +182,8 @@ public class MqttSettingActivity extends BaseDeviceConnectActivity implements Vi
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 setLinkText(mLinkOneStatus,isChecked);
                 isCheckedLinkOne = isChecked;
-                if (!isChecked) {
+                Timber.i("lianlu1de boolean ==== "+isCheckedLinkOne);
+                if (!isCheckedLinkOne) {
                     showCloseSwitchButtonDialog("确定要关闭链路1？",1);
                 } else {
                     editLinkOne = false;
@@ -203,15 +224,44 @@ public class MqttSettingActivity extends BaseDeviceConnectActivity implements Vi
     }
 
     private MQttOnClickListener onClickListener = new MQttOnClickListener() {
-        @Override
-        public boolean onSureClick(View v) {
 
-            return true;
+        @Override
+        public boolean onSureClick(View v, MqttConfigInfoSub mqttConfigInfoSub,String linkNumber) {
+            Timber.i("===MQttOnClickListener==="+mqttConfigInfoSub.toString());
+            String communicationProtocol = mqttConfigInfoSub.getCommunicationProtocol();
+            String dataPlatformAddress = mqttConfigInfoSub.getDataPlatformAddress();
+            String keepAliveValue = mqttConfigInfoSub.getKeepAliveValue();
+            String deviceSn = mqttConfigInfoSub.getDeviceSn();
+            String productId = mqttConfigInfoSub.getProductId();
+            String registrationCode = mqttConfigInfoSub.getRegistrationCode();
+            String registrationPlatform = mqttConfigInfoSub.getRegistrationPlatform();
+            String registrationPlatformAddress = mqttConfigInfoSub.getRegistrationPlatformAddress();
+            String appkey = mqttConfigInfoSub.getAppKey();
+            String mqttDeviceId = mqttConfigInfoSub.getMqttDeviceId();
+            String mqttUsername = mqttConfigInfoSub.getMqttUsername();
+            String mqttPassword = mqttConfigInfoSub.getMqttPassword();
+
+            //1、设置网络链路通讯协议
+            sendCommonCommand("##202"+linkNumber+communicationProtocol+"\r\n");
+            //2、设置自动注册平台参数
+            sendCommonCommand("##803"+linkNumber+deviceSn+","+productId+","+registrationCode+"\r\n");
+            //3、设置手动注册平台参数
+            sendCommonCommand("##805"+linkNumber+mqttDeviceId+","+mqttUsername+","+mqttPassword+"\r\n");
+            //4、设置自动注册平台地址端口
+            sendCommonCommand("##807"+linkNumber+registrationPlatformAddress+"\r\n");
+            //5、设置MQTT KeepAlive值
+            sendCommonCommand("##809"+linkNumber+keepAliveValue+"\r\n");
+            //6、设置数据平台地址端口
+            sendCommonCommand("##201"+linkNumber+dataPlatformAddress+"\r\n");
+            //7、选择平台
+            sendCommonCommand("##810"+linkNumber+registrationPlatform+"\r\n");
+            //8、appKey(米度/北京平台特有)：
+            sendCommonCommand("##811"+linkNumber+appkey+"\r\n");
+            return false;
         }
 
         @Override
         public void onCancelClick(View view) {
-
         }
     };
 
@@ -238,16 +288,28 @@ public class MqttSettingActivity extends BaseDeviceConnectActivity implements Vi
         Timber.i("链路==="+message);
         String commandType = StringUtil.extractCommandType(message);
         switch (commandType){
-            case "201":
-                if (!StringUtil.isOpenLink(message)){
-                    if (StringUtil.linkNumber(message).equals("1")){
-                        isCheckedLinkOne = true;
-                    }else if (StringUtil.linkNumber(message).equals("2")){
-                        isCheckedLinkTwo = true;
-                    }else if (StringUtil.linkNumber(message).equals("3")){
-                        isCheckedLinkThree = true;
+            case "200":
+                if (StringUtil.isOpenLink(message)){
+                    String linkNumber = StringUtil.linkNumber(message);
+                    switch (linkNumber){
+                        case "1":
+                            isCheckedLinkOne = true;
+                            Timber.i("链路==isCheckedLinkOne="+isCheckedLinkOne);
+                            //根据返回指令初始化按钮状态
+                            mSbLinkOne.setChecked(isCheckedLinkOne);
+                            break;
+                        case "2":
+                            isCheckedLinkTwo = true;
+                            mSbLinkTwo.setChecked(isCheckedLinkTwo);
+                            Timber.i("链路==isCheckedLinkTwo="+isCheckedLinkTwo);
+                            break;
+                        case "3":
+                            isCheckedLinkThree = true;
+                            mSbLinkThree.setChecked(isCheckedLinkThree);
+                            Timber.i("链路==isCheckedLinkThree="+isCheckedLinkThree);
+                            break;
                     }
-                }else {
+                } else {
                     isCheckedLinkOne = false;
                     isCheckedLinkTwo = false;
                     isCheckedLinkThree = false;
@@ -256,19 +318,28 @@ public class MqttSettingActivity extends BaseDeviceConnectActivity implements Vi
             case "889":
                 if (isCheckedLinkOne){
                     mqttConfigInfoSub1 = StringUtil.parserMqttConfig(message);
+                    if (mqttConfigInfoSub1 == null)
+                        return;
+                    //弹框
+                    factory.createDialog(MqttSettingActivity.this,"1",mqttConfigInfoSub1,onClickListener);
                 }else if (isCheckedLinkTwo){
                     mqttConfigInfoSub2 = StringUtil.parserMqttConfig(message);
+                    if (mqttConfigInfoSub2 == null)
+                        return;
+                    //弹框
+                    factory.createDialog(MqttSettingActivity.this,"2",mqttConfigInfoSub2,onClickListener);
                 }else if (isCheckedLinkThree){
                     mqttConfigInfoSub3 = StringUtil.parserMqttConfig(message);
+                    if (mqttConfigInfoSub3 == null)
+                        return;
+                    //弹框
+                    factory.createDialog(MqttSettingActivity.this,"3",mqttConfigInfoSub3,onClickListener);
                 }
                 break;
 
         }
 
-        //根据返回指令初始化按钮状态
-        mSbLinkOne.setChecked(isCheckedLinkOne);
-        mSbLinkTwo.setChecked(isCheckedLinkTwo);
-        mSbLinkThree.setChecked(isCheckedLinkThree);
+
     }
 
     /**
@@ -284,8 +355,6 @@ public class MqttSettingActivity extends BaseDeviceConnectActivity implements Vi
                     //查询数据中心参数
                     sendCommonCommand("##8891\r\n");
                     Timber.i("链路1第1次编辑");
-                    //弹框
-                    factory.createDialog(MqttSettingActivity.this,"1",mqttConfigInfoSub1,onClickListener);
                 }else {
                     //直接弹框
                     Timber.i("链路1第2次编辑");
@@ -298,8 +367,6 @@ public class MqttSettingActivity extends BaseDeviceConnectActivity implements Vi
                     //查询数据中心参数
                     sendCommonCommand("##8892\r\n");
                     Timber.i("链路2第1次编辑");
-                    //弹框
-                    factory.createDialog(MqttSettingActivity.this,"2",mqttConfigInfoSub2,onClickListener);
                 }else {
                     //直接弹框
                     Timber.i("链路2第2次编辑");
@@ -312,8 +379,6 @@ public class MqttSettingActivity extends BaseDeviceConnectActivity implements Vi
                     //查询数据中心参数
                     sendCommonCommand("##8893\r\n");
                     Timber.i("链路3第1次编辑");
-                    //弹框
-                    factory.createDialog(MqttSettingActivity.this,"3",mqttConfigInfoSub3,onClickListener);
                 }else {
                     //直接弹框
                     Timber.i("链路3第2次编辑");
@@ -380,5 +445,10 @@ public class MqttSettingActivity extends BaseDeviceConnectActivity implements Vi
                 });
         MaterialDialog mMaterialDialog = mBuilder.build();
         mMaterialDialog.show();
+    }
+
+    @Override
+    public void onBackPressed() {
+        finish();
     }
 }

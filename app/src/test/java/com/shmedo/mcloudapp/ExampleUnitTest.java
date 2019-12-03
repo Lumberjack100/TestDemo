@@ -5,6 +5,7 @@ import com.shmedo.das.das.cmd.CommandResult;
 import com.shmedo.das.das.cmd.parser.ParseManager;
 import com.shmedo.mcloudapp.entity.ble.*;
 import com.shmedo.mcloudapp.entity.ble.collector.CollectorSensorParamsInfoSub;
+import com.shmedo.mcloudapp.entity.ble.collector.MqttConfigInfoSub;
 import com.shmedo.mcloudapp.util.StringUtil;
 import com.shmedo.mcloudapp.util.bleutil.BlueResultParserUtil;
 
@@ -81,8 +82,22 @@ public class ExampleUnitTest {
 
     @Test
     public void testRain(){
-        String str = "$$0053";
-        RainStationSub rainStationSub = BlueResultParserUtil.getRainStationInfo(str);
-        System.out.println(rainStationSub.getRainStation());
+        String message="$$2001 test.shmedo.cn 9001";
+        if (StringUtil.isOpenLink(message)){
+            String linkNumber = StringUtil.linkNumber(message);
+            System.out.println(linkNumber);
+            switch (linkNumber){
+                case "1":
+                    System.out.println("1111");
+                    break;
+                case "2":
+                    System.out.println("2222");
+                    break;
+                case "3":
+                    System.out.println("3333");
+                    break;
+            }
+        }
     }
+
 }
