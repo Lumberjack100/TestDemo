@@ -7,12 +7,22 @@
         <item>100条</item>
     </string-array>
 
+    //调试模式
     <string-array name="das_debug_mode">
         <item>初始化</item>
         <item>关闭</item>
         <item>DEBUG</item>
         <item>INFO</item>
     </string-array>
+
+
+    //开关量
+    <string-array name="das_switch">
+        <item>关闭</item>
+        <item>雨量计</item>
+        <item>断线报警器</item>
+    </string-array>
+
 
     //断线报警器状态
     <string-array name="break_alarm_status">

@@ -167,6 +167,7 @@ public class ConfigDAGActivity extends BaseDeviceConnectActivity {
                 break;
 
             case R.id.tv_highsetting:
+                resetTabState();//reset the tab state
                 setTabState(mTvHighsetting, R.drawable.gjpz, getResources().getColor(R.color.colorPrimary));
                 switchFrgment(3);
                 break;
@@ -274,26 +275,46 @@ public class ConfigDAGActivity extends BaseDeviceConnectActivity {
 //        sendCommonCommand(versionCommand);
 //        Timber.d("发送版本信息指令===" + versionCommand);
 
-        sendCommonCommand("##2270\r\n");
-        Timber.d("发送获取断线报警器状态指令===" + "##2270");
+//        sendCommonCommand("##2270\r\n");
+//        Timber.d("发送获取断线报警器状态指令===" + "##2270");
     }
 
 
     @Override
     protected void parserResult(String cmdStr) {
-        //查询断线报警器状态应答
-        if (cmdStr.startsWith("$$2270") && cmdStr.endsWith("\r\n")) {
+        //查询数字式渗压计参数
+        if (cmdStr.startsWith("$$400") && cmdStr.endsWith("\r\n")) {
             dismissLoadingDialog();
             hander.removeCallbacks(dismssDialogRunnable);
         }
 
+        //恢复出厂设置应答
+        if (cmdStr.startsWith("$$119") && cmdStr.endsWith("\r\n")) {
+
+        }
+
+        //重启
+        if (cmdStr.startsWith("$$008") && cmdStr.endsWith("\r\n")) {
+
+        }
+
         //此处是各个配置指令应答，表示已经更改配置了
-        if ((cmdStr.startsWith("$$005")
-                || cmdStr.startsWith("$$401")
-                || cmdStr.startsWith("$$2011")
-                || cmdStr.startsWith("$$2012")
-                || cmdStr.startsWith("$$7001")
-                || cmdStr.startsWith("$$7003")) && cmdStr.endsWith("\r\n")) {
+        if ((cmdStr.startsWith("$$006")//调试模式
+                || cmdStr.startsWith("$$005")//开关量功能
+                || cmdStr.startsWith("$$121")//雨量计精度
+                || cmdStr.startsWith("$$227")//断线报警器
+                || (cmdStr.startsWith("$$40") && !cmdStr.equals("$$400\r\n"))//设置数字渗压计
+                || cmdStr.startsWith("$$150")//采集器接入的传感器
+                || cmdStr.startsWith("$$16")//采集器
+                || cmdStr.startsWith("$$147")//采集器地址
+                || cmdStr.startsWith("$$201")//平台服务器地址端口
+                || (cmdStr.startsWith("$$202") && !cmdStr.equals("$$2020\r\n"))//网络链路通信协议
+                || (cmdStr.startsWith("$$810") && !cmdStr.equals("$$8100\r\n"))//自动注册平台选择
+                || cmdStr.startsWith("$$803")//自动注册平台参数
+                || cmdStr.startsWith("$$807")//自动注册服务器地址端口
+                || cmdStr.startsWith("$$805")//手动注册平台参数
+                || (cmdStr.startsWith("$$809") && !cmdStr.equals("$$8090\r\n"))//MQTT KeepAlive 值
+        ) && cmdStr.endsWith("\r\n")) {
             isConfigChange = true;
         }
 

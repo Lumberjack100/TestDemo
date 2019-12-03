@@ -202,7 +202,7 @@ public class ADMEMotorControlActivity extends BaseDeviceConnectActivity {
         UIHandler = new Handler();
 
         Intent intent = getIntent();
-        if (intent.getExtras().containsKey(Extras.ADME_MOTOR_CONTROL_CONFIG_INFO)) {
+        if (intent.getExtras() != null && intent.getExtras().containsKey(Extras.ADME_MOTOR_CONTROL_CONFIG_INFO)) {
             configInfo = intent.getStringExtra(Extras.ADME_MOTOR_CONTROL_CONFIG_INFO);
         }
 

@@ -193,11 +193,11 @@ public class DeviceFragment extends BaseFragment implements View.OnClickListener
 
     private void getIntentData() {
         Intent intent = getActivity().getIntent();
-        if (intent.getExtras().containsKey(Extras.DEVICE_MAC_ADDRESS)) {
+        if (intent.getExtras() != null && intent.getExtras().containsKey(Extras.DEVICE_MAC_ADDRESS)) {
             macAddress = intent.getStringExtra(Extras.DEVICE_MAC_ADDRESS);
         }
 
-        if (intent.getExtras().containsKey(Extras.CUR_DEVICE_NAME)) {
+        if (intent.getExtras() != null && intent.getExtras().containsKey(Extras.CUR_DEVICE_NAME)) {
             deviceInfo = intent.getStringExtra(Extras.CUR_DEVICE_NAME);
             Timber.d("deviceInfo=" + deviceInfo);
             String[] scanData = deviceInfo.split(",");

@@ -97,7 +97,7 @@ public class RainConfigActivity extends BaseDeviceConnectActivity {
 
     private void parseIntent() {
         Intent intent = getIntent();
-        if (intent.getExtras().containsKey(Extras.PARAM_CONFIG_INFO)) {
+        if (intent.getExtras() != null && intent.getExtras().containsKey(Extras.PARAM_CONFIG_INFO)) {
             rainAccury = intent.getStringExtra(Extras.PARAM_CONFIG_INFO);
             if (TextUtils.isEmpty(rainAccury)) {
                 return;
@@ -158,6 +158,20 @@ public class RainConfigActivity extends BaseDeviceConnectActivity {
     public void getConfig(String messageEvent) {
         if (!TextUtils.isEmpty(messageEvent) && messageEvent.startsWith("$$")) {
             setResultData(messageEvent);
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (MCloudApp.isIsBluetoothDeviceConnected()) {
+            if (isConfigChange) {
+                isExitMode = true;
+                showSaveDialog(getResources().getString(R.string.disconnect_bluetooth_device_save_param_warn));
+            } else {
+                finish();
+            }
+        } else {
+            finish();
         }
     }
 }

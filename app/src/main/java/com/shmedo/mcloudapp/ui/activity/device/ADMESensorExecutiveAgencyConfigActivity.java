@@ -338,11 +338,11 @@ public class ADMESensorExecutiveAgencyConfigActivity extends BaseDeviceConnectAc
 
     private void parseIntent() {
         Intent intent = getIntent();
-        if (intent.getExtras().containsKey(Extras.ADME_SENSOR_CONFIG_INFO)) {
+        if (intent.getExtras() != null && intent.getExtras().containsKey(Extras.ADME_SENSOR_CONFIG_INFO)) {
             dagConfigInfo = intent.getStringExtra(Extras.ADME_SENSOR_CONFIG_INFO);
         }
 
-        if (intent.getExtras().containsKey(Extras.ADME_EXECUTIVE_AGENCY_CONFIG_INFO)) {
+        if (intent.getExtras() != null && intent.getExtras().containsKey(Extras.ADME_EXECUTIVE_AGENCY_CONFIG_INFO)) {
             executiveAgencyConfigInfo = intent.getStringExtra(Extras.ADME_EXECUTIVE_AGENCY_CONFIG_INFO);
         }
     }

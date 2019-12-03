@@ -117,7 +117,7 @@ public class CountMeterWheelActivity extends BaseDeviceConnectActivity {
 
     private void parseIntent() {
         Intent intent = getIntent();
-        if (intent.getExtras().containsKey(Extras.ADME_COUNT_METER_WHEEL_CONFIG_INFO)) {
+        if (intent.getExtras() != null && intent.getExtras().containsKey(Extras.ADME_COUNT_METER_WHEEL_CONFIG_INFO)) {
             countMeterParam = intent.getStringExtra(Extras.ADME_COUNT_METER_WHEEL_CONFIG_INFO);
             if (TextUtils.isEmpty(countMeterParam)) {
                 Timber.e("countMeterParam 为空或者null");
@@ -139,7 +139,7 @@ public class CountMeterWheelActivity extends BaseDeviceConnectActivity {
             mEtWheelDiameter.setText(cmdArray[2]);
         }
 
-        if (intent.getExtras().containsKey(Extras.ENCODER_CORRECTION_PARAMETERS)) {
+        if (intent.getExtras() != null && intent.getExtras().containsKey(Extras.ENCODER_CORRECTION_PARAMETERS)) {
             correctionParam = intent.getStringExtra(Extras.ENCODER_CORRECTION_PARAMETERS);
             if (TextUtils.isEmpty(correctionParam)) {
                 Timber.e("correctionParam 为空或者null");

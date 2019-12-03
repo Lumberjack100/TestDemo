@@ -181,7 +181,7 @@ public class ParameterConfigFragment extends BaseFragment
 
     private void getIntentData() {
         Intent intent = getActivity().getIntent();
-        if (intent.getExtras().containsKey(Extras.CUR_DEVICE_NAME)) {
+        if (intent.getExtras() != null && intent.getExtras().containsKey(Extras.CUR_DEVICE_NAME)) {
             deviceInfo = intent.getStringExtra(Extras.CUR_DEVICE_NAME);
 
             String[] scanData = deviceInfo.split(",");

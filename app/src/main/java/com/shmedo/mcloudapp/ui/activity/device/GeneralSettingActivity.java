@@ -95,7 +95,7 @@ public class GeneralSettingActivity extends BaseDeviceConnectActivity {
         mToolbarTitle.setText("通用设置");
 
         Intent intent = getIntent();
-        if (intent.getExtras().containsKey(Extras.PARAM_CONFIG_INFO)) {
+        if (intent.getExtras() != null && intent.getExtras().containsKey(Extras.PARAM_CONFIG_INFO)) {
             CollectorConfigInfo collectorConfigInfo = (CollectorConfigInfo) intent.getSerializableExtra(Extras.PARAM_CONFIG_INFO);
             if (collectorConfigInfo != null) {
                 mEtCollectorAddress.setText(collectorConfigInfo.getCollectorAddress());
@@ -105,7 +105,7 @@ public class GeneralSettingActivity extends BaseDeviceConnectActivity {
             }
         }
 
-        if (intent.getExtras().containsKey(Extras.COLLECTOR_TYPE)) {
+        if (intent.getExtras() != null && intent.getExtras().containsKey(Extras.COLLECTOR_TYPE)) {
             collectorType = intent.getStringExtra(Extras.COLLECTOR_TYPE);
         }
     }
@@ -147,9 +147,8 @@ public class GeneralSettingActivity extends BaseDeviceConnectActivity {
         standbyTime = mEtStandbyTime.getText().toString().trim();
         collectTime = mEtCollectTime.getText().toString().trim();
 
-        int address = Integer.parseInt(collectorAddress);
-        if (address < 0 || address >= 255) {
-            ToastUtils.show("采集器地址输入有误");
+        if (TextUtils.isEmpty(collectorAddress) || Integer.parseInt(collectorAddress) <= 0 || Integer.parseInt(collectorAddress) > 255) {
+            ToastUtils.show("请输入正确的采集器地址");
             return;
         }
 

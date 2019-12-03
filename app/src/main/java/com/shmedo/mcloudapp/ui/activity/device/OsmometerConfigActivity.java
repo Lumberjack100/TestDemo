@@ -21,6 +21,7 @@ import com.shmedo.mcloudapp.model.Extras;
 import com.shmedo.mcloudapp.model.common.CommonVariable;
 import com.shmedo.mcloudapp.ui.fragment.AdvanceSetFragment;
 import com.shmedo.mcloudapp.util.UserConfig;
+import com.shmedo.mcloudapp.util.bleutil.BlueResultParserUtil;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -86,9 +87,9 @@ public class OsmometerConfigActivity extends BaseDeviceConnectActivity {
 
     private UserConfig uc;
 
-    public static void startActivity(Context context, QueryOsmometerParameterInfo queryOsmometerParameterInfo) {
+    public static void startActivity(Context context, String osmometerParameterInfo) {
         Intent intent = new Intent(context, OsmometerConfigActivity.class);
-//        intent.putExtra(Extras.PARAM_CONFIG_INFO, queryOsmometerParameterInfo);
+        intent.putExtra(Extras.PARAM_CONFIG_INFO, osmometerParameterInfo);
         context.startActivity(intent);
     }
 
@@ -109,21 +110,25 @@ public class OsmometerConfigActivity extends BaseDeviceConnectActivity {
         mToolbarTitle.setText("配置渗压计");
         AdvanceSetFragment.modifyHintText("随手一记，好记性不如烂笔头", mEtNote);
 
+        uc = UserConfig.getConfig(this, CommonVariable.OSMOMETER_NOTE);
+        mEtNote.setText(uc.readString(CommonVariable.OSMOMETER_NOTE));
+
         Intent intent = getIntent();
-        if (intent.getExtras().containsKey(Extras.PARAM_CONFIG_INFO)) {
-            QueryOsmometerParameterInfo queryOsmometerParameterInfo = (QueryOsmometerParameterInfo) intent.getSerializableExtra(Extras.PARAM_CONFIG_INFO);
-            if (queryOsmometerParameterInfo != null) {
-                mEtOsmometerAddress.setText(queryOsmometerParameterInfo.getOsmometerAddress());
-                mEtWaterAlarmValue.setText(String.valueOf(queryOsmometerParameterInfo.getDepthTrigger()));
-                mEtWaterRevised.setText(String.valueOf(queryOsmometerParameterInfo.getDepthCorrect()));
-                mEtOsmometerCord.setText(String.valueOf(queryOsmometerParameterInfo.getCordLenght()));
-                //TODO  安装高程
-                mEtNozzelHeight.setText("");
+        if (intent.getExtras() != null && intent.getExtras().containsKey(Extras.PARAM_CONFIG_INFO)) {
+            String configInfo = intent.getStringExtra(Extras.PARAM_CONFIG_INFO);
+            if (!TextUtils.isEmpty(configInfo)) {
+                QueryOsmometerParameterInfo queryOsmometerParameterInfo = BlueResultParserUtil.getQueryOsmometerParameterInfo(configInfo);
+                if (queryOsmometerParameterInfo != null) {
+                    mEtOsmometerAddress.setText(queryOsmometerParameterInfo.getOsmometerAddress());
+                    mEtWaterAlarmValue.setText(String.valueOf(queryOsmometerParameterInfo.getDepthTrigger()));
+                    mEtWaterRevised.setText(String.valueOf(queryOsmometerParameterInfo.getDepthCorrect()));
+                    mEtOsmometerCord.setText(String.valueOf(queryOsmometerParameterInfo.getCordLenght()));
+                    //TODO  安装高程
+                    mEtNozzelHeight.setText("");
+                }
             }
         }
 
-        uc = UserConfig.getConfig(this, CommonVariable.OSMOMETER_NOTE);
-        mEtNote.setText(uc.readString(CommonVariable.OSMOMETER_NOTE));
     }
 
 
@@ -163,9 +168,6 @@ public class OsmometerConfigActivity extends BaseDeviceConnectActivity {
     }
 
     private void showDialog() {
-
-        View contentView = View.inflate(this, R.layout.dialog_test, null);
-
         MaterialDialog.Builder mBuilder = new MaterialDialog.Builder(this);
         mBuilder.title("温馨提示：")
                 .customView(R.layout.dialog_test, false)
@@ -192,9 +194,8 @@ public class OsmometerConfigActivity extends BaseDeviceConnectActivity {
         uc.writeString(CommonVariable.OSMOMETER_NOTE, note);
 
 
-        int address = Integer.parseInt(osmometerAddress);
-        if (address <= 0 || address >= 255) {
-            ToastUtils.show("渗压计地址输入有误");
+        if (TextUtils.isEmpty(osmometerAddress) || Integer.parseInt(osmometerAddress) <= 0 || Integer.parseInt(osmometerAddress) > 255) {
+            ToastUtils.show("请输入正确的渗压计地址");
             return;
         }
 
@@ -221,23 +222,23 @@ public class OsmometerConfigActivity extends BaseDeviceConnectActivity {
         String cmdOsmometerAddress = "##402" + osmometerAddress + "\r\n";
         String cmdDepthTriggerValue = "##403" + depthTriggerValue + ",0" + "\r\n";
         String cmdDepthCorrection = "##404" + depthCorrection + "," + nozzelHeight + "\r\n";
-        String cmdCalculatTime = "##405" + osmometerLength + "\r\n";
-
-        sendCommonCommand("##4011\r\n");
-        Timber.d("发送设置采集器地址指令===" + "##4011\r\n");
+        String cmdOsmometerLength = "##405" + osmometerLength + "\r\n";
+        String cmdNozzelHeight = "##405" + nozzelHeight + "\r\n";
 
         sendCommonCommand(cmdOsmometerAddress);
-        Timber.d("发送设置采集器地址指令===" + cmdOsmometerAddress);
+        Timber.d("发送设置数字渗压计地址指令===" + cmdOsmometerAddress);
 
         sendCommonCommand(cmdDepthTriggerValue);
-        Timber.d("发送设置采集器地址指令===" + cmdDepthTriggerValue);
+        Timber.d("发送设置数字渗压计深度触发值，温度触发值指令===" + cmdDepthTriggerValue);
 
         sendCommonCommand(cmdDepthCorrection);
-        Timber.d("发送设置采集器地址指令===" + cmdDepthCorrection);
+        Timber.d("发送设置数字渗压计深度修正值，温度修正值指令===" + cmdDepthCorrection);
 
-        sendCommonCommand(cmdCalculatTime);
-        Timber.d("发送设置采集器地址指令===" + cmdCalculatTime);
+        sendCommonCommand(cmdOsmometerLength);
+        Timber.d("发送数字渗压计绳长指令===" + cmdOsmometerLength);
 
+        sendCommonCommand(cmdNozzelHeight);
+        Timber.d("发送数字渗压计安装高程指令===" + cmdNozzelHeight);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
