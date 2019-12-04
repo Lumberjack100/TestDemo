@@ -181,7 +181,6 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
         if (null != mdBluetoothManager) {
             mdBluetoothManager.disconnect();
             isAutoConnectBlue = false;
-//            MCloudApp.setIsBluetoothDeviceConnected(false);
         }
     }
 
@@ -231,6 +230,7 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
                 case WRITE_TIME_OUT:
                     Timber.d("写入等待超时");
                     disconnectDevice();
+                    isAutoConnectBlue = true;
                     mHandler.sendEmptyMessage(Constants.BT_WRITE_TIME_OUT);
                     break;
 
@@ -252,6 +252,7 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
                     Timber.d("消息等待响应超时");
                     mHandler.sendEmptyMessage(Constants.MESSAGE_RESPONSE_TIME_OUT);
                     disconnectDevice();
+                    isAutoConnectBlue = true;
                     break;
 
                 case MESSAGE_WRITE_FAIL:
@@ -293,10 +294,10 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
                     hander.removeCallbacks(dismssDialogRunnable);
                     MCloudApp.setIsBluetoothDeviceConnected(false);
                     EventBus.getDefault().post(new BluetoothStateEvent(false));
-//                    if (isAutoConnectBlue) {
-//                        //断开蓝牙后重新连接
-//                        findAndConnectBleDevice();
-//                    }
+                    if (isAutoConnectBlue) {
+                        //断开蓝牙后重新连接
+                        findAndConnectBleDevice();
+                    }
                     break;
 
                 case Constants.BT_MESSAGE_WRITE_SUCCESS:
@@ -318,7 +319,7 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
                     if (msg.obj.equals("1")) {
                         showLoadingDialog("查询设备配置参数...");
                         errMsg = "查询设备参数超时，请尝试重新连接";
-                        hander.postDelayed(dismssDialogRunnable, 5000);
+                        hander.postDelayed(dismssDialogRunnable, 10000);
                         obtainDeviceStateCmd();
 
                     } else {
@@ -326,6 +327,7 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
                         try {
                             Thread.sleep(1000);
                             disconnectDevice();
+                            isAutoConnectBlue = true;
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
@@ -366,7 +368,6 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
                     break;
 
                 case Constants.MESSAGE_LOCK_REBOOT_DEVICE:
-//                    ToastUtils.show("蓝牙通讯已就绪！");
                     Timber.d("蓝牙通讯已就绪");
                     obtainDeviceStateCmd();
                     break;

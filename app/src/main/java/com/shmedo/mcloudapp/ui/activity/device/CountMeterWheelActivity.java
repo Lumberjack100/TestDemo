@@ -82,7 +82,7 @@ public class CountMeterWheelActivity extends BaseDeviceConnectActivity {
 
     private void initView() {
         mToolbarTitle.setText("参数设置");
-        mIvBluetooth.setVisibility(View.VISIBLE);
+        mIvBluetooth.setVisibility(View.GONE);
 
         mEtPulsesNumber.setInputType(InputType.TYPE_CLASS_NUMBER);
         mEtPulsesNumber.setHint("默认值：400个");

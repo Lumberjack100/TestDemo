@@ -29,7 +29,6 @@ import com.shmedo.das.common.GetAllSensorConfigInfo;
 import com.shmedo.das.common.QueryOsmometerParameterInfo;
 import com.shmedo.das.common.enumerate.BreakAlarmStatus;
 import com.shmedo.das.common.enumerate.OsmometerStatus;
-import com.shmedo.das.das.cmd.CommandManager;
 import com.shmedo.das.das.cmd.CommandType;
 import com.shmedo.das.utils.StringUtil;
 import com.shmedo.mcloudapp.MCloudApp;
@@ -166,7 +165,7 @@ public class DAGHomeFragment extends BaseFragment {
 
     private String lockStatus = "";//设备锁定状态
 
-    private StringBuilder sbcollectorSensor;//采集器上传感器配置信息
+    private StringBuilder sbcollectorSensor = new StringBuilder();//采集器上传感器配置信息
 
     private StringBuilder sbOsmometerParameterInfo;//数字渗压计配置
 
@@ -274,6 +273,10 @@ public class DAGHomeFragment extends BaseFragment {
         mBtnOsmometer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (!MCloudApp.isIsBluetoothDeviceConnected()) {
+                    ToastUtils.show(getString(R.string.param_config_bluetooth_disconnect_warn));
+                    return;
+                }
                 OsmometerConfigActivity.startActivity(configDAGActivity, sbOsmometerParameterInfo.toString());
             }
         });
@@ -576,9 +579,19 @@ public class DAGHomeFragment extends BaseFragment {
     /**
      * 所有配置信息处理
      */
-    private void processGetAllSensorConfig(GetAllSensorConfigInfo getAllSensorConfigInfo) {
-        if (getAllSensorConfigInfo == null)
+    private void processGetAllSensorConfig(String cmdStr) {
+        String[] strs = cmdStr.split("@@");
+        if (strs == null || strs.length < 6)
             return;
+
+        //拼接采集器接入的传感器配置信息
+        sbcollectorSensor = new StringBuilder();
+        for (int i = 5; i < strs.length; i++) {
+            sbcollectorSensor.append(strs[i] + "&&");
+        }
+
+        GetAllSensorConfigInfo getAllSensorConfigInfo = BlueResultParserUtil.getAllBlueMessage(cmdStr);
+        Timber.d("--------所有配置信息-------" + getAllSensorConfigInfo.toString());
 
         collectorConfigInfo = getAllSensorConfigInfo.getCollectorConfig();
         baseConfigInfo = getAllSensorConfigInfo.getBaseConfig();
@@ -587,13 +600,7 @@ public class DAGHomeFragment extends BaseFragment {
             collectorType = baseConfigInfo.getCollectorModel().toString();
         }
 
-        if (!TextUtils.isEmpty(collectorType)) {
-            //根据采集器型号获取采集器配置 ##100
-            String collectorCommand = CommandManager.getInstance().getCommand(CommandType.COLLECTOR_CONFIG, null);
-            String collectorResult = collectorCommand.replace("\r\n", "") + collectorType + "\r\n";
-            Timber.d("发送获取采集器配置信息指令===" + collectorResult);
-            configDAGActivity.sendCommonCommand(collectorResult);
-        }
+        updateView();
     }
 
     private void updateView() {
@@ -708,23 +715,8 @@ public class DAGHomeFragment extends BaseFragment {
 //                queryOsmometerParameterInfo.setOsmometerStatus(OsmometerStatus.valueOf(digitalOsmometerFunctionSub.getOsmometerStatus()));
                 break;
 
-            case COLLECTOR_CONFIG://获取采集器配置 100
-                collectorConfigInfo = BlueResultParserUtil.getCollectorConfigInfo(cmdStr);
-                Timber.d("--------获取采集器配置-------" + collectorConfigInfo.toString());
-                sbcollectorSensor = new StringBuilder();
-                send101Instruction(collectorConfigInfo);//发送101指令
-                break;
-
-            case COLLECTOR_CHANNEL_SENSOR_PARAMETER: //101
-                sbcollectorSensor.append(cmdStr + "&&");
-                Timber.d("--------101指令-------" + cmdStr);
-                break;
-
             case GET_ALL_SENSOR_CONFIG://所有配置信息 333
-                GetAllSensorConfigInfo getAllSensorConfigInfo = BlueResultParserUtil.getAllBlueMessage(cmdStr);
-                Timber.d("--------所有配置信息-------" + getAllSensorConfigInfo.toString());
-                processGetAllSensorConfig(getAllSensorConfigInfo);
-                updateView();
+                processGetAllSensorConfig(cmdStr);
                 break;
 
             case BREAK_ALARM_STATUS: //断线报警器状态 227
@@ -760,23 +752,6 @@ public class DAGHomeFragment extends BaseFragment {
     }
 
 
-    /**
-     * 发送101指令
-     *
-     * @param collectorInfoSub
-     */
-    private void send101Instruction(CollectorConfigInfo collectorInfoSub) {
-        for (int i = 0; i < collectorInfoSub.getAccessSum(); i++) {
-            //##101XXYY\r\n：获取XX采集器YY通道的传感器参数
-            String collectorCommand = CommandManager.getInstance().getCommand(CommandType.COLLECTOR_CHANNEL_SENSOR_PARAMETER, null);
-            String count = com.shmedo.mcloudapp.util.StringUtil.formatTwo(i);
-            String collectorResult = collectorCommand.replace("\r\n", "") + collectorType + count + "\r\n";
-            configDAGActivity.sendCommonCommand(collectorResult);
-            Timber.d("发送101采集器配置指令===" + collectorResult);
-        }
-    }
-
-
     private void setSwitchViewState(boolean isOpen, TextView textView, String content) {
         textView.setText(content);
         textView.setTextColor(isOpen ? getResources().getColor(R.color.colorPrimary) : getResources().getColor(R.color.gray_807B7B));
@@ -786,14 +761,14 @@ public class DAGHomeFragment extends BaseFragment {
         if (isConnected) {
             mSbBluetoothConnect.setCheckedImmediatelyNoEvent(true);
             setSwitchViewState(true, mTvBluetoothConnect, "已连接");
-//            mBtnEdit1.setEnabled(true);
+            if (mBtnOsmometer.getText().toString().equals("配置"))
+                mBtnOsmometer.setEnabled(true);
 
         } else {
             mSbBluetoothConnect.setCheckedImmediatelyNoEvent(false);
             setSwitchViewState(false, mTvBluetoothConnect, "已断开");
-//            sbAutoMonitorState.setCheckedImmediatelyNoEvent(false);
-//            setSwitchViewState(false, tvAutoMonitorState, "已关闭");
-//            mBtnEdit1.setEnabled(false);
+            if (mBtnOsmometer.getText().toString().equals("配置"))
+                mBtnOsmometer.setEnabled(false);
         }
     }
 

@@ -30,14 +30,13 @@
             android:text="取消"
             android:textColor="@color/colorPrimaryDark"
             android:textSize="18sp" />
+
     </RelativeLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="40dp"
-        android:orientation="horizontal"
-
-        >
+        android:orientation="horizontal">
 
         <TextView
             android:layout_width="0dp"
@@ -56,17 +55,17 @@
             android:layout_marginRight="10dp"
             android:layout_weight="3"
             android:background="@drawable/icon_dialog_input"
+            android:inputType="number"
             android:hint="1~99"
             android:paddingLeft="10dp"
             android:singleLine="true" />
+
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="40dp"
-        android:orientation="horizontal"
-
-        >
+        android:orientation="horizontal">
 
         <TextView
             android:layout_width="0dp"
@@ -85,9 +84,11 @@
             android:layout_marginRight="10dp"
             android:layout_weight="3"
             android:background="@drawable/icon_dialog_input"
+            android:inputType="number"
             android:hint="请输入"
             android:paddingLeft="10dp"
             android:singleLine="true" />
+
     </LinearLayout>
 
     <LinearLayout
@@ -112,10 +113,12 @@
             android:layout_marginRight="10dp"
             android:layout_weight="3"
             android:background="@drawable/icon_dialog_input"
+            android:inputType="number"
             android:hint="请输入"
             android:paddingLeft="10dp"
             android:singleLine="true" />
     </LinearLayout>
+
     <!--<LinearLayout
         android:layout_width="match_parent"
         android:layout_height="40dp"

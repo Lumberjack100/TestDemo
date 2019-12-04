@@ -152,7 +152,7 @@ public class ADMESensorExecutiveAgencyConfigActivity extends BaseDeviceConnectAc
 
     private void initHeadView() {
         mToolbarTitle.setText("参数设置");
-        mIvBluetooth.setVisibility(View.VISIBLE);
+        mIvBluetooth.setVisibility(View.GONE);
         mIvBack.setOnClickListener(this);
         mIvBluetooth.setOnClickListener(this);
 

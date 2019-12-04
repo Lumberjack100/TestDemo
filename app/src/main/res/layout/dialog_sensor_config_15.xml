@@ -1,36 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/white"
     android:orientation="vertical">
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="40dp"
-        android:background="@color/bg_main_light_white"
-        >
+        android:background="@color/bg_main_light_white">
+
         <TextView
             android:id="@+id/tv_save"
             android:layout_width="50dp"
             android:layout_height="40dp"
-            android:text="保存"
-            android:gravity="center_horizontal|center_vertical"
-            android:textColor="@color/colorPrimaryDark"
-            android:textSize="18sp"
             android:layout_marginLeft="10dp"
-            />
+            android:gravity="center_horizontal|center_vertical"
+            android:text="保存"
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="18sp" />
+
         <TextView
             android:id="@+id/tv_cancel"
             android:layout_width="50dp"
             android:layout_height="40dp"
-            android:text="取消"
             android:layout_alignParentRight="true"
-            android:gravity="center_horizontal|center_vertical"
-            android:textColor="@color/colorPrimaryDark"
-            android:textSize="18sp"
             android:layout_marginRight="10dp"
-            />
+            android:gravity="center_horizontal|center_vertical"
+            android:text="取消"
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="18sp" />
     </RelativeLayout>
 
     <LinearLayout
@@ -39,15 +38,15 @@
         android:orientation="horizontal"
 
         >
+
         <TextView
             android:layout_width="0dp"
-            android:layout_weight="2"
             android:layout_height="wrap_content"
-            android:text="Modbus地址"
             android:layout_gravity="center_vertical"
-            android:textSize="14sp"
             android:layout_marginLeft="20dp"
-            />
+            android:layout_weight="2"
+            android:text="Modbus地址"
+            android:textSize="14sp" />
 
         <EditText
             android:id="@+id/et_modbus_address"
@@ -58,117 +57,121 @@
             android:layout_weight="3"
             android:background="@drawable/icon_dialog_input"
             android:hint="1~99"
+            android:inputType="number"
             android:paddingLeft="10dp"
             android:singleLine="true" />
     </LinearLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="40dp"
-        android:orientation="horizontal"
+        android:orientation="horizontal">
 
-        >
         <TextView
             android:layout_width="0dp"
-            android:layout_weight="2"
             android:layout_height="wrap_content"
-            android:text="触发阈值"
             android:layout_gravity="center_vertical"
-            android:textSize="14sp"
             android:layout_marginLeft="20dp"
-            />
+            android:layout_weight="2"
+            android:text="触发阈值"
+            android:textSize="14sp" />
+
         <EditText
             android:id="@+id/triggerThreshold"
             android:layout_width="0dp"
-            android:layout_weight="3"
             android:layout_height="wrap_content"
-            android:hint="请输入"
-            android:singleLine="true"
-            android:background="@drawable/icon_dialog_input"
             android:layout_gravity="center_vertical"
             android:layout_marginRight="10dp"
+            android:layout_weight="3"
+            android:background="@drawable/icon_dialog_input"
+            android:inputType="number"
+            android:hint="请输入"
             android:paddingLeft="10dp"
-            />
+            android:singleLine="true" />
     </LinearLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="40dp"
-        android:orientation="horizontal"
-        >
+        android:orientation="horizontal">
+
         <TextView
             android:layout_width="0dp"
-            android:layout_weight="2"
             android:layout_height="wrap_content"
-            android:text="修正值"
             android:layout_gravity="center_vertical"
-            android:textSize="14sp"
             android:layout_marginLeft="20dp"
-            />
+            android:layout_weight="2"
+            android:text="修正值"
+            android:textSize="14sp" />
+
         <EditText
             android:id="@+id/revised"
             android:layout_width="0dp"
-            android:layout_weight="3"
             android:layout_height="wrap_content"
-            android:hint="请输入"
-            android:singleLine="true"
-            android:background="@drawable/icon_dialog_input"
             android:layout_gravity="center_vertical"
             android:layout_marginRight="10dp"
+            android:layout_weight="3"
+            android:background="@drawable/icon_dialog_input"
+            android:inputType="number"
+            android:hint="请输入"
             android:paddingLeft="10dp"
-            />
+            android:singleLine="true" />
     </LinearLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="40dp"
-        android:orientation="horizontal"
-        >
+        android:orientation="horizontal">
+
         <TextView
             android:layout_width="0dp"
-            android:layout_weight="2"
             android:layout_height="wrap_content"
-            android:text="绳长"
             android:layout_gravity="center_vertical"
-            android:textSize="14sp"
             android:layout_marginLeft="20dp"
-            />
+            android:layout_weight="2"
+            android:text="绳长"
+            android:textSize="14sp" />
+
         <EditText
             android:id="@+id/cordlength"
             android:layout_width="0dp"
-            android:layout_weight="3"
             android:layout_height="wrap_content"
-            android:hint="请输入"
-            android:singleLine="true"
-            android:background="@drawable/icon_dialog_input"
             android:layout_gravity="center_vertical"
             android:layout_marginRight="10dp"
+            android:layout_weight="3"
+            android:background="@drawable/icon_dialog_input"
+            android:inputType="number"
+            android:hint="请输入"
             android:paddingLeft="10dp"
-            />
+            android:singleLine="true" />
     </LinearLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="40dp"
-        android:orientation="horizontal"
-        >
+        android:orientation="horizontal">
+
         <TextView
             android:layout_width="0dp"
-            android:layout_weight="2"
             android:layout_height="wrap_content"
-            android:text="安装高程"
             android:layout_gravity="center_vertical"
-            android:textSize="14sp"
             android:layout_marginLeft="20dp"
-            />
+            android:layout_weight="2"
+            android:text="安装高程"
+            android:textSize="14sp" />
+
         <EditText
             android:id="@+id/installationElevation"
             android:layout_width="0dp"
-            android:layout_weight="3"
             android:layout_height="wrap_content"
-            android:hint="请输入"
-            android:singleLine="true"
-            android:background="@drawable/icon_dialog_input"
             android:layout_gravity="center_vertical"
             android:layout_marginRight="10dp"
+            android:layout_weight="3"
+            android:background="@drawable/icon_dialog_input"
+            android:inputType="number"
+            android:hint="请输入"
             android:paddingLeft="10dp"
-            />
+            android:singleLine="true" />
     </LinearLayout>
     <!--<LinearLayout
         android:layout_width="match_parent"
@@ -200,31 +203,29 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="40dp"
-        android:orientation="horizontal"
         android:layout_marginBottom="20dp"
-        >
+        android:orientation="horizontal">
 
         <TextView
             android:layout_width="0dp"
-            android:layout_weight="2"
             android:layout_height="wrap_content"
-            android:text="备注信息"
             android:layout_gravity="center_vertical"
-            android:textSize="14sp"
             android:layout_marginLeft="20dp"
-            />
+            android:layout_weight="2"
+            android:text="备注信息"
+            android:textSize="14sp" />
+
         <EditText
             android:id="@+id/et_note"
             android:layout_width="0dp"
-            android:layout_weight="3"
             android:layout_height="wrap_content"
-            android:hint="请输入"
-            android:singleLine="true"
-            android:background="@drawable/icon_dialog_input"
             android:layout_gravity="center_vertical"
             android:layout_marginRight="10dp"
+            android:layout_weight="3"
+            android:background="@drawable/icon_dialog_input"
+            android:hint="请输入"
             android:paddingLeft="10dp"
-            />
+            android:singleLine="true" />
     </LinearLayout>
 
 </LinearLayout>
