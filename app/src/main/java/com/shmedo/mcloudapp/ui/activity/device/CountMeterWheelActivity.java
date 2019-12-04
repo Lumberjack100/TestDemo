@@ -249,10 +249,9 @@ public class CountMeterWheelActivity extends BaseDeviceConnectActivity {
         stringBuilder.append(constant + ",");
         stringBuilder.append(filterCoefficient + "\r\n");
         cmdStr = String.valueOf(stringBuilder);
-        sendCommonCommand(cmdStr);
 
-        showLoadingDialog("正在发送配置指令...");
-        hander.postDelayed(dismssDialogRunnable, 5000);
+        startProgressRunnable("正在发送配置指令...", 10000);
+        sendCommonCommand(cmdStr);
     }
 
 
@@ -262,8 +261,7 @@ public class CountMeterWheelActivity extends BaseDeviceConnectActivity {
     private void setResultData(String cmdStr) {
         //计米轮参数配置后应答
         if (cmdStr.startsWith("$$7023") && cmdStr.endsWith("\r\n")) {
-            dismissLoadingDialog();
-            hander.removeCallbacks(dismssDialogRunnable);
+            stopProgressRunnable();
             isExitMode = true;
             showSaveDialog("是否保存设备配置参数？");
         }

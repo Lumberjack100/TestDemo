@@ -788,10 +788,10 @@ public class SenSorBGKConfigActivity extends BaseDeviceConnectActivity {
         builderFirst.append("\r\n");
 
         String result = String.valueOf(builderFirst);
+
+        startProgressRunnable("正在发送配置指令...", 10000);
         sendCommonCommand(result);
         Timber.d("设置采集器接入的传感器指令===" + result);
-        showLoadingDialog("正在发送配置指令...");
-        hander.postDelayed(dismssDialogRunnable, 10000);
 
         cmdNum = 0;
         for (int i = 0; i < collectorSensorParamsInfoSubs.size(); i++) {
@@ -890,8 +890,7 @@ public class SenSorBGKConfigActivity extends BaseDeviceConnectActivity {
             cmdNum++;
 
             if (cmdNum == collectorSensorParamsInfoSubs.size() - 1) {
-                dismissLoadingDialog();
-                hander.removeCallbacks(dismssDialogRunnable);
+                stopProgressRunnable();
                 isExitMode = true;
                 showSaveDialogNoDisconnect("是否现在保存设备配置参数？");
             }
@@ -899,10 +898,9 @@ public class SenSorBGKConfigActivity extends BaseDeviceConnectActivity {
 
         //设置保存参数应答
         if (cmdStr.startsWith("$$0191") && cmdStr.endsWith("\r\n")) {
+            stopProgressRunnable();
             ToastUtils.show("已发送保存命令,设备即将断开连接重启");
             isConfigChange = false;
-            hander.removeCallbacks(dismssDialogRunnable);
-            dismissLoadingDialog();
             disconnectDevice();
 
             if (isExitMode) {
@@ -911,7 +909,7 @@ public class SenSorBGKConfigActivity extends BaseDeviceConnectActivity {
                     public void run() {
                         finish();
                     }
-                }, 3000);
+                }, 2000);
             }
         }
     }

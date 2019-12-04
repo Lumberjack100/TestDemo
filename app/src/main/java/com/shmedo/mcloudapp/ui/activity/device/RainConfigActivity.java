@@ -139,9 +139,9 @@ public class RainConfigActivity extends BaseDeviceConnectActivity {
             return;
         }
         String cmdStr = "##121" + rainResult + "\r\n";
+
+        startProgressRunnable("正在发送配置指令...", 10000);
         sendCommonCommand(cmdStr);
-        showLoadingDialog("正在发送配置指令...");
-        hander.postDelayed(dismssDialogRunnable, 10000);
     }
 
 
@@ -151,15 +151,20 @@ public class RainConfigActivity extends BaseDeviceConnectActivity {
     private void setResultData(String cmdStr) {
         //参数配置后应答
         if (cmdStr.startsWith("$$121") && cmdStr.endsWith("\r\n")) {
-            dismissLoadingDialog();
-            hander.removeCallbacks(dismssDialogRunnable);
+            if (cmdStr.startsWith("$$121e") || cmdStr.startsWith("$$121ce")) {
+                ToastUtils.show("雨量计精度配置错误!");
+                stopProgressRunnable();
+                return;
+            }
+            stopProgressRunnable();
             ToastUtils.show("设置完成");
             hander.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    RainConfigActivity.this.finish();
+                    finish();
                 }
-            }, 3000);
+            }, 2000);
+            return;
         }
     }
 

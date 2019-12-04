@@ -233,7 +233,7 @@ public class OsmometerConfigActivity extends BaseDeviceConnectActivity {
         cmdNozzelHeight = "##406" + nozzelHeight + "\r\n";
 
         startProgressRunnable("正在发送配置指令...", 10000);
-        sendCommonCommand(cmdOsmometerAddress);
+        sendCommonCommandImmediately(cmdOsmometerAddress);
         Timber.d("发送设置数字渗压计地址指令===" + cmdOsmometerAddress);
     }
 
@@ -269,7 +269,7 @@ public class OsmometerConfigActivity extends BaseDeviceConnectActivity {
                 stopProgressRunnable();
                 return;
             }
-            sendCommonCommand(cmdOsmometerLength);
+            sendCommonCommandImmediately(cmdOsmometerLength);
             Timber.d("发送数字渗压计绳长指令===" + cmdOsmometerLength);
             return;
         }
@@ -280,7 +280,7 @@ public class OsmometerConfigActivity extends BaseDeviceConnectActivity {
                 stopProgressRunnable();
                 return;
             }
-            sendCommonCommand(cmdNozzelHeight);
+            sendCommonCommandImmediately(cmdNozzelHeight);
             Timber.d("发送数字渗压计安装高程指令===" + cmdNozzelHeight);
             return;
         }
@@ -298,7 +298,7 @@ public class OsmometerConfigActivity extends BaseDeviceConnectActivity {
                 public void run() {
                     finish();
                 }
-            }, 3000);
+            }, 2000);
             return;
         }
     }

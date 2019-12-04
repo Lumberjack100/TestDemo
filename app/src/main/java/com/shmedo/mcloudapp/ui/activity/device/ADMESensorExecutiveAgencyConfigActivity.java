@@ -622,12 +622,10 @@ public class ADMESensorExecutiveAgencyConfigActivity extends BaseDeviceConnectAc
         sbExecutiveAgency.append(strMeasuringPitch + "\r\n");
         executiveAgencyConfigInfo = String.valueOf(sbExecutiveAgency);
 
+        startProgressRunnable("正在发送配置指令...", 10000);
         //先发送采集器配置指令,收到配置完成应答时再发送执行结构配置指令
         String cmdStr = String.valueOf(sbCollector);
         sendCommonCommand(cmdStr);
-
-        showLoadingDialog("正在发送配置指令...");
-        hander.postDelayed(dismssDialogRunnable, 5000);
     }
 
 
@@ -643,8 +641,7 @@ public class ADMESensorExecutiveAgencyConfigActivity extends BaseDeviceConnectAc
 
         //执行机构参数配置后应答
         if (cmdStr.startsWith("$$7003") && cmdStr.endsWith("\r\n")) {
-            dismissLoadingDialog();
-            hander.removeCallbacks(dismssDialogRunnable);
+            stopProgressRunnable();
             isExitMode = true;
             showSaveDialog("是否保存设备配置参数？");
         }

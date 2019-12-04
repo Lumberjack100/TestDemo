@@ -440,8 +440,7 @@ public class ADMEMotorControlActivity extends BaseDeviceConnectActivity {
         stringBuilder.append(speedPullDown + "\r\n");
         String cmdStr = String.valueOf(stringBuilder);
 
-        showLoadingDialog("正在发送配置指令...");
-        hander.postDelayed(dismssDialogRunnable, 5000);
+        startProgressRunnable("正在发送配置指令...", 10000);
         sendCommonCommand(cmdStr);
         Timber.d("控制电机" + (mSpinner.getSelectedItemPosition() == 0 ? "上拉" : "下降") + "指令==" + cmdStr);
         //轮询查询电机状态
@@ -456,9 +455,7 @@ public class ADMEMotorControlActivity extends BaseDeviceConnectActivity {
         //控制电机上拉、下降指令应答
         if (!cmdStr.startsWith("$$7021,1")
                 && (cmdStr.startsWith("$$7021,2") || cmdStr.startsWith("$$7021,3"))) {
-            dismissLoadingDialog();
-            hander.removeCallbacks(dismssDialogRunnable);
-
+            stopProgressRunnable();
             if (runMode == PULL_AUTO) {
                 ToastUtils.show("已设置控制电机指令");
                 mBtnConfirm.setText("停止");

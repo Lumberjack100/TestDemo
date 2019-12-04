@@ -64,15 +64,15 @@ public class GeneralSettingActivity extends BaseDeviceConnectActivity {
     @BindView(R.id.btn_confirm_complete)
     Button mBtnConfirmComplete;
 
-    private String collectorAddress;
-
-    private String calculatTime;
-
-    private String standbyTime;
-
-    private String collectTime;
-
     private String collectorType;
+
+    private String cmdCollectorAddress;//采集器地址
+
+    private String cmdCalculatTime;//解算时间
+
+    private String cmdStandbyTime;//待机时间
+
+    private String cmdCollectTime;//采集时间
 
 
     public static void startActivity(Context context, CollectorConfigInfo collectorConfigInfo, String collectorType) {
@@ -154,10 +154,10 @@ public class GeneralSettingActivity extends BaseDeviceConnectActivity {
 
 
     private void sendCollector() {
-        collectorAddress = mEtCollectorAddress.getText().toString().trim();
-        calculatTime = mEtCalculatingTime.getText().toString().trim();
-        standbyTime = mEtStandbyTime.getText().toString().trim();
-        collectTime = mEtCollectTime.getText().toString().trim();
+        String collectorAddress = mEtCollectorAddress.getText().toString().trim();
+        String calculatTime = mEtCalculatingTime.getText().toString().trim();
+        String standbyTime = mEtStandbyTime.getText().toString().trim();
+        String collectTime = mEtCollectTime.getText().toString().trim();
 
         if (TextUtils.isEmpty(collectorAddress) || Integer.parseInt(collectorAddress) <= 0 || Integer.parseInt(collectorAddress) > 255) {
             ToastUtils.show("请输入正确的采集器地址");
@@ -179,25 +179,14 @@ public class GeneralSettingActivity extends BaseDeviceConnectActivity {
             return;
         }
 
-        String cmdCollectorAddress = "##147" + collectorAddress + "\r\n";
-        String cmdCalculatTime = "##163" + collectorType + StringUtil.formatStringFour(calculatTime) + "\r\n";
-        String cmdStandbyTime = "##160" + collectorType + StringUtil.formatStringFour(standbyTime) + "\r\n";
-        String cmdCollectTime = "##161" + collectorType + StringUtil.formatStringFive(collectTime) + "\r\n";
+        cmdCollectorAddress = "##147" + collectorAddress + "\r\n";
+        cmdCalculatTime = "##163" + collectorType + StringUtil.formatStringFour(calculatTime) + "\r\n";
+        cmdStandbyTime = "##160" + collectorType + StringUtil.formatStringFour(standbyTime) + "\r\n";
+        cmdCollectTime = "##161" + collectorType + StringUtil.formatStringFive(collectTime) + "\r\n";
 
-        sendCommonCommand(cmdCollectorAddress);
+        startProgressRunnable("正在发送配置指令...", 10000);
+        sendCommonCommandImmediately(cmdCollectorAddress);
         Timber.d("设置采集器地址指令===" + cmdCollectorAddress);
-
-        sendCommonCommand(cmdCalculatTime);
-        Timber.d("设置采集器解算频度指令===" + cmdCalculatTime);
-
-        sendCommonCommand(cmdStandbyTime);
-        Timber.d("设置采集器待机时长指令===" + cmdStandbyTime);
-
-        sendCommonCommand(cmdCollectTime);
-        Timber.d("设置采集器采集频度指令===" + cmdCollectTime);
-
-        showLoadingDialog("正在发送配置指令...");
-        hander.postDelayed(dismssDialogRunnable, 10000);
     }
 
 
@@ -205,30 +194,54 @@ public class GeneralSettingActivity extends BaseDeviceConnectActivity {
      * 设置显示数据
      */
     private void setResultData(String cmdStr) {
-        //设置采集器采集频度指令应答
-        if (cmdStr.startsWith("$$161") && cmdStr.endsWith("\r\n")) {
-            dismissLoadingDialog();
-            hander.removeCallbacks(dismssDialogRunnable);
-            isExitMode = true;
-            showSaveDialogNoDisconnect("是否现在保存设备配置参数？");
+        if (cmdStr.startsWith("$$147") && cmdStr.endsWith("\r\n")) {
+            if (cmdStr.startsWith("$$147e") || cmdStr.startsWith("$$147ce")) {
+                ToastUtils.show("采集器地址配置错误!");
+                stopProgressRunnable();
+                return;
+            }
+            sendCommonCommandImmediately(cmdCalculatTime);
+            Timber.d("设置采集器解算频度指令===" + cmdCalculatTime);
+            return;
         }
 
-        //设置保存参数应答
-        if (cmdStr.startsWith("$$0191") && cmdStr.endsWith("\r\n")) {
-            ToastUtils.show("已发送保存命令,设备即将断开连接重启");
-            isConfigChange = false;
-            hander.removeCallbacks(dismssDialogRunnable);
-            dismissLoadingDialog();
-            disconnectDevice();
-
-            if (isExitMode) {
-                hander.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                       finish();
-                    }
-                }, 3000);
+        if (cmdStr.startsWith("$$163") && cmdStr.endsWith("\r\n")) {
+            if (cmdStr.startsWith("$$163e") || cmdStr.startsWith("$$163ce")) {
+                ToastUtils.show("采集器解算频度配置错误!");
+                stopProgressRunnable();
+                return;
             }
+            sendCommonCommandImmediately(cmdStandbyTime);
+            Timber.d("设置采集器待机时长指令===" + cmdStandbyTime);
+            return;
+        }
+
+        if (cmdStr.startsWith("$$160") && cmdStr.endsWith("\r\n")) {
+            if (cmdStr.startsWith("$$160e") || cmdStr.startsWith("$$160ce")) {
+                ToastUtils.show("采集器待机时长配置错误!");
+                stopProgressRunnable();
+                return;
+            }
+            sendCommonCommandImmediately(cmdCollectTime);
+            Timber.d("设置采集器采集频度指令===" + cmdCollectTime);
+            return;
+        }
+
+        if (cmdStr.startsWith("$$161") && cmdStr.endsWith("\r\n")) {
+            if (cmdStr.startsWith("$$161e") || cmdStr.startsWith("$$161ce")) {
+                ToastUtils.show("采集器采集频度配置错误!");
+                stopProgressRunnable();
+                return;
+            }
+            stopProgressRunnable();
+            ToastUtils.show("设置完成");
+            hander.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    finish();
+                }
+            }, 2000);
+            return;
         }
     }
 

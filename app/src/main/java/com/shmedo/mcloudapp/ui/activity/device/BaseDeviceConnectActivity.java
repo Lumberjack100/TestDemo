@@ -73,21 +73,6 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
     private ProgressRunnable progressRunnable;
 
 
-    protected Runnable dismssDialogRunnable = new Runnable() {
-        @Override
-        public void run() {
-            dismissLoadingDialog();
-            if (!TextUtils.isEmpty(errMsg)) {
-                ToastUtils.show(errMsg);
-
-                if (errMsg.contains("连接超时")) {
-                    MCloudApp.setIsBluetoothDeviceConnected(false);
-                    EventBus.getDefault().post(new BluetoothStateEvent(false));
-                }
-            }
-        }
-    };
-
     private class ProgressRunnable implements Runnable {
         @Override
         public void run() {
@@ -155,9 +140,8 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
         //蓝牙已打开时，开始扫描蓝牙设备
         mdBluetoothManager.scanDevice(10, this);
         if (null != mBluetoothAdapter && mBluetoothAdapter.isEnabled()) {
-            showLoadingDialog("正在搜索设备：" + SN);
             errMsg = "扫描超时，请稍后尝试";
-            hander.postDelayed(dismssDialogRunnable, 10000);
+            startProgressRunnable("正在搜索设备：" + SN, 10000);
         }
     }
 
@@ -190,8 +174,7 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
             return;
 
         if (device.getName().contains(SN)) {
-            dismissLoadingDialog();
-            hander.removeCallbacks(dismssDialogRunnable);
+            stopProgressRunnable();
             doConnect(device);
         }
     }
@@ -202,9 +185,8 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
     private void doConnect(BluetoothDevice device) {
         mdBluetoothManager.stopScan();
         mdBluetoothManager.connectDevice(device, this);
-        showLoadingDialog("正在连接设备：" + SN);
         errMsg = "连接超时,请稍后尝试";
-        hander.postDelayed(dismssDialogRunnable, 15000);
+        startProgressRunnable("正在连接设备：" + SN, 15000);
     }
 
     /**
@@ -323,8 +305,7 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
 
                 case Constants.BT_DISCONNECTED:
                     ToastUtils.show("设备断开连接");
-                    dismissLoadingDialog();
-                    hander.removeCallbacks(dismssDialogRunnable);
+                    stopProgressRunnable();
                     MCloudApp.setIsBluetoothDeviceConnected(false);
                     EventBus.getDefault().post(new BluetoothStateEvent(false));
                     if (isAutoConnectBlue) {
@@ -346,13 +327,10 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
                     break;
 
                 case Constants.VERIFY_RESULT:
-                    dismissLoadingDialog();
-                    hander.removeCallbacks(dismssDialogRunnable);
-
+                    stopProgressRunnable();
                     if (msg.obj.equals("1")) {
-                        showLoadingDialog("查询设备配置参数...");
                         errMsg = "查询设备参数超时，请尝试重新连接";
-                        hander.postDelayed(dismssDialogRunnable, 10000);
+                        startProgressRunnable("查询设备配置参数...", 10000);
                         obtainDeviceConfigInfoCmd();
 
                     } else {
@@ -499,8 +477,7 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
         if (cmdStr.startsWith("$$0191") && cmdStr.endsWith("\r\n")) {
             ToastUtils.show("已发送保存命令,设备即将断开连接重启");
             isConfigChange = false;
-            hander.removeCallbacks(dismssDialogRunnable);
-            dismissLoadingDialog();
+            stopProgressRunnable();
             disconnectDevice();
 
             if (isExitMode) {
@@ -524,8 +501,7 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
     private void parserADMECmdResult(String cmdStr) {
         //查询执行机构参数应答
         if (cmdStr.startsWith("$$7002") && cmdStr.endsWith("\r\n")) {
-            dismissLoadingDialog();
-            hander.removeCallbacks(dismssDialogRunnable);
+            stopProgressRunnable();
         }
 
         if ((cmdStr.startsWith("$$2011")
@@ -544,8 +520,7 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
     private void parserDASCmdResult(String cmdStr) {
         //查询数字式渗压计参数
         if (cmdStr.startsWith("$$400") && cmdStr.endsWith("\r\n")) {
-            dismissLoadingDialog();
-            hander.removeCallbacks(dismssDialogRunnable);
+            stopProgressRunnable();
         }
 
         //此处是各个配置指令应答，表示已经更改配置了
@@ -684,10 +659,9 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
 
 
     protected void sendSaveParamCommand() {
-        sendCommonCommandImmediately("##0191\r\n");
-        showLoadingDialog("正在发送保存命令...");
         errMsg = "发送指令超时,请稍后尝试";
-        hander.postDelayed(dismssDialogRunnable, 5000);
+        startProgressRunnable("正在发送保存命令...", 10000);
+        sendCommonCommandImmediately("##0191\r\n");
     }
 
 

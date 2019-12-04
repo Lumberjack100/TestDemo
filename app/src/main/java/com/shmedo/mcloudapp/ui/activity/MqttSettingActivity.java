@@ -7,9 +7,15 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.view.View;
-import android.widget.*;
-import butterknife.BindView;
-import butterknife.ButterKnife;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.CompoundButton;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.Spinner;
+import android.widget.TextView;
+
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.hjq.toast.ToastUtils;
@@ -25,9 +31,12 @@ import com.shmedo.mcloudapp.ui.activity.device.BaseDeviceConnectActivity;
 import com.shmedo.mcloudapp.ui.activity.device.sensor.dialog.MqttDialogFactory;
 import com.shmedo.mcloudapp.util.StringUtil;
 import com.shmedo.mcloudapp.views.ClearEditText;
-import com.shmedo.mcloudapp.views.LoadingDialog;
+
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import timber.log.Timber;
 
 
@@ -97,6 +106,7 @@ public class MqttSettingActivity extends BaseDeviceConnectActivity implements Vi
     private boolean isCheckedLinkOne, isCheckedLinkTwo, isCheckedLinkThree;
 
     private String dataCommunicationMode;
+
     @Override
     protected int initContentView() {
         return R.layout.activity_mqtt_setting;
@@ -193,8 +203,7 @@ public class MqttSettingActivity extends BaseDeviceConnectActivity implements Vi
     }
 
     private void initData() {
-        showLoadingDialog("正在获取指令参数...");
-        hander.postDelayed(dismssDialogRunnable, 10000);
+        startProgressRunnable("正在获取指令参数...", 10000);
         //查询链路开启状态
         sendCommonCommand("##2001\r\n");
         sendCommonCommand("##2002\r\n");
@@ -371,6 +380,7 @@ public class MqttSettingActivity extends BaseDeviceConnectActivity implements Vi
                 CommandResult<BaseConfigInfo> bean = ParseManager.getInstance().parse(message);
                 if (!bean.isSuccess())
                     return;
+
                 Timber.i("===$$000===" + bean.getResult().toString());
                 int communicateMode = bean.getResult().getDataCommunicateMode().toInt();
                 switch (communicateMode) {
@@ -390,12 +400,9 @@ public class MqttSettingActivity extends BaseDeviceConnectActivity implements Vi
                 int reportInterval = bean.getResult().getDataReportInterval();
                 mCetDataReport.setText(String.valueOf(reportInterval));
                 mCetBDCardNumber.setText(bean.getResult().getTargetBGNum());
-                dismissLoadingDialog();
-                hander.removeCallbacks(dismssDialogRunnable);
+                stopProgressRunnable();
                 break;
-
         }
-
     }
 
     /**
@@ -453,7 +460,7 @@ public class MqttSettingActivity extends BaseDeviceConnectActivity implements Vi
                 }
                 break;
             case R.id.btn_confirm:
-                if (MCloudApp.isIsBluetoothDeviceConnected()){
+                if (MCloudApp.isIsBluetoothDeviceConnected()) {
                     //设置数据通讯模式
                     sendCommonCommand("##003" + dataCommunicationMode + "\r\n");
                     //设置数据上报间隔
@@ -468,10 +475,10 @@ public class MqttSettingActivity extends BaseDeviceConnectActivity implements Vi
                     if (bdNumber.equals("")) {
                         ToastUtils.show("北斗目标卡号不能为空");
                         return;
-                    }else {
+                    } else {
                         sendCommonCommand("##001" + bdNumber + "\r\n");
                     }
-                }else {
+                } else {
                     ToastUtils.show("蓝牙已断开！");
                 }
 
