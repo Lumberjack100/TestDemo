@@ -10,8 +10,6 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.hjq.toast.ToastUtils;
-import com.shmedo.das.das.cmd.CommandManager;
-import com.shmedo.das.das.cmd.CommandType;
 import com.shmedo.mcloudapp.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.model.Extras;
@@ -21,11 +19,8 @@ import com.shmedo.mcloudapp.ui.fragment.DAGHomeFragment;
 import com.shmedo.mcloudapp.ui.fragment.DeviceDetailsFragment;
 import com.shmedo.mcloudapp.ui.fragment.QueryDataFragment;
 
-import org.greenrobot.eventbus.EventBus;
-
 import butterknife.BindView;
 import butterknife.OnClick;
-import timber.log.Timber;
 
 public class ConfigDAGActivity extends BaseDeviceConnectActivity {
     @BindView(R.id.tv_title)
@@ -253,92 +248,6 @@ public class ConfigDAGActivity extends BaseDeviceConnectActivity {
         }
     }
 
-
-    @Override
-    protected void obtainDeviceStateCmd() {
-        //获取所有配置  ##333
-        String allInfoCommand = CommandManager.getInstance().getCommand(CommandType.GET_ALL_SENSOR_CONFIG, null);
-        sendCommonCommand(allInfoCommand);
-        Timber.d("发送获取所有配置指令===" + allInfoCommand);
-
-        //系统运行状态 ##014
-//        String runstateCommand = CommandManager.getInstance().getCommand(CommandType.SYSTEM_RUN_STATE, null);
-//        sendCommonCommand(runstateCommand);
-//        Timber.d("发送系统运行状态指令===" + runstateCommand);
-
-        //查询数字式渗压计参数 ##400
-        String shenyajiCommand = CommandManager.getInstance().getCommand(CommandType.QUERY_OSMOMETER_PARAMETER, null);
-        sendCommonCommand(shenyajiCommand);
-        Timber.d("发送查询渗压计指令===" + shenyajiCommand);
-
-        //版本信息 ##040
-//        String versionCommand = CommandManager.getInstance().getCommand(CommandType.VERSION_MESSAGE, null);
-//        sendCommonCommand(versionCommand);
-//        Timber.d("发送版本信息指令===" + versionCommand);
-    }
-
-
-    @Override
-    protected void parserResult(String cmdStr) {
-        //查询数字式渗压计参数
-        if (cmdStr.startsWith("$$400") && cmdStr.endsWith("\r\n")) {
-            dismissLoadingDialog();
-            hander.removeCallbacks(dismssDialogRunnable);
-        }
-
-        //恢复出厂设置应答
-        if (cmdStr.startsWith("$$119") && cmdStr.endsWith("\r\n")) {
-
-        }
-
-        //重启
-        if (cmdStr.startsWith("$$008") && cmdStr.endsWith("\r\n")) {
-
-        }
-
-        //此处是各个配置指令应答，表示已经更改配置了
-        if ((cmdStr.startsWith("$$006")//调试模式
-                || cmdStr.startsWith("$$005")//开关量功能
-                || cmdStr.startsWith("$$121")//雨量计精度
-                || cmdStr.startsWith("$$227")//断线报警器
-                || (cmdStr.startsWith("$$40") && !cmdStr.equals("$$400\r\n"))//设置数字渗压计
-                || cmdStr.startsWith("$$150")//采集器接入的传感器
-                || cmdStr.startsWith("$$16")//采集器
-                || cmdStr.startsWith("$$147")//采集器地址
-                || cmdStr.startsWith("$$201")//平台服务器地址端口
-                || (cmdStr.startsWith("$$202") && !cmdStr.equals("$$2020\r\n"))//网络链路通信协议
-                || (cmdStr.startsWith("$$810") && !cmdStr.equals("$$8100\r\n"))//自动注册平台选择
-                || cmdStr.startsWith("$$803")//自动注册平台参数
-                || cmdStr.startsWith("$$807")//自动注册服务器地址端口
-                || cmdStr.startsWith("$$805")//手动注册平台参数
-                || (cmdStr.startsWith("$$809") && !cmdStr.equals("$$8090\r\n"))//MQTT KeepAlive 值
-                || cmdStr.startsWith("$$003") //设置数据通讯模式
-                || cmdStr.startsWith("$$143")//设置数据上报间隔
-                || cmdStr.startsWith("$$001")//设置六位目标北斗卡号
-        ) && cmdStr.endsWith("\r\n")) {
-            isConfigChange = true;
-        }
-
-        //设置保存参数应答
-        if (cmdStr.startsWith("$$0191") && cmdStr.endsWith("\r\n")) {
-            ToastUtils.show("已发送保存命令,设备即将断开连接重启");
-            isConfigChange = false;
-            hander.removeCallbacks(dismssDialogRunnable);
-            dismissLoadingDialog();
-            disconnectDevice();
-
-            if (isExitMode) {
-                hander.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        ConfigDAGActivity.this.finish();
-                    }
-                }, 3000);
-            }
-        }
-
-        EventBus.getDefault().post(cmdStr);
-    }
 
 
     @Override

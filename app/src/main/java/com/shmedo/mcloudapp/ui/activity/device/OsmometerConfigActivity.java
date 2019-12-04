@@ -78,12 +78,16 @@ public class OsmometerConfigActivity extends BaseDeviceConnectActivity {
     @BindView(R.id.btn_confirm_complete)
     Button mBtnConfirmComplete;
 
+    private String cmdOsmometerAddress;//渗压计地址
 
-    private String osmometerAddress;//渗压计地址
-    private String depthTriggerValue;//深度触发值-水位报警值
-    private String depthCorrection;//深度修正值
-    private String osmometerLength;//渗压计绳长
-    private String nozzelHeight;//管口高程
+    private String cmdDepthTriggerValue;//深度触发值-水位报警值
+
+    private String cmdDepthCorrection;//深度修正值
+
+    private String cmdOsmometerLength;//渗压计绳长
+
+    private String cmdNozzelHeight;//管口高程
+
 
     private UserConfig uc;
 
@@ -131,7 +135,7 @@ public class OsmometerConfigActivity extends BaseDeviceConnectActivity {
     }
 
 
-    @OnClick({R.id.back,R.id.iv_osmometer_address, R.id.iv_water_alarm_value, R.id.iv_water_revised,
+    @OnClick({R.id.back, R.id.iv_osmometer_address, R.id.iv_water_alarm_value, R.id.iv_water_revised,
             R.id.iv_osmometer_cord, R.id.iv_nozzel_height, R.id.btn_confirm_complete})
     public void onViewClicked(View view) {
         switch (view.getId()) {
@@ -183,15 +187,15 @@ public class OsmometerConfigActivity extends BaseDeviceConnectActivity {
 
 
     private void sendOsmometerConfig() {
-        osmometerAddress = mEtOsmometerAddress.getText().toString().trim();
+        String osmometerAddress = mEtOsmometerAddress.getText().toString().trim();
 
-        depthTriggerValue = mEtWaterAlarmValue.getText().toString().trim();
+        String depthTriggerValue = mEtWaterAlarmValue.getText().toString().trim();
 
-        depthCorrection = mEtWaterRevised.getText().toString().trim();
+        String depthCorrection = mEtWaterRevised.getText().toString().trim();
 
-        osmometerLength = mEtOsmometerCord.getText().toString().trim();
+        String osmometerLength = mEtOsmometerCord.getText().toString().trim();
 
-        nozzelHeight = mEtNozzelHeight.getText().toString().trim();
+        String nozzelHeight = mEtNozzelHeight.getText().toString().trim();
 
         String note = mEtNote.getText().toString().trim();
         uc.writeString(CommonVariable.OSMOMETER_NOTE, note);
@@ -222,39 +226,72 @@ public class OsmometerConfigActivity extends BaseDeviceConnectActivity {
             return;
         }
 
-        String cmdOsmometerAddress = "##402" + osmometerAddress + "\r\n";
-        String cmdDepthTriggerValue = "##403" + depthTriggerValue + ",0" + "\r\n";
-        String cmdDepthCorrection = "##404" + depthCorrection + "," + nozzelHeight + "\r\n";
-        String cmdOsmometerLength = "##405" + osmometerLength + "\r\n";
-        String cmdNozzelHeight = "##405" + nozzelHeight + "\r\n";
+        cmdOsmometerAddress = "##402" + osmometerAddress + "\r\n";
+        cmdDepthTriggerValue = "##403" + depthTriggerValue + ",1" + "\r\n";
+        cmdDepthCorrection = "##404" + depthCorrection + "," + nozzelHeight + "\r\n";
+        cmdOsmometerLength = "##405" + osmometerLength + "\r\n";
+        cmdNozzelHeight = "##406" + nozzelHeight + "\r\n";
 
+        startProgressRunnable("正在发送配置指令...", 10000);
         sendCommonCommand(cmdOsmometerAddress);
         Timber.d("发送设置数字渗压计地址指令===" + cmdOsmometerAddress);
-
-        sendCommonCommand(cmdDepthTriggerValue);
-        Timber.d("发送设置数字渗压计深度触发值，温度触发值指令===" + cmdDepthTriggerValue);
-
-        sendCommonCommand(cmdDepthCorrection);
-        Timber.d("发送设置数字渗压计深度修正值，温度修正值指令===" + cmdDepthCorrection);
-
-        sendCommonCommand(cmdOsmometerLength);
-        Timber.d("发送数字渗压计绳长指令===" + cmdOsmometerLength);
-
-        sendCommonCommand(cmdNozzelHeight);
-        Timber.d("发送数字渗压计安装高程指令===" + cmdNozzelHeight);
-
-        showLoadingDialog("正在发送配置指令...");
-        hander.postDelayed(dismssDialogRunnable, 10000);
     }
 
     /**
      * 设置显示数据
      */
     private void setResultData(String cmdStr) {
-        //参数配置后应答
+        if (cmdStr.startsWith("$$402") && cmdStr.endsWith("\r\n")) {
+            if (cmdStr.startsWith("$$402e") || cmdStr.startsWith("$$402ce")) {
+                ToastUtils.show("数字渗压计地址配置错误!");
+                stopProgressRunnable();
+                return;
+            }
+            sendCommonCommandImmediately(cmdDepthTriggerValue);
+            Timber.d("发送设置数字渗压计深度触发值，温度触发值指令===" + cmdDepthTriggerValue);
+            return;
+        }
+
+        if (cmdStr.startsWith("$$403") && cmdStr.endsWith("\r\n")) {
+            if (cmdStr.startsWith("$$403e") || cmdStr.startsWith("$$403ce")) {
+                ToastUtils.show("数字渗压计深度触发值配置错误!");
+                stopProgressRunnable();
+                return;
+            }
+            sendCommonCommandImmediately(cmdDepthCorrection);
+            Timber.d("发送设置数字渗压计深度修正值，温度修正值指令===" + cmdDepthCorrection);
+            return;
+        }
+
+        if (cmdStr.startsWith("$$404") && cmdStr.endsWith("\r\n")) {
+            if (cmdStr.startsWith("$$404e") || cmdStr.startsWith("$$404ce")) {
+                ToastUtils.show("数字渗压计深度修正值配置错误!");
+                stopProgressRunnable();
+                return;
+            }
+            sendCommonCommand(cmdOsmometerLength);
+            Timber.d("发送数字渗压计绳长指令===" + cmdOsmometerLength);
+            return;
+        }
+
         if (cmdStr.startsWith("$$405") && cmdStr.endsWith("\r\n")) {
-            dismissLoadingDialog();
-            hander.removeCallbacks(dismssDialogRunnable);
+            if (cmdStr.startsWith("$$405e") || cmdStr.startsWith("$$405ce")) {
+                ToastUtils.show("数字渗压计绳长配置错误!");
+                stopProgressRunnable();
+                return;
+            }
+            sendCommonCommand(cmdNozzelHeight);
+            Timber.d("发送数字渗压计安装高程指令===" + cmdNozzelHeight);
+            return;
+        }
+
+        if (cmdStr.startsWith("$$406") && cmdStr.endsWith("\r\n")) {
+            if (cmdStr.startsWith("$$406e") || cmdStr.startsWith("$$406ce")) {
+                ToastUtils.show("数字渗压计安装高程配置错误!");
+                stopProgressRunnable();
+                return;
+            }
+            stopProgressRunnable();
             ToastUtils.show("设置完成");
             hander.postDelayed(new Runnable() {
                 @Override
@@ -262,6 +299,7 @@ public class OsmometerConfigActivity extends BaseDeviceConnectActivity {
                     finish();
                 }
             }, 3000);
+            return;
         }
     }
 

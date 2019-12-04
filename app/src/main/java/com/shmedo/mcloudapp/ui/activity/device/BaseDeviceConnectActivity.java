@@ -14,6 +14,8 @@ import android.text.TextUtils;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.hjq.toast.ToastUtils;
+import com.shmedo.das.das.cmd.CommandManager;
+import com.shmedo.das.das.cmd.CommandType;
 import com.shmedo.das.utils.DesUtil;
 import com.shmedo.das.utils.OnBytePackage;
 import com.shmedo.das.utils.StringUtil;
@@ -68,6 +70,8 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
 
     private String macAddress = MCloudApp.getCurDeviceMacAddr();
 
+    private ProgressRunnable progressRunnable;
+
 
     protected Runnable dismssDialogRunnable = new Runnable() {
         @Override
@@ -83,6 +87,35 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
             }
         }
     };
+
+    private class ProgressRunnable implements Runnable {
+        @Override
+        public void run() {
+            dismissLoadingDialog();
+            if (!TextUtils.isEmpty(errMsg)) {
+                ToastUtils.show(errMsg);
+
+                if (errMsg.contains("连接超时")) {
+                    MCloudApp.setIsBluetoothDeviceConnected(false);
+                    EventBus.getDefault().post(new BluetoothStateEvent(false));
+                }
+            }
+        }
+    }
+
+    protected void startProgressRunnable(String dialogContent, long delayMillis) {
+        showLoadingDialog(dialogContent);
+        if (progressRunnable == null) {
+            progressRunnable = new ProgressRunnable();
+            hander.postDelayed(progressRunnable, delayMillis);
+        }
+    }
+
+    protected void stopProgressRunnable() {
+        dismissLoadingDialog();
+        hander.removeCallbacks(progressRunnable);
+        progressRunnable = null;
+    }
 
 
     @Override
@@ -320,7 +353,7 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
                         showLoadingDialog("查询设备配置参数...");
                         errMsg = "查询设备参数超时，请尝试重新连接";
                         hander.postDelayed(dismssDialogRunnable, 10000);
-                        obtainDeviceStateCmd();
+                        obtainDeviceConfigInfoCmd();
 
                     } else {
                         ToastUtils.show("蓝牙认证失败!");
@@ -369,7 +402,7 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
 
                 case Constants.MESSAGE_LOCK_REBOOT_DEVICE:
                     Timber.d("蓝牙通讯已就绪");
-                    obtainDeviceStateCmd();
+                    obtainDeviceConfigInfoCmd();
                     break;
 
                 default:
@@ -414,19 +447,19 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
 
                 //设备登录验证结果指令
                 if (cmdStr.startsWith("$$223") && cmdStr.endsWith("\r\n")) {
-                    sendCommonMessage(Constants.VERIFY_RESULT, cmdArray[1]);
+                    sendHandleMessage(Constants.VERIFY_RESULT, cmdArray[1]);
                     Timber.d("设备登录验证状态===" + cmdArray[1]);
                     return;
                 }
 
                 //需要验证设备
                 if (cmdStr.equals("Please verify the equipment.\r\n")) {
-                    sendCommonMessage(Constants.VERIFY_RESULT, "0");
+                    sendHandleMessage(Constants.VERIFY_RESULT, "0");
                     return;
                 }
 
                 if (cmdStr.equals("Equipment Verify OK.\r\n")) {
-                    sendCommonMessage(Constants.MESSAGE_LOCK_REBOOT_DEVICE, null);
+                    sendHandleMessage(Constants.MESSAGE_LOCK_REBOOT_DEVICE, null);
                     return;
                 }
 
@@ -445,23 +478,21 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
 
 
     /**
-     * 此方法处理具体蓝牙设备的参数指令应答，可以在子类中重载
-     * <br/>此处默认实现的是 ADME 的参数指令
+     * 解析设备的参数指令
      *
      * @param cmdStr
      */
-    protected void parserResult(String cmdStr) {
-        //查询执行机构参数应答
-        if (cmdStr.startsWith("$$7002") && cmdStr.endsWith("\r\n")) {
-            dismissLoadingDialog();
-            hander.removeCallbacks(dismssDialogRunnable);
-        }
+    private void parserResult(String cmdStr) {
+        if (SN.endsWith("T")) {//ADME 设备
+            parserADMECmdResult(cmdStr);
 
-        if ((cmdStr.startsWith("$$2011")
-                || cmdStr.startsWith("$$2012")
-                || cmdStr.startsWith("$$7001")
-                || cmdStr.startsWith("$$7003")) && cmdStr.endsWith("\r\n")) {
-            isConfigChange = true;
+        } else if (SN.endsWith("L")) {//DAS 设备
+            parserDASCmdResult(cmdStr);
+
+        } else {//其他设备
+
+            //TODO 其他设备
+
         }
 
         //设置保存参数应答
@@ -485,51 +516,80 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
         EventBus.getDefault().post(cmdStr);
     }
 
-
-    private void sendCommonMessage(int what, Object obj) {
-        android.os.Message message = new android.os.Message();
-        message.what = what;
-        if (obj != null) {
-            message.obj = obj;
-        }
-        mHandler.sendMessage(message);
-    }
-
-
     /**
-     * 发送蓝牙指令,延迟200ms 后发送，以免同时发送多条指令带来问题
+     * 解析 ADME 的参数指令
      *
      * @param cmdStr
      */
-    public void sendCommonCommand(final String cmdStr) {
-        final Message msg = new Message(UUID.randomUUID().toString(), cmdStr, true);
+    private void parserADMECmdResult(String cmdStr) {
+        //查询执行机构参数应答
+        if (cmdStr.startsWith("$$7002") && cmdStr.endsWith("\r\n")) {
+            dismissLoadingDialog();
+            hander.removeCallbacks(dismssDialogRunnable);
+        }
 
-        hander.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                if (mdBluetoothManager != null) {
-                    mdBluetoothManager.writeMessage(msg);
-                }
-            }
-        }, 200);
+        if ((cmdStr.startsWith("$$2011")
+                || cmdStr.startsWith("$$2012")
+                || cmdStr.startsWith("$$7001")
+                || cmdStr.startsWith("$$7003")) && cmdStr.endsWith("\r\n")) {
+            isConfigChange = true;
+        }
     }
 
     /**
-     * 蓝牙连接成功开始进行验证  lock
+     * 解析 DAS 的参数指令
+     *
+     * @param cmdStr
      */
-    private void startBluAuthenticate() {
-        String com = "\r\n##224," + SN + ",0\r\n";
-        Message msg = new Message(UUID.randomUUID().toString(), com, true);
-        mdBluetoothManager.writeMessage(msg);
-        Timber.d("发送指令===" + com);
+    private void parserDASCmdResult(String cmdStr) {
+        //查询数字式渗压计参数
+        if (cmdStr.startsWith("$$400") && cmdStr.endsWith("\r\n")) {
+            dismissLoadingDialog();
+            hander.removeCallbacks(dismssDialogRunnable);
+        }
+
+        //此处是各个配置指令应答，表示已经更改配置了
+        if ((cmdStr.startsWith("$$006")//调试模式
+                || cmdStr.startsWith("$$005")//开关量功能
+                || cmdStr.startsWith("$$121")//雨量计精度
+                || cmdStr.startsWith("$$227")//断线报警器
+                || (cmdStr.startsWith("$$40") && !cmdStr.equals("$$400\r\n"))//设置数字渗压计
+                || cmdStr.startsWith("$$150")//采集器接入的传感器
+                || cmdStr.startsWith("$$16")//采集器
+                || cmdStr.startsWith("$$147")//采集器地址
+                || cmdStr.startsWith("$$201")//平台服务器地址端口
+                || (cmdStr.startsWith("$$202") && !cmdStr.equals("$$2020\r\n"))//网络链路通信协议
+                || (cmdStr.startsWith("$$810") && !cmdStr.equals("$$8100\r\n"))//自动注册平台选择
+                || cmdStr.startsWith("$$803")//自动注册平台参数
+                || cmdStr.startsWith("$$807")//自动注册服务器地址端口
+                || cmdStr.startsWith("$$805")//手动注册平台参数
+                || (cmdStr.startsWith("$$809") && !cmdStr.equals("$$8090\r\n"))//MQTT KeepAlive 值
+        ) && cmdStr.endsWith("\r\n")) {
+            isConfigChange = true;
+        }
     }
 
 
     /**
-     * 此方法是查询具体蓝牙设备的配置参数指令，可以在子类中重载覆盖
-     * <br/>此处默认实现的是查询 ADME 的参数信息指令
+     * 查询设备的配置参数信息
      */
-    protected void obtainDeviceStateCmd() {
+    protected void obtainDeviceConfigInfoCmd() {
+        if (SN.endsWith("T")) {//ADME 设备
+            queryADMEConfigInfoCmd();
+
+        } else if (SN.endsWith("L")) {//DAS 设备
+            queryDASConfigInfoCmd();
+
+        } else {//其他设备
+
+            //TODO 其他设备
+        }
+    }
+
+    /**
+     * 查询 ADME 设备的配置参数信息
+     */
+    private void queryADMEConfigInfoCmd() {
         sendCommonCommand("##7010\r\n");
         Timber.d("发送查询工作模式指令===" + "##7010");
 
@@ -546,9 +606,85 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
         Timber.d("发送查询执行机构参数指令===" + "##7002");
     }
 
+    /**
+     * 查询 DAS 设备的配置参数信息
+     */
+    private void queryDASConfigInfoCmd() {
+        //获取所有配置  ##333
+        String allInfoCommand = CommandManager.getInstance().getCommand(CommandType.GET_ALL_SENSOR_CONFIG, null);
+        sendCommonCommand(allInfoCommand);
+        Timber.d("发送获取所有配置指令===" + allInfoCommand);
+
+        //系统运行状态 ##014
+//        String runstateCommand = CommandManager.getInstance().getCommand(CommandType.SYSTEM_RUN_STATE, null);
+//        sendCommonCommand(runstateCommand);
+//        Timber.d("发送系统运行状态指令===" + runstateCommand);
+
+        //查询数字式渗压计参数 ##400
+        String shenyajiCommand = CommandManager.getInstance().getCommand(CommandType.QUERY_OSMOMETER_PARAMETER, null);
+        sendCommonCommand(shenyajiCommand);
+        Timber.d("发送查询渗压计指令===" + shenyajiCommand);
+
+        //版本信息 ##040
+//        String versionCommand = CommandManager.getInstance().getCommand(CommandType.VERSION_MESSAGE, null);
+//        sendCommonCommand(versionCommand);
+//        Timber.d("发送版本信息指令===" + versionCommand);
+    }
+
+
+    private void sendHandleMessage(int what, Object obj) {
+        android.os.Message message = new android.os.Message();
+        message.what = what;
+        if (obj != null) {
+            message.obj = obj;
+        }
+        mHandler.sendMessage(message);
+    }
+
+
+    /**
+     * 发送蓝牙指令,延迟200ms 后发送，以免同时发送多条指令带来问题
+     *
+     * @param cmdStr
+     */
+    public void sendCommonCommand(final String cmdStr) {
+        final Message msg = new Message(UUID.randomUUID().toString(), cmdStr, true);
+        hander.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (mdBluetoothManager != null) {
+                    mdBluetoothManager.writeMessage(msg);
+                }
+            }
+        }, 200);
+    }
+
+
+    /**
+     * 马上发送蓝牙指令
+     *
+     * @param cmdStr
+     */
+    public void sendCommonCommandImmediately(final String cmdStr) {
+        final Message msg = new Message(UUID.randomUUID().toString(), cmdStr, true);
+        if (mdBluetoothManager != null) {
+            mdBluetoothManager.writeMessage(msg);
+        }
+    }
+
+    /**
+     * 蓝牙连接成功开始进行验证  lock
+     */
+    private void startBluAuthenticate() {
+        String com = "\r\n##224," + SN + ",0\r\n";
+        Message msg = new Message(UUID.randomUUID().toString(), com, true);
+        mdBluetoothManager.writeMessage(msg);
+        Timber.d("发送指令===" + com);
+    }
+
 
     protected void sendSaveParamCommand() {
-        sendCommonCommand("##0191\r\n");
+        sendCommonCommandImmediately("##0191\r\n");
         showLoadingDialog("正在发送保存命令...");
         errMsg = "发送指令超时,请稍后尝试";
         hander.postDelayed(dismssDialogRunnable, 5000);
