@@ -4,7 +4,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/white">
-    <include layout="@layout/activity_device_toolbar" />
+    <include layout="@layout/toolbar_para_config" />
 
     <LinearLayout
             android:layout_width="match_parent"

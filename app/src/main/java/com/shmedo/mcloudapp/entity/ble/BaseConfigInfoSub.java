@@ -6,6 +6,10 @@ package com.shmedo.mcloudapp.entity.ble;
  * Author:        社会小青年
  * Date:          2018/1/24 14:26
  * Description：  基础配置信息的Ui展示信息类
+ *
+ *  ==##000===BaseConfigInfoSub{token='18A092-L', localBGNum='null', targetBGNum='null', equipmentStatus='待机',
+ *  dataCommunicateMode='GPRS', rainfallStation='关闭', collectorModel='RD08', dataReportInterval='120',
+ *  debugModel='INFO', sensorInterfaceType='RS485', serverAddressOne='null', serverAddressTwo='null', simChoose='选择sim卡1'}
  */
 
 public class BaseConfigInfoSub {
