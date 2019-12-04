@@ -82,21 +82,12 @@ public class ExampleUnitTest {
 
     @Test
     public void testRain(){
-        String message="$$2001 test.shmedo.cn 9001";
-        if (StringUtil.isOpenLink(message)){
-            String linkNumber = StringUtil.linkNumber(message);
-            System.out.println(linkNumber);
-            switch (linkNumber){
-                case "1":
-                    System.out.println("1111");
-                    break;
-                case "2":
-                    System.out.println("2222");
-                    break;
-                case "3":
-                    System.out.println("3333");
-                    break;
-            }
+        String message1="$$000,18A092-L,0,455872,1,1,1,5000,10,100,1440,115200,9600,07,120,6,3,1,2,1\r\n";
+        String message="$$000,18A095-L,0,455872,2,1,1,5400,10,100,0,9600,9600,02,3,6,3,1,2,1\r\n";
+        CommandResult<BaseConfigInfo> bean = ParseManager.getInstance().parse(message1);
+        System.out.println(bean.getResult().toString());
+        if (!bean.isSuccess()){
+
         }
     }
 

@@ -312,6 +312,9 @@ public class ConfigDAGActivity extends BaseDeviceConnectActivity {
                 || cmdStr.startsWith("$$807")//自动注册服务器地址端口
                 || cmdStr.startsWith("$$805")//手动注册平台参数
                 || (cmdStr.startsWith("$$809") && !cmdStr.equals("$$8090\r\n"))//MQTT KeepAlive 值
+                || cmdStr.startsWith("$$003") //设置数据通讯模式
+                || cmdStr.startsWith("$$143")//设置数据上报间隔
+                || cmdStr.startsWith("$$001")//设置六位目标北斗卡号
         ) && cmdStr.endsWith("\r\n")) {
             isConfigChange = true;
         }

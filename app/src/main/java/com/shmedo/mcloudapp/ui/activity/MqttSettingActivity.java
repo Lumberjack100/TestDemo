@@ -389,7 +389,7 @@ public class MqttSettingActivity extends BaseDeviceConnectActivity implements Vi
                 }
                 int reportInterval = bean.getResult().getDataReportInterval();
                 mCetDataReport.setText(String.valueOf(reportInterval));
-                mCetBDCardNumber.setText(bean.getResult().getLocalBGNum());
+                mCetBDCardNumber.setText(bean.getResult().getTargetBGNum());
                 dismissLoadingDialog();
                 hander.removeCallbacks(dismssDialogRunnable);
                 break;
@@ -453,20 +453,28 @@ public class MqttSettingActivity extends BaseDeviceConnectActivity implements Vi
                 }
                 break;
             case R.id.btn_confirm:
-                //设置数据通讯模式
-                sendCommonCommand("##003" + dataCommunicationMode + "\r\n");
-                //设置数据上报间隔
-                String report = mCetDataReport.getText() == null ? "" : mCetDataReport.getText().toString().trim();
-                if (report.equals("")) {
-                    sendCommonCommand("##143120\r\n");
-                } else {
-                    sendCommonCommand("##143" + report + "\r\n");
+                if (MCloudApp.isIsBluetoothDeviceConnected()){
+                    //设置数据通讯模式
+                    sendCommonCommand("##003" + dataCommunicationMode + "\r\n");
+                    //设置数据上报间隔
+                    String report = mCetDataReport.getText() == null ? "" : mCetDataReport.getText().toString().trim();
+                    if (report.equals("")) {
+                        sendCommonCommand("##143120\r\n");
+                    } else {
+                        sendCommonCommand("##143" + report + "\r\n");
+                    }
+                    //设置六位目标北斗卡号
+                    String bdNumber = mCetBDCardNumber.getText() == null ? "" : mCetBDCardNumber.getText().toString().trim();
+                    if (bdNumber.equals("")) {
+                        ToastUtils.show("北斗目标卡号不能为空");
+                        return;
+                    }else {
+                        sendCommonCommand("##001" + bdNumber + "\r\n");
+                    }
+                }else {
+                    ToastUtils.show("蓝牙已断开！");
                 }
-                //设置六位目标北斗卡号
-                String bdNumber = mCetBDCardNumber.getText() == null ? "" : mCetBDCardNumber.getText().toString().trim();
-                if (!bdNumber.equals("")) {
-                    sendCommonCommand("##001" + bdNumber + "\r\n");
-                }
+
                 break;
             case R.id.back:
                 onBackPressed();
