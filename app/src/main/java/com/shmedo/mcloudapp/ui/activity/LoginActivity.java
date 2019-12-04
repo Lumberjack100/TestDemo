@@ -120,16 +120,11 @@ public class LoginActivity extends BaseActivity
     {
         super.onCreate(savedInstanceState);
         setCheckNetWork(true);
-        initDialog();
         initView();
         initServiceAddressAndUser();
     }
 
 
-    private void initDialog()
-    {
-        manager.init(this);
-    }
 
     private void initView()
     {

@@ -202,15 +202,18 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
         //在activity执行onCreate时执行mMapView.onCreate(savedInstanceState)，创建地图
         mMapView.onCreate(savedInstanceState);
 
-        initData();
+        hander = new Handler();
         hidingConnectionView();
         initMap();
         initBluetooth();
+    }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
         //获取地图要加载的数据
         getDeviceBasicInfoList("1");
     }
-
 
     @Override
     protected void onResume() {
@@ -242,12 +245,6 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
         super.onSaveInstanceState(outState);
         //在activity执行onSaveInstanceState时执行mMapView.onSaveInstanceState (outState)，保存地图当前的状态
         mMapView.onSaveInstanceState(outState);
-    }
-
-
-    private void initData() {
-        manager.init(this);
-        hander = new Handler();
     }
 
 

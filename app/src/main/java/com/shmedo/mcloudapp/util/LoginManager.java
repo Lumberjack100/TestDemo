@@ -114,7 +114,6 @@ public class LoginManager {
                         userInfoWrapper.setUserInfo(GsonFactory.getGson().toJson(userInfo));
 
                         DaoManager manager = DaoManager.getInstance();
-                        manager.init(MCloudApp.getContext());
                         manager.getDaoSession().getUserInfoWrapperDao().insertOrReplace(userInfoWrapper);
 
                         UserConfig userConfig = UserConfig.getConfig(MCloudApp.getContext(), CommonVariable.USER_CONFIG_NAME);

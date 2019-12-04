@@ -71,7 +71,6 @@ public class SearchDeviceActivity extends BaseActivity implements MultiItemTypeA
 
 
     private void initView() {
-        manager.init(this);
         //搜索框获取焦点，弹出软键盘
         KeyBordUtils.popSoftKeyboard(mCeSearch,true);
     }

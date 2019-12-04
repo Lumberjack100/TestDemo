@@ -102,8 +102,6 @@ public class UserInfoActivity extends BaseActivity {
 
 
     private void initData() {
-        manager.init(this);
-
         userInfo = MCloudApp.getCurrentUserInfo();
         if (userInfo != null && userInfo.getUser() != null) {
             user = userInfo.getUser();

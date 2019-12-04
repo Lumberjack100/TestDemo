@@ -98,7 +98,6 @@ public class DeviceManageActivity extends BaseActivity implements OnRefreshListe
 
 
     private void initView() {
-        manager.init(this);
         mLoadingDialog = new LoadingDialog(this);
         systemAdapter = new SystemAdapter(this, systemList);
         mRecyclerSystem.setLayoutManager(new LinearLayoutManager(this));
