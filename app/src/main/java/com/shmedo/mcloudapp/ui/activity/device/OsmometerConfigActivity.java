@@ -242,27 +242,40 @@ public class OsmometerConfigActivity extends BaseDeviceConnectActivity {
 
         sendCommonCommand(cmdNozzelHeight);
         Timber.d("发送数字渗压计安装高程指令===" + cmdNozzelHeight);
+
+        showLoadingDialog("正在发送配置指令...");
+        hander.postDelayed(dismssDialogRunnable, 10000);
     }
+
+    /**
+     * 设置显示数据
+     */
+    private void setResultData(String cmdStr) {
+        //参数配置后应答
+        if (cmdStr.startsWith("$$405") && cmdStr.endsWith("\r\n")) {
+            dismissLoadingDialog();
+            hander.removeCallbacks(dismssDialogRunnable);
+            ToastUtils.show("设置完成");
+            hander.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    finish();
+                }
+            }, 3000);
+        }
+    }
+
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void getConfig(String messageEvent) {
         if (!TextUtils.isEmpty(messageEvent) && messageEvent.startsWith("$$")) {
-            Timber.d(messageEvent);
+            setResultData(messageEvent);
         }
     }
 
     @Override
     public void onBackPressed() {
-        if (MCloudApp.isIsBluetoothDeviceConnected()) {
-            if (isConfigChange) {
-                isExitMode = true;
-                showSaveDialog(getResources().getString(R.string.disconnect_bluetooth_device_save_param_warn));
-            } else {
-                finish();
-            }
-        } else {
-            finish();
-        }
+        finish();
     }
 
 }

@@ -16,6 +16,7 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.shmedo.das.utils.ByteManager;
@@ -386,6 +387,7 @@ public class MdBluetoothManager {
     private class MdLeScanCallback implements BluetoothAdapter.LeScanCallback {
         @Override
         public void onLeScan(BluetoothDevice device, int rssi, byte[] scanRecord) {
+            Timber.d("扫描到设备：name=" + (TextUtils.isEmpty(device.getName()) ? "UnkonwName" : device.getName()) + ";macAddress=" + device.getAddress());
             MDevice mDev = new MDevice(device, rssi);
             if (devices.contains(mDev))
                 return;

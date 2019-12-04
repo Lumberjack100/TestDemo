@@ -141,7 +141,7 @@ public class RainConfigActivity extends BaseDeviceConnectActivity {
         String cmdStr = "##121" + rainResult + "\r\n";
         sendCommonCommand(cmdStr);
         showLoadingDialog("正在发送配置指令...");
-        hander.postDelayed(dismssDialogRunnable, 5000);
+        hander.postDelayed(dismssDialogRunnable, 10000);
     }
 
 
@@ -153,6 +153,7 @@ public class RainConfigActivity extends BaseDeviceConnectActivity {
         if (cmdStr.startsWith("$$121") && cmdStr.endsWith("\r\n")) {
             dismissLoadingDialog();
             hander.removeCallbacks(dismssDialogRunnable);
+            ToastUtils.show("设置完成");
             hander.postDelayed(new Runnable() {
                 @Override
                 public void run() {
@@ -172,15 +173,6 @@ public class RainConfigActivity extends BaseDeviceConnectActivity {
 
     @Override
     public void onBackPressed() {
-        if (MCloudApp.isIsBluetoothDeviceConnected()) {
-            if (isConfigChange) {
-                isExitMode = true;
-                showSaveDialog(getResources().getString(R.string.disconnect_bluetooth_device_save_param_warn));
-            } else {
-                finish();
-            }
-        } else {
-            finish();
-        }
+        finish();
     }
 }
