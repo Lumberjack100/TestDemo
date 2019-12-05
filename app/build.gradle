@@ -28,7 +28,7 @@ android {
         minSdkVersion MIN_SDK_VERSION as int
         targetSdkVersion TARGET_SDK_VERSION as int
         versionCode gitVersionCode()
-        versionName "1.0.${releaseTime()}"
+        versionName "1.0.${releaseTime()}" + "(" + gitShortCommitId() + ")"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
 
@@ -58,9 +58,9 @@ android {
         variant.outputs.each { output ->
             def fileName
             if (variant.buildType.name == "release") {
-                fileName = "米易通_" + android.defaultConfig.versionName + "(" + gitShortCommitId() + ").apk"
+                fileName = "米易通_" + android.defaultConfig.versionName + ".apk"
             } else {
-                fileName = "米易通_debug_" + android.defaultConfig.versionName + "(" + gitShortCommitId() + ").apk"
+                fileName = "米易通_debug_" + android.defaultConfig.versionName + ".apk"
             }
             output.outputFileName = fileName
         }
