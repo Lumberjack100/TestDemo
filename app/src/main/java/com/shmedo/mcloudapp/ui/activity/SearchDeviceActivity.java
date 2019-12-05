@@ -143,7 +143,7 @@ public class SearchDeviceActivity extends BaseActivity implements MultiItemTypeA
 
         if (!TextUtils.isEmpty(statusInfoResult.getDeviceTypeName()) && statusInfoResult.getDeviceTypeName().toUpperCase().contains("DAS")) {
             String deviceInfo = "MEDO," + statusInfoResult.getDeviceToken() + "," + statusInfoResult.getDeviceTypeName();
-            ConfigDASActivity.startActivity(SearchDeviceActivity.this, deviceInfo);
+            ConfigDAGActivity.startActivity(SearchDeviceActivity.this, deviceInfo);
             SearchDeviceActivity.this.finish();
         }
 

@@ -97,7 +97,7 @@ public class InputDeviceSNActivity extends BaseActivity {
         String deviceInfo = "";
         if (deviceType.equals("DAS")) {
             deviceInfo = "MEDO," + snNumber + "," + deviceType;
-            ConfigDASActivity.startActivity(InputDeviceSNActivity.this, deviceInfo);
+            ConfigDAGActivity.startActivity(InputDeviceSNActivity.this, deviceInfo);
 
         } else if (deviceType.equals("E60")) {
             deviceInfo = "MEDO," + snNumber + "," + deviceType;
