@@ -19,5 +19,5 @@ public interface MQttOnClickListener {
      */
     boolean onSureClick(View v, MqttConfigInfoSub mqttConfigInfoSub,String linkNumber);
 
-    void onCancelClick(View view);
+    void onCancelClick(View view,String linkNumber);
 }

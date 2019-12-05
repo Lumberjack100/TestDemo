@@ -237,8 +237,8 @@ public class StringUtil {
 
     /**
      * 获取链路序号
-     * @param result
-     * @return
+     * @param result $$2001 0.0.0.0 9001
+     * @return  1
      */
     public static String linkNumber(String result){
         if (isNullOrEmpty(result) ||  result.length() < CommandResult.RESULT_MIN_LENGTH)
@@ -248,6 +248,18 @@ public class StringUtil {
         return number;
     }
 
+    /**
+     *
+     * @param result $$8893,0,4,0.0.0.0 9001,300,18A092L,,a84b42b1-cb30-410f-8285-5f4de6f9d319,2,mqtt.shmedo.com 80,a84b42b1-cb30-410f-8285-5f4de6f9d319,,,
+     * @return 3
+     */
+    public static String linkNumbers(String result){
+        if (isNullOrEmpty(result) ||  result.length() < CommandResult.RESULT_MIN_LENGTH)
+            throw new IllegalArgumentException("指令结果格式错误:" + result);
+        String[] cmd = result.split(",");
+        String number = cmd[0].replace(CommandResult.COMMAND_RESULT_HEADER, "").substring(3,4);
+        return number;
+    }
     /**
      * 解析mqtt config
      * @param result
@@ -262,9 +274,12 @@ public class StringUtil {
     public static MqttConfigInfoSub parserMqttConfig(String result){
         if (isNullOrEmpty(result) ||  result.length() < CommandResult.RESULT_MIN_LENGTH)
             throw new IllegalArgumentException("指令结果格式错误:" + result);
+        if (result.replace("\r\n","").endsWith("e")){
+            return null;
+        }
         MqttConfigInfoSub mqttConfigInfoSub = new MqttConfigInfoSub();
         String[] cmd = result.replace("\r\n", "").split(",",-1);
-        mqttConfigInfoSub.setDataCenterSwitch(Integer.parseInt(cmd[1]));
+//        mqttConfigInfoSub.setDataCenterSwitch(Integer.parseInt(cmd[1]));
         mqttConfigInfoSub.setCommunicationProtocol(cmd[2]);
         mqttConfigInfoSub.setDataPlatformAddress(cmd[3]);
         mqttConfigInfoSub.setKeepAliveValue(cmd[4]);

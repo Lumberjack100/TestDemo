@@ -33,11 +33,21 @@ android {
     }
 
     signingConfigs {
+        debug {
+            keyAlias 'mcloud'
+            keyPassword '420529'
+            storeFile file('../app/mcloud.jks')
+            storePassword '420529'
+            v1SigningEnabled true
+            v2SigningEnabled true
+        }
         release {
-            storeFile file("../mcloud.jks")
-            storePassword "420529"
             keyAlias "mcloud"
             keyPassword "420529"
+            storeFile file("../app/mcloud.jks")
+            storePassword "420529"
+            v1SigningEnabled true
+            v2SigningEnabled true
         }
     }
 
@@ -51,6 +61,12 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
+        }
+        debug {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.debug
         }
     }
 
@@ -106,7 +122,7 @@ dependencies {
     //fab
     implementation 'com.github.clans:fab:1.6.4'
 
-    implementation 'cn.shmedo:das-config-base:4.1-SNAPSHOT'//自己封装的米度工具类库
+    implementation 'cn.shmedo:das-config-base:4.2-SNAPSHOT'//自己封装的米度工具类库
 
     implementation 'jp.bassaer:chatmessageview:1.2.0'
 

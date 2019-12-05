@@ -147,7 +147,8 @@ public class MqttConfigDialog implements IDialogOpt<MqttConfigInfoSub>{
             public void onNothingSelected(AdapterView<?> parent) {
             }
         });
-
+        if (mqttConfigInfoSub==null)
+            return;
         //配置参数
         tvTitle.setText("链路"+link+"配置");
         switch (mqttConfigInfoSub.getCommunicationProtocol()){
@@ -212,7 +213,7 @@ public class MqttConfigDialog implements IDialogOpt<MqttConfigInfoSub>{
             mqttCancel.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    mQttOnClickListener.onCancelClick(view);
+                    mQttOnClickListener.onCancelClick(view,link);
                     Timber.i("mqtt----取消了");
                     dialog.dismiss();
                 }
