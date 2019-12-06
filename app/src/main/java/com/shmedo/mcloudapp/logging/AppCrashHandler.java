@@ -2,8 +2,9 @@ package com.shmedo.mcloudapp.logging;
 
 import android.content.Context;
 import android.os.Looper;
+import android.widget.Toast;
 
-import com.hjq.toast.ToastUtils;
+import com.shmedo.mcloudapp.util.ActivityCollector;
 
 import timber.log.Timber;
 
@@ -14,7 +15,7 @@ import timber.log.Timber;
  * 创建时间:  2019-09-03
  * 描述：    TODO
  */
-public class AppCrashHandler {
+public class AppCrashHandler implements Thread.UncaughtExceptionHandler {
 
     private Context mContext;
 
@@ -24,7 +25,11 @@ public class AppCrashHandler {
 
     public static AppCrashHandler getInstance(Context mContext) {
         if (instance == null) {
-            instance = new AppCrashHandler(mContext);
+            synchronized (AppCrashHandler.class) {
+                if (instance == null) {
+                    instance = new AppCrashHandler(mContext);
+                }
+            }
         }
 
         return instance;
@@ -34,61 +39,56 @@ public class AppCrashHandler {
     private AppCrashHandler(Context context) {
         this.mContext = context;
         this.uncaughtExceptionHandler = Thread.getDefaultUncaughtExceptionHandler();
-
-        Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
-            @Override
-            public void uncaughtException(Thread thread, final Throwable ex) {
-                Timber.e(ex, "米易通异常退出：" + ex.getMessage());
-
-                //如果用户没有处理则让系统默认的异常处理器来处理
-                uncaughtExceptionHandler.uncaughtException(thread, ex);
-
-
-//                if (!handleException(ex) && uncaughtExceptionHandler != null) {
-//                    //如果用户没有处理则让系统默认的异常处理器来处理
-//                    uncaughtExceptionHandler.uncaughtException(thread, ex);
-//
-//                } else {
-//
-//                    try {
-//                        Thread.sleep(2000);
-//                    } catch (InterruptedException e) {
-//                        e.printStackTrace();
-//                    }
-//                    android.os.Process.killProcess(android.os.Process.myPid());
-//                    System.exit(1);
-//                    System.gc();
-//                }
-            }
-        });
+        Thread.setDefaultUncaughtExceptionHandler(this);
     }
 
 
     /**
-     * 自定义错误处理,收集错误信息 发送错误报告等操作均在此完成.
+     * 当程序中有未被捕获的异常，系统将会自动调用uncaughtException方法
      *
-     * @param ex
-     * @return true:如果处理了该异常信息;否则返回false.
+     * @param t  出现未捕获异常的线程
+     * @param ex 未捕获的异常，有了这个ex，我们就可以得到异常信息
      */
-    private boolean handleException(Throwable ex) {
-        if (ex == null) {
-            return false;
-        }
+    @Override
+    public void uncaughtException(Thread t, Throwable ex) {
+        Timber.e(ex, "米易通异常退出：" + ex.getMessage());
 
-        //使用Toast来显示异常信息
-        new Thread() {
-            @Override
-            public void run() {
-                Looper.prepare();
-                ToastUtils.show("很抱歉！米易通出现异常，即将退出。");
-                Looper.loop();
-            }
-        }.start();
+        killProcess();
 
-        //保存日志文件
-//        saveCatchInfo2File(ex);
-        return true;
+//        if (!handleException(ex) && uncaughtExceptionHandler != null) {
+//            //如果用户没有处理则让系统默认的异常处理器来处理
+//            uncaughtExceptionHandler.uncaughtException(thread, ex);
+//
+//        } else {
+//
+//        killProcess();
+//        }
     }
 
 
+    /**
+     * 退出应用
+     */
+    public void killProcess() {
+        //结束应用
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Looper.prepare();
+                Toast.makeText(mContext, "哎呀，程序发生异常啦...", Toast.LENGTH_SHORT).show();
+                Looper.loop();
+            }
+        }).start();
+
+        ActivityCollector.finishAll();
+
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException ex) {
+            Timber.e("CrashHandler.InterruptedException--->" + ex.toString());
+        }
+        //退出程序
+        android.os.Process.killProcess(android.os.Process.myPid());
+        System.exit(1);
+    }
 }
