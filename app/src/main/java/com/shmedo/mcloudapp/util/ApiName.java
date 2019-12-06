@@ -6,7 +6,7 @@ package com.shmedo.mcloudapp.util;
  * 文件名:   ApiName
  * 创建者:   dpc
  * 创建时间:  2019/7/5 10:42
- * 描述：    TODO
+ *
  */
 public class ApiName {
 

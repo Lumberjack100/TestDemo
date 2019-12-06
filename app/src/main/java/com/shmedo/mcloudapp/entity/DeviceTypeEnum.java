@@ -6,7 +6,7 @@ package com.shmedo.mcloudapp.entity;
  * 文件名:   DeviceTypeEnum
  * 创建者:   dpc
  * 创建时间:  2019/1/28 16:32
- * 描述：    TODO
+ *
  */
 public enum DeviceTypeEnum {
     DAS("DAS"),

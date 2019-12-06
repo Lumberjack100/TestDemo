@@ -81,12 +81,6 @@
             android:theme="@style/AppThemeBar"
             android:windowSoftInputMode="stateAlwaysHidden|adjustResize" />
         <activity
-            android:name=".ui.activity.ScanAddDeviceActivity"
-            android:label="添加设备"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppThemeBar"
-            android:windowSoftInputMode="stateAlwaysHidden|adjustResize" />
-        <activity
             android:name=".ui.activity.InputDeviceSNActivity"
             android:label="添加设备"
             android:screenOrientation="portrait"
@@ -178,12 +172,12 @@
             android:windowSoftInputMode="stateHidden|adjustResize" />
 
         <activity
-            android:name=".ui.activity.ConfigDAGActivity"
+            android:name=".ui.activity.ConfigDASActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppThemeNoTitle"
             android:windowSoftInputMode="stateHidden|adjustResize" />
         <activity
-            android:name=".ui.activity.MqttSettingActivity"
+            android:name=".ui.activity.device.MqttSettingActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppThemeNoTitle"
             android:windowSoftInputMode="stateHidden|adjustResize" />

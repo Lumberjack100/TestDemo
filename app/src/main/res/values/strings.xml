@@ -132,7 +132,4 @@
     <string name="permission_request_camera_external_storage">米易通需要使用相机权限和存储卡权限，请前往设置页面授予权限</string>
     <string name="permission_request_location">米易通需要使用定位权限，请前往设置页面授予权限</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-
 </resources>

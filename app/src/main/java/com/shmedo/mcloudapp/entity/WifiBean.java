@@ -9,7 +9,7 @@ import android.os.Parcelable;
  * 文件名:   WifiBean
  * 创建者:   dpc
  * 创建时间:  2019/1/24 11:41
- * 描述：    TODO
+ *
  */
 public class WifiBean implements Comparable<WifiBean>, Parcelable {
     private String wifiName;

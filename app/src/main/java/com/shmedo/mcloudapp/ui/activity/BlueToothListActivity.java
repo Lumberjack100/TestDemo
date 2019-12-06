@@ -28,7 +28,7 @@ import java.util.List;
  * 文件名:   BlueToothListActivity
  * 创建者:   dpc
  * 创建时间:  2019/1/21 16:02
- * 描述：    TODO
+ *
  */
 public class BlueToothListActivity extends Activity {
     private RecyclerView mRecyclerView;
@@ -115,7 +115,7 @@ public class BlueToothListActivity extends Activity {
                 } else if (deviceName.endsWith("L")) {
                     String deviceInfo = "MEDO," + deviceName.substring(3) + ",DAS";
 //                    ConfigDASActivity.startActivity(BlueToothListActivity.this, deviceInfo, macAddress);
-                    ConfigDAGActivity.startActivity(BlueToothListActivity.this, deviceInfo);
+                    ConfigDASActivity.startActivity(BlueToothListActivity.this, deviceInfo);
                 }
 
                 finish();

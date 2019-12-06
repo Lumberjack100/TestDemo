@@ -28,7 +28,7 @@ import com.shmedo.das.das.cmd.entity.RebootDeviceEntity;
 import com.shmedo.mcloudapp.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.base.BaseFragment;
-import com.shmedo.mcloudapp.ui.activity.ConfigDAGActivity;
+import com.shmedo.mcloudapp.ui.activity.ConfigDASActivity;
 import com.shmedo.mcloudapp.ui.activity.device.senior.InstructionDebugActivity;
 import com.shmedo.mcloudapp.ui.activity.device.senior.ProductRegistrationActivity;
 import com.shmedo.mcloudapp.util.KeyBordUtils;
@@ -46,7 +46,7 @@ import butterknife.OnClick;
  */
 public class AdvanceSetFragment extends BaseFragment {
 
-    private ConfigDAGActivity configDAGActivity;
+    private ConfigDASActivity configDASActivity;
 
     private MaterialDialog.Builder mBuilder;
     private MaterialDialog mMaterialDialog;
@@ -63,7 +63,7 @@ public class AdvanceSetFragment extends BaseFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = super.onCreateView(inflater, container, savedInstanceState);
-        configDAGActivity = (ConfigDAGActivity) getActivity();
+        configDASActivity = (ConfigDASActivity) getActivity();
 
         return view;
     }
@@ -121,7 +121,7 @@ public class AdvanceSetFragment extends BaseFragment {
             @Override
             public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                 String baseInfoCommand = CommandManager.getInstance().getCommand(CommandType.RESTORE_FACTORY_SETTING, null);
-                configDAGActivity.sendCommonCommand(baseInfoCommand);
+                configDASActivity.sendCommonCommand(baseInfoCommand);
                 ToastUtils.show("指令已发送，设备即将恢复出厂设置");
 
                 mMaterialDialog.dismiss();
@@ -174,7 +174,7 @@ public class AdvanceSetFragment extends BaseFragment {
 
                 RebootDeviceEntity rebootDeviceEntity = new RebootDeviceEntity(Integer.valueOf(time));
                 String command = CommandManager.getInstance().getCommand(CommandType.REBOOT_DEVICE, rebootDeviceEntity);
-                configDAGActivity.sendCommonCommand(command);
+                configDASActivity.sendCommonCommand(command);
                 ToastUtils.show("指令已发送，设备将在 " + time + "s 后重启");
 
                 KeyBordUtils.hideSoftKeyboard(etRestartTime);

@@ -17,7 +17,7 @@ import com.shmedo.mcloudapp.R;
  * 文件名:   GlideUtils
  * 创建者:   dpc
  * 创建时间:  2018/2/27 09:10
- * 描述：    TODO
+ *
  */
 
 public class GlideUtils {

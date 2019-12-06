@@ -24,7 +24,7 @@ import org.greenrobot.eventbus.EventBus;
  * 文件名:   DialogStyle1
  * 创建者:   dpc
  * 创建时间:  2019/6/14 09:47
- * 描述：    TODO
+ *
  */
 public class DialogStyle5354 implements IDialogOpt<CollectorSensorParamsInfoSub>{
     private Context mContext;

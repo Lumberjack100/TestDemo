@@ -12,7 +12,7 @@ import java.util.List;
  * 文件名:   SetRainpage
  * 创建者:   dpc
  * 创建时间:  2019/4/4 09:24
- * 描述：    TODO
+ *
  */
 public class SetRainAccuryPage extends BasePage<SetRainAccuryPage.SetRianAccuryParameter> {
     //"##12150/r/n" +         //雨量计精度

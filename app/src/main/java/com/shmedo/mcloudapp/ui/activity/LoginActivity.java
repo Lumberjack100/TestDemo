@@ -44,7 +44,7 @@ import okhttp3.RequestBody;
  * 文件名:   LoginActivity
  * 创建者:   dpc
  * 创建时间:  2019/1/8 10:09
- * 描述：    TODO
+ *
  */
 public class LoginActivity extends BaseActivity
 {

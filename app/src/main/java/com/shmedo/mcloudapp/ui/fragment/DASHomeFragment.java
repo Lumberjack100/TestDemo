@@ -38,12 +38,11 @@ import com.shmedo.mcloudapp.entity.SystemDataInfo;
 import com.shmedo.mcloudapp.entity.SystemDataInfoDao;
 import com.shmedo.mcloudapp.entity.ble.BreakAlarmStatusSub;
 import com.shmedo.mcloudapp.entity.ble.DeviceLockStatusSub;
-import com.shmedo.mcloudapp.entity.ble.SettingRainPrecisionSub;
 import com.shmedo.mcloudapp.entity.event.BluetoothStateEvent;
 import com.shmedo.mcloudapp.model.Extras;
-import com.shmedo.mcloudapp.ui.activity.ConfigDAGActivity;
-import com.shmedo.mcloudapp.ui.activity.MqttSettingActivity;
+import com.shmedo.mcloudapp.ui.activity.ConfigDASActivity;
 import com.shmedo.mcloudapp.ui.activity.device.GeneralSettingActivity;
+import com.shmedo.mcloudapp.ui.activity.device.MqttSettingActivity;
 import com.shmedo.mcloudapp.ui.activity.device.OsmometerConfigActivity;
 import com.shmedo.mcloudapp.ui.activity.device.RainConfigActivity;
 import com.shmedo.mcloudapp.ui.activity.device.sensor.SenSorBGKConfigActivity;
@@ -69,7 +68,7 @@ import timber.log.Timber;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class DAGHomeFragment extends BaseFragment {
+public class DASHomeFragment extends BaseFragment {
 
     private static final int DEVICE_ENABLE = 0x0002;
 
@@ -149,7 +148,7 @@ public class DAGHomeFragment extends BaseFragment {
 
     private Unbinder unbinder;
 
-    private ConfigDAGActivity configDAGActivity;
+    private ConfigDASActivity configDASActivity;
 
     private DaoManager manager = DaoManager.getInstance();
 
@@ -182,7 +181,7 @@ public class DAGHomeFragment extends BaseFragment {
 
     @Override
     protected int initContentView() {
-        return R.layout.fragment_daghome;
+        return R.layout.fragment_dashome;
     }
 
     @Override
@@ -216,7 +215,7 @@ public class DAGHomeFragment extends BaseFragment {
             mTvDeviceModel.setText(scanData[2]);//功能型号
             mTvSensorType.setText("拉线位移计");
         }
-        configDAGActivity = (ConfigDAGActivity) getActivity();
+        configDASActivity = (ConfigDASActivity) getActivity();
     }
 
 
@@ -269,7 +268,6 @@ public class DAGHomeFragment extends BaseFragment {
             spinnerProjectName.setVisibility(View.VISIBLE);
         }
 
-
         mBtnOsmometer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -277,7 +275,7 @@ public class DAGHomeFragment extends BaseFragment {
                     ToastUtils.show(getString(R.string.param_config_bluetooth_disconnect_warn));
                     return;
                 }
-                OsmometerConfigActivity.startActivity(configDAGActivity, sbOsmometerParameterInfo.toString());
+                OsmometerConfigActivity.startActivity(configDASActivity, sbOsmometerParameterInfo.toString());
             }
         });
 
@@ -308,14 +306,14 @@ public class DAGHomeFragment extends BaseFragment {
 
                 //未连接时，直接打开连接
                 if (isChecked) {
-                    configDAGActivity.findAndConnectBleDevice();
+                    configDASActivity.findAndConnectBleDevice();
 
                 } else {//断开连接处理
-                    if (configDAGActivity.isConfigChange) {
-                        configDAGActivity.isExitMode = false;
-                        configDAGActivity.showSaveDialog(getResources().getString(R.string.disconnect_bluetooth_device_save_param_warn));
+                    if (configDASActivity.isConfigChange) {
+                        configDASActivity.isExitMode = false;
+                        configDASActivity.showSaveDialog(getResources().getString(R.string.disconnect_bluetooth_device_save_param_warn));
                     } else {
-                        configDAGActivity.disconnectDevice();
+                        configDASActivity.disconnectDevice();
                         setViewStateByConnectState(false);
                     }
                 }
@@ -334,7 +332,7 @@ public class DAGHomeFragment extends BaseFragment {
 
                 if (isChecked) {
                     //发送激活DAS命令
-                    configDAGActivity.sendCommonCommand("##0182\r\n");
+                    configDASActivity.sendCommonCommand("##0182\r\n");
                     setSwitchViewState(true, mTvDeviceEnable, "已激活");
                 } else {
                     showCloseSwitchButtonDialog(getString(R.string.device_enable_state_close_warn), DEVICE_ENABLE);
@@ -353,11 +351,11 @@ public class DAGHomeFragment extends BaseFragment {
                 }
                 if (isChecked) {
                     //发送解锁命令
-                    configDAGActivity.sendCommonCommand("##2250\r\n");
+                    configDASActivity.sendCommonCommand("##2250\r\n");
                     setSwitchViewState(true, mTvDeviceLock, "未锁定");
                 } else {
                     //发送锁定命令
-                    configDAGActivity.sendCommonCommand("##2251\r\n");
+                    configDASActivity.sendCommonCommand("##2251\r\n");
                     setSwitchViewState(false, mTvDeviceLock, "锁定");
                 }
             }
@@ -399,12 +397,12 @@ public class DAGHomeFragment extends BaseFragment {
 
                 if (isChecked) {
                     //发送打开自动测量模式命令
-                    configDAGActivity.sendCommonCommand("##4011\r\n");
+                    configDASActivity.sendCommonCommand("##4011\r\n");
                     mBtnOsmometer.setEnabled(true);
                     mBtnOsmometer.setText("配置");
                 } else {
                     //发送关闭渗压计命令
-                    configDAGActivity.sendCommonCommand("##4012\r\n");
+                    configDASActivity.sendCommonCommand("##4012\r\n");
                     mBtnOsmometer.setEnabled(false);
                     mBtnOsmometer.setText("已停用");
                 }
@@ -422,11 +420,11 @@ public class DAGHomeFragment extends BaseFragment {
                 }
                 if (isChecked) {
                     //发送断线报警器常开指令
-                    configDAGActivity.sendCommonCommand("##2271\r\n");
+                    configDASActivity.sendCommonCommand("##2271\r\n");
                     setSwitchViewState(true, mTvBreakAlarm, "常开");
 
                 } else {
-                    configDAGActivity.sendCommonCommand("##2272\r\n");
+                    configDASActivity.sendCommonCommand("##2272\r\n");
                     setSwitchViewState(false, mTvBreakAlarm, "常闭");
                 }
             }
@@ -447,7 +445,7 @@ public class DAGHomeFragment extends BaseFragment {
 
         //调试模式
         String[] debugData = getResources().getStringArray(R.array.das_debug_mode);
-        debugModeAdapter = new ArrayAdapter<>(configDAGActivity, android.R.layout.simple_spinner_item, debugData);
+        debugModeAdapter = new ArrayAdapter<>(configDASActivity, android.R.layout.simple_spinner_item, debugData);
         debugModeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mSpDebugMode.setAdapter(debugModeAdapter);
         mSpDebugMode.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -477,7 +475,7 @@ public class DAGHomeFragment extends BaseFragment {
                             smdStr = "##0061\r\n";
                             break;
                     }
-                    configDAGActivity.sendCommonCommand(smdStr);
+                    configDASActivity.sendCommonCommand(smdStr);
                     Timber.d("设置调试模式指令==" + smdStr);
                 }
             }
@@ -491,7 +489,7 @@ public class DAGHomeFragment extends BaseFragment {
 
         //开关量
         String[] switchData = getResources().getStringArray(R.array.das_switch);
-        switchAdapter = new ArrayAdapter<>(configDAGActivity, android.R.layout.simple_spinner_item, switchData);
+        switchAdapter = new ArrayAdapter<>(configDASActivity, android.R.layout.simple_spinner_item, switchData);
         switchAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mSpSwitch.setAdapter(switchAdapter);
         mSpSwitch.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -521,11 +519,11 @@ public class DAGHomeFragment extends BaseFragment {
                             break;
                     }
 
-                    configDAGActivity.sendCommonCommand(smdStr);
+                    configDASActivity.sendCommonCommand(smdStr);
                     Timber.d("设置开关量指令==" + smdStr);
 
                     if (value.equals("断线报警器")) {
-                        configDAGActivity.sendCommonCommand("##2270\r\n");
+                        configDASActivity.sendCommonCommand("##2270\r\n");
                         Timber.d("查询断线报警器参数指令==##2270");
                     }
                 }
@@ -558,19 +556,35 @@ public class DAGHomeFragment extends BaseFragment {
                 break;
 
             case R.id.tv_rain_gauge:
-                RainConfigActivity.startActivity(configDAGActivity, setRianAccuryParameter.getRainAccury());
+                if (!MCloudApp.isIsBluetoothDeviceConnected()) {
+                    ToastUtils.show(getString(R.string.param_config_bluetooth_disconnect_warn));
+                    return;
+                }
+                RainConfigActivity.startActivity(configDASActivity, setRianAccuryParameter.getRainAccury());
                 break;
 
             case R.id.sensor_setting_layout:
-                SenSorBGKConfigActivity.startActivity(configDAGActivity, sbcollectorSensor.toString());
+                if (!MCloudApp.isIsBluetoothDeviceConnected()) {
+                    ToastUtils.show(getString(R.string.param_config_bluetooth_disconnect_warn));
+                    return;
+                }
+                SenSorBGKConfigActivity.startActivity(configDASActivity, sbcollectorSensor.toString());
                 break;
 
             case R.id.rl_general_setting:
-                GeneralSettingActivity.startActivity(configDAGActivity, collectorConfigInfo, collectorType);
+                if (!MCloudApp.isIsBluetoothDeviceConnected()) {
+                    ToastUtils.show(getString(R.string.param_config_bluetooth_disconnect_warn));
+                    return;
+                }
+                GeneralSettingActivity.startActivity(configDASActivity, collectorConfigInfo, collectorType);
                 break;
 
             case R.id.rl_mqtt_setting:
-                MqttSettingActivity.startActivity(configDAGActivity);
+                if (!MCloudApp.isIsBluetoothDeviceConnected()) {
+                    ToastUtils.show(getString(R.string.param_config_bluetooth_disconnect_warn));
+                    return;
+                }
+                MqttSettingActivity.startActivity(configDASActivity);
                 break;
         }
     }
@@ -664,7 +678,7 @@ public class DAGHomeFragment extends BaseFragment {
                 mTvRainGauge.setVisibility(View.GONE);
                 breakAlarmLayout.setVisibility(View.VISIBLE);
 
-                configDAGActivity.sendCommonCommand("##2270\r\n");
+                configDASActivity.sendCommonCommand("##2270\r\n");
                 Timber.d("查询断线报警器参数指令==##2270");
                 break;
         }
@@ -683,19 +697,11 @@ public class DAGHomeFragment extends BaseFragment {
 
         CommandType type = StringUtil.extractCommandType(cmdStr);
         switch (type) {
-            case SYSTEM_RUN_STATE://运行系统状态 014
-                //systemRunStateSub = BlueResultParserUtil.getSystemRunState(cmdStr);
-                break;
-
-            case SETTING_RAIN_PRECISION://设置雨量计精度 121
-                SettingRainPrecisionSub settingRainPrecisionSub = BlueResultParserUtil.getRainPrecisionInfo(cmdStr);
-                Timber.d("--------设置雨量计精度-------" + settingRainPrecisionSub.toString());
-                setRianAccuryParameter.setRainAccury(String.valueOf(settingRainPrecisionSub.getPrecision()));
-                break;
-
-            case RAIN_STATION://雨量计开关 0051：开启  0052：关闭
-//                RainStationSub rainStationSub = BlueResultParserUtil.getRainStationInfo(cmdStr);
-//                Timber.d("--------雨量计开关状态-------" + rainStationSub.getRainStation());
+            case RAIN_STATION://雨量计开关 0051：雨量计开启  0052：关闭   0053：断线报警器开启
+                if (cmdStr.endsWith("e\r\n") || cmdStr.startsWith("$$ce\r\n")) {
+                    ToastUtils.show("开关量配置错误!");
+                    return;
+                }
                 break;
 
             case QUERY_OSMOMETER_PARAMETER://查询数字式渗压计参数 400
@@ -710,9 +716,10 @@ public class DAGHomeFragment extends BaseFragment {
                 break;
 
             case DIGITAL_OSMOMETER_FUNCTION://开启/关闭数字式渗压计功能 401
-//                DigitalOsmometerFunctionSub digitalOsmometerFunctionSub = BlueResultParserUtil.getOsmoeterFunctionInfo(cmdStr);
-//                Timber.d("--------开启/关闭数字式渗压计功能-------" + digitalOsmometerFunctionSub.toString());
-//                queryOsmometerParameterInfo.setOsmometerStatus(OsmometerStatus.valueOf(digitalOsmometerFunctionSub.getOsmometerStatus()));
+                if (cmdStr.endsWith("e\r\n") || cmdStr.startsWith("$$ce\r\n")) {
+                    ToastUtils.show("渗压计配置错误!");
+                    return;
+                }
                 break;
 
             case GET_ALL_SENSOR_CONFIG://所有配置信息 333
@@ -720,6 +727,11 @@ public class DAGHomeFragment extends BaseFragment {
                 break;
 
             case BREAK_ALARM_STATUS: //断线报警器状态 227
+                if (cmdStr.endsWith("e\r\n") || cmdStr.startsWith("$$ce\r\n")) {
+                    ToastUtils.show("断线报警器配置错误!");
+                    return;
+                }
+
                 BreakAlarmStatusSub breakAlarmStatusSub = BlueResultParserUtil.getBreakAlarmStatus(cmdStr);
                 Timber.d("--------断线报警器状态-------" + breakAlarmStatusSub.getAlarmStatus());
                 breakAlarmStatusInfo.setStatus(BreakAlarmStatus.valueOf(breakAlarmStatusSub.getAlarmStatus()));
@@ -764,11 +776,17 @@ public class DAGHomeFragment extends BaseFragment {
             if (mBtnOsmometer.getText().toString().equals("配置"))
                 mBtnOsmometer.setEnabled(true);
 
+            mSpDebugMode.setEnabled(true);
+            mSpSwitch.setEnabled(true);
+
         } else {
             mSbBluetoothConnect.setCheckedImmediatelyNoEvent(false);
             setSwitchViewState(false, mTvBluetoothConnect, "已断开");
             if (mBtnOsmometer.getText().toString().equals("配置"))
                 mBtnOsmometer.setEnabled(false);
+
+            mSpDebugMode.setEnabled(false);
+            mSpSwitch.setEnabled(false);
         }
     }
 
@@ -791,13 +809,13 @@ public class DAGHomeFragment extends BaseFragment {
                         switch (index) {
                             case DEVICE_ENABLE:
                                 //发送关闭DAS命令
-                                configDAGActivity.sendCommonCommand("##0181\r\n");
+                                configDASActivity.sendCommonCommand("##0181\r\n");
                                 setSwitchViewState(true, mTvDeviceEnable, "已待机");
                                 break;
 
                             case OSMOMETER_CONFIG:
                                 //发送关闭渗压计命令
-                                configDAGActivity.sendCommonCommand("##4012\r\n");
+                                configDASActivity.sendCommonCommand("##4012\r\n");
                                 mBtnOsmometer.setEnabled(false);
                                 mBtnOsmometer.setText("已停用");
                                 break;

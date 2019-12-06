@@ -19,7 +19,7 @@ import com.shmedo.mcloudapp.R;
  * 文件名:   ClearEditText
  * 创建者:   dpc
  * 创建时间:  2017/9/6 15:12
- * 描述：    TODO
+ *
  */
 
 public class ClearEditText extends AppCompatEditText

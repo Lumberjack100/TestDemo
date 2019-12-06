@@ -11,7 +11,7 @@ import java.nio.charset.StandardCharsets;
  * 文件名:   ByteManagerUtil
  * 创建者:   dpc
  * 创建时间:  2019/1/21 11:03
- * 描述：    TODO
+ *
  */
 public class ByteManagerUtil {
     private static final int MAX_LENGTH = 1024;

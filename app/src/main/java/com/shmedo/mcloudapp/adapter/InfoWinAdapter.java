@@ -18,7 +18,7 @@ import com.shmedo.mcloudapp.R;
  * 文件名:   InfoWinAdapter
  * 创建者:   dpc
  * 创建时间:  2019/1/17 13:46
- * 描述：    TODO
+ * 描述：
  */
 public class InfoWinAdapter implements AMap.InfoWindowAdapter {
     private Context mContext = MCloudApp.getContext();

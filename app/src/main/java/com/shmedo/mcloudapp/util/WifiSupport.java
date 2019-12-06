@@ -22,7 +22,7 @@ import java.util.List;
  * 文件名:   WifiSupport
  * 创建者:   dpc
  * 创建时间:  2019/1/24 13:30
- * 描述：    TODO
+ *
  */
 public class WifiSupport {
     private static final String TAG = "WifiSupport";

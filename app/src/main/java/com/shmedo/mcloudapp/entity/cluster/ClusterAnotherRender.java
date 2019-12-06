@@ -8,7 +8,7 @@ import android.graphics.drawable.Drawable;
  * 文件名:   ClusterAnotherRender
  * 创建者:   dpc
  * 创建时间:  2019/8/14 11:31
- * 描述：    TODO
+ *
  */
 public interface ClusterAnotherRender {
     /**

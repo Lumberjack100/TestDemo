@@ -11,7 +11,7 @@ import org.greenrobot.greendao.annotation.Unique;
  * 文件名:   UserInfoWrapper
  * 创建者:   dpc
  * 创建时间:  2019/1/10 09:19
- * 描述：    TODO
+ *
  */
 @Entity
 public class UserInfoWrapper {

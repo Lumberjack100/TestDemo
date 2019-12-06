@@ -8,7 +8,7 @@ import okhttp3.MediaType;
  * 文件名:   CommonVariable
  * 创建者:   dpc
  * 创建时间:  2019/1/8 09:34
- * 描述：    TODO
+ *
  */
 public class CommonVariable {
 

@@ -14,7 +14,7 @@ import java.io.File;
  * 文件名:   PhotoUtil
  * 创建者:   dpc
  * 创建时间:  2018/4/18 09:10
- * 描述：    TODO
+ *
  * @author adu
  */
 public class PhotoUtil {

@@ -23,7 +23,7 @@ import com.shmedo.mcloudapp.util.WifiSupport;
  * 文件名:   WifiLinkDialog
  * 创建者:   dpc
  * 创建时间:  2019/1/24 14:38
- * 描述：    TODO
+ *
  */
 public class WifiLinkDialog extends Dialog implements View.OnClickListener{
 

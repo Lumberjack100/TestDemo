@@ -21,7 +21,7 @@ import java.util.List;
  * 文件名:   WifiListAdapter
  * 创建者:   dpc
  * 创建时间:  2019/1/24 11:42
- * 描述：    TODO
+ * 描述：
  */
 public class WifiListAdapter extends RecyclerView.Adapter<WifiListAdapter.MyViewHolder> {
 

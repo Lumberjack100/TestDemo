@@ -8,7 +8,7 @@ import com.shmedo.mcloudapp.entity.ble.collector.MqttConfigInfoSub;
  * 包名：    com.shmedo.mcloudapp.inter
  * 创建者:   gonghe
  * 创建时间:  2019-09-28
- * 描述：    TODO
+ *
  */
 public interface MQttOnClickListener {
 

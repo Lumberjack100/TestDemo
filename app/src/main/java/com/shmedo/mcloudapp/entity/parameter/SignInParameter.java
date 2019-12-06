@@ -6,7 +6,7 @@ package com.shmedo.mcloudapp.entity.parameter;
  * 文件名:   SignInParameter
  * 创建者:   dpc
  * 创建时间:  2019/1/10 10:37
- * 描述：    TODO
+ *
  */
 public class SignInParameter implements Cloneable{
     private String account;

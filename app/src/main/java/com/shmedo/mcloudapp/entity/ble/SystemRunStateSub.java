@@ -6,7 +6,7 @@ package com.shmedo.mcloudapp.entity.ble;
  * 文件名:   SystemRunStateSub
  * 创建者:   dpc
  * 创建时间:  2019/3/7 14:06
- * 描述：    TODO
+ *
  */
 public class SystemRunStateSub {
     private String gprsSignal;//GPRS信号强度

@@ -26,7 +26,7 @@ import java.util.concurrent.Future;
  * 包名：    com.shmedo.mcloudapp.util
  * 创建者:   gonghe
  * 创建时间:  2019-10-18
- * 描述：    TODO
+ *
  */
 public class NetworkUtils {
 

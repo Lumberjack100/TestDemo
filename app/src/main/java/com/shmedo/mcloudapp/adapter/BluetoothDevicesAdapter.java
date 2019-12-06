@@ -23,7 +23,7 @@ import butterknife.ButterKnife;
  * 文件名:   DevicesAdapter
  * 创建者:   dpc
  * 创建时间:  2019/1/21 16:09
- * 描述：    TODO
+ * 描述：
  */
 public class BluetoothDevicesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements View.OnClickListener {
     private List<MDevice> list;

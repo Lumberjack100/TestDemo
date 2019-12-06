@@ -13,7 +13,7 @@ import timber.log.Timber;
  * 包名：    com.shmedo.mcloudapp.logging
  * 创建者:   gonghe
  * 创建时间:  2019-09-03
- * 描述：    TODO
+ *
  */
 public class AppCrashHandler implements Thread.UncaughtExceptionHandler {
 

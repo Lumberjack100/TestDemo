@@ -8,7 +8,7 @@ import java.util.List;
  * 文件名:   DeviceDetailInfo
  * 创建者:   dpc
  * 创建时间:  2019/3/28 11:30
- * 描述：    TODO
+ *
  */
 public class DeviceDetailInfo {
     private BasicInfoResult basicInfo;      //基础信息

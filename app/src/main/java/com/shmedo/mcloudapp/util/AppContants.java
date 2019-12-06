@@ -6,7 +6,7 @@ package com.shmedo.mcloudapp.util;
  * 文件名:   AppContants
  * 创建者:   dpc
  * 创建时间:  2019/1/24 11:45
- * 描述：    TODO
+ *
  */
 public class AppContants {
     public static final String WIFI_STATE_CONNECT = "已连接";

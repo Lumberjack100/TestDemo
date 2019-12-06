@@ -8,7 +8,7 @@ import java.util.List;
  * 文件名:   ProjectDeviceInfoList
  * 创建者:   dpc
  * 创建时间:  2019/8/19 14:20
- * 描述：    TODO
+ *
  */
 public class PageResult<T> {
     private int totalPage;

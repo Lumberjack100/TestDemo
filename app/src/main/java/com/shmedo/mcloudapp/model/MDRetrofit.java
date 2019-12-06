@@ -10,7 +10,7 @@ import okhttp3.logging.HttpLoggingInterceptor;
  * 文件名:   MDRetrofit
  * 创建者:   dpc
  * 创建时间:  2019/1/8 09:40
- * 描述：    TODO
+ *
  */
 public class MDRetrofit extends BaseRetrofit {
 

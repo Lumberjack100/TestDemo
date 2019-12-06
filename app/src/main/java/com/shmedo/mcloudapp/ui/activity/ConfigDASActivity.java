@@ -15,14 +15,14 @@ import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.model.Extras;
 import com.shmedo.mcloudapp.ui.activity.device.BaseDeviceConnectActivity;
 import com.shmedo.mcloudapp.ui.fragment.AdvanceSetFragment;
-import com.shmedo.mcloudapp.ui.fragment.DAGHomeFragment;
+import com.shmedo.mcloudapp.ui.fragment.DASHomeFragment;
 import com.shmedo.mcloudapp.ui.fragment.DeviceDetailsFragment;
 import com.shmedo.mcloudapp.ui.fragment.QueryDataFragment;
 
 import butterknife.BindView;
 import butterknife.OnClick;
 
-public class ConfigDAGActivity extends BaseDeviceConnectActivity {
+public class ConfigDASActivity extends BaseDeviceConnectActivity {
     @BindView(R.id.tv_title)
     TextView mToolbarTitle;
 
@@ -41,7 +41,7 @@ public class ConfigDAGActivity extends BaseDeviceConnectActivity {
     @BindView(R.id.tv_highsetting)
     TextView mTvHighsetting;
 
-    private DAGHomeFragment dagHomeFragment;
+    private DASHomeFragment DASHomeFragment;
     private QueryDataFragment queryDataFragment;        //查询数据
     private DeviceDetailsFragment deviceDetailsFragment;//设备详情
     private AdvanceSetFragment advanceSetFragment;      //高级设置
@@ -51,7 +51,7 @@ public class ConfigDAGActivity extends BaseDeviceConnectActivity {
 
 
     public static void startActivity(Context context, String deviceInfo) {
-        Intent intent = new Intent(context, ConfigDAGActivity.class);
+        Intent intent = new Intent(context, ConfigDASActivity.class);
         intent.putExtra(Extras.CUR_DEVICE_NAME, deviceInfo);
         context.startActivity(intent);
     }
@@ -59,7 +59,7 @@ public class ConfigDAGActivity extends BaseDeviceConnectActivity {
 
     @Override
     protected int initContentView() {
-        return R.layout.activity_config_dag;
+        return R.layout.activity_config_das;
     }
 
 
@@ -97,21 +97,21 @@ public class ConfigDAGActivity extends BaseDeviceConnectActivity {
         if (savedInstanceState != null) {  // “内存重启”时调用
             String curTag = savedInstanceState.getString("CurrentFragment");
             currentFragment = getSupportFragmentManager().findFragmentByTag(curTag);
-            dagHomeFragment = (DAGHomeFragment) getSupportFragmentManager().findFragmentByTag(DAGHomeFragment.class.getName());
+            DASHomeFragment = (DASHomeFragment) getSupportFragmentManager().findFragmentByTag(DASHomeFragment.class.getName());
             queryDataFragment = (QueryDataFragment) getSupportFragmentManager().findFragmentByTag(QueryDataFragment.class.getName());
             deviceDetailsFragment = (DeviceDetailsFragment) getSupportFragmentManager().findFragmentByTag(DeviceDetailsFragment.class.getName());
             advanceSetFragment = (AdvanceSetFragment) getSupportFragmentManager().findFragmentByTag(AdvanceSetFragment.class.getName());
 
             // 解决重叠问题
             getSupportFragmentManager().beginTransaction()
-                    .hide(dagHomeFragment)
+                    .hide(DASHomeFragment)
                     .hide(queryDataFragment)
                     .hide(deviceDetailsFragment)
                     .hide(advanceSetFragment)
                     .show(currentFragment)
                     .commit();
         } else {
-            dagHomeFragment = new DAGHomeFragment();
+            DASHomeFragment = new DASHomeFragment();
             queryDataFragment = new QueryDataFragment();
             deviceDetailsFragment = new DeviceDetailsFragment();
             advanceSetFragment = new AdvanceSetFragment();
@@ -214,7 +214,7 @@ public class ConfigDAGActivity extends BaseDeviceConnectActivity {
     private void switchFrgment(int i) {
         switch (i) {
             case 0:
-                showFragment(dagHomeFragment);
+                showFragment(DASHomeFragment);
                 break;
 
             case 1:

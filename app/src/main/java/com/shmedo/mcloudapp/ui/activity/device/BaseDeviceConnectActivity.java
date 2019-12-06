@@ -44,7 +44,6 @@ import timber.log.Timber;
  * 包名：    com.shmedo.mcloudapp.ui.activity.device
  * 创建者:   gonghe
  * 创建时间:  2019-11-08
- * 描述：    TODO
  */
 public abstract class BaseDeviceConnectActivity extends BaseActivity {
 
@@ -81,6 +80,8 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
                 ToastUtils.show(errMsg);
 
                 if (errMsg.contains("连接超时")) {
+                    disconnectDevice();
+                    isAutoConnectBlue = true;
                     MCloudApp.setIsBluetoothDeviceConnected(false);
                     EventBus.getDefault().post(new BluetoothStateEvent(false));
                 }

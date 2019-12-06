@@ -6,7 +6,7 @@ import android.content.Context;
  * 文件名:   AppInit
  * 创建者:   dpc
  * 创建时间: 2018/11/25 12:54
- * 描述：    TODO
+ *
  */
 
 public class AppInit{

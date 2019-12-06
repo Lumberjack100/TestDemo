@@ -12,7 +12,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
  * 文件名:   LoadingDialog
  * 创建者:   dpc
  * 创建时间:  2018/3/14 16:05
- * 描述：    TODO
+ *
  */
 
 public class LoadingDialog {

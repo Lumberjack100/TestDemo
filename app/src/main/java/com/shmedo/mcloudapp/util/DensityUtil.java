@@ -16,7 +16,7 @@ import com.shmedo.mcloudapp.MCloudApp;
  * 文件名:   DensityUtil
  * 创建者:   dpc
  * 创建时间:  2018/1/25 15:13
- * 描述：    TODO
+ *
  */
 
 public class DensityUtil {

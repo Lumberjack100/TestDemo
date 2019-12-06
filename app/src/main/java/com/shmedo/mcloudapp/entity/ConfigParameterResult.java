@@ -8,7 +8,7 @@ import java.util.List;
  * 文件名:   ConfigParameterResult
  * 创建者:   dpc
  * 创建时间:  2019/3/28 11:31
- * 描述：    TODO
+ *
  */
 public class ConfigParameterResult {
 

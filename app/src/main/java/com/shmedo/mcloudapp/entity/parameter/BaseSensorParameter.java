@@ -6,7 +6,7 @@ package com.shmedo.mcloudapp.entity.parameter;
  * 文件名:   BaseSensorParameter
  * 创建者:   dpc
  * 创建时间:  2019/6/27 14:05
- * 描述：    TODO
+ *
  */
 public class BaseSensorParameter {
     private String sensorType;

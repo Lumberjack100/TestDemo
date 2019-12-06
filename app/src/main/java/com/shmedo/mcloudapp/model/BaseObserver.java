@@ -11,7 +11,7 @@ import io.reactivex.disposables.Disposable;
  * 文件名:   BaseObserver
  * 创建者:   dpc
  * 创建时间:  2019/1/8 09:35
- * 描述：    TODO
+ *
  */
 public  abstract class BaseObserver<T> implements Observer<ResultWrapper<T>> {
 

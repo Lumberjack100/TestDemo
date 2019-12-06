@@ -6,7 +6,7 @@ package com.shmedo.mcloudapp.entity;
  * 文件名:   DeviceSensorResult
  * 创建者:   dpc
  * 创建时间:  2019/3/28 11:31
- * 描述：    TODO
+ *
  */
 public class DeviceSensorResult {
    private Integer sensorID;    //传感器ID

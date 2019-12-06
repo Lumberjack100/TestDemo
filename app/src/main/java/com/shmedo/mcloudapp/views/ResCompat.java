@@ -16,7 +16,7 @@ import java.lang.reflect.Method;
  * 文件名:   ResCompat
  * 创建者:   dpc
  * 创建时间:  2018/5/16 14:13
- * 描述：    TODO
+ *
  */
 public class ResCompat {
 

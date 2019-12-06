@@ -8,7 +8,7 @@ import java.util.List;
  * 文件名:   UserInfo
  * 创建者:   dpc
  * 创建时间:  2018/11/27 14:48
- * 描述：    TODO
+ *
  */
 
 public class UserInfo {

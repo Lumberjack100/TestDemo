@@ -13,7 +13,7 @@ import java.util.Locale;
  * 文件名:   TimeUtil
  * 创建者:   dpc
  * 创建时间:  2019/1/15 17:41
- * 描述：    TODO
+ *
  */
 public class TimeUtil {
     private static SimpleDateFormat sdf = null;

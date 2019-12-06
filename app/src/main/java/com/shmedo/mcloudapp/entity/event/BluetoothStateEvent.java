@@ -5,7 +5,7 @@ package com.shmedo.mcloudapp.entity.event;
  * 包名：    com.shmedo.mcloudapp.entity.event
  * 创建者:   gonghe
  * 创建时间:  2019-10-28
- * 描述：    TODO
+ *
  */
 public class BluetoothStateEvent {
     public boolean isConnected; //是否连接

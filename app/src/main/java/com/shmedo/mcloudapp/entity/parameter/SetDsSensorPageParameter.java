@@ -8,7 +8,7 @@ import com.shmedo.mcloudapp.util.page.ParameterValidate;
  * 文件名:   SetDsSensorPageParameter
  * 创建者:   dpc
  * 创建时间:  2019/6/27 14:24
- * 描述：    TODO
+ *
  */
 public class SetDsSensorPageParameter implements ParameterValidate {
     private String sensorAddress;

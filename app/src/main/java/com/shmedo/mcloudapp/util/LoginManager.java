@@ -19,7 +19,7 @@ import okhttp3.RequestBody;
  * 包名：    com.shmedo.mcloudapp.util
  * 创建者:   gonghe
  * 创建时间:  2019-10-17
- * 描述：    TODO
+ *
  */
 public class LoginManager {
 

@@ -8,7 +8,7 @@ import com.amap.api.maps.model.LatLng;
  * 文件名:   ClusterItem
  * 创建者:   dpc
  * 创建时间:  2019/8/13 19:42
- * 描述：    TODO
+ *
  */
 public interface ClusterItem {
     /**

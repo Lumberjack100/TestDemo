@@ -18,7 +18,7 @@ import java.io.IOException;
  * 文件名:   ImageUtil
  * 创建者:   dpc
  * 创建时间:  2018/1/25 17:24
- * 描述：    TODO
+ *
  */
 
 public class ImageUtil {

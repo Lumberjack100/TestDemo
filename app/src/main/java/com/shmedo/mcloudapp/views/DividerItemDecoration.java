@@ -15,7 +15,7 @@ import com.shmedo.mcloudapp.R;
  * 文件名:   DividerItemDecoration
  * 创建者:   dpc
  * 创建时间:  2018/3/1 16:34
- * 描述：    TODO
+ *
  */
 
 public class DividerItemDecoration extends RecyclerView.ItemDecoration {

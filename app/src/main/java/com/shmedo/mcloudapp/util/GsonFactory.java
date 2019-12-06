@@ -9,7 +9,7 @@ import com.google.gson.GsonBuilder;
  * 文件名:   GsonFactory
  * 创建者:   dpc
  * 创建时间:  2018/11/24 00:37
- * 描述：    TODO
+ *
  */
 public class GsonFactory {
     private static GsonBuilder gsonBuilder;

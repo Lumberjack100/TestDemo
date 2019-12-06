@@ -26,7 +26,7 @@ import com.shmedo.mcloudapp.util.XPermissionUtils;
  * 文件名:   WelcomeActivity
  * 创建者:   dpc
  * 创建时间:  2019/1/8 09:17
- * 描述：    TODO
+ *
  */
 public class WelcomeActivity extends BaseActivity implements LoginManager.LoginCallback {
 

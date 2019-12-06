@@ -12,7 +12,7 @@ import timber.log.Timber;
  * 包名：    com.shmedo.mcloudapp
  * 创建者:   gonghe
  * 创建时间:  2019-09-16
- * 描述：    TODO
+ *
  */
 public class DebugApplication extends MCloudApplication {
 

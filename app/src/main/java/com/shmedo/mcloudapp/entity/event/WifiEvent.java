@@ -8,7 +8,7 @@ import com.shmedo.mcloudapp.entity.WifiBean;
  * 文件名:   WifiEvent
  * 创建者:   dpc
  * 创建时间:  2019/1/25 15:12
- * 描述：    TODO
+ *
  */
 public class WifiEvent {
     private String message;

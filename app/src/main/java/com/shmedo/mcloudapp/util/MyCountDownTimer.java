@@ -11,7 +11,7 @@ import com.shmedo.mcloudapp.R;
  * 文件名:   MyCountDownTimer
  * 创建者:   dpc
  * 创建时间:  2019/1/9 15:15
- * 描述：    TODO
+ *
  */
 public class MyCountDownTimer extends CountDownTimer {
     private Button btnTime;

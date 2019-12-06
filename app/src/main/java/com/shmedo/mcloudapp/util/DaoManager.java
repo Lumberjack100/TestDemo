@@ -12,7 +12,7 @@ import org.greenrobot.greendao.query.QueryBuilder;
  * 文件名:   DaoManager
  * 创建者:   dpc
  * 创建时间:  2017/9/25 18:46
- * 描述：    TODO
+ *
  */
 
 public class DaoManager {

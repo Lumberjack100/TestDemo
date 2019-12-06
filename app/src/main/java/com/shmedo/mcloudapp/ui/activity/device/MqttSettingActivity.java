@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.ui.activity;
+package com.shmedo.mcloudapp.ui.activity.device;
 
 import android.content.Context;
 import android.content.Intent;
@@ -27,7 +27,6 @@ import com.shmedo.mcloudapp.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.entity.ble.collector.MqttConfigInfoSub;
 import com.shmedo.mcloudapp.inter.MQttOnClickListener;
-import com.shmedo.mcloudapp.ui.activity.device.BaseDeviceConnectActivity;
 import com.shmedo.mcloudapp.ui.activity.device.sensor.dialog.MqttDialogFactory;
 import com.shmedo.mcloudapp.util.StringUtil;
 import com.shmedo.mcloudapp.views.ClearEditText;

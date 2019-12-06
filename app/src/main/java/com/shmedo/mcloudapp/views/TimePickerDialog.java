@@ -22,7 +22,7 @@ import static top.defaults.view.DateTimePickerView.TYPE_YEAR_MONTH_DAY_HOUR_MINU
  * 文件名:   TimePickerDialog
  * 创建者:   dpc
  * 创建时间:  2019/2/12 17:33
- * 描述：    TODO
+ *
  */
 public class TimePickerDialog extends BaseDialog {
     private DateTimePickerView mPickerView;

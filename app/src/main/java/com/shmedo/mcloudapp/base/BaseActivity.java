@@ -51,7 +51,7 @@ import timber.log.Timber;
  * 文件名:   BaseActivity
  * 创建者:   dpc
  * 创建时间:  2019/1/8 09:46
- * 描述：    TODO
+ * 描述：
  */
 public abstract class BaseActivity extends AppCompatActivity {
 

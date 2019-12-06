@@ -852,7 +852,7 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
 
         if (localData[2].equals("DAS")) {
 //            ConfigDASActivity.startActivity(MainActivity.this, deviceInfo);
-            ConfigDAGActivity.startActivity(MainActivity.this, deviceInfo);
+            ConfigDASActivity.startActivity(MainActivity.this, deviceInfo);
 
         } else if (localData[2].equals("ADME")) {
             ConfigADMEActivity.startActivity(MainActivity.this, deviceInfo);

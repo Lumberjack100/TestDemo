@@ -15,7 +15,7 @@ import java.io.File;
  * 文件名:   FileProviderUtils
  * 创建者:   dpc
  * 创建时间:  2018/4/17 18:44
- * 描述：    TODO
+ *
  */
 public class FileProviderUtils {
 

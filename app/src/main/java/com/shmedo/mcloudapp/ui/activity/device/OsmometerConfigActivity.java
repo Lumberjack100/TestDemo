@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.InputFilter;
+import android.text.InputType;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
@@ -106,13 +108,31 @@ public class OsmometerConfigActivity extends BaseDeviceConnectActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setView();
         parseIntent();
     }
 
-    private void parseIntent() {
+    private void setView(){
         mToolbarTitle.setText("配置渗压计");
         AdvanceSetFragment.modifyHintText("随手一记，好记性不如烂笔头", mEtNote);
 
+        mEtOsmometerAddress.setInputType(InputType.TYPE_CLASS_NUMBER);
+        mEtOsmometerAddress.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
+
+        mEtWaterAlarmValue.setInputType(InputType.TYPE_CLASS_NUMBER);
+        mEtWaterAlarmValue.setFilters(new InputFilter[]{new InputFilter.LengthFilter(5)});
+
+        mEtWaterRevised.setInputType(InputType.TYPE_CLASS_NUMBER);
+        mEtWaterRevised.setFilters(new InputFilter[]{new InputFilter.LengthFilter(5)});
+
+        mEtOsmometerCord.setInputType(InputType.TYPE_CLASS_NUMBER);
+        mEtOsmometerCord.setFilters(new InputFilter[]{new InputFilter.LengthFilter(5)});
+
+        mEtNozzelHeight.setInputType(InputType.TYPE_CLASS_NUMBER);
+        mEtNozzelHeight.setFilters(new InputFilter[]{new InputFilter.LengthFilter(5)});
+    }
+
+    private void parseIntent() {
         uc = UserConfig.getConfig(this, CommonVariable.OSMOMETER_NOTE);
         mEtNote.setText(uc.readString(CommonVariable.OSMOMETER_NOTE));
 

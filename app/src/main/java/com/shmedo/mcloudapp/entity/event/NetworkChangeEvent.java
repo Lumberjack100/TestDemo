@@ -7,7 +7,7 @@ import com.shmedo.mcloudapp.util.NetworkUtils;
  * 包名：    com.shmedo.mcloudapp.entity
  * 创建者:   gonghe
  * 创建时间:  2019-10-18
- * 描述：    TODO
+ *
  */
 public class NetworkChangeEvent {
     public boolean isConnected; //是否存在网络
