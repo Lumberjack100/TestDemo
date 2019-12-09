@@ -28,7 +28,7 @@ android {
         minSdkVersion MIN_SDK_VERSION as int
         targetSdkVersion TARGET_SDK_VERSION as int
         versionCode gitVersionCode()
-        versionName "1.0.${releaseTime()}" + "(" + gitShortCommitId() + ")"
+        versionName "1.0.${releaseTime()}" //+ "(" + gitShortCommitId() + ")"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
 
@@ -74,9 +74,9 @@ android {
         variant.outputs.each { output ->
             def fileName
             if (variant.buildType.name == "release") {
-                fileName = "米易通_" + android.defaultConfig.versionName + ".apk"
+                fileName = "米易通_" + android.defaultConfig.versionName + "(" + gitShortCommitId() + ")" + ".apk"
             } else {
-                fileName = "米易通_debug_" + android.defaultConfig.versionName + ".apk"
+                fileName = "米易通_debug_" + android.defaultConfig.versionName + "(" + gitShortCommitId() + ")" + ".apk"
             }
             output.outputFileName = fileName
         }
@@ -136,6 +136,8 @@ dependencies {
     implementation 'cn.bingoogolapple:bga-baseadapter:1.2.9@aar'
     //Toast 吐司
     implementation 'com.hjq:toast:8.0'//https://github.com/getActivity/ToastUtils
+    //蒲公英SDk
+    implementation 'com.pgyersdk:sdk:3.0.10'
 
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'

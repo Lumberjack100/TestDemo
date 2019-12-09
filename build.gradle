@@ -22,7 +22,8 @@ allprojects {
         google()
         jcenter()
         maven { url 'https://jitpack.io' }
-        maven {url "http://172.168.5.46:9760/nexus/content/repositories/snapshots/"}
+        maven {url "http://172.168.5.46:9760/nexus/content/repositories/snapshots/"}//封装的米度蓝牙工具类库
+        maven { url "https://raw.githubusercontent.com/Pgyer/mvn_repo_pgyer/master" }//蒲公英SDk
     }
 }
 
