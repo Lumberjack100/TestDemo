@@ -41,16 +41,21 @@
         <meta-data
             android:name="com.amap.api.v2.apikey"
             android:value="31d7ee436c402270e11183ce1b5d01dc" /> <!-- 定位需要的服务 使用2.0的定位需要加上这个 -->
+
         <service android:name="com.amap.api.location.APSService" /> <!-- 兼容7.0 -->
+
         <provider
             android:name="android.support.v4.content.FileProvider"
             android:authorities="com.shmedo.mcloudapp.FileProvider"
             android:exported="false"
-            android:grantUriPermissions="true">
+            android:grantUriPermissions="true"
+            tools:replace="android:authorities">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/file_paths" />
+                android:resource="@xml/file_paths"
+                tools:replace="android:resource" />
         </provider>
+
 
         <activity android:name=".ui.activity.WelcomeActivity">
             <intent-filter>
@@ -160,7 +165,8 @@
             android:theme="@style/AppThemeNoTitle"
             android:windowSoftInputMode="stateHidden|adjustResize" />
 
-        <activity android:name=".ui.activity.device.ADMEMotorControlActivity"
+        <activity
+            android:name=".ui.activity.device.ADMEMotorControlActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppThemeNoTitle"
             android:windowSoftInputMode="stateHidden|adjustResize" />
