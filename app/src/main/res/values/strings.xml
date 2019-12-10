@@ -131,5 +131,6 @@
     <!-- 权限申请-->
     <string name="permission_request_camera_external_storage">米易通需要使用相机权限和存储卡权限，请前往设置页面授予权限</string>
     <string name="permission_request_location">米易通需要使用定位权限，请前往设置页面授予权限</string>
-
+    <string name="permission_external_storage">米易通需要使用存储卡权限，请前往设置页面授予权限</string>
+    <string name="message_permission_rationale">授予以下权限以继续执行该程序</string>
 </resources>

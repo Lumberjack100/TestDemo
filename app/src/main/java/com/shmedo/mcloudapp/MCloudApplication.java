@@ -9,6 +9,7 @@ import android.widget.Toast;
 import com.hjq.toast.ToastInterceptor;
 import com.hjq.toast.ToastUtils;
 import com.hjq.toast.style.ToastBlackStyle;
+import com.pgyersdk.crash.PgyCrashManager;
 import com.shmedo.mcloudapp.bluetooth.MdBluetoothManager;
 import com.shmedo.mcloudapp.logging.AppCrashHandler;
 import com.shmedo.mcloudapp.logging.CrashReportingTree;
@@ -33,8 +34,10 @@ public class MCloudApplication extends Application {
         super.onCreate();
         MCloudApp.initialize(this);
         //初始化蒲公英
-        //PgyCrashManager.register(this);
-
+        //启动 Pgyer 检测 Crash 功能
+        PgyCrashManager.register();
+        //初始化facebook.stetho
+        //AppInit.init(this);
         AppCrashHandler.getInstance(this);// crash handler
 
         //基于 mmap 的高性能通用 key-value 组件

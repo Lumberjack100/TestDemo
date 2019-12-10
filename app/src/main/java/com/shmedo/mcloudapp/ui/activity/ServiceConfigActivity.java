@@ -1,7 +1,7 @@
 package com.shmedo.mcloudapp.ui.activity;
 
 import android.os.Bundle;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 import android.widget.Button;
 
 import com.hjq.toast.ToastUtils;

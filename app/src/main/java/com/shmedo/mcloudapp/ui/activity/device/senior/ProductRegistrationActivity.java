@@ -2,7 +2,7 @@ package com.shmedo.mcloudapp.ui.activity.device.senior;
 
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.SpannedString;

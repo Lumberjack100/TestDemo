@@ -8,9 +8,10 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.Settings;
-import android.support.annotation.NonNull;
-import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.core.content.ContextCompat;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -43,7 +44,7 @@ public class XPermissionUtils {
         requestPermissions(fragment, requestCode, permission, callback);
     }
 
-    public static void requestPermissionsResult(android.support.v4.app.Fragment fragment, int requestCode
+    public static void requestPermissionsResult(Fragment fragment, int requestCode
             , String[] permission, OnPermissionListener callback) {
         requestPermissions(fragment, requestCode, permission, callback);
     }
@@ -77,8 +78,8 @@ public class XPermissionUtils {
                 } else if (object instanceof android.app.Fragment) {
                     ((android.app.Fragment) object).requestPermissions(deniedPermissions
                             .toArray(new String[deniedPermissions.size()]), requestCode);
-                } else if (object instanceof android.support.v4.app.Fragment) {
-                    ((android.support.v4.app.Fragment) object).requestPermissions(deniedPermissions
+                } else if (object instanceof Fragment) {
+                    ((Fragment) object).requestPermissions(deniedPermissions
                             .toArray(new String[deniedPermissions.size()]), requestCode);
                 } else {
                     mRequestCode = -1;
@@ -94,8 +95,8 @@ public class XPermissionUtils {
         Context context;
         if (object instanceof android.app.Fragment) {
             context = ((android.app.Fragment) object).getActivity();
-        } else if (object instanceof android.support.v4.app.Fragment) {
-            context = ((android.support.v4.app.Fragment) object).getActivity();
+        } else if (object instanceof Fragment) {
+            context = ((Fragment) object).getActivity();
         } else {
             context = (Activity) object;
         }
@@ -158,7 +159,7 @@ public class XPermissionUtils {
         }
 
         boolean isActivity = object instanceof Activity;
-        boolean isSupportFragment = object instanceof android.support.v4.app.Fragment;
+        boolean isSupportFragment = object instanceof Fragment;
         boolean isAppFragment = object instanceof android.app.Fragment;
 
         if (!(isActivity || isSupportFragment || isAppFragment)) {

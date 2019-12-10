@@ -2,17 +2,16 @@ package com.shmedo.mcloudapp.views;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import android.view.View;
 import android.widget.TextView;
-
 import com.shmedo.mcloudapp.R;
+import top.defaults.view.DateTimePickerView;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Locale;
-
-import top.defaults.view.DateTimePickerView;
 
 import static top.defaults.view.DateTimePickerView.TYPE_YEAR_MONTH_DAY_HOUR_MINUTE;
 

@@ -3,7 +3,6 @@ package com.shmedo.mcloudapp.views;
 import android.content.Context;
 import android.graphics.Color;
 import android.text.TextUtils;
-
 import com.afollestad.materialdialogs.MaterialDialog;
 
 /**

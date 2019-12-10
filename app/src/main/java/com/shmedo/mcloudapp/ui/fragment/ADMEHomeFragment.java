@@ -5,8 +5,6 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.annotation.NonNull;
-import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,6 +18,8 @@ import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.hjq.toast.ToastUtils;
@@ -56,7 +56,7 @@ import butterknife.Unbinder;
 import timber.log.Timber;
 
 /**
- * A simple {@link Fragment} subclass.
+ * A simple
  */
 public class ADMEHomeFragment extends BaseFragment {
     private static final int AUTO_MONITOR = 0x0001;

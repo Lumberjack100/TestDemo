@@ -6,14 +6,14 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.content.ContextCompat;
+import androidx.annotation.Nullable;
+
 import android.view.View;
 import android.widget.Button;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
-
+import androidx.core.content.ContextCompat;
 import com.hjq.toast.ToastUtils;
 import com.shmedo.mcloudapp.MCloudApp;
 import com.shmedo.mcloudapp.R;

@@ -5,7 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
-import android.support.v4.content.FileProvider;
+import androidx.core.content.FileProvider;
 
 import java.io.File;
 
@@ -30,7 +30,7 @@ public class FileProviderUtils {
         Uri fileUri;
         //7.0以上进行适配
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            String p = context.getPackageName() + ".FileProvider";
+            String p = context.getPackageName() + ".fileProvider";
             fileUri = FileProvider.getUriForFile(context, p, file);
         } else {
             fileUri = Uri.fromFile(file);

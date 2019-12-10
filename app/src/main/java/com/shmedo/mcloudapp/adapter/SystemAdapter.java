@@ -1,14 +1,15 @@
 package com.shmedo.mcloudapp.adapter;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.RecyclerView;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.entity.SystemDataInfo;
 
@@ -35,7 +36,8 @@ public class SystemAdapter extends RecyclerView.Adapter<SystemAdapter.ViewHolder
     }
 
 
-    @NonNull @Override
+    @NonNull
+    @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         View view = LayoutInflater.from(mContext).inflate(R.layout.item_system,viewGroup,false);
         return new ViewHolder(view);

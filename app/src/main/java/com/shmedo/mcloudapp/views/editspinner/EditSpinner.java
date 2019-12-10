@@ -3,8 +3,7 @@ package com.shmedo.mcloudapp.views.editspinner;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
-import android.support.annotation.ColorInt;
-import android.support.annotation.DrawableRes;
+
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -15,14 +14,9 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.RotateAnimation;
-import android.widget.AdapterView;
-import android.widget.BaseAdapter;
-import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.ListPopupWindow;
-import android.widget.PopupWindow;
-import android.widget.RelativeLayout;
-
+import android.widget.*;
+import androidx.annotation.ColorInt;
+import androidx.annotation.DrawableRes;
 import com.shmedo.mcloudapp.R;
 
 import java.util.List;

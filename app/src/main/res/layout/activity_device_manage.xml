@@ -42,7 +42,7 @@
         android:layout_height="200dp"
         android:layout_marginTop="5dp">
 
-        <android.support.v7.widget.RecyclerView
+        <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler_system"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
@@ -110,7 +110,7 @@
         app:srlEnableFooterFollowWhenLoadFinished="true"
         app:srlEnableScrollContentWhenLoaded="true">
 
-        <android.support.v7.widget.RecyclerView
+        <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler_device"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />

@@ -2,8 +2,6 @@ package com.shmedo.mcloudapp.ui.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.content.ContextCompat;
 import android.text.InputFilter;
 import android.text.TextUtils;
 import android.view.View;
@@ -12,6 +10,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import com.hjq.toast.ToastUtils;
 import com.shmedo.mcloudapp.MCloudApp;
 import com.shmedo.mcloudapp.R;
@@ -22,13 +22,8 @@ import com.shmedo.mcloudapp.entity.parameter.SignInParameter;
 import com.shmedo.mcloudapp.model.BaseObserver;
 import com.shmedo.mcloudapp.model.MDRetrofit;
 import com.shmedo.mcloudapp.model.common.CommonVariable;
-import com.shmedo.mcloudapp.util.DaoManager;
-import com.shmedo.mcloudapp.util.GsonFactory;
-import com.shmedo.mcloudapp.util.MD5Util;
-import com.shmedo.mcloudapp.util.MyCountDownTimer;
-import com.shmedo.mcloudapp.util.StartActivityUtil;
-import com.shmedo.mcloudapp.util.StringUtil;
-import com.shmedo.mcloudapp.util.UserConfig;
+import com.shmedo.mcloudapp.util.*;
+import com.shmedo.mcloudapp.util.permission.UpdataManagerUtil;
 import com.shmedo.mcloudapp.views.ClearEditText;
 
 import butterknife.BindView;
@@ -120,6 +115,7 @@ public class LoginActivity extends BaseActivity
     {
         super.onCreate(savedInstanceState);
         setCheckNetWork(true);
+//        UpdataManagerUtil.requestPermissionForInstallPackage(this);//版本更新
         initView();
         initServiceAddressAndUser();
     }
@@ -262,7 +258,8 @@ public class LoginActivity extends BaseActivity
 
             case R.id.tv_registered:
                 //用户注册
-                ToastUtils.show("用户注册");
+//                ToastUtils.show("用户注册");
+                UpdataManagerUtil.requestPermissionForInstallPackage(LoginActivity.this);
                 break;
 
             case R.id.tv_forgot_password:

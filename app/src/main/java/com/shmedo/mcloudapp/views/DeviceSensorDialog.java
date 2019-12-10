@@ -3,22 +3,21 @@ package com.shmedo.mcloudapp.views;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.os.Bundle;
-import android.support.annotation.StyleRes;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+
+import androidx.annotation.StyleRes;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
-
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.adapter.recyclerviewbaseadapter.CommonAdapter;
 import com.shmedo.mcloudapp.adapter.recyclerviewbaseadapter.ViewHolder;
 import com.shmedo.mcloudapp.entity.SensorAndCount;
 import com.shmedo.mcloudapp.util.ImageUtil;
+import timber.log.Timber;
 
 import java.util.List;
-
-import timber.log.Timber;
 
 /**
  * 项目名：  mCloudapp

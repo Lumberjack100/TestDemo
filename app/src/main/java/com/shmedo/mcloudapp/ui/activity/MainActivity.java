@@ -1,6 +1,7 @@
 package com.shmedo.mcloudapp.ui.activity;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothManager;
@@ -11,31 +12,23 @@ import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
-import android.widget.Toast;
-
+import android.widget.*;
+import androidx.annotation.NonNull;
+import androidx.appcompat.widget.Toolbar;
+import butterknife.BindView;
+import butterknife.OnClick;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amap.api.location.AMapLocation;
 import com.amap.api.location.AMapLocationClient;
 import com.amap.api.location.AMapLocationClientOption;
 import com.amap.api.location.AMapLocationListener;
-import com.amap.api.maps.AMap;
-import com.amap.api.maps.AMapOptions;
-import com.amap.api.maps.CameraUpdateFactory;
-import com.amap.api.maps.LocationSource;
-import com.amap.api.maps.MapView;
-import com.amap.api.maps.UiSettings;
+import com.amap.api.maps.*;
 import com.amap.api.maps.model.LatLng;
 import com.amap.api.maps.model.LatLngBounds;
 import com.amap.api.maps.model.Marker;
@@ -56,40 +49,25 @@ import com.shmedo.mcloudapp.entity.DeviceBasicInfoResultDao;
 import com.shmedo.mcloudapp.entity.DeviceTypeEnum;
 import com.shmedo.mcloudapp.entity.StatusInfoResult;
 import com.shmedo.mcloudapp.entity.ble.MDevice;
-import com.shmedo.mcloudapp.entity.cluster.ClusterAnotherClickListener;
-import com.shmedo.mcloudapp.entity.cluster.ClusterAnotherRender;
-import com.shmedo.mcloudapp.entity.cluster.ClusterItem;
-import com.shmedo.mcloudapp.entity.cluster.ClusterItemImp;
-import com.shmedo.mcloudapp.entity.cluster.ClusterOverlayMerchant;
+import com.shmedo.mcloudapp.entity.cluster.*;
 import com.shmedo.mcloudapp.entity.event.MapDeviceEvent;
 import com.shmedo.mcloudapp.entity.event.WifiEvent;
 import com.shmedo.mcloudapp.entity.parameter.LocationResult;
 import com.shmedo.mcloudapp.model.BaseObserver;
 import com.shmedo.mcloudapp.model.MDRetrofit;
 import com.shmedo.mcloudapp.model.common.CommonVariable;
-import com.shmedo.mcloudapp.util.DaoManager;
-import com.shmedo.mcloudapp.util.DensityUtil;
-import com.shmedo.mcloudapp.util.GsonFactory;
-import com.shmedo.mcloudapp.util.StartActivityUtil;
-import com.shmedo.mcloudapp.util.XPermissionUtils;
+import com.shmedo.mcloudapp.util.*;
 import com.shmedo.mcloudapp.util.common.MapManagerUtil;
+import com.shmedo.mcloudapp.util.permission.UpdataManagerUtil;
 import com.shmedo.mcloudapp.views.LoadingDialog;
-
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-
-import butterknife.BindView;
-import butterknife.OnClick;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.RequestBody;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 import timber.log.Timber;
+
+import java.util.*;
 
 import static com.shmedo.mcloudapp.util.bleutil.Constants.BT_CONNECT;
 import static com.shmedo.mcloudapp.util.bleutil.Constants.BT_DISCONNECTED;
@@ -206,6 +184,7 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
         hidingConnectionView();
         initMap();
         initBluetooth();
+//        UpdataManagerUtil.requestPermissionForInstallPackage(this);//版本更新
     }
 
     @Override
@@ -869,6 +848,7 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
         addDeviceOnMap(device);
     }
 
+    @SuppressLint("MissingSuperCall")
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {

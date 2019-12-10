@@ -4,15 +4,9 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Point;
-import android.view.Display;
-import android.view.KeyEvent;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.WindowManager;
+import android.view.*;
 import android.widget.Button;
 import android.widget.TextView;
-
 import com.shmedo.mcloudapp.R;
 
 /**
