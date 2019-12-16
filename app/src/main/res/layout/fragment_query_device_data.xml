@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical">
+    <TextView
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:background="@color/bg_main_light_white"
+            android:gravity="center_vertical"
+            android:paddingLeft="16dp"
+            android:text="sn号" />
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:background="@color/white"
+            android:orientation="horizontal"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp">
+
+
+
+
+
+        <TextView
+                android:id="@+id/sensor_channel_number"
+                android:layout_width="0px"
+                android:layout_height="match_parent"
+                android:layout_weight="2"
+                android:gravity="center"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:text="设备："
+                android:textColor="@color/black"
+                android:textSize="14sp" />
+
+
+
+
+        <TextView
+                android:id="@+id/sensor_status"
+                android:layout_width="0px"
+                android:layout_height="match_parent"
+                android:layout_weight="2.5"
+                android:gravity="center"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:text="监测值"
+                android:textColor="@color/black"
+                android:textSize="14sp" />
+
+
+
+
+    </LinearLayout>
+
+
+</LinearLayout>

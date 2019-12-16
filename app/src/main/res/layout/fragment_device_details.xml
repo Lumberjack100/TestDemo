@@ -1,9 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.shmedo.mcloudapp.views.VerticalSwipeRefreshLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/refresh"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        >
+<ScrollView
+    android:id="@+id/scrollView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
     android:orientation="vertical">
+
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -23,9 +31,14 @@
                 android:paddingLeft="16dp"
                 android:text="基本信息" />
 
+
+
+
+
+
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="25dp"
+                android:layout_height="match_parent"
                 android:layout_marginTop="5dp"
                 android:gravity="center_vertical"
                 android:orientation="horizontal">
@@ -36,10 +49,10 @@
                     android:layout_marginLeft="20dp"
                     android:layout_weight="4"
                     android:gravity="right"
-                    android:text="名称：" />
+                    android:text="SIM卡号(ICCID)：" />
 
                 <TextView
-                    android:id="@+id/name"
+                    android:id="@+id/sim_card_number"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="8"
@@ -60,10 +73,10 @@
                     android:layout_marginLeft="20dp"
                     android:layout_weight="4"
                     android:gravity="right"
-                    android:text="设备类型：" />
+                    android:text="IMEI号：" />
 
                 <TextView
-                    android:id="@+id/device_type"
+                    android:id="@+id/imei_number"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="8"
@@ -84,130 +97,10 @@
                     android:layout_marginLeft="20dp"
                     android:layout_weight="4"
                     android:gravity="right"
-                    android:text="功能型号：" />
+                    android:text="设备启动代码：" />
 
                 <TextView
-                    android:id="@+id/function_model"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="8"
-                    android:text="物联网采集器" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="5dp"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="20dp"
-                    android:layout_weight="4"
-                    android:gravity="right"
-                    android:text="授权码：" />
-
-                <TextView
-                    android:id="@+id/authorization_code"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="8"
-                    android:text="物联网采集器" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="5dp"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="20dp"
-                    android:layout_weight="4"
-                    android:gravity="right"
-                    android:text="设备编号：" />
-
-                <TextView
-                    android:id="@+id/device_number"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="8"
-                    android:text="物联网采集器" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="5dp"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="20dp"
-                    android:layout_weight="4"
-                    android:gravity="right"
-                    android:text="生产日期：" />
-
-                <TextView
-                    android:id="@+id/production_date"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="8"
-                    android:text="物联网采集器" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="5dp"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="20dp"
-                    android:layout_weight="4"
-                    android:gravity="right"
-                    android:text="所在项目：" />
-
-                <TextView
-                    android:id="@+id/the_project"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="8"
-                    android:text="物联网采集器" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="5dp"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="20dp"
-                    android:layout_weight="4"
-                    android:gravity="right"
-                    android:text="CPUID：" />
-
-                <TextView
-                    android:id="@+id/cpu_id"
+                    android:id="@+id/device_start_code"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="8"
@@ -239,29 +132,7 @@
 
             </LinearLayout>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="5dp"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
 
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="20dp"
-                    android:layout_weight="4"
-                    android:gravity="right"
-                    android:text="硬件版本：" />
-
-                <TextView
-                    android:id="@+id/hardware_version"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="8"
-                    android:text="物联网采集器" />
-
-            </LinearLayout>
         </LinearLayout>
 
         <LinearLayout
@@ -276,7 +147,37 @@
                 android:background="@color/bg_main_light_white"
                 android:gravity="center_vertical"
                 android:paddingLeft="16dp"
-                android:text="通信参数" />
+                android:text="网络状态" />
+
+            <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="5dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="20dp"
+                        android:layout_weight="4"
+                        android:gravity="right"
+                        android:text="信号强度：" />
+                <ImageView
+                    android:id="@+id/img_signal_strength"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        />
+
+                <TextView
+                        android:id="@+id/signal_strength"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="7.5"
+                        android:layout_marginLeft="5dp"
+                        android:text="物联网采集器" />
+
+            </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -291,10 +192,10 @@
                     android:layout_marginLeft="20dp"
                     android:layout_weight="4"
                     android:gravity="right"
-                    android:text="运营商1：" />
+                    android:text="中心1状态：" />
 
                 <TextView
-                    android:id="@+id/operator_one"
+                    android:id="@+id/link_one_status"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="8"
@@ -312,209 +213,113 @@
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="20dp"
+                    android:layout_marginLeft="0dp"
                     android:layout_weight="4"
                     android:gravity="right"
-                    android:text="SIM1号码：" />
+                    android:text="链路1已发送数据：" />
 
                 <TextView
-                    android:id="@+id/sim_number_one"
+                    android:id="@+id/link_one_send_data"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="8"
+                    android:layout_weight="7"
                     android:text="物联网采集器" />
 
             </LinearLayout>
 
             <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="5dp"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
+                    android:layout_width="match_parent"
+                    android:layout_height="25dp"
+                    android:layout_marginTop="5dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
 
                 <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="20dp"
-                    android:layout_weight="4"
-                    android:gravity="right"
-                    android:text="端口1：" />
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="20dp"
+                        android:layout_weight="4"
+                        android:gravity="right"
+                        android:text="中心2状态：" />
 
                 <TextView
-                    android:id="@+id/port_one"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="8"
-                    android:text="物联网采集器" />
+                        android:id="@+id/link_two_status"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="8"
+                        android:text="物联网采集器" />
 
             </LinearLayout>
 
             <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="5dp"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="5dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
 
                 <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="20dp"
-                    android:layout_weight="4"
-                    android:gravity="right"
-                    android:text="信号强度：" />
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="0dp"
+                        android:layout_weight="4"
+                        android:gravity="right"
+                        android:text="链路2已发送数据：" />
 
                 <TextView
-                    android:id="@+id/signal_strength_one"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="8"
-                    android:text="物联网采集器" />
+                        android:id="@+id/link_two_send_data"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="7"
+                        android:text="物联网采集器" />
 
             </LinearLayout>
 
             <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="5dp"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
+                    android:layout_width="match_parent"
+                    android:layout_height="25dp"
+                    android:layout_marginTop="5dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
 
                 <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="20dp"
-                    android:layout_weight="4"
-                    android:gravity="right"
-                    android:text="当月累计数据量：" />
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="20dp"
+                        android:layout_weight="4"
+                        android:gravity="right"
+                        android:text="中心3状态：" />
 
                 <TextView
-                    android:id="@+id/data_amount_one"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="8"
-                    android:text="物联网采集器" />
+                        android:id="@+id/link_three_status"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="8"
+                        android:text="物联网采集器" />
 
             </LinearLayout>
 
             <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="5dp"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="5dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
 
                 <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="20dp"
-                    android:layout_weight="4"
-                    android:gravity="right"
-                    android:text="运营商2：" />
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="0dp"
+                        android:layout_weight="4"
+                        android:gravity="right"
+                        android:text="链路3已发送数据：" />
 
                 <TextView
-                    android:id="@+id/operator_two"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="8"
-                    android:text="物联网采集器" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="5dp"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="20dp"
-                    android:layout_weight="4"
-                    android:gravity="right"
-                    android:text="SIM2号码：" />
-
-                <TextView
-                    android:id="@+id/sim_number_two"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="8"
-                    android:text="物联网采集器" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="5dp"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="20dp"
-                    android:layout_weight="4"
-                    android:gravity="right"
-                    android:text="端口2：" />
-
-                <TextView
-                    android:id="@+id/port_two"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="8"
-                    android:text="物联网采集器" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="5dp"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="20dp"
-                    android:layout_weight="4"
-                    android:gravity="right"
-                    android:text="信号强度：" />
-
-                <TextView
-                    android:id="@+id/signal_strength_two"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="8"
-                    android:text="物联网采集器" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="5dp"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="20dp"
-                    android:layout_weight="4"
-                    android:gravity="right"
-                    android:text="当月累计数据量：" />
-
-                <TextView
-                    android:id="@+id/data_amount_two"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="8"
-                    android:text="物联网采集器" />
+                        android:id="@+id/link_three_send_data"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="7"
+                        android:text="物联网采集器" />
 
             </LinearLayout>
 
@@ -532,7 +337,7 @@
                 android:background="@color/bg_main_light_white"
                 android:gravity="center_vertical"
                 android:paddingLeft="16dp"
-                android:text="运行参数" />
+                android:text="太阳能控制器" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -547,10 +352,10 @@
                     android:layout_marginLeft="20dp"
                     android:layout_weight="4"
                     android:gravity="right"
-                    android:text="设备状态：" />
+                    android:text="状态：" />
 
                 <TextView
-                    android:id="@+id/device_status"
+                    android:id="@+id/solar_status"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="8"
@@ -571,10 +376,10 @@
                     android:layout_marginLeft="20dp"
                     android:layout_weight="4"
                     android:gravity="right"
-                    android:text="雨量计功能：" />
+                    android:text="太阳能板电压：" />
 
                 <TextView
-                    android:id="@+id/rain_function"
+                    android:id="@+id/solar_voltage"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="8"
@@ -595,10 +400,10 @@
                     android:layout_marginLeft="20dp"
                     android:layout_weight="4"
                     android:gravity="right"
-                    android:text="渗压计功能：" />
+                    android:text="电池电压：" />
 
                 <TextView
-                    android:id="@+id/osmometer_function"
+                    android:id="@+id/battery_voltage"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="8"
@@ -619,10 +424,10 @@
                     android:layout_marginLeft="20dp"
                     android:layout_weight="4"
                     android:gravity="right"
-                    android:text="调式模式：" />
+                    android:text="日发电量：" />
 
                 <TextView
-                    android:id="@+id/debug_model"
+                    android:id="@+id/rifa_battery"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="8"
@@ -643,10 +448,10 @@
                     android:layout_marginLeft="20dp"
                     android:layout_weight="4"
                     android:gravity="right"
-                    android:text="数据上报间隔：" />
+                    android:text="日耗电量：" />
 
                 <TextView
-                    android:id="@+id/data_interval"
+                    android:id="@+id/rihao_battery"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="8"
@@ -654,176 +459,422 @@
 
             </LinearLayout>
 
-            <LinearLayout
+
+        </LinearLayout>
+
+        <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="5dp"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:orientation="vertical">
+
+            <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:background="@color/bg_main_light_white"
+                    android:gravity="center_vertical"
+                    android:paddingLeft="16dp"
+                    android:text="机箱内部温湿度" />
+
+            <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="25dp"
+                    android:layout_marginTop="5dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
 
                 <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="20dp"
-                    android:layout_weight="4"
-                    android:gravity="right"
-                    android:text="数据通信方式：" />
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="20dp"
+                        android:layout_weight="4"
+                        android:gravity="right"
+                        android:text="状态：" />
 
                 <TextView
-                    android:id="@+id/data_communication"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="8"
-                    android:text="物联网采集器" />
+                        android:id="@+id/case_internal_status"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="8"
+                        android:text="物联网采集器" />
 
             </LinearLayout>
 
             <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="5dp"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="5dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
 
                 <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="20dp"
-                    android:layout_weight="4"
-                    android:gravity="right"
-                    android:text="传感器接口类型：" />
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="20dp"
+                        android:layout_weight="4"
+                        android:gravity="right"
+                        android:text="温度：" />
 
                 <TextView
-                    android:id="@+id/sensor_type"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="8"
-                    android:text="物联网采集器" />
+                        android:id="@+id/case_internal_temperature"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="8"
+                        android:text="物联网采集器" />
 
             </LinearLayout>
 
             <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="5dp"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="5dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
 
                 <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="20dp"
-                    android:layout_weight="4"
-                    android:gravity="right"
-                    android:text="外部电压：" />
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="20dp"
+                        android:layout_weight="4"
+                        android:gravity="right"
+                        android:text="湿度：" />
 
                 <TextView
-                    android:id="@+id/external_voltage"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="8"
-                    android:text="物联网采集器" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="5dp"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="20dp"
-                    android:layout_weight="4"
-                    android:gravity="right"
-                    android:text="注册码期限：" />
-
-                <TextView
-                    android:id="@+id/register_deadline"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="8"
-                    android:text="物联网采集器" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="5dp"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="20dp"
-                    android:layout_weight="4"
-                    android:gravity="right"
-                    android:text="内部温度：" />
-
-                <TextView
-                    android:id="@+id/internal_temperature"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="8"
-                    android:text="物联网采集器" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="5dp"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="20dp"
-                    android:layout_weight="4"
-                    android:gravity="right"
-                    android:text="设备定位：" />
-
-                <TextView
-                    android:id="@+id/device_position"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="8"
-                    android:text="物联网采集器" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="5dp"
-                android:layout_marginBottom="20dp"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="20dp"
-                    android:layout_weight="4"
-                    android:gravity="right"
-                    android:text="数据中心：" />
-
-                <TextView
-                    android:id="@+id/data_center"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="8"
-                    android:text="物联网采集器" />
+                        android:id="@+id/case_internal_humidity"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="8"
+                        android:text="物联网采集器" />
 
             </LinearLayout>
         </LinearLayout>
 
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:orientation="vertical">
+
+            <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:background="@color/bg_main_light_white"
+                    android:gravity="center_vertical"
+                    android:paddingLeft="16dp"
+                    android:text="机箱外部温湿度" />
+
+            <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="25dp"
+                    android:layout_marginTop="5dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="20dp"
+                        android:layout_weight="4"
+                        android:gravity="right"
+                        android:text="状态：" />
+
+                <TextView
+                        android:id="@+id/case_external_status"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="8"
+                        android:text="物联网采集器" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="5dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="20dp"
+                        android:layout_weight="4"
+                        android:gravity="right"
+                        android:text="温度：" />
+
+                <TextView
+                        android:id="@+id/case_external_temperature"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="8"
+                        android:text="物联网采集器" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="5dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="20dp"
+                        android:layout_weight="4"
+                        android:gravity="right"
+                        android:text="湿度：" />
+
+                <TextView
+                        android:id="@+id/case_external_humidity"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="8"
+                        android:text="物联网采集器" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:orientation="vertical">
+
+            <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:background="@color/bg_main_light_white"
+                    android:gravity="center_vertical"
+                    android:paddingLeft="16dp"
+                    android:text="设备电压" />
+
+            <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="25dp"
+                    android:layout_marginTop="5dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="20dp"
+                        android:layout_weight="4"
+                        android:gravity="right"
+                        android:text="内部电压：" />
+
+                <TextView
+                        android:id="@+id/internal_battery"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="8"
+                        android:text="物联网采集器" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="5dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="20dp"
+                        android:layout_weight="4"
+                        android:gravity="right"
+                        android:text="外部电压：" />
+
+                <TextView
+                        android:id="@+id/external_battery"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="8"
+                        android:text="物联网采集器" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:orientation="vertical">
+
+            <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:background="@color/bg_main_light_white"
+                    android:gravity="center_vertical"
+                    android:paddingLeft="16dp"
+                    android:text="传感器数据" />
+            <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="5dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="20dp"
+                        android:layout_weight="4"
+                        android:gravity="right"
+                        android:text="开关量类型：" />
+
+                <TextView
+                        android:id="@+id/switch_type"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="8"
+                        android:text="物联网采集器" />
+
+            </LinearLayout>
+            <LinearLayout
+                    android:id="@+id/ll_rain"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="5dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="20dp"
+                        android:layout_weight="4"
+                        android:gravity="right"
+                        android:text="雨量值：" />
+
+                <TextView
+                        android:id="@+id/rain_data"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="8"
+                        android:text="物联网采集器" />
+
+            </LinearLayout>
+            <LinearLayout
+                    android:id="@+id/ll_alarm"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="5dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="20dp"
+                        android:layout_weight="4"
+                        android:gravity="right"
+                        android:text="断线报警器：" />
+
+                <TextView
+                        android:id="@+id/alarm_status"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="8"
+                        android:text="物联网采集器" />
+
+            </LinearLayout>
+            <LinearLayout
+                    android:id="@+id/ll_sensor"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+                <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/font_main"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginLeft="50dp"
+                        android:layout_marginRight="50dp"/>
+                <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:layout_marginLeft="50dp"
+                        android:layout_marginRight="50dp"
+                        android:background="@color/white"
+                        android:orientation="horizontal">
+
+
+                    <View
+                            android:layout_width="1dp"
+                            android:layout_height="match_parent"
+                            android:background="@color/font_main" />
+
+                    <TextView
+                            android:id="@+id/tv_channel_number"
+                            android:layout_width="0px"
+                            android:layout_height="match_parent"
+                            android:layout_weight="2"
+                            android:gravity="center"
+                            android:paddingLeft="10dp"
+                            android:paddingRight="10dp"
+                            android:text="雷达物位计"
+                            android:textColor="@color/black"
+                            android:textSize="14sp" />
+
+                    <View
+                            android:layout_width="1dp"
+                            android:layout_height="match_parent"
+                            android:background="@color/font_main" />
+                    <TextView
+                            android:layout_width="0px"
+                            android:layout_height="match_parent"
+                            android:layout_weight="2.5"
+                            android:gravity="center"
+                            android:paddingLeft="10dp"
+                            android:paddingRight="10dp"
+                            android:text="状态"
+                            android:textColor="@color/black"
+                            android:textSize="14sp" />
+
+                    <View
+                            android:layout_width="1dp"
+                            android:layout_height="match_parent"
+                            android:background="@color/font_main" />
+                    <TextView
+                            android:layout_width="0px"
+                            android:layout_height="match_parent"
+                            android:layout_weight="2.5"
+                            android:gravity="center"
+                            android:paddingLeft="10dp"
+                            android:paddingRight="10dp"
+                            android:text="数值"
+                            android:textColor="@color/black"
+                            android:textSize="14sp" />
+
+                    <View
+                            android:layout_width="1dp"
+                            android:layout_height="match_parent"
+                            android:background="@color/font_main" />
+                </LinearLayout>
+                <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/font_main"
+                        android:layout_marginLeft="50dp"
+                        android:layout_marginRight="50dp"/>
+                <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/sensor_recycle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="50dp"
+                        android:layout_marginRight="50dp"/>
+            </LinearLayout>
+
+
+        </LinearLayout>
     </LinearLayout>
 
 </ScrollView>
+</com.shmedo.mcloudapp.views.VerticalSwipeRefreshLayout>

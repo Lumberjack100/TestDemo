@@ -6,6 +6,8 @@ import com.shmedo.das.das.cmd.parser.ParseManager;
 import com.shmedo.mcloudapp.entity.ble.*;
 import com.shmedo.mcloudapp.entity.ble.collector.CollectorSensorParamsInfoSub;
 import com.shmedo.mcloudapp.entity.ble.collector.MqttConfigInfoSub;
+import com.shmedo.mcloudapp.entity.devicedetails.DeviceInternetStatus;
+import com.shmedo.mcloudapp.util.ParserDeviceDetailsUtils;
 import com.shmedo.mcloudapp.util.StringUtil;
 import com.shmedo.mcloudapp.util.bleutil.BlueResultParserUtil;
 
@@ -82,13 +84,10 @@ public class ExampleUnitTest {
 
     @Test
     public void testRain(){
-        String message1="$$000,18A092-L,0,455872,1,1,1,5000,10,100,1440,115200,9600,07,120,6,3,1,2,1\r\n";
+        String message1="$$0443,0,0,1,0x00600000,0x00600000,0,0,0,0\r\n";
         String message="$$000,18A095-L,0,455872,2,1,1,5400,10,100,0,9600,9600,02,3,6,3,1,2,1\r\n";
-        CommandResult<BaseConfigInfo> bean = ParseManager.getInstance().parse(message1);
-        System.out.println(bean.getResult().toString());
-        if (!bean.isSuccess()){
-
-        }
+        DeviceInternetStatus internetStatus = ParserDeviceDetailsUtils.parserInternetStatus(message1);
+        System.out.println(internetStatus.toString());
     }
 
 }

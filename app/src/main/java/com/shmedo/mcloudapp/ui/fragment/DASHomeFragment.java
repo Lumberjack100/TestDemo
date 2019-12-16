@@ -75,11 +75,11 @@ public class DASHomeFragment extends BaseFragment {
 
     private static final int DEVICE_LOCK = 0x0003;
 
-    private static final int SIM_A = 0x0005;
+//    private static final int SIM_A = 0x0005;
 
-    private static final int SIM_B = 0x0006;
+//    private static final int SIM_B = 0x0006;
 
-    private static final int OSMOMETER_CONFIG = 0x0008;
+//    private static final int OSMOMETER_CONFIG = 0x0008;
 
 
     @BindView(R.id.tv_device_name)
@@ -94,35 +94,14 @@ public class DASHomeFragment extends BaseFragment {
     @BindView(R.id.tv_sensor_type)
     TextView mTvSensorType;
 
-    @BindView(R.id.iv_lock)
-    ImageView mIvLock;
-
-    @BindView(R.id.tv_lock)
-    TextView mTvLock;
-
-    @BindView(R.id.editSpinner1)
-    EditSpinner spinnerProjectName;
-
-    @BindView(R.id.tv_projectName)
-    TextView mTvProName;
-
     @BindView(R.id.bluetooth_connect_layout)
     View bluetoothConnectLayout;
 
     @BindView(R.id.device_enable_state_layout)
     View deviceEnableLayout;
 
-    @BindView(R.id.device_lock_state_layout)
-    View deviceLockLayout;
-
     @BindView(R.id.debug_model_layout)
     View debugModelLayout;
-
-    @BindView(R.id.sim_A_layout)
-    View simALayout;
-
-    @BindView(R.id.sim_B_layout)
-    View simBLayout;
 
     @BindView(R.id.switch_layout)
     View switchLayout;
@@ -133,19 +112,14 @@ public class DASHomeFragment extends BaseFragment {
     @BindView(R.id.llty_break_alarm)
     View breakAlarmLayout;
 
-    @BindView(R.id.osmometer_config_layout)
-    View osmometerConfigLayout;
-
     @BindView(R.id.sensor_setting_layout)
     View sensorSettingLayout;
 
-    private TextView mTvBluetoothConnect, mTvDeviceEnable, mTvDeviceLock, mTvSimA, mTvSimB, mTvRainGauge, mTvBreakAlarm;
+    private TextView mTvBluetoothConnect, mTvDeviceEnable, mTvRainGauge, mTvBreakAlarm;
 
-    private SwitchButton mSbBluetoothConnect, mSbDeviceEnable, mSbDeviceLock, mSbSimA, mSbSimB, mSbBleakAlarm, mSbOsmometer;
+    private SwitchButton mSbBluetoothConnect, mSbDeviceEnable, mSbBleakAlarm;
 
     private Spinner mSpDebugMode, mSpSwitch;
-
-    private Button mBtnOsmometer;
 
     private Unbinder unbinder;
 
@@ -153,9 +127,9 @@ public class DASHomeFragment extends BaseFragment {
 
     private DaoManager manager = DaoManager.getInstance();
 
-    private List<String> systemDataInfoList = new ArrayList<>();//项目信息列表
+//    private List<String> systemDataInfoList = new ArrayList<>();//项目信息列表
 
-    private HashMap<String, SystemDataInfo> systemDataInfoHashMap = new HashMap<>();
+//    private HashMap<String, SystemDataInfo> systemDataInfoHashMap = new HashMap<>();
 
     private ArrayAdapter<String> debugModeAdapter;
 
@@ -167,7 +141,6 @@ public class DASHomeFragment extends BaseFragment {
 
     private StringBuilder sbcollectorSensor = new StringBuilder();//采集器上传感器配置信息
 
-    private StringBuilder sbOsmometerParameterInfo;//数字渗压计配置
 
     private SetRainAccuryPage.SetRianAccuryParameter setRianAccuryParameter = new SetRainAccuryPage.SetRianAccuryParameter();
     private CollectorConfigInfo collectorConfigInfo;
@@ -198,11 +171,9 @@ public class DASHomeFragment extends BaseFragment {
         unbinder = ButterKnife.bind(this, view);
 
         getIntentData();
-        queryProjectList();
         initView();
         setSwitchViewListener();
         initAdapter();
-
         return view;
     }
 
@@ -229,20 +200,8 @@ public class DASHomeFragment extends BaseFragment {
         mTvDeviceEnable = deviceEnableLayout.findViewById(R.id.tv_device_state);
         mSbDeviceEnable = deviceEnableLayout.findViewById(R.id.switchButton);
 
-        ((TextView) deviceLockLayout.findViewById(R.id.tv_config_name)).setText("设备锁定状态");
-        mTvDeviceLock = deviceLockLayout.findViewById(R.id.tv_device_state);
-        mSbDeviceLock = deviceLockLayout.findViewById(R.id.switchButton);
-
         ((TextView) debugModelLayout.findViewById(R.id.tv_config_name)).setText("调试模式");
         mSpDebugMode = debugModelLayout.findViewById(R.id.spinner);
-
-        ((TextView) simALayout.findViewById(R.id.tv_config_name)).setText("SIM卡A功能");
-        mTvSimA = simALayout.findViewById(R.id.tv_device_state);
-        mSbSimA = simALayout.findViewById(R.id.switchButton);
-
-        ((TextView) simBLayout.findViewById(R.id.tv_config_name)).setText("SIM卡B功能");
-        mTvSimB = simBLayout.findViewById(R.id.tv_device_state);
-        mSbSimB = simBLayout.findViewById(R.id.switchButton);
 
         ((TextView) switchLayout.findViewById(R.id.tv_config_name)).setText("开关量");
         mSpSwitch = switchLayout.findViewById(R.id.spinner);
@@ -250,49 +209,7 @@ public class DASHomeFragment extends BaseFragment {
         mTvBreakAlarm = breakAlarmLayout.findViewById(R.id.tv_break_alarm);
         mSbBleakAlarm = breakAlarmLayout.findViewById(R.id.sb_break_alarm);
 
-        ((TextView) osmometerConfigLayout.findViewById(R.id.tv_config_name)).setText("渗压计功能");
-        mBtnOsmometer = osmometerConfigLayout.findViewById(R.id.btn_config);
-        mSbOsmometer = osmometerConfigLayout.findViewById(R.id.switchButton);
-
         ((TextView) sensorSettingLayout.findViewById(R.id.tv_config_name)).setText("传感器参数配置");
-
-        //TODO 需要查询接口确定设备所属项目
-        mTvProName.setText("xxxx 项目");
-        if (mTvLock.getText().equals("已锁定")) {
-            mIvLock.setImageResource(R.drawable.icon_close_lock);
-            mTvProName.setVisibility(View.VISIBLE);
-            spinnerProjectName.setVisibility(View.GONE);
-
-        } else if (mTvLock.getText().equals("已解锁")) {
-            mIvLock.setImageResource(R.drawable.icon_open_lock);
-            mTvProName.setVisibility(View.GONE);
-            spinnerProjectName.setVisibility(View.VISIBLE);
-        }
-
-        mBtnOsmometer.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (!MCloudApp.isIsBluetoothDeviceConnected()) {
-                    ToastUtils.show(getString(R.string.param_config_bluetooth_disconnect_warn));
-                    return;
-                }
-                OsmometerConfigActivity.startActivity(configDASActivity, sbOsmometerParameterInfo.toString());
-            }
-        });
-
-
-        //TODO 暂时禁止，后期需要再放开
-        mSbDeviceEnable.setEnabled(false);
-        setSwitchViewState(false, mTvDeviceEnable, "已禁用");
-
-        mSbDeviceLock.setEnabled(false);
-        setSwitchViewState(false, mTvDeviceLock, "已禁用");
-
-        mSbSimA.setEnabled(false);
-        setSwitchViewState(false, mTvSimA, "已禁用");
-
-        mSbSimB.setEnabled(false);
-        setSwitchViewState(false, mTvSimB, "已禁用");
     }
 
     /**
@@ -341,75 +258,6 @@ public class DASHomeFragment extends BaseFragment {
             }
         });
 
-        //设备锁定状态开关
-        mSbDeviceLock.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, final boolean isChecked) {
-                if (!MCloudApp.isIsBluetoothDeviceConnected()) {
-                    ToastUtils.show(getString(R.string.param_config_bluetooth_disconnect_warn));
-                    mSbDeviceLock.setCheckedImmediatelyNoEvent(!isChecked);
-                    return;
-                }
-                if (isChecked) {
-                    //发送解锁命令
-                    configDASActivity.sendCommonCommand("##2250\r\n");
-                    setSwitchViewState(true, mTvDeviceLock, "未锁定");
-                } else {
-                    //发送锁定命令
-                    configDASActivity.sendCommonCommand("##2251\r\n");
-                    setSwitchViewState(false, mTvDeviceLock, "锁定");
-                }
-            }
-        });
-
-        //SimA开关
-        mSbSimA.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, final boolean isChecked) {
-                if (!MCloudApp.isIsBluetoothDeviceConnected()) {
-                    ToastUtils.show(getString(R.string.param_config_bluetooth_disconnect_warn));
-                    mSbSimA.setCheckedImmediatelyNoEvent(!isChecked);
-                    return;
-                }
-            }
-        });
-
-        //mSbSimB开关
-        mSbSimB.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, final boolean isChecked) {
-                if (!MCloudApp.isIsBluetoothDeviceConnected()) {
-                    ToastUtils.show(getString(R.string.param_config_bluetooth_disconnect_warn));
-                    mSbSimB.setCheckedImmediatelyNoEvent(!isChecked);
-                    return;
-                }
-            }
-        });
-
-        //渗压计开关
-        mSbOsmometer.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, final boolean isChecked) {
-                if (!MCloudApp.isIsBluetoothDeviceConnected()) {
-                    ToastUtils.show(getString(R.string.param_config_bluetooth_disconnect_warn));
-                    mSbOsmometer.setCheckedImmediatelyNoEvent(!isChecked);
-                    return;
-                }
-
-                if (isChecked) {
-                    //发送打开自动测量模式命令
-                    configDASActivity.sendCommonCommand("##4011\r\n");
-                    mBtnOsmometer.setEnabled(true);
-                    mBtnOsmometer.setText("配置");
-                } else {
-                    //发送关闭渗压计命令
-                    configDASActivity.sendCommonCommand("##4012\r\n");
-                    mBtnOsmometer.setEnabled(false);
-                    mBtnOsmometer.setText("已停用");
-                }
-            }
-        });
-
         //断线报警器开关
         mSbBleakAlarm.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -433,17 +281,6 @@ public class DASHomeFragment extends BaseFragment {
     }
 
     private void initAdapter() {
-        spinnerProjectName.setItemData(systemDataInfoList);
-        spinnerProjectName.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if (null != parent.getAdapter()) {
-                    String projectName = spinnerProjectName.getText();
-                    mTvProName.setText(projectName);
-                }
-            }
-        });
-
         //调试模式
         String[] debugData = getResources().getStringArray(R.array.das_debug_mode);
         debugModeAdapter = new ArrayAdapter<>(configDASActivity, android.R.layout.simple_spinner_item, debugData);
@@ -538,24 +375,9 @@ public class DASHomeFragment extends BaseFragment {
     }
 
 
-    @OnClick({R.id.iv_lock, R.id.tv_rain_gauge, R.id.sensor_setting_layout, R.id.rl_general_setting, R.id.rl_mqtt_setting})
+    @OnClick({R.id.tv_rain_gauge, R.id.sensor_setting_layout, R.id.rl_general_setting, R.id.rl_mqtt_setting})
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.iv_lock:
-                if (mTvLock.getText().equals("已锁定")) {
-                    mTvLock.setText("已解锁");
-                    mIvLock.setImageResource(R.drawable.icon_open_lock);
-                    mTvProName.setVisibility(View.GONE);
-                    spinnerProjectName.setVisibility(View.VISIBLE);
-
-                } else if (mTvLock.getText().equals("已解锁")) {
-                    mTvLock.setText("已锁定");
-                    mIvLock.setImageResource(R.drawable.icon_close_lock);
-                    mTvProName.setVisibility(View.VISIBLE);
-                    spinnerProjectName.setVisibility(View.GONE);
-                }
-                break;
-
             case R.id.tv_rain_gauge:
                 if (!MCloudApp.isIsBluetoothDeviceConnected()) {
                     ToastUtils.show(getString(R.string.param_config_bluetooth_disconnect_warn));
@@ -595,6 +417,7 @@ public class DASHomeFragment extends BaseFragment {
      * 所有配置信息处理
      */
     private void processGetAllSensorConfig(String cmdStr) {
+        Timber.d("--------所有配置信息 --每次返回指令-------" +  cmdStr);
         String[] strs = cmdStr.split("@@");
         if (strs == null || strs.length < 6)
             return;
@@ -619,14 +442,6 @@ public class DASHomeFragment extends BaseFragment {
     }
 
     private void updateView() {
-        //设备启用状态 TODO 已禁用
-//        mSbDeviceEnable.setCheckedImmediatelyNoEvent(baseConfigInfo.getEquipmentStatus() == EquipmentStatus.ACTIVATION);
-//        setSwitchViewState(baseConfigInfo.getEquipmentStatus() == EquipmentStatus.ACTIVATION, mTvDeviceEnable, baseConfigInfo.getEquipmentStatus() == EquipmentStatus.ACTIVATION ? "已激活" : "待机");
-
-        //设备锁定状态 TODO 已禁用
-//        mSbDeviceLock.setCheckedImmediatelyNoEvent(lockStatus.equals("unlock"));
-//        setSwitchViewState(lockStatus.equals("unlock"), mTvDeviceLock, lockStatus.equals("unlock") ? "未锁定" : "锁定");
-
         //设备调试模式
         switch (baseConfigInfo.getDebugModel()) {
             case INITIALZE:
@@ -650,14 +465,17 @@ public class DASHomeFragment extends BaseFragment {
                 break;
         }
 
-        //选择SIM卡功能 TODO 已禁用
-//        if (baseConfigInfo.getSIMChoose() == SIMChoose.SIM2) {
-//            mSbSimA.setCheckedImmediatelyNoEvent(false);
-//            mSbSimB.setCheckedImmediatelyNoEvent(true);
-//        } else {
-//            mSbSimA.setCheckedImmediatelyNoEvent(true);
-//            mSbSimB.setCheckedImmediatelyNoEvent(false);
-//        }
+        //设备状态
+        switch (baseConfigInfo.getEquipmentStatus()){
+            case STANDBY:   //待机
+                mSbDeviceEnable.setCheckedImmediatelyNoEvent(false);
+                setSwitchViewState(false, mTvDeviceEnable, "已待机");
+                break;
+            case ACTIVATION:    //激活
+                mSbDeviceEnable.setCheckedImmediatelyNoEvent(true);
+                setSwitchViewState(true, mTvDeviceEnable, "已激活");
+                break;
+        }
 
         //设备雨量站开关量
         switch (baseConfigInfo.getRainfallStation()) {
@@ -704,25 +522,6 @@ public class DASHomeFragment extends BaseFragment {
                     return;
                 }
                 break;
-
-            case QUERY_OSMOMETER_PARAMETER://查询数字式渗压计参数 400
-                sbOsmometerParameterInfo = new StringBuilder();
-                sbOsmometerParameterInfo.append(cmdStr);
-                queryOsmometerParameterInfo = BlueResultParserUtil.getQueryOsmometerParameterInfo(cmdStr);
-                Timber.d("--------查询数字式渗压计参数-------" + queryOsmometerParameterInfo.toString());
-                //渗压计开关
-                mSbOsmometer.setCheckedImmediatelyNoEvent(queryOsmometerParameterInfo.getOsmometerStatus() == OsmometerStatus.OSMOMETER_OPEN);
-                mBtnOsmometer.setEnabled(queryOsmometerParameterInfo.getOsmometerStatus() == OsmometerStatus.OSMOMETER_OPEN);
-                mBtnOsmometer.setText(queryOsmometerParameterInfo.getOsmometerStatus() == OsmometerStatus.OSMOMETER_OPEN ? "配置" : "已停用");
-                break;
-
-            case DIGITAL_OSMOMETER_FUNCTION://开启/关闭数字式渗压计功能 401
-                if (cmdStr.endsWith("e\r\n") || cmdStr.startsWith("$$ce\r\n")) {
-                    ToastUtils.show("渗压计配置错误!");
-                    return;
-                }
-                break;
-
             case GET_ALL_SENSOR_CONFIG://所有配置信息 333
                 processGetAllSensorConfig(cmdStr);
                 break;
@@ -747,13 +546,18 @@ public class DASHomeFragment extends BaseFragment {
                         break;
                 }
                 break;
+            case DAS_DEBUG_MODE:
+
+                break;
         }
     }
 
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void getConfig(String messageEvent) {
-        if (!TextUtils.isEmpty(messageEvent) && messageEvent.startsWith("$$")) {
+        if (TextUtils.isEmpty(messageEvent) && !messageEvent.startsWith("$$")) {
+            return;
+        }else if (messageEvent.startsWith("$$005")|| messageEvent.startsWith("$$333")||messageEvent.startsWith("$$227")){
             setResultData(messageEvent);
         }
     }
@@ -774,8 +578,6 @@ public class DASHomeFragment extends BaseFragment {
         if (isConnected) {
             mSbBluetoothConnect.setCheckedImmediatelyNoEvent(true);
             setSwitchViewState(true, mTvBluetoothConnect, "已连接");
-            if (mBtnOsmometer.getText().toString().equals("配置"))
-                mBtnOsmometer.setEnabled(true);
 
             mSpDebugMode.setEnabled(true);
             mSpSwitch.setEnabled(true);
@@ -783,8 +585,6 @@ public class DASHomeFragment extends BaseFragment {
         } else {
             mSbBluetoothConnect.setCheckedImmediatelyNoEvent(false);
             setSwitchViewState(false, mTvBluetoothConnect, "已断开");
-            if (mBtnOsmometer.getText().toString().equals("配置"))
-                mBtnOsmometer.setEnabled(false);
 
             mSpDebugMode.setEnabled(false);
             mSpSwitch.setEnabled(false);
@@ -814,12 +614,12 @@ public class DASHomeFragment extends BaseFragment {
                                 setSwitchViewState(true, mTvDeviceEnable, "已待机");
                                 break;
 
-                            case OSMOMETER_CONFIG:
-                                //发送关闭渗压计命令
-                                configDASActivity.sendCommonCommand("##4012\r\n");
-                                mBtnOsmometer.setEnabled(false);
-                                mBtnOsmometer.setText("已停用");
-                                break;
+//                            case OSMOMETER_CONFIG:
+//                                //发送关闭渗压计命令
+//                                configDASActivity.sendCommonCommand("##4012\r\n");
+//                                mBtnOsmometer.setEnabled(false);
+//                                mBtnOsmometer.setText("已停用");
+//                                break;
                         }
                     }
                 }).onNegative(new MaterialDialog.SingleButtonCallback() {
@@ -831,32 +631,14 @@ public class DASHomeFragment extends BaseFragment {
                                 mSbDeviceEnable.setCheckedImmediatelyNoEvent(true);
                                 break;
 
-                            case OSMOMETER_CONFIG:
-                                mSbOsmometer.setCheckedImmediatelyNoEvent(true);
-                                break;
+//                            case OSMOMETER_CONFIG:
+//                                mSbOsmometer.setCheckedImmediatelyNoEvent(true);
+//                                break;
                         }
                     }
                 });
         MaterialDialog mMaterialDialog = mBuilder.build();
         mMaterialDialog.show();
-    }
-
-    /**
-     * 查询本地数据库中项目信息
-     */
-    private void queryProjectList() {
-        List<SystemDataInfo> infoList = manager.getDaoSession().getSystemDataInfoDao().queryBuilder()
-                .where(SystemDataInfoDao.Properties.Account.isNotNull(), SystemDataInfoDao.Properties.Account.eq(MCloudApp.getAccount()))
-                .list();
-
-        systemDataInfoList.clear();
-        systemDataInfoHashMap.clear();
-        if (null != infoList && infoList.size() > 0) {
-            for (SystemDataInfo systemDataInfo : infoList) {
-                systemDataInfoList.add(systemDataInfo.getProjName());
-                systemDataInfoHashMap.put(systemDataInfo.getProjName(), systemDataInfo);
-            }
-        }
     }
 
 
