@@ -3,8 +3,10 @@ package com.shmedo.mcloudapp.util;
 import android.text.TextUtils;
 import android.util.Log;
 
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Locale;
 
 /**
@@ -18,6 +20,8 @@ import java.util.Locale;
 public class TimeUtil {
     private static SimpleDateFormat sdf = null;
     private static SimpleDateFormat sdf_systime_format=new SimpleDateFormat("yyMMddHHmmss");
+    private static SimpleDateFormat sdf_systime_format2=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
     public  static String formatUTC(long l, String strPattern) {
         if (TextUtils.isEmpty(strPattern)) {
             strPattern = "yyyy-MM-dd HH:mm:ss";
@@ -45,5 +49,17 @@ public class TimeUtil {
             return "";
         }
 
+    }
+    public static String getCurrentTime(){
+        Date date = new Date();
+        DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        return format.format(date);
+    }
+    public static String getDateBefore(int day){
+        Date date = new Date();
+        Calendar now =Calendar.getInstance();
+        now.setTime(date);
+        now.set(Calendar.DATE,now.get(Calendar.DATE)-day);
+        return sdf_systime_format2.format(now.getTime());
     }
 }

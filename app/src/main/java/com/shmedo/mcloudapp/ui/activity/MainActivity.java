@@ -375,7 +375,7 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
     private void getDeviceBasicInfoList(String currentCompanyID) {
         RequestBody body = RequestBody.create(CommonVariable.JSON_TYPE, currentCompanyID);
         MDRetrofit.getInstance()
-                .createService()
+                .createService(ApiName.HTTPS)
                 .QueryDeviceBasicInfoList(MCloudApp.getAccessToken(), body)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

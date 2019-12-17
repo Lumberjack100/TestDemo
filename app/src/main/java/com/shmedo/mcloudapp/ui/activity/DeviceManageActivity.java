@@ -33,10 +33,7 @@ import com.shmedo.mcloudapp.entity.parameter.SystemParameter;
 import com.shmedo.mcloudapp.model.BaseObserver;
 import com.shmedo.mcloudapp.model.MDRetrofit;
 import com.shmedo.mcloudapp.model.common.CommonVariable;
-import com.shmedo.mcloudapp.util.AmapUtil;
-import com.shmedo.mcloudapp.util.DaoManager;
-import com.shmedo.mcloudapp.util.GsonFactory;
-import com.shmedo.mcloudapp.util.XPermissionUtils;
+import com.shmedo.mcloudapp.util.*;
 import com.shmedo.mcloudapp.views.DeviceSensorDialog;
 import com.shmedo.mcloudapp.views.DividerItemDecoration;
 import com.shmedo.mcloudapp.views.EmptyDataView;
@@ -130,7 +127,7 @@ public class DeviceManageActivity extends BaseActivity implements OnRefreshListe
         String json = GsonFactory.getGson().toJson(parameter);
         RequestBody body = RequestBody.create(CommonVariable.JSON_TYPE, json);
         MDRetrofit.getInstance()
-                .createService()
+                .createService(ApiName.HTTPS)
                 .QueryUserListProject(MCloudApp.getAccessToken(), body)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -248,7 +245,7 @@ public class DeviceManageActivity extends BaseActivity implements OnRefreshListe
     private void getDeviceList(String currentCompanyID) {
         RequestBody body = RequestBody.create(CommonVariable.JSON_TYPE, currentCompanyID);
         MDRetrofit.getInstance()
-                .createService()
+                .createService(ApiName.HTTPS)
                 .QueryDeviceStatusInfoList(MCloudApp.getAccessToken(), body)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

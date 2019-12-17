@@ -27,15 +27,7 @@ import com.shmedo.mcloudapp.entity.parameter.SetUserHeadPhotoParameter;
 import com.shmedo.mcloudapp.model.BaseObserver;
 import com.shmedo.mcloudapp.model.MDRetrofit;
 import com.shmedo.mcloudapp.model.common.CommonVariable;
-import com.shmedo.mcloudapp.util.ActivityCollector;
-import com.shmedo.mcloudapp.util.DaoManager;
-import com.shmedo.mcloudapp.util.FileProviderUtils;
-import com.shmedo.mcloudapp.util.FileUtil;
-import com.shmedo.mcloudapp.util.GlideUtils;
-import com.shmedo.mcloudapp.util.GsonFactory;
-import com.shmedo.mcloudapp.util.ImageUtil;
-import com.shmedo.mcloudapp.util.PhotoUtil;
-import com.shmedo.mcloudapp.util.XPermissionUtils;
+import com.shmedo.mcloudapp.util.*;
 import com.shmedo.mcloudapp.views.LoadingDialog;
 import com.shmedo.mcloudapp.views.MyMenu;
 
@@ -259,7 +251,7 @@ public class UserInfoActivity extends BaseActivity {
         String json = GsonFactory.getGson().toJson(parameter);
         RequestBody body = RequestBody.create(CommonVariable.JSON_TYPE, json);
         mLoadingDialog.showNoCancelDialog("正在上传...");
-        MDRetrofit.getInstance().createService().setUserHeadPhoto(body).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new BaseObserver<String>() {
+        MDRetrofit.getInstance().createService(ApiName.HTTPS).setUserHeadPhoto(body).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new BaseObserver<String>() {
             @Override
             public void Success(String s, String message) {
                 mLoadingDialog.dismiss();

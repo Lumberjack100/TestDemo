@@ -30,6 +30,7 @@ import com.shmedo.mcloudapp.entity.DeviceBasicInfoResultDao;
 import com.shmedo.mcloudapp.model.BaseObserver;
 import com.shmedo.mcloudapp.model.Extras;
 import com.shmedo.mcloudapp.model.MDRetrofit;
+import com.shmedo.mcloudapp.util.ApiName;
 import com.shmedo.mcloudapp.util.DaoManager;
 import com.shmedo.mcloudapp.util.WifiSupport;
 import com.shmedo.mcloudapp.views.LoadingDialog;
@@ -132,7 +133,7 @@ public class ConfigE60Activity extends BaseActivity {
         String url = "http://" + ipAddr + "/device.json";
 
         mLoadingDialog.showNoCancelDialog("正在验证设备...");
-        MDRetrofit.getInstance().createService().ValidateDeviceE60(url)
+        MDRetrofit.getInstance().createService(ApiName.HTTPS).ValidateDeviceE60(url)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new BaseObserver<String>() {

@@ -32,6 +32,8 @@ public class MCloudApp {
 
     private static String serviceAddress = "mdnetservice.shmedo.cn";
 
+    private static String httpServiceAddress = "chaxun.shmedo.cn";
+
     private static boolean isNetworkConnected = true;
 
     private static boolean isBluetoothDeviceConnected = false;
@@ -82,6 +84,15 @@ public class MCloudApp {
         MCloudApp.serviceAddress = serviceAddress;
     }
 
+    public static String getHttpServiceAddress() {
+        if (StringUtil.isNullOrEmpty(httpServiceAddress))
+            return httpServiceAddress;
+        return "http://" + httpServiceAddress;
+    }
+
+    public static void setHttpServiceAddress(String httpServiceAddress) {
+        MCloudApp.httpServiceAddress = httpServiceAddress;
+    }
 
     public static UserInfo getCurrentUserInfo() {
         return currentUserInfo;

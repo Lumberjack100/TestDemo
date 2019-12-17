@@ -334,7 +334,7 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
                         errMsg = "查询设备参数超时，请尝试重新连接";
                         startProgressRunnable("查询设备配置参数...", 10000);
                         obtainDeviceConfigInfoCmd();
-
+                        ToastUtils.show("蓝牙连接成功");
                     } else {
                         ToastUtils.show("蓝牙认证失败!");
                         try {
@@ -521,7 +521,7 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
      */
     private void parserDASCmdResult(String cmdStr) {
         //查询数字式渗压计参数
-        if (cmdStr.startsWith("$$400") && cmdStr.endsWith("\r\n")) {
+        if (cmdStr.startsWith("$$333") && cmdStr.endsWith("\r\n")) {
             stopProgressRunnable();
         }
 
@@ -598,9 +598,9 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
 //        Timber.d("发送系统运行状态指令===" + runstateCommand);
 
         //查询数字式渗压计参数 ##400
-        String shenyajiCommand = CommandManager.getInstance().getCommand(CommandType.QUERY_OSMOMETER_PARAMETER, null);
-        sendCommonCommand(shenyajiCommand);
-        Timber.d("发送查询渗压计指令===" + shenyajiCommand);
+//        String shenyajiCommand = CommandManager.getInstance().getCommand(CommandType.QUERY_OSMOMETER_PARAMETER, null);
+//        sendCommonCommand(shenyajiCommand);
+//        Timber.d("发送查询渗压计指令===" + shenyajiCommand);
 
         //版本信息 ##040
 //        String versionCommand = CommandManager.getInstance().getCommand(CommandType.VERSION_MESSAGE, null);
@@ -673,6 +673,7 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
                 .content(content)
                 .contentColor(Color.parseColor("#000000"))
                 .canceledOnTouchOutside(false)
+                .neutralText("取消")
                 .positiveText("保存")
                 .negativeText("不保存")
                 .negativeColor(Color.parseColor("#807B7B"))
@@ -691,6 +692,11 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
                         if (isExitMode) {
                             BaseDeviceConnectActivity.this.finish();
                         }
+                    }
+                }).onNeutral(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        dialog.dismiss();
                     }
                 });
         MaterialDialog mMaterialDialog = mBuilder.build();

@@ -14,10 +14,7 @@ import com.shmedo.mcloudapp.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.model.Extras;
 import com.shmedo.mcloudapp.ui.activity.device.BaseDeviceConnectActivity;
-import com.shmedo.mcloudapp.ui.fragment.AdvanceSetFragment;
-import com.shmedo.mcloudapp.ui.fragment.DASHomeFragment;
-import com.shmedo.mcloudapp.ui.fragment.DeviceDetailsFragment;
-import com.shmedo.mcloudapp.ui.fragment.QueryDataFragment;
+import com.shmedo.mcloudapp.ui.fragment.*;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -42,7 +39,7 @@ public class ConfigDASActivity extends BaseDeviceConnectActivity {
     TextView mTvHighsetting;
 
     private DASHomeFragment DASHomeFragment;
-    private QueryDataFragment queryDataFragment;        //查询数据
+    private QueryDeviceDataFragment queryDataFragment;        //查询数据
     private DeviceDetailsFragment deviceDetailsFragment;//设备详情
     private AdvanceSetFragment advanceSetFragment;      //高级设置
     private Fragment currentFragment;
@@ -98,7 +95,7 @@ public class ConfigDASActivity extends BaseDeviceConnectActivity {
             String curTag = savedInstanceState.getString("CurrentFragment");
             currentFragment = getSupportFragmentManager().findFragmentByTag(curTag);
             DASHomeFragment = (DASHomeFragment) getSupportFragmentManager().findFragmentByTag(DASHomeFragment.class.getName());
-            queryDataFragment = (QueryDataFragment) getSupportFragmentManager().findFragmentByTag(QueryDataFragment.class.getName());
+            queryDataFragment = (QueryDeviceDataFragment) getSupportFragmentManager().findFragmentByTag(QueryDeviceDataFragment.class.getName());
             deviceDetailsFragment = (DeviceDetailsFragment) getSupportFragmentManager().findFragmentByTag(DeviceDetailsFragment.class.getName());
             advanceSetFragment = (AdvanceSetFragment) getSupportFragmentManager().findFragmentByTag(AdvanceSetFragment.class.getName());
 
@@ -112,7 +109,7 @@ public class ConfigDASActivity extends BaseDeviceConnectActivity {
                     .commit();
         } else {
             DASHomeFragment = new DASHomeFragment();
-            queryDataFragment = new QueryDataFragment();
+            queryDataFragment = new QueryDeviceDataFragment();
             deviceDetailsFragment = new DeviceDetailsFragment();
             advanceSetFragment = new AdvanceSetFragment();
             setDefaultFragment();
@@ -173,6 +170,7 @@ public class ConfigDASActivity extends BaseDeviceConnectActivity {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
             case REQUEST_ENABLE_BT:
                 // 蓝牙已经开启
