@@ -10,16 +10,16 @@ import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
-
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.hjq.toast.ToastUtils;
 import com.shmedo.mcloudapp.R;
@@ -51,21 +51,34 @@ import butterknife.OnClick;
  */
 public class WifiConnectionActivity extends AppCompatActivity {
     private static final String TAG = "adu";
-    @BindView(R.id.LL_close) LinearLayout mLLClose;
+
+    @BindView(R.id.LL_close)
+    LinearLayout mLLClose;
 
     private ProgressBar mPbWifiLoading;
+
     private RecyclerView mRecycleListWifi;
-    List<WifiBean> realWifiList = new ArrayList<>();
+
+    private List<WifiBean> realWifiList = new ArrayList<>();
 
     private WifiListAdapter adapter;
 
     private WifiBroadcastReceiver wifiReceiver;
+
     private int connectType = 0;//1：连接成功？ 2 正在连接（如果wifi热点列表发生变需要该字段）
 
     private WifiBean wifiBean;
+
     private WifiEvent event = new WifiEvent();
 
-    @Override protected void onCreate(@Nullable Bundle savedInstanceState) {
+    public static void startActivity(Context context) {
+        Intent intent = new Intent(context, WifiConnectionActivity.class);
+        context.startActivity(intent);
+    }
+
+
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
         setContentView(R.layout.activity_wifi_list);
@@ -103,16 +116,16 @@ public class WifiConnectionActivity extends AppCompatActivity {
             public void onItemClick(View view, int postion, Object o) {
                 wifiBean = realWifiList.get(postion);
                 if (wifiBean.getState().equals(AppContants.WIFI_STATE_UNCONNECT) ||
-                    wifiBean.getState().equals(AppContants.WIFI_STATE_CONNECT)) {
+                        wifiBean.getState().equals(AppContants.WIFI_STATE_CONNECT)) {
                     String capabilities = realWifiList.get(postion).getCapabilities();
                     if (WifiSupport.getWifiCipher(capabilities) ==
-                        WifiSupport.WifiCipherType.WIFICIPHER_NOPASS) {//无需密码
+                            WifiSupport.WifiCipherType.WIFICIPHER_NOPASS) {//无需密码
                         WifiConfiguration tempConfig = WifiSupport.isExsits(wifiBean.getWifiName(),
-                            WifiConnectionActivity.this);
+                                WifiConnectionActivity.this);
                         if (tempConfig == null) {
                             WifiConfiguration exsits = WifiSupport.createWifiConfig(
-                                wifiBean.getWifiName(), null,
-                                WifiSupport.WifiCipherType.WIFICIPHER_NOPASS);
+                                    wifiBean.getWifiName(), null,
+                                    WifiSupport.WifiCipherType.WIFICIPHER_NOPASS);
                             WifiSupport.addNetWork(exsits, WifiConnectionActivity.this);
                         } else {
                             WifiSupport.addNetWork(tempConfig, WifiConnectionActivity.this);
@@ -151,8 +164,8 @@ public class WifiConnectionActivity extends AppCompatActivity {
     //之前没配置过该网络， 弹出输入密码界面
     private void noConfigurationWifi(int position) {
         WifiLinkDialog linkDialog = new WifiLinkDialog(this,
-            R.style.dialog_download, realWifiList.get(position).getWifiName(),
-            realWifiList.get(position).getCapabilities());
+                R.style.dialog_download, realWifiList.get(position).getWifiName(),
+                realWifiList.get(position).getCapabilities());
         if (!linkDialog.isShowing()) {
             linkDialog.show();
         }
@@ -240,7 +253,7 @@ public class WifiConnectionActivity extends AppCompatActivity {
                     Log.d(TAG, "wifi连接上了");
                     hidingProgressBar();
                     WifiInfo connectedWifiInfo = WifiSupport.getConnectedWifiInfo(
-                        WifiConnectionActivity.this);
+                            WifiConnectionActivity.this);
 
                     //连接成功 跳转界面 传递ip地址
                     ToastUtils.show("WIFI连接上了");
@@ -252,7 +265,7 @@ public class WifiConnectionActivity extends AppCompatActivity {
                     Log.d(TAG, "wifi正在连接");
                     showProgressBar();
                     WifiInfo connectedWifiInfo = WifiSupport.getConnectedWifiInfo(
-                        WifiConnectionActivity.this);
+                            WifiConnectionActivity.this);
                     connectType = 2;
                     wifiListSet(connectedWifiInfo.getSSID(), connectType);
                 }

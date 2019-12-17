@@ -2,121 +2,58 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:layout_height="55dp"
+    android:layout_marginStart="20dp"
+    android:layout_marginEnd="20dp"
+    android:gravity="center_vertical">
 
-    <LinearLayout
+    <com.github.clans.fab.FloatingActionButton
+        android:id="@+id/fab_location"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="right"
-        android:layout_marginEnd="20dp"
-        android:orientation="vertical">
+        android:src="@drawable/icon_location"
+        app:fab_colorNormal="@color/white"
+        app:fab_colorPressed="@color/app_color_blue_pressed"
+        app:fab_colorRipple="@color/app_color_blue_pressed"
+        app:fab_size="mini" />
 
-        <com.github.clans.fab.FloatingActionButton
-            android:id="@+id/fab_bluetooth"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_bluetooth_primary"
-            android:visibility="gone"
-            app:fab_colorNormal="@color/white"
-            app:fab_colorPressed="@color/app_color_blue_pressed"
-            app:fab_colorRipple="@color/app_color_blue_pressed"
-            app:fab_size="mini" />
-
-        <com.github.clans.fab.FloatingActionButton
-            android:id="@+id/fab_wifi"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/icon_wifi"
-            android:visibility="gone"
-            app:fab_colorNormal="@color/white"
-            app:fab_colorPressed="@color/app_color_blue_pressed"
-            app:fab_colorRipple="@color/app_color_blue_pressed"
-            app:fab_size="mini" />
-
-
-        <com.github.clans.fab.FloatingActionButton
-            android:id="@+id/fab_config"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/icon_config"
-            android:visibility="gone"
-            app:fab_colorNormal="@color/white"
-            app:fab_colorPressed="@color/app_color_blue_pressed"
-            app:fab_colorRipple="@color/app_color_blue_pressed"
-            app:fab_size="mini" />
-
-        <com.github.clans.fab.FloatingActionButton
-            android:id="@+id/fab_expand"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_arrow_top_primary"
-            app:fab_colorNormal="@color/white"
-            app:fab_colorPressed="@color/app_color_blue_pressed"
-            app:fab_colorRipple="@color/app_color_blue_pressed"
-            app:fab_size="mini" />
-
-    </LinearLayout>
-
-
-    <LinearLayout
-        android:id="@+id/foot_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_vertical"
+    <RelativeLayout
+        android:id="@+id/RL_scan"
+        android:layout_width="0dp"
+        android:layout_height="45dp"
         android:layout_marginStart="20dp"
-        android:layout_marginEnd="20dp">
+        android:layout_marginEnd="20dp"
+        android:layout_weight="1"
+        android:background="@drawable/btn_select">
 
-        <com.github.clans.fab.FloatingActionButton
-            android:id="@+id/fab_location"
+        <ImageView
+            android:id="@+id/img_scan"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="15dp"
+            android:layout_toStartOf="@+id/tv_scan"
+            android:src="@drawable/icon_scan" />
+
+        <TextView
+            android:id="@+id/tv_scan"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/icon_location"
-            app:fab_colorNormal="@color/white"
-            app:fab_colorPressed="@color/app_color_blue_pressed"
-            app:fab_colorRipple="@color/app_color_blue_pressed"
-            app:fab_size="mini" />
+            android:layout_centerInParent="true"
+            android:text="扫一扫"
+            android:textColor="@color/white"
+            android:textSize="20sp" />
 
-        <RelativeLayout
-            android:id="@+id/RL_scan"
-            android:layout_width="0dp"
-            android:layout_height="45dp"
-            android:layout_weight="1"
-            android:layout_marginStart="20dp"
-            android:layout_marginEnd="20dp"
-            android:background="@drawable/btn_select">
+    </RelativeLayout>
 
-            <ImageView
-                android:id="@+id/img_scan"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_centerVertical="true"
-                android:layout_marginEnd="15dp"
-                android:layout_toStartOf="@+id/tv_scan"
-                android:src="@drawable/icon_scan" />
-
-            <TextView
-                android:id="@+id/tv_scan"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:text="扫一扫"
-                android:textColor="@color/white"
-                android:textSize="20sp" />
-
-        </RelativeLayout>
-
-        <com.github.clans.fab.FloatingActionButton
-            android:id="@+id/fab_refresh"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/icon_refresh"
-            app:fab_colorNormal="@color/white"
-            app:fab_colorPressed="@color/app_color_blue_pressed"
-            app:fab_colorRipple="@color/app_color_blue_pressed"
-            app:fab_size="mini" />
-
-    </LinearLayout>
-
+    <com.github.clans.fab.FloatingActionButton
+        android:id="@+id/fab_refresh"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/icon_refresh"
+        app:fab_colorNormal="@color/white"
+        app:fab_colorPressed="@color/app_color_blue_pressed"
+        app:fab_colorRipple="@color/app_color_blue_pressed"
+        app:fab_size="mini" />
 
 </LinearLayout>

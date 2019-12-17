@@ -1,6 +1,5 @@
 package com.shmedo.mcloudapp.ui.activity;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
@@ -15,7 +14,6 @@ import android.os.Handler;
 import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.KeyEvent;
-import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
@@ -23,11 +21,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.widget.Toolbar;
 
-import com.afollestad.materialdialogs.DialogAction;
-import com.afollestad.materialdialogs.MaterialDialog;
 import com.amap.api.location.AMapLocation;
 import com.amap.api.location.AMapLocationClient;
 import com.amap.api.location.AMapLocationClientOption;
@@ -42,7 +37,6 @@ import com.amap.api.maps.model.LatLng;
 import com.amap.api.maps.model.LatLngBounds;
 import com.amap.api.maps.model.Marker;
 import com.amap.api.maps.model.MyLocationStyle;
-import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.gson.reflect.TypeToken;
 import com.hjq.toast.ToastUtils;
 import com.shmedo.mcloudapp.MCloudApp;
@@ -70,11 +64,11 @@ import com.shmedo.mcloudapp.model.BaseObserver;
 import com.shmedo.mcloudapp.model.MDRetrofit;
 import com.shmedo.mcloudapp.model.common.CommonVariable;
 import com.shmedo.mcloudapp.ui.SearchDataUI;
+import com.shmedo.mcloudapp.util.ApiName;
 import com.shmedo.mcloudapp.util.DaoManager;
 import com.shmedo.mcloudapp.util.DensityUtil;
 import com.shmedo.mcloudapp.util.GsonFactory;
 import com.shmedo.mcloudapp.util.StartActivityUtil;
-import com.shmedo.mcloudapp.util.XPermissionUtils;
 import com.shmedo.mcloudapp.util.common.MapManagerUtil;
 import com.shmedo.mcloudapp.views.LoadingDialog;
 
@@ -94,14 +88,11 @@ import io.reactivex.schedulers.Schedulers;
 import okhttp3.RequestBody;
 import timber.log.Timber;
 
-import static com.shmedo.mcloudapp.util.bleutil.Constants.BT_CONNECT;
-import static com.shmedo.mcloudapp.util.bleutil.Constants.BT_DISCONNECTED;
-
 public class MainActivity extends BaseActivity implements LocationSource, AMapLocationListener {
 
-    private static final int REQUEST_ENABLE_BT = 0x002;
+    public static final int REQUEST_ENABLE_BT = 0x002;
 
-    private static final int REQUEST_CODE_SCAN = 0x001;
+    public static final int REQUEST_CODE_SCAN = 0x001;
 
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
@@ -126,8 +117,6 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
 
     private SearchDataUI searchDataUI;
 
-    private View rootView;
-
     private AMap aMap; //初始化地图控制器对象
     private UiSettings mUiSettings;//定义一个UiSettings对象
     private MyLocationStyle myLocationStyle;
@@ -138,8 +127,6 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
     private LatLng myLatLng;
     private boolean followMove = true;
 
-    private MaterialDialog mMaterialDialog;
-    private MaterialDialog.Builder mBuilder;
     private DaoManager manager = DaoManager.getInstance();
     private BluetoothAdapter mBluetoothAdapter;
     private MdBluetoothManager mdBluetoothManager;
@@ -147,16 +134,11 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
 
     private List<MDevice> list = new ArrayList<>();
     private Handler hander;
-    private String currentMessageId = "";
 
-    private boolean isBlueModle = true;//当前模式是否是蓝牙模式
-    private static boolean isConneted = false;//蓝牙是否已连接
     private List<ClusterItem> clusterItemsMerchant = new ArrayList<>();
     private ClusterOverlayMerchant clusterOverlayMerchant;
     private Map<Integer, Drawable> mBackDrawAblesMerchant = new HashMap<Integer, Drawable>();
     private int clusterRadius = 48;
-
-    private BottomSheetBehavior mBottomSheetBehavior;
 
 
     public static void start(Context context) {
@@ -165,6 +147,7 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         context.startActivity(intent);
     }
+
 
     private Runnable dismssDialogRunnable = new Runnable() {
         @Override
@@ -183,8 +166,6 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
 
     @Override
     protected int initContentView() {
-        rootView = LayoutInflater.from(this).inflate(R.layout.main, null);
-
         return R.layout.main;
     }
 
@@ -201,25 +182,7 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
         initBluetooth();
 //        UpdataManagerUtil.requestPermissionForInstallPackage(this);//版本更新
 
-        searchDataUI = new SearchDataUI(this, rootView);
-//        mBottomSheetBehavior = BottomSheetBehavior.from(findViewById(R.id.bottom_sheet));
-//        int height = DensityUtil.Dp2Px(MainActivity.this, 120);
-//        mBottomSheetBehavior.setPeekHeight(height);
-//        mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-//        mBottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
-//            @Override
-//            public void onStateChanged(View bottomSheet, int newState) {
-//                if (newState == BottomSheetBehavior.STATE_COLLAPSED) {
-//                    int height = DensityUtil.Dp2Px(MainActivity.this, 120);
-//                    mBottomSheetBehavior.setPeekHeight(height);
-//                }
-//            }
-//
-//            @Override
-//            public void onSlide(View bottomSheet, float slideOffset) {
-//            }
-//        });
-
+        searchDataUI = new SearchDataUI(this);
     }
 
     @Override
@@ -478,7 +441,7 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
         }
     }
 
-    @OnClick({R.id.img_user, R.id.img_equipment, R.id.RL_scan, R.id.fab_config, R.id.fab_location, R.id.fab_refresh})
+    @OnClick({R.id.img_user, R.id.img_equipment})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.img_user://用户信息
@@ -489,76 +452,33 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
                 StartActivityUtil.comeOnBaby(this, DeviceManageActivity.class);
                 break;
 
-            case R.id.RL_scan: //扫一扫
-                doScanButtonClick();
-                break;
-
-//            case R.id.fab_add://添加
-//                chooseModel();
-//                break;
-
-            case R.id.fab_config://配置
-                LoadingDialog.showScanResultDialog(this, "米易通App远程配置功能开发中...");
-                break;
-
-            case R.id.fab_location://定位
-
-                if (myLatLng != null) {
-                    Timber.d("latitude=" + myLatLng.latitude + ",longitude=" + myLatLng.longitude);
-                    aMap.moveCamera(CameraUpdateFactory.changeLatLng(myLatLng));
-                }
-                break;
-
-            case R.id.fab_refresh:
-                ToastUtils.show("功能开发中...");
-                break;
         }
     }
 
-
-    //搜索蓝牙或者搜索wifi
-    private void chooseModel() {
-        View view = getLayoutInflater().inflate(R.layout.choose_menu, null);
-        LinearLayout bluetooth = view.findViewById(R.id.search_bluetooth);
-        LinearLayout wifi = view.findViewById(R.id.search_wifi);
-        LinearLayout cloud = view.findViewById(R.id.search_cloud);
-        final MaterialDialog mDialog = new MaterialDialog.Builder(this)
-                .cancelable(true)
-                .title("请选择")
-                .customView(view, true)
-                .show();
-        bluetooth.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mDialog.dismiss();
-                if (isBlueModle && !isConneted) {
-                    //搜索附近蓝牙设备
-                    startDiscoveryDevice();
-                    if (null != mBluetoothAdapter && mBluetoothAdapter.isEnabled()) {
-                        showLoadingDialog("正在获取附近的蓝牙设备...");
-                        hander.postDelayed(dismssDialogRunnable, 5000);
-                    }
-
-                } else if (isBlueModle && isConneted) {
-                    showChangeModle(getResources().getString(R.string.disconnect_bluetooth_device));
-                }
-            }
-        });
-        wifi.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mDialog.dismiss();
-                Intent intent = new Intent(MainActivity.this, WifiConnectionActivity.class);
-                startActivity(intent);
-            }
-        });
-        cloud.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                ToastUtils.show("云端数据");
-            }
-        });
+    /**
+     * 配置点击事件
+     */
+    public void processConfigListener() {
+        ToastUtils.show("米易通App远程配置功能开发中...");
     }
+
+    /**
+     * 定位点击事件
+     */
+    public void processLocationListener() {
+        if (myLatLng != null) {
+            Timber.d("latitude=" + myLatLng.latitude + ",longitude=" + myLatLng.longitude);
+            aMap.moveCamera(CameraUpdateFactory.changeLatLng(myLatLng));
+        }
+    }
+
+    /**
+     *  刷新点击事件
+     */
+    public void processRefreshListener() {
+        ToastUtils.show("功能开发中...");
+    }
+
 
     /**
      * 初始化蓝牙
@@ -573,7 +493,7 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
     /**
      * 扫描蓝牙设备，主要用来判断要连接的设备是否能被搜索到
      */
-    private void startDiscoveryDevice() {
+    public void startDiscoveryDevice() {
         //未打开蓝牙
         if (!mBluetoothAdapter.isEnabled()) {
             Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
@@ -584,6 +504,9 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
         if (null != list && list.size() > 0) {
             list.clear();
         }
+
+        showLoadingDialog("正在获取附近的蓝牙设备...");
+        hander.postDelayed(dismssDialogRunnable, 5000);
         mdBluetoothManager.scanDevice(10, this);
     }
 
@@ -595,43 +518,9 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
                 case DEVICE_FIND:
                     handleDeviceFind((BluetoothDeviceFindEventData) event.getEventData());
                     break;
-
-                case CONNECTED:
-                    //ByteManagerUtil.init(new MyOnBytePackage());
-                    mHandler.sendEmptyMessage(BT_CONNECT);
-                    break;
-
-                case DISCONNECTED:
-                    mHandler.sendEmptyMessage(BT_DISCONNECTED);
-                    break;
             }
         }
     }
-
-
-    public Handler mHandler = new Handler(new Handler.Callback() {
-        @Override
-        public boolean handleMessage(android.os.Message msg) {
-            switch (msg.what) {
-                case BT_CONNECT:
-                    ToastUtils.show("蓝牙已连接");
-                    dismissLoadingDialog();
-                    isConneted = true;
-                    //startBluAuthenticate();//蓝牙连接成功开始进行验证
-                    hander.removeCallbacks(dismssDialogRunnable);
-                    mdBluetoothManager.stopScan();
-                    break;
-
-                case BT_DISCONNECTED:
-                    ToastUtils.show("蓝牙连接已断开!");
-                    dismissLoadingDialog();
-                    isConneted = false;
-                    break;
-            }
-
-            return false;
-        }
-    });
 
 
     private void handleDeviceFind(BluetoothDeviceFindEventData eventData) {
@@ -650,15 +539,6 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
             }
         }
         list.add(eventData.getNewDevice());
-    }
-
-    /**
-     * ble 取消连接
-     */
-    private void disconnectDevice() {
-        if (null != MdBluetoothManager.getInstance()) {
-            MdBluetoothManager.getInstance().disconnect();
-        }
     }
 
 
@@ -767,53 +647,6 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
         mLlConnection.setVisibility(View.GONE);
     }
 
-    /**
-     * 是否切换连接模式
-     */
-    private void showChangeModle(String content) {
-        mBuilder = new MaterialDialog.Builder(this);
-        mBuilder.title("温馨提示：")
-                .content(content)
-                .contentColor(Color.parseColor("#000000"))
-                .canceledOnTouchOutside(false)
-                .positiveText("确定")
-                .negativeText("取消");
-        mMaterialDialog = mBuilder.build();
-        mMaterialDialog.show();
-        mBuilder.onAny(new MaterialDialog.SingleButtonCallback() {
-            @Override
-            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                if (which == DialogAction.POSITIVE) {
-                    isConneted = false;
-                    disconnectDevice();
-                    mMaterialDialog.dismiss();
-
-                } else if (which == DialogAction.NEGATIVE) {
-                    mMaterialDialog.dismiss();
-                }
-            }
-        });
-    }
-
-
-    private void doScanButtonClick() {
-        XPermissionUtils.requestPermissionsResult(this, 200, new String[]{
-                        Manifest.permission.CAMERA,
-                        Manifest.permission.READ_EXTERNAL_STORAGE},
-                new XPermissionUtils.OnPermissionListener() {
-                    @Override
-                    public void onPermissionGranted() {
-                        ScanActivity.startActivityForResult(MainActivity.this, REQUEST_CODE_SCAN);
-                    }
-
-                    @Override
-                    public void onPermissionDenied() {
-                        XPermissionUtils.showRefusePermissionDialog(MainActivity.this,
-                                getResources().getString(R.string.permission_request_camera_external_storage));
-                    }
-                });
-    }
-
 
     private void scanResult(String result) {
         if (TextUtils.isEmpty(result)) {
@@ -864,7 +697,6 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
         MCloudApp.setCurDeviceMacAddr(null);
 
         if (localData[2].equals("DAS")) {
-//            ConfigDASActivity.startActivity(MainActivity.this, deviceInfo);
             ConfigDASActivity.startActivity(MainActivity.this, deviceInfo);
 
         } else if (localData[2].equals("ADME")) {
@@ -893,10 +725,6 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
                     return;
                 }
                 startDiscoveryDevice();
-                if (null != mBluetoothAdapter && mBluetoothAdapter.isEnabled()) {
-                    showLoadingDialog("正在获取附近的蓝牙设备...");
-                    hander.postDelayed(dismssDialogRunnable, 10000);
-                }
                 break;
 
             case REQUEST_CODE_SCAN:

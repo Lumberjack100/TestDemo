@@ -1,12 +1,8 @@
 package com.shmedo.mcloudapp.ui;
 
-import android.annotation.SuppressLint;
+import android.Manifest;
 import android.app.Activity;
-import android.content.Context;
-import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.View;
-import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.RotateAnimation;
 
@@ -15,10 +11,11 @@ import androidx.annotation.NonNull;
 import com.github.clans.fab.FloatingActionButton;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.shmedo.mcloudapp.R;
+import com.shmedo.mcloudapp.ui.activity.MainActivity;
+import com.shmedo.mcloudapp.ui.activity.ScanActivity;
+import com.shmedo.mcloudapp.ui.activity.WifiConnectionActivity;
 import com.shmedo.mcloudapp.util.DensityUtil;
-
-import butterknife.BindView;
-import timber.log.Timber;
+import com.shmedo.mcloudapp.util.XPermissionUtils;
 
 /**
  * 项目名：  mCloudapp
@@ -29,27 +26,21 @@ import timber.log.Timber;
  */
 public class SearchDataUI implements View.OnClickListener {
 
-    @BindView(R.id.fab_bluetooth)
-    FloatingActionButton mFabBluetooth;
+    private FloatingActionButton mFabBluetooth;
 
-    @BindView(R.id.fab_wifi)
-    FloatingActionButton mFabWfi;
+    private FloatingActionButton mFabWfi;
 
-    @BindView(R.id.fab_config)
-    FloatingActionButton mFabConfig;
+    private FloatingActionButton mFabConfig;
 
-    @BindView(R.id.fab_expand)
-    FloatingActionButton mFabExpand;
+    private FloatingActionButton mFabExpand;
 
-    @BindView(R.id.fab_location)
-    FloatingActionButton mFabLocation;
+    private FloatingActionButton mFabLocation;
 
-    @BindView(R.id.fab_refresh)
-    FloatingActionButton mFabRefresh;
+    private FloatingActionButton mFabRefresh;
 
-    private Activity mainActivity;
+    private View scanView;
 
-    private View rootView;
+    private MainActivity mainActivity;
 
     private BottomSheetBehavior mBottomSheetBehavior;
 
@@ -62,42 +53,20 @@ public class SearchDataUI implements View.OnClickListener {
     private Animation mFoldResetAnimation;
 
 
-    public SearchDataUI(Activity context, View root) {
-        this.mainActivity = context;
-        this.rootView = root;
-
+    public SearchDataUI(Activity activity) {
+        if (activity instanceof MainActivity) {
+            mainActivity = (MainActivity) activity;
+        }
         findViews();
-        getAndroiodScreenProperty();
     }
-
-    @SuppressLint("NewApi")
-    public void getAndroiodScreenProperty() {
-        WindowManager wm = (WindowManager) mainActivity.getSystemService(Context.WINDOW_SERVICE);
-        DisplayMetrics dm = new DisplayMetrics();
-        wm.getDefaultDisplay().getMetrics(dm);
-        int width = dm.widthPixels;// 屏幕宽度（像素）
-        int height = dm.heightPixels; // 屏幕高度（像素）
-        float density = dm.density;//屏幕密度（0.75 / 1.0 / 1.5）
-        int densityDpi = dm.densityDpi;//屏幕密度dpi（120 / 160 / 240）
-        //屏幕宽度算法:屏幕宽度（像素）/屏幕密度
-        int screenWidth = (int) (width / density);//屏幕宽度(dp)
-        int screenHeight = (int) (height / density);//屏幕高度(dp)
-        Log.d("DisplayMetrics", "density=" + density + ";densityDpi=" + densityDpi + ";screenWidth=" + screenWidth + "======" + screenHeight);
-    }
-
 
     private void findViews() {
-        if (rootView == null) {
-            return;
-        }
-
         View bottomView = mainActivity.findViewById(R.id.bottom_sheet);
         mBottomSheetBehavior = BottomSheetBehavior.from(bottomView);
-        int height = DensityUtil.Dp2Px(mainActivity, 120);
+        int height = DensityUtil.Dp2Px(mainActivity, 80);
         mBottomSheetBehavior.setPeekHeight(height);
         mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
         mBottomSheetBehavior.setBottomSheetCallback(bottomSheetCallback);
-
 
         mFabBluetooth = mainActivity.findViewById(R.id.fab_bluetooth);
         mFabWfi = mainActivity.findViewById(R.id.fab_wifi);
@@ -106,12 +75,15 @@ public class SearchDataUI implements View.OnClickListener {
         mFabLocation = mainActivity.findViewById(R.id.fab_location);
         mFabRefresh = mainActivity.findViewById(R.id.fab_refresh);
 
+        scanView = mainActivity.findViewById(R.id.RL_scan);
+
         mFabBluetooth.setOnClickListener(this);
         mFabWfi.setOnClickListener(this);
         mFabConfig.setOnClickListener(this);
         mFabExpand.setOnClickListener(this);
         mFabLocation.setOnClickListener(this);
         mFabRefresh.setOnClickListener(this);
+        scanView.setOnClickListener(this);
 
         initAnimation();
     }
@@ -134,11 +106,6 @@ public class SearchDataUI implements View.OnClickListener {
                 case BottomSheetBehavior.STATE_COLLAPSED:
                     isScrollUp = true;
                     isArrowTop = true;
-                    mFabExpand.setVisibility(View.VISIBLE);
-                    mFabExpand.setImageResource(R.drawable.ic_arrow_top_primary);
-                    mFabExpand.clearAnimation();
-//                    int height = DensityUtil.Dp2Px(mainActivity, 120);
-//                    mBottomSheetBehavior.setPeekHeight(height);
                     break;
 
                 case BottomSheetBehavior.STATE_DRAGGING:
@@ -149,24 +116,15 @@ public class SearchDataUI implements View.OnClickListener {
                         mFabExpand.setVisibility(View.GONE);
                     } else {
                         mFabExpand.setVisibility(View.VISIBLE);
-                        int height = DensityUtil.Dp2Px(mainActivity, 120);
-                        mBottomSheetBehavior.setPeekHeight(height);
+                        mFabExpand.setImageResource(R.drawable.ic_arrow_top_primary);
+                        mFabExpand.clearAnimation();
                     }
                     break;
 
                 case BottomSheetBehavior.STATE_EXPANDED:
                     isScrollUp = false;
                     break;
-
-                case BottomSheetBehavior.STATE_HIDDEN:
-                    Timber.d("STATE_HIDDEN");
-                    break;
-
-                case BottomSheetBehavior.STATE_SETTLING:
-                    Timber.d("STATE_SETTLING");
-                    break;
             }
-
         }
 
         @Override
@@ -179,15 +137,15 @@ public class SearchDataUI implements View.OnClickListener {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.fab_bluetooth:
-
+                mainActivity.startDiscoveryDevice();
                 break;
 
             case R.id.fab_wifi:
-
+                WifiConnectionActivity.startActivity(mainActivity);
                 break;
 
             case R.id.fab_config:
-
+                mainActivity.processConfigListener();
                 break;
 
             case R.id.fab_expand:
@@ -195,25 +153,38 @@ public class SearchDataUI implements View.OnClickListener {
                 mFabBluetooth.setVisibility(isArrowTop ? View.VISIBLE : View.GONE);
                 mFabWfi.setVisibility(isArrowTop ? View.VISIBLE : View.GONE);
                 mFabConfig.setVisibility(isArrowTop ? View.VISIBLE : View.GONE);
-                if (isArrowTop) {
-                    int height = DensityUtil.Dp2Px(mainActivity, 330);
-                    mBottomSheetBehavior.setPeekHeight(height);
-                } else {
-                    int height = DensityUtil.Dp2Px(mainActivity, 120);
-                    mBottomSheetBehavior.setPeekHeight(height);
-                }
-
                 isArrowTop = !isArrowTop;
                 break;
 
             case R.id.fab_location:
-
+                mainActivity.processLocationListener();
                 break;
 
             case R.id.fab_refresh:
-
+                mainActivity.processRefreshListener();
                 break;
 
+            case R.id.RL_scan:
+                doScanButtonClick();
+                break;
         }
+    }
+
+    private void doScanButtonClick() {
+        XPermissionUtils.requestPermissionsResult(mainActivity, 200, new String[]{
+                        Manifest.permission.CAMERA,
+                        Manifest.permission.READ_EXTERNAL_STORAGE},
+                new XPermissionUtils.OnPermissionListener() {
+                    @Override
+                    public void onPermissionGranted() {
+                        ScanActivity.startActivityForResult(mainActivity, MainActivity.REQUEST_CODE_SCAN);
+                    }
+
+                    @Override
+                    public void onPermissionDenied() {
+                        XPermissionUtils.showRefusePermissionDialog(mainActivity,
+                                mainActivity.getResources().getString(R.string.permission_request_camera_external_storage));
+                    }
+                });
     }
 }
