@@ -11,7 +11,7 @@
     <string name="agent_addr">地址：%1$s</string>
     <string name="exit_login_tip">确定退出登录吗？</string>
     <string name="appbar_scrolling_view_behavior" translatable="false">android.support.design.widget.AppBarLayout$ScrollingViewBehavior</string>
-    <string name="bottom_sheet_behavior" translatable="false">android.support.design.widget.BottomSheetBehavior</string>
+    <string name="bottom_sheet_behavior" translatable="false">com.google.android.material.bottomsheet.BottomSheetBehavior</string>
     <string name="network_error_tip">网络不给力，请稍后再试！</string>
     <string name="open_flash">打开闪光灯</string>
     <string name="close_flash">关闭闪光灯</string>

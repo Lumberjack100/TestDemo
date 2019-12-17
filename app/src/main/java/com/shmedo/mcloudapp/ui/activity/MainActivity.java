@@ -15,25 +15,34 @@ import android.os.Handler;
 import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.*;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.Toolbar;
-import butterknife.BindView;
-import butterknife.OnClick;
+
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amap.api.location.AMapLocation;
 import com.amap.api.location.AMapLocationClient;
 import com.amap.api.location.AMapLocationClientOption;
 import com.amap.api.location.AMapLocationListener;
-import com.amap.api.maps.*;
+import com.amap.api.maps.AMap;
+import com.amap.api.maps.AMapOptions;
+import com.amap.api.maps.CameraUpdateFactory;
+import com.amap.api.maps.LocationSource;
+import com.amap.api.maps.MapView;
+import com.amap.api.maps.UiSettings;
 import com.amap.api.maps.model.LatLng;
 import com.amap.api.maps.model.LatLngBounds;
 import com.amap.api.maps.model.Marker;
 import com.amap.api.maps.model.MyLocationStyle;
-import com.github.clans.fab.FloatingActionButton;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.gson.reflect.TypeToken;
 import com.hjq.toast.ToastUtils;
 import com.shmedo.mcloudapp.MCloudApp;
@@ -49,25 +58,41 @@ import com.shmedo.mcloudapp.entity.DeviceBasicInfoResultDao;
 import com.shmedo.mcloudapp.entity.DeviceTypeEnum;
 import com.shmedo.mcloudapp.entity.StatusInfoResult;
 import com.shmedo.mcloudapp.entity.ble.MDevice;
-import com.shmedo.mcloudapp.entity.cluster.*;
+import com.shmedo.mcloudapp.entity.cluster.ClusterAnotherClickListener;
+import com.shmedo.mcloudapp.entity.cluster.ClusterAnotherRender;
+import com.shmedo.mcloudapp.entity.cluster.ClusterItem;
+import com.shmedo.mcloudapp.entity.cluster.ClusterItemImp;
+import com.shmedo.mcloudapp.entity.cluster.ClusterOverlayMerchant;
 import com.shmedo.mcloudapp.entity.event.MapDeviceEvent;
 import com.shmedo.mcloudapp.entity.event.WifiEvent;
 import com.shmedo.mcloudapp.entity.parameter.LocationResult;
 import com.shmedo.mcloudapp.model.BaseObserver;
 import com.shmedo.mcloudapp.model.MDRetrofit;
 import com.shmedo.mcloudapp.model.common.CommonVariable;
-import com.shmedo.mcloudapp.util.*;
+import com.shmedo.mcloudapp.ui.SearchDataUI;
+import com.shmedo.mcloudapp.util.DaoManager;
+import com.shmedo.mcloudapp.util.DensityUtil;
+import com.shmedo.mcloudapp.util.GsonFactory;
+import com.shmedo.mcloudapp.util.StartActivityUtil;
+import com.shmedo.mcloudapp.util.XPermissionUtils;
 import com.shmedo.mcloudapp.util.common.MapManagerUtil;
-import com.shmedo.mcloudapp.util.permission.UpdataManagerUtil;
 import com.shmedo.mcloudapp.views.LoadingDialog;
+
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+
+import butterknife.BindView;
+import butterknife.OnClick;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.RequestBody;
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
 import timber.log.Timber;
-
-import java.util.*;
 
 import static com.shmedo.mcloudapp.util.bleutil.Constants.BT_CONNECT;
 import static com.shmedo.mcloudapp.util.bleutil.Constants.BT_DISCONNECTED;
@@ -93,29 +118,15 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
     @BindView(R.id.map)
     MapView mMapView;
 
-    @BindView(R.id.fab_add)
-    FloatingActionButton mFabAdd;
-
-    @BindView(R.id.fab_config)
-    FloatingActionButton mFabConfig;
-
-    @BindView(R.id.fab_location)
-    FloatingActionButton mFabLocation;
-
-    @BindView(R.id.fab_refresh)
-    FloatingActionButton mFabRefresh;
-
     @BindView(R.id.tv_connection)
     TextView mTvConnection;
 
     @BindView(R.id.ll_connection)
     LinearLayout mLlConnection;
 
-    @BindView(R.id.RL_scan)
-    RelativeLayout mRLScan;
+    private SearchDataUI searchDataUI;
 
-    @BindView(R.id.img_scan)
-    ImageView mImgScan;
+    private View rootView;
 
     private AMap aMap; //初始化地图控制器对象
     private UiSettings mUiSettings;//定义一个UiSettings对象
@@ -145,6 +156,8 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
     private Map<Integer, Drawable> mBackDrawAblesMerchant = new HashMap<Integer, Drawable>();
     private int clusterRadius = 48;
 
+    private BottomSheetBehavior mBottomSheetBehavior;
+
 
     public static void start(Context context) {
         Intent intent = new Intent();
@@ -170,7 +183,9 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
 
     @Override
     protected int initContentView() {
-        return R.layout.activity_main;
+        rootView = LayoutInflater.from(this).inflate(R.layout.main, null);
+
+        return R.layout.main;
     }
 
 
@@ -185,6 +200,26 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
         initMap();
         initBluetooth();
 //        UpdataManagerUtil.requestPermissionForInstallPackage(this);//版本更新
+
+        searchDataUI = new SearchDataUI(this, rootView);
+//        mBottomSheetBehavior = BottomSheetBehavior.from(findViewById(R.id.bottom_sheet));
+//        int height = DensityUtil.Dp2Px(MainActivity.this, 120);
+//        mBottomSheetBehavior.setPeekHeight(height);
+//        mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+//        mBottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+//            @Override
+//            public void onStateChanged(View bottomSheet, int newState) {
+//                if (newState == BottomSheetBehavior.STATE_COLLAPSED) {
+//                    int height = DensityUtil.Dp2Px(MainActivity.this, 120);
+//                    mBottomSheetBehavior.setPeekHeight(height);
+//                }
+//            }
+//
+//            @Override
+//            public void onSlide(View bottomSheet, float slideOffset) {
+//            }
+//        });
+
     }
 
     @Override
@@ -443,8 +478,7 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
         }
     }
 
-    @OnClick({R.id.img_user, R.id.img_equipment, R.id.RL_scan,
-            R.id.fab_add, R.id.fab_config, R.id.fab_location, R.id.fab_refresh})
+    @OnClick({R.id.img_user, R.id.img_equipment, R.id.RL_scan, R.id.fab_config, R.id.fab_location, R.id.fab_refresh})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.img_user://用户信息
@@ -459,9 +493,9 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
                 doScanButtonClick();
                 break;
 
-            case R.id.fab_add://添加
-                chooseModel();
-                break;
+//            case R.id.fab_add://添加
+//                chooseModel();
+//                break;
 
             case R.id.fab_config://配置
                 LoadingDialog.showScanResultDialog(this, "米易通App远程配置功能开发中...");
