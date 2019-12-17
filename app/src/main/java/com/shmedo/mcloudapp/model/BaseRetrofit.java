@@ -21,7 +21,7 @@ import timber.log.Timber;
  */
 public class BaseRetrofit {
 
-    public <T> T getService(final Class<T> service, final HttpLoggingInterceptor.Level level) {
+    public <T> T getService(final Class<T> service, final HttpLoggingInterceptor.Level level,String urlType) {
 
         HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
         interceptor.setLevel(level);
@@ -33,20 +33,28 @@ public class BaseRetrofit {
                 .build();
 
         Timber.i("-----------------------------------------------------");
-        Timber.i("ServiceAddress= " + MCloudApp.getServiceAddress());
+        Timber.i(urlType+"===ServiceAddress= " + MCloudApp.getServiceAddress());
         Timber.i("-----------------------------------------------------");
-
-        return new Retrofit.Builder()
-                //设置网络请求的Url地址
-                .baseUrl(MCloudApp.getServiceAddress())
-                .client(client)
-                //设置数据解析器
-                .addConverterFactory(GsonConverterFactory.create())
-                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                .build()
-                .create(service);
-
-
+        if(urlType.equals("http")){
+            return new Retrofit.Builder()
+                    .baseUrl(MCloudApp.getHttpServiceAddress())
+                    .client(client)
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                    .build()
+                    .create(service);
+        }else if (urlType.equals("https")){
+            return new Retrofit.Builder()
+                    //设置网络请求的Url地址
+                    .baseUrl(MCloudApp.getServiceAddress())
+                    .client(client)
+                    //设置数据解析器
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                    .build()
+                    .create(service);
+        }
+        return null;
     }
 
 }

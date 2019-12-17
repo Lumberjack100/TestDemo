@@ -34,7 +34,7 @@ public class DeviceStatusTwo {
     private String snNumber;
     private String longitude;
     private String latitude;
-    private String internalVoltage;
+    private double internalVoltage;
     private String externalVoltage;
     private String solarControllerStatus;
     private String solarPanelVoltage;
@@ -74,11 +74,11 @@ public class DeviceStatusTwo {
         this.latitude = latitude;
     }
 
-    public String getInternalVoltage() {
+    public double getInternalVoltage() {
         return internalVoltage;
     }
 
-    public void setInternalVoltage(String internalVoltage) {
+    public void setInternalVoltage(double internalVoltage) {
         this.internalVoltage = internalVoltage;
     }
 

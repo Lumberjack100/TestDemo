@@ -289,7 +289,7 @@ public class LoginActivity extends BaseActivity
         RequestBody body = RequestBody.create(CommonVariable.JSON_TYPE, json);
 
         showLoadingDialog("正在登录...");
-        MDRetrofit.getInstance().createService().SmsLogin(body).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new BaseObserver<String>()
+        MDRetrofit.getInstance().createService(ApiName.HTTPS).SmsLogin(body).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new BaseObserver<String>()
         {
             @Override
             public void Success(String s, String message)
@@ -325,7 +325,7 @@ public class LoginActivity extends BaseActivity
         RequestBody body = RequestBody.create(CommonVariable.JSON_TYPE, json);
 
         showLoadingDialog("正在获取验证码...");
-        MDRetrofit.getInstance().createService().sendSmsCode(CommonVariable.APP_KEY, CommonVariable.APP_SECRET, body).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new BaseObserver<String>()
+        MDRetrofit.getInstance().createService(ApiName.HTTPS).sendSmsCode(CommonVariable.APP_KEY, CommonVariable.APP_SECRET, body).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new BaseObserver<String>()
         {
             @Override
             public void Success(String s, String message)
@@ -360,7 +360,7 @@ public class LoginActivity extends BaseActivity
         RequestBody body = RequestBody.create(CommonVariable.JSON_TYPE, json);
 
         showLoadingDialog("正在登录...");
-        MDRetrofit.getInstance().createService().getSingIn(body).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new BaseObserver<String>()
+        MDRetrofit.getInstance().createService(ApiName.HTTPS).getSingIn(body).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new BaseObserver<String>()
         {
 
             @Override
@@ -388,7 +388,7 @@ public class LoginActivity extends BaseActivity
      */
     private void getMyInfo(final String token, final String uid, final String pwd)
     {
-        MDRetrofit.getInstance().createService().getMyInfo(token).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new BaseObserver<UserInfo>()
+        MDRetrofit.getInstance().createService(ApiName.HTTPS).getMyInfo(token).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new BaseObserver<UserInfo>()
         {
             @Override
             public void Success(UserInfo userInfo, String message)

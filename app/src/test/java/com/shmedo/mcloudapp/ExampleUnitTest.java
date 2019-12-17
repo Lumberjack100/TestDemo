@@ -9,6 +9,7 @@ import com.shmedo.mcloudapp.entity.ble.collector.MqttConfigInfoSub;
 import com.shmedo.mcloudapp.entity.devicedetails.DeviceInternetStatus;
 import com.shmedo.mcloudapp.util.ParserDeviceDetailsUtils;
 import com.shmedo.mcloudapp.util.StringUtil;
+import com.shmedo.mcloudapp.util.TimeUtil;
 import com.shmedo.mcloudapp.util.bleutil.BlueResultParserUtil;
 
 import org.junit.Test;
@@ -86,8 +87,10 @@ public class ExampleUnitTest {
     public void testRain(){
         String message1="$$0443,0,0,1,0x00600000,0x00600000,0,0,0,0\r\n";
         String message="$$000,18A095-L,0,455872,2,1,1,5400,10,100,0,9600,9600,02,3,6,3,1,2,1\r\n";
-        DeviceInternetStatus internetStatus = ParserDeviceDetailsUtils.parserInternetStatus(message1);
-        System.out.println(internetStatus.toString());
+//        DeviceInternetStatus internetStatus = ParserDeviceDetailsUtils.parserInternetStatus(message1);
+//        System.out.println(internetStatus.toString());
+
+        System.out.println(ParserDeviceDetailsUtils.setDeviceInternalBattery(0));
     }
 
 }

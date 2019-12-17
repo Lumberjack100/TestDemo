@@ -26,12 +26,12 @@ public class MDRetrofit extends BaseRetrofit {
         return instance;
     }
 
-    public <T> T getService(Class<T> service) {
-        return getService(service, HttpLoggingInterceptor.Level.BODY);
+    public <T> T getService(Class<T> service,String urlType) {
+        return getService(service, HttpLoggingInterceptor.Level.BODY,urlType);
     }
 
-    public ApiService createService() {
-        return getService(ApiService.class);
+    public ApiService createService(String urlType) {
+        return getService(ApiService.class,urlType);
     }
 
 }

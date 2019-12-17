@@ -82,7 +82,7 @@ public class ParserDeviceDetailsUtils {
         statusTwo.setSnNumber(cmd[1]);
         statusTwo.setLongitude(cmd[2]);
         statusTwo.setLatitude(cmd[3]);
-        statusTwo.setInternalVoltage(cmd[4]);
+        statusTwo.setInternalVoltage(Double.parseDouble(cmd[4]));
         statusTwo.setExternalVoltage(cmd[5]);
         statusTwo.setSolarControllerStatus(cmd[6]);
         statusTwo.setSolarPanelVoltage(cmd[7]);
@@ -180,6 +180,23 @@ public class ParserDeviceDetailsUtils {
         return operatorInformation;
     }
 
+    /**
+     * 计算内部电压
+     * @param internalBattery
+     * @return
+     */
+    public static String setDeviceInternalBattery(double internalBattery){
+        if (internalBattery <= 6){
+            return "1%";
+        }else {
+            int result = (int) ((internalBattery - 6)/(8.2-6)*100);
+            if (result>100){
+                return "100%";
+            }else {
+                return result+"%";
+            }
+        }
+    }
     /**
      * 设置设备状态
      * @param textView

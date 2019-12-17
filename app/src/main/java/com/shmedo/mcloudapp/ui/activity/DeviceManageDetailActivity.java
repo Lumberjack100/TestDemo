@@ -28,6 +28,7 @@ import com.shmedo.mcloudapp.model.BaseObserver;
 import com.shmedo.mcloudapp.model.Extras;
 import com.shmedo.mcloudapp.model.MDRetrofit;
 import com.shmedo.mcloudapp.model.common.CommonVariable;
+import com.shmedo.mcloudapp.util.ApiName;
 import com.shmedo.mcloudapp.util.GsonFactory;
 import com.shmedo.mcloudapp.views.ClearEditText;
 import com.shmedo.mcloudapp.views.DividerItemDecoration;
@@ -165,7 +166,7 @@ public class DeviceManageDetailActivity extends BaseActivity implements OnRefres
         String json = GsonFactory.getGson().toJson(paramter);
         RequestBody body = RequestBody.create(CommonVariable.JSON_TYPE, json);
         MDRetrofit.getInstance()
-                .createService()
+                .createService(ApiName.HTTPS)
                 .QueryProjectDevice(MCloudApp.getAccessToken(), body)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

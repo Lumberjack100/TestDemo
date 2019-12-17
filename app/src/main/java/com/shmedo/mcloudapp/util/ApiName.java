@@ -10,6 +10,9 @@ package com.shmedo.mcloudapp.util;
  */
 public class ApiName {
 
+    public static final String HTTP = "http";
+    public static final String HTTPS = "https";
+
     /**
      * 获取api版本信息
      */
@@ -64,4 +67,9 @@ public class ApiName {
      * 查询设备的详细信息
      */
     public static final String GET_DEVICE_DETAIL_INFO = "GetDeviceDetailInfo";
+
+    /**
+     * 查询设备运营数据
+     */
+    public static final String QUERY_CLOUD_DATA = "queryCloudData";
 }

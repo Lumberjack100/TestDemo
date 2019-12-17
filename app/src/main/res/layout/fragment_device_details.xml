@@ -55,8 +55,7 @@
                     android:id="@+id/sim_card_number"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="8"
-                    android:text="物联网采集器" />
+                    android:layout_weight="8"  />
 
             </LinearLayout>
 
@@ -79,8 +78,7 @@
                     android:id="@+id/imei_number"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="8"
-                    android:text="物联网采集器" />
+                    android:layout_weight="8" />
 
             </LinearLayout>
 
@@ -103,8 +101,7 @@
                     android:id="@+id/device_start_code"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="8"
-                    android:text="物联网采集器" />
+                    android:layout_weight="8" />
 
             </LinearLayout>
 
@@ -127,8 +124,7 @@
                     android:id="@+id/firmware_version"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="8"
-                    android:text="物联网采集器" />
+                    android:layout_weight="8"  />
 
             </LinearLayout>
 
@@ -175,7 +171,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="7.5"
                         android:layout_marginLeft="5dp"
-                        android:text="物联网采集器" />
+                          />
 
             </LinearLayout>
 
@@ -199,7 +195,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="8"
-                    android:text="物联网采集器" />
+                      />
 
             </LinearLayout>
 
@@ -216,14 +212,14 @@
                     android:layout_marginLeft="0dp"
                     android:layout_weight="4"
                     android:gravity="right"
-                    android:text="链路1已发送数据：" />
+                    android:text="中心1已发送数据：" />
 
                 <TextView
                     android:id="@+id/link_one_send_data"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="7"
-                    android:text="物联网采集器" />
+                      />
 
             </LinearLayout>
 
@@ -247,7 +243,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="8"
-                        android:text="物联网采集器" />
+                          />
 
             </LinearLayout>
 
@@ -264,14 +260,14 @@
                         android:layout_marginLeft="0dp"
                         android:layout_weight="4"
                         android:gravity="right"
-                        android:text="链路2已发送数据：" />
+                        android:text="中心2已发送数据：" />
 
                 <TextView
                         android:id="@+id/link_two_send_data"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="7"
-                        android:text="物联网采集器" />
+                          />
 
             </LinearLayout>
 
@@ -295,7 +291,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="8"
-                        android:text="物联网采集器" />
+                          />
 
             </LinearLayout>
 
@@ -312,14 +308,14 @@
                         android:layout_marginLeft="0dp"
                         android:layout_weight="4"
                         android:gravity="right"
-                        android:text="链路3已发送数据：" />
+                        android:text="中心3已发送数据：" />
 
                 <TextView
                         android:id="@+id/link_three_send_data"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="7"
-                        android:text="物联网采集器" />
+                          />
 
             </LinearLayout>
 
@@ -359,7 +355,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="8"
-                    android:text="物联网采集器" />
+                      />
 
             </LinearLayout>
 
@@ -383,7 +379,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="8"
-                    android:text="物联网采集器" />
+                      />
 
             </LinearLayout>
 
@@ -407,7 +403,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="8"
-                    android:text="物联网采集器" />
+                      />
 
             </LinearLayout>
 
@@ -424,14 +420,14 @@
                     android:layout_marginLeft="20dp"
                     android:layout_weight="4"
                     android:gravity="right"
-                    android:text="日发电量：" />
+                    android:text="太阳能板功率：" />
 
                 <TextView
                     android:id="@+id/rifa_battery"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="8"
-                    android:text="物联网采集器" />
+                      />
 
             </LinearLayout>
 
@@ -448,14 +444,14 @@
                     android:layout_marginLeft="20dp"
                     android:layout_weight="4"
                     android:gravity="right"
-                    android:text="日耗电量：" />
+                    android:text="负载功率：" />
 
                 <TextView
                     android:id="@+id/rihao_battery"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="8"
-                    android:text="物联网采集器" />
+                      />
 
             </LinearLayout>
 
@@ -496,7 +492,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="8"
-                        android:text="物联网采集器" />
+                          />
 
             </LinearLayout>
 
@@ -520,7 +516,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="8"
-                        android:text="物联网采集器" />
+                          />
 
             </LinearLayout>
 
@@ -544,7 +540,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="8"
-                        android:text="物联网采集器" />
+                          />
 
             </LinearLayout>
         </LinearLayout>
@@ -583,7 +579,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="8"
-                        android:text="物联网采集器" />
+                          />
 
             </LinearLayout>
 
@@ -607,7 +603,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="8"
-                        android:text="物联网采集器" />
+                          />
 
             </LinearLayout>
 
@@ -631,7 +627,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="8"
-                        android:text="物联网采集器" />
+                          />
 
             </LinearLayout>
 
@@ -664,14 +660,14 @@
                         android:layout_marginLeft="20dp"
                         android:layout_weight="4"
                         android:gravity="right"
-                        android:text="内部电压：" />
+                        android:text="内部电量：" />
 
                 <TextView
                         android:id="@+id/internal_battery"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="8"
-                        android:text="物联网采集器" />
+                          />
 
             </LinearLayout>
 
@@ -695,7 +691,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="8"
-                        android:text="物联网采集器" />
+                          />
 
             </LinearLayout>
 
@@ -734,7 +730,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="8"
-                        android:text="物联网采集器" />
+                          />
 
             </LinearLayout>
             <LinearLayout
@@ -758,7 +754,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="8"
-                        android:text="物联网采集器" />
+                          />
 
             </LinearLayout>
             <LinearLayout
@@ -782,7 +778,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="8"
-                        android:text="物联网采集器" />
+                          />
 
             </LinearLayout>
             <LinearLayout

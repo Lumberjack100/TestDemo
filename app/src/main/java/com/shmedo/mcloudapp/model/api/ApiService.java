@@ -1,13 +1,6 @@
 package com.shmedo.mcloudapp.model.api;
 
-import com.shmedo.mcloudapp.entity.DeviceBasicInfoResult;
-import com.shmedo.mcloudapp.entity.DeviceDetailInfo;
-import com.shmedo.mcloudapp.entity.PageResult;
-import com.shmedo.mcloudapp.entity.ProjectDeviceInfo;
-import com.shmedo.mcloudapp.entity.ResultWrapper;
-import com.shmedo.mcloudapp.entity.StatusInfoResult;
-import com.shmedo.mcloudapp.entity.SystemDataInfo;
-import com.shmedo.mcloudapp.entity.UserInfo;
+import com.shmedo.mcloudapp.entity.*;
 import com.shmedo.mcloudapp.model.common.CommonVariable;
 import com.shmedo.mcloudapp.util.ApiName;
 
@@ -92,4 +85,8 @@ public interface ApiService {
     //验证E60设备,需传入一个完整的 Url，不需要调用接口
     @GET
     Observable<ResultWrapper<String>> ValidateDeviceE60(@Url String url);
+
+    //查询数据
+    @POST(ApiName.QUERY_CLOUD_DATA)
+    Observable<ResultWrapper<List<QueryCloudDataInfo>>> QueryCloudData(@Body RequestBody parameter);
 }

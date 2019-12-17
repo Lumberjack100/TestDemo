@@ -36,10 +36,16 @@ public class TimePickerDialog extends BaseDialog {
         mPickerView.setType(TYPE_YEAR_MONTH_DAY_HOUR_MINUTE);
 
         // 注意：月份是从0开始计数的
-        Calendar c = Calendar.getInstance();
-        mPickerView.setSelectedDate(c);
-        mPickerView.setStartDate(new GregorianCalendar(1999, 10, 1, 12, 30));
-        mPickerView.setEndDate(new GregorianCalendar(2048, 1, 1, 12, 30));
+        Calendar date = Calendar.getInstance();
+        int year = date.get(Calendar.YEAR);
+        int month = date.get(Calendar.MONTH);
+        int dayOfMonth = date.get(Calendar.DAY_OF_MONTH);
+        int time = date.get(Calendar.HOUR_OF_DAY);
+        int min = date.get(Calendar.MINUTE);
+        int second = date.get(Calendar.SECOND);
+        mPickerView.setSelectedDate(date);
+        mPickerView.setStartDate(new GregorianCalendar(2008, 10, 1, 12, 30,10));
+        mPickerView.setEndDate(new GregorianCalendar(year, month, dayOfMonth, time, min,second));
         helper.addOnClickLisinter(R.id.datePickerCancel);
         helper.addOnClickLisinter(R.id.datePickerOk);
     }
@@ -64,7 +70,8 @@ public class TimePickerDialog extends BaseDialog {
         int dayOfMonth = date.get(Calendar.DAY_OF_MONTH);
         int time = date.get(Calendar.HOUR_OF_DAY);
         int min = date.get(Calendar.MINUTE);
-        return String.format(Locale.getDefault(), "%d-%02d-%02d %02d:%02d", year, month + 1, dayOfMonth,time,min);
+        int second = date.get(Calendar.SECOND);
+        return String.format(Locale.getDefault(), "%d-%02d-%02d %02d:%02d:%02d", year, month + 1, dayOfMonth,time,min,second);
 
     }
 }

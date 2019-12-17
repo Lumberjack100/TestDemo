@@ -11,6 +11,7 @@ import com.shmedo.mcloudapp.base.BaseActivity;
 import com.shmedo.mcloudapp.model.BaseObserver;
 import com.shmedo.mcloudapp.model.MDRetrofit;
 import com.shmedo.mcloudapp.model.common.CommonVariable;
+import com.shmedo.mcloudapp.util.ApiName;
 import com.shmedo.mcloudapp.util.StringUtil;
 import com.shmedo.mcloudapp.util.UserConfig;
 import com.shmedo.mcloudapp.views.ClearEditText;
@@ -77,7 +78,7 @@ public class ServiceConfigActivity extends BaseActivity {
         MCloudApp.setServiceAddress(service_text);
 
         showLoadingDialog("正在配置服务器...");
-        MDRetrofit.getInstance().createService().getApiVerson()
+        MDRetrofit.getInstance().createService(ApiName.HTTPS).getApiVerson()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new BaseObserver<String>() {

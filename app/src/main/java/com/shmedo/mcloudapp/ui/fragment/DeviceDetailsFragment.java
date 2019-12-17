@@ -336,8 +336,8 @@ public class DeviceDetailsFragment extends BaseFragment implements SwipeRefreshL
         //caseExternalStatus.setText(statusTwo.getExternalTempHumidityStatus());
         caseExternalTemperature.setText(statusTwo.getExternalTemperature() + "°");
         caseExternalHumidity.setText(statusTwo.getExternalHumidity() + "%");
-        //设备电压
-        internalBattery.setText(statusTwo.getInternalVoltage() + "V");
+        //设备电量、电压
+        internalBattery.setText(ParserDeviceDetailsUtils.setDeviceInternalBattery(statusTwo.getInternalVoltage()));
         externalBattery.setText(statusTwo.getExternalVoltage() + "V");
 
         //雨量值 断线报警器状态
@@ -443,7 +443,6 @@ public class DeviceDetailsFragment extends BaseFragment implements SwipeRefreshL
             //发送指令
             ToastUtils.show("刷新指令成功");
             configDASActivity.sendCommonCommandImmediately("##040\r\n");
-            Timber.i("查询设备版本信息：刷新==##040");
             onRefreshFirst = true;
         }
         if (prelongTim == 0) {
@@ -452,21 +451,21 @@ public class DeviceDetailsFragment extends BaseFragment implements SwipeRefreshL
         } else {
             long curTime = (new Date()).getTime();
             long tenTime = curTime - prelongTim;
-
             //如果下拉刷新超过10s再次发送指令
             if (tenTime >= 10000) {
                 //发送指令
+                ToastUtils.show("刷新指令成功！");
                 configDASActivity.sendCommonCommandImmediately("##040\r\n");
-                Timber.i("查询设备版本信息：重新刷新==##040");
                 prelongTim = 0;
+                onRefreshFirst = false;
+                refreshLayout.setRefreshing(false);
             } else {
                 ToastUtils.show("发送指令间隔需超过10s");
                 refreshLayout.setRefreshing(false);
             }
         }
-
-//            if (!MCloudApp.isIsBluetoothDeviceConnected()) {
-        refreshLayout.setRefreshing(false);
-//            }
+            if (!MCloudApp.isIsBluetoothDeviceConnected()) {
+                refreshLayout.setRefreshing(false);
+            }
     }
 }

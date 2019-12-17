@@ -673,6 +673,7 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
                 .content(content)
                 .contentColor(Color.parseColor("#000000"))
                 .canceledOnTouchOutside(false)
+                .neutralText("取消")
                 .positiveText("保存")
                 .negativeText("不保存")
                 .negativeColor(Color.parseColor("#807B7B"))
@@ -691,6 +692,11 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
                         if (isExitMode) {
                             BaseDeviceConnectActivity.this.finish();
                         }
+                    }
+                }).onNeutral(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        dialog.dismiss();
                     }
                 });
         MaterialDialog mMaterialDialog = mBuilder.build();

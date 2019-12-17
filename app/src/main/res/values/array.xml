@@ -52,6 +52,14 @@
         <item>米度平台</item>
     </string-array>
 
+    //查询设备数据条目总数
+    <string-array name="item_count">
+        <item>10</item>
+        <item>30</item>
+        <item>100</item>
+        <item>500</item>
+    </string-array>
+
     <string-array name="rain">
         <item>0.1mm</item>
         <item>0.2mm</item>
