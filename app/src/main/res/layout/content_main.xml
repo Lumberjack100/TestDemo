@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/ll_connection"
+        android:layout_width="match_parent"
+        android:layout_height="20dp"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="50dp"
+        android:background="@color/gray_D4D6D8"
+        android:gravity="center"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/tv_connection"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:singleLine="true"
+            android:text="已连接已连接已连接已连接已连接已连接"
+            android:textColor="@color/app_color_theme_1"
+            android:textSize="13sp" />
+    </LinearLayout>
+
+    <com.amap.api.maps.MapView
+        android:id="@+id/map"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="50dp" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="70dp"
+        android:orientation="vertical">
+
+        <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/fab_bluetooth"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_bluetooth_primary"
+            android:visibility="gone"
+            app:fab_colorNormal="@color/white"
+            app:fab_colorPressed="@color/app_color_blue_pressed"
+            app:fab_colorRipple="@color/app_color_blue_pressed"
+            app:fab_size="mini" />
+
+        <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/fab_wifi"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/icon_wifi"
+            android:visibility="gone"
+            app:fab_colorNormal="@color/white"
+            app:fab_colorPressed="@color/app_color_blue_pressed"
+            app:fab_colorRipple="@color/app_color_blue_pressed"
+            app:fab_size="mini" />
+
+        <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/fab_config"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/icon_config"
+            android:visibility="gone"
+            app:fab_colorNormal="@color/white"
+            app:fab_colorPressed="@color/app_color_blue_pressed"
+            app:fab_colorRipple="@color/app_color_blue_pressed"
+            app:fab_size="mini" />
+
+        <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/fab_expand"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_arrow_top_primary"
+            app:fab_colorNormal="@color/white"
+            app:fab_colorPressed="@color/app_color_blue_pressed"
+            app:fab_colorRipple="@color/app_color_blue_pressed"
+            app:fab_size="mini" />
+
+    </LinearLayout>
+
+</RelativeLayout>
