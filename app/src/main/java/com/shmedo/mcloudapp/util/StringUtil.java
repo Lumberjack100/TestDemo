@@ -2,11 +2,13 @@ package com.shmedo.mcloudapp.util;
 
 import android.annotation.SuppressLint;
 import android.text.TextUtils;
+
 import com.shmedo.das.das.cmd.CommandResult;
 import com.shmedo.mcloudapp.entity.ble.collector.MqttConfigInfoSub;
 
 import java.text.DecimalFormat;
 import java.util.Collection;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
@@ -169,17 +171,6 @@ public class StringUtil {
         }
     }
 
-    //public static List<String> getCmdResult(List<String> result){
-    //
-    //    StringBuffer buffer = new StringBuffer();
-    //    List<String> stringList = new ArrayList<>();
-    //    for (int i = 0;i<lists.get(0).getCommands().size();i++){
-    //        buffer.append(lists.get(0).getCommands().get(i).toString());
-    //    }
-    //    stringList.add(String.valueOf(buffer));
-    //
-    //    return stringList;
-    //}
 
     public static String setSize(int size) {
         //获取到的size为：1705230
@@ -295,5 +286,29 @@ public class StringUtil {
         return mqttConfigInfoSub;
     }
 
+
+
+    /***
+     * 判断 String 是否是 int<br>通过正则表达式判断
+     *
+     * @param input
+     * @return
+     */
+    public static boolean isInteger(String input){
+        Matcher mer = Pattern.compile("^[+-]?[0-9]+$").matcher(input);
+        return mer.find();
+    }
+
+
+
+    /**
+     * 判断 String 是否是 double<br>通过正则表达式判断
+     * @param input
+     * @return
+     */
+    public static boolean isDouble(String input){
+        Matcher mer = Pattern.compile("^[+-]?[0-9.]+$").matcher(input);
+        return mer.find();
+    }
 
 }

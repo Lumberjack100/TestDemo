@@ -4,223 +4,249 @@
     android:layout_height="match_parent"
     android:background="@color/white"
     android:orientation="vertical">
+
     <TextView
-            android:id="@+id/tv_device_number"
-            android:layout_width="match_parent"
-            android:layout_height="30dp"
-            android:background="@color/bg_main_light_white"
-            android:gravity="center_vertical"
-            android:paddingLeft="16dp"
-            android:text="设备号" />
+        android:id="@+id/tv_device_number"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:background="@color/bg_main_light_white"
+        android:gravity="center_vertical"
+        android:paddingLeft="16dp"
+        android:text="设备号" />
 
     <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="30dp"
-            android:background="@color/white"
-            android:orientation="horizontal"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp">
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:background="@color/white"
+        android:orientation="horizontal">
+
         <TextView
-                android:layout_width="0px"
-                android:layout_height="match_parent"
-                android:layout_weight="2"
-                android:gravity="center"
-                android:paddingLeft="10dp"
-                android:paddingRight="10dp"
-                android:text="开始时间："
-                android:textColor="@color/black"
-                android:textSize="14sp" />
+            android:layout_width="0px"
+            android:layout_height="match_parent"
+            android:layout_weight="2"
+            android:gravity="center"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:text="开始时间："
+            android:textColor="@color/black"
+            android:textSize="14sp" />
+
         <View
-                android:layout_width="0.5dp"
-                android:layout_height="match_parent"
-                android:background="@color/secondary_text"/>
+            android:layout_width="0.5dp"
+            android:layout_height="match_parent"
+            android:background="@color/secondary_text" />
+
         <TextView
-                android:id="@+id/start_time"
-                android:layout_width="0px"
-                android:layout_height="match_parent"
-                android:layout_weight="2"
-                android:gravity="center"
-                android:paddingLeft="10dp"
-                android:paddingRight="10dp"
-                android:text="开始时间"
-                android:textColor="@color/black"
-                android:textSize="14sp" />
+            android:id="@+id/start_time"
+            android:layout_width="0px"
+            android:layout_height="match_parent"
+            android:layout_weight="3"
+            android:gravity="center"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:text="开始时间"
+            android:textColor="@color/black"
+            android:textSize="14sp" />
 
     </LinearLayout>
+
     <View
-            android:layout_width="match_parent"
-            android:layout_height="0.5dp"
-            android:background="@color/secondary_text"/>
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="@color/secondary_text" />
+
     <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="30dp"
-            android:background="@color/white"
-            android:orientation="horizontal"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp">
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:background="@color/white"
+        android:orientation="horizontal">
+
         <TextView
-                android:layout_width="0px"
-                android:layout_height="match_parent"
-                android:layout_weight="2"
-                android:gravity="center"
-                android:paddingLeft="10dp"
-                android:paddingRight="10dp"
-                android:text="结束时间："
-                android:textColor="@color/black"
-                android:textSize="14sp" />
+            android:layout_width="0px"
+            android:layout_height="match_parent"
+            android:layout_weight="2"
+            android:gravity="center"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:text="结束时间："
+            android:textColor="@color/black"
+            android:textSize="14sp" />
+
         <View
-                android:layout_width="0.5dp"
-                android:layout_height="match_parent"
-                android:background="@color/secondary_text"/>
+            android:layout_width="0.5dp"
+            android:layout_height="match_parent"
+            android:background="@color/secondary_text" />
+
         <TextView
-                android:id="@+id/end_time"
-                android:layout_width="0px"
-                android:layout_height="match_parent"
-                android:layout_weight="2"
-                android:gravity="center"
-                android:paddingLeft="10dp"
-                android:paddingRight="10dp"
-                android:text="开始时间"
-                android:textColor="@color/black"
-                android:textSize="14sp" />
+            android:id="@+id/end_time"
+            android:layout_width="0px"
+            android:layout_height="match_parent"
+            android:layout_weight="3"
+            android:gravity="center"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:text="开始时间"
+            android:textColor="@color/black"
+            android:textSize="14sp" />
 
 
     </LinearLayout>
+
     <View
-            android:layout_width="match_parent"
-            android:layout_height="0.5dp"
-            android:background="@color/secondary_text"/>
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="@color/secondary_text" />
+
     <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="30dp"
-            android:background="@color/white"
-            android:orientation="horizontal"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp">
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:background="@color/white"
+        android:orientation="horizontal">
+
         <TextView
-                android:layout_width="0px"
-                android:layout_height="match_parent"
-                android:layout_weight="2"
-                android:gravity="center"
-                android:paddingLeft="10dp"
-                android:paddingRight="10dp"
-                android:text="显示条数："
-                android:textColor="@color/black"
-                android:textSize="14sp" />
+            android:layout_width="0px"
+            android:layout_height="match_parent"
+            android:layout_weight="2"
+            android:gravity="center"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:text="显示条数："
+            android:textColor="@color/black"
+            android:textSize="14sp" />
+
         <View
-                android:layout_width="0.5dp"
-                android:layout_height="match_parent"
-                android:background="@color/secondary_text"/>
+            android:layout_width="0.5dp"
+            android:layout_height="match_parent"
+            android:background="@color/secondary_text" />
+
         <Spinner
-                android:id="@+id/sp_item_count"
-                android:layout_width="0dp"
-                android:layout_weight="2"
-                android:layout_height="wrap_content"
-                android:singleLine="true"
-                android:layout_gravity="center_vertical"
-                android:paddingLeft="10dp"
-                />
-
+            android:id="@+id/sp_item_count"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="3"
+            android:paddingLeft="10dp"
+            android:singleLine="true"
+            android:dropDownVerticalOffset="30dp"
+            android:gravity="center"/>
 
     </LinearLayout>
+
     <View
-            android:layout_width="match_parent"
-            android:layout_height="0.5dp"
-            android:background="@color/secondary_text"/>
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="@color/secondary_text" />
+
     <Button
-            android:id="@+id/btn_query_device"
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginTop="30dp"
-            android:layout_marginRight="10dp"
-            android:background="@drawable/scan_add_selector"
-            android:text="查 询"
-            android:textSize="18sp"
-            android:textColor="@color/white" />
-<RelativeLayout
+        android:id="@+id/btn_query_device"
         android:layout_width="match_parent"
         android:layout_height="40dp"
-        android:orientation="horizontal"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="30dp"
+        android:layout_marginRight="10dp"
+        android:background="@drawable/btn_select"
+        android:text="查 询"
+        android:textColor="@color/white"
+        android:textSize="18sp" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
         android:layout_marginTop="20dp"
-        android:background="@color/bg_main_light_white">
-    <TextView
+        android:background="@color/bg_main_light_white"
+        android:orientation="horizontal">
+
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="20sp"
-            android:text="运营服务器数据列表："
             android:layout_centerVertical="true"
             android:layout_marginLeft="15dp"
-            />
-    <ImageView
+            android:text="运营服务器数据列表："
+            android:textSize="20sp" />
+
+        <ImageView
             android:id="@+id/img_arrow"
             android:layout_width="30dp"
             android:layout_height="30dp"
-            android:background="@drawable/icon_arrow_u"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:layout_marginRight="20dp"
-            />
-</RelativeLayout>
+            android:background="@drawable/ic_downarrow" />
+    </RelativeLayout>
+
     <View
-            android:layout_width="match_parent"
-            android:layout_height="0.5dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:background="@color/secondary_text"/>
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="10dp"
+        android:background="@color/secondary_text" />
+
     <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="30dp"
-            android:background="@color/white"
-            android:orientation="horizontal"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp">
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:background="@color/white"
+        android:orientation="horizontal">
+
         <View
-                android:layout_width="0.5dp"
-                android:layout_height="match_parent"
-                android:background="@color/secondary_text"/>
-        <TextView
-                android:layout_width="0px"
-                android:layout_height="match_parent"
-                android:layout_weight="2"
-                android:gravity="center"
-                android:paddingLeft="10dp"
-                android:paddingRight="10dp"
-                android:text="数据接收时间"
-                android:textColor="@color/black"
-                android:background="@color/app_color_theme_10"
-                android:textSize="14sp" />
-        <View
-                android:layout_width="0.5dp"
-                android:layout_height="match_parent"
-                android:background="@color/secondary_text"/>
-        <TextView
-                android:layout_width="0px"
-                android:layout_height="match_parent"
-                android:layout_weight="2"
-                android:gravity="center"
-                android:paddingLeft="10dp"
-                android:paddingRight="10dp"
-                android:text="数据内容"
-                android:textColor="@color/black"
-                android:background="@color/app_color_theme_10"
-                android:textSize="14sp" />
-        <View
-                android:layout_width="0.5dp"
-                android:layout_height="match_parent"
-                android:background="@color/secondary_text"/>
-    </LinearLayout>
-    <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:background="@color/secondary_text"/>
-    <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/query_recycle_view"
-            android:layout_width="match_parent"
+            android:layout_width="0.5dp"
             android:layout_height="match_parent"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"/>
+            android:background="@color/secondary_text" />
+
+        <TextView
+            android:layout_width="0px"
+            android:layout_height="match_parent"
+            android:layout_weight="2"
+            android:background="@color/app_color_theme_10"
+            android:gravity="center"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:text="数据接收时间"
+            android:textColor="@color/black"
+            android:textSize="14sp" />
+
+        <View
+            android:layout_width="0.5dp"
+            android:layout_height="match_parent"
+            android:background="@color/secondary_text" />
+
+        <TextView
+            android:layout_width="0px"
+            android:layout_height="match_parent"
+            android:layout_weight="2"
+            android:background="@color/app_color_theme_10"
+            android:gravity="center"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:text="数据内容"
+            android:textColor="@color/black"
+            android:textSize="14sp" />
+
+        <View
+            android:layout_width="0.5dp"
+            android:layout_height="match_parent"
+            android:background="@color/secondary_text" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:background="@color/secondary_text" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/query_recycle_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp" />
 </LinearLayout>

@@ -955,7 +955,7 @@ public class SenSorBGKConfigActivity extends BaseDeviceConnectActivity {
     private void setResultData(String cmdStr) {
         if (cmdStr.startsWith("$$168") && cmdStr.endsWith("\r\n")) {
             if (cmdStr.startsWith("$$168e") || cmdStr.startsWith("$$168ce")) {
-                ToastUtils.show(collectorName +"的传感器触发阈值配置错误!");
+                ToastUtils.show(collectorName + "的传感器触发阈值配置错误!");
                 stopProgressRunnable();
                 return;
             }
@@ -967,7 +967,7 @@ public class SenSorBGKConfigActivity extends BaseDeviceConnectActivity {
         //最后一个传感器参数设置指令
         if (cmdStr.startsWith("$$165") && cmdStr.endsWith("\r\n")) {
             if (cmdStr.startsWith("$$165e") || cmdStr.startsWith("$$165ce")) {
-                ToastUtils.show(collectorName +"的传感器修正值配置错误!");
+                ToastUtils.show(collectorName + "的传感器修正值配置错误!");
                 stopProgressRunnable();
                 return;
             }

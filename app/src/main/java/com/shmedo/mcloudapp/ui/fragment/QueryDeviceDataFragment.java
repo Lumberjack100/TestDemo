@@ -5,13 +5,19 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.*;
+import android.view.animation.Animation;
+import android.view.animation.RotateAnimation;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.Spinner;
+import android.widget.TextView;
+
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
+
 import com.hjq.toast.ToastUtils;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.adapter.recyclerviewbaseadapter.CommonAdapter;
@@ -29,13 +35,17 @@ import com.shmedo.mcloudapp.util.GsonFactory;
 import com.shmedo.mcloudapp.util.TimeUtil;
 import com.shmedo.mcloudapp.views.DividerItemDecoration;
 import com.shmedo.mcloudapp.views.TimePickerDialog;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.RequestBody;
 import timber.log.Timber;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * 项目名：  mCloudapp
@@ -69,6 +79,10 @@ public class QueryDeviceDataFragment extends BaseFragment {
     @BindView(R.id.sp_item_count)
     Spinner spItemCount;
 
+    private Animation mExpandAnimation;
+
+    private Animation mFoldResetAnimation;
+
     private ArrayAdapter<String> itemCountAdapter;
     private String itemCount;
     private String snNubmer;
@@ -97,6 +111,7 @@ public class QueryDeviceDataFragment extends BaseFragment {
         getIntentData();
         initView();
         initAdapter();
+        initAnimation();
         return view;
     }
 
@@ -115,7 +130,7 @@ public class QueryDeviceDataFragment extends BaseFragment {
 
     private void initView() {
         String[] cmData = getResources().getStringArray(R.array.item_count);
-        itemCountAdapter = new ArrayAdapter<>(configDASActivity, android.R.layout.simple_spinner_item, cmData);
+        itemCountAdapter = new ArrayAdapter<>(configDASActivity, R.layout.spinner_item, cmData);
         itemCountAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spItemCount.setAdapter(itemCountAdapter);
         spItemCount.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -147,6 +162,17 @@ public class QueryDeviceDataFragment extends BaseFragment {
         queryRecycleView.setAdapter(adapter);
     }
 
+    private void initAnimation() {
+        mExpandAnimation = new RotateAnimation(0, 180, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+        mExpandAnimation.setDuration(350);
+        mExpandAnimation.setFillAfter(true);
+
+        mFoldResetAnimation = new RotateAnimation(180, 0, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+        mFoldResetAnimation.setDuration(350);
+        mFoldResetAnimation.setFillAfter(true);
+    }
+
+
     @OnClick({R.id.start_time, R.id.end_time, R.id.btn_query_device,R.id.img_arrow})
     public void onViewClicked(View view) {
         switch (view.getId()) {
@@ -173,7 +199,7 @@ public class QueryDeviceDataFragment extends BaseFragment {
                 break;
             case R.id.img_arrow:
                 if (linearLayoutManager.getReverseLayout()){
-                    imgArrow.setBackgroundResource(R.drawable.icon_arrow_d);
+                    imgArrow.startAnimation(mExpandAnimation);
                     linearLayoutManager.setReverseLayout(false);
                     linearLayoutManager.setReverseLayout(false);
                     queryRecycleView.setLayoutManager(linearLayoutManager);
@@ -181,9 +207,9 @@ public class QueryDeviceDataFragment extends BaseFragment {
                     adapter.notifyDataSetChanged();
                     Timber.i("有小到大");
                 }else {
+                    imgArrow.startAnimation(mFoldResetAnimation);
                     linearLayoutManager.setReverseLayout(true);
                     linearLayoutManager.setReverseLayout(true);
-                    imgArrow.setBackgroundResource(R.drawable.icon_arrow_u);
                     queryRecycleView.setLayoutManager(linearLayoutManager);
                     queryRecycleView.scrollToPosition(queryCloudDataInfoList.size()-1);
                     adapter.notifyDataSetChanged();
