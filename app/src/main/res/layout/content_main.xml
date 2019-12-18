@@ -37,7 +37,7 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
         android:layout_marginEnd="20dp"
-        android:layout_marginBottom="70dp"
+        android:layout_marginBottom="85dp"
         android:orientation="vertical">
 
         <com.github.clans.fab.FloatingActionButton
@@ -55,7 +55,7 @@
             android:id="@+id/fab_wifi"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/icon_wifi"
+            android:src="@drawable/ic_wifi"
             android:visibility="gone"
             app:fab_colorNormal="@color/white"
             app:fab_colorPressed="@color/app_color_blue_pressed"
@@ -66,7 +66,7 @@
             android:id="@+id/fab_config"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/icon_config"
+            android:src="@drawable/ic_phone"
             android:visibility="gone"
             app:fab_colorNormal="@color/white"
             app:fab_colorPressed="@color/app_color_blue_pressed"

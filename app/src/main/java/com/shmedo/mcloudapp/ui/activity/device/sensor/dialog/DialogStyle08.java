@@ -88,6 +88,16 @@ public class DialogStyle08 implements IDialogOpt<CollectorSensorParamsInfoSub>{
         if (myOnClickListener != null){
             save.setOnClickListener(new View.OnClickListener() {
                 @Override public void onClick(View view) {
+//                    if (triggerThreshold.getText().length() == 0 || !StringUtil.isInteger(triggerThreshold.getText().toString())) {
+//                        ToastUtils.show("请输入正确的触发值");
+//                        return;
+//                    }
+//
+//                    if (revised.getText().length() == 0 || (!StringUtil.isInteger(revised.getText().toString()) && !StringUtil.isDouble(revised.getText().toString()))) {
+//                        ToastUtils.show("请输入正确的修正值");
+//                        return;
+//                    }
+
                     sensorMoistureMeterInfo.setHumidityTriggerThreshold(Integer.parseInt(humidityTriggerThreshold.getText().toString()));
                     sensorMoistureMeterInfo.setHumidityCorrectionValue(Double.valueOf(humidityCorrectionValue.getText().toString()));
                     sensorMoistureMeterInfo.setSaltTriggerThreshold(Integer.parseInt(saltTriggerThreshold.getText().toString()));

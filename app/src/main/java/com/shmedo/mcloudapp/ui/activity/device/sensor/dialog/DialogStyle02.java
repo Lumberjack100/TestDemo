@@ -9,10 +9,12 @@ import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.hjq.toast.ToastUtils;
 import com.shmedo.das.common.SensorWireShiftInfo;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.entity.ble.collector.CollectorSensorParamsInfoSub;
 import com.shmedo.mcloudapp.inter.MyOnClickListener;
+import com.shmedo.mcloudapp.util.StringUtil;
 import com.shmedo.mcloudapp.util.UserConfig;
 
 /**
@@ -57,7 +59,6 @@ public class DialogStyle02 implements IDialogOpt<CollectorSensorParamsInfoSub> {
 
     @Override
     public void initData(final CollectorSensorParamsInfoSub info) {
-
         TextView cancel = contentView.findViewById(R.id.tv_cancel);
         final TextView save = contentView.findViewById(R.id.tv_save);
         final EditText modbusAddress = contentView.findViewById(R.id.et_modbus_address);
@@ -78,6 +79,16 @@ public class DialogStyle02 implements IDialogOpt<CollectorSensorParamsInfoSub> {
             save.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    if (triggerThreshold.getText().length() == 0 || !StringUtil.isInteger(triggerThreshold.getText().toString())) {
+                        ToastUtils.show("请输入正确的触发值");
+                        return;
+                    }
+
+                    if (revised.getText().length() == 0 || (!StringUtil.isInteger(revised.getText().toString()) && !StringUtil.isDouble(revised.getText().toString()))) {
+                        ToastUtils.show("请输入正确的修正值");
+                        return;
+                    }
+
                     sensorWireShiftInfo.setTriggerThreshold(Integer.parseInt(triggerThreshold.getText().toString()));
                     sensorWireShiftInfo.setCorrectionValue(Double.valueOf(revised.getText().toString()));
                     collectorSensorParamsInfoSub.setSensorData(sensorWireShiftInfo);
@@ -100,6 +111,7 @@ public class DialogStyle02 implements IDialogOpt<CollectorSensorParamsInfoSub> {
             });
         }
     }
+
 
     public DialogStyle02 setMyOnClickListener(MyOnClickListener listener) {
         this.myOnClickListener = listener;
