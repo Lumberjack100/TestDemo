@@ -973,7 +973,7 @@ public class SenSorBGKConfigActivity extends BaseDeviceConnectActivity {
             }
             cmdNum++;
 
-            if (cmdNum == collectorSensorParamsInfoSubs.size() - 1) {
+            if (cmdNum == collectorSensorParamsInfoSubs.size()) {
                 stopProgressRunnable();
                 ToastUtils.show("设置完成");
                 hander.postDelayed(new Runnable() {

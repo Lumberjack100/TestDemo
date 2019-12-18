@@ -1,5 +1,6 @@
 package com.shmedo.mcloudapp.ui.fragment;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
@@ -167,14 +168,11 @@ public class DeviceDetailsFragment extends BaseFragment implements SwipeRefreshL
     @BindView(R.id.img_signal_strength)
     ImageView imgSignalStrength;
 
-    private Handler handler;
     private boolean onRefreshFirst = false;
     private long prelongTim = 0;
     private Unbinder unbinder;
 
     private ConfigDASActivity configDASActivity;
-
-    private DaoManager manager = DaoManager.getInstance();
 
     private List<String> sensorList = new ArrayList<>();
     private CommonAdapter adapter;
@@ -205,7 +203,6 @@ public class DeviceDetailsFragment extends BaseFragment implements SwipeRefreshL
         refreshLayout.setSize(SwipeRefreshLayout.LARGE);
         refreshLayout.setScrollUpChild(scrollView);
         refreshLayout.setOnRefreshListener(this);
-        handler = new Handler();
     }
 
     private void initData() {
@@ -217,7 +214,6 @@ public class DeviceDetailsFragment extends BaseFragment implements SwipeRefreshL
 
     private void initAdapter() {
         sensorRecycle.setLayoutManager(new LinearLayoutManager(getActivity()));
-        sensorRecycle.addItemDecoration(new DividerItemDecoration());
         adapter = new CommonAdapter<String>(getActivity(), R.layout.item_device_details, sensorList) {
             @Override
             protected void convert(ViewHolder holder, String string, int position) {
@@ -368,10 +364,12 @@ public class DeviceDetailsFragment extends BaseFragment implements SwipeRefreshL
                 switchType.setText("断线报警器");
                 llAlarm.setVisibility(View.VISIBLE);
                 llRain.setVisibility(View.GONE);
-                if (statusTwo.getRainfallStatus().equals("1")) {
-                    alarmStatus.setText("断开");
-                } else if (statusTwo.getRainfallStatus().equals("0")) {
-                    alarmStatus.setText("闭合");
+                if (statusTwo.getRainfallStatus().equals("1.0")||statusTwo.getRainfallStatus().equals("1")) {
+                    alarmStatus.setText("已断线");
+                    alarmStatus.setTextColor(Color.RED);
+                } else if (statusTwo.getRainfallStatus().equals("0.0")||statusTwo.getRainfallStatus().equals("0")) {
+                    alarmStatus.setText("未断线");
+                    alarmStatus.setTextColor(Color.GREEN);
                 }
                 break;
         }
@@ -380,10 +378,15 @@ public class DeviceDetailsFragment extends BaseFragment implements SwipeRefreshL
     //设置设备状态3  $$043,150000L,2,   3:0:3.1,   5:0:3.1\r\n
     private void setDeviceStatusThree(DeviceStatusThree statusThree) {
         ParserDeviceDetailsUtils.setChannelNumber(tvChannelNumber, statusThree.getCollectorModel());
-        List<String> list = statusThree.getSensorStatus();
-        sensorList.clear();
-        sensorList.addAll(list);
-        adapter.notifyDataSetChanged();
+        if (statusThree.getCollectorAddress().equals("0")){
+            llSensor.setVisibility(View.GONE);
+        }else {
+            llSensor.setVisibility(View.VISIBLE);
+            List<String> list = statusThree.getSensorStatus();
+            sensorList.clear();
+            sensorList.addAll(list);
+            adapter.notifyDataSetChanged();
+        }
     }
 
     //设置网络状态  ##044

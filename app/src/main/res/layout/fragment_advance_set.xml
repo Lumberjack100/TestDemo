@@ -109,4 +109,26 @@
             android:gravity="center"
             android:src="@drawable/icon_right" />
     </RelativeLayout>
+    <RelativeLayout
+        android:id="@+id/rl_log_print"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginTop="1dp"
+        android:background="@color/bg_main_light_white">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="25dp"
+            android:gravity="center"
+            android:text="指令日志输出" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="20dp"
+            android:gravity="center"
+            android:src="@drawable/icon_right" />
+    </RelativeLayout>
 </LinearLayout>

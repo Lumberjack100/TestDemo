@@ -14,15 +14,17 @@ public class DeviceStatusThree {
      * $$043,(1),(2),(3),(4)
      *  (1) sn号
      * （2）采集器型号
-     * （3）传感器状态，用冒号分隔的字符串
+     *  (3)采集器地址
+     * （4）传感器状态，用冒号分隔的字符串
      * ①:②:③，其中①：传感器地址，②：传感器状态，0正常，1异常，③：传感器数据
-     * （4）传感器状态，和（2）格式相同，
+     * （5）传感器状态，和（2）格式相同，
      * 注：传感器状态可能有很多个，有接入传感器个数决定。
      * 示例：
-     * $$043,150000L,2,  3:0:3.1,   5:0:3.1\r\n
+     * $$043,150000L,2,2,  3:0:3.1,   5:0:3.1\r\n
      */
     private String snNumber;
     private String collectorModel;
+    private String collectorAddress;
     private List<String> sensorStatus;
 
     public String getSnNumber() {
@@ -39,6 +41,14 @@ public class DeviceStatusThree {
 
     public void setCollectorModel(String collectorModel) {
         this.collectorModel = collectorModel;
+    }
+
+    public String getCollectorAddress() {
+        return collectorAddress;
+    }
+
+    public void setCollectorAddress(String collectorAddress) {
+        this.collectorAddress = collectorAddress;
     }
 
     public List<String> getSensorStatus() {

@@ -24,24 +24,6 @@
         tools:text="已激活"
         android:textColor="@color/gray_807B7B" />
 
-
-<!--    <com.kyleduo.switchbutton.SwitchButton-->
-<!--        android:id="@+id/switchButton"-->
-<!--        style="@style/SwitchButtonStyle"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_alignParentRight="true"-->
-<!--        android:layout_centerVertical="true"-->
-<!--        android:layout_marginRight="20dp"-->
-<!--        app:kswAnimationDuration="300"-->
-<!--        app:kswBackDrawable="@drawable/ios_back_drawable"-->
-<!--        app:kswThumbDrawable="@drawable/ios_thumb_selector"-->
-<!--        app:kswThumbMarginBottom="-8dp"-->
-<!--        app:kswThumbMarginLeft="-5dp"-->
-<!--        app:kswThumbMarginRight="-5dp"-->
-<!--        app:kswThumbMarginTop="-2.5dp"-->
-<!--        app:kswThumbRangeRatio="1.4"/>-->
-
     <com.kyleduo.switchbutton.SwitchButton
         android:id="@+id/switchButton"
         android:layout_width="wrap_content"

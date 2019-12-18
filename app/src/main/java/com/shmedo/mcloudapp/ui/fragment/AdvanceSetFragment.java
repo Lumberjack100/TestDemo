@@ -31,6 +31,7 @@ import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.base.BaseFragment;
 import com.shmedo.mcloudapp.ui.activity.ConfigDASActivity;
 import com.shmedo.mcloudapp.ui.activity.device.senior.InstructionDebugActivity;
+import com.shmedo.mcloudapp.ui.activity.device.senior.LogPrintActivity;
 import com.shmedo.mcloudapp.ui.activity.device.senior.ProductRegistrationActivity;
 import com.shmedo.mcloudapp.util.KeyBordUtils;
 import com.shmedo.mcloudapp.util.StringUtil;
@@ -69,7 +70,8 @@ public class AdvanceSetFragment extends BaseFragment {
         return view;
     }
 
-    @OnClick({R.id.ll_reset_data, R.id.ll_restart_system, R.id.rl_modify_authorization, R.id.rl_product_register, R.id.rl_instruction_debug})
+    @OnClick({R.id.ll_reset_data, R.id.ll_restart_system, R.id.rl_modify_authorization,
+            R.id.rl_product_register, R.id.rl_instruction_debug,R.id.rl_log_print})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.ll_reset_data://恢复出厂设置
@@ -100,6 +102,12 @@ public class AdvanceSetFragment extends BaseFragment {
             case R.id.rl_instruction_debug://指令交互调试模式
                 if (checkIsBluetoothConnected()) {
                     InstructionDebugActivity.startActivity(getActivity());
+                }
+                break;
+
+            case R.id.rl_log_print://日志输出
+                if (checkIsBluetoothConnected()) {
+                    LogPrintActivity.startActivity(getActivity());
                 }
                 break;
         }

@@ -136,7 +136,6 @@ public class QueryDeviceDataFragment extends BaseFragment {
         linearLayoutManager.setStackFromEnd(true);
         linearLayoutManager.setReverseLayout(true);
         queryRecycleView.setLayoutManager(linearLayoutManager);
-        queryRecycleView.addItemDecoration(new DividerItemDecoration());
         adapter = new CommonAdapter<QueryCloudDataInfo>(getActivity(), R.layout.item_query_cloud_data, queryCloudDataInfoList) {
             @Override
             protected void convert(ViewHolder holder, QueryCloudDataInfo info, int position) {

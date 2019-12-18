@@ -102,7 +102,7 @@ public class ParserDeviceDetailsUtils {
 
     /**
      * 设备状态3
-     * @param result $$043,150000L,2,3:0:3.1,5:0:3.1\r\n
+     * @param result $$043,150000L,2,2,3:0:3.1,5:0:3.1\r\n
      * @return DeviceStatusThree
      */
     public static DeviceStatusThree parserDeviceStatusThree(String result){
@@ -114,11 +114,12 @@ public class ParserDeviceDetailsUtils {
         List<String> list = new ArrayList<>();
         DeviceStatusThree statusThree = new DeviceStatusThree();
         String[] cmd = result.replace("\r\n", "").split(",",-1);
-        for (int i = 3; i < cmd.length; i++) {
+        for (int i = 4; i < cmd.length; i++) {
             list.add(cmd[i]);
         }
         statusThree.setSnNumber(cmd[1]);
         statusThree.setCollectorModel(cmd[2]);
+        statusThree.setCollectorAddress(cmd[3]);
         statusThree.setSensorStatus(list);
         return statusThree;
     }
