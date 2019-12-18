@@ -230,16 +230,29 @@ public class ParserDeviceDetailsUtils {
 
     /**
      * 修改链路状态
-     * @param textView
+     * @param
      * @param status
      */
-    public static void setLinkStatus(TextView textView, String status){
-        if (status.equals("1")){
-            textView.setText("已上线");
-            textView.setTextColor(Color.GREEN);
-        }else if (status.equals("0")){
-            textView.setText("未上线");
-            textView.setTextColor(Color.RED);
+    public static void setLinkStatus(TextView tvLinkStatus,TextView tvSendData,TextView tvUnSend, String status,String enable,
+                                     String sendData,String generatedData){
+        String unSendData =String.valueOf( Integer.parseInt(generatedData) - Integer.parseInt(sendData));
+        //如果链路使能
+        if (enable.equals("1")){
+            if (status.equals("1")){
+                tvLinkStatus.setText("已上线");
+                tvLinkStatus.setTextColor(Color.GREEN);
+            }else if (status.equals("0")){
+                tvLinkStatus.setText("未上线");
+                tvLinkStatus.setTextColor(Color.RED);
+            }
+            tvSendData.setText(sendData);
+            tvUnSend.setText(unSendData);
+        }else if (enable.equals("0")){
+            //0:未使能
+            tvLinkStatus.setText("未开启");
+            tvLinkStatus.setTextColor(Color.GRAY);
+            tvSendData.setText("0");
+            tvUnSend.setText("0");
         }
     }
 

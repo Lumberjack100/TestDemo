@@ -194,17 +194,19 @@ public class MqttConfigDialog implements IDialogOpt<MqttConfigInfoSub>{
                 @Override
                 public void onClick(View view) {
                     mqttConfigInfoSub.setCommunicationProtocol(protocolItem);
-                    mqttConfigInfoSub.setDataPlatformAddress(dataPlatformAddress.getText()!=null?dataPlatformAddress.getText().toString():"");
+                    String platformAddress = dataPlatformAddress.getText()!=null?dataPlatformAddress.getText().toString():"";
+                    mqttConfigInfoSub.setDataPlatformAddress(" "+platformAddress);
                     mqttConfigInfoSub.setKeepAliveValue(cetKeepAliveValue.getText()!=null?cetKeepAliveValue.getText().toString():"");
                     mqttConfigInfoSub.setDeviceSn(cetDeviceSn.getText()!=null?cetDeviceSn.getText().toString():"");
                     mqttConfigInfoSub.setProductId(cetProductId.getText()!=null?cetProductId.getText().toString():"");
                     mqttConfigInfoSub.setRegistrationCode(cetRegistrationCode.getText()!=null?cetRegistrationCode.getText().toString():"");
                     mqttConfigInfoSub.setRegistrationPlatform(registerPlatformItem);
-                    mqttConfigInfoSub.setRegistrationPlatformAddress(cetRegisterAddress.getText()!=null?cetRegisterAddress.getText().toString():"");
+                    String registrationPlatformAddress = cetRegisterAddress.getText()!=null?cetRegisterAddress.getText().toString():"";
+                    mqttConfigInfoSub.setRegistrationPlatformAddress(" "+registrationPlatformAddress);
                     mqttConfigInfoSub.setAppKey(cetRegistrationCode.getText()!=null?cetRegistrationCode.getText().toString():"");
                     mqttConfigInfoSub.setMqttDeviceId(cetMqttDeviceId.getText()!=null?cetMqttDeviceId.getText().toString():"");
                     mqttConfigInfoSub.setMqttUsername(cetMqttUsername.getText()!=null?cetMqttUsername.getText().toString():"");
-                    mqttConfigInfoSub.setMqttPassword(cetMqttPassword.getText()!=null?cetMqttDeviceId.getText().toString():"");
+                    mqttConfigInfoSub.setMqttPassword(cetMqttPassword.getText()!=null?cetMqttPassword.getText().toString():"");
                     mQttOnClickListener.onSureClick(view,mqttConfigInfoSub,link);
                     dialog.dismiss();
                 }
