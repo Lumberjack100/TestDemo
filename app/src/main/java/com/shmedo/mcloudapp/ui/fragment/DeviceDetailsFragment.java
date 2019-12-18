@@ -86,6 +86,15 @@ public class DeviceDetailsFragment extends BaseFragment implements SwipeRefreshL
     @BindView(R.id.link_three_send_data)
     TextView linkThreeSendData;
 
+    @BindView(R.id.link_one_unsend_data)
+    TextView linkOneUnsendData;
+
+    @BindView(R.id.link_two_unsend_data)
+    TextView linkTwoUnsendData;
+
+    @BindView(R.id.link_three_unsend_data)
+    TextView linkThreeUnsendData;
+
     @BindView(R.id.solar_status)
     TextView solarStatus;
 
@@ -381,37 +390,25 @@ public class DeviceDetailsFragment extends BaseFragment implements SwipeRefreshL
     private void setInternetStatus(DeviceInternetStatus internetStatus, String linkNumber) {
         switch (linkNumber) {
             case "1":
-                ParserDeviceDetailsUtils.setLinkStatus(linkOneStatus, internetStatus.getLinkStatus());
-                linkOneSendData.setText(internetStatus.getSentData());
+                ParserDeviceDetailsUtils.setLinkStatus(linkOneStatus,linkOneSendData, linkOneUnsendData,internetStatus.getLinkStatus(),
+                        internetStatus.getLinkEnable(),internetStatus.getSentData(),internetStatus.getGeneratedData());
                 break;
             case "2":
-                ParserDeviceDetailsUtils.setLinkStatus(linkTwoStatus, internetStatus.getLinkStatus());
-                linkTwoSendData.setText(internetStatus.getSentData());
+                ParserDeviceDetailsUtils.setLinkStatus(linkTwoStatus,linkTwoSendData, linkTwoUnsendData,internetStatus.getLinkStatus(),
+                        internetStatus.getLinkEnable(),internetStatus.getSentData(),internetStatus.getGeneratedData());
                 break;
             case "3":
-                ParserDeviceDetailsUtils.setLinkStatus(linkThreeStatus, internetStatus.getLinkStatus());
-                linkThreeSendData.setText(internetStatus.getSentData());
+                ParserDeviceDetailsUtils.setLinkStatus(linkThreeStatus,linkThreeSendData, linkThreeUnsendData,internetStatus.getLinkStatus(),
+                        internetStatus.getLinkEnable(),internetStatus.getSentData(),internetStatus.getGeneratedData());
                 break;
         }
     }
 
     //设置运营商信息  ##014
     private void setOperatorInformation(OperatorInformation operatorInformation) {
-        ParserDeviceDetailsUtils.setSignalStrength(imgSignalStrength,operatorInformation.getSignalStrength());
+        ParserDeviceDetailsUtils.setSignalStrength(imgSignalStrength, operatorInformation.getSignalStrength());
         signalStrength.setText(ParserDeviceDetailsUtils.setOperatorType(operatorInformation.getOperatorType()));
 
-    }
-
-
-    private long getCurrentDeviceId() {
-        StatusInfoResult statusInfoResult = manager.getDaoSession().getStatusInfoResultDao().queryBuilder()
-                .where(StatusInfoResultDao.Properties.DeviceName.eq(MCloudApp.getCurDeviceToken()))
-                .unique();
-
-        if (statusInfoResult != null)
-            return statusInfoResult.getId();
-        else
-            return -1;
     }
 
     @Override
@@ -464,8 +461,8 @@ public class DeviceDetailsFragment extends BaseFragment implements SwipeRefreshL
                 refreshLayout.setRefreshing(false);
             }
         }
-            if (!MCloudApp.isIsBluetoothDeviceConnected()) {
-                refreshLayout.setRefreshing(false);
-            }
+        if (!MCloudApp.isIsBluetoothDeviceConnected()) {
+            refreshLayout.setRefreshing(false);
+        }
     }
 }

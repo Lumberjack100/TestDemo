@@ -4,8 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.AdapterView;
@@ -16,6 +14,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -279,23 +279,35 @@ public class MqttSettingActivity extends BaseDeviceConnectActivity implements Vi
             String mqttUsername = mqttConfigInfoSub.getMqttUsername();
             String mqttPassword = mqttConfigInfoSub.getMqttPassword();
 
+            startProgressRunnable("正在发送配置指令...", 10000);
             //1、设置网络链路通讯协议
             sendCommonCommand("##202" + linkNumber + communicationProtocol + "\r\n");
-            //2、设置自动注册平台参数
-            sendCommonCommand("##803" + linkNumber + deviceSn + "," + productId + "," + registrationCode + "\r\n");
-            //3、设置手动注册平台参数
-            sendCommonCommand("##805" + linkNumber + mqttDeviceId + "," + mqttUsername + "," + mqttPassword + "\r\n");
-            //4、设置自动注册平台地址端口
-            sendCommonCommand("##807" + linkNumber + registrationPlatformAddress + "\r\n");
-            //5、设置MQTT KeepAlive值
-            sendCommonCommand("##809" + linkNumber + keepAliveValue + "\r\n");
             //6、设置数据平台地址端口
             sendCommonCommand("##201" + linkNumber + dataPlatformAddress + "\r\n");
-            //7、选择平台
-            sendCommonCommand("##810" + linkNumber + registrationPlatform + "\r\n");
-            //8、appKey(米度/北京平台特有)：
-            sendCommonCommand("##811" + linkNumber + appkey + "\r\n");
-            startProgressRunnable("正在发送配置指令...", 10000);
+           if (communicationProtocol.equals("4")){
+                // MQTT自动注册
+               //7、选择平台
+               sendCommonCommand("##810" + linkNumber + registrationPlatform + "\r\n");
+                //2、设置自动注册平台参数
+                sendCommonCommand("##803" + linkNumber + deviceSn + "," + productId + "," + registrationCode + "\r\n");
+                //4、设置自动注册平台地址端口
+                sendCommonCommand("##807" + linkNumber + registrationPlatformAddress + "\r\n");
+                //5、设置MQTT KeepAlive值
+                sendCommonCommand("##809" + linkNumber + keepAliveValue + "\r\n");
+
+            }else if (communicationProtocol.equals("5")){
+                //MQTT手动注册
+                //3、设置手动注册平台参数
+                sendCommonCommand("##805" + linkNumber + mqttDeviceId + "," + mqttUsername + "," + mqttPassword + "\r\n");
+                //5、设置MQTT KeepAlive值
+                sendCommonCommand("##809" + linkNumber + keepAliveValue + "\r\n");
+                if (registrationPlatform.equals("2")){
+                    //8、appKey(米度/北京平台特有)：
+                    sendCommonCommand("##811" + linkNumber + appkey + "\r\n");
+                }
+            }
+            stopProgressRunnable();
+            ToastUtils.show("设置完成");
             return false;
         }
 
@@ -325,6 +337,13 @@ public class MqttSettingActivity extends BaseDeviceConnectActivity implements Vi
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void getConfig(String messageEvent) {
         if (!TextUtils.isEmpty(messageEvent) && messageEvent.startsWith("$$")) {
+
+        }else if (messageEvent.startsWith("$$200") ||
+                messageEvent.startsWith("$$889") ||messageEvent.startsWith("$$000") || messageEvent.startsWith("$$811") ||
+                messageEvent.startsWith("$$202") ||messageEvent.startsWith("$$201") || messageEvent.startsWith("$$810") ||
+                messageEvent.startsWith("$$803") ||messageEvent.startsWith("$$807") || messageEvent.startsWith("$$809") ||
+                messageEvent.startsWith("$$805")
+        ){
             setResultData(messageEvent);
         }
     }
@@ -424,6 +443,43 @@ public class MqttSettingActivity extends BaseDeviceConnectActivity implements Vi
                 changeLinkStatus(mLinkTwoStatus,true,R.color.colorPrimaryDark);
                 changeLinkStatus(mLinkThreeStatus,true,R.color.colorPrimaryDark);
                 break;
+            /*case "202":
+            case "201":
+            case "810":
+            case "803":
+            case "807":
+            case "809":
+            case "805":
+                stopProgress(message);
+                break;*/
+        }
+    }
+
+    private void stopProgress(String message){
+        if (message.startsWith("$$202e") || message.startsWith("$$202ce")) {
+            ToastUtils.show("设置网络链路通讯协议错误!");
+            stopProgressRunnable();
+        }else if (message.startsWith("$$201e") || message.startsWith("$$201ce")) {
+            ToastUtils.show("设置数据平台地址端口错误!");
+            stopProgressRunnable();
+        } else if (message.startsWith("$$801e") || message.startsWith("$$801ce")) {
+            ToastUtils.show("选择平台配置错误!");
+            stopProgressRunnable();
+        } else if (message.startsWith("$$803e") || message.startsWith("$$803ce")) {
+            ToastUtils.show("设置自动注册平台参数错误!");
+            stopProgressRunnable();
+        } else if (message.startsWith("$$807e") || message.startsWith("$$807ce")) {
+            ToastUtils.show("设置自动注册平台地址端口错误!");
+            stopProgressRunnable();
+        } else if (message.startsWith("$$809e") || message.startsWith("$$809ce")) {
+            ToastUtils.show("设置MQTT KeepAlive值错误!");
+            stopProgressRunnable();
+        } else if (message.startsWith("$$805e") || message.startsWith("$$805ce")) {
+            ToastUtils.show("设置手动注册平台参数错误!");
+            stopProgressRunnable();
+        } else {
+            stopProgressRunnable();
+            ToastUtils.show("设置完成");
         }
     }
 

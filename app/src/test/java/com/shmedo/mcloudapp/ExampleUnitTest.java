@@ -90,7 +90,6 @@ public class ExampleUnitTest {
 //        DeviceInternetStatus internetStatus = ParserDeviceDetailsUtils.parserInternetStatus(message1);
 //        System.out.println(internetStatus.toString());
 
-        System.out.println(ParserDeviceDetailsUtils.setDeviceInternalBattery(0));
     }
 
 }
