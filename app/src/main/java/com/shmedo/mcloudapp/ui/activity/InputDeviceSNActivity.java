@@ -7,6 +7,7 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
 import com.hjq.toast.ToastUtils;
+import com.shmedo.mcloudapp.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.base.BaseActivity;
 import com.shmedo.mcloudapp.entity.DeviceBasicInfoResult;
@@ -50,6 +51,9 @@ public class InputDeviceSNActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initData();
+        int checkedId = mRgDevice.getCheckedRadioButtonId();
+        RadioButton chose = findViewById(checkedId);
+        deviceType = chose.getText().toString();
     }
 
 
@@ -94,18 +98,20 @@ public class InputDeviceSNActivity extends BaseActivity {
             return;
         }
 
-        String deviceInfo = "";
+        MCloudApp.setCurDeviceToken(snNumber);
+        MCloudApp.setCurDeviceMacAddr(null);
+
+        String deviceInfo = "MEDO," + snNumber + "," + deviceType;
         if (deviceType.equals("DAS")) {
-            deviceInfo = "MEDO," + snNumber + "," + deviceType;
             ConfigDASActivity.startActivity(InputDeviceSNActivity.this, deviceInfo);
 
-        } else if (deviceType.equals("E60")) {
-            deviceInfo = "MEDO," + snNumber + "," + deviceType;
+        } else if (deviceType.equals("ADME")) {
+            ConfigADMEActivity.startActivity(InputDeviceSNActivity.this, deviceInfo);
 
+        } else if (deviceType.equals("E60")) {
             DeviceBasicInfoResult deviceBasicInfoResult = new DeviceBasicInfoResult();
             deviceBasicInfoResult.setDeviceToken(snNumber);
             deviceBasicInfoResult.setDeviceTypeName(deviceType);
-
             ConfigE60Activity.startActivity(InputDeviceSNActivity.this, deviceBasicInfoResult);
 
         } else if (deviceType.equals("PVS")) {
@@ -114,7 +120,6 @@ public class InputDeviceSNActivity extends BaseActivity {
 
 
         if (!TextUtils.isEmpty(deviceInfo) && deviceInfo.split(",").length > 0) {
-
             //将设备信息传递到MainActivity中
             MapDeviceEvent event = new MapDeviceEvent();
             event.setType("mapDevice");

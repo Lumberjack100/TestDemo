@@ -2,6 +2,7 @@ package com.shmedo.mcloudapp.ui.activity.device.sensor.dialog;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
@@ -28,13 +29,21 @@ import com.shmedo.mcloudapp.util.UserConfig;
 public class DialogStyle02 implements IDialogOpt<CollectorSensorParamsInfoSub> {
 
     private View contentView;
-    private CollectorSensorParamsInfoSub collectorSensorParamsInfoSub;
-    private SensorWireShiftInfo sensorWireShiftInfo = new SensorWireShiftInfo();
-    private Dialog dialog;
-    private MyOnClickListener myOnClickListener;
+
     private Context mContext;
-    private UserConfig uc;
+
+    private Dialog dialog;
+
+    private MyOnClickListener myOnClickListener;
+
+    private CollectorSensorParamsInfoSub collectorSensorParamsInfoSub;
+
+    private SensorWireShiftInfo sensorWireShiftInfo = new SensorWireShiftInfo();
+
+    private UserConfig userConfig;
+
     private String channelNumber;
+
 
     public DialogStyle02(Context context, String channelNumber) {
         this.mContext = context;
@@ -59,42 +68,51 @@ public class DialogStyle02 implements IDialogOpt<CollectorSensorParamsInfoSub> {
 
     @Override
     public void initData(final CollectorSensorParamsInfoSub info) {
-        TextView cancel = contentView.findViewById(R.id.tv_cancel);
-        final TextView save = contentView.findViewById(R.id.tv_save);
-        final EditText modbusAddress = contentView.findViewById(R.id.et_modbus_address);
-        final EditText triggerThreshold = contentView.findViewById(R.id.et_trigger_threshold);
-        final EditText revised = contentView.findViewById(R.id.et_revised);
-        final EditText note = contentView.findViewById(R.id.et_note);
+        TextView mTvCancel = contentView.findViewById(R.id.tv_cancel);
+        final TextView mTvSave = contentView.findViewById(R.id.tv_save);
+        final EditText mEtModbusAddress = contentView.findViewById(R.id.et_modbus_address);
+        final EditText mEtTriggerThreshold = contentView.findViewById(R.id.et_trigger_threshold);
+        final EditText mEtRevised = contentView.findViewById(R.id.et_revised);
+        final EditText mEtNote = contentView.findViewById(R.id.et_note);
 
         collectorSensorParamsInfoSub = info;
         sensorWireShiftInfo = (SensorWireShiftInfo) collectorSensorParamsInfoSub.getSensorData();
 
-        modbusAddress.setText(collectorSensorParamsInfoSub.getSensorAddress());
-        triggerThreshold.setText(sensorWireShiftInfo.getTriggerThreshold() + "");
-        revised.setText(String.valueOf(sensorWireShiftInfo.getCorrectionValue()));
-        uc = UserConfig.getConfig(mContext, String.valueOf(channelNumber));
-        note.setText(uc.readString(String.valueOf(channelNumber)));
+        mEtModbusAddress.setText(collectorSensorParamsInfoSub.getSensorAddress());
+        mEtTriggerThreshold.setText(sensorWireShiftInfo.getTriggerThreshold() + "");
+        mEtRevised.setText(String.valueOf(sensorWireShiftInfo.getCorrectionValue()));
+        userConfig = UserConfig.getConfig(mContext, String.valueOf(channelNumber));
+        mEtNote.setText(userConfig.readString(String.valueOf(channelNumber)));
 
         if (myOnClickListener != null) {
-            save.setOnClickListener(new View.OnClickListener() {
+            mTvSave.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if (triggerThreshold.getText().length() == 0 || !StringUtil.isInteger(triggerThreshold.getText().toString())) {
+                    String address = mEtModbusAddress.getText().toString().trim();
+                    String triggerThreshold = mEtTriggerThreshold.getText().toString().trim();
+                    String revised = mEtRevised.getText().toString().trim();
+
+                    if (TextUtils.isEmpty(address) || !StringUtil.isInteger(address) || Integer.parseInt(address) < 0 || Integer.parseInt(address) > 99) {
+                        ToastUtils.show("请输入正确的地址");
+                        return;
+                    }
+
+                    if (TextUtils.isEmpty(triggerThreshold) || !StringUtil.isInteger(triggerThreshold)) {
                         ToastUtils.show("请输入正确的触发值");
                         return;
                     }
 
-                    if (revised.getText().length() == 0 || (!StringUtil.isInteger(revised.getText().toString()) && !StringUtil.isDouble(revised.getText().toString()))) {
+                    if (TextUtils.isEmpty(revised) || (!StringUtil.isInteger(revised) && !StringUtil.isDouble(revised))) {
                         ToastUtils.show("请输入正确的修正值");
                         return;
                     }
 
-                    sensorWireShiftInfo.setTriggerThreshold(Integer.parseInt(triggerThreshold.getText().toString()));
-                    sensorWireShiftInfo.setCorrectionValue(Double.valueOf(revised.getText().toString()));
+                    collectorSensorParamsInfoSub.setSensorAddress(address);
+                    sensorWireShiftInfo.setTriggerThreshold(Integer.parseInt(triggerThreshold));
+                    sensorWireShiftInfo.setCorrectionValue(Double.valueOf(revised));
                     collectorSensorParamsInfoSub.setSensorData(sensorWireShiftInfo);
-                    collectorSensorParamsInfoSub.setSensorAddress(modbusAddress.getText().toString());
 
-                    uc.writeString(String.valueOf(channelNumber), note.getText().toString().trim());
+                    userConfig.writeString(String.valueOf(channelNumber), mEtNote.getText().toString().trim());
 
                     if (myOnClickListener.onSureClick(view)) {
                         dialog.dismiss();
@@ -102,7 +120,7 @@ public class DialogStyle02 implements IDialogOpt<CollectorSensorParamsInfoSub> {
                 }
             });
 
-            cancel.setOnClickListener(new View.OnClickListener() {
+            mTvCancel.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     myOnClickListener.onCancelClick(view, channelNumber);

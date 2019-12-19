@@ -19,6 +19,9 @@ public class DialogFactory {
 
         switch (type) {
             case "02":
+            case "03":
+            case "07":
+            case "21":
                 opt = new DialogStyle02(context, channelNumber);
                 opt.getDialog().show();
 
@@ -27,14 +30,14 @@ public class DialogFactory {
                 }
                 break;
 
-            case "03":
-                opt = new DialogStyle03(context, channelNumber);
-                opt.getDialog().show();
-
-                if (onClickListener != null) {
-                    ((DialogStyle03) opt).setMyOnClickListener(onClickListener);
-                }
-                break;
+//            case "03":
+//                opt = new DialogStyle03(context, channelNumber);
+//                opt.getDialog().show();
+//
+//                if (onClickListener != null) {
+//                    ((DialogStyle03) opt).setMyOnClickListener(onClickListener);
+//                }
+//                break;
 
             case "04":
                 opt = new DialogStyle04(context, channelNumber);
@@ -54,14 +57,14 @@ public class DialogFactory {
                 }
                 break;
 
-            case "07":
-                opt = new DialogStyle07(context, channelNumber);
-                opt.getDialog().show();
-
-                if (onClickListener != null) {
-                    ((DialogStyle07) opt).setMyOnClickListener(onClickListener);
-                }
-                break;
+//            case "07":
+//                opt = new DialogStyle07(context, channelNumber);
+//                opt.getDialog().show();
+//
+//                if (onClickListener != null) {
+//                    ((DialogStyle07) opt).setMyOnClickListener(onClickListener);
+//                }
+//                break;
 
             case "08":
                 opt = new DialogStyle08(context, channelNumber);

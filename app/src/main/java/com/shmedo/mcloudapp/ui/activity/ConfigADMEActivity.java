@@ -171,6 +171,8 @@ public class ConfigADMEActivity extends BaseDeviceConnectActivity {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
         switch (requestCode) {
             case REQUEST_ENABLE_BT:
                 // 蓝牙已经开启

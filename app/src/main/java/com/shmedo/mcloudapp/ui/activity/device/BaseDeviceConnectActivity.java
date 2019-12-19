@@ -131,18 +131,11 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
     /**
      * 扫描蓝牙设备，主要用来判断要连接的设备是否能被搜索到
      */
-    protected void startDiscoveryDevice() {
-        //蓝牙未打开
-        if (!mBluetoothAdapter.isEnabled()) {
-            Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-            startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
-            return;
-        }
-
+    private void startDiscoveryDevice() {
         //蓝牙已打开时，开始扫描蓝牙设备
         mdBluetoothManager.scanDevice(10, this);
         if (null != mBluetoothAdapter && mBluetoothAdapter.isEnabled()) {
-            errMsg = "扫描超时，请稍后尝试";
+            errMsg = "未搜索到此设备，请稍后尝试";
             startProgressRunnable("正在搜索设备：" + SN, 10000);
         }
     }
@@ -152,6 +145,13 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
      * 搜索并连接指定的蓝牙设备
      */
     public void findAndConnectBleDevice() {
+        //蓝牙未打开
+        if (!mBluetoothAdapter.isEnabled()) {
+            Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+            startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
+            return;
+        }
+
         //通过蓝牙设备列表页面跳转过来时，直接连接设备
         if (!TextUtils.isEmpty(macAddress)) {
             BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(macAddress);
@@ -197,7 +197,7 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
     public void disconnectDevice() {
         if (null != mdBluetoothManager) {
             mdBluetoothManager.disconnect();
-            isAutoConnectBlue = false;
+            isAutoConnectBlue = false;//
         }
     }
 
@@ -299,7 +299,6 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
         public boolean handleMessage(android.os.Message msg) {
             switch (msg.what) {
                 case Constants.BT_CONNECT:
-                    isAutoConnectBlue = true;
                     MCloudApp.setIsBluetoothDeviceConnected(true);
                     EventBus.getDefault().post(new BluetoothStateEvent(true));
                     startBluAuthenticate();//蓝牙连接成功开始进行验证
@@ -697,34 +696,6 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                         dialog.dismiss();
-                    }
-                });
-        MaterialDialog mMaterialDialog = mBuilder.build();
-        mMaterialDialog.show();
-    }
-
-    public void showSaveDialogNoDisconnect(String content) {
-        final MaterialDialog.Builder mBuilder = new MaterialDialog.Builder(this)
-                .title("温馨提示：")
-                .content(content)
-                .contentColor(Color.parseColor("#000000"))
-                .canceledOnTouchOutside(false)
-                .positiveText("确定")
-                .negativeText("稍后")
-                .negativeColor(Color.parseColor("#807B7B"))
-                .onPositive(new MaterialDialog.SingleButtonCallback() {
-                    @Override
-                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        dialog.dismiss();
-                        sendSaveParamCommand();
-                    }
-                }).onNegative(new MaterialDialog.SingleButtonCallback() {
-                    @Override
-                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        dialog.dismiss();
-                        if (isExitMode) {
-                            BaseDeviceConnectActivity.this.finish();
-                        }
                     }
                 });
         MaterialDialog mMaterialDialog = mBuilder.build();

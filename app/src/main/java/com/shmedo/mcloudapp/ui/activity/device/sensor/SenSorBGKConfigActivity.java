@@ -141,6 +141,8 @@ public class SenSorBGKConfigActivity extends BaseDeviceConnectActivity {
 
     private DialogFactory factory = new DialogFactory();
 
+    private String collectorName = "";
+
     private int cmdNum = 0;
 
 
@@ -203,62 +205,61 @@ public class SenSorBGKConfigActivity extends BaseDeviceConnectActivity {
         if (defaultCollectorSensorParamsInfoSub == null)
             return;
 
-        String title = "";
         CollectorModel collectorModel = CollectorModel.value(defaultCollectorSensorParamsInfoSub.getCollectorModel());
         switch (collectorModel) {
             case VW08:
-                title = "采集器";
+                collectorName = "采集器";
                 break;
 
             case DS08:
-                title = "裂缝计采集器";
+                collectorName = "裂缝计采集器";
                 break;
 
             case HD08:
-                title = "土壤湿度采集器";
+                collectorName = "土壤湿度采集器";
                 break;
 
             case CX08:
-                title = "测斜仪采集器";
+                collectorName = "测斜仪采集器";
                 break;
 
             case UDS08:
-                title = "超声波采集器";
+                collectorName = "超声波采集器";
                 break;
 
             case RD08:
-                title = "雷达采集器";
+                collectorName = "雷达采集器";
                 break;
 
             case SMC08:
-                title = "墒情采集器";
+                collectorName = "墒情采集器";
                 break;
 
             case TH08:
-                title = "温湿度采集器";
+                collectorName = "温湿度采集器";
                 break;
 
             case DVWP:
-                title = "数字式渗压计采集器";
+                collectorName = "数字式渗压计采集器";
                 break;
 
             case QJY08:
-                title = "倾角仪采集器";
+                collectorName = "倾角仪采集器";
                 break;
 
             case CS08:
-                title = "次声采集器";
+                collectorName = "次声采集器";
                 break;
 
             case VW01:
-                title = "单通道采集器";
+                collectorName = "单通道采集器";
                 break;
 
             default:
                 break;
         }
 
-        mToolbarTitle.setText(title);
+        mToolbarTitle.setText(collectorName);
     }
 
     private String channelNumber0 = "-1";
@@ -877,15 +878,15 @@ public class SenSorBGKConfigActivity extends BaseDeviceConnectActivity {
         }
     }
 
-    private String collectorName = "";
+
     private String cmdTriggerThreshold = "";
     private String cmdCorrectionValue = "";
 
     private void setSensorValue(CollectorSensorParamsInfoSub paramsInfoSub) {
-        switch (paramsInfoSub.getCollectorModel()) {
-            case "02":
-                //裂缝计采集器 DS08
-                collectorName = "裂缝计采集器";
+        CollectorModel collectorModel = CollectorModel.value(paramsInfoSub.getCollectorModel());
+        switch (collectorModel) {
+            case DS08://裂缝计采集器
+            case CS08://次声采集器
                 SensorWireShiftInfo sensorWireShiftInfo = (SensorWireShiftInfo) paramsInfoSub.getSensorData();
                 cmdTriggerThreshold = "##168" +
                         StringUtil.formatStringTwo(paramsInfoSub.getCollectorModel()) +
@@ -898,9 +899,7 @@ public class SenSorBGKConfigActivity extends BaseDeviceConnectActivity {
                         sensorWireShiftInfo.getCorrectionValue() + "\r\n";
                 break;
 
-            case "03":
-                //土壤湿度采集器 HD08
-                collectorName = "土壤湿度采集器";
+            case HD08://土壤湿度采集器
                 SensorSoilMoistureInfo sensorSoilMoistureInfo = (SensorSoilMoistureInfo) paramsInfoSub.getSensorData();
                 cmdTriggerThreshold = "##168" +
                         StringUtil.formatStringTwo(paramsInfoSub.getCollectorModel()) +
@@ -913,24 +912,7 @@ public class SenSorBGKConfigActivity extends BaseDeviceConnectActivity {
                         sensorSoilMoistureInfo.getRevised() + "\r\n";
                 break;
 
-            case "04":
-                //测斜仪采集器 CX08
-                collectorName = "测斜仪采集器";
-                SensorInclinometerInfo sensorInclinometerInfo = (SensorInclinometerInfo) paramsInfoSub.getSensorData();
-                cmdTriggerThreshold = "##168" +
-                        StringUtil.formatStringTwo(paramsInfoSub.getCollectorModel()) +
-                        StringUtil.formatStringTwo(paramsInfoSub.getSensorAddress()) +
-                        sensorInclinometerInfo.getTriggerThreshold() + "\r\n";
-
-                cmdCorrectionValue = "##165" +
-                        StringUtil.formatStringTwo(paramsInfoSub.getCollectorModel()) +
-                        StringUtil.formatStringTwo(paramsInfoSub.getSensorAddress()) +
-                        sensorInclinometerInfo.getCorrectionValue() + "\r\n";
-                break;
-
-            case "07":
-                //雷达采集器 RD08
-                collectorName = "雷达采集器";
+            case RD08://雷达采集器
                 SensorRadarLevelInfo sensorRadarLevelInfo = (SensorRadarLevelInfo) paramsInfoSub.getSensorData();
                 cmdTriggerThreshold = "##168" +
                         StringUtil.formatStringTwo(paramsInfoSub.getCollectorModel()) +
@@ -941,6 +923,19 @@ public class SenSorBGKConfigActivity extends BaseDeviceConnectActivity {
                         StringUtil.formatStringTwo(paramsInfoSub.getCollectorModel()) +
                         StringUtil.formatStringTwo(paramsInfoSub.getSensorAddress()) +
                         sensorRadarLevelInfo.getRevised() + "\r\n";
+                break;
+
+            case CX08://测斜仪采集器
+                SensorInclinometerInfo sensorInclinometerInfo = (SensorInclinometerInfo) paramsInfoSub.getSensorData();
+                cmdTriggerThreshold = "##168" +
+                        StringUtil.formatStringTwo(paramsInfoSub.getCollectorModel()) +
+                        StringUtil.formatStringTwo(paramsInfoSub.getSensorAddress()) +
+                        sensorInclinometerInfo.getTriggerThreshold() + "\r\n";
+
+                cmdCorrectionValue = "##165" +
+                        StringUtil.formatStringTwo(paramsInfoSub.getCollectorModel()) +
+                        StringUtil.formatStringTwo(paramsInfoSub.getSensorAddress()) +
+                        sensorInclinometerInfo.getCorrectionValue() + "\r\n";
                 break;
         }
 
@@ -982,28 +977,8 @@ public class SenSorBGKConfigActivity extends BaseDeviceConnectActivity {
                         finish();
                     }
                 }, 2000);
-//
-//                isExitMode = true;
-//                showSaveDialogNoDisconnect("是否现在保存设备配置参数？");
             }
         }
-
-//        //设置保存参数应答
-//        if (cmdStr.startsWith("$$0191") && cmdStr.endsWith("\r\n")) {
-//            stopProgressRunnable();
-//            ToastUtils.show("已发送保存命令,设备即将断开连接重启");
-//            isConfigChange = false;
-//            disconnectDevice();
-//
-//            if (isExitMode) {
-//                hander.postDelayed(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        finish();
-//                    }
-//                }, 2000);
-//            }
-//        }
     }
 
 
@@ -1016,17 +991,6 @@ public class SenSorBGKConfigActivity extends BaseDeviceConnectActivity {
 
     @Override
     public void onBackPressed() {
-//        if (MCloudApp.isIsBluetoothDeviceConnected()) {
-//            if (isConfigChange) {
-//                isExitMode = true;
-//                showSaveDialog(getResources().getString(R.string.disconnect_bluetooth_device_save_param_warn));
-//            } else {
-//                finish();
-//            }
-//        } else {
-//            finish();
-//        }
-
         finish();
     }
 

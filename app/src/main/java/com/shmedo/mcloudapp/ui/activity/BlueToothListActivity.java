@@ -4,13 +4,13 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.annotation.Nullable;
-import androidx.annotation.Nullable;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
+
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.hjq.toast.ToastUtils;
 import com.shmedo.mcloudapp.MCloudApp;
@@ -115,7 +115,6 @@ public class BlueToothListActivity extends Activity {
 
                 } else if (deviceName.endsWith("L")) {
                     String deviceInfo = "MEDO," + deviceName.substring(3) + ",DAS";
-//                    ConfigDASActivity.startActivity(BlueToothListActivity.this, deviceInfo, macAddress);
                     ConfigDASActivity.startActivity(BlueToothListActivity.this, deviceInfo);
                 }
 

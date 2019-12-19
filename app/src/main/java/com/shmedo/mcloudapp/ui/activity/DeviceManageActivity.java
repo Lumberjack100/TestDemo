@@ -319,15 +319,13 @@ public class DeviceManageActivity extends BaseActivity implements OnRefreshListe
                     MCloudApp.setCurDeviceToken(statusInfoResult.getDeviceName());
                     MCloudApp.setCurDeviceMacAddr(null);
 
+                    String deviceInfo = "MEDO," + statusInfoResult.getDeviceName() + "," + statusInfoResult.getDeviceTypeName();
                     if (!TextUtils.isEmpty(statusInfoResult.getDeviceTypeName()) && statusInfoResult.getDeviceTypeName().toUpperCase().contains("ADME")) {
-                        String deviceInfo = "MEDO," + statusInfoResult.getDeviceName() + "," + statusInfoResult.getDeviceTypeName();
                         ConfigADMEActivity.startActivity(DeviceManageActivity.this, deviceInfo);
                         return;
                     }
 
                     if (!TextUtils.isEmpty(statusInfoResult.getDeviceTypeName()) && statusInfoResult.getDeviceTypeName().toUpperCase().contains("DAS")) {
-                        String deviceInfo = "MEDO," + statusInfoResult.getDeviceName() + "," + statusInfoResult.getDeviceTypeName();
-//                        ConfigDASActivity.startActivity(DeviceManageActivity.this, deviceInfo);
                         ConfigDASActivity.startActivity(DeviceManageActivity.this, deviceInfo);
                         return;
                     }

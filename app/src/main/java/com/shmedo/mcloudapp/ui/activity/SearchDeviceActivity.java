@@ -1,16 +1,16 @@
 package com.shmedo.mcloudapp.ui.activity;
 
 import android.os.Bundle;
-import androidx.annotation.Nullable;
-
-import androidx.annotation.Nullable;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.hjq.toast.ToastUtils;
+import com.shmedo.mcloudapp.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.adapter.recyclerviewbaseadapter.CommonAdapter;
 import com.shmedo.mcloudapp.adapter.recyclerviewbaseadapter.MultiItemTypeAdapter;
@@ -140,21 +140,25 @@ public class SearchDeviceActivity extends BaseActivity implements MultiItemTypeA
 
     @Override
     public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
-
         StatusInfoResult statusInfoResult = statusInfoList.get(position);
+        MCloudApp.setCurDeviceToken(statusInfoResult.getDeviceName());
+        MCloudApp.setCurDeviceMacAddr(null);
+
+        String deviceInfo = "MEDO," + statusInfoResult.getDeviceName() + "," + statusInfoResult.getDeviceTypeName();
+        if (!TextUtils.isEmpty(statusInfoResult.getDeviceTypeName()) && statusInfoResult.getDeviceTypeName().toUpperCase().contains("ADME")) {
+            ConfigADMEActivity.startActivity(SearchDeviceActivity.this, deviceInfo);
+            SearchDeviceActivity.this.finish();
+        }
 
         if (!TextUtils.isEmpty(statusInfoResult.getDeviceTypeName()) && statusInfoResult.getDeviceTypeName().toUpperCase().contains("DAS")) {
-            String deviceInfo = "MEDO," + statusInfoResult.getDeviceToken() + "," + statusInfoResult.getDeviceTypeName();
             ConfigDASActivity.startActivity(SearchDeviceActivity.this, deviceInfo);
             SearchDeviceActivity.this.finish();
         }
 
         if (!TextUtils.isEmpty(statusInfoResult.getDeviceName()) && statusInfoResult.getDeviceName().toUpperCase().contains("E60")) {
-
             DeviceBasicInfoResult deviceBasicInfoResult = new DeviceBasicInfoResult();
             deviceBasicInfoResult.setDeviceToken(statusInfoResult.getDeviceToken());
-            deviceBasicInfoResult.setDeviceTypeName(statusInfoResult.getDeviceName());
-
+            deviceBasicInfoResult.setDeviceName(statusInfoResult.getDeviceName());
             ConfigE60Activity.startActivity(SearchDeviceActivity.this, deviceBasicInfoResult);
             SearchDeviceActivity.this.finish();
         }

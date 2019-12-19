@@ -717,6 +717,8 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
     @SuppressLint("MissingSuperCall")
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
         switch (requestCode) {
             case REQUEST_ENABLE_BT:
                 // 判断蓝牙是否启用
