@@ -27,7 +27,8 @@ android {
         minSdkVersion rootProject.ext.android.minSdkVersion
         targetSdkVersion rootProject.ext.android.targetSdkVersion
         versionCode gitVersionCode()
-        versionName "1.0.${releaseTime()}" //+ "(" + gitShortCommitId() + ")"
+//        versionName "1.0.${releaseTime()}" //+ "(" + gitShortCommitId() + ")"
+        versionName rootProject.ext.android.versionName
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
 

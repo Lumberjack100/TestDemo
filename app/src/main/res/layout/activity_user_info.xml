@@ -33,7 +33,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_marginLeft="13dp"
-            android:text="点击头像修改"
+            android:text=""
             android:textColor="@color/gray_818182"
             android:textSize="14sp" />
 
@@ -47,8 +47,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:src="@drawable/icon_right" />
+                android:layout_centerVertical="true" />
 
         </RelativeLayout>
 
@@ -247,7 +246,62 @@
             android:textSize="14sp" />
 
     </LinearLayout>
+    <LinearLayout
+            android:id="@+id/ll_userAbout"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="15dp"
+            android:background="@drawable/selector_view"
+            android:orientation="horizontal"
+            android:paddingLeft="15dp"
+            android:paddingRight="5dp">
 
+        <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1.3"
+                android:gravity="center_vertical"
+                android:text="关于"
+                android:textColor="@color/gray_818182"
+                android:textSize="14sp" />
+
+        <RelativeLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="4"
+                android:gravity="center_vertical">
+
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical"
+                    android:textColor="@color/gray_818182"
+                    android:textSize="14sp" />
+
+            <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentRight="true"
+                    android:background="@drawable/selector_view"
+                    android:clickable="true"
+                    android:padding="10dp">
+
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:gravity="center_vertical"
+                        android:textColor="@color/gray_818182"
+                        android:textSize="13sp" />
+
+                <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_centerVertical="true"
+                        android:src="@drawable/icon_right" />
+            </RelativeLayout>
+
+        </RelativeLayout>
+    </LinearLayout>
     <View
         android:layout_width="match_parent"
         android:layout_height="0.5dp"

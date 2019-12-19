@@ -164,17 +164,19 @@ public class UserInfoActivity extends BaseActivity {
         }
     }
 
-    @OnClick({R.id.ll_change_photo, R.id.RL_advice, R.id.btn_exit})
+    @OnClick({R.id.ll_change_photo, R.id.RL_advice,R.id.ll_userAbout,R.id.btn_exit})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.ll_change_photo:
-                myMenu.show();
+//                myMenu.show();
                 break;
-
-            case R.id.RL_advice:
+            case R.id.RL_advice: //基本资料
 
                 break;
-
+            case R.id.ll_userAbout:
+                Intent intent = new Intent(this,AboutAppActivity.class);
+                startActivity(intent);
+                break;
             case R.id.btn_exit:
                 exitApp();
                 break;

@@ -77,7 +77,7 @@ public class LoginActivity extends BaseActivity
     @BindView(R.id.login_phone_password)
     ClearEditText mLoginPhonePassword;
 
-    @BindView(R.id.btn_getCode)
+    @BindView(R.id.btn_get_code)
     Button mBtnGetCode;
 
     @BindView(R.id.server_config)
@@ -155,17 +155,17 @@ public class LoginActivity extends BaseActivity
     }
 
 
-    @OnClick({R.id.login_accountLogin, R.id.login_quickLogin, R.id.btn_getCode, R.id.server_config, R.id.btn_login_account, R.id.btn_login_phone, R.id.tv_registered, R.id.tv_forgot_password, R.id.tourists_login})
+    @OnClick({R.id.login_accountLogin, R.id.login_quickLogin, R.id.btn_get_code, R.id.server_config, R.id.btn_login_account, R.id.btn_login_phone, R.id.tv_registered, R.id.tv_forgot_password, R.id.tourists_login})
     public void onViewClicked(View view)
     {
         switch (view.getId())
         {
             case R.id.login_accountLogin:
                 //账号登录
-                mLoginAccountLogin.setTextColor(ContextCompat.getColor(this, R.color.app_color_blue_2));
-                mLoginQuickLogin.setTextColor(ContextCompat.getColor(this, R.color.font_main));
-                mLoginSelectLeftLine.setBackgroundColor(ContextCompat.getColor(this, R.color.app_color_blue_2));
-                mLoginSelectRightLine.setBackgroundColor(ContextCompat.getColor(this, R.color.font_main));
+                mLoginAccountLogin.setTextColor(ContextCompat.getColor(this, R.color.colorPrimary));
+                mLoginQuickLogin.setTextColor(ContextCompat.getColor(this, R.color.gray_757575));
+                mLoginSelectLeftLine.setBackgroundColor(ContextCompat.getColor(this, R.color.colorPrimary));
+                mLoginSelectRightLine.setBackgroundColor(ContextCompat.getColor(this, R.color.gray_757575));
                 mLlAccountLogin.setVisibility(View.VISIBLE);
                 mLlPhoneLogin.setVisibility(View.GONE);
                 mTvForgotPassword.setVisibility(View.VISIBLE);
@@ -173,16 +173,16 @@ public class LoginActivity extends BaseActivity
 
             case R.id.login_quickLogin:
                 //手机快速登录
-                mLoginAccountLogin.setTextColor(ContextCompat.getColor(this, R.color.font_main));
-                mLoginQuickLogin.setTextColor(ContextCompat.getColor(this, R.color.app_color_blue_2));
-                mLoginSelectLeftLine.setBackgroundColor(ContextCompat.getColor(this, R.color.font_main));
-                mLoginSelectRightLine.setBackgroundColor(ContextCompat.getColor(this, R.color.app_color_blue_2));
+                mLoginAccountLogin.setTextColor(ContextCompat.getColor(this, R.color.gray_757575));
+                mLoginQuickLogin.setTextColor(ContextCompat.getColor(this, R.color.colorPrimary));
+                mLoginSelectLeftLine.setBackgroundColor(ContextCompat.getColor(this, R.color.gray_757575));
+                mLoginSelectRightLine.setBackgroundColor(ContextCompat.getColor(this, R.color.colorPrimary));
                 mLlAccountLogin.setVisibility(View.GONE);
                 mLlPhoneLogin.setVisibility(View.VISIBLE);
                 mTvForgotPassword.setVisibility(View.GONE);
                 break;
 
-            case R.id.btn_getCode:
+            case R.id.btn_get_code:
                 //获取验证码
                 String mPhoneNumber = mLoginEditTextIphone.getText().toString().trim();
                 if (StringUtil.isPhoneNumber(mPhoneNumber))
