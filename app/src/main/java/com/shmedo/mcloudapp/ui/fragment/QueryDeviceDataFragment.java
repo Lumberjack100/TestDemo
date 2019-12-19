@@ -177,16 +177,14 @@ public class QueryDeviceDataFragment extends BaseFragment {
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.start_time:
-                if (timeDialog == null) {
-                    timeDialog = new TimePickerDialog(configDASActivity);
-                }
+                timeDialog = null ;
+                timeDialog = new TimePickerDialog(configDASActivity);
                 timeDialog.setTimeLisinter(startTime);
                 timeDialog.build();
                 break;
             case R.id.end_time:
-                if (timeDialog == null) {
-                    timeDialog = new TimePickerDialog(configDASActivity);
-                }
+                timeDialog = null ;
+                timeDialog = new TimePickerDialog(configDASActivity);
                 timeDialog.setTimeLisinter(endTime);
                 timeDialog.build();
                 break;
@@ -205,7 +203,6 @@ public class QueryDeviceDataFragment extends BaseFragment {
                     queryRecycleView.setLayoutManager(linearLayoutManager);
                     queryRecycleView.scrollToPosition(0);
                     adapter.notifyDataSetChanged();
-                    Timber.i("有小到大");
                 }else {
                     imgArrow.startAnimation(mFoldResetAnimation);
                     linearLayoutManager.setReverseLayout(true);
@@ -213,7 +210,6 @@ public class QueryDeviceDataFragment extends BaseFragment {
                     queryRecycleView.setLayoutManager(linearLayoutManager);
                     queryRecycleView.scrollToPosition(queryCloudDataInfoList.size()-1);
                     adapter.notifyDataSetChanged();
-                    Timber.i("有大到小");
                 }
                 break;
         }

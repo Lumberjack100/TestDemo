@@ -255,7 +255,7 @@
                 android:layout_centerVertical="true"
                 android:layout_marginStart="5dp"
                 android:layout_toRightOf="@id/iv_mqtt_setting"
-                android:text="MQTT设置"
+                android:text="数据中心设置"
                 android:textColor="@color/gray_807B7B"
                 android:textSize="@dimen/text_size_18" />
 
@@ -294,7 +294,7 @@
                 android:layout_centerVertical="true"
                 android:layout_marginStart="5dp"
                 android:layout_toRightOf="@id/iv_general_setting"
-                android:text="通用设置"
+                android:text="采集器设置"
                 android:textColor="@color/gray_807B7B"
                 android:textSize="@dimen/text_size_18" />
 

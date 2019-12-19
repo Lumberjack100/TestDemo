@@ -14,6 +14,11 @@
         <item>DEBUG</item>
         <item>INFO</item>
     </string-array>
+    <string-array name="das_debug">
+        <item>关闭</item>
+        <item>DEBUG</item>
+        <item>INFO</item>
+    </string-array>
 
 
     //开关量

@@ -112,7 +112,7 @@
                 android:layout_height="wrap_content"
                 android:textColor="@color/app_color_blue"
                 android:textSize="@dimen/text_size_14"
-                tools:text="拉线位移计" />
+                tools:text="裂缝计" />
 
         </LinearLayout>
 

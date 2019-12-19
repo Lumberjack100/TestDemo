@@ -97,7 +97,7 @@ public class GeneralSettingActivity extends BaseDeviceConnectActivity {
 
 
     private void parseIntent() {
-        mToolbarTitle.setText("通用设置");
+        mToolbarTitle.setText("采集器设置");
 
         Intent intent = getIntent();
         if (intent.getExtras() == null)

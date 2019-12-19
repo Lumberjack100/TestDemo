@@ -185,7 +185,7 @@ public class DASHomeFragment extends BaseFragment {
             mTvDeviceName.setText("物联网数据采集器");
             mTvDeviceSn.setText(scanData[1]);//设备编号
             mTvDeviceModel.setText(scanData[2]);//功能型号
-            mTvSensorType.setText("拉线位移计");
+            mTvSensorType.setText("裂缝计");
         }
         configDASActivity = (ConfigDASActivity) getActivity();
     }

@@ -58,6 +58,10 @@ public class TimePickerDialog extends BaseDialog {
                     case R.id.datePickerOk:
                         textView.setText(getDateString(mPickerView.getSelectedDate()));
                         dismiss();
+                        break;
+                    case R.id.datePickerCancel:
+                        dismiss();
+                        break;
                 }
             }
         });

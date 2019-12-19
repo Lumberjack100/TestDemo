@@ -129,7 +129,7 @@ public class MqttSettingActivity extends BaseDeviceConnectActivity implements Vi
     }
 
     private void initView() {
-        tvTitle.setText("配置MQTT");
+        tvTitle.setText("数据中心");
         tvSave.setVisibility(View.VISIBLE);
         ((TextView) communicationMethod.findViewById(R.id.tv_config_name)).setText("通讯方式:");
 //        mTvCommunicationMethod = communicationMethod.findViewById(R.id.tv_device_state);
@@ -307,7 +307,10 @@ public class MqttSettingActivity extends BaseDeviceConnectActivity implements Vi
                 }
             }
             stopProgressRunnable();
-            ToastUtils.show("设置完成");
+            changeLinkStatus(mLinkOneStatus,true,R.color.colorPrimaryDark);
+            changeLinkStatus(mLinkTwoStatus,true,R.color.colorPrimaryDark);
+            changeLinkStatus(mLinkThreeStatus,true,R.color.colorPrimaryDark);
+            ToastUtils.show("指令发送完成");
             return false;
         }
 
@@ -336,14 +339,13 @@ public class MqttSettingActivity extends BaseDeviceConnectActivity implements Vi
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void getConfig(String messageEvent) {
-        if (!TextUtils.isEmpty(messageEvent) && messageEvent.startsWith("$$")) {
-
+        if (TextUtils.isEmpty(messageEvent) && !messageEvent.startsWith("$$")) {
+            return;
         }else if (messageEvent.startsWith("$$200") ||
                 messageEvent.startsWith("$$889") ||messageEvent.startsWith("$$000") || messageEvent.startsWith("$$811") ||
                 messageEvent.startsWith("$$202") ||messageEvent.startsWith("$$201") || messageEvent.startsWith("$$810") ||
                 messageEvent.startsWith("$$803") ||messageEvent.startsWith("$$807") || messageEvent.startsWith("$$809") ||
-                messageEvent.startsWith("$$805")
-        ){
+                messageEvent.startsWith("$$805")){
             setResultData(messageEvent);
         }
     }
@@ -443,7 +445,7 @@ public class MqttSettingActivity extends BaseDeviceConnectActivity implements Vi
                 changeLinkStatus(mLinkTwoStatus,true,R.color.colorPrimaryDark);
                 changeLinkStatus(mLinkThreeStatus,true,R.color.colorPrimaryDark);
                 break;
-            /*case "202":
+            case "202":
             case "201":
             case "810":
             case "803":
@@ -451,7 +453,7 @@ public class MqttSettingActivity extends BaseDeviceConnectActivity implements Vi
             case "809":
             case "805":
                 stopProgress(message);
-                break;*/
+                break;
         }
     }
 
@@ -477,9 +479,6 @@ public class MqttSettingActivity extends BaseDeviceConnectActivity implements Vi
         } else if (message.startsWith("$$805e") || message.startsWith("$$805ce")) {
             ToastUtils.show("设置手动注册平台参数错误!");
             stopProgressRunnable();
-        } else {
-            stopProgressRunnable();
-            ToastUtils.show("设置完成");
         }
     }
 
@@ -660,5 +659,41 @@ public class MqttSettingActivity extends BaseDeviceConnectActivity implements Vi
         } else {
             finish();
         }
+    }
+
+    public void showSaveDialog(String content) {
+        MaterialDialog.Builder mBuilder = new MaterialDialog.Builder(this)
+                .title("温馨提示：")
+                .content(content)
+                .contentColor(Color.parseColor("#000000"))
+                .canceledOnTouchOutside(false)
+                .neutralText("取消")
+                .positiveText("保存")
+                .negativeText("不保存")
+                .negativeColor(Color.parseColor("#807B7B"))
+                .onPositive(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        dialog.dismiss();
+                        sendSaveParamCommand();
+                    }
+                }).onNegative(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        dialog.dismiss();
+//                        isConfigChange = false;
+//                        disconnectDevice();
+                        if (isExitMode) {
+                            finish();
+                        }
+                    }
+                }).onNeutral(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        dialog.dismiss();
+                    }
+                });
+        MaterialDialog mMaterialDialog = mBuilder.build();
+        mMaterialDialog.show();
     }
 }

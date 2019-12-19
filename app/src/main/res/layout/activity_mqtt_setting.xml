@@ -49,28 +49,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
-        <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:background="@color/bg_main_light_white"
-                android:orientation="horizontal">
 
-            <ImageView
-                    android:layout_width="30dp"
-                    android:layout_height="40dp"
-                    android:layout_marginStart="16dp"
-                    android:src="@drawable/icon_serson_setting" />
-
-            <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_marginStart="5dp"
-                    android:gravity="center_vertical"
-                    android:text="北斗配置"
-                    android:textColor="@color/gray_807B7B"
-                    android:textSize="@dimen/text_size_18" />
-
-        </LinearLayout>
         <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp" />
@@ -82,7 +61,17 @@
                 android:layout_height="1dp" />
 
     </LinearLayout>
-
+    <Button
+            android:id="@+id/btn_confirm"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginBottom="20dp"
+            android:background="@drawable/btn_select"
+            android:text="保存通用配置"
+            android:textColor="@color/white" />
     <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="40dp"
@@ -124,16 +113,6 @@
             android:id="@+id/link_three"
             layout="@layout/device_config_switchview_item" />
 
-    <Button
-            android:id="@+id/btn_confirm"
-            android:layout_width="match_parent"
-            android:layout_height="45dp"
-            android:layout_marginTop="50dp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:layout_marginBottom="20dp"
-            android:background="@drawable/btn_select"
-            android:text="发送指令"
-            android:textColor="@color/white" />
+
 
 </LinearLayout>

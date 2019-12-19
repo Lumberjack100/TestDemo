@@ -343,7 +343,7 @@ public class SenSorBGKConfigActivity extends BaseDeviceConnectActivity {
      */
     private void setSensorIconByType(String sensorType, ImageView imageView) {
         switch (sensorType) {
-            case "02"://拉线位移计 MPS-M-2000
+            case "02"://裂缝计 MPS-M-2000
                 imageView.setImageResource(R.drawable.das);
                 break;
 

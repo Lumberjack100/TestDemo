@@ -38,7 +38,8 @@
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:layout_marginRight="8dp"
-            android:src="@drawable/icon_equipment" />
+            android:src="@drawable/icon_equipment"
+            android:visibility="gone"/>
 
     </RelativeLayout>
 

@@ -6,7 +6,7 @@ package com.shmedo.mcloudapp.entity.ble.collector;
  * 文件名:   SensorWireShiftInfoSub
  * 创建者:   dpc
  * 创建时间:  2019/5/9 14:51
- * 描述：    传感器拉线位移计 02
+ * 描述：    传感器裂缝计 02
  */
 public class SensorWireShiftInfoSub {
     private int triggerThreshold;    //触发阈值

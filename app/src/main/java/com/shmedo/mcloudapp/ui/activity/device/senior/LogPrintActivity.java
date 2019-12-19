@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.*;
-import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import butterknife.BindView;
@@ -101,7 +100,7 @@ public class LogPrintActivity extends BaseDeviceConnectActivity {
     private void initView() {
         toolbarTitle.setText("指令日志输出");
         //调试模式
-        String[] debugData = getResources().getStringArray(R.array.das_debug_mode);
+        String[] debugData = getResources().getStringArray(R.array.das_debug);
         debugModeAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, debugData);
         debugModeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerDebug.setAdapter(debugModeAdapter);
@@ -112,10 +111,6 @@ public class LogPrintActivity extends BaseDeviceConnectActivity {
                     String status = parent.getSelectedItem().toString();
                     String smdStr;
                     switch (status) {
-                        case "初始化":
-                            smdStr = "##0060\r\n";
-                            break;
-
                         case "关闭":
                             smdStr = "##0061\r\n";
                             break;

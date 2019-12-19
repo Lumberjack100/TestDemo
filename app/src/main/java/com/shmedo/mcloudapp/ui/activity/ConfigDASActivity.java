@@ -88,7 +88,6 @@ public class ConfigDASActivity extends BaseDeviceConnectActivity {
     }
 
     private void initView(Bundle savedInstanceState) {
-        mToolbarTitle.setText("参数设置");
         mTvSave.setVisibility(View.VISIBLE);
 
         if (savedInstanceState != null) {  // “内存重启”时调用
@@ -142,24 +141,28 @@ public class ConfigDASActivity extends BaseDeviceConnectActivity {
                 break;
 
             case R.id.tv_parameter:
+                mToolbarTitle.setText("参数设置");
                 resetTabState();//reset the tab state
                 setTabState(mTvParameter, R.drawable.szxd, getResources().getColor(R.color.colorPrimary));
                 switchFrgment(0);
                 break;
 
             case R.id.tv_query_data:
+                mToolbarTitle.setText("查询数据");
                 resetTabState();//reset the tab state
                 setTabState(mTvQueryData, R.drawable.yxzt, getResources().getColor(R.color.colorPrimary));
                 switchFrgment(1);
                 break;
 
             case R.id.tv_device_details:
+                mToolbarTitle.setText("设备详情");
                 resetTabState();//reset the tab state
                 setTabState(mTvDeviceDetails, R.drawable.xtgj, getResources().getColor(R.color.colorPrimary));
                 switchFrgment(2);
                 break;
 
             case R.id.tv_highsetting:
+                mToolbarTitle.setText("高级配置");
                 resetTabState();//reset the tab state
                 setTabState(mTvHighsetting, R.drawable.gjpz, getResources().getColor(R.color.colorPrimary));
                 switchFrgment(3);

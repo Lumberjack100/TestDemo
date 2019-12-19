@@ -280,17 +280,15 @@ public class SearchDataUI implements View.OnClickListener {
                 break;
 
             case R.id.start_time:
-                if (timeDialog == null) {
-                    timeDialog = new TimePickerDialog(mainActivity);
-                }
+                timeDialog = null;
+                timeDialog = new TimePickerDialog(mainActivity);
                 timeDialog.setTimeLisinter(startTime);
                 timeDialog.build();
                 break;
 
             case R.id.end_time:
-                if (timeDialog == null) {
-                    timeDialog = new TimePickerDialog(mainActivity);
-                }
+                timeDialog = null;
+                timeDialog = new TimePickerDialog(mainActivity);
                 timeDialog.setTimeLisinter(endTime);
                 timeDialog.build();
                 break;
@@ -307,7 +305,6 @@ public class SearchDataUI implements View.OnClickListener {
                     queryRecycleView.setLayoutManager(linearLayoutManager);
                     queryRecycleView.scrollToPosition(0);
                     adapter.notifyDataSetChanged();
-                    Timber.i("有小到大");
                 } else {
                     imgArrow.startAnimation(mFoldResetAnimation);
                     linearLayoutManager.setReverseLayout(true);
@@ -315,7 +312,6 @@ public class SearchDataUI implements View.OnClickListener {
                     queryRecycleView.setLayoutManager(linearLayoutManager);
                     queryRecycleView.scrollToPosition(queryCloudDataInfoList.size() - 1);
                     adapter.notifyDataSetChanged();
-                    Timber.i("有大到小");
                 }
                 break;
         }
@@ -330,7 +326,10 @@ public class SearchDataUI implements View.OnClickListener {
             ToastUtils.show("请输入设备编号");
             return ;
         }
-
+        if (snNubmer.length()!=7) {
+            ToastUtils.show("请输入正确的设备编号");
+            return ;
+        }
         QueryCloudDataParameter paramter = new QueryCloudDataParameter();
         paramter.setSn(snNubmer);
         paramter.setBegin(begin);
