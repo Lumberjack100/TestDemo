@@ -30,6 +30,7 @@ import com.shmedo.mcloudapp.entity.parameter.QueryCloudDataParameter;
 import com.shmedo.mcloudapp.model.BaseObserver;
 import com.shmedo.mcloudapp.model.MDRetrofit;
 import com.shmedo.mcloudapp.model.common.CommonVariable;
+import com.shmedo.mcloudapp.ui.activity.BlueToothListActivity;
 import com.shmedo.mcloudapp.ui.activity.MainActivity;
 import com.shmedo.mcloudapp.ui.activity.ScanActivity;
 import com.shmedo.mcloudapp.ui.activity.WifiConnectionActivity;
@@ -248,7 +249,7 @@ public class SearchDataUI implements View.OnClickListener {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.fab_bluetooth:
-                mainActivity.startDiscoveryDevice();
+                BlueToothListActivity.startActivity(mainActivity);
                 break;
 
             case R.id.fab_wifi:
