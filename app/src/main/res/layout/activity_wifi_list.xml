@@ -2,35 +2,34 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    >
+    android:orientation="vertical">
 
     <RelativeLayout
         android:id="@+id/rl_bar"
-        android:background="@color/gray_F8F8F8"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:background="@color/gray_F8F8F8">
 
         <TextView
-            android:textColor="@color/gray_909090"
-            android:layout_marginTop="9dp"
-            android:layout_marginBottom="9dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
             android:layout_marginLeft="12dp"
+            android:layout_marginTop="9dp"
+            android:layout_marginBottom="9dp"
             android:text="WiFi列表"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:textColor="@color/gray_909090" />
 
         <ProgressBar
             android:id="@+id/pb_wifi_loading"
-            android:layout_marginRight="12dp"
             style="@android:style/Widget.ProgressBar.Small"
-            android:layout_centerVertical="true"
-            android:layout_alignParentRight="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:visibility="gone"/>
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="12dp"
+            android:visibility="gone" />
 
     </RelativeLayout>
 
@@ -38,30 +37,27 @@
         android:id="@+id/recycle_list_wifi"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/rl_bar"
         android:layout_above="@id/LL_close"
-         >
+        android:layout_below="@id/rl_bar">
 
     </androidx.recyclerview.widget.RecyclerView>
+
     <LinearLayout
         android:id="@+id/LL_close"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:orientation="horizontal"
-        android:background="@color/app_color_blue_2"
-        android:gravity="center"
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="50dp"
-        >
+        android:background="@color/app_color_blue_2"
+        android:gravity="center"
+        android:orientation="horizontal">
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="关闭"
-            android:textSize="20sp"
-            android:layout_toRightOf="@+id/img_scan"
             android:textColor="@color/white"
-            android:layout_marginLeft="10dp"
-            />
+            android:textSize="20sp" />
     </LinearLayout>
 
 

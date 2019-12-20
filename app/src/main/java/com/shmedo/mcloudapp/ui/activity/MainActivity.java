@@ -2,15 +2,12 @@ package com.shmedo.mcloudapp.ui.activity;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothManager;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.Bundle;
-import android.os.Handler;
 import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -43,15 +40,10 @@ import com.shmedo.mcloudapp.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.adapter.InfoWinAdapter;
 import com.shmedo.mcloudapp.base.BaseActivity;
-import com.shmedo.mcloudapp.bluetooth.BluetoothDeviceFindEventData;
-import com.shmedo.mcloudapp.bluetooth.BluetoothEvent;
-import com.shmedo.mcloudapp.bluetooth.BluetoothEventHandler;
-import com.shmedo.mcloudapp.bluetooth.MdBluetoothManager;
 import com.shmedo.mcloudapp.entity.DeviceBasicInfoResult;
 import com.shmedo.mcloudapp.entity.DeviceBasicInfoResultDao;
 import com.shmedo.mcloudapp.entity.DeviceTypeEnum;
 import com.shmedo.mcloudapp.entity.StatusInfoResult;
-import com.shmedo.mcloudapp.entity.ble.MDevice;
 import com.shmedo.mcloudapp.entity.cluster.ClusterAnotherClickListener;
 import com.shmedo.mcloudapp.entity.cluster.ClusterAnotherRender;
 import com.shmedo.mcloudapp.entity.cluster.ClusterItem;
@@ -79,7 +71,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -89,8 +80,6 @@ import okhttp3.RequestBody;
 import timber.log.Timber;
 
 public class MainActivity extends BaseActivity implements LocationSource, AMapLocationListener {
-
-    public static final int REQUEST_ENABLE_BT = 0x002;
 
     public static final int REQUEST_CODE_SCAN = 0x001;
 
@@ -128,12 +117,6 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
     private boolean followMove = true;
 
     private DaoManager manager = DaoManager.getInstance();
-    private BluetoothAdapter mBluetoothAdapter;
-    private MdBluetoothManager mdBluetoothManager;
-    private MdBluetoothEventHandler mdBluetoothEventHandler = new MdBluetoothEventHandler();
-
-    private List<MDevice> list = new ArrayList<>();
-    private Handler hander;
 
     private List<ClusterItem> clusterItemsMerchant = new ArrayList<>();
     private ClusterOverlayMerchant clusterOverlayMerchant;
@@ -149,20 +132,6 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
     }
 
 
-    private Runnable dismssDialogRunnable = new Runnable() {
-        @Override
-        public void run() {
-            dismissLoadingDialog();
-            mdBluetoothManager.stopScan();
-            if (list.isEmpty()) {
-                ToastUtils.show("未发现设备，请尝试重新扫描");
-                return;
-            }
-
-            BlueToothListActivity.startActivity(MainActivity.this, list);
-        }
-    };
-
 
     @Override
     protected int initContentView() {
@@ -176,10 +145,8 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
         //在activity执行onCreate时执行mMapView.onCreate(savedInstanceState)，创建地图
         mMapView.onCreate(savedInstanceState);
 
-        hander = new Handler();
         hidingConnectionView();
         initMap();
-        initBluetooth();
 //        UpdataManagerUtil.requestPermissionForInstallPackage(this);//版本更新
 
         searchDataUI = new SearchDataUI(this);
@@ -197,7 +164,6 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
         super.onResume();
         //在activity执行onResume时执行mMapView.onResume ()，重新绘制加载地图
         mMapView.onResume();
-        mdBluetoothManager.addBluetoothEventHandler(mdBluetoothEventHandler);
     }
 
 
@@ -206,7 +172,6 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
         super.onPause();
         //在activity执行onPause时执行mMapView.onPause ()，暂停地图的绘制
         mMapView.onPause();
-        mdBluetoothManager.removeBluetoothEventHandler(mdBluetoothEventHandler);
     }
 
     @Override
@@ -480,68 +445,6 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
     }
 
 
-    /**
-     * 初始化蓝牙
-     */
-    private void initBluetooth() {
-        final BluetoothManager bluetoothManager = (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
-        mBluetoothAdapter = Objects.requireNonNull(bluetoothManager).getAdapter();
-        mdBluetoothManager = MdBluetoothManager.getInstance();
-    }
-
-
-    /**
-     * 扫描蓝牙设备，主要用来判断要连接的设备是否能被搜索到
-     */
-    public void startDiscoveryDevice() {
-        //未打开蓝牙
-        if (!mBluetoothAdapter.isEnabled()) {
-            Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-            startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
-            return;
-        }
-
-        if (null != list && list.size() > 0) {
-            list.clear();
-        }
-
-        showLoadingDialog("正在获取附近的蓝牙设备...");
-        hander.postDelayed(dismssDialogRunnable, 5000);
-        mdBluetoothManager.scanDevice(10, this);
-    }
-
-
-    private class MdBluetoothEventHandler implements BluetoothEventHandler {
-        @Override
-        public void handle(final BluetoothEvent event) {
-            switch (event.getEventType()) {
-                case DEVICE_FIND:
-                    handleDeviceFind((BluetoothDeviceFindEventData) event.getEventData());
-                    break;
-            }
-        }
-    }
-
-
-    private void handleDeviceFind(BluetoothDeviceFindEventData eventData) {
-        if (list.contains(eventData.getNewDevice()) || eventData.getNewDevice().getDevice().getName() == null) {
-            return;
-        }
-
-        if (null != list && list.size() > 0) {
-            for (MDevice mDevice : list) {
-                if (eventData.getNewDevice()
-                        .getDevice()
-                        .getName()
-                        .equals(mDevice.getDevice().getName())) {
-                    return;
-                }
-            }
-        }
-        list.add(eventData.getNewDevice());
-    }
-
-
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(WifiEvent events) {
         if (events.getMessage().equals("wifi")) {
@@ -720,15 +623,6 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
         super.onActivityResult(requestCode, resultCode, data);
 
         switch (requestCode) {
-            case REQUEST_ENABLE_BT:
-                // 判断蓝牙是否启用
-                if (resultCode != Activity.RESULT_OK) {
-                    ToastUtils.show("蓝牙未启用");
-                    return;
-                }
-                startDiscoveryDevice();
-                break;
-
             case REQUEST_CODE_SCAN:
                 if (resultCode == Activity.RESULT_OK) {
                     if (data != null) {

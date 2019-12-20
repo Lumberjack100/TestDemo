@@ -119,7 +119,6 @@
         <activity
             android:name=".ui.activity.BlueToothListActivity"
             android:configChanges="orientation|keyboardHidden"
-            android:label="@string/select_device"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.Dialog" />
         <activity
