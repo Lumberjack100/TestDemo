@@ -45,7 +45,7 @@
 
         <meta-data
             android:name="com.amap.api.v2.apikey"
-            android:value="31d7ee436c402270e11183ce1b5d01dc" /> <!-- 定位需要的服务 使用2.0的定位需要加上这个 -->
+            android:value="${mapApikey}" /> <!-- 定位需要的服务 使用2.0的定位需要加上这个 -->
 
         <service android:name="com.amap.api.location.APSService" /> <!-- 兼容7.0 -->
 
@@ -64,7 +64,7 @@
         <activity android:name="com.pgyersdk.feedback.FeedbackActivity"/>
         <meta-data
                 android:name="PGYER_APPID"
-                android:value="725bb8b9ee91e100e28d6623d8f8c86b" >
+                android:value="${pgyerKey}" >
         </meta-data>
 
 

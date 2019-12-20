@@ -62,7 +62,8 @@
                 android:layout_height="match_parent"
                 android:layout_marginLeft="30dp"
                 android:gravity="center"
-                tools:text="日志传输：" />
+                android:text="日志传输："
+                />
 
         <TextView
                 android:id="@+id/tv_log_print"
@@ -103,7 +104,6 @@
             android:layout_marginTop="5dp"
             android:layout_marginRight="8dp"
             android:layout_below="@id/view2"
-            android:background="@drawable/search_edittext_shape"
             android:orientation="horizontal">
 
         <com.shmedo.mcloudapp.views.ClearEditText
@@ -123,7 +123,6 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="2"
-                android:background="@drawable/search_button_shape"
                 android:text="发送"
                 android:textColor="@color/white" />
     </LinearLayout>
