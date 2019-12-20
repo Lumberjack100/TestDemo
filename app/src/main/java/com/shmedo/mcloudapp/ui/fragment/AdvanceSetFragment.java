@@ -26,6 +26,7 @@ import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.base.BaseFragment;
 import com.shmedo.mcloudapp.ui.activity.ConfigDASActivity;
 import com.shmedo.mcloudapp.ui.activity.device.senior.InstructionDebugActivity;
+import com.shmedo.mcloudapp.ui.activity.device.senior.LogPrintActivity;
 import com.shmedo.mcloudapp.ui.activity.device.senior.ProductRegistrationActivity;
 import com.shmedo.mcloudapp.util.KeyBordUtils;
 import com.shmedo.mcloudapp.util.StringUtil;
@@ -119,10 +120,10 @@ public class AdvanceSetFragment extends BaseFragment {
                 break;
 
             case R.id.rl_log_print://日志输出
-                ToastUtils.show("功能开发中...");
-//                if (checkIsBluetoothConnected()) {
-//                    LogPrintActivity.startActivity(getActivity());
-//                }
+//                ToastUtils.show("功能开发中...");
+                if (checkIsBluetoothConnected()) {
+                    LogPrintActivity.startActivity(getActivity());
+                }
                 break;
         }
     }

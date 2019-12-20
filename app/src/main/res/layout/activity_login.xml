@@ -9,11 +9,11 @@
     <RelativeLayout
         android:id="@+id/rl_user_photo"
         android:layout_width="match_parent"
-        android:layout_height="240dp">
+        android:layout_height="200dp">
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/user_image"
-                android:layout_width="120dp"
-                android:layout_height="120dp"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
                 android:src="@drawable/userphoto"
                 android:layout_centerInParent="true"
                 app:civ_border_color="@color/app_color_blue"

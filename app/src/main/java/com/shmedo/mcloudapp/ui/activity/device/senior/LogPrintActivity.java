@@ -150,10 +150,10 @@ public class LogPrintActivity extends BaseDeviceConnectActivity {
 
                 if (isChecked) {
                     //发送激活DAS命令
-                    sendCommonCommand("##2260\r\n");
+                    sendCommonCommand("##2261\r\n");
                     setSwitchViewState(true, logSwitchButton, "已开启");
                 } else {
-                    sendCommonCommand("##2261\r\n");
+                    sendCommonCommand("##2260\r\n");
                     setSwitchViewState(true, logSwitchButton, "已关闭");
                 }
             }
@@ -193,19 +193,21 @@ public class LogPrintActivity extends BaseDeviceConnectActivity {
                 break;
             case R.id.tv_view_log_directory:
                 //打开日志目录
-
+                ToastUtils.show("功能开发中...");
                 break;
         }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void getConfig(String messageEvent) {
-        if (!TextUtils.isEmpty(messageEvent) && messageEvent.startsWith("$$")) {
+        if (!TextUtils.isEmpty(messageEvent)) {
             setResultData(messageEvent);
         }
     }
 
     private void setResultData(String messageEvent) {
-
+        String result = messageEvent.replace("\r\n","");
+        logList.add(result);
+        adapter.notifyDataSetChanged();
     }
 }
