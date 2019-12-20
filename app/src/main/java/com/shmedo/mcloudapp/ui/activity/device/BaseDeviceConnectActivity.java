@@ -12,6 +12,7 @@ import android.os.Handler;
 import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
+
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.hjq.toast.ToastUtils;
@@ -82,7 +83,6 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
 
                 if (errMsg.contains("连接超时")) {
                     disconnectDevice();
-                    isAutoConnectBlue = true;
                     MCloudApp.setIsBluetoothDeviceConnected(false);
                     EventBus.getDefault().post(new BluetoothStateEvent(false));
                 }
@@ -114,8 +114,8 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
+    protected void onResume() {
+        super.onResume();
         mdBluetoothManager.addBluetoothEventHandler(mdBluetoothEventHandler);
         ByteManagerUtil.init(new MyOnBytePackage());
     }
@@ -201,6 +201,19 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
         }
     }
 
+    /**
+     * 连接失败时，中断一会儿再连接
+     */
+    private void setAutoConnectBlueAfterDisconnect() {
+        try {
+            Thread.sleep(1000);
+            disconnectDevice();
+            isAutoConnectBlue = true;
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
     private class MdBluetoothEventHandler implements BluetoothEventHandler {
         @Override
         public void handle(final BluetoothEvent event) {
@@ -246,13 +259,11 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
 
                 case WRITE_TIME_OUT:
                     Timber.d("写入等待超时");
-                    disconnectDevice();
-                    isAutoConnectBlue = true;
                     mHandler.sendEmptyMessage(Constants.BT_WRITE_TIME_OUT);
                     break;
 
                 case MESSAGE_WRITE_SUCCESS:
-//                    Timber.d("消息写入成功");
+                    Timber.d("消息写入成功");
                     mHandler.sendEmptyMessage(Constants.BT_MESSAGE_WRITE_SUCCESS);
                     try {
                         String msg = ((Message) event.getEventData()).getResponseMessage();
@@ -268,8 +279,6 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
                 case MESSAGE_RESPONSE_TIME_OUT:
                     Timber.d("消息等待响应超时");
                     mHandler.sendEmptyMessage(Constants.MESSAGE_RESPONSE_TIME_OUT);
-                    disconnectDevice();
-                    isAutoConnectBlue = true;
                     break;
 
                 case MESSAGE_WRITE_FAIL:
@@ -299,6 +308,7 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
         public boolean handleMessage(android.os.Message msg) {
             switch (msg.what) {
                 case Constants.BT_CONNECT:
+                    isAutoConnectBlue = true;
                     MCloudApp.setIsBluetoothDeviceConnected(true);
                     EventBus.getDefault().post(new BluetoothStateEvent(true));
                     startBluAuthenticate();//蓝牙连接成功开始进行验证
@@ -325,6 +335,7 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
 
                 case Constants.BT_WRITE_TIME_OUT:
                     ToastUtils.show("指令发送超时");
+                    setAutoConnectBlueAfterDisconnect();
                     break;
 
                 case Constants.VERIFY_RESULT:
@@ -336,18 +347,12 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
                         ToastUtils.show("蓝牙连接成功");
                     } else {
                         ToastUtils.show("蓝牙认证失败!");
-                        try {
-                            Thread.sleep(1000);
-                            disconnectDevice();
-                            isAutoConnectBlue = true;
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
+                        setAutoConnectBlueAfterDisconnect();
                     }
                     break;
 
-                case Constants.MESSAGE_RESPONSE_TIME_OUT:
-//                    ToastUtils.show("消息等待响应超时！");
+                case Constants.MESSAGE_RESPONSE_TIME_OUT://消息等待响应超时
+                    setAutoConnectBlueAfterDisconnect();
                     break;
 
                 case Constants.REFRESH_RUN_STATE:

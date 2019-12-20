@@ -118,7 +118,6 @@ public class InputDeviceSNActivity extends BaseActivity {
             ToastUtils.show("pvs==" + snNumber + "==" + deviceType);
         }
 
-
         if (!TextUtils.isEmpty(deviceInfo) && deviceInfo.split(",").length > 0) {
             //将设备信息传递到MainActivity中
             MapDeviceEvent event = new MapDeviceEvent();
@@ -126,5 +125,7 @@ public class InputDeviceSNActivity extends BaseActivity {
             event.setDeviceName(deviceInfo);
             EventBus.getDefault().post(event);
         }
+
+        InputDeviceSNActivity.this.finish();
     }
 }

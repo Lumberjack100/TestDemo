@@ -4,10 +4,11 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Vibrator;
-import androidx.fragment.app.Fragment;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import androidx.fragment.app.Fragment;
 
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.base.BaseActivity;
@@ -135,6 +136,7 @@ public class ScanActivity extends BaseActivity implements QRCodeView.Delegate {
 
             case R.id.inputSNLayout:
                 StartActivityUtil.comeOnBaby(this, InputDeviceSNActivity.class);
+                finish();
                 break;
 
             case R.id.albumLayout:

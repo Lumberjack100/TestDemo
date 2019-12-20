@@ -512,6 +512,7 @@ public class MdBluetoothManager {
                 try {
                     byteManager.writeByte(value);
                 } catch (Exception ex) {
+                    Timber.e(ex);
                     //消息达到最大的字节数，仍然没有遇到完整包
                     handleBluetoothEvent(BluetoothEventType.STATE_EXCEPTION, ex);
                 }
@@ -651,6 +652,8 @@ public class MdBluetoothManager {
 
 
     private void notifyBluetoothEvent(final BluetoothEvent event) {
+        Timber.d(event.getEventType().name() + "->Thread Name: " + Thread.currentThread().getName() + ",Thread Id: " + Thread.currentThread().getId());
+
         if (bluetoothEventHandlerList != null) {
             for (BluetoothEventHandler bluetoothEventHandler : bluetoothEventHandlerList) {
                 bluetoothEventHandler.handle(event);
