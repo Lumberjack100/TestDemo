@@ -21,6 +21,8 @@ import com.shmedo.mcloudapp.util.KeyBordUtils;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import com.shmedo.mcloudapp.util.TimeUtil;
+import com.shmedo.mcloudapp.views.TimePickerDialog;
 
 /**
  * 项目名：  mCloudapp
@@ -51,7 +53,7 @@ public class ProductRegistrationActivity extends BaseActivity {
     private MaterialDialog.Builder mBuilder;
     private MaterialDialog mMaterialDialog;
 
-
+    private TimePickerDialog timeDialog;
     @Override
     protected int initContentView() {
         return R.layout.activity_product_registration;
@@ -67,12 +69,12 @@ public class ProductRegistrationActivity extends BaseActivity {
 
 
     private void initView() {
-
         mToolbarTitle.setText("产品注册");
+        mTvDate.setText(TimeUtil.getCurrentTime());
     }
 
 
-    @OnClick({R.id.iv_question, R.id.btn_confirm_registered})
+    @OnClick({R.id.iv_question, R.id.btn_confirm_registered,R.id.tv_date})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.iv_question:
@@ -81,6 +83,12 @@ public class ProductRegistrationActivity extends BaseActivity {
 
             case R.id.btn_confirm_registered:
                 processRegister();
+                break;
+            case R.id.tv_date:
+                timeDialog = null ;
+                timeDialog = new TimePickerDialog(this);
+                timeDialog.setTimeLisinter(mTvDate);
+                timeDialog.build();
                 break;
         }
     }
@@ -148,7 +156,7 @@ public class ProductRegistrationActivity extends BaseActivity {
                 }
 
                 //TODO  调用注册码申请接口
-
+                ToastUtils.show("功能开发中...");
             }
         });
         btnCancel.setOnClickListener(new View.OnClickListener() {

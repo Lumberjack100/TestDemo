@@ -75,7 +75,7 @@ public class AdvanceSetFragment extends BaseFragment {
                     return;
                 }
                 if (isChecked) {
-                    showReStartDialog("打开固件升级","固件");
+                    showReStartDialog("固件升级","固件");
                 } else {
                     configDASActivity.sendCommonCommand("##1200\r\n");
                     ToastUtils.show("关闭固件升级");
@@ -238,6 +238,7 @@ public class AdvanceSetFragment extends BaseFragment {
                 if (instructions.equals("重启")){
                     KeyBordUtils.hideSoftKeyboard(etRestartTime);
                 }else if (instructions.equals("固件")){
+                    swFirmwareUpgrade.setCheckedImmediatelyNoEvent(false);
                     KeyBordUtils.hideSoftKeyboard(etPortNumber);
                 }
                 mMaterialDialog.dismiss();
@@ -297,6 +298,7 @@ public class AdvanceSetFragment extends BaseFragment {
                 }
 
                 //TODO 调用修改授权码接口
+                ToastUtils.show("功能开发中...");
             }
         });
         btnCancel.setOnClickListener(new View.OnClickListener() {
