@@ -3,6 +3,7 @@ package com.shmedo.mcloudapp.util;
 import android.content.Context;
 import android.os.Environment;
 import androidx.annotation.NonNull;
+import timber.log.Timber;
 
 import java.io.File;
 import java.io.IOException;
@@ -19,74 +20,58 @@ import java.util.Locale;
  * 描述：    日志文件工具类
  */
 public class LogFileUtil {
-    private static final String DEFAULT_FORMAT = "yyyyMMdd_HHmmss_SSS";
+    private static final String DEFAULT_FORMAT = "yyyy_MM_dd";
     private static final int SYSTEM = 1024;
     private static final int DIRECTORY_SIZE = 10;
 
-    /**
-     * 创建 logcat 缓存文件
-     *
-     * @param context    Context
-     * @param cleanCache cleanCache
-     * @return File
-     */
-    public static File createLogCacheFile(Context context, File file, boolean cleanCache) {
-        if (file == null) {
-            return createCacheFile(getCacheFileDir(context, "log"), getFileName(), cleanCache);
-        } else {
-            return LogFileUtil.createLogCacheFile(file);
-        }
-    }
+
+
+
+
 
     /**
-     * 创建 logcat 缓存文件
+     * 创建 logcat文件
      *
      * @param file file
      * @return File
      */
-    private static File createLogCacheFile(File file) {
-        if (file.exists()) {
+    public static File createLogFile(File file,String snNumber) {
+
+        if (file.exists()) {//存在
             if (file.isFile()) {
                 return createFile(file);
             } else if (file.isDirectory()) {
-                return createCacheFile(file.getAbsolutePath(), getFileName(), false);
+                return createLogFile(file.getAbsolutePath()+"/mCloudLogFiles/"+snNumber+"/", getFileName(), false);
             }
-        } else {
+        }
+        else {
             if (file.mkdirs()) {
-                return createLogCacheFile(file);
+                return createLogFile(file,snNumber);
             }
         }
         return file;
     }
 
-    /**
-     * 创建 crash 缓存文件
-     *
-     * @param context    Context
-     * @param cleanCache cleanCache
-     * @return File
-     */
-    public static File createCrashCacheFile(Context context, boolean cleanCache) {
-        return createCacheFile(getCacheFileDir(context, "crash"), getFileName(), cleanCache);
-    }
+
 
     /**
-     * 创建缓存文件
+     * 创建log文件
      *
      * @param path       path
      * @param fileName   fileName
      * @param cleanCache cleanCache
      */
-    private static File createCacheFile(String path, String fileName, boolean cleanCache) {
+    private static File createLogFile(String path, String fileName, boolean cleanCache) {
         File directory = new File(path);
         if (!directory.exists()) {
+
             directory.mkdirs();
         }
 
         // 是否删除缓存日志文件
-        if (cleanCache) {
-            computeSize(directory);
-        }
+//        if (cleanCache) {
+//            computeSize(directory);
+//        }
 
         File file = new File(directory, fileName);
         return createFile(file);
@@ -101,14 +86,16 @@ public class LogFileUtil {
     @NonNull
     private static File createFile(File file) {
         if (file.exists()) {
-            file.delete();
+            return file;
+        }else {
+            try {
+                file.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return file;
         }
-        try {
-            file.createNewFile();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return file;
+
     }
 
     /**

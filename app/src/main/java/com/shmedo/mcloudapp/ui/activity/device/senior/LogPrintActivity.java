@@ -1,15 +1,24 @@
 package com.shmedo.mcloudapp.ui.activity.device.senior;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.*;
+import androidx.annotation.NonNull;
+import androidx.core.content.FileProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import butterknife.BindView;
 import butterknife.OnClick;
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
+import com.github.clans.fab.FloatingActionButton;
 import com.hjq.toast.ToastUtils;
 import com.kyleduo.switchbutton.SwitchButton;
 import com.shmedo.mcloudapp.MCloudApp;
@@ -17,12 +26,17 @@ import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.adapter.recyclerviewbaseadapter.CommonAdapter;
 import com.shmedo.mcloudapp.adapter.recyclerviewbaseadapter.ViewHolder;
 import com.shmedo.mcloudapp.ui.activity.device.BaseDeviceConnectActivity;
+import com.shmedo.mcloudapp.util.LogFileUtil;
+import com.shmedo.mcloudapp.util.LogToSDUtil;
 import com.shmedo.mcloudapp.views.ClearEditText;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 import timber.log.Timber;
 
+import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -70,6 +84,10 @@ public class LogPrintActivity extends BaseDeviceConnectActivity {
 
     @BindView(R.id.toolbar_title)
     TextView toolbarTitle;
+    @BindView(R.id.view2)
+    View view2;
+    @BindView(R.id.fab_start_pause)
+    FloatingActionButton fabStartPause;
 
     private ArrayAdapter<String> debugModeAdapter;
     private int debugModeCheck = 0;
@@ -78,9 +96,15 @@ public class LogPrintActivity extends BaseDeviceConnectActivity {
 
     private List<String> logList = new ArrayList<>();
 
+    private boolean isStart = false;
 
-    public static void startActivity(Context context) {
+    private String snNumber;
+    private MaterialDialog mMaterialDialog;
+    private MaterialDialog.Builder mBuilder;
+
+    public static void startActivity(Context context,String snNumber) {
         Intent intent = new Intent(context, LogPrintActivity.class);
+        intent.putExtra("snNumber",snNumber);
         context.startActivity(intent);
     }
 
@@ -98,6 +122,7 @@ public class LogPrintActivity extends BaseDeviceConnectActivity {
     }
 
     private void initView() {
+        snNumber = getIntent().getStringExtra("snNumber");
         toolbarTitle.setText("指令日志输出");
         //调试模式
         String[] debugData = getResources().getStringArray(R.array.das_debug);
@@ -152,9 +177,15 @@ public class LogPrintActivity extends BaseDeviceConnectActivity {
                     //发送激活DAS命令
                     sendCommonCommand("##2261\r\n");
                     setSwitchViewState(true, logSwitchButton, "已开启");
+                    isStart = false;
+                    ToastUtils.show("开始日志输出");
+                    fabStartPause.setImageDrawable(getResources().getDrawable(R.drawable.ic_pause));
                 } else {
                     sendCommonCommand("##2260\r\n");
                     setSwitchViewState(true, logSwitchButton, "已关闭");
+                    ToastUtils.show("关闭日志输出");
+                    isStart = true;
+                    fabStartPause.setImageDrawable(getResources().getDrawable(R.drawable.ic_start));
                 }
             }
         });
@@ -179,21 +210,53 @@ public class LogPrintActivity extends BaseDeviceConnectActivity {
         textView.setTextColor(isOpen ? getResources().getColor(R.color.colorPrimary) : getResources().getColor(R.color.gray_807B7B));
     }
 
-    @OnClick({R.id.btn_send, R.id.tv_view_log_directory})
+    @OnClick({R.id.btn_send, R.id.tv_view_log_directory, R.id.fab_start_pause})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.btn_send:
                 //发送指令
                 String sendCode = ceSendCode.getText().toString().trim();
-                String result = sendCode+"\r\n";
+                String result = sendCode + "\r\n";
                 if (null != sendCode && sendCode.startsWith("##")) {
+                   sendCommonCommandImmediately(result);
+                    ToastUtils.show("指令已发送");
                     logList.add(sendCode);
                     adapter.notifyDataSetChanged();
+                } else {
+                    ToastUtils.show("指令格式不正确，请重新输入");
                 }
                 break;
             case R.id.tv_view_log_directory:
-                //打开日志目录
-                ToastUtils.show("功能开发中...");
+
+                File filesPath = Environment.getExternalStorageDirectory().getAbsoluteFile();
+                File file =  LogFileUtil.createLogFile(filesPath,snNumber);
+                if (file.exists()){
+                    showLogResultDialog(file.getAbsolutePath());
+                } else {
+                    ToastUtils.show("暂未生成日志");
+                }
+//                Uri logUir = FileProvider.getUriForFile(this, getApplicationContext().getPackageName() + ".provider",file.getParentFile());
+//                //打开日志目录
+//                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+//                intent.setDataAndType(logUir, "*.txt");
+////                intent.addCategory(Intent.CATEGORY_OPENABLE);
+//                intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+//                startActivity(intent);
+//                try {
+//                }catch (Exception e){
+//                    e.printStackTrace();
+//                }
+                break;
+            case R.id.fab_start_pause:
+                if (isStart) {
+                    isStart = false;
+                    ToastUtils.show("日志已开始输出");
+                    fabStartPause.setImageDrawable(getResources().getDrawable(R.drawable.ic_pause));
+                } else {
+                    ToastUtils.show("日志已暂停输出");
+                    isStart = true;
+                    fabStartPause.setImageDrawable(getResources().getDrawable(R.drawable.ic_start));
+                }
                 break;
         }
     }
@@ -206,8 +269,40 @@ public class LogPrintActivity extends BaseDeviceConnectActivity {
     }
 
     private void setResultData(String messageEvent) {
-        String result = messageEvent.replace("\r\n","");
-        logList.add(result);
-        adapter.notifyDataSetChanged();
+        //输出内容
+        @SuppressLint("SimpleDateFormat")
+        String time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
+        String content = time+"  "+messageEvent;
+        Timber.i("====日志内容"+content);
+        LogToSDUtil.saveLogToSD(content,snNumber);
+
+        if (isStart) { //
+            Timber.i("=====暂停了");
+
+        } else {
+            Timber.i("=====开始了");
+            String result = messageEvent.replace("\r\n", "");
+            logList.add(result);
+            adapter.notifyDataSetChanged();
+            recyclerLogPrint.scrollToPosition(adapter.getItemCount() - 1);
+
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        finish();
+    }
+
+    private void showLogResultDialog(String content) {
+        mBuilder = new MaterialDialog.Builder(this);
+        mBuilder.title("日志目录地址：").content(content).contentColor(Color.parseColor("#000000")).canceledOnTouchOutside(false).positiveText("确定").onPositive(new MaterialDialog.SingleButtonCallback() {
+            @Override
+            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                dialog.dismiss();
+            }
+        });
+        mMaterialDialog = mBuilder.build();
+        mMaterialDialog.show();
     }
 }

@@ -211,7 +211,7 @@ public class StringUtil {
     }
 
     /**
-     * 判断链路是否开启
+     * 判断中心是否开启
      * @param result 蓝牙指令返回参数
      * @return 返回是否开启
      */
@@ -227,7 +227,7 @@ public class StringUtil {
     }
 
     /**
-     * 获取链路序号
+     * 获取中心序号
      * @param result $$2001 0.0.0.0 9001
      * @return  1
      */

@@ -51,10 +51,11 @@
         android:id="@+id/recycleview_bluetooth_device"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/LL_close"
+
         android:layout_below="@id/rl_bar"
         android:scrollbarSize="3dp"
         android:scrollbarStyle="outsideOverlay"
+        android:background="@color/white"
         android:scrollbarThumbVertical="@drawable/scrollbar_vertical_thumb"
         android:scrollbars="vertical" />
 
@@ -62,7 +63,7 @@
         android:id="@+id/LL_close"
         android:layout_width="match_parent"
         android:layout_height="40dp"
-        android:layout_alignParentBottom="true"
+         android:layout_below="@+id/recycleview_bluetooth_device"
         android:layout_marginTop="15dp"
         android:background="@drawable/selector_button_bg"
         android:gravity="center"
