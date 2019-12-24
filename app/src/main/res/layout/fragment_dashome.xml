@@ -150,15 +150,12 @@
                 android:background="@color/white"
                 android:layout_height="1dp" />
 
-            <TextView
-                android:id="@+id/tv_rain_gauge"
+            <include
+                android:id="@+id/llty_rain"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
-                android:gravity="center_vertical"
-                android:paddingLeft="50dp"
-                android:text="雨量计配置"
-                android:textColor="@color/gray_807B7B"
-                android:textSize="@dimen/text_size_14" />
+                android:layout_marginStart="20dp"
+                layout="@layout/device_config_switchview_item3" />
 
             <LinearLayout
                 android:id="@+id/llty_break_alarm"

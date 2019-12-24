@@ -78,6 +78,8 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
         @Override
         public void run() {
             dismissLoadingDialog();
+            progressRunnable = null;
+
             if (!TextUtils.isEmpty(errMsg)) {
                 ToastUtils.show(errMsg);
 

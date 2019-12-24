@@ -4,20 +4,18 @@ package com.shmedo.mcloudapp.ui.fragment;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.CompoundButton;
-import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -29,14 +27,11 @@ import com.shmedo.das.common.CollectorConfigInfo;
 import com.shmedo.das.common.GetAllSensorConfigInfo;
 import com.shmedo.das.common.QueryOsmometerParameterInfo;
 import com.shmedo.das.common.enumerate.BreakAlarmStatus;
-import com.shmedo.das.common.enumerate.OsmometerStatus;
 import com.shmedo.das.das.cmd.CommandType;
 import com.shmedo.das.utils.StringUtil;
 import com.shmedo.mcloudapp.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.base.BaseFragment;
-import com.shmedo.mcloudapp.entity.SystemDataInfo;
-import com.shmedo.mcloudapp.entity.SystemDataInfoDao;
 import com.shmedo.mcloudapp.entity.ble.BreakAlarmStatusSub;
 import com.shmedo.mcloudapp.entity.ble.DeviceLockStatusSub;
 import com.shmedo.mcloudapp.entity.event.BluetoothStateEvent;
@@ -44,21 +39,16 @@ import com.shmedo.mcloudapp.model.Extras;
 import com.shmedo.mcloudapp.ui.activity.ConfigDASActivity;
 import com.shmedo.mcloudapp.ui.activity.device.GeneralSettingActivity;
 import com.shmedo.mcloudapp.ui.activity.device.MqttSettingActivity;
-import com.shmedo.mcloudapp.ui.activity.device.OsmometerConfigActivity;
-import com.shmedo.mcloudapp.ui.activity.device.RainConfigActivity;
 import com.shmedo.mcloudapp.ui.activity.device.sensor.SenSorBGKConfigActivity;
 import com.shmedo.mcloudapp.util.DaoManager;
 import com.shmedo.mcloudapp.util.bleutil.BlueResultParserUtil;
 import com.shmedo.mcloudapp.util.page.model.SetRainAccuryPage;
-import com.shmedo.mcloudapp.views.editspinner.EditSpinner;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.text.DecimalFormat;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -109,17 +99,20 @@ public class DASHomeFragment extends BaseFragment {
     @BindView(R.id.llty_rain_break_alarm)
     View rainBreakAlarmLayout;
 
+    @BindView(R.id.llty_rain)
+    View rainLayout;
+
     @BindView(R.id.llty_break_alarm)
     View breakAlarmLayout;
 
     @BindView(R.id.sensor_setting_layout)
     View sensorSettingLayout;
 
-    private TextView mTvBluetoothConnect, mTvDeviceEnable, mTvRainGauge, mTvBreakAlarm;
+    private TextView mTvBluetoothConnect, mTvDeviceEnable, mTvBreakAlarm;
 
     private SwitchButton mSbBluetoothConnect, mSbDeviceEnable, mSbBleakAlarm;
 
-    private Spinner mSpDebugMode, mSpSwitch;
+    private Spinner mSpDebugMode, mSpSwitch, mSpRain;
 
     private Unbinder unbinder;
 
@@ -134,6 +127,8 @@ public class DASHomeFragment extends BaseFragment {
     private ArrayAdapter<String> debugModeAdapter;
 
     private ArrayAdapter<String> switchAdapter;
+
+    private ArrayAdapter<String> rainAdapter;
 
     private String collectorType = "";//采集器编号
 
@@ -151,6 +146,8 @@ public class DASHomeFragment extends BaseFragment {
     private int debugModeCheck = 0;//标志位，Avoid onItemSelected calls during initialization
 
     private int alarmStatusCheck = 0;//标志位，Avoid onItemSelected calls during initialization
+
+    private int rainCheck = 0;//标志位，Avoid onItemSelected calls during initialization
 
 
     @Override
@@ -205,7 +202,10 @@ public class DASHomeFragment extends BaseFragment {
 
         ((TextView) switchLayout.findViewById(R.id.tv_config_name)).setText("开关量");
         mSpSwitch = switchLayout.findViewById(R.id.spinner);
-        mTvRainGauge = rainBreakAlarmLayout.findViewById(R.id.tv_rain_gauge);
+
+        ((TextView) rainLayout.findViewById(R.id.tv_config_name)).setText("雨量计配置");
+        mSpRain = rainLayout.findViewById(R.id.spinner);
+
         mTvBreakAlarm = breakAlarmLayout.findViewById(R.id.tv_break_alarm);
         mSbBleakAlarm = breakAlarmLayout.findViewById(R.id.sb_break_alarm);
 
@@ -289,7 +289,8 @@ public class DASHomeFragment extends BaseFragment {
         mSpDebugMode.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (++debugModeCheck > 1) {
+                debugModeCheck++;
+                if (debugModeCheck >= 2) {
                     String status = parent.getSelectedItem().toString();
                     String smdStr;
                     switch (status) {
@@ -324,7 +325,6 @@ public class DASHomeFragment extends BaseFragment {
             }
         });
 
-
         //开关量
         String[] switchData = getResources().getStringArray(R.array.das_switch);
         switchAdapter = new ArrayAdapter<>(configDASActivity, android.R.layout.simple_spinner_item, switchData);
@@ -333,7 +333,8 @@ public class DASHomeFragment extends BaseFragment {
         mSpSwitch.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (++alarmStatusCheck > 1) {
+                alarmStatusCheck++;
+                if (alarmStatusCheck >= 2) {
                     String value = parent.getSelectedItem().toString();
                     String smdStr = "";
                     switch (value) {
@@ -345,14 +346,14 @@ public class DASHomeFragment extends BaseFragment {
                         case "雨量计":
                             smdStr = "##0051\r\n";
                             rainBreakAlarmLayout.setVisibility(View.VISIBLE);
-                            mTvRainGauge.setVisibility(View.VISIBLE);
+                            rainLayout.setVisibility(View.VISIBLE);
                             breakAlarmLayout.setVisibility(View.GONE);
                             break;
 
                         case "断线报警器":
                             smdStr = "##0053\r\n";
                             rainBreakAlarmLayout.setVisibility(View.VISIBLE);
-                            mTvRainGauge.setVisibility(View.GONE);
+                            rainLayout.setVisibility(View.GONE);
                             breakAlarmLayout.setVisibility(View.VISIBLE);
                             break;
                     }
@@ -372,19 +373,46 @@ public class DASHomeFragment extends BaseFragment {
 
             }
         });
+
+        //雨量计精度配置
+        String[] rainData = getResources().getStringArray(R.array.rain);
+        rainAdapter = new ArrayAdapter<>(configDASActivity, android.R.layout.simple_spinner_item, rainData);
+        rainAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mSpRain.setAdapter(rainAdapter);
+        mSpRain.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                rainCheck++;
+                if (rainCheck >= 2) {
+                    String result = mSpRain.getSelectedItem().toString().replace("mm", "");
+                    DecimalFormat df = new DecimalFormat("0");
+                    String rainResult = df.format(Double.valueOf(result) * 100);
+
+                    String cmdStr = "##121" + rainResult + "\r\n";
+
+                    configDASActivity.sendCommonCommand(cmdStr);
+                    Timber.d("设置雨量计精度指令==" + cmdStr);
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
     }
 
 
-    @OnClick({R.id.tv_rain_gauge, R.id.sensor_setting_layout, R.id.rl_general_setting, R.id.rl_mqtt_setting})
+    @OnClick({R.id.sensor_setting_layout, R.id.rl_general_setting, R.id.rl_mqtt_setting})
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.tv_rain_gauge:
-                if (!MCloudApp.isIsBluetoothDeviceConnected()) {
-                    ToastUtils.show(getString(R.string.param_config_bluetooth_disconnect_warn));
-                    return;
-                }
-                RainConfigActivity.startActivity(configDASActivity, setRianAccuryParameter.getRainAccury());
-                break;
+//            case R.id.tv_rain_gauge:
+//                if (!MCloudApp.isIsBluetoothDeviceConnected()) {
+//                    ToastUtils.show(getString(R.string.param_config_bluetooth_disconnect_warn));
+//                    return;
+//                }
+//                RainConfigActivity.startActivity(configDASActivity, setRianAccuryParameter.getRainAccury());
+//                break;
 
             case R.id.sensor_setting_layout:
                 if (!MCloudApp.isIsBluetoothDeviceConnected()) {
@@ -417,7 +445,7 @@ public class DASHomeFragment extends BaseFragment {
      * 所有配置信息处理
      */
     private void processGetAllSensorConfig(String cmdStr) {
-        Timber.d("--------所有配置信息 --每次返回指令-------" +  cmdStr);
+        Timber.d("--------所有配置信息 --每次返回指令-------" + cmdStr);
         String[] strs = cmdStr.split("@@");
         if (strs == null || strs.length < 6)
             return;
@@ -466,7 +494,7 @@ public class DASHomeFragment extends BaseFragment {
         }
 
         //设备状态
-        switch (baseConfigInfo.getEquipmentStatus()){
+        switch (baseConfigInfo.getEquipmentStatus()) {
             case STANDBY:   //待机
                 mSbDeviceEnable.setCheckedImmediatelyNoEvent(false);
                 setSwitchViewState(false, mTvDeviceEnable, "已待机");
@@ -487,19 +515,28 @@ public class DASHomeFragment extends BaseFragment {
             case RAIN_OPEN://雨量站开启
                 mSpSwitch.setSelection(1);
                 rainBreakAlarmLayout.setVisibility(View.VISIBLE);
-                mTvRainGauge.setVisibility(View.VISIBLE);
+                rainLayout.setVisibility(View.VISIBLE);
                 breakAlarmLayout.setVisibility(View.GONE);
                 break;
 
             case ALARM_OPEN://短线报警器开启
                 mSpSwitch.setSelection(2);
                 rainBreakAlarmLayout.setVisibility(View.VISIBLE);
-                mTvRainGauge.setVisibility(View.GONE);
+                rainLayout.setVisibility(View.GONE);
                 breakAlarmLayout.setVisibility(View.VISIBLE);
 
                 configDASActivity.sendCommonCommand("##2270\r\n");
                 Timber.d("查询断线报警器参数指令==##2270");
                 break;
+        }
+
+        String result = Double.valueOf(setRianAccuryParameter.getRainAccury()) / 100 + "mm";
+        int count = rainAdapter.getCount();
+        for (int i = 0; i < count; i++) {
+            if (result.equals(rainAdapter.getItem(i))) {
+                mSpRain.setSelection(i);
+                break;
+            }
         }
     }
 
@@ -557,7 +594,7 @@ public class DASHomeFragment extends BaseFragment {
     public void getConfig(String messageEvent) {
         if (TextUtils.isEmpty(messageEvent) && !messageEvent.startsWith("$$")) {
             return;
-        }else if (messageEvent.startsWith("$$005")|| messageEvent.startsWith("$$333")||messageEvent.startsWith("$$227")){
+        } else if (messageEvent.startsWith("$$005") || messageEvent.startsWith("$$333") || messageEvent.startsWith("$$227")) {
             setResultData(messageEvent);
         }
     }
@@ -581,6 +618,7 @@ public class DASHomeFragment extends BaseFragment {
 
             mSpDebugMode.setEnabled(true);
             mSpSwitch.setEnabled(true);
+            mSpRain.setEnabled(true);
 
         } else {
             mSbBluetoothConnect.setCheckedImmediatelyNoEvent(false);
@@ -588,6 +626,7 @@ public class DASHomeFragment extends BaseFragment {
 
             mSpDebugMode.setEnabled(false);
             mSpSwitch.setEnabled(false);
+            mSpRain.setEnabled(false);
         }
     }
 
