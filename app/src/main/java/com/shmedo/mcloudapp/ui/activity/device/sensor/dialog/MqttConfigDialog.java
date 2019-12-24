@@ -150,7 +150,7 @@ public class MqttConfigDialog implements IDialogOpt<MqttConfigInfoSub>{
         if (mqttConfigInfoSub==null)
             return;
         //配置参数
-        tvTitle.setText("链路"+link+"配置");
+        tvTitle.setText("中心"+link+"配置");
         switch (mqttConfigInfoSub.getCommunicationProtocol()){
             case "2":
                 communicationProtocol.setSelection(0);
@@ -162,7 +162,7 @@ public class MqttConfigDialog implements IDialogOpt<MqttConfigInfoSub>{
                 communicationProtocol.setSelection(2);
                 break;
         }
-        dataPlatformAddress.setText(mqttConfigInfoSub.getDataPlatformAddress());
+        dataPlatformAddress.setText(mqttConfigInfoSub.getDataPlatformAddress().trim());
         cetKeepAliveValue.setText(mqttConfigInfoSub.getKeepAliveValue());
         cetDeviceSn.setText(mqttConfigInfoSub.getDeviceSn());
         cetProductId.setText(mqttConfigInfoSub.getProductId());
@@ -181,7 +181,8 @@ public class MqttConfigDialog implements IDialogOpt<MqttConfigInfoSub>{
                 spRegistrationPlatform.setSelection(0);
                 break;
         }
-        cetRegisterAddress.setText(mqttConfigInfoSub.getRegistrationPlatformAddress());
+
+        cetRegisterAddress.setText(mqttConfigInfoSub.getRegistrationPlatformAddress().trim());
         cetAppKey.setText(mqttConfigInfoSub.getAppKey());
         cetMqttDeviceId.setText(mqttConfigInfoSub.getMqttDeviceId());
         cetMqttUsername.setText(mqttConfigInfoSub.getMqttUsername());
@@ -194,14 +195,14 @@ public class MqttConfigDialog implements IDialogOpt<MqttConfigInfoSub>{
                 @Override
                 public void onClick(View view) {
                     mqttConfigInfoSub.setCommunicationProtocol(protocolItem);
-                    String platformAddress = dataPlatformAddress.getText()!=null?dataPlatformAddress.getText().toString():"";
+                    String platformAddress = dataPlatformAddress.getText()!=null?dataPlatformAddress.getText().toString().trim():"";
                     mqttConfigInfoSub.setDataPlatformAddress(" "+platformAddress);
                     mqttConfigInfoSub.setKeepAliveValue(cetKeepAliveValue.getText()!=null?cetKeepAliveValue.getText().toString():"");
                     mqttConfigInfoSub.setDeviceSn(cetDeviceSn.getText()!=null?cetDeviceSn.getText().toString():"");
                     mqttConfigInfoSub.setProductId(cetProductId.getText()!=null?cetProductId.getText().toString():"");
                     mqttConfigInfoSub.setRegistrationCode(cetRegistrationCode.getText()!=null?cetRegistrationCode.getText().toString():"");
                     mqttConfigInfoSub.setRegistrationPlatform(registerPlatformItem);
-                    String registrationPlatformAddress = cetRegisterAddress.getText()!=null?cetRegisterAddress.getText().toString():"";
+                    String registrationPlatformAddress = cetRegisterAddress.getText()!=null?cetRegisterAddress.getText().toString().trim():"";
                     mqttConfigInfoSub.setRegistrationPlatformAddress(" "+registrationPlatformAddress);
                     mqttConfigInfoSub.setAppKey(cetRegistrationCode.getText()!=null?cetRegistrationCode.getText().toString():"");
                     mqttConfigInfoSub.setMqttDeviceId(cetMqttDeviceId.getText()!=null?cetMqttDeviceId.getText().toString():"");

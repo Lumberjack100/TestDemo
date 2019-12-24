@@ -539,7 +539,7 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
                 || cmdStr.startsWith("$$16")//采集器
                 || cmdStr.startsWith("$$147")//采集器地址
                 || cmdStr.startsWith("$$201")//平台服务器地址端口
-                || (cmdStr.startsWith("$$202") && !cmdStr.equals("$$2020\r\n"))//网络链路通信协议
+                || (cmdStr.startsWith("$$202") && !cmdStr.equals("$$2020\r\n"))//网络中心通信协议
                 || (cmdStr.startsWith("$$810") && !cmdStr.equals("$$8100\r\n"))//自动注册平台选择
                 || cmdStr.startsWith("$$803")//自动注册平台参数
                 || cmdStr.startsWith("$$807")//自动注册服务器地址端口

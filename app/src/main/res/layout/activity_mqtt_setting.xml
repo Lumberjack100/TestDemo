@@ -89,7 +89,7 @@
                 android:layout_height="match_parent"
                 android:layout_marginStart="5dp"
                 android:gravity="center_vertical"
-                android:text="链路设置"
+                android:text="数据中心设置"
                 android:textColor="@color/gray_807B7B"
                 android:textSize="@dimen/text_size_18" />
 

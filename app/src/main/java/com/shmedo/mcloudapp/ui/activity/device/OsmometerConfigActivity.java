@@ -22,6 +22,7 @@ import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.model.Extras;
 import com.shmedo.mcloudapp.model.common.CommonVariable;
 import com.shmedo.mcloudapp.ui.fragment.AdvanceSetFragment;
+import com.shmedo.mcloudapp.util.AdvanceSetDialogUtils;
 import com.shmedo.mcloudapp.util.UserConfig;
 import com.shmedo.mcloudapp.util.bleutil.BlueResultParserUtil;
 
@@ -114,7 +115,7 @@ public class OsmometerConfigActivity extends BaseDeviceConnectActivity {
 
     private void setView(){
         mToolbarTitle.setText("配置渗压计");
-        AdvanceSetFragment.modifyHintText("随手一记，好记性不如烂笔头", mEtNote);
+        AdvanceSetDialogUtils.modifyHintText("随手一记，好记性不如烂笔头", mEtNote);
 
         mEtOsmometerAddress.setInputType(InputType.TYPE_CLASS_NUMBER);
         mEtOsmometerAddress.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});

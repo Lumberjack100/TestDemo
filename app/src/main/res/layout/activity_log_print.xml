@@ -15,6 +15,7 @@
             android:id="@+id/ll_debug"
             android:layout_width="match_parent"
             android:layout_height="30dp"
+            android:layout_marginTop="5dp"
             android:orientation="horizontal">
         <TextView
                 android:layout_width="0dp"
@@ -48,6 +49,7 @@
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:background="@color/white"
+            android:layout_marginTop="5dp"
             android:layout_below="@id/ll_debug"/>
     <RelativeLayout
             android:id="@+id/rl_log"
@@ -141,6 +143,18 @@
             android:background="@color/white"
             android:layout_below="@id/view3"
             android:layout_marginBottom="35dp"/>
+        <com.github.clans.fab.FloatingActionButton
+                android:id="@+id/fab_start_pause"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_start"
+                app:fab_colorNormal="@color/app_color_theme_3"
+                android:layout_above="@id/tv_view_log_directory"
+                android:layout_alignParentRight="true"
+                android:layout_margin="20dp"
+                app:fab_colorPressed="@color/app_color_blue_pressed"
+                app:fab_colorRipple="@color/app_color_blue_pressed"
+                app:fab_size="mini"/>
     <TextView
             android:id="@+id/tv_view_log_directory"
             android:layout_width="match_parent"

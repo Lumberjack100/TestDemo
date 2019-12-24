@@ -2,7 +2,6 @@ package com.shmedo.mcloudapp.ui.fragment;
 
 import android.graphics.Color;
 import android.os.Bundle;
-import android.os.Handler;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,14 +24,10 @@ import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.adapter.recyclerviewbaseadapter.CommonAdapter;
 import com.shmedo.mcloudapp.adapter.recyclerviewbaseadapter.ViewHolder;
 import com.shmedo.mcloudapp.base.BaseFragment;
-import com.shmedo.mcloudapp.entity.StatusInfoResult;
-import com.shmedo.mcloudapp.entity.StatusInfoResultDao;
 import com.shmedo.mcloudapp.entity.devicedetails.*;
 import com.shmedo.mcloudapp.ui.activity.ConfigDASActivity;
-import com.shmedo.mcloudapp.util.DaoManager;
 import com.shmedo.mcloudapp.util.ParserDeviceDetailsUtils;
 import com.shmedo.mcloudapp.util.StringUtil;
-import com.shmedo.mcloudapp.views.DividerItemDecoration;
 import com.shmedo.mcloudapp.views.VerticalSwipeRefreshLayout;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -168,6 +163,14 @@ public class DeviceDetailsFragment extends BaseFragment implements SwipeRefreshL
     @BindView(R.id.img_signal_strength)
     ImageView imgSignalStrength;
 
+    //在线率
+    @BindView(R.id.link_one_online_rate)
+    TextView linkOneOnlineRate;
+    @BindView(R.id.link_two_online_rate)
+    TextView linkTwoOnlineRate;
+    @BindView(R.id.link_three_online_rate)
+    TextView linkThreeOnlineRate;
+
     private boolean onRefreshFirst = false;
     private long prelongTim = 0;
     private Unbinder unbinder;
@@ -220,7 +223,7 @@ public class DeviceDetailsFragment extends BaseFragment implements SwipeRefreshL
                 //①:②:③，其中①：传感器地址，②：传感器状态，0正常，1异常，③：传感器数据
                 String[] result = string.split(":");
                 holder.setText(R.id.sensor_channel_number, result[0]);
-                holder.setText(R.id.sensor_status, ParserDeviceDetailsUtils.setSensorDataStatus(holder.getView(R.id.sensor_status), result[1]));
+                holder.setText(R.id.sensor_status, ParserDeviceDetailsUtils.setSensorDataStatus(holder.getView(R.id.sensor_status), result[1],configDASActivity));
                 holder.setText(R.id.sensor_data, result[2] + "mm");
             }
         };
@@ -266,7 +269,7 @@ public class DeviceDetailsFragment extends BaseFragment implements SwipeRefreshL
                 break;
             case "043":
                 configDASActivity.sendCommonCommandImmediately("##0441\r\n");
-                Timber.i("查询网络状态：链路1==##0441");
+                Timber.i("查询网络状态：中心1==##0441");
                 DeviceStatusThree statusThree = ParserDeviceDetailsUtils.parserDeviceStatusThree(message);
                 setDeviceStatusThree(statusThree);
                 break;
@@ -276,13 +279,13 @@ public class DeviceDetailsFragment extends BaseFragment implements SwipeRefreshL
                 switch (number) {
                     case "1":
                         configDASActivity.sendCommonCommandImmediately("##0442\r\n");
-                        Timber.i("查询网络状态：链路2==##0442");
+                        Timber.i("查询网络状态：中心2==##0442");
                         DeviceInternetStatus internetStatus1 = ParserDeviceDetailsUtils.parserInternetStatus(message);
                         setInternetStatus(internetStatus1, number);
                         break;
                     case "2":
                         configDASActivity.sendCommonCommandImmediately("##0443\r\n");
-                        Timber.i("查询网络状态：链路3==##0443");
+                        Timber.i("查询网络状态：中心3==##0443");
                         DeviceInternetStatus internetStatus2 = ParserDeviceDetailsUtils.parserInternetStatus(message);
                         setInternetStatus(internetStatus2, number);
                         break;
@@ -323,7 +326,7 @@ public class DeviceDetailsFragment extends BaseFragment implements SwipeRefreshL
     //设置设备状态2  ##042
     private void setDeviceStatusTwo(DeviceStatusTwo statusTwo) {
         //太阳能控制器
-        ParserDeviceDetailsUtils.setDeviceStatus(solarStatus, statusTwo.getSolarControllerStatus());
+        ParserDeviceDetailsUtils.setDeviceStatus(solarStatus, statusTwo.getSolarControllerStatus(),configDASActivity);
         //solarStatus.setText(statusTwo.getSolarControllerStatus());
         solarVoltage.setText(statusTwo.getSolarPanelVoltage() + "V");
         batteryVoltage.setText(statusTwo.getBatteryVoltage() + "V");
@@ -331,13 +334,13 @@ public class DeviceDetailsFragment extends BaseFragment implements SwipeRefreshL
         rihaoBattery.setText(statusTwo.getDailyPowerConsumption() + "W");
 
         //机箱内部温湿度
-        ParserDeviceDetailsUtils.setDeviceStatus(caseInternalStatus, statusTwo.getInternalTempHumidityStatus());
+        ParserDeviceDetailsUtils.setDeviceStatus(caseInternalStatus, statusTwo.getInternalTempHumidityStatus(),configDASActivity);
         //caseInternalStatus.setText(statusTwo.getInternalTempHumidityStatus());
         caseInternalTemperature.setText(statusTwo.getInternalTemperature() + "°");
         caseInternalHumidity.setText(statusTwo.getInternalHumidity() + "%");
 
         //机箱外部温湿度
-        ParserDeviceDetailsUtils.setDeviceStatus(caseExternalStatus, statusTwo.getExternalTempHumidityStatus());
+        ParserDeviceDetailsUtils.setDeviceStatus(caseExternalStatus, statusTwo.getExternalTempHumidityStatus(),configDASActivity);
         //caseExternalStatus.setText(statusTwo.getExternalTempHumidityStatus());
         caseExternalTemperature.setText(statusTwo.getExternalTemperature() + "°");
         caseExternalHumidity.setText(statusTwo.getExternalHumidity() + "%");
@@ -364,12 +367,12 @@ public class DeviceDetailsFragment extends BaseFragment implements SwipeRefreshL
                 switchType.setText("断线报警器");
                 llAlarm.setVisibility(View.VISIBLE);
                 llRain.setVisibility(View.GONE);
-                if (statusTwo.getRainfallStatus().equals("1.0")||statusTwo.getRainfallStatus().equals("1")) {
+                if (statusTwo.getRainfallStatus().equals("1.0") || statusTwo.getRainfallStatus().equals("1")) {
                     alarmStatus.setText("已断线");
                     alarmStatus.setTextColor(Color.RED);
-                } else if (statusTwo.getRainfallStatus().equals("0.0")||statusTwo.getRainfallStatus().equals("0")) {
+                } else if (statusTwo.getRainfallStatus().equals("0.0") || statusTwo.getRainfallStatus().equals("0")) {
                     alarmStatus.setText("未断线");
-                    alarmStatus.setTextColor(Color.GREEN);
+                    alarmStatus.setTextColor(getResources().getColor(R.color.green_53a659));
                 }
                 break;
         }
@@ -378,9 +381,9 @@ public class DeviceDetailsFragment extends BaseFragment implements SwipeRefreshL
     //设置设备状态3  $$043,150000L,2,   3:0:3.1,   5:0:3.1\r\n
     private void setDeviceStatusThree(DeviceStatusThree statusThree) {
         ParserDeviceDetailsUtils.setChannelNumber(tvChannelNumber, statusThree.getCollectorModel());
-        if (statusThree.getCollectorAddress().equals("0")){
+        if (statusThree.getCollectorAddress().equals("0")) {
             llSensor.setVisibility(View.GONE);
-        }else {
+        } else {
             llSensor.setVisibility(View.VISIBLE);
             List<String> list = statusThree.getSensorStatus();
             sensorList.clear();
@@ -393,16 +396,19 @@ public class DeviceDetailsFragment extends BaseFragment implements SwipeRefreshL
     private void setInternetStatus(DeviceInternetStatus internetStatus, String linkNumber) {
         switch (linkNumber) {
             case "1":
-                ParserDeviceDetailsUtils.setLinkStatus(linkOneStatus,linkOneSendData, linkOneUnsendData,internetStatus.getLinkStatus(),
-                        internetStatus.getLinkEnable(),internetStatus.getSentData(),internetStatus.getGeneratedData());
+                ParserDeviceDetailsUtils.setLinkStatus(linkOneStatus, linkOneSendData, linkOneUnsendData, internetStatus.getLinkStatus(),
+                        internetStatus.getLinkEnable(), internetStatus.getSentData(), internetStatus.getGeneratedData(),configDASActivity);
+                linkOneOnlineRate.setText(internetStatus.getOnlineRate()+"%");
                 break;
             case "2":
-                ParserDeviceDetailsUtils.setLinkStatus(linkTwoStatus,linkTwoSendData, linkTwoUnsendData,internetStatus.getLinkStatus(),
-                        internetStatus.getLinkEnable(),internetStatus.getSentData(),internetStatus.getGeneratedData());
+                ParserDeviceDetailsUtils.setLinkStatus(linkTwoStatus, linkTwoSendData, linkTwoUnsendData, internetStatus.getLinkStatus(),
+                        internetStatus.getLinkEnable(), internetStatus.getSentData(), internetStatus.getGeneratedData(),configDASActivity);
+                linkTwoOnlineRate.setText(internetStatus.getOnlineRate()+"%");
                 break;
             case "3":
-                ParserDeviceDetailsUtils.setLinkStatus(linkThreeStatus,linkThreeSendData, linkThreeUnsendData,internetStatus.getLinkStatus(),
-                        internetStatus.getLinkEnable(),internetStatus.getSentData(),internetStatus.getGeneratedData());
+                ParserDeviceDetailsUtils.setLinkStatus(linkThreeStatus, linkThreeSendData, linkThreeUnsendData, internetStatus.getLinkStatus(),
+                        internetStatus.getLinkEnable(), internetStatus.getSentData(), internetStatus.getGeneratedData(),configDASActivity);
+                linkThreeOnlineRate.setText(internetStatus.getOnlineRate()+"%");
                 break;
         }
     }

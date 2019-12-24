@@ -230,8 +230,8 @@ public class SearchDataUI implements View.OnClickListener {
 
     private void initAdapter() {
         linearLayoutManager = new LinearLayoutManager(mainActivity);
-        linearLayoutManager.setStackFromEnd(true);
-        linearLayoutManager.setReverseLayout(true);
+        linearLayoutManager.setStackFromEnd(false);
+        linearLayoutManager.setReverseLayout(false);
         queryRecycleView.setLayoutManager(linearLayoutManager);
         queryRecycleView.addItemDecoration(new DividerItemDecoration());
         adapter = new CommonAdapter<QueryCloudDataInfo>(mainActivity, R.layout.item_query_cloud_data, queryCloudDataInfoList) {

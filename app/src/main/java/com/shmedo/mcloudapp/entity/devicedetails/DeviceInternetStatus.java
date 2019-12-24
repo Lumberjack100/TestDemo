@@ -16,10 +16,11 @@ public class DeviceInternetStatus {
      * （3）flash使能，取值0,1，1表示使能，0表示未使能
      * （4）flash读指针
      * （5）flash写指针
-     * （6）链路使能：取值0,1，1表示使能，0表示未使能
-     * （7）链路状态：取值0,1，1表示上线，0表示未下线
+     * （6）中心使能：取值0,1，1表示使能，0表示未使能
+     * （7）中心状态：取值0,1，1表示上线，0表示未下线
      * （8）4G模块状态：
      * （9）MQTT状态：
+     *  (10)在线率，单位%
      * 示例：
      * $$0441,7,7,1,0x001000D4,0x001000D4,1,1,4,7
      */
@@ -33,6 +34,7 @@ public class DeviceInternetStatus {
     private String linkStatus;
     private String FourGModuleStatus;
     private String mqttStatus;
+    private String onlineRate;
 
     public String getLinkNumber() {
         return linkNumber;
@@ -114,6 +116,14 @@ public class DeviceInternetStatus {
         this.mqttStatus = mqttStatus;
     }
 
+    public String getOnlineRate() {
+        return onlineRate;
+    }
+
+    public void setOnlineRate(String onlineRate) {
+        this.onlineRate = onlineRate;
+    }
+
     @Override
     public String toString() {
         return "DeviceInternetStatus{" +
@@ -127,6 +137,7 @@ public class DeviceInternetStatus {
                 ", linkStatus='" + linkStatus + '\'' +
                 ", FourGModuleStatus='" + FourGModuleStatus + '\'' +
                 ", mqttStatus='" + mqttStatus + '\'' +
+                ", onlineRate='" + onlineRate + '\'' +
                 '}';
     }
 }

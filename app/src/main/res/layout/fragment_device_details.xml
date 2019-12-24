@@ -575,7 +575,7 @@
                         android:layout_height="match_parent"
                         android:layout_weight="4"
                         android:gravity="center"
-                        android:text="通讯链路" />
+                        android:text="数据中心" />
                 <View
                         android:layout_width="1dp"
                         android:layout_height="match_parent"
@@ -606,6 +606,16 @@
                         android:layout_weight="4"
                         android:gravity="center"
                         android:text="未发送" />
+                <View
+                        android:layout_width="1dp"
+                        android:layout_height="match_parent"
+                        android:background="@color/font_main"/>
+                <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="4"
+                        android:gravity="center"
+                        android:text="在线率" />
                 <View
                         android:layout_width="1dp"
                         android:layout_height="match_parent"
@@ -661,6 +671,16 @@
                         android:background="@color/font_main"/>
                 <TextView
                         android:id="@+id/link_one_unsend_data"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="4"
+                        android:gravity="center" />
+                <View
+                        android:layout_width="1dp"
+                        android:layout_height="match_parent"
+                        android:background="@color/font_main"/>
+                <TextView
+                        android:id="@+id/link_one_online_rate"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="4"
@@ -727,6 +747,16 @@
                         android:layout_width="1dp"
                         android:layout_height="match_parent"
                         android:background="@color/font_main"/>
+                <TextView
+                        android:id="@+id/link_two_online_rate"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="4"
+                        android:gravity="center" />
+                <View
+                        android:layout_width="1dp"
+                        android:layout_height="match_parent"
+                        android:background="@color/font_main"/>
             </LinearLayout>
             <View
                     android:layout_width="match_parent"
@@ -781,6 +811,16 @@
                         android:layout_height="match_parent"
                         android:layout_weight="4"
                         android:gravity="center"/>
+                <View
+                        android:layout_width="1dp"
+                        android:layout_height="match_parent"
+                        android:background="@color/font_main"/>
+                <TextView
+                        android:id="@+id/link_three_online_rate"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="4"
+                        android:gravity="center" />
                 <View
                         android:layout_width="1dp"
                         android:layout_height="match_parent"

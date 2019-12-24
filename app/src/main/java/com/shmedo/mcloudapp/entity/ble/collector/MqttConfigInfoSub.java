@@ -8,7 +8,7 @@ package com.shmedo.mcloudapp.entity.ble.collector;
  *       2,mqtt.shmedo.com 80,fXQQROerSlJ0bqTPCoMnyqgR-2dzhytztk3eYV6nuA0OBQljkqG_exXYtNfr,,,
  * 9.查询数据中心参数
  * （1）查询：##889n\r\n，其中
- *   n：表示链路编号，取值1，2，3
+ *   n：表示中心编号，取值1，2，3
  *   (2）返回参数：##889n,(1),(2),(3),(4),(5),(6),(7),(8),(9),(10),(11),(12)\r\n
  *   (1):数据中心开关，0：关闭，1：打开
  *   (2):通讯协议，2：MDM协议，4：MQTT自动注册，5：MQTT手动注册

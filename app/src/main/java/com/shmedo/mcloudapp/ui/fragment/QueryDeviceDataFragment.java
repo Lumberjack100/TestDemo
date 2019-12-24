@@ -148,8 +148,8 @@ public class QueryDeviceDataFragment extends BaseFragment {
     }
     private void initAdapter() {
         linearLayoutManager = new LinearLayoutManager(configDASActivity);
-        linearLayoutManager.setStackFromEnd(true);
-        linearLayoutManager.setReverseLayout(true);
+        linearLayoutManager.setStackFromEnd(false);
+        linearLayoutManager.setReverseLayout(false);
         queryRecycleView.setLayoutManager(linearLayoutManager);
         adapter = new CommonAdapter<QueryCloudDataInfo>(getActivity(), R.layout.item_query_cloud_data, queryCloudDataInfoList) {
             @Override
@@ -189,10 +189,10 @@ public class QueryDeviceDataFragment extends BaseFragment {
                 timeDialog.build();
                 break;
             case R.id.btn_query_device:
-                Timber.i("sn=====：" + snNubmer);
-                Timber.i("开始时间：" + startTime.getText().toString());
-                Timber.i("结束时间：" + endTime.getText().toString());
-                Timber.i("显示条数：" + itemCount);
+//                Timber.i("sn=====：" + snNubmer);
+//                Timber.i("开始时间：" + startTime.getText().toString());
+//                Timber.i("结束时间：" + endTime.getText().toString());
+//                Timber.i("显示条数：" + itemCount);
                 queryCloudData(snNubmer,startTime.getText().toString(),endTime.getText().toString(),itemCount);
                 break;
             case R.id.img_arrow:

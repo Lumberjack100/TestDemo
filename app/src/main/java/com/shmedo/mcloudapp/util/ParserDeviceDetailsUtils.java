@@ -127,7 +127,7 @@ public class ParserDeviceDetailsUtils {
 
     /**
      * 网络状态
-     * @param result $$0441,7,7,1,0x001000D4,0x001000D4,1,1,4,7
+     * @param result $$0441,7,7,1,0x001000D4,0x001000D4,1,1,4,7,93.6
      * @return  DeviceInternetStatus
      */
     public static DeviceInternetStatus parserInternetStatus(String result){
@@ -149,7 +149,8 @@ public class ParserDeviceDetailsUtils {
         internetStatus.setLinkEnable(cmd[6]);
         internetStatus.setLinkStatus(cmd[7]);
         internetStatus.setFourGModuleStatus(cmd[8]);
-        internetStatus.setMqttStatus(cmd[9 ]);
+        internetStatus.setMqttStatus(cmd[9]);
+        internetStatus.setOnlineRate(cmd[10]);
         return internetStatus;
     }
 
@@ -203,13 +204,13 @@ public class ParserDeviceDetailsUtils {
      * @param textView
      * @param status
      */
-    public static void setDeviceStatus(TextView textView, String status){
+    public static void setDeviceStatus(TextView textView, String status,Context context){
         if (status.equals("1")){
             textView.setText("异常");
             textView.setTextColor(Color.RED);
         }else if (status.equals("0")){
             textView.setText("正常");
-            textView.setTextColor(Color.GREEN);
+            textView.setTextColor(context.getResources().getColor(R.color.green_53a659));
         }
     }
 
@@ -218,9 +219,9 @@ public class ParserDeviceDetailsUtils {
      * @param status
      * @return
      */
-    public static String setSensorDataStatus(TextView textView,String status){
+    public static String setSensorDataStatus(TextView textView,String status,Context context){
         if (status.equals("0")){
-            textView.setTextColor(Color.GREEN);
+            textView.setTextColor(context.getResources().getColor(R.color.green_53a659));
             return "正常";
         }else if (status.equals("1")){
             textView.setTextColor(Color.RED);
@@ -230,18 +231,18 @@ public class ParserDeviceDetailsUtils {
     }
 
     /**
-     * 修改链路状态
+     * 修改中心状态
      * @param
      * @param status
      */
     public static void setLinkStatus(TextView tvLinkStatus,TextView tvSendData,TextView tvUnSend, String status,String enable,
-                                     String sendData,String generatedData){
+                                     String sendData,String generatedData,Context context){
         String unSendData =String.valueOf( Integer.parseInt(generatedData) - Integer.parseInt(sendData));
-        //如果链路使能
+        //如果中心使能
         if (enable.equals("1")){
             if (status.equals("1")){
                 tvLinkStatus.setText("已上线");
-                tvLinkStatus.setTextColor(Color.GREEN);
+                tvLinkStatus.setTextColor(context.getResources().getColor(R.color.green_53a659));
             }else if (status.equals("0")){
                 tvLinkStatus.setText("未上线");
                 tvLinkStatus.setTextColor(Color.RED);

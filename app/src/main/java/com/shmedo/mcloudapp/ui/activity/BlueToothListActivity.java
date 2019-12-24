@@ -222,7 +222,8 @@ public class BlueToothListActivity extends AppCompatActivity implements MultiIte
 
 
     private void handleDeviceFind(BluetoothDeviceFindEventData eventData) {
-        if (deviceList.contains(eventData.getNewDevice()) || eventData.getNewDevice().getDevice().getName() == null) {
+        if (deviceList.contains(eventData.getNewDevice()) || eventData.getNewDevice().getDevice().getName() == null||
+                !eventData.getNewDevice().getDevice().getName().startsWith("MD")) {
             return;
         }
 
@@ -238,7 +239,7 @@ public class BlueToothListActivity extends AppCompatActivity implements MultiIte
         adapter.addItem(eventData.getNewDevice());
 //        deviceList.add(eventData.getNewDevice());
 //        adapter.notifyDataSetChanged();
-        mRecyclerView.scrollToPosition(adapter.getItemCount() - 1);
+//        mRecyclerView.scrollToPosition(adapter.getItemCount() - 1);
     }
 
 
