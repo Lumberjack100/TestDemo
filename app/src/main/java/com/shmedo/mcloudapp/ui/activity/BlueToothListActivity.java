@@ -31,8 +31,10 @@ import com.shmedo.mcloudapp.bluetooth.BluetoothEvent;
 import com.shmedo.mcloudapp.bluetooth.BluetoothEventHandler;
 import com.shmedo.mcloudapp.bluetooth.MdBluetoothManager;
 import com.shmedo.mcloudapp.entity.ble.MDevice;
+import com.shmedo.mcloudapp.util.ActivityCollector;
 import com.shmedo.mcloudapp.views.DividerItemDecoration;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -101,6 +103,8 @@ public class BlueToothListActivity extends AppCompatActivity implements MultiIte
         supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.device_list);
         ButterKnife.bind(this);
+        WeakReference<Activity> weakRefActivity = new WeakReference<>(this);
+        ActivityCollector.add(weakRefActivity);
 
         hander = new Handler();
         initAdapter();
@@ -125,7 +129,6 @@ public class BlueToothListActivity extends AppCompatActivity implements MultiIte
         adapter.setOnItemClickListener(this);
         mRecyclerView.setAdapter(adapter);
     }
-
 
 
     @Override
@@ -222,7 +225,7 @@ public class BlueToothListActivity extends AppCompatActivity implements MultiIte
 
 
     private void handleDeviceFind(BluetoothDeviceFindEventData eventData) {
-        if (deviceList.contains(eventData.getNewDevice()) || eventData.getNewDevice().getDevice().getName() == null||
+        if (deviceList.contains(eventData.getNewDevice()) || eventData.getNewDevice().getDevice().getName() == null ||
                 !eventData.getNewDevice().getDevice().getName().startsWith("MD")) {
             return;
         }

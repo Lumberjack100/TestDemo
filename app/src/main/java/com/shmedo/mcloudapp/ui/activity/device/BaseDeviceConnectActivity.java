@@ -111,9 +111,7 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        BluetoothManager bluetoothManager = (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
-        mBluetoothAdapter = Objects.requireNonNull(bluetoothManager).getAdapter();
-        mdBluetoothManager = MdBluetoothManager.getInstance();
+        initBluetooth();
     }
 
     @Override
@@ -128,6 +126,15 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
     protected void onPause() {
         super.onPause();
         mdBluetoothManager.removeBluetoothEventHandler(mdBluetoothEventHandler);
+    }
+
+    /**
+     * 初始化蓝牙
+     */
+    private void initBluetooth() {
+        BluetoothManager bluetoothManager = (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
+        mBluetoothAdapter = Objects.requireNonNull(bluetoothManager).getAdapter();
+        mdBluetoothManager = MdBluetoothManager.getInstance();
     }
 
 
