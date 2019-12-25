@@ -36,6 +36,7 @@ import com.shmedo.mcloudapp.util.common.HandleBackUtil;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -404,7 +405,7 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
         @Override
         public void onPackageArrived(final byte[] data) {
             try {
-                final String cmdStr = new String(data, "utf-8");
+                final String cmdStr = new String(data, StandardCharsets.UTF_8);
                 Timber.d("应答指令===" + cmdStr);
                 String cmdArray[] = cmdStr.replace("\r\n", "").split(",");
 

@@ -34,6 +34,7 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 import timber.log.Timber;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -170,6 +171,9 @@ public class DeviceDetailsFragment extends BaseFragment implements SwipeRefreshL
     TextView linkTwoOnlineRate;
     @BindView(R.id.link_three_online_rate)
     TextView linkThreeOnlineRate;
+    //安装位置
+    @BindView(R.id.tv_install_position)
+    TextView tvInstallPosition;
 
     private boolean onRefreshFirst = false;
     private long prelongTim = 0;
@@ -223,7 +227,7 @@ public class DeviceDetailsFragment extends BaseFragment implements SwipeRefreshL
                 //①:②:③，其中①：传感器地址，②：传感器状态，0正常，1异常，③：传感器数据
                 String[] result = string.split(":");
                 holder.setText(R.id.sensor_channel_number, result[0]);
-                holder.setText(R.id.sensor_status, ParserDeviceDetailsUtils.setSensorDataStatus(holder.getView(R.id.sensor_status), result[1],configDASActivity));
+                holder.setText(R.id.sensor_status, ParserDeviceDetailsUtils.setSensorDataStatus(holder.getView(R.id.sensor_status), result[1], configDASActivity));
                 holder.setText(R.id.sensor_data, result[2] + "mm");
             }
         };
@@ -240,7 +244,8 @@ public class DeviceDetailsFragment extends BaseFragment implements SwipeRefreshL
                 messageEvent.startsWith("$$042") ||
                 messageEvent.startsWith("$$043") ||
                 messageEvent.startsWith("$$044") ||
-                messageEvent.startsWith("$$014")) {
+                messageEvent.startsWith("$$014") ||
+                messageEvent.startsWith("$$916")) {
             setResultData(messageEvent);
         }
     }
@@ -250,10 +255,16 @@ public class DeviceDetailsFragment extends BaseFragment implements SwipeRefreshL
         String commandType = StringUtil.extractCommandType(message);
         switch (commandType) {
             case "040":
-                configDASActivity.sendCommonCommandImmediately("##041\r\n");
-                Timber.i("查询设备状态1：：==##041");
+                configDASActivity.sendCommonCommandImmediately("##9162\r\n");
+                Timber.i("查询安装位置：：==##9162");
                 DeviceVersionInfo versionInfo = ParserDeviceDetailsUtils.parserVersionInfo(message);
                 setVersionInfo(versionInfo);
+                break;
+            case "916":
+                configDASActivity.sendCommonCommandImmediately("##041\r\n");
+                Timber.i("查询设备状态1：：==##041");
+                String position = ParserDeviceDetailsUtils.parserInstallPosition(message);
+                tvInstallPosition.setText(position);
                 break;
             case "041":
                 configDASActivity.sendCommonCommandImmediately("##042\r\n");
@@ -326,7 +337,7 @@ public class DeviceDetailsFragment extends BaseFragment implements SwipeRefreshL
     //设置设备状态2  ##042
     private void setDeviceStatusTwo(DeviceStatusTwo statusTwo) {
         //太阳能控制器
-        ParserDeviceDetailsUtils.setDeviceStatus(solarStatus, statusTwo.getSolarControllerStatus(),configDASActivity);
+        ParserDeviceDetailsUtils.setDeviceStatus(solarStatus, statusTwo.getSolarControllerStatus(), configDASActivity);
         //solarStatus.setText(statusTwo.getSolarControllerStatus());
         solarVoltage.setText(statusTwo.getSolarPanelVoltage() + "V");
         batteryVoltage.setText(statusTwo.getBatteryVoltage() + "V");
@@ -334,13 +345,13 @@ public class DeviceDetailsFragment extends BaseFragment implements SwipeRefreshL
         rihaoBattery.setText(statusTwo.getDailyPowerConsumption() + "W");
 
         //机箱内部温湿度
-        ParserDeviceDetailsUtils.setDeviceStatus(caseInternalStatus, statusTwo.getInternalTempHumidityStatus(),configDASActivity);
+        ParserDeviceDetailsUtils.setDeviceStatus(caseInternalStatus, statusTwo.getInternalTempHumidityStatus(), configDASActivity);
         //caseInternalStatus.setText(statusTwo.getInternalTempHumidityStatus());
         caseInternalTemperature.setText(statusTwo.getInternalTemperature() + "°");
         caseInternalHumidity.setText(statusTwo.getInternalHumidity() + "%");
 
         //机箱外部温湿度
-        ParserDeviceDetailsUtils.setDeviceStatus(caseExternalStatus, statusTwo.getExternalTempHumidityStatus(),configDASActivity);
+        ParserDeviceDetailsUtils.setDeviceStatus(caseExternalStatus, statusTwo.getExternalTempHumidityStatus(), configDASActivity);
         //caseExternalStatus.setText(statusTwo.getExternalTempHumidityStatus());
         caseExternalTemperature.setText(statusTwo.getExternalTemperature() + "°");
         caseExternalHumidity.setText(statusTwo.getExternalHumidity() + "%");
@@ -397,18 +408,22 @@ public class DeviceDetailsFragment extends BaseFragment implements SwipeRefreshL
         switch (linkNumber) {
             case "1":
                 ParserDeviceDetailsUtils.setLinkStatus(linkOneStatus, linkOneSendData, linkOneUnsendData, internetStatus.getLinkStatus(),
-                        internetStatus.getLinkEnable(), internetStatus.getSentData(), internetStatus.getGeneratedData(),configDASActivity);
-                linkOneOnlineRate.setText(internetStatus.getOnlineRate()+"%");
+                        internetStatus.getLinkEnable(), internetStatus.getSentData(), internetStatus.getGeneratedData(), configDASActivity);
+                if (internetStatus.getOnlineRate() != null) {
+                    linkOneOnlineRate.setText(internetStatus.getOnlineRate() + "%");
+                }
                 break;
             case "2":
                 ParserDeviceDetailsUtils.setLinkStatus(linkTwoStatus, linkTwoSendData, linkTwoUnsendData, internetStatus.getLinkStatus(),
-                        internetStatus.getLinkEnable(), internetStatus.getSentData(), internetStatus.getGeneratedData(),configDASActivity);
-                linkTwoOnlineRate.setText(internetStatus.getOnlineRate()+"%");
+                        internetStatus.getLinkEnable(), internetStatus.getSentData(), internetStatus.getGeneratedData(), configDASActivity);
+                if (internetStatus.getOnlineRate() != null)
+                    linkTwoOnlineRate.setText(internetStatus.getOnlineRate() + "%");
                 break;
             case "3":
                 ParserDeviceDetailsUtils.setLinkStatus(linkThreeStatus, linkThreeSendData, linkThreeUnsendData, internetStatus.getLinkStatus(),
-                        internetStatus.getLinkEnable(), internetStatus.getSentData(), internetStatus.getGeneratedData(),configDASActivity);
-                linkThreeOnlineRate.setText(internetStatus.getOnlineRate()+"%");
+                        internetStatus.getLinkEnable(), internetStatus.getSentData(), internetStatus.getGeneratedData(), configDASActivity);
+                if (internetStatus.getOnlineRate() != null)
+                    linkThreeOnlineRate.setText(internetStatus.getOnlineRate() + "%");
                 break;
         }
     }

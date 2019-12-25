@@ -23,14 +23,20 @@ import com.shmedo.das.das.cmd.entity.RebootDeviceEntity;
 import com.shmedo.mcloudapp.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.base.BaseFragment;
+import com.shmedo.mcloudapp.entity.SyncPositionBean;
 import com.shmedo.mcloudapp.model.Extras;
 import com.shmedo.mcloudapp.ui.activity.ConfigDASActivity;
 import com.shmedo.mcloudapp.ui.activity.device.senior.InstructionDebugActivity;
 import com.shmedo.mcloudapp.ui.activity.device.senior.ProductRegistrationActivity;
-import com.shmedo.mcloudapp.util.AdvanceSetDialogUtils;
-import com.shmedo.mcloudapp.util.KeyBordUtils;
-import com.shmedo.mcloudapp.util.LogToSDUtil;
-import com.shmedo.mcloudapp.util.StringUtil;
+import com.shmedo.mcloudapp.util.*;
+import com.shmedo.mcloudapp.util.bleutil.ByteManagerUtil;
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+import timber.log.Timber;
+
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 
 /**
  * 项目名：  mCloudapp
@@ -132,10 +138,78 @@ public class AdvanceSetFragment extends BaseFragment {
                 }
                 break;
             case R.id.rl_sync_position: //同步安装位置
-
+//                ToastUtils.show("功能开发中...");
+                if (checkIsBluetoothConnected()) {
+                    showSyncPositionDialog(configDASActivity);
+                }
                 break;
         }
     }
+
+    private static MaterialDialog.Builder mBuilder;
+    private static MaterialDialog mMaterialDialog;
+    private static String address;
+    private static String latLong;
+    private static EditText etPositionInfo;
+    private static TextView tvLatLong;
+    private static void showSyncPositionDialog(ConfigDASActivity activity){
+        mBuilder = new MaterialDialog.Builder(activity);
+        mBuilder.customView(R.layout.dialog_sync_position, false)
+                .title("同步安装位置")
+                .contentColor(Color.parseColor("#000000"))
+                .canceledOnTouchOutside(false);
+        mMaterialDialog = mBuilder.build();
+        mMaterialDialog.show();
+
+        etPositionInfo = (EditText) mMaterialDialog.findViewById(R.id.et_position_info);
+        ImageView imgPosition = (ImageView) mMaterialDialog.findViewById(R.id.img_position);
+        tvLatLong = (TextView) mMaterialDialog.findViewById(R.id.lat_long);
+        Button btnCancelRestart = (Button) mMaterialDialog.findViewById(R.id.btn_cancel_restart);
+        Button btnRestartSystem = (Button) mMaterialDialog.findViewById(R.id.btn_restart_system);
+
+        imgPosition.setOnClickListener(view -> {
+            LocationUtils.getInstance().startLocalService();
+        });
+
+        btnRestartSystem.setOnClickListener(view -> {
+            String result = etPositionInfo.getText().toString().trim();
+            if (!StringUtil.isEmpty(result)){
+                try {
+                    String command = "##9161"+result+"\r\n";
+                    activity.sendCommonCommandImmediately(command);
+                } catch ( Exception e) {
+                    e.printStackTrace();
+                }
+            }else {
+                ToastUtils.show("位置信息不能为空");
+                return;
+            }
+            ToastUtils.show("位置信息同步成功");
+            mMaterialDialog.dismiss();
+            mMaterialDialog = null;
+            mBuilder = null;
+        });
+        btnCancelRestart.setOnClickListener(view -> {
+            mMaterialDialog.dismiss();
+            mMaterialDialog = null;
+            mBuilder = null;
+        });
+
+    }
+
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onMessageEvent(SyncPositionBean event) {
+        Timber.i("==位置来了=="+event.toString());
+        if (event.getType().equals("location")){
+            address = event.getAddress();
+            latLong  = event.getLongitude()+","+event.getLatitude();
+            etPositionInfo.setText(latLong);
+            tvLatLong.setText(address);
+            LocationUtils.getInstance().stopLocalService();
+        }
+    }
+
 
     private boolean checkIsBluetoothConnected() {
         if (!MCloudApp.isIsBluetoothDeviceConnected()) {
@@ -146,7 +220,17 @@ public class AdvanceSetFragment extends BaseFragment {
         return true;
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        EventBus.getDefault().register(this);
+    }
 
+    @Override
+    public void onStop() {
+        super.onStop();
+        EventBus.getDefault().unregister(this);
+    }
     @Override
     public boolean onBackPressed() {
         return false;

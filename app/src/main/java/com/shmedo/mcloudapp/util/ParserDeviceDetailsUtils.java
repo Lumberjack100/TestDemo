@@ -43,6 +43,21 @@ public class ParserDeviceDetailsUtils {
     }
 
     /**
+     * 解析安装位置
+     * @param result
+     * @return
+     */
+    public static String parserInstallPosition(String result){
+        if (isNullOrEmpty(result) ||  result.length() < CommandResult.RESULT_MIN_LENGTH)
+            throw new IllegalArgumentException("指令结果格式错误:" + result);
+        if (result.replace("\r\n","").endsWith("e")){
+            return null;
+        }
+        String cmd = result.replace("\r\n", "").substring(7);
+        return cmd;
+    }
+
+    /**
      * 设备状态1
      * @param result $$041,150000L,865860047575320,898604061918C0643348,20,1,9
      * @return DeviceStatusOne
@@ -150,6 +165,7 @@ public class ParserDeviceDetailsUtils {
         internetStatus.setLinkStatus(cmd[7]);
         internetStatus.setFourGModuleStatus(cmd[8]);
         internetStatus.setMqttStatus(cmd[9]);
+        if (cmd.length==11)
         internetStatus.setOnlineRate(cmd[10]);
         return internetStatus;
     }

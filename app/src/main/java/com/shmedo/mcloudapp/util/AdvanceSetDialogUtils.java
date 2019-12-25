@@ -11,13 +11,25 @@ import android.widget.*;
 import androidx.annotation.NonNull;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.amap.api.location.AMapLocation;
+import com.amap.api.location.AMapLocationClient;
+import com.amap.api.location.AMapLocationClientOption;
+import com.amap.api.location.AMapLocationListener;
 import com.hjq.toast.ToastUtils;
 import com.kyleduo.switchbutton.SwitchButton;
 import com.shmedo.das.das.cmd.CommandManager;
 import com.shmedo.das.das.cmd.CommandType;
 import com.shmedo.das.das.cmd.entity.RebootDeviceEntity;
 import com.shmedo.mcloudapp.R;
+import com.shmedo.mcloudapp.entity.SyncPositionBean;
+import com.shmedo.mcloudapp.entity.event.BluetoothStateEvent;
 import com.shmedo.mcloudapp.ui.activity.ConfigDASActivity;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+import timber.log.Timber;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * 项目名：  mCloudapp
@@ -36,7 +48,7 @@ public class AdvanceSetDialogUtils {
 
 
     /**
-     * 重启系统
+     * 固件升级 or 重启系统
      */
     public static void showReStartDialog(ConfigDASActivity activity, String title, String instructions, SwitchButton swFirmwareUpgrade) {
         mBuilder = new MaterialDialog.Builder(activity);

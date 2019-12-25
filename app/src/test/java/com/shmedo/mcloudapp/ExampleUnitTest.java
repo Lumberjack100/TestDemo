@@ -12,7 +12,10 @@ import com.shmedo.mcloudapp.util.StringUtil;
 import com.shmedo.mcloudapp.util.TimeUtil;
 import com.shmedo.mcloudapp.util.bleutil.BlueResultParserUtil;
 
+import com.shmedo.mcloudapp.util.bleutil.ByteManagerUtil;
 import org.junit.Test;
+
+import java.io.UnsupportedEncodingException;
 
 /**
  * Example local unit test, which will execute on the development machine (host).
@@ -85,8 +88,14 @@ public class ExampleUnitTest {
 
     @Test
     public void testRain(){
-        String message1="$$0443,0,0,1,0x00600000,0x00600000,0,0,0,0\r\n";
-        String message="$$000,18A095-L,0,455872,2,1,1,5400,10,100,0,9600,9600,02,3,6,3,1,2,1\r\n";
+
+        String command = "##9161,123.12412,30.123\r\n";
+
+            String cmd = command.replace("\r\n", "").substring(7);
+            System.out.println(cmd);
+
+
+
 //        DeviceInternetStatus internetStatus = ParserDeviceDetailsUtils.parserInternetStatus(message1);
 //        System.out.println(internetStatus.toString());
 

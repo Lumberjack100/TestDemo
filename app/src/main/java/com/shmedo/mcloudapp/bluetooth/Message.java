@@ -2,6 +2,7 @@ package com.shmedo.mcloudapp.bluetooth;
 
 import com.shmedo.mcloudapp.util.bleutil.BleHelpUtil;
 
+import java.nio.charset.StandardCharsets;
 import java.sql.Timestamp;
 import java.util.Arrays;
 
@@ -58,7 +59,7 @@ public class Message {
         this.status = MessageWriteStatus.TO_BE_SEND;
         this.needResponse = true;
         try {
-            this.messageBytes = data.getBytes("us-ascii");
+            this.messageBytes = data.getBytes(StandardCharsets.UTF_8);
             this.currentWriteIndex = 0;
         } catch (Exception ex) {
             throw new RuntimeException(ex);
