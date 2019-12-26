@@ -10,13 +10,12 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
+
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
+
 import com.hjq.toast.ToastUtils;
 import com.shmedo.das.das.cmd.CommandResult;
 import com.shmedo.mcloudapp.MCloudApp;
@@ -24,20 +23,29 @@ import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.adapter.recyclerviewbaseadapter.CommonAdapter;
 import com.shmedo.mcloudapp.adapter.recyclerviewbaseadapter.ViewHolder;
 import com.shmedo.mcloudapp.base.BaseFragment;
-import com.shmedo.mcloudapp.entity.devicedetails.*;
+import com.shmedo.mcloudapp.entity.devicedetails.DeviceInternetStatus;
+import com.shmedo.mcloudapp.entity.devicedetails.DeviceStatusOne;
+import com.shmedo.mcloudapp.entity.devicedetails.DeviceStatusThree;
+import com.shmedo.mcloudapp.entity.devicedetails.DeviceStatusTwo;
+import com.shmedo.mcloudapp.entity.devicedetails.DeviceVersionInfo;
+import com.shmedo.mcloudapp.entity.devicedetails.OperatorInformation;
 import com.shmedo.mcloudapp.ui.activity.ConfigDASActivity;
 import com.shmedo.mcloudapp.util.ParserDeviceDetailsUtils;
 import com.shmedo.mcloudapp.util.StringUtil;
 import com.shmedo.mcloudapp.views.VerticalSwipeRefreshLayout;
+
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
-import timber.log.Timber;
 
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
+import timber.log.Timber;
 
 /**
  * 项目名：  mCloudapp
@@ -460,6 +468,12 @@ public class DeviceDetailsFragment extends BaseFragment implements SwipeRefreshL
 
     @Override
     public void onRefresh() {
+        if (!MCloudApp.isIsBluetoothDeviceConnected()) {
+            refreshLayout.setRefreshing(false);
+            ToastUtils.show("设备已断开连接,无法刷新指令");
+            return;
+        }
+
         if (!onRefreshFirst) {
             //发送指令
             ToastUtils.show("刷新指令成功");
@@ -485,8 +499,6 @@ public class DeviceDetailsFragment extends BaseFragment implements SwipeRefreshL
                 refreshLayout.setRefreshing(false);
             }
         }
-        if (!MCloudApp.isIsBluetoothDeviceConnected()) {
-            refreshLayout.setRefreshing(false);
-        }
+
     }
 }
