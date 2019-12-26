@@ -564,7 +564,7 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
     /**
      * 查询设备的配置参数信息
      */
-    protected void obtainDeviceConfigInfoCmd() {
+    private void obtainDeviceConfigInfoCmd() {
         if (SN.endsWith("T")) {//ADME 设备
             queryADMEConfigInfoCmd();
 

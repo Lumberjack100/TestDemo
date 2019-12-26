@@ -1,21 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.shmedo.mcloudapp.views.VerticalSwipeRefreshLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/refresh"
+<com.shmedo.mcloudapp.views.VerticalSwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/refresh"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ScrollView
+        android:id="@+id/scrollView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        >
-<ScrollView
-    android:id="@+id/scrollView"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/white"
-    android:orientation="vertical">
-
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:background="@color/white"
         android:orientation="vertical">
 
         <LinearLayout
@@ -23,282 +16,278 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="30dp"
-                android:background="@color/bg_main_light_white"
-                android:gravity="center_vertical"
-                android:paddingLeft="16dp"
-                android:text="基本信息" />
-
-
-
-
-
-
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="5dp"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
                 <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="20dp"
-                    android:layout_weight="4"
-                    android:gravity="right"
-                    android:text="SIM卡号(ICCID)：" />
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:background="@color/bg_main_light_white"
+                    android:gravity="center_vertical"
+                    android:paddingLeft="16dp"
+                    android:text="基本信息" />
 
-                <TextView
-                    android:id="@+id/sim_card_number"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="8"  />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="5dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
 
-            </LinearLayout>
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="20dp"
+                        android:layout_weight="4"
+                        android:gravity="right"
+                        android:text="SIM卡号(ICCID)：" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="5dp"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
+                    <TextView
+                        android:id="@+id/sim_card_number"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="8" />
 
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="20dp"
-                    android:layout_weight="4"
-                    android:gravity="right"
-                    android:text="IMEI号：" />
+                </LinearLayout>
 
-                <TextView
-                    android:id="@+id/imei_number"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="8" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="5dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
 
-            </LinearLayout>
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="20dp"
+                        android:layout_weight="4"
+                        android:gravity="right"
+                        android:text="IMEI号：" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="5dp"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
+                    <TextView
+                        android:id="@+id/imei_number"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="8" />
 
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="20dp"
-                    android:layout_weight="4"
-                    android:gravity="right"
-                    android:text="设备启动代码：" />
+                </LinearLayout>
 
-                <TextView
-                    android:id="@+id/device_start_code"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="8" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="5dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
 
-            </LinearLayout>
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="20dp"
+                        android:layout_weight="4"
+                        android:gravity="right"
+                        android:text="设备启动代码：" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="5dp"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
+                    <TextView
+                        android:id="@+id/device_start_code"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="8" />
 
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="20dp"
-                    android:layout_weight="4"
-                    android:gravity="right"
-                    android:text="固件版本：" />
+                </LinearLayout>
 
-                <TextView
-                    android:id="@+id/firmware_version"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="8"  />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="5dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
 
-            </LinearLayout>
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="5dp"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="20dp"
+                        android:layout_weight="4"
+                        android:gravity="right"
+                        android:text="固件版本：" />
 
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="20dp"
-                    android:layout_weight="4"
-                    android:gravity="right"
-                    android:text="安装位置：" />
+                    <TextView
+                        android:id="@+id/firmware_version"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="8" />
 
-                <TextView
-                    android:id="@+id/tv_install_position"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="10dp"
-                    android:layout_weight="8"/>
+                </LinearLayout>
 
-            </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="5dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
 
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="20dp"
+                        android:layout_weight="4"
+                        android:gravity="right"
+                        android:text="安装位置：" />
 
-        </LinearLayout>
+                    <TextView
+                        android:id="@+id/tv_install_position"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="10dp"
+                        android:layout_weight="8" />
 
+                </LinearLayout>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:orientation="vertical">
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="30dp"
-                android:background="@color/bg_main_light_white"
-                android:gravity="center_vertical"
-                android:paddingLeft="16dp"
-                android:text="太阳能控制器" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="25dp"
-                android:layout_marginTop="5dp"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="20dp"
-                    android:layout_weight="4"
-                    android:gravity="right"
-                    android:text="状态：" />
-
-                <TextView
-                    android:id="@+id/solar_status"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="8"
-                      />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="5dp"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="20dp"
-                    android:layout_weight="4"
-                    android:gravity="right"
-                    android:text="太阳能板电压：" />
-
-                <TextView
-                    android:id="@+id/solar_voltage"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="8"
-                      />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="5dp"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="20dp"
-                    android:layout_weight="4"
-                    android:gravity="right"
-                    android:text="电池电压：" />
-
-                <TextView
-                    android:id="@+id/battery_voltage"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="8"
-                      />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="5dp"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="20dp"
-                    android:layout_weight="4"
-                    android:gravity="right"
-                    android:text="太阳能板功率：" />
-
-                <TextView
-                    android:id="@+id/rifa_battery"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="8"
-                      />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="5dp"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="20dp"
-                    android:layout_weight="4"
-                    android:gravity="right"
-                    android:text="负载功率：" />
-
-                <TextView
-                    android:id="@+id/rihao_battery"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="8"
-                      />
 
             </LinearLayout>
 
 
-        </LinearLayout>
-
-        <LinearLayout
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:orientation="vertical">
 
-            <TextView
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:background="@color/bg_main_light_white"
+                    android:gravity="center_vertical"
+                    android:paddingLeft="16dp"
+                    android:text="太阳能控制器" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="25dp"
+                    android:layout_marginTop="5dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="20dp"
+                        android:layout_weight="4"
+                        android:gravity="right"
+                        android:text="状态：" />
+
+                    <TextView
+                        android:id="@+id/solar_status"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="8" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="5dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="20dp"
+                        android:layout_weight="4"
+                        android:gravity="right"
+                        android:text="太阳能板电压：" />
+
+                    <TextView
+                        android:id="@+id/solar_voltage"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="8" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="5dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="20dp"
+                        android:layout_weight="4"
+                        android:gravity="right"
+                        android:text="电池电压：" />
+
+                    <TextView
+                        android:id="@+id/battery_voltage"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="8" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="5dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="20dp"
+                        android:layout_weight="4"
+                        android:gravity="right"
+                        android:text="太阳能板功率：" />
+
+                    <TextView
+                        android:id="@+id/rifa_battery"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="8" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="5dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="20dp"
+                        android:layout_weight="4"
+                        android:gravity="right"
+                        android:text="负载功率：" />
+
+                    <TextView
+                        android:id="@+id/rihao_battery"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="8" />
+
+                </LinearLayout>
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:orientation="vertical">
+
+                <TextView
                     android:layout_width="match_parent"
                     android:layout_height="30dp"
                     android:background="@color/bg_main_light_white"
@@ -306,14 +295,14 @@
                     android:paddingLeft="16dp"
                     android:text="机箱内部温湿度" />
 
-            <LinearLayout
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="25dp"
                     android:layout_marginTop="5dp"
                     android:gravity="center_vertical"
                     android:orientation="horizontal">
 
-                <TextView
+                    <TextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="20dp"
@@ -321,23 +310,22 @@
                         android:gravity="right"
                         android:text="状态：" />
 
-                <TextView
+                    <TextView
                         android:id="@+id/case_internal_status"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="8"
-                          />
+                        android:layout_weight="8" />
 
-            </LinearLayout>
+                </LinearLayout>
 
-            <LinearLayout
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_marginTop="5dp"
                     android:gravity="center_vertical"
                     android:orientation="horizontal">
 
-                <TextView
+                    <TextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="20dp"
@@ -345,23 +333,22 @@
                         android:gravity="right"
                         android:text="温度：" />
 
-                <TextView
+                    <TextView
                         android:id="@+id/case_internal_temperature"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="8"
-                          />
+                        android:layout_weight="8" />
 
-            </LinearLayout>
+                </LinearLayout>
 
-            <LinearLayout
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_marginTop="5dp"
                     android:gravity="center_vertical"
                     android:orientation="horizontal">
 
-                <TextView
+                    <TextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="20dp"
@@ -369,23 +356,22 @@
                         android:gravity="right"
                         android:text="湿度：" />
 
-                <TextView
+                    <TextView
                         android:id="@+id/case_internal_humidity"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="8"
-                          />
+                        android:layout_weight="8" />
 
+                </LinearLayout>
             </LinearLayout>
-        </LinearLayout>
 
-        <LinearLayout
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:orientation="vertical">
 
-            <TextView
+                <TextView
                     android:layout_width="match_parent"
                     android:layout_height="30dp"
                     android:background="@color/bg_main_light_white"
@@ -393,14 +379,14 @@
                     android:paddingLeft="16dp"
                     android:text="机箱外部温湿度" />
 
-            <LinearLayout
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="25dp"
                     android:layout_marginTop="5dp"
                     android:gravity="center_vertical"
                     android:orientation="horizontal">
 
-                <TextView
+                    <TextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="20dp"
@@ -408,23 +394,22 @@
                         android:gravity="right"
                         android:text="状态：" />
 
-                <TextView
+                    <TextView
                         android:id="@+id/case_external_status"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="8"
-                          />
+                        android:layout_weight="8" />
 
-            </LinearLayout>
+                </LinearLayout>
 
-            <LinearLayout
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_marginTop="5dp"
                     android:gravity="center_vertical"
                     android:orientation="horizontal">
 
-                <TextView
+                    <TextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="20dp"
@@ -432,23 +417,22 @@
                         android:gravity="right"
                         android:text="温度：" />
 
-                <TextView
+                    <TextView
                         android:id="@+id/case_external_temperature"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="8"
-                          />
+                        android:layout_weight="8" />
 
-            </LinearLayout>
+                </LinearLayout>
 
-            <LinearLayout
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_marginTop="5dp"
                     android:gravity="center_vertical"
                     android:orientation="horizontal">
 
-                <TextView
+                    <TextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="20dp"
@@ -456,24 +440,23 @@
                         android:gravity="right"
                         android:text="湿度：" />
 
-                <TextView
+                    <TextView
                         android:id="@+id/case_external_humidity"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="8"
-                          />
+                        android:layout_weight="8" />
+
+                </LinearLayout>
 
             </LinearLayout>
 
-        </LinearLayout>
-
-        <LinearLayout
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:orientation="vertical">
 
-            <TextView
+                <TextView
                     android:layout_width="match_parent"
                     android:layout_height="30dp"
                     android:background="@color/bg_main_light_white"
@@ -481,14 +464,14 @@
                     android:paddingLeft="16dp"
                     android:text="设备电压" />
 
-            <LinearLayout
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="25dp"
                     android:layout_marginTop="5dp"
                     android:gravity="center_vertical"
                     android:orientation="horizontal">
 
-                <TextView
+                    <TextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="20dp"
@@ -496,23 +479,22 @@
                         android:gravity="right"
                         android:text="内部电量：" />
 
-                <TextView
+                    <TextView
                         android:id="@+id/internal_battery"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="8"
-                          />
+                        android:layout_weight="8" />
 
-            </LinearLayout>
+                </LinearLayout>
 
-            <LinearLayout
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_marginTop="5dp"
                     android:gravity="center_vertical"
                     android:orientation="horizontal">
 
-                <TextView
+                    <TextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="20dp"
@@ -520,24 +502,23 @@
                         android:gravity="right"
                         android:text="外部电压：" />
 
-                <TextView
+                    <TextView
                         android:id="@+id/external_battery"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="8"
-                          />
+                        android:layout_weight="8" />
+
+                </LinearLayout>
 
             </LinearLayout>
 
-        </LinearLayout>
-
-        <LinearLayout
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:orientation="vertical">
 
-            <TextView
+                <TextView
                     android:layout_width="match_parent"
                     android:layout_height="30dp"
                     android:background="@color/bg_main_light_white"
@@ -545,340 +526,391 @@
                     android:paddingLeft="16dp"
                     android:text="网络状态" />
 
-            <LinearLayout
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_marginTop="5dp"
                     android:gravity="center_vertical"
                     android:orientation="horizontal">
 
-                <TextView
+                    <TextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="20dp"
                         android:layout_weight="4"
                         android:gravity="right"
                         android:text="信号强度：" />
-                <ImageView
+
+                    <ImageView
                         android:id="@+id/img_signal_strength"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        />
+                        android:layout_height="wrap_content" />
 
-                <TextView
+                    <TextView
                         android:id="@+id/signal_strength"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="7.5"
                         android:layout_marginLeft="5dp"
-                        />
+                        android:layout_weight="7.5" />
 
-            </LinearLayout>
+                </LinearLayout>
 
-            <View
+                <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="@color/font_main"
-                    android:layout_marginTop="10dp"
                     android:layout_marginLeft="20dp"
-                    android:layout_marginRight="20dp"/>
-            <LinearLayout
+                    android:layout_marginTop="10dp"
+                    android:layout_marginRight="20dp"
+                    android:background="@color/font_main" />
+
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="30dp"
-                    android:gravity="center"
                     android:layout_marginLeft="20dp"
                     android:layout_marginRight="20dp"
+                    android:gravity="center"
                     android:orientation="horizontal">
-                <View
+
+                    <View
                         android:layout_width="1dp"
                         android:layout_height="match_parent"
-                        android:background="@color/font_main"/>
-                <TextView
+                        android:background="@color/font_main" />
+
+                    <TextView
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="4"
                         android:gravity="center"
                         android:text="数据中心" />
-                <View
+
+                    <View
                         android:layout_width="1dp"
                         android:layout_height="match_parent"
-                        android:background="@color/font_main"/>
-                <TextView
+                        android:background="@color/font_main" />
+
+                    <TextView
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="4"
                         android:gravity="center"
                         android:text="状态" />
-                <View
+
+                    <View
                         android:layout_width="1dp"
                         android:layout_height="match_parent"
-                        android:background="@color/font_main"/>
-                <TextView
+                        android:background="@color/font_main" />
+
+                    <TextView
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="4"
                         android:gravity="center"
                         android:text="已发送" />
-                <View
+
+                    <View
                         android:layout_width="1dp"
                         android:layout_height="match_parent"
-                        android:background="@color/font_main"/>
-                <TextView
+                        android:background="@color/font_main" />
+
+                    <TextView
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="4"
                         android:gravity="center"
                         android:text="未发送" />
-                <View
+
+                    <View
                         android:layout_width="1dp"
                         android:layout_height="match_parent"
-                        android:background="@color/font_main"/>
-                <TextView
+                        android:background="@color/font_main" />
+
+                    <TextView
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="4"
                         android:gravity="center"
                         android:text="在线率" />
-                <View
+
+                    <View
                         android:layout_width="1dp"
                         android:layout_height="match_parent"
-                        android:background="@color/font_main"/>
-            </LinearLayout>
-            <View
+                        android:background="@color/font_main" />
+                </LinearLayout>
+
+                <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="@color/font_main"
-                    android:layout_marginLeft="20dp"
-                    android:layout_marginRight="20dp"/>
-            <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="30dp"
-                    android:gravity="center"
                     android:layout_marginLeft="20dp"
                     android:layout_marginRight="20dp"
+                    android:background="@color/font_main" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="20dp"
+                    android:gravity="center"
                     android:orientation="horizontal">
-                <View
+
+                    <View
                         android:layout_width="1dp"
                         android:layout_height="match_parent"
-                        android:background="@color/font_main"/>
-                <TextView
+                        android:background="@color/font_main" />
+
+                    <TextView
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="4"
                         android:gravity="center"
                         android:text="1" />
-                <View
+
+                    <View
                         android:layout_width="1dp"
                         android:layout_height="match_parent"
-                        android:background="@color/font_main"/>
-                <TextView
+                        android:background="@color/font_main" />
+
+                    <TextView
                         android:id="@+id/link_one_status"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="4"
-                        android:gravity="center"
-                        />
-                <View
+                        android:gravity="center" />
+
+                    <View
                         android:layout_width="1dp"
                         android:layout_height="match_parent"
-                        android:background="@color/font_main"/>
-                <TextView
+                        android:background="@color/font_main" />
+
+                    <TextView
                         android:id="@+id/link_one_send_data"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="4"
                         android:gravity="center" />
-                <View
+
+                    <View
                         android:layout_width="1dp"
                         android:layout_height="match_parent"
-                        android:background="@color/font_main"/>
-                <TextView
+                        android:background="@color/font_main" />
+
+                    <TextView
                         android:id="@+id/link_one_unsend_data"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="4"
                         android:gravity="center" />
-                <View
+
+                    <View
                         android:layout_width="1dp"
                         android:layout_height="match_parent"
-                        android:background="@color/font_main"/>
-                <TextView
+                        android:background="@color/font_main" />
+
+                    <TextView
                         android:id="@+id/link_one_online_rate"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="4"
                         android:gravity="center" />
-                <View
+
+                    <View
                         android:layout_width="1dp"
                         android:layout_height="match_parent"
-                        android:background="@color/font_main"/>
-            </LinearLayout>
-            <View
+                        android:background="@color/font_main" />
+                </LinearLayout>
+
+                <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="@color/font_main"
-                    android:layout_marginLeft="20dp"
-                    android:layout_marginRight="20dp"/>
-            <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="30dp"
-                    android:gravity="center"
                     android:layout_marginLeft="20dp"
                     android:layout_marginRight="20dp"
+                    android:background="@color/font_main" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="20dp"
+                    android:gravity="center"
                     android:orientation="horizontal">
-                <View
+
+                    <View
                         android:layout_width="1dp"
                         android:layout_height="match_parent"
-                        android:background="@color/font_main"/>
-                <TextView
+                        android:background="@color/font_main" />
+
+                    <TextView
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="4"
                         android:gravity="center"
                         android:text="2" />
-                <View
+
+                    <View
                         android:layout_width="1dp"
                         android:layout_height="match_parent"
-                        android:background="@color/font_main"/>
-                <TextView
+                        android:background="@color/font_main" />
+
+                    <TextView
                         android:id="@+id/link_two_status"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="4"
                         android:gravity="center" />
-                <View
+
+                    <View
                         android:layout_width="1dp"
                         android:layout_height="match_parent"
-                        android:background="@color/font_main"/>
-                <TextView
+                        android:background="@color/font_main" />
+
+                    <TextView
                         android:id="@+id/link_two_send_data"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="4"
                         android:gravity="center" />
-                <View
+
+                    <View
                         android:layout_width="1dp"
                         android:layout_height="match_parent"
-                        android:background="@color/font_main"/>
-                <TextView
+                        android:background="@color/font_main" />
+
+                    <TextView
                         android:id="@+id/link_two_unsend_data"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="4"
-                        android:gravity="center"/>
-                <View
+                        android:gravity="center" />
+
+                    <View
                         android:layout_width="1dp"
                         android:layout_height="match_parent"
-                        android:background="@color/font_main"/>
-                <TextView
+                        android:background="@color/font_main" />
+
+                    <TextView
                         android:id="@+id/link_two_online_rate"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="4"
                         android:gravity="center" />
-                <View
+
+                    <View
                         android:layout_width="1dp"
                         android:layout_height="match_parent"
-                        android:background="@color/font_main"/>
-            </LinearLayout>
-            <View
+                        android:background="@color/font_main" />
+                </LinearLayout>
+
+                <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="@color/font_main"
-                    android:layout_marginLeft="20dp"
-                    android:layout_marginRight="20dp"/>
-            <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="30dp"
-                    android:gravity="center"
                     android:layout_marginLeft="20dp"
                     android:layout_marginRight="20dp"
+                    android:background="@color/font_main" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="20dp"
+                    android:gravity="center"
                     android:orientation="horizontal">
-                <View
+
+                    <View
                         android:layout_width="1dp"
                         android:layout_height="match_parent"
-                        android:background="@color/font_main"/>
-                <TextView
+                        android:background="@color/font_main" />
+
+                    <TextView
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="4"
                         android:gravity="center"
                         android:text="3" />
-                <View
+
+                    <View
                         android:layout_width="1dp"
                         android:layout_height="match_parent"
-                        android:background="@color/font_main"/>
-                <TextView
+                        android:background="@color/font_main" />
+
+                    <TextView
                         android:id="@+id/link_three_status"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="4"
                         android:gravity="center" />
-                <View
+
+                    <View
                         android:layout_width="1dp"
                         android:layout_height="match_parent"
-                        android:background="@color/font_main"/>
-                <TextView
+                        android:background="@color/font_main" />
+
+                    <TextView
                         android:id="@+id/link_three_send_data"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="4"
-                        android:gravity="center"/>
-                <View
+                        android:gravity="center" />
+
+                    <View
                         android:layout_width="1dp"
                         android:layout_height="match_parent"
-                        android:background="@color/font_main"/>
-                <TextView
+                        android:background="@color/font_main" />
+
+                    <TextView
                         android:id="@+id/link_three_unsend_data"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="4"
-                        android:gravity="center"/>
-                <View
+                        android:gravity="center" />
+
+                    <View
                         android:layout_width="1dp"
                         android:layout_height="match_parent"
-                        android:background="@color/font_main"/>
-                <TextView
+                        android:background="@color/font_main" />
+
+                    <TextView
                         android:id="@+id/link_three_online_rate"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="4"
                         android:gravity="center" />
-                <View
+
+                    <View
                         android:layout_width="1dp"
                         android:layout_height="match_parent"
-                        android:background="@color/font_main"/>
-            </LinearLayout>
-            <View
+                        android:background="@color/font_main" />
+                </LinearLayout>
+
+                <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="@color/font_main"
                     android:layout_marginLeft="20dp"
-                    android:layout_marginRight="20dp"/>
+                    android:layout_marginRight="20dp"
+                    android:background="@color/font_main" />
 
-        </LinearLayout>
+            </LinearLayout>
 
-        <LinearLayout
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:orientation="vertical">
 
-            <TextView
+                <TextView
                     android:layout_width="match_parent"
                     android:layout_height="30dp"
                     android:background="@color/bg_main_light_white"
                     android:gravity="center_vertical"
                     android:paddingLeft="16dp"
                     android:text="传感器数据" />
-            <LinearLayout
+
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_marginTop="5dp"
                     android:gravity="center_vertical"
                     android:orientation="horizontal">
 
-                <TextView
+                    <TextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="20dp"
@@ -886,15 +918,15 @@
                         android:gravity="right"
                         android:text="开关量类型：" />
 
-                <TextView
+                    <TextView
                         android:id="@+id/switch_type"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="8"
-                          />
+                        android:layout_weight="8" />
 
-            </LinearLayout>
-            <LinearLayout
+                </LinearLayout>
+
+                <LinearLayout
                     android:id="@+id/ll_rain"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -902,7 +934,7 @@
                     android:gravity="center_vertical"
                     android:orientation="horizontal">
 
-                <TextView
+                    <TextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="20dp"
@@ -910,15 +942,15 @@
                         android:gravity="right"
                         android:text="雨量值：" />
 
-                <TextView
+                    <TextView
                         android:id="@+id/rain_data"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="8"
-                          />
+                        android:layout_weight="8" />
 
-            </LinearLayout>
-            <LinearLayout
+                </LinearLayout>
+
+                <LinearLayout
                     android:id="@+id/ll_alarm"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -926,7 +958,7 @@
                     android:gravity="center_vertical"
                     android:orientation="horizontal">
 
-                <TextView
+                    <TextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="20dp"
@@ -934,27 +966,29 @@
                         android:gravity="right"
                         android:text="断线报警器：" />
 
-                <TextView
+                    <TextView
                         android:id="@+id/alarm_status"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="8"
-                          />
+                        android:layout_weight="8" />
 
-            </LinearLayout>
-            <LinearLayout
+                </LinearLayout>
+
+                <LinearLayout
                     android:id="@+id/ll_sensor"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
-                <View
+
+                    <View
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
-                        android:background="@color/font_main"
-                        android:layout_marginTop="10dp"
                         android:layout_marginLeft="50dp"
-                        android:layout_marginRight="50dp"/>
-                <LinearLayout
+                        android:layout_marginTop="10dp"
+                        android:layout_marginRight="50dp"
+                        android:background="@color/font_main" />
+
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="40dp"
                         android:layout_marginLeft="50dp"
@@ -963,12 +997,12 @@
                         android:orientation="horizontal">
 
 
-                    <View
+                        <View
                             android:layout_width="1dp"
                             android:layout_height="match_parent"
                             android:background="@color/font_main" />
 
-                    <TextView
+                        <TextView
                             android:id="@+id/tv_channel_number"
                             android:layout_width="0px"
                             android:layout_height="match_parent"
@@ -980,11 +1014,12 @@
                             android:textColor="@color/black"
                             android:textSize="14sp" />
 
-                    <View
+                        <View
                             android:layout_width="1dp"
                             android:layout_height="match_parent"
                             android:background="@color/font_main" />
-                    <TextView
+
+                        <TextView
                             android:layout_width="0px"
                             android:layout_height="match_parent"
                             android:layout_weight="2.5"
@@ -995,11 +1030,12 @@
                             android:textColor="@color/black"
                             android:textSize="14sp" />
 
-                    <View
+                        <View
                             android:layout_width="1dp"
                             android:layout_height="match_parent"
                             android:background="@color/font_main" />
-                    <TextView
+
+                        <TextView
                             android:layout_width="0px"
                             android:layout_height="match_parent"
                             android:layout_weight="2.5"
@@ -1010,28 +1046,30 @@
                             android:textColor="@color/black"
                             android:textSize="14sp" />
 
-                    <View
+                        <View
                             android:layout_width="1dp"
                             android:layout_height="match_parent"
                             android:background="@color/font_main" />
-                </LinearLayout>
-                <View
+                    </LinearLayout>
+
+                    <View
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
-                        android:background="@color/font_main"
                         android:layout_marginLeft="50dp"
-                        android:layout_marginRight="50dp"/>
-                <androidx.recyclerview.widget.RecyclerView
+                        android:layout_marginRight="50dp"
+                        android:background="@color/font_main" />
+
+                    <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/sensor_recycle"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="50dp"
-                        android:layout_marginRight="50dp"/>
+                        android:layout_marginRight="50dp" />
+                </LinearLayout>
+
+
             </LinearLayout>
-
-
         </LinearLayout>
-    </LinearLayout>
 
-</ScrollView>
+    </ScrollView>
 </com.shmedo.mcloudapp.views.VerticalSwipeRefreshLayout>
