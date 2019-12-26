@@ -21,7 +21,7 @@ import java.util.List;
  */
 public class UpdataManagerUtil {
 
-    public static void requestPermissionForInstallPackage(final Activity activity) {
+    public static void requestPermissionForInstallPackage(final Activity activity,String tag) {
         if (!FileUtils.externalAvailable()) {
             new AlertDialog.Builder(activity)
                     .setTitle("提示")
@@ -43,8 +43,12 @@ public class UpdataManagerUtil {
                 .onGranted(new Action<List<String>>() {
                     @Override
                     public void onAction(List<String> data) {
-                        UpgradeVersion();
-//                        upDataVersion();
+//
+                        if (tag.equals("back")){
+                            upDataVersion();
+                        }else if (tag.equals("notBack")){
+                            UpgradeVersion();
+                        }
                     }
                 })
                 .onDenied(new Action<List<String>>() {
@@ -63,9 +67,10 @@ public class UpdataManagerUtil {
             new PgyUpdateManager.Builder()
                     .setForced(false)                //设置是否强制提示更新
                     // v3.0.4+ 以上同时可以在官网设置强制更新最高低版本；网站设置和代码设置一种情况成立则提示强制更新
-                    .setUserCanRetry(false)         //失败后是否提示重新下载
-                    .setDeleteHistroyApk(false)     // 检查更新前是否删除本地历史 Apk， 默认为true
+                    .setUserCanRetry(true)         //失败后是否提示重新下载
+                    .setDeleteHistroyApk(true)     // 检查更新前是否删除本地历史 Apk， 默认为true
                     .register();
+
         } catch (Exception e) {
             PgyCrashManager.reportCaughtException(e);
         }
@@ -81,6 +86,7 @@ public class UpdataManagerUtil {
                     public void onNoUpdateAvailable() {
                         //没有更新是回调此方法
                         Log.d("pgyer", "there is no new version");
+                        ToastUtils.show("当前已是最新版本");
                     }
 
                     @Override

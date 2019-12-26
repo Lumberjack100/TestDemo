@@ -168,7 +168,7 @@ public class AdvanceSetFragment extends BaseFragment {
         Button btnRestartSystem = (Button) mMaterialDialog.findViewById(R.id.btn_restart_system);
 
         imgPosition.setOnClickListener(view -> {
-            LocationUtils.getInstance().startLocalService();
+            LocationUtils.getInstance().getPositionPermission(activity);
         });
 
         btnRestartSystem.setOnClickListener(view -> {
@@ -185,14 +185,18 @@ public class AdvanceSetFragment extends BaseFragment {
                 return;
             }
             ToastUtils.show("位置信息同步成功");
+            KeyBordUtils.hideSoftKeyboard(etPositionInfo);
             mMaterialDialog.dismiss();
             mMaterialDialog = null;
             mBuilder = null;
+            LocationUtils.getInstance().stopLocalService();
         });
         btnCancelRestart.setOnClickListener(view -> {
+            KeyBordUtils.hideSoftKeyboard(etPositionInfo);
             mMaterialDialog.dismiss();
             mMaterialDialog = null;
             mBuilder = null;
+            LocationUtils.getInstance().stopLocalService();
         });
 
     }

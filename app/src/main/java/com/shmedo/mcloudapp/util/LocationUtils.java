@@ -1,15 +1,29 @@
 package com.shmedo.mcloudapp.util;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.text.TextUtils;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import com.amap.api.location.AMapLocation;
 import com.amap.api.location.AMapLocationClient;
 import com.amap.api.location.AMapLocationClientOption;
 import com.amap.api.location.AMapLocationListener;
 import com.hjq.toast.ToastUtils;
 import com.shmedo.mcloudapp.MCloudApp;
+import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.entity.SyncPositionBean;
+import com.shmedo.mcloudapp.ui.activity.ConfigDASActivity;
+import com.shmedo.mcloudapp.util.permission.RuntimeRationale;
+import com.yanzhenjie.permission.Action;
+import com.yanzhenjie.permission.AndPermission;
+import com.yanzhenjie.permission.runtime.Permission;
 import org.greenrobot.eventbus.EventBus;
 import timber.log.Timber;
+
+import java.util.List;
 
 /**
  * 项目名：  mCloudapp
@@ -31,6 +45,29 @@ public class LocationUtils {
         return LocationHolder.INSTANCE;
     }
 
+
+    public void getPositionPermission(ConfigDASActivity activity){
+        AndPermission.with(activity)
+                .runtime()
+                .permission(Permission.ACCESS_FINE_LOCATION,Permission.ACCESS_COARSE_LOCATION)
+                .rationale(new RuntimeRationale())
+                .onGranted(new Action<List<String>>() {
+                    @Override
+                    public void onAction(List<String> permissions) {
+                        startLocalService();
+                    }
+                })
+                .onDenied(new Action<List<String>>() {
+                    @Override
+                    public void onAction(@NonNull List<String> permissions) {
+
+                        if (AndPermission.hasAlwaysDeniedPermission(activity, permissions)) {
+                            showSettingDialog(activity, permissions);
+                        }
+                    }
+                })
+                .start();
+    }
     public void startLocalService() {
         //初始化定位
         mLocationClient = new AMapLocationClient(MCloudApp.getContext());
@@ -60,6 +97,7 @@ public class LocationUtils {
 //                    locationBean.setLatitude(String.valueOf(LngUtils.decimalSix(location.getLatitude())));
 //                    EventBus.getDefault().post(locationBean);
                 } else {
+                    ToastUtils.show("定位失败");
                     Timber.i( "定位失败\n错误码：" + location.getErrorCode()
                             + "\n错误信息:" + location.getErrorInfo()
                             + "\n错误描述:" + location.getLocationDetail());
@@ -102,4 +140,28 @@ public class LocationUtils {
         mOption.setGeoLanguage(AMapLocationClientOption.GeoLanguage.DEFAULT);//可选，设置逆地理信息的语言，默认值为默认语言（根据所在地区选择语言）
         return mOption;
     }
+
+
+    public void showSettingDialog(ConfigDASActivity context, final List<String> permissions) {
+        List<String> permissionNames = Permission.transformText(context, permissions);
+        @SuppressLint({"StringFormatInvalid", "LocalSuppress"})
+        String message = context.getString(R.string.message_permission_always_failed, TextUtils.join("\n", permissionNames));
+
+        new AlertDialog.Builder(context).setCancelable(false)
+                .setTitle("提示")
+                .setMessage(message)
+                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                         ToastUtils.show("请同意定位权限");
+                    }
+                })
+                .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                    }
+                })
+                .show();
+    }
+
 }
