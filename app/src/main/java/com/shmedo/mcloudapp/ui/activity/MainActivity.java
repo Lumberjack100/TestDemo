@@ -62,6 +62,7 @@ import com.shmedo.mcloudapp.util.DensityUtil;
 import com.shmedo.mcloudapp.util.GsonFactory;
 import com.shmedo.mcloudapp.util.StartActivityUtil;
 import com.shmedo.mcloudapp.util.common.MapManagerUtil;
+import com.shmedo.mcloudapp.util.permission.UpdataManagerUtil;
 import com.shmedo.mcloudapp.views.LoadingDialog;
 
 import org.greenrobot.eventbus.Subscribe;
@@ -145,9 +146,9 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
         //在activity执行onCreate时执行mMapView.onCreate(savedInstanceState)，创建地图
         mMapView.onCreate(savedInstanceState);
 
+        UpdataManagerUtil.requestPermissionForInstallPackage(this,"notBack");//版本更新
         hidingConnectionView();
         initMap();
-//        UpdataManagerUtil.requestPermissionForInstallPackage(this);//版本更新
 
         searchDataUI = new SearchDataUI(this);
     }

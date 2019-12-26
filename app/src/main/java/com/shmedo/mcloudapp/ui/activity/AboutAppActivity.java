@@ -76,7 +76,7 @@ public class AboutAppActivity extends BaseActivity {
                 showFeedbackDialog();
                 break;
             case R.id.ll_userUpData:
-                UpdataManagerUtil.requestPermissionForInstallPackage(this);
+                UpdataManagerUtil.requestPermissionForInstallPackage(this,"back");
                 break;
         }
     }
