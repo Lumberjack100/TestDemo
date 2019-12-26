@@ -1,5 +1,6 @@
 package com.shmedo.mcloudapp.ui.activity;
 
+import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -26,6 +27,7 @@ import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.adapter.WifiListAdapter;
 import com.shmedo.mcloudapp.entity.WifiBean;
 import com.shmedo.mcloudapp.entity.event.WifiEvent;
+import com.shmedo.mcloudapp.util.ActivityCollector;
 import com.shmedo.mcloudapp.util.AppContants;
 import com.shmedo.mcloudapp.util.StringUtil;
 import com.shmedo.mcloudapp.util.WifiSupport;
@@ -33,6 +35,7 @@ import com.shmedo.mcloudapp.views.WifiLinkDialog;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -55,7 +58,8 @@ public class WifiConnectionActivity extends AppCompatActivity {
     @BindView(R.id.LL_close)
     LinearLayout mLLClose;
 
-    private ProgressBar mPbWifiLoading;
+    @BindView(R.id.pb_wifi_loading)
+    ProgressBar mPbWifiLoading;
 
     private RecyclerView mRecycleListWifi;
 
@@ -83,8 +87,9 @@ public class WifiConnectionActivity extends AppCompatActivity {
         requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
         setContentView(R.layout.activity_wifi_list);
         ButterKnife.bind(this);
-        //setResult(Activity.RESULT_CANCELED);
-        mPbWifiLoading = (ProgressBar) this.findViewById(R.id.pb_wifi_loading);
+        WeakReference<Activity> weakRefActivity = new WeakReference<>(this);
+        ActivityCollector.add(weakRefActivity);
+
         initView();
     }
 
