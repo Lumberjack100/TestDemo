@@ -259,7 +259,7 @@ public class LoginActivity extends BaseActivity
             case R.id.tv_registered:
                 //用户注册
 //                ToastUtils.show("用户注册");
-                UpdataManagerUtil.requestPermissionForInstallPackage(LoginActivity.this,"notBack");
+                UpdataManagerUtil.requestPermissionForInstallPackage(LoginActivity.this,false);
                 break;
 
             case R.id.tv_forgot_password:
