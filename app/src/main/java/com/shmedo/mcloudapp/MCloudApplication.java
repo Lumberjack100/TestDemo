@@ -13,6 +13,7 @@ import com.pgyersdk.crash.PgyCrashManager;
 import com.shmedo.mcloudapp.bluetooth.MdBluetoothManager;
 import com.shmedo.mcloudapp.logging.AppCrashHandler;
 import com.shmedo.mcloudapp.logging.CrashReportingTree;
+import com.tencent.bugly.crashreport.CrashReport;
 import com.tencent.mmkv.MMKV;
 
 import java.util.Objects;
@@ -39,7 +40,7 @@ public class MCloudApplication extends Application {
         //初始化facebook.stetho
         //AppInit.init(this);
         AppCrashHandler.getInstance(this);// crash handler
-
+        CrashReport.initCrashReport(getApplicationContext(), "6b0340b2b8", false);
         //基于 mmap 的高性能通用 key-value 组件
         MMKV.initialize(this);
 

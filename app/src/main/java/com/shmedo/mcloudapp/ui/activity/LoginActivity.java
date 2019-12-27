@@ -28,6 +28,7 @@ import com.shmedo.mcloudapp.views.ClearEditText;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import com.tencent.bugly.crashreport.CrashReport;
 import de.hdodenhof.circleimageview.CircleImageView;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
@@ -197,6 +198,7 @@ public class LoginActivity extends BaseActivity
 
             case R.id.server_config:
                 //配置服务器
+//                CrashReport.testJavaCrash();
                 StartActivityUtil.comeOnBaby(this, ServiceConfigActivity.class);
                 break;
 

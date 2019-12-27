@@ -148,6 +148,7 @@ dependencies {
     implementation 'com.pgyersdk:sdk:3.0.10'
     //AndPermission
     implementation 'com.yanzhenjie:permission:2.0.3'
+    implementation 'com.tencent.bugly:crashreport:2.8.6'
 
     testImplementation 'junit:junit:4.12'
 //    androidTestImplementation 'com.android.support.test:runner:1.0.2'

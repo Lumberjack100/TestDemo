@@ -30,10 +30,7 @@ import com.shmedo.mcloudapp.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.entity.event.NetworkChangeEvent;
 import com.shmedo.mcloudapp.receiver.NetworkConnectChangedReceiver;
-import com.shmedo.mcloudapp.util.ActivityCollector;
-import com.shmedo.mcloudapp.util.KeyBordUtils;
-import com.shmedo.mcloudapp.util.NetworkUtils;
-import com.shmedo.mcloudapp.util.XPermissionUtils;
+import com.shmedo.mcloudapp.util.*;
 import com.shmedo.mcloudapp.util.common.HandleBackUtil;
 
 import org.greenrobot.eventbus.EventBus;
@@ -78,6 +75,10 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && UiUtils.isTranslucentOrFloating(this)) {
+            UiUtils.fixOrientation(this);
+            Timber.i("===api 26 全屏横竖屏切换 crash=");
+        }
         super.onCreate(savedInstanceState);
 
         weakRefActivity = new WeakReference<Activity>(this);
@@ -91,7 +92,14 @@ public abstract class BaseActivity extends AppCompatActivity {
         registerNetWorkChangReceiver();
     }
 
-
+    @Override
+    public void setRequestedOrientation(int requestedOrientation) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && UiUtils.isTranslucentOrFloating(this)) {
+            Timber.i("===api 26 全屏横竖屏切换 crash");
+            return;
+        }
+        super.setRequestedOrientation(requestedOrientation);
+    }
     /**
      * 沉浸式状态栏
      */
