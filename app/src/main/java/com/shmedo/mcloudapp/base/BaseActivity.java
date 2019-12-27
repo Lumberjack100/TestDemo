@@ -83,9 +83,7 @@ public abstract class BaseActivity extends AppCompatActivity {
 
         weakRefActivity = new WeakReference<Activity>(this);
         ActivityCollector.add(weakRefActivity);
-        //StatusUtil.StatusBarLightMode(this);
         setContentView(initContentView());
-        initState();
         ButterKnife.bind(this);
 
         initTipView();//初始化提示View
@@ -100,24 +98,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         }
         super.setRequestedOrientation(requestedOrientation);
     }
-    /**
-     * 沉浸式状态栏
-     */
-    public void initState() {
-        //设置了Theme带ActionBar的Activity，左上角显示返回按钮
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            if (Build.VERSION.SDK_INT >= 21) {
-                getSupportActionBar().setElevation(0);
-            }
-        }
-        /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            //透明状态栏
-            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-            //透明导航栏
-            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
-        }*/
-    }
+
 
     /**
      * Use a Toolbar as an Action Bar

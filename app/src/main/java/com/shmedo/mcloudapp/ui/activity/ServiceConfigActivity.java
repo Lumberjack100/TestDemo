@@ -1,8 +1,10 @@
 package com.shmedo.mcloudapp.ui.activity;
 
 import android.os.Bundle;
-import androidx.annotation.Nullable;
 import android.widget.Button;
+import android.widget.TextView;
+
+import androidx.annotation.Nullable;
 
 import com.hjq.toast.ToastUtils;
 import com.shmedo.mcloudapp.MCloudApp;
@@ -31,6 +33,9 @@ import timber.log.Timber;
  * 描述：    配置服务器
  */
 public class ServiceConfigActivity extends BaseActivity {
+    @BindView(R.id.toolbar_title)
+    TextView mToolbarTitle;
+
     @BindView(R.id.etServiceAddress)
     ClearEditText mEtServiceAddress;
 
@@ -50,7 +55,8 @@ public class ServiceConfigActivity extends BaseActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        setToolBar(R.id.toolbar);
+        mToolbarTitle.setText("配置服务器");
         initServiceAddress();
     }
 

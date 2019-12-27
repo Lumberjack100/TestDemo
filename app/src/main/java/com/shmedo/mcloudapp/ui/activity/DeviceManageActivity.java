@@ -4,13 +4,14 @@ import android.Manifest;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.google.gson.reflect.TypeToken;
 import com.hjq.toast.ToastUtils;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
@@ -33,7 +34,11 @@ import com.shmedo.mcloudapp.entity.parameter.SystemParameter;
 import com.shmedo.mcloudapp.model.BaseObserver;
 import com.shmedo.mcloudapp.model.MDRetrofit;
 import com.shmedo.mcloudapp.model.common.CommonVariable;
-import com.shmedo.mcloudapp.util.*;
+import com.shmedo.mcloudapp.util.AmapUtil;
+import com.shmedo.mcloudapp.util.ApiName;
+import com.shmedo.mcloudapp.util.DaoManager;
+import com.shmedo.mcloudapp.util.GsonFactory;
+import com.shmedo.mcloudapp.util.XPermissionUtils;
 import com.shmedo.mcloudapp.views.DeviceSensorDialog;
 import com.shmedo.mcloudapp.views.DividerItemDecoration;
 import com.shmedo.mcloudapp.views.EmptyDataView;
@@ -58,6 +63,8 @@ import timber.log.Timber;
  * 描述：    设备管理页面
  */
 public class DeviceManageActivity extends BaseActivity implements OnRefreshListener, OnRefreshLoadMoreListener {
+    @BindView(R.id.toolbar_title)
+    TextView mToolbarTitle;
 
     @BindView(R.id.recycler_system)
     RecyclerView mRecyclerSystem;
@@ -87,7 +94,8 @@ public class DeviceManageActivity extends BaseActivity implements OnRefreshListe
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        setToolBar(R.id.toolbar);
+        mToolbarTitle.setText("设备管理");
         initView();
         getProjectList();
         //获取设备列表

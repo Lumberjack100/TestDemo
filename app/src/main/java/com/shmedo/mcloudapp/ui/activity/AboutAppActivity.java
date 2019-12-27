@@ -1,23 +1,15 @@
 package com.shmedo.mcloudapp.ui.activity;
 
-import android.Manifest;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import butterknife.BindView;
-import butterknife.OnClick;
+
 import com.hjq.toast.ToastUtils;
 import com.pgyersdk.crash.PgyCrashManager;
 import com.pgyersdk.feedback.PgyerFeedbackManager;
-import com.pgyersdk.update.DownloadFileListener;
-import com.pgyersdk.update.PgyUpdateManager;
-import com.pgyersdk.update.UpdateManagerListener;
-import com.pgyersdk.update.javabean.AppBean;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.base.BaseActivity;
 import com.shmedo.mcloudapp.util.permission.Permission;
@@ -28,6 +20,9 @@ import com.yanzhenjie.permission.AndPermission;
 
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.OnClick;
+
 /**
  * 项目名：  mCloudapp
  * 包名：    com.shmedo.mcloudapp.ui.activity
@@ -36,21 +31,30 @@ import java.util.List;
  * 描述：    关于app
  */
 public class AboutAppActivity extends BaseActivity {
+    @BindView(R.id.toolbar_title)
+    TextView mToolbarTitle;
 
     @BindView(R.id.tv_version)
     TextView mTvVersion;
+
     @BindView(R.id.ll_userAdvice)
     LinearLayout mLlUserAdvice;
-    @BindView(R.id.ll_userUpData) LinearLayout mLlUserUpData;
+
+    @BindView(R.id.ll_userUpData)
+    LinearLayout mLlUserUpData;
 
 
-    @Override protected int initContentView() {
+    @Override
+    protected int initContentView() {
         return R.layout.activity_about;
     }
 
 
-    @Override protected void onCreate(Bundle savedInstanceState) {
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setToolBar(R.id.toolbar);
+        mToolbarTitle.setText("关于");
         initData();
     }
 
@@ -69,14 +73,14 @@ public class AboutAppActivity extends BaseActivity {
     }
 
 
-    @OnClick({ R.id.ll_userAdvice, R.id.ll_userUpData })
+    @OnClick({R.id.ll_userAdvice, R.id.ll_userUpData})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.ll_userAdvice:
                 showFeedbackDialog();
                 break;
             case R.id.ll_userUpData:
-                UpdataManagerUtil.requestPermissionForInstallPackage(this,true);
+                UpdataManagerUtil.requestPermissionForInstallPackage(this, true);
                 break;
         }
     }
@@ -88,7 +92,7 @@ public class AboutAppActivity extends BaseActivity {
     private void showFeedbackDialog() {
         AndPermission.with(this)
                 .runtime()
-                .permission(Permission.Group.STORAGE,Permission.Group.MICROPHONE)
+                .permission(Permission.Group.STORAGE, Permission.Group.MICROPHONE)
                 .rationale(new RuntimeRationale())
                 .onGranted(new Action<List<String>>() {
                     @Override
@@ -111,7 +115,7 @@ public class AboutAppActivity extends BaseActivity {
                             //PgyerDialog.setDialogTitleBackgroundColor("#03A9F4");
                             //PgyFeedback.getInstance().showDialog(AboutAppActivity.this);
                         } catch (Exception ex) {
-                            PgyCrashManager.reportCaughtException( ex);
+                            PgyCrashManager.reportCaughtException(ex);
                         }
                     }
                 })
@@ -123,9 +127,6 @@ public class AboutAppActivity extends BaseActivity {
                 }).start();
 
     }
-
-
-
 
 
     @Override

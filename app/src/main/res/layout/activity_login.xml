@@ -10,23 +10,25 @@
         android:id="@+id/rl_user_photo"
         android:layout_width="match_parent"
         android:layout_height="200dp">
-            <de.hdodenhof.circleimageview.CircleImageView
-                android:id="@+id/user_image"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:src="@drawable/userphoto"
-                android:layout_centerInParent="true"
-                app:civ_border_color="@color/app_color_blue"
-                app:civ_border_width="2dp" />
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/user_image"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_centerInParent="true"
+            android:src="@drawable/userphoto"
+            app:civ_border_color="@color/app_color_blue"
+            app:civ_border_width="2dp" />
+
         <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/user_image"
-                 android:layout_centerHorizontal="true"
-                android:layout_marginTop="20dp"
-                android:text="米易通"
-                android:textColor="@color/app_color_blue"
-                android:textSize="20sp" />
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/user_image"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="20dp"
+            android:text="米易通"
+            android:textColor="@color/app_color_blue"
+            android:textSize="20sp" />
 
 
         <ImageView
@@ -54,14 +56,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/rl_user_photo"
-        android:background="@color/white"
         android:layout_marginTop="30dp"
+        android:background="@color/white"
         android:orientation="vertical">
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="60dp"
-            >
+            android:layout_height="60dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -126,8 +127,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="45dp"
-                android:layout_marginRight="45dp"
                 android:layout_marginTop="20dp"
+                android:layout_marginRight="45dp"
                 android:background="@color/white"
                 android:orientation="vertical">
 
@@ -203,7 +204,7 @@
                     android:background="@drawable/btn_blue_selector"
                     android:text="登 录"
                     android:textColor="@color/white"
-                    android:textSize="16dp" />
+                    android:textSize="@dimen/text_size_16" />
             </LinearLayout>
 
             <LinearLayout
@@ -211,11 +212,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="45dp"
+                android:layout_marginTop="20dp"
                 android:layout_marginRight="45dp"
                 android:background="@color/white"
                 android:orientation="vertical"
-                android:layout_marginTop="20dp"
-                 android:visibility="gone">
+                android:visibility="gone">
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -248,11 +249,9 @@
                 </RelativeLayout>
 
 
-
                 <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    >
+                    android:layout_height="wrap_content">
 
                     <com.shmedo.mcloudapp.views.ClearEditText
                         android:id="@+id/login_phone_password"
@@ -263,9 +262,9 @@
                         android:hint="@string/login_input_code_hint"
                         android:inputType="numberPassword"
                         android:padding="16dp"
+                        android:paddingRight="50dp"
                         android:scrollHorizontally="true"
                         android:singleLine="true"
-                            android:paddingRight="50dp"
                         android:textColorHint="@color/gray_80666666"
                         android:textSize="14sp" />
 
@@ -314,7 +313,7 @@
             android:layout_marginTop="20dp"
             android:layout_marginRight="45dp"
             android:orientation="horizontal"
-                android:visibility="gone">
+            android:visibility="gone">
 
             <TextView
                 android:id="@+id/tv_registered"
@@ -329,10 +328,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
-                android:visibility="invisible"
                 android:text="游客登录"
                 android:textColor="@color/app_color_blue_2"
-                android:textSize="14sp" />
+                android:textSize="14sp"
+                android:visibility="invisible" />
 
             <TextView
                 android:id="@+id/tv_forgot_password"
@@ -346,16 +345,14 @@
     </LinearLayout>
 
 
-
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_marginBottom="15dp"
-            android:gravity="center"
-            android:text="@string/login_medo_copyright"
-            android:textColor="@color/colorPrimary"
-            android:textSize="15sp" />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="15dp"
+        android:gravity="center"
+        android:text="@string/login_medo_copyright"
+        android:textColor="@color/colorPrimary"
+        android:textSize="15sp" />
 
 </RelativeLayout>

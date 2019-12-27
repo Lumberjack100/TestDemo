@@ -6,7 +6,7 @@
     <string name="login_input_phone_hint">请输入手机号</string>
     <string name="login_input_code_hint">请输入验证码</string>
     <string name="reSend">重新发送</string>
-    <string name="service_set_address">请输入服务器地址/域名：端口 \n 如：192.168.1.101:8081 \n mCloud.shmedo.cn:9901</string>
+    <string name="service_set_address">请输入服务器地址/域名：端口\n如：192.168.1.101:8081\nmCloud.shmedo.cn:9901</string>
     <string name="service_address">service_address</string>
     <string name="agent_addr">地址：%1$s</string>
     <string name="exit_login_tip">确定退出登录吗？</string>

@@ -7,6 +7,8 @@
     android:background="@color/bg_main_light_white"
     android:orientation="vertical">
 
+    <include layout="@layout/activity_support_actionbar_toolbar" />
+
     <LinearLayout
         android:id="@+id/ll_change_photo"
         android:layout_width="match_parent"

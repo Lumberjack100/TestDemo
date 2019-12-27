@@ -6,14 +6,14 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -27,7 +27,16 @@ import com.shmedo.mcloudapp.entity.parameter.SetUserHeadPhotoParameter;
 import com.shmedo.mcloudapp.model.BaseObserver;
 import com.shmedo.mcloudapp.model.MDRetrofit;
 import com.shmedo.mcloudapp.model.common.CommonVariable;
-import com.shmedo.mcloudapp.util.*;
+import com.shmedo.mcloudapp.util.ActivityCollector;
+import com.shmedo.mcloudapp.util.ApiName;
+import com.shmedo.mcloudapp.util.DaoManager;
+import com.shmedo.mcloudapp.util.FileProviderUtils;
+import com.shmedo.mcloudapp.util.FileUtil;
+import com.shmedo.mcloudapp.util.GlideUtils;
+import com.shmedo.mcloudapp.util.GsonFactory;
+import com.shmedo.mcloudapp.util.ImageUtil;
+import com.shmedo.mcloudapp.util.PhotoUtil;
+import com.shmedo.mcloudapp.util.XPermissionUtils;
 import com.shmedo.mcloudapp.views.LoadingDialog;
 import com.shmedo.mcloudapp.views.MyMenu;
 
@@ -50,6 +59,9 @@ import okhttp3.RequestBody;
  * 描述：    个人中心
  */
 public class UserInfoActivity extends BaseActivity {
+
+    @BindView(R.id.toolbar_title)
+    TextView mToolbarTitle;
 
     @BindView(R.id.circle_image)
     CircleImageView mCircleImage;
@@ -89,6 +101,8 @@ public class UserInfoActivity extends BaseActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setToolBar(R.id.toolbar);
+        mToolbarTitle.setText("我的");
         initData();
         initView();
     }

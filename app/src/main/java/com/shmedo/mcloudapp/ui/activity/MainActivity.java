@@ -136,7 +136,7 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
 
     @Override
     protected int initContentView() {
-        return R.layout.main;
+        return R.layout.activity_main;
     }
 
 

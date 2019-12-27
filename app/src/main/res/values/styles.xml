@@ -1,34 +1,24 @@
 <resources>
-
-    <!-- application theme. -->
-    <style name="AppThemeBase" parent="Theme.AppCompat.Light.DarkActionBar">
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- actionbar颜色-->
         <item name="colorPrimary">@color/colorPrimary</item>
         <!-- 状态栏颜色-->
         <item name="colorPrimaryDark">@color/colorPrimary</item>
         <item name="colorAccent">@color/colorPrimary</item>
         <item name="android:windowBackground">@color/font_main</item>
-        <!-- 去掉actionbar-->
-        <item name="windowActionBar">false</item>
-        <item name="windowNoTitle">true</item>
+    </style>
+
+    <!-- 闪屏页主题 -->
+    <style name="SplashTheme" parent="AppTheme">
         <!--Android冷启动白屏解析http://blog.csdn.net/guolin_blog/article/details/51019856-->
         <item name="android:windowIsTranslucent">true</item>
     </style>
 
-    <!--有ActionBar、Title的主题-->
-    <style name="AppThemeBar" parent="Theme.AppCompat.Light.DarkActionBar">
-        <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimary</item>
-        <item name="colorAccent">@color/colorPrimary</item>
-        <item name="android:textColorPrimary">@color/font_main</item>
-        <item name="android:actionBarSize">@dimen/nav_bar_height</item>
-        <item name="android:windowIsTranslucent">true
-        </item>   <!-- 注意：设置为true时,Activity A 启动 Activity B 时,A 的 onStop方法不会回调-->
-    </style>
-
-    <style name="AppThemeNoTitle" parent="AppThemeBase">
-        <item name="android:windowIsTranslucent">false</item>
+    <!-- ScanActivity 用到的 theme. -->
+    <style name="ScanActivityTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">#2d2e2a</item>
+        <item name="colorPrimaryDark">#2d2e2a</item>
     </style>
 
 
@@ -134,11 +124,6 @@
         <item name="android:padding">5dp</item>
     </style>
 
-    <!-- ScanActivity 用到的 theme. -->
-    <style name="ScanActivityTheme" parent="Theme.AppCompat.Light.NoActionBar">
-        <item name="colorPrimary">#2d2e2a</item>
-        <item name="colorPrimaryDark">#2d2e2a</item>
-    </style>
 
     <!--SwitchButton控件样式-->
     <style name="SwitchButtonStyle">

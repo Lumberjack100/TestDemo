@@ -6,7 +6,7 @@
     android:fitsSystemWindows="true"
     android:orientation="vertical">
 
-    <include layout="@layout/activity_device_toolbar" />
+    <include layout="@layout/activity_support_actionbar_toolbar" />
 
     <com.shmedo.mcloudapp.views.MyWebView
         android:id="@+id/mWebView"
