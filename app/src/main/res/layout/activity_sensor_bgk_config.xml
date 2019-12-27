@@ -11,12 +11,12 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="20dp"
         android:orientation="horizontal">
 
         <LinearLayout
             android:layout_width="0dp"
-            android:layout_height="130dp"
+            android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="2dp"
             android:layout_weight="1"
@@ -25,12 +25,12 @@
 
             <ImageView
                 android:id="@+id/iv_stay1"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:src="@drawable/das" />
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:src="@drawable/ic_sensor" />
 
             <LinearLayout
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
                 android:orientation="horizontal">
@@ -64,7 +64,7 @@
 
         <LinearLayout
             android:layout_width="0dp"
-            android:layout_height="130dp"
+            android:layout_height="wrap_content"
             android:layout_marginLeft="2dp"
             android:layout_marginRight="2dp"
             android:layout_weight="1"
@@ -73,12 +73,12 @@
 
             <ImageView
                 android:id="@+id/iv_stay2"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:src="@drawable/das" />
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:src="@drawable/ic_sensor" />
 
             <LinearLayout
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
                 android:orientation="horizontal">
@@ -112,7 +112,7 @@
 
         <LinearLayout
             android:layout_width="0dp"
-            android:layout_height="130dp"
+            android:layout_height="wrap_content"
             android:layout_marginLeft="2dp"
             android:layout_marginRight="2dp"
             android:layout_weight="1"
@@ -121,12 +121,12 @@
 
             <ImageView
                 android:id="@+id/iv_stay3"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:src="@drawable/das" />
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:src="@drawable/ic_sensor" />
 
             <LinearLayout
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
                 android:orientation="horizontal">
@@ -159,7 +159,7 @@
 
         <LinearLayout
             android:layout_width="0dp"
-            android:layout_height="130dp"
+            android:layout_height="wrap_content"
             android:layout_marginLeft="2dp"
             android:layout_marginRight="10dp"
             android:layout_weight="1"
@@ -168,12 +168,12 @@
 
             <ImageView
                 android:id="@+id/iv_stay4"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:src="@drawable/das" />
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:src="@drawable/ic_sensor" />
 
             <LinearLayout
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
                 android:orientation="horizontal">
@@ -210,12 +210,12 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="20dp"
         android:orientation="horizontal">
 
         <LinearLayout
             android:layout_width="0dp"
-            android:layout_height="130dp"
+            android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="2dp"
             android:layout_weight="1"
@@ -224,12 +224,12 @@
 
             <ImageView
                 android:id="@+id/iv_stay5"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:src="@drawable/das" />
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:src="@drawable/ic_sensor" />
 
             <LinearLayout
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
                 android:orientation="horizontal">
@@ -263,7 +263,7 @@
 
         <LinearLayout
             android:layout_width="0dp"
-            android:layout_height="130dp"
+            android:layout_height="wrap_content"
             android:layout_marginLeft="2dp"
             android:layout_marginRight="2dp"
             android:layout_weight="1"
@@ -272,12 +272,12 @@
 
             <ImageView
                 android:id="@+id/iv_stay6"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:src="@drawable/das" />
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:src="@drawable/ic_sensor" />
 
             <LinearLayout
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
                 android:orientation="horizontal">
@@ -311,7 +311,7 @@
 
         <LinearLayout
             android:layout_width="0dp"
-            android:layout_height="130dp"
+            android:layout_height="wrap_content"
             android:layout_marginLeft="2dp"
             android:layout_marginRight="2dp"
             android:layout_weight="1"
@@ -320,12 +320,12 @@
 
             <ImageView
                 android:id="@+id/iv_stay7"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:src="@drawable/das" />
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:src="@drawable/ic_sensor" />
 
             <LinearLayout
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
                 android:orientation="horizontal">
@@ -359,7 +359,7 @@
 
         <LinearLayout
             android:layout_width="0dp"
-            android:layout_height="130dp"
+            android:layout_height="wrap_content"
             android:layout_marginLeft="2dp"
             android:layout_marginRight="10dp"
             android:layout_weight="1"
@@ -368,12 +368,12 @@
 
             <ImageView
                 android:id="@+id/iv_stay8"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:src="@drawable/das" />
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:src="@drawable/ic_sensor" />
 
             <LinearLayout
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
                 android:orientation="horizontal">

@@ -206,59 +206,7 @@ public class SenSorBGKConfigActivity extends BaseDeviceConnectActivity {
             return;
 
         CollectorModel collectorModel = CollectorModel.value(defaultCollectorSensorParamsInfoSub.getCollectorModel());
-        switch (collectorModel) {
-            case VW08:
-                collectorName = "采集器";
-                break;
-
-            case DS08:
-                collectorName = "裂缝计采集器";
-                break;
-
-            case HD08:
-                collectorName = "土壤湿度采集器";
-                break;
-
-            case CX08:
-                collectorName = "测斜仪采集器";
-                break;
-
-            case UDS08:
-                collectorName = "超声波采集器";
-                break;
-
-            case RD08:
-                collectorName = "雷达采集器";
-                break;
-
-            case SMC08:
-                collectorName = "墒情采集器";
-                break;
-
-            case TH08:
-                collectorName = "温湿度采集器";
-                break;
-
-            case DVWP:
-                collectorName = "数字式渗压计采集器";
-                break;
-
-            case QJY08:
-                collectorName = "倾角仪采集器";
-                break;
-
-            case CS08:
-                collectorName = "次声采集器";
-                break;
-
-            case VW01:
-                collectorName = "单通道采集器";
-                break;
-
-            default:
-                break;
-        }
-
+        collectorName = BlueResultParserUtil.getCollectorName(collectorModel);
         mToolbarTitle.setText(collectorName);
     }
 
@@ -345,67 +293,67 @@ public class SenSorBGKConfigActivity extends BaseDeviceConnectActivity {
     private void setSensorIconByType(String sensorType, ImageView imageView) {
         switch (sensorType) {
             case "02"://裂缝计 MPS-M-2000
-                imageView.setImageResource(R.drawable.das);
+                imageView.setImageResource(R.drawable.ic_sensor);
                 break;
 
             case "03"://土壤含水率 TR-3000
-                imageView.setImageResource(R.drawable.das);
+                imageView.setImageResource(R.drawable.ic_sensor);
                 break;
 
             case "04"://测斜仪 I-P-I
-                imageView.setImageResource(R.drawable.das);
+                imageView.setImageResource(R.drawable.ic_sensor);
                 break;
 
             case "06"://超声波物位计 HBRD908
-                imageView.setImageResource(R.drawable.das);
+                imageView.setImageResource(R.drawable.ic_sensor);
                 break;
 
             case "07"://雷达物位计 MH-A15R
-                imageView.setImageResource(R.drawable.das);
+                imageView.setImageResource(R.drawable.ic_sensor);
                 break;
 
             case "08"://墒情计 EP100G
-                imageView.setImageResource(R.drawable.das);
+                imageView.setImageResource(R.drawable.ic_sensor);
                 break;
 
             case "12"://温湿度计 CSW18
-                imageView.setImageResource(R.drawable.das);
+                imageView.setImageResource(R.drawable.ic_sensor);
                 break;
 
             case "15"://扬压力计 VWP-G
-                imageView.setImageResource(R.drawable.das);
+                imageView.setImageResource(R.drawable.ic_sensor);
                 break;
 
             case "16"://陆岩倾角仪 LY215
-                imageView.setImageResource(R.drawable.das);
+                imageView.setImageResource(R.drawable.ic_sensor);
                 break;
 
-            case "21"://21次声传感器
-                imageView.setImageResource(R.drawable.das);
+            case "21"://次声传感器
+                imageView.setImageResource(R.drawable.ic_sensor);
                 break;
 
             case "50"://基康渗压计 BGK-4500
-                imageView.setImageResource(R.drawable.das);
+                imageView.setImageResource(R.drawable.ic_sensor);
                 break;
 
             case "51"://葛南渗压计 VWP-03
-                imageView.setImageResource(R.drawable.das);
+                imageView.setImageResource(R.drawable.ic_sensor);
                 break;
 
             case "52"://葛南土压力盒 VWE-0.6
-                imageView.setImageResource(R.drawable.das);
+                imageView.setImageResource(R.drawable.ic_sensor);
                 break;
 
             case "53"://葛南应力计 VWS-15
-                imageView.setImageResource(R.drawable.das);
+                imageView.setImageResource(R.drawable.ic_sensor);
                 break;
 
             case "54"://葛南无应力计 VWS-15M
-                imageView.setImageResource(R.drawable.das);
+                imageView.setImageResource(R.drawable.ic_sensor);
                 break;
 
             case "55"://葛南位移计 VWD-100
-                imageView.setImageResource(R.drawable.das);
+                imageView.setImageResource(R.drawable.ic_sensor);
                 break;
 
             default:

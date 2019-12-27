@@ -3,13 +3,14 @@ package com.shmedo.mcloudapp.ui.activity.device;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import androidx.annotation.Nullable;
 
 import com.hjq.toast.ToastUtils;
 import com.shmedo.das.common.CollectorConfigInfo;
@@ -64,7 +65,7 @@ public class GeneralSettingActivity extends BaseDeviceConnectActivity {
     @BindView(R.id.btn_confirm_complete)
     Button mBtnConfirmComplete;
 
-    private String collectorType;
+    private String collectorModel;//采集器类型
 
     private String cmdCollectorAddress;//采集器地址
 
@@ -75,10 +76,10 @@ public class GeneralSettingActivity extends BaseDeviceConnectActivity {
     private String cmdCollectTime;//采集时间
 
 
-    public static void startActivity(Context context, CollectorConfigInfo collectorConfigInfo, String collectorType) {
+    public static void startActivity(Context context, CollectorConfigInfo collectorConfigInfo, String collectorModel) {
         Intent intent = new Intent(context, GeneralSettingActivity.class);
         intent.putExtra(Extras.PARAM_CONFIG_INFO, collectorConfigInfo);
-        intent.putExtra(Extras.COLLECTOR_TYPE, collectorType);
+        intent.putExtra(Extras.COLLECTOR_MODE, collectorModel);
 
         context.startActivity(intent);
     }
@@ -113,8 +114,8 @@ public class GeneralSettingActivity extends BaseDeviceConnectActivity {
             }
         }
 
-        if (intent.getExtras().containsKey(Extras.COLLECTOR_TYPE)) {
-            collectorType = intent.getStringExtra(Extras.COLLECTOR_TYPE);
+        if (intent.getExtras().containsKey(Extras.COLLECTOR_MODE)) {
+            collectorModel = intent.getStringExtra(Extras.COLLECTOR_MODE);
         }
     }
 
@@ -180,9 +181,9 @@ public class GeneralSettingActivity extends BaseDeviceConnectActivity {
         }
 
         cmdCollectorAddress = "##147" + collectorAddress + "\r\n";
-        cmdCalculatTime = "##163" + collectorType + StringUtil.formatStringFour(calculatTime) + "\r\n";
-        cmdStandbyTime = "##160" + collectorType + StringUtil.formatStringFour(standbyTime) + "\r\n";
-        cmdCollectTime = "##161" + collectorType + StringUtil.formatStringFive(collectTime) + "\r\n";
+        cmdCalculatTime = "##163" + collectorModel + StringUtil.formatStringFour(calculatTime) + "\r\n";
+        cmdStandbyTime = "##160" + collectorModel + StringUtil.formatStringFour(standbyTime) + "\r\n";
+        cmdCollectTime = "##161" + collectorModel + StringUtil.formatStringFive(collectTime) + "\r\n";
 
         startProgressRunnable("正在发送配置指令...", 10000);
         sendCommonCommandImmediately(cmdCollectorAddress);
