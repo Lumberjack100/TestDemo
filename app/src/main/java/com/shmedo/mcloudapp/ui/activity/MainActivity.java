@@ -146,7 +146,7 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
         //在activity执行onCreate时执行mMapView.onCreate(savedInstanceState)，创建地图
         mMapView.onCreate(savedInstanceState);
 
-        UpdataManagerUtil.requestPermissionForInstallPackage(this,"notBack");//版本更新
+        UpdataManagerUtil.requestPermissionForInstallPackage(this,false);//版本更新
         hidingConnectionView();
         initMap();
 

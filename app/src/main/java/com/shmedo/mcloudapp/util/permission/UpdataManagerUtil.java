@@ -21,7 +21,7 @@ import java.util.List;
  */
 public class UpdataManagerUtil {
 
-    public static void requestPermissionForInstallPackage(final Activity activity,String tag) {
+    public static void requestPermissionForInstallPackage(final Activity activity,boolean tag) {
         if (!FileUtils.externalAvailable()) {
             new AlertDialog.Builder(activity)
                     .setTitle("提示")
@@ -43,10 +43,9 @@ public class UpdataManagerUtil {
                 .onGranted(new Action<List<String>>() {
                     @Override
                     public void onAction(List<String> data) {
-//
-                        if (tag.equals("back")){
+                        if (tag){
                             upDataVersion();
-                        }else if (tag.equals("notBack")){
+                        }else{
                             UpgradeVersion();
                         }
                     }
