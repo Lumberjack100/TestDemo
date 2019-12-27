@@ -2,11 +2,34 @@ package com.shmedo.mcloudapp.util.bleutil;
 
 import android.util.Log;
 
-import com.shmedo.das.common.*;
+import com.shmedo.das.common.BaseConfigInfo;
+import com.shmedo.das.common.BreakAlarmStatusInfo;
+import com.shmedo.das.common.CollectorConfigInfo;
+import com.shmedo.das.common.CollectorSensorParamsInfo;
+import com.shmedo.das.common.DeviceLockStatusInfo;
+import com.shmedo.das.common.DigitalOsmometerFunctionInfo;
+import com.shmedo.das.common.GetAllSensorConfigInfo;
+import com.shmedo.das.common.QueryOsmometerParameterInfo;
+import com.shmedo.das.common.RainStationInfo;
+import com.shmedo.das.common.RebootDeviceInfo;
+import com.shmedo.das.common.SettingRainPrecisionInfo;
+import com.shmedo.das.common.SystemRunStateInfo;
+import com.shmedo.das.common.VersionMessageInfo;
+import com.shmedo.das.common.enumerate.CollectorModel;
 import com.shmedo.das.das.cmd.CommandResult;
 import com.shmedo.das.das.cmd.parser.GetAllSensorConfigParser;
 import com.shmedo.das.das.cmd.parser.ParseManager;
-import com.shmedo.mcloudapp.entity.ble.*;
+import com.shmedo.mcloudapp.entity.ble.BaseConfigInfoSub;
+import com.shmedo.mcloudapp.entity.ble.BreakAlarmStatusSub;
+import com.shmedo.mcloudapp.entity.ble.CollectorInfoSub;
+import com.shmedo.mcloudapp.entity.ble.DeviceLockStatusSub;
+import com.shmedo.mcloudapp.entity.ble.DigitalOsmometerFunctionSub;
+import com.shmedo.mcloudapp.entity.ble.QueryOsmometerParameterSubInfo;
+import com.shmedo.mcloudapp.entity.ble.RainStationSub;
+import com.shmedo.mcloudapp.entity.ble.RebootDeviceSub;
+import com.shmedo.mcloudapp.entity.ble.SettingRainPrecisionSub;
+import com.shmedo.mcloudapp.entity.ble.SystemRunStateSub;
+import com.shmedo.mcloudapp.entity.ble.VersionMessageSub;
 import com.shmedo.mcloudapp.entity.ble.collector.CollectorSensorParamsInfoSub;
 
 /**
@@ -329,29 +352,31 @@ public class BlueResultParserUtil {
 
     /**
      * 获取断线报警器状态
+     *
      * @param result
      * @return
      */
-    public static BreakAlarmStatusSub getBreakAlarmStatus(String result){
+    public static BreakAlarmStatusSub getBreakAlarmStatus(String result) {
         CommandResult<BreakAlarmStatusInfo> bean = ParseManager.getInstance().parse(result);
         BreakAlarmStatusInfo info = null;
         BreakAlarmStatusSub statusSub = new BreakAlarmStatusSub();
-        if (bean.isSuccess()){
+        if (bean.isSuccess()) {
             info = bean.getResult();
         } else {
             return statusSub;
         }
-        return setBreakAlarmInfo(info,statusSub);
+        return setBreakAlarmInfo(info, statusSub);
     }
 
     /**
      * 设置断线报警器状态
+     *
      * @param info
      * @param statusSub
      * @return
      */
     private static BreakAlarmStatusSub setBreakAlarmInfo(BreakAlarmStatusInfo info, BreakAlarmStatusSub statusSub) {
-        switch (info.getStatus()){
+        switch (info.getStatus()) {
             case OPEN:
                 statusSub.setAlarmStatus(1);
                 break;
@@ -398,7 +423,7 @@ public class BlueResultParserUtil {
                 rainStationSub.setRainStation("2");
                 break;
             }
-            case ALARM_OPEN:{
+            case ALARM_OPEN: {
                 rainStationSub.setRainStation("3");
                 break;
             }
@@ -597,5 +622,63 @@ public class BlueResultParserUtil {
         }
 
         return digtalInfo;
+    }
+
+    public static String getCollectorName(CollectorModel collectorModel) {
+        String collectorName = "";
+        switch (collectorModel) {
+            case VW08:
+                collectorName = "采集器";
+                break;
+
+            case DS08:
+                collectorName = "裂缝计采集器";
+                break;
+
+            case HD08:
+                collectorName = "土壤湿度采集器";
+                break;
+
+            case CX08:
+                collectorName = "测斜仪采集器";
+                break;
+
+            case UDS08:
+                collectorName = "超声波采集器";
+                break;
+
+            case RD08:
+                collectorName = "雷达采集器";
+                break;
+
+            case SMC08:
+                collectorName = "墒情采集器";
+                break;
+
+            case TH08:
+                collectorName = "温湿度采集器";
+                break;
+
+            case DVWP:
+                collectorName = "数字式渗压计采集器";
+                break;
+
+            case QJY08:
+                collectorName = "倾角仪采集器";
+                break;
+
+            case CS08:
+                collectorName = "次声采集器";
+                break;
+
+            case VW01:
+                collectorName = "单通道采集器";
+                break;
+
+            default:
+                break;
+        }
+
+        return collectorName;
     }
 }

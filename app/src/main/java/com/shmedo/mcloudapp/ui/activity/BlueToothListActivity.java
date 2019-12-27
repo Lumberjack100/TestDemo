@@ -240,8 +240,6 @@ public class BlueToothListActivity extends AppCompatActivity implements MultiIte
         }
 
         adapter.addItem(eventData.getNewDevice());
-//        deviceList.add(eventData.getNewDevice());
-//        adapter.notifyDataSetChanged();
 //        mRecyclerView.scrollToPosition(adapter.getItemCount() - 1);
     }
 

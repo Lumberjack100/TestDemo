@@ -135,7 +135,7 @@ public class MqttSettingActivity extends BaseDeviceConnectActivity implements Vi
 //        mTvCommunicationMethod = communicationMethod.findViewById(R.id.tv_device_state);
         spCommunicationmethod = communicationMethod.findViewById(R.id.spinner);
 
-        ((TextView) dataReport.findViewById(R.id.tv_config_name)).setText("数据上报:");
+        ((TextView) dataReport.findViewById(R.id.tv_config_name)).setText("数据上报(分钟):");
 //        mTvDataReport = dataReport.findViewById(R.id.tv_device_state);
         mCetDataReport = dataReport.findViewById(R.id.clear_edit_text);
         mCetDataReport.setHint("默认120分钟");

@@ -19,7 +19,7 @@
     <string name="input_sn"> 手动输入</string>
     <string name="securityNo">请输入新的设备授权码</string>
     <string name="select_device">选择一个设备连接</string>
-    <string name="tv_prompt">1台DAS可支持8只裂缝计接入，请根据实际接入的数量\n任意点击"启用"或"停用"，并对启用的裂缝计配置相应的参数。</string>
+    <string name="tv_prompt">1台DAS可支持8只传感器接入，请根据实际接入的数量\n任意点击"启用"或"停用"，并对启用的传感器配置相应的参数。</string>
     <string name="service_address_note1">MD-NET服务器地址：端口</string>
     <string name="service_address_note2">mCloud服务器地址：端口</string>
     <string name="input_server_address_hint">请输入地址</string>

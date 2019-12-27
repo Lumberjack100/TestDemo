@@ -129,7 +129,7 @@ dependencies {
     implementation 'com.facebook.stetho:stetho:1.5.0'
     //fab
     implementation 'com.github.clans:fab:1.6.4'
-    implementation 'cn.shmedo:das-config-base:4.2-SNAPSHOT'//自己封装的米度工具类库
+    implementation 'cn.shmedo:das-config-base:4.3-SNAPSHOT'//自己封装的米度工具类库
     implementation 'jp.bassaer:chatmessageview:1.2.0'
     //mmkv
     implementation 'com.tencent:mmkv:1.0.19'

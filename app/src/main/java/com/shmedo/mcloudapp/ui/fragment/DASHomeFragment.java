@@ -27,6 +27,7 @@ import com.shmedo.das.common.CollectorConfigInfo;
 import com.shmedo.das.common.GetAllSensorConfigInfo;
 import com.shmedo.das.common.QueryOsmometerParameterInfo;
 import com.shmedo.das.common.enumerate.BreakAlarmStatus;
+import com.shmedo.das.common.enumerate.CollectorModel;
 import com.shmedo.das.das.cmd.CommandType;
 import com.shmedo.das.utils.StringUtil;
 import com.shmedo.mcloudapp.MCloudApp;
@@ -130,7 +131,7 @@ public class DASHomeFragment extends BaseFragment {
 
     private ArrayAdapter<String> rainAdapter;
 
-    private String collectorType = "";//采集器编号
+    private String collectorModel = "";//采集器类型
 
     private String lockStatus = "";//设备锁定状态
 
@@ -182,7 +183,7 @@ public class DASHomeFragment extends BaseFragment {
             mTvDeviceName.setText("物联网数据采集器");
             mTvDeviceSn.setText(scanData[1]);//设备编号
             mTvDeviceModel.setText(scanData[2]);//功能型号
-            mTvSensorType.setText("裂缝计");
+            mTvSensorType.setText("");
         }
         configDASActivity = (ConfigDASActivity) getActivity();
     }
@@ -427,7 +428,7 @@ public class DASHomeFragment extends BaseFragment {
                     ToastUtils.show(getString(R.string.param_config_bluetooth_disconnect_warn));
                     return;
                 }
-                GeneralSettingActivity.startActivity(configDASActivity, collectorConfigInfo, collectorType);
+                GeneralSettingActivity.startActivity(configDASActivity, collectorConfigInfo, collectorModel);
                 break;
 
             case R.id.rl_mqtt_setting:
@@ -463,13 +464,19 @@ public class DASHomeFragment extends BaseFragment {
         baseConfigInfo = getAllSensorConfigInfo.getBaseConfig();
         if (baseConfigInfo != null) {
             setRianAccuryParameter.setRainAccury(String.valueOf(baseConfigInfo.getRainAccuracy() / 100));
-            collectorType = baseConfigInfo.getCollectorModel().toString();
+            collectorModel = baseConfigInfo.getCollectorModel().toString();
         }
 
         updateView();
     }
 
     private void updateView() {
+        if (!TextUtils.isEmpty(collectorModel)) {
+            CollectorModel model = CollectorModel.value(collectorModel);
+            String collectorName = BlueResultParserUtil.getCollectorName(model);
+            mTvSensorType.setText(collectorName);
+        }
+
         //设备调试模式
         switch (baseConfigInfo.getDebugModel()) {
             case INITIALZE:

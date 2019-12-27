@@ -23,7 +23,7 @@ public interface Extras {
 
     String PARAM_CONFIG_INFO = "param_config_info";
 
-    String COLLECTOR_TYPE = "collector_type";
+    String COLLECTOR_MODE = "collector_mode";
 
     String SENSOR_PARAMS = "sensor_params";
 
