@@ -11,7 +11,12 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.hjq.toast.ToastUtils;
+import com.shmedo.das.common.SensorInclinometerInfo;
+import com.shmedo.das.common.SensorInfrasoundInfo;
+import com.shmedo.das.common.SensorRadarLevelInfo;
+import com.shmedo.das.common.SensorSoilMoistureInfo;
 import com.shmedo.das.common.SensorWireShiftInfo;
+import com.shmedo.das.common.enumerate.CollectorModel;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.entity.ble.collector.CollectorSensorParamsInfoSub;
 import com.shmedo.mcloudapp.inter.MyOnClickListener;
@@ -37,8 +42,6 @@ public class DialogStyle02 implements IDialogOpt<CollectorSensorParamsInfoSub> {
     private MyOnClickListener myOnClickListener;
 
     private CollectorSensorParamsInfoSub collectorSensorParamsInfoSub;
-
-    private SensorWireShiftInfo sensorWireShiftInfo = new SensorWireShiftInfo();
 
     private UserConfig userConfig;
 
@@ -76,11 +79,42 @@ public class DialogStyle02 implements IDialogOpt<CollectorSensorParamsInfoSub> {
         final EditText mEtNote = contentView.findViewById(R.id.et_note);
 
         collectorSensorParamsInfoSub = info;
-        sensorWireShiftInfo = (SensorWireShiftInfo) collectorSensorParamsInfoSub.getSensorData();
+        CollectorModel collectorModel = CollectorModel.value(collectorSensorParamsInfoSub.getCollectorModel());
+        switch (collectorModel) {
+            case DS08://裂缝计采集器
+            {
+                SensorWireShiftInfo sensorWireShiftInfo = (SensorWireShiftInfo) collectorSensorParamsInfoSub.getSensorData();
+                mEtTriggerThreshold.setText(sensorWireShiftInfo.getTriggerThreshold() + "");
+                mEtRevised.setText(String.valueOf(sensorWireShiftInfo.getCorrectionValue()));
+            }
+            break;
+
+            case CS08://次声采集器
+            {
+                SensorInfrasoundInfo sensorInfrasoundInfo = (SensorInfrasoundInfo) collectorSensorParamsInfoSub.getSensorData();
+                mEtTriggerThreshold.setText(sensorInfrasoundInfo.getTriggerThreshold() );
+                mEtRevised.setText(String.valueOf(sensorInfrasoundInfo.getRevised()));
+            }
+            break;
+
+            case HD08://土壤湿度采集器
+            {
+                SensorSoilMoistureInfo sensorSoilMoistureInfo = (SensorSoilMoistureInfo) collectorSensorParamsInfoSub.getSensorData();
+                mEtTriggerThreshold.setText(sensorSoilMoistureInfo.getTriggerThreshold());
+                mEtRevised.setText(String.valueOf(sensorSoilMoistureInfo.getRevised()));
+            }
+            break;
+
+            case RD08://雷达采集器
+            {
+                SensorRadarLevelInfo sensorRadarLevelInfo = (SensorRadarLevelInfo) collectorSensorParamsInfoSub.getSensorData();
+                mEtTriggerThreshold.setText(sensorRadarLevelInfo.getTriggerThreshold() );
+                mEtRevised.setText(String.valueOf(sensorRadarLevelInfo.getRevised()));
+            }
+            break;
+        }
 
         mEtModbusAddress.setText(collectorSensorParamsInfoSub.getSensorAddress());
-        mEtTriggerThreshold.setText(sensorWireShiftInfo.getTriggerThreshold() + "");
-        mEtRevised.setText(String.valueOf(sensorWireShiftInfo.getCorrectionValue()));
         userConfig = UserConfig.getConfig(mContext, String.valueOf(channelNumber));
         mEtNote.setText(userConfig.readString(String.valueOf(channelNumber)));
 
@@ -107,11 +141,46 @@ public class DialogStyle02 implements IDialogOpt<CollectorSensorParamsInfoSub> {
                         return;
                     }
 
-                    collectorSensorParamsInfoSub.setSensorAddress(address);
-                    sensorWireShiftInfo.setTriggerThreshold(Integer.parseInt(triggerThreshold));
-                    sensorWireShiftInfo.setCorrectionValue(Double.valueOf(revised));
-                    collectorSensorParamsInfoSub.setSensorData(sensorWireShiftInfo);
 
+                    switch (collectorModel) {
+                        case DS08://裂缝计采集器
+                        {
+                            SensorWireShiftInfo sensorWireShiftInfo = (SensorWireShiftInfo) collectorSensorParamsInfoSub.getSensorData();
+                            sensorWireShiftInfo.setTriggerThreshold(Integer.parseInt(triggerThreshold));
+                            sensorWireShiftInfo.setCorrectionValue(Double.valueOf(revised));
+                            collectorSensorParamsInfoSub.setSensorData(sensorWireShiftInfo);
+                        }
+                        break;
+
+                        case CS08://次声采集器
+                        {
+                            SensorInfrasoundInfo sensorInfrasoundInfo = (SensorInfrasoundInfo) collectorSensorParamsInfoSub.getSensorData();
+                            sensorInfrasoundInfo.setTriggerThreshold(triggerThreshold);
+                            sensorInfrasoundInfo.setRevised(Double.valueOf(revised));
+                            collectorSensorParamsInfoSub.setSensorData(sensorInfrasoundInfo);
+                        }
+                        break;
+
+                        case HD08://土壤湿度采集器
+                        {
+                            SensorSoilMoistureInfo sensorSoilMoistureInfo = (SensorSoilMoistureInfo) collectorSensorParamsInfoSub.getSensorData();
+                            sensorSoilMoistureInfo.setTriggerThreshold(triggerThreshold);
+                            sensorSoilMoistureInfo.setRevised(Double.valueOf(revised));
+                            collectorSensorParamsInfoSub.setSensorData(sensorSoilMoistureInfo);
+                        }
+                        break;
+
+                        case RD08://雷达采集器
+                        {
+                            SensorRadarLevelInfo sensorRadarLevelInfo = (SensorRadarLevelInfo) collectorSensorParamsInfoSub.getSensorData();
+                            sensorRadarLevelInfo.setTriggerThreshold(triggerThreshold);
+                            sensorRadarLevelInfo.setRevised(Double.valueOf(revised));
+                            collectorSensorParamsInfoSub.setSensorData(sensorRadarLevelInfo);
+                        }
+                        break;
+                    }
+
+                    collectorSensorParamsInfoSub.setSensorAddress(address);
                     userConfig.writeString(String.valueOf(channelNumber), mEtNote.getText().toString().trim());
 
                     if (myOnClickListener.onSureClick(view)) {

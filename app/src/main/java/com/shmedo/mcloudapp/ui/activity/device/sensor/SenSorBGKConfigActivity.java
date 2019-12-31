@@ -18,6 +18,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.hjq.toast.ToastUtils;
 import com.kyleduo.switchbutton.SwitchButton;
 import com.shmedo.das.common.SensorInclinometerInfo;
+import com.shmedo.das.common.SensorInfrasoundInfo;
 import com.shmedo.das.common.SensorRadarLevelInfo;
 import com.shmedo.das.common.SensorSoilMoistureInfo;
 import com.shmedo.das.common.SensorWireShiftInfo;
@@ -834,7 +835,6 @@ public class SenSorBGKConfigActivity extends BaseDeviceConnectActivity {
         CollectorModel collectorModel = CollectorModel.value(paramsInfoSub.getCollectorModel());
         switch (collectorModel) {
             case DS08://裂缝计采集器
-            case CS08://次声采集器
                 SensorWireShiftInfo sensorWireShiftInfo = (SensorWireShiftInfo) paramsInfoSub.getSensorData();
                 cmdTriggerThreshold = "##168" +
                         StringUtil.formatStringTwo(paramsInfoSub.getCollectorModel()) +
@@ -845,6 +845,19 @@ public class SenSorBGKConfigActivity extends BaseDeviceConnectActivity {
                         StringUtil.formatStringTwo(paramsInfoSub.getCollectorModel()) +
                         StringUtil.formatStringTwo(paramsInfoSub.getSensorAddress()) +
                         sensorWireShiftInfo.getCorrectionValue() + "\r\n";
+                break;
+
+            case CS08://次声采集器
+                SensorInfrasoundInfo sensorInfrasoundInfo = (SensorInfrasoundInfo) paramsInfoSub.getSensorData();
+                cmdTriggerThreshold = "##168" +
+                        StringUtil.formatStringTwo(paramsInfoSub.getCollectorModel()) +
+                        StringUtil.formatStringTwo(paramsInfoSub.getSensorAddress()) +
+                        sensorInfrasoundInfo.getTriggerThreshold() + "\r\n";
+
+                cmdCorrectionValue = "##165" +
+                        StringUtil.formatStringTwo(paramsInfoSub.getCollectorModel()) +
+                        StringUtil.formatStringTwo(paramsInfoSub.getSensorAddress()) +
+                        sensorInfrasoundInfo.getRevised() + "\r\n";
                 break;
 
             case HD08://土壤湿度采集器
