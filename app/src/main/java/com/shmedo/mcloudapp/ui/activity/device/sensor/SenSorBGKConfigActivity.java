@@ -419,7 +419,7 @@ public class SenSorBGKConfigActivity extends BaseDeviceConnectActivity {
                     ToastUtils.show("此传感器为空");
                     return;
                 }
-                showBottomDialog(channelNumber0);
+                showBottomDialogForModify(channelNumber0);
                 break;
 
             case R.id.iv_stay2:
@@ -427,7 +427,7 @@ public class SenSorBGKConfigActivity extends BaseDeviceConnectActivity {
                     ToastUtils.show("此传感器为空");
                     return;
                 }
-                showBottomDialog(channelNumber1);
+                showBottomDialogForModify(channelNumber1);
                 break;
 
             case R.id.iv_stay3:
@@ -435,7 +435,7 @@ public class SenSorBGKConfigActivity extends BaseDeviceConnectActivity {
                     ToastUtils.show("此传感器为空");
                     return;
                 }
-                showBottomDialog(channelNumber2);
+                showBottomDialogForModify(channelNumber2);
                 break;
 
             case R.id.iv_stay4:
@@ -443,7 +443,7 @@ public class SenSorBGKConfigActivity extends BaseDeviceConnectActivity {
                     ToastUtils.show("此传感器为空");
                     return;
                 }
-                showBottomDialog(channelNumber3);
+                showBottomDialogForModify(channelNumber3);
                 break;
 
             case R.id.iv_stay5:
@@ -451,7 +451,7 @@ public class SenSorBGKConfigActivity extends BaseDeviceConnectActivity {
                     ToastUtils.show("此传感器为空");
                     return;
                 }
-                showBottomDialog(channelNumber4);
+                showBottomDialogForModify(channelNumber4);
                 break;
 
             case R.id.iv_stay6:
@@ -459,7 +459,7 @@ public class SenSorBGKConfigActivity extends BaseDeviceConnectActivity {
                     ToastUtils.show("此传感器为空");
                     return;
                 }
-                showBottomDialog(channelNumber5);
+                showBottomDialogForModify(channelNumber5);
                 break;
 
             case R.id.iv_stay7:
@@ -467,7 +467,7 @@ public class SenSorBGKConfigActivity extends BaseDeviceConnectActivity {
                     ToastUtils.show("此传感器为空");
                     return;
                 }
-                showBottomDialog(channelNumber6);
+                showBottomDialogForModify(channelNumber6);
                 break;
 
             case R.id.iv_stay8:
@@ -475,7 +475,7 @@ public class SenSorBGKConfigActivity extends BaseDeviceConnectActivity {
                     ToastUtils.show("此传感器为空");
                     return;
                 }
-                showBottomDialog(channelNumber7);
+                showBottomDialogForModify(channelNumber7);
                 break;
 
             case R.id.btn_confirm://确定发送指令
@@ -500,6 +500,7 @@ public class SenSorBGKConfigActivity extends BaseDeviceConnectActivity {
             setSwitchViewState(true, textView);
             setOpenSwitchDialog(channelNumber);
         } else {
+            switchButton.setCheckedImmediatelyNoEvent(!switchButton.isChecked());
             closeSwitchColorbg(textView, switchButton, channelNumber);
         }
     }
@@ -591,7 +592,7 @@ public class SenSorBGKConfigActivity extends BaseDeviceConnectActivity {
                     collectorSensorParamsInfoSub.setSensorData(defaultCollectorSensorParamsInfoSub.getSensorData());
                     collectorSensorHashMap.put(channelNumber, collectorSensorParamsInfoSub);
                 }
-                showBottomDialog(channelNumber0);
+                showBottomDialogForAdd(channelNumber0);
                 break;
 
             case "01":
@@ -605,7 +606,7 @@ public class SenSorBGKConfigActivity extends BaseDeviceConnectActivity {
                     collectorSensorParamsInfoSub.setSensorData(defaultCollectorSensorParamsInfoSub.getSensorData());
                     collectorSensorHashMap.put(channelNumber, collectorSensorParamsInfoSub);
                 }
-                showBottomDialog(channelNumber1);
+                showBottomDialogForAdd(channelNumber1);
                 break;
 
             case "02":
@@ -619,7 +620,7 @@ public class SenSorBGKConfigActivity extends BaseDeviceConnectActivity {
                     collectorSensorParamsInfoSub.setSensorData(defaultCollectorSensorParamsInfoSub.getSensorData());
                     collectorSensorHashMap.put(channelNumber, collectorSensorParamsInfoSub);
                 }
-                showBottomDialog(channelNumber2);
+                showBottomDialogForAdd(channelNumber2);
                 break;
 
             case "03":
@@ -633,7 +634,7 @@ public class SenSorBGKConfigActivity extends BaseDeviceConnectActivity {
                     collectorSensorParamsInfoSub.setSensorData(defaultCollectorSensorParamsInfoSub.getSensorData());
                     collectorSensorHashMap.put(channelNumber, collectorSensorParamsInfoSub);
                 }
-                showBottomDialog(channelNumber3);
+                showBottomDialogForAdd(channelNumber3);
                 break;
 
             case "04":
@@ -647,7 +648,7 @@ public class SenSorBGKConfigActivity extends BaseDeviceConnectActivity {
                     collectorSensorParamsInfoSub.setSensorData(defaultCollectorSensorParamsInfoSub.getSensorData());
                     collectorSensorHashMap.put(channelNumber, collectorSensorParamsInfoSub);
                 }
-                showBottomDialog(channelNumber4);
+                showBottomDialogForAdd(channelNumber4);
                 break;
 
             case "05":
@@ -661,7 +662,7 @@ public class SenSorBGKConfigActivity extends BaseDeviceConnectActivity {
                     collectorSensorParamsInfoSub.setSensorData(defaultCollectorSensorParamsInfoSub.getSensorData());
                     collectorSensorHashMap.put(channelNumber, collectorSensorParamsInfoSub);
                 }
-                showBottomDialog(channelNumber5);
+                showBottomDialogForAdd(channelNumber5);
                 break;
 
             case "06":
@@ -675,7 +676,7 @@ public class SenSorBGKConfigActivity extends BaseDeviceConnectActivity {
                     collectorSensorParamsInfoSub.setSensorData(defaultCollectorSensorParamsInfoSub.getSensorData());
                     collectorSensorHashMap.put(channelNumber, collectorSensorParamsInfoSub);
                 }
-                showBottomDialog(channelNumber6);
+                showBottomDialogForAdd(channelNumber6);
                 break;
 
             case "07":
@@ -689,7 +690,7 @@ public class SenSorBGKConfigActivity extends BaseDeviceConnectActivity {
                     collectorSensorParamsInfoSub.setSensorData(defaultCollectorSensorParamsInfoSub.getSensorData());
                     collectorSensorHashMap.put(channelNumber, collectorSensorParamsInfoSub);
                 }
-                showBottomDialog(channelNumber7);
+                showBottomDialogForAdd(channelNumber7);
                 break;
 
             default:
@@ -701,11 +702,15 @@ public class SenSorBGKConfigActivity extends BaseDeviceConnectActivity {
      *
      * @param
      */
-    private void showBottomDialog(String channelNumber) {
-        factory.createDialog(this, collectorSensorHashMap.get(channelNumber).getSensorType(), collectorSensorHashMap.get(channelNumber), channelNumber, onSureClickListener);
+    private void showBottomDialogForAdd(String channelNumber) {
+        factory.createDialog(this, collectorSensorHashMap.get(channelNumber).getSensorType(), collectorSensorHashMap.get(channelNumber), channelNumber, addClickListener);
     }
 
-    private MyOnClickListener onSureClickListener = new MyOnClickListener() {
+    private void showBottomDialogForModify(String channelNumber) {
+        factory.createDialog(this, collectorSensorHashMap.get(channelNumber).getSensorType(), collectorSensorHashMap.get(channelNumber), channelNumber, modifyClickListener);
+    }
+
+    private MyOnClickListener addClickListener = new MyOnClickListener() {
         @Override
         public boolean onSureClick(View v) {
             List<CollectorSensorParamsInfoSub> paramsInfoSubList = new ArrayList<>();
@@ -790,6 +795,31 @@ public class SenSorBGKConfigActivity extends BaseDeviceConnectActivity {
     };
 
 
+    private MyOnClickListener modifyClickListener = new MyOnClickListener() {
+        @Override
+        public boolean onSureClick(View v) {
+            List<CollectorSensorParamsInfoSub> paramsInfoSubList = new ArrayList<>();
+            paramsInfoSubList.addAll(collectorSensorHashMap.values());
+            if (paramsInfoSubList.isEmpty()) {
+                return false;
+            }
+
+            for (int k = 0; k < paramsInfoSubList.size() - 1; k++) {
+                for (int j = k + 1; j < paramsInfoSubList.size(); j++) {
+                    if (paramsInfoSubList.get(k).getSensorAddress().equals(paramsInfoSubList.get(j).getSensorAddress())) {
+                        ToastUtils.show("Modbus地址不能重复");
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
+
+        @Override
+        public void onCancelClick(View view, String channelNumber) {
+
+        }
+    };
     /**
      * ##150zzxxXXXX\r\n：设置采集器接入的传感器
      * zz 采集器型号
