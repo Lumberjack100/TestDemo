@@ -283,10 +283,10 @@ public class ParserDeviceDetailsUtils {
                 textView.setText("裂缝计地址");
                 break;
             case "3":
-                textView.setText("雷达物位计地址");
+                textView.setText("土壤含水率地址");
                 break;
             case "7":
-                textView.setText("土壤含水率地址");
+                textView.setText("雷达物位计地址");
                 break;
             case "21":
                 textView.setText("次声地址");
