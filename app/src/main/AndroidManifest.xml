@@ -71,7 +71,7 @@
         </meta-data>
 
 
-        <activity android:name=".ui.activity.WelcomeActivity"
+        <activity android:name="com.shmedo.mcloudapp.ui.activity.WelcomeActivity"
             android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -80,138 +80,138 @@
         </activity>
 
         <activity
-            android:name=".ui.activity.LoginActivity"
+            android:name="com.shmedo.mcloudapp.ui.activity.LoginActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan|stateHidden" />
 
         <activity
-            android:name=".ui.activity.MainActivity"
+            android:name="com.shmedo.mcloudapp.ui.activity.MainActivity"
             android:label="主页面"
             android:screenOrientation="portrait" />
 
         <activity
-            android:name=".ui.activity.ServiceConfigActivity"
+            android:name="com.shmedo.mcloudapp.ui.activity.ServiceConfigActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden|adjustResize" />
 
         <activity
-            android:name=".ui.activity.UserInfoActivity"
+            android:name="com.shmedo.mcloudapp.ui.activity.UserInfoActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden|adjustResize" />
 
         <activity
-            android:name=".ui.activity.InputDeviceSNActivity"
+            android:name="com.shmedo.mcloudapp.ui.activity.InputDeviceSNActivity"
             android:label="添加设备"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan|stateHidden" />
 
         <activity
-            android:name=".ui.activity.DeviceManageActivity"
+            android:name="com.shmedo.mcloudapp.ui.activity.DeviceManageActivity"
             android:label="设备管理"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden|adjustResize" />
 
         <activity
-            android:name=".ui.activity.SearchDeviceActivity"
+            android:name="com.shmedo.mcloudapp.ui.activity.SearchDeviceActivity"
             android:screenOrientation="portrait" />
 
         <activity
-            android:name=".ui.activity.DeviceManageDetailActivity"
+            android:name="com.shmedo.mcloudapp.ui.activity.DeviceManageDetailActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden|adjustResize" />
 
         <activity
-            android:name=".ui.activity.BlueToothListActivity"
+            android:name="com.shmedo.mcloudapp.ui.activity.BlueToothListActivity"
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="portrait"
             android:launchMode="singleTop"
             android:theme="@style/AppTheme.Dialog" />
 
         <activity
-            android:name=".ui.activity.WifiConnectionActivity"
+            android:name="com.shmedo.mcloudapp.ui.activity.WifiConnectionActivity"
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="portrait"
             android:launchMode="singleTop"
             android:theme="@style/AppTheme.Dialog" />
 
         <activity
-            android:name=".ui.activity.device.senior.ProductRegistrationActivity"
+            android:name="com.shmedo.mcloudapp.ui.activity.device.senior.ProductRegistrationActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden|adjustResize" />
 
         <activity
-            android:name=".ui.activity.device.senior.InstructionDebugActivity"
+            android:name="com.shmedo.mcloudapp.ui.activity.device.senior.InstructionDebugActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden|adjustResize" />
 
         <activity
-            android:name=".ui.activity.device.GeneralSettingActivity"
+            android:name="com.shmedo.mcloudapp.ui.activity.device.GeneralSettingActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden|adjustResize" />
 
         <activity
-            android:name=".ui.activity.device.sensor.SenSorBGKConfigActivity"
+            android:name="com.shmedo.mcloudapp.ui.activity.device.sensor.SenSorBGKConfigActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan|stateHidden" />
 
         <activity
-            android:name=".ui.activity.device.OsmometerConfigActivity"
+            android:name="com.shmedo.mcloudapp.ui.activity.device.OsmometerConfigActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan|stateHidden" />
 
         <activity
-            android:name=".ui.activity.device.RainConfigActivity"
+            android:name="com.shmedo.mcloudapp.ui.activity.device.RainConfigActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan|stateHidden" />
 
         <activity
-            android:name=".ui.activity.ConfigE60Activity"
+            android:name="com.shmedo.mcloudapp.ui.activity.ConfigE60Activity"
             android:label="E60设备配置页面"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan|stateHidden" />
 
         <activity
-            android:name=".ui.activity.ConfigADMEActivity"
+            android:name="com.shmedo.mcloudapp.ui.activity.ConfigADMEActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustResize" />
 
         <activity
-            android:name=".ui.activity.ScanActivity"
+            android:name="com.shmedo.mcloudapp.ui.activity.ScanActivity"
             android:screenOrientation="portrait"
             android:theme="@style/ScanActivityTheme" />
 
         <activity
-            android:name=".ui.activity.device.ADMESensorExecutiveAgencyConfigActivity"
+            android:name="com.shmedo.mcloudapp.ui.activity.device.ADMESensorExecutiveAgencyConfigActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustResize" />
 
         <activity
-            android:name=".ui.activity.device.ADMEMotorControlActivity"
+            android:name="com.shmedo.mcloudapp.ui.activity.device.ADMEMotorControlActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustResize" />
 
         <activity
-            android:name=".ui.activity.device.CountMeterWheelActivity"
+            android:name="com.shmedo.mcloudapp.ui.activity.device.CountMeterWheelActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustResize" />
 
         <activity
-            android:name=".ui.activity.ConfigDASActivity"
+            android:name="com.shmedo.mcloudapp.ui.activity.ConfigDASActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustResize" />
 
         <activity
-            android:name=".ui.activity.device.MqttSettingActivity"
+            android:name="com.shmedo.mcloudapp.ui.activity.device.MqttSettingActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustResize" />
 
         <activity
-                android:name=".ui.activity.device.senior.LogPrintActivity"
+                android:name="com.shmedo.mcloudapp.ui.activity.device.senior.LogPrintActivity"
                 android:screenOrientation="portrait"
                 android:windowSoftInputMode="stateAlwaysHidden|adjustResize" />
 
         <activity
-                android:name=".ui.activity.AboutAppActivity"
+                android:name="com.shmedo.mcloudapp.ui.activity.AboutAppActivity"
                 android:screenOrientation="portrait" />
 
     </application>

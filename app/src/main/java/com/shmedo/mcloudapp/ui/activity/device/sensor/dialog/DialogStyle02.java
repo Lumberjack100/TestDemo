@@ -74,6 +74,10 @@ public class DialogStyle02 implements IDialogOpt<CollectorSensorParamsInfoSub> {
     public void initData(final CollectorSensorParamsInfoSub info) {
         TextView mTvCancel = contentView.findViewById(R.id.tv_cancel);
         final TextView mTvSave = contentView.findViewById(R.id.tv_save);
+        //触发阈值(单位：mm)
+        final TextView mTvTriggerThreshold = contentView.findViewById(R.id.tv_triggerThreshold);
+        //修正值(单位：m)
+        final TextView mTvCorrectionValue = contentView.findViewById(R.id.tv_correctionValue);
         final EditText mEtModbusAddress = contentView.findViewById(R.id.et_modbus_address);
         final EditText mEtTriggerThreshold = contentView.findViewById(R.id.et_trigger_threshold);
         final EditText mEtRevised = contentView.findViewById(R.id.et_revised);
@@ -84,6 +88,8 @@ public class DialogStyle02 implements IDialogOpt<CollectorSensorParamsInfoSub> {
         switch (collectorModel) {
             case DS08://裂缝计采集器
             {
+                mTvTriggerThreshold.setText("触发阈值(单位：mm)");
+                mTvCorrectionValue.setText("修正值(单位：m)");
                 SensorWireShiftInfo sensorWireShiftInfo = (SensorWireShiftInfo) collectorSensorParamsInfoSub.getSensorData();
                 mEtTriggerThreshold.setText(sensorWireShiftInfo.getTriggerThreshold() + "");
                 mEtRevised.setText(String.valueOf(sensorWireShiftInfo.getCorrectionValue()));
@@ -92,6 +98,8 @@ public class DialogStyle02 implements IDialogOpt<CollectorSensorParamsInfoSub> {
 
             case CS08://次声采集器
             {
+                mTvTriggerThreshold.setText("触发阈值(单位：Hz)");
+                mTvCorrectionValue.setText("修正值(单位：Hz)");
                 SensorInfrasoundInfo sensorInfrasoundInfo = (SensorInfrasoundInfo) collectorSensorParamsInfoSub.getSensorData();
                 mEtTriggerThreshold.setText(sensorInfrasoundInfo.getTriggerThreshold());
                 mEtRevised.setText(String.valueOf(sensorInfrasoundInfo.getRevised()));
@@ -100,6 +108,8 @@ public class DialogStyle02 implements IDialogOpt<CollectorSensorParamsInfoSub> {
 
             case HD08://土壤湿度采集器
             {
+                mTvTriggerThreshold.setText("触发阈值(单位：%rh)");
+                mTvCorrectionValue.setText("修正值(单位：%rh)");
                 SensorSoilMoistureInfo sensorSoilMoistureInfo = (SensorSoilMoistureInfo) collectorSensorParamsInfoSub.getSensorData();
                 mEtTriggerThreshold.setText(sensorSoilMoistureInfo.getTriggerThreshold());
                 mEtRevised.setText(String.valueOf(sensorSoilMoistureInfo.getRevised()));
@@ -108,6 +118,8 @@ public class DialogStyle02 implements IDialogOpt<CollectorSensorParamsInfoSub> {
 
             case RD08://雷达采集器
             {
+                mTvTriggerThreshold.setText("触发阈值(单位：mm)");
+                mTvCorrectionValue.setText("修正值(单位：mm)");
                 SensorRadarLevelInfo sensorRadarLevelInfo = (SensorRadarLevelInfo) collectorSensorParamsInfoSub.getSensorData();
                 mEtTriggerThreshold.setText(sensorRadarLevelInfo.getTriggerThreshold());
                 mEtRevised.setText(String.valueOf(sensorRadarLevelInfo.getRevised()));

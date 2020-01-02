@@ -324,9 +324,6 @@ public abstract class BaseActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (loadingDialog.isShowing()) {
-            loadingDialog.dismiss();
-        }
         ActivityCollector.remove(weakRefActivity);
         unregisterReceiver(mNetWorkChangReceiver);
     }

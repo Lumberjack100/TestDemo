@@ -192,6 +192,8 @@ public class DeviceDetailsFragment extends BaseFragment implements SwipeRefreshL
     private List<String> sensorList = new ArrayList<>();
     private CommonAdapter adapter;
 
+    private String channelNumber = "";
+
     @Override
     protected int initContentView() {
         return R.layout.fragment_device_details;
@@ -236,7 +238,13 @@ public class DeviceDetailsFragment extends BaseFragment implements SwipeRefreshL
                 String[] result = string.split(":");
                 holder.setText(R.id.sensor_channel_number, result[0]);
                 holder.setText(R.id.sensor_status, ParserDeviceDetailsUtils.setSensorDataStatus(holder.getView(R.id.sensor_status), result[1], configDASActivity));
-                holder.setText(R.id.sensor_data, result[2] + "mm");
+                if (channelNumber.equals("3")){
+                    holder.setText(R.id.sensor_data, result[2] + "%rh");
+                }else if (channelNumber.equals("21")){
+                    holder.setText(R.id.sensor_data, result[2] + "Hz");
+                }else {
+                    holder.setText(R.id.sensor_data, result[2] + "mm");
+                }
             }
         };
 
@@ -290,6 +298,7 @@ public class DeviceDetailsFragment extends BaseFragment implements SwipeRefreshL
                 configDASActivity.sendCommonCommandImmediately("##0441\r\n");
                 Timber.i("查询网络状态：中心1==##0441");
                 DeviceStatusThree statusThree = ParserDeviceDetailsUtils.parserDeviceStatusThree(message);
+                channelNumber = statusThree.getCollectorModel();
                 setDeviceStatusThree(statusThree);
                 break;
             case "044":
