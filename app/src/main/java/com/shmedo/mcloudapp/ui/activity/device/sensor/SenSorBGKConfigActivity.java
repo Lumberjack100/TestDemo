@@ -185,6 +185,8 @@ public class SenSorBGKConfigActivity extends BaseDeviceConnectActivity {
 
         if (!collectorSensorParamsInfoSubs.isEmpty()) {
             defaultCollectorSensorParamsInfoSub = collectorSensorParamsInfoSubs.get(0);
+            String sensorType = defaultCollectorSensorParamsInfoSub.getSensorType();
+            setSensorIconByType(sensorType);
         }
     }
 
@@ -233,133 +235,134 @@ public class SenSorBGKConfigActivity extends BaseDeviceConnectActivity {
                 channelNumber0 = "00";
                 switchButton1.setCheckedImmediatelyNoEvent(true);
                 setSwitchViewState(true, textView1);
-                setSensorIconByType(sensorType, imageView1);
                 break;
 
             case 1:
                 channelNumber1 = "01";
                 switchButton2.setCheckedImmediatelyNoEvent(true);
                 setSwitchViewState(true, textView2);
-                setSensorIconByType(sensorType, imageView2);
                 break;
 
             case 2:
                 channelNumber2 = "02";
                 switchButton3.setCheckedImmediatelyNoEvent(true);
                 setSwitchViewState(true, textView3);
-                setSensorIconByType(sensorType, imageView3);
                 break;
 
             case 3:
                 channelNumber3 = "03";
                 switchButton4.setCheckedImmediatelyNoEvent(true);
                 setSwitchViewState(true, textView4);
-                setSensorIconByType(sensorType, imageView4);
                 break;
 
             case 4:
                 channelNumber4 = "04";
                 switchButton5.setCheckedImmediatelyNoEvent(true);
                 setSwitchViewState(true, textView5);
-                setSensorIconByType(sensorType, imageView5);
                 break;
 
             case 5:
                 channelNumber5 = "05";
                 switchButton6.setCheckedImmediatelyNoEvent(true);
                 setSwitchViewState(true, textView6);
-                setSensorIconByType(sensorType, imageView6);
                 break;
 
             case 6:
                 channelNumber6 = "06";
                 switchButton7.setCheckedImmediatelyNoEvent(true);
                 setSwitchViewState(true, textView7);
-                setSensorIconByType(sensorType, imageView7);
                 break;
 
             case 7:
                 channelNumber7 = "07";
                 switchButton8.setCheckedImmediatelyNoEvent(true);
                 setSwitchViewState(true, textView8);
-                setSensorIconByType(sensorType, imageView8);
                 break;
         }
     }
 
-
     /**
      * 根据type的值设置不同类型传感器的图标
      */
-    private void setSensorIconByType(String sensorType, ImageView imageView) {
+    private void setSensorIconByType(String sensorType){
+        int resId=-1;
         switch (sensorType) {
             case "02"://裂缝计 MPS-M-2000
-                imageView.setImageResource(R.drawable.ic_sensor);
+                resId=R.drawable.ic_sensor;
                 break;
 
             case "03"://土壤含水率 TR-3000
-                imageView.setImageResource(R.drawable.ic_sensor);
+                resId=R.drawable.ic_sensor_soilmoisture;
                 break;
 
             case "04"://测斜仪 I-P-I
-                imageView.setImageResource(R.drawable.ic_sensor);
+                resId=R.drawable.ic_sensor;
                 break;
 
             case "06"://超声波物位计 HBRD908
-                imageView.setImageResource(R.drawable.ic_sensor);
+                resId=R.drawable.ic_sensor;
                 break;
 
             case "07"://雷达物位计 MH-A15R
-                imageView.setImageResource(R.drawable.ic_sensor);
+                resId=R.drawable.ic_sensor;
                 break;
 
             case "08"://墒情计 EP100G
-                imageView.setImageResource(R.drawable.ic_sensor);
+                resId=R.drawable.ic_sensor;
                 break;
 
             case "12"://温湿度计 CSW18
-                imageView.setImageResource(R.drawable.ic_sensor);
+                resId=R.drawable.ic_sensor;
                 break;
 
             case "15"://扬压力计 VWP-G
-                imageView.setImageResource(R.drawable.ic_sensor);
+                resId=R.drawable.ic_sensor;
                 break;
 
             case "16"://陆岩倾角仪 LY215
-                imageView.setImageResource(R.drawable.ic_sensor);
+                resId=R.drawable.ic_sensor;
                 break;
 
             case "21"://次声传感器
-                imageView.setImageResource(R.drawable.ic_sensor);
+                resId=R.drawable.ic_sensor;
                 break;
 
             case "50"://基康渗压计 BGK-4500
-                imageView.setImageResource(R.drawable.ic_sensor);
+                resId=R.drawable.ic_sensor;
                 break;
 
             case "51"://葛南渗压计 VWP-03
-                imageView.setImageResource(R.drawable.ic_sensor);
+                resId=R.drawable.ic_sensor;
                 break;
 
             case "52"://葛南土压力盒 VWE-0.6
-                imageView.setImageResource(R.drawable.ic_sensor);
+                resId=R.drawable.ic_sensor;
                 break;
 
             case "53"://葛南应力计 VWS-15
-                imageView.setImageResource(R.drawable.ic_sensor);
+                resId=R.drawable.ic_sensor;
                 break;
 
             case "54"://葛南无应力计 VWS-15M
-                imageView.setImageResource(R.drawable.ic_sensor);
+                resId=R.drawable.ic_sensor;
                 break;
 
             case "55"://葛南位移计 VWD-100
-                imageView.setImageResource(R.drawable.ic_sensor);
+                resId=R.drawable.ic_sensor;
                 break;
 
             default:
                 break;
         }
+
+        imageView1.setImageResource(resId);
+        imageView2.setImageResource(resId);
+        imageView3.setImageResource(resId);
+        imageView4.setImageResource(resId);
+        imageView5.setImageResource(resId);
+        imageView6.setImageResource(resId);
+        imageView7.setImageResource(resId);
+        imageView8.setImageResource(resId);
     }
 
 
