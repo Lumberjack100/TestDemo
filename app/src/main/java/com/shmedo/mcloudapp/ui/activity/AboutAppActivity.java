@@ -4,7 +4,6 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.hjq.toast.ToastUtils;
@@ -36,12 +35,6 @@ public class AboutAppActivity extends BaseActivity {
 
     @BindView(R.id.tv_version)
     TextView mTvVersion;
-
-    @BindView(R.id.ll_userAdvice)
-    LinearLayout mLlUserAdvice;
-
-    @BindView(R.id.ll_userUpData)
-    LinearLayout mLlUserUpData;
 
 
     @Override
@@ -79,6 +72,7 @@ public class AboutAppActivity extends BaseActivity {
             case R.id.ll_userAdvice:
                 showFeedbackDialog();
                 break;
+
             case R.id.ll_userUpData:
                 UpdataManagerUtil.requestPermissionForInstallPackage(this, true);
                 break;

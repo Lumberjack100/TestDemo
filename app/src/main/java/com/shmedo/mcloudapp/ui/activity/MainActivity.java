@@ -411,7 +411,7 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.img_user://用户信息
-                StartActivityUtil.comeOnBaby(this, UserInfoActivity.class);
+                UserInfoActivity.startActivity(this);
                 break;
 
             case R.id.img_equipment://设备管理

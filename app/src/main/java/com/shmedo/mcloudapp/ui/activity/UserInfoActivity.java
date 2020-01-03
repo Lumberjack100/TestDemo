@@ -1,6 +1,7 @@
 package com.shmedo.mcloudapp.ui.activity;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -92,6 +93,21 @@ public class UserInfoActivity extends BaseActivity {
     private MyMenu myMenu;
     private boolean isCamera = false;
 
+
+    /**
+     * 说明：启动Activity
+     * <p>
+     * 注意：这里使用到了Intent的Flag属性singleTop。singleTop模式下，在同一个task中，如果存在该Activity的实例，
+     * 并且该Activity实例位于栈顶(即，该Activity位于前端)，则调用startActivity()时，不再创建该Activity的示例；
+     * 而仅仅只是调用Activity的onNewIntent()。否则的话，则新建该Activity的实例，并将其置于栈顶。
+     * </p>
+     */
+    public static void startActivity(Context context) {
+        Intent intent = new Intent(context, UserInfoActivity.class);
+        context.startActivity(intent);
+    }
+
+
     @Override
     protected int initContentView() {
         return R.layout.activity_user_info;
@@ -100,6 +116,7 @@ public class UserInfoActivity extends BaseActivity {
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
+        overridePendingTransition(R.anim.translate_in_from_left, R.anim.translate_out);
         super.onCreate(savedInstanceState);
         setToolBar(R.id.toolbar);
         mToolbarTitle.setText("我的");
@@ -178,7 +195,7 @@ public class UserInfoActivity extends BaseActivity {
         }
     }
 
-    @OnClick({R.id.ll_change_photo, R.id.RL_advice,R.id.ll_userAbout,R.id.btn_exit})
+    @OnClick({R.id.ll_change_photo, R.id.RL_advice, R.id.ll_userAbout, R.id.btn_exit})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.ll_change_photo:
@@ -188,7 +205,7 @@ public class UserInfoActivity extends BaseActivity {
 
                 break;
             case R.id.ll_userAbout:
-                Intent intent = new Intent(this,AboutAppActivity.class);
+                Intent intent = new Intent(this, AboutAppActivity.class);
                 startActivity(intent);
                 break;
             case R.id.btn_exit:
@@ -337,7 +354,6 @@ public class UserInfoActivity extends BaseActivity {
     }
 
 
-
     /**
      * 跳转到登录页面
      */
@@ -346,5 +362,11 @@ public class UserInfoActivity extends BaseActivity {
         in.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(in);
         finish();
+    }
+
+    @Override
+    public void finish() {
+        super.finish();
+        overridePendingTransition(0, R.anim.translate_out_to_left);
     }
 }

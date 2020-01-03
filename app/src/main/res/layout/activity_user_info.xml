@@ -14,21 +14,22 @@
         android:layout_width="match_parent"
         android:layout_height="70dp"
         android:layout_marginTop="10dp"
-        android:background="@drawable/selector_view"
+        android:background="@drawable/bg_setting_list_item"
         android:clickable="true"
         android:orientation="horizontal"
-        android:paddingLeft="15dp"
+        android:paddingLeft="30dp"
         android:paddingRight="15dp">
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/circle_image"
-            android:layout_width="45dp"
-            android:layout_height="45dp"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
             android:layout_gravity="center_vertical"
-            android:src="@drawable/icon_users"
+            android:src="@drawable/ic_default_avatar"
             app:civ_border_color="@color/white"
             app:civ_border_overlay="true"
-            app:civ_border_width="1dp" />
+            app:civ_border_width="0.5dp"
+            app:civ_fill_color="@color/white" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -39,20 +40,6 @@
             android:textColor="@color/gray_818182"
             android:textSize="14sp" />
 
-        <RelativeLayout
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="@drawable/selector_view">
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true" />
-
-        </RelativeLayout>
-
     </LinearLayout>
 
     <LinearLayout
@@ -60,7 +47,7 @@
         android:layout_height="30dp"
         android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:paddingStart="16dp">
+        android:paddingStart="15dp">
 
         <ImageView
             android:layout_width="25dp"
@@ -103,9 +90,9 @@
             android:layout_height="wrap_content"
             android:layout_weight="4"
             android:singleLine="true"
-            tools:text="账户"
             android:textColor="@color/gray_818182"
-            android:textSize="14sp" />
+            android:textSize="14sp"
+            tools:text="账户" />
 
     </LinearLayout>
 
@@ -138,9 +125,9 @@
             android:layout_height="wrap_content"
             android:layout_weight="4"
             android:singleLine="true"
-            tools:text="昵称"
             android:textColor="@color/gray_818182"
-            android:textSize="14sp" />
+            android:textSize="14sp"
+            tools:text="昵称" />
 
     </LinearLayout>
 
@@ -173,9 +160,9 @@
             android:layout_height="wrap_content"
             android:layout_weight="4"
             android:singleLine="true"
-            tools:text="手机"
             android:textColor="@color/gray_818182"
-            android:textSize="14sp" />
+            android:textSize="14sp"
+            tools:text="手机" />
 
     </LinearLayout>
 
@@ -208,9 +195,9 @@
             android:layout_height="wrap_content"
             android:layout_weight="4"
             android:singleLine="true"
-            tools:text="公司"
             android:textColor="@color/gray_818182"
-            android:textSize="14sp" />
+            android:textSize="14sp"
+            tools:text="公司" />
 
     </LinearLayout>
 
@@ -243,67 +230,39 @@
             android:layout_height="wrap_content"
             android:layout_weight="4"
             android:singleLine="true"
-            tools:text="部门"
+            android:textColor="@color/gray_818182"
+            android:textSize="14sp"
+            tools:text="部门" />
+
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/ll_userAbout"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginTop="15dp"
+        android:background="@drawable/bg_setting_list_item"
+        android:paddingLeft="45dp"
+        android:paddingRight="15dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:text="关于"
             android:textColor="@color/gray_818182"
             android:textSize="14sp" />
 
-    </LinearLayout>
-    <LinearLayout
-            android:id="@+id/ll_userAbout"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_marginTop="15dp"
-            android:background="@drawable/selector_view"
-            android:orientation="horizontal"
-            android:paddingLeft="15dp"
-            android:paddingRight="5dp">
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:src="@drawable/icon_right" />
 
-        <TextView
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1.3"
-                android:gravity="center_vertical"
-                android:text="关于"
-                android:textColor="@color/gray_818182"
-                android:textSize="14sp" />
+    </RelativeLayout>
 
-        <RelativeLayout
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="4"
-                android:gravity="center_vertical">
-
-            <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:gravity="center_vertical"
-                    android:textColor="@color/gray_818182"
-                    android:textSize="14sp" />
-
-            <RelativeLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_alignParentRight="true"
-                    android:background="@drawable/selector_view"
-                    android:clickable="true"
-                    android:padding="10dp">
-
-                <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:gravity="center_vertical"
-                        android:textColor="@color/gray_818182"
-                        android:textSize="13sp" />
-
-                <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_centerVertical="true"
-                        android:src="@drawable/icon_right" />
-            </RelativeLayout>
-
-        </RelativeLayout>
-    </LinearLayout>
     <View
         android:layout_width="match_parent"
         android:layout_height="0.5dp"
