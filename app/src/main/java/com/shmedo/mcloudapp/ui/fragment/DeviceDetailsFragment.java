@@ -29,7 +29,7 @@ import com.shmedo.mcloudapp.entity.devicedetails.DeviceStatusThree;
 import com.shmedo.mcloudapp.entity.devicedetails.DeviceStatusTwo;
 import com.shmedo.mcloudapp.entity.devicedetails.DeviceVersionInfo;
 import com.shmedo.mcloudapp.entity.devicedetails.OperatorInformation;
-import com.shmedo.mcloudapp.ui.activity.ConfigDASActivity;
+import com.shmedo.mcloudapp.ui.activity.device.BaseDeviceConnectActivity;
 import com.shmedo.mcloudapp.util.ParserDeviceDetailsUtils;
 import com.shmedo.mcloudapp.util.StringUtil;
 import com.shmedo.mcloudapp.views.VerticalSwipeRefreshLayout;
@@ -187,7 +187,7 @@ public class DeviceDetailsFragment extends BaseFragment implements SwipeRefreshL
     private long prelongTim = 0;
     private Unbinder unbinder;
 
-    private ConfigDASActivity configDASActivity;
+    private BaseDeviceConnectActivity deviceConnectActivity;
 
     private List<String> sensorList = new ArrayList<>();
     private CommonAdapter adapter;
@@ -213,7 +213,7 @@ public class DeviceDetailsFragment extends BaseFragment implements SwipeRefreshL
     }
 
     private void initView() {
-        configDASActivity = (ConfigDASActivity) getActivity();
+        deviceConnectActivity = (BaseDeviceConnectActivity) getActivity();
         refreshLayout.setColorSchemeResources(android.R.color.holo_blue_light,
                 android.R.color.holo_red_light, android.R.color.holo_orange_light,
                 android.R.color.holo_green_light);
@@ -223,7 +223,7 @@ public class DeviceDetailsFragment extends BaseFragment implements SwipeRefreshL
     }
 
     private void initData() {
-        configDASActivity.sendCommonCommandImmediately("##040\r\n");
+        deviceConnectActivity.sendCommonCommandImmediately("##040\r\n");
         Timber.i("查询设备版本信息：==##040");
 
     }
@@ -237,7 +237,7 @@ public class DeviceDetailsFragment extends BaseFragment implements SwipeRefreshL
                 //①:②:③，其中①：传感器地址，②：传感器状态，0正常，1异常，③：传感器数据
                 String[] result = string.split(":");
                 holder.setText(R.id.sensor_channel_number, result[0]);
-                holder.setText(R.id.sensor_status, ParserDeviceDetailsUtils.setSensorDataStatus(holder.getView(R.id.sensor_status), result[1], configDASActivity));
+                holder.setText(R.id.sensor_status, ParserDeviceDetailsUtils.setSensorDataStatus(holder.getView(R.id.sensor_status), result[1], deviceConnectActivity));
                 if (channelNumber.equals("3")){
                     holder.setText(R.id.sensor_data, result[2] + "%rh");
                 }else if (channelNumber.equals("21")){
@@ -271,31 +271,31 @@ public class DeviceDetailsFragment extends BaseFragment implements SwipeRefreshL
         String commandType = StringUtil.extractCommandType(message);
         switch (commandType) {
             case "040":
-                configDASActivity.sendCommonCommandImmediately("##9162\r\n");
+                deviceConnectActivity.sendCommonCommandImmediately("##9162\r\n");
                 Timber.i("查询安装位置：：==##9162");
                 DeviceVersionInfo versionInfo = ParserDeviceDetailsUtils.parserVersionInfo(message);
                 setVersionInfo(versionInfo);
                 break;
             case "916":
-                configDASActivity.sendCommonCommandImmediately("##041\r\n");
+                deviceConnectActivity.sendCommonCommandImmediately("##041\r\n");
                 Timber.i("查询设备状态1：：==##041");
                 String position = ParserDeviceDetailsUtils.parserInstallPosition(message);
                 tvInstallPosition.setText(position);
                 break;
             case "041":
-                configDASActivity.sendCommonCommandImmediately("##042\r\n");
+                deviceConnectActivity.sendCommonCommandImmediately("##042\r\n");
                 Timber.i("查询设备状态2：：==##042");
                 DeviceStatusOne statusOne = ParserDeviceDetailsUtils.parserDeviceStatusOne(message);
                 setDeviceStatusOne(statusOne);
                 break;
             case "042":
-                configDASActivity.sendCommonCommandImmediately("##043\r\n");
+                deviceConnectActivity.sendCommonCommandImmediately("##043\r\n");
                 Timber.i("查询设备状态3：==##043");
                 DeviceStatusTwo statusTwo = ParserDeviceDetailsUtils.parserDeviceStatusTwo(message);
                 setDeviceStatusTwo(statusTwo);
                 break;
             case "043":
-                configDASActivity.sendCommonCommandImmediately("##0441\r\n");
+                deviceConnectActivity.sendCommonCommandImmediately("##0441\r\n");
                 Timber.i("查询网络状态：中心1==##0441");
                 DeviceStatusThree statusThree = ParserDeviceDetailsUtils.parserDeviceStatusThree(message);
                 channelNumber = statusThree.getCollectorModel();
@@ -306,19 +306,19 @@ public class DeviceDetailsFragment extends BaseFragment implements SwipeRefreshL
 
                 switch (number) {
                     case "1":
-                        configDASActivity.sendCommonCommandImmediately("##0442\r\n");
+                        deviceConnectActivity.sendCommonCommandImmediately("##0442\r\n");
                         Timber.i("查询网络状态：中心2==##0442");
                         DeviceInternetStatus internetStatus1 = ParserDeviceDetailsUtils.parserInternetStatus(message);
                         setInternetStatus(internetStatus1, number);
                         break;
                     case "2":
-                        configDASActivity.sendCommonCommandImmediately("##0443\r\n");
+                        deviceConnectActivity.sendCommonCommandImmediately("##0443\r\n");
                         Timber.i("查询网络状态：中心3==##0443");
                         DeviceInternetStatus internetStatus2 = ParserDeviceDetailsUtils.parserInternetStatus(message);
                         setInternetStatus(internetStatus2, number);
                         break;
                     case "3":
-                        configDASActivity.sendCommonCommandImmediately("##014\r\n");
+                        deviceConnectActivity.sendCommonCommandImmediately("##014\r\n");
                         Timber.i("查询运营商信息：==##014");
                         DeviceInternetStatus internetStatus3 = ParserDeviceDetailsUtils.parserInternetStatus(message);
                         setInternetStatus(internetStatus3, number);
@@ -354,7 +354,7 @@ public class DeviceDetailsFragment extends BaseFragment implements SwipeRefreshL
     //设置设备状态2  ##042
     private void setDeviceStatusTwo(DeviceStatusTwo statusTwo) {
         //太阳能控制器
-        ParserDeviceDetailsUtils.setDeviceStatus(solarStatus, statusTwo.getSolarControllerStatus(), configDASActivity);
+        ParserDeviceDetailsUtils.setDeviceStatus(solarStatus, statusTwo.getSolarControllerStatus(), deviceConnectActivity);
         //solarStatus.setText(statusTwo.getSolarControllerStatus());
         solarVoltage.setText(statusTwo.getSolarPanelVoltage() + "V");
         batteryVoltage.setText(statusTwo.getBatteryVoltage() + "V");
@@ -362,13 +362,13 @@ public class DeviceDetailsFragment extends BaseFragment implements SwipeRefreshL
         rihaoBattery.setText(statusTwo.getDailyPowerConsumption() + "W");
 
         //机箱内部温湿度
-        ParserDeviceDetailsUtils.setDeviceStatus(caseInternalStatus, statusTwo.getInternalTempHumidityStatus(), configDASActivity);
+        ParserDeviceDetailsUtils.setDeviceStatus(caseInternalStatus, statusTwo.getInternalTempHumidityStatus(), deviceConnectActivity);
         //caseInternalStatus.setText(statusTwo.getInternalTempHumidityStatus());
         caseInternalTemperature.setText(statusTwo.getInternalTemperature() + "°");
         caseInternalHumidity.setText(statusTwo.getInternalHumidity() + "%");
 
         //机箱外部温湿度
-        ParserDeviceDetailsUtils.setDeviceStatus(caseExternalStatus, statusTwo.getExternalTempHumidityStatus(), configDASActivity);
+        ParserDeviceDetailsUtils.setDeviceStatus(caseExternalStatus, statusTwo.getExternalTempHumidityStatus(), deviceConnectActivity);
         //caseExternalStatus.setText(statusTwo.getExternalTempHumidityStatus());
         caseExternalTemperature.setText(statusTwo.getExternalTemperature() + "°");
         caseExternalHumidity.setText(statusTwo.getExternalHumidity() + "%");
@@ -425,20 +425,20 @@ public class DeviceDetailsFragment extends BaseFragment implements SwipeRefreshL
         switch (linkNumber) {
             case "1":
                 ParserDeviceDetailsUtils.setLinkStatus(linkOneStatus, linkOneSendData, linkOneUnsendData, internetStatus.getLinkStatus(),
-                        internetStatus.getLinkEnable(), internetStatus.getSentData(), internetStatus.getGeneratedData(), configDASActivity);
+                        internetStatus.getLinkEnable(), internetStatus.getSentData(), internetStatus.getGeneratedData(), deviceConnectActivity);
                 if (internetStatus.getOnlineRate() != null) {
                     linkOneOnlineRate.setText(internetStatus.getOnlineRate() + "%");
                 }
                 break;
             case "2":
                 ParserDeviceDetailsUtils.setLinkStatus(linkTwoStatus, linkTwoSendData, linkTwoUnsendData, internetStatus.getLinkStatus(),
-                        internetStatus.getLinkEnable(), internetStatus.getSentData(), internetStatus.getGeneratedData(), configDASActivity);
+                        internetStatus.getLinkEnable(), internetStatus.getSentData(), internetStatus.getGeneratedData(), deviceConnectActivity);
                 if (internetStatus.getOnlineRate() != null)
                     linkTwoOnlineRate.setText(internetStatus.getOnlineRate() + "%");
                 break;
             case "3":
                 ParserDeviceDetailsUtils.setLinkStatus(linkThreeStatus, linkThreeSendData, linkThreeUnsendData, internetStatus.getLinkStatus(),
-                        internetStatus.getLinkEnable(), internetStatus.getSentData(), internetStatus.getGeneratedData(), configDASActivity);
+                        internetStatus.getLinkEnable(), internetStatus.getSentData(), internetStatus.getGeneratedData(), deviceConnectActivity);
                 if (internetStatus.getOnlineRate() != null)
                     linkThreeOnlineRate.setText(internetStatus.getOnlineRate() + "%");
                 break;
@@ -486,7 +486,7 @@ public class DeviceDetailsFragment extends BaseFragment implements SwipeRefreshL
         if (!onRefreshFirst) {
             //发送指令
             ToastUtils.show("刷新指令成功");
-            configDASActivity.sendCommonCommandImmediately("##040\r\n");
+            deviceConnectActivity.sendCommonCommandImmediately("##040\r\n");
             onRefreshFirst = true;
         }
         if (prelongTim == 0) {
@@ -499,7 +499,7 @@ public class DeviceDetailsFragment extends BaseFragment implements SwipeRefreshL
             if (tenTime >= 10000) {
                 //发送指令
                 ToastUtils.show("刷新指令成功！");
-                configDASActivity.sendCommonCommandImmediately("##040\r\n");
+                deviceConnectActivity.sendCommonCommandImmediately("##040\r\n");
                 prelongTim = 0;
                 onRefreshFirst = false;
                 refreshLayout.setRefreshing(false);

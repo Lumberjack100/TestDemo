@@ -28,6 +28,7 @@ import com.shmedo.mcloudapp.entity.parameter.SetUserHeadPhotoParameter;
 import com.shmedo.mcloudapp.model.BaseObserver;
 import com.shmedo.mcloudapp.model.MDRetrofit;
 import com.shmedo.mcloudapp.model.common.CommonVariable;
+import com.shmedo.mcloudapp.ui.activity.device.QuickActivationActivity;
 import com.shmedo.mcloudapp.util.ActivityCollector;
 import com.shmedo.mcloudapp.util.ApiName;
 import com.shmedo.mcloudapp.util.DaoManager;
@@ -195,21 +196,28 @@ public class UserInfoActivity extends BaseActivity {
         }
     }
 
-    @OnClick({R.id.ll_change_photo, R.id.RL_advice, R.id.ll_userAbout, R.id.btn_exit})
+    @OnClick({R.id.ll_change_photo, R.id.RL_advice, R.id.ll_userAbout, R.id.btn_exit, R.id.ll_activation})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.ll_change_photo:
 //                myMenu.show();
                 break;
+
             case R.id.RL_advice: //基本资料
 
                 break;
+
             case R.id.ll_userAbout:
                 Intent intent = new Intent(this, AboutAppActivity.class);
                 startActivity(intent);
                 break;
+
             case R.id.btn_exit:
                 exitApp();
+                break;
+
+            case R.id.ll_activation: //快速激活
+                QuickActivationActivity.startActivity(this);
                 break;
         }
     }

@@ -66,9 +66,11 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
 
     public boolean isExitMode = false;
 
+    protected boolean isQuickActivation = false;
+
     private String errMsg = "";
 
-    private String SN = MCloudApp.getCurDeviceToken();
+    protected String SN = MCloudApp.getCurDeviceToken();
 
     private String macAddress = MCloudApp.getCurDeviceMacAddr();
 
@@ -351,10 +353,14 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
                 case Constants.VERIFY_RESULT:
                     stopProgressRunnable();
                     if (msg.obj.equals("1")) {
-                        errMsg = "查询设备参数超时，请尝试重新连接";
-                        startProgressRunnable("查询设备配置参数...", 10000);
-                        obtainDeviceConfigInfoCmd();
-                        ToastUtils.show("蓝牙连接成功");
+                        if (isQuickActivation) {
+                            sendActivateDeviceCmd();
+                        } else {
+                            ToastUtils.show("蓝牙连接成功");
+                            errMsg = "查询设备参数超时，请尝试重新连接";
+                            startProgressRunnable("查询设备配置参数...", 10000);
+                            obtainDeviceConfigInfoCmd();
+                        }
                     } else {
                         ToastUtils.show("蓝牙认证失败!");
                         setAutoConnectBlueAfterDisconnect();
@@ -560,6 +566,9 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
         }
     }
 
+    protected void sendActivateDeviceCmd() {
+
+    }
 
     /**
      * 查询设备的配置参数信息

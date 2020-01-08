@@ -263,10 +263,33 @@
 
     </RelativeLayout>
 
-    <View
+    <RelativeLayout
+        android:id="@+id/ll_activation"
         android:layout_width="match_parent"
-        android:layout_height="0.5dp"
-        android:background="@color/divide_line_color" />
+        android:layout_height="50dp"
+        android:layout_marginTop="15dp"
+        android:background="@drawable/bg_setting_list_item"
+        android:paddingLeft="45dp"
+        android:paddingRight="15dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:text="快速激活"
+            android:textColor="@color/gray_818182"
+            android:textSize="14sp" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:src="@drawable/icon_right" />
+
+    </RelativeLayout>
+
 
     <RelativeLayout
         android:id="@+id/RL_advice"
