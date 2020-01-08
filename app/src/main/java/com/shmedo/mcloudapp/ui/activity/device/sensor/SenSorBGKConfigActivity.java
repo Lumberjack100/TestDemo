@@ -30,6 +30,7 @@ import com.shmedo.mcloudapp.inter.MyOnClickListener;
 import com.shmedo.mcloudapp.model.Extras;
 import com.shmedo.mcloudapp.ui.activity.device.BaseDeviceConnectActivity;
 import com.shmedo.mcloudapp.ui.activity.device.sensor.dialog.DialogFactory;
+import com.shmedo.mcloudapp.util.KeyBordUtils;
 import com.shmedo.mcloudapp.util.StringUtil;
 import com.shmedo.mcloudapp.util.bleutil.BlueResultParserUtil;
 
@@ -715,7 +716,9 @@ public class SenSorBGKConfigActivity extends BaseDeviceConnectActivity {
 
     private MyOnClickListener addClickListener = new MyOnClickListener() {
         @Override
-        public boolean onSureClick(View v) {
+        public boolean onSureClick(View view) {
+            KeyBordUtils.hideSoftKeyboard(view);
+
             List<CollectorSensorParamsInfoSub> paramsInfoSubList = new ArrayList<>();
             paramsInfoSubList.addAll(collectorSensorHashMap.values());
             if (paramsInfoSubList.isEmpty()) {
@@ -735,6 +738,8 @@ public class SenSorBGKConfigActivity extends BaseDeviceConnectActivity {
 
         @Override
         public void onCancelClick(View view, String channelNumber) {
+            KeyBordUtils.hideSoftKeyboard(view);
+
             switch (channelNumber) {
                 case "00":
                     switchButton1.setCheckedImmediatelyNoEvent(false);
@@ -800,7 +805,9 @@ public class SenSorBGKConfigActivity extends BaseDeviceConnectActivity {
 
     private MyOnClickListener modifyClickListener = new MyOnClickListener() {
         @Override
-        public boolean onSureClick(View v) {
+        public boolean onSureClick(View view) {
+            KeyBordUtils.hideSoftKeyboard(view);
+
             List<CollectorSensorParamsInfoSub> paramsInfoSubList = new ArrayList<>();
             paramsInfoSubList.addAll(collectorSensorHashMap.values());
             if (paramsInfoSubList.isEmpty()) {
@@ -820,7 +827,7 @@ public class SenSorBGKConfigActivity extends BaseDeviceConnectActivity {
 
         @Override
         public void onCancelClick(View view, String channelNumber) {
-
+            KeyBordUtils.hideSoftKeyboard(view);
         }
     };
     /**

@@ -2,6 +2,7 @@ package com.shmedo.mcloudapp.ui.activity.device.sensor.dialog;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.text.InputFilter;
 import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.View;
@@ -82,6 +83,11 @@ public class DialogStyle02 implements IDialogOpt<CollectorSensorParamsInfoSub> {
         final EditText mEtTriggerThreshold = contentView.findViewById(R.id.et_trigger_threshold);
         final EditText mEtRevised = contentView.findViewById(R.id.et_revised);
         final EditText mEtNote = contentView.findViewById(R.id.et_note);
+
+        mEtModbusAddress.setFilters(new InputFilter[]{new InputFilter.LengthFilter(2)});
+        mEtTriggerThreshold.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
+        mEtRevised.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
+
 
         collectorSensorParamsInfoSub = info;
         CollectorModel collectorModel = CollectorModel.value(collectorSensorParamsInfoSub.getCollectorModel());

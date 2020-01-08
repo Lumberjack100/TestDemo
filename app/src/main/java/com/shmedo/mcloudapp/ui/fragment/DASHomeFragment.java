@@ -1,6 +1,7 @@
 package com.shmedo.mcloudapp.ui.fragment;
 
 
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -62,6 +63,8 @@ import timber.log.Timber;
  */
 public class DASHomeFragment extends BaseFragment {
 
+    public static final int REQUEST_CODE_COLLECTOR_CONFIG = 0x001;
+
     private static final int DEVICE_ENABLE = 0x0002;
 
     private static final int DEVICE_LOCK = 0x0003;
@@ -109,9 +112,9 @@ public class DASHomeFragment extends BaseFragment {
     @BindView(R.id.sensor_setting_layout)
     View sensorSettingLayout;
 
-    private TextView mTvBluetoothConnect, mTvDeviceEnable, mTvBreakAlarm;
+    private TextView mTvBluetoothConnect, mTvDeviceActivation, mTvBreakAlarm;
 
-    private SwitchButton mSbBluetoothConnect, mSbDeviceEnable, mSbBleakAlarm;
+    private SwitchButton mSbBluetoothConnect, mSbDeviceActivation, mSbBleakAlarm;
 
     private Spinner mSpDebugMode, mSpSwitch, mSpRain;
 
@@ -195,8 +198,8 @@ public class DASHomeFragment extends BaseFragment {
         mSbBluetoothConnect = bluetoothConnectLayout.findViewById(R.id.switchButton);
 
         ((TextView) deviceEnableLayout.findViewById(R.id.tv_config_name)).setText("设备启用状态");
-        mTvDeviceEnable = deviceEnableLayout.findViewById(R.id.tv_device_state);
-        mSbDeviceEnable = deviceEnableLayout.findViewById(R.id.switchButton);
+        mTvDeviceActivation = deviceEnableLayout.findViewById(R.id.tv_device_state);
+        mSbDeviceActivation = deviceEnableLayout.findViewById(R.id.switchButton);
 
         ((TextView) debugModelLayout.findViewById(R.id.tv_config_name)).setText("调试模式");
         mSpDebugMode = debugModelLayout.findViewById(R.id.spinner);
@@ -240,19 +243,19 @@ public class DASHomeFragment extends BaseFragment {
         });
 
         //设备启用状态开关
-        mSbDeviceEnable.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        mSbDeviceActivation.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, final boolean isChecked) {
                 if (!MCloudApp.isIsBluetoothDeviceConnected()) {
                     ToastUtils.show(getString(R.string.param_config_bluetooth_disconnect_warn));
-                    mSbDeviceEnable.setCheckedImmediatelyNoEvent(!isChecked);
+                    mSbDeviceActivation.setCheckedImmediatelyNoEvent(!isChecked);
                     return;
                 }
 
                 if (isChecked) {
                     //发送激活DAS命令
                     configDASActivity.sendCommonCommand("##0182\r\n");
-                    setSwitchViewState(true, mTvDeviceEnable, "已激活");
+                    setSwitchViewState(true, mTvDeviceActivation, "已激活");
                 } else {
                     showCloseSwitchButtonDialog(getString(R.string.device_enable_state_close_warn), DEVICE_ENABLE);
                 }
@@ -428,7 +431,7 @@ public class DASHomeFragment extends BaseFragment {
                     ToastUtils.show(getString(R.string.param_config_bluetooth_disconnect_warn));
                     return;
                 }
-                GeneralSettingActivity.startActivity(configDASActivity, collectorConfigInfo, collectorModel);
+                GeneralSettingActivity.startActivityForResultByFragment(this, REQUEST_CODE_COLLECTOR_CONFIG, collectorConfigInfo, collectorModel);
                 break;
 
             case R.id.rl_mqtt_setting:
@@ -503,12 +506,12 @@ public class DASHomeFragment extends BaseFragment {
         //设备状态
         switch (baseConfigInfo.getEquipmentStatus()) {
             case STANDBY:   //待机
-                mSbDeviceEnable.setCheckedImmediatelyNoEvent(false);
-                setSwitchViewState(false, mTvDeviceEnable, "已待机");
+                mSbDeviceActivation.setCheckedImmediatelyNoEvent(false);
+                setSwitchViewState(false, mTvDeviceActivation, "已待机");
                 break;
             case ACTIVATION:    //激活
-                mSbDeviceEnable.setCheckedImmediatelyNoEvent(true);
-                setSwitchViewState(true, mTvDeviceEnable, "已激活");
+                mSbDeviceActivation.setCheckedImmediatelyNoEvent(true);
+                setSwitchViewState(true, mTvDeviceActivation, "已激活");
                 break;
         }
 
@@ -623,14 +626,18 @@ public class DASHomeFragment extends BaseFragment {
             mSbBluetoothConnect.setCheckedImmediatelyNoEvent(true);
             setSwitchViewState(true, mTvBluetoothConnect, "已连接");
 
+            mTvDeviceActivation.setTextColor(getResources().getColor(R.color.colorPrimary));
+            mTvBreakAlarm.setTextColor(getResources().getColor(R.color.colorPrimary));
             mSpDebugMode.setEnabled(true);
             mSpSwitch.setEnabled(true);
             mSpRain.setEnabled(true);
 
         } else {
             mSbBluetoothConnect.setCheckedImmediatelyNoEvent(false);
-            setSwitchViewState(false, mTvBluetoothConnect, "已断开");
+            setSwitchViewState(false, mTvBluetoothConnect, "待连接");
 
+            mTvDeviceActivation.setTextColor(getResources().getColor(R.color.gray_807B7B));
+            mTvBreakAlarm.setTextColor(getResources().getColor(R.color.gray_807B7B));
             mSpDebugMode.setEnabled(false);
             mSpSwitch.setEnabled(false);
             mSpRain.setEnabled(false);
@@ -657,7 +664,7 @@ public class DASHomeFragment extends BaseFragment {
                             case DEVICE_ENABLE:
                                 //发送关闭DAS命令
                                 configDASActivity.sendCommonCommand("##0181\r\n");
-                                setSwitchViewState(true, mTvDeviceEnable, "已待机");
+                                setSwitchViewState(false, mTvDeviceActivation, "已待机");
                                 break;
 
 //                            case OSMOMETER_CONFIG:
@@ -674,7 +681,7 @@ public class DASHomeFragment extends BaseFragment {
                         dialog.dismiss();
                         switch (index) {
                             case DEVICE_ENABLE:
-                                mSbDeviceEnable.setCheckedImmediatelyNoEvent(true);
+                                mSbDeviceActivation.setCheckedImmediatelyNoEvent(true);
                                 break;
 
 //                            case OSMOMETER_CONFIG:
@@ -693,6 +700,22 @@ public class DASHomeFragment extends BaseFragment {
         super.onHiddenChanged(hidden);
         if (!hidden) {
             //TODO  fragment  显示或隐藏时会触发此事件
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        super.onActivityResult(requestCode, resultCode, intent);
+        if (resultCode != Activity.RESULT_OK)
+            return;
+
+        switch (requestCode) {
+            case REQUEST_CODE_COLLECTOR_CONFIG:
+                if (intent != null) {
+                    collectorConfigInfo = (CollectorConfigInfo) intent.getSerializableExtra(Extras.PARAM_CONFIG_INFO);
+                    configDASActivity.isConfigChange = true;
+                }
+                break;
         }
     }
 

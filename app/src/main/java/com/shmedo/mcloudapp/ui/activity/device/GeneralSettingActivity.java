@@ -3,6 +3,7 @@ package com.shmedo.mcloudapp.ui.activity.device;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.InputFilter;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
@@ -11,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 
 import com.hjq.toast.ToastUtils;
 import com.shmedo.das.common.CollectorConfigInfo;
@@ -67,6 +69,11 @@ public class GeneralSettingActivity extends BaseDeviceConnectActivity {
 
     private String collectorModel;//采集器类型
 
+    private String collectorAddress;//采集器地址
+    private String calculatTime;//解算时间
+    private String standbyTime;//待机时间
+    private String collectTime;//采集时间
+
     private String cmdCollectorAddress;//采集器地址
 
     private String cmdCalculatTime;//解算时间
@@ -75,13 +82,21 @@ public class GeneralSettingActivity extends BaseDeviceConnectActivity {
 
     private String cmdCollectTime;//采集时间
 
+    private CollectorConfigInfo collectorConfigInfo;
+
 
     public static void startActivity(Context context, CollectorConfigInfo collectorConfigInfo, String collectorModel) {
         Intent intent = new Intent(context, GeneralSettingActivity.class);
         intent.putExtra(Extras.PARAM_CONFIG_INFO, collectorConfigInfo);
         intent.putExtra(Extras.COLLECTOR_MODE, collectorModel);
-
         context.startActivity(intent);
+    }
+
+    public static void startActivityForResultByFragment(Fragment context, int requestCode, CollectorConfigInfo collectorConfigInfo, String collectorModel) {
+        Intent intent = new Intent(context.getActivity(), GeneralSettingActivity.class);
+        intent.putExtra(Extras.PARAM_CONFIG_INFO, collectorConfigInfo);
+        intent.putExtra(Extras.COLLECTOR_MODE, collectorModel);
+        context.startActivityForResult(intent, requestCode);
     }
 
     @Override
@@ -93,7 +108,15 @@ public class GeneralSettingActivity extends BaseDeviceConnectActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        initView();
         parseIntent();
+    }
+
+    private void initView() {
+        mEtCollectorAddress.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
+        mEtCalculatingTime.setFilters(new InputFilter[]{new InputFilter.LengthFilter(4)});
+        mEtStandbyTime.setFilters(new InputFilter[]{new InputFilter.LengthFilter(4)});
+        mEtCollectTime.setFilters(new InputFilter[]{new InputFilter.LengthFilter(5)});
     }
 
 
@@ -105,7 +128,7 @@ public class GeneralSettingActivity extends BaseDeviceConnectActivity {
             return;
 
         if (intent.getExtras().containsKey(Extras.PARAM_CONFIG_INFO)) {
-            CollectorConfigInfo collectorConfigInfo = (CollectorConfigInfo) intent.getSerializableExtra(Extras.PARAM_CONFIG_INFO);
+            collectorConfigInfo = (CollectorConfigInfo) intent.getSerializableExtra(Extras.PARAM_CONFIG_INFO);
             if (collectorConfigInfo != null) {
                 mEtCollectorAddress.setText(collectorConfigInfo.getCollectorAddress());
                 mEtCalculatingTime.setText(collectorConfigInfo.getWorkTime());
@@ -155,10 +178,10 @@ public class GeneralSettingActivity extends BaseDeviceConnectActivity {
 
 
     private void sendCollector() {
-        String collectorAddress = mEtCollectorAddress.getText().toString().trim();
-        String calculatTime = mEtCalculatingTime.getText().toString().trim();
-        String standbyTime = mEtStandbyTime.getText().toString().trim();
-        String collectTime = mEtCollectTime.getText().toString().trim();
+        collectorAddress = mEtCollectorAddress.getText().toString().trim();
+        calculatTime = mEtCalculatingTime.getText().toString().trim();
+        standbyTime = mEtStandbyTime.getText().toString().trim();
+        collectTime = mEtCollectTime.getText().toString().trim();
 
         if (TextUtils.isEmpty(collectorAddress) || Integer.parseInt(collectorAddress) <= 0 || Integer.parseInt(collectorAddress) > 255) {
             ToastUtils.show("请输入正确的采集器地址");
@@ -234,11 +257,19 @@ public class GeneralSettingActivity extends BaseDeviceConnectActivity {
                 stopProgressRunnable();
                 return;
             }
+            collectorConfigInfo.setCollectorAddress(collectorAddress);
+            collectorConfigInfo.setWorkTime(calculatTime);
+            collectorConfigInfo.setStandbyTime(standbyTime);
+            collectorConfigInfo.setCollectorInterval(collectTime);
+
             stopProgressRunnable();
             ToastUtils.show("设置完成");
             hander.postDelayed(new Runnable() {
                 @Override
                 public void run() {
+                    Intent intent = getIntent();
+                    intent.putExtra(Extras.PARAM_CONFIG_INFO, collectorConfigInfo);
+                    setResult(RESULT_OK, intent);
                     finish();
                 }
             }, 2000);
