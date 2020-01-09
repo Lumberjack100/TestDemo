@@ -749,6 +749,12 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
     }
 
     @Override
+    protected void onDestroy() {
+        dismissLoadingDialog();
+        super.onDestroy();
+    }
+
+    @Override
     public void onBackPressed() {
         if (!HandleBackUtil.handleBackPress(this)) {
             if (MCloudApp.isIsBluetoothDeviceConnected()) {
