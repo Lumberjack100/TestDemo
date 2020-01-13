@@ -175,8 +175,10 @@ public class DeviceDetailsFragment extends BaseFragment implements SwipeRefreshL
     //在线率
     @BindView(R.id.link_one_online_rate)
     TextView linkOneOnlineRate;
+
     @BindView(R.id.link_two_online_rate)
     TextView linkTwoOnlineRate;
+
     @BindView(R.id.link_three_online_rate)
     TextView linkThreeOnlineRate;
     //安装位置
@@ -225,7 +227,6 @@ public class DeviceDetailsFragment extends BaseFragment implements SwipeRefreshL
     private void initData() {
         deviceConnectActivity.sendCommonCommandImmediately("##040\r\n");
         Timber.i("查询设备版本信息：==##040");
-
     }
 
 
@@ -267,43 +268,39 @@ public class DeviceDetailsFragment extends BaseFragment implements SwipeRefreshL
     }
 
     private void setResultData(String message) {
-        Timber.i("DeviceDetailsFragment：：======" + message);
+        Timber.i("DeviceDetailsFragment：======" + message);
         String commandType = StringUtil.extractCommandType(message);
         switch (commandType) {
             case "040":
-                deviceConnectActivity.sendCommonCommandImmediately("##9162\r\n");
-                Timber.i("查询安装位置：：==##9162");
                 DeviceVersionInfo versionInfo = ParserDeviceDetailsUtils.parserVersionInfo(message);
                 setVersionInfo(versionInfo);
+                deviceConnectActivity.sendCommonCommandImmediately("##9162\r\n");
+                Timber.i("查询安装位置：==##9162");
                 break;
+
             case "916":
-                deviceConnectActivity.sendCommonCommandImmediately("##041\r\n");
-                Timber.i("查询设备状态1：：==##041");
                 String position = ParserDeviceDetailsUtils.parserInstallPosition(message);
                 tvInstallPosition.setText(position);
+                deviceConnectActivity.sendCommonCommandImmediately("##041\r\n");
+                Timber.i("查询设备状态1：==##041");
                 break;
+
             case "041":
-                deviceConnectActivity.sendCommonCommandImmediately("##042\r\n");
-                Timber.i("查询设备状态2：：==##042");
                 DeviceStatusOne statusOne = ParserDeviceDetailsUtils.parserDeviceStatusOne(message);
                 setDeviceStatusOne(statusOne);
+                deviceConnectActivity.sendCommonCommandImmediately("##014\r\n");
+                Timber.i("查询运营商信息：==##014");
                 break;
-            case "042":
-                deviceConnectActivity.sendCommonCommandImmediately("##043\r\n");
-                Timber.i("查询设备状态3：==##043");
-                DeviceStatusTwo statusTwo = ParserDeviceDetailsUtils.parserDeviceStatusTwo(message);
-                setDeviceStatusTwo(statusTwo);
-                break;
-            case "043":
+
+            case "014":
+                OperatorInformation operatorInformation = ParserDeviceDetailsUtils.parserOperatorInformation(message);
+                setOperatorInformation(operatorInformation);
                 deviceConnectActivity.sendCommonCommandImmediately("##0441\r\n");
                 Timber.i("查询网络状态：中心1==##0441");
-                DeviceStatusThree statusThree = ParserDeviceDetailsUtils.parserDeviceStatusThree(message);
-                channelNumber = statusThree.getCollectorModel();
-                setDeviceStatusThree(statusThree);
                 break;
+
             case "044":
                 String number = message.replace(CommandResult.COMMAND_RESULT_HEADER, "").substring(3, 4);
-
                 switch (number) {
                     case "1":
                         deviceConnectActivity.sendCommonCommandImmediately("##0442\r\n");
@@ -311,23 +308,34 @@ public class DeviceDetailsFragment extends BaseFragment implements SwipeRefreshL
                         DeviceInternetStatus internetStatus1 = ParserDeviceDetailsUtils.parserInternetStatus(message);
                         setInternetStatus(internetStatus1, number);
                         break;
+
                     case "2":
                         deviceConnectActivity.sendCommonCommandImmediately("##0443\r\n");
                         Timber.i("查询网络状态：中心3==##0443");
                         DeviceInternetStatus internetStatus2 = ParserDeviceDetailsUtils.parserInternetStatus(message);
                         setInternetStatus(internetStatus2, number);
                         break;
+
                     case "3":
-                        deviceConnectActivity.sendCommonCommandImmediately("##014\r\n");
-                        Timber.i("查询运营商信息：==##014");
                         DeviceInternetStatus internetStatus3 = ParserDeviceDetailsUtils.parserInternetStatus(message);
                         setInternetStatus(internetStatus3, number);
+                        deviceConnectActivity.sendCommonCommandImmediately("##042\r\n");
+                        Timber.i("查询设备状态2：：==##042");
                         break;
                 }
                 break;
-            case "014":
-                OperatorInformation operatorInformation = ParserDeviceDetailsUtils.parserOperatorInformation(message);
-                setOperatorInformation(operatorInformation);
+
+            case "042":
+                deviceConnectActivity.sendCommonCommandImmediately("##043\r\n");
+                Timber.i("查询设备状态3：==##043");
+                DeviceStatusTwo statusTwo = ParserDeviceDetailsUtils.parserDeviceStatusTwo(message);
+                setDeviceStatusTwo(statusTwo);
+                break;
+
+            case "043":
+                DeviceStatusThree statusThree = ParserDeviceDetailsUtils.parserDeviceStatusThree(message);
+                channelNumber = statusThree.getCollectorModel();
+                setDeviceStatusThree(statusThree);
                 break;
         }
     }
@@ -343,12 +351,11 @@ public class DeviceDetailsFragment extends BaseFragment implements SwipeRefreshL
     private void setDeviceStatusOne(DeviceStatusOne statusOne) {
         simCardNumber.setText(statusOne.getSimNumber());
         imeiNumber.setText(statusOne.getImeiNumber());
+
         StringBuilder stringBuilder = new StringBuilder();
         String startCode1 = StringUtil.formatStringTwo(statusOne.getStartCodeOne());
         String startCode2 = StringUtil.formatStringTwo(statusOne.getStartCodeTwo());
-
         deviceStartCode.setText(stringBuilder.append(startCode1).append(startCode2).toString());
-
     }
 
     //设置设备状态2  ##042
