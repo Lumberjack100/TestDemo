@@ -171,7 +171,6 @@ public class BlueToothListActivity extends AppCompatActivity implements MultiIte
                 break;
 
             case R.id.LL_close:
-                mdBluetoothManager.stopScan();
                 finish();
                 break;
         }
@@ -266,6 +265,7 @@ public class BlueToothListActivity extends AppCompatActivity implements MultiIte
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        mdBluetoothManager.stopScan();
         mdBluetoothManager.removeBluetoothEventHandler(mdBluetoothEventHandler);
     }
 }
