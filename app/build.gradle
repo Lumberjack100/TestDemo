@@ -31,8 +31,8 @@ android {
         versionName rootProject.ext.android.versionName
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
-        manifestPlaceholders = ["mapApikey":"6694cc57b25bd627c6c4e7aa2df0a081",
-                                "pgyerKey":"5cc3cf1c0c3c3e204015fa232eedb439"]
+        manifestPlaceholders = ["mapApikey":"31d7ee436c402270e11183ce1b5d01dc",
+                                "pgyerKey":"725bb8b9ee91e100e28d6623d8f8c86b"]
     }
 
     signingConfigs {

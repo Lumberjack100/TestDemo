@@ -4,11 +4,11 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
-
 import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
@@ -148,7 +148,18 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
         mdBluetoothManager.scanDevice(10, this);
         if (null != mBluetoothAdapter && mBluetoothAdapter.isEnabled()) {
             errMsg = "未搜索到此设备，请稍后尝试";
-            startProgressRunnable("正在搜索设备：" + SN, 10000);
+            startProgressRunnable("正在搜索设备：" + SN, 5000);
+
+            if (loadingDialog != null) {
+                loadingDialog.setCancelable(true);
+                loadingDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+                    @Override
+                    public void onCancel(DialogInterface dialog) {
+                        stopProgressRunnable();
+                        mdBluetoothManager.stopScan();
+                    }
+                });
+            }
         }
     }
 
