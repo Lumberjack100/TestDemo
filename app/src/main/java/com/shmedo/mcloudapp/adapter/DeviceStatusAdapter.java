@@ -4,12 +4,13 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.entity.SensorAndCount;
 import com.shmedo.mcloudapp.entity.StatusInfoResult;
@@ -50,7 +51,7 @@ public class DeviceStatusAdapter extends RecyclerView.Adapter<DeviceStatusAdapte
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, final int position) {
 
-        holder.tv_deviceStatus.setText(data.get(position).getDeviceTypeName());
+        holder.ivState.setImageResource(R.drawable.ic_dot_unassigned);
         if (data.get(position).getLocal()) {
             holder.tv_deviceToken.setText(data.get(position).getDeviceName() + "\n" + "本地设备");
         } else {
@@ -84,7 +85,6 @@ public class DeviceStatusAdapter extends RecyclerView.Adapter<DeviceStatusAdapte
             holder.tv_sensorType2.setText("x" + sensorAndCountList.get(1).getSensorCount());
 
         } else {
-
             holder.tv_sensorType1.setVisibility(View.VISIBLE);
             holder.tv_sensorType2.setVisibility(View.GONE);
             holder.tv_sensorMore.setVisibility(View.GONE);
@@ -103,7 +103,7 @@ public class DeviceStatusAdapter extends RecyclerView.Adapter<DeviceStatusAdapte
 
     class MyViewHolder extends RecyclerView.ViewHolder {
 
-        private TextView tv_deviceStatus;
+        private ImageView ivState;
         private TextView tv_deviceToken;
         private LinearLayout ll_SensorType;
         private TextView tv_sensorType1;
@@ -115,7 +115,7 @@ public class DeviceStatusAdapter extends RecyclerView.Adapter<DeviceStatusAdapte
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
-            tv_deviceStatus = itemView.findViewById(R.id.tv_deviceStatus);
+            ivState = itemView.findViewById(R.id.iv_state);
             tv_deviceToken = itemView.findViewById(R.id.tv_deviceToken);
             ll_SensorType = itemView.findViewById(R.id.ll_SensorType);
             tv_sensorType1 = itemView.findViewById(R.id.tv_sensor_type_1);

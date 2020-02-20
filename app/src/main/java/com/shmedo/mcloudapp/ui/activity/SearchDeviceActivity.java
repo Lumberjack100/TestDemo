@@ -26,7 +26,7 @@ import com.shmedo.mcloudapp.util.KeyBordUtils;
 import com.shmedo.mcloudapp.util.StringUtil;
 import com.shmedo.mcloudapp.views.ClearEditText;
 import com.shmedo.mcloudapp.views.DeviceSensorDialog;
-import com.shmedo.mcloudapp.views.DividerItemDecoration;
+import com.shmedo.mcloudapp.views.recycleviewitemdivider.DividerItemDecoration;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -83,7 +83,6 @@ public class SearchDeviceActivity extends BaseActivity implements MultiItemTypeA
         adapter = new CommonAdapter<StatusInfoResult>(this, R.layout.item_all_device, statusInfoList) {
             @Override
             protected void convert(ViewHolder holder, final StatusInfoResult statusInfoResult, final int position) {
-                holder.setText(R.id.tv_deviceStatus, statusInfoResult.getDeviceName());
                 holder.setText(R.id.tv_deviceToken, statusInfoResult.getDeviceToken() + "\n" + (statusInfoResult.getLocal() ? "本地设备" : "云端设备"));
                 holder.setText(R.id.tv_electricity, statusInfoResult.getVoltage() + "V");
                 holder.setText(R.id.tv_gprs, StringUtil.setSize(statusInfoResult.getGprs()));

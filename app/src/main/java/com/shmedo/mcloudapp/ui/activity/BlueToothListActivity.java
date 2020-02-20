@@ -32,7 +32,7 @@ import com.shmedo.mcloudapp.bluetooth.BluetoothEventHandler;
 import com.shmedo.mcloudapp.bluetooth.MdBluetoothManager;
 import com.shmedo.mcloudapp.entity.ble.MDevice;
 import com.shmedo.mcloudapp.util.ActivityCollector;
-import com.shmedo.mcloudapp.views.DividerItemDecoration;
+import com.shmedo.mcloudapp.views.recycleviewitemdivider.DividerItemDecoration;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;

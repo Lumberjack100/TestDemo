@@ -40,7 +40,7 @@ import com.shmedo.mcloudapp.util.DaoManager;
 import com.shmedo.mcloudapp.util.GsonFactory;
 import com.shmedo.mcloudapp.util.XPermissionUtils;
 import com.shmedo.mcloudapp.views.DeviceSensorDialog;
-import com.shmedo.mcloudapp.views.DividerItemDecoration;
+import com.shmedo.mcloudapp.views.recycleviewitemdivider.DividerItemDecoration;
 import com.shmedo.mcloudapp.views.EmptyDataView;
 import com.shmedo.mcloudapp.views.LoadingDialog;
 

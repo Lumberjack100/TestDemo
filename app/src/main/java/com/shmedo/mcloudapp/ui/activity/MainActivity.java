@@ -18,8 +18,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.appcompat.widget.Toolbar;
-
 import com.amap.api.location.AMapLocation;
 import com.amap.api.location.AMapLocationClient;
 import com.amap.api.location.AMapLocationClientOption;
@@ -60,10 +58,8 @@ import com.shmedo.mcloudapp.util.ApiName;
 import com.shmedo.mcloudapp.util.DaoManager;
 import com.shmedo.mcloudapp.util.DensityUtil;
 import com.shmedo.mcloudapp.util.GsonFactory;
-import com.shmedo.mcloudapp.util.StartActivityUtil;
 import com.shmedo.mcloudapp.util.common.MapManagerUtil;
 import com.shmedo.mcloudapp.util.permission.UpdataManagerUtil;
-import com.shmedo.mcloudapp.views.LoadingDialog;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -83,9 +79,6 @@ import timber.log.Timber;
 public class MainActivity extends BaseActivity implements LocationSource, AMapLocationListener {
 
     public static final int REQUEST_CODE_SCAN = 0x001;
-
-    @BindView(R.id.toolbar)
-    Toolbar mToolbar;
 
     @BindView(R.id.img_user)
     ImageView mImgUser;
@@ -133,7 +126,6 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
     }
 
 
-
     @Override
     protected int initContentView() {
         return R.layout.activity_main;
@@ -146,7 +138,7 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
         //在activity执行onCreate时执行mMapView.onCreate(savedInstanceState)，创建地图
         mMapView.onCreate(savedInstanceState);
 
-        UpdataManagerUtil.requestPermissionForInstallPackage(this,false);//版本更新
+        UpdataManagerUtil.requestPermissionForInstallPackage(this, false);//版本更新
         hidingConnectionView();
         initMap();
 
@@ -414,8 +406,8 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
                 UserInfoActivity.startActivity(this);
                 break;
 
-            case R.id.img_equipment://设备管理
-                StartActivityUtil.comeOnBaby(this, DeviceManageActivity.class);
+            case R.id.img_equipment://项目管理
+                ProjectListActivity.startActivity(this);
                 break;
 
         }
@@ -439,7 +431,7 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
     }
 
     /**
-     *  刷新点击事件
+     * 刷新点击事件
      */
     public void processRefreshListener() {
         ToastUtils.show("功能开发中...");
@@ -554,7 +546,7 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
 
     private void scanResult(String result) {
         if (TextUtils.isEmpty(result)) {
-            LoadingDialog.showScanResultDialog(this, "请扫码正确的设备二维码");
+            showTipDialog("请扫码正确的设备二维码");
             return;
         }
 
@@ -572,28 +564,28 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
      */
     private void scan(String deviceInfo) {
         if (!deviceInfo.startsWith("MEDO")) {
-            LoadingDialog.showScanResultDialog(this, "请扫码正确的设备二维码");
+            showTipDialog("请扫码正确的设备二维码");
             return;
         }
 
         String[] localData = deviceInfo.split(",");
         if (localData.length != 3) {
-            LoadingDialog.showScanResultDialog(this, "请扫码正确的设备二维码");
+            showTipDialog("请扫码正确的设备二维码");
             return;
         }
 
         if (TextUtils.isEmpty(localData[0]) || TextUtils.isEmpty(localData[1]) || TextUtils.isEmpty(localData[2])) {
-            LoadingDialog.showScanResultDialog(this, "二维码信息不能为空");
+            showTipDialog("二维码信息不能为空");
             return;
         }
 
         if (localData[1].length() != 7) {
-            LoadingDialog.showScanResultDialog(this, "设备标识有误,请扫码正确的设备二维码");
+            showTipDialog("设备标识有误,请扫码正确的设备二维码");
             return;
         }
 
         if (!DeviceTypeEnum.value(localData[2])) {
-            LoadingDialog.showScanResultDialog(this, "此设备类型暂时不支持");
+            showTipDialog("此设备类型暂时不支持");
             return;
         }
 

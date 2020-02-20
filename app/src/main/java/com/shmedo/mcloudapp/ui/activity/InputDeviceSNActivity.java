@@ -14,7 +14,6 @@ import com.shmedo.mcloudapp.entity.DeviceBasicInfoResult;
 import com.shmedo.mcloudapp.entity.DeviceTypeEnum;
 import com.shmedo.mcloudapp.entity.event.MapDeviceEvent;
 import com.shmedo.mcloudapp.views.ClearEditText;
-import com.shmedo.mcloudapp.views.LoadingDialog;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -89,12 +88,12 @@ public class InputDeviceSNActivity extends BaseActivity {
     //MEDO,189150L,DAS
     private void scanResult(String snNumber, String deviceType) {
         if (snNumber.length() != 7) {
-            LoadingDialog.showScanResultDialog(this, "请输入正确的设备SN号");
+            showTipDialog("请输入正确的设备SN号");
             return;
         }
 
         if (!DeviceTypeEnum.value(deviceType)) {
-            LoadingDialog.showScanResultDialog(this, "此设备类型暂时不支持");
+            showTipDialog("此设备类型暂时不支持");
             return;
         }
 

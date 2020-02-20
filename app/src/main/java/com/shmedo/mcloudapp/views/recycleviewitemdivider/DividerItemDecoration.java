@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.views;
+package com.shmedo.mcloudapp.views.recycleviewitemdivider;
 
 import android.graphics.Canvas;
 import android.graphics.Rect;
@@ -7,6 +7,7 @@ import android.view.View;
 import androidx.recyclerview.widget.RecyclerView;
 import com.shmedo.mcloudapp.MCloudApp;
 import com.shmedo.mcloudapp.R;
+import com.shmedo.mcloudapp.views.ResCompat;
 
 /**
  * 项目名：  das-config-app

@@ -20,7 +20,6 @@ import com.shmedo.mcloudapp.entity.event.BluetoothStateEvent;
 import com.shmedo.mcloudapp.ui.activity.MainActivity;
 import com.shmedo.mcloudapp.ui.activity.ScanActivity;
 import com.shmedo.mcloudapp.util.XPermissionUtils;
-import com.shmedo.mcloudapp.views.LoadingDialog;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -105,7 +104,7 @@ public class QuickActivationActivity extends BaseDeviceConnectActivity {
     }
 
 
-    @OnClick({R.id.back,R.id.ll_scan})
+    @OnClick({R.id.back, R.id.ll_scan})
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.back:
@@ -204,7 +203,7 @@ public class QuickActivationActivity extends BaseDeviceConnectActivity {
 
     private void scanResult(String result) {
         if (TextUtils.isEmpty(result)) {
-            LoadingDialog.showScanResultDialog(this, "请扫码正确的设备二维码");
+            showTipDialog("请扫码正确的设备二维码");
             return;
         }
 
@@ -221,28 +220,28 @@ public class QuickActivationActivity extends BaseDeviceConnectActivity {
      */
     private void scan(String deviceInfo) {
         if (!deviceInfo.startsWith("MEDO")) {
-            LoadingDialog.showScanResultDialog(this, "请扫码正确的设备二维码");
+            showTipDialog("请扫码正确的设备二维码");
             return;
         }
 
         String[] localData = deviceInfo.split(",");
         if (localData.length != 3) {
-            LoadingDialog.showScanResultDialog(this, "请扫码正确的设备二维码");
+            showTipDialog("请扫码正确的设备二维码");
             return;
         }
 
         if (TextUtils.isEmpty(localData[0]) || TextUtils.isEmpty(localData[1]) || TextUtils.isEmpty(localData[2])) {
-            LoadingDialog.showScanResultDialog(this, "二维码信息不能为空");
+            showTipDialog("二维码信息不能为空");
             return;
         }
 
         if (localData[1].length() != 7) {
-            LoadingDialog.showScanResultDialog(this, "设备标识有误,请扫码正确的设备二维码");
+            showTipDialog("设备标识有误,请扫码正确的设备二维码");
             return;
         }
 
         if (!DeviceTypeEnum.value(localData[2])) {
-            LoadingDialog.showScanResultDialog(this, "此设备类型暂时不支持");
+            showTipDialog("此设备类型暂时不支持");
             return;
         }
         SN = localData[1];

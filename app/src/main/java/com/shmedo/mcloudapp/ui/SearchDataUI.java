@@ -39,7 +39,7 @@ import com.shmedo.mcloudapp.util.DensityUtil;
 import com.shmedo.mcloudapp.util.GsonFactory;
 import com.shmedo.mcloudapp.util.TimeUtil;
 import com.shmedo.mcloudapp.util.XPermissionUtils;
-import com.shmedo.mcloudapp.views.DividerItemDecoration;
+import com.shmedo.mcloudapp.views.recycleviewitemdivider.DividerItemDecoration;
 import com.shmedo.mcloudapp.views.TimePickerDialog;
 
 import java.util.ArrayList;

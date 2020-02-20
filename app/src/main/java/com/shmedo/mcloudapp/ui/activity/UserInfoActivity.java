@@ -39,7 +39,6 @@ import com.shmedo.mcloudapp.util.GsonFactory;
 import com.shmedo.mcloudapp.util.ImageUtil;
 import com.shmedo.mcloudapp.util.PhotoUtil;
 import com.shmedo.mcloudapp.util.XPermissionUtils;
-import com.shmedo.mcloudapp.views.LoadingDialog;
 import com.shmedo.mcloudapp.views.MyMenu;
 
 import java.io.File;
@@ -90,7 +89,6 @@ public class UserInfoActivity extends BaseActivity {
     private UserInfo userInfo;
     private UserInfo.UserBean user;
     private InputMethodManager imm;
-    private LoadingDialog mLoadingDialog;
     private MyMenu myMenu;
     private boolean isCamera = false;
 
@@ -148,7 +146,6 @@ public class UserInfoActivity extends BaseActivity {
 
 
     private void initView() {
-        mLoadingDialog = new LoadingDialog(this);
         myMenu = new MyMenu(this, "上传头像", "拍照", "从相册中选择");
         myMenu.setOnMenuClickListener(new MyMenu.MenuOnClickListener() {
             @Override
@@ -291,11 +288,11 @@ public class UserInfoActivity extends BaseActivity {
         parameter.setPhotoContent(fileContent);
         String json = GsonFactory.getGson().toJson(parameter);
         RequestBody body = RequestBody.create(CommonVariable.JSON_TYPE, json);
-        mLoadingDialog.showNoCancelDialog("正在上传...");
+        showLoadingDialog("正在上传...");
         MDRetrofit.getInstance().createService(ApiName.HTTPS).setUserHeadPhoto(body).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new BaseObserver<String>() {
             @Override
             public void Success(String s, String message) {
-                mLoadingDialog.dismiss();
+               dismissLoadingDialog();
                 ToastUtils.show("头像已上传");
 
                 initUserInfo();
@@ -303,7 +300,7 @@ public class UserInfoActivity extends BaseActivity {
 
             @Override
             public void Failure(String message) {
-                mLoadingDialog.dismiss();
+                dismissLoadingDialog();
                 ToastUtils.show("上传头像失败," + message);
             }
         });

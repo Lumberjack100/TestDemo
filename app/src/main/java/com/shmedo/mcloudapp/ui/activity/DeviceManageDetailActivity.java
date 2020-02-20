@@ -31,7 +31,7 @@ import com.shmedo.mcloudapp.model.common.CommonVariable;
 import com.shmedo.mcloudapp.util.ApiName;
 import com.shmedo.mcloudapp.util.GsonFactory;
 import com.shmedo.mcloudapp.views.ClearEditText;
-import com.shmedo.mcloudapp.views.DividerItemDecoration;
+import com.shmedo.mcloudapp.views.recycleviewitemdivider.DividerItemDecoration;
 import com.shmedo.mcloudapp.views.EmptyDataView;
 import com.shmedo.mcloudapp.views.LoadingDialog;
 

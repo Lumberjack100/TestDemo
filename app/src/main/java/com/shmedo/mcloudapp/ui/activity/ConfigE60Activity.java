@@ -7,8 +7,6 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.View;
 import android.webkit.DownloadListener;
@@ -19,6 +17,8 @@ import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -33,7 +33,6 @@ import com.shmedo.mcloudapp.model.MDRetrofit;
 import com.shmedo.mcloudapp.util.ApiName;
 import com.shmedo.mcloudapp.util.DaoManager;
 import com.shmedo.mcloudapp.util.WifiSupport;
-import com.shmedo.mcloudapp.views.LoadingDialog;
 import com.shmedo.mcloudapp.views.MyWebView;
 
 import butterknife.BindView;
@@ -49,7 +48,6 @@ public class ConfigE60Activity extends BaseActivity {
     @BindView(R.id.mWebView)
     MyWebView mMWebView;
 
-    private LoadingDialog mLoadingDialog;
     private MaterialDialog mMaterialDialog;
     private MaterialDialog.Builder mBuilder;
     private String deviceToken;
@@ -60,8 +58,7 @@ public class ConfigE60Activity extends BaseActivity {
     private String securityNo;
 
 
-
-    public static void startActivity(Context context,  DeviceBasicInfoResult deviceBasicInfoResult) {
+    public static void startActivity(Context context, DeviceBasicInfoResult deviceBasicInfoResult) {
         Intent intent = new Intent(context, ConfigE60Activity.class);
         intent.putExtra(Extras.DEVICE_E60, deviceBasicInfoResult);
         context.startActivity(intent);
@@ -83,8 +80,6 @@ public class ConfigE60Activity extends BaseActivity {
 
 
     private void initView() {
-        mLoadingDialog = new LoadingDialog(this);
-
         DeviceBasicInfoResult deviceBasicInfoResult = (DeviceBasicInfoResult) (getIntent().getSerializableExtra(Extras.DEVICE_E60));
         if (deviceBasicInfoResult != null) {
             deviceToken = deviceBasicInfoResult.getDeviceToken() != null ? deviceBasicInfoResult.getDeviceToken() : "";
@@ -116,9 +111,6 @@ public class ConfigE60Activity extends BaseActivity {
         super.onResume();
 
         if (againLoading) {
-            if (mLoadingDialog == null) {
-                mLoadingDialog = new LoadingDialog(this);
-            }
             initData();
             againLoading = false;
         }
@@ -132,14 +124,14 @@ public class ConfigE60Activity extends BaseActivity {
 
         String url = "http://" + ipAddr + "/device.json";
 
-        mLoadingDialog.showNoCancelDialog("正在验证设备...");
+        showLoadingDialog("正在验证设备...");
         MDRetrofit.getInstance().createService(ApiName.HTTPS).ValidateDeviceE60(url)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new BaseObserver<String>() {
                     @Override
                     public void Success(String result, String message) {
-                        mLoadingDialog.dismiss();
+                        dismissLoadingDialog();
 
                         if (TextUtils.isEmpty(result)) {
                             showPopWindow();
@@ -151,10 +143,8 @@ public class ConfigE60Activity extends BaseActivity {
                             Timber.d("Call getDeviceJson," + result + "--" + data[1] + "--" + deviceToken + "--" + data[2] + "--" + deviceTypeName);
 
                             if (data[1].equals(deviceToken) && data[2].equals(deviceTypeName)) {
-                                mLoadingDialog.dismiss();
                                 setWebView(ipAddr, deviceToken);
                             } else {
-                                mLoadingDialog.dismiss();
                                 showLoadResultDialog("设备验证失败,请选择正确的设备进行验证");
                             }
                         } else {
@@ -165,8 +155,8 @@ public class ConfigE60Activity extends BaseActivity {
 
                     @Override
                     public void Failure(String message) {
+                        dismissLoadingDialog();
                         Timber.w(message);
-                        mLoadingDialog.dismiss();
                         showPopWindow();
                     }
                 });
@@ -262,17 +252,14 @@ public class ConfigE60Activity extends BaseActivity {
 
 
     private void setWebView(final String ipAddr, String token) {
-        if (mLoadingDialog == null) {
-            mLoadingDialog = new LoadingDialog(this);
-        }
-
         if (TextUtils.isEmpty(token)) {
             return;
         }
 
         securityNo = queryAuthor(token);
         Timber.d("securityNo=" + securityNo);
-        mLoadingDialog.showNoCancelDialog("正在登录系统...");
+
+        showLoadingDialog("正在登录系统...");
         mMWebView.loadUrl("http://" + ipAddr + "/cors/index.html?uid=E60&pwd=medo123");
         WebSettings webSettings = mMWebView.getSettings();
         webSettings.setJavaScriptCanOpenWindowsAutomatically(true);
@@ -291,12 +278,11 @@ public class ConfigE60Activity extends BaseActivity {
                 return true;
             }
 
-
             @Override
             public void onPageFinished(WebView view, String url) {
                 super.onPageFinished(view, url);
 
-                mLoadingDialog.dismiss();
+                dismissLoadingDialog();
             }
         });
     }
