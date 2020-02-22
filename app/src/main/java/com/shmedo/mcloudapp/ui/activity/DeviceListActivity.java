@@ -53,6 +53,9 @@ public class DeviceListActivity extends BaseActivity implements  OnRefreshListen
     @BindView(R.id.toolbar_title)
     TextView mToolbarTitle;
 
+    @BindView(R.id.tv_search_hint)
+    TextView mTvSearchHint;
+
     @BindView(R.id.recycler_devide)
     RecyclerView mRecyclerDevice;
 
@@ -96,6 +99,7 @@ public class DeviceListActivity extends BaseActivity implements  OnRefreshListen
         super.onCreate(savedInstanceState);
         setToolBar(R.id.toolbar);
         mToolbarTitle.setText("设备管理");
+        mTvSearchHint.setText("请输入设备SN号");
         initView();
         //获取设备列表
         getDeviceList("1");
@@ -121,8 +125,7 @@ public class DeviceListActivity extends BaseActivity implements  OnRefreshListen
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.ll_search:
-                Intent intent = new Intent(this, SearchDeviceActivity.class);
-                startActivity(intent);
+                SearchDeviceActivity.startActivity(this);
                 break;
         }
     }

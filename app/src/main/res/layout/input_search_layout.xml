@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="35dp"
+    android:layout_marginTop="5dp"
+    android:layout_marginBottom="5dp"
+    android:background="@color/white"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:paddingStart="15dp"
+    android:paddingEnd="8dp">
+
+    <com.shmedo.mcloudapp.views.ClearEditText
+        android:id="@+id/et_search"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="8"
+        android:background="@drawable/search_edittext_shape"
+        android:imeOptions="actionSearch"
+        android:paddingStart="10dp"
+        android:paddingEnd="5dp"
+        android:singleLine="true"
+        android:textSize="@dimen/text_size_14"
+        tools:hint="请输入设备号" />
+
+    <TextView
+        android:id="@+id/tv_cancel"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:text="取消"
+        android:textColor="@color/gray_807B7B"
+        android:textSize="@dimen/text_size_16" />
+
+</LinearLayout>

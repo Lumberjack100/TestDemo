@@ -1,15 +1,20 @@
 package com.shmedo.mcloudapp.ui.activity;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
+import android.view.KeyEvent;
 import android.view.View;
-import android.widget.Button;
+import android.view.inputmethod.EditorInfo;
+import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.hjq.toast.ToastUtils;
 import com.shmedo.mcloudapp.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.adapter.recyclerviewbaseadapter.CommonAdapter;
@@ -42,13 +47,13 @@ import butterknife.OnClick;
  * 创建时间:  2019/8/20 18:08
  * 描述：    搜索设备
  */
-public class SearchDeviceActivity extends BaseActivity implements MultiItemTypeAdapter.OnItemClickListener {
+public class SearchDeviceActivity extends BaseActivity implements MultiItemTypeAdapter.OnItemClickListener, TextWatcher, TextView.OnEditorActionListener {
 
-    @BindView(R.id.ce_search)
-    ClearEditText mCeSearch;
+    @BindView(R.id.toolbar_title)
+    TextView mToolbarTitle;
 
-    @BindView(R.id.btn_search)
-    Button mBtnSearch;
+    @BindView(R.id.et_search)
+    ClearEditText mEtSearch;
 
     @BindView(R.id.recycler_device)
     RecyclerView mRecyclerDevice;
@@ -56,7 +61,24 @@ public class SearchDeviceActivity extends BaseActivity implements MultiItemTypeA
     private CommonAdapter adapter;
 
     private List<StatusInfoResult> statusInfoList = new ArrayList<>();
+
     private DaoManager manager = DaoManager.getInstance();
+
+
+    /**
+     * 说明：启动Activity
+     * <p>
+     * 注意：这里使用到了Intent的Flag属性singleTop。singleTop模式下，在同一个task中，如果存在该Activity的实例，
+     * 并且该Activity实例位于栈顶(即，该Activity位于前端)，则调用startActivity()时，不再创建该Activity的示例；
+     * 而仅仅只是调用Activity的onNewIntent()。否则的话，则新建该Activity的实例，并将其置于栈顶。
+     * </p>
+     */
+    public static void startActivity(Context context) {
+        Intent intent = new Intent(context, SearchDeviceActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        context.startActivity(intent);
+    }
+
 
     @Override
     protected int initContentView() {
@@ -67,6 +89,9 @@ public class SearchDeviceActivity extends BaseActivity implements MultiItemTypeA
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setToolBar(R.id.toolbar);
+        mToolbarTitle.setText("设备查询");
+        mEtSearch.setHint("请输入设备SN号");
         initView();
         initAdapter();
     }
@@ -74,10 +99,12 @@ public class SearchDeviceActivity extends BaseActivity implements MultiItemTypeA
 
     private void initView() {
         //搜索框获取焦点，弹出软键盘
-        KeyBordUtils.popSoftKeyboard(mCeSearch,true);
+        KeyBordUtils.popSoftKeyboard(mEtSearch, true);
+        mEtSearch.addTextChangedListener(this);
+        mEtSearch.setOnEditorActionListener(this);
     }
 
-    private void initAdapter(){
+    private void initAdapter() {
         mRecyclerDevice.setLayoutManager(new LinearLayoutManager(this));
         mRecyclerDevice.addItemDecoration(new DividerItemDecoration());
         adapter = new CommonAdapter<StatusInfoResult>(this, R.layout.item_all_device, statusInfoList) {
@@ -169,29 +196,97 @@ public class SearchDeviceActivity extends BaseActivity implements MultiItemTypeA
     }
 
 
-    @OnClick(R.id.btn_search)
-    public void onViewClicked() {
-        String snName = mCeSearch.getText().toString();
-        if (StringUtil.isEmpty(snName)) {
-            ToastUtils.show("设备的SN号不能为空");
-            return;
+    @OnClick({R.id.tv_cancel})
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.tv_cancel:
+                SearchDeviceActivity.this.finish();
+                break;
         }
-        KeyBordUtils.hideSoftKeyboard(mBtnSearch);
-        List<StatusInfoResult> list = fuzzyQueryDevice(snName);
-        statusInfoList.clear();
-        statusInfoList.addAll(list);
-        adapter.notifyDataSetChanged();
     }
 
+
     /**
-     * 通过设备名字进行模糊查询
+     * 搜索处理逻辑
      */
-    private List<StatusInfoResult> fuzzyQueryDevice(String name) {
-        List<StatusInfoResult> list = manager.getDaoSession()
+    private void searchProcess(String queryText) {
+        List<StatusInfoResult> resultList = manager.getDaoSession()
                 .getStatusInfoResultDao()
                 .queryBuilder()
-                .where(StatusInfoResultDao.Properties.DeviceToken.like("%" + name + "%"))
+                .where(StatusInfoResultDao.Properties.DeviceToken.like("%" + queryText + "%"))
                 .list();
-        return list;
+
+        if (resultList != null && resultList.size() > 0) {
+            statusInfoList.clear();
+            statusInfoList.addAll(resultList);
+            adapter.notifyDataSetChanged();
+        }
+    }
+
+
+//    @OnClick(R.id.tv_cancel)
+//    public void onViewClicked() {
+//        String snName = mEtSearch.getText().toString();
+//        if (StringUtil.isEmpty(snName)) {
+//            ToastUtils.show("设备的SN号不能为空");
+//            return;
+//        }
+//        KeyBordUtils.hideSoftKeyboard(mEtSearch);
+//        List<StatusInfoResult> list = fuzzyQueryDevice(snName);
+//        statusInfoList.clear();
+//        statusInfoList.addAll(list);
+//        adapter.notifyDataSetChanged();
+//    }
+
+//    /**
+//     * 通过设备名字进行模糊查询
+//     */
+//    private List<StatusInfoResult> fuzzyQueryDevice(String name) {
+//        List<StatusInfoResult> list = manager.getDaoSession()
+//                .getStatusInfoResultDao()
+//                .queryBuilder()
+//                .where(StatusInfoResultDao.Properties.DeviceToken.like("%" + name + "%"))
+//                .list();
+//        return list;
+//    }
+
+    @Override
+    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+    }
+
+    @Override
+    public void onTextChanged(CharSequence text, int start, int before, int count) {
+        if (!TextUtils.isEmpty(text)) {
+            searchProcess(text.toString().trim());
+
+        } else {
+            KeyBordUtils.popSoftKeyboard(mEtSearch, true);
+            statusInfoList.clear();
+            adapter.notifyDataSetChanged();
+        }
+    }
+
+    @Override
+    public void afterTextChanged(Editable s) {
+
+    }
+
+    @Override
+    public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+        if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+            // 当按了搜索之后关闭软键盘
+            KeyBordUtils.hideSoftKeyboard(mEtSearch);
+
+            String text = mEtSearch.getText().toString();
+            if (StringUtil.isEmpty(text)) {
+                mEtSearch.clearFocus();
+                return true;
+            }
+
+            searchProcess(text.trim());
+            return true;
+        }
+        return false;
     }
 }

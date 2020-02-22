@@ -51,7 +51,7 @@ public class ClearEditText extends AppCompatEditText
         //mClearTextIcon = wrappedDrawable;
         mClearTextIcon = getCompoundDrawables()[2];
         if(mClearTextIcon == null){
-            final Drawable drawable = ContextCompat.getDrawable(context, R.drawable.icon_delete);
+            final Drawable drawable = ContextCompat.getDrawable(context, R.drawable.ic_clear);
             final Drawable wrapDrawable = DrawableCompat.wrap(drawable);
             DrawableCompat.setTint(wrapDrawable, getCurrentHintTextColor());
             mClearTextIcon = wrapDrawable;

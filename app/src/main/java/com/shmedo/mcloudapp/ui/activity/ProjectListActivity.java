@@ -56,6 +56,9 @@ public class ProjectListActivity extends BaseActivity implements MultiItemTypeAd
     @BindView(R.id.tv_right)
     TextView mTvRight;
 
+    @BindView(R.id.tv_search_hint)
+    TextView mTvSearchHint;
+
     @BindView(R.id.recycler_project)
     RecyclerView mRecyclerProject;
 
@@ -99,6 +102,7 @@ public class ProjectListActivity extends BaseActivity implements MultiItemTypeAd
         mToolbarTitle.setText("项目管理");
         mTvRight.setVisibility(View.VISIBLE);
         mTvRight.setText("设备管理");
+        mTvSearchHint.setText("请输入工程项目名称关键字");
         initView();
         getProjectList();
 //        //自动刷新，getProjectList();
@@ -137,8 +141,7 @@ public class ProjectListActivity extends BaseActivity implements MultiItemTypeAd
                 break;
 
             case R.id.ll_search:
-                Intent intent = new Intent(this, SearchDeviceActivity.class);
-                startActivity(intent);
+                SearchProjectActivity.startActivity(this);
                 break;
 
             case R.id.tv_right:
