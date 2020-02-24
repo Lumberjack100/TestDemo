@@ -48,7 +48,6 @@
         tools:replace="android:appComponentFactory"
         tools:targetApi="n">
 
-
         <meta-data
             android:name="com.amap.api.v2.apikey"
             android:value="${mapApikey}" /> <!-- 定位需要的服务 使用2.0的定位需要加上这个 -->
@@ -103,12 +102,6 @@
             android:label="添加设备"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan|stateHidden" />
-        <activity
-            android:name=".ui.activity.DeviceManageActivity"
-            android:label="设备管理"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateAlwaysHidden|adjustResize" />
-
         <activity
             android:name=".ui.activity.DeviceManageDetailActivity"
             android:screenOrientation="portrait"
@@ -196,19 +189,20 @@
             android:name=".ui.activity.SearchProjectActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateVisible|adjustResize" />
-
         <activity
             android:name=".ui.activity.SearchDeviceActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateVisible|adjustResize" />
-
-
         <activity
             android:name=".ui.activity.ProjectListActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustResize" />
+        <activity
+            android:name=".ui.activity.DeviceListActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden|adjustResize" />
 
-        <activity android:name=".ui.activity.DeviceListActivity"
+        <activity android:name=".ui.activity.ProjectContainDevicesActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustResize" />
 

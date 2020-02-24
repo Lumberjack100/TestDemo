@@ -19,7 +19,9 @@ import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 import com.scwang.smartrefresh.layout.listener.OnRefreshLoadMoreListener;
 import com.shmedo.mcloudapp.MCloudApp;
 import com.shmedo.mcloudapp.R;
-import com.shmedo.mcloudapp.adapter.DeviceStatusAdapter;
+import com.shmedo.mcloudapp.adapter.recyclerviewbaseadapter.CommonAdapter;
+import com.shmedo.mcloudapp.adapter.recyclerviewbaseadapter.MultiItemTypeAdapter;
+import com.shmedo.mcloudapp.adapter.recyclerviewbaseadapter.ViewHolder;
 import com.shmedo.mcloudapp.base.BaseActivity;
 import com.shmedo.mcloudapp.entity.DeviceBasicInfoResult;
 import com.shmedo.mcloudapp.entity.SensorAndCount;
@@ -30,6 +32,8 @@ import com.shmedo.mcloudapp.model.MDRetrofit;
 import com.shmedo.mcloudapp.model.common.CommonVariable;
 import com.shmedo.mcloudapp.util.ApiName;
 import com.shmedo.mcloudapp.util.DaoManager;
+import com.shmedo.mcloudapp.util.ImageUtil;
+import com.shmedo.mcloudapp.util.StringUtil;
 import com.shmedo.mcloudapp.views.DeviceSensorDialog;
 import com.shmedo.mcloudapp.views.EmptyDataView;
 import com.shmedo.mcloudapp.views.recycleviewitemdivider.DividerItemDecoration;
@@ -49,7 +53,7 @@ import timber.log.Timber;
  * 创建时间:  2020/2/20 21:08
  * 描述：    设备列表页面
  */
-public class DeviceListActivity extends BaseActivity implements  OnRefreshListener, OnRefreshLoadMoreListener {
+public class DeviceListActivity extends BaseActivity implements  MultiItemTypeAdapter.OnItemClickListener, OnRefreshListener, OnRefreshLoadMoreListener {
     @BindView(R.id.toolbar_title)
     TextView mToolbarTitle;
 
@@ -65,7 +69,7 @@ public class DeviceListActivity extends BaseActivity implements  OnRefreshListen
     @BindView(R.id.empty_data)
     EmptyDataView mEmptyData;
 
-    private DeviceStatusAdapter deviceStatusAdapter;
+    private CommonAdapter adapter;
 
     private List<StatusInfoResult> statusInfoList = new ArrayList<>();
 
@@ -101,6 +105,7 @@ public class DeviceListActivity extends BaseActivity implements  OnRefreshListen
         mToolbarTitle.setText("设备管理");
         mTvSearchHint.setText("请输入设备SN号");
         initView();
+        initAdapter();
         //获取设备列表
         getDeviceList("1");
     }
@@ -112,12 +117,94 @@ public class DeviceListActivity extends BaseActivity implements  OnRefreshListen
         mRefreshLayout.setOnRefreshLoadMoreListener(this);
         mRefreshLayout.setRefreshHeader(new ClassicsHeader(this));
         //mRefreshLayout.setRefreshFooter(new ClassicsFooter(this));
+    }
 
-        deviceStatusAdapter = new DeviceStatusAdapter(this, statusInfoList);
+    private void initAdapter() {
         mRecyclerDevice.setLayoutManager(new LinearLayoutManager(this));
         mRecyclerDevice.addItemDecoration(new DividerItemDecoration());
-        mRecyclerDevice.setAdapter(deviceStatusAdapter);
-        deviceStatusAdapter.setOnItemClickListener(listener);
+        adapter = new CommonAdapter<StatusInfoResult>(this, R.layout.item_all_device, statusInfoList) {
+            @Override
+            protected void convert(ViewHolder holder, final StatusInfoResult statusInfoResult, final int position) {
+                holder.setText(R.id.tv_deviceToken, statusInfoResult.getDeviceToken() + "\n" + (statusInfoResult.getLocal() ? "本地设备" : "云端设备"));
+                holder.setText(R.id.tv_electricity, statusInfoResult.getVoltage() + "V");
+                holder.setText(R.id.tv_gprs, StringUtil.setSize(statusInfoResult.getGprs()));
+                holder.setText(R.id.tv_signal, statusInfoResult.getSignal() + "");
+                holder.setTag(R.id.ll_SensorType, position);
+
+                final List<SensorAndCount> sensorAndCountList = statusInfoResult.getSensorInfo();
+                if (sensorAndCountList == null || sensorAndCountList.size() == 0) {
+                    holder.setVisibleOrGone(R.id.tv_sensor_type_1, false);
+                    holder.setVisibleOrGone(R.id.tv_sensor_type_2, false);
+                    holder.setVisibleOrGone(R.id.tv_sensor_more, false);
+                    return;
+                }
+
+                if (sensorAndCountList.size() > 1) {
+                    holder.setVisibleOrGone(R.id.tv_sensor_type_1, true);
+                    holder.setVisibleOrGone(R.id.tv_sensor_type_2, true);
+                    holder.setVisibleOrGone(R.id.tv_sensor_more, sensorAndCountList.size() > 2);
+
+                    holder.setCompoundDrawablesWithIntrinsicBounds(R.id.tv_sensor_type_1, ImageUtil.getSensorResourceID(sensorAndCountList.get(0).getSensorType()), 0, 0, 0);
+                    holder.setText(R.id.tv_sensor_type_1, "x" + sensorAndCountList.get(0).getSensorCount());
+                    holder.setCompoundDrawablesWithIntrinsicBounds(R.id.tv_sensor_type_2, ImageUtil.getSensorResourceID(sensorAndCountList.get(1).getSensorType()), 0, 0, 0);
+                    holder.setText(R.id.tv_sensor_type_2, "x" + sensorAndCountList.get(1).getSensorCount());
+
+                } else {
+                    holder.setVisibleOrGone(R.id.tv_sensor_type_1, true);
+                    holder.setVisibleOrGone(R.id.tv_sensor_type_2, false);
+                    holder.setVisibleOrGone(R.id.tv_sensor_more, false);
+
+                    holder.setCompoundDrawablesWithIntrinsicBounds(R.id.tv_sensor_type_1, ImageUtil.getSensorResourceID(sensorAndCountList.get(0).getSensorType()), 0, 0, 0);
+                    holder.setText(R.id.tv_sensor_type_1, "x" + sensorAndCountList.get(0).getSensorCount());
+                }
+
+                holder.setOnClickListener(R.id.tv_sensor_more, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                        if (sensorAndCountList == null || sensorAndCountList.size() < 3)
+                            return;
+
+                        DeviceSensorDialog deviceSensorDialog = new DeviceSensorDialog(DeviceListActivity.this, R.style.dialog_center_full, sensorAndCountList);
+                        if (!deviceSensorDialog.isShowing()) {
+                            deviceSensorDialog.show();
+                        }
+                    }
+                });
+
+            }
+        };
+        adapter.setOnItemClickListener(this);
+        mRecyclerDevice.setAdapter(adapter);
+    }
+
+
+    @Override
+    public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
+        StatusInfoResult statusInfoResult = statusInfoList.get(position);
+        MCloudApp.setCurDeviceToken(statusInfoResult.getDeviceName());
+        MCloudApp.setCurDeviceMacAddr(null);
+
+        String deviceInfo = "MEDO," + statusInfoResult.getDeviceName() + "," + statusInfoResult.getDeviceTypeName();
+        if (!TextUtils.isEmpty(statusInfoResult.getDeviceTypeName()) && statusInfoResult.getDeviceTypeName().toUpperCase().contains("ADME")) {
+            ConfigADMEActivity.startActivity(DeviceListActivity.this, deviceInfo);
+        }
+
+        if (!TextUtils.isEmpty(statusInfoResult.getDeviceTypeName()) && statusInfoResult.getDeviceTypeName().toUpperCase().contains("DAS")) {
+            ConfigDASActivity.startActivity(DeviceListActivity.this, deviceInfo);
+        }
+
+        if (!TextUtils.isEmpty(statusInfoResult.getDeviceName()) && statusInfoResult.getDeviceName().toUpperCase().contains("E60")) {
+            DeviceBasicInfoResult deviceBasicInfoResult = new DeviceBasicInfoResult();
+            deviceBasicInfoResult.setDeviceToken(statusInfoResult.getDeviceToken());
+            deviceBasicInfoResult.setDeviceName(statusInfoResult.getDeviceName());
+            ConfigE60Activity.startActivity(DeviceListActivity.this, deviceBasicInfoResult);
+        }
+    }
+
+    @Override
+    public boolean onItemLongClick(View view, RecyclerView.ViewHolder holder, int position) {
+        return false;
     }
 
 
@@ -130,51 +217,6 @@ public class DeviceListActivity extends BaseActivity implements  OnRefreshListen
         }
     }
 
-    private DeviceSensorDialog deviceSensorDialog;
-    private DeviceStatusAdapter.OnItemClickListener listener = new DeviceStatusAdapter.OnItemClickListener() {
-        @Override
-        public void onItemClick(View v, DeviceStatusAdapter.ViewName viewName, int position) {
-            switch (v.getId()) {
-                case R.id.ll_SensorType://传感器类型 Layout 点击事件
-                    Timber.d("----传感器---" + position);
-
-                    List<SensorAndCount> data = statusInfoList.get(position).getSensorInfo();
-                    if (data == null || data.size() < 3)
-                        return;
-
-                    deviceSensorDialog = new DeviceSensorDialog(DeviceListActivity.this, R.style.dialog_center_full, data);
-                    if (!deviceSensorDialog.isShowing()) {
-                        deviceSensorDialog.show();
-                    }
-                    break;
-
-                default://整个 Item 点击事件
-                    StatusInfoResult statusInfoResult = statusInfoList.get(position);
-                    MCloudApp.setCurDeviceToken(statusInfoResult.getDeviceName());
-                    MCloudApp.setCurDeviceMacAddr(null);
-
-                    String deviceInfo = "MEDO," + statusInfoResult.getDeviceName() + "," + statusInfoResult.getDeviceTypeName();
-                    if (!TextUtils.isEmpty(statusInfoResult.getDeviceTypeName()) && statusInfoResult.getDeviceTypeName().toUpperCase().contains("ADME")) {
-                        ConfigADMEActivity.startActivity(DeviceListActivity.this, deviceInfo);
-                        return;
-                    }
-
-                    if (!TextUtils.isEmpty(statusInfoResult.getDeviceTypeName()) && statusInfoResult.getDeviceTypeName().toUpperCase().contains("DAS")) {
-                        ConfigDASActivity.startActivity(DeviceListActivity.this, deviceInfo);
-                        return;
-                    }
-
-                    if (!TextUtils.isEmpty(statusInfoResult.getDeviceName()) && statusInfoResult.getDeviceName().toUpperCase().contains("E60")) {
-                        DeviceBasicInfoResult deviceBasicInfoResult = new DeviceBasicInfoResult();
-                        deviceBasicInfoResult.setDeviceToken(statusInfoResult.getDeviceToken());
-                        deviceBasicInfoResult.setDeviceName(statusInfoResult.getDeviceName());
-                        ConfigE60Activity.startActivity(DeviceListActivity.this, deviceBasicInfoResult);
-                        return;
-                    }
-                    break;
-            }
-        }
-    };
 
 
     /**
@@ -258,7 +300,7 @@ public class DeviceListActivity extends BaseActivity implements  OnRefreshListen
 
             statusInfoList.clear();
             statusInfoList.addAll(infoList);
-            deviceStatusAdapter.notifyDataSetChanged();
+            adapter.notifyDataSetChanged();
         }
     }
 

@@ -129,9 +129,10 @@
 
 
     <!-- 权限申请-->
-    <string name="permission_request_camera_external_storage">米易通需要使用相机权限和存储卡权限，请前往设置页面授予权限</string>
-    <string name="permission_request_location">米易通需要使用定位权限，请前往设置页面授予权限</string>
-    <string name="permission_external_storage">米易通需要使用存储卡权限，请前往设置页面授予权限</string>
+    <string name="permission_request_camera_external_storage">需要使用相机权限和存储卡权限，请前往设置页面授予权限</string>
+    <string name="permission_request_location_hardware">需要打开系统定位开关，用于提供精确的定位及导航服务</string>
+    <string name="permission_request_location">需要使用定位权限，用于提供精确的定位及导航服务</string>
+    <string name="permission_external_storage">需要使用存储卡权限，请前往设置页面授予权限</string>
     <string name="message_permission_rationale">授予以下权限以继续执行该程序</string>
     <string name="message_permission_always_failed">请同意定位权限</string>
 </resources>

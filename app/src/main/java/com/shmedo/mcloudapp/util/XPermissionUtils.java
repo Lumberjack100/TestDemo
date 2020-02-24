@@ -8,10 +8,10 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.Settings;
+
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -174,7 +174,7 @@ public class XPermissionUtils {
      * @param permissions 权限列表
      * @return
      */
-    private static boolean checkPermissions(Context context, String... permissions) {
+    public static boolean checkPermissions(Context context, String... permissions) {
         if (isOverMarshmallow()) {
             for (String permission : permissions) {
                 if (ContextCompat.checkSelfPermission(context, permission) == PackageManager.PERMISSION_DENIED) {
