@@ -7,7 +7,9 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -18,6 +20,10 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.amap.api.location.AMapLocation;
 import com.amap.api.location.AMapLocationClient;
 import com.amap.api.location.AMapLocationClientOption;
@@ -59,7 +65,11 @@ import com.shmedo.mcloudapp.util.DaoManager;
 import com.shmedo.mcloudapp.util.DensityUtil;
 import com.shmedo.mcloudapp.util.GsonFactory;
 import com.shmedo.mcloudapp.util.common.MapManagerUtil;
+import com.shmedo.mcloudapp.util.permission.RuntimeRationale;
 import com.shmedo.mcloudapp.util.permission.UpdataManagerUtil;
+import com.yanzhenjie.permission.Action;
+import com.yanzhenjie.permission.AndPermission;
+import com.yanzhenjie.permission.runtime.Permission;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -79,6 +89,11 @@ import timber.log.Timber;
 public class MainActivity extends BaseActivity implements LocationSource, AMapLocationListener {
 
     public static final int REQUEST_CODE_SCAN = 0x001;
+
+    public static final int PERMISSION_CODE_GPS = 0x011;
+
+    public static final int PERMISSION_CODE_LOCATION = 0x012;
+
 
     @BindView(R.id.img_user)
     ImageView mImgUser;
@@ -135,11 +150,12 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        hidingConnectionView();
         //在activity执行onCreate时执行mMapView.onCreate(savedInstanceState)，创建地图
         mMapView.onCreate(savedInstanceState);
 
+        checkPermissionForGPS();
         UpdataManagerUtil.requestPermissionForInstallPackage(this, false);//版本更新
-        hidingConnectionView();
         initMap();
 
         searchDataUI = new SearchDataUI(this);
@@ -409,7 +425,6 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
             case R.id.img_equipment://项目管理
                 ProjectListActivity.startActivity(this);
                 break;
-
         }
     }
 
@@ -424,10 +439,7 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
      * 定位点击事件
      */
     public void processLocationListener() {
-        if (myLatLng != null) {
-            Timber.d("latitude=" + myLatLng.latitude + ",longitude=" + myLatLng.longitude);
-            aMap.moveCamera(CameraUpdateFactory.changeLatLng(myLatLng));
-        }
+        checkPermissionForGPS();
     }
 
     /**
@@ -543,6 +555,141 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
         mLlConnection.setVisibility(View.GONE);
     }
 
+    private void updateLocation() {
+        if (myLatLng != null) {
+            Timber.d("latitude=" + myLatLng.latitude + ",longitude=" + myLatLng.longitude);
+            aMap.moveCamera(CameraUpdateFactory.changeLatLng(myLatLng));
+        }
+    }
+
+    /**
+     * 检查是否打开系统位置服务，如果开启了，接着检查是否授予 APP 定位权限
+     */
+    private void checkPermissionForGPS() {
+//        XPermissionUtils.requestPermissionsResult(this, 200, new String[]{
+//                        Manifest.permission.LOCATION_HARDWARE},
+//                new XPermissionUtils.OnPermissionListener() {
+//                    @Override
+//                    public void onPermissionGranted() {
+//                        checkPermissionForLocation();
+//                    }
+//
+//                    @Override
+//                    public void onPermissionDenied() {
+//                        if (AndPermission.hasAlwaysDeniedPermission(MainActivity.this, Manifest.permission.LOCATION_HARDWARE)) {
+//                            showGPSSettingDialog();
+//                        }
+//                    }
+//                });
+
+        if (isGPSOPen(this)) {
+            checkPermissionForLocation();
+
+        } else {
+            showGPSSettingDialog();
+        }
+    }
+
+
+    /**
+     * 检查是否授予 APP 定位权限
+     */
+    private void checkPermissionForLocation() {
+        AndPermission.with(MainActivity.this)
+                .runtime()
+                .permission(Permission.ACCESS_COARSE_LOCATION, Permission.ACCESS_FINE_LOCATION)
+                .rationale(new RuntimeRationale())
+                .onGranted(new Action<List<String>>() {
+                    @Override
+                    public void onAction(List<String> permissions) {
+                        ToastUtils.show("刷新定位...");
+                        updateLocation();
+                    }
+                })
+                .onDenied(new Action<List<String>>() {
+                    @Override
+                    public void onAction(@NonNull List<String> permissions) {
+                        if (AndPermission.hasAlwaysDeniedPermission(MainActivity.this, permissions)) {
+                            showLocationSettingDialog();
+                        }
+                    }
+                })
+                .start();
+    }
+
+    private void showGPSSettingDialog() {
+        MaterialDialog.Builder mBuilder = new MaterialDialog.Builder(MainActivity.this)
+                .title("权限申请").content(getResources().getString(R.string.permission_request_location_hardware))
+                .negativeText("暂不开启")
+                .positiveText("去设置")
+                .negativeColor(getResources().getColor(R.color.font_main))
+                .positiveColor(getResources().getColor(R.color.colorPrimary))
+                .cancelable(false)
+                .onPositive(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        dialog.dismiss();
+                        Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                        startActivityForResult(intent, PERMISSION_CODE_GPS);
+                    }
+                })
+                .onNegative(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        dialog.dismiss();
+                    }
+                });
+
+        MaterialDialog mMaterialDialog = mBuilder.build();
+        mMaterialDialog.show();
+    }
+
+    private void showLocationSettingDialog() {
+        MaterialDialog.Builder mBuilder = new MaterialDialog.Builder(MainActivity.this)
+                .title("权限申请").content(getResources().getString(R.string.permission_request_location))
+                .negativeText("暂不开启")
+                .positiveText("去设置")
+                .negativeColor(getResources().getColor(R.color.font_main))
+                .positiveColor(getResources().getColor(R.color.colorPrimary))
+                .cancelable(false)
+                .onPositive(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        dialog.dismiss();
+                        AndPermission.with(MainActivity.this).runtime().setting().start(PERMISSION_CODE_LOCATION);
+                    }
+                })
+                .onNegative(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        dialog.dismiss();
+                    }
+                });
+
+        MaterialDialog mMaterialDialog = mBuilder.build();
+        mMaterialDialog.show();
+    }
+
+
+    /**
+     * 判断GPS是否开启，GPS或者AGPS开启一个就认为是开启的
+     *
+     * @param context
+     * @return true 表示开启
+     */
+    public static final boolean isGPSOPen(final Context context) {
+        LocationManager locationManager
+                = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+        // 通过GPS卫星定位，定位级别可以精确到街（通过24颗卫星定位，在室外和空旷的地方定位准确、速度快）
+        boolean gps = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+        // 通过WLAN或移动网络(3G/2G)确定的位置（也称作AGPS，辅助GPS定位。主要用于在室内或遮盖物（建筑群或茂密的深林等）密集的地方定位）
+        boolean network = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+        if (gps || network) {
+            return true;
+        }
+
+        return false;
+    }
 
     private void scanResult(String result) {
         if (TextUtils.isEmpty(result)) {
@@ -616,6 +763,25 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
         super.onActivityResult(requestCode, resultCode, data);
 
         switch (requestCode) {
+
+            case PERMISSION_CODE_GPS:
+                if (isGPSOPen(MainActivity.this)) {
+                    ToastUtils.show("刷新定位...");
+                    updateLocation();
+                }
+                break;
+
+            case PERMISSION_CODE_LOCATION:
+                if (AndPermission.hasPermissions(this, Permission.ACCESS_COARSE_LOCATION, Permission.ACCESS_FINE_LOCATION)) {
+                    // 有对应的权限
+                    //刷新定位
+                    ToastUtils.show("刷新定位...");
+                    updateLocation();
+                } else {
+                    // 没有对应的权限
+                }
+                break;
+
             case REQUEST_CODE_SCAN:
                 if (resultCode == Activity.RESULT_OK) {
                     if (data != null) {

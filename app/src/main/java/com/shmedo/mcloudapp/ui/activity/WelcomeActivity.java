@@ -5,12 +5,12 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.WindowManager;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.shmedo.mcloudapp.R;
@@ -65,7 +65,13 @@ public class WelcomeActivity extends BaseActivity implements LoginManager.LoginC
         initStates();
         setCheckNetWork(false);
         initViewAndData();
-        checkPermission();
+//        checkPermission();
+        //自动登录
+        if (!TextUtils.isEmpty(mAccount) && !TextUtils.isEmpty(mPassword)) {
+            makeAutoLogin(mAccount, mPassword);
+        } else {
+            redirectToLoginActivity();
+        }
     }
 
     private void initViewAndData() {
