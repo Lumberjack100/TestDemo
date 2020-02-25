@@ -1,19 +1,19 @@
 package com.shmedo.mcloudapp.ui.activity;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
-import android.location.Location;
 import android.location.LocationManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.KeyEvent;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -24,14 +24,11 @@ import androidx.annotation.NonNull;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.amap.api.location.AMapLocation;
 import com.amap.api.location.AMapLocationClient;
 import com.amap.api.location.AMapLocationClientOption;
-import com.amap.api.location.AMapLocationListener;
 import com.amap.api.maps.AMap;
 import com.amap.api.maps.AMapOptions;
 import com.amap.api.maps.CameraUpdateFactory;
-import com.amap.api.maps.LocationSource;
 import com.amap.api.maps.MapView;
 import com.amap.api.maps.UiSettings;
 import com.amap.api.maps.model.LatLng;
@@ -65,7 +62,6 @@ import com.shmedo.mcloudapp.util.DaoManager;
 import com.shmedo.mcloudapp.util.DensityUtil;
 import com.shmedo.mcloudapp.util.GsonFactory;
 import com.shmedo.mcloudapp.util.common.MapManagerUtil;
-import com.shmedo.mcloudapp.util.permission.RuntimeRationale;
 import com.shmedo.mcloudapp.util.permission.UpdataManagerUtil;
 import com.yanzhenjie.permission.Action;
 import com.yanzhenjie.permission.AndPermission;
@@ -86,13 +82,15 @@ import io.reactivex.schedulers.Schedulers;
 import okhttp3.RequestBody;
 import timber.log.Timber;
 
-public class MainActivity extends BaseActivity implements LocationSource, AMapLocationListener {
+public class MainActivity extends BaseActivity {
 
     public static final int REQUEST_CODE_SCAN = 0x001;
 
     public static final int PERMISSION_CODE_GPS = 0x011;
 
     public static final int PERMISSION_CODE_LOCATION = 0x012;
+
+    public static final int PERMISSION_CODE_STORAGE = 0x013;
 
 
     @BindView(R.id.img_user)
@@ -116,14 +114,12 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
     private SearchDataUI searchDataUI;
 
     private AMap aMap; //初始化地图控制器对象
-    private UiSettings mUiSettings;//定义一个UiSettings对象
-    private MyLocationStyle myLocationStyle;
-    private InfoWinAdapter adapter;
-    private OnLocationChangedListener mListener;
+
     private AMapLocationClient mLocationClient;
-    private AMapLocationClientOption mLocationOption;
+
+    private InfoWinAdapter adapter;
+
     private LatLng myLatLng;
-    private boolean followMove = true;
 
     private DaoManager manager = DaoManager.getInstance();
 
@@ -131,6 +127,14 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
     private ClusterOverlayMerchant clusterOverlayMerchant;
     private Map<Integer, Drawable> mBackDrawAblesMerchant = new HashMap<Integer, Drawable>();
     private int clusterRadius = 48;
+
+    /**
+     * 定位需要进行检测的权限数组
+     */
+    protected String[] locationNeedPermissions = {
+            Manifest.permission.ACCESS_COARSE_LOCATION,
+            Manifest.permission.ACCESS_FINE_LOCATION
+    };
 
 
     public static void start(Context context) {
@@ -154,11 +158,10 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
         //在activity执行onCreate时执行mMapView.onCreate(savedInstanceState)，创建地图
         mMapView.onCreate(savedInstanceState);
 
+        init();
         checkPermissionForGPS();
-        UpdataManagerUtil.requestPermissionForInstallPackage(this, false);//版本更新
-        initMap();
-
         searchDataUI = new SearchDataUI(this);
+        UpdataManagerUtil.requestPermissionForInstallPackage(this, false);//版本更新
     }
 
     @Override
@@ -188,6 +191,9 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
         super.onDestroy();
         //在activity执行onDestroy时执行mMapView.onDestroy()，销毁地图
         mMapView.onDestroy();
+        if (null != mLocationClient) {
+            mLocationClient.onDestroy();
+        }
     }
 
 
@@ -198,109 +204,63 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
         mMapView.onSaveInstanceState(outState);
     }
 
-
-    //初始化地图信息
-    private void initMap() {
+    /**
+     * 初始化
+     */
+    private void init() {
+        if (Build.VERSION.SDK_INT > 28 && getApplicationContext().getApplicationInfo().targetSdkVersion > 28) {
+            locationNeedPermissions = new String[]{
+                    Manifest.permission.ACCESS_COARSE_LOCATION,
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Permission.ACCESS_BACKGROUND_LOCATION
+            };
+        }
         if (aMap == null) {
             aMap = mMapView.getMap();
-            mUiSettings = aMap.getUiSettings();//实例化UiSettings类对象
-        }
-        mUiSettings.setZoomControlsEnabled(false); //隐藏缩放控件
-        mUiSettings.setMyLocationButtonEnabled(false);//设置默认定位按钮是否显示，非必需设置。
-        mUiSettings.setLogoPosition(AMapOptions.LOGO_POSITION_BOTTOM_RIGHT);//设置logo位置
-
-        myLocationStyle = new MyLocationStyle();//初始化定位蓝点样式类
-        //myLocationStyle.interval(2000); //设置连续定位模式下的定位间隔，只在连续定位模式下生效，单次定位模式下不会生效。单位为毫秒。
-        myLocationStyle.strokeColor(getResources().getColor(R.color.app_color_blue_2));// 设置圆形的边框颜色
-        myLocationStyle.radiusFillColor(Color.argb(100, 29, 161, 242));// 设置圆形的填充颜色
-        myLocationStyle.strokeWidth(1.0f);// 设置圆形的边框粗细
-        myLocationStyle.myLocationType(MyLocationStyle.LOCATION_TYPE_LOCATE);//定位一次，且将视角移动到地图中心点。
-        // myLocationStyle.myLocationType(MyLocationStyle.LOCATION_TYPE_LOCATION_ROTATE);//连续定位、且将视角移动到地图中心点，定位点依照设备方向旋转，并且会跟随设备移动。（1秒1次定位）如果不设置myLocationType，默认也会执行此种模式。
-        myLocationStyle.showMyLocation(true);
-
-        aMap.setMyLocationEnabled(true);// 设置为true表示启动显示定位蓝点，false表示隐藏定位蓝点并不进行定位，默认是false。
-        aMap.setMyLocationStyle(myLocationStyle);//设置定位蓝点的Style
-        //aMap.setLocationSource(this);// 设置定位资源。如果不设置此定位资源则定位按钮不可点击。并且实现activate激活定位,停止定位的回调方法
-        aMap.setOnMyLocationChangeListener(new AMap.OnMyLocationChangeListener() {
-            @Override
-            public void onMyLocationChange(Location location) {
-                double latitude = location.getLatitude();
-                double longitude = location.getLongitude();
-                myLatLng = new LatLng(latitude, longitude);
-                if (followMove) {
-                    aMap.animateCamera(CameraUpdateFactory.newLatLng(myLatLng));
-                }
-            }
-        });
-
-        aMap.setOnMapTouchListener(new AMap.OnMapTouchListener() {
-            @Override
-            public void onTouch(MotionEvent motionEvent) {
-                followMove = false;
-            }
-        });
-
-//        addMerchantClustersToMap(queryLocalDeviceList());
-    }
-
-
-    @Override
-    public void activate(OnLocationChangedListener onLocationChangedListener) {
-        mListener = onLocationChangedListener;
-        if (null == mLocationClient) {
-            //初始化定位
-            mLocationClient = new AMapLocationClient(this);
-            //初始化AMapLocationClientOption对象
-            mLocationOption = new AMapLocationClientOption();
-            //设置定位回调监听
-            mLocationClient.setLocationListener(this);
-            //设置为高精度定位模式
-            mLocationOption.setLocationMode(AMapLocationClientOption.AMapLocationMode.Hight_Accuracy);
-            mLocationOption.setOnceLocation(true);
-            //设置是否返回地址信息（默认返回地址信息）
-            mLocationOption.setNeedAddress(true);
-            //resetOption();
-            mLocationClient.setLocationOption(mLocationOption);
-            //设置场景模式后最好调用一次stop，再调用start以保证场景模式生效
-            //mLocationClient.stopLocation();
-            mLocationClient.startLocation();
+            setUpMap();
         }
     }
 
     /**
-     * 定位成功后回调函数
+     * 设置一些amap的属性
      */
-    @Override
-    public void onLocationChanged(AMapLocation aMapLocation) {
-        if (aMapLocation != null) {
-            if (mListener != null) {
-                // aMap.clear();  清除之前的marker
-                mListener.onLocationChanged(aMapLocation);// 显示系统小蓝点-我的位置
-            }
+    private void setUpMap() {
+        UiSettings mUiSettings = aMap.getUiSettings();//实例化UiSettings类对象
+        mUiSettings.setZoomControlsEnabled(false); //隐藏缩放控件
+        mUiSettings.setMyLocationButtonEnabled(false);//设置默认定位按钮是否显示，非必需设置。
+        mUiSettings.setLogoPosition(AMapOptions.LOGO_POSITION_BOTTOM_RIGHT);//设置logo位置
+        aMap.setMyLocationEnabled(true);// 设置为true表示启动显示定位蓝点，false表示隐藏定位蓝点并不进行定位，默认是false。
+        setupLocationStyle();
+//        aMap.setOnMyLocationChangeListener(new AMap.OnMyLocationChangeListener() {
+//            @Override
+//            public void onMyLocationChange(Location location) {
+//                double latitude = location.getLatitude();
+//                double longitude = location.getLongitude();
+//                myLatLng = new LatLng(latitude, longitude);
+//                aMap.animateCamera(CameraUpdateFactory.newLatLng(myLatLng));
+//            }
+//        });
 
-            if (aMapLocation.getErrorCode() == 0) {
-                myLatLng = new LatLng(aMapLocation.getLatitude(), aMapLocation.getLongitude());
-                aMap.moveCamera(CameraUpdateFactory.newLatLngZoom(myLatLng, 8));
-                String city = aMapLocation.getCity();
-                String address = aMapLocation.getAddress();
-                //addMarkerToMap(latLng,city,address);
-                Timber.d("city=" + city + ",address=" + address);
-            } else {
-                //定位失败时，可通过ErrCode（错误码）信息来确定失败的原因，errInfo是错误信息，详见错误码表。
-                Timber.e("location Error, ErrCode:" + aMapLocation.getErrorCode() + ", errInfo:"
-                        + aMapLocation.getErrorInfo());
-            }
-        }
+//        addMerchantClustersToMap(queryLocalDeviceList());
     }
 
-    @Override
-    public void deactivate() {
-        mListener = null;
-        if (mLocationClient != null) {
-            mLocationClient.stopLocation();
-            mLocationClient.onDestroy();
-        }
-        mLocationClient = null;
+    /**
+     * 设置自定义定位蓝点
+     */
+    private void setupLocationStyle() {
+        // 自定义系统定位蓝点
+        MyLocationStyle myLocationStyle = new MyLocationStyle();
+        // 自定义定位蓝点图标
+//        myLocationStyle.myLocationIcon(BitmapDescriptorFactory.fromResource(R.drawable.gps_point));
+        //设置定位蓝点精度圆圈的边框颜色
+        myLocationStyle.strokeColor(getResources().getColor(R.color.app_color_blue_2));
+        //设置定位蓝点精度圆圈的边框宽度
+        myLocationStyle.strokeWidth(1);
+        // 设置定位蓝点精度圆圈的填充颜色
+        myLocationStyle.radiusFillColor(Color.argb(100, 29, 161, 242));
+        myLocationStyle.myLocationType(MyLocationStyle.LOCATION_TYPE_LOCATE);//定位一次，且将视角移动到地图中心点。
+        // 将自定义的 myLocationStyle 对象添加到地图上
+        aMap.setMyLocationStyle(myLocationStyle);
     }
 
 
@@ -319,7 +279,6 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
                 .subscribe(new BaseObserver<List<DeviceBasicInfoResult>>() {
                     @Override
                     public void Success(List<DeviceBasicInfoResult> infoList, String message) {
-
                         if (null != infoList && infoList.size() != 0) {
                             for (DeviceBasicInfoResult deviceBasicInfoResult : infoList) {
                                 deviceBasicInfoResult.setAccount(MCloudApp.getAccount());
@@ -338,7 +297,10 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
     }
 
 
-    //添加设备的 marker 点
+    /**
+     * 添加设备的 marker 点
+     * @param deviceList
+     */
     private void addMerchantClustersToMap(final List<DeviceBasicInfoResult> deviceList) {
         LatLng latLng = null;
         for (int i = 0; i < deviceList.size(); i++) {
@@ -555,33 +517,11 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
         mLlConnection.setVisibility(View.GONE);
     }
 
-    private void updateLocation() {
-        if (myLatLng != null) {
-            Timber.d("latitude=" + myLatLng.latitude + ",longitude=" + myLatLng.longitude);
-            aMap.moveCamera(CameraUpdateFactory.changeLatLng(myLatLng));
-        }
-    }
 
     /**
      * 检查是否打开系统位置服务，如果开启了，接着检查是否授予 APP 定位权限
      */
     private void checkPermissionForGPS() {
-//        XPermissionUtils.requestPermissionsResult(this, 200, new String[]{
-//                        Manifest.permission.LOCATION_HARDWARE},
-//                new XPermissionUtils.OnPermissionListener() {
-//                    @Override
-//                    public void onPermissionGranted() {
-//                        checkPermissionForLocation();
-//                    }
-//
-//                    @Override
-//                    public void onPermissionDenied() {
-//                        if (AndPermission.hasAlwaysDeniedPermission(MainActivity.this, Manifest.permission.LOCATION_HARDWARE)) {
-//                            showGPSSettingDialog();
-//                        }
-//                    }
-//                });
-
         if (isGPSOPen(this)) {
             checkPermissionForLocation();
 
@@ -597,13 +537,11 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
     private void checkPermissionForLocation() {
         AndPermission.with(MainActivity.this)
                 .runtime()
-                .permission(Permission.ACCESS_COARSE_LOCATION, Permission.ACCESS_FINE_LOCATION)
-                .rationale(new RuntimeRationale())
+                .permission(locationNeedPermissions)
                 .onGranted(new Action<List<String>>() {
                     @Override
                     public void onAction(List<String> permissions) {
-                        ToastUtils.show("刷新定位...");
-                        updateLocation();
+                        startLocalService();
                     }
                 })
                 .onDenied(new Action<List<String>>() {
@@ -670,6 +608,58 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
         mMaterialDialog.show();
     }
 
+
+    public void startLocalService() {
+        //初始化定位
+        mLocationClient = new AMapLocationClient(MCloudApp.getContext());
+        mLocationClient.setLocationOption(getDefaultOption());
+        mLocationClient.setLocationListener(location -> {
+            if (null != location) {
+                if (location.getErrorCode() == 0) {
+                    Timber.i("定位成功===" + location.toString());
+                    double latitude = location.getLatitude();
+                    double longitude = location.getLongitude();
+                    myLatLng = new LatLng(latitude, longitude);
+                    aMap.animateCamera(CameraUpdateFactory.newLatLng(myLatLng));
+
+                    stopLocalService();
+                } else {
+                    ToastUtils.show("定位失败");
+                    Timber.i("定位失败\n错误码：" + location.getErrorCode()
+                            + "\n错误信息:" + location.getErrorInfo()
+                            + "\n错误描述:" + location.getLocationDetail());
+                }
+            } else {
+                ToastUtils.show("定位失败，loc is null");
+            }
+        });
+        mLocationClient.startLocation();
+    }
+
+    public void stopLocalService() {
+        if (null != mLocationClient) {
+            mLocationClient.onDestroy();
+            mLocationClient.stopLocation();
+        }
+        mLocationClient = null;
+    }
+
+    private AMapLocationClientOption getDefaultOption() {
+        AMapLocationClientOption mOption = new AMapLocationClientOption();
+        mOption.setLocationMode(AMapLocationClientOption.AMapLocationMode.Hight_Accuracy);//可选，设置定位模式，可选的模式有高精度、仅设备、仅网络。默认为高精度模式
+        mOption.setGpsFirst(false);//可选，设置是否gps优先，只在高精度模式下有效。默认关闭
+        mOption.setHttpTimeOut(30000);//可选，设置网络请求超时时间。默认为30秒。在仅设备模式下无效
+        mOption.setInterval(2000);//可选，设置定位间隔。默认为2秒
+        mOption.setNeedAddress(true);//可选，设置是否返回逆地理地址信息。默认是true
+        mOption.setOnceLocation(false);//可选，设置是否单次定位。默认是false
+        mOption.setOnceLocationLatest(false);//可选，设置是否等待wifi刷新，默认为false.如果设置为true,会自动变为单次定位，持续定位时不要使用
+        AMapLocationClientOption.setLocationProtocol(AMapLocationClientOption.AMapLocationProtocol.HTTP);//可选， 设置网络请求的协议。可选HTTP或者HTTPS。默认为HTTP
+        mOption.setSensorEnable(false);//可选，设置是否使用传感器。默认是false
+        mOption.setWifiScan(true); //可选，设置是否开启wifi扫描。默认为true，如果设置为false会同时停止主动刷新，停止以后完全依赖于系统刷新，定位位置可能存在误差
+        mOption.setLocationCacheEnable(true); //可选，设置是否使用缓存定位，默认为true
+        mOption.setGeoLanguage(AMapLocationClientOption.GeoLanguage.DEFAULT);//可选，设置逆地理信息的语言，默认值为默认语言（根据所在地区选择语言）
+        return mOption;
+    }
 
     /**
      * 判断GPS是否开启，GPS或者AGPS开启一个就认为是开启的
@@ -763,22 +753,17 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
         super.onActivityResult(requestCode, resultCode, data);
 
         switch (requestCode) {
-
             case PERMISSION_CODE_GPS:
                 if (isGPSOPen(MainActivity.this)) {
-                    ToastUtils.show("刷新定位...");
-                    updateLocation();
+                    startLocalService();
                 }
                 break;
 
             case PERMISSION_CODE_LOCATION:
-                if (AndPermission.hasPermissions(this, Permission.ACCESS_COARSE_LOCATION, Permission.ACCESS_FINE_LOCATION)) {
+                if (AndPermission.hasPermissions(this, locationNeedPermissions)) {
                     // 有对应的权限
                     //刷新定位
-                    ToastUtils.show("刷新定位...");
-                    updateLocation();
-                } else {
-                    // 没有对应的权限
+                    startLocalService();
                 }
                 break;
 

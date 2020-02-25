@@ -3,25 +3,35 @@ package com.shmedo.mcloudapp.util.permission;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.util.Log;
+
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
+
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.hjq.toast.ToastUtils;
 import com.pgyersdk.crash.PgyCrashManager;
 import com.pgyersdk.update.DownloadFileListener;
 import com.pgyersdk.update.PgyUpdateManager;
 import com.pgyersdk.update.UpdateManagerListener;
 import com.pgyersdk.update.javabean.AppBean;
+import com.shmedo.mcloudapp.R;
+import com.shmedo.mcloudapp.ui.activity.MainActivity;
 import com.yanzhenjie.permission.Action;
 import com.yanzhenjie.permission.AndPermission;
+import com.yanzhenjie.permission.runtime.Permission;
 
 import java.io.File;
 import java.util.List;
+
+import timber.log.Timber;
 
 /**
  * 版本更新
  */
 public class UpdataManagerUtil {
 
-    public static void requestPermissionForInstallPackage(final Activity activity,boolean tag) {
+    public static void requestPermissionForInstallPackage(final Activity activity, boolean tag) {
         if (!FileUtils.externalAvailable()) {
             new AlertDialog.Builder(activity)
                     .setTitle("提示")
@@ -38,14 +48,14 @@ public class UpdataManagerUtil {
 
         AndPermission.with(activity)
                 .runtime()
-                .permission(Permission.Group.STORAGE)
+                .permission(Permission.READ_EXTERNAL_STORAGE, Permission.WRITE_EXTERNAL_STORAGE)
                 .rationale(new RuntimeRationale())
                 .onGranted(new Action<List<String>>() {
                     @Override
                     public void onAction(List<String> data) {
-                        if (tag){
+                        if (tag) {
                             upDataVersion();
-                        }else{
+                        } else {
                             UpgradeVersion();
                         }
                     }
@@ -54,13 +64,16 @@ public class UpdataManagerUtil {
                     @Override
                     public void onAction(List<String> data) {
                         ToastUtils.show("您的设备不允许我们安装应用");
+                        if (AndPermission.hasAlwaysDeniedPermission(activity, Permission.READ_EXTERNAL_STORAGE, Permission.WRITE_EXTERNAL_STORAGE)) {
+                            showLocationSettingDialog(activity);
+                        }
                     }
                 })
                 .start();
     }
 
 
-    private static void UpgradeVersion(){
+    private static void UpgradeVersion() {
         //蒲公英检查更新
         try {
             new PgyUpdateManager.Builder()
@@ -75,7 +88,7 @@ public class UpdataManagerUtil {
         }
     }
 
-    private static void upDataVersion(){
+    private static void upDataVersion() {
         new PgyUpdateManager.Builder()
                 .setForced(true)                //设置是否强制更新,非自定义回调更新接口此方法有用
                 .setUserCanRetry(false)         //失败后是否提示重新下载，非自定义下载 apk 回调此方法有用
@@ -84,14 +97,14 @@ public class UpdataManagerUtil {
                     @Override
                     public void onNoUpdateAvailable() {
                         //没有更新是回调此方法
-                        Log.d("pgyer", "there is no new version");
+                        Timber.d("there is no new version");
                         ToastUtils.show("当前已是最新版本");
                     }
 
                     @Override
                     public void onUpdateAvailable(AppBean appBean) {
                         //没有更新是回调此方法
-                        Log.d("pgyer", "there is new version can update"
+                        Timber.d("there is new version can update"
                                 + "new versionCode is " + appBean.getVersionCode());
 
                         //调用以下方法，DownloadFileListener 才有效；如果完全使用自己的下载方法，不需要设置DownloadFileListener
@@ -102,7 +115,6 @@ public class UpdataManagerUtil {
                     public void checkUpdateFailed(Exception e) {
                         //更新检测失败回调
                         Log.e("pgyer", "check update failed ", e);
-
                     }
                 })
                 //注意 ：下载方法调用 PgyUpdateManager.downLoadApk(appBean.getDownloadURL()); 此回调才有效
@@ -117,7 +129,6 @@ public class UpdataManagerUtil {
                     public void downloadSuccessful(File file) {
                         Log.e("pgyer", "download apk failed");
                         PgyUpdateManager.installApk(file);  // 使用蒲公英提供的安装方法提示用户 安装apk
-
                     }
 
                     @Override
@@ -126,6 +137,32 @@ public class UpdataManagerUtil {
                     }
                 })
                 .register();
+    }
+
+    private static void showLocationSettingDialog(final Activity activity) {
+        MaterialDialog.Builder mBuilder = new MaterialDialog.Builder(activity)
+                .title("权限申请").content(activity.getResources().getString(R.string.permission_external_storage))
+                .negativeText("暂不开启")
+                .positiveText("去设置")
+                .negativeColor(activity.getResources().getColor(R.color.font_main))
+                .positiveColor(activity.getResources().getColor(R.color.colorPrimary))
+                .cancelable(false)
+                .onPositive(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        dialog.dismiss();
+                        AndPermission.with(activity).runtime().setting().start(MainActivity.PERMISSION_CODE_STORAGE);
+                    }
+                })
+                .onNegative(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        dialog.dismiss();
+                    }
+                });
+
+        MaterialDialog mMaterialDialog = mBuilder.build();
+        mMaterialDialog.show();
     }
 
     /*private void writeApkForInstallPackage(final Activity activity) {

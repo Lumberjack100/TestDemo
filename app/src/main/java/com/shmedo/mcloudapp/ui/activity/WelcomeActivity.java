@@ -1,6 +1,5 @@
 package com.shmedo.mcloudapp.ui.activity;
 
-import android.Manifest;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -20,6 +19,11 @@ import com.shmedo.mcloudapp.util.LoginManager;
 import com.shmedo.mcloudapp.util.StartActivityUtil;
 import com.shmedo.mcloudapp.util.UserConfig;
 import com.shmedo.mcloudapp.util.XPermissionUtils;
+import com.yanzhenjie.permission.Action;
+import com.yanzhenjie.permission.AndPermission;
+import com.yanzhenjie.permission.runtime.Permission;
+
+import java.util.List;
 
 /**
  * 项目名：  mCloudapp
@@ -27,7 +31,6 @@ import com.shmedo.mcloudapp.util.XPermissionUtils;
  * 文件名:   WelcomeActivity
  * 创建者:   dpc
  * 创建时间:  2019/1/8 09:17
- *
  */
 public class WelcomeActivity extends BaseActivity implements LoginManager.LoginCallback {
 
@@ -65,13 +68,7 @@ public class WelcomeActivity extends BaseActivity implements LoginManager.LoginC
         initStates();
         setCheckNetWork(false);
         initViewAndData();
-//        checkPermission();
-        //自动登录
-        if (!TextUtils.isEmpty(mAccount) && !TextUtils.isEmpty(mPassword)) {
-            makeAutoLogin(mAccount, mPassword);
-        } else {
-            redirectToLoginActivity();
-        }
+        checkPermission();
     }
 
     private void initViewAndData() {
@@ -127,12 +124,12 @@ public class WelcomeActivity extends BaseActivity implements LoginManager.LoginC
 
 
     private void checkPermission() {
-        XPermissionUtils.requestPermissionsResult(this, 200, new String[]{
-                        Manifest.permission.ACCESS_FINE_LOCATION,
-                        Manifest.permission.ACCESS_COARSE_LOCATION},
-                new XPermissionUtils.OnPermissionListener() {
+        AndPermission.with(this)
+                .runtime()
+                .permission(Permission.READ_EXTERNAL_STORAGE, Permission.WRITE_EXTERNAL_STORAGE)
+                .onGranted(new Action<List<String>>() {
                     @Override
-                    public void onPermissionGranted() {
+                    public void onAction(List<String> permissions) {
                         //自动登录
                         if (!TextUtils.isEmpty(mAccount) && !TextUtils.isEmpty(mPassword)) {
                             makeAutoLogin(mAccount, mPassword);
@@ -140,9 +137,10 @@ public class WelcomeActivity extends BaseActivity implements LoginManager.LoginC
                             redirectToLoginActivity();
                         }
                     }
-
+                })
+                .onDenied(new Action<List<String>>() {
                     @Override
-                    public void onPermissionDenied() {
+                    public void onAction(@NonNull List<String> permissions) {
                         if (mMaterialDialog != null && !mMaterialDialog.isShowing()) {
                             mMaterialDialog.show();
 
@@ -150,13 +148,14 @@ public class WelcomeActivity extends BaseActivity implements LoginManager.LoginC
                             showRefusePermissionDialog();
                         }
                     }
-                });
+                })
+                .start();
     }
 
 
     private void showRefusePermissionDialog() {
         MaterialDialog.Builder mBuilder = new MaterialDialog.Builder(WelcomeActivity.this)
-                .title("权限申请").content(getResources().getString(R.string.permission_request_location))
+                .title("权限申请").content(getResources().getString(R.string.permission_external_storage))
                 .negativeText("取消")
                 .positiveText("去设置")
                 .negativeColor(getResources().getColor(R.color.font_main))
@@ -173,7 +172,7 @@ public class WelcomeActivity extends BaseActivity implements LoginManager.LoginC
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                         dialog.dismiss();
-                        redirectToLoginActivity();
+                        finish();
                     }
                 });
 

@@ -1,16 +1,16 @@
 package com.shmedo.mcloudapp.util;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
-import android.app.Activity;
-import android.content.Context;
 import android.content.DialogInterface;
+import android.os.Build;
 import android.text.TextUtils;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
-import com.amap.api.location.AMapLocation;
+
 import com.amap.api.location.AMapLocationClient;
 import com.amap.api.location.AMapLocationClientOption;
-import com.amap.api.location.AMapLocationListener;
 import com.hjq.toast.ToastUtils;
 import com.shmedo.mcloudapp.MCloudApp;
 import com.shmedo.mcloudapp.R;
@@ -20,10 +20,12 @@ import com.shmedo.mcloudapp.util.permission.RuntimeRationale;
 import com.yanzhenjie.permission.Action;
 import com.yanzhenjie.permission.AndPermission;
 import com.yanzhenjie.permission.runtime.Permission;
+
 import org.greenrobot.eventbus.EventBus;
-import timber.log.Timber;
 
 import java.util.List;
+
+import timber.log.Timber;
 
 /**
  * 项目名：  mCloudapp
@@ -33,23 +35,43 @@ import java.util.List;
  * 描述：    TODO
  */
 public class LocationUtils {
+    private static final int REQUEST_CODE_SETTING = 1;
+
     @SuppressLint("StaticFieldLeak")
     private static AMapLocationClient mLocationClient;
+
     private AMapLocationClientOption mLocationOption = null;
+
+    /**
+     * 定位需要进行检测的权限数组
+     */
+    private String[] locationNeedPermissions = {
+            Manifest.permission.ACCESS_COARSE_LOCATION,
+            Manifest.permission.ACCESS_FINE_LOCATION
+    };
 
     private static class LocationHolder {
         private static final LocationUtils INSTANCE = new LocationUtils();
     }
 
     public static LocationUtils getInstance() {
+
         return LocationHolder.INSTANCE;
     }
 
 
     public void getPositionPermission(ConfigDASActivity activity){
+        if (Build.VERSION.SDK_INT > 28 && MCloudApp.getContext().getApplicationInfo().targetSdkVersion > 28) {
+            locationNeedPermissions = new String[]{
+                    Manifest.permission.ACCESS_COARSE_LOCATION,
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Permission.ACCESS_BACKGROUND_LOCATION
+            };
+        }
+
         AndPermission.with(activity)
                 .runtime()
-                .permission(Permission.ACCESS_FINE_LOCATION,Permission.ACCESS_COARSE_LOCATION)
+                .permission(locationNeedPermissions)
                 .rationale(new RuntimeRationale())
                 .onGranted(new Action<List<String>>() {
                     @Override
@@ -60,7 +82,6 @@ public class LocationUtils {
                 .onDenied(new Action<List<String>>() {
                     @Override
                     public void onAction(@NonNull List<String> permissions) {
-
                         if (AndPermission.hasAlwaysDeniedPermission(activity, permissions)) {
                             showSettingDialog(activity, permissions);
                         }
@@ -107,12 +128,6 @@ public class LocationUtils {
             }
         });
         mLocationClient.startLocation();
-        mLocationClient.setLocationListener(new AMapLocationListener() {
-            @Override
-            public void onLocationChanged(AMapLocation aMapLocation) {
-
-            }
-        });
     }
 
     public void stopLocalService() {
@@ -153,7 +168,7 @@ public class LocationUtils {
                 .setPositiveButton("确定", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                         ToastUtils.show("请同意定位权限");
+                        AndPermission.with(context).runtime().setting().start(REQUEST_CODE_SETTING);
                     }
                 })
                 .setNegativeButton("取消", new DialogInterface.OnClickListener() {

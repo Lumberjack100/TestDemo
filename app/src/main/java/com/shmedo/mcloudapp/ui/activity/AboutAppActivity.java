@@ -11,11 +11,11 @@ import com.pgyersdk.crash.PgyCrashManager;
 import com.pgyersdk.feedback.PgyerFeedbackManager;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.base.BaseActivity;
-import com.shmedo.mcloudapp.util.permission.Permission;
 import com.shmedo.mcloudapp.util.permission.RuntimeRationale;
 import com.shmedo.mcloudapp.util.permission.UpdataManagerUtil;
 import com.yanzhenjie.permission.Action;
 import com.yanzhenjie.permission.AndPermission;
+import com.yanzhenjie.permission.runtime.Permission;
 
 import java.util.List;
 

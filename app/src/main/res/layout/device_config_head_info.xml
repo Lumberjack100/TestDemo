@@ -102,7 +102,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="传感器型号："
+                android:text="采集器型号："
                 android:textColor="@color/app_color_blue"
                 android:textSize="@dimen/text_size_14" />
 

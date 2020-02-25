@@ -1,17 +1,17 @@
 package com.shmedo.mcloudapp.util;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.os.Environment;
+
 import androidx.appcompat.app.AlertDialog;
-import com.hjq.toast.ToastUtils;
+
 import com.shmedo.mcloudapp.ui.activity.device.senior.LogPrintActivity;
 import com.shmedo.mcloudapp.util.permission.FileUtils;
-import com.shmedo.mcloudapp.util.permission.Permission;
 import com.shmedo.mcloudapp.util.permission.RuntimeRationale;
 import com.yanzhenjie.permission.Action;
 import com.yanzhenjie.permission.AndPermission;
+import com.yanzhenjie.permission.runtime.Permission;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -62,7 +62,7 @@ public class LogToSDUtil {
 
         AndPermission.with(activity)
                 .runtime()
-                .permission(Permission.Group.STORAGE)
+                .permission(Permission.READ_EXTERNAL_STORAGE, Permission.WRITE_EXTERNAL_STORAGE)
                 .rationale(new RuntimeRationale())
                 .onGranted(new Action<List<String>>() {
                     @Override
