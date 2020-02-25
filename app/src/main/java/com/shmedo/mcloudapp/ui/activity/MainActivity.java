@@ -622,24 +622,24 @@ public class MainActivity extends BaseActivity {
                     myLatLng = new LatLng(latitude, longitude);
                     aMap.animateCamera(CameraUpdateFactory.newLatLng(myLatLng));
 
-                    stopLocalService();
                 } else {
-                    ToastUtils.show("定位失败");
                     Timber.i("定位失败\n错误码：" + location.getErrorCode()
                             + "\n错误信息:" + location.getErrorInfo()
                             + "\n错误描述:" + location.getLocationDetail());
                 }
             } else {
-                ToastUtils.show("定位失败，loc is null");
+                Timber.i("定位失败，loc is null");
             }
+            //停止定位服务
+            stopLocalService();
         });
         mLocationClient.startLocation();
     }
 
     public void stopLocalService() {
         if (null != mLocationClient) {
-            mLocationClient.onDestroy();
             mLocationClient.stopLocation();
+            mLocationClient.onDestroy();
         }
         mLocationClient = null;
     }
@@ -756,6 +756,7 @@ public class MainActivity extends BaseActivity {
             case PERMISSION_CODE_GPS:
                 if (isGPSOPen(MainActivity.this)) {
                     startLocalService();
+
                 }
                 break;
 
