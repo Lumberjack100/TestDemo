@@ -541,47 +541,65 @@ public class BlueResultParserUtil {
             case WIRE_SHIFT:
                 infoSub.setSensorType("02");
                 break;
+
             case SOIL_MOISTURE:
                 infoSub.setSensorType("03");
                 break;
+
             case INCLINOMETER:
                 infoSub.setSensorType("04");
                 break;
+
             case ULTRASONIC_LEVEL_GAUGE:
                 infoSub.setSensorType("06");
                 break;
+
             case RADAR_LEVEL_GAUGE:
                 infoSub.setSensorType("07");
                 break;
+
             case MOISTURE_METER:
                 infoSub.setSensorType("08");
                 break;
+
             case TEMPERATURE_HUMIDITY_METER:
                 infoSub.setSensorType("12");
                 break;
+
             case UPLIFT_PRESSURE_GAUGE:
                 infoSub.setSensorType("15");
                 break;
+
             case KANG_PERCOLATE:
                 infoSub.setSensorType("50");
                 break;
+
             case GUDAN_PERCOLATE:
                 infoSub.setSensorType("51");
                 break;
+
             case GUDAN_SOIL_PRESSURE:
                 infoSub.setSensorType("52");
                 break;
+
             case GUDAN_STRESS:
                 infoSub.setSensorType("53");
                 break;
+
             case GUDAN_NOT_STRESS:
                 infoSub.setSensorType("54");
                 break;
+
             case GUDAN_DISPLACEMENT_METER:
                 infoSub.setSensorType("55");
                 break;
+
+            case INFRASOUND_SENSOR:
+                infoSub.setSensorType("21");
+                break;
+
             default:
-                return null;
+                infoSub.setSensorType("00");//未知的传感器类型
         }
 
         return infoSub;
