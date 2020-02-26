@@ -33,6 +33,11 @@ android {
 
         manifestPlaceholders = ["mapApikey":"31d7ee436c402270e11183ce1b5d01dc",
                                 "pgyerKey":"725bb8b9ee91e100e28d6623d8f8c86b"]
+
+        ndk {
+            //设置支持的SO库架构（开发者可以根据需要，选择一个或多个平台的so）
+            abiFilters "armeabi", "armeabi-v7a", "arm64-v8a", "x86","x86_64"
+        }
     }
 
     signingConfigs {
@@ -149,6 +154,11 @@ dependencies {
     implementation 'com.yanzhenjie:permission:2.0.3'
     //异常信息上报组件
     implementation 'com.tencent.bugly:crashreport:2.8.6'
+
+    //3D地图so及jar
+    implementation 'com.amap.api:3dmap:latest.integration'
+    //定位功能
+    implementation 'com.amap.api:location:latest.integration'
 
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test:runner:1.2.0'
