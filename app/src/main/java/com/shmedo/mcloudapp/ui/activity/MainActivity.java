@@ -118,6 +118,8 @@ public class MainActivity extends BaseActivity {
 
     private AMapLocationClient mLocationClient;
 
+    private MyLocationStyle myLocationStyle;
+
     private InfoWinAdapter adapter;
 
     private LatLng myLatLng;
@@ -239,15 +241,12 @@ public class MainActivity extends BaseActivity {
      */
     private void setupLocationStyle() {
         // 自定义系统定位蓝点
-        MyLocationStyle myLocationStyle = new MyLocationStyle();
-        // 自定义定位蓝点图标
-//        myLocationStyle.myLocationIcon(BitmapDescriptorFactory.fromResource(R.drawable.gps_point));
-        //设置定位蓝点精度圆圈的边框颜色
-        myLocationStyle.strokeColor(getResources().getColor(R.color.app_color_blue_2));
-        //设置定位蓝点精度圆圈的边框宽度
-        myLocationStyle.strokeWidth(1);
-        // 设置定位蓝点精度圆圈的填充颜色
-        myLocationStyle.radiusFillColor(Color.argb(100, 29, 161, 242));
+        myLocationStyle = new MyLocationStyle();
+//        myLocationStyle.myLocationIcon(BitmapDescriptorFactory.fromResource(R.drawable.gps_point)); // 自定义定位小蓝点图标
+        myLocationStyle.showMyLocation(true);//设置是否显示定位小蓝点，true 显示，false不显示。
+        myLocationStyle.strokeColor(getResources().getColor(R.color.app_color_blue_2));  //设置定位小蓝点精度圆圈的边框颜色
+        myLocationStyle.strokeWidth(1); //设置定位小蓝点精度圆圈的边框宽度
+        myLocationStyle.radiusFillColor(Color.argb(100, 29, 161, 242)); // 设置定位小蓝点精度圆圈的填充颜色
         myLocationStyle.myLocationType(MyLocationStyle.LOCATION_TYPE_LOCATE);//定位一次，且将视角移动到地图中心点。
         // 将自定义的 myLocationStyle 对象添加到地图上
         aMap.setMyLocationStyle(myLocationStyle);
@@ -757,15 +756,16 @@ public class MainActivity extends BaseActivity {
         switch (requestCode) {
             case PERMISSION_CODE_GPS:
                 if (isGPSOPen(MainActivity.this)) {
-                    mLocationClient.startLocation();
+//                    mLocationClient.startLocation();
+                    aMap.setMyLocationStyle(myLocationStyle.myLocationType(MyLocationStyle.LOCATION_TYPE_LOCATE));
                 }
                 break;
 
             case PERMISSION_CODE_LOCATION:
                 if (AndPermission.hasPermissions(this, locationNeedPermissions)) {
-                    // 有对应的权限
                     //刷新定位
-                    mLocationClient.startLocation();
+//                    mLocationClient.startLocation();
+                    aMap.setMyLocationStyle(myLocationStyle.myLocationType(MyLocationStyle.LOCATION_TYPE_LOCATE));
                 }
                 break;
 
