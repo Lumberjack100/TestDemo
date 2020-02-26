@@ -1,6 +1,5 @@
 package com.shmedo.mcloudapp.ui.activity;
 
-import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -40,6 +39,9 @@ import com.shmedo.mcloudapp.util.ImageUtil;
 import com.shmedo.mcloudapp.util.PhotoUtil;
 import com.shmedo.mcloudapp.util.XPermissionUtils;
 import com.shmedo.mcloudapp.views.MyMenu;
+import com.yanzhenjie.permission.Action;
+import com.yanzhenjie.permission.AndPermission;
+import com.yanzhenjie.permission.runtime.Permission;
 
 import java.io.File;
 import java.util.List;
@@ -170,17 +172,24 @@ public class UserInfoActivity extends BaseActivity {
      * 获取SD卡、相机权限
      */
     private void getSDPermission() {
-        XPermissionUtils.requestPermissionsResult(this, 200, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE}, new XPermissionUtils.OnPermissionListener() {
-            @Override
-            public void onPermissionGranted() {
-                cameraOrAlbum();
-            }
-
-            @Override
-            public void onPermissionDenied() {
-                XPermissionUtils.showRefusePermissionDialog(UserInfoActivity.this, getResources().getString(R.string.permission_request_camera_external_storage));
-            }
-        });
+        AndPermission.with(this)
+                .runtime()
+                .permission(Permission.CAMERA, Permission.READ_EXTERNAL_STORAGE, Permission.WRITE_EXTERNAL_STORAGE)
+                .onGranted(new Action<List<String>>() {
+                    @Override
+                    public void onAction(List<String> permissions) {
+                        cameraOrAlbum();
+                    }
+                })
+                .onDenied(new Action<List<String>>() {
+                    @Override
+                    public void onAction(@NonNull List<String> permissions) {
+                        if (AndPermission.hasAlwaysDeniedPermission(UserInfoActivity.this, permissions)) {
+                            XPermissionUtils.showRefusePermissionDialog(UserInfoActivity.this, getResources().getString(R.string.permission_request_camera_external_storage));
+                        }
+                    }
+                })
+                .start();
     }
 
     private void cameraOrAlbum() {

@@ -23,7 +23,8 @@
     <uses-permission android:name="android.permission.VIBRATE" /> <!-- 允许访问振动设备 -->
     <uses-permission android:name="android.permission.GET_TASKS" />
     <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" /> <!-- Android8.0 安装 apk 需要添加权限 -->
-    <!--如果您的应用需要后台定位权限，且有可能运行在Android Q设备上,并且设置了target>28，必须增加这个权限声明-->
+    <!--如果您的应用需要后台定位权限，且有可能运行在Android Q设备上,并且设置了target>28，必须增加这个权限声明
+    如果设置了target > 28，需要增加这个权限，否则不会弹出"始终允许"这个选择框 -->
     <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
     <uses-permission
         android:name="android.permission.READ_LOGS"

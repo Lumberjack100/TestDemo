@@ -163,8 +163,7 @@ public class XPermissionUtils {
         boolean isAppFragment = object instanceof android.app.Fragment;
 
         if (!(isActivity || isSupportFragment || isAppFragment)) {
-            throw new IllegalArgumentException(
-                    "Caller must be an Activity or a Fragment");
+            throw new IllegalArgumentException("Caller must be an Activity or a Fragment");
         }
     }
 

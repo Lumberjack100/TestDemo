@@ -1,6 +1,5 @@
 package com.shmedo.mcloudapp.ui;
 
-import android.Manifest;
 import android.app.Activity;
 import android.text.TextUtils;
 import android.view.View;
@@ -39,8 +38,11 @@ import com.shmedo.mcloudapp.util.DensityUtil;
 import com.shmedo.mcloudapp.util.GsonFactory;
 import com.shmedo.mcloudapp.util.TimeUtil;
 import com.shmedo.mcloudapp.util.XPermissionUtils;
-import com.shmedo.mcloudapp.views.recycleviewitemdivider.DividerItemDecoration;
 import com.shmedo.mcloudapp.views.TimePickerDialog;
+import com.shmedo.mcloudapp.views.recycleviewitemdivider.DividerItemDecoration;
+import com.yanzhenjie.permission.Action;
+import com.yanzhenjie.permission.AndPermission;
+import com.yanzhenjie.permission.runtime.Permission;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -325,11 +327,11 @@ public class SearchDataUI implements View.OnClickListener {
         String end = endTime.getText().toString();
         if (TextUtils.isEmpty(snNubmer)) {
             ToastUtils.show("请输入设备编号");
-            return ;
+            return;
         }
-        if (snNubmer.length()!=7) {
+        if (snNubmer.length() != 7) {
             ToastUtils.show("请输入正确的设备编号");
-            return ;
+            return;
         }
         QueryCloudDataParameter paramter = new QueryCloudDataParameter();
         paramter.setSn(snNubmer);
@@ -363,21 +365,44 @@ public class SearchDataUI implements View.OnClickListener {
                 });
     }
 
+//    private void doScanButtonClick() {
+//        XPermissionUtils.requestPermissionsResult(mainActivity, 200, new String[]{
+//                        Manifest.permission.CAMERA,
+//                        Manifest.permission.READ_EXTERNAL_STORAGE},
+//                new XPermissionUtils.OnPermissionListener() {
+//                    @Override
+//                    public void onPermissionGranted() {
+//                        ScanActivity.startActivityForResult(mainActivity, MainActivity.REQUEST_CODE_SCAN);
+//                    }
+//
+//                    @Override
+//                    public void onPermissionDenied() {
+//                        XPermissionUtils.showRefusePermissionDialog(mainActivity,
+//                                mainActivity.getResources().getString(R.string.permission_request_camera_external_storage));
+//                    }
+//                });
+//    }
+
     private void doScanButtonClick() {
-        XPermissionUtils.requestPermissionsResult(mainActivity, 200, new String[]{
-                        Manifest.permission.CAMERA,
-                        Manifest.permission.READ_EXTERNAL_STORAGE},
-                new XPermissionUtils.OnPermissionListener() {
+        AndPermission.with(mainActivity)
+                .runtime()
+                .permission(Permission.CAMERA, Permission.READ_EXTERNAL_STORAGE, Permission.WRITE_EXTERNAL_STORAGE)
+                .onGranted(new Action<List<String>>() {
                     @Override
-                    public void onPermissionGranted() {
+                    public void onAction(List<String> permissions) {
                         ScanActivity.startActivityForResult(mainActivity, MainActivity.REQUEST_CODE_SCAN);
                     }
-
+                })
+                .onDenied(new Action<List<String>>() {
                     @Override
-                    public void onPermissionDenied() {
-                        XPermissionUtils.showRefusePermissionDialog(mainActivity,
-                                mainActivity.getResources().getString(R.string.permission_request_camera_external_storage));
+                    public void onAction(@NonNull List<String> permissions) {
+                        if (AndPermission.hasAlwaysDeniedPermission(mainActivity, permissions)) {
+                            XPermissionUtils.showRefusePermissionDialog(mainActivity,
+                                    mainActivity.getResources().getString(R.string.permission_request_camera_external_storage));
+                        }
                     }
-                });
+                })
+                .start();
     }
+
 }
