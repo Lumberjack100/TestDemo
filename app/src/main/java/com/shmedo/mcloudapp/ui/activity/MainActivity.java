@@ -24,6 +24,7 @@ import androidx.annotation.NonNull;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.amap.api.location.AMapLocation;
 import com.amap.api.location.AMapLocationClient;
 import com.amap.api.location.AMapLocationClientOption;
 import com.amap.api.maps.AMap;
@@ -158,7 +159,8 @@ public class MainActivity extends BaseActivity {
         //在activity执行onCreate时执行mMapView.onCreate(savedInstanceState)，创建地图
         mMapView.onCreate(savedInstanceState);
 
-        init();
+        initMap();
+        initLocation();
         checkPermissionForGPS();
         searchDataUI = new SearchDataUI(this);
         UpdataManagerUtil.requestPermissionForInstallPackage(this, false);//版本更新
@@ -192,7 +194,9 @@ public class MainActivity extends BaseActivity {
         //在activity执行onDestroy时执行mMapView.onDestroy()，销毁地图
         mMapView.onDestroy();
         if (null != mLocationClient) {
+            mLocationClient.stopLocation();
             mLocationClient.onDestroy();
+            mLocationClient = null;
         }
     }
 
@@ -205,9 +209,9 @@ public class MainActivity extends BaseActivity {
     }
 
     /**
-     * 初始化
+     * 初始化地图配置
      */
-    private void init() {
+    private void initMap() {
         if (Build.VERSION.SDK_INT > 28 && getApplicationContext().getApplicationInfo().targetSdkVersion > 28) {
             locationNeedPermissions = new String[]{
                     Manifest.permission.ACCESS_COARSE_LOCATION,
@@ -217,32 +221,18 @@ public class MainActivity extends BaseActivity {
         }
         if (aMap == null) {
             aMap = mMapView.getMap();
-            setUpMap();
         }
-    }
 
-    /**
-     * 设置一些amap的属性
-     */
-    private void setUpMap() {
         UiSettings mUiSettings = aMap.getUiSettings();//实例化UiSettings类对象
         mUiSettings.setZoomControlsEnabled(false); //隐藏缩放控件
         mUiSettings.setMyLocationButtonEnabled(false);//设置默认定位按钮是否显示，非必需设置。
         mUiSettings.setLogoPosition(AMapOptions.LOGO_POSITION_BOTTOM_RIGHT);//设置logo位置
         aMap.setMyLocationEnabled(true);// 设置为true表示启动显示定位蓝点，false表示隐藏定位蓝点并不进行定位，默认是false。
         setupLocationStyle();
-//        aMap.setOnMyLocationChangeListener(new AMap.OnMyLocationChangeListener() {
-//            @Override
-//            public void onMyLocationChange(Location location) {
-//                double latitude = location.getLatitude();
-//                double longitude = location.getLongitude();
-//                myLatLng = new LatLng(latitude, longitude);
-//                aMap.animateCamera(CameraUpdateFactory.newLatLng(myLatLng));
-//            }
-//        });
 
 //        addMerchantClustersToMap(queryLocalDeviceList());
     }
+
 
     /**
      * 设置自定义定位蓝点
@@ -261,6 +251,44 @@ public class MainActivity extends BaseActivity {
         myLocationStyle.myLocationType(MyLocationStyle.LOCATION_TYPE_LOCATE);//定位一次，且将视角移动到地图中心点。
         // 将自定义的 myLocationStyle 对象添加到地图上
         aMap.setMyLocationStyle(myLocationStyle);
+    }
+
+    /**
+     * 初始化定位
+     */
+    private void initLocation() {
+        //初始化定位
+        mLocationClient = new AMapLocationClient(MCloudApp.getContext());
+        mLocationClient.setLocationOption(getDefaultOption());
+        mLocationClient.setLocationListener(location -> {
+            if (null != location) {
+                if (location.getErrorCode() == 0) {
+                    Timber.i("定位成功===" + location.toString());
+                    double latitude = location.getLatitude();
+                    double longitude = location.getLongitude();
+                    myLatLng = new LatLng(latitude, longitude);
+                    aMap.animateCamera(CameraUpdateFactory.changeLatLng(myLatLng));
+
+                } else {
+                    Timber.i("定位失败\n错误码：" + location.getErrorCode()
+                            + "\n错误信息:" + location.getErrorInfo()
+                            + "\n错误描述:" + location.getLocationDetail());
+                }
+            } else {
+                Timber.i("定位失败，loc is null");
+            }
+            //停止定位服务
+            mLocationClient.stopLocation();
+        });
+
+        //获取最后一次定位的位置
+        AMapLocation location = mLocationClient.getLastKnownLocation();
+        if (location != null && location.getErrorCode() == 0) {
+            double latitude = location.getLatitude();
+            double longitude = location.getLongitude();
+            myLatLng = new LatLng(latitude, longitude);
+            aMap.animateCamera(CameraUpdateFactory.changeLatLng(myLatLng));
+        }
     }
 
 
@@ -299,6 +327,7 @@ public class MainActivity extends BaseActivity {
 
     /**
      * 添加设备的 marker 点
+     *
      * @param deviceList
      */
     private void addMerchantClustersToMap(final List<DeviceBasicInfoResult> deviceList) {
@@ -361,6 +390,7 @@ public class MainActivity extends BaseActivity {
 
     }
 
+
     private int checkMarkerIcon(String sensorType) {
         switch (sensorType) {
             case "DAS":
@@ -377,6 +407,7 @@ public class MainActivity extends BaseActivity {
         }
     }
 
+
     @OnClick({R.id.img_user, R.id.img_equipment})
     public void onViewClicked(View view) {
         switch (view.getId()) {
@@ -389,6 +420,7 @@ public class MainActivity extends BaseActivity {
                 break;
         }
     }
+
 
     /**
      * 配置点击事件
@@ -403,6 +435,7 @@ public class MainActivity extends BaseActivity {
     public void processLocationListener() {
         checkPermissionForGPS();
     }
+
 
     /**
      * 刷新点击事件
@@ -487,6 +520,7 @@ public class MainActivity extends BaseActivity {
         manager.getDaoSession().getStatusInfoResultDao().insertOrReplaceInTx(infoResult);
     }
 
+
     /**
      * 查询设备列表中是否有这个设备
      */
@@ -496,6 +530,7 @@ public class MainActivity extends BaseActivity {
                 .where(DeviceBasicInfoResultDao.Properties.DeviceName.eq(deviceName))
                 .unique();
     }
+
 
     /**
      * 查询位置信息不为空的设备
@@ -508,10 +543,12 @@ public class MainActivity extends BaseActivity {
                 .list();
     }
 
+
     public void showConnectionView(String str) {
         mLlConnection.setVisibility(View.VISIBLE);
         mTvConnection.setText(str);
     }
+
 
     public void hidingConnectionView() {
         mLlConnection.setVisibility(View.GONE);
@@ -541,7 +578,7 @@ public class MainActivity extends BaseActivity {
                 .onGranted(new Action<List<String>>() {
                     @Override
                     public void onAction(List<String> permissions) {
-                        startLocalService();
+                        mLocationClient.startLocation();
                     }
                 })
                 .onDenied(new Action<List<String>>() {
@@ -608,41 +645,6 @@ public class MainActivity extends BaseActivity {
         mMaterialDialog.show();
     }
 
-
-    public void startLocalService() {
-        //初始化定位
-        mLocationClient = new AMapLocationClient(MCloudApp.getContext());
-        mLocationClient.setLocationOption(getDefaultOption());
-        mLocationClient.setLocationListener(location -> {
-            if (null != location) {
-                if (location.getErrorCode() == 0) {
-                    Timber.i("定位成功===" + location.toString());
-                    double latitude = location.getLatitude();
-                    double longitude = location.getLongitude();
-                    myLatLng = new LatLng(latitude, longitude);
-                    aMap.animateCamera(CameraUpdateFactory.newLatLng(myLatLng));
-
-                } else {
-                    Timber.i("定位失败\n错误码：" + location.getErrorCode()
-                            + "\n错误信息:" + location.getErrorInfo()
-                            + "\n错误描述:" + location.getLocationDetail());
-                }
-            } else {
-                Timber.i("定位失败，loc is null");
-            }
-            //停止定位服务
-            stopLocalService();
-        });
-        mLocationClient.startLocation();
-    }
-
-    public void stopLocalService() {
-        if (null != mLocationClient) {
-            mLocationClient.stopLocation();
-            mLocationClient.onDestroy();
-        }
-        mLocationClient = null;
-    }
 
     private AMapLocationClientOption getDefaultOption() {
         AMapLocationClientOption mOption = new AMapLocationClientOption();
@@ -755,8 +757,7 @@ public class MainActivity extends BaseActivity {
         switch (requestCode) {
             case PERMISSION_CODE_GPS:
                 if (isGPSOPen(MainActivity.this)) {
-                    startLocalService();
-
+                    mLocationClient.startLocation();
                 }
                 break;
 
@@ -764,7 +765,7 @@ public class MainActivity extends BaseActivity {
                 if (AndPermission.hasPermissions(this, locationNeedPermissions)) {
                     // 有对应的权限
                     //刷新定位
-                    startLocalService();
+                    mLocationClient.startLocation();
                 }
                 break;
 
