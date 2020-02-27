@@ -57,6 +57,8 @@ import timber.log.Timber;
  */
 public class DeviceDetailsFragment extends BaseFragment implements SwipeRefreshLayout.OnRefreshListener {
 
+    @BindView(R.id.tv_device_sn)
+    TextView mTvDeviceSn;
 
     @BindView(R.id.sim_card_number)
     TextView simCardNumber;
@@ -349,6 +351,7 @@ public class DeviceDetailsFragment extends BaseFragment implements SwipeRefreshL
 
     //设置设备状态1  ##041
     private void setDeviceStatusOne(DeviceStatusOne statusOne) {
+        mTvDeviceSn.setText(statusOne.getSnNumber());
         simCardNumber.setText(statusOne.getSimNumber());
         imeiNumber.setText(statusOne.getImeiNumber());
 
