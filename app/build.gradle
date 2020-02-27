@@ -84,9 +84,9 @@ android {
         variant.outputs.each { output ->
             def fileName
             if (variant.buildType.name == "release") {
-                fileName = "米易通_" + android.defaultConfig.versionName + "(" + gitShortCommitId() + ")" + ".apk"
+                fileName = "米易通贵州_" + android.defaultConfig.versionName + "(" + gitShortCommitId() + ")" + ".apk"
             } else {
-                fileName = "米易通_debug_" + android.defaultConfig.versionName + "(" + gitShortCommitId() + ")" + ".apk"
+                fileName = "米易通贵州_debug_" + android.defaultConfig.versionName + "(" + gitShortCommitId() + ")" + ".apk"
             }
             output.outputFileName = fileName
         }
