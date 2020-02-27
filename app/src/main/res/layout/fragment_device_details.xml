@@ -1004,16 +1004,16 @@
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
-                        android:layout_marginLeft="50dp"
+                        android:layout_marginLeft="30dp"
                         android:layout_marginTop="10dp"
-                        android:layout_marginRight="50dp"
+                        android:layout_marginRight="30dp"
                         android:background="@color/font_main" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="40dp"
-                        android:layout_marginLeft="50dp"
-                        android:layout_marginRight="50dp"
+                        android:layout_marginLeft="30dp"
+                        android:layout_marginRight="30dp"
                         android:background="@color/white"
                         android:orientation="horizontal">
 
@@ -1027,10 +1027,8 @@
                             android:id="@+id/tv_channel_number"
                             android:layout_width="0px"
                             android:layout_height="match_parent"
-                            android:layout_weight="2"
+                            android:layout_weight="1"
                             android:gravity="center"
-                            android:paddingLeft="10dp"
-                            android:paddingRight="10dp"
                             android:textColor="@color/black"
                             android:textSize="14sp" />
 
@@ -1042,10 +1040,8 @@
                         <TextView
                             android:layout_width="0px"
                             android:layout_height="match_parent"
-                            android:layout_weight="2.5"
+                            android:layout_weight="1"
                             android:gravity="center"
-                            android:paddingLeft="10dp"
-                            android:paddingRight="10dp"
                             android:text="状态"
                             android:textColor="@color/black"
                             android:textSize="14sp" />
@@ -1058,10 +1054,8 @@
                         <TextView
                             android:layout_width="0px"
                             android:layout_height="match_parent"
-                            android:layout_weight="2.5"
+                            android:layout_weight="1"
                             android:gravity="center"
-                            android:paddingLeft="10dp"
-                            android:paddingRight="10dp"
                             android:text="数值"
                             android:textColor="@color/black"
                             android:textSize="14sp" />
@@ -1070,21 +1064,22 @@
                             android:layout_width="1dp"
                             android:layout_height="match_parent"
                             android:background="@color/font_main" />
+
                     </LinearLayout>
 
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
-                        android:layout_marginLeft="50dp"
-                        android:layout_marginRight="50dp"
+                        android:layout_marginLeft="30dp"
+                        android:layout_marginRight="30dp"
                         android:background="@color/font_main" />
 
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/sensor_recycle"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="50dp"
-                        android:layout_marginRight="50dp" />
+                        android:layout_marginLeft="30dp"
+                        android:layout_marginRight="30dp" />
                 </LinearLayout>
 
 
