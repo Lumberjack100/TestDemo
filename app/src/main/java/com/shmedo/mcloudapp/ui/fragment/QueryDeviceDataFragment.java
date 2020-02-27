@@ -2,6 +2,7 @@ package com.shmedo.mcloudapp.ui.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,7 +10,6 @@ import android.view.animation.Animation;
 import android.view.animation.RotateAnimation;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.hjq.toast.ToastUtils;
+import com.shmedo.mcloudapp.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.adapter.recyclerviewbaseadapter.CommonAdapter;
 import com.shmedo.mcloudapp.adapter.recyclerviewbaseadapter.ViewHolder;
@@ -34,6 +35,10 @@ import com.shmedo.mcloudapp.util.ApiName;
 import com.shmedo.mcloudapp.util.GsonFactory;
 import com.shmedo.mcloudapp.util.TimeUtil;
 import com.shmedo.mcloudapp.views.TimePickerDialog;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -66,15 +71,12 @@ public class QueryDeviceDataFragment extends BaseFragment {
     @BindView(R.id.end_time)
     TextView endTime;
 
-    @BindView(R.id.btn_query_device)
-    Button btnQueryDevice;
-
     @BindView(R.id.img_arrow)
     ImageView imgArrow;
 
     @BindView(R.id.query_recycle_view)
     RecyclerView queryRecycleView;
-    
+
     @BindView(R.id.sp_item_count)
     Spinner spItemCount;
 
@@ -137,6 +139,7 @@ public class QueryDeviceDataFragment extends BaseFragment {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 itemCount = parent.getSelectedItem().toString();
             }
+
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
             }
@@ -145,6 +148,7 @@ public class QueryDeviceDataFragment extends BaseFragment {
         startTime.setText(TimeUtil.getDateBefore(3));
         endTime.setText(TimeUtil.getCurrentTime());
     }
+
     private void initAdapter() {
         linearLayoutManager = new LinearLayoutManager(configDASActivity);
         linearLayoutManager.setStackFromEnd(false);
@@ -153,8 +157,8 @@ public class QueryDeviceDataFragment extends BaseFragment {
         adapter = new CommonAdapter<QueryCloudDataInfo>(getActivity(), R.layout.item_query_cloud_data, queryCloudDataInfoList) {
             @Override
             protected void convert(ViewHolder holder, QueryCloudDataInfo info, int position) {
-                holder.setText(R.id.tv_data_time,info.getTimeStr());
-                holder.setText(R.id.tv_data_content,info.getContent());
+                holder.setText(R.id.tv_data_time, info.getTimeStr());
+                holder.setText(R.id.tv_data_content, info.getContent());
             }
         };
 
@@ -172,46 +176,79 @@ public class QueryDeviceDataFragment extends BaseFragment {
     }
 
 
-    @OnClick({R.id.start_time, R.id.end_time, R.id.btn_query_device,R.id.img_arrow})
+    @OnClick({R.id.start_time, R.id.end_time, R.id.btn_telemetry, R.id.btn_query_device, R.id.img_arrow})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.start_time:
-                timeDialog = null ;
+                timeDialog = null;
                 timeDialog = new TimePickerDialog(configDASActivity);
                 timeDialog.setTimeLisinter(startTime);
                 timeDialog.build();
                 break;
+
             case R.id.end_time:
-                timeDialog = null ;
+                timeDialog = null;
                 timeDialog = new TimePickerDialog(configDASActivity);
                 timeDialog.setTimeLisinter(endTime);
                 timeDialog.build();
                 break;
+
+            case R.id.btn_telemetry:
+                if (!MCloudApp.isIsBluetoothDeviceConnected()) {
+                    ToastUtils.show(getString(R.string.param_config_bluetooth_disconnect_warn));
+                    return;
+                }
+                //发送遥测指令
+                configDASActivity.sendCommonCommand("##110\r\n");
+                break;
+
             case R.id.btn_query_device:
 //                Timber.i("sn=====：" + snNubmer);
 //                Timber.i("开始时间：" + startTime.getText().toString());
 //                Timber.i("结束时间：" + endTime.getText().toString());
 //                Timber.i("显示条数：" + itemCount);
-                queryCloudData(snNubmer,startTime.getText().toString(),endTime.getText().toString(),itemCount);
+                queryCloudData(snNubmer, startTime.getText().toString(), endTime.getText().toString(), itemCount);
                 break;
+
             case R.id.img_arrow:
-                if (linearLayoutManager.getReverseLayout()){
+                if (linearLayoutManager.getReverseLayout()) {
                     imgArrow.startAnimation(mExpandAnimation);
                     linearLayoutManager.setReverseLayout(false);
                     linearLayoutManager.setReverseLayout(false);
                     queryRecycleView.setLayoutManager(linearLayoutManager);
                     queryRecycleView.scrollToPosition(0);
                     adapter.notifyDataSetChanged();
-                }else {
+                } else {
                     imgArrow.startAnimation(mFoldResetAnimation);
                     linearLayoutManager.setReverseLayout(true);
                     linearLayoutManager.setReverseLayout(true);
                     queryRecycleView.setLayoutManager(linearLayoutManager);
-                    queryRecycleView.scrollToPosition(queryCloudDataInfoList.size()-1);
+                    queryRecycleView.scrollToPosition(queryCloudDataInfoList.size() - 1);
                     adapter.notifyDataSetChanged();
                 }
                 break;
         }
+    }
+
+
+    /**
+     * 设置显示数据
+     */
+    private void setResultData(String cmdStr) {
+        //遥测应答指令处理
+        if (cmdStr.startsWith("$$110") && cmdStr.endsWith("\r\n")) {
+            ToastUtils.show("遥测指令已发送");
+            return;
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void getConfig(String messageEvent) {
+        if (TextUtils.isEmpty(messageEvent) && !messageEvent.startsWith("$$")) {
+            return;
+        }
+
+        setResultData(messageEvent);
     }
 
 
@@ -230,13 +267,13 @@ public class QueryDeviceDataFragment extends BaseFragment {
                 .subscribe(new BaseObserver<List<QueryCloudDataInfo>>() {
                     @Override
                     public void Success(List<QueryCloudDataInfo> queryCloudDataInfos, String message) {
-                        Timber.i(message+"===queryCloudDataInfos=="+queryCloudDataInfos.size());
+                        Timber.i(message + "===queryCloudDataInfos==" + queryCloudDataInfos.size());
                         ToastUtils.show("查询成功");
-                        if (queryCloudDataInfos.size() != 0){
+                        if (queryCloudDataInfos.size() != 0) {
                             queryCloudDataInfoList.clear();
                             queryCloudDataInfoList.addAll(queryCloudDataInfos);
                             adapter.notifyDataSetChanged();
-                        }else {
+                        } else {
                             ToastUtils.show("暂无数据！");
                         }
                     }
@@ -249,6 +286,18 @@ public class QueryDeviceDataFragment extends BaseFragment {
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        EventBus.getDefault().unregister(this);
+    }
+
+    @Override
     public boolean onBackPressed() {
         return false;
     }
@@ -257,7 +306,7 @@ public class QueryDeviceDataFragment extends BaseFragment {
     @Override
     public void onHiddenChanged(boolean hidden) {
         super.onHiddenChanged(hidden);
-        if (!hidden){
+        if (!hidden) {
             Timber.i("重新加载了");
         }
     }

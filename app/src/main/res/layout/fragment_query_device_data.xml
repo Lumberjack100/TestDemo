@@ -143,17 +143,35 @@
         android:layout_height="0.5dp"
         android:background="@color/secondary_text" />
 
-    <Button
-        android:id="@+id/btn_query_device"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:layout_marginLeft="10dp"
+        android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
-        android:layout_marginRight="10dp"
-        android:background="@drawable/btn_select"
-        android:text="查 询"
-        android:textColor="@color/white"
-        android:textSize="18sp" />
+        android:paddingStart="10dp"
+        android:paddingEnd="10dp">
+
+        <Button
+            android:id="@+id/btn_telemetry"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:background="@drawable/btn_select"
+            android:text="遥 测"
+            android:textColor="@color/white"
+            android:textSize="18sp" />
+
+        <Button
+            android:id="@+id/btn_query_device"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:layout_marginLeft="40dp"
+            android:background="@drawable/btn_select"
+            android:text="查 询"
+            android:textColor="@color/white"
+            android:textSize="18sp" />
+
+    </LinearLayout>
 
     <RelativeLayout
         android:layout_width="match_parent"
