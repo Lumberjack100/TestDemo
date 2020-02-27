@@ -33,6 +33,7 @@
         android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
         android:layout_marginEnd="10dp"
-        android:src="@drawable/icon_equipment" />
+        android:src="@drawable/icon_equipment"
+        android:visibility="gone"/>
 
 </RelativeLayout>
