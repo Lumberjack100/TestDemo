@@ -389,9 +389,9 @@ public class MdBluetoothManager {
         public void onLeScan(BluetoothDevice device, int rssi, byte[] scanRecord) {
             Timber.d("扫描到设备：name=" + (TextUtils.isEmpty(device.getName()) ? "UnkonwName" : device.getName()) + ";macAddress=" + device.getAddress());
             MDevice mDev = new MDevice(device, rssi);
-            if (devices.contains(mDev))
-                return;
-            devices.add(mDev);
+//            if (devices.contains(mDev))
+//                return;
+//            devices.add(mDev);
             handleBluetoothEvent(BluetoothEventType.DEVICE_FIND, new BluetoothDeviceFindEventData(mDev, devices));
         }
     }
