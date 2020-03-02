@@ -227,7 +227,7 @@ public class BlueToothListActivity extends AppCompatActivity  {
             }
         }
 //        deviceList.add(eventData.getNewDevice());
-//        adapter.notifyDataSetChanged();
+//        deviceAdapter.notifyDataSetChanged();
 
         deviceAdapter.addData(eventData.getNewDevice());
     }
