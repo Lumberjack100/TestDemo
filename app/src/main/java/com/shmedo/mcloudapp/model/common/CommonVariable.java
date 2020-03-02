@@ -16,6 +16,7 @@ public class CommonVariable {
     public static final String USER_HEAD_PHOTO_FILE_NAME = "/mnt/sdcard/tupian.png";
     public static final String USER_CONFIG_NAME = "mcloudApp";
     public static final String SERVICE_ADDRESS = "service_address";
+    public static final String TOKEN_UPDATE_TIME = "token_update_time";
     public static final String ACCESS_TOKEN = "access_token";
     public static final String APP_KEY = "b4524704-b325-4c88-a0dc-bfce89d58138";
     public static final String APP_SECRET = "c1507673-7a16-4cba-817c-2595a9c8a6e8";

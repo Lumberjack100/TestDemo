@@ -1,5 +1,7 @@
 package com.shmedo.mcloudapp.ui.activity;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.widget.Button;
@@ -39,6 +41,14 @@ public class InputDeviceSNActivity extends BaseActivity {
     Button mAddDevice;
 
     private String deviceType;
+
+
+    public static void startActivity(Context context) {
+        Intent intent = new Intent(context, InputDeviceSNActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        context.startActivity(intent);
+    }
+
 
     @Override
     protected int initContentView() {

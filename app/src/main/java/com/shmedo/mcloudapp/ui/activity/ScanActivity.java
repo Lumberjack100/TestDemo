@@ -12,7 +12,6 @@ import androidx.fragment.app.Fragment;
 
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.base.BaseActivity;
-import com.shmedo.mcloudapp.util.StartActivityUtil;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -135,7 +134,7 @@ public class ScanActivity extends BaseActivity implements QRCodeView.Delegate {
                 break;
 
             case R.id.inputSNLayout:
-                StartActivityUtil.comeOnBaby(this, InputDeviceSNActivity.class);
+                InputDeviceSNActivity.startActivity(this);
                 finish();
                 break;
 

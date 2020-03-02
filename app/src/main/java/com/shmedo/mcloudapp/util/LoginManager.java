@@ -2,6 +2,7 @@ package com.shmedo.mcloudapp.util;
 
 import android.os.Handler;
 
+import com.hjq.toast.ToastUtils;
 import com.shmedo.mcloudapp.MCloudApp;
 import com.shmedo.mcloudapp.entity.UserInfo;
 import com.shmedo.mcloudapp.entity.UserInfoWrapper;
@@ -9,6 +10,8 @@ import com.shmedo.mcloudapp.entity.parameter.SignInParameter;
 import com.shmedo.mcloudapp.model.BaseObserver;
 import com.shmedo.mcloudapp.model.MDRetrofit;
 import com.shmedo.mcloudapp.model.common.CommonVariable;
+
+import java.util.Date;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
@@ -19,7 +22,6 @@ import okhttp3.RequestBody;
  * 包名：    com.shmedo.mcloudapp.util
  * 创建者:   gonghe
  * 创建时间:  2019-10-17
- *
  */
 public class LoginManager {
 
@@ -28,10 +30,6 @@ public class LoginManager {
     public static final int LOGIN_CODE_FAIL_EXCEPTION = 0x0040;
 
     public static final int LOGIN_CODE_FAIL_BUSINESS = 0x0041;
-
-    public static final int USER_INFO_CODE_SUCCESS = 0;
-
-    public static final int USER_INFO_CODE_FAIL = -1;
 
     private static LoginManager instance = new LoginManager();
 
@@ -42,6 +40,10 @@ public class LoginManager {
     private String mAccount = null;
 
     private String mPassword = null;
+
+    private String Code = null;
+
+    private String Mobile = null;
 
 
     public static LoginManager getInstance() {
@@ -58,11 +60,20 @@ public class LoginManager {
         this.mAccount = account;
         this.mPassword = password;
 
-        makeLogin();
+        makeLoginByAccount();
     }
 
+    public void quickLogin(String mobile, String code, final LoginCallback callback) {
+        this.loginCallback = callback;
+        this.Mobile = mobile;
+        this.Code = code;
+        makeQuickLogin();
+    }
 
-    private void makeLogin() {
+    /**
+     * 账户密码登录
+     */
+    private void makeLoginByAccount() {
         SignInParameter parameter = new SignInParameter(mAccount, mPassword);
         parameter.setPassword(MD5Util.MD5(mAccount + mPassword));
         String json = GsonFactory.getGson().toJson(parameter);
@@ -84,11 +95,38 @@ public class LoginManager {
                             loginCallback.callback(LOGIN_CODE_FAIL_EXCEPTION, message);
                         }
                     }
-
-                    public void onError(Throwable e) {
-                        super.onError(e);
-                    }
                 });
+    }
+
+    /**
+     * 手机验证码登录
+     */
+    private void makeQuickLogin() {
+        SignInParameter parameter = new SignInParameter(Mobile, Code);
+        String json = GsonFactory.getGson().toJson(parameter);
+        RequestBody body = RequestBody.create(CommonVariable.JSON_TYPE, json);
+
+        MDRetrofit.getInstance().createService(ApiName.HTTPS).SmsLogin(body).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new BaseObserver<String>() {
+            @Override
+            public void Success(String token, String message) {
+                if (token.contains("手机号对应的用户不存在")) {
+                    ToastUtils.show("手机号对应的用户不存在");
+                    //TODO 手机号不存在设置为游客登录
+                    if (loginCallback != null) {
+                        loginCallback.callback(LOGIN_CODE_FAIL_BUSINESS, message);
+                    }
+                } else {
+                    getUserInfo(token);
+                }
+            }
+
+            @Override
+            public void Failure(String message) {
+                if (loginCallback != null) {
+                    loginCallback.callback(LOGIN_CODE_FAIL_EXCEPTION, message);
+                }
+            }
+        });
     }
 
 
@@ -104,19 +142,22 @@ public class LoginManager {
                 .subscribe(new BaseObserver<UserInfo>() {
                     @Override
                     public void Success(UserInfo userInfo, String message) {
+                        //在内存中保存用户数据为全局变量
                         MCloudApp.setAccessToken(token);
                         MCloudApp.setAccount(userInfo.getUser().getAccount());
                         MCloudApp.setCurrentUserInfo(userInfo);
 
+                        //下面是持久化保存用户数据
                         Long id = Long.valueOf(userInfo.getUser().getId());
                         UserInfoWrapper userInfoWrapper = new UserInfoWrapper();
                         userInfoWrapper.setId(id);
                         userInfoWrapper.setUserInfo(GsonFactory.getGson().toJson(userInfo));
-
                         DaoManager manager = DaoManager.getInstance();
                         manager.getDaoSession().getUserInfoWrapperDao().insertOrReplace(userInfoWrapper);
 
                         UserConfig userConfig = UserConfig.getConfig(MCloudApp.getContext(), CommonVariable.USER_CONFIG_NAME);
+                        userConfig.writeString(CommonVariable.ACCESS_TOKEN, token);
+                        userConfig.writeString(CommonVariable.TOKEN_UPDATE_TIME, new Date().getTime() + "");
                         if (mAccount != null && mPassword != null) {
                             userConfig.writeString(CommonVariable.UID, mAccount);
                             userConfig.writeString(CommonVariable.PWD, mPassword);

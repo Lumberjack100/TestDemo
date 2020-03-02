@@ -1,5 +1,7 @@
 package com.shmedo.mcloudapp.ui.activity;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.TextView;
@@ -45,6 +47,14 @@ public class ServiceConfigActivity extends BaseActivity {
     private UserConfig userConfig;
 
     private String config = "mdnetservice.shmedo.cn";
+
+
+    public static void startActivity(Context context) {
+        Intent intent = new Intent(context, ServiceConfigActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        context.startActivity(intent);
+    }
+
 
     @Override
     protected int initContentView() {

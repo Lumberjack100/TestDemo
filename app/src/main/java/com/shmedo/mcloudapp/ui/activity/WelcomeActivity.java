@@ -12,18 +12,25 @@ import androidx.annotation.Nullable;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.shmedo.mcloudapp.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.base.BaseActivity;
+import com.shmedo.mcloudapp.entity.UserInfo;
+import com.shmedo.mcloudapp.entity.UserInfoWrapper;
 import com.shmedo.mcloudapp.model.common.CommonVariable;
+import com.shmedo.mcloudapp.util.DaoManager;
+import com.shmedo.mcloudapp.util.GsonFactory;
 import com.shmedo.mcloudapp.util.LoginManager;
-import com.shmedo.mcloudapp.util.StartActivityUtil;
 import com.shmedo.mcloudapp.util.UserConfig;
 import com.shmedo.mcloudapp.util.XPermissionUtils;
 import com.yanzhenjie.permission.Action;
 import com.yanzhenjie.permission.AndPermission;
 import com.yanzhenjie.permission.runtime.Permission;
 
+import java.util.Date;
 import java.util.List;
+
+import timber.log.Timber;
 
 /**
  * 项目名：  mCloudapp
@@ -79,47 +86,83 @@ public class WelcomeActivity extends BaseActivity implements LoginManager.LoginC
 
 
     private void makeAutoLogin(String account, String password) {
-//        showLoadingDialog("正在登录...");
-        LoginManager.getInstance().login(account, password, this);
+        if (MCloudApp.isIsNetworkConnected()) {
+            LoginManager.getInstance().login(account, password, this);
+        } else {
+            loginForOffline();
+        }
     }
 
 
     @Override
     public void callback(int code, Object data) {
-//        dismissLoadingDialog();
         if (LoginManager.LOGIN_CODE_SUCCESS == code) {
-            redirectToMainActivity();
+            redirectToMainActivity(1500);
 
         } else {
-            redirectToLoginActivity();
+            redirectToLoginActivity(1500);
         }
+    }
+
+    /**
+     * 离线登录
+     */
+    private void loginForOffline() {
+        UserConfig userConfig = UserConfig.getConfig(MCloudApp.getContext(), CommonVariable.USER_CONFIG_NAME);
+        String token = userConfig.readString(CommonVariable.ACCESS_TOKEN);
+        String time = userConfig.readString(CommonVariable.TOKEN_UPDATE_TIME);
+
+        if (TextUtils.isEmpty(token) || TextUtils.isEmpty(token)) {
+            Timber.d("token或time为空，不能离线登录");
+            return;
+        }
+
+        long lastTime = Long.parseLong(time);
+        long interval = new Date().getTime() - lastTime;
+        if (interval / (24 * 3600 * 1000) > 28) {
+            Timber.d("token超过28天有效期，不能离线登录");
+            return;
+        }
+
+        DaoManager manager = DaoManager.getInstance();
+        UserInfoWrapper userInfoWrapper = manager.getDaoSession().getUserInfoWrapperDao().queryBuilder().unique();
+        if (userInfoWrapper != null) {
+            UserInfo userInfo = GsonFactory.getGson().fromJson(userInfoWrapper.getUserInfo(), UserInfo.class);
+            if (userInfo != null) {
+                MCloudApp.setAccount(userInfo.getUser().getAccount());
+                MCloudApp.setCurrentUserInfo(userInfo);
+            }
+        }
+        MCloudApp.setAccessToken(token);
+
+        redirectToMainActivity(1500);
     }
 
 
     /**
      * 跳转到登录界面
      */
-    private void redirectToLoginActivity() {
+    private void redirectToLoginActivity(long delayMillis) {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                StartActivityUtil.comeOnBaby(WelcomeActivity.this, LoginActivity.class);
+                LoginActivity.startActivity(WelcomeActivity.this);
                 finish();
             }
-        }, 2000);
+        }, delayMillis);
     }
 
     /**
      * 跳转到主界面
      */
-    private void redirectToMainActivity() {
+    private void redirectToMainActivity(long delayMillis) {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
                 MainActivity.start(WelcomeActivity.this);
                 finish();
             }
-        }, 2000);
+        }, delayMillis);
     }
 
 
@@ -134,7 +177,7 @@ public class WelcomeActivity extends BaseActivity implements LoginManager.LoginC
                         if (!TextUtils.isEmpty(mAccount) && !TextUtils.isEmpty(mPassword)) {
                             makeAutoLogin(mAccount, mPassword);
                         } else {
-                            redirectToLoginActivity();
+                            redirectToLoginActivity(1500);
                         }
                     }
                 })
