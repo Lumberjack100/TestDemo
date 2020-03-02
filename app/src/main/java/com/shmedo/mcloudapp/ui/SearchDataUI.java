@@ -1,5 +1,6 @@
 package com.shmedo.mcloudapp.ui;
 
+import android.Manifest;
 import android.app.Activity;
 import android.text.TextUtils;
 import android.view.View;
@@ -40,9 +41,6 @@ import com.shmedo.mcloudapp.util.TimeUtil;
 import com.shmedo.mcloudapp.util.XPermissionUtils;
 import com.shmedo.mcloudapp.views.TimePickerDialog;
 import com.shmedo.mcloudapp.views.recycleviewitemdivider.DividerItemDecoration;
-import com.yanzhenjie.permission.Action;
-import com.yanzhenjie.permission.AndPermission;
-import com.yanzhenjie.permission.runtime.Permission;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -365,44 +363,43 @@ public class SearchDataUI implements View.OnClickListener {
                 });
     }
 
-//    private void doScanButtonClick() {
-//        XPermissionUtils.requestPermissionsResult(mainActivity, 200, new String[]{
-//                        Manifest.permission.CAMERA,
-//                        Manifest.permission.READ_EXTERNAL_STORAGE},
-//                new XPermissionUtils.OnPermissionListener() {
-//                    @Override
-//                    public void onPermissionGranted() {
-//                        ScanActivity.startActivityForResult(mainActivity, MainActivity.REQUEST_CODE_SCAN);
-//                    }
-//
-//                    @Override
-//                    public void onPermissionDenied() {
-//                        XPermissionUtils.showRefusePermissionDialog(mainActivity,
-//                                mainActivity.getResources().getString(R.string.permission_request_camera_external_storage));
-//                    }
-//                });
-//    }
-
     private void doScanButtonClick() {
-        AndPermission.with(mainActivity)
-                .runtime()
-                .permission(Permission.CAMERA, Permission.READ_EXTERNAL_STORAGE, Permission.WRITE_EXTERNAL_STORAGE)
-                .onGranted(new Action<List<String>>() {
+        XPermissionUtils.requestPermissionsResult(mainActivity, 200, new String[]{
+                        Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                new XPermissionUtils.OnPermissionListener() {
                     @Override
-                    public void onAction(List<String> permissions) {
+                    public void onPermissionGranted() {
                         ScanActivity.startActivityForResult(mainActivity, MainActivity.REQUEST_CODE_SCAN);
                     }
-                })
-                .onDenied(new Action<List<String>>() {
+
                     @Override
-                    public void onAction(@NonNull List<String> permissions) {
-                        if (AndPermission.hasAlwaysDeniedPermission(mainActivity, permissions)) {
-                            XPermissionUtils.showRefusePermissionDialog(mainActivity,
-                                    mainActivity.getResources().getString(R.string.permission_request_camera_external_storage));
-                        }
+                    public void onPermissionDenied() {
+                        XPermissionUtils.showRefusePermissionDialog(mainActivity,
+                                mainActivity.getResources().getString(R.string.permission_request_camera_external_storage));
                     }
-                })
-                .start();
+                });
     }
+
+//    private void doScanButtonClick() {
+//        AndPermission.with(mainActivity)
+//                .runtime()
+//                .permission(Permission.CAMERA, Permission.READ_EXTERNAL_STORAGE, Permission.WRITE_EXTERNAL_STORAGE)
+//                .onGranted(new Action<List<String>>() {
+//                    @Override
+//                    public void onAction(List<String> permissions) {
+//                        ScanActivity.startActivityForResult(mainActivity, MainActivity.REQUEST_CODE_SCAN);
+//                    }
+//                })
+//                .onDenied(new Action<List<String>>() {
+//                    @Override
+//                    public void onAction(@NonNull List<String> permissions) {
+//                        if (AndPermission.hasAlwaysDeniedPermission(mainActivity, permissions)) {
+//                            XPermissionUtils.showRefusePermissionDialog(mainActivity,
+//                                    mainActivity.getResources().getString(R.string.permission_request_camera_external_storage));
+//                        }
+//                    }
+//                })
+//                .start();
+//    }
 
 }

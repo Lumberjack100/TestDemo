@@ -1,5 +1,6 @@
 package com.shmedo.mcloudapp.ui.activity.device;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
@@ -10,8 +11,6 @@ import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
-
 import com.hjq.toast.ToastUtils;
 import com.kyleduo.switchbutton.SwitchButton;
 import com.shmedo.mcloudapp.MCloudApp;
@@ -21,14 +20,9 @@ import com.shmedo.mcloudapp.entity.event.BluetoothStateEvent;
 import com.shmedo.mcloudapp.ui.activity.MainActivity;
 import com.shmedo.mcloudapp.ui.activity.ScanActivity;
 import com.shmedo.mcloudapp.util.XPermissionUtils;
-import com.yanzhenjie.permission.Action;
-import com.yanzhenjie.permission.AndPermission;
-import com.yanzhenjie.permission.runtime.Permission;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
-
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -190,25 +184,20 @@ public class QuickActivationActivity extends BaseDeviceConnectActivity {
     }
 
     private void startScan() {
-        AndPermission.with(this)
-                .runtime()
-                .permission(Permission.CAMERA, Permission.READ_EXTERNAL_STORAGE, Permission.WRITE_EXTERNAL_STORAGE)
-                .onGranted(new Action<List<String>>() {
+
+        XPermissionUtils.requestPermissionsResult(this, 200, new String[]{
+                        Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                new XPermissionUtils.OnPermissionListener() {
                     @Override
-                    public void onAction(List<String> permissions) {
+                    public void onPermissionGranted() {
                         ScanActivity.startActivityForResult(QuickActivationActivity.this, MainActivity.REQUEST_CODE_SCAN);
                     }
-                })
-                .onDenied(new Action<List<String>>() {
+
                     @Override
-                    public void onAction(@NonNull List<String> permissions) {
-                        if (AndPermission.hasAlwaysDeniedPermission(QuickActivationActivity.this, permissions)) {
-                            XPermissionUtils.showRefusePermissionDialog(QuickActivationActivity.this,
-                                    getResources().getString(R.string.permission_request_camera_external_storage));
-                        }
+                    public void onPermissionDenied() {
+                        XPermissionUtils.showRefusePermissionDialog(QuickActivationActivity.this, getResources().getString(R.string.permission_request_camera_external_storage));
                     }
-                })
-                .start();
+                });
     }
 
     private void scanResult(String result) {
