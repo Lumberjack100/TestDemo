@@ -222,7 +222,7 @@ public class MqttSettingActivity extends BaseDeviceConnectActivity implements Vi
                     showCloseSwitchButtonDialog("确定要关闭中心1？", 1);
                 } else {
                     sendCommonCommand("##8891\r\n");
-                    changeLinkStatus(mLinkOneStatus,false,R.color.font_main);
+                    changeLinkStatus(mLinkOneStatus, false, R.color.font_main);
                     editLinkOne = false;
                 }
                 Timber.i("mSbLinkOne===" + isChecked);
@@ -237,7 +237,7 @@ public class MqttSettingActivity extends BaseDeviceConnectActivity implements Vi
                     showCloseSwitchButtonDialog("确定要关闭中心2？", 2);
                 } else {
                     sendCommonCommand("##8892\r\n");
-                    changeLinkStatus(mLinkTwoStatus,false,R.color.font_main);
+                    changeLinkStatus(mLinkTwoStatus, false, R.color.font_main);
                     editLinkTwo = false;
                 }
                 Timber.i("mSbLinkTwo===" + isChecked);
@@ -252,7 +252,7 @@ public class MqttSettingActivity extends BaseDeviceConnectActivity implements Vi
                     showCloseSwitchButtonDialog("确定要关闭中心3？", 3);
                 } else {
                     sendCommonCommand("##8893\r\n");
-                    changeLinkStatus(mLinkThreeStatus,false,R.color.font_main);
+                    changeLinkStatus(mLinkThreeStatus, false, R.color.font_main);
                     editLinkThree = false;
                 }
                 Timber.i("mSbLinkThree===" + isChecked);
@@ -284,10 +284,10 @@ public class MqttSettingActivity extends BaseDeviceConnectActivity implements Vi
             sendCommonCommand("##202" + linkNumber + communicationProtocol + "\r\n");
             //6、设置数据平台地址端口
             sendCommonCommand("##201" + linkNumber + dataPlatformAddress + "\r\n");
-           if (communicationProtocol.equals("4")){
+            if (communicationProtocol.equals("4")) {
                 // MQTT自动注册
-               //7、选择平台
-               sendCommonCommand("##810" + linkNumber + registrationPlatform + "\r\n");
+                //7、选择平台
+                sendCommonCommand("##810" + linkNumber + registrationPlatform + "\r\n");
                 //2、设置自动注册平台参数
                 sendCommonCommand("##803" + linkNumber + deviceSn + "," + productId + "," + registrationCode + "\r\n");
                 //4、设置自动注册平台地址端口
@@ -295,33 +295,33 @@ public class MqttSettingActivity extends BaseDeviceConnectActivity implements Vi
                 //5、设置MQTT KeepAlive值
                 sendCommonCommand("##809" + linkNumber + keepAliveValue + "\r\n");
 
-            }else if (communicationProtocol.equals("5")){
+            } else if (communicationProtocol.equals("5")) {
                 //MQTT手动注册
                 //3、设置手动注册平台参数
-                sendCommonCommand("##805" + linkNumber + mqttDeviceId + "," + mqttUsername + "," + mqttPassword + "\r\n");
+                sendCommonCommand("##805" + linkNumber + mqttUsername + "," + mqttDeviceId + "," + mqttPassword + "\r\n");
                 //5、设置MQTT KeepAlive值
                 sendCommonCommand("##809" + linkNumber + keepAliveValue + "\r\n");
-                if (registrationPlatform.equals("2")){
+                if (registrationPlatform.equals("2")) {
                     //8、appKey(米度/北京平台特有)：
                     sendCommonCommand("##811" + linkNumber + appkey + "\r\n");
                 }
             }
             stopProgressRunnable();
-            changeLinkStatus(mLinkOneStatus,true,R.color.colorPrimaryDark);
-            changeLinkStatus(mLinkTwoStatus,true,R.color.colorPrimaryDark);
-            changeLinkStatus(mLinkThreeStatus,true,R.color.colorPrimaryDark);
+            changeLinkStatus(mLinkOneStatus, true, R.color.colorPrimaryDark);
+            changeLinkStatus(mLinkTwoStatus, true, R.color.colorPrimaryDark);
+            changeLinkStatus(mLinkThreeStatus, true, R.color.colorPrimaryDark);
             ToastUtils.show("指令发送完成");
             return false;
         }
 
         @Override
-        public void onCancelClick(View view,String linkNumber) {
-            if (linkNumber.equals("1")){
-                changeLinkStatus(mLinkOneStatus,true,R.color.colorPrimaryDark);
-            }else if (linkNumber.equals("2")){
-                changeLinkStatus(mLinkTwoStatus,true,R.color.colorPrimaryDark);
-            }else if (linkNumber.equals("3")){
-                changeLinkStatus(mLinkThreeStatus,true,R.color.colorPrimaryDark);
+        public void onCancelClick(View view, String linkNumber) {
+            if (linkNumber.equals("1")) {
+                changeLinkStatus(mLinkOneStatus, true, R.color.colorPrimaryDark);
+            } else if (linkNumber.equals("2")) {
+                changeLinkStatus(mLinkTwoStatus, true, R.color.colorPrimaryDark);
+            } else if (linkNumber.equals("3")) {
+                changeLinkStatus(mLinkThreeStatus, true, R.color.colorPrimaryDark);
             }
         }
     };
@@ -341,11 +341,11 @@ public class MqttSettingActivity extends BaseDeviceConnectActivity implements Vi
     public void getConfig(String messageEvent) {
         if (TextUtils.isEmpty(messageEvent) && !messageEvent.startsWith("$$")) {
             return;
-        }else if (messageEvent.startsWith("$$200") ||
-                messageEvent.startsWith("$$889") ||messageEvent.startsWith("$$000") || messageEvent.startsWith("$$811") ||
-                messageEvent.startsWith("$$202") ||messageEvent.startsWith("$$201") || messageEvent.startsWith("$$810") ||
-                messageEvent.startsWith("$$803") ||messageEvent.startsWith("$$807") || messageEvent.startsWith("$$809") ||
-                messageEvent.startsWith("$$805")){
+        } else if (messageEvent.startsWith("$$200") ||
+                messageEvent.startsWith("$$889") || messageEvent.startsWith("$$000") || messageEvent.startsWith("$$811") ||
+                messageEvent.startsWith("$$202") || messageEvent.startsWith("$$201") || messageEvent.startsWith("$$810") ||
+                messageEvent.startsWith("$$803") || messageEvent.startsWith("$$807") || messageEvent.startsWith("$$809") ||
+                messageEvent.startsWith("$$805")) {
             setResultData(messageEvent);
         }
     }
@@ -386,29 +386,29 @@ public class MqttSettingActivity extends BaseDeviceConnectActivity implements Vi
                 String linkNumber = StringUtil.linkNumbers(message);
                 switch (linkNumber) {
                     case "1":
-                            mqttConfigInfoSub1 = StringUtil.parserMqttConfig(message);
-                            changeLinkStatus(mLinkOneStatus,true,R.color.colorPrimaryDark);
-                            if (mqttConfigInfoSub1 == null)
-                                return;
-                            //弹框
-                            factory.createDialog(MqttSettingActivity.this, "1", mqttConfigInfoSub1, onClickListener);
+                        mqttConfigInfoSub1 = StringUtil.parserMqttConfig(message);
+                        changeLinkStatus(mLinkOneStatus, true, R.color.colorPrimaryDark);
+                        if (mqttConfigInfoSub1 == null)
+                            return;
+                        //弹框
+                        factory.createDialog(MqttSettingActivity.this, "1", mqttConfigInfoSub1, onClickListener);
                         break;
                     case "2":
-                            mqttConfigInfoSub2 = StringUtil.parserMqttConfig(message);
-                            Timber.i("8892返回===="+mqttConfigInfoSub2.toString());
-                            changeLinkStatus(mLinkTwoStatus,true,R.color.colorPrimaryDark);
-                            if (mqttConfigInfoSub2 == null)
-                                return;
-                            //弹框
-                            factory.createDialog(MqttSettingActivity.this, "2", mqttConfigInfoSub2, onClickListener);
+                        mqttConfigInfoSub2 = StringUtil.parserMqttConfig(message);
+                        Timber.i("8892返回====" + mqttConfigInfoSub2.toString());
+                        changeLinkStatus(mLinkTwoStatus, true, R.color.colorPrimaryDark);
+                        if (mqttConfigInfoSub2 == null)
+                            return;
+                        //弹框
+                        factory.createDialog(MqttSettingActivity.this, "2", mqttConfigInfoSub2, onClickListener);
                         break;
                     case "3":
-                            mqttConfigInfoSub3 = StringUtil.parserMqttConfig(message);
-                            changeLinkStatus(mLinkThreeStatus,true,R.color.colorPrimaryDark);
-                            if (mqttConfigInfoSub3 == null)
-                                return;
-                            //弹框
-                            factory.createDialog(MqttSettingActivity.this, "3", mqttConfigInfoSub3, onClickListener);
+                        mqttConfigInfoSub3 = StringUtil.parserMqttConfig(message);
+                        changeLinkStatus(mLinkThreeStatus, true, R.color.colorPrimaryDark);
+                        if (mqttConfigInfoSub3 == null)
+                            return;
+                        //弹框
+                        factory.createDialog(MqttSettingActivity.this, "3", mqttConfigInfoSub3, onClickListener);
                         break;
                 }
 
@@ -441,9 +441,9 @@ public class MqttSettingActivity extends BaseDeviceConnectActivity implements Vi
                 break;
             case "811":
                 stopProgressRunnable();
-                changeLinkStatus(mLinkOneStatus,true,R.color.colorPrimaryDark);
-                changeLinkStatus(mLinkTwoStatus,true,R.color.colorPrimaryDark);
-                changeLinkStatus(mLinkThreeStatus,true,R.color.colorPrimaryDark);
+                changeLinkStatus(mLinkOneStatus, true, R.color.colorPrimaryDark);
+                changeLinkStatus(mLinkTwoStatus, true, R.color.colorPrimaryDark);
+                changeLinkStatus(mLinkThreeStatus, true, R.color.colorPrimaryDark);
                 break;
             case "202":
             case "201":
@@ -457,11 +457,11 @@ public class MqttSettingActivity extends BaseDeviceConnectActivity implements Vi
         }
     }
 
-    private void stopProgress(String message){
+    private void stopProgress(String message) {
         if (message.startsWith("$$202e") || message.startsWith("$$202ce")) {
             ToastUtils.show("设置网络中心通讯协议错误!");
             stopProgressRunnable();
-        }else if (message.startsWith("$$201e") || message.startsWith("$$201ce")) {
+        } else if (message.startsWith("$$201e") || message.startsWith("$$201ce")) {
             ToastUtils.show("设置数据平台地址端口错误!");
             stopProgressRunnable();
         } else if (message.startsWith("$$801e") || message.startsWith("$$801ce")) {
@@ -489,14 +489,14 @@ public class MqttSettingActivity extends BaseDeviceConnectActivity implements Vi
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.tv_link_one:
-                changeLinkStatus(mLinkOneStatus,false,R.color.font_main);
+                changeLinkStatus(mLinkOneStatus, false, R.color.font_main);
                 if (!editLinkOne) {
                     editLinkOne = true;
                     //查询数据中心参数
                     sendCommonCommandImmediately("##8891\r\n");
                     Timber.i("中心1第1次编辑");
                 } else {
-                    Timber.i("中心1第2次编辑==="+mqttConfigInfoSub1.toString());
+                    Timber.i("中心1第2次编辑===" + mqttConfigInfoSub1.toString());
                     if (mqttConfigInfoSub1 == null) {
                         ToastUtils.show("等2s再点击");
                         return;
@@ -507,14 +507,14 @@ public class MqttSettingActivity extends BaseDeviceConnectActivity implements Vi
                 }
                 break;
             case R.id.tv_link_two:
-                changeLinkStatus(mLinkTwoStatus,false,R.color.font_main);
+                changeLinkStatus(mLinkTwoStatus, false, R.color.font_main);
                 if (!editLinkTwo) {
                     editLinkTwo = true;
                     //查询数据中心参数
                     sendCommonCommandImmediately("##8892\r\n");
                     Timber.i("中心2第1次编辑");
                 } else {
-                    Timber.i("中心2第2次编辑==="+mqttConfigInfoSub2.toString());
+                    Timber.i("中心2第2次编辑===" + mqttConfigInfoSub2.toString());
                     if (mqttConfigInfoSub2 == null) {
                         ToastUtils.show("等2s再点击");
                         return;
@@ -525,14 +525,14 @@ public class MqttSettingActivity extends BaseDeviceConnectActivity implements Vi
                 }
                 break;
             case R.id.tv_link_three:
-                changeLinkStatus(mLinkThreeStatus,false,R.color.font_main);
+                changeLinkStatus(mLinkThreeStatus, false, R.color.font_main);
                 if (!editLinkThree) {
                     editLinkThree = true;
                     //查询数据中心参数
                     sendCommonCommandImmediately("##8893\r\n");
                     Timber.i("中心3第1次编辑");
                 } else {
-                    Timber.i("中心3第2次编辑==="+mqttConfigInfoSub3.toString());
+                    Timber.i("中心3第2次编辑===" + mqttConfigInfoSub3.toString());
                     if (mqttConfigInfoSub3 == null) {
                         ToastUtils.show("等2s再点击");
                         return;
@@ -638,11 +638,12 @@ public class MqttSettingActivity extends BaseDeviceConnectActivity implements Vi
 
     /**
      * 改变编辑字体状态
+     *
      * @param textView
      * @param status
      * @param color
      */
-    private void changeLinkStatus(TextView textView,boolean status,int color){
+    private void changeLinkStatus(TextView textView, boolean status, int color) {
         textView.setEnabled(status);
         textView.setTextColor(getResources().getColor(color));
     }
