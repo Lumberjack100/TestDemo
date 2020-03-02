@@ -15,17 +15,18 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.hjq.toast.ToastUtils;
 import com.shmedo.mcloudapp.MCloudApp;
 import com.shmedo.mcloudapp.R;
-import com.shmedo.mcloudapp.adapter.recyclerviewbaseadapter.CommonAdapter;
-import com.shmedo.mcloudapp.adapter.recyclerviewbaseadapter.MultiItemTypeAdapter;
-import com.shmedo.mcloudapp.adapter.recyclerviewbaseadapter.ViewHolder;
+import com.shmedo.mcloudapp.adapter.BluetoothDeviceAdapter;
 import com.shmedo.mcloudapp.bluetooth.BluetoothDeviceFindEventData;
 import com.shmedo.mcloudapp.bluetooth.BluetoothEvent;
 import com.shmedo.mcloudapp.bluetooth.BluetoothEventHandler;
@@ -50,7 +51,7 @@ import butterknife.OnClick;
  * 创建者:   dpc
  * 创建时间:  2019/1/21 16:02
  */
-public class BlueToothListActivity extends AppCompatActivity implements MultiItemTypeAdapter.OnItemClickListener {
+public class BlueToothListActivity extends AppCompatActivity  {
     public static final int REQUEST_ENABLE_BT = 0x002;
 
     @BindView(R.id.recycleview_bluetooth_device)
@@ -65,7 +66,7 @@ public class BlueToothListActivity extends AppCompatActivity implements MultiIte
     @BindView(R.id.btn_scan)
     Button btnScan;
 
-    private CommonAdapter adapter;
+    private BluetoothDeviceAdapter deviceAdapter;
 
     private List<MDevice> deviceList = new ArrayList<>();
 
@@ -113,50 +114,39 @@ public class BlueToothListActivity extends AppCompatActivity implements MultiIte
         startDiscoveryDevice();
     }
 
-
     private void initAdapter() {
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mRecyclerView.addItemDecoration(new DividerItemDecoration());
-        adapter = new CommonAdapter<MDevice>(this, R.layout.item_bluetoothdevice, deviceList) {
+        deviceAdapter = new BluetoothDeviceAdapter(R.layout.item_bluetoothdevice, deviceList);
+        mRecyclerView.setAdapter(deviceAdapter);
+
+        deviceAdapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
-            protected void convert(ViewHolder holder, final MDevice mDevice, final int position) {
-                BluetoothDevice bluetoothDevice = mDevice.getDevice();
-                holder.setText(R.id.tv_dev_name, bluetoothDevice.getName());
-                holder.setText(R.id.tv_dev_mac, bluetoothDevice.getAddress());
-                holder.setText(R.id.tv_dev_signal, mDevice.getRssi() + "dBm");
+            public void onItemClick(@NonNull BaseQuickAdapter adapter, @NonNull View view, int position) {
+                mdBluetoothManager.stopScan();
+
+                BluetoothDevice bluetoothDevice = deviceList.get(position).getDevice();
+                String macAddress = bluetoothDevice.getAddress();
+                String deviceName = bluetoothDevice.getName();
+                MCloudApp.setCurDeviceToken(deviceName.substring(3));
+                MCloudApp.setCurDeviceMacAddr(macAddress);
+
+                if (deviceName.endsWith("T")) {
+                    String deviceInfo = "MEDO," + deviceName.substring(3) + ",ADME";
+                    ConfigADMEActivity.startActivity(BlueToothListActivity.this, deviceInfo);
+
+                } else if (deviceName.endsWith("L")) {
+                    String deviceInfo = "MEDO," + deviceName.substring(3) + ",DAS";
+                    ConfigDASActivity.startActivity(BlueToothListActivity.this, deviceInfo);
+                }
+
+                finish();
             }
-        };
-        adapter.setOnItemClickListener(this);
-        mRecyclerView.setAdapter(adapter);
+        });
     }
 
 
-    @Override
-    public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
-        mdBluetoothManager.stopScan();
 
-        BluetoothDevice bluetoothDevice = deviceList.get(position).getDevice();
-        String macAddress = bluetoothDevice.getAddress();
-        String deviceName = bluetoothDevice.getName();
-        MCloudApp.setCurDeviceToken(deviceName.substring(3));
-        MCloudApp.setCurDeviceMacAddr(macAddress);
-
-        if (deviceName.endsWith("T")) {
-            String deviceInfo = "MEDO," + deviceName.substring(3) + ",ADME";
-            ConfigADMEActivity.startActivity(BlueToothListActivity.this, deviceInfo);
-
-        } else if (deviceName.endsWith("L")) {
-            String deviceInfo = "MEDO," + deviceName.substring(3) + ",DAS";
-            ConfigDASActivity.startActivity(BlueToothListActivity.this, deviceInfo);
-        }
-
-        finish();
-    }
-
-    @Override
-    public boolean onItemLongClick(View view, RecyclerView.ViewHolder holder, int position) {
-        return false;
-    }
 
     @OnClick({R.id.btn_scan, R.id.LL_close})
     public void onClick(View v) {
@@ -224,24 +214,22 @@ public class BlueToothListActivity extends AppCompatActivity implements MultiIte
 
 
     private void handleDeviceFind(BluetoothDeviceFindEventData eventData) {
-        if (deviceList.contains(eventData.getNewDevice()) || eventData.getNewDevice().getDevice().getName() == null ||
-                !eventData.getNewDevice().getDevice().getName().startsWith("MD")) {
+        if (eventData.getNewDevice().getDevice().getName() == null || !eventData.getNewDevice().getDevice().getName().startsWith("MD")) {
             return;
         }
 
         for (MDevice mDevice : deviceList) {
             if (eventData.getNewDevice()
                     .getDevice()
-                    .getName()
-                    .equals(mDevice.getDevice().getName())) {
+                    .getAddress()
+                    .equals(mDevice.getDevice().getAddress())) {
                 return;
             }
         }
+//        deviceList.add(eventData.getNewDevice());
+//        adapter.notifyDataSetChanged();
 
-//        adapter.addItem(eventData.getNewDevice());
-        deviceList.add(eventData.getNewDevice());
-        adapter.notifyDataSetChanged();
-//        mRecyclerView.scrollToPosition(adapter.getItemCount() - 1);
+        deviceAdapter.addData(eventData.getNewDevice());
     }
 
 
