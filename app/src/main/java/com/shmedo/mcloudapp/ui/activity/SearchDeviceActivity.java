@@ -208,12 +208,16 @@ public class SearchDeviceActivity extends BaseActivity implements MultiItemTypeA
 
     /**
      * 搜索处理逻辑
+     * <br/>
+     * 查询本地数据库中匹配搜索关键字的当前用户的设备
      */
     private void searchProcess(String queryText) {
         List<StatusInfoResult> resultList = manager.getDaoSession()
                 .getStatusInfoResultDao()
                 .queryBuilder()
-                .where(StatusInfoResultDao.Properties.DeviceToken.like("%" + queryText + "%"))
+                .where(StatusInfoResultDao.Properties.DeviceToken.like("%" + queryText + "%"),
+                        StatusInfoResultDao.Properties.Account.isNotNull(),
+                        StatusInfoResultDao.Properties.Account.eq(MCloudApp.getAccount()))
                 .list();
 
         if (resultList != null && resultList.size() > 0) {
@@ -223,32 +227,6 @@ public class SearchDeviceActivity extends BaseActivity implements MultiItemTypeA
         }
     }
 
-
-//    @OnClick(R.id.tv_cancel)
-//    public void onViewClicked() {
-//        String snName = mEtSearch.getText().toString();
-//        if (StringUtil.isEmpty(snName)) {
-//            ToastUtils.show("设备的SN号不能为空");
-//            return;
-//        }
-//        KeyBordUtils.hideSoftKeyboard(mEtSearch);
-//        List<StatusInfoResult> list = fuzzyQueryDevice(snName);
-//        statusInfoList.clear();
-//        statusInfoList.addAll(list);
-//        adapter.notifyDataSetChanged();
-//    }
-
-//    /**
-//     * 通过设备名字进行模糊查询
-//     */
-//    private List<StatusInfoResult> fuzzyQueryDevice(String name) {
-//        List<StatusInfoResult> list = manager.getDaoSession()
-//                .getStatusInfoResultDao()
-//                .queryBuilder()
-//                .where(StatusInfoResultDao.Properties.DeviceToken.like("%" + name + "%"))
-//                .list();
-//        return list;
-//    }
 
     @Override
     public void beforeTextChanged(CharSequence s, int start, int count, int after) {

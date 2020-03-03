@@ -292,7 +292,7 @@ public class MainActivity extends BaseActivity {
 
 
     /**
-     * 获取用户在当前公司的设备列表信息
+     * 获取用户在当前公司的设备基础信息列表
      *
      * @param currentCompanyID
      */
@@ -521,10 +521,11 @@ public class MainActivity extends BaseActivity {
 
 
     /**
-     * 查询设备列表中是否有这个设备
+     * 查询本地数据库设备列表中是否有这个设备
      */
     private DeviceBasicInfoResult queryExistDevice(String deviceName) {
-        return manager.getDaoSession().getDeviceBasicInfoResultDao()
+        return manager.getDaoSession()
+                .getDeviceBasicInfoResultDao()
                 .queryBuilder()
                 .where(DeviceBasicInfoResultDao.Properties.DeviceName.eq(deviceName))
                 .unique();
@@ -532,13 +533,15 @@ public class MainActivity extends BaseActivity {
 
 
     /**
-     * 查询位置信息不为空的设备
+     * 查询位置信息不为空的当前用户的设备
      */
     private List<DeviceBasicInfoResult> queryLocalDeviceList() {
         return manager.getDaoSession()
                 .getDeviceBasicInfoResultDao()
                 .queryBuilder()
-                .where(DeviceBasicInfoResultDao.Properties.GpsLocation.notEq(""), DeviceBasicInfoResultDao.Properties.Account.eq(MCloudApp.getAccount()))
+                .where(DeviceBasicInfoResultDao.Properties.GpsLocation.notEq(""),
+                        DeviceBasicInfoResultDao.Properties.Account.isNotNull(),
+                        DeviceBasicInfoResultDao.Properties.Account.eq(MCloudApp.getAccount()))
                 .list();
     }
 

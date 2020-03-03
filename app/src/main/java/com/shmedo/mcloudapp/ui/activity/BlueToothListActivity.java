@@ -95,6 +95,7 @@ public class BlueToothListActivity extends AppCompatActivity  {
      */
     public static void startActivity(Context context) {
         Intent intent = new Intent(context, BlueToothListActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         context.startActivity(intent);
     }
 

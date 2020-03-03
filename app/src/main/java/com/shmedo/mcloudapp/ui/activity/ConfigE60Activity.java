@@ -48,13 +48,16 @@ public class ConfigE60Activity extends BaseActivity {
     @BindView(R.id.mWebView)
     MyWebView mMWebView;
 
-    private MaterialDialog mMaterialDialog;
-    private MaterialDialog.Builder mBuilder;
     private String deviceToken;
+
     private String deviceTypeName;
+
     private String ipAddress = "192.168.5.2";
-    private boolean againLoading = false;
+
+    private boolean isAgainLoading = false;
+
     private DaoManager manager = DaoManager.getInstance();
+
     private String securityNo;
 
 
@@ -78,6 +81,17 @@ public class ConfigE60Activity extends BaseActivity {
         initData();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        if (isAgainLoading) {
+            initData();
+            isAgainLoading = false;
+        }
+        isAgainLoading = true;
+    }
+
 
     private void initView() {
         DeviceBasicInfoResult deviceBasicInfoResult = (DeviceBasicInfoResult) (getIntent().getSerializableExtra(Extras.DEVICE_E60));
@@ -90,42 +104,32 @@ public class ConfigE60Activity extends BaseActivity {
     }
 
     private void initData() {
-        if (WifiSupport.isOpenWifi(this)) {
-            if (WifiSupport.isWifiConnected(this)) {
-                getDeviceJson(ipAddress);
-
-            } else {
-                ToastUtils.show("请打开连接正确的WIFI");
-                WifiSupport.goWifiSetting(this);
-            }
-
-        } else {
+        if (!WifiSupport.isOpenWifi(this)) {
             ToastUtils.show("请打开WIFI连接");
             WifiSupport.goWifiSetting(this);
+            return;
         }
+
+        if (!WifiSupport.isWifiConnected(this)) {
+            ToastUtils.show("请打开连接正确的WIFI");
+            WifiSupport.goWifiSetting(this);
+            return;
+        }
+
+        getDeviceJson(ipAddress);
     }
 
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-
-        if (againLoading) {
-            initData();
-            againLoading = false;
-        }
-        againLoading = true;
-    }
 
     /**
      * 请求设备json
      */
     private void getDeviceJson(final String ipAddr) {
-
         String url = "http://" + ipAddr + "/device.json";
 
         showLoadingDialog("正在验证设备...");
-        MDRetrofit.getInstance().createService(ApiName.HTTPS).ValidateDeviceE60(url)
+        MDRetrofit.getInstance()
+                .createService(ApiName.HTTPS)
+                .ValidateDeviceE60(url)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new BaseObserver<String>() {
@@ -138,25 +142,25 @@ public class ConfigE60Activity extends BaseActivity {
                             return;
                         }
 
-                        if (result.startsWith("MEDO")) {
-                            String[] data = result.split(",");
-                            Timber.d("Call getDeviceJson," + result + "--" + data[1] + "--" + deviceToken + "--" + data[2] + "--" + deviceTypeName);
+                        if (!result.startsWith("MEDO")) {
+                            showLoadResultDialog("设备验证失败,请选择正确的设备进行验证");
+                            return;
+                        }
 
-                            if (data[1].equals(deviceToken) && data[2].equals(deviceTypeName)) {
-                                setWebView(ipAddr, deviceToken);
-                            } else {
-                                showLoadResultDialog("设备验证失败,请选择正确的设备进行验证");
-                            }
+                        String[] data = result.split(",");
+                        Timber.d("Call getDeviceJson," + result + "--" + data[1] + "--" + deviceToken + "--" + data[2] + "--" + deviceTypeName);
+
+                        if (data[1].equals(deviceToken) && data[2].equals(deviceTypeName)) {
+                            setWebView(ipAddr, deviceToken);
                         } else {
-
                             showLoadResultDialog("设备验证失败,请选择正确的设备进行验证");
                         }
                     }
 
                     @Override
                     public void Failure(String message) {
-                        dismissLoadingDialog();
                         Timber.w(message);
+                        dismissLoadingDialog();
                         showPopWindow();
                     }
                 });
@@ -191,7 +195,7 @@ public class ConfigE60Activity extends BaseActivity {
             public void onClick(View v) {
                 mDialog.dismiss();
                 WifiSupport.goWifiSetting(ConfigE60Activity.this);
-                againLoading = true;
+                isAgainLoading = true;
             }
         });
         cancel.setOnClickListener(new View.OnClickListener() {
@@ -256,7 +260,7 @@ public class ConfigE60Activity extends BaseActivity {
             return;
         }
 
-        securityNo = queryAuthor(token);
+        securityNo = searchProcess(token);
         Timber.d("securityNo=" + securityNo);
 
         showLoadingDialog("正在登录系统...");
@@ -268,8 +272,9 @@ public class ConfigE60Activity extends BaseActivity {
         webSettings.setDatabaseEnabled(true);
         webSettings.setUseWideViewPort(true);
         webSettings.setLoadWithOverviewMode(true);
-        mMWebView.setVerticalScrollBarEnabled(true);
         webSettings.setAllowFileAccess(true);
+
+        mMWebView.setVerticalScrollBarEnabled(true);
         mMWebView.setDownloadListener(new MyWebViewDownLoadListener());
         mMWebView.setWebViewClient(new WebViewClient() {
             @Override
@@ -305,13 +310,18 @@ public class ConfigE60Activity extends BaseActivity {
     }
 
     /**
-     * 根据设备名称查询sn号
+     * 在本地设备基础信息数据库中根据设备名称查询sn号
      *
      * @param token
      * @return
      */
-    private String queryAuthor(String token) {
-        return manager.getDaoSession().getDeviceBasicInfoResultDao().queryBuilder().where(DeviceBasicInfoResultDao.Properties.DeviceToken.eq(token)).unique().getSecurityNO();
+    private String searchProcess(String token) {
+        return manager.getDaoSession()
+                .getDeviceBasicInfoResultDao()
+                .queryBuilder()
+                .where(DeviceBasicInfoResultDao.Properties.DeviceToken.eq(token))
+                .unique()
+                .getSecurityNO();
     }
 
     /**
@@ -320,15 +330,20 @@ public class ConfigE60Activity extends BaseActivity {
      * @param content
      */
     private void showLoadResultDialog(String content) {
-        mBuilder = new MaterialDialog.Builder(this);
-        mBuilder.title("温馨提示：").content(content).contentColor(Color.parseColor("#000000")).canceledOnTouchOutside(false).positiveText("确定").onPositive(new MaterialDialog.SingleButtonCallback() {
+        MaterialDialog.Builder  mBuilder = new MaterialDialog.Builder(this);
+        mBuilder.title("温馨提示：")
+                .content(content)
+                .contentColor(Color.parseColor("#000000"))
+                .canceledOnTouchOutside(false)
+                .positiveText("确定")
+                .onPositive(new MaterialDialog.SingleButtonCallback() {
             @Override
             public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                 dialog.dismiss();
                 finish();
             }
         });
-        mMaterialDialog = mBuilder.build();
+        MaterialDialog mMaterialDialog = mBuilder.build();
         mMaterialDialog.show();
     }
 

@@ -14,6 +14,7 @@ import android.widget.TextView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.shmedo.mcloudapp.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.adapter.recyclerviewbaseadapter.CommonAdapter;
 import com.shmedo.mcloudapp.adapter.recyclerviewbaseadapter.MultiItemTypeAdapter;
@@ -129,11 +130,12 @@ public class SearchProjectActivity extends BaseActivity implements MultiItemType
 
 
     /**
-     * 搜索处理逻辑
+     * 搜索处理逻辑<br/>
+     * 查询本地数据库中匹配搜索关键字的当前用户的项目
      */
     private void searchProcess(String queryText) {
         List<SystemDataInfo> resultList = manager.getDaoSession().getSystemDataInfoDao().queryBuilder()
-                .where(SystemDataInfoDao.Properties.ProjName.like("%" + queryText + "%"))
+                .where(SystemDataInfoDao.Properties.ProjName.like("%" + queryText + "%"), SystemDataInfoDao.Properties.Account.isNotNull(), SystemDataInfoDao.Properties.Account.eq(MCloudApp.getAccount()))
                 .list();
 
         if (resultList != null && resultList.size() > 0) {

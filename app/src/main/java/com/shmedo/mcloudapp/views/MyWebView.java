@@ -16,9 +16,11 @@ import android.webkit.WebView;
  */
 public class MyWebView extends WebView {
     private ViewGroup viewGroup;
+
     public MyWebView(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
+
     public MyWebView(Context context) {
         super(context);
     }
@@ -35,16 +37,17 @@ public class MyWebView extends WebView {
 
 
     @Override
-    public boolean onTouchEvent(MotionEvent event){
+    public boolean onTouchEvent(MotionEvent event) {
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 if (this.getScrollY() <= 0) {
-                    this.scrollTo(0,1);
+                    this.scrollTo(0, 1);
                 }
                 break;
-            case MotionEvent.ACTION_UP:
 
+            case MotionEvent.ACTION_UP:
                 break;
+
             default:
                 break;
         }

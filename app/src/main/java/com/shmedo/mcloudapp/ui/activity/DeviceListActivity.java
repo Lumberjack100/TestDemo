@@ -246,7 +246,7 @@ public class DeviceListActivity extends BaseActivity implements  MultiItemTypeAd
     }
 
     /**
-     * 获取设备列表
+     * 获取用户在当前公司的设备状态信息列表
      *
      * @param currentCompanyID
      */
@@ -289,6 +289,9 @@ public class DeviceListActivity extends BaseActivity implements  MultiItemTypeAd
 
     }
 
+    /**
+     * 从本地数据库查出云端设备和本地设备进行显示
+     */
     private void queryDeviceStatusList() {
         List<StatusInfoResult> infoList = manager.getDaoSession().getStatusInfoResultDao().queryBuilder()
                 .where(StatusInfoResultDao.Properties.Account.isNotNull(), StatusInfoResultDao.Properties.Account.eq(MCloudApp.getAccount()))
@@ -296,7 +299,7 @@ public class DeviceListActivity extends BaseActivity implements  MultiItemTypeAd
 
         if (null != infoList && infoList.size() > 0) {
             //TODO 添加测试数据,测试后需要删除
-            infoList.get(0).setSensorInfo(initTestData());
+//            infoList.get(0).setSensorInfo(initTestData());
 
             statusInfoList.clear();
             statusInfoList.addAll(infoList);
@@ -304,6 +307,10 @@ public class DeviceListActivity extends BaseActivity implements  MultiItemTypeAd
         }
     }
 
+    /**
+     * 传感器测试数据
+     * @return
+     */
     private List<SensorAndCount> initTestData() {
         List<SensorAndCount> list = new ArrayList<>();
 

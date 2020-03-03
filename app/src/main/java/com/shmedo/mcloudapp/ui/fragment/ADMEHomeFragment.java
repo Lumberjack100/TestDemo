@@ -19,7 +19,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.hjq.toast.ToastUtils;
@@ -853,11 +853,12 @@ public class ADMEHomeFragment extends BaseFragment {
 
 
     /**
-     * 查询本地数据库中项目信息
+     * 查询本地数据库中当前用户的项目信息
      */
     private void queryProjectList() {
         List<SystemDataInfo> infoList = manager.getDaoSession().getSystemDataInfoDao().queryBuilder()
-                .where(SystemDataInfoDao.Properties.Account.isNotNull(), SystemDataInfoDao.Properties.Account.eq(MCloudApp.getAccount()))
+                .where(SystemDataInfoDao.Properties.Account.isNotNull(),
+                        SystemDataInfoDao.Properties.Account.eq(MCloudApp.getAccount()))
                 .list();
 
         systemDataInfoList.clear();
