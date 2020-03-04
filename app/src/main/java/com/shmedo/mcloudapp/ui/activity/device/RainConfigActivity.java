@@ -16,7 +16,7 @@ import android.widget.TextView;
 import com.hjq.toast.ToastUtils;
 import com.shmedo.mcloudapp.MCloudApp;
 import com.shmedo.mcloudapp.R;
-import com.shmedo.mcloudapp.model.Extras;
+import com.shmedo.mcloudapp.inter.Extras;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;

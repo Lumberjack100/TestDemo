@@ -13,7 +13,7 @@ import com.shmedo.mcloudapp.adapter.recyclerviewbaseadapter.CommonAdapter;
 import com.shmedo.mcloudapp.base.BaseActivity;
 import com.shmedo.mcloudapp.entity.ProjectDeviceInfo;
 import com.shmedo.mcloudapp.entity.SystemDataInfo;
-import com.shmedo.mcloudapp.model.Extras;
+import com.shmedo.mcloudapp.inter.Extras;
 import com.shmedo.mcloudapp.views.ClearEditText;
 import com.shmedo.mcloudapp.views.EmptyDataView;
 

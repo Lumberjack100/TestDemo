@@ -28,7 +28,7 @@ import com.shmedo.mcloudapp.base.BaseActivity;
 import com.shmedo.mcloudapp.entity.DeviceBasicInfoResult;
 import com.shmedo.mcloudapp.entity.DeviceBasicInfoResultDao;
 import com.shmedo.mcloudapp.model.BaseObserver;
-import com.shmedo.mcloudapp.model.Extras;
+import com.shmedo.mcloudapp.inter.Extras;
 import com.shmedo.mcloudapp.model.MDRetrofit;
 import com.shmedo.mcloudapp.util.ApiName;
 import com.shmedo.mcloudapp.util.DaoManager;
@@ -52,7 +52,7 @@ public class ConfigE60Activity extends BaseActivity {
 
     private String deviceTypeName;
 
-    private String ipAddress = "192.168.5.2";
+    private String ipAddress = "172.168.5.249";
 
     private boolean isAgainLoading = false;
 
@@ -128,7 +128,7 @@ public class ConfigE60Activity extends BaseActivity {
 
         showLoadingDialog("正在验证设备...");
         MDRetrofit.getInstance()
-                .createService(ApiName.HTTPS)
+                .createService(ApiName.HTTP)
                 .ValidateDeviceE60(url)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -260,11 +260,11 @@ public class ConfigE60Activity extends BaseActivity {
             return;
         }
 
-        securityNo = searchProcess(token);
+//        securityNo = searchProcess(token);
         Timber.d("securityNo=" + securityNo);
 
         showLoadingDialog("正在登录系统...");
-        mMWebView.loadUrl("http://" + ipAddr + "/cors/index.html?uid=E60&pwd=medo123");
+        mMWebView.loadUrl("http://" + ipAddr + "/cors/index.html?uid=admin&pwd=admin");
         WebSettings webSettings = mMWebView.getSettings();
         webSettings.setJavaScriptCanOpenWindowsAutomatically(true);
         webSettings.setJavaScriptEnabled(true);

@@ -3,40 +3,32 @@ package com.shmedo.mcloudapp.ui.fragment;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.text.*;
-import android.text.style.AbsoluteSizeSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
-import androidx.annotation.NonNull;
+
 import androidx.annotation.Nullable;
 import butterknife.BindView;
 import butterknife.OnClick;
-import com.afollestad.materialdialogs.DialogAction;
+
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.hjq.toast.ToastUtils;
 import com.kyleduo.switchbutton.SwitchButton;
-import com.shmedo.das.das.cmd.CommandManager;
-import com.shmedo.das.das.cmd.CommandType;
-import com.shmedo.das.das.cmd.entity.RebootDeviceEntity;
 import com.shmedo.mcloudapp.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.base.BaseFragment;
 import com.shmedo.mcloudapp.entity.SyncPositionBean;
-import com.shmedo.mcloudapp.model.Extras;
+import com.shmedo.mcloudapp.inter.Extras;
 import com.shmedo.mcloudapp.ui.activity.ConfigDASActivity;
 import com.shmedo.mcloudapp.ui.activity.device.senior.InstructionDebugActivity;
 import com.shmedo.mcloudapp.ui.activity.device.senior.ProductRegistrationActivity;
 import com.shmedo.mcloudapp.util.*;
-import com.shmedo.mcloudapp.util.bleutil.ByteManagerUtil;
+
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 import timber.log.Timber;
-
-import java.io.UnsupportedEncodingException;
-import java.nio.charset.StandardCharsets;
 
 /**
  * 项目名：  mCloudapp

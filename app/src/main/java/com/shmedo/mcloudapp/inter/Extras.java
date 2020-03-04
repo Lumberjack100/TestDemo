@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.model;
+package com.shmedo.mcloudapp.inter;
 
 /**
  * 项目名：  mCloudapp

@@ -37,7 +37,7 @@ import com.shmedo.mcloudapp.base.BaseFragment;
 import com.shmedo.mcloudapp.entity.ble.BreakAlarmStatusSub;
 import com.shmedo.mcloudapp.entity.ble.DeviceLockStatusSub;
 import com.shmedo.mcloudapp.entity.event.BluetoothStateEvent;
-import com.shmedo.mcloudapp.model.Extras;
+import com.shmedo.mcloudapp.inter.Extras;
 import com.shmedo.mcloudapp.ui.activity.ConfigDASActivity;
 import com.shmedo.mcloudapp.ui.activity.device.GeneralSettingActivity;
 import com.shmedo.mcloudapp.ui.activity.device.MqttSettingActivity;

@@ -25,7 +25,7 @@ import com.shmedo.mcloudapp.entity.ProjectDeviceInfo;
 import com.shmedo.mcloudapp.entity.SystemDataInfo;
 import com.shmedo.mcloudapp.entity.parameter.QueryProjectDeviceParamter;
 import com.shmedo.mcloudapp.model.BaseObserver;
-import com.shmedo.mcloudapp.model.Extras;
+import com.shmedo.mcloudapp.inter.Extras;
 import com.shmedo.mcloudapp.model.MDRetrofit;
 import com.shmedo.mcloudapp.model.common.CommonVariable;
 import com.shmedo.mcloudapp.util.ApiName;

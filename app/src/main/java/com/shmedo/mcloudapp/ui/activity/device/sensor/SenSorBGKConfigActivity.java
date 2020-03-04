@@ -27,7 +27,7 @@ import com.shmedo.mcloudapp.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.entity.ble.collector.CollectorSensorParamsInfoSub;
 import com.shmedo.mcloudapp.inter.MyOnClickListener;
-import com.shmedo.mcloudapp.model.Extras;
+import com.shmedo.mcloudapp.inter.Extras;
 import com.shmedo.mcloudapp.ui.activity.device.BaseDeviceConnectActivity;
 import com.shmedo.mcloudapp.ui.activity.device.sensor.dialog.DialogFactory;
 import com.shmedo.mcloudapp.util.KeyBordUtils;
