@@ -9,7 +9,6 @@ import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
-import timber.log.Timber;
 
 /**
  * 项目名：  mCloudapp
@@ -32,9 +31,6 @@ public class BaseRetrofit {
                 .addNetworkInterceptor(interceptor)
                 .build();
 
-        Timber.i("-----------------------------------------------------");
-        Timber.i(urlType+"===ServiceAddress= " + MCloudApp.getServiceAddress());
-        Timber.i("-----------------------------------------------------");
         if(urlType.equals("http")){
             return new Retrofit.Builder()
                     .baseUrl(MCloudApp.getHttpServiceAddress())

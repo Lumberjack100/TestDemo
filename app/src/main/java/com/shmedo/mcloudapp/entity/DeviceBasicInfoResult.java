@@ -10,12 +10,12 @@ import org.greenrobot.greendao.annotation.Unique;
 import java.io.Serializable;
 
 /**
- * 项目名：  mCloudapp
- * 包名：    com.shmedo.mcloudapp.entity
- * 文件名:   DeviceBasicInfoResult
- * 创建者:   dpc
- * 创建时间:  2019/8/8 18:39
- * 描述：    4.2 查询设备基础信息列表 地图展示
+ * 项目名：  mCloudapp<br/>
+ * 包名：    com.shmedo.mcloudapp.entity<br/>
+ * 文件名:   DeviceBasicInfoResult<br/>
+ * 创建者:   dpc<br/>
+ * 创建时间:  2019/8/8 18:39<br/>
+ * 描述：    4.2 查询设备基础信息列表 地图展示<br/>
  */
 @Entity
 public class DeviceBasicInfoResult  implements Serializable {

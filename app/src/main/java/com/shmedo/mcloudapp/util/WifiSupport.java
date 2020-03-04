@@ -199,7 +199,13 @@ public class WifiSupport {
         }
     }
 
-    //查看以前是否也配置过这个网络
+
+    /**
+     * 查看以前是否也配置过这个网络
+     * @param SSID
+     * @param context
+     * @return
+     */
     public static WifiConfiguration isExsits(String SSID, Context context) {
         WifiManager wifimanager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
         List<WifiConfiguration> existingConfigs = wifimanager.getConfiguredNetworks();
