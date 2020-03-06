@@ -115,12 +115,10 @@
         <activity
             android:name=".ui.activity.BlueToothListActivity"
             android:configChanges="orientation|keyboardHidden"
-            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.Dialog" />
         <activity
             android:name=".ui.activity.WifiConnectionActivity"
             android:configChanges="orientation|keyboardHidden"
-            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.Dialog" />
         <activity
             android:name=".ui.activity.device.senior.ProductRegistrationActivity"
@@ -218,7 +216,6 @@
             android:name=".ui.activity.TestActivity"
             android:configChanges="orientation|keyboardHidden"
             android:launchMode="singleTop"
-            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.Dialog" />
     </application>
 
