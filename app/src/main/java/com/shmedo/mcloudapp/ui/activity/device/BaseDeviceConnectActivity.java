@@ -197,7 +197,7 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
      */
     private void handleDeviceFind(BluetoothDeviceFindEventData eventData) {
         BluetoothDevice device = eventData.getNewDevice().getDevice();
-        if (device.getName() == null)
+        if (TextUtils.isEmpty(SN) || TextUtils.isEmpty(device.getName()))
             return;
 
         if (device.getName().contains(SN)) {

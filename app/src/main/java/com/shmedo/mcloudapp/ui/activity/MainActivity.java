@@ -335,14 +335,15 @@ public class MainActivity extends BaseActivity {
             LocationResult location = GsonFactory.getGson()
                     .fromJson(deviceList.get(i).getInstallLocation(), new TypeToken<LocationResult>() {
                     }.getType());
-            latLng = new LatLng(location.getLat(), location.getLng());
-            ClusterItemImp clusterImp = new ClusterItemImp(latLng, deviceList.get(i).getDeviceName());
-            clusterItemsMerchant.add(clusterImp);
+            if (location != null) {
+                latLng = new LatLng(location.getLat(), location.getLng());
+                ClusterItemImp clusterImp = new ClusterItemImp(latLng, deviceList.get(i).getDeviceName());
+                clusterItemsMerchant.add(clusterImp);
+            }
         }
 
         if (clusterOverlayMerchant == null) {
-            clusterOverlayMerchant = new ClusterOverlayMerchant(aMap, clusterItemsMerchant,
-                    DensityUtil.Dp2Px(getApplicationContext(), clusterRadius), getApplicationContext());
+            clusterOverlayMerchant = new ClusterOverlayMerchant(aMap, clusterItemsMerchant, DensityUtil.Dp2Px(getApplicationContext(), clusterRadius), getApplicationContext());
         } else {
             clusterOverlayMerchant.onDestroy();
             clusterOverlayMerchant = null;

@@ -109,6 +109,7 @@ public class WelcomeActivity extends BaseActivity implements LoginManager.LoginC
      */
     private void loginForOffline() {
         UserConfig userConfig = UserConfig.getConfig(MCloudApp.getContext(), CommonVariable.USER_CONFIG_NAME);
+        String account = userConfig.readString(CommonVariable.UID);
         String token = userConfig.readString(CommonVariable.ACCESS_TOKEN);
         String time = userConfig.readString(CommonVariable.TOKEN_UPDATE_TIME);
 
@@ -125,14 +126,18 @@ public class WelcomeActivity extends BaseActivity implements LoginManager.LoginC
         }
 
         DaoManager manager = DaoManager.getInstance();
-        UserInfoWrapper userInfoWrapper = manager.getDaoSession().getUserInfoWrapperDao().queryBuilder().unique();
-        if (userInfoWrapper != null) {
-            UserInfo userInfo = GsonFactory.getGson().fromJson(userInfoWrapper.getUserInfo(), UserInfo.class);
-            if (userInfo != null) {
-                MCloudApp.setAccount(userInfo.getUser().getAccount());
-                MCloudApp.setCurrentUserInfo(userInfo);
+        List<UserInfoWrapper> userInfoWrapperList = manager.getDaoSession().getUserInfoWrapperDao().queryBuilder().list();
+        if (userInfoWrapperList != null) {
+            for (UserInfoWrapper userInfoWrapper : userInfoWrapperList) {
+                UserInfo userInfo = GsonFactory.getGson().fromJson(userInfoWrapper.getUserInfo(), UserInfo.class);
+                if (userInfo != null && account.equals(userInfo.getUser().getAccount())) {
+                    MCloudApp.setCurrentUserInfo(userInfo);
+                    break;
+                }
             }
         }
+
+        MCloudApp.setAccount(account);
         MCloudApp.setAccessToken(token);
 
         redirectToMainActivity(1500);

@@ -175,14 +175,17 @@ public class MqttSettingActivity extends BaseDeviceConnectActivity implements Vi
                         dataCommunicationMode = "1";
                         llBd.setVisibility(View.GONE);
                         break;
+
                     case "SMS":
                         dataCommunicationMode = "2";
                         llBd.setVisibility(View.GONE);
                         break;
+
                     case "BD":
                         dataCommunicationMode = "3";
                         llBd.setVisibility(View.VISIBLE);
                         break;
+
                     case "BD+4G":
                         dataCommunicationMode = "4";
                         llBd.setVisibility(View.VISIBLE);
@@ -365,11 +368,13 @@ public class MqttSettingActivity extends BaseDeviceConnectActivity implements Vi
                             mSbLinkOne.setCheckedImmediatelyNoEvent(isCheckedLinkOne);
                             setLinkText(mLinkOneStatus, isCheckedLinkOne);
                             break;
+
                         case "2":
                             isCheckedLinkTwo = true;
                             mSbLinkTwo.setCheckedImmediatelyNoEvent(isCheckedLinkTwo);
                             setLinkText(mLinkTwoStatus, isCheckedLinkTwo);
                             break;
+
                         case "3":
                             isCheckedLinkThree = true;
                             mSbLinkThree.setCheckedImmediatelyNoEvent(isCheckedLinkThree);
@@ -382,6 +387,7 @@ public class MqttSettingActivity extends BaseDeviceConnectActivity implements Vi
                     isCheckedLinkThree = false;
                 }
                 break;
+
             case "889":
                 String linkNumber = StringUtil.linkNumbers(message);
                 switch (linkNumber) {
@@ -393,6 +399,7 @@ public class MqttSettingActivity extends BaseDeviceConnectActivity implements Vi
                         //弹框
                         factory.createDialog(MqttSettingActivity.this, "1", mqttConfigInfoSub1, onClickListener);
                         break;
+
                     case "2":
                         mqttConfigInfoSub2 = StringUtil.parserMqttConfig(message);
                         Timber.i("8892返回====" + mqttConfigInfoSub2.toString());
@@ -402,6 +409,7 @@ public class MqttSettingActivity extends BaseDeviceConnectActivity implements Vi
                         //弹框
                         factory.createDialog(MqttSettingActivity.this, "2", mqttConfigInfoSub2, onClickListener);
                         break;
+
                     case "3":
                         mqttConfigInfoSub3 = StringUtil.parserMqttConfig(message);
                         changeLinkStatus(mLinkThreeStatus, true, R.color.colorPrimaryDark);
@@ -411,8 +419,8 @@ public class MqttSettingActivity extends BaseDeviceConnectActivity implements Vi
                         factory.createDialog(MqttSettingActivity.this, "3", mqttConfigInfoSub3, onClickListener);
                         break;
                 }
-
                 break;
+
             case "000":
                 CommandResult<BaseConfigInfo> bean = ParseManager.getInstance().parse(message);
                 if (!bean.isSuccess())
@@ -424,12 +432,15 @@ public class MqttSettingActivity extends BaseDeviceConnectActivity implements Vi
                     case 1:
                         spCommunicationmethod.setSelection(0);
                         break;
+
                     case 2:
                         spCommunicationmethod.setSelection(1);
                         break;
+
                     case 3:
                         spCommunicationmethod.setSelection(2);
                         break;
+
                     case 4:
                         spCommunicationmethod.setSelection(3);
                         break;
@@ -439,12 +450,14 @@ public class MqttSettingActivity extends BaseDeviceConnectActivity implements Vi
                 mCetBDCardNumber.setText(bean.getResult().getTargetBGNum());
                 stopProgressRunnable();
                 break;
+
             case "811":
                 stopProgressRunnable();
                 changeLinkStatus(mLinkOneStatus, true, R.color.colorPrimaryDark);
                 changeLinkStatus(mLinkTwoStatus, true, R.color.colorPrimaryDark);
                 changeLinkStatus(mLinkThreeStatus, true, R.color.colorPrimaryDark);
                 break;
+
             case "202":
             case "201":
             case "810":
@@ -496,16 +509,16 @@ public class MqttSettingActivity extends BaseDeviceConnectActivity implements Vi
                     sendCommonCommandImmediately("##8891\r\n");
                     Timber.i("中心1第1次编辑");
                 } else {
-                    Timber.i("中心1第2次编辑===" + mqttConfigInfoSub1.toString());
                     if (mqttConfigInfoSub1 == null) {
                         ToastUtils.show("等2s再点击");
                         return;
                     }
                     //直接弹框
-                    Timber.i("中心1第2次编辑");
+                    Timber.i("中心1第2次编辑===" + mqttConfigInfoSub1.toString());
                     factory.createDialog(MqttSettingActivity.this, "1", mqttConfigInfoSub1, onClickListener);
                 }
                 break;
+
             case R.id.tv_link_two:
                 changeLinkStatus(mLinkTwoStatus, false, R.color.font_main);
                 if (!editLinkTwo) {
@@ -514,16 +527,16 @@ public class MqttSettingActivity extends BaseDeviceConnectActivity implements Vi
                     sendCommonCommandImmediately("##8892\r\n");
                     Timber.i("中心2第1次编辑");
                 } else {
-                    Timber.i("中心2第2次编辑===" + mqttConfigInfoSub2.toString());
                     if (mqttConfigInfoSub2 == null) {
                         ToastUtils.show("等2s再点击");
                         return;
                     }
                     //直接弹框
-                    Timber.i("中心2第2次编辑");
+                    Timber.i("中心2第2次编辑===" + mqttConfigInfoSub2.toString());
                     factory.createDialog(MqttSettingActivity.this, "2", mqttConfigInfoSub2, onClickListener);
                 }
                 break;
+
             case R.id.tv_link_three:
                 changeLinkStatus(mLinkThreeStatus, false, R.color.font_main);
                 if (!editLinkThree) {
@@ -532,16 +545,16 @@ public class MqttSettingActivity extends BaseDeviceConnectActivity implements Vi
                     sendCommonCommandImmediately("##8893\r\n");
                     Timber.i("中心3第1次编辑");
                 } else {
-                    Timber.i("中心3第2次编辑===" + mqttConfigInfoSub3.toString());
                     if (mqttConfigInfoSub3 == null) {
                         ToastUtils.show("等2s再点击");
                         return;
                     }
                     //直接弹框
-                    Timber.i("中心3第2次编辑");
+                    Timber.i("中心3第2次编辑===" + mqttConfigInfoSub3.toString());
                     factory.createDialog(MqttSettingActivity.this, "3", mqttConfigInfoSub3, onClickListener);
                 }
                 break;
+
             case R.id.btn_confirm:
                 if (MCloudApp.isIsBluetoothDeviceConnected()) {
                     //设置数据通讯模式
@@ -564,11 +577,12 @@ public class MqttSettingActivity extends BaseDeviceConnectActivity implements Vi
                 } else {
                     ToastUtils.show("蓝牙已断开！");
                 }
-
                 break;
+
             case R.id.back:
                 onBackPressed();
                 break;
+
             case R.id.tv_save:
                 if (MCloudApp.isIsBluetoothDeviceConnected()) {
                     showSaveDialog(getResources().getString(R.string.disconnect_bluetooth_device_save_param_warn));
@@ -600,11 +614,13 @@ public class MqttSettingActivity extends BaseDeviceConnectActivity implements Vi
                                 setLinkText(mLinkOneStatus, false);
                                 sendCommonCommand("##2011\r\n");
                                 break;
+
                             case 2:
                                 mSbLinkTwo.setCheckedImmediatelyNoEvent(false);
                                 setLinkText(mLinkTwoStatus, false);
                                 sendCommonCommand("##2012\r\n");
                                 break;
+
                             case 3:
                                 mSbLinkThree.setCheckedImmediatelyNoEvent(false);
                                 setLinkText(mLinkThreeStatus, false);
@@ -621,10 +637,12 @@ public class MqttSettingActivity extends BaseDeviceConnectActivity implements Vi
                                 mSbLinkOne.setCheckedImmediatelyNoEvent(true);
                                 setLinkText(mLinkOneStatus, true);
                                 break;
+
                             case 2:
                                 mSbLinkTwo.setCheckedImmediatelyNoEvent(true);
                                 setLinkText(mLinkTwoStatus, true);
                                 break;
+
                             case 3:
                                 mSbLinkThree.setCheckedImmediatelyNoEvent(true);
                                 setLinkText(mLinkThreeStatus, true);
