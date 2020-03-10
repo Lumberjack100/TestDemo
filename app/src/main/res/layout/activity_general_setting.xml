@@ -31,7 +31,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
             android:layout_weight="1"
-            android:text="采集器地址(1~255)"
+            android:text="采集器地址(0~255)"
             android:textColor="@color/gray_807B7B"
             android:textSize="@dimen/text_size_14" />
 

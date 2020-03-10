@@ -28,7 +28,7 @@ public class DaoManager {
     }
 
 
-    public DaoMaster getDaoMaster() {
+    private DaoMaster getDaoMaster() {
         if (mDaoMaster == null) {
             mHelper = new DaoMaster.DevOpenHelper(MCloudApp.getContext(), "project.db", null);
             mDaoMaster = new DaoMaster(mHelper.getWritableDatabase());

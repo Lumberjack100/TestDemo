@@ -183,7 +183,7 @@ public class GeneralSettingActivity extends BaseDeviceConnectActivity {
         standbyTime = mEtStandbyTime.getText().toString().trim();
         collectTime = mEtCollectTime.getText().toString().trim();
 
-        if (TextUtils.isEmpty(collectorAddress) || Integer.parseInt(collectorAddress) <= 0 || Integer.parseInt(collectorAddress) > 255) {
+        if (TextUtils.isEmpty(collectorAddress) || Integer.parseInt(collectorAddress) < 0 || Integer.parseInt(collectorAddress) > 255) {
             ToastUtils.show("请输入正确的采集器地址");
             return;
         }
