@@ -8,19 +8,20 @@
     <TextView
         android:id="@+id/tv_config_name"
         android:layout_width="0dp"
-        android:layout_weight="5"
         android:layout_height="match_parent"
         android:layout_marginStart="30dp"
+        android:layout_weight="5"
         android:gravity="center_vertical"
         tools:text="设备启用状态" />
 
     <Spinner
         android:id="@+id/spinner"
         android:layout_width="0dp"
-        android:layout_weight="5"
         android:layout_height="match_parent"
-        android:layout_marginRight="20dp"
+        android:layout_marginEnd="20dp"
+        android:layout_weight="5"
         android:background="@drawable/icon_dialog_switch"
-        />
+        android:dropDownVerticalOffset="40dp"
+        android:gravity="center" />
 
 </LinearLayout>

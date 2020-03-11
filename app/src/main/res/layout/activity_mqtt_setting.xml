@@ -1,118 +1,126 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/white">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical">
+
     <include layout="@layout/activity_custom_toolbar" />
 
     <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:background="@color/bg_main_light_white"
-            android:orientation="horizontal">
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:background="@color/bg_main_light_white"
+        android:orientation="horizontal">
 
         <ImageView
-                android:layout_width="30dp"
-                android:layout_height="40dp"
-                android:layout_marginStart="16dp"
-                android:src="@drawable/icon_serson_setting" />
+            android:layout_width="30dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="16dp"
+            android:src="@drawable/icon_serson_setting" />
 
         <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_marginStart="5dp"
-                android:gravity="center_vertical"
-                android:text="通用设置"
-                android:textColor="@color/gray_807B7B"
-                android:textSize="@dimen/text_size_18" />
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginStart="5dp"
+            android:gravity="center_vertical"
+            android:text="通用设置"
+            android:textColor="@color/gray_807B7B"
+            android:textSize="@dimen/text_size_18" />
 
     </LinearLayout>
 
     <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp" />
+        android:layout_width="match_parent"
+        android:layout_height="1dp" />
+
     <include
-            android:id="@+id/communication_method"
-            layout="@layout/device_config_view_item" />
+        android:id="@+id/communication_method"
+        layout="@layout/device_config_view_item" />
+
     <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp" />
+        android:layout_width="match_parent"
+        android:layout_height="1dp" />
+
     <include
-            android:id="@+id/data_report"
-            layout="@layout/device_config_view_item1" />
-    <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp" />
+        android:id="@+id/data_report"
+        layout="@layout/device_config_view_item1" />
+
     <LinearLayout
-            android:id="@+id/ll_bd"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+        android:id="@+id/ll_bd"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
         <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp" />
+            android:layout_width="match_parent"
+            android:layout_height="1dp" />
+
         <include
-                android:id="@+id/bd_card_number"
-                layout="@layout/device_config_view_item1" />
+            android:id="@+id/bd_card_number"
+            layout="@layout/device_config_view_item1" />
+
         <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp" />
+            android:layout_width="match_parent"
+            android:layout_height="1dp" />
 
     </LinearLayout>
+
     <Button
-            android:id="@+id/btn_confirm"
-            android:layout_width="match_parent"
-            android:layout_height="45dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:layout_marginBottom="20dp"
-            android:background="@drawable/btn_select"
-            android:text="保存通用配置"
-            android:textColor="@color/white" />
+        android:id="@+id/btn_confirm"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:layout_margin="20dp"
+        android:background="@drawable/btn_select"
+        android:text="保存通用配置"
+        android:textColor="@color/white" />
+
     <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:background="@color/bg_main_light_white"
-            android:orientation="horizontal">
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:background="@color/bg_main_light_white"
+        android:orientation="horizontal">
 
         <ImageView
-                android:layout_width="30dp"
-                android:layout_height="40dp"
-                android:layout_marginStart="16dp"
-                android:src="@drawable/icon_serson_setting" />
+            android:layout_width="30dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="16dp"
+            android:src="@drawable/icon_serson_setting" />
 
         <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_marginStart="5dp"
-                android:gravity="center_vertical"
-                android:text="数据中心设置"
-                android:textColor="@color/gray_807B7B"
-                android:textSize="@dimen/text_size_18" />
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginStart="5dp"
+            android:gravity="center_vertical"
+            android:text="数据中心设置"
+            android:textColor="@color/gray_807B7B"
+            android:textSize="@dimen/text_size_18" />
 
     </LinearLayout>
-    <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp" />
-    <include
-            android:id="@+id/link_one"
-            layout="@layout/device_config_switchview_item" />
-    <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp" />
-    <include
-            android:id="@+id/link_two"
-            layout="@layout/device_config_switchview_item" />
-    <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp" />
-    <include
-            android:id="@+id/link_three"
-            layout="@layout/device_config_switchview_item" />
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp" />
+
+    <include
+        android:id="@+id/link_one"
+        layout="@layout/device_config_switchview_item" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp" />
+
+    <include
+        android:id="@+id/link_two"
+        layout="@layout/device_config_switchview_item" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp" />
+
+    <include
+        android:id="@+id/link_three"
+        layout="@layout/device_config_switchview_item" />
 
 
 </LinearLayout>
