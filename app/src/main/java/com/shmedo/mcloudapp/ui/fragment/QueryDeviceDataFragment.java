@@ -244,7 +244,7 @@ public class QueryDeviceDataFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void getConfig(String messageEvent) {
-        if (TextUtils.isEmpty(messageEvent) && !messageEvent.startsWith("$$")) {
+        if (TextUtils.isEmpty(messageEvent) || !messageEvent.startsWith("$$")) {
             return;
         }
 

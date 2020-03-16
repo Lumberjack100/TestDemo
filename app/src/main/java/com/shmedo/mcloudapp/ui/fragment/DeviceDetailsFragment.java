@@ -241,11 +241,11 @@ public class DeviceDetailsFragment extends BaseFragment implements SwipeRefreshL
                 String[] result = string.split(":");
                 holder.setText(R.id.sensor_channel_number, result[0]);
                 holder.setText(R.id.sensor_status, ParserDeviceDetailsUtils.setSensorDataStatus(holder.getView(R.id.sensor_status), result[1], deviceConnectActivity));
-                if (channelNumber.equals("3")){
+                if (channelNumber.equals("3")) {
                     holder.setText(R.id.sensor_data, result[2] + "%rh");
-                }else if (channelNumber.equals("21")){
+                } else if (channelNumber.equals("21")) {
                     holder.setText(R.id.sensor_data, result[2] + "Hz");
-                }else {
+                } else {
                     holder.setText(R.id.sensor_data, result[2] + "mm");
                 }
             }
@@ -256,9 +256,10 @@ public class DeviceDetailsFragment extends BaseFragment implements SwipeRefreshL
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void getConfig(String messageEvent) {
-        if (TextUtils.isEmpty(messageEvent) && !messageEvent.startsWith("$$")) {
+        if (TextUtils.isEmpty(messageEvent) || !messageEvent.startsWith("$$")) {
             return;
-        } else if (messageEvent.startsWith("$$040") ||
+        }
+        if (messageEvent.startsWith("$$040") ||
                 messageEvent.startsWith("$$041") ||
                 messageEvent.startsWith("$$042") ||
                 messageEvent.startsWith("$$043") ||

@@ -652,7 +652,7 @@ public class MdBluetoothManager {
 
 
     private void notifyBluetoothEvent(final BluetoothEvent event) {
-        Timber.d(event.getEventType().name() + "->Thread Name: " + Thread.currentThread().getName() + ",Thread Id: " + Thread.currentThread().getId());
+//        Timber.d(event.getEventType().name() + "->Thread Name: " + Thread.currentThread().getName() + ",Thread Id: " + Thread.currentThread().getId());
 
         if (bluetoothEventHandlerList != null) {
             for (BluetoothEventHandler bluetoothEventHandler : bluetoothEventHandlerList) {

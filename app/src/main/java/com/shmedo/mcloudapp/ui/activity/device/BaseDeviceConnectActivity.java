@@ -68,7 +68,7 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
 
     protected boolean isQuickActivation = false;
 
-    private String errMsg = "";
+    protected String errMsg = "";
 
     protected String SN = MCloudApp.getCurDeviceToken();
 

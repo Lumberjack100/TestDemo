@@ -271,18 +271,18 @@ public class StringUtil {
         MqttConfigInfoSub mqttConfigInfoSub = new MqttConfigInfoSub();
         String[] cmd = result.replace("\r\n", "").split(",",-1);
 //        mqttConfigInfoSub.setDataCenterSwitch(Integer.parseInt(cmd[1]));
-        mqttConfigInfoSub.setCommunicationProtocol(cmd[2]);
-        mqttConfigInfoSub.setDataPlatformAddress(cmd[3]);
+        mqttConfigInfoSub.setCommunicationProtocol(cmd[2]);//通讯协议，2：MDM协议，4：MQTT自动注册，5：MQTT手动注册
+        mqttConfigInfoSub.setDataPlatformAddress(cmd[3]);//数据平台地址
         mqttConfigInfoSub.setKeepAliveValue(cmd[4]);
-        mqttConfigInfoSub.setDeviceSn(cmd[5]);
-        mqttConfigInfoSub.setProductId(cmd[6]);
-        mqttConfigInfoSub.setRegistrationCode(cmd[7]);
-        mqttConfigInfoSub.setRegistrationPlatform(cmd[8]);
-        mqttConfigInfoSub.setRegistrationPlatformAddress(cmd[9]);
+        mqttConfigInfoSub.setDeviceSn(cmd[5]);//设备SN号
+        mqttConfigInfoSub.setProductId(cmd[6]);//产品ID
+        mqttConfigInfoSub.setRegistrationCode(cmd[7]);//注册码
+        mqttConfigInfoSub.setRegistrationPlatform(cmd[8]);//注册平台类型，0：地大平台，1：成都理工平台，2：米度平台
+        mqttConfigInfoSub.setRegistrationPlatformAddress(cmd[9]);//注册平台地址
         mqttConfigInfoSub.setAppKey(cmd[10]);
-        mqttConfigInfoSub.setMqttDeviceId(cmd[11]);
-        mqttConfigInfoSub.setMqttUsername(cmd[12]);
-        mqttConfigInfoSub.setMqttPassword(cmd[13]);
+        mqttConfigInfoSub.setMqttDeviceId(cmd[11]);//MQTT设备ID
+        mqttConfigInfoSub.setMqttUsername(cmd[12]);//MQTT用户名
+        mqttConfigInfoSub.setMqttPassword(cmd[13]);//MQTT密码
         return mqttConfigInfoSub;
     }
 

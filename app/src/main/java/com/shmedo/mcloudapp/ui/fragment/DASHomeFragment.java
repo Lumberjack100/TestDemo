@@ -602,9 +602,11 @@ public class DASHomeFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void getConfig(String messageEvent) {
-        if (TextUtils.isEmpty(messageEvent) && !messageEvent.startsWith("$$")) {
+        if (TextUtils.isEmpty(messageEvent) || !messageEvent.startsWith("$$")) {
             return;
-        } else if (messageEvent.startsWith("$$005") || messageEvent.startsWith("$$333") || messageEvent.startsWith("$$227")) {
+        }
+
+        if (messageEvent.startsWith("$$005") || messageEvent.startsWith("$$333") || messageEvent.startsWith("$$227")) {
             setResultData(messageEvent);
         }
     }
