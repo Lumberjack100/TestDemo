@@ -214,9 +214,9 @@
         <!-- 蓝牙设备列表测试页面 -->
         <activity
             android:name=".ui.activity.TestActivity"
-            android:configChanges="orientation|keyboardHidden"
+            android:configChanges="orientation|keyboardHidden|screenSize"
             android:launchMode="singleTop"
-            android:theme="@style/AppTheme.Dialog" />
+           />
     </application>
 
 </manifest>

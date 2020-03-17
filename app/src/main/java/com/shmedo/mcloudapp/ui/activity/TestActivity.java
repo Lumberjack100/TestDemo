@@ -1,12 +1,10 @@
 package com.shmedo.mcloudapp.ui.activity;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
-import android.view.Window;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -20,24 +18,20 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;
-import com.hjq.toast.ToastUtils;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.adapter.recyclerviewbaseadapter.CommonAdapter;
-import com.shmedo.mcloudapp.adapter.recyclerviewbaseadapter.MultiItemTypeAdapter;
-import com.shmedo.mcloudapp.adapter.recyclerviewbaseadapter.ViewHolder;
 import com.shmedo.mcloudapp.entity.ble.MDevice;
-import com.shmedo.mcloudapp.util.ActivityCollector;
 import com.shmedo.mcloudapp.views.recycleviewitemdivider.DividerItemDecoration;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import timber.log.Timber;
 
 /**
  * 项目名：  mCloudapp
@@ -46,7 +40,7 @@ import butterknife.OnClick;
  * 创建时间:  2020-02-28
  * 描述：    TODO
  */
-public class TestActivity extends AppCompatActivity implements MultiItemTypeAdapter.OnItemClickListener {
+public class TestActivity extends AppCompatActivity  {
     public static final int REQUEST_ENABLE_BT = 0x002;
 
     @BindView(R.id.recycleview_bluetooth_device)
@@ -75,7 +69,7 @@ public class TestActivity extends AppCompatActivity implements MultiItemTypeAdap
     private Runnable dismssDialogRunnable = new Runnable() {
         @Override
         public void run() {
-            if (index > 200)
+            if (index > 20)
                 return;
 
             index++;
@@ -101,46 +95,67 @@ public class TestActivity extends AppCompatActivity implements MultiItemTypeAdap
         context.startActivity(intent);
     }
 
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        Timber.d("执行了 onRestart()");
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Timber.d("执行了 onStart()");
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Timber.d("执行了 onResume()");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Timber.d("执行了 onPause()");
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Timber.d("执行了 onStop()");
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Timber.d("执行了 onDestroy()");
+    }
+
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        Timber.d("执行了 onSaveInstanceState()");
+    }
+
+    @Override
+    protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        Timber.d("执行了 onRestoreInstanceState()");
+    }
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
+        Timber.d("执行了 onCreate()");
         setContentView(R.layout.device_list);
         ButterKnife.bind(this);
-        WeakReference<Activity> weakRefActivity = new WeakReference<>(this);
-        ActivityCollector.add(weakRefActivity);
 
         hander = new Handler();
         initAdapter2();
         startDiscoveryDevice();
     }
 
-
-    private void initAdapter() {
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        mRecyclerView.addItemDecoration(new DividerItemDecoration());
-        adapter = new CommonAdapter<MDevice>(this, R.layout.item_bluetoothdevice, deviceList) {
-            @Override
-            protected void convert(ViewHolder holder, final MDevice mDevice, final int position) {
-                holder.setText(R.id.tv_dev_name, "New测试设备：" + holder.getAdapterPosition());
-                holder.setText(R.id.tv_dev_mac, "00:00:00:00:00:00");
-                holder.setText(R.id.tv_dev_signal, "00dBm");
-            }
-        };
-        adapter.setOnItemClickListener(this);
-        mRecyclerView.setAdapter(adapter);
-    }
-
-
-    @Override
-    public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
-        ToastUtils.show("点击了 "+position+" 设备");
-    }
-
-    @Override
-    public boolean onItemLongClick(View view, RecyclerView.ViewHolder holder, int position) {
-        return false;
-    }
 
     @OnClick({R.id.btn_scan, R.id.LL_close})
     public void onClick(View v) {
@@ -172,13 +187,13 @@ public class TestActivity extends AppCompatActivity implements MultiItemTypeAdap
     public void startDiscoveryDevice() {
         deviceList.clear();
         index++;
-        MDevice mDevice = new MDevice();
+        for(int i = 0;i<20;i++) {
+            MDevice mDevice = new MDevice();
+            deviceAdapter.addData(mDevice);
+        }
 
-//        adapter.addItem("设备：" + (index++));
-        deviceAdapter.addData(mDevice);
-
-        hander.postDelayed(dismssDialogRunnable, 10);
-        updateViewState(true);
+//        hander.postDelayed(dismssDialogRunnable, 10);
+//        updateViewState(true);
     }
 
 
@@ -191,7 +206,9 @@ public class TestActivity extends AppCompatActivity implements MultiItemTypeAdap
         deviceAdapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(@NonNull BaseQuickAdapter adapter, @NonNull View view, int position) {
-                ToastUtils.show("点击了 "+position+" 设备");
+//                showTipDialog("点击了 "+position+" 设备");
+
+                WifiConnectionActivity.startActivity(TestActivity.this);
             }
         });
     }
@@ -209,5 +226,7 @@ public class TestActivity extends AppCompatActivity implements MultiItemTypeAdap
             holder.setText(R.id.tv_dev_signal, "00dBm");
         }
     }
+
+
 
 }

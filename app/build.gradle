@@ -9,11 +9,17 @@ def releaseTime() {
     return new Date().format("yyyyMMddHHmm", TimeZone.getDefault())
 }
 
+/**
+ * 获取Git库HEAD的SHA1码前5位
+ */
 def gitShortCommitId() {
     def cmd = 'git rev-parse --short HEAD'
     cmd.execute().text.trim()
 }
 
+/**
+ * 获取Git库的提交次数
+ */
 def gitVersionCode() {
     def cmd = 'git rev-list HEAD --count'
     cmd.execute().text.trim().toInteger()
