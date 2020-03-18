@@ -4,17 +4,21 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 import android.view.View;
 import android.widget.TextView;
+
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.hjq.toast.ToastUtils;
 import com.shmedo.mcloudapp.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.inter.Extras;
 import com.shmedo.mcloudapp.ui.activity.device.BaseDeviceConnectActivity;
-import com.shmedo.mcloudapp.ui.fragment.*;
+import com.shmedo.mcloudapp.ui.fragment.AdvanceSetFragment;
+import com.shmedo.mcloudapp.ui.fragment.DASHomeFragment;
+import com.shmedo.mcloudapp.ui.fragment.DeviceDetailsFragment;
+import com.shmedo.mcloudapp.ui.fragment.QueryDeviceDataFragment;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -97,6 +101,18 @@ public class ConfigDASActivity extends BaseDeviceConnectActivity {
             queryDataFragment = (QueryDeviceDataFragment) getSupportFragmentManager().findFragmentByTag(QueryDeviceDataFragment.class.getName());
             deviceDetailsFragment = (DeviceDetailsFragment) getSupportFragmentManager().findFragmentByTag(DeviceDetailsFragment.class.getName());
             advanceSetFragment = (AdvanceSetFragment) getSupportFragmentManager().findFragmentByTag(AdvanceSetFragment.class.getName());
+
+//            if(DASHomeFragment==null)
+//                DASHomeFragment = new DASHomeFragment();
+//
+//            if(queryDataFragment==null)
+//                queryDataFragment=new QueryDeviceDataFragment();
+//
+//            if(deviceDetailsFragment==null)
+//                deviceDetailsFragment = new DeviceDetailsFragment();
+//
+//            if(advanceSetFragment==null)
+//                advanceSetFragment = new AdvanceSetFragment();
 
             // 解决重叠问题
             getSupportFragmentManager().beginTransaction()

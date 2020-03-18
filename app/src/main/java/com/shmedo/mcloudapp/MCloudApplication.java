@@ -29,27 +29,43 @@ import timber.log.Timber;
  *
  */
 public class MCloudApplication extends Application {
-
     @Override
     public void onCreate() {
         super.onCreate();
         MCloudApp.initialize(this);
+        //初始化facebook.stetho
+        //AppInit.init(this);
+
         //初始化蒲公英
         //启动 Pgyer 检测 Crash 功能
         PgyCrashManager.register();
-        //初始化facebook.stetho
-        //AppInit.init(this);
-        AppCrashHandler.getInstance(this);// crash handler
-        CrashReport.initCrashReport(getApplicationContext(), "6b0340b2b8", false);
+
         //基于 mmap 的高性能通用 key-value 组件
         MMKV.initialize(this);
 
-        //日志输出
+        //异常上报和升级
+        initCrashReport();
+
+        //初始化日志输出
         initTimber();
 
+        //初始化吐司消息组件
         initToastUtil();
 
+        //初始化蓝牙管理类
         initMdBluetoothManager();
+    }
+
+
+    /**
+     * 初始化异常上报
+     */
+    private void initCrashReport() {
+        //自己处理的异常
+        AppCrashHandler.getInstance(this);// crash handler
+
+        //初始化腾讯Bugly异常上报组件
+        CrashReport.initCrashReport(getApplicationContext(),  BuildConfig.BUGLY_APPKEY, false);
     }
 
 
