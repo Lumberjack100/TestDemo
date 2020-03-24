@@ -313,7 +313,7 @@ public class ClusterOverlayMerchant {
             if (mClusterRender != null && mClusterRender.getAnotherDrawAble(num) != null) {
                 textView.setBackgroundDrawable(mClusterRender.getAnotherDrawAble(num));
             } else {
-                textView.setBackgroundResource(R.mipmap.marker_bg);
+                textView.setBackgroundResource(R.drawable.marker_bg);
             }
             bitmapDescriptor = BitmapDescriptorFactory.fromView(textView);
             mLruCache.put(num, bitmapDescriptor);

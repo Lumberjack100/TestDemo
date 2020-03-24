@@ -4,12 +4,15 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
+
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.hjq.toast.ToastUtils;
 import com.shmedo.mcloudapp.MCloudApp;
 import com.shmedo.mcloudapp.R;
@@ -36,17 +39,8 @@ public class ConfigADMEActivity extends BaseDeviceConnectActivity {
     @BindView(R.id.tv_save)
     TextView mTvSave;
 
-    @BindView(R.id.tv_parameter)
-    TextView mTvParameter;
-
-    @BindView(R.id.tv_query_data)
-    TextView mTvQueryData;
-
-    @BindView(R.id.tv_device_details)
-    TextView mTvDeviceDetails;
-
-    @BindView(R.id.tv_highsetting)
-    TextView mTvHighsetting;
+    @BindView(R.id.bottom_navigation)
+    BottomNavigationView bottomNavigationView;
 
     private ADMEHomeFragment admeHomeFragment;
     private QueryDataFragment queryDataFragment;        //查询数据
@@ -98,8 +92,7 @@ public class ConfigADMEActivity extends BaseDeviceConnectActivity {
     private void initView(Bundle savedInstanceState) {
         mToolbarTitle.setText("参数设置");
         mTvSave.setVisibility(View.VISIBLE);
-        mTvHighsetting.setVisibility(View.GONE);
-
+        bottomNavigationView.getMenu().getItem(3).setVisible(false);
         if (savedInstanceState != null) {  // “内存重启”时调用
             String curTag = savedInstanceState.getString("CurrentFragment");
             currentFragment = getSupportFragmentManager().findFragmentByTag(curTag);
@@ -118,22 +111,42 @@ public class ConfigADMEActivity extends BaseDeviceConnectActivity {
             admeHomeFragment = new ADMEHomeFragment();
             queryDataFragment = new QueryDataFragment();
             deviceDetailsFragment = new DeviceDetailsFragment();
-            setDefaultFragment();
+            switchFrgment(0);
         }
+
+        initBottomNavigationItemSelectedListener();
     }
 
 
-    /**
-     * set the default Fragment
-     */
-    private void setDefaultFragment() {
-        switchFrgment(0);
-        //set the defalut tab state
-        setTabState(mTvParameter, R.drawable.szxd, getResources().getColor(R.color.colorPrimary));
+    private void initBottomNavigationItemSelectedListener() {
+        //为底部导航设置条目选中监听
+        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.item_parameter:
+                        mToolbarTitle.setText("参数设置");
+                        switchFrgment(0);
+                        break;
+                    case R.id.item_query_data:
+                        mToolbarTitle.setText("查询数据");
+                        switchFrgment(1);
+                        break;
+                    case R.id.item_device_details:
+                        mToolbarTitle.setText("设备详情");
+                        switchFrgment(2);
+                        break;
+                }
+
+                return true;    //这里返回true，表示事件已经被处理。如果返回false，为了达到条目选中效果，还需要下面的代码
+                // item.setChecked(true);  不论点击了哪一个，都手动设置为选中状态true（该控件并没有默认实现)
+                // 。如果不设置，只有第一个menu展示的时候是选中状态，其他的即便被点击选中了，图标和文字也不会做任何更改
+            }
+        });
     }
 
 
-    @OnClick({R.id.back, R.id.tv_save, R.id.tv_parameter, R.id.tv_query_data, R.id.tv_device_details})
+    @OnClick({R.id.back, R.id.tv_save})
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.back:
@@ -147,24 +160,6 @@ public class ConfigADMEActivity extends BaseDeviceConnectActivity {
                 }
                 sendSaveParamCommand();
                 break;
-
-            case R.id.tv_parameter:
-                resetTabState();//reset the tab state
-                setTabState(mTvParameter, R.drawable.szxd, getResources().getColor(R.color.colorPrimary));
-                switchFrgment(0);
-                break;
-
-            case R.id.tv_query_data:
-                resetTabState();//reset the tab state
-                setTabState(mTvQueryData, R.drawable.yxzt, getResources().getColor(R.color.colorPrimary));
-                switchFrgment(1);
-                break;
-
-            case R.id.tv_device_details:
-                resetTabState();//reset the tab state
-                setTabState(mTvDeviceDetails, R.drawable.xtgj, getResources().getColor(R.color.colorPrimary));
-                switchFrgment(2);
-                break;
         }
     }
 
@@ -172,7 +167,6 @@ public class ConfigADMEActivity extends BaseDeviceConnectActivity {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
         switch (requestCode) {
             case REQUEST_ENABLE_BT:
                 // 蓝牙已经开启
@@ -187,28 +181,6 @@ public class ConfigADMEActivity extends BaseDeviceConnectActivity {
 
 
     /**
-     * revert the image color and text color to black
-     */
-    private void resetTabState() {
-        setTabState(mTvParameter, R.drawable.szxd_wxz, getResources().getColor(R.color.font_main));
-        setTabState(mTvQueryData, R.drawable.yxzt_wxz, getResources().getColor(R.color.font_main));
-        setTabState(mTvDeviceDetails, R.drawable.xtgj_wxz, getResources().getColor(R.color.font_main));
-        setTabState(mTvHighsetting, R.drawable.gjpz_wxz, getResources().getColor(R.color.font_main));
-    }
-
-    /**
-     * set the tab state of bottom navigation bar
-     *
-     * @param textView the text to be shown
-     * @param image    the image
-     * @param color    the text color
-     */
-    private void setTabState(TextView textView, int image, int color) {
-        textView.setCompoundDrawablesRelativeWithIntrinsicBounds(0, image, 0, 0);//Call requires API level 17
-        textView.setTextColor(color);
-    }
-
-    /**
      * switch the fragment accordting to id
      */
     private void switchFrgment(int i) {
@@ -216,11 +188,9 @@ public class ConfigADMEActivity extends BaseDeviceConnectActivity {
             case 0:
                 showFragment(admeHomeFragment);
                 break;
-
             case 1:
                 showFragment(queryDataFragment);
                 break;
-
             case 2:
                 showFragment(deviceDetailsFragment);
                 break;

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/item_parameter"
+        android:icon="@drawable/ic_param_config"
+        android:title="参数配置" />
+
+    <item
+        android:id="@+id/item_query_data"
+        android:icon="@drawable/ic_search_data"
+        android:title="查询数据" />
+
+    <item
+        android:id="@+id/item_device_details"
+        android:icon="@drawable/ic_device_info"
+        android:title="设备详情" />
+
+    <item
+        android:id="@+id/item_highsetting"
+        android:icon="@drawable/ic_advanced_config"
+        android:title="高级配置" />
+
+</menu>
