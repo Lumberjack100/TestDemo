@@ -43,8 +43,6 @@ import java.util.Date;
 import java.util.List;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
 import timber.log.Timber;
 
 /**
@@ -189,7 +187,6 @@ public class DeviceDetailsFragment extends BaseFragment implements SwipeRefreshL
 
     private boolean onRefreshFirst = false;
     private long prelongTim = 0;
-    private Unbinder unbinder;
 
     private BaseDeviceConnectActivity deviceConnectActivity;
 
@@ -208,7 +205,6 @@ public class DeviceDetailsFragment extends BaseFragment implements SwipeRefreshL
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = super.onCreateView(inflater, container, savedInstanceState);
-        unbinder = ButterKnife.bind(this, view);
 
         initView();
         initData();
@@ -463,11 +459,6 @@ public class DeviceDetailsFragment extends BaseFragment implements SwipeRefreshL
 
     }
 
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        unbinder.unbind();
-    }
 
     @Override
     public void onStart() {

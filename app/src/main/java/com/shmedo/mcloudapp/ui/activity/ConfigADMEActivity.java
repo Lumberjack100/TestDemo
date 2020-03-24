@@ -90,9 +90,9 @@ public class ConfigADMEActivity extends BaseDeviceConnectActivity {
     }
 
     private void initView(Bundle savedInstanceState) {
-        mToolbarTitle.setText("参数设置");
         mTvSave.setVisibility(View.VISIBLE);
-        bottomNavigationView.getMenu().getItem(3).setVisible(false);
+        bottomNavigationView.getMenu().getItem(3).setVisible(false);//隐藏底部导航菜单 '高级配置' 按钮
+
         if (savedInstanceState != null) {  // “内存重启”时调用
             String curTag = savedInstanceState.getString("CurrentFragment");
             currentFragment = getSupportFragmentManager().findFragmentByTag(curTag);

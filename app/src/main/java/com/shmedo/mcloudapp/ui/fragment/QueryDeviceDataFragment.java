@@ -26,8 +26,8 @@ import com.shmedo.mcloudapp.adapter.recyclerviewbaseadapter.ViewHolder;
 import com.shmedo.mcloudapp.base.BaseFragment;
 import com.shmedo.mcloudapp.entity.QueryCloudDataInfo;
 import com.shmedo.mcloudapp.entity.parameter.QueryCloudDataParameter;
-import com.shmedo.mcloudapp.model.BaseObserver;
 import com.shmedo.mcloudapp.inter.Extras;
+import com.shmedo.mcloudapp.model.BaseObserver;
 import com.shmedo.mcloudapp.model.MDRetrofit;
 import com.shmedo.mcloudapp.model.common.CommonVariable;
 import com.shmedo.mcloudapp.ui.activity.ConfigDASActivity;
@@ -44,7 +44,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import butterknife.OnClick;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
@@ -60,7 +59,6 @@ import timber.log.Timber;
  * 描述：    查询数据
  */
 public class QueryDeviceDataFragment extends BaseFragment {
-
 
     @BindView(R.id.tv_device_number)
     TextView tvDeviceNumber;
@@ -108,7 +106,6 @@ public class QueryDeviceDataFragment extends BaseFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = super.onCreateView(inflater, container, savedInstanceState);
-        ButterKnife.bind(this, view);
         getIntentData();
         initView();
         initAdapter();

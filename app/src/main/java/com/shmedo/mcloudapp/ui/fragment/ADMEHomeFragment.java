@@ -50,9 +50,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import butterknife.OnClick;
-import butterknife.Unbinder;
 import timber.log.Timber;
 
 /**
@@ -127,8 +125,6 @@ public class ADMEHomeFragment extends BaseFragment {
 
     private RotateAnimation mRefreshAnimation;
 
-    private Unbinder unbinder;
-
     private ConfigADMEActivity configADMEActivity;
 
     private DaoManager manager = DaoManager.getInstance();
@@ -185,8 +181,6 @@ public class ADMEHomeFragment extends BaseFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = super.onCreateView(inflater, container, savedInstanceState);
-        unbinder = ButterKnife.bind(this, view);
-
         getIntentData();
         queryProjectList();
         initView();
@@ -890,13 +884,6 @@ public class ADMEHomeFragment extends BaseFragment {
     public void onStop() {
         super.onStop();
         EventBus.getDefault().unregister(this);
-    }
-
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        unbinder.unbind();
     }
 
 

@@ -96,17 +96,17 @@ public class ConfigDASActivity extends BaseDeviceConnectActivity {
             deviceDetailsFragment = (DeviceDetailsFragment) getSupportFragmentManager().findFragmentByTag(DeviceDetailsFragment.class.getName());
             advanceSetFragment = (AdvanceSetFragment) getSupportFragmentManager().findFragmentByTag(AdvanceSetFragment.class.getName());
 
-//            if(DASHomeFragment==null)
-//                DASHomeFragment = new DASHomeFragment();
-//
-//            if(queryDataFragment==null)
-//                queryDataFragment=new QueryDeviceDataFragment();
-//
-//            if(deviceDetailsFragment==null)
-//                deviceDetailsFragment = new DeviceDetailsFragment();
-//
-//            if(advanceSetFragment==null)
-//                advanceSetFragment = new AdvanceSetFragment();
+            if(DASHomeFragment==null)
+                DASHomeFragment = new DASHomeFragment();
+
+            if(queryDataFragment==null)
+                queryDataFragment=new QueryDeviceDataFragment();
+
+            if(deviceDetailsFragment==null)
+                deviceDetailsFragment = new DeviceDetailsFragment();
+
+            if(advanceSetFragment==null)
+                advanceSetFragment = new AdvanceSetFragment();
 
             // 解决重叠问题
             getSupportFragmentManager().beginTransaction()

@@ -6,11 +6,13 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.*;
+import android.widget.Button;
+import android.widget.CompoundButton;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.annotation.Nullable;
-import butterknife.BindView;
-import butterknife.OnClick;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.hjq.toast.ToastUtils;
@@ -23,11 +25,18 @@ import com.shmedo.mcloudapp.inter.Extras;
 import com.shmedo.mcloudapp.ui.activity.ConfigDASActivity;
 import com.shmedo.mcloudapp.ui.activity.device.senior.InstructionDebugActivity;
 import com.shmedo.mcloudapp.ui.activity.device.senior.ProductRegistrationActivity;
-import com.shmedo.mcloudapp.util.*;
+import com.shmedo.mcloudapp.util.AdvanceSetDialogUtils;
+import com.shmedo.mcloudapp.util.KeyBordUtils;
+import com.shmedo.mcloudapp.util.LocationUtils;
+import com.shmedo.mcloudapp.util.LogToSDUtil;
+import com.shmedo.mcloudapp.util.StringUtil;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+
+import butterknife.BindView;
+import butterknife.OnClick;
 import timber.log.Timber;
 
 /**
@@ -39,15 +48,13 @@ import timber.log.Timber;
  * 描述：   高级设置
  */
 public class AdvanceSetFragment extends BaseFragment {
-
     @BindView(R.id.sw_firmware_upgrade)
     SwitchButton swFirmwareUpgrade;
 
     private ConfigDASActivity configDASActivity;
 
-
-
     private String snNumber;
+
     @Override
     protected int initContentView() {
         return R.layout.fragment_advance_set;

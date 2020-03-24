@@ -53,9 +53,7 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.text.DecimalFormat;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import butterknife.OnClick;
-import butterknife.Unbinder;
 import timber.log.Timber;
 
 /**
@@ -118,8 +116,6 @@ public class DASHomeFragment extends BaseFragment {
 
     private Spinner mSpDebugMode, mSpSwitch, mSpRain;
 
-    private Unbinder unbinder;
-
     private ConfigDASActivity configDASActivity;
 
     private DaoManager manager = DaoManager.getInstance();
@@ -169,7 +165,6 @@ public class DASHomeFragment extends BaseFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = super.onCreateView(inflater, container, savedInstanceState);
-        unbinder = ButterKnife.bind(this, view);
 
         getIntentData();
         initView();
@@ -733,12 +728,6 @@ public class DASHomeFragment extends BaseFragment {
         EventBus.getDefault().unregister(this);
     }
 
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        unbinder.unbind();
-    }
 
 
     @Override

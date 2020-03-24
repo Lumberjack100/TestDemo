@@ -2,7 +2,6 @@ package com.shmedo.mcloudapp.base;
 
 import android.graphics.Color;
 import android.os.Bundle;
-
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,8 +9,8 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.shmedo.mcloudapp.util.XPermissionUtils;
 import com.shmedo.mcloudapp.util.common.HandleBackInterface;
@@ -41,7 +40,7 @@ public abstract class BaseFragment extends Fragment implements HandleBackInterfa
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(initContentView(), container, false);
         ButterKnife.bind(this, view);
-        //initState();
+
         return view;
     }
 
