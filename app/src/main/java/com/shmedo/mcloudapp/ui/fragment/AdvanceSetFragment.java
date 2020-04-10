@@ -35,6 +35,8 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.util.Locale;
+
 import butterknife.BindView;
 import butterknife.OnClick;
 import timber.log.Timber;
@@ -69,6 +71,7 @@ public class AdvanceSetFragment extends BaseFragment {
         initData();
         return view;
     }
+
     private void getIntentData() {
         Intent intent = getActivity().getIntent();
         if (intent.getExtras() != null && intent.getExtras().containsKey(Extras.CUR_DEVICE_NAME)) {
@@ -78,6 +81,7 @@ public class AdvanceSetFragment extends BaseFragment {
         }
         configDASActivity = (ConfigDASActivity) getActivity();
     }
+
     private void initData() {
         swFirmwareUpgrade.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -88,7 +92,7 @@ public class AdvanceSetFragment extends BaseFragment {
                     return;
                 }
                 if (isChecked) {
-                    AdvanceSetDialogUtils.showReStartDialog(configDASActivity,"固件升级","固件",swFirmwareUpgrade);
+                    AdvanceSetDialogUtils.showReStartDialog(configDASActivity, "固件升级", "固件", swFirmwareUpgrade);
                 } else {
                     configDASActivity.sendCommonCommand("##1200\r\n");
                     ToastUtils.show("关闭固件升级");
@@ -98,7 +102,7 @@ public class AdvanceSetFragment extends BaseFragment {
     }
 
     @OnClick({R.id.ll_reset_data, R.id.ll_restart_system, R.id.rl_modify_authorization,
-            R.id.rl_product_register, R.id.rl_instruction_debug, R.id.rl_log_print,R.id.rl_sync_position})
+            R.id.rl_product_register, R.id.rl_instruction_debug, R.id.rl_log_print, R.id.rl_sync_position})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.ll_reset_data://恢复出厂设置
@@ -109,7 +113,7 @@ public class AdvanceSetFragment extends BaseFragment {
 
             case R.id.ll_restart_system://重启系统
                 if (checkIsBluetoothConnected()) {
-                    AdvanceSetDialogUtils.showReStartDialog(configDASActivity,"重启系统","重启",null);
+                    AdvanceSetDialogUtils.showReStartDialog(configDASActivity, "重启系统", "重启", null);
                 }
                 break;
 
@@ -133,7 +137,7 @@ public class AdvanceSetFragment extends BaseFragment {
 
             case R.id.rl_log_print://日志输出
                 if (checkIsBluetoothConnected()) {
-                    LogToSDUtil.requestPermissionForSaveLog(configDASActivity,snNumber);
+                    LogToSDUtil.requestPermissionForSaveLog(configDASActivity, snNumber);
                 }
                 break;
             case R.id.rl_sync_position: //同步安装位置
@@ -151,7 +155,8 @@ public class AdvanceSetFragment extends BaseFragment {
     private static String latLong;
     private static EditText etPositionInfo;
     private static TextView tvLatLong;
-    private static void showSyncPositionDialog(ConfigDASActivity activity){
+
+    private static void showSyncPositionDialog(ConfigDASActivity activity) {
         mBuilder = new MaterialDialog.Builder(activity);
         mBuilder.customView(R.layout.dialog_sync_position, false)
                 .title("同步安装位置")
@@ -172,14 +177,14 @@ public class AdvanceSetFragment extends BaseFragment {
 
         btnRestartSystem.setOnClickListener(view -> {
             String result = etPositionInfo.getText().toString().trim();
-            if (!StringUtil.isEmpty(result)){
+            if (!StringUtil.isEmpty(result)) {
                 try {
-                    String command = "##9161"+result+"\r\n";
+                    String command = "##9161" + result + "\r\n";
                     activity.sendCommonCommandImmediately(command);
-                } catch ( Exception e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
-            }else {
+            } else {
                 ToastUtils.show("位置信息不能为空");
                 return;
             }
@@ -203,10 +208,10 @@ public class AdvanceSetFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(SyncPositionBean event) {
-        Timber.i("==位置来了=="+event.toString());
-        if (event.getType().equals("location")){
+        Timber.i("==位置来了==" + event.toString());
+        if (event.getType().equals("location")) {
             address = event.getAddress();
-            latLong  = event.getLongitude()+","+event.getLatitude();
+            latLong = String.format(Locale.getDefault(),"%.6f", event.getLongitude()) + "," + String.format(Locale.getDefault(),"%.6f", event.getLatitude());
             etPositionInfo.setText(latLong);
             tvLatLong.setText(address);
             LocationUtils.getInstance().stopLocalService();
@@ -234,6 +239,7 @@ public class AdvanceSetFragment extends BaseFragment {
         super.onStop();
         EventBus.getDefault().unregister(this);
     }
+
     @Override
     public boolean onBackPressed() {
         return false;

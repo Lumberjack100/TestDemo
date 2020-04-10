@@ -143,8 +143,6 @@ dependencies {
     implementation 'com.github.clans:fab:1.6.4'
     implementation 'cn.shmedo:das-config-base:4.3-SNAPSHOT'//自己封装的米度工具类库
     implementation 'jp.bassaer:chatmessageview:1.2.0'
-    //mmkv
-    implementation 'com.tencent:mmkv:1.0.19'
     //下拉刷新
     implementation 'com.scwang.smartrefresh:SmartRefreshLayout:1.1.0'
     //日志输出

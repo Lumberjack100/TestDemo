@@ -108,8 +108,8 @@ public class LocationUtils {
                     // description=在浦江智谷附近#locationType=5
                     Timber.i("定位成功==="+location.toString());
                     SyncPositionBean bean = new SyncPositionBean();
-                    bean.setLatitude(String.valueOf(location.getLatitude()));
-                    bean.setLongitude(String.valueOf(location.getLongitude()));
+                    bean.setLatitude(location.getLatitude());
+                    bean.setLongitude(location.getLongitude());
                     bean.setAddress(location.getAddress());
                     bean.setType("location");
                     EventBus.getDefault().post(bean);

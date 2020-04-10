@@ -14,7 +14,6 @@ import com.shmedo.mcloudapp.bluetooth.MdBluetoothManager;
 import com.shmedo.mcloudapp.logging.AppCrashHandler;
 import com.shmedo.mcloudapp.logging.CrashReportingTree;
 import com.tencent.bugly.crashreport.CrashReport;
-import com.tencent.mmkv.MMKV;
 
 import java.util.Objects;
 
@@ -39,9 +38,6 @@ public class MCloudApplication extends Application {
         //初始化蒲公英
         //启动 Pgyer 检测 Crash 功能
         PgyCrashManager.register();
-
-        //基于 mmap 的高性能通用 key-value 组件
-        MMKV.initialize(this);
 
         //异常上报和升级
         initCrashReport();
