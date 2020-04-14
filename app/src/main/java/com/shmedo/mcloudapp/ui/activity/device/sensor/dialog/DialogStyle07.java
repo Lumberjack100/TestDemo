@@ -10,7 +10,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.hjq.toast.ToastUtils;
-import com.shmedo.das.common.SensorRadarLevelInfo;
+import com.shmedo.core.model.SensorRadarLevelInfo;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.entity.ble.collector.CollectorSensorParamsInfoSub;
 import com.shmedo.mcloudapp.entity.event.SensorDataEvent;

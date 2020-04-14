@@ -17,7 +17,7 @@ import android.widget.TextView;
 
 import com.hjq.toast.ToastUtils;
 import com.kyleduo.switchbutton.SwitchButton;
-import com.shmedo.das.das.cmd.CommandResult;
+import com.shmedo.core.cmd.CommandResult;
 import com.shmedo.mcloudapp.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.entity.event.BluetoothStateEvent;

@@ -2,8 +2,8 @@ package com.shmedo.mcloudapp.util;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.text.TextUtils;
 
-import com.shmedo.das.utils.StringUtil;
 import com.shmedo.mcloudapp.R;
 
 import java.io.File;
@@ -28,7 +28,7 @@ public class ImageUtil {
         if (bmp == null)
             return;
 
-        if (StringUtil.isNullOrEmpty(fileName))
+        if (TextUtils.isEmpty(fileName))
             return;
 
         File file = new File(fileName);

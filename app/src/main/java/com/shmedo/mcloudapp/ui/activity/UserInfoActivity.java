@@ -19,7 +19,6 @@ import androidx.annotation.Nullable;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.hjq.toast.ToastUtils;
-import com.shmedo.das.utils.StringUtil;
 import com.shmedo.mcloudapp.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.base.BaseActivity;
@@ -278,12 +277,12 @@ public class UserInfoActivity extends BaseActivity {
      */
     private void SetUserHeadPhotoTask() {
         String filePath = MCloudApp.getUserHeadPhotoFileName();
-        if (StringUtil.isNullOrEmpty(filePath)) {
+        if (TextUtils.isEmpty(filePath)) {
             return;
         }
         String fileName = FileUtil.getFileName(filePath);
         String fileContent = FileUtil.toString(filePath);
-        if (StringUtil.isNullOrEmpty(fileName) || StringUtil.isNullOrEmpty(fileContent)) {
+        if (TextUtils.isEmpty(fileName) || TextUtils.isEmpty(fileContent)) {
             return;
         }
         SetUserHeadPhotoParameter parameter = new SetUserHeadPhotoParameter();
@@ -311,7 +310,7 @@ public class UserInfoActivity extends BaseActivity {
 
     private void initUserInfo() {
         String userPhotFileName = MCloudApp.getUserHeadPhotoFileName();
-        if (StringUtil.isNullOrEmpty(userPhotFileName)) {
+        if (TextUtils.isEmpty(userPhotFileName)) {
             return;
         }
 
@@ -327,7 +326,7 @@ public class UserInfoActivity extends BaseActivity {
                 return;
             }
             final String headPhotoPath = userInfo.getUser().getHeadPhotoPath();
-            if (StringUtil.isNullOrEmpty(headPhotoPath)) {
+            if (TextUtils.isEmpty(headPhotoPath)) {
                 return;
             }
             GlideUtils.loadImage(this, headPhotoPath, mCircleImage, R.drawable.userphoto);

@@ -3,6 +3,7 @@ package com.shmedo.mcloudapp.ui.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -16,7 +17,6 @@ import com.shmedo.mcloudapp.model.BaseObserver;
 import com.shmedo.mcloudapp.model.MDRetrofit;
 import com.shmedo.mcloudapp.model.common.CommonVariable;
 import com.shmedo.mcloudapp.util.ApiName;
-import com.shmedo.mcloudapp.util.StringUtil;
 import com.shmedo.mcloudapp.util.UserConfig;
 import com.shmedo.mcloudapp.views.ClearEditText;
 
@@ -75,7 +75,7 @@ public class ServiceConfigActivity extends BaseActivity {
         mEtServiceAddress.setText(config);
         userConfig = UserConfig.getConfig(this, CommonVariable.USER_CONFIG_NAME);
         String address = userConfig.readString(CommonVariable.SERVICE_ADDRESS);
-        if (!StringUtil.isNullOrEmpty(address)) {
+        if (!TextUtils.isEmpty(address)) {
             mEtServiceAddress.setText(address);
         }
     }
@@ -84,7 +84,7 @@ public class ServiceConfigActivity extends BaseActivity {
     @OnClick(R.id.btnServiceTest)
     public void onViewClicked() {
         final String service_text = mEtServiceAddress.getText().toString();
-        if (StringUtil.isNullOrEmpty(service_text)) {
+        if (TextUtils.isEmpty(service_text)) {
             mEtServiceAddress.setError("请输入配置服务器地址");
             mEtServiceAddress.requestFocus();
             return;

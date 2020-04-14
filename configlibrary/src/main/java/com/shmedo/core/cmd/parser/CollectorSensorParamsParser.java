@@ -1,0 +1,378 @@
+package com.shmedo.core.cmd.parser;
+
+import android.text.TextUtils;
+
+import com.shmedo.core.annotations.Parser;
+import com.shmedo.core.enums.CollectorModel;
+import com.shmedo.core.enums.CommandType;
+import com.shmedo.core.enums.SensorType;
+import com.shmedo.core.interfaces.ResultParser;
+import com.shmedo.core.model.CollectorSensorParamsInfo;
+import com.shmedo.core.model.SensorGudanDisplacementInfo;
+import com.shmedo.core.model.SensorGudanNotStressInfo;
+import com.shmedo.core.model.SensorGudanPercolateInfo;
+import com.shmedo.core.model.SensorGudanSoilPressureInfo;
+import com.shmedo.core.model.SensorGudanStressInfo;
+import com.shmedo.core.model.SensorInclinometerInfo;
+import com.shmedo.core.model.SensorInfrasoundInfo;
+import com.shmedo.core.model.SensorKangPercolateInfo;
+import com.shmedo.core.model.SensorMoistureMeterInfo;
+import com.shmedo.core.model.SensorRadarLevelInfo;
+import com.shmedo.core.model.SensorSoilMoistureInfo;
+import com.shmedo.core.model.SensorTemperHumidityInfo;
+import com.shmedo.core.model.SensorUltrasonicLevelInfo;
+import com.shmedo.core.model.SensorUpliftPressureInfo;
+import com.shmedo.core.model.SensorWireShiftInfo;
+import com.shmedo.core.utils.ParserUtils;
+
+import static com.shmedo.core.enums.SensorType.WIRE_SHIFT;
+
+
+
+/**
+ * Created by adu on 2017/12/14.
+ * 解析 获取XX采集器YY通道的传感器参数
+ */
+@Parser
+public class CollectorSensorParamsParser implements ResultParser<CollectorSensorParamsInfo> {
+
+    @Override
+    public CollectorSensorParamsInfo parse(String result) {
+        String[] strs = result.split(",");
+        String collectorType = ParserUtils.setSersonValue(strs[2]);
+        switch (collectorType){
+            case "02": return parserWireShift(strs);
+            case "03": return parserSoilMoisture(strs);
+            case "04": return parserInclinometer(strs);
+            case "06": return parserUltrasonicLevel(strs);
+            case "07": return parserRadarLevel(strs);
+            case "08": return parserMoistureMeter(strs);
+            case "12": return parserTemperHumidity(strs);
+            case "15": return parserUpliftPressure(strs);
+            case "21": return parserInfrasound(strs);
+            case "50": return parserKangPercolate(strs);
+            case "51": return parserGudanPercolate(strs);
+            case "52": return parserGudanSoilPressure(strs);
+            case "53": return parserGudanStress(strs);
+            case "54": return parserGudanNotStress(strs);
+            case "55": return parserGudanDisplacement(strs);
+            default: return null;
+        }
+    }
+
+    @Override
+    public void validate(String result) {
+
+    }
+    @Override
+    public CommandType commandType() {
+        return CommandType.COLLECTOR_CHANNEL_SENSOR_PARAMETER;
+    }
+
+
+    /**
+     * 解析拉线位移计 2个参数   02
+     *
+     * @param strs 返回裂缝计数据
+     * @return 返回具体的传感器拉线位移计实体类
+     */
+    public static CollectorSensorParamsInfo<SensorWireShiftInfo> parserWireShift(String[] strs)
+    {
+        CollectorSensorParamsInfo bean = new CollectorSensorParamsInfo();
+        SensorWireShiftInfo info = new SensorWireShiftInfo();
+        bean.setCollectorModel(CollectorModel.value(strs[0].substring(5, 7)));
+        bean.setChannelNumber(strs[0].substring(7, 9));
+        bean.setSensorAddress(strs[1]);
+        bean.setSensorType(WIRE_SHIFT);
+        info.setTriggerThreshold((TextUtils.isEmpty(strs[3]) || strs[3].contains("nan")) ? 0 : Integer.valueOf(strs[3]));
+        info.setCorrectionValue((TextUtils.isEmpty(strs[4]) || strs[4].contains("nan")) ? 0 : Double.valueOf(strs[4]));
+        bean.setSensorData(info);
+        return bean;
+    }
+
+
+    /**
+     * 解析土壤含水率  03
+     * @param strs
+     * @return
+     */
+    public static CollectorSensorParamsInfo<SensorSoilMoistureInfo> parserSoilMoisture(String[] strs) {
+        CollectorSensorParamsInfo bean= new CollectorSensorParamsInfo();
+        SensorSoilMoistureInfo info = new SensorSoilMoistureInfo();
+        bean.setCollectorModel(CollectorModel.value(strs[0].substring(5,7)));
+        bean.setChannelNumber(strs[0].substring(7,9));
+        bean.setSensorAddress(strs[1]);
+        bean.setSensorType(SensorType.SOIL_MOISTURE);
+        info.setTriggerThreshold(strs[3]);
+        info.setRevised((TextUtils.isEmpty(strs[4]) || strs[4].contains("nan")) ? 0 : Double.valueOf(strs[4]));
+        bean.setSensorData(info);
+        return bean;
+    }
+    /**
+     * 解析测斜仪  3个参数  04
+     * @param strs
+     * @return
+     */
+    private CollectorSensorParamsInfo<SensorInclinometerInfo> parserInclinometer(String[] strs) {
+        CollectorSensorParamsInfo bean= new CollectorSensorParamsInfo();
+        SensorInclinometerInfo info = new SensorInclinometerInfo();
+        bean.setCollectorModel(CollectorModel.value(strs[0].substring(5,7)));
+        bean.setChannelNumber(strs[0].substring(7,9));
+        bean.setSensorAddress(strs[1]);
+        bean.setSensorType(SensorType.INCLINOMETER);
+        info.setTriggerThreshold((TextUtils.isEmpty(strs[2]) || strs[2].contains("nan")) ? 0 : Integer.valueOf(strs[2]));
+        info.setMeasureLength((TextUtils.isEmpty(strs[3]) || strs[3].contains("nan")) ? 0 : Integer.valueOf(strs[3]));
+        info.setCorrectionValue((TextUtils.isEmpty(strs[4]) || strs[4].contains("nan")) ? 0 : Double.valueOf(strs[4]));
+        bean.setSensorData(info);
+        return bean;
+    }
+
+
+    /**
+     * 解析超声波物位计  06
+     * @param strs
+     * @return
+     */
+    private CollectorSensorParamsInfo<SensorUltrasonicLevelInfo> parserUltrasonicLevel(String[] strs) {
+        CollectorSensorParamsInfo bean= new CollectorSensorParamsInfo();
+        SensorUltrasonicLevelInfo info = new SensorUltrasonicLevelInfo();
+        bean.setCollectorModel(CollectorModel.value(strs[0].substring(5,7)));
+        bean.setChannelNumber(strs[0].substring(7,9));
+        bean.setSensorAddress(strs[1]);
+        bean.setSensorType(SensorType.ULTRASONIC_LEVEL_GAUGE);
+        info.setTriggerThreshold(strs[2]);
+        info.setRevised((TextUtils.isEmpty(strs[3]) || strs[3].contains("nan")) ? 0 : Double.valueOf(strs[3]));
+        info.setProbeElevation(strs[4]);
+        bean.setSensorData(info);
+        return bean;
+    }
+
+    /**
+     *  解析雷达物位计  07
+     * @param strs
+     * @return
+     */
+    public static CollectorSensorParamsInfo<SensorRadarLevelInfo> parserRadarLevel(String[] strs){
+        CollectorSensorParamsInfo bean= new CollectorSensorParamsInfo();
+        SensorRadarLevelInfo info = new SensorRadarLevelInfo();
+        bean.setCollectorModel(CollectorModel.value(strs[0].substring(5,7)));
+        bean.setChannelNumber(strs[0].substring(7,9));
+        bean.setSensorAddress(strs[1]);
+        bean.setSensorType(SensorType.RADAR_LEVEL_GAUGE);
+        info.setTriggerThreshold(strs[3]);
+        info.setRevised((TextUtils.isEmpty(strs[4]) || strs[4].contains("nan")) ? 0 : Double.valueOf(strs[4]));
+        bean.setSensorData(info);
+        return bean;
+    }
+    /**
+     * 解析墒情计    6个参数   08
+     * @param strs
+     * @return
+     */
+    private CollectorSensorParamsInfo<SensorMoistureMeterInfo> parserMoistureMeter(String [] strs) {
+        CollectorSensorParamsInfo bean= new CollectorSensorParamsInfo();
+        SensorMoistureMeterInfo info = new SensorMoistureMeterInfo();
+        bean.setCollectorModel(CollectorModel.value(strs[0].substring(5,7)));
+        bean.setChannelNumber(strs[0].substring(7,9));
+        bean.setSensorAddress(strs[1]);
+        bean.setSensorType(SensorType.MOISTURE_METER);
+        info.setHumidityTriggerThreshold((TextUtils.isEmpty(strs[2]) || strs[2].contains("nan")) ? 0 : Integer.valueOf(strs[2]));
+        info.setHumidityCorrectionValue((TextUtils.isEmpty(strs[3]) || strs[3].contains("nan")) ? 0 : Integer.valueOf(strs[3]));
+        info.setSaltTriggerThreshold((TextUtils.isEmpty(strs[4]) || strs[4].contains("nan")) ? 0 : Integer.valueOf(strs[4]));
+        info.setSaltCorrectionValue((TextUtils.isEmpty(strs[5]) || strs[5].contains("nan")) ? 0 : Integer.valueOf(strs[5]));
+        info.setTemperatureTriggerThreshold((TextUtils.isEmpty(strs[6]) || strs[6].contains("nan")) ? 0 : Integer.valueOf(strs[6]));
+        info.setTemperatureCorrectionValue((TextUtils.isEmpty(strs[7]) || strs[7].contains("nan")) ? 0 : Integer.valueOf(strs[7]));
+        bean.setSensorData(info);
+        return bean;
+    }
+
+
+    /**
+     * 解析温湿度计  12
+     * @param strs
+     * @return
+     */
+    private CollectorSensorParamsInfo<SensorTemperHumidityInfo> parserTemperHumidity(String [] strs){
+        CollectorSensorParamsInfo bean= new CollectorSensorParamsInfo();
+        SensorTemperHumidityInfo info = new SensorTemperHumidityInfo();
+        bean.setCollectorModel(CollectorModel.value(strs[0].substring(5,7)));
+        bean.setChannelNumber(strs[0].substring(7,9));
+        bean.setSensorAddress(strs[1]);
+        bean.setSensorType(SensorType.TEMPERATURE_HUMIDITY_METER);
+        info.setTemperatureTriggerThreshold(strs[2]);
+        info.setHumidityTriggerThreshold(strs[3]);
+        bean.setSensorData(info);
+        return bean;
+    }
+
+
+    /**
+     * 解析扬压力计 15
+     * @param strs
+     * @return
+     */
+    private CollectorSensorParamsInfo<SensorUpliftPressureInfo> parserUpliftPressure(String [] strs){
+        CollectorSensorParamsInfo bean= new CollectorSensorParamsInfo();
+        SensorUpliftPressureInfo info = new SensorUpliftPressureInfo();
+        bean.setCollectorModel(CollectorModel.value(strs[0].substring(5,7)));
+        bean.setChannelNumber(strs[0].substring(7,9));
+        bean.setSensorAddress(strs[1]);
+        bean.setSensorType(SensorType.UPLIFT_PRESSURE_GAUGE);
+        info.setTriggerThreshold((TextUtils.isEmpty(strs[2]) || strs[2].contains("nan")) ? 0 : Integer.valueOf(strs[2]));
+        info.setRevised((TextUtils.isEmpty(strs[3]) || strs[3].contains("nan")) ? 0 : Double.valueOf(strs[3]));
+        info.setCordlength(strs[4]);
+        info.setInstallationElevation(strs[5]);
+        bean.setSensorData(info);
+        return bean;
+    }
+
+    /**
+     * 次声传感器  17
+     * @param strs
+     * @return
+     */
+    public static CollectorSensorParamsInfo<SensorInfrasoundInfo> parserInfrasound(String [] strs){
+        CollectorSensorParamsInfo bean= new CollectorSensorParamsInfo();
+        SensorInfrasoundInfo info = new SensorInfrasoundInfo();
+        bean.setCollectorModel(CollectorModel.value(strs[0].substring(5,7)));
+        bean.setChannelNumber(strs[0].substring(7,9));
+        bean.setSensorAddress(strs[1]);
+        bean.setSensorType(SensorType.INFRASOUND_SENSOR);
+        info.setTriggerThreshold(strs[3]);
+        info.setRevised((TextUtils.isEmpty(strs[4]) || strs[4].contains("nan")) ? 0 : Double.valueOf(strs[4]));
+        bean.setSensorData(info);
+        return bean;
+    }
+    /**
+     * 解析基康渗压计  7个参数   50
+     * @param strs
+     * @return
+     */
+    private CollectorSensorParamsInfo<SensorKangPercolateInfo> parserKangPercolate(String[] strs) {
+        CollectorSensorParamsInfo bean= new CollectorSensorParamsInfo();
+        SensorKangPercolateInfo info = new SensorKangPercolateInfo();
+        bean.setCollectorModel(CollectorModel.value(strs[0].substring(5,7)));
+        bean.setChannelNumber(strs[0].substring(7,9));
+        bean.setSensorAddress(strs[1]);
+        bean.setSensorType(SensorType.KANG_PERCOLATE);
+        info.setTriggerThreshold((TextUtils.isEmpty(strs[2]) || strs[2].contains("nan")) ? 0 : Integer.valueOf(strs[2]));
+        info.setPolynomialRatioA(strs[3]);
+        info.setPolynomialRatioB(strs[4]);
+        info.setPolynomialRatioC(strs[5]);
+        info.setTemperatureCoefficientK((TextUtils.isEmpty(strs[6]) || strs[6].contains("nan")) ? 0 : Double.valueOf(strs[6]));
+        info.setCreateTemperature((TextUtils.isEmpty(strs[7]) || strs[7].contains("nan")) ? 0 : Double.valueOf(strs[7]));
+        info.setManualCorrection(strs[8]);
+        bean.setSensorData(info);
+        return bean;
+    }
+
+    /**
+     * 解析葛南渗压计   6个参数   51
+     * @param strs
+     * @return
+     */
+    private CollectorSensorParamsInfo<SensorGudanPercolateInfo> parserGudanPercolate(String[] strs) {
+        CollectorSensorParamsInfo bean= new CollectorSensorParamsInfo();
+        SensorGudanPercolateInfo info = new SensorGudanPercolateInfo();
+        bean.setCollectorModel(CollectorModel.value(strs[0].substring(5,7)));
+        bean.setChannelNumber(strs[0].substring(7,9));
+        bean.setSensorAddress(strs[1]);
+        bean.setSensorType(SensorType.GUDAN_PERCOLATE);
+        info.setTriggerThreshold((TextUtils.isEmpty(strs[2]) || strs[2].contains("nan")) ? 0 : Integer.valueOf(strs[2]));
+        info.setSensitivityK((TextUtils.isEmpty(strs[3]) || strs[3].contains("nan")) ? 0 : Integer.valueOf(strs[3]));
+        info.setTemperatureCoefficientB((TextUtils.isEmpty(strs[4]) || strs[4].contains("nan")) ? 0 : Double.valueOf(strs[4]));
+        info.setDatumValueF0((TextUtils.isEmpty(strs[5]) || strs[5].contains("nan")) ? 0 : Double.valueOf(strs[5]));
+        info.setCreateTemperature((TextUtils.isEmpty(strs[6]) || strs[6].contains("nan")) ? 0 : Double.valueOf(strs[6]));
+        info.setManualCorrection(strs[7]);
+        bean.setSensorData(info);
+        return bean;
+    }
+
+
+    /**
+     * 解析葛南土压力盒 52
+     * @param strs
+     * @return
+     */
+    private CollectorSensorParamsInfo<SensorGudanSoilPressureInfo> parserGudanSoilPressure(String[] strs) {
+        CollectorSensorParamsInfo bean= new CollectorSensorParamsInfo();
+        SensorGudanSoilPressureInfo info = new SensorGudanSoilPressureInfo();
+        bean.setCollectorModel(CollectorModel.value(strs[0].substring(5,7)));
+        bean.setChannelNumber(strs[0].substring(7,9));
+        bean.setSensorAddress(strs[1]);
+        bean.setSensorType(SensorType.GUDAN_SOIL_PRESSURE);
+        info.setTriggerThreshold((TextUtils.isEmpty(strs[2]) || strs[2].contains("nan")) ? 0 : Integer.valueOf(strs[2]));
+        info.setSensitivityK((TextUtils.isEmpty(strs[3]) || strs[3].contains("nan")) ? 0 : Integer.valueOf(strs[3]));
+        info.setTemperatureCoefficientB((TextUtils.isEmpty(strs[4]) || strs[4].contains("nan")) ? 0 : Double.valueOf(strs[4]));
+        info.setDatumValueF0((TextUtils.isEmpty(strs[5]) || strs[5].contains("nan")) ? 0 : Double.valueOf(strs[5]));
+        info.setCreateTemperature((TextUtils.isEmpty(strs[6]) || strs[6].contains("nan")) ? 0 : Double.valueOf(strs[6]));
+        info.setManualCorrection(strs[7]);
+        bean.setSensorData(info);
+        return bean;
+    }
+
+    /**
+     * 解析 葛南应力计 7个参数  53
+     * @param strs
+     * @return
+     */
+    private CollectorSensorParamsInfo<SensorGudanStressInfo> parserGudanStress(String[] strs) {
+        CollectorSensorParamsInfo bean= new CollectorSensorParamsInfo();
+        SensorGudanStressInfo info = new SensorGudanStressInfo();
+        bean.setCollectorModel(CollectorModel.value(strs[0].substring(5,7)));
+        bean.setChannelNumber(strs[0].substring(7,9));
+        bean.setSensorAddress(strs[1]);
+        bean.setSensorType(SensorType.GUDAN_STRESS);
+        info.setTriggerThreshold((TextUtils.isEmpty(strs[2]) || strs[2].contains("nan")) ? 0 : Integer.valueOf(strs[2]));
+        info.setSensitivityK((TextUtils.isEmpty(strs[3]) || strs[3].contains("nan")) ? 0 : Integer.valueOf(strs[3]));
+        info.setTemperatureCoefficientB((TextUtils.isEmpty(strs[4]) || strs[4].contains("nan")) ? 0 : Double.valueOf(strs[4]));
+        info.setExpansionCoefficient((TextUtils.isEmpty(strs[5]) || strs[5].contains("nan")) ? 0 : Double.valueOf(strs[5]));
+        info.setDatumValueF0((TextUtils.isEmpty(strs[6]) || strs[6].contains("nan")) ? 0 : Double.valueOf(strs[6]));
+        info.setCreateTemperature((TextUtils.isEmpty(strs[7]) || strs[7].contains("nan")) ? 0 : Double.valueOf(strs[7]));
+        info.setManualCorrection(strs[8]);
+        bean.setSensorData(info);
+        return bean;
+    }
+
+
+    /**
+     * 解析 葛南无应力计   54
+     * @param strs
+     * @return
+     */
+    private CollectorSensorParamsInfo<SensorGudanNotStressInfo> parserGudanNotStress(String[] strs) {
+        CollectorSensorParamsInfo bean= new CollectorSensorParamsInfo();
+        SensorGudanNotStressInfo info = new SensorGudanNotStressInfo();
+        bean.setCollectorModel(CollectorModel.value(strs[0].substring(5,7)));
+        bean.setChannelNumber(strs[0].substring(7,9));
+        bean.setSensorAddress(strs[1]);
+        bean.setSensorType(SensorType.GUDAN_NOT_STRESS);
+        info.setTriggerThreshold((TextUtils.isEmpty(strs[2]) || strs[2].contains("nan")) ? 0 : Integer.valueOf(strs[2]));
+        info.setSensitivityK((TextUtils.isEmpty(strs[3]) || strs[3].contains("nan")) ? 0 : Integer.valueOf(strs[3]));
+        info.setTemperatureCoefficientB((TextUtils.isEmpty(strs[4]) || strs[4].contains("nan")) ? 0 : Double.valueOf(strs[4]));
+        info.setExpansionCoefficient((TextUtils.isEmpty(strs[5]) || strs[5].contains("nan")) ? 0 : Double.valueOf(strs[5]));
+        info.setDatumValueF0((TextUtils.isEmpty(strs[6]) || strs[6].contains("nan")) ? 0 : Double.valueOf(strs[6]));
+        info.setCreateTemperature((TextUtils.isEmpty(strs[7]) || strs[7].contains("nan")) ? 0 : Double.valueOf(strs[7]));
+        info.setManualCorrection(strs[8]);
+        bean.setSensorData(info);
+        return bean;
+    }
+
+
+    private CollectorSensorParamsInfo<SensorGudanDisplacementInfo> parserGudanDisplacement(String[] strs) {
+        CollectorSensorParamsInfo bean= new CollectorSensorParamsInfo();
+        SensorGudanDisplacementInfo info = new SensorGudanDisplacementInfo();
+        bean.setCollectorModel(CollectorModel.value(strs[0].substring(5,7)));
+        bean.setChannelNumber(strs[0].substring(7,9));
+        bean.setSensorAddress(strs[1]);
+        bean.setSensorType(SensorType.GUDAN_DISPLACEMENT_METER);
+        info.setTriggerThreshold((TextUtils.isEmpty(strs[2]) || strs[2].contains("nan")) ? 0 : Integer.valueOf(strs[2]));
+        info.setSensitivityK((TextUtils.isEmpty(strs[3]) || strs[3].contains("nan")) ? 0 : Integer.valueOf(strs[3]));
+        info.setTemperatureCoefficientB((TextUtils.isEmpty(strs[4]) || strs[4].contains("nan")) ? 0 : Double.valueOf(strs[4]));
+        info.setDatumValueF0((TextUtils.isEmpty(strs[5]) || strs[5].contains("nan")) ? 0 : Double.valueOf(strs[5]));
+        info.setCreateTemperature((TextUtils.isEmpty(strs[6]) || strs[6].contains("nan")) ? 0 : Double.valueOf(strs[6]));
+        info.setManualCorrection(strs[7]);
+        bean.setSensorData(info);
+        return bean;
+    }
+}

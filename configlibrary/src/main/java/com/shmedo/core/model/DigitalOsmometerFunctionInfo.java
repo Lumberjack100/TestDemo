@@ -1,0 +1,27 @@
+package com.shmedo.core.model;
+
+
+import com.shmedo.core.enums.OsmometerStatus;
+
+/**
+ * Created by adu on 2018/1/8.
+ * 开启/关闭 数字式渗压计功能实体类
+ */
+public class DigitalOsmometerFunctionInfo {
+    private OsmometerStatus osmometerStatus;
+
+    public OsmometerStatus getOsmometerStatus() {
+        return osmometerStatus;
+    }
+
+    public void setOsmometerStatus(OsmometerStatus osmometerStatus) {
+        this.osmometerStatus = osmometerStatus;
+    }
+
+    @Override
+    public String toString() {
+        return "DigitalOsmometerFunctionInfo{" +
+                "osmometerStatus=" + osmometerStatus +
+                '}';
+    }
+}

@@ -1,7 +1,8 @@
 package com.shmedo.mcloudapp.util.bleutil;
 
-import com.shmedo.das.utils.ByteManager;
-import com.shmedo.das.utils.OnBytePackage;
+
+import com.shmedo.core.interfaces.OnBytePackage;
+import com.shmedo.core.utils.ByteManager;
 
 import java.nio.charset.StandardCharsets;
 

@@ -3,6 +3,7 @@ package com.shmedo.mcloudapp.ui.fragment;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,7 +30,6 @@ import com.shmedo.mcloudapp.util.AdvanceSetDialogUtils;
 import com.shmedo.mcloudapp.util.KeyBordUtils;
 import com.shmedo.mcloudapp.util.LocationUtils;
 import com.shmedo.mcloudapp.util.LogToSDUtil;
-import com.shmedo.mcloudapp.util.StringUtil;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -177,7 +177,7 @@ public class AdvanceSetFragment extends BaseFragment {
 
         btnRestartSystem.setOnClickListener(view -> {
             String result = etPositionInfo.getText().toString().trim();
-            if (!StringUtil.isEmpty(result)) {
+            if (!TextUtils.isEmpty(result)) {
                 try {
                     String command = "##9161" + result + "\r\n";
                     activity.sendCommonCommandImmediately(command);

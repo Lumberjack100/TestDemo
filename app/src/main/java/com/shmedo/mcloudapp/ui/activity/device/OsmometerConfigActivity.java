@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import androidx.annotation.Nullable;
 import android.text.InputFilter;
 import android.text.InputType;
 import android.text.TextUtils;
@@ -14,9 +13,11 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.Nullable;
+
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.hjq.toast.ToastUtils;
-import com.shmedo.das.common.QueryOsmometerParameterInfo;
+import com.shmedo.core.model.QueryOsmometerParameterInfo;
 import com.shmedo.mcloudapp.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.inter.Extras;

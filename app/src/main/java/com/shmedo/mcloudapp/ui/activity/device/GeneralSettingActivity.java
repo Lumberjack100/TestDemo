@@ -15,7 +15,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.hjq.toast.ToastUtils;
-import com.shmedo.das.common.CollectorConfigInfo;
+import com.shmedo.core.model.CollectorConfigInfo;
 import com.shmedo.mcloudapp.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.inter.Extras;

@@ -19,11 +19,10 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.shmedo.das.utils.ByteManager;
-import com.shmedo.das.utils.OnBytePackage;
+import com.shmedo.core.interfaces.OnBytePackage;
+import com.shmedo.core.utils.ByteManager;
 import com.shmedo.mcloudapp.bluetooth.exception.ScanAlreadyStartException;
 import com.shmedo.mcloudapp.entity.ble.MDevice;
-import com.shmedo.mcloudapp.util.StringUtil;
 import com.shmedo.mcloudapp.util.bleutil.BleHelpUtil;
 import com.shmedo.mcloudapp.util.bleutil.Constants;
 import com.shmedo.mcloudapp.util.bleutil.DescriptorParser;
@@ -284,7 +283,7 @@ public class MdBluetoothManager {
                     event = new BluetoothEvent(eventType, msg);
                     writeMessageManager.removeFront();
                 } else {
-                    if (!StringUtil.isEmpty(msg.getResponseMessage())) {
+                    if (!TextUtils.isEmpty(msg.getResponseMessage())) {
                         event = BluetoothEvent.builder().setEventType(BluetoothEventType.MESSAGE_WRITE_SUCCESS)
                                 .setEventData(msg)
                                 .build();

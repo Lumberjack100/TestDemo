@@ -10,7 +10,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.hjq.toast.ToastUtils;
-import com.shmedo.das.common.SensorInclinometerInfo;
+import com.shmedo.core.model.SensorInclinometerInfo;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.entity.ble.collector.CollectorSensorParamsInfoSub;
 import com.shmedo.mcloudapp.entity.event.SensorDataEvent;

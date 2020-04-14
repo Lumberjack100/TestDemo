@@ -27,7 +27,6 @@ import com.shmedo.mcloudapp.entity.WifiBean;
 import com.shmedo.mcloudapp.entity.event.WifiEvent;
 import com.shmedo.mcloudapp.util.ActivityCollector;
 import com.shmedo.mcloudapp.util.AppContants;
-import com.shmedo.mcloudapp.util.StringUtil;
 import com.shmedo.mcloudapp.util.WifiSupport;
 import com.shmedo.mcloudapp.views.WifiLinkDialog;
 
@@ -286,7 +285,7 @@ public class WifiConnectionActivity extends AppCompatActivity {
      */
     private void updateWifiList() {
         List<ScanResult> scanResults = WifiSupport.noSameName(WifiSupport.getWifiScanResult(this));
-        if (StringUtil.isNullOrEmpty(scanResults))
+        if ( scanResults.isEmpty())
             return;
 
         wifiBeanList.clear();
@@ -309,7 +308,7 @@ public class WifiConnectionActivity extends AppCompatActivity {
      * 将"已连接"或者"正在连接"的wifi热点放置在第一个位置
      */
     private void setSpecifyWifiOnTop(String wifiName, int type) {
-        if (StringUtil.isNullOrEmpty(wifiBeanList)) {
+        if (wifiBeanList.isEmpty()) {
             return;
         }
 

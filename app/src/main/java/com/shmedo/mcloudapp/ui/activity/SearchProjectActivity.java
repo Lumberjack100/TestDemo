@@ -174,7 +174,7 @@ public class SearchProjectActivity extends BaseActivity implements MultiItemType
             KeyBordUtils.hideSoftKeyboard(mEtSearch);
 
             String text = mEtSearch.getText().toString();
-            if (StringUtil.isEmpty(text)) {
+            if (TextUtils.isEmpty(text)) {
                 mEtSearch.clearFocus();
                 return true;
             }

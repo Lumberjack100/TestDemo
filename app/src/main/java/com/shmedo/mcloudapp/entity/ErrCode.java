@@ -1,6 +1,6 @@
 package com.shmedo.mcloudapp.entity;
 
-import com.shmedo.mcloudapp.util.StringUtil;
+import android.text.TextUtils;
 
 /**
  * 项目名：  CheckAndroid
@@ -65,7 +65,7 @@ public class ErrCode {
 
     @Override public String toString() {
         String message="服务访问错误代码："+ Integer.toString(code);
-        return StringUtil.isNullOrEmpty(this.errMessage) ? message : (message+"  "+ this.errMessage);
+        return TextUtils.isEmpty(this.errMessage) ? message : (message+"  "+ this.errMessage);
     }
 
 

@@ -4,10 +4,10 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
+import android.text.TextUtils;
 
 import com.shmedo.mcloudapp.entity.UserInfo;
 import com.shmedo.mcloudapp.model.common.CommonVariable;
-import com.shmedo.mcloudapp.util.StringUtil;
 import com.shmedo.mcloudapp.util.UserConfig;
 
 /**
@@ -75,7 +75,7 @@ public class MCloudApp {
 
 
     public static String getServiceAddress() {
-        if (StringUtil.isNullOrEmpty(serviceAddress))
+        if (TextUtils.isEmpty(serviceAddress))
             return serviceAddress;
         return "https://" + serviceAddress + "/api/v1/";
     }
@@ -85,7 +85,7 @@ public class MCloudApp {
     }
 
     public static String getHttpServiceAddress() {
-        if (StringUtil.isNullOrEmpty(httpServiceAddress))
+        if (TextUtils.isEmpty(httpServiceAddress))
             return httpServiceAddress;
         return "http://" + httpServiceAddress;
     }

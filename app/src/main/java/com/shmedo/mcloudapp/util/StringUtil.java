@@ -3,11 +3,10 @@ package com.shmedo.mcloudapp.util;
 import android.annotation.SuppressLint;
 import android.text.TextUtils;
 
-import com.shmedo.das.das.cmd.CommandResult;
+import com.shmedo.core.cmd.CommandResult;
 import com.shmedo.mcloudapp.entity.ble.collector.MqttConfigInfoSub;
 
 import java.text.DecimalFormat;
-import java.util.Collection;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -39,33 +38,6 @@ public class StringUtil {
     public static final String REGEX_URL = "[-A-Za-z0-9+&@#/%?=~_|!:,.;]+[-A-Za-z0-9+&@#/%=~_|]";
 
 
-    public static boolean isNullOrEmpty(String s) {
-        return (s == null) || (s.length() == 0);
-    }
-
-
-    /**
-     * 判断集合是否为null或者0个元素
-     *
-     * @param c
-     * @return
-     */
-    public static boolean isNullOrEmpty(Collection c) {
-        if (null == c || c.isEmpty()) {
-            return true;
-        }
-        return false;
-    }
-
-    /**
-     * 判断字符串是否为空
-     *
-     * @param str
-     * @return
-     */
-    public static boolean isEmpty(String str) {
-        return str == null || str.length() == 0 || str.equalsIgnoreCase("null");
-    }
 
     /**
      * 手机号输入是否正确
@@ -116,7 +88,6 @@ public class StringUtil {
     }
 
     public static String convertStringToHex(String str) {
-
         char[] chars = str.toCharArray();
 
         StringBuffer hex = new StringBuffer();
@@ -129,7 +100,7 @@ public class StringUtil {
 
     @SuppressLint("DefaultLocale")
     public static String formatStringTwo(String str) {
-        if (StringUtil.isEmpty(str)) {
+        if (TextUtils.isEmpty(str)) {
             return "";
         } else {
             return String.format("%02d", Integer.valueOf(str));
@@ -138,7 +109,7 @@ public class StringUtil {
 
     @SuppressLint("DefaultLocale")
     public static String formatStringFour(String str) {
-        if (StringUtil.isEmpty(str)) {
+        if (TextUtils.isEmpty(str)) {
             return "";
         } else {
             return String.format("%04d", Integer.valueOf(str));
@@ -146,7 +117,7 @@ public class StringUtil {
     }
 
     public static String formatStringFive(String str) {
-        if (StringUtil.isEmpty(str)) {
+        if (TextUtils.isEmpty(str)) {
             return "";
         } else {
             return String.format("%05d", Integer.valueOf(str));
@@ -204,7 +175,7 @@ public class StringUtil {
      * @return
      */
     public static String extractCommandType(String result){
-        if (com.shmedo.das.utils.StringUtil.isNullOrEmpty(result) || result.length() < CommandResult.RESULT_MIN_LENGTH)
+        if (TextUtils.isEmpty(result) || result.length() < CommandResult.RESULT_MIN_LENGTH)
             throw new IllegalArgumentException("指令结果格式错误:" + result);
         String cmd = result.replace(CommandResult.COMMAND_RESULT_HEADER, "").substring(0, 3);
         return cmd;
@@ -216,7 +187,7 @@ public class StringUtil {
      * @return 返回是否开启
      */
     public static boolean isOpenLink(String result){
-        if (isNullOrEmpty(result) ||  result.length() < CommandResult.RESULT_MIN_LENGTH)
+        if (TextUtils.isEmpty(result) ||  result.length() < CommandResult.RESULT_MIN_LENGTH)
             throw new IllegalArgumentException("指令结果格式错误:" + result);
         String[] cmd = result.split(" ");
         if (cmd[1].equals("0.0.0.0")){
@@ -232,7 +203,7 @@ public class StringUtil {
      * @return  1
      */
     public static String linkNumber(String result){
-        if (isNullOrEmpty(result) ||  result.length() < CommandResult.RESULT_MIN_LENGTH)
+        if (TextUtils.isEmpty(result) ||  result.length() < CommandResult.RESULT_MIN_LENGTH)
             throw new IllegalArgumentException("指令结果格式错误:" + result);
         String[] cmd = result.split(" ");
         String number = cmd[0].replace(CommandResult.COMMAND_RESULT_HEADER, "").substring(3,4);
@@ -245,7 +216,7 @@ public class StringUtil {
      * @return 3
      */
     public static String linkNumbers(String result){
-        if (isNullOrEmpty(result) ||  result.length() < CommandResult.RESULT_MIN_LENGTH)
+        if (TextUtils.isEmpty(result) ||  result.length() < CommandResult.RESULT_MIN_LENGTH)
             throw new IllegalArgumentException("指令结果格式错误:" + result);
         String[] cmd = result.split(",");
         String number = cmd[0].replace(CommandResult.COMMAND_RESULT_HEADER, "").substring(3,4);
@@ -263,7 +234,7 @@ public class StringUtil {
      * $$8891,0,2,0.0.0.0 9001,,,,,,,,,,
      */
     public static MqttConfigInfoSub parserMqttConfig(String result){
-        if (isNullOrEmpty(result) ||  result.length() < CommandResult.RESULT_MIN_LENGTH)
+        if (TextUtils.isEmpty(result) ||  result.length() < CommandResult.RESULT_MIN_LENGTH)
             throw new IllegalArgumentException("指令结果格式错误:" + result);
         if (result.replace("\r\n","").endsWith("e")){
             return null;

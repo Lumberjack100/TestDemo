@@ -1,35 +1,31 @@
 package com.shmedo.mcloudapp.util;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
-import android.content.Context;
 import android.graphics.Color;
-import android.text.*;
+import android.text.InputFilter;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.SpannedString;
+import android.text.TextUtils;
 import android.text.style.AbsoluteSizeSpan;
 import android.view.View;
-import android.widget.*;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+
 import androidx.annotation.NonNull;
+
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.amap.api.location.AMapLocation;
-import com.amap.api.location.AMapLocationClient;
-import com.amap.api.location.AMapLocationClientOption;
-import com.amap.api.location.AMapLocationListener;
 import com.hjq.toast.ToastUtils;
 import com.kyleduo.switchbutton.SwitchButton;
-import com.shmedo.das.das.cmd.CommandManager;
-import com.shmedo.das.das.cmd.CommandType;
-import com.shmedo.das.das.cmd.entity.RebootDeviceEntity;
+import com.shmedo.core.cmd.CommandManager;
+import com.shmedo.core.cmd.entity.RebootDeviceEntity;
+import com.shmedo.core.enums.CommandType;
 import com.shmedo.mcloudapp.R;
-import com.shmedo.mcloudapp.entity.SyncPositionBean;
-import com.shmedo.mcloudapp.entity.event.BluetoothStateEvent;
 import com.shmedo.mcloudapp.ui.activity.ConfigDASActivity;
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
-import timber.log.Timber;
-
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 /**
  * 项目名：  mCloudapp

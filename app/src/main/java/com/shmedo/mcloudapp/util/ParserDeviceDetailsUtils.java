@@ -2,16 +2,22 @@ package com.shmedo.mcloudapp.util;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.text.TextUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
-import com.shmedo.das.das.cmd.CommandResult;
+
+import com.shmedo.core.cmd.CommandResult;
 import com.shmedo.mcloudapp.R;
-import com.shmedo.mcloudapp.entity.devicedetails.*;
+import com.shmedo.mcloudapp.entity.devicedetails.DeviceInternetStatus;
+import com.shmedo.mcloudapp.entity.devicedetails.DeviceStatusOne;
+import com.shmedo.mcloudapp.entity.devicedetails.DeviceStatusThree;
+import com.shmedo.mcloudapp.entity.devicedetails.DeviceStatusTwo;
+import com.shmedo.mcloudapp.entity.devicedetails.DeviceVersionInfo;
+import com.shmedo.mcloudapp.entity.devicedetails.OperatorInformation;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.shmedo.mcloudapp.util.StringUtil.isNullOrEmpty;
 
 /**
  * 项目名：  mCloudapp
@@ -28,7 +34,7 @@ public class ParserDeviceDetailsUtils {
      * @return DeviceVersionInfo
      */
     public static DeviceVersionInfo parserVersionInfo(String result){
-        if (isNullOrEmpty(result) ||  result.length() < CommandResult.RESULT_MIN_LENGTH)
+        if (TextUtils.isEmpty(result) ||  result.length() < CommandResult.RESULT_MIN_LENGTH)
             throw new IllegalArgumentException("指令结果格式错误:" + result);
         if (result.replace("\r\n","").endsWith("e")){
             return null;
@@ -48,7 +54,7 @@ public class ParserDeviceDetailsUtils {
      * @return
      */
     public static String parserInstallPosition(String result){
-        if (isNullOrEmpty(result) ||  result.length() < CommandResult.RESULT_MIN_LENGTH)
+        if (TextUtils.isEmpty(result) ||  result.length() < CommandResult.RESULT_MIN_LENGTH)
             throw new IllegalArgumentException("指令结果格式错误:" + result);
         if (result.replace("\r\n","").endsWith("e")){
             return null;
@@ -63,7 +69,7 @@ public class ParserDeviceDetailsUtils {
      * @return DeviceStatusOne
      */
     public static DeviceStatusOne parserDeviceStatusOne(String result){
-        if (isNullOrEmpty(result) ||  result.length() < CommandResult.RESULT_MIN_LENGTH)
+        if (TextUtils.isEmpty(result) ||  result.length() < CommandResult.RESULT_MIN_LENGTH)
             throw new IllegalArgumentException("指令结果格式错误:" + result);
         if (result.replace("\r\n","").endsWith("e")){
             return null;
@@ -86,7 +92,7 @@ public class ParserDeviceDetailsUtils {
      * @return DeviceStatusTwo
      */
     public static DeviceStatusTwo parserDeviceStatusTwo(String result){
-        if (isNullOrEmpty(result) ||  result.length() < CommandResult.RESULT_MIN_LENGTH)
+        if (TextUtils.isEmpty(result) ||  result.length() < CommandResult.RESULT_MIN_LENGTH)
             throw new IllegalArgumentException("指令结果格式错误:" + result);
         if (result.replace("\r\n","").endsWith("e")){
             return null;
@@ -121,7 +127,7 @@ public class ParserDeviceDetailsUtils {
      * @return DeviceStatusThree
      */
     public static DeviceStatusThree parserDeviceStatusThree(String result){
-        if (isNullOrEmpty(result) ||  result.length() < CommandResult.RESULT_MIN_LENGTH)
+        if (TextUtils.isEmpty(result) ||  result.length() < CommandResult.RESULT_MIN_LENGTH)
             throw new IllegalArgumentException("指令结果格式错误:" + result);
         if (result.replace("\r\n","").endsWith("e")){
             return null;
@@ -146,7 +152,7 @@ public class ParserDeviceDetailsUtils {
      * @return  DeviceInternetStatus
      */
     public static DeviceInternetStatus parserInternetStatus(String result){
-        if (isNullOrEmpty(result) ||  result.length() < CommandResult.RESULT_MIN_LENGTH)
+        if (TextUtils.isEmpty(result) ||  result.length() < CommandResult.RESULT_MIN_LENGTH)
             throw new IllegalArgumentException("指令结果格式错误:" + result);
         if (result.replace("\r\n","").endsWith("e")){
             return null;
@@ -176,7 +182,7 @@ public class ParserDeviceDetailsUtils {
      * @return  OperatorInformation
      */
     public static OperatorInformation parserOperatorInformation(String result){
-        if (isNullOrEmpty(result) ||  result.length() < CommandResult.RESULT_MIN_LENGTH)
+        if (TextUtils.isEmpty(result) ||  result.length() < CommandResult.RESULT_MIN_LENGTH)
             throw new IllegalArgumentException("指令结果格式错误:" + result);
         if (result.replace("\r\n","").endsWith("e")){
             return null;

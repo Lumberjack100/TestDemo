@@ -9,7 +9,7 @@ import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.shmedo.das.common.SensorMoistureMeterInfo;
+import com.shmedo.core.model.SensorMoistureMeterInfo;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.entity.ble.collector.CollectorSensorParamsInfoSub;
 import com.shmedo.mcloudapp.entity.event.SensorDataEvent;
