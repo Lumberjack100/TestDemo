@@ -135,15 +135,15 @@ public class ConfigDASActivity extends BaseDeviceConnectActivity {
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.item_parameter:
-                        mToolbarTitle.setText("参数设置");
+                        mToolbarTitle.setText(getString(R.string.device_configuration));
                         switchFrgment(0);
                         break;
                     case R.id.item_query_data:
-                        mToolbarTitle.setText("查询数据");
+                        mToolbarTitle.setText(getString(R.string.query_data));
                         switchFrgment(1);
                         break;
                     case R.id.item_device_details:
-                        mToolbarTitle.setText("设备详情");
+                        mToolbarTitle.setText(getString(R.string.device_state_info));
                         switchFrgment(2);
                         break;
                     case R.id.item_highsetting:

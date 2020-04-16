@@ -149,7 +149,7 @@ public class BlueToothListActivity extends AppCompatActivity  {
 
 
 
-    @OnClick({R.id.btn_scan, R.id.LL_close})
+    @OnClick({R.id.btn_scan, R.id.iv_close})
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_scan:
@@ -161,7 +161,7 @@ public class BlueToothListActivity extends AppCompatActivity  {
                 }
                 break;
 
-            case R.id.LL_close:
+            case R.id.iv_close:
                 finish();
                 break;
         }

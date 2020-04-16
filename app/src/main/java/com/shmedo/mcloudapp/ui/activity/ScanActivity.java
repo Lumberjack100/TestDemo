@@ -161,12 +161,12 @@ public class ScanActivity extends BaseActivity implements QRCodeView.Delegate {
     public void switchFlashImg() {
         if (FLASH_OPEN) {
             mZXingView.openFlashlight(); // 打开闪光灯
-            flashLightIv.setImageResource(R.drawable.ic_open);
+            flashLightIv.setImageResource(R.drawable.ic_open_flashligh);
             flashLightTv.setText(R.string.close_flash);
 
         } else {
             mZXingView.closeFlashlight(); // 关闭闪光灯
-            flashLightIv.setImageResource(R.drawable.ic_close);
+            flashLightIv.setImageResource(R.drawable.ic_close_flashligh);
             flashLightTv.setText(R.string.open_flash);
         }
     }

@@ -18,12 +18,12 @@ public class SettingRemoteUpgradeEntity implements Validater {
 
     @Override
     public void validate() {
-        if (model != 1 && model != 2)
+        if (model != 0 && model != 1)
             throw new DASParameterException("升级模式错误");
     }
 
     @Override
     public String toString() {
-        return this.model+""+this.port;
+        return this.model + "" + this.port;
     }
 }

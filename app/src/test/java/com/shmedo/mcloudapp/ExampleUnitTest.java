@@ -1,21 +1,18 @@
 package com.shmedo.mcloudapp;
 
-import com.shmedo.das.common.BaseConfigInfo;
-import com.shmedo.das.das.cmd.CommandResult;
-import com.shmedo.das.das.cmd.parser.ParseManager;
-import com.shmedo.mcloudapp.entity.ble.*;
+
+import com.shmedo.core.cmd.CommandResult;
+import com.shmedo.core.cmd.parser.ParseManager;
+import com.shmedo.core.model.BaseConfigInfo;
+import com.shmedo.mcloudapp.entity.ble.BaseConfigInfoSub;
+import com.shmedo.mcloudapp.entity.ble.DigitalOsmometerFunctionSub;
+import com.shmedo.mcloudapp.entity.ble.QueryOsmometerParameterSubInfo;
+import com.shmedo.mcloudapp.entity.ble.SettingRainPrecisionSub;
 import com.shmedo.mcloudapp.entity.ble.collector.CollectorSensorParamsInfoSub;
-import com.shmedo.mcloudapp.entity.ble.collector.MqttConfigInfoSub;
-import com.shmedo.mcloudapp.entity.devicedetails.DeviceInternetStatus;
-import com.shmedo.mcloudapp.util.ParserDeviceDetailsUtils;
 import com.shmedo.mcloudapp.util.StringUtil;
-import com.shmedo.mcloudapp.util.TimeUtil;
 import com.shmedo.mcloudapp.util.bleutil.BlueResultParserUtil;
 
-import com.shmedo.mcloudapp.util.bleutil.ByteManagerUtil;
 import org.junit.Test;
-
-import java.io.UnsupportedEncodingException;
 
 /**
  * Example local unit test, which will execute on the development machine (host).

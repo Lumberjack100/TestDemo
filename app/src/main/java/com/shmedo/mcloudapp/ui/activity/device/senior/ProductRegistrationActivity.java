@@ -1,8 +1,9 @@
 package com.shmedo.mcloudapp.ui.activity.device.senior;
 
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import androidx.annotation.Nullable;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.SpannedString;
@@ -13,16 +14,18 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import androidx.annotation.Nullable;
+
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.hjq.toast.ToastUtils;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.base.BaseActivity;
 import com.shmedo.mcloudapp.util.KeyBordUtils;
+import com.shmedo.mcloudapp.util.TimeUtil;
+import com.shmedo.mcloudapp.views.TimePickerDialog;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-import com.shmedo.mcloudapp.util.TimeUtil;
-import com.shmedo.mcloudapp.views.TimePickerDialog;
 
 /**
  * 项目名：  mCloudapp
@@ -49,11 +52,16 @@ public class ProductRegistrationActivity extends BaseActivity {
     @BindView(R.id.btn_confirm_registered)
     Button mBtnConfirmRegistered;
 
-
     private MaterialDialog.Builder mBuilder;
     private MaterialDialog mMaterialDialog;
 
     private TimePickerDialog timeDialog;
+
+    public static void startActivity(Context context) {
+        Intent intent = new Intent(context, ProductRegistrationActivity.class);
+        context.startActivity(intent);
+    }
+
     @Override
     protected int initContentView() {
         return R.layout.activity_product_registration;

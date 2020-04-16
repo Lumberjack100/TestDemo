@@ -39,6 +39,7 @@ import com.shmedo.mcloudapp.entity.ble.DeviceLockStatusSub;
 import com.shmedo.mcloudapp.entity.event.BluetoothStateEvent;
 import com.shmedo.mcloudapp.interfaces.Extras;
 import com.shmedo.mcloudapp.ui.activity.ConfigDASActivity;
+import com.shmedo.mcloudapp.ui.activity.device.DeviceAdvanceConfigActivity;
 import com.shmedo.mcloudapp.ui.activity.device.GeneralSettingActivity;
 import com.shmedo.mcloudapp.ui.activity.device.MqttSettingActivity;
 import com.shmedo.mcloudapp.ui.activity.device.sensor.SenSorBGKConfigActivity;
@@ -107,8 +108,8 @@ public class DASHomeFragment extends BaseFragment {
     @BindView(R.id.llty_break_alarm)
     View breakAlarmLayout;
 
-    @BindView(R.id.sensor_setting_layout)
-    View sensorSettingLayout;
+    @BindView(R.id.general_sensor_param_config_layout)
+    View generalSensorParamConfigLayout;
 
     private TextView mTvBluetoothConnect, mTvDeviceActivation, mTvBreakAlarm;
 
@@ -208,7 +209,7 @@ public class DASHomeFragment extends BaseFragment {
         mTvBreakAlarm = breakAlarmLayout.findViewById(R.id.tv_break_alarm);
         mSbBleakAlarm = breakAlarmLayout.findViewById(R.id.sb_break_alarm);
 
-        ((TextView) sensorSettingLayout.findViewById(R.id.tv_config_name)).setText("传感器参数配置");
+        ((TextView) generalSensorParamConfigLayout.findViewById(R.id.tv_config_name)).setText("传感器参数配置");
     }
 
     /**
@@ -402,7 +403,7 @@ public class DASHomeFragment extends BaseFragment {
     }
 
 
-    @OnClick({R.id.sensor_setting_layout, R.id.rl_general_setting, R.id.rl_mqtt_setting})
+    @OnClick({R.id.rl_mqtt_config, R.id.rl_collector_control, R.id.general_sensor_param_config_layout,R.id.rl_advanced_config})
     public void onClick(View v) {
         switch (v.getId()) {
 //            case R.id.tv_rain_gauge:
@@ -413,7 +414,7 @@ public class DASHomeFragment extends BaseFragment {
 //                RainConfigActivity.startActivity(configDASActivity, setRianAccuryParameter.getRainAccury());
 //                break;
 
-            case R.id.sensor_setting_layout:
+            case R.id.general_sensor_param_config_layout:
                 if (!MCloudApp.isIsBluetoothDeviceConnected()) {
                     ToastUtils.show(getString(R.string.param_config_bluetooth_disconnect_warn));
                     return;
@@ -421,7 +422,15 @@ public class DASHomeFragment extends BaseFragment {
                 SenSorBGKConfigActivity.startActivity(configDASActivity, sbcollectorSensor.toString());
                 break;
 
-            case R.id.rl_general_setting:
+            case R.id.rl_mqtt_config:
+                if (!MCloudApp.isIsBluetoothDeviceConnected()) {
+                    ToastUtils.show(getString(R.string.param_config_bluetooth_disconnect_warn));
+                    return;
+                }
+                MqttSettingActivity.startActivity(configDASActivity);
+                break;
+
+            case R.id.rl_collector_control:
                 if (!MCloudApp.isIsBluetoothDeviceConnected()) {
                     ToastUtils.show(getString(R.string.param_config_bluetooth_disconnect_warn));
                     return;
@@ -429,12 +438,8 @@ public class DASHomeFragment extends BaseFragment {
                 GeneralSettingActivity.startActivityForResultByFragment(this, REQUEST_CODE_COLLECTOR_CONFIG, collectorConfigInfo, collectorModel);
                 break;
 
-            case R.id.rl_mqtt_setting:
-                if (!MCloudApp.isIsBluetoothDeviceConnected()) {
-                    ToastUtils.show(getString(R.string.param_config_bluetooth_disconnect_warn));
-                    return;
-                }
-                MqttSettingActivity.startActivity(configDASActivity);
+            case R.id.rl_advanced_config:
+                DeviceAdvanceConfigActivity.startActivity(getActivity());
                 break;
         }
     }

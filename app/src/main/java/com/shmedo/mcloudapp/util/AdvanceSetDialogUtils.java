@@ -1,6 +1,5 @@
 package com.shmedo.mcloudapp.util;
 
-import android.annotation.SuppressLint;
 import android.graphics.Color;
 import android.text.InputFilter;
 import android.text.SpannableString;
@@ -8,6 +7,7 @@ import android.text.Spanned;
 import android.text.SpannedString;
 import android.text.TextUtils;
 import android.text.style.AbsoluteSizeSpan;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -23,9 +23,10 @@ import com.hjq.toast.ToastUtils;
 import com.kyleduo.switchbutton.SwitchButton;
 import com.shmedo.core.cmd.CommandManager;
 import com.shmedo.core.cmd.entity.RebootDeviceEntity;
+import com.shmedo.core.cmd.entity.SettingRemoteUpgradeEntity;
 import com.shmedo.core.enums.CommandType;
 import com.shmedo.mcloudapp.R;
-import com.shmedo.mcloudapp.ui.activity.ConfigDASActivity;
+import com.shmedo.mcloudapp.ui.activity.device.BaseDeviceConnectActivity;
 
 /**
  * 项目名：  mCloudapp
@@ -35,47 +36,44 @@ import com.shmedo.mcloudapp.ui.activity.ConfigDASActivity;
  * 描述：    TODO
  */
 public class AdvanceSetDialogUtils {
-    @SuppressLint("StaticFieldLeak")
-    private static MaterialDialog.Builder mBuilder;
-    @SuppressLint("StaticFieldLeak")
-    private static MaterialDialog mMaterialDialog;
-
     private static boolean isShowPrompt = true;
-
 
     /**
      * 固件升级 or 重启系统
      */
-    public static void showReStartDialog(ConfigDASActivity activity, String title, String instructions, SwitchButton swFirmwareUpgrade) {
-        mBuilder = new MaterialDialog.Builder(activity);
-        mBuilder.customView(R.layout.dialog_restart_system, false)
+    public static void showReStartDialog(BaseDeviceConnectActivity activity, String title, String instructions, SwitchButton swFirmwareUpgrade) {
+        LayoutInflater inflater = LayoutInflater.from(activity);
+        View view = inflater.inflate(R.layout.dialog_restart_system, null);
+        MaterialDialog.Builder mBuilder = new MaterialDialog.Builder(activity);
+        mBuilder.customView(view, false)
                 .title(title)
                 .contentColor(Color.parseColor("#000000"))
                 .canceledOnTouchOutside(false);
-        mMaterialDialog = mBuilder.build();
+        final MaterialDialog mMaterialDialog = mBuilder.build();
         mMaterialDialog.show();
-        LinearLayout llTime = (LinearLayout) mMaterialDialog.findViewById(R.id.ll_time);
-        LinearLayout llPort = (LinearLayout) mMaterialDialog.findViewById(R.id.ll_port);
-        final EditText etRestartTime = (EditText) mMaterialDialog.findViewById(R.id.et_restart_time);
-        final EditText etPortNumber = (EditText) mMaterialDialog.findViewById(R.id.et_port_number);
-        Button btnCancelRestart = (Button) mMaterialDialog.findViewById(R.id.btn_cancel_restart);
-        Button btnRestartSystem = (Button) mMaterialDialog.findViewById(R.id.btn_restart_system);
+
+        LinearLayout llTime = view.findViewById(R.id.ll_time);
+        LinearLayout llPort = view.findViewById(R.id.ll_port);
+        final EditText etRestartTime = view.findViewById(R.id.et_restart_time);
+        final EditText etPortNumber = view.findViewById(R.id.et_port_number);
+        Button btnCancelRestart = view.findViewById(R.id.btn_cancel_restart);
+        Button btnRestartSystem = view.findViewById(R.id.btn_restart_system);
         modifyHintText("最大四位数", etRestartTime);
         modifyHintText("最长支持5位数字", etPortNumber);
         //设置最大长度
         etRestartTime.setFilters(new InputFilter[]{new InputFilter.LengthFilter(4)});
         etPortNumber.setFilters(new InputFilter[]{new InputFilter.LengthFilter(5)});
-        if (instructions.equals("重启")){
+        if (instructions.equals("重启")) {
             llTime.setVisibility(View.VISIBLE);
             llPort.setVisibility(View.GONE);
-        }else if (instructions.equals("固件")){
+        } else if (instructions.equals("固件")) {
             llTime.setVisibility(View.GONE);
             llPort.setVisibility(View.VISIBLE);
         }
         btnRestartSystem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (instructions.equals("重启")){
+                if (instructions.equals("重启")) {
                     String time = etRestartTime.getText().toString().trim();
                     if (TextUtils.isEmpty(time)) {
                         ToastUtils.show("重启时间不能为空");
@@ -89,9 +87,8 @@ public class AdvanceSetDialogUtils {
                     String command = CommandManager.getInstance().getCommand(CommandType.REBOOT_DEVICE, rebootDeviceEntity);
                     activity.sendCommonCommand(command);
                     ToastUtils.show("指令已发送，设备将在 " + time + "s 后重启");
-
                     KeyBordUtils.hideSoftKeyboard(etRestartTime);
-                }else if (instructions.equals("固件")){
+                } else if (instructions.equals("固件")) {
                     //升级固件
                     String port = etPortNumber.getText().toString().trim();
                     if (TextUtils.isEmpty(port)) {
@@ -102,29 +99,24 @@ public class AdvanceSetDialogUtils {
                         ToastUtils.show("端口号格式只能为数字");
                         return;
                     }
-                    String command = "##1201"+port+"\r\n";
+                    SettingRemoteUpgradeEntity settingRemoteUpgradeEntity = new SettingRemoteUpgradeEntity(1, Integer.parseInt(port));
+                    String command = CommandManager.getInstance().getCommand(CommandType.SETTING_REMOTE_UPGRADE, settingRemoteUpgradeEntity);
                     activity.sendCommonCommand(command);
-                    ToastUtils.show("指令已发送");
                     KeyBordUtils.hideSoftKeyboard(etPortNumber);
                 }
-
                 mMaterialDialog.dismiss();
-                mMaterialDialog = null;
-                mBuilder = null;
             }
         });
         btnCancelRestart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (instructions.equals("重启")){
+                if (instructions.equals("重启")) {
                     KeyBordUtils.hideSoftKeyboard(etRestartTime);
-                }else if (instructions.equals("固件")){
+                } else if (instructions.equals("固件")) {
                     swFirmwareUpgrade.setCheckedImmediatelyNoEvent(false);
                     KeyBordUtils.hideSoftKeyboard(etPortNumber);
                 }
                 mMaterialDialog.dismiss();
-                mMaterialDialog = null;
-                mBuilder = null;
             }
         });
     }
@@ -133,22 +125,24 @@ public class AdvanceSetDialogUtils {
     /**
      * 修改授权码
      */
-    public static void showModifyAuthorizationDialog(ConfigDASActivity activity) {
-        mBuilder = new MaterialDialog.Builder(activity);
-        mBuilder.customView(R.layout.dialog_modify_authorization, false)
+    public static void showModifyAuthorizationDialog(BaseDeviceConnectActivity activity) {
+        LayoutInflater inflater = LayoutInflater.from(activity);
+        View view = inflater.inflate(R.layout.dialog_modify_authorization, null);
+        MaterialDialog.Builder mBuilder = new MaterialDialog.Builder(activity);
+        mBuilder.customView(view, false)
                 .title("修改授权码")
                 .contentColor(Color.parseColor("#000000"))
                 .canceledOnTouchOutside(false);
-        mMaterialDialog = mBuilder.build();
+        final MaterialDialog mMaterialDialog = mBuilder.build();
         mMaterialDialog.show();
 
-        ImageView ivQuestion = (ImageView) mMaterialDialog.findViewById(R.id.iv_question);
-        final EditText etOriginAuthor = (EditText) mMaterialDialog.findViewById(R.id.et_origin_author);
-        final EditText etNewAuthor = (EditText) mMaterialDialog.findViewById(R.id.et_new_author);
-        final EditText etConfirmAuthor = (EditText) mMaterialDialog.findViewById(R.id.et_confirm_author);
-        final TextView tvPrompt = (TextView) mMaterialDialog.findViewById(R.id.tv_prompt);
-        Button btnCancel = (Button) mMaterialDialog.findViewById(R.id.btn_cancel);
-        Button btnConfirmModify = (Button) mMaterialDialog.findViewById(R.id.btn_confirm_modify);
+        ImageView ivQuestion = view.findViewById(R.id.iv_question);
+        final EditText etOriginAuthor = view.findViewById(R.id.et_origin_author);
+        final EditText etNewAuthor = view.findViewById(R.id.et_new_author);
+        final EditText etConfirmAuthor = view.findViewById(R.id.et_confirm_author);
+        final TextView tvPrompt = view.findViewById(R.id.tv_prompt);
+        Button btnCancel = view.findViewById(R.id.btn_cancel);
+        Button btnConfirmModify = view.findViewById(R.id.btn_confirm_modify);
         modifyHintText("请输入原授权码", etOriginAuthor);
         modifyHintText("请输入新的授权码", etNewAuthor);
         modifyHintText("请再次确认授权码", etConfirmAuthor);
@@ -180,6 +174,7 @@ public class AdvanceSetDialogUtils {
 
                 //TODO 调用修改授权码接口
                 ToastUtils.show("功能开发中...");
+                mMaterialDialog.dismiss();
             }
         });
         btnCancel.setOnClickListener(new View.OnClickListener() {
@@ -187,8 +182,6 @@ public class AdvanceSetDialogUtils {
             public void onClick(View view) {
                 KeyBordUtils.hideSoftKeyboard(etOriginAuthor);
                 mMaterialDialog.dismiss();
-                mMaterialDialog = null;
-                mBuilder = null;
             }
         });
     }
@@ -197,36 +190,30 @@ public class AdvanceSetDialogUtils {
     /**
      * 恢复出厂设置
      */
-    public static void showRestoreDataDialog(ConfigDASActivity activity) {
-        mBuilder = new MaterialDialog.Builder(activity);
+    public static void showRestoreDataDialog(BaseDeviceConnectActivity activity) {
+        MaterialDialog.Builder mBuilder = new MaterialDialog.Builder(activity);
         mBuilder.title("温馨提示：")
                 .content("产品将恢复出厂设置状态，请确认是否继续？")
                 .contentColor(Color.parseColor("#000000"))
                 .canceledOnTouchOutside(false)
                 .positiveText("确定")
-                .negativeText("取消");
-        mMaterialDialog = mBuilder.build();
+                .negativeText("取消")
+                .negativeColor(Color.parseColor("#807B7B"))
+                .onPositive(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        dialog.dismiss();
+                        String baseInfoCommand = CommandManager.getInstance().getCommand(CommandType.RESTORE_FACTORY_SETTING, null);
+                        activity.sendCommonCommand(baseInfoCommand);
+                    }
+                }).onNegative(new MaterialDialog.SingleButtonCallback() {
+            @Override
+            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                dialog.dismiss();
+            }
+        });
+        MaterialDialog mMaterialDialog = mBuilder.build();
         mMaterialDialog.show();
-        mBuilder.onPositive(new MaterialDialog.SingleButtonCallback() {
-            @Override
-            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                String baseInfoCommand = CommandManager.getInstance().getCommand(CommandType.RESTORE_FACTORY_SETTING, null);
-                activity.sendCommonCommand(baseInfoCommand);
-                ToastUtils.show("指令已发送，设备即将恢复出厂设置");
-
-                mMaterialDialog.dismiss();
-                mMaterialDialog = null;
-                mBuilder = null;
-            }
-        });
-        mBuilder.onNegative(new MaterialDialog.SingleButtonCallback() {
-            @Override
-            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                mMaterialDialog.dismiss();
-                mMaterialDialog = null;
-                mBuilder = null;
-            }
-        });
     }
 
 

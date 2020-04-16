@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:background="@color/white"
-        android:orientation="vertical">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical">
+
+    <include layout="@layout/activity_custom_toolbar" />
 
     <LinearLayout
         android:id="@+id/ll_reset_data"
@@ -89,31 +91,31 @@
     </RelativeLayout>
 
     <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:layout_marginTop="1dp"
-            android:background="@color/bg_main_light_white">
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginTop="1dp"
+        android:background="@color/bg_main_light_white">
 
         <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_marginLeft="25dp"
-                android:gravity="center"
-                android:text="固件升级" />
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="25dp"
+            android:gravity="center"
+            android:text="固件升级" />
 
         <com.kyleduo.switchbutton.SwitchButton
-                android:id="@+id/sw_firmware_upgrade"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:layout_marginRight="20dp"
-                app:kswAnimationDuration="100"
-                app:kswBackDrawable="@drawable/sl_switchbutton_back"
-                app:kswThumbDrawable="@drawable/shape_switchbutton_thumb"
-                app:kswThumbHeight="22dp"
-                app:kswThumbRangeRatio="2"
-                app:kswThumbWidth="22dp" />
+            android:id="@+id/sw_firmware_upgrade"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="20dp"
+            app:kswAnimationDuration="100"
+            app:kswBackDrawable="@drawable/sl_switchbutton_back"
+            app:kswThumbDrawable="@drawable/shape_switchbutton_thumb"
+            app:kswThumbHeight="22dp"
+            app:kswThumbRangeRatio="2"
+            app:kswThumbWidth="22dp" />
     </RelativeLayout>
 
     <RelativeLayout

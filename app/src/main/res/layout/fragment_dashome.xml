@@ -17,33 +17,22 @@
             android:id="@+id/head_info_layout"
             layout="@layout/device_config_head_info" />
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="0.5dp"
-            android:background="#a6a6a6" />
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp" />
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:background="@color/bg_main_light_white"
             android:gravity="center_vertical"
-            android:orientation="horizontal">
+            android:paddingStart="16dp">
 
             <ImageView
                 android:layout_width="20dp"
                 android:layout_height="25dp"
-                android:layout_marginStart="16dp"
-                android:src="@drawable/icon_state_setting" />
+                android:src="@drawable/ic_device_state_set" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="5dp"
-                android:gravity="center_vertical"
                 android:text="状态设置"
                 android:textColor="@color/gray_807B7B"
                 android:textSize="@dimen/text_size_18" />
@@ -66,14 +55,6 @@
             android:id="@+id/device_enable_state_layout"
             layout="@layout/device_config_switchview_item" />
 
-<!--        <View-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="1dp" />-->
-
-<!--        <include-->
-<!--            android:id="@+id/device_lock_state_layout"-->
-<!--            layout="@layout/device_config_switchview_item" />-->
-
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp" />
@@ -82,58 +63,6 @@
             android:id="@+id/debug_model_layout"
             layout="@layout/device_config_switchview_item3" />
 
-<!--        <View-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="1dp" />-->
-
-<!--        <include-->
-<!--            android:id="@+id/sim_A_layout"-->
-<!--            layout="@layout/device_config_switchview_item" />-->
-
-<!--        <View-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="1dp" />-->
-
-<!--        <include-->
-<!--            android:id="@+id/sim_B_layout"-->
-<!--            layout="@layout/device_config_switchview_item" />-->
-        <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp" />
-
-        <RelativeLayout
-                android:id="@+id/rl_general_setting"
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:background="@color/bg_main_light_white">
-
-            <ImageView
-                    android:id="@+id/iv_general_setting"
-                    android:layout_width="25dp"
-                    android:layout_height="25dp"
-                    android:layout_centerVertical="true"
-                    android:layout_marginStart="16dp"
-                    android:src="@drawable/ic_settings" />
-
-            <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_marginStart="5dp"
-                    android:layout_toRightOf="@id/iv_general_setting"
-                    android:text="采集器设置"
-                    android:textColor="@color/gray_807B7B"
-                    android:textSize="@dimen/text_size_18" />
-
-            <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true"
-                    android:layout_centerVertical="true"
-                    android:layout_marginEnd="20dp"
-                    android:src="@drawable/icon_right" />
-
-        </RelativeLayout>
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp" />
@@ -143,19 +72,17 @@
             android:layout_height="40dp"
             android:background="@color/bg_main_light_white"
             android:gravity="center_vertical"
-            android:orientation="horizontal">
+            android:paddingStart="16dp">
 
             <ImageView
                 android:layout_width="25dp"
                 android:layout_height="25dp"
-                android:layout_marginStart="16dp"
-                android:src="@drawable/icon_serson_setting" />
+                android:src="@drawable/ic_sensor_config" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="5dp"
-                android:gravity="center_vertical"
                 android:text="传感器设置"
                 android:textColor="@color/gray_807B7B"
                 android:textSize="@dimen/text_size_18" />
@@ -180,15 +107,15 @@
 
             <View
                 android:layout_width="match_parent"
-                android:background="@color/white"
-                android:layout_height="1dp" />
+                android:layout_height="1dp"
+                android:background="@color/white" />
 
             <include
                 android:id="@+id/llty_rain"
+                layout="@layout/device_config_switchview_item3"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
-                android:layout_marginStart="20dp"
-                layout="@layout/device_config_switchview_item3" />
+                android:layout_marginStart="20dp" />
 
             <LinearLayout
                 android:id="@+id/llty_break_alarm"
@@ -244,20 +171,20 @@
 
         </LinearLayout>
 
-<!--        <View-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="1dp" />-->
+        <!--        <View-->
+        <!--            android:layout_width="match_parent"-->
+        <!--            android:layout_height="1dp" />-->
 
-<!--        <include-->
-<!--            android:id="@+id/osmometer_config_layout"-->
-<!--            layout="@layout/device_config_switchview_item4" />-->
+        <!--        <include-->
+        <!--            android:id="@+id/osmometer_config_layout"-->
+        <!--            layout="@layout/device_config_switchview_item4" />-->
 
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp" />
 
         <include
-            android:id="@+id/sensor_setting_layout"
+            android:id="@+id/general_sensor_param_config_layout"
             layout="@layout/device_config_choose_item" />
 
         <View
@@ -265,27 +192,26 @@
             android:layout_height="1dp" />
 
         <RelativeLayout
-            android:id="@+id/rl_mqtt_setting"
+            android:id="@+id/rl_mqtt_config"
             android:layout_width="match_parent"
             android:layout_height="40dp"
-            android:background="@color/bg_main_light_white">
+            android:background="@color/bg_main_light_white"
+            android:paddingStart="16dp">
 
             <ImageView
-                android:id="@+id/iv_mqtt_setting"
+                android:id="@+id/iv_mqtt_config"
                 android:layout_width="25dp"
                 android:layout_height="25dp"
                 android:layout_centerVertical="true"
-                android:layout_marginStart="16dp"
-                android:src="@drawable/ic_settings"
-                android:tint="@color/font_main" />
+                android:src="@drawable/ic_data_center" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:layout_marginStart="5dp"
-                android:layout_toRightOf="@id/iv_mqtt_setting"
-                android:text="数据中心设置"
+                android:layout_toRightOf="@id/iv_mqtt_config"
+                android:text="数据中心"
                 android:textColor="@color/gray_807B7B"
                 android:textSize="@dimen/text_size_18" />
 
@@ -299,7 +225,81 @@
 
         </RelativeLayout>
 
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp" />
 
+        <RelativeLayout
+            android:id="@+id/rl_collector_control"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:background="@color/bg_main_light_white"
+            android:paddingStart="16dp">
+
+            <ImageView
+                android:id="@+id/iv_collector_control"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_centerVertical="true"
+                android:src="@drawable/ic_collector_control" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="5dp"
+                android:layout_toRightOf="@id/iv_collector_control"
+                android:text="采集控制"
+                android:textColor="@color/gray_807B7B"
+                android:textSize="@dimen/text_size_18" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="20dp"
+                android:src="@drawable/icon_right" />
+
+        </RelativeLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp" />
+
+        <RelativeLayout
+            android:id="@+id/rl_advanced_config"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:background="@color/bg_main_light_white"
+            android:paddingStart="16dp">
+
+            <ImageView
+                android:id="@+id/iv_advanced_config"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_centerVertical="true"
+                android:src="@drawable/ic_advanced_config" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="5dp"
+                android:layout_toRightOf="@id/iv_advanced_config"
+                android:text="高级设置"
+                android:textColor="@color/gray_807B7B"
+                android:textSize="@dimen/text_size_18" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="20dp"
+                android:src="@drawable/icon_right" />
+
+        </RelativeLayout>
 
     </LinearLayout>
 

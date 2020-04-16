@@ -10,7 +10,7 @@
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" /> <!-- 允许程序改变Wi-Fi连接状态 -->
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" /> <!-- 允许程序访问Wi-Fi网络状态信息 -->
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" /> <!-- 允许程序获取网络状态 -->
-    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" /><!-- 允许程序改变网络链接状态 -->
+    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" /> <!-- 允许程序改变网络链接状态 -->
     <uses-permission android:name="android.permission.ACCESS_LOCATION_EXTRA_COMMANDS" /> <!-- 允许应用程序访问额外的位置提供命令 -->
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" /> <!-- 允许程序设置内置sd卡的读权限 -->
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" /> <!-- 允许程序设置内置sd卡的写权限 -->
@@ -51,6 +51,7 @@
         android:theme="@style/AppTheme"
         tools:ignore="LockedOrientationActivity"
         tools:targetApi="p">
+
 
         <meta-data
             android:name="com.amap.api.v2.apikey"
@@ -235,12 +236,15 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustResize" />
 
+        <activity android:name=".ui.activity.device.DeviceAdvanceConfigActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden|adjustResize"/>
+
         <activity
             android:name=".ui.activity.BluetoothDeviceListActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize" />
+            android:configChanges="keyboardHidden|orientation|screenSize" /> <!-- 蓝牙设备列表测试页面 -->
 
-
-        <!-- 蓝牙设备列表测试页面 -->
         <activity
             android:name=".ui.activity.TestActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"

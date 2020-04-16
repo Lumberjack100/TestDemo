@@ -1,0 +1,286 @@
+package com.shmedo.mcloudapp.ui.activity.device;
+
+import android.content.Context;
+import android.content.Intent;
+import android.graphics.Color;
+import android.os.Bundle;
+import android.text.TextUtils;
+import android.view.View;
+import android.widget.Button;
+import android.widget.CompoundButton;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import com.afollestad.materialdialogs.MaterialDialog;
+import com.hjq.toast.ToastUtils;
+import com.kyleduo.switchbutton.SwitchButton;
+import com.shmedo.core.cmd.CommandManager;
+import com.shmedo.core.cmd.CommandResult;
+import com.shmedo.core.cmd.entity.SettingRemoteUpgradeEntity;
+import com.shmedo.core.enums.CommandType;
+import com.shmedo.core.utils.StringUtil;
+import com.shmedo.mcloudapp.MCloudApp;
+import com.shmedo.mcloudapp.R;
+import com.shmedo.mcloudapp.entity.SyncPositionBean;
+import com.shmedo.mcloudapp.ui.activity.device.senior.InstructionDebugActivity;
+import com.shmedo.mcloudapp.ui.activity.device.senior.ProductRegistrationActivity;
+import com.shmedo.mcloudapp.util.AdvanceSetDialogUtils;
+import com.shmedo.mcloudapp.util.KeyBordUtils;
+import com.shmedo.mcloudapp.util.LocationUtils;
+import com.shmedo.mcloudapp.util.LogToSDUtil;
+
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
+import java.util.Locale;
+
+import butterknife.BindView;
+import butterknife.OnClick;
+import timber.log.Timber;
+
+public class DeviceAdvanceConfigActivity extends BaseDeviceConnectActivity {
+    @BindView(R.id.tv_title)
+    TextView mToolbarTitle;
+
+    @BindView(R.id.sw_firmware_upgrade)
+    SwitchButton mSbFirmwareUpgrade;
+
+    public static void startActivity(Context context) {
+        Intent intent = new Intent(context, DeviceAdvanceConfigActivity.class);
+        context.startActivity(intent);
+    }
+
+    @Override
+    protected int initContentView() {
+        return R.layout.activity_device_advance_config;
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mToolbarTitle.setText("高级配置");
+        setSwitchViewListener();
+    }
+
+    /**
+     * switch按钮事件
+     */
+    private void setSwitchViewListener() {
+        mSbFirmwareUpgrade.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, final boolean isChecked) {
+                if (!MCloudApp.isIsBluetoothDeviceConnected()) {
+                    ToastUtils.show(getString(R.string.param_config_bluetooth_disconnect_warn));
+                    mSbFirmwareUpgrade.setCheckedImmediatelyNoEvent(!isChecked);
+                    return;
+                }
+                if (isChecked) {
+                    AdvanceSetDialogUtils.showReStartDialog(DeviceAdvanceConfigActivity.this, "固件升级", "固件", mSbFirmwareUpgrade);
+                } else {
+                    SettingRemoteUpgradeEntity settingRemoteUpgradeEntity = new SettingRemoteUpgradeEntity(0, 0);
+                    String command = CommandManager.getInstance().getCommand(CommandType.SETTING_REMOTE_UPGRADE, settingRemoteUpgradeEntity);
+                    sendCommonCommand(command);
+                    ToastUtils.show("关闭固件升级");
+                }
+            }
+        });
+    }
+
+
+    @OnClick({R.id.back, R.id.ll_reset_data, R.id.ll_restart_system, R.id.rl_modify_authorization,
+            R.id.rl_product_register, R.id.rl_instruction_debug, R.id.rl_log_print, R.id.rl_sync_position})
+    public void onViewClicked(View view) {
+        switch (view.getId()) {
+            case R.id.back:
+                onBackPressed();
+                break;
+
+            case R.id.ll_reset_data://恢复出厂设置
+                if (checkIsBluetoothConnected()) {
+                    AdvanceSetDialogUtils.showRestoreDataDialog(this);
+                }
+                break;
+
+            case R.id.ll_restart_system://重启系统
+                if (checkIsBluetoothConnected()) {
+                    AdvanceSetDialogUtils.showReStartDialog(this, "重启系统", "重启", null);
+                }
+                break;
+
+            case R.id.rl_modify_authorization: //修改授权码
+                if (checkIsBluetoothConnected()) {
+                    AdvanceSetDialogUtils.showModifyAuthorizationDialog(this);
+                }
+                break;
+
+            case R.id.rl_product_register://产品注册
+                if (checkIsBluetoothConnected()) {
+                    ProductRegistrationActivity.startActivity(DeviceAdvanceConfigActivity.this);
+                }
+                break;
+
+            case R.id.rl_instruction_debug://指令交互调试模式
+                if (checkIsBluetoothConnected()) {
+                    InstructionDebugActivity.startActivity(DeviceAdvanceConfigActivity.this);
+                }
+                break;
+
+            case R.id.rl_log_print://日志输出
+                if (checkIsBluetoothConnected()) {
+                    LogToSDUtil.requestPermissionForSaveLog(this, SN);
+                }
+                break;
+
+            case R.id.rl_sync_position: //同步安装位置
+                if (checkIsBluetoothConnected()) {
+                    showSyncPositionDialog(DeviceAdvanceConfigActivity.this);
+                }
+                break;
+        }
+    }
+
+    private MaterialDialog.Builder mBuilder;
+    private MaterialDialog mMaterialDialog;
+    private String address;
+    private String latLong;
+    private EditText etPositionInfo;
+    private TextView tvLatLong;
+    private void showSyncPositionDialog(BaseDeviceConnectActivity activity) {
+        mBuilder = new MaterialDialog.Builder(activity);
+        mBuilder.customView(R.layout.dialog_sync_position, false)
+                .title("同步安装位置")
+                .contentColor(Color.parseColor("#000000"))
+                .canceledOnTouchOutside(false);
+        mMaterialDialog = mBuilder.build();
+        mMaterialDialog.show();
+
+        etPositionInfo = (EditText) mMaterialDialog.findViewById(R.id.et_position_info);
+        ImageView imgPosition = (ImageView) mMaterialDialog.findViewById(R.id.img_position);
+        tvLatLong = (TextView) mMaterialDialog.findViewById(R.id.lat_long);
+        Button btnCancelRestart = (Button) mMaterialDialog.findViewById(R.id.btn_cancel_restart);
+        Button btnRestartSystem = (Button) mMaterialDialog.findViewById(R.id.btn_restart_system);
+
+        imgPosition.setOnClickListener(view -> {
+            LocationUtils.getInstance().getPositionPermission(activity);
+        });
+
+        btnRestartSystem.setOnClickListener(view -> {
+            String result = etPositionInfo.getText().toString().trim();
+            if (!TextUtils.isEmpty(result)) {
+                try {
+                    String command = "##9161" + result + "\r\n";
+                    activity.sendCommonCommandImmediately(command);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            } else {
+                ToastUtils.show("位置信息不能为空");
+                return;
+            }
+            ToastUtils.show("位置信息同步成功");
+            KeyBordUtils.hideSoftKeyboard(etPositionInfo);
+            mMaterialDialog.dismiss();
+            mMaterialDialog = null;
+            mBuilder = null;
+            LocationUtils.getInstance().stopLocalService();
+        });
+        btnCancelRestart.setOnClickListener(view -> {
+            KeyBordUtils.hideSoftKeyboard(etPositionInfo);
+            mMaterialDialog.dismiss();
+            mMaterialDialog = null;
+            mBuilder = null;
+            LocationUtils.getInstance().stopLocalService();
+        });
+    }
+
+
+    /**
+     * 设置显示数据
+     */
+    private void setResultData(String cmdStr) {
+        CommandType cmdType = StringUtil.extractCommandType(cmdStr);
+        if (cmdType == CommandType.REBOOT_DEVICE) {
+            if (cmdStr.endsWith(CommandResult.ERROR_END)) {
+                ToastUtils.show("发送重启指令错误!");
+                stopProgressRunnable();
+                return;
+            }
+            stopProgressRunnable();
+            hander.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    finish();
+                }
+            }, 3000);
+            return;
+        }
+
+        if (cmdType == CommandType.SETTING_REMOTE_UPGRADE) {
+            if (cmdStr.endsWith(CommandResult.ERROR_END)) {
+                ToastUtils.show("发送远程升级指令错误!");
+                stopProgressRunnable();
+                return;
+            }
+            stopProgressRunnable();
+            ToastUtils.show("远程升级指令已发送");
+            hander.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    finish();
+                }
+            }, 3000);
+            return;
+        }
+        if (cmdType == CommandType.RESTORE_FACTORY_SETTING) {
+            if (cmdStr.endsWith(CommandResult.ERROR_END)) {
+                ToastUtils.show("发送恢复出厂设置指令错误!");
+                stopProgressRunnable();
+                return;
+            }
+            stopProgressRunnable();
+            ToastUtils.show("指令已发送，设备即将恢复出厂设置");
+            hander.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    finish();
+                }
+            }, 3000);
+            return;
+        }
+    }
+
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void getConfig(String messageEvent) {
+        if (!TextUtils.isEmpty(messageEvent) && messageEvent.startsWith("$$")) {
+            setResultData(messageEvent);
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onMessageEvent(SyncPositionBean event) {
+        Timber.i("==位置来了==" + event.toString());
+        if (event.getType().equals("location")) {
+            address = event.getAddress();
+            latLong = String.format(Locale.getDefault(), "%.6f", event.getLongitude()) + "," + String.format(Locale.getDefault(), "%.6f", event.getLatitude());
+            etPositionInfo.setText(latLong);
+            tvLatLong.setText(address);
+            LocationUtils.getInstance().stopLocalService();
+        }
+    }
+
+    private boolean checkIsBluetoothConnected() {
+        if (!MCloudApp.isIsBluetoothDeviceConnected()) {
+            ToastUtils.show(getString(R.string.param_config_bluetooth_disconnect_warn));
+            return false;
+        }
+
+        return true;
+    }
+
+    @Override
+    public void onBackPressed() {
+        finish();
+    }
+}

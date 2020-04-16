@@ -15,7 +15,7 @@ import com.hjq.toast.ToastUtils;
 import com.shmedo.mcloudapp.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.entity.SyncPositionBean;
-import com.shmedo.mcloudapp.ui.activity.ConfigDASActivity;
+import com.shmedo.mcloudapp.ui.activity.device.BaseDeviceConnectActivity;
 import com.shmedo.mcloudapp.util.permission.RuntimeRationale;
 import com.yanzhenjie.permission.Action;
 import com.yanzhenjie.permission.AndPermission;
@@ -60,7 +60,7 @@ public class LocationUtils {
     }
 
 
-    public void getPositionPermission(ConfigDASActivity activity){
+    public void getPositionPermission(BaseDeviceConnectActivity activity){
         if (Build.VERSION.SDK_INT > 28 && MCloudApp.getContext().getApplicationInfo().targetSdkVersion > 28) {
             locationNeedPermissions = new String[]{
                     Manifest.permission.ACCESS_COARSE_LOCATION,
@@ -157,7 +157,7 @@ public class LocationUtils {
     }
 
 
-    public void showSettingDialog(ConfigDASActivity context, final List<String> permissions) {
+    public void showSettingDialog(BaseDeviceConnectActivity context, final List<String> permissions) {
         List<String> permissionNames = Permission.transformText(context, permissions);
         @SuppressLint({"StringFormatInvalid", "LocalSuppress"})
         String message = context.getString(R.string.message_permission_always_failed, TextUtils.join("\n", permissionNames));

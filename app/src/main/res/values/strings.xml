@@ -28,8 +28,10 @@
     <string name="finish_activity_disconnect_bluetooth_device">确定要退出该页面，并断开蓝牙连接吗？</string>
     <string name="disconnect_bluetooth_device_save_param_warn">您还没有保存设备的配置信息，是否保存？</string>
     <string name="device_enable_state_close_warn">关闭系统激活状态，将导致设备自动关机进入休眠状态。请确认是否关闭【激活状态】？</string>
-
-
+    <string name="device_configuration">设备配置</string>
+    <string name="query_data">查询数据</string>
+    <string name="device_state_info">设备详情</string>
+    <string name="advanced_configuration">高级配置</string>
     <!-- 采集器、传感器参数说明-->
     <string name="collector_address">
         采集器地址：当同一条RS485总线下，接入多个采集器时，区分每个采集器，采集器(DAS)可识别区分，可填入1-255任意数字。
