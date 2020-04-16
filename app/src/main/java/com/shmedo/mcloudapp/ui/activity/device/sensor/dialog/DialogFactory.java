@@ -2,7 +2,7 @@ package com.shmedo.mcloudapp.ui.activity.device.sensor.dialog;
 
 import android.content.Context;
 
-import com.shmedo.mcloudapp.inter.MyOnClickListener;
+import com.shmedo.mcloudapp.interfaces.MyOnClickListener;
 
 /**
  * 项目名：  mCloudAPP

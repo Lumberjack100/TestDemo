@@ -9,7 +9,7 @@ import android.view.WindowManager;
 import android.widget.*;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.entity.ble.collector.MqttConfigInfoSub;
-import com.shmedo.mcloudapp.inter.MQttOnClickListener;
+import com.shmedo.mcloudapp.interfaces.MQttOnClickListener;
 import com.shmedo.mcloudapp.views.ClearEditText;
 import timber.log.Timber;
 

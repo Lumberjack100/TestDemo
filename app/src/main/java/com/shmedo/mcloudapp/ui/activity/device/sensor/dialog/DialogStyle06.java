@@ -14,7 +14,7 @@ import com.shmedo.core.model.SensorUltrasonicLevelInfo;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.entity.ble.collector.CollectorSensorParamsInfoSub;
 import com.shmedo.mcloudapp.entity.event.SensorDataEvent;
-import com.shmedo.mcloudapp.inter.MyOnClickListener;
+import com.shmedo.mcloudapp.interfaces.MyOnClickListener;
 import com.shmedo.mcloudapp.util.GsonFactory;
 import com.shmedo.mcloudapp.util.StringUtil;
 

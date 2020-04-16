@@ -20,7 +20,7 @@ import com.hjq.toast.ToastUtils;
 import com.shmedo.core.model.QueryOsmometerParameterInfo;
 import com.shmedo.mcloudapp.MCloudApp;
 import com.shmedo.mcloudapp.R;
-import com.shmedo.mcloudapp.inter.Extras;
+import com.shmedo.mcloudapp.interfaces.Extras;
 import com.shmedo.mcloudapp.model.common.CommonVariable;
 import com.shmedo.mcloudapp.util.AdvanceSetDialogUtils;
 import com.shmedo.mcloudapp.util.UserConfig;

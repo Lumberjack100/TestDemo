@@ -27,7 +27,7 @@ import com.shmedo.core.model.BaseConfigInfo;
 import com.shmedo.mcloudapp.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.entity.ble.collector.MqttConfigInfoSub;
-import com.shmedo.mcloudapp.inter.MQttOnClickListener;
+import com.shmedo.mcloudapp.interfaces.MQttOnClickListener;
 import com.shmedo.mcloudapp.ui.activity.device.sensor.dialog.MqttDialogFactory;
 import com.shmedo.mcloudapp.util.StringUtil;
 import com.shmedo.mcloudapp.views.ClearEditText;

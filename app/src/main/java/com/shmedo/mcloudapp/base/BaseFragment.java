@@ -13,7 +13,7 @@ import androidx.fragment.app.Fragment;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.shmedo.mcloudapp.util.XPermissionUtils;
-import com.shmedo.mcloudapp.util.common.HandleBackInterface;
+import com.shmedo.mcloudapp.interfaces.HandleBackInterface;
 import com.shmedo.mcloudapp.util.common.HandleBackUtil;
 
 import butterknife.ButterKnife;

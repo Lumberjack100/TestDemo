@@ -1,7 +1,7 @@
 package com.shmedo.mcloudapp.ui.activity.device.sensor.dialog;
 
 import android.content.Context;
-import com.shmedo.mcloudapp.inter.MQttOnClickListener;
+import com.shmedo.mcloudapp.interfaces.MQttOnClickListener;
 
 /**
  *

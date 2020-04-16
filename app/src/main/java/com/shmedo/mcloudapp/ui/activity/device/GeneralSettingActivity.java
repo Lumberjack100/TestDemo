@@ -18,7 +18,7 @@ import com.hjq.toast.ToastUtils;
 import com.shmedo.core.model.CollectorConfigInfo;
 import com.shmedo.mcloudapp.MCloudApp;
 import com.shmedo.mcloudapp.R;
-import com.shmedo.mcloudapp.inter.Extras;
+import com.shmedo.mcloudapp.interfaces.Extras;
 import com.shmedo.mcloudapp.util.StringUtil;
 
 import org.greenrobot.eventbus.Subscribe;

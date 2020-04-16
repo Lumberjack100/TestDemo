@@ -19,7 +19,7 @@ import com.shmedo.core.model.SensorSoilMoistureInfo;
 import com.shmedo.core.model.SensorWireShiftInfo;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.entity.ble.collector.CollectorSensorParamsInfoSub;
-import com.shmedo.mcloudapp.inter.MyOnClickListener;
+import com.shmedo.mcloudapp.interfaces.MyOnClickListener;
 import com.shmedo.mcloudapp.util.StringUtil;
 import com.shmedo.mcloudapp.util.UserConfig;
 

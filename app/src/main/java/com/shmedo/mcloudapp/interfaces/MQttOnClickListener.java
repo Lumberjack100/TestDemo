@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.inter;
+package com.shmedo.mcloudapp.interfaces;
 
 import android.view.View;
 import com.shmedo.mcloudapp.entity.ble.collector.MqttConfigInfoSub;

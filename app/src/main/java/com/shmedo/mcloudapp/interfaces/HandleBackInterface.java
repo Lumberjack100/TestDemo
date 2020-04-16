@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.util.common;
+package com.shmedo.mcloudapp.interfaces;
 
 /**
  * 项目名：  mCloudapp
