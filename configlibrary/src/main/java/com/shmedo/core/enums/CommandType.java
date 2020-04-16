@@ -266,8 +266,7 @@ public enum CommandType {
     /**
      *
      */
-    MQTT_SET_LINK_COMMUN_PROTOCOL(""),
-    ;
+    MQTT_SET_LINK_COMMUN_PROTOCOL("");
 
     private String commandCode;
 

@@ -18,7 +18,6 @@ import com.shmedo.mcloudapp.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.interfaces.Extras;
 import com.shmedo.mcloudapp.ui.activity.device.BaseDeviceConnectActivity;
-import com.shmedo.mcloudapp.ui.fragment.AdvanceSetFragment;
 import com.shmedo.mcloudapp.ui.fragment.DASHomeFragment;
 import com.shmedo.mcloudapp.ui.fragment.DeviceDetailsFragment;
 import com.shmedo.mcloudapp.ui.fragment.QueryDeviceDataFragment;
@@ -39,7 +38,6 @@ public class ConfigDASActivity extends BaseDeviceConnectActivity {
     private DASHomeFragment DASHomeFragment;
     private QueryDeviceDataFragment queryDataFragment;        //查询数据
     private DeviceDetailsFragment deviceDetailsFragment;//设备详情
-    private AdvanceSetFragment advanceSetFragment;      //高级设置
     private Fragment currentFragment;
 
     private boolean isFirstCall = true;
@@ -87,6 +85,7 @@ public class ConfigDASActivity extends BaseDeviceConnectActivity {
 
     private void initView(Bundle savedInstanceState) {
         mTvSave.setVisibility(View.VISIBLE);
+        bottomNavigationView.getMenu().getItem(3).setVisible(false);//隐藏底部导航菜单 '高级配置' 按钮
 
         if (savedInstanceState != null) {  // “内存重启”时调用
             String curTag = savedInstanceState.getString("CurrentFragment");
@@ -94,7 +93,6 @@ public class ConfigDASActivity extends BaseDeviceConnectActivity {
             DASHomeFragment = (DASHomeFragment) getSupportFragmentManager().findFragmentByTag(DASHomeFragment.class.getName());
             queryDataFragment = (QueryDeviceDataFragment) getSupportFragmentManager().findFragmentByTag(QueryDeviceDataFragment.class.getName());
             deviceDetailsFragment = (DeviceDetailsFragment) getSupportFragmentManager().findFragmentByTag(DeviceDetailsFragment.class.getName());
-            advanceSetFragment = (AdvanceSetFragment) getSupportFragmentManager().findFragmentByTag(AdvanceSetFragment.class.getName());
 
             if(DASHomeFragment==null)
                 DASHomeFragment = new DASHomeFragment();
@@ -105,23 +103,17 @@ public class ConfigDASActivity extends BaseDeviceConnectActivity {
             if(deviceDetailsFragment==null)
                 deviceDetailsFragment = new DeviceDetailsFragment();
 
-            if(advanceSetFragment==null)
-                advanceSetFragment = new AdvanceSetFragment();
-
             // 解决重叠问题
             getSupportFragmentManager().beginTransaction()
                     .hide(DASHomeFragment)
                     .hide(queryDataFragment)
                     .hide(deviceDetailsFragment)
-                    .hide(advanceSetFragment)
                     .show(currentFragment)
                     .commit();
         } else {
             DASHomeFragment = new DASHomeFragment();
             queryDataFragment = new QueryDeviceDataFragment();
             deviceDetailsFragment = new DeviceDetailsFragment();
-            advanceSetFragment = new AdvanceSetFragment();
-
             switchFrgment(0);
         }
 
@@ -207,9 +199,6 @@ public class ConfigDASActivity extends BaseDeviceConnectActivity {
                 break;
             case 2:
                 showFragment(deviceDetailsFragment);
-                break;
-            case 3:
-                showFragment(advanceSetFragment);
                 break;
         }
     }

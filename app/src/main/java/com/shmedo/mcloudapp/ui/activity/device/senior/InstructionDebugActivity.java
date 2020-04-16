@@ -6,26 +6,28 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Bundle;
-import androidx.annotation.Nullable;
-
 import android.view.View;
 import android.widget.Button;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
+
+import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
+
 import com.hjq.toast.ToastUtils;
+import com.shmedo.core.cmd.Command;
+import com.shmedo.core.cmd.CommandManager;
+import com.shmedo.core.cmd.entity.LocalTimeEntity;
+import com.shmedo.core.enums.CommandType;
 import com.shmedo.mcloudapp.MCloudApp;
 import com.shmedo.mcloudapp.R;
-import com.shmedo.mcloudapp.bluetooth.MdBluetoothManager;
 import com.shmedo.mcloudapp.ui.activity.device.BaseDeviceConnectActivity;
 import com.shmedo.mcloudapp.util.StringUtil;
 import com.shmedo.mcloudapp.util.TimeUtil;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
-
-import java.util.UUID;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -42,6 +44,9 @@ import timber.log.Timber;
  * 描述：    指令交互调试模式
  */
 public class InstructionDebugActivity extends BaseDeviceConnectActivity {
+    private static final int ASCII_MODE = 0;
+
+    private static final int HEX_MODE = 1;
 
     @BindView(R.id.toolbar_title)
     TextView mToolbarTitle;
@@ -73,13 +78,10 @@ public class InstructionDebugActivity extends BaseDeviceConnectActivity {
     @BindView(R.id.chat_view)
     ChatView mChatView;
 
-    private MdBluetoothManager mdBluetoothManager;
-
-
     //0 ASCII，1 HEX
-    public static int send_model = 0;
+    public static int send_model = ASCII_MODE;
 
-    public static int receive_model = 0;
+    public static int receive_model = ASCII_MODE;
 
     final String myName = "发送";
 
@@ -109,7 +111,6 @@ public class InstructionDebugActivity extends BaseDeviceConnectActivity {
 
     private void initView() {
         mToolbarTitle.setText("指令交互调试模式");
-        mdBluetoothManager = MdBluetoothManager.getInstance();
 
         mSetSysTimeBT.setEnabled(MCloudApp.isIsBluetoothDeviceConnected());
         mGetDataBt.setEnabled(MCloudApp.isIsBluetoothDeviceConnected());
@@ -143,8 +144,14 @@ public class InstructionDebugActivity extends BaseDeviceConnectActivity {
                     return;
                 }
 
-                sendMessage(mChatView.getInputText().trim());
-                sendCommand(mChatView.getInputText().trim() + "\r\n");
+                String command = mChatView.getInputText().trim() + "\r\n";
+                if (!command.startsWith(Command.COMMAND_HEADER)) {
+                    ToastUtils.show("指令格式不正确!");
+                    return;
+                }
+                sendCommonCommandImmediately(command);
+                sendMessage(command);
+                Timber.d("发送指令===%s", command);
                 //Reset edit text
                 mChatView.setInputText("");
             }
@@ -157,13 +164,13 @@ public class InstructionDebugActivity extends BaseDeviceConnectActivity {
                     case R.id.send_ascii_id:
                         mSendAsciiId.setChecked(true);
                         mSendHexId.setChecked(false);
-                        send_model = 0;
+                        send_model = ASCII_MODE;
                         break;
 
                     case R.id.send_hex_id:
                         mSendAsciiId.setChecked(false);
                         mSendHexId.setChecked(true);
-                        send_model = 1;
+                        send_model = HEX_MODE;
                         break;
                 }
             }
@@ -175,13 +182,13 @@ public class InstructionDebugActivity extends BaseDeviceConnectActivity {
                     case R.id.receive_ascii_id:
                         mReceiveAsciiId.setChecked(true);
                         mReceiveHexId.setChecked(false);
-                        receive_model = 0;
+                        receive_model = ASCII_MODE;
                         break;
 
                     case R.id.receive_hex_id:
                         mReceiveAsciiId.setChecked(false);
                         mReceiveHexId.setChecked(true);
-                        receive_model = 1;
+                        receive_model = HEX_MODE;
                         break;
                 }
             }
@@ -189,10 +196,10 @@ public class InstructionDebugActivity extends BaseDeviceConnectActivity {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onMessageEvent(String msg) {
-        Timber.i("onMessageEvent(), current msg is " + msg);
+    public void getConfig(String msg) {
+        Timber.i("received msg is " + msg);
         //Receive message
-        if (receive_model == 1) {
+        if (receive_model == HEX_MODE) {
             msg = StringUtil.convertStringToHex(msg);
         }
         final Bitmap yourIcon = BitmapFactory.decodeResource(getResources(), R.drawable.icon_das);
@@ -230,8 +237,11 @@ public class InstructionDebugActivity extends BaseDeviceConnectActivity {
         }
 
         String sysTime = getSysTime();
-        sendMessage("##010" + sysTime);
-        sendCommand("##010" + sysTime + "\r\n");
+        LocalTimeEntity localTimeEntity = new LocalTimeEntity(sysTime);
+        String command = CommandManager.getInstance().getCommand(CommandType.LOCAL_TIME, localTimeEntity);
+        sendCommonCommandImmediately(command);
+        sendMessage(command);
+        Timber.d("发送指令===%s", command);
         //Reset edit text
         mChatView.setInputText("");
     }
@@ -245,8 +255,10 @@ public class InstructionDebugActivity extends BaseDeviceConnectActivity {
             return;
         }
 
-        sendMessage("##110");
-        sendCommand("##110\r\n");
+        String command = CommandManager.getInstance().getCommand(CommandType.INSTANT_COLLEACTOR, null);
+        sendCommonCommandImmediately(command);
+        sendMessage(command);
+        Timber.d("发送指令===%s", command);
         //Reset edit text
         mChatView.setInputText("");
     }
@@ -259,23 +271,13 @@ public class InstructionDebugActivity extends BaseDeviceConnectActivity {
                 .setRightMessage(true)
                 .build();
 
-        if (send_model == 0) {
+        if (send_model == ASCII_MODE) {
             message.setMessageText(messageText);
         } else {
             message.setMessageText(StringUtil.convertStringToHex(messageText));
         }
         //Set to chat view
         mChatView.send(message);
-    }
-
-
-    private void sendCommand(String cmdStr) {
-        com.shmedo.mcloudapp.bluetooth.Message msg =
-                new com.shmedo.mcloudapp.bluetooth.Message(UUID.randomUUID().toString(), cmdStr, true);
-        if (mdBluetoothManager != null) {
-            mdBluetoothManager.writeMessage(msg);
-            Timber.d("发送指令===" + cmdStr);
-        }
     }
 
 
