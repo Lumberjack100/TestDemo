@@ -6,10 +6,9 @@ buildscript {
     repositories {
         google()
         jcenter()
-        mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.5.1'
+        classpath 'com.android.tools.build:gradle:3.6.2'
         classpath 'org.greenrobot:greendao-gradle-plugin:3.2.2'
         classpath 'com.jakewharton:butterknife-gradle-plugin:10.2.0'
 
@@ -23,7 +22,6 @@ allprojects {
         google()
         jcenter()
         maven { url 'https://jitpack.io' }
-//        maven { url "http://172.168.5.46:9760/nexus/content/repositories/snapshots/"}//封装的米度蓝牙工具类库
     }
 }
 
