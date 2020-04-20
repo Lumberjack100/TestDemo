@@ -128,20 +128,23 @@
 
                     <TextView
                         android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
                         android:layout_marginLeft="50dp"
-                        android:gravity="center"
-                        android:text="断线报警器" />
+                        android:text="断线报警器"
+                        android:textColor="@color/gray_807B7B"
+                        android:textSize="@dimen/text_size_15" />
 
                     <TextView
                         android:id="@+id/tv_break_alarm"
                         android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
                         android:layout_marginRight="10dp"
                         android:layout_toLeftOf="@id/sb_break_alarm"
-                        android:gravity="center"
                         android:text="常闭"
-                        android:textColor="@color/gray_807B7B" />
+                        android:textColor="@color/gray_807B7B"
+                        android:textSize="@dimen/text_size_15" />
 
                     <com.kyleduo.switchbutton.SwitchButton
                         android:id="@+id/sb_break_alarm"

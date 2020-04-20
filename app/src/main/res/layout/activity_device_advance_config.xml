@@ -20,6 +20,8 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textColor="@color/gray_807B7B"
+            android:textSize="@dimen/text_size_15"
             android:text="恢复出厂设置" />
 
     </LinearLayout>
@@ -36,6 +38,8 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textColor="@color/gray_807B7B"
+            android:textSize="@dimen/text_size_15"
             android:text="重启系统" />
 
     </LinearLayout>
@@ -53,6 +57,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
+            android:textColor="@color/gray_807B7B"
+            android:textSize="@dimen/text_size_15"
             android:text="修改授权码" />
 
         <ImageView
@@ -77,6 +83,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
+            android:textColor="@color/gray_807B7B"
+            android:textSize="@dimen/text_size_15"
             android:text="产品注册" />
 
         <ImageView
@@ -100,6 +108,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
+            android:textColor="@color/gray_807B7B"
+            android:textSize="@dimen/text_size_15"
             android:text="固件升级" />
 
         <com.kyleduo.switchbutton.SwitchButton
@@ -130,6 +140,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
+            android:textColor="@color/gray_807B7B"
+            android:textSize="@dimen/text_size_15"
             android:text="指令交互调试模式" />
 
         <ImageView
@@ -154,6 +166,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
+            android:textColor="@color/gray_807B7B"
+            android:textSize="@dimen/text_size_15"
             android:text="指令日志输出" />
 
         <ImageView
@@ -178,6 +192,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
+            android:textColor="@color/gray_807B7B"
+            android:textSize="@dimen/text_size_15"
             android:text="同步安装位置" />
 
         <ImageView
@@ -203,6 +219,8 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:textColor="@color/gray_807B7B"
+            android:textSize="@dimen/text_size_15"
             android:text="调试模式" />
 
         <LinearLayout

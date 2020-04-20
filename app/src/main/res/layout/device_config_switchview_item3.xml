@@ -13,7 +13,7 @@
         android:layout_marginStart="30dp"
         android:layout_weight="1"
         android:textColor="@color/gray_807B7B"
-        android:textSize="@dimen/text_size_14"
+        android:textSize="@dimen/text_size_15"
         tools:text="解算时间(单位：秒)" />
 
     <LinearLayout

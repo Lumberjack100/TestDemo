@@ -91,9 +91,6 @@ public class DASHomeFragment extends BaseFragment {
     @BindView(R.id.device_enable_state_layout)
     View deviceEnableLayout;
 
-    @BindView(R.id.debug_model_layout)
-    View debugModelLayout;
-
     @BindView(R.id.switch_layout)
     View switchLayout;
 
@@ -113,7 +110,7 @@ public class DASHomeFragment extends BaseFragment {
 
     private SwitchButton mSbBluetoothConnect, mSbDeviceActivation, mSbBleakAlarm;
 
-    private Spinner  mSpSwitch, mSpRain;
+    private Spinner mSpSwitch, mSpRain;
 
     private ConfigDASActivity configDASActivity;
 
@@ -344,14 +341,6 @@ public class DASHomeFragment extends BaseFragment {
     @OnClick({R.id.rl_mqtt_config, R.id.rl_collector_control, R.id.general_sensor_param_config_layout, R.id.rl_advanced_config})
     public void onClick(View v) {
         switch (v.getId()) {
-//            case R.id.tv_rain_gauge:
-//                if (!MCloudApp.isIsBluetoothDeviceConnected()) {
-//                    ToastUtils.show(getString(R.string.param_config_bluetooth_disconnect_warn));
-//                    return;
-//                }
-//                RainConfigActivity.startActivity(configDASActivity, setRianAccuryParameter.getRainAccury());
-//                break;
-
             case R.id.general_sensor_param_config_layout:
                 if (!MCloudApp.isIsBluetoothDeviceConnected()) {
                     ToastUtils.show(getString(R.string.param_config_bluetooth_disconnect_warn));
