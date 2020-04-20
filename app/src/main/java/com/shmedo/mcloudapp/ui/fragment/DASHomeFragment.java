@@ -518,23 +518,11 @@ public class DASHomeFragment extends BaseFragment {
     }
 
     private void setViewStateByConnectState(boolean isConnected) {
-        mSbBleakAlarm.setEnabled(isConnected);
-        if (isConnected) {
-            mSbBluetoothConnect.setCheckedImmediatelyNoEvent(true);
-            setSwitchViewState(true, mTvBluetoothConnect, "已连接");
-
-            mTvDeviceActivation.setTextColor(getResources().getColor(R.color.colorPrimary));
-            mSpSwitch.setEnabled(true);
-            mSpRain.setEnabled(true);
-
-        } else {
-            mSbBluetoothConnect.setCheckedImmediatelyNoEvent(false);
-            setSwitchViewState(false, mTvBluetoothConnect, "待连接");
-
-            mTvDeviceActivation.setTextColor(getResources().getColor(R.color.gray_807B7B));
-            mSpSwitch.setEnabled(false);
-            mSpRain.setEnabled(false);
-        }
+        mSbBluetoothConnect.setCheckedImmediatelyNoEvent(isConnected);
+        setSwitchViewState(isConnected, mTvBluetoothConnect, isConnected ? "已连接" : "待连接");
+        mTvDeviceActivation.setTextColor(isConnected ? getResources().getColor(R.color.colorPrimary) : getResources().getColor(R.color.gray_807B7B));
+        mSpSwitch.setEnabled(isConnected);
+        mSpRain.setEnabled(isConnected);
     }
 
 

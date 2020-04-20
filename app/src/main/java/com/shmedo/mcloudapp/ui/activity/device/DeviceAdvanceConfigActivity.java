@@ -359,12 +359,9 @@ public class DeviceAdvanceConfigActivity extends BaseDeviceConnectActivity {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(BluetoothStateEvent bluetoothStateEvent) {
-        setViewStateByConnectState(bluetoothStateEvent.isConnected);
+        mSpDebugMode.setEnabled(bluetoothStateEvent.isConnected);
     }
 
-    private void setViewStateByConnectState(boolean isConnected) {
-        mSpDebugMode.setEnabled(isConnected);
-    }
 
     private boolean checkIsBluetoothConnected() {
         if (!MCloudApp.isIsBluetoothDeviceConnected()) {
