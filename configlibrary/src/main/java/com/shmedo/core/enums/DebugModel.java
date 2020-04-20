@@ -9,9 +9,11 @@ public enum DebugModel {
     //初始化、关闭、debug、info
 
     private int model;
+
     DebugModel(int i) {
         this.model = i;
     }
+
     public int toInt() {
         return model;
     }

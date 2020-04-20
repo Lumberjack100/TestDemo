@@ -6,10 +6,13 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -19,10 +22,13 @@ import com.shmedo.core.cmd.CommandManager;
 import com.shmedo.core.cmd.CommandResult;
 import com.shmedo.core.cmd.entity.SettingRemoteUpgradeEntity;
 import com.shmedo.core.enums.CommandType;
+import com.shmedo.core.enums.DebugModel;
 import com.shmedo.core.utils.StringUtil;
 import com.shmedo.mcloudapp.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.entity.SyncPositionBean;
+import com.shmedo.mcloudapp.entity.event.BluetoothStateEvent;
+import com.shmedo.mcloudapp.interfaces.Extras;
 import com.shmedo.mcloudapp.ui.activity.device.senior.InstructionDebugActivity;
 import com.shmedo.mcloudapp.ui.activity.device.senior.ProductRegistrationActivity;
 import com.shmedo.mcloudapp.util.AdvanceSetDialogUtils;
@@ -46,8 +52,14 @@ public class DeviceAdvanceConfigActivity extends BaseDeviceConnectActivity {
     @BindView(R.id.sw_firmware_upgrade)
     SwitchButton mSbFirmwareUpgrade;
 
-    public static void startActivity(Context context) {
+    @BindView(R.id.sp_debug_mode)
+    Spinner mSpDebugMode;
+
+    private int debugModeCheck = 0;//标志位，Avoid onItemSelected calls during initialization
+
+    public static void startActivity(Context context, int mode) {
         Intent intent = new Intent(context, DeviceAdvanceConfigActivity.class);
+        intent.putExtra(Extras.DEBUG_MODE, mode);
         context.startActivity(intent);
     }
 
@@ -61,6 +73,34 @@ public class DeviceAdvanceConfigActivity extends BaseDeviceConnectActivity {
         super.onCreate(savedInstanceState);
         mToolbarTitle.setText("高级配置");
         setSwitchViewListener();
+        initSpinnerAdapter();
+        initData();
+    }
+
+    private void initData() {
+        int mode = getIntent().getIntExtra(Extras.DEBUG_MODE, 1);
+        //设备调试模式
+        switch (DebugModel.valueOf(mode)) {
+            case INITIALZE:
+                mSpDebugMode.setSelection(0);
+                break;
+
+            case CLOSE:
+                mSpDebugMode.setSelection(1);
+                break;
+
+            case DEBUG:
+                mSpDebugMode.setSelection(2);
+                break;
+
+            case INFO:
+                mSpDebugMode.setSelection(3);
+                break;
+
+            default:
+                mSpDebugMode.setSelection(1);
+                break;
+        }
     }
 
     /**
@@ -83,6 +123,52 @@ public class DeviceAdvanceConfigActivity extends BaseDeviceConnectActivity {
                     sendCommonCommand(command);
                     ToastUtils.show("关闭固件升级");
                 }
+            }
+        });
+    }
+
+    private void initSpinnerAdapter() {
+        //调试模式
+        String[] debugData = getResources().getStringArray(R.array.das_debug_mode);
+        ArrayAdapter<String> debugModeAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, debugData);
+        debugModeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mSpDebugMode.setAdapter(debugModeAdapter);
+        mSpDebugMode.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                debugModeCheck++;
+                if (debugModeCheck >= 2) {
+                    String status = parent.getSelectedItem().toString();
+                    String smdStr;
+                    switch (status) {
+                        case "初始化":
+                            smdStr = "##0060\r\n";
+                            break;
+
+                        case "关闭":
+                            smdStr = "##0061\r\n";
+                            break;
+
+                        case "DEBUG":
+                            smdStr = "##0062\r\n";
+                            break;
+
+                        case "INFO":
+                            smdStr = "##0063\r\n";
+                            break;
+
+                        default:
+                            smdStr = "##0061\r\n";
+                            break;
+                    }
+                    sendCommonCommandImmediately(smdStr);
+                    Timber.d("设置调试模式指令==" + smdStr);
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
             }
         });
     }
@@ -146,6 +232,7 @@ public class DeviceAdvanceConfigActivity extends BaseDeviceConnectActivity {
     private String latLong;
     private EditText etPositionInfo;
     private TextView tvLatLong;
+
     private void showSyncPositionDialog(BaseDeviceConnectActivity activity) {
         mBuilder = new MaterialDialog.Builder(activity);
         mBuilder.customView(R.layout.dialog_sync_position, false)
@@ -268,6 +355,15 @@ public class DeviceAdvanceConfigActivity extends BaseDeviceConnectActivity {
             tvLatLong.setText(address);
             LocationUtils.getInstance().stopLocalService();
         }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onMessageEvent(BluetoothStateEvent bluetoothStateEvent) {
+        setViewStateByConnectState(bluetoothStateEvent.isConnected);
+    }
+
+    private void setViewStateByConnectState(boolean isConnected) {
+        mSpDebugMode.setEnabled(isConnected);
     }
 
     private boolean checkIsBluetoothConnected() {

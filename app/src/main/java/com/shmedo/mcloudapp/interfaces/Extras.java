@@ -11,17 +11,15 @@ public interface Extras {
 
     String QUERY_PROJECT_DEVICE = "queryProjectDevice";
 
-    String DEVICE_LATLNG = "device_latlng";
-
     String CUR_DEVICE_NAME = "cur_device_name";
 
     String DEVICE_MAC_ADDRESS = "cur_device_mac_address";
 
     String DEVICE_E60 = "device_e60";
 
-    String SCAN_DEVICE_LIST = "scan_device_list";
-
     String PARAM_CONFIG_INFO = "param_config_info";
+
+    String DEBUG_MODE = "debug_mode";
 
     String COLLECTOR_MODE = "collector_mode";
 

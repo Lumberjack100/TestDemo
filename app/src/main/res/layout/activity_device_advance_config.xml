@@ -14,14 +14,12 @@
         android:layout_height="40dp"
         android:layout_marginTop="1dp"
         android:background="@color/bg_main_light_white"
-        android:orientation="horizontal">
+        android:gravity="center_vertical"
+        android:paddingStart="25dp">
 
         <TextView
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="25dp"
-            android:layout_toRightOf="@id/iv_pro"
-            android:gravity="center_vertical"
+            android:layout_height="wrap_content"
             android:text="恢复出厂设置" />
 
     </LinearLayout>
@@ -32,14 +30,12 @@
         android:layout_height="40dp"
         android:layout_marginTop="1dp"
         android:background="@color/bg_main_light_white"
-        android:orientation="horizontal">
+        android:gravity="center_vertical"
+        android:paddingStart="25dp">
 
         <TextView
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="25dp"
-            android:layout_toRightOf="@id/iv_pro"
-            android:gravity="center_vertical"
+            android:layout_height="wrap_content"
             android:text="重启系统" />
 
     </LinearLayout>
@@ -49,22 +45,23 @@
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:layout_marginTop="1dp"
-        android:background="@color/bg_main_light_white">
+        android:background="@color/bg_main_light_white"
+        android:paddingStart="25dp"
+        android:paddingEnd="20dp">
 
         <TextView
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="25dp"
-            android:gravity="center"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
             android:text="修改授权码" />
 
         <ImageView
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:layout_marginRight="20dp"
-            android:gravity="center"
+            android:layout_centerVertical="true"
             android:src="@drawable/icon_right" />
+
     </RelativeLayout>
 
     <RelativeLayout
@@ -72,35 +69,37 @@
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:layout_marginTop="1dp"
-        android:background="@color/bg_main_light_white">
+        android:background="@color/bg_main_light_white"
+        android:paddingStart="25dp"
+        android:paddingEnd="20dp">
 
         <TextView
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="25dp"
-            android:gravity="center"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
             android:text="产品注册" />
 
         <ImageView
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:layout_marginRight="20dp"
-            android:gravity="center"
+            android:layout_centerVertical="true"
             android:src="@drawable/icon_right" />
+
     </RelativeLayout>
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:layout_marginTop="1dp"
-        android:background="@color/bg_main_light_white">
+        android:background="@color/bg_main_light_white"
+        android:paddingStart="25dp"
+        android:paddingEnd="20dp">
 
         <TextView
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="25dp"
-            android:gravity="center"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
             android:text="固件升级" />
 
         <com.kyleduo.switchbutton.SwitchButton
@@ -109,13 +108,13 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:layout_marginRight="20dp"
             app:kswAnimationDuration="100"
             app:kswBackDrawable="@drawable/sl_switchbutton_back"
             app:kswThumbDrawable="@drawable/shape_switchbutton_thumb"
             app:kswThumbHeight="22dp"
             app:kswThumbRangeRatio="2"
             app:kswThumbWidth="22dp" />
+
     </RelativeLayout>
 
     <RelativeLayout
@@ -123,22 +122,23 @@
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:layout_marginTop="1dp"
-        android:background="@color/bg_main_light_white">
+        android:background="@color/bg_main_light_white"
+        android:paddingStart="25dp"
+        android:paddingEnd="20dp">
 
         <TextView
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="25dp"
-            android:gravity="center"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
             android:text="指令交互调试模式" />
 
         <ImageView
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:layout_marginRight="20dp"
-            android:gravity="center"
+            android:layout_centerVertical="true"
             android:src="@drawable/icon_right" />
+
     </RelativeLayout>
 
     <RelativeLayout
@@ -146,22 +146,23 @@
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:layout_marginTop="1dp"
-        android:background="@color/bg_main_light_white">
+        android:background="@color/bg_main_light_white"
+        android:paddingStart="25dp"
+        android:paddingEnd="20dp">
 
         <TextView
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="25dp"
-            android:gravity="center"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
             android:text="指令日志输出" />
 
         <ImageView
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:layout_marginRight="20dp"
-            android:gravity="center"
+            android:layout_centerVertical="true"
             android:src="@drawable/icon_right" />
+
     </RelativeLayout>
 
     <RelativeLayout
@@ -169,22 +170,57 @@
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:layout_marginTop="1dp"
-        android:background="@color/bg_main_light_white">
+        android:background="@color/bg_main_light_white"
+        android:paddingStart="25dp"
+        android:paddingEnd="20dp">
 
         <TextView
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="25dp"
-            android:gravity="center"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
             android:text="同步安装位置" />
 
         <ImageView
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:layout_marginRight="20dp"
-            android:gravity="center"
+            android:layout_centerVertical="true"
             android:src="@drawable/icon_right" />
+
     </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginTop="1dp"
+        android:background="@color/bg_main_light_white"
+        android:gravity="center_vertical"
+        android:paddingStart="25dp"
+        android:paddingEnd="20dp">
+
+        <TextView
+            android:id="@+id/tv_config_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="调试模式" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="30dp"
+            android:layout_weight="1"
+            android:background="@color/white">
+
+            <Spinner
+                android:id="@+id/sp_debug_mode"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:dropDownVerticalOffset="30dp"
+                android:gravity="center" />
+
+        </LinearLayout>
+
+    </LinearLayout>
 
 </LinearLayout>

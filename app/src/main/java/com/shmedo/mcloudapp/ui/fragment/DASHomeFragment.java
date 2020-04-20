@@ -35,7 +35,6 @@ import com.shmedo.mcloudapp.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.base.BaseFragment;
 import com.shmedo.mcloudapp.entity.ble.BreakAlarmStatusSub;
-import com.shmedo.mcloudapp.entity.ble.DeviceLockStatusSub;
 import com.shmedo.mcloudapp.entity.event.BluetoothStateEvent;
 import com.shmedo.mcloudapp.interfaces.Extras;
 import com.shmedo.mcloudapp.ui.activity.ConfigDASActivity;
@@ -43,7 +42,6 @@ import com.shmedo.mcloudapp.ui.activity.device.DeviceAdvanceConfigActivity;
 import com.shmedo.mcloudapp.ui.activity.device.GeneralSettingActivity;
 import com.shmedo.mcloudapp.ui.activity.device.MqttSettingActivity;
 import com.shmedo.mcloudapp.ui.activity.device.sensor.SenSorBGKConfigActivity;
-import com.shmedo.mcloudapp.util.DaoManager;
 import com.shmedo.mcloudapp.util.bleutil.BlueResultParserUtil;
 import com.shmedo.mcloudapp.util.page.model.SetRainAccuryPage;
 
@@ -115,17 +113,9 @@ public class DASHomeFragment extends BaseFragment {
 
     private SwitchButton mSbBluetoothConnect, mSbDeviceActivation, mSbBleakAlarm;
 
-    private Spinner mSpDebugMode, mSpSwitch, mSpRain;
+    private Spinner  mSpSwitch, mSpRain;
 
     private ConfigDASActivity configDASActivity;
-
-    private DaoManager manager = DaoManager.getInstance();
-
-//    private List<String> systemDataInfoList = new ArrayList<>();//项目信息列表
-
-//    private HashMap<String, SystemDataInfo> systemDataInfoHashMap = new HashMap<>();
-
-    private ArrayAdapter<String> debugModeAdapter;
 
     private ArrayAdapter<String> switchAdapter;
 
@@ -133,18 +123,13 @@ public class DASHomeFragment extends BaseFragment {
 
     private String collectorModel = "";//采集器类型
 
-    private String lockStatus = "";//设备锁定状态
-
     private StringBuilder sbcollectorSensor = new StringBuilder();//采集器上传感器配置信息
-
 
     private SetRainAccuryPage.SetRianAccuryParameter setRianAccuryParameter = new SetRainAccuryPage.SetRianAccuryParameter();
     private CollectorConfigInfo collectorConfigInfo;
     private BaseConfigInfo baseConfigInfo;
     private QueryOsmometerParameterInfo queryOsmometerParameterInfo;
     private BreakAlarmStatusInfo breakAlarmStatusInfo = new BreakAlarmStatusInfo();
-
-    private int debugModeCheck = 0;//标志位，Avoid onItemSelected calls during initialization
 
     private int alarmStatusCheck = 0;//标志位，Avoid onItemSelected calls during initialization
 
@@ -196,9 +181,6 @@ public class DASHomeFragment extends BaseFragment {
         ((TextView) deviceEnableLayout.findViewById(R.id.tv_config_name)).setText("设备启用状态");
         mTvDeviceActivation = deviceEnableLayout.findViewById(R.id.tv_device_state);
         mSbDeviceActivation = deviceEnableLayout.findViewById(R.id.switchButton);
-
-        ((TextView) debugModelLayout.findViewById(R.id.tv_config_name)).setText("调试模式");
-        mSpDebugMode = debugModelLayout.findViewById(R.id.spinner);
 
         ((TextView) switchLayout.findViewById(R.id.tv_config_name)).setText("开关量");
         mSpSwitch = switchLayout.findViewById(R.id.spinner);
@@ -281,50 +263,6 @@ public class DASHomeFragment extends BaseFragment {
     }
 
     private void initAdapter() {
-        //调试模式
-        String[] debugData = getResources().getStringArray(R.array.das_debug_mode);
-        debugModeAdapter = new ArrayAdapter<>(configDASActivity, android.R.layout.simple_spinner_item, debugData);
-        debugModeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        mSpDebugMode.setAdapter(debugModeAdapter);
-        mSpDebugMode.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                debugModeCheck++;
-                if (debugModeCheck >= 2) {
-                    String status = parent.getSelectedItem().toString();
-                    String smdStr;
-                    switch (status) {
-                        case "初始化":
-                            smdStr = "##0060\r\n";
-                            break;
-
-                        case "关闭":
-                            smdStr = "##0061\r\n";
-                            break;
-
-                        case "DEBUG":
-                            smdStr = "##0062\r\n";
-                            break;
-
-                        case "INFO":
-                            smdStr = "##0063\r\n";
-                            break;
-
-                        default:
-                            smdStr = "##0061\r\n";
-                            break;
-                    }
-                    configDASActivity.sendCommonCommand(smdStr);
-                    Timber.d("设置调试模式指令==" + smdStr);
-                }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
-
         //开关量
         String[] switchData = getResources().getStringArray(R.array.das_switch);
         switchAdapter = new ArrayAdapter<>(configDASActivity, android.R.layout.simple_spinner_item, switchData);
@@ -403,7 +341,7 @@ public class DASHomeFragment extends BaseFragment {
     }
 
 
-    @OnClick({R.id.rl_mqtt_config, R.id.rl_collector_control, R.id.general_sensor_param_config_layout,R.id.rl_advanced_config})
+    @OnClick({R.id.rl_mqtt_config, R.id.rl_collector_control, R.id.general_sensor_param_config_layout, R.id.rl_advanced_config})
     public void onClick(View v) {
         switch (v.getId()) {
 //            case R.id.tv_rain_gauge:
@@ -439,7 +377,7 @@ public class DASHomeFragment extends BaseFragment {
                 break;
 
             case R.id.rl_advanced_config:
-                DeviceAdvanceConfigActivity.startActivity(getActivity());
+                DeviceAdvanceConfigActivity.startActivity(getActivity(), baseConfigInfo.getDebugModel().toInt());
                 break;
         }
     }
@@ -449,7 +387,7 @@ public class DASHomeFragment extends BaseFragment {
      * 所有配置信息处理
      */
     private void processGetAllSensorConfig(String cmdStr) {
-        Timber.d("--------所有配置信息 --每次返回指令-------" + cmdStr);
+        Timber.d("--------所有配置信息返回指令-------" + cmdStr);
         String[] strs = cmdStr.split("@@");
         if (strs == null || strs.length < 6)
             return;
@@ -478,29 +416,6 @@ public class DASHomeFragment extends BaseFragment {
             CollectorModel model = CollectorModel.value(collectorModel);
             String collectorName = BlueResultParserUtil.getCollectorName(model);
             mTvSensorType.setText(collectorName);
-        }
-
-        //设备调试模式
-        switch (baseConfigInfo.getDebugModel()) {
-            case INITIALZE:
-                mSpDebugMode.setSelection(0);
-                break;
-
-            case CLOSE:
-                mSpDebugMode.setSelection(1);
-                break;
-
-            case DEBUG:
-                mSpDebugMode.setSelection(2);
-                break;
-
-            case INFO:
-                mSpDebugMode.setSelection(3);
-                break;
-
-            default:
-                mSpDebugMode.setSelection(1);
-                break;
         }
 
         //设备状态
@@ -554,13 +469,6 @@ public class DASHomeFragment extends BaseFragment {
      * 设置显示数据
      */
     private void setResultData(String cmdStr) {
-        //锁定状态应答指令处理
-        if (cmdStr.startsWith("$$225") && cmdStr.endsWith("\r\n")) {
-            DeviceLockStatusSub deviceLockStatusSub = BlueResultParserUtil.getDeviceLockStatusInfo(cmdStr);
-            lockStatus = (deviceLockStatusSub.getLockStatus() == 0) ? "unlock" : "lock";
-            return;
-        }
-
         CommandType type = StringUtil.extractCommandType(cmdStr);
         switch (type) {
             case RAIN_STATION://雨量计开关 0051：雨量计开启  0052：关闭   0053：断线报警器开启
@@ -592,9 +500,6 @@ public class DASHomeFragment extends BaseFragment {
                         setSwitchViewState(false, mTvBreakAlarm, "常闭");
                         break;
                 }
-                break;
-            case DAS_DEBUG_MODE:
-
                 break;
         }
     }
@@ -630,7 +535,6 @@ public class DASHomeFragment extends BaseFragment {
 
             mTvDeviceActivation.setTextColor(getResources().getColor(R.color.colorPrimary));
             mTvBreakAlarm.setTextColor(getResources().getColor(R.color.colorPrimary));
-            mSpDebugMode.setEnabled(true);
             mSpSwitch.setEnabled(true);
             mSpRain.setEnabled(true);
 
@@ -640,7 +544,6 @@ public class DASHomeFragment extends BaseFragment {
 
             mTvDeviceActivation.setTextColor(getResources().getColor(R.color.gray_807B7B));
             mTvBreakAlarm.setTextColor(getResources().getColor(R.color.gray_807B7B));
-            mSpDebugMode.setEnabled(false);
             mSpSwitch.setEnabled(false);
             mSpRain.setEnabled(false);
         }
@@ -732,7 +635,6 @@ public class DASHomeFragment extends BaseFragment {
         super.onStop();
         EventBus.getDefault().unregister(this);
     }
-
 
 
     @Override
