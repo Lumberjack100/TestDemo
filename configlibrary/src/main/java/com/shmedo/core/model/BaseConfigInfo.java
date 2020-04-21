@@ -5,7 +5,7 @@ import com.shmedo.core.enums.DataCommunicateMode;
 import com.shmedo.core.enums.DataEncryption;
 import com.shmedo.core.enums.DebugModel;
 import com.shmedo.core.enums.EquipmentStatus;
-import com.shmedo.core.enums.RainfallStation;
+import com.shmedo.core.enums.RainStation;
 import com.shmedo.core.enums.SIMChoose;
 import com.shmedo.core.enums.SensorInterfaceType;
 
@@ -19,7 +19,7 @@ public class BaseConfigInfo {
     private String targetBGNum;     //目标北斗卡号
     private EquipmentStatus equipmentStatus;    //设备状态
     private DataCommunicateMode dataCommunicateMode;     //数据通讯模式
-    private RainfallStation rainfallStation;    //雨量站
+    private RainStation rainStation;    //雨量站
     private int rainAccuracy;     //雨量计精度
     private int locationSensitivity;  //定位灵敏度
     private int locationAccuracy;     //定位精度
@@ -78,11 +78,11 @@ public class BaseConfigInfo {
     public void setDataCommunicateMode(DataCommunicateMode dataCommunicateMode) {
         this.dataCommunicateMode = dataCommunicateMode;
     }
-    public RainfallStation getRainfallStation() {
-        return rainfallStation;
+    public RainStation getRainStation() {
+        return rainStation;
     }
-    public void setRainfallStation(RainfallStation rainfallStation) {
-        this.rainfallStation = rainfallStation;
+    public void setRainStation(RainStation rainfallStation) {
+        this.rainStation = rainfallStation;
     }
     public int getRainAccuracy() {
         return rainAccuracy;
@@ -194,7 +194,7 @@ public class BaseConfigInfo {
                 ", targetBGNum='" + targetBGNum + '\'' +
                 ", equipmentStatus=" + equipmentStatus +
                 ", dataCommunicateMode=" + dataCommunicateMode +
-                ", rainfallStation=" + rainfallStation +
+                ", rainStation=" + rainStation +
                 ", rainAccuracy=" + rainAccuracy +
                 ", locationSensitivity=" + locationSensitivity +
                 ", locationAccuracy=" + locationAccuracy +

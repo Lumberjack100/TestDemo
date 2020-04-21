@@ -82,11 +82,11 @@ public class BlueResultParserUtil {
             default:
                 break;
         }
-        switch (info.getRainfallStation()) {
-            case RAIN_OPEN:
+        switch (info.getRainStation()) {
+            case OPEN:
                 infoSub.setRainfallStation("开启");
                 break;
-            case RAIN_CLOSE:
+            case CLOSE:
                 infoSub.setRainfallStation("关闭");
                 break;
         }

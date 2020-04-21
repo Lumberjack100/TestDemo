@@ -6,7 +6,7 @@ import com.shmedo.core.enums.DataCommunicateMode;
 import com.shmedo.core.enums.DataEncryption;
 import com.shmedo.core.enums.DebugModel;
 import com.shmedo.core.enums.EquipmentStatus;
-import com.shmedo.core.enums.RainfallStation;
+import com.shmedo.core.enums.RainStation;
 import com.shmedo.core.enums.SIMChoose;
 import com.shmedo.core.enums.SensorInterfaceType;
 import com.shmedo.core.enums.SetServerAddressPort;
@@ -55,7 +55,7 @@ public class ParserUtils
         bean.setDataCommunicateMode(DataCommunicateMode.valueOf(dataCommunicateMode));
 
         int rainfallStation = Integer.valueOf(strs[6]);
-        bean.setRainfallStation(RainfallStation.valueOf(rainfallStation));
+        bean.setRainStation(RainStation.valueOf(rainfallStation));
 
         int rainAccuracy = Integer.valueOf(strs[7]);
         bean.setRainAccuracy(rainAccuracy);

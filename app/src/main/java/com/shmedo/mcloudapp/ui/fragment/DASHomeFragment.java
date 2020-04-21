@@ -420,13 +420,13 @@ public class DASHomeFragment extends BaseFragment {
         }
 
         //设备雨量站开关量
-        switch (baseConfigInfo.getRainfallStation()) {
-            case RAIN_CLOSE:
+        switch (baseConfigInfo.getRainStation()) {
+            case CLOSE:
                 mSpSwitch.setSelection(0);
                 rainBreakAlarmLayout.setVisibility(View.GONE);
                 break;
 
-            case RAIN_OPEN://雨量站开启
+            case OPEN://雨量站开启
                 mSpSwitch.setSelection(1);
                 rainBreakAlarmLayout.setVisibility(View.VISIBLE);
                 rainLayout.setVisibility(View.VISIBLE);
