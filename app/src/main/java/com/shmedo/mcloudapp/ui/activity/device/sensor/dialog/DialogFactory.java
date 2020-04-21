@@ -18,10 +18,10 @@ public class DialogFactory {
         IDialogOpt opt = null;
 
         switch (type) {
-            case "02":
-            case "03":
-            case "07":
-            case "21":
+            case "02"://裂缝计采集器
+            case "03"://土壤湿度采集器
+            case "07"://雷达采集器
+            case "21"://次声采集器
                 opt = new DialogStyle02(context, channelNumber);
                 opt.getDialog().show();
 
@@ -39,7 +39,7 @@ public class DialogFactory {
 //                }
 //                break;
 
-            case "04":
+            case "04"://测斜仪采集器
                 opt = new DialogStyle04(context, channelNumber);
                 opt.getDialog().show();
 
