@@ -10,6 +10,10 @@ import android.bluetooth.BluetoothGattDescriptor;
 import android.bluetooth.BluetoothGattService;
 import android.bluetooth.BluetoothManager;
 import android.bluetooth.BluetoothProfile;
+import android.bluetooth.le.BluetoothLeScanner;
+import android.bluetooth.le.ScanCallback;
+import android.bluetooth.le.ScanResult;
+import android.bluetooth.le.ScanSettings;
 import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
@@ -39,7 +43,6 @@ import java.nio.charset.StandardCharsets;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.Executors;
@@ -98,8 +101,8 @@ public class MdBluetoothManager {
     private BluetoothManager androidBluetoothManager;
     private List<BluetoothEventHandler> bluetoothEventHandlerList = null;
     private volatile boolean mScanning = false;
-    private BluetoothAdapter.LeScanCallback leScanCallback = new MdLeScanCallback();
-    private List<MDevice> devices;
+    private BluetoothLeScanner bluetoothLeScanner;
+    private ScanCallback leScanCallback = new MdLeScanCallback();
     private BluetoothGatt gatt;
     private BluetoothDevice currentDevice;
     private MdBluetoothGattCallback gattCallback = new MdBluetoothGattCallback();
@@ -117,6 +120,7 @@ public class MdBluetoothManager {
         }
         this.bluetoothAdapter = bluetoothAdapter;
         this.androidBluetoothManager = androidBluetoothManager;
+        this.bluetoothLeScanner = bluetoothAdapter.getBluetoothLeScanner();
     }
 
 
@@ -133,14 +137,16 @@ public class MdBluetoothManager {
         if (currentDevice == null || gatt == null) {
             return false;
         }
-        return androidBluetoothManager.getConnectionState(currentDevice, BluetoothGatt.GATT)
-                == BluetoothProfile.STATE_CONNECTED;
+        return androidBluetoothManager.getConnectionState(currentDevice, BluetoothGatt.GATT) == BluetoothProfile.STATE_CONNECTED;
     }
 
     private void processScan(int maxScanSecond, final Activity activity) {
         clearData();
         mScanning = true;
-        bluetoothAdapter.startLeScan(leScanCallback);
+        ScanSettings.Builder builderScanSettings = new ScanSettings.Builder();
+        builderScanSettings.setScanMode(ScanSettings.SCAN_MODE_BALANCED);
+        builderScanSettings.setReportDelay(0);
+        bluetoothLeScanner.startScan(null, builderScanSettings.build(), leScanCallback);
         Executors.newScheduledThreadPool(1)
                 .schedule(new Runnable() {
                     @Override
@@ -151,7 +157,7 @@ public class MdBluetoothManager {
                                 public void run() {
                                     if (mScanning) {
                                         mScanning = false;
-                                        bluetoothAdapter.stopLeScan(leScanCallback);
+                                        bluetoothLeScanner.stopScan(leScanCallback);
                                     }
                                 }
                             });
@@ -186,7 +192,7 @@ public class MdBluetoothManager {
         ThreadUtil.checkRunOnUiThread();
         if (mScanning) {
             mScanning = false;
-            bluetoothAdapter.stopLeScan(leScanCallback);
+            bluetoothLeScanner.stopScan(leScanCallback);
         }
     }
 
@@ -278,7 +284,6 @@ public class MdBluetoothManager {
 
     private void clearData() {
         mScanning = false;
-        devices = new LinkedList<>();
         currentDevice = null;
         writeMessageManager.clear();
         isReadable = false;
@@ -428,15 +433,24 @@ public class MdBluetoothManager {
     }
 
 
-    private class MdLeScanCallback implements BluetoothAdapter.LeScanCallback {
+    private class MdLeScanCallback extends ScanCallback {
         @Override
-        public void onLeScan(BluetoothDevice device, int rssi, byte[] scanRecord) {
+        public void onScanResult(int callbackType, ScanResult result) {
+            BluetoothDevice device = result.getDevice();
             Timber.d("在线程 " + Thread.currentThread().getName() + " 中扫描到设备：name=" + (TextUtils.isEmpty(device.getName()) ? "UnkonwName" : device.getName()) + ";macAddress=" + device.getAddress());
-            MDevice mDev = new MDevice(device, rssi);
-//            if (devices.contains(mDev))
-//                return;
-//            devices.add(mDev);
-            handleBluetoothEvent(BluetoothEventType.DEVICE_FIND, new BluetoothDeviceFindEventData(mDev, devices));
+            MDevice mDev = new MDevice(device, result.getRssi());
+
+            handleBluetoothEvent(BluetoothEventType.DEVICE_FIND, new BluetoothDeviceFindEventData(mDev, new ArrayList<>()));
+        }
+
+        @Override
+        public void onBatchScanResults(List<ScanResult> results) {
+            super.onBatchScanResults(results);
+        }
+
+        @Override
+        public void onScanFailed(int errorCode) {
+            super.onScanFailed(errorCode);
         }
     }
 
