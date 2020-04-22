@@ -1,6 +1,5 @@
 package com.shmedo.mcloudapp.bluetooth;
 
-import android.Manifest;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -12,23 +11,28 @@ import android.bluetooth.BluetoothGattService;
 import android.bluetooth.BluetoothManager;
 import android.bluetooth.BluetoothProfile;
 import android.content.Context;
-import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 
+import androidx.annotation.NonNull;
+
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.shmedo.core.interfaces.OnBytePackage;
 import com.shmedo.core.utils.ByteManager;
+import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.bluetooth.exception.ScanAlreadyStartException;
 import com.shmedo.mcloudapp.entity.ble.MDevice;
 import com.shmedo.mcloudapp.util.bleutil.BleHelpUtil;
 import com.shmedo.mcloudapp.util.bleutil.Constants;
 import com.shmedo.mcloudapp.util.bleutil.DescriptorParser;
 import com.shmedo.mcloudapp.util.bleutil.GattAttributes;
-import com.shmedo.mcloudapp.util.bleutil.LogTag;
 import com.shmedo.mcloudapp.util.bleutil.ThreadUtil;
 import com.shmedo.mcloudapp.util.bleutil.UUIDDatabase;
+import com.yanzhenjie.permission.Action;
+import com.yanzhenjie.permission.AndPermission;
+import com.yanzhenjie.permission.runtime.Permission;
 
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
@@ -73,6 +77,7 @@ public class MdBluetoothManager {
      */
     private static final int WAIT_FOR_RESPONSE_TIME_OUT_SECOND = 60;
 
+    private static final int PERMISSION_CODE_LOCATION = 0x012;
 
     private static MdBluetoothManager bluetoothManager;
 
@@ -132,19 +137,7 @@ public class MdBluetoothManager {
                 == BluetoothProfile.STATE_CONNECTED;
     }
 
-    /**
-     * 开始扫描蓝牙设备
-     *
-     * @param maxScanSecond 最大扫描时间，到时间后自动停止
-     * @param activity
-     */
-    @RunOnUiThread
-    public void scanDevice(int maxScanSecond, final Activity activity) {
-        if (mScanning) {
-            throw new ScanAlreadyStartException();
-        }
-        ThreadUtil.checkRunOnUiThread();
-        checkPermission(activity);
+    private void processScan(int maxScanSecond, final Activity activity) {
         clearData();
         mScanning = true;
         bluetoothAdapter.startLeScan(leScanCallback);
@@ -167,6 +160,22 @@ public class MdBluetoothManager {
                         }
                     }
                 }, maxScanSecond, TimeUnit.SECONDS);
+    }
+
+
+    /**
+     * 开始扫描蓝牙设备
+     *
+     * @param maxScanSecond 最大扫描时间，到时间后自动停止
+     * @param activity
+     */
+    @RunOnUiThread
+    public void scanDevice(int maxScanSecond, final Activity activity) {
+        if (mScanning) {
+            throw new ScanAlreadyStartException();
+        }
+        ThreadUtil.checkRunOnUiThread();
+        checkPermission(maxScanSecond, activity);
     }
 
     /**
@@ -217,18 +226,55 @@ public class MdBluetoothManager {
         }
     }
 
+
     @RunOnUiThread
-    private void checkPermission(Activity context) {
-        ThreadUtil.checkRunOnUiThread();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            // Android M Permission check
-            if ((context.checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) ||
-                    (context.checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED)) {
-                context.requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, ENABLE_PERMISSION);
-                context.requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, ENABLE_PERMISSION);
-            }
-        }
+    private void checkPermission(final int maxScanSecond, final Activity context) {
+        AndPermission.with(context)
+                .runtime()
+                .permission(Permission.ACCESS_COARSE_LOCATION, Permission.ACCESS_FINE_LOCATION)
+                .onGranted(new Action<List<String>>() {
+                    @Override
+                    public void onAction(List<String> permissions) {
+                        processScan(maxScanSecond, context);
+                    }
+                })
+                .onDenied(new Action<List<String>>() {
+                    @Override
+                    public void onAction(@NonNull List<String> permissions) {
+                        if (AndPermission.hasAlwaysDeniedPermission(context, permissions)) {
+                            showRefusePermissionDialog(context);
+                        }
+                    }
+                })
+                .start();
     }
+
+    private void showRefusePermissionDialog(Context context) {
+        MaterialDialog.Builder mBuilder = new MaterialDialog.Builder(context)
+                .title("权限申请").content(context.getResources().getString(R.string.bluetooth_request_location))
+                .negativeText("取消")
+                .positiveText("去设置")
+                .negativeColor(context.getResources().getColor(R.color.font_main))
+                .positiveColor(context.getResources().getColor(R.color.colorPrimary))
+                .cancelable(false)
+                .onPositive(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        dialog.dismiss();
+                        AndPermission.with(context).runtime().setting().start(PERMISSION_CODE_LOCATION);
+                    }
+                })
+                .onNegative(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        dialog.dismiss();
+                    }
+                });
+
+        MaterialDialog mMaterialDialog = mBuilder.build();
+        mMaterialDialog.show();
+    }
+
 
     private void clearData() {
         mScanning = false;
@@ -249,7 +295,7 @@ public class MdBluetoothManager {
                 try {
                     checkBluetoothStatus();
                 } catch (Exception ex) {
-                    Timber.e(ex, ex.getMessage());
+                    Timber.e(ex);
                 }
             }
         }, CHECK_INTERVAL_MILLI, CHECK_INTERVAL_MILLI, TimeUnit.MILLISECONDS);
@@ -326,7 +372,7 @@ public class MdBluetoothManager {
             } else {
                 //已经写入了，在等待返回
                 if (lastWriteTime == null) {
-                    Log.e(LogTag.ERROR_TAG, "不可写，最后写入时间却为NULL，状态异常");
+                    Timber.e("不可写，最后写入时间却为NULL，状态异常");
                     eventType = BluetoothEventType.STATE_EXCEPTION;
                 } else {
                     Timestamp now = new Timestamp(System.currentTimeMillis());
