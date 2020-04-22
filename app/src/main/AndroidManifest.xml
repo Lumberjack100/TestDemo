@@ -6,6 +6,10 @@
     <uses-permission android:name="android.permission.INTERNET" /> <!-- 允许程序打开网络套接字 -->
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" /> <!-- 允许程序访问CellID或WiFi热点来获取粗略的位置 -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" /> <!-- 允许程序访问精良位置(如GPS) -->
+    <!--
+如果您的应用需要后台定位权限，且有可能运行在Android Q设备上,并且设置了target>28，必须增加ACCESS_BACKGROUND_LOCATION权限声明
+如果设置了target > 28，需要增加这个权限，否则不会弹出"始终允许"这个选择框
+-->
     <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" /> <!-- 允许程序访问精良位置(如GPS) -->
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" /> <!-- 允许程序改变Wi-Fi连接状态 -->
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" /> <!-- 允许程序访问Wi-Fi网络状态信息 -->
@@ -22,19 +26,14 @@
     <uses-permission android:name="android.permission.WAKE_LOCK" /> <!-- 用WakeLock使Android应用程序保持后台唤醒 -->
     <uses-permission android:name="android.permission.FLASHLIGHT" /> <!-- 访问闪光灯 -->
     <uses-permission android:name="android.permission.VIBRATE" /> <!-- 允许访问振动设备 -->
-    <uses-permission android:name="android.permission.GET_TASKS" />
     <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" /> <!-- Android8.0 安装 apk 需要添加权限 -->
-    <!--
-如果您的应用需要后台定位权限，且有可能运行在Android Q设备上,并且设置了target>28，必须增加这个权限声明
-    如果设置了target > 28，需要增加这个权限，否则不会弹出"始终允许"这个选择框
-    -->
-    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
     <uses-permission
         android:name="android.permission.READ_LOGS"
         tools:ignore="ProtectedPermissions" />
 
     <uses-feature android:name="android.hardware.camera" />
     <uses-feature android:name="android.hardware.camera.autofocus" />
+    <!--声明应用仅适用于支持 BLE 的设备-->
     <uses-feature
         android:name="android.hardware.bluetooth_le"
         android:required="true" />
@@ -52,11 +51,10 @@
         tools:ignore="LockedOrientationActivity"
         tools:targetApi="p">
 
-
         <meta-data
             android:name="com.amap.api.v2.apikey"
-            android:value="${mapApikey}" /> <!-- 定位需要的服务 使用2.0的定位需要加上这个 -->
-        <service android:name="com.amap.api.location.APSService" /> <!-- 兼容7.0 -->
+            android:value="${mapApikey}" />
+        <service android:name="com.amap.api.location.APSService" />
         <!--
 <provider
             android:name="androidx.core.content.FileProvider"
@@ -236,10 +234,11 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustResize" />
 
-        <activity android:name=".ui.activity.device.DeviceAdvanceConfigActivity"
+        <activity
+            android:name=".ui.activity.device.DeviceAdvanceConfigActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateHidden|adjustResize"/>
+            android:windowSoftInputMode="stateHidden|adjustResize" />
 
         <activity
             android:name=".ui.activity.BluetoothDeviceListActivity"

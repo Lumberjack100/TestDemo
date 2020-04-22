@@ -1,7 +1,6 @@
 package com.shmedo.mcloudapp.bluetooth;
 
 import android.Manifest;
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -93,7 +92,7 @@ public class MdBluetoothManager {
     private BluetoothAdapter bluetoothAdapter;
     private BluetoothManager androidBluetoothManager;
     private List<BluetoothEventHandler> bluetoothEventHandlerList = null;
-    private volatile boolean scan = false;
+    private volatile boolean mScanning = false;
     private BluetoothAdapter.LeScanCallback leScanCallback = new MdLeScanCallback();
     private List<MDevice> devices;
     private BluetoothGatt gatt;
@@ -141,13 +140,13 @@ public class MdBluetoothManager {
      */
     @RunOnUiThread
     public void scanDevice(int maxScanSecond, final Activity activity) {
-        if (scan) {
+        if (mScanning) {
             throw new ScanAlreadyStartException();
         }
         ThreadUtil.checkRunOnUiThread();
         checkPermission(activity);
         clearData();
-        scan = true;
+        mScanning = true;
         bluetoothAdapter.startLeScan(leScanCallback);
         Executors.newScheduledThreadPool(1)
                 .schedule(new Runnable() {
@@ -157,14 +156,14 @@ public class MdBluetoothManager {
                             activity.runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    if (scan) {
-                                        scan = false;
+                                    if (mScanning) {
+                                        mScanning = false;
                                         bluetoothAdapter.stopLeScan(leScanCallback);
                                     }
                                 }
                             });
                         } catch (Exception ex) {
-                            Log.e(LogTag.ERROR_TAG, ex.getMessage(), ex);
+                            Timber.e(ex);
                         }
                     }
                 }, maxScanSecond, TimeUnit.SECONDS);
@@ -176,8 +175,8 @@ public class MdBluetoothManager {
     @RunOnUiThread
     public void stopScan() {
         ThreadUtil.checkRunOnUiThread();
-        if (scan) {
-            scan = false;
+        if (mScanning) {
+            mScanning = false;
             bluetoothAdapter.stopLeScan(leScanCallback);
         }
     }
@@ -232,9 +231,9 @@ public class MdBluetoothManager {
     }
 
     private void clearData() {
-        scan = false;
+        mScanning = false;
         devices = new LinkedList<>();
-//        currentDevice = null;
+        currentDevice = null;
         writeMessageManager.clear();
         isReadable = false;
         lastWriteTime = null;
@@ -250,7 +249,7 @@ public class MdBluetoothManager {
                 try {
                     checkBluetoothStatus();
                 } catch (Exception ex) {
-                    Log.e(LogTag.ERROR_TAG, ex.getMessage(), ex);
+                    Timber.e(ex, ex.getMessage());
                 }
             }
         }, CHECK_INTERVAL_MILLI, CHECK_INTERVAL_MILLI, TimeUnit.MILLISECONDS);
@@ -386,7 +385,7 @@ public class MdBluetoothManager {
     private class MdLeScanCallback implements BluetoothAdapter.LeScanCallback {
         @Override
         public void onLeScan(BluetoothDevice device, int rssi, byte[] scanRecord) {
-            Timber.d("扫描到设备：name=" + (TextUtils.isEmpty(device.getName()) ? "UnkonwName" : device.getName()) + ";macAddress=" + device.getAddress());
+            Timber.d("在线程 " + Thread.currentThread().getName() + " 中扫描到设备：name=" + (TextUtils.isEmpty(device.getName()) ? "UnkonwName" : device.getName()) + ";macAddress=" + device.getAddress());
             MDevice mDev = new MDevice(device, rssi);
 //            if (devices.contains(mDev))
 //                return;
@@ -407,7 +406,7 @@ public class MdBluetoothManager {
             BluetoothEventType eventType = null;
             if (newState == BluetoothProfile.STATE_CONNECTED) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    requestMtu(gatt, PACKAGE_SIZE);
+                    gatt.requestMtu(PACKAGE_SIZE);//
                 } else {
                     throw new RuntimeException("运行版本太低");
                 }
@@ -418,11 +417,6 @@ public class MdBluetoothManager {
             }
 
             handleBluetoothEvent(eventType, null);
-        }
-
-        @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-        private void requestMtu(BluetoothGatt gatt, int size) {
-            gatt.requestMtu(size);
         }
 
         @Override
@@ -449,7 +443,7 @@ public class MdBluetoothManager {
                 String uuid = gattService.getUuid().toString();
                 if (uuid.equals(GattAttributes.GENERIC_ACCESS_SERVICE) || uuid.equals(GattAttributes.GENERIC_ATTRIBUTE_SERVICE))
                     continue;
-                String name = GattAttributes.lookup(gattService.getUuid().toString(), "UnkonwService");
+                String name = GattAttributes.lookup(uuid, "UnkonwService");
                 if (USR_SERVICE.equals(name)) {
                     usrGattService = gattService;
                 }
@@ -602,7 +596,7 @@ public class MdBluetoothManager {
             if (data == null || data.length == 0)
                 return;
             if (writeCharacteristic == null || gatt == null) {
-                Log.w(LogTag.WARN_TAG, "没有读取到特征或者gatt,无法写入数据");
+                Timber.w("没有读取到特征或者gatt,无法写入数据");
                 return;
             }
             writeCharacteristic.setValue(data);
