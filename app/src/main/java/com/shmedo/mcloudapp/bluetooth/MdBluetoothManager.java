@@ -66,7 +66,6 @@ public class MdBluetoothManager {
      */
     private static final byte[] DEFAULT_SPLIT_BYTES = "\r\n".getBytes(StandardCharsets.UTF_8);
 
-    private static final int ENABLE_PERMISSION = 1;
     /**
      * 50毫秒检查一次
      */
@@ -420,6 +419,7 @@ public class MdBluetoothManager {
     }
 
     private void handleBluetoothEvent(BluetoothEventType eventType, Object eventData) {
+        Timber.d("线程 " + Thread.currentThread().getName() + ", BluetoothEventType = " + eventType);
         BluetoothEvent event = BluetoothEvent.builder()
                 .setEventType(eventType)
                 .setEventData(eventData)

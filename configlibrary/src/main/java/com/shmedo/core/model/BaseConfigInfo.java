@@ -31,8 +31,8 @@ public class BaseConfigInfo {
     private String batteryOverProtect;  //电池过放保护
     private DebugModel debugModel;      //调试模式
     private SensorInterfaceType sensorInterfaceType;    //传感器接口类型
-    private com.shmedo.core.enums.DataEncryption DataEncryption;      //数据加密
-    private com.shmedo.core.enums.SIMChoose SIMChoose;        //SIM选择
+    private DataEncryption DataEncryption;      //数据加密
+    private SIMChoose SIMChoose;        //SIM选择
 
     public BaseConfigInfo() {
     }

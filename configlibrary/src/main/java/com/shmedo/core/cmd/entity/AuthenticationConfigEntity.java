@@ -29,30 +29,30 @@ public class AuthenticationConfigEntity implements Validater {
         if (sn.length() != 7)
             throw new DASParameterException("SN号有误");
         //验证secureCode必须为八位数或者八的倍数
-        if (TextUtils.isEmpty(secureCode) && secureCode.length()%8 != 0)
+        if (TextUtils.isEmpty(secureCode) || secureCode.length() % 8 != 0)
             throw new DASParameterException("参数异常");
     }
 
     @Override
     public String toString() {
-        StringBuilder builder=new StringBuilder();
+        StringBuilder builder = new StringBuilder();
         builder.append(",");
         builder.append(this.sn);
+        builder.append(",");
 
-        String tempString= StringUtil.getRandomString()+secureCode;
-        byte[]asciiByte= tempString.getBytes(StandardCharsets.US_ASCII);
-        byte[]encryptByte= new byte[0];
+        String tempString = StringUtil.getRandomString() + secureCode;
+        byte[] asciiByte = tempString.getBytes(StandardCharsets.US_ASCII);
+        byte[] encryptByte = new byte[0];
         try {
-            encryptByte = DesUtil.encrypt(asciiByte,secureCode);
+            encryptByte = DesUtil.encrypt(asciiByte, secureCode);
         } catch (Exception e) {
             e.printStackTrace();
         }
-        String keyString=StringUtil.bytesToHexString(encryptByte);
-        builder.append(","+keyString);
+        String keyString = StringUtil.bytesToHexString(encryptByte);
+        builder.append( keyString);
 
         return builder.toString();
     }
-
 
 
 }

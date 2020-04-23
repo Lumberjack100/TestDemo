@@ -6,9 +6,13 @@ package com.shmedo.core.enums;
  */
 public enum EquipmentStatus {
 
-    STANDBY(1),ACTIVATION(2);
+    STANDBY(1),
+
+    ACTIVATION(2);
+
     //1、待机  2、激活
     private int status;
+
     EquipmentStatus(int i) {
         this.status = i;
     }
@@ -19,9 +23,11 @@ public enum EquipmentStatus {
 
     public static EquipmentStatus valueOf(int status) {
         switch (status) {
-            case 1:return STANDBY;
-            case 2:return ACTIVATION;
-            default: return STANDBY;
+            case 2:
+                return ACTIVATION;
+
+            default:
+                return STANDBY;
         }
     }
 }

@@ -9,7 +9,16 @@ import com.shmedo.core.interfaces.Validater;
 public class CommandManager {
     private static final CommandManager instance = new CommandManager();
 
+    public static CommandManager getInstance() {
+        return instance;
+    }
+
     private CommandManager() {
+    }
+
+    public String getCommand(CommandType commandType) {
+        Command cmd = new Command(commandType);
+        return cmd.toString();
     }
 
     public <T extends Validater> String getCommand(CommandType commandType, T parameter) {
@@ -17,7 +26,5 @@ public class CommandManager {
         return cmd.toString();
     }
 
-    public static CommandManager getInstance() {
-        return instance;
-    }
+
 }

@@ -27,7 +27,9 @@ public class Command<T extends Validater> {
     public String toString() {
         if (parameters != null)
             parameters.validate();
+
         String paraString = parameters == null ? "" : parameters.toString();
+
         return COMMAND_HEADER + commandType.toString() + paraString + "\r\n";
     }
 }

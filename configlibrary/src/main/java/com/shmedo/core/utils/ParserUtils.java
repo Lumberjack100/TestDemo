@@ -31,7 +31,7 @@ public class ParserUtils
     {
         BaseConfigInfo bean = new BaseConfigInfo();
         bean.setToken(strs[1]);
-        if (Integer.valueOf(strs[2]) != 0)
+        if (Integer.parseInt(strs[2]) != 0)
         {
             if (ValidateUtil.isNumberSix(strs[2]))
                 bean.setLocalBGNum(strs[2]);
@@ -40,7 +40,7 @@ public class ParserUtils
         {
             bean.setLocalBGNum(strs[2]);
         }
-        if (ValidateUtil.isNumberSix(strs[3]) || Integer.valueOf(strs[2]) == 0)
+        if (ValidateUtil.isNumberSix(strs[3]) || Integer.parseInt(strs[2]) == 0)
         {
             bean.setTargetBGNum(strs[3]);
         }
@@ -48,25 +48,25 @@ public class ParserUtils
         {
             throw new DASParameterException("目标北斗卡号异常");
         }
-        int equipmentStatus = Integer.valueOf(strs[4]);
+        int equipmentStatus = Integer.parseInt(strs[4]);
         bean.setEquipmentStatus(EquipmentStatus.valueOf(equipmentStatus));
 
-        int dataCommunicateMode = Integer.valueOf(strs[5]);
+        int dataCommunicateMode = Integer.parseInt(strs[5]);
         bean.setDataCommunicateMode(DataCommunicateMode.valueOf(dataCommunicateMode));
 
-        int rainfallStation = Integer.valueOf(strs[6]);
+        int rainfallStation = Integer.parseInt(strs[6]);
         bean.setRainStation(RainStation.valueOf(rainfallStation));
 
-        int rainAccuracy = Integer.valueOf(strs[7]);
+        int rainAccuracy = Integer.parseInt(strs[7]);
         bean.setRainAccuracy(rainAccuracy);
 
-        int locationSensitivity = Integer.valueOf(strs[8]);
+        int locationSensitivity = Integer.parseInt(strs[8]);
         bean.setLocationSensitivity(locationSensitivity);
 
-        int locationAccuracy = Integer.valueOf(strs[9]);
+        int locationAccuracy = Integer.parseInt(strs[9]);
         bean.setLocationAccuracy(locationAccuracy);
 
-        int heartbeatTimeInterval = Integer.valueOf(strs[10]);
+        int heartbeatTimeInterval = Integer.parseInt(strs[10]);
         bean.setHeartbeatTimeInterval(heartbeatTimeInterval);
 
         long debugBandRate = Long.parseLong(strs[11]);
@@ -78,20 +78,20 @@ public class ParserUtils
         String collectorModel = strs[13];
         bean.setCollectorModel(CollectorModel.value(collectorModel));
 
-        int dataReportInterval = Integer.valueOf(strs[14]);
+        int dataReportInterval = Integer.parseInt(strs[14]);
         bean.setDataReportInterval(dataReportInterval);
         bean.setBatteryOverProtect(strs[15]);
 
-        int debugModel = Integer.valueOf(strs[16]);
+        int debugModel = Integer.parseInt(strs[16]);
         bean.setDebugModel(DebugModel.valueOf(debugModel));
 
-        int sensorInterfaceType = Integer.valueOf(strs[17]);
+        int sensorInterfaceType = Integer.parseInt(strs[17]);
         bean.setSensorInterfaceType(SensorInterfaceType.valueOf(sensorInterfaceType));
 
-        int dataEncryption = Integer.valueOf(strs[18]);
+        int dataEncryption = Integer.parseInt(strs[18]);
         bean.setDataEncryption(DataEncryption.valueOf(dataEncryption));
 
-        int simChoose = Integer.valueOf(strs[19]);
+        int simChoose = Integer.parseInt(strs[19]);
         bean.setSIMChoose(SIMChoose.valueOf(simChoose));
 
         return bean;
@@ -111,7 +111,7 @@ public class ParserUtils
         bean.setStandbyTime(strs[2]);
         bean.setWorkTime(strs[3]);
         bean.setCollectorInterval(strs[4]);
-        bean.setAccessSum(Integer.valueOf(strs[5]));
+        bean.setAccessSum(Integer.parseInt(strs[5]));
 
         return bean;
     }
@@ -120,7 +120,7 @@ public class ParserUtils
     public static SetServerAddressPortInfo startParserServerAddress(String[] strs)
     {
         SetServerAddressPortInfo info = new SetServerAddressPortInfo();
-        info.setNumber(SetServerAddressPort.valueOf(Integer.valueOf(strs[0].substring(5))));
+        info.setNumber(SetServerAddressPort.valueOf(Integer.parseInt(strs[0].substring(5))));
         info.setAddress(strs[1]);
         info.setPort(Integer.parseInt(strs[2]));
         return info;
@@ -135,7 +135,7 @@ public class ParserUtils
      */
     public static String setSersonValue(String sersorValue)
     {
-        int result = Integer.valueOf(sersorValue);
+        int result = Integer.parseInt(sersorValue);
         return String.format("%02d", result);
     }
 

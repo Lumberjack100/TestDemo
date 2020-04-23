@@ -25,6 +25,7 @@ public enum CollectorModel {
     CS08("21");
 
     private String model;
+
     CollectorModel(String model) {
         this.model = model;
     }
@@ -37,30 +38,44 @@ public enum CollectorModel {
 
     public static CollectorModel value(String model) {
         switch (model) {
-            case "00": return VW08;
-            case "02": return DS08;
-            case "03": return HD08;
-            case "04": return CX08;
-            case "06": return UDS08;
-            case "07": return RD08;
-            case "08": return SMC08;
-            case "12": return TH08;
-            case "15": return DVWP;
-            case "16": return QJY08;
-            case "20": return VW01;
-            case "21": return CS08;
-            default: return VW08;
+            case "00":
+                return VW08;
+            case "02":
+                return DS08;
+            case "03":
+                return HD08;
+            case "04":
+                return CX08;
+            case "06":
+                return UDS08;
+            case "07":
+                return RD08;
+            case "08":
+                return SMC08;
+            case "12":
+                return TH08;
+            case "15":
+                return DVWP;
+            case "16":
+                return QJY08;
+            case "20":
+                return VW01;
+            case "21":
+                return CS08;
+            default:
+                return VW08;
         }
     }
 
-    public static boolean isValidCollector(String coll)
-    {
-        if(TextUtils.isEmpty(coll))
+    public static boolean isValidCollector(String coll) {
+        if (TextUtils.isEmpty(coll))
             return false;
-        List<String> allCollectors= new ArrayList<>();
-        for(CollectorModel modle:CollectorModel.values()){
+
+        List<String> allCollectors = new ArrayList<>();
+        for (CollectorModel modle : CollectorModel.values()) {
             allCollectors.add(modle.toString());
         }
+
         return allCollectors.contains(coll);
     }
 }

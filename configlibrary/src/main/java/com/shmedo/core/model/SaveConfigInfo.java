@@ -1,5 +1,7 @@
 package com.shmedo.core.model;
 
+import com.shmedo.core.enums.SaveConfigMode;
+
 /**
  * 项目名：  das-config-base
  * 包名：    com.shmedo.das.common
@@ -10,22 +12,19 @@ package com.shmedo.core.model;
  */
 
 public class SaveConfigInfo {
-    private int info;
+    private SaveConfigMode mode;
 
-
-    public int getInfo() {
-        return info;
+    public SaveConfigMode getMode() {
+        return mode;
     }
 
-
-    public void setInfo(int info) {
-        this.info = info;
+    public void setMode(SaveConfigMode mode) {
+        this.mode = mode;
     }
-
 
     @Override public String toString() {
         return "SaveConfigInfo{" +
-            "info=" + info +
+            "mode=" + mode +
             '}';
     }
 }

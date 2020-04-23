@@ -1,6 +1,7 @@
 package com.shmedo.core.cmd.parser;
 
 import com.shmedo.core.enums.CommandType;
+import com.shmedo.core.enums.SaveConfigMode;
 import com.shmedo.core.interfaces.ResultParser;
 import com.shmedo.core.model.SaveConfigInfo;
 
@@ -17,7 +18,7 @@ public class SaveConfigInfoParser implements ResultParser<SaveConfigInfo> {
 
     @Override public SaveConfigInfo parse(String result) {
         SaveConfigInfo info = new SaveConfigInfo();
-        info.setInfo(Integer.parseInt(result.substring(5,6)));
+        info.setMode(SaveConfigMode.valueOf(Integer.parseInt(result.substring(5,6))));
         return info;
     }
 

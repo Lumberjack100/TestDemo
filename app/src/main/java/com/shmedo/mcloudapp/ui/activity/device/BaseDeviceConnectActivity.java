@@ -17,7 +17,9 @@ import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.hjq.toast.ToastUtils;
 import com.shmedo.core.cmd.CommandManager;
+import com.shmedo.core.cmd.entity.SaveConfigInfoEntity;
 import com.shmedo.core.enums.CommandType;
+import com.shmedo.core.enums.SaveConfigMode;
 import com.shmedo.core.interfaces.OnBytePackage;
 import com.shmedo.core.utils.DesUtil;
 import com.shmedo.core.utils.StringUtil;
@@ -51,6 +53,13 @@ import timber.log.Timber;
 public abstract class BaseDeviceConnectActivity extends BaseActivity {
 
     public static final int REQUEST_ENABLE_BT = 0x001;
+
+    private static final int COMMAND_DELAY_MILLIS = 10000;
+
+    private static final int SCAN_DELAY_MILLIS = 5000;
+
+    private static final int CONNECT_DELAY_MILLIS = 15000;
+
 
     private MdBluetoothManager mdBluetoothManager;
 
@@ -148,7 +157,7 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
         mdBluetoothManager.scanDevice(10, this);
         if (null != mBluetoothAdapter && mBluetoothAdapter.isEnabled()) {
             errMsg = "未搜索到此设备，请稍后尝试";
-            startProgressRunnable("正在搜索设备：" + SN, 5000);
+            startProgressRunnable("正在搜索设备：" + SN, SCAN_DELAY_MILLIS);
 
             //因设备问题会造成长时间搜索设备，在此操作过程中无法中断和进行其他操作，进度框会长时间在页面停留
             //新增操作返回，中断当前蓝牙操作并关闭进度框
@@ -213,7 +222,7 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
         mdBluetoothManager.stopScan();
         mdBluetoothManager.connectDevice(device, this);
         errMsg = "连接超时,请稍后尝试";
-        startProgressRunnable("正在连接设备：" + SN, 15000);
+        startProgressRunnable("正在连接设备：" + SN, CONNECT_DELAY_MILLIS);
     }
 
     /**
@@ -293,7 +302,7 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
                     try {
                         String msg = ((Message) event.getEventData()).getResponseMessage();
                         byte[] data = (byte[]) msg.getBytes();
-                        if (data != null && data.length > 0) {
+                        if (data.length > 0) {
                             ByteManagerUtil.getInstance().writeByte(data);
                         }
                     } catch (Exception ex) {
@@ -314,7 +323,7 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
                 case RESPONSE_WITH_NO_MESSAGE:
                     try {
                         byte[] data = ((String) event.getEventData()).getBytes();
-                        if (data != null && data.length > 0) {
+                        if (data.length > 0) {
                             ByteManagerUtil.getInstance().writeByte(data);
                         }
                     } catch (Exception ex) {
@@ -371,7 +380,7 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
                         } else {
                             ToastUtils.show("蓝牙连接成功");
                             errMsg = "查询设备参数超时，请尝试重新连接";
-                            startProgressRunnable("查询设备配置参数...", 10000);
+                            startProgressRunnable("查询设备配置参数...", COMMAND_DELAY_MILLIS);
                             obtainDeviceConfigInfoCmd();
                         }
                     } else {
@@ -432,7 +441,7 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
         public void onPackageArrived(final byte[] data) {
             try {
                 final String cmdStr = new String(data, StandardCharsets.UTF_8);
-                Timber.d("应答指令===" + cmdStr);
+                Timber.d("应答指令===%s", cmdStr);
                 String cmdArray[] = cmdStr.replace("\r\n", "").split(",");
 
                 if (cmdStr.startsWith("$$224") && cmdStr.endsWith("\r\n")) {
@@ -444,12 +453,12 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
                     byte[] resultData = StringUtil.hexStringToBytes(cmdArray[3]);
                     try {
                         String deskey = "12345678";
-                        String strdes = new String(DesUtil.decrypt(resultData, deskey), "utf-8");
+                        String strdes = new String(DesUtil.decrypt(resultData, deskey), StandardCharsets.UTF_8);
                         if (!TextUtils.isEmpty(strdes)) {
                             String desStr = StringUtil.bytesToHexString(DesUtil.encrypt((StringUtil.reverseString(strdes.substring(0, 6)) + deskey).getBytes(), deskey));
                             String cmd = "##222," + SN + ",0," + desStr.toUpperCase() + "\r\n";
                             sendCommonCommand(cmd);
-                            Timber.d("发送设备登录验证指令===" + cmd);
+                            Timber.d("发送设备登录验证指令===%s", cmd);
                             return;
                         }
                     } catch (Exception e) {
@@ -461,7 +470,7 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
                 //设备登录验证结果指令
                 if (cmdStr.startsWith("$$223") && cmdStr.endsWith("\r\n")) {
                     sendHandleMessage(Constants.VERIFY_RESULT, cmdArray[1]);
-                    Timber.d("设备登录验证状态===" + cmdArray[1]);
+                    Timber.d("设备登录验证状态===%s", cmdArray[1]);
                     return;
                 }
 
@@ -689,17 +698,19 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
      * 蓝牙连接成功开始进行验证  lock
      */
     private void startBluAuthenticate() {
-        String com = "\r\n##224," + SN + ",0\r\n";
-        Message msg = new Message(UUID.randomUUID().toString(), com, true);
-        mdBluetoothManager.writeMessage(msg);
-        Timber.d("发送指令===" + com);
+        String cmd = "\r\n##224," + SN + ",0\r\n";
+        sendCommonCommandImmediately(cmd);
+        Timber.d("发送验证指令===" + cmd);
     }
 
 
     protected void sendSaveParamCommand() {
+        SaveConfigInfoEntity saveConfigInfoEntity = new SaveConfigInfoEntity(SaveConfigMode.SAVE_REBOOT.toInt());
+        String command = CommandManager.getInstance().getCommand(CommandType.SAVE_CONFIG_INFO, saveConfigInfoEntity);
+
         errMsg = "发送指令超时,请稍后尝试";
-        startProgressRunnable("正在发送保存命令...", 10000);
-        sendCommonCommandImmediately("##0191\r\n");
+        startProgressRunnable("正在发送保存命令...", COMMAND_DELAY_MILLIS);
+        sendCommonCommandImmediately(command);
     }
 
 

@@ -20,6 +20,7 @@ import com.hjq.toast.ToastUtils;
 import com.kyleduo.switchbutton.SwitchButton;
 import com.shmedo.core.cmd.CommandManager;
 import com.shmedo.core.cmd.CommandResult;
+import com.shmedo.core.cmd.entity.DebugModeEntity;
 import com.shmedo.core.cmd.entity.SettingRemoteUpgradeEntity;
 import com.shmedo.core.enums.CommandType;
 import com.shmedo.core.enums.DebugModel;
@@ -139,30 +140,32 @@ public class DeviceAdvanceConfigActivity extends BaseDeviceConnectActivity {
                 debugModeCheck++;
                 if (debugModeCheck >= 2) {
                     String status = parent.getSelectedItem().toString();
-                    String smdStr;
+                    DebugModel debugModel;
                     switch (status) {
                         case "初始化":
-                            smdStr = "##0060\r\n";
+                            debugModel = DebugModel.INITIALZE;
                             break;
 
                         case "关闭":
-                            smdStr = "##0061\r\n";
+                            debugModel = DebugModel.CLOSE;
                             break;
 
                         case "DEBUG":
-                            smdStr = "##0062\r\n";
+                            debugModel = DebugModel.DEBUG;
                             break;
 
                         case "INFO":
-                            smdStr = "##0063\r\n";
+                            debugModel = DebugModel.INFO;
                             break;
 
                         default:
-                            smdStr = "##0061\r\n";
+                            debugModel = DebugModel.CLOSE;
                             break;
                     }
-                    sendCommonCommandImmediately(smdStr);
-                    Timber.d("设置调试模式指令==" + smdStr);
+                    DebugModeEntity debugModeEntity = new DebugModeEntity(debugModel.toInt());
+                    String command = CommandManager.getInstance().getCommand(CommandType.DAS_DEBUG_MODE, debugModeEntity);
+                    sendCommonCommandImmediately(command);
+                    Timber.d("设置调试模式指令==%s", command);
                 }
             }
 
@@ -347,7 +350,7 @@ public class DeviceAdvanceConfigActivity extends BaseDeviceConnectActivity {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(SyncPositionBean event) {
-        Timber.i("==位置来了==" + event.toString());
+        Timber.i("==位置来了==%s", event.toString());
         if (event.getType().equals("location")) {
             address = event.getAddress();
             latLong = String.format(Locale.getDefault(), "%.6f", event.getLongitude()) + "," + String.format(Locale.getDefault(), "%.6f", event.getLatitude());
