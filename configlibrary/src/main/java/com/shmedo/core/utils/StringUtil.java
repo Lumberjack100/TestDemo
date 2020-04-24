@@ -7,6 +7,7 @@ import com.shmedo.core.cmd.CommandResult;
 import com.shmedo.core.enums.CommandType;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.Random;
 
 /**
@@ -14,7 +15,7 @@ import java.util.Random;
  */
 public class StringUtil {
 
-    public static boolean isNullOrEmptyList(List<String> list){
+    public static boolean isNullOrEmptyList(List<String> list) {
         return list.size() == 0;
     }
 
@@ -29,7 +30,7 @@ public class StringUtil {
             throw new IllegalArgumentException("指令结果格式错误:" + result);
         String cmd = result.replace(CommandResult.COMMAND_RESULT_HEADER, "").substring(0, 3);
         Holder<CommandType> cmdTypeHolder = new Holder<>();
-        for (CommandType cmds:CommandType.values()){
+        for (CommandType cmds : CommandType.values()) {
             if (cmds.toString().equals(cmd)) {
                 cmdTypeHolder.setData(cmds);
             }
@@ -43,28 +44,29 @@ public class StringUtil {
 
     /**
      * A-Z 65-90 a-z 97-122
+     *
      * @return 返回六位随机数
      */
-    public static String getRandomString()
-    {
-        StringBuilder builder=new StringBuilder();
-        Random rnd=new Random();
-        for(int i=0;i<6;++i)
-        {
-            char c=(char)(rnd.nextInt(90)%(90-65+1)+65);
-            char c2=(char)(rnd.nextInt(122)%(122-97+1)+97);
-            char use=i%2==0?c:c2;
+    public static String getRandomString() {
+        StringBuilder builder = new StringBuilder();
+        Random rnd = new Random();
+        for (int i = 0; i < 6; ++i) {
+            char c = (char) (rnd.nextInt(90) % (90 - 65 + 1) + 65);
+            char c2 = (char) (rnd.nextInt(122) % (122 - 97 + 1) + 97);
+            char use = i % 2 == 0 ? c : c2;
             builder.append(use);
         }
         return builder.toString();
     }
 
+
     /**
-     *  将字节数组转化成字符串
+     * 将字节数组转化成字符串
+     *
      * @param src 字节数组
      * @return 返回字符串
      */
-    public static String bytesToHexString(byte[] src){
+    public static String bytesToHexString(byte[] src) {
         StringBuilder stringBuilder = new StringBuilder();
         if (src == null || src.length <= 0) {
             return null;
@@ -81,7 +83,8 @@ public class StringUtil {
     }
 
     /**
-     *  将十六进制字符串转化成数组
+     * 将十六进制字符串转化成数组
+     *
      * @param hexString 参数
      * @return 返回字节数组
      */
@@ -99,21 +102,85 @@ public class StringUtil {
         }
         return d;
     }
+
     private static byte charToByte(char c) {
         return (byte) "0123456789ABCDEF".indexOf(c);
     }
 
     /**
-     *  倒叙
+     * 将字符串转化成十六进制字符串
+     *
+     * @param str 返回字符串
+     * @return 返回字符串
+     */
+    public static String convertStringToHex(String str) {
+        char[] chars = str.toCharArray();
+
+        StringBuffer hex = new StringBuffer();
+        for (int i = 0; i < chars.length; i++) {
+            hex.append(Integer.toHexString((int) chars[i]) + " ");
+        }
+
+        return hex.toString();
+    }
+
+    /**
+     * 倒叙
+     *
      * @param str 参数
      * @return 返回字符串
      */
     public static String reverseString(String str) {
-
         StringBuffer stringBuffer = new StringBuffer();
-        for (int i = str.length()-1;i >= 0;i--){
+        for (int i = str.length() - 1; i >= 0; i--) {
             stringBuffer.append(str.charAt(i));
         }
         return stringBuffer.toString();
+    }
+
+
+    /**
+     * 格式化输出2位整数(02d: 0 代表前面补充0,2 代表长度为2,d 代表参数为正数型)
+     * @param str
+     * @return
+     */
+    public static String formatStringTwo(String str) {
+        if (TextUtils.isEmpty(str)) {
+            return "";
+        }
+        return String.format(Locale.getDefault(), "%02d", Integer.parseInt(str));
+    }
+
+    /**
+     * 格式化输出4位整数(04d: 0 代表前面补充0,4 代表长度为4,d 代表参数为正数型)
+     * @param str
+     * @return
+     */
+    public static String formatStringFour(String str) {
+        if (TextUtils.isEmpty(str)) {
+            return "";
+        }
+        return String.format(Locale.getDefault(), "%04d", Integer.parseInt(str));
+    }
+
+    /**
+     * 格式化输出5位整数(05d: 0 代表前面补充0,5 代表长度为5,d 代表参数为正数型)
+     * @param str
+     * @return
+     */
+    public static String formatStringFive(String str) {
+        if (TextUtils.isEmpty(str)) {
+            return "";
+        }
+        return String.format(Locale.getDefault(), "%05d", Integer.parseInt(str));
+    }
+
+
+    public static int formatNumber(String accessSum) {
+        if (accessSum != null) {
+            return Integer.parseInt(accessSum);
+        } else {
+            return -1;
+        }
     }
 }

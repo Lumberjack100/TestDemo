@@ -23,7 +23,7 @@ import com.shmedo.core.model.SensorTemperHumidityInfo;
 import com.shmedo.core.model.SensorUltrasonicLevelInfo;
 import com.shmedo.core.model.SensorUpliftPressureInfo;
 import com.shmedo.core.model.SensorWireShiftInfo;
-import com.shmedo.core.utils.ParserUtils;
+import com.shmedo.core.utils.StringUtil;
 
 import static com.shmedo.core.enums.SensorType.WIRE_SHIFT;
 
@@ -39,7 +39,7 @@ public class CollectorSensorParamsParser implements ResultParser<CollectorSensor
     @Override
     public CollectorSensorParamsInfo parse(String result) {
         String[] strs = result.split(",");
-        String collectorType = ParserUtils.setSersonValue(strs[2]);
+        String collectorType = StringUtil.formatStringTwo(strs[2]);
         switch (collectorType){
             case "02": return parserWireShift(strs);
             case "03": return parserSoilMoisture(strs);

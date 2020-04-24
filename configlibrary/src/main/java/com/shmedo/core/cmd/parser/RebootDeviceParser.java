@@ -14,7 +14,7 @@ public class RebootDeviceParser implements ResultParser<RebootDeviceInfo> {
     @Override
     public RebootDeviceInfo parse(String result) {
         RebootDeviceInfo info = new RebootDeviceInfo();
-        info.setTime(Integer.valueOf(result.substring(5)));
+        info.setTime(Integer.parseInt(result.substring(5)));
         return info;
     }
 

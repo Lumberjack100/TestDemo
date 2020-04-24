@@ -11,6 +11,7 @@ import android.text.TextUtils;
 
 import androidx.core.content.ContextCompat;
 
+import com.shmedo.core.utils.StringUtil;
 import com.shmedo.mcloudapp.R;
 
 import org.jetbrains.annotations.NotNull;
@@ -78,7 +79,7 @@ public class ImageUtil {
      * @time 2019-09-05
      */
     public static int getSensorResourceID(int type) {
-        String sensorType = com.shmedo.mcloudapp.util.StringUtil.formatStringTwo(String.valueOf(type));
+        String sensorType = StringUtil.formatStringTwo(String.valueOf(type));
         switch (sensorType) {
             case "02":
                 return R.drawable.medo_icon_sensortype_2;

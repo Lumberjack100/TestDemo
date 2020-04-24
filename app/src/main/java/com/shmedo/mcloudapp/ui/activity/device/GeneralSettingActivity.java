@@ -23,10 +23,10 @@ import com.shmedo.core.cmd.entity.CollectorStandbyTimeEntity;
 import com.shmedo.core.cmd.entity.SetCollectorAddressEntity;
 import com.shmedo.core.enums.CommandType;
 import com.shmedo.core.model.CollectorConfigInfo;
+import com.shmedo.core.utils.StringUtil;
 import com.shmedo.mcloudapp.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.interfaces.Extras;
-import com.shmedo.mcloudapp.util.StringUtil;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;

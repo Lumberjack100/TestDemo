@@ -15,6 +15,7 @@ import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 
 import com.hjq.toast.ToastUtils;
+import com.shmedo.core.utils.ValidateUtil;
 import com.shmedo.mcloudapp.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.base.BaseActivity;
@@ -26,7 +27,6 @@ import com.shmedo.mcloudapp.util.DaoManager;
 import com.shmedo.mcloudapp.util.GsonFactory;
 import com.shmedo.mcloudapp.util.LoginManager;
 import com.shmedo.mcloudapp.util.MyCountDownTimer;
-import com.shmedo.mcloudapp.util.StringUtil;
 import com.shmedo.mcloudapp.util.UserConfig;
 import com.shmedo.mcloudapp.views.ClearEditText;
 
@@ -181,7 +181,7 @@ public class LoginActivity extends BaseActivity implements LoginManager.LoginCal
 
             case R.id.btn_get_code://获取验证码
                 String mPhoneNumber = mLoginEditTextIphone.getText().toString().trim();
-                if (StringUtil.isPhoneNumber(mPhoneNumber)) {
+                if (ValidateUtil.checkMobileNumber(mPhoneNumber)) {
                     sendSmsCode(mPhoneNumber);
                 } else {
                     ToastUtils.show("手机号输入格式错误！");
@@ -221,7 +221,7 @@ public class LoginActivity extends BaseActivity implements LoginManager.LoginCal
 
                 String mobile = mLoginEditTextIphone.getText().toString();
                 String code = mLoginPhonePassword.getText().toString();
-                if (!StringUtil.isPhoneNumber(mobile) || !StringUtil.isNumeric(code)) {
+                if (!ValidateUtil.checkMobileNumber(mobile) || !ValidateUtil.isNumeric(code)) {
                     ToastUtils.show("手机号或验证码输入格式错误！");
                     return;
                 }

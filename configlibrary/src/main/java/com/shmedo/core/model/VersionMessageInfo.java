@@ -5,7 +5,13 @@ package com.shmedo.core.model;
  *  版本信息实体类
  */
 public class VersionMessageInfo {
-
+    /**
+     * （1）SN号
+     * （2）固件版本
+     * （3）生产日期
+     * 示例：
+     * $$040,150000L,DAS-LF-V3.0.2,170817
+     */
     private String productID;       //产品序列号
     private String firmwareVersion; //固件版本号
     private String produceDate;     //生产日期

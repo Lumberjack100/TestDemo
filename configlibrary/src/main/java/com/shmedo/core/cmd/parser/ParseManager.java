@@ -7,6 +7,7 @@ import com.shmedo.core.enums.CommandType;
 import com.shmedo.core.interfaces.ResultParser;
 import com.shmedo.core.utils.StringUtil;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,6 +19,7 @@ import static com.shmedo.core.cmd.CommandResult.RESULT_MIN_LENGTH;
 
 /**
  * Created by Liudongdong on 17/12/12.
+ * 解析数据管理器
  */
 public class ParseManager {
     private static final ParseManager instance = new ParseManager();
@@ -77,111 +79,68 @@ public class ParseManager {
      * 将本包下的Parse注册到parserMap中
      */
     private void registerParse() {
-        AuthenticationConfigParser authenticationConfigParser = new AuthenticationConfigParser();
-        AuthorizePhoneNumberParser authorizePhoneNumberParser = new AuthorizePhoneNumberParser();
-        BaseConfigParser baseConfigParser = new BaseConfigParser();
-        BatchResultParser batchResultParser = new BatchResultParser();
-        CellProtectionVoltageParser cellProtectionVoltageParser = new CellProtectionVoltageParser();
-        CollectorConfigParser collectorConfigParser = new CollectorConfigParser();
-        CollectorFrequencyParser collectorFrequencyParser = new CollectorFrequencyParser();
-        CollectorSensorParamsParser collectorSensorParamsParser = new CollectorSensorParamsParser();
-        CollectorSensorRevisedParser collectorSensorRevisedParser = new CollectorSensorRevisedParser();
-        CollectorSensorThresholdParser collectorSensorThresholdParser = new CollectorSensorThresholdParser();
-        CollectorSensorThresholdSoliParser collectorSensorThresholdSoliParser = new CollectorSensorThresholdSoliParser();
-        CollectorSolutionFrequencyParser collectorSolutionFrequencyParser = new CollectorSolutionFrequencyParser();
-        CollectorStandbyTimeParser collectorStandbyTimeParser = new CollectorStandbyTimeParser();
-        DASSendAuthenticRequestParser dasSendAuthenticRequestParser = new DASSendAuthenticRequestParser();
-        DASSendAuthenticResultParser dasSendAuthenticResultParser = new DASSendAuthenticResultParser();
-        LowEnergyModelParser lowEnergyModelParser = new LowEnergyModelParser();
-        DataMessageModelParser dataMessageModelParser = new DataMessageModelParser();
-        DataReportIntervalParser dataReportIntervalParser = new DataReportIntervalParser();
-        DigitalOsmometerFunctionParser digitalOsmometerFunctionParser = new DigitalOsmometerFunctionParser();
-        GetAllSensorConfigParser getAllSensorConfigParser = new GetAllSensorConfigParser();
-        HeartbeatSendIntervalParser heartbeatSendIntervalParser = new HeartbeatSendIntervalParser();
-        InstantCollectionParser instantCollectionParser = new InstantCollectionParser();
-        LocalTimeParser localTimeParser = new LocalTimeParser();
-        QueryOsmometerParameterParser queryOsmometerParameterParser = new QueryOsmometerParameterParser();
-        RainStationParser rainStationParser = new RainStationParser();
-        RebootDeviceParser rebootDeviceParser = new RebootDeviceParser();
-        RestoreFactorySettingParser restoreFactorySettingParser = new RestoreFactorySettingParser();
-        SaveConfigInfoParser saveConfigInfoParser = new SaveConfigInfoParser();
-        SensorBaudRateParser sensorBaudRateParser = new SensorBaudRateParser();
-        SensorInterfaceTypeParser sensorInterfaceTypeParser = new SensorInterfaceTypeParser();
-        ServerAddressParser serverAddressParser = new ServerAddressParser();
-        SetAuthorzePhoneParser setAuthorzePhoneParser = new SetAuthorzePhoneParser();
-        SetCollectorAddressParser setCollectorAddressParser = new SetCollectorAddressParser();
-        SetCollectorSensorParser setCollectorSensorParser = new SetCollectorSensorParser();
-        SetCordLenghtParser setCordLenghtParser = new SetCordLenghtParser();
-        SetGPRSOnlineTimeParser setGPRSOnlineTimeParser = new SetGPRSOnlineTimeParser();
-        SetInclinometerLongParser setInclinometerLongParser = new SetInclinometerLongParser();
-        SetOsmometerAddressParser setOsmometerAddressParser = new SetOsmometerAddressParser();
-        SetOsmometerCorrectparser setOsmometerCorrectparser = new SetOsmometerCorrectparser();
-        SetOsmometerTriggerParser setOsmometerTriggerParser = new SetOsmometerTriggerParser();
-        SetServerAddressPortParser setServerAddressPortParser = new SetServerAddressPortParser();
-        SetGPSPositionParser setGPSPositionParser = new SetGPSPositionParser();
-        SetRainPrecisionParser setRainPrecisionParser = new SetRainPrecisionParser();
-        SetRemoteUpgradeParser setRemoteUpgradeParser = new SetRemoteUpgradeParser();
-        SixTargerBDNumberParser sixTargerBDNumberParser = new SixTargerBDNumberParser();
-        SystemRunStateParser systemRunStateParser = new SystemRunStateParser();
-        VersionMessageParser versionMessageParser = new VersionMessageParser();
-        VibratingSensorParameterParser vibratingSensorParameterParser = new VibratingSensorParameterParser();
-        DeviceLockStatusParser deviceLockStatusParser = new DeviceLockStatusParser();
-        BreakAlarmStatusParser breakAlarmStatusParser = new BreakAlarmStatusParser();
+        List<Class> clazzes = Arrays.asList(new Class[]{
+                AuthenticationConfigParser.class,
+                BaseConfigParser.class,
+                BatchResultParser.class,
+                CellProtectionVoltageParser.class,
+                CollectorConfigParser.class,
+                CollectorFrequencyParser.class,
+                CollectorSensorParamsParser.class,
+                CollectorSensorRevisedParser.class,
+                CollectorSensorThresholdParser.class,
+                CollectorSensorThresholdSoliParser.class,
+                CollectorSolutionFrequencyParser.class,
+                CollectorStandbyTimeParser.class,
+                DASSendAuthenticRequestParser.class,
+                DASSendAuthenticResultParser.class,
+                LowEnergyModelParser.class,
+                DataMessageModelParser.class,
+                DataReportIntervalParser.class,
+                DigitalOsmometerFunctionParser.class,
+                GetAllSensorConfigParser.class,
+                HeartbeatSendIntervalParser.class,
+                InstantCollectionParser.class,
+                LocalTimeParser.class,
+                QueryOsmometerParameterParser.class,
+                RainStationParser.class,
+                RebootDeviceParser.class,
+                RestoreFactorySettingParser.class,
+                SaveConfigInfoParser.class,
+                SensorBaudRateParser.class,
+                SensorInterfaceTypeParser.class,
+                ServerAddressParser.class,
+                SetAuthorzePhoneParser.class,
+                SetCollectorAddressParser.class,
+                SetCollectorSensorParser.class,
+                SetCordLenghtParser.class,
+                SetGPRSOnlineTimeParser.class,
+                SetInclinometerLongParser.class,
+                SetOsmometerAddressParser.class,
+                SetOsmometerCorrectparser.class,
+                SetOsmometerTriggerParser.class,
+                SetServerAddressPortParser.class,
+                SetGPSPositionParser.class,
+                SetRainPrecisionParser.class,
+                SetRemoteUpgradeParser.class,
+                SixTargerBDNumberParser.class,
+                SystemRunStateParser.class,
+                VersionMessageParser.class,
+                VibratingSensorParameterParser.class,
+                DeviceLockStatusParser.class,
+                BreakAlarmStatusParser.class,
+                InstallLocationParser.class,
+                DeviceStatusInfoOneParse.class,
+                DeviceStatusInfoTwoParse.class,
+                DeviceStatusInfoThreeParse.class,
+                DeviceNetStatusParser.class,
+                OperatorInfoParser.class
+        });
 
-        parserMap.put(authenticationConfigParser.commandType(), authenticationConfigParser);
-        parserMap.put(authorizePhoneNumberParser.commandType(), authorizePhoneNumberParser);
-        parserMap.put(baseConfigParser.commandType(), baseConfigParser);
-        parserMap.put(batchResultParser.commandType(), batchResultParser);
-        parserMap.put(cellProtectionVoltageParser.commandType(), cellProtectionVoltageParser);
-        parserMap.put(collectorConfigParser.commandType(), collectorConfigParser);
-        parserMap.put(collectorFrequencyParser.commandType(), collectorFrequencyParser);
-        parserMap.put(collectorSensorParamsParser.commandType(), collectorSensorParamsParser);
-        parserMap.put(collectorSensorRevisedParser.commandType(), collectorSensorRevisedParser);
-        parserMap.put(collectorSensorThresholdParser.commandType(), collectorSensorThresholdParser);
-        parserMap.put(collectorSensorThresholdSoliParser.commandType(), collectorSensorThresholdSoliParser);
-        parserMap.put(collectorSolutionFrequencyParser.commandType(), collectorSolutionFrequencyParser);
-        parserMap.put(collectorStandbyTimeParser.commandType(), collectorStandbyTimeParser);
-        parserMap.put(dasSendAuthenticRequestParser.commandType(), dasSendAuthenticRequestParser);
-        parserMap.put(dasSendAuthenticResultParser.commandType(), dasSendAuthenticResultParser);
-        parserMap.put(lowEnergyModelParser.commandType(), lowEnergyModelParser);
-        parserMap.put(dataMessageModelParser.commandType(), dataMessageModelParser);
-        parserMap.put(dataReportIntervalParser.commandType(), dataReportIntervalParser);
-        parserMap.put(digitalOsmometerFunctionParser.commandType(), digitalOsmometerFunctionParser);
-        parserMap.put(getAllSensorConfigParser.commandType(), getAllSensorConfigParser);
-        parserMap.put(heartbeatSendIntervalParser.commandType(), heartbeatSendIntervalParser);
-        parserMap.put(instantCollectionParser.commandType(), instantCollectionParser);
-        parserMap.put(localTimeParser.commandType(), localTimeParser);
-        parserMap.put(queryOsmometerParameterParser.commandType(), queryOsmometerParameterParser);
-        parserMap.put(rainStationParser.commandType(), rainStationParser);
-        parserMap.put(rebootDeviceParser.commandType(), rebootDeviceParser);
-        parserMap.put(restoreFactorySettingParser.commandType(), restoreFactorySettingParser);
-        parserMap.put(saveConfigInfoParser.commandType(), saveConfigInfoParser);
-        parserMap.put(sensorBaudRateParser.commandType(), sensorBaudRateParser);
-        parserMap.put(sensorInterfaceTypeParser.commandType(), sensorInterfaceTypeParser);
-        parserMap.put(serverAddressParser.commandType(), serverAddressParser);
-        parserMap.put(setAuthorzePhoneParser.commandType(), setAuthorzePhoneParser);
-        parserMap.put(setCollectorAddressParser.commandType(), setCollectorAddressParser);
-        parserMap.put(setCollectorSensorParser.commandType(), setCollectorSensorParser);
-        parserMap.put(setCordLenghtParser.commandType(), setCordLenghtParser);
-        parserMap.put(setGPRSOnlineTimeParser.commandType(), setGPRSOnlineTimeParser);
-        parserMap.put(setInclinometerLongParser.commandType(), setInclinometerLongParser);
-        parserMap.put(setOsmometerAddressParser.commandType(), setOsmometerAddressParser);
-        parserMap.put(setOsmometerCorrectparser.commandType(), setOsmometerCorrectparser);
-        parserMap.put(setOsmometerTriggerParser.commandType(), setOsmometerTriggerParser);
-        parserMap.put(setServerAddressPortParser.commandType(), setServerAddressPortParser);
-        parserMap.put(setGPSPositionParser.commandType(), setGPSPositionParser);
-        parserMap.put(setRainPrecisionParser.commandType(), setRainPrecisionParser);
-        parserMap.put(setRemoteUpgradeParser.commandType(), setRemoteUpgradeParser);
-        parserMap.put(sixTargerBDNumberParser.commandType(), sixTargerBDNumberParser);
-        parserMap.put(systemRunStateParser.commandType(), systemRunStateParser);
-        parserMap.put(versionMessageParser.commandType(), versionMessageParser);
-        parserMap.put(vibratingSensorParameterParser.commandType(), vibratingSensorParameterParser);
-        parserMap.put(deviceLockStatusParser.commandType(), deviceLockStatusParser);
-        parserMap.put(breakAlarmStatusParser.commandType(), breakAlarmStatusParser);
-
+        registerWithClass(clazzes);
     }
 
-    public void registerWithClass(List<Class> classes) {
+    private void registerWithClass(List<Class> classes) {
         try {
             for (int i = 0; i < classes.size(); ++i) {
                 ResultParser resultParser = (ResultParser) classes.get(i).newInstance();
@@ -191,6 +150,5 @@ public class ParseManager {
             throw new RuntimeException(ex);
         }
     }
-
 
 }

@@ -25,6 +25,7 @@ import com.shmedo.core.cmd.CommandManager;
 import com.shmedo.core.cmd.entity.RebootDeviceEntity;
 import com.shmedo.core.cmd.entity.SetRemoteUpgradeEntity;
 import com.shmedo.core.enums.CommandType;
+import com.shmedo.core.utils.ValidateUtil;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.ui.activity.device.BaseDeviceConnectActivity;
 
@@ -79,7 +80,7 @@ public class AdvanceSetDialogUtils {
                         ToastUtils.show("重启时间不能为空");
                         return;
                     }
-                    if (!StringUtil.isNumeric(time)) {
+                    if (!ValidateUtil.isNumeric(time)) {
                         ToastUtils.show("重启时间格式只能为数字");
                         return;
                     }
@@ -95,7 +96,7 @@ public class AdvanceSetDialogUtils {
                         ToastUtils.show("端口号不能为空");
                         return;
                     }
-                    if (!StringUtil.isNumeric(port)) {
+                    if (!ValidateUtil.isNumeric(port)) {
                         ToastUtils.show("端口号格式只能为数字");
                         return;
                     }

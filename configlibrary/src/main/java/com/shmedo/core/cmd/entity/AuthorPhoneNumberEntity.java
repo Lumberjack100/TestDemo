@@ -22,7 +22,7 @@ public class AuthorPhoneNumberEntity implements Validater {
     public void validate() {
         if (TextUtils.isEmpty(phoneNUmber))
             throw new DASParameterException("手机号不能为空");
-        if (!ValidateUtil.checkCellphone(this.phoneNUmber))
+        if (!ValidateUtil.checkMobileNumber(this.phoneNUmber))
             throw new DASParameterException("手机号码有误，请重试！");
 
     }

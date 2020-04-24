@@ -1,6 +1,5 @@
 package com.shmedo.mcloudapp.util;
 
-import android.annotation.SuppressLint;
 import android.text.TextUtils;
 
 import com.shmedo.core.cmd.CommandResult;
@@ -21,126 +20,7 @@ import java.util.regex.Pattern;
 
 public class StringUtil {
 
-    /**
-     * 正则表达式：验证手机号
-     */
-    public static final String REGEX_MOBILE = "^(1[3-9])\\d{9}$";//"^1\\d{10}$"
 
-    /**
-     * 正则表达式：数字验证码
-     */
-    public static final String REGEX_NUMERIC = "^[0-9]*$";
-
-
-    /**
-     * 正则表达式：URL
-     */
-    public static final String REGEX_URL = "[-A-Za-z0-9+&@#/%?=~_|!:,.;]+[-A-Za-z0-9+&@#/%=~_|]";
-
-
-
-    /**
-     * 手机号输入是否正确
-     *
-     * @param phoneNumber
-     * @return 校验通过返回true，否则返回false
-     */
-    public static boolean isPhoneNumber(String phoneNumber) {
-        if (TextUtils.isEmpty(phoneNumber)) {
-            return false;
-        }
-
-        return Pattern.matches(REGEX_MOBILE, phoneNumber);
-    }
-
-
-    /**
-     * 是否数字
-     *
-     * @param code
-     * @return
-     */
-    public static boolean isNumeric(String code) {
-        if (TextUtils.isEmpty(code)) {
-            return false;
-        }
-
-        return Pattern.matches(REGEX_NUMERIC, code);
-    }
-
-
-    /**
-     * 检查采集器地址是否合法；地址可以为空
-     *
-     * @param address
-     * @return
-     */
-    public static boolean checkServerAddress(String address) {
-        if (TextUtils.isEmpty(address)) {
-            return true;
-        }
-
-        if(!address.contains(":")){
-            return false;
-        }
-
-        return Pattern.matches(REGEX_URL, address);
-    }
-
-    public static String convertStringToHex(String str) {
-        char[] chars = str.toCharArray();
-
-        StringBuffer hex = new StringBuffer();
-        for (int i = 0; i < chars.length; i++) {
-            hex.append(Integer.toHexString((int) chars[i]) + " ");
-        }
-
-        return hex.toString();
-    }
-
-    @SuppressLint("DefaultLocale")
-    public static String formatStringTwo(String str) {
-        if (TextUtils.isEmpty(str)) {
-            return "";
-        } else {
-            return String.format("%02d", Integer.valueOf(str));
-        }
-    }
-
-    @SuppressLint("DefaultLocale")
-    public static String formatStringFour(String str) {
-        if (TextUtils.isEmpty(str)) {
-            return "";
-        } else {
-            return String.format("%04d", Integer.valueOf(str));
-        }
-    }
-
-    public static String formatStringFive(String str) {
-        if (TextUtils.isEmpty(str)) {
-            return "";
-        } else {
-            return String.format("%05d", Integer.valueOf(str));
-        }
-    }
-
-    @SuppressLint("DefaultLocale")
-    public static String formatTwo(int accessSum) {
-        if (accessSum == 0) {
-            return "00";
-        } else {
-            int sum = accessSum;
-            return String.format("%02d", sum);
-        }
-    }
-
-    public static int formatNumber(String accessSum) {
-        if (accessSum != null) {
-            return Integer.valueOf(accessSum);
-        } else {
-            return -1;
-        }
-    }
 
 
     public static String setSize(int size) {

@@ -26,13 +26,13 @@ import com.shmedo.core.cmd.entity.SetOsmometerNozzelHeightEntity;
 import com.shmedo.core.cmd.entity.SetOsmometerTriggerEntity;
 import com.shmedo.core.enums.CommandType;
 import com.shmedo.core.model.QueryOsmometerParameterInfo;
+import com.shmedo.core.utils.ResultParserUtil;
 import com.shmedo.mcloudapp.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.interfaces.Extras;
 import com.shmedo.mcloudapp.model.common.CommonVariable;
 import com.shmedo.mcloudapp.util.AdvanceSetDialogUtils;
 import com.shmedo.mcloudapp.util.UserConfig;
-import com.shmedo.mcloudapp.util.bleutil.BlueResultParserUtil;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -149,7 +149,7 @@ public class OsmometerConfigActivity extends BaseDeviceConnectActivity {
         if (intent.getExtras() != null && intent.getExtras().containsKey(Extras.PARAM_CONFIG_INFO)) {
             String configInfo = intent.getStringExtra(Extras.PARAM_CONFIG_INFO);
             if (!TextUtils.isEmpty(configInfo)) {
-                QueryOsmometerParameterInfo queryOsmometerParameterInfo = BlueResultParserUtil.getQueryOsmometerParameterInfo(configInfo);
+                QueryOsmometerParameterInfo queryOsmometerParameterInfo = ResultParserUtil.getEntityObject(configInfo);
                 if (queryOsmometerParameterInfo != null) {
                     mEtOsmometerAddress.setText(queryOsmometerParameterInfo.getOsmometerAddress());
                     mEtWaterAlarmValue.setText(String.valueOf(queryOsmometerParameterInfo.getDepthTrigger()));

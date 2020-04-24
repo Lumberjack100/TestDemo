@@ -22,20 +22,21 @@ import com.shmedo.core.cmd.CommandResult;
 import com.shmedo.core.cmd.entity.DataMessageModelEntity;
 import com.shmedo.core.cmd.entity.InstallLocationEntity;
 import com.shmedo.core.enums.CommandType;
+import com.shmedo.core.model.DeviceNetStatus;
+import com.shmedo.core.model.DeviceStatusInfoOne;
+import com.shmedo.core.model.DeviceStatusInfoThree;
+import com.shmedo.core.model.DeviceStatusInfoTwo;
+import com.shmedo.core.model.OperatorInfo;
+import com.shmedo.core.model.VersionMessageInfo;
+import com.shmedo.core.utils.ResultParserUtil;
+import com.shmedo.core.utils.StringUtil;
 import com.shmedo.mcloudapp.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.adapter.recyclerviewbaseadapter.CommonAdapter;
 import com.shmedo.mcloudapp.adapter.recyclerviewbaseadapter.ViewHolder;
 import com.shmedo.mcloudapp.base.BaseFragment;
-import com.shmedo.mcloudapp.entity.devicedetails.DeviceInternetStatus;
-import com.shmedo.mcloudapp.entity.devicedetails.DeviceStatusOne;
-import com.shmedo.mcloudapp.entity.devicedetails.DeviceStatusThree;
-import com.shmedo.mcloudapp.entity.devicedetails.DeviceStatusTwo;
-import com.shmedo.mcloudapp.entity.devicedetails.DeviceVersionInfo;
-import com.shmedo.mcloudapp.entity.devicedetails.OperatorInformation;
 import com.shmedo.mcloudapp.ui.activity.device.BaseDeviceConnectActivity;
-import com.shmedo.mcloudapp.util.ParserDeviceDetailsUtils;
-import com.shmedo.mcloudapp.util.StringUtil;
+import com.shmedo.mcloudapp.util.DeviceDetailInfoUtils;
 import com.shmedo.mcloudapp.views.VerticalSwipeRefreshLayout;
 
 import org.greenrobot.eventbus.EventBus;
@@ -241,7 +242,7 @@ public class DeviceDetailsFragment extends BaseFragment implements SwipeRefreshL
                 //①:②:③，其中①：传感器地址，②：传感器状态，0正常，1异常，③：传感器数据
                 String[] result = string.split(":");
                 holder.setText(R.id.sensor_channel_number, result[0]);
-                holder.setText(R.id.sensor_status, ParserDeviceDetailsUtils.setSensorDataStatus(holder.getView(R.id.sensor_status), result[1], deviceConnectActivity));
+                holder.setText(R.id.sensor_status, DeviceDetailInfoUtils.setSensorDataStatus(holder.getView(R.id.sensor_status), result[1], deviceConnectActivity));
                 if (channelNumber.equals("3")) {
                     holder.setText(R.id.sensor_data, result[2] + "%rh");
                 } else if (channelNumber.equals("21")) {
@@ -271,14 +272,14 @@ public class DeviceDetailsFragment extends BaseFragment implements SwipeRefreshL
         }
     }
 
-    private void setResultData(String message) {
-        Timber.i("DeviceDetailsFragment：======%s", message);
+    private void setResultData(String result) {
+        Timber.i("DeviceDetailsFragment：======%s", result);
         String command;
-        CommandType commandType = com.shmedo.core.utils.StringUtil.extractCommandType(message);
+        CommandType commandType = StringUtil.extractCommandType(result);
         switch (commandType) {
             case VERSION_MESSAGE:
-                DeviceVersionInfo versionInfo = ParserDeviceDetailsUtils.parserVersionInfo(message);
-                setVersionInfo(versionInfo);
+                VersionMessageInfo versionMessageInfo = ResultParserUtil.getEntityObject(result);
+                setVersionInfo(versionMessageInfo);
                 InstallLocationEntity installLocationEntity = new InstallLocationEntity(2);
                 command = CommandManager.getInstance().getCommand(CommandType.INSTALL_LOCATION, installLocationEntity);
                 deviceConnectActivity.sendCommonCommandImmediately(command);
@@ -286,7 +287,7 @@ public class DeviceDetailsFragment extends BaseFragment implements SwipeRefreshL
                 break;
 
             case INSTALL_LOCATION:
-                String position = ParserDeviceDetailsUtils.parserInstallPosition(message);
+                String position = ResultParserUtil.getEntityObject(result);
                 tvInstallPosition.setText(position);
                 command = CommandManager.getInstance().getCommand(CommandType.QUERY_DAS_STATUS_1);
                 deviceConnectActivity.sendCommonCommandImmediately(command);
@@ -294,15 +295,15 @@ public class DeviceDetailsFragment extends BaseFragment implements SwipeRefreshL
                 break;
 
             case QUERY_DAS_STATUS_1:
-                DeviceStatusOne statusOne = ParserDeviceDetailsUtils.parserDeviceStatusOne(message);
-                setDeviceStatusOne(statusOne);
+                DeviceStatusInfoOne deviceStatusInfoOne = ResultParserUtil.getEntityObject(result);
+                setDeviceStatusOne(deviceStatusInfoOne);
                 command = CommandManager.getInstance().getCommand(CommandType.SYSTEM_RUN_STATE);
                 deviceConnectActivity.sendCommonCommandImmediately(command);
                 Timber.i("查询运行状态：%s", command);
                 break;
 
             case SYSTEM_RUN_STATE:
-                OperatorInformation operatorInformation = ParserDeviceDetailsUtils.parserOperatorInformation(message);
+                OperatorInfo operatorInformation = ResultParserUtil.getEntityObject(result);
                 setOperatorInformation(operatorInformation);
                 DataMessageModelEntity dataMessageModelEntity = new DataMessageModelEntity(1);
                 command = CommandManager.getInstance().getCommand(CommandType.QUERY_NETWORK_STATUS, dataMessageModelEntity);
@@ -311,10 +312,10 @@ public class DeviceDetailsFragment extends BaseFragment implements SwipeRefreshL
                 break;
 
             case QUERY_NETWORK_STATUS:
-                String number = message.replace(CommandResult.COMMAND_RESULT_HEADER, "").substring(3, 4);
+                String number = result.replace(CommandResult.COMMAND_RESULT_HEADER, "").substring(3, 4);
                 switch (number) {
                     case "1":
-                        DeviceInternetStatus internetStatus1 = ParserDeviceDetailsUtils.parserInternetStatus(message);
+                        DeviceNetStatus internetStatus1 = ResultParserUtil.getEntityObject(result);
                         setInternetStatus(internetStatus1, number);
                         dataMessageModelEntity = new DataMessageModelEntity(2);
                         command = CommandManager.getInstance().getCommand(CommandType.QUERY_NETWORK_STATUS, dataMessageModelEntity);
@@ -323,7 +324,7 @@ public class DeviceDetailsFragment extends BaseFragment implements SwipeRefreshL
                         break;
 
                     case "2":
-                        DeviceInternetStatus internetStatus2 = ParserDeviceDetailsUtils.parserInternetStatus(message);
+                        DeviceNetStatus internetStatus2 = ResultParserUtil.getEntityObject(result);
                         setInternetStatus(internetStatus2, number);
                         dataMessageModelEntity = new DataMessageModelEntity(3);
                         command = CommandManager.getInstance().getCommand(CommandType.QUERY_NETWORK_STATUS, dataMessageModelEntity);
@@ -332,7 +333,7 @@ public class DeviceDetailsFragment extends BaseFragment implements SwipeRefreshL
                         break;
 
                     case "3":
-                        DeviceInternetStatus internetStatus3 = ParserDeviceDetailsUtils.parserInternetStatus(message);
+                        DeviceNetStatus internetStatus3 = ResultParserUtil.getEntityObject(result);
                         setInternetStatus(internetStatus3, number);
                         command = CommandManager.getInstance().getCommand(CommandType.QUERY_DAS_STATUS_2);
                         deviceConnectActivity.sendCommonCommandImmediately(command);
@@ -342,7 +343,7 @@ public class DeviceDetailsFragment extends BaseFragment implements SwipeRefreshL
                 break;
 
             case QUERY_DAS_STATUS_2:
-                DeviceStatusTwo statusTwo = ParserDeviceDetailsUtils.parserDeviceStatusTwo(message);
+                DeviceStatusInfoTwo statusTwo = ResultParserUtil.getEntityObject(result);
                 setDeviceStatusTwo(statusTwo);
                 command = CommandManager.getInstance().getCommand(CommandType.QUERY_DAS_STATUS_3);
                 deviceConnectActivity.sendCommonCommandImmediately(command);
@@ -350,7 +351,7 @@ public class DeviceDetailsFragment extends BaseFragment implements SwipeRefreshL
                 break;
 
             case QUERY_DAS_STATUS_3:
-                DeviceStatusThree statusThree = ParserDeviceDetailsUtils.parserDeviceStatusThree(message);
+                DeviceStatusInfoThree statusThree = ResultParserUtil.getEntityObject(result);
                 channelNumber = statusThree.getCollectorModel();
                 setDeviceStatusThree(statusThree);
                 break;
@@ -359,12 +360,12 @@ public class DeviceDetailsFragment extends BaseFragment implements SwipeRefreshL
 
 
     //设置设备版本信息  ##040
-    private void setVersionInfo(DeviceVersionInfo versionInfo) {
+    private void setVersionInfo(VersionMessageInfo versionInfo) {
         firmwareVersion.setText(versionInfo.getFirmwareVersion());
     }
 
     //设置设备状态1  ##041
-    private void setDeviceStatusOne(DeviceStatusOne statusOne) {
+    private void setDeviceStatusOne(DeviceStatusInfoOne statusOne) {
         mTvDeviceSn.setText(statusOne.getSnNumber());
         simCardNumber.setText(statusOne.getSimNumber());
         imeiNumber.setText(statusOne.getImeiNumber());
@@ -376,9 +377,9 @@ public class DeviceDetailsFragment extends BaseFragment implements SwipeRefreshL
     }
 
     //设置设备状态2  ##042
-    private void setDeviceStatusTwo(DeviceStatusTwo statusTwo) {
+    private void setDeviceStatusTwo(DeviceStatusInfoTwo statusTwo) {
         //太阳能控制器
-        ParserDeviceDetailsUtils.setDeviceStatus(solarStatus, statusTwo.getSolarControllerStatus(), deviceConnectActivity);
+        DeviceDetailInfoUtils.setDeviceStatus(solarStatus, statusTwo.getSolarControllerStatus(), deviceConnectActivity);
         //solarStatus.setText(statusTwo.getSolarControllerStatus());
         solarVoltage.setText(statusTwo.getSolarPanelVoltage() + "V");
         batteryVoltage.setText(statusTwo.getBatteryVoltage() + "V");
@@ -386,18 +387,18 @@ public class DeviceDetailsFragment extends BaseFragment implements SwipeRefreshL
         rihaoBattery.setText(statusTwo.getDailyPowerConsumption() + "W");
 
         //机箱内部温湿度
-        ParserDeviceDetailsUtils.setDeviceStatus(caseInternalStatus, statusTwo.getInternalTempHumidityStatus(), deviceConnectActivity);
+        DeviceDetailInfoUtils.setDeviceStatus(caseInternalStatus, statusTwo.getInternalTempHumidityStatus(), deviceConnectActivity);
         //caseInternalStatus.setText(statusTwo.getInternalTempHumidityStatus());
         caseInternalTemperature.setText(statusTwo.getInternalTemperature() + "°");
         caseInternalHumidity.setText(statusTwo.getInternalHumidity() + "%");
 
         //机箱外部温湿度
-        ParserDeviceDetailsUtils.setDeviceStatus(caseExternalStatus, statusTwo.getExternalTempHumidityStatus(), deviceConnectActivity);
+        DeviceDetailInfoUtils.setDeviceStatus(caseExternalStatus, statusTwo.getExternalTempHumidityStatus(), deviceConnectActivity);
         //caseExternalStatus.setText(statusTwo.getExternalTempHumidityStatus());
         caseExternalTemperature.setText(statusTwo.getExternalTemperature() + "°");
         caseExternalHumidity.setText(statusTwo.getExternalHumidity() + "%");
         //设备电量、电压
-        internalBattery.setText(ParserDeviceDetailsUtils.setDeviceInternalBattery(statusTwo.getInternalVoltage()));
+        internalBattery.setText(DeviceDetailInfoUtils.setDeviceInternalBattery(statusTwo.getInternalVoltage()));
         externalBattery.setText(statusTwo.getExternalVoltage() + "V");
 
         //雨量值 断线报警器状态
@@ -431,8 +432,8 @@ public class DeviceDetailsFragment extends BaseFragment implements SwipeRefreshL
     }
 
     //设置设备状态3  $$043,150000L,2,   3:0:3.1,   5:0:3.1\r\n
-    private void setDeviceStatusThree(DeviceStatusThree statusThree) {
-        ParserDeviceDetailsUtils.setChannelNumber(tvChannelNumber, statusThree.getCollectorModel());
+    private void setDeviceStatusThree(DeviceStatusInfoThree statusThree) {
+        DeviceDetailInfoUtils.setChannelNumber(tvChannelNumber, statusThree.getCollectorModel());
         if (statusThree.getCollectorAddress().equals("0")) {
             llSensor.setVisibility(View.GONE);
         } else {
@@ -445,23 +446,23 @@ public class DeviceDetailsFragment extends BaseFragment implements SwipeRefreshL
     }
 
     //设置网络状态  ##044
-    private void setInternetStatus(DeviceInternetStatus internetStatus, String linkNumber) {
+    private void setInternetStatus(DeviceNetStatus internetStatus, String linkNumber) {
         switch (linkNumber) {
             case "1":
-                ParserDeviceDetailsUtils.setLinkStatus(linkOneStatus, linkOneSendData, linkOneUnsendData, internetStatus.getLinkStatus(),
+                DeviceDetailInfoUtils.setLinkStatus(linkOneStatus, linkOneSendData, linkOneUnsendData, internetStatus.getLinkStatus(),
                         internetStatus.getLinkEnable(), internetStatus.getSentData(), internetStatus.getGeneratedData(), deviceConnectActivity);
                 if (internetStatus.getOnlineRate() != null) {
                     linkOneOnlineRate.setText(internetStatus.getOnlineRate() + "%");
                 }
                 break;
             case "2":
-                ParserDeviceDetailsUtils.setLinkStatus(linkTwoStatus, linkTwoSendData, linkTwoUnsendData, internetStatus.getLinkStatus(),
+                DeviceDetailInfoUtils.setLinkStatus(linkTwoStatus, linkTwoSendData, linkTwoUnsendData, internetStatus.getLinkStatus(),
                         internetStatus.getLinkEnable(), internetStatus.getSentData(), internetStatus.getGeneratedData(), deviceConnectActivity);
                 if (internetStatus.getOnlineRate() != null)
                     linkTwoOnlineRate.setText(internetStatus.getOnlineRate() + "%");
                 break;
             case "3":
-                ParserDeviceDetailsUtils.setLinkStatus(linkThreeStatus, linkThreeSendData, linkThreeUnsendData, internetStatus.getLinkStatus(),
+                DeviceDetailInfoUtils.setLinkStatus(linkThreeStatus, linkThreeSendData, linkThreeUnsendData, internetStatus.getLinkStatus(),
                         internetStatus.getLinkEnable(), internetStatus.getSentData(), internetStatus.getGeneratedData(), deviceConnectActivity);
                 if (internetStatus.getOnlineRate() != null)
                     linkThreeOnlineRate.setText(internetStatus.getOnlineRate() + "%");
@@ -470,10 +471,9 @@ public class DeviceDetailsFragment extends BaseFragment implements SwipeRefreshL
     }
 
     //设置运营商信息  ##014
-    private void setOperatorInformation(OperatorInformation operatorInformation) {
-        ParserDeviceDetailsUtils.setSignalStrength(imgSignalStrength, operatorInformation.getSignalStrength());
-        signalStrength.setText(ParserDeviceDetailsUtils.setOperatorType(operatorInformation.getOperatorType()));
-
+    private void setOperatorInformation(OperatorInfo operatorInformation) {
+        DeviceDetailInfoUtils.setSignalStrength(imgSignalStrength, operatorInformation.getSignalStrength());
+        signalStrength.setText(DeviceDetailInfoUtils.setOperatorType(operatorInformation.getOperatorType()));
     }
 
 

@@ -4,12 +4,12 @@ package com.shmedo.core.utils;
 import com.shmedo.core.enums.CollectorModel;
 import com.shmedo.core.enums.DataCommunicateMode;
 import com.shmedo.core.enums.DataEncryption;
-import com.shmedo.core.enums.WorkModel;
 import com.shmedo.core.enums.EquipmentStatus;
 import com.shmedo.core.enums.RainStation;
 import com.shmedo.core.enums.SIMChoose;
 import com.shmedo.core.enums.SensorInterfaceType;
 import com.shmedo.core.enums.SetServerAddressPort;
+import com.shmedo.core.enums.WorkModel;
 import com.shmedo.core.exception.DASParameterException;
 import com.shmedo.core.model.BaseConfigInfo;
 import com.shmedo.core.model.CollectorConfigInfo;
@@ -19,33 +19,25 @@ import com.shmedo.core.model.SetServerAddressPortInfo;
  * Created by adu on 2017/12/22.
  * 解析数据的工具类
  */
-public class ParserUtils
-{
+public class ParserUtils {
     /**
      * 开始进行解析基础配置
      *
      * @param strs 返回的基础配置数据
      * @return 返回基础配置的实体类
      */
-    public static BaseConfigInfo startParserBaseConfig(String[] strs) throws DASParameterException
-    {
+    public static BaseConfigInfo startParserBaseConfig(String[] strs) throws DASParameterException {
         BaseConfigInfo bean = new BaseConfigInfo();
         bean.setToken(strs[1]);
-        if (Integer.parseInt(strs[2]) != 0)
-        {
+        if (Integer.parseInt(strs[2]) != 0) {
             if (ValidateUtil.isNumberSix(strs[2]))
                 bean.setLocalBGNum(strs[2]);
-        }
-        else
-        {
+        } else {
             bean.setLocalBGNum(strs[2]);
         }
-        if (ValidateUtil.isNumberSix(strs[3]) || Integer.parseInt(strs[2]) == 0)
-        {
+        if (ValidateUtil.isNumberSix(strs[3]) || Integer.parseInt(strs[2]) == 0) {
             bean.setTargetBGNum(strs[3]);
-        }
-        else
-        {
+        } else {
             throw new DASParameterException("目标北斗卡号异常");
         }
         int equipmentStatus = Integer.parseInt(strs[4]);
@@ -104,8 +96,7 @@ public class ParserUtils
      * @param strs $$100XX, (1), (2), (3), (4), (5) \r\n，
      * @return 返回采集器配置的实体类
      */
-    public static CollectorConfigInfo startParserCollectorConfig(String[] strs)
-    {
+    public static CollectorConfigInfo startParserCollectorConfig(String[] strs) {
         CollectorConfigInfo bean = new CollectorConfigInfo();
         bean.setCollectorAddress(strs[1]);
         bean.setStandbyTime(strs[2]);
@@ -117,8 +108,7 @@ public class ParserUtils
     }
 
 
-    public static SetServerAddressPortInfo startParserServerAddress(String[] strs)
-    {
+    public static SetServerAddressPortInfo startParserServerAddress(String[] strs) {
         SetServerAddressPortInfo info = new SetServerAddressPortInfo();
         info.setNumber(SetServerAddressPort.valueOf(Integer.parseInt(strs[0].substring(5))));
         info.setAddress(strs[1]);
@@ -126,17 +116,5 @@ public class ParserUtils
         return info;
     }
 
-
-    /**
-     * 格式化字符串 将2格式化为02
-     *
-     * @param sersorValue 传感器的值
-     * @return 返回格式化后的字符串
-     */
-    public static String setSersonValue(String sersorValue)
-    {
-        int result = Integer.parseInt(sersorValue);
-        return String.format("%02d", result);
-    }
 
 }

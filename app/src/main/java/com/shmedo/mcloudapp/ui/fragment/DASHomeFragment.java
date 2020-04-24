@@ -22,7 +22,6 @@ import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.hjq.toast.ToastUtils;
 import com.kyleduo.switchbutton.SwitchButton;
-import com.shmedo.core.enums.BreakAlarmStatus;
 import com.shmedo.core.enums.CollectorModel;
 import com.shmedo.core.enums.CommandType;
 import com.shmedo.core.model.BaseConfigInfo;
@@ -31,11 +30,11 @@ import com.shmedo.core.model.CollectorConfigInfo;
 import com.shmedo.core.model.GetAllSensorConfigInfo;
 import com.shmedo.core.model.QueryOsmometerParameterInfo;
 import com.shmedo.core.model.SetRainPrecisionInfo;
+import com.shmedo.core.utils.ResultParserUtil;
 import com.shmedo.core.utils.StringUtil;
 import com.shmedo.mcloudapp.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.base.BaseFragment;
-import com.shmedo.mcloudapp.entity.ble.BreakAlarmStatusSub;
 import com.shmedo.mcloudapp.entity.event.BluetoothStateEvent;
 import com.shmedo.mcloudapp.interfaces.Extras;
 import com.shmedo.mcloudapp.ui.activity.ConfigDASActivity;
@@ -126,7 +125,7 @@ public class DASHomeFragment extends BaseFragment {
     private CollectorConfigInfo collectorConfigInfo;
     private BaseConfigInfo baseConfigInfo;
     private QueryOsmometerParameterInfo queryOsmometerParameterInfo;
-    private BreakAlarmStatusInfo breakAlarmStatusInfo = new BreakAlarmStatusInfo();
+    private BreakAlarmStatusInfo breakAlarmStatusInfo ;
 
     private int alarmStatusCheck = 0;//标志位，Avoid onItemSelected calls during initialization
 
@@ -387,9 +386,8 @@ public class DASHomeFragment extends BaseFragment {
             sbcollectorSensor.append(strs[i] + "&&");
         }
 
-        GetAllSensorConfigInfo getAllSensorConfigInfo = BlueResultParserUtil.getAllBlueMessage(cmdStr);
+        GetAllSensorConfigInfo getAllSensorConfigInfo = ResultParserUtil.getEntityObject(cmdStr);
         Timber.d("所有配置信息Json%s", getAllSensorConfigInfo.toString());
-
         collectorConfigInfo = getAllSensorConfigInfo.getCollectorConfig();
         baseConfigInfo = getAllSensorConfigInfo.getBaseConfig();
         if (baseConfigInfo != null) {
@@ -474,10 +472,8 @@ public class DASHomeFragment extends BaseFragment {
                     ToastUtils.show("断线报警器配置错误!");
                     return;
                 }
-
-                BreakAlarmStatusSub breakAlarmStatusSub = BlueResultParserUtil.getBreakAlarmStatus(cmdStr);
-                Timber.d("--------断线报警器状态-------" + breakAlarmStatusSub.getAlarmStatus());
-                breakAlarmStatusInfo.setStatus(BreakAlarmStatus.valueOf(breakAlarmStatusSub.getAlarmStatus()));
+                breakAlarmStatusInfo = ResultParserUtil.getEntityObject(cmdStr);
+                Timber.d("--------断线报警器状态-------%s", breakAlarmStatusInfo.toString());
                 switch (breakAlarmStatusInfo.getStatus()) {
                     case OPEN:
                         mSbBleakAlarm.setCheckedImmediatelyNoEvent(true);

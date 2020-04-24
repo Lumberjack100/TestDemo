@@ -16,7 +16,7 @@ public class RainStationParser implements ResultParser<RainStationInfo> {
     @Override
     public RainStationInfo parse(String result) {
         RainStationInfo info = new RainStationInfo();
-        info.setRainStation(RainStation.valueOf(Integer.valueOf(result.substring(5))));
+        info.setRainStation(RainStation.valueOf(Integer.parseInt(result.substring(5))));
         return info;
     }
 

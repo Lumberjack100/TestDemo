@@ -24,6 +24,7 @@ import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.hjq.toast.ToastUtils;
 import com.kyleduo.switchbutton.SwitchButton;
+import com.shmedo.core.utils.ValidateUtil;
 import com.shmedo.mcloudapp.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.base.BaseFragment;
@@ -37,7 +38,6 @@ import com.shmedo.mcloudapp.ui.activity.device.ADMESensorExecutiveAgencyConfigAc
 import com.shmedo.mcloudapp.ui.activity.device.CountMeterWheelActivity;
 import com.shmedo.mcloudapp.ui.activity.device.senior.InstructionDebugActivity;
 import com.shmedo.mcloudapp.util.DaoManager;
-import com.shmedo.mcloudapp.util.StringUtil;
 import com.shmedo.mcloudapp.views.ClearEditText;
 import com.shmedo.mcloudapp.views.editspinner.EditSpinner;
 
@@ -518,7 +518,7 @@ public class ADMEHomeFragment extends BaseFragment {
 
     private void doServerAddress1Config() {
         String address = mEtAddress1.getText().toString().trim();
-        if (!StringUtil.checkServerAddress(address)) {
+        if (!ValidateUtil.checkServerAddress(address)) {
             ToastUtils.show("地址格式不正确");
             return;
         }
@@ -537,7 +537,7 @@ public class ADMEHomeFragment extends BaseFragment {
 
     private void doServerAddress2Config() {
         String address = mEtAddress2.getText().toString().trim();
-        if (!StringUtil.checkServerAddress(address)) {
+        if (!ValidateUtil.checkServerAddress(address)) {
             ToastUtils.show("地址格式不正确");
             return;
         }

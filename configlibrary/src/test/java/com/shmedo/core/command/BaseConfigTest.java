@@ -1,8 +1,7 @@
 package com.shmedo.core.command;
 
 
-import com.shmedo.core.cmd.CommandManager;
-import com.shmedo.core.enums.CommandType;
+import com.shmedo.core.utils.ValidateUtil;
 
 import org.junit.Test;
 
@@ -13,8 +12,11 @@ public class BaseConfigTest {
 
     @Test
     public void getBaseConfig(){
-        String info = CommandManager.getInstance().getCommand(CommandType.BASE_CONFIG,null);
-        System.out.println(info);
-        assert info.equals("##000\r\n");
+//        String info = CommandManager.getInstance().getCommand(CommandType.BASE_CONFIG,null);
+//        System.out.println(info);
+//        assert info.equals("##000\r\n");
+
+        boolean result = ValidateUtil.isNumberSix("123450");
+        String ss = "";
     }
 }
