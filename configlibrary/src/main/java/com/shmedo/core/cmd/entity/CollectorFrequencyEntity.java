@@ -24,12 +24,13 @@ public class CollectorFrequencyEntity implements Validater {
     public void validate() {
         if (TextUtils.isEmpty(type) && TextUtils.isEmpty(timeInterval))
             throw new DASParameterException("不能为空");
-        if(!CollectorModel.isValidCollector(this.type))
+
+        if (!CollectorModel.isValidCollector(this.type))
             throw new DASParameterException("采集器不存在");
     }
 
     @Override
     public String toString() {
-        return type+""+timeInterval;
+        return type + "" + timeInterval;
     }
 }

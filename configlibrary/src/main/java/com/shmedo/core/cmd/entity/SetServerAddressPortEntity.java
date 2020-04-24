@@ -24,6 +24,7 @@ public class SetServerAddressPortEntity implements Validater{
     public void validate() {
         if (number == 0 && TextUtils.isEmpty(address) && port == 0)
             throw new DASParameterException("不能为空");
+
         if (number != 1 && number != 2 && number != 3)
             throw new DASParameterException("服务器编号错误");
     }

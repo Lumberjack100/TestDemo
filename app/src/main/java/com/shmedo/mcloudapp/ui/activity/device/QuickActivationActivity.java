@@ -120,7 +120,7 @@ public class QuickActivationActivity extends BaseDeviceConnectActivity {
 
     @Override
     protected void sendActivateDeviceCmd() {
-        startProgressRunnable("正在发送升级指令...", 10000);
+        startProgressRunnable("正在发送升级指令...", COMMAND_DELAY_MILLIS);
         sendCommonCommandImmediately("##12017073\r\n");
     }
 

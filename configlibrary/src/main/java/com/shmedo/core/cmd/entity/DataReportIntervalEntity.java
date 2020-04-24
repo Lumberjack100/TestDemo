@@ -16,7 +16,7 @@ public class DataReportIntervalEntity implements Validater {
 
     @Override
     public void validate() {
-        if (time <= 0 && time > 100000)
+        if (time <= 0 || time > 100000)
             throw new DASParameterException("数据上报间隔参数错误");
     }
 

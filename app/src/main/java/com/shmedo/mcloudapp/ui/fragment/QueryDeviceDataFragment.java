@@ -19,6 +19,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.hjq.toast.ToastUtils;
+import com.shmedo.core.cmd.CommandManager;
+import com.shmedo.core.enums.CommandType;
 import com.shmedo.mcloudapp.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.adapter.recyclerviewbaseadapter.CommonAdapter;
@@ -195,8 +197,9 @@ public class QueryDeviceDataFragment extends BaseFragment {
                     ToastUtils.show(getString(R.string.param_config_bluetooth_disconnect_warn));
                     return;
                 }
+                String command = CommandManager.getInstance().getCommand(CommandType.INSTANT_COLLEACTOR, null);
                 //发送遥测指令
-                configDASActivity.sendCommonCommand("##110\r\n");
+                configDASActivity.sendCommonCommandImmediately(command);
                 break;
 
             case R.id.btn_query_device:

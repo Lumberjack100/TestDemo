@@ -141,7 +141,7 @@ public class RainConfigActivity extends BaseDeviceConnectActivity {
         }
         String cmdStr = "##121" + rainResult + "\r\n";
 
-        startProgressRunnable("正在发送配置指令...", 10000);
+        startProgressRunnable("正在发送配置指令...", COMMAND_DELAY_MILLIS);
         sendCommonCommand(cmdStr);
     }
 

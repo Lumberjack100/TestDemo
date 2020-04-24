@@ -4,23 +4,34 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.text.TextUtils;
 import android.view.View;
-import android.widget.*;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.CompoundButton;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.Spinner;
+import android.widget.TextView;
+
 import androidx.annotation.NonNull;
-import androidx.core.content.FileProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import butterknife.BindView;
-import butterknife.OnClick;
+
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.github.clans.fab.FloatingActionButton;
 import com.hjq.toast.ToastUtils;
 import com.kyleduo.switchbutton.SwitchButton;
+import com.shmedo.core.cmd.CommandManager;
+import com.shmedo.core.cmd.entity.WorkModeEntity;
+import com.shmedo.core.cmd.entity.LogOutputEntity;
+import com.shmedo.core.enums.CommandType;
+import com.shmedo.core.enums.WorkModel;
+import com.shmedo.core.enums.LogOutputStatus;
 import com.shmedo.mcloudapp.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.adapter.recyclerviewbaseadapter.CommonAdapter;
@@ -29,15 +40,19 @@ import com.shmedo.mcloudapp.ui.activity.device.BaseDeviceConnectActivity;
 import com.shmedo.mcloudapp.util.LogFileUtil;
 import com.shmedo.mcloudapp.util.LogToSDUtil;
 import com.shmedo.mcloudapp.views.ClearEditText;
+
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
-import timber.log.Timber;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import butterknife.BindView;
+import butterknife.OnClick;
+import timber.log.Timber;
 
 /**
  * 项目名：  mCloudapp
@@ -102,9 +117,9 @@ public class LogPrintActivity extends BaseDeviceConnectActivity {
     private MaterialDialog mMaterialDialog;
     private MaterialDialog.Builder mBuilder;
 
-    public static void startActivity(Context context,String snNumber) {
+    public static void startActivity(Context context, String snNumber) {
         Intent intent = new Intent(context, LogPrintActivity.class);
-        intent.putExtra("snNumber",snNumber);
+        intent.putExtra("snNumber", snNumber);
         context.startActivity(intent);
     }
 
@@ -134,26 +149,28 @@ public class LogPrintActivity extends BaseDeviceConnectActivity {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if (++debugModeCheck > 1) {
                     String status = parent.getSelectedItem().toString();
-                    String smdStr;
+                    WorkModel workModel;
                     switch (status) {
                         case "关闭":
-                            smdStr = "##0061\r\n";
+                            workModel = WorkModel.WORK;
                             break;
 
                         case "DEBUG":
-                            smdStr = "##0062\r\n";
+                            workModel = WorkModel.DEBUG;
                             break;
 
                         case "INFO":
-                            smdStr = "##0063\r\n";
+                            workModel = WorkModel.INFO;
                             break;
 
                         default:
-                            smdStr = "##0061\r\n";
+                            workModel = WorkModel.WORK;
                             break;
                     }
-                    sendCommonCommand(smdStr);
-                    Timber.d("设置调试模式指令==" + smdStr);
+                    WorkModeEntity workModeEntity = new WorkModeEntity(workModel.toInt());
+                    String command = CommandManager.getInstance().getCommand(CommandType.WORK_MODE, workModeEntity);
+                    sendCommonCommandImmediately(command);
+                    Timber.d("设置调试模式指令==%s", command);
                 }
             }
 
@@ -173,24 +190,27 @@ public class LogPrintActivity extends BaseDeviceConnectActivity {
                     return;
                 }
 
+                LogOutputEntity logOutputEntity;
+                String cmd;
                 if (isChecked) {
-                    //发送激活DAS命令
-                    sendCommonCommand("##2261\r\n");
+                    logOutputEntity = new LogOutputEntity(LogOutputStatus.OPEN.toInt());
+                    cmd = CommandManager.getInstance().getCommand(CommandType.LOG_OUTPUT_STATUS, logOutputEntity);
+                    sendCommonCommandImmediately(cmd);
                     setSwitchViewState(true, logSwitchButton, "已开启");
                     isStart = false;
                     ToastUtils.show("开始日志输出");
                     fabStartPause.setImageDrawable(getResources().getDrawable(R.drawable.ic_pause));
                 } else {
-                    sendCommonCommand("##2260\r\n");
-                    setSwitchViewState(true, logSwitchButton, "已关闭");
+                    logOutputEntity = new LogOutputEntity(LogOutputStatus.CLOSE.toInt());
+                    cmd = CommandManager.getInstance().getCommand(CommandType.LOG_OUTPUT_STATUS, logOutputEntity);
+                    sendCommonCommandImmediately(cmd);
+                    setSwitchViewState(false, logSwitchButton, "已关闭");
                     ToastUtils.show("关闭日志输出");
                     isStart = true;
                     fabStartPause.setImageDrawable(getResources().getDrawable(R.drawable.ic_start));
                 }
             }
         });
-
-
     }
 
     private void initAdapter() {
@@ -217,8 +237,8 @@ public class LogPrintActivity extends BaseDeviceConnectActivity {
                 //发送指令
                 String sendCode = ceSendCode.getText().toString().trim();
                 String result = sendCode + "\r\n";
-                if (null != sendCode && sendCode.startsWith("##")) {
-                   sendCommonCommandImmediately(result);
+                if (sendCode.startsWith("##")) {
+                    sendCommonCommandImmediately(result);
                     ToastUtils.show("指令已发送");
                     logList.add(sendCode);
                     adapter.notifyDataSetChanged();
@@ -226,11 +246,11 @@ public class LogPrintActivity extends BaseDeviceConnectActivity {
                     ToastUtils.show("指令格式不正确，请重新输入");
                 }
                 break;
-            case R.id.tv_view_log_directory:
 
+            case R.id.tv_view_log_directory:
                 File filesPath = Environment.getExternalStorageDirectory().getAbsoluteFile();
-                File file =  LogFileUtil.createLogFile(filesPath,snNumber);
-                if (file.exists()){
+                File file = LogFileUtil.createLogFile(filesPath, snNumber);
+                if (file.exists()) {
                     showLogResultDialog(file.getAbsolutePath());
                 } else {
                     ToastUtils.show("暂未生成日志");
@@ -247,6 +267,7 @@ public class LogPrintActivity extends BaseDeviceConnectActivity {
 //                    e.printStackTrace();
 //                }
                 break;
+
             case R.id.fab_start_pause:
                 if (isStart) {
                     isStart = false;
@@ -272,9 +293,9 @@ public class LogPrintActivity extends BaseDeviceConnectActivity {
         //输出内容
         @SuppressLint("SimpleDateFormat")
         String time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
-        String content = time+"  "+messageEvent;
-        Timber.i("====日志内容"+content);
-        LogToSDUtil.saveLogToSD(content,snNumber);
+        String content = time + "  " + messageEvent;
+        Timber.i("====日志内容" + content);
+        LogToSDUtil.saveLogToSD(content, snNumber);
 
         if (isStart) { //
             Timber.i("=====暂停了");

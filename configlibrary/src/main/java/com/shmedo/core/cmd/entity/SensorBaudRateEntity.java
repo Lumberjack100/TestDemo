@@ -16,7 +16,7 @@ public class SensorBaudRateEntity implements Validater {
 
     @Override
     public void validate() {
-        int baud = Integer.valueOf(baudRate);
+        int baud = Integer.parseInt(baudRate);
         if (baud != 1200 && baud != 2400 && baud != 4800 && baud != 9600 && baud != 19200 && baud != 57600 && baud != 115200 )
             throw new DASParameterException("波特率参数错误");
     }

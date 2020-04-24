@@ -18,7 +18,8 @@ public class SetGPRSOnlineTimeEntity implements Validater {
     public void validate() {
         if (time == 0)
             throw new DASParameterException("参数不能为空");
-        if (time < 0 && time > 65536) {
+
+        if (time < 0 || time > 65536) {
             throw new DASParameterException("设置持续在线时长错误");
         }
     }

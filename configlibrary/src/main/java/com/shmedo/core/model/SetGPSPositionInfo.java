@@ -4,7 +4,7 @@ package com.shmedo.core.model;
  * Created by adu on 2017/12/18.
  * 设置GPS定位
  */
-public class SettingGPSPositionInfo {
+public class SetGPSPositionInfo {
     private String sensitivity;
     private int accuracy;
 

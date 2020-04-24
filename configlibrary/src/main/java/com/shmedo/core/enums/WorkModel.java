@@ -5,18 +5,18 @@ import java.util.List;
 
 /**
  * Created by adu on 2017/12/11.
- * 调试模式
+ * 工作模式
  */
-public enum DebugModel {
-    INITIALZE(0), //初始化
-    CLOSE(1), //关闭
-    DEBUG(2), //debug
-    INFO(3);//info
+public enum WorkModel {
+    INITIALZE(0), //初始化模式
+    WORK(1), //工作模式
+    DEBUG(2), //debug模式
+    INFO(3);//info模式
 
 
     private int model;
 
-    DebugModel(int i) {
+    WorkModel(int i) {
         this.model = i;
     }
 
@@ -24,13 +24,13 @@ public enum DebugModel {
         return model;
     }
 
-    public static DebugModel valueOf(int model) {
+    public static WorkModel valueOf(int model) {
         switch (model) {
             case 0:
                 return INITIALZE;
 
             case 1:
-                return CLOSE;
+                return WORK;
 
             case 2:
                 return DEBUG;
@@ -45,7 +45,7 @@ public enum DebugModel {
 
     public static boolean isValidMode(int value) {
         List<Integer> allModes = new ArrayList<>();
-        for (DebugModel model : DebugModel.values()) {
+        for (WorkModel model : WorkModel.values()) {
             allModes.add(model.toInt());
         }
 

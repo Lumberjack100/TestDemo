@@ -215,7 +215,7 @@ public class MqttSettingActivity extends BaseDeviceConnectActivity implements Vi
     }
 
     private void initData() {
-        startProgressRunnable("正在获取指令参数...", 10000);
+        startProgressRunnable("正在获取指令参数...", COMMAND_DELAY_MILLIS);
         //获取服务器地址,查询中心开启状态
         sendCommonCommand("##2001\r\n");
         sendCommonCommand("##2002\r\n");
@@ -659,7 +659,7 @@ public class MqttSettingActivity extends BaseDeviceConnectActivity implements Vi
                 }
 
                 errMsg = "发送指令超时,请稍后尝试";
-                startProgressRunnable("正在发送配置指令...", 10000);
+                startProgressRunnable("正在发送配置指令...", COMMAND_DELAY_MILLIS);
                 sendCommonCommandImmediately("##003" + dataCommunicationMode + "\r\n");
                 Timber.d("设置数据通讯模式===" + "##003" + dataCommunicationMode + "\r\n");
                 break;
@@ -723,7 +723,7 @@ public class MqttSettingActivity extends BaseDeviceConnectActivity implements Vi
             setLinkTextEnabled(mTvLinkOneStatus, true);
             setLinkTextEnabled(mTvLinkTwoStatus, true);
             setLinkTextEnabled(mTvLinkThreeStatus, true);
-            startProgressRunnable("正在发送配置指令...", 10000);
+            startProgressRunnable("正在发送配置指令...", COMMAND_DELAY_MILLIS);
             sendCommonCommandImmediately(cmdCommunicationProtocol);
             Timber.d("设置网络中心通讯协议===" + cmdCommunicationProtocol);
             return false;

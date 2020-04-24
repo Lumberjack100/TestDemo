@@ -5,7 +5,7 @@ package com.shmedo.mcloudapp.entity.devicedetails;
  * 包名：    com.shmedo.mcloudapp.entity.devicedetails
  * 创建者:   dpc
  * 创建时间:  2019-12-11
- * 描述：    运营商信息
+ * 描述：    系统运行状态
  */
 public class OperatorInformation {
     /**

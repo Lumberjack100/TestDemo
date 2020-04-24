@@ -7,11 +7,11 @@ import com.shmedo.core.exception.DASParameterException;
  * Created by adu on 2017/12/18.
  * 设置远程升级参数
  */
-public class SettingRemoteUpgradeEntity implements Validater {
+public class SetRemoteUpgradeEntity implements Validater {
     private int model;
     private int port;
 
-    public SettingRemoteUpgradeEntity(int model, int port) {
+    public SetRemoteUpgradeEntity(int model, int port) {
         this.model = model;
         this.port = port;
     }

@@ -17,7 +17,9 @@ import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.hjq.toast.ToastUtils;
 import com.kyleduo.switchbutton.SwitchButton;
+import com.shmedo.core.cmd.CommandResult;
 import com.shmedo.core.enums.CollectorModel;
+import com.shmedo.core.enums.CommandType;
 import com.shmedo.core.model.SensorInclinometerInfo;
 import com.shmedo.core.model.SensorInfrasoundInfo;
 import com.shmedo.core.model.SensorRadarLevelInfo;
@@ -285,71 +287,71 @@ public class SenSorBGKConfigActivity extends BaseDeviceConnectActivity {
     /**
      * 根据type的值设置不同类型传感器的图标
      */
-    private void setSensorIconByType(String sensorType){
-        int resId=-1;
+    private void setSensorIconByType(String sensorType) {
+        int resId = -1;
         switch (sensorType) {
             case "02"://裂缝计 MPS-M-2000
-                resId=R.drawable.ic_sensor;
+                resId = R.drawable.ic_sensor;
                 break;
 
             case "03"://土壤含水率 TR-3000
-                resId=R.drawable.ic_sensor_soilmoisture;
+                resId = R.drawable.ic_sensor_soilmoisture;
                 break;
 
             case "04"://测斜仪 I-P-I
-                resId=R.drawable.ic_sensor;
+                resId = R.drawable.ic_sensor;
                 break;
 
             case "06"://超声波物位计 HBRD908
-                resId=R.drawable.ic_sensor;
+                resId = R.drawable.ic_sensor;
                 break;
 
             case "07"://雷达物位计 MH-A15R
-                resId=R.drawable.ic_sensor;
+                resId = R.drawable.ic_sensor;
                 break;
 
             case "08"://墒情计 EP100G
-                resId=R.drawable.ic_sensor;
+                resId = R.drawable.ic_sensor;
                 break;
 
             case "12"://温湿度计 CSW18
-                resId=R.drawable.ic_sensor;
+                resId = R.drawable.ic_sensor;
                 break;
 
             case "15"://扬压力计 VWP-G
-                resId=R.drawable.ic_sensor;
+                resId = R.drawable.ic_sensor;
                 break;
 
             case "16"://陆岩倾角仪 LY215
-                resId=R.drawable.ic_sensor;
+                resId = R.drawable.ic_sensor;
                 break;
 
             case "21"://次声传感器
-                resId=R.drawable.ic_sensor;
+                resId = R.drawable.ic_sensor;
                 break;
 
             case "50"://基康渗压计 BGK-4500
-                resId=R.drawable.ic_sensor;
+                resId = R.drawable.ic_sensor;
                 break;
 
             case "51"://葛南渗压计 VWP-03
-                resId=R.drawable.ic_sensor;
+                resId = R.drawable.ic_sensor;
                 break;
 
             case "52"://葛南土压力盒 VWE-0.6
-                resId=R.drawable.ic_sensor;
+                resId = R.drawable.ic_sensor;
                 break;
 
             case "53"://葛南应力计 VWS-15
-                resId=R.drawable.ic_sensor;
+                resId = R.drawable.ic_sensor;
                 break;
 
             case "54"://葛南无应力计 VWS-15M
-                resId=R.drawable.ic_sensor;
+                resId = R.drawable.ic_sensor;
                 break;
 
             case "55"://葛南位移计 VWD-100
-                resId=R.drawable.ic_sensor;
+                resId = R.drawable.ic_sensor;
                 break;
 
             default:
@@ -830,6 +832,7 @@ public class SenSorBGKConfigActivity extends BaseDeviceConnectActivity {
             KeyBordUtils.hideSoftKeyboard(view);
         }
     };
+
     /**
      * ##150zzxxXXXX\r\n：设置采集器接入的传感器
      * zz 采集器型号
@@ -857,9 +860,9 @@ public class SenSorBGKConfigActivity extends BaseDeviceConnectActivity {
 
         String result = String.valueOf(builderFirst);
 
-        startProgressRunnable("正在发送配置指令...", 10000);
+        startProgressRunnable("正在发送配置指令...", COMMAND_DELAY_MILLIS);
         sendCommonCommand(result);
-        Timber.d("设置采集器接入的传感器指令===" + result);
+        Timber.d("设置 " + collectorName + " 接入的传感器指令===%s", result);
 
         cmdNum = 0;
         for (int i = 0; i < collectorSensorParamsInfoSubs.size(); i++) {
@@ -949,8 +952,8 @@ public class SenSorBGKConfigActivity extends BaseDeviceConnectActivity {
      * 设置显示数据
      */
     private void setResultData(String cmdStr) {
-        if (cmdStr.startsWith("$$168") && cmdStr.endsWith("\r\n")) {
-            if (cmdStr.startsWith("$$168e") || cmdStr.startsWith("$$168ce")) {
+        if (cmdStr.startsWith(CommandType.COLLECTOR_SENSOR_THRESHOLD_SOLI.toString())) {
+            if (cmdStr.endsWith(CommandResult.ERROR_END)) {
                 ToastUtils.show(collectorName + "的传感器触发阈值配置错误!");
                 stopProgressRunnable();
                 return;
@@ -961,8 +964,8 @@ public class SenSorBGKConfigActivity extends BaseDeviceConnectActivity {
         }
 
         //最后一个传感器参数设置指令
-        if (cmdStr.startsWith("$$165") && cmdStr.endsWith("\r\n")) {
-            if (cmdStr.startsWith("$$165e") || cmdStr.startsWith("$$165ce")) {
+        if (cmdStr.startsWith(CommandType.COLLECTOR_SENSOR_REVISED.toString())) {
+            if (cmdStr.endsWith(CommandResult.ERROR_END)) {
                 ToastUtils.show(collectorName + "的传感器修正值配置错误!");
                 stopProgressRunnable();
                 return;
@@ -986,7 +989,7 @@ public class SenSorBGKConfigActivity extends BaseDeviceConnectActivity {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void getConfig(String messageEvent) {
         if (!TextUtils.isEmpty(messageEvent) && messageEvent.startsWith("$$")) {
-            setResultData(messageEvent);
+            setResultData(messageEvent.replace("$$", ""));
         }
     }
 

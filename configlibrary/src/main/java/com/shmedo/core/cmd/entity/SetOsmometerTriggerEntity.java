@@ -8,24 +8,25 @@ import com.shmedo.core.exception.DASParameterException;
  * 设置数字渗压计触发值
  */
 public class SetOsmometerTriggerEntity implements Validater {
-    private int depthTrigger; //深度触发
-    private int temperatureTrigger; //温度触发
+    private double depthTrigger; //深度触发值 mm
+    private double temperatureTrigger; //温度触发值 ℃
 
-    public SetOsmometerTriggerEntity(int depthTrigger, int temperatureTrigger) {
+    public SetOsmometerTriggerEntity(double depthTrigger, double temperatureTrigger) {
         this.depthTrigger = depthTrigger;
         this.temperatureTrigger = temperatureTrigger;
     }
 
     @Override
     public void validate() {
-        if (depthTrigger < 0 && depthTrigger > 65535)
+        if (depthTrigger > 65535)
             throw new DASParameterException("深度触发参数错误");
-        if (temperatureTrigger < 0 && temperatureTrigger > 65535)
+
+        if (temperatureTrigger < 0 || temperatureTrigger > 65535)
             throw new DASParameterException("温度触发参数错误");
     }
 
     @Override
     public String toString() {
-        return depthTrigger+""+temperatureTrigger;
+        return depthTrigger + "," + temperatureTrigger;
     }
 }

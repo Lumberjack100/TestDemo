@@ -3,7 +3,7 @@ package com.shmedo.core.model;
 import com.shmedo.core.enums.CollectorModel;
 import com.shmedo.core.enums.DataCommunicateMode;
 import com.shmedo.core.enums.DataEncryption;
-import com.shmedo.core.enums.DebugModel;
+import com.shmedo.core.enums.WorkModel;
 import com.shmedo.core.enums.EquipmentStatus;
 import com.shmedo.core.enums.RainStation;
 import com.shmedo.core.enums.SIMChoose;
@@ -29,7 +29,7 @@ public class BaseConfigInfo {
     private CollectorModel collectorModel;  //采集器型号
     private int dataReportInterval; //数据上报间隔
     private String batteryOverProtect;  //电池过放保护
-    private DebugModel debugModel;      //调试模式
+    private WorkModel workModel;      //调试模式
     private SensorInterfaceType sensorInterfaceType;    //传感器接口类型
     private DataEncryption DataEncryption;      //数据加密
     private SIMChoose SIMChoose;        //SIM选择
@@ -37,53 +37,48 @@ public class BaseConfigInfo {
     public BaseConfigInfo() {
     }
 
-
     public String getToken() {
         return token;
     }
-
     public void setToken(String token) {
         this.token = token;
     }
+
     public String getLocalBGNum() {
         return localBGNum;
     }
-
     public void setLocalBGNum(String localBGNum) {
         this.localBGNum = localBGNum;
     }
 
-
     public String getTargetBGNum() {
         return targetBGNum;
     }
-
-
     public void setTargetBGNum(String targetBGNum) {
         this.targetBGNum = targetBGNum;
     }
 
-
     public EquipmentStatus getEquipmentStatus() {
         return equipmentStatus;
     }
-
-
     public void setEquipmentStatus(EquipmentStatus equipmentStatus) {
         this.equipmentStatus = equipmentStatus;
     }
+
     public DataCommunicateMode getDataCommunicateMode() {
         return dataCommunicateMode;
     }
     public void setDataCommunicateMode(DataCommunicateMode dataCommunicateMode) {
         this.dataCommunicateMode = dataCommunicateMode;
     }
+
     public RainStation getRainStation() {
         return rainStation;
     }
     public void setRainStation(RainStation rainfallStation) {
         this.rainStation = rainfallStation;
     }
+
     public int getRainAccuracy() {
         return rainAccuracy;
     }
@@ -94,14 +89,13 @@ public class BaseConfigInfo {
     public int getLocationSensitivity() {
         return locationSensitivity;
     }
-
     public void setLocationSensitivity(int locationSensitivity) {
         this.locationSensitivity = locationSensitivity;
     }
+
     public int getLocationAccuracy() {
         return locationAccuracy;
     }
-
     public void setLocationAccuracy(int locationAccuracy) {
         this.locationAccuracy = locationAccuracy;
     }
@@ -109,7 +103,6 @@ public class BaseConfigInfo {
     public int getHeartbeatTimeInterval() {
         return heartbeatTimeInterval;
     }
-
     public void setHeartbeatTimeInterval(int heartbeatTimeInterval) {
         this.heartbeatTimeInterval = heartbeatTimeInterval;
     }
@@ -117,7 +110,6 @@ public class BaseConfigInfo {
     public long getDebugBandRate() {
         return debugBandRate;
     }
-
     public void setDebugBandRate(long debugBandRate) {
         this.debugBandRate = debugBandRate;
     }
@@ -125,7 +117,6 @@ public class BaseConfigInfo {
     public long getSensorBandRate() {
         return sensorBandRate;
     }
-
     public void setSensorBandRate(long sensorBandRate) {
         this.sensorBandRate = sensorBandRate;
     }
@@ -133,7 +124,6 @@ public class BaseConfigInfo {
     public CollectorModel getCollectorModel() {
         return collectorModel;
     }
-
     public void setCollectorModel(CollectorModel collectorModel) {
         this.collectorModel = collectorModel;
     }
@@ -141,7 +131,6 @@ public class BaseConfigInfo {
     public int getDataReportInterval() {
         return dataReportInterval;
     }
-
     public void setDataReportInterval(int dataReportInterval) {
         this.dataReportInterval = dataReportInterval;
     }
@@ -149,23 +138,20 @@ public class BaseConfigInfo {
     public String getBatteryOverProtect() {
         return batteryOverProtect;
     }
-
     public void setBatteryOverProtect(String batteryOverProtect) {
         this.batteryOverProtect = batteryOverProtect;
     }
 
-    public DebugModel getDebugModel() {
-        return debugModel;
+    public WorkModel getWorkModel() {
+        return workModel;
     }
-
-    public void setDebugModel(DebugModel debugModel) {
-        this.debugModel = debugModel;
+    public void setWorkModel(WorkModel workModel) {
+        this.workModel = workModel;
     }
 
     public SensorInterfaceType getSensorInterfaceType() {
         return sensorInterfaceType;
     }
-
     public void setSensorInterfaceType(SensorInterfaceType sensorInterfaceType) {
         this.sensorInterfaceType = sensorInterfaceType;
     }
@@ -173,7 +159,6 @@ public class BaseConfigInfo {
     public DataEncryption getDataEncryption() {
         return DataEncryption;
     }
-
     public void setDataEncryption(DataEncryption dataEncryption) {
         DataEncryption = dataEncryption;
     }
@@ -181,7 +166,6 @@ public class BaseConfigInfo {
     public SIMChoose getSIMChoose() {
         return SIMChoose;
     }
-
     public void setSIMChoose(SIMChoose SIMChoose) {
         this.SIMChoose = SIMChoose;
     }
@@ -204,7 +188,7 @@ public class BaseConfigInfo {
                 ", collectorModel=" + collectorModel +
                 ", dataReportInterval=" + dataReportInterval +
                 ", batteryOverProtect='" + batteryOverProtect + '\'' +
-                ", debugModel=" + debugModel +
+                ", debugModel=" + workModel +
                 ", sensorInterfaceType=" + sensorInterfaceType +
                 ", DataEncryption=" + DataEncryption +
                 ", SIMChoose=" + SIMChoose +

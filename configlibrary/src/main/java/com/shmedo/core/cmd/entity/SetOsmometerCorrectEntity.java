@@ -8,24 +8,25 @@ import com.shmedo.core.exception.DASParameterException;
  * 设置数字渗压计深度、温度修正值参数
  */
 public class SetOsmometerCorrectEntity implements Validater {
-    private int depthCorrect; //深度
-    private int temperatureCorrect; //温度触发
+    private double depthCorrect; //深度修正值 mm
+    private double temperatureCorrect; //温度修正值 ℃
 
-    public SetOsmometerCorrectEntity(int depthCorrect, int temperatureCorrect) {
+    public SetOsmometerCorrectEntity(double depthCorrect, double temperatureCorrect) {
         this.depthCorrect = depthCorrect;
         this.temperatureCorrect = temperatureCorrect;
     }
 
     @Override
     public void validate() {
-        if (depthCorrect < 0 && depthCorrect > 65535)
+        if ( depthCorrect > 65535)
             throw new DASParameterException("深度触发参数错误");
-        if (temperatureCorrect < 0 && temperatureCorrect > 65535)
+
+        if (temperatureCorrect < 0 || temperatureCorrect > 65535)
             throw new DASParameterException("温度触发参数错误");
     }
 
     @Override
     public String toString() {
-        return super.toString();
+        return depthCorrect + "," + temperatureCorrect;
     }
 }

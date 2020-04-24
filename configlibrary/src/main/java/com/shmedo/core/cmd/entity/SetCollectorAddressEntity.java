@@ -17,7 +17,7 @@ public class SetCollectorAddressEntity implements Validater{
 
     @Override
     public void validate() {
-        if (address < 0 && address > 100000)
+        if (address < 0 || address > 255)
             throw new DASParameterException("采集器地址错误");
     }
 

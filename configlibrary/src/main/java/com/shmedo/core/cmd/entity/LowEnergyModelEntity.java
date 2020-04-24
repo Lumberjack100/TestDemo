@@ -7,10 +7,10 @@ import com.shmedo.core.exception.DASParameterException;
  * Created by adu on 2017/12/18.
  * DAS工作模式参数
  */
-public class DASWorkModelEntity implements Validater {
+public class LowEnergyModelEntity implements Validater {
     private int model;
 
-    public DASWorkModelEntity(int model) {
+    public LowEnergyModelEntity(int model) {
         this.model = model;
     }
 

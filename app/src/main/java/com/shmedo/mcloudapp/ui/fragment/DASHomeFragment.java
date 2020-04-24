@@ -30,6 +30,7 @@ import com.shmedo.core.model.BreakAlarmStatusInfo;
 import com.shmedo.core.model.CollectorConfigInfo;
 import com.shmedo.core.model.GetAllSensorConfigInfo;
 import com.shmedo.core.model.QueryOsmometerParameterInfo;
+import com.shmedo.core.model.SetRainPrecisionInfo;
 import com.shmedo.core.utils.StringUtil;
 import com.shmedo.mcloudapp.MCloudApp;
 import com.shmedo.mcloudapp.R;
@@ -43,7 +44,6 @@ import com.shmedo.mcloudapp.ui.activity.device.GeneralSettingActivity;
 import com.shmedo.mcloudapp.ui.activity.device.MqttSettingActivity;
 import com.shmedo.mcloudapp.ui.activity.device.sensor.SenSorBGKConfigActivity;
 import com.shmedo.mcloudapp.util.bleutil.BlueResultParserUtil;
-import com.shmedo.mcloudapp.util.page.model.SetRainAccuryPage;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -122,7 +122,7 @@ public class DASHomeFragment extends BaseFragment {
 
     private StringBuilder sbcollectorSensor = new StringBuilder();//采集器上传感器配置信息
 
-    private SetRainAccuryPage.SetRianAccuryParameter setRianAccuryParameter = new SetRainAccuryPage.SetRianAccuryParameter();
+    private SetRainPrecisionInfo setRainPrecisionInfo = new SetRainPrecisionInfo();
     private CollectorConfigInfo collectorConfigInfo;
     private BaseConfigInfo baseConfigInfo;
     private QueryOsmometerParameterInfo queryOsmometerParameterInfo;
@@ -366,7 +366,7 @@ public class DASHomeFragment extends BaseFragment {
                 break;
 
             case R.id.rl_advanced_config:
-                DeviceAdvanceConfigActivity.startActivity(getActivity(), baseConfigInfo.getDebugModel().toInt());
+                DeviceAdvanceConfigActivity.startActivity(getActivity(), baseConfigInfo.getWorkModel().toInt());
                 break;
         }
     }
@@ -376,9 +376,9 @@ public class DASHomeFragment extends BaseFragment {
      * 所有配置信息处理
      */
     private void processGetAllSensorConfig(String cmdStr) {
-        Timber.d("--------所有配置信息返回指令-------" + cmdStr);
+        Timber.d("所有配置信息指令%s", cmdStr);
         String[] strs = cmdStr.split("@@");
-        if (strs == null || strs.length < 6)
+        if (strs.length < 6)
             return;
 
         //拼接采集器接入的传感器配置信息
@@ -388,12 +388,12 @@ public class DASHomeFragment extends BaseFragment {
         }
 
         GetAllSensorConfigInfo getAllSensorConfigInfo = BlueResultParserUtil.getAllBlueMessage(cmdStr);
-        Timber.d("--------所有配置信息-------" + getAllSensorConfigInfo.toString());
+        Timber.d("所有配置信息Json%s", getAllSensorConfigInfo.toString());
 
         collectorConfigInfo = getAllSensorConfigInfo.getCollectorConfig();
         baseConfigInfo = getAllSensorConfigInfo.getBaseConfig();
         if (baseConfigInfo != null) {
-            setRianAccuryParameter.setRainAccury(String.valueOf(baseConfigInfo.getRainAccuracy() / 100));
+            setRainPrecisionInfo.setPrecision((double) baseConfigInfo.getRainAccuracy() / 100);
             collectorModel = baseConfigInfo.getCollectorModel().toString();
         }
 
@@ -443,8 +443,7 @@ public class DASHomeFragment extends BaseFragment {
                 Timber.d("查询断线报警器参数指令==##2270");
                 break;
         }
-
-        String result = Double.valueOf(setRianAccuryParameter.getRainAccury()) / 100 + "mm";
+        String result = setRainPrecisionInfo.getPrecision() / 100 + "mm";
         int count = rainAdapter.getCount();
         for (int i = 0; i < count; i++) {
             if (result.equals(rainAdapter.getItem(i))) {

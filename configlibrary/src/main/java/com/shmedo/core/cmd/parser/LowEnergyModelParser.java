@@ -3,21 +3,21 @@ package com.shmedo.core.cmd.parser;
 
 import com.shmedo.core.annotations.Parser;
 import com.shmedo.core.enums.CommandType;
-import com.shmedo.core.enums.DASWorkModel;
+import com.shmedo.core.enums.LowEnergyModel;
 import com.shmedo.core.interfaces.ResultParser;
-import com.shmedo.core.model.DASWorkModelInfo;
+import com.shmedo.core.model.LowEnergyModelInfo;
 
 /**
  * Created by adu on 2017/12/18.
  * 解析设置DAS工作模式
  */
 @Parser
-public class DASWorkModelParser implements ResultParser<DASWorkModelInfo> {
+public class LowEnergyModelParser implements ResultParser<LowEnergyModelInfo> {
     @Override
-    public DASWorkModelInfo parse(String result) {
+    public LowEnergyModelInfo parse(String result) {
         result.replace("\r\n","");
-        DASWorkModelInfo info = new DASWorkModelInfo();
-        info.setDasWorkModel(DASWorkModel.valueOf(Integer.valueOf(result.substring(5))));
+        LowEnergyModelInfo info = new LowEnergyModelInfo();
+        info.setLowEnergyModel(LowEnergyModel.valueOf(Integer.valueOf(result.substring(5))));
         return info;
     }
 
@@ -28,6 +28,6 @@ public class DASWorkModelParser implements ResultParser<DASWorkModelInfo> {
 
     @Override
     public CommandType commandType() {
-        return CommandType.DAS_WORK_MODEL;
+        return CommandType.LOW_ENERGY;
     }
 }

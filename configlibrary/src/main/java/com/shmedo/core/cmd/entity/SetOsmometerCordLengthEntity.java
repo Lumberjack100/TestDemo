@@ -8,23 +8,23 @@ import com.shmedo.core.interfaces.Validater;
  * 包名：    com.shmedo.core.cmd.entity <br/>
  * 创建者:   gonghe <br/>
  * 创建时间:  2020/4/23 <br/>
- * 描述：    设备调试模式参数
+ * 描述：   设置渗压计绳长
  */
-public class DebugModeEntity implements Validater {
-    private int model;
+public class SetOsmometerCordLengthEntity implements Validater {
+    private double cordLength;
 
-    public DebugModeEntity(int model) {
-        this.model = model;
+    public SetOsmometerCordLengthEntity(double cordLength) {
+        this.cordLength = cordLength;
     }
 
     @Override
     public void validate() {
-        if (model != 0 && model != 1 && model != 2 && model != 3)
-            throw new DASParameterException("调试模式错误");
+        if (cordLength > 65535)
+            throw new DASParameterException("绳长参数错误");
     }
 
     @Override
     public String toString() {
-        return String.valueOf(this.model);
+        return cordLength + "";
     }
 }

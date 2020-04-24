@@ -20,10 +20,10 @@ import com.hjq.toast.ToastUtils;
 import com.kyleduo.switchbutton.SwitchButton;
 import com.shmedo.core.cmd.CommandManager;
 import com.shmedo.core.cmd.CommandResult;
-import com.shmedo.core.cmd.entity.DebugModeEntity;
-import com.shmedo.core.cmd.entity.SettingRemoteUpgradeEntity;
+import com.shmedo.core.cmd.entity.WorkModeEntity;
+import com.shmedo.core.cmd.entity.SetRemoteUpgradeEntity;
 import com.shmedo.core.enums.CommandType;
-import com.shmedo.core.enums.DebugModel;
+import com.shmedo.core.enums.WorkModel;
 import com.shmedo.core.utils.StringUtil;
 import com.shmedo.mcloudapp.MCloudApp;
 import com.shmedo.mcloudapp.R;
@@ -81,12 +81,12 @@ public class DeviceAdvanceConfigActivity extends BaseDeviceConnectActivity {
     private void initData() {
         int mode = getIntent().getIntExtra(Extras.DEBUG_MODE, 1);
         //设备调试模式
-        switch (DebugModel.valueOf(mode)) {
+        switch (WorkModel.valueOf(mode)) {
             case INITIALZE:
                 mSpDebugMode.setSelection(0);
                 break;
 
-            case CLOSE:
+            case WORK:
                 mSpDebugMode.setSelection(1);
                 break;
 
@@ -119,8 +119,8 @@ public class DeviceAdvanceConfigActivity extends BaseDeviceConnectActivity {
                 if (isChecked) {
                     AdvanceSetDialogUtils.showReStartDialog(DeviceAdvanceConfigActivity.this, "固件升级", "固件", mSbFirmwareUpgrade);
                 } else {
-                    SettingRemoteUpgradeEntity settingRemoteUpgradeEntity = new SettingRemoteUpgradeEntity(0, 0);
-                    String command = CommandManager.getInstance().getCommand(CommandType.SETTING_REMOTE_UPGRADE, settingRemoteUpgradeEntity);
+                    SetRemoteUpgradeEntity setRemoteUpgradeEntity = new SetRemoteUpgradeEntity(0, 0);
+                    String command = CommandManager.getInstance().getCommand(CommandType.SETTING_REMOTE_UPGRADE, setRemoteUpgradeEntity);
                     sendCommonCommand(command);
                     ToastUtils.show("关闭固件升级");
                 }
@@ -129,9 +129,9 @@ public class DeviceAdvanceConfigActivity extends BaseDeviceConnectActivity {
     }
 
     private void initSpinnerAdapter() {
-        //调试模式
-        String[] debugData = getResources().getStringArray(R.array.das_debug_mode);
-        ArrayAdapter<String> debugModeAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, debugData);
+        //工作模式
+        String[] workMode = getResources().getStringArray(R.array.das_work_mode);
+        ArrayAdapter<String> debugModeAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, workMode);
         debugModeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mSpDebugMode.setAdapter(debugModeAdapter);
         mSpDebugMode.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -140,32 +140,32 @@ public class DeviceAdvanceConfigActivity extends BaseDeviceConnectActivity {
                 debugModeCheck++;
                 if (debugModeCheck >= 2) {
                     String status = parent.getSelectedItem().toString();
-                    DebugModel debugModel;
+                    WorkModel workModel;
                     switch (status) {
                         case "初始化":
-                            debugModel = DebugModel.INITIALZE;
+                            workModel = WorkModel.INITIALZE;
                             break;
 
-                        case "关闭":
-                            debugModel = DebugModel.CLOSE;
+                        case "工作":
+                            workModel = WorkModel.WORK;
                             break;
 
                         case "DEBUG":
-                            debugModel = DebugModel.DEBUG;
+                            workModel = WorkModel.DEBUG;
                             break;
 
                         case "INFO":
-                            debugModel = DebugModel.INFO;
+                            workModel = WorkModel.INFO;
                             break;
 
                         default:
-                            debugModel = DebugModel.CLOSE;
+                            workModel = WorkModel.WORK;
                             break;
                     }
-                    DebugModeEntity debugModeEntity = new DebugModeEntity(debugModel.toInt());
-                    String command = CommandManager.getInstance().getCommand(CommandType.DAS_DEBUG_MODE, debugModeEntity);
+                    WorkModeEntity workModeEntity = new WorkModeEntity(workModel.toInt());
+                    String command = CommandManager.getInstance().getCommand(CommandType.WORK_MODE, workModeEntity);
                     sendCommonCommandImmediately(command);
-                    Timber.d("设置调试模式指令==%s", command);
+                    Timber.d("设置工作模式指令==%s", command);
                 }
             }
 

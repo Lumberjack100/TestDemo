@@ -23,6 +23,7 @@ public class SetInclinometerLongEntity implements Validater{
     public void validate() {
         if (TextUtils.isEmpty(sensorType) && TextUtils.isEmpty(measSegment))
             throw new DASParameterException("参数不能为空");
+
         if (!SensorType.isValidSensor(sensorType))
             throw new DASParameterException("传感器不存在");
     }

@@ -18,6 +18,7 @@ public class DigitalOsmometerFunctionEntity implements Validater {
     public void validate() {
         if (osmometerStatus == 0)
             throw new DASParameterException("参数不能为空");
+
         if (osmometerStatus != 1 && osmometerStatus != 2)
             throw new DASParameterException("渗压计功能设置失败");
     }

@@ -7,7 +7,6 @@ import com.shmedo.core.model.BaseConfigInfo;
 import com.shmedo.mcloudapp.entity.ble.BaseConfigInfoSub;
 import com.shmedo.mcloudapp.entity.ble.DigitalOsmometerFunctionSub;
 import com.shmedo.mcloudapp.entity.ble.QueryOsmometerParameterSubInfo;
-import com.shmedo.mcloudapp.entity.ble.SettingRainPrecisionSub;
 import com.shmedo.mcloudapp.entity.ble.collector.CollectorSensorParamsInfoSub;
 import com.shmedo.mcloudapp.util.StringUtil;
 import com.shmedo.mcloudapp.util.bleutil.BlueResultParserUtil;
@@ -41,8 +40,6 @@ public class ExampleUnitTest {
         QueryOsmometerParameterSubInfo mFuncSubInfo = BlueResultParserUtil.getQueryOsmometerParameter(shenya);
         System.out.println(mFuncSubInfo.toString());
 
-       SettingRainPrecisionSub rainStationSub =  BlueResultParserUtil.getRainPrecisionInfo("$$12120");
-        System.out.println(rainStationSub.toString());
 
         DigitalOsmometerFunctionSub digitalOsmometerFunctionSub = BlueResultParserUtil.getOsmoeterFunctionInfo("$$4011\r\n");
         System.out.println(digitalOsmometerFunctionSub.toString());

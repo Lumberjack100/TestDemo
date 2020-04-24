@@ -16,7 +16,7 @@ public class SetOsmometerAddressEntity implements Validater{
 
     @Override
     public void validate() {
-        if (address < 0 && address > 255)
+        if (address < 0 || address > 255)
             throw new DASParameterException("设置数字式渗压地址错误");
     }
 

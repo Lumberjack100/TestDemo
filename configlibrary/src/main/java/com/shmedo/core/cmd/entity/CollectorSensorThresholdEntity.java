@@ -24,6 +24,7 @@ public class CollectorSensorThresholdEntity implements Validater {
     public void validate() {
         if (TextUtils.isEmpty(type) && TextUtils.isEmpty(threshold))
             throw new DASParameterException("不能为空");
+
         if(!CollectorModel.isValidCollector(this.type))
             throw new DASParameterException("采集器不存在");
     }

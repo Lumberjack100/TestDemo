@@ -7,19 +7,19 @@
         <item>100条</item>
     </string-array>
 
-    //调试模式
-    <string-array name="das_debug_mode">
+    //工作模式
+    <string-array name="das_work_mode">
         <item>初始化</item>
-        <item>关闭</item>
+        <item>工作</item>
         <item>DEBUG</item>
         <item>INFO</item>
     </string-array>
+
     <string-array name="das_debug">
         <item>关闭</item>
         <item>DEBUG</item>
         <item>INFO</item>
     </string-array>
-
 
     //开关量
     <string-array name="das_switch">

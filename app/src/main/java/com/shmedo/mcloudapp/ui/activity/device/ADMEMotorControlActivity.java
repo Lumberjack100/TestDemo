@@ -441,7 +441,7 @@ public class ADMEMotorControlActivity extends BaseDeviceConnectActivity {
         stringBuilder.append(speedPullDown + "\r\n");
         String cmdStr = String.valueOf(stringBuilder);
 
-        startProgressRunnable("正在发送配置指令...", 10000);
+        startProgressRunnable("正在发送配置指令...", COMMAND_DELAY_MILLIS);
         sendCommonCommand(cmdStr);
         Timber.d("控制电机" + (mSpinner.getSelectedItemPosition() == 0 ? "上拉" : "下降") + "指令==" + cmdStr);
         //轮询查询电机状态

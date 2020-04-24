@@ -31,6 +31,7 @@ public class CollectorSensorRevisedEntity implements Validater {
         if (TextUtils.isEmpty(collectorModel) && TextUtils.isEmpty(address)&& TextUtils.isEmpty(humidity)
                 && TextUtils.isEmpty(salinity)&& TextUtils.isEmpty(temperature))
             throw new DASParameterException("不能为空");
+
         if(!CollectorModel.isValidCollector(this.collectorModel))
             throw new DASParameterException("采集器不存在");
     }

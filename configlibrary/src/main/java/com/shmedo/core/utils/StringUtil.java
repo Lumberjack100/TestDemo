@@ -13,9 +13,7 @@ import java.util.Random;
  * Created by Liudongdong on 17/12/12.
  */
 public class StringUtil {
-    public static boolean isNullOrEmpty(String str) {
-        return str == null || str.length() == 0;
-    }
+
     public static boolean isNullOrEmptyList(List<String> list){
         return list.size() == 0;
     }

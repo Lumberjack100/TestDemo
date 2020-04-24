@@ -92,7 +92,7 @@ public class ParseManager {
         CollectorStandbyTimeParser collectorStandbyTimeParser = new CollectorStandbyTimeParser();
         DASSendAuthenticRequestParser dasSendAuthenticRequestParser = new DASSendAuthenticRequestParser();
         DASSendAuthenticResultParser dasSendAuthenticResultParser = new DASSendAuthenticResultParser();
-        DASWorkModelParser dasWorkModelParser = new DASWorkModelParser();
+        LowEnergyModelParser lowEnergyModelParser = new LowEnergyModelParser();
         DataMessageModelParser dataMessageModelParser = new DataMessageModelParser();
         DataReportIntervalParser dataReportIntervalParser = new DataReportIntervalParser();
         DigitalOsmometerFunctionParser digitalOsmometerFunctionParser = new DigitalOsmometerFunctionParser();
@@ -118,9 +118,9 @@ public class ParseManager {
         SetOsmometerCorrectparser setOsmometerCorrectparser = new SetOsmometerCorrectparser();
         SetOsmometerTriggerParser setOsmometerTriggerParser = new SetOsmometerTriggerParser();
         SetServerAddressPortParser setServerAddressPortParser = new SetServerAddressPortParser();
-        SettingGPSPositionParser settingGPSPositionParser = new SettingGPSPositionParser();
-        SettingRainPrecisionParser settingRainPrecisionParser = new SettingRainPrecisionParser();
-        SettingRemoteUpgradeParser settingRemoteUpgradeParser = new SettingRemoteUpgradeParser();
+        SetGPSPositionParser setGPSPositionParser = new SetGPSPositionParser();
+        SetRainPrecisionParser setRainPrecisionParser = new SetRainPrecisionParser();
+        SetRemoteUpgradeParser setRemoteUpgradeParser = new SetRemoteUpgradeParser();
         SixTargerBDNumberParser sixTargerBDNumberParser = new SixTargerBDNumberParser();
         SystemRunStateParser systemRunStateParser = new SystemRunStateParser();
         VersionMessageParser versionMessageParser = new VersionMessageParser();
@@ -143,7 +143,7 @@ public class ParseManager {
         parserMap.put(collectorStandbyTimeParser.commandType(), collectorStandbyTimeParser);
         parserMap.put(dasSendAuthenticRequestParser.commandType(), dasSendAuthenticRequestParser);
         parserMap.put(dasSendAuthenticResultParser.commandType(), dasSendAuthenticResultParser);
-        parserMap.put(dasWorkModelParser.commandType(), dasWorkModelParser);
+        parserMap.put(lowEnergyModelParser.commandType(), lowEnergyModelParser);
         parserMap.put(dataMessageModelParser.commandType(), dataMessageModelParser);
         parserMap.put(dataReportIntervalParser.commandType(), dataReportIntervalParser);
         parserMap.put(digitalOsmometerFunctionParser.commandType(), digitalOsmometerFunctionParser);
@@ -169,9 +169,9 @@ public class ParseManager {
         parserMap.put(setOsmometerCorrectparser.commandType(), setOsmometerCorrectparser);
         parserMap.put(setOsmometerTriggerParser.commandType(), setOsmometerTriggerParser);
         parserMap.put(setServerAddressPortParser.commandType(), setServerAddressPortParser);
-        parserMap.put(settingGPSPositionParser.commandType(), settingGPSPositionParser);
-        parserMap.put(settingRainPrecisionParser.commandType(), settingRainPrecisionParser);
-        parserMap.put(settingRemoteUpgradeParser.commandType(), settingRemoteUpgradeParser);
+        parserMap.put(setGPSPositionParser.commandType(), setGPSPositionParser);
+        parserMap.put(setRainPrecisionParser.commandType(), setRainPrecisionParser);
+        parserMap.put(setRemoteUpgradeParser.commandType(), setRemoteUpgradeParser);
         parserMap.put(sixTargerBDNumberParser.commandType(), sixTargerBDNumberParser);
         parserMap.put(systemRunStateParser.commandType(), systemRunStateParser);
         parserMap.put(versionMessageParser.commandType(), versionMessageParser);

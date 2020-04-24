@@ -9,15 +9,23 @@ public enum ServerAddress {
     ADDRESS_TWO(2);
 
     private int port;
+
     ServerAddress(int port) {
         this.port = port;
     }
 
+    public int toInt() {
+        return port;
+    }
+
     public static ServerAddress valueOf(int port) {
         switch (port) {
-            case 1:return ADDRESS_ONE;
-            case 2:return ADDRESS_TWO;
-            default: return ADDRESS_ONE;
+            case 1:
+                return ADDRESS_ONE;
+            case 2:
+                return ADDRESS_TWO;
+            default:
+                return ADDRESS_ONE;
         }
     }
 

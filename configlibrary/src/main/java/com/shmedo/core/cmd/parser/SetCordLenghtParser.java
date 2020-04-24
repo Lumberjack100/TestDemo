@@ -30,6 +30,6 @@ public class SetCordLenghtParser implements ResultParser<SetCordLengthInfo> {
 
 
     @Override public CommandType commandType() {
-        return CommandType.SET_CORD_LENGHT;
+        return CommandType.SET_CORD_LENGTH;
     }
 }

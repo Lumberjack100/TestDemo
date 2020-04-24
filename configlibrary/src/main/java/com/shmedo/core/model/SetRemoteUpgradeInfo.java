@@ -1,21 +1,21 @@
 package com.shmedo.core.model;
 
 
-import com.shmedo.core.enums.SettingRemoteUpgrade;
+import com.shmedo.core.enums.SetRemoteUpgrade;
 
 /**
  * Created by adu on 2017/12/18.
  * 设置远程升级的实体类
  */
-public class SettingRemoteUpgradeInfo {
-    private SettingRemoteUpgrade model;
+public class SetRemoteUpgradeInfo {
+    private SetRemoteUpgrade model;
     private int port;
 
-    public SettingRemoteUpgrade getModel() {
+    public SetRemoteUpgrade getModel() {
         return model;
     }
 
-    public void setModel(SettingRemoteUpgrade model) {
+    public void setModel(SetRemoteUpgrade model) {
         this.model = model;
     }
 

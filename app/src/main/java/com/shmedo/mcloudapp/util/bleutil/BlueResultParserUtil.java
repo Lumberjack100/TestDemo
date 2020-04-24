@@ -14,9 +14,7 @@ import com.shmedo.core.model.DeviceLockStatusInfo;
 import com.shmedo.core.model.DigitalOsmometerFunctionInfo;
 import com.shmedo.core.model.GetAllSensorConfigInfo;
 import com.shmedo.core.model.QueryOsmometerParameterInfo;
-import com.shmedo.core.model.RainStationInfo;
 import com.shmedo.core.model.RebootDeviceInfo;
-import com.shmedo.core.model.SettingRainPrecisionInfo;
 import com.shmedo.core.model.SystemRunStateInfo;
 import com.shmedo.core.model.VersionMessageInfo;
 import com.shmedo.mcloudapp.entity.ble.BaseConfigInfoSub;
@@ -25,12 +23,12 @@ import com.shmedo.mcloudapp.entity.ble.CollectorInfoSub;
 import com.shmedo.mcloudapp.entity.ble.DeviceLockStatusSub;
 import com.shmedo.mcloudapp.entity.ble.DigitalOsmometerFunctionSub;
 import com.shmedo.mcloudapp.entity.ble.QueryOsmometerParameterSubInfo;
-import com.shmedo.mcloudapp.entity.ble.RainStationSub;
 import com.shmedo.mcloudapp.entity.ble.RebootDeviceSub;
-import com.shmedo.mcloudapp.entity.ble.SettingRainPrecisionSub;
 import com.shmedo.mcloudapp.entity.ble.SystemRunStateSub;
 import com.shmedo.mcloudapp.entity.ble.VersionMessageSub;
 import com.shmedo.mcloudapp.entity.ble.collector.CollectorSensorParamsInfoSub;
+
+import timber.log.Timber;
 
 /**
  * 项目名：  mCloudapp
@@ -56,7 +54,7 @@ public class BlueResultParserUtil {
         if (baseBean.isSuccess()) {
             info = baseBean.getResult();
         } else {
-            Log.d(LogTag.INFO_TAG, baseBean.getMessage());
+            Timber.d(baseBean.getMessage());
             return infoSub;
         }
 
@@ -90,11 +88,11 @@ public class BlueResultParserUtil {
                 infoSub.setRainfallStation("关闭");
                 break;
         }
-        switch (info.getDebugModel()) {
+        switch (info.getWorkModel()) {
             case INITIALZE:
                 infoSub.setDebugModel("初始化");
                 break;
-            case CLOSE:
+            case WORK:
                 infoSub.setDebugModel("关闭");
                 break;
             case INFO:
@@ -191,7 +189,7 @@ public class BlueResultParserUtil {
             digitalOsFuncSubInfo.setTemperatureCorrect(digtalInfo.getTemperatureCorrect());
 
         } else {
-            Log.i(LogTag.INFO_TAG, "解析渗压计信息=" + shenyaBean.getMessage());
+            Timber.i("解析渗压计信息=" + shenyaBean.getMessage());
             return digitalOsFuncSubInfo;
         }
         return setDigtalInfo(digtalInfo, digitalOsFuncSubInfo);
@@ -385,74 +383,6 @@ public class BlueResultParserUtil {
                 break;
         }
         return statusSub;
-    }
-
-
-    /**
-     * 获取雨量计开关
-     *
-     * @param result
-     * @return
-     */
-    public static RainStationSub getRainStationInfo(String result) {
-        CommandResult<RainStationInfo> bean = ParseManager.getInstance().parse(result);
-        RainStationInfo info = null;
-        RainStationSub rainStationSub = new RainStationSub();
-        if (bean.isSuccess()) {
-            info = bean.getResult();
-        } else {
-            return rainStationSub;
-        }
-        return setRainStationInfo(info, rainStationSub);
-    }
-
-    /**
-     * 设置雨量计开关
-     *
-     * @param info
-     * @param rainStationSub
-     * @return
-     */
-    private static RainStationSub setRainStationInfo(RainStationInfo info, RainStationSub rainStationSub) {
-        switch (info.getRainStation()) {
-            case OPEN: {
-                rainStationSub.setRainStation("1");
-                break;
-            }
-            case CLOSE: {
-                rainStationSub.setRainStation("2");
-                break;
-            }
-            case ALARM_OPEN: {
-                rainStationSub.setRainStation("3");
-                break;
-            }
-        }
-        return rainStationSub;
-    }
-
-
-    /**
-     * 设置雨量站精度
-     *
-     * @param result
-     * @return
-     */
-    public static SettingRainPrecisionSub getRainPrecisionInfo(String result) {
-        CommandResult<SettingRainPrecisionInfo> bean = ParseManager.getInstance().parse(result);
-        SettingRainPrecisionInfo info = null;
-        SettingRainPrecisionSub rainPrecisionSub = new SettingRainPrecisionSub();
-        if (bean.isSuccess()) {
-            info = bean.getResult();
-        } else {
-            return rainPrecisionSub;
-        }
-        return setRainPrecisionInfo(info, rainPrecisionSub);
-    }
-
-    private static SettingRainPrecisionSub setRainPrecisionInfo(SettingRainPrecisionInfo info, SettingRainPrecisionSub rainPrecisionSub) {
-        rainPrecisionSub.setPrecision(info.getPrecision());
-        return rainPrecisionSub;
     }
 
 

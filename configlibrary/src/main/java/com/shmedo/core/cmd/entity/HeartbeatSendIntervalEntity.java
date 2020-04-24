@@ -17,7 +17,7 @@ public class HeartbeatSendIntervalEntity implements Validater {
     @Override
     public void validate() {
         //验证间隔格式
-    if (Integer.valueOf(time) < 0 && Integer.valueOf(time) >86400)
+    if (Integer.parseInt(time) < 0 || Integer.parseInt(time) >86400)
             throw new DASParameterException("参数错误");
     }
 

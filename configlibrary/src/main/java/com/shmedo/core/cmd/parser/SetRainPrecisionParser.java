@@ -3,18 +3,18 @@ package com.shmedo.core.cmd.parser;
 import com.shmedo.core.annotations.Parser;
 import com.shmedo.core.enums.CommandType;
 import com.shmedo.core.interfaces.ResultParser;
-import com.shmedo.core.model.SettingRainPrecisionInfo;
+import com.shmedo.core.model.SetRainPrecisionInfo;
 
 /**
  * Created by adu on 2017/12/19.
  * 解析设置雨量计精度
  */
 @Parser
-public class SettingRainPrecisionParser implements ResultParser<SettingRainPrecisionInfo> {
+public class SetRainPrecisionParser implements ResultParser<SetRainPrecisionInfo> {
     @Override
-    public SettingRainPrecisionInfo parse(String result) {
-        SettingRainPrecisionInfo info = new SettingRainPrecisionInfo();
-        info.setPrecision(Integer.valueOf(result.substring(5)));
+    public SetRainPrecisionInfo parse(String result) {
+        SetRainPrecisionInfo info = new SetRainPrecisionInfo();
+        info.setPrecision(Integer.parseInt(result.substring(5)));
         return info;
     }
 

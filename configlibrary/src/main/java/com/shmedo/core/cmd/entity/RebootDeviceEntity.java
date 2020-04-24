@@ -8,7 +8,6 @@ import com.shmedo.core.exception.DASParameterException;
  * 重启设备的参数
  */
 public class RebootDeviceEntity implements Validater{
-
     private int time;
 
     public RebootDeviceEntity(int time) {
@@ -17,7 +16,7 @@ public class RebootDeviceEntity implements Validater{
 
     @Override
     public void validate() {
-        if (time < 0 && time > 9999)
+        if (time < 0 || time > 9999)
             throw new DASParameterException("时间设置错误");
     }
 

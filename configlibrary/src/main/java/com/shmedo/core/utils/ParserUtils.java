@@ -4,7 +4,7 @@ package com.shmedo.core.utils;
 import com.shmedo.core.enums.CollectorModel;
 import com.shmedo.core.enums.DataCommunicateMode;
 import com.shmedo.core.enums.DataEncryption;
-import com.shmedo.core.enums.DebugModel;
+import com.shmedo.core.enums.WorkModel;
 import com.shmedo.core.enums.EquipmentStatus;
 import com.shmedo.core.enums.RainStation;
 import com.shmedo.core.enums.SIMChoose;
@@ -83,7 +83,7 @@ public class ParserUtils
         bean.setBatteryOverProtect(strs[15]);
 
         int debugModel = Integer.parseInt(strs[16]);
-        bean.setDebugModel(DebugModel.valueOf(debugModel));
+        bean.setWorkModel(WorkModel.valueOf(debugModel));
 
         int sensorInterfaceType = Integer.parseInt(strs[17]);
         bean.setSensorInterfaceType(SensorInterfaceType.valueOf(sensorInterfaceType));

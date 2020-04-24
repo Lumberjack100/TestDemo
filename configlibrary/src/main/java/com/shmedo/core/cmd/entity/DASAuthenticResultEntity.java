@@ -7,11 +7,11 @@ import com.shmedo.core.exception.DASParameterException;
  * Created by adu on 2018/1/11.
  * DAS发送认证结果
  */
-public class DASSendAuthenticResultEntity implements Validater {
+public class DASAuthenticResultEntity implements Validater {
 
     private int result;
 
-    public DASSendAuthenticResultEntity(int result) {
+    public DASAuthenticResultEntity(int result) {
         this.result = result;
     }
 

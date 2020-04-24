@@ -15,6 +15,13 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.hjq.toast.ToastUtils;
+import com.shmedo.core.cmd.CommandManager;
+import com.shmedo.core.cmd.CommandResult;
+import com.shmedo.core.cmd.entity.CollectorFrequencyEntity;
+import com.shmedo.core.cmd.entity.CollectorSolutionFrequencyEntity;
+import com.shmedo.core.cmd.entity.CollectorStandbyTimeEntity;
+import com.shmedo.core.cmd.entity.SetCollectorAddressEntity;
+import com.shmedo.core.enums.CommandType;
 import com.shmedo.core.model.CollectorConfigInfo;
 import com.shmedo.mcloudapp.MCloudApp;
 import com.shmedo.mcloudapp.R;
@@ -70,17 +77,17 @@ public class GeneralSettingActivity extends BaseDeviceConnectActivity {
     private String collectorModel;//采集器类型
 
     private String collectorAddress;//采集器地址
-    private String calculatTime;//解算时间
+    private String calculatTime;//解算时间频度
     private String standbyTime;//待机时间
-    private String collectTime;//采集时间
+    private String collectTime;//采集时间频度
 
     private String cmdCollectorAddress;//采集器地址
 
-    private String cmdCalculatTime;//解算时间
+    private String cmdCalculatTime;//解算时间频度
 
     private String cmdStandbyTime;//待机时间
 
-    private String cmdCollectTime;//采集时间
+    private String cmdCollectTime;//采集时间频度
 
     private CollectorConfigInfo collectorConfigInfo;
 
@@ -203,14 +210,21 @@ public class GeneralSettingActivity extends BaseDeviceConnectActivity {
             return;
         }
 
-        cmdCollectorAddress = "##147" + collectorAddress + "\r\n";
-        cmdCalculatTime = "##163" + collectorModel + StringUtil.formatStringFour(calculatTime) + "\r\n";
-        cmdStandbyTime = "##160" + collectorModel + StringUtil.formatStringFour(standbyTime) + "\r\n";
-        cmdCollectTime = "##161" + collectorModel + StringUtil.formatStringFive(collectTime) + "\r\n";
+        SetCollectorAddressEntity collectorAddressEntity = new SetCollectorAddressEntity(Integer.parseInt(collectorAddress));
+        cmdCollectorAddress = CommandManager.getInstance().getCommand(CommandType.SET_COLLECTOR_ADDRESS, collectorAddressEntity);
 
-        startProgressRunnable("正在发送配置指令...", 10000);
+        CollectorSolutionFrequencyEntity frequencyEntity = new CollectorSolutionFrequencyEntity(collectorModel, StringUtil.formatStringFour(calculatTime));
+        cmdCalculatTime = CommandManager.getInstance().getCommand(CommandType.COLLECTOR_SOLUTION_FREQUENCY, frequencyEntity);
+
+        CollectorStandbyTimeEntity collectorStandbyTimeEntity = new CollectorStandbyTimeEntity(collectorModel, StringUtil.formatStringFour(standbyTime));
+        cmdStandbyTime = CommandManager.getInstance().getCommand(CommandType.COLLECTOR_STANDBY_TIME, collectorStandbyTimeEntity);
+
+        CollectorFrequencyEntity collectorFrequencyEntity = new CollectorFrequencyEntity(collectorModel, StringUtil.formatStringFive(collectTime));
+        cmdCollectTime = CommandManager.getInstance().getCommand(CommandType.COLLECTOR_FREQUENCY, collectorFrequencyEntity);
+
+        startProgressRunnable("正在发送配置指令...", COMMAND_DELAY_MILLIS);
         sendCommonCommandImmediately(cmdCollectorAddress);
-        Timber.d("设置采集器地址指令===" + cmdCollectorAddress);
+        Timber.d("设置采集器地址指令===%s", cmdCollectorAddress);
     }
 
 
@@ -218,41 +232,41 @@ public class GeneralSettingActivity extends BaseDeviceConnectActivity {
      * 设置显示数据
      */
     private void setResultData(String cmdStr) {
-        if (cmdStr.startsWith("$$147") && cmdStr.endsWith("\r\n")) {
-            if (cmdStr.startsWith("$$147e") || cmdStr.startsWith("$$147ce")) {
+        if (cmdStr.startsWith(CommandType.SET_COLLECTOR_ADDRESS.toString())) {
+            if (cmdStr.endsWith(CommandResult.ERROR_END)) {
                 ToastUtils.show("采集器地址配置错误!");
                 stopProgressRunnable();
                 return;
             }
             sendCommonCommandImmediately(cmdCalculatTime);
-            Timber.d("设置采集器解算频度指令===" + cmdCalculatTime);
+            Timber.d("设置采集器解算频度指令===%s", cmdCalculatTime);
             return;
         }
 
-        if (cmdStr.startsWith("$$163") && cmdStr.endsWith("\r\n")) {
-            if (cmdStr.startsWith("$$163e") || cmdStr.startsWith("$$163ce")) {
+        if (cmdStr.startsWith(CommandType.COLLECTOR_SOLUTION_FREQUENCY.toString())) {
+            if (cmdStr.endsWith(CommandResult.ERROR_END)) {
                 ToastUtils.show("采集器解算频度配置错误!");
                 stopProgressRunnable();
                 return;
             }
             sendCommonCommandImmediately(cmdStandbyTime);
-            Timber.d("设置采集器待机时长指令===" + cmdStandbyTime);
+            Timber.d("设置采集器待机时长指令===%s", cmdStandbyTime);
             return;
         }
 
-        if (cmdStr.startsWith("$$160") && cmdStr.endsWith("\r\n")) {
-            if (cmdStr.startsWith("$$160e") || cmdStr.startsWith("$$160ce")) {
+        if (cmdStr.startsWith(CommandType.COLLECTOR_STANDBY_TIME.toString())) {
+            if (cmdStr.endsWith(CommandResult.ERROR_END)) {
                 ToastUtils.show("采集器待机时长配置错误!");
                 stopProgressRunnable();
                 return;
             }
             sendCommonCommandImmediately(cmdCollectTime);
-            Timber.d("设置采集器采集频度指令===" + cmdCollectTime);
+            Timber.d("设置采集器采集频度指令===%s", cmdCollectTime);
             return;
         }
 
-        if (cmdStr.startsWith("$$161") && cmdStr.endsWith("\r\n")) {
-            if (cmdStr.startsWith("$$161e") || cmdStr.startsWith("$$161ce")) {
+        if (cmdStr.startsWith(CommandType.COLLECTOR_FREQUENCY.toString())) {
+            if (cmdStr.endsWith(CommandResult.ERROR_END)) {
                 ToastUtils.show("采集器采集频度配置错误!");
                 stopProgressRunnable();
                 return;
@@ -273,7 +287,6 @@ public class GeneralSettingActivity extends BaseDeviceConnectActivity {
                     finish();
                 }
             }, 2000);
-            return;
         }
     }
 
@@ -281,7 +294,7 @@ public class GeneralSettingActivity extends BaseDeviceConnectActivity {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void getConfig(String messageEvent) {
         if (!TextUtils.isEmpty(messageEvent) && messageEvent.startsWith("$$")) {
-            setResultData(messageEvent);
+            setResultData(messageEvent.replace("$$", ""));
         }
     }
 

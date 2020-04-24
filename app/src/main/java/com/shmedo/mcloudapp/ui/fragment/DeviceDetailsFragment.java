@@ -17,7 +17,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.hjq.toast.ToastUtils;
+import com.shmedo.core.cmd.CommandManager;
 import com.shmedo.core.cmd.CommandResult;
+import com.shmedo.core.cmd.entity.DataMessageModelEntity;
+import com.shmedo.core.cmd.entity.InstallLocationEntity;
+import com.shmedo.core.enums.CommandType;
 import com.shmedo.mcloudapp.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.adapter.recyclerviewbaseadapter.CommonAdapter;
@@ -223,8 +227,9 @@ public class DeviceDetailsFragment extends BaseFragment implements SwipeRefreshL
     }
 
     private void initData() {
-        deviceConnectActivity.sendCommonCommandImmediately("##040\r\n");
-        Timber.i("查询设备版本信息：==##040");
+        String command = CommandManager.getInstance().getCommand(CommandType.VERSION_MESSAGE);
+        deviceConnectActivity.sendCommonCommandImmediately(command);
+        Timber.i("查询设备版本信息：%s", command);
     }
 
 
@@ -267,71 +272,84 @@ public class DeviceDetailsFragment extends BaseFragment implements SwipeRefreshL
     }
 
     private void setResultData(String message) {
-        Timber.i("DeviceDetailsFragment：======" + message);
-        String commandType = StringUtil.extractCommandType(message);
+        Timber.i("DeviceDetailsFragment：======%s", message);
+        String command;
+        CommandType commandType = com.shmedo.core.utils.StringUtil.extractCommandType(message);
         switch (commandType) {
-            case "040":
+            case VERSION_MESSAGE:
                 DeviceVersionInfo versionInfo = ParserDeviceDetailsUtils.parserVersionInfo(message);
                 setVersionInfo(versionInfo);
-                deviceConnectActivity.sendCommonCommandImmediately("##9162\r\n");
-                Timber.i("查询安装位置：==##9162");
+                InstallLocationEntity installLocationEntity = new InstallLocationEntity(2);
+                command = CommandManager.getInstance().getCommand(CommandType.INSTALL_LOCATION, installLocationEntity);
+                deviceConnectActivity.sendCommonCommandImmediately(command);
+                Timber.i("查询安装位置：%s", command);
                 break;
 
-            case "916":
+            case INSTALL_LOCATION:
                 String position = ParserDeviceDetailsUtils.parserInstallPosition(message);
                 tvInstallPosition.setText(position);
-                deviceConnectActivity.sendCommonCommandImmediately("##041\r\n");
-                Timber.i("查询设备状态1：==##041");
+                command = CommandManager.getInstance().getCommand(CommandType.QUERY_DAS_STATUS_1);
+                deviceConnectActivity.sendCommonCommandImmediately(command);
+                Timber.i("查询设备状态1：%s", command);
                 break;
 
-            case "041":
+            case QUERY_DAS_STATUS_1:
                 DeviceStatusOne statusOne = ParserDeviceDetailsUtils.parserDeviceStatusOne(message);
                 setDeviceStatusOne(statusOne);
-                deviceConnectActivity.sendCommonCommandImmediately("##014\r\n");
-                Timber.i("查询运营商信息：==##014");
+                command = CommandManager.getInstance().getCommand(CommandType.SYSTEM_RUN_STATE);
+                deviceConnectActivity.sendCommonCommandImmediately(command);
+                Timber.i("查询运行状态：%s", command);
                 break;
 
-            case "014":
+            case SYSTEM_RUN_STATE:
                 OperatorInformation operatorInformation = ParserDeviceDetailsUtils.parserOperatorInformation(message);
                 setOperatorInformation(operatorInformation);
-                deviceConnectActivity.sendCommonCommandImmediately("##0441\r\n");
-                Timber.i("查询网络状态：中心1==##0441");
+                DataMessageModelEntity dataMessageModelEntity = new DataMessageModelEntity(1);
+                command = CommandManager.getInstance().getCommand(CommandType.QUERY_NETWORK_STATUS, dataMessageModelEntity);
+                deviceConnectActivity.sendCommonCommandImmediately(command);
+                Timber.i("查询网络状态：中心1==%s", command);
                 break;
 
-            case "044":
+            case QUERY_NETWORK_STATUS:
                 String number = message.replace(CommandResult.COMMAND_RESULT_HEADER, "").substring(3, 4);
                 switch (number) {
                     case "1":
-                        deviceConnectActivity.sendCommonCommandImmediately("##0442\r\n");
-                        Timber.i("查询网络状态：中心2==##0442");
                         DeviceInternetStatus internetStatus1 = ParserDeviceDetailsUtils.parserInternetStatus(message);
                         setInternetStatus(internetStatus1, number);
+                        dataMessageModelEntity = new DataMessageModelEntity(2);
+                        command = CommandManager.getInstance().getCommand(CommandType.QUERY_NETWORK_STATUS, dataMessageModelEntity);
+                        deviceConnectActivity.sendCommonCommandImmediately(command);
+                        Timber.i("查询网络状态：中心2==%s", command);
                         break;
 
                     case "2":
-                        deviceConnectActivity.sendCommonCommandImmediately("##0443\r\n");
-                        Timber.i("查询网络状态：中心3==##0443");
                         DeviceInternetStatus internetStatus2 = ParserDeviceDetailsUtils.parserInternetStatus(message);
                         setInternetStatus(internetStatus2, number);
+                        dataMessageModelEntity = new DataMessageModelEntity(3);
+                        command = CommandManager.getInstance().getCommand(CommandType.QUERY_NETWORK_STATUS, dataMessageModelEntity);
+                        deviceConnectActivity.sendCommonCommandImmediately(command);
+                        Timber.i("查询网络状态：中心3==%s", command);
                         break;
 
                     case "3":
                         DeviceInternetStatus internetStatus3 = ParserDeviceDetailsUtils.parserInternetStatus(message);
                         setInternetStatus(internetStatus3, number);
-                        deviceConnectActivity.sendCommonCommandImmediately("##042\r\n");
-                        Timber.i("查询设备状态2：：==##042");
+                        command = CommandManager.getInstance().getCommand(CommandType.QUERY_DAS_STATUS_2);
+                        deviceConnectActivity.sendCommonCommandImmediately(command);
+                        Timber.i("查询设备状态2：%s", command);
                         break;
                 }
                 break;
 
-            case "042":
-                deviceConnectActivity.sendCommonCommandImmediately("##043\r\n");
-                Timber.i("查询设备状态3：==##043");
+            case QUERY_DAS_STATUS_2:
                 DeviceStatusTwo statusTwo = ParserDeviceDetailsUtils.parserDeviceStatusTwo(message);
                 setDeviceStatusTwo(statusTwo);
+                command = CommandManager.getInstance().getCommand(CommandType.QUERY_DAS_STATUS_3);
+                deviceConnectActivity.sendCommonCommandImmediately(command);
+                Timber.i("查询设备状态3：%s", command);
                 break;
 
-            case "043":
+            case QUERY_DAS_STATUS_3:
                 DeviceStatusThree statusThree = ParserDeviceDetailsUtils.parserDeviceStatusThree(message);
                 channelNumber = statusThree.getCollectorModel();
                 setDeviceStatusThree(statusThree);
@@ -343,7 +361,6 @@ public class DeviceDetailsFragment extends BaseFragment implements SwipeRefreshL
     //设置设备版本信息  ##040
     private void setVersionInfo(DeviceVersionInfo versionInfo) {
         firmwareVersion.setText(versionInfo.getFirmwareVersion());
-
     }
 
     //设置设备状态1  ##041
@@ -485,15 +502,18 @@ public class DeviceDetailsFragment extends BaseFragment implements SwipeRefreshL
             return;
         }
 
+        String command = CommandManager.getInstance().getCommand(CommandType.VERSION_MESSAGE);
         if (!onRefreshFirst) {
             //发送指令
             ToastUtils.show("刷新指令成功");
-            deviceConnectActivity.sendCommonCommandImmediately("##040\r\n");
+            deviceConnectActivity.sendCommonCommandImmediately(command);
             onRefreshFirst = true;
         }
+
         if (prelongTim == 0) {
             prelongTim = (new Date()).getTime();
             refreshLayout.setRefreshing(false);
+
         } else {
             long curTime = (new Date()).getTime();
             long tenTime = curTime - prelongTim;
@@ -501,7 +521,7 @@ public class DeviceDetailsFragment extends BaseFragment implements SwipeRefreshL
             if (tenTime >= 10000) {
                 //发送指令
                 ToastUtils.show("刷新指令成功！");
-                deviceConnectActivity.sendCommonCommandImmediately("##040\r\n");
+                deviceConnectActivity.sendCommonCommandImmediately(command);
                 prelongTim = 0;
                 onRefreshFirst = false;
                 refreshLayout.setRefreshing(false);
@@ -510,6 +530,5 @@ public class DeviceDetailsFragment extends BaseFragment implements SwipeRefreshL
                 refreshLayout.setRefreshing(false);
             }
         }
-
     }
 }

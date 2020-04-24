@@ -18,8 +18,10 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.hjq.toast.ToastUtils;
 import com.shmedo.core.cmd.CommandManager;
 import com.shmedo.core.cmd.entity.SaveConfigInfoEntity;
+import com.shmedo.core.cmd.entity.ServerAddressEntity;
 import com.shmedo.core.enums.CommandType;
 import com.shmedo.core.enums.SaveConfigMode;
+import com.shmedo.core.enums.ServerAddress;
 import com.shmedo.core.interfaces.OnBytePackage;
 import com.shmedo.core.utils.DesUtil;
 import com.shmedo.core.utils.StringUtil;
@@ -54,11 +56,11 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
 
     public static final int REQUEST_ENABLE_BT = 0x001;
 
-    private static final int COMMAND_DELAY_MILLIS = 10000;
+    public static final int COMMAND_DELAY_MILLIS = 10000;
 
-    private static final int SCAN_DELAY_MILLIS = 5000;
+    public static final int SCAN_DELAY_MILLIS = 5000;
 
-    private static final int CONNECT_DELAY_MILLIS = 15000;
+    public static final int CONNECT_DELAY_MILLIS = 15000;
 
 
     private MdBluetoothManager mdBluetoothManager;
@@ -615,11 +617,15 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
         sendCommonCommand("##7010\r\n");
         Timber.d("发送查询工作模式指令===" + "##7010");
 
-        sendCommonCommand("##2001\r\n");
-        Timber.d("发送查询服务器地址1指令===" + "##2001");
+        ServerAddressEntity serverAddressEntity = new ServerAddressEntity(ServerAddress.ADDRESS_ONE.toInt());
+        String cmdAddress1 = CommandManager.getInstance().getCommand(CommandType.SERVER_ADDRESS, serverAddressEntity);
+        sendCommonCommand(cmdAddress1);
+        Timber.d("发送查询服务器地址1指令===%s", cmdAddress1);
 
-        sendCommonCommand("##2002\r\n");
-        Timber.d("发送查询服务器地址2指令===" + "##2002");
+        serverAddressEntity = new ServerAddressEntity(ServerAddress.ADDRESS_TWO.toInt());
+        String cmdAddress2 = CommandManager.getInstance().getCommand(CommandType.SERVER_ADDRESS, serverAddressEntity);
+        sendCommonCommand(cmdAddress2);
+        Timber.d("发送查询服务器地址2指令===%s", cmdAddress2);
 
         sendCommonCommand("##7000\r\n");
         Timber.d("发送查询采集器参数指令===" + "##7000");
@@ -633,9 +639,9 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
      */
     private void queryDASConfigInfoCmd() {
         //获取所有配置  ##333
-        String allInfoCommand = CommandManager.getInstance().getCommand(CommandType.GET_ALL_SENSOR_CONFIG, null);
+        String allInfoCommand = CommandManager.getInstance().getCommand(CommandType.GET_ALL_SENSOR_CONFIG);
         sendCommonCommand(allInfoCommand);
-        Timber.d("发送获取所有配置指令===" + allInfoCommand);
+        Timber.d("发送获取所有配置指令===%s", allInfoCommand);
 
         //系统运行状态 ##014
 //        String runstateCommand = CommandManager.getInstance().getCommand(CommandType.SYSTEM_RUN_STATE, null);
@@ -700,7 +706,7 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
     private void startBluAuthenticate() {
         String cmd = "\r\n##224," + SN + ",0\r\n";
         sendCommonCommandImmediately(cmd);
-        Timber.d("发送验证指令===" + cmd);
+        Timber.d("发送验证指令===%s", cmd);
     }
 
 
