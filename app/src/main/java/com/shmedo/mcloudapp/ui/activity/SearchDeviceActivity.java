@@ -15,6 +15,7 @@ import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.shmedo.core.utils.StringUtil;
 import com.shmedo.mcloudapp.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.adapter.recyclerviewbaseadapter.CommonAdapter;
@@ -28,7 +29,6 @@ import com.shmedo.mcloudapp.entity.StatusInfoResultDao;
 import com.shmedo.mcloudapp.util.DaoManager;
 import com.shmedo.mcloudapp.util.ImageUtil;
 import com.shmedo.mcloudapp.util.KeyBordUtils;
-import com.shmedo.mcloudapp.util.StringUtil;
 import com.shmedo.mcloudapp.views.ClearEditText;
 import com.shmedo.mcloudapp.views.DeviceSensorDialog;
 import com.shmedo.mcloudapp.views.recycleviewitemdivider.DividerItemDecoration;
@@ -112,7 +112,7 @@ public class SearchDeviceActivity extends BaseActivity implements MultiItemTypeA
             protected void convert(ViewHolder holder, final StatusInfoResult statusInfoResult, final int position) {
                 holder.setText(R.id.tv_deviceToken, statusInfoResult.getDeviceToken() + "\n" + (statusInfoResult.getLocal() ? "本地设备" : "云端设备"));
                 holder.setText(R.id.tv_electricity, statusInfoResult.getVoltage() + "V");
-                holder.setText(R.id.tv_gprs, StringUtil.setSize(statusInfoResult.getGprs()));
+                holder.setText(R.id.tv_gprs, StringUtil.getByteSize(statusInfoResult.getGprs()));
                 holder.setText(R.id.tv_signal, statusInfoResult.getSignal() + "");
                 holder.setTag(R.id.ll_SensorType, position);
 

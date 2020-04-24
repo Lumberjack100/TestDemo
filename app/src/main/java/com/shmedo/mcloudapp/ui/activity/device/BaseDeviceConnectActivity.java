@@ -18,10 +18,10 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.hjq.toast.ToastUtils;
 import com.shmedo.core.cmd.CommandManager;
 import com.shmedo.core.cmd.entity.SaveConfigInfoEntity;
-import com.shmedo.core.cmd.entity.ServerAddressEntity;
+import com.shmedo.core.cmd.entity.ServerAddressNumberEntity;
 import com.shmedo.core.enums.CommandType;
 import com.shmedo.core.enums.SaveConfigMode;
-import com.shmedo.core.enums.ServerAddress;
+import com.shmedo.core.enums.ServerAddressNumber;
 import com.shmedo.core.interfaces.OnBytePackage;
 import com.shmedo.core.utils.DesUtil;
 import com.shmedo.core.utils.StringUtil;
@@ -617,13 +617,13 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
         sendCommonCommand("##7010\r\n");
         Timber.d("发送查询工作模式指令===" + "##7010");
 
-        ServerAddressEntity serverAddressEntity = new ServerAddressEntity(ServerAddress.ADDRESS_ONE.toInt());
-        String cmdAddress1 = CommandManager.getInstance().getCommand(CommandType.SERVER_ADDRESS, serverAddressEntity);
+        ServerAddressNumberEntity serverAddressNumberEntity = new ServerAddressNumberEntity(ServerAddressNumber.NUMBER_ONE.toInt());
+        String cmdAddress1 = CommandManager.getInstance().getCommand(CommandType.SERVER_ADDRESS, serverAddressNumberEntity);
         sendCommonCommand(cmdAddress1);
         Timber.d("发送查询服务器地址1指令===%s", cmdAddress1);
 
-        serverAddressEntity = new ServerAddressEntity(ServerAddress.ADDRESS_TWO.toInt());
-        String cmdAddress2 = CommandManager.getInstance().getCommand(CommandType.SERVER_ADDRESS, serverAddressEntity);
+        serverAddressNumberEntity = new ServerAddressNumberEntity(ServerAddressNumber.NUMBER_TWO.toInt());
+        String cmdAddress2 = CommandManager.getInstance().getCommand(CommandType.SERVER_ADDRESS, serverAddressNumberEntity);
         sendCommonCommand(cmdAddress2);
         Timber.d("发送查询服务器地址2指令===%s", cmdAddress2);
 

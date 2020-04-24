@@ -6,6 +6,7 @@ import android.text.TextUtils;
 import com.shmedo.core.cmd.CommandResult;
 import com.shmedo.core.enums.CommandType;
 
+import java.text.DecimalFormat;
 import java.util.List;
 import java.util.Locale;
 import java.util.Random;
@@ -28,16 +29,19 @@ public class StringUtil {
     public static CommandType extractCommandType(String result) {
         if (TextUtils.isEmpty(result) || result.length() < CommandResult.RESULT_MIN_LENGTH)
             throw new IllegalArgumentException("指令结果格式错误:" + result);
+
         String cmd = result.replace(CommandResult.COMMAND_RESULT_HEADER, "").substring(0, 3);
         Holder<CommandType> cmdTypeHolder = new Holder<>();
-        for (CommandType cmds : CommandType.values()) {
-            if (cmds.toString().equals(cmd)) {
-                cmdTypeHolder.setData(cmds);
+        for (CommandType commandType : CommandType.values()) {
+            if (commandType.toString().equals(cmd)) {
+                cmdTypeHolder.setData(commandType);
             }
         }
+
         CommandType cmdType = cmdTypeHolder.getData();
         if (cmdType == null)
             throw new IllegalArgumentException("未找到命令:" + result);
+
         return cmdType;
     }
 
@@ -182,5 +186,26 @@ public class StringUtil {
         } else {
             return -1;
         }
+    }
+
+    public static String getByteSize(int size) {
+        //获取到的size为：1705230
+        int GB = 1024 * 1024 * 1024;//定义GB的计算常量
+        int MB = 1024 * 1024;//定义MB的计算常量
+        int KB = 1024;//定义KB的计算常量
+        DecimalFormat df = new DecimalFormat("0.00");//格式化小数
+        String resultSize = "";
+        if (size / GB >= 1) {
+            //如果当前Byte的值大于等于1GB
+            resultSize = df.format(size / (float) GB) + "GB";
+        } else if (size / MB >= 1) {
+            //如果当前Byte的值大于等于1MB
+            resultSize = df.format(size / (float) MB) + "MB";
+        } else {
+            resultSize = "< 1MB";
+        }
+
+
+        return resultSize;
     }
 }

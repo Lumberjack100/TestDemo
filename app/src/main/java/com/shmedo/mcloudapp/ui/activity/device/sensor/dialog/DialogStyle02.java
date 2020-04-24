@@ -17,10 +17,10 @@ import com.shmedo.core.model.SensorInfrasoundInfo;
 import com.shmedo.core.model.SensorRadarLevelInfo;
 import com.shmedo.core.model.SensorSoilMoistureInfo;
 import com.shmedo.core.model.SensorWireShiftInfo;
+import com.shmedo.core.utils.ValidateUtil;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.entity.ble.collector.CollectorSensorParamsInfoSub;
 import com.shmedo.mcloudapp.interfaces.MyOnClickListener;
-import com.shmedo.mcloudapp.util.StringUtil;
 import com.shmedo.mcloudapp.util.UserConfig;
 
 /**
@@ -148,17 +148,17 @@ public class DialogStyle02 implements IDialogOpt<CollectorSensorParamsInfoSub> {
                     newTriggerThreshold = mEtTriggerThreshold.getText().toString().trim();
                     newRevised = mEtRevised.getText().toString().trim();
 
-                    if (TextUtils.isEmpty(newAddress) || !StringUtil.isInteger(newAddress) || Integer.parseInt(newAddress) < 0 || Integer.parseInt(newAddress) > 99) {
+                    if (TextUtils.isEmpty(newAddress) || !ValidateUtil.isInteger(newAddress) || Integer.parseInt(newAddress) < 0 || Integer.parseInt(newAddress) > 99) {
                         ToastUtils.show("请输入正确的地址");
                         return;
                     }
 
-                    if (TextUtils.isEmpty(newTriggerThreshold) || !StringUtil.isInteger(newTriggerThreshold)) {
+                    if (TextUtils.isEmpty(newTriggerThreshold) || !ValidateUtil.isInteger(newTriggerThreshold)) {
                         ToastUtils.show("请输入正确的触发值");
                         return;
                     }
 
-                    if (TextUtils.isEmpty(newRevised) || (!StringUtil.isInteger(newRevised) && !StringUtil.isDouble(newRevised))) {
+                    if (TextUtils.isEmpty(newRevised) || (!ValidateUtil.isInteger(newRevised) && !ValidateUtil.isDouble(newRevised))) {
                         ToastUtils.show("请输入正确的修正值");
                         return;
                     }

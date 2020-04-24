@@ -26,13 +26,42 @@ public class ValidateUtil {
     private static final String REGEX_NUMERIC = "^[0-9]*$";
 
     /**
+     * 正则表达式：验证整数
+     */
+    private static final String REGEX_INTEGER = "^[+-]?[0-9]+$";
+
+    /**
+     * 正则表达式：验证双精度浮点数
+     */
+    private static final String REGEX_DOUBLE = "^[+-]?[0-9.]+$";
+
+    /**
      * 正则表达式：URL
      */
     public static final String REGEX_URL = "[-A-Za-z0-9+&@#/%?=~_|!:,.;]+[-A-Za-z0-9+&@#/%=~_|]";
 
 
-    public static boolean isNumeric(String str) {
+    /***
+     * 判断 String 是否是 int<br>通过正则表达式判断
+     *
+     * @param input
+     * @return
+     */
+    public static boolean isInteger(String input){
+        return Pattern.matches(REGEX_INTEGER, input);
+    }
 
+
+    /**
+     * 判断 String 是否是 double<br>通过正则表达式判断
+     * @param input
+     * @return
+     */
+    public static boolean isDouble(String input){
+        return Pattern.matches(REGEX_DOUBLE, input);
+    }
+
+    public static boolean isNumeric(String str) {
         return Pattern.matches(REGEX_NUMERIC, str);
     }
 

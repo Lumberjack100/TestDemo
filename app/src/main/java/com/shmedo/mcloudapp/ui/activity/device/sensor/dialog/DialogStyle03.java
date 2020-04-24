@@ -11,12 +11,12 @@ import android.widget.TextView;
 
 import com.hjq.toast.ToastUtils;
 import com.shmedo.core.model.SensorSoilMoistureInfo;
+import com.shmedo.core.utils.ValidateUtil;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.entity.ble.collector.CollectorSensorParamsInfoSub;
 import com.shmedo.mcloudapp.entity.event.SensorDataEvent;
 import com.shmedo.mcloudapp.interfaces.MyOnClickListener;
 import com.shmedo.mcloudapp.util.GsonFactory;
-import com.shmedo.mcloudapp.util.StringUtil;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -81,12 +81,12 @@ public class DialogStyle03 implements IDialogOpt<CollectorSensorParamsInfoSub> {
             save.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if (triggerThreshold.getText().length() == 0 || !StringUtil.isInteger(triggerThreshold.getText().toString())) {
+                    if (triggerThreshold.getText().length() == 0 || !ValidateUtil.isInteger(triggerThreshold.getText().toString())) {
                         ToastUtils.show("请输入正确的触发值");
                         return;
                     }
 
-                    if (revised.getText().length() == 0 || (!StringUtil.isInteger(revised.getText().toString()) && !StringUtil.isDouble(revised.getText().toString()))) {
+                    if (revised.getText().length() == 0 || (!ValidateUtil.isInteger(revised.getText().toString()) && !ValidateUtil.isDouble(revised.getText().toString()))) {
                         ToastUtils.show("请输入正确的修正值");
                         return;
                     }

@@ -11,12 +11,12 @@ import android.widget.TextView;
 
 import com.hjq.toast.ToastUtils;
 import com.shmedo.core.model.SensorTemperHumidityInfo;
+import com.shmedo.core.utils.ValidateUtil;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.entity.ble.collector.CollectorSensorParamsInfoSub;
 import com.shmedo.mcloudapp.entity.event.SensorDataEvent;
 import com.shmedo.mcloudapp.interfaces.MyOnClickListener;
 import com.shmedo.mcloudapp.util.GsonFactory;
-import com.shmedo.mcloudapp.util.StringUtil;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -80,12 +80,12 @@ public class DialogStyle12 implements IDialogOpt<CollectorSensorParamsInfoSub>{
         if (myOnClickListener != null){
             save.setOnClickListener(new View.OnClickListener() {
                 @Override public void onClick(View view) {
-                    if (temperatureTriggerThreshold.getText().length() == 0 || !StringUtil.isInteger(temperatureTriggerThreshold.getText().toString())) {
+                    if (temperatureTriggerThreshold.getText().length() == 0 || !ValidateUtil.isInteger(temperatureTriggerThreshold.getText().toString())) {
                         ToastUtils.show("请输入正确的温度触发值");
                         return;
                     }
 
-                    if (humidityTriggerThreshold.getText().length() == 0 || (!StringUtil.isInteger(humidityTriggerThreshold.getText().toString()) && !StringUtil.isDouble(humidityTriggerThreshold.getText().toString()))) {
+                    if (humidityTriggerThreshold.getText().length() == 0 || (!ValidateUtil.isInteger(humidityTriggerThreshold.getText().toString()) && !ValidateUtil.isDouble(humidityTriggerThreshold.getText().toString()))) {
                         ToastUtils.show("请输入正确的修正值");
                         return;
                     }

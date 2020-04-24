@@ -17,6 +17,7 @@ import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.header.ClassicsHeader;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 import com.scwang.smartrefresh.layout.listener.OnRefreshLoadMoreListener;
+import com.shmedo.core.utils.StringUtil;
 import com.shmedo.mcloudapp.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.adapter.recyclerviewbaseadapter.CommonAdapter;
@@ -33,7 +34,6 @@ import com.shmedo.mcloudapp.model.common.CommonVariable;
 import com.shmedo.mcloudapp.util.ApiName;
 import com.shmedo.mcloudapp.util.DaoManager;
 import com.shmedo.mcloudapp.util.ImageUtil;
-import com.shmedo.mcloudapp.util.StringUtil;
 import com.shmedo.mcloudapp.views.DeviceSensorDialog;
 import com.shmedo.mcloudapp.views.EmptyDataView;
 import com.shmedo.mcloudapp.views.recycleviewitemdivider.DividerItemDecoration;
@@ -127,7 +127,7 @@ public class DeviceListActivity extends BaseActivity implements  MultiItemTypeAd
             protected void convert(ViewHolder holder, final StatusInfoResult statusInfoResult, final int position) {
                 holder.setText(R.id.tv_deviceToken, statusInfoResult.getDeviceToken() + "\n" + (statusInfoResult.getLocal() ? "本地设备" : "云端设备"));
                 holder.setText(R.id.tv_electricity, statusInfoResult.getVoltage() + "V");
-                holder.setText(R.id.tv_gprs, StringUtil.setSize(statusInfoResult.getGprs()));
+                holder.setText(R.id.tv_gprs, StringUtil.getByteSize(statusInfoResult.getGprs()));
                 holder.setText(R.id.tv_signal, statusInfoResult.getSignal() + "");
                 holder.setTag(R.id.ll_SensorType, position);
 

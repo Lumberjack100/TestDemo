@@ -1,22 +1,22 @@
 package com.shmedo.core.model;
 
 
-import com.shmedo.core.enums.SetServerAddressPort;
+import com.shmedo.core.enums.ServerAddressNumber;
 
 /**
  * Created by adu on 2017/12/19.
  * 设置服务器地址端口（x,y,z之间由空格隔开）
  */
 public class SetServerAddressPortInfo {
-    private SetServerAddressPort number;
+    private ServerAddressNumber number;
     private String address;
     private int port;
 
-    public SetServerAddressPort getNumber() {
+    public ServerAddressNumber getNumber() {
         return number;
     }
 
-    public void setNumber(SetServerAddressPort number) {
+    public void setNumber(ServerAddressNumber number) {
         this.number = number;
     }
 

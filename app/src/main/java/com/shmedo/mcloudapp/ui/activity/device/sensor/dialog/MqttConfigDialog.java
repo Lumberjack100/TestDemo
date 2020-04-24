@@ -6,21 +6,27 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.*;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.LinearLayout;
+import android.widget.Spinner;
+import android.widget.TextView;
+
+import com.shmedo.core.model.MqttConfigInfo;
 import com.shmedo.mcloudapp.R;
-import com.shmedo.mcloudapp.entity.ble.collector.MqttConfigInfoSub;
 import com.shmedo.mcloudapp.interfaces.MQttOnClickListener;
 import com.shmedo.mcloudapp.views.ClearEditText;
+
 import timber.log.Timber;
 
 /**
  * mqtt  dialog
  */
-public class MqttConfigDialog implements IDialogOpt<MqttConfigInfoSub>{
+public class MqttConfigDialog implements IDialogOpt<MqttConfigInfo> {
 
     private Dialog dialog;
     private View contentView;
-    private MqttConfigInfoSub mqttConfigInfoSub;
+    private MqttConfigInfo mqttConfigInfoSub;
 
     private MQttOnClickListener mQttOnClickListener;
     private String link;
@@ -30,7 +36,7 @@ public class MqttConfigDialog implements IDialogOpt<MqttConfigInfoSub>{
     private ArrayAdapter<String> protocolAdapter;
     private ArrayAdapter<String> registerAdapter;
 
-    private String protocolItem,registerPlatformItem;
+    private String protocolItem, registerPlatformItem;
 
     public MqttConfigDialog(Context context, String link) {
         this.context = context;
@@ -53,7 +59,7 @@ public class MqttConfigDialog implements IDialogOpt<MqttConfigInfoSub>{
     }
 
     @Override
-    public void initData(MqttConfigInfoSub info) {
+    public void initData(MqttConfigInfo info) {
         mqttConfigInfoSub = info;
         TextView tvTitle = contentView.findViewById(R.id.tv_title);
         final Spinner communicationProtocol = contentView.findViewById(R.id.communication_protocol);
@@ -71,7 +77,7 @@ public class MqttConfigDialog implements IDialogOpt<MqttConfigInfoSub>{
         final ClearEditText cetRegistrationCode = contentView.findViewById(R.id.cet_registration_code);
         final LinearLayout llDeviceConfig = contentView.findViewById(R.id.ll_device_config);
         final ClearEditText cetMqttDeviceId = contentView.findViewById(R.id.cet_mqtt_device_id);
-        final ClearEditText cetMqttUsername = contentView.findViewById(R.id.cet_mqtt_username) ;
+        final ClearEditText cetMqttUsername = contentView.findViewById(R.id.cet_mqtt_username);
         final ClearEditText cetMqttPassword = contentView.findViewById(R.id.cet_mqtt_password);
         final LinearLayout llMqttConfig = contentView.findViewById(R.id.ll_mqtt_config);
         TextView mqttCancel = contentView.findViewById(R.id.mqtt_cancel);
@@ -85,7 +91,7 @@ public class MqttConfigDialog implements IDialogOpt<MqttConfigInfoSub>{
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 String item = parent.getSelectedItem().toString();
-                switch (item){
+                switch (item) {
                     case "MDM协议":
                         protocolItem = "2";
                         llAppKey.setVisibility(View.GONE);
@@ -115,6 +121,7 @@ public class MqttConfigDialog implements IDialogOpt<MqttConfigInfoSub>{
                         break;
                 }
             }
+
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
             }
@@ -128,7 +135,7 @@ public class MqttConfigDialog implements IDialogOpt<MqttConfigInfoSub>{
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 String item = parent.getSelectedItem().toString();
-                switch (item){
+                switch (item) {
                     case "地大平台":
                         registerPlatformItem = "0";
                         llAppKey.setVisibility(View.GONE);
@@ -143,15 +150,16 @@ public class MqttConfigDialog implements IDialogOpt<MqttConfigInfoSub>{
                         break;
                 }
             }
+
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
             }
         });
-        if (mqttConfigInfoSub==null)
+        if (mqttConfigInfoSub == null)
             return;
         //配置参数
-        tvTitle.setText("中心"+link+"配置");
-        switch (mqttConfigInfoSub.getCommunicationProtocol()){
+        tvTitle.setText("中心" + link + "配置");
+        switch (mqttConfigInfoSub.getCommunicationProtocol()) {
             case "2":
                 communicationProtocol.setSelection(0);
                 break;
@@ -167,7 +175,7 @@ public class MqttConfigDialog implements IDialogOpt<MqttConfigInfoSub>{
         cetDeviceSn.setText(mqttConfigInfoSub.getDeviceSn());
         cetProductId.setText(mqttConfigInfoSub.getProductId());
         cetRegistrationCode.setText(mqttConfigInfoSub.getRegistrationCode());
-        switch (mqttConfigInfoSub.getRegistrationPlatform()){
+        switch (mqttConfigInfoSub.getRegistrationPlatform()) {
             case "0"://地大平台
                 spRegistrationPlatform.setSelection(0);
                 break;
@@ -189,26 +197,25 @@ public class MqttConfigDialog implements IDialogOpt<MqttConfigInfoSub>{
         cetMqttPassword.setText(mqttConfigInfoSub.getMqttPassword());
 
 
-
         if (mQttOnClickListener != null) {
             mqttSave.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     mqttConfigInfoSub.setCommunicationProtocol(protocolItem);
-                    String platformAddress = dataPlatformAddress.getText()!=null?dataPlatformAddress.getText().toString().trim():"";
-                    mqttConfigInfoSub.setDataPlatformAddress(" "+platformAddress);
-                    mqttConfigInfoSub.setKeepAliveValue(cetKeepAliveValue.getText()!=null?cetKeepAliveValue.getText().toString():"");
-                    mqttConfigInfoSub.setDeviceSn(cetDeviceSn.getText()!=null?cetDeviceSn.getText().toString():"");
-                    mqttConfigInfoSub.setProductId(cetProductId.getText()!=null?cetProductId.getText().toString():"");
-                    mqttConfigInfoSub.setRegistrationCode(cetRegistrationCode.getText()!=null?cetRegistrationCode.getText().toString():"");
+                    String platformAddress = dataPlatformAddress.getText() != null ? dataPlatformAddress.getText().toString().trim() : "";
+                    mqttConfigInfoSub.setDataPlatformAddress(" " + platformAddress);
+                    mqttConfigInfoSub.setKeepAliveValue(cetKeepAliveValue.getText() != null ? cetKeepAliveValue.getText().toString() : "");
+                    mqttConfigInfoSub.setDeviceSn(cetDeviceSn.getText() != null ? cetDeviceSn.getText().toString() : "");
+                    mqttConfigInfoSub.setProductId(cetProductId.getText() != null ? cetProductId.getText().toString() : "");
+                    mqttConfigInfoSub.setRegistrationCode(cetRegistrationCode.getText() != null ? cetRegistrationCode.getText().toString() : "");
                     mqttConfigInfoSub.setRegistrationPlatform(registerPlatformItem);
-                    String registrationPlatformAddress = cetRegisterAddress.getText()!=null?cetRegisterAddress.getText().toString().trim():"";
-                    mqttConfigInfoSub.setRegistrationPlatformAddress(" "+registrationPlatformAddress);
-                    mqttConfigInfoSub.setAppKey(cetRegistrationCode.getText()!=null?cetRegistrationCode.getText().toString():"");
-                    mqttConfigInfoSub.setMqttDeviceId(cetMqttDeviceId.getText()!=null?cetMqttDeviceId.getText().toString():"");
-                    mqttConfigInfoSub.setMqttUsername(cetMqttUsername.getText()!=null?cetMqttUsername.getText().toString():"");
-                    mqttConfigInfoSub.setMqttPassword(cetMqttPassword.getText()!=null?cetMqttPassword.getText().toString():"");
-                    mQttOnClickListener.onSureClick(view,mqttConfigInfoSub,link);
+                    String registrationPlatformAddress = cetRegisterAddress.getText() != null ? cetRegisterAddress.getText().toString().trim() : "";
+                    mqttConfigInfoSub.setRegistrationPlatformAddress(" " + registrationPlatformAddress);
+                    mqttConfigInfoSub.setAppKey(cetRegistrationCode.getText() != null ? cetRegistrationCode.getText().toString() : "");
+                    mqttConfigInfoSub.setMqttDeviceId(cetMqttDeviceId.getText() != null ? cetMqttDeviceId.getText().toString() : "");
+                    mqttConfigInfoSub.setMqttUsername(cetMqttUsername.getText() != null ? cetMqttUsername.getText().toString() : "");
+                    mqttConfigInfoSub.setMqttPassword(cetMqttPassword.getText() != null ? cetMqttPassword.getText().toString() : "");
+                    mQttOnClickListener.onSureClick(view, mqttConfigInfoSub, link);
                     dialog.dismiss();
                 }
             });
@@ -216,7 +223,7 @@ public class MqttConfigDialog implements IDialogOpt<MqttConfigInfoSub>{
             mqttCancel.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    mQttOnClickListener.onCancelClick(view,link);
+                    mQttOnClickListener.onCancelClick(view, link);
                     Timber.i("mqtt----取消了");
                     dialog.dismiss();
                 }
@@ -228,8 +235,9 @@ public class MqttConfigDialog implements IDialogOpt<MqttConfigInfoSub>{
         this.mQttOnClickListener = listener;
         return this;
     }
+
     @Override
-    public MqttConfigInfoSub getData() {
+    public MqttConfigInfo getData() {
         return mqttConfigInfoSub;
     }
 

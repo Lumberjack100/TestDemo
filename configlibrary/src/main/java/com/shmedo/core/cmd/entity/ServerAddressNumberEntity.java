@@ -7,21 +7,21 @@ import com.shmedo.core.exception.DASParameterException;
  * Created by adu on 2017/12/14.
  * 获取服务器地址参数
  */
-public class ServerAddressEntity implements Validater{
-    private int port;
+public class ServerAddressNumberEntity implements Validater{
+    private int number;
 
-    public ServerAddressEntity(int port) {
-        this.port = port;
+    public ServerAddressNumberEntity(int number) {
+        this.number = number;
     }
 
     @Override
     public void validate() {
-        if (port != 1 && port != 2 && port != 3)
+        if (number != 1 && number != 2 && number != 3)
             throw new DASParameterException("服务器地址不存在");
     }
 
     @Override
     public String toString() {
-        return String.valueOf(this.port);
+        return String.valueOf(this.number);
     }
 }

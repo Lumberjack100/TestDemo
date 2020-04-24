@@ -11,11 +11,11 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.shmedo.core.utils.StringUtil;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.entity.SensorAndCount;
 import com.shmedo.mcloudapp.entity.StatusInfoResult;
 import com.shmedo.mcloudapp.util.ImageUtil;
-import com.shmedo.mcloudapp.util.StringUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,7 +59,7 @@ public class DeviceStatusAdapter extends RecyclerView.Adapter<DeviceStatusAdapte
         }
 
         holder.tv_electricity.setText(data.get(position).getVoltage() + "V");
-        holder.tv_gprs.setText(StringUtil.setSize(data.get(position).getGprs()));
+        holder.tv_gprs.setText(StringUtil.getByteSize(data.get(position).getGprs()));
         holder.tv_signal.setText(data.get(position).getSignal() + "");
         holder.ll_SensorType.setTag(position);
         holder.itemView.setTag(position);

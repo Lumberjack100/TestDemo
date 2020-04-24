@@ -109,7 +109,6 @@ public class ParseManager {
                 SaveConfigInfoParser.class,
                 SensorBaudRateParser.class,
                 SensorInterfaceTypeParser.class,
-                ServerAddressParser.class,
                 SetAuthorzePhoneParser.class,
                 SetCollectorAddressParser.class,
                 SetCollectorSensorParser.class,
@@ -134,8 +133,12 @@ public class ParseManager {
                 DeviceStatusInfoTwoParse.class,
                 DeviceStatusInfoThreeParse.class,
                 DeviceNetStatusParser.class,
-                OperatorInfoParser.class
+                OperatorInfoParser.class,
+                MqttConfigInfoParser.class,
+                DataCenterLinkNumberParser.class
         });
+
+//        List<Class> temp = ClassUtil.getAllClassByInterface("com.shmedo.core.cmd.parser", ResultParser.class);
 
         registerWithClass(clazzes);
     }

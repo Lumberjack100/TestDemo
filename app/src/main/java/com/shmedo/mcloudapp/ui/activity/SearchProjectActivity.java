@@ -24,7 +24,6 @@ import com.shmedo.mcloudapp.entity.SystemDataInfo;
 import com.shmedo.mcloudapp.entity.SystemDataInfoDao;
 import com.shmedo.mcloudapp.util.DaoManager;
 import com.shmedo.mcloudapp.util.KeyBordUtils;
-import com.shmedo.mcloudapp.util.StringUtil;
 import com.shmedo.mcloudapp.views.ClearEditText;
 import com.shmedo.mcloudapp.views.EmptyDataView;
 import com.shmedo.mcloudapp.views.recycleviewitemdivider.DividerItemDecoration;

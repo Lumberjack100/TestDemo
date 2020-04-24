@@ -21,15 +21,22 @@ import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.hjq.toast.ToastUtils;
 import com.kyleduo.switchbutton.SwitchButton;
+import com.shmedo.core.cmd.CommandManager;
 import com.shmedo.core.cmd.CommandResult;
+import com.shmedo.core.cmd.entity.ServerAddressNumberEntity;
 import com.shmedo.core.cmd.parser.ParseManager;
+import com.shmedo.core.enums.CommandType;
+import com.shmedo.core.enums.DataCenterLinkNumber;
+import com.shmedo.core.enums.ServerAddressNumber;
 import com.shmedo.core.model.BaseConfigInfo;
+import com.shmedo.core.model.MqttConfigInfo;
+import com.shmedo.core.model.SetServerAddressPortInfo;
+import com.shmedo.core.utils.ResultParserUtil;
+import com.shmedo.core.utils.StringUtil;
 import com.shmedo.mcloudapp.MCloudApp;
 import com.shmedo.mcloudapp.R;
-import com.shmedo.mcloudapp.entity.ble.collector.MqttConfigInfoSub;
 import com.shmedo.mcloudapp.interfaces.MQttOnClickListener;
 import com.shmedo.mcloudapp.ui.activity.device.sensor.dialog.MqttDialogFactory;
-import com.shmedo.mcloudapp.util.StringUtil;
 import com.shmedo.mcloudapp.views.ClearEditText;
 
 import org.greenrobot.eventbus.Subscribe;
@@ -95,9 +102,9 @@ public class MqttSettingActivity extends BaseDeviceConnectActivity implements Vi
 
     private ArrayAdapter<String> CommunicationMethodAdapter;
 
-    private MqttConfigInfoSub mqttConfigInfoSub1 = new MqttConfigInfoSub();
-    private MqttConfigInfoSub mqttConfigInfoSub2 = new MqttConfigInfoSub();
-    private MqttConfigInfoSub mqttConfigInfoSub3 = new MqttConfigInfoSub();
+    private MqttConfigInfo mqttConfigInfoSub1 = new MqttConfigInfo();
+    private MqttConfigInfo mqttConfigInfoSub2 = new MqttConfigInfo();
+    private MqttConfigInfo mqttConfigInfoSub3 = new MqttConfigInfo();
 
     //第一次编辑发送指令，第二次直接弹框
     private boolean editLinkOne, editLinkTwo, editLinkThree;
@@ -217,11 +224,24 @@ public class MqttSettingActivity extends BaseDeviceConnectActivity implements Vi
     private void initData() {
         startProgressRunnable("正在获取指令参数...", COMMAND_DELAY_MILLIS);
         //获取服务器地址,查询中心开启状态
-        sendCommonCommand("##2001\r\n");
-        sendCommonCommand("##2002\r\n");
-        sendCommonCommand("##2003\r\n");
-        //获取基础配置信息
-        sendCommonCommand("##000\r\n");
+        ServerAddressNumberEntity serverAddressNumberEntity = new ServerAddressNumberEntity(ServerAddressNumber.NUMBER_ONE.toInt());
+        String cmdAddress1 = CommandManager.getInstance().getCommand(CommandType.SERVER_ADDRESS, serverAddressNumberEntity);
+        sendCommonCommand(cmdAddress1);
+        Timber.d("发送查询服务器地址1指令===%s", cmdAddress1);
+
+        serverAddressNumberEntity = new ServerAddressNumberEntity(ServerAddressNumber.NUMBER_TWO.toInt());
+        String cmdAddress2 = CommandManager.getInstance().getCommand(CommandType.SERVER_ADDRESS, serverAddressNumberEntity);
+        sendCommonCommand(cmdAddress2);
+        Timber.d("发送查询服务器地址2指令===%s", cmdAddress2);
+
+        serverAddressNumberEntity = new ServerAddressNumberEntity(ServerAddressNumber.NUMBER_THREE.toInt());
+        String cmdAddress3 = CommandManager.getInstance().getCommand(CommandType.SERVER_ADDRESS, serverAddressNumberEntity);
+        sendCommonCommand(cmdAddress3);
+        Timber.d("发送查询服务器地址3指令===%s", cmdAddress3);
+
+        String baseInfoCommand = CommandManager.getInstance().getCommand(CommandType.BASE_CONFIG);
+        sendCommonCommand(baseInfoCommand);
+        Timber.d("发送基础配置信息指令===%s", baseInfoCommand);
     }
 
     private void setSwitchViewListener() {
@@ -242,7 +262,7 @@ public class MqttSettingActivity extends BaseDeviceConnectActivity implements Vi
                     setLinkTextEnabled(mTvLinkOneStatus, false);
                     editLinkOne = false;
                 }
-                Timber.i("mSbLinkOne===" + isChecked);
+                Timber.i("mSbLinkOne===%s", isChecked);
             }
         });
         mSbLinkTwo.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -262,7 +282,7 @@ public class MqttSettingActivity extends BaseDeviceConnectActivity implements Vi
                     setLinkTextEnabled(mTvLinkTwoStatus, false);
                     editLinkTwo = false;
                 }
-                Timber.i("mSbLinkTwo===" + isChecked);
+                Timber.i("mSbLinkTwo===%s", isChecked);
             }
         });
         mSbLinkThree.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -282,7 +302,7 @@ public class MqttSettingActivity extends BaseDeviceConnectActivity implements Vi
                     setLinkTextEnabled(mTvLinkThreeStatus, false);
                     editLinkThree = false;
                 }
-                Timber.i("mSbLinkThree===" + isChecked);
+                Timber.i("mSbLinkThree===%s", isChecked);
             }
         });
     }
@@ -305,23 +325,23 @@ public class MqttSettingActivity extends BaseDeviceConnectActivity implements Vi
 
 
     private void setResultData(String cmdStr) {
-        Timber.i("数据中心应答指令===" + cmdStr);
-        String commandType = StringUtil.extractCommandType(cmdStr);
-        switch (commandType) {
-            case "200"://获取服务器1、2、3 的地址
-                if (StringUtil.isOpenLink(cmdStr)) {
-                    String linkNumber = StringUtil.linkNumber(cmdStr);
-                    switch (linkNumber) {
-                        case "1":
+        Timber.i("数据中心应答指令===%s", cmdStr);
+        CommandType cmdType = StringUtil.extractCommandType(cmdStr);
+        switch (cmdType) {
+            case SERVER_ADDRESS://获取服务器1、2、3 的地址
+                SetServerAddressPortInfo setServerAddressPortInfo = ResultParserUtil.getEntityObject(cmdStr);
+                if (!setServerAddressPortInfo.getAddress().equals("0.0.0.0")) {
+                    switch (setServerAddressPortInfo.getNumber()) {
+                        case NUMBER_ONE:
                             //根据返回指令初始化按钮状态
                             mSbLinkOne.setCheckedImmediatelyNoEvent(true);
                             setLinkTextVisibility(mTvLinkOneStatus, true);
                             break;
-                        case "2":
+                        case NUMBER_TWO:
                             mSbLinkTwo.setCheckedImmediatelyNoEvent(true);
                             setLinkTextVisibility(mTvLinkTwoStatus, true);
                             break;
-                        case "3":
+                        case NUMBER_THREE:
                             mSbLinkThree.setCheckedImmediatelyNoEvent(true);
                             setLinkTextVisibility(mTvLinkThreeStatus, true);
                             break;
@@ -329,7 +349,7 @@ public class MqttSettingActivity extends BaseDeviceConnectActivity implements Vi
                 }
                 break;
 
-            case "000"://获取基础配置信息
+            case BASE_CONFIG://获取基础配置信息
                 CommandResult<BaseConfigInfo> bean = ParseManager.getInstance().parse(cmdStr);
                 if (!bean.isSuccess()) {
                     stopProgressRunnable();
@@ -358,11 +378,11 @@ public class MqttSettingActivity extends BaseDeviceConnectActivity implements Vi
                 stopProgressRunnable();
                 break;
 
-            case "889"://查询数据中心 1、2、3 参数
-                String linkNumber = StringUtil.linkNumbers(cmdStr);
-                switch (linkNumber) {
-                    case "1":
-                        mqttConfigInfoSub1 = StringUtil.parserMqttConfig(cmdStr);
+            case QUERY_DATA_CENTER_PARAM://查询数据中心 1、2、3 参数
+                DataCenterLinkNumber dataCenterLinkNumber = ResultParserUtil.getEntityObject(cmdStr);
+                switch (dataCenterLinkNumber) {
+                    case NUMBER_ONE:
+                        mqttConfigInfoSub1 = ResultParserUtil.getEntityObject(cmdStr);
                         setLinkTextEnabled(mTvLinkOneStatus, true);
                         if (mqttConfigInfoSub1 == null)
                             return;
@@ -370,8 +390,8 @@ public class MqttSettingActivity extends BaseDeviceConnectActivity implements Vi
                         factory.createDialog(MqttSettingActivity.this, "1", mqttConfigInfoSub1, onClickListener);
                         break;
 
-                    case "2":
-                        mqttConfigInfoSub2 = StringUtil.parserMqttConfig(cmdStr);
+                    case NUMBER_TWO:
+                        mqttConfigInfoSub2 = ResultParserUtil.getEntityObject(cmdStr);
                         setLinkTextEnabled(mTvLinkTwoStatus, true);
                         if (mqttConfigInfoSub2 == null)
                             return;
@@ -379,8 +399,8 @@ public class MqttSettingActivity extends BaseDeviceConnectActivity implements Vi
                         factory.createDialog(MqttSettingActivity.this, "2", mqttConfigInfoSub2, onClickListener);
                         break;
 
-                    case "3":
-                        mqttConfigInfoSub3 = StringUtil.parserMqttConfig(cmdStr);
+                    case NUMBER_THREE:
+                        mqttConfigInfoSub3 = ResultParserUtil.getEntityObject(cmdStr);
                         setLinkTextEnabled(mTvLinkThreeStatus, true);
                         if (mqttConfigInfoSub3 == null)
                             return;
@@ -390,171 +410,144 @@ public class MqttSettingActivity extends BaseDeviceConnectActivity implements Vi
                 }
                 break;
 
-            case "202":
-                if (cmdStr.startsWith("$$202") && cmdStr.endsWith("\r\n")) {
-                    if (cmdStr.startsWith("$$202e") || cmdStr.startsWith("$$202ce")) {
-                        ToastUtils.show("网络中心通讯协议配置错误!");
-                        stopProgressRunnable();
-                        return;
-                    }
-                    sendCommonCommandImmediately(cmdDataPlatformAddress);
-                    Timber.d("数据服务器地址、端口配置===%s", cmdDataPlatformAddress);
+            case NET_LINK_COMMUN_PROTOCOL:
+                if (cmdStr.endsWith(CommandResult.ERROR_END)) {
+                    ToastUtils.show("网络中心通讯协议配置错误!");
+                    stopProgressRunnable();
                     return;
                 }
+                sendCommonCommandImmediately(cmdDataPlatformAddress);
+                Timber.d("数据服务器地址、端口配置===%s", cmdDataPlatformAddress);
                 break;
 
-            case "201":
-                if (cmdStr.startsWith("$$201") && cmdStr.endsWith("\r\n")) {
-                    if (cmdStr.startsWith("$$201e") || cmdStr.startsWith("$$201ce")) {
-                        ToastUtils.show("数据服务器地址、端口配置错误!");
-                        stopProgressRunnable();
-                        return;
-                    }
-
-                    //处理关闭中心1、2、3的开关时，接收到的应答指令
-                    if (TextUtils.isEmpty(communicationProtocol)) {
-                        return;
-                    }
-
-                    if (communicationProtocol.equals("4")) {//MQTT自动注册
-                        sendCommonCommandImmediately(cmdRegistrationPlatform);
-                        Timber.d("选择平台配置===%s", cmdRegistrationPlatform);
-                        return;
-                    } else if (communicationProtocol.equals("5")) {//MQTT手动注册
-                        sendCommonCommandImmediately(cmdKeepAliveValue);
-                        Timber.d("设置KeepAlive===%s", cmdKeepAliveValue);
-                        return;
-                    }
-                }
-                break;
-
-            case "810":
-                if (cmdStr.startsWith("$$810") && cmdStr.endsWith("\r\n")) {
-                    if (cmdStr.startsWith("$$810e") || cmdStr.startsWith("$$810ce")) {
-                        ToastUtils.show("选择平台配置错误!");
-                        stopProgressRunnable();
-                        return;
-                    }
-                    sendCommonCommandImmediately(cmdRegistrationPlatformAddress);
-                    Timber.d("自动注册平台地址配置===%s", cmdRegistrationPlatformAddress);
+            case SET_SERVER_ADDRESS_PORT:
+                if (cmdStr.endsWith(CommandResult.ERROR_END)) {
+                    ToastUtils.show("数据服务器地址、端口配置错误!");
+                    stopProgressRunnable();
                     return;
                 }
-                break;
 
-            case "807":
-                if (cmdStr.startsWith("$$807") && cmdStr.endsWith("\r\n")) {
-                    if (cmdStr.startsWith("$$807e") || cmdStr.startsWith("$$807ce")) {
-                        ToastUtils.show("自动注册平台地址配置错误!");
-                        stopProgressRunnable();
-                        return;
-                    }
+                //处理关闭中心1、2、3的开关时，接收到的应答指令
+                if (TextUtils.isEmpty(communicationProtocol)) {
+                    return;
+                }
+
+                if (communicationProtocol.equals("4")) {//MQTT自动注册
+                    sendCommonCommandImmediately(cmdRegistrationPlatform);
+                    Timber.d("选择平台配置===%s", cmdRegistrationPlatform);
+                    return;
+                } else if (communicationProtocol.equals("5")) {//MQTT手动注册
                     sendCommonCommandImmediately(cmdKeepAliveValue);
                     Timber.d("设置KeepAlive===%s", cmdKeepAliveValue);
                     return;
                 }
                 break;
 
-            case "809":
-                if (cmdStr.startsWith("$$809") && cmdStr.endsWith("\r\n")) {
-                    if (cmdStr.startsWith("$$809e") || cmdStr.startsWith("$$809ce")) {
-                        ToastUtils.show("设置MQTT KeepAlive值错误!");
-                        stopProgressRunnable();
-                        return;
-                    }
-
-                    sendCommonCommandImmediately(cmdPlatformParam);
-                    Timber.d("自动/手动注册平台参数===%s", cmdPlatformParam);
+            case AUTO_REGISTRATION_PLATFORM:
+                if (cmdStr.endsWith(CommandResult.ERROR_END)) {
+                    ToastUtils.show("选择平台配置错误!");
+                    stopProgressRunnable();
                     return;
                 }
+                sendCommonCommandImmediately(cmdRegistrationPlatformAddress);
+                Timber.d("自动注册平台地址配置===%s", cmdRegistrationPlatformAddress);
                 break;
 
-            case "803":
-                if (cmdStr.startsWith("$$803") && cmdStr.endsWith("\r\n")) {
-                    if (cmdStr.startsWith("$$803e") || cmdStr.startsWith("$$803ce")) {
-                        ToastUtils.show("自动注册平台参数配置错误!");
-                        stopProgressRunnable();
-                        return;
-                    }
-
-                    if (!TextUtils.isEmpty(registrationPlatform) && registrationPlatform.equals("2")) {
-                        sendCommonCommandImmediately(cmdAppKey);
-                        Timber.d("设置 AppKey===%s", cmdAppKey);
-                        return;
-                    }
-
+            case SET_AUTO_REGISTRATION_PLATFORM_SERVER_ADDRESS_PORT:
+                if (cmdStr.endsWith(CommandResult.ERROR_END)) {
+                    ToastUtils.show("自动注册平台地址配置错误!");
                     stopProgressRunnable();
-                    ToastUtils.show("设置完成");
-                }
-                break;
-
-            case "805":
-                if (cmdStr.startsWith("$$805") && cmdStr.endsWith("\r\n")) {
-                    if (cmdStr.startsWith("$$805e") || cmdStr.startsWith("$$805ce")) {
-                        ToastUtils.show("手动注册平台参数配置错误!");
-                        stopProgressRunnable();
-                        return;
-                    }
-
-                    stopProgressRunnable();
-                    ToastUtils.show("设置完成");
-                }
-                break;
-
-            case "811"://设置appKey(米度/北京平台特有)
-                if (cmdStr.startsWith("$$811") && cmdStr.endsWith("\r\n")) {
-                    if (cmdStr.startsWith("$$811e") || cmdStr.startsWith("$$811ce")) {
-                        ToastUtils.show("AppKey配置错误!");
-                        stopProgressRunnable();
-                        return;
-                    }
-
-                    stopProgressRunnable();
-                    ToastUtils.show("设置完成");
-                }
-                break;
-
-            case "003"://设置数据通讯方式
-                if (cmdStr.startsWith("$$003") && cmdStr.endsWith("\r\n")) {
-                    if (cmdStr.startsWith("$$003e") || cmdStr.startsWith("$$003ce")) {
-                        ToastUtils.show("数据通讯方式配置错误!");
-                        stopProgressRunnable();
-                        return;
-                    }
-
-                    sendCommonCommandImmediately(cmdDataReport);
-                    Timber.d("设置数据上报间隔===%s", cmdDataReport);
                     return;
                 }
+                sendCommonCommandImmediately(cmdKeepAliveValue);
+                Timber.d("设置KeepAlive===%s", cmdKeepAliveValue);
                 break;
 
-            case "143"://设置数据上报间隔
-                if (cmdStr.startsWith("$$143") && cmdStr.endsWith("\r\n")) {
-                    if (cmdStr.startsWith("$$143e") || cmdStr.startsWith("$$143ce")) {
-                        ToastUtils.show("数据上报配置错误!");
-                        stopProgressRunnable();
-                        return;
-                    }
-
-                    if (spCommunicationmethod.getSelectedItem().toString().contains("BD")) {
-                        sendCommonCommandImmediately(cmdBDCardNumber);
-                        Timber.d("北斗配置参数===%s", cmdBDCardNumber);
-                        return;
-                    }
+            case MQTT_KEEP_ALIVE:
+                if (cmdStr.endsWith(CommandResult.ERROR_END)) {
+                    ToastUtils.show("设置MQTT KeepAlive值错误!");
                     stopProgressRunnable();
-                    ToastUtils.show("设置完成");
+                    return;
                 }
+
+                sendCommonCommandImmediately(cmdPlatformParam);
+                Timber.d("自动/手动注册平台参数===%s", cmdPlatformParam);
                 break;
 
-            case "001"://北斗配置
-                if (cmdStr.startsWith("$$001") && cmdStr.endsWith("\r\n")) {
-                    if (cmdStr.startsWith("$$001e") || cmdStr.startsWith("$$001ce")) {
-                        ToastUtils.show("北斗配置错误!");
-                        stopProgressRunnable();
-                        return;
-                    }
+            case SET_AUTO_REGISTRATION_PLATFORM_PARAM:
+                if (cmdStr.endsWith(CommandResult.ERROR_END)) {
+                    ToastUtils.show("自动注册平台参数配置错误!");
                     stopProgressRunnable();
-                    ToastUtils.show("设置完成");
+                    return;
                 }
+
+                if (!TextUtils.isEmpty(registrationPlatform) && registrationPlatform.equals("2")) {
+                    sendCommonCommandImmediately(cmdAppKey);
+                    Timber.d("设置 AppKey===%s", cmdAppKey);
+                    return;
+                }
+
+                stopProgressRunnable();
+                ToastUtils.show("设置完成");
+                break;
+
+            case SET_MANUAL_REGISTRATION_PLATFORM_PARAM:
+                if (cmdStr.endsWith(CommandResult.ERROR_END)) {
+                    ToastUtils.show("手动注册平台参数配置错误!");
+                    stopProgressRunnable();
+                    return;
+                }
+
+                stopProgressRunnable();
+                ToastUtils.show("设置完成");
+                break;
+
+            case SET_MEDO_PLATFORM_APPKEY://设置appKey(米度/北京平台特有)
+                if (cmdStr.endsWith(CommandResult.ERROR_END)) {
+                    ToastUtils.show("AppKey配置错误!");
+                    stopProgressRunnable();
+                    return;
+                }
+
+                stopProgressRunnable();
+                ToastUtils.show("设置完成");
+                break;
+
+            case DATA_MASSAGE_MODEL://设置数据通讯方式
+                if (cmdStr.endsWith(CommandResult.ERROR_END)) {
+                    ToastUtils.show("数据通讯方式配置错误!");
+                    stopProgressRunnable();
+                    return;
+                }
+
+                sendCommonCommandImmediately(cmdDataReport);
+                Timber.d("设置数据上报间隔===%s", cmdDataReport);
+                break;
+
+            case DATA_REPORT_INTERVAL://设置数据上报间隔
+                if (cmdStr.endsWith(CommandResult.ERROR_END)) {
+                    ToastUtils.show("数据上报配置错误!");
+                    stopProgressRunnable();
+                    return;
+                }
+
+                if (spCommunicationmethod.getSelectedItem().toString().contains("BD")) {
+                    sendCommonCommandImmediately(cmdBDCardNumber);
+                    Timber.d("北斗配置参数===%s", cmdBDCardNumber);
+                    return;
+                }
+                stopProgressRunnable();
+                ToastUtils.show("设置完成");
+                break;
+
+            case SIX_TARGER_BD_NUMBER://北斗配置
+                if (cmdStr.endsWith(CommandResult.ERROR_END)) {
+                    ToastUtils.show("北斗配置错误!");
+                    stopProgressRunnable();
+                    return;
+                }
+                stopProgressRunnable();
+                ToastUtils.show("设置完成");
                 break;
         }
     }
@@ -583,7 +576,7 @@ public class MqttSettingActivity extends BaseDeviceConnectActivity implements Vi
                         return;
                     }
                     //直接弹框
-                    Timber.i("中心1第2次编辑===" + mqttConfigInfoSub1.toString());
+                    Timber.i("中心1第2次编辑===%s", mqttConfigInfoSub1.toString());
                     factory.createDialog(MqttSettingActivity.this, "1", mqttConfigInfoSub1, onClickListener);
                 }
                 break;
@@ -606,7 +599,7 @@ public class MqttSettingActivity extends BaseDeviceConnectActivity implements Vi
                         return;
                     }
                     //直接弹框
-                    Timber.i("中心2第2次编辑===" + mqttConfigInfoSub2.toString());
+                    Timber.i("中心2第2次编辑===%s", mqttConfigInfoSub2.toString());
                     factory.createDialog(MqttSettingActivity.this, "2", mqttConfigInfoSub2, onClickListener);
                 }
                 break;
@@ -629,7 +622,7 @@ public class MqttSettingActivity extends BaseDeviceConnectActivity implements Vi
                         return;
                     }
                     //直接弹框
-                    Timber.i("中心3第2次编辑===" + mqttConfigInfoSub3.toString());
+                    Timber.i("中心3第2次编辑===%s", mqttConfigInfoSub3.toString());
                     factory.createDialog(MqttSettingActivity.this, "3", mqttConfigInfoSub3, onClickListener);
                 }
                 break;
@@ -681,20 +674,20 @@ public class MqttSettingActivity extends BaseDeviceConnectActivity implements Vi
 
     private MQttOnClickListener onClickListener = new MQttOnClickListener() {
         @Override
-        public boolean onSureClick(View v, MqttConfigInfoSub mqttConfigInfoSub, String linkNumber) {
-            Timber.i("===MQttOnClickListener===%s", mqttConfigInfoSub.toString());
-            communicationProtocol = mqttConfigInfoSub.getCommunicationProtocol();
-            String dataPlatformAddress = mqttConfigInfoSub.getDataPlatformAddress();
-            String keepAliveValue = mqttConfigInfoSub.getKeepAliveValue();
-            String deviceSn = mqttConfigInfoSub.getDeviceSn();
-            String productId = mqttConfigInfoSub.getProductId();
-            String registrationCode = mqttConfigInfoSub.getRegistrationCode();
-            registrationPlatform = mqttConfigInfoSub.getRegistrationPlatform();
-            String registrationPlatformAddress = mqttConfigInfoSub.getRegistrationPlatformAddress();
-            String appkey = mqttConfigInfoSub.getAppKey();
-            String mqttDeviceId = mqttConfigInfoSub.getMqttDeviceId();
-            String mqttUsername = mqttConfigInfoSub.getMqttUsername();
-            String mqttPassword = mqttConfigInfoSub.getMqttPassword();
+        public boolean onSureClick(View v, MqttConfigInfo mqttConfigInfo, String linkNumber) {
+            Timber.i("===MQttOnClickListener===%s", mqttConfigInfo.toString());
+            communicationProtocol = mqttConfigInfo.getCommunicationProtocol();
+            String dataPlatformAddress = mqttConfigInfo.getDataPlatformAddress();
+            String keepAliveValue = mqttConfigInfo.getKeepAliveValue();
+            String deviceSn = mqttConfigInfo.getDeviceSn();
+            String productId = mqttConfigInfo.getProductId();
+            String registrationCode = mqttConfigInfo.getRegistrationCode();
+            registrationPlatform = mqttConfigInfo.getRegistrationPlatform();
+            String registrationPlatformAddress = mqttConfigInfo.getRegistrationPlatformAddress();
+            String appkey = mqttConfigInfo.getAppKey();
+            String mqttDeviceId = mqttConfigInfo.getMqttDeviceId();
+            String mqttUsername = mqttConfigInfo.getMqttUsername();
+            String mqttPassword = mqttConfigInfo.getMqttPassword();
 
             //网络中心通讯协议
             cmdCommunicationProtocol = "##202" + linkNumber + communicationProtocol + "\r\n";
@@ -762,17 +755,23 @@ public class MqttSettingActivity extends BaseDeviceConnectActivity implements Vi
                             case 1:
                                 mSbLinkOne.setCheckedImmediatelyNoEvent(false);
                                 setLinkTextVisibility(mTvLinkOneStatus, false);
-                                sendCommonCommand("##2011\r\n");//设置服务器1地址、端口
+                                ServerAddressNumberEntity serverAddressNumberEntity = new ServerAddressNumberEntity(ServerAddressNumber.NUMBER_ONE.toInt());
+                                String cmdAddress1 = CommandManager.getInstance().getCommand(CommandType.SET_SERVER_ADDRESS_PORT, serverAddressNumberEntity);
+                                sendCommonCommand(cmdAddress1);//关闭服务器1
                                 break;
                             case 2:
                                 mSbLinkTwo.setCheckedImmediatelyNoEvent(false);
                                 setLinkTextVisibility(mTvLinkTwoStatus, false);
-                                sendCommonCommand("##2012\r\n");//设置服务器2地址、端口
+                                serverAddressNumberEntity = new ServerAddressNumberEntity(ServerAddressNumber.NUMBER_TWO.toInt());
+                                String cmdAddress2 = CommandManager.getInstance().getCommand(CommandType.SET_SERVER_ADDRESS_PORT, serverAddressNumberEntity);
+                                sendCommonCommand(cmdAddress2);//关闭服务器2
                                 break;
                             case 3:
                                 mSbLinkThree.setCheckedImmediatelyNoEvent(false);
                                 setLinkTextVisibility(mTvLinkThreeStatus, false);
-                                sendCommonCommand("##2013\r\n");//设置服务器3地址、端口
+                                serverAddressNumberEntity = new ServerAddressNumberEntity(ServerAddressNumber.NUMBER_THREE.toInt());
+                                String cmdAddress3 = CommandManager.getInstance().getCommand(CommandType.SET_SERVER_ADDRESS_PORT, serverAddressNumberEntity);
+                                sendCommonCommand(cmdAddress3);//关闭服务器3
                                 break;
                         }
                     }
