@@ -19,9 +19,10 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.hjq.toast.ToastUtils;
 import com.shmedo.core.cmd.CommandManager;
 import com.shmedo.core.cmd.CommandResult;
-import com.shmedo.core.cmd.entity.DataMessageModelEntity;
 import com.shmedo.core.cmd.entity.InstallLocationEntity;
+import com.shmedo.core.cmd.entity.ServerNumberEntity;
 import com.shmedo.core.enums.CommandType;
+import com.shmedo.core.enums.ServerNumber;
 import com.shmedo.core.model.DeviceNetStatus;
 import com.shmedo.core.model.DeviceStatusInfoOne;
 import com.shmedo.core.model.DeviceStatusInfoThree;
@@ -305,8 +306,8 @@ public class DeviceDetailsFragment extends BaseFragment implements SwipeRefreshL
             case SYSTEM_RUN_STATE:
                 OperatorInfo operatorInformation = ResultParserUtil.getEntityObject(result);
                 setOperatorInformation(operatorInformation);
-                DataMessageModelEntity dataMessageModelEntity = new DataMessageModelEntity(1);
-                command = CommandManager.getInstance().getCommand(CommandType.QUERY_NETWORK_STATUS, dataMessageModelEntity);
+                ServerNumberEntity addressNumberEntity = new ServerNumberEntity(ServerNumber.NUMBER_ONE.toInt());
+                command = CommandManager.getInstance().getCommand(CommandType.QUERY_NETWORK_STATUS, addressNumberEntity);
                 deviceConnectActivity.sendCommonCommandImmediately(command);
                 Timber.i("查询网络状态：中心1==%s", command);
                 break;
@@ -317,8 +318,8 @@ public class DeviceDetailsFragment extends BaseFragment implements SwipeRefreshL
                     case "1":
                         DeviceNetStatus internetStatus1 = ResultParserUtil.getEntityObject(result);
                         setInternetStatus(internetStatus1, number);
-                        dataMessageModelEntity = new DataMessageModelEntity(2);
-                        command = CommandManager.getInstance().getCommand(CommandType.QUERY_NETWORK_STATUS, dataMessageModelEntity);
+                        addressNumberEntity = new ServerNumberEntity(ServerNumber.NUMBER_TWO.toInt());
+                        command = CommandManager.getInstance().getCommand(CommandType.QUERY_NETWORK_STATUS, addressNumberEntity);
                         deviceConnectActivity.sendCommonCommandImmediately(command);
                         Timber.i("查询网络状态：中心2==%s", command);
                         break;
@@ -326,8 +327,8 @@ public class DeviceDetailsFragment extends BaseFragment implements SwipeRefreshL
                     case "2":
                         DeviceNetStatus internetStatus2 = ResultParserUtil.getEntityObject(result);
                         setInternetStatus(internetStatus2, number);
-                        dataMessageModelEntity = new DataMessageModelEntity(3);
-                        command = CommandManager.getInstance().getCommand(CommandType.QUERY_NETWORK_STATUS, dataMessageModelEntity);
+                        addressNumberEntity = new ServerNumberEntity(ServerNumber.NUMBER_THREE.toInt());
+                        command = CommandManager.getInstance().getCommand(CommandType.QUERY_NETWORK_STATUS, addressNumberEntity);
                         deviceConnectActivity.sendCommonCommandImmediately(command);
                         Timber.i("查询网络状态：中心3==%s", command);
                         break;

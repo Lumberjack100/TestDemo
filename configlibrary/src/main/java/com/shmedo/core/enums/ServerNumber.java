@@ -1,18 +1,17 @@
 package com.shmedo.core.enums;
 
 /**
- * 创建者:   gonghe <br/>
- * 创建时间:  2020/4/24 <br/>
- * 描述：   数据中心链路编号
+ * Created by adu on 2017/12/15.
+ * 服务器(数据中心)编号
  */
-public enum DataCenterLinkNumber {
+public enum ServerNumber {
     NUMBER_ONE(1),
     NUMBER_TWO(2),
     NUMBER_THREE(3);
 
     private int number;
 
-    DataCenterLinkNumber(int number) {
+    ServerNumber(int number) {
         this.number = number;
     }
 
@@ -20,8 +19,8 @@ public enum DataCenterLinkNumber {
         return number;
     }
 
-    public static DataCenterLinkNumber valueOf(int number) {
-        switch (number) {
+    public static ServerNumber valueOf(int port) {
+        switch (port) {
             case 1:
                 return NUMBER_ONE;
             case 2:
@@ -32,4 +31,5 @@ public enum DataCenterLinkNumber {
                 return NUMBER_ONE;
         }
     }
+
 }

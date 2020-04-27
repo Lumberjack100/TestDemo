@@ -8,12 +8,12 @@ import com.shmedo.core.enums.EquipmentStatus;
 import com.shmedo.core.enums.RainStation;
 import com.shmedo.core.enums.SIMChoose;
 import com.shmedo.core.enums.SensorInterfaceType;
-import com.shmedo.core.enums.ServerAddressNumber;
+import com.shmedo.core.enums.ServerNumber;
 import com.shmedo.core.enums.WorkModel;
 import com.shmedo.core.exception.DASParameterException;
 import com.shmedo.core.model.BaseConfigInfo;
 import com.shmedo.core.model.CollectorConfigInfo;
-import com.shmedo.core.model.SetServerAddressPortInfo;
+import com.shmedo.core.model.ServerAddressInfo;
 
 /**
  * Created by adu on 2017/12/22.
@@ -108,9 +108,9 @@ public class ParserUtils {
     }
 
 
-    public static SetServerAddressPortInfo startParserServerAddress(String[] strs) {
-        SetServerAddressPortInfo info = new SetServerAddressPortInfo();
-        info.setNumber(ServerAddressNumber.valueOf(Integer.parseInt(strs[0].substring(5))));
+    public static ServerAddressInfo startParserServerAddress(String[] strs) {
+        ServerAddressInfo info = new ServerAddressInfo();
+        info.setNumber(ServerNumber.valueOf(Integer.parseInt(strs[0].substring(5))));
         info.setAddress(strs[1]);
         info.setPort(Integer.parseInt(strs[2]));
         return info;

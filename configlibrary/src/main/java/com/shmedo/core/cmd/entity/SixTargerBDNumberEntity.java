@@ -9,20 +9,20 @@ import com.shmedo.core.utils.ValidateUtil;
  * 设置六位目标北斗卡号参数
  */
 public class SixTargerBDNumberEntity implements Validater {
-    private int sixNumber;
+    private String sixNumber;
 
-    public SixTargerBDNumberEntity(int sixNumber) {
+    public SixTargerBDNumberEntity(String sixNumber) {
         this.sixNumber = sixNumber;
     }
 
     @Override
     public void validate() {
-        if (!ValidateUtil.isNumberSix(String.valueOf(sixNumber)))
-            throw new DASParameterException("参数错误");
+        if (!ValidateUtil.isNumberSix(sixNumber))
+            throw new DASParameterException("北斗卡号参数错误");
     }
 
     @Override
     public String toString() {
-        return String.valueOf(sixNumber);
+        return sixNumber;
     }
 }

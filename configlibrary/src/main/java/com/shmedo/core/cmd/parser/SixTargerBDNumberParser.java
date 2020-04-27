@@ -13,8 +13,7 @@ public class SixTargerBDNumberParser implements ResultParser<SixTargerBDNumberIn
     @Override
     public SixTargerBDNumberInfo parse(String result) {
         SixTargerBDNumberInfo info = new SixTargerBDNumberInfo();
-        int number = Integer.valueOf(result.substring(5));
-        info.setSixNumber(number);
+        info.setSixNumber(result.substring(5));
         return info;
     }
 

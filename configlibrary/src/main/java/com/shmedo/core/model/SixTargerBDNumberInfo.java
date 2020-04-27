@@ -5,18 +5,18 @@ package com.shmedo.core.model;
  * 六位目标北斗卡号实体类
  */
 public class SixTargerBDNumberInfo {
-    private int sixNumber;
+    private String sixNumber;
 
-    public int getSixNumber() {
+    public String getSixNumber() {
         return sixNumber;
     }
 
-    public void setSixNumber(int sixNumber) {
+    public void setSixNumber(String sixNumber) {
         this.sixNumber = sixNumber;
     }
 
     @Override
     public String toString() {
-        return String.valueOf(this.sixNumber);
+        return sixNumber;
     }
 }

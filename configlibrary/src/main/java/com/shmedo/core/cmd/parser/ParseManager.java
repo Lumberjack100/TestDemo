@@ -95,7 +95,7 @@ public class ParseManager {
                 DASSendAuthenticRequestParser.class,
                 DASSendAuthenticResultParser.class,
                 LowEnergyModelParser.class,
-                DataMessageModelParser.class,
+                DataCommunicateModeParser.class,
                 DataReportIntervalParser.class,
                 DigitalOsmometerFunctionParser.class,
                 GetAllSensorConfigParser.class,
@@ -118,7 +118,7 @@ public class ParseManager {
                 SetOsmometerAddressParser.class,
                 SetOsmometerCorrectparser.class,
                 SetOsmometerTriggerParser.class,
-                SetServerAddressPortParser.class,
+                ServerAddressInfoParser.class,
                 SetGPSPositionParser.class,
                 SetRainPrecisionParser.class,
                 SetRemoteUpgradeParser.class,
@@ -134,8 +134,7 @@ public class ParseManager {
                 DeviceStatusInfoThreeParse.class,
                 DeviceNetStatusParser.class,
                 OperatorInfoParser.class,
-                MqttConfigInfoParser.class,
-                DataCenterLinkNumberParser.class
+                MqttConfigInfoParser.class
         });
 
 //        List<Class> temp = ClassUtil.getAllClassByInterface("com.shmedo.core.cmd.parser", ResultParser.class);
@@ -147,7 +146,9 @@ public class ParseManager {
         try {
             for (int i = 0; i < classes.size(); ++i) {
                 ResultParser resultParser = (ResultParser) classes.get(i).newInstance();
-                parserMap.put(resultParser.commandType(), resultParser);
+                if (!parserMap.containsKey(resultParser.commandType())) {
+                    parserMap.put(resultParser.commandType(), resultParser);
+                }
             }
         } catch (Exception ex) {
             throw new RuntimeException(ex);

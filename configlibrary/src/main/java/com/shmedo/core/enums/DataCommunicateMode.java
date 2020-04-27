@@ -6,23 +6,44 @@ package com.shmedo.core.enums;
  */
 public enum DataCommunicateMode {
 
-    GPRS(1),SMS(2),BD(3),BD4G(4);
+    /**
+     * GPRS模式
+     */
+    GPRS(1),
+
+    /**
+     * 短信息模式
+     */
+    SMS(2),
+
+    /**
+     * 北斗短报文模式
+     */
+    BD(3),
+
+    BD4G(4);
 
     private int mode;
-    DataCommunicateMode (int i) {
+    DataCommunicateMode(int i) {
         this.mode = i;
     }
-    public int toInt(){
+
+    public int toInt() {
         return mode;
     }
 
     public static DataCommunicateMode valueOf(int mode) {
         switch (mode) {
-            case 1: return GPRS;
-            case 2: return SMS;
-            case 3: return BD;
-            case 4: return BD4G;
-            default: return GPRS;
+            case 1:
+                return GPRS;
+            case 2:
+                return SMS;
+            case 3:
+                return BD;
+            case 4:
+                return BD4G;
+            default:
+                return GPRS;
         }
     }
 }

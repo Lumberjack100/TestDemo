@@ -12,9 +12,10 @@ public class ExampleUnitTest {
 
     @Test
     public void testRain() {
-        String command = "##9161,123.12412,30.123\r\n";
+        String command = " 123.30.123 8098 ";
+        command = command.trim();
 
-        String cmd = command.replace("\r\n", "").substring(7);
+        String[] cmd = command.split(" ");
         System.out.println(cmd);
     }
 

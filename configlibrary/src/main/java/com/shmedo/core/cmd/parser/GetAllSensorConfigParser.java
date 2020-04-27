@@ -11,7 +11,7 @@ import com.shmedo.core.model.SensorInfrasoundInfo;
 import com.shmedo.core.model.SensorRadarLevelInfo;
 import com.shmedo.core.model.SensorSoilMoistureInfo;
 import com.shmedo.core.model.SensorWireShiftInfo;
-import com.shmedo.core.model.SetServerAddressPortInfo;
+import com.shmedo.core.model.ServerAddressInfo;
 import com.shmedo.core.utils.ParserUtils;
 
 import java.util.ArrayList;
@@ -71,9 +71,9 @@ public class GetAllSensorConfigParser implements ResultParser<GetAllSensorConfig
         CollectorConfigInfo collectorConfigInfo = ParserUtils.startParserCollectorConfig(collectorConfig);
         getAllSensorConfigInfo.setCollectorConfig(collectorConfigInfo);
 
-        SetServerAddressPortInfo serverAddressPortInfo1 = ParserUtils.startParserServerAddress(serverAddress1);
+        ServerAddressInfo serverAddressPortInfo1 = ParserUtils.startParserServerAddress(serverAddress1);
         getAllSensorConfigInfo.setServerAddressPortInfo1(serverAddressPortInfo1);
-        SetServerAddressPortInfo serverAddressPortInfo2 = ParserUtils.startParserServerAddress(serverAddress2);
+        ServerAddressInfo serverAddressPortInfo2 = ParserUtils.startParserServerAddress(serverAddress2);
         getAllSensorConfigInfo.setServerAddressPortInfo2(serverAddressPortInfo2);
 
         String[] cs = new String[strs.length-5];

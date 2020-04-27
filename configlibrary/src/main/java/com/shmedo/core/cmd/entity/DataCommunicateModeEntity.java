@@ -7,17 +7,17 @@ import com.shmedo.core.exception.DASParameterException;
  * Created by adu on 2017/12/15.
  * 数据通讯模式参数
  */
-public class DataMessageModelEntity implements Validater {
+public class DataCommunicateModeEntity implements Validater {
 
     private int model;
 
-    public DataMessageModelEntity(int model) {
+    public DataCommunicateModeEntity(int model) {
         this.model = model;
     }
 
     @Override
     public void validate() {
-        if (model != 1 && model != 2 && model != 3)
+        if (model != 1 && model != 2 && model != 3 && model != 4)
             throw new DASParameterException("数据通讯模式有误");
     }
 

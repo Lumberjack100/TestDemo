@@ -14,7 +14,7 @@ public class DataReportIntervalParser implements ResultParser<DataReportInterval
     @Override
     public DataReportIntervalInfo parse(String result) {
         DataReportIntervalInfo info = new DataReportIntervalInfo();
-        info.setTime(Integer.valueOf(result.substring(5)));
+        info.setTime(Integer.parseInt(result.substring(5)));
         return info;
     }
 

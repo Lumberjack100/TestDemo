@@ -31,8 +31,8 @@ public class GetAllSensorConfigInfo {
     private BaseConfigInfo baseConfig;
     private CollectorConfigInfo collectorConfig;
     private List<CollectorSensorParamsInfo> collectorSensorParamsInfos;
-    private SetServerAddressPortInfo serverAddressPortInfo1;
-    private SetServerAddressPortInfo serverAddressPortInfo2;
+    private ServerAddressInfo serverAddressPortInfo1;
+    private ServerAddressInfo serverAddressPortInfo2;
 
     public BaseConfigInfo getBaseConfig() {
         return baseConfig;
@@ -59,22 +59,22 @@ public class GetAllSensorConfigInfo {
     }
 
 
-    public SetServerAddressPortInfo getServerAddressPortInfo1() {
+    public ServerAddressInfo getServerAddressPortInfo1() {
         return serverAddressPortInfo1;
     }
 
 
-    public void setServerAddressPortInfo1(SetServerAddressPortInfo serverAddressPortInfo1) {
+    public void setServerAddressPortInfo1(ServerAddressInfo serverAddressPortInfo1) {
         this.serverAddressPortInfo1 = serverAddressPortInfo1;
     }
 
 
-    public SetServerAddressPortInfo getServerAddressPortInfo2() {
+    public ServerAddressInfo getServerAddressPortInfo2() {
         return serverAddressPortInfo2;
     }
 
 
-    public void setServerAddressPortInfo2(SetServerAddressPortInfo serverAddressPortInfo2) {
+    public void setServerAddressPortInfo2(ServerAddressInfo serverAddressPortInfo2) {
         this.serverAddressPortInfo2 = serverAddressPortInfo2;
     }
 
