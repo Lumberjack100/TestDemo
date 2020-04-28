@@ -1,26 +1,20 @@
 package com.shmedo.core.cmd.entity;
 
 
-import android.text.TextUtils;
-
 import com.shmedo.core.exception.DASParameterException;
 import com.shmedo.core.interfaces.Validater;
-import com.shmedo.core.utils.DesUtil;
-import com.shmedo.core.utils.StringUtil;
-
-import java.nio.charset.StandardCharsets;
 
 /**
  * Created by adu on 2018/1/10.
- * 配置认证请求的参数
+ * 配置认证类型的参数
  */
 public class AuthenticationConfigEntity implements Validater {
     private String sn;
-    private String secureCode;
+    private int mode;//认证类型 0:普通认证 1:系统认证
 
-    public AuthenticationConfigEntity(String sn, String secureCode) {
+    public AuthenticationConfigEntity(String sn, int mode) {
         this.sn = sn;
-        this.secureCode = secureCode;
+        this.mode = mode;
     }
 
     @Override
@@ -28,31 +22,14 @@ public class AuthenticationConfigEntity implements Validater {
         //验证sn必须为7位字符
         if (sn.length() != 7)
             throw new DASParameterException("SN号有误");
-        //验证secureCode必须为八位数或者八的倍数
-        if (TextUtils.isEmpty(secureCode) || secureCode.length() % 8 != 0)
-            throw new DASParameterException("参数异常");
+
+        if (mode != 0 && mode != 1)
+            throw new DASParameterException("认证类型错误");
     }
 
     @Override
     public String toString() {
-        StringBuilder builder = new StringBuilder();
-        builder.append(",");
-        builder.append(this.sn);
-        builder.append(",");
-
-        String tempString = StringUtil.getRandomString() + secureCode;
-        byte[] asciiByte = tempString.getBytes(StandardCharsets.US_ASCII);
-        byte[] encryptByte = new byte[0];
-        try {
-            encryptByte = DesUtil.encrypt(asciiByte, secureCode);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        String keyString = StringUtil.bytesToHexString(encryptByte);
-        builder.append( keyString);
-
-        return builder.toString();
+        return "," + this.sn + "," + this.mode;
     }
-
 
 }

@@ -177,13 +177,13 @@ public enum CommandType {
      */
     DAS_SEND_AUTHENTICATION_REQUEST("222"),
     /**
-     * 平台收到认证请求若需要配置，发送验证码
-     */
-    AUTHENTICATION_CONFIG("222"),
-    /**
      * DAS发送认证结果
      */
     DAS_SEND_AUTHENTICATION_RESULT("223"),
+    /**
+     * 平台收到认证请求若需要配置，发送验证码
+     */
+    AUTHENTICATION_CONFIG("224"),
     /**
      * 设备锁定状态
      */

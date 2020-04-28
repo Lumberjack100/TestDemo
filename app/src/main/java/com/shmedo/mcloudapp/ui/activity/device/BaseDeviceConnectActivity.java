@@ -18,6 +18,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.hjq.toast.ToastUtils;
 import com.shmedo.core.cmd.CommandManager;
 import com.shmedo.core.cmd.CommandResult;
+import com.shmedo.core.cmd.entity.AuthenticationConfigEntity;
 import com.shmedo.core.cmd.entity.BreakAlarmStatusEntity;
 import com.shmedo.core.cmd.entity.LowEnergyModelEntity;
 import com.shmedo.core.cmd.entity.SaveConfigInfoEntity;
@@ -701,9 +702,10 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
      * 蓝牙连接成功开始进行验证  lock
      */
     private void startBluAuthenticate() {
-        String cmd = "\r\n##224," + SN + ",0\r\n";
-        sendCommonCommandImmediately(cmd);
-        Timber.d("验证指令===%s", cmd);
+        AuthenticationConfigEntity configEntity = new AuthenticationConfigEntity(SN, 0);
+        String command = CommandManager.getInstance().getCommand(CommandType.AUTHENTICATION_CONFIG, configEntity);
+        sendCommonCommandImmediately("\r\n" + command);
+        Timber.d("设置认证类型指令===%s", command);
     }
 
 
@@ -741,8 +743,8 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
     /**
      * 设置远程升级
      */
-    public void setSetRemoteUpgrade(SetRemoteUpgrade remoteUpgrade,String address,int port){
-        SetRemoteUpgradeEntity setRemoteUpgradeEntity = new SetRemoteUpgradeEntity(remoteUpgrade.toInt(),address, port);
+    public void setSetRemoteUpgrade(SetRemoteUpgrade remoteUpgrade, String address, int port) {
+        SetRemoteUpgradeEntity setRemoteUpgradeEntity = new SetRemoteUpgradeEntity(remoteUpgrade.toInt(), address, port);
         String command = CommandManager.getInstance().getCommand(CommandType.SETTING_REMOTE_UPGRADE, setRemoteUpgradeEntity);
         sendCommonCommandImmediately(command);
         Timber.d("设置远程升级指令==%s", command);

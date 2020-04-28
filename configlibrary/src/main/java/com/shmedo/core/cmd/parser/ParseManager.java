@@ -80,7 +80,6 @@ public class ParseManager {
      */
     private void registerParse() {
         List<Class> clazzes = Arrays.asList(new Class[]{
-                AuthenticationConfigParser.class,
                 BaseConfigParser.class,
                 BatchResultParser.class,
                 CellProtectionVoltageParser.class,
