@@ -453,10 +453,9 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
             try {
                 final String cmdStr = new String(data, StandardCharsets.UTF_8);
                 Timber.d("应答指令===%s", cmdStr);
-                CommandType type = StringUtil.extractCommandType(cmdStr);
                 String cmdArray[] = cmdStr.replace("\r\n", "").split(",");
 
-                if (type == CommandType.AUTHENTICATION_CONFIG) {//认证方式
+                if (cmdStr.startsWith("$$224")) {//认证方式
                     if (cmdStr.replace("\r\n", "").endsWith(CommandResult.ERROR_END)) {
                         startBluAuthenticate();//重新认证
                         return;

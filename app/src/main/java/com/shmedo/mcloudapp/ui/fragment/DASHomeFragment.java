@@ -275,7 +275,7 @@ public class DASHomeFragment extends BaseFragment {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 alarmStatusCheck++;
-                if (alarmStatusCheck >= 2) {
+                if (alarmStatusCheck >= 3) {
                     String value = parent.getSelectedItem().toString();
                     RainStationEntity entity = null;
                     switch (value) {
@@ -371,6 +371,10 @@ public class DASHomeFragment extends BaseFragment {
                 break;
 
             case R.id.rl_advanced_config:
+                if (!MCloudApp.isIsBluetoothDeviceConnected()) {
+                    ToastUtils.show(getString(R.string.param_config_bluetooth_disconnect_warn));
+                    return;
+                }
                 DeviceAdvanceConfigActivity.startActivity(getActivity(), baseConfigInfo.getWorkModel().toInt());
                 break;
         }
