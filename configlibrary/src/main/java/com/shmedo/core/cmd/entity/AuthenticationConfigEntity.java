@@ -6,11 +6,11 @@ import com.shmedo.core.interfaces.Validater;
 
 /**
  * Created by adu on 2018/1/10.
- * 配置认证类型的参数
+ * 配置认证方式的参数
  */
 public class AuthenticationConfigEntity implements Validater {
     private String sn;
-    private int mode;//认证类型 0:普通认证 1:系统认证
+    private int mode;//认证方式 0:普通认证 1:系统认证
 
     public AuthenticationConfigEntity(String sn, int mode) {
         this.sn = sn;
@@ -24,7 +24,7 @@ public class AuthenticationConfigEntity implements Validater {
             throw new DASParameterException("SN号有误");
 
         if (mode != 0 && mode != 1)
-            throw new DASParameterException("认证类型错误");
+            throw new DASParameterException("认证方式错误");
     }
 
     @Override
