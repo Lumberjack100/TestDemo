@@ -121,7 +121,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         String name = getClass().getName();
-        Timber.d("startPage,activity=" + name);
+        Timber.i("startPage,activity=%s", name);
 
         //在无网络情况下打开APP时，系统不会发送网络状况变更的Intent，需要自己手动检查
         netStateChangedUI(NetworkUtils.isConnected());
@@ -132,7 +132,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         String name = getClass().getName();
-        Timber.d("endPage,activity=" + name);
+        Timber.i("endPage,activity=%s", name);
     }
 
     @Override
@@ -310,7 +310,7 @@ public abstract class BaseActivity extends AppCompatActivity {
      */
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onNetworkChangeEvent(NetworkChangeEvent event) {
-        Timber.d("网络发生变化:" + event.toString());
+        Timber.i("网络发生变化:%s", event.toString());
         mNetConnected = event.isConnected;
         MCloudApp.setIsNetworkConnected(mNetConnected);
         netStateChangedUI(event.isConnected);

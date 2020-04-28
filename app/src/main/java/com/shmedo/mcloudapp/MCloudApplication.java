@@ -32,8 +32,12 @@ public class MCloudApplication extends Application {
     public void onCreate() {
         super.onCreate();
         MCloudApp.initialize(this);
+
         //初始化facebook.stetho
         //AppInit.init(this);
+
+        //初始化日志输出
+        initTimber();
 
         //初始化蒲公英
         //启动 Pgyer 检测 Crash 功能
@@ -41,9 +45,6 @@ public class MCloudApplication extends Application {
 
         //异常上报和升级
         initCrashReport();
-
-        //初始化日志输出
-        initTimber();
 
         //初始化吐司消息组件
         initToastUtil();
@@ -69,7 +70,6 @@ public class MCloudApplication extends Application {
      * 设置日志输出
      */
     private void initTimber() {
-        Timber.d("initTimber()------in");
         if (BuildConfig.DEBUG) {
             Timber.plant(new Timber.DebugTree());
         } else {

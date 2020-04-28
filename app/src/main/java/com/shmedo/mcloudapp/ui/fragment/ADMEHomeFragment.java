@@ -577,10 +577,10 @@ public class ADMEHomeFragment extends BaseFragment {
             //测试模式打开时，查询电机和计米轮相关参数
             if (cmdArray[2].trim().equals("3")) {
                 configADMEActivity.sendCommonCommand("##7020\r\n");
-                Timber.d("发送查询控制电机参数指令===" + "##7020");
+                Timber.d("查询控制电机参数指令===" + "##7020");
 
                 configADMEActivity.sendCommonCommand("##7022\r\n");
-                Timber.d("发送查询计米轮参数指令===" + "##7022");
+                Timber.d("查询计米轮参数指令===" + "##7022");
             }
             return;
         }
@@ -659,13 +659,13 @@ public class ADMEHomeFragment extends BaseFragment {
         if (cmdStr.startsWith("$$70123") && cmdStr.endsWith("\r\n")) {
             Timber.d("测试模式已打开");
             configADMEActivity.sendCommonCommand("##7020\r\n");
-            Timber.d("发送查询控制电机参数指令===" + "##7020");
+            Timber.d("查询控制电机参数指令===" + "##7020");
 
             configADMEActivity.sendCommonCommand("##7022\r\n");
-            Timber.d("发送查询计米轮参数指令===" + "##7022");
+            Timber.d("查询计米轮参数指令===" + "##7022");
 
             configADMEActivity.sendCommonCommand("##7030\r\n");
-            Timber.d("发送查询编码器修正参数指令===" + "##7030");
+            Timber.d("查询编码器修正参数指令===" + "##7030");
             return;
         }
 

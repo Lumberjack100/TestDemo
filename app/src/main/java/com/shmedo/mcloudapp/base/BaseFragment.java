@@ -57,7 +57,7 @@ public abstract class BaseFragment extends Fragment implements HandleBackInterfa
     public void onResume() {
         super.onResume();
         String name = getClass().getName();
-        Timber.d("startPage,Fragment=" + name);
+        Timber.i("startPage,Fragment=%s", name);
     }
 
 
@@ -65,7 +65,7 @@ public abstract class BaseFragment extends Fragment implements HandleBackInterfa
     public void onPause() {
         super.onPause();
         String name = getClass().getName();
-        Timber.d("endPage,Fragment=" + name);
+        Timber.i("endPage,Fragment=%s", name);
     }
 
 

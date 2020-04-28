@@ -273,7 +273,7 @@ public class OsmometerConfigActivity extends BaseDeviceConnectActivity {
 
         startProgressRunnable("正在发送配置指令...", COMMAND_DELAY_MILLIS);
         sendCommonCommandImmediately(cmdOsmometerAddress);
-        Timber.d("发送设置数字渗压计地址指令===%s", cmdOsmometerAddress);
+        Timber.d("设置数字渗压计地址指令===%s", cmdOsmometerAddress);
     }
 
     /**
@@ -289,7 +289,7 @@ public class OsmometerConfigActivity extends BaseDeviceConnectActivity {
                     return;
                 }
                 sendCommonCommandImmediately(cmdDepthTriggerValue);
-                Timber.d("发送设置数字渗压计深度触发值，温度触发值指令===%s", cmdDepthTriggerValue);
+                Timber.d("设置数字渗压计深度触发值，温度触发值指令===%s", cmdDepthTriggerValue);
                 break;
 
             case SET_OSMOMETER_TRIGGER:
@@ -299,7 +299,7 @@ public class OsmometerConfigActivity extends BaseDeviceConnectActivity {
                     return;
                 }
                 sendCommonCommandImmediately(cmdDepthCorrection);
-                Timber.d("发送设置数字渗压计深度修正值，温度修正值指令===%s", cmdDepthCorrection);
+                Timber.d("设置数字渗压计深度修正值，温度修正值指令===%s", cmdDepthCorrection);
                 break;
 
             case SET_OSMOMETR_CORRECT:
@@ -309,7 +309,7 @@ public class OsmometerConfigActivity extends BaseDeviceConnectActivity {
                     return;
                 }
                 sendCommonCommandImmediately(cmdOsmometerLength);
-                Timber.d("发送数字渗压计绳长指令===%s", cmdOsmometerLength);
+                Timber.d("数字渗压计绳长指令===%s", cmdOsmometerLength);
                 break;
 
             case SET_CORD_LENGTH:
@@ -319,7 +319,7 @@ public class OsmometerConfigActivity extends BaseDeviceConnectActivity {
                     return;
                 }
                 sendCommonCommandImmediately(cmdNozzelHeight);
-                Timber.d("发送数字渗压计安装高程指令===%s", cmdNozzelHeight);
+                Timber.d("数字渗压计安装高程指令===%s", cmdNozzelHeight);
                 break;
 
             case SET_OSMOMETR_NOZZEL_HEIGHT:

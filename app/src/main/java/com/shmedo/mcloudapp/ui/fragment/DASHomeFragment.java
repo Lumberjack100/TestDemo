@@ -381,7 +381,6 @@ public class DASHomeFragment extends BaseFragment {
      * 所有配置信息处理
      */
     private void processGetAllSensorConfig(String cmdStr) {
-        Timber.d("所有配置信息指令%s", cmdStr);
         String[] strs = cmdStr.split("@@");
         if (strs.length < 6)
             return;
@@ -393,7 +392,7 @@ public class DASHomeFragment extends BaseFragment {
         }
 
         GetAllSensorConfigInfo getAllSensorConfigInfo = ResultParserUtil.getEntityObject(cmdStr);
-        Timber.d("所有配置信息Json%s", getAllSensorConfigInfo.toString());
+        Timber.d("所有配置信息实体类: %s", getAllSensorConfigInfo.toString());
         collectorConfigInfo = getAllSensorConfigInfo.getCollectorConfig();
         baseConfigInfo = getAllSensorConfigInfo.getBaseConfig();
         if (baseConfigInfo != null) {
@@ -480,7 +479,7 @@ public class DASHomeFragment extends BaseFragment {
                     return;
                 }
                 breakAlarmStatusInfo = ResultParserUtil.getEntityObject(cmdStr);
-                Timber.d("--------断线报警器状态-------%s", breakAlarmStatusInfo.toString());
+                Timber.d("断线报警器状态: %s", breakAlarmStatusInfo.toString());
                 switch (breakAlarmStatusInfo.getStatus()) {
                     case OPEN:
                         mSbBleakAlarm.setCheckedImmediatelyNoEvent(true);

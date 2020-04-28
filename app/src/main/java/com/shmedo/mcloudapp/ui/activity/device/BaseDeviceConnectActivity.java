@@ -201,7 +201,7 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
             if (device != null) {
                 doConnect(device);
             } else {
-                Timber.w("Device not found.  Unable to connect.");
+                Timber.e("Device not found.  Unable to connect.");
             }
             return;
         }
@@ -271,42 +271,42 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
                     break;
 
                 case DISCONNECTED:
-                    Timber.d("蓝牙连接断开");
+                    Timber.e("蓝牙连接断开");
                     mHandler.sendEmptyMessage(Constants.BT_DISCONNECTED);
                     break;
 
                 case REQUEST_MTU_FAIL:
-                    Timber.d("MTU请求设置失败");
+                    Timber.e("MTU请求设置失败");
                     mHandler.sendEmptyMessage(Constants.BT_REQUEST_MTU_FAIL);
                     break;
 
                 case SERVICE_FIND_FAIL:
-                    Timber.d("蓝牙服务发现失败");
+                    Timber.e("蓝牙服务发现失败");
                     mHandler.sendEmptyMessage(Constants.BT_SERVICE_FIND_FAIL);
                     break;
 
                 case CHARACTERISTICS_FIND_FAIL:
-                    Timber.d("特征读取失败");
+                    Timber.e("特征读取失败");
                     mHandler.sendEmptyMessage(Constants.BT_CHARACTERISTICS_FIND_FAIL);
                     break;
 
                 case ENABLE_READ_SUCCESS:
-                    Timber.d("设置读取Descriptor成功");
+                    Timber.i("设置读取Descriptor成功");
                     mHandler.sendEmptyMessage(Constants.BT_ENABLE_READ_SUCCESS);
                     break;
 
                 case ENABLE_READ_FAIL:
-                    Timber.d("设置读取Descriptor失败");
+                    Timber.e("设置读取Descriptor失败");
                     mHandler.sendEmptyMessage(Constants.BT_ENABLE_READ_FAIL);
                     break;
 
                 case WRITE_TIME_OUT:
-                    Timber.d("写入等待超时");
+                    Timber.e("写入等待超时");
                     mHandler.sendEmptyMessage(Constants.BT_WRITE_TIME_OUT);
                     break;
 
                 case MESSAGE_WRITE_SUCCESS:
-                    Timber.d("消息写入成功");
+//                    Timber.i("消息写入成功");
                     mHandler.sendEmptyMessage(Constants.BT_MESSAGE_WRITE_SUCCESS);
                     try {
                         String msg = ((Message) event.getEventData()).getResponseMessage();
@@ -320,16 +320,17 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
                     break;
 
                 case MESSAGE_RESPONSE_TIME_OUT:
-                    Timber.d("消息等待响应超时");
+                    Timber.e("消息等待响应超时");
                     mHandler.sendEmptyMessage(Constants.MESSAGE_RESPONSE_TIME_OUT);
                     break;
 
                 case MESSAGE_WRITE_FAIL:
-                    Timber.d("消息写入失败");
+                    Timber.e("消息写入失败");
                     mHandler.sendEmptyMessage(Constants.BT_MESSAGE_WRITE_FAIL);
                     break;
 
                 case RESPONSE_WITH_NO_MESSAGE:
+                    Timber.i("RESPONSE_WITH_NO_MESSAGE");
                     try {
                         byte[] data = ((String) event.getEventData()).getBytes();
                         if (data.length > 0) {
@@ -432,7 +433,7 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
                     break;
 
                 case Constants.MESSAGE_LOCK_REBOOT_DEVICE:
-                    Timber.d("蓝牙通讯已就绪");
+                    Timber.i("蓝牙通讯已就绪");
                     obtainDeviceConfigInfoCmd();
                     break;
 
@@ -453,7 +454,7 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
                 Timber.d("应答指令===%s", cmdStr);
                 String cmdArray[] = cmdStr.replace("\r\n", "").split(",");
 
-                if (cmdStr.startsWith("$$224") && cmdStr.endsWith("\r\n")) {
+                if (cmdStr.startsWith("$$224")) {
                     if (cmdStr.endsWith(CommandResult.ERROR_END)) {
                         startBluAuthenticate();//重新认证
                         return;
@@ -467,7 +468,7 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
                             String desStr = StringUtil.bytesToHexString(DesUtil.encrypt((StringUtil.reverseString(strdes.substring(0, 6)) + deskey).getBytes(), deskey));
                             String cmd = "##222," + SN + ",0," + desStr.toUpperCase() + "\r\n";
                             sendCommonCommand(cmd);
-                            Timber.d("发送设备登录验证指令===%s", cmd);
+                            Timber.d("设备登录验证指令===%s", cmd);
                             return;
                         }
                     } catch (Exception e) {
@@ -477,7 +478,7 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
                 }
 
                 //设备登录验证结果指令
-                if (cmdStr.startsWith("$$223") && cmdStr.endsWith("\r\n")) {
+                if (cmdStr.startsWith("$$223")) {
                     sendHandleMessage(Constants.VERIFY_RESULT, cmdArray[1]);
                     Timber.d("设备登录验证状态===%s", cmdArray[1]);
                     return;
@@ -621,23 +622,23 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
      */
     private void queryADMEConfigInfoCmd() {
         sendCommonCommand("##7010\r\n");
-        Timber.d("发送查询工作模式指令===" + "##7010");
+        Timber.d("查询工作模式指令===" + "##7010");
 
         ServerNumberEntity serverNumberEntity = new ServerNumberEntity(ServerNumber.NUMBER_ONE.toInt());
         String cmdAddress1 = CommandManager.getInstance().getCommand(CommandType.SERVER_ADDRESS, serverNumberEntity);
         sendCommonCommand(cmdAddress1);
-        Timber.d("发送查询服务器地址1指令===%s", cmdAddress1);
+        Timber.d("查询服务器地址1指令===%s", cmdAddress1);
 
         serverNumberEntity = new ServerNumberEntity(ServerNumber.NUMBER_TWO.toInt());
         String cmdAddress2 = CommandManager.getInstance().getCommand(CommandType.SERVER_ADDRESS, serverNumberEntity);
         sendCommonCommand(cmdAddress2);
-        Timber.d("发送查询服务器地址2指令===%s", cmdAddress2);
+        Timber.d("查询服务器地址2指令===%s", cmdAddress2);
 
         sendCommonCommand("##7000\r\n");
-        Timber.d("发送查询采集器参数指令===" + "##7000");
+        Timber.d("查询采集器参数指令===" + "##7000");
 
         sendCommonCommand("##7002\r\n");
-        Timber.d("发送查询执行机构参数指令===" + "##7002");
+        Timber.d("查询执行机构参数指令===" + "##7002");
     }
 
     /**
@@ -647,12 +648,12 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
         //获取所有配置  ##333
         String allInfoCommand = CommandManager.getInstance().getCommand(CommandType.GET_ALL_SENSOR_CONFIG);
         sendCommonCommand(allInfoCommand);
-        Timber.d("发送获取所有配置指令===%s", allInfoCommand);
+        Timber.d("获取所有配置指令===%s", allInfoCommand);
 
         //查询数字式渗压计参数 ##400
 //        String shenyajiCommand = CommandManager.getInstance().getCommand(CommandType.QUERY_OSMOMETER_PARAMETER, null);
 //        sendCommonCommand(shenyajiCommand);
-//        Timber.d("发送查询渗压计指令===" + shenyajiCommand);
+//        Timber.d("查询渗压计指令===" + shenyajiCommand);
     }
 
 
@@ -702,7 +703,7 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
     private void startBluAuthenticate() {
         String cmd = "\r\n##224," + SN + ",0\r\n";
         sendCommonCommandImmediately(cmd);
-        Timber.d("发送验证指令===%s", cmd);
+        Timber.d("验证指令===%s", cmd);
     }
 
 

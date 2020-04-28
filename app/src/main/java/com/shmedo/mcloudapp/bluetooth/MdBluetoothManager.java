@@ -419,7 +419,7 @@ public class MdBluetoothManager {
     }
 
     private void handleBluetoothEvent(BluetoothEventType eventType, Object eventData) {
-        Timber.d("线程 " + Thread.currentThread().getName() + ", BluetoothEventType = " + eventType);
+//        Timber.d("线程 " + Thread.currentThread().getName() + ", BluetoothEventType = " + eventType);
         BluetoothEvent event = BluetoothEvent.builder()
                 .setEventType(eventType)
                 .setEventData(eventData)
@@ -437,7 +437,7 @@ public class MdBluetoothManager {
         @Override
         public void onScanResult(int callbackType, ScanResult result) {
             BluetoothDevice device = result.getDevice();
-            Timber.d("在线程 " + Thread.currentThread().getName() + " 中扫描到设备：name=" + (TextUtils.isEmpty(device.getName()) ? "UnkonwName" : device.getName()) + ";macAddress=" + device.getAddress());
+//            Timber.d("在线程 " + Thread.currentThread().getName() + " 中扫描到设备：name=" + (TextUtils.isEmpty(device.getName()) ? "UnkonwName" : device.getName()) + ";macAddress=" + device.getAddress());
             MDevice mDev = new MDevice(device, result.getRssi());
 
             handleBluetoothEvent(BluetoothEventType.DEVICE_FIND, new BluetoothDeviceFindEventData(mDev, new ArrayList<>()));

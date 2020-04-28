@@ -235,21 +235,21 @@ public class MqttSettingActivity extends BaseDeviceConnectActivity implements Vi
         ServerNumberEntity serverNumberEntity = new ServerNumberEntity(ServerNumber.NUMBER_ONE.toInt());
         String cmdAddress1 = CommandManager.getInstance().getCommand(CommandType.SERVER_ADDRESS, serverNumberEntity);
         sendCommonCommand(cmdAddress1);
-        Timber.d("发送查询服务器地址1指令===%s", cmdAddress1);
+        Timber.d("查询服务器地址1指令===%s", cmdAddress1);
 
         serverNumberEntity = new ServerNumberEntity(ServerNumber.NUMBER_TWO.toInt());
         String cmdAddress2 = CommandManager.getInstance().getCommand(CommandType.SERVER_ADDRESS, serverNumberEntity);
         sendCommonCommand(cmdAddress2);
-        Timber.d("发送查询服务器地址2指令===%s", cmdAddress2);
+        Timber.d("查询服务器地址2指令===%s", cmdAddress2);
 
         serverNumberEntity = new ServerNumberEntity(ServerNumber.NUMBER_THREE.toInt());
         String cmdAddress3 = CommandManager.getInstance().getCommand(CommandType.SERVER_ADDRESS, serverNumberEntity);
         sendCommonCommand(cmdAddress3);
-        Timber.d("发送查询服务器地址3指令===%s", cmdAddress3);
+        Timber.d("查询服务器地址3指令===%s", cmdAddress3);
 
         String baseInfoCommand = CommandManager.getInstance().getCommand(CommandType.BASE_CONFIG);
         sendCommonCommand(baseInfoCommand);
-        Timber.d("发送基础配置信息指令===%s", baseInfoCommand);
+        Timber.d("基础配置信息指令===%s", baseInfoCommand);
     }
 
     private void setSwitchViewListener() {
