@@ -232,70 +232,71 @@ public class GeneralSettingActivity extends BaseDeviceConnectActivity {
      * 设置显示数据
      */
     private void setResultData(String cmdStr) {
-        if (cmdStr.startsWith(CommandType.SET_COLLECTOR_ADDRESS.toString())) {
-            if (cmdStr.endsWith(CommandResult.ERROR_END)) {
-                ToastUtils.show("采集器地址配置错误!");
-                stopProgressRunnable();
-                return;
-            }
-            sendCommonCommandImmediately(cmdCalculatTime);
-            Timber.d("设置采集器解算频度指令===%s", cmdCalculatTime);
-            return;
-        }
-
-        if (cmdStr.startsWith(CommandType.COLLECTOR_SOLUTION_FREQUENCY.toString())) {
-            if (cmdStr.endsWith(CommandResult.ERROR_END)) {
-                ToastUtils.show("采集器解算频度配置错误!");
-                stopProgressRunnable();
-                return;
-            }
-            sendCommonCommandImmediately(cmdStandbyTime);
-            Timber.d("设置采集器待机时长指令===%s", cmdStandbyTime);
-            return;
-        }
-
-        if (cmdStr.startsWith(CommandType.COLLECTOR_STANDBY_TIME.toString())) {
-            if (cmdStr.endsWith(CommandResult.ERROR_END)) {
-                ToastUtils.show("采集器待机时长配置错误!");
-                stopProgressRunnable();
-                return;
-            }
-            sendCommonCommandImmediately(cmdCollectTime);
-            Timber.d("设置采集器采集频度指令===%s", cmdCollectTime);
-            return;
-        }
-
-        if (cmdStr.startsWith(CommandType.COLLECTOR_FREQUENCY.toString())) {
-            if (cmdStr.endsWith(CommandResult.ERROR_END)) {
-                ToastUtils.show("采集器采集频度配置错误!");
-                stopProgressRunnable();
-                return;
-            }
-            collectorConfigInfo.setCollectorAddress(collectorAddress);
-            collectorConfigInfo.setWorkTime(calculatTime);
-            collectorConfigInfo.setStandbyTime(standbyTime);
-            collectorConfigInfo.setCollectorInterval(collectTime);
-
-            stopProgressRunnable();
-            ToastUtils.show("设置完成");
-            hander.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    Intent intent = getIntent();
-                    intent.putExtra(Extras.PARAM_CONFIG_INFO, collectorConfigInfo);
-                    setResult(RESULT_OK, intent);
-                    finish();
+        CommandType type = StringUtil.extractCommandType(cmdStr);
+        switch (type) {
+            case SET_COLLECTOR_ADDRESS:
+                if (cmdStr.endsWith(CommandResult.ERROR_END)) {
+                    ToastUtils.show("采集器地址配置错误!");
+                    stopProgressRunnable();
+                    return;
                 }
-            }, 2000);
+                sendCommonCommandImmediately(cmdCalculatTime);
+                Timber.d("设置采集器解算频度指令===%s", cmdCalculatTime);
+                break;
+
+            case COLLECTOR_SOLUTION_FREQUENCY:
+                if (cmdStr.endsWith(CommandResult.ERROR_END)) {
+                    ToastUtils.show("采集器解算频度配置错误!");
+                    stopProgressRunnable();
+                    return;
+                }
+                sendCommonCommandImmediately(cmdStandbyTime);
+                Timber.d("设置采集器待机时长指令===%s", cmdStandbyTime);
+                break;
+
+            case COLLECTOR_STANDBY_TIME:
+                if (cmdStr.endsWith(CommandResult.ERROR_END)) {
+                    ToastUtils.show("采集器待机时长配置错误!");
+                    stopProgressRunnable();
+                    return;
+                }
+                sendCommonCommandImmediately(cmdCollectTime);
+                Timber.d("设置采集器采集频度指令===%s", cmdCollectTime);
+                break;
+
+            case COLLECTOR_FREQUENCY:
+                if (cmdStr.endsWith(CommandResult.ERROR_END)) {
+                    ToastUtils.show("采集器采集频度配置错误!");
+                    stopProgressRunnable();
+                    return;
+                }
+                collectorConfigInfo.setCollectorAddress(collectorAddress);
+                collectorConfigInfo.setWorkTime(calculatTime);
+                collectorConfigInfo.setStandbyTime(standbyTime);
+                collectorConfigInfo.setCollectorInterval(collectTime);
+
+                stopProgressRunnable();
+                ToastUtils.show("设置完成");
+                hander.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        Intent intent = getIntent();
+                        intent.putExtra(Extras.PARAM_CONFIG_INFO, collectorConfigInfo);
+                        setResult(RESULT_OK, intent);
+                        finish();
+                    }
+                }, 2000);
+                break;
         }
     }
 
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void getConfig(String messageEvent) {
-        if (!TextUtils.isEmpty(messageEvent) && messageEvent.startsWith("$$")) {
-            setResultData(messageEvent.replace("$$", ""));
+        if (TextUtils.isEmpty(messageEvent) || !messageEvent.startsWith("$$")) {
+            return;
         }
+        setResultData(messageEvent);
     }
 
     @Override

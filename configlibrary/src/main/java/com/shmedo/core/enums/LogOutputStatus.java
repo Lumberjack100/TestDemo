@@ -5,12 +5,12 @@ package com.shmedo.core.enums;
  * 包名：    com.shmedo.core.enums <br/>
  * 创建者:   gonghe <br/>
  * 创建时间:  2020/4/23 <br/>
- * 描述：    TODO
+ * 描述：   日志输出状态
  */
 public enum LogOutputStatus {
     CLOSE(0), //关闭
 
-    OPEN(1);
+    OPEN(1);//打开
 
 
     private int status;

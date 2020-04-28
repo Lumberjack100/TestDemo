@@ -16,8 +16,8 @@ public class RainStationEntity implements Validater {
 
     @Override
     public void validate() {
-        if (state != 1 && state != 2)
-            throw new DASParameterException("雨量站状态错误");
+        if (state != 1 && state != 2 && state != 3)
+            throw new DASParameterException("雨量站(开关量)状态错误");
     }
 
     @Override

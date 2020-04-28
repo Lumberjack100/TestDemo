@@ -22,16 +22,24 @@ public enum RainStation {
     ALARM_OPEN(3);
 
     private int state;
-
     RainStation(int state) {
         this.state = state;
     }
+
+    public int toInt() {
+        return state;
+    }
+
     public static RainStation valueOf(int state) {
         switch (state) {
-            case 1: return OPEN;
-            case 2: return CLOSE;
-            case 3: return ALARM_OPEN;
-            default: return OPEN;
+            case 1:
+                return OPEN;
+            case 2:
+                return CLOSE;
+            case 3:
+                return ALARM_OPEN;
+            default:
+                return OPEN;
         }
     }
 }

@@ -118,10 +118,13 @@ public class DeviceDetailInfoUtils {
         switch (type) {
             case "CMCC":
                 return "移动";
+
             case "UNICOM":
                 return "联通";
+
             case "CT":
                 return "电信";
+
             default:
                 return "";
         }

@@ -669,7 +669,7 @@ public class MqttSettingActivity extends BaseDeviceConnectActivity implements Vi
                     return;
                 }
                 isExitMode = true;
-                sendSaveParamCommand();
+                saveConfigInfo();
                 break;
         }
     }
@@ -869,7 +869,7 @@ public class MqttSettingActivity extends BaseDeviceConnectActivity implements Vi
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                         dialog.dismiss();
-                        sendSaveParamCommand();
+                        saveConfigInfo();
                     }
                 }).onNegative(new MaterialDialog.SingleButtonCallback() {
                     @Override

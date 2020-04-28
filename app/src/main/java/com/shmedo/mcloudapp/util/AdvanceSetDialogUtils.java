@@ -23,8 +23,8 @@ import com.hjq.toast.ToastUtils;
 import com.kyleduo.switchbutton.SwitchButton;
 import com.shmedo.core.cmd.CommandManager;
 import com.shmedo.core.cmd.entity.RebootDeviceEntity;
-import com.shmedo.core.cmd.entity.SetRemoteUpgradeEntity;
 import com.shmedo.core.enums.CommandType;
+import com.shmedo.core.enums.SetRemoteUpgrade;
 import com.shmedo.core.utils.ValidateUtil;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.ui.activity.device.BaseDeviceConnectActivity;
@@ -84,7 +84,7 @@ public class AdvanceSetDialogUtils {
                         ToastUtils.show("重启时间格式只能为数字");
                         return;
                     }
-                    RebootDeviceEntity rebootDeviceEntity = new RebootDeviceEntity(Integer.valueOf(time));
+                    RebootDeviceEntity rebootDeviceEntity = new RebootDeviceEntity(Integer.parseInt(time));
                     String command = CommandManager.getInstance().getCommand(CommandType.REBOOT_DEVICE, rebootDeviceEntity);
                     activity.sendCommonCommand(command);
                     ToastUtils.show("指令已发送，设备将在 " + time + "s 后重启");
@@ -100,9 +100,7 @@ public class AdvanceSetDialogUtils {
                         ToastUtils.show("端口号格式只能为数字");
                         return;
                     }
-                    SetRemoteUpgradeEntity setRemoteUpgradeEntity = new SetRemoteUpgradeEntity(1, Integer.parseInt(port));
-                    String command = CommandManager.getInstance().getCommand(CommandType.SETTING_REMOTE_UPGRADE, setRemoteUpgradeEntity);
-                    activity.sendCommonCommand(command);
+                    activity.setSetRemoteUpgrade(SetRemoteUpgrade.OPEN_UPGRADE_MODEL1, null, Integer.parseInt(port));
                     KeyBordUtils.hideSoftKeyboard(etPortNumber);
                 }
                 mMaterialDialog.dismiss();

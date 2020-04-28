@@ -27,7 +27,7 @@ import com.shmedo.core.model.DeviceNetStatus;
 import com.shmedo.core.model.DeviceStatusInfoOne;
 import com.shmedo.core.model.DeviceStatusInfoThree;
 import com.shmedo.core.model.DeviceStatusInfoTwo;
-import com.shmedo.core.model.OperatorInfo;
+import com.shmedo.core.model.SystemRunStateInfo;
 import com.shmedo.core.model.VersionMessageInfo;
 import com.shmedo.core.utils.ResultParserUtil;
 import com.shmedo.core.utils.StringUtil;
@@ -304,8 +304,8 @@ public class DeviceDetailsFragment extends BaseFragment implements SwipeRefreshL
                 break;
 
             case SYSTEM_RUN_STATE:
-                OperatorInfo operatorInformation = ResultParserUtil.getEntityObject(result);
-                setOperatorInformation(operatorInformation);
+                SystemRunStateInfo runStateInfo = ResultParserUtil.getEntityObject(result);
+                setOperatorInformation(runStateInfo);
                 ServerNumberEntity addressNumberEntity = new ServerNumberEntity(ServerNumber.NUMBER_ONE.toInt());
                 command = CommandManager.getInstance().getCommand(CommandType.QUERY_NETWORK_STATUS, addressNumberEntity);
                 deviceConnectActivity.sendCommonCommandImmediately(command);
@@ -472,9 +472,9 @@ public class DeviceDetailsFragment extends BaseFragment implements SwipeRefreshL
     }
 
     //设置运营商信息  ##014
-    private void setOperatorInformation(OperatorInfo operatorInformation) {
-        DeviceDetailInfoUtils.setSignalStrength(imgSignalStrength, operatorInformation.getSignalStrength());
-        signalStrength.setText(DeviceDetailInfoUtils.setOperatorType(operatorInformation.getOperatorType()));
+    private void setOperatorInformation(SystemRunStateInfo runStateInfo) {
+        DeviceDetailInfoUtils.setSignalStrength(imgSignalStrength, Integer.parseInt(runStateInfo.getGprsSignal()));
+        signalStrength.setText(DeviceDetailInfoUtils.setOperatorType(runStateInfo.getOperator()));
     }
 
 

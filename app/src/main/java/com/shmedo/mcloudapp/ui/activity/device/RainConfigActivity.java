@@ -15,6 +15,11 @@ import android.widget.TextView;
 import androidx.annotation.Nullable;
 
 import com.hjq.toast.ToastUtils;
+import com.shmedo.core.cmd.CommandManager;
+import com.shmedo.core.cmd.CommandResult;
+import com.shmedo.core.cmd.entity.SetRainPrecisionEntity;
+import com.shmedo.core.enums.CommandType;
+import com.shmedo.core.utils.StringUtil;
 import com.shmedo.mcloudapp.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.interfaces.Extras;
@@ -84,7 +89,7 @@ public class RainConfigActivity extends BaseDeviceConnectActivity {
                 String result = mSpRain.getSelectedItem().toString().replace("mm", "");
 
                 DecimalFormat df = new DecimalFormat("0");
-                rainResult = df.format(Double.valueOf(result) * 100);
+                rainResult = df.format(Double.parseDouble(result) * 100);
             }
 
             @Override
@@ -102,7 +107,7 @@ public class RainConfigActivity extends BaseDeviceConnectActivity {
             if (TextUtils.isEmpty(rainAccury)) {
                 return;
             }
-            String result = Double.valueOf(rainAccury) / 100 + "mm";
+            String result = Double.parseDouble(rainAccury) / 100 + "mm";
             SpinnerAdapter spinnerAdapter = mSpRain.getAdapter();
             int count = spinnerAdapter.getCount();
             for (int i = 0; i < count; i++) {
@@ -117,7 +122,6 @@ public class RainConfigActivity extends BaseDeviceConnectActivity {
 
     @OnClick({R.id.back, R.id.btn_confirm_complete})
     public void onClick(View v) {
-
         switch (v.getId()) {
             case R.id.back:
                 onBackPressed();
@@ -128,7 +132,6 @@ public class RainConfigActivity extends BaseDeviceConnectActivity {
                     ToastUtils.show(getString(R.string.param_config_bluetooth_disconnect_warn));
                     return;
                 }
-
                 doConfirm();
                 break;
         }
@@ -139,10 +142,11 @@ public class RainConfigActivity extends BaseDeviceConnectActivity {
             ToastUtils.show("未获取到选中的值");
             return;
         }
-        String cmdStr = "##121" + rainResult + "\r\n";
 
         startProgressRunnable("正在发送配置指令...", COMMAND_DELAY_MILLIS);
-        sendCommonCommand(cmdStr);
+        SetRainPrecisionEntity entity = new SetRainPrecisionEntity(Double.parseDouble(rainResult));
+        String command = CommandManager.getInstance().getCommand(CommandType.SETTING_RAIN_PRECISION, entity);
+        sendCommonCommandImmediately(command);
     }
 
 
@@ -150,9 +154,9 @@ public class RainConfigActivity extends BaseDeviceConnectActivity {
      * 设置显示数据
      */
     private void setResultData(String cmdStr) {
-        //参数配置后应答
-        if (cmdStr.startsWith("$$121") && cmdStr.endsWith("\r\n")) {
-            if (cmdStr.startsWith("$$121e") || cmdStr.startsWith("$$121ce")) {
+        CommandType type = StringUtil.extractCommandType(cmdStr);
+        if (type == CommandType.SETTING_RAIN_PRECISION) {
+            if (cmdStr.endsWith(CommandResult.ERROR_END)) {
                 ToastUtils.show("雨量计精度配置错误!");
                 stopProgressRunnable();
                 return;
@@ -165,16 +169,16 @@ public class RainConfigActivity extends BaseDeviceConnectActivity {
                     finish();
                 }
             }, 2000);
-            return;
         }
     }
 
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void getConfig(String messageEvent) {
-        if (!TextUtils.isEmpty(messageEvent) && messageEvent.startsWith("$$")) {
-            setResultData(messageEvent);
+        if (TextUtils.isEmpty(messageEvent) || !messageEvent.startsWith("$$")) {
+            return;
         }
+        setResultData(messageEvent);
     }
 
     @Override

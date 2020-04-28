@@ -158,7 +158,7 @@ public class ConfigADMEActivity extends BaseDeviceConnectActivity {
                     ToastUtils.show(getString(R.string.param_config_bluetooth_disconnect_warn));
                     return;
                 }
-                sendSaveParamCommand();
+                saveConfigInfo();
                 break;
         }
     }

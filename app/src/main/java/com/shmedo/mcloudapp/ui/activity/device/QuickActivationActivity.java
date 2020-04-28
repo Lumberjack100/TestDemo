@@ -13,6 +13,10 @@ import android.widget.TextView;
 
 import com.hjq.toast.ToastUtils;
 import com.kyleduo.switchbutton.SwitchButton;
+import com.shmedo.core.cmd.CommandResult;
+import com.shmedo.core.enums.CommandType;
+import com.shmedo.core.enums.SetRemoteUpgrade;
+import com.shmedo.core.utils.StringUtil;
 import com.shmedo.mcloudapp.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.entity.DeviceTypeEnum;
@@ -121,35 +125,37 @@ public class QuickActivationActivity extends BaseDeviceConnectActivity {
     @Override
     protected void sendActivateDeviceCmd() {
         startProgressRunnable("正在发送升级指令...", COMMAND_DELAY_MILLIS);
-        sendCommonCommandImmediately("##12017073\r\n");
+        setSetRemoteUpgrade(SetRemoteUpgrade.OPEN_UPGRADE_MODEL1, null, 7073);
     }
 
     /**
      * 设置显示数据
      */
     private void setResultData(String cmdStr) {
-        if (cmdStr.startsWith("$$12017073") && cmdStr.endsWith("\r\n")) {
-            if (cmdStr.startsWith("$$12017073e") || cmdStr.startsWith("$$12017073ce")) {
-                ToastUtils.show("发送升级指令出现错误!");
-                stopProgressRunnable();
-                return;
-            }
-            sendCommonCommandImmediately("##0182\r\n");
-            return;
-        }
+        CommandType type = StringUtil.extractCommandType(cmdStr);
+        switch (type) {
+            case SETTING_REMOTE_UPGRADE:
+                if (cmdStr.endsWith(CommandResult.ERROR_END)) {
+                    ToastUtils.show("发送升级指令出现错误!");
+                    stopProgressRunnable();
+                    return;
+                }
 
-        if (cmdStr.startsWith("$$0182") && cmdStr.endsWith("\r\n")) {
-            if (cmdStr.startsWith("$$0182e") || cmdStr.startsWith("$$0182ce")) {
-                ToastUtils.show("发送激活指令出现错误!");
-                stopProgressRunnable();
-                return;
-            }
+                setLowEnergyModel(true);
+                break;
 
-            ToastUtils.show("已激活，设备即将重启并断开连接");
-            setSwitchViewState(true, mTvActiveState, "已激活");
-            stopProgressRunnable();
-            disconnectDevice();
-            return;
+            case LOW_ENERGY:
+                if (cmdStr.endsWith(CommandResult.ERROR_END)) {
+                    ToastUtils.show("发送激活指令出现错误!");
+                    stopProgressRunnable();
+                    return;
+                }
+
+                ToastUtils.show("已激活，设备即将重启并断开连接");
+                setSwitchViewState(true, mTvActiveState, "已激活");
+                stopProgressRunnable();
+                disconnectDevice();
+                break;
         }
     }
 
@@ -184,7 +190,6 @@ public class QuickActivationActivity extends BaseDeviceConnectActivity {
     }
 
     private void startScan() {
-
         XPermissionUtils.requestPermissionsResult(this, 200, new String[]{
                         Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE},
                 new XPermissionUtils.OnPermissionListener() {
@@ -264,7 +269,7 @@ public class QuickActivationActivity extends BaseDeviceConnectActivity {
                 if (resultCode == Activity.RESULT_OK) {
                     if (data != null) {
                         String content = data.getStringExtra(ScanActivity.CODED_CONTENT);
-                        Timber.d("扫描结果为：" + content);
+                        Timber.d("扫描结果为：%s", content);
                         scanResult(content);
                     }
                 }

@@ -13,8 +13,8 @@ public class SystemRunStateInfo {
     private String internalTemperature; //设备内部温度
     private String batteryVoltage;      //设备电池电压
     private String externalVoltage;   //设备外部电压
-    private String operator;   //运营商
-    private String networkMode;    //网络模式
+    private String operator;   //运营商 CMCC：移动，UNICOM：联通，CT：电信
+    private String networkMode;    //网络模式 0,2,3：2G，4,5,6：3G，7：4G，100：CDMA
 
     public String getGprsSignal() {
         return gprsSignal;

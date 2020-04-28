@@ -20,9 +20,10 @@ import com.hjq.toast.ToastUtils;
 import com.kyleduo.switchbutton.SwitchButton;
 import com.shmedo.core.cmd.CommandManager;
 import com.shmedo.core.cmd.CommandResult;
+import com.shmedo.core.cmd.entity.InstallLocationEntity;
 import com.shmedo.core.cmd.entity.WorkModeEntity;
-import com.shmedo.core.cmd.entity.SetRemoteUpgradeEntity;
 import com.shmedo.core.enums.CommandType;
+import com.shmedo.core.enums.SetRemoteUpgrade;
 import com.shmedo.core.enums.WorkModel;
 import com.shmedo.core.utils.StringUtil;
 import com.shmedo.mcloudapp.MCloudApp;
@@ -119,9 +120,7 @@ public class DeviceAdvanceConfigActivity extends BaseDeviceConnectActivity {
                 if (isChecked) {
                     AdvanceSetDialogUtils.showReStartDialog(DeviceAdvanceConfigActivity.this, "固件升级", "固件", mSbFirmwareUpgrade);
                 } else {
-                    SetRemoteUpgradeEntity setRemoteUpgradeEntity = new SetRemoteUpgradeEntity(0, 0);
-                    String command = CommandManager.getInstance().getCommand(CommandType.SETTING_REMOTE_UPGRADE, setRemoteUpgradeEntity);
-                    sendCommonCommand(command);
+                    setSetRemoteUpgrade(SetRemoteUpgrade.CLOSE_UPGRADE_MODEL, null, 0);
                     ToastUtils.show("关闭固件升级");
                 }
             }
@@ -259,8 +258,10 @@ public class DeviceAdvanceConfigActivity extends BaseDeviceConnectActivity {
             String result = etPositionInfo.getText().toString().trim();
             if (!TextUtils.isEmpty(result)) {
                 try {
-                    String command = "##9161" + result + "\r\n";
+                    InstallLocationEntity installLocationEntity = new InstallLocationEntity(1);
+                    String command = CommandManager.getInstance().getCommand(CommandType.INSTALL_LOCATION, installLocationEntity);
                     activity.sendCommonCommandImmediately(command);
+                    Timber.i("查询安装位置：%s", command);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

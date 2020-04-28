@@ -17,11 +17,18 @@ import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.hjq.toast.ToastUtils;
 import com.shmedo.core.cmd.CommandManager;
+import com.shmedo.core.cmd.CommandResult;
+import com.shmedo.core.cmd.entity.BreakAlarmStatusEntity;
+import com.shmedo.core.cmd.entity.LowEnergyModelEntity;
 import com.shmedo.core.cmd.entity.SaveConfigInfoEntity;
 import com.shmedo.core.cmd.entity.ServerNumberEntity;
+import com.shmedo.core.cmd.entity.SetRemoteUpgradeEntity;
+import com.shmedo.core.enums.BreakAlarmStatus;
 import com.shmedo.core.enums.CommandType;
+import com.shmedo.core.enums.LowEnergyModel;
 import com.shmedo.core.enums.SaveConfigMode;
 import com.shmedo.core.enums.ServerNumber;
+import com.shmedo.core.enums.SetRemoteUpgrade;
 import com.shmedo.core.interfaces.OnBytePackage;
 import com.shmedo.core.utils.DesUtil;
 import com.shmedo.core.utils.StringUtil;
@@ -447,7 +454,7 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
                 String cmdArray[] = cmdStr.replace("\r\n", "").split(",");
 
                 if (cmdStr.startsWith("$$224") && cmdStr.endsWith("\r\n")) {
-                    if (cmdStr.equals("$$224ce\r\n")) {
+                    if (cmdStr.endsWith(CommandResult.ERROR_END)) {
                         startBluAuthenticate();//重新认证
                         return;
                     }
@@ -516,7 +523,6 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
         } else {//其他设备
 
             //TODO 其他设备
-
         }
 
         //设置保存参数应答
@@ -643,20 +649,10 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
         sendCommonCommand(allInfoCommand);
         Timber.d("发送获取所有配置指令===%s", allInfoCommand);
 
-        //系统运行状态 ##014
-//        String runstateCommand = CommandManager.getInstance().getCommand(CommandType.SYSTEM_RUN_STATE, null);
-//        sendCommonCommand(runstateCommand);
-//        Timber.d("发送系统运行状态指令===" + runstateCommand);
-
         //查询数字式渗压计参数 ##400
 //        String shenyajiCommand = CommandManager.getInstance().getCommand(CommandType.QUERY_OSMOMETER_PARAMETER, null);
 //        sendCommonCommand(shenyajiCommand);
 //        Timber.d("发送查询渗压计指令===" + shenyajiCommand);
-
-        //版本信息 ##040
-//        String versionCommand = CommandManager.getInstance().getCommand(CommandType.VERSION_MESSAGE, null);
-//        sendCommonCommand(versionCommand);
-//        Timber.d("发送版本信息指令===" + versionCommand);
     }
 
 
@@ -671,7 +667,7 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
 
 
     /**
-     * 发送蓝牙指令,延迟200ms 后发送，以免同时发送多条指令带来问题
+     * 延迟200ms发送蓝牙指令,以免同时发送多条指令带来问题
      *
      * @param cmdStr
      */
@@ -710,13 +706,45 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
     }
 
 
-    protected void sendSaveParamCommand() {
+    /**
+     * 保存配置信息指令
+     */
+    protected void saveConfigInfo() {
         SaveConfigInfoEntity saveConfigInfoEntity = new SaveConfigInfoEntity(SaveConfigMode.SAVE_REBOOT.toInt());
         String command = CommandManager.getInstance().getCommand(CommandType.SAVE_CONFIG_INFO, saveConfigInfoEntity);
 
         errMsg = "发送指令超时,请稍后尝试";
         startProgressRunnable("正在发送保存命令...", COMMAND_DELAY_MILLIS);
         sendCommonCommandImmediately(command);
+    }
+
+    /**
+     * 打开/关闭设备低功耗模式
+     */
+    public void setLowEnergyModel(boolean isOpen) {
+        LowEnergyModelEntity entity = new LowEnergyModelEntity(isOpen ? LowEnergyModel.ACTIVATE.toInt() : LowEnergyModel.STANDBY.toInt());
+        String command = CommandManager.getInstance().getCommand(CommandType.LOW_ENERGY, entity);
+        sendCommonCommandImmediately(command);
+    }
+
+    /**
+     * 设置断线报警器状态
+     */
+    public void setBreakAlarmStatus(BreakAlarmStatus breakAlarmStatus) {
+        BreakAlarmStatusEntity entity = new BreakAlarmStatusEntity(breakAlarmStatus.toInt());
+        String command = CommandManager.getInstance().getCommand(CommandType.BREAK_ALARM_STATUS, entity);
+        sendCommonCommandImmediately(command);
+        Timber.d("设置断线报警器指令==%s", command);
+    }
+
+    /**
+     * 设置远程升级
+     */
+    public void setSetRemoteUpgrade(SetRemoteUpgrade remoteUpgrade,String address,int port){
+        SetRemoteUpgradeEntity setRemoteUpgradeEntity = new SetRemoteUpgradeEntity(remoteUpgrade.toInt(),address, port);
+        String command = CommandManager.getInstance().getCommand(CommandType.SETTING_REMOTE_UPGRADE, setRemoteUpgradeEntity);
+        sendCommonCommandImmediately(command);
+        Timber.d("设置远程升级指令==%s", command);
     }
 
 
@@ -734,7 +762,7 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                         dialog.dismiss();
-                        sendSaveParamCommand();
+                        saveConfigInfo();
                     }
                 }).onNegative(new MaterialDialog.SingleButtonCallback() {
                     @Override

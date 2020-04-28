@@ -22,8 +22,14 @@ import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.hjq.toast.ToastUtils;
 import com.kyleduo.switchbutton.SwitchButton;
+import com.shmedo.core.cmd.CommandManager;
+import com.shmedo.core.cmd.CommandResult;
+import com.shmedo.core.cmd.entity.RainStationEntity;
+import com.shmedo.core.cmd.entity.SetRainPrecisionEntity;
+import com.shmedo.core.enums.BreakAlarmStatus;
 import com.shmedo.core.enums.CollectorModel;
 import com.shmedo.core.enums.CommandType;
+import com.shmedo.core.enums.RainStation;
 import com.shmedo.core.model.BaseConfigInfo;
 import com.shmedo.core.model.BreakAlarmStatusInfo;
 import com.shmedo.core.model.CollectorConfigInfo;
@@ -125,7 +131,7 @@ public class DASHomeFragment extends BaseFragment {
     private CollectorConfigInfo collectorConfigInfo;
     private BaseConfigInfo baseConfigInfo;
     private QueryOsmometerParameterInfo queryOsmometerParameterInfo;
-    private BreakAlarmStatusInfo breakAlarmStatusInfo ;
+    private BreakAlarmStatusInfo breakAlarmStatusInfo;
 
     private int alarmStatusCheck = 0;//标志位，Avoid onItemSelected calls during initialization
 
@@ -228,7 +234,7 @@ public class DASHomeFragment extends BaseFragment {
 
                 if (isChecked) {
                     //发送激活DAS命令
-                    configDASActivity.sendCommonCommand("##0182\r\n");
+                    configDASActivity.setLowEnergyModel(true);
                     setSwitchViewState(true, mTvDeviceActivation, "已激活");
                 } else {
                     showCloseSwitchButtonDialog(getString(R.string.device_enable_state_close_warn), DEVICE_ENABLE);
@@ -247,11 +253,12 @@ public class DASHomeFragment extends BaseFragment {
                 }
                 if (isChecked) {
                     //发送断线报警器常开指令
-                    configDASActivity.sendCommonCommand("##2271\r\n");
+                    configDASActivity.setBreakAlarmStatus(BreakAlarmStatus.OPEN);
                     setSwitchViewState(true, mTvBreakAlarm, "常开");
 
                 } else {
-                    configDASActivity.sendCommonCommand("##2272\r\n");
+                    //发送断线报警器常闭指令
+                    configDASActivity.setBreakAlarmStatus(BreakAlarmStatus.CLOSE);
                     setSwitchViewState(false, mTvBreakAlarm, "常闭");
                 }
             }
@@ -270,34 +277,33 @@ public class DASHomeFragment extends BaseFragment {
                 alarmStatusCheck++;
                 if (alarmStatusCheck >= 2) {
                     String value = parent.getSelectedItem().toString();
-                    String smdStr = "";
+                    RainStationEntity entity = null;
                     switch (value) {
                         case "关闭":
-                            smdStr = "##0052\r\n";
+                            entity = new RainStationEntity(RainStation.CLOSE.toInt());
                             rainBreakAlarmLayout.setVisibility(View.GONE);
                             break;
 
                         case "雨量计":
-                            smdStr = "##0051\r\n";
+                            entity = new RainStationEntity(RainStation.OPEN.toInt());
                             rainBreakAlarmLayout.setVisibility(View.VISIBLE);
                             rainLayout.setVisibility(View.VISIBLE);
                             breakAlarmLayout.setVisibility(View.GONE);
                             break;
 
                         case "断线报警器":
-                            smdStr = "##0053\r\n";
+                            entity = new RainStationEntity(RainStation.ALARM_OPEN.toInt());
                             rainBreakAlarmLayout.setVisibility(View.VISIBLE);
                             rainLayout.setVisibility(View.GONE);
                             breakAlarmLayout.setVisibility(View.VISIBLE);
                             break;
                     }
-
-                    configDASActivity.sendCommonCommand(smdStr);
-                    Timber.d("设置开关量指令==" + smdStr);
-
+                    String command = CommandManager.getInstance().getCommand(CommandType.RAIN_STATION, entity);
+                    configDASActivity.sendCommonCommandImmediately(command);
+                    Timber.d("设置开关量指令==%s", command);
                     if (value.equals("断线报警器")) {
-                        configDASActivity.sendCommonCommand("##2270\r\n");
-                        Timber.d("查询断线报警器参数指令==##2270");
+                        //查询断线报警器参数
+                        configDASActivity.setBreakAlarmStatus(BreakAlarmStatus.QUERY);
                     }
                 }
             }
@@ -320,12 +326,12 @@ public class DASHomeFragment extends BaseFragment {
                 if (rainCheck >= 2) {
                     String result = mSpRain.getSelectedItem().toString().replace("mm", "");
                     DecimalFormat df = new DecimalFormat("0");
-                    String rainResult = df.format(Double.valueOf(result) * 100);
+                    String rainResult = df.format(Double.parseDouble(result) * 100);
 
-                    String cmdStr = "##121" + rainResult + "\r\n";
-
-                    configDASActivity.sendCommonCommand(cmdStr);
-                    Timber.d("设置雨量计精度指令==" + cmdStr);
+                    SetRainPrecisionEntity entity = new SetRainPrecisionEntity(Double.parseDouble(rainResult));
+                    String command = CommandManager.getInstance().getCommand(CommandType.SETTING_RAIN_PRECISION, entity);
+                    configDASActivity.sendCommonCommandImmediately(command);
+                    Timber.d("设置雨量计精度指令==%s", command);
                 }
             }
 
@@ -437,8 +443,8 @@ public class DASHomeFragment extends BaseFragment {
                 rainLayout.setVisibility(View.GONE);
                 breakAlarmLayout.setVisibility(View.VISIBLE);
 
-                configDASActivity.sendCommonCommand("##2270\r\n");
-                Timber.d("查询断线报警器参数指令==##2270");
+                //查询断线报警器参数
+                configDASActivity.setBreakAlarmStatus(BreakAlarmStatus.QUERY);
                 break;
         }
         String result = setRainPrecisionInfo.getPrecision() / 100 + "mm";
@@ -458,17 +464,18 @@ public class DASHomeFragment extends BaseFragment {
         CommandType type = StringUtil.extractCommandType(cmdStr);
         switch (type) {
             case RAIN_STATION://雨量计开关 0051：雨量计开启  0052：关闭   0053：断线报警器开启
-                if (cmdStr.endsWith("e\r\n") || cmdStr.startsWith("$$ce\r\n")) {
+                if (cmdStr.endsWith(CommandResult.ERROR_END)) {
                     ToastUtils.show("开关量配置错误!");
                     return;
                 }
                 break;
+
             case GET_ALL_SENSOR_CONFIG://所有配置信息 333
                 processGetAllSensorConfig(cmdStr);
                 break;
 
             case BREAK_ALARM_STATUS: //断线报警器状态 227
-                if (cmdStr.endsWith("e\r\n") || cmdStr.startsWith("$$ce\r\n")) {
+                if (cmdStr.endsWith(CommandResult.ERROR_END)) {
                     ToastUtils.show("断线报警器配置错误!");
                     return;
                 }
@@ -495,9 +502,7 @@ public class DASHomeFragment extends BaseFragment {
             return;
         }
 
-        if (messageEvent.startsWith("$$005") || messageEvent.startsWith("$$333") || messageEvent.startsWith("$$227")) {
-            setResultData(messageEvent);
-        }
+        setResultData(messageEvent);
     }
 
 
@@ -539,7 +544,7 @@ public class DASHomeFragment extends BaseFragment {
                         switch (index) {
                             case DEVICE_ENABLE:
                                 //发送关闭DAS命令
-                                configDASActivity.sendCommonCommand("##0181\r\n");
+                                configDASActivity.setLowEnergyModel(false);
                                 setSwitchViewState(false, mTvDeviceActivation, "已待机");
                                 break;
 

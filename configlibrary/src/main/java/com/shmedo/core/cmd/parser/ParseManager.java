@@ -133,7 +133,6 @@ public class ParseManager {
                 DeviceStatusInfoTwoParse.class,
                 DeviceStatusInfoThreeParse.class,
                 DeviceNetStatusParser.class,
-                OperatorInfoParser.class,
                 MqttConfigInfoParser.class
         });
 

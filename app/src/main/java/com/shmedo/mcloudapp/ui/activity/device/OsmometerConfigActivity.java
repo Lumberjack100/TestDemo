@@ -27,6 +27,7 @@ import com.shmedo.core.cmd.entity.SetOsmometerTriggerEntity;
 import com.shmedo.core.enums.CommandType;
 import com.shmedo.core.model.QueryOsmometerParameterInfo;
 import com.shmedo.core.utils.ResultParserUtil;
+import com.shmedo.core.utils.StringUtil;
 import com.shmedo.mcloudapp.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.interfaces.Extras;
@@ -279,73 +280,73 @@ public class OsmometerConfigActivity extends BaseDeviceConnectActivity {
      * 设置显示数据
      */
     private void setResultData(String cmdStr) {
-        if (cmdStr.startsWith(CommandType.SET_OSMOMETER_ADDRESS.toString())) {
-            if (cmdStr.endsWith(CommandResult.ERROR_END)) {
-                ToastUtils.show("数字渗压计地址配置错误!");
-                stopProgressRunnable();
-                return;
-            }
-            sendCommonCommandImmediately(cmdDepthTriggerValue);
-            Timber.d("发送设置数字渗压计深度触发值，温度触发值指令===%s", cmdDepthTriggerValue);
-            return;
-        }
-
-        if (cmdStr.startsWith(CommandType.SET_OSMOMETER_TRIGGER.toString())) {
-            if (cmdStr.endsWith(CommandResult.ERROR_END)) {
-                ToastUtils.show("数字渗压计深度触发值配置错误!");
-                stopProgressRunnable();
-                return;
-            }
-            sendCommonCommandImmediately(cmdDepthCorrection);
-            Timber.d("发送设置数字渗压计深度修正值，温度修正值指令===%s", cmdDepthCorrection);
-            return;
-        }
-
-        if (cmdStr.startsWith(CommandType.SET_OSMOMETR_CORRECT.toString())) {
-            if (cmdStr.endsWith(CommandResult.ERROR_END)) {
-                ToastUtils.show("数字渗压计深度修正值配置错误!");
-                stopProgressRunnable();
-                return;
-            }
-            sendCommonCommandImmediately(cmdOsmometerLength);
-            Timber.d("发送数字渗压计绳长指令===%s", cmdOsmometerLength);
-            return;
-        }
-
-        if (cmdStr.startsWith(CommandType.SET_CORD_LENGTH.toString())) {
-            if (cmdStr.endsWith(CommandResult.ERROR_END)) {
-                ToastUtils.show("数字渗压计绳长配置错误!");
-                stopProgressRunnable();
-                return;
-            }
-            sendCommonCommandImmediately(cmdNozzelHeight);
-            Timber.d("发送数字渗压计安装高程指令===%s", cmdNozzelHeight);
-            return;
-        }
-
-        if (cmdStr.startsWith(CommandType.SET_OSMOMETR_NOZZEL_HEIGHT.toString())) {
-            if (cmdStr.endsWith(CommandResult.ERROR_END)) {
-                ToastUtils.show("数字渗压计安装高程配置错误!");
-                stopProgressRunnable();
-                return;
-            }
-            stopProgressRunnable();
-            ToastUtils.show("设置完成");
-            hander.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    finish();
+        CommandType type = StringUtil.extractCommandType(cmdStr);
+        switch (type) {
+            case SET_OSMOMETER_ADDRESS:
+                if (cmdStr.endsWith(CommandResult.ERROR_END)) {
+                    ToastUtils.show("数字渗压计地址配置错误!");
+                    stopProgressRunnable();
+                    return;
                 }
-            }, 2000);
+                sendCommonCommandImmediately(cmdDepthTriggerValue);
+                Timber.d("发送设置数字渗压计深度触发值，温度触发值指令===%s", cmdDepthTriggerValue);
+                break;
+
+            case SET_OSMOMETER_TRIGGER:
+                if (cmdStr.endsWith(CommandResult.ERROR_END)) {
+                    ToastUtils.show("数字渗压计深度触发值配置错误!");
+                    stopProgressRunnable();
+                    return;
+                }
+                sendCommonCommandImmediately(cmdDepthCorrection);
+                Timber.d("发送设置数字渗压计深度修正值，温度修正值指令===%s", cmdDepthCorrection);
+                break;
+
+            case SET_OSMOMETR_CORRECT:
+                if (cmdStr.endsWith(CommandResult.ERROR_END)) {
+                    ToastUtils.show("数字渗压计深度修正值配置错误!");
+                    stopProgressRunnable();
+                    return;
+                }
+                sendCommonCommandImmediately(cmdOsmometerLength);
+                Timber.d("发送数字渗压计绳长指令===%s", cmdOsmometerLength);
+                break;
+
+            case SET_CORD_LENGTH:
+                if (cmdStr.endsWith(CommandResult.ERROR_END)) {
+                    ToastUtils.show("数字渗压计绳长配置错误!");
+                    stopProgressRunnable();
+                    return;
+                }
+                sendCommonCommandImmediately(cmdNozzelHeight);
+                Timber.d("发送数字渗压计安装高程指令===%s", cmdNozzelHeight);
+                break;
+
+            case SET_OSMOMETR_NOZZEL_HEIGHT:
+                if (cmdStr.endsWith(CommandResult.ERROR_END)) {
+                    ToastUtils.show("数字渗压计安装高程配置错误!");
+                    stopProgressRunnable();
+                    return;
+                }
+                stopProgressRunnable();
+                ToastUtils.show("设置完成");
+                hander.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        finish();
+                    }
+                }, 2000);
+                break;
         }
     }
 
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void getConfig(String messageEvent) {
-        if (!TextUtils.isEmpty(messageEvent) && messageEvent.startsWith("$$")) {
-            setResultData(messageEvent.replace("$$", ""));
+        if (TextUtils.isEmpty(messageEvent) || !messageEvent.startsWith("$$")) {
+            return;
         }
+        setResultData(messageEvent);
     }
 
     @Override
