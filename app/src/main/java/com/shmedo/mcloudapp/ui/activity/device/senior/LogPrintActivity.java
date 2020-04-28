@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Vibrator;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.AdapterView;
@@ -26,12 +27,14 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.github.clans.fab.FloatingActionButton;
 import com.hjq.toast.ToastUtils;
 import com.kyleduo.switchbutton.SwitchButton;
+import com.lxj.xpopup.XPopup;
+import com.lxj.xpopup.interfaces.OnSelectListener;
 import com.shmedo.core.cmd.CommandManager;
-import com.shmedo.core.cmd.entity.WorkModeEntity;
 import com.shmedo.core.cmd.entity.LogOutputEntity;
+import com.shmedo.core.cmd.entity.WorkModeEntity;
 import com.shmedo.core.enums.CommandType;
-import com.shmedo.core.enums.WorkModel;
 import com.shmedo.core.enums.LogOutputStatus;
+import com.shmedo.core.enums.WorkModel;
 import com.shmedo.mcloudapp.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.adapter.recyclerviewbaseadapter.CommonAdapter;
@@ -62,7 +65,8 @@ import timber.log.Timber;
  * 描述：     体脂输出页面
  */
 public class LogPrintActivity extends BaseDeviceConnectActivity {
-
+    @BindView(R.id.toolbar_title)
+    TextView toolbarTitle;
 
     @BindView(R.id.spinner_debug)
     Spinner spinnerDebug;
@@ -91,16 +95,18 @@ public class LogPrintActivity extends BaseDeviceConnectActivity {
     @BindView(R.id.ll_send)
     LinearLayout llSend;
 
+    @BindView(R.id.viewEmpty)
+    View viewEmpty;
+
     @BindView(R.id.recycler_log_print)
     RecyclerView recyclerLogPrint;
 
     @BindView(R.id.tv_view_log_directory)
     TextView tvViewLogDirectory;
 
-    @BindView(R.id.toolbar_title)
-    TextView toolbarTitle;
     @BindView(R.id.view2)
     View view2;
+
     @BindView(R.id.fab_start_pause)
     FloatingActionButton fabStartPause;
 
@@ -221,8 +227,28 @@ public class LogPrintActivity extends BaseDeviceConnectActivity {
                 holder.setText(R.id.tv_log, string);
             }
         };
-
         recyclerLogPrint.setAdapter(adapter);
+        viewEmpty.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                Vibrator vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
+                vibrator.vibrate(200);
+                new XPopup.Builder(LogPrintActivity.this)
+                        //.maxWidth(600)
+                        .asCenterList("", new String[]{"清空日志"},
+                                new OnSelectListener() {
+                                    @Override
+                                    public void onSelect(int position, String text) {
+                                        if (position == 0) {
+                                            logList.clear();
+                                            adapter.notifyDataSetChanged();
+                                        }
+                                    }
+                                })
+                        .show();
+                return false;
+            }
+        });
     }
 
     private void setSwitchViewState(boolean isOpen, TextView textView, String content) {
@@ -239,7 +265,6 @@ public class LogPrintActivity extends BaseDeviceConnectActivity {
                 String result = sendCode + "\r\n";
                 if (sendCode.startsWith("##")) {
                     sendCommonCommandImmediately(result);
-                    ToastUtils.show("指令已发送");
                     logList.add(sendCode);
                     adapter.notifyDataSetChanged();
                 } else {
