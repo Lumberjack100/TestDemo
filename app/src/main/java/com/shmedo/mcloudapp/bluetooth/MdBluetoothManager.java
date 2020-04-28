@@ -142,8 +142,10 @@ public class MdBluetoothManager {
     private void processScan(int maxScanSecond, final Activity activity) {
         clearData();
         mScanning = true;
+        if (bluetoothLeScanner == null)
+            bluetoothLeScanner = bluetoothAdapter.getBluetoothLeScanner();
         ScanSettings.Builder builderScanSettings = new ScanSettings.Builder();
-        builderScanSettings.setScanMode(ScanSettings.SCAN_MODE_BALANCED);
+        builderScanSettings.setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY);
         builderScanSettings.setReportDelay(0);
         bluetoothLeScanner.startScan(null, builderScanSettings.build(), leScanCallback);
         Executors.newScheduledThreadPool(1)

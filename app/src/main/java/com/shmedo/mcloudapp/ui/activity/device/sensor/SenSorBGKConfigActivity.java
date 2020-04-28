@@ -952,36 +952,38 @@ public class SenSorBGKConfigActivity extends BaseDeviceConnectActivity {
      * 设置显示数据
      */
     private void setResultData(String cmdStr) {
-        if (cmdStr.startsWith(CommandType.COLLECTOR_SENSOR_THRESHOLD_SOLI.toString())) {
-            if (cmdStr.endsWith(CommandResult.ERROR_END)) {
-                ToastUtils.show(collectorName + "的传感器触发阈值配置错误!");
-                stopProgressRunnable();
-                return;
-            }
-            sendCommonCommandImmediately(cmdCorrectionValue);
-            Timber.d("设置" + collectorName + "的传感器修正值指令===" + cmdCorrectionValue);
-            return;
-        }
+        String tempStr = cmdStr.replace("$$", "").replace("\r\n", "");
+        CommandType type = StringUtil.extractCommandType(cmdStr);
+        switch (type) {
+            case COLLECTOR_SENSOR_THRESHOLD_SOLI:
+                if (tempStr.endsWith(CommandResult.ERROR_END)) {
+                    ToastUtils.show(collectorName + "的传感器触发阈值配置错误!");
+                    stopProgressRunnable();
+                    return;
+                }
+                sendCommonCommandImmediately(cmdCorrectionValue);
+                Timber.d("设置" + collectorName + "的传感器修正值指令===" + cmdCorrectionValue);
+                break;
 
-        //最后一个传感器参数设置指令
-        if (cmdStr.startsWith(CommandType.COLLECTOR_SENSOR_REVISED.toString())) {
-            if (cmdStr.endsWith(CommandResult.ERROR_END)) {
-                ToastUtils.show(collectorName + "的传感器修正值配置错误!");
-                stopProgressRunnable();
-                return;
-            }
-            cmdNum++;
+            case COLLECTOR_SENSOR_REVISED: //最后一个传感器参数设置指令
+                if (tempStr.endsWith(CommandResult.ERROR_END)) {
+                    ToastUtils.show(collectorName + "的传感器修正值配置错误!");
+                    stopProgressRunnable();
+                    return;
+                }
+                cmdNum++;
 
-            if (cmdNum == collectorSensorParamsInfoSubs.size()) {
-                stopProgressRunnable();
-                ToastUtils.show("设置完成");
-                hander.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        finish();
-                    }
-                }, 2000);
-            }
+                if (cmdNum == collectorSensorParamsInfoSubs.size()) {
+                    stopProgressRunnable();
+                    ToastUtils.show("设置完成");
+                    hander.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            finish();
+                        }
+                    }, 2000);
+                }
+                break;
         }
     }
 
@@ -989,7 +991,7 @@ public class SenSorBGKConfigActivity extends BaseDeviceConnectActivity {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void getConfig(String messageEvent) {
         if (!TextUtils.isEmpty(messageEvent) && messageEvent.startsWith("$$")) {
-            setResultData(messageEvent.replace("$$", ""));
+            setResultData(messageEvent);
         }
     }
 

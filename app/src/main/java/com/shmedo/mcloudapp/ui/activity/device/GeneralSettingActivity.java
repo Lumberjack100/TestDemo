@@ -232,10 +232,11 @@ public class GeneralSettingActivity extends BaseDeviceConnectActivity {
      * 设置显示数据
      */
     private void setResultData(String cmdStr) {
+        String tempStr = cmdStr.replace("$$", "").replace("\r\n", "");
         CommandType type = StringUtil.extractCommandType(cmdStr);
         switch (type) {
             case SET_COLLECTOR_ADDRESS:
-                if (cmdStr.endsWith(CommandResult.ERROR_END)) {
+                if (tempStr.endsWith(CommandResult.ERROR_END)) {
                     ToastUtils.show("采集器地址配置错误!");
                     stopProgressRunnable();
                     return;
@@ -245,7 +246,7 @@ public class GeneralSettingActivity extends BaseDeviceConnectActivity {
                 break;
 
             case COLLECTOR_SOLUTION_FREQUENCY:
-                if (cmdStr.endsWith(CommandResult.ERROR_END)) {
+                if (tempStr.endsWith(CommandResult.ERROR_END)) {
                     ToastUtils.show("采集器解算频度配置错误!");
                     stopProgressRunnable();
                     return;
@@ -255,7 +256,7 @@ public class GeneralSettingActivity extends BaseDeviceConnectActivity {
                 break;
 
             case COLLECTOR_STANDBY_TIME:
-                if (cmdStr.endsWith(CommandResult.ERROR_END)) {
+                if (tempStr.endsWith(CommandResult.ERROR_END)) {
                     ToastUtils.show("采集器待机时长配置错误!");
                     stopProgressRunnable();
                     return;
@@ -265,7 +266,7 @@ public class GeneralSettingActivity extends BaseDeviceConnectActivity {
                 break;
 
             case COLLECTOR_FREQUENCY:
-                if (cmdStr.endsWith(CommandResult.ERROR_END)) {
+                if (tempStr.endsWith(CommandResult.ERROR_END)) {
                     ToastUtils.show("采集器采集频度配置错误!");
                     stopProgressRunnable();
                     return;

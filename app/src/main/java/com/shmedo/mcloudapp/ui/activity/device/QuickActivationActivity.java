@@ -132,10 +132,11 @@ public class QuickActivationActivity extends BaseDeviceConnectActivity {
      * 设置显示数据
      */
     private void setResultData(String cmdStr) {
+        String tempStr = cmdStr.replace("$$", "").replace("\r\n", "");
         CommandType type = StringUtil.extractCommandType(cmdStr);
         switch (type) {
             case SETTING_REMOTE_UPGRADE:
-                if (cmdStr.endsWith(CommandResult.ERROR_END)) {
+                if (tempStr.endsWith(CommandResult.ERROR_END)) {
                     ToastUtils.show("发送升级指令出现错误!");
                     stopProgressRunnable();
                     return;
@@ -145,7 +146,7 @@ public class QuickActivationActivity extends BaseDeviceConnectActivity {
                 break;
 
             case LOW_ENERGY:
-                if (cmdStr.endsWith(CommandResult.ERROR_END)) {
+                if (tempStr.endsWith(CommandResult.ERROR_END)) {
                     ToastUtils.show("发送激活指令出现错误!");
                     stopProgressRunnable();
                     return;

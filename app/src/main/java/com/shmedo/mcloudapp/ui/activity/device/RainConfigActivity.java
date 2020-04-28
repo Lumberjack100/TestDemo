@@ -154,9 +154,10 @@ public class RainConfigActivity extends BaseDeviceConnectActivity {
      * 设置显示数据
      */
     private void setResultData(String cmdStr) {
+        String tempStr = cmdStr.replace("$$", "").replace("\r\n", "");
         CommandType type = StringUtil.extractCommandType(cmdStr);
         if (type == CommandType.SETTING_RAIN_PRECISION) {
-            if (cmdStr.endsWith(CommandResult.ERROR_END)) {
+            if (tempStr.endsWith(CommandResult.ERROR_END)) {
                 ToastUtils.show("雨量计精度配置错误!");
                 stopProgressRunnable();
                 return;

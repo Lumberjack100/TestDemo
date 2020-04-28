@@ -334,6 +334,7 @@ public class MqttSettingActivity extends BaseDeviceConnectActivity implements Vi
 
     private void setResultData(String cmdStr) {
         Timber.i("数据中心应答指令===%s", cmdStr);
+        String tempStr = cmdStr.replace("$$", "").replace("\r\n", "");
         CommandType cmdType = StringUtil.extractCommandType(cmdStr);
         switch (cmdType) {
             case SERVER_ADDRESS://获取服务器1、2、3 的地址
@@ -419,7 +420,7 @@ public class MqttSettingActivity extends BaseDeviceConnectActivity implements Vi
                 break;
 
             case NET_LINK_COMMUN_PROTOCOL:
-                if (cmdStr.endsWith(CommandResult.ERROR_END)) {
+                if (tempStr.endsWith(CommandResult.ERROR_END)) {
                     ToastUtils.show("网络中心通讯协议配置错误!");
                     stopProgressRunnable();
                     return;
@@ -429,7 +430,7 @@ public class MqttSettingActivity extends BaseDeviceConnectActivity implements Vi
                 break;
 
             case SET_SERVER_ADDRESS_PORT:
-                if (cmdStr.endsWith(CommandResult.ERROR_END)) {
+                if (tempStr.endsWith(CommandResult.ERROR_END)) {
                     ToastUtils.show("数据服务器地址、端口配置错误!");
                     stopProgressRunnable();
                     return;
@@ -450,7 +451,7 @@ public class MqttSettingActivity extends BaseDeviceConnectActivity implements Vi
                 break;
 
             case AUTO_REGISTRATION_PLATFORM:
-                if (cmdStr.endsWith(CommandResult.ERROR_END)) {
+                if (tempStr.endsWith(CommandResult.ERROR_END)) {
                     ToastUtils.show("选择平台配置错误!");
                     stopProgressRunnable();
                     return;
@@ -460,7 +461,7 @@ public class MqttSettingActivity extends BaseDeviceConnectActivity implements Vi
                 break;
 
             case SET_AUTO_REGISTRATION_PLATFORM_SERVER_ADDRESS_PORT:
-                if (cmdStr.endsWith(CommandResult.ERROR_END)) {
+                if (tempStr.endsWith(CommandResult.ERROR_END)) {
                     ToastUtils.show("自动注册平台地址配置错误!");
                     stopProgressRunnable();
                     return;
@@ -470,7 +471,7 @@ public class MqttSettingActivity extends BaseDeviceConnectActivity implements Vi
                 break;
 
             case MQTT_KEEP_ALIVE:
-                if (cmdStr.endsWith(CommandResult.ERROR_END)) {
+                if (tempStr.endsWith(CommandResult.ERROR_END)) {
                     ToastUtils.show("设置MQTT KeepAlive值错误!");
                     stopProgressRunnable();
                     return;
@@ -480,7 +481,7 @@ public class MqttSettingActivity extends BaseDeviceConnectActivity implements Vi
                 break;
 
             case SET_AUTO_REGISTRATION_PLATFORM_PARAM:
-                if (cmdStr.endsWith(CommandResult.ERROR_END)) {
+                if (tempStr.endsWith(CommandResult.ERROR_END)) {
                     ToastUtils.show("自动注册平台参数配置错误!");
                     stopProgressRunnable();
                     return;
@@ -495,7 +496,7 @@ public class MqttSettingActivity extends BaseDeviceConnectActivity implements Vi
                 break;
 
             case SET_MANUAL_REGISTRATION_PLATFORM_PARAM:
-                if (cmdStr.endsWith(CommandResult.ERROR_END)) {
+                if (tempStr.endsWith(CommandResult.ERROR_END)) {
                     ToastUtils.show("手动注册平台参数配置错误!");
                     stopProgressRunnable();
                     return;
@@ -505,7 +506,7 @@ public class MqttSettingActivity extends BaseDeviceConnectActivity implements Vi
                 break;
 
             case SET_MEDO_PLATFORM_APPKEY://设置appKey(米度/北京平台特有)
-                if (cmdStr.endsWith(CommandResult.ERROR_END)) {
+                if (tempStr.endsWith(CommandResult.ERROR_END)) {
                     ToastUtils.show("AppKey配置错误!");
                     stopProgressRunnable();
                     return;
@@ -515,7 +516,7 @@ public class MqttSettingActivity extends BaseDeviceConnectActivity implements Vi
                 break;
 
             case DATA_MASSAGE_MODEL://设置数据通讯方式
-                if (cmdStr.endsWith(CommandResult.ERROR_END)) {
+                if (tempStr.endsWith(CommandResult.ERROR_END)) {
                     ToastUtils.show("数据通讯方式配置错误!");
                     stopProgressRunnable();
                     return;
@@ -525,7 +526,7 @@ public class MqttSettingActivity extends BaseDeviceConnectActivity implements Vi
                 break;
 
             case DATA_REPORT_INTERVAL://设置数据上报间隔
-                if (cmdStr.endsWith(CommandResult.ERROR_END)) {
+                if (tempStr.endsWith(CommandResult.ERROR_END)) {
                     ToastUtils.show("数据上报配置错误!");
                     stopProgressRunnable();
                     return;
@@ -540,7 +541,7 @@ public class MqttSettingActivity extends BaseDeviceConnectActivity implements Vi
                 break;
 
             case SIX_TARGER_BD_NUMBER://北斗配置
-                if (cmdStr.endsWith(CommandResult.ERROR_END)) {
+                if (tempStr.endsWith(CommandResult.ERROR_END)) {
                     ToastUtils.show("北斗配置错误!");
                     stopProgressRunnable();
                     return;

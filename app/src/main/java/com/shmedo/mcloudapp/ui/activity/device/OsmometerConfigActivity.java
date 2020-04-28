@@ -280,10 +280,11 @@ public class OsmometerConfigActivity extends BaseDeviceConnectActivity {
      * 设置显示数据
      */
     private void setResultData(String cmdStr) {
+        String tempStr = cmdStr.replace("$$", "").replace("\r\n", "");
         CommandType type = StringUtil.extractCommandType(cmdStr);
         switch (type) {
             case SET_OSMOMETER_ADDRESS:
-                if (cmdStr.endsWith(CommandResult.ERROR_END)) {
+                if (tempStr.endsWith(CommandResult.ERROR_END)) {
                     ToastUtils.show("数字渗压计地址配置错误!");
                     stopProgressRunnable();
                     return;
@@ -293,7 +294,7 @@ public class OsmometerConfigActivity extends BaseDeviceConnectActivity {
                 break;
 
             case SET_OSMOMETER_TRIGGER:
-                if (cmdStr.endsWith(CommandResult.ERROR_END)) {
+                if (tempStr.endsWith(CommandResult.ERROR_END)) {
                     ToastUtils.show("数字渗压计深度触发值配置错误!");
                     stopProgressRunnable();
                     return;
@@ -303,7 +304,7 @@ public class OsmometerConfigActivity extends BaseDeviceConnectActivity {
                 break;
 
             case SET_OSMOMETR_CORRECT:
-                if (cmdStr.endsWith(CommandResult.ERROR_END)) {
+                if (tempStr.endsWith(CommandResult.ERROR_END)) {
                     ToastUtils.show("数字渗压计深度修正值配置错误!");
                     stopProgressRunnable();
                     return;
@@ -313,7 +314,7 @@ public class OsmometerConfigActivity extends BaseDeviceConnectActivity {
                 break;
 
             case SET_CORD_LENGTH:
-                if (cmdStr.endsWith(CommandResult.ERROR_END)) {
+                if (tempStr.endsWith(CommandResult.ERROR_END)) {
                     ToastUtils.show("数字渗压计绳长配置错误!");
                     stopProgressRunnable();
                     return;
@@ -323,7 +324,7 @@ public class OsmometerConfigActivity extends BaseDeviceConnectActivity {
                 break;
 
             case SET_OSMOMETR_NOZZEL_HEIGHT:
-                if (cmdStr.endsWith(CommandResult.ERROR_END)) {
+                if (tempStr.endsWith(CommandResult.ERROR_END)) {
                     ToastUtils.show("数字渗压计安装高程配置错误!");
                     stopProgressRunnable();
                     return;

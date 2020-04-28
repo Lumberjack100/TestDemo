@@ -460,10 +460,11 @@ public class DASHomeFragment extends BaseFragment {
      * 设置显示数据
      */
     private void setResultData(String cmdStr) {
+        String tempStr = cmdStr.replace("$$", "").replace("\r\n", "");
         CommandType type = StringUtil.extractCommandType(cmdStr);
         switch (type) {
             case RAIN_STATION://雨量计开关 0051：雨量计开启  0052：关闭   0053：断线报警器开启
-                if (cmdStr.endsWith(CommandResult.ERROR_END)) {
+                if (tempStr.endsWith(CommandResult.ERROR_END)) {
                     ToastUtils.show("开关量配置错误!");
                     return;
                 }
@@ -474,7 +475,7 @@ public class DASHomeFragment extends BaseFragment {
                 break;
 
             case BREAK_ALARM_STATUS: //断线报警器状态 227
-                if (cmdStr.endsWith(CommandResult.ERROR_END)) {
+                if (tempStr.endsWith(CommandResult.ERROR_END)) {
                     ToastUtils.show("断线报警器配置错误!");
                     return;
                 }

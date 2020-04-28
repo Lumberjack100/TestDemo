@@ -457,7 +457,7 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
                 String cmdArray[] = cmdStr.replace("\r\n", "").split(",");
 
                 if (type == CommandType.AUTHENTICATION_CONFIG) {//认证方式
-                    if (cmdStr.endsWith(CommandResult.ERROR_END)) {
+                    if (cmdStr.replace("\r\n", "").endsWith(CommandResult.ERROR_END)) {
                         startBluAuthenticate();//重新认证
                         return;
                     }

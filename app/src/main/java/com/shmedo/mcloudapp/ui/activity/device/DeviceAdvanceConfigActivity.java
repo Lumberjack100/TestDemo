@@ -290,9 +290,10 @@ public class DeviceAdvanceConfigActivity extends BaseDeviceConnectActivity {
      * 设置显示数据
      */
     private void setResultData(String cmdStr) {
+        String tempStr = cmdStr.replace("$$", "").replace("\r\n", "");
         CommandType cmdType = StringUtil.extractCommandType(cmdStr);
         if (cmdType == CommandType.REBOOT_DEVICE) {
-            if (cmdStr.endsWith(CommandResult.ERROR_END)) {
+            if (tempStr.endsWith(CommandResult.ERROR_END)) {
                 ToastUtils.show("发送重启指令错误!");
                 stopProgressRunnable();
                 return;
@@ -308,7 +309,7 @@ public class DeviceAdvanceConfigActivity extends BaseDeviceConnectActivity {
         }
 
         if (cmdType == CommandType.SETTING_REMOTE_UPGRADE) {
-            if (cmdStr.endsWith(CommandResult.ERROR_END)) {
+            if (tempStr.endsWith(CommandResult.ERROR_END)) {
                 ToastUtils.show("发送远程升级指令错误!");
                 stopProgressRunnable();
                 return;
@@ -324,7 +325,7 @@ public class DeviceAdvanceConfigActivity extends BaseDeviceConnectActivity {
             return;
         }
         if (cmdType == CommandType.RESTORE_FACTORY_SETTING) {
-            if (cmdStr.endsWith(CommandResult.ERROR_END)) {
+            if (tempStr.endsWith(CommandResult.ERROR_END)) {
                 ToastUtils.show("发送恢复出厂设置指令错误!");
                 stopProgressRunnable();
                 return;
@@ -337,7 +338,6 @@ public class DeviceAdvanceConfigActivity extends BaseDeviceConnectActivity {
                     finish();
                 }
             }, 3000);
-            return;
         }
     }
 
