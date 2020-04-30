@@ -105,6 +105,12 @@ public class TestActivity extends BaseActivity {
 
     private int varifyFailedNum = 0;
 
+    private Runnable runnableConn = new Runnable() {
+        @Override
+        public void run() {
+            connectBleDevice();
+        }
+    };
 
     private class ProgressRunnable implements Runnable {
         @Override
@@ -128,7 +134,7 @@ public class TestActivity extends BaseActivity {
     protected void startProgressRunnable(String dialogContent, long delayMillis) {
         showLoadingDialog(dialogContent);
         if (progressRunnable == null) {
-            progressRunnable = new TestActivity.ProgressRunnable();
+            progressRunnable = new ProgressRunnable();
             hander.postDelayed(progressRunnable, delayMillis);
         }
     }
@@ -229,12 +235,7 @@ public class TestActivity extends BaseActivity {
      * 连接失败时，中断一会儿再连接
      */
     private void autoConnectBlueAfterAWhile(long delayMillis) {
-        hander.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                connectBleDevice();
-            }
-        }, delayMillis);
+        hander.postDelayed(runnableConn, delayMillis);
     }
 
     private class MdBluetoothEventHandler implements BluetoothEventHandler {
@@ -337,9 +338,10 @@ public class TestActivity extends BaseActivity {
 
                 case Constants.BT_DISCONNECTED:
                     stopProgressRunnable();
-                    ToastUtils.show("30s后重连");
-                    if (isAutoConnectBlue)
+                    if (isAutoConnectBlue) {
+                        ToastUtils.show("30s后重连");
                         autoConnectBlueAfterAWhile(30000);
+                    }
                     break;
 
                 case Constants.VERIFY_RESULT:
@@ -491,6 +493,7 @@ public class TestActivity extends BaseActivity {
 
             case R.id.btn_2:
                 isAutoConnectBlue = false;
+                hander.removeCallbacks(runnableConn);
                 disconnectDevice();
                 break;
         }

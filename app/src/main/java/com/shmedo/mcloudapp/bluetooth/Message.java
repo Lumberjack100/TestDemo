@@ -1,6 +1,6 @@
 package com.shmedo.mcloudapp.bluetooth;
 
-import com.shmedo.mcloudapp.util.bleutil.BleHelpUtil;
+import com.shmedo.mcloudapp.util.TimeUtil;
 
 import java.nio.charset.StandardCharsets;
 import java.sql.Timestamp;
@@ -121,7 +121,7 @@ public class Message {
             return false;
         }
         Timestamp now = new Timestamp(System.currentTimeMillis());
-        int second = BleHelpUtil.sencondBetweenTimestamp(lastWriteTime, now);
+        int second = TimeUtil.sencondBetweenTimestamp(lastWriteTime, now);
         return second > timeoutSecond;
     }
 
@@ -130,9 +130,7 @@ public class Message {
             return null;
         }
         int beginIndex = currentWriteIndex * BLUETOOTH_MAX_WRITE_PACKAGE_SIZE;
-        int endIndex = ((currentWriteIndex + 1) * BLUETOOTH_MAX_WRITE_PACKAGE_SIZE)
-                           > messageBytes.length ?
-                       messageBytes.length : ((currentWriteIndex + 1) * BLUETOOTH_MAX_WRITE_PACKAGE_SIZE);
+        int endIndex = Math.min(((currentWriteIndex + 1) * BLUETOOTH_MAX_WRITE_PACKAGE_SIZE), messageBytes.length);
         byte[] tempByte = Arrays.copyOfRange(this.messageBytes, beginIndex, endIndex);
         currentWriteIndex++;
         return tempByte;
@@ -161,7 +159,7 @@ public class Message {
     }
 
 
-    public static enum MessageWriteStatus {
+    public enum MessageWriteStatus {
         /**
          * 发送成功
          */

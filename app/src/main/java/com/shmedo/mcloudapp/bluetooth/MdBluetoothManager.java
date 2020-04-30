@@ -28,7 +28,7 @@ import com.shmedo.core.utils.ByteManager;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.bluetooth.exception.ScanAlreadyStartException;
 import com.shmedo.mcloudapp.entity.ble.MDevice;
-import com.shmedo.mcloudapp.util.bleutil.BleHelpUtil;
+import com.shmedo.mcloudapp.util.TimeUtil;
 import com.shmedo.mcloudapp.util.bleutil.Constants;
 import com.shmedo.mcloudapp.util.bleutil.DescriptorParser;
 import com.shmedo.mcloudapp.util.bleutil.GattAttributes;
@@ -382,7 +382,7 @@ public class MdBluetoothManager {
                     eventType = BluetoothEventType.STATE_EXCEPTION;
                 } else {
                     Timestamp now = new Timestamp(System.currentTimeMillis());
-                    int second = BleHelpUtil.sencondBetweenTimestamp(lastWriteTime, now);
+                    int second = TimeUtil.sencondBetweenTimestamp(lastWriteTime, now);
                     if (second >= WRITE_TIME_OUT_SECOND) {
                         result = true;
                     } else {
@@ -412,7 +412,7 @@ public class MdBluetoothManager {
             return false;
         }
         Timestamp now = new Timestamp(System.currentTimeMillis());
-        int second = BleHelpUtil.sencondBetweenTimestamp(lastWriteTime, now);
+        int second = TimeUtil.sencondBetweenTimestamp(lastWriteTime, now);
         if (second >= WAIT_FOR_RESPONSE_TIME_OUT_SECOND) {
             return true;
         } else {
