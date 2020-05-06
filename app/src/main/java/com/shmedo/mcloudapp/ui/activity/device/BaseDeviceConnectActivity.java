@@ -712,7 +712,7 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
     /**
      * 保存配置信息指令
      */
-    protected void saveConfigInfo() {
+    public void saveConfigInfo() {
         SaveConfigInfoEntity saveConfigInfoEntity = new SaveConfigInfoEntity(SaveConfigMode.SAVE_REBOOT.toInt());
         String command = CommandManager.getInstance().getCommand(CommandType.SAVE_CONFIG_INFO, saveConfigInfoEntity);
 

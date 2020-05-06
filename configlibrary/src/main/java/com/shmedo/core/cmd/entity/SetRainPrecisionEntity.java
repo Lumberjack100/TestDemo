@@ -8,9 +8,9 @@ import com.shmedo.core.exception.DASParameterException;
  *  设置雨量计精度参数
  */
 public class SetRainPrecisionEntity implements Validater{
-    private double precision;
+    private int precision;
 
-    public SetRainPrecisionEntity(double precision) {
+    public SetRainPrecisionEntity(int precision) {
         this.precision = precision;
     }
 

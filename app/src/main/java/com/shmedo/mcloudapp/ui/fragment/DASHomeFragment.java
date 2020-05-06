@@ -54,8 +54,6 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import java.text.DecimalFormat;
-
 import butterknife.BindView;
 import butterknife.OnClick;
 import timber.log.Timber;
@@ -325,10 +323,8 @@ public class DASHomeFragment extends BaseFragment {
                 rainCheck++;
                 if (rainCheck >= 2) {
                     String result = mSpRain.getSelectedItem().toString().replace("mm", "");
-                    DecimalFormat df = new DecimalFormat("0");
-                    String rainResult = df.format(Double.parseDouble(result) * 100);
-
-                    SetRainPrecisionEntity entity = new SetRainPrecisionEntity(Double.parseDouble(rainResult));
+                    int precision = (int) (Double.parseDouble(result) * 100);
+                    SetRainPrecisionEntity entity = new SetRainPrecisionEntity(precision);
                     String command = CommandManager.getInstance().getCommand(CommandType.SETTING_RAIN_PRECISION, entity);
                     configDASActivity.sendCommonCommandImmediately(command);
                     Timber.d("设置雨量计精度指令==%s", command);
@@ -343,7 +339,7 @@ public class DASHomeFragment extends BaseFragment {
     }
 
 
-    @OnClick({R.id.rl_mqtt_config, R.id.rl_collector_control, R.id.general_sensor_param_config_layout, R.id.rl_advanced_config})
+    @OnClick({R.id.rl_mqtt_config, R.id.rl_collector_control, R.id.general_sensor_param_config_layout, R.id.rl_advanced_config, R.id.btn_save})
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.general_sensor_param_config_layout:
@@ -376,6 +372,15 @@ public class DASHomeFragment extends BaseFragment {
                     return;
                 }
                 DeviceAdvanceConfigActivity.startActivity(getActivity(), baseConfigInfo.getWorkModel().toInt());
+                break;
+
+            case R.id.btn_save:
+                if (!MCloudApp.isIsBluetoothDeviceConnected()) {
+                    ToastUtils.show(getString(R.string.param_config_bluetooth_disconnect_warn));
+                    return;
+                }
+//                isExitMode = true;
+                configDASActivity.saveConfigInfo();
                 break;
         }
     }

@@ -27,8 +27,6 @@ import com.shmedo.mcloudapp.interfaces.Extras;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import java.text.DecimalFormat;
-
 import butterknife.BindView;
 import butterknife.OnClick;
 
@@ -87,9 +85,8 @@ public class RainConfigActivity extends BaseDeviceConnectActivity {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
                 String result = mSpRain.getSelectedItem().toString().replace("mm", "");
-
-                DecimalFormat df = new DecimalFormat("0");
-                rainResult = df.format(Double.parseDouble(result) * 100);
+                int precision = (int) (Double.parseDouble(result) * 100);
+                rainResult = precision + "";
             }
 
             @Override
@@ -144,7 +141,7 @@ public class RainConfigActivity extends BaseDeviceConnectActivity {
         }
 
         startProgressRunnable("正在发送配置指令...", COMMAND_DELAY_MILLIS);
-        SetRainPrecisionEntity entity = new SetRainPrecisionEntity(Double.parseDouble(rainResult));
+        SetRainPrecisionEntity entity = new SetRainPrecisionEntity(Integer.parseInt(rainResult));
         String command = CommandManager.getInstance().getCommand(CommandType.SETTING_RAIN_PRECISION, entity);
         sendCommonCommandImmediately(command);
     }

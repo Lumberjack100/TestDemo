@@ -157,7 +157,7 @@ public class MqttSettingActivity extends BaseDeviceConnectActivity implements Vi
     private void initView() {
         tvTitle.setText("数据中心");
         tvSave.setText("保存");
-        tvSave.setVisibility(View.VISIBLE);
+        tvSave.setVisibility(View.GONE);
 
         ((TextView) communicationMethod.findViewById(R.id.tv_config_name)).setText("通讯方式:");
         spCommunicationmethod = communicationMethod.findViewById(R.id.spinner);
@@ -843,16 +843,18 @@ public class MqttSettingActivity extends BaseDeviceConnectActivity implements Vi
 
     @Override
     public void onBackPressed() {
-        if (MCloudApp.isIsBluetoothDeviceConnected()) {
-            if (isConfigChange) {
-                isExitMode = true;
-                showSaveDialog(getResources().getString(R.string.disconnect_bluetooth_device_save_param_warn));
-            } else {
-                finish();
-            }
-        } else {
-            finish();
-        }
+//        if (MCloudApp.isIsBluetoothDeviceConnected()) {
+//            if (isConfigChange) {
+//                isExitMode = true;
+//                showSaveDialog(getResources().getString(R.string.disconnect_bluetooth_device_save_param_warn));
+//            } else {
+//                finish();
+//            }
+//        } else {
+//            finish();
+//        }
+
+        finish();
     }
 
     @Override
