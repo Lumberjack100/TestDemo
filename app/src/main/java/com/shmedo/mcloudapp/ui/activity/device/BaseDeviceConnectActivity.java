@@ -110,6 +110,7 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
                 ToastUtils.show(errMsg);
 
                 if (errMsg.contains("连接超时")) {
+                    stopAuthenticateRunnable();
                     disconnectDevice();
                     MCloudApp.setIsBluetoothDeviceConnected(false);
                     EventBus.getDefault().post(new BluetoothStateEvent(false));

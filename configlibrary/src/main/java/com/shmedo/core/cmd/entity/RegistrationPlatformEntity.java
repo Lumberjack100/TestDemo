@@ -1,7 +1,5 @@
 package com.shmedo.core.cmd.entity;
 
-import android.text.TextUtils;
-
 import com.shmedo.core.exception.DASParameterException;
 import com.shmedo.core.interfaces.Validater;
 
@@ -28,14 +26,14 @@ public class RegistrationPlatformEntity implements Validater {
         if (number != 1 && number != 2 && number != 3)
             throw new DASParameterException("服务器编号错误");
 
-        if (TextUtils.isEmpty(sNOrProductId))
-            throw new DASParameterException("设备SN号/产品ID不能为空");
-
-        if (TextUtils.isEmpty(productIdOrDeviceId))
-            throw new DASParameterException("产品ID/设备ID不能为空");
-
-        if (TextUtils.isEmpty(registrationCodeOrPwd))
-            throw new DASParameterException("注册码/设备KEY不能为空");
+//        if (TextUtils.isEmpty(sNOrProductId))
+//            throw new DASParameterException("设备SN号/产品ID不能为空");
+//
+//        if (TextUtils.isEmpty(productIdOrDeviceId))
+//            throw new DASParameterException("产品ID/设备ID不能为空");
+//
+//        if (TextUtils.isEmpty(registrationCodeOrPwd))
+//            throw new DASParameterException("注册码/设备KEY不能为空");
     }
 
     @Override

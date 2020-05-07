@@ -114,6 +114,7 @@ public class TestActivity extends BaseActivity {
 
                 if (errMsg.contains("连接超时")) {
                     updateLog("连接超时");
+                    stopAuthenticateRunnable();
                     disconnectDevice();
                     MCloudApp.setIsBluetoothDeviceConnected(false);
                     EventBus.getDefault().post(new BluetoothStateEvent(false));
