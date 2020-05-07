@@ -269,7 +269,8 @@
         android:layout_marginTop="15dp"
         android:background="@drawable/bg_setting_list_item"
         android:paddingLeft="45dp"
-        android:paddingRight="15dp">
+        android:paddingRight="15dp"
+        android:visibility="gone">
 
         <TextView
             android:layout_width="wrap_content"
@@ -277,6 +278,33 @@
             android:layout_alignParentStart="true"
             android:layout_centerVertical="true"
             android:text="快速激活"
+            android:textColor="@color/gray_818182"
+            android:textSize="14sp" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:src="@drawable/icon_right" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/ll_connectTest"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginTop="1dp"
+        android:background="@drawable/bg_setting_list_item"
+        android:paddingLeft="45dp"
+        android:paddingRight="15dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:text="连接测试"
             android:textColor="@color/gray_818182"
             android:textSize="14sp" />
 

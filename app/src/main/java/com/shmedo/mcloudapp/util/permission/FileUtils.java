@@ -18,14 +18,27 @@ package com.shmedo.mcloudapp.util.permission;
 import android.content.Context;
 import android.os.Environment;
 import android.text.TextUtils;
+import android.util.Base64;
+
 import androidx.annotation.Nullable;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
 
 /**
  * Created dpc 2019-12-9
  */
 public class FileUtils {
+    public static boolean externalAvailable() {
+        return Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState());
+    }
+
+
+    public static String getFileName(String filePath) {
+        int index = filePath.lastIndexOf("/");
+        return filePath.substring(index + 1);
+    }
 
     public static File getFileDir(Context context) {
         return getFileDir(context, null);
@@ -40,10 +53,6 @@ public class FileUtils {
             createDir(dir);
             return dir;
         }
-    }
-
-    public static boolean externalAvailable() {
-        return Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState());
     }
 
     public static File getExternalDir(Context context) {
@@ -98,6 +107,21 @@ public class FileUtils {
         }
         if (!dir.exists()) {
             dir.mkdirs();
+        }
+    }
+
+    public static String getFileContent(String filePath) {
+        try {
+            File f = new File(filePath);
+            if (!f.exists())
+                return null;
+            InputStream is = new FileInputStream(f);
+            byte[] bs = new byte[is.available()];
+            is.read(bs);
+            String fileContent = Base64.encodeToString(bs, Base64.DEFAULT);
+            return fileContent;
+        } catch (Exception ex) {
+            throw new RuntimeException(ex);
         }
     }
 }

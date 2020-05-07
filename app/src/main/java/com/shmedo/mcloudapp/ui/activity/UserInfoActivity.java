@@ -32,12 +32,12 @@ import com.shmedo.mcloudapp.util.ActivityCollector;
 import com.shmedo.mcloudapp.util.ApiName;
 import com.shmedo.mcloudapp.util.DaoManager;
 import com.shmedo.mcloudapp.util.FileProviderUtils;
-import com.shmedo.mcloudapp.util.FileUtil;
 import com.shmedo.mcloudapp.util.GlideUtils;
 import com.shmedo.mcloudapp.util.GsonFactory;
 import com.shmedo.mcloudapp.util.ImageUtil;
 import com.shmedo.mcloudapp.util.PhotoUtil;
 import com.shmedo.mcloudapp.util.XPermissionUtils;
+import com.shmedo.mcloudapp.util.permission.FileUtils;
 import com.shmedo.mcloudapp.views.MyMenu;
 
 import java.io.File;
@@ -195,7 +195,7 @@ public class UserInfoActivity extends BaseActivity {
         }
     }
 
-    @OnClick({R.id.ll_change_photo, R.id.RL_advice, R.id.ll_userAbout, R.id.btn_exit, R.id.ll_activation})
+    @OnClick({R.id.ll_change_photo, R.id.RL_advice, R.id.ll_userAbout, R.id.btn_exit, R.id.ll_activation, R.id.ll_connectTest})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.ll_change_photo:
@@ -217,6 +217,10 @@ public class UserInfoActivity extends BaseActivity {
 
             case R.id.ll_activation: //快速激活
                 QuickActivationActivity.startActivity(this);
+                break;
+
+            case R.id.ll_connectTest: //连接测试
+                BluetoothDeviceListActivity.startActivity(this);
                 break;
         }
     }
@@ -280,8 +284,8 @@ public class UserInfoActivity extends BaseActivity {
         if (TextUtils.isEmpty(filePath)) {
             return;
         }
-        String fileName = FileUtil.getFileName(filePath);
-        String fileContent = FileUtil.toString(filePath);
+        String fileName = FileUtils.getFileName(filePath);
+        String fileContent = FileUtils.getFileContent(filePath);
         if (TextUtils.isEmpty(fileName) || TextUtils.isEmpty(fileContent)) {
             return;
         }

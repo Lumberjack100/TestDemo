@@ -242,7 +242,8 @@
 
         <activity
             android:name=".ui.activity.BluetoothDeviceListActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize" /> <!-- 蓝牙设备列表测试页面 -->
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:theme="@style/AppTheme.Dialog" /> <!-- 蓝牙设备列表测试页面 -->
 
         <activity
             android:name=".ui.activity.TestActivity"

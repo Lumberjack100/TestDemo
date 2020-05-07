@@ -160,32 +160,31 @@
             <View
                 android:id="@+id/viewEmpty"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"/>
+                android:layout_height="match_parent" />
 
         </FrameLayout>
 
-        <com.github.clans.fab.FloatingActionButton
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/fab_start_pause"
+            style="@style/Widget.Design.FloatingActionButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_above="@id/tv_view_log_directory"
             android:layout_alignParentRight="true"
-            android:layout_margin="20dp"
-            android:src="@drawable/ic_start"
-            app:fab_colorNormal="@color/app_color_theme_3"
-            app:fab_colorPressed="@color/app_color_blue_pressed"
-            app:fab_colorRipple="@color/app_color_blue_pressed"
-            app:fab_size="mini" />
+            android:layout_margin="16dp"
+            app:srcCompat="@drawable/ic_start" />
 
         <TextView
             android:id="@+id/tv_view_log_directory"
             android:layout_width="match_parent"
-            android:layout_height="35dp"
+            android:layout_height="40dp"
             android:layout_alignParentBottom="true"
             android:background="@color/colorPrimary"
-            android:gravity="center_vertical|center_horizontal"
+            android:gravity="center"
             android:text="查看输入日志目录"
             android:textColor="@color/white"
             android:textSize="16sp" />
+
     </RelativeLayout>
+
 </LinearLayout>

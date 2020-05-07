@@ -694,7 +694,7 @@ public class MqttSettingActivity extends BaseDeviceConnectActivity implements Vi
 
             //网络中心通讯协议
             DataCenterCommunicateProtoclEntity communicateProtoclEntity = new DataCenterCommunicateProtoclEntity(Integer.parseInt(linkNumber), Integer.parseInt(communicationProtocol));
-            cmdCommunicationProtocol = CommandManager.getInstance().getCommand(CommandType.DATA_MASSAGE_MODEL, communicateProtoclEntity);
+            cmdCommunicationProtocol = CommandManager.getInstance().getCommand(CommandType.NET_LINK_COMMUN_PROTOCOL, communicateProtoclEntity);
 
             //数据服务器地址、端口
             String[] strs = dataPlatformAddress.trim().split(" ");

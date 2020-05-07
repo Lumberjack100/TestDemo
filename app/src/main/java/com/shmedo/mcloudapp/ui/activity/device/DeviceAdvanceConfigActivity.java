@@ -216,7 +216,7 @@ public class DeviceAdvanceConfigActivity extends BaseDeviceConnectActivity {
 
             case R.id.rl_log_print://日志输出
                 if (checkIsBluetoothConnected()) {
-                    LogToSDUtil.requestPermissionForSaveLog(this, SN);
+                    LogToSDUtil.requestPermissionForSaveLog(this);
                 }
                 break;
 

@@ -28,15 +28,15 @@ public class LogToSDUtil {
 
     /**
      * 日志输出功能需求：
-     *  一、以每个设备的sn号新建文件夹，以时间（天）为单位新建文件
-     *  二、文件内容格式：    年月日时分秒 文件内容
-     *  三、同一sn号同一天的日志 追加内容
+     * 一、以每个设备的sn号新建文件夹，以时间（天）为单位新建文件
+     * 二、文件内容格式：    年月日时分秒 文件内容
+     * 三、同一sn号同一天的日志 追加内容
      */
-    public static void saveLogToSD(String content,String snNumber){
+    public static void saveLogToSD(String content, String snNumber) {
         File filesPath = Environment.getExternalStorageDirectory().getAbsoluteFile();
-        File file =  LogFileUtil.createLogFile(filesPath,snNumber);
+        File file = LogFileUtil.createLogFile(filesPath, snNumber);
         try {
-            FileOutputStream fos = new FileOutputStream(file,true);
+            FileOutputStream fos = new FileOutputStream(file, true);
             fos.write(content.getBytes());
             fos.close();
         } catch (Exception e) {
@@ -45,7 +45,7 @@ public class LogToSDUtil {
     }
 
 
-    public static void requestPermissionForSaveLog(final Activity activity,String snNumber) {
+    public static void requestPermissionForSaveLog(final Activity activity) {
         if (!FileUtils.externalAvailable()) {
             new AlertDialog.Builder(activity)
                     .setTitle("提示")
@@ -67,7 +67,7 @@ public class LogToSDUtil {
                 .onGranted(new Action<List<String>>() {
                     @Override
                     public void onAction(List<String> data) {
-                        LogPrintActivity.startActivity(activity,snNumber);
+                        LogPrintActivity.startActivity(activity);
 
                     }
                 })

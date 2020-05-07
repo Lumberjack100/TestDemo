@@ -11,10 +11,7 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.CompoundButton;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -24,7 +21,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.github.clans.fab.FloatingActionButton;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.hjq.toast.ToastUtils;
 import com.kyleduo.switchbutton.SwitchButton;
 import com.lxj.xpopup.XPopup;
@@ -71,29 +68,11 @@ public class LogPrintActivity extends BaseDeviceConnectActivity {
     @BindView(R.id.spinner_debug)
     Spinner spinnerDebug;
 
-    @BindView(R.id.ll_debug)
-    LinearLayout llDebug;
-
-    @BindView(R.id.tv_config_name)
-    TextView tvConfigName;
-
-    @BindView(R.id.tv_log_print)
-    TextView tvLogPrint;
-
     @BindView(R.id.log_switchButton)
     SwitchButton logSwitchButton;
 
-    @BindView(R.id.rl_log)
-    RelativeLayout rlLog;
-
     @BindView(R.id.ce_send_code)
     ClearEditText ceSendCode;
-
-    @BindView(R.id.btn_send)
-    Button btnSend;
-
-    @BindView(R.id.ll_send)
-    LinearLayout llSend;
 
     @BindView(R.id.viewEmpty)
     View viewEmpty;
@@ -104,9 +83,6 @@ public class LogPrintActivity extends BaseDeviceConnectActivity {
     @BindView(R.id.tv_view_log_directory)
     TextView tvViewLogDirectory;
 
-    @BindView(R.id.view2)
-    View view2;
-
     @BindView(R.id.fab_start_pause)
     FloatingActionButton fabStartPause;
 
@@ -115,17 +91,17 @@ public class LogPrintActivity extends BaseDeviceConnectActivity {
 
     private CommonAdapter adapter;
 
-    private List<String> logList = new ArrayList<>();
+    private List<String> logDataList = new ArrayList<>();
 
-    private boolean isStart = false;
+    private boolean isPause = false;
 
     private String snNumber;
     private MaterialDialog mMaterialDialog;
     private MaterialDialog.Builder mBuilder;
 
-    public static void startActivity(Context context, String snNumber) {
+    public static void startActivity(Context context) {
         Intent intent = new Intent(context, LogPrintActivity.class);
-        intent.putExtra("snNumber", snNumber);
+        intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         context.startActivity(intent);
     }
 
@@ -143,8 +119,9 @@ public class LogPrintActivity extends BaseDeviceConnectActivity {
     }
 
     private void initView() {
-        snNumber = getIntent().getStringExtra("snNumber");
         toolbarTitle.setText("指令日志输出");
+        snNumber = MCloudApp.getCurDeviceToken();
+
         //调试模式
         String[] debugData = getResources().getStringArray(R.array.das_debug);
         debugModeAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, debugData);
@@ -196,24 +173,18 @@ public class LogPrintActivity extends BaseDeviceConnectActivity {
                     return;
                 }
 
-                LogOutputEntity logOutputEntity;
-                String cmd;
                 if (isChecked) {
-                    logOutputEntity = new LogOutputEntity(LogOutputStatus.OPEN.toInt());
-                    cmd = CommandManager.getInstance().getCommand(CommandType.LOG_OUTPUT_STATUS, logOutputEntity);
-                    sendCommonCommandImmediately(cmd);
+                    switchLogOutputMode(true);
                     setSwitchViewState(true, logSwitchButton, "已开启");
-                    isStart = false;
                     ToastUtils.show("开始日志输出");
-                    fabStartPause.setImageDrawable(getResources().getDrawable(R.drawable.ic_pause));
+                    isPause = false;
+                    fabStartPause.setImageResource(R.drawable.ic_pause);
                 } else {
-                    logOutputEntity = new LogOutputEntity(LogOutputStatus.CLOSE.toInt());
-                    cmd = CommandManager.getInstance().getCommand(CommandType.LOG_OUTPUT_STATUS, logOutputEntity);
-                    sendCommonCommandImmediately(cmd);
+                    switchLogOutputMode(false);
                     setSwitchViewState(false, logSwitchButton, "已关闭");
                     ToastUtils.show("关闭日志输出");
-                    isStart = true;
-                    fabStartPause.setImageDrawable(getResources().getDrawable(R.drawable.ic_start));
+                    isPause = true;
+                    fabStartPause.setImageResource(R.drawable.ic_start);
                 }
             }
         });
@@ -221,7 +192,7 @@ public class LogPrintActivity extends BaseDeviceConnectActivity {
 
     private void initAdapter() {
         recyclerLogPrint.setLayoutManager(new LinearLayoutManager(this));
-        adapter = new CommonAdapter<String>(this, R.layout.item_log_print, logList) {
+        adapter = new CommonAdapter<String>(this, R.layout.item_log_print, logDataList) {
             @Override
             protected void convert(ViewHolder holder, String string, int position) {
                 holder.setText(R.id.tv_log, string);
@@ -231,16 +202,18 @@ public class LogPrintActivity extends BaseDeviceConnectActivity {
         viewEmpty.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
+                if (logDataList.size() == 0)
+                    return false;
+
                 Vibrator vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
                 vibrator.vibrate(200);
                 new XPopup.Builder(LogPrintActivity.this)
-                        //.maxWidth(600)
                         .asCenterList("", new String[]{"清空日志"},
                                 new OnSelectListener() {
                                     @Override
                                     public void onSelect(int position, String text) {
                                         if (position == 0) {
-                                            logList.clear();
+                                            logDataList.clear();
                                             adapter.notifyDataSetChanged();
                                         }
                                     }
@@ -260,16 +233,20 @@ public class LogPrintActivity extends BaseDeviceConnectActivity {
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.btn_send:
+                if (!MCloudApp.isIsBluetoothDeviceConnected()) {
+                    ToastUtils.show(getString(R.string.param_config_bluetooth_disconnect_warn));
+                    return;
+                }
                 //发送指令
                 String sendCode = ceSendCode.getText().toString().trim();
                 String result = sendCode + "\r\n";
-                if (sendCode.startsWith("##")) {
-                    sendCommonCommandImmediately(result);
-                    logList.add(sendCode);
-                    adapter.notifyDataSetChanged();
-                } else {
+                if (!sendCode.startsWith("##")) {
                     ToastUtils.show("指令格式不正确，请重新输入");
+                    return;
                 }
+                sendCommonCommandImmediately(result);
+                logDataList.add(sendCode);
+                adapter.notifyDataSetChanged();
                 break;
 
             case R.id.tv_view_log_directory:
@@ -294,18 +271,25 @@ public class LogPrintActivity extends BaseDeviceConnectActivity {
                 break;
 
             case R.id.fab_start_pause:
-                if (isStart) {
-                    isStart = false;
+                if (isPause) {
+                    isPause = false;
                     ToastUtils.show("日志已开始输出");
                     fabStartPause.setImageDrawable(getResources().getDrawable(R.drawable.ic_pause));
                 } else {
                     ToastUtils.show("日志已暂停输出");
-                    isStart = true;
+                    isPause = true;
                     fabStartPause.setImageDrawable(getResources().getDrawable(R.drawable.ic_start));
                 }
                 break;
         }
     }
+
+    private void switchLogOutputMode(boolean isOpen) {
+        LogOutputEntity logOutputEntity = new LogOutputEntity(isOpen ? LogOutputStatus.OPEN.toInt() : LogOutputStatus.CLOSE.toInt());
+        String cmd = CommandManager.getInstance().getCommand(CommandType.LOG_OUTPUT_STATUS, logOutputEntity);
+        sendCommonCommandImmediately(cmd);
+    }
+
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void getConfig(String messageEvent) {
@@ -319,25 +303,19 @@ public class LogPrintActivity extends BaseDeviceConnectActivity {
         @SuppressLint("SimpleDateFormat")
         String time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
         String content = time + "  " + messageEvent;
-        Timber.i("====日志内容" + content);
+        Timber.i("====日志内容%s", content);
         LogToSDUtil.saveLogToSD(content, snNumber);
 
-        if (isStart) { //
+        if (isPause) { //
             Timber.i("=====暂停了");
 
         } else {
             Timber.i("=====开始了");
             String result = messageEvent.replace("\r\n", "");
-            logList.add(result);
+            logDataList.add(result);
             adapter.notifyDataSetChanged();
             recyclerLogPrint.scrollToPosition(adapter.getItemCount() - 1);
-
         }
-    }
-
-    @Override
-    public void onBackPressed() {
-        finish();
     }
 
     private void showLogResultDialog(String content) {
@@ -350,5 +328,10 @@ public class LogPrintActivity extends BaseDeviceConnectActivity {
         });
         mMaterialDialog = mBuilder.build();
         mMaterialDialog.show();
+    }
+
+    @Override
+    public void onBackPressed() {
+        finish();
     }
 }

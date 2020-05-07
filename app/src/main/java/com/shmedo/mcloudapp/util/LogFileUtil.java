@@ -2,8 +2,8 @@ package com.shmedo.mcloudapp.util;
 
 import android.content.Context;
 import android.os.Environment;
+
 import androidx.annotation.NonNull;
-import timber.log.Timber;
 
 import java.io.File;
 import java.io.IOException;
@@ -25,33 +25,27 @@ public class LogFileUtil {
     private static final int DIRECTORY_SIZE = 10;
 
 
-
-
-
-
     /**
      * 创建 logcat文件
      *
      * @param file file
      * @return File
      */
-    public static File createLogFile(File file,String snNumber) {
+    public static File createLogFile(File file, String snNumber) {
 
         if (file.exists()) {//存在
             if (file.isFile()) {
                 return createFile(file);
             } else if (file.isDirectory()) {
-                return createLogFile(file.getAbsolutePath()+"/mCloudLogFiles/"+snNumber+"/", getFileName(), false);
+                return createLogFile(file.getAbsolutePath() + "/mCloudLogFiles/" + snNumber + "/", getFileName(), false);
             }
-        }
-        else {
+        } else {
             if (file.mkdirs()) {
-                return createLogFile(file,snNumber);
+                return createLogFile(file, snNumber);
             }
         }
         return file;
     }
-
 
 
     /**
@@ -87,7 +81,7 @@ public class LogFileUtil {
     private static File createFile(File file) {
         if (file.exists()) {
             return file;
-        }else {
+        } else {
             try {
                 file.createNewFile();
             } catch (IOException e) {

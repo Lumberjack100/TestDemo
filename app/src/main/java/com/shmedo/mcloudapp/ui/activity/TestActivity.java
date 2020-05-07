@@ -49,20 +49,6 @@ import timber.log.Timber;
  * 描述：    TODO
  */
 public class TestActivity extends BaseActivity {
-    /**
-     * 说明：启动Activity
-     * <p>
-     * 注意：这里使用到了Intent的Flag属性singleTop。singleTop模式下，在同一个task中，如果存在该Activity的实例，
-     * 并且该Activity实例位于栈顶(即，该Activity位于前端)，则调用startActivity()时，不再创建该Activity的示例；
-     * 而仅仅只是调用Activity的onNewIntent()。否则的话，则新建该Activity的实例，并将其置于栈顶。
-     * </p>
-     */
-    public static void startActivity(Context context) {
-        Intent intent = new Intent(context, TestActivity.class);
-        context.startActivity(intent);
-    }
-
-
     @BindView(R.id.tv_title)
     TextView mToolbarTitle;
 
@@ -105,6 +91,11 @@ public class TestActivity extends BaseActivity {
 
     private int varifyFailedNum = 0;
 
+    private String authenticateParam = "";
+
+    private AuthenticateRunnable authenticateRunnable;
+
+
     private Runnable runnableConn = new Runnable() {
         @Override
         public void run() {
@@ -143,6 +134,32 @@ public class TestActivity extends BaseActivity {
         dismissLoadingDialog();
         hander.removeCallbacks(progressRunnable);
         progressRunnable = null;
+    }
+
+    private class AuthenticateRunnable implements Runnable {
+        @Override
+        public void run() {
+            startBleAuthenticate();
+            hander.postDelayed(this, 2000);
+        }
+    }
+
+    private void startAuthenticateRunnable(long delayMillis) {
+        if (authenticateRunnable == null) {
+            authenticateRunnable = new AuthenticateRunnable();
+            hander.postDelayed(authenticateRunnable, delayMillis);
+        }
+    }
+
+    private void stopAuthenticateRunnable() {
+        hander.removeCallbacks(authenticateRunnable);
+        authenticateRunnable = null;
+    }
+
+
+    public static void startActivity(Context context) {
+        Intent intent = new Intent(context, TestActivity.class);
+        context.startActivity(intent);
     }
 
     @Override
@@ -332,7 +349,7 @@ public class TestActivity extends BaseActivity {
             switch (msg.what) {
                 case Constants.BT_CONNECT:
                     stopProgressRunnable();
-                    startBluAuthenticate();//蓝牙连接成功开始进行验证
+                    setBleAuthenticateWay();//蓝牙连接成功开始进行验证
                     startProgressRunnable("开始认证...", CONNECT_DELAY_MILLIS);
                     break;
 
@@ -374,29 +391,17 @@ public class TestActivity extends BaseActivity {
 
                 if (cmdStr.startsWith("$$224")) {//认证方式
                     if (cmdStr.replace("\r\n", "").endsWith(CommandResult.ERROR_END)) {
-                        startBluAuthenticate();//重新认证
+                        setBleAuthenticateWay();//重新认证
                         return;
                     }
-
-                    byte[] resultData = StringUtil.hexStringToBytes(cmdArray[3]);
-                    try {
-                        String deskey = "12345678";
-                        String strdes = new String(DesUtil.decrypt(resultData, deskey), StandardCharsets.UTF_8);
-                        if (!TextUtils.isEmpty(strdes)) {
-                            String desStr = StringUtil.bytesToHexString(DesUtil.encrypt((StringUtil.reverseString(strdes.substring(0, 6)) + deskey).getBytes(), deskey));
-                            String cmd = "##222," + SN + ",0," + desStr.toUpperCase() + "\r\n";
-                            sendCommonCommandImmediately(cmd);
-                            Timber.d("设备登录验证指令===%s", cmd);
-                            return;
-                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        return;
-                    }
+                    authenticateParam = cmdArray[3];
+                    startAuthenticateRunnable(2000);
+                    startBleAuthenticate();
                 }
 
                 //设备登录验证结果指令
                 if (cmdStr.startsWith("$$223")) {
+                    stopAuthenticateRunnable();
                     sendHandleMessage(Constants.VERIFY_RESULT, cmdArray[1]);
                     Timber.d("设备登录验证状态===%s", cmdArray[1]);
                     return;
@@ -472,11 +477,31 @@ public class TestActivity extends BaseActivity {
     /**
      * 蓝牙连接成功开始进行验证  lock
      */
-    private void startBluAuthenticate() {
+    private void setBleAuthenticateWay() {
         AuthenticationConfigEntity configEntity = new AuthenticationConfigEntity(SN, 0);
         String command = CommandManager.getInstance().getCommand(CommandType.AUTHENTICATION_CONFIG, configEntity);
         sendCommonCommandImmediately("\r\n" + command);
         Timber.d("设置认证类型指令===%s", command);
+    }
+
+
+    /**
+     * 开始认证流程
+     */
+    private void startBleAuthenticate() {
+        byte[] resultData = StringUtil.hexStringToBytes(authenticateParam);
+        try {
+            String deskey = "12345678";
+            String strdes = new String(DesUtil.decrypt(resultData, deskey), StandardCharsets.UTF_8);
+            if (!TextUtils.isEmpty(strdes)) {
+                String desStr = StringUtil.bytesToHexString(DesUtil.encrypt((StringUtil.reverseString(strdes.substring(0, 6)) + deskey).getBytes(), deskey));
+                String cmd = "##222," + SN + ",0," + desStr.toUpperCase() + "\r\n";
+                sendCommonCommandImmediately(cmd);
+                Timber.d("设备登录验证指令===%s", cmd);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @OnClick({R.id.back, R.id.btn_1, R.id.btn_2})
