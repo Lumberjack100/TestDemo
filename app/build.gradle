@@ -168,11 +168,12 @@ dependencies {
     implementation 'com.tencent.bugly:crashreport:2.8.6'
     //一个强大并且灵活的RecyclerViewAdapter
     implementation 'com.github.CymChad:BaseRecyclerViewAdapterHelper:3.0.3'
+    implementation 'gdut.bsx:share2:0.9.3'
 
     //3D地图so及jar
-    implementation 'com.amap.api:3dmap:latest.integration'
+    implementation 'com.amap.api:3dmap:7.4.0'
     //定位功能
-    implementation 'com.amap.api:location:latest.integration'
+    implementation 'com.amap.api:location:4.9.0'
 
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test:runner:1.2.0'

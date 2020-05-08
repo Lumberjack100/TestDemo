@@ -3,6 +3,8 @@ package com.shmedo.mcloudapp.ui.activity.device.senior;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.text.TextUtils;
@@ -12,8 +14,10 @@ import android.widget.ArrayAdapter;
 import android.widget.CompoundButton;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.FileProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -41,11 +45,14 @@ import com.shmedo.mcloudapp.views.ClearEditText;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import gdut.bsx.share2.Share2;
+import gdut.bsx.share2.ShareContentType;
 import me.pqpo.librarylog4a.Log4a;
 import timber.log.Timber;
 
@@ -57,6 +64,10 @@ import timber.log.Timber;
  * 描述：     体脂输出页面
  */
 public class LogPrintActivity extends BaseDeviceConnectActivity {
+    private static final int FILE_SELECT_CODE = 100;
+
+    private static final int REQUEST_SHARE_FILE_CODE = 120;
+
     private static final String TAG = "LogPrintActivity";
 
     @BindView(R.id.toolbar_title)
@@ -95,6 +106,9 @@ public class LogPrintActivity extends BaseDeviceConnectActivity {
     private String snNumber;
     private MaterialDialog mMaterialDialog;
     private MaterialDialog.Builder mBuilder;
+
+    private Uri shareFileUrl = null;
+
 
     public static void startActivity(Context context) {
         Intent intent = new Intent(context, LogPrintActivity.class);
@@ -249,14 +263,9 @@ public class LogPrintActivity extends BaseDeviceConnectActivity {
                 break;
 
             case R.id.tv_view_log_directory:
-//                File filesPath = Environment.getExternalStorageDirectory().getAbsoluteFile();
-//                File file = LogFileUtil.createLogFile(filesPath, snNumber);
-//                if (file.exists()) {
-//                    showLogResultDialog(file.getAbsolutePath());
-//                } else {
-//                    ToastUtils.show("暂未生成日志");
-//                }
-                showLogResultDialog(LogFileUtil.getLogPath());
+
+                openFileChooser();
+//                showLogResultDialog(LogFileUtil.getLogPath());
                 break;
 
             case R.id.fab_start_pause:
@@ -288,12 +297,10 @@ public class LogPrintActivity extends BaseDeviceConnectActivity {
     }
 
     private void setResultData(String messageEvent) {
-        String content = messageEvent.replace("\r\n","");
+        String content = messageEvent.replace("\r\n", "");
         Timber.i("====日志内容%s", content);
         Log4a.i(TAG, content);
         Log4a.flush();
-//        Log4a.release();
-//        LogToSDUtil.saveLogToSD(content, snNumber);
 
         if (isPause) { //
             Timber.i("=====暂停了");
@@ -318,6 +325,67 @@ public class LogPrintActivity extends BaseDeviceConnectActivity {
         mMaterialDialog = mBuilder.build();
         mMaterialDialog.show();
     }
+
+    private void test() {
+        String path = LogFileUtil.getLogPath();
+        File txtFile = new File(path);
+
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        //判断是否是AndroidN以及更高的版本
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            Uri contentUri = FileProvider.getUriForFile(this, getApplicationContext().getPackageName() + ".fileProvider", txtFile);
+            intent.setDataAndType(contentUri, "text/*");
+        } else {
+            intent.setDataAndType(Uri.fromFile(txtFile), "text/*");
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        }
+        startActivity(intent);
+    }
+
+
+    private void openFileChooser() {
+        File file = getExternalFilesDir("logs");
+        if (null == file || !file.exists()) {
+            return;
+        }
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+
+        //判断是否是AndroidN以及更高的版本
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            intent.addCategory(Intent.CATEGORY_OPENABLE);
+            intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            Uri contentUri = FileProvider.getUriForFile(this, getApplicationContext().getPackageName() + ".fileProvider", file);
+            intent.setDataAndType(contentUri, "text/plain");
+        } else {
+            intent.setDataAndType(Uri.fromFile(file), "text/plain");
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        }
+
+        startActivityForResult(intent, FILE_SELECT_CODE);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, final Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        Timber.d("requestCode=" + requestCode + " resultCode=" + resultCode);
+        if (requestCode == FILE_SELECT_CODE && resultCode == RESULT_OK) {
+            shareFileUrl = data.getData();
+            if (shareFileUrl == null) {
+                Toast.makeText(this, "Please choose a file to share.", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            new Share2.Builder(this)
+                    .setContentType(ShareContentType.FILE)
+                    .setShareFileUri(shareFileUrl)
+                    .setTitle("Share File")
+                    .setOnActivityResult(REQUEST_SHARE_FILE_CODE)
+                    .build()
+                    .shareBySystem();
+        }
+    }
+
 
     @Override
     public void onBackPressed() {

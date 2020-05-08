@@ -15,13 +15,14 @@ import javax.crypto.spec.IvParameterSpec;
 public class DesUtil {
     /**
      * 加密
+     *
      * @param datasource byte[]
      * @param password   String
      * @return byte[]
      */
     public static byte[] encrypt(byte[] datasource, String password) {
         try {
-            byte[]keyByte=password.getBytes(StandardCharsets.UTF_8);
+            byte[] keyByte = password.getBytes(StandardCharsets.UTF_8);
             DESKeySpec desKey = new DESKeySpec(keyByte);
             //创建一个密匙工厂，然后用它把DESKeySpec转换成
             SecretKeyFactory keyFactory = SecretKeyFactory.getInstance("DES");
@@ -38,6 +39,7 @@ public class DesUtil {
         }
         return null;
     }
+
     /**
      * 解密
      *
@@ -47,7 +49,7 @@ public class DesUtil {
      */
     public static byte[] decrypt(byte[] src, String password) {
         try {
-            byte[]keyByte=password.getBytes(StandardCharsets.UTF_8);
+            byte[] keyByte = password.getBytes(StandardCharsets.UTF_8);
             // 创建一个DESKeySpec对象
             DESKeySpec desKey = new DESKeySpec(keyByte);
             // 创建一个密匙工厂
@@ -60,8 +62,7 @@ public class DesUtil {
             cipher.init(Cipher.DECRYPT_MODE, securekey, new IvParameterSpec(keyByte));
             // 真正开始解密操作
             return cipher.doFinal(src);
-        }catch (Exception ex)
-        {
+        } catch (Exception ex) {
             throw new RuntimeException(ex);
         }
     }
