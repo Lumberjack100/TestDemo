@@ -482,6 +482,7 @@ public class TestActivity extends BaseActivity {
         AuthenticationConfigEntity configEntity = new AuthenticationConfigEntity(SN, 0);
         String command = CommandManager.getInstance().getCommand(CommandType.AUTHENTICATION_CONFIG, configEntity);
         sendCommonCommandImmediately("\r\n" + command);
+        updateLog(command);
         Timber.d("设置认证类型指令===%s", command);
     }
 
@@ -496,9 +497,10 @@ public class TestActivity extends BaseActivity {
             String strdes = new String(DesUtil.decrypt(resultData, deskey), StandardCharsets.UTF_8);
             if (!TextUtils.isEmpty(strdes)) {
                 String desStr = StringUtil.bytesToHexString(DesUtil.encrypt((StringUtil.reverseString(strdes.substring(0, 6)) + deskey).getBytes(), deskey));
-                String cmd = "##222," + SN + ",0," + desStr.toUpperCase() + "\r\n";
-                sendCommonCommandImmediately(cmd);
-                Timber.d("设备登录验证指令===%s", cmd);
+                String command = "##222," + SN + ",0," + desStr.toUpperCase() + "\r\n";
+                sendCommonCommandImmediately(command);
+                updateLog(command);
+                Timber.d("设备登录验证指令===%s", command);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -529,10 +531,10 @@ public class TestActivity extends BaseActivity {
     @Override
     protected void onDestroy() {
         dismissLoadingDialog();
-//        totalConnNum = 0;
-//        connSuccessNum = 0;
-//        varifySuccessNum = 0;
-//        varifyFailedNum = 0;
+        totalConnNum = 0;
+        connSuccessNum = 0;
+        varifySuccessNum = 0;
+        varifyFailedNum = 0;
         super.onDestroy();
     }
 

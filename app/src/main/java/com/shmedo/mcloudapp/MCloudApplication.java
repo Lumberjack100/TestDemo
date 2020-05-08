@@ -11,8 +11,9 @@ import com.hjq.toast.ToastUtils;
 import com.hjq.toast.style.ToastBlackStyle;
 import com.pgyersdk.crash.PgyCrashManager;
 import com.shmedo.mcloudapp.bluetooth.MdBluetoothManager;
-import com.shmedo.mcloudapp.logging.AppCrashHandler;
-import com.shmedo.mcloudapp.logging.CrashReportingTree;
+import com.shmedo.mcloudapp.log.AppCrashHandler;
+import com.shmedo.mcloudapp.log.CrashReportingTree;
+import com.shmedo.mcloudapp.log.log4a.LogInit;
 import com.tencent.bugly.crashreport.CrashReport;
 
 import java.util.Objects;
@@ -38,6 +39,8 @@ public class MCloudApplication extends Application {
 
         //初始化日志输出
         initTimber();
+        //初始化基于 mmap, 高性能、高可用的 Android 日志收集框架
+        LogInit.init(this);
 
         //初始化蒲公英
         //启动 Pgyer 检测 Crash 功能

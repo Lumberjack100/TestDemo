@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.shmedo.mcloudapp.util.permission;
+package com.shmedo.mcloudapp.util;
 
 import android.content.Context;
 import android.os.Environment;
@@ -34,11 +34,6 @@ public class FileUtils {
         return Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState());
     }
 
-
-    public static String getFileName(String filePath) {
-        int index = filePath.lastIndexOf("/");
-        return filePath.substring(index + 1);
-    }
 
     public static File getFileDir(Context context) {
         return getFileDir(context, null);
@@ -99,7 +94,7 @@ public class FileUtils {
         throw new RuntimeException("External storage device is not available.");
     }
 
-    public static void createDir(File dir) {
+    private static void createDir(File dir) {
         if (dir.exists()) {
             if (!dir.isDirectory()) {
                 dir.delete();
@@ -108,6 +103,11 @@ public class FileUtils {
         if (!dir.exists()) {
             dir.mkdirs();
         }
+    }
+
+    public static String getFileName(String filePath) {
+        int index = filePath.lastIndexOf("/");
+        return filePath.substring(index + 1);
     }
 
     public static String getFileContent(String filePath) {

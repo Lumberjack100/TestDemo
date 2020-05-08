@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.logging;
+package com.shmedo.mcloudapp.log;
 
 import android.content.Context;
 import android.os.Looper;

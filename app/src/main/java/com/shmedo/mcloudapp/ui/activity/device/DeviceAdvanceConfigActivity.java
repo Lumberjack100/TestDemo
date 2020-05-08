@@ -36,7 +36,7 @@ import com.shmedo.mcloudapp.ui.activity.device.senior.ProductRegistrationActivit
 import com.shmedo.mcloudapp.util.AdvanceSetDialogUtils;
 import com.shmedo.mcloudapp.util.KeyBordUtils;
 import com.shmedo.mcloudapp.util.LocationUtils;
-import com.shmedo.mcloudapp.util.LogToSDUtil;
+import com.shmedo.mcloudapp.util.LogFileUtil;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -216,7 +216,7 @@ public class DeviceAdvanceConfigActivity extends BaseDeviceConnectActivity {
 
             case R.id.rl_log_print://日志输出
                 if (checkIsBluetoothConnected()) {
-                    LogToSDUtil.requestPermissionForSaveLog(this);
+                    LogFileUtil.requestPermissionForSaveLog(this);
                 }
                 break;
 

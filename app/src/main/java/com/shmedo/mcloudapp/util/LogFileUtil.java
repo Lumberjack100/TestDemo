@@ -1,16 +1,31 @@
 package com.shmedo.mcloudapp.util;
 
+import android.app.Activity;
 import android.content.Context;
-import android.os.Environment;
+import android.content.DialogInterface;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+
+import com.shmedo.mcloudapp.ui.activity.device.senior.LogPrintActivity;
+import com.shmedo.mcloudapp.util.permission.RuntimeRationale;
+import com.yanzhenjie.permission.Action;
+import com.yanzhenjie.permission.AndPermission;
+import com.yanzhenjie.permission.runtime.Permission;
 
 import java.io.File;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
+
+import me.pqpo.librarylog4a.Log4a;
+import me.pqpo.librarylog4a.appender.Appender;
+import me.pqpo.librarylog4a.appender.FileAppender;
+import me.pqpo.librarylog4a.logger.AppenderLogger;
+import me.pqpo.librarylog4a.logger.Logger;
 
 /**
  * 项目名：  mCloudapp
@@ -63,9 +78,9 @@ public class LogFileUtil {
         }
 
         // 是否删除缓存日志文件
-//        if (cleanCache) {
-//            computeSize(directory);
-//        }
+        if (cleanCache) {
+            computeSize(directory);
+        }
 
         File file = new File(directory, fileName);
         return createFile(file);
@@ -123,20 +138,66 @@ public class LogFileUtil {
         return format.format(new Date(System.currentTimeMillis())) + ".txt";
     }
 
-    /**
-     * 文件路径
-     *
-     * @param context Context
-     * @param dirName dirName
-     * @return FileDir
-     */
-    private static String getCacheFileDir(Context context, String dirName) {
-        String name = "/" + dirName;
-        if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())
-                || !Environment.isExternalStorageRemovable()) {
-            return context.getExternalCacheDir() + name;
-        } else {
-            return context.getCacheDir() + name;
+
+    public static File getLogDir(Context context) {
+        File log = context.getExternalFilesDir("logs");
+        if (log == null) {
+            log = new File(context.getFilesDir(), "logs");
         }
+        if (!log.exists()) {
+            log.mkdir();
+        }
+        return log;
+    }
+
+
+    public static String getLogPath() {
+        String logPath = "";
+        Logger logger = Log4a.getLogger();
+        if (logger instanceof AppenderLogger) {
+            List<Appender> appenderList = ((AppenderLogger) logger).getAppenderList();
+            for (Appender appender : appenderList) {
+                if (appender instanceof FileAppender) {
+                    FileAppender fileAppender = (FileAppender) appender;
+                    logPath = fileAppender.getLogPath();
+                    break;
+                }
+            }
+        }
+        return logPath;
+    }
+
+    public static void requestPermissionForSaveLog(final Activity activity) {
+        if (!FileUtils.externalAvailable()) {
+            new AlertDialog.Builder(activity)
+                    .setTitle("提示")
+                    .setMessage("请允许写入文件权限")
+                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    })
+                    .show();
+            return;
+        }
+
+        AndPermission.with(activity)
+                .runtime()
+                .permission(Permission.READ_EXTERNAL_STORAGE, Permission.WRITE_EXTERNAL_STORAGE)
+                .rationale(new RuntimeRationale())
+                .onGranted(new Action<List<String>>() {
+                    @Override
+                    public void onAction(List<String> data) {
+                        LogPrintActivity.startActivity(activity);
+                    }
+                })
+                .onDenied(new Action<List<String>>() {
+                    @Override
+                    public void onAction(List<String> data) {
+
+                    }
+                })
+                .start();
     }
 }

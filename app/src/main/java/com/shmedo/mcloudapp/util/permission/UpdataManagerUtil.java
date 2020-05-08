@@ -17,6 +17,7 @@ import com.pgyersdk.update.UpdateManagerListener;
 import com.pgyersdk.update.javabean.AppBean;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.ui.activity.MainActivity;
+import com.shmedo.mcloudapp.util.FileUtils;
 import com.yanzhenjie.permission.Action;
 import com.yanzhenjie.permission.AndPermission;
 import com.yanzhenjie.permission.runtime.Permission;

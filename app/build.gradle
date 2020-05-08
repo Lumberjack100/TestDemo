@@ -150,6 +150,8 @@ dependencies {
     implementation 'com.scwang.smartrefresh:SmartRefreshLayout:1.1.0'
     //日志输出
     implementation 'com.jakewharton.timber:timber:4.7.1'
+    //一个基于 mmap, 高性能、高可用的 Android 日志收集框架
+    implementation 'com.github.pqpo:Log4a:1.5.0'
     //开关 Button
     implementation 'com.kyleduo.switchbutton:library:2.0.0'
     //新的zxing 扫码

@@ -37,7 +37,7 @@ import com.shmedo.mcloudapp.util.GsonFactory;
 import com.shmedo.mcloudapp.util.ImageUtil;
 import com.shmedo.mcloudapp.util.PhotoUtil;
 import com.shmedo.mcloudapp.util.XPermissionUtils;
-import com.shmedo.mcloudapp.util.permission.FileUtils;
+import com.shmedo.mcloudapp.util.FileUtils;
 import com.shmedo.mcloudapp.views.MyMenu;
 
 import java.io.File;

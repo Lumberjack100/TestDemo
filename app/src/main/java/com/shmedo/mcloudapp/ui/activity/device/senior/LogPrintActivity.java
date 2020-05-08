@@ -1,11 +1,9 @@
 package com.shmedo.mcloudapp.ui.activity.device.senior;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Vibrator;
 import android.text.TextUtils;
 import android.view.View;
@@ -38,20 +36,17 @@ import com.shmedo.mcloudapp.adapter.recyclerviewbaseadapter.CommonAdapter;
 import com.shmedo.mcloudapp.adapter.recyclerviewbaseadapter.ViewHolder;
 import com.shmedo.mcloudapp.ui.activity.device.BaseDeviceConnectActivity;
 import com.shmedo.mcloudapp.util.LogFileUtil;
-import com.shmedo.mcloudapp.util.LogToSDUtil;
 import com.shmedo.mcloudapp.views.ClearEditText;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import java.io.File;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import me.pqpo.librarylog4a.Log4a;
 import timber.log.Timber;
 
 /**
@@ -62,6 +57,8 @@ import timber.log.Timber;
  * 描述：     体脂输出页面
  */
 public class LogPrintActivity extends BaseDeviceConnectActivity {
+    private static final String TAG = "LogPrintActivity";
+
     @BindView(R.id.toolbar_title)
     TextView toolbarTitle;
 
@@ -121,6 +118,8 @@ public class LogPrintActivity extends BaseDeviceConnectActivity {
     private void initView() {
         toolbarTitle.setText("指令日志输出");
         snNumber = MCloudApp.getCurDeviceToken();
+        String content = String.format("====开始调试设备：%s", snNumber);
+        Log4a.i(TAG, content);
 
         //调试模式
         String[] debugData = getResources().getStringArray(R.array.das_debug);
@@ -250,24 +249,14 @@ public class LogPrintActivity extends BaseDeviceConnectActivity {
                 break;
 
             case R.id.tv_view_log_directory:
-                File filesPath = Environment.getExternalStorageDirectory().getAbsoluteFile();
-                File file = LogFileUtil.createLogFile(filesPath, snNumber);
-                if (file.exists()) {
-                    showLogResultDialog(file.getAbsolutePath());
-                } else {
-                    ToastUtils.show("暂未生成日志");
-                }
-//                Uri logUir = FileProvider.getUriForFile(this, getApplicationContext().getPackageName() + ".provider",file.getParentFile());
-//                //打开日志目录
-//                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-//                intent.setDataAndType(logUir, "*.txt");
-////                intent.addCategory(Intent.CATEGORY_OPENABLE);
-//                intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-//                startActivity(intent);
-//                try {
-//                }catch (Exception e){
-//                    e.printStackTrace();
+//                File filesPath = Environment.getExternalStorageDirectory().getAbsoluteFile();
+//                File file = LogFileUtil.createLogFile(filesPath, snNumber);
+//                if (file.exists()) {
+//                    showLogResultDialog(file.getAbsolutePath());
+//                } else {
+//                    ToastUtils.show("暂未生成日志");
 //                }
+                showLogResultDialog(LogFileUtil.getLogPath());
                 break;
 
             case R.id.fab_start_pause:
@@ -299,12 +288,12 @@ public class LogPrintActivity extends BaseDeviceConnectActivity {
     }
 
     private void setResultData(String messageEvent) {
-        //输出内容
-        @SuppressLint("SimpleDateFormat")
-        String time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
-        String content = time + "  " + messageEvent;
+        String content = messageEvent.replace("\r\n","");
         Timber.i("====日志内容%s", content);
-        LogToSDUtil.saveLogToSD(content, snNumber);
+        Log4a.i(TAG, content);
+        Log4a.flush();
+//        Log4a.release();
+//        LogToSDUtil.saveLogToSD(content, snNumber);
 
         if (isPause) { //
             Timber.i("=====暂停了");
@@ -332,6 +321,9 @@ public class LogPrintActivity extends BaseDeviceConnectActivity {
 
     @Override
     public void onBackPressed() {
+        String content = String.format("====结束调试设备：%s\r\n", snNumber);
+        Log4a.i(TAG, content);
+        Log4a.flush();
         finish();
     }
 }
