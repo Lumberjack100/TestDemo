@@ -181,7 +181,7 @@
             android:layout_alignParentBottom="true"
             android:background="@color/colorPrimary"
             android:gravity="center"
-            android:text="查看输入日志目录"
+            android:text="分享日志文件"
             android:textColor="@color/white"
             android:textSize="16sp" />
 

@@ -264,7 +264,7 @@ public class LogPrintActivity extends BaseDeviceConnectActivity {
 
             case R.id.tv_view_log_directory:
 
-                openFileChooser();
+                shareFile();
 //                showLogResultDialog(LogFileUtil.getLogPath());
                 break;
 
@@ -326,21 +326,29 @@ public class LogPrintActivity extends BaseDeviceConnectActivity {
         mMaterialDialog.show();
     }
 
-    private void test() {
+    private void shareFile() {
         String path = LogFileUtil.getLogPath();
-        File txtFile = new File(path);
-
-        Intent intent = new Intent(Intent.ACTION_VIEW);
-        //判断是否是AndroidN以及更高的版本
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-            Uri contentUri = FileProvider.getUriForFile(this, getApplicationContext().getPackageName() + ".fileProvider", txtFile);
-            intent.setDataAndType(contentUri, "text/*");
-        } else {
-            intent.setDataAndType(Uri.fromFile(txtFile), "text/*");
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        File file = new File(path);
+        if (!file.exists()) {
+            ToastUtils.show("日志文件不存在");
+            return;
         }
-        startActivity(intent);
+
+        Uri contentUri;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            contentUri = FileProvider.getUriForFile(this, getApplicationContext().getPackageName() + ".fileProvider", file);
+
+        } else {
+            contentUri = Uri.fromFile(file);
+        }
+
+        new Share2.Builder(this)
+                .setContentType(ShareContentType.FILE)
+                .setShareFileUri(contentUri)
+                .setTitle("分享文件")
+                .setOnActivityResult(300)
+                .build()
+                .shareBySystem();
     }
 
 
@@ -354,14 +362,13 @@ public class LogPrintActivity extends BaseDeviceConnectActivity {
         //判断是否是AndroidN以及更高的版本
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             intent.addCategory(Intent.CATEGORY_OPENABLE);
-            intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
             Uri contentUri = FileProvider.getUriForFile(this, getApplicationContext().getPackageName() + ".fileProvider", file);
             intent.setDataAndType(contentUri, "text/plain");
         } else {
             intent.setDataAndType(Uri.fromFile(file), "text/plain");
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         }
-
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivityForResult(intent, FILE_SELECT_CODE);
     }
 
