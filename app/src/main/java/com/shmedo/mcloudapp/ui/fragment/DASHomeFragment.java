@@ -136,7 +136,7 @@ public class DASHomeFragment extends BaseFragment {
 
     private int rainCheck = 0;//标志位，Avoid onItemSelected calls during initialization
 
-    private int accessNumFlag = 0;//接入传感器数量标志
+    private int sensorIndex = 0;//接入的传感器索引号
 
 
     @Override
@@ -412,15 +412,20 @@ public class DASHomeFragment extends BaseFragment {
                     return;
                 }
                 collectorConfigInfo = ResultParserUtil.getEntityObject(cmdStr);
+                // 查询传感器配置信息前,重置accessNumFlag、sbcollectorSensor参数
+                sensorIndex = 0;
+                sbcollectorSensor = new StringBuilder();
+                if (collectorConfigInfo == null) {
+                    Timber.e("采集器配置信息为空!");
+                    return;
+                }
                 querySensorConfigInfo();
                 break;
 
             case COLLECTOR_CHANNEL_SENSOR_PARAMETER://断线报警器状态 227
                 sbcollectorSensor.append(cmdStr.replace("\r\n", "") + "&&");
-                accessNumFlag++;
-                if (accessNumFlag == collectorConfigInfo.getAccessSum()) {
-                    configDASActivity.stopProgressRunnable();
-                }
+                sensorIndex++;
+                querySensorConfigInfo();
                 break;
 
             case RAIN_STATION://雨量计开关 0051：雨量计开启  0052：关闭   0053：断线报警器开启
@@ -534,24 +539,18 @@ public class DASHomeFragment extends BaseFragment {
      * 查询采集器接入的传感器配置信息
      */
     private void querySensorConfigInfo() {
-        // 查询传感器配置信息前,重置accessNumFlag、sbcollectorSensor参数
-        accessNumFlag = 0;
-        sbcollectorSensor = new StringBuilder();
-
-        if (collectorConfigInfo == null) {
-            Timber.e("采集器配置信息为空!");
+        if (sensorIndex >= collectorConfigInfo.getAccessSum()) {
+            configDASActivity.stopProgressRunnable();
             return;
         }
 
-        int sum = collectorConfigInfo.getAccessSum();
-        for (int i = 0; i < sum; i++) {
-            String address = StringUtil.formatStringTwo(i + "");
-            CollectorSensorParamsEntity entity = new CollectorSensorParamsEntity(collectorModel, address);
-            String command = CommandManager.getInstance().getCommand(CommandType.COLLECTOR_CHANNEL_SENSOR_PARAMETER, entity);
-            configDASActivity.sendCommonCommand(command);
-            Timber.d("获取 %s 采集器 %s 通道的传感器参数===%s", collectorModel, address, command);
-        }
+        String address = StringUtil.formatStringTwo(sensorIndex + "");
+        CollectorSensorParamsEntity entity = new CollectorSensorParamsEntity(collectorModel, address);
+        String command = CommandManager.getInstance().getCommand(CommandType.COLLECTOR_CHANNEL_SENSOR_PARAMETER, entity);
+        configDASActivity.sendCommonCommand(command);
+        Timber.d("获取 %s 采集器 %s 通道的传感器参数===%s", collectorModel, address, command);
     }
+
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void getConfig(String messageEvent) {

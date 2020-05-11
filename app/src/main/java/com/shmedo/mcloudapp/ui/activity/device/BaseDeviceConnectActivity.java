@@ -66,11 +66,13 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
 
     public static final int REQUEST_ENABLE_BT = 0x001;
 
-    public static final int COMMAND_DELAY_MILLIS = 10000;
+    public static final int SCAN_DELAY_MILLIS = 5000;//扫描蓝牙设备超时时间
 
-    public static final int SCAN_DELAY_MILLIS = 5000;
+    public static final int SEND_SINGLE_COMMAND_DELAY_MILLIS = 3000;//发送单条指令超时时间
 
-    public static final int CONNECT_DELAY_MILLIS = 15000;
+    public static final int CONFIG_DELAY_MILLIS = 15000;//发送设备配置参数指令超时时间
+
+    public static final int CONNECT_DELAY_MILLIS = 20000;//连接设备超时时间
 
 
     private MdBluetoothManager mdBluetoothManager;
@@ -419,7 +421,7 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
                     ToastUtils.show("蓝牙连接成功");
                     errMsg = "查询设备参数超时，请尝试重新连接";
                     if (BaseDeviceConnectActivity.this instanceof ConfigDASActivity || BaseDeviceConnectActivity.this instanceof ConfigADMEActivity) {
-                        startProgressRunnable("查询设备配置参数...", COMMAND_DELAY_MILLIS);
+                        startProgressRunnable("查询设备配置参数...", CONFIG_DELAY_MILLIS);
                         queryDeviceConfigInfoCmd();
                     }
                     break;
@@ -730,7 +732,7 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
         String command = CommandManager.getInstance().getCommand(CommandType.SAVE_CONFIG_INFO, saveConfigInfoEntity);
 
         errMsg = "发送指令超时,请稍后尝试";
-        startProgressRunnable("正在发送保存命令...", COMMAND_DELAY_MILLIS);
+        startProgressRunnable("正在发送保存命令...", CONFIG_DELAY_MILLIS);
         sendCommonCommandImmediately(command);
     }
 

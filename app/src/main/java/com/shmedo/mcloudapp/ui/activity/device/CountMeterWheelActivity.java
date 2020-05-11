@@ -250,7 +250,7 @@ public class CountMeterWheelActivity extends BaseDeviceConnectActivity {
         stringBuilder.append(filterCoefficient + "\r\n");
         cmdStr = String.valueOf(stringBuilder);
 
-        startProgressRunnable("正在发送配置指令...", COMMAND_DELAY_MILLIS);
+        startProgressRunnable("正在发送配置指令...", CONFIG_DELAY_MILLIS);
         sendCommonCommand(cmdStr);
     }
 

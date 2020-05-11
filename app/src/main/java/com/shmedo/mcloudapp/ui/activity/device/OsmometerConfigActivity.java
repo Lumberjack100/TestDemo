@@ -271,7 +271,7 @@ public class OsmometerConfigActivity extends BaseDeviceConnectActivity {
         SetOsmometerNozzelHeightEntity nozzelHeightEntity = new SetOsmometerNozzelHeightEntity(Double.parseDouble(nozzelHeight));
         cmdNozzelHeight = CommandManager.getInstance().getCommand(CommandType.SET_OSMOMETR_NOZZEL_HEIGHT, nozzelHeightEntity);
 
-        startProgressRunnable("正在发送配置指令...", COMMAND_DELAY_MILLIS);
+        startProgressRunnable("正在发送配置指令...", CONFIG_DELAY_MILLIS);
         sendCommonCommandImmediately(cmdOsmometerAddress);
         Timber.d("设置数字渗压计地址指令===%s", cmdOsmometerAddress);
     }

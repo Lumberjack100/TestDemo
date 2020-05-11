@@ -147,7 +147,7 @@ public class SenSorBGKConfigActivity extends BaseDeviceConnectActivity {
 
     private String collectorName = "";
 
-    private int cmdNum = 0;
+    private int sensorIndex = 0;//接入的传感器索引号
 
 
     public static void startActivity(Context context, String collectorSensorConfig) {
@@ -515,9 +515,8 @@ public class SenSorBGKConfigActivity extends BaseDeviceConnectActivity {
         }
     }
 
-
     /**
-     * 关闭采集器设备  确定后停用6226560118056462
+     * 关闭采集器设备  确定后停用
      */
     private void closeSwitchColorbg(final TextView textView, final SwitchButton switchButton, final String channelNumber) {
         mBuilder = new MaterialDialog.Builder(this);
@@ -587,7 +586,6 @@ public class SenSorBGKConfigActivity extends BaseDeviceConnectActivity {
             }
         });
     }
-
 
     private void setOpenSwitchDialog(String channelNumber) {
         switch (channelNumber) {
@@ -808,7 +806,6 @@ public class SenSorBGKConfigActivity extends BaseDeviceConnectActivity {
         }
     };
 
-
     private MyOnClickListener modifyClickListener = new MyOnClickListener() {
         @Override
         public boolean onSureClick(View view) {
@@ -850,6 +847,7 @@ public class SenSorBGKConfigActivity extends BaseDeviceConnectActivity {
         collectorSensorParamsInfoSubs.clear();
         collectorSensorParamsInfoSubs.addAll(collectorSensorHashMap.values());
         if (collectorSensorParamsInfoSubs.isEmpty()) {
+            Timber.e("%s 采集器接入的传感器信息为空!", collectorName);
             return;
         }
 
@@ -861,34 +859,86 @@ public class SenSorBGKConfigActivity extends BaseDeviceConnectActivity {
             builderFirst.append(StringUtil.formatStringTwo(paramsInfoSub.getSensorAddress()) + StringUtil.formatStringTwo(paramsInfoSub.getSensorType()));
         }
         builderFirst.append("\r\n");
+        String command = String.valueOf(builderFirst);
 
-        String result = String.valueOf(builderFirst);
-
-        startProgressRunnable("正在发送配置指令...", COMMAND_DELAY_MILLIS);
-        sendCommonCommand(result);
-        Timber.d("设置 " + collectorName + " 接入的传感器指令===%s", result);
-
-        cmdNum = 0;
-        for (int i = 0; i < collectorSensorParamsInfoSubs.size(); i++) {
-            setSensorValue(collectorSensorParamsInfoSubs.get(i));
-        }
+        startProgressRunnable("正在发送配置指令...", CONFIG_DELAY_MILLIS);
+        sendCommonCommandImmediately(command);
+        Timber.d("设置 %s 接入的传感器指令===%s", collectorName, command);
     }
 
 
-    private String cmdTriggerThreshold = "";
-    private String cmdCorrectionValue = "";
+    /**
+     * 设置采集器接入传感器触发阈值
+     */
+    private void setTriggerThreshold() {
+        if (sensorIndex >= collectorSensorParamsInfoSubs.size()) {
+            return;
+        }
 
-    private void setSensorValue(CollectorSensorParamsInfoSub paramsInfoSub) {
+        String command = "";
+        CollectorSensorParamsInfoSub paramsInfoSub = collectorSensorParamsInfoSubs.get(sensorIndex);
         CollectorModel collectorModel = CollectorModel.value(paramsInfoSub.getCollectorModel());
         switch (collectorModel) {
             case DS08://裂缝计采集器
                 SensorWireShiftInfo sensorWireShiftInfo = (SensorWireShiftInfo) paramsInfoSub.getSensorData();
-                cmdTriggerThreshold = "##168" +
+                command = "##168" +
                         StringUtil.formatStringTwo(paramsInfoSub.getCollectorModel()) +
                         StringUtil.formatStringTwo(paramsInfoSub.getSensorAddress()) +
                         sensorWireShiftInfo.getTriggerThreshold() + "\r\n";
+                break;
 
-                cmdCorrectionValue = "##165" +
+            case CS08://次声采集器
+                SensorInfrasoundInfo sensorInfrasoundInfo = (SensorInfrasoundInfo) paramsInfoSub.getSensorData();
+                command = "##168" +
+                        StringUtil.formatStringTwo(paramsInfoSub.getCollectorModel()) +
+                        StringUtil.formatStringTwo(paramsInfoSub.getSensorAddress()) +
+                        sensorInfrasoundInfo.getTriggerThreshold() + "\r\n";
+                break;
+
+            case HD08://土壤湿度采集器
+                SensorSoilMoistureInfo sensorSoilMoistureInfo = (SensorSoilMoistureInfo) paramsInfoSub.getSensorData();
+                command = "##168" +
+                        StringUtil.formatStringTwo(paramsInfoSub.getCollectorModel()) +
+                        StringUtil.formatStringTwo(paramsInfoSub.getSensorAddress()) +
+                        sensorSoilMoistureInfo.getTriggerThreshold() + "\r\n";
+                break;
+
+            case RD08://雷达采集器
+                SensorRadarLevelInfo sensorRadarLevelInfo = (SensorRadarLevelInfo) paramsInfoSub.getSensorData();
+                command = "##168" +
+                        StringUtil.formatStringTwo(paramsInfoSub.getCollectorModel()) +
+                        StringUtil.formatStringTwo(paramsInfoSub.getSensorAddress()) +
+                        sensorRadarLevelInfo.getTriggerThreshold() + "\r\n";
+                break;
+
+            case CX08://测斜仪采集器
+                SensorInclinometerInfo sensorInclinometerInfo = (SensorInclinometerInfo) paramsInfoSub.getSensorData();
+                command = "##168" +
+                        StringUtil.formatStringTwo(paramsInfoSub.getCollectorModel()) +
+                        StringUtil.formatStringTwo(paramsInfoSub.getSensorAddress()) +
+                        sensorInclinometerInfo.getTriggerThreshold() + "\r\n";
+                break;
+        }
+
+        sendCommonCommand(command);
+        Timber.d("设置 %s 采集器 %s 地址的传感器触发阈值参数===%s", collectorModel, StringUtil.formatStringTwo(paramsInfoSub.getSensorAddress()), command);
+    }
+
+    /**
+     * 设置采集器接入传感器修正值（只有墒情计用到3个修正值，其他传感器只用到一个修正值）
+     */
+    private void setCorrectionValue() {
+        if (sensorIndex >= collectorSensorParamsInfoSubs.size()) {
+            return;
+        }
+
+        String command = "";
+        CollectorSensorParamsInfoSub paramsInfoSub = collectorSensorParamsInfoSubs.get(sensorIndex);
+        CollectorModel collectorModel = CollectorModel.value(paramsInfoSub.getCollectorModel());
+        switch (collectorModel) {
+            case DS08://裂缝计采集器
+                SensorWireShiftInfo sensorWireShiftInfo = (SensorWireShiftInfo) paramsInfoSub.getSensorData();
+                command = "##165" +
                         StringUtil.formatStringTwo(paramsInfoSub.getCollectorModel()) +
                         StringUtil.formatStringTwo(paramsInfoSub.getSensorAddress()) +
                         sensorWireShiftInfo.getCorrectionValue() + "\r\n";
@@ -896,12 +946,7 @@ public class SenSorBGKConfigActivity extends BaseDeviceConnectActivity {
 
             case CS08://次声采集器
                 SensorInfrasoundInfo sensorInfrasoundInfo = (SensorInfrasoundInfo) paramsInfoSub.getSensorData();
-                cmdTriggerThreshold = "##168" +
-                        StringUtil.formatStringTwo(paramsInfoSub.getCollectorModel()) +
-                        StringUtil.formatStringTwo(paramsInfoSub.getSensorAddress()) +
-                        sensorInfrasoundInfo.getTriggerThreshold() + "\r\n";
-
-                cmdCorrectionValue = "##165" +
+                command = "##165" +
                         StringUtil.formatStringTwo(paramsInfoSub.getCollectorModel()) +
                         StringUtil.formatStringTwo(paramsInfoSub.getSensorAddress()) +
                         sensorInfrasoundInfo.getRevised() + "\r\n";
@@ -909,12 +954,7 @@ public class SenSorBGKConfigActivity extends BaseDeviceConnectActivity {
 
             case HD08://土壤湿度采集器
                 SensorSoilMoistureInfo sensorSoilMoistureInfo = (SensorSoilMoistureInfo) paramsInfoSub.getSensorData();
-                cmdTriggerThreshold = "##168" +
-                        StringUtil.formatStringTwo(paramsInfoSub.getCollectorModel()) +
-                        StringUtil.formatStringTwo(paramsInfoSub.getSensorAddress()) +
-                        sensorSoilMoistureInfo.getTriggerThreshold() + "\r\n";
-
-                cmdCorrectionValue = "##165" +
+                command = "##165" +
                         StringUtil.formatStringTwo(paramsInfoSub.getCollectorModel()) +
                         StringUtil.formatStringTwo(paramsInfoSub.getSensorAddress()) +
                         sensorSoilMoistureInfo.getRevised() + "\r\n";
@@ -922,12 +962,7 @@ public class SenSorBGKConfigActivity extends BaseDeviceConnectActivity {
 
             case RD08://雷达采集器
                 SensorRadarLevelInfo sensorRadarLevelInfo = (SensorRadarLevelInfo) paramsInfoSub.getSensorData();
-                cmdTriggerThreshold = "##168" +
-                        StringUtil.formatStringTwo(paramsInfoSub.getCollectorModel()) +
-                        StringUtil.formatStringTwo(paramsInfoSub.getSensorAddress()) +
-                        sensorRadarLevelInfo.getTriggerThreshold() + "\r\n";
-
-                cmdCorrectionValue = "##165" +
+                command = "##165" +
                         StringUtil.formatStringTwo(paramsInfoSub.getCollectorModel()) +
                         StringUtil.formatStringTwo(paramsInfoSub.getSensorAddress()) +
                         sensorRadarLevelInfo.getRevised() + "\r\n";
@@ -935,20 +970,14 @@ public class SenSorBGKConfigActivity extends BaseDeviceConnectActivity {
 
             case CX08://测斜仪采集器
                 SensorInclinometerInfo sensorInclinometerInfo = (SensorInclinometerInfo) paramsInfoSub.getSensorData();
-                cmdTriggerThreshold = "##168" +
-                        StringUtil.formatStringTwo(paramsInfoSub.getCollectorModel()) +
-                        StringUtil.formatStringTwo(paramsInfoSub.getSensorAddress()) +
-                        sensorInclinometerInfo.getTriggerThreshold() + "\r\n";
-
-                cmdCorrectionValue = "##165" +
+                command = "##165" +
                         StringUtil.formatStringTwo(paramsInfoSub.getCollectorModel()) +
                         StringUtil.formatStringTwo(paramsInfoSub.getSensorAddress()) +
                         sensorInclinometerInfo.getCorrectionValue() + "\r\n";
                 break;
         }
-
-        sendCommonCommand(cmdTriggerThreshold);
-        Timber.d("设置" + collectorName + "的传感器触发阈值指令===" + cmdTriggerThreshold);
+        sendCommonCommandImmediately(command);
+        Timber.d("设置 %s 采集器 %s 地址的传感器修正值参数===%s", collectorModel, StringUtil.formatStringTwo(paramsInfoSub.getSensorAddress()), command);
     }
 
 
@@ -959,25 +988,34 @@ public class SenSorBGKConfigActivity extends BaseDeviceConnectActivity {
         String tempStr = cmdStr.replace("$$", "").replace("\r\n", "");
         CommandType type = StringUtil.extractCommandType(cmdStr);
         switch (type) {
-            case COLLECTOR_SENSOR_THRESHOLD_SOLI:
+            case SET_COLLECTOR_SENSOR://设置采集器接入的传感器 150
+                if (tempStr.endsWith(CommandResult.ERROR_END)) {
+                    ToastUtils.show(collectorName + "接入传感器配置错误!");
+                    stopProgressRunnable();
+                    return;
+                }
+                setTriggerThreshold();
+                break;
+
+            case COLLECTOR_SENSOR_THRESHOLD_SOLI://传感器触发阈值 168
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
                     ToastUtils.show(collectorName + "的传感器触发阈值配置错误!");
                     stopProgressRunnable();
                     return;
                 }
-                sendCommonCommandImmediately(cmdCorrectionValue);
-                Timber.d("设置" + collectorName + "的传感器修正值指令===" + cmdCorrectionValue);
+                setCorrectionValue();
                 break;
 
-            case COLLECTOR_SENSOR_REVISED: //最后一个传感器参数设置指令
+            case COLLECTOR_SENSOR_REVISED: //传感器修正值 165
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
                     ToastUtils.show(collectorName + "的传感器修正值配置错误!");
                     stopProgressRunnable();
                     return;
                 }
-                cmdNum++;
+                sensorIndex++;
+                setTriggerThreshold();
 
-                if (cmdNum == collectorSensorParamsInfoSubs.size()) {
+                if (sensorIndex >= collectorSensorParamsInfoSubs.size()) {
                     stopProgressRunnable();
                     ToastUtils.show("设置完成");
                     hander.postDelayed(new Runnable() {
