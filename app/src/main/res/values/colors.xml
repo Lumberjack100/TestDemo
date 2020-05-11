@@ -6,6 +6,7 @@
     <color name="white">#FFFFFFFF</color>
     <color name="black">#FF000000</color>
     <color name="red">#fd1b1b</color>
+    <color name="green">#00FF00</color>
     <color name="font_main">@color/gray_797979</color>
     <color name="secondary_text">#727272</color>
     <color name="bg_main_light_white">#ebebeb</color>

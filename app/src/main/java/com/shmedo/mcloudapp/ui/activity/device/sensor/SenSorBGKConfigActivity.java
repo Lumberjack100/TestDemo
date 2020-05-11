@@ -173,11 +173,15 @@ public class SenSorBGKConfigActivity extends BaseDeviceConnectActivity {
     private void initData() {
         String collectorSensorConfig = getIntent().getStringExtra(Extras.SENSOR_PARAMS);
         if (TextUtils.isEmpty(collectorSensorConfig)) {
+            Timber.e("传递的传感器参数为空!");
             return;
         }
 
         String[] sensorConfigs = collectorSensorConfig.split("&&");
         for (String sensorConfig : sensorConfigs) {
+            if (TextUtils.isEmpty(sensorConfig))
+                continue;
+
             CollectorSensorParamsInfoSub mCollectorParamsInfoSub = BlueResultParserUtil.setCollectorParams(sensorConfig);
             Timber.d("--------XX采集器YY通道的传感器参数-------%s", mCollectorParamsInfoSub.toString());
 

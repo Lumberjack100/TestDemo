@@ -84,8 +84,8 @@ public class CollectorSensorParamsParser implements ResultParser<CollectorSensor
         bean.setChannelNumber(strs[0].substring(7, 9));
         bean.setSensorAddress(strs[1]);
         bean.setSensorType(WIRE_SHIFT);
-        info.setTriggerThreshold((TextUtils.isEmpty(strs[3]) || strs[3].contains("nan")) ? 0 : Integer.valueOf(strs[3]));
-        info.setCorrectionValue((TextUtils.isEmpty(strs[4]) || strs[4].contains("nan")) ? 0 : Double.valueOf(strs[4]));
+        info.setTriggerThreshold((TextUtils.isEmpty(strs[3]) || strs[3].contains("nan")) ? 0 : Integer.parseInt(strs[3]));
+        info.setCorrectionValue((TextUtils.isEmpty(strs[4]) || strs[4].contains("nan")) ? 0 : Double.parseDouble(strs[4]));
         bean.setSensorData(info);
         return bean;
     }
@@ -104,7 +104,7 @@ public class CollectorSensorParamsParser implements ResultParser<CollectorSensor
         bean.setSensorAddress(strs[1]);
         bean.setSensorType(SensorType.SOIL_MOISTURE);
         info.setTriggerThreshold(strs[3]);
-        info.setRevised((TextUtils.isEmpty(strs[4]) || strs[4].contains("nan")) ? 0 : Double.valueOf(strs[4]));
+        info.setRevised((TextUtils.isEmpty(strs[4]) || strs[4].contains("nan")) ? 0 : Double.parseDouble(strs[4]));
         bean.setSensorData(info);
         return bean;
     }
@@ -120,9 +120,9 @@ public class CollectorSensorParamsParser implements ResultParser<CollectorSensor
         bean.setChannelNumber(strs[0].substring(7,9));
         bean.setSensorAddress(strs[1]);
         bean.setSensorType(SensorType.INCLINOMETER);
-        info.setTriggerThreshold((TextUtils.isEmpty(strs[2]) || strs[2].contains("nan")) ? 0 : Integer.valueOf(strs[2]));
-        info.setMeasureLength((TextUtils.isEmpty(strs[3]) || strs[3].contains("nan")) ? 0 : Integer.valueOf(strs[3]));
-        info.setCorrectionValue((TextUtils.isEmpty(strs[4]) || strs[4].contains("nan")) ? 0 : Double.valueOf(strs[4]));
+        info.setTriggerThreshold((TextUtils.isEmpty(strs[2]) || strs[2].contains("nan")) ? 0 : Integer.parseInt(strs[2]));
+        info.setMeasureLength((TextUtils.isEmpty(strs[3]) || strs[3].contains("nan")) ? 0 : Integer.parseInt(strs[3]));
+        info.setCorrectionValue((TextUtils.isEmpty(strs[4]) || strs[4].contains("nan")) ? 0 : Double.parseDouble(strs[4]));
         bean.setSensorData(info);
         return bean;
     }
@@ -141,7 +141,7 @@ public class CollectorSensorParamsParser implements ResultParser<CollectorSensor
         bean.setSensorAddress(strs[1]);
         bean.setSensorType(SensorType.ULTRASONIC_LEVEL_GAUGE);
         info.setTriggerThreshold(strs[2]);
-        info.setRevised((TextUtils.isEmpty(strs[3]) || strs[3].contains("nan")) ? 0 : Double.valueOf(strs[3]));
+        info.setRevised((TextUtils.isEmpty(strs[3]) || strs[3].contains("nan")) ? 0 : Double.parseDouble(strs[3]));
         info.setProbeElevation(strs[4]);
         bean.setSensorData(info);
         return bean;
@@ -160,7 +160,7 @@ public class CollectorSensorParamsParser implements ResultParser<CollectorSensor
         bean.setSensorAddress(strs[1]);
         bean.setSensorType(SensorType.RADAR_LEVEL_GAUGE);
         info.setTriggerThreshold(strs[3]);
-        info.setRevised((TextUtils.isEmpty(strs[4]) || strs[4].contains("nan")) ? 0 : Double.valueOf(strs[4]));
+        info.setRevised((TextUtils.isEmpty(strs[4]) || strs[4].contains("nan")) ? 0 : Double.parseDouble(strs[4]));
         bean.setSensorData(info);
         return bean;
     }
@@ -176,12 +176,12 @@ public class CollectorSensorParamsParser implements ResultParser<CollectorSensor
         bean.setChannelNumber(strs[0].substring(7,9));
         bean.setSensorAddress(strs[1]);
         bean.setSensorType(SensorType.MOISTURE_METER);
-        info.setHumidityTriggerThreshold((TextUtils.isEmpty(strs[2]) || strs[2].contains("nan")) ? 0 : Integer.valueOf(strs[2]));
-        info.setHumidityCorrectionValue((TextUtils.isEmpty(strs[3]) || strs[3].contains("nan")) ? 0 : Integer.valueOf(strs[3]));
-        info.setSaltTriggerThreshold((TextUtils.isEmpty(strs[4]) || strs[4].contains("nan")) ? 0 : Integer.valueOf(strs[4]));
-        info.setSaltCorrectionValue((TextUtils.isEmpty(strs[5]) || strs[5].contains("nan")) ? 0 : Integer.valueOf(strs[5]));
-        info.setTemperatureTriggerThreshold((TextUtils.isEmpty(strs[6]) || strs[6].contains("nan")) ? 0 : Integer.valueOf(strs[6]));
-        info.setTemperatureCorrectionValue((TextUtils.isEmpty(strs[7]) || strs[7].contains("nan")) ? 0 : Integer.valueOf(strs[7]));
+        info.setHumidityTriggerThreshold((TextUtils.isEmpty(strs[2]) || strs[2].contains("nan")) ? 0 : Integer.parseInt(strs[2]));
+        info.setHumidityCorrectionValue((TextUtils.isEmpty(strs[3]) || strs[3].contains("nan")) ? 0 : Integer.parseInt(strs[3]));
+        info.setSaltTriggerThreshold((TextUtils.isEmpty(strs[4]) || strs[4].contains("nan")) ? 0 : Integer.parseInt(strs[4]));
+        info.setSaltCorrectionValue((TextUtils.isEmpty(strs[5]) || strs[5].contains("nan")) ? 0 : Integer.parseInt(strs[5]));
+        info.setTemperatureTriggerThreshold((TextUtils.isEmpty(strs[6]) || strs[6].contains("nan")) ? 0 : Integer.parseInt(strs[6]));
+        info.setTemperatureCorrectionValue((TextUtils.isEmpty(strs[7]) || strs[7].contains("nan")) ? 0 : Integer.parseInt(strs[7]));
         bean.setSensorData(info);
         return bean;
     }
@@ -218,8 +218,8 @@ public class CollectorSensorParamsParser implements ResultParser<CollectorSensor
         bean.setChannelNumber(strs[0].substring(7,9));
         bean.setSensorAddress(strs[1]);
         bean.setSensorType(SensorType.UPLIFT_PRESSURE_GAUGE);
-        info.setTriggerThreshold((TextUtils.isEmpty(strs[2]) || strs[2].contains("nan")) ? 0 : Integer.valueOf(strs[2]));
-        info.setRevised((TextUtils.isEmpty(strs[3]) || strs[3].contains("nan")) ? 0 : Double.valueOf(strs[3]));
+        info.setTriggerThreshold((TextUtils.isEmpty(strs[2]) || strs[2].contains("nan")) ? 0 : Integer.parseInt(strs[2]));
+        info.setRevised((TextUtils.isEmpty(strs[3]) || strs[3].contains("nan")) ? 0 : Double.parseDouble(strs[3]));
         info.setCordlength(strs[4]);
         info.setInstallationElevation(strs[5]);
         bean.setSensorData(info);
@@ -239,7 +239,7 @@ public class CollectorSensorParamsParser implements ResultParser<CollectorSensor
         bean.setSensorAddress(strs[1]);
         bean.setSensorType(SensorType.INFRASOUND_SENSOR);
         info.setTriggerThreshold(strs[3]);
-        info.setRevised((TextUtils.isEmpty(strs[4]) || strs[4].contains("nan")) ? 0 : Double.valueOf(strs[4]));
+        info.setRevised((TextUtils.isEmpty(strs[4]) || strs[4].contains("nan")) ? 0 : Double.parseDouble(strs[4]));
         bean.setSensorData(info);
         return bean;
     }
@@ -255,12 +255,12 @@ public class CollectorSensorParamsParser implements ResultParser<CollectorSensor
         bean.setChannelNumber(strs[0].substring(7,9));
         bean.setSensorAddress(strs[1]);
         bean.setSensorType(SensorType.KANG_PERCOLATE);
-        info.setTriggerThreshold((TextUtils.isEmpty(strs[2]) || strs[2].contains("nan")) ? 0 : Integer.valueOf(strs[2]));
+        info.setTriggerThreshold((TextUtils.isEmpty(strs[2]) || strs[2].contains("nan")) ? 0 : Integer.parseInt(strs[2]));
         info.setPolynomialRatioA(strs[3]);
         info.setPolynomialRatioB(strs[4]);
         info.setPolynomialRatioC(strs[5]);
-        info.setTemperatureCoefficientK((TextUtils.isEmpty(strs[6]) || strs[6].contains("nan")) ? 0 : Double.valueOf(strs[6]));
-        info.setCreateTemperature((TextUtils.isEmpty(strs[7]) || strs[7].contains("nan")) ? 0 : Double.valueOf(strs[7]));
+        info.setTemperatureCoefficientK((TextUtils.isEmpty(strs[6]) || strs[6].contains("nan")) ? 0 : Double.parseDouble(strs[6]));
+        info.setCreateTemperature((TextUtils.isEmpty(strs[7]) || strs[7].contains("nan")) ? 0 : Double.parseDouble(strs[7]));
         info.setManualCorrection(strs[8]);
         bean.setSensorData(info);
         return bean;
@@ -278,11 +278,11 @@ public class CollectorSensorParamsParser implements ResultParser<CollectorSensor
         bean.setChannelNumber(strs[0].substring(7,9));
         bean.setSensorAddress(strs[1]);
         bean.setSensorType(SensorType.GUDAN_PERCOLATE);
-        info.setTriggerThreshold((TextUtils.isEmpty(strs[2]) || strs[2].contains("nan")) ? 0 : Integer.valueOf(strs[2]));
-        info.setSensitivityK((TextUtils.isEmpty(strs[3]) || strs[3].contains("nan")) ? 0 : Integer.valueOf(strs[3]));
-        info.setTemperatureCoefficientB((TextUtils.isEmpty(strs[4]) || strs[4].contains("nan")) ? 0 : Double.valueOf(strs[4]));
-        info.setDatumValueF0((TextUtils.isEmpty(strs[5]) || strs[5].contains("nan")) ? 0 : Double.valueOf(strs[5]));
-        info.setCreateTemperature((TextUtils.isEmpty(strs[6]) || strs[6].contains("nan")) ? 0 : Double.valueOf(strs[6]));
+        info.setTriggerThreshold((TextUtils.isEmpty(strs[2]) || strs[2].contains("nan")) ? 0 : Integer.parseInt(strs[2]));
+        info.setSensitivityK((TextUtils.isEmpty(strs[3]) || strs[3].contains("nan")) ? 0 : Integer.parseInt(strs[3]));
+        info.setTemperatureCoefficientB((TextUtils.isEmpty(strs[4]) || strs[4].contains("nan")) ? 0 : Double.parseDouble(strs[4]));
+        info.setDatumValueF0((TextUtils.isEmpty(strs[5]) || strs[5].contains("nan")) ? 0 : Double.parseDouble(strs[5]));
+        info.setCreateTemperature((TextUtils.isEmpty(strs[6]) || strs[6].contains("nan")) ? 0 : Double.parseDouble(strs[6]));
         info.setManualCorrection(strs[7]);
         bean.setSensorData(info);
         return bean;
@@ -301,11 +301,11 @@ public class CollectorSensorParamsParser implements ResultParser<CollectorSensor
         bean.setChannelNumber(strs[0].substring(7,9));
         bean.setSensorAddress(strs[1]);
         bean.setSensorType(SensorType.GUDAN_SOIL_PRESSURE);
-        info.setTriggerThreshold((TextUtils.isEmpty(strs[2]) || strs[2].contains("nan")) ? 0 : Integer.valueOf(strs[2]));
-        info.setSensitivityK((TextUtils.isEmpty(strs[3]) || strs[3].contains("nan")) ? 0 : Integer.valueOf(strs[3]));
-        info.setTemperatureCoefficientB((TextUtils.isEmpty(strs[4]) || strs[4].contains("nan")) ? 0 : Double.valueOf(strs[4]));
-        info.setDatumValueF0((TextUtils.isEmpty(strs[5]) || strs[5].contains("nan")) ? 0 : Double.valueOf(strs[5]));
-        info.setCreateTemperature((TextUtils.isEmpty(strs[6]) || strs[6].contains("nan")) ? 0 : Double.valueOf(strs[6]));
+        info.setTriggerThreshold((TextUtils.isEmpty(strs[2]) || strs[2].contains("nan")) ? 0 : Integer.parseInt(strs[2]));
+        info.setSensitivityK((TextUtils.isEmpty(strs[3]) || strs[3].contains("nan")) ? 0 : Integer.parseInt(strs[3]));
+        info.setTemperatureCoefficientB((TextUtils.isEmpty(strs[4]) || strs[4].contains("nan")) ? 0 : Double.parseDouble(strs[4]));
+        info.setDatumValueF0((TextUtils.isEmpty(strs[5]) || strs[5].contains("nan")) ? 0 : Double.parseDouble(strs[5]));
+        info.setCreateTemperature((TextUtils.isEmpty(strs[6]) || strs[6].contains("nan")) ? 0 : Double.parseDouble(strs[6]));
         info.setManualCorrection(strs[7]);
         bean.setSensorData(info);
         return bean;
@@ -323,12 +323,12 @@ public class CollectorSensorParamsParser implements ResultParser<CollectorSensor
         bean.setChannelNumber(strs[0].substring(7,9));
         bean.setSensorAddress(strs[1]);
         bean.setSensorType(SensorType.GUDAN_STRESS);
-        info.setTriggerThreshold((TextUtils.isEmpty(strs[2]) || strs[2].contains("nan")) ? 0 : Integer.valueOf(strs[2]));
-        info.setSensitivityK((TextUtils.isEmpty(strs[3]) || strs[3].contains("nan")) ? 0 : Integer.valueOf(strs[3]));
-        info.setTemperatureCoefficientB((TextUtils.isEmpty(strs[4]) || strs[4].contains("nan")) ? 0 : Double.valueOf(strs[4]));
-        info.setExpansionCoefficient((TextUtils.isEmpty(strs[5]) || strs[5].contains("nan")) ? 0 : Double.valueOf(strs[5]));
-        info.setDatumValueF0((TextUtils.isEmpty(strs[6]) || strs[6].contains("nan")) ? 0 : Double.valueOf(strs[6]));
-        info.setCreateTemperature((TextUtils.isEmpty(strs[7]) || strs[7].contains("nan")) ? 0 : Double.valueOf(strs[7]));
+        info.setTriggerThreshold((TextUtils.isEmpty(strs[2]) || strs[2].contains("nan")) ? 0 : Integer.parseInt(strs[2]));
+        info.setSensitivityK((TextUtils.isEmpty(strs[3]) || strs[3].contains("nan")) ? 0 : Integer.parseInt(strs[3]));
+        info.setTemperatureCoefficientB((TextUtils.isEmpty(strs[4]) || strs[4].contains("nan")) ? 0 : Double.parseDouble(strs[4]));
+        info.setExpansionCoefficient((TextUtils.isEmpty(strs[5]) || strs[5].contains("nan")) ? 0 : Double.parseDouble(strs[5]));
+        info.setDatumValueF0((TextUtils.isEmpty(strs[6]) || strs[6].contains("nan")) ? 0 : Double.parseDouble(strs[6]));
+        info.setCreateTemperature((TextUtils.isEmpty(strs[7]) || strs[7].contains("nan")) ? 0 : Double.parseDouble(strs[7]));
         info.setManualCorrection(strs[8]);
         bean.setSensorData(info);
         return bean;
@@ -347,12 +347,12 @@ public class CollectorSensorParamsParser implements ResultParser<CollectorSensor
         bean.setChannelNumber(strs[0].substring(7,9));
         bean.setSensorAddress(strs[1]);
         bean.setSensorType(SensorType.GUDAN_NOT_STRESS);
-        info.setTriggerThreshold((TextUtils.isEmpty(strs[2]) || strs[2].contains("nan")) ? 0 : Integer.valueOf(strs[2]));
-        info.setSensitivityK((TextUtils.isEmpty(strs[3]) || strs[3].contains("nan")) ? 0 : Integer.valueOf(strs[3]));
-        info.setTemperatureCoefficientB((TextUtils.isEmpty(strs[4]) || strs[4].contains("nan")) ? 0 : Double.valueOf(strs[4]));
-        info.setExpansionCoefficient((TextUtils.isEmpty(strs[5]) || strs[5].contains("nan")) ? 0 : Double.valueOf(strs[5]));
-        info.setDatumValueF0((TextUtils.isEmpty(strs[6]) || strs[6].contains("nan")) ? 0 : Double.valueOf(strs[6]));
-        info.setCreateTemperature((TextUtils.isEmpty(strs[7]) || strs[7].contains("nan")) ? 0 : Double.valueOf(strs[7]));
+        info.setTriggerThreshold((TextUtils.isEmpty(strs[2]) || strs[2].contains("nan")) ? 0 : Integer.parseInt(strs[2]));
+        info.setSensitivityK((TextUtils.isEmpty(strs[3]) || strs[3].contains("nan")) ? 0 : Integer.parseInt(strs[3]));
+        info.setTemperatureCoefficientB((TextUtils.isEmpty(strs[4]) || strs[4].contains("nan")) ? 0 : Double.parseDouble(strs[4]));
+        info.setExpansionCoefficient((TextUtils.isEmpty(strs[5]) || strs[5].contains("nan")) ? 0 : Double.parseDouble(strs[5]));
+        info.setDatumValueF0((TextUtils.isEmpty(strs[6]) || strs[6].contains("nan")) ? 0 : Double.parseDouble(strs[6]));
+        info.setCreateTemperature((TextUtils.isEmpty(strs[7]) || strs[7].contains("nan")) ? 0 : Double.parseDouble(strs[7]));
         info.setManualCorrection(strs[8]);
         bean.setSensorData(info);
         return bean;
@@ -366,11 +366,11 @@ public class CollectorSensorParamsParser implements ResultParser<CollectorSensor
         bean.setChannelNumber(strs[0].substring(7,9));
         bean.setSensorAddress(strs[1]);
         bean.setSensorType(SensorType.GUDAN_DISPLACEMENT_METER);
-        info.setTriggerThreshold((TextUtils.isEmpty(strs[2]) || strs[2].contains("nan")) ? 0 : Integer.valueOf(strs[2]));
-        info.setSensitivityK((TextUtils.isEmpty(strs[3]) || strs[3].contains("nan")) ? 0 : Integer.valueOf(strs[3]));
-        info.setTemperatureCoefficientB((TextUtils.isEmpty(strs[4]) || strs[4].contains("nan")) ? 0 : Double.valueOf(strs[4]));
-        info.setDatumValueF0((TextUtils.isEmpty(strs[5]) || strs[5].contains("nan")) ? 0 : Double.valueOf(strs[5]));
-        info.setCreateTemperature((TextUtils.isEmpty(strs[6]) || strs[6].contains("nan")) ? 0 : Double.valueOf(strs[6]));
+        info.setTriggerThreshold((TextUtils.isEmpty(strs[2]) || strs[2].contains("nan")) ? 0 : Integer.parseInt(strs[2]));
+        info.setSensitivityK((TextUtils.isEmpty(strs[3]) || strs[3].contains("nan")) ? 0 : Integer.parseInt(strs[3]));
+        info.setTemperatureCoefficientB((TextUtils.isEmpty(strs[4]) || strs[4].contains("nan")) ? 0 : Double.parseDouble(strs[4]));
+        info.setDatumValueF0((TextUtils.isEmpty(strs[5]) || strs[5].contains("nan")) ? 0 : Double.parseDouble(strs[5]));
+        info.setCreateTemperature((TextUtils.isEmpty(strs[6]) || strs[6].contains("nan")) ? 0 : Double.parseDouble(strs[6]));
         info.setManualCorrection(strs[7]);
         bean.setSensorData(info);
         return bean;

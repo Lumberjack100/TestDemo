@@ -42,6 +42,8 @@ import com.shmedo.mcloudapp.bluetooth.BluetoothEventHandler;
 import com.shmedo.mcloudapp.bluetooth.MdBluetoothManager;
 import com.shmedo.mcloudapp.bluetooth.Message;
 import com.shmedo.mcloudapp.entity.event.BluetoothStateEvent;
+import com.shmedo.mcloudapp.ui.activity.ConfigADMEActivity;
+import com.shmedo.mcloudapp.ui.activity.ConfigDASActivity;
 import com.shmedo.mcloudapp.util.bleutil.ByteManagerUtil;
 import com.shmedo.mcloudapp.util.bleutil.Constants;
 import com.shmedo.mcloudapp.util.common.HandleBackUtil;
@@ -85,8 +87,6 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
 
     public boolean isExitMode = false;
 
-    protected boolean isQuickActivation = false;
-
     private String authenticateParam = "";
 
     protected String errMsg = "";
@@ -127,7 +127,7 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
         }
     }
 
-    protected void stopProgressRunnable() {
+    public void stopProgressRunnable() {
         dismissLoadingDialog();
         hander.removeCallbacks(progressRunnable);
         progressRunnable = null;
@@ -410,30 +410,22 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
 
                 case Constants.VERIFY_RESULT:
                     stopProgressRunnable();
-                    if (msg.obj.equals("1")) {
-                        if (isQuickActivation) {
-                            sendActivateDeviceCmd();
-                        } else {
-                            ToastUtils.show("蓝牙连接成功");
-                            errMsg = "查询设备参数超时，请尝试重新连接";
-                            startProgressRunnable("查询设备配置参数...", COMMAND_DELAY_MILLIS);
-                            obtainDeviceConfigInfoCmd();
-                        }
-                    } else {
+                    if (!msg.obj.equals("1")) {
                         ToastUtils.show("蓝牙认证失败!");
                         setAutoConnectBlueAfterDisconnect();
+                        break;
+                    }
+
+                    ToastUtils.show("蓝牙连接成功");
+                    errMsg = "查询设备参数超时，请尝试重新连接";
+                    if (BaseDeviceConnectActivity.this instanceof ConfigDASActivity || BaseDeviceConnectActivity.this instanceof ConfigADMEActivity) {
+                        startProgressRunnable("查询设备配置参数...", COMMAND_DELAY_MILLIS);
+                        queryDeviceConfigInfoCmd();
                     }
                     break;
 
                 case Constants.MESSAGE_RESPONSE_TIME_OUT://消息等待响应超时
                     setAutoConnectBlueAfterDisconnect();
-                    break;
-
-                case Constants.REFRESH_RUN_STATE:
-                    break;
-
-                case Constants.MESSAGE_RESPONSE_SAVE_SETTINGS_SUCCESS:
-//                    ToastUtils.show("设置信息已保存！");
                     break;
 
                 case Constants.BT_REQUEST_MTU_FAIL:
@@ -452,15 +444,9 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
                     ToastUtils.show("设置读取Descriptor失败！");
                     break;
 
-                case Constants.BT_RECOVERY_SUCCESS:
-                    break;
-
-                case Constants.MESSAGE_RESPONSE_REBOOT_DEVICE:
-                    break;
-
                 case Constants.MESSAGE_LOCK_REBOOT_DEVICE:
                     Timber.i("蓝牙通讯已就绪");
-                    obtainDeviceConfigInfoCmd();
+                    queryDeviceConfigInfoCmd();
                     break;
 
                 default:
@@ -525,14 +511,12 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
 
     /**
      * 解析设备的参数指令
-     *
-     * @param cmdStr
      */
     private void parserResult(String cmdStr) {
-        if (SN.endsWith("T")) {//ADME 设备
+        if (SN.endsWith("T")) {//ADME 设备应答指令预处理
             parserADMECmdResult(cmdStr);
 
-        } else if (SN.endsWith("L")) {//DAS 设备
+        } else if (SN.endsWith("L")) {//DAS 设备应答指令预处理
             parserDASCmdResult(cmdStr);
 
         } else {//其他设备
@@ -586,9 +570,9 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
      */
     private void parserDASCmdResult(String cmdStr) {
         //查询数字式渗压计参数
-        if (cmdStr.startsWith("$$333") && cmdStr.endsWith("\r\n")) {
-            stopProgressRunnable();
-        }
+//        if (cmdStr.startsWith("$$333") && cmdStr.endsWith("\r\n")) {
+//            stopProgressRunnable();
+//        }
 
         //此处是各个配置指令应答，表示已经更改配置了
         if ((cmdStr.startsWith("$$006")//调试模式
@@ -611,17 +595,11 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
         }
     }
 
-    /**
-     * 快速激活
-     */
-    protected void sendActivateDeviceCmd() {
-
-    }
 
     /**
      * 查询设备的配置参数信息
      */
-    private void obtainDeviceConfigInfoCmd() {
+    private void queryDeviceConfigInfoCmd() {
         if (SN.endsWith("T")) {//ADME 设备
             queryADMEConfigInfoCmd();
 
@@ -662,10 +640,10 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
      * 查询 DAS 设备的配置参数信息
      */
     private void queryDASConfigInfoCmd() {
-        //获取所有配置  ##333
-        String allInfoCommand = CommandManager.getInstance().getCommand(CommandType.GET_ALL_SENSOR_CONFIG);
-        sendCommonCommand(allInfoCommand);
-        Timber.d("获取所有配置指令===%s", allInfoCommand);
+        //获取基础配置信息  ##000
+        String command = CommandManager.getInstance().getCommand(CommandType.BASE_CONFIG);
+        sendCommonCommandImmediately(command);
+        Timber.d("获取基础配置信息指令===%s", command);
 
         //查询数字式渗压计参数 ##400
 //        String shenyajiCommand = CommandManager.getInstance().getCommand(CommandType.QUERY_OSMOMETER_PARAMETER, null);

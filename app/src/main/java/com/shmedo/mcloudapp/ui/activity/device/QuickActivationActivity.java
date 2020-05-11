@@ -75,7 +75,7 @@ public class QuickActivationActivity extends BaseDeviceConnectActivity {
 
 
     private void initView() {
-        isQuickActivation = true;
+//        isQuickActivation = true;
 
         ((TextView) bluetoothSwitchLayout.findViewById(R.id.tv_config_name)).setText("蓝牙连接状态：");
         tvBluetoothState = bluetoothSwitchLayout.findViewById(R.id.tv_device_state);
@@ -122,7 +122,7 @@ public class QuickActivationActivity extends BaseDeviceConnectActivity {
     }
 
 
-    @Override
+
     protected void sendActivateDeviceCmd() {
         startProgressRunnable("正在发送升级指令...", COMMAND_DELAY_MILLIS);
         setSetRemoteUpgrade(SetRemoteUpgrade.OPEN_UPGRADE_MODEL1, null, 7073);

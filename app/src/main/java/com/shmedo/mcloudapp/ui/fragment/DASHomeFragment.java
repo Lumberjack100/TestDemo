@@ -24,6 +24,8 @@ import com.hjq.toast.ToastUtils;
 import com.kyleduo.switchbutton.SwitchButton;
 import com.shmedo.core.cmd.CommandManager;
 import com.shmedo.core.cmd.CommandResult;
+import com.shmedo.core.cmd.entity.CollectorConfigEntity;
+import com.shmedo.core.cmd.entity.CollectorSensorParamsEntity;
 import com.shmedo.core.cmd.entity.RainStationEntity;
 import com.shmedo.core.cmd.entity.SetRainPrecisionEntity;
 import com.shmedo.core.enums.BreakAlarmStatus;
@@ -33,7 +35,6 @@ import com.shmedo.core.enums.RainStation;
 import com.shmedo.core.model.BaseConfigInfo;
 import com.shmedo.core.model.BreakAlarmStatusInfo;
 import com.shmedo.core.model.CollectorConfigInfo;
-import com.shmedo.core.model.GetAllSensorConfigInfo;
 import com.shmedo.core.model.QueryOsmometerParameterInfo;
 import com.shmedo.core.model.SetRainPrecisionInfo;
 import com.shmedo.core.utils.ResultParserUtil;
@@ -63,7 +64,7 @@ import timber.log.Timber;
  */
 public class DASHomeFragment extends BaseFragment {
 
-    public static final int REQUEST_CODE_COLLECTOR_CONFIG = 0x001;
+    private static final int REQUEST_CODE_COLLECTOR_CONFIG = 0x001;
 
     private static final int DEVICE_ENABLE = 0x0002;
 
@@ -134,6 +135,8 @@ public class DASHomeFragment extends BaseFragment {
     private int alarmStatusCheck = 0;//标志位，Avoid onItemSelected calls during initialization
 
     private int rainCheck = 0;//标志位，Avoid onItemSelected calls during initialization
+
+    private int accessNumFlag = 0;//接入传感器数量标志
 
 
     @Override
@@ -387,32 +390,84 @@ public class DASHomeFragment extends BaseFragment {
 
 
     /**
-     * 所有配置信息处理
+     * 设置显示数据
      */
-    private void processGetAllSensorConfig(String cmdStr) {
-        String[] strs = cmdStr.split("@@");
-        if (strs.length < 6)
-            return;
+    private void setResultData(String cmdStr) {
+        String tempStr = cmdStr.replace("$$", "").replace("\r\n", "");
+        CommandType type = StringUtil.extractCommandType(cmdStr);
+        switch (type) {
+            case BASE_CONFIG://基础配置信息 000
+                if (tempStr.endsWith(CommandResult.ERROR_END)) {
+                    Timber.e("查询基础配置信息指令出错!");
+                    return;
+                }
+                baseConfigInfo = ResultParserUtil.getEntityObject(cmdStr);
+                initBaseConfigInfo();
+                queryCollectorConfigInfo();
+                break;
 
-        //拼接采集器接入的传感器配置信息
-        sbcollectorSensor = new StringBuilder();
-        for (int i = 5; i < strs.length; i++) {
-            sbcollectorSensor.append(strs[i] + "&&");
+            case COLLECTOR_CONFIG://采集器配置信息 100
+                if (tempStr.endsWith(CommandResult.ERROR_END)) {
+                    Timber.e("查询采集器配置信息指令出错!");
+                    return;
+                }
+                collectorConfigInfo = ResultParserUtil.getEntityObject(cmdStr);
+                querySensorConfigInfo();
+                break;
+
+            case COLLECTOR_CHANNEL_SENSOR_PARAMETER://断线报警器状态 227
+                sbcollectorSensor.append(cmdStr.replace("\r\n", "") + "&&");
+                accessNumFlag++;
+                if (accessNumFlag == collectorConfigInfo.getAccessSum()) {
+                    configDASActivity.stopProgressRunnable();
+                }
+                break;
+
+            case RAIN_STATION://雨量计开关 0051：雨量计开启  0052：关闭   0053：断线报警器开启
+                if (tempStr.endsWith(CommandResult.ERROR_END)) {
+                    ToastUtils.show("开关量配置错误!");
+                    return;
+                }
+                break;
+
+            case BREAK_ALARM_STATUS: //断线报警器状态 227
+                if (tempStr.endsWith(CommandResult.ERROR_END)) {
+                    ToastUtils.show("断线报警器配置错误!");
+                    return;
+                }
+                breakAlarmStatusInfo = ResultParserUtil.getEntityObject(cmdStr);
+                if (breakAlarmStatusInfo == null) {
+                    Timber.e("断线报警器状态为空!");
+                    return;
+                }
+                Timber.d("断线报警器状态: %s", breakAlarmStatusInfo.toString());
+                switch (breakAlarmStatusInfo.getStatus()) {
+                    case OPEN:
+                        mSbBleakAlarm.setCheckedImmediatelyNoEvent(true);
+                        setSwitchViewState(true, mTvBreakAlarm, "常开");
+                        break;
+                    case CLOSE:
+                        mSbBleakAlarm.setCheckedImmediatelyNoEvent(false);
+                        setSwitchViewState(false, mTvBreakAlarm, "常闭");
+                        break;
+                }
+                break;
         }
-
-        GetAllSensorConfigInfo getAllSensorConfigInfo = ResultParserUtil.getEntityObject(cmdStr);
-        Timber.d("所有配置信息实体类: %s", getAllSensorConfigInfo.toString());
-        collectorConfigInfo = getAllSensorConfigInfo.getCollectorConfig();
-        baseConfigInfo = getAllSensorConfigInfo.getBaseConfig();
-        if (baseConfigInfo != null) {
-            setRainPrecisionInfo.setPrecision((double) baseConfigInfo.getRainAccuracy() / 100);
-            collectorModel = baseConfigInfo.getCollectorModel().toString();
-        }
-
-        updateView();
     }
 
-    private void updateView() {
+    /**
+     * 处理基础配置信息
+     */
+    private void initBaseConfigInfo() {
+        if (baseConfigInfo == null) {
+            Timber.e("基础配置信息为空!");
+            return;
+        }
+
+        setRainPrecisionInfo.setPrecision((double) baseConfigInfo.getRainAccuracy() / 100);
+        collectorModel = baseConfigInfo.getCollectorModel().toString();
+
+        //获取采集器类型
         if (!TextUtils.isEmpty(collectorModel)) {
             CollectorModel model = CollectorModel.value(collectorModel);
             String collectorName = BlueResultParserUtil.getCollectorName(model);
@@ -466,51 +521,43 @@ public class DASHomeFragment extends BaseFragment {
     }
 
     /**
-     * 设置显示数据
+     * 查询采集器配置信息
      */
-    private void setResultData(String cmdStr) {
-        String tempStr = cmdStr.replace("$$", "").replace("\r\n", "");
-        CommandType type = StringUtil.extractCommandType(cmdStr);
-        switch (type) {
-            case RAIN_STATION://雨量计开关 0051：雨量计开启  0052：关闭   0053：断线报警器开启
-                if (tempStr.endsWith(CommandResult.ERROR_END)) {
-                    ToastUtils.show("开关量配置错误!");
-                    return;
-                }
-                break;
-
-            case GET_ALL_SENSOR_CONFIG://所有配置信息 333
-                processGetAllSensorConfig(cmdStr);
-                break;
-
-            case BREAK_ALARM_STATUS: //断线报警器状态 227
-                if (tempStr.endsWith(CommandResult.ERROR_END)) {
-                    ToastUtils.show("断线报警器配置错误!");
-                    return;
-                }
-                breakAlarmStatusInfo = ResultParserUtil.getEntityObject(cmdStr);
-                Timber.d("断线报警器状态: %s", breakAlarmStatusInfo.toString());
-                switch (breakAlarmStatusInfo.getStatus()) {
-                    case OPEN:
-                        mSbBleakAlarm.setCheckedImmediatelyNoEvent(true);
-                        setSwitchViewState(true, mTvBreakAlarm, "常开");
-                        break;
-                    case CLOSE:
-                        mSbBleakAlarm.setCheckedImmediatelyNoEvent(false);
-                        setSwitchViewState(false, mTvBreakAlarm, "常闭");
-                        break;
-                }
-                break;
-        }
+    private void queryCollectorConfigInfo() {
+        CollectorConfigEntity collectorConfigEntity = new CollectorConfigEntity(collectorModel);
+        String command = CommandManager.getInstance().getCommand(CommandType.COLLECTOR_CONFIG, collectorConfigEntity);
+        configDASActivity.sendCommonCommandImmediately(command);
+        Timber.d("查询采集器配置信息===%s", command);
     }
 
+    /**
+     * 查询采集器接入的传感器配置信息
+     */
+    private void querySensorConfigInfo() {
+        // 查询传感器配置信息前,重置accessNumFlag、sbcollectorSensor参数
+        accessNumFlag = 0;
+        sbcollectorSensor = new StringBuilder();
+
+        if (collectorConfigInfo == null) {
+            Timber.e("采集器配置信息为空!");
+            return;
+        }
+
+        int sum = collectorConfigInfo.getAccessSum();
+        for (int i = 0; i < sum; i++) {
+            String address = StringUtil.formatStringTwo(i + "");
+            CollectorSensorParamsEntity entity = new CollectorSensorParamsEntity(collectorModel, address);
+            String command = CommandManager.getInstance().getCommand(CommandType.COLLECTOR_CHANNEL_SENSOR_PARAMETER, entity);
+            configDASActivity.sendCommonCommand(command);
+            Timber.d("获取 %s 采集器 %s 通道的传感器参数===%s", collectorModel, address, command);
+        }
+    }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void getConfig(String messageEvent) {
         if (TextUtils.isEmpty(messageEvent) || !messageEvent.startsWith("$$")) {
             return;
         }
-
         setResultData(messageEvent);
     }
 
@@ -518,12 +565,6 @@ public class DASHomeFragment extends BaseFragment {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(BluetoothStateEvent bluetoothStateEvent) {
         setViewStateByConnectState(bluetoothStateEvent.isConnected);
-    }
-
-
-    private void setSwitchViewState(boolean isOpen, TextView textView, String content) {
-        textView.setText(content);
-        textView.setTextColor(isOpen ? getResources().getColor(R.color.colorPrimary) : getResources().getColor(R.color.gray_807B7B));
     }
 
     private void setViewStateByConnectState(boolean isConnected) {
@@ -534,6 +575,10 @@ public class DASHomeFragment extends BaseFragment {
         mSpRain.setEnabled(isConnected);
     }
 
+    private void setSwitchViewState(boolean isOpen, TextView textView, String content) {
+        textView.setText(content);
+        textView.setTextColor(isOpen ? getResources().getColor(R.color.colorPrimary) : getResources().getColor(R.color.gray_807B7B));
+    }
 
     /**
      * 关闭SwitchButton

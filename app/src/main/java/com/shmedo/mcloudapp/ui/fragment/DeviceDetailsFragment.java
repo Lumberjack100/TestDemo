@@ -2,7 +2,10 @@ package com.shmedo.mcloudapp.ui.fragment;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
+import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -399,8 +402,7 @@ public class DeviceDetailsFragment extends BaseFragment implements SwipeRefreshL
         caseExternalTemperature.setText(statusTwo.getExternalTemperature() + "°");
         caseExternalHumidity.setText(statusTwo.getExternalHumidity() + "%");
         //设备电量、电压
-        internalBattery.setText(DeviceDetailInfoUtils.setDeviceInternalBattery(statusTwo.getInternalVoltage()));
-        externalBattery.setText(statusTwo.getExternalVoltage() + "V");
+        processPowerAndVoltage(statusTwo);
 
         //雨量值 断线报警器状态
         //根据开关量类型来判断降雨量和断线报警器
@@ -430,6 +432,25 @@ public class DeviceDetailsFragment extends BaseFragment implements SwipeRefreshL
                 }
                 break;
         }
+    }
+
+    /**
+     * 设备电量、电压警戒值处理
+     */
+    private void processPowerAndVoltage(DeviceStatusInfoTwo statusTwo) {
+        String powerStr = DeviceDetailInfoUtils.setDeviceInternalBattery(statusTwo.getInternalVoltage());
+        double power = Double.parseDouble(powerStr.replace("%", ""));
+        SpannableStringBuilder builder = new SpannableStringBuilder(powerStr);
+        ForegroundColorSpan colorSpan = new ForegroundColorSpan(power <= 10 ? getContext().getResources().getColor(R.color.red) : getContext().getResources().getColor(R.color.green));
+        builder.setSpan(colorSpan, 0, builder.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        internalBattery.setText(builder);
+
+        String voltageStr = statusTwo.getExternalVoltage();
+        double voltage = Double.parseDouble(voltageStr);
+        builder = new SpannableStringBuilder(voltageStr + "V");
+        colorSpan = new ForegroundColorSpan(voltage <= 5 ? getContext().getResources().getColor(R.color.red) : getContext().getResources().getColor(R.color.green));
+        builder.setSpan(colorSpan, 0, builder.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        externalBattery.setText(builder);
     }
 
     //设置设备状态3  $$043,150000L,2,   3:0:3.1,   5:0:3.1\r\n

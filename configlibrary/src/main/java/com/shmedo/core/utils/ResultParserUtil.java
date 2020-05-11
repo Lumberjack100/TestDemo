@@ -1,8 +1,12 @@
 package com.shmedo.core.utils;
 
+import android.text.TextUtils;
+
 import com.shmedo.core.cmd.CommandResult;
 import com.shmedo.core.cmd.parser.ParseManager;
 import com.shmedo.core.model.GetAllSensorConfigInfo;
+
+import timber.log.Timber;
 
 /**
  * 创建者:   gonghe <br/>
@@ -34,6 +38,11 @@ public class ResultParserUtil {
      * @return
      */
     public static <T> T getEntityObject(String result) {
+        if (TextUtils.isEmpty(result)) {
+            Timber.e("待解析的指令结果字符串为空");
+            return null;
+        }
+
         CommandResult<Class> commandResult = ParseManager.getInstance().parse(result);
         T info = null;
         if (commandResult.isSuccess()) {

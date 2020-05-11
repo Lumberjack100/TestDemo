@@ -23,14 +23,15 @@ public class CollectorSensorParamsEntity implements Validater {
 
     @Override
     public void validate() {
-        if(!CollectorModel.isValidCollector(this.collectorType))
+        if (!CollectorModel.isValidCollector(this.collectorType))
             throw new DASParameterException("采集器不存在");
+
         if (TextUtils.isEmpty(this.channelNumber))
             throw new DASParameterException("通道号不能为空");
     }
 
     @Override
     public String toString() {
-        return this.collectorType+""+this.channelNumber;
+        return this.collectorType + "" + this.channelNumber;
     }
 }
