@@ -6,18 +6,15 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.content.FileProvider;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -39,7 +36,6 @@ import com.shmedo.mcloudapp.util.FileUtils;
 import com.shmedo.mcloudapp.util.GlideUtils;
 import com.shmedo.mcloudapp.util.GsonFactory;
 import com.shmedo.mcloudapp.util.ImageUtil;
-import com.shmedo.mcloudapp.util.LogFileUtil;
 import com.shmedo.mcloudapp.util.PhotoUtil;
 import com.shmedo.mcloudapp.util.XPermissionUtils;
 import com.shmedo.mcloudapp.views.MyMenu;
@@ -50,8 +46,6 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.OnClick;
 import de.hdodenhof.circleimageview.CircleImageView;
-import gdut.bsx.share2.Share2;
-import gdut.bsx.share2.ShareContentType;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.RequestBody;
@@ -65,7 +59,6 @@ import okhttp3.RequestBody;
  * 描述：    个人中心
  */
 public class UserInfoActivity extends BaseActivity {
-    private static final int FILE_SELECT_CODE = 100;
 
     @BindView(R.id.toolbar_title)
     TextView mToolbarTitle;
@@ -210,8 +203,7 @@ public class UserInfoActivity extends BaseActivity {
                 break;
 
             case R.id.RL_advice:
-//                openFileChooser();
-                shareFile();
+
                 break;
 
             case R.id.ll_userAbout:
@@ -233,45 +225,9 @@ public class UserInfoActivity extends BaseActivity {
         }
     }
 
-    private void shareFile() {
 
-        String path = LogFileUtil.getLogPath();
-        File file = new File(path);
-        Uri contentUri;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            contentUri = FileProvider.getUriForFile(this, getApplicationContext().getPackageName() + ".fileProvider", file);
 
-        } else {
-            contentUri = Uri.fromFile(file);
-        }
 
-        new Share2.Builder(this)
-                .setContentType(ShareContentType.FILE)
-                .setShareFileUri(contentUri)
-                .setTitle("分享文件")
-                .setOnActivityResult(300)
-                .build()
-                .shareBySystem();
-    }
-
-    private void openFileChooser() {
-        File file = getExternalFilesDir("logs");
-        if (null == file || !file.exists()) {
-            return;
-        }
-        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-
-        //判断是否是AndroidN以及更高的版本
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            intent.addCategory(Intent.CATEGORY_OPENABLE);
-            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-            Uri contentUri = FileProvider.getUriForFile(this, getApplicationContext().getPackageName() + ".fileProvider", file);
-            intent.setDataAndType(contentUri, "text/plain");
-        } else {
-            intent.setDataAndType(Uri.fromFile(file), "text/plain");
-        }
-        startActivityForResult(intent, FILE_SELECT_CODE);
-    }
 
 
     @Override
@@ -315,22 +271,6 @@ public class UserInfoActivity extends BaseActivity {
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
-                break;
-
-            case FILE_SELECT_CODE:
-                Uri shareFileUrl = data.getData();
-                if (shareFileUrl == null) {
-                    Toast.makeText(this, "Please choose a file to share.", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
-                new Share2.Builder(this)
-                        .setContentType(ShareContentType.FILE)
-                        .setShareFileUri(shareFileUrl)
-                        .setTitle("分享文件")
-                        .setOnActivityResult(300)
-                        .build()
-                        .shareBySystem();
                 break;
 
             default:
