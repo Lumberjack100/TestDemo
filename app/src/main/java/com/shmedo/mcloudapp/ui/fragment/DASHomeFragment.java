@@ -68,14 +68,11 @@ public class DASHomeFragment extends BaseFragment {
 
     private static final int DEVICE_ENABLE = 0x0002;
 
-    private static final int DEVICE_LOCK = 0x0003;
-
 //    private static final int SIM_A = 0x0005;
 
 //    private static final int SIM_B = 0x0006;
 
 //    private static final int OSMOMETER_CONFIG = 0x0008;
-
 
     @BindView(R.id.tv_device_name)
     TextView mTvDeviceName;
@@ -124,13 +121,13 @@ public class DASHomeFragment extends BaseFragment {
 
     private String collectorModel = "";//采集器类型
 
-    private StringBuilder sbcollectorSensor = new StringBuilder();//采集器上传感器配置信息
+    private StringBuilder sbcollectorSensor;//采集器上传感器配置信息
 
-    private SetRainPrecisionInfo setRainPrecisionInfo = new SetRainPrecisionInfo();
+    private SetRainPrecisionInfo setRainPrecisionInfo;
     private CollectorConfigInfo collectorConfigInfo;
     private BaseConfigInfo baseConfigInfo;
-    private QueryOsmometerParameterInfo queryOsmometerParameterInfo;
     private BreakAlarmStatusInfo breakAlarmStatusInfo;
+    private QueryOsmometerParameterInfo queryOsmometerParameterInfo;
 
     private int alarmStatusCheck = 0;//标志位，Avoid onItemSelected calls during initialization
 
@@ -469,6 +466,7 @@ public class DASHomeFragment extends BaseFragment {
             return;
         }
 
+        setRainPrecisionInfo = new SetRainPrecisionInfo();
         setRainPrecisionInfo.setPrecision((double) baseConfigInfo.getRainAccuracy() / 100);
         collectorModel = baseConfigInfo.getCollectorModel().toString();
 

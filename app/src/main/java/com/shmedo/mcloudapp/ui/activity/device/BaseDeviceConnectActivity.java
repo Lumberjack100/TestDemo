@@ -383,6 +383,9 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
                     isAutoConnectBlue = true;
                     MCloudApp.setIsBluetoothDeviceConnected(true);
                     EventBus.getDefault().post(new BluetoothStateEvent(true));
+                    stopProgressRunnable();
+                    errMsg = "认证超时,请稍后尝试";
+                    startProgressRunnable("蓝牙已连接,设备认证中...", 5000);
                     setBleAuthenticateWay();//蓝牙连接成功开始进行验证
                     break;
 
@@ -391,14 +394,10 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
                     stopProgressRunnable();
                     MCloudApp.setIsBluetoothDeviceConnected(false);
                     EventBus.getDefault().post(new BluetoothStateEvent(false));
+                    //断开蓝牙后重新连接
                     if (isAutoConnectBlue) {
-                        //断开蓝牙后重新连接
                         findAndConnectBleDevice();
                     }
-                    break;
-
-                case Constants.BT_MESSAGE_WRITE_SUCCESS:
-//                    ToastUtils.show("指令已发送");
                     break;
 
                 case Constants.BT_MESSAGE_WRITE_FAIL:
@@ -413,15 +412,14 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
                 case Constants.VERIFY_RESULT:
                     stopProgressRunnable();
                     if (!msg.obj.equals("1")) {
-                        ToastUtils.show("蓝牙认证失败!");
+                        ToastUtils.show("设备认证失败!");
                         setAutoConnectBlueAfterDisconnect();
                         break;
                     }
 
-                    ToastUtils.show("蓝牙连接成功");
-                    errMsg = "查询设备参数超时，请尝试重新连接";
+                    errMsg = "查询设备配置参数超时，请尝试重新连接";
                     if (BaseDeviceConnectActivity.this instanceof ConfigDASActivity || BaseDeviceConnectActivity.this instanceof ConfigADMEActivity) {
-                        startProgressRunnable("查询设备配置参数...", CONFIG_DELAY_MILLIS);
+                        startProgressRunnable("初始化设备配置信息...", CONFIG_DELAY_MILLIS);
                         queryDeviceConfigInfoCmd();
                     }
                     break;
