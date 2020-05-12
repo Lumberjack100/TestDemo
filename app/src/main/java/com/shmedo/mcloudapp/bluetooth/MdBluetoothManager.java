@@ -102,7 +102,7 @@ public class MdBluetoothManager {
     private volatile boolean mScanning = false;
     private BluetoothLeScanner bluetoothLeScanner;
     private ScanCallback leScanCallback = new MdLeScanCallback();
-    private BluetoothGatt gatt;
+    private BluetoothGatt mBluetoothGatt;
     private BluetoothDevice currentDevice;
     private MdBluetoothGattCallback gattCallback = new MdBluetoothGattCallback();
     private ByteManager byteManager = new ByteManager(DEFAULT_SPLIT_BYTES, new OnBytePackageArrivedImpl(), MAX_LENGTH);
@@ -133,7 +133,7 @@ public class MdBluetoothManager {
      * @return
      */
     public boolean connected() {
-        if (currentDevice == null || gatt == null) {
+        if (currentDevice == null || mBluetoothGatt == null) {
             return false;
         }
         return androidBluetoothManager.getConnectionState(currentDevice, BluetoothGatt.GATT) == BluetoothProfile.STATE_CONNECTED;
@@ -204,25 +204,25 @@ public class MdBluetoothManager {
      * @param context Activity上下文
      */
     public void connectDevice(BluetoothDevice device, Context context) {
-        if (gatt != null) {
+        if (mBluetoothGatt != null) {
             try {
-                gatt.close();
+                mBluetoothGatt.close();
             } catch (Exception ex) {
                 Timber.e(ex);
             }
         }
         isReadable = false;
-        gatt = device.connectGatt(context, false, gattCallback);
+        mBluetoothGatt = device.connectGatt(context, false, gattCallback);
         currentDevice = device;
     }
 
     public void disconnect() {
         clearData();
-        if (gatt == null) {
+        if (mBluetoothGatt == null) {
             return;
         }
 
-        gatt.close();
+        mBluetoothGatt.close();
         currentDevice = null;
         handleBluetoothEvent(BluetoothEventType.DISCONNECTED, null);
     }
@@ -657,12 +657,12 @@ public class MdBluetoothManager {
         public void writeData(byte[] data) {
             if (data == null || data.length == 0)
                 return;
-            if (writeCharacteristic == null || gatt == null) {
+            if (writeCharacteristic == null || mBluetoothGatt == null) {
                 Timber.w("没有读取到特征或者gatt,无法写入数据");
                 return;
             }
             writeCharacteristic.setValue(data);
-            gatt.writeCharacteristic(writeCharacteristic);
+            mBluetoothGatt.writeCharacteristic(writeCharacteristic);
         }
     }
 

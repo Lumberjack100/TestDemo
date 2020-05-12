@@ -226,11 +226,11 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
         //通过蓝牙设备列表页面跳转过来时，直接连接设备
         if (!TextUtils.isEmpty(macAddress)) {
             BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(macAddress);
-            if (device != null) {
-                doConnect(device);
-            } else {
+            if (device == null) {
                 Timber.e("Device not found.  Unable to connect.");
+                return;
             }
+            doConnect(device);
             return;
         }
 
