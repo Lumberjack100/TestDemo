@@ -441,14 +441,14 @@ public class DeviceDetailsFragment extends BaseFragment implements SwipeRefreshL
         String powerStr = DeviceDetailInfoUtils.setDeviceInternalBattery(statusTwo.getInternalVoltage());
         double power = Double.parseDouble(powerStr.replace("%", ""));
         SpannableStringBuilder builder = new SpannableStringBuilder(powerStr);
-        ForegroundColorSpan colorSpan = new ForegroundColorSpan(power <= 10 ? getContext().getResources().getColor(R.color.red) : getContext().getResources().getColor(R.color.green));
+        ForegroundColorSpan colorSpan = new ForegroundColorSpan(power <= 10 ? getContext().getResources().getColor(R.color.red) : getContext().getResources().getColor(R.color.green_53a659));
         builder.setSpan(colorSpan, 0, builder.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         internalBattery.setText(builder);
 
         String voltageStr = statusTwo.getExternalVoltage();
         double voltage = Double.parseDouble(voltageStr);
         builder = new SpannableStringBuilder(voltageStr + "V");
-        colorSpan = new ForegroundColorSpan(voltage <= 5 ? getContext().getResources().getColor(R.color.red) : getContext().getResources().getColor(R.color.green));
+        colorSpan = new ForegroundColorSpan(voltage <= 5 ? getContext().getResources().getColor(R.color.red) : getContext().getResources().getColor(R.color.green_53a659));
         builder.setSpan(colorSpan, 0, builder.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         externalBattery.setText(builder);
     }
