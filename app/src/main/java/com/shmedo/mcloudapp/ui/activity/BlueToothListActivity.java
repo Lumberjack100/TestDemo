@@ -196,8 +196,8 @@ public class BlueToothListActivity extends AppCompatActivity  {
         }
 
         deviceList.clear();
-        mdBluetoothManager.scanDevice(15, this);
-        hander.postDelayed(dismssDialogRunnable, 15000);
+        mdBluetoothManager.scanDevice(30, this);
+        hander.postDelayed(dismssDialogRunnable, 30000);
         updateViewState(true);
     }
 
