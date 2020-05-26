@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.util;
+package com.shmedo.mcloudapp.model.api;
 
 /**
  * 项目名：  mCloudapp
@@ -9,9 +9,6 @@ package com.shmedo.mcloudapp.util;
  *
  */
 public class ApiName {
-
-    public static final String HTTP = "http";
-    public static final String HTTPS = "https";
 
     /**
      * 获取api版本信息

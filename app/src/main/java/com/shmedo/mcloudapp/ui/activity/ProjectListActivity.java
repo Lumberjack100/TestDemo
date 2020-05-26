@@ -27,7 +27,6 @@ import com.shmedo.mcloudapp.entity.parameter.SystemParameter;
 import com.shmedo.mcloudapp.model.BaseObserver;
 import com.shmedo.mcloudapp.model.MDRetrofit;
 import com.shmedo.mcloudapp.model.common.CommonVariable;
-import com.shmedo.mcloudapp.util.ApiName;
 import com.shmedo.mcloudapp.util.DaoManager;
 import com.shmedo.mcloudapp.util.GsonFactory;
 import com.shmedo.mcloudapp.views.EmptyDataView;
@@ -200,7 +199,7 @@ public class ProjectListActivity extends BaseActivity implements MultiItemTypeAd
         String json = GsonFactory.getGson().toJson(parameter);
         RequestBody body = RequestBody.create(CommonVariable.JSON_TYPE, json);
         MDRetrofit.getInstance()
-                .createService(ApiName.HTTPS)
+                .createService()
                 .QueryUserListProject(MCloudApp.getAccessToken(), body)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

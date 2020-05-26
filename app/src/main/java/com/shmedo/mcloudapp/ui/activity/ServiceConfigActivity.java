@@ -16,7 +16,6 @@ import com.shmedo.mcloudapp.base.BaseActivity;
 import com.shmedo.mcloudapp.model.BaseObserver;
 import com.shmedo.mcloudapp.model.MDRetrofit;
 import com.shmedo.mcloudapp.model.common.CommonVariable;
-import com.shmedo.mcloudapp.util.ApiName;
 import com.shmedo.mcloudapp.util.UserConfig;
 import com.shmedo.mcloudapp.views.ClearEditText;
 
@@ -91,10 +90,10 @@ public class ServiceConfigActivity extends BaseActivity {
         }
         final UserConfig uc = UserConfig.getConfig(this, CommonVariable.USER_CONFIG_NAME);
         uc.writeString(getResources().getString(R.string.service_address), service_text);
-        MCloudApp.setServiceAddress(service_text);
+        MCloudApp.setHttpsServiceAddress(service_text);
 
         showLoadingDialog("正在配置服务器...");
-        MDRetrofit.getInstance().createService(ApiName.HTTPS).getApiVerson()
+        MDRetrofit.getInstance().createService().getApiVerson()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new BaseObserver<String>() {

@@ -31,7 +31,6 @@ import com.shmedo.mcloudapp.entity.StatusInfoResultDao;
 import com.shmedo.mcloudapp.model.BaseObserver;
 import com.shmedo.mcloudapp.model.MDRetrofit;
 import com.shmedo.mcloudapp.model.common.CommonVariable;
-import com.shmedo.mcloudapp.util.ApiName;
 import com.shmedo.mcloudapp.util.DaoManager;
 import com.shmedo.mcloudapp.util.ImageUtil;
 import com.shmedo.mcloudapp.views.DeviceSensorDialog;
@@ -255,7 +254,7 @@ public class DeviceListActivity extends BaseActivity implements  MultiItemTypeAd
 
         RequestBody body = RequestBody.create(CommonVariable.JSON_TYPE, currentCompanyID);
         MDRetrofit.getInstance()
-                .createService(ApiName.HTTPS)
+                .createService()
                 .QueryDeviceStatusInfoList(MCloudApp.getAccessToken(), body)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

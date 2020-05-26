@@ -1,6 +1,7 @@
 package com.shmedo.mcloudapp.model;
 
 import com.shmedo.mcloudapp.MCloudApp;
+import com.shmedo.mcloudapp.model.api.ServiceAddressType;
 
 import java.util.concurrent.TimeUnit;
 
@@ -18,9 +19,13 @@ import retrofit2.converter.gson.GsonConverterFactory;
  * 创建时间:  2019/1/8 09:29
  * 描述：    Retrofit 基类
  */
-public class BaseRetrofit {
+public abstract class BaseRetrofit {
 
-    public <T> T getService(final Class<T> service, final HttpLoggingInterceptor.Level level,String urlType) {
+    protected <T> T getService(final Class<T> service, final HttpLoggingInterceptor.Level level) {
+        return this.getService(service, level, ServiceAddressType.HTTPS);
+    }
+
+    protected <T> T getService(final Class<T> service, final HttpLoggingInterceptor.Level level, ServiceAddressType addressType) {
 
         HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
         interceptor.setLevel(level);
@@ -31,26 +36,33 @@ public class BaseRetrofit {
                 .addNetworkInterceptor(interceptor)
                 .build();
 
-        if(urlType.equals("http")){
-            return new Retrofit.Builder()
-                    .baseUrl(MCloudApp.getHttpServiceAddress())
-                    .client(client)
-                    .addConverterFactory(GsonConverterFactory.create())
-                    .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                    .build()
-                    .create(service);
-        }else if (urlType.equals("https")){
-            return new Retrofit.Builder()
-                    //设置网络请求的Url地址
-                    .baseUrl(MCloudApp.getServiceAddress())
-                    .client(client)
-                    //设置数据解析器
-                    .addConverterFactory(GsonConverterFactory.create())
-                    .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                    .build()
-                    .create(service);
+        String baseUrl = "";
+        switch (addressType) {
+            case HTTP:
+                baseUrl = MCloudApp.getHttpServiceAddress();
+                break;
+
+            case HTTPS:
+                baseUrl = MCloudApp.getHttpsServiceAddress();
+                break;
+
+            case HTTPS_NO_API_VERSION:
+                baseUrl = MCloudApp.getHttpsNoApiVersionAddress();
+                break;
+
+            default:
+                break;
         }
-        return null;
+
+        return new Retrofit.Builder()
+                //设置网络请求的Url地址
+                .baseUrl(baseUrl)
+                .client(client)
+                //设置数据解析器
+                .addConverterFactory(GsonConverterFactory.create())
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                .build()
+                .create(service);
     }
 
 }

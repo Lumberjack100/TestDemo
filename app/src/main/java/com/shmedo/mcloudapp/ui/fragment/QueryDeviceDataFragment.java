@@ -31,9 +31,9 @@ import com.shmedo.mcloudapp.entity.parameter.QueryCloudDataParameter;
 import com.shmedo.mcloudapp.interfaces.Extras;
 import com.shmedo.mcloudapp.model.BaseObserver;
 import com.shmedo.mcloudapp.model.MDRetrofit;
+import com.shmedo.mcloudapp.model.api.ServiceAddressType;
 import com.shmedo.mcloudapp.model.common.CommonVariable;
 import com.shmedo.mcloudapp.ui.activity.ConfigDASActivity;
-import com.shmedo.mcloudapp.util.ApiName;
 import com.shmedo.mcloudapp.util.GsonFactory;
 import com.shmedo.mcloudapp.util.TimeUtil;
 import com.shmedo.mcloudapp.views.TimePickerDialog;
@@ -260,7 +260,7 @@ public class QueryDeviceDataFragment extends BaseFragment {
         paramter.setNumber(number);
         String json = GsonFactory.getGson().toJson(paramter);
         RequestBody body = RequestBody.create(CommonVariable.JSON_TYPE, json);
-        MDRetrofit.getInstance().createService(ApiName.HTTP)
+        MDRetrofit.getInstance().createService(ServiceAddressType.HTTPS_NO_API_VERSION)
                 .QueryCloudData(body)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

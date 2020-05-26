@@ -101,6 +101,8 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
 
     private AuthenticateRunnable authenticateRunnable;
 
+    private int authenticateNum = 0;
+
 
     private class ProgressRunnable implements Runnable {
         @Override
@@ -111,7 +113,7 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
             if (!TextUtils.isEmpty(errMsg)) {
                 ToastUtils.show(errMsg);
 
-                if (errMsg.contains("连接超时")) {
+                if (errMsg.contains("连接超时") || errMsg.contains("认证超时")) {
                     stopAuthenticateRunnable();
                     disconnectDevice();
                     MCloudApp.setIsBluetoothDeviceConnected(false);
@@ -139,20 +141,27 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
         @Override
         public void run() {
             startBleAuthenticate();
-            hander.postDelayed(this, 2000);
+            if (authenticateNum <= 4) {
+                startAuthenticateRunnable(3000);
+            } else {
+                stopAuthenticateRunnable();
+            }
         }
     }
 
     private void startAuthenticateRunnable(long delayMillis) {
         if (authenticateRunnable == null) {
             authenticateRunnable = new AuthenticateRunnable();
-            hander.postDelayed(authenticateRunnable, delayMillis);
         }
+
+        authenticateNum++;
+        hander.postDelayed(authenticateRunnable, delayMillis);
     }
 
     private void stopAuthenticateRunnable() {
         hander.removeCallbacks(authenticateRunnable);
         authenticateRunnable = null;
+        authenticateNum = 0;
     }
 
 
@@ -385,7 +394,7 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
                     EventBus.getDefault().post(new BluetoothStateEvent(true));
                     stopProgressRunnable();
                     errMsg = "认证超时,请稍后尝试";
-                    startProgressRunnable("蓝牙已连接,设备认证中...", 5000);
+                    startProgressRunnable("蓝牙已连接,设备认证中...", 15000);
                     setBleAuthenticateWay();//蓝牙连接成功开始进行验证
                     break;
 
@@ -472,15 +481,15 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
                         return;
                     }
                     authenticateParam = cmdArray[3];
-                    startAuthenticateRunnable(2000);
                     startBleAuthenticate();
+//                    startAuthenticateRunnable(3000);
                 }
 
                 //设备登录验证结果指令
                 if (cmdStr.startsWith("$$223")) {
                     stopAuthenticateRunnable();
                     sendHandleMessage(Constants.VERIFY_RESULT, cmdArray[1]);
-                    Timber.d("设备登录验证状态===%s", cmdArray[1]);
+                    Timber.d("设备登录验证状态===%s", cmdArray[1].contains("1"));
                     return;
                 }
 

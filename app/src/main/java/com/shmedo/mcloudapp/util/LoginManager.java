@@ -79,7 +79,8 @@ public class LoginManager {
         String json = GsonFactory.getGson().toJson(parameter);
         RequestBody body = RequestBody.create(CommonVariable.JSON_TYPE, json);
 
-        MDRetrofit.getInstance().createService(ApiName.HTTPS).getSingIn(body)
+        MDRetrofit.getInstance().createService()
+                .getSingIn(body)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new BaseObserver<String>() {
@@ -106,7 +107,7 @@ public class LoginManager {
         String json = GsonFactory.getGson().toJson(parameter);
         RequestBody body = RequestBody.create(CommonVariable.JSON_TYPE, json);
 
-        MDRetrofit.getInstance().createService(ApiName.HTTPS).SmsLogin(body).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new BaseObserver<String>() {
+        MDRetrofit.getInstance().createService().SmsLogin(body).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new BaseObserver<String>() {
             @Override
             public void Success(String token, String message) {
                 if (token.contains("手机号对应的用户不存在")) {
@@ -136,7 +137,7 @@ public class LoginManager {
      * @param token
      */
     public void getUserInfo(final String token) {
-        MDRetrofit.getInstance().createService(ApiName.HTTPS).getMyInfo(token)
+        MDRetrofit.getInstance().createService().getMyInfo(token)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new BaseObserver<UserInfo>() {

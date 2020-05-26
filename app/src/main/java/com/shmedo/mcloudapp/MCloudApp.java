@@ -30,7 +30,9 @@ public class MCloudApp {
 
     private static String account;
 
-    private static String serviceAddress = "mdnetservice.shmedo.cn";
+    private static String httpsServiceAddress = "mdnetservice.shmedo.cn";
+
+    private static String httpsNoApiVersionAddress="chaxun.shmedo.cn";
 
     private static String httpServiceAddress = "chaxun.shmedo.cn";
 
@@ -74,15 +76,23 @@ public class MCloudApp {
     }
 
 
-    public static String getServiceAddress() {
-        if (TextUtils.isEmpty(serviceAddress))
-            return serviceAddress;
-        return "https://" + serviceAddress + "/api/v1/";
+    public static String getHttpsServiceAddress() {
+        if (TextUtils.isEmpty(httpsServiceAddress))
+            return httpsServiceAddress;
+        return "https://" + httpsServiceAddress + "/api/v1/";
     }
 
-    public static void setServiceAddress(String serviceAddress) {
-        MCloudApp.serviceAddress = serviceAddress;
+    public static void setHttpsServiceAddress(String httpsServiceAddress) {
+        MCloudApp.httpsServiceAddress = httpsServiceAddress;
     }
+
+    public static String getHttpsNoApiVersionAddress() {
+        if (TextUtils.isEmpty(httpsNoApiVersionAddress))
+            return httpsNoApiVersionAddress;
+        return "https://" + httpsNoApiVersionAddress;
+    }
+
+
 
     public static String getHttpServiceAddress() {
         if (TextUtils.isEmpty(httpServiceAddress))
@@ -90,9 +100,6 @@ public class MCloudApp {
         return "http://" + httpServiceAddress;
     }
 
-    public static void setHttpServiceAddress(String httpServiceAddress) {
-        MCloudApp.httpServiceAddress = httpServiceAddress;
-    }
 
     public static UserInfo getCurrentUserInfo() {
         return currentUserInfo;
@@ -101,7 +108,6 @@ public class MCloudApp {
     public static void setCurrentUserInfo(UserInfo currentUserInfo) {
         MCloudApp.currentUserInfo = currentUserInfo;
     }
-
 
     public static String getAccessToken() {
         return accessToken;

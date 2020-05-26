@@ -1,6 +1,7 @@
 package com.shmedo.mcloudapp.model;
 
 import com.shmedo.mcloudapp.model.api.ApiService;
+import com.shmedo.mcloudapp.model.api.ServiceAddressType;
 
 import okhttp3.logging.HttpLoggingInterceptor;
 
@@ -10,13 +11,10 @@ import okhttp3.logging.HttpLoggingInterceptor;
  * 文件名:   MDRetrofit
  * 创建者:   dpc
  * 创建时间:  2019/1/8 09:40
- *
  */
 public class MDRetrofit extends BaseRetrofit {
 
-
     private static MDRetrofit instance;
-
 
     static {
         instance = new MDRetrofit();
@@ -26,12 +24,13 @@ public class MDRetrofit extends BaseRetrofit {
         return instance;
     }
 
-    public <T> T getService(Class<T> service,String urlType) {
-        return getService(service, HttpLoggingInterceptor.Level.BODY,urlType);
+
+    public ApiService createService() {
+        return getService(ApiService.class, HttpLoggingInterceptor.Level.BODY);
     }
 
-    public ApiService createService(String urlType) {
-        return getService(ApiService.class,urlType);
+    public ApiService createService(ServiceAddressType addressType) {
+        return getService(ApiService.class, HttpLoggingInterceptor.Level.BODY, addressType);
     }
 
 }

@@ -27,10 +27,10 @@ import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.base.BaseActivity;
 import com.shmedo.mcloudapp.entity.DeviceBasicInfoResult;
 import com.shmedo.mcloudapp.entity.DeviceBasicInfoResultDao;
-import com.shmedo.mcloudapp.model.BaseObserver;
 import com.shmedo.mcloudapp.interfaces.Extras;
+import com.shmedo.mcloudapp.model.BaseObserver;
 import com.shmedo.mcloudapp.model.MDRetrofit;
-import com.shmedo.mcloudapp.util.ApiName;
+import com.shmedo.mcloudapp.model.api.ServiceAddressType;
 import com.shmedo.mcloudapp.util.DaoManager;
 import com.shmedo.mcloudapp.util.WifiSupport;
 import com.shmedo.mcloudapp.views.MyWebView;
@@ -128,7 +128,7 @@ public class ConfigE60Activity extends BaseActivity {
 
         showLoadingDialog("正在验证设备...");
         MDRetrofit.getInstance()
-                .createService(ApiName.HTTP)
+                .createService(ServiceAddressType.HTTP)
                 .ValidateDeviceE60(url)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

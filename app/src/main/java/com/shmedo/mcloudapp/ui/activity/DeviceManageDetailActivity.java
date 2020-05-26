@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.hjq.toast.ToastUtils;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
@@ -24,16 +25,15 @@ import com.shmedo.mcloudapp.entity.PageResult;
 import com.shmedo.mcloudapp.entity.ProjectDeviceInfo;
 import com.shmedo.mcloudapp.entity.SystemDataInfo;
 import com.shmedo.mcloudapp.entity.parameter.QueryProjectDeviceParamter;
-import com.shmedo.mcloudapp.model.BaseObserver;
 import com.shmedo.mcloudapp.interfaces.Extras;
+import com.shmedo.mcloudapp.model.BaseObserver;
 import com.shmedo.mcloudapp.model.MDRetrofit;
 import com.shmedo.mcloudapp.model.common.CommonVariable;
-import com.shmedo.mcloudapp.util.ApiName;
 import com.shmedo.mcloudapp.util.GsonFactory;
 import com.shmedo.mcloudapp.views.ClearEditText;
-import com.shmedo.mcloudapp.views.recycleviewitemdivider.DividerItemDecoration;
 import com.shmedo.mcloudapp.views.EmptyDataView;
 import com.shmedo.mcloudapp.views.LoadingDialog;
+import com.shmedo.mcloudapp.views.recycleviewitemdivider.DividerItemDecoration;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -166,7 +166,7 @@ public class DeviceManageDetailActivity extends BaseActivity implements OnRefres
         String json = GsonFactory.getGson().toJson(paramter);
         RequestBody body = RequestBody.create(CommonVariable.JSON_TYPE, json);
         MDRetrofit.getInstance()
-                .createService(ApiName.HTTPS)
+                .createService()
                 .QueryProjectDevice(MCloudApp.getAccessToken(), body)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

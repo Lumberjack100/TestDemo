@@ -22,7 +22,6 @@ import com.shmedo.mcloudapp.base.BaseActivity;
 import com.shmedo.mcloudapp.model.BaseObserver;
 import com.shmedo.mcloudapp.model.MDRetrofit;
 import com.shmedo.mcloudapp.model.common.CommonVariable;
-import com.shmedo.mcloudapp.util.ApiName;
 import com.shmedo.mcloudapp.util.DaoManager;
 import com.shmedo.mcloudapp.util.GsonFactory;
 import com.shmedo.mcloudapp.util.LoginManager;
@@ -140,7 +139,7 @@ public class LoginActivity extends BaseActivity implements LoginManager.LoginCal
         userConfig = UserConfig.getConfig(this, CommonVariable.USER_CONFIG_NAME);
         String addr = userConfig.readString(CommonVariable.SERVICE_ADDRESS);
         if (!TextUtils.isEmpty(addr)) {
-            MCloudApp.setServiceAddress(addr);
+            MCloudApp.setHttpsServiceAddress(addr);
         }
 
         String uid = userConfig.readString(CommonVariable.UID);
@@ -194,7 +193,7 @@ public class LoginActivity extends BaseActivity implements LoginManager.LoginCal
                 break;
 
             case R.id.btn_login_account://账号登录
-                if (TextUtils.isEmpty(MCloudApp.getServiceAddress())) {
+                if (TextUtils.isEmpty(MCloudApp.getHttpsServiceAddress())) {
                     ToastUtils.show("请先配置服务地址！");
                     ServiceConfigActivity.startActivity(this);
                     return;
@@ -209,7 +208,7 @@ public class LoginActivity extends BaseActivity implements LoginManager.LoginCal
                 break;
 
             case R.id.btn_login_phone://快速登录
-                if (TextUtils.isEmpty(MCloudApp.getServiceAddress())) {
+                if (TextUtils.isEmpty(MCloudApp.getHttpsServiceAddress())) {
                     ToastUtils.show("请先配置服务地址！");
                     ServiceConfigActivity.startActivity(this);
                     return;
@@ -271,7 +270,7 @@ public class LoginActivity extends BaseActivity implements LoginManager.LoginCal
         RequestBody body = RequestBody.create(CommonVariable.JSON_TYPE, json);
 
         showLoadingDialog("正在获取验证码...");
-        MDRetrofit.getInstance().createService(ApiName.HTTPS).sendSmsCode(CommonVariable.APP_KEY, CommonVariable.APP_SECRET, body).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new BaseObserver<String>() {
+        MDRetrofit.getInstance().createService().sendSmsCode(CommonVariable.APP_KEY, CommonVariable.APP_SECRET, body).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new BaseObserver<String>() {
             @Override
             public void Success(String s, String message) {
                 dismissLoadingDialog();

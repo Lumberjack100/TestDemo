@@ -2,7 +2,6 @@ package com.shmedo.mcloudapp.model.api;
 
 import com.shmedo.mcloudapp.entity.*;
 import com.shmedo.mcloudapp.model.common.CommonVariable;
-import com.shmedo.mcloudapp.util.ApiName;
 
 import java.util.List;
 

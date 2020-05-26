@@ -29,7 +29,6 @@ import com.shmedo.mcloudapp.model.MDRetrofit;
 import com.shmedo.mcloudapp.model.common.CommonVariable;
 import com.shmedo.mcloudapp.ui.activity.device.QuickActivationActivity;
 import com.shmedo.mcloudapp.util.ActivityCollector;
-import com.shmedo.mcloudapp.util.ApiName;
 import com.shmedo.mcloudapp.util.DaoManager;
 import com.shmedo.mcloudapp.util.FileProviderUtils;
 import com.shmedo.mcloudapp.util.FileUtils;
@@ -298,7 +297,7 @@ public class UserInfoActivity extends BaseActivity {
         String json = GsonFactory.getGson().toJson(parameter);
         RequestBody body = RequestBody.create(CommonVariable.JSON_TYPE, json);
         showLoadingDialog("正在上传...");
-        MDRetrofit.getInstance().createService(ApiName.HTTPS).setUserHeadPhoto(body).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new BaseObserver<String>() {
+        MDRetrofit.getInstance().createService().setUserHeadPhoto(body).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new BaseObserver<String>() {
             @Override
             public void Success(String s, String message) {
                 dismissLoadingDialog();
