@@ -22,7 +22,7 @@ import android.widget.OverScroller;
 import java.lang.ref.WeakReference;
 import java.util.List;
 
-import top.defaults.logger.Logger;
+import timber.log.Timber;
 
 import static top.defaults.view.Utils.checkNotNull;
 
@@ -113,9 +113,7 @@ public class PickerView extends View {
                         maxY,
                         0, maxOverScrollY);
 
-                if (DEBUG) {
-                    Logger.d("fling: " + startScrollerY + ", velocityY: " + velocityY);
-                }
+                Timber.d("fling: " + startScrollerY + ", velocityY: " + velocityY);
 
                 previousScrollerY = scroller.getCurrY();
                 pendingJustify = true;
@@ -567,9 +565,8 @@ public class PickerView extends View {
                             0, previousScrollerY,
                             0, -scrollOffset,
                             DURATION_SHORT);
-                    if (DEBUG) {
-                        Logger.d("scrollOffset = %d", scrollOffset);
-                    }
+
+                    Timber.d("scrollOffset = %d", scrollOffset);
                     break;
                 }
                 scrolling = false;
@@ -592,9 +589,7 @@ public class PickerView extends View {
     public void computeScroll() {
         if (scroller.computeScrollOffset()) {
             int scrollerY = scroller.getCurrY();
-            if (DEBUG) {
-                Logger.d("scrollerY = %d, previousScrollerY = %d", scrollerY, previousScrollerY);
-            }
+            Timber.d("scrollerY = %d, previousScrollerY = %d", scrollerY, previousScrollerY);
             int dy = scrollerY - previousScrollerY;
             handleOffset(dy);
             previousScrollerY = scrollerY;
@@ -677,19 +672,15 @@ public class PickerView extends View {
                     0, previousScrollerY,
                     0, scrollOffset,
                     duration);
-            if (DEBUG) {
-                Logger.d("justify: duration = %d, yOffset = %d, scrollOffset = %d", duration, yOffset, scrollOffset);
-            }
-
+            Timber.d("justify: duration = %d, yOffset = %d, scrollOffset = %d", duration, yOffset, scrollOffset);
             invalidate();
         }
         pendingJustify = false;
     }
 
     private void handleOffset(int dy) {
-        if (DEBUG) {
-            Logger.d("yOffset = %d, dy = %d", yOffset, dy);
-        }
+        Timber.d("yOffset = %d, dy = %d", yOffset, dy);
+
         yOffset += dy;
 
         if (Math.abs(yOffset) >= itemHeight) {
