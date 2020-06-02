@@ -1,5 +1,5 @@
 ext {
-    android = [applicationId    : "com.shmedo.mcloudappgz",
+    android = [applicationId    : "com.shmedo.mcloudapp",
                compileSdkVersion: 29,
                buildToolsVersion: "29.0.3",
                minSdkVersion    : 21,
