@@ -6,10 +6,9 @@ apply plugin: 'com.jakewharton.butterknife'
  * @return
  */
 def getAppName() {
-    def name = rootProject.android.applicationId
-    name = name.toString().endsWith("mcloudappgz") ? '米易通贵州' : '米易通'
+//    def name = applicationId.toString().endsWith("mcloudappgz") ? '米易通贵州' : '米易通'
 
-    return name
+    return '米易通'
 }
 
 /**
@@ -38,7 +37,6 @@ android {
         minSdkVersion rootProject.android.minSdkVersion
         targetSdkVersion rootProject.android.targetSdkVersion
         versionCode gitVersionCode()
-//        versionName "1.0.${releaseTime()}" //+ "(" + gitShortCommitId() + ")"
         versionName rootProject.android.versionName
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
@@ -49,7 +47,7 @@ android {
 
         ndk {
             //设置支持的SO库架构（开发者可以根据需要，选择一个或多个平台的so）
-            abiFilters "armeabi", "armeabi-v7a"
+            abiFilters "armeabi"
         }
     }
 
@@ -91,6 +89,34 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.debug
+        }
+    }
+
+    // Specifies one flavor dimension.
+    flavorDimensions "version"
+    productFlavors {
+        guizhou {
+            // Assigns this product flavor to the "version" flavor dimension.
+            // If you are using only one dimension, this property is optional,
+            // and the plugin automatically assigns all the module's flavors to
+            // that dimension.
+            dimension "version"
+            applicationId "com.shmedo.mcloudappgz"
+            resValue "string", "app_name", "米易通贵州"   // 设置默认的app_name
+            manifestPlaceholders = ["mapApikey":"6694cc57b25bd627c6c4e7aa2df0a081",
+                                    "pgyerKey":"5cc3cf1c0c3c3e204015fa232eedb439"]
+
+            buildConfigField "String", "BUGLY_APPKEY", "\"6ff91a2c12\""
+        }
+
+        common {
+            dimension "version"
+            applicationId "com.shmedo.mcloudapp"
+            resValue "string", "app_name", "米易通"   // 设置默认的app_name
+            manifestPlaceholders = ["mapApikey": "31d7ee436c402270e11183ce1b5d01dc",
+                                    "pgyerKey" : "725bb8b9ee91e100e28d6623d8f8c86b"]
+
+            buildConfigField "String", "BUGLY_APPKEY", "\"6b0340b2b8\""
         }
     }
 
