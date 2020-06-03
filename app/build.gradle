@@ -45,7 +45,7 @@ android {
 
         ndk {
             //设置支持的SO库架构（开发者可以根据需要，选择一个或多个平台的so）
-            abiFilters "armeabi","armeabi-v7a"
+            abiFilters "armeabi", "armeabi-v7a"
         }
     }
 
@@ -75,11 +75,6 @@ android {
         main {
             jniLibs.srcDirs = ['libs']
         }
-        dev_gz {
-            java {
-                srcDirs 'src/dev_gz/java', 'src/main/java/2'
-            }
-        }
     }
 
     buildTypes {
@@ -98,7 +93,7 @@ android {
     // Specifies one flavor dimension.
     flavorDimensions "version"
     productFlavors {
-         dev_gz {//开发版
+        dev_gz {//贵州专版
             dimension "version"
             applicationId "com.shmedo.mcloudappgz"
             resValue "string", "app_name", "米易通贵州"   // 设置默认的app_name
