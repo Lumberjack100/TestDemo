@@ -6,8 +6,6 @@ apply plugin: 'com.jakewharton.butterknife'
  * @return
  */
 def getAppName() {
-//    def name = applicationId.toString().endsWith("mcloudappgz") ? '米易通贵州' : '米易通'
-
     return '米易通'
 }
 
@@ -47,7 +45,7 @@ android {
 
         ndk {
             //设置支持的SO库架构（开发者可以根据需要，选择一个或多个平台的so）
-            abiFilters "armeabi"
+            abiFilters "armeabi","armeabi-v7a"
         }
     }
 
@@ -77,6 +75,11 @@ android {
         main {
             jniLibs.srcDirs = ['libs']
         }
+        dev_gz {
+            java {
+                srcDirs 'src/dev_gz/java', 'src/main/java/2'
+            }
+        }
     }
 
     buildTypes {
@@ -95,21 +98,17 @@ android {
     // Specifies one flavor dimension.
     flavorDimensions "version"
     productFlavors {
-        guizhou {
-            // Assigns this product flavor to the "version" flavor dimension.
-            // If you are using only one dimension, this property is optional,
-            // and the plugin automatically assigns all the module's flavors to
-            // that dimension.
+         dev_gz {//开发版
             dimension "version"
             applicationId "com.shmedo.mcloudappgz"
             resValue "string", "app_name", "米易通贵州"   // 设置默认的app_name
-            manifestPlaceholders = ["mapApikey":"6694cc57b25bd627c6c4e7aa2df0a081",
-                                    "pgyerKey":"5cc3cf1c0c3c3e204015fa232eedb439"]
+            manifestPlaceholders = ["mapApikey": "6694cc57b25bd627c6c4e7aa2df0a081",
+                                    "pgyerKey" : "5cc3cf1c0c3c3e204015fa232eedb439"]
 
             buildConfigField "String", "BUGLY_APPKEY", "\"6ff91a2c12\""
         }
 
-        common {
+        production {//正式发布版本
             dimension "version"
             applicationId "com.shmedo.mcloudapp"
             resValue "string", "app_name", "米易通"   // 设置默认的app_name
@@ -122,11 +121,17 @@ android {
 
     applicationVariants.all { variant ->
         variant.outputs.each { output ->
+            def NameSuffix = ""
+            // To check for a certain build type, use variant.buildType.name == "<buildType>"
+            if (variant.name.contains("guizhou")) {
+                NameSuffix = "贵州"
+            }
+
             def fileName
             if (variant.buildType.name == "release") {
-                fileName = getAppName() + "_" + android.defaultConfig.versionName + "(" + gitShortCommitId() + ")" + ".apk"
+                fileName = getAppName() + NameSuffix + "_" + android.defaultConfig.versionName + "(" + gitShortCommitId() + ")" + ".apk"
             } else {
-                fileName = getAppName() + "_debug_" + android.defaultConfig.versionName + "(" + gitShortCommitId() + ")" + ".apk"
+                fileName = getAppName() + NameSuffix + "_debug_" + android.defaultConfig.versionName + "(" + gitShortCommitId() + ")" + ".apk"
             }
             output.outputFileName = fileName
         }
