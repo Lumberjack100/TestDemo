@@ -1,5 +1,6 @@
 package com.shmedo.mcloudapp.ui.activity.device.sensor;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -31,9 +32,11 @@ import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.entity.ble.collector.CollectorSensorParamsInfoSub;
 import com.shmedo.mcloudapp.interfaces.Extras;
 import com.shmedo.mcloudapp.interfaces.MyOnClickListener;
+import com.shmedo.mcloudapp.ui.activity.ScanActivity;
 import com.shmedo.mcloudapp.ui.activity.device.BaseDeviceConnectActivity;
 import com.shmedo.mcloudapp.ui.activity.device.sensor.dialog.DialogFactory;
 import com.shmedo.mcloudapp.util.KeyBordUtils;
+import com.shmedo.mcloudapp.util.XPermissionUtils;
 import com.shmedo.mcloudapp.util.bleutil.BlueResultParserUtil;
 
 import org.greenrobot.eventbus.Subscribe;
@@ -1007,6 +1010,28 @@ public class SenSorBGKConfigActivity extends BaseDeviceConnectActivity {
     public void getConfig(String messageEvent) {
         if (!TextUtils.isEmpty(messageEvent) && messageEvent.startsWith("$$")) {
             setResultData(messageEvent);
+        }
+    }
+
+    private void scanResult(String result) {
+        if (TextUtils.isEmpty(result)) {
+            showTipDialog("请扫码正确的设备二维码");
+            return;
+        }
+    }
+
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case XPermissionUtils.REQUEST_CODE_SCAN:
+                if (resultCode == Activity.RESULT_OK) {
+                    if (data != null) {
+                        String content = data.getStringExtra(ScanActivity.CODED_CONTENT);
+                        Timber.d("扫描结果为：" + content);
+                        scanResult(content);
+                    }
+                }
+                break;
         }
     }
 

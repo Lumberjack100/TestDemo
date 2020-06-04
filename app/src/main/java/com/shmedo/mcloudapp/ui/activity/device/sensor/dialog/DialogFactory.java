@@ -1,5 +1,6 @@
 package com.shmedo.mcloudapp.ui.activity.device.sensor.dialog;
 
+import android.app.Activity;
 import android.content.Context;
 
 import com.shmedo.mcloudapp.interfaces.MyOnClickListener;
@@ -14,7 +15,7 @@ import com.shmedo.mcloudapp.interfaces.MyOnClickListener;
  */
 public class DialogFactory {
 
-    public <T> IDialogOpt<T> createDialog(final Context context, String type, T data, String channelNumber, MyOnClickListener onClickListener) {
+    public <T> IDialogOpt<T> createDialog(final Activity context, String type, T data, String channelNumber, MyOnClickListener onClickListener) {
         IDialogOpt opt = null;
 
         switch (type) {
@@ -22,11 +23,11 @@ public class DialogFactory {
             case "03"://土壤含水率
             case "07"://雷达物位计
             case "21"://次声
-                opt = new DialogStyle02(context, channelNumber);
+                opt = new Osmometer_AxialForceGaugeDialog(context, channelNumber);
                 opt.getDialog().show();
 
                 if (onClickListener != null) {
-                    ((DialogStyle02) opt).setMyOnClickListener(onClickListener);
+                    ((Osmometer_AxialForceGaugeDialog) opt).setMyOnClickListener(onClickListener);
                 }
                 break;
 
@@ -53,7 +54,7 @@ public class DialogFactory {
                 opt.getDialog().show();
 
                 if (onClickListener != null) {
-                    ((DialogStyle50) opt).setMyOnClickListener(onClickListener);
+                    ((Osmometer_AxialForceGaugeDialog) opt).setMyOnClickListener(onClickListener);
                 }
                 break;
 

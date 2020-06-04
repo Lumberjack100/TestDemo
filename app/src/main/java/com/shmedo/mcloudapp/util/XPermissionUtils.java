@@ -32,6 +32,8 @@ public class XPermissionUtils {
 
     public static final int CODE_REQUEST_PERMISSIONS = 0x001;
 
+    public static final int REQUEST_CODE_SCAN = 0x1008;
+
     private static int mRequestCode = -1;
 
     public static void requestPermissionsResult(Activity activity, int requestCode

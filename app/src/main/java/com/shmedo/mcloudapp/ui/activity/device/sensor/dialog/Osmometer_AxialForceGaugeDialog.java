@@ -1,5 +1,7 @@
 package com.shmedo.mcloudapp.ui.activity.device.sensor.dialog;
 
+import android.Manifest;
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.text.InputFilter;
@@ -21,7 +23,10 @@ import com.shmedo.core.utils.ValidateUtil;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.entity.ble.collector.CollectorSensorParamsInfoSub;
 import com.shmedo.mcloudapp.interfaces.MyOnClickListener;
+import com.shmedo.mcloudapp.ui.activity.MainActivity;
+import com.shmedo.mcloudapp.ui.activity.ScanActivity;
 import com.shmedo.mcloudapp.util.UserConfig;
+import com.shmedo.mcloudapp.util.XPermissionUtils;
 
 /**
  * 创建者:   gonghe <br/>
@@ -29,7 +34,7 @@ import com.shmedo.mcloudapp.util.UserConfig;
  * 描述：    基康渗压计、葛南渗压计、轴力计等传感器配置页面
  */
 public class Osmometer_AxialForceGaugeDialog implements IDialogOpt<CollectorSensorParamsInfoSub> {
-    private Context mContext;
+    private Activity activity;
     private View contentView;
     private Spinner spinnerType;
     private ViewGroup scanLayout;
@@ -51,20 +56,20 @@ public class Osmometer_AxialForceGaugeDialog implements IDialogOpt<CollectorSens
     private String oldSensitivityCoefficient, newSensitivityCoefficient, oldTemperatureCoefficient, newTemperatureCoefficient;
     private String oldAddress, newAddress, oldNozzelHeight, newNozzelHeight, oldOsmometerCord, newOsmometerCord, oldAlarmValue, newAlarmValue, oldCorrectValue, newCorrectValue;
 
-    public Osmometer_AxialForceGaugeDialog(Context context, String channelNumber) {
-        this.mContext = context;
+    public Osmometer_AxialForceGaugeDialog(Activity context, String channelNumber) {
+        this.activity = context;
         this.channelNumber = channelNumber;
     }
 
     @Override
     public Dialog getDialog() {
-        dialog = new Dialog(mContext, R.style.dialog_bottom_full);
+        dialog = new Dialog(activity, R.style.dialog_bottom_full);
         dialog.setCanceledOnTouchOutside(true);
         dialog.setCancelable(false);
         Window window = dialog.getWindow();
         window.setGravity(Gravity.BOTTOM);
         window.setWindowAnimations(R.style.share_animation);
-        contentView = View.inflate(mContext, R.layout.dialog_sensor_config_osmometer_axialforcegauge, null);
+        contentView = View.inflate(activity, R.layout.dialog_sensor_config_osmometer_axialforcegauge, null);
         window.setContentView(contentView);
         window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);//设置横向全屏
         return dialog;
@@ -102,8 +107,8 @@ public class Osmometer_AxialForceGaugeDialog implements IDialogOpt<CollectorSens
         mEtCorrectValue.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
 
         //传感器类型
-        String[] stringArray = mContext.getResources().getStringArray(R.array.sensor_osmometer);
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(mContext, android.R.layout.simple_spinner_item, stringArray);
+        String[] stringArray = activity.getResources().getStringArray(R.array.sensor_osmometer);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(activity, android.R.layout.simple_spinner_item, stringArray);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerType.setAdapter(adapter);
         spinnerType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -146,7 +151,7 @@ public class Osmometer_AxialForceGaugeDialog implements IDialogOpt<CollectorSens
         }
     }
 
-    private void setValue(){
+    private void setValue() {
         String sensorType = collectorSensorParamsInfoSub.getSensorType();
         switch (sensorType) {
             case "50":
@@ -167,7 +172,7 @@ public class Osmometer_AxialForceGaugeDialog implements IDialogOpt<CollectorSens
         }
 
         mEtModbusAddress.setText(collectorSensorParamsInfoSub.getSensorAddress());
-        userConfig = UserConfig.getConfig(mContext, String.valueOf(channelNumber));
+        userConfig = UserConfig.getConfig(activity, String.valueOf(channelNumber));
         mEtNote.setText(userConfig.readString(String.valueOf(channelNumber)));
         oldAddress = mEtModbusAddress.getText().toString().trim();
         oldNozzelHeight = mEtNozzelHeight.getText().toString().trim();
@@ -183,7 +188,7 @@ public class Osmometer_AxialForceGaugeDialog implements IDialogOpt<CollectorSens
         @Override
         public void onClick(View view) {
             if (view.getId() == R.id.rl_scan_config) {
-
+                doScanButtonClick();
             } else if (view.getId() == R.id.tv_save) {
                 newAddress = mEtModbusAddress.getText().toString().trim();
                 newAlarmValue = mEtAlarmValue.getText().toString().trim();
@@ -218,6 +223,23 @@ public class Osmometer_AxialForceGaugeDialog implements IDialogOpt<CollectorSens
 
     private void updateParamsInfo(CollectorModel collectorModel, boolean isSure) {
 
+    }
+
+    private void doScanButtonClick() {
+        XPermissionUtils.requestPermissionsResult(activity, 200, new String[]{
+                        Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                new XPermissionUtils.OnPermissionListener() {
+                    @Override
+                    public void onPermissionGranted() {
+                        ScanActivity.startActivityForResult(activity, XPermissionUtils.REQUEST_CODE_SCAN);
+                    }
+
+                    @Override
+                    public void onPermissionDenied() {
+                        XPermissionUtils.showRefusePermissionDialog(activity,
+                                activity.getResources().getString(R.string.permission_request_camera_external_storage));
+                    }
+                });
     }
 
 
