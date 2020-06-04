@@ -18,10 +18,10 @@ public class DialogFactory {
         IDialogOpt opt = null;
 
         switch (type) {
-            case "02"://裂缝计采集器
-            case "03"://土壤湿度采集器
-            case "07"://雷达采集器
-            case "21"://次声采集器
+            case "02"://拉线位移计
+            case "03"://土壤含水率
+            case "07"://雷达物位计
+            case "21"://次声
                 opt = new DialogStyle02(context, channelNumber);
                 opt.getDialog().show();
 
@@ -29,15 +29,6 @@ public class DialogFactory {
                     ((DialogStyle02) opt).setMyOnClickListener(onClickListener);
                 }
                 break;
-
-//            case "03":
-//                opt = new DialogStyle03(context, channelNumber);
-//                opt.getDialog().show();
-//
-//                if (onClickListener != null) {
-//                    ((DialogStyle03) opt).setMyOnClickListener(onClickListener);
-//                }
-//                break;
 
             case "04"://测斜仪采集器
                 opt = new DialogStyle04(context, channelNumber);
@@ -48,24 +39,6 @@ public class DialogFactory {
                 }
                 break;
 
-            case "06":
-                opt = new DialogStyle06(context, channelNumber);
-                opt.getDialog().show();
-
-                if (onClickListener != null) {
-                    ((DialogStyle06) opt).setMyOnClickListener(onClickListener);
-                }
-                break;
-
-//            case "07":
-//                opt = new DialogStyle07(context, channelNumber);
-//                opt.getDialog().show();
-//
-//                if (onClickListener != null) {
-//                    ((DialogStyle07) opt).setMyOnClickListener(onClickListener);
-//                }
-//                break;
-
             case "08":
                 opt = new DialogStyle08(context, channelNumber);
                 opt.getDialog().show();
@@ -75,26 +48,8 @@ public class DialogFactory {
                 }
                 break;
 
-            case "12":
-                opt = new DialogStyle12(context, channelNumber);
-                opt.getDialog().show();
-
-                if (onClickListener != null) {
-                    ((DialogStyle12) opt).setMyOnClickListener(onClickListener);
-                }
-                break;
-
-            case "15":
-                opt = new DialogStyle15(context, channelNumber);
-                opt.getDialog().show();
-
-                if (onClickListener != null) {
-                    ((DialogStyle15) opt).setMyOnClickListener(onClickListener);
-                }
-                break;
-
             case "50":
-                opt = new DialogStyle50(context, channelNumber);
+                opt = new Osmometer_AxialForceGaugeDialog(context, channelNumber);
                 opt.getDialog().show();
 
                 if (onClickListener != null) {

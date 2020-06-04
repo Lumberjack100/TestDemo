@@ -11,11 +11,6 @@ import android.view.View;
  */
 public interface MyOnClickListener {
 
-    /**
-     * Called when a view has been clicked.
-     *
-     * @param v The view that was clicked.
-     */
     boolean onSureClick(View v);
 
     void onCancelClick(View view, String channelNumber);

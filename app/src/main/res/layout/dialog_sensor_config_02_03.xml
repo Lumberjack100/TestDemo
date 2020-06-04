@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/white"
@@ -34,116 +35,59 @@
 
     </RelativeLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:orientation="horizontal">
+    <LinearLayout style="@style/LinearLayout_Sensor_Config_Item">
 
         <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_marginLeft="20dp"
-            android:layout_weight="2"
-            android:text="Modbus地址"
-            android:textSize="14sp" />
+            style="@style/TextView_Sensor_Config_Item"
+            android:text="Modbus地址" />
 
         <EditText
             android:id="@+id/et_modbus_address"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_marginRight="10dp"
-            android:layout_weight="3"
-            android:background="@drawable/icon_dialog_input"
+            style="@style/EditText_Sensor_Config_Item"
             android:hint="0~99"
-            android:inputType="number"
-            android:paddingLeft="10dp"
-            android:singleLine="true" />
+            android:inputType="number" />
 
     </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:orientation="horizontal">
+    <LinearLayout style="@style/LinearLayout_Sensor_Config_Item">
 
         <TextView
             android:id="@+id/tv_triggerThreshold"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_marginLeft="20dp"
-            android:layout_weight="2"
-            android:textSize="14sp" />
+            style="@style/TextView_Sensor_Config_Item"
+            tools:text="多项式系数C" />
 
         <EditText
             android:id="@+id/et_trigger_threshold"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_marginRight="10dp"
-            android:layout_weight="3"
-            android:background="@drawable/icon_dialog_input"
-            android:hint="请输入"
-            android:paddingLeft="10dp"
-            android:singleLine="true" />
+            style="@style/EditText_Sensor_Config_Item"
+            android:hint="请输入" />
 
     </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:orientation="horizontal">
+    <LinearLayout style="@style/LinearLayout_Sensor_Config_Item">
 
         <TextView
             android:id="@+id/tv_correctionValue"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_marginLeft="20dp"
-            android:layout_weight="2"
-            android:textSize="14sp" />
+            style="@style/TextView_Sensor_Config_Item"
+            tools:text="多项式系数C" />
 
         <EditText
             android:id="@+id/et_revised"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_marginRight="10dp"
-            android:layout_weight="3"
-            android:background="@drawable/icon_dialog_input"
-            android:hint="请输入"
-            android:paddingLeft="10dp"
-            android:singleLine="true" />
+            style="@style/EditText_Sensor_Config_Item"
+            android:hint="请输入" />
+
     </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:layout_marginBottom="20dp"
-        android:orientation="horizontal">
+    <LinearLayout style="@style/LinearLayout_Sensor_Config_Item">
 
         <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_marginLeft="20dp"
-            android:layout_weight="2"
-            android:text="备注信息"
-            android:textSize="14sp" />
+            style="@style/TextView_Sensor_Config_Item"
+            android:text="备注" />
 
         <EditText
             android:id="@+id/et_note"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_marginRight="10dp"
-            android:layout_weight="3"
-            android:background="@drawable/icon_dialog_input"
-            android:hint="请输入"
-            android:paddingLeft="10dp"
-            android:singleLine="true" />
+            style="@style/EditText_Sensor_Config_Item"
+            android:inputType="number" />
+
     </LinearLayout>
 
 </LinearLayout>

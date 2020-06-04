@@ -95,6 +95,13 @@
         <item>VWD-100</item>
     </string-array>
 
+    <!--  渗压计、轴力计类型-->
+    <string-array name="sensor_osmometer">
+        <item>渗压计-BGK</item>
+        <item>渗压计-NGN</item>
+        <item>轴力计</item>
+    </string-array>
+
     <!--  ADME 执行结构数据解算方式-->
     <string-array name="adme_executive_agency_data_settlement">
         <item>顶固定法</item>

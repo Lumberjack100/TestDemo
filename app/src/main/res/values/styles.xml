@@ -81,6 +81,38 @@
     </style>
 
 
+    <!-- 传感器参数配置项布局中的LinearLayout控件样式-->
+    <style name="LinearLayout_Sensor_Config_Item">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">40dp</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:paddingStart">15dp</item>
+        <item name="android:paddingEnd">15dp</item>
+    </style>
+
+    <!-- 传感器参数配置项布局中的TextView控件样式-->
+    <style name="TextView_Sensor_Config_Item">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_weight">1.5</item>
+        <item name="android:textColor">@color/gray_807B7B</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <!-- 传感器参数配置项布局中的EditText控件样式-->
+    <style name="EditText_Sensor_Config_Item">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_weight">2</item>
+        <item name="android:background">@drawable/icon_dialog_input</item>
+        <item name="android:paddingStart">10dp</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:textColor">@color/gray_807B7B</item>
+        <item name="android:textColorHint">@color/gray_807B7B</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+
+
     <!--SwitchButton控件样式-->
     <style name="SwitchButtonStyle">
         <item name="android:paddingLeft">10dp</item>

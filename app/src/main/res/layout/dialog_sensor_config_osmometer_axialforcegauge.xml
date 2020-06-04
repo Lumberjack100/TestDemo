@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/bg_main_light_white"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:background="@color/bg_main_light_white">
+
+        <TextView
+            android:id="@+id/tv_cancel"
+            android:layout_width="50dp"
+            android:layout_height="40dp"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="10dp"
+            android:gravity="center"
+            android:text="取消"
+            android:textColor="@color/font_main"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/tv_save"
+            android:layout_width="50dp"
+            android:layout_height="40dp"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="10dp"
+            android:gravity="center"
+            android:text="保存"
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="18sp" />
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <ScrollView
+            android:id="@+id/scrollview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:fadingEdge="none">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <LinearLayout style="@style/LinearLayout_Sensor_Config_Item">
+
+                    <TextView
+                        style="@style/TextView_Sensor_Config_Item"
+                        android:text="Modbus地址" />
+
+                    <EditText
+                        android:id="@+id/et_modbus_address"
+                        style="@style/EditText_Sensor_Config_Item"
+                        android:hint="0~99"
+                        android:inputType="number" />
+
+                </LinearLayout>
+
+                <LinearLayout style="@style/LinearLayout_Sensor_Config_Item">
+
+                    <TextView
+                        style="@style/TextView_Sensor_Config_Item"
+                        android:text="传感器类型:" />
+
+                    <Spinner
+                        android:id="@+id/spinner"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="2"
+                        android:background="@drawable/icon_dialog_switch"
+                        android:paddingLeft="10dp"
+                        android:singleLine="true" />
+
+                </LinearLayout>
+
+                <include
+                    android:id="@+id/bgk_osmometer_config_layout"
+                    layout="@layout/bgk_osmometer_config" />
+
+                <include
+                    android:id="@+id/ngn_osmometer_config_layout"
+                    layout="@layout/ngn_osmometer_config"
+                    android:visibility="gone" />
+
+                <include
+                    android:id="@+id/axialforcegauge_config_layout"
+                    layout="@layout/axialforcegauge_config"
+                    android:visibility="gone" />
+
+            </LinearLayout>
+
+        </ScrollView>
+
+        <RelativeLayout
+            android:id="@+id/rl_scan_config"
+            android:layout_width="200dp"
+            android:layout_height="40dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/btn_select">
+
+            <ImageView
+                android:id="@+id/img_scan"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="15dp"
+                android:layout_toStartOf="@+id/tv_scan"
+                android:src="@drawable/ic_camera" />
+
+            <TextView
+                android:id="@+id/tv_scan"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="扫码配置"
+                android:textColor="@color/white"
+                android:textSize="16sp" />
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

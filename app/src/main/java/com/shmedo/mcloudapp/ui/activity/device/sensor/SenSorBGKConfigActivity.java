@@ -144,6 +144,15 @@ public class SenSorBGKConfigActivity extends BaseDeviceConnectActivity {
 
     private String collectorName = "";
 
+    private String channelNumber0 = "-1";
+    private String channelNumber1 = "-1";
+    private String channelNumber2 = "-1";
+    private String channelNumber3 = "-1";
+    private String channelNumber4 = "-1";
+    private String channelNumber5 = "-1";
+    private String channelNumber6 = "-1";
+    private String channelNumber7 = "-1";
+
     private int sensorIndex = 0;//接入的传感器索引号
 
 
@@ -181,10 +190,9 @@ public class SenSorBGKConfigActivity extends BaseDeviceConnectActivity {
 
             CollectorSensorParamsInfoSub mCollectorParamsInfoSub = BlueResultParserUtil.setCollectorParams(sensorConfig);
             Timber.d("--------XX采集器YY通道的传感器参数-------%s", mCollectorParamsInfoSub.toString());
-
             collectorSensorParamsInfoSubs.add(mCollectorParamsInfoSub);
             collectorSensorHashMap.put(mCollectorParamsInfoSub.getChannelNumber(), mCollectorParamsInfoSub);
-            initSwitchButton(mCollectorParamsInfoSub);
+            initSensorState(mCollectorParamsInfoSub);
         }
 
         if (!collectorSensorParamsInfoSubs.isEmpty()) {
@@ -206,70 +214,61 @@ public class SenSorBGKConfigActivity extends BaseDeviceConnectActivity {
         mToolbarTitle.setText(collectorName);
     }
 
-    private String channelNumber0 = "-1";
-    private String channelNumber1 = "-1";
-    private String channelNumber2 = "-1";
-    private String channelNumber3 = "-1";
-    private String channelNumber4 = "-1";
-    private String channelNumber5 = "-1";
-    private String channelNumber6 = "-1";
-    private String channelNumber7 = "-1";
 
     /**
-     * 初始化传感器
-     *
+     * 初始化传感器启用状态
      * @param mCollectorParamsInfoSub
      */
-    private void initSwitchButton(CollectorSensorParamsInfoSub mCollectorParamsInfoSub) {
+    private void initSensorState(CollectorSensorParamsInfoSub mCollectorParamsInfoSub) {
         String sensorType = mCollectorParamsInfoSub.getSensorType();
         int number = StringUtil.formatNumber(mCollectorParamsInfoSub.getChannelNumber());
         switch (number) {
             case 0:
                 channelNumber0 = "00";
                 switchButton1.setCheckedImmediatelyNoEvent(true);
-                setSwitchViewState(true, textView1);
+                setBgColorAndText(true, textView1);
                 break;
 
             case 1:
                 channelNumber1 = "01";
                 switchButton2.setCheckedImmediatelyNoEvent(true);
-                setSwitchViewState(true, textView2);
+                setBgColorAndText(true, textView2);
                 break;
 
             case 2:
                 channelNumber2 = "02";
                 switchButton3.setCheckedImmediatelyNoEvent(true);
-                setSwitchViewState(true, textView3);
+                setBgColorAndText(true, textView3);
                 break;
 
             case 3:
                 channelNumber3 = "03";
                 switchButton4.setCheckedImmediatelyNoEvent(true);
-                setSwitchViewState(true, textView4);
+                setBgColorAndText(true, textView4);
                 break;
 
             case 4:
                 channelNumber4 = "04";
                 switchButton5.setCheckedImmediatelyNoEvent(true);
-                setSwitchViewState(true, textView5);
+                setBgColorAndText(true, textView5);
                 break;
 
             case 5:
                 channelNumber5 = "05";
                 switchButton6.setCheckedImmediatelyNoEvent(true);
-                setSwitchViewState(true, textView6);
+                setBgColorAndText(true, textView6);
                 break;
 
             case 6:
                 channelNumber6 = "06";
                 switchButton7.setCheckedImmediatelyNoEvent(true);
-                setSwitchViewState(true, textView7);
+                setBgColorAndText(true, textView7);
                 break;
 
             case 7:
                 channelNumber7 = "07";
                 switchButton8.setCheckedImmediatelyNoEvent(true);
-                setSwitchViewState(true, textView8);
+                setBgColorAndText(true, textView8);
                 break;
         }
     }
@@ -363,35 +362,35 @@ public class SenSorBGKConfigActivity extends BaseDeviceConnectActivity {
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
         switch (buttonView.getId()) {
             case R.id.sw_stay1:
-                toggleSwitchView(textView1, switchButton1, "00");
+                toggleSensor(textView1, switchButton1, "00");
                 break;
 
             case R.id.sw_stay2:
-                toggleSwitchView(textView2, switchButton2, "01");
+                toggleSensor(textView2, switchButton2, "01");
                 break;
 
             case R.id.sw_stay3:
-                toggleSwitchView(textView3, switchButton3, "02");
+                toggleSensor(textView3, switchButton3, "02");
                 break;
 
             case R.id.sw_stay4:
-                toggleSwitchView(textView4, switchButton4, "03");
+                toggleSensor(textView4, switchButton4, "03");
                 break;
 
             case R.id.sw_stay5:
-                toggleSwitchView(textView5, switchButton5, "04");
+                toggleSensor(textView5, switchButton5, "04");
                 break;
 
             case R.id.sw_stay6:
-                toggleSwitchView(textView6, switchButton6, "05");
+                toggleSensor(textView6, switchButton6, "05");
                 break;
 
             case R.id.sw_stay7:
-                toggleSwitchView(textView7, switchButton7, "06");
+                toggleSensor(textView7, switchButton7, "06");
                 break;
 
             case R.id.sw_stay8:
-                toggleSwitchView(textView8, switchButton8, "07");
+                toggleSensor(textView8, switchButton8, "07");
                 break;
         }
     }
@@ -400,7 +399,6 @@ public class SenSorBGKConfigActivity extends BaseDeviceConnectActivity {
     /**
      * 点击imageview弹框
      * 点击switch 进行关闭、打开状态
-     *
      * @param view
      */
     @OnClick({R.id.back, R.id.iv_stay1, R.id.iv_stay2, R.id.iv_stay3, R.id.iv_stay4, R.id.iv_stay5, R.id.iv_stay6, R.id.iv_stay7, R.id.iv_stay8, R.id.btn_confirm})
@@ -415,7 +413,7 @@ public class SenSorBGKConfigActivity extends BaseDeviceConnectActivity {
                     ToastUtils.show("此传感器为空");
                     return;
                 }
-                showBottomDialogForModify(channelNumber0);
+                showBottomDialogForModifySensor(channelNumber0);
                 break;
 
             case R.id.iv_stay2:
@@ -423,7 +421,7 @@ public class SenSorBGKConfigActivity extends BaseDeviceConnectActivity {
                     ToastUtils.show("此传感器为空");
                     return;
                 }
-                showBottomDialogForModify(channelNumber1);
+                showBottomDialogForModifySensor(channelNumber1);
                 break;
 
             case R.id.iv_stay3:
@@ -431,7 +429,7 @@ public class SenSorBGKConfigActivity extends BaseDeviceConnectActivity {
                     ToastUtils.show("此传感器为空");
                     return;
                 }
-                showBottomDialogForModify(channelNumber2);
+                showBottomDialogForModifySensor(channelNumber2);
                 break;
 
             case R.id.iv_stay4:
@@ -439,7 +437,7 @@ public class SenSorBGKConfigActivity extends BaseDeviceConnectActivity {
                     ToastUtils.show("此传感器为空");
                     return;
                 }
-                showBottomDialogForModify(channelNumber3);
+                showBottomDialogForModifySensor(channelNumber3);
                 break;
 
             case R.id.iv_stay5:
@@ -447,7 +445,7 @@ public class SenSorBGKConfigActivity extends BaseDeviceConnectActivity {
                     ToastUtils.show("此传感器为空");
                     return;
                 }
-                showBottomDialogForModify(channelNumber4);
+                showBottomDialogForModifySensor(channelNumber4);
                 break;
 
             case R.id.iv_stay6:
@@ -455,7 +453,7 @@ public class SenSorBGKConfigActivity extends BaseDeviceConnectActivity {
                     ToastUtils.show("此传感器为空");
                     return;
                 }
-                showBottomDialogForModify(channelNumber5);
+                showBottomDialogForModifySensor(channelNumber5);
                 break;
 
             case R.id.iv_stay7:
@@ -463,7 +461,7 @@ public class SenSorBGKConfigActivity extends BaseDeviceConnectActivity {
                     ToastUtils.show("此传感器为空");
                     return;
                 }
-                showBottomDialogForModify(channelNumber6);
+                showBottomDialogForModifySensor(channelNumber6);
                 break;
 
             case R.id.iv_stay8:
@@ -471,7 +469,7 @@ public class SenSorBGKConfigActivity extends BaseDeviceConnectActivity {
                     ToastUtils.show("此传感器为空");
                     return;
                 }
-                showBottomDialogForModify(channelNumber7);
+                showBottomDialogForModifySensor(channelNumber7);
                 break;
 
             case R.id.btn_confirm://确定发送指令
@@ -486,25 +484,25 @@ public class SenSorBGKConfigActivity extends BaseDeviceConnectActivity {
     }
 
 
-    private void setSwitchViewState(boolean isOpen, TextView mTvStay) {
+    private void setBgColorAndText(boolean isOpen, TextView mTvStay) {
         mTvStay.setText(isOpen ? "已启用" : "已停用");
         mTvStay.setBackgroundColor(getResources().getColor(isOpen ? R.color.colorPrimaryDark : R.color.secondary_text));
     }
 
-    private void toggleSwitchView(TextView textView, SwitchButton switchButton, String channelNumber) {
+    private void toggleSensor(TextView textView, SwitchButton switchButton, String channelNumber) {
         if (switchButton.isChecked()) {
-            setSwitchViewState(true, textView);
-            setOpenSwitchDialog(channelNumber);
+            setBgColorAndText(true, textView);
+            enableSensor(channelNumber);
         } else {
             switchButton.setCheckedImmediatelyNoEvent(!switchButton.isChecked());
-            closeSwitchColorbg(textView, switchButton, channelNumber);
+            disableSensor(textView, switchButton, channelNumber);
         }
     }
 
     /**
-     * 关闭采集器设备  确定后停用
+     * 关闭传感器
      */
-    private void closeSwitchColorbg(final TextView textView, final SwitchButton switchButton, final String channelNumber) {
+    private void disableSensor(final TextView textView, final SwitchButton switchButton, final String channelNumber) {
         mBuilder = new MaterialDialog.Builder(this);
         mBuilder.title("温馨提示：")
                 .content("确认要停用该传感器吗？")
@@ -514,19 +512,11 @@ public class SenSorBGKConfigActivity extends BaseDeviceConnectActivity {
                 .negativeText("取消");
         mMaterialDialog = mBuilder.build();
         mMaterialDialog.show();
-        mBuilder.onNegative(new MaterialDialog.SingleButtonCallback() {
-            @Override
-            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                switchButton.setCheckedImmediatelyNoEvent(true);
-                setSwitchViewState(true, textView);
-            }
-        });
         mBuilder.onPositive(new MaterialDialog.SingleButtonCallback() {
             @Override
             public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                 switchButton.setCheckedImmediatelyNoEvent(false);
-                setSwitchViewState(false, textView);
-
+                setBgColorAndText(false, textView);
                 //停用后停止
                 switch (channelNumber) {
                     case "00":
@@ -573,7 +563,10 @@ public class SenSorBGKConfigActivity extends BaseDeviceConnectActivity {
         });
     }
 
-    private void setOpenSwitchDialog(String channelNumber) {
+    /**
+     * 启用传感器
+     */
+    private void enableSensor(String channelNumber) {
         switch (channelNumber) {
             case "00":
                 channelNumber0 = channelNumber;
@@ -586,7 +579,7 @@ public class SenSorBGKConfigActivity extends BaseDeviceConnectActivity {
                     collectorSensorParamsInfoSub.setSensorData(defaultCollectorSensorParamsInfoSub.getSensorData());
                     collectorSensorHashMap.put(channelNumber, collectorSensorParamsInfoSub);
                 }
-                showBottomDialogForAdd(channelNumber0);
+                showBottomDialogForEnableSensor(channelNumber0);
                 break;
 
             case "01":
@@ -600,7 +593,7 @@ public class SenSorBGKConfigActivity extends BaseDeviceConnectActivity {
                     collectorSensorParamsInfoSub.setSensorData(defaultCollectorSensorParamsInfoSub.getSensorData());
                     collectorSensorHashMap.put(channelNumber, collectorSensorParamsInfoSub);
                 }
-                showBottomDialogForAdd(channelNumber1);
+                showBottomDialogForEnableSensor(channelNumber1);
                 break;
 
             case "02":
@@ -614,7 +607,7 @@ public class SenSorBGKConfigActivity extends BaseDeviceConnectActivity {
                     collectorSensorParamsInfoSub.setSensorData(defaultCollectorSensorParamsInfoSub.getSensorData());
                     collectorSensorHashMap.put(channelNumber, collectorSensorParamsInfoSub);
                 }
-                showBottomDialogForAdd(channelNumber2);
+                showBottomDialogForEnableSensor(channelNumber2);
                 break;
 
             case "03":
@@ -628,7 +621,7 @@ public class SenSorBGKConfigActivity extends BaseDeviceConnectActivity {
                     collectorSensorParamsInfoSub.setSensorData(defaultCollectorSensorParamsInfoSub.getSensorData());
                     collectorSensorHashMap.put(channelNumber, collectorSensorParamsInfoSub);
                 }
-                showBottomDialogForAdd(channelNumber3);
+                showBottomDialogForEnableSensor(channelNumber3);
                 break;
 
             case "04":
@@ -642,7 +635,7 @@ public class SenSorBGKConfigActivity extends BaseDeviceConnectActivity {
                     collectorSensorParamsInfoSub.setSensorData(defaultCollectorSensorParamsInfoSub.getSensorData());
                     collectorSensorHashMap.put(channelNumber, collectorSensorParamsInfoSub);
                 }
-                showBottomDialogForAdd(channelNumber4);
+                showBottomDialogForEnableSensor(channelNumber4);
                 break;
 
             case "05":
@@ -656,7 +649,7 @@ public class SenSorBGKConfigActivity extends BaseDeviceConnectActivity {
                     collectorSensorParamsInfoSub.setSensorData(defaultCollectorSensorParamsInfoSub.getSensorData());
                     collectorSensorHashMap.put(channelNumber, collectorSensorParamsInfoSub);
                 }
-                showBottomDialogForAdd(channelNumber5);
+                showBottomDialogForEnableSensor(channelNumber5);
                 break;
 
             case "06":
@@ -670,7 +663,7 @@ public class SenSorBGKConfigActivity extends BaseDeviceConnectActivity {
                     collectorSensorParamsInfoSub.setSensorData(defaultCollectorSensorParamsInfoSub.getSensorData());
                     collectorSensorHashMap.put(channelNumber, collectorSensorParamsInfoSub);
                 }
-                showBottomDialogForAdd(channelNumber6);
+                showBottomDialogForEnableSensor(channelNumber6);
                 break;
 
             case "07":
@@ -684,23 +677,17 @@ public class SenSorBGKConfigActivity extends BaseDeviceConnectActivity {
                     collectorSensorParamsInfoSub.setSensorData(defaultCollectorSensorParamsInfoSub.getSensorData());
                     collectorSensorHashMap.put(channelNumber, collectorSensorParamsInfoSub);
                 }
-                showBottomDialogForAdd(channelNumber7);
+                showBottomDialogForEnableSensor(channelNumber7);
                 break;
-
-            default:
         }
     }
 
-    /**
-     * 弹框
-     *
-     * @param
-     */
-    private void showBottomDialogForAdd(String channelNumber) {
+
+    private void showBottomDialogForEnableSensor(String channelNumber) {
         factory.createDialog(this, collectorSensorHashMap.get(channelNumber).getSensorType(), collectorSensorHashMap.get(channelNumber), channelNumber, addClickListener);
     }
 
-    private void showBottomDialogForModify(String channelNumber) {
+    private void showBottomDialogForModifySensor(String channelNumber) {
         factory.createDialog(this, collectorSensorHashMap.get(channelNumber).getSensorType(), collectorSensorHashMap.get(channelNumber), channelNumber, modifyClickListener);
     }
 
@@ -733,56 +720,56 @@ public class SenSorBGKConfigActivity extends BaseDeviceConnectActivity {
             switch (channelNumber) {
                 case "00":
                     switchButton1.setCheckedImmediatelyNoEvent(false);
-                    setSwitchViewState(false, textView1);
+                    setBgColorAndText(false, textView1);
                     channelNumber0 = "-1";
                     collectorSensorHashMap.remove(channelNumber);
                     break;
 
                 case "01":
                     switchButton2.setCheckedImmediatelyNoEvent(false);
-                    setSwitchViewState(false, textView2);
+                    setBgColorAndText(false, textView2);
                     channelNumber1 = "-1";
                     collectorSensorHashMap.remove(channelNumber);
                     break;
 
                 case "02":
                     switchButton3.setCheckedImmediatelyNoEvent(false);
-                    setSwitchViewState(false, textView3);
+                    setBgColorAndText(false, textView3);
                     channelNumber2 = "-1";
                     collectorSensorHashMap.remove(channelNumber);
                     break;
 
                 case "03":
                     switchButton4.setCheckedImmediatelyNoEvent(false);
-                    setSwitchViewState(false, textView4);
+                    setBgColorAndText(false, textView4);
                     channelNumber3 = "-1";
                     collectorSensorHashMap.remove(channelNumber);
                     break;
 
                 case "04":
                     switchButton5.setCheckedImmediatelyNoEvent(false);
-                    setSwitchViewState(false, textView5);
+                    setBgColorAndText(false, textView5);
                     channelNumber4 = "-1";
                     collectorSensorHashMap.remove(channelNumber);
                     break;
 
                 case "05":
                     switchButton6.setCheckedImmediatelyNoEvent(false);
-                    setSwitchViewState(false, textView6);
+                    setBgColorAndText(false, textView6);
                     channelNumber5 = "-1";
                     collectorSensorHashMap.remove(channelNumber);
                     break;
 
                 case "06":
                     switchButton7.setCheckedImmediatelyNoEvent(false);
-                    setSwitchViewState(false, textView7);
+                    setBgColorAndText(false, textView7);
                     channelNumber6 = "-1";
                     collectorSensorHashMap.remove(channelNumber);
                     break;
 
                 case "07":
                     switchButton8.setCheckedImmediatelyNoEvent(false);
-                    setSwitchViewState(false, textView8);
+                    setBgColorAndText(false, textView8);
                     channelNumber7 = "-1";
                     collectorSensorHashMap.remove(channelNumber);
                     break;

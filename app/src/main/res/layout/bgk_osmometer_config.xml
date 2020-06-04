@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:orientation="vertical">
+
+    <LinearLayout style="@style/LinearLayout_Sensor_Config_Item">
+
+        <TextView
+            style="@style/TextView_Sensor_Config_Item"
+            android:text="多项式系数A" />
+
+        <EditText
+            android:id="@+id/polynomialRatioA"
+            style="@style/EditText_Sensor_Config_Item"
+            android:hint="请输入系数B"
+            android:inputType="number" />
+
+    </LinearLayout>
+
+    <LinearLayout style="@style/LinearLayout_Sensor_Config_Item">
+
+        <TextView
+            style="@style/TextView_Sensor_Config_Item"
+            android:text="多项式系数B" />
+
+        <EditText
+            android:id="@+id/polynomialRatioB"
+            style="@style/EditText_Sensor_Config_Item"
+            android:hint="请输入系数B"
+            android:inputType="number" />
+
+    </LinearLayout>
+
+    <LinearLayout style="@style/LinearLayout_Sensor_Config_Item">
+
+        <TextView
+            style="@style/TextView_Sensor_Config_Item"
+            android:text="多项式系数C" />
+
+        <EditText
+            android:id="@+id/polynomialRatioC"
+            style="@style/EditText_Sensor_Config_Item"
+            android:hint="请输入系数C"
+            android:inputType="number" />
+
+    </LinearLayout>
+
+    <LinearLayout style="@style/LinearLayout_Sensor_Config_Item">
+
+        <TextView
+            style="@style/TextView_Sensor_Config_Item"
+            android:text="温度系数K" />
+
+        <EditText
+            android:id="@+id/temperatureCoefficientK"
+            style="@style/EditText_Sensor_Config_Item"
+            android:hint="请输入系数K"
+            android:inputType="number" />
+
+    </LinearLayout>
+
+    <LinearLayout style="@style/LinearLayout_Sensor_Config_Item">
+
+        <TextView
+            style="@style/TextView_Sensor_Config_Item"
+            android:text="管口高程(单位：米)" />
+
+        <EditText
+            android:id="@+id/et_nozzel_height"
+            style="@style/EditText_Sensor_Config_Item"
+            android:hint="请输入管口高程"
+            android:inputType="number" />
+
+    </LinearLayout>
+
+    <LinearLayout style="@style/LinearLayout_Sensor_Config_Item">
+
+        <TextView
+            style="@style/TextView_Sensor_Config_Item"
+            android:text="绳长(单位：米)" />
+
+        <EditText
+            android:id="@+id/et_osmometer_cord"
+            style="@style/EditText_Sensor_Config_Item"
+            android:hint="请输入绳长"
+            android:inputType="number" />
+
+    </LinearLayout>
+
+    <LinearLayout style="@style/LinearLayout_Sensor_Config_Item">
+
+        <TextView
+            style="@style/TextView_Sensor_Config_Item"
+            android:text="报警值(单位：毫米)" />
+
+        <EditText
+            android:id="@+id/et_alarm_value"
+            style="@style/EditText_Sensor_Config_Item"
+            android:hint="请输入报警值"
+            android:inputType="number" />
+
+    </LinearLayout>
+
+    <LinearLayout style="@style/LinearLayout_Sensor_Config_Item">
+
+        <TextView
+            style="@style/TextView_Sensor_Config_Item"
+            android:text="修正值(单位：米)" />
+
+        <EditText
+            android:id="@+id/et_correct_value"
+            style="@style/EditText_Sensor_Config_Item"
+            android:hint="请输入修正值"
+            android:inputType="number" />
+
+    </LinearLayout>
+
+    <LinearLayout style="@style/LinearLayout_Sensor_Config_Item">
+
+        <TextView
+            style="@style/TextView_Sensor_Config_Item"
+            android:text="备注" />
+
+        <EditText
+            android:id="@+id/et_note"
+            style="@style/EditText_Sensor_Config_Item"
+            android:inputType="number" />
+
+    </LinearLayout>
+
+</LinearLayout>
