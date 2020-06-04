@@ -49,12 +49,9 @@ import butterknife.OnClick;
 import timber.log.Timber;
 
 /**
- * 项目名：  mCloudapp
- * 包名：    com.shmedo.mcloudapp.ui.activity.device.sensor
- * 文件名:   SenSorMHConfigActivity
  * 创建者:   dpc
  * 创建时间:  2019/4/24 14:44
- * 描述：    基康渗压计 参数配置 50
+ * 描述：   传感器配置页面
  */
 public class SenSorBGKConfigActivity extends BaseDeviceConnectActivity {
 
@@ -198,18 +195,7 @@ public class SenSorBGKConfigActivity extends BaseDeviceConnectActivity {
     }
 
     /**
-     * VW08("00"),
-     * DS08("02"),
-     * HD08("03"),
-     * CX08("04"),
-     * UDS08("06"),
-     * RD08("07"),
-     * SMC08("08"),
-     * TH08("12"),
-     * DVWP("15"),
-     * QJY08("16"),
-     * CS08("17"),
-     * VW01("20");
+     * 采集器名称作为标题
      */
     private void initTitle() {
         if (defaultCollectorSensorParamsInfoSub == null)

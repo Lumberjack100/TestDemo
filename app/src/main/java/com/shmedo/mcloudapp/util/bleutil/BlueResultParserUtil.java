@@ -41,63 +41,63 @@ public class BlueResultParserUtil {
      */
     private static CollectorSensorParamsInfoSub setCollectorSeneorInfo(CollectorSensorParamsInfo info, CollectorSensorParamsInfoSub infoSub) {
         switch (info.getSensorType()) {
-            case WIRE_SHIFT:
+            case WIRE_SHIFT://拉线位移计
                 infoSub.setSensorType("02");
                 break;
 
-            case SOIL_MOISTURE:
+            case SOIL_MOISTURE://土壤含水率
                 infoSub.setSensorType("03");
                 break;
 
-            case INCLINOMETER:
+            case INCLINOMETER://测斜仪
                 infoSub.setSensorType("04");
                 break;
 
-            case ULTRASONIC_LEVEL_GAUGE:
+            case ULTRASONIC_LEVEL_GAUGE://超声波物位计
                 infoSub.setSensorType("06");
                 break;
 
-            case RADAR_LEVEL_GAUGE:
+            case RADAR_LEVEL_GAUGE://雷达物位计
                 infoSub.setSensorType("07");
                 break;
 
-            case MOISTURE_METER:
+            case MOISTURE_METER://墒情计
                 infoSub.setSensorType("08");
                 break;
 
-            case TEMPERATURE_HUMIDITY_METER:
+            case TEMPERATURE_HUMIDITY_METER://温湿度计
                 infoSub.setSensorType("12");
                 break;
 
-            case UPLIFT_PRESSURE_GAUGE:
+            case UPLIFT_PRESSURE_GAUGE://扬压力计
                 infoSub.setSensorType("15");
                 break;
 
-            case KANG_PERCOLATE:
+            case KANG_PERCOLATE://基康渗压计
                 infoSub.setSensorType("50");
                 break;
 
-            case GUDAN_PERCOLATE:
+            case GUDAN_PERCOLATE://葛南渗压计
                 infoSub.setSensorType("51");
                 break;
 
-            case GUDAN_SOIL_PRESSURE:
+            case GUDAN_SOIL_PRESSURE://葛南土压力盒
                 infoSub.setSensorType("52");
                 break;
 
-            case GUDAN_STRESS:
+            case GUDAN_STRESS://葛南应力计
                 infoSub.setSensorType("53");
                 break;
 
-            case GUDAN_NOT_STRESS:
+            case GUDAN_NOT_STRESS://葛南无应力计
                 infoSub.setSensorType("54");
                 break;
 
-            case GUDAN_DISPLACEMENT_METER:
+            case GUDAN_DISPLACEMENT_METER://葛南位移计
                 infoSub.setSensorType("55");
                 break;
 
-            case INFRASOUND_SENSOR:
+            case INFRASOUND_SENSOR://次声传感器
                 infoSub.setSensorType("21");
                 break;
 
@@ -109,7 +109,11 @@ public class BlueResultParserUtil {
     }
 
 
-
+    /**
+     * 根据采集器型号得到采集器名称
+     * @param collectorModel
+     * @return
+     */
     public static String getCollectorName(CollectorModel collectorModel) {
         String collectorName = "";
         switch (collectorModel) {
@@ -153,12 +157,12 @@ public class BlueResultParserUtil {
                 collectorName = "倾角仪采集器";
                 break;
 
-            case CS08:
-                collectorName = "次声采集器";
-                break;
-
             case VW01:
                 collectorName = "单通道采集器";
+                break;
+
+            case CS08:
+                collectorName = "次声采集器";
                 break;
 
             default:

@@ -72,8 +72,7 @@ public enum SensorType {
     /**
      * 葛南位移计
      */
-    GUDAN_DISPLACEMENT_METER("55")
-   ;
+    GUDAN_DISPLACEMENT_METER("55");
 
     private String type;
     SensorType (String type) {
