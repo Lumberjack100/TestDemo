@@ -9,12 +9,12 @@
 
         <TextView
             style="@style/TextView_Sensor_Config_Item"
-            android:text="灵敏度系数" />
+            android:text="灵敏度K" />
 
         <EditText
             android:id="@+id/sensitivityCoefficient"
             style="@style/EditText_Sensor_Config_Item"
-            android:hint="请输入灵敏度系数"
+            android:hint="请输入"
             android:inputType="number" />
 
     </LinearLayout>
@@ -23,12 +23,12 @@
 
         <TextView
             style="@style/TextView_Sensor_Config_Item"
-            android:text="温补系数" />
+            android:text="温修系数b" />
 
         <EditText
             android:id="@+id/temperatureCoefficient"
             style="@style/EditText_Sensor_Config_Item"
-            android:hint="请输入温补系数"
+            android:hint="请输入"
             android:inputType="number" />
 
     </LinearLayout>
@@ -37,12 +37,12 @@
 
         <TextView
             style="@style/TextView_Sensor_Config_Item"
-            android:text="管口高程(单位：米)" />
+            android:text="安装高程(m)" />
 
         <EditText
-            android:id="@+id/et_nozzel_height"
+            android:id="@+id/et_install_elevation"
             style="@style/EditText_Sensor_Config_Item"
-            android:hint="请输入管口高程"
+            android:hint="请输入"
             android:inputType="number" />
 
     </LinearLayout>
@@ -51,12 +51,12 @@
 
         <TextView
             style="@style/TextView_Sensor_Config_Item"
-            android:text="绳长(单位：米)" />
+            android:text="绳长(m)" />
 
         <EditText
             android:id="@+id/et_osmometer_cord"
             style="@style/EditText_Sensor_Config_Item"
-            android:hint="请输入绳长"
+            android:hint="请输入"
             android:inputType="number" />
 
     </LinearLayout>
@@ -65,12 +65,12 @@
 
         <TextView
             style="@style/TextView_Sensor_Config_Item"
-            android:text="报警值(单位：毫米)" />
+            android:text="触发阀值(mm)" />
 
         <EditText
-            android:id="@+id/et_alarm_value"
+            android:id="@+id/et_trigger_threshold"
             style="@style/EditText_Sensor_Config_Item"
-            android:hint="请输入报警值"
+            android:hint="请输入"
             android:inputType="number" />
 
     </LinearLayout>
@@ -79,12 +79,12 @@
 
         <TextView
             style="@style/TextView_Sensor_Config_Item"
-            android:text="修正值(单位：米)" />
+            android:text="手动纠偏(mm)" />
 
         <EditText
             android:id="@+id/et_correct_value"
             style="@style/EditText_Sensor_Config_Item"
-            android:hint="请输入修正值"
+            android:hint="请输入"
             android:inputType="number" />
 
     </LinearLayout>
@@ -93,11 +93,26 @@
 
         <TextView
             style="@style/TextView_Sensor_Config_Item"
-            android:text="备注" />
+            android:text="初始温度T0" />
 
         <EditText
-            android:id="@+id/et_note"
+            android:id="@+id/et_initialtemperature"
             style="@style/EditText_Sensor_Config_Item"
+            android:hint="请输入"
+            android:inputType="number" />
+
+    </LinearLayout>
+
+    <LinearLayout style="@style/LinearLayout_Sensor_Config_Item">
+
+        <TextView
+            style="@style/TextView_Sensor_Config_Item"
+            android:text="基准值F0" />
+
+        <EditText
+            android:id="@+id/et_ReferenceValue"
+            style="@style/EditText_Sensor_Config_Item"
+            android:hint="请输入"
             android:inputType="number" />
 
     </LinearLayout>

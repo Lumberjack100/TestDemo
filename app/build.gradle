@@ -141,14 +141,10 @@ greendao {
 }
 
 dependencies {
-    configurations {
-        all*.exclude group: 'com.android.support', module: 'support-v13'
-    }
-    implementation group: 'org.reflections', name: 'reflections', version: '0.9.11'
-
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation project(path: ':picker-view')
     implementation project(path: ':configlibrary')
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation "androidx.appcompat:appcompat:$rootProject.thirdLib.appcompat"
     implementation "androidx.constraintlayout:constraintlayout:$rootProject.thirdLib.constraintlayout"
     implementation "com.google.android.material:material:$rootProject.thirdLib.material"

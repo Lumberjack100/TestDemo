@@ -6,7 +6,7 @@ import com.shmedo.core.enums.SensorType;
 
 /**
  * Created by adu on 2017/12/14.
- * 传感器类型为葛南渗压计 51
+ * 传感器类型为葛南渗压计 VWP-03
  */
 public class SensorGudanPercolateInfo implements SensorParameter {
     private int triggerThreshold;   //触发阈值
@@ -15,6 +15,8 @@ public class SensorGudanPercolateInfo implements SensorParameter {
     private double datumValueF0; //基准值
     private double CreateTemperature;   //初始化温度T0
     private String manualCorrection;    //手动纠偏
+    private double cordLenght;  //绳长
+    private double installElevation;  //安装高程
 
     public int getTriggerThreshold() {
         return triggerThreshold;
@@ -64,6 +66,22 @@ public class SensorGudanPercolateInfo implements SensorParameter {
         this.manualCorrection = manualCorrection;
     }
 
+    public double getCordLenght() {
+        return cordLenght;
+    }
+
+    public void setCordLenght(double cordLenght) {
+        this.cordLenght = cordLenght;
+    }
+
+    public double getInstallElevation() {
+        return installElevation;
+    }
+
+    public void setInstallElevation(double installElevation) {
+        this.installElevation = installElevation;
+    }
+
     @Override
     public SensorType getSensorType() {
         return SensorType.GUDAN_PERCOLATE;
@@ -78,6 +96,8 @@ public class SensorGudanPercolateInfo implements SensorParameter {
                 ", datumValueF0=" + datumValueF0 +
                 ", CreateTemperature=" + CreateTemperature +
                 ", manualCorrection='" + manualCorrection + '\'' +
+                ", cordLenght=" + cordLenght +
+                ", installElevation=" + installElevation +
                 '}';
     }
 }

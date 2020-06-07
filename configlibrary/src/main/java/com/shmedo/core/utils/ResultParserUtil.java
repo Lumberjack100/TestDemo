@@ -43,7 +43,7 @@ public class ResultParserUtil {
             return null;
         }
 
-        CommandResult<Class> commandResult = ParseManager.getInstance().parse(result);
+        CommandResult<T> commandResult = ParseManager.getInstance().parse(result);
         T info = null;
         if (commandResult.isSuccess()) {
             info = (T) commandResult.getResult();

@@ -1,5 +1,5 @@
 <resources>
-  <!--  <string name="app_name">米易通</string>-->
+    <!--  <string name="app_name">米易通</string>-->
     <string name="login_medo_copyright">©上海米度测控科技有限公司版权所有</string>
     <string name="login_input_username_hint">请输入用户名</string>
     <string name="login_input_password_hint">请输入密码</string>
@@ -138,4 +138,7 @@
     <string name="permission_external_storage">当前应用缺少必要的读写存储权限，请前往设置页面授予权限</string>
     <string name="message_permission_rationale">授予以下权限以继续执行该程序</string>
     <string name="message_permission_always_failed">请同意定位权限</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

@@ -73,6 +73,10 @@ public class BlueResultParserUtil {
                 infoSub.setSensorType("15");
                 break;
 
+            case INFRASOUND_SENSOR://次声传感器
+                infoSub.setSensorType("21");
+                break;
+
             case KANG_PERCOLATE://基康渗压计
                 infoSub.setSensorType("50");
                 break;
@@ -97,8 +101,8 @@ public class BlueResultParserUtil {
                 infoSub.setSensorType("55");
                 break;
 
-            case INFRASOUND_SENSOR://次声传感器
-                infoSub.setSensorType("21");
+            case JUNXING_ZLJ_300T://军星轴力计 ZLJ-300T
+                infoSub.setSensorType("58");
                 break;
 
             default:

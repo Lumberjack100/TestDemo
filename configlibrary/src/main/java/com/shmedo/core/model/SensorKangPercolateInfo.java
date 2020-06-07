@@ -5,7 +5,7 @@ import com.shmedo.core.interfaces.SensorParameter;
 
 /**
  * Created by adu on 2017/12/14.
- * 传感器为基康渗压计  50
+ * 传感器为基康渗压计 BGK-4500
  */
 public class SensorKangPercolateInfo implements SensorParameter {
 
@@ -16,6 +16,8 @@ public class SensorKangPercolateInfo implements SensorParameter {
     private double temperatureCoefficientK;//温度系数K
     private double CreateTemperature;   //初始化温度T0
     private String manualCorrection;    //手动纠偏
+    private double cordLenght;  //绳长
+    private double installElevation;  //安装高程
 
     public int getTriggerThreshold() {
         return triggerThreshold;
@@ -73,6 +75,22 @@ public class SensorKangPercolateInfo implements SensorParameter {
         this.manualCorrection = manualCorrection;
     }
 
+    public double getCordLenght() {
+        return cordLenght;
+    }
+
+    public void setCordLenght(double cordLenght) {
+        this.cordLenght = cordLenght;
+    }
+
+    public double getInstallElevation() {
+        return installElevation;
+    }
+
+    public void setInstallElevation(double installElevation) {
+        this.installElevation = installElevation;
+    }
+
     @Override
     public SensorType getSensorType() {
         return SensorType.KANG_PERCOLATE;
@@ -88,6 +106,8 @@ public class SensorKangPercolateInfo implements SensorParameter {
                 ", temperatureCoefficientK=" + temperatureCoefficientK +
                 ", CreateTemperature=" + CreateTemperature +
                 ", manualCorrection='" + manualCorrection + '\'' +
+                ", cordLenght=" + cordLenght +
+                ", installElevation=" + installElevation +
                 '}';
     }
 }
