@@ -23,6 +23,20 @@
 
         <TextView
             style="@style/TextView_Sensor_Config_Item"
+            android:text="触发阀值(mm)" />
+
+        <EditText
+            android:id="@+id/et_trigger_threshold"
+            style="@style/EditText_Sensor_Config_Item"
+            android:hint="请输入"
+            android:inputType="number" />
+
+    </LinearLayout>
+
+    <LinearLayout style="@style/LinearLayout_Sensor_Config_Item">
+
+        <TextView
+            style="@style/TextView_Sensor_Config_Item"
             android:text="多项式系数A" />
 
         <EditText
@@ -75,38 +89,10 @@
 
         <TextView
             style="@style/TextView_Sensor_Config_Item"
-            android:text="安装高程(m)" />
+            android:text="初始温度T0" />
 
         <EditText
-            android:id="@+id/et_install_elevation"
-            style="@style/EditText_Sensor_Config_Item"
-            android:hint="请输入"
-            android:inputType="number" />
-
-    </LinearLayout>
-
-    <LinearLayout style="@style/LinearLayout_Sensor_Config_Item">
-
-        <TextView
-            style="@style/TextView_Sensor_Config_Item"
-            android:text="绳长(m)" />
-
-        <EditText
-            android:id="@+id/et_osmometer_cord"
-            style="@style/EditText_Sensor_Config_Item"
-            android:hint="请输入"
-            android:inputType="number" />
-
-    </LinearLayout>
-
-    <LinearLayout style="@style/LinearLayout_Sensor_Config_Item">
-
-        <TextView
-            style="@style/TextView_Sensor_Config_Item"
-            android:text="触发阀值(mm)" />
-
-        <EditText
-            android:id="@+id/et_trigger_threshold"
+            android:id="@+id/et_initialtemperature"
             style="@style/EditText_Sensor_Config_Item"
             android:hint="请输入"
             android:inputType="number" />
@@ -131,10 +117,24 @@
 
         <TextView
             style="@style/TextView_Sensor_Config_Item"
-            android:text="初始温度T0" />
+            android:text="绳长(m)" />
 
         <EditText
-            android:id="@+id/et_initialtemperature"
+            android:id="@+id/et_cord_length"
+            style="@style/EditText_Sensor_Config_Item"
+            android:hint="请输入"
+            android:inputType="number" />
+
+    </LinearLayout>
+
+    <LinearLayout style="@style/LinearLayout_Sensor_Config_Item">
+
+        <TextView
+            style="@style/TextView_Sensor_Config_Item"
+            android:text="安装高程(m)" />
+
+        <EditText
+            android:id="@+id/et_install_elevation"
             style="@style/EditText_Sensor_Config_Item"
             android:hint="请输入"
             android:inputType="number" />

@@ -46,20 +46,15 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
 
-              <!--  <include
-                    android:id="@+id/bgk_osmometer_config_layout"
-                    layout="@layout/bgk_osmometer_config" />-->
+                <com.shmedo.mcloudapp.ui.activity.device.sensor.view.SensorVWP03View
+                    android:id="@+id/sensorVWP03View"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
 
-                <include
-                    android:id="@+id/ngn_osmometer_config_layout"
-                    layout="@layout/vwp_osmometer_config"
-                    android:visibility="gone" />
-
-                <include
-                    android:id="@+id/axialforcegauge_config_layout"
-                    layout="@layout/axialforcegauge_config"
-                    android:visibility="gone" />
-
+                <com.shmedo.mcloudapp.ui.activity.device.sensor.view.SensorZLJ300tView
+                    android:id="@+id/sensorZLJ300tView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
             </LinearLayout>
 
         </ScrollView>

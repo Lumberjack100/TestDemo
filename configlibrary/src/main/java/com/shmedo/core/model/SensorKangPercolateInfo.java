@@ -9,21 +9,21 @@ import com.shmedo.core.interfaces.SensorParameter;
  */
 public class SensorKangPercolateInfo implements SensorParameter {
 
-    private int triggerThreshold;   //触发阈值
+    private String triggerThreshold;   //触发阈值
     private String polynomialRatioA;//多项式系数A
     private String polynomialRatioB;//多项式系数B
     private String polynomialRatioC;//多项式系数C
-    private double temperatureCoefficientK;//温度系数K
-    private double CreateTemperature;   //初始化温度T0
+    private String temperatureCoefficientK;//温度系数K
+    private String CreateTemperature;   //初始化温度T0
     private String manualCorrection;    //手动纠偏
-    private double cordLenght;  //绳长
-    private double installElevation;  //安装高程
+    private String cordLenght;  //绳长
+    private String installElevation;  //安装高程
 
-    public int getTriggerThreshold() {
+    public String getTriggerThreshold() {
         return triggerThreshold;
     }
 
-    public void setTriggerThreshold(int triggerThreshold) {
+    public void setTriggerThreshold(String triggerThreshold) {
         this.triggerThreshold = triggerThreshold;
     }
 
@@ -51,19 +51,19 @@ public class SensorKangPercolateInfo implements SensorParameter {
         this.polynomialRatioC = polynomialRatioC;
     }
 
-    public double getTemperatureCoefficientK() {
+    public String getTemperatureCoefficientK() {
         return temperatureCoefficientK;
     }
 
-    public void setTemperatureCoefficientK(double temperatureCoefficientK) {
+    public void setTemperatureCoefficientK(String temperatureCoefficientK) {
         this.temperatureCoefficientK = temperatureCoefficientK;
     }
 
-    public double getCreateTemperature() {
+    public String getCreateTemperature() {
         return CreateTemperature;
     }
 
-    public void setCreateTemperature(double createTemperature) {
+    public void setCreateTemperature(String createTemperature) {
         CreateTemperature = createTemperature;
     }
 
@@ -75,19 +75,19 @@ public class SensorKangPercolateInfo implements SensorParameter {
         this.manualCorrection = manualCorrection;
     }
 
-    public double getCordLenght() {
+    public String getCordLenght() {
         return cordLenght;
     }
 
-    public void setCordLenght(double cordLenght) {
+    public void setCordLenght(String cordLenght) {
         this.cordLenght = cordLenght;
     }
 
-    public double getInstallElevation() {
+    public String getInstallElevation() {
         return installElevation;
     }
 
-    public void setInstallElevation(double installElevation) {
+    public void setInstallElevation(String installElevation) {
         this.installElevation = installElevation;
     }
 
@@ -99,15 +99,15 @@ public class SensorKangPercolateInfo implements SensorParameter {
     @Override
     public String toString() {
         return "SensorKangPercolateInfo{" +
-                "triggerThreshold=" + triggerThreshold +
+                "triggerThreshold='" + triggerThreshold + '\'' +
                 ", polynomialRatioA='" + polynomialRatioA + '\'' +
                 ", polynomialRatioB='" + polynomialRatioB + '\'' +
                 ", polynomialRatioC='" + polynomialRatioC + '\'' +
-                ", temperatureCoefficientK=" + temperatureCoefficientK +
-                ", CreateTemperature=" + CreateTemperature +
+                ", temperatureCoefficientK='" + temperatureCoefficientK + '\'' +
+                ", CreateTemperature='" + CreateTemperature + '\'' +
                 ", manualCorrection='" + manualCorrection + '\'' +
-                ", cordLenght=" + cordLenght +
-                ", installElevation=" + installElevation +
+                ", cordLenght='" + cordLenght + '\'' +
+                ", installElevation='" + installElevation + '\'' +
                 '}';
     }
 }

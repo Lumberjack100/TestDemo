@@ -13,9 +13,12 @@ import androidx.fragment.app.Fragment;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.entity.ble.collector.CollectorSensorParamsInfoSub;
 import com.shmedo.mcloudapp.ui.activity.device.sensor.view.SensorBGK4500View;
+import com.shmedo.mcloudapp.ui.activity.device.sensor.view.SensorVWP03View;
+import com.shmedo.mcloudapp.ui.activity.device.sensor.view.SensorZLJ300tView;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import timber.log.Timber;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -28,6 +31,12 @@ public class TestFragment extends BaseDialogFragment {
 
     @BindView(R.id.sensorBGK4500View)
     SensorBGK4500View sensorBGK4500View;
+
+    @BindView(R.id.sensorVWP03View)
+    SensorVWP03View sensorVWP03View;
+
+    @BindView(R.id.sensorZLJ300tView)
+    SensorZLJ300tView sensorZLJ300tView;
 
     private CollectorSensorParamsInfoSub collectorSensorParamsInfoSub;
 
@@ -58,7 +67,6 @@ public class TestFragment extends BaseDialogFragment {
                              Bundle savedInstanceState) {
         View rootView = super.onCreateView(inflater, container, savedInstanceState);
         initView();
-        setValue();
         return rootView;
     }
 
@@ -75,20 +83,20 @@ public class TestFragment extends BaseDialogFragment {
                 switch (item) {
                     case "渗压计-BGK":
                         sensorBGK4500View.setVisibility(View.VISIBLE);
-//                        ngnOsmometerConfigLayout.setVisibility(View.GONE);
-//                        axialforcegaugeConfigLayout.setVisibility(View.GONE);
+                        sensorVWP03View.setVisibility(View.GONE);
+                        sensorZLJ300tView.setVisibility(View.GONE);
                         break;
 
                     case "渗压计-NGN":
                         sensorBGK4500View.setVisibility(View.GONE);
-//                        ngnOsmometerConfigLayout.setVisibility(View.VISIBLE);
-//                        axialforcegaugeConfigLayout.setVisibility(View.GONE);
+                        sensorVWP03View.setVisibility(View.VISIBLE);
+                        sensorZLJ300tView.setVisibility(View.GONE);
                         break;
 
                     case "轴力计":
                         sensorBGK4500View.setVisibility(View.GONE);
-//                        ngnOsmometerConfigLayout.setVisibility(View.GONE);
-//                        axialforcegaugeConfigLayout.setVisibility(View.VISIBLE);
+                        sensorVWP03View.setVisibility(View.GONE);
+                        sensorZLJ300tView.setVisibility(View.VISIBLE);
                         break;
                 }
             }
@@ -101,35 +109,31 @@ public class TestFragment extends BaseDialogFragment {
         String sensorType = collectorSensorParamsInfoSub.getSensorType();
         switch (sensorType) {
             case "50"://基康渗压计(BGK-4500)
-                sensorBGK4500View.setVisibility(View.VISIBLE);
                 spinnerType.setSelection(0);
-                break;
-
-            case "51"://葛南渗压计(VWP-03)
-                sensorBGK4500View.setVisibility(View.GONE);
-                break;
-
-            case "58"://军星轴力计(ZLJ-300T)
-                sensorBGK4500View.setVisibility(View.GONE);
-                break;
-        }
-    }
-
-    private void setValue() {
-        String sensorType = collectorSensorParamsInfoSub.getSensorType();
-        switch (sensorType) {
-            case "50":
+                sensorBGK4500View.setVisibility(View.VISIBLE);
+                sensorVWP03View.setVisibility(View.GONE);
+                sensorZLJ300tView.setVisibility(View.GONE);
                 sensorBGK4500View.bindData(collectorSensorParamsInfoSub);
                 break;
 
-            case "51":
-
+            case "51"://葛南渗压计(VWP-03)
+                spinnerType.setSelection(1);
+                sensorBGK4500View.setVisibility(View.GONE);
+                sensorVWP03View.setVisibility(View.VISIBLE);
+                sensorZLJ300tView.setVisibility(View.GONE);
+                sensorVWP03View.bindData(collectorSensorParamsInfoSub);
                 break;
 
-            case "55":
+            case "58"://军星轴力计(ZLJ-300T)
+                spinnerType.setSelection(2);
+                sensorBGK4500View.setVisibility(View.GONE);
+                sensorVWP03View.setVisibility(View.GONE);
+                sensorZLJ300tView.setVisibility(View.VISIBLE);
+                sensorZLJ300tView.bindData(collectorSensorParamsInfoSub);
                 break;
         }
     }
+
 
     @OnClick({R.id.rl_scan_config, R.id.tv_cancel, R.id.tv_save})
     public void onClick(View view) {
@@ -148,10 +152,11 @@ public class TestFragment extends BaseDialogFragment {
     }
 
     private void doPositiveClick(View view) {
+        boolean updateDataSuccess = false;
         String sensorType = collectorSensorParamsInfoSub.getSensorType();
         switch (sensorType) {
             case "50":
-                sensorBGK4500View.updateData(collectorSensorParamsInfoSub);
+                updateDataSuccess = sensorBGK4500View.updateData(collectorSensorParamsInfoSub);
                 break;
 
             case "51":
@@ -160,6 +165,10 @@ public class TestFragment extends BaseDialogFragment {
 
             case "55":
                 break;
+        }
+        if (!updateDataSuccess) {
+            Timber.w("传感器参数存在错误!");
+            return;
         }
         DialogFragmentClickListener listener = (DialogFragmentClickListener) getActivity();
         if (listener.onPositiveClick(view)) {
@@ -172,7 +181,6 @@ public class TestFragment extends BaseDialogFragment {
         listener.onNegativeClick(view);
         dismiss();
     }
-
 
 
     @Override

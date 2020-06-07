@@ -12,7 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.hjq.toast.ToastUtils;
-import com.shmedo.core.model.SensorKangPercolateInfo;
+import com.shmedo.core.model.SensorGudanPercolateInfo;
 import com.shmedo.core.utils.ValidateUtil;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.entity.ble.collector.CollectorSensorParamsInfoSub;
@@ -22,22 +22,20 @@ import butterknife.ButterKnife;
 
 /**
  * 创建者:   gonghe <br/>
- * 创建时间:  2020/6/6 <br/>
- * 描述：   基康渗压计(BGK-4500)配置项视图
+ * 创建时间:  2020/6/7 <br/>
+ * 描述：  葛南渗压计(VWP-03)配置项视图
  */
-public class SensorBGK4500View extends FrameLayout {
+public class SensorVWP03View extends FrameLayout {
     @BindView(R.id.et_modbus_address)
     EditText mEtModbusAddress;//通道号
     @BindView(R.id.et_trigger_threshold)
     EditText mEtTriggerThreshold;//触发阀值
-    @BindView(R.id.polynomialRatioA)
-    EditText mEtCoefficientA;//多项式系数A
-    @BindView(R.id.polynomialRatioB)
-    EditText mEtCoefficientB;//多项式系数B
-    @BindView(R.id.polynomialRatioC)
-    EditText mEtCoefficientC;//多项式系数C
-    @BindView(R.id.temperatureCoefficientK)
-    EditText mEtCoefficientK;//温度系数K
+    @BindView(R.id.sensitivityCoefficient)
+    EditText mEtSensitivityCoefficient;//灵敏度k
+    @BindView(R.id.temperatureCoefficient)
+    EditText mEtTemperatureCoefficient;//温修系数b
+    @BindView(R.id.et_ReferenceValue)
+    EditText mEtReferenceValue;//基准值F0
     @BindView(R.id.et_initialtemperature)
     EditText mEtInitialTemperature;//初始温度
     @BindView(R.id.et_correct_value)
@@ -47,41 +45,36 @@ public class SensorBGK4500View extends FrameLayout {
     @BindView(R.id.et_install_elevation)
     EditText mEtInstallElevation;//安装高程
 
-    private String address, triggerThreshold, coefficientA, coefficientB, coefficientC, coefficientK, initialTemperature, correctValue, cordLength, installElevation;
+    private String address, triggerThreshold, coefficientK, coefficientB, referenceValue, initialTemperature, correctValue, cordLenght, installElevation;
 
 
-    public SensorBGK4500View(@NonNull Context context) {
+    public SensorVWP03View(@NonNull Context context) {
         this(context, null);
     }
 
-    public SensorBGK4500View(@NonNull Context context, @Nullable AttributeSet attrs) {
+    public SensorVWP03View(@NonNull Context context, @Nullable AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public SensorBGK4500View(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public SensorVWP03View(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         //关联布局文件
-        ((LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.bgk_osmometer_config, this, true);
+        ((LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.vwp_osmometer_config, this, true);
         ButterKnife.bind(this);
         initView();
     }
 
     private void initView() {
         mEtModbusAddress.setFilters(new InputFilter[]{new InputFilter.LengthFilter(2)});
-//        mEtTriggerThreshold.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
-//        mEtCorrectValue.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
-//        mEtCordLenght.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
-//        mEtInstallElevation.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
     }
 
     public void bindData(CollectorSensorParamsInfoSub infoSub) {
-        SensorKangPercolateInfo sensorInfo = (SensorKangPercolateInfo) infoSub.getSensorData();
+        SensorGudanPercolateInfo sensorInfo = (SensorGudanPercolateInfo) infoSub.getSensorData();
         mEtModbusAddress.setText(infoSub.getSensorAddress());
         mEtTriggerThreshold.setText(sensorInfo.getTriggerThreshold());
-        mEtCoefficientA.setText(sensorInfo.getPolynomialRatioA());
-        mEtCoefficientB.setText(sensorInfo.getPolynomialRatioB());
-        mEtCoefficientC.setText(sensorInfo.getPolynomialRatioC());
-        mEtCoefficientK.setText(sensorInfo.getTemperatureCoefficientK());
+        mEtSensitivityCoefficient.setText(sensorInfo.getSensitivityK());
+        mEtTemperatureCoefficient.setText(sensorInfo.getTemperatureCoefficientB());
+        mEtReferenceValue.setText(sensorInfo.getReferenceValue());
         mEtInitialTemperature.setText(sensorInfo.getCreateTemperature());
         mEtCorrectValue.setText(sensorInfo.getManualCorrection());
         mEtCordLength.setText(sensorInfo.getCordLenght());
@@ -89,20 +82,19 @@ public class SensorBGK4500View extends FrameLayout {
     }
 
     public boolean updateData(CollectorSensorParamsInfoSub infoSub) {
-        SensorKangPercolateInfo sensorInfo = (SensorKangPercolateInfo) infoSub.getSensorData();
+        SensorGudanPercolateInfo sensorInfo = (SensorGudanPercolateInfo) infoSub.getSensorData();
         if (!checkValue()) {
             return false;
         }
 
         infoSub.setSensorAddress(address);
         sensorInfo.setTriggerThreshold(triggerThreshold);
-        sensorInfo.setPolynomialRatioA(coefficientA);
-        sensorInfo.setPolynomialRatioB(coefficientB);
-        sensorInfo.setPolynomialRatioC(coefficientC);
-        sensorInfo.setTemperatureCoefficientK(coefficientK);
+        sensorInfo.setSensitivityK(coefficientK);
+        sensorInfo.setTemperatureCoefficientB(coefficientB);
+        sensorInfo.setReferenceValue(referenceValue);
         sensorInfo.setCreateTemperature(initialTemperature);
         sensorInfo.setManualCorrection(correctValue);
-        sensorInfo.setCordLenght(cordLength);
+        sensorInfo.setCordLenght(cordLenght);
         sensorInfo.setInstallElevation(installElevation);
 
         return true;
@@ -111,13 +103,12 @@ public class SensorBGK4500View extends FrameLayout {
     private boolean checkValue() {
         address = mEtModbusAddress.getText().toString().trim();
         triggerThreshold = mEtTriggerThreshold.getText().toString().trim();
-        coefficientA = mEtCoefficientA.getText().toString().trim();
-        coefficientB = mEtCoefficientB.getText().toString().trim();
-        coefficientC = mEtCoefficientC.getText().toString().trim();
-        coefficientK = mEtCoefficientK.getText().toString().trim();
+        coefficientK = mEtSensitivityCoefficient.getText().toString().trim();
+        coefficientB = mEtTemperatureCoefficient.getText().toString().trim();
+        referenceValue = mEtReferenceValue.getText().toString().trim();
         initialTemperature = mEtInitialTemperature.getText().toString().trim();
         correctValue = mEtCorrectValue.getText().toString().trim();
-        cordLength = mEtCordLength.getText().toString().trim();
+        cordLenght = mEtCordLength.getText().toString().trim();
         installElevation = mEtInstallElevation.getText().toString().trim();
 
         if (TextUtils.isEmpty(address) || !ValidateUtil.isInteger(address) || Integer.parseInt(address) < 0 || Integer.parseInt(address) > 99) {
@@ -130,27 +121,22 @@ public class SensorBGK4500View extends FrameLayout {
             return false;
         }
 
-        if (TextUtils.isEmpty(coefficientA)) {
-            ToastUtils.show("请输入正确的多项式系数A");
+        if (TextUtils.isEmpty(coefficientK)) {
+            ToastUtils.show("请输入正确的灵敏度");
             return false;
         }
 
         if (TextUtils.isEmpty(coefficientB)) {
-            ToastUtils.show("请输入正确的多项式系数B");
+            ToastUtils.show("请输入正确的温修系数");
             return false;
         }
 
-        if (TextUtils.isEmpty(coefficientC)) {
-            ToastUtils.show("请输入正确的多项式系数C");
+        if (TextUtils.isEmpty(referenceValue)) {
+            ToastUtils.show("请输入正确的基准值");
             return false;
         }
 
-        if (TextUtils.isEmpty(coefficientK)) {
-            ToastUtils.show("请输入正确的温度系数K");
-            return false;
-        }
-
-        if (TextUtils.isEmpty(cordLength)) {
+        if (TextUtils.isEmpty(cordLenght)) {
             ToastUtils.show("请输入初始温度");
             return false;
         }
@@ -165,7 +151,7 @@ public class SensorBGK4500View extends FrameLayout {
             return false;
         }
 
-        if (TextUtils.isEmpty(cordLength)) {
+        if (TextUtils.isEmpty(cordLenght)) {
             ToastUtils.show("请输入绳长");
             return false;
         }

@@ -9,6 +9,34 @@
 
         <TextView
             style="@style/TextView_Sensor_Config_Item"
+            android:text="Modbus地址" />
+
+        <EditText
+            android:id="@+id/et_modbus_address"
+            style="@style/EditText_Sensor_Config_Item"
+            android:hint="0~99"
+            android:inputType="number" />
+
+    </LinearLayout>
+
+    <LinearLayout style="@style/LinearLayout_Sensor_Config_Item">
+
+        <TextView
+            style="@style/TextView_Sensor_Config_Item"
+            android:text="触发阀值(mm)" />
+
+        <EditText
+            android:id="@+id/et_trigger_threshold"
+            style="@style/EditText_Sensor_Config_Item"
+            android:hint="请输入"
+            android:inputType="number" />
+
+    </LinearLayout>
+
+    <LinearLayout style="@style/LinearLayout_Sensor_Config_Item">
+
+        <TextView
+            style="@style/TextView_Sensor_Config_Item"
             android:text="灵敏度K" />
 
         <EditText
@@ -37,52 +65,10 @@
 
         <TextView
             style="@style/TextView_Sensor_Config_Item"
-            android:text="安装高程(m)" />
+            android:text="基准值F0" />
 
         <EditText
-            android:id="@+id/et_install_elevation"
-            style="@style/EditText_Sensor_Config_Item"
-            android:hint="请输入"
-            android:inputType="number" />
-
-    </LinearLayout>
-
-    <LinearLayout style="@style/LinearLayout_Sensor_Config_Item">
-
-        <TextView
-            style="@style/TextView_Sensor_Config_Item"
-            android:text="绳长(m)" />
-
-        <EditText
-            android:id="@+id/et_osmometer_cord"
-            style="@style/EditText_Sensor_Config_Item"
-            android:hint="请输入"
-            android:inputType="number" />
-
-    </LinearLayout>
-
-    <LinearLayout style="@style/LinearLayout_Sensor_Config_Item">
-
-        <TextView
-            style="@style/TextView_Sensor_Config_Item"
-            android:text="触发阀值(mm)" />
-
-        <EditText
-            android:id="@+id/et_trigger_threshold"
-            style="@style/EditText_Sensor_Config_Item"
-            android:hint="请输入"
-            android:inputType="number" />
-
-    </LinearLayout>
-
-    <LinearLayout style="@style/LinearLayout_Sensor_Config_Item">
-
-        <TextView
-            style="@style/TextView_Sensor_Config_Item"
-            android:text="手动纠偏(mm)" />
-
-        <EditText
-            android:id="@+id/et_correct_value"
+            android:id="@+id/et_ReferenceValue"
             style="@style/EditText_Sensor_Config_Item"
             android:hint="请输入"
             android:inputType="number" />
@@ -107,10 +93,38 @@
 
         <TextView
             style="@style/TextView_Sensor_Config_Item"
-            android:text="基准值F0" />
+            android:text="手动纠偏(mm)" />
 
         <EditText
-            android:id="@+id/et_ReferenceValue"
+            android:id="@+id/et_correct_value"
+            style="@style/EditText_Sensor_Config_Item"
+            android:hint="请输入"
+            android:inputType="number" />
+
+    </LinearLayout>
+
+    <LinearLayout style="@style/LinearLayout_Sensor_Config_Item">
+
+        <TextView
+            style="@style/TextView_Sensor_Config_Item"
+            android:text="绳长(m)" />
+
+        <EditText
+            android:id="@+id/et_cord_length"
+            style="@style/EditText_Sensor_Config_Item"
+            android:hint="请输入"
+            android:inputType="number" />
+
+    </LinearLayout>
+
+    <LinearLayout style="@style/LinearLayout_Sensor_Config_Item">
+
+        <TextView
+            style="@style/TextView_Sensor_Config_Item"
+            android:text="安装高程(m)" />
+
+        <EditText
+            android:id="@+id/et_install_elevation"
             style="@style/EditText_Sensor_Config_Item"
             android:hint="请输入"
             android:inputType="number" />

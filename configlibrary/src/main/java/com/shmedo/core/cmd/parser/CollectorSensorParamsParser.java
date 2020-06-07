@@ -15,6 +15,7 @@ import com.shmedo.core.model.SensorGudanSoilPressureInfo;
 import com.shmedo.core.model.SensorGudanStressInfo;
 import com.shmedo.core.model.SensorInclinometerInfo;
 import com.shmedo.core.model.SensorInfrasoundInfo;
+import com.shmedo.core.model.SensorJunXingZljInfo;
 import com.shmedo.core.model.SensorKangPercolateInfo;
 import com.shmedo.core.model.SensorMoistureMeterInfo;
 import com.shmedo.core.model.SensorRadarLevelInfo;
@@ -25,6 +26,7 @@ import com.shmedo.core.model.SensorUpliftPressureInfo;
 import com.shmedo.core.model.SensorWireShiftInfo;
 import com.shmedo.core.utils.StringUtil;
 
+import static com.shmedo.core.enums.SensorType.JUNXING_ZLJ_300T;
 import static com.shmedo.core.enums.SensorType.WIRE_SHIFT;
 
 
@@ -71,7 +73,7 @@ public class CollectorSensorParamsParser implements ResultParser<CollectorSensor
             case "55"://葛南位移计 VWD-100
                 return parserGudanDisplacement(strs);
             case "58":
-                return null;
+                return parserJunXingZlj(strs);
             default:
                 return null;
         }
@@ -254,7 +256,6 @@ public class CollectorSensorParamsParser implements ResultParser<CollectorSensor
 
     /**
      * 次声传感器  17
-     *
      * @param strs
      * @return
      */
@@ -272,56 +273,61 @@ public class CollectorSensorParamsParser implements ResultParser<CollectorSensor
     }
 
     /**
-     * 解析基康渗压计  7个参数   50
-     *
+     * 解析基康渗压计 50
+     * $$1010003,03,50,2.000000e+00,4.597945e-08,3.000000e+00,4.000000e+00,5.000000e+00,3.800000e+01,3.300000e+01,2.300000e+01,6.600000e+01
+     * $$1010003,传感器地址/通道号,传感器类型,触发阀值,A,B,C,K,初始温度T0,手动纠偏,绳长,安装高程
      * @param strs
      * @return
      */
     private CollectorSensorParamsInfo<SensorKangPercolateInfo> parserKangPercolate(String[] strs) {
         CollectorSensorParamsInfo bean = new CollectorSensorParamsInfo();
-        SensorKangPercolateInfo info = new SensorKangPercolateInfo();
         bean.setCollectorModel(CollectorModel.value(strs[0].substring(5, 7)));
         bean.setChannelNumber(strs[0].substring(7, 9));
         bean.setSensorAddress(strs[1]);
         bean.setSensorType(SensorType.KANG_PERCOLATE);
-        info.setTriggerThreshold((TextUtils.isEmpty(strs[2]) || strs[2].contains("nan")) ? 0 : Integer.parseInt(strs[2]));
-        info.setPolynomialRatioA(strs[3]);
-        info.setPolynomialRatioB(strs[4]);
-        info.setPolynomialRatioC(strs[5]);
-        info.setTemperatureCoefficientK((TextUtils.isEmpty(strs[6]) || strs[6].contains("nan")) ? 0 : Double.parseDouble(strs[6]));
-        info.setCreateTemperature((TextUtils.isEmpty(strs[7]) || strs[7].contains("nan")) ? 0 : Double.parseDouble(strs[7]));
-        info.setManualCorrection(strs[8]);
-        bean.setSensorData(info);
+        SensorKangPercolateInfo sensorInfo = new SensorKangPercolateInfo();
+        sensorInfo.setTriggerThreshold(strs[3]);
+        sensorInfo.setPolynomialRatioA(strs[4]);
+        sensorInfo.setPolynomialRatioB(strs[5]);
+        sensorInfo.setPolynomialRatioC(strs[6]);
+        sensorInfo.setTemperatureCoefficientK(strs[7]);
+        sensorInfo.setCreateTemperature(strs[8]);
+        sensorInfo.setManualCorrection(strs[9]);
+        sensorInfo.setCordLenght(strs[10]);
+        sensorInfo.setInstallElevation(strs[11]);
+        bean.setSensorData(sensorInfo);
         return bean;
     }
 
     /**
-     * 解析葛南渗压计   6个参数   51
-     *
+     * 解析葛南渗压计
+     * $$1010002,02,51,2.000000e+00,4.597945e-08,3.000000e+00,4.400000e+01,3.800000e+01,1.300000e+01,5.000000e+00,1.600000e+01
+     * $$1010002,传感器地址/通道号,传感器类型,触发阀值,灵敏度K,温修系数b,基准值F0,初始温度T0,手动纠偏,绳长,安装高程
      * @param strs
      * @return
      */
     private CollectorSensorParamsInfo<SensorGudanPercolateInfo> parserGudanPercolate(String[] strs) {
         CollectorSensorParamsInfo bean = new CollectorSensorParamsInfo();
-        SensorGudanPercolateInfo info = new SensorGudanPercolateInfo();
         bean.setCollectorModel(CollectorModel.value(strs[0].substring(5, 7)));
         bean.setChannelNumber(strs[0].substring(7, 9));
         bean.setSensorAddress(strs[1]);
         bean.setSensorType(SensorType.GUDAN_PERCOLATE);
-        info.setTriggerThreshold((TextUtils.isEmpty(strs[2]) || strs[2].contains("nan")) ? 0 : Integer.parseInt(strs[2]));
-        info.setSensitivityK((TextUtils.isEmpty(strs[3]) || strs[3].contains("nan")) ? 0 : Integer.parseInt(strs[3]));
-        info.setTemperatureCoefficientB((TextUtils.isEmpty(strs[4]) || strs[4].contains("nan")) ? 0 : Double.parseDouble(strs[4]));
-        info.setDatumValueF0((TextUtils.isEmpty(strs[5]) || strs[5].contains("nan")) ? 0 : Double.parseDouble(strs[5]));
-        info.setCreateTemperature((TextUtils.isEmpty(strs[6]) || strs[6].contains("nan")) ? 0 : Double.parseDouble(strs[6]));
-        info.setManualCorrection(strs[7]);
-        bean.setSensorData(info);
+        SensorGudanPercolateInfo sensorInfo = new SensorGudanPercolateInfo();
+        sensorInfo.setTriggerThreshold(strs[3]);
+        sensorInfo.setSensitivityK(strs[4]);
+        sensorInfo.setTemperatureCoefficientB(strs[5]);
+        sensorInfo.setReferenceValue(strs[6]);
+        sensorInfo.setCreateTemperature(strs[7]);
+        sensorInfo.setManualCorrection(strs[8]);
+        sensorInfo.setCordLenght(strs[9]);
+        sensorInfo.setInstallElevation(strs[10]);
+        bean.setSensorData(sensorInfo);
         return bean;
     }
 
 
     /**
      * 解析葛南土压力盒 52
-     *
      * @param strs
      * @return
      */
@@ -409,5 +415,28 @@ public class CollectorSensorParamsParser implements ResultParser<CollectorSensor
         return bean;
     }
 
+
+    /**
+     * 解析军星轴力计ZLJ-300T
+     * $$1010001,01,58,2.000000e+00,4.597945e-08,3.000000e+00,5.000000e+00
+     * $$1010001,传感器地址/通道号,传感器类型,触发阀值,灵敏度K,基准值F0,手动纠偏
+     * @param strs
+     * @return
+     */
+    private CollectorSensorParamsInfo<SensorJunXingZljInfo> parserJunXingZlj(String[] strs){
+        CollectorSensorParamsInfo bean = new CollectorSensorParamsInfo();
+        bean.setCollectorModel(CollectorModel.value(strs[0].substring(5, 7)));
+        bean.setChannelNumber(strs[0].substring(7, 9));
+        bean.setSensorAddress(strs[1]);
+        bean.setSensorType(JUNXING_ZLJ_300T);
+        SensorJunXingZljInfo sensorInfo = new SensorJunXingZljInfo();
+        sensorInfo.setTriggerThreshold(strs[3]);
+        sensorInfo.setSensitivityK(strs[4]);
+        sensorInfo.setReferenceValue(strs[5]);
+        sensorInfo.setManualCorrection(strs[6]);
+        bean.setSensorData(sensorInfo);
+
+        return bean;
+    }
 
 }

@@ -132,10 +132,8 @@ public class SenSorBGKConfigActivity extends BaseDeviceConnectActivity implement
     TextView textView8;
 
     private List<CollectorSensorParamsInfoSub> collectorSensorParamsInfoSubs = new ArrayList<>();
-
     //以传感器的通道号为 Key,CollectorSensorParamsInfoSub 对象为 Value
     private HashMap<String, CollectorSensorParamsInfoSub> collectorSensorHashMap = new HashMap<>();
-
     private CollectorSensorParamsInfoSub defaultCollectorSensorParamsInfoSub = new CollectorSensorParamsInfoSub();
 
     private String collectorName = "";
@@ -174,12 +172,26 @@ public class SenSorBGKConfigActivity extends BaseDeviceConnectActivity implement
         initTitle();
     }
 
+    /**
+     * 接同种传感器参数信息:
+     * $$1010200,3,2,7,1.100000&&$$1010201,5,2,5,0.000000&&$$1010202,2,2,7,1.100000&&
+     * <p>
+     * 接多种传感器参数信息:
+     * $$1010000,00,50,2.000000e+00,4.597945e-08,3.000000e+00,4.000000e+00,5.000000e+00,3.800000e+01,3.300000e+01,2.300000e+01,6.600000e+01&&
+     * $$1010001,01,51,2.000000e+00,4.597945e-08,3.000000e+00,4.400000e+01,3.800000e+01,1.300000e+01,5.000000e+00,1.600000e+01&&
+     * $$1010002,02,58,2.000000e+00,4.597945e-08,3.000000e+00,5.000000e+00&&
+     */
     private void initData() {
         String collectorSensorConfig = getIntent().getStringExtra(Extras.SENSOR_PARAMS);
         if (TextUtils.isEmpty(collectorSensorConfig)) {
             Timber.e("传递的传感器参数为空!");
             return;
         }
+
+        //测试参数，测试结束删除此行
+        collectorSensorConfig = "$$1010000,00,50,2.000000e+00,4.597945e-08,3.000000e+00,4.000000e+00,5.000000e+00,3.800000e+01,3.300000e+01,2.300000e+01,6.600000e+01&&"+
+        "$$1010001,01,51,2.000000e+00,4.597945e-08,3.000000e+00,4.400000e+01,3.800000e+01,1.300000e+01,5.000000e+00,1.600000e+01&&"+
+        "$$1010002,02,58,2.000000e+00,4.597945e-08,3.000000e+00,5.000000e+00&&";
 
         String[] sensorConfigs = collectorSensorConfig.split("&&");
         for (String sensorConfig : sensorConfigs) {
@@ -309,6 +321,7 @@ public class SenSorBGKConfigActivity extends BaseDeviceConnectActivity implement
     /**
      * 点击imageview弹框
      * 点击switch 进行关闭、打开状态
+     *
      * @param view
      */
     @OnClick({R.id.back, R.id.iv_stay1, R.id.iv_stay2, R.id.iv_stay3, R.id.iv_stay4, R.id.iv_stay5, R.id.iv_stay6, R.id.iv_stay7, R.id.iv_stay8, R.id.btn_confirm})
