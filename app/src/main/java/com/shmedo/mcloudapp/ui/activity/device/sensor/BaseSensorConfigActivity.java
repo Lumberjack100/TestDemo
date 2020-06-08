@@ -134,10 +134,9 @@ public abstract class BaseSensorConfigActivity extends BaseDeviceConnectActivity
     private String channelNumber6 = "-1";
     private String channelNumber7 = "-1";
 
-    protected String curChannelNumber = "";
-    protected boolean isEnableNewSensor = false;
+    private String curChannelNumber = "";
+    private boolean isEnableNewSensor = false;
     protected int sensorIndex = 0;//接入的传感器索引号
-
 
 
     @Override
@@ -598,14 +597,14 @@ public abstract class BaseSensorConfigActivity extends BaseDeviceConnectActivity
             case "04"://测斜仪
             case "07"://雷达物位计
             case "21"://次声
-                newFragment = CommonSensorConfigDialogFragment.newInstance(collectorSensorParamsInfoSub);
+                newFragment = new CommonSensorConfigDialogFragment();
                 newFragment.show(getSupportFragmentManager(), "dialog");
                 break;
 
             case "50"://基康渗压计(BGK-4500)
             case "51"://葛南渗压计(VWP-03)
             case "58"://军星轴力计(ZLJ-300T)
-                newFragment = Osmometer_AxialForceGaugeDialogFragment.newInstance(collectorSensorParamsInfoSub);
+                newFragment = new Osmometer_AxialForceGaugeDialogFragment();
                 newFragment.show(getSupportFragmentManager(), "dialog");
                 break;
         }
@@ -698,8 +697,12 @@ public abstract class BaseSensorConfigActivity extends BaseDeviceConnectActivity
         }
     }
 
-
     protected abstract void sendInstruction();
+
+    public CollectorSensorParamsInfoSub getCurrentCollectorSensorParamsInfoSub() {
+        CollectorSensorParamsInfoSub collectorSensorParamsInfoSub = collectorSensorHashMap.get(curChannelNumber);
+        return collectorSensorParamsInfoSub;
+    }
 
     @Override
     public void onBackPressed() {

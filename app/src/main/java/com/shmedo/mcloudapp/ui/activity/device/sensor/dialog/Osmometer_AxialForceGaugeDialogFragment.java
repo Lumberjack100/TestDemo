@@ -1,6 +1,8 @@
 package com.shmedo.mcloudapp.ui.activity.device.sensor.dialog;
 
+import android.graphics.Color;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,8 +10,16 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
+import androidx.annotation.NonNull;
+
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
+import com.hjq.toast.ToastUtils;
+import com.shmedo.core.model.SensorGudanPercolateInfo;
+import com.shmedo.core.model.SensorKangPercolateInfo;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.entity.ble.collector.CollectorSensorParamsInfoSub;
+import com.shmedo.mcloudapp.ui.activity.device.sensor.BaseSensorConfigActivity;
 import com.shmedo.mcloudapp.ui.activity.device.sensor.view.SensorBGK4500View;
 import com.shmedo.mcloudapp.ui.activity.device.sensor.view.SensorVWP03View;
 import com.shmedo.mcloudapp.ui.activity.device.sensor.view.SensorZLJ300tView;
@@ -22,8 +32,6 @@ import timber.log.Timber;
  * 基康渗压计(BGK-4500)、葛南渗压计(VWP-03)、军星轴力计(ZLJ-300T)
  */
 public class Osmometer_AxialForceGaugeDialogFragment extends BaseDialogFragment {
-    private static final String ARG_PARAM1 = "param1";
-
     @BindView(R.id.spinner)
     Spinner spinnerType;
 
@@ -39,14 +47,6 @@ public class Osmometer_AxialForceGaugeDialogFragment extends BaseDialogFragment 
     private CollectorSensorParamsInfoSub collectorSensorParamsInfoSub;
 
 
-    public static Osmometer_AxialForceGaugeDialogFragment newInstance(CollectorSensorParamsInfoSub infoSub) {
-        Osmometer_AxialForceGaugeDialogFragment fragment = new Osmometer_AxialForceGaugeDialogFragment();
-        Bundle args = new Bundle();
-        args.putSerializable(ARG_PARAM1, infoSub);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
     @Override
     protected int initContentView() {
         return R.layout.fragment_osmometer__axial_force_gauge_dialog;
@@ -55,9 +55,7 @@ public class Osmometer_AxialForceGaugeDialogFragment extends BaseDialogFragment 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            collectorSensorParamsInfoSub = (CollectorSensorParamsInfoSub) getArguments().getSerializable(ARG_PARAM1);
-        }
+        collectorSensorParamsInfoSub = ((BaseSensorConfigActivity) getActivity()).getCurrentCollectorSensorParamsInfoSub();
     }
 
     @Override
@@ -177,7 +175,88 @@ public class Osmometer_AxialForceGaugeDialogFragment extends BaseDialogFragment 
     }
 
     @Override
-    protected void scanResult(String content) {
+    protected void scanResult(String result) {
+        if (TextUtils.isEmpty(result)) {
+            ToastUtils.show("二维码不正确!");
+            return;
+        }
 
+        if (!result.startsWith("medo") && !result.startsWith("MEDO")) {
+            ToastUtils.show("二维码不正确!");
+            return;
+        }
+
+        String[] localData = result.split(",");
+        if (localData.length < 3) {
+            ToastUtils.show("二维码不正确!");
+            return;
+        }
+
+        switch (localData[2]) {
+            case "BGK": {
+                SensorKangPercolateInfo sensorInfo = new SensorKangPercolateInfo();
+                sensorInfo.setPolynomialRatioA(localData[3]);
+                sensorInfo.setPolynomialRatioB(localData[4]);
+                sensorInfo.setPolynomialRatioC(localData[5]);
+                sensorInfo.setTemperatureCoefficientK(localData[6]);
+                if (spinnerType.getSelectedItemPosition() != 0) {
+                    showSwitchSensorTypeDialog(localData[2], sensorInfo);
+                    return;
+                }
+                spinnerType.setSelection(0);
+                sensorBGK4500View.initDataByScan(sensorInfo);
+            }
+            break;
+
+            case "NGN": {
+                SensorGudanPercolateInfo sensorInfo = new SensorGudanPercolateInfo();
+                sensorInfo.setSensitivityK(localData[3]);
+                sensorInfo.setTemperatureCoefficientB(localData[4]);
+                if (spinnerType.getSelectedItemPosition() != 0) {
+                    showSwitchSensorTypeDialog(localData[2], sensorInfo);
+                    return;
+                }
+                spinnerType.setSelection(1);
+                sensorVWP03View.initDataByScan(sensorInfo);
+            }
+            break;
+
+            default:
+                ToastUtils.show("此设备类型暂时不支持!");
+                break;
+        }
+    }
+
+
+    public void showSwitchSensorTypeDialog(String type, Object object) {
+        MaterialDialog.Builder mBuilder = new MaterialDialog.Builder(getActivity())
+                .title("温馨提示：")
+                .content("扫描条码获取的传感器类型与当前不一致，是否切换？")
+                .contentColor(Color.parseColor("#000000"))
+                .canceledOnTouchOutside(false)
+                .positiveText("确定")
+                .negativeText("取消")
+                .onPositive(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        dialog.dismiss();
+                        switch (type) {
+                            case "BGK":
+                                spinnerType.setSelection(0);
+                                sensorBGK4500View.initDataByScan((SensorKangPercolateInfo) object);
+                                break;
+
+                            case "NGN":
+                                spinnerType.setSelection(1);
+                                sensorVWP03View.initDataByScan((SensorGudanPercolateInfo) object);
+                                break;
+
+                            default:
+                                break;
+                        }
+                    }
+                });
+        MaterialDialog mMaterialDialog = mBuilder.build();
+        mMaterialDialog.show();
     }
 }

@@ -18,6 +18,7 @@ import com.shmedo.core.model.SensorWireShiftInfo;
 import com.shmedo.core.utils.ValidateUtil;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.entity.ble.collector.CollectorSensorParamsInfoSub;
+import com.shmedo.mcloudapp.ui.activity.device.sensor.BaseSensorConfigActivity;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -49,20 +50,7 @@ public class CommonSensorConfigDialogFragment extends BaseDialogFragment {
 
     private String sensorType;//传感器类型
 
-    public static final String ARG_PARAM1 = "param1";
 
-    public CommonSensorConfigDialogFragment() {
-        // Required empty public constructor
-    }
-
-
-    public static CommonSensorConfigDialogFragment newInstance(CollectorSensorParamsInfoSub infoSub) {
-        CommonSensorConfigDialogFragment fragment = new CommonSensorConfigDialogFragment();
-        Bundle args = new Bundle();
-        args.putSerializable(ARG_PARAM1, infoSub);
-        fragment.setArguments(args);
-        return fragment;
-    }
 
     @Override
     protected int initContentView() {
@@ -72,9 +60,7 @@ public class CommonSensorConfigDialogFragment extends BaseDialogFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            collectorSensorParamsInfoSub = (CollectorSensorParamsInfoSub) getArguments().getSerializable(ARG_PARAM1);
-        }
+        collectorSensorParamsInfoSub =((BaseSensorConfigActivity)getActivity()).getCurrentCollectorSensorParamsInfoSub();
     }
 
     @Override

@@ -81,6 +81,16 @@ public class SensorVWP03View extends FrameLayout {
         mEtInstallElevation.setText(sensorInfo.getInstallElevation());
     }
 
+    /**
+     * 通过扫描二维码填充多项式参数
+     * @param sensorInfo
+     */
+    public void initDataByScan(SensorGudanPercolateInfo sensorInfo) {
+        mEtSensitivityCoefficient.setText(sensorInfo.getSensitivityK());
+        mEtTemperatureCoefficient.setText(sensorInfo.getTemperatureCoefficientB());
+        mEtReferenceValue.setText(sensorInfo.getReferenceValue());
+    }
+
     public boolean updateSensorData(CollectorSensorParamsInfoSub infoSub) {
         if (!checkValue()) {
             return false;

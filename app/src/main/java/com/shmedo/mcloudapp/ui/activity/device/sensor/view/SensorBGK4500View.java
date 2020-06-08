@@ -88,6 +88,17 @@ public class SensorBGK4500View extends FrameLayout {
         mEtInstallElevation.setText(sensorInfo.getInstallElevation());
     }
 
+    /**
+     * 通过扫描二维码填充多项式参数
+     * @param sensorInfo
+     */
+    public void initDataByScan(SensorKangPercolateInfo sensorInfo) {
+        mEtCoefficientA.setText(sensorInfo.getPolynomialRatioA());
+        mEtCoefficientB.setText(sensorInfo.getPolynomialRatioB());
+        mEtCoefficientC.setText(sensorInfo.getPolynomialRatioC());
+        mEtCoefficientK.setText(sensorInfo.getTemperatureCoefficientK());
+    }
+
     public boolean updateSensorData(CollectorSensorParamsInfoSub infoSub) {
         if (!checkValue()) {
             return false;
@@ -120,17 +131,17 @@ public class SensorBGK4500View extends FrameLayout {
         cordLength = mEtCordLength.getText().toString().trim();
         installElevation = mEtInstallElevation.getText().toString().trim();
 
-        if (TextUtils.isEmpty(address)){
+        if (TextUtils.isEmpty(address)) {
             ToastUtils.show("请输入通道号!");
             return false;
         }
 
-        if ( !ValidateUtil.isInteger(address) || Integer.parseInt(address) < 0 || Integer.parseInt(address) > 99) {
+        if (!ValidateUtil.isInteger(address) || Integer.parseInt(address) < 0 || Integer.parseInt(address) > 99) {
             ToastUtils.show("通道号不正确!");
             return false;
         }
 
-        if (TextUtils.isEmpty(triggerThreshold)){
+        if (TextUtils.isEmpty(triggerThreshold)) {
             ToastUtils.show("请输入触发值!");
             return false;
         }

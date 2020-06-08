@@ -14,7 +14,6 @@ import android.view.WindowManager;
 
 import androidx.fragment.app.DialogFragment;
 
-import com.hjq.toast.ToastUtils;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.ui.activity.ScanActivity;
 import com.shmedo.mcloudapp.util.XPermissionUtils;
@@ -94,7 +93,6 @@ public abstract class BaseDialogFragment extends DialogFragment {
                     if (data != null) {
                         String content = data.getStringExtra(ScanActivity.CODED_CONTENT);
                         Timber.d("扫描结果为：" + content);
-                        ToastUtils.show("扫描结果为：" + content);
                         scanResult(content);
                     }
                 }

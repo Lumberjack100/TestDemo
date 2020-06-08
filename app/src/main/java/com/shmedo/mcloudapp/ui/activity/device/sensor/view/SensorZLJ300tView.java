@@ -71,6 +71,15 @@ public class SensorZLJ300tView extends FrameLayout {
         mEtInitialTemperature.setText("");
     }
 
+    /**
+     * 通过扫描二维码填充多项式参数
+     * @param sensorInfo
+     */
+    public void initDataByScan(SensorJunXingZljInfo sensorInfo) {
+        mEtSensitivityCoefficient.setText(sensorInfo.getSensitivityK());
+        mEtReferenceValue.setText(sensorInfo.getReferenceValue());
+    }
+
     public boolean updateSensorData(CollectorSensorParamsInfoSub infoSub) {
         if (!checkValue()) {
             return false;
@@ -93,7 +102,6 @@ public class SensorZLJ300tView extends FrameLayout {
         referenceValue = mEtReferenceValue.getText().toString().trim();
         correctValue = mEtCorrectValue.getText().toString().trim();
 //        initialTemperature = mEtInitialTemperature.getText().toString().trim();
-
 
         if (TextUtils.isEmpty(address) || !ValidateUtil.isInteger(address) || Integer.parseInt(address) < 0 || Integer.parseInt(address) > 99) {
             ToastUtils.show("请输入正确的通道号");
