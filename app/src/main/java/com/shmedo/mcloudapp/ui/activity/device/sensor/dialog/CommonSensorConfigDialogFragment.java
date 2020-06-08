@@ -18,10 +18,10 @@ import com.shmedo.core.model.SensorWireShiftInfo;
 import com.shmedo.core.utils.ValidateUtil;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.entity.ble.collector.CollectorSensorParamsInfoSub;
-import com.shmedo.mcloudapp.util.UserConfig;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import timber.log.Timber;
 
 
 public class CommonSensorConfigDialogFragment extends BaseDialogFragment {
@@ -39,15 +39,13 @@ public class CommonSensorConfigDialogFragment extends BaseDialogFragment {
     EditText mEtCorrectValue;
     @BindView(R.id.et_measure_long)
     EditText mEtMeasureLong;
-    @BindView(R.id.et_note)
-    EditText mEtNote;
+
 
     @BindView(R.id.measure_long_layout)
     ViewGroup measureLongLayout;
 
     private CollectorSensorParamsInfoSub collectorSensorParamsInfoSub;
-    private UserConfig userConfig;
-    private String oldAddress, newAddress, oldAlarmValue, newAlarmValue, oldCorrectValue, newCorrectValue, oldMeasureLong, newMeasureLong;
+    private String address, triggerThreshold, correctValue, measureLong;
 
     private String sensorType;//传感器类型
 
@@ -150,12 +148,6 @@ public class CommonSensorConfigDialogFragment extends BaseDialogFragment {
         }
 
         mEtModbusAddress.setText(collectorSensorParamsInfoSub.getSensorAddress());
-        userConfig = UserConfig.getConfig(getActivity(), collectorSensorParamsInfoSub.getChannelNumber());
-        mEtNote.setText(userConfig.readString(collectorSensorParamsInfoSub.getChannelNumber()));
-        oldAddress = mEtModbusAddress.getText().toString().trim();
-        oldAlarmValue = mEtAlarmValue.getText().toString().trim();
-        oldCorrectValue = mEtCorrectValue.getText().toString().trim();
-        oldMeasureLong = mEtMeasureLong.getText().toString().trim();
     }
 
     @OnClick({R.id.tv_cancel, R.id.tv_save})
@@ -172,35 +164,12 @@ public class CommonSensorConfigDialogFragment extends BaseDialogFragment {
     }
 
     private void doPositiveClick(View view) {
-        newAddress = mEtModbusAddress.getText().toString().trim();
-        newAlarmValue = mEtAlarmValue.getText().toString().trim();
-        newCorrectValue = mEtCorrectValue.getText().toString().trim();
-        newMeasureLong = mEtCorrectValue.getText().toString().trim();
-
-        if (TextUtils.isEmpty(newAddress) || !ValidateUtil.isInteger(newAddress) || Integer.parseInt(newAddress) < 0 || Integer.parseInt(newAddress) > 99) {
-            ToastUtils.show("请输入正确的通道号");
+        if (!checkValue()) {
+            Timber.w("传感器参数存在错误!");
             return;
         }
 
-        if (TextUtils.isEmpty(newAlarmValue) || !ValidateUtil.isInteger(newAlarmValue)) {
-            ToastUtils.show("请输入正确的触发值");
-            return;
-        }
-
-        if (TextUtils.isEmpty(newCorrectValue) || (!ValidateUtil.isInteger(newCorrectValue) && !ValidateUtil.isDouble(newCorrectValue))) {
-            ToastUtils.show("请输入正确的修正值");
-            return;
-        }
-
-        if (sensorType.equals("04")) {
-            if (TextUtils.isEmpty(newMeasureLong) || !ValidateUtil.isInteger(newMeasureLong)) {
-                ToastUtils.show("请输入正确的测段长值");
-                return;
-            }
-        }
-
-        userConfig.writeString(String.valueOf(collectorSensorParamsInfoSub.getChannelNumber()), mEtNote.getText().toString().trim());
-        updateParamsInfo(true);
+        updateSensorData();
         DialogFragmentClickListener listener = (DialogFragmentClickListener) getActivity();
         if (listener.onPositiveClick(view)) {
             dismiss();
@@ -208,51 +177,80 @@ public class CommonSensorConfigDialogFragment extends BaseDialogFragment {
     }
 
     private void doNegativeClick(View view) {
-        // Do stuff here.
-        updateParamsInfo(false);
         DialogFragmentClickListener listener = (DialogFragmentClickListener) getActivity();
         listener.onNegativeClick(view);
         dismiss();
     }
 
-    private void updateParamsInfo(boolean isUseNewValue) {
+    private boolean checkValue() {
+        address = mEtModbusAddress.getText().toString().trim();
+        triggerThreshold = mEtAlarmValue.getText().toString().trim();
+        correctValue = mEtCorrectValue.getText().toString().trim();
+        measureLong = mEtCorrectValue.getText().toString().trim();
+
+        if (TextUtils.isEmpty(address) || !ValidateUtil.isInteger(address) || Integer.parseInt(address) < 0 || Integer.parseInt(address) > 99) {
+            ToastUtils.show("请输入正确的通道号");
+            return false;
+        }
+
+        if (TextUtils.isEmpty(triggerThreshold) || !ValidateUtil.isInteger(triggerThreshold)) {
+            ToastUtils.show("请输入正确的触发值");
+            return false;
+        }
+
+        if (TextUtils.isEmpty(correctValue) || (!ValidateUtil.isInteger(correctValue) && !ValidateUtil.isDouble(correctValue))) {
+            ToastUtils.show("请输入正确的修正值");
+            return false;
+        }
+
+        if (sensorType.equals("04")) {
+            if (TextUtils.isEmpty(measureLong) || !ValidateUtil.isInteger(measureLong)) {
+                ToastUtils.show("请输入正确的测段长值");
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private void updateSensorData() {
         switch (sensorType) {
             case "02"://拉线位移计
                 SensorWireShiftInfo sensorWireShiftInfo = (SensorWireShiftInfo) collectorSensorParamsInfoSub.getSensorData();
-                sensorWireShiftInfo.setTriggerThreshold(isUseNewValue ? Integer.parseInt(newAlarmValue) : Integer.parseInt(oldAlarmValue));
-                sensorWireShiftInfo.setCorrectionValue(isUseNewValue ? Double.valueOf(newCorrectValue) : Double.valueOf(oldCorrectValue));
+                sensorWireShiftInfo.setTriggerThreshold(Integer.parseInt(triggerThreshold));
+                sensorWireShiftInfo.setCorrectionValue(Double.parseDouble(correctValue));
                 collectorSensorParamsInfoSub.setSensorData(sensorWireShiftInfo);
                 break;
 
             case "03"://土壤含水率
                 SensorSoilMoistureInfo sensorSoilMoistureInfo = (SensorSoilMoistureInfo) collectorSensorParamsInfoSub.getSensorData();
-                sensorSoilMoistureInfo.setTriggerThreshold(isUseNewValue ? newAlarmValue : oldAlarmValue);
-                sensorSoilMoistureInfo.setRevised(isUseNewValue ? Double.valueOf(newCorrectValue) : Double.valueOf(oldCorrectValue));
+                sensorSoilMoistureInfo.setTriggerThreshold(triggerThreshold);
+                sensorSoilMoistureInfo.setRevised(Double.parseDouble(correctValue));
                 collectorSensorParamsInfoSub.setSensorData(sensorSoilMoistureInfo);
                 break;
 
             case "04"://测斜仪
                 SensorInclinometerInfo sensorInclinometerInfo = (SensorInclinometerInfo) collectorSensorParamsInfoSub.getSensorData();
-                sensorInclinometerInfo.setTriggerThreshold(isUseNewValue ? Integer.parseInt(newAlarmValue) : Integer.parseInt(oldAlarmValue));
-                sensorInclinometerInfo.setCorrectionValue(isUseNewValue ? Double.valueOf(newCorrectValue) : Double.valueOf(oldCorrectValue));
-                sensorInclinometerInfo.setMeasureLength(isUseNewValue ? Integer.parseInt(newMeasureLong) : Integer.parseInt(oldMeasureLong));
+                sensorInclinometerInfo.setTriggerThreshold(Integer.parseInt(triggerThreshold));
+                sensorInclinometerInfo.setCorrectionValue(Double.parseDouble(correctValue));
+                sensorInclinometerInfo.setMeasureLength(Integer.parseInt(measureLong));
                 break;
 
             case "07"://雷达物位计
                 SensorRadarLevelInfo sensorRadarLevelInfo = (SensorRadarLevelInfo) collectorSensorParamsInfoSub.getSensorData();
-                sensorRadarLevelInfo.setTriggerThreshold(isUseNewValue ? newAlarmValue : oldAlarmValue);
-                sensorRadarLevelInfo.setRevised(isUseNewValue ? Double.valueOf(newCorrectValue) : Double.valueOf(oldCorrectValue));
+                sensorRadarLevelInfo.setTriggerThreshold(triggerThreshold);
+                sensorRadarLevelInfo.setRevised(Double.parseDouble(correctValue));
                 collectorSensorParamsInfoSub.setSensorData(sensorRadarLevelInfo);
                 break;
 
             case "21"://次声
                 SensorInfrasoundInfo sensorInfrasoundInfo = (SensorInfrasoundInfo) collectorSensorParamsInfoSub.getSensorData();
-                sensorInfrasoundInfo.setTriggerThreshold(isUseNewValue ? newAlarmValue : oldAlarmValue);
-                sensorInfrasoundInfo.setRevised(isUseNewValue ? Double.valueOf(newCorrectValue) : Double.valueOf(oldCorrectValue));
+                sensorInfrasoundInfo.setTriggerThreshold(triggerThreshold);
+                sensorInfrasoundInfo.setRevised(Double.parseDouble(correctValue));
                 collectorSensorParamsInfoSub.setSensorData(sensorInfrasoundInfo);
                 break;
         }
 
-        collectorSensorParamsInfoSub.setSensorAddress(isUseNewValue ? newAddress : oldAddress);
+        collectorSensorParamsInfoSub.setSensorAddress(address);
     }
 }

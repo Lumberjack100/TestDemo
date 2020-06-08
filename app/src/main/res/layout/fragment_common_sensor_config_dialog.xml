@@ -65,17 +65,4 @@
 
     </LinearLayout>
 
-    <LinearLayout style="@style/LinearLayout_Sensor_Config_Item">
-
-        <TextView
-            style="@style/TextView_Sensor_Config_Item"
-            android:text="备注" />
-
-        <EditText
-            android:id="@+id/et_note"
-            style="@style/EditText_Sensor_Config_Item"
-            android:inputType="number" />
-
-    </LinearLayout>
-
 </LinearLayout>

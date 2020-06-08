@@ -9,7 +9,7 @@
     <!--
 如果您的应用需要后台定位权限，且有可能运行在Android Q设备上,并且设置了target>28，必须增加ACCESS_BACKGROUND_LOCATION权限声明
 如果设置了target > 28，需要增加这个权限，否则不会弹出"始终允许"这个选择框
--->
+    -->
     <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" /> <!-- 允许程序访问精良位置(如GPS) -->
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" /> <!-- 允许程序改变Wi-Fi连接状态 -->
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" /> <!-- 允许程序访问Wi-Fi网络状态信息 -->
@@ -32,8 +32,7 @@
         tools:ignore="ProtectedPermissions" />
 
     <uses-feature android:name="android.hardware.camera" />
-    <uses-feature android:name="android.hardware.camera.autofocus" />
-    <!--声明应用仅适用于支持 BLE 的设备-->
+    <uses-feature android:name="android.hardware.camera.autofocus" /> <!-- 声明应用仅适用于支持 BLE 的设备 -->
     <uses-feature
         android:name="android.hardware.bluetooth_le"
         android:required="true" />
@@ -55,9 +54,7 @@
             android:name="com.amap.api.v2.apikey"
             android:value="${mapApikey}" />
 
-        <service android:name="com.amap.api.location.APSService" />
-
-        <!-- 蒲公英配置 -->
+        <service android:name="com.amap.api.location.APSService" /> <!-- 蒲公英配置 -->
         <activity android:name="com.pgyersdk.feedback.FeedbackActivity" />
 
         <meta-data
@@ -65,14 +62,14 @@
             android:value="${pgyerKey}" />
 
         <provider
-            android:name="com.shmedo.mcloudapp.provider.GenericFileProvider"
+            android:name=".provider.GenericFileProvider"
             android:authorities="${applicationId}.fileProvider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths"
-                tools:replace="android:resource"/>
+                tools:replace="android:resource" />
         </provider>
 
         <activity
@@ -141,6 +138,17 @@
             android:windowSoftInputMode="stateAlwaysHidden|adjustResize" />
         <activity
             android:name=".ui.activity.device.sensor.SenSorBGKConfigActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan|stateHidden" />
+
+        <activity android:name=".ui.activity.device.sensor.CommonSensorConfigActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan|stateHidden" />
+
+        <activity
+            android:name=".ui.activity.device.sensor.VibratingWireSensorConfigActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan|stateHidden" />
@@ -233,18 +241,15 @@
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustResize" />
-
         <activity
             android:name=".ui.activity.device.DeviceAdvanceConfigActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustResize" />
-
         <activity
             android:name=".ui.activity.BluetoothDeviceListActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:theme="@style/AppTheme.Dialog" /> <!-- 蓝牙设备列表测试页面 -->
-
         <activity
             android:name=".ui.activity.TestActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"

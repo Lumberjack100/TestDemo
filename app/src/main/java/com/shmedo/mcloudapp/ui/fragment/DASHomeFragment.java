@@ -48,7 +48,8 @@ import com.shmedo.mcloudapp.ui.activity.ConfigDASActivity;
 import com.shmedo.mcloudapp.ui.activity.device.DeviceAdvanceConfigActivity;
 import com.shmedo.mcloudapp.ui.activity.device.GeneralSettingActivity;
 import com.shmedo.mcloudapp.ui.activity.device.MqttSettingActivity;
-import com.shmedo.mcloudapp.ui.activity.device.sensor.SenSorBGKConfigActivity;
+import com.shmedo.mcloudapp.ui.activity.device.sensor.CommonSensorConfigActivity;
+import com.shmedo.mcloudapp.ui.activity.device.sensor.VibratingWireSensorConfigActivity;
 import com.shmedo.mcloudapp.util.bleutil.BlueResultParserUtil;
 
 import org.greenrobot.eventbus.EventBus;
@@ -343,11 +344,7 @@ public class DASHomeFragment extends BaseFragment {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.general_sensor_param_config_layout:
-                if (!MCloudApp.isIsBluetoothDeviceConnected()) {
-                    ToastUtils.show(getString(R.string.param_config_bluetooth_disconnect_warn));
-                    return;
-                }
-                SenSorBGKConfigActivity.startActivity(configDASActivity, sbcollectorSensor.toString());
+                startSensorConfigActivity();
                 break;
 
             case R.id.rl_mqtt_config:
@@ -385,6 +382,22 @@ public class DASHomeFragment extends BaseFragment {
         }
     }
 
+    private void startSensorConfigActivity() {
+        if (!MCloudApp.isIsBluetoothDeviceConnected()) {
+            ToastUtils.show(getString(R.string.param_config_bluetooth_disconnect_warn));
+            return;
+        }
+        CollectorModel model = CollectorModel.value(collectorModel);
+        switch (model) {
+            case VW08://同时接入多种类型传感器的采集器
+                VibratingWireSensorConfigActivity.startActivity(configDASActivity, sbcollectorSensor.toString());
+                break;
+
+            default:
+                CommonSensorConfigActivity.startActivity(configDASActivity, sbcollectorSensor.toString());
+                break;
+        }
+    }
 
     /**
      * 设置显示数据

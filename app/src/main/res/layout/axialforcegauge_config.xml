@@ -56,7 +56,8 @@
         <EditText
             android:id="@+id/et_ReferenceValue"
             style="@style/EditText_Sensor_Config_Item"
-            android:hint="请输入"
+            android:hint="默认为0"
+            android:text="0"
             android:inputType="number" />
 
     </LinearLayout>
@@ -70,13 +71,15 @@
         <EditText
             android:id="@+id/et_correct_value"
             style="@style/EditText_Sensor_Config_Item"
-            android:hint="请输入"
+            android:hint="默认为0"
+            android:text="0"
             android:inputType="number" />
 
     </LinearLayout>
 
 
-    <LinearLayout style="@style/LinearLayout_Sensor_Config_Item">
+    <LinearLayout style="@style/LinearLayout_Sensor_Config_Item"
+        android:visibility="gone">
 
         <TextView
             style="@style/TextView_Sensor_Config_Item"

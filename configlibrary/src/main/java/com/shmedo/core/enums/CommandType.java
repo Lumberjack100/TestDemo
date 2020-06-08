@@ -173,6 +173,10 @@ public enum CommandType {
      */
     COLLECTOR_SENSOR_THRESHOLD_SOLI("168"),
     /**
+     * 设置振弦式传感器安装高程
+     */
+    SENSOR_INSTALLELEVATION("169"),
+    /**
      * DAS发送认证请求
      */
     DAS_SEND_AUTHENTICATION_REQUEST("222"),

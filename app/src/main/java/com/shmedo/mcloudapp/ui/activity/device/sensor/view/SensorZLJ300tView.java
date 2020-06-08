@@ -61,7 +61,7 @@ public class SensorZLJ300tView extends FrameLayout {
         mEtModbusAddress.setFilters(new InputFilter[]{new InputFilter.LengthFilter(2)});
     }
 
-    public void bindData(CollectorSensorParamsInfoSub infoSub) {
+    public void bindSensorData(CollectorSensorParamsInfoSub infoSub) {
         SensorJunXingZljInfo sensorInfo = (SensorJunXingZljInfo) infoSub.getSensorData();
         mEtModbusAddress.setText(infoSub.getSensorAddress());
         mEtTriggerThreshold.setText(sensorInfo.getTriggerThreshold());
@@ -71,12 +71,12 @@ public class SensorZLJ300tView extends FrameLayout {
         mEtInitialTemperature.setText("");
     }
 
-    public boolean updateData(CollectorSensorParamsInfoSub infoSub) {
-        SensorJunXingZljInfo sensorInfo = (SensorJunXingZljInfo) infoSub.getSensorData();
+    public boolean updateSensorData(CollectorSensorParamsInfoSub infoSub) {
         if (!checkValue()) {
             return false;
         }
 
+        SensorJunXingZljInfo sensorInfo = (SensorJunXingZljInfo) infoSub.getSensorData();
         infoSub.setSensorAddress(address);
         sensorInfo.setTriggerThreshold(triggerThreshold);
         sensorInfo.setSensitivityK(coefficientK);
@@ -100,7 +100,7 @@ public class SensorZLJ300tView extends FrameLayout {
             return false;
         }
 
-        if (TextUtils.isEmpty(triggerThreshold) || !ValidateUtil.isInteger(triggerThreshold)) {
+        if (TextUtils.isEmpty(triggerThreshold) ) {
             ToastUtils.show("请输入正确的触发值");
             return false;
         }
@@ -115,10 +115,6 @@ public class SensorZLJ300tView extends FrameLayout {
             return false;
         }
 
-//        if (TextUtils.isEmpty(correctValue) || (!ValidateUtil.isInteger(correctValue) && !ValidateUtil.isDouble(correctValue))) {
-//            ToastUtils.show("请输入正确的修正值");
-//            return false;
-//        }
 
         if (TextUtils.isEmpty(correctValue)) {
             ToastUtils.show("请输入修正值");

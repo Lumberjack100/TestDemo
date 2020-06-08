@@ -77,24 +77,18 @@ public class Osmometer_AxialForceGaugeDialogFragment extends BaseDialogFragment 
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 String item = parent.getSelectedItem().toString();
-                switch (item) {
-                    case "渗压计-BGK":
-                        sensorBGK4500View.setVisibility(View.VISIBLE);
-                        sensorVWP03View.setVisibility(View.GONE);
-                        sensorZLJ300tView.setVisibility(View.GONE);
-                        break;
-
-                    case "渗压计-NGN":
-                        sensorBGK4500View.setVisibility(View.GONE);
-                        sensorVWP03View.setVisibility(View.VISIBLE);
-                        sensorZLJ300tView.setVisibility(View.GONE);
-                        break;
-
-                    case "轴力计":
-                        sensorBGK4500View.setVisibility(View.GONE);
-                        sensorVWP03View.setVisibility(View.GONE);
-                        sensorZLJ300tView.setVisibility(View.VISIBLE);
-                        break;
+                if (item.contains("基康渗压计")) {
+                    sensorBGK4500View.setVisibility(View.VISIBLE);
+                    sensorVWP03View.setVisibility(View.GONE);
+                    sensorZLJ300tView.setVisibility(View.GONE);
+                } else if (item.contains("葛南渗压计")) {
+                    sensorBGK4500View.setVisibility(View.GONE);
+                    sensorVWP03View.setVisibility(View.VISIBLE);
+                    sensorZLJ300tView.setVisibility(View.GONE);
+                } else if (item.contains("军星轴力计")) {
+                    sensorBGK4500View.setVisibility(View.GONE);
+                    sensorVWP03View.setVisibility(View.GONE);
+                    sensorZLJ300tView.setVisibility(View.VISIBLE);
                 }
             }
 
@@ -110,7 +104,7 @@ public class Osmometer_AxialForceGaugeDialogFragment extends BaseDialogFragment 
                 sensorBGK4500View.setVisibility(View.VISIBLE);
                 sensorVWP03View.setVisibility(View.GONE);
                 sensorZLJ300tView.setVisibility(View.GONE);
-                sensorBGK4500View.bindData(collectorSensorParamsInfoSub);
+                sensorBGK4500View.bindSensorData(collectorSensorParamsInfoSub);
                 break;
 
             case "51"://葛南渗压计(VWP-03)
@@ -118,7 +112,7 @@ public class Osmometer_AxialForceGaugeDialogFragment extends BaseDialogFragment 
                 sensorBGK4500View.setVisibility(View.GONE);
                 sensorVWP03View.setVisibility(View.VISIBLE);
                 sensorZLJ300tView.setVisibility(View.GONE);
-                sensorVWP03View.bindData(collectorSensorParamsInfoSub);
+                sensorVWP03View.bindSensorData(collectorSensorParamsInfoSub);
                 break;
 
             case "58"://军星轴力计(ZLJ-300T)
@@ -126,7 +120,7 @@ public class Osmometer_AxialForceGaugeDialogFragment extends BaseDialogFragment 
                 sensorBGK4500View.setVisibility(View.GONE);
                 sensorVWP03View.setVisibility(View.GONE);
                 sensorZLJ300tView.setVisibility(View.VISIBLE);
-                sensorZLJ300tView.bindData(collectorSensorParamsInfoSub);
+                sensorZLJ300tView.bindSensorData(collectorSensorParamsInfoSub);
                 break;
         }
     }
@@ -154,15 +148,15 @@ public class Osmometer_AxialForceGaugeDialogFragment extends BaseDialogFragment 
         String sensorType = collectorSensorParamsInfoSub.getSensorType();
         switch (sensorType) {
             case "50":
-                updateDataSuccess = sensorBGK4500View.updateData(collectorSensorParamsInfoSub);
+                updateDataSuccess = sensorBGK4500View.updateSensorData(collectorSensorParamsInfoSub);
                 break;
 
             case "51":
-                updateDataSuccess = sensorVWP03View.updateData(collectorSensorParamsInfoSub);
+                updateDataSuccess = sensorVWP03View.updateSensorData(collectorSensorParamsInfoSub);
                 break;
 
-            case "55":
-                updateDataSuccess = sensorZLJ300tView.updateData(collectorSensorParamsInfoSub);
+            case "58":
+                updateDataSuccess = sensorZLJ300tView.updateSensorData(collectorSensorParamsInfoSub);
                 break;
         }
         if (!updateDataSuccess) {

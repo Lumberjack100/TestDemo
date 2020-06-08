@@ -74,7 +74,7 @@ public class SensorBGK4500View extends FrameLayout {
 //        mEtInstallElevation.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
     }
 
-    public void bindData(CollectorSensorParamsInfoSub infoSub) {
+    public void bindSensorData(CollectorSensorParamsInfoSub infoSub) {
         SensorKangPercolateInfo sensorInfo = (SensorKangPercolateInfo) infoSub.getSensorData();
         mEtModbusAddress.setText(infoSub.getSensorAddress());
         mEtTriggerThreshold.setText(sensorInfo.getTriggerThreshold());
@@ -88,12 +88,12 @@ public class SensorBGK4500View extends FrameLayout {
         mEtInstallElevation.setText(sensorInfo.getInstallElevation());
     }
 
-    public boolean updateData(CollectorSensorParamsInfoSub infoSub) {
-        SensorKangPercolateInfo sensorInfo = (SensorKangPercolateInfo) infoSub.getSensorData();
+    public boolean updateSensorData(CollectorSensorParamsInfoSub infoSub) {
         if (!checkValue()) {
             return false;
         }
 
+        SensorKangPercolateInfo sensorInfo = (SensorKangPercolateInfo) infoSub.getSensorData();
         infoSub.setSensorAddress(address);
         sensorInfo.setTriggerThreshold(triggerThreshold);
         sensorInfo.setPolynomialRatioA(coefficientA);
@@ -120,8 +120,18 @@ public class SensorBGK4500View extends FrameLayout {
         cordLength = mEtCordLength.getText().toString().trim();
         installElevation = mEtInstallElevation.getText().toString().trim();
 
-        if (TextUtils.isEmpty(address) || !ValidateUtil.isInteger(address) || Integer.parseInt(address) < 0 || Integer.parseInt(address) > 99) {
-            ToastUtils.show("请输入正确的通道号");
+        if (TextUtils.isEmpty(address)){
+            ToastUtils.show("请输入通道号!");
+            return false;
+        }
+
+        if ( !ValidateUtil.isInteger(address) || Integer.parseInt(address) < 0 || Integer.parseInt(address) > 99) {
+            ToastUtils.show("通道号不正确!");
+            return false;
+        }
+
+        if (TextUtils.isEmpty(triggerThreshold)){
+            ToastUtils.show("请输入触发值!");
             return false;
         }
 

@@ -1,7 +1,5 @@
 package com.shmedo.mcloudapp.ui.activity.device.sensor;
 
-import android.content.Context;
-import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -17,14 +15,7 @@ import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.hjq.toast.ToastUtils;
 import com.kyleduo.switchbutton.SwitchButton;
-import com.shmedo.core.cmd.CommandResult;
 import com.shmedo.core.enums.CollectorModel;
-import com.shmedo.core.enums.CommandType;
-import com.shmedo.core.model.SensorInclinometerInfo;
-import com.shmedo.core.model.SensorInfrasoundInfo;
-import com.shmedo.core.model.SensorRadarLevelInfo;
-import com.shmedo.core.model.SensorSoilMoistureInfo;
-import com.shmedo.core.model.SensorWireShiftInfo;
 import com.shmedo.core.utils.StringUtil;
 import com.shmedo.mcloudapp.MCloudApp;
 import com.shmedo.mcloudapp.R;
@@ -37,9 +28,6 @@ import com.shmedo.mcloudapp.ui.activity.device.sensor.dialog.Osmometer_AxialForc
 import com.shmedo.mcloudapp.util.KeyBordUtils;
 import com.shmedo.mcloudapp.util.bleutil.BlueResultParserUtil;
 
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -50,12 +38,11 @@ import butterknife.OnClick;
 import timber.log.Timber;
 
 /**
- * 创建者:   dpc
- * 创建时间:  2019/4/24 14:44
- * 描述：   传感器配置页面
+ * 创建者:   gonghe <br/>
+ * 创建时间:  2020/6/8 <br/>
+ * 描述：    传感器基础配置页面
  */
-public class SenSorBGKConfigActivity extends BaseDeviceConnectActivity implements BaseDialogFragment.DialogFragmentClickListener {
-
+public abstract class BaseSensorConfigActivity extends BaseDeviceConnectActivity implements BaseDialogFragment.DialogFragmentClickListener {
     @BindView(R.id.tv_title)
     TextView mToolbarTitle;
 
@@ -131,12 +118,12 @@ public class SenSorBGKConfigActivity extends BaseDeviceConnectActivity implement
     @BindView(R.id.tv_stay8)
     TextView textView8;
 
-    private List<CollectorSensorParamsInfoSub> collectorSensorParamsInfoSubs = new ArrayList<>();
+    protected List<CollectorSensorParamsInfoSub> collectorSensorParamsInfoSubs = new ArrayList<>();
     //以传感器的通道号为 Key,CollectorSensorParamsInfoSub 对象为 Value
-    private HashMap<String, CollectorSensorParamsInfoSub> collectorSensorHashMap = new HashMap<>();
-    private CollectorSensorParamsInfoSub defaultCollectorSensorParamsInfoSub = new CollectorSensorParamsInfoSub();
+    protected HashMap<String, CollectorSensorParamsInfoSub> collectorSensorHashMap = new HashMap<>();
+    protected CollectorSensorParamsInfoSub defaultCollectorSensorParamsInfoSub = new CollectorSensorParamsInfoSub();
 
-    private String collectorName = "";
+    protected String collectorName = "";
 
     private String channelNumber0 = "-1";
     private String channelNumber1 = "-1";
@@ -147,17 +134,11 @@ public class SenSorBGKConfigActivity extends BaseDeviceConnectActivity implement
     private String channelNumber6 = "-1";
     private String channelNumber7 = "-1";
 
-    private String curChannelNumber = "";
-    private boolean isEnableNewSensor = false;
+    protected String curChannelNumber = "";
+    protected boolean isEnableNewSensor = false;
+    protected int sensorIndex = 0;//接入的传感器索引号
 
-    private int sensorIndex = 0;//接入的传感器索引号
 
-
-    public static void startActivity(Context context, String collectorSensorConfig) {
-        Intent intent = new Intent(context, SenSorBGKConfigActivity.class);
-        intent.putExtra(Extras.SENSOR_PARAMS, collectorSensorConfig);
-        context.startActivity(intent);
-    }
 
     @Override
     protected int initContentView() {
@@ -189,9 +170,9 @@ public class SenSorBGKConfigActivity extends BaseDeviceConnectActivity implement
         }
 
         //测试参数，测试结束删除此行
-        collectorSensorConfig = "$$1010000,00,50,2.000000e+00,4.597945e-08,3.000000e+00,4.000000e+00,5.000000e+00,3.800000e+01,3.300000e+01,2.300000e+01,6.600000e+01&&"+
-        "$$1010001,01,51,2.000000e+00,4.597945e-08,3.000000e+00,4.400000e+01,3.800000e+01,1.300000e+01,5.000000e+00,1.600000e+01&&"+
-        "$$1010002,02,58,2.000000e+00,4.597945e-08,3.000000e+00,5.000000e+00&&";
+//        collectorSensorConfig = "$$1010000,00,50,2.000000e+00,4.597945e-08,3.000000e+00,4.000000e+00,5.000000e+00,3.800000e+01,3.300000e+01,2.300000e+01,6.600000e+01&&" +
+//                "$$1010001,01,51,2.000000e+00,4.597945e-08,3.000000e+00,4.400000e+01,3.800000e+01,1.300000e+01,5.000000e+00,1.600000e+01&&" +
+//                "$$1010002,02,58,2.000000e+00,4.597945e-08,3.000000e+00,5.000000e+00&&";
 
         String[] sensorConfigs = collectorSensorConfig.split("&&");
         for (String sensorConfig : sensorConfigs) {
@@ -718,212 +699,10 @@ public class SenSorBGKConfigActivity extends BaseDeviceConnectActivity implement
     }
 
 
-    /**
-     * ##150zzxxXXXX\r\n：设置采集器接入的传感器
-     * zz 采集器型号
-     * xx的取值范围为：01~08，表示接入传感器的个数
-     * 1）当传感器个数为01时XXXX（4个字节）的含义：前两位表示地址或者通道号，后两位表示接入传感器类型
-     * 2）当传感器个数为02时XXXXXXXX（8个字节）的含义：前四位表示第一个地址和对应的传感器类型，后四位表示第二个地址和对应的传感器类型
-     * ……以此类推。
-     * 该指令不定长，根据接入传感器的个数而定，地址为01~99,通道为00~07
-     */
-    private void sendInstruction() {
-        collectorSensorParamsInfoSubs.clear();
-        collectorSensorParamsInfoSubs.addAll(collectorSensorHashMap.values());
-        if (collectorSensorParamsInfoSubs.isEmpty()) {
-            Timber.e("%s 采集器接入的传感器信息为空!", collectorName);
-            return;
-        }
-
-        //##150zzxxXXXX\r\n：设置采集器接入的传感器
-        StringBuilder builderFirst = new StringBuilder();
-        builderFirst.append("##150");
-        builderFirst.append(defaultCollectorSensorParamsInfoSub.getCollectorModel() + StringUtil.formatStringTwo(String.valueOf(collectorSensorParamsInfoSubs.size())));
-        for (CollectorSensorParamsInfoSub paramsInfoSub : collectorSensorParamsInfoSubs) {
-            builderFirst.append(StringUtil.formatStringTwo(paramsInfoSub.getSensorAddress()) + StringUtil.formatStringTwo(paramsInfoSub.getSensorType()));
-        }
-        builderFirst.append("\r\n");
-        String command = String.valueOf(builderFirst);
-
-        startProgressRunnable("正在发送配置指令...", CONFIG_DELAY_MILLIS);
-        sendCommonCommandImmediately(command);
-        Timber.d("设置 %s 接入的传感器指令===%s", collectorName, command);
-    }
-
-
-    /**
-     * 设置采集器接入传感器触发阈值
-     */
-    private void setTriggerThreshold() {
-        if (sensorIndex >= collectorSensorParamsInfoSubs.size()) {
-            return;
-        }
-
-        String command = "";
-        CollectorSensorParamsInfoSub paramsInfoSub = collectorSensorParamsInfoSubs.get(sensorIndex);
-        CollectorModel collectorModel = CollectorModel.value(paramsInfoSub.getCollectorModel());
-        switch (collectorModel) {
-            case DS08://裂缝计采集器
-                SensorWireShiftInfo sensorWireShiftInfo = (SensorWireShiftInfo) paramsInfoSub.getSensorData();
-                command = "##168" +
-                        StringUtil.formatStringTwo(paramsInfoSub.getCollectorModel()) +
-                        StringUtil.formatStringTwo(paramsInfoSub.getSensorAddress()) +
-                        sensorWireShiftInfo.getTriggerThreshold() + "\r\n";
-                break;
-
-            case CS08://次声采集器
-                SensorInfrasoundInfo sensorInfrasoundInfo = (SensorInfrasoundInfo) paramsInfoSub.getSensorData();
-                command = "##168" +
-                        StringUtil.formatStringTwo(paramsInfoSub.getCollectorModel()) +
-                        StringUtil.formatStringTwo(paramsInfoSub.getSensorAddress()) +
-                        sensorInfrasoundInfo.getTriggerThreshold() + "\r\n";
-                break;
-
-            case HD08://土壤湿度采集器
-                SensorSoilMoistureInfo sensorSoilMoistureInfo = (SensorSoilMoistureInfo) paramsInfoSub.getSensorData();
-                command = "##168" +
-                        StringUtil.formatStringTwo(paramsInfoSub.getCollectorModel()) +
-                        StringUtil.formatStringTwo(paramsInfoSub.getSensorAddress()) +
-                        sensorSoilMoistureInfo.getTriggerThreshold() + "\r\n";
-                break;
-
-            case RD08://雷达采集器
-                SensorRadarLevelInfo sensorRadarLevelInfo = (SensorRadarLevelInfo) paramsInfoSub.getSensorData();
-                command = "##168" +
-                        StringUtil.formatStringTwo(paramsInfoSub.getCollectorModel()) +
-                        StringUtil.formatStringTwo(paramsInfoSub.getSensorAddress()) +
-                        sensorRadarLevelInfo.getTriggerThreshold() + "\r\n";
-                break;
-
-            case CX08://测斜仪采集器
-                SensorInclinometerInfo sensorInclinometerInfo = (SensorInclinometerInfo) paramsInfoSub.getSensorData();
-                command = "##168" +
-                        StringUtil.formatStringTwo(paramsInfoSub.getCollectorModel()) +
-                        StringUtil.formatStringTwo(paramsInfoSub.getSensorAddress()) +
-                        sensorInclinometerInfo.getTriggerThreshold() + "\r\n";
-                break;
-        }
-
-        sendCommonCommand(command);
-        Timber.d("设置 %s 采集器 %s 地址的传感器触发阈值参数===%s", collectorModel, StringUtil.formatStringTwo(paramsInfoSub.getSensorAddress()), command);
-    }
-
-    /**
-     * 设置采集器接入传感器修正值（只有墒情计用到3个修正值，其他传感器只用到一个修正值）
-     */
-    private void setCorrectionValue() {
-        if (sensorIndex >= collectorSensorParamsInfoSubs.size()) {
-            return;
-        }
-
-        String command = "";
-        CollectorSensorParamsInfoSub paramsInfoSub = collectorSensorParamsInfoSubs.get(sensorIndex);
-        CollectorModel collectorModel = CollectorModel.value(paramsInfoSub.getCollectorModel());
-        switch (collectorModel) {
-            case DS08://裂缝计采集器
-                SensorWireShiftInfo sensorWireShiftInfo = (SensorWireShiftInfo) paramsInfoSub.getSensorData();
-                command = "##165" +
-                        StringUtil.formatStringTwo(paramsInfoSub.getCollectorModel()) +
-                        StringUtil.formatStringTwo(paramsInfoSub.getSensorAddress()) +
-                        sensorWireShiftInfo.getCorrectionValue() + "\r\n";
-                break;
-
-            case CS08://次声采集器
-                SensorInfrasoundInfo sensorInfrasoundInfo = (SensorInfrasoundInfo) paramsInfoSub.getSensorData();
-                command = "##165" +
-                        StringUtil.formatStringTwo(paramsInfoSub.getCollectorModel()) +
-                        StringUtil.formatStringTwo(paramsInfoSub.getSensorAddress()) +
-                        sensorInfrasoundInfo.getRevised() + "\r\n";
-                break;
-
-            case HD08://土壤湿度采集器
-                SensorSoilMoistureInfo sensorSoilMoistureInfo = (SensorSoilMoistureInfo) paramsInfoSub.getSensorData();
-                command = "##165" +
-                        StringUtil.formatStringTwo(paramsInfoSub.getCollectorModel()) +
-                        StringUtil.formatStringTwo(paramsInfoSub.getSensorAddress()) +
-                        sensorSoilMoistureInfo.getRevised() + "\r\n";
-                break;
-
-            case RD08://雷达采集器
-                SensorRadarLevelInfo sensorRadarLevelInfo = (SensorRadarLevelInfo) paramsInfoSub.getSensorData();
-                command = "##165" +
-                        StringUtil.formatStringTwo(paramsInfoSub.getCollectorModel()) +
-                        StringUtil.formatStringTwo(paramsInfoSub.getSensorAddress()) +
-                        sensorRadarLevelInfo.getRevised() + "\r\n";
-                break;
-
-            case CX08://测斜仪采集器
-                SensorInclinometerInfo sensorInclinometerInfo = (SensorInclinometerInfo) paramsInfoSub.getSensorData();
-                command = "##165" +
-                        StringUtil.formatStringTwo(paramsInfoSub.getCollectorModel()) +
-                        StringUtil.formatStringTwo(paramsInfoSub.getSensorAddress()) +
-                        sensorInclinometerInfo.getCorrectionValue() + "\r\n";
-                break;
-        }
-        sendCommonCommandImmediately(command);
-        Timber.d("设置 %s 采集器 %s 地址的传感器修正值参数===%s", collectorModel, StringUtil.formatStringTwo(paramsInfoSub.getSensorAddress()), command);
-    }
-
-
-    /**
-     * 设置显示数据
-     */
-    private void setResultData(String cmdStr) {
-        String tempStr = cmdStr.replace("$$", "").replace("\r\n", "");
-        CommandType type = StringUtil.extractCommandType(cmdStr);
-        switch (type) {
-            case SET_COLLECTOR_SENSOR://设置采集器接入的传感器 150
-                if (tempStr.endsWith(CommandResult.ERROR_END)) {
-                    ToastUtils.show(collectorName + "接入传感器配置错误!");
-                    stopProgressRunnable();
-                    return;
-                }
-                setTriggerThreshold();
-                break;
-
-            case COLLECTOR_SENSOR_THRESHOLD_SOLI://传感器触发阈值 168
-                if (tempStr.endsWith(CommandResult.ERROR_END)) {
-                    ToastUtils.show(collectorName + "的传感器触发阈值配置错误!");
-                    stopProgressRunnable();
-                    return;
-                }
-                setCorrectionValue();
-                break;
-
-            case COLLECTOR_SENSOR_REVISED: //传感器修正值 165
-                if (tempStr.endsWith(CommandResult.ERROR_END)) {
-                    ToastUtils.show(collectorName + "的传感器修正值配置错误!");
-                    stopProgressRunnable();
-                    return;
-                }
-                sensorIndex++;
-                setTriggerThreshold();
-
-                if (sensorIndex >= collectorSensorParamsInfoSubs.size()) {
-                    stopProgressRunnable();
-                    ToastUtils.show("设置完成");
-                    hander.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            finish();
-                        }
-                    }, 2000);
-                }
-                break;
-        }
-    }
-
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void getConfig(String messageEvent) {
-        if (!TextUtils.isEmpty(messageEvent) && messageEvent.startsWith("$$")) {
-            setResultData(messageEvent);
-        }
-    }
+    protected abstract void sendInstruction();
 
     @Override
     public void onBackPressed() {
         finish();
     }
-
 }
