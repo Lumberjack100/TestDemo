@@ -9,7 +9,7 @@
 
         <TextView
             style="@style/TextView_Sensor_Config_Item"
-            android:text="Modbus地址" />
+            android:text="通道" />
 
         <EditText
             android:id="@+id/et_modbus_address"

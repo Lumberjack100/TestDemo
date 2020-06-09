@@ -34,6 +34,7 @@ public class VibratingWireSensorConfigActivity extends BaseSensorConfigActivity 
      */
     private List<String> correctValueCmdList = new LinkedList<>();
 
+    private String curCorrectCmd;
 
     public static void startActivity(Context context, String collectorSensorConfig) {
         Intent intent = new Intent(context, VibratingWireSensorConfigActivity.class);
@@ -135,6 +136,7 @@ public class VibratingWireSensorConfigActivity extends BaseSensorConfigActivity 
      * x…x：为长度不确定的参数<br/>
      */
     private void setCorrectionValue() {
+        correctValueCmdList.clear();
         for (CollectorSensorParamsInfoSub paramsInfoSub : collectorSensorParamsInfoSubs) {
             getCorrectionValueParamCommands(paramsInfoSub);
         }
@@ -194,6 +196,7 @@ public class VibratingWireSensorConfigActivity extends BaseSensorConfigActivity 
         String command = correctValueCmdList.get(0);
         sendCommonCommandImmediately(command);
         Timber.d("设置传感器修正参数===%s", command);
+        curCorrectCmd = command;
         //移除已发送的指令
         correctValueCmdList.remove(0);
     }
@@ -226,7 +229,8 @@ public class VibratingWireSensorConfigActivity extends BaseSensorConfigActivity 
             case VIBRATING_SENSOR_PARAMETER://传感器修正值 167
             case SENSOR_INSTALLELEVATION://传感器安装高程 169
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
-                    ToastUtils.show(collectorName + "的传感器修正值配置错误!");
+                    Timber.w("参数: " + curCorrectCmd + " 配置错误!");
+                    ToastUtils.show("参数: " + curCorrectCmd + " 配置错误!");
                     stopProgressRunnable();
                     return;
                 }

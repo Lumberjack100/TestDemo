@@ -452,7 +452,7 @@
             android:layout_marginRight="20dp"
             android:layout_marginBottom="20dp"
             android:background="@drawable/btn_select"
-            android:text="确定"
+            android:text="设置"
             android:textColor="@color/white" />
     </RelativeLayout>
 
