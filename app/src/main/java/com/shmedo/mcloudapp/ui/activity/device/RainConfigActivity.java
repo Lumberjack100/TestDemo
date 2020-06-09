@@ -140,6 +140,7 @@ public class RainConfigActivity extends BaseDeviceConnectActivity {
             return;
         }
 
+        errMsg = "发送指令超时,请稍后尝试";
         startProgressRunnable("正在发送配置指令...", CONFIG_DELAY_MILLIS);
         SetRainPrecisionEntity entity = new SetRainPrecisionEntity(Integer.parseInt(rainResult));
         String command = CommandManager.getInstance().getCommand(CommandType.SETTING_RAIN_PRECISION, entity);

@@ -13,6 +13,7 @@ import androidx.annotation.Nullable;
 
 import com.hjq.toast.ToastUtils;
 import com.shmedo.core.model.SensorJunXingZljInfo;
+import com.shmedo.core.utils.StringUtil;
 import com.shmedo.core.utils.ValidateUtil;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.entity.ble.collector.CollectorSensorParamsInfoSub;
@@ -62,24 +63,26 @@ public class SensorZLJ300tView extends FrameLayout {
         mEtTriggerThreshold.setFilters(new InputFilter[]{new InputFilter.LengthFilter(5)});
         mEtSensitivityCoefficient.setFilters(new InputFilter[]{new InputFilter.LengthFilter(20)});
         mEtReferenceValue.setFilters(new InputFilter[]{new InputFilter.LengthFilter(20)});
-        mEtCorrectValue.setFilters(new InputFilter[]{new InputFilter.LengthFilter(5)});
+        mEtCorrectValue.setFilters(new InputFilter[]{new InputFilter.LengthFilter(10)});
     }
 
     public void bindSensorData(CollectorSensorParamsInfoSub infoSub) {
         SensorJunXingZljInfo sensorInfo = (SensorJunXingZljInfo) infoSub.getSensorData();
         mEtModbusAddress.setText(infoSub.getSensorAddress());
-        mEtTriggerThreshold.setText(sensorInfo.getTriggerThreshold());
+        mEtTriggerThreshold.setText((int) Double.parseDouble(sensorInfo.getTriggerThreshold())+"");
         mEtSensitivityCoefficient.setText(sensorInfo.getSensitivityK());
         mEtReferenceValue.setText(sensorInfo.getReferenceValue());
-        mEtCorrectValue.setText(sensorInfo.getManualCorrection());
+        mEtCorrectValue.setText(StringUtil.getDouble3AccuracyString(sensorInfo.getManualCorrection()));
         mEtInitialTemperature.setText("");
     }
 
     /**
      * 通过扫描二维码填充多项式参数
+     *
      * @param sensorInfo
      */
-    public void initDataByScan(SensorJunXingZljInfo sensorInfo) {
+    public void initDataByScan(String address, SensorJunXingZljInfo sensorInfo) {
+        mEtModbusAddress.setText(address);
         mEtSensitivityCoefficient.setText(sensorInfo.getSensitivityK());
         mEtReferenceValue.setText(sensorInfo.getReferenceValue());
     }
@@ -89,12 +92,13 @@ public class SensorZLJ300tView extends FrameLayout {
             return false;
         }
 
-        SensorJunXingZljInfo sensorInfo = (SensorJunXingZljInfo) infoSub.getSensorData();
+        SensorJunXingZljInfo sensorInfo = new SensorJunXingZljInfo();
         infoSub.setSensorAddress(address);
         sensorInfo.setTriggerThreshold(triggerThreshold);
         sensorInfo.setSensitivityK(coefficientK);
         sensorInfo.setReferenceValue(referenceValue);
         sensorInfo.setManualCorrection(correctValue);
+        infoSub.setSensorData(sensorInfo);
 
         return true;
     }
@@ -132,17 +136,7 @@ public class SensorZLJ300tView extends FrameLayout {
             return false;
         }
 
-        if (TextUtils.isEmpty(referenceValue)) {
-            ToastUtils.show("基准值不能为空!");
-            return false;
-        }
-
-        if (TextUtils.isEmpty(correctValue)) {
-            ToastUtils.show("修正值不能为空!");
-            return false;
-        }
-
-        if (!ValidateUtil.isDouble(correctValue)) {
+        if (!TextUtils.isEmpty(correctValue) && !ValidateUtil.isDouble(correctValue)) {
             ToastUtils.show("请输入正确的修正值!");
             return false;
         }

@@ -13,6 +13,7 @@ import androidx.annotation.Nullable;
 
 import com.hjq.toast.ToastUtils;
 import com.shmedo.core.model.SensorGudanPercolateInfo;
+import com.shmedo.core.utils.StringUtil;
 import com.shmedo.core.utils.ValidateUtil;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.entity.ble.collector.CollectorSensorParamsInfoSub;
@@ -70,30 +71,30 @@ public class SensorVWP03View extends FrameLayout {
         mEtSensitivityCoefficient.setFilters(new InputFilter[]{new InputFilter.LengthFilter(20)});
         mEtTemperatureCoefficient.setFilters(new InputFilter[]{new InputFilter.LengthFilter(20)});
         mEtReferenceValue.setFilters(new InputFilter[]{new InputFilter.LengthFilter(20)});
-        mEtInitialTemperature.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
-        mEtCorrectValue.setFilters(new InputFilter[]{new InputFilter.LengthFilter(5)});
-        mEtCordLength.setFilters(new InputFilter[]{new InputFilter.LengthFilter(5)});
-        mEtInstallElevation.setFilters(new InputFilter[]{new InputFilter.LengthFilter(5)});
+        mEtInitialTemperature.setFilters(new InputFilter[]{new InputFilter.LengthFilter(10)});
+        mEtCorrectValue.setFilters(new InputFilter[]{new InputFilter.LengthFilter(10)});
+        mEtCordLength.setFilters(new InputFilter[]{new InputFilter.LengthFilter(10)});
+        mEtInstallElevation.setFilters(new InputFilter[]{new InputFilter.LengthFilter(10)});
     }
 
     public void bindSensorData(CollectorSensorParamsInfoSub infoSub) {
         SensorGudanPercolateInfo sensorInfo = (SensorGudanPercolateInfo) infoSub.getSensorData();
         mEtModbusAddress.setText(infoSub.getSensorAddress());
-        mEtTriggerThreshold.setText(sensorInfo.getTriggerThreshold());
+        mEtTriggerThreshold.setText((int) Double.parseDouble(sensorInfo.getTriggerThreshold())+"");
         mEtSensitivityCoefficient.setText(sensorInfo.getSensitivityK());
         mEtTemperatureCoefficient.setText(sensorInfo.getTemperatureCoefficientB());
         mEtReferenceValue.setText(sensorInfo.getReferenceValue());
-        mEtInitialTemperature.setText(sensorInfo.getCreateTemperature());
-        mEtCorrectValue.setText(sensorInfo.getManualCorrection());
-        mEtCordLength.setText(sensorInfo.getCordLenght());
-        mEtInstallElevation.setText(sensorInfo.getInstallElevation());
+        mEtInitialTemperature.setText(StringUtil.getDouble3AccuracyString(sensorInfo.getCreateTemperature()));
+        mEtCorrectValue.setText(StringUtil.getDouble3AccuracyString(sensorInfo.getManualCorrection()));
+        mEtCordLength.setText(StringUtil.getDouble3AccuracyString(sensorInfo.getCordLenght()));
+        mEtInstallElevation.setText(StringUtil.getDouble3AccuracyString(sensorInfo.getInstallElevation()));
     }
 
     /**
      * 通过扫描二维码填充多项式参数
-     * @param sensorInfo
      */
-    public void initDataByScan(SensorGudanPercolateInfo sensorInfo) {
+    public void initDataByScan(String address, SensorGudanPercolateInfo sensorInfo) {
+        mEtModbusAddress.setText(address);
         mEtSensitivityCoefficient.setText(sensorInfo.getSensitivityK());
         mEtTemperatureCoefficient.setText(sensorInfo.getTemperatureCoefficientB());
         mEtReferenceValue.setText(sensorInfo.getReferenceValue());
@@ -104,16 +105,17 @@ public class SensorVWP03View extends FrameLayout {
             return false;
         }
 
-        SensorGudanPercolateInfo sensorInfo = (SensorGudanPercolateInfo) infoSub.getSensorData();
+        SensorGudanPercolateInfo sensorInfo = new SensorGudanPercolateInfo();
         infoSub.setSensorAddress(address);
         sensorInfo.setTriggerThreshold(triggerThreshold);
         sensorInfo.setSensitivityK(coefficientK);
         sensorInfo.setTemperatureCoefficientB(coefficientB);
-        sensorInfo.setReferenceValue(referenceValue);
-        sensorInfo.setCreateTemperature(initialTemperature);
-        sensorInfo.setManualCorrection(correctValue);
+        sensorInfo.setReferenceValue(TextUtils.isEmpty(referenceValue) ? "0" : referenceValue);
+        sensorInfo.setCreateTemperature(TextUtils.isEmpty(initialTemperature) ? "0" : initialTemperature);
+        sensorInfo.setManualCorrection(TextUtils.isEmpty(correctValue) ? "0" : correctValue);
         sensorInfo.setCordLenght(cordLength);
         sensorInfo.setInstallElevation(installElevation);
+        infoSub.setSensorData(sensorInfo);
 
         return true;
     }
@@ -159,27 +161,17 @@ public class SensorVWP03View extends FrameLayout {
             return false;
         }
 
-        if (TextUtils.isEmpty(referenceValue)) {
-            ToastUtils.show("基准值不能为空!");
+        if (!TextUtils.isEmpty(referenceValue) && !ValidateUtil.isDouble(referenceValue)) {
+            ToastUtils.show("请输入正确的基准值!");
             return false;
         }
 
-        if (TextUtils.isEmpty(initialTemperature)) {
-            ToastUtils.show("初始温度不能为空!");
-            return false;
-        }
-
-        if (!ValidateUtil.isDouble(initialTemperature)) {
+        if (!TextUtils.isEmpty(initialTemperature) && !ValidateUtil.isDouble(initialTemperature)) {
             ToastUtils.show("请输入正确的初始温度!");
             return false;
         }
 
-        if (TextUtils.isEmpty(correctValue)) {
-            ToastUtils.show("修正值不能为空!");
-            return false;
-        }
-
-        if (!ValidateUtil.isDouble(correctValue)) {
+        if (!TextUtils.isEmpty(correctValue) && !ValidateUtil.isDouble(correctValue)) {
             ToastUtils.show("请输入正确的修正值!");
             return false;
         }

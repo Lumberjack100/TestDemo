@@ -14,7 +14,7 @@
         <EditText
             android:id="@+id/et_modbus_address"
             style="@style/EditText_Sensor_Config_Item"
-            android:hint="0~99"
+            android:hint="范围0~99"
             android:inputType="number" />
 
     </LinearLayout>

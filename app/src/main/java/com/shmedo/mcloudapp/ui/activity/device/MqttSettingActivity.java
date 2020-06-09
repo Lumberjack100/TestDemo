@@ -737,6 +737,7 @@ public class MqttSettingActivity extends BaseDeviceConnectActivity implements Vi
             setLinkTextEnabled(mTvLinkTwoStatus, true);
             setLinkTextEnabled(mTvLinkThreeStatus, true);
 
+            errMsg = "发送指令超时,请稍后尝试";
             startProgressRunnable("正在发送配置指令...", CONFIG_DELAY_MILLIS);
             sendCommonCommandImmediately(cmdCommunicationProtocol);
             Timber.d("设置网络中心通讯协议===%s", cmdCommunicationProtocol);

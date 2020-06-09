@@ -145,6 +145,7 @@ public class StringUtil {
 
     /**
      * 格式化输出2位整数(02d: 0 代表前面补充0,2 代表长度为2,d 代表参数为正数型)
+     *
      * @param str
      * @return
      */
@@ -157,6 +158,7 @@ public class StringUtil {
 
     /**
      * 格式化输出4位整数(04d: 0 代表前面补充0,4 代表长度为4,d 代表参数为正数型)
+     *
      * @param str
      * @return
      */
@@ -169,6 +171,7 @@ public class StringUtil {
 
     /**
      * 格式化输出5位整数(05d: 0 代表前面补充0,5 代表长度为5,d 代表参数为正数型)
+     *
      * @param str
      * @return
      */
@@ -186,6 +189,23 @@ public class StringUtil {
         } else {
             return -1;
         }
+    }
+
+    /**
+     * 将 String 转换的double保留3位小数
+     * @param param
+     * @return
+     */
+    public static String getDouble3AccuracyString(String param) {
+        String result = "";
+        try {
+            result = String.format(Locale.getDefault(), "%.3f", Double.parseDouble(param));
+        } catch (Exception ex) {
+            result = "";
+            ex.printStackTrace();
+        }
+
+        return result;
     }
 
     public static String getByteSize(int size) {

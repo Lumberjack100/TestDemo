@@ -74,6 +74,7 @@ public class VibratingWireSensorConfigActivity extends BaseSensorConfigActivity 
         builderFirst.append("\r\n");
         String command = String.valueOf(builderFirst);
 
+        errMsg = "发送指令超时,请稍后尝试";
         startProgressRunnable("正在发送配置指令...", CONFIG_DELAY_MILLIS);
         sendCommonCommandImmediately(command);
         Timber.d("设置接入的传感器指令===%s", command);
@@ -106,19 +107,19 @@ public class VibratingWireSensorConfigActivity extends BaseSensorConfigActivity 
         switch (sensorType) {
             case "50": {//基康渗压计(BGK-4500)
                 SensorKangPercolateInfo sensorInfo = (SensorKangPercolateInfo) infoSub.getSensorData();
-                value = StringUtil.formatStringFour(sensorInfo.getTriggerThreshold());
+                value = StringUtil.formatStringFour((int) Double.parseDouble(sensorInfo.getTriggerThreshold()) + "");
             }
             break;
 
             case "51": {//葛南渗压计(VWP-03)
                 SensorGudanPercolateInfo sensorInfo = (SensorGudanPercolateInfo) infoSub.getSensorData();
-                value = StringUtil.formatStringFour(sensorInfo.getTriggerThreshold());
+                value = StringUtil.formatStringFour((int) Double.parseDouble(sensorInfo.getTriggerThreshold()) + "");
             }
             break;
 
             case "58": {//军星轴力计(ZLJ-300T)
                 SensorJunXingZljInfo sensorInfo = (SensorJunXingZljInfo) infoSub.getSensorData();
-                value = StringUtil.formatStringFour(sensorInfo.getTriggerThreshold());
+                value = StringUtil.formatStringFour((int) Double.parseDouble(sensorInfo.getTriggerThreshold()) + "");
             }
             break;
         }

@@ -36,6 +36,7 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -441,6 +442,7 @@ public class ADMEMotorControlActivity extends BaseDeviceConnectActivity {
         stringBuilder.append(speedPullDown + "\r\n");
         String cmdStr = String.valueOf(stringBuilder);
 
+        errMsg = "发送指令超时,请稍后尝试";
         startProgressRunnable("正在发送配置指令...", CONFIG_DELAY_MILLIS);
         sendCommonCommand(cmdStr);
         Timber.d("控制电机" + (mSpinner.getSelectedItemPosition() == 0 ? "上拉" : "下降") + "指令==" + cmdStr);
@@ -497,7 +499,7 @@ public class ADMEMotorControlActivity extends BaseDeviceConnectActivity {
             pulseNumber = cmdArray[1];
 
             try {
-                distance = String.format("%.3f", Double.parseDouble(cmdArray[2]));
+                distance = String.format(Locale.getDefault(),"%.3f", Double.parseDouble(cmdArray[2]));
             } catch (Exception ex) {
                 distance = cmdArray[2];
                 ex.printStackTrace();
