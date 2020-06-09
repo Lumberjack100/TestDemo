@@ -68,10 +68,15 @@ public class SensorBGK4500View extends FrameLayout {
 
     private void initView() {
         mEtModbusAddress.setFilters(new InputFilter[]{new InputFilter.LengthFilter(2)});
-//        mEtTriggerThreshold.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
-//        mEtCorrectValue.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
-//        mEtCordLenght.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
-//        mEtInstallElevation.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
+        mEtTriggerThreshold.setFilters(new InputFilter[]{new InputFilter.LengthFilter(5)});
+        mEtCoefficientA.setFilters(new InputFilter[]{new InputFilter.LengthFilter(20)});
+        mEtCoefficientB.setFilters(new InputFilter[]{new InputFilter.LengthFilter(20)});
+        mEtCoefficientC.setFilters(new InputFilter[]{new InputFilter.LengthFilter(20)});
+        mEtCoefficientK.setFilters(new InputFilter[]{new InputFilter.LengthFilter(20)});
+        mEtInitialTemperature.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
+        mEtCorrectValue.setFilters(new InputFilter[]{new InputFilter.LengthFilter(5)});
+        mEtCordLength.setFilters(new InputFilter[]{new InputFilter.LengthFilter(5)});
+        mEtInstallElevation.setFilters(new InputFilter[]{new InputFilter.LengthFilter(5)});
     }
 
     public void bindSensorData(CollectorSensorParamsInfoSub infoSub) {
@@ -90,6 +95,7 @@ public class SensorBGK4500View extends FrameLayout {
 
     /**
      * 通过扫描二维码填充多项式参数
+     *
      * @param sensorInfo
      */
     public void initDataByScan(SensorKangPercolateInfo sensorInfo) {
@@ -132,67 +138,82 @@ public class SensorBGK4500View extends FrameLayout {
         installElevation = mEtInstallElevation.getText().toString().trim();
 
         if (TextUtils.isEmpty(address)) {
-            ToastUtils.show("请输入通道号!");
+            ToastUtils.show("通道号不能为空!");
             return false;
         }
 
         if (!ValidateUtil.isInteger(address) || Integer.parseInt(address) < 0 || Integer.parseInt(address) > 99) {
-            ToastUtils.show("通道号不正确!");
+            ToastUtils.show("请输入正确的通道号!");
             return false;
         }
 
         if (TextUtils.isEmpty(triggerThreshold)) {
-            ToastUtils.show("请输入触发值!");
+            ToastUtils.show("触发阀值不能为空!");
             return false;
         }
 
-        if (TextUtils.isEmpty(triggerThreshold) || !ValidateUtil.isInteger(triggerThreshold)) {
-            ToastUtils.show("请输入正确的触发值");
+        if (!ValidateUtil.isDouble(triggerThreshold)) {
+            ToastUtils.show("请输入正确的触发阀值!");
             return false;
         }
 
         if (TextUtils.isEmpty(coefficientA)) {
-            ToastUtils.show("请输入正确的多项式系数A");
+            ToastUtils.show("多项式系数A不能为空!");
             return false;
         }
 
         if (TextUtils.isEmpty(coefficientB)) {
-            ToastUtils.show("请输入正确的多项式系数B");
+            ToastUtils.show("多项式系数B不能为空!");
             return false;
         }
 
         if (TextUtils.isEmpty(coefficientC)) {
-            ToastUtils.show("请输入正确的多项式系数C");
+            ToastUtils.show("多项式系数C不能为空!");
             return false;
         }
 
         if (TextUtils.isEmpty(coefficientK)) {
-            ToastUtils.show("请输入正确的温度系数K");
+            ToastUtils.show("温度系数K不能为空!");
             return false;
         }
 
-        if (TextUtils.isEmpty(cordLength)) {
-            ToastUtils.show("请输入初始温度");
+        if (TextUtils.isEmpty(initialTemperature)) {
+            ToastUtils.show("初始温度不能为空!");
             return false;
         }
 
-//        if (TextUtils.isEmpty(correctValue) || (!ValidateUtil.isInteger(correctValue) && !ValidateUtil.isDouble(correctValue))) {
-//            ToastUtils.show("请输入正确的修正值");
-//            return false;
-//        }
+        if (!ValidateUtil.isDouble(initialTemperature)) {
+            ToastUtils.show("请输入正确的初始温度!");
+            return false;
+        }
 
         if (TextUtils.isEmpty(correctValue)) {
-            ToastUtils.show("请输入修正值");
+            ToastUtils.show("修正值不能为空!");
+            return false;
+        }
+
+        if (!ValidateUtil.isDouble(correctValue)) {
+            ToastUtils.show("请输入正确的修正值!");
             return false;
         }
 
         if (TextUtils.isEmpty(cordLength)) {
-            ToastUtils.show("请输入绳长");
+            ToastUtils.show("绳长不能为空!");
+            return false;
+        }
+
+        if (!ValidateUtil.isDouble(cordLength)) {
+            ToastUtils.show("请输入正确的绳长!");
             return false;
         }
 
         if (TextUtils.isEmpty(installElevation)) {
-            ToastUtils.show("请输入安装高程");
+            ToastUtils.show("安装高程不能为空!");
+            return false;
+        }
+
+        if (!ValidateUtil.isDouble(installElevation)) {
+            ToastUtils.show("请输入正确的安装高程!");
             return false;
         }
         return true;

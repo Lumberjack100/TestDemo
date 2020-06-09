@@ -51,7 +51,6 @@ public class CommonSensorConfigDialogFragment extends BaseDialogFragment {
     private String sensorType;//传感器类型
 
 
-
     @Override
     protected int initContentView() {
         return R.layout.fragment_common_sensor_config_dialog;
@@ -60,7 +59,7 @@ public class CommonSensorConfigDialogFragment extends BaseDialogFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        collectorSensorParamsInfoSub =((BaseSensorConfigActivity)getActivity()).getCurrentCollectorSensorParamsInfoSub();
+        collectorSensorParamsInfoSub = ((BaseSensorConfigActivity) getActivity()).getCurrentCollectorSensorParamsInfoSub();
     }
 
     @Override
@@ -174,24 +173,42 @@ public class CommonSensorConfigDialogFragment extends BaseDialogFragment {
         correctValue = mEtCorrectValue.getText().toString().trim();
         measureLong = mEtCorrectValue.getText().toString().trim();
 
-        if (TextUtils.isEmpty(address) || !ValidateUtil.isInteger(address) || Integer.parseInt(address) < 0 || Integer.parseInt(address) > 99) {
-            ToastUtils.show("请输入正确的通道号");
+        if (TextUtils.isEmpty(address)) {
+            ToastUtils.show("通道号不能为空!");
             return false;
         }
 
-        if (TextUtils.isEmpty(triggerThreshold) || !ValidateUtil.isInteger(triggerThreshold)) {
-            ToastUtils.show("请输入正确的触发值");
+        if (!ValidateUtil.isInteger(address) || Integer.parseInt(address) < 0 || Integer.parseInt(address) > 99) {
+            ToastUtils.show("请输入正确的通道号!");
+            return false;
+        }
+        if (TextUtils.isEmpty(triggerThreshold)) {
+            ToastUtils.show("触发值不能为空!");
             return false;
         }
 
-        if (TextUtils.isEmpty(correctValue) || (!ValidateUtil.isInteger(correctValue) && !ValidateUtil.isDouble(correctValue))) {
-            ToastUtils.show("请输入正确的修正值");
+        if (!ValidateUtil.isDouble(triggerThreshold)) {
+            ToastUtils.show("请输入正确的触发值!");
+            return false;
+        }
+
+        if (TextUtils.isEmpty(correctValue)) {
+            ToastUtils.show("修正值不能为空!");
+            return false;
+        }
+
+        if (!ValidateUtil.isDouble(correctValue)) {
+            ToastUtils.show("请输入正确的修正值!");
             return false;
         }
 
         if (sensorType.equals("04")) {
-            if (TextUtils.isEmpty(measureLong) || !ValidateUtil.isInteger(measureLong)) {
-                ToastUtils.show("请输入正确的测段长值");
+            if (TextUtils.isEmpty(measureLong)) {
+                ToastUtils.show("测段长值不能为空!");
+                return false;
+            }
+            if (!ValidateUtil.isDouble(measureLong)) {
+                ToastUtils.show("请输入正确的测段长值!");
                 return false;
             }
         }

@@ -59,6 +59,10 @@ public class SensorZLJ300tView extends FrameLayout {
 
     private void initView() {
         mEtModbusAddress.setFilters(new InputFilter[]{new InputFilter.LengthFilter(2)});
+        mEtTriggerThreshold.setFilters(new InputFilter[]{new InputFilter.LengthFilter(5)});
+        mEtSensitivityCoefficient.setFilters(new InputFilter[]{new InputFilter.LengthFilter(20)});
+        mEtReferenceValue.setFilters(new InputFilter[]{new InputFilter.LengthFilter(20)});
+        mEtCorrectValue.setFilters(new InputFilter[]{new InputFilter.LengthFilter(5)});
     }
 
     public void bindSensorData(CollectorSensorParamsInfoSub infoSub) {
@@ -103,29 +107,43 @@ public class SensorZLJ300tView extends FrameLayout {
         correctValue = mEtCorrectValue.getText().toString().trim();
 //        initialTemperature = mEtInitialTemperature.getText().toString().trim();
 
-        if (TextUtils.isEmpty(address) || !ValidateUtil.isInteger(address) || Integer.parseInt(address) < 0 || Integer.parseInt(address) > 99) {
-            ToastUtils.show("请输入正确的通道号");
+        if (TextUtils.isEmpty(address)) {
+            ToastUtils.show("通道号不能为空!");
             return false;
         }
 
-        if (TextUtils.isEmpty(triggerThreshold) ) {
-            ToastUtils.show("请输入正确的触发值");
+        if (!ValidateUtil.isInteger(address) || Integer.parseInt(address) < 0 || Integer.parseInt(address) > 99) {
+            ToastUtils.show("请输入正确的通道号!");
+            return false;
+        }
+
+        if (TextUtils.isEmpty(triggerThreshold)) {
+            ToastUtils.show("触发阀值不能为空!");
+            return false;
+        }
+
+        if (!ValidateUtil.isDouble(triggerThreshold)) {
+            ToastUtils.show("请输入正确的触发阀值!");
             return false;
         }
 
         if (TextUtils.isEmpty(coefficientK)) {
-            ToastUtils.show("请输入正确的灵敏度");
+            ToastUtils.show("灵敏度不能为空!");
             return false;
         }
 
         if (TextUtils.isEmpty(referenceValue)) {
-            ToastUtils.show("请输入正确的基准值");
+            ToastUtils.show("基准值不能为空!");
             return false;
         }
 
-
         if (TextUtils.isEmpty(correctValue)) {
-            ToastUtils.show("请输入修正值");
+            ToastUtils.show("修正值不能为空!");
+            return false;
+        }
+
+        if (!ValidateUtil.isDouble(correctValue)) {
+            ToastUtils.show("请输入正确的修正值!");
             return false;
         }
 

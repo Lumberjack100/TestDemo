@@ -1,7 +1,11 @@
 package com.shmedo.mcloudapp;
 
 
+import com.shmedo.core.utils.ValidateUtil;
+
 import org.junit.Test;
+
+import timber.log.Timber;
 
 /**
  * Example local unit test, which will execute on the development machine (host).
@@ -12,11 +16,12 @@ public class ExampleUnitTest {
 
     @Test
     public void testRain() {
-        String command = " 123.30.123 8098 ";
-        command = command.trim();
 
-        String[] cmd = command.split(" ");
-        System.out.println(cmd);
+        System.out.println(-12345678.0);
+
+        boolean result = ValidateUtil.isDouble("222.888r");
+
+        Timber.d("结果：" + result);
     }
 
 }

@@ -42,8 +42,7 @@
         <EditText
             android:id="@+id/sensitivityCoefficient"
             style="@style/EditText_Sensor_Config_Item"
-            android:hint="请输入"
-            android:inputType="number" />
+            android:hint="请输入" />
 
     </LinearLayout>
 
@@ -56,8 +55,7 @@
         <EditText
             android:id="@+id/temperatureCoefficient"
             style="@style/EditText_Sensor_Config_Item"
-            android:hint="请输入"
-            android:inputType="number" />
+            android:hint="请输入" />
 
     </LinearLayout>
 
@@ -71,13 +69,11 @@
             android:id="@+id/et_ReferenceValue"
             style="@style/EditText_Sensor_Config_Item"
             android:hint="默认为0"
-            android:text="0"
-            android:inputType="number" />
+            android:text="0" />
 
     </LinearLayout>
 
     <LinearLayout style="@style/LinearLayout_Sensor_Config_Item">
-
         <TextView
             style="@style/TextView_Sensor_Config_Item"
             android:text="初始温度T0" />

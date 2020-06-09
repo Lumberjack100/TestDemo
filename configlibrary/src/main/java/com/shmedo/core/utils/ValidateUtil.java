@@ -38,7 +38,7 @@ public class ValidateUtil {
     /**
      * 正则表达式：URL
      */
-    public static final String REGEX_URL = "[-A-Za-z0-9+&@#/%?=~_|!:,.;]+[-A-Za-z0-9+&@#/%=~_|]";
+    private static final String REGEX_URL = "[-A-Za-z0-9+&@#/%?=~_|!:,.;]+[-A-Za-z0-9+&@#/%=~_|]";
 
 
     /***
