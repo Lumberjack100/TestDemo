@@ -70,7 +70,7 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
 
     public static final int SEND_SINGLE_COMMAND_DELAY_MILLIS = 3000;//发送单条指令超时时间
 
-    public static final int CONFIG_DELAY_MILLIS = 15000;//发送设备配置参数指令超时时间
+    public static final int CONFIG_DELAY_MILLIS = 20000;//发送设备配置参数指令超时时间
 
     public static final int CONNECT_DELAY_MILLIS = 20000;//连接设备超时时间
 

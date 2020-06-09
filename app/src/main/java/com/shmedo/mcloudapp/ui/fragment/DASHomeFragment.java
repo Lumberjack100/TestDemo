@@ -432,7 +432,7 @@ public class DASHomeFragment extends BaseFragment {
                 querySensorConfigInfo();
                 break;
 
-            case COLLECTOR_CHANNEL_SENSOR_PARAMETER://断线报警器状态 227
+            case COLLECTOR_CHANNEL_SENSOR_PARAMETER://获取XX采集器YY通道的传感器参数 101
                 sbcollectorSensor.append(cmdStr.replace("\r\n", "") + "&&");
                 sensorIndex++;
                 querySensorConfigInfo();

@@ -168,11 +168,6 @@ public abstract class BaseSensorConfigActivity extends BaseDeviceConnectActivity
             return;
         }
 
-        //测试参数，测试结束删除此行
-//        collectorSensorConfig = "$$1010000,00,50,2.000000e+00,4.597945e-08,3.000000e+00,4.000000e+00,5.000000e+00,3.800000e+01,3.300000e+01,2.300000e+01,6.600000e+01&&" +
-//                "$$1010001,01,51,2.000000e+00,4.597945e-08,3.000000e+00,4.400000e+01,3.800000e+01,1.300000e+01,5.000000e+00,1.600000e+01&&" +
-//                "$$1010002,02,58,2.000000e+00,4.597945e-08,3.000000e+00,5.000000e+00&&";
-
         String[] sensorConfigs = collectorSensorConfig.split("&&");
         for (String sensorConfig : sensorConfigs) {
             if (TextUtils.isEmpty(sensorConfig))
