@@ -27,8 +27,6 @@ import butterknife.ButterKnife;
  * 描述：  军星轴力计(ZLJ-300T)配置项视图
  */
 public class SensorZLJ300tView extends FrameLayout {
-    @BindView(R.id.et_modbus_address)
-    EditText mEtModbusAddress;//通道号
     @BindView(R.id.et_trigger_threshold)
     EditText mEtTriggerThreshold;//触发阀值
     @BindView(R.id.sensitivityCoefficient)
@@ -40,7 +38,7 @@ public class SensorZLJ300tView extends FrameLayout {
     @BindView(R.id.et_initialtemperature)
     EditText mEtInitialTemperature;//初始温度
 
-    private String address, triggerThreshold, coefficientK, referenceValue, correctValue, initialTemperature;
+    private String triggerThreshold, coefficientK, referenceValue, correctValue, initialTemperature;
 
     public SensorZLJ300tView(@NonNull Context context) {
         this(context, null);
@@ -59,7 +57,6 @@ public class SensorZLJ300tView extends FrameLayout {
     }
 
     private void initView() {
-        mEtModbusAddress.setFilters(new InputFilter[]{new InputFilter.LengthFilter(2)});
         mEtTriggerThreshold.setFilters(new InputFilter[]{new InputFilter.LengthFilter(5)});
         mEtSensitivityCoefficient.setFilters(new InputFilter[]{new InputFilter.LengthFilter(20)});
         mEtReferenceValue.setFilters(new InputFilter[]{new InputFilter.LengthFilter(20)});
@@ -68,8 +65,7 @@ public class SensorZLJ300tView extends FrameLayout {
 
     public void bindSensorData(CollectorSensorParamsInfoSub infoSub) {
         SensorJunXingZljInfo sensorInfo = (SensorJunXingZljInfo) infoSub.getSensorData();
-        mEtModbusAddress.setText(infoSub.getSensorAddress());
-        mEtTriggerThreshold.setText((int) Double.parseDouble(sensorInfo.getTriggerThreshold())+"");
+        mEtTriggerThreshold.setText((int) Double.parseDouble(sensorInfo.getTriggerThreshold()) + "");
         mEtSensitivityCoefficient.setText(sensorInfo.getSensitivityK());
         mEtReferenceValue.setText(sensorInfo.getReferenceValue());
         mEtCorrectValue.setText(StringUtil.getDouble3AccuracyString(sensorInfo.getManualCorrection()));
@@ -81,8 +77,7 @@ public class SensorZLJ300tView extends FrameLayout {
      *
      * @param sensorInfo
      */
-    public void initDataByScan(String address, SensorJunXingZljInfo sensorInfo) {
-        mEtModbusAddress.setText(address);
+    public void initDataByScan(SensorJunXingZljInfo sensorInfo) {
         mEtSensitivityCoefficient.setText(sensorInfo.getSensitivityK());
         mEtReferenceValue.setText(sensorInfo.getReferenceValue());
     }
@@ -93,7 +88,6 @@ public class SensorZLJ300tView extends FrameLayout {
         }
 
         SensorJunXingZljInfo sensorInfo = new SensorJunXingZljInfo();
-        infoSub.setSensorAddress(address);
         sensorInfo.setTriggerThreshold(triggerThreshold);
         sensorInfo.setSensitivityK(coefficientK);
         sensorInfo.setReferenceValue(referenceValue);
@@ -104,22 +98,11 @@ public class SensorZLJ300tView extends FrameLayout {
     }
 
     private boolean checkValue() {
-        address = mEtModbusAddress.getText().toString().trim();
         triggerThreshold = mEtTriggerThreshold.getText().toString().trim();
         coefficientK = mEtSensitivityCoefficient.getText().toString().trim();
         referenceValue = mEtReferenceValue.getText().toString().trim();
         correctValue = mEtCorrectValue.getText().toString().trim();
 //        initialTemperature = mEtInitialTemperature.getText().toString().trim();
-
-        if (TextUtils.isEmpty(address)) {
-            ToastUtils.show("通道号不能为空!");
-            return false;
-        }
-
-        if (!ValidateUtil.isInteger(address) || Integer.parseInt(address) < 0 || Integer.parseInt(address) > 99) {
-            ToastUtils.show("请输入正确的通道号!");
-            return false;
-        }
 
         if (TextUtils.isEmpty(triggerThreshold)) {
             ToastUtils.show("触发阀值不能为空!");

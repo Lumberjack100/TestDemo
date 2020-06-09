@@ -618,7 +618,7 @@ public abstract class BaseSensorConfigActivity extends BaseDeviceConnectActivity
         for (int k = 0; k < paramsInfoSubList.size() - 1; k++) {
             for (int j = k + 1; j < paramsInfoSubList.size(); j++) {
                 if (paramsInfoSubList.get(k).getSensorAddress().equals(paramsInfoSubList.get(j).getSensorAddress())) {
-                    ToastUtils.show("Modbus地址不能重复");
+                    ToastUtils.show("通道号不能重复");
                     return false;
                 }
             }

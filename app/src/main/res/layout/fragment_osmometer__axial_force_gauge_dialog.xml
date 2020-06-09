@@ -28,10 +28,30 @@
 
                     <TextView
                         style="@style/TextView_Sensor_Config_Item"
+                        android:drawableLeft="@drawable/ic_required"
                         android:text="传感器类型:" />
 
                     <Spinner
-                        android:id="@+id/spinner"
+                        android:id="@+id/spinnerType"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="2"
+                        android:background="@drawable/icon_dialog_switch"
+                        android:paddingLeft="10dp"
+                        android:singleLine="true" />
+
+                </LinearLayout>
+
+                <LinearLayout style="@style/LinearLayout_Sensor_Config_Item"
+                    android:layout_marginTop="5dp">
+
+                    <TextView
+                        style="@style/TextView_Sensor_Config_Item"
+                        android:drawableLeft="@drawable/ic_required"
+                        android:text="通道:" />
+
+                    <Spinner
+                        android:id="@+id/spinnerWay"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="2"

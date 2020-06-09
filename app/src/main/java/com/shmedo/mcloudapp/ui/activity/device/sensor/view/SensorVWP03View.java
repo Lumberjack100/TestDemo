@@ -27,8 +27,6 @@ import butterknife.ButterKnife;
  * 描述：  葛南渗压计(VWP-03)配置项视图
  */
 public class SensorVWP03View extends FrameLayout {
-    @BindView(R.id.et_modbus_address)
-    EditText mEtModbusAddress;//通道号
     @BindView(R.id.et_trigger_threshold)
     EditText mEtTriggerThreshold;//触发阀值
     @BindView(R.id.sensitivityCoefficient)
@@ -46,7 +44,7 @@ public class SensorVWP03View extends FrameLayout {
     @BindView(R.id.et_install_elevation)
     EditText mEtInstallElevation;//安装高程
 
-    private String address, triggerThreshold, coefficientK, coefficientB, referenceValue, initialTemperature, correctValue, cordLength, installElevation;
+    private String triggerThreshold, coefficientK, coefficientB, referenceValue, initialTemperature, correctValue, cordLength, installElevation;
 
 
     public SensorVWP03View(@NonNull Context context) {
@@ -66,7 +64,6 @@ public class SensorVWP03View extends FrameLayout {
     }
 
     private void initView() {
-        mEtModbusAddress.setFilters(new InputFilter[]{new InputFilter.LengthFilter(2)});
         mEtTriggerThreshold.setFilters(new InputFilter[]{new InputFilter.LengthFilter(5)});
         mEtSensitivityCoefficient.setFilters(new InputFilter[]{new InputFilter.LengthFilter(20)});
         mEtTemperatureCoefficient.setFilters(new InputFilter[]{new InputFilter.LengthFilter(20)});
@@ -79,8 +76,7 @@ public class SensorVWP03View extends FrameLayout {
 
     public void bindSensorData(CollectorSensorParamsInfoSub infoSub) {
         SensorGudanPercolateInfo sensorInfo = (SensorGudanPercolateInfo) infoSub.getSensorData();
-        mEtModbusAddress.setText(infoSub.getSensorAddress());
-        mEtTriggerThreshold.setText((int) Double.parseDouble(sensorInfo.getTriggerThreshold())+"");
+        mEtTriggerThreshold.setText((int) Double.parseDouble(sensorInfo.getTriggerThreshold()) + "");
         mEtSensitivityCoefficient.setText(sensorInfo.getSensitivityK());
         mEtTemperatureCoefficient.setText(sensorInfo.getTemperatureCoefficientB());
         mEtReferenceValue.setText(sensorInfo.getReferenceValue());
@@ -93,8 +89,7 @@ public class SensorVWP03View extends FrameLayout {
     /**
      * 通过扫描二维码填充多项式参数
      */
-    public void initDataByScan(String address, SensorGudanPercolateInfo sensorInfo) {
-        mEtModbusAddress.setText(address);
+    public void initDataByScan(SensorGudanPercolateInfo sensorInfo) {
         mEtSensitivityCoefficient.setText(sensorInfo.getSensitivityK());
         mEtTemperatureCoefficient.setText(sensorInfo.getTemperatureCoefficientB());
         mEtReferenceValue.setText(sensorInfo.getReferenceValue());
@@ -106,7 +101,6 @@ public class SensorVWP03View extends FrameLayout {
         }
 
         SensorGudanPercolateInfo sensorInfo = new SensorGudanPercolateInfo();
-        infoSub.setSensorAddress(address);
         sensorInfo.setTriggerThreshold(triggerThreshold);
         sensorInfo.setSensitivityK(coefficientK);
         sensorInfo.setTemperatureCoefficientB(coefficientB);
@@ -121,7 +115,6 @@ public class SensorVWP03View extends FrameLayout {
     }
 
     private boolean checkValue() {
-        address = mEtModbusAddress.getText().toString().trim();
         triggerThreshold = mEtTriggerThreshold.getText().toString().trim();
         coefficientK = mEtSensitivityCoefficient.getText().toString().trim();
         coefficientB = mEtTemperatureCoefficient.getText().toString().trim();
@@ -130,16 +123,6 @@ public class SensorVWP03View extends FrameLayout {
         correctValue = mEtCorrectValue.getText().toString().trim();
         cordLength = mEtCordLength.getText().toString().trim();
         installElevation = mEtInstallElevation.getText().toString().trim();
-
-        if (TextUtils.isEmpty(address)) {
-            ToastUtils.show("通道号不能为空!");
-            return false;
-        }
-
-        if (!ValidateUtil.isInteger(address) || Integer.parseInt(address) < 0 || Integer.parseInt(address) > 99) {
-            ToastUtils.show("请输入正确的通道号!");
-            return false;
-        }
 
         if (TextUtils.isEmpty(triggerThreshold)) {
             ToastUtils.show("触发阀值不能为空!");

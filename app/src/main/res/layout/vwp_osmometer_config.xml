@@ -9,20 +9,7 @@
 
         <TextView
             style="@style/TextView_Sensor_Config_Item"
-            android:text="Modbus地址" />
-
-        <EditText
-            android:id="@+id/et_modbus_address"
-            style="@style/EditText_Sensor_Config_Item"
-            android:hint="0~99"
-            android:inputType="number" />
-
-    </LinearLayout>
-
-    <LinearLayout style="@style/LinearLayout_Sensor_Config_Item">
-
-        <TextView
-            style="@style/TextView_Sensor_Config_Item"
+            android:drawableLeft="@drawable/ic_required"
             android:text="触发阀值(mm)" />
 
         <EditText
@@ -37,6 +24,7 @@
 
         <TextView
             style="@style/TextView_Sensor_Config_Item"
+            android:drawableLeft="@drawable/ic_required"
             android:text="灵敏度K" />
 
         <EditText
@@ -50,6 +38,7 @@
 
         <TextView
             style="@style/TextView_Sensor_Config_Item"
+            android:drawableLeft="@drawable/ic_required"
             android:text="温修系数b" />
 
         <EditText
@@ -106,6 +95,7 @@
 
         <TextView
             style="@style/TextView_Sensor_Config_Item"
+            android:drawableLeft="@drawable/ic_required"
             android:text="绳长(m)" />
 
         <EditText
@@ -120,6 +110,7 @@
 
         <TextView
             style="@style/TextView_Sensor_Config_Item"
+            android:drawableLeft="@drawable/ic_required"
             android:text="安装高程(m)" />
 
         <EditText

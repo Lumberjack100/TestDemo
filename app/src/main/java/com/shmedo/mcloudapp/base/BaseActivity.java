@@ -8,8 +8,6 @@ import android.graphics.PixelFormat;
 import android.net.ConnectivityManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.IBinder;
-
 import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -18,19 +16,23 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.shmedo.mcloudapp.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.entity.event.NetworkChangeEvent;
 import com.shmedo.mcloudapp.receiver.NetworkConnectChangedReceiver;
-import com.shmedo.mcloudapp.util.*;
+import com.shmedo.mcloudapp.util.ActivityCollector;
+import com.shmedo.mcloudapp.util.KeyBordUtils;
+import com.shmedo.mcloudapp.util.NetworkUtils;
+import com.shmedo.mcloudapp.util.UiUtils;
+import com.shmedo.mcloudapp.util.XPermissionUtils;
 import com.shmedo.mcloudapp.util.common.HandleBackUtil;
 
 import org.greenrobot.eventbus.EventBus;
@@ -243,18 +245,6 @@ public abstract class BaseActivity extends AppCompatActivity {
         }
         // 如果焦点不是EditText则忽略
         return false;
-    }
-
-    /**
-     * 获取InputMethodManager，隐藏软键盘
-     *
-     * @param token
-     */
-    private void hideKeyboard(IBinder token) {
-        if (token != null) {
-            InputMethodManager im = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-            im.hideSoftInputFromWindow(token, InputMethodManager.HIDE_NOT_ALWAYS);
-        }
     }
 
 

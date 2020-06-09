@@ -5,6 +5,8 @@ import android.text.InputFilter;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 
@@ -17,6 +19,7 @@ import com.shmedo.core.utils.StringUtil;
 import com.shmedo.core.utils.ValidateUtil;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.entity.ble.collector.CollectorSensorParamsInfoSub;
+import com.shmedo.mcloudapp.util.KeyBordUtils;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -27,8 +30,6 @@ import butterknife.ButterKnife;
  * 描述：   基康渗压计(BGK-4500)配置项视图
  */
 public class SensorBGK4500View extends FrameLayout {
-    @BindView(R.id.et_modbus_address)
-    EditText mEtModbusAddress;//通道号
     @BindView(R.id.et_trigger_threshold)
     EditText mEtTriggerThreshold;//触发阀值
     @BindView(R.id.polynomialRatioA)
@@ -48,7 +49,7 @@ public class SensorBGK4500View extends FrameLayout {
     @BindView(R.id.et_install_elevation)
     EditText mEtInstallElevation;//安装高程
 
-    private String address, triggerThreshold, coefficientA, coefficientB, coefficientC, coefficientK, initialTemperature, correctValue, cordLength, installElevation;
+    private String triggerThreshold, coefficientA, coefficientB, coefficientC, coefficientK, initialTemperature, correctValue, cordLength, installElevation;
 
 
     public SensorBGK4500View(@NonNull Context context) {
@@ -68,7 +69,6 @@ public class SensorBGK4500View extends FrameLayout {
     }
 
     private void initView() {
-        mEtModbusAddress.setFilters(new InputFilter[]{new InputFilter.LengthFilter(2)});
         mEtTriggerThreshold.setFilters(new InputFilter[]{new InputFilter.LengthFilter(5)});
         mEtCoefficientA.setFilters(new InputFilter[]{new InputFilter.LengthFilter(20)});
         mEtCoefficientB.setFilters(new InputFilter[]{new InputFilter.LengthFilter(20)});
@@ -82,7 +82,6 @@ public class SensorBGK4500View extends FrameLayout {
 
     public void bindSensorData(CollectorSensorParamsInfoSub infoSub) {
         SensorKangPercolateInfo sensorInfo = (SensorKangPercolateInfo) infoSub.getSensorData();
-        mEtModbusAddress.setText(infoSub.getSensorAddress());
         mEtTriggerThreshold.setText((int) Double.parseDouble(sensorInfo.getTriggerThreshold()) + "");
         mEtCoefficientA.setText(sensorInfo.getPolynomialRatioA());
         mEtCoefficientB.setText(sensorInfo.getPolynomialRatioB());
@@ -97,8 +96,7 @@ public class SensorBGK4500View extends FrameLayout {
     /**
      * 通过扫描二维码填充多项式参数
      */
-    public void initDataByScan(String address, SensorKangPercolateInfo sensorInfo) {
-        mEtModbusAddress.setText(address);
+    public void initDataByScan(SensorKangPercolateInfo sensorInfo) {
         mEtCoefficientA.setText(sensorInfo.getPolynomialRatioA());
         mEtCoefficientB.setText(sensorInfo.getPolynomialRatioB());
         mEtCoefficientC.setText(sensorInfo.getPolynomialRatioC());
@@ -111,7 +109,6 @@ public class SensorBGK4500View extends FrameLayout {
         }
 
         SensorKangPercolateInfo sensorInfo = new SensorKangPercolateInfo();
-        infoSub.setSensorAddress(address);
         sensorInfo.setTriggerThreshold(triggerThreshold);
         sensorInfo.setPolynomialRatioA(coefficientA);
         sensorInfo.setPolynomialRatioB(coefficientB);
@@ -127,7 +124,6 @@ public class SensorBGK4500View extends FrameLayout {
     }
 
     private boolean checkValue() {
-        address = mEtModbusAddress.getText().toString().trim();
         triggerThreshold = mEtTriggerThreshold.getText().toString().trim();
         coefficientA = mEtCoefficientA.getText().toString().trim();
         coefficientB = mEtCoefficientB.getText().toString().trim();
@@ -137,16 +133,6 @@ public class SensorBGK4500View extends FrameLayout {
         correctValue = mEtCorrectValue.getText().toString().trim();
         cordLength = mEtCordLength.getText().toString().trim();
         installElevation = mEtInstallElevation.getText().toString().trim();
-
-        if (TextUtils.isEmpty(address)) {
-            ToastUtils.show("通道号不能为空!");
-            return false;
-        }
-
-        if (!ValidateUtil.isInteger(address) || Integer.parseInt(address) < 0 || Integer.parseInt(address) > 99) {
-            ToastUtils.show("请输入正确的通道号!");
-            return false;
-        }
 
         if (TextUtils.isEmpty(triggerThreshold)) {
             ToastUtils.show("触发阀值不能为空!");
@@ -208,6 +194,48 @@ public class SensorBGK4500View extends FrameLayout {
             return false;
         }
         return true;
+    }
+
+
+    /**
+     * 点击空白区域隐藏键盘.
+     */
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent motionEvent) {
+        if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {  //把操作放在用户点击的时候
+            View v = this.getFocusedChild();      //得到当前页面的焦点,ps:有输入框的页面焦点一般会被输入框占据
+            if (isShouldHideKeyboard(v, motionEvent)) { //判断用户点击的是否是输入框以外的区域
+                KeyBordUtils.hideSoftKeyboard(v);
+            }
+        }
+        return super.dispatchTouchEvent(motionEvent);
+    }
+
+    /**
+     * 根据EditText所在坐标和用户点击的坐标相对比，来判断是否隐藏键盘，因为当用户点击EditText时则不能隐藏
+     *
+     * @param v
+     * @param event
+     * @return
+     */
+    private boolean isShouldHideKeyboard(View v, MotionEvent event) {
+        if ((v instanceof EditText)) {  //判断得到的焦点控件是否包含EditText
+            int[] l = {0, 0};
+            v.getLocationInWindow(l);
+            int left = l[0],    //得到输入框在屏幕中上下左右的位置
+                    top = l[1],
+                    bottom = top + v.getHeight(),
+                    right = left + v.getWidth();
+            if (event.getX() > left && event.getX() < right
+                    && event.getY() > top && event.getY() < bottom) {
+                // 点击位置如果是EditText的区域，忽略它，不收起键盘。
+                return false;
+            } else {
+                return true;
+            }
+        }
+        // 如果焦点不是EditText则忽略
+        return false;
     }
 
 }
