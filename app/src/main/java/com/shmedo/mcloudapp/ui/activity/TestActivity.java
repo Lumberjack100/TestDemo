@@ -364,14 +364,16 @@ public class TestActivity extends BaseActivity {
 
                 case Constants.VERIFY_RESULT:
                     stopProgressRunnable();
+                    stopAuthenticateRunnable();
                     if (msg.obj.equals("1")) {
                         varifySuccessNum++;
                         updateLog("蓝牙连接认证通过！\r\n");
                     } else {
                         varifyFailedNum++;
                         updateLog("蓝牙连接认证失败！\r\n");
+                        setBleAuthenticateWay();//重新认证
                     }
-                    disconnectDevice();
+//                    disconnectDevice();
                     break;
             }
 

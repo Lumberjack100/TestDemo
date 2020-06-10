@@ -40,7 +40,15 @@ public class VibratingWireSensorConfigActivity extends BaseSensorConfigActivity 
      */
     private List<String> correctValueCmdList = new LinkedList<>();
 
-    private String curCorrectCmd;
+    /**
+     * 传感器除了触发阀值外,其他参数配置项名称
+     */
+    private List<String> configItemNameList = new ArrayList<>();
+
+    /**
+     * 当前配置项名称
+     */
+    private String curConfigItemName;
 
     public static void startActivityForResultByFragment(Fragment context, String collectorSensorConfig, int requestCode) {
         Intent intent = new Intent(context.getActivity(), VibratingWireSensorConfigActivity.class);
@@ -118,7 +126,7 @@ public class VibratingWireSensorConfigActivity extends BaseSensorConfigActivity 
         String command = String.valueOf(builderFirst);
 
         errMsg = "发送指令超时,请稍后尝试";
-        startProgressRunnable("正在发送配置指令...", CONFIG_DELAY_MILLIS);
+        startProgressRunnable("正在发送配置指令...", CONFIG_PARAMS_DELAY_MILLIS);
         sendCommonCommandImmediately(command);
         Timber.d("设置接入的传感器指令===%s", command);
     }
@@ -178,6 +186,7 @@ public class VibratingWireSensorConfigActivity extends BaseSensorConfigActivity 
      * x…x：为长度不确定的参数<br/>
      */
     private void setCorrectionValue() {
+        configItemNameList.clear();
         correctValueCmdList.clear();
         for (CollectorSensorParamsInfo paramsInfoSub : collectorSensorParamsInfoSubs) {
             getCorrectionValueParamCommands(paramsInfoSub);
@@ -201,6 +210,15 @@ public class VibratingWireSensorConfigActivity extends BaseSensorConfigActivity 
                 correctValueCmdList.add(cmdInstallElevationFormat.replace("{}", sensorInfo.getInstallElevation()));
                 correctValueCmdList.add(cmdCorrectionValueFormat.replace("{}", "M" + sensorInfo.getManualCorrection()));
                 correctValueCmdList.add(cmdCorrectionValueFormat.replace("{}", "T" + sensorInfo.getCreateTemperature()));
+
+                configItemNameList.add("基康渗压计多项式系数A");
+                configItemNameList.add("基康渗压计多项式系数B");
+                configItemNameList.add("基康渗压计多项式系数C");
+                configItemNameList.add("基康渗压计温度系数K");
+                configItemNameList.add("基康渗压计初始温度T0");
+                configItemNameList.add("基康渗压计手动纠偏");
+                configItemNameList.add("基康渗压计绳长");
+                configItemNameList.add("基康渗压计安装高程");
             }
             break;
 
@@ -213,6 +231,14 @@ public class VibratingWireSensorConfigActivity extends BaseSensorConfigActivity 
                 correctValueCmdList.add(cmdCorrectionValueFormat.replace("{}", "M" + sensorInfo.getManualCorrection()));
                 correctValueCmdList.add(cmdCorrectionValueFormat.replace("{}", "T" + sensorInfo.getCreateTemperature()));
                 correctValueCmdList.add(cmdCorrectionValueFormat.replace("{}", "F" + sensorInfo.getReferenceValue()));
+
+                configItemNameList.add("葛南渗压计灵敏度K");
+                configItemNameList.add("葛南渗压计温修系数b");
+                configItemNameList.add("葛南渗压计基准值F0");
+                configItemNameList.add("葛南渗压计初始温度T0");
+                configItemNameList.add("葛南渗压计手动纠偏");
+                configItemNameList.add("葛南渗压计绳长");
+                configItemNameList.add("葛南渗压计安装高程");
             }
             break;
 
@@ -221,6 +247,11 @@ public class VibratingWireSensorConfigActivity extends BaseSensorConfigActivity 
                 correctValueCmdList.add(cmdCorrectionValueFormat.replace("{}", "A" + sensorInfo.getSensitivityK()));
                 correctValueCmdList.add(cmdCorrectionValueFormat.replace("{}", "M" + sensorInfo.getManualCorrection()));
                 correctValueCmdList.add(cmdCorrectionValueFormat.replace("{}", "F" + sensorInfo.getReferenceValue()));
+
+                configItemNameList.add("军星轴力计触发阀值");
+                configItemNameList.add("军星轴力计灵敏度K");
+                configItemNameList.add("军星轴力计触基准值F0");
+                configItemNameList.add("军星轴力计手动纠偏");
             }
             break;
         }
@@ -238,9 +269,11 @@ public class VibratingWireSensorConfigActivity extends BaseSensorConfigActivity 
         String command = correctValueCmdList.get(0);
         sendCommonCommandImmediately(command);
         Timber.d("设置传感器修正参数===%s", command);
-        curCorrectCmd = command;
         //移除已发送的指令
         correctValueCmdList.remove(0);
+
+        curConfigItemName = configItemNameList.get(0);
+        configItemNameList.remove(0);
     }
 
     /**
@@ -271,8 +304,8 @@ public class VibratingWireSensorConfigActivity extends BaseSensorConfigActivity 
             case VIBRATING_SENSOR_PARAMETER://传感器修正值 167
             case SENSOR_INSTALLELEVATION://传感器安装高程 169
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
-                    Timber.w("参数: " + curCorrectCmd + " 配置错误!");
-                    ToastUtils.show("参数: " + curCorrectCmd + " 配置错误!");
+                    Timber.w(curConfigItemName + " 配置错误!");
+                    ToastUtils.show(curConfigItemName + " 配置错误!");
                     stopProgressRunnable();
                     return;
                 }

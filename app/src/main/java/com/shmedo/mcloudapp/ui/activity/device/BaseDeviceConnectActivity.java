@@ -64,15 +64,17 @@ import timber.log.Timber;
  */
 public abstract class BaseDeviceConnectActivity extends BaseActivity {
 
-    public static final int REQUEST_ENABLE_BT = 0x001;
+    public static final int REQUEST_ENABLE_BT = 0x001;//请求开启蓝牙
 
-    public static final int SCAN_DELAY_MILLIS = 5000;//扫描蓝牙设备超时时间
+    public static final int SCAN_SPECIFIC_DEVICE_DELAY_MILLIS = 10000;//搜索指定蓝牙设备超时时间
+
+    public static final int AUTHENTICATE_DELAY_MILLIS = 15000;//认证超时时间
+
+    public static final int CONNECT_DELAY_MILLIS = 20000;//连接设备超时时间
 
     public static final int SEND_SINGLE_COMMAND_DELAY_MILLIS = 3000;//发送单条指令超时时间
 
-    public static final int CONFIG_DELAY_MILLIS = 20000;//发送设备配置参数指令超时时间
-
-    public static final int CONNECT_DELAY_MILLIS = 20000;//连接设备超时时间
+    public static final int CONFIG_PARAMS_DELAY_MILLIS = 25000;//发送配置参数指令超时时间
 
 
     private MdBluetoothManager mdBluetoothManager;
@@ -200,10 +202,10 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
      */
     private void startDiscoveryDevice() {
         //蓝牙已打开时，开始扫描蓝牙设备
-        mdBluetoothManager.scanDevice(10, this);
+        mdBluetoothManager.scanDevice(SCAN_SPECIFIC_DEVICE_DELAY_MILLIS, this);
         if (null != mBluetoothAdapter && mBluetoothAdapter.isEnabled()) {
             errMsg = "未搜索到此设备，请稍后尝试";
-            startProgressRunnable("正在搜索设备：" + SN, SCAN_DELAY_MILLIS);
+            startProgressRunnable("正在搜索设备：" + SN, SCAN_SPECIFIC_DEVICE_DELAY_MILLIS);
 
             //因设备问题会造成长时间搜索设备，在此操作过程中无法中断和进行其他操作，进度框会长时间在页面停留
             //新增操作返回，中断当前蓝牙操作并关闭进度框
@@ -394,7 +396,7 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
                     EventBus.getDefault().post(new BluetoothStateEvent(true));
                     stopProgressRunnable();
                     errMsg = "认证超时,请稍后尝试";
-                    startProgressRunnable("蓝牙已连接,设备认证中...", 15000);
+                    startProgressRunnable("蓝牙已连接,设备认证中...", AUTHENTICATE_DELAY_MILLIS);
                     setBleAuthenticateWay();//蓝牙连接成功开始进行验证
                     break;
 
@@ -422,13 +424,13 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
                     stopProgressRunnable();
                     if (!msg.obj.equals("1")) {
                         ToastUtils.show("设备认证失败!");
-                        setAutoConnectBlueAfterDisconnect();
+                        setBleAuthenticateWay();//重新认证
                         break;
                     }
 
                     errMsg = "查询设备配置参数超时，请尝试重新连接";
                     if (BaseDeviceConnectActivity.this instanceof ConfigDASActivity || BaseDeviceConnectActivity.this instanceof ConfigADMEActivity) {
-                        startProgressRunnable("初始化设备配置信息...", CONFIG_DELAY_MILLIS);
+                        startProgressRunnable("初始化设备配置信息...", CONFIG_PARAMS_DELAY_MILLIS);
                         queryDeviceConfigInfoCmd();
                     }
                     break;
@@ -715,13 +717,21 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
      * 开始认证流程
      */
     private void startBleAuthenticate() {
+        Timber.d("解密前:%s", authenticateParam);
         byte[] resultData = StringUtil.hexStringToBytes(authenticateParam);
         try {
             String deskey = "12345678";
-            String strdes = new String(DesUtil.decrypt(resultData, deskey), StandardCharsets.UTF_8);
-            if (!TextUtils.isEmpty(strdes)) {
-                String desStr = StringUtil.bytesToHexString(DesUtil.encrypt((StringUtil.reverseString(strdes.substring(0, 6)) + deskey).getBytes(), deskey));
-                String cmd = "##222," + SN + ",0," + desStr.toUpperCase() + "\r\n";
+            //解密后认证码
+            String strDecrypt = new String(DesUtil.decrypt(resultData, deskey), StandardCharsets.UTF_8);
+            Timber.d("解密后:%s", strDecrypt);
+
+            if (!TextUtils.isEmpty(strDecrypt)) {
+                //反转6位随机码
+                String reverseRandomCode = StringUtil.reverseString(strDecrypt.substring(0, 6));
+                byte[] byteEncryt = DesUtil.encrypt((reverseRandomCode + deskey).getBytes(), deskey);
+                //加密后认证码
+                String strEncryt = StringUtil.bytesToHexString(byteEncryt);
+                String cmd = "##222," + SN + ",0," + strEncryt.toUpperCase() + "\r\n";
                 sendCommonCommand(cmd);
                 Timber.d("设备登录验证指令===%s", cmd);
             }
@@ -739,7 +749,7 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
         String command = CommandManager.getInstance().getCommand(CommandType.SAVE_CONFIG_INFO, saveConfigInfoEntity);
 
         errMsg = "发送指令超时,请稍后尝试";
-        startProgressRunnable("正在发送保存命令...", CONFIG_DELAY_MILLIS);
+        startProgressRunnable("正在发送保存命令...", CONFIG_PARAMS_DELAY_MILLIS);
         sendCommonCommandImmediately(command);
     }
 

@@ -43,7 +43,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class BluetoothDeviceListActivity extends AppCompatActivity {
+public class TestBluetoothListActivity extends AppCompatActivity {
     public static final int REQUEST_ENABLE_BT = 0x002;
 
     @BindView(R.id.recycleview_bluetooth_device)
@@ -79,7 +79,7 @@ public class BluetoothDeviceListActivity extends AppCompatActivity {
 
 
     public static void startActivity(Context context) {
-        Intent intent = new Intent(context, BluetoothDeviceListActivity.class);
+        Intent intent = new Intent(context, TestBluetoothListActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         context.startActivity(intent);
     }
@@ -120,11 +120,11 @@ public class BluetoothDeviceListActivity extends AppCompatActivity {
 
                 if (deviceName.endsWith("T")) {
                     String deviceInfo = "MEDO," + deviceName.substring(3) + ",ADME";
-                    ConfigADMEActivity.startActivity(BluetoothDeviceListActivity.this, deviceInfo);
+                    ConfigADMEActivity.startActivity(TestBluetoothListActivity.this, deviceInfo);
 
                 } else if (deviceName.endsWith("L")) {
 
-                    TestActivity.startActivity(BluetoothDeviceListActivity.this);
+                    TestActivity.startActivity(TestBluetoothListActivity.this);
                 }
 
                 finish();

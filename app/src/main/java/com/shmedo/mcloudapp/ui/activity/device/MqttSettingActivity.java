@@ -230,7 +230,7 @@ public class MqttSettingActivity extends BaseDeviceConnectActivity implements Vi
     }
 
     private void initData() {
-        startProgressRunnable("正在获取指令参数...", CONFIG_DELAY_MILLIS);
+        startProgressRunnable("正在获取指令参数...", CONFIG_PARAMS_DELAY_MILLIS);
         //获取服务器地址,查询中心开启状态
         ServerNumberEntity serverNumberEntity = new ServerNumberEntity(ServerNumber.NUMBER_ONE.toInt());
         String cmdAddress1 = CommandManager.getInstance().getCommand(CommandType.SERVER_ADDRESS, serverNumberEntity);
@@ -653,7 +653,7 @@ public class MqttSettingActivity extends BaseDeviceConnectActivity implements Vi
                 cmdDataReport = CommandManager.getInstance().getCommand(CommandType.DATA_REPORT_INTERVAL, intervalEntity);
 
                 errMsg = "发送指令超时,请稍后尝试";
-                startProgressRunnable("正在发送配置指令...", CONFIG_DELAY_MILLIS);
+                startProgressRunnable("正在发送配置指令...", CONFIG_PARAMS_DELAY_MILLIS);
                 DataCommunicateModeEntity communicateModeEntity = new DataCommunicateModeEntity(Integer.parseInt(dataCommunicationMode));
                 String cmd = CommandManager.getInstance().getCommand(CommandType.DATA_MASSAGE_MODEL, communicateModeEntity);
                 sendCommonCommandImmediately(cmd);
@@ -738,7 +738,7 @@ public class MqttSettingActivity extends BaseDeviceConnectActivity implements Vi
             setLinkTextEnabled(mTvLinkThreeStatus, true);
 
             errMsg = "发送指令超时,请稍后尝试";
-            startProgressRunnable("正在发送配置指令...", CONFIG_DELAY_MILLIS);
+            startProgressRunnable("正在发送配置指令...", CONFIG_PARAMS_DELAY_MILLIS);
             sendCommonCommandImmediately(cmdCommunicationProtocol);
             Timber.d("设置网络中心通讯协议===%s", cmdCommunicationProtocol);
             return false;

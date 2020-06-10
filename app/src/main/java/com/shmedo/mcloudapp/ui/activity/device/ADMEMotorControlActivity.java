@@ -443,7 +443,7 @@ public class ADMEMotorControlActivity extends BaseDeviceConnectActivity {
         String cmdStr = String.valueOf(stringBuilder);
 
         errMsg = "发送指令超时,请稍后尝试";
-        startProgressRunnable("正在发送配置指令...", CONFIG_DELAY_MILLIS);
+        startProgressRunnable("正在发送配置指令...", CONFIG_PARAMS_DELAY_MILLIS);
         sendCommonCommand(cmdStr);
         Timber.d("控制电机" + (mSpinner.getSelectedItemPosition() == 0 ? "上拉" : "下降") + "指令==" + cmdStr);
         //轮询查询电机状态

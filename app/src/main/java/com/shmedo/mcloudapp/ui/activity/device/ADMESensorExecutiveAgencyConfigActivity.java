@@ -623,7 +623,7 @@ public class ADMESensorExecutiveAgencyConfigActivity extends BaseDeviceConnectAc
         executiveAgencyConfigInfo = String.valueOf(sbExecutiveAgency);
 
         errMsg = "发送指令超时,请稍后尝试";
-        startProgressRunnable("正在发送配置指令...", CONFIG_DELAY_MILLIS);
+        startProgressRunnable("正在发送配置指令...", CONFIG_PARAMS_DELAY_MILLIS);
         //先发送采集器配置指令,收到配置完成应答时再发送执行结构配置指令
         String cmdStr = String.valueOf(sbCollector);
         sendCommonCommand(cmdStr);

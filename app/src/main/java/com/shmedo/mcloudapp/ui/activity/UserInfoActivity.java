@@ -219,7 +219,7 @@ public class UserInfoActivity extends BaseActivity {
                 break;
 
             case R.id.ll_connectTest: //连接测试
-                BluetoothDeviceListActivity.startActivity(this);
+                TestBluetoothListActivity.startActivity(this);
                 break;
         }
     }

@@ -47,7 +47,7 @@ public class DesUtil {
      * @param password String
      * @return byte[]
      */
-    public static byte[] decrypt(byte[] src, String password) {
+    public static byte[] decrypt(byte[] src, String password)  {
         try {
             byte[] keyByte = password.getBytes(StandardCharsets.UTF_8);
             // 创建一个DESKeySpec对象

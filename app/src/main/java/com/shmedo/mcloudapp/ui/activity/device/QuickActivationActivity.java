@@ -124,7 +124,7 @@ public class QuickActivationActivity extends BaseDeviceConnectActivity {
 
 
     protected void sendActivateDeviceCmd() {
-        startProgressRunnable("正在发送升级指令...", CONFIG_DELAY_MILLIS);
+        startProgressRunnable("正在发送升级指令...", CONFIG_PARAMS_DELAY_MILLIS);
         setSetRemoteUpgrade(SetRemoteUpgrade.OPEN_UPGRADE_MODEL1, null, 7073);
     }
 
