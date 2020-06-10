@@ -210,7 +210,7 @@ public class DASHomeFragment extends BaseFragment {
 
                 //未连接时，直接打开连接
                 if (isChecked) {
-                    configDASActivity.findAndConnectBleDevice();
+                    configDASActivity.findAndConnectSpecificDevice();
 
                 } else {//断开连接处理
                     if (configDASActivity.isConfigChange) {

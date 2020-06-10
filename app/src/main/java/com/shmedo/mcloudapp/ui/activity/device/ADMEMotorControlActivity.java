@@ -306,7 +306,7 @@ public class ADMEMotorControlActivity extends BaseDeviceConnectActivity {
                         disconnectDevice();
                     }
                 } else {
-                    findAndConnectBleDevice();
+                    findAndConnectSpecificDevice();
                 }
                 break;
 

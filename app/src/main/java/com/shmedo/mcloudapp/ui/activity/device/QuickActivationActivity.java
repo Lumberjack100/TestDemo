@@ -91,7 +91,7 @@ public class QuickActivationActivity extends BaseDeviceConnectActivity {
 
                 //未连接时，直接打开连接
                 if (isChecked) {
-                    findAndConnectBleDevice();
+                    findAndConnectSpecificDevice();
 
                 } else {//断开连接处理
                     if (isConfigChange) {
@@ -256,7 +256,7 @@ public class QuickActivationActivity extends BaseDeviceConnectActivity {
         if (localData[2].equals("DAS")) {
             mTvDeviceSN.setText("设备SN：" + localData[1]);
             setSwitchViewState(false, mTvActiveState, "待激活");
-            findAndConnectBleDevice();
+            findAndConnectSpecificDevice();
         }
     }
 

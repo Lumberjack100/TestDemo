@@ -267,7 +267,7 @@ public class TestActivity extends BaseActivity {
                     break;
 
                 case DISCONNECTED:
-                    Timber.e("蓝牙连接断开");
+                    Timber.w("蓝牙连接断开");
                     if (!isConnSucceed)
                         updateLog("蓝牙连接断开！\r\n");
                     mHandler.sendEmptyMessage(Constants.BT_DISCONNECTED);
@@ -357,8 +357,8 @@ public class TestActivity extends BaseActivity {
                 case Constants.BT_DISCONNECTED:
                     stopProgressRunnable();
                     if (isAutoConnectBlue) {
-                        ToastUtils.show("30s后重连");
-                        autoConnectBlueAfterAWhile(30000);
+                        ToastUtils.show("5s后重连");
+                        autoConnectBlueAfterAWhile(5000);
                     }
                     break;
 
@@ -371,9 +371,9 @@ public class TestActivity extends BaseActivity {
                     } else {
                         varifyFailedNum++;
                         updateLog("蓝牙连接认证失败！\r\n");
-                        setBleAuthenticateWay();//重新认证
+//                        setBleAuthenticateWay();//重新认证
                     }
-//                    disconnectDevice();
+                    disconnectDevice();
                     break;
             }
 
@@ -488,7 +488,6 @@ public class TestActivity extends BaseActivity {
         Timber.d("设置认证类型指令===%s", command);
     }
 
-
     /**
      * 开始认证流程
      */
@@ -496,18 +495,27 @@ public class TestActivity extends BaseActivity {
         byte[] resultData = StringUtil.hexStringToBytes(authenticateParam);
         try {
             String deskey = "12345678";
-            String strdes = new String(DesUtil.decrypt(resultData, deskey), StandardCharsets.UTF_8);
-            if (!TextUtils.isEmpty(strdes)) {
-                String desStr = StringUtil.bytesToHexString(DesUtil.encrypt((StringUtil.reverseString(strdes.substring(0, 6)) + deskey).getBytes(), deskey));
-                String command = "##222," + SN + ",0," + desStr.toUpperCase() + "\r\n";
+            //解密后认证码
+            String strDecrypt = new String(DesUtil.decrypt(resultData, deskey), StandardCharsets.UTF_8);
+            Timber.d("解密后:%s", strDecrypt);
+
+            if (!TextUtils.isEmpty(strDecrypt)) {
+                //反转6位随机码
+                String reverseRandomCode = StringUtil.reverseString(strDecrypt.substring(0, 6));
+                byte[] byteEncryt = DesUtil.encrypt((reverseRandomCode + deskey).getBytes(), deskey);
+                //加密后认证码
+                String strEncryt = StringUtil.bytesToHexString(byteEncryt);
+                String command = "##222," + SN + ",0," + strEncryt.toUpperCase() + "\r\n";
                 sendCommonCommandImmediately(command);
-                updateLog(command);
                 Timber.d("设备登录验证指令===%s", command);
+                updateLog(command);
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
+
+
 
     @OnClick({R.id.back, R.id.btn_1, R.id.btn_2})
     public void onClick(View v) {

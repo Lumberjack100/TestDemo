@@ -79,7 +79,7 @@ public class ConfigADMEActivity extends BaseDeviceConnectActivity {
     protected void onResume() {
         super.onResume();
         if (isFirstCall) {
-            findAndConnectBleDevice();
+            findAndConnectSpecificDevice();
         }
     }
 
@@ -174,7 +174,7 @@ public class ConfigADMEActivity extends BaseDeviceConnectActivity {
                     ToastUtils.show("蓝牙未启用");
                     return;
                 }
-                findAndConnectBleDevice();
+                findAndConnectSpecificDevice();
                 break;
         }
     }

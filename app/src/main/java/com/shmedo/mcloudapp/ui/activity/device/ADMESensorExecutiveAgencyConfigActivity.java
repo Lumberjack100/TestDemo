@@ -479,7 +479,7 @@ public class ADMESensorExecutiveAgencyConfigActivity extends BaseDeviceConnectAc
                     }
 
                 } else {
-                    findAndConnectBleDevice();
+                    findAndConnectSpecificDevice();
                 }
                 break;
 

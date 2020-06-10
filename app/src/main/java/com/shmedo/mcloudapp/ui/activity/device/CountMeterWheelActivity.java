@@ -186,7 +186,7 @@ public class CountMeterWheelActivity extends BaseDeviceConnectActivity {
                         disconnectDevice();
                     }
                 } else {
-                    findAndConnectBleDevice();
+                    findAndConnectSpecificDevice();
                 }
                 break;
 

@@ -73,7 +73,7 @@ public class ConfigDASActivity extends BaseDeviceConnectActivity {
     protected void onResume() {
         super.onResume();
         if (isFirstCall) {
-            findAndConnectBleDevice();
+            findAndConnectSpecificDevice();
         }
     }
 
@@ -180,7 +180,7 @@ public class ConfigDASActivity extends BaseDeviceConnectActivity {
                     ToastUtils.show("蓝牙未启用");
                     return;
                 }
-                findAndConnectBleDevice();
+                findAndConnectSpecificDevice();
                 break;
         }
     }

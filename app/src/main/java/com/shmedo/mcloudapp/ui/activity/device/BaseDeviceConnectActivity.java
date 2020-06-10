@@ -103,8 +103,6 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
 
     private ProgressRunnable progressRunnable;
 
-    private AuthenticateRunnable authenticateRunnable;
-
     private int authenticateNum = 0;
 
 
@@ -119,7 +117,6 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
                 ToastUtils.show(errMsg);
 
                 if (errMsg.contains("连接超时") || errMsg.contains("认证超时")) {
-                    stopAuthenticateRunnable();
                     disconnectDevice();
                     MCloudApp.setIsBluetoothDeviceConnected(false);
                     EventBus.getDefault().post(new BluetoothStateEvent(false));
@@ -141,33 +138,6 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
         dismissLoadingDialog();
         hander.removeCallbacks(progressRunnable);
         progressRunnable = null;
-    }
-
-    private class AuthenticateRunnable implements Runnable {
-        @Override
-        public void run() {
-            startBleAuthenticate();
-            if (authenticateNum <= 4) {
-                startAuthenticateRunnable(3000);
-            } else {
-                stopAuthenticateRunnable();
-            }
-        }
-    }
-
-    private void startAuthenticateRunnable(long delayMillis) {
-        if (authenticateRunnable == null) {
-            authenticateRunnable = new AuthenticateRunnable();
-        }
-
-        authenticateNum++;
-        hander.postDelayed(authenticateRunnable, delayMillis);
-    }
-
-    private void stopAuthenticateRunnable() {
-        hander.removeCallbacks(authenticateRunnable);
-        authenticateRunnable = null;
-        authenticateNum = 0;
     }
 
 
@@ -230,7 +200,7 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
     /**
      * 搜索并连接指定的蓝牙设备
      */
-    public void findAndConnectBleDevice() {
+    public void findAndConnectSpecificDevice() {
         //蓝牙未打开
         if (!mBluetoothAdapter.isEnabled()) {
             Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
@@ -290,7 +260,7 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
     /**
      * 连接失败时，中断一会儿再连接
      */
-    private void setAutoConnectBlueAfterDisconnect() {
+    private void autoConnectAfterDisconnect() {
         try {
             Thread.sleep(1000);
             disconnectDevice();
@@ -395,13 +365,14 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
         public boolean handleMessage(android.os.Message msg) {
             switch (msg.what) {
                 case Constants.BT_CONNECT:
+                    authenticateNum = 0;
                     isAutoConnectBlue = true;
+                    stopProgressRunnable();
                     MCloudApp.setIsBluetoothDeviceConnected(true);
                     EventBus.getDefault().post(new BluetoothStateEvent(true));
-                    stopProgressRunnable();
                     errMsg = "认证超时,请稍后尝试";
                     startProgressRunnable("蓝牙已连接,设备认证中...", AUTHENTICATE_DELAY_MILLIS);
-                    setBleAuthenticateWay();//蓝牙连接成功开始进行验证
+                    setAuthenticateWay();//蓝牙连接成功开始进行验证
                     break;
 
                 case Constants.BT_DISCONNECTED:
@@ -411,7 +382,7 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
                     EventBus.getDefault().post(new BluetoothStateEvent(false));
                     //断开蓝牙后重新连接
                     if (isAutoConnectBlue) {
-                        findAndConnectBleDevice();
+                        findAndConnectSpecificDevice();
                     }
                     break;
 
@@ -421,14 +392,18 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
 
                 case Constants.BT_WRITE_TIME_OUT:
                     ToastUtils.show("指令发送超时");
-                    setAutoConnectBlueAfterDisconnect();
+                    autoConnectAfterDisconnect();
                     break;
 
                 case Constants.VERIFY_RESULT:
                     stopProgressRunnable();
                     if (!msg.obj.equals("1")) {
                         ToastUtils.show("设备认证失败!");
-                        setBleAuthenticateWay();//重新认证
+                        if (authenticateNum < 5) {
+                            setAuthenticateWay();//重新认证
+                        } else {
+                            disconnectDevice();
+                        }
                         break;
                     }
 
@@ -440,7 +415,7 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
                     break;
 
                 case Constants.MESSAGE_RESPONSE_TIME_OUT://消息等待响应超时
-                    setAutoConnectBlueAfterDisconnect();
+                    autoConnectAfterDisconnect();
                     break;
 
                 case Constants.BT_REQUEST_MTU_FAIL:
@@ -483,17 +458,15 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
 
                 if (cmdStr.startsWith("$$224")) {//认证方式
                     if (cmdStr.replace("\r\n", "").endsWith(CommandResult.ERROR_END)) {
-                        setBleAuthenticateWay();//重新认证
+                        setAuthenticateWay();//重新认证
                         return;
                     }
                     authenticateParam = cmdArray[3];
-                    startBleAuthenticate();
-//                    startAuthenticateRunnable(3000);
+                    sendAuthenticateCodeCmd();
                 }
 
                 //设备登录验证结果指令
                 if (cmdStr.startsWith("$$223")) {
-                    stopAuthenticateRunnable();
                     sendHandleMessage(Constants.VERIFY_RESULT, cmdArray[1]);
                     Timber.d("设备登录验证状态===%s", cmdArray[1].contains("1"));
                     return;
@@ -710,7 +683,8 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
     /**
      * 蓝牙连接成功,发送认证方式
      */
-    private void setBleAuthenticateWay() {
+    private void setAuthenticateWay() {
+        authenticateNum++;
         AuthenticationConfigEntity configEntity = new AuthenticationConfigEntity(SN, 0);
         String command = CommandManager.getInstance().getCommand(CommandType.AUTHENTICATION_CONFIG, configEntity);
         sendCommonCommandImmediately("\r\n" + command);
@@ -720,7 +694,7 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
     /**
      * 开始认证流程
      */
-    private void startBleAuthenticate() {
+    private void sendAuthenticateCodeCmd() {
         Timber.d("解密前:%s", authenticateParam);
         byte[] resultData = StringUtil.hexStringToBytes(authenticateParam);
         try {

@@ -298,7 +298,7 @@ public class ADMEHomeFragment extends BaseFragment {
 
                 //未连接时，直接打开连接
                 if (isChecked) {
-                    configADMEActivity.findAndConnectBleDevice();
+                    configADMEActivity.findAndConnectSpecificDevice();
 
                 } else {//断开连接处理
                     if (configADMEActivity.isConfigChange) {
