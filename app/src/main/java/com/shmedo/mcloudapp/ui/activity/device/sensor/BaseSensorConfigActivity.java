@@ -613,26 +613,6 @@ public abstract class BaseSensorConfigActivity extends BaseDeviceConnectActivity
         }
     }
 
-    @Override
-    public boolean onPositiveClick(View view) {
-        KeyBordUtils.hideSoftKeyboard(view);
-
-        List<CollectorSensorParamsInfoSub> paramsInfoSubList = new ArrayList<>();
-        paramsInfoSubList.addAll(collectorSensorHashMap.values());
-        if (paramsInfoSubList.isEmpty()) {
-            return false;
-        }
-
-        for (int k = 0; k < paramsInfoSubList.size() - 1; k++) {
-            for (int j = k + 1; j < paramsInfoSubList.size(); j++) {
-                if (paramsInfoSubList.get(k).getChannelNumber().equals(paramsInfoSubList.get(j).getChannelNumber())) {
-                    ToastUtils.show("通道号不能重复");
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
 
     @Override
     public void onNegativeClick(View view) {
@@ -704,12 +684,12 @@ public abstract class BaseSensorConfigActivity extends BaseDeviceConnectActivity
 
     protected void spliceStringCollectorSensorParams(CollectorSensorParamsInfoSub collectorSensorParamsInfoSub) {
         sbCollectorSensorConfig.append("$$101" + collectorSensorParamsInfoSub.getCollectorModel() + StringUtil.formatStringTwo(collectorSensorParamsInfoSub.getChannelNumber()));
-        sbCollectorSensorConfig.append("," + collectorSensorParamsInfoSub.getChannelNumber());
-        sbCollectorSensorConfig.append("," + collectorSensorParamsInfoSub.getSensorType());
 
         String sensorType = collectorSensorParamsInfoSub.getSensorType();
         switch (sensorType) {
             case "02": {//拉线位移计 $$1010200,3,2,7,1.100000&&$$1010201,5,2,5,0.000000&&$$1010202,2,2,7,1.100000&&
+                sbCollectorSensorConfig.append("," + collectorSensorParamsInfoSub.getSensorAddress());
+                sbCollectorSensorConfig.append("," + collectorSensorParamsInfoSub.getSensorType());
                 SensorWireShiftInfo sensorInfo = (SensorWireShiftInfo) collectorSensorParamsInfoSub.getSensorData();
                 sbCollectorSensorConfig.append("," + sensorInfo.getTriggerThreshold());
                 sbCollectorSensorConfig.append("," + sensorInfo.getCorrectionValue());
@@ -718,6 +698,8 @@ public abstract class BaseSensorConfigActivity extends BaseDeviceConnectActivity
             break;
 
             case "03": {//土壤含水率
+                sbCollectorSensorConfig.append("," + collectorSensorParamsInfoSub.getSensorAddress());
+                sbCollectorSensorConfig.append("," + collectorSensorParamsInfoSub.getSensorType());
                 SensorInfrasoundInfo sensorInfo = (SensorInfrasoundInfo) collectorSensorParamsInfoSub.getSensorData();
                 sbCollectorSensorConfig.append("," + sensorInfo.getTriggerThreshold());
                 sbCollectorSensorConfig.append("," + sensorInfo.getRevised());
@@ -726,6 +708,8 @@ public abstract class BaseSensorConfigActivity extends BaseDeviceConnectActivity
             break;
 
             case "04": {//测斜仪
+                sbCollectorSensorConfig.append("," + collectorSensorParamsInfoSub.getSensorAddress());
+                sbCollectorSensorConfig.append("," + collectorSensorParamsInfoSub.getSensorType());
                 SensorSoilMoistureInfo sensorInfo = (SensorSoilMoistureInfo) collectorSensorParamsInfoSub.getSensorData();
                 sbCollectorSensorConfig.append("," + sensorInfo.getTriggerThreshold());
                 sbCollectorSensorConfig.append("," + sensorInfo.getRevised());
@@ -734,6 +718,8 @@ public abstract class BaseSensorConfigActivity extends BaseDeviceConnectActivity
             break;
 
             case "07": {//雷达物位计
+                sbCollectorSensorConfig.append("," + collectorSensorParamsInfoSub.getSensorAddress());
+                sbCollectorSensorConfig.append("," + collectorSensorParamsInfoSub.getSensorType());
                 SensorRadarLevelInfo sensorInfo = (SensorRadarLevelInfo) collectorSensorParamsInfoSub.getSensorData();
                 sbCollectorSensorConfig.append("," + sensorInfo.getTriggerThreshold());
                 sbCollectorSensorConfig.append("," + sensorInfo.getRevised());
@@ -742,6 +728,8 @@ public abstract class BaseSensorConfigActivity extends BaseDeviceConnectActivity
             break;
 
             case "21": {//次声
+                sbCollectorSensorConfig.append("," + collectorSensorParamsInfoSub.getSensorAddress());
+                sbCollectorSensorConfig.append("," + collectorSensorParamsInfoSub.getSensorType());
                 SensorInclinometerInfo sensorInfo = (SensorInclinometerInfo) collectorSensorParamsInfoSub.getSensorData();
                 sbCollectorSensorConfig.append("," + sensorInfo.getTriggerThreshold());
                 sbCollectorSensorConfig.append("," + sensorInfo.getCorrectionValue());
@@ -750,6 +738,8 @@ public abstract class BaseSensorConfigActivity extends BaseDeviceConnectActivity
             break;
 
             case "50": {//基康渗压计(BGK-4500)
+                sbCollectorSensorConfig.append("," + collectorSensorParamsInfoSub.getChannelNumber());
+                sbCollectorSensorConfig.append("," + collectorSensorParamsInfoSub.getSensorType());
                 SensorKangPercolateInfo sensorInfo = (SensorKangPercolateInfo) collectorSensorParamsInfoSub.getSensorData();
                 sbCollectorSensorConfig.append("," + sensorInfo.getTriggerThreshold());
                 sbCollectorSensorConfig.append("," + sensorInfo.getPolynomialRatioA());
@@ -765,6 +755,8 @@ public abstract class BaseSensorConfigActivity extends BaseDeviceConnectActivity
             break;
 
             case "51": {//葛南渗压计(VWP-03)
+                sbCollectorSensorConfig.append("," + collectorSensorParamsInfoSub.getChannelNumber());
+                sbCollectorSensorConfig.append("," + collectorSensorParamsInfoSub.getSensorType());
                 SensorGudanPercolateInfo sensorInfo = (SensorGudanPercolateInfo) collectorSensorParamsInfoSub.getSensorData();
                 sbCollectorSensorConfig.append("," + sensorInfo.getTriggerThreshold());
                 sbCollectorSensorConfig.append("," + sensorInfo.getSensitivityK());
@@ -779,6 +771,8 @@ public abstract class BaseSensorConfigActivity extends BaseDeviceConnectActivity
             break;
 
             case "58": {//军星轴力计(ZLJ-300T)
+                sbCollectorSensorConfig.append("," + collectorSensorParamsInfoSub.getChannelNumber());
+                sbCollectorSensorConfig.append("," + collectorSensorParamsInfoSub.getSensorType());
                 SensorJunXingZljInfo sensorInfo = (SensorJunXingZljInfo) collectorSensorParamsInfoSub.getSensorData();
                 sbCollectorSensorConfig.append("," + sensorInfo.getTriggerThreshold());
                 sbCollectorSensorConfig.append("," + sensorInfo.getSensitivityK());

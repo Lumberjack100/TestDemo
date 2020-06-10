@@ -8,22 +8,18 @@
 
     <include layout="@layout/dialog_sensorconfig_header_layout"/>
 
-    <LinearLayout style="@style/LinearLayout_Sensor_Config_Item"
-        android:layout_marginTop="5dp">
+    <LinearLayout style="@style/LinearLayout_Sensor_Config_Item">
 
         <TextView
             style="@style/TextView_Sensor_Config_Item"
             android:drawableLeft="@drawable/ic_required"
-            android:text="通道:" />
+            android:text="Modbus地址" />
 
-        <Spinner
-            android:id="@+id/spinnerWay"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="2"
-            android:background="@drawable/icon_dialog_switch"
-            android:paddingLeft="10dp"
-            android:singleLine="true" />
+        <EditText
+            android:id="@+id/et_modbus_address"
+            style="@style/EditText_Sensor_Config_Item"
+            android:hint="0~99"
+            android:inputType="number" />
 
     </LinearLayout>
 

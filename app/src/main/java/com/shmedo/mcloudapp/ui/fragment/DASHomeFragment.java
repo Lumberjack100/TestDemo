@@ -668,6 +668,7 @@ public class DASHomeFragment extends BaseFragment {
             case REQUEST_CODE_SENSOR_CONFIG:
                 if (intent != null) {
                     String ss = intent.getStringExtra(Extras.SPLICE_SENSOR_PARAMS);
+                    Timber.d("更新后的传感器拼接参数:" + ss);
                     sbcollectorSensor = new StringBuilder();
                     sbcollectorSensor.append(ss);
                 }

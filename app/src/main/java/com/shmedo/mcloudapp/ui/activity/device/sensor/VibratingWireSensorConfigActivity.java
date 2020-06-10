@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.View;
 
 import androidx.fragment.app.Fragment;
 
@@ -16,10 +17,12 @@ import com.shmedo.core.model.SensorKangPercolateInfo;
 import com.shmedo.core.utils.StringUtil;
 import com.shmedo.mcloudapp.entity.ble.collector.CollectorSensorParamsInfoSub;
 import com.shmedo.mcloudapp.interfaces.Extras;
+import com.shmedo.mcloudapp.util.KeyBordUtils;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -57,6 +60,32 @@ public class VibratingWireSensorConfigActivity extends BaseSensorConfigActivity 
         super.onCreate(savedInstanceState);
     }
 
+
+    @Override
+    public boolean onPositiveClick(View view) {
+        KeyBordUtils.hideSoftKeyboard(view);
+
+        List<CollectorSensorParamsInfoSub> paramsInfoSubList = new ArrayList<>();
+        paramsInfoSubList.addAll(collectorSensorHashMap.values());
+        if (paramsInfoSubList.isEmpty()) {
+            return false;
+        }
+
+        for (int k = 0; k < paramsInfoSubList.size() - 1; k++) {
+            for (int j = k + 1; j < paramsInfoSubList.size(); j++) {
+                if (paramsInfoSubList.get(k).getChannelNumber().equals(paramsInfoSubList.get(j).getChannelNumber())) {
+                    ToastUtils.show("通道号不能重复");
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public void onNegativeClick(View view) {
+        super.onNegativeClick(view);
+    }
 
     /**
      * 设置采集器接入的传感器<br/>
