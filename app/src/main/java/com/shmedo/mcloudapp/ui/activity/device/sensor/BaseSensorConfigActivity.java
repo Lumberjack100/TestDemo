@@ -16,6 +16,8 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.hjq.toast.ToastUtils;
 import com.kyleduo.switchbutton.SwitchButton;
 import com.shmedo.core.enums.CollectorModel;
+import com.shmedo.core.enums.SensorType;
+import com.shmedo.core.model.CollectorSensorParamsInfo;
 import com.shmedo.core.model.SensorGudanPercolateInfo;
 import com.shmedo.core.model.SensorInclinometerInfo;
 import com.shmedo.core.model.SensorInfrasoundInfo;
@@ -24,10 +26,10 @@ import com.shmedo.core.model.SensorKangPercolateInfo;
 import com.shmedo.core.model.SensorRadarLevelInfo;
 import com.shmedo.core.model.SensorSoilMoistureInfo;
 import com.shmedo.core.model.SensorWireShiftInfo;
+import com.shmedo.core.utils.ResultParserUtil;
 import com.shmedo.core.utils.StringUtil;
 import com.shmedo.mcloudapp.MCloudApp;
 import com.shmedo.mcloudapp.R;
-import com.shmedo.mcloudapp.entity.ble.collector.CollectorSensorParamsInfoSub;
 import com.shmedo.mcloudapp.interfaces.Extras;
 import com.shmedo.mcloudapp.ui.activity.device.BaseDeviceConnectActivity;
 import com.shmedo.mcloudapp.ui.activity.device.sensor.dialog.BaseDialogFragment;
@@ -127,10 +129,10 @@ public abstract class BaseSensorConfigActivity extends BaseDeviceConnectActivity
     @BindView(R.id.tv_stay8)
     TextView textView8;
 
-    protected List<CollectorSensorParamsInfoSub> collectorSensorParamsInfoSubs = new ArrayList<>();
-    //以传感器的通道号为 Key,CollectorSensorParamsInfoSub 对象为 Value
-    protected HashMap<String, CollectorSensorParamsInfoSub> collectorSensorHashMap = new HashMap<>();
-    protected CollectorSensorParamsInfoSub defaultCollectorSensorParamsInfoSub = new CollectorSensorParamsInfoSub();
+    protected List<CollectorSensorParamsInfo> collectorSensorParamsInfoSubs = new ArrayList<>();
+    //以传感器的通道号为 Key,CollectorSensorParamsInfo 对象为 Value
+    protected HashMap<String, CollectorSensorParamsInfo> collectorSensorHashMap = new HashMap<>();
+    protected CollectorSensorParamsInfo defaultCollectorSensorParamsInfo = new CollectorSensorParamsInfo();
 
     protected String collectorName = "";
 
@@ -182,14 +184,14 @@ public abstract class BaseSensorConfigActivity extends BaseDeviceConnectActivity
             if (TextUtils.isEmpty(sensorConfig))
                 continue;
 
-            CollectorSensorParamsInfoSub mCollectorParamsInfoSub = BlueResultParserUtil.setCollectorParams(sensorConfig);
+            CollectorSensorParamsInfo mCollectorParamsInfoSub = ResultParserUtil.getEntityObject(sensorConfig);
             Timber.d("--------XX采集器YY通道的传感器参数-------%s", mCollectorParamsInfoSub.toString());
             collectorSensorHashMap.put(mCollectorParamsInfoSub.getChannelNumber(), mCollectorParamsInfoSub);
             initSensorState(mCollectorParamsInfoSub);
         }
 
         if (!collectorSensorHashMap.values().isEmpty()) {
-            defaultCollectorSensorParamsInfoSub = (CollectorSensorParamsInfoSub) collectorSensorHashMap.values().toArray()[0];
+            defaultCollectorSensorParamsInfo = (CollectorSensorParamsInfo) collectorSensorHashMap.values().toArray()[0];
         }
     }
 
@@ -197,10 +199,10 @@ public abstract class BaseSensorConfigActivity extends BaseDeviceConnectActivity
      * 采集器名称作为标题
      */
     private void initTitle() {
-        if (defaultCollectorSensorParamsInfoSub == null)
+        if (defaultCollectorSensorParamsInfo == null)
             return;
 
-        CollectorModel collectorModel = CollectorModel.value(defaultCollectorSensorParamsInfoSub.getCollectorModel());
+        CollectorModel collectorModel = defaultCollectorSensorParamsInfo.getCollectorModel();
         collectorName = BlueResultParserUtil.getCollectorName(collectorModel);
         mToolbarTitle.setText(collectorName);
     }
@@ -210,8 +212,7 @@ public abstract class BaseSensorConfigActivity extends BaseDeviceConnectActivity
      *
      * @param mCollectorParamsInfoSub
      */
-    private void initSensorState(CollectorSensorParamsInfoSub mCollectorParamsInfoSub) {
-        String sensorType = mCollectorParamsInfoSub.getSensorType();
+    private void initSensorState(CollectorSensorParamsInfo mCollectorParamsInfoSub) {
         int number = StringUtil.formatNumber(mCollectorParamsInfoSub.getChannelNumber());
         switch (number) {
             case 0:
@@ -476,12 +477,12 @@ public abstract class BaseSensorConfigActivity extends BaseDeviceConnectActivity
             case "00":
                 channelNumber0 = channelNumber;
                 if (!collectorSensorHashMap.containsKey(channelNumber)) {
-                    CollectorSensorParamsInfoSub collectorSensorParamsInfoSub = new CollectorSensorParamsInfoSub();
-                    collectorSensorParamsInfoSub.setCollectorModel(defaultCollectorSensorParamsInfoSub.getCollectorModel());
+                    CollectorSensorParamsInfo collectorSensorParamsInfoSub = new CollectorSensorParamsInfo();
+                    collectorSensorParamsInfoSub.setCollectorModel(defaultCollectorSensorParamsInfo.getCollectorModel());
                     collectorSensorParamsInfoSub.setChannelNumber(channelNumber);
-                    collectorSensorParamsInfoSub.setSensorType(defaultCollectorSensorParamsInfoSub.getSensorType());
-                    collectorSensorParamsInfoSub.setChannelNumber(defaultCollectorSensorParamsInfoSub.getChannelNumber());
-                    collectorSensorParamsInfoSub.setSensorData(defaultCollectorSensorParamsInfoSub.getSensorData());
+                    collectorSensorParamsInfoSub.setSensorType(defaultCollectorSensorParamsInfo.getSensorType());
+                    collectorSensorParamsInfoSub.setChannelNumber(defaultCollectorSensorParamsInfo.getChannelNumber());
+                    collectorSensorParamsInfoSub.setSensorData(defaultCollectorSensorParamsInfo.getSensorData());
                     collectorSensorHashMap.put(channelNumber, collectorSensorParamsInfoSub);
                 }
                 showBottomDialog(channelNumber0, true);
@@ -490,12 +491,12 @@ public abstract class BaseSensorConfigActivity extends BaseDeviceConnectActivity
             case "01":
                 channelNumber1 = channelNumber;
                 if (!collectorSensorHashMap.containsKey(channelNumber)) {
-                    CollectorSensorParamsInfoSub collectorSensorParamsInfoSub = new CollectorSensorParamsInfoSub();
-                    collectorSensorParamsInfoSub.setCollectorModel(defaultCollectorSensorParamsInfoSub.getCollectorModel());
+                    CollectorSensorParamsInfo collectorSensorParamsInfoSub = new CollectorSensorParamsInfo();
+                    collectorSensorParamsInfoSub.setCollectorModel(defaultCollectorSensorParamsInfo.getCollectorModel());
                     collectorSensorParamsInfoSub.setChannelNumber(channelNumber);
-                    collectorSensorParamsInfoSub.setSensorType(defaultCollectorSensorParamsInfoSub.getSensorType());
+                    collectorSensorParamsInfoSub.setSensorType(defaultCollectorSensorParamsInfo.getSensorType());
                     collectorSensorParamsInfoSub.setSensorAddress(channelNumber);
-                    collectorSensorParamsInfoSub.setSensorData(defaultCollectorSensorParamsInfoSub.getSensorData());
+                    collectorSensorParamsInfoSub.setSensorData(defaultCollectorSensorParamsInfo.getSensorData());
                     collectorSensorHashMap.put(channelNumber, collectorSensorParamsInfoSub);
                 }
                 showBottomDialog(channelNumber1, true);
@@ -504,12 +505,12 @@ public abstract class BaseSensorConfigActivity extends BaseDeviceConnectActivity
             case "02":
                 channelNumber2 = channelNumber;
                 if (!collectorSensorHashMap.containsKey(channelNumber)) {
-                    CollectorSensorParamsInfoSub collectorSensorParamsInfoSub = new CollectorSensorParamsInfoSub();
-                    collectorSensorParamsInfoSub.setCollectorModel(defaultCollectorSensorParamsInfoSub.getCollectorModel());
+                    CollectorSensorParamsInfo collectorSensorParamsInfoSub = new CollectorSensorParamsInfo();
+                    collectorSensorParamsInfoSub.setCollectorModel(defaultCollectorSensorParamsInfo.getCollectorModel());
                     collectorSensorParamsInfoSub.setChannelNumber(channelNumber);
-                    collectorSensorParamsInfoSub.setSensorType(defaultCollectorSensorParamsInfoSub.getSensorType());
+                    collectorSensorParamsInfoSub.setSensorType(defaultCollectorSensorParamsInfo.getSensorType());
                     collectorSensorParamsInfoSub.setSensorAddress(channelNumber);
-                    collectorSensorParamsInfoSub.setSensorData(defaultCollectorSensorParamsInfoSub.getSensorData());
+                    collectorSensorParamsInfoSub.setSensorData(defaultCollectorSensorParamsInfo.getSensorData());
                     collectorSensorHashMap.put(channelNumber, collectorSensorParamsInfoSub);
                 }
                 showBottomDialog(channelNumber2, true);
@@ -518,12 +519,12 @@ public abstract class BaseSensorConfigActivity extends BaseDeviceConnectActivity
             case "03":
                 channelNumber3 = channelNumber;
                 if (!collectorSensorHashMap.containsKey(channelNumber)) {
-                    CollectorSensorParamsInfoSub collectorSensorParamsInfoSub = new CollectorSensorParamsInfoSub();
-                    collectorSensorParamsInfoSub.setCollectorModel(defaultCollectorSensorParamsInfoSub.getCollectorModel());
+                    CollectorSensorParamsInfo collectorSensorParamsInfoSub = new CollectorSensorParamsInfo();
+                    collectorSensorParamsInfoSub.setCollectorModel(defaultCollectorSensorParamsInfo.getCollectorModel());
                     collectorSensorParamsInfoSub.setChannelNumber(channelNumber);
-                    collectorSensorParamsInfoSub.setSensorType(defaultCollectorSensorParamsInfoSub.getSensorType());
+                    collectorSensorParamsInfoSub.setSensorType(defaultCollectorSensorParamsInfo.getSensorType());
                     collectorSensorParamsInfoSub.setSensorAddress(channelNumber);
-                    collectorSensorParamsInfoSub.setSensorData(defaultCollectorSensorParamsInfoSub.getSensorData());
+                    collectorSensorParamsInfoSub.setSensorData(defaultCollectorSensorParamsInfo.getSensorData());
                     collectorSensorHashMap.put(channelNumber, collectorSensorParamsInfoSub);
                 }
                 showBottomDialog(channelNumber3, true);
@@ -532,12 +533,12 @@ public abstract class BaseSensorConfigActivity extends BaseDeviceConnectActivity
             case "04":
                 channelNumber4 = channelNumber;
                 if (!collectorSensorHashMap.containsKey(channelNumber)) {
-                    CollectorSensorParamsInfoSub collectorSensorParamsInfoSub = new CollectorSensorParamsInfoSub();
-                    collectorSensorParamsInfoSub.setCollectorModel(defaultCollectorSensorParamsInfoSub.getCollectorModel());
+                    CollectorSensorParamsInfo collectorSensorParamsInfoSub = new CollectorSensorParamsInfo();
+                    collectorSensorParamsInfoSub.setCollectorModel(defaultCollectorSensorParamsInfo.getCollectorModel());
                     collectorSensorParamsInfoSub.setChannelNumber(channelNumber);
-                    collectorSensorParamsInfoSub.setSensorType(defaultCollectorSensorParamsInfoSub.getSensorType());
+                    collectorSensorParamsInfoSub.setSensorType(defaultCollectorSensorParamsInfo.getSensorType());
                     collectorSensorParamsInfoSub.setSensorAddress(channelNumber);
-                    collectorSensorParamsInfoSub.setSensorData(defaultCollectorSensorParamsInfoSub.getSensorData());
+                    collectorSensorParamsInfoSub.setSensorData(defaultCollectorSensorParamsInfo.getSensorData());
                     collectorSensorHashMap.put(channelNumber, collectorSensorParamsInfoSub);
                 }
                 showBottomDialog(channelNumber4, true);
@@ -546,12 +547,12 @@ public abstract class BaseSensorConfigActivity extends BaseDeviceConnectActivity
             case "05":
                 channelNumber5 = channelNumber;
                 if (!collectorSensorHashMap.containsKey(channelNumber)) {
-                    CollectorSensorParamsInfoSub collectorSensorParamsInfoSub = new CollectorSensorParamsInfoSub();
-                    collectorSensorParamsInfoSub.setCollectorModel(defaultCollectorSensorParamsInfoSub.getCollectorModel());
+                    CollectorSensorParamsInfo collectorSensorParamsInfoSub = new CollectorSensorParamsInfo();
+                    collectorSensorParamsInfoSub.setCollectorModel(defaultCollectorSensorParamsInfo.getCollectorModel());
                     collectorSensorParamsInfoSub.setChannelNumber(channelNumber);
-                    collectorSensorParamsInfoSub.setSensorType(defaultCollectorSensorParamsInfoSub.getSensorType());
+                    collectorSensorParamsInfoSub.setSensorType(defaultCollectorSensorParamsInfo.getSensorType());
                     collectorSensorParamsInfoSub.setSensorAddress(channelNumber);
-                    collectorSensorParamsInfoSub.setSensorData(defaultCollectorSensorParamsInfoSub.getSensorData());
+                    collectorSensorParamsInfoSub.setSensorData(defaultCollectorSensorParamsInfo.getSensorData());
                     collectorSensorHashMap.put(channelNumber, collectorSensorParamsInfoSub);
                 }
                 showBottomDialog(channelNumber5, true);
@@ -560,12 +561,12 @@ public abstract class BaseSensorConfigActivity extends BaseDeviceConnectActivity
             case "06":
                 channelNumber6 = channelNumber;
                 if (!collectorSensorHashMap.containsKey(channelNumber)) {
-                    CollectorSensorParamsInfoSub collectorSensorParamsInfoSub = new CollectorSensorParamsInfoSub();
-                    collectorSensorParamsInfoSub.setCollectorModel(defaultCollectorSensorParamsInfoSub.getCollectorModel());
+                    CollectorSensorParamsInfo collectorSensorParamsInfoSub = new CollectorSensorParamsInfo();
+                    collectorSensorParamsInfoSub.setCollectorModel(defaultCollectorSensorParamsInfo.getCollectorModel());
                     collectorSensorParamsInfoSub.setChannelNumber(channelNumber);
-                    collectorSensorParamsInfoSub.setSensorType(defaultCollectorSensorParamsInfoSub.getSensorType());
+                    collectorSensorParamsInfoSub.setSensorType(defaultCollectorSensorParamsInfo.getSensorType());
                     collectorSensorParamsInfoSub.setSensorAddress(channelNumber);
-                    collectorSensorParamsInfoSub.setSensorData(defaultCollectorSensorParamsInfoSub.getSensorData());
+                    collectorSensorParamsInfoSub.setSensorData(defaultCollectorSensorParamsInfo.getSensorData());
                     collectorSensorHashMap.put(channelNumber, collectorSensorParamsInfoSub);
                 }
                 showBottomDialog(channelNumber6, true);
@@ -574,12 +575,12 @@ public abstract class BaseSensorConfigActivity extends BaseDeviceConnectActivity
             case "07":
                 channelNumber7 = channelNumber;
                 if (!collectorSensorHashMap.containsKey(channelNumber)) {
-                    CollectorSensorParamsInfoSub collectorSensorParamsInfoSub = new CollectorSensorParamsInfoSub();
-                    collectorSensorParamsInfoSub.setCollectorModel(defaultCollectorSensorParamsInfoSub.getCollectorModel());
+                    CollectorSensorParamsInfo collectorSensorParamsInfoSub = new CollectorSensorParamsInfo();
+                    collectorSensorParamsInfoSub.setCollectorModel(defaultCollectorSensorParamsInfo.getCollectorModel());
                     collectorSensorParamsInfoSub.setChannelNumber(channelNumber);
-                    collectorSensorParamsInfoSub.setSensorType(defaultCollectorSensorParamsInfoSub.getSensorType());
+                    collectorSensorParamsInfoSub.setSensorType(defaultCollectorSensorParamsInfo.getSensorType());
                     collectorSensorParamsInfoSub.setSensorAddress(channelNumber);
-                    collectorSensorParamsInfoSub.setSensorData(defaultCollectorSensorParamsInfoSub.getSensorData());
+                    collectorSensorParamsInfoSub.setSensorData(defaultCollectorSensorParamsInfo.getSensorData());
                     collectorSensorHashMap.put(channelNumber, collectorSensorParamsInfoSub);
                 }
                 showBottomDialog(channelNumber7, true);
@@ -592,21 +593,21 @@ public abstract class BaseSensorConfigActivity extends BaseDeviceConnectActivity
 
         curChannelNumber = channelNumber;
         isEnableNewSensor = isAddOrModifySensor;
-        CollectorSensorParamsInfoSub collectorSensorParamsInfoSub = collectorSensorHashMap.get(channelNumber);
-        String sensorType = collectorSensorParamsInfoSub.getSensorType();
+        CollectorSensorParamsInfo collectorSensorParamsInfoSub = collectorSensorHashMap.get(channelNumber);
+        SensorType sensorType = collectorSensorParamsInfoSub.getSensorType();
         switch (sensorType) {
-            case "02"://拉线位移计
-            case "03"://土壤含水率
-            case "04"://测斜仪
-            case "07"://雷达物位计
-            case "21"://次声
+            case WIRE_SHIFT://拉线位移计
+            case SOIL_MOISTURE://土壤含水率
+            case INCLINOMETER://测斜仪
+            case RADAR_LEVEL_GAUGE://雷达物位计
+            case INFRASOUND_SENSOR://次声
                 newFragment = new CommonSensorConfigDialogFragment();
                 newFragment.show(getSupportFragmentManager(), "dialog");
                 break;
 
-            case "50"://基康渗压计(BGK-4500)
-            case "51"://葛南渗压计(VWP-03)
-            case "58"://军星轴力计(ZLJ-300T)
+            case KANG_PERCOLATE://基康渗压计(BGK-4500)
+            case GUDAN_PERCOLATE://葛南渗压计(VWP-03)
+            case JUNXING_ZLJ_300T://军星轴力计(ZLJ-300T)
                 newFragment = new Osmometer_AxialForceGaugeDialogFragment();
                 newFragment.show(getSupportFragmentManager(), "dialog");
                 break;
@@ -682,12 +683,12 @@ public abstract class BaseSensorConfigActivity extends BaseDeviceConnectActivity
 
     protected abstract void sendInstruction();
 
-    protected void spliceStringCollectorSensorParams(CollectorSensorParamsInfoSub collectorSensorParamsInfoSub) {
+    protected void spliceStringCollectorSensorParams(CollectorSensorParamsInfo collectorSensorParamsInfoSub) {
         sbCollectorSensorConfig.append("$$101" + collectorSensorParamsInfoSub.getCollectorModel() + StringUtil.formatStringTwo(collectorSensorParamsInfoSub.getChannelNumber()));
 
-        String sensorType = collectorSensorParamsInfoSub.getSensorType();
+        SensorType sensorType = collectorSensorParamsInfoSub.getSensorType();
         switch (sensorType) {
-            case "02": {//拉线位移计 $$1010200,3,2,7,1.100000&&$$1010201,5,2,5,0.000000&&$$1010202,2,2,7,1.100000&&
+            case WIRE_SHIFT: {//拉线位移计 $$1010200,3,2,7,1.100000&&$$1010201,5,2,5,0.000000&&$$1010202,2,2,7,1.100000&&
                 sbCollectorSensorConfig.append("," + collectorSensorParamsInfoSub.getSensorAddress());
                 sbCollectorSensorConfig.append("," + collectorSensorParamsInfoSub.getSensorType());
                 SensorWireShiftInfo sensorInfo = (SensorWireShiftInfo) collectorSensorParamsInfoSub.getSensorData();
@@ -697,7 +698,7 @@ public abstract class BaseSensorConfigActivity extends BaseDeviceConnectActivity
             }
             break;
 
-            case "03": {//土壤含水率
+            case SOIL_MOISTURE: {//土壤含水率
                 sbCollectorSensorConfig.append("," + collectorSensorParamsInfoSub.getSensorAddress());
                 sbCollectorSensorConfig.append("," + collectorSensorParamsInfoSub.getSensorType());
                 SensorInfrasoundInfo sensorInfo = (SensorInfrasoundInfo) collectorSensorParamsInfoSub.getSensorData();
@@ -707,7 +708,7 @@ public abstract class BaseSensorConfigActivity extends BaseDeviceConnectActivity
             }
             break;
 
-            case "04": {//测斜仪
+            case INCLINOMETER: {//测斜仪
                 sbCollectorSensorConfig.append("," + collectorSensorParamsInfoSub.getSensorAddress());
                 sbCollectorSensorConfig.append("," + collectorSensorParamsInfoSub.getSensorType());
                 SensorSoilMoistureInfo sensorInfo = (SensorSoilMoistureInfo) collectorSensorParamsInfoSub.getSensorData();
@@ -717,7 +718,7 @@ public abstract class BaseSensorConfigActivity extends BaseDeviceConnectActivity
             }
             break;
 
-            case "07": {//雷达物位计
+            case RADAR_LEVEL_GAUGE: {//雷达物位计
                 sbCollectorSensorConfig.append("," + collectorSensorParamsInfoSub.getSensorAddress());
                 sbCollectorSensorConfig.append("," + collectorSensorParamsInfoSub.getSensorType());
                 SensorRadarLevelInfo sensorInfo = (SensorRadarLevelInfo) collectorSensorParamsInfoSub.getSensorData();
@@ -727,7 +728,7 @@ public abstract class BaseSensorConfigActivity extends BaseDeviceConnectActivity
             }
             break;
 
-            case "21": {//次声
+            case INFRASOUND_SENSOR: {//次声
                 sbCollectorSensorConfig.append("," + collectorSensorParamsInfoSub.getSensorAddress());
                 sbCollectorSensorConfig.append("," + collectorSensorParamsInfoSub.getSensorType());
                 SensorInclinometerInfo sensorInfo = (SensorInclinometerInfo) collectorSensorParamsInfoSub.getSensorData();
@@ -737,7 +738,7 @@ public abstract class BaseSensorConfigActivity extends BaseDeviceConnectActivity
             }
             break;
 
-            case "50": {//基康渗压计(BGK-4500)
+            case KANG_PERCOLATE: {//基康渗压计(BGK-4500)
                 sbCollectorSensorConfig.append("," + collectorSensorParamsInfoSub.getChannelNumber());
                 sbCollectorSensorConfig.append("," + collectorSensorParamsInfoSub.getSensorType());
                 SensorKangPercolateInfo sensorInfo = (SensorKangPercolateInfo) collectorSensorParamsInfoSub.getSensorData();
@@ -754,7 +755,7 @@ public abstract class BaseSensorConfigActivity extends BaseDeviceConnectActivity
             }
             break;
 
-            case "51": {//葛南渗压计(VWP-03)
+            case GUDAN_PERCOLATE: {//葛南渗压计(VWP-03)
                 sbCollectorSensorConfig.append("," + collectorSensorParamsInfoSub.getChannelNumber());
                 sbCollectorSensorConfig.append("," + collectorSensorParamsInfoSub.getSensorType());
                 SensorGudanPercolateInfo sensorInfo = (SensorGudanPercolateInfo) collectorSensorParamsInfoSub.getSensorData();
@@ -770,7 +771,7 @@ public abstract class BaseSensorConfigActivity extends BaseDeviceConnectActivity
             }
             break;
 
-            case "58": {//军星轴力计(ZLJ-300T)
+            case JUNXING_ZLJ_300T: {//军星轴力计(ZLJ-300T)
                 sbCollectorSensorConfig.append("," + collectorSensorParamsInfoSub.getChannelNumber());
                 sbCollectorSensorConfig.append("," + collectorSensorParamsInfoSub.getSensorType());
                 SensorJunXingZljInfo sensorInfo = (SensorJunXingZljInfo) collectorSensorParamsInfoSub.getSensorData();
@@ -784,8 +785,8 @@ public abstract class BaseSensorConfigActivity extends BaseDeviceConnectActivity
         }
     }
 
-    public CollectorSensorParamsInfoSub getCurrentCollectorSensorParamsInfoSub() {
-        CollectorSensorParamsInfoSub collectorSensorParamsInfoSub = collectorSensorHashMap.get(curChannelNumber);
+    public CollectorSensorParamsInfo getCurrentCollectorSensorParamsInfo() {
+        CollectorSensorParamsInfo collectorSensorParamsInfoSub = collectorSensorHashMap.get(curChannelNumber);
         return collectorSensorParamsInfoSub;
     }
 

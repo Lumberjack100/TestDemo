@@ -11,11 +11,12 @@ import androidx.fragment.app.Fragment;
 import com.hjq.toast.ToastUtils;
 import com.shmedo.core.cmd.CommandResult;
 import com.shmedo.core.enums.CommandType;
+import com.shmedo.core.enums.SensorType;
+import com.shmedo.core.model.CollectorSensorParamsInfo;
 import com.shmedo.core.model.SensorGudanPercolateInfo;
 import com.shmedo.core.model.SensorJunXingZljInfo;
 import com.shmedo.core.model.SensorKangPercolateInfo;
 import com.shmedo.core.utils.StringUtil;
-import com.shmedo.mcloudapp.entity.ble.collector.CollectorSensorParamsInfoSub;
 import com.shmedo.mcloudapp.interfaces.Extras;
 import com.shmedo.mcloudapp.util.KeyBordUtils;
 
@@ -65,7 +66,7 @@ public class VibratingWireSensorConfigActivity extends BaseSensorConfigActivity 
     public boolean onPositiveClick(View view) {
         KeyBordUtils.hideSoftKeyboard(view);
 
-        List<CollectorSensorParamsInfoSub> paramsInfoSubList = new ArrayList<>();
+        List<CollectorSensorParamsInfo> paramsInfoSubList = new ArrayList<>();
         paramsInfoSubList.addAll(collectorSensorHashMap.values());
         if (paramsInfoSubList.isEmpty()) {
             return false;
@@ -108,10 +109,10 @@ public class VibratingWireSensorConfigActivity extends BaseSensorConfigActivity 
 
         StringBuilder builderFirst = new StringBuilder();
         builderFirst.append("##150");
-        builderFirst.append(defaultCollectorSensorParamsInfoSub.getCollectorModel() + StringUtil.formatStringTwo(String.valueOf(collectorSensorParamsInfoSubs.size())));
-        for (CollectorSensorParamsInfoSub paramsInfoSub : collectorSensorParamsInfoSubs) {
+        builderFirst.append(defaultCollectorSensorParamsInfo.getCollectorModel() + StringUtil.formatStringTwo(String.valueOf(collectorSensorParamsInfoSubs.size())));
+        for (CollectorSensorParamsInfo paramsInfoSub : collectorSensorParamsInfoSubs) {
             spliceStringCollectorSensorParams(paramsInfoSub);
-            builderFirst.append(StringUtil.formatStringTwo(paramsInfoSub.getChannelNumber()) + StringUtil.formatStringTwo(paramsInfoSub.getSensorType()));
+            builderFirst.append(StringUtil.formatStringTwo(paramsInfoSub.getChannelNumber()) + StringUtil.formatStringTwo(paramsInfoSub.getSensorType().toString()));
         }
         builderFirst.append("\r\n");
         String command = String.valueOf(builderFirst);
@@ -133,8 +134,8 @@ public class VibratingWireSensorConfigActivity extends BaseSensorConfigActivity 
     private void setTriggerThreshold() {
         StringBuilder builderFirst = new StringBuilder();
         builderFirst.append("##162");
-        builderFirst.append(defaultCollectorSensorParamsInfoSub.getCollectorModel());
-        for (CollectorSensorParamsInfoSub paramsInfoSub : collectorSensorParamsInfoSubs) {
+        builderFirst.append(defaultCollectorSensorParamsInfo.getCollectorModel());
+        for (CollectorSensorParamsInfo paramsInfoSub : collectorSensorParamsInfoSubs) {
             builderFirst.append(getTriggerThresholdBySensorType(paramsInfoSub));
         }
         builderFirst.append("\r\n");
@@ -143,23 +144,23 @@ public class VibratingWireSensorConfigActivity extends BaseSensorConfigActivity 
         Timber.d("设置传感器触发阈值===%s", command);
     }
 
-    private String getTriggerThresholdBySensorType(CollectorSensorParamsInfoSub infoSub) {
+    private String getTriggerThresholdBySensorType(CollectorSensorParamsInfo infoSub) {
         String value = "";
-        String sensorType = infoSub.getSensorType();
+        SensorType sensorType = infoSub.getSensorType();
         switch (sensorType) {
-            case "50": {//基康渗压计(BGK-4500)
+            case KANG_PERCOLATE: {//基康渗压计(BGK-4500)
                 SensorKangPercolateInfo sensorInfo = (SensorKangPercolateInfo) infoSub.getSensorData();
                 value = StringUtil.formatStringFour((int) Double.parseDouble(sensorInfo.getTriggerThreshold()) + "");
             }
             break;
 
-            case "51": {//葛南渗压计(VWP-03)
+            case GUDAN_PERCOLATE: {//葛南渗压计(VWP-03)
                 SensorGudanPercolateInfo sensorInfo = (SensorGudanPercolateInfo) infoSub.getSensorData();
                 value = StringUtil.formatStringFour((int) Double.parseDouble(sensorInfo.getTriggerThreshold()) + "");
             }
             break;
 
-            case "58": {//军星轴力计(ZLJ-300T)
+            case JUNXING_ZLJ_300T: {//军星轴力计(ZLJ-300T)
                 SensorJunXingZljInfo sensorInfo = (SensorJunXingZljInfo) infoSub.getSensorData();
                 value = StringUtil.formatStringFour((int) Double.parseDouble(sensorInfo.getTriggerThreshold()) + "");
             }
@@ -178,19 +179,19 @@ public class VibratingWireSensorConfigActivity extends BaseSensorConfigActivity 
      */
     private void setCorrectionValue() {
         correctValueCmdList.clear();
-        for (CollectorSensorParamsInfoSub paramsInfoSub : collectorSensorParamsInfoSubs) {
+        for (CollectorSensorParamsInfo paramsInfoSub : collectorSensorParamsInfoSubs) {
             getCorrectionValueParamCommands(paramsInfoSub);
         }
         sendCorrectionValueCmd();
     }
 
-    private void getCorrectionValueParamCommands(CollectorSensorParamsInfoSub infoSub) {
+    private void getCorrectionValueParamCommands(CollectorSensorParamsInfo infoSub) {
         String channelNumber = StringUtil.formatStringTwo(infoSub.getChannelNumber());
         String cmdCorrectionValueFormat = "##167" + channelNumber + "{}\r\n";//修正参数
         String cmdInstallElevationFormat = "##169" + channelNumber + "{}\r\n";//安装高程
-        String sensorType = infoSub.getSensorType();
+        SensorType sensorType = infoSub.getSensorType();
         switch (sensorType) {
-            case "50": {//基康渗压计(BGK-4500)
+            case KANG_PERCOLATE: {//基康渗压计(BGK-4500)
                 SensorKangPercolateInfo sensorInfo = (SensorKangPercolateInfo) infoSub.getSensorData();
                 correctValueCmdList.add(cmdCorrectionValueFormat.replace("{}", "A" + sensorInfo.getPolynomialRatioA()));
                 correctValueCmdList.add(cmdCorrectionValueFormat.replace("{}", "B" + sensorInfo.getPolynomialRatioB()));
@@ -203,7 +204,7 @@ public class VibratingWireSensorConfigActivity extends BaseSensorConfigActivity 
             }
             break;
 
-            case "51": {//葛南渗压计(VWP-03)
+            case GUDAN_PERCOLATE: {//葛南渗压计(VWP-03)
                 SensorGudanPercolateInfo sensorInfo = (SensorGudanPercolateInfo) infoSub.getSensorData();
                 correctValueCmdList.add(cmdCorrectionValueFormat.replace("{}", "A" + sensorInfo.getSensitivityK()));
                 correctValueCmdList.add(cmdCorrectionValueFormat.replace("{}", "B" + sensorInfo.getTemperatureCoefficientB()));
@@ -215,7 +216,7 @@ public class VibratingWireSensorConfigActivity extends BaseSensorConfigActivity 
             }
             break;
 
-            case "58": {//军星轴力计(ZLJ-300T)
+            case JUNXING_ZLJ_300T: {//军星轴力计(ZLJ-300T)
                 SensorJunXingZljInfo sensorInfo = (SensorJunXingZljInfo) infoSub.getSensorData();
                 correctValueCmdList.add(cmdCorrectionValueFormat.replace("{}", "A" + sensorInfo.getSensitivityK()));
                 correctValueCmdList.add(cmdCorrectionValueFormat.replace("{}", "M" + sensorInfo.getManualCorrection()));

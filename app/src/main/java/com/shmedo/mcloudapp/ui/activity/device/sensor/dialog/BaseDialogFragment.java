@@ -14,8 +14,8 @@ import android.view.WindowManager;
 
 import androidx.fragment.app.DialogFragment;
 
+import com.shmedo.core.model.CollectorSensorParamsInfo;
 import com.shmedo.mcloudapp.R;
-import com.shmedo.mcloudapp.entity.ble.collector.CollectorSensorParamsInfoSub;
 import com.shmedo.mcloudapp.ui.activity.ScanActivity;
 import com.shmedo.mcloudapp.util.XPermissionUtils;
 
@@ -27,7 +27,7 @@ import timber.log.Timber;
  *
  */
 public abstract class BaseDialogFragment extends DialogFragment {
-    protected CollectorSensorParamsInfoSub collectorSensorParamsInfoSub;
+    protected CollectorSensorParamsInfo collectorSensorParamsInfo;
 
     protected String selectedChannelNumber = "";
 

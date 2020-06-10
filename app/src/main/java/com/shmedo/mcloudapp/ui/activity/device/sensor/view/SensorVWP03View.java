@@ -12,11 +12,11 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.hjq.toast.ToastUtils;
+import com.shmedo.core.model.CollectorSensorParamsInfo;
 import com.shmedo.core.model.SensorGudanPercolateInfo;
 import com.shmedo.core.utils.StringUtil;
 import com.shmedo.core.utils.ValidateUtil;
 import com.shmedo.mcloudapp.R;
-import com.shmedo.mcloudapp.entity.ble.collector.CollectorSensorParamsInfoSub;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -78,7 +78,7 @@ public class SensorVWP03View extends FrameLayout {
         mEtCorrectValue.setText("0");
     }
 
-    public void bindSensorData(CollectorSensorParamsInfoSub infoSub) {
+    public void bindSensorData(CollectorSensorParamsInfo infoSub) {
         SensorGudanPercolateInfo sensorInfo = (SensorGudanPercolateInfo) infoSub.getSensorData();
         mEtTriggerThreshold.setText((int) Double.parseDouble(sensorInfo.getTriggerThreshold()) + "");
         mEtSensitivityCoefficient.setText(sensorInfo.getSensitivityK());
@@ -99,7 +99,7 @@ public class SensorVWP03View extends FrameLayout {
         mEtReferenceValue.setText(sensorInfo.getReferenceValue());
     }
 
-    public boolean updateSensorData(CollectorSensorParamsInfoSub infoSub) {
+    public boolean updateSensorData(CollectorSensorParamsInfo infoSub) {
         if (!checkValue()) {
             return false;
         }
@@ -148,10 +148,6 @@ public class SensorVWP03View extends FrameLayout {
             return false;
         }
 
-        if (!TextUtils.isEmpty(referenceValue) && !ValidateUtil.isDouble(referenceValue)) {
-            ToastUtils.show("请输入正确的基准值!");
-            return false;
-        }
 
         if (!TextUtils.isEmpty(initialTemperature) && !ValidateUtil.isDouble(initialTemperature)) {
             ToastUtils.show("请输入正确的初始温度!");

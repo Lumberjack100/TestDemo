@@ -10,6 +10,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.hjq.toast.ToastUtils;
+import com.shmedo.core.enums.SensorType;
 import com.shmedo.core.model.SensorInclinometerInfo;
 import com.shmedo.core.model.SensorInfrasoundInfo;
 import com.shmedo.core.model.SensorRadarLevelInfo;
@@ -47,7 +48,7 @@ public class CommonSensorConfigDialogFragment extends BaseDialogFragment {
     ViewGroup measureLongLayout;
 
     private String address,triggerThreshold, correctValue, measureLong;
-    private String sensorType;//传感器类型
+    private SensorType sensorType;//传感器类型
 
 
     @Override
@@ -58,7 +59,7 @@ public class CommonSensorConfigDialogFragment extends BaseDialogFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        collectorSensorParamsInfoSub = ((BaseSensorConfigActivity) getActivity()).getCurrentCollectorSensorParamsInfoSub();
+        collectorSensorParamsInfo = ((BaseSensorConfigActivity) getActivity()).getCurrentCollectorSensorParamsInfo();
     }
 
     @Override
@@ -72,9 +73,9 @@ public class CommonSensorConfigDialogFragment extends BaseDialogFragment {
     }
 
     private void initView() {
-        if (collectorSensorParamsInfoSub != null) {
-            sensorType = collectorSensorParamsInfoSub.getSensorType();
-            if (sensorType.equals("04")) {
+        if (collectorSensorParamsInfo != null) {
+            sensorType = collectorSensorParamsInfo.getSensorType();
+            if (sensorType.toString().equals("04")) {
                 measureLongLayout.setVisibility(View.VISIBLE);
             } else {
                 measureLongLayout.setVisibility(View.GONE);
@@ -89,46 +90,46 @@ public class CommonSensorConfigDialogFragment extends BaseDialogFragment {
 
 
     private void setValue() {
-        mEtModbusAddress.setText(collectorSensorParamsInfoSub.getSensorAddress());
+        mEtModbusAddress.setText(collectorSensorParamsInfo.getSensorAddress());
         switch (sensorType) {
-            case "02"://拉线位移计
+            case WIRE_SHIFT://拉线位移计
                 mTvAlarmValue.setText("触发阈值(单位:mm)");
                 mTvCorrectValue.setText("修正值(单位:m)");
-                SensorWireShiftInfo sensorWireShiftInfo = (SensorWireShiftInfo) collectorSensorParamsInfoSub.getSensorData();
+                SensorWireShiftInfo sensorWireShiftInfo = (SensorWireShiftInfo) collectorSensorParamsInfo.getSensorData();
                 mEtAlarmValue.setText(sensorWireShiftInfo.getTriggerThreshold() + "");
                 mEtCorrectValue.setText(String.valueOf(sensorWireShiftInfo.getCorrectionValue()));
                 break;
 
-            case "03"://土壤含水率
+            case SOIL_MOISTURE://土壤含水率
                 mTvAlarmValue.setText("触发阈值(单位:%rh)");
                 mTvCorrectValue.setText("修正值(单位:%rh)");
-                SensorSoilMoistureInfo sensorSoilMoistureInfo = (SensorSoilMoistureInfo) collectorSensorParamsInfoSub.getSensorData();
+                SensorSoilMoistureInfo sensorSoilMoistureInfo = (SensorSoilMoistureInfo) collectorSensorParamsInfo.getSensorData();
                 mEtAlarmValue.setText(sensorSoilMoistureInfo.getTriggerThreshold());
                 mEtCorrectValue.setText(String.valueOf(sensorSoilMoistureInfo.getRevised()));
                 break;
 
-            case "04"://测斜仪
+            case INCLINOMETER://测斜仪
                 mTvAlarmValue.setText("触发阈值(单位:mm)");
                 mTvCorrectValue.setText("修正值(单位:m)");
                 mTvMeasureLong.setText("测段长(单位:mm)");
-                SensorInclinometerInfo sensorInclinometerInfo = (SensorInclinometerInfo) collectorSensorParamsInfoSub.getSensorData();
+                SensorInclinometerInfo sensorInclinometerInfo = (SensorInclinometerInfo) collectorSensorParamsInfo.getSensorData();
                 mEtAlarmValue.setText(sensorInclinometerInfo.getTriggerThreshold());
                 mEtCorrectValue.setText(String.valueOf(sensorInclinometerInfo.getCorrectionValue()));
                 mEtMeasureLong.setText(sensorInclinometerInfo.getMeasureLength());
                 break;
 
-            case "07"://雷达物位计
+            case RADAR_LEVEL_GAUGE://雷达物位计
                 mTvAlarmValue.setText("触发阈值(单位:mm)");
                 mTvCorrectValue.setText("修正值(单位:mm)");
-                SensorRadarLevelInfo sensorRadarLevelInfo = (SensorRadarLevelInfo) collectorSensorParamsInfoSub.getSensorData();
+                SensorRadarLevelInfo sensorRadarLevelInfo = (SensorRadarLevelInfo) collectorSensorParamsInfo.getSensorData();
                 mEtAlarmValue.setText(sensorRadarLevelInfo.getTriggerThreshold());
                 mEtCorrectValue.setText(String.valueOf(sensorRadarLevelInfo.getRevised()));
                 break;
 
-            case "21"://次声
+            case INFRASOUND_SENSOR://次声
                 mTvAlarmValue.setText("触发阈值(单位:Hz)");
                 mTvCorrectValue.setText("修正值(单位:Hz)");
-                SensorInfrasoundInfo sensorInfrasoundInfo = (SensorInfrasoundInfo) collectorSensorParamsInfoSub.getSensorData();
+                SensorInfrasoundInfo sensorInfrasoundInfo = (SensorInfrasoundInfo) collectorSensorParamsInfo.getSensorData();
                 mEtAlarmValue.setText(sensorInfrasoundInfo.getTriggerThreshold());
                 mEtCorrectValue.setText(String.valueOf(sensorInfrasoundInfo.getRevised()));
                 break;
@@ -218,41 +219,41 @@ public class CommonSensorConfigDialogFragment extends BaseDialogFragment {
     }
 
     private void updateSensorData() {
-        collectorSensorParamsInfoSub.setSensorAddress(address);
+        collectorSensorParamsInfo.setSensorAddress(address);
         switch (sensorType) {
-            case "02"://拉线位移计
-                SensorWireShiftInfo sensorWireShiftInfo = (SensorWireShiftInfo) collectorSensorParamsInfoSub.getSensorData();
+            case WIRE_SHIFT://拉线位移计
+                SensorWireShiftInfo sensorWireShiftInfo = (SensorWireShiftInfo) collectorSensorParamsInfo.getSensorData();
                 sensorWireShiftInfo.setTriggerThreshold(Integer.parseInt(triggerThreshold));
                 sensorWireShiftInfo.setCorrectionValue(Double.parseDouble(correctValue));
-                collectorSensorParamsInfoSub.setSensorData(sensorWireShiftInfo);
+                collectorSensorParamsInfo.setSensorData(sensorWireShiftInfo);
                 break;
 
-            case "03"://土壤含水率
-                SensorSoilMoistureInfo sensorSoilMoistureInfo = (SensorSoilMoistureInfo) collectorSensorParamsInfoSub.getSensorData();
+            case SOIL_MOISTURE://土壤含水率
+                SensorSoilMoistureInfo sensorSoilMoistureInfo = (SensorSoilMoistureInfo) collectorSensorParamsInfo.getSensorData();
                 sensorSoilMoistureInfo.setTriggerThreshold(triggerThreshold);
                 sensorSoilMoistureInfo.setRevised(Double.parseDouble(correctValue));
-                collectorSensorParamsInfoSub.setSensorData(sensorSoilMoistureInfo);
+                collectorSensorParamsInfo.setSensorData(sensorSoilMoistureInfo);
                 break;
 
-            case "04"://测斜仪
-                SensorInclinometerInfo sensorInclinometerInfo = (SensorInclinometerInfo) collectorSensorParamsInfoSub.getSensorData();
+            case INCLINOMETER://测斜仪
+                SensorInclinometerInfo sensorInclinometerInfo = (SensorInclinometerInfo) collectorSensorParamsInfo.getSensorData();
                 sensorInclinometerInfo.setTriggerThreshold(Integer.parseInt(triggerThreshold));
                 sensorInclinometerInfo.setCorrectionValue(Double.parseDouble(correctValue));
                 sensorInclinometerInfo.setMeasureLength(Integer.parseInt(measureLong));
                 break;
 
-            case "07"://雷达物位计
-                SensorRadarLevelInfo sensorRadarLevelInfo = (SensorRadarLevelInfo) collectorSensorParamsInfoSub.getSensorData();
+            case RADAR_LEVEL_GAUGE://雷达物位计
+                SensorRadarLevelInfo sensorRadarLevelInfo = (SensorRadarLevelInfo) collectorSensorParamsInfo.getSensorData();
                 sensorRadarLevelInfo.setTriggerThreshold(triggerThreshold);
                 sensorRadarLevelInfo.setRevised(Double.parseDouble(correctValue));
-                collectorSensorParamsInfoSub.setSensorData(sensorRadarLevelInfo);
+                collectorSensorParamsInfo.setSensorData(sensorRadarLevelInfo);
                 break;
 
-            case "21"://次声
-                SensorInfrasoundInfo sensorInfrasoundInfo = (SensorInfrasoundInfo) collectorSensorParamsInfoSub.getSensorData();
+            case INFRASOUND_SENSOR://次声
+                SensorInfrasoundInfo sensorInfrasoundInfo = (SensorInfrasoundInfo) collectorSensorParamsInfo.getSensorData();
                 sensorInfrasoundInfo.setTriggerThreshold(triggerThreshold);
                 sensorInfrasoundInfo.setRevised(Double.parseDouble(correctValue));
-                collectorSensorParamsInfoSub.setSensorData(sensorInfrasoundInfo);
+                collectorSensorParamsInfo.setSensorData(sensorInfrasoundInfo);
                 break;
         }
     }

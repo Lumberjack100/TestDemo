@@ -9,9 +9,9 @@ import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.shmedo.core.model.CollectorSensorParamsInfo;
 import com.shmedo.core.model.SensorGudanSoilPressureInfo;
 import com.shmedo.mcloudapp.R;
-import com.shmedo.mcloudapp.entity.ble.collector.CollectorSensorParamsInfoSub;
 import com.shmedo.mcloudapp.entity.event.SensorDataEvent;
 import com.shmedo.mcloudapp.interfaces.MyOnClickListener;
 import com.shmedo.mcloudapp.util.GsonFactory;
@@ -26,10 +26,10 @@ import org.greenrobot.eventbus.EventBus;
  * 创建时间:  2019/6/14 09:47
  *
  */
-public class DialogStyle515255 implements IDialogOpt<CollectorSensorParamsInfoSub>{
+public class DialogStyle515255 implements IDialogOpt<CollectorSensorParamsInfo>{
     private Context mContext;
     private View contentView;
-    private CollectorSensorParamsInfoSub collectorSensorParamsInfoSub;
+    private CollectorSensorParamsInfo collectorSensorParamsInfo;
     private SensorGudanSoilPressureInfo sensorGudanSoilPressureInfo = new SensorGudanSoilPressureInfo();
     private MyOnClickListener myOnClickListener;
     private SensorDataEvent event = new SensorDataEvent();
@@ -59,8 +59,8 @@ public class DialogStyle515255 implements IDialogOpt<CollectorSensorParamsInfoSu
 
 
     @Override
-    public void initData(final CollectorSensorParamsInfoSub info) {
-        collectorSensorParamsInfoSub = info;
+    public void initData(final CollectorSensorParamsInfo info) {
+        collectorSensorParamsInfo = info;
          sensorGudanSoilPressureInfo = (SensorGudanSoilPressureInfo) info.getSensorData();
          
         TextView cancel = contentView.findViewById(R.id.tv_cancel);
@@ -74,7 +74,7 @@ public class DialogStyle515255 implements IDialogOpt<CollectorSensorParamsInfoSu
         final EditText manualCorrection = contentView.findViewById(R.id.manualCorrection);
         final EditText note = contentView.findViewById(R.id.et_note);
 
-        modbusAddress.setText(collectorSensorParamsInfoSub.getChannelNumber());
+        modbusAddress.setText(collectorSensorParamsInfo.getChannelNumber());
         triggerThreshold.setText(String.valueOf(sensorGudanSoilPressureInfo.getTriggerThreshold()));
         sensitivityK.setText(sensorGudanSoilPressureInfo.getSensitivityK());
         temperatureCoefficientB.setText(String.valueOf(sensorGudanSoilPressureInfo.getTemperatureCoefficientB()));
@@ -91,11 +91,11 @@ public class DialogStyle515255 implements IDialogOpt<CollectorSensorParamsInfoSu
                     sensorGudanSoilPressureInfo.setTemperatureCoefficientB(Double.parseDouble(temperatureCoefficientB.getText().toString()));
                     sensorGudanSoilPressureInfo.setDatumValueF0(Double.parseDouble(datumValueF0.getText().toString()));
                     sensorGudanSoilPressureInfo.setManualCorrection(manualCorrection.getText().toString());
-                    collectorSensorParamsInfoSub.setSensorData(sensorGudanSoilPressureInfo);
-                    collectorSensorParamsInfoSub.setSensorAddress(modbusAddress.getText().toString());
+                    collectorSensorParamsInfo.setSensorData(sensorGudanSoilPressureInfo);
+                    collectorSensorParamsInfo.setSensorAddress(modbusAddress.getText().toString());
 
                     if(myOnClickListener.onSureClick(view)){
-                        String json = GsonFactory.getGson().toJson(collectorSensorParamsInfoSub);
+                        String json = GsonFactory.getGson().toJson(collectorSensorParamsInfo);
                         event.setType("515255");
                         event.setMessage(json);
                         EventBus.getDefault().post(event);
@@ -122,7 +122,7 @@ public class DialogStyle515255 implements IDialogOpt<CollectorSensorParamsInfoSu
 
 
     @Override
-    public CollectorSensorParamsInfoSub getData() {
-        return collectorSensorParamsInfoSub;
+    public CollectorSensorParamsInfo getData() {
+        return collectorSensorParamsInfo;
     }
 }

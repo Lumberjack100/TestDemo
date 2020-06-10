@@ -1,10 +1,6 @@
 package com.shmedo.mcloudapp.util.bleutil;
 
-import com.shmedo.core.cmd.CommandResult;
-import com.shmedo.core.cmd.parser.ParseManager;
 import com.shmedo.core.enums.CollectorModel;
-import com.shmedo.core.model.CollectorSensorParamsInfo;
-import com.shmedo.mcloudapp.entity.ble.collector.CollectorSensorParamsInfoSub;
 
 /**
  * 项目名：  mCloudapp
@@ -15,103 +11,6 @@ import com.shmedo.mcloudapp.entity.ble.collector.CollectorSensorParamsInfoSub;
  * 描述：   蓝牙交互数据解析工具类
  */
 public class BlueResultParserUtil {
-    //"$$1010200,2,2,10,0.000000\r\n";
-    public static CollectorSensorParamsInfoSub setCollectorParams(String result) {
-        CollectorSensorParamsInfoSub collectorSensorParamsInfoSub = new CollectorSensorParamsInfoSub();
-        CommandResult<CollectorSensorParamsInfo> bean = ParseManager.getInstance().parse(result);
-        CollectorSensorParamsInfo collectorSensorParamsInfo = null;
-
-        if (bean.isSuccess()) {
-            collectorSensorParamsInfo = bean.getResult();
-            collectorSensorParamsInfoSub.setSensorAddress(collectorSensorParamsInfo.getSensorAddress());
-            collectorSensorParamsInfoSub.setSensorData(collectorSensorParamsInfo.getSensorData());
-            collectorSensorParamsInfoSub.setChannelNumber(collectorSensorParamsInfo.getChannelNumber());
-            collectorSensorParamsInfoSub.setCollectorModel(collectorSensorParamsInfo.getCollectorModel().toString());
-
-            return setCollectorSeneorInfo(collectorSensorParamsInfo, collectorSensorParamsInfoSub);
-        } else {
-
-            return collectorSensorParamsInfoSub;
-        }
-    }
-
-
-    /**
-     * 设置传感器类型
-     */
-    private static CollectorSensorParamsInfoSub setCollectorSeneorInfo(CollectorSensorParamsInfo info, CollectorSensorParamsInfoSub infoSub) {
-        switch (info.getSensorType()) {
-            case WIRE_SHIFT://拉线位移计
-                infoSub.setSensorType("02");
-                break;
-
-            case SOIL_MOISTURE://土壤含水率
-                infoSub.setSensorType("03");
-                break;
-
-            case INCLINOMETER://测斜仪
-                infoSub.setSensorType("04");
-                break;
-
-            case ULTRASONIC_LEVEL_GAUGE://超声波物位计
-                infoSub.setSensorType("06");
-                break;
-
-            case RADAR_LEVEL_GAUGE://雷达物位计
-                infoSub.setSensorType("07");
-                break;
-
-            case MOISTURE_METER://墒情计
-                infoSub.setSensorType("08");
-                break;
-
-            case TEMPERATURE_HUMIDITY_METER://温湿度计
-                infoSub.setSensorType("12");
-                break;
-
-            case UPLIFT_PRESSURE_GAUGE://扬压力计
-                infoSub.setSensorType("15");
-                break;
-
-            case INFRASOUND_SENSOR://次声传感器
-                infoSub.setSensorType("21");
-                break;
-
-            case KANG_PERCOLATE://基康渗压计
-                infoSub.setSensorType("50");
-                break;
-
-            case GUDAN_PERCOLATE://葛南渗压计
-                infoSub.setSensorType("51");
-                break;
-
-            case GUDAN_SOIL_PRESSURE://葛南土压力盒
-                infoSub.setSensorType("52");
-                break;
-
-            case GUDAN_STRESS://葛南应力计
-                infoSub.setSensorType("53");
-                break;
-
-            case GUDAN_NOT_STRESS://葛南无应力计
-                infoSub.setSensorType("54");
-                break;
-
-            case GUDAN_DISPLACEMENT_METER://葛南位移计
-                infoSub.setSensorType("55");
-                break;
-
-            case JUNXING_ZLJ_300T://军星轴力计 ZLJ-300T
-                infoSub.setSensorType("58");
-                break;
-
-            default:
-                infoSub.setSensorType("00");//未知的传感器类型
-        }
-
-        return infoSub;
-    }
-
 
     /**
      * 根据采集器型号得到采集器名称

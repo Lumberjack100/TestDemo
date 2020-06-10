@@ -69,7 +69,7 @@ public class Osmometer_AxialForceGaugeDialogFragment extends BaseDialogFragment 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        collectorSensorParamsInfoSub = ((BaseSensorConfigActivity) getActivity()).getCurrentCollectorSensorParamsInfoSub();
+        collectorSensorParamsInfo = ((BaseSensorConfigActivity) getActivity()).getCurrentCollectorSensorParamsInfo();
         wayList.clear();
         wayList.addAll(sensorWays);
     }
@@ -118,29 +118,29 @@ public class Osmometer_AxialForceGaugeDialogFragment extends BaseDialogFragment 
     }
 
     private void initSpecifiedSensorView() {
-        switch (collectorSensorParamsInfoSub.getSensorType()) {
-            case "50"://基康渗压计(BGK-4500)
+        switch (collectorSensorParamsInfo.getSensorType()) {
+            case KANG_PERCOLATE://基康渗压计(BGK-4500)
                 spinnerType.setSelection(0);
                 sensorBGK4500View.setVisibility(View.VISIBLE);
                 sensorVWP03View.setVisibility(View.GONE);
                 sensorZLJ300tView.setVisibility(View.GONE);
-                sensorBGK4500View.bindSensorData(collectorSensorParamsInfoSub);
+                sensorBGK4500View.bindSensorData(collectorSensorParamsInfo);
                 break;
 
-            case "51"://葛南渗压计(VWP-03)
+            case GUDAN_PERCOLATE://葛南渗压计(VWP-03)
                 spinnerType.setSelection(1);
                 sensorBGK4500View.setVisibility(View.GONE);
                 sensorVWP03View.setVisibility(View.VISIBLE);
                 sensorZLJ300tView.setVisibility(View.GONE);
-                sensorVWP03View.bindSensorData(collectorSensorParamsInfoSub);
+                sensorVWP03View.bindSensorData(collectorSensorParamsInfo);
                 break;
 
-            case "58"://军星轴力计(ZLJ-300T)
+            case JUNXING_ZLJ_300T://军星轴力计(ZLJ-300T)
                 spinnerType.setSelection(2);
                 sensorBGK4500View.setVisibility(View.GONE);
                 sensorVWP03View.setVisibility(View.GONE);
                 sensorZLJ300tView.setVisibility(View.VISIBLE);
-                sensorZLJ300tView.bindSensorData(collectorSensorParamsInfoSub);
+                sensorZLJ300tView.bindSensorData(collectorSensorParamsInfo);
                 break;
         }
     }
@@ -161,7 +161,7 @@ public class Osmometer_AxialForceGaugeDialogFragment extends BaseDialogFragment 
             }
         });
 
-        String channelNumber = StringUtil.formatStringTwo(collectorSensorParamsInfoSub.getChannelNumber());
+        String channelNumber = StringUtil.formatStringTwo(collectorSensorParamsInfo.getChannelNumber());
         switch (channelNumber) {
             case "00":
                 spinnerWay.setSelection(0);
@@ -203,15 +203,15 @@ public class Osmometer_AxialForceGaugeDialogFragment extends BaseDialogFragment 
         boolean updateDataSuccess = false;
         switch (selectedSensorType) {
             case "50":
-                updateDataSuccess = sensorBGK4500View.updateSensorData(collectorSensorParamsInfoSub);
+                updateDataSuccess = sensorBGK4500View.updateSensorData(collectorSensorParamsInfo);
                 break;
 
             case "51":
-                updateDataSuccess = sensorVWP03View.updateSensorData(collectorSensorParamsInfoSub);
+                updateDataSuccess = sensorVWP03View.updateSensorData(collectorSensorParamsInfo);
                 break;
 
             case "58":
-                updateDataSuccess = sensorZLJ300tView.updateSensorData(collectorSensorParamsInfoSub);
+                updateDataSuccess = sensorZLJ300tView.updateSensorData(collectorSensorParamsInfo);
                 break;
         }
 
@@ -220,8 +220,9 @@ public class Osmometer_AxialForceGaugeDialogFragment extends BaseDialogFragment 
             return;
         }
 
-        collectorSensorParamsInfoSub.setChannelNumber(selectedChannelNumber);
-        collectorSensorParamsInfoSub.setSensorType(selectedSensorType);
+        collectorSensorParamsInfo.setChannelNumber(selectedChannelNumber);
+        collectorSensorParamsInfo.setSensorType(SensorType.value(selectedSensorType));
+
 
         DialogFragmentClickListener listener = (DialogFragmentClickListener) getActivity();
         if (listener.onPositiveClick(view)) {

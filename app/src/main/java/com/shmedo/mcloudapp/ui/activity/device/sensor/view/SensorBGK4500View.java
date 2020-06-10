@@ -14,11 +14,11 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.hjq.toast.ToastUtils;
+import com.shmedo.core.model.CollectorSensorParamsInfo;
 import com.shmedo.core.model.SensorKangPercolateInfo;
 import com.shmedo.core.utils.StringUtil;
 import com.shmedo.core.utils.ValidateUtil;
 import com.shmedo.mcloudapp.R;
-import com.shmedo.mcloudapp.entity.ble.collector.CollectorSensorParamsInfoSub;
 import com.shmedo.mcloudapp.util.KeyBordUtils;
 
 import butterknife.BindView;
@@ -83,7 +83,7 @@ public class SensorBGK4500View extends FrameLayout {
         mEtCorrectValue.setText("0");
     }
 
-    public void bindSensorData(CollectorSensorParamsInfoSub infoSub) {
+    public void bindSensorData(CollectorSensorParamsInfo infoSub) {
         SensorKangPercolateInfo sensorInfo = (SensorKangPercolateInfo) infoSub.getSensorData();
         mEtTriggerThreshold.setText((int) Double.parseDouble(sensorInfo.getTriggerThreshold()) + "");
         mEtCoefficientA.setText(sensorInfo.getPolynomialRatioA());
@@ -106,7 +106,7 @@ public class SensorBGK4500View extends FrameLayout {
         mEtCoefficientK.setText(sensorInfo.getTemperatureCoefficientK());
     }
 
-    public boolean updateSensorData(CollectorSensorParamsInfoSub infoSub) {
+    public boolean updateSensorData(CollectorSensorParamsInfo infoSub) {
         if (!checkValue()) {
             return false;
         }
