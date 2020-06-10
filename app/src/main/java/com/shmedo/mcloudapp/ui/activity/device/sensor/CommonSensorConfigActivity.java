@@ -1,9 +1,11 @@
 package com.shmedo.mcloudapp.ui.activity.device.sensor;
 
-import android.content.Context;
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+
+import androidx.fragment.app.Fragment;
 
 import com.hjq.toast.ToastUtils;
 import com.shmedo.core.cmd.CommandResult;
@@ -29,10 +31,17 @@ import timber.log.Timber;
  */
 public class CommonSensorConfigActivity extends BaseSensorConfigActivity {
 
-    public static void startActivity(Context context, String collectorSensorConfig) {
+    public static void startActivityForResultByFragment(Fragment context, String collectorSensorConfig, int requestCode) {
+        Intent intent = new Intent(context.getActivity(), CommonSensorConfigActivity.class);
+        intent.putExtra(Extras.SPLICE_SENSOR_PARAMS, collectorSensorConfig);
+        context.startActivityForResult(intent, requestCode);
+    }
+
+
+    public static void startActivityForResult(Activity context, String collectorSensorConfig, int requestCode) {
         Intent intent = new Intent(context, CommonSensorConfigActivity.class);
-        intent.putExtra(Extras.SENSOR_PARAMS, collectorSensorConfig);
-        context.startActivity(intent);
+        intent.putExtra(Extras.SPLICE_SENSOR_PARAMS, collectorSensorConfig);
+        context.startActivityForResult(intent, requestCode);
     }
 
 
@@ -65,7 +74,8 @@ public class CommonSensorConfigActivity extends BaseSensorConfigActivity {
         builderFirst.append("##150");
         builderFirst.append(defaultCollectorSensorParamsInfoSub.getCollectorModel() + StringUtil.formatStringTwo(String.valueOf(collectorSensorParamsInfoSubs.size())));
         for (CollectorSensorParamsInfoSub paramsInfoSub : collectorSensorParamsInfoSubs) {
-            builderFirst.append(StringUtil.formatStringTwo(paramsInfoSub.getSensorAddress()) + StringUtil.formatStringTwo(paramsInfoSub.getSensorType()));
+            spliceStringCollectorSensorParams(paramsInfoSub);
+            builderFirst.append(StringUtil.formatStringTwo(paramsInfoSub.getChannelNumber()) + StringUtil.formatStringTwo(paramsInfoSub.getSensorType()));
         }
         builderFirst.append("\r\n");
         String command = String.valueOf(builderFirst);
@@ -93,7 +103,7 @@ public class CommonSensorConfigActivity extends BaseSensorConfigActivity {
                 SensorWireShiftInfo sensorWireShiftInfo = (SensorWireShiftInfo) paramsInfoSub.getSensorData();
                 command = "##168" +
                         StringUtil.formatStringTwo(paramsInfoSub.getCollectorModel()) +
-                        StringUtil.formatStringTwo(paramsInfoSub.getSensorAddress()) +
+                        StringUtil.formatStringTwo(paramsInfoSub.getChannelNumber()) +
                         sensorWireShiftInfo.getTriggerThreshold() + "\r\n";
                 break;
 
@@ -101,7 +111,7 @@ public class CommonSensorConfigActivity extends BaseSensorConfigActivity {
                 SensorInfrasoundInfo sensorInfrasoundInfo = (SensorInfrasoundInfo) paramsInfoSub.getSensorData();
                 command = "##168" +
                         StringUtil.formatStringTwo(paramsInfoSub.getCollectorModel()) +
-                        StringUtil.formatStringTwo(paramsInfoSub.getSensorAddress()) +
+                        StringUtil.formatStringTwo(paramsInfoSub.getChannelNumber()) +
                         sensorInfrasoundInfo.getTriggerThreshold() + "\r\n";
                 break;
 
@@ -109,7 +119,7 @@ public class CommonSensorConfigActivity extends BaseSensorConfigActivity {
                 SensorSoilMoistureInfo sensorSoilMoistureInfo = (SensorSoilMoistureInfo) paramsInfoSub.getSensorData();
                 command = "##168" +
                         StringUtil.formatStringTwo(paramsInfoSub.getCollectorModel()) +
-                        StringUtil.formatStringTwo(paramsInfoSub.getSensorAddress()) +
+                        StringUtil.formatStringTwo(paramsInfoSub.getChannelNumber()) +
                         sensorSoilMoistureInfo.getTriggerThreshold() + "\r\n";
                 break;
 
@@ -117,7 +127,7 @@ public class CommonSensorConfigActivity extends BaseSensorConfigActivity {
                 SensorRadarLevelInfo sensorRadarLevelInfo = (SensorRadarLevelInfo) paramsInfoSub.getSensorData();
                 command = "##168" +
                         StringUtil.formatStringTwo(paramsInfoSub.getCollectorModel()) +
-                        StringUtil.formatStringTwo(paramsInfoSub.getSensorAddress()) +
+                        StringUtil.formatStringTwo(paramsInfoSub.getChannelNumber()) +
                         sensorRadarLevelInfo.getTriggerThreshold() + "\r\n";
                 break;
 
@@ -125,13 +135,13 @@ public class CommonSensorConfigActivity extends BaseSensorConfigActivity {
                 SensorInclinometerInfo sensorInclinometerInfo = (SensorInclinometerInfo) paramsInfoSub.getSensorData();
                 command = "##168" +
                         StringUtil.formatStringTwo(paramsInfoSub.getCollectorModel()) +
-                        StringUtil.formatStringTwo(paramsInfoSub.getSensorAddress()) +
+                        StringUtil.formatStringTwo(paramsInfoSub.getChannelNumber()) +
                         sensorInclinometerInfo.getTriggerThreshold() + "\r\n";
                 break;
         }
 
         sendCommonCommandImmediately(command);
-        Timber.d("设置 %s %s 通道号的传感器触发阈值参数===%s", collectorName, StringUtil.formatStringTwo(paramsInfoSub.getSensorAddress()), command);
+        Timber.d("设置 %s %s 通道号的传感器触发阈值参数===%s", collectorName, StringUtil.formatStringTwo(paramsInfoSub.getChannelNumber()), command);
     }
 
     /**
@@ -150,7 +160,7 @@ public class CommonSensorConfigActivity extends BaseSensorConfigActivity {
                 SensorWireShiftInfo sensorWireShiftInfo = (SensorWireShiftInfo) paramsInfoSub.getSensorData();
                 command = "##165" +
                         StringUtil.formatStringTwo(paramsInfoSub.getCollectorModel()) +
-                        StringUtil.formatStringTwo(paramsInfoSub.getSensorAddress()) +
+                        StringUtil.formatStringTwo(paramsInfoSub.getChannelNumber()) +
                         sensorWireShiftInfo.getCorrectionValue() + "\r\n";
                 break;
 
@@ -158,7 +168,7 @@ public class CommonSensorConfigActivity extends BaseSensorConfigActivity {
                 SensorInfrasoundInfo sensorInfrasoundInfo = (SensorInfrasoundInfo) paramsInfoSub.getSensorData();
                 command = "##165" +
                         StringUtil.formatStringTwo(paramsInfoSub.getCollectorModel()) +
-                        StringUtil.formatStringTwo(paramsInfoSub.getSensorAddress()) +
+                        StringUtil.formatStringTwo(paramsInfoSub.getChannelNumber()) +
                         sensorInfrasoundInfo.getRevised() + "\r\n";
                 break;
 
@@ -166,7 +176,7 @@ public class CommonSensorConfigActivity extends BaseSensorConfigActivity {
                 SensorSoilMoistureInfo sensorSoilMoistureInfo = (SensorSoilMoistureInfo) paramsInfoSub.getSensorData();
                 command = "##165" +
                         StringUtil.formatStringTwo(paramsInfoSub.getCollectorModel()) +
-                        StringUtil.formatStringTwo(paramsInfoSub.getSensorAddress()) +
+                        StringUtil.formatStringTwo(paramsInfoSub.getChannelNumber()) +
                         sensorSoilMoistureInfo.getRevised() + "\r\n";
                 break;
 
@@ -174,7 +184,7 @@ public class CommonSensorConfigActivity extends BaseSensorConfigActivity {
                 SensorRadarLevelInfo sensorRadarLevelInfo = (SensorRadarLevelInfo) paramsInfoSub.getSensorData();
                 command = "##165" +
                         StringUtil.formatStringTwo(paramsInfoSub.getCollectorModel()) +
-                        StringUtil.formatStringTwo(paramsInfoSub.getSensorAddress()) +
+                        StringUtil.formatStringTwo(paramsInfoSub.getChannelNumber()) +
                         sensorRadarLevelInfo.getRevised() + "\r\n";
                 break;
 
@@ -182,12 +192,12 @@ public class CommonSensorConfigActivity extends BaseSensorConfigActivity {
                 SensorInclinometerInfo sensorInclinometerInfo = (SensorInclinometerInfo) paramsInfoSub.getSensorData();
                 command = "##165" +
                         StringUtil.formatStringTwo(paramsInfoSub.getCollectorModel()) +
-                        StringUtil.formatStringTwo(paramsInfoSub.getSensorAddress()) +
+                        StringUtil.formatStringTwo(paramsInfoSub.getChannelNumber()) +
                         sensorInclinometerInfo.getCorrectionValue() + "\r\n";
                 break;
         }
         sendCommonCommandImmediately(command);
-        Timber.d("设置 %s 采集器 %s 地址的传感器修正值参数===%s", collectorModel, StringUtil.formatStringTwo(paramsInfoSub.getSensorAddress()), command);
+        Timber.d("设置 %s 采集器 %s 地址的传感器修正值参数===%s", collectorModel, StringUtil.formatStringTwo(paramsInfoSub.getChannelNumber()), command);
     }
 
 
@@ -231,6 +241,9 @@ public class CommonSensorConfigActivity extends BaseSensorConfigActivity {
                     hander.postDelayed(new Runnable() {
                         @Override
                         public void run() {
+                            Intent intent = getIntent();
+                            intent.putExtra(Extras.SPLICE_SENSOR_PARAMS, sbCollectorSensorConfig.toString());
+                            setResult(RESULT_OK, intent);
                             finish();
                         }
                     }, 2000);

@@ -23,7 +23,7 @@ public interface Extras {
 
     String COLLECTOR_MODE = "collector_mode";
 
-    String SENSOR_PARAMS = "sensor_params";
+    String SPLICE_SENSOR_PARAMS = "splice_sensor_params";
 
     //ADME的 DAG 采集器配置
     String ADME_SENSOR_CONFIG_INFO = "adme_sensor_config_info";

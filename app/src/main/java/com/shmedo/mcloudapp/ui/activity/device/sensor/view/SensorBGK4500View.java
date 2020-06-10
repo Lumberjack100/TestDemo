@@ -78,6 +78,9 @@ public class SensorBGK4500View extends FrameLayout {
         mEtCorrectValue.setFilters(new InputFilter[]{new InputFilter.LengthFilter(10)});
         mEtCordLength.setFilters(new InputFilter[]{new InputFilter.LengthFilter(10)});
         mEtInstallElevation.setFilters(new InputFilter[]{new InputFilter.LengthFilter(10)});
+
+        mEtInitialTemperature.setText("0");
+        mEtCorrectValue.setText("0");
     }
 
     public void bindSensorData(CollectorSensorParamsInfoSub infoSub) {

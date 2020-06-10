@@ -61,6 +61,9 @@ public class SensorZLJ300tView extends FrameLayout {
         mEtSensitivityCoefficient.setFilters(new InputFilter[]{new InputFilter.LengthFilter(20)});
         mEtReferenceValue.setFilters(new InputFilter[]{new InputFilter.LengthFilter(20)});
         mEtCorrectValue.setFilters(new InputFilter[]{new InputFilter.LengthFilter(10)});
+
+        mEtReferenceValue.setText("0");
+        mEtCorrectValue.setText("0");
     }
 
     public void bindSensorData(CollectorSensorParamsInfoSub infoSub) {

@@ -1,9 +1,11 @@
 package com.shmedo.mcloudapp.ui.activity.device.sensor;
 
-import android.content.Context;
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+
+import androidx.fragment.app.Fragment;
 
 import com.hjq.toast.ToastUtils;
 import com.shmedo.core.cmd.CommandResult;
@@ -36,11 +38,19 @@ public class VibratingWireSensorConfigActivity extends BaseSensorConfigActivity 
 
     private String curCorrectCmd;
 
-    public static void startActivity(Context context, String collectorSensorConfig) {
-        Intent intent = new Intent(context, VibratingWireSensorConfigActivity.class);
-        intent.putExtra(Extras.SENSOR_PARAMS, collectorSensorConfig);
-        context.startActivity(intent);
+    public static void startActivityForResultByFragment(Fragment context, String collectorSensorConfig, int requestCode) {
+        Intent intent = new Intent(context.getActivity(), VibratingWireSensorConfigActivity.class);
+        intent.putExtra(Extras.SPLICE_SENSOR_PARAMS, collectorSensorConfig);
+        context.startActivityForResult(intent, requestCode);
     }
+
+
+    public static void startActivityForResult(Activity context, String collectorSensorConfig, int requestCode) {
+        Intent intent = new Intent(context, VibratingWireSensorConfigActivity.class);
+        intent.putExtra(Extras.SPLICE_SENSOR_PARAMS, collectorSensorConfig);
+        context.startActivityForResult(intent, requestCode);
+    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +69,7 @@ public class VibratingWireSensorConfigActivity extends BaseSensorConfigActivity 
      */
     @Override
     protected void sendInstruction() {
+        sbCollectorSensorConfig = new StringBuilder();
         collectorSensorParamsInfoSubs.clear();
         collectorSensorParamsInfoSubs.addAll(collectorSensorHashMap.values());
         if (collectorSensorParamsInfoSubs.isEmpty()) {
@@ -70,7 +81,8 @@ public class VibratingWireSensorConfigActivity extends BaseSensorConfigActivity 
         builderFirst.append("##150");
         builderFirst.append(defaultCollectorSensorParamsInfoSub.getCollectorModel() + StringUtil.formatStringTwo(String.valueOf(collectorSensorParamsInfoSubs.size())));
         for (CollectorSensorParamsInfoSub paramsInfoSub : collectorSensorParamsInfoSubs) {
-            builderFirst.append(StringUtil.formatStringTwo(paramsInfoSub.getSensorAddress()) + StringUtil.formatStringTwo(paramsInfoSub.getSensorType()));
+            spliceStringCollectorSensorParams(paramsInfoSub);
+            builderFirst.append(StringUtil.formatStringTwo(paramsInfoSub.getChannelNumber()) + StringUtil.formatStringTwo(paramsInfoSub.getSensorType()));
         }
         builderFirst.append("\r\n");
         String command = String.valueOf(builderFirst);
@@ -144,9 +156,9 @@ public class VibratingWireSensorConfigActivity extends BaseSensorConfigActivity 
     }
 
     private void getCorrectionValueParamCommands(CollectorSensorParamsInfoSub infoSub) {
-        String address = StringUtil.formatStringTwo(infoSub.getSensorAddress());
-        String cmdCorrectionValueFormat = "##167" + address + "{}\r\n";//修正参数
-        String cmdInstallElevationFormat = "##169" + address + "{}\r\n";//安装高程
+        String channelNumber = StringUtil.formatStringTwo(infoSub.getChannelNumber());
+        String cmdCorrectionValueFormat = "##167" + channelNumber + "{}\r\n";//修正参数
+        String cmdInstallElevationFormat = "##169" + channelNumber + "{}\r\n";//安装高程
         String sensorType = infoSub.getSensorType();
         switch (sensorType) {
             case "50": {//基康渗压计(BGK-4500)
@@ -244,6 +256,9 @@ public class VibratingWireSensorConfigActivity extends BaseSensorConfigActivity 
                 hander.postDelayed(new Runnable() {
                     @Override
                     public void run() {
+                        Intent intent = getIntent();
+                        intent.putExtra(Extras.SPLICE_SENSOR_PARAMS, sbCollectorSensorConfig.toString());
+                        setResult(RESULT_OK, intent);
                         finish();
                     }
                 }, 2000);

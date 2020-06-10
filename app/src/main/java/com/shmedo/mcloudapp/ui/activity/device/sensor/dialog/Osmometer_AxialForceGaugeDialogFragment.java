@@ -15,10 +15,11 @@ import androidx.annotation.NonNull;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.hjq.toast.ToastUtils;
+import com.shmedo.core.enums.SensorType;
 import com.shmedo.core.model.SensorGudanPercolateInfo;
 import com.shmedo.core.model.SensorKangPercolateInfo;
+import com.shmedo.core.utils.StringUtil;
 import com.shmedo.mcloudapp.R;
-import com.shmedo.mcloudapp.entity.ble.collector.CollectorSensorParamsInfoSub;
 import com.shmedo.mcloudapp.ui.activity.device.sensor.BaseSensorConfigActivity;
 import com.shmedo.mcloudapp.ui.activity.device.sensor.view.SensorBGK4500View;
 import com.shmedo.mcloudapp.ui.activity.device.sensor.view.SensorVWP03View;
@@ -52,11 +53,12 @@ public class Osmometer_AxialForceGaugeDialogFragment extends BaseDialogFragment 
     @BindView(R.id.sensorZLJ300tView)
     SensorZLJ300tView sensorZLJ300tView;
 
-    private CollectorSensorParamsInfoSub collectorSensorParamsInfoSub;
 
     private ArrayAdapter<String> adapterWay;
-    private List<String> sensorWays = Arrays.asList("0", "1", "2", "3");
+    private List<String> sensorWays = Arrays.asList("00", "01", "02", "03");
     private List<String> wayList = new ArrayList<>();
+
+    private String selectedSensorType = "";
 
     @Override
     protected int initContentView() {
@@ -75,6 +77,7 @@ public class Osmometer_AxialForceGaugeDialogFragment extends BaseDialogFragment 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = super.onCreateView(inflater, container, savedInstanceState);
         initSensorTypeAdapter();
+        initSpecifiedSensorView();
         initSensorWayAdapter();
         return rootView;
     }
@@ -82,7 +85,7 @@ public class Osmometer_AxialForceGaugeDialogFragment extends BaseDialogFragment 
     private void initSensorTypeAdapter() {
         //传感器类型
         String[] stringArray = getActivity().getResources().getStringArray(R.array.sensor_osmometer);
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), R.layout.spinner_item, stringArray);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), R.layout.sensor_spinner_item, stringArray);
         adapter.setDropDownViewResource(R.layout.spinner_item);
         spinnerType.setAdapter(adapter);
         spinnerType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -90,17 +93,17 @@ public class Osmometer_AxialForceGaugeDialogFragment extends BaseDialogFragment 
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 String item = parent.getSelectedItem().toString();
                 if (item.contains("基康渗压计")) {
-                    collectorSensorParamsInfoSub.setSensorType("50");
+                    selectedSensorType = SensorType.KANG_PERCOLATE.toString();
                     sensorBGK4500View.setVisibility(View.VISIBLE);
                     sensorVWP03View.setVisibility(View.GONE);
                     sensorZLJ300tView.setVisibility(View.GONE);
                 } else if (item.contains("葛南渗压计")) {
-                    collectorSensorParamsInfoSub.setSensorType("51");
+                    selectedSensorType = SensorType.GUDAN_PERCOLATE.toString();
                     sensorBGK4500View.setVisibility(View.GONE);
                     sensorVWP03View.setVisibility(View.VISIBLE);
                     sensorZLJ300tView.setVisibility(View.GONE);
                 } else if (item.contains("军星轴力计")) {
-                    collectorSensorParamsInfoSub.setSensorType("58");
+                    selectedSensorType = SensorType.JUNXING_ZLJ_300T.toString();
                     sensorBGK4500View.setVisibility(View.GONE);
                     sensorVWP03View.setVisibility(View.GONE);
                     sensorZLJ300tView.setVisibility(View.VISIBLE);
@@ -111,9 +114,10 @@ public class Osmometer_AxialForceGaugeDialogFragment extends BaseDialogFragment 
             public void onNothingSelected(AdapterView<?> parent) {
             }
         });
+    }
 
-        String sensorType = collectorSensorParamsInfoSub.getSensorType();
-        switch (sensorType) {
+    private void initSpecifiedSensorView() {
+        switch (collectorSensorParamsInfoSub.getSensorType()) {
             case "50"://基康渗压计(BGK-4500)
                 spinnerType.setSelection(0);
                 sensorBGK4500View.setVisibility(View.VISIBLE);
@@ -140,20 +144,40 @@ public class Osmometer_AxialForceGaugeDialogFragment extends BaseDialogFragment 
         }
     }
 
+
     private void initSensorWayAdapter() {
-        adapterWay = new ArrayAdapter<>(getActivity(), R.layout.spinner_item, wayList);
+        adapterWay = new ArrayAdapter<>(getActivity(), R.layout.sensor_spinner_item, wayList);
         adapterWay.setDropDownViewResource(R.layout.spinner_item);
         spinnerWay.setAdapter(adapterWay);
         spinnerWay.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                collectorSensorParamsInfoSub.setSensorAddress(wayList.get(position));
+                selectedChannelNumber = wayList.get(position);
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
             }
         });
+
+        String channelNumber = StringUtil.formatStringTwo(collectorSensorParamsInfoSub.getChannelNumber());
+        switch (channelNumber) {
+            case "00":
+                spinnerWay.setSelection(0);
+                break;
+
+            case "01":
+                spinnerWay.setSelection(1);
+                break;
+
+            case "02":
+                spinnerWay.setSelection(2);
+                break;
+
+            case "03":
+                spinnerWay.setSelection(3);
+                break;
+        }
     }
 
 
@@ -176,8 +200,7 @@ public class Osmometer_AxialForceGaugeDialogFragment extends BaseDialogFragment 
 
     private void doPositiveClick(View view) {
         boolean updateDataSuccess = false;
-        String sensorType = collectorSensorParamsInfoSub.getSensorType();
-        switch (sensorType) {
+        switch (selectedSensorType) {
             case "50":
                 updateDataSuccess = sensorBGK4500View.updateSensorData(collectorSensorParamsInfoSub);
                 break;
@@ -190,10 +213,15 @@ public class Osmometer_AxialForceGaugeDialogFragment extends BaseDialogFragment 
                 updateDataSuccess = sensorZLJ300tView.updateSensorData(collectorSensorParamsInfoSub);
                 break;
         }
+
         if (!updateDataSuccess) {
             Timber.w("传感器参数存在错误!");
             return;
         }
+
+        collectorSensorParamsInfoSub.setChannelNumber(selectedChannelNumber);
+        collectorSensorParamsInfoSub.setSensorType(selectedSensorType);
+
         DialogFragmentClickListener listener = (DialogFragmentClickListener) getActivity();
         if (listener.onPositiveClick(view)) {
             dismiss();

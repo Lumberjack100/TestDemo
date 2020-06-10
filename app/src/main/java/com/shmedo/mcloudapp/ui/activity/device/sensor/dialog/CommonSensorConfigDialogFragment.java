@@ -6,7 +6,10 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.hjq.toast.ToastUtils;
@@ -15,10 +18,13 @@ import com.shmedo.core.model.SensorInfrasoundInfo;
 import com.shmedo.core.model.SensorRadarLevelInfo;
 import com.shmedo.core.model.SensorSoilMoistureInfo;
 import com.shmedo.core.model.SensorWireShiftInfo;
+import com.shmedo.core.utils.StringUtil;
 import com.shmedo.core.utils.ValidateUtil;
 import com.shmedo.mcloudapp.R;
-import com.shmedo.mcloudapp.entity.ble.collector.CollectorSensorParamsInfoSub;
 import com.shmedo.mcloudapp.ui.activity.device.sensor.BaseSensorConfigActivity;
+
+import java.util.Arrays;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -26,14 +32,15 @@ import timber.log.Timber;
 
 
 public class CommonSensorConfigDialogFragment extends BaseDialogFragment {
+    @BindView(R.id.spinnerWay)
+    Spinner spinnerWay;
+
     @BindView(R.id.tv_triggerThreshold)
     TextView mTvAlarmValue;
     @BindView(R.id.tv_correctionValue)
     TextView mTvCorrectValue;
     @BindView(R.id.tv_measure_long)
     TextView mTvMeasureLong;
-    @BindView(R.id.et_modbus_address)
-    EditText mEtModbusAddress;
     @BindView(R.id.et_trigger_threshold)
     EditText mEtAlarmValue;
     @BindView(R.id.et_revised)
@@ -41,15 +48,14 @@ public class CommonSensorConfigDialogFragment extends BaseDialogFragment {
     @BindView(R.id.et_measure_long)
     EditText mEtMeasureLong;
 
-
     @BindView(R.id.measure_long_layout)
     ViewGroup measureLongLayout;
 
-    private CollectorSensorParamsInfoSub collectorSensorParamsInfoSub;
-    private String address, triggerThreshold, correctValue, measureLong;
-
+    private String triggerThreshold, correctValue, measureLong;
     private String sensorType;//传感器类型
 
+    private ArrayAdapter<String> adapterWay;
+    private List<String> wayList = Arrays.asList("00", "01", "02", "03", "04", "05", "06", "07");
 
     @Override
     protected int initContentView() {
@@ -68,6 +74,7 @@ public class CommonSensorConfigDialogFragment extends BaseDialogFragment {
         View rootView = super.onCreateView(inflater, container, savedInstanceState);
 
         initView();
+        initSensorWayAdapter();
         setValue();
         return rootView;
     }
@@ -81,10 +88,60 @@ public class CommonSensorConfigDialogFragment extends BaseDialogFragment {
                 measureLongLayout.setVisibility(View.GONE);
             }
         }
-        mEtModbusAddress.setFilters(new InputFilter[]{new InputFilter.LengthFilter(2)});
         mEtAlarmValue.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
         mEtCorrectValue.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
         mEtMeasureLong.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
+    }
+
+    private void initSensorWayAdapter() {
+        adapterWay = new ArrayAdapter<>(getActivity(), R.layout.sensor_spinner_item, wayList);
+        adapterWay.setDropDownViewResource(R.layout.spinner_item);
+        spinnerWay.setAdapter(adapterWay);
+        spinnerWay.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                selectedChannelNumber = wayList.get(position);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
+
+        String channelNumber = StringUtil.formatStringTwo(collectorSensorParamsInfoSub.getChannelNumber());
+        switch (channelNumber) {
+            case "00":
+                spinnerWay.setSelection(0);
+                break;
+
+            case "01":
+                spinnerWay.setSelection(1);
+                break;
+
+            case "02":
+                spinnerWay.setSelection(2);
+                break;
+
+            case "03":
+                spinnerWay.setSelection(3);
+                break;
+
+            case "04":
+                spinnerWay.setSelection(4);
+                break;
+
+            case "05":
+                spinnerWay.setSelection(5);
+                break;
+
+            case "06":
+                spinnerWay.setSelection(6);
+                break;
+
+            case "07":
+                spinnerWay.setSelection(7);
+                break;
+        }
     }
 
     private void setValue() {
@@ -131,8 +188,6 @@ public class CommonSensorConfigDialogFragment extends BaseDialogFragment {
                 mEtCorrectValue.setText(String.valueOf(sensorInfrasoundInfo.getRevised()));
                 break;
         }
-
-        mEtModbusAddress.setText(collectorSensorParamsInfoSub.getSensorAddress());
     }
 
     @OnClick({R.id.tv_cancel, R.id.tv_save})
@@ -168,20 +223,10 @@ public class CommonSensorConfigDialogFragment extends BaseDialogFragment {
     }
 
     private boolean checkValue() {
-        address = mEtModbusAddress.getText().toString().trim();
         triggerThreshold = mEtAlarmValue.getText().toString().trim();
         correctValue = mEtCorrectValue.getText().toString().trim();
         measureLong = mEtCorrectValue.getText().toString().trim();
 
-        if (TextUtils.isEmpty(address)) {
-            ToastUtils.show("通道号不能为空!");
-            return false;
-        }
-
-        if (!ValidateUtil.isInteger(address) || Integer.parseInt(address) < 0 || Integer.parseInt(address) > 99) {
-            ToastUtils.show("请输入正确的通道号!");
-            return false;
-        }
         if (TextUtils.isEmpty(triggerThreshold)) {
             ToastUtils.show("触发值不能为空!");
             return false;
@@ -217,6 +262,7 @@ public class CommonSensorConfigDialogFragment extends BaseDialogFragment {
     }
 
     private void updateSensorData() {
+        collectorSensorParamsInfoSub.setChannelNumber(selectedChannelNumber);
         switch (sensorType) {
             case "02"://拉线位移计
                 SensorWireShiftInfo sensorWireShiftInfo = (SensorWireShiftInfo) collectorSensorParamsInfoSub.getSensorData();
@@ -253,7 +299,5 @@ public class CommonSensorConfigDialogFragment extends BaseDialogFragment {
                 collectorSensorParamsInfoSub.setSensorData(sensorInfrasoundInfo);
                 break;
         }
-
-        collectorSensorParamsInfoSub.setSensorAddress(address);
     }
 }

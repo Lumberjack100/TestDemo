@@ -65,7 +65,10 @@ import timber.log.Timber;
  */
 public class DASHomeFragment extends BaseFragment {
 
-    private static final int REQUEST_CODE_COLLECTOR_CONFIG = 0x001;
+    private static final int REQUEST_CODE_COLLECTOR_CONFIG = 0x0010;
+
+    private static final int REQUEST_CODE_SENSOR_CONFIG = 0x0011;
+
 
     private static final int DEVICE_ENABLE = 0x0002;
 
@@ -390,11 +393,11 @@ public class DASHomeFragment extends BaseFragment {
         CollectorModel model = CollectorModel.value(collectorModel);
         switch (model) {
             case VW08://同时接入多种类型传感器的采集器
-                VibratingWireSensorConfigActivity.startActivity(configDASActivity, sbcollectorSensor.toString());
+                VibratingWireSensorConfigActivity.startActivityForResultByFragment(this, sbcollectorSensor.toString(), REQUEST_CODE_SENSOR_CONFIG);
                 break;
 
             default:
-                CommonSensorConfigActivity.startActivity(configDASActivity, sbcollectorSensor.toString());
+                CommonSensorConfigActivity.startActivityForResultByFragment(this, sbcollectorSensor.toString(), REQUEST_CODE_SENSOR_CONFIG);
                 break;
         }
     }
@@ -659,6 +662,14 @@ public class DASHomeFragment extends BaseFragment {
                 if (intent != null) {
                     collectorConfigInfo = (CollectorConfigInfo) intent.getSerializableExtra(Extras.PARAM_CONFIG_INFO);
                     configDASActivity.isConfigChange = true;
+                }
+                break;
+
+            case REQUEST_CODE_SENSOR_CONFIG:
+                if (intent != null) {
+                    String ss = intent.getStringExtra(Extras.SPLICE_SENSOR_PARAMS);
+                    sbcollectorSensor = new StringBuilder();
+                    sbcollectorSensor.append(ss);
                 }
                 break;
         }

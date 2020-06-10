@@ -72,6 +72,10 @@ public class SensorVWP03View extends FrameLayout {
         mEtCorrectValue.setFilters(new InputFilter[]{new InputFilter.LengthFilter(10)});
         mEtCordLength.setFilters(new InputFilter[]{new InputFilter.LengthFilter(10)});
         mEtInstallElevation.setFilters(new InputFilter[]{new InputFilter.LengthFilter(10)});
+
+        mEtReferenceValue.setText("0");
+        mEtInitialTemperature.setText("0");
+        mEtCorrectValue.setText("0");
     }
 
     public void bindSensorData(CollectorSensorParamsInfoSub infoSub) {

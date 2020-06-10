@@ -74,7 +74,7 @@ public class DialogStyle515255 implements IDialogOpt<CollectorSensorParamsInfoSu
         final EditText manualCorrection = contentView.findViewById(R.id.manualCorrection);
         final EditText note = contentView.findViewById(R.id.et_note);
 
-        modbusAddress.setText(collectorSensorParamsInfoSub.getSensorAddress());
+        modbusAddress.setText(collectorSensorParamsInfoSub.getChannelNumber());
         triggerThreshold.setText(String.valueOf(sensorGudanSoilPressureInfo.getTriggerThreshold()));
         sensitivityK.setText(sensorGudanSoilPressureInfo.getSensitivityK());
         temperatureCoefficientB.setText(String.valueOf(sensorGudanSoilPressureInfo.getTemperatureCoefficientB()));

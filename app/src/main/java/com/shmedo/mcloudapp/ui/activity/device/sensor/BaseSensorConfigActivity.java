@@ -16,6 +16,14 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.hjq.toast.ToastUtils;
 import com.kyleduo.switchbutton.SwitchButton;
 import com.shmedo.core.enums.CollectorModel;
+import com.shmedo.core.model.SensorGudanPercolateInfo;
+import com.shmedo.core.model.SensorInclinometerInfo;
+import com.shmedo.core.model.SensorInfrasoundInfo;
+import com.shmedo.core.model.SensorJunXingZljInfo;
+import com.shmedo.core.model.SensorKangPercolateInfo;
+import com.shmedo.core.model.SensorRadarLevelInfo;
+import com.shmedo.core.model.SensorSoilMoistureInfo;
+import com.shmedo.core.model.SensorWireShiftInfo;
 import com.shmedo.core.utils.StringUtil;
 import com.shmedo.mcloudapp.MCloudApp;
 import com.shmedo.mcloudapp.R;
@@ -43,6 +51,7 @@ import timber.log.Timber;
  * 描述：    传感器基础配置页面
  */
 public abstract class BaseSensorConfigActivity extends BaseDeviceConnectActivity implements BaseDialogFragment.DialogFragmentClickListener {
+
     @BindView(R.id.tv_title)
     TextView mToolbarTitle;
 
@@ -137,7 +146,7 @@ public abstract class BaseSensorConfigActivity extends BaseDeviceConnectActivity
     private String curChannelNumber = "";
     private boolean isEnableNewSensor = false;
     protected int sensorIndex = 0;//接入的传感器索引号
-
+    protected StringBuilder sbCollectorSensorConfig = new StringBuilder();
 
     @Override
     protected int initContentView() {
@@ -162,7 +171,7 @@ public abstract class BaseSensorConfigActivity extends BaseDeviceConnectActivity
      * $$1010002,02,58,2.000000e+00,4.597945e-08,3.000000e+00,5.000000e+00&&
      */
     private void initData() {
-        String collectorSensorConfig = getIntent().getStringExtra(Extras.SENSOR_PARAMS);
+        String collectorSensorConfig = getIntent().getStringExtra(Extras.SPLICE_SENSOR_PARAMS);
         if (TextUtils.isEmpty(collectorSensorConfig)) {
             Timber.e("传递的传感器参数为空!");
             return;
@@ -175,13 +184,12 @@ public abstract class BaseSensorConfigActivity extends BaseDeviceConnectActivity
 
             CollectorSensorParamsInfoSub mCollectorParamsInfoSub = BlueResultParserUtil.setCollectorParams(sensorConfig);
             Timber.d("--------XX采集器YY通道的传感器参数-------%s", mCollectorParamsInfoSub.toString());
-            collectorSensorParamsInfoSubs.add(mCollectorParamsInfoSub);
             collectorSensorHashMap.put(mCollectorParamsInfoSub.getChannelNumber(), mCollectorParamsInfoSub);
             initSensorState(mCollectorParamsInfoSub);
         }
 
-        if (!collectorSensorParamsInfoSubs.isEmpty()) {
-            defaultCollectorSensorParamsInfoSub = collectorSensorParamsInfoSubs.get(0);
+        if (!collectorSensorHashMap.values().isEmpty()) {
+            defaultCollectorSensorParamsInfoSub = (CollectorSensorParamsInfoSub) collectorSensorHashMap.values().toArray()[0];
         }
     }
 
@@ -472,7 +480,7 @@ public abstract class BaseSensorConfigActivity extends BaseDeviceConnectActivity
                     collectorSensorParamsInfoSub.setCollectorModel(defaultCollectorSensorParamsInfoSub.getCollectorModel());
                     collectorSensorParamsInfoSub.setChannelNumber(channelNumber);
                     collectorSensorParamsInfoSub.setSensorType(defaultCollectorSensorParamsInfoSub.getSensorType());
-                    collectorSensorParamsInfoSub.setSensorAddress(defaultCollectorSensorParamsInfoSub.getSensorAddress());
+                    collectorSensorParamsInfoSub.setChannelNumber(defaultCollectorSensorParamsInfoSub.getChannelNumber());
                     collectorSensorParamsInfoSub.setSensorData(defaultCollectorSensorParamsInfoSub.getSensorData());
                     collectorSensorHashMap.put(channelNumber, collectorSensorParamsInfoSub);
                 }
@@ -617,7 +625,7 @@ public abstract class BaseSensorConfigActivity extends BaseDeviceConnectActivity
 
         for (int k = 0; k < paramsInfoSubList.size() - 1; k++) {
             for (int j = k + 1; j < paramsInfoSubList.size(); j++) {
-                if (paramsInfoSubList.get(k).getSensorAddress().equals(paramsInfoSubList.get(j).getSensorAddress())) {
+                if (paramsInfoSubList.get(k).getChannelNumber().equals(paramsInfoSubList.get(j).getChannelNumber())) {
                     ToastUtils.show("通道号不能重复");
                     return false;
                 }
@@ -693,6 +701,94 @@ public abstract class BaseSensorConfigActivity extends BaseDeviceConnectActivity
     }
 
     protected abstract void sendInstruction();
+
+    protected void spliceStringCollectorSensorParams(CollectorSensorParamsInfoSub collectorSensorParamsInfoSub) {
+        sbCollectorSensorConfig.append("$$101" + collectorSensorParamsInfoSub.getCollectorModel() + StringUtil.formatStringTwo(collectorSensorParamsInfoSub.getChannelNumber()));
+        sbCollectorSensorConfig.append("," + collectorSensorParamsInfoSub.getChannelNumber());
+        sbCollectorSensorConfig.append("," + collectorSensorParamsInfoSub.getSensorType());
+
+        String sensorType = collectorSensorParamsInfoSub.getSensorType();
+        switch (sensorType) {
+            case "02": {//拉线位移计 $$1010200,3,2,7,1.100000&&$$1010201,5,2,5,0.000000&&$$1010202,2,2,7,1.100000&&
+                SensorWireShiftInfo sensorInfo = (SensorWireShiftInfo) collectorSensorParamsInfoSub.getSensorData();
+                sbCollectorSensorConfig.append("," + sensorInfo.getTriggerThreshold());
+                sbCollectorSensorConfig.append("," + sensorInfo.getCorrectionValue());
+                sbCollectorSensorConfig.append("&&");
+            }
+            break;
+
+            case "03": {//土壤含水率
+                SensorInfrasoundInfo sensorInfo = (SensorInfrasoundInfo) collectorSensorParamsInfoSub.getSensorData();
+                sbCollectorSensorConfig.append("," + sensorInfo.getTriggerThreshold());
+                sbCollectorSensorConfig.append("," + sensorInfo.getRevised());
+                sbCollectorSensorConfig.append("&&");
+            }
+            break;
+
+            case "04": {//测斜仪
+                SensorSoilMoistureInfo sensorInfo = (SensorSoilMoistureInfo) collectorSensorParamsInfoSub.getSensorData();
+                sbCollectorSensorConfig.append("," + sensorInfo.getTriggerThreshold());
+                sbCollectorSensorConfig.append("," + sensorInfo.getRevised());
+                sbCollectorSensorConfig.append("&&");
+            }
+            break;
+
+            case "07": {//雷达物位计
+                SensorRadarLevelInfo sensorInfo = (SensorRadarLevelInfo) collectorSensorParamsInfoSub.getSensorData();
+                sbCollectorSensorConfig.append("," + sensorInfo.getTriggerThreshold());
+                sbCollectorSensorConfig.append("," + sensorInfo.getRevised());
+                sbCollectorSensorConfig.append("&&");
+            }
+            break;
+
+            case "21": {//次声
+                SensorInclinometerInfo sensorInfo = (SensorInclinometerInfo) collectorSensorParamsInfoSub.getSensorData();
+                sbCollectorSensorConfig.append("," + sensorInfo.getTriggerThreshold());
+                sbCollectorSensorConfig.append("," + sensorInfo.getCorrectionValue());
+                sbCollectorSensorConfig.append("&&");
+            }
+            break;
+
+            case "50": {//基康渗压计(BGK-4500)
+                SensorKangPercolateInfo sensorInfo = (SensorKangPercolateInfo) collectorSensorParamsInfoSub.getSensorData();
+                sbCollectorSensorConfig.append("," + sensorInfo.getTriggerThreshold());
+                sbCollectorSensorConfig.append("," + sensorInfo.getPolynomialRatioA());
+                sbCollectorSensorConfig.append("," + sensorInfo.getPolynomialRatioB());
+                sbCollectorSensorConfig.append("," + sensorInfo.getPolynomialRatioC());
+                sbCollectorSensorConfig.append("," + sensorInfo.getTemperatureCoefficientK());
+                sbCollectorSensorConfig.append("," + sensorInfo.getCreateTemperature());
+                sbCollectorSensorConfig.append("," + sensorInfo.getManualCorrection());
+                sbCollectorSensorConfig.append("," + sensorInfo.getCordLenght());
+                sbCollectorSensorConfig.append("," + sensorInfo.getInstallElevation());
+                sbCollectorSensorConfig.append("&&");
+            }
+            break;
+
+            case "51": {//葛南渗压计(VWP-03)
+                SensorGudanPercolateInfo sensorInfo = (SensorGudanPercolateInfo) collectorSensorParamsInfoSub.getSensorData();
+                sbCollectorSensorConfig.append("," + sensorInfo.getTriggerThreshold());
+                sbCollectorSensorConfig.append("," + sensorInfo.getSensitivityK());
+                sbCollectorSensorConfig.append("," + sensorInfo.getTemperatureCoefficientB());
+                sbCollectorSensorConfig.append("," + sensorInfo.getReferenceValue());
+                sbCollectorSensorConfig.append("," + sensorInfo.getCreateTemperature());
+                sbCollectorSensorConfig.append("," + sensorInfo.getManualCorrection());
+                sbCollectorSensorConfig.append("," + sensorInfo.getCordLenght());
+                sbCollectorSensorConfig.append("," + sensorInfo.getInstallElevation());
+                sbCollectorSensorConfig.append("&&");
+            }
+            break;
+
+            case "58": {//军星轴力计(ZLJ-300T)
+                SensorJunXingZljInfo sensorInfo = (SensorJunXingZljInfo) collectorSensorParamsInfoSub.getSensorData();
+                sbCollectorSensorConfig.append("," + sensorInfo.getTriggerThreshold());
+                sbCollectorSensorConfig.append("," + sensorInfo.getSensitivityK());
+                sbCollectorSensorConfig.append("," + sensorInfo.getReferenceValue());
+                sbCollectorSensorConfig.append("," + sensorInfo.getManualCorrection());
+                sbCollectorSensorConfig.append("&&");
+            }
+            break;
+        }
+    }
 
     public CollectorSensorParamsInfoSub getCurrentCollectorSensorParamsInfoSub() {
         CollectorSensorParamsInfoSub collectorSensorParamsInfoSub = collectorSensorHashMap.get(curChannelNumber);
