@@ -93,8 +93,6 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
 
     public boolean isTimeOut = false;
 
-    private String authenticateParam = "";
-
     protected String errMsg = "";
 
     protected String SN = MCloudApp.getCurDeviceToken();
@@ -461,8 +459,7 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
                         setAuthenticateWay();//重新认证
                         return;
                     }
-                    authenticateParam = cmdArray[3];
-                    sendAuthenticateCodeCmd();
+                    sendAuthenticateCodeCmd(cmdArray[3]);
                 }
 
                 //设备登录验证结果指令
@@ -684,6 +681,9 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
      * 蓝牙连接成功,发送认证方式
      */
     private void setAuthenticateWay() {
+        if (authenticateNum >= 5) {
+            return;
+        }
         authenticateNum++;
         AuthenticationConfigEntity configEntity = new AuthenticationConfigEntity(SN, 0);
         String command = CommandManager.getInstance().getCommand(CommandType.AUTHENTICATION_CONFIG, configEntity);
@@ -694,7 +694,7 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
     /**
      * 开始认证流程
      */
-    private void sendAuthenticateCodeCmd() {
+    private void sendAuthenticateCodeCmd(String authenticateParam) {
         Timber.d("解密前:%s", authenticateParam);
         byte[] resultData = StringUtil.hexStringToBytes(authenticateParam);
         try {
