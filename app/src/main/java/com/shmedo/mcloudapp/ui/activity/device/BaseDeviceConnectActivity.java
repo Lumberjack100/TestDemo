@@ -91,6 +91,8 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
 
     public boolean isExitMode = false;
 
+    public boolean isTimeOut = false;
+
     private String authenticateParam = "";
 
     protected String errMsg = "";
@@ -109,6 +111,7 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
     private class ProgressRunnable implements Runnable {
         @Override
         public void run() {
+            isTimeOut = true;
             dismissLoadingDialog();
             progressRunnable = null;
 
@@ -126,6 +129,7 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
     }
 
     protected void startProgressRunnable(String dialogContent, long delayMillis) {
+        isTimeOut = false;
         showLoadingDialog(dialogContent);
         if (progressRunnable == null) {
             progressRunnable = new ProgressRunnable();
