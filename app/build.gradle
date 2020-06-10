@@ -118,7 +118,7 @@ android {
         variant.outputs.each { output ->
             def NameSuffix = ""
             // To check for a certain build type, use variant.buildType.name == "<buildType>"
-            if (variant.name.contains("guizhou")) {
+            if (variant.name.contains("dev_gz")) {
                 NameSuffix = "贵州"
             }
 
