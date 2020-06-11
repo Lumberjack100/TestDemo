@@ -253,7 +253,7 @@ public class LoginActivity extends BaseActivity implements LoginManager.LoginCal
         dismissLoadingDialog();
 
         if (LoginManager.LOGIN_CODE_SUCCESS == code) {
-            MainActivity.start(LoginActivity.this);
+            NewMainActivity.start(LoginActivity.this);
             finish();
 
         } else {

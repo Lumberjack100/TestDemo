@@ -32,6 +32,13 @@
     <string name="query_data">查询数据</string>
     <string name="device_state_info">设备详情</string>
     <string name="advanced_configuration">高级配置</string>
+    <string name="config_module">设备配置</string>
+    <string name="map_module">地图</string>
+    <string name="project_module">项目</string>
+    <string name="knowledge_module">知识库</string>
+    <string name="me_module">我的</string>
+
+
     <!-- 采集器、传感器参数说明-->
     <string name="collector_address">
         采集器地址：当同一条RS485总线下，接入多个采集器时，区分每个采集器，采集器(DAS)可识别区分，可填入1-255任意数字。
@@ -48,12 +55,10 @@
         采集时间：当DAS处于工作模式时，对外接的传感器/采集器发送采集指令，每次发送采集指令的时间间隔即为采集时间，采集时间间隔数值越小，
         获取到的数据样本就越多，对提高数据精度和准确性有帮助，具体设置多少，要看外部传感器/采集器是否支持，以及对功耗的考量。
     </string>
-
     <string name="osmometer_address">
         渗压计地址：当同一条RS485总线下，接入多个渗压计时，区分每个渗压计，采集器(DAS)可识别区分，可填入1-255任意数字。
         这里说的渗压计是指数字式的，支持Modbus RTU协议。当接入振弦式渗压计时，需额外配置振弦数据采集器。
     </string>
-
     <string name="water_alarm_value">
         水位报警值：当水位超过设定值时，自动报警。猪哥数值设定多少，需要跟业主、设计院等沟通，以便指定合理有效的报警值。
     </string>
@@ -129,7 +134,6 @@
         测量间距：每个测点的深度间隔
     </string>
 
-
     <!-- 权限申请-->
     <string name="permission_request_camera_external_storage">需要使用相机权限和存储卡权限，请前往设置页面授予权限</string>
     <string name="permission_request_location_hardware">需要打开系统定位开关，用于提供精确的定位及导航服务</string>
@@ -140,5 +144,5 @@
     <string name="message_permission_always_failed">请同意定位权限</string>
 
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+
 </resources>
