@@ -52,7 +52,7 @@
                 android:layout_weight="1"
                 android:padding="5dp"
                 android:src="@drawable/ic_map_module"
-                android:tint="@color/colorPrimary" />
+                android:tint="@color/bottom_navigation_selected" />
 
             <View
                 android:layout_width="0dp"

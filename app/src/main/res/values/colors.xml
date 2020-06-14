@@ -60,4 +60,7 @@
     <color name="gray_FEFEFE">#FEFEFE</color>
 
 
+    <color name="bottom_navigation_selected">#0DB3A6</color>
+
+
 </resources>
