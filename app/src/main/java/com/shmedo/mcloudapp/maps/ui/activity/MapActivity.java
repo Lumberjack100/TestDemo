@@ -1,13 +1,18 @@
-package com.shmedo.mcloudapp.maps.ui;
+package com.shmedo.mcloudapp.maps.ui.activity;
 
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
+import com.amap.api.maps.MapView;
 import com.shmedo.mcloudapp.R;
-import com.shmedo.mcloudapp.base.BaseActivity;
 
-public class MapActivity extends BaseActivity {
+import butterknife.BindView;
+
+public class MapActivity extends CheckMapNeedPermissionsActivity {
+    @BindView(R.id.map)
+    MapView mMapView;
+
 
     public static void startActivity(Context context) {
         Intent intent = new Intent(context, MapActivity.class);
@@ -25,4 +30,9 @@ public class MapActivity extends BaseActivity {
     }
 
 
+
+    @Override
+    protected void doOnPermissionGranted() {
+
+    }
 }

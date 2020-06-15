@@ -11,7 +11,7 @@ import androidx.annotation.NonNull;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.base.BaseActivity;
-import com.shmedo.mcloudapp.maps.ui.MapActivity;
+import com.shmedo.mcloudapp.maps.ui.activity.MapActivity;
 
 import butterknife.BindView;
 import butterknife.OnClick;
