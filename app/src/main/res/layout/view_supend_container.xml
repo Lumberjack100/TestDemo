@@ -8,7 +8,7 @@
 
 
     <RelativeLayout
-        android:id="@+id/bottomRouteLayout"
+        android:id="@+id/gps_route_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/dimen_size_20"
@@ -39,7 +39,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        app:layout_constraintBottom_toTopOf="@+id/bottomRouteLayout"
+        app:layout_constraintBottom_toTopOf="@+id/gps_route_container"
         app:layout_constraintEnd_toEndOf="parent" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
