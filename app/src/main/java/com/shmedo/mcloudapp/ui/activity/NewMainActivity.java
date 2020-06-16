@@ -58,6 +58,7 @@ public class NewMainActivity extends BaseActivity {
                     case R.id.item_project_module:
 
                         break;
+
                     case R.id.item_knowledge_module:
 
                         break;
