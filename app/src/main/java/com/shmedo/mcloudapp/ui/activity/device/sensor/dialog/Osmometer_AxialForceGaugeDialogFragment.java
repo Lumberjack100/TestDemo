@@ -228,7 +228,7 @@ public class Osmometer_AxialForceGaugeDialogFragment extends BaseDialogFragment 
 
 
         DialogFragmentClickListener listener = (DialogFragmentClickListener) getActivity();
-        if (listener.onPositiveClick(view)) {
+        if (listener.onPositiveClick(view, collectorSensorParamsInfo)) {
             dismiss();
         }
     }

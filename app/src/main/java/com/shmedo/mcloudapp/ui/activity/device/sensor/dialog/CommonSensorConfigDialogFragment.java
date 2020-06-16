@@ -47,7 +47,7 @@ public class CommonSensorConfigDialogFragment extends BaseDialogFragment {
     @BindView(R.id.measure_long_layout)
     ViewGroup measureLongLayout;
 
-    private String address,triggerThreshold, correctValue, measureLong;
+    private String address, triggerThreshold, correctValue, measureLong;
     private SensorType sensorType;//传感器类型
 
 
@@ -86,7 +86,6 @@ public class CommonSensorConfigDialogFragment extends BaseDialogFragment {
         mEtCorrectValue.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
         mEtMeasureLong.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
     }
-
 
 
     private void setValue() {
@@ -157,7 +156,7 @@ public class CommonSensorConfigDialogFragment extends BaseDialogFragment {
 
         updateSensorData();
         DialogFragmentClickListener listener = (DialogFragmentClickListener) getActivity();
-        if (listener.onPositiveClick(view)) {
+        if (listener.onPositiveClick(view, collectorSensorParamsInfo)) {
             dismiss();
         }
     }

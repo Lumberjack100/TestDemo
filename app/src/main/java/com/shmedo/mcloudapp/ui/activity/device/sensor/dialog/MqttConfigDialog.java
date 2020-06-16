@@ -174,8 +174,8 @@ public class MqttConfigDialog implements IDialogOpt<MqttConfigInfo> {
         cetKeepAliveValue.setText(mqttConfigInfoSub.getKeepAliveValue());
         cetDeviceSn.setText(mqttConfigInfoSub.getDeviceSn());
         cetProductId.setText(mqttConfigInfoSub.getProductId());
-        cetRegistrationCode.setText(mqttConfigInfoSub.getRegistrationCode());
-        switch (mqttConfigInfoSub.getRegistrationPlatform()) {
+        cetRegistrationCode.setText(mqttConfigInfoSub.getRegisterCode());
+        switch (mqttConfigInfoSub.getRegisterPlatform()) {
             case "0"://地大平台
                 spRegistrationPlatform.setSelection(0);
                 break;
@@ -190,7 +190,7 @@ public class MqttConfigDialog implements IDialogOpt<MqttConfigInfo> {
                 break;
         }
 
-        cetRegisterAddress.setText(mqttConfigInfoSub.getRegistrationPlatformAddress().trim());
+        cetRegisterAddress.setText(mqttConfigInfoSub.getRegisterPlatformAddress().trim());
         cetAppKey.setText(mqttConfigInfoSub.getAppKey());
         cetMqttDeviceId.setText(mqttConfigInfoSub.getMqttDeviceId());
         cetMqttUsername.setText(mqttConfigInfoSub.getMqttUsername());
@@ -206,10 +206,10 @@ public class MqttConfigDialog implements IDialogOpt<MqttConfigInfo> {
                     mqttConfigInfoSub.setKeepAliveValue(cetKeepAliveValue.getText() != null ? cetKeepAliveValue.getText().toString() : "");
                     mqttConfigInfoSub.setDeviceSn(cetDeviceSn.getText() != null ? cetDeviceSn.getText().toString() : "");
                     mqttConfigInfoSub.setProductId(cetProductId.getText() != null ? cetProductId.getText().toString() : "");
-                    mqttConfigInfoSub.setRegistrationCode(cetRegistrationCode.getText() != null ? cetRegistrationCode.getText().toString() : "");
-                    mqttConfigInfoSub.setRegistrationPlatform(registerPlatformItem);
+                    mqttConfigInfoSub.setRegisterCode(cetRegistrationCode.getText() != null ? cetRegistrationCode.getText().toString() : "");
+                    mqttConfigInfoSub.setRegisterPlatform(registerPlatformItem);
                     String registrationPlatformAddress = cetRegisterAddress.getText() != null ? cetRegisterAddress.getText().toString().trim() : "";
-                    mqttConfigInfoSub.setRegistrationPlatformAddress(" " + registrationPlatformAddress);
+                    mqttConfigInfoSub.setRegisterPlatformAddress(" " + registrationPlatformAddress);
                     mqttConfigInfoSub.setAppKey(cetRegistrationCode.getText() != null ? cetRegistrationCode.getText().toString() : "");
                     mqttConfigInfoSub.setMqttDeviceId(cetMqttDeviceId.getText() != null ? cetMqttDeviceId.getText().toString() : "");
                     mqttConfigInfoSub.setMqttUsername(cetMqttUsername.getText() != null ? cetMqttUsername.getText().toString() : "");

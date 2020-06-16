@@ -35,9 +35,9 @@ public class MqttConfigInfo implements Serializable {
     private String keepAliveValue;
     private String deviceSn;
     private String productId;
-    private String registrationCode;
-    private String registrationPlatform;
-    private String registrationPlatformAddress;
+    private String registerCode;
+    private String registerPlatform;
+    private String registerPlatformAddress;
     private String appKey;
     private String mqttDeviceId;
     private String mqttUsername;
@@ -92,28 +92,28 @@ public class MqttConfigInfo implements Serializable {
         this.productId = productId;
     }
 
-    public String getRegistrationCode() {
-        return registrationCode;
+    public String getRegisterCode() {
+        return registerCode;
     }
 
-    public void setRegistrationCode(String registrationCode) {
-        this.registrationCode = registrationCode;
+    public void setRegisterCode(String registerCode) {
+        this.registerCode = registerCode;
     }
 
-    public String getRegistrationPlatform() {
-        return registrationPlatform;
+    public String getRegisterPlatform() {
+        return registerPlatform;
     }
 
-    public void setRegistrationPlatform(String registrationPlatform) {
-        this.registrationPlatform = registrationPlatform;
+    public void setRegisterPlatform(String registerPlatform) {
+        this.registerPlatform = registerPlatform;
     }
 
-    public String getRegistrationPlatformAddress() {
-        return registrationPlatformAddress;
+    public String getRegisterPlatformAddress() {
+        return registerPlatformAddress;
     }
 
-    public void setRegistrationPlatformAddress(String registrationPlatformAddress) {
-        this.registrationPlatformAddress = registrationPlatformAddress;
+    public void setRegisterPlatformAddress(String registerPlatformAddress) {
+        this.registerPlatformAddress = registerPlatformAddress;
     }
 
     public String getAppKey() {
@@ -157,9 +157,9 @@ public class MqttConfigInfo implements Serializable {
                 ", keepAliveValue='" + keepAliveValue + '\'' +
                 ", deviceSn='" + deviceSn + '\'' +
                 ", productId='" + productId + '\'' +
-                ", registrationCode='" + registrationCode + '\'' +
-                ", registrationPlatform='" + registrationPlatform + '\'' +
-                ", registrationPlatformAddress='" + registrationPlatformAddress + '\'' +
+                ", registrationCode='" + registerCode + '\'' +
+                ", registrationPlatform='" + registerPlatform + '\'' +
+                ", registrationPlatformAddress='" + registerPlatformAddress + '\'' +
                 ", appKey='" + appKey + '\'' +
                 ", mqttDeviceId='" + mqttDeviceId + '\'' +
                 ", mqttUsername='" + mqttUsername + '\'' +

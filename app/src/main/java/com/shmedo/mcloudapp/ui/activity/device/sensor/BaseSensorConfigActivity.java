@@ -52,7 +52,7 @@ import timber.log.Timber;
  * 创建时间:  2020/6/8 <br/>
  * 描述：    传感器基础配置页面
  */
-public abstract class BaseSensorConfigActivity extends BaseDeviceConnectActivity implements BaseDialogFragment.DialogFragmentClickListener {
+public abstract class BaseSensorConfigActivity extends BaseDeviceConnectActivity implements BaseDialogFragment.DialogFragmentClickListener<CollectorSensorParamsInfo> {
 
     @BindView(R.id.tv_title)
     TextView mToolbarTitle;

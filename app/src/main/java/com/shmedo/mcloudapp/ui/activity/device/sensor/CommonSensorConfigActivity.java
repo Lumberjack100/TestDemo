@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import timber.log.Timber;
+
 /**
  * 创建者:   gonghe <br/>
  * 创建时间:  2020/6/8 <br/>
@@ -57,7 +58,7 @@ public class CommonSensorConfigActivity extends BaseSensorConfigActivity {
 
 
     @Override
-    public boolean onPositiveClick(View view) {
+    public boolean onPositiveClick(View view, CollectorSensorParamsInfo data) {
         KeyBordUtils.hideSoftKeyboard(view);
 
         List<CollectorSensorParamsInfo> paramsInfoSubList = new ArrayList<>();

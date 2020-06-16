@@ -71,7 +71,7 @@ public class VibratingWireSensorConfigActivity extends BaseSensorConfigActivity 
 
 
     @Override
-    public boolean onPositiveClick(View view) {
+    public boolean onPositiveClick(View view, CollectorSensorParamsInfo data) {
         KeyBordUtils.hideSoftKeyboard(view);
 
         List<CollectorSensorParamsInfo> paramsInfoSubList = new ArrayList<>();

@@ -35,9 +35,8 @@ public abstract class BaseDialogFragment extends DialogFragment {
 
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        setWindowStyle();
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        setWindowStyle(Gravity.BOTTOM);
 
         View rootView = inflater.inflate(initContentView(), container, false);
         ButterKnife.bind(this, rootView);
@@ -45,7 +44,7 @@ public abstract class BaseDialogFragment extends DialogFragment {
     }
 
 
-    private void setWindowStyle() {
+    protected void setWindowStyle(int gravity) {
         Dialog mDialog = getDialog();
         Window window = mDialog.getWindow();
         //无标题  必须放在setContextView之前调用
@@ -61,7 +60,7 @@ public abstract class BaseDialogFragment extends DialogFragment {
         window.setBackgroundDrawableResource(android.R.color.transparent);
         window.getDecorView().setPadding(0, 0, 0, 0);
         WindowManager.LayoutParams wlp = window.getAttributes();
-        wlp.gravity = Gravity.BOTTOM;
+        wlp.gravity = gravity;
         wlp.width = WindowManager.LayoutParams.MATCH_PARENT;
         wlp.height = WindowManager.LayoutParams.WRAP_CONTENT;
         window.setAttributes(wlp);
@@ -104,9 +103,9 @@ public abstract class BaseDialogFragment extends DialogFragment {
         }
     }
 
-    public interface DialogFragmentClickListener {
+    public interface DialogFragmentClickListener<T> {
 
-        boolean onPositiveClick(View view);
+        boolean onPositiveClick(View view, T data);
 
         void onNegativeClick(View view);
     }

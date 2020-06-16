@@ -43,8 +43,9 @@ import com.shmedo.core.utils.ResultParserUtil;
 import com.shmedo.core.utils.StringUtil;
 import com.shmedo.mcloudapp.MCloudApp;
 import com.shmedo.mcloudapp.R;
-import com.shmedo.mcloudapp.interfaces.MQttOnClickListener;
-import com.shmedo.mcloudapp.ui.activity.device.sensor.dialog.MqttDialogFactory;
+import com.shmedo.mcloudapp.ui.activity.device.sensor.dialog.BaseDialogFragment;
+import com.shmedo.mcloudapp.ui.activity.device.sensor.dialog.MqttConfigDialogFragment;
+import com.shmedo.mcloudapp.util.KeyBordUtils;
 import com.shmedo.mcloudapp.views.ClearEditText;
 
 import org.greenrobot.eventbus.Subscribe;
@@ -63,7 +64,7 @@ import timber.log.Timber;
  * 创建时间:  2019/11/26 15:23
  * 描述：    mqtt设置
  */
-public class MqttSettingActivity extends BaseDeviceConnectActivity implements View.OnClickListener {
+public class MqttSettingActivity extends BaseDeviceConnectActivity implements View.OnClickListener, BaseDialogFragment.DialogFragmentClickListener<MqttConfigInfo> {
     @BindView(R.id.back)
     ImageView back;
 
@@ -97,9 +98,6 @@ public class MqttSettingActivity extends BaseDeviceConnectActivity implements Vi
     @BindView(R.id.btn_confirm)
     Button btnConfirm;
 
-
-    private MqttDialogFactory factory = new MqttDialogFactory();
-
     private TextView mTvLinkOneStatus, mTvLinkTwoStatus, mTvLinkThreeStatus;
 
     private Spinner spCommunicationmethod;
@@ -110,18 +108,16 @@ public class MqttSettingActivity extends BaseDeviceConnectActivity implements Vi
 
     private ArrayAdapter<String> CommunicationMethodAdapter;
 
-    private MqttConfigInfo mqttConfigInfoSub1 = new MqttConfigInfo();
-    private MqttConfigInfo mqttConfigInfoSub2 = new MqttConfigInfo();
-    private MqttConfigInfo mqttConfigInfoSub3 = new MqttConfigInfo();
+    private MqttConfigInfo mqttConfigInfo1 = new MqttConfigInfo();
+    private MqttConfigInfo mqttConfigInfo2 = new MqttConfigInfo();
+    private MqttConfigInfo mqttConfigInfo3 = new MqttConfigInfo();
 
     //第一次编辑发送指令，第二次直接弹框
     private boolean editLinkOne, editLinkTwo, editLinkThree;
 
     private String dataCommunicationMode;
-
     private String communicationProtocol;//通讯协议，2：MDM协议，4：MQTT自动注册，5：MQTT手动注册
     private String registrationPlatform;//注册平台类型，0：地大平台，1：成都理工平台，2：米度平台
-
     private String cmdCommunicationProtocol;//网络中心通讯协议
     private String cmdDataPlatformAddress;//设置数据服务器地址、端口
     private String cmdRegistrationPlatform;//自动注册选择平台
@@ -129,16 +125,15 @@ public class MqttSettingActivity extends BaseDeviceConnectActivity implements Vi
     private String cmdKeepAliveValue;//
     private String cmdPlatformParam;//手动/自动注册平台参数
     private String cmdAppKey;//米度平台 AppKey
-
     private String cmdDataReport;//数据上报间隔
     private String cmdBDCardNumber;//北斗卡号
 
+    private String curLinkNumber;
 
     @Override
     protected int initContentView() {
         return R.layout.activity_mqtt_setting;
     }
-
 
     public static void startActivity(Context context) {
         Intent intent = new Intent(context, MqttSettingActivity.class);
@@ -322,15 +317,134 @@ public class MqttSettingActivity extends BaseDeviceConnectActivity implements Vi
     }
 
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void getConfig(String messageEvent) {
-        if (TextUtils.isEmpty(messageEvent) || !messageEvent.startsWith("$$")) {
-            return;
-        }
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.tv_link_one:
+                if (!MCloudApp.isIsBluetoothDeviceConnected()) {
+                    ToastUtils.show(getString(R.string.param_config_bluetooth_disconnect_warn));
+                    return;
+                }
+                setLinkTextEnabled(mTvLinkOneStatus, false);
+                if (!editLinkOne) {//第一次编辑时，需要查询数据中心参数
+                    editLinkOne = true;
+                    ServerNumberEntity serverNumberEntity = new ServerNumberEntity(ServerNumber.NUMBER_ONE.toInt());
+                    String command = CommandManager.getInstance().getCommand(CommandType.QUERY_DATA_CENTER_PARAM, serverNumberEntity);
+                    sendCommonCommandImmediately(command);//查询数据中心1参数
+                    Timber.i("中心1第1次编辑");
+                } else {
+                    if (mqttConfigInfo1 == null) {
+                        ToastUtils.show("等2s再点击");
+                        return;
+                    }
+                    //直接弹框
+                    Timber.i("中心1第2次编辑===%s", mqttConfigInfo1.toString());
+                    curLinkNumber = "1";
+                    showConfigDialog(mqttConfigInfo1, "1");
+                }
+                break;
 
-        setResultData(messageEvent);
+            case R.id.tv_link_two:
+                if (!MCloudApp.isIsBluetoothDeviceConnected()) {
+                    ToastUtils.show(getString(R.string.param_config_bluetooth_disconnect_warn));
+                    return;
+                }
+
+                setLinkTextEnabled(mTvLinkTwoStatus, false);
+                if (!editLinkTwo) {//第一次编辑时，需要查询数据中心参数
+                    editLinkTwo = true;
+                    ServerNumberEntity serverNumberEntity = new ServerNumberEntity(ServerNumber.NUMBER_TWO.toInt());
+                    String command = CommandManager.getInstance().getCommand(CommandType.QUERY_DATA_CENTER_PARAM, serverNumberEntity);
+                    sendCommonCommandImmediately(command);//查询数据中心2参数
+                    Timber.i("中心2第1次编辑");
+                } else {
+                    if (mqttConfigInfo2 == null) {
+                        ToastUtils.show("等2s再点击");
+                        return;
+                    }
+                    //直接弹框
+                    Timber.i("中心2第2次编辑===%s", mqttConfigInfo2.toString());
+                    curLinkNumber = "2";
+                    showConfigDialog(mqttConfigInfo2, "2");
+                }
+                break;
+
+            case R.id.tv_link_three:
+                if (!MCloudApp.isIsBluetoothDeviceConnected()) {
+                    ToastUtils.show(getString(R.string.param_config_bluetooth_disconnect_warn));
+                    return;
+                }
+
+                setLinkTextEnabled(mTvLinkThreeStatus, false);
+                if (!editLinkThree) {//第一次编辑时，需要查询数据中心参数
+                    editLinkThree = true;
+                    ServerNumberEntity serverNumberEntity = new ServerNumberEntity(ServerNumber.NUMBER_THREE.toInt());
+                    String command = CommandManager.getInstance().getCommand(CommandType.QUERY_DATA_CENTER_PARAM, serverNumberEntity);
+                    sendCommonCommandImmediately(command);//查询数据中心3参数
+                    Timber.i("中心3第1次编辑");
+                } else {
+                    if (mqttConfigInfo3 == null) {
+                        ToastUtils.show("等2s再点击");
+                        return;
+                    }
+                    //直接弹框
+                    Timber.i("中心3第2次编辑===%s", mqttConfigInfo3.toString());
+                    curLinkNumber = "3";
+                    showConfigDialog(mqttConfigInfo3, "3");
+                }
+                break;
+
+            case R.id.btn_confirm:
+                if (!MCloudApp.isIsBluetoothDeviceConnected()) {
+                    ToastUtils.show(getString(R.string.param_config_bluetooth_disconnect_warn));
+                    return;
+                }
+
+                if (spCommunicationmethod.getSelectedItem().toString().contains("BD")) {
+                    String bdNumber = mCetBDCardNumber.getText() == null ? "" : mCetBDCardNumber.getText().toString().trim();
+                    if (bdNumber.equals("")) {
+                        ToastUtils.show("北斗目标卡号不能为空");
+                        return;
+                    }
+                    //设置六位目标北斗卡号
+                    SixTargerBDNumberEntity bdNumberEntity = new SixTargerBDNumberEntity(bdNumber);
+                    cmdBDCardNumber = CommandManager.getInstance().getCommand(CommandType.SIX_TARGER_BD_NUMBER, bdNumberEntity);
+                }
+
+                //设置数据上报间隔
+                String report = mCetDataReport.getText() == null ? "" : mCetDataReport.getText().toString().trim();
+                DataReportIntervalEntity intervalEntity = new DataReportIntervalEntity(report.equals("") ? 120 : Integer.parseInt(report));
+                cmdDataReport = CommandManager.getInstance().getCommand(CommandType.DATA_REPORT_INTERVAL, intervalEntity);
+
+                errMsg = "发送指令超时,请稍后尝试";
+                startProgressRunnable("正在发送配置指令...", CONFIG_PARAMS_DELAY_MILLIS);
+                DataCommunicateModeEntity communicateModeEntity = new DataCommunicateModeEntity(Integer.parseInt(dataCommunicationMode));
+                String cmd = CommandManager.getInstance().getCommand(CommandType.DATA_MASSAGE_MODEL, communicateModeEntity);
+                sendCommonCommandImmediately(cmd);
+                Timber.d("设置数据通讯模式===%s", cmd);
+                break;
+
+            case R.id.back:
+                onBackPressed();
+                break;
+
+            case R.id.tv_save:
+                if (!MCloudApp.isIsBluetoothDeviceConnected()) {
+                    ToastUtils.show(getString(R.string.param_config_bluetooth_disconnect_warn));
+                    return;
+                }
+                isExitMode = true;
+                saveConfigInfo();
+                break;
+        }
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void getConfig(String messageEvent) {
+        if (!TextUtils.isEmpty(messageEvent) && messageEvent.startsWith("$$")) {
+            setResultData(messageEvent);
+        }
+    }
 
     private void setResultData(String cmdStr) {
         Timber.i("数据中心应答指令===%s", cmdStr);
@@ -391,30 +505,33 @@ public class MqttSettingActivity extends BaseDeviceConnectActivity implements Vi
                 ServerNumber dataCenterLinkNumber = ServerNumber.valueOf(Integer.parseInt(strs[0].substring(5)));
                 switch (dataCenterLinkNumber) {
                     case NUMBER_ONE:
-                        mqttConfigInfoSub1 = ResultParserUtil.getEntityObject(cmdStr);
+                        mqttConfigInfo1 = ResultParserUtil.getEntityObject(cmdStr);
                         setLinkTextEnabled(mTvLinkOneStatus, true);
-                        if (mqttConfigInfoSub1 == null)
+                        if (mqttConfigInfo1 == null)
                             return;
                         //弹框
-                        factory.createDialog(MqttSettingActivity.this, "1", mqttConfigInfoSub1, onClickListener);
+                        curLinkNumber = "1";
+                        showConfigDialog(mqttConfigInfo1, "1");
                         break;
 
                     case NUMBER_TWO:
-                        mqttConfigInfoSub2 = ResultParserUtil.getEntityObject(cmdStr);
+                        mqttConfigInfo2 = ResultParserUtil.getEntityObject(cmdStr);
                         setLinkTextEnabled(mTvLinkTwoStatus, true);
-                        if (mqttConfigInfoSub2 == null)
+                        if (mqttConfigInfo2 == null)
                             return;
                         //弹框
-                        factory.createDialog(MqttSettingActivity.this, "2", mqttConfigInfoSub2, onClickListener);
+                        curLinkNumber = "2";
+                        showConfigDialog(mqttConfigInfo2, "2");
                         break;
 
                     case NUMBER_THREE:
-                        mqttConfigInfoSub3 = ResultParserUtil.getEntityObject(cmdStr);
+                        mqttConfigInfo3 = ResultParserUtil.getEntityObject(cmdStr);
                         setLinkTextEnabled(mTvLinkThreeStatus, true);
-                        if (mqttConfigInfoSub3 == null)
+                        if (mqttConfigInfo3 == null)
                             return;
                         //弹框
-                        factory.createDialog(MqttSettingActivity.this, "3", mqttConfigInfoSub3, onClickListener);
+                        curLinkNumber = "3";
+                        showConfigDialog(mqttConfigInfo3, "3");
                         break;
                 }
                 break;
@@ -552,209 +669,92 @@ public class MqttSettingActivity extends BaseDeviceConnectActivity implements Vi
         }
     }
 
-
-    /**
-     * @param v
-     */
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.tv_link_one:
-                if (!MCloudApp.isIsBluetoothDeviceConnected()) {
-                    ToastUtils.show(getString(R.string.param_config_bluetooth_disconnect_warn));
-                    return;
-                }
-                setLinkTextEnabled(mTvLinkOneStatus, false);
-                if (!editLinkOne) {//第一次编辑时，需要查询数据中心参数
-                    editLinkOne = true;
-                    ServerNumberEntity serverNumberEntity = new ServerNumberEntity(ServerNumber.NUMBER_ONE.toInt());
-                    String command = CommandManager.getInstance().getCommand(CommandType.QUERY_DATA_CENTER_PARAM, serverNumberEntity);
-                    sendCommonCommandImmediately(command);//查询数据中心1参数
-                    Timber.i("中心1第1次编辑");
-                } else {
-                    if (mqttConfigInfoSub1 == null) {
-                        ToastUtils.show("等2s再点击");
-                        return;
-                    }
-                    //直接弹框
-                    Timber.i("中心1第2次编辑===%s", mqttConfigInfoSub1.toString());
-                    factory.createDialog(MqttSettingActivity.this, "1", mqttConfigInfoSub1, onClickListener);
-                }
-                break;
-
-            case R.id.tv_link_two:
-                if (!MCloudApp.isIsBluetoothDeviceConnected()) {
-                    ToastUtils.show(getString(R.string.param_config_bluetooth_disconnect_warn));
-                    return;
-                }
-
-                setLinkTextEnabled(mTvLinkTwoStatus, false);
-                if (!editLinkTwo) {//第一次编辑时，需要查询数据中心参数
-                    editLinkTwo = true;
-                    ServerNumberEntity serverNumberEntity = new ServerNumberEntity(ServerNumber.NUMBER_TWO.toInt());
-                    String command = CommandManager.getInstance().getCommand(CommandType.QUERY_DATA_CENTER_PARAM, serverNumberEntity);
-                    sendCommonCommandImmediately(command);//查询数据中心2参数
-                    Timber.i("中心2第1次编辑");
-                } else {
-                    if (mqttConfigInfoSub2 == null) {
-                        ToastUtils.show("等2s再点击");
-                        return;
-                    }
-                    //直接弹框
-                    Timber.i("中心2第2次编辑===%s", mqttConfigInfoSub2.toString());
-                    factory.createDialog(MqttSettingActivity.this, "2", mqttConfigInfoSub2, onClickListener);
-                }
-                break;
-
-            case R.id.tv_link_three:
-                if (!MCloudApp.isIsBluetoothDeviceConnected()) {
-                    ToastUtils.show(getString(R.string.param_config_bluetooth_disconnect_warn));
-                    return;
-                }
-
-                setLinkTextEnabled(mTvLinkThreeStatus, false);
-                if (!editLinkThree) {//第一次编辑时，需要查询数据中心参数
-                    editLinkThree = true;
-                    ServerNumberEntity serverNumberEntity = new ServerNumberEntity(ServerNumber.NUMBER_THREE.toInt());
-                    String command = CommandManager.getInstance().getCommand(CommandType.QUERY_DATA_CENTER_PARAM, serverNumberEntity);
-                    sendCommonCommandImmediately(command);//查询数据中心3参数
-                    Timber.i("中心3第1次编辑");
-                } else {
-                    if (mqttConfigInfoSub3 == null) {
-                        ToastUtils.show("等2s再点击");
-                        return;
-                    }
-                    //直接弹框
-                    Timber.i("中心3第2次编辑===%s", mqttConfigInfoSub3.toString());
-                    factory.createDialog(MqttSettingActivity.this, "3", mqttConfigInfoSub3, onClickListener);
-                }
-                break;
-
-            case R.id.btn_confirm:
-                if (!MCloudApp.isIsBluetoothDeviceConnected()) {
-                    ToastUtils.show(getString(R.string.param_config_bluetooth_disconnect_warn));
-                    return;
-                }
-
-                if (spCommunicationmethod.getSelectedItem().toString().contains("BD")) {
-                    String bdNumber = mCetBDCardNumber.getText() == null ? "" : mCetBDCardNumber.getText().toString().trim();
-                    if (bdNumber.equals("")) {
-                        ToastUtils.show("北斗目标卡号不能为空");
-                        return;
-                    }
-                    //设置六位目标北斗卡号
-                    SixTargerBDNumberEntity bdNumberEntity = new SixTargerBDNumberEntity(bdNumber);
-                    cmdBDCardNumber = CommandManager.getInstance().getCommand(CommandType.SIX_TARGER_BD_NUMBER, bdNumberEntity);
-                }
-
-                //设置数据上报间隔
-                String report = mCetDataReport.getText() == null ? "" : mCetDataReport.getText().toString().trim();
-                DataReportIntervalEntity intervalEntity = new DataReportIntervalEntity(report.equals("") ? 120 : Integer.parseInt(report));
-                cmdDataReport = CommandManager.getInstance().getCommand(CommandType.DATA_REPORT_INTERVAL, intervalEntity);
-
-                errMsg = "发送指令超时,请稍后尝试";
-                startProgressRunnable("正在发送配置指令...", CONFIG_PARAMS_DELAY_MILLIS);
-                DataCommunicateModeEntity communicateModeEntity = new DataCommunicateModeEntity(Integer.parseInt(dataCommunicationMode));
-                String cmd = CommandManager.getInstance().getCommand(CommandType.DATA_MASSAGE_MODEL, communicateModeEntity);
-                sendCommonCommandImmediately(cmd);
-                Timber.d("设置数据通讯模式===%s", cmd);
-                break;
-
-            case R.id.back:
-                onBackPressed();
-                break;
-
-            case R.id.tv_save:
-                if (!MCloudApp.isIsBluetoothDeviceConnected()) {
-                    ToastUtils.show(getString(R.string.param_config_bluetooth_disconnect_warn));
-                    return;
-                }
-                isExitMode = true;
-                saveConfigInfo();
-                break;
-        }
+    private void showConfigDialog(MqttConfigInfo mqttConfigInfo, String linkNumber) {
+        BaseDialogFragment newFragment = MqttConfigDialogFragment.newInstance(mqttConfigInfo, linkNumber);
+        newFragment.show(getSupportFragmentManager(), "dialog");
     }
 
-    private MQttOnClickListener onClickListener = new MQttOnClickListener() {
-        @Override
-        public boolean onSureClick(View v, MqttConfigInfo mqttConfigInfo, String linkNumber) {
-            Timber.i("===MQttOnClickListener===%s", mqttConfigInfo.toString());
-            communicationProtocol = mqttConfigInfo.getCommunicationProtocol();
-            String dataPlatformAddress = mqttConfigInfo.getDataPlatformAddress();
-            String keepAliveValue = mqttConfigInfo.getKeepAliveValue();
-            String deviceSn = mqttConfigInfo.getDeviceSn();
-            String productId = mqttConfigInfo.getProductId();
-            String registrationCode = mqttConfigInfo.getRegistrationCode();
-            registrationPlatform = mqttConfigInfo.getRegistrationPlatform();
-            String registrationPlatformAddress = mqttConfigInfo.getRegistrationPlatformAddress();
-            String appkey = mqttConfigInfo.getAppKey();
-            String mqttDeviceId = mqttConfigInfo.getMqttDeviceId();
-            String mqttUsername = mqttConfigInfo.getMqttUsername();
-            String mqttPassword = mqttConfigInfo.getMqttPassword();
+    @Override
+    public boolean onPositiveClick(View view, MqttConfigInfo mqttConfigInfo) {
+        KeyBordUtils.hideSoftKeyboard(view);
 
-            //网络中心通讯协议
-            DataCenterCommunicateProtoclEntity communicateProtoclEntity = new DataCenterCommunicateProtoclEntity(Integer.parseInt(linkNumber), Integer.parseInt(communicationProtocol));
-            cmdCommunicationProtocol = CommandManager.getInstance().getCommand(CommandType.NET_LINK_COMMUN_PROTOCOL, communicateProtoclEntity);
+        Timber.i("===MQttOnClickListener===%s", mqttConfigInfo.toString());
+        communicationProtocol = mqttConfigInfo.getCommunicationProtocol();
+        String dataPlatformAddress = mqttConfigInfo.getDataPlatformAddress();
+        String keepAliveValue = mqttConfigInfo.getKeepAliveValue();
+        String deviceSn = mqttConfigInfo.getDeviceSn();
+        String productId = mqttConfigInfo.getProductId();
+        String registrationCode = mqttConfigInfo.getRegisterCode();
+        registrationPlatform = mqttConfigInfo.getRegisterPlatform();
+        String registrationPlatformAddress = mqttConfigInfo.getRegisterPlatformAddress();
+        String appkey = mqttConfigInfo.getAppKey();
+        String mqttDeviceId = mqttConfigInfo.getMqttDeviceId();
+        String mqttUsername = mqttConfigInfo.getMqttUsername();
+        String mqttPassword = mqttConfigInfo.getMqttPassword();
 
-            //数据服务器地址、端口
-            String[] strs = dataPlatformAddress.trim().split(" ");
-            ServerAddressInfoEntity addressInfoEntity = new ServerAddressInfoEntity(Integer.parseInt(linkNumber), strs[0], Integer.parseInt(strs[1]));
-            cmdDataPlatformAddress = CommandManager.getInstance().getCommand(CommandType.SET_SERVER_ADDRESS_PORT, addressInfoEntity);
+        //网络中心通讯协议
+        DataCenterCommunicateProtoclEntity communicateProtoclEntity = new DataCenterCommunicateProtoclEntity(Integer.parseInt(curLinkNumber), Integer.parseInt(communicationProtocol));
+        cmdCommunicationProtocol = CommandManager.getInstance().getCommand(CommandType.NET_LINK_COMMUN_PROTOCOL, communicateProtoclEntity);
 
-            if (communicationProtocol.equals("4")) {//MQTT自动注册
-                //选择注册平台
-                RegistrationPlatformSelectionEntity platformSelectionEntity = new RegistrationPlatformSelectionEntity(Integer.parseInt(linkNumber), Integer.parseInt(registrationPlatform));
-                cmdRegistrationPlatform = CommandManager.getInstance().getCommand(CommandType.AUTO_REGISTRATION_PLATFORM, platformSelectionEntity);
+        //数据服务器地址、端口
+        String[] strs = dataPlatformAddress.trim().split(" ");
+        ServerAddressInfoEntity addressInfoEntity = new ServerAddressInfoEntity(Integer.parseInt(curLinkNumber), strs[0], Integer.parseInt(strs[1]));
+        cmdDataPlatformAddress = CommandManager.getInstance().getCommand(CommandType.SET_SERVER_ADDRESS_PORT, addressInfoEntity);
 
-                //自动注册平台地址端口
-                strs = registrationPlatformAddress.trim().split(" ");
-                addressInfoEntity = new ServerAddressInfoEntity(Integer.parseInt(linkNumber), strs[0], Integer.parseInt(strs[1]));
-                cmdRegistrationPlatformAddress = CommandManager.getInstance().getCommand(CommandType.SET_AUTO_REGISTRATION_PLATFORM_SERVER_ADDRESS_PORT, addressInfoEntity);
+        if (communicationProtocol.equals("4")) {//MQTT自动注册
+            //选择注册平台
+            RegistrationPlatformSelectionEntity platformSelectionEntity = new RegistrationPlatformSelectionEntity(Integer.parseInt(curLinkNumber), Integer.parseInt(registrationPlatform));
+            cmdRegistrationPlatform = CommandManager.getInstance().getCommand(CommandType.AUTO_REGISTRATION_PLATFORM, platformSelectionEntity);
 
-                //MQTT KeepAlive值
-                MQTTKeepAliveEntity keepAliveEntity = new MQTTKeepAliveEntity(Integer.parseInt(linkNumber), Integer.parseInt(keepAliveValue));
-                cmdKeepAliveValue = CommandManager.getInstance().getCommand(CommandType.MQTT_KEEP_ALIVE, keepAliveEntity);
+            //自动注册平台地址端口
+            strs = registrationPlatformAddress.trim().split(" ");
+            addressInfoEntity = new ServerAddressInfoEntity(Integer.parseInt(curLinkNumber), strs[0], Integer.parseInt(strs[1]));
+            cmdRegistrationPlatformAddress = CommandManager.getInstance().getCommand(CommandType.SET_AUTO_REGISTRATION_PLATFORM_SERVER_ADDRESS_PORT, addressInfoEntity);
 
-                //自动注册平台参数：设备SN号+产品ID+注册码
-                RegistrationPlatformEntity registrationPlatformEntity = new RegistrationPlatformEntity(Integer.parseInt(linkNumber), deviceSn, productId, registrationCode);
-                cmdPlatformParam = CommandManager.getInstance().getCommand(CommandType.SET_AUTO_REGISTRATION_PLATFORM_PARAM, registrationPlatformEntity);
-                if (registrationPlatform.equals("2")) {
-                    //appKey(米度/北京平台特有)
-                    APPKeyEntity appKeyEntity = new APPKeyEntity(Integer.parseInt(linkNumber), appkey);
-                    cmdAppKey = CommandManager.getInstance().getCommand(CommandType.SET_MEDO_PLATFORM_APPKEY, appKeyEntity);
-                }
-            } else if (communicationProtocol.equals("5")) {//MQTT手动注册
-                //MQTT KeepAlive值
-                MQTTKeepAliveEntity keepAliveEntity = new MQTTKeepAliveEntity(Integer.parseInt(linkNumber), Integer.parseInt(keepAliveValue));
-                cmdKeepAliveValue = CommandManager.getInstance().getCommand(CommandType.MQTT_KEEP_ALIVE, keepAliveEntity);
+            //MQTT KeepAlive值
+            MQTTKeepAliveEntity keepAliveEntity = new MQTTKeepAliveEntity(Integer.parseInt(curLinkNumber), Integer.parseInt(keepAliveValue));
+            cmdKeepAliveValue = CommandManager.getInstance().getCommand(CommandType.MQTT_KEEP_ALIVE, keepAliveEntity);
 
-                //手动注册平台参数：产品ID+设备ID+设备KEY
-                RegistrationPlatformEntity registrationPlatformEntity = new RegistrationPlatformEntity(Integer.parseInt(linkNumber), mqttUsername, mqttDeviceId, mqttPassword);
-                cmdPlatformParam = CommandManager.getInstance().getCommand(CommandType.SET_MANUAL_REGISTRATION_PLATFORM_PARAM, registrationPlatformEntity);
+            //自动注册平台参数：设备SN号+产品ID+注册码
+            RegistrationPlatformEntity registrationPlatformEntity = new RegistrationPlatformEntity(Integer.parseInt(curLinkNumber), deviceSn, productId, registrationCode);
+            cmdPlatformParam = CommandManager.getInstance().getCommand(CommandType.SET_AUTO_REGISTRATION_PLATFORM_PARAM, registrationPlatformEntity);
+            if (registrationPlatform.equals("2")) {
+                //appKey(米度/北京平台特有)
+                APPKeyEntity appKeyEntity = new APPKeyEntity(Integer.parseInt(curLinkNumber), appkey);
+                cmdAppKey = CommandManager.getInstance().getCommand(CommandType.SET_MEDO_PLATFORM_APPKEY, appKeyEntity);
             }
+        } else if (communicationProtocol.equals("5")) {//MQTT手动注册
+            //MQTT KeepAlive值
+            MQTTKeepAliveEntity keepAliveEntity = new MQTTKeepAliveEntity(Integer.parseInt(curLinkNumber), Integer.parseInt(keepAliveValue));
+            cmdKeepAliveValue = CommandManager.getInstance().getCommand(CommandType.MQTT_KEEP_ALIVE, keepAliveEntity);
 
+            //手动注册平台参数：产品ID+设备ID+设备KEY
+            RegistrationPlatformEntity registrationPlatformEntity = new RegistrationPlatformEntity(Integer.parseInt(curLinkNumber), mqttUsername, mqttDeviceId, mqttPassword);
+            cmdPlatformParam = CommandManager.getInstance().getCommand(CommandType.SET_MANUAL_REGISTRATION_PLATFORM_PARAM, registrationPlatformEntity);
+        }
+
+        setLinkTextEnabled(mTvLinkOneStatus, true);
+        setLinkTextEnabled(mTvLinkTwoStatus, true);
+        setLinkTextEnabled(mTvLinkThreeStatus, true);
+
+        errMsg = "发送指令超时,请稍后尝试";
+        startProgressRunnable("正在发送配置指令...", CONFIG_PARAMS_DELAY_MILLIS);
+        sendCommonCommandImmediately(cmdCommunicationProtocol);
+        Timber.d("设置网络中心通讯协议===%s", cmdCommunicationProtocol);
+        return true;
+    }
+
+    @Override
+    public void onNegativeClick(View view) {
+        KeyBordUtils.hideSoftKeyboard(view);
+        if (curLinkNumber.equals("1")) {
             setLinkTextEnabled(mTvLinkOneStatus, true);
+        } else if (curLinkNumber.equals("2")) {
             setLinkTextEnabled(mTvLinkTwoStatus, true);
+        } else if (curLinkNumber.equals("3")) {
             setLinkTextEnabled(mTvLinkThreeStatus, true);
-
-            errMsg = "发送指令超时,请稍后尝试";
-            startProgressRunnable("正在发送配置指令...", CONFIG_PARAMS_DELAY_MILLIS);
-            sendCommonCommandImmediately(cmdCommunicationProtocol);
-            Timber.d("设置网络中心通讯协议===%s", cmdCommunicationProtocol);
-            return false;
         }
-
-        @Override
-        public void onCancelClick(View view, String linkNumber) {
-            if (linkNumber.equals("1")) {
-                setLinkTextEnabled(mTvLinkOneStatus, true);
-            } else if (linkNumber.equals("2")) {
-                setLinkTextEnabled(mTvLinkTwoStatus, true);
-            } else if (linkNumber.equals("3")) {
-                setLinkTextEnabled(mTvLinkThreeStatus, true);
-            }
-        }
-    };
+    }
 
     /**
      * 关闭SwitchButton

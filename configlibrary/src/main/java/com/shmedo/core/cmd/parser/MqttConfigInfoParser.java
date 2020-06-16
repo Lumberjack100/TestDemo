@@ -19,9 +19,9 @@ public class MqttConfigInfoParser implements ResultParser<MqttConfigInfo> {
         mqttConfigInfo.setKeepAliveValue(cmd[4]);
         mqttConfigInfo.setDeviceSn(cmd[5]);//设备SN号
         mqttConfigInfo.setProductId(cmd[6]);//产品ID
-        mqttConfigInfo.setRegistrationCode(cmd[7]);//注册码
-        mqttConfigInfo.setRegistrationPlatform(cmd[8]);//注册平台类型，0：地大平台，1：成都理工平台，2：米度平台
-        mqttConfigInfo.setRegistrationPlatformAddress(cmd[9]);//注册平台地址
+        mqttConfigInfo.setRegisterCode(cmd[7]);//注册码
+        mqttConfigInfo.setRegisterPlatform(cmd[8]);//注册平台类型，0：地大平台，1：成都理工平台，2：米度平台
+        mqttConfigInfo.setRegisterPlatformAddress(cmd[9]);//注册平台地址
         mqttConfigInfo.setAppKey(cmd[10]);
         mqttConfigInfo.setMqttDeviceId(cmd[11]);//MQTT设备ID
         mqttConfigInfo.setMqttUsername(cmd[12]);//MQTT用户名
