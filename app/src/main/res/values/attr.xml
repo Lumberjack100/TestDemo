@@ -3,7 +3,6 @@
     <attr name="app_primary_color" format="color"/> <!-- topbar -->
     <attr name="app_content_bg_color" format="color"/> <!-- content-->
 
-
     <!--EditSpinner控件-->
     <declare-styleable name="EditSpinner">
         <attr name="hint" format="string"/>
@@ -23,6 +22,13 @@
             <enum name="positive" value="1"/>
             <enum name="negative" value="2"/>
         </attr>
+    </declare-styleable>
+
+    <declare-styleable name="BaseIconView">
+        <!--IconView最外面背景图片，可以是单个图片或者selector-->
+        <attr name="biv_background" format="reference|color" />
+        <!--IconView最背里面景图片，可以是单个图片或者selector-->
+        <attr name="biv_icon" format="reference|color" />
     </declare-styleable>
 
 </resources>

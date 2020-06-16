@@ -22,6 +22,11 @@
     </style>
 
 
+    <style name="FullscreenTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="windowNoTitle">true</item>
+        <item name="android:windowFullscreen">true</item>
+    </style>
+
     <style name="AppTheme.Dialog" parent="Theme.AppCompat.Dialog">
         <item name="android:windowBackground">@android:color/transparent</item>
     </style>
@@ -119,6 +124,13 @@
         <item name="android:paddingRight">10dp</item>
         <item name="android:paddingTop">4dp</item>
         <item name="android:paddingBottom">4dp</item>
+    </style>
+
+
+    <!--地图模块-->
+    <style name="IconViewStyle">
+        <item name="android:layout_width">40dp</item>
+        <item name="android:layout_height">45dp</item>
     </style>
 
 </resources>
