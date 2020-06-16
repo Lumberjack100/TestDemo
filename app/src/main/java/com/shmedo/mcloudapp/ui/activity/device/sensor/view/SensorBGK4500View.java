@@ -173,7 +173,7 @@ public class SensorBGK4500View extends FrameLayout {
         }
 
         if (!TextUtils.isEmpty(correctValue) && !ValidateUtil.isDouble(correctValue)) {
-            ToastUtils.show("请输入正确的修正值!");
+            ToastUtils.show("请输入正确的手动纠偏!");
             return false;
         }
 

@@ -148,14 +148,13 @@ public class SensorVWP03View extends FrameLayout {
             return false;
         }
 
-
         if (!TextUtils.isEmpty(initialTemperature) && !ValidateUtil.isDouble(initialTemperature)) {
             ToastUtils.show("请输入正确的初始温度!");
             return false;
         }
 
         if (!TextUtils.isEmpty(correctValue) && !ValidateUtil.isDouble(correctValue)) {
-            ToastUtils.show("请输入正确的修正值!");
+            ToastUtils.show("请输入正确的手动纠偏!");
             return false;
         }
 
