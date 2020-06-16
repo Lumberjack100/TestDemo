@@ -117,6 +117,9 @@ public class Osmometer_AxialForceGaugeDialogFragment extends BaseDialogFragment 
         });
     }
 
+    /**
+     * 初始化指定的传感器视图
+     */
     private void initSpecifiedSensorView() {
         switch (collectorSensorParamsInfo.getSensorType()) {
             case KANG_PERCOLATE://基康渗压计(BGK-4500)
@@ -275,7 +278,7 @@ public class Osmometer_AxialForceGaugeDialogFragment extends BaseDialogFragment 
                 SensorGudanPercolateInfo sensorInfo = new SensorGudanPercolateInfo();
                 sensorInfo.setSensitivityK(localData[3]);
                 sensorInfo.setTemperatureCoefficientB(localData[4]);
-                if (spinnerType.getSelectedItemPosition() != 0) {
+                if (spinnerType.getSelectedItemPosition() != 1) {
                     showSwitchSensorTypeDialog(localData[2], sensorInfo);
                     return;
                 }
