@@ -2,9 +2,14 @@ package com.shmedo.mcloudapp.maps.ui.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 
+import com.amap.api.location.AMapLocationClient;
+import com.amap.api.maps.AMap;
+import com.amap.api.maps.AMapOptions;
 import com.amap.api.maps.TextureMapView;
+import com.amap.api.maps.model.MyLocationStyle;
 import com.shmedo.mcloudapp.R;
 
 import butterknife.BindView;
@@ -12,6 +17,11 @@ import butterknife.BindView;
 public class MapActivity extends CheckMapNeedPermissionsActivity {
     @BindView(R.id.map)
     TextureMapView mMapView;
+
+    private AMap aMap; //地图控制器对象
+
+    private MyLocationStyle myLocationStyle;
+    private AMapLocationClient mLocationClient;
 
 
     public static void startActivity(Context context) {
@@ -27,10 +37,8 @@ public class MapActivity extends CheckMapNeedPermissionsActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //在activity执行onCreate时执行mMapView.onCreate(savedInstanceState)，创建地图
-        mMapView.onCreate(savedInstanceState);
+        initView(savedInstanceState);
     }
-
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
@@ -65,6 +73,45 @@ public class MapActivity extends CheckMapNeedPermissionsActivity {
 //            mLocationClient = null;
 //        }
     }
+
+    private void initView(Bundle savedInstanceState) {
+        //在activity执行onCreate时执行mMapView.onCreate(savedInstanceState)，创建地图
+        mMapView.onCreate(savedInstanceState);
+        setMapView();
+    }
+
+    private void setMapView(){
+        if (aMap == null) {
+            //初始化地图控制器对象
+            aMap = mMapView.getMap();
+        }
+        aMap.setMapType(AMap.MAP_TYPE_SATELLITE);// 卫星地图模式
+        aMap.setMyLocationEnabled(true);// 设置为true表示启动显示定位蓝点，false表示隐藏定位蓝点并不进行定位，默认是false。
+        aMap.getUiSettings().setZoomControlsEnabled(false); //隐藏缩放控件
+        aMap.getUiSettings().setMyLocationButtonEnabled(false);//设置默认定位按钮是否显示，非必需设置。
+        aMap.getUiSettings().setLogoPosition(AMapOptions.LOGO_POSITION_BOTTOM_RIGHT);//设置logo位置
+//        mUiSettings.setLogoBottomMargin(-50);//隐藏logo
+        setupLocationStyle();
+    }
+
+    /**
+     * 设置 定位小蓝点（当前位置）的绘制样式
+     */
+    private void setupLocationStyle() {
+        // 自定义系统定位蓝点
+        myLocationStyle = new MyLocationStyle();
+        myLocationStyle.strokeColor(getResources().getColor(R.color.app_color_blue_2));  //设置定位小蓝点精度圆圈的边框颜色
+        myLocationStyle.strokeWidth(1); //设置定位小蓝点精度圆圈的边框宽度
+        myLocationStyle.radiusFillColor(Color.argb(100, 29, 161, 242)); // 设置定位小蓝点精度圆圈的填充颜色
+        myLocationStyle.myLocationType(MyLocationStyle.LOCATION_TYPE_LOCATE);//定位一次，且将视角移动到地图中心点。
+        // 将自定义的 myLocationStyle 对象添加到地图上
+        aMap.setMyLocationStyle(myLocationStyle);
+    }
+
+
+
+
+
 
 
 
