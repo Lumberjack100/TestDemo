@@ -112,7 +112,7 @@ public class SensorZLJ300tView extends FrameLayout {
             return false;
         }
 
-        if (!ValidateUtil.isDouble(triggerThreshold)) {
+        if (!ValidateUtil.isInteger(triggerThreshold)) {
             ToastUtils.show("请输入正确的触发阀值!");
             return false;
         }

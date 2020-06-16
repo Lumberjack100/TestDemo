@@ -8,7 +8,6 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -23,20 +22,20 @@ import timber.log.Timber;
  * mqtt  dialog
  */
 public class MqttConfigDialog implements IDialogOpt<MqttConfigInfo> {
-
+    private Context context;
     private Dialog dialog;
     private View contentView;
     private MqttConfigInfo mqttConfigInfoSub;
-
     private MQttOnClickListener mQttOnClickListener;
     private String link;
-
-    private Context context;
 
     private ArrayAdapter<String> protocolAdapter;
     private ArrayAdapter<String> registerAdapter;
 
-    private String protocolItem, registerPlatformItem;
+    private Spinner communicationProtocol, spRegistrationPlatform;
+    private View llRegisterPlatform, llAppKey, llRegisterAddress, llKeepAlive, llDeviceConfig, llMqttConfig;
+    private ClearEditText dataPlatformAddress, cetAppKey, cetRegisterAddress, cetKeepAliveValue, cetDeviceSn, cetProductId, cetRegistrationCode, cetMqttDeviceId, cetMqttUsername, cetMqttPassword;
+    private String protocolItem, registerPlatformItem, serviceAddress, registrationPlatformAddress;
 
     public MqttConfigDialog(Context context, String link) {
         this.context = context;
@@ -62,24 +61,24 @@ public class MqttConfigDialog implements IDialogOpt<MqttConfigInfo> {
     public void initData(MqttConfigInfo info) {
         mqttConfigInfoSub = info;
         TextView tvTitle = contentView.findViewById(R.id.tv_title);
-        final Spinner communicationProtocol = contentView.findViewById(R.id.communication_protocol);
-        final ClearEditText dataPlatformAddress = contentView.findViewById(R.id.cet_service_address);
-        Spinner spRegistrationPlatform = contentView.findViewById(R.id.sp_registration_platform);
-        final LinearLayout llRegisterPlatform = contentView.findViewById(R.id.ll_register_platform);
-        ClearEditText cetAppKey = contentView.findViewById(R.id.cet_app_Key);
-        final LinearLayout llAppKey = contentView.findViewById(R.id.ll_app_key);
-        final ClearEditText cetRegisterAddress = contentView.findViewById(R.id.cet_register_address);
-        final LinearLayout llRegisterAddress = contentView.findViewById(R.id.ll_register_address);
-        final ClearEditText cetKeepAliveValue = contentView.findViewById(R.id.cet_KeepAlive_value);
-        final LinearLayout llKeepAlive = contentView.findViewById(R.id.ll_keep_alive);
-        final ClearEditText cetDeviceSn = contentView.findViewById(R.id.cet_device_sn);
-        final ClearEditText cetProductId = contentView.findViewById(R.id.cet_product_id);
-        final ClearEditText cetRegistrationCode = contentView.findViewById(R.id.cet_registration_code);
-        final LinearLayout llDeviceConfig = contentView.findViewById(R.id.ll_device_config);
-        final ClearEditText cetMqttDeviceId = contentView.findViewById(R.id.cet_mqtt_device_id);
-        final ClearEditText cetMqttUsername = contentView.findViewById(R.id.cet_mqtt_username);
-        final ClearEditText cetMqttPassword = contentView.findViewById(R.id.cet_mqtt_password);
-        final LinearLayout llMqttConfig = contentView.findViewById(R.id.ll_mqtt_config);
+        communicationProtocol = contentView.findViewById(R.id.communication_protocol);
+        dataPlatformAddress = contentView.findViewById(R.id.cet_service_address);
+        spRegistrationPlatform = contentView.findViewById(R.id.sp_registration_platform);
+        llRegisterPlatform = contentView.findViewById(R.id.ll_register_platform);
+        cetAppKey = contentView.findViewById(R.id.cet_app_Key);
+        llAppKey = contentView.findViewById(R.id.ll_app_key);
+        cetRegisterAddress = contentView.findViewById(R.id.cet_register_address);
+        llRegisterAddress = contentView.findViewById(R.id.ll_register_address);
+        cetKeepAliveValue = contentView.findViewById(R.id.cet_KeepAlive_value);
+        llKeepAlive = contentView.findViewById(R.id.ll_keep_alive);
+        cetDeviceSn = contentView.findViewById(R.id.cet_device_sn);
+        cetProductId = contentView.findViewById(R.id.cet_product_id);
+        cetRegistrationCode = contentView.findViewById(R.id.cet_registration_code);
+        llDeviceConfig = contentView.findViewById(R.id.ll_device_config);
+        cetMqttDeviceId = contentView.findViewById(R.id.cet_mqtt_device_id);
+        cetMqttUsername = contentView.findViewById(R.id.cet_mqtt_username);
+        cetMqttPassword = contentView.findViewById(R.id.cet_mqtt_password);
+        llMqttConfig = contentView.findViewById(R.id.ll_mqtt_config);
         TextView mqttCancel = contentView.findViewById(R.id.mqtt_cancel);
         TextView mqttSave = contentView.findViewById(R.id.mqtt_save);
         //通讯协议
@@ -97,27 +96,26 @@ public class MqttConfigDialog implements IDialogOpt<MqttConfigInfo> {
                         llAppKey.setVisibility(View.GONE);
                         llRegisterPlatform.setVisibility(View.GONE);
                         llRegisterAddress.setVisibility(View.GONE);
+                        llKeepAlive.setVisibility(View.GONE);
                         llDeviceConfig.setVisibility(View.GONE);
-                        llKeepAlive.setVisibility(View.GONE);
                         llMqttConfig.setVisibility(View.GONE);
-                        llKeepAlive.setVisibility(View.GONE);
                         break;
                     case "MQTT自动注册":
                         protocolItem = "4";
                         llRegisterPlatform.setVisibility(View.VISIBLE);
                         llRegisterAddress.setVisibility(View.VISIBLE);
+                        llKeepAlive.setVisibility(View.VISIBLE);
                         llDeviceConfig.setVisibility(View.VISIBLE);
                         llMqttConfig.setVisibility(View.GONE);
-                        llKeepAlive.setVisibility(View.VISIBLE);
                         break;
                     case "MQTT手动注册":
                         protocolItem = "5";
                         llAppKey.setVisibility(View.GONE);
                         llRegisterPlatform.setVisibility(View.GONE);
                         llRegisterAddress.setVisibility(View.GONE);
+                        llKeepAlive.setVisibility(View.VISIBLE);
                         llDeviceConfig.setVisibility(View.GONE);
                         llMqttConfig.setVisibility(View.VISIBLE);
-                        llKeepAlive.setVisibility(View.VISIBLE);
                         break;
                 }
             }
@@ -155,8 +153,10 @@ public class MqttConfigDialog implements IDialogOpt<MqttConfigInfo> {
             public void onNothingSelected(AdapterView<?> parent) {
             }
         });
+
         if (mqttConfigInfoSub == null)
             return;
+
         //配置参数
         tvTitle.setText("中心" + link + "配置");
         switch (mqttConfigInfoSub.getCommunicationProtocol()) {
@@ -196,7 +196,6 @@ public class MqttConfigDialog implements IDialogOpt<MqttConfigInfo> {
         cetMqttUsername.setText(mqttConfigInfoSub.getMqttUsername());
         cetMqttPassword.setText(mqttConfigInfoSub.getMqttPassword());
 
-
         if (mQttOnClickListener != null) {
             mqttSave.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -229,6 +228,12 @@ public class MqttConfigDialog implements IDialogOpt<MqttConfigInfo> {
                 }
             });
         }
+    }
+
+    private boolean checkValue() {
+        serviceAddress = dataPlatformAddress.getText().toString().trim();
+
+        return true;
     }
 
     public MqttConfigDialog setMyOnClickListener(MQttOnClickListener listener) {

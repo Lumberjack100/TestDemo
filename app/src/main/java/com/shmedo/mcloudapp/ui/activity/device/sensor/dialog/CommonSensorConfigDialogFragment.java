@@ -180,7 +180,7 @@ public class CommonSensorConfigDialogFragment extends BaseDialogFragment {
         }
 
         if (!ValidateUtil.isInteger(address) || Integer.parseInt(address) < 0 || Integer.parseInt(address) > 99) {
-            ToastUtils.show("请输入正确的通道号!");
+            ToastUtils.show("请输入正确的地址!");
             return false;
         }
 
@@ -189,7 +189,7 @@ public class CommonSensorConfigDialogFragment extends BaseDialogFragment {
             return false;
         }
 
-        if (!ValidateUtil.isDouble(triggerThreshold)) {
+        if (!ValidateUtil.isInteger(triggerThreshold)) {
             ToastUtils.show("请输入正确的触发值!");
             return false;
         }

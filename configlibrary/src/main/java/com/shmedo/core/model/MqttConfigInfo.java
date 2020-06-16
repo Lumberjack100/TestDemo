@@ -1,11 +1,13 @@
 package com.shmedo.core.model;
 
+import java.io.Serializable;
+
 /**
  * 创建者:   gonghe <br/>
  * 创建时间:  2020/4/24 <br/>
  * 描述：   mqtt配置实体类
  */
-public class MqttConfigInfo {
+public class MqttConfigInfo implements Serializable {
     /**
      * $$8893,1,4,mqtt.shmedo.com 6883,300,150000L,150000L,a84b42b1-cb30-410f-8285-5f4de6f9d319,
      * 2,mqtt.shmedo.com 80,fXQQROerSlJ0bqTPCoMnyqgR-2dzhytztk3eYV6nuA0OBQljkqG_exXYtNfr,,,
