@@ -9,6 +9,6 @@
     <!--边框/颜色-->
     <stroke
         android:width="0.5dp"
-        android:color="@color/color_gray_f2f2f2" />
+        android:color="@color/gray_f2f2f2" />
 
 </shape>

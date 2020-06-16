@@ -41,11 +41,10 @@
     <color name="black_333333">#333333</color>
     <color name="black_444444">#444444</color>
     <color name="black_505050">#505050</color>
-
-
     <color name="gray_80666666">#80666666</color>
-    <color name="color_gray_f2f2f2">#F2F2F2</color>
+    <color name="gray_f2f2f2">#F2F2F2</color>
     <color name="gray_f6f7f9">#f6f7f9</color>
+    <color name="gray_616161">#616161</color>
     <color name="gray_757575">#757575</color>
     <color name="gray_797979">#797979</color>
     <color name="gray_818182">#818182</color>
@@ -62,9 +61,9 @@
     <color name="gray_F8F8F8">#F8F8F8</color>
     <color name="gray_FEFEFE">#FEFEFE</color>
 
+    <!-- 地图模块 -->
     <color name="floating_action_button_selected">#7b7c79</color>
-
     <color name="bottom_navigation_selected">#0DB3A6</color>
-
+    <color name="map_icon_foreground">#616161</color>
 
 </resources>
