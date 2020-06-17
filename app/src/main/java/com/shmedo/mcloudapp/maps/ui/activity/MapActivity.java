@@ -39,7 +39,7 @@ import butterknife.BindView;
 import butterknife.OnClick;
 import timber.log.Timber;
 
-public class MapActivity extends CheckMapNeedPermissionsActivity implements AMapGestureListener, AMapLocationListener, LocationSource, PoiDetailBottomView.OnPoiDetailBottomClickListener {
+public class MapActivity extends CheckMapNeedPermissionsActivity implements AMapGestureListener, AMapLocationListener, LocationSource, PoiDetailBottomView.OnPoiDetailBottomClickListener, ZoomView.OnZoomViewClickListener {
     @BindView(R.id.map)
     TextureMapView mMapView;
 
@@ -105,7 +105,6 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
         super.onCreate(savedInstanceState);
         initView(savedInstanceState);
         setListener();
-
     }
 
     @Override
@@ -139,8 +138,10 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
         super.onPause();
         //在activity执行onPause时执行mMapView.onPause ()，暂停地图的绘制
         mMapView.onPause();
-        mLocationOption.setInterval(20000);//定位时间间隔，默认2000ms
-        mLocationClient.setLocationOption(mLocationOption);
+        if(mLocationOption != null && mLocationClient != null){
+            mLocationOption.setInterval(2000);//定位时间间隔，默认2000ms
+            mLocationClient.setLocationOption(mLocationOption);
+        }
     }
 
     @Override
@@ -178,6 +179,7 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
         aMap.setAMapGestureListener(this);
         mSensorHelper = new SensorEventHelper(this);
         mSensorHelper.registerSensorListener();
+        mZoomView.setOnZoomViewClickListener(this);
         mPoiDetailBottomView.setOnPoiDetailBottomClickListener(this);
     }
 
@@ -466,6 +468,23 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
      */
     @Override
     public void onMapStable() {
+
+    }
+
+    /**
+     *  点击放大
+     */
+    @Override
+    public void onZoomInClick() {
+        aMap.moveCamera(CameraUpdateFactory.zoomIn());
+    }
+
+    /**
+     * 点击缩小
+     */
+    @Override
+    public void onZoomOutClick() {
+        aMap.moveCamera(CameraUpdateFactory.zoomOut());
 
     }
 
