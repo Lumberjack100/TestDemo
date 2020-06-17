@@ -38,6 +38,7 @@
     <color name="orange_FF7502">#ff7502</color>
     <color name="green_53a659">#53a659</color>
 
+    <color name="black_070707">#070707</color>
     <color name="black_333333">#333333</color>
     <color name="black_444444">#444444</color>
     <color name="black_505050">#505050</color>
@@ -65,5 +66,6 @@
     <color name="floating_action_button_selected">#7b7c79</color>
     <color name="bottom_navigation_selected">#0DB3A6</color>
     <color name="map_icon_foreground">#616161</color>
-
+    <color name="poi_detail_title">@color/black_070707</color>
+    <color name="poi_detail_loc">#3E3E3E</color>
 </resources>

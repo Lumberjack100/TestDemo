@@ -352,9 +352,17 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
         mLocationClient = null;
     }
 
+    /**
+     * 地图手势事件回调：单指双击
+     */
     @Override
     public void onDoubleTap(float v, float v1) {
-
+        mMapType = MyLocationStyle.LOCATION_TYPE_LOCATION_ROTATE_NO_CENTER;
+        mCurrentGpsState = STATE_UNLOCKED;
+        mGpsView.setGpsState(mCurrentGpsState);
+//        setLocationStyle();
+        resetLocationMarker();
+        isCanMoveToCenter = false;
     }
 
     @Override
@@ -367,26 +375,56 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
 
     }
 
+
+    /**
+     * 地体手势事件回调：单指滑动
+     */
     @Override
     public void onScroll(float v, float v1) {
-
+        //避免重复调用闪屏，当手指up才重置为false
+        if (!onScrolling) {
+            onScrolling = true;
+            Timber.d( "onScroll,x=" + v + ",y=" + v1);
+            //旋转不移动到中心点
+            mMapType = MyLocationStyle.LOCATION_TYPE_LOCATION_ROTATE_NO_CENTER;
+            mCurrentGpsState = STATE_UNLOCKED;
+            //当前没有正在定位才能修改状态
+            if (!isFirstLocation) {
+                mGpsView.setGpsState(mCurrentGpsState);
+            }
+            isCanMoveToCenter = false;
+//            setLocationStyle();
+            resetLocationMarker();
+        }
     }
 
+    /**
+     * 长按
+     */
     @Override
     public void onLongPress(float v, float v1) {
 
     }
 
+    /**
+     * 地体手势事件回调：单指按下
+     */
     @Override
     public void onDown(float v, float v1) {
 
     }
 
+    /**
+     * 地体手势事件回调：单指抬起
+     */
     @Override
     public void onUp(float v, float v1) {
-
+        onScrolling = false;
     }
 
+    /**
+     * 地体手势事件回调：地图稳定下来会回到此接口
+     */
     @Override
     public void onMapStable() {
 

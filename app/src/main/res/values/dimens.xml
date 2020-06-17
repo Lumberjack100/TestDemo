@@ -53,9 +53,21 @@
     <dimen name="dimen_size_18">18dp</dimen>
     <dimen name="dimen_size_19">19dp</dimen>
     <dimen name="dimen_size_20">20dp</dimen>
+    <dimen name="dimen_size_21">21dp</dimen>
+    <dimen name="dimen_size_22">22dp</dimen>
+    <dimen name="dimen_size_23">23dp</dimen>
+    <dimen name="dimen_size_24">24dp</dimen>
     <dimen name="dimen_size_25">25dp</dimen>
+    <dimen name="dimen_size_26">26dp</dimen>
+    <dimen name="dimen_size_27">27dp</dimen>
+    <dimen name="dimen_size_28">28dp</dimen>
+    <dimen name="dimen_size_29">29dp</dimen>
     <dimen name="dimen_size_30">30dp</dimen>
     <dimen name="dimen_size_35">35dp</dimen>
+    <dimen name="dimen_size_36">36dp</dimen>
+    <dimen name="dimen_size_37">37dp</dimen>
+    <dimen name="dimen_size_38">38dp</dimen>
+    <dimen name="dimen_size_39">39dp</dimen>
     <dimen name="dimen_size_40">40dp</dimen>
     <dimen name="dimen_size_41">41dp</dimen>
     <dimen name="dimen_size_42">42dp</dimen>
@@ -63,7 +75,12 @@
     <dimen name="dimen_size_44">44dp</dimen>
     <dimen name="dimen_size_45">45dp</dimen>
     <dimen name="dimen_size_50">50dp</dimen>
+    <dimen name="dimen_size_55">55dp</dimen>
+    <dimen name="dimen_size_60">60dp</dimen>
 
     <dimen name="design_bottom_navigation_text_size" tools:override="true">12sp</dimen>
     <dimen name="design_bottom_navigation_active_text_size" tools:override="true">12sp</dimen>
+    <!--圆角矩形-->
+    <dimen name="rect_radius_medium">18dp</dimen>
+    <dimen name="rect_height_medium">36dp</dimen>
 </resources>

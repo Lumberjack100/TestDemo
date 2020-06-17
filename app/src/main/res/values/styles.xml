@@ -133,4 +133,22 @@
         <item name="android:layout_height">45dp</item>
     </style>
 
+    <style name="DividerCommon">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">1px</item>
+        <item name="android:background">@color/gray_f2f2f2</item>
+    </style>
+
+    <!--固定在底部的布局样式-->
+    <style name="PoiDetailFixedStyle">
+        <item name="android:layout_height">36dp</item>
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:layout_gravity">center_vertical</item>
+        <item name="android:textColor">@color/poi_detail_loc</item>
+        <item name="android:textSize">@dimen/text_size_16</item>
+        <item name="android:layout_marginLeft">10dp</item>
+        <item name="android:layout_marginRight">10dp</item>
+    </style>
+
 </resources>
