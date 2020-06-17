@@ -37,7 +37,7 @@
             app:layout_constraintTop_toTopOf="@id/tv_poi_title" />
 
         <TextView
-            android:id="@+id/tv_poi_detail"
+            android:id="@+id/tv_poi_distance"
             android:layout_width="wrap_content"
             android:layout_height="26dp"
             android:gravity="center_vertical"

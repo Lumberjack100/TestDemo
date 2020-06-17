@@ -69,9 +69,7 @@ public class MapHeaderView extends RelativeLayout  {
     }
 
     public void setOnMapHeaderViewClickListener(OnMapHeaderViewClickListener listener) {
-        if (listener != null) {
-            this.mListener = listener;
-        }
+        this.mListener = listener;
     }
 
     /**

@@ -6,13 +6,38 @@
     android:layout_height="match_parent"
     android:background="@color/transparent">
 
+    <com.shmedo.mcloudapp.maps.ui.view.MapHeaderView
+        android:id="@+id/map_head_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dimen_size_30"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.shmedo.mcloudapp.maps.ui.view.SupendPartitionView
+        android:id="@+id/spv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dimen_size_15"
+        android:layout_marginRight="@dimen/dimen_size_10"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/map_head_view" />
+
+
+    <com.shmedo.mcloudapp.maps.ui.view.ZoomView
+        android:id="@+id/zoom_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="@dimen/dimen_size_10"
+        app:layout_constraintBottom_toTopOf="@+id/gps_route_container"
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <RelativeLayout
         android:id="@+id/gps_route_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/dimen_size_20"
-        android:background="@color/transparent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
@@ -33,38 +58,15 @@
 
     </RelativeLayout>
 
-    <com.shmedo.mcloudapp.maps.ui.view.ZoomView
-        android:id="@+id/zoom_view"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toTopOf="@+id/gps_route_container"
-        app:layout_constraintEnd_toEndOf="parent" />
 
     <com.shmedo.mcloudapp.maps.ui.view.PoiDetailBottomView
         android:id="@+id/poi_detail_bottom_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:visibility="visible"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <com.shmedo.mcloudapp.maps.ui.view.MapHeaderView
-        android:id="@+id/map_head_view"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dimen_size_30"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <com.shmedo.mcloudapp.maps.ui.view.SupendPartitionView
-        android:id="@+id/spv"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dimen_size_15"
-        android:layout_marginRight="@dimen/dimen_size_10"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/map_head_view" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
