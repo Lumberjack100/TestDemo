@@ -83,7 +83,7 @@ public abstract class CheckMapNeedPermissionsActivity extends BaseActivity {
      * @param context
      * @return true 表示开启
      */
-    private boolean isGPSOPen(final Context context) {
+    protected boolean isGPSOPen(final Context context) {
         LocationManager locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
         // 通过GPS卫星定位，定位级别可以精确到街（通过24颗卫星定位，在室外和空旷的地方定位准确、速度快）
         boolean gps = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
@@ -141,7 +141,7 @@ public abstract class CheckMapNeedPermissionsActivity extends BaseActivity {
         mMaterialDialog.show();
     }
 
-    private void showGPSSettingDialog() {
+    protected void showGPSSettingDialog() {
         MaterialDialog.Builder mBuilder = new MaterialDialog.Builder(CheckMapNeedPermissionsActivity.this)
                 .title("权限申请").content(getResources().getString(R.string.permission_request_location_hardware))
                 .negativeText("暂不开启")
