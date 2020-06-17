@@ -31,6 +31,7 @@ import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.maps.ui.view.GPSView;
 import com.shmedo.mcloudapp.maps.ui.view.PoiDetailBottomView;
 import com.shmedo.mcloudapp.maps.ui.view.RouteView;
+import com.shmedo.mcloudapp.maps.ui.view.ZoomView;
 import com.shmedo.mcloudapp.maps.util.AMapLocationUtil;
 import com.shmedo.mcloudapp.maps.util.SensorEventHelper;
 
@@ -41,6 +42,9 @@ import timber.log.Timber;
 public class MapActivity extends CheckMapNeedPermissionsActivity implements AMapGestureListener, AMapLocationListener, LocationSource, PoiDetailBottomView.OnPoiDetailBottomClickListener {
     @BindView(R.id.map)
     TextureMapView mMapView;
+
+    @BindView(R.id.zoom_view)
+    ZoomView mZoomView;
 
     @BindView(R.id.gps_route_container)
     View mGspContainer;
@@ -81,6 +85,7 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
     private boolean slideDown;//向下滑动
     private float mAccuracy;
     private int moveY;
+    private int[] mBottomSheetLoc = new int[2];
     private String mPoiName;
     private String mCity;
 
@@ -600,9 +605,10 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
                 if (moveY == 0) {
                     //计算Y轴方向移动距离
                     moveY = mGspContainer.getTop() - mPoiDetailBottomView.getTop() + mGspContainer.getMeasuredHeight() + getResources().getDimensionPixelSize(R.dimen.dimen_size_10);
-                    mPoiDetailBottomView.getLocationInWindow(new int[2]);
+                    mPoiDetailBottomView.getLocationInWindow(mBottomSheetLoc);
                 }
                 if (moveY > 0) {
+                    mZoomView.setTranslationY(-moveY);
                     mGspContainer.setTranslationY(-moveY);
                     mGpsView.setAbovePoiDetail(true);
                 }
@@ -622,6 +628,7 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
                     return;
                 }
                 //回到原来位置
+                mZoomView.setTranslationY(0);
                 mGspContainer.setTranslationY(0);
                 mGpsView.setAbovePoiDetail(false);
             }
