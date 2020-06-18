@@ -248,7 +248,7 @@
         <activity android:name=".maps.ui.activity.MapActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:screenOrientation="portrait"
-            android:theme="@style/FullscreenTheme"/>
+            android:theme="@style/SplashTheme"/>
 
 
         <activity
