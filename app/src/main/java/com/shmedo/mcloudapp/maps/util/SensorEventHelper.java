@@ -10,7 +10,8 @@ import android.view.Surface;
 import android.view.WindowManager;
 
 import com.amap.api.maps.model.Marker;
-import com.facebook.stetho.common.LogUtil;
+
+import timber.log.Timber;
 
 /**
  * 方向传感器
@@ -19,11 +20,9 @@ public class SensorEventHelper implements SensorEventListener {
     private SensorManager mSensorManager;
     private Sensor mSensor;
     private long lastTime = 0;
-    private final int TIME_SENSOR = 100;
     private float mAngle;
     private Context mContext;
     private Marker mMarker;
-    private static final String TAG = "SensorEventHelper";
     private boolean rotate = true;//是否可以旋转marker
     private float rotation;//旋转角度
 
@@ -31,7 +30,6 @@ public class SensorEventHelper implements SensorEventListener {
         mContext = context;
         mSensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
         mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION);
-
     }
 
     public void registerSensorListener() {
@@ -49,21 +47,21 @@ public class SensorEventHelper implements SensorEventListener {
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
         // TODO Auto-generated method stub
-
     }
 
     @Override
     public void onSensorChanged(SensorEvent event) {
+        int TIME_SENSOR = 100;
         if (System.currentTimeMillis() - lastTime < TIME_SENSOR) {
             return;
         }
         switch (event.sensor.getType()) {
             case Sensor.TYPE_ORIENTATION: {
-                if(!rotate){
+                if (!rotate) {
                     return;
                 }
                 float x = event.values[0];
-                LogUtil.d(TAG, "onSensorChanged,"+"mLocMarker="+mMarker);
+                Timber.d("onSensorChanged," + "mLocMarker=" + mMarker);
                 x += getScreenRotationOnPhone(mContext);
                 x %= 360.0F;
                 if (x > 180.0F)
@@ -112,9 +110,10 @@ public class SensorEventHelper implements SensorEventListener {
 
     /**
      * 获取旋转角度
+     *
      * @return
      */
-    public float getRotationAngle(){
+    public float getRotationAngle() {
         return rotation;
     }
 

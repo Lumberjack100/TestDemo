@@ -59,7 +59,7 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
     PoiDetailBottomView mPoiDetailBottomView;
 
     private AMap aMap; //地图控制器对象
-    private MyLocationStyle myLocationStyle;
+    private MyLocationStyle mLocationStyle;
     private AMapLocationClient mLocationClient;
     private AMapLocationClientOption mLocationOption;
     private AMapLocation mAmapLocation;
@@ -202,13 +202,13 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
      */
     private void setLocationStyle() {
         // 自定义系统定位蓝点
-        myLocationStyle = new MyLocationStyle();
-        myLocationStyle.strokeColor(getResources().getColor(R.color.app_color_blue_2));  //设置定位小蓝点精度圆圈的边框颜色
-        myLocationStyle.strokeWidth(1); //设置定位小蓝点精度圆圈的边框宽度
-        myLocationStyle.radiusFillColor(Color.argb(100, 29, 161, 242)); // 设置定位小蓝点精度圆圈的填充颜色
-        myLocationStyle.myLocationType(MyLocationStyle.LOCATION_TYPE_LOCATE);//定位一次，且将视角移动到地图中心点。
+        if (null == mLocationStyle) {
+            mLocationStyle = new MyLocationStyle();
+            mLocationStyle.strokeColor(Color.argb(0, 0, 0, 0));
+            mLocationStyle.radiusFillColor(Color.argb(0, 0, 0, 0));//圆圈的颜色,设为透明
+        }
         // 将自定义的 myLocationStyle 对象添加到地图上
-        aMap.setMyLocationStyle(myLocationStyle);
+        aMap.setMyLocationStyle(mLocationStyle.myLocationType(mMapType));
     }
 
 
@@ -244,21 +244,22 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
                 mZoomLevel = 18;
                 mAnimDuartion = 500;
                 mCurrentGpsState = STATE_ROTATE;
-//                setLocationStyle(MyLocationStyle.LOCATION_TYPE_MAP_ROTATE);
-                ////连续定位、且将视角移动到地图中心点，地图依照设备方向旋转，定位点会跟随设备移动。（默认1秒1次定位）
+                //连续定位、且将视角移动到地图中心点，地图依照设备方向旋转，定位点会跟随设备移动。
                 mMapType = MyLocationStyle.LOCATION_TYPE_MAP_ROTATE;
                 cameraUpdate = CameraUpdateFactory.newCameraPosition(new CameraPosition(mLatLng, mZoomLevel, 30, 0));
                 break;
+
             case STATE_UNLOCKED:
             case STATE_ROTATE:
                 mZoomLevel = 16;
                 mAnimDuartion = 500;
                 mCurrentGpsState = STATE_LOCKED;
-                ////连续定位、蓝点不会移动到地图中心点，定位点依照设备方向旋转，并且蓝点会跟随设备移动。
+                //连续定位、蓝点不会移动到地图中心点，定位点依照设备方向旋转，并且蓝点会跟随设备移动。
                 mMapType = MyLocationStyle.LOCATION_TYPE_LOCATION_ROTATE_NO_CENTER;
                 cameraUpdate = CameraUpdateFactory.newCameraPosition(new CameraPosition(mLatLng, mZoomLevel, 0, 0));
                 break;
         }
+
         //显示底部POI详情
         if (mPoiDetailBottomView.getVisibility() == View.GONE ) {
             showPoiDetail("我的位置", String.format("在%s附近", mPoiName));
@@ -269,7 +270,6 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
         }
 
         aMap.setMyLocationEnabled(true);
-        Timber.d( "onGPSClick:mCurrentGpsState=" + mCurrentGpsState + ",mMapType=" + mMapType);
         //改变定位图标状态
         mGpsView.setGpsState(mCurrentGpsState);
         //执行地图动效
@@ -283,7 +283,7 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
 
             }
         });
-//        setLocationStyle();
+        setLocationStyle();
         resetLocationMarker();
     }
 
@@ -402,7 +402,7 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
         mMapType = MyLocationStyle.LOCATION_TYPE_LOCATION_ROTATE_NO_CENTER;
         mCurrentGpsState = STATE_UNLOCKED;
         mGpsView.setGpsState(mCurrentGpsState);
-//        setLocationStyle();
+        setLocationStyle();
         resetLocationMarker();
         isCanMoveToCenter = false;
     }
@@ -434,7 +434,7 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
                 mGpsView.setGpsState(mCurrentGpsState);
             }
             isCanMoveToCenter = false;
-//            setLocationStyle();
+            setLocationStyle();
             resetLocationMarker();
         }
     }
