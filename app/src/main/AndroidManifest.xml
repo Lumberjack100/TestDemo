@@ -116,11 +116,11 @@
         <activity
             android:name=".ui.activity.BlueToothListActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:theme="@style/AppTheme.Dialog" />
+            android:theme="@style/DialogActivityTheme" />
         <activity
             android:name=".ui.activity.WifiConnectionActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:theme="@style/AppTheme.Dialog" />
+            android:theme="@style/DialogActivityTheme" />
         <activity
             android:name=".ui.activity.device.senior.ProductRegistrationActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
@@ -254,7 +254,7 @@
         <activity
             android:name=".ui.activity.TestBluetoothListActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:theme="@style/AppTheme.Dialog" /> <!-- 蓝牙设备列表测试页面 -->
+            android:theme="@style/DialogActivityTheme" /> <!-- 蓝牙设备列表测试页面 -->
         <activity
             android:name=".ui.activity.TestActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"

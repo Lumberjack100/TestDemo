@@ -50,7 +50,7 @@ public class DialogStyle515255 implements IDialogOpt<CollectorSensorParamsInfo>{
         dialog.setCancelable(false);
         Window window = dialog.getWindow();
         window.setGravity(Gravity.BOTTOM);
-        window.setWindowAnimations(R.style.share_animation);
+        window.setWindowAnimations(R.style.FullscreenDialogAnimation);
         contentView = View.inflate(mContext, R.layout.dialog_sensor_config_51_52_55, null);
         window.setContentView(contentView);
         window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);//设置横向全屏

@@ -51,7 +51,7 @@ public class MqttConfigDialog implements IDialogOpt<MqttConfigInfo> {
         dialog.setCancelable(false);
         Window window = dialog.getWindow();
         window.setGravity(Gravity.CENTER_VERTICAL);
-        window.setWindowAnimations(R.style.share_animation);
+        window.setWindowAnimations(R.style.FullscreenDialogAnimation);
         contentView = View.inflate(context, R.layout.dialog_mqtt_config, null);
         window.setContentView(contentView);
         window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
