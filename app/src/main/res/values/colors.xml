@@ -44,6 +44,7 @@
     <color name="black_505050">#505050</color>
     <color name="gray_80666666">#80666666</color>
     <color name="gray_f2f2f2">#F2F2F2</color>
+    <color name="gray_f4f4f4">#F4F4F4</color>
     <color name="gray_f6f7f9">#f6f7f9</color>
     <color name="gray_616161">#616161</color>
     <color name="gray_757575">#757575</color>
@@ -68,4 +69,6 @@
     <color name="map_icon_foreground">#616161</color>
     <color name="poi_detail_title">@color/black_070707</color>
     <color name="poi_detail_loc">#3E3E3E</color>
+    <color name="gray_bg">#F4F4F4</color>
+
 </resources>

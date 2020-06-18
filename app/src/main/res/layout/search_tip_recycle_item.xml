@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/poi_search_item_selector"
+    android:minHeight="56dp"
+    android:paddingLeft="@dimen/dimen_size_20"
+    android:paddingRight="@dimen/dimen_size_20">
+
+    <ImageView
+        android:id="@+id/iv_loc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:background="@drawable/ic_location" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginStart="@dimen/dimen_size_10"
+        android:layout_marginRight="@dimen/dimen_size_10"
+        android:layout_toStartOf="@id/iv_route"
+        android:layout_toEndOf="@id/iv_loc"
+        android:orientation="vertical"
+        android:paddingTop="@dimen/dimen_size_10"
+        android:paddingBottom="@dimen/dimen_size_10">
+
+        <TextView
+            android:id="@+id/tv_search_title"
+            style="@style/NormalTextTheme.BaseTextTheme"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textColor="#313131"
+            tools:text="罗森便利店" />
+
+        <TextView
+            android:id="@+id/tv_search_loc"
+            style="@style/SmallTextTheme.BaseTextTheme"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimen_size_4"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textColor="#797979"
+            tools:text="云南中路248号11号楼7层" />
+
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/iv_route"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:background="@drawable/route_circle_bg"
+        android:padding="4dp"
+        android:src="@drawable/poi_indicator_route" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_alignParentBottom="true"
+        android:layout_toEndOf="@id/iv_loc"
+        android:background="@color/gray_bg" />
+
+</RelativeLayout>

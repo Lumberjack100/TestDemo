@@ -30,7 +30,9 @@ import com.amap.api.maps.model.Marker;
 import com.amap.api.maps.model.MarkerOptions;
 import com.amap.api.maps.model.MyLocationStyle;
 import com.shmedo.mcloudapp.R;
+import com.shmedo.mcloudapp.maps.ui.fragment.SearchPoiFragment;
 import com.shmedo.mcloudapp.maps.ui.view.GPSView;
+import com.shmedo.mcloudapp.maps.ui.view.MapHeaderView;
 import com.shmedo.mcloudapp.maps.ui.view.PoiDetailBottomView;
 import com.shmedo.mcloudapp.maps.ui.view.RouteView;
 import com.shmedo.mcloudapp.maps.ui.view.ZoomView;
@@ -41,9 +43,12 @@ import butterknife.BindView;
 import butterknife.OnClick;
 import timber.log.Timber;
 
-public class MapActivity extends CheckMapNeedPermissionsActivity implements AMapGestureListener, AMapLocationListener, LocationSource, PoiDetailBottomView.OnPoiDetailBottomClickListener, ZoomView.OnZoomViewClickListener {
+public class MapActivity extends CheckMapNeedPermissionsActivity implements AMapGestureListener, AMapLocationListener, LocationSource, MapHeaderView.OnMapHeaderViewClickListener, PoiDetailBottomView.OnPoiDetailBottomClickListener, ZoomView.OnZoomViewClickListener {
     @BindView(R.id.map)
     TextureMapView mMapView;
+
+    @BindView(R.id.map_head_view)
+    MapHeaderView mMapHeaderView;
 
     @BindView(R.id.zoom_view)
     ZoomView mZoomView;
@@ -141,7 +146,7 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
             mSensorHelper.registerSensorListener();
             setUpMap();
         }
-        if(mLocationOption != null && mLocationClient != null){
+        if (mLocationOption != null && mLocationClient != null) {
             mLocationOption.setInterval(2000);//定位时间间隔，默认2000ms
             mLocationClient.setLocationOption(mLocationOption);
             aMap.setMyLocationEnabled(true);
@@ -153,7 +158,7 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
         super.onPause();
         //在activity执行onPause时执行mMapView.onPause ()，暂停地图的绘制
         mMapView.onPause();
-        if(mLocationOption != null && mLocationClient != null){
+        if (mLocationOption != null && mLocationClient != null) {
             mLocationOption.setInterval(2000);//定位时间间隔，默认2000ms
             mLocationClient.setLocationOption(mLocationOption);
         }
@@ -194,6 +199,7 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
         aMap.setAMapGestureListener(this);
         mSensorHelper = new SensorEventHelper(this);
         mSensorHelper.registerSensorListener();
+        mMapHeaderView.setOnMapHeaderViewClickListener(this);
         mZoomView.setOnZoomViewClickListener(this);
         mPoiDetailBottomView.setOnPoiDetailBottomClickListener(this);
     }
@@ -231,7 +237,7 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
     protected void doOnPermissionGranted() {
     }
 
-    @OnClick({R.id.gps_view,R.id.route_view})
+    @OnClick({R.id.gps_view, R.id.route_view})
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.gps_view:
@@ -249,7 +255,7 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
             showGPSSettingDialog();
             return;
         }
-      
+
         CameraUpdate cameraUpdate = null;
         isCanMoveToCenter = true;
         isPoiClick = false;
@@ -276,7 +282,7 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
         }
 
         //显示底部POI详情
-        if (mPoiDetailBottomView.getVisibility() == View.GONE ) {
+        if (mPoiDetailBottomView.getVisibility() == View.GONE) {
             showPoiDetail("我的位置", String.format("在%s附近", mPoiName));
             moveGspButtonAbove();
         } else {
@@ -370,8 +376,6 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
 
     /**
      * 激活定位
-     *
-     * @param listener
      */
     @Override
     public void activate(OnLocationChangedListener listener) {
@@ -440,7 +444,7 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
         //避免重复调用闪屏，当手指up才重置为false
         if (!onScrolling) {
             onScrolling = true;
-            Timber.d( "onScroll,x=" + v + ",y=" + v1);
+            Timber.d("onScroll,x=" + v + ",y=" + v1);
             //旋转不移动到中心点
             mMapType = MyLocationStyle.LOCATION_TYPE_LOCATION_ROTATE_NO_CENTER;
             mCurrentGpsState = STATE_UNLOCKED;
@@ -487,7 +491,32 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
     }
 
     /**
-     *  点击放大
+     * 点击返回箭头
+     */
+    @Override
+    public void onBackClick() {
+        finish();
+    }
+
+    /**
+     * 点击常规搜索点位
+     */
+    @Override
+    public void onSearchNormalClick() {
+        SearchPoiFragment newFragment =  SearchPoiFragment.newInstance(mCity);
+        newFragment.show(getSupportFragmentManager(), "dialog");
+    }
+
+    /**
+     * 点击按经纬度搜索点位
+     */
+    @Override
+    public void onSearchLatLongClick() {
+
+    }
+
+    /**
+     * 点击放大
      */
     @Override
     public void onZoomInClick() {
@@ -593,8 +622,6 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
     }
 
 
-
-
     /**
      * 隐藏底部POI详情
      */
@@ -606,8 +633,9 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
 
     /**
      * 显示底部POI详情
+     *
      * @param locTitle 定位标题,比如当前所在位置名称
-     * @param locInfo 定位信息,比如当前在什么附近/距离当前位置多少米
+     * @param locInfo  定位信息,比如当前在什么附近/距离当前位置多少米
      */
     public void showPoiDetail(String locTitle, String locInfo) {
         mPoiDetailBottomView.setVisibility(View.VISIBLE);

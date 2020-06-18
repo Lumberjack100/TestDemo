@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- actionbar颜色-->
@@ -149,6 +149,22 @@
         <item name="android:textSize">@dimen/text_size_16</item>
         <item name="android:layout_marginLeft">10dp</item>
         <item name="android:layout_marginRight">10dp</item>
+    </style>
+
+
+    <!--TextView相关样式-->
+    <style name="BaseTextTheme">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:gravity">center_vertical</item>
+    </style>
+
+    <style name="NormalTextTheme.BaseTextTheme" parent="BaseTextTheme">
+        <item name="android:textSize" tools:ignore="SpUsage">16sp</item>
+    </style>
+
+    <style name="SmallTextTheme.BaseTextTheme" parent="BaseTextTheme">
+        <item name="android:textSize" tools:ignore="SpUsage">14sp</item>
     </style>
 
 </resources>

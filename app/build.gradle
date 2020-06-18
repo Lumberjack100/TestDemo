@@ -202,6 +202,8 @@ dependencies {
     implementation "com.amap.api:3dmap:$rootProject.thirdLib.amap3dMap"
     //定位功能
     implementation "com.amap.api:location:$rootProject.thirdLib.amapLocation"
+    //搜索
+    implementation "com.amap.api:search:$rootProject.thirdLib.amapSearch"
 
     testImplementation "junit:junit:$rootProject.thirdLib.junit"
     androidTestImplementation "androidx.test:runner:$rootProject.thirdLib.runner"
