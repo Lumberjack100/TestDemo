@@ -91,7 +91,7 @@ public class SearchPoiFragment extends BaseSearchPoiDialogFragment implements Te
 
     private void initAdapter() {
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        adapter = new CommonAdapter<Tip>(getContext(), R.layout.search_tip_recycle_item, poiResultList) {
+        adapter = new CommonAdapter<Tip>(getContext(), R.layout.poi_search_adapter_item, poiResultList) {
             @Override
             protected void convert(ViewHolder holder, final Tip tip, final int position) {
                 holder.setText(R.id.tv_search_title, tip.getName());
