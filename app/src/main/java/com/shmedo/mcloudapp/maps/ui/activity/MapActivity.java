@@ -30,7 +30,6 @@ import com.amap.api.maps.model.Marker;
 import com.amap.api.maps.model.MarkerOptions;
 import com.amap.api.maps.model.MyLocationStyle;
 import com.shmedo.mcloudapp.R;
-import com.shmedo.mcloudapp.maps.ui.fragment.SearchPoiFragment;
 import com.shmedo.mcloudapp.maps.ui.view.GPSView;
 import com.shmedo.mcloudapp.maps.ui.view.MapHeaderView;
 import com.shmedo.mcloudapp.maps.ui.view.PoiDetailBottomView;
@@ -503,8 +502,10 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
      */
     @Override
     public void onSearchNormalClick() {
-        SearchPoiFragment newFragment =  SearchPoiFragment.newInstance(mCity);
-        newFragment.show(getSupportFragmentManager(), "dialog");
+//        SearchPoiFragment newFragment =  SearchPoiFragment.newInstance(mCity);
+//        newFragment.show(getSupportFragmentManager(), "dialog");
+
+        PoiSearchActivity.startActivityForResult(this,0);
     }
 
     /**
