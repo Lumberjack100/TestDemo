@@ -75,7 +75,7 @@
         <activity
             android:name=".ui.activity.WelcomeActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:theme="@style/SplashTheme">
+            android:theme="@style/WindowTranslucentTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -244,12 +244,16 @@
             android:name=".ui.activity.NewMainActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:screenOrientation="portrait" />
-
-        <activity android:name=".maps.ui.activity.MapActivity"
+        <activity
+            android:name=".maps.ui.activity.MapActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:screenOrientation="portrait"
-            android:theme="@style/SplashTheme"/>
+            android:theme="@style/WindowTranslucentTheme" />
 
+        <activity
+            android:name=".maps.ui.activity.PoiSearchActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:screenOrientation="portrait" />
 
         <activity
             android:name=".ui.activity.TestBluetoothListActivity"

@@ -10,7 +10,7 @@
     </style>
 
     <!-- 闪屏页主题 -->
-    <style name="SplashTheme" parent="AppTheme">
+    <style name="WindowTranslucentTheme" parent="AppTheme">
         <!--Android冷启动白屏解析http://blog.csdn.net/guolin_blog/article/details/51019856-->
         <item name="android:windowIsTranslucent">true</item>
     </style>
@@ -23,7 +23,8 @@
 
     <style name="FullscreenTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="windowNoTitle">true</item>
-        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
     </style>
 
     <style name="DialogActivityTheme" parent="Theme.AppCompat.Dialog">
