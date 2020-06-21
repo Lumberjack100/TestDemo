@@ -104,6 +104,7 @@ public class PoiSearchActivity extends BaseActivity implements TextWatcher, PoiS
     }
 
     private void initView() {
+        mEtSearchTip.requestFocus();
         mEtSearchTip.addTextChangedListener(this);
         mEtSearchTip.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
