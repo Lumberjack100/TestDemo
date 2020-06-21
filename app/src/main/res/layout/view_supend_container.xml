@@ -1,19 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/transparent">
+    android:background="@color/transparent"
+    android:fitsSystemWindows="true">
 
-    <com.shmedo.mcloudapp.maps.ui.view.MapHeaderView
-        android:id="@+id/map_head_view"
+    <com.shmedo.mcloudapp.maps.ui.view.LocationTitleView
+        android:id="@+id/location_title_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dimen_size_30"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <com.shmedo.mcloudapp.maps.ui.view.MapSearchView
+        android:id="@+id/map_search_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dimen_size_15"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/location_title_view" />
 
     <com.shmedo.mcloudapp.maps.ui.view.SupendPartitionView
         android:id="@+id/spv"
@@ -22,7 +30,7 @@
         android:layout_marginTop="@dimen/dimen_size_15"
         android:layout_marginRight="@dimen/dimen_size_10"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/map_head_view" />
+        app:layout_constraintTop_toBottomOf="@id/map_search_view" />
 
 
     <com.shmedo.mcloudapp.maps.ui.view.ZoomView

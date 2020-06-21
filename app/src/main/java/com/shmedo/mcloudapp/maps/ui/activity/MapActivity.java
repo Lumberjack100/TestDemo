@@ -31,7 +31,7 @@ import com.amap.api.maps.model.MarkerOptions;
 import com.amap.api.maps.model.MyLocationStyle;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.maps.ui.view.GPSView;
-import com.shmedo.mcloudapp.maps.ui.view.MapHeaderView;
+import com.shmedo.mcloudapp.maps.ui.view.MapSearchView;
 import com.shmedo.mcloudapp.maps.ui.view.PoiDetailBottomView;
 import com.shmedo.mcloudapp.maps.ui.view.RouteView;
 import com.shmedo.mcloudapp.maps.ui.view.ZoomView;
@@ -42,12 +42,12 @@ import butterknife.BindView;
 import butterknife.OnClick;
 import timber.log.Timber;
 
-public class MapActivity extends CheckMapNeedPermissionsActivity implements AMapGestureListener, AMapLocationListener, LocationSource, MapHeaderView.OnMapHeaderViewClickListener, PoiDetailBottomView.OnPoiDetailBottomClickListener, ZoomView.OnZoomViewClickListener {
+public class MapActivity extends CheckMapNeedPermissionsActivity implements AMapGestureListener, AMapLocationListener, LocationSource, MapSearchView.OnMapHeaderViewClickListener, PoiDetailBottomView.OnPoiDetailBottomClickListener, ZoomView.OnZoomViewClickListener {
     @BindView(R.id.map)
     TextureMapView mMapView;
 
-    @BindView(R.id.map_head_view)
-    MapHeaderView mMapHeaderView;
+    @BindView(R.id.map_search_view)
+    MapSearchView mMapSearchView;
 
     @BindView(R.id.zoom_view)
     ZoomView mZoomView;
@@ -109,7 +109,7 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        initStates();
+//        initStates();
         initView(savedInstanceState);
         setListener();
     }
@@ -198,7 +198,7 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
         aMap.setAMapGestureListener(this);
         mSensorHelper = new SensorEventHelper(this);
         mSensorHelper.registerSensorListener();
-        mMapHeaderView.setOnMapHeaderViewClickListener(this);
+        mMapSearchView.setOnMapHeaderViewClickListener(this);
         mZoomView.setOnZoomViewClickListener(this);
         mPoiDetailBottomView.setOnPoiDetailBottomClickListener(this);
     }

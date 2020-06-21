@@ -136,6 +136,15 @@
         <item name="android:background">@color/gray_f2f2f2</item>
     </style>
 
+    <!--地图顶部定位坐标、海拔等 TextView 样式-->
+    <style name="LocationTitleTextViewStyle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textColor">@color/gray_807B7B</item>
+        <item name="android:textSize">@dimen/text_size_12</item>
+    </style>
+
     <!--固定在底部的布局样式-->
     <style name="PoiDetailFixedStyle">
         <item name="android:layout_height">36dp</item>
@@ -147,7 +156,6 @@
         <item name="android:layout_marginLeft">10dp</item>
         <item name="android:layout_marginRight">10dp</item>
     </style>
-
 
     <!--TextView相关样式-->
     <style name="BaseTextTheme">

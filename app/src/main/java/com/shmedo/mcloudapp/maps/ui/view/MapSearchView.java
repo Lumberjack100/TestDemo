@@ -18,25 +18,25 @@ import butterknife.OnClick;
  * 创建时间:  2020/6/15 <br/>
  * 描述：    地图头部搜索框
  */
-public class MapHeaderView extends RelativeLayout  {
+public class MapSearchView extends RelativeLayout  {
     @BindView(R.id.iv_back)
     FloatingActionButton fabBack;
 
     private OnMapHeaderViewClickListener mListener;
 
 
-    public MapHeaderView(Context context) {
+    public MapSearchView(Context context) {
         this(context, null);
     }
 
-    public MapHeaderView(Context context, AttributeSet attrs) {
+    public MapSearchView(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public MapHeaderView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public MapSearchView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         ((LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE))
-                .inflate(R.layout.view_map_header, this, true);
+                .inflate(R.layout.view_map_search, this, true);
 
         ButterKnife.bind(this);
         initView();
