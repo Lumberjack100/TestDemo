@@ -23,9 +23,8 @@
 
     </FrameLayout>
 
-    <include
-        android:id="@+id/nav_view"
-        layout="@layout/toolbox_navi_layout"
+    <com.shmedo.mcloudapp.maps.ui.view.NaviToolView
+        android:id="@+id/nav_tool_view"
         android:layout_width="250dp"
         android:layout_height="match_parent"
         android:layout_gravity="start" />

@@ -9,7 +9,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#73F2F2F2"
+        android:background="#F2F2F2"
         android:padding="@dimen/dimen_size_10"
         android:text="工具箱"
         android:textColor="@color/gray_807B7B"
@@ -17,10 +17,7 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/testSpeedView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="?attr/selectableItemBackground"
-        android:padding="@dimen/dimen_size_10">
+        style="@style/NaviToolView_ConstraintLayoutStyle">
 
         <ImageView
             android:id="@+id/iv_test_speed"
@@ -59,10 +56,7 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/measureDistanceView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="?attr/selectableItemBackground"
-        android:padding="@dimen/dimen_size_10">
+        style="@style/NaviToolView_ConstraintLayoutStyle">
 
         <ImageView
             android:id="@+id/iv_measure_distance"
@@ -101,10 +95,7 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/calculatedAreaView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="?attr/selectableItemBackground"
-        android:padding="@dimen/dimen_size_10">
+        style="@style/NaviToolView_ConstraintLayoutStyle">
 
         <ImageView
             android:id="@+id/iv_calculated_area"
@@ -143,10 +134,7 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/compassView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="?attr/selectableItemBackground"
-        android:padding="@dimen/dimen_size_10">
+        style="@style/NaviToolView_ConstraintLayoutStyle">
 
         <ImageView
             android:id="@+id/iv_compass"

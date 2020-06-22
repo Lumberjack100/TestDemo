@@ -8,8 +8,8 @@ import android.widget.LinearLayout;
 
 import androidx.annotation.Nullable;
 
-import com.hjq.toast.ToastUtils;
 import com.shmedo.mcloudapp.R;
+import com.shmedo.mcloudapp.maps.ui.activity.SpeedTestActivity;
 
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -20,6 +20,8 @@ import butterknife.OnClick;
  * 描述：    TODO
  */
 public class NaviToolView extends LinearLayout {
+    private Context mContext;
+
     private OnNaviToolViewClickListener mListener;
 
     public NaviToolView(Context context) {
@@ -34,41 +36,40 @@ public class NaviToolView extends LinearLayout {
         super(context, attrs, defStyleAttr);
         ((LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE))
                 .inflate(R.layout.toolbox_navi_layout, this, true);
-
         ButterKnife.bind(this);
-        initView();
+        mContext=context;
     }
 
-    private void initView() {
-
-    }
 
     @OnClick({R.id.testSpeedView,R.id.measureDistanceView, R.id.calculatedAreaView, R.id.compassView})
     public void onClick(View view) {
-        if (mListener == null) {
-            return;
-        }
+//        if (mListener == null) {
+//            return;
+//        }
 
         switch (view.getId()) {
             case R.id.testSpeedView:
-                ToastUtils.show("测速");
-                mListener.onTestSpeedClick();
+//                mListener.onTestSpeedClick();
+                SpeedTestActivity.startActivity(mContext);
                 break;
 
             case R.id.measureDistanceView:
-                mListener.onMeasureDistanceClick();
+//                mListener.onMeasureDistanceClick();
                 break;
 
             case R.id.calculatedAreaView:
-                mListener.onCalculatedAreaClick();
+//                mListener.onCalculatedAreaClick();
                 break;
 
             case R.id.compassView:
-                mListener.onCompassClick();
+//                mListener.onCompassClick();
                 break;
         }
     }
 
+    public void setOnNaviToolViewClickListener(OnNaviToolViewClickListener listener) {
+        this.mListener = listener;
+    }
 
     public interface OnNaviToolViewClickListener {
         /**
