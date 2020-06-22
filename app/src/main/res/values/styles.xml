@@ -26,6 +26,7 @@
         <item name="android:windowFullscreen">true</item>
     </style>
 
+
     <style name="DialogActivityTheme" parent="Theme.AppCompat.Dialog">
         <item name="android:windowBackground">@android:color/transparent</item>
     </style>

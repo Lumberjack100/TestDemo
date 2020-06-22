@@ -253,11 +253,15 @@
             android:name=".maps.ui.activity.PoiSearchActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:screenOrientation="portrait" />
-
-        <activity android:name=".maps.ui.activity.SpeedTestActivity"
+        <activity
+            android:name=".maps.ui.activity.SpeedTestActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:screenOrientation="portrait"
             android:theme="@style/FullscreenTheme" />
+
+        <activity android:name=".maps.ui.activity.SpeedTestResultActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:screenOrientation="portrait" />
 
         <activity
             android:name=".ui.activity.TestBluetoothListActivity"

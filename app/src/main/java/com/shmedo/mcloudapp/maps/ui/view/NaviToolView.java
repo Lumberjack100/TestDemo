@@ -10,6 +10,7 @@ import androidx.annotation.Nullable;
 
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.maps.ui.activity.SpeedTestActivity;
+import com.shmedo.mcloudapp.maps.ui.activity.SpeedTestResultActivity;
 
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -54,6 +55,7 @@ public class NaviToolView extends LinearLayout {
                 break;
 
             case R.id.measureDistanceView:
+                SpeedTestResultActivity.startActivity(mContext);
 //                mListener.onMeasureDistanceClick();
                 break;
 

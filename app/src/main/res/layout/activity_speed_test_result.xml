@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#61a9fc"
+    android:fitsSystemWindows="true"
+    tools:context=".maps.ui.activity.SpeedTestResultActivity">
+
+    <RelativeLayout
+        android:id="@+id/titleLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:padding="@dimen/dimen_size_10">
+
+        <ImageView
+            android:id="@+id/back"
+            android:layout_width="35dp"
+            android:layout_height="40dp"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="15dp"
+            android:src="@drawable/ic_back" />
+
+        <TextView
+            android:id="@+id/tv_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_size_20"
+            tools:text="参数配置" />
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/contentLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/titleLayout"
+        android:layout_margin="@dimen/dimen_size_10"
+        android:background="@drawable/shape_rect_bg"
+        android:orientation="vertical"
+        android:padding="@dimen/dimen_size_10">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:layout_gravity="center_vertical"
+            android:background="@drawable/network_latency_rect_bg"
+            android:paddingLeft="@dimen/dimen_size_40"
+            android:paddingRight="@dimen/dimen_size_40">
+
+            <TextView
+                android:id="@+id/tv_delay"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:gravity="center"
+                android:textColor="@color/white"
+                android:textSize="@dimen/text_size_20"
+                tools:text="30\nms" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:gravity="center"
+                android:textColor="@color/white"
+                android:textSize="@dimen/text_size_20"
+                tools:text="网络\n延时" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginTop="@dimen/dimen_size_10"
+            android:background="@drawable/download_speed_rect_bg"
+            android:paddingLeft="@dimen/dimen_size_40"
+            android:paddingRight="@dimen/dimen_size_40">
+
+            <TextView
+                android:id="@+id/tv_download_speed"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:gravity="center"
+                android:textColor="@color/white"
+                android:textSize="@dimen/text_size_20"
+                tools:text="30.5\Mbps" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:gravity="center"
+                android:textColor="@color/white"
+                android:textSize="@dimen/text_size_20"
+                tools:text="下载\n速度" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginTop="@dimen/dimen_size_10"
+            android:background="@drawable/upload_speed_rect_bg"
+            android:paddingLeft="@dimen/dimen_size_40"
+            android:paddingRight="@dimen/dimen_size_40">
+
+            <TextView
+                android:id="@+id/tv_upload_speed"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:gravity="center"
+                android:textColor="@color/white"
+                android:textSize="@dimen/text_size_20"
+                tools:text="30.5\Mbps" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:gravity="center"
+                android:textColor="@color/white"
+                android:textSize="@dimen/text_size_20"
+                tools:text="上传\n速度" />
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/tv_nettype"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="@dimen/dimen_size_5"
+            android:textColor="@color/poi_detail_title"
+            android:textSize="@dimen/text_size_17"
+            tools:text="4G网络" />
+
+        <TextView
+            android:id="@+id/tv_operator_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="@dimen/dimen_size_5"
+            android:textColor="@color/poi_detail_title"
+            android:textSize="@dimen/text_size_17"
+            tools:text="移动运营商" />
+
+        <TextView
+            android:id="@+id/tv_location"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="@dimen/dimen_size_5"
+            android:textColor="@color/poi_detail_title"
+            android:textSize="@dimen/text_size_17"
+            tools:text="121°31′19.84″, 31°4′58.62" />
+
+        <TextView
+            android:id="@+id/tv_gprs_signal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="@dimen/dimen_size_5"
+            android:layout_marginBottom="@dimen/dimen_size_20"
+            android:textColor="@color/poi_detail_title"
+            android:textSize="@dimen/text_size_17"
+            tools:text="-98dbm   35asu" />
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tv_screenshot"
+        android:layout_width="200dp"
+        android:layout_height="40dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="@dimen/dimen_size_20"
+        android:background="@drawable/shape_button_bg"
+        android:gravity="center"
+        android:text="截图"
+        android:textColor="@color/white"
+        android:textSize="20sp" />
+
+</RelativeLayout>
