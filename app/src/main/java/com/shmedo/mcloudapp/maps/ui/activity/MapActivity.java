@@ -10,6 +10,9 @@ import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+
 import com.amap.api.location.AMapLocation;
 import com.amap.api.location.AMapLocationClient;
 import com.amap.api.location.AMapLocationClientOption;
@@ -45,6 +48,9 @@ import timber.log.Timber;
 public class MapActivity extends CheckMapNeedPermissionsActivity implements AMapGestureListener, AMapLocationListener, LocationSource, MapSearchView.OnMapHeaderViewClickListener, PoiDetailBottomView.OnPoiDetailBottomClickListener, ZoomView.OnZoomViewClickListener {
     @BindView(R.id.map)
     TextureMapView mMapView;
+
+    @BindView(R.id.id_drawer_layout)
+    DrawerLayout mDrawerLayout;
 
     @BindView(R.id.map_search_view)
     MapSearchView mMapSearchView;
@@ -236,7 +242,7 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
     protected void doOnPermissionGranted() {
     }
 
-    @OnClick({R.id.gps_view, R.id.route_view})
+    @OnClick({R.id.gps_view, R.id.route_view, R.id.mapToolView})
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.gps_view:
@@ -245,6 +251,14 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
 
             case R.id.route_view:
 
+                break;
+
+            case R.id.mapToolView:
+                if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
+                    mDrawerLayout.closeDrawer(GravityCompat.START);
+                } else {
+                    mDrawerLayout.openDrawer(GravityCompat.START);
+                }
                 break;
         }
     }
@@ -505,7 +519,7 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
 //        SearchPoiFragment newFragment =  SearchPoiFragment.newInstance(mCity);
 //        newFragment.show(getSupportFragmentManager(), "dialog");
 
-        PoiSearchActivity.startActivityForResult(this,0);
+        PoiSearchActivity.startActivityForResult(this, 0);
     }
 
     /**
