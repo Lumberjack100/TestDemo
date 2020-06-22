@@ -8,6 +8,7 @@ import android.widget.TextView;
 
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.base.BaseActivity;
+import com.shmedo.mcloudapp.maps.util.ScreenShotAction;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -60,7 +61,8 @@ public class SpeedTestResultActivity extends BaseActivity {
         if (v.getId() == R.id.back) {
             finish();
         } else if (v.getId() == R.id.tv_screenshot) {
-
+            ScreenShotAction screenShotAction = new ScreenShotAction(this);
+            screenShotAction.execute();
         }
     }
 }
