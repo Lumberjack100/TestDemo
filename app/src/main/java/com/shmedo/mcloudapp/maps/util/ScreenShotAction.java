@@ -75,7 +75,7 @@ public class ScreenShotAction extends AsyncTask<Void, Integer, Boolean> {
     }
 
     private boolean saveImage(Bitmap bitmap, @NonNull String name) {
-        boolean saved;
+        boolean saved = true;
         String IMAGES_FOLDER_NAME = "/medo/screenshot";
         OutputStream fos;
         Uri imageUri = null;
@@ -101,7 +101,7 @@ public class ScreenShotAction extends AsyncTask<Void, Integer, Boolean> {
                 fos = new FileOutputStream(fileImage);
             }
 
-            saved = bitmap.compress(Bitmap.CompressFormat.PNG, 100, fos);
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, fos);
             fos.flush();
             fos.close();
         } catch (IOException e) {
