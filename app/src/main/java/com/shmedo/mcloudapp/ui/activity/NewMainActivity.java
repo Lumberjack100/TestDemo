@@ -75,10 +75,10 @@ public class NewMainActivity extends BaseActivity {
         });
     }
 
-    @OnClick({R.id.image_map_module})
+    @OnClick({R.id.map_module_view})
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.image_map_module:
+            case R.id.map_module_view:
                 MapActivity.startActivity(NewMainActivity.this);
                 break;
         }

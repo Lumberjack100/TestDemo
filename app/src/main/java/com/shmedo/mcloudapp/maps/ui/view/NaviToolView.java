@@ -9,6 +9,7 @@ import android.widget.LinearLayout;
 import androidx.annotation.Nullable;
 
 import com.shmedo.mcloudapp.R;
+import com.shmedo.mcloudapp.maps.model.NetWorkQuality;
 import com.shmedo.mcloudapp.maps.ui.activity.SpeedTestActivity;
 import com.shmedo.mcloudapp.maps.ui.activity.SpeedTestResultActivity;
 
@@ -55,7 +56,7 @@ public class NaviToolView extends LinearLayout {
                 break;
 
             case R.id.measureDistanceView:
-                SpeedTestResultActivity.startActivity(mContext);
+                goToResultActivity();
 //                mListener.onMeasureDistanceClick();
                 break;
 
@@ -94,5 +95,13 @@ public class NaviToolView extends LinearLayout {
          */
         void onCompassClick();
 
+    }
+
+    private void goToResultActivity() {
+        NetWorkQuality netWorkQuality = new NetWorkQuality();
+        netWorkQuality.setDelay("30 ms");
+        netWorkQuality.setDownloadSpeed("30.5 Mbps");
+        netWorkQuality.setUploadSpeed("32.5 Mbps");
+        SpeedTestResultActivity.startActivity(mContext, netWorkQuality);
     }
 }

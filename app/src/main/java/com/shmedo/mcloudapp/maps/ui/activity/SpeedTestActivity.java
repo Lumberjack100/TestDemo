@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.LinearInterpolator;
@@ -17,6 +18,7 @@ import android.widget.Toast;
 
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.base.BaseActivity;
+import com.shmedo.mcloudapp.maps.model.NetWorkQuality;
 import com.shmedo.mcloudapp.maps.testspeed.GetSpeedTestHostsHandler;
 import com.shmedo.mcloudapp.maps.testspeed.HttpDownloadTest;
 import com.shmedo.mcloudapp.maps.testspeed.HttpUploadTest;
@@ -94,9 +96,11 @@ public class SpeedTestActivity extends BaseActivity {
         tempBlackList = new HashSet<>();
     }
 
-    @OnClick({R.id.startButton})
+    @OnClick({R.id.back, R.id.startButton})
     public void onClick(View v) {
-        if (v.getId() == R.id.startButton) {
+        if (v.getId() == R.id.back) {
+            finish();
+        } else if (v.getId() == R.id.startButton) {
             startTest();
         }
     }
@@ -315,9 +319,7 @@ public class SpeedTestActivity extends BaseActivity {
                                     rotate.setDuration(100);
                                     barImageView.startAnimation(rotate);
                                     downloadTextView.setText(dec.format(downloadTest.getInstantDownloadRate()) + " Mbps");
-
                                 }
-
                             });
                             lastPosition = position;
 
@@ -359,6 +361,7 @@ public class SpeedTestActivity extends BaseActivity {
                                     @Override
                                     public void run() {
                                         uploadTextView.setText(dec.format(uploadTest.getFinalUploadRate()) + " Mbps");
+                                        goToResultActivity();
                                     }
                                 });
                             }
@@ -369,7 +372,6 @@ public class SpeedTestActivity extends BaseActivity {
                             position = getPositionByRate(uploadRate);
 
                             runOnUiThread(new Runnable() {
-
                                 @Override
                                 public void run() {
                                     rotate = new RotateAnimation(lastPosition, position, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
@@ -378,7 +380,6 @@ public class SpeedTestActivity extends BaseActivity {
                                     barImageView.startAnimation(rotate);
                                     uploadTextView.setText(dec.format(uploadTest.getInstantUploadRate()) + " Mbps");
                                 }
-
                             });
                             lastPosition = position;
 
@@ -406,7 +407,6 @@ public class SpeedTestActivity extends BaseActivity {
                                     chartUpload.addView(chartView, 0);
                                 }
                             });
-
                         }
                     }
 
@@ -451,7 +451,7 @@ public class SpeedTestActivity extends BaseActivity {
     }
 
 
-    private XYMultipleSeriesRenderer initSeriesRenderer(){
+    private XYMultipleSeriesRenderer initSeriesRenderer() {
         XYSeriesRenderer xySeriesRenderer = new XYSeriesRenderer();
         XYSeriesRenderer.FillOutsideLine fillOutsideLine = new XYSeriesRenderer.FillOutsideLine(XYSeriesRenderer.FillOutsideLine.Type.BOUNDS_ALL);
         fillOutsideLine.setColor(Color.parseColor("#4d5a6a"));
@@ -493,4 +493,18 @@ public class SpeedTestActivity extends BaseActivity {
 
         return 0;
     }
+
+    private void goToResultActivity() {
+        NetWorkQuality netWorkQuality = new NetWorkQuality();
+        netWorkQuality.setDelay(pingTextView.getText().toString());
+        netWorkQuality.setDownloadSpeed(downloadTextView.getText().toString());
+        netWorkQuality.setUploadSpeed(uploadTextView.getText().toString());
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                SpeedTestResultActivity.startActivity(SpeedTestActivity.this, netWorkQuality);
+            }
+        }, 1500);
+    }
+
 }

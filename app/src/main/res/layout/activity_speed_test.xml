@@ -4,26 +4,33 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
     android:background="@color/testspeed_bg"
     android:orientation="vertical">
 
-    <LinearLayout
+    <RelativeLayout
+        android:id="@+id/titleLayout"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:background="@color/testspeed_bg"
-        android:gravity="center"
-        android:orientation="horizontal">
+        android:padding="@dimen/dimen_size_10">
+
+        <ImageView
+            android:id="@+id/back"
+            android:layout_width="35dp"
+            android:layout_height="40dp"
+            android:layout_centerVertical="true"
+            android:src="@drawable/ic_back2" />
 
         <TextView
-            android:id="@+id/tv_nettype"
+            android:id="@+id/tv_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
             android:textColor="@color/white"
-            android:textSize="18sp"
-            android:textStyle="normal|bold"
-            tools:text="当前4g 网络" />
+            android:textSize="@dimen/text_size_20"
+            tools:text="参数配置" />
 
-    </LinearLayout>
+    </RelativeLayout>
 
     <LinearLayout
         android:layout_width="match_parent"

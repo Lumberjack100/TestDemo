@@ -38,21 +38,28 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:elevation="@dimen/dimen_size_16"
-            >
+            android:elevation="@dimen/dimen_size_16">
 
             <View
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1" />
 
-            <ImageView
-                android:id="@+id/image_map_module"
-                android:layout_width="@dimen/dimen_size_35"
-                android:layout_height="@dimen/dimen_size_35"
-                android:layout_gravity="center"
-                android:tint="@color/bottom_navigation_selected"
-                android:src="@drawable/ic_map_module" />
+            <RelativeLayout
+                android:id="@+id/map_module_view"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+
+                <ImageView
+                    android:id="@+id/image_map_module"
+                    android:layout_width="@dimen/dimen_size_35"
+                    android:layout_height="@dimen/dimen_size_35"
+                    android:layout_centerInParent="true"
+                    android:src="@drawable/ic_map_module"
+                    android:tint="@color/bottom_navigation_selected" />
+
+            </RelativeLayout>
 
             <View
                 android:layout_width="0dp"

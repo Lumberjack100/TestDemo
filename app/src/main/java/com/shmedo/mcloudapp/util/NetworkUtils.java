@@ -1,11 +1,11 @@
 package com.shmedo.mcloudapp.util;
 
 import android.content.Context;
-import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.wifi.WifiManager;
 import android.telephony.TelephonyManager;
+import android.text.TextUtils;
 
 import com.shmedo.mcloudapp.MCloudApp;
 
@@ -20,6 +20,8 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+
+import timber.log.Timber;
 
 /**
  * 项目名：  mCloudapp
@@ -43,17 +45,6 @@ public class NetworkUtils {
         NETWORK_NO
     }
 
-    /**
-     * 打开网络设置界面
-     * <p>3.0以下打开设置界面</p>
-     */
-    public static void openWirelessSettings() {
-        if (android.os.Build.VERSION.SDK_INT > 10) {
-            MCloudApp.getContext().startActivity(new Intent(android.provider.Settings.ACTION_WIRELESS_SETTINGS).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
-        } else {
-            MCloudApp.getContext().startActivity(new Intent(android.provider.Settings.ACTION_SETTINGS).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
-        }
-    }
 
     /**
      * 获取活动网络信息
@@ -171,7 +162,6 @@ public class NetworkUtils {
     }
 
 
-
     /**
      * 获取网络运营商名称
      * <p>中国移动、如中国联通、中国电信</p>
@@ -180,7 +170,7 @@ public class NetworkUtils {
      */
     public static String getNetworkOperatorName() {
         TelephonyManager tm = (TelephonyManager) MCloudApp.getContext().getSystemService(Context.TELEPHONY_SERVICE);
-        return tm != null ? tm.getNetworkOperatorName() : null;
+        return tm != null ? tm.getNetworkOperatorName() : "";
     }
 
     private static final int NETWORK_TYPE_GSM      = 16;
@@ -237,8 +227,8 @@ public class NetworkUtils {
                     case TelephonyManager.NETWORK_TYPE_LTE:
                         netType = NetworkType.NETWORK_4G;
                         break;
-                    default:
 
+                    default:
                         String subtypeName = info.getSubtypeName();
                         if (subtypeName.equalsIgnoreCase("TD-SCDMA")
                                 || subtypeName.equalsIgnoreCase("WCDMA")
@@ -254,6 +244,99 @@ public class NetworkUtils {
             }
         }
         return netType;
+    }
+
+
+    /**
+     * 获取设备拨号运营商
+     *
+     * @return ["中国电信CTCC":3]["中国联通CUCC:2]["中国移动CMCC":1]["other":0]["无sim卡":-1]
+     */
+    public static int getSubscriptionOperatorType() {
+        int opeType = -1;
+        // No sim
+        if (!hasSim()) {
+            return opeType;
+        }
+
+        TelephonyManager tm = (TelephonyManager) MCloudApp.getContext().getApplicationContext().getSystemService(Context.TELEPHONY_SERVICE);
+        String operator = tm.getNetworkOperator();
+        // 中国联通
+        if ("46001".equals(operator) || "46006".equals(operator) || "46009".equals(operator)) {
+            opeType = 2;
+            // 中国移动
+        } else if ("46000".equals(operator) || "46002".equals(operator) || "46004".equals(operator) || "46007".equals(operator)) {
+            opeType = 1;
+            // 中国电信
+        } else if ("46003".equals(operator) || "46005".equals(operator) || "46011".equals(operator)) {
+            opeType = 3;
+        } else {
+            opeType = 0;
+        }
+        return opeType;
+    }
+
+    /**
+     * 获取设备蜂窝网络运营商
+     *
+     * @return ["中国电信CTCC":3]["中国联通CUCC:2]["中国移动CMCC":1]["other":0]["无sim卡":-1]["数据流量未打开":-2]
+     */
+    public static int getCellularOperatorType() {
+        int opeType = -1;
+        // No sim
+        if (!hasSim()) {
+            return opeType;
+        }
+        // Mobile data disabled
+        if (!isMobileDataEnabled()) {
+            opeType = -2;
+            return opeType;
+        }
+        // Check cellular operator
+        TelephonyManager tm = (TelephonyManager) MCloudApp.getContext().getApplicationContext().getSystemService(Context.TELEPHONY_SERVICE);
+        String operator = tm.getSimOperator();
+        // 中国联通
+        if ("46001".equals(operator) || "46006".equals(operator) || "46009".equals(operator)) {
+            opeType = 2;
+            // 中国移动
+        } else if ("46000".equals(operator) || "46002".equals(operator) || "46004".equals(operator) || "46007".equals(operator)) {
+            opeType = 1;
+            // 中国电信
+        } else if ("46003".equals(operator) || "46005".equals(operator) || "46011".equals(operator)) {
+            opeType = 3;
+        } else {
+            opeType = 0;
+        }
+        return opeType;
+    }
+
+    /**
+     * 判断数据流量开关是否打开
+     *
+     * @return
+     */
+    public static boolean isMobileDataEnabled() {
+        try {
+            Method method = ConnectivityManager.class.getDeclaredMethod("getMobileDataEnabled");
+            method.setAccessible(true);
+            ConnectivityManager connectivityManager = (ConnectivityManager) MCloudApp.getContext().getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+            return (Boolean) method.invoke(connectivityManager);
+        } catch (Throwable t) {
+            Timber.d("Check mobile data encountered exception");
+            return false;
+        }
+    }
+
+    /**
+     * 检查手机是否有sim卡
+     */
+    public static boolean hasSim() {
+        TelephonyManager tm = (TelephonyManager) MCloudApp.getContext().getApplicationContext().getSystemService(Context.TELEPHONY_SERVICE);
+        String operator = tm.getSimOperator();
+        if (TextUtils.isEmpty(operator)) {
+            return false;
+        }
+        return true;
     }
 
     /**

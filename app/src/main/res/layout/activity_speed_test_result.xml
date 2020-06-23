@@ -71,7 +71,7 @@
                 android:gravity="center"
                 android:textColor="@color/white"
                 android:textSize="@dimen/text_size_20"
-                tools:text="网络\n延时" />
+                android:text="网络\n延时" />
         </RelativeLayout>
 
         <RelativeLayout
@@ -92,7 +92,7 @@
                 android:gravity="center"
                 android:textColor="@color/white"
                 android:textSize="@dimen/text_size_20"
-                tools:text="30.5\Mbps" />
+                tools:text="30.5\nMbps" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -102,7 +102,7 @@
                 android:gravity="center"
                 android:textColor="@color/white"
                 android:textSize="@dimen/text_size_20"
-                tools:text="下载\n速度" />
+                android:text="下载\n速度" />
         </RelativeLayout>
 
         <RelativeLayout
@@ -123,7 +123,7 @@
                 android:gravity="center"
                 android:textColor="@color/white"
                 android:textSize="@dimen/text_size_20"
-                tools:text="30.5\Mbps" />
+                tools:text="30.5\nMbps" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -133,7 +133,7 @@
                 android:gravity="center"
                 android:textColor="@color/white"
                 android:textSize="@dimen/text_size_20"
-                tools:text="上传\n速度" />
+                android:text="上传\n速度" />
         </RelativeLayout>
 
         <TextView

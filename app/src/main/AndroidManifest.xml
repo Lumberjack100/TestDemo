@@ -248,6 +248,7 @@
             android:name=".maps.ui.activity.MapActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:screenOrientation="portrait"
+            android:launchMode="singleTop"
             android:theme="@style/WindowTranslucentTheme" />
         <activity
             android:name=".maps.ui.activity.PoiSearchActivity"
@@ -256,12 +257,12 @@
         <activity
             android:name=".maps.ui.activity.SpeedTestActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:screenOrientation="portrait"
-            android:theme="@style/FullscreenTheme" />
+            android:screenOrientation="portrait" />
 
         <activity android:name=".maps.ui.activity.SpeedTestResultActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:screenOrientation="portrait"
+            android:launchMode="singleTop"
             android:theme="@style/SpeedTestResultTheme"/>
 
         <activity
