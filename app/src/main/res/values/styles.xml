@@ -26,6 +26,14 @@
         <item name="android:windowFullscreen">true</item>
     </style>
 
+    <style name="SpeedTestResultTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="windowNoTitle">true</item>
+        <!-- actionbar颜色-->
+        <item name="colorPrimary">#61a9fc</item>
+        <!-- 状态栏颜色-->
+        <item name="colorPrimaryDark">#61a9fc</item>
+    </style>
+
 
     <style name="DialogActivityTheme" parent="Theme.AppCompat.Dialog">
         <item name="android:windowBackground">@android:color/transparent</item>

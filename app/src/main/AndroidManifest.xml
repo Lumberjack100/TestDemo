@@ -261,7 +261,8 @@
 
         <activity android:name=".maps.ui.activity.SpeedTestResultActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/SpeedTestResultTheme"/>
 
         <activity
             android:name=".ui.activity.TestBluetoothListActivity"
