@@ -5,9 +5,9 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Environment;
 import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.view.View;
@@ -21,8 +21,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
-import timber.log.Timber;
 
 /**
  * Created by Jesley on 2016/10/13.
@@ -52,24 +50,16 @@ public class ScreenShotAction extends AsyncTask<Void, Integer, File> {
     @Override
     protected void onPreExecute() {
         View view = targetView.getRootView();
-        view.setDrawingCacheEnabled(true);
-        view.buildDrawingCache();
-
-        //从缓存中获取当前屏幕的图片
-        bitmap = view.getDrawingCache();
+        bitmap = Bitmap.createBitmap(view.getWidth(), view.getHeight(), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+        view.draw(canvas);
         showLoadingDialog(activity, "处理中");
-
-//        view.setDrawingCacheEnabled(false);
-//        view.destroyDrawingCache();
     }
 
     @Override
     protected File doInBackground(Void... params) {
-        String filename = null;
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
-        filename = activity.getExternalFilesDir(null).getAbsolutePath() + File.separator + "ScreenShot" + File.separator + sdf.format(new Date()) + ".png";
-
-        Timber.d("filename:" + filename);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy_MM_dd_hh_mm_ss");
+        String filename = activity.getExternalFilesDir(null).getAbsolutePath() + File.separator + "ScreenShot" + File.separator + sdf.format(new Date()) + ".png";
         File file = new File(filename);
         if (saveFile(bitmap, file)) {
             return file;
@@ -126,15 +116,6 @@ public class ScreenShotAction extends AsyncTask<Void, Integer, File> {
         activity.sendBroadcast(intent);
 
         return isOk;
-    }
-
-    private boolean hasExternalStorageState() {
-        String status = Environment.getExternalStorageState();
-        if (status.equals(Environment.MEDIA_MOUNTED)) {
-            return true;
-        } else {
-            return false;
-        }
     }
 
     private void showLoadingDialog(Context context, String tip) {
