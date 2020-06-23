@@ -34,7 +34,8 @@
         <EditText
             android:id="@+id/et_trigger_threshold"
             style="@style/EditText_Sensor_Config_Item"
-            android:hint="请输入" />
+            android:hint="请输入"
+            android:inputType="number"/>
 
     </LinearLayout>
 

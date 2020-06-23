@@ -82,9 +82,9 @@ public class CommonSensorConfigDialogFragment extends BaseDialogFragment {
             }
         }
         mEtModbusAddress.setFilters(new InputFilter[]{new InputFilter.LengthFilter(2)});
-        mEtAlarmValue.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
-        mEtCorrectValue.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
-        mEtMeasureLong.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
+        mEtAlarmValue.setFilters(new InputFilter[]{new InputFilter.LengthFilter(5)});
+        mEtCorrectValue.setFilters(new InputFilter[]{new InputFilter.LengthFilter(10)});
+        mEtMeasureLong.setFilters(new InputFilter[]{new InputFilter.LengthFilter(10)});
     }
 
 
@@ -95,7 +95,7 @@ public class CommonSensorConfigDialogFragment extends BaseDialogFragment {
                 mTvAlarmValue.setText("触发阈值(单位:mm)");
                 mTvCorrectValue.setText("修正值(单位:m)");
                 SensorWireShiftInfo sensorWireShiftInfo = (SensorWireShiftInfo) collectorSensorParamsInfo.getSensorData();
-                mEtAlarmValue.setText(sensorWireShiftInfo.getTriggerThreshold() + "");
+                mEtAlarmValue.setText(String.valueOf(sensorWireShiftInfo.getTriggerThreshold()));
                 mEtCorrectValue.setText(String.valueOf(sensorWireShiftInfo.getCorrectionValue()));
                 break;
 
@@ -112,9 +112,9 @@ public class CommonSensorConfigDialogFragment extends BaseDialogFragment {
                 mTvCorrectValue.setText("修正值(单位:m)");
                 mTvMeasureLong.setText("测段长(单位:mm)");
                 SensorInclinometerInfo sensorInclinometerInfo = (SensorInclinometerInfo) collectorSensorParamsInfo.getSensorData();
-                mEtAlarmValue.setText(sensorInclinometerInfo.getTriggerThreshold());
+                mEtAlarmValue.setText(String.valueOf(sensorInclinometerInfo.getTriggerThreshold()));
                 mEtCorrectValue.setText(String.valueOf(sensorInclinometerInfo.getCorrectionValue()));
-                mEtMeasureLong.setText(sensorInclinometerInfo.getMeasureLength());
+                mEtMeasureLong.setText(String.valueOf(sensorInclinometerInfo.getMeasureLength()));
                 break;
 
             case RADAR_LEVEL_GAUGE://雷达物位计
@@ -174,7 +174,7 @@ public class CommonSensorConfigDialogFragment extends BaseDialogFragment {
         measureLong = mEtCorrectValue.getText().toString().trim();
 
         if (TextUtils.isEmpty(address)) {
-            ToastUtils.show("通道号不能为空!");
+            ToastUtils.show("地址不能为空!");
             return false;
         }
 
