@@ -361,7 +361,6 @@ public class SpeedTestActivity extends BaseActivity {
                                     @Override
                                     public void run() {
                                         uploadTextView.setText(dec.format(uploadTest.getFinalUploadRate()) + " Mbps");
-                                        goToResultActivity();
                                     }
                                 });
                             }
@@ -444,6 +443,7 @@ public class SpeedTestActivity extends BaseActivity {
                         startButton.setEnabled(true);
                         startButton.setTextSize(16);
                         startButton.setText("重新测试");
+                        goToResultActivity();
                     }
                 });
             }
@@ -504,7 +504,7 @@ public class SpeedTestActivity extends BaseActivity {
             public void run() {
                 SpeedTestResultActivity.startActivity(SpeedTestActivity.this, netWorkQuality);
             }
-        }, 1500);
+        }, 1000);
     }
 
 }

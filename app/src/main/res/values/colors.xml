@@ -70,7 +70,9 @@
     <color name="poi_detail_title">@color/black_070707</color>
     <color name="poi_detail_loc">#3E3E3E</color>
     <color name="gray_bg">#F4F4F4</color>
+
     <color name="testspeed_bg">#2d3a4a</color>
     <color name="testspeed_textColor">#3af3ff</color>
+    <color name="testspeed_result_bg">#61a9fc</color>
 
 </resources>

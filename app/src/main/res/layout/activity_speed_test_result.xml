@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#61a9fc"
+    android:background="@color/testspeed_result_bg"
     android:fitsSystemWindows="true"
     tools:context=".maps.ui.activity.SpeedTestResultActivity">
 
