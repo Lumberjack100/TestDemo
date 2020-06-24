@@ -85,8 +85,7 @@ public class SpeedTestResultActivity extends BaseActivity {
         }
 
 
-        showNetType();
-        showOperatorName();
+        showNetTypeAndOperatorName();
     }
 
     @Override
@@ -95,7 +94,7 @@ public class SpeedTestResultActivity extends BaseActivity {
         LocationUtils.getInstance().getPositionPermission(this);
     }
 
-    private void showNetType() {
+    private void showNetTypeAndOperatorName() {
         String netType = "";
         NetworkUtils.NetworkType networkType = NetworkUtils.getNetworkType();
         switch (networkType) {
@@ -119,8 +118,13 @@ public class SpeedTestResultActivity extends BaseActivity {
                 netType = "未知网络类型";
                 break;
         }
-
         mTvNetType.setText(netType);
+        if(networkType== NetworkUtils.NetworkType.NETWORK_WIFI){
+            mTvOperatorName.setText(NetworkUtils.getConnectWifiSsid());
+
+        }else{
+            showOperatorName();
+        }
     }
 
     private void showOperatorName() {
