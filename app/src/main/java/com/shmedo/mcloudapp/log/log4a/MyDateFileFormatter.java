@@ -5,7 +5,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
-import me.pqpo.librarylog4a.Level;
 import me.pqpo.librarylog4a.formatter.Formatter;
 
 /**
@@ -55,6 +54,7 @@ public class MyDateFileFormatter implements Formatter {
             mStringBuffer.delete(mTimeLength, mStringBuffer.length());
         }
 
-        return mStringBuffer.append(Level.getShortLevelName(logLevel)).append("/").append(tag).append(": ").append(msg).append('\n').toString();
+//        return mStringBuffer.append(Level.getShortLevelName(logLevel)).append("/").append(tag).append(": ").append(msg).append('\n').toString();
+        return mStringBuffer.append(msg).append('\n').toString();
     }
 }
