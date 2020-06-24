@@ -2,6 +2,7 @@ package com.shmedo.mcloudapp.util;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.DialogInterface;
 import android.os.Build;
 import android.text.TextUtils;
@@ -15,7 +16,6 @@ import com.hjq.toast.ToastUtils;
 import com.shmedo.mcloudapp.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.entity.SyncPositionBean;
-import com.shmedo.mcloudapp.ui.activity.device.BaseDeviceConnectActivity;
 import com.shmedo.mcloudapp.util.permission.RuntimeRationale;
 import com.yanzhenjie.permission.Action;
 import com.yanzhenjie.permission.AndPermission;
@@ -60,7 +60,7 @@ public class LocationUtils {
     }
 
 
-    public void getPositionPermission(BaseDeviceConnectActivity activity){
+    public void getPositionPermission(Activity activity) {
         if (Build.VERSION.SDK_INT > 28 && MCloudApp.getContext().getApplicationInfo().targetSdkVersion > 28) {
             locationNeedPermissions = new String[]{
                     Manifest.permission.ACCESS_COARSE_LOCATION,
@@ -89,6 +89,7 @@ public class LocationUtils {
                 })
                 .start();
     }
+
     public void startLocalService() {
         //初始化定位
         mLocationClient = new AMapLocationClient(MCloudApp.getContext());
@@ -106,20 +107,17 @@ public class LocationUtils {
                     // aoiName=浦江智谷#poiid=#floor=#errorCode=0#errorInfo=success#
                     // locationDetail=#csid:95d47daae7dc4ee3b2af8e0ec17be6ce#
                     // description=在浦江智谷附近#locationType=5
-                    Timber.i("定位成功==="+location.toString());
+                    Timber.i("定位成功===" + location.toString());
                     SyncPositionBean bean = new SyncPositionBean();
                     bean.setLatitude(location.getLatitude());
                     bean.setLongitude(location.getLongitude());
                     bean.setAddress(location.getAddress());
                     bean.setType("location");
                     EventBus.getDefault().post(bean);
-//                    LocationBean locationBean = new LocationBean();
-//                    locationBean.setLongitude(String.valueOf(LngUtils.decimalSix(location.getLongitude())));
-//                    locationBean.setLatitude(String.valueOf(LngUtils.decimalSix(location.getLatitude())));
-//                    EventBus.getDefault().post(locationBean);
+                    stopLocalService();
                 } else {
                     ToastUtils.show("定位失败");
-                    Timber.i( "定位失败\n错误码：" + location.getErrorCode()
+                    Timber.i("定位失败\n错误码：" + location.getErrorCode()
                             + "\n错误信息:" + location.getErrorInfo()
                             + "\n错误描述:" + location.getLocationDetail());
                 }
@@ -157,7 +155,7 @@ public class LocationUtils {
     }
 
 
-    public void showSettingDialog(BaseDeviceConnectActivity context, final List<String> permissions) {
+    public void showSettingDialog(Activity context, final List<String> permissions) {
         List<String> permissionNames = Permission.transformText(context, permissions);
         @SuppressLint({"StringFormatInvalid", "LocalSuppress"})
         String message = context.getString(R.string.message_permission_always_failed, TextUtils.join("\n", permissionNames));

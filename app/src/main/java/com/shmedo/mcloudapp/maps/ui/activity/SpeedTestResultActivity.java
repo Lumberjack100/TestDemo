@@ -8,15 +8,22 @@ import android.widget.TextView;
 
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.base.BaseActivity;
+import com.shmedo.mcloudapp.entity.SyncPositionBean;
 import com.shmedo.mcloudapp.maps.model.NetWorkQuality;
 import com.shmedo.mcloudapp.maps.util.ScreenShotAction;
+import com.shmedo.mcloudapp.util.LocationUtils;
 import com.shmedo.mcloudapp.util.NetworkUtils;
+
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import timber.log.Timber;
 
 public class SpeedTestResultActivity extends BaseActivity {
     private static final String RESULT_PARAM = "result_param";
@@ -80,6 +87,12 @@ public class SpeedTestResultActivity extends BaseActivity {
 
         showNetType();
         showOperatorName();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        LocationUtils.getInstance().getPositionPermission(this);
     }
 
     private void showNetType() {
@@ -151,6 +164,16 @@ public class SpeedTestResultActivity extends BaseActivity {
         } else if (v.getId() == R.id.tv_screenshot) {
             ScreenShotAction screenShotAction = new ScreenShotAction(this);
             screenShotAction.execute();
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onMessageEvent(SyncPositionBean event) {
+        Timber.i("==位置来了==%s", event.toString());
+        if (event.getType().equals("location")) {
+          String  latLong = String.format(Locale.getDefault(), "%.6f", event.getLongitude()) + "," + String.format(Locale.getDefault(), "%.6f", event.getLatitude());
+            mTvLocation.setText(latLong);
+            LocationUtils.getInstance().stopLocalService();
         }
     }
 }
