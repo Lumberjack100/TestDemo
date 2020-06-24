@@ -40,6 +40,7 @@ import com.shmedo.mcloudapp.maps.ui.view.RouteView;
 import com.shmedo.mcloudapp.maps.ui.view.ZoomView;
 import com.shmedo.mcloudapp.maps.util.AMapLocationUtil;
 import com.shmedo.mcloudapp.maps.util.SensorEventHelper;
+import com.shmedo.mcloudapp.util.LocationUtils;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -264,7 +265,7 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
     }
 
     private void processGpsViewClick() {
-        if (!isGPSOPen(this)) {
+        if (!LocationUtils.getInstance().isGpsEnabled()) {
             showGPSSettingDialog();
             return;
         }

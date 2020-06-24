@@ -140,7 +140,7 @@
     <string name="permission_request_location">需要使用定位权限，用于提供精确的定位及导航服务</string>
     <string name="bluetooth_request_location">使用蓝牙功能需要开启定位权限</string>
     <string name="permission_external_storage">当前应用缺少必要的读写存储权限，请前往设置页面授予权限</string>
-    <string name="message_permission_rationale">授予以下权限以继续执行该程序</string>
+    <string name="message_permission_rationale">授予以下权限以继续执行该程序:\n\n%s</string>
     <string name="message_permission_always_failed">请同意定位权限</string>
 
     <!-- 地图模块-->

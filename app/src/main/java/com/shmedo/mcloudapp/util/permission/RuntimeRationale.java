@@ -15,11 +15,13 @@
  */
 package com.shmedo.mcloudapp.util.permission;
 
-import android.annotation.SuppressLint;
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.text.TextUtils;
+
+import androidx.annotation.NonNull;
+
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.shmedo.mcloudapp.R;
 import com.yanzhenjie.permission.Rationale;
 import com.yanzhenjie.permission.RequestExecutor;
@@ -35,25 +37,32 @@ public final class RuntimeRationale implements Rationale<List<String>> {
     @Override
     public void showRationale(Context context, List<String> permissions, final RequestExecutor executor) {
         List<String> permissionNames = Permission.transformText(context, permissions);
-        @SuppressLint({"StringFormatInvalid", "LocalSuppress"})
         String message = context.getString(R.string.message_permission_rationale,
             TextUtils.join("\n", permissionNames));
 
-        new AlertDialog.Builder(context).setCancelable(false)
-            .setTitle("提示")
-            .setMessage(message)
-            .setPositiveButton("确定", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    executor.execute();
-                }
-            })
-            .setNegativeButton("取消", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    executor.cancel();
-                }
-            })
-            .show();
+        MaterialDialog.Builder mBuilder = new MaterialDialog.Builder(context)
+                .title("提示").content(message)
+                .negativeText("取消")
+                .positiveText("确定")
+                .negativeColor(context.getResources().getColor(R.color.gray_797979))
+                .positiveColor(context.getResources().getColor(R.color.colorPrimary))
+                .cancelable(false)
+                .onPositive(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        dialog.dismiss();
+                        executor.execute();
+                    }
+                })
+                .onNegative(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        dialog.dismiss();
+                        executor.cancel();
+                    }
+                });
+
+        MaterialDialog mMaterialDialog = mBuilder.build();
+        mMaterialDialog.show();
     }
 }

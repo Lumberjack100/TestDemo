@@ -1,9 +1,7 @@
 package com.shmedo.mcloudapp.maps.ui.activity;
 
 import android.Manifest;
-import android.content.Context;
 import android.content.Intent;
-import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
@@ -14,6 +12,7 @@ import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.base.BaseActivity;
+import com.shmedo.mcloudapp.util.LocationUtils;
 import com.shmedo.mcloudapp.util.XPermissionUtils;
 
 /**
@@ -69,7 +68,7 @@ public abstract class CheckMapNeedPermissionsActivity extends BaseActivity {
      * 检查是否打开系统位置服务，如果开启了，接着检查是否授予 APP 定位权限
      */
     private void checkPermissionForGPS() {
-        if (isGPSOPen(this)) {
+        if (LocationUtils.getInstance().isGpsEnabled()) {
             checkPermissionForLocation();
 
         } else {
@@ -77,24 +76,7 @@ public abstract class CheckMapNeedPermissionsActivity extends BaseActivity {
         }
     }
 
-    /**
-     * 判断GPS是否开启，GPS或者AGPS开启一个就认为是开启的
-     *
-     * @param context
-     * @return true 表示开启
-     */
-    protected boolean isGPSOPen(final Context context) {
-        LocationManager locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
-        // 通过GPS卫星定位，定位级别可以精确到街（通过24颗卫星定位，在室外和空旷的地方定位准确、速度快）
-        boolean gps = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
-        // 通过WLAN或移动网络(3G/2G)确定的位置（也称作AGPS，辅助GPS定位。主要用于在室内或遮盖物（建筑群或茂密的深林等）密集的地方定位）
-        boolean network = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
-        if (gps || network) {
-            return true;
-        }
 
-        return false;
-    }
 
     /**
      * 检查是否授予 APP 定位权限
@@ -103,7 +85,6 @@ public abstract class CheckMapNeedPermissionsActivity extends BaseActivity {
         XPermissionUtils.requestPermissionsResult(CheckMapNeedPermissionsActivity.this, XPermissionUtils.CODE_REQUEST_PERMISSIONS, needPermissions, new XPermissionUtils.OnPermissionListener() {
             @Override
             public void onPermissionGranted() {
-                //                        mLocationClient.startLocation();
                 doOnPermissionGranted();
             }
 
@@ -178,7 +159,7 @@ public abstract class CheckMapNeedPermissionsActivity extends BaseActivity {
         super.onActivityResult(requestCode, resultCode, intent);
         switch (requestCode) {
             case PERMISSION_CODE_GPS:
-                if (isGPSOPen(CheckMapNeedPermissionsActivity.this)) {
+                if (LocationUtils.getInstance().isGpsEnabled()) {
 //                    mLocationClient.startLocation();
 //                    aMap.setMyLocationStyle(myLocationStyle.myLocationType(MyLocationStyle.LOCATION_TYPE_LOCATE));
                 }

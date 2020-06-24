@@ -129,7 +129,7 @@ public class NetworkUtils {
     public static String getConnectWifiSsid() {
         WifiManager wifiMgr = (WifiManager) MCloudApp.getContext().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         WifiInfo info = wifiMgr.getConnectionInfo();
-        String wifiId = info != null ? info.getSSID() : "未知WiFi";
+        String wifiId = info != null ? info.getSSID() : "未知的 ssid";
 
         return wifiId;
     }

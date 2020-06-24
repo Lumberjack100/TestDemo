@@ -27,6 +27,7 @@ import timber.log.Timber;
 
 public class SpeedTestResultActivity extends BaseActivity {
     private static final String RESULT_PARAM = "result_param";
+    public static final int PERMISSION_CODE_GPS = 0x011;
 
     @BindView(R.id.tv_title)
     TextView mTvTitle;
@@ -78,23 +79,18 @@ public class SpeedTestResultActivity extends BaseActivity {
         if (intent.getExtras() != null) {
             netWorkQuality = (NetWorkQuality) intent.getSerializableExtra(RESULT_PARAM);
             if (netWorkQuality != null) {
-                mTvDelay.setText(netWorkQuality.getDelay().replace(" ","\n"));
-                mTvDownloadSpeed.setText(netWorkQuality.getDownloadSpeed().replace(" ","\n"));
-                mTvUploadSpeed.setText(netWorkQuality.getUploadSpeed().replace(" ","\n"));
+                mTvDelay.setText(netWorkQuality.getDelay().replace(" ", "\n"));
+                mTvDownloadSpeed.setText(netWorkQuality.getDownloadSpeed().replace(" ", "\n"));
+                mTvUploadSpeed.setText(netWorkQuality.getUploadSpeed().replace(" ", "\n"));
             }
         }
-
-
-        showNetTypeAndOperatorName();
+        LocationUtils.getInstance().startLocalService();
+        showNetType();
+        processOperatorName();
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        LocationUtils.getInstance().getPositionPermission(this);
-    }
 
-    private void showNetTypeAndOperatorName() {
+    private void showNetType(){
         String netType = "";
         NetworkUtils.NetworkType networkType = NetworkUtils.getNetworkType();
         switch (networkType) {
@@ -119,40 +115,45 @@ public class SpeedTestResultActivity extends BaseActivity {
                 break;
         }
         mTvNetType.setText(netType);
-        if(networkType== NetworkUtils.NetworkType.NETWORK_WIFI){
-            mTvOperatorName.setText(NetworkUtils.getConnectWifiSsid());
+    }
 
-        }else{
+
+    private void processOperatorName() {
+        NetworkUtils.NetworkType networkType = NetworkUtils.getNetworkType();
+        if (networkType == NetworkUtils.NetworkType.NETWORK_WIFI) {
+            //获取连接的wifi名称
+            mTvOperatorName.setText(NetworkUtils.getConnectWifiSsid());
+        } else {
             showOperatorName();
         }
     }
 
     private void showOperatorName() {
-        String name="";
+        String name = "";
         int opeType = NetworkUtils.getCellularOperatorType();
         switch (opeType) {
             case 0:
-                name="other";
+                name = "other";
                 break;
 
             case 1:
-                name="中国移动";
+                name = "中国移动";
                 break;
 
             case 2:
-                name="中国联通";
+                name = "中国联通";
                 break;
 
             case 3:
-                name="中国电信";
+                name = "中国电信";
                 break;
 
             case -1:
-                name="无sim卡";
+                name = "无sim卡";
                 break;
 
             case -2:
-                name="数据流量未打开";
+                name = "数据流量未打开";
                 break;
 
             default:
@@ -175,9 +176,98 @@ public class SpeedTestResultActivity extends BaseActivity {
     public void onMessageEvent(SyncPositionBean event) {
         Timber.i("==位置来了==%s", event.toString());
         if (event.getType().equals("location")) {
-          String  latLong = String.format(Locale.getDefault(), "%.6f", event.getLongitude()) + "," + String.format(Locale.getDefault(), "%.6f", event.getLatitude());
+            String latLong = String.format(Locale.getDefault(), "%.6f", event.getLongitude()) + "," + String.format(Locale.getDefault(), "%.6f", event.getLatitude());
             mTvLocation.setText(latLong);
             LocationUtils.getInstance().stopLocalService();
         }
     }
+
+   /* *//**
+     * 定位需要进行检测的权限数组
+     *//*
+    private String[] needPermissions = {
+            Manifest.permission.ACCESS_COARSE_LOCATION
+    };
+
+    *//**
+     * 获取连接WiFi的名称相关权限处理
+     *//*
+    private void checkWifiNeedPermissions() {
+        //获取必要权限
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            needPermissions = new String[]{
+                    Manifest.permission.ACCESS_COARSE_LOCATION,
+                    Manifest.permission.ACCESS_FINE_LOCATION
+            };
+        }
+        //获取必要权限
+        AndPermission.with(this)
+                .runtime()
+                .permission(needPermissions)
+                .rationale(new RuntimeRationale())
+                .onGranted(new Action<List<String>>() {
+                    @Override
+                    public void onAction(List<String> permissions) {
+                        //先判断Android系统，9.0以上除了需要定位权限还需要开启GPS才能获取wifi名字
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
+                            if (!LocationUtils.getInstance().isGpsEnabled()) {
+                                showGPSSettingDialog();
+                            } else {
+                                //获取连接的wifi名称
+                                mTvOperatorName.setText(NetworkUtils.getConnectWifiSsid());
+
+                            }
+                        } else {
+                            //获取连接的wifi名称
+                            mTvOperatorName.setText(NetworkUtils.getConnectWifiSsid());
+                        }
+                    }
+                })
+                .onDenied(new Action<List<String>>() {
+                    @Override
+                    public void onAction(@NonNull List<String> permissions) {
+
+                    }
+                })
+                .start();
+    }
+
+    protected void showGPSSettingDialog() {
+        MaterialDialog.Builder mBuilder = new MaterialDialog.Builder(this)
+                .title("权限申请").content("需要打开系统定位开关")
+                .negativeText("暂不开启")
+                .positiveText("去设置")
+                .negativeColor(getResources().getColor(R.color.gray_797979))
+                .positiveColor(getResources().getColor(R.color.colorPrimary))
+                .cancelable(false)
+                .onPositive(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        dialog.dismiss();
+                        Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                        startActivityForResult(intent, PERMISSION_CODE_GPS);
+                    }
+                })
+                .onNegative(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        dialog.dismiss();
+                    }
+                });
+
+        MaterialDialog mMaterialDialog = mBuilder.build();
+        mMaterialDialog.show();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        super.onActivityResult(requestCode, resultCode, intent);
+        switch (requestCode) {
+            case PERMISSION_CODE_GPS:
+                if (LocationUtils.getInstance().isGpsEnabled()) {
+//                    mTvOperatorName.setText(NetworkUtils.getConnectWifiSsid());
+                }
+                break;
+        }
+    }*/
 }
