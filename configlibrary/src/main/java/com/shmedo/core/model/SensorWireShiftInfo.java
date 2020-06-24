@@ -9,22 +9,22 @@ import com.shmedo.core.enums.SensorType;
  * 传感器拉线位移计 02
  */
 public class SensorWireShiftInfo implements SensorParameter {
-    private int triggerThreshold;    //触发阈值
-    private double correctionValue;        //修正值
+    private String triggerThreshold;    //触发阈值
+    private String correctionValue;        //修正值
 
-    public int getTriggerThreshold() {
+    public String getTriggerThreshold() {
         return triggerThreshold;
     }
 
-    public void setTriggerThreshold(int triggerThreshold) {
+    public void setTriggerThreshold(String triggerThreshold) {
         this.triggerThreshold = triggerThreshold;
     }
 
-    public double getCorrectionValue() {
+    public String getCorrectionValue() {
         return correctionValue;
     }
 
-    public void setCorrectionValue(double correctionValue) {
+    public void setCorrectionValue(String correctionValue) {
         this.correctionValue = correctionValue;
     }
 

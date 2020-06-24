@@ -703,7 +703,7 @@ public abstract class BaseSensorConfigActivity extends BaseDeviceConnectActivity
                 sbCollectorSensorConfig.append("," + collectorSensorParamsInfoSub.getSensorType());
                 SensorSoilMoistureInfo sensorInfo = (SensorSoilMoistureInfo) collectorSensorParamsInfoSub.getSensorData();
                 sbCollectorSensorConfig.append("," + sensorInfo.getTriggerThreshold());
-                sbCollectorSensorConfig.append("," + sensorInfo.getRevised());
+                sbCollectorSensorConfig.append("," + sensorInfo.getCorrectionValue());
                 sbCollectorSensorConfig.append("&&");
             }
             break;
@@ -723,7 +723,7 @@ public abstract class BaseSensorConfigActivity extends BaseDeviceConnectActivity
                 sbCollectorSensorConfig.append("," + collectorSensorParamsInfoSub.getSensorType());
                 SensorRadarLevelInfo sensorInfo = (SensorRadarLevelInfo) collectorSensorParamsInfoSub.getSensorData();
                 sbCollectorSensorConfig.append("," + sensorInfo.getTriggerThreshold());
-                sbCollectorSensorConfig.append("," + sensorInfo.getRevised());
+                sbCollectorSensorConfig.append("," + sensorInfo.getCorrectionValue());
                 sbCollectorSensorConfig.append("&&");
             }
             break;
@@ -733,7 +733,7 @@ public abstract class BaseSensorConfigActivity extends BaseDeviceConnectActivity
                 sbCollectorSensorConfig.append("," + collectorSensorParamsInfoSub.getSensorType());
                 SensorInfrasoundInfo sensorInfo = (SensorInfrasoundInfo) collectorSensorParamsInfoSub.getSensorData();
                 sbCollectorSensorConfig.append("," + sensorInfo.getTriggerThreshold());
-                sbCollectorSensorConfig.append("," + sensorInfo.getRevised());
+                sbCollectorSensorConfig.append("," + sensorInfo.getCorrectionValue());
                 sbCollectorSensorConfig.append("&&");
             }
             break;

@@ -202,7 +202,7 @@ public class CommonSensorConfigActivity extends BaseSensorConfigActivity {
                 command = "##165" +
                         StringUtil.formatStringTwo(paramsInfoSub.getCollectorModel().toString()) +
                         StringUtil.formatStringTwo(paramsInfoSub.getSensorAddress()) +
-                        sensorInfrasoundInfo.getRevised() + "\r\n";
+                        sensorInfrasoundInfo.getCorrectionValue() + "\r\n";
                 break;
 
             case HD08://土壤湿度采集器
@@ -210,7 +210,7 @@ public class CommonSensorConfigActivity extends BaseSensorConfigActivity {
                 command = "##165" +
                         StringUtil.formatStringTwo(paramsInfoSub.getCollectorModel().toString()) +
                         StringUtil.formatStringTwo(paramsInfoSub.getSensorAddress()) +
-                        sensorSoilMoistureInfo.getRevised() + "\r\n";
+                        sensorSoilMoistureInfo.getCorrectionValue() + "\r\n";
                 break;
 
             case RD08://雷达采集器
@@ -218,7 +218,7 @@ public class CommonSensorConfigActivity extends BaseSensorConfigActivity {
                 command = "##165" +
                         StringUtil.formatStringTwo(paramsInfoSub.getCollectorModel().toString()) +
                         StringUtil.formatStringTwo(paramsInfoSub.getSensorAddress()) +
-                        sensorRadarLevelInfo.getRevised() + "\r\n";
+                        sensorRadarLevelInfo.getCorrectionValue() + "\r\n";
                 break;
 
             case CX08://测斜仪采集器

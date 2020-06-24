@@ -13,29 +13,29 @@ import com.shmedo.core.interfaces.SensorParameter;
  */
 
 public class SensorUpliftPressureInfo implements SensorParameter {
-    private int triggerThreshold;   //触发阈值 mm
-    private double revised;    //修正值m
+    private String triggerThreshold;   //触发阈值 mm
+    private String correctionValue;    //修正值m
     private String cordlength;  //绳长m
     private String installationElevation;  //安装高程 m
 
 
-    public int getTriggerThreshold() {
+    public String getTriggerThreshold() {
         return triggerThreshold;
     }
 
 
-    public void setTriggerThreshold(int triggerThreshold) {
+    public void setTriggerThreshold(String triggerThreshold) {
         this.triggerThreshold = triggerThreshold;
     }
 
 
-    public double getRevised() {
-        return revised;
+    public String getCorrectionValue() {
+        return correctionValue;
     }
 
 
-    public void setRevised(double revised) {
-        this.revised = revised;
+    public void setCorrectionValue(String correctionValue) {
+        this.correctionValue = correctionValue;
     }
 
 
@@ -59,15 +59,15 @@ public class SensorUpliftPressureInfo implements SensorParameter {
     }
 
 
-    @Override public String toString() {
+    @Override
+    public String toString() {
         return "SensorUpliftPressureInfo{" +
-            "triggerThreshold=" + triggerThreshold +
-            ", revised='" + revised + '\'' +
-            ", cordlength='" + cordlength + '\'' +
-            ", installationElevation='" + installationElevation + '\'' +
-            '}';
+                "triggerThreshold='" + triggerThreshold + '\'' +
+                ", correctionValue='" + correctionValue + '\'' +
+                ", cordlength='" + cordlength + '\'' +
+                ", installationElevation='" + installationElevation + '\'' +
+                '}';
     }
-
 
     @Override public SensorType getSensorType() {
         return SensorType.UPLIFT_PRESSURE_GAUGE;

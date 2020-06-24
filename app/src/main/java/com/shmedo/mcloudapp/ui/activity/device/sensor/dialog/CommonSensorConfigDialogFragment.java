@@ -104,7 +104,7 @@ public class CommonSensorConfigDialogFragment extends BaseDialogFragment {
                 mTvCorrectValue.setText("修正值(单位:%rh)");
                 SensorSoilMoistureInfo sensorSoilMoistureInfo = (SensorSoilMoistureInfo) collectorSensorParamsInfo.getSensorData();
                 mEtAlarmValue.setText(sensorSoilMoistureInfo.getTriggerThreshold());
-                mEtCorrectValue.setText(String.valueOf(sensorSoilMoistureInfo.getRevised()));
+                mEtCorrectValue.setText(String.valueOf(sensorSoilMoistureInfo.getCorrectionValue()));
                 break;
 
             case INCLINOMETER://测斜仪
@@ -122,7 +122,7 @@ public class CommonSensorConfigDialogFragment extends BaseDialogFragment {
                 mTvCorrectValue.setText("修正值(单位:mm)");
                 SensorRadarLevelInfo sensorRadarLevelInfo = (SensorRadarLevelInfo) collectorSensorParamsInfo.getSensorData();
                 mEtAlarmValue.setText(sensorRadarLevelInfo.getTriggerThreshold());
-                mEtCorrectValue.setText(String.valueOf(sensorRadarLevelInfo.getRevised()));
+                mEtCorrectValue.setText(String.valueOf(sensorRadarLevelInfo.getCorrectionValue()));
                 break;
 
             case INFRASOUND_SENSOR://次声
@@ -130,7 +130,7 @@ public class CommonSensorConfigDialogFragment extends BaseDialogFragment {
                 mTvCorrectValue.setText("修正值(单位:Hz)");
                 SensorInfrasoundInfo sensorInfrasoundInfo = (SensorInfrasoundInfo) collectorSensorParamsInfo.getSensorData();
                 mEtAlarmValue.setText(sensorInfrasoundInfo.getTriggerThreshold());
-                mEtCorrectValue.setText(String.valueOf(sensorInfrasoundInfo.getRevised()));
+                mEtCorrectValue.setText(String.valueOf(sensorInfrasoundInfo.getCorrectionValue()));
                 break;
         }
     }
@@ -222,36 +222,36 @@ public class CommonSensorConfigDialogFragment extends BaseDialogFragment {
         switch (sensorType) {
             case WIRE_SHIFT://拉线位移计
                 SensorWireShiftInfo sensorWireShiftInfo = (SensorWireShiftInfo) collectorSensorParamsInfo.getSensorData();
-                sensorWireShiftInfo.setTriggerThreshold(Integer.parseInt(triggerThreshold));
-                sensorWireShiftInfo.setCorrectionValue(Double.parseDouble(correctValue));
+                sensorWireShiftInfo.setTriggerThreshold(triggerThreshold);
+                sensorWireShiftInfo.setCorrectionValue(correctValue);
                 collectorSensorParamsInfo.setSensorData(sensorWireShiftInfo);
                 break;
 
             case SOIL_MOISTURE://土壤含水率
                 SensorSoilMoistureInfo sensorSoilMoistureInfo = (SensorSoilMoistureInfo) collectorSensorParamsInfo.getSensorData();
                 sensorSoilMoistureInfo.setTriggerThreshold(triggerThreshold);
-                sensorSoilMoistureInfo.setRevised(Double.parseDouble(correctValue));
+                sensorSoilMoistureInfo.setCorrectionValue(correctValue);
                 collectorSensorParamsInfo.setSensorData(sensorSoilMoistureInfo);
                 break;
 
             case INCLINOMETER://测斜仪
                 SensorInclinometerInfo sensorInclinometerInfo = (SensorInclinometerInfo) collectorSensorParamsInfo.getSensorData();
-                sensorInclinometerInfo.setTriggerThreshold(Integer.parseInt(triggerThreshold));
-                sensorInclinometerInfo.setCorrectionValue(Double.parseDouble(correctValue));
-                sensorInclinometerInfo.setMeasureLength(Integer.parseInt(measureLong));
+                sensorInclinometerInfo.setTriggerThreshold(triggerThreshold);
+                sensorInclinometerInfo.setCorrectionValue(correctValue);
+                sensorInclinometerInfo.setMeasureLength(measureLong);
                 break;
 
             case RADAR_LEVEL_GAUGE://雷达物位计
                 SensorRadarLevelInfo sensorRadarLevelInfo = (SensorRadarLevelInfo) collectorSensorParamsInfo.getSensorData();
                 sensorRadarLevelInfo.setTriggerThreshold(triggerThreshold);
-                sensorRadarLevelInfo.setRevised(Double.parseDouble(correctValue));
+                sensorRadarLevelInfo.setCorrectionValue(correctValue);
                 collectorSensorParamsInfo.setSensorData(sensorRadarLevelInfo);
                 break;
 
             case INFRASOUND_SENSOR://次声
                 SensorInfrasoundInfo sensorInfrasoundInfo = (SensorInfrasoundInfo) collectorSensorParamsInfo.getSensorData();
                 sensorInfrasoundInfo.setTriggerThreshold(triggerThreshold);
-                sensorInfrasoundInfo.setRevised(Double.parseDouble(correctValue));
+                sensorInfrasoundInfo.setCorrectionValue(correctValue);
                 collectorSensorParamsInfo.setSensorData(sensorInfrasoundInfo);
                 break;
         }
