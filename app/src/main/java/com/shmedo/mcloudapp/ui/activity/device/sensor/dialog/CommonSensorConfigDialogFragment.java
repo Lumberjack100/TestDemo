@@ -171,7 +171,7 @@ public class CommonSensorConfigDialogFragment extends BaseDialogFragment {
         address = mEtModbusAddress.getText().toString().trim();
         triggerThreshold = mEtAlarmValue.getText().toString().trim();
         correctValue = mEtCorrectValue.getText().toString().trim();
-        measureLong = mEtCorrectValue.getText().toString().trim();
+        measureLong = mEtMeasureLong.getText().toString().trim();
 
         if (TextUtils.isEmpty(address)) {
             ToastUtils.show("地址不能为空!");

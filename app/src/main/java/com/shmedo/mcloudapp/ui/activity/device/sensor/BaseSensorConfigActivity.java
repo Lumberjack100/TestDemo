@@ -701,7 +701,7 @@ public abstract class BaseSensorConfigActivity extends BaseDeviceConnectActivity
             case SOIL_MOISTURE: {//土壤含水率
                 sbCollectorSensorConfig.append("," + collectorSensorParamsInfoSub.getSensorAddress());
                 sbCollectorSensorConfig.append("," + collectorSensorParamsInfoSub.getSensorType());
-                SensorInfrasoundInfo sensorInfo = (SensorInfrasoundInfo) collectorSensorParamsInfoSub.getSensorData();
+                SensorSoilMoistureInfo sensorInfo = (SensorSoilMoistureInfo) collectorSensorParamsInfoSub.getSensorData();
                 sbCollectorSensorConfig.append("," + sensorInfo.getTriggerThreshold());
                 sbCollectorSensorConfig.append("," + sensorInfo.getRevised());
                 sbCollectorSensorConfig.append("&&");
@@ -711,9 +711,9 @@ public abstract class BaseSensorConfigActivity extends BaseDeviceConnectActivity
             case INCLINOMETER: {//测斜仪
                 sbCollectorSensorConfig.append("," + collectorSensorParamsInfoSub.getSensorAddress());
                 sbCollectorSensorConfig.append("," + collectorSensorParamsInfoSub.getSensorType());
-                SensorSoilMoistureInfo sensorInfo = (SensorSoilMoistureInfo) collectorSensorParamsInfoSub.getSensorData();
+                SensorInclinometerInfo sensorInfo = (SensorInclinometerInfo) collectorSensorParamsInfoSub.getSensorData();
                 sbCollectorSensorConfig.append("," + sensorInfo.getTriggerThreshold());
-                sbCollectorSensorConfig.append("," + sensorInfo.getRevised());
+                sbCollectorSensorConfig.append("," + sensorInfo.getCorrectionValue());
                 sbCollectorSensorConfig.append("&&");
             }
             break;
@@ -731,9 +731,9 @@ public abstract class BaseSensorConfigActivity extends BaseDeviceConnectActivity
             case INFRASOUND_SENSOR: {//次声
                 sbCollectorSensorConfig.append("," + collectorSensorParamsInfoSub.getSensorAddress());
                 sbCollectorSensorConfig.append("," + collectorSensorParamsInfoSub.getSensorType());
-                SensorInclinometerInfo sensorInfo = (SensorInclinometerInfo) collectorSensorParamsInfoSub.getSensorData();
+                SensorInfrasoundInfo sensorInfo = (SensorInfrasoundInfo) collectorSensorParamsInfoSub.getSensorData();
                 sbCollectorSensorConfig.append("," + sensorInfo.getTriggerThreshold());
-                sbCollectorSensorConfig.append("," + sensorInfo.getCorrectionValue());
+                sbCollectorSensorConfig.append("," + sensorInfo.getRevised());
                 sbCollectorSensorConfig.append("&&");
             }
             break;
