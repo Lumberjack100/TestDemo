@@ -8,8 +8,8 @@ package com.shmedo.mcloudapp.entity;
  * 描述：    同步位置实体类
  */
 public class SyncPositionBean {
-    private double latitude;
-    private double longitude;
+    private double latitude;//纬度
+    private double longitude;//经度
     private String address;
     private String type;
 
