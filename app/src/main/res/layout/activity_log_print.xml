@@ -144,25 +144,29 @@
             android:layout_marginTop="5dp"
             android:background="@color/white" />
 
-        <FrameLayout
-            android:id="@+id/frameLayout"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_log_print"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_below="@id/view3"
-            android:layout_marginBottom="35dp"
-            android:background="@color/white">
+            android:layout_above="@+id/tv_view_log_directory"
+            android:layout_marginBottom="5dp"
+            android:background="@color/white"
+            android:paddingEnd="5dp"
+            android:scrollbarSize="3dp"
+            android:scrollbarStyle="outsideOverlay"
+            android:scrollbarThumbVertical="@drawable/scrollbar_vertical_thumb"
+            android:scrollbars="vertical" />
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recycler_log_print"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
-
-            <View
-                android:id="@+id/viewEmpty"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
-
-        </FrameLayout>
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fab_clear_log"
+            style="@style/Widget.Design.FloatingActionButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/fab_start_pause"
+            android:layout_alignParentRight="true"
+            android:layout_margin="16dp"
+            app:srcCompat="@drawable/ic_clear_log" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/fab_start_pause"

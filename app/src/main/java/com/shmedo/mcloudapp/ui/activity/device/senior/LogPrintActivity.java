@@ -2,11 +2,9 @@ package com.shmedo.mcloudapp.ui.activity.device.senior;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Vibrator;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.AdapterView;
@@ -16,18 +14,13 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.core.content.FileProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.afollestad.materialdialogs.DialogAction;
-import com.afollestad.materialdialogs.MaterialDialog;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.hjq.toast.ToastUtils;
 import com.kyleduo.switchbutton.SwitchButton;
-import com.lxj.xpopup.XPopup;
-import com.lxj.xpopup.interfaces.OnSelectListener;
 import com.shmedo.core.cmd.CommandManager;
 import com.shmedo.core.cmd.entity.LogOutputEntity;
 import com.shmedo.core.cmd.entity.WorkModeEntity;
@@ -82,9 +75,6 @@ public class LogPrintActivity extends BaseDeviceConnectActivity {
     @BindView(R.id.ce_send_code)
     ClearEditText ceSendCode;
 
-    @BindView(R.id.viewEmpty)
-    View viewEmpty;
-
     @BindView(R.id.recycler_log_print)
     RecyclerView recyclerLogPrint;
 
@@ -104,8 +94,6 @@ public class LogPrintActivity extends BaseDeviceConnectActivity {
     private boolean isPause = false;
 
     private String snNumber;
-    private MaterialDialog mMaterialDialog;
-    private MaterialDialog.Builder mBuilder;
 
     private Uri shareFileUrl = null;
 
@@ -212,29 +200,6 @@ public class LogPrintActivity extends BaseDeviceConnectActivity {
             }
         };
         recyclerLogPrint.setAdapter(adapter);
-        viewEmpty.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                if (logDataList.size() == 0)
-                    return false;
-
-                Vibrator vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
-                vibrator.vibrate(200);
-                new XPopup.Builder(LogPrintActivity.this)
-                        .asCenterList("", new String[]{"清空日志"},
-                                new OnSelectListener() {
-                                    @Override
-                                    public void onSelect(int position, String text) {
-                                        if (position == 0) {
-                                            logDataList.clear();
-                                            adapter.notifyDataSetChanged();
-                                        }
-                                    }
-                                })
-                        .show();
-                return false;
-            }
-        });
     }
 
     private void setSwitchViewState(boolean isOpen, TextView textView, String content) {
@@ -242,7 +207,7 @@ public class LogPrintActivity extends BaseDeviceConnectActivity {
         textView.setTextColor(isOpen ? getResources().getColor(R.color.colorPrimary) : getResources().getColor(R.color.gray_807B7B));
     }
 
-    @OnClick({R.id.btn_send, R.id.tv_view_log_directory, R.id.fab_start_pause})
+    @OnClick({R.id.btn_send, R.id.tv_view_log_directory,  R.id.fab_clear_log,R.id.fab_start_pause})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.btn_send:
@@ -263,9 +228,12 @@ public class LogPrintActivity extends BaseDeviceConnectActivity {
                 break;
 
             case R.id.tv_view_log_directory:
-
                 shareFile();
-//                showLogResultDialog(LogFileUtil.getLogPath());
+                break;
+
+            case R.id.fab_clear_log:
+                logDataList.clear();
+                adapter.notifyDataSetChanged();
                 break;
 
             case R.id.fab_start_pause:
@@ -312,18 +280,6 @@ public class LogPrintActivity extends BaseDeviceConnectActivity {
             adapter.notifyDataSetChanged();
             recyclerLogPrint.scrollToPosition(adapter.getItemCount() - 1);
         }
-    }
-
-    private void showLogResultDialog(String content) {
-        mBuilder = new MaterialDialog.Builder(this);
-        mBuilder.title("日志目录地址：").content(content).contentColor(Color.parseColor("#000000")).canceledOnTouchOutside(false).positiveText("确定").onPositive(new MaterialDialog.SingleButtonCallback() {
-            @Override
-            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                dialog.dismiss();
-            }
-        });
-        mMaterialDialog = mBuilder.build();
-        mMaterialDialog.show();
     }
 
     private void shareFile() {
