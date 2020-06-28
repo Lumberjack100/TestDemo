@@ -23,10 +23,23 @@
 
     </FrameLayout>
 
-    <com.shmedo.mcloudapp.maps.ui.view.NaviToolView
-        android:id="@+id/nav_tool_view"
-        android:layout_width="250dp"
+    <FrameLayout
+        android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:layout_gravity="start" />
+        android:layout_gravity="start">
+
+        <com.shmedo.mcloudapp.maps.ui.view.NaviToolView
+            android:id="@+id/nav_tool_view"
+            android:layout_width="250dp"
+            android:layout_height="match_parent" />
+
+        <com.shmedo.mcloudapp.maps.ui.view.NaviMapLayerView
+            android:id="@+id/nav_map_layer_view"
+            android:layout_width="250dp"
+            android:layout_height="match_parent"
+            android:visibility="gone"/>
+
+    </FrameLayout>
+
 
 </androidx.drawerlayout.widget.DrawerLayout>

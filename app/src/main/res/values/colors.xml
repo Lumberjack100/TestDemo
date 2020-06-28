@@ -64,6 +64,8 @@
     <color name="gray_FEFEFE">#FEFEFE</color>
 
     <!-- 地图模块 -->
+    <color name="map_primary">#5d86fb</color>
+    <color name="map_primary_dark">#3a5295</color>
     <color name="floating_action_button_selected">#7b7c79</color>
     <color name="bottom_navigation_selected">#0DB3A6</color>
     <color name="map_icon_foreground">#616161</color>

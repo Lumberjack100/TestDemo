@@ -19,7 +19,7 @@ import butterknife.OnClick;
 /**
  * 创建者:   gonghe <br/>
  * 创建时间:  2020/6/22 <br/>
- * 描述：    TODO
+ * 描述：    工具箱视图
  */
 public class NaviToolView extends LinearLayout {
     private Context mContext;
@@ -39,11 +39,11 @@ public class NaviToolView extends LinearLayout {
         ((LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE))
                 .inflate(R.layout.toolbox_navi_layout, this, true);
         ButterKnife.bind(this);
-        mContext=context;
+        mContext = context;
     }
 
 
-    @OnClick({R.id.testSpeedView,R.id.measureDistanceView, R.id.calculatedAreaView, R.id.compassView})
+    @OnClick({R.id.testSpeedView, R.id.measureDistanceView, R.id.calculatedAreaView, R.id.compassView})
     public void onClick(View view) {
 //        if (mListener == null) {
 //            return;
@@ -56,11 +56,11 @@ public class NaviToolView extends LinearLayout {
                 break;
 
             case R.id.measureDistanceView:
-                goToResultActivity();
 //                mListener.onMeasureDistanceClick();
                 break;
 
             case R.id.calculatedAreaView:
+                goToResultActivityForTest();
 //                mListener.onCalculatedAreaClick();
                 break;
 
@@ -97,7 +97,7 @@ public class NaviToolView extends LinearLayout {
 
     }
 
-    private void goToResultActivity() {
+    private void goToResultActivityForTest() {
         NetWorkQuality netWorkQuality = new NetWorkQuality();
         netWorkQuality.setDelay("30 ms");
         netWorkQuality.setDownloadSpeed("30.5 Mbps");

@@ -53,6 +53,12 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
     @BindView(R.id.id_drawer_layout)
     DrawerLayout mDrawerLayout;
 
+    @BindView(R.id.nav_tool_view)
+    View mNaviToolView;
+
+    @BindView(R.id.nav_map_layer_view)
+    View mNaviMapLayerView;
+
     @BindView(R.id.map_search_view)
     MapSearchView mMapSearchView;
 
@@ -243,7 +249,7 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
     protected void doOnPermissionGranted() {
     }
 
-    @OnClick({R.id.gps_view, R.id.route_view, R.id.mapToolView})
+    @OnClick({R.id.gps_view, R.id.route_view, R.id.mapToolView, R.id.mapLayerView})
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.gps_view:
@@ -255,6 +261,20 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
                 break;
 
             case R.id.mapToolView:
+                mNaviToolView.setVisibility(View.VISIBLE);
+                mNaviMapLayerView.setVisibility(View.GONE);
+
+                if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
+                    mDrawerLayout.closeDrawer(GravityCompat.START);
+                } else {
+                    mDrawerLayout.openDrawer(GravityCompat.START);
+                }
+                break;
+
+            case R.id.mapLayerView:
+                mNaviToolView.setVisibility(View.GONE);
+                mNaviMapLayerView.setVisibility(View.VISIBLE);
+
                 if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
                     mDrawerLayout.closeDrawer(GravityCompat.START);
                 } else {
