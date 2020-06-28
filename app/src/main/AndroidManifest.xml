@@ -49,6 +49,7 @@
         android:theme="@style/AppTheme"
         tools:ignore="LockedOrientationActivity"
         tools:targetApi="p">
+        <activity android:name=".maps.ui.activity.RouteDistanceActivity"></activity>
 
         <meta-data
             android:name="com.amap.api.v2.apikey"
@@ -247,8 +248,8 @@
         <activity
             android:name=".maps.ui.activity.MapActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:screenOrientation="portrait"
             android:launchMode="singleTop"
+            android:screenOrientation="portrait"
             android:theme="@style/WindowTranslucentTheme" />
         <activity
             android:name=".maps.ui.activity.PoiSearchActivity"
@@ -257,14 +258,14 @@
         <activity
             android:name=".maps.ui.activity.SpeedTestActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:screenOrientation="portrait" />
-
-        <activity android:name=".maps.ui.activity.SpeedTestResultActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:screenOrientation="portrait"
             android:launchMode="singleTop"
-            android:theme="@style/SpeedTestResultTheme"/>
-
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".maps.ui.activity.SpeedTestResultActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait"
+            android:theme="@style/SpeedTestResultTheme" />
         <activity
             android:name=".ui.activity.TestBluetoothListActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"

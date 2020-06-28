@@ -73,7 +73,6 @@ public class SpeedTestActivity extends BaseActivity {
 
     public static void startActivity(Context context) {
         Intent intent = new Intent(context, SpeedTestActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         context.startActivity(intent);
     }
 

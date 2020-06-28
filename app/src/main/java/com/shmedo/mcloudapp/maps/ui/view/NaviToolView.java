@@ -10,6 +10,7 @@ import androidx.annotation.Nullable;
 
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.maps.model.NetWorkQuality;
+import com.shmedo.mcloudapp.maps.ui.activity.RouteDistanceActivity;
 import com.shmedo.mcloudapp.maps.ui.activity.SpeedTestActivity;
 import com.shmedo.mcloudapp.maps.ui.activity.SpeedTestResultActivity;
 
@@ -57,6 +58,7 @@ public class NaviToolView extends LinearLayout {
 
             case R.id.measureDistanceView:
 //                mListener.onMeasureDistanceClick();
+                RouteDistanceActivity.startActivity(mContext);
                 break;
 
             case R.id.calculatedAreaView:
