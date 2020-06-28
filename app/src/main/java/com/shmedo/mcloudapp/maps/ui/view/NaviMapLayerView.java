@@ -18,6 +18,7 @@ import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.maps.model.MapLayerInfo;
 import com.shmedo.mcloudapp.maps.model.MapType;
+import com.shmedo.mcloudapp.util.DensityUtil;
 import com.shmedo.mcloudapp.views.recycleviewitemdivider.GridSpacingItemDecoration;
 
 import org.jetbrains.annotations.NotNull;
@@ -75,24 +76,7 @@ public class NaviMapLayerView extends LinearLayout {
         mapLayerInfo.setLayerName("卫星地图");
         mapLayerInfo.setLayerThumbnail(R.drawable.map_mode_satellite_normal);
         mapLayerInfo.setMapType(MapType.GAODE_SATELLITE);
-        mapTypeAdapter.addData(mapLayerInfo);
-
-        mapLayerInfo = new MapLayerInfo();
-        mapLayerInfo.setLayerName("卫星地图");
-        mapLayerInfo.setLayerThumbnail(R.drawable.map_mode_satellite_normal);
-        mapLayerInfo.setMapType(MapType.GAODE_SATELLITE);
-        mapTypeAdapter.addData(mapLayerInfo);
-
-        mapLayerInfo = new MapLayerInfo();
-        mapLayerInfo.setLayerName("卫星地图");
-        mapLayerInfo.setLayerThumbnail(R.drawable.map_mode_satellite_normal);
-        mapLayerInfo.setMapType(MapType.GAODE_SATELLITE);
-        mapTypeAdapter.addData(mapLayerInfo);
-
-        mapLayerInfo = new MapLayerInfo();
-        mapLayerInfo.setLayerName("卫星地图");
-        mapLayerInfo.setLayerThumbnail(R.drawable.map_mode_satellite_normal);
-        mapLayerInfo.setMapType(MapType.GAODE_SATELLITE);
+        mapLayerInfo.setChecked(true);
         mapTypeAdapter.addData(mapLayerInfo);
     }
 
@@ -100,19 +84,23 @@ public class NaviMapLayerView extends LinearLayout {
         mapTypeAdapter = new MapTypeAdapter();
         mRecyclerView.setLayoutManager(new GridLayoutManager(mContext, 2));
         int spanCount = 2;//跟布局里面的spanCount属性是一致的
-        int spacing = 10;//每一个矩形的间距
+        int spacing = DensityUtil.Dp2Px(mContext, 15);//每一个矩形的间距
         //设置每个item间距
         mRecyclerView.addItemDecoration(new GridSpacingItemDecoration(spanCount, spacing, true));
         mRecyclerView.setAdapter(mapTypeAdapter);
         mapTypeAdapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
-                for (MapLayerInfo mapLayerInfo : mapTypeAdapter.getData()) {
-                    mapLayerInfo.setChecked(false);
-                }
                 MapLayerInfo mapLayerInfo = mapTypeAdapter.getItem(position);
+                if (mapLayerInfo.isChecked())
+                    return;
+
+                for (MapLayerInfo bean : mapTypeAdapter.getData()) {
+                    bean.setChecked(false);
+                }
                 mapLayerInfo.setChecked(true);
                 mapTypeAdapter.notifyDataSetChanged();
+
                 if (mListener != null) {
                     mListener.onMapLayerItemClick(adapter, view, mapLayerInfo);
                 }

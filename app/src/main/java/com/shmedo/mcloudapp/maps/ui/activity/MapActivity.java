@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 
+import androidx.annotation.NonNull;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
@@ -32,9 +33,13 @@ import com.amap.api.maps.model.LatLng;
 import com.amap.api.maps.model.Marker;
 import com.amap.api.maps.model.MarkerOptions;
 import com.amap.api.maps.model.MyLocationStyle;
+import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.shmedo.mcloudapp.R;
+import com.shmedo.mcloudapp.maps.model.MapLayerInfo;
 import com.shmedo.mcloudapp.maps.ui.view.GPSView;
 import com.shmedo.mcloudapp.maps.ui.view.MapSearchView;
+import com.shmedo.mcloudapp.maps.ui.view.NaviMapLayerView;
+import com.shmedo.mcloudapp.maps.ui.view.NaviToolView;
 import com.shmedo.mcloudapp.maps.ui.view.PoiDetailBottomView;
 import com.shmedo.mcloudapp.maps.ui.view.RouteView;
 import com.shmedo.mcloudapp.maps.ui.view.ZoomView;
@@ -46,7 +51,7 @@ import butterknife.BindView;
 import butterknife.OnClick;
 import timber.log.Timber;
 
-public class MapActivity extends CheckMapNeedPermissionsActivity implements AMapGestureListener, AMapLocationListener, LocationSource, MapSearchView.OnMapHeaderViewClickListener, PoiDetailBottomView.OnPoiDetailBottomClickListener, ZoomView.OnZoomViewClickListener {
+public class MapActivity extends CheckMapNeedPermissionsActivity implements AMapGestureListener, AMapLocationListener, LocationSource, MapSearchView.OnMapHeaderViewClickListener, NaviMapLayerView.OnMapLayerItemClickListener, PoiDetailBottomView.OnPoiDetailBottomClickListener, ZoomView.OnZoomViewClickListener {
     @BindView(R.id.map)
     TextureMapView mMapView;
 
@@ -54,10 +59,10 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
     DrawerLayout mDrawerLayout;
 
     @BindView(R.id.nav_tool_view)
-    View mNaviToolView;
+    NaviToolView mNaviToolView;
 
     @BindView(R.id.nav_map_layer_view)
-    View mNaviMapLayerView;
+    NaviMapLayerView mNaviMapLayerView;
 
     @BindView(R.id.map_search_view)
     MapSearchView mMapSearchView;
@@ -212,6 +217,7 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
         mSensorHelper = new SensorEventHelper(this);
         mSensorHelper.registerSensorListener();
         mMapSearchView.setOnMapHeaderViewClickListener(this);
+        mNaviMapLayerView.setOnMapLayerItemClickListener(this);
         mZoomView.setOnZoomViewClickListener(this);
         mPoiDetailBottomView.setOnPoiDetailBottomClickListener(this);
     }
@@ -522,6 +528,27 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
     @Override
     public void onMapStable() {
 
+    }
+
+    @Override
+    public void onMapLayerItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, MapLayerInfo mapLayerInfo) {
+        if (mapLayerInfo == null) {
+            Timber.e("切换图层错误: MapLayerInfo is Null");
+            return;
+        }
+
+        switch (mapLayerInfo.getMapType()) {
+            case GAODE_NORMAL:
+                aMap.setMapType(AMap.MAP_TYPE_NORMAL);// 设置白昼地图（即普通地图)，aMap是地图控制器对象。
+                break;
+
+            case GAODE_SATELLITE:
+                aMap.setMapType(AMap.MAP_TYPE_SATELLITE);// 设置卫星地图模式，aMap是地图控制器对象。
+                break;
+
+            default:
+                break;
+        }
     }
 
     /**

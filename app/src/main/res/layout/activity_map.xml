@@ -35,7 +35,7 @@
 
         <com.shmedo.mcloudapp.maps.ui.view.NaviMapLayerView
             android:id="@+id/nav_map_layer_view"
-            android:layout_width="250dp"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:visibility="gone"/>
 
