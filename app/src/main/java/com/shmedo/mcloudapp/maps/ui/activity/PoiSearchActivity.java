@@ -230,12 +230,12 @@ public class PoiSearchActivity extends BaseActivity implements TextWatcher, PoiS
      * POI信息查询回调方法
      */
     @Override
-    public void onPoiSearched(PoiResult result, int resultCode) {
+    public void onPoiSearched(PoiResult result, int errorCode) {
         mProgressBar.setVisibility(View.GONE);
         mIvClearText.setVisibility(View.VISIBLE);
 
-        if (resultCode != AMapException.CODE_AMAP_SUCCESS) {
-            ToastUtils.show(MapErrorUtil.getErrorMsg(resultCode));
+        if (errorCode != AMapException.CODE_AMAP_SUCCESS) {
+            ToastUtils.show(MapErrorUtil.getErrorMsg(errorCode));
             return;
         }
 

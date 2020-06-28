@@ -10,8 +10,8 @@
         android:id="@+id/titleLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white"
         android:layout_alignParentTop="true"
+        android:background="@color/white"
         android:padding="@dimen/dimen_size_10">
 
         <ImageView
@@ -23,23 +23,33 @@
             android:src="@drawable/ic_chevron_left" />
 
         <TextView
-            android:id="@+id/tv_title"
+            android:id="@+id/tv_distance"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
+            android:text="继续点击地图"
             android:textColor="@color/poi_detail_title"
-            android:textSize="@dimen/text_size_17"
-            android:text="继续点击地图" />
+            android:textSize="@dimen/text_size_17" />
+
+        <ImageView
+            android:id="@+id/iv_remove_marker"
+            android:layout_width="50dp"
+            android:layout_height="30dp"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@+id/tv_clear_markers"
+            android:src="@drawable/ic_back"
+            android:tint="@color/poi_detail_title" />
 
         <TextView
-            android:id="@+id/tv_clear"
+            android:id="@+id/tv_clear_markers"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/dimen_size_10"
+            android:text="清空"
             android:textColor="@color/map_primary"
-            android:textSize="@dimen/text_size_17"
-            android:text="清空" />
+            android:textSize="@dimen/text_size_17" />
 
     </RelativeLayout>
 
