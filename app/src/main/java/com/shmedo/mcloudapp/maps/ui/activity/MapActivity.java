@@ -756,6 +756,7 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
         mMapSearchView.setVisibility(!isOpen ? View.VISIBLE : View.GONE);
         mSupendPartitionView.setVisibility(!isOpen ? View.VISIBLE : View.GONE);
         mRouteView.setVisibility(!isOpen ? View.VISIBLE : View.GONE);
+        aMap.setAMapGestureListener(!isOpen ? this : null);
     }
 
     /**
