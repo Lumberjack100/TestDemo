@@ -44,10 +44,13 @@ public class RouteDistanceActivity extends BaseActivity implements AMap.OnMapCli
 
     private AMap aMap;
 
-    private LatLng latLngStart;
-    private LatLng latLngEnd;
-    private List<LatLng> latLngList = new ArrayList<LatLng>();
-    private Marker mLastMarker;//
+    private int markerHeight;
+    private int markerWidth;
+
+
+    private List<LatLng> latLngList = new ArrayList<>();
+    private List<Marker> markerList = new ArrayList<>();
+    private List<Polyline> polylineList = new ArrayList<>();
 
 
     public static void startActivity(Context context) {
@@ -64,6 +67,8 @@ public class RouteDistanceActivity extends BaseActivity implements AMap.OnMapCli
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mapView.onCreate(savedInstanceState);// 此方法必须重写
+        markerHeight = DensityUtil.Dp2Px(this, 12);
+        markerWidth = DensityUtil.Dp2Px(this, 12);
         init();
     }
 
@@ -85,11 +90,40 @@ public class RouteDistanceActivity extends BaseActivity implements AMap.OnMapCli
                 break;
 
             case R.id.iv_remove_marker:
+                if (markerList.size() == 0 || latLngList.size() == 0) {
+                    return;
+                }
+                latLngList.remove(latLngList.size() - 1);
+
+                Marker mLastMarker = markerList.get(markerList.size() - 1);
+                markerList.remove(mLastMarker);
+                mLastMarker.destroy();
+
+                if (polylineList.size() > 0) {
+                    Polyline polyline = polylineList.get(polylineList.size() - 1);
+                    polylineList.remove(polyline);
+                    polyline.remove();
+                }
+
+                if (markerList.size() > 0) {
+                    mLastMarker = markerList.get(markerList.size() - 1);
+                    BitmapDrawable bitmapDrawable = (BitmapDrawable) getResources().getDrawable(R.drawable.measure_point_red);
+                    Bitmap smallMarker = Bitmap.createScaledBitmap(bitmapDrawable.getBitmap(), markerWidth, markerHeight, false);
+                    mLastMarker.setIcon(BitmapDescriptorFactory.fromBitmap(smallMarker));
+                }
+
+                if (latLngList.size() >= 2) {
+                    searchDistanceResult();
+                } else {
+                    mTvDistance.setText("0米");
+                }
                 break;
 
             case R.id.tv_clear_markers:
                 aMap.clear();
                 latLngList.clear();
+                markerList.clear();
+                polylineList.clear();
                 mTvDistance.setText("0米");
                 break;
 
@@ -102,8 +136,8 @@ public class RouteDistanceActivity extends BaseActivity implements AMap.OnMapCli
     @Override
     public void onMapClick(LatLng latLng) {
         processAddMarkers(latLng);
-        processAddPolylines();
         if (latLngList.size() >= 2) {
+            processAddPolylines();
             searchDistanceResult();
         }
     }
@@ -115,51 +149,47 @@ public class RouteDistanceActivity extends BaseActivity implements AMap.OnMapCli
      */
     private void processAddMarkers(LatLng latLng) {
         latLngList.add(latLng);
+
         if (latLngList.size() == 1) {
             MarkerOptions markerOption = new MarkerOptions().icon(BitmapDescriptorFactory.fromResource(R.drawable.polyline_start))
                     .position(latLng)
                     .draggable(false);
-            aMap.addMarker(markerOption);
+            Marker marker = aMap.addMarker(markerOption);
+            markerList.add(marker);
             return;
         }
 
-        int height = DensityUtil.Dp2Px(this, 12);
-        int width = DensityUtil.Dp2Px(this, 12);
-        if (mLastMarker != null) {
+        if (markerList.size() >= 1) {
+            Marker mLastMarker = markerList.get(markerList.size() - 1);
             BitmapDrawable bitmapDrawable = (BitmapDrawable) getResources().getDrawable(R.drawable.measure_point);
-            Bitmap smallMarker = Bitmap.createScaledBitmap(bitmapDrawable.getBitmap(), width, height, false);
+            Bitmap smallMarker = Bitmap.createScaledBitmap(bitmapDrawable.getBitmap(), markerWidth, markerHeight, false);
             mLastMarker.setIcon(BitmapDescriptorFactory.fromBitmap(smallMarker));
         }
 
         BitmapDrawable bitmapDrawable = (BitmapDrawable) getResources().getDrawable(R.drawable.measure_point_red);
-        Bitmap smallMarker = Bitmap.createScaledBitmap(bitmapDrawable.getBitmap(), width, height, false);
+        Bitmap smallMarker = Bitmap.createScaledBitmap(bitmapDrawable.getBitmap(), markerWidth, markerHeight, false);
         MarkerOptions markerOption = new MarkerOptions().icon(BitmapDescriptorFactory.fromBitmap(smallMarker))
-                .position(latLng)
-                .draggable(false);
-        mLastMarker = aMap.addMarker(markerOption);
+                .position(latLng);
+        Marker marker = aMap.addMarker(markerOption);
+        markerList.add(marker);
     }
 
     /**
      * 绘制线
      */
     private void processAddPolylines() {
-        if (latLngList == null || latLngList.size() == 0) {
-            return;
-        }
-
-        for (int i = 0; i < latLngList.size() - 1; i++) {
-            latLngStart = latLngList.get(i);
-            latLngEnd = latLngList.get(i + 1);
-            PolylineOptions polylineOptions = new PolylineOptions().add(latLngStart, latLngEnd).width(15).color(Color.BLUE);
-            Polyline polyline=aMap.addPolyline(polylineOptions);
-        }
+        LatLng latLngStart = latLngList.get(latLngList.size() - 2);
+        LatLng latLngEnd = latLngList.get(latLngList.size() - 1);
+        PolylineOptions polylineOptions = new PolylineOptions().add(latLngStart, latLngEnd).width(15).color(Color.BLUE);
+        Polyline polyline = aMap.addPolyline(polylineOptions);
+        polylineList.add(polyline);
     }
 
     /**
      * 开始搜索路径规划方案
      */
     public void searchDistanceResult() {
-        List<LatLonPoint> latLonPoints = new ArrayList<LatLonPoint>();
+        List<LatLonPoint> latLonPoints = new ArrayList<>();
         for (int i = 0; i < latLngList.size() - 1; i++) {
             LatLng latLng = latLngList.get(i);
             latLonPoints.add(new LatLonPoint(latLng.latitude, latLng.longitude));
@@ -171,10 +201,30 @@ public class RouteDistanceActivity extends BaseActivity implements AMap.OnMapCli
         DistanceSearch.DistanceQuery distanceQuery = new DistanceSearch.DistanceQuery();
         distanceQuery.setOrigins(latLonPoints);
         distanceQuery.setDestination(dest);
-        distanceQuery.setType(DistanceSearch.TYPE_DRIVING_DISTANCE);
+        distanceQuery.setType(DistanceSearch.TYPE_DISTANCE);
 
         distanceSearch.calculateRouteDistanceAsyn(distanceQuery);
     }
+
+//    /**
+//     * 开始搜索路径规划方案
+//     */
+//    public void searchDistanceResult() {
+//        List<LatLonPoint> latLonPoints = new ArrayList<>();
+//        LatLng latLngStart = latLngList.get(latLngList.size() - 2);
+//        LatLng latLngEnd = latLngList.get(latLngList.size() - 1);
+//        latLonPoints.add(new LatLonPoint(latLngStart.latitude, latLngStart.longitude));
+//        LatLonPoint dest = new LatLonPoint(latLngEnd.latitude, latLngEnd.longitude);
+//
+//        DistanceSearch distanceSearch = new DistanceSearch(this);
+//        distanceSearch.setDistanceSearchListener(this);
+//        DistanceSearch.DistanceQuery distanceQuery = new DistanceSearch.DistanceQuery();
+//        distanceQuery.setOrigins(latLonPoints);
+//        distanceQuery.setDestination(dest);
+//        distanceQuery.setType(DistanceSearch.TYPE_DRIVING_DISTANCE);
+//
+//        distanceSearch.calculateRouteDistanceAsyn(distanceQuery);
+//    }
 
     @Override
     public void onDistanceSearched(DistanceResult distanceResult, int errorCode) {
@@ -183,12 +233,15 @@ public class RouteDistanceActivity extends BaseActivity implements AMap.OnMapCli
             return;
         }
 
-        float distance = 0;
+        float totalDistance = 0;
         List<DistanceItem> distanceItems = distanceResult.getDistanceResults();
         for (DistanceItem item : distanceItems) {
-            distance += item.getDistance();
+            totalDistance += item.getDistance();
         }
+        showDistance(totalDistance);
+    }
 
+    private void showDistance(float distance) {
         if (distance > 1000) {
             DecimalFormat decimalFormat = new DecimalFormat(".0");//构造方法的字符格式这里如果小数不足2位,会以0补足.
             String p = decimalFormat.format(distance / 1000);//format 返回的是字符串
