@@ -52,12 +52,10 @@ public class NaviToolView extends LinearLayout {
 
         switch (view.getId()) {
             case R.id.testSpeedView:
-//                mListener.onTestSpeedClick();
                 SpeedTestActivity.startActivity(mContext);
                 break;
 
             case R.id.measureDistanceView:
-//                mListener.onMeasureDistanceClick();
                 RouteDistanceActivity.startActivity(mContext);
                 break;
 

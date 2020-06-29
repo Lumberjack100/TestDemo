@@ -53,8 +53,6 @@ public class RouteDistanceActivity extends BaseActivity implements AMap.OnMapCli
 
     private int markerHeight;
     private int markerWidth;
-
-
     private List<LatLng> latLngList = new ArrayList<>();
     private List<Marker> markerList = new ArrayList<>();
     private List<Polyline> polylineList = new ArrayList<>();
@@ -176,7 +174,7 @@ public class RouteDistanceActivity extends BaseActivity implements AMap.OnMapCli
             return;
         }
 
-        if (markerList.size() >= 1) {
+        if (markerList.size() >= 2) {
             Marker mLastMarker = markerList.get(markerList.size() - 1);
             BitmapDrawable bitmapDrawable = (BitmapDrawable) getResources().getDrawable(R.drawable.measure_point);
             Bitmap smallMarker = Bitmap.createScaledBitmap(bitmapDrawable.getBitmap(), markerWidth, markerHeight, false);

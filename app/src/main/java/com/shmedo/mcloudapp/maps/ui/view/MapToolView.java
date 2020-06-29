@@ -3,7 +3,6 @@ package com.shmedo.mcloudapp.maps.ui.view;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.util.AttributeSet;
-import android.view.View;
 
 import com.shmedo.mcloudapp.R;
 
@@ -25,12 +24,6 @@ public class MapToolView extends BaseIconView{
 
     public MapToolView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });
     }
 
     @Override

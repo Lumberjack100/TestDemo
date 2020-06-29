@@ -2,8 +2,10 @@ package com.shmedo.mcloudapp.maps.ui.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewTreeObserver;
@@ -31,25 +33,42 @@ import com.amap.api.maps.model.LatLng;
 import com.amap.api.maps.model.Marker;
 import com.amap.api.maps.model.MarkerOptions;
 import com.amap.api.maps.model.MyLocationStyle;
+import com.amap.api.maps.model.Polyline;
+import com.amap.api.maps.model.PolylineOptions;
+import com.amap.api.services.core.AMapException;
+import com.amap.api.services.core.LatLonPoint;
+import com.amap.api.services.route.DistanceItem;
+import com.amap.api.services.route.DistanceResult;
+import com.amap.api.services.route.DistanceSearch;
 import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.hjq.toast.ToastUtils;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.maps.model.MapLayerInfo;
+import com.shmedo.mcloudapp.maps.ui.view.DistanceToolbarView;
 import com.shmedo.mcloudapp.maps.ui.view.GPSView;
+import com.shmedo.mcloudapp.maps.ui.view.LocationTitleView;
 import com.shmedo.mcloudapp.maps.ui.view.MapSearchView;
 import com.shmedo.mcloudapp.maps.ui.view.NaviMapLayerView;
 import com.shmedo.mcloudapp.maps.ui.view.NaviToolView;
 import com.shmedo.mcloudapp.maps.ui.view.PoiDetailBottomView;
 import com.shmedo.mcloudapp.maps.ui.view.RouteView;
+import com.shmedo.mcloudapp.maps.ui.view.SupendPartitionView;
 import com.shmedo.mcloudapp.maps.ui.view.ZoomView;
 import com.shmedo.mcloudapp.maps.util.AMapLocationUtil;
+import com.shmedo.mcloudapp.maps.util.MapErrorUtil;
 import com.shmedo.mcloudapp.maps.util.SensorEventHelper;
+import com.shmedo.mcloudapp.util.DensityUtil;
 import com.shmedo.mcloudapp.util.LocationUtils;
+
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
 import timber.log.Timber;
 
-public class MapActivity extends CheckMapNeedPermissionsActivity implements AMapGestureListener, AMapLocationListener, LocationSource, MapSearchView.OnMapHeaderViewClickListener, NaviMapLayerView.OnMapLayerItemClickListener, PoiDetailBottomView.OnPoiDetailBottomClickListener, ZoomView.OnZoomViewClickListener {
+public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap.OnMapClickListener, DistanceSearch.OnDistanceSearchListener, AMapGestureListener, AMapLocationListener, LocationSource, DistanceToolbarView.OnDistanceToolbarViewClickListener, MapSearchView.OnMapHeaderViewClickListener, NaviMapLayerView.OnMapLayerItemClickListener, PoiDetailBottomView.OnPoiDetailBottomClickListener, ZoomView.OnZoomViewClickListener {
     @BindView(R.id.map)
     TextureMapView mMapView;
 
@@ -62,8 +81,17 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
     @BindView(R.id.nav_map_layer_view)
     NaviMapLayerView mNaviMapLayerView;
 
+    @BindView(R.id.distance_toolbar_view)
+    DistanceToolbarView mDistanceToolbarView;
+
+    @BindView(R.id.location_title_view)
+    LocationTitleView mLocationTitleView;
+
     @BindView(R.id.map_search_view)
     MapSearchView mMapSearchView;
+
+    @BindView(R.id.supend_partition_view)
+    SupendPartitionView mSupendPartitionView;
 
     @BindView(R.id.zoom_view)
     ZoomView mZoomView;
@@ -110,6 +138,13 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
     private int[] mBottomSheetLoc = new int[2];
     private String mPoiName;
     private String mCity;
+
+    //以下变量是测距所需
+    private int markerHeight;
+    private int markerWidth;
+    private List<LatLng> latLngList = new ArrayList<>();
+    private List<Marker> markerList = new ArrayList<>();
+    private List<Polyline> polylineList = new ArrayList<>();
 
 
     public static void startActivity(Context context) {
@@ -201,8 +236,16 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
         //在activity执行onCreate时执行mMapView.onCreate(savedInstanceState)，创建地图
         mMapView.onCreate(savedInstanceState);
         mGpsView.setGpsState(mCurrentGpsState);
-
+        initDistanceToolView();
         setUpMap();
+    }
+
+    private void initDistanceToolView() {
+        markerHeight = DensityUtil.Dp2Px(this, 12);
+        markerWidth = DensityUtil.Dp2Px(this, 12);
+        mDistanceToolbarView.mIvRemoveMarker.setEnabled(false);
+        mDistanceToolbarView.mIvClearMarkers.setEnabled(false);
+        mDistanceToolbarView.mTvDistance.setText("0米");
     }
 
     private void setListener() {
@@ -210,8 +253,11 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
         aMap.setLocationSource(this);
         //地图手势事件
         aMap.setAMapGestureListener(this);
+        // 对amap添加单击地图事件监听器
+        aMap.setOnMapClickListener(this);
         mSensorHelper = new SensorEventHelper(this);
         mSensorHelper.registerSensorListener();
+        mDistanceToolbarView.setOnDistanceToolbarViewClickListener(this);
         mMapSearchView.setOnMapHeaderViewClickListener(this);
         mNaviMapLayerView.setOnMapLayerItemClickListener(this);
         mZoomView.setOnZoomViewClickListener(this);
@@ -251,18 +297,18 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
     protected void doOnPermissionGranted() {
     }
 
-    @OnClick({R.id.gps_view, R.id.route_view, R.id.mapToolView, R.id.mapLayerView})
+    @OnClick({R.id.gps_view, R.id.route_view, R.id.mapToolView, R.id.mapLayerView, R.id.measureDistanceView})
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.gps_view:
+            case R.id.gps_view://Gps 定位
                 processGpsViewClick();
                 break;
 
-            case R.id.route_view:
+            case R.id.route_view://路线
 
                 break;
 
-            case R.id.mapToolView:
+            case R.id.mapToolView://退出/关闭工具箱抽屉
                 mNaviToolView.setVisibility(View.VISIBLE);
                 mNaviMapLayerView.setVisibility(View.GONE);
 
@@ -273,7 +319,7 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
                 }
                 break;
 
-            case R.id.mapLayerView:
+            case R.id.mapLayerView://退出/关闭图层抽屉
                 mNaviToolView.setVisibility(View.GONE);
                 mNaviMapLayerView.setVisibility(View.VISIBLE);
 
@@ -282,6 +328,11 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
                 } else {
                     mDrawerLayout.openDrawer(GravityCompat.START);
                 }
+                break;
+
+            case R.id.measureDistanceView://测距按钮
+                setDistanceToolbarViewVisibility(true);
+                mDrawerLayout.closeDrawer(GravityCompat.START);
                 break;
         }
     }
@@ -464,7 +515,7 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
     }
 
     /**
-     * 地体手势事件回调：单指滑动
+     * 地图手势事件回调：单指滑动
      */
     @Override
     public void onScroll(float v, float v1) {
@@ -494,7 +545,7 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
     }
 
     /**
-     * 地体手势事件回调：单指按下
+     * 地图手势事件回调：单指按下
      */
     @Override
     public void onDown(float v, float v1) {
@@ -502,7 +553,7 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
     }
 
     /**
-     * 地体手势事件回调：单指抬起
+     * 地图手势事件回调：单指抬起
      */
     @Override
     public void onUp(float v, float v1) {
@@ -510,7 +561,7 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
     }
 
     /**
-     * 地体手势事件回调：地图稳定下来会回到此接口
+     * 地图手势事件回调：地图稳定下来会回到此接口
      */
     @Override
     public void onMapStable() {
@@ -536,6 +587,175 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
             default:
                 break;
         }
+    }
+
+    /**
+     * 点击测距返回箭头
+     */
+    @Override
+    public void onCancelDistanceClick() {
+        onClearMarkersClick();
+        setDistanceToolbarViewVisibility(false);
+    }
+
+    /**
+     * 点击移除测距点标记
+     */
+    @Override
+    public void onRemoveMarkerClick() {
+        if (markerList.size() == 0 || latLngList.size() == 0) {
+            return;
+        }
+        latLngList.remove(latLngList.size() - 1);
+
+        Marker mLastMarker = markerList.get(markerList.size() - 1);
+        markerList.remove(mLastMarker);
+        mLastMarker.destroy();
+
+        if (polylineList.size() > 0) {
+            Polyline polyline = polylineList.get(polylineList.size() - 1);
+            polylineList.remove(polyline);
+            polyline.remove();
+        }
+
+        if (markerList.size() > 0) {
+            mLastMarker = markerList.get(markerList.size() - 1);
+            BitmapDrawable bitmapDrawable = (BitmapDrawable) getResources().getDrawable(R.drawable.measure_point_red);
+            Bitmap smallMarker = Bitmap.createScaledBitmap(bitmapDrawable.getBitmap(), markerWidth, markerHeight, false);
+            mLastMarker.setIcon(BitmapDescriptorFactory.fromBitmap(smallMarker));
+        }
+
+        if (latLngList.size() >= 2) {
+            calculateRouteDistance();
+        } else {
+            mDistanceToolbarView.mTvDistance.setText("0米");
+        }
+        if (markerList.size() == 0) {
+            mDistanceToolbarView.mIvRemoveMarker.setEnabled(false);
+            mDistanceToolbarView.mIvClearMarkers.setEnabled(false);
+        }
+    }
+
+    /**
+     * 点击清空所有测距点标记
+     */
+    @Override
+    public void onClearMarkersClick() {
+        mDistanceToolbarView.mIvRemoveMarker.setEnabled(false);
+        mDistanceToolbarView.mIvClearMarkers.setEnabled(false);
+        aMap.clear();
+        latLngList.clear();
+        markerList.clear();
+        polylineList.clear();
+        mDistanceToolbarView.mTvDistance.setText("0米");
+    }
+
+    @Override
+    public void onMapClick(LatLng latLng) {
+        addMarkersForDistance(latLng);
+        if (latLngList.size() >= 2) {
+            addPolylinesForDistance();
+            calculateRouteDistance();
+        }
+    }
+
+    /**
+     * 绘制点标记
+     *
+     * @param latLng
+     */
+    private void addMarkersForDistance(LatLng latLng) {
+        mDistanceToolbarView.mIvRemoveMarker.setEnabled(true);
+        mDistanceToolbarView.mIvClearMarkers.setEnabled(true);
+        latLngList.add(latLng);
+
+        if (latLngList.size() == 1) {
+            MarkerOptions markerOption = new MarkerOptions().icon(BitmapDescriptorFactory.fromResource(R.drawable.polyline_start))
+                    .position(latLng)
+                    .draggable(false);
+            Marker marker = aMap.addMarker(markerOption);
+            markerList.add(marker);
+            return;
+        }
+
+        if (markerList.size() >= 2) {
+            Marker mLastMarker = markerList.get(markerList.size() - 1);
+            BitmapDrawable bitmapDrawable = (BitmapDrawable) getResources().getDrawable(R.drawable.measure_point);
+            Bitmap smallMarker = Bitmap.createScaledBitmap(bitmapDrawable.getBitmap(), markerWidth, markerHeight, false);
+            mLastMarker.setIcon(BitmapDescriptorFactory.fromBitmap(smallMarker));
+        }
+
+        BitmapDrawable bitmapDrawable = (BitmapDrawable) getResources().getDrawable(R.drawable.measure_point_red);
+        Bitmap smallMarker = Bitmap.createScaledBitmap(bitmapDrawable.getBitmap(), markerWidth, markerHeight, false);
+        MarkerOptions markerOption = new MarkerOptions().icon(BitmapDescriptorFactory.fromBitmap(smallMarker))
+                .position(latLng);
+        Marker marker = aMap.addMarker(markerOption);
+        markerList.add(marker);
+    }
+
+    /**
+     * 绘制线
+     */
+    private void addPolylinesForDistance() {
+        LatLng latLngStart = latLngList.get(latLngList.size() - 2);
+        LatLng latLngEnd = latLngList.get(latLngList.size() - 1);
+        PolylineOptions polylineOptions = new PolylineOptions().add(latLngStart, latLngEnd).width(15).color(Color.BLUE);
+        Polyline polyline = aMap.addPolyline(polylineOptions);
+        polylineList.add(polyline);
+    }
+
+    /**
+     * 开始搜索路径规划方案
+     */
+    public void calculateRouteDistance() {
+        List<LatLonPoint> latLonPoints = new ArrayList<>();
+        for (int i = 0; i < latLngList.size() - 1; i++) {
+            LatLng latLng = latLngList.get(i);
+            latLonPoints.add(new LatLonPoint(latLng.latitude, latLng.longitude));
+        }
+        LatLonPoint dest = new LatLonPoint(latLngList.get(latLngList.size() - 1).latitude, latLngList.get(latLngList.size() - 1).longitude);
+
+        DistanceSearch distanceSearch = new DistanceSearch(this);
+        distanceSearch.setDistanceSearchListener(this);
+        DistanceSearch.DistanceQuery distanceQuery = new DistanceSearch.DistanceQuery();
+        distanceQuery.setOrigins(latLonPoints);
+        distanceQuery.setDestination(dest);
+        distanceQuery.setType(DistanceSearch.TYPE_DISTANCE);
+
+        distanceSearch.calculateRouteDistanceAsyn(distanceQuery);
+    }
+
+    @Override
+    public void onDistanceSearched(DistanceResult distanceResult, int errorCode) {
+        if (errorCode != AMapException.CODE_AMAP_SUCCESS) {
+            ToastUtils.show(MapErrorUtil.getErrorMsg(errorCode));
+            return;
+        }
+
+        float totalDistance = 0;
+        List<DistanceItem> distanceItems = distanceResult.getDistanceResults();
+        for (DistanceItem item : distanceItems) {
+            totalDistance += item.getDistance();
+        }
+        showDistance(totalDistance);
+    }
+
+    private void showDistance(float distance) {
+        if (distance > 1000) {
+            DecimalFormat decimalFormat = new DecimalFormat(".0");//构造方法的字符格式这里如果小数不足2位,会以0补足.
+            String p = decimalFormat.format(distance / 1000);//format 返回的是字符串
+            mDistanceToolbarView.mTvDistance.setText(String.format("%s公里", p));
+        } else {
+            mDistanceToolbarView.mTvDistance.setText(String.format("%s米", distance));
+        }
+    }
+
+    private void setDistanceToolbarViewVisibility(boolean isOpen) {
+        mDistanceToolbarView.setVisibility(isOpen ? View.VISIBLE : View.GONE);
+        mLocationTitleView.setVisibility(!isOpen ? View.VISIBLE : View.GONE);
+        mMapSearchView.setVisibility(!isOpen ? View.VISIBLE : View.GONE);
+        mSupendPartitionView.setVisibility(!isOpen ? View.VISIBLE : View.GONE);
+        mRouteView.setVisibility(!isOpen ? View.VISIBLE : View.GONE);
     }
 
     /**
@@ -579,7 +799,6 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
     @Override
     public void onZoomOutClick() {
         aMap.moveCamera(CameraUpdateFactory.zoomOut());
-
     }
 
     /**
