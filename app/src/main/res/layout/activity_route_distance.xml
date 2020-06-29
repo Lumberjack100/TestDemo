@@ -6,7 +6,8 @@
     android:orientation="vertical"
     tools:context=".maps.ui.activity.RouteDistanceActivity">
 
-    <RelativeLayout
+    <include layout="@layout/map_distance_toolbar" />
+ <!--   <RelativeLayout
         android:id="@+id/titleLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -51,7 +52,7 @@
             android:textColor="@color/map_primary"
             android:textSize="@dimen/text_size_17" />
 
-    </RelativeLayout>
+    </RelativeLayout>-->
 
     <com.amap.api.maps.MapView
         android:id="@+id/map"

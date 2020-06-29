@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="?attr/actionBarSize"
+    android:background="@color/white"
+    android:fitsSystemWindows="true"
+    android:paddingLeft="@dimen/dimen_size_10"
+    android:paddingRight="@dimen/dimen_size_10">
+
+    <ImageView
+        android:id="@+id/back"
+        android:layout_width="30dp"
+        android:layout_height="35dp"
+        android:layout_centerVertical="true"
+        android:src="@drawable/ic_chevron_left" />
+
+    <TextView
+        android:id="@+id/tv_distance"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:text="继续点击地图"
+        android:textColor="@color/poi_detail_title"
+        android:textSize="@dimen/text_size_17" />
+
+    <ImageView
+        android:id="@+id/iv_remove_marker"
+        android:layout_width="50dp"
+        android:layout_height="30dp"
+        android:layout_centerVertical="true"
+        android:layout_toLeftOf="@+id/iv_clear_markers"
+        android:background="@drawable/distance_toolbar_btn_selector"
+        android:padding="@dimen/dimen_size_5"
+        android:src="@drawable/ic_back"
+        android:tint="@color/poi_detail_title" />
+
+    <ImageView
+        android:id="@+id/iv_clear_markers"
+        android:layout_width="50dp"
+        android:layout_height="30dp"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="@dimen/dimen_size_10"
+        android:background="@drawable/distance_toolbar_btn_selector"
+        android:padding="@dimen/dimen_size_5"
+        android:src="@drawable/ic_delete" />
+
+
+</RelativeLayout>

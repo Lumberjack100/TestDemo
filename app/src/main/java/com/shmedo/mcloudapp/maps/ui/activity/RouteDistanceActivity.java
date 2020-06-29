@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.amap.api.maps.AMap;
@@ -42,6 +43,12 @@ public class RouteDistanceActivity extends BaseActivity implements AMap.OnMapCli
     @BindView(R.id.tv_distance)
     TextView mTvDistance;
 
+    @BindView(R.id.iv_remove_marker)
+    ImageView mIvRemoveMarker;
+
+    @BindView(R.id.iv_clear_markers)
+    ImageView mIvClearMarkers;
+
     private AMap aMap;
 
     private int markerHeight;
@@ -69,6 +76,8 @@ public class RouteDistanceActivity extends BaseActivity implements AMap.OnMapCli
         mapView.onCreate(savedInstanceState);// 此方法必须重写
         markerHeight = DensityUtil.Dp2Px(this, 12);
         markerWidth = DensityUtil.Dp2Px(this, 12);
+        mIvRemoveMarker.setEnabled(false);
+        mIvClearMarkers.setEnabled(false);
         init();
     }
 
@@ -83,7 +92,7 @@ public class RouteDistanceActivity extends BaseActivity implements AMap.OnMapCli
     }
 
 
-    @OnClick({R.id.back, R.id.iv_remove_marker, R.id.tv_clear_markers})
+    @OnClick({R.id.back, R.id.iv_remove_marker, R.id.iv_clear_markers})
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.back:
@@ -117,9 +126,15 @@ public class RouteDistanceActivity extends BaseActivity implements AMap.OnMapCli
                 } else {
                     mTvDistance.setText("0米");
                 }
+                if (markerList.size() == 0) {
+                    mIvRemoveMarker.setEnabled(false);
+                    mIvClearMarkers.setEnabled(false);
+                }
                 break;
 
-            case R.id.tv_clear_markers:
+            case R.id.iv_clear_markers:
+                mIvRemoveMarker.setEnabled(false);
+                mIvClearMarkers.setEnabled(false);
                 aMap.clear();
                 latLngList.clear();
                 markerList.clear();
@@ -148,6 +163,8 @@ public class RouteDistanceActivity extends BaseActivity implements AMap.OnMapCli
      * @param latLng
      */
     private void processAddMarkers(LatLng latLng) {
+        mIvRemoveMarker.setEnabled(true);
+        mIvClearMarkers.setEnabled(true);
         latLngList.add(latLng);
 
         if (latLngList.size() == 1) {
