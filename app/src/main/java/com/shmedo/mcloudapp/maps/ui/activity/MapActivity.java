@@ -4,11 +4,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewTreeObserver;
-import android.view.WindowManager;
 
 import androidx.annotation.NonNull;
 import androidx.core.view.GravityCompat;
@@ -132,9 +130,7 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
         setListener();
     }
 
-    /**
-     * 沉浸式状态栏
-     */
+    /*//沉浸式状态栏
     private void initStates() {
         if (Build.VERSION.SDK_INT > 19 && getApplicationContext().getApplicationInfo().targetSdkVersion > 19) {
             //透明状态栏
@@ -142,7 +138,7 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
             //透明导航栏
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
         }
-    }
+    }*/
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
@@ -334,16 +330,7 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
         //改变定位图标状态
         mGpsView.setGpsState(mCurrentGpsState);
         //执行地图动效
-        aMap.animateCamera(cameraUpdate, mAnimDuartion, new AMap.CancelableCallback() {
-            @Override
-            public void onFinish() {
-            }
-
-            @Override
-            public void onCancel() {
-
-            }
-        });
+        aMap.animateCamera(cameraUpdate, mAnimDuartion, null);
         setLocationStyle();
         resetLocationMarker();
     }
@@ -613,7 +600,7 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
     }
 
     /**
-     * 点位导航
+     * 跳转点位导航
      */
     @Override
     public void onNaviClick() {
@@ -621,7 +608,7 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
     }
 
     /**
-     * 点位路线
+     * 跳转点位路线
      */
     @Override
     public void onRouteClick() {
