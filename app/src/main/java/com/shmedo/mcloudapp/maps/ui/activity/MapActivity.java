@@ -9,6 +9,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewTreeObserver;
+import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
 import androidx.core.view.GravityCompat;
@@ -757,6 +758,15 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
         mSupendPartitionView.setVisibility(!isOpen ? View.VISIBLE : View.GONE);
         mRouteView.setVisibility(!isOpen ? View.VISIBLE : View.GONE);
         aMap.setAMapGestureListener(!isOpen ? this : null);
+        mDistanceToolbarView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(mMapView.getLayoutParams());
+                layoutParams.topMargin = isOpen ? mDistanceToolbarView.getHeight() : 0;
+                mMapView.setLayoutParams(layoutParams);
+                mDistanceToolbarView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+            }
+        });
     }
 
     /**

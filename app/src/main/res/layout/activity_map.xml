@@ -7,14 +7,12 @@
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/white">
+        android:layout_height="match_parent">
 
         <com.amap.api.maps.TextureMapView
             android:id="@+id/map"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/white" />
+            android:layout_height="match_parent"/>
 
         <com.shmedo.mcloudapp.maps.ui.view.SupendViewContainer
             android:layout_width="match_parent"
@@ -36,7 +34,7 @@
             android:id="@+id/nav_map_layer_view"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:visibility="gone"/>
+            android:visibility="gone" />
 
     </FrameLayout>
 
