@@ -141,6 +141,7 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
     private String mCity;
 
     //以下变量是测距所需
+    private boolean isDistanceMode = false;//是否打开测距工具
     private int markerHeight;
     private int markerWidth;
     private List<LatLng> latLngList = new ArrayList<>();
@@ -298,7 +299,7 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
     protected void doOnPermissionGranted() {
     }
 
-    @OnClick({R.id.gps_view, R.id.route_view, R.id.mapToolView, R.id.mapLayerView, R.id.measureDistanceView})
+    @OnClick({R.id.gps_view, R.id.route_view, R.id.mapToolView, R.id.mapLayerView, R.id.testSpeedView, R.id.measureDistanceView})
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.gps_view://Gps 定位
@@ -331,7 +332,12 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
                 }
                 break;
 
+            case R.id.testSpeedView://路线
+                SpeedTestActivity.startActivity(this);
+                break;
+
             case R.id.measureDistanceView://测距按钮
+                isDistanceMode = true;
                 setDistanceToolbarViewVisibility(true);
                 mDrawerLayout.closeDrawer(GravityCompat.START);
                 break;
@@ -595,6 +601,7 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
      */
     @Override
     public void onCancelDistanceClick() {
+        isDistanceMode = false;
         onClearMarkersClick();
         setDistanceToolbarViewVisibility(false);
     }
@@ -651,12 +658,19 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
         mDistanceToolbarView.mTvDistance.setText("0米");
     }
 
+    /**
+     * 地图点击事件
+     * @param latLng
+     */
     @Override
     public void onMapClick(LatLng latLng) {
-        addMarkersForDistance(latLng);
-        if (latLngList.size() >= 2) {
-            addPolylinesForDistance();
-            calculateRouteDistance();
+        //打开测距模式下
+        if (isDistanceMode) {
+            addMarkersForDistance(latLng);
+            if (latLngList.size() >= 2) {
+                addPolylinesForDistance();
+                calculateRouteDistance();
+            }
         }
     }
 

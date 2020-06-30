@@ -266,6 +266,11 @@
             android:launchMode="singleTop"
             android:screenOrientation="portrait"
             android:theme="@style/SpeedTestResultTheme" />
+
+        <!--Activity在高德 SDK内部实现 -->
+        <activity android:name="com.amap.api.maps.offlinemap.OfflineMapActivity"
+            android:screenOrientation="portrait"  />
+
         <activity
             android:name=".ui.activity.TestBluetoothListActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"

@@ -186,11 +186,10 @@
         <item name="android:clickable">true</item>
         <item name="android:focusable">true</item>
         <item name="android:background">?attr/selectableItemBackground</item>
-       <item name="android:paddingLeft">@dimen/dimen_size_10</item>
+        <item name="android:paddingLeft">@dimen/dimen_size_10</item>
         <item name="android:paddingRight">@dimen/dimen_size_10</item>
         <item name="android:paddingTop">@dimen/dimen_size_15</item>
         <item name="android:paddingBottom">@dimen/dimen_size_15</item>
-
     </style>
 
 </resources>

@@ -3,19 +3,13 @@ package com.shmedo.mcloudapp.maps.ui.view;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.widget.LinearLayout;
 
 import androidx.annotation.Nullable;
 
 import com.shmedo.mcloudapp.R;
-import com.shmedo.mcloudapp.maps.model.NetWorkQuality;
-import com.shmedo.mcloudapp.maps.ui.activity.RouteDistanceActivity;
-import com.shmedo.mcloudapp.maps.ui.activity.SpeedTestActivity;
-import com.shmedo.mcloudapp.maps.ui.activity.SpeedTestResultActivity;
 
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 /**
  * 创建者:   gonghe <br/>
@@ -24,8 +18,6 @@ import butterknife.OnClick;
  */
 public class NaviToolView extends LinearLayout {
     private Context mContext;
-
-    private OnNaviToolViewClickListener mListener;
 
     public NaviToolView(Context context) {
         this(context, null);
@@ -43,65 +35,4 @@ public class NaviToolView extends LinearLayout {
         mContext = context;
     }
 
-
-    @OnClick({R.id.testSpeedView, R.id.measureDistanceView, R.id.calculatedAreaView, R.id.compassView})
-    public void onClick(View view) {
-//        if (mListener == null) {
-//            return;
-//        }
-
-        switch (view.getId()) {
-            case R.id.testSpeedView:
-                SpeedTestActivity.startActivity(mContext);
-                break;
-
-            case R.id.measureDistanceView:
-                RouteDistanceActivity.startActivity(mContext);
-                break;
-
-            case R.id.calculatedAreaView:
-                goToResultActivityForTest();
-//                mListener.onCalculatedAreaClick();
-                break;
-
-            case R.id.compassView:
-//                mListener.onCompassClick();
-                break;
-        }
-    }
-
-    public void setOnNaviToolViewClickListener(OnNaviToolViewClickListener listener) {
-        this.mListener = listener;
-    }
-
-    public interface OnNaviToolViewClickListener {
-        /**
-         * 网络测速
-         */
-        void onTestSpeedClick();
-
-        /**
-         * 测距
-         */
-        void onMeasureDistanceClick();
-
-        /**
-         * 计算面积
-         */
-        void onCalculatedAreaClick();
-
-        /**
-         * 指南针
-         */
-        void onCompassClick();
-
-    }
-
-    private void goToResultActivityForTest() {
-        NetWorkQuality netWorkQuality = new NetWorkQuality();
-        netWorkQuality.setDelay("30 ms");
-        netWorkQuality.setDownloadSpeed("30.5 Mbps");
-        netWorkQuality.setUploadSpeed("32.5 Mbps");
-        SpeedTestResultActivity.startActivity(mContext, netWorkQuality);
-    }
 }

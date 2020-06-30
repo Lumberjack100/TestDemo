@@ -1,6 +1,7 @@
 package com.shmedo.mcloudapp.maps.ui.view;
 
 import android.content.Context;
+import android.content.Intent;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,21 +14,16 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
-import com.chad.library.adapter.base.module.LoadMoreModule;
-import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 import com.shmedo.mcloudapp.R;
+import com.shmedo.mcloudapp.maps.adapter.MapTypeAdapter;
 import com.shmedo.mcloudapp.maps.model.MapLayerInfo;
 import com.shmedo.mcloudapp.maps.model.MapType;
 import com.shmedo.mcloudapp.util.DensityUtil;
 import com.shmedo.mcloudapp.views.recycleviewitemdivider.GridSpacingItemDecoration;
 
-import org.jetbrains.annotations.NotNull;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 /**
  * 创建者:   gonghe <br/>
@@ -41,8 +37,6 @@ public class NaviMapLayerView extends LinearLayout {
     RecyclerView mRecyclerView;
 
     private MapTypeAdapter mapTypeAdapter;
-
-    private List<MapLayerInfo> mapLayerInfoList;
 
     private OnMapLayerItemClickListener mListener;
 
@@ -65,7 +59,6 @@ public class NaviMapLayerView extends LinearLayout {
     }
 
     private void initView() {
-        mapLayerInfoList = new ArrayList<>();
         MapLayerInfo mapLayerInfo = new MapLayerInfo();
         mapLayerInfo.setLayerName("标准地图");
         mapLayerInfo.setLayerThumbnail(R.drawable.map_mode_plain_normal);
@@ -108,33 +101,26 @@ public class NaviMapLayerView extends LinearLayout {
         });
     }
 
+    @OnClick({R.id.offlineMapDownloadView, R.id.mapSettingView})
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.offlineMapDownloadView:
+               //在Activity页面调用startActvity启动离线地图组件
+                mContext.startActivity(new Intent(mContext, com.amap.api.maps.offlinemap.OfflineMapActivity.class));
+                break;
+
+            case R.id.mapSettingView:
+
+                break;
+        }
+    }
+
 
     public void setOnMapLayerItemClickListener(OnMapLayerItemClickListener listener) {
         this.mListener = listener;
     }
 
     public interface OnMapLayerItemClickListener {
-
         void onMapLayerItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, MapLayerInfo mapLayerInfo);
-    }
-
-    public class MapTypeAdapter extends BaseQuickAdapter<MapLayerInfo, BaseViewHolder> implements LoadMoreModule {
-        public MapTypeAdapter() {
-            super(R.layout.item_map_layer);
-        }
-
-        @Override
-        protected void convert(@NotNull BaseViewHolder holder, @org.jetbrains.annotations.Nullable MapLayerInfo mapLayerInfo) {
-            holder.setBackgroundResource(R.id.iv_map_type, mapLayerInfo.getLayerThumbnail());
-            holder.setText(R.id.tv_layer_name, mapLayerInfo.getLayerName());
-
-            if (mapLayerInfo.isChecked()) {
-                holder.setImageResource(R.id.iv_map_type, R.drawable.map_mode_cheked);
-                holder.setTextColorRes(R.id.tv_layer_name, R.color.map_primary);
-            } else {
-                holder.setImageResource(R.id.iv_map_type, 0);
-                holder.setTextColorRes(R.id.tv_layer_name, R.color.black_333333);
-            }
-        }
     }
 }
