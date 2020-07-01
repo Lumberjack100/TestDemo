@@ -250,28 +250,14 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
         mDistanceToolbarView.mTvDistance.setText("0米");
     }
 
-    private void setListener() {
-        // 设置定位监听
-        aMap.setLocationSource(this);
-        //地图手势事件
-        aMap.setAMapGestureListener(this);
-        // 对amap添加单击地图事件监听器
-        aMap.setOnMapClickListener(this);
-        mSensorHelper = new SensorEventHelper(this);
-        mSensorHelper.registerSensorListener();
-        mDistanceToolbarView.setOnDistanceToolbarViewClickListener(this);
-        mMapSearchView.setOnMapHeaderViewClickListener(this);
-        mNaviMapLayerView.setOnMapLayerItemClickListener(this);
-        mZoomView.setOnZoomViewClickListener(this);
-        mPoiDetailBottomView.setOnPoiDetailBottomClickListener(this);
-    }
-
     private void setUpMap() {
         if (aMap == null) {
             //初始化地图控制器对象
             aMap = mMapView.getMap();
+            aMap.setMapType(AMap.MAP_TYPE_SATELLITE);//卫星地图模式
         }
-        aMap.setMapType(AMap.MAP_TYPE_SATELLITE);//卫星地图模式
+        // 设置定位监听
+        aMap.setLocationSource(this);
         // 设置为true表示启动显示定位蓝点，false表示隐藏定位蓝点并不进行定位，默认是false。
         aMap.setMyLocationEnabled(true);
         aMap.getUiSettings().setZoomControlsEnabled(false); //隐藏缩放控件
@@ -292,6 +278,22 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
         }
         // 将自定义的 myLocationStyle 对象添加到地图上
         aMap.setMyLocationStyle(mLocationStyle.myLocationType(mMapType));
+    }
+
+    private void setListener() {
+        // 设置定位监听
+//        aMap.setLocationSource(this);
+        //地图手势事件
+        aMap.setAMapGestureListener(this);
+        // 对amap添加单击地图事件监听器
+        aMap.setOnMapClickListener(this);
+        mSensorHelper = new SensorEventHelper(this);
+        mSensorHelper.registerSensorListener();
+        mDistanceToolbarView.setOnDistanceToolbarViewClickListener(this);
+        mMapSearchView.setOnMapHeaderViewClickListener(this);
+        mNaviMapLayerView.setOnMapLayerItemClickListener(this);
+        mZoomView.setOnZoomViewClickListener(this);
+        mPoiDetailBottomView.setOnPoiDetailBottomClickListener(this);
     }
 
 
