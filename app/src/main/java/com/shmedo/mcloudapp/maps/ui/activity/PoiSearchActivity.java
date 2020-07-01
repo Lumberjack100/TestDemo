@@ -16,6 +16,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -25,12 +26,14 @@ import com.amap.api.services.core.SuggestionCity;
 import com.amap.api.services.poisearch.PoiResult;
 import com.amap.api.services.poisearch.PoiSearch;
 import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.chad.library.adapter.base.listener.OnLoadMoreListener;
 import com.chad.library.adapter.base.module.LoadMoreModule;
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 import com.hjq.toast.ToastUtils;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.base.BaseActivity;
+import com.shmedo.mcloudapp.interfaces.Extras;
 import com.shmedo.mcloudapp.maps.model.PageInfo;
 import com.shmedo.mcloudapp.maps.util.MapErrorUtil;
 
@@ -127,6 +130,16 @@ public class PoiSearchActivity extends BaseActivity implements TextWatcher, PoiS
         poiSearchAdapter = new PoiSearchAdapter();
         poiSearchAdapter.setAnimationEnable(true);
         mRecyclerView.setAdapter(poiSearchAdapter);
+        poiSearchAdapter.setOnItemClickListener(new OnItemClickListener() {
+            @Override
+            public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
+                PoiItem poiItem = poiSearchAdapter.getItem(position);
+                Intent intent = getIntent();
+                intent.putExtra(Extras.POIITEM_INFO, poiItem);
+                setResult(RESULT_OK, intent);
+                finish();
+            }
+        });
     }
 
     /**

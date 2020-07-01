@@ -40,4 +40,7 @@ public interface Extras {
     //编码器修正参数
     String ENCODER_CORRECTION_PARAMETERS = "encoder_correction_parameters";
 
+    //地图 Poi 点信息
+    String POIITEM_INFO = "poiitem_info";
+
 }

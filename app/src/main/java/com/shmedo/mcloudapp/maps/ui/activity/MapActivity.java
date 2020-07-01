@@ -1,5 +1,6 @@
 package com.shmedo.mcloudapp.maps.ui.activity;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -40,12 +41,14 @@ import com.amap.api.maps.model.Polyline;
 import com.amap.api.maps.model.PolylineOptions;
 import com.amap.api.services.core.AMapException;
 import com.amap.api.services.core.LatLonPoint;
+import com.amap.api.services.core.PoiItem;
 import com.amap.api.services.route.DistanceItem;
 import com.amap.api.services.route.DistanceResult;
 import com.amap.api.services.route.DistanceSearch;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.hjq.toast.ToastUtils;
 import com.shmedo.mcloudapp.R;
+import com.shmedo.mcloudapp.interfaces.Extras;
 import com.shmedo.mcloudapp.maps.model.MapLayerInfo;
 import com.shmedo.mcloudapp.maps.ui.view.DistanceToolbarView;
 import com.shmedo.mcloudapp.maps.ui.view.GPSView;
@@ -73,7 +76,9 @@ import butterknife.BindView;
 import butterknife.OnClick;
 import timber.log.Timber;
 
-public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap.OnMapClickListener,  AMap.OnPOIClickListener,DistanceSearch.OnDistanceSearchListener, AMapGestureListener, AMapLocationListener, LocationSource, DistanceToolbarView.OnDistanceToolbarViewClickListener, MapSearchView.OnMapHeaderViewClickListener, NaviMapLayerView.OnMapLayerItemClickListener, PoiDetailBottomView.OnPoiDetailBottomClickListener, ZoomView.OnZoomViewClickListener {
+public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap.OnMapClickListener, AMap.OnPOIClickListener, DistanceSearch.OnDistanceSearchListener, AMapGestureListener, AMapLocationListener, LocationSource, DistanceToolbarView.OnDistanceToolbarViewClickListener, MapSearchView.OnMapHeaderViewClickListener, NaviMapLayerView.OnMapLayerItemClickListener, PoiDetailBottomView.OnPoiDetailBottomClickListener, ZoomView.OnZoomViewClickListener {
+    public static final int REQUEST_CODE_POI_SEARCH = 0x011;
+
     @BindView(R.id.map)
     TextureMapView mMapView;
 
@@ -478,13 +483,6 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
             mLocationClient.setLocationListener(this);
 
             mLocationClient.startLocation();//启动定位
-            //运行时权限
-                /*if (PermissionUtil.checkPermissions(this)) {
-                    mLocationClient.startLocation();
-                } else {
-                    //未授予权限，动态申请
-                    PermissionUtil.initPermissions(this, REQ_CODE_INIT);
-                }*/
         }
     }
 
@@ -506,7 +504,7 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
      */
     @Override
     public void onPOIClick(Poi poi) {
-        if(poi == null || poi.getCoordinate() == null || TextUtils.isEmpty(poi.getName())){
+        if (poi == null || poi.getCoordinate() == null || TextUtils.isEmpty(poi.getName())) {
             return;
         }
         // 当前点击坐标
@@ -822,7 +820,7 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
 //        SearchPoiFragment newFragment =  SearchPoiFragment.newInstance(mCity);
 //        newFragment.show(getSupportFragmentManager(), "dialog");
 
-        PoiSearchActivity.startActivityForResult(this, 0);
+        PoiSearchActivity.startActivityForResult(this, REQUEST_CODE_POI_SEARCH);
     }
 
     /**
@@ -901,10 +899,11 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
 
     /**
      * 移动地图中心点到指定位置
+     *
      * @param latLng
      */
-    private void animMap(LatLng latLng){
-        if(latLng != null){
+    private void animMap(LatLng latLng) {
+        if (latLng != null) {
             aMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, mZoomLevel));
         }
     }
@@ -926,7 +925,7 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
         if (mPoiDetailBottomView.getVisibility() == View.GONE) {
             showPoiDetail(poiName, String.format("距离您%s", distanceStr));
             moveGspButtonAbove();
-        }else{
+        } else {
             mPoiDetailBottomView.tvPoiTitle.setText(poiName);
             mPoiDetailBottomView.tvPoiDistance.setText(String.format("距离您%s", distanceStr));
         }
@@ -966,7 +965,7 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
     private void addLockedMarker(LatLng latlng) {
         MarkerOptions markerOptions = new MarkerOptions();
         markerOptions.icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(this.getResources(),
-                R.drawable.navi_map_gps_locked)));
+                R.drawable.icon_map_gps_locked)));
         markerOptions.anchor(0.5f, 0.5f);
         markerOptions.position(latlng);
         mLocationMarker = aMap.addMarker(markerOptions);
@@ -981,7 +980,6 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
         markerOptions.position(latlng);
         mLocationMarker = aMap.addMarker(markerOptions);
     }
-
 
 
     /**
@@ -1057,5 +1055,26 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
                 mGpsView.setAbovePoiDetail(false);
             }
         });
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        super.onActivityResult(requestCode, resultCode, intent);
+        if (resultCode != Activity.RESULT_OK)
+            return;
+
+        switch (requestCode) {
+            case REQUEST_CODE_POI_SEARCH:
+                if (intent != null) {
+                    PoiItem poiItem = intent.getParcelableExtra(Extras.POIITEM_INFO);
+                    isPoiClick = true;
+
+                    LatLonPoint point = poiItem.getLatLonPoint();
+                    LatLng latLng = new LatLng(point.getLatitude(), point.getLongitude());
+                    addPOIMarderAndShowDetail(latLng, poiItem.getTitle());
+                }
+                break;
+
+        }
     }
 }

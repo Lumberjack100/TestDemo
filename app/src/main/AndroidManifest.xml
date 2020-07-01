@@ -55,8 +55,8 @@
             android:name="com.amap.api.v2.apikey"
             android:value="${mapApikey}" />
 
-        <service android:name="com.amap.api.location.APSService" /> <!-- 蒲公英配置 -->
-        <activity android:name="com.pgyersdk.feedback.FeedbackActivity" />
+        <service android:name="com.amap.api.location.APSService" />
+        <activity android:name="com.pgyersdk.feedback.FeedbackActivity" /><!-- 蒲公英配置 -->
 
         <meta-data
             android:name="PGYER_APPID"
