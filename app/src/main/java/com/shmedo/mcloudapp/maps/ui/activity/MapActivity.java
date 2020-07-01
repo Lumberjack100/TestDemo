@@ -7,6 +7,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
@@ -34,6 +35,7 @@ import com.amap.api.maps.model.LatLng;
 import com.amap.api.maps.model.Marker;
 import com.amap.api.maps.model.MarkerOptions;
 import com.amap.api.maps.model.MyLocationStyle;
+import com.amap.api.maps.model.Poi;
 import com.amap.api.maps.model.Polyline;
 import com.amap.api.maps.model.PolylineOptions;
 import com.amap.api.services.core.AMapException;
@@ -58,6 +60,7 @@ import com.shmedo.mcloudapp.maps.ui.view.ZoomView;
 import com.shmedo.mcloudapp.maps.util.AMapLocationUtil;
 import com.shmedo.mcloudapp.maps.util.CoordinateFormatUtils;
 import com.shmedo.mcloudapp.maps.util.MapErrorUtil;
+import com.shmedo.mcloudapp.maps.util.MyAMapUtils;
 import com.shmedo.mcloudapp.maps.util.SensorEventHelper;
 import com.shmedo.mcloudapp.util.DensityUtil;
 import com.shmedo.mcloudapp.util.LocationUtils;
@@ -70,7 +73,7 @@ import butterknife.BindView;
 import butterknife.OnClick;
 import timber.log.Timber;
 
-public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap.OnMapClickListener, DistanceSearch.OnDistanceSearchListener, AMapGestureListener, AMapLocationListener, LocationSource, DistanceToolbarView.OnDistanceToolbarViewClickListener, MapSearchView.OnMapHeaderViewClickListener, NaviMapLayerView.OnMapLayerItemClickListener, PoiDetailBottomView.OnPoiDetailBottomClickListener, ZoomView.OnZoomViewClickListener {
+public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap.OnMapClickListener,  AMap.OnPOIClickListener,DistanceSearch.OnDistanceSearchListener, AMapGestureListener, AMapLocationListener, LocationSource, DistanceToolbarView.OnDistanceToolbarViewClickListener, MapSearchView.OnMapHeaderViewClickListener, NaviMapLayerView.OnMapLayerItemClickListener, PoiDetailBottomView.OnPoiDetailBottomClickListener, ZoomView.OnZoomViewClickListener {
     @BindView(R.id.map)
     TextureMapView mMapView;
 
@@ -195,12 +198,7 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
             mSensorHelper = new SensorEventHelper(this);
             //重新注册
             mSensorHelper.registerSensorListener();
-            setUpMap();
-        }
-        if (mLocationOption != null && mLocationClient != null) {
-            mLocationOption.setInterval(2000);//定位时间间隔，默认2000ms
-            mLocationClient.setLocationOption(mLocationOption);
-            aMap.setMyLocationEnabled(true);
+//            setUpMap();
         }
     }
 
@@ -209,10 +207,7 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
         super.onPause();
         //在activity执行onPause时执行mMapView.onPause ()，暂停地图的绘制
         mMapView.onPause();
-        if (mLocationOption != null && mLocationClient != null) {
-            mLocationOption.setInterval(2000);//定位时间间隔，默认2000ms
-            mLocationClient.setLocationOption(mLocationOption);
-        }
+        deactivate();
     }
 
     @Override
@@ -226,8 +221,7 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
             mSensorHelper.setCurrentMarker(null);
             mSensorHelper = null;
         }
-        deactivate();
-        if (null != mLocationClient) {
+        if (mLocationClient != null) {
             mLocationClient.onDestroy();
         }
         if (mLocationMarker != null) {
@@ -240,7 +234,11 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
         mMapView.onCreate(savedInstanceState);
         mGpsView.setGpsState(mCurrentGpsState);
         initDistanceToolView();
-        setUpMap();
+        if (aMap == null) {
+            //初始化地图控制器对象
+            aMap = mMapView.getMap();
+            setUpMap();
+        }
     }
 
     private void initDistanceToolView() {
@@ -252,19 +250,14 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
     }
 
     private void setUpMap() {
-        if (aMap == null) {
-            //初始化地图控制器对象
-            aMap = mMapView.getMap();
-            aMap.setMapType(AMap.MAP_TYPE_SATELLITE);//卫星地图模式
-        }
+        aMap.setMapType(AMap.MAP_TYPE_SATELLITE);//卫星地图模式
+        aMap.getUiSettings().setZoomControlsEnabled(false); //隐藏缩放控件
+        aMap.getUiSettings().setLogoPosition(AMapOptions.LOGO_POSITION_BOTTOM_RIGHT);//设置logo位置
+        setLocationStyle();
         // 设置定位监听
         aMap.setLocationSource(this);
         // 设置为true表示启动显示定位蓝点，false表示隐藏定位蓝点并不进行定位，默认是false。
         aMap.setMyLocationEnabled(true);
-        aMap.getUiSettings().setZoomControlsEnabled(false); //隐藏缩放控件
-        aMap.getUiSettings().setLogoPosition(AMapOptions.LOGO_POSITION_BOTTOM_RIGHT);//设置logo位置
-//        mUiSettings.setLogoBottomMargin(-50);//隐藏logo
-        setLocationStyle();
     }
 
     /**
@@ -282,12 +275,12 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
     }
 
     private void setListener() {
-        // 设置定位监听
-//        aMap.setLocationSource(this);
         //地图手势事件
         aMap.setAMapGestureListener(this);
         // 对amap添加单击地图事件监听器
         aMap.setOnMapClickListener(this);
+        // 地图poi点击
+        aMap.setOnPOIClickListener(this);
         mSensorHelper = new SensorEventHelper(this);
         mSensorHelper.registerSensorListener();
         mDistanceToolbarView.setOnDistanceToolbarViewClickListener(this);
@@ -392,28 +385,28 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
         mGpsView.setGpsState(mCurrentGpsState);
         //执行地图动效
         aMap.animateCamera(cameraUpdate, mAnimDuartion, null);
-        setLocationStyle();
+//        setLocationStyle();
         resetLocationMarker();
     }
 
     @Override
-    public void onLocationChanged(final AMapLocation location) {
-        if (null == mOnLocationChangedListener || null == location || location.getErrorCode() != 0) {
-            if (location != null) {
-                Timber.d("定位失败：errorCode=" + location.getErrorCode() + ",errorMsg=" + location.getErrorInfo());
+    public void onLocationChanged(final AMapLocation aMapLocation) {
+        if (null == mOnLocationChangedListener || null == aMapLocation || aMapLocation.getErrorCode() != 0) {
+            if (aMapLocation != null) {
+                Timber.d("定位失败：errorCode=" + aMapLocation.getErrorCode() + ",errorMsg=" + aMapLocation.getErrorInfo());
             }
             return;
         }
 
-        mAmapLocation = location;
+        mAmapLocation = aMapLocation;
         //获取经纬度
-        double lng = location.getLongitude();
-        double lat = location.getLatitude();
+        double lng = aMapLocation.getLongitude();
+        double lat = aMapLocation.getLatitude();
         String coordinate = CoordinateFormatUtils.DDtoDMS(lng) + "E," + CoordinateFormatUtils.DDtoDMS(lat) + "N";
         mLocationTitleView.post(new Runnable() {
             @Override
             public void run() {
-                mLocationTitleView.updataView(coordinate, location.getAltitude(), location.getAccuracy(), location.getGpsAccuracyStatus());
+                mLocationTitleView.updataView(coordinate, aMapLocation.getAltitude(), aMapLocation.getAccuracy(), aMapLocation.getGpsAccuracyStatus());
             }
         });
 
@@ -422,24 +415,24 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
             return;
         }
         // 当前poiName和上次不相等才更新显示
-        if (location.getPoiName() != null && !location.getPoiName().equals(mPoiName)) {
+        if (aMapLocation.getPoiName() != null && !aMapLocation.getPoiName().equals(mPoiName)) {
             if (!isPoiClick) {
                 // 点击poi时,定位位置和点击位置不一定一样
-                mPoiName = location.getPoiName();
+                mPoiName = aMapLocation.getPoiName();
                 showPoiNameText(String.format("在%s附近", mPoiName));
             }
         }
-        Timber.d("定位成功，onLocationChanged： Longitude=" + lng + ",Latitude=" + lat + ",poiName=" + mPoiName + ",getDescription=" + location.getDescription() + ", address=" + location.getAddress() + ",getLocationDetail" + location.getLocationDetail() + ",street=" + location.getStreet());
+        Timber.d("定位成功，onLocationChanged： Longitude=" + lng + ",Latitude=" + lat + ",poiName=" + mPoiName + ",getDescription=" + aMapLocation.getDescription() + ", address=" + aMapLocation.getAddress() + ",getLocationDetail" + aMapLocation.getLocationDetail() + ",street=" + aMapLocation.getStreet());
 
         //参数依次是：视角调整区域的中心点坐标、希望调整到的缩放级别、俯仰角0°~45°（垂直与地图时为0）、偏航角 0~360° (正北方为0)
         mLatLng = new LatLng(lat, lng);
-        if (!location.getCity().equals(mCity)) {
-            mCity = location.getCity();
+        if (!aMapLocation.getCity().equals(mCity)) {
+            mCity = aMapLocation.getCity();
         }
 
         //首次定位,选择移动到地图中心点并修改级别到15级
         //首次定位成功才修改地图中心点，并移动
-        mAccuracy = location.getAccuracy();
+        mAccuracy = aMapLocation.getAccuracy();
         Timber.d("accuracy=" + mAccuracy + ",mFirstLocation=" + isFirstLocation);
         if (isFirstLocation) {
             aMap.animateCamera(CameraUpdateFactory.newLatLngZoom(mLatLng, mZoomLevel), new AMap.CancelableCallback() {
@@ -505,8 +498,22 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
             mLocationClient.stopLocation();
             mLocationClient.onDestroy();
         }
-        mLocationMarker = null;
         mLocationClient = null;
+    }
+
+    /**
+     * 当用户点击底图上的poi时回调此方法。
+     */
+    @Override
+    public void onPOIClick(Poi poi) {
+        if(poi == null || poi.getCoordinate() == null || TextUtils.isEmpty(poi.getName())){
+            return;
+        }
+        // 当前点击坐标
+        mClickPoiLatLng = poi.getCoordinate();
+        // 当前正在处理poi点击
+        isPoiClick = true;
+        addPOIMarderAndShowDetail(poi.getCoordinate(), poi.getName());
     }
 
     /**
@@ -517,7 +524,7 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
         mMapType = MyLocationStyle.LOCATION_TYPE_LOCATION_ROTATE_NO_CENTER;
         mCurrentGpsState = STATE_UNLOCKED;
         mGpsView.setGpsState(mCurrentGpsState);
-        setLocationStyle();
+//        setLocationStyle();
         resetLocationMarker();
         isCanMoveToCenter = false;
     }
@@ -549,7 +556,7 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
                 mGpsView.setGpsState(mCurrentGpsState);
             }
             isCanMoveToCenter = false;
-            setLocationStyle();
+//            setLocationStyle();
             resetLocationMarker();
         }
     }
@@ -586,6 +593,9 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
 
     }
 
+    /**
+     * 图层列表点击事件
+     */
     @Override
     public void onMapLayerItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, MapLayerInfo mapLayerInfo) {
         if (mapLayerInfo == null) {
@@ -668,6 +678,7 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
         polylineList.clear();
         mDistanceToolbarView.mTvDistance.setText("0米");
     }
+
 
     /**
      * 地图点击事件
@@ -872,6 +883,56 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
     }
 
     /**
+     * 添加POImarker
+     */
+    private void addPOIMarderAndShowDetail(LatLng latLng, String poiName) {
+        animMap(latLng);
+        mMapType = MyLocationStyle.LOCATION_TYPE_LOCATION_ROTATE_NO_CENTER;
+        mCurrentGpsState = STATE_UNLOCKED;
+        //当前没有正在定位才能修改状态
+        if (!isFirstLocation) {
+            mGpsView.setGpsState(mCurrentGpsState);
+        }
+        isCanMoveToCenter = false;
+        // 添加marker标记
+        addPOIMarker(latLng);
+        showClickPoiDetail(latLng, poiName);
+    }
+
+    /**
+     * 移动地图中心点到指定位置
+     * @param latLng
+     */
+    private void animMap(LatLng latLng){
+        if(latLng != null){
+            aMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, mZoomLevel));
+        }
+    }
+
+    private void addPOIMarker(LatLng latLng) {
+        aMap.clear();
+        MarkerOptions markOptiopns = new MarkerOptions();
+        markOptiopns.position(latLng);
+        markOptiopns.icon(BitmapDescriptorFactory.fromResource(R.drawable.poi_mark));
+        aMap.addMarker(markOptiopns);
+    }
+
+    /**
+     * 显示poi点击底部BottomSheet
+     */
+    private void showClickPoiDetail(LatLng latLng, String poiName) {
+        mPoiName = poiName;
+        String distanceStr = MyAMapUtils.calculateDistanceStr(mLatLng, latLng);
+        if (mPoiDetailBottomView.getVisibility() == View.GONE) {
+            showPoiDetail(poiName, String.format("距离您%s", distanceStr));
+            moveGspButtonAbove();
+        }else{
+            mPoiDetailBottomView.tvPoiTitle.setText(poiName);
+            mPoiDetailBottomView.tvPoiDistance.setText(String.format("距离您%s", distanceStr));
+        }
+    }
+
+    /**
      * 根据当前地图状态重置定位蓝点
      */
     private void resetLocationMarker() {
@@ -903,9 +964,6 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
     }
 
     private void addLockedMarker(LatLng latlng) {
-        /*if (mLocMarker != null) {
-            return;
-        }*/
         MarkerOptions markerOptions = new MarkerOptions();
         markerOptions.icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(this.getResources(),
                 R.drawable.navi_map_gps_locked)));
@@ -915,17 +973,15 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
     }
 
     private void addRotateMarker(LatLng latlng) {
-       /* if (mLocMarker != null) {
-            return;
-        }*/
         MarkerOptions markerOptions = new MarkerOptions();
         //3D效果
         markerOptions.icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(this.getResources(),
-                R.drawable.navi_map_gps_3d)));
+                R.drawable.icon_gps_rotate)));
         markerOptions.anchor(0.5f, 0.5f);
         markerOptions.position(latlng);
         mLocationMarker = aMap.addMarker(markerOptions);
     }
+
 
 
     /**
