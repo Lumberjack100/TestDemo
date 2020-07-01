@@ -56,6 +56,7 @@ import com.shmedo.mcloudapp.maps.ui.view.RouteView;
 import com.shmedo.mcloudapp.maps.ui.view.SupendPartitionView;
 import com.shmedo.mcloudapp.maps.ui.view.ZoomView;
 import com.shmedo.mcloudapp.maps.util.AMapLocationUtil;
+import com.shmedo.mcloudapp.maps.util.CoordinateFormatUtils;
 import com.shmedo.mcloudapp.maps.util.MapErrorUtil;
 import com.shmedo.mcloudapp.maps.util.SensorEventHelper;
 import com.shmedo.mcloudapp.util.DensityUtil;
@@ -405,13 +406,21 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
         }
 
         mAmapLocation = location;
+        //获取经纬度
+        double lng = location.getLongitude();
+        double lat = location.getLatitude();
+        String coordinate = CoordinateFormatUtils.DDtoDMS(lng) + "E," + CoordinateFormatUtils.DDtoDMS(lat) + "N";
+        mLocationTitleView.post(new Runnable() {
+            @Override
+            public void run() {
+                mLocationTitleView.updataView(coordinate, location.getAltitude(), location.getAccuracy(), location.getGpsAccuracyStatus());
+            }
+        });
+
         if (onScrolling) {
             Timber.e("MapView is Scrolling by user,can not operate...");
             return;
         }
-        //获取经纬度
-        double lng = location.getLongitude();
-        double lat = location.getLatitude();
         // 当前poiName和上次不相等才更新显示
         if (location.getPoiName() != null && !location.getPoiName().equals(mPoiName)) {
             if (!isPoiClick) {
@@ -662,6 +671,7 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
 
     /**
      * 地图点击事件
+     *
      * @param latLng
      */
     @Override

@@ -23,6 +23,7 @@ public class AMapLocationUtil {
         mOption.setInterval(2000);//可选，设置定位间隔。默认为2秒
         mOption.setHttpTimeOut(30000);//可选，设置网络请求超时时间。默认为30秒。在仅设备模式下无效
         mOption.setLocationCacheEnable(true); //可选，设置是否使用缓存定位，默认为true
+        mOption.setSensorEnable(true);//是否开启设备传感器，当设置为true时，网络定位可以返回海拔、角度和速度。
         return mOption;
     }
 }

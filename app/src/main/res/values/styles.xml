@@ -148,7 +148,7 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:gravity">center</item>
         <item name="android:textColor">@color/gray_807B7B</item>
-        <item name="android:textSize">@dimen/text_size_12</item>
+        <item name="android:textSize">11.5sp</item>
     </style>
 
     <!--固定在底部的布局样式-->

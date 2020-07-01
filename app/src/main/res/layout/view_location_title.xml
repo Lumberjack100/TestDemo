@@ -28,6 +28,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
+        android:visibility="gone"
         android:gravity="right|center_vertical">
 
         <TextView
@@ -39,7 +40,6 @@
             style="@style/LocationTitle_TextViewStyle"
             android:layout_marginLeft="@dimen/dimen_size_1"
             android:drawablePadding="@dimen/dimen_size_3"
-            android:drawableLeft="@drawable/ic_signal_one"
             tools:text="17" />
 
     </LinearLayout>

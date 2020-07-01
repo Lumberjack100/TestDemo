@@ -19,6 +19,8 @@ import butterknife.ButterKnife;
  * 描述：    TODO
  */
 public class LocationTitleView extends LinearLayout {
+    private Context mContext;
+
     @BindView(R.id.tv_coordinate)
     TextView mTvCoordinate;
 
@@ -44,14 +46,15 @@ public class LocationTitleView extends LinearLayout {
         super(context, attrs, defStyleAttr);
         ((LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.view_location_title, this, true);
         ButterKnife.bind(this);
-        updataView("121°31′19.84″E, 31°4′58.62″N", "12", "38", "17");
+        mContext = context;
     }
 
-    public void updataView(String coordinate, String altitude, String locationDeviation, String gpsSignal) {
+    public void updataView(String coordinate, double altitude, float locationDeviation, int gpsSignal) {
         mTvCoordinate.setText(coordinate);
-        mTvAltitude.setText("海拔 " + altitude + "m");
-        mTvLocationDeviation.setText("定位误差 " + locationDeviation + "m");
-        mTvGpsSignal.setText(gpsSignal);
+        mTvAltitude.setText(String.format("海拔 %sm", altitude));
+        mTvLocationDeviation.setText(String.format("定位误差 %sm", locationDeviation));
+        mTvGpsSignal.setText(String.valueOf(gpsSignal));
         mTvGpsSignal.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_signal_four, 0, 0, 0);
+
     }
 }

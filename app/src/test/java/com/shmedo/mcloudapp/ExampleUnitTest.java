@@ -1,6 +1,8 @@
 package com.shmedo.mcloudapp;
 
 
+import com.shmedo.mcloudapp.maps.util.CoordinateFormatUtils;
+
 import org.junit.Test;
 
 import java.util.Locale;
@@ -17,12 +19,11 @@ public class ExampleUnitTest {
 
         //2.000000e+00
         String result = String.format(Locale.getDefault(), "%.3f", Double.parseDouble("4.400000e+01"));
-
         double dd = Double.parseDouble("4.400000e+01");
 
-        int tt = (int) dd;
-        System.out.println(-12345678.0);
 
+        result =   CoordinateFormatUtils.DDtoDMS(121.526456);
+        System.out.println(result);
     }
 
 }
