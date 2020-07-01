@@ -21,6 +21,8 @@ import com.shmedo.core.utils.ValidateUtil;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.util.KeyBordUtils;
 
+import java.util.Locale;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -85,7 +87,7 @@ public class SensorBGK4500View extends FrameLayout {
 
     public void bindSensorData(CollectorSensorParamsInfo infoSub) {
         SensorKangPercolateInfo sensorInfo = (SensorKangPercolateInfo) infoSub.getSensorData();
-        mEtTriggerThreshold.setText((int) Double.parseDouble(sensorInfo.getTriggerThreshold()) + "");
+        mEtTriggerThreshold.setText(String.format(Locale.getDefault(),"%d", (int) Double.parseDouble(sensorInfo.getTriggerThreshold())));
         mEtCoefficientA.setText(sensorInfo.getPolynomialRatioA());
         mEtCoefficientB.setText(sensorInfo.getPolynomialRatioB());
         mEtCoefficientC.setText(sensorInfo.getPolynomialRatioC());

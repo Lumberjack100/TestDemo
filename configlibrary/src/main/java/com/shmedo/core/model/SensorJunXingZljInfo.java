@@ -6,13 +6,16 @@ import com.shmedo.core.interfaces.SensorParameter;
 /**
  * 创建者:   gonghe <br/>
  * 创建时间:  2020/6/7 <br/>
- * 描述：  传感器为军星轴力计 ZLJ-300T
+ * 描述：  传感器为轴力计 ZLJ-300T
  */
 public class SensorJunXingZljInfo implements SensorParameter {
     private String triggerThreshold;   //触发阈值
-    private String sensitivityK;   //灵敏度K
+    private String polynomialRatioA;//标定系数A
+    private String temperatureCoefficientB;//温度系数b
     private String referenceValue; //基准值
+    private String CreateTemperature;   //初始化温度T0
     private String manualCorrection;    //手动纠偏
+
 
     public String getTriggerThreshold() {
         return triggerThreshold;
@@ -22,20 +25,20 @@ public class SensorJunXingZljInfo implements SensorParameter {
         this.triggerThreshold = triggerThreshold;
     }
 
-    public String getSensitivityK() {
-        return sensitivityK;
+    public String getPolynomialRatioA() {
+        return polynomialRatioA;
     }
 
-    public void setSensitivityK(String sensitivityK) {
-        this.sensitivityK = sensitivityK;
+    public void setPolynomialRatioA(String polynomialRatioA) {
+        this.polynomialRatioA = polynomialRatioA;
     }
 
-    public String getManualCorrection() {
-        return manualCorrection;
+    public String getTemperatureCoefficientB() {
+        return temperatureCoefficientB;
     }
 
-    public void setManualCorrection(String manualCorrection) {
-        this.manualCorrection = manualCorrection;
+    public void setTemperatureCoefficientB(String temperatureCoefficientB) {
+        this.temperatureCoefficientB = temperatureCoefficientB;
     }
 
     public String getReferenceValue() {
@@ -46,6 +49,22 @@ public class SensorJunXingZljInfo implements SensorParameter {
         this.referenceValue = referenceValue;
     }
 
+    public String getCreateTemperature() {
+        return CreateTemperature;
+    }
+
+    public void setCreateTemperature(String createTemperature) {
+        CreateTemperature = createTemperature;
+    }
+
+    public String getManualCorrection() {
+        return manualCorrection;
+    }
+
+    public void setManualCorrection(String manualCorrection) {
+        this.manualCorrection = manualCorrection;
+    }
+
     @Override
     public SensorType getSensorType() {
         return SensorType.JUNXING_ZLJ_300T;
@@ -54,10 +73,12 @@ public class SensorJunXingZljInfo implements SensorParameter {
     @Override
     public String toString() {
         return "SensorJunXingZljInfo{" +
-                "triggerThreshold=" + triggerThreshold +
-                ", sensitivityK=" + sensitivityK +
+                "triggerThreshold='" + triggerThreshold + '\'' +
+                ", polynomialRatioA='" + polynomialRatioA + '\'' +
+                ", temperatureCoefficientB='" + temperatureCoefficientB + '\'' +
+                ", referenceValue='" + referenceValue + '\'' +
+                ", CreateTemperature='" + CreateTemperature + '\'' +
                 ", manualCorrection='" + manualCorrection + '\'' +
-                ", referenceValue=" + referenceValue +
                 '}';
     }
 }

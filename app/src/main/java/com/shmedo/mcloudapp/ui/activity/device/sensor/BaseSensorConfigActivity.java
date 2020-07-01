@@ -607,7 +607,7 @@ public abstract class BaseSensorConfigActivity extends BaseDeviceConnectActivity
 
             case KANG_PERCOLATE://基康渗压计(BGK-4500)
             case GUDAN_PERCOLATE://葛南渗压计(VWP-03)
-            case JUNXING_ZLJ_300T://军星轴力计(ZLJ-300T)
+            case JUNXING_ZLJ_300T://轴力计(ZLJ-300T)
                 newFragment = new Osmometer_AxialForceGaugeDialogFragment();
                 newFragment.show(getSupportFragmentManager(), "dialog");
                 break;
@@ -771,14 +771,16 @@ public abstract class BaseSensorConfigActivity extends BaseDeviceConnectActivity
             }
             break;
 
-            case JUNXING_ZLJ_300T: {//军星轴力计(ZLJ-300T)
+            case JUNXING_ZLJ_300T: {//轴力计(ZLJ-300T)
                 sbCollectorSensorConfig.append("," + collectorSensorParamsInfoSub.getChannelNumber());
                 sbCollectorSensorConfig.append("," + collectorSensorParamsInfoSub.getSensorType());
                 SensorJunXingZljInfo sensorInfo = (SensorJunXingZljInfo) collectorSensorParamsInfoSub.getSensorData();
                 sbCollectorSensorConfig.append("," + sensorInfo.getTriggerThreshold());
-                sbCollectorSensorConfig.append("," + sensorInfo.getSensitivityK());
+                sbCollectorSensorConfig.append("," + sensorInfo.getPolynomialRatioA());
                 sbCollectorSensorConfig.append("," + sensorInfo.getReferenceValue());
                 sbCollectorSensorConfig.append("," + sensorInfo.getManualCorrection());
+                sbCollectorSensorConfig.append("," + sensorInfo.getTemperatureCoefficientB());
+                sbCollectorSensorConfig.append("," + sensorInfo.getCreateTemperature());
                 sbCollectorSensorConfig.append("&&");
             }
             break;

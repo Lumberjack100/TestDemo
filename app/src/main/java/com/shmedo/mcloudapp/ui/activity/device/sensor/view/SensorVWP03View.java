@@ -18,6 +18,8 @@ import com.shmedo.core.utils.StringUtil;
 import com.shmedo.core.utils.ValidateUtil;
 import com.shmedo.mcloudapp.R;
 
+import java.util.Locale;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -80,7 +82,7 @@ public class SensorVWP03View extends FrameLayout {
 
     public void bindSensorData(CollectorSensorParamsInfo infoSub) {
         SensorGudanPercolateInfo sensorInfo = (SensorGudanPercolateInfo) infoSub.getSensorData();
-        mEtTriggerThreshold.setText((int) Double.parseDouble(sensorInfo.getTriggerThreshold()) + "");
+        mEtTriggerThreshold.setText(String.format(Locale.getDefault(),"%d", (int) Double.parseDouble(sensorInfo.getTriggerThreshold())));
         mEtSensitivityCoefficient.setText(sensorInfo.getSensitivityK());
         mEtTemperatureCoefficient.setText(sensorInfo.getTemperatureCoefficientB());
         mEtReferenceValue.setText(sensorInfo.getReferenceValue());
@@ -147,6 +149,11 @@ public class SensorVWP03View extends FrameLayout {
             ToastUtils.show("温修系数不能为空!");
             return false;
         }
+
+        //        if (TextUtils.isEmpty(referenceValue)) {
+//            ToastUtils.show("基准值不能为空!");
+//            return false;
+//        }
 
         if (!TextUtils.isEmpty(initialTemperature) && !ValidateUtil.isDouble(initialTemperature)) {
             ToastUtils.show("请输入正确的初始温度!");

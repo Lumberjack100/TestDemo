@@ -35,7 +35,7 @@ import timber.log.Timber;
 
 /**
  * 振弦式传感器配置参数对话框
- * 基康渗压计(BGK-4500)、葛南渗压计(VWP-03)、军星轴力计(ZLJ-300T)
+ * 基康渗压计(BGK-4500)、葛南渗压计(VWP-03)、轴力计(ZLJ-300T)
  */
 public class Osmometer_AxialForceGaugeDialogFragment extends BaseDialogFragment {
 
@@ -103,7 +103,7 @@ public class Osmometer_AxialForceGaugeDialogFragment extends BaseDialogFragment 
                     sensorBGK4500View.setVisibility(View.GONE);
                     sensorVWP03View.setVisibility(View.VISIBLE);
                     sensorZLJ300tView.setVisibility(View.GONE);
-                } else if (item.contains("军星轴力计")) {
+                } else if (item.contains("轴力计")) {
                     selectedSensorType = SensorType.JUNXING_ZLJ_300T.toString();
                     sensorBGK4500View.setVisibility(View.GONE);
                     sensorVWP03View.setVisibility(View.GONE);
@@ -138,7 +138,7 @@ public class Osmometer_AxialForceGaugeDialogFragment extends BaseDialogFragment 
                 sensorVWP03View.bindSensorData(collectorSensorParamsInfo);
                 break;
 
-            case JUNXING_ZLJ_300T://军星轴力计(ZLJ-300T)
+            case JUNXING_ZLJ_300T://轴力计(ZLJ-300T)
                 spinnerType.setSelection(2);
                 sensorBGK4500View.setVisibility(View.GONE);
                 sensorVWP03View.setVisibility(View.GONE);

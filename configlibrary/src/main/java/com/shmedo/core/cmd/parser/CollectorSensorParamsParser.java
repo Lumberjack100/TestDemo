@@ -288,7 +288,7 @@ public class CollectorSensorParamsParser implements ResultParser<CollectorSensor
         bean.setSensorAddress(strs[1]);
         bean.setSensorType(SensorType.KANG_PERCOLATE);
         SensorKangPercolateInfo sensorInfo = new SensorKangPercolateInfo();
-        sensorInfo.setTriggerThreshold(strs[3]);
+        sensorInfo.setTriggerThreshold((TextUtils.isEmpty(strs[3]) || strs[3].contains("nan")) ? "0" : strs[3]);
         sensorInfo.setPolynomialRatioA(strs[4]);
         sensorInfo.setPolynomialRatioB(strs[5]);
         sensorInfo.setPolynomialRatioC(strs[6]);
@@ -316,7 +316,7 @@ public class CollectorSensorParamsParser implements ResultParser<CollectorSensor
         bean.setSensorAddress(strs[1]);
         bean.setSensorType(SensorType.GUDAN_PERCOLATE);
         SensorGudanPercolateInfo sensorInfo = new SensorGudanPercolateInfo();
-        sensorInfo.setTriggerThreshold(strs[3]);
+        sensorInfo.setTriggerThreshold((TextUtils.isEmpty(strs[3]) || strs[3].contains("nan")) ? "0" : strs[3]);
         sensorInfo.setSensitivityK(strs[4]);
         sensorInfo.setTemperatureCoefficientB(strs[5]);
         sensorInfo.setReferenceValue(strs[6]);
@@ -421,9 +421,9 @@ public class CollectorSensorParamsParser implements ResultParser<CollectorSensor
 
 
     /**
-     * 解析军星轴力计ZLJ-300T
+     * 解析轴力计ZLJ-300T
      * $$1010001,01,58,2.000000e+00,4.597945e-08,3.000000e+00,5.000000e+00
-     * $$1010001,传感器地址/通道号,传感器类型,触发阀值,灵敏度K,基准值F0,手动纠偏
+     * $$1010001,传感器地址/通道号,传感器类型,触发阀值,标定系数A,基准值F0,手动纠偏,温修系数B,初始温度T0
      *
      * @param strs
      * @return
@@ -435,10 +435,12 @@ public class CollectorSensorParamsParser implements ResultParser<CollectorSensor
         bean.setSensorAddress(strs[1]);
         bean.setSensorType(JUNXING_ZLJ_300T);
         SensorJunXingZljInfo sensorInfo = new SensorJunXingZljInfo();
-        sensorInfo.setTriggerThreshold(strs[3]);
-        sensorInfo.setSensitivityK(strs[4]);
+        sensorInfo.setTriggerThreshold((TextUtils.isEmpty(strs[3]) || strs[3].contains("nan")) ? "0" : strs[3]);
+        sensorInfo.setPolynomialRatioA(strs[4]);
         sensorInfo.setReferenceValue(strs[5]);
         sensorInfo.setManualCorrection(strs[6]);
+        sensorInfo.setTemperatureCoefficientB(strs[7]);
+        sensorInfo.setCreateTemperature(strs[8]);
         bean.setSensorData(sensorInfo);
 
         return bean;

@@ -39,7 +39,7 @@
         <TextView
             style="@style/TextView_Sensor_Config_Item"
             android:drawableLeft="@drawable/ic_required"
-            android:text="温修系数b" />
+            android:text="温修系数B" />
 
         <EditText
             android:id="@+id/temperatureCoefficient"
