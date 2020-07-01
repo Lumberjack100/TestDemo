@@ -49,7 +49,6 @@
         android:theme="@style/AppTheme"
         tools:ignore="LockedOrientationActivity"
         tools:targetApi="p">
-        <activity android:name=".maps.ui.activity.RouteDistanceActivity"></activity>
 
         <meta-data
             android:name="com.amap.api.v2.apikey"
@@ -270,6 +269,13 @@
         <!--Activity在高德 SDK内部实现 -->
         <activity android:name="com.amap.api.maps.offlinemap.OfflineMapActivity"
             android:screenOrientation="portrait"  />
+
+        <activity android:name="com.amap.api.navi.AmapRouteActivity"
+            android:theme="@android:style/Theme.NoTitleBar"
+            android:configChanges="orientation|keyboardHidden|screenSize" />
+
+        <activity android:name=".maps.ui.activity.RouteDistanceActivity"/>
+
 
         <activity
             android:name=".ui.activity.TestBluetoothListActivity"

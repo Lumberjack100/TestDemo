@@ -39,6 +39,10 @@ import com.amap.api.maps.model.MyLocationStyle;
 import com.amap.api.maps.model.Poi;
 import com.amap.api.maps.model.Polyline;
 import com.amap.api.maps.model.PolylineOptions;
+import com.amap.api.navi.AmapNaviPage;
+import com.amap.api.navi.AmapNaviParams;
+import com.amap.api.navi.AmapNaviType;
+import com.amap.api.navi.AmapPageType;
 import com.amap.api.services.core.AMapException;
 import com.amap.api.services.core.LatLonPoint;
 import com.amap.api.services.core.PoiItem;
@@ -377,13 +381,7 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
         }
 
         //显示底部POI详情
-        if (mPoiDetailBottomView.getVisibility() == View.GONE) {
-            showPoiDetail("我的位置", String.format("在%s附近", mPoiName));
-            moveGspButtonAbove();
-        } else {
-            mPoiDetailBottomView.tvPoiTitle.setText("我的位置");
-            mPoiDetailBottomView.tvPoiDistance.setText(String.format("在%s附近", mPoiName));
-        }
+        showPoiDetailBottomView("我的位置", String.format("在%s附近", mPoiName));
 
         aMap.setMyLocationEnabled(true);
         //改变定位图标状态
@@ -424,7 +422,7 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
             if (!isPoiClick) {
                 // 点击poi时,定位位置和点击位置不一定一样
                 mPoiName = aMapLocation.getPoiName();
-                showPoiNameText(String.format("在%s附近", mPoiName));
+                mPoiDetailBottomView.tvPoiDistance.setText(String.format("在%s附近", mPoiName));
             }
         }
         Timber.d("定位成功，onLocationChanged： Longitude=" + lng + ",Latitude=" + lat + ",poiName=" + mPoiName + ",getDescription=" + aMapLocation.getDescription() + ", address=" + aMapLocation.getAddress() + ",getLocationDetail" + aMapLocation.getLocationDetail() + ",street=" + aMapLocation.getStreet());
@@ -792,7 +790,10 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
         mMapSearchView.setVisibility(!isOpen ? View.VISIBLE : View.GONE);
         mSupendPartitionView.setVisibility(!isOpen ? View.VISIBLE : View.GONE);
         mRouteView.setVisibility(!isOpen ? View.VISIBLE : View.GONE);
+        resetGpsButtonPosition();
+        mPoiDetailBottomView.setVisibility(View.GONE);
         aMap.setAMapGestureListener(!isOpen ? this : null);
+        aMap.setOnPOIClickListener(!isOpen ? this : null);
         mDistanceToolbarView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
@@ -869,7 +870,9 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
      */
     @Override
     public void onNaviClick() {
-
+        AmapNaviParams amapNaviParams = new AmapNaviParams(new Poi("我的位置", mLatLng, ""), null, new Poi(mPoiName, mClickPoiLatLng, ""), AmapNaviType.DRIVER, AmapPageType.NAVI);//, AmapPageType.NAVI
+        amapNaviParams.setUseInnerVoice(true);
+        AmapNaviPage.getInstance().showRouteActivity(getApplicationContext(), amapNaviParams, null);
     }
 
     /**
@@ -922,13 +925,7 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
     private void showClickPoiDetail(LatLng latLng, String poiName) {
         mPoiName = poiName;
         String distanceStr = MyAMapUtils.calculateDistanceStr(mLatLng, latLng);
-        if (mPoiDetailBottomView.getVisibility() == View.GONE) {
-            showPoiDetail(poiName, String.format("距离您%s", distanceStr));
-            moveGspButtonAbove();
-        } else {
-            mPoiDetailBottomView.tvPoiTitle.setText(poiName);
-            mPoiDetailBottomView.tvPoiDistance.setText(String.format("距离您%s", distanceStr));
-        }
+        showPoiDetailBottomView(poiName, String.format("距离您%s", distanceStr));
     }
 
     /**
@@ -981,14 +978,15 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
         mLocationMarker = aMap.addMarker(markerOptions);
     }
 
-
-    /**
-     * 隐藏底部POI详情
-     */
-    public void hidePoiDetail() {
-        mPoiDetailBottomView.setVisibility(View.GONE);
-        //gsp控件回退到原来位置、并显示底部其他控件
-        mRouteView.setVisibility(View.VISIBLE);
+    private void showPoiDetailBottomView(String locTitle, String locInfo) {
+        if (mPoiDetailBottomView.getVisibility() == View.GONE) {
+            showPoiDetail(locTitle, locInfo);
+            moveGspButtonAbove();
+        } else {
+            mPoiDetailBottomView.tvPoiTitle.setText(locTitle);
+            mPoiDetailBottomView.tvPoiDistance.setText(locInfo);
+        }
+        mPoiDetailBottomView.tvNavi.setVisibility(locTitle.equals("我的位置") ? View.GONE : View.VISIBLE);
     }
 
     /**
@@ -998,19 +996,20 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
      * @param locInfo  定位信息,比如当前在什么附近/距离当前位置多少米
      */
     public void showPoiDetail(String locTitle, String locInfo) {
-        mPoiDetailBottomView.setVisibility(View.VISIBLE);
         mGpsView.setVisibility(View.VISIBLE);
         mRouteView.setVisibility(View.GONE);
-        //我的位置
+        mPoiDetailBottomView.setVisibility(View.VISIBLE);
         mPoiDetailBottomView.tvPoiTitle.setText(locTitle);
         mPoiDetailBottomView.tvPoiDistance.setText(locInfo);
     }
 
     /**
-     * 显示当前所在poi点信息
+     * 隐藏底部POI详情
      */
-    private void showPoiNameText(String locInfo) {
-        mPoiDetailBottomView.tvPoiDistance.setText(locInfo);
+    public void hidePoiDetail() {
+        //gsp控件回退到原来位置、并显示底部其他控件
+        mRouteView.setVisibility(View.VISIBLE);
+        mPoiDetailBottomView.setVisibility(View.GONE);
     }
 
     /**
@@ -1070,8 +1069,8 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
                     isPoiClick = true;
 
                     LatLonPoint point = poiItem.getLatLonPoint();
-                    LatLng latLng = new LatLng(point.getLatitude(), point.getLongitude());
-                    addPOIMarderAndShowDetail(latLng, poiItem.getTitle());
+                    mClickPoiLatLng = new LatLng(point.getLatitude(), point.getLongitude());
+                    addPOIMarderAndShowDetail(mClickPoiLatLng, poiItem.getTitle());
                 }
                 break;
 

@@ -198,12 +198,15 @@ dependencies {
     implementation "com.github.CymChad:BaseRecyclerViewAdapterHelper:$rootProject.thirdLib.BaseRecyclerViewAdapterHelper"
     implementation "gdut.bsx:share2:$rootProject.thirdLib.bsxShare"
 
+    //导航
+    implementation "com.amap.api:navi-3dmap:$rootProject.thirdLib.amapNavi"
     //3D地图so及jar
-    implementation "com.amap.api:3dmap:$rootProject.thirdLib.amap3dMap"
+//    implementation "com.amap.api:3dmap:$rootProject.thirdLib.amap3dMap"
     //定位功能
     implementation "com.amap.api:location:$rootProject.thirdLib.amapLocation"
     //搜索
     implementation "com.amap.api:search:$rootProject.thirdLib.amapSearch"
+
 
     testImplementation "junit:junit:$rootProject.thirdLib.junit"
     androidTestImplementation "androidx.test:runner:$rootProject.thirdLib.runner"
