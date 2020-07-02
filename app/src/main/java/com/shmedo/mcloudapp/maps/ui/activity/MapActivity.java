@@ -133,7 +133,7 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
     private static final int STATE_LOCKED = 1;//定位状态
     private static final int STATE_ROTATE = 2;//根据地图方向旋转状态
     private int mCurrentGpsState = STATE_UNLOCKED;//当前定位状态
-    private int mZoomLevel = 15;//地图缩放级别，最大缩放级别为20
+    private float mZoomLevel = 16;//地图的缩放级别一共分为 17 级，从 3 到 19。数字越大，展示的图面信息越精细。
     private LatLng mLatLng;//当前定位经纬度
     private LatLng mClickPoiLatLng;//当前点击的poi经纬度
     private static long mAnimDuartion = 500L;//地图动效时长
@@ -370,7 +370,7 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
 
             case STATE_UNLOCKED:
             case STATE_ROTATE:
-                mZoomLevel = 15;
+                mZoomLevel = 16;
                 mCurrentGpsState = STATE_LOCKED;
                 //连续定位、蓝点不会移动到地图中心点，定位点依照设备方向旋转，并且蓝点会跟随设备移动。
                 mMapType = MyLocationStyle.LOCATION_TYPE_LOCATION_ROTATE_NO_CENTER;
@@ -443,7 +443,7 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
                     mGpsView.setGpsState(mCurrentGpsState);
                     mMapType = MyLocationStyle.LOCATION_TYPE_LOCATE;
                     addCircle(mLatLng, mAccuracy);//添加定位精度圆
-                    addLockedMarker(mLatLng);//添加定位图标
+                    addLocationLockedMarker(mLatLng);//添加定位图标
                     mSensorHelper.setCurrentMarker(mLocationMarker);//定位图标旋转
                     isFirstLocation = false;
                 }
@@ -835,7 +835,12 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
      */
     @Override
     public void onZoomInClick() {
-        aMap.moveCamera(CameraUpdateFactory.zoomIn());
+        mZoomLevel = aMap.getCameraPosition().zoom + 1;
+        if (mZoomLevel > 19) {
+            ToastUtils.show("已放大至最高级别");
+            return;
+        }
+        aMap.moveCamera(CameraUpdateFactory.zoomTo(mZoomLevel));
     }
 
     /**
@@ -843,7 +848,12 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
      */
     @Override
     public void onZoomOutClick() {
-        aMap.moveCamera(CameraUpdateFactory.zoomOut());
+        mZoomLevel = aMap.getCameraPosition().zoom - 1;
+        if (mZoomLevel < 3) {
+            ToastUtils.show("已缩小至最低级别");
+            return;
+        }
+        aMap.moveCamera(CameraUpdateFactory.zoomTo(mZoomLevel));
     }
 
     /**
@@ -903,11 +913,18 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
 
 
     private void addPOIMarker(LatLng latLng) {
-        aMap.clear();
-        MarkerOptions markOptiopns = new MarkerOptions();
-        markOptiopns.position(latLng);
-        markOptiopns.icon(BitmapDescriptorFactory.fromResource(R.drawable.poi_mark));
-        poiMarker = aMap.addMarker(markOptiopns);
+//        aMap.clear();
+        if (poiMarker == null) {
+            MarkerOptions markOptiopns = new MarkerOptions();
+            markOptiopns.position(latLng);
+            markOptiopns.icon(BitmapDescriptorFactory.fromResource(R.drawable.poi_mark));
+            poiMarker = aMap.addMarker(markOptiopns);
+        } else {
+            LatLng curLatlng = poiMarker.getPosition();
+            if (curLatlng == null || !curLatlng.equals(latLng)) {
+                poiMarker.setPosition(latLng);
+            }
+        }
     }
 
     /**
@@ -923,15 +940,18 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
      * 根据当前地图状态重置定位蓝点
      */
     private void resetLocationMarker() {
-        aMap.clear();
-        mLocationMarker = null;
+//        aMap.clear();
+//        mLocationMarker = null;
+        if (mLocationMarker != null) {
+            mLocationMarker.destroy();
+        }
         if (mGpsView.getGpsState() == GPSView.STATE_ROTATE) {
             //ROTATE模式不需要方向传感器
             //mSensorHelper.unRegisterSensorListener();
-            addRotateMarker(mLatLng);
+            addLocationRotateMarker(mLatLng);
         } else {
             //mSensorHelper.registerSensorListener();
-            addLockedMarker(mLatLng);
+            addLocationLockedMarker(mLatLng);
             if (null != mLocationMarker) {
                 mSensorHelper.setCurrentMarker(mLocationMarker);
             }
@@ -950,7 +970,7 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
         mCircle = aMap.addCircle(options);
     }
 
-    private void addLockedMarker(LatLng latlng) {
+    private void addLocationLockedMarker(LatLng latlng) {
         MarkerOptions markerOptions = new MarkerOptions();
         markerOptions.icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(this.getResources(),
                 R.drawable.icon_map_gps_locked)));
@@ -959,7 +979,7 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
         mLocationMarker = aMap.addMarker(markerOptions);
     }
 
-    private void addRotateMarker(LatLng latlng) {
+    private void addLocationRotateMarker(LatLng latlng) {
         MarkerOptions markerOptions = new MarkerOptions();
         //3D效果
         markerOptions.icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(this.getResources(),
@@ -1027,6 +1047,11 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
                     mGspContainer.setTranslationY(-moveY);
                     mGpsView.setAbovePoiDetail(true);
                 }
+
+                //设置 MapView 的bottomMargin
+                FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(mMapView.getLayoutParams());
+                layoutParams.bottomMargin = mPoiDetailBottomView.getHeight();
+                mMapView.setLayoutParams(layoutParams);
             }
         });
     }
@@ -1047,6 +1072,11 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
                 mZoomView.setTranslationY(0);
                 mGspContainer.setTranslationY(0);
                 mGpsView.setAbovePoiDetail(false);
+
+                //设置 MapView 的bottomMargin
+                FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(mMapView.getLayoutParams());
+                layoutParams.bottomMargin = 0;
+                mMapView.setLayoutParams(layoutParams);
             }
         });
     }
