@@ -9,6 +9,7 @@ import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
@@ -28,6 +29,7 @@ import com.amap.api.maps.CameraUpdateFactory;
 import com.amap.api.maps.LocationSource;
 import com.amap.api.maps.TextureMapView;
 import com.amap.api.maps.model.AMapGestureListener;
+import com.amap.api.maps.model.BitmapDescriptor;
 import com.amap.api.maps.model.BitmapDescriptorFactory;
 import com.amap.api.maps.model.CameraPosition;
 import com.amap.api.maps.model.Circle;
@@ -54,6 +56,7 @@ import com.hjq.toast.ToastUtils;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.interfaces.Extras;
 import com.shmedo.mcloudapp.maps.model.MapLayerInfo;
+import com.shmedo.mcloudapp.maps.model.MapMode;
 import com.shmedo.mcloudapp.maps.ui.view.DistanceToolbarView;
 import com.shmedo.mcloudapp.maps.ui.view.GPSView;
 import com.shmedo.mcloudapp.maps.ui.view.LocationTitleView;
@@ -147,16 +150,15 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
     private boolean onScrolling;//正在滑动地图
     // 当前是否正在处理POI点击
     private boolean isPoiClick;
-    private boolean slideDown;//向下滑动
     private float mAccuracy;
     private int moveY;
     private int[] mBottomSheetLoc = new int[2];
     private String mPoiName;//POI的名称
     private String mCityName;//定位所在城市
     private Marker poiMarker;
+    private MapMode mMapMode = MapMode.NORMAL;
 
     //以下变量是测距所需
-    private boolean isDistanceMode = false;//是否打开测距工具
     private int markerHeight;
     private int markerWidth;
     private List<LatLng> latLngList = new ArrayList<>();
@@ -235,6 +237,7 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
         }
         if (mLocationMarker != null) {
             mLocationMarker.destroy();
+            mLocationMarker = null;
         }
     }
 
@@ -342,7 +345,7 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
                 break;
 
             case R.id.measureDistanceView://测距按钮
-                isDistanceMode = true;
+                mMapMode = MapMode.CACULATE_DISTANCE;
                 setDistanceToolbarViewVisibility(true);
                 mDrawerLayout.closeDrawer(GravityCompat.START);
                 break;
@@ -378,8 +381,10 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
                 break;
         }
 
-        //显示底部POI详情
-        showPoiDetailBottomView("我的位置", String.format("在%s附近", mPoiName));
+        if (mMapMode == MapMode.NORMAL) {
+            //显示底部POI详情
+            showPoiDetailBottomView("我的位置", String.format("在%s附近", mPoiName));
+        }
 
         aMap.setMyLocationEnabled(true);
         //改变定位图标状态
@@ -442,7 +447,7 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
                     mCurrentGpsState = STATE_LOCKED;
                     mGpsView.setGpsState(mCurrentGpsState);
                     mMapType = MyLocationStyle.LOCATION_TYPE_LOCATE;
-                    addCircle(mLatLng, mAccuracy);//添加定位精度圆
+                    addCircle();//添加定位精度圆
                     addLocationLockedMarker(mLatLng);//添加定位图标
                     mSensorHelper.setCurrentMarker(mLocationMarker);//定位图标旋转
                     isFirstLocation = false;
@@ -616,7 +621,7 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
      */
     @Override
     public void onCancelDistanceClick() {
-        isDistanceMode = false;
+        mMapMode = MapMode.NORMAL;
         onClearMarkersClick();
         setDistanceToolbarViewVisibility(false);
     }
@@ -666,11 +671,13 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
     public void onClearMarkersClick() {
         mDistanceToolbarView.mIvRemoveMarker.setEnabled(false);
         mDistanceToolbarView.mIvClearMarkers.setEnabled(false);
-        aMap.clear();
+        mDistanceToolbarView.mTvDistance.setText("0米");
         latLngList.clear();
         markerList.clear();
         polylineList.clear();
-        mDistanceToolbarView.mTvDistance.setText("0米");
+        aMap.clear();
+        aMap.addMarker(mLocationMarker.getOptions());
+        addCircle();
     }
 
 
@@ -682,7 +689,7 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
     @Override
     public void onMapClick(LatLng latLng) {
         //打开测距模式下
-        if (isDistanceMode) {
+        if (mMapMode == MapMode.CACULATE_DISTANCE) {
             addMarkersForDistance(latLng);
             if (latLngList.size() >= 2) {
                 addPolylinesForDistance();
@@ -788,20 +795,23 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
         mMapSearchView.setVisibility(!isOpen ? View.VISIBLE : View.GONE);
         mSupendPartitionView.setVisibility(!isOpen ? View.VISIBLE : View.GONE);
         mRouteView.setVisibility(!isOpen ? View.VISIBLE : View.GONE);
-        resetGpsButtonPosition();
         mPoiDetailBottomView.setVisibility(View.GONE);
-        aMap.setAMapGestureListener(!isOpen ? this : null);
-        aMap.setOnPOIClickListener(!isOpen ? this : null);
+        if (isOpen) {
+            if (poiMarker != null)
+                poiMarker.destroy();
+            resetGpsButtonPosition();
+        }
         mDistanceToolbarView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
                 mDistanceToolbarView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-
                 FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(mMapView.getLayoutParams());
                 layoutParams.topMargin = isOpen ? mDistanceToolbarView.getHeight() : 0;
                 mMapView.setLayoutParams(layoutParams);
             }
         });
+        aMap.setAMapGestureListener(!isOpen ? this : null);
+        aMap.setOnPOIClickListener(!isOpen ? this : null);
     }
 
     /**
@@ -860,16 +870,15 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
      * 关闭点位详情框
      */
     @Override
-    public void onCloseClick() {
-        resetGpsButtonPosition();
-        hidePoiDetail();
+    public void onPoiCloseClick() {
+        hidePoiDetailBottomView();
     }
 
     /**
      * 分享点位信息
      */
     @Override
-    public void onShareClick() {
+    public void onPoiShareClick() {
 
     }
 
@@ -877,7 +886,7 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
      * 跳转点位导航
      */
     @Override
-    public void onNaviClick() {
+    public void onPoiNaviClick() {
         AmapNaviParams amapNaviParams = new AmapNaviParams(new Poi("我的位置", mLatLng, ""), null, new Poi(mPoiName, mClickPoiLatLng, ""), AmapNaviType.DRIVER, AmapPageType.NAVI);//, AmapPageType.NAVI
         amapNaviParams.setUseInnerVoice(true);
         AmapNaviPage.getInstance().showRouteActivity(getApplicationContext(), amapNaviParams, null);
@@ -887,7 +896,7 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
      * 跳转点位路线
      */
     @Override
-    public void onRouteClick() {
+    public void onPoiRouteClick() {
 
     }
 
@@ -913,18 +922,10 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
 
 
     private void addPOIMarker(LatLng latLng) {
-//        aMap.clear();
-        if (poiMarker == null) {
-            MarkerOptions markOptiopns = new MarkerOptions();
-            markOptiopns.position(latLng);
-            markOptiopns.icon(BitmapDescriptorFactory.fromResource(R.drawable.poi_mark));
-            poiMarker = aMap.addMarker(markOptiopns);
-        } else {
-            LatLng curLatlng = poiMarker.getPosition();
-            if (curLatlng == null || !curLatlng.equals(latLng)) {
-                poiMarker.setPosition(latLng);
-            }
-        }
+        MarkerOptions markOptiopns = new MarkerOptions();
+        markOptiopns.position(latLng);
+        markOptiopns.icon(BitmapDescriptorFactory.fromResource(R.drawable.poi_mark));
+        poiMarker = aMap.addMarker(markOptiopns);
     }
 
     /**
@@ -940,11 +941,6 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
      * 根据当前地图状态重置定位蓝点
      */
     private void resetLocationMarker() {
-//        aMap.clear();
-//        mLocationMarker = null;
-        if (mLocationMarker != null) {
-            mLocationMarker.destroy();
-        }
         if (mGpsView.getGpsState() == GPSView.STATE_ROTATE) {
             //ROTATE模式不需要方向传感器
             //mSensorHelper.unRegisterSensorListener();
@@ -957,72 +953,82 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
             }
         }
 
-        addCircle(mLatLng, mAccuracy);
+        addCircle();
     }
 
-    private void addCircle(LatLng latlng, double radius) {
+    private void addCircle() {
+        if (mCircle != null) {
+            mCircle.remove();
+        }
         CircleOptions options = new CircleOptions();
         options.strokeWidth(1f);
         options.fillColor(Color.argb(10, 0, 0, 180));
         options.strokeColor(Color.argb(240, 3, 145, 255));
-        options.center(latlng);
-        options.radius(radius);
         mCircle = aMap.addCircle(options);
+        mCircle.setCenter(mLatLng);
+        mCircle.setRadius(mAccuracy);
     }
 
     private void addLocationLockedMarker(LatLng latlng) {
+        if (mLocationMarker != null) {
+            mLocationMarker.destroy();
+        }
+        BitmapDescriptor bitmapDescriptor = BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(this.getResources(),
+                R.drawable.icon_map_gps_locked));
         MarkerOptions markerOptions = new MarkerOptions();
-        markerOptions.icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(this.getResources(),
-                R.drawable.icon_map_gps_locked)));
+        markerOptions.icon(bitmapDescriptor);
         markerOptions.anchor(0.5f, 0.5f);
         markerOptions.position(latlng);
         mLocationMarker = aMap.addMarker(markerOptions);
     }
 
     private void addLocationRotateMarker(LatLng latlng) {
+        if (mLocationMarker != null) {
+            mLocationMarker.destroy();
+        }
+        BitmapDescriptor bitmapDescriptor = BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(this.getResources(),
+                R.drawable.icon_gps_rotate));
         MarkerOptions markerOptions = new MarkerOptions();
         //3D效果
-        markerOptions.icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(this.getResources(),
-                R.drawable.icon_gps_rotate)));
+        markerOptions.icon(bitmapDescriptor);
         markerOptions.anchor(0.5f, 0.5f);
         markerOptions.position(latlng);
         mLocationMarker = aMap.addMarker(markerOptions);
     }
 
-    private void showPoiDetailBottomView(String locTitle, String locInfo) {
-        if (mPoiDetailBottomView.getVisibility() == View.GONE) {
-            showPoiDetail(locTitle, locInfo);
-            moveGspButtonAbove();
-        } else {
-            mPoiDetailBottomView.tvPoiTitle.setText(locTitle);
-            mPoiDetailBottomView.tvPoiDistance.setText(locInfo);
-        }
-        mPoiDetailBottomView.tvNavi.setVisibility(locTitle.equals("我的位置") ? View.GONE : View.VISIBLE);
-    }
-
     /**
-     * 显示底部POI详情
+     * 底部显示POI详情
      *
      * @param locTitle 定位标题,比如当前所在位置名称
      * @param locInfo  定位信息,比如当前在什么附近/距离当前位置多少米
      */
-    public void showPoiDetail(String locTitle, String locInfo) {
-        mGpsView.setVisibility(View.VISIBLE);
-        mRouteView.setVisibility(View.GONE);
-        mPoiDetailBottomView.setVisibility(View.VISIBLE);
+    private void showPoiDetailBottomView(String locTitle, String locInfo) {
+        mMapMode = MapMode.SHOW_POIDETAIL;
+        if (mPoiDetailBottomView.getVisibility() == View.GONE) {
+            mGpsView.setVisibility(View.VISIBLE);
+            mRouteView.setVisibility(View.GONE);
+            mPoiDetailBottomView.setVisibility(View.VISIBLE);
+            moveGspButtonAbove();
+        }
         mPoiDetailBottomView.tvPoiTitle.setText(locTitle);
         mPoiDetailBottomView.tvPoiDistance.setText(locInfo);
+        mPoiDetailBottomView.tvNavi.setVisibility(locTitle.equals("我的位置") ? View.GONE : View.VISIBLE);
     }
+
 
     /**
      * 隐藏底部POI详情
      */
-    public void hidePoiDetail() {
+    public void hidePoiDetailBottomView() {
+        mMapMode = MapMode.NORMAL;
         //gsp控件回退到原来位置、并显示底部其他控件
         mRouteView.setVisibility(View.VISIBLE);
         mPoiDetailBottomView.setVisibility(View.GONE);
-        if (poiMarker != null)
+        if (poiMarker != null) {
             poiMarker.destroy();
+            poiMarker = null;
+        }
+        resetGpsButtonPosition();
     }
 
     /**
@@ -1092,13 +1098,36 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
                 if (intent != null) {
                     PoiItem poiItem = intent.getParcelableExtra(Extras.POIITEM_INFO);
                     isPoiClick = true;
-
                     LatLonPoint point = poiItem.getLatLonPoint();
                     mClickPoiLatLng = new LatLng(point.getLatitude(), point.getLongitude());
                     addPOIMarderAndShowDetail(mClickPoiLatLng, poiItem.getTitle());
                 }
                 break;
-
         }
     }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        // 处理返回键
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            if (mMapMode == MapMode.NORMAL) {
+                if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
+                    mDrawerLayout.closeDrawer(GravityCompat.START);
+                    return true;
+                } else {
+                    return super.onKeyDown(keyCode, event);
+                }
+            } else if (mMapMode == MapMode.SHOW_POIDETAIL) {
+                mMapMode = MapMode.NORMAL;
+                onPoiCloseClick();
+                return true;
+            } else if (mMapMode == MapMode.CACULATE_DISTANCE) {
+                mMapMode = MapMode.NORMAL;
+                onCancelDistanceClick();
+                return true;
+            }
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+
 }

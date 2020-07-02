@@ -65,19 +65,19 @@ public class PoiDetailBottomView extends LinearLayout {
 
         switch (view.getId()) {
             case R.id.iv_close:
-                mListener.onCloseClick();
+                mListener.onPoiCloseClick();
                 break;
 
             case R.id.tv_share:
-                mListener.onShareClick();
+                mListener.onPoiShareClick();
                 break;
 
             case R.id.tv_navigation:
-                mListener.onNaviClick();
+                mListener.onPoiNaviClick();
                 break;
 
             case R.id.tv_route:
-                mListener.onRouteClick();
+                mListener.onPoiRouteClick();
                 break;
         }
     }
@@ -93,22 +93,22 @@ public class PoiDetailBottomView extends LinearLayout {
         /**
          * 关闭点位详情框
          */
-        void onCloseClick();
+        void onPoiCloseClick();
 
         /**
          * 分享
          */
-        void onShareClick();
+        void onPoiShareClick();
 
         /**
          * 导航
          */
-        void onNaviClick();
+        void onPoiNaviClick();
 
         /**
          * 路线
          */
-        void onRouteClick();
+        void onPoiRouteClick();
     }
 
 }
