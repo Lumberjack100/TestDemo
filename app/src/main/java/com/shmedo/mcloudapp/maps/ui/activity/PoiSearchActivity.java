@@ -47,6 +47,8 @@ import butterknife.BindView;
 import butterknife.OnClick;
 
 public class PoiSearchActivity extends BaseActivity implements TextWatcher, PoiSearch.OnPoiSearchListener {
+    private static final String ARG_PARAM1 = "param1";
+
     @BindView(R.id.et_search_tip)
     EditText mEtSearchTip;
 
@@ -68,14 +70,15 @@ public class PoiSearchActivity extends BaseActivity implements TextWatcher, PoiS
     private static final int PAGE_SIZE = 10;
 
 
-    private String keyWord = "";// 要输入的poi搜索关键字
-    private String city = "上海";
+    private String keyWord;// 要输入的poi搜索关键字
+    private String cityName;
 
     private PageInfo pageInfo = new PageInfo();
 
 
-    public static void startActivityForResult(Activity activity, int requestCode) {
+    public static void startActivityForResult(Activity activity, String cityName, int requestCode) {
         Intent intent = new Intent(activity, PoiSearchActivity.class);
+        intent.putExtra(ARG_PARAM1, cityName);
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         activity.startActivityForResult(intent, requestCode);
     }
@@ -89,6 +92,7 @@ public class PoiSearchActivity extends BaseActivity implements TextWatcher, PoiS
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 //        initStates();
+        parseIntent();
         initView();
         initAdapter();
         initLoadMore();
@@ -103,6 +107,13 @@ public class PoiSearchActivity extends BaseActivity implements TextWatcher, PoiS
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
             //透明导航栏
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
+        }
+    }
+
+    private void parseIntent() {
+        Intent intent = getIntent();
+        if (intent != null) {
+            cityName = intent.getStringExtra(ARG_PARAM1);
         }
     }
 
@@ -213,7 +224,7 @@ public class PoiSearchActivity extends BaseActivity implements TextWatcher, PoiS
         }
 
         keyWord = s.toString();
-        if (!TextUtils.isEmpty(keyWord) && !TextUtils.isEmpty(city)) {
+        if (!TextUtils.isEmpty(keyWord) && !TextUtils.isEmpty(cityName)) {
             // 需要重置页数
             pageInfo.reset();
             doSearchQuery();
@@ -228,7 +239,7 @@ public class PoiSearchActivity extends BaseActivity implements TextWatcher, PoiS
      */
     protected void doSearchQuery() {
         // 第一个参数表示搜索字符串，第二个参数表示poi搜索类型，第三个参数表示poi搜索区域（空字符串代表全国）
-        query = new PoiSearch.Query(keyWord, "", city);
+        query = new PoiSearch.Query(keyWord, "", cityName);
         // 设置每页最多返回多少条poiitem
         query.setPageSize(PAGE_SIZE);
         // 设置查第一页
