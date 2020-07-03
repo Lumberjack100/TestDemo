@@ -152,4 +152,7 @@
     <string name="sear_loc_bus_subway">查找地点、公交、地铁</string>
     <string name="please_open_gps">请开启定位</string>
 
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
 </resources>

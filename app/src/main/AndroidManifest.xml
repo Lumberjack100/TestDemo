@@ -274,8 +274,6 @@
             android:theme="@android:style/Theme.NoTitleBar"
             android:configChanges="orientation|keyboardHidden|screenSize" />
 
-        <activity android:name=".maps.ui.activity.RouteDistanceActivity"/>
-
 
         <activity
             android:name=".ui.activity.TestBluetoothListActivity"
