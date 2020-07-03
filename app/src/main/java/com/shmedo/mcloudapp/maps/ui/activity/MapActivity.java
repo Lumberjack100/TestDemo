@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewTreeObserver;
@@ -36,18 +35,14 @@ import com.amap.api.maps.model.LatLng;
 import com.amap.api.maps.model.Marker;
 import com.amap.api.maps.model.MarkerOptions;
 import com.amap.api.maps.model.MyLocationStyle;
-import com.amap.api.maps.model.Poi;
-import com.amap.api.navi.AmapNaviPage;
-import com.amap.api.navi.AmapNaviParams;
-import com.amap.api.navi.AmapNaviType;
-import com.amap.api.navi.AmapPageType;
 import com.amap.api.services.core.LatLonPoint;
 import com.amap.api.services.core.PoiItem;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.hjq.toast.ToastUtils;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.interfaces.Extras;
-import com.shmedo.mcloudapp.maps.callback.GaoDeCaculateDistanceListener;
+import com.shmedo.mcloudapp.maps.callback.GaoDeCaculateDistanceHelper;
+import com.shmedo.mcloudapp.maps.callback.GaoDePoiProcessHelper;
 import com.shmedo.mcloudapp.maps.model.MapLayerInfo;
 import com.shmedo.mcloudapp.maps.model.MapMode;
 import com.shmedo.mcloudapp.maps.ui.view.DistanceToolbarView;
@@ -62,7 +57,6 @@ import com.shmedo.mcloudapp.maps.ui.view.SupendPartitionView;
 import com.shmedo.mcloudapp.maps.ui.view.ZoomView;
 import com.shmedo.mcloudapp.maps.util.AMapLocationUtil;
 import com.shmedo.mcloudapp.maps.util.CoordinateFormatUtils;
-import com.shmedo.mcloudapp.maps.util.MyAMapUtils;
 import com.shmedo.mcloudapp.maps.util.SensorEventHelper;
 import com.shmedo.mcloudapp.util.LocationUtils;
 
@@ -70,7 +64,7 @@ import butterknife.BindView;
 import butterknife.OnClick;
 import timber.log.Timber;
 
-public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap.OnPOIClickListener, AMapGestureListener, AMapLocationListener, LocationSource, MapSearchView.OnMapHeaderViewClickListener, NaviMapLayerView.OnMapLayerItemClickListener, PoiDetailBottomView.OnPoiDetailBottomClickListener, ZoomView.OnZoomViewClickListener {
+public class MapActivity extends CheckMapNeedPermissionsActivity implements AMapGestureListener, AMapLocationListener, LocationSource, MapSearchView.OnMapHeaderViewClickListener, NaviMapLayerView.OnMapLayerItemClickListener, ZoomView.OnZoomViewClickListener {
     public static final int REQUEST_CODE_POI_SEARCH = 0x011;
 
     @BindView(R.id.map)
@@ -119,34 +113,30 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
     private AMapLocation mAmapLocation;
     private OnLocationChangedListener mOnLocationChangedListener;
 
-    private static final int STATE_UNLOCKED = 0;//未定位状态，默认状态
-    private static final int STATE_LOCKED = 1;//定位状态
-    private static final int STATE_ROTATE = 2;//根据地图方向旋转状态
-    private int mCurrentGpsState = STATE_UNLOCKED;//当前定位状态
-    private float mZoomLevel = 16;//地图的缩放级别一共分为 17 级，从 3 到 19。数字越大，展示的图面信息越精细。
-    private LatLng mLatLng;//当前定位经纬度
-    private LatLng mClickPoiLatLng;//当前点击的poi经纬度
-    private static long mAnimDuartion = 500L;//地图动效时长
-    private int mMapType = MyLocationStyle.LOCATION_TYPE_LOCATION_ROTATE_NO_CENTER;//地图状态类型
-    private SensorEventHelper mSensorHelper;
+    public static final int STATE_UNLOCKED = 0;//未定位状态，默认状态
+    public static final int STATE_LOCKED = 1;//定位状态
+    public static final int STATE_ROTATE = 2;//根据地图方向旋转状态
+    public int mCurrentGpsState = STATE_UNLOCKED;//当前定位状态
+    public float mZoomLevel = 16;//地图的缩放级别一共分为 17 级，从 3 到 19。数字越大，展示的图面信息越精细。
+    public LatLng mLatLng;//当前定位经纬度
+    public static long mAnimDuartion = 500L;//地图动效时长
+    public int mMapType = MyLocationStyle.LOCATION_TYPE_LOCATION_ROTATE_NO_CENTER;//地图状态类型
+    public SensorEventHelper mSensorHelper;
     public Marker mLocationMarker;//自定义小蓝点
-    private Circle mCircle;
+    public Circle mCircle;
 
-    private boolean isFirstLocation = true;//第一次定位
-    private boolean isCanMoveToCenter = true;//是否可以移动地图到定位点
-    private boolean onScrolling;//正在滑动地图
+    public boolean isFirstLocation = true;//第一次定位
+    public boolean isCanMoveToCenter = true;//是否可以移动地图到定位点
+    public boolean onScrolling;//正在滑动地图
     // 当前是否正在处理POI点击
-    private boolean isPoiClick;
-    private float mAccuracy;
-    private int moveY;
-    private int[] mBottomSheetLoc = new int[2];
-    private String mPoiName;//POI的名称
-    private String mCityName;//定位所在城市
-    private Marker poiMarker;
+    public boolean isPoiClick;
+    public float mAccuracy;
+    public String mPoiName;//POI的名称
+    public String mCityName;//定位所在城市
     public MapMode mMapMode = MapMode.NORMAL;
 
-    private GaoDeCaculateDistanceListener gaoDeCaculateDistanceListener;
-
+    private GaoDeCaculateDistanceHelper gaoDeCaculateDistanceHelper;
+    private GaoDePoiProcessHelper gaoDePoiProcessHelper;
 
     public static void startActivity(Context context) {
         Intent intent = new Intent(context, MapActivity.class);
@@ -263,16 +253,14 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
     private void setListener() {
         //地图手势事件
         aMap.setAMapGestureListener(this);
-        // 地图poi点击
-        aMap.setOnPOIClickListener(this);
         mSensorHelper = new SensorEventHelper(this);
         mSensorHelper.registerSensorListener();
         mMapSearchView.setOnMapHeaderViewClickListener(this);
         mNaviMapLayerView.setOnMapLayerItemClickListener(this);
         mZoomView.setOnZoomViewClickListener(this);
-        mPoiDetailBottomView.setOnPoiDetailBottomClickListener(this);
 
-        gaoDeCaculateDistanceListener = new GaoDeCaculateDistanceListener(this);
+        gaoDeCaculateDistanceHelper = new GaoDeCaculateDistanceHelper(this);
+        gaoDePoiProcessHelper = new GaoDePoiProcessHelper(this);
     }
 
 
@@ -354,9 +342,10 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
                 break;
         }
 
-        if (mMapMode == MapMode.NORMAL) {
+        if (mMapMode != MapMode.CACULATE_DISTANCE) {
+            gaoDePoiProcessHelper.destroyPoiMarker();
             //显示底部POI详情
-            showPoiDetailBottomView("我的位置", String.format("在%s附近", mPoiName));
+            gaoDePoiProcessHelper.showPoiDetailBottomView("我的位置", String.format("在%s附近", mPoiName));
         }
 
         aMap.setMyLocationEnabled(true);
@@ -364,7 +353,7 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
         mGpsView.setGpsState(mCurrentGpsState);
         //执行地图动效
         aMap.animateCamera(cameraUpdate, mAnimDuartion, null);
-//        setLocationStyle();
+        setLocationStyle();
         resetLocationMarker();
     }
 
@@ -401,7 +390,7 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
                 mPoiDetailBottomView.tvPoiDistance.setText(String.format("在%s附近", mPoiName));
             }
         }
-        Timber.d("定位成功，onLocationChanged： Longitude=" + lng + ",Latitude=" + lat + ",poiName=" + mPoiName + ",getDescription=" + aMapLocation.getDescription() + ", address=" + aMapLocation.getAddress() + ",getLocationDetail" + aMapLocation.getLocationDetail() + ",street=" + aMapLocation.getStreet());
+//        Timber.d("定位成功，onLocationChanged： Longitude=" + lng + ",Latitude=" + lat + ",poiName=" + aMapLocation.getPoiName() + ",getDescription=" + aMapLocation.getDescription() + ", address=" + aMapLocation.getAddress() + ",getLocationDetail" + aMapLocation.getLocationDetail() + ",street=" + aMapLocation.getStreet());
 
         //参数依次是：视角调整区域的中心点坐标、希望调整到的缩放级别、俯仰角0°~45°（垂直与地图时为0）、偏航角 0~360° (正北方为0)
         mLatLng = new LatLng(lat, lng);
@@ -412,7 +401,7 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
         //首次定位,选择移动到地图中心点并修改级别到15级
         //首次定位成功才修改地图中心点，并移动
         mAccuracy = aMapLocation.getAccuracy();
-        Timber.d("accuracy=" + mAccuracy + ",mFirstLocation=" + isFirstLocation);
+        Timber.d("accuracy=" + mAccuracy + ",isFirstLocation=" + isFirstLocation);
         if (isFirstLocation) {
             aMap.animateCamera(CameraUpdateFactory.newLatLngZoom(mLatLng, mZoomLevel), new AMap.CancelableCallback() {
                 @Override
@@ -455,7 +444,6 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
             mLocationClient.setLocationOption(mLocationOption);
             //设置定位监听
             mLocationClient.setLocationListener(this);
-
             mLocationClient.startLocation();//启动定位
         }
     }
@@ -473,20 +461,6 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
         mLocationClient = null;
     }
 
-    /**
-     * 当用户点击底图上的poi时回调此方法。
-     */
-    @Override
-    public void onPOIClick(Poi poi) {
-        if (poi == null || poi.getCoordinate() == null || TextUtils.isEmpty(poi.getName())) {
-            return;
-        }
-        // 当前点击坐标
-        mClickPoiLatLng = poi.getCoordinate();
-        // 当前正在处理poi点击
-        isPoiClick = true;
-        addPOIMarderAndShowDetail(poi.getCoordinate(), poi.getName());
-    }
 
     /**
      * 地图手势事件回调：单指双击
@@ -496,7 +470,7 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
         mMapType = MyLocationStyle.LOCATION_TYPE_LOCATION_ROTATE_NO_CENTER;
         mCurrentGpsState = STATE_UNLOCKED;
         mGpsView.setGpsState(mCurrentGpsState);
-//        setLocationStyle();
+        setLocationStyle();
         resetLocationMarker();
         isCanMoveToCenter = false;
     }
@@ -518,8 +492,8 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
     public void onScroll(float v, float v1) {
         //避免重复调用闪屏，当手指up才重置为false
         if (!onScrolling) {
-            onScrolling = true;
             Timber.d("onScroll,x=" + v + ",y=" + v1);
+            onScrolling = true;
             //旋转不移动到中心点
             mMapType = MyLocationStyle.LOCATION_TYPE_LOCATION_ROTATE_NO_CENTER;
             mCurrentGpsState = STATE_UNLOCKED;
@@ -528,7 +502,7 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
                 mGpsView.setGpsState(mCurrentGpsState);
             }
             isCanMoveToCenter = false;
-//            setLocationStyle();
+            setLocationStyle();
             resetLocationMarker();
         }
     }
@@ -597,9 +571,8 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
         mRouteView.setVisibility(!isOpen ? View.VISIBLE : View.GONE);
         mPoiDetailBottomView.setVisibility(View.GONE);
         if (isOpen) {
-            if (poiMarker != null)
-                poiMarker.destroy();
-            resetGpsButtonPosition();
+            gaoDePoiProcessHelper.destroyPoiMarker();
+            gaoDePoiProcessHelper.resetGpsButtonPosition();
         }
         mDistanceToolbarView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
@@ -611,7 +584,7 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
             }
         });
         aMap.setAMapGestureListener(!isOpen ? this : null);
-        aMap.setOnPOIClickListener(!isOpen ? this : null);
+        gaoDePoiProcessHelper.setOnPOIClickListener(!isOpen);
     }
 
     /**
@@ -664,77 +637,6 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
             return;
         }
         aMap.moveCamera(CameraUpdateFactory.zoomTo(mZoomLevel));
-    }
-
-    /**
-     * 关闭点位详情框
-     */
-    @Override
-    public void onPoiCloseClick() {
-        hidePoiDetailBottomView();
-    }
-
-    /**
-     * 分享点位信息
-     */
-    @Override
-    public void onPoiShareClick() {
-
-    }
-
-    /**
-     * 跳转点位导航
-     */
-    @Override
-    public void onPoiNaviClick() {
-        AmapNaviParams amapNaviParams = new AmapNaviParams(new Poi("我的位置", mLatLng, ""), null, new Poi(mPoiName, mClickPoiLatLng, ""), AmapNaviType.DRIVER, AmapPageType.NAVI);//, AmapPageType.NAVI
-        amapNaviParams.setUseInnerVoice(true);
-        AmapNaviPage.getInstance().showRouteActivity(getApplicationContext(), amapNaviParams, null);
-    }
-
-    /**
-     * 跳转点位路线
-     */
-    @Override
-    public void onPoiRouteClick() {
-
-    }
-
-    /**
-     * 添加POImarker
-     */
-    private void addPOIMarderAndShowDetail(LatLng latLng, String poiName) {
-        if (latLng != null) {
-            //移动地图中心点到指定位置
-            aMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, mZoomLevel));
-        }
-        mMapType = MyLocationStyle.LOCATION_TYPE_LOCATION_ROTATE_NO_CENTER;
-        mCurrentGpsState = STATE_UNLOCKED;
-        //当前没有正在定位才能修改状态
-        if (!isFirstLocation) {
-            mGpsView.setGpsState(mCurrentGpsState);
-        }
-        isCanMoveToCenter = false;
-        // 添加marker标记
-        addPOIMarker(latLng);
-        showClickPoiDetail(latLng, poiName);
-    }
-
-
-    private void addPOIMarker(LatLng latLng) {
-        MarkerOptions markOptiopns = new MarkerOptions();
-        markOptiopns.position(latLng);
-        markOptiopns.icon(BitmapDescriptorFactory.fromResource(R.drawable.poi_mark));
-        poiMarker = aMap.addMarker(markOptiopns);
-    }
-
-    /**
-     * 显示poi点击底部BottomSheet
-     */
-    private void showClickPoiDetail(LatLng latLng, String poiName) {
-        mPoiName = poiName;
-        String distanceStr = MyAMapUtils.calculateDistanceStr(mLatLng, latLng);
-        showPoiDetailBottomView(poiName, String.format("距离您%s", distanceStr));
     }
 
     /**
@@ -796,96 +698,6 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
         mLocationMarker = aMap.addMarker(markerOptions);
     }
 
-    /**
-     * 底部显示POI详情
-     *
-     * @param locTitle 定位标题,比如当前所在位置名称
-     * @param locInfo  定位信息,比如当前在什么附近/距离当前位置多少米
-     */
-    private void showPoiDetailBottomView(String locTitle, String locInfo) {
-        mMapMode = MapMode.SHOW_POIDETAIL;
-        if (mPoiDetailBottomView.getVisibility() == View.GONE) {
-            mGpsView.setVisibility(View.VISIBLE);
-            mRouteView.setVisibility(View.GONE);
-            mPoiDetailBottomView.setVisibility(View.VISIBLE);
-            moveGspButtonAbove();
-        }
-        mPoiDetailBottomView.tvPoiTitle.setText(locTitle);
-        mPoiDetailBottomView.tvPoiDistance.setText(locInfo);
-        mPoiDetailBottomView.tvNavi.setVisibility(locTitle.equals("我的位置") ? View.GONE : View.VISIBLE);
-    }
-
-
-    /**
-     * 隐藏底部POI详情
-     */
-    public void hidePoiDetailBottomView() {
-        mMapMode = MapMode.NORMAL;
-        //gsp控件回退到原来位置、并显示底部其他控件
-        mRouteView.setVisibility(View.VISIBLE);
-        mPoiDetailBottomView.setVisibility(View.GONE);
-        if (poiMarker != null) {
-            poiMarker.destroy();
-            poiMarker = null;
-        }
-        resetGpsButtonPosition();
-    }
-
-    /**
-     * 将GpsButton移动到poi detail上面
-     */
-    private void moveGspButtonAbove() {
-        mPoiDetailBottomView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
-                mPoiDetailBottomView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                if (mGpsView.isAbovePoiDetail()) {
-                    //已经在上面，不需要重复调用
-                    return;
-                }
-                if (moveY == 0) {
-                    //计算Y轴方向移动距离
-                    moveY = mGspContainer.getTop() - mPoiDetailBottomView.getTop() + mGspContainer.getMeasuredHeight() + getResources().getDimensionPixelSize(R.dimen.dimen_size_10);
-                    mPoiDetailBottomView.getLocationInWindow(mBottomSheetLoc);
-                }
-                if (moveY > 0) {
-                    mZoomView.setTranslationY(-moveY);
-                    mGspContainer.setTranslationY(-moveY);
-                    mGpsView.setAbovePoiDetail(true);
-                }
-
-                //设置 MapView 的bottomMargin
-                FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(mMapView.getLayoutParams());
-                layoutParams.bottomMargin = mPoiDetailBottomView.getHeight();
-                mMapView.setLayoutParams(layoutParams);
-            }
-        });
-    }
-
-    /**
-     * 将GpsButton移动到原来位置
-     */
-    private void resetGpsButtonPosition() {
-        mPoiDetailBottomView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
-                mPoiDetailBottomView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                if (!mGpsView.isAbovePoiDetail()) {
-                    //已经在下面，不需要重复调用
-                    return;
-                }
-                //回到原来位置
-                mZoomView.setTranslationY(0);
-                mGspContainer.setTranslationY(0);
-                mGpsView.setAbovePoiDetail(false);
-
-                //设置 MapView 的bottomMargin
-                FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(mMapView.getLayoutParams());
-                layoutParams.bottomMargin = 0;
-                mMapView.setLayoutParams(layoutParams);
-            }
-        });
-    }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
@@ -897,10 +709,13 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
             case REQUEST_CODE_POI_SEARCH:
                 if (intent != null) {
                     PoiItem poiItem = intent.getParcelableExtra(Extras.POIITEM_INFO);
+                    if (poiItem == null) {
+                        return;
+                    }
                     isPoiClick = true;
                     LatLonPoint point = poiItem.getLatLonPoint();
-                    mClickPoiLatLng = new LatLng(point.getLatitude(), point.getLongitude());
-                    addPOIMarderAndShowDetail(mClickPoiLatLng, poiItem.getTitle());
+                    LatLng latLng = new LatLng(point.getLatitude(), point.getLongitude());
+                    gaoDePoiProcessHelper.addPOIMarderAndShowDetail(latLng, poiItem.getTitle());
                 }
                 break;
         }
@@ -919,11 +734,11 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
                 }
             } else if (mMapMode == MapMode.SHOW_POIDETAIL) {
                 mMapMode = MapMode.NORMAL;
-                onPoiCloseClick();
+                gaoDePoiProcessHelper.onPoiCloseClick();
                 return true;
             } else if (mMapMode == MapMode.CACULATE_DISTANCE) {
                 mMapMode = MapMode.NORMAL;
-                gaoDeCaculateDistanceListener.onCancelDistanceClick();
+                gaoDeCaculateDistanceHelper.onCancelDistanceClick();
                 return true;
             }
         }

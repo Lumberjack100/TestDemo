@@ -34,7 +34,7 @@ import java.util.List;
  * 创建时间:  2020/7/3 <br/>
  * 描述：    高德地图测量直线距离辅助类
  */
-public class GaoDeCaculateDistanceListener implements AMap.OnMapClickListener, DistanceSearch.OnDistanceSearchListener, DistanceToolbarView.OnDistanceToolbarViewClickListener {
+public class GaoDeCaculateDistanceHelper implements AMap.OnMapClickListener, DistanceSearch.OnDistanceSearchListener, DistanceToolbarView.OnDistanceToolbarViewClickListener {
 
     private MapActivity mapActivity;
     private DistanceToolbarView mDistanceToolbarView;
@@ -48,7 +48,7 @@ public class GaoDeCaculateDistanceListener implements AMap.OnMapClickListener, D
     private List<Marker> markerList = new ArrayList<>();
     private List<Polyline> polylineList = new ArrayList<>();
 
-    public GaoDeCaculateDistanceListener(MapActivity activity) {
+    public GaoDeCaculateDistanceHelper(MapActivity activity) {
         mapActivity = activity;
         mapView = activity.mMapView;
         aMap = mapView.getMap();
