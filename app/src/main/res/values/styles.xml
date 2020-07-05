@@ -74,7 +74,7 @@
         <item name="android:windowIsFloating">true</item>
     </style>
 
-    <style name="FullscreenDialogAnimation" parent="android:Animation">
+    <style name="share_animation" parent="android:Animation">
         <item name="android:windowEnterAnimation">@anim/dialog_enter</item>
         <item name="android:windowExitAnimation">@anim/dialog_exit</item>
     </style>
