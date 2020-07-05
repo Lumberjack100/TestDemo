@@ -34,10 +34,13 @@
         <item name="colorPrimaryDark">#61a9fc</item>
     </style>
 
-
     <style name="DialogActivityTheme" parent="Theme.AppCompat.Dialog">
         <item name="android:windowBackground">@android:color/transparent</item>
     </style>
+
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
     <style name="dialog_download" parent="android:Theme.Dialog">
         <item name="android:windowFrame">@null</item>
