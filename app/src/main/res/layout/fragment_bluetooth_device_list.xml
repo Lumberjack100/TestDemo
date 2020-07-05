@@ -31,7 +31,7 @@
                     android:id="@+id/ivDiscoveryDevice"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    app:diffuse_color="@color/colorAccent"
+                    app:diffuse_color="@color/white"
                     app:diffuse_coreColor="@color/white"
                     app:diffuse_coreImage="@drawable/icon_bluetooth_discovery"
                     app:diffuse_coreRadius="100"

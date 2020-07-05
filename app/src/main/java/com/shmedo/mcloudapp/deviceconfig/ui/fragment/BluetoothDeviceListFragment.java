@@ -41,6 +41,7 @@ import com.shmedo.mcloudapp.ui.activity.ConfigADMEActivity;
 import com.shmedo.mcloudapp.ui.activity.ConfigDASActivity;
 import com.shmedo.mcloudapp.ui.activity.ConfigE60Activity;
 import com.shmedo.mcloudapp.ui.activity.ScanActivity;
+import com.shmedo.mcloudapp.ui.activity.UserInfoActivity;
 import com.shmedo.mcloudapp.util.XPermissionUtils;
 import com.shmedo.mcloudapp.views.recycleviewitemdivider.DividerItemDecoration;
 
@@ -56,7 +57,6 @@ import timber.log.Timber;
  * 蓝牙设备列表页面
  */
 public class BluetoothDeviceListFragment extends BaseFragment {
-
     private static final int REQUEST_ENABLE_BT = 0x002;
 
     @BindView(R.id.ivDiscoveryDevice)
@@ -149,9 +149,13 @@ public class BluetoothDeviceListFragment extends BaseFragment {
     }
 
 
-    @OnClick({R.id.ivDiscoveryDevice, R.id.iv_open_camera_scan})
+    @OnClick({R.id.img_user, R.id.ivDiscoveryDevice, R.id.iv_open_camera_scan})
     public void onClick(View v) {
         switch (v.getId()) {
+            case R.id.img_user://用户信息
+                UserInfoActivity.startActivity(getActivity());
+                break;
+
             case R.id.ivDiscoveryDevice:
                 if (mTvDiscoveryState.getText().toString().contains("正在使劲搜索...")) {
                     mdBluetoothManager.stopScan();
