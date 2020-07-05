@@ -8,70 +8,70 @@ import com.shmedo.core.interfaces.SensorParameter;
  * 传感器类型为墒情计 08
  */
 public class SensorMoistureMeterInfo implements SensorParameter {
-    private int humidityTriggerThreshold;   //湿度触发阈值
-    private double humidityCorrectionValue;    //湿度修正值
-    private int saltTriggerThreshold;       //盐分触发阈值
-    private double saltCorrectionValue;        //盐分修正值
-    private int temperatureTriggerThreshold;//温度触发阈值
-    private double temperatureCorrectionValue; //温度修正值
+    private String humidityTriggerThreshold;   //湿度触发阈值
+    private String humidityCorrectionValue;    //湿度修正值
+    private String saltTriggerThreshold;       //盐分触发阈值
+    private String saltCorrectionValue;        //盐分修正值
+    private String temperatureTriggerThreshold;//温度触发阈值
+    private String temperatureCorrectionValue; //温度修正值
 
 
-    public int getHumidityTriggerThreshold() {
+    public String getHumidityTriggerThreshold() {
         return humidityTriggerThreshold;
     }
 
 
-    public void setHumidityTriggerThreshold(int humidityTriggerThreshold) {
+    public void setHumidityTriggerThreshold(String humidityTriggerThreshold) {
         this.humidityTriggerThreshold = humidityTriggerThreshold;
     }
 
 
-    public double getHumidityCorrectionValue() {
+    public String getHumidityCorrectionValue() {
         return humidityCorrectionValue;
     }
 
 
-    public void setHumidityCorrectionValue(double humidityCorrectionValue) {
+    public void setHumidityCorrectionValue(String humidityCorrectionValue) {
         this.humidityCorrectionValue = humidityCorrectionValue;
     }
 
 
-    public int getSaltTriggerThreshold() {
+    public String getSaltTriggerThreshold() {
         return saltTriggerThreshold;
     }
 
 
-    public void setSaltTriggerThreshold(int saltTriggerThreshold) {
+    public void setSaltTriggerThreshold(String saltTriggerThreshold) {
         this.saltTriggerThreshold = saltTriggerThreshold;
     }
 
 
-    public double getSaltCorrectionValue() {
+    public String getSaltCorrectionValue() {
         return saltCorrectionValue;
     }
 
 
-    public void setSaltCorrectionValue(double saltCorrectionValue) {
+    public void setSaltCorrectionValue(String saltCorrectionValue) {
         this.saltCorrectionValue = saltCorrectionValue;
     }
 
 
-    public int getTemperatureTriggerThreshold() {
+    public String getTemperatureTriggerThreshold() {
         return temperatureTriggerThreshold;
     }
 
 
-    public void setTemperatureTriggerThreshold(int temperatureTriggerThreshold) {
+    public void setTemperatureTriggerThreshold(String temperatureTriggerThreshold) {
         this.temperatureTriggerThreshold = temperatureTriggerThreshold;
     }
 
 
-    public double getTemperatureCorrectionValue() {
+    public String getTemperatureCorrectionValue() {
         return temperatureCorrectionValue;
     }
 
 
-    public void setTemperatureCorrectionValue(double temperatureCorrectionValue) {
+    public void setTemperatureCorrectionValue(String temperatureCorrectionValue) {
         this.temperatureCorrectionValue = temperatureCorrectionValue;
     }
 

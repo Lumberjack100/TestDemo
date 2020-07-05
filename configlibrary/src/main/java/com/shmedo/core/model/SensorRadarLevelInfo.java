@@ -14,7 +14,7 @@ import com.shmedo.core.interfaces.SensorParameter;
 
 public class SensorRadarLevelInfo implements SensorParameter {
     private String triggerThreshold;   //触发阈值
-    private double revised;     //修正值
+    private String correctionValue;     //修正值
 
 
 
@@ -28,13 +28,13 @@ public class SensorRadarLevelInfo implements SensorParameter {
     }
 
 
-    public double getRevised() {
-        return revised;
+    public String getCorrectionValue() {
+        return correctionValue;
     }
 
 
-    public void setRevised(double revised) {
-        this.revised = revised;
+    public void setCorrectionValue(String correctionValue) {
+        this.correctionValue = correctionValue;
     }
 
 
@@ -46,10 +46,11 @@ public class SensorRadarLevelInfo implements SensorParameter {
     }
 
 
-    @Override public String toString() {
+    @Override
+    public String toString() {
         return "SensorRadarLevelInfo{" +
-            "triggerThreshold='" + triggerThreshold + '\'' +
-            ", revised='" + revised + '\'' +
-            '}';
+                "triggerThreshold='" + triggerThreshold + '\'' +
+                ", correctionValue='" + correctionValue + '\'' +
+                '}';
     }
 }

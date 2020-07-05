@@ -9,7 +9,7 @@ import com.shmedo.core.interfaces.SensorParameter;
  */
 public class SensorInfrasoundInfo implements SensorParameter {
     private String triggerThreshold;   //触发阈值
-    private double revised;     //修正值
+    private String correctionValue;     //修正值
 
     public String getTriggerThreshold() {
         return triggerThreshold;
@@ -19,19 +19,19 @@ public class SensorInfrasoundInfo implements SensorParameter {
         this.triggerThreshold = triggerThreshold;
     }
 
-    public double getRevised() {
-        return revised;
+    public String getCorrectionValue() {
+        return correctionValue;
     }
 
-    public void setRevised(double revised) {
-        this.revised = revised;
+    public void setCorrectionValue(String correctionValue) {
+        this.correctionValue = correctionValue;
     }
 
     @Override
     public String toString() {
         return "SensorInfrasoundInfo{" +
                 "triggerThreshold='" + triggerThreshold + '\'' +
-                ", revised=" + revised +
+                ", correctionValue='" + correctionValue + '\'' +
                 '}';
     }
 

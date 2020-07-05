@@ -35,7 +35,7 @@ import timber.log.Timber;
 
 /**
  * 振弦式传感器配置参数对话框
- * 基康渗压计(BGK-4500)、葛南渗压计(VWP-03)、军星轴力计(ZLJ-300T)
+ * 基康渗压计(BGK-4500)、葛南渗压计(VWP-03)、轴力计(ZLJ-300T)
  */
 public class Osmometer_AxialForceGaugeDialogFragment extends BaseDialogFragment {
 
@@ -103,7 +103,7 @@ public class Osmometer_AxialForceGaugeDialogFragment extends BaseDialogFragment 
                     sensorBGK4500View.setVisibility(View.GONE);
                     sensorVWP03View.setVisibility(View.VISIBLE);
                     sensorZLJ300tView.setVisibility(View.GONE);
-                } else if (item.contains("军星轴力计")) {
+                } else if (item.contains("轴力计")) {
                     selectedSensorType = SensorType.JUNXING_ZLJ_300T.toString();
                     sensorBGK4500View.setVisibility(View.GONE);
                     sensorVWP03View.setVisibility(View.GONE);
@@ -117,6 +117,9 @@ public class Osmometer_AxialForceGaugeDialogFragment extends BaseDialogFragment 
         });
     }
 
+    /**
+     * 初始化指定的传感器视图
+     */
     private void initSpecifiedSensorView() {
         switch (collectorSensorParamsInfo.getSensorType()) {
             case KANG_PERCOLATE://基康渗压计(BGK-4500)
@@ -135,7 +138,7 @@ public class Osmometer_AxialForceGaugeDialogFragment extends BaseDialogFragment 
                 sensorVWP03View.bindSensorData(collectorSensorParamsInfo);
                 break;
 
-            case JUNXING_ZLJ_300T://军星轴力计(ZLJ-300T)
+            case JUNXING_ZLJ_300T://轴力计(ZLJ-300T)
                 spinnerType.setSelection(2);
                 sensorBGK4500View.setVisibility(View.GONE);
                 sensorVWP03View.setVisibility(View.GONE);
@@ -225,7 +228,7 @@ public class Osmometer_AxialForceGaugeDialogFragment extends BaseDialogFragment 
 
 
         DialogFragmentClickListener listener = (DialogFragmentClickListener) getActivity();
-        if (listener.onPositiveClick(view)) {
+        if (listener.onPositiveClick(view, collectorSensorParamsInfo)) {
             dismiss();
         }
     }
@@ -275,7 +278,7 @@ public class Osmometer_AxialForceGaugeDialogFragment extends BaseDialogFragment 
                 SensorGudanPercolateInfo sensorInfo = new SensorGudanPercolateInfo();
                 sensorInfo.setSensitivityK(localData[3]);
                 sensorInfo.setTemperatureCoefficientB(localData[4]);
-                if (spinnerType.getSelectedItemPosition() != 0) {
+                if (spinnerType.getSelectedItemPosition() != 1) {
                     showSwitchSensorTypeDialog(localData[2], sensorInfo);
                     return;
                 }

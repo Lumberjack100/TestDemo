@@ -10,7 +10,7 @@
         <TextView
             style="@style/TextView_Sensor_Config_Item"
             android:drawableLeft="@drawable/ic_required"
-            android:text="触发阀值(mm)" />
+            android:text="触发阀值(KN)" />
 
         <EditText
             android:id="@+id/et_trigger_threshold"
@@ -25,12 +25,26 @@
         <TextView
             style="@style/TextView_Sensor_Config_Item"
             android:drawableLeft="@drawable/ic_required"
-            android:text="灵敏度K" />
+            android:text="标定系数A" />
 
         <EditText
-            android:id="@+id/sensitivityCoefficient"
+            android:id="@+id/polynomialRatioA"
             style="@style/EditText_Sensor_Config_Item"
             android:hint="请输入" />
+
+    </LinearLayout>
+
+    <LinearLayout style="@style/LinearLayout_Sensor_Config_Item">
+
+        <TextView
+            style="@style/TextView_Sensor_Config_Item"
+            android:text="温修系数B" />
+
+        <EditText
+            android:id="@+id/temperatureCoefficient"
+            style="@style/EditText_Sensor_Config_Item"
+            android:hint="默认为0"
+            android:text="0" />
 
     </LinearLayout>
 
@@ -52,6 +66,20 @@
 
         <TextView
             style="@style/TextView_Sensor_Config_Item"
+            android:text="初始温度T0" />
+
+        <EditText
+            android:id="@+id/et_initialtemperature"
+            style="@style/EditText_Sensor_Config_Item"
+            android:hint="默认为0"
+            android:text="0" />
+
+    </LinearLayout>
+
+    <LinearLayout style="@style/LinearLayout_Sensor_Config_Item">
+
+        <TextView
+            style="@style/TextView_Sensor_Config_Item"
             android:text="手动纠偏(KN)" />
 
         <EditText
@@ -61,24 +89,6 @@
             android:text="0" />
 
     </LinearLayout>
-
-
-    <LinearLayout style="@style/LinearLayout_Sensor_Config_Item"
-        android:visibility="gone">
-
-        <TextView
-            style="@style/TextView_Sensor_Config_Item"
-            android:text="初始温度T0" />
-
-        <EditText
-            android:id="@+id/et_initialtemperature"
-            style="@style/EditText_Sensor_Config_Item"
-            android:hint="请输入"
-            android:inputType="number" />
-
-    </LinearLayout>
-
-
 
 
 </LinearLayout>

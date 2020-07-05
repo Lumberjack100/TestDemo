@@ -8,59 +8,59 @@ import com.shmedo.core.interfaces.SensorParameter;
  * 传感器类型为葛南应力计 53
  */
 public class SensorGudanStressInfo implements SensorParameter{
-    private int triggerThreshold;   //触发阈值
-    private int sensitivityK;   //灵敏度K
-    private double temperatureCoefficientB;//温度系数b
-    private double expansionCoefficient;    //膨胀系数
-    private double datumValueF0; //基准值
-    private double CreateTemperature;   //初始化温度T0
+    private String triggerThreshold;   //触发阈值
+    private String sensitivityK;   //灵敏度K
+    private String temperatureCoefficientB;//温度系数b
+    private String expansionCoefficient;    //膨胀系数
+    private String datumValueF0; //基准值
+    private String CreateTemperature;   //初始化温度T0
     private String manualCorrection;    //手动纠偏
 
-    public int getTriggerThreshold() {
+    public String getTriggerThreshold() {
         return triggerThreshold;
     }
 
-    public void setTriggerThreshold(int triggerThreshold) {
+    public void setTriggerThreshold(String triggerThreshold) {
         this.triggerThreshold = triggerThreshold;
     }
 
-    public int getSensitivityK() {
+    public String getSensitivityK() {
         return sensitivityK;
     }
 
-    public void setSensitivityK(int sensitivityK) {
+    public void setSensitivityK(String sensitivityK) {
         this.sensitivityK = sensitivityK;
     }
 
-    public double getTemperatureCoefficientB() {
+    public String getTemperatureCoefficientB() {
         return temperatureCoefficientB;
     }
 
-    public void setTemperatureCoefficientB(double temperatureCoefficientB) {
+    public void setTemperatureCoefficientB(String temperatureCoefficientB) {
         this.temperatureCoefficientB = temperatureCoefficientB;
     }
 
-    public double getExpansionCoefficient() {
+    public String getExpansionCoefficient() {
         return expansionCoefficient;
     }
 
-    public void setExpansionCoefficient(double expansionCoefficient) {
+    public void setExpansionCoefficient(String expansionCoefficient) {
         this.expansionCoefficient = expansionCoefficient;
     }
 
-    public double getDatumValueF0() {
+    public String getDatumValueF0() {
         return datumValueF0;
     }
 
-    public void setDatumValueF0(double datumValueF0) {
+    public void setDatumValueF0(String datumValueF0) {
         this.datumValueF0 = datumValueF0;
     }
 
-    public double getCreateTemperature() {
+    public String getCreateTemperature() {
         return CreateTemperature;
     }
 
-    public void setCreateTemperature(double createTemperature) {
+    public void setCreateTemperature(String createTemperature) {
         CreateTemperature = createTemperature;
     }
 

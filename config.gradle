@@ -39,6 +39,8 @@ ext {
             buglyCrashReport             : '2.8.6',
             BaseRecyclerViewAdapterHelper: '3.0.3',
             bsxShare                     : '0.9.3',
+            amap3dMap                    : '7.4.0',
+            amapLocation                 : '4.9.0',
             timberVersion                : '4.7.1',
             glideVersion                 : '4.8.0',
             amap3dMap                    : '7.4.0',

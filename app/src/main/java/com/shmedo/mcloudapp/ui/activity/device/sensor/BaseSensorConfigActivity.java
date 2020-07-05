@@ -52,7 +52,7 @@ import timber.log.Timber;
  * 创建时间:  2020/6/8 <br/>
  * 描述：    传感器基础配置页面
  */
-public abstract class BaseSensorConfigActivity extends BaseDeviceConnectActivity implements BaseDialogFragment.DialogFragmentClickListener {
+public abstract class BaseSensorConfigActivity extends BaseDeviceConnectActivity implements BaseDialogFragment.DialogFragmentClickListener<CollectorSensorParamsInfo> {
 
     @BindView(R.id.tv_title)
     TextView mToolbarTitle;
@@ -607,7 +607,7 @@ public abstract class BaseSensorConfigActivity extends BaseDeviceConnectActivity
 
             case KANG_PERCOLATE://基康渗压计(BGK-4500)
             case GUDAN_PERCOLATE://葛南渗压计(VWP-03)
-            case JUNXING_ZLJ_300T://军星轴力计(ZLJ-300T)
+            case JUNXING_ZLJ_300T://轴力计(ZLJ-300T)
                 newFragment = new Osmometer_AxialForceGaugeDialogFragment();
                 newFragment.show(getSupportFragmentManager(), "dialog");
                 break;
@@ -701,9 +701,9 @@ public abstract class BaseSensorConfigActivity extends BaseDeviceConnectActivity
             case SOIL_MOISTURE: {//土壤含水率
                 sbCollectorSensorConfig.append("," + collectorSensorParamsInfoSub.getSensorAddress());
                 sbCollectorSensorConfig.append("," + collectorSensorParamsInfoSub.getSensorType());
-                SensorInfrasoundInfo sensorInfo = (SensorInfrasoundInfo) collectorSensorParamsInfoSub.getSensorData();
+                SensorSoilMoistureInfo sensorInfo = (SensorSoilMoistureInfo) collectorSensorParamsInfoSub.getSensorData();
                 sbCollectorSensorConfig.append("," + sensorInfo.getTriggerThreshold());
-                sbCollectorSensorConfig.append("," + sensorInfo.getRevised());
+                sbCollectorSensorConfig.append("," + sensorInfo.getCorrectionValue());
                 sbCollectorSensorConfig.append("&&");
             }
             break;
@@ -711,9 +711,9 @@ public abstract class BaseSensorConfigActivity extends BaseDeviceConnectActivity
             case INCLINOMETER: {//测斜仪
                 sbCollectorSensorConfig.append("," + collectorSensorParamsInfoSub.getSensorAddress());
                 sbCollectorSensorConfig.append("," + collectorSensorParamsInfoSub.getSensorType());
-                SensorSoilMoistureInfo sensorInfo = (SensorSoilMoistureInfo) collectorSensorParamsInfoSub.getSensorData();
+                SensorInclinometerInfo sensorInfo = (SensorInclinometerInfo) collectorSensorParamsInfoSub.getSensorData();
                 sbCollectorSensorConfig.append("," + sensorInfo.getTriggerThreshold());
-                sbCollectorSensorConfig.append("," + sensorInfo.getRevised());
+                sbCollectorSensorConfig.append("," + sensorInfo.getCorrectionValue());
                 sbCollectorSensorConfig.append("&&");
             }
             break;
@@ -723,7 +723,7 @@ public abstract class BaseSensorConfigActivity extends BaseDeviceConnectActivity
                 sbCollectorSensorConfig.append("," + collectorSensorParamsInfoSub.getSensorType());
                 SensorRadarLevelInfo sensorInfo = (SensorRadarLevelInfo) collectorSensorParamsInfoSub.getSensorData();
                 sbCollectorSensorConfig.append("," + sensorInfo.getTriggerThreshold());
-                sbCollectorSensorConfig.append("," + sensorInfo.getRevised());
+                sbCollectorSensorConfig.append("," + sensorInfo.getCorrectionValue());
                 sbCollectorSensorConfig.append("&&");
             }
             break;
@@ -731,7 +731,7 @@ public abstract class BaseSensorConfigActivity extends BaseDeviceConnectActivity
             case INFRASOUND_SENSOR: {//次声
                 sbCollectorSensorConfig.append("," + collectorSensorParamsInfoSub.getSensorAddress());
                 sbCollectorSensorConfig.append("," + collectorSensorParamsInfoSub.getSensorType());
-                SensorInclinometerInfo sensorInfo = (SensorInclinometerInfo) collectorSensorParamsInfoSub.getSensorData();
+                SensorInfrasoundInfo sensorInfo = (SensorInfrasoundInfo) collectorSensorParamsInfoSub.getSensorData();
                 sbCollectorSensorConfig.append("," + sensorInfo.getTriggerThreshold());
                 sbCollectorSensorConfig.append("," + sensorInfo.getCorrectionValue());
                 sbCollectorSensorConfig.append("&&");
@@ -771,14 +771,16 @@ public abstract class BaseSensorConfigActivity extends BaseDeviceConnectActivity
             }
             break;
 
-            case JUNXING_ZLJ_300T: {//军星轴力计(ZLJ-300T)
+            case JUNXING_ZLJ_300T: {//轴力计(ZLJ-300T)
                 sbCollectorSensorConfig.append("," + collectorSensorParamsInfoSub.getChannelNumber());
                 sbCollectorSensorConfig.append("," + collectorSensorParamsInfoSub.getSensorType());
                 SensorJunXingZljInfo sensorInfo = (SensorJunXingZljInfo) collectorSensorParamsInfoSub.getSensorData();
                 sbCollectorSensorConfig.append("," + sensorInfo.getTriggerThreshold());
-                sbCollectorSensorConfig.append("," + sensorInfo.getSensitivityK());
+                sbCollectorSensorConfig.append("," + sensorInfo.getPolynomialRatioA());
                 sbCollectorSensorConfig.append("," + sensorInfo.getReferenceValue());
                 sbCollectorSensorConfig.append("," + sensorInfo.getManualCorrection());
+                sbCollectorSensorConfig.append("," + sensorInfo.getTemperatureCoefficientB());
+                sbCollectorSensorConfig.append("," + sensorInfo.getCreateTemperature());
                 sbCollectorSensorConfig.append("&&");
             }
             break;

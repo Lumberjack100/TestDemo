@@ -21,6 +21,8 @@ import com.shmedo.core.utils.ValidateUtil;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.util.KeyBordUtils;
 
+import java.util.Locale;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -85,7 +87,7 @@ public class SensorBGK4500View extends FrameLayout {
 
     public void bindSensorData(CollectorSensorParamsInfo infoSub) {
         SensorKangPercolateInfo sensorInfo = (SensorKangPercolateInfo) infoSub.getSensorData();
-        mEtTriggerThreshold.setText((int) Double.parseDouble(sensorInfo.getTriggerThreshold()) + "");
+        mEtTriggerThreshold.setText(String.format(Locale.getDefault(),"%d", (int) Double.parseDouble(sensorInfo.getTriggerThreshold())));
         mEtCoefficientA.setText(sensorInfo.getPolynomialRatioA());
         mEtCoefficientB.setText(sensorInfo.getPolynomialRatioB());
         mEtCoefficientC.setText(sensorInfo.getPolynomialRatioC());
@@ -142,7 +144,7 @@ public class SensorBGK4500View extends FrameLayout {
             return false;
         }
 
-        if (!ValidateUtil.isDouble(triggerThreshold)) {
+        if (!ValidateUtil.isInteger(triggerThreshold)) {
             ToastUtils.show("请输入正确的触发阀值!");
             return false;
         }
@@ -173,7 +175,7 @@ public class SensorBGK4500View extends FrameLayout {
         }
 
         if (!TextUtils.isEmpty(correctValue) && !ValidateUtil.isDouble(correctValue)) {
-            ToastUtils.show("请输入正确的修正值!");
+            ToastUtils.show("请输入正确的手动纠偏!");
             return false;
         }
 

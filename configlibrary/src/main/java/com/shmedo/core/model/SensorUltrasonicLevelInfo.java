@@ -14,7 +14,7 @@ import com.shmedo.core.interfaces.SensorParameter;
 
 public class SensorUltrasonicLevelInfo implements SensorParameter {
     private String triggerThreshold;   //触发阈值
-    private double revised;     //修正值
+    private String correctionValue;     //修正值
     private String probeElevation;  //探头高程
 
 
@@ -28,13 +28,13 @@ public class SensorUltrasonicLevelInfo implements SensorParameter {
     }
 
 
-    public double getRevised() {
-        return revised;
+    public String getCorrectionValue() {
+        return correctionValue;
     }
 
 
-    public void setRevised(double revised) {
-        this.revised = revised;
+    public void setCorrectionValue(String correctionValue) {
+        this.correctionValue = correctionValue;
     }
 
 
@@ -53,11 +53,12 @@ public class SensorUltrasonicLevelInfo implements SensorParameter {
     }
 
 
-    @Override public String toString() {
+    @Override
+    public String toString() {
         return "SensorUltrasonicLevelInfo{" +
-            "triggerThreshold='" + triggerThreshold + '\'' +
-            ", revised='" + revised + '\'' +
-            ", probeElevation='" + probeElevation + '\'' +
-            '}';
+                "triggerThreshold='" + triggerThreshold + '\'' +
+                ", correctionValue='" + correctionValue + '\'' +
+                ", probeElevation='" + probeElevation + '\'' +
+                '}';
     }
 }

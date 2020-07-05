@@ -99,7 +99,7 @@
     <string-array name="sensor_osmometer">
         <item>基康渗压计(BGK-4500)</item>
         <item>葛南渗压计(VWP-03)</item>
-        <item>军星轴力计(ZLJ-300T)</item>
+        <item>轴力计(ZLJ-300T)</item>
     </string-array>
 
     <!--  ADME 执行结构数据解算方式-->

@@ -8,31 +8,31 @@ import com.shmedo.core.interfaces.SensorParameter;
  * 传感器测斜仪  04
  */
 public class SensorInclinometerInfo implements SensorParameter {
-    private int triggerThreshold;       //触发阈值
-    private int measureLength;          //测段长
-    private double correctionValue;        //修正值
+    private String triggerThreshold;       //触发阈值
+    private String measureLength;          //测段长
+    private String correctionValue;        //修正值
 
-    public int getTriggerThreshold() {
+    public String getTriggerThreshold() {
         return triggerThreshold;
     }
 
-    public void setTriggerThreshold(int triggerThreshold) {
+    public void setTriggerThreshold(String triggerThreshold) {
         this.triggerThreshold = triggerThreshold;
     }
 
-    public int getMeasureLength() {
+    public String getMeasureLength() {
         return measureLength;
     }
 
-    public void setMeasureLength(int measureLength) {
+    public void setMeasureLength(String measureLength) {
         this.measureLength = measureLength;
     }
 
-    public double getCorrectionValue() {
+    public String getCorrectionValue() {
         return correctionValue;
     }
 
-    public void setCorrectionValue(double correctionValue) {
+    public void setCorrectionValue(String correctionValue) {
         this.correctionValue = correctionValue;
     }
 
@@ -44,9 +44,9 @@ public class SensorInclinometerInfo implements SensorParameter {
     @Override
     public String toString() {
         return "SensorInclinometerInfo{" +
-                "triggerThreshold=" + triggerThreshold +
-                ", measureLength=" + measureLength +
-                ", correctionValue=" + correctionValue +
+                "triggerThreshold='" + triggerThreshold + '\'' +
+                ", measureLength='" + measureLength + '\'' +
+                ", correctionValue='" + correctionValue + '\'' +
                 '}';
     }
 }

@@ -39,7 +39,7 @@
         <TextView
             style="@style/TextView_Sensor_Config_Item"
             android:drawableLeft="@drawable/ic_required"
-            android:text="温修系数b" />
+            android:text="温修系数B" />
 
         <EditText
             android:id="@+id/temperatureCoefficient"
@@ -63,6 +63,7 @@
     </LinearLayout>
 
     <LinearLayout style="@style/LinearLayout_Sensor_Config_Item">
+
         <TextView
             style="@style/TextView_Sensor_Config_Item"
             android:text="初始温度T0" />
@@ -71,8 +72,7 @@
             android:id="@+id/et_initialtemperature"
             style="@style/EditText_Sensor_Config_Item"
             android:hint="默认为0"
-            android:text="0"
-            android:inputType="number" />
+            android:text="0" />
 
     </LinearLayout>
 
@@ -86,8 +86,7 @@
             android:id="@+id/et_correct_value"
             style="@style/EditText_Sensor_Config_Item"
             android:hint="默认为0"
-            android:text="0"
-            android:inputType="number" />
+            android:text="0" />
 
     </LinearLayout>
 
@@ -101,8 +100,7 @@
         <EditText
             android:id="@+id/et_cord_length"
             style="@style/EditText_Sensor_Config_Item"
-            android:hint="请输入"
-            android:inputType="number" />
+            android:hint="请输入" />
 
     </LinearLayout>
 
@@ -116,8 +114,7 @@
         <EditText
             android:id="@+id/et_install_elevation"
             style="@style/EditText_Sensor_Config_Item"
-            android:hint="请输入"
-            android:inputType="number" />
+            android:hint="请输入" />
 
     </LinearLayout>
 

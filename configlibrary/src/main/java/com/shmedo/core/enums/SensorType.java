@@ -76,7 +76,7 @@ public enum SensorType {
      */
     GUDAN_DISPLACEMENT_METER("55"),
     /**
-     * 军星轴力计 ZLJ-300T
+     * 轴力计 ZLJ-300T
      */
     JUNXING_ZLJ_300T("58");
 

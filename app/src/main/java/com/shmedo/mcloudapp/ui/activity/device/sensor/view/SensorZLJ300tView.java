@@ -18,27 +18,31 @@ import com.shmedo.core.utils.StringUtil;
 import com.shmedo.core.utils.ValidateUtil;
 import com.shmedo.mcloudapp.R;
 
+import java.util.Locale;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
  * 创建者:   gonghe <br/>
  * 创建时间:  2020/6/7 <br/>
- * 描述：  军星轴力计(ZLJ-300T)配置项视图
+ * 描述：  轴力计(ZLJ-300T)配置项视图
  */
 public class SensorZLJ300tView extends FrameLayout {
     @BindView(R.id.et_trigger_threshold)
     EditText mEtTriggerThreshold;//触发阀值
-    @BindView(R.id.sensitivityCoefficient)
-    EditText mEtSensitivityCoefficient;//灵敏度k
+    @BindView(R.id.polynomialRatioA)
+    EditText mEtCoefficientA;//标定系数A
+    @BindView(R.id.temperatureCoefficient)
+    EditText mEtTemperatureCoefficient;//温修系数b
     @BindView(R.id.et_ReferenceValue)
     EditText mEtReferenceValue;//基准值F0
-    @BindView(R.id.et_correct_value)
-    EditText mEtCorrectValue;//手动纠偏
     @BindView(R.id.et_initialtemperature)
     EditText mEtInitialTemperature;//初始温度
+    @BindView(R.id.et_correct_value)
+    EditText mEtCorrectValue;//手动纠偏
 
-    private String triggerThreshold, coefficientK, referenceValue, correctValue, initialTemperature;
+    private String triggerThreshold, coefficientA, coefficientB, referenceValue, initialTemperature, correctValue;
 
     public SensorZLJ300tView(@NonNull Context context) {
         this(context, null);
@@ -58,21 +62,26 @@ public class SensorZLJ300tView extends FrameLayout {
 
     private void initView() {
         mEtTriggerThreshold.setFilters(new InputFilter[]{new InputFilter.LengthFilter(5)});
-        mEtSensitivityCoefficient.setFilters(new InputFilter[]{new InputFilter.LengthFilter(20)});
+        mEtCoefficientA.setFilters(new InputFilter[]{new InputFilter.LengthFilter(20)});
+        mEtTemperatureCoefficient.setFilters(new InputFilter[]{new InputFilter.LengthFilter(20)});
         mEtReferenceValue.setFilters(new InputFilter[]{new InputFilter.LengthFilter(20)});
+        mEtInitialTemperature.setFilters(new InputFilter[]{new InputFilter.LengthFilter(10)});
         mEtCorrectValue.setFilters(new InputFilter[]{new InputFilter.LengthFilter(10)});
 
+        mEtTemperatureCoefficient.setText("0");
         mEtReferenceValue.setText("0");
+        mEtInitialTemperature.setText("0");
         mEtCorrectValue.setText("0");
     }
 
     public void bindSensorData(CollectorSensorParamsInfo infoSub) {
         SensorJunXingZljInfo sensorInfo = (SensorJunXingZljInfo) infoSub.getSensorData();
-        mEtTriggerThreshold.setText((int) Double.parseDouble(sensorInfo.getTriggerThreshold()) + "");
-        mEtSensitivityCoefficient.setText(sensorInfo.getSensitivityK());
+        mEtTriggerThreshold.setText(String.format(Locale.getDefault(), "%.0f", Double.parseDouble(sensorInfo.getTriggerThreshold())));
+        mEtCoefficientA.setText(sensorInfo.getPolynomialRatioA());
+        mEtTemperatureCoefficient.setText(sensorInfo.getTemperatureCoefficientB());
         mEtReferenceValue.setText(sensorInfo.getReferenceValue());
+        mEtInitialTemperature.setText(StringUtil.getDouble3AccuracyString(sensorInfo.getCreateTemperature()));
         mEtCorrectValue.setText(StringUtil.getDouble3AccuracyString(sensorInfo.getManualCorrection()));
-        mEtInitialTemperature.setText("");
     }
 
     /**
@@ -81,7 +90,8 @@ public class SensorZLJ300tView extends FrameLayout {
      * @param sensorInfo
      */
     public void initDataByScan(SensorJunXingZljInfo sensorInfo) {
-        mEtSensitivityCoefficient.setText(sensorInfo.getSensitivityK());
+        mEtCoefficientA.setText(sensorInfo.getPolynomialRatioA());
+        mEtTemperatureCoefficient.setText(sensorInfo.getTemperatureCoefficientB());
         mEtReferenceValue.setText(sensorInfo.getReferenceValue());
     }
 
@@ -92,9 +102,11 @@ public class SensorZLJ300tView extends FrameLayout {
 
         SensorJunXingZljInfo sensorInfo = new SensorJunXingZljInfo();
         sensorInfo.setTriggerThreshold(triggerThreshold);
-        sensorInfo.setSensitivityK(coefficientK);
-        sensorInfo.setReferenceValue(referenceValue);
-        sensorInfo.setManualCorrection(correctValue);
+        sensorInfo.setPolynomialRatioA(coefficientA);
+        sensorInfo.setTemperatureCoefficientB(TextUtils.isEmpty(coefficientB) ? "0" : coefficientB);
+        sensorInfo.setReferenceValue(TextUtils.isEmpty(referenceValue) ? "0" : referenceValue);
+        sensorInfo.setCreateTemperature(TextUtils.isEmpty(initialTemperature) ? "0" : initialTemperature);
+        sensorInfo.setManualCorrection(TextUtils.isEmpty(correctValue) ? "0" : correctValue);
         infoSub.setSensorData(sensorInfo);
 
         return true;
@@ -102,28 +114,44 @@ public class SensorZLJ300tView extends FrameLayout {
 
     private boolean checkValue() {
         triggerThreshold = mEtTriggerThreshold.getText().toString().trim();
-        coefficientK = mEtSensitivityCoefficient.getText().toString().trim();
+        coefficientA = mEtCoefficientA.getText().toString().trim();
+        coefficientB = mEtTemperatureCoefficient.getText().toString().trim();
         referenceValue = mEtReferenceValue.getText().toString().trim();
+        initialTemperature = mEtInitialTemperature.getText().toString().trim();
         correctValue = mEtCorrectValue.getText().toString().trim();
-//        initialTemperature = mEtInitialTemperature.getText().toString().trim();
 
         if (TextUtils.isEmpty(triggerThreshold)) {
             ToastUtils.show("触发阀值不能为空!");
             return false;
         }
 
-        if (!ValidateUtil.isDouble(triggerThreshold)) {
+        if (!ValidateUtil.isInteger(triggerThreshold)) {
             ToastUtils.show("请输入正确的触发阀值!");
             return false;
         }
 
-        if (TextUtils.isEmpty(coefficientK)) {
-            ToastUtils.show("灵敏度不能为空!");
+        if (TextUtils.isEmpty(coefficientA)) {
+            ToastUtils.show("标定系数A不能为空!");
+            return false;
+        }
+
+//        if (TextUtils.isEmpty(coefficientB)) {
+//            ToastUtils.show("温修系数不能为空!");
+//            return false;
+//        }
+
+//        if (TextUtils.isEmpty(referenceValue)) {
+//            ToastUtils.show("基准值不能为空!");
+//            return false;
+//        }
+
+        if (!TextUtils.isEmpty(initialTemperature) && !ValidateUtil.isDouble(initialTemperature)) {
+            ToastUtils.show("请输入正确的初始温度!");
             return false;
         }
 
         if (!TextUtils.isEmpty(correctValue) && !ValidateUtil.isDouble(correctValue)) {
-            ToastUtils.show("请输入正确的修正值!");
+            ToastUtils.show("请输入正确的手动纠偏!");
             return false;
         }
 

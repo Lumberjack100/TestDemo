@@ -32,7 +32,7 @@ import timber.log.Timber;
 /**
  * 创建者:   gonghe <br/>
  * 创建时间:  2020/6/8 <br/>
- * 描述：    正弦传感器配置页面
+ * 描述：    振弦式传感器配置页面
  */
 public class VibratingWireSensorConfigActivity extends BaseSensorConfigActivity {
     /**
@@ -71,7 +71,7 @@ public class VibratingWireSensorConfigActivity extends BaseSensorConfigActivity 
 
 
     @Override
-    public boolean onPositiveClick(View view) {
+    public boolean onPositiveClick(View view, CollectorSensorParamsInfo data) {
         KeyBordUtils.hideSoftKeyboard(view);
 
         List<CollectorSensorParamsInfo> paramsInfoSubList = new ArrayList<>();
@@ -168,7 +168,7 @@ public class VibratingWireSensorConfigActivity extends BaseSensorConfigActivity 
             }
             break;
 
-            case JUNXING_ZLJ_300T: {//军星轴力计(ZLJ-300T)
+            case JUNXING_ZLJ_300T: {//轴力计(ZLJ-300T)
                 SensorJunXingZljInfo sensorInfo = (SensorJunXingZljInfo) infoSub.getSensorData();
                 value = StringUtil.formatStringFour((int) Double.parseDouble(sensorInfo.getTriggerThreshold()) + "");
             }
@@ -206,10 +206,10 @@ public class VibratingWireSensorConfigActivity extends BaseSensorConfigActivity 
                 correctValueCmdList.add(cmdCorrectionValueFormat.replace("{}", "B" + sensorInfo.getPolynomialRatioB()));
                 correctValueCmdList.add(cmdCorrectionValueFormat.replace("{}", "C" + sensorInfo.getPolynomialRatioC()));
                 correctValueCmdList.add(cmdCorrectionValueFormat.replace("{}", "K" + sensorInfo.getTemperatureCoefficientK()));
+                correctValueCmdList.add(cmdCorrectionValueFormat.replace("{}", "T" + sensorInfo.getCreateTemperature()));
+                correctValueCmdList.add(cmdCorrectionValueFormat.replace("{}", "M" + sensorInfo.getManualCorrection()));
                 correctValueCmdList.add(cmdCorrectionValueFormat.replace("{}", "F" + sensorInfo.getCordLenght()));
                 correctValueCmdList.add(cmdInstallElevationFormat.replace("{}", sensorInfo.getInstallElevation()));
-                correctValueCmdList.add(cmdCorrectionValueFormat.replace("{}", "M" + sensorInfo.getManualCorrection()));
-                correctValueCmdList.add(cmdCorrectionValueFormat.replace("{}", "T" + sensorInfo.getCreateTemperature()));
 
                 configItemNameList.add("基康渗压计 多项式系数A");
                 configItemNameList.add("基康渗压计 多项式系数B");
@@ -226,11 +226,11 @@ public class VibratingWireSensorConfigActivity extends BaseSensorConfigActivity 
                 SensorGudanPercolateInfo sensorInfo = (SensorGudanPercolateInfo) infoSub.getSensorData();
                 correctValueCmdList.add(cmdCorrectionValueFormat.replace("{}", "A" + sensorInfo.getSensitivityK()));
                 correctValueCmdList.add(cmdCorrectionValueFormat.replace("{}", "B" + sensorInfo.getTemperatureCoefficientB()));
+                correctValueCmdList.add(cmdCorrectionValueFormat.replace("{}", "F" + sensorInfo.getReferenceValue()));
+                correctValueCmdList.add(cmdCorrectionValueFormat.replace("{}", "T" + sensorInfo.getCreateTemperature()));
+                correctValueCmdList.add(cmdCorrectionValueFormat.replace("{}", "M" + sensorInfo.getManualCorrection()));
                 correctValueCmdList.add(cmdCorrectionValueFormat.replace("{}", "C" + sensorInfo.getCordLenght()));
                 correctValueCmdList.add(cmdInstallElevationFormat.replace("{}", sensorInfo.getInstallElevation()));
-                correctValueCmdList.add(cmdCorrectionValueFormat.replace("{}", "M" + sensorInfo.getManualCorrection()));
-                correctValueCmdList.add(cmdCorrectionValueFormat.replace("{}", "T" + sensorInfo.getCreateTemperature()));
-                correctValueCmdList.add(cmdCorrectionValueFormat.replace("{}", "F" + sensorInfo.getReferenceValue()));
 
                 configItemNameList.add("葛南渗压计 灵敏度K");
                 configItemNameList.add("葛南渗压计 温修系数b");
@@ -242,16 +242,19 @@ public class VibratingWireSensorConfigActivity extends BaseSensorConfigActivity 
             }
             break;
 
-            case JUNXING_ZLJ_300T: {//军星轴力计(ZLJ-300T)
+            case JUNXING_ZLJ_300T: {//轴力计(ZLJ-300T)
                 SensorJunXingZljInfo sensorInfo = (SensorJunXingZljInfo) infoSub.getSensorData();
-                correctValueCmdList.add(cmdCorrectionValueFormat.replace("{}", "A" + sensorInfo.getSensitivityK()));
-                correctValueCmdList.add(cmdCorrectionValueFormat.replace("{}", "M" + sensorInfo.getManualCorrection()));
+                correctValueCmdList.add(cmdCorrectionValueFormat.replace("{}", "A" + sensorInfo.getPolynomialRatioA()));
+                correctValueCmdList.add(cmdCorrectionValueFormat.replace("{}", "B" + sensorInfo.getTemperatureCoefficientB()));
                 correctValueCmdList.add(cmdCorrectionValueFormat.replace("{}", "F" + sensorInfo.getReferenceValue()));
+                correctValueCmdList.add(cmdCorrectionValueFormat.replace("{}", "T" + sensorInfo.getCreateTemperature()));
+                correctValueCmdList.add(cmdCorrectionValueFormat.replace("{}", "M" + sensorInfo.getManualCorrection()));
 
-                configItemNameList.add("军星轴力计 触发阀值");
-                configItemNameList.add("军星轴力计 灵敏度K");
-                configItemNameList.add("军星轴力计 触基准值F0");
-                configItemNameList.add("军星轴力计 手动纠偏");
+                configItemNameList.add("轴力计 标定系数A");
+                configItemNameList.add("轴力计 温修系数b");
+                configItemNameList.add("轴力计 基准值F0");
+                configItemNameList.add("轴力计 初始温度T0");
+                configItemNameList.add("轴力计 手动纠偏");
             }
             break;
         }
