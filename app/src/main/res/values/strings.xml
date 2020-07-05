@@ -10,7 +10,6 @@
     <string name="service_address">service_address</string>
     <string name="agent_addr">地址：%1$s</string>
     <string name="exit_login_tip">确定退出登录吗？</string>
-    <string name="appbar_scrolling_view_behavior" translatable="false">android.support.design.widget.AppBarLayout$ScrollingViewBehavior</string>
     <string name="bottom_sheet_behavior" translatable="false">com.google.android.material.bottomsheet.BottomSheetBehavior</string>
     <string name="network_error_tip">网络不给力，请稍后再试！</string>
     <string name="open_flash">打开闪光灯</string>
@@ -151,8 +150,5 @@
     <string name="no_result">对不起，没有搜索到相关数据！</string>
     <string name="sear_loc_bus_subway">查找地点、公交、地铁</string>
     <string name="please_open_gps">请开启定位</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

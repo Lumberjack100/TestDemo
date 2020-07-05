@@ -7,11 +7,15 @@ import android.view.MenuItem;
 import android.view.View;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.base.BaseActivity;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.BluetoothDeviceListFragment;
 import com.shmedo.mcloudapp.maps.ui.activity.MapActivity;
+import com.shmedo.mcloudapp.ui.fragment.DASHomeFragment;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -20,6 +24,9 @@ public class NewMainActivity extends BaseActivity {
 
     @BindView(R.id.bottom_navigation)
     BottomNavigationView bottomNavigationView;
+
+    private BluetoothDeviceListFragment bluetoothDeviceListFragment;
+    private Fragment currentFragment;
 
 
     public static void start(Context context) {
@@ -42,6 +49,29 @@ public class NewMainActivity extends BaseActivity {
     }
 
     private void initView(Bundle savedInstanceState) {
+
+        if (savedInstanceState != null) {  // “内存重启”时调用
+            String curTag = savedInstanceState.getString("CurrentFragment");
+            currentFragment = getSupportFragmentManager().findFragmentByTag(curTag);
+            bluetoothDeviceListFragment = (BluetoothDeviceListFragment) getSupportFragmentManager().findFragmentByTag(DASHomeFragment.class.getName());
+
+            if (bluetoothDeviceListFragment == null)
+                bluetoothDeviceListFragment = new BluetoothDeviceListFragment();
+
+            // 解决重叠问题
+            getSupportFragmentManager().beginTransaction()
+                    .hide(bluetoothDeviceListFragment)
+//                    .hide(queryDataFragment)
+//                    .hide(deviceDetailsFragment)
+                    .show(currentFragment)
+                    .commit();
+        } else {
+            bluetoothDeviceListFragment = new BluetoothDeviceListFragment();
+//            queryDataFragment = new QueryDeviceDataFragment();
+//            deviceDetailsFragment = new DeviceDetailsFragment();
+            switchFrgment(0);
+        }
+
         initBottomNavigationItemSelectedListener();
     }
 
@@ -83,4 +113,40 @@ public class NewMainActivity extends BaseActivity {
                 break;
         }
     }
+
+
+    /**
+     * switch the fragment accordting to id
+     */
+    private void switchFrgment(int i) {
+        switch (i) {
+            case 0:
+                showFragment(bluetoothDeviceListFragment);
+                break;
+            case 1:
+//                showFragment(queryDataFragment);
+                break;
+            case 2:
+//                showFragment(deviceDetailsFragment);
+                break;
+        }
+    }
+
+    private void showFragment(Fragment fragment) {
+        if (currentFragment != fragment) {//  判断传入的fragment是不是当前的currentFragmentgit
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            if (!fragment.isAdded()) { //  判断传入的fragment是否已经被add()过
+                transaction.add(R.id.content_frame, fragment, fragment.getClass().getName());
+                if (currentFragment != null) {
+                    transaction.hide(currentFragment);
+                }
+            } else {
+                transaction.hide(currentFragment).show(fragment);
+            }
+
+            currentFragment = fragment;  //  然后将传入的fragment赋值给currentFragment
+            transaction.commit();
+        }
+    }
+
 }
