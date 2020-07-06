@@ -81,7 +81,7 @@ public class PrivacyTipDialog extends DialogFragment {
         int end1 = start1 + "《用户协议》".length();
         int start2 = text.indexOf("《隐私协议》");
         int end2 = start2 + "《隐私协议》".length();
-        spannableString.setSpan(new MyClickText(getActivity(), ContentType.USER_AGREEMENT), start1, end1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        spannableString.setSpan(new MyClickText(getActivity(), ContentType.USER_PROTOCOL), start1, end1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         spannableString.setSpan(new MyClickText(getActivity(), ContentType.PRIVACY_POLICY), start2, end2, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 
         //当然这里也可以通过setSpan来设置哪些位置的文本哪些颜色
@@ -142,8 +142,8 @@ public class PrivacyTipDialog extends DialogFragment {
 
         @Override
         public void onClick(View view) {
-            if (contentType == ContentType.USER_AGREEMENT) {
-                ProtocolActivity.startActivity(context, ContentType.USER_AGREEMENT);
+            if (contentType == ContentType.USER_PROTOCOL) {
+                ProtocolActivity.startActivity(context, ContentType.USER_PROTOCOL);
             } else {
                 ProtocolActivity.startActivity(context, ContentType.PRIVACY_POLICY);
             }
@@ -151,7 +151,7 @@ public class PrivacyTipDialog extends DialogFragment {
     }
 
     public enum ContentType implements Serializable {
-        USER_AGREEMENT,//用户协议
+        USER_PROTOCOL,//用户协议
         PRIVACY_POLICY//隐私政策
     }
 }
