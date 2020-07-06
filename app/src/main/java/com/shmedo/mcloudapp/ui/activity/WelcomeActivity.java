@@ -51,8 +51,6 @@ public class WelcomeActivity extends BaseActivity implements LoginManager.LoginC
 
     private String mPassword = null;
 
-    private boolean isShowPrivacyAgreement = false;
-
 
     @Override
     protected int initContentView() {

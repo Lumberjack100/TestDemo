@@ -49,14 +49,15 @@
         android:theme="@style/AppTheme"
         tools:ignore="LockedOrientationActivity"
         tools:targetApi="p">
+        <activity android:name=".ui.activity.ProtocolActivity"></activity>
 
         <meta-data
             android:name="com.amap.api.v2.apikey"
             android:value="${mapApikey}" />
 
         <service android:name="com.amap.api.location.APSService" />
-        <activity android:name="com.pgyersdk.feedback.FeedbackActivity" /><!-- 蒲公英配置 -->
 
+        <activity android:name="com.pgyersdk.feedback.FeedbackActivity" /> <!-- 蒲公英配置 -->
         <meta-data
             android:name="PGYER_APPID"
             android:value="${pgyerKey}" />
@@ -264,17 +265,14 @@
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:launchMode="singleTop"
             android:screenOrientation="portrait"
-            android:theme="@style/SpeedTestResultTheme" />
-
-        <!--Activity在高德 SDK内部实现 -->
-        <activity android:name="com.amap.api.maps.offlinemap.OfflineMapActivity"
-            android:screenOrientation="portrait"  />
-
-        <activity android:name="com.amap.api.navi.AmapRouteActivity"
-            android:theme="@android:style/Theme.NoTitleBar"
-            android:configChanges="orientation|keyboardHidden|screenSize" />
-
-
+            android:theme="@style/SpeedTestResultTheme" /> <!-- Activity在高德 SDK内部实现 -->
+        <activity
+            android:name="com.amap.api.maps.offlinemap.OfflineMapActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.amap.api.navi.AmapRouteActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:theme="@android:style/Theme.NoTitleBar" />
         <activity
             android:name=".ui.activity.TestBluetoothListActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
