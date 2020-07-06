@@ -1,14 +1,15 @@
 package com.shmedo.mcloudapp.ui.activity;
 
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
+import android.view.View;
 import android.view.WindowManager;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.fragment.app.DialogFragment;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -18,6 +19,7 @@ import com.shmedo.mcloudapp.base.BaseActivity;
 import com.shmedo.mcloudapp.entity.UserInfo;
 import com.shmedo.mcloudapp.entity.UserInfoWrapper;
 import com.shmedo.mcloudapp.model.common.CommonVariable;
+import com.shmedo.mcloudapp.ui.PrivacyTipDialog;
 import com.shmedo.mcloudapp.util.DaoManager;
 import com.shmedo.mcloudapp.util.GsonFactory;
 import com.shmedo.mcloudapp.util.LoginManager;
@@ -39,7 +41,7 @@ import timber.log.Timber;
  * 创建者:   dpc
  * 创建时间:  2019/1/8 09:17
  */
-public class WelcomeActivity extends BaseActivity implements LoginManager.LoginCallback {
+public class WelcomeActivity extends BaseActivity implements LoginManager.LoginCallback, PrivacyTipDialog.DialogFragmentClickListener {
 
     private MaterialDialog mMaterialDialog;
 
@@ -56,43 +58,50 @@ public class WelcomeActivity extends BaseActivity implements LoginManager.LoginC
     }
 
 
-    /**
-     * 沉浸式状态栏
-     */
-    private void initStates() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            //透明状态栏
-            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-            //透明导航栏
-            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
-        }
-    }
-
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initStates();
         setCheckNetWork(false);
-        initViewAndData();
-        checkPermission();
+        initData();
+//        checkPermission();
     }
 
-    private void initViewAndData() {
+    /**
+     * 沉浸式状态栏
+     */
+    private void initStates() {
+        //透明状态栏
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        //透明导航栏
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
+    }
+
+    private void initData() {
         userConfig = UserConfig.getConfig(this, CommonVariable.USER_CONFIG_NAME);
         mAccount = userConfig.readString(CommonVariable.UID);
         mPassword = userConfig.readString(CommonVariable.PWD);
-    }
 
-
-    private void makeAutoLogin(String account, String password) {
-        if (MCloudApp.isIsNetworkConnected()) {
-            LoginManager.getInstance().login(account, password, this);
+        String mPrivacy = userConfig.readString(CommonVariable.PRIVACY_AGREEMENT);
+        if (TextUtils.isEmpty(mPrivacy) || mPrivacy.toLowerCase().equals("refuse")) {
+            DialogFragment privacyTipDialog = new PrivacyTipDialog();
+            privacyTipDialog.show(getSupportFragmentManager(), "dialog");
         } else {
-            loginForOffline();
+            checkPermission();
         }
     }
 
+    @Override
+    public void onPositiveClick(View view) {
+        userConfig.writeString(CommonVariable.PRIVACY_AGREEMENT, "agree");
+        checkPermission();
+    }
+
+    @Override
+    public void onNegativeClick(View view) {
+        userConfig.writeString(CommonVariable.PRIVACY_AGREEMENT, "refuse");
+        WelcomeActivity.this.finish();
+    }
 
     @Override
     public void callback(int code, Object data) {
@@ -108,7 +117,6 @@ public class WelcomeActivity extends BaseActivity implements LoginManager.LoginC
      * 离线登录
      */
     private void loginForOffline() {
-        UserConfig userConfig = UserConfig.getConfig(MCloudApp.getContext(), CommonVariable.USER_CONFIG_NAME);
         String account = userConfig.readString(CommonVariable.UID);
         String token = userConfig.readString(CommonVariable.ACCESS_TOKEN);
         String time = userConfig.readString(CommonVariable.TOKEN_UPDATE_TIME);
@@ -143,7 +151,6 @@ public class WelcomeActivity extends BaseActivity implements LoginManager.LoginC
         redirectToMainActivity(1500);
     }
 
-
     /**
      * 跳转到登录界面
      */
@@ -170,6 +177,13 @@ public class WelcomeActivity extends BaseActivity implements LoginManager.LoginC
         }, delayMillis);
     }
 
+    private void makeAutoLogin(String account, String password) {
+        if (MCloudApp.isIsNetworkConnected()) {
+            LoginManager.getInstance().login(account, password, this);
+        } else {
+            loginForOffline();
+        }
+    }
 
     private void checkPermission() {
         AndPermission.with(this)
@@ -182,7 +196,7 @@ public class WelcomeActivity extends BaseActivity implements LoginManager.LoginC
                         if (!TextUtils.isEmpty(mAccount) && !TextUtils.isEmpty(mPassword)) {
                             makeAutoLogin(mAccount, mPassword);
                         } else {
-                            redirectToLoginActivity(1500);
+                            redirectToLoginActivity(1000);
                         }
                     }
                 })
@@ -199,7 +213,6 @@ public class WelcomeActivity extends BaseActivity implements LoginManager.LoginC
                 })
                 .start();
     }
-
 
     private void showRefusePermissionDialog() {
         MaterialDialog.Builder mBuilder = new MaterialDialog.Builder(WelcomeActivity.this)
