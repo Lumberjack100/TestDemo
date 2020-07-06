@@ -79,8 +79,8 @@ public class PrivacyTipDialog extends DialogFragment {
         SpannableString spannableString = new SpannableString(text);
         int start1 = text.indexOf("《用户协议》");
         int end1 = start1 + "《用户协议》".length();
-        int start2 = text.indexOf("《隐私协议》");
-        int end2 = start2 + "《隐私协议》".length();
+        int start2 = text.indexOf("《隐私政策》");
+        int end2 = start2 + "《隐私政策》".length();
         spannableString.setSpan(new MyClickText(getActivity(), ContentType.USER_PROTOCOL), start1, end1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         spannableString.setSpan(new MyClickText(getActivity(), ContentType.PRIVACY_POLICY), start2, end2, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 

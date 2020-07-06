@@ -1,7 +1,7 @@
 <resources>
-    <!--  <string name="app_name">米易通</string>-->
+    <!--  <string name="app_name"> 米易通</string>-->
     <string name="privacy_agreement_title">个人信息保护指引</string>
-    <string name="privacy_agreement_desc">欢迎您使用米易通！我们将通过《用户协议》和《隐私协议》帮助您了解我们收集、使用、存储和共享个人信息的情况，特别是我们所采集的个人信息类型与用途的对应关系。我们将严格按照政策内容使用和保护您的个人信息，为您提供更好的服务。</string>
+    <string name="privacy_agreement_desc">欢迎您使用 米易通！我们将通过《用户协议》和《隐私政策》帮助您了解我们收集、使用、存储和共享个人信息的情况，特别是我们所采集的个人信息类型与用途的对应关系。我们将严格按照政策内容使用和保护您的个人信息，为您提供更好的服务。</string>
 
     <string name="login_medo_copyright">©上海米度测控科技有限公司版权所有</string>
     <string name="login_input_username_hint">请输入用户名</string>

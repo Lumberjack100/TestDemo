@@ -49,7 +49,7 @@
         android:theme="@style/AppTheme"
         tools:ignore="LockedOrientationActivity"
         tools:targetApi="p">
-        <activity android:name=".ui.activity.ProtocolActivity"></activity>
+        <activity android:name=".ui.activity.ProtocolActivity"/>
 
         <meta-data
             android:name="com.amap.api.v2.apikey"
