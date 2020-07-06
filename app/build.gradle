@@ -6,7 +6,7 @@ apply plugin: 'com.jakewharton.butterknife'
  * @return
  */
 def getAppName() {
-    return '米易通'
+    return 'mCloud Device'
 }
 
 /**
