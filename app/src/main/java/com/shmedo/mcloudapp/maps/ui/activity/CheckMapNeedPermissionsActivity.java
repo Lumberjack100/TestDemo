@@ -82,7 +82,7 @@ public abstract class CheckMapNeedPermissionsActivity extends BaseActivity {
      * 检查是否授予 APP 定位权限
      */
     private void checkPermissionForLocation() {
-        XPermissionUtils.requestPermissionsResult(CheckMapNeedPermissionsActivity.this, XPermissionUtils.CODE_REQUEST_PERMISSIONS, needPermissions, new XPermissionUtils.OnPermissionListener() {
+        XPermissionUtils.requestPermissionsResult(CheckMapNeedPermissionsActivity.this, XPermissionUtils.REQUEST_CODE_OPEN_APPLICATION_SETTING, needPermissions, new XPermissionUtils.OnPermissionListener() {
             @Override
             public void onPermissionGranted() {
                 doOnPermissionGranted();
@@ -165,7 +165,7 @@ public abstract class CheckMapNeedPermissionsActivity extends BaseActivity {
                 }
                 break;
 
-            case XPermissionUtils.CODE_REQUEST_PERMISSIONS:
+            case XPermissionUtils.REQUEST_CODE_OPEN_APPLICATION_SETTING:
                 if (XPermissionUtils.checkPermissions(CheckMapNeedPermissionsActivity.this, needPermissions)) {
                     //                    mLocationClient.startLocation();
 //                    aMap.setMyLocationStyle(myLocationStyle.myLocationType(MyLocationStyle.LOCATION_TYPE_LOCATE));

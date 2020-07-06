@@ -37,8 +37,6 @@ import timber.log.Timber;
  * 描述：    TODO
  */
 public class LocationUtils {
-    private static final int REQUEST_CODE_SETTING = 1;
-
     @SuppressLint("StaticFieldLeak")
     private static AMapLocationClient mLocationClient;
 
@@ -185,7 +183,7 @@ public class LocationUtils {
                 .setPositiveButton("确定", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        AndPermission.with(context).runtime().setting().start(REQUEST_CODE_SETTING);
+                        AndPermission.with(context).runtime().setting().start(XPermissionUtils.REQUEST_CODE_OPEN_APPLICATION_SETTING);
                     }
                 })
                 .setNegativeButton("取消", new DialogInterface.OnClickListener() {

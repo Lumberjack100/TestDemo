@@ -90,8 +90,6 @@ public class MainActivity extends BaseActivity {
 
     public static final int PERMISSION_CODE_LOCATION = 0x012;
 
-    public static final int PERMISSION_CODE_STORAGE = 0x013;
-
 
     @BindView(R.id.img_user)
     ImageView mImgUser;

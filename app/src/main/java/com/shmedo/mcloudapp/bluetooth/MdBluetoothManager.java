@@ -29,6 +29,7 @@ import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.bluetooth.exception.ScanAlreadyStartException;
 import com.shmedo.mcloudapp.entity.ble.MDevice;
 import com.shmedo.mcloudapp.util.TimeUtil;
+import com.shmedo.mcloudapp.util.XPermissionUtils;
 import com.shmedo.mcloudapp.util.bleutil.Constants;
 import com.shmedo.mcloudapp.util.bleutil.DescriptorParser;
 import com.shmedo.mcloudapp.util.bleutil.GattAttributes;
@@ -79,7 +80,6 @@ public class MdBluetoothManager {
      */
     private static final int WAIT_FOR_RESPONSE_TIME_OUT_SECOND = 60;
 
-    private static final int PERMISSION_CODE_LOCATION = 0x012;
 
     private static MdBluetoothManager bluetoothManager;
 
@@ -268,7 +268,7 @@ public class MdBluetoothManager {
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                         dialog.dismiss();
-                        AndPermission.with(context).runtime().setting().start(PERMISSION_CODE_LOCATION);
+                        AndPermission.with(context).runtime().setting().start(XPermissionUtils.REQUEST_CODE_LOCATION_PERMISSION);
                     }
                 })
                 .onNegative(new MaterialDialog.SingleButtonCallback() {

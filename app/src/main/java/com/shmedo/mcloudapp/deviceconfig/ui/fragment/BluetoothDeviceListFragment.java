@@ -23,10 +23,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
+import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 import com.hjq.toast.ToastUtils;
 import com.shmedo.mcloudapp.MCloudApp;
 import com.shmedo.mcloudapp.R;
-import com.shmedo.mcloudapp.adapter.BluetoothDeviceAdapter;
 import com.shmedo.mcloudapp.base.BaseFragment;
 import com.shmedo.mcloudapp.bluetooth.BluetoothDeviceFindEventData;
 import com.shmedo.mcloudapp.bluetooth.BluetoothEvent;
@@ -45,8 +45,9 @@ import com.shmedo.mcloudapp.ui.activity.UserInfoActivity;
 import com.shmedo.mcloudapp.util.XPermissionUtils;
 import com.shmedo.mcloudapp.views.recycleviewitemdivider.DividerItemDecoration;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 import butterknife.BindView;
@@ -68,8 +69,7 @@ public class BluetoothDeviceListFragment extends BaseFragment {
     @BindView(R.id.recyclerView)
     RecyclerView mRecyclerView;
 
-    private BluetoothDeviceAdapter deviceAdapter;
-    private List<MDevice> deviceList = new ArrayList<>();
+    private DeviceAdapter deviceAdapter;
 
     private BluetoothAdapter mBluetoothAdapter;
     private MdBluetoothManager mdBluetoothManager;
@@ -122,15 +122,14 @@ public class BluetoothDeviceListFragment extends BaseFragment {
     private void initAdapter() {
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         mRecyclerView.addItemDecoration(new DividerItemDecoration());
-        deviceAdapter = new BluetoothDeviceAdapter(R.layout.item_bluetoothdevice, deviceList);
+        deviceAdapter = new DeviceAdapter();
         mRecyclerView.setAdapter(deviceAdapter);
-
         deviceAdapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(@NonNull BaseQuickAdapter adapter, @NonNull View view, int position) {
                 mdBluetoothManager.stopScan();
 
-                BluetoothDevice bluetoothDevice = deviceList.get(position).getDevice();
+                BluetoothDevice bluetoothDevice = deviceAdapter.getItem(position).getDevice();
                 String macAddress = bluetoothDevice.getAddress();
                 String deviceName = bluetoothDevice.getName();
                 MCloudApp.setCurDeviceToken(deviceName.substring(3));
@@ -180,7 +179,6 @@ public class BluetoothDeviceListFragment extends BaseFragment {
             mIvDiscoveryDevice.stop();
     }
 
-
     /**
      * 初始化蓝牙
      */
@@ -189,7 +187,6 @@ public class BluetoothDeviceListFragment extends BaseFragment {
         mBluetoothAdapter = Objects.requireNonNull(bluetoothManager).getAdapter();
         mdBluetoothManager = MdBluetoothManager.getInstance();
     }
-
 
     /**
      * 扫描蓝牙设备，主要用来判断要连接的设备是否能被搜索到
@@ -202,12 +199,11 @@ public class BluetoothDeviceListFragment extends BaseFragment {
             return;
         }
 
-        deviceList.clear();
+        deviceAdapter.setNewInstance(new ArrayList<>());
         mdBluetoothManager.scanDevice(30, getActivity());
         hander.postDelayed(dismssDialogRunnable, 30000);
         updateViewState(true);
     }
-
 
     private class MdBluetoothEventHandler implements BluetoothEventHandler {
         @Override
@@ -218,13 +214,12 @@ public class BluetoothDeviceListFragment extends BaseFragment {
         }
     }
 
-
     private void handleDeviceFind(BluetoothDeviceFindEventData eventData) {
         if (eventData.getNewDevice().getDevice().getName() == null || !eventData.getNewDevice().getDevice().getName().startsWith("MD")) {
             return;
         }
 
-        for (MDevice mDevice : deviceList) {
+        for (MDevice mDevice : deviceAdapter.getData()) {
             if (eventData.getNewDevice()
                     .getDevice()
                     .getAddress()
@@ -252,7 +247,6 @@ public class BluetoothDeviceListFragment extends BaseFragment {
                     }
                 });
     }
-
 
     @SuppressLint("MissingSuperCall")
     @Override
@@ -294,7 +288,6 @@ public class BluetoothDeviceListFragment extends BaseFragment {
             scan(result);
         }
     }
-
 
     /**
      * 处理扫描结果，例如：MEDO,189150L,DAS
@@ -347,19 +340,21 @@ public class BluetoothDeviceListFragment extends BaseFragment {
         }
     }
 
+    public class DeviceAdapter extends BaseQuickAdapter<MDevice, BaseViewHolder> {
+        public DeviceAdapter() {
+            super(R.layout.item_bluetoothdevice);
+        }
 
-//    @Override
-//    public void onStart() {
-//        super.onStart();
-//        EventBus.getDefault().register(this);
-//    }
-//
-//    @Override
-//    public void onStop() {
-//        super.onStop();
-//        EventBus.getDefault().unregister(this);
-//    }
 
+        @Override
+        protected void convert(@NotNull BaseViewHolder holder, MDevice mDevice) {
+//            Timber.d("This is an Item, pos: " + (holder.getAdapterPosition() - getHeaderLayoutCount()));
+            BluetoothDevice bluetoothDevice = mDevice.getDevice();
+            holder.setText(R.id.tv_dev_name, TextUtils.isEmpty(bluetoothDevice.getName()) ? "N/A" : bluetoothDevice.getName());
+            holder.setText(R.id.tv_dev_mac, bluetoothDevice.getAddress());
+            holder.setText(R.id.tv_dev_signal, mDevice.getRssi() + "dBm");
+        }
+    }
 
     @Override
     public void onDestroy() {

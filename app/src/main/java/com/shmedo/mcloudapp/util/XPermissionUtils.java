@@ -30,7 +30,10 @@ import java.util.List;
 
 public class XPermissionUtils {
 
-    public static final int CODE_REQUEST_PERMISSIONS = 0x001;
+    public static final int REQUEST_CODE_OPEN_APPLICATION_SETTING = 0x0010;
+    public static final int REQUEST_CODE_STORAGE_PERMISSION = 0x0011;
+    public static final int REQUEST_CODE_LOCATION_PERMISSION = 0x0012;
+
 
     public static final int REQUEST_CODE_SCAN = 0x1008;
 
@@ -219,7 +222,7 @@ public class XPermissionUtils {
     public static void startAppSettings(Activity activity) {
         Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
         intent.setData(Uri.parse("package:" + activity.getPackageName()));
-        activity.startActivityForResult(intent, CODE_REQUEST_PERMISSIONS);
+        activity.startActivityForResult(intent, REQUEST_CODE_OPEN_APPLICATION_SETTING);
     }
 
 
@@ -229,7 +232,7 @@ public class XPermissionUtils {
     public static void startAppSettings(Fragment fragment) {
         Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
         intent.setData(Uri.parse("package:" + fragment.getContext().getPackageName()));
-        fragment.startActivityForResult(intent, CODE_REQUEST_PERMISSIONS);
+        fragment.startActivityForResult(intent, REQUEST_CODE_OPEN_APPLICATION_SETTING);
     }
 
     /**
