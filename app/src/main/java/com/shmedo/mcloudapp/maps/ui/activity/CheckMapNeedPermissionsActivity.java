@@ -99,9 +99,7 @@ public abstract class CheckMapNeedPermissionsActivity extends BaseActivity {
     private void showPermissionSettingDialog() {
         MaterialDialog.Builder mBuilder = new MaterialDialog.Builder(CheckMapNeedPermissionsActivity.this)
                 .title("权限申请").content(getResources().getString(R.string.permission_request_location))
-                .negativeText("暂不开启")
                 .positiveText("去设置")
-                .negativeColor(getResources().getColor(R.color.gray_797979))
                 .positiveColor(getResources().getColor(R.color.colorPrimary))
                 .cancelable(false)
                 .onPositive(new MaterialDialog.SingleButtonCallback() {
@@ -109,12 +107,6 @@ public abstract class CheckMapNeedPermissionsActivity extends BaseActivity {
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                         dialog.dismiss();
                         XPermissionUtils.startAppSettings(CheckMapNeedPermissionsActivity.this);
-                    }
-                })
-                .onNegative(new MaterialDialog.SingleButtonCallback() {
-                    @Override
-                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        dialog.dismiss();
                     }
                 });
 

@@ -622,9 +622,7 @@ public class MainActivity extends BaseActivity {
     private void showLocationSettingDialog() {
         MaterialDialog.Builder mBuilder = new MaterialDialog.Builder(MainActivity.this)
                 .title("权限申请").content(getResources().getString(R.string.permission_request_location))
-                .negativeText("暂不开启")
                 .positiveText("去设置")
-                .negativeColor(getResources().getColor(R.color.font_main))
                 .positiveColor(getResources().getColor(R.color.colorPrimary))
                 .cancelable(false)
                 .onPositive(new MaterialDialog.SingleButtonCallback() {
@@ -632,12 +630,6 @@ public class MainActivity extends BaseActivity {
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                         dialog.dismiss();
                         AndPermission.with(MainActivity.this).runtime().setting().start(PERMISSION_CODE_LOCATION);
-                    }
-                })
-                .onNegative(new MaterialDialog.SingleButtonCallback() {
-                    @Override
-                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        dialog.dismiss();
                     }
                 });
 

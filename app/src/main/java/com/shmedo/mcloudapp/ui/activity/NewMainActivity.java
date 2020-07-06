@@ -16,6 +16,8 @@ import com.shmedo.mcloudapp.base.BaseActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.BluetoothDeviceListFragment;
 import com.shmedo.mcloudapp.maps.ui.activity.MapActivity;
 import com.shmedo.mcloudapp.ui.fragment.DASHomeFragment;
+import com.shmedo.mcloudapp.util.XPermissionUtils;
+import com.shmedo.mcloudapp.util.permission.UpdataManagerUtil;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -46,10 +48,10 @@ public class NewMainActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initView(savedInstanceState);
+        UpdataManagerUtil.requestPermissionForInstallPackage(this, false);//版本更新
     }
 
     private void initView(Bundle savedInstanceState) {
-
         if (savedInstanceState != null) {  // “内存重启”时调用
             String curTag = savedInstanceState.getString("CurrentFragment");
             currentFragment = getSupportFragmentManager().findFragmentByTag(curTag);
@@ -114,7 +116,6 @@ public class NewMainActivity extends BaseActivity {
         }
     }
 
-
     /**
      * switch the fragment accordting to id
      */
@@ -149,4 +150,15 @@ public class NewMainActivity extends BaseActivity {
         }
     }
 
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        switch (requestCode) {
+            case XPermissionUtils.REQUEST_CODE_STORAGE_PERMISSION:
+                UpdataManagerUtil.requestPermissionForInstallPackage(this, false);//版本更新
+                break;
+        }
+    }
 }

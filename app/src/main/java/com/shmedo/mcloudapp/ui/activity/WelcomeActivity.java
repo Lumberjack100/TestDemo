@@ -7,12 +7,9 @@ import android.text.TextUtils;
 import android.view.View;
 import android.view.WindowManager;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
-import com.afollestad.materialdialogs.DialogAction;
-import com.afollestad.materialdialogs.MaterialDialog;
 import com.shmedo.mcloudapp.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.base.BaseActivity;
@@ -25,9 +22,6 @@ import com.shmedo.mcloudapp.util.GsonFactory;
 import com.shmedo.mcloudapp.util.LoginManager;
 import com.shmedo.mcloudapp.util.UserConfig;
 import com.shmedo.mcloudapp.util.XPermissionUtils;
-import com.yanzhenjie.permission.Action;
-import com.yanzhenjie.permission.AndPermission;
-import com.yanzhenjie.permission.runtime.Permission;
 
 import java.util.Date;
 import java.util.List;
@@ -42,13 +36,9 @@ import timber.log.Timber;
  * 创建时间:  2019/1/8 09:17
  */
 public class WelcomeActivity extends BaseActivity implements LoginManager.LoginCallback, PrivacyTipDialog.DialogFragmentClickListener {
-
-    private MaterialDialog mMaterialDialog;
-
     private UserConfig userConfig;
 
     private String mAccount = null;
-
     private String mPassword = null;
 
 
@@ -64,7 +54,6 @@ public class WelcomeActivity extends BaseActivity implements LoginManager.LoginC
         initStates();
         setCheckNetWork(false);
         initData();
-//        checkPermission();
     }
 
     /**
@@ -87,14 +76,14 @@ public class WelcomeActivity extends BaseActivity implements LoginManager.LoginC
             DialogFragment privacyTipDialog = new PrivacyTipDialog();
             privacyTipDialog.show(getSupportFragmentManager(), "dialog");
         } else {
-            checkPermission();
+            checkLogin();
         }
     }
 
     @Override
     public void onPositiveClick(View view) {
         userConfig.writeString(CommonVariable.PRIVACY_AGREEMENT, "agree");
-        checkPermission();
+        checkLogin();
     }
 
     @Override
@@ -103,13 +92,20 @@ public class WelcomeActivity extends BaseActivity implements LoginManager.LoginC
         WelcomeActivity.this.finish();
     }
 
-    @Override
-    public void callback(int code, Object data) {
-        if (LoginManager.LOGIN_CODE_SUCCESS == code) {
-            redirectToMainActivity(1500);
-
+    private void checkLogin() {
+        //自动登录
+        if (!TextUtils.isEmpty(mAccount) && !TextUtils.isEmpty(mPassword)) {
+            makeAutoLogin(mAccount, mPassword);
         } else {
-            redirectToLoginActivity(1500);
+            redirectToLoginActivity(1000);
+        }
+    }
+
+    private void makeAutoLogin(String account, String password) {
+        if (MCloudApp.isIsNetworkConnected()) {
+            LoginManager.getInstance().login(account, password, this);
+        } else {
+            loginForOffline();
         }
     }
 
@@ -151,6 +147,16 @@ public class WelcomeActivity extends BaseActivity implements LoginManager.LoginC
         redirectToMainActivity(1500);
     }
 
+    @Override
+    public void callback(int code, Object data) {
+        if (LoginManager.LOGIN_CODE_SUCCESS == code) {
+            redirectToMainActivity(1500);
+
+        } else {
+            redirectToLoginActivity(1500);
+        }
+    }
+
     /**
      * 跳转到登录界面
      */
@@ -177,76 +183,12 @@ public class WelcomeActivity extends BaseActivity implements LoginManager.LoginC
         }, delayMillis);
     }
 
-    private void makeAutoLogin(String account, String password) {
-        if (MCloudApp.isIsNetworkConnected()) {
-            LoginManager.getInstance().login(account, password, this);
-        } else {
-            loginForOffline();
-        }
-    }
-
-    private void checkPermission() {
-        AndPermission.with(this)
-                .runtime()
-                .permission(Permission.READ_EXTERNAL_STORAGE, Permission.WRITE_EXTERNAL_STORAGE)
-                .onGranted(new Action<List<String>>() {
-                    @Override
-                    public void onAction(List<String> permissions) {
-                        //自动登录
-                        if (!TextUtils.isEmpty(mAccount) && !TextUtils.isEmpty(mPassword)) {
-                            makeAutoLogin(mAccount, mPassword);
-                        } else {
-                            redirectToLoginActivity(1000);
-                        }
-                    }
-                })
-                .onDenied(new Action<List<String>>() {
-                    @Override
-                    public void onAction(@NonNull List<String> permissions) {
-                        if (mMaterialDialog != null && !mMaterialDialog.isShowing()) {
-                            mMaterialDialog.show();
-
-                        } else {
-                            showRefusePermissionDialog();
-                        }
-                    }
-                })
-                .start();
-    }
-
-    private void showRefusePermissionDialog() {
-        MaterialDialog.Builder mBuilder = new MaterialDialog.Builder(WelcomeActivity.this)
-                .title("权限申请").content(getResources().getString(R.string.permission_external_storage))
-                .negativeText("取消")
-                .positiveText("去设置")
-                .negativeColor(getResources().getColor(R.color.font_main))
-                .positiveColor(getResources().getColor(R.color.colorPrimary))
-                .cancelable(false)
-                .onPositive(new MaterialDialog.SingleButtonCallback() {
-                    @Override
-                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        dialog.dismiss();
-                        XPermissionUtils.startAppSettings(WelcomeActivity.this);
-                    }
-                })
-                .onNegative(new MaterialDialog.SingleButtonCallback() {
-                    @Override
-                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        dialog.dismiss();
-                        finish();
-                    }
-                });
-
-        mMaterialDialog = mBuilder.build();
-        mMaterialDialog.show();
-    }
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
 
-        if (requestCode == XPermissionUtils.CODE_REQUEST_PERMISSIONS) {
-            checkPermission();
+        if (requestCode == XPermissionUtils.REQUEST_CODE_OPEN_APPLICATION_SETTING) {
+            checkLogin();
         }
     }
 

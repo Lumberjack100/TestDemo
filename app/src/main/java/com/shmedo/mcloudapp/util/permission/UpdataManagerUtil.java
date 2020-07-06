@@ -2,7 +2,6 @@ package com.shmedo.mcloudapp.util.permission;
 
 import android.app.Activity;
 import android.content.DialogInterface;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -16,8 +15,8 @@ import com.pgyersdk.update.PgyUpdateManager;
 import com.pgyersdk.update.UpdateManagerListener;
 import com.pgyersdk.update.javabean.AppBean;
 import com.shmedo.mcloudapp.R;
-import com.shmedo.mcloudapp.ui.activity.MainActivity;
 import com.shmedo.mcloudapp.util.FileUtils;
+import com.shmedo.mcloudapp.util.XPermissionUtils;
 import com.yanzhenjie.permission.Action;
 import com.yanzhenjie.permission.AndPermission;
 import com.yanzhenjie.permission.runtime.Permission;
@@ -36,7 +35,7 @@ public class UpdataManagerUtil {
         if (!FileUtils.externalAvailable()) {
             new AlertDialog.Builder(activity)
                     .setTitle("提示")
-                    .setMessage("请允许安装应用权限")
+                    .setMessage("您的手机没有SD卡，无法进行版本自动升级")
                     .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
@@ -64,10 +63,10 @@ public class UpdataManagerUtil {
                 .onDenied(new Action<List<String>>() {
                     @Override
                     public void onAction(List<String> data) {
-                        ToastUtils.show("您的设备不允许我们安装应用");
-                        if (AndPermission.hasAlwaysDeniedPermission(activity, Permission.READ_EXTERNAL_STORAGE, Permission.WRITE_EXTERNAL_STORAGE)) {
-                            showLocationSettingDialog(activity);
-                        }
+//                        if (AndPermission.hasAlwaysDeniedPermission(activity, Permission.READ_EXTERNAL_STORAGE, Permission.WRITE_EXTERNAL_STORAGE)) {
+//                            showStoragePermissionSettingDialog(activity);
+//                        }
+                        showStoragePermissionSettingDialog(activity);
                     }
                 })
                 .start();
@@ -115,7 +114,7 @@ public class UpdataManagerUtil {
                     @Override
                     public void checkUpdateFailed(Exception e) {
                         //更新检测失败回调
-                        Log.e("pgyer", "check update failed ", e);
+                        Timber.e(e, "check update failed ");
                     }
                 })
                 //注意 ：下载方法调用 PgyUpdateManager.downLoadApk(appBean.getDownloadURL()); 此回调才有效
@@ -123,42 +122,34 @@ public class UpdataManagerUtil {
                     @Override
                     public void downloadFailed() {
                         //下载失败
-                        Log.e("pgyer", "download apk failed");
+                        Timber.e("download apk failed");
                     }
 
                     @Override
                     public void downloadSuccessful(File file) {
-                        Log.e("pgyer", "download apk failed");
+                        Timber.e("download apk failed");
                         PgyUpdateManager.installApk(file);  // 使用蒲公英提供的安装方法提示用户 安装apk
                     }
 
                     @Override
                     public void onProgressUpdate(Integer... integers) {
-                        Log.e("pgyer", "update download apk progress : " + integers[0]);
+                        Timber.e("update download apk progress : %s", integers[0]);
                     }
                 })
                 .register();
     }
 
-    private static void showLocationSettingDialog(final Activity activity) {
+    private static void showStoragePermissionSettingDialog(final Activity activity) {
         MaterialDialog.Builder mBuilder = new MaterialDialog.Builder(activity)
                 .title("权限申请").content(activity.getResources().getString(R.string.permission_external_storage))
-                .negativeText("暂不开启")
                 .positiveText("去设置")
-                .negativeColor(activity.getResources().getColor(R.color.font_main))
                 .positiveColor(activity.getResources().getColor(R.color.colorPrimary))
                 .cancelable(false)
                 .onPositive(new MaterialDialog.SingleButtonCallback() {
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                         dialog.dismiss();
-                        AndPermission.with(activity).runtime().setting().start(MainActivity.PERMISSION_CODE_STORAGE);
-                    }
-                })
-                .onNegative(new MaterialDialog.SingleButtonCallback() {
-                    @Override
-                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        dialog.dismiss();
+                        AndPermission.with(activity).runtime().setting().start(XPermissionUtils.REQUEST_CODE_STORAGE_PERMISSION);
                     }
                 });
 

@@ -12,6 +12,8 @@ import android.text.TextUtils;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.amap.api.location.AMapLocationClient;
 import com.amap.api.location.AMapLocationClientOption;
 import com.hjq.toast.ToastUtils;
@@ -101,7 +103,8 @@ public class LocationUtils {
                     @Override
                     public void onAction(@NonNull List<String> permissions) {
                         if (AndPermission.hasAlwaysDeniedPermission(activity, permissions)) {
-                            showSettingDialog(activity, permissions);
+//                            showSettingDialog(activity, permissions);
+                            showLocationSettingDialog(activity);
                         }
                     }
                 })
@@ -172,7 +175,25 @@ public class LocationUtils {
         return mOption;
     }
 
-    public void showSettingDialog(Activity context, final List<String> permissions) {
+    private void showLocationSettingDialog(Activity context) {
+        MaterialDialog.Builder mBuilder = new MaterialDialog.Builder(context)
+                .title("权限申请").content(context.getResources().getString(R.string.permission_request_location))
+                .positiveText("去设置")
+                .positiveColor(context.getResources().getColor(R.color.colorPrimary))
+                .cancelable(false)
+                .onPositive(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        dialog.dismiss();
+                        AndPermission.with(context).runtime().setting().start(XPermissionUtils.REQUEST_CODE_OPEN_APPLICATION_SETTING);
+                    }
+                });
+
+        MaterialDialog mMaterialDialog = mBuilder.build();
+        mMaterialDialog.show();
+    }
+
+    private void showSettingDialog(Activity context, final List<String> permissions) {
         List<String> permissionNames = Permission.transformText(context, permissions);
         @SuppressLint({"StringFormatInvalid", "LocalSuppress"})
         String message = context.getString(R.string.message_permission_always_failed, TextUtils.join("\n", permissionNames));

@@ -259,7 +259,6 @@ public class MdBluetoothManager {
     private void showRefusePermissionDialog(Context context) {
         MaterialDialog.Builder mBuilder = new MaterialDialog.Builder(context)
                 .title("权限申请").content(context.getResources().getString(R.string.bluetooth_request_location))
-                .negativeText("取消")
                 .positiveText("去设置")
                 .negativeColor(context.getResources().getColor(R.color.font_main))
                 .positiveColor(context.getResources().getColor(R.color.colorPrimary))
@@ -269,12 +268,6 @@ public class MdBluetoothManager {
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                         dialog.dismiss();
                         AndPermission.with(context).runtime().setting().start(XPermissionUtils.REQUEST_CODE_LOCATION_PERMISSION);
-                    }
-                })
-                .onNegative(new MaterialDialog.SingleButtonCallback() {
-                    @Override
-                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        dialog.dismiss();
                     }
                 });
 
