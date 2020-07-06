@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Base64;
 
+import java.nio.charset.StandardCharsets;
+
 /**
  * 项目名：  CheckAndroid
  * 包名：    cn.shmedo.checkandroid.util
@@ -13,66 +15,50 @@ import android.util.Base64;
  * 描述：    用户参数类
  */
 
-public class UserConfig
-{
+public class UserConfig {
 
     private SharedPreferences preferences;
 
-    public static UserConfig getConfig(Context con, String configName)
-    {
+    public static UserConfig getConfig(Context con, String configName) {
         return new UserConfig(con, configName);
     }
 
-    public UserConfig(Context con, String configName)
-    {
+    private UserConfig(Context con, String configName) {
         preferences = con.getSharedPreferences(configName, Context.MODE_PRIVATE);
     }
 
-    public void writeString(String key, String value)
-    {
-        try
-        {
+    public void writeString(String key, String value) {
+        try {
             SharedPreferences.Editor editor = preferences.edit();
-            byte[] bs = value.getBytes("UTF-8");
+            byte[] bs = value.getBytes(StandardCharsets.UTF_8);
             String base64Str = Base64.encodeToString(bs, Base64.DEFAULT);
             editor.putString(key, base64Str);
-            editor.commit();
-        }
-        catch (Exception ex)
-        {
+            editor.apply();
+        } catch (Exception ex) {
             throw new RuntimeException(ex);
 
         }
     }
 
-    public String readString(String key)
-    {
-        try
-        {
+    public String readString(String key) {
+        try {
             String base64String = preferences.getString(key, null);
-            if (base64String == null)
-            {
+            if (base64String == null) {
                 return null;
             }
             byte[] bs = Base64.decode(base64String, Context.MODE_PRIVATE);
-            return new String(bs, "UTF-8");
-        }
-        catch (Exception e)
-        {
+            return new String(bs, StandardCharsets.UTF_8);
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
-    public void remove(String key)
-    {
-        try
-        {
+    public void remove(String key) {
+        try {
             SharedPreferences.Editor editor = preferences.edit();
             editor.remove(key);
-            editor.commit();
-        }
-        catch (Exception ex)
-        {
+            editor.apply();
+        } catch (Exception ex) {
             throw new RuntimeException(ex);
         }
 
