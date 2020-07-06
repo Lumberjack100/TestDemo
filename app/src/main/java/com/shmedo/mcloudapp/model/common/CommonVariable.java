@@ -12,7 +12,7 @@ import okhttp3.MediaType;
  */
 public class CommonVariable {
 
-    //是否显示隐私协议
+    //是否显示 隐私政策
     public static final String PRIVACY_AGREEMENT="privacy_agreement";
     public static final String OSMOMETER_NOTE = "osmometer";
     public static final String USER_HEAD_PHOTO_FILE_NAME = "/mnt/sdcard/tupian.png";

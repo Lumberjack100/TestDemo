@@ -26,7 +26,7 @@
             android:layout_below="@+id/user_image"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="20dp"
-            android:text="米易通"
+            android:text=" mCloud Device"
             android:textColor="@color/app_color_blue"
             android:textSize="20sp" />
 

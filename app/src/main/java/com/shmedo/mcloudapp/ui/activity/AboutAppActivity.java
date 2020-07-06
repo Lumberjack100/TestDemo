@@ -11,6 +11,7 @@ import com.pgyersdk.crash.PgyCrashManager;
 import com.pgyersdk.feedback.PgyerFeedbackManager;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.base.BaseActivity;
+import com.shmedo.mcloudapp.ui.PrivacyTipDialog;
 import com.shmedo.mcloudapp.util.permission.RuntimeRationale;
 import com.shmedo.mcloudapp.util.permission.UpdataManagerUtil;
 import com.yanzhenjie.permission.Action;
@@ -62,11 +63,11 @@ public class AboutAppActivity extends BaseActivity {
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }
-        mTvVersion.setText("米易通当前版本：" + localVersion);
+        mTvVersion.setText(" mCloud Device当前版本：" + localVersion);
     }
 
 
-    @OnClick({R.id.ll_userAdvice, R.id.ll_userUpData})
+    @OnClick({R.id.ll_userAdvice, R.id.ll_userUpData, R.id.userProtocolLayout, R.id.privacyPolicyLayout})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.ll_userAdvice:
@@ -75,6 +76,14 @@ public class AboutAppActivity extends BaseActivity {
 
             case R.id.ll_userUpData:
                 UpdataManagerUtil.requestPermissionForInstallPackage(this, true);
+                break;
+
+            case R.id.userProtocolLayout:
+                ProtocolActivity.startActivity(this, PrivacyTipDialog.ContentType.USER_PROTOCOL);
+                break;
+
+            case R.id.privacyPolicyLayout:
+                ProtocolActivity.startActivity(this, PrivacyTipDialog.ContentType.PRIVACY_POLICY);
                 break;
         }
     }

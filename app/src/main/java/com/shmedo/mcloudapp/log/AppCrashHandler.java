@@ -51,7 +51,7 @@ public class AppCrashHandler implements Thread.UncaughtExceptionHandler {
      */
     @Override
     public void uncaughtException(Thread t, Throwable ex) {
-        Timber.e(ex, "米易通异常退出：" + ex.getMessage());
+        Timber.e(ex, " mCloud Device异常退出：" + ex.getMessage());
 
         killProcess();
 

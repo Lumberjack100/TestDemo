@@ -425,7 +425,7 @@ public class MainActivity extends BaseActivity {
      * 配置点击事件
      */
     public void processConfigListener() {
-        ToastUtils.show("米易通App远程配置功能开发中...");
+        ToastUtils.show(" mCloud DeviceApp远程配置功能开发中...");
     }
 
     /**
