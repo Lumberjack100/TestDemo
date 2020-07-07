@@ -28,6 +28,7 @@ import com.shmedo.mcloudapp.model.BaseObserver;
 import com.shmedo.mcloudapp.model.MDRetrofit;
 import com.shmedo.mcloudapp.model.common.CommonVariable;
 import com.shmedo.mcloudapp.ui.activity.device.QuickActivationActivity;
+import com.shmedo.mcloudapp.user.ui.activity.AboutAppActivity;
 import com.shmedo.mcloudapp.util.ActivityCollector;
 import com.shmedo.mcloudapp.util.DaoManager;
 import com.shmedo.mcloudapp.util.FileProviderUtils;

@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/scrollView"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/gray_f2f2f2"
+    android:scrollbars="none">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <include layout="@layout/activity_support_actionbar_toolbar" />
+
+        <RelativeLayout
+            android:id="@+id/userLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimen_size_15"
+            android:foreground="?attr/selectableItemBackground"
+            android:background="@drawable/dialog_bg_white"
+            android:clickable="true"
+            android:focusable="true"
+            android:padding="@dimen/dimen_size_20">
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/userAvatar"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="@dimen/dimen_size_10"
+                android:src="@drawable/ic_avatar_default"
+                app:civ_border_color="@color/white"
+                app:civ_border_overlay="true"
+                app:civ_border_width="0.5dp" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="15dp"
+                android:layout_toRightOf="@+id/userAvatar"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/userName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black_333333"
+                    android:textSize="@dimen/text_size_18"
+                    tools:text="张三丰" />
+
+                <TextView
+                    android:id="@+id/userTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dimen_size_7"
+                    android:textColor="@color/gray_818182"
+                    android:textSize="@dimen/text_size_15"
+                    tools:text="产品经理" />
+
+            </LinearLayout>
+
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:src="@drawable/icon_right" />
+
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimen_size_15"
+            android:background="@drawable/dialog_bg_white"
+            android:orientation="vertical"
+            android:paddingTop="@dimen/dimen_size_20"
+            android:paddingBottom="@dimen/dimen_size_30">
+
+            <LinearLayout
+                android:id="@+id/companyLayout"
+                style="@style/UserInfo_LinearLayoutStyle">
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/icon_userinfo_company" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dimen_size_15"
+                    android:text="所属企业"
+                    android:textColor="@color/black_333333"
+                    android:textSize="@dimen/text_size_16" />
+
+                <TextView
+                    android:id="@+id/tv_companyName"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:drawableEnd="@drawable/icon_right"
+                    android:drawablePadding="@dimen/dimen_size_5"
+                    android:ellipsize="end"
+                    android:gravity="right"
+                    android:maxLines="1"
+                    android:textColor="@color/gray_818182"
+                    android:textSize="@dimen/text_size_15"
+                    tools:text="上海米度测控科技有限公司" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/updatePwdLayout"
+                style="@style/UserInfo_LinearLayoutStyle">
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/icon_userinfo_setting" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dimen_size_15"
+                    android:text="修改密码"
+                    android:textColor="@color/black_333333"
+                    android:textSize="@dimen/text_size_16" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:drawableEnd="@drawable/icon_right"
+                    android:drawablePadding="@dimen/dimen_size_5"
+                    android:ellipsize="end"
+                    android:gravity="right"
+                    android:maxLines="1"
+                    android:textColor="@color/gray_818182"
+                    android:textSize="@dimen/text_size_16" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/checkVersionLayout"
+                style="@style/UserInfo_LinearLayoutStyle">
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/icon_userinfo_check_version" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dimen_size_15"
+                    android:text="版本检测"
+                    android:textColor="@color/black_333333"
+                    android:textSize="@dimen/text_size_16" />
+
+                <TextView
+                    android:id="@+id/tv_versionName"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:drawableEnd="@drawable/icon_right"
+                    android:drawablePadding="@dimen/dimen_size_5"
+                    android:ellipsize="end"
+                    android:gravity="right"
+                    android:maxLines="1"
+                    android:textColor="@color/gray_818182"
+                    android:textSize="@dimen/text_size_15"
+                    tools:text="1.1.0" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/aboutLayout"
+                style="@style/UserInfo_LinearLayoutStyle">
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/icon_userinfo_about" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dimen_size_15"
+                    android:text="关于"
+                    android:textColor="@color/black_333333"
+                    android:textSize="@dimen/text_size_16" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:drawableEnd="@drawable/icon_right"
+                    android:drawablePadding="@dimen/dimen_size_5"
+                    android:ellipsize="end"
+                    android:gravity="right"
+                    android:maxLines="1"
+                    android:textColor="@color/gray_818182"
+                    android:textSize="@dimen/text_size_16" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/btn_exit"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginBottom="20dp"
+            android:background="@drawable/btn_select"
+            android:text="退出登录"
+            android:textColor="@color/white"
+            android:textSize="16dp" />
+
+    </LinearLayout>
+
+</ScrollView>

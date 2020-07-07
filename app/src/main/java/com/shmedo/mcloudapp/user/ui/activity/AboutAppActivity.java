@@ -1,7 +1,7 @@
-package com.shmedo.mcloudapp.ui.activity;
+package com.shmedo.mcloudapp.user.ui.activity;
 
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
@@ -12,6 +12,8 @@ import com.pgyersdk.feedback.PgyerFeedbackManager;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.base.BaseActivity;
 import com.shmedo.mcloudapp.ui.PrivacyTipDialog;
+import com.shmedo.mcloudapp.ui.activity.ProtocolActivity;
+import com.shmedo.mcloudapp.user.util.GlobalUtil;
 import com.shmedo.mcloudapp.util.permission.RuntimeRationale;
 import com.shmedo.mcloudapp.util.permission.UpdataManagerUtil;
 import com.yanzhenjie.permission.Action;
@@ -38,11 +40,17 @@ public class AboutAppActivity extends BaseActivity {
     TextView mTvVersion;
 
 
+    public static void startActivity(Context context) {
+        Intent intent = new Intent(context, AboutAppActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        context.startActivity(intent);
+    }
+
+
     @Override
     protected int initContentView() {
         return R.layout.activity_about;
     }
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,16 +62,8 @@ public class AboutAppActivity extends BaseActivity {
 
 
     private void initData() {
-        String localVersion = "";
-        try {
-            PackageInfo packageInfo = getApplicationContext()
-                    .getPackageManager()
-                    .getPackageInfo(getPackageName(), 0);
-            localVersion = packageInfo.versionName;
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-        }
-        mTvVersion.setText("米易通当前版本：" + localVersion);
+        String localVersion = GlobalUtil.getAppVersionName();
+        mTvVersion.setText(String.format("米易通当前版本：%s", localVersion));
     }
 
 
@@ -131,15 +131,4 @@ public class AboutAppActivity extends BaseActivity {
 
     }
 
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-    }
-
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-    }
 }
