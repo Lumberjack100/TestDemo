@@ -3,18 +3,19 @@ package com.shmedo.mcloudapp.ui.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.webkit.WebView;
 import android.widget.TextView;
 
 import androidx.appcompat.widget.Toolbar;
 
+import com.hjq.toast.ToastUtils;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.base.BaseActivity;
-import com.shmedo.mcloudapp.ui.PrivacyTipDialog;
 
 import butterknife.BindView;
 
-public class ProtocolActivity extends BaseActivity {
+public class WebViewActivity extends BaseActivity {
     private static final String ARG_PARAM1 = "param1";
 
     @BindView(R.id.toolbar)
@@ -26,18 +27,18 @@ public class ProtocolActivity extends BaseActivity {
     @BindView(R.id.webView)
     WebView webView;
 
-    private PrivacyTipDialog.ContentType contentType;
+    private String url;
 
-    public static void startActivity(Context context, PrivacyTipDialog.ContentType contentType) {
-        Intent intent = new Intent(context, ProtocolActivity.class);
-        intent.putExtra(ARG_PARAM1, contentType);
+    public static void startActivity(Context context, String url) {
+        Intent intent = new Intent(context, WebViewActivity.class);
+        intent.putExtra(ARG_PARAM1, url);
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         context.startActivity(intent);
     }
 
     @Override
     protected int initContentView() {
-        return R.layout.activity_protocol;
+        return R.layout.activity_webview;
     }
 
     @Override
@@ -55,21 +56,16 @@ public class ProtocolActivity extends BaseActivity {
     private void parseIntent() {
         Intent intent = getIntent();
         if (intent.getExtras() != null && intent.getExtras().containsKey(ARG_PARAM1)) {
-            contentType = (PrivacyTipDialog.ContentType) intent.getSerializableExtra(ARG_PARAM1);
-
-            String url = "";
-            if (contentType == PrivacyTipDialog.ContentType.USER_PROTOCOL) {
-                mToolbarTitle.setText("用户协议");
-                url = "file:///android_asset/private/UserProtocol.html";
-            } else {
-                mToolbarTitle.setText("隐私政策");
-                url = "file:///android_asset/private/PrivacyPolicy.html";
-            }
-            loadData(url);
+            url = intent.getStringExtra(ARG_PARAM1);
+            loadData();
         }
     }
 
-    public void loadData(String url) {
-        webView.loadUrl(url);
+    public void loadData() {
+        if (TextUtils.isEmpty(url)) {
+            ToastUtils.show("地址错误，地址不能为空");
+        } else {
+            webView.loadUrl(url);
+        }
     }
 }

@@ -20,7 +20,7 @@ import android.widget.TextView;
 import androidx.fragment.app.DialogFragment;
 
 import com.shmedo.mcloudapp.R;
-import com.shmedo.mcloudapp.ui.activity.ProtocolActivity;
+import com.shmedo.mcloudapp.ui.activity.WebViewActivity;
 
 import java.io.Serializable;
 
@@ -143,9 +143,11 @@ public class PrivacyTipDialog extends DialogFragment {
         @Override
         public void onClick(View view) {
             if (contentType == ContentType.USER_PROTOCOL) {
-                ProtocolActivity.startActivity(context, ContentType.USER_PROTOCOL);
+                String url = "file:///android_asset/private/UserProtocol.html";
+                WebViewActivity.startActivity(context, url);
             } else {
-                ProtocolActivity.startActivity(context, ContentType.PRIVACY_POLICY);
+                String url = "file:///android_asset/private/PrivacyPolicy.html";
+                WebViewActivity.startActivity(context, url);
             }
         }
     }
