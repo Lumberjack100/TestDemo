@@ -106,7 +106,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
             android:layout_centerVertical="true"
-            android:text="用户协议"
+            android:text="用户协议和免责条款"
             android:textColor="@color/gray_818182"
             android:textSize="14sp" />
 

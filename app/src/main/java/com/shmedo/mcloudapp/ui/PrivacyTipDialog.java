@@ -77,12 +77,12 @@ public class PrivacyTipDialog extends DialogFragment {
     private void urlSpan() {
         String text = getActivity().getResources().getString(R.string.privacy_agreement_desc);
         SpannableString spannableString = new SpannableString(text);
-        int start1 = text.indexOf("《用户协议》");
-        int end1 = start1 + "《用户协议》".length();
-        int start2 = text.indexOf("《隐私政策》");
-        int end2 = start2 + "《隐私政策》".length();
+        int start1 = text.indexOf("《用户协议和免责条款》");
+        int end1 = start1 + "《用户协议和免责条款》".length();
+//        int start2 = text.indexOf("《隐私政策》");
+//        int end2 = start2 + "《隐私政策》".length();
         spannableString.setSpan(new MyClickText(getActivity(), ContentType.USER_PROTOCOL), start1, end1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        spannableString.setSpan(new MyClickText(getActivity(), ContentType.PRIVACY_POLICY), start2, end2, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+//        spannableString.setSpan(new MyClickText(getActivity(), ContentType.PRIVACY_POLICY), start2, end2, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 
         //当然这里也可以通过setSpan来设置哪些位置的文本哪些颜色
         mTvPrivacyDesc.setText(spannableString);
