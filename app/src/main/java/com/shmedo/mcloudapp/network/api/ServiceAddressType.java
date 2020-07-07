@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.model.api;
+package com.shmedo.mcloudapp.network.api;
 
 /**
  * 创建者:   gonghe <br/>

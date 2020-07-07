@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.model;
+package com.shmedo.mcloudapp.network;
 
 import com.shmedo.mcloudapp.entity.ResultWrapper;
 

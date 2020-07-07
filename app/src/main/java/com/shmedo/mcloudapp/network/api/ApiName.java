@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.model.api;
+package com.shmedo.mcloudapp.network.api;
 
 /**
  * 项目名：  mCloudapp
@@ -40,6 +40,13 @@ public class ApiName {
      */
     public static final String SET_USER_HEAD_PHOTO = "SetUserHeadPhoto";
 
+    //公司模块
+    /**
+     * 查询单个公司信息
+     */
+    public static final String GET_COMPANY_INFO = "GetCompanyInfo";
+
+
     /**
      * v2 3.查询当前用户的项目列表(列表方式、不分页)--系统列表
      */
@@ -69,4 +76,6 @@ public class ApiName {
      * 查询设备运营数据
      */
     public static final String QUERY_CLOUD_DATA = "queryCloudData";
+
+
 }

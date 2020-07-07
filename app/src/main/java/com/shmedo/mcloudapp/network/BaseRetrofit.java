@@ -1,7 +1,7 @@
-package com.shmedo.mcloudapp.model;
+package com.shmedo.mcloudapp.network;
 
 import com.shmedo.mcloudapp.MCloudApp;
-import com.shmedo.mcloudapp.model.api.ServiceAddressType;
+import com.shmedo.mcloudapp.network.api.ServiceAddressType;
 
 import java.util.concurrent.TimeUnit;
 

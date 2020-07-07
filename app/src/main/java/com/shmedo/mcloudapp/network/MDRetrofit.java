@@ -1,7 +1,7 @@
-package com.shmedo.mcloudapp.model;
+package com.shmedo.mcloudapp.network;
 
-import com.shmedo.mcloudapp.model.api.ApiService;
-import com.shmedo.mcloudapp.model.api.ServiceAddressType;
+import com.shmedo.mcloudapp.network.api.ApiService;
+import com.shmedo.mcloudapp.network.api.ServiceAddressType;
 
 import okhttp3.logging.HttpLoggingInterceptor;
 

@@ -15,7 +15,7 @@ import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.base.BaseActivity;
 import com.shmedo.mcloudapp.entity.UserInfo;
 import com.shmedo.mcloudapp.entity.UserInfoWrapper;
-import com.shmedo.mcloudapp.model.common.CommonVariable;
+import com.shmedo.mcloudapp.network.common.CommonVariable;
 import com.shmedo.mcloudapp.ui.PrivacyTipDialog;
 import com.shmedo.mcloudapp.util.DaoManager;
 import com.shmedo.mcloudapp.util.GsonFactory;

@@ -42,7 +42,7 @@
                     android:maxLines="1"
                     android:textColor="@color/gray_818182"
                     android:textSize="@dimen/text_size_15"
-                    android:text="上海米度测控科技有限公司" />
+                    tools:text="上海米度测控科技有限公司" />
 
             </LinearLayout>
 
@@ -71,7 +71,7 @@
                     android:maxLines="1"
                     android:textColor="@color/gray_818182"
                     android:textSize="@dimen/text_size_16"
-                    android:text="私营企业" />
+                    tools:text="私营企业" />
 
             </LinearLayout>
 
@@ -100,7 +100,7 @@
                     android:maxLines="1"
                     android:textColor="@color/gray_818182"
                     android:textSize="@dimen/text_size_15"
-                    android:text="互联网科技" />
+                    tools:text="互联网科技" />
 
             </LinearLayout>
 
@@ -129,7 +129,7 @@
                     android:maxLines="1"
                     android:textColor="@color/gray_818182"
                     android:textSize="@dimen/text_size_16"
-                    android:text="021-33923627" />
+                    tools:text="021-33923627" />
 
             </LinearLayout>
 
@@ -159,7 +159,7 @@
                     android:maxLines="2"
                     android:textColor="@color/gray_818182"
                     android:textSize="@dimen/text_size_16"
-                    android:text="上海市闵行区联航路1188号32号楼5层" />
+                    tools:text="上海市闵行区联航路1188号32号楼5层" />
 
             </LinearLayout>
 
@@ -191,7 +191,7 @@
                     android:maxLines="2"
                     android:textColor="@color/app_color_theme_6"
                     android:textSize="@dimen/text_size_16"
-                    android:text="www.shmedo.cn" />
+                    tools:text="www.shmedo.cn" />
 
             </LinearLayout>
 
@@ -217,7 +217,7 @@
                 android:layout_marginStart="@dimen/dimen_size_20"
                 android:layout_marginTop="@dimen/dimen_size_10"
                 android:layout_marginEnd="@dimen/dimen_size_20"
-                android:text="@string/company_intro"
+                tools:text="@string/company_intro"
                 android:textColor="@color/gray_818182"
                 android:textSize="@dimen/text_size_16" />
 

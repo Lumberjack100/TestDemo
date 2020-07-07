@@ -13,9 +13,9 @@ import com.hjq.toast.ToastUtils;
 import com.shmedo.mcloudapp.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.base.BaseActivity;
-import com.shmedo.mcloudapp.model.BaseObserver;
-import com.shmedo.mcloudapp.model.MDRetrofit;
-import com.shmedo.mcloudapp.model.common.CommonVariable;
+import com.shmedo.mcloudapp.network.BaseObserver;
+import com.shmedo.mcloudapp.network.MDRetrofit;
+import com.shmedo.mcloudapp.network.common.CommonVariable;
 import com.shmedo.mcloudapp.util.UserConfig;
 import com.shmedo.mcloudapp.views.ClearEditText;
 

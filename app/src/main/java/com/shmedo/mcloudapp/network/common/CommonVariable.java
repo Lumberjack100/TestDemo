@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.model.common;
+package com.shmedo.mcloudapp.network.common;
 
 import okhttp3.MediaType;
 

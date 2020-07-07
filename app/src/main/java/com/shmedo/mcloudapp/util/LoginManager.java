@@ -7,9 +7,9 @@ import com.shmedo.mcloudapp.MCloudApp;
 import com.shmedo.mcloudapp.entity.UserInfo;
 import com.shmedo.mcloudapp.entity.UserInfoWrapper;
 import com.shmedo.mcloudapp.entity.parameter.SignInParameter;
-import com.shmedo.mcloudapp.model.BaseObserver;
-import com.shmedo.mcloudapp.model.MDRetrofit;
-import com.shmedo.mcloudapp.model.common.CommonVariable;
+import com.shmedo.mcloudapp.network.BaseObserver;
+import com.shmedo.mcloudapp.network.MDRetrofit;
+import com.shmedo.mcloudapp.network.common.CommonVariable;
 
 import java.util.Date;
 

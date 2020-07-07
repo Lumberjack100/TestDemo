@@ -7,7 +7,7 @@ import android.os.Looper;
 import android.text.TextUtils;
 
 import com.shmedo.mcloudapp.entity.UserInfo;
-import com.shmedo.mcloudapp.model.common.CommonVariable;
+import com.shmedo.mcloudapp.network.common.CommonVariable;
 import com.shmedo.mcloudapp.util.UserConfig;
 
 /**
