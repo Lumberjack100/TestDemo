@@ -14,11 +14,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
+import com.dragon.core.util.DensityUtil;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.maps.adapter.MapTypeAdapter;
 import com.shmedo.mcloudapp.maps.model.MapLayerInfo;
 import com.shmedo.mcloudapp.maps.model.MapType;
-import com.shmedo.mcloudapp.util.DensityUtil;
 import com.shmedo.mcloudapp.views.recycleviewitemdivider.GridSpacingItemDecoration;
 
 import butterknife.BindView;

@@ -281,6 +281,12 @@
             android:name=".user.ui.activity.NewUserInfoActivity"
             android:configChanges="orientation|keyboardHidden|screenSize" />
         <activity android:name=".ui.activity.WebViewActivity" />
+
+        <activity
+            android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/CropImageActivity"/>
+
         <activity
             android:name=".ui.activity.TestBluetoothListActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"

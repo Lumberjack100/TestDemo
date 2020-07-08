@@ -16,8 +16,8 @@ import androidx.core.content.ContextCompat;
 
 import com.hjq.toast.ToastUtils;
 import com.shmedo.core.utils.ValidateUtil;
-import com.shmedo.mcloudapp.AppContants;
-import com.shmedo.mcloudapp.MCloudApp;
+import com.dragon.core.AppContants;
+import com.dragon.core.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.base.BaseActivity;
 import com.shmedo.mcloudapp.network.BaseObserver;
@@ -25,7 +25,7 @@ import com.shmedo.mcloudapp.network.MDRetrofit;
 import com.shmedo.mcloudapp.network.NetworkConst;
 import com.shmedo.mcloudapp.util.LoginManager;
 import com.shmedo.mcloudapp.util.MyCountDownTimer;
-import com.shmedo.mcloudapp.util.SharedUtil;
+import com.dragon.core.util.SharedUtil;
 import com.shmedo.mcloudapp.views.ClearEditText;
 
 import butterknife.BindView;

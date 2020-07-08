@@ -24,7 +24,7 @@ import com.shmedo.core.cmd.entity.SetCollectorAddressEntity;
 import com.shmedo.core.enums.CommandType;
 import com.shmedo.core.model.CollectorConfigInfo;
 import com.shmedo.core.utils.StringUtil;
-import com.shmedo.mcloudapp.MCloudApp;
+import com.dragon.core.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.interfaces.Extras;
 

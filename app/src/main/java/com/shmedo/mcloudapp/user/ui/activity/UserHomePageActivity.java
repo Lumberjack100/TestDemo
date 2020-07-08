@@ -1,24 +1,47 @@
 package com.shmedo.mcloudapp.user.ui.activity;
 
+import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
+import androidx.annotation.Nullable;
+
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
+import com.dragon.core.MCloudApp;
+import com.dragon.core.model.UserInfo;
+import com.dragon.core.util.DeviceInfo;
+import com.dragon.core.util.GlobalUtil;
 import com.hjq.toast.ToastUtils;
-import com.shmedo.mcloudapp.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.base.BaseActivity;
-import com.shmedo.mcloudapp.entity.UserInfo;
 import com.shmedo.mcloudapp.network.BaseObserver;
 import com.shmedo.mcloudapp.network.MDRetrofit;
 import com.shmedo.mcloudapp.network.NetworkConst;
 import com.shmedo.mcloudapp.user.model.UpdateMyInfoParam;
+import com.shmedo.mcloudapp.util.FileProviderUtils;
 import com.shmedo.mcloudapp.util.GlideUtils;
 import com.shmedo.mcloudapp.util.GsonFactory;
 import com.shmedo.mcloudapp.views.ClearEditText;
+import com.theartofdev.edmodo.cropper.CropImage;
+import com.theartofdev.edmodo.cropper.CropImageView;
+import com.zhihu.matisse.Matisse;
+import com.zhihu.matisse.MimeType;
+import com.zhihu.matisse.engine.impl.GlideEngine;
+
+import java.io.File;
+import java.io.IOException;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -32,6 +55,11 @@ import timber.log.Timber;
  * 用户个人详细信息页
  */
 public class UserHomePageActivity extends BaseActivity {
+    private static final String TEMP_PHOTO = "taken_photo.jpg";
+    private static final int TAKE_PHOTO = 0x1000;
+    private static final int CHOOSE_FROM_ALBUM = 0x1001;
+    private static final int TAKE_AVATAR_PICTURE = 0;
+
     @BindView(R.id.toolbar_title)
     TextView mToolbarTitle;
 
@@ -52,9 +80,11 @@ public class UserHomePageActivity extends BaseActivity {
 
     private UserInfo userInfo;
     private UserInfo.UserBean user;
-
     private String userName, title, email;
 
+    private Uri photoUri;
+    private Uri userAvatarUri;
+    private int action = 0;
 
     public static void startActivity(Context context) {
         Intent intent = new Intent(context, UserHomePageActivity.class);
@@ -100,6 +130,7 @@ public class UserHomePageActivity extends BaseActivity {
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.userLayout:
+                showTakePictureDialog();
                 break;
 
             case R.id.mobileLayout:
@@ -175,5 +206,162 @@ public class UserHomePageActivity extends BaseActivity {
                         Timber.w("请求失败--%s", message);
                     }
                 });
+    }
+
+    /**
+     * 显示选择照片的对话框。
+     */
+    private void showTakePictureDialog() {
+        CharSequence[] items = new CharSequence[]{getString(R.string.take_photo), getString(R.string.your_album)};
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this)
+                .setTitle(getString(R.string.select_avatar))
+                .setItems(items, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        switch (which) {
+                            case 0:
+                                takePhoto();
+                                break;
+                            case 1:
+                                chooseFromAlbum();
+                                break;
+                        }
+                    }
+                });
+        builder.show();
+    }
+
+    /**
+     * 打开摄像头拍照。
+     */
+    private void takePhoto() {
+        if (!Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
+            ToastUtils.show(getString(R.string.operation_failed_without_sdcard));
+            return;
+        }
+
+        // 创建 File 对象，用于存储拍照后的图片
+        File outputImage = new File(getExternalCacheDir(), TEMP_PHOTO);
+        try {
+            if (outputImage.exists()) {
+                outputImage.delete();
+            }
+            outputImage.createNewFile();
+        } catch (IOException ex) {
+            Timber.w(ex);
+        }
+
+        photoUri = FileProviderUtils.uriFromFile(this, outputImage);
+        Intent intent = new Intent();
+        intent.setAction(MediaStore.ACTION_IMAGE_CAPTURE);
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri);
+        startActivityForResult(intent, TAKE_PHOTO);
+    }
+
+    /**
+     * 从相册中选择图片。
+     */
+    private void chooseFromAlbum() {
+        int reqWidth = DeviceInfo.getScreenWidth();
+        int reqHeight = reqWidth;
+
+//        AlbumActivity.actionStartForResult(this@ModifyUserInfoActivity, CHOOSE_FROM_ALBUM, reqWidth, reqHeight);
+
+        test();
+    }
+
+    private void test() {
+
+        Matisse.from(this)
+                .choose(MimeType.ofAll())
+                .countable(false)
+                .maxSelectable(1)
+                .restrictOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED)
+                .thumbnailScale(0.85f)
+                .imageEngine(new GlideEngine())
+                .showPreview(false) // Default is `true`
+                .forResult(CHOOSE_FROM_ALBUM);
+    }
+
+    /**
+     * 对指定图片进行裁剪。
+     *
+     * @param uri 图片的uri地址。
+     */
+    private void cropPhoto(Uri uri) {
+        int reqWidth = DeviceInfo.getScreenWidth();
+        int reqHeight = reqWidth;
+
+        CropImage.activity(uri)
+                .setGuidelines(CropImageView.Guidelines.ON)
+                .setFixAspectRatio(true)
+                .setAspectRatio(reqWidth, reqHeight)
+                .setActivityTitle(GlobalUtil.getString(R.string.crop))
+                .setRequestedSize(reqWidth, reqHeight)
+                .setCropMenuCropButtonIcon(R.drawable.ic_crop)
+                .start(this);
+    }
+
+    private void showCroppedPhoto(Uri imageUri) {
+        if (imageUri == null)
+            return;
+
+        if (action == TAKE_AVATAR_PICTURE) {
+            userAvatarUri = imageUri;
+            Timber.d("userAvatarPath is $userAvatarUri");
+
+            Glide.with(this)
+//                    .asBitmap()
+                    .load(userAvatarUri)
+                    .apply(new RequestOptions()
+//                            .circleCrop()
+                            .error(R.drawable.ic_avatar_default)
+                            .placeholder(R.drawable.loading_bg_circle)
+                            .diskCacheStrategy(DiskCacheStrategy.ALL))
+                    .into(mIvUserAvatar);
+
+        }
+    }
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case TAKE_PHOTO:
+                if (resultCode == RESULT_OK) {
+                    cropPhoto(photoUri);
+                }
+                break;
+
+            case CHOOSE_FROM_ALBUM:
+                if (resultCode == RESULT_OK) {
+                    Uri uri = Matisse.obtainResult(data).get(0);
+                    cropPhoto(uri);
+                }
+
+//                if (resultCode == RESULT_OK) {
+//                    if (data != null) {
+//                        Uri uri = Matisse.obtainResult(data).get(0);
+//                        showCroppedPhoto(data.getParcelableExtra(AlbumActivity.IMAGE_URI));
+//                    }
+//                } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
+//                    ToastUtils.show(getString(R.string.crop_failed));
+//                }
+                break;
+
+            case CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE:
+                CropImage.ActivityResult result = CropImage.getActivityResult(data);
+                if (resultCode == Activity.RESULT_OK) {
+                    showCroppedPhoto(result.getUri());
+                } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
+                    Timber.w(result.getError(), "Cropping failed: %s", result.getError().getMessage());
+                    ToastUtils.show(GlobalUtil.getString(R.string.crop_failed));
+                }
+                break;
+
+        }
+
     }
 }

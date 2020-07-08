@@ -24,7 +24,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.shmedo.mcloudapp.MCloudApp;
+import com.dragon.core.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.entity.event.NetworkChangeEvent;
 import com.shmedo.mcloudapp.receiver.NetworkConnectChangedReceiver;

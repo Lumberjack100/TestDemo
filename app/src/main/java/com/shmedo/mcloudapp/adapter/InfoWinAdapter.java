@@ -2,7 +2,7 @@ package com.shmedo.mcloudapp.adapter;
 
 import android.content.Context;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
@@ -10,7 +10,7 @@ import android.widget.TextView;
 import com.amap.api.maps.AMap;
 import com.amap.api.maps.model.LatLng;
 import com.amap.api.maps.model.Marker;
-import com.shmedo.mcloudapp.MCloudApp;
+import com.dragon.core.MCloudApp;
 import com.shmedo.mcloudapp.R;
 
 /**

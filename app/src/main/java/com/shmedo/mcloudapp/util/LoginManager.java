@@ -2,10 +2,11 @@ package com.shmedo.mcloudapp.util;
 
 import android.os.Handler;
 
+import com.dragon.core.MCloudApp;
+import com.dragon.core.model.UserInfo;
+import com.dragon.core.util.SharedUtil;
 import com.hjq.toast.ToastUtils;
-import com.shmedo.mcloudapp.AppContants;
-import com.shmedo.mcloudapp.MCloudApp;
-import com.shmedo.mcloudapp.entity.UserInfo;
+import com.dragon.core.AppContants;
 import com.shmedo.mcloudapp.entity.UserInfoWrapper;
 import com.shmedo.mcloudapp.entity.parameter.SignInParameter;
 import com.shmedo.mcloudapp.network.BaseObserver;

@@ -39,7 +39,7 @@ import com.shmedo.core.model.QueryOsmometerParameterInfo;
 import com.shmedo.core.model.SetRainPrecisionInfo;
 import com.shmedo.core.utils.ResultParserUtil;
 import com.shmedo.core.utils.StringUtil;
-import com.shmedo.mcloudapp.MCloudApp;
+import com.dragon.core.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.base.BaseFragment;
 import com.shmedo.mcloudapp.entity.event.BluetoothStateEvent;

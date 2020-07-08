@@ -28,12 +28,12 @@ import com.shmedo.core.enums.CommandType;
 import com.shmedo.core.model.QueryOsmometerParameterInfo;
 import com.shmedo.core.utils.ResultParserUtil;
 import com.shmedo.core.utils.StringUtil;
-import com.shmedo.mcloudapp.AppContants;
-import com.shmedo.mcloudapp.MCloudApp;
+import com.dragon.core.AppContants;
+import com.dragon.core.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.interfaces.Extras;
 import com.shmedo.mcloudapp.util.AdvanceSetDialogUtils;
-import com.shmedo.mcloudapp.util.SharedUtil;
+import com.dragon.core.util.SharedUtil;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;

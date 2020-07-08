@@ -20,7 +20,7 @@ import com.shmedo.core.cmd.CommandResult;
 import com.shmedo.core.cmd.entity.SetRainPrecisionEntity;
 import com.shmedo.core.enums.CommandType;
 import com.shmedo.core.utils.StringUtil;
-import com.shmedo.mcloudapp.MCloudApp;
+import com.dragon.core.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.interfaces.Extras;
 

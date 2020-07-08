@@ -5,7 +5,7 @@ import android.util.AttributeSet;
 
 import androidx.core.widget.NestedScrollView;
 
-import com.shmedo.mcloudapp.util.DensityUtil;
+import com.dragon.core.util.DeviceInfo;
 
 /**
  * 项目名：  mCloudapp
@@ -31,7 +31,7 @@ public class MaxHeightNestedScrollView extends NestedScrollView {
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        int maxHeight = DensityUtil.getDisplayMetrics().heightPixels * 4 / 5;
+        int maxHeight = DeviceInfo.getScreenHeight() * 4 / 5;
         heightMeasureSpec = MeasureSpec.makeMeasureSpec(maxHeight, MeasureSpec.AT_MOST);
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     }

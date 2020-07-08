@@ -9,7 +9,7 @@ import android.os.Build;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 
-import com.shmedo.mcloudapp.MCloudApp;
+import com.dragon.core.MCloudApp;
 
 import java.lang.reflect.Method;
 import java.net.InetAddress;

@@ -33,7 +33,7 @@ import com.shmedo.core.enums.SetRemoteUpgrade;
 import com.shmedo.core.interfaces.OnBytePackage;
 import com.shmedo.core.utils.DesUtil;
 import com.shmedo.core.utils.StringUtil;
-import com.shmedo.mcloudapp.MCloudApp;
+import com.dragon.core.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.base.BaseActivity;
 import com.shmedo.mcloudapp.bluetooth.BluetoothDeviceFindEventData;

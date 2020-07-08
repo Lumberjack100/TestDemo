@@ -1,5 +1,6 @@
 package com.shmedo.mcloudapp.network.api;
 
+import com.dragon.core.model.UserInfo;
 import com.shmedo.mcloudapp.entity.DeviceBasicInfoResult;
 import com.shmedo.mcloudapp.entity.DeviceDetailInfo;
 import com.shmedo.mcloudapp.entity.PageResult;
@@ -8,7 +9,6 @@ import com.shmedo.mcloudapp.entity.QueryCloudDataInfo;
 import com.shmedo.mcloudapp.entity.ResultWrapper;
 import com.shmedo.mcloudapp.entity.StatusInfoResult;
 import com.shmedo.mcloudapp.entity.SystemDataInfo;
-import com.shmedo.mcloudapp.entity.UserInfo;
 import com.shmedo.mcloudapp.network.NetworkConst;
 import com.shmedo.mcloudapp.user.model.CompanyInfo;
 

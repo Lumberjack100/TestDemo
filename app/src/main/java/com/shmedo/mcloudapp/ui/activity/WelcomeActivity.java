@@ -10,18 +10,18 @@ import android.view.WindowManager;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
-import com.shmedo.mcloudapp.AppContants;
-import com.shmedo.mcloudapp.MCloudApp;
+import com.dragon.core.AppContants;
+import com.dragon.core.MCloudApp;
+import com.dragon.core.model.UserInfo;
+import com.dragon.core.util.SharedUtil;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.base.BaseActivity;
-import com.shmedo.mcloudapp.entity.UserInfo;
 import com.shmedo.mcloudapp.entity.UserInfoWrapper;
 import com.shmedo.mcloudapp.network.NetworkConst;
 import com.shmedo.mcloudapp.ui.PrivacyTipDialog;
 import com.shmedo.mcloudapp.util.DaoManager;
 import com.shmedo.mcloudapp.util.GsonFactory;
 import com.shmedo.mcloudapp.util.LoginManager;
-import com.shmedo.mcloudapp.util.SharedUtil;
 import com.shmedo.mcloudapp.util.XPermissionUtils;
 
 import java.util.Date;

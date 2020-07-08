@@ -5,7 +5,7 @@ import android.util.AttributeSet;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.shmedo.mcloudapp.util.DensityUtil;
+import com.dragon.core.util.DeviceInfo;
 
 /**
  * 项目名：  mCloudapp
@@ -30,7 +30,7 @@ public class MaxHeightRecyclerView extends RecyclerView {
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        int maxHeight = DensityUtil.getDisplayMetrics().heightPixels * 2 / 3;
+        int maxHeight = DeviceInfo.getScreenHeight() * 2 / 3;
         heightMeasureSpec = MeasureSpec.makeMeasureSpec(maxHeight, MeasureSpec.EXACTLY);
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     }

@@ -27,11 +27,12 @@ import com.shmedo.core.cmd.entity.WorkModeEntity;
 import com.shmedo.core.enums.CommandType;
 import com.shmedo.core.enums.LogOutputStatus;
 import com.shmedo.core.enums.WorkModel;
-import com.shmedo.mcloudapp.MCloudApp;
+import com.dragon.core.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.adapter.recyclerviewbaseadapter.CommonAdapter;
 import com.shmedo.mcloudapp.adapter.recyclerviewbaseadapter.ViewHolder;
 import com.shmedo.mcloudapp.ui.activity.device.BaseDeviceConnectActivity;
+import com.shmedo.mcloudapp.util.FileProviderUtils;
 import com.shmedo.mcloudapp.util.LogFileUtil;
 import com.shmedo.mcloudapp.views.ClearEditText;
 
@@ -207,7 +208,7 @@ public class LogPrintActivity extends BaseDeviceConnectActivity {
         textView.setTextColor(isOpen ? getResources().getColor(R.color.colorPrimary) : getResources().getColor(R.color.gray_807B7B));
     }
 
-    @OnClick({R.id.btn_send, R.id.tv_view_log_directory,  R.id.fab_clear_log,R.id.fab_start_pause})
+    @OnClick({R.id.btn_send, R.id.tv_view_log_directory, R.id.fab_clear_log, R.id.fab_start_pause})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.btn_send:
@@ -290,13 +291,7 @@ public class LogPrintActivity extends BaseDeviceConnectActivity {
             return;
         }
 
-        Uri contentUri;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            contentUri = FileProvider.getUriForFile(this, getApplicationContext().getPackageName() + ".fileProvider", file);
-
-        } else {
-            contentUri = Uri.fromFile(file);
-        }
+        Uri contentUri = FileProviderUtils.uriFromFile(this, file);
 
         new Share2.Builder(this)
                 .setContentType(ShareContentType.FILE)

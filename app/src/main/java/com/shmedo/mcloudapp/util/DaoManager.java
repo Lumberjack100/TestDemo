@@ -1,6 +1,6 @@
 package com.shmedo.mcloudapp.util;
 
-import com.shmedo.mcloudapp.MCloudApp;
+import com.dragon.core.MCloudApp;
 import com.shmedo.mcloudapp.entity.DaoMaster;
 import com.shmedo.mcloudapp.entity.DaoSession;
 

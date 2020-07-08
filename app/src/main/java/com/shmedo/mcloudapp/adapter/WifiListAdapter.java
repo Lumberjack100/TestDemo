@@ -9,7 +9,7 @@ import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.shmedo.mcloudapp.AppContants;
+import com.dragon.core.AppContants;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.entity.WifiBean;
 import com.shmedo.mcloudapp.util.WifiSupport;
