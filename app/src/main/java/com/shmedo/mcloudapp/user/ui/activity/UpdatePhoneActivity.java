@@ -13,7 +13,6 @@ import com.shmedo.core.utils.ValidateUtil;
 import com.shmedo.mcloudapp.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.base.BaseActivity;
-import com.shmedo.mcloudapp.entity.UserInfo;
 import com.shmedo.mcloudapp.network.BaseObserver;
 import com.shmedo.mcloudapp.network.MDRetrofit;
 import com.shmedo.mcloudapp.network.common.CommonVariable;
@@ -36,9 +35,6 @@ public class UpdatePhoneActivity extends BaseActivity {
     @BindView(R.id.toolbar_title)
     TextView mToolbarTitle;
 
-    @BindView(R.id.oldPhoneET)
-    ClearEditText mEtOldPhone;
-
     @BindView(R.id.newPhoneET)
     ClearEditText mEtNewPhone;
 
@@ -50,10 +46,10 @@ public class UpdatePhoneActivity extends BaseActivity {
 
     private Handler hander = new Handler();
 
-    private String oldPhone, newPhone, code;
+    private String newPhone, code;
 
     public static void startActivity(Context context) {
-        Intent intent = new Intent(context, UpdatePasswordActivity.class);
+        Intent intent = new Intent(context, UpdatePhoneActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         context.startActivity(intent);
     }
@@ -68,18 +64,9 @@ public class UpdatePhoneActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setToolBar(R.id.toolbar);
-        mToolbarTitle.setText("修改密码");
-        initDate();
+        mToolbarTitle.setText("修改手机号");
     }
 
-    private void initDate() {
-        UserInfo userInfo = MCloudApp.getCurrentUserInfo();
-        if (userInfo != null && userInfo.getUser() != null) {
-            UserInfo.UserBean user = userInfo.getUser();
-            mEtOldPhone.setText(user.getCellPhone());
-
-        }
-    }
 
     @OnClick({R.id.getCodeBtn, R.id.btn_confirm})
     public void onViewClicked(View view) {
@@ -109,46 +96,38 @@ public class UpdatePhoneActivity extends BaseActivity {
      * 发送验证码
      */
     private void sendSmsCode() {
-        String json = GsonFactory.getGson().toJson(newPhone);
-        RequestBody body = RequestBody.create(CommonVariable.JSON_TYPE, json);
+        RequestBody body = RequestBody.create(CommonVariable.JSON_TYPE, newPhone);
 
         showLoadingDialog("正在获取验证码...");
         MDRetrofit.getInstance()
                 .createService()
-                .sendSmsCode(CommonVariable.APP_KEY, CommonVariable.APP_SECRET, body)
+                .sendSmsCode(body)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new BaseObserver<String>() {
-            @Override
-            public void Success(String data, String message) {
-                dismissLoadingDialog();
+                    @Override
+                    public void Success(String data, String message) {
+                        dismissLoadingDialog();
 
-                if (data.contains("已发送")) {
-                    MyCountDownTimer timer = new MyCountDownTimer(mBtnGetCode, 60000, 1000);
-                    timer.start();
-                }else {
-                    ToastUtils.show(data);
-                }
-            }
+                        if (data.contains("已发送")) {
+                            MyCountDownTimer timer = new MyCountDownTimer(mBtnGetCode, 60000, 1000);
+                            timer.start();
+                        } else {
+                            ToastUtils.show(data);
+                        }
+                    }
 
-            @Override
-            public void Failure(String message) {
-                dismissLoadingDialog();
-                ToastUtils.show(message);
-            }
-        });
+                    @Override
+                    public void Failure(String message) {
+                        dismissLoadingDialog();
+                        ToastUtils.show(message);
+                    }
+                });
     }
 
     private void preProcessParam() {
-        oldPhone = mEtOldPhone.getText().toString();
         newPhone = mEtNewPhone.getText().toString();
         code = mEtCode.getText().toString();
-
-        if (TextUtils.isEmpty(oldPhone)) {
-            ToastUtils.show("请输入当前手机号");
-            mEtOldPhone.requestFocus();
-            return;
-        }
 
         if (TextUtils.isEmpty(newPhone)) {
             ToastUtils.show("请输入新手机号");
@@ -159,11 +138,6 @@ public class UpdatePhoneActivity extends BaseActivity {
         if (TextUtils.isEmpty(code)) {
             ToastUtils.show("请输入验证码");
             mEtCode.requestFocus();
-            return;
-        }
-
-        if (!ValidateUtil.checkMobileNumber(oldPhone)) {
-            ToastUtils.show("当前手机号格式不正确！");
             return;
         }
 

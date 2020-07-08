@@ -23,7 +23,6 @@ import com.shmedo.mcloudapp.network.BaseObserver;
 import com.shmedo.mcloudapp.network.MDRetrofit;
 import com.shmedo.mcloudapp.network.common.CommonVariable;
 import com.shmedo.mcloudapp.util.DaoManager;
-import com.shmedo.mcloudapp.util.GsonFactory;
 import com.shmedo.mcloudapp.util.LoginManager;
 import com.shmedo.mcloudapp.util.MyCountDownTimer;
 import com.shmedo.mcloudapp.util.UserConfig;
@@ -266,33 +265,32 @@ public class LoginActivity extends BaseActivity implements LoginManager.LoginCal
      * 发送验证码
      */
     private void sendSmsCode(String mPhoneNumber) {
-        String json = GsonFactory.getGson().toJson(mPhoneNumber);
-        RequestBody body = RequestBody.create(CommonVariable.JSON_TYPE, json);
+        RequestBody body = RequestBody.create(CommonVariable.JSON_TYPE, mPhoneNumber);
 
         showLoadingDialog("正在获取验证码...");
         MDRetrofit.getInstance()
                 .createService()
-                .sendSmsCode(CommonVariable.APP_KEY, CommonVariable.APP_SECRET, body)
+                .sendSmsCode(body)
                 .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new BaseObserver<String>() {
-            @Override
-            public void Success(String data, String message) {
-                dismissLoadingDialog();
+                    @Override
+                    public void Success(String data, String message) {
+                        dismissLoadingDialog();
 
-                if (data.contains("已发送")) {
-                    MyCountDownTimer timer = new MyCountDownTimer(mBtnGetCode, 60000, 1000);
-                    timer.start();
-                } else {
-                    ToastUtils.show(data);
-                }
-            }
+                        if (data.contains("已发送")) {
+                            MyCountDownTimer timer = new MyCountDownTimer(mBtnGetCode, 60000, 1000);
+                            timer.start();
+                        } else {
+                            ToastUtils.show(data);
+                        }
+                    }
 
-            @Override
-            public void Failure(String message) {
-                dismissLoadingDialog();
-                ToastUtils.show(message);
-            }
-        });
+                    @Override
+                    public void Failure(String message) {
+                        dismissLoadingDialog();
+                        ToastUtils.show(message);
+                    }
+                });
     }
 
 

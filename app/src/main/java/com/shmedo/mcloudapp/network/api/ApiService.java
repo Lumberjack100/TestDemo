@@ -29,11 +29,13 @@ import retrofit2.http.Url;
  * 文件名:   ApiService
  * 创建者:   dpc
  * 创建时间:  2019/1/8 09:41
- *
  */
 public interface ApiService {
 
     String HEADER_ACCESS_TYPE = "access_type:android";
+    String HEADER_APP_KEY = "app_key:b4524704-b325-4c88-a0dc-bfce89d58138";
+    String HEADER_APP_SECRET = "app_secret:c1507673-7a16-4cba-817c-2595a9c8a6e8";
+
 
     //获取api版本信息
     @Headers({HEADER_ACCESS_TYPE})
@@ -51,9 +53,10 @@ public interface ApiService {
     Observable<ResultWrapper<UserInfo>> getMyInfo(@Header(CommonVariable.ACCESS_TOKEN) String token);
 
     //发送登录验证码(间隔60秒，有效期15分钟)
-    @Headers({HEADER_ACCESS_TYPE})
+    @Headers({HEADER_ACCESS_TYPE,HEADER_APP_KEY,HEADER_APP_SECRET})
     @POST(ApiName.SEND_SMS_CODE)
-    Observable<ResultWrapper<String>> sendSmsCode(@Header("app_key") String appKey, @Header("app_secret") String appSecret, @Body RequestBody parameter);
+    Observable<ResultWrapper<String>> sendSmsCode(@Body RequestBody parameter);
+
 
     //使用手机号和验证码登录
     @Headers({HEADER_ACCESS_TYPE})
