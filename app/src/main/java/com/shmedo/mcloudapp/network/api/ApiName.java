@@ -45,6 +45,11 @@ public class ApiName {
      */
     public static final String CHANGE_MY_PASSWORD = "ChangeMyPassword";
 
+    /**
+     * 修改我的手机号码
+     */
+    public static final String UPDATE_MY_CELL_PHONE = "UpdateMyCellPhone";
+
     //公司模块
     /**
      * 查询单个公司信息

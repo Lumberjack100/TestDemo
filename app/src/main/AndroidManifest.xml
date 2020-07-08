@@ -49,7 +49,7 @@
         android:theme="@style/AppTheme"
         tools:ignore="LockedOrientationActivity"
         tools:targetApi="p">
-
+        <activity android:name=".user.ui.activity.UpdatePhoneActivity"></activity>
 
         <meta-data
             android:name="com.amap.api.v2.apikey"
@@ -273,25 +273,19 @@
             android:name="com.amap.api.navi.AmapRouteActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:theme="@android:style/Theme.NoTitleBar" />
-
         <activity
             android:name=".user.ui.activity.UpdatePasswordActivity"
             android:configChanges="orientation|keyboardHidden|screenSize" />
-
         <activity
             android:name=".user.ui.activity.CompanyHomePageActivity"
             android:configChanges="orientation|keyboardHidden|screenSize" />
-
         <activity
             android:name=".user.ui.activity.UserHomePageActivity"
             android:configChanges="orientation|keyboardHidden|screenSize" />
-
         <activity
             android:name=".user.ui.activity.NewUserInfoActivity"
             android:configChanges="orientation|keyboardHidden|screenSize" />
-
         <activity android:name=".ui.activity.WebViewActivity" />
-
         <activity
             android:name=".ui.activity.TestBluetoothListActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"

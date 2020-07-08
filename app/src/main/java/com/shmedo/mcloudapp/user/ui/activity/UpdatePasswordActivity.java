@@ -3,6 +3,7 @@ package com.shmedo.mcloudapp.user.ui.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
@@ -39,6 +40,8 @@ public class UpdatePasswordActivity extends BaseActivity {
 
     @BindView(R.id.confirmNewPasswordET)
     ClearEditText mEtConfirmPassword;
+
+    private Handler hander = new Handler();
 
     private String mAccount;
     private String oldPassword, newPassword, confirmNewPassword;
@@ -110,7 +113,7 @@ public class UpdatePasswordActivity extends BaseActivity {
      * 修改当前登录用户的密码
      */
     private void updatePassword() {
-        showLoadingDialog("加载数据中...");
+        showLoadingDialog("处理中...");
 
         UpdatePasswordParam parameter = new UpdatePasswordParam();
         parameter.setCurrentPassword(MD5Util.MD5(mAccount + oldPassword));
@@ -125,17 +128,23 @@ public class UpdatePasswordActivity extends BaseActivity {
                 .ChangeMyPassword(MCloudApp.getAccessToken(), body)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new BaseObserver<Boolean>() {
+                .subscribe(new BaseObserver<String>() {
                     @Override
-                    public void Success(Boolean result, String message) {
+                    public void Success(String result, String message) {
                         dismissLoadingDialog();
-                        ToastUtils.show(result ? "修改完成" : "修改失败," + message);
+                        ToastUtils.show("修改完成");
+                        hander.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                finish();
+                            }
+                        }, 1500);
                     }
 
                     @Override
                     public void Failure(String message) {
                         dismissLoadingDialog();
-                        Timber.w("服务器连接失败--%s", message);
+                        Timber.w("请求失败--%s", message);
                     }
                 });
     }

@@ -1,7 +1,7 @@
 package com.shmedo.mcloudapp.util;
 
 import android.os.CountDownTimer;
-import android.widget.Button;
+import android.widget.TextView;
 
 import com.shmedo.mcloudapp.R;
 
@@ -14,8 +14,8 @@ import com.shmedo.mcloudapp.R;
  *
  */
 public class MyCountDownTimer extends CountDownTimer {
-    private Button btnTime;
-    public MyCountDownTimer(Button time,long millisInFuture, long countDownInterval) {
+    private TextView btnTime;
+    public MyCountDownTimer(TextView time,long millisInFuture, long countDownInterval) {
         super(millisInFuture, countDownInterval);
         this.btnTime = time;
     }
