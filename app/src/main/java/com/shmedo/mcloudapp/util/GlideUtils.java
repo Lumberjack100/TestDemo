@@ -43,7 +43,6 @@ public class GlideUtils {
                         .error(id)
                         .placeholder(id)
                         .diskCacheStrategy(DiskCacheStrategy.ALL))
-                .transition(new DrawableTransitionOptions().crossFade(400)) //使用变换效果
                 .into(imageView);
     }
 

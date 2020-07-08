@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.hjq.toast.ToastUtils;
@@ -11,6 +12,7 @@ import com.pgyersdk.crash.PgyCrashManager;
 import com.pgyersdk.feedback.PgyerFeedbackManager;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.base.BaseActivity;
+import com.shmedo.mcloudapp.ui.activity.TestBluetoothListActivity;
 import com.shmedo.mcloudapp.ui.activity.WebViewActivity;
 import com.shmedo.mcloudapp.util.GlobalUtil;
 import com.shmedo.mcloudapp.util.permission.RuntimeRationale;
@@ -34,8 +36,14 @@ public class AboutAppActivity extends BaseActivity {
     @BindView(R.id.toolbar_title)
     TextView mToolbarTitle;
 
+    @BindView(R.id.logoImage)
+    ImageView mIvLogo;
+
     @BindView(R.id.tv_version)
     TextView mTvVersion;
+
+    @BindView(R.id.connectTestLayout)
+    View connectTestLayout;
 
 
     public static void startActivity(Context context) {
@@ -56,16 +64,32 @@ public class AboutAppActivity extends BaseActivity {
         setToolBar(R.id.toolbar);
         mToolbarTitle.setText("关于");
         initData();
+        initTouchListener();
+    }
+
+    private void initTouchListener() {
+        mIvLogo.setOnClickListener(new DoubleClickListener() {
+            @Override
+            public void onSingleClick(View v) {
+
+            }
+
+            @Override
+            public void onDoubleClick(View v) {
+                connectTestLayout.setVisibility(View.VISIBLE);
+            }
+        });
     }
 
 
     private void initData() {
         String localVersion = GlobalUtil.getAppVersionName();
         mTvVersion.setText(String.format("米易通 v%s", localVersion));
+        connectTestLayout.setVisibility(View.GONE);
     }
 
 
-    @OnClick({R.id.ll_userAdvice, R.id.userProtocolLayout, R.id.privacyPolicyLayout, R.id.appIntroLayout})
+    @OnClick({R.id.ll_userAdvice, R.id.userProtocolLayout, R.id.privacyPolicyLayout, R.id.appIntroLayout, R.id.connectTestLayout})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.ll_userAdvice:
@@ -89,9 +113,33 @@ public class AboutAppActivity extends BaseActivity {
                 WebViewActivity.startActivity(this, url);
             }
             break;
+
+            case R.id.connectTestLayout: //连接测试
+                TestBluetoothListActivity.startActivity(this);
+                break;
         }
     }
 
+    public abstract class DoubleClickListener implements View.OnClickListener {
+        private static final long DOUBLE_CLICK_TIME_DELTA = 300;//milliseconds
+
+        private long lastClickTime = 0;
+
+        @Override
+        public void onClick(View v) {
+            long clickTime = System.currentTimeMillis();
+            if (clickTime - lastClickTime < DOUBLE_CLICK_TIME_DELTA) {
+                onDoubleClick(v);
+            } else {
+                onSingleClick(v);
+            }
+            lastClickTime = clickTime;
+        }
+
+        public abstract void onSingleClick(View v);
+
+        public abstract void onDoubleClick(View v);
+    }
 
     /**
      * 弹出反馈dialog

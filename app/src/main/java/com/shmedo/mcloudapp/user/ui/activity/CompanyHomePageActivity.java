@@ -8,22 +8,16 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
-import com.shmedo.mcloudapp.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.base.BaseActivity;
-import com.shmedo.mcloudapp.network.BaseObserver;
-import com.shmedo.mcloudapp.network.MDRetrofit;
-import com.shmedo.mcloudapp.network.NetworkConst;
 import com.shmedo.mcloudapp.user.model.CompanyInfo;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.schedulers.Schedulers;
-import okhttp3.RequestBody;
-import timber.log.Timber;
 
 public class CompanyHomePageActivity extends BaseActivity {
+    private static final String ARG_PARAM1 = "param1";
+
     @BindView(R.id.toolbar_title)
     TextView mToolbarTitle;
 
@@ -49,8 +43,10 @@ public class CompanyHomePageActivity extends BaseActivity {
     TextView mTvCompanyIntro;
 
 
-    public static void startActivity(Context context) {
+
+    public static void startActivity(Context context,CompanyInfo companyInfo) {
         Intent intent = new Intent(context, CompanyHomePageActivity.class);
+        intent.putExtra(ARG_PARAM1,companyInfo);
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         context.startActivity(intent);
     }
@@ -66,7 +62,15 @@ public class CompanyHomePageActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setToolBar(R.id.toolbar);
         mToolbarTitle.setText("企业详情");
-        getCompanyInfo();
+        parseIntent();
+    }
+
+    private void parseIntent() {
+        Intent intent = getIntent();
+        if (intent.getExtras() != null && intent.getExtras().containsKey(ARG_PARAM1)) {
+            CompanyInfo  mCompanyInfo = (CompanyInfo)intent.getSerializableExtra(ARG_PARAM1);
+            updateView(mCompanyInfo);
+        }
     }
 
     private void updateView(CompanyInfo companyInfo) {
@@ -97,7 +101,7 @@ public class CompanyHomePageActivity extends BaseActivity {
     /**
      * 查询单个公司信息
      */
-    private void getCompanyInfo() {
+   /* private void getCompanyInfo() {
         showLoadingDialog("加载数据中...");
 
         RequestBody body = RequestBody.create(NetworkConst.JSON_TYPE, "");
@@ -119,5 +123,5 @@ public class CompanyHomePageActivity extends BaseActivity {
                         Timber.w("服务器连接失败--%s", message);
                     }
                 });
-    }
+    }*/
 }

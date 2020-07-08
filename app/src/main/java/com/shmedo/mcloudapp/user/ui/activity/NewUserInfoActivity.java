@@ -14,15 +14,23 @@ import com.shmedo.mcloudapp.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.base.BaseActivity;
 import com.shmedo.mcloudapp.entity.UserInfo;
+import com.shmedo.mcloudapp.network.BaseObserver;
+import com.shmedo.mcloudapp.network.MDRetrofit;
+import com.shmedo.mcloudapp.network.NetworkConst;
 import com.shmedo.mcloudapp.ui.activity.LoginActivity;
-import com.shmedo.mcloudapp.util.GlobalUtil;
+import com.shmedo.mcloudapp.user.model.CompanyInfo;
 import com.shmedo.mcloudapp.util.ActivityCollector;
 import com.shmedo.mcloudapp.util.GlideUtils;
+import com.shmedo.mcloudapp.util.GlobalUtil;
 import com.shmedo.mcloudapp.util.permission.UpdataManagerUtil;
 
 import butterknife.BindView;
 import butterknife.OnClick;
 import de.hdodenhof.circleimageview.CircleImageView;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
+import okhttp3.RequestBody;
+import timber.log.Timber;
 
 /**
  * 用户信息页面
@@ -49,6 +57,8 @@ public class NewUserInfoActivity extends BaseActivity {
     private UserInfo userInfo;
     private UserInfo.UserBean user;
 
+    private CompanyInfo mCompanyInfo;
+
     public static void startActivity(Context context) {
         Intent intent = new Intent(context, NewUserInfoActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
@@ -67,6 +77,7 @@ public class NewUserInfoActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setToolBar(R.id.toolbar);
         mToolbarTitle.setText("我的");
+        getCompanyInfo();
     }
 
     @Override
@@ -84,7 +95,6 @@ public class NewUserInfoActivity extends BaseActivity {
             }
             mTvUserName.setText(user.getName() != null ? user.getName() : "");
             mTvUserTitle.setText(user.getPosition() != null ? user.getPosition() : "");
-            mTvCompanyName.setText("");
             mTvVersionName.setText(GlobalUtil.getAppVersionName());
         }
     }
@@ -97,7 +107,7 @@ public class NewUserInfoActivity extends BaseActivity {
                 break;
 
             case R.id.companyLayout:
-                CompanyHomePageActivity.startActivity(this);
+                CompanyHomePageActivity.startActivity(this, mCompanyInfo);
                 break;
 
             case R.id.updatePwdLayout:
@@ -152,6 +162,36 @@ public class NewUserInfoActivity extends BaseActivity {
         in.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(in);
         finish();
+    }
+
+    /**
+     * 查询单个公司信息
+     */
+    private void getCompanyInfo() {
+        showLoadingDialog("加载数据中...");
+
+        RequestBody body = RequestBody.create(NetworkConst.JSON_TYPE, "");
+        MDRetrofit.getInstance()
+                .createService()
+                .GetCompanyInfo(MCloudApp.getAccessToken(), body)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new BaseObserver<CompanyInfo>() {
+                    @Override
+                    public void Success(CompanyInfo companyInfo, String message) {
+                        dismissLoadingDialog();
+                        mCompanyInfo = companyInfo;
+                        if(mCompanyInfo!=null) {
+                            mTvCompanyName.setText(mCompanyInfo.getFullName() != null ? mCompanyInfo.getFullName() : "");
+                        }
+                    }
+
+                    @Override
+                    public void Failure(String message) {
+                        dismissLoadingDialog();
+                        Timber.w("服务器连接失败--%s", message);
+                    }
+                });
     }
 
     @Override
