@@ -40,6 +40,11 @@ public class ApiName {
      */
     public static final String SET_USER_HEAD_PHOTO = "SetUserHeadPhoto";
 
+    /**
+     * 修改当前登录用户的密码
+     */
+    public static final String CHANGE_MY_PASSWORD = "ChangeMyPassword";
+
     //公司模块
     /**
      * 查询单个公司信息

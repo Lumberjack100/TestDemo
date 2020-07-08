@@ -65,6 +65,12 @@ public interface ApiService {
     @POST(ApiName.SET_USER_HEAD_PHOTO)
     Observable<ResultWrapper<String>> setUserHeadPhoto(@Body RequestBody parameter);
 
+    //系统接口v2  修改当前登录用户的密码
+    @Headers({HEADER_API_VERSION})
+    @POST(ApiName.CHANGE_MY_PASSWORD)
+    Observable<ResultWrapper<Boolean>> ChangeMyPassword(@Header(CommonVariable.ACCESS_TOKEN) String token, @Body RequestBody parameter);
+
+
     //系统接口v2  公司模块 4.查询单个公司信息
     @Headers({HEADER_API_VERSION})
     @POST(ApiName.GET_COMPANY_INFO)

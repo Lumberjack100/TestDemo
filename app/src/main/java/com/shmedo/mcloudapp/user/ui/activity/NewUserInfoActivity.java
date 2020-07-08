@@ -95,7 +95,7 @@ public class NewUserInfoActivity extends BaseActivity {
                 break;
 
             case R.id.updatePwdLayout:
-
+                UpdatePasswordActivity.startActivity(this);
                 break;
 
             case R.id.checkVersionLayout:
