@@ -270,14 +270,20 @@ public class LoginActivity extends BaseActivity implements LoginManager.LoginCal
         RequestBody body = RequestBody.create(CommonVariable.JSON_TYPE, json);
 
         showLoadingDialog("正在获取验证码...");
-        MDRetrofit.getInstance().createService().sendSmsCode(CommonVariable.APP_KEY, CommonVariable.APP_SECRET, body).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new BaseObserver<String>() {
+        MDRetrofit.getInstance()
+                .createService()
+                .sendSmsCode(CommonVariable.APP_KEY, CommonVariable.APP_SECRET, body)
+                .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new BaseObserver<String>() {
             @Override
-            public void Success(String s, String message) {
+            public void Success(String data, String message) {
                 dismissLoadingDialog();
 
-                if (s.contains("已发送")) {
+                if (data.contains("已发送")) {
                     MyCountDownTimer timer = new MyCountDownTimer(mBtnGetCode, 60000, 1000);
                     timer.start();
+                } else {
+                    ToastUtils.show(data);
                 }
             }
 

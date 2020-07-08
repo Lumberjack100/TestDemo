@@ -23,7 +23,7 @@ public  abstract class BaseObserver<T> implements Observer<ResultWrapper<T>> {
     @Override
     public void onNext(ResultWrapper<T> baseResponse) {
         if (baseResponse.isSuccess()) {
-            String msg = baseResponse.getErrCode().getErrMessage() != null ? baseResponse.getErrCode().getErrMessage() : "请求成功";
+            String msg = baseResponse.getErrCode().getErrMessage() != null ? baseResponse.getErrCode().getErrMessage() : "";
             if (baseResponse.getData() != null) {
                 Success(baseResponse.getData(), msg);
             }

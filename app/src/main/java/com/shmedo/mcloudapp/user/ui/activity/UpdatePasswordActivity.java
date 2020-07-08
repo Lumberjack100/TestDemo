@@ -144,6 +144,7 @@ public class UpdatePasswordActivity extends BaseActivity {
                     @Override
                     public void Failure(String message) {
                         dismissLoadingDialog();
+                        ToastUtils.show(message);
                         Timber.w("请求失败--%s", message);
                     }
                 });

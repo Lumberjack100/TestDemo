@@ -3,6 +3,7 @@ package com.shmedo.mcloudapp.user.ui.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
@@ -46,6 +47,8 @@ public class UpdatePhoneActivity extends BaseActivity {
 
     @BindView(R.id.getCodeBtn)
     TextView mBtnGetCode;
+
+    private Handler hander = new Handler();
 
     private String oldPhone, newPhone, code;
 
@@ -117,12 +120,14 @@ public class UpdatePhoneActivity extends BaseActivity {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new BaseObserver<String>() {
             @Override
-            public void Success(String s, String message) {
+            public void Success(String data, String message) {
                 dismissLoadingDialog();
 
-                if (s.contains("已发送")) {
+                if (data.contains("已发送")) {
                     MyCountDownTimer timer = new MyCountDownTimer(mBtnGetCode, 60000, 1000);
                     timer.start();
+                }else {
+                    ToastUtils.show(data);
                 }
             }
 
@@ -196,12 +201,19 @@ public class UpdatePhoneActivity extends BaseActivity {
                     @Override
                     public void Success(String result, String message) {
                         dismissLoadingDialog();
-//                        ToastUtils.show(TextUtils.isEmpty() ? "修改完成" : "修改失败," + message);
+                        ToastUtils.show("修改完成");
+                        hander.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                finish();
+                            }
+                        }, 1500);
                     }
 
                     @Override
                     public void Failure(String message) {
                         dismissLoadingDialog();
+                        ToastUtils.show(message);
                         Timber.w("请求失败--%s", message);
                     }
                 });

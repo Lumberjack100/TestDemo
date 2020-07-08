@@ -209,4 +209,13 @@
         <item name="android:paddingBottom">@dimen/dimen_size_15</item>
     </style>
 
+    <style name="UserInfo_EditItem_LinearLayoutStyle">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">55dp</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:background">@color/white</item>
+        <item name="android:paddingLeft">@dimen/dimen_size_20</item>
+        <item name="android:paddingRight">@dimen/dimen_size_20</item>
+    </style>
+
 </resources>

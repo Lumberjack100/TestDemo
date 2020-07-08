@@ -88,6 +88,7 @@ public class NewUserInfoActivity extends BaseActivity {
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.userLayout:
+                UserHomePageActivity.startActivity(this);
                 break;
 
             case R.id.companyLayout:
