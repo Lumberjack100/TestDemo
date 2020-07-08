@@ -150,7 +150,7 @@ public class LoginManager {
                         MCloudApp.setCurrentUserInfo(userInfo);
 
                         //下面是持久化保存用户数据
-                        Long id = Long.valueOf(userInfo.getUser().getId());
+                        Long id = (long) userInfo.getUser().getId();
                         UserInfoWrapper userInfoWrapper = new UserInfoWrapper();
                         userInfoWrapper.setId(id);
                         userInfoWrapper.setUserInfo(GsonFactory.getGson().toJson(userInfo));

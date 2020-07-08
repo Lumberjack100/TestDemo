@@ -13,6 +13,7 @@ import com.shmedo.core.utils.ValidateUtil;
 import com.shmedo.mcloudapp.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.base.BaseActivity;
+import com.shmedo.mcloudapp.entity.UserInfo;
 import com.shmedo.mcloudapp.network.BaseObserver;
 import com.shmedo.mcloudapp.network.MDRetrofit;
 import com.shmedo.mcloudapp.network.NetworkConst;
@@ -175,6 +176,13 @@ public class UpdatePhoneActivity extends BaseActivity {
                     @Override
                     public void Success(String result, String message) {
                         dismissLoadingDialog();
+                        UserInfo userInfo = MCloudApp.getCurrentUserInfo();
+                        if (userInfo != null && userInfo.getUser() != null) {
+                            UserInfo.UserBean user = userInfo.getUser();
+                            user.setCellPhone(newPhone);
+                        }
+                        MCloudApp.setCurrentUserInfo(userInfo);
+
                         ToastUtils.show("修改完成");
                         hander.postDelayed(new Runnable() {
                             @Override

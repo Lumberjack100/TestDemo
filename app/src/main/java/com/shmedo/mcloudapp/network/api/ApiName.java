@@ -36,11 +36,6 @@ public class ApiName {
     public static final String GET_MY_INFO = "GetMyInfo";
 
     /**
-     * 用户上传头像接口
-     */
-    public static final String SET_USER_HEAD_PHOTO = "SetUserHeadPhoto";
-
-    /**
      * 修改当前登录用户的密码
      */
     public static final String CHANGE_MY_PASSWORD = "ChangeMyPassword";
@@ -49,6 +44,16 @@ public class ApiName {
      * 修改我的手机号码
      */
     public static final String UPDATE_MY_CELL_PHONE = "UpdateMyCellPhone";
+
+    /**
+     * 修改我的信息
+     */
+    public static final String UPDATE_MY_INFO = "UpdateMyInfo";
+
+    /**
+     * 用户上传头像接口
+     */
+    public static final String SET_USER_HEAD_PHOTO = "SetUserHeadPhoto";
 
     //公司模块
     /**

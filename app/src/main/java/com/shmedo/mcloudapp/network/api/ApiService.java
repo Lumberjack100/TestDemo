@@ -58,11 +58,6 @@ public interface ApiService {
     @POST(ApiName.SMS_LOGIN)
     Observable<ResultWrapper<String>> SmsLogin(@Body RequestBody parameter);
 
-    //用户上传头像
-    @Headers({NetworkConst.HEADER_ACCESS_TYPE})
-    @POST(ApiName.SET_USER_HEAD_PHOTO)
-    Observable<ResultWrapper<String>> setUserHeadPhoto(@Body RequestBody parameter);
-
     //系统接口v2  修改当前登录用户的密码
     @Headers({NetworkConst.HEADER_ACCESS_TYPE})
     @POST(ApiName.CHANGE_MY_PASSWORD)
@@ -72,6 +67,16 @@ public interface ApiService {
     @Headers({NetworkConst.HEADER_ACCESS_TYPE})
     @POST(ApiName.UPDATE_MY_CELL_PHONE)
     Observable<ResultWrapper<String>> UpdateMyCellPhone(@Header(NetworkConst.ACCESS_TOKEN) String token, @Body RequestBody parameter);
+
+    //系统接口v2  修改我的信息
+    @Headers({NetworkConst.HEADER_ACCESS_TYPE})
+    @POST(ApiName.UPDATE_MY_INFO)
+    Observable<ResultWrapper<String>> UpdateMyInfo(@Header(NetworkConst.ACCESS_TOKEN) String token, @Body RequestBody parameter);
+
+    //用户上传头像
+    @Headers({NetworkConst.HEADER_ACCESS_TYPE})
+    @POST(ApiName.SET_USER_HEAD_PHOTO)
+    Observable<ResultWrapper<String>> setUserHeadPhoto(@Body RequestBody parameter);
 
 
     //系统接口v2  公司模块 4.查询单个公司信息

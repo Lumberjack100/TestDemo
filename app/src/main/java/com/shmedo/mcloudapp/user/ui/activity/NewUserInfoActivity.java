@@ -67,10 +67,15 @@ public class NewUserInfoActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setToolBar(R.id.toolbar);
         mToolbarTitle.setText("我的");
-        initView();
     }
 
-    private void initView() {
+    @Override
+    protected void onStart() {
+        super.onStart();
+        updateView();
+    }
+
+    private void updateView() {
         userInfo = MCloudApp.getCurrentUserInfo();
         if (userInfo != null && userInfo.getUser() != null) {
             user = userInfo.getUser();

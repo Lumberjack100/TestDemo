@@ -58,6 +58,7 @@ import com.shmedo.mcloudapp.network.BaseObserver;
 import com.shmedo.mcloudapp.network.MDRetrofit;
 import com.shmedo.mcloudapp.network.NetworkConst;
 import com.shmedo.mcloudapp.ui.SearchDataUI;
+import com.shmedo.mcloudapp.user.ui.activity.NewUserInfoActivity;
 import com.shmedo.mcloudapp.util.DaoManager;
 import com.shmedo.mcloudapp.util.DensityUtil;
 import com.shmedo.mcloudapp.util.GsonFactory;
@@ -409,7 +410,7 @@ public class MainActivity extends BaseActivity {
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.img_user://用户信息
-                UserInfoActivity.startActivity(this);
+                NewUserInfoActivity.startActivity(this);
                 break;
 
             case R.id.img_equipment://项目管理
