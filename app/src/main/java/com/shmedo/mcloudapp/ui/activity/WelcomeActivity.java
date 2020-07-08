@@ -21,7 +21,7 @@ import com.shmedo.mcloudapp.ui.PrivacyTipDialog;
 import com.shmedo.mcloudapp.util.DaoManager;
 import com.shmedo.mcloudapp.util.GsonFactory;
 import com.shmedo.mcloudapp.util.LoginManager;
-import com.shmedo.mcloudapp.util.UserConfig;
+import com.shmedo.mcloudapp.util.SharedUtil;
 import com.shmedo.mcloudapp.util.XPermissionUtils;
 
 import java.util.Date;
@@ -37,7 +37,6 @@ import timber.log.Timber;
  * 创建时间:  2019/1/8 09:17
  */
 public class WelcomeActivity extends BaseActivity implements LoginManager.LoginCallback, PrivacyTipDialog.DialogFragmentClickListener {
-    private UserConfig userConfig;
 
     private String mAccount = null;
     private String mPassword = null;
@@ -68,11 +67,10 @@ public class WelcomeActivity extends BaseActivity implements LoginManager.LoginC
     }
 
     private void initData() {
-        userConfig = UserConfig.getConfig(this,  AppContants.APP_CONFIG_NAME);
-        mAccount = userConfig.readString(AppContants.User.UID);
-        mPassword = userConfig.readString(AppContants.User.PWD);
+        mAccount = SharedUtil.read(AppContants.User.UID, "");
+        mPassword = SharedUtil.read(AppContants.User.PWD, "");
 
-        String mPrivacy = userConfig.readString(AppContants.PRIVACY_AGREEMENT);
+        String mPrivacy = SharedUtil.read(AppContants.PRIVACY_AGREEMENT, "");
         if (TextUtils.isEmpty(mPrivacy) || mPrivacy.toLowerCase().equals("refuse")) {
             DialogFragment privacyTipDialog = new PrivacyTipDialog();
             privacyTipDialog.show(getSupportFragmentManager(), "dialog");
@@ -83,13 +81,13 @@ public class WelcomeActivity extends BaseActivity implements LoginManager.LoginC
 
     @Override
     public void onPositiveClick(View view) {
-        userConfig.writeString(AppContants.PRIVACY_AGREEMENT, "agree");
+        SharedUtil.save(AppContants.PRIVACY_AGREEMENT, "agree");
         checkLogin();
     }
 
     @Override
     public void onNegativeClick(View view) {
-        userConfig.writeString(AppContants.PRIVACY_AGREEMENT, "refuse");
+        SharedUtil.save(AppContants.PRIVACY_AGREEMENT, "refuse");
         WelcomeActivity.this.finish();
     }
 
@@ -114,9 +112,9 @@ public class WelcomeActivity extends BaseActivity implements LoginManager.LoginC
      * 离线登录
      */
     private void loginForOffline() {
-        String account = userConfig.readString(AppContants.User.UID);
-        String token = userConfig.readString(NetworkConst.ACCESS_TOKEN);
-        String time = userConfig.readString(AppContants.TOKEN_UPDATE_TIME);
+        String account = SharedUtil.read(AppContants.User.UID);
+        String token = SharedUtil.read(NetworkConst.ACCESS_TOKEN);
+        String time = SharedUtil.read(AppContants.TOKEN_UPDATE_TIME);
 
         if (TextUtils.isEmpty(token) || TextUtils.isEmpty(token)) {
             Timber.d("token或time为空，不能离线登录");

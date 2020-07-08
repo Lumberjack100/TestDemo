@@ -52,39 +52,6 @@
                     android:textColor="@color/white"
                     android:textSize="@dimen/text_size_20" />
 
-                <!--    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_centerInParent="true"
-                        android:gravity="center"
-                        android:orientation="vertical">
-
-                        <com.shmedo.mcloudapp.deviceconfig.ui.view.DiffuseView
-                            android:id="@+id/ivDiscoveryDevice"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            app:diffuse_color="@color/white"
-                            app:diffuse_coreColor="@color/white"
-                            app:diffuse_coreImage="@drawable/icon_bluetooth_discovery"
-                            app:diffuse_coreRadius="100"
-                            app:diffuse_maxWidth="200"
-                            app:diffuse_speed="2"
-                            app:diffuse_width="4" />
-
-                        <TextView
-                            android:id="@+id/tvDiscoveryState"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_centerInParent="true"
-                            android:layout_marginTop="@dimen/dimen_size_10"
-                            android:ellipsize="end"
-                            android:maxLines="1"
-                            android:text="开始搜索"
-                            android:textColor="@color/white"
-                            android:textSize="@dimen/text_size_20" />
-
-                    </LinearLayout>-->
-
             </RelativeLayout>
 
             <androidx.appcompat.widget.Toolbar

@@ -70,7 +70,7 @@ public class UpdatePhoneActivity extends BaseActivity {
 
 
     @OnClick({R.id.getCodeBtn, R.id.btn_confirm})
-    public void onViewClicked(View view) {
+    public void onClick(View view) {
         switch (view.getId()) {
             case R.id.getCodeBtn:
                 newPhone = mEtNewPhone.getText().toString().trim();

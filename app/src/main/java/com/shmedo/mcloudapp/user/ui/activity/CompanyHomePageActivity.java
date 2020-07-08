@@ -83,7 +83,7 @@ public class CompanyHomePageActivity extends BaseActivity {
     }
 
     @OnClick({R.id.websiteLayout})
-    public void onViewClicked(View view) {
+    public void onClick(View view) {
         if (view.getId() == R.id.websiteLayout) {
             String url = mTvWebsite.getText().toString();
             if (!TextUtils.isEmpty(url)) {

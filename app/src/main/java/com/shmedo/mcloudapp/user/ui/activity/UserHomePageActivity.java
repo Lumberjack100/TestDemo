@@ -16,11 +16,13 @@ import com.shmedo.mcloudapp.network.BaseObserver;
 import com.shmedo.mcloudapp.network.MDRetrofit;
 import com.shmedo.mcloudapp.network.NetworkConst;
 import com.shmedo.mcloudapp.user.model.UpdateMyInfoParam;
+import com.shmedo.mcloudapp.util.GlideUtils;
 import com.shmedo.mcloudapp.util.GsonFactory;
 import com.shmedo.mcloudapp.views.ClearEditText;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import de.hdodenhof.circleimageview.CircleImageView;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.RequestBody;
@@ -33,8 +35,8 @@ public class UserHomePageActivity extends BaseActivity {
     @BindView(R.id.toolbar_title)
     TextView mToolbarTitle;
 
-//    @BindView(R.id.userAvatar)
-//    CircleImageView mIvUserAvatar;
+    @BindView(R.id.userAvatar)
+    CircleImageView mIvUserAvatar;
 
     @BindView(R.id.userNameET)
     ClearEditText mEtUserName;
@@ -84,7 +86,7 @@ public class UserHomePageActivity extends BaseActivity {
         if (userInfo != null && userInfo.getUser() != null) {
             user = userInfo.getUser();
             if (user.getHeadPhotoPath() != null) {
-//                GlideUtils.loadImage(this, user.getHeadPhotoPath(), mIvUserAvatar, R.drawable.userphoto);
+                GlideUtils.loadImage(this, user.getHeadPhotoPath(), mIvUserAvatar, R.drawable.ic_avatar_default);
             }
             mEtUserName.setText(user.getName() != null ? user.getName() : "");
             mEtTitle.setText(user.getPosition() != null ? user.getPosition() : "");
@@ -94,9 +96,12 @@ public class UserHomePageActivity extends BaseActivity {
     }
 
 
-    @OnClick({R.id.mobileLayout, R.id.btn_confirm})
-    public void onViewClicked(View view) {
+    @OnClick({R.id.userLayout, R.id.mobileLayout, R.id.btn_confirm})
+    public void onClick(View view) {
         switch (view.getId()) {
+            case R.id.userLayout:
+                break;
+
             case R.id.mobileLayout:
                 UpdatePhoneActivity.startActivity(this);
                 break;

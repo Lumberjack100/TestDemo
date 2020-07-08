@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.user.util;
+package com.shmedo.mcloudapp.util;
 
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;

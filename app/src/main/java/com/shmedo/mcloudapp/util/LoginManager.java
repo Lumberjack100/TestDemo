@@ -157,12 +157,11 @@ public class LoginManager {
                         DaoManager manager = DaoManager.getInstance();
                         manager.getDaoSession().getUserInfoWrapperDao().insertOrReplace(userInfoWrapper);
 
-                        UserConfig userConfig = UserConfig.getConfig(MCloudApp.getContext(), AppContants.APP_CONFIG_NAME);
-                        userConfig.writeString(NetworkConst.ACCESS_TOKEN, token);
-                        userConfig.writeString(AppContants.TOKEN_UPDATE_TIME, new Date().getTime() + "");
+                        SharedUtil.save(NetworkConst.ACCESS_TOKEN, token);
+                        SharedUtil.save(AppContants.TOKEN_UPDATE_TIME, new Date().getTime() + "");
                         if (mAccount != null && mPassword != null) {
-                            userConfig.writeString(AppContants.User.UID, mAccount);
-                            userConfig.writeString(AppContants.User.PWD, mPassword);
+                            SharedUtil.save(AppContants.User.UID, mAccount);
+                            SharedUtil.save(AppContants.User.PWD, mPassword);
                         }
 
                         if (loginCallback != null) {

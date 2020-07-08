@@ -33,7 +33,7 @@ import com.shmedo.mcloudapp.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.interfaces.Extras;
 import com.shmedo.mcloudapp.util.AdvanceSetDialogUtils;
-import com.shmedo.mcloudapp.util.UserConfig;
+import com.shmedo.mcloudapp.util.SharedUtil;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -101,8 +101,6 @@ public class OsmometerConfigActivity extends BaseDeviceConnectActivity {
     private String cmdNozzelHeight;//管口高程
 
 
-    private UserConfig uc;
-
     public static void startActivity(Context context, String osmometerParameterInfo) {
         Intent intent = new Intent(context, OsmometerConfigActivity.class);
         intent.putExtra(Extras.PARAM_CONFIG_INFO, osmometerParameterInfo);
@@ -143,8 +141,7 @@ public class OsmometerConfigActivity extends BaseDeviceConnectActivity {
     }
 
     private void parseIntent() {
-        uc = UserConfig.getConfig(this, AppContants.OSMOMETER_NOTE);
-        mEtNote.setText(uc.readString(AppContants.OSMOMETER_NOTE));
+        mEtNote.setText(SharedUtil.read(AppContants.OSMOMETER_NOTE));
 
         Intent intent = getIntent();
         if (intent.getExtras() != null && intent.getExtras().containsKey(Extras.PARAM_CONFIG_INFO)) {
@@ -228,8 +225,7 @@ public class OsmometerConfigActivity extends BaseDeviceConnectActivity {
         String nozzelHeight = mEtNozzelHeight.getText().toString().trim();
 
         String note = mEtNote.getText().toString().trim();
-        uc.writeString(AppContants.OSMOMETER_NOTE, note);
-
+        SharedUtil.save(AppContants.OSMOMETER_NOTE, note);
 
         if (TextUtils.isEmpty(osmometerAddress) || Integer.parseInt(osmometerAddress) <= 0 || Integer.parseInt(osmometerAddress) > 255) {
             ToastUtils.show("请输入正确的渗压计地址");

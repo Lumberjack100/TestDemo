@@ -23,10 +23,9 @@ import com.shmedo.mcloudapp.base.BaseActivity;
 import com.shmedo.mcloudapp.network.BaseObserver;
 import com.shmedo.mcloudapp.network.MDRetrofit;
 import com.shmedo.mcloudapp.network.NetworkConst;
-import com.shmedo.mcloudapp.util.DaoManager;
 import com.shmedo.mcloudapp.util.LoginManager;
 import com.shmedo.mcloudapp.util.MyCountDownTimer;
-import com.shmedo.mcloudapp.util.UserConfig;
+import com.shmedo.mcloudapp.util.SharedUtil;
 import com.shmedo.mcloudapp.views.ClearEditText;
 
 import butterknife.BindView;
@@ -99,10 +98,6 @@ public class LoginActivity extends BaseActivity implements LoginManager.LoginCal
     @BindView(R.id.tourists_login)
     TextView mTouristsLogin;
 
-    private DaoManager manager = DaoManager.getInstance();
-
-    private UserConfig userConfig;
-
 
     public static void startActivity(Context context) {
         Intent intent = new Intent(context, LoginActivity.class);
@@ -136,14 +131,13 @@ public class LoginActivity extends BaseActivity implements LoginManager.LoginCal
 
 
     private void initServiceAddressAndUser() {
-        userConfig = UserConfig.getConfig(this, AppContants.APP_CONFIG_NAME);
-        String addr = userConfig.readString(AppContants.SERVICE_ADDRESS);
+        String addr =  SharedUtil.read(AppContants.SERVICE_ADDRESS);
         if (!TextUtils.isEmpty(addr)) {
             MCloudApp.setHttpsServiceAddress(addr);
         }
 
-        String uid = userConfig.readString(AppContants.User.UID);
-        String pwd = userConfig.readString(AppContants.User.PWD);
+        String uid =  SharedUtil.read(AppContants.User.UID);
+        String pwd =  SharedUtil.read(AppContants.User.PWD);
         if (!TextUtils.isEmpty(uid)) {
             mLoginEditTextAccount.setText(uid);
             mLoginEditTextAccount.setSelection(uid.length());

@@ -28,12 +28,12 @@
 
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/userAvatar"
-                android:layout_width="60dp"
-                android:layout_height="60dp"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
                 android:layout_alignParentStart="true"
                 android:layout_centerVertical="true"
                 android:layout_marginStart="@dimen/dimen_size_10"
-                android:src="@drawable/ic_avatar_default"
+                tools:src="@drawable/ic_avatar_default"
                 app:civ_border_color="@color/white"
                 app:civ_border_overlay="true"
                 app:civ_border_width="0.5dp" />
@@ -59,8 +59,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dimen_size_7"
-                    android:textColor="@color/gray_818182"
-                    android:textSize="@dimen/text_size_15"
+                    android:textColor="@color/black_333333"
+                    android:textSize="@dimen/text_size_14"
                     tools:text="产品经理" />
 
             </LinearLayout>

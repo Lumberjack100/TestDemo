@@ -7,7 +7,7 @@ import android.os.Looper;
 import android.text.TextUtils;
 
 import com.shmedo.mcloudapp.entity.UserInfo;
-import com.shmedo.mcloudapp.util.UserConfig;
+import com.shmedo.mcloudapp.util.SharedUtil;
 
 /**
  * 项目名：  mCloudapp
@@ -169,8 +169,7 @@ public class MCloudApp {
         account = null;
         currentUserInfo = null;
 
-        UserConfig userConfig = UserConfig.getConfig(mContext,  AppContants.APP_CONFIG_NAME);
-        userConfig.remove(AppContants.User.PWD);
+        SharedUtil.clear(AppContants.User.PWD);
     }
 
 

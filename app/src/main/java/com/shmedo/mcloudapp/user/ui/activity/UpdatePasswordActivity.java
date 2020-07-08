@@ -76,7 +76,7 @@ public class UpdatePasswordActivity extends BaseActivity {
 
 
     @OnClick({R.id.btn_confirm})
-    public void onViewClicked(View view) {
+    public void onClick(View view) {
         if (view.getId() == R.id.btn_confirm) {
             oldPassword = mEtOldPassword.getText().toString();
             newPassword = mEtNewPassword.getText().toString();

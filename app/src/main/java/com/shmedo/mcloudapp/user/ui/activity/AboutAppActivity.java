@@ -12,7 +12,7 @@ import com.pgyersdk.feedback.PgyerFeedbackManager;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.base.BaseActivity;
 import com.shmedo.mcloudapp.ui.activity.WebViewActivity;
-import com.shmedo.mcloudapp.user.util.GlobalUtil;
+import com.shmedo.mcloudapp.util.GlobalUtil;
 import com.shmedo.mcloudapp.util.permission.RuntimeRationale;
 import com.yanzhenjie.permission.Action;
 import com.yanzhenjie.permission.AndPermission;
@@ -66,7 +66,7 @@ public class AboutAppActivity extends BaseActivity {
 
 
     @OnClick({R.id.ll_userAdvice, R.id.userProtocolLayout, R.id.privacyPolicyLayout, R.id.appIntroLayout})
-    public void onViewClicked(View view) {
+    public void onClick(View view) {
         switch (view.getId()) {
             case R.id.ll_userAdvice:
                 showFeedbackDialog();

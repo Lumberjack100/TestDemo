@@ -5,6 +5,7 @@ import android.net.Uri;
 import android.widget.ImageView;
 
 import androidx.annotation.DrawableRes;
+
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
@@ -17,7 +18,6 @@ import com.shmedo.mcloudapp.R;
  * 文件名:   GlideUtils
  * 创建者:   dpc
  * 创建时间:  2018/2/27 09:10
- *
  */
 
 public class GlideUtils {
@@ -34,31 +34,30 @@ public class GlideUtils {
      * @param context
      * @param strUrl
      * @param imageView
-     *
      */
-    public static void loadImage(Context context, final String strUrl, final ImageView imageView,@DrawableRes final int id) {
+    public static void loadImage(Context context, final String strUrl, final ImageView imageView, @DrawableRes final int id) {
         Glide.with(context)
-            .load(strUrl)
-            .apply(new RequestOptions()
-                .centerCrop()
-                .error(id)
-                .placeholder(id)
-                .diskCacheStrategy(DiskCacheStrategy.ALL))
-            .transition(new DrawableTransitionOptions().crossFade(400)) //使用变换效果
-            .into(imageView);
+                .load(strUrl)
+                .apply(new RequestOptions()
+                        .centerCrop()
+                        .error(id)
+                        .placeholder(id)
+                        .diskCacheStrategy(DiskCacheStrategy.ALL))
+                .transition(new DrawableTransitionOptions().crossFade(400)) //使用变换效果
+                .into(imageView);
     }
 
     public static void loadImageFitCenter(Context context, final String strUrl, final ImageView imageView,
                                           @DrawableRes final int id) {
         Glide.with(context)
-            .load(strUrl)
-            .apply(new RequestOptions()
-                .fitCenter()
-                .error(id)
-                .placeholder(id)
-                .diskCacheStrategy(DiskCacheStrategy.ALL))
-            .transition(new DrawableTransitionOptions().crossFade(400)) //使用变换效果
-            .into(imageView);
+                .load(strUrl)
+                .apply(new RequestOptions()
+                        .fitCenter()
+                        .error(id)
+                        .placeholder(id)
+                        .diskCacheStrategy(DiskCacheStrategy.ALL))
+                .transition(new DrawableTransitionOptions().crossFade(400)) //使用变换效果
+                .into(imageView);
     }
 
     /**
@@ -73,15 +72,15 @@ public class GlideUtils {
     public static void loadRadianImage(Context context, final String strUrl, final ImageView imageView,
                                        float radian, @DrawableRes final int id) {
         Glide.with(context)
-            .load(strUrl)
-            .apply(new RequestOptions()
-                .centerCrop()
-                .transform(new GlideRadianTransform(radian))
-                .error(id)
-                .placeholder(id)
-                .diskCacheStrategy(DiskCacheStrategy.ALL))
-            .transition(new DrawableTransitionOptions().crossFade(300)) //使用变换效果
-            .into(imageView);
+                .load(strUrl)
+                .apply(new RequestOptions()
+                        .centerCrop()
+                        .transform(new GlideRadianTransform(radian))
+                        .error(id)
+                        .placeholder(id)
+                        .diskCacheStrategy(DiskCacheStrategy.ALL))
+                .transition(new DrawableTransitionOptions().crossFade(300)) //使用变换效果
+                .into(imageView);
     }
 
     /**
@@ -95,28 +94,28 @@ public class GlideUtils {
     public static void loadRoundImage(Context context, final String strUrl, final ImageView imageView,
                                       @DrawableRes final int id) {
         Glide.with(context)
-            .load(strUrl)
-            .apply(new RequestOptions()
-                .centerCrop()
-                .transform(new GlideRoundTransform())
-                .error(id)
-                .placeholder(id)
-                .diskCacheStrategy(DiskCacheStrategy.ALL))
-            .transition(new DrawableTransitionOptions().crossFade(300)) //使用变换效果
-            .into(imageView);
+                .load(strUrl)
+                .apply(new RequestOptions()
+                        .centerCrop()
+                        .transform(new GlideRoundTransform())
+                        .error(id)
+                        .placeholder(id)
+                        .diskCacheStrategy(DiskCacheStrategy.ALL))
+                .transition(new DrawableTransitionOptions().crossFade(300)) //使用变换效果
+                .into(imageView);
     }
 
     //加载drawable图片
     public static void loadResImage(Context context, int resId, ImageView imageView) {
         Glide.with(context)
-            .load(resourceIdToUri(context, resId))
-            .apply(new RequestOptions()
-                .centerCrop()
-                .error(R.color.white)
-                .placeholder(R.color.white)
-                .diskCacheStrategy(DiskCacheStrategy.ALL))
-            .transition(new DrawableTransitionOptions().crossFade(300)) //使用变换效果
-            .into(imageView);
+                .load(resourceIdToUri(context, resId))
+                .apply(new RequestOptions()
+                        .centerCrop()
+                        .error(R.color.white)
+                        .placeholder(R.color.white)
+                        .diskCacheStrategy(DiskCacheStrategy.ALL))
+                .transition(new DrawableTransitionOptions().crossFade(300)) //使用变换效果
+                .into(imageView);
     }
 
     // 将资源ID转为Uri
@@ -124,6 +123,6 @@ public class GlideUtils {
         return Uri.parse(ANDROID_RESOURCE + context.getPackageName() + FOREWARD_SLASH + resourceId);
     }
 
-    public static final String ANDROID_RESOURCE = "android.resource://";
-    public static final String FOREWARD_SLASH = "/";
+    private static final String ANDROID_RESOURCE = "android.resource://";
+    private static final String FOREWARD_SLASH = "/";
 }

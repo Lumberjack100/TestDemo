@@ -15,7 +15,7 @@ import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.base.BaseActivity;
 import com.shmedo.mcloudapp.entity.UserInfo;
 import com.shmedo.mcloudapp.ui.activity.LoginActivity;
-import com.shmedo.mcloudapp.user.util.GlobalUtil;
+import com.shmedo.mcloudapp.util.GlobalUtil;
 import com.shmedo.mcloudapp.util.ActivityCollector;
 import com.shmedo.mcloudapp.util.GlideUtils;
 import com.shmedo.mcloudapp.util.permission.UpdataManagerUtil;
@@ -80,7 +80,7 @@ public class NewUserInfoActivity extends BaseActivity {
         if (userInfo != null && userInfo.getUser() != null) {
             user = userInfo.getUser();
             if (user.getHeadPhotoPath() != null) {
-                GlideUtils.loadImage(this, user.getHeadPhotoPath(), mIvUserAvatar, R.drawable.userphoto);
+                GlideUtils.loadImage(this, user.getHeadPhotoPath(), mIvUserAvatar, R.drawable.ic_avatar_default);
             }
             mTvUserName.setText(user.getName() != null ? user.getName() : "");
             mTvUserTitle.setText(user.getPosition() != null ? user.getPosition() : "");
@@ -90,7 +90,7 @@ public class NewUserInfoActivity extends BaseActivity {
     }
 
     @OnClick({R.id.userLayout, R.id.companyLayout, R.id.updatePwdLayout, R.id.checkVersionLayout, R.id.aboutLayout, R.id.btn_exit})
-    public void onViewClicked(View view) {
+    public void onClick(View view) {
         switch (view.getId()) {
             case R.id.userLayout:
                 UserHomePageActivity.startActivity(this);
