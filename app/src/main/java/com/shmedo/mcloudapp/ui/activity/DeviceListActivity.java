@@ -30,7 +30,7 @@ import com.shmedo.mcloudapp.entity.StatusInfoResult;
 import com.shmedo.mcloudapp.entity.StatusInfoResultDao;
 import com.shmedo.mcloudapp.network.BaseObserver;
 import com.shmedo.mcloudapp.network.MDRetrofit;
-import com.shmedo.mcloudapp.network.common.CommonVariable;
+import com.shmedo.mcloudapp.network.NetworkConst;
 import com.shmedo.mcloudapp.util.DaoManager;
 import com.shmedo.mcloudapp.util.ImageUtil;
 import com.shmedo.mcloudapp.views.DeviceSensorDialog;
@@ -252,7 +252,7 @@ public class DeviceListActivity extends BaseActivity implements  MultiItemTypeAd
     private void getDeviceList(String currentCompanyID) {
         showLoadingDialog("加载数据中...");
 
-        RequestBody body = RequestBody.create(CommonVariable.JSON_TYPE, currentCompanyID);
+        RequestBody body = RequestBody.create(NetworkConst.JSON_TYPE, currentCompanyID);
         MDRetrofit.getInstance()
                 .createService()
                 .QueryDeviceStatusInfoList(MCloudApp.getAccessToken(), body)

@@ -56,7 +56,7 @@ import com.shmedo.mcloudapp.entity.event.WifiEvent;
 import com.shmedo.mcloudapp.entity.parameter.LocationResult;
 import com.shmedo.mcloudapp.network.BaseObserver;
 import com.shmedo.mcloudapp.network.MDRetrofit;
-import com.shmedo.mcloudapp.network.common.CommonVariable;
+import com.shmedo.mcloudapp.network.NetworkConst;
 import com.shmedo.mcloudapp.ui.SearchDataUI;
 import com.shmedo.mcloudapp.util.DaoManager;
 import com.shmedo.mcloudapp.util.DensityUtil;
@@ -294,7 +294,7 @@ public class MainActivity extends BaseActivity {
      * @param currentCompanyID
      */
     private void getDeviceBasicInfoList(String currentCompanyID) {
-        RequestBody body = RequestBody.create(CommonVariable.JSON_TYPE, currentCompanyID);
+        RequestBody body = RequestBody.create(NetworkConst.JSON_TYPE, currentCompanyID);
         MDRetrofit.getInstance()
                 .createService()
                 .QueryDeviceBasicInfoList(MCloudApp.getAccessToken(), body)

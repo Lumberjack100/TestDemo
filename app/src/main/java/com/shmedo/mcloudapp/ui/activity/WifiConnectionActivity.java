@@ -26,7 +26,7 @@ import com.shmedo.mcloudapp.adapter.WifiListAdapter;
 import com.shmedo.mcloudapp.entity.WifiBean;
 import com.shmedo.mcloudapp.entity.event.WifiEvent;
 import com.shmedo.mcloudapp.util.ActivityCollector;
-import com.shmedo.mcloudapp.util.AppContants;
+import com.shmedo.mcloudapp.AppContants;
 import com.shmedo.mcloudapp.util.WifiSupport;
 import com.shmedo.mcloudapp.views.WifiLinkDialog;
 
@@ -135,7 +135,7 @@ public class WifiConnectionActivity extends AppCompatActivity {
             @Override
             public void onItemClick(View view, int postion, Object o) {
                 curWifiBean = wifiBeanList.get(postion);
-                if (curWifiBean.getState().equals(AppContants.WIFI_STATE_ON_CONNECTING))
+                if (curWifiBean.getState().equals(AppContants.WiFi.WIFI_STATE_ON_CONNECTING))
                     return;
 
                 String capabilities = curWifiBean.getCapabilities();
@@ -240,7 +240,7 @@ public class WifiConnectionActivity extends AppCompatActivity {
             case DISCONNECTED:
                 hidingProgressBar();
                 for (int i = 0; i < wifiBeanList.size(); i++) {//没连接上将 所有的连接状态都置为“未连接”
-                    wifiBeanList.get(i).setState(AppContants.WIFI_STATE_UNCONNECT);
+                    wifiBeanList.get(i).setState(AppContants.WiFi.WIFI_STATE_UNCONNECT);
                 }
                 adapter.notifyDataSetChanged();
                 break;
@@ -292,7 +292,7 @@ public class WifiConnectionActivity extends AppCompatActivity {
         for (int i = 0; i < scanResults.size(); i++) {
             WifiBean wifiBean = new WifiBean();
             wifiBean.setWifiName(scanResults.get(i).SSID);
-            wifiBean.setState(AppContants.WIFI_STATE_UNCONNECT);   //只要获取都假设设置成未连接，真正的状态都通过广播来确定
+            wifiBean.setState(AppContants.WiFi.WIFI_STATE_UNCONNECT);   //只要获取都假设设置成未连接，真正的状态都通过广播来确定
             wifiBean.setCapabilities(scanResults.get(i).capabilities);
             wifiBean.setLevel(WifiSupport.getLevel(scanResults.get(i).level) + "");
             wifiBeanList.add(wifiBean);
@@ -323,9 +323,9 @@ public class WifiConnectionActivity extends AppCompatActivity {
                 tempBean.setWifiName(wifiBean.getWifiName());
                 tempBean.setCapabilities(wifiBean.getCapabilities());
                 if (type == 1) {
-                    tempBean.setState(AppContants.WIFI_STATE_CONNECT);
+                    tempBean.setState(AppContants.WiFi.WIFI_STATE_CONNECT);
                 } else {
-                    tempBean.setState(AppContants.WIFI_STATE_ON_CONNECTING);
+                    tempBean.setState(AppContants.WiFi.WIFI_STATE_ON_CONNECTING);
                 }
 
                 break;
@@ -342,7 +342,7 @@ public class WifiConnectionActivity extends AppCompatActivity {
 
     private void resetWifiBeanState() {
         for (int i = 0; i < wifiBeanList.size(); i++) {
-            wifiBeanList.get(i).setState(AppContants.WIFI_STATE_UNCONNECT);
+            wifiBeanList.get(i).setState(AppContants.WiFi.WIFI_STATE_UNCONNECT);
         }
         Collections.sort(wifiBeanList);//根据信号强度排序
     }

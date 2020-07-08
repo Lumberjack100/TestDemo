@@ -49,6 +49,7 @@ public class UserHomePageActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setToolBar(R.id.toolbar);
         mToolbarTitle.setText("我的信息");
+
     }
 
 

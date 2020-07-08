@@ -7,7 +7,6 @@ import android.os.Looper;
 import android.text.TextUtils;
 
 import com.shmedo.mcloudapp.entity.UserInfo;
-import com.shmedo.mcloudapp.network.common.CommonVariable;
 import com.shmedo.mcloudapp.util.UserConfig;
 
 /**
@@ -170,8 +169,8 @@ public class MCloudApp {
         account = null;
         currentUserInfo = null;
 
-        UserConfig userConfig = UserConfig.getConfig(mContext, CommonVariable.USER_CONFIG_NAME);
-        userConfig.remove(CommonVariable.PWD);
+        UserConfig userConfig = UserConfig.getConfig(mContext,  AppContants.APP_CONFIG_NAME);
+        userConfig.remove(AppContants.User.PWD);
     }
 
 
@@ -180,6 +179,6 @@ public class MCloudApp {
             return null;
         }
 
-        return CommonVariable.USER_HEAD_PHOTO_FILE_NAME;
+        return AppContants.USER_HEAD_PHOTO_FILE_NAME;
     }
 }

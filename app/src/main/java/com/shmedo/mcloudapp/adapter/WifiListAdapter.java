@@ -1,16 +1,17 @@
 package com.shmedo.mcloudapp.adapter;
 
 import android.content.Context;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.shmedo.mcloudapp.AppContants;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.entity.WifiBean;
-import com.shmedo.mcloudapp.util.AppContants;
 import com.shmedo.mcloudapp.util.WifiSupport;
 
 import java.util.List;
@@ -53,7 +54,7 @@ public class WifiListAdapter extends RecyclerView.Adapter<WifiListAdapter.MyView
         holder.tvItemWifiStatus.setText("("+bean.getState()+")");
 
         //可以传递给adapter的数据都是经过处理的，已连接或者正在连接状态的wifi都是处于集合中的首位，所以可以写出如下判断
-        if(position == 0  && (AppContants.WIFI_STATE_ON_CONNECTING.equals(bean.getState()) || AppContants.WIFI_STATE_CONNECT.equals(bean.getState()))){
+        if(position == 0  && (AppContants.WiFi.WIFI_STATE_ON_CONNECTING.equals(bean.getState()) || AppContants.WiFi.WIFI_STATE_CONNECT.equals(bean.getState()))){
             holder.tvItemWifiName.setTextColor(mContext.getResources().getColor(R.color.app_color_blue));
             holder.tvItemWifiStatus.setTextColor(mContext.getResources().getColor(R.color.app_color_blue));
         }else{

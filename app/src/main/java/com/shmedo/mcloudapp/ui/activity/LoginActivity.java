@@ -16,12 +16,13 @@ import androidx.core.content.ContextCompat;
 
 import com.hjq.toast.ToastUtils;
 import com.shmedo.core.utils.ValidateUtil;
+import com.shmedo.mcloudapp.AppContants;
 import com.shmedo.mcloudapp.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.base.BaseActivity;
 import com.shmedo.mcloudapp.network.BaseObserver;
 import com.shmedo.mcloudapp.network.MDRetrofit;
-import com.shmedo.mcloudapp.network.common.CommonVariable;
+import com.shmedo.mcloudapp.network.NetworkConst;
 import com.shmedo.mcloudapp.util.DaoManager;
 import com.shmedo.mcloudapp.util.LoginManager;
 import com.shmedo.mcloudapp.util.MyCountDownTimer;
@@ -135,14 +136,14 @@ public class LoginActivity extends BaseActivity implements LoginManager.LoginCal
 
 
     private void initServiceAddressAndUser() {
-        userConfig = UserConfig.getConfig(this, CommonVariable.USER_CONFIG_NAME);
-        String addr = userConfig.readString(CommonVariable.SERVICE_ADDRESS);
+        userConfig = UserConfig.getConfig(this, AppContants.APP_CONFIG_NAME);
+        String addr = userConfig.readString(AppContants.SERVICE_ADDRESS);
         if (!TextUtils.isEmpty(addr)) {
             MCloudApp.setHttpsServiceAddress(addr);
         }
 
-        String uid = userConfig.readString(CommonVariable.UID);
-        String pwd = userConfig.readString(CommonVariable.PWD);
+        String uid = userConfig.readString(AppContants.User.UID);
+        String pwd = userConfig.readString(AppContants.User.PWD);
         if (!TextUtils.isEmpty(uid)) {
             mLoginEditTextAccount.setText(uid);
             mLoginEditTextAccount.setSelection(uid.length());
@@ -265,7 +266,7 @@ public class LoginActivity extends BaseActivity implements LoginManager.LoginCal
      * 发送验证码
      */
     private void sendSmsCode(String mPhoneNumber) {
-        RequestBody body = RequestBody.create(CommonVariable.JSON_TYPE, mPhoneNumber);
+        RequestBody body = RequestBody.create(NetworkConst.JSON_TYPE, mPhoneNumber);
 
         showLoadingDialog("正在获取验证码...");
         MDRetrofit.getInstance()

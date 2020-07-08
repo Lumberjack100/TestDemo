@@ -13,7 +13,7 @@ import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.base.BaseActivity;
 import com.shmedo.mcloudapp.network.BaseObserver;
 import com.shmedo.mcloudapp.network.MDRetrofit;
-import com.shmedo.mcloudapp.network.common.CommonVariable;
+import com.shmedo.mcloudapp.network.NetworkConst;
 import com.shmedo.mcloudapp.user.model.CompanyInfo;
 
 import butterknife.BindView;
@@ -100,7 +100,7 @@ public class CompanyHomePageActivity extends BaseActivity {
     private void getCompanyInfo() {
         showLoadingDialog("加载数据中...");
 
-        RequestBody body = RequestBody.create(CommonVariable.JSON_TYPE, "");
+        RequestBody body = RequestBody.create(NetworkConst.JSON_TYPE, "");
         MDRetrofit.getInstance()
                 .createService()
                 .GetCompanyInfo(MCloudApp.getAccessToken(), body)

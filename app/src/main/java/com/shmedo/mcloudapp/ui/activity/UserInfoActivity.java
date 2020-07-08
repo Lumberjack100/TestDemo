@@ -26,7 +26,7 @@ import com.shmedo.mcloudapp.entity.UserInfo;
 import com.shmedo.mcloudapp.entity.parameter.SetUserHeadPhotoParameter;
 import com.shmedo.mcloudapp.network.BaseObserver;
 import com.shmedo.mcloudapp.network.MDRetrofit;
-import com.shmedo.mcloudapp.network.common.CommonVariable;
+import com.shmedo.mcloudapp.network.NetworkConst;
 import com.shmedo.mcloudapp.ui.activity.device.QuickActivationActivity;
 import com.shmedo.mcloudapp.user.ui.activity.AboutAppActivity;
 import com.shmedo.mcloudapp.util.ActivityCollector;
@@ -296,7 +296,7 @@ public class UserInfoActivity extends BaseActivity {
         parameter.setPhotoName(fileName);
         parameter.setPhotoContent(fileContent);
         String json = GsonFactory.getGson().toJson(parameter);
-        RequestBody body = RequestBody.create(CommonVariable.JSON_TYPE, json);
+        RequestBody body = RequestBody.create(NetworkConst.JSON_TYPE, json);
         showLoadingDialog("正在上传...");
         MDRetrofit.getInstance().createService().setUserHeadPhoto(body).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new BaseObserver<String>() {
             @Override

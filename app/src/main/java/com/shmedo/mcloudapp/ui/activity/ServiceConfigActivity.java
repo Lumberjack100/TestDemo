@@ -10,12 +10,12 @@ import android.widget.TextView;
 import androidx.annotation.Nullable;
 
 import com.hjq.toast.ToastUtils;
+import com.shmedo.mcloudapp.AppContants;
 import com.shmedo.mcloudapp.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.base.BaseActivity;
 import com.shmedo.mcloudapp.network.BaseObserver;
 import com.shmedo.mcloudapp.network.MDRetrofit;
-import com.shmedo.mcloudapp.network.common.CommonVariable;
 import com.shmedo.mcloudapp.util.UserConfig;
 import com.shmedo.mcloudapp.views.ClearEditText;
 
@@ -72,8 +72,8 @@ public class ServiceConfigActivity extends BaseActivity {
 
     private void initServiceAddress() {
         mEtServiceAddress.setText(config);
-        userConfig = UserConfig.getConfig(this, CommonVariable.USER_CONFIG_NAME);
-        String address = userConfig.readString(CommonVariable.SERVICE_ADDRESS);
+        userConfig = UserConfig.getConfig(this,  AppContants.APP_CONFIG_NAME);
+        String address = userConfig.readString(AppContants.SERVICE_ADDRESS);
         if (!TextUtils.isEmpty(address)) {
             mEtServiceAddress.setText(address);
         }
@@ -88,7 +88,7 @@ public class ServiceConfigActivity extends BaseActivity {
             mEtServiceAddress.requestFocus();
             return;
         }
-        final UserConfig uc = UserConfig.getConfig(this, CommonVariable.USER_CONFIG_NAME);
+        final UserConfig uc = UserConfig.getConfig(this,  AppContants.APP_CONFIG_NAME);
         uc.writeString(getResources().getString(R.string.service_address), service_text);
         MCloudApp.setHttpsServiceAddress(service_text);
 
@@ -102,7 +102,7 @@ public class ServiceConfigActivity extends BaseActivity {
                         dismissLoadingDialog();
 
                         ToastUtils.show("服务端已连接，API版本为：" + s);
-                        userConfig.writeString(CommonVariable.SERVICE_ADDRESS, mEtServiceAddress.getText().toString());
+                        userConfig.writeString(AppContants.SERVICE_ADDRESS, mEtServiceAddress.getText().toString());
                         finish();
                     }
 

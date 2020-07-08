@@ -15,7 +15,7 @@ import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.base.BaseActivity;
 import com.shmedo.mcloudapp.network.BaseObserver;
 import com.shmedo.mcloudapp.network.MDRetrofit;
-import com.shmedo.mcloudapp.network.common.CommonVariable;
+import com.shmedo.mcloudapp.network.NetworkConst;
 import com.shmedo.mcloudapp.user.model.UpdateMobileParam;
 import com.shmedo.mcloudapp.util.GsonFactory;
 import com.shmedo.mcloudapp.util.MyCountDownTimer;
@@ -96,7 +96,7 @@ public class UpdatePhoneActivity extends BaseActivity {
      * 发送验证码
      */
     private void sendSmsCode() {
-        RequestBody body = RequestBody.create(CommonVariable.JSON_TYPE, newPhone);
+        RequestBody body = RequestBody.create(NetworkConst.JSON_TYPE, newPhone);
 
         showLoadingDialog("正在获取验证码...");
         MDRetrofit.getInstance()
@@ -164,7 +164,7 @@ public class UpdatePhoneActivity extends BaseActivity {
         parameter.setNewCellPhone(newPhone);
         parameter.setCode(code);
         String json = GsonFactory.getGson().toJson(parameter);
-        RequestBody body = RequestBody.create(CommonVariable.JSON_TYPE, json);
+        RequestBody body = RequestBody.create(NetworkConst.JSON_TYPE, json);
 
         MDRetrofit.getInstance()
                 .createService()

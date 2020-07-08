@@ -3,13 +3,14 @@ package com.shmedo.mcloudapp.util;
 import android.os.Handler;
 
 import com.hjq.toast.ToastUtils;
+import com.shmedo.mcloudapp.AppContants;
 import com.shmedo.mcloudapp.MCloudApp;
 import com.shmedo.mcloudapp.entity.UserInfo;
 import com.shmedo.mcloudapp.entity.UserInfoWrapper;
 import com.shmedo.mcloudapp.entity.parameter.SignInParameter;
 import com.shmedo.mcloudapp.network.BaseObserver;
 import com.shmedo.mcloudapp.network.MDRetrofit;
-import com.shmedo.mcloudapp.network.common.CommonVariable;
+import com.shmedo.mcloudapp.network.NetworkConst;
 
 import java.util.Date;
 
@@ -77,7 +78,7 @@ public class LoginManager {
         SignInParameter parameter = new SignInParameter(mAccount, mPassword);
         parameter.setPassword(MD5Util.MD5(mAccount + mPassword));
         String json = GsonFactory.getGson().toJson(parameter);
-        RequestBody body = RequestBody.create(CommonVariable.JSON_TYPE, json);
+        RequestBody body = RequestBody.create(NetworkConst.JSON_TYPE, json);
 
         MDRetrofit.getInstance().createService()
                 .getSingIn(body)
@@ -105,7 +106,7 @@ public class LoginManager {
     private void makeQuickLogin() {
         SignInParameter parameter = new SignInParameter(Mobile, Code);
         String json = GsonFactory.getGson().toJson(parameter);
-        RequestBody body = RequestBody.create(CommonVariable.JSON_TYPE, json);
+        RequestBody body = RequestBody.create(NetworkConst.JSON_TYPE, json);
 
         MDRetrofit.getInstance().createService().SmsLogin(body).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new BaseObserver<String>() {
             @Override
@@ -156,12 +157,12 @@ public class LoginManager {
                         DaoManager manager = DaoManager.getInstance();
                         manager.getDaoSession().getUserInfoWrapperDao().insertOrReplace(userInfoWrapper);
 
-                        UserConfig userConfig = UserConfig.getConfig(MCloudApp.getContext(), CommonVariable.USER_CONFIG_NAME);
-                        userConfig.writeString(CommonVariable.ACCESS_TOKEN, token);
-                        userConfig.writeString(CommonVariable.TOKEN_UPDATE_TIME, new Date().getTime() + "");
+                        UserConfig userConfig = UserConfig.getConfig(MCloudApp.getContext(), AppContants.APP_CONFIG_NAME);
+                        userConfig.writeString(NetworkConst.ACCESS_TOKEN, token);
+                        userConfig.writeString(AppContants.TOKEN_UPDATE_TIME, new Date().getTime() + "");
                         if (mAccount != null && mPassword != null) {
-                            userConfig.writeString(CommonVariable.UID, mAccount);
-                            userConfig.writeString(CommonVariable.PWD, mPassword);
+                            userConfig.writeString(AppContants.User.UID, mAccount);
+                            userConfig.writeString(AppContants.User.PWD, mPassword);
                         }
 
                         if (loginCallback != null) {

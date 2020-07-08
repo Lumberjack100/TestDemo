@@ -30,7 +30,7 @@ import com.shmedo.mcloudapp.entity.parameter.QueryCloudDataParameter;
 import com.shmedo.mcloudapp.network.BaseObserver;
 import com.shmedo.mcloudapp.network.MDRetrofit;
 import com.shmedo.mcloudapp.network.api.ServiceAddressType;
-import com.shmedo.mcloudapp.network.common.CommonVariable;
+import com.shmedo.mcloudapp.network.NetworkConst;
 import com.shmedo.mcloudapp.ui.activity.BlueToothListActivity;
 import com.shmedo.mcloudapp.ui.activity.MainActivity;
 import com.shmedo.mcloudapp.ui.activity.ScanActivity;
@@ -337,7 +337,7 @@ public class SearchDataUI implements View.OnClickListener {
         paramter.setEnd(end);
         paramter.setNumber(itemCount);
         String json = GsonFactory.getGson().toJson(paramter);
-        RequestBody body = RequestBody.create(CommonVariable.JSON_TYPE, json);
+        RequestBody body = RequestBody.create(NetworkConst.JSON_TYPE, json);
 
         MDRetrofit.getInstance().createService(ServiceAddressType.HTTPS_NO_API_VERSION)
                 .QueryCloudData(body)

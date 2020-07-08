@@ -28,7 +28,7 @@ import com.shmedo.mcloudapp.entity.parameter.QueryProjectDeviceParamter;
 import com.shmedo.mcloudapp.interfaces.Extras;
 import com.shmedo.mcloudapp.network.BaseObserver;
 import com.shmedo.mcloudapp.network.MDRetrofit;
-import com.shmedo.mcloudapp.network.common.CommonVariable;
+import com.shmedo.mcloudapp.network.NetworkConst;
 import com.shmedo.mcloudapp.util.GsonFactory;
 import com.shmedo.mcloudapp.views.ClearEditText;
 import com.shmedo.mcloudapp.views.EmptyDataView;
@@ -164,7 +164,7 @@ public class DeviceManageDetailActivity extends BaseActivity implements OnRefres
         paramter.setPageSize(pageSize);
         paramter.setCurrentPage(currentPage);
         String json = GsonFactory.getGson().toJson(paramter);
-        RequestBody body = RequestBody.create(CommonVariable.JSON_TYPE, json);
+        RequestBody body = RequestBody.create(NetworkConst.JSON_TYPE, json);
         MDRetrofit.getInstance()
                 .createService()
                 .QueryProjectDevice(MCloudApp.getAccessToken(), body)

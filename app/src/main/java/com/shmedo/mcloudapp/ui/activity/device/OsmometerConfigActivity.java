@@ -28,10 +28,10 @@ import com.shmedo.core.enums.CommandType;
 import com.shmedo.core.model.QueryOsmometerParameterInfo;
 import com.shmedo.core.utils.ResultParserUtil;
 import com.shmedo.core.utils.StringUtil;
+import com.shmedo.mcloudapp.AppContants;
 import com.shmedo.mcloudapp.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.interfaces.Extras;
-import com.shmedo.mcloudapp.network.common.CommonVariable;
 import com.shmedo.mcloudapp.util.AdvanceSetDialogUtils;
 import com.shmedo.mcloudapp.util.UserConfig;
 
@@ -143,8 +143,8 @@ public class OsmometerConfigActivity extends BaseDeviceConnectActivity {
     }
 
     private void parseIntent() {
-        uc = UserConfig.getConfig(this, CommonVariable.OSMOMETER_NOTE);
-        mEtNote.setText(uc.readString(CommonVariable.OSMOMETER_NOTE));
+        uc = UserConfig.getConfig(this, AppContants.OSMOMETER_NOTE);
+        mEtNote.setText(uc.readString(AppContants.OSMOMETER_NOTE));
 
         Intent intent = getIntent();
         if (intent.getExtras() != null && intent.getExtras().containsKey(Extras.PARAM_CONFIG_INFO)) {
@@ -228,7 +228,7 @@ public class OsmometerConfigActivity extends BaseDeviceConnectActivity {
         String nozzelHeight = mEtNozzelHeight.getText().toString().trim();
 
         String note = mEtNote.getText().toString().trim();
-        uc.writeString(CommonVariable.OSMOMETER_NOTE, note);
+        uc.writeString(AppContants.OSMOMETER_NOTE, note);
 
 
         if (TextUtils.isEmpty(osmometerAddress) || Integer.parseInt(osmometerAddress) <= 0 || Integer.parseInt(osmometerAddress) > 255) {
