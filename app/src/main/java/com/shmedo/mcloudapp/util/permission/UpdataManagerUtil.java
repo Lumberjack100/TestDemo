@@ -3,11 +3,9 @@ package com.shmedo.mcloudapp.util.permission;
 import android.app.Activity;
 import android.content.DialogInterface;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 
-import com.afollestad.materialdialogs.DialogAction;
-import com.afollestad.materialdialogs.MaterialDialog;
+import com.dragon.core.util.GlobalUtil;
 import com.hjq.toast.ToastUtils;
 import com.pgyersdk.crash.PgyCrashManager;
 import com.pgyersdk.update.DownloadFileListener;
@@ -66,7 +64,7 @@ public class UpdataManagerUtil {
 //                        if (AndPermission.hasAlwaysDeniedPermission(activity, Permission.READ_EXTERNAL_STORAGE, Permission.WRITE_EXTERNAL_STORAGE)) {
 //                            showStoragePermissionSettingDialog(activity);
 //                        }
-                        showStoragePermissionSettingDialog(activity);
+                        XPermissionUtils.showRefusePermissionDialog(activity, GlobalUtil.getString(R.string.permission_external_storage));
                     }
                 })
                 .start();
@@ -138,65 +136,6 @@ public class UpdataManagerUtil {
                 })
                 .register();
     }
-
-    private static void showStoragePermissionSettingDialog(final Activity activity) {
-        MaterialDialog.Builder mBuilder = new MaterialDialog.Builder(activity)
-                .title("权限申请").content(activity.getResources().getString(R.string.permission_external_storage))
-                .positiveText("去设置")
-                .positiveColor(activity.getResources().getColor(R.color.colorPrimary))
-                .cancelable(false)
-                .onPositive(new MaterialDialog.SingleButtonCallback() {
-                    @Override
-                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        dialog.dismiss();
-                        AndPermission.with(activity).runtime().setting().start(XPermissionUtils.REQUEST_CODE_STORAGE_PERMISSION);
-                    }
-                });
-
-        MaterialDialog mMaterialDialog = mBuilder.build();
-        mMaterialDialog.show();
-    }
-
-    /*private void writeApkForInstallPackage(final Activity activity) {
-        new TaskExecutor<File>(activity) {
-            @Override
-            protected File doInBackground(Void... voids) {
-                try {
-                    InputStream input = activity.getAssets().open("android.apk");
-                    File apk = new File(FileUtils.getExternalDir(activity, Environment.DIRECTORY_DOWNLOADS), "AndPermission.apk");
-                    if (apk.exists()) return apk;
-
-                    OutputStream output = new BufferedOutputStream(new FileOutputStream(apk));
-
-                    IOUtils.write(input, output);
-                    IOUtils.close(output);
-
-                    return apk;
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
-                return null;
-            }
-
-            @Override
-            protected void onFinish(File apkFile) {
-                if (apkFile == null) {
-                    new AlertDialog.Builder(activity)
-                            .setTitle(R.string.title_dialog)
-                            .setMessage(R.string.message_error_save_failed)
-                            .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                }
-                            })
-                            .show();
-                } else {
-                    installPackage(apkFile);
-                }
-            }
-        }.execute();
-    }*/
 
 
 }

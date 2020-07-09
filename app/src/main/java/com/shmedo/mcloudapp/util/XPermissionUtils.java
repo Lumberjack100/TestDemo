@@ -31,9 +31,6 @@ import java.util.List;
 public class XPermissionUtils {
 
     public static final int REQUEST_CODE_OPEN_APPLICATION_SETTING = 0x0010;
-    public static final int REQUEST_CODE_STORAGE_PERMISSION = 0x0011;
-    public static final int REQUEST_CODE_LOCATION_PERMISSION = 0x0012;
-
 
     public static final int REQUEST_CODE_SCAN = 0x1008;
 
@@ -193,27 +190,26 @@ public class XPermissionUtils {
     /**
      * 显示提示对话框
      */
-    public static void showRefusePermissionDialog(final Context context, String message) {
-        MaterialDialog.Builder builderRefuse = new MaterialDialog.Builder(context)
-                .title("权限申请").content(message).negativeText("稍后再试").positiveText("现在设置")
+    public static void showRefusePermissionDialog(final Object object, String message) {
+        MaterialDialog.Builder builderRefuse = new MaterialDialog.Builder(getContext(object))
+                .title("权限申请")
+                .content(message)
+                .negativeText("取消")
+                .positiveText("去设置")
                 .onPositive(new MaterialDialog.SingleButtonCallback() {
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                         dialog.dismiss();
-                        startAppSettings(context);
+
+                        if (object instanceof Fragment) {
+                            startAppSettings((Fragment) object);
+                        } else {
+                            startAppSettings((Activity) object);
+                        }
                     }
                 });
 
         builderRefuse.show();
-    }
-
-    /**
-     * 启动当前应用设置页面
-     */
-    private static void startAppSettings(Context context) {
-        Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-        intent.setData(Uri.parse("package:" + context.getPackageName()));
-        context.startActivity(intent);
     }
 
     /**

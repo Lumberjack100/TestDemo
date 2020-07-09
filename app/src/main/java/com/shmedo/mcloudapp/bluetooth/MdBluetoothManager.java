@@ -21,8 +21,7 @@ import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
 
-import com.afollestad.materialdialogs.DialogAction;
-import com.afollestad.materialdialogs.MaterialDialog;
+import com.dragon.core.util.GlobalUtil;
 import com.shmedo.core.interfaces.OnBytePackage;
 import com.shmedo.core.utils.ByteManager;
 import com.shmedo.mcloudapp.R;
@@ -249,30 +248,11 @@ public class MdBluetoothManager {
                     @Override
                     public void onAction(@NonNull List<String> permissions) {
                         if (AndPermission.hasAlwaysDeniedPermission(context, permissions)) {
-                            showRefusePermissionDialog(context);
+                            XPermissionUtils.showRefusePermissionDialog(context, GlobalUtil.getString(R.string.bluetooth_request_location));
                         }
                     }
                 })
                 .start();
-    }
-
-    private void showRefusePermissionDialog(Context context) {
-        MaterialDialog.Builder mBuilder = new MaterialDialog.Builder(context)
-                .title("权限申请").content(context.getResources().getString(R.string.bluetooth_request_location))
-                .positiveText("去设置")
-                .negativeColor(context.getResources().getColor(R.color.font_main))
-                .positiveColor(context.getResources().getColor(R.color.colorPrimary))
-                .cancelable(false)
-                .onPositive(new MaterialDialog.SingleButtonCallback() {
-                    @Override
-                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        dialog.dismiss();
-                        AndPermission.with(context).runtime().setting().start(XPermissionUtils.REQUEST_CODE_LOCATION_PERMISSION);
-                    }
-                });
-
-        MaterialDialog mMaterialDialog = mBuilder.build();
-        mMaterialDialog.show();
     }
 
 

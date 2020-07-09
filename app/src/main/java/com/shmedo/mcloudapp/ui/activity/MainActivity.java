@@ -40,6 +40,7 @@ import com.amap.api.maps.model.MarkerOptions;
 import com.amap.api.maps.model.MyLocationStyle;
 import com.dragon.core.MCloudApp;
 import com.dragon.core.util.DensityUtil;
+import com.dragon.core.util.GlobalUtil;
 import com.google.gson.reflect.TypeToken;
 import com.hjq.toast.ToastUtils;
 import com.shmedo.mcloudapp.R;
@@ -64,6 +65,7 @@ import com.shmedo.mcloudapp.ui.SearchDataUI;
 import com.shmedo.mcloudapp.user.ui.activity.NewUserInfoActivity;
 import com.shmedo.mcloudapp.util.DaoManager;
 import com.shmedo.mcloudapp.util.GsonFactory;
+import com.shmedo.mcloudapp.util.XPermissionUtils;
 import com.shmedo.mcloudapp.util.permission.UpdataManagerUtil;
 import com.yanzhenjie.permission.Action;
 import com.yanzhenjie.permission.AndPermission;
@@ -89,8 +91,6 @@ public class MainActivity extends BaseActivity {
     public static final int REQUEST_CODE_SCAN = 0x001;
 
     public static final int PERMISSION_CODE_GPS = 0x011;
-
-    public static final int PERMISSION_CODE_LOCATION = 0x012;
 
 
     @BindView(R.id.img_user)
@@ -592,7 +592,7 @@ public class MainActivity extends BaseActivity {
                     @Override
                     public void onAction(@NonNull List<String> permissions) {
                         if (AndPermission.hasAlwaysDeniedPermission(MainActivity.this, permissions)) {
-                            showLocationSettingDialog();
+                            XPermissionUtils.showRefusePermissionDialog(MainActivity.this, GlobalUtil.getString(R.string.permission_request_location));
                         }
                     }
                 })
@@ -619,24 +619,6 @@ public class MainActivity extends BaseActivity {
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                         dialog.dismiss();
-                    }
-                });
-
-        MaterialDialog mMaterialDialog = mBuilder.build();
-        mMaterialDialog.show();
-    }
-
-    private void showLocationSettingDialog() {
-        MaterialDialog.Builder mBuilder = new MaterialDialog.Builder(MainActivity.this)
-                .title("权限申请").content(getResources().getString(R.string.permission_request_location))
-                .positiveText("去设置")
-                .positiveColor(getResources().getColor(R.color.colorPrimary))
-                .cancelable(false)
-                .onPositive(new MaterialDialog.SingleButtonCallback() {
-                    @Override
-                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        dialog.dismiss();
-                        AndPermission.with(MainActivity.this).runtime().setting().start(PERMISSION_CODE_LOCATION);
                     }
                 });
 
@@ -761,7 +743,7 @@ public class MainActivity extends BaseActivity {
                 }
                 break;
 
-            case PERMISSION_CODE_LOCATION:
+            case XPermissionUtils.REQUEST_CODE_OPEN_APPLICATION_SETTING:
                 if (AndPermission.hasPermissions(this, locationNeedPermissions)) {
                     //刷新定位
 //                    mLocationClient.startLocation();

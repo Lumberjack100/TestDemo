@@ -12,12 +12,11 @@ import android.text.TextUtils;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 
-import com.afollestad.materialdialogs.DialogAction;
-import com.afollestad.materialdialogs.MaterialDialog;
 import com.amap.api.location.AMapLocationClient;
 import com.amap.api.location.AMapLocationClientOption;
-import com.hjq.toast.ToastUtils;
 import com.dragon.core.MCloudApp;
+import com.dragon.core.util.GlobalUtil;
+import com.hjq.toast.ToastUtils;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.entity.SyncPositionBean;
 import com.shmedo.mcloudapp.util.permission.RuntimeRationale;
@@ -103,8 +102,7 @@ public class LocationUtils {
                     @Override
                     public void onAction(@NonNull List<String> permissions) {
                         if (AndPermission.hasAlwaysDeniedPermission(activity, permissions)) {
-//                            showSettingDialog(activity, permissions);
-                            showLocationSettingDialog(activity);
+                            XPermissionUtils.showRefusePermissionDialog(activity, GlobalUtil.getString(R.string.permission_request_location));
                         }
                     }
                 })
@@ -173,24 +171,6 @@ public class LocationUtils {
         mOption.setLocationCacheEnable(true); //可选，设置是否使用缓存定位，默认为true
         mOption.setGeoLanguage(AMapLocationClientOption.GeoLanguage.DEFAULT);//可选，设置逆地理信息的语言，默认值为默认语言（根据所在地区选择语言）
         return mOption;
-    }
-
-    private void showLocationSettingDialog(Activity context) {
-        MaterialDialog.Builder mBuilder = new MaterialDialog.Builder(context)
-                .title("权限申请").content(context.getResources().getString(R.string.permission_request_location))
-                .positiveText("去设置")
-                .positiveColor(context.getResources().getColor(R.color.colorPrimary))
-                .cancelable(false)
-                .onPositive(new MaterialDialog.SingleButtonCallback() {
-                    @Override
-                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        dialog.dismiss();
-                        AndPermission.with(context).runtime().setting().start(XPermissionUtils.REQUEST_CODE_OPEN_APPLICATION_SETTING);
-                    }
-                });
-
-        MaterialDialog mMaterialDialog = mBuilder.build();
-        mMaterialDialog.show();
     }
 
     private void showSettingDialog(Activity context, final List<String> permissions) {

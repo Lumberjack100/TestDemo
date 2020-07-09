@@ -23,7 +23,6 @@ import butterknife.BindView;
 import butterknife.OnClick;
 
 public class NewMainActivity extends BaseActivity {
-
     @BindView(R.id.bottom_navigation)
     BottomNavigationView bottomNavigationView;
 
@@ -43,6 +42,14 @@ public class NewMainActivity extends BaseActivity {
     protected int initContentView() {
         return R.layout.activity_new_main;
     }
+
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString("CurrentFragment", currentFragment.getClass().getName());
+    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,7 +91,7 @@ public class NewMainActivity extends BaseActivity {
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.item_config_module:
-
+                        switchFrgment(0);
                         break;
 
                     case R.id.item_project_module:
@@ -155,10 +162,8 @@ public class NewMainActivity extends BaseActivity {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        switch (requestCode) {
-            case XPermissionUtils.REQUEST_CODE_STORAGE_PERMISSION:
-                UpdataManagerUtil.requestPermissionForInstallPackage(this, false);//版本更新
-                break;
+        if (requestCode == XPermissionUtils.REQUEST_CODE_OPEN_APPLICATION_SETTING) {
+            UpdataManagerUtil.requestPermissionForInstallPackage(this, false);//版本更新
         }
     }
 }

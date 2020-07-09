@@ -53,7 +53,7 @@
                     android:layout_centerVertical="true"
                     android:layout_marginStart="@dimen/dimen_size_10"
                     android:layout_toLeftOf="@+id/iv_arrow_right"
-                    tools:src="@drawable/ic_avatar_default"
+                    android:src="@drawable/ic_avatar_default"
                     app:civ_border_color="@color/white"
                     app:civ_border_overlay="true"
                     app:civ_border_width="0.5dp" />
