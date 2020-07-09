@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.maps.callback;
+package com.shmedo.mcloudapp.maps.helper;
 
 import android.text.TextUtils;
 import android.view.View;
@@ -96,7 +96,7 @@ public class GaoDePoiProcessHelper implements AMap.OnPOIClickListener, PoiDetail
      */
     @Override
     public void onPoiNaviClick() {
-        AmapNaviParams amapNaviParams = new AmapNaviParams(new Poi("我的位置", mapActivity.mLatLng, ""), null, new Poi(mapActivity.mPoiName, mClickPoiLatLng, ""), AmapNaviType.DRIVER, AmapPageType.NAVI);//, AmapPageType.NAVI
+        AmapNaviParams amapNaviParams = new AmapNaviParams(new Poi("我的位置", mapActivity.mLatLng, ""), null, new Poi(mapActivity.mPoiName, mClickPoiLatLng, ""), AmapNaviType.DRIVER, AmapPageType.ROUTE);//, AmapPageType.NAVI
         amapNaviParams.setUseInnerVoice(true);
         AmapNaviPage.getInstance().showRouteActivity(mapActivity, amapNaviParams, null);
     }

@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.maps.callback;
+package com.shmedo.mcloudapp.maps.helper;
 
 import com.amap.api.location.AMapLocation;
 import com.amap.api.location.AMapLocationListener;

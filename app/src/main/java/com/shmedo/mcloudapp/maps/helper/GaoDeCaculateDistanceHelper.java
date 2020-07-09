@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.maps.callback;
+package com.shmedo.mcloudapp.maps.helper;
 
 import android.graphics.Bitmap;
 import android.graphics.Color;
