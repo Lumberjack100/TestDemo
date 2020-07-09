@@ -21,7 +21,6 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation "androidx.appcompat:appcompat:$rootProject.thirdLib.appcompat"
-    implementation "com.jakewharton.timber:timber:$rootProject.thirdLib.timberVersion"
+    implementation project(path: ':core')
 }
 

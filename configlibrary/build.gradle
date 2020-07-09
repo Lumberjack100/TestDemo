@@ -22,7 +22,7 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation "com.jakewharton.timber:timber:$rootProject.thirdLib.timberVersion"
+    implementation project(path: ':core')
 
     testImplementation "junit:junit:$rootProject.thirdLib.junit"
     androidTestImplementation "androidx.test.ext:junit:$rootProject.thirdLib.testExtJunit"

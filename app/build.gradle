@@ -147,7 +147,7 @@ dependencies {
     implementation project(path: ':core')
 
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    implementation "androidx.appcompat:appcompat:$rootProject.thirdLib.appcompat"
+//    implementation "androidx.appcompat:appcompat:$rootProject.thirdLib.appcompat"
     implementation "androidx.constraintlayout:constraintlayout:$rootProject.thirdLib.constraintlayout"
     implementation "com.google.android.material:material:$rootProject.thirdLib.material"
     implementation "org.greenrobot:greendao:$rootProject.thirdLib.greendao"
@@ -162,7 +162,7 @@ dependencies {
     implementation "com.squareup.retrofit2:converter-gson:$rootProject.thirdLib.converterGson"
     implementation "com.squareup.okhttp3:logging-interceptor:$rootProject.thirdLib.loggingInterceptor"
     // Glide
-//    implementation "com.github.bumptech.glide:glide:$rootProject.thirdLib.glideVersion"
+    implementation "com.github.bumptech.glide:glide:$rootProject.thirdLib.glideVersion"
 //    annotationProcessor "com.github.bumptech.glide:compiler:$rootProject.thirdLib.glideCompilerVersion"
     //CircleImageView
     implementation "de.hdodenhof:circleimageview:$rootProject.thirdLib.circleimageview"
@@ -199,11 +199,8 @@ dependencies {
     implementation "com.github.CymChad:BaseRecyclerViewAdapterHelper:$rootProject.thirdLib.BaseRecyclerViewAdapterHelper"
     implementation "gdut.bsx:share2:$rootProject.thirdLib.bsxShare"
 
-
     //导航
     implementation "com.amap.api:navi-3dmap:$rootProject.thirdLib.amapNavi"
-    //3D地图so及jar
-//    implementation "com.amap.api:3dmap:$rootProject.thirdLib.amap3dMap"
     //定位功能
     implementation "com.amap.api:location:$rootProject.thirdLib.amapLocation"
     //搜索
