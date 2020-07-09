@@ -176,6 +176,8 @@ public class UpdatePhoneActivity extends BaseActivity {
                     @Override
                     public void Success(String result, String message) {
                         dismissLoadingDialog();
+                        ToastUtils.show("修改完成");
+
                         UserInfo userInfo = MCloudApp.getCurrentUserInfo();
                         if (userInfo != null && userInfo.getUser() != null) {
                             UserInfo.UserBean user = userInfo.getUser();
@@ -183,7 +185,6 @@ public class UpdatePhoneActivity extends BaseActivity {
                         }
                         MCloudApp.setCurrentUserInfo(userInfo);
 
-                        ToastUtils.show("修改完成");
                         hander.postDelayed(new Runnable() {
                             @Override
                             public void run() {

@@ -32,9 +32,11 @@ import com.amap.api.maps.AMapOptions;
 import com.amap.api.maps.CameraUpdateFactory;
 import com.amap.api.maps.MapView;
 import com.amap.api.maps.UiSettings;
+import com.amap.api.maps.model.BitmapDescriptorFactory;
 import com.amap.api.maps.model.LatLng;
 import com.amap.api.maps.model.LatLngBounds;
 import com.amap.api.maps.model.Marker;
+import com.amap.api.maps.model.MarkerOptions;
 import com.amap.api.maps.model.MyLocationStyle;
 import com.dragon.core.MCloudApp;
 import com.dragon.core.util.DensityUtil;
@@ -62,7 +64,6 @@ import com.shmedo.mcloudapp.ui.SearchDataUI;
 import com.shmedo.mcloudapp.user.ui.activity.NewUserInfoActivity;
 import com.shmedo.mcloudapp.util.DaoManager;
 import com.shmedo.mcloudapp.util.GsonFactory;
-import com.shmedo.mcloudapp.util.common.MapManagerUtil;
 import com.shmedo.mcloudapp.util.permission.UpdataManagerUtil;
 import com.yanzhenjie.permission.Action;
 import com.yanzhenjie.permission.AndPermission;
@@ -484,7 +485,12 @@ public class MainActivity extends BaseActivity {
         }
 
         LatLng latLng = myLatLng;
-        MapManagerUtil.addMarkerToMap(aMap, latLng, device[2], device[1]);
+        aMap.addMarker(new MarkerOptions().anchor(0.5f, 0.5f)
+                .position(latLng)
+                .title(device[2])
+                .snippet(device[1])
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.icon_marker))
+        );
 
         String installLocation = GsonFactory.getGson().toJson(latLng);
         DeviceBasicInfoResult result = new DeviceBasicInfoResult();

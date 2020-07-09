@@ -6,11 +6,14 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.text.TextUtils;
+import android.util.Base64;
 import android.view.View;
 import android.widget.TextView;
 
@@ -39,6 +42,7 @@ import com.zhihu.matisse.Matisse;
 import com.zhihu.matisse.MimeType;
 import com.zhihu.matisse.engine.impl.GlideEngine;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 
@@ -119,9 +123,6 @@ public class UserHomePageActivity extends BaseActivity {
 
     private void updateView() {
         if (user != null) {
-//            if (user.getHeadPhotoPath() != null) {
-//                GlideUtils.loadImage(this, user.getHeadPhotoPath(), mIvUserAvatar, R.drawable.ic_avatar_default);
-//            }
             mEtUserName.setText(user.getName() != null ? user.getName() : "");
             mEtTitle.setText(user.getPosition() != null ? user.getPosition() : "");
             mEtEmail.setText(user.getEmail() != null ? user.getEmail() : "");
@@ -172,45 +173,6 @@ public class UserHomePageActivity extends BaseActivity {
         updateMyInfo();
     }
 
-    private void updateMyInfo() {
-        showLoadingDialog("处理中...");
-
-        UpdateMyInfoParam parameter = new UpdateMyInfoParam();
-        parameter.setName(userName);
-        parameter.setPosition(title);
-        parameter.setEmail(email);
-        String json = GsonFactory.getGson().toJson(parameter);
-        RequestBody body = RequestBody.create(NetworkConst.JSON_TYPE, json);
-
-        MDRetrofit.getInstance()
-                .createService()
-                .UpdateMyInfo(MCloudApp.getAccessToken(), body)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new BaseObserver<String>() {
-                    @Override
-                    public void Success(String result, String message) {
-                        dismissLoadingDialog();
-                        ToastUtils.show("修改完成");
-
-                        UserInfo userInfo = MCloudApp.getCurrentUserInfo();
-                        if (userInfo != null && userInfo.getUser() != null) {
-                            UserInfo.UserBean user = userInfo.getUser();
-                            user.setName(userName);
-                            user.setPosition(title);
-                            user.setEmail(email);
-                        }
-                        MCloudApp.setCurrentUserInfo(userInfo);
-                    }
-
-                    @Override
-                    public void Failure(String message) {
-                        dismissLoadingDialog();
-                        ToastUtils.show(message);
-                        Timber.w("请求失败--%s", message);
-                    }
-                });
-    }
 
     /**
      * 显示选择照片的对话框。
@@ -278,7 +240,6 @@ public class UserHomePageActivity extends BaseActivity {
                 .forResult(CHOOSE_FROM_ALBUM);
     }
 
-
     /**
      * 对指定图片进行裁剪。
      *
@@ -298,6 +259,11 @@ public class UserHomePageActivity extends BaseActivity {
                 .start(this);
     }
 
+    /**
+     * 显示剪裁后的头像，并上传至服务器
+     *
+     * @param imageUri
+     */
     private void showCroppedPhoto(Uri imageUri) {
         if (imageUri == null)
             return;
@@ -306,7 +272,6 @@ public class UserHomePageActivity extends BaseActivity {
         GlideUtils.loadImage(this, imageUri.getPath(), mIvUserAvatar, R.drawable.ic_avatar_default);
         SetUserHeadPhotoTask();
     }
-
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -337,6 +302,51 @@ public class UserHomePageActivity extends BaseActivity {
         }
     }
 
+
+    /**
+     * bitmap转为base64
+     *
+     * @param bitmap
+     * @return
+     */
+    private String bitmapToBase64(Bitmap bitmap) {
+        String result = null;
+        ByteArrayOutputStream outputStream = null;
+        try {
+            if (bitmap != null) {
+                outputStream = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 80, outputStream);
+                outputStream.flush();
+                outputStream.close();
+
+                byte[] bitmapBytes = outputStream.toByteArray();
+                float byteLength = ((float) bitmapBytes.length / 1024 / 1024);
+                Timber.i("bytes.length=  " + byteLength + "MB");
+
+                result = Base64.encodeToString(bitmapBytes, Base64.NO_WRAP);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (outputStream != null) {
+                    outputStream.flush();
+                    outputStream.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return result;
+    }
+
+    private String getBase64ImageString(String filePath) {
+        Bitmap bitmap = BitmapFactory.decodeFile(filePath);
+        String imgString = bitmapToBase64(bitmap);
+
+        return imgString;
+    }
+
     /**
      * 上传用户头像
      */
@@ -346,10 +356,12 @@ public class UserHomePageActivity extends BaseActivity {
             return;
         }
         String fileName = FileUtils.getFileName(filePath);
-        String fileContent = FileUtils.getFileContent(filePath);
+        String fileContent = getBase64ImageString(filePath);
         if (TextUtils.isEmpty(fileName) || TextUtils.isEmpty(fileContent)) {
+            Timber.w("头像图片文件名或图片Base64字符串为空");
             return;
         }
+
         SetUserHeadPhotoParameter parameter = new SetUserHeadPhotoParameter();
         parameter.setPhotoName(fileName);
         parameter.setPhotoContent(fileContent);
@@ -358,22 +370,64 @@ public class UserHomePageActivity extends BaseActivity {
         showLoadingDialog("正在上传...");
         MDRetrofit.getInstance()
                 .createService()
-                .setUserHeadPhoto(body)
+                .setUserHeadPhoto(MCloudApp.getAccessToken(), body)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new BaseObserver<String>() {
                     @Override
-                    public void Success(String s, String message) {
+                    public void Success(String data, String message) {
                         dismissLoadingDialog();
                         ToastUtils.show("头像已上传");
 
-//                initUserInfo();
+                        if (!TextUtils.isEmpty(data))
+                            user.setHeadPhotoPath(data);
                     }
 
                     @Override
                     public void Failure(String message) {
                         dismissLoadingDialog();
                         ToastUtils.show("上传头像失败," + message);
+                        Timber.w("上传头像失败--%s", message);
+                    }
+                });
+    }
+
+    private void updateMyInfo() {
+        showLoadingDialog("处理中...");
+
+        UpdateMyInfoParam parameter = new UpdateMyInfoParam();
+        parameter.setName(userName);
+        parameter.setPosition(title);
+        parameter.setEmail(email);
+        String json = GsonFactory.getGson().toJson(parameter);
+        RequestBody body = RequestBody.create(NetworkConst.JSON_TYPE, json);
+
+        MDRetrofit.getInstance()
+                .createService()
+                .UpdateMyInfo(MCloudApp.getAccessToken(), body)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new BaseObserver<String>() {
+                    @Override
+                    public void Success(String result, String message) {
+                        dismissLoadingDialog();
+                        ToastUtils.show("修改后的个人信息已保存");
+
+                        UserInfo userInfo = MCloudApp.getCurrentUserInfo();
+                        if (userInfo != null && userInfo.getUser() != null) {
+                            UserInfo.UserBean user = userInfo.getUser();
+                            user.setName(userName);
+                            user.setPosition(title);
+                            user.setEmail(email);
+                        }
+                        MCloudApp.setCurrentUserInfo(userInfo);
+                    }
+
+                    @Override
+                    public void Failure(String message) {
+                        dismissLoadingDialog();
+                        ToastUtils.show(message);
+                        Timber.w("个人信息保存失败--%s", message);
                     }
                 });
     }

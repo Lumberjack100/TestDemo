@@ -26,7 +26,7 @@ public class HandleBackUtil {
      * @see #handleBackPress(Fragment)
      * @see #handleBackPress(FragmentActivity)
      */
-    public static boolean handleBackPress(FragmentManager fragmentManager) {
+    private static boolean handleBackPress(FragmentManager fragmentManager) {
         List<Fragment> fragments = fragmentManager.getFragments();
 
         if (fragments == null) return false;

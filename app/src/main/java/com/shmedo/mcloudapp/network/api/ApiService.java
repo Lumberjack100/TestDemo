@@ -76,7 +76,7 @@ public interface ApiService {
     //用户上传头像
     @Headers({NetworkConst.HEADER_ACCESS_TYPE})
     @POST(ApiName.SET_USER_HEAD_PHOTO)
-    Observable<ResultWrapper<String>> setUserHeadPhoto(@Body RequestBody parameter);
+    Observable<ResultWrapper<String>> setUserHeadPhoto(@Header(NetworkConst.ACCESS_TOKEN) String token, @Body RequestBody parameter);
 
 
     //系统接口v2  公司模块 4.查询单个公司信息
