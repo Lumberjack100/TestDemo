@@ -16,9 +16,6 @@ import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.request.RequestOptions;
 import com.dragon.core.MCloudApp;
 import com.dragon.core.model.UserInfo;
 import com.dragon.core.util.DeviceInfo;
@@ -26,11 +23,13 @@ import com.dragon.core.util.GlobalUtil;
 import com.hjq.toast.ToastUtils;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.base.BaseActivity;
+import com.shmedo.mcloudapp.entity.parameter.SetUserHeadPhotoParameter;
 import com.shmedo.mcloudapp.network.BaseObserver;
 import com.shmedo.mcloudapp.network.MDRetrofit;
 import com.shmedo.mcloudapp.network.NetworkConst;
 import com.shmedo.mcloudapp.user.model.UpdateMyInfoParam;
 import com.shmedo.mcloudapp.util.FileProviderUtils;
+import com.shmedo.mcloudapp.util.FileUtils;
 import com.shmedo.mcloudapp.util.GlideUtils;
 import com.shmedo.mcloudapp.util.GsonFactory;
 import com.shmedo.mcloudapp.views.ClearEditText;
@@ -58,7 +57,6 @@ public class UserHomePageActivity extends BaseActivity {
     private static final String TEMP_PHOTO = "taken_photo.jpg";
     private static final int TAKE_PHOTO = 0x1000;
     private static final int CHOOSE_FROM_ALBUM = 0x1001;
-    private static final int TAKE_AVATAR_PICTURE = 0;
 
     @BindView(R.id.toolbar_title)
     TextView mToolbarTitle;
@@ -84,7 +82,6 @@ public class UserHomePageActivity extends BaseActivity {
 
     private Uri photoUri;
     private Uri userAvatarUri;
-    private int action = 0;
 
     public static void startActivity(Context context) {
         Intent intent = new Intent(context, UserHomePageActivity.class);
@@ -263,16 +260,6 @@ public class UserHomePageActivity extends BaseActivity {
      * 从相册中选择图片。
      */
     private void chooseFromAlbum() {
-        int reqWidth = DeviceInfo.getScreenWidth();
-        int reqHeight = reqWidth;
-
-//        AlbumActivity.actionStartForResult(this@ModifyUserInfoActivity, CHOOSE_FROM_ALBUM, reqWidth, reqHeight);
-
-        test();
-    }
-
-    private void test() {
-
         Matisse.from(this)
                 .choose(MimeType.ofAll())
                 .countable(false)
@@ -283,6 +270,7 @@ public class UserHomePageActivity extends BaseActivity {
                 .showPreview(false) // Default is `true`
                 .forResult(CHOOSE_FROM_ALBUM);
     }
+
 
     /**
      * 对指定图片进行裁剪。
@@ -307,21 +295,22 @@ public class UserHomePageActivity extends BaseActivity {
         if (imageUri == null)
             return;
 
-        if (action == TAKE_AVATAR_PICTURE) {
-            userAvatarUri = imageUri;
-            Timber.d("userAvatarPath is $userAvatarUri");
-
-            Glide.with(this)
+        userAvatarUri = imageUri;
+        Timber.d("userAvatarPath is $userAvatarUri");
+//        SetUserHeadPhotoTask();
+//        Glide.with(this)
 //                    .asBitmap()
-                    .load(userAvatarUri)
-                    .apply(new RequestOptions()
-//                            .circleCrop()
-                            .error(R.drawable.ic_avatar_default)
-                            .placeholder(R.drawable.loading_bg_circle)
-                            .diskCacheStrategy(DiskCacheStrategy.ALL))
-                    .into(mIvUserAvatar);
+//                .load(imageUri)
+//                .apply(new RequestOptions()
+////                            .circleCrop()
+//                        .error(R.drawable.ic_avatar_default)
+//                        .placeholder(R.drawable.loading_bg_circle)
+//                        .diskCacheStrategy(DiskCacheStrategy.ALL))
+//                .into(mIvUserAvatar);
 
-        }
+//        String url="https://cdn.pixabay.com/photo/2020/07/05/22/04/young-hare-5374708_1280.jpg";
+//        GlideUtils.loadImage(this, url, mIvUserAvatar, R.drawable.ic_avatar_default);
+
     }
 
 
@@ -360,8 +349,47 @@ public class UserHomePageActivity extends BaseActivity {
                     ToastUtils.show(GlobalUtil.getString(R.string.crop_failed));
                 }
                 break;
-
         }
+    }
 
+    /**
+     * 上传用户头像
+     */
+    private void SetUserHeadPhotoTask() {
+        String filePath = userAvatarUri.getPath();
+        if (TextUtils.isEmpty(filePath)) {
+            return;
+        }
+        String fileName = FileUtils.getFileName(filePath);
+        String fileContent = FileUtils.getFileContent(filePath);
+        if (TextUtils.isEmpty(fileName) || TextUtils.isEmpty(fileContent)) {
+            return;
+        }
+        SetUserHeadPhotoParameter parameter = new SetUserHeadPhotoParameter();
+        parameter.setPhotoName(fileName);
+        parameter.setPhotoContent(fileContent);
+        String json = GsonFactory.getGson().toJson(parameter);
+        RequestBody body = RequestBody.create(NetworkConst.JSON_TYPE, json);
+        showLoadingDialog("正在上传...");
+        MDRetrofit.getInstance()
+                .createService()
+                .setUserHeadPhoto(body)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new BaseObserver<String>() {
+                    @Override
+                    public void Success(String s, String message) {
+                        dismissLoadingDialog();
+                        ToastUtils.show("头像已上传");
+
+//                initUserInfo();
+                    }
+
+                    @Override
+                    public void Failure(String message) {
+                        dismissLoadingDialog();
+                        ToastUtils.show("上传头像失败," + message);
+                    }
+                });
     }
 }

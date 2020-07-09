@@ -96,7 +96,7 @@ public class GaoDePoiProcessHelper implements AMap.OnPOIClickListener, PoiDetail
      */
     @Override
     public void onPoiNaviClick() {
-        AmapNaviParams amapNaviParams = new AmapNaviParams(new Poi("我的位置", mapActivity.mLatLng, ""), null, new Poi(mapActivity.mPoiName, mClickPoiLatLng, ""), AmapNaviType.DRIVER, AmapPageType.ROUTE);//, AmapPageType.NAVI
+        AmapNaviParams amapNaviParams = new AmapNaviParams(new Poi("我的位置", mapActivity.mLatLng, ""), null, new Poi(mapActivity.mPoiName, mClickPoiLatLng, ""), AmapNaviType.DRIVER, AmapPageType.NAVI);//, AmapPageType.NAVI
         amapNaviParams.setUseInnerVoice(true);
         AmapNaviPage.getInstance().showRouteActivity(mapActivity, amapNaviParams, null);
     }
