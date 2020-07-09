@@ -31,7 +31,7 @@
         android:name="android.permission.READ_LOGS"
         tools:ignore="ProtectedPermissions" />
 
-    <uses-feature android:name="android.hardware.camera" />
+    <uses-feature android:name="android.hardware.camera" android:required="false" />
     <uses-feature android:name="android.hardware.camera.autofocus" /> <!-- 声明应用仅适用于支持 BLE 的设备 -->
     <uses-feature
         android:name="android.hardware.bluetooth_le"

@@ -1,5 +1,6 @@
 package com.shmedo.mcloudapp.user.ui.activity;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -35,6 +36,7 @@ import com.shmedo.mcloudapp.util.FileProviderUtils;
 import com.shmedo.mcloudapp.util.FileUtils;
 import com.shmedo.mcloudapp.util.GlideUtils;
 import com.shmedo.mcloudapp.util.GsonFactory;
+import com.shmedo.mcloudapp.util.XPermissionUtils;
 import com.shmedo.mcloudapp.views.ClearEditText;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
@@ -173,7 +175,6 @@ public class UserHomePageActivity extends BaseActivity {
         updateMyInfo();
     }
 
-
     /**
      * 显示选择照片的对话框。
      */
@@ -187,16 +188,17 @@ public class UserHomePageActivity extends BaseActivity {
                     public void onClick(DialogInterface dialog, int which) {
                         switch (which) {
                             case 0:
-                                takePhoto();
+                                checkTakePhotoPermission();
                                 break;
                             case 1:
-                                chooseFromAlbum();
+                                checkSDCardPermission();
                                 break;
                         }
                     }
                 });
         builder.show();
     }
+
 
     /**
      * 打开摄像头拍照。
@@ -271,6 +273,38 @@ public class UserHomePageActivity extends BaseActivity {
         userAvatarUri = imageUri;
         GlideUtils.loadImage(this, imageUri.getPath(), mIvUserAvatar, R.drawable.ic_avatar_default);
         SetUserHeadPhotoTask();
+    }
+
+    private void checkTakePhotoPermission(){
+        XPermissionUtils.requestPermissionsResult(this, 200, new String[]{
+                        Manifest.permission.CAMERA},
+                new XPermissionUtils.OnPermissionListener() {
+                    @Override
+                    public void onPermissionGranted() {
+                        takePhoto();
+                    }
+
+                    @Override
+                    public void onPermissionDenied() {
+                        ToastUtils.show(GlobalUtil.getString(R.string.message_permission_camera_denied));
+                    }
+                });
+    }
+
+    private void checkSDCardPermission(){
+        XPermissionUtils.requestPermissionsResult(this, 200, new String[]{
+                        Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                new XPermissionUtils.OnPermissionListener() {
+                    @Override
+                    public void onPermissionGranted() {
+                        chooseFromAlbum();
+                    }
+
+                    @Override
+                    public void onPermissionDenied() {
+                        ToastUtils.show(GlobalUtil.getString(R.string.message_permission_storage_denied));
+                    }
+                });
     }
 
     @Override
