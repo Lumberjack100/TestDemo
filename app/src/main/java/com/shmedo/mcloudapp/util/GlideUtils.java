@@ -46,8 +46,7 @@ public class GlideUtils {
                 .into(imageView);
     }
 
-    public static void loadImageFitCenter(Context context, final String strUrl, final ImageView imageView,
-                                          @DrawableRes final int id) {
+    public static void loadImageFitCenter(Context context, final String strUrl, final ImageView imageView, @DrawableRes final int id) {
         Glide.with(context)
                 .load(strUrl)
                 .apply(new RequestOptions()
@@ -118,7 +117,7 @@ public class GlideUtils {
     }
 
     // 将资源ID转为Uri
-    public static Uri resourceIdToUri(Context context, int resourceId) {
+    private static Uri resourceIdToUri(Context context, int resourceId) {
         return Uri.parse(ANDROID_RESOURCE + context.getPackageName() + FOREWARD_SLASH + resourceId);
     }
 

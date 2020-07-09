@@ -100,6 +100,15 @@ public class UserHomePageActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setToolBar(R.id.toolbar);
         mToolbarTitle.setText("我的信息");
+        initData();
+    }
+
+    private void initData() {
+        userInfo = MCloudApp.getCurrentUserInfo();
+        if (userInfo != null && userInfo.getUser() != null) {
+            user = userInfo.getUser();
+            GlideUtils.loadImage(this, user.getHeadPhotoPath(), mIvUserAvatar, R.drawable.ic_avatar_default);
+        }
     }
 
     @Override
@@ -109,12 +118,10 @@ public class UserHomePageActivity extends BaseActivity {
     }
 
     private void updateView() {
-        userInfo = MCloudApp.getCurrentUserInfo();
-        if (userInfo != null && userInfo.getUser() != null) {
-            user = userInfo.getUser();
-            if (user.getHeadPhotoPath() != null) {
-                GlideUtils.loadImage(this, user.getHeadPhotoPath(), mIvUserAvatar, R.drawable.ic_avatar_default);
-            }
+        if (user != null) {
+//            if (user.getHeadPhotoPath() != null) {
+//                GlideUtils.loadImage(this, user.getHeadPhotoPath(), mIvUserAvatar, R.drawable.ic_avatar_default);
+//            }
             mEtUserName.setText(user.getName() != null ? user.getName() : "");
             mEtTitle.setText(user.getPosition() != null ? user.getPosition() : "");
             mEtEmail.setText(user.getEmail() != null ? user.getEmail() : "");
@@ -296,21 +303,8 @@ public class UserHomePageActivity extends BaseActivity {
             return;
 
         userAvatarUri = imageUri;
-        Timber.d("userAvatarPath is $userAvatarUri");
-//        SetUserHeadPhotoTask();
-//        Glide.with(this)
-//                    .asBitmap()
-//                .load(imageUri)
-//                .apply(new RequestOptions()
-////                            .circleCrop()
-//                        .error(R.drawable.ic_avatar_default)
-//                        .placeholder(R.drawable.loading_bg_circle)
-//                        .diskCacheStrategy(DiskCacheStrategy.ALL))
-//                .into(mIvUserAvatar);
-
-//        String url="https://cdn.pixabay.com/photo/2020/07/05/22/04/young-hare-5374708_1280.jpg";
-//        GlideUtils.loadImage(this, url, mIvUserAvatar, R.drawable.ic_avatar_default);
-
+        GlideUtils.loadImage(this, imageUri.getPath(), mIvUserAvatar, R.drawable.ic_avatar_default);
+        SetUserHeadPhotoTask();
     }
 
 
@@ -329,15 +323,6 @@ public class UserHomePageActivity extends BaseActivity {
                     Uri uri = Matisse.obtainResult(data).get(0);
                     cropPhoto(uri);
                 }
-
-//                if (resultCode == RESULT_OK) {
-//                    if (data != null) {
-//                        Uri uri = Matisse.obtainResult(data).get(0);
-//                        showCroppedPhoto(data.getParcelableExtra(AlbumActivity.IMAGE_URI));
-//                    }
-//                } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
-//                    ToastUtils.show(getString(R.string.crop_failed));
-//                }
                 break;
 
             case CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE:
