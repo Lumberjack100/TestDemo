@@ -16,7 +16,7 @@ import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.base.BaseActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.BluetoothDeviceListFragment;
 import com.shmedo.mcloudapp.maps.ui.activity.MapActivity;
-import com.shmedo.mcloudapp.ui.fragment.DASHomeFragment;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.DASHomeFragment;
 import com.shmedo.mcloudapp.util.permission.XPermissionUtils;
 import com.shmedo.mcloudapp.util.permission.UpdataManagerUtil;
 

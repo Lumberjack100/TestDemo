@@ -198,6 +198,8 @@ public class XPermissionUtils {
         MaterialDialog.Builder builderRefuse = new MaterialDialog.Builder(getContext(object))
                 .title("权限申请")
                 .content(message)
+                .cancelable(false)
+                .canceledOnTouchOutside(false)
                 .negativeText("取消")
                 .positiveText("去设置")
                 .onPositive(new MaterialDialog.SingleButtonCallback() {

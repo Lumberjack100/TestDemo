@@ -46,6 +46,9 @@ import com.hjq.toast.ToastUtils;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.adapter.InfoWinAdapter;
 import com.shmedo.mcloudapp.base.BaseActivity;
+import com.shmedo.mcloudapp.deviceconfig.ui.activity.ConfigADMEActivity;
+import com.shmedo.mcloudapp.deviceconfig.ui.activity.ConfigDASActivity;
+import com.shmedo.mcloudapp.deviceconfig.ui.activity.ConfigE60Activity;
 import com.shmedo.mcloudapp.entity.DeviceBasicInfoResult;
 import com.shmedo.mcloudapp.entity.DeviceBasicInfoResultDao;
 import com.shmedo.mcloudapp.entity.DeviceTypeEnum;
@@ -607,6 +610,7 @@ public class MainActivity extends BaseActivity {
                 .negativeColor(getResources().getColor(R.color.font_main))
                 .positiveColor(getResources().getColor(R.color.colorPrimary))
                 .cancelable(false)
+                .canceledOnTouchOutside(false)
                 .onPositive(new MaterialDialog.SingleButtonCallback() {
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {

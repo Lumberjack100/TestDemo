@@ -175,7 +175,7 @@ public abstract class BaseActivity extends AppCompatActivity {
                     .progress(true, 0)
                     .progressIndeterminateStyle(false)
                     .build();
-            loadingDialog.setCancelable(false);
+//            loadingDialog.setCancelable(false);
             loadingDialog.setCanceledOnTouchOutside(false);
         }
 

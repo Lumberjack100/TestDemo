@@ -47,6 +47,7 @@ public final class RuntimeRationale implements Rationale<List<String>> {
                 .negativeColor(context.getResources().getColor(R.color.gray_797979))
                 .positiveColor(context.getResources().getColor(R.color.colorPrimary))
                 .cancelable(false)
+                .canceledOnTouchOutside(false)
                 .onPositive(new MaterialDialog.SingleButtonCallback() {
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {

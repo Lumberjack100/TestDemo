@@ -28,12 +28,12 @@ import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.bluetooth.exception.ScanAlreadyStartException;
 import com.shmedo.mcloudapp.entity.ble.MDevice;
 import com.shmedo.mcloudapp.util.TimeUtil;
-import com.shmedo.mcloudapp.util.permission.XPermissionUtils;
 import com.shmedo.mcloudapp.util.bleutil.Constants;
 import com.shmedo.mcloudapp.util.bleutil.DescriptorParser;
 import com.shmedo.mcloudapp.util.bleutil.GattAttributes;
 import com.shmedo.mcloudapp.util.bleutil.ThreadUtil;
 import com.shmedo.mcloudapp.util.bleutil.UUIDDatabase;
+import com.shmedo.mcloudapp.util.permission.XPermissionUtils;
 import com.yanzhenjie.permission.Action;
 import com.yanzhenjie.permission.AndPermission;
 import com.yanzhenjie.permission.runtime.Permission;
@@ -234,21 +234,21 @@ public class MdBluetoothManager {
 
 
     @RunOnUiThread
-    private void checkPermission(final int maxScanSecond, final Activity context) {
-        AndPermission.with(context)
+    private void checkPermission(final int maxScanSecond, final Activity activity) {
+        AndPermission.with(activity)
                 .runtime()
                 .permission(Permission.ACCESS_COARSE_LOCATION, Permission.ACCESS_FINE_LOCATION)
                 .onGranted(new Action<List<String>>() {
                     @Override
                     public void onAction(List<String> permissions) {
-                        processScan(maxScanSecond, context);
+                        processScan(maxScanSecond, activity);
                     }
                 })
                 .onDenied(new Action<List<String>>() {
                     @Override
                     public void onAction(@NonNull List<String> permissions) {
-                        if (AndPermission.hasAlwaysDeniedPermission(context, permissions)) {
-                            XPermissionUtils.showRefusePermissionDialog(context, GlobalUtil.getString(R.string.bluetooth_request_location));
+                        if (AndPermission.hasAlwaysDeniedPermission(activity, permissions)) {
+                            XPermissionUtils.showRefusePermissionDialog(activity, GlobalUtil.getString(R.string.message_permission_bluetooth_location_rational));
                         }
                     }
                 })

@@ -1,5 +1,6 @@
 package com.shmedo.mcloudapp.deviceconfig.ui.fragment;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
@@ -24,6 +25,7 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 import com.dragon.core.MCloudApp;
+import com.dragon.core.util.GlobalUtil;
 import com.hjq.toast.ToastUtils;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.base.BaseFragment;
@@ -36,9 +38,9 @@ import com.shmedo.mcloudapp.deviceconfig.ui.view.DiffuseView;
 import com.shmedo.mcloudapp.entity.DeviceBasicInfoResult;
 import com.shmedo.mcloudapp.entity.DeviceTypeEnum;
 import com.shmedo.mcloudapp.entity.ble.MDevice;
-import com.shmedo.mcloudapp.ui.activity.ConfigADMEActivity;
-import com.shmedo.mcloudapp.ui.activity.ConfigDASActivity;
-import com.shmedo.mcloudapp.ui.activity.ConfigE60Activity;
+import com.shmedo.mcloudapp.deviceconfig.ui.activity.ConfigADMEActivity;
+import com.shmedo.mcloudapp.deviceconfig.ui.activity.ConfigDASActivity;
+import com.shmedo.mcloudapp.deviceconfig.ui.activity.ConfigE60Activity;
 import com.shmedo.mcloudapp.ui.activity.ScanActivity;
 import com.shmedo.mcloudapp.user.ui.activity.NewUserInfoActivity;
 import com.shmedo.mcloudapp.util.permission.PermissionHelper;
@@ -48,6 +50,7 @@ import com.shmedo.mcloudapp.views.recycleviewitemdivider.DividerItemDecoration;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import butterknife.BindView;
@@ -199,10 +202,32 @@ public class BluetoothDeviceListFragment extends BaseFragment {
             return;
         }
 
-        deviceAdapter.setNewInstance(new ArrayList<>());
-        mdBluetoothManager.scanDevice(30, getActivity());
-        hander.postDelayed(dismssDialogRunnable, 30000);
-        updateViewState(true);
+        checkBluetoothPermissions();
+    }
+
+    private void checkBluetoothPermissions() {
+        XPermissionUtils.requestPermissionsResult(getActivity(), 200, new String[]{
+                        Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION},
+                new XPermissionUtils.OnPermissionListener() {
+                    @Override
+                    public void onPermissionGranted() {
+                        deviceAdapter.setNewInstance(new ArrayList<>());
+                        mdBluetoothManager.scanDevice(30, getActivity());
+                        hander.postDelayed(dismssDialogRunnable, 30000);
+                        updateViewState(true);
+                    }
+
+                    @Override
+                    public void onPermissionDenied(List<String> deniedPermissions) {
+                        boolean allNeverAskAgain = XPermissionUtils.isAllNeverAskAgain(getActivity(), deniedPermissions);
+                        // 所有的权限都被勾上不再询问时，跳转到应用设置界面，引导用户手动打开权限
+                        if (allNeverAskAgain) {
+                            XPermissionUtils.showRefusePermissionDialog(getActivity(), GlobalUtil.getString(R.string.message_permission_bluetooth_location_rational));
+                        } else {
+                            ToastUtils.show(GlobalUtil.getString(R.string.message_permission_location_denied));
+                        }
+                    }
+                });
     }
 
     private class MdBluetoothEventHandler implements BluetoothEventHandler {
@@ -251,7 +276,7 @@ public class BluetoothDeviceListFragment extends BaseFragment {
                 if (resultCode == Activity.RESULT_OK) {
                     if (data != null) {
                         String content = data.getStringExtra(ScanActivity.CODED_CONTENT);
-                        Timber.d("扫描结果为：" + content);
+                        Timber.d("扫描结果为：%s", content);
                         scanResult(content);
                     }
                 }

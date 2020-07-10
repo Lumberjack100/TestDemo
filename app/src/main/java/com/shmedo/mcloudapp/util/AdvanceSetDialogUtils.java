@@ -27,7 +27,7 @@ import com.shmedo.core.enums.CommandType;
 import com.shmedo.core.enums.SetRemoteUpgrade;
 import com.shmedo.core.utils.ValidateUtil;
 import com.shmedo.mcloudapp.R;
-import com.shmedo.mcloudapp.ui.activity.device.BaseDeviceConnectActivity;
+import com.shmedo.mcloudapp.deviceconfig.ui.activity.BaseDeviceConnectActivity;
 
 /**
  * 项目名：  mCloudapp

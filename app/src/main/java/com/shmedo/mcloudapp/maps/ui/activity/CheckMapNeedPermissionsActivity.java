@@ -104,6 +104,7 @@ public abstract class CheckMapNeedPermissionsActivity extends BaseActivity {
                 .positiveText("去设置")
                 .positiveColor(getResources().getColor(R.color.colorPrimary))
                 .cancelable(false)
+                .canceledOnTouchOutside(false)
                 .onPositive(new MaterialDialog.SingleButtonCallback() {
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
@@ -123,7 +124,7 @@ public abstract class CheckMapNeedPermissionsActivity extends BaseActivity {
                 .positiveText("去设置")
                 .negativeColor(getResources().getColor(R.color.gray_797979))
                 .positiveColor(getResources().getColor(R.color.colorPrimary))
-                .cancelable(false)
+                .canceledOnTouchOutside(false)
                 .onPositive(new MaterialDialog.SingleButtonCallback() {
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {

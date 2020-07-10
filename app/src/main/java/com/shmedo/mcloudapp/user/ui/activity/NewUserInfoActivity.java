@@ -135,6 +135,7 @@ public class NewUserInfoActivity extends BaseActivity {
         MaterialDialog.Builder mBuilder = new MaterialDialog.Builder(this)
                 .title("提示")
                 .content(getResources().getString(R.string.exit_login_tip))
+                .canceledOnTouchOutside(false)
                 .negativeText("取消")
                 .positiveText("确定")
                 .negativeColor(getResources().getColor(R.color.font_main))

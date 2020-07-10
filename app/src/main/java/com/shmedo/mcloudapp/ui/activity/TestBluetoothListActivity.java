@@ -1,5 +1,6 @@
 package com.shmedo.mcloudapp.ui.activity;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
@@ -22,16 +23,19 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
-import com.hjq.toast.ToastUtils;
 import com.dragon.core.MCloudApp;
+import com.dragon.core.util.GlobalUtil;
+import com.hjq.toast.ToastUtils;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.adapter.BluetoothDeviceAdapter;
 import com.shmedo.mcloudapp.bluetooth.BluetoothDeviceFindEventData;
 import com.shmedo.mcloudapp.bluetooth.BluetoothEvent;
 import com.shmedo.mcloudapp.bluetooth.BluetoothEventHandler;
 import com.shmedo.mcloudapp.bluetooth.MdBluetoothManager;
+import com.shmedo.mcloudapp.deviceconfig.ui.activity.ConfigADMEActivity;
 import com.shmedo.mcloudapp.entity.ble.MDevice;
 import com.shmedo.mcloudapp.util.ActivityCollector;
+import com.shmedo.mcloudapp.util.permission.XPermissionUtils;
 import com.shmedo.mcloudapp.views.recycleviewitemdivider.DividerItemDecoration;
 
 import java.lang.ref.WeakReference;
@@ -179,10 +183,32 @@ public class TestBluetoothListActivity extends AppCompatActivity {
             return;
         }
 
-        deviceList.clear();
-        mdBluetoothManager.scanDevice(15, this);
-        hander.postDelayed(dismssDialogRunnable, 15000);
-        updateViewState(true);
+        checkBluetoothPermissions();
+    }
+
+    private void checkBluetoothPermissions() {
+        XPermissionUtils.requestPermissionsResult(this, 200, new String[]{
+                        Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION},
+                new XPermissionUtils.OnPermissionListener() {
+                    @Override
+                    public void onPermissionGranted() {
+                        deviceList.clear();
+                        mdBluetoothManager.scanDevice(15, TestBluetoothListActivity.this);
+                        hander.postDelayed(dismssDialogRunnable, 15000);
+                        updateViewState(true);
+                    }
+
+                    @Override
+                    public void onPermissionDenied(List<String> deniedPermissions) {
+                        boolean allNeverAskAgain = XPermissionUtils.isAllNeverAskAgain(TestBluetoothListActivity.this, deniedPermissions);
+                        // 所有的权限都被勾上不再询问时，跳转到应用设置界面，引导用户手动打开权限
+                        if (allNeverAskAgain) {
+                            XPermissionUtils.showRefusePermissionDialog(TestBluetoothListActivity.this, GlobalUtil.getString(R.string.message_permission_bluetooth_location_rational));
+                        } else {
+                            ToastUtils.show(GlobalUtil.getString(R.string.message_permission_location_denied));
+                        }
+                    }
+                });
     }
 
 
