@@ -24,6 +24,7 @@
     <!-- 权限申请-->
     <string name="permission_request_location_hardware">需要打开系统定位开关，用于提供精确的定位及导航服务</string>
 
+    <string name="message_permissions_denied">请求相关权限失败，无法继续操作</string>
     <string name="message_permission_camera_denied">请求相机权限失败，无法继续操作</string>
     <string name="message_permission_storage_denied">请求 SD 卡权限失败，无法继续操作</string>
     <string name="message_permission_location_denied">请求定位权限失败，无法继续操作</string>

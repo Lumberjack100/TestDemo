@@ -97,6 +97,16 @@ public class GlobalUtil {
     }
 
     /**
+     * 获取资源文件中定义的字符串。
+     *
+     * @param colorId 颜色资源id
+     * @return 字符串资源id对应的字符串内容。
+     */
+    public static int getColor(int colorId) {
+        return MCloudApp.getContext().getResources().getColor(colorId);
+    }
+
+    /**
      * 获取指定资源名的资源id。
      *
      * @param name 资源名

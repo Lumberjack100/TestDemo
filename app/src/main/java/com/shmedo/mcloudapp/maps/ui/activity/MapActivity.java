@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
@@ -58,7 +59,7 @@ import com.shmedo.mcloudapp.maps.ui.view.ZoomView;
 import com.shmedo.mcloudapp.maps.util.AMapLocationUtil;
 import com.shmedo.mcloudapp.maps.util.CoordinateFormatUtils;
 import com.shmedo.mcloudapp.maps.util.SensorEventHelper;
-import com.shmedo.mcloudapp.util.LocationUtils;
+import com.shmedo.mcloudapp.util.permission.PermissionHelper;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -118,7 +119,6 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
     public static final int STATE_ROTATE = 2;//根据地图方向旋转状态
     public int mCurrentGpsState = STATE_UNLOCKED;//当前定位状态
     public float mZoomLevel = 16;//地图的缩放级别一共分为 17 级，从 3 到 19。数字越大，展示的图面信息越精细。
-    public LatLng mLatLng;//当前定位经纬度
     public static long mAnimDuartion = 500L;//地图动效时长
     public int mMapType = MyLocationStyle.LOCATION_TYPE_LOCATION_ROTATE_NO_CENTER;//地图状态类型
     public SensorEventHelper mSensorHelper;
@@ -134,6 +134,8 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
     public String mPoiName;//POI的名称
     public String mCityName;//定位所在城市
     public MapMode mMapMode = MapMode.NORMAL;
+    public LatLng mLatLng;//当前定位经纬度
+
 
     private GaoDeCaculateDistanceHelper gaoDeCaculateDistanceHelper;
     private GaoDePoiProcessHelper gaoDePoiProcessHelper;
@@ -178,10 +180,11 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
         super.onResume();
         //在activity执行onResume时执行mMapView.onResume ()，重新绘制加载地图
         mMapView.onResume();
-        if (null == mSensorHelper) {
-            mSensorHelper = new SensorEventHelper(this);
-            //重新注册
-            mSensorHelper.registerSensorListener();
+        if (Build.VERSION.SDK_INT >= 23) {
+            if (isNeedCheck) {
+                Timber.d("checkPermissionForGPS call");
+                checkPermissionForGPS(PermissionHelper.REQUEST_CODE_LOCATION);
+            }
         }
     }
 
@@ -191,11 +194,6 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
         //在activity执行onPause时执行mMapView.onPause ()，暂停地图的绘制
         mMapView.onPause();
         deactivate();
-        if (mSensorHelper != null) {
-            mSensorHelper.unRegisterSensorListener();
-            mSensorHelper.setCurrentMarker(null);
-            mSensorHelper = null;
-        }
     }
 
     @Override
@@ -210,6 +208,11 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
         if (mLocationMarker != null) {
             mLocationMarker.destroy();
             mLocationMarker = null;
+        }
+        if (mSensorHelper != null) {
+            mSensorHelper.unRegisterSensorListener();
+            mSensorHelper.setCurrentMarker(null);
+            mSensorHelper = null;
         }
     }
 
@@ -265,14 +268,24 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
 
 
     @Override
-    protected void doOnPermissionGranted() {
+    protected void doOnPermissionGranted(int requestCode) {
+        if (requestCode == PermissionHelper.REQUEST_CODE_LOCATION) {
+            aMap.setMyLocationEnabled(true);
+
+        } else if (requestCode == PermissionHelper.REQUEST_CODE_GPS_LOCATION) {
+            processGpsViewClick();
+
+        } else if (requestCode == PermissionHelper.REQUEST_CODE_NAVI) {
+            gaoDePoiProcessHelper.doOnPermissionGranted(requestCode);
+        }
     }
 
     @OnClick({R.id.gps_view, R.id.route_view, R.id.mapToolView, R.id.mapLayerView, R.id.testSpeedView, R.id.measureDistanceView})
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.gps_view://Gps 定位
-                processGpsViewClick();
+                Timber.d("checkPermissionForGPS call");
+                checkPermissionForGPS(PermissionHelper.REQUEST_CODE_GPS_LOCATION);
                 break;
 
             case R.id.route_view://路线
@@ -314,11 +327,6 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
     }
 
     private void processGpsViewClick() {
-        if (!LocationUtils.getInstance().isGpsEnabled()) {
-            showGPSSettingDialog();
-            return;
-        }
-
         CameraUpdate cameraUpdate = null;
         isCanMoveToCenter = true;
         isPoiClick = false;
@@ -411,7 +419,9 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
                     mMapType = MyLocationStyle.LOCATION_TYPE_LOCATE;
                     addCircle();//添加定位精度圆
                     addLocationLockedMarker(mLatLng);//添加定位图标
-                    mSensorHelper.setCurrentMarker(mLocationMarker);//定位图标旋转
+                    if (null != mLocationMarker) {
+                        mSensorHelper.setCurrentMarker(mLocationMarker);//定位图标旋转
+                    }
                     isFirstLocation = false;
                 }
 

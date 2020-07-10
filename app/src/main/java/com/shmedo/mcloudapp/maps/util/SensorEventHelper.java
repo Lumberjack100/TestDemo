@@ -55,32 +55,29 @@ public class SensorEventHelper implements SensorEventListener {
         if (System.currentTimeMillis() - lastTime < TIME_SENSOR) {
             return;
         }
-        switch (event.sensor.getType()) {
-            case Sensor.TYPE_ORIENTATION: {
-                if (!rotate) {
-                    return;
-                }
-                float x = event.values[0];
-                Timber.d("onSensorChanged," + "mLocMarker=" + mMarker);
-                x += getScreenRotationOnPhone(mContext);
-                x %= 360.0F;
-                if (x > 180.0F)
-                    x -= 360.0F;
-                else if (x < -180.0F)
-                    x += 360.0F;
-
-                if (Math.abs(mAngle - x) < 3.0f) {
-                    break;
-                }
-                mAngle = Float.isNaN(x) ? 0 : x;
-                if (mMarker != null) {
-                    rotation = 360 - mAngle;
-                    mMarker.setRotateAngle(rotation);
-                }
-                lastTime = System.currentTimeMillis();
+        if (event.sensor.getType() == Sensor.TYPE_ORIENTATION) {
+            if (!rotate) {
+                return;
             }
-        }
+            float x = event.values[0];
+            Timber.d("onSensorChanged," + "mLocMarker=" + mMarker);
+            x += getScreenRotationOnPhone(mContext);
+            x %= 360.0F;
+            if (x > 180.0F)
+                x -= 360.0F;
+            else if (x < -180.0F)
+                x += 360.0F;
 
+            if (Math.abs(mAngle - x) < 3.0f) {
+                return;
+            }
+            mAngle = Float.isNaN(x) ? 0 : x;
+            if (mMarker != null) {
+                rotation = 360 - mAngle;
+                mMarker.setRotateAngle(rotation);
+            }
+            lastTime = System.currentTimeMillis();
+        }
     }
 
     /**

@@ -23,6 +23,7 @@ import com.shmedo.mcloudapp.maps.model.MapMode;
 import com.shmedo.mcloudapp.maps.ui.activity.MapActivity;
 import com.shmedo.mcloudapp.maps.ui.view.PoiDetailBottomView;
 import com.shmedo.mcloudapp.maps.util.MyAMapUtils;
+import com.shmedo.mcloudapp.util.permission.PermissionHelper;
 
 import static com.shmedo.mcloudapp.maps.ui.activity.MapActivity.STATE_UNLOCKED;
 
@@ -50,7 +51,6 @@ public class GaoDePoiProcessHelper implements AMap.OnPOIClickListener, PoiDetail
         mPoiDetailBottomView = mapActivity.mPoiDetailBottomView;
         registerListeners();
     }
-
 
     private void registerListeners() {
         // 地图poi点击
@@ -96,9 +96,7 @@ public class GaoDePoiProcessHelper implements AMap.OnPOIClickListener, PoiDetail
      */
     @Override
     public void onPoiNaviClick() {
-        AmapNaviParams amapNaviParams = new AmapNaviParams(new Poi("我的位置", mapActivity.mLatLng, ""), null, new Poi(mapActivity.mPoiName, mClickPoiLatLng, ""), AmapNaviType.DRIVER, AmapPageType.NAVI);//, AmapPageType.NAVI
-        amapNaviParams.setUseInnerVoice(true);
-        AmapNaviPage.getInstance().showRouteActivity(mapActivity, amapNaviParams, null);
+        mapActivity.checkPermissionForGPS(PermissionHelper.REQUEST_CODE_NAVI);
     }
 
     /**
@@ -109,7 +107,15 @@ public class GaoDePoiProcessHelper implements AMap.OnPOIClickListener, PoiDetail
 
     }
 
-    public void destroyPoiMarker(){
+    public void doOnPermissionGranted(int requestCode) {
+        if (requestCode == PermissionHelper.REQUEST_CODE_NAVI) {
+            AmapNaviParams amapNaviParams = new AmapNaviParams(new Poi("我的位置", mapActivity.mLatLng, ""), null, new Poi(mapActivity.mPoiName, mClickPoiLatLng, ""), AmapNaviType.DRIVER, AmapPageType.NAVI);//, AmapPageType.NAVI
+            amapNaviParams.setUseInnerVoice(true);
+            AmapNaviPage.getInstance().showRouteActivity(mapActivity, amapNaviParams, null);
+        }
+    }
+
+    public void destroyPoiMarker() {
         if (poiMarker != null) {
             poiMarker.destroy();
         }
@@ -137,7 +143,6 @@ public class GaoDePoiProcessHelper implements AMap.OnPOIClickListener, PoiDetail
         showPoiDetailBottomView(poiName, String.format("距离您%s", distanceStr));
     }
 
-
     private void addPOIMarker(LatLng latLng) {
         destroyPoiMarker();
         MarkerOptions markOptiopns = new MarkerOptions();
@@ -164,7 +169,6 @@ public class GaoDePoiProcessHelper implements AMap.OnPOIClickListener, PoiDetail
         mPoiDetailBottomView.tvPoiDistance.setText(locInfo);
         mPoiDetailBottomView.tvNavi.setVisibility(locTitle.equals("我的位置") ? View.GONE : View.VISIBLE);
     }
-
 
     /**
      * 隐藏底部POI详情
