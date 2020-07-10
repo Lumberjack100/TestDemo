@@ -47,6 +47,7 @@ import com.zhihu.matisse.engine.impl.GlideEngine;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -275,7 +276,7 @@ public class UserHomePageActivity extends BaseActivity {
         SetUserHeadPhotoTask();
     }
 
-    private void checkTakePhotoPermission(){
+    private void checkTakePhotoPermission() {
         XPermissionUtils.requestPermissionsResult(this, 200, new String[]{
                         Manifest.permission.CAMERA},
                 new XPermissionUtils.OnPermissionListener() {
@@ -285,13 +286,19 @@ public class UserHomePageActivity extends BaseActivity {
                     }
 
                     @Override
-                    public void onPermissionDenied() {
-                        ToastUtils.show(GlobalUtil.getString(R.string.message_permission_camera_denied));
+                    public void onPermissionDenied(List<String> deniedPermissions) {
+                        boolean allNeverAskAgain = XPermissionUtils.isAllNeverAskAgain(UserHomePageActivity.this, deniedPermissions);
+                        // 所有的权限都被勾上不再询问时，跳转到应用设置界面，引导用户手动打开权限
+                        if (allNeverAskAgain) {
+                            XPermissionUtils.showRefusePermissionDialog(UserHomePageActivity.this, GlobalUtil.getString(R.string.message_permission_camera_rationale));
+                        } else {
+                            ToastUtils.show(GlobalUtil.getString(R.string.message_permission_camera_denied));
+                        }
                     }
                 });
     }
 
-    private void checkSDCardPermission(){
+    private void checkSDCardPermission() {
         XPermissionUtils.requestPermissionsResult(this, 200, new String[]{
                         Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE},
                 new XPermissionUtils.OnPermissionListener() {
@@ -301,8 +308,14 @@ public class UserHomePageActivity extends BaseActivity {
                     }
 
                     @Override
-                    public void onPermissionDenied() {
-                        ToastUtils.show(GlobalUtil.getString(R.string.message_permission_storage_denied));
+                    public void onPermissionDenied(List<String> deniedPermissions) {
+                        boolean allNeverAskAgain = XPermissionUtils.isAllNeverAskAgain(UserHomePageActivity.this, deniedPermissions);
+                        // 所有的权限都被勾上不再询问时，跳转到应用设置界面，引导用户手动打开权限
+                        if (allNeverAskAgain) {
+                            XPermissionUtils.showRefusePermissionDialog(UserHomePageActivity.this, GlobalUtil.getString(R.string.message_permission_storage_rationale));
+                        } else {
+                            ToastUtils.show(GlobalUtil.getString(R.string.message_permission_storage_denied));
+                        }
                     }
                 });
     }

@@ -1,5 +1,6 @@
 package com.shmedo.mcloudapp.ui.activity;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -55,7 +56,9 @@ public class NewMainActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initView(savedInstanceState);
-        UpdataManagerUtil.requestPermissionForInstallPackage(this, false);//版本更新
+        if (XPermissionUtils.checkPermissions(this, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE)) {
+            UpdataManagerUtil.requestPermissionForInstallPackage(this, false);//版本更新
+        }
     }
 
     private void initView(Bundle savedInstanceState) {
@@ -162,8 +165,8 @@ public class NewMainActivity extends BaseActivity {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == XPermissionUtils.REQUEST_CODE_OPEN_APPLICATION_SETTING) {
-            UpdataManagerUtil.requestPermissionForInstallPackage(this, false);//版本更新
-        }
+//        if (requestCode == XPermissionUtils.REQUEST_CODE_OPEN_APPLICATION_SETTING) {
+//            UpdataManagerUtil.requestPermissionForInstallPackage(this, false);//版本更新
+//        }
     }
 }

@@ -374,7 +374,7 @@ public class SearchDataUI implements View.OnClickListener {
                     }
 
                     @Override
-                    public void onPermissionDenied() {
+                    public void onPermissionDenied(List<String> deniedPermissions) {
                         XPermissionUtils.showRefusePermissionDialog(mainActivity,
                                 mainActivity.getResources().getString(R.string.permission_request_camera_external_storage));
                     }

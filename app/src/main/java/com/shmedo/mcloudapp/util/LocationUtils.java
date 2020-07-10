@@ -176,7 +176,7 @@ public class LocationUtils {
     private void showSettingDialog(Activity context, final List<String> permissions) {
         List<String> permissionNames = Permission.transformText(context, permissions);
         @SuppressLint({"StringFormatInvalid", "LocalSuppress"})
-        String message = context.getString(R.string.message_permission_always_failed, TextUtils.join("\n", permissionNames));
+        String message = context.getString(R.string.message_permission_location_denied, TextUtils.join("\n", permissionNames));
 
         new AlertDialog.Builder(context).setCancelable(false)
                 .setTitle("提示")

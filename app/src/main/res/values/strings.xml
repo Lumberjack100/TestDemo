@@ -19,6 +19,7 @@
     <string name="user_info_status_abnormal">当前登录状态存在异常</string>
     <string name="your_phone_does_not_install_qq">您的手机还没有安装QQ</string>
     <string name="your_phone_does_not_install_wechat">您的手机还没有安装微信</string>
+    <string name="operation_failed_without_sdcard">您的手机没有SD卡，无法完成操作</string>
 
     <!-- 权限申请-->
     <string name="permission_request_camera_external_storage">需要使用相机权限和存储卡权限，请前往设置页面授予权限</string>
@@ -26,13 +27,16 @@
     <string name="permission_request_location">需要使用定位权限，用于提供精确的定位及导航服务，请前往设置页面授予权限</string>
     <string name="bluetooth_request_location">使用蓝牙功能需要开启定位权限，请前往设置页面授予权限</string>
     <string name="permission_external_storage">当前应用缺少必要的读写存储权限，请前往设置页面授予权限</string>
-    <string name="message_permission_camera_denied">需要授予相机权限，才能正常拍照</string>
+
+    <string name="message_permission_camera_denied">请求相机权限失败，无法继续操作</string>
     <string name="message_permission_storage_denied">请求 SD 卡权限失败，无法继续操作</string>
 
-    <string name="message_permission_rationale">授予以下权限以继续执行该程序:\n%s</string>
-    <string name="message_permission_always_failed">请同意定位权限</string>
+    <string name="message_permission_camera_rationale">需要在系统 “权限” 中打开 “相机” 开关，才能使用相机拍照或扫描 </string>
+    <string name="message_permission_storage_rationale">需要在系统 “权限” 中打开 “读写手机存储” 开关，才能继续操作 </string>
+    <string name="message_permission_update_version_rationale">请在系统 “权限” 中打开 “读写手机存储” 开关，以执行版本更新 </string>
 
-    <string name="operation_failed_without_sdcard">您的手机没有SD卡，无法完成操作</string>
+    <string name="message_permission_rationale">授予以下权限以继续执行该程序:\n%s</string>
+    <string name="message_permission_location_denied">请同意定位权限</string>
 
 
     <!-- 用户 -->

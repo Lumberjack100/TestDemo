@@ -10,6 +10,7 @@ import android.os.Build;
 import android.provider.Settings;
 
 import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
@@ -66,27 +67,24 @@ public class XPermissionUtils {
         checkCallingObjectSuitability(object);
         mOnPermissionListener = callback;
 
-        //已经授予所有权限
-        if (checkPermissions(getContext(object), permissions)) {
+        List<String> deniedPermissions = getDeniedPermissions(getContext(object), permissions);
+        if (!deniedPermissions.isEmpty()) {
+            mRequestCode = requestCode;
+            if (object instanceof Activity) {
+                ((Activity) object).requestPermissions(deniedPermissions
+                        .toArray(new String[deniedPermissions.size()]), requestCode);
+            } else if (object instanceof android.app.Fragment) {
+                ((android.app.Fragment) object).requestPermissions(deniedPermissions
+                        .toArray(new String[deniedPermissions.size()]), requestCode);
+            } else if (object instanceof Fragment) {
+                ((Fragment) object).requestPermissions(deniedPermissions
+                        .toArray(new String[deniedPermissions.size()]), requestCode);
+            } else {
+                mRequestCode = -1;
+            }
+        } else {
             if (mOnPermissionListener != null)
                 mOnPermissionListener.onPermissionGranted();
-        } else {
-            List<String> deniedPermissions = getDeniedPermissions(getContext(object), permissions);
-            if (deniedPermissions.size() > 0) {
-                mRequestCode = requestCode;
-                if (object instanceof Activity) {
-                    ((Activity) object).requestPermissions(deniedPermissions
-                            .toArray(new String[deniedPermissions.size()]), requestCode);
-                } else if (object instanceof android.app.Fragment) {
-                    ((android.app.Fragment) object).requestPermissions(deniedPermissions
-                            .toArray(new String[deniedPermissions.size()]), requestCode);
-                } else if (object instanceof Fragment) {
-                    ((Fragment) object).requestPermissions(deniedPermissions
-                            .toArray(new String[deniedPermissions.size()]), requestCode);
-                } else {
-                    mRequestCode = -1;
-                }
-            }
         }
     }
 
@@ -110,28 +108,27 @@ public class XPermissionUtils {
      */
     public static void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         if (mRequestCode != -1 && requestCode == mRequestCode) {
-            if (verifyPermissions(grantResults)) {
-                if (mOnPermissionListener != null)
-                    mOnPermissionListener.onPermissionGranted();
-            } else {
-                if (mOnPermissionListener != null)
-                    mOnPermissionListener.onPermissionDenied();
+            if (grantResults.length > 0) {
+                List<String> deniedPermissions = new ArrayList<>();
+                for (int i = 0; i < grantResults.length; i++) {
+                    int grantResult = grantResults[i];
+                    String permission = permissions[i];
+                    if (grantResult != PackageManager.PERMISSION_GRANTED) {
+                        deniedPermissions.add(permission);
+                    }
+                }
+
+                if (deniedPermissions.isEmpty()) {
+                    if (mOnPermissionListener != null)
+                        mOnPermissionListener.onPermissionGranted();
+                } else {
+                    if (mOnPermissionListener != null)
+                        mOnPermissionListener.onPermissionDenied(deniedPermissions);
+                }
             }
         }
     }
 
-
-    /**
-     * 验证权限是否都已经授权
-     */
-    private static boolean verifyPermissions(int[] grantResults) {
-        for (int grantResult : grantResults) {
-            if (grantResult != PackageManager.PERMISSION_GRANTED) {
-                return false;
-            }
-        }
-        return true;
-    }
 
     /**
      * 获取权限列表中所有需要授权的权限
@@ -142,6 +139,10 @@ public class XPermissionUtils {
      */
     private static List<String> getDeniedPermissions(Context context, String... permissions) {
         List<String> deniedPermissions = new ArrayList<>();
+        if (!isOverMarshmallow()) {
+            return new ArrayList<>();
+        }
+
         for (String permission : permissions) {
             if (ContextCompat.checkSelfPermission(context, permission) == PackageManager.PERMISSION_DENIED) {
                 deniedPermissions.add(permission);
@@ -178,12 +179,24 @@ public class XPermissionUtils {
     public static boolean checkPermissions(Context context, String... permissions) {
         if (isOverMarshmallow()) {
             for (String permission : permissions) {
-                if (ContextCompat.checkSelfPermission(context, permission) == PackageManager.PERMISSION_DENIED) {
+                if (ContextCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
                     return false;
                 }
             }
         }
         return true;
+    }
+
+    public static boolean isAllNeverAskAgain(Activity activity,List<String> deniedPermissions){
+        boolean allNeverAskAgain = true;
+        for (String deniedPermission : deniedPermissions) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(activity, deniedPermission)) {
+                allNeverAskAgain = false;
+                break;
+            }
+        }
+
+        return allNeverAskAgain;
     }
 
 
@@ -241,7 +254,7 @@ public class XPermissionUtils {
     public interface OnPermissionListener {
         void onPermissionGranted();
 
-        void onPermissionDenied();
+        void onPermissionDenied(List<String> deniedPermissions);
     }
 
     private static OnPermissionListener mOnPermissionListener;

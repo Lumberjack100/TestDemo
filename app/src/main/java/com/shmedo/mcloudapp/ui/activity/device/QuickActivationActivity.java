@@ -11,13 +11,13 @@ import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.TextView;
 
+import com.dragon.core.MCloudApp;
 import com.hjq.toast.ToastUtils;
 import com.kyleduo.switchbutton.SwitchButton;
 import com.shmedo.core.cmd.CommandResult;
 import com.shmedo.core.enums.CommandType;
 import com.shmedo.core.enums.SetRemoteUpgrade;
 import com.shmedo.core.utils.StringUtil;
-import com.dragon.core.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.entity.DeviceTypeEnum;
 import com.shmedo.mcloudapp.entity.event.BluetoothStateEvent;
@@ -27,6 +27,8 @@ import com.shmedo.mcloudapp.util.XPermissionUtils;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -200,7 +202,7 @@ public class QuickActivationActivity extends BaseDeviceConnectActivity {
                     }
 
                     @Override
-                    public void onPermissionDenied() {
+                    public void onPermissionDenied(List<String> deniedPermissions) {
                         XPermissionUtils.showRefusePermissionDialog(QuickActivationActivity.this, getResources().getString(R.string.permission_request_camera_external_storage));
                     }
                 });

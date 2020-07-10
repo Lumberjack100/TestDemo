@@ -1,5 +1,6 @@
 package com.shmedo.mcloudapp.util.permission;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.DialogInterface;
 
@@ -15,9 +16,6 @@ import com.pgyersdk.update.javabean.AppBean;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.util.FileUtils;
 import com.shmedo.mcloudapp.util.XPermissionUtils;
-import com.yanzhenjie.permission.Action;
-import com.yanzhenjie.permission.AndPermission;
-import com.yanzhenjie.permission.runtime.Permission;
 
 import java.io.File;
 import java.util.List;
@@ -44,30 +42,29 @@ public class UpdataManagerUtil {
             return;
         }
 
-        AndPermission.with(activity)
-                .runtime()
-                .permission(Permission.READ_EXTERNAL_STORAGE, Permission.WRITE_EXTERNAL_STORAGE)
-                .rationale(new RuntimeRationale())
-                .onGranted(new Action<List<String>>() {
+        XPermissionUtils.requestPermissionsResult(activity, 200, new String[]{
+                        Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                new XPermissionUtils.OnPermissionListener() {
                     @Override
-                    public void onAction(List<String> data) {
+                    public void onPermissionGranted() {
                         if (tag) {
                             upDataVersion();
                         } else {
                             UpgradeVersion();
                         }
                     }
-                })
-                .onDenied(new Action<List<String>>() {
+
                     @Override
-                    public void onAction(List<String> data) {
-//                        if (AndPermission.hasAlwaysDeniedPermission(activity, Permission.READ_EXTERNAL_STORAGE, Permission.WRITE_EXTERNAL_STORAGE)) {
-//                            showStoragePermissionSettingDialog(activity);
-//                        }
-                        XPermissionUtils.showRefusePermissionDialog(activity, GlobalUtil.getString(R.string.permission_external_storage));
+                    public void onPermissionDenied(List<String> deniedPermissions) {
+                        boolean allNeverAskAgain = XPermissionUtils.isAllNeverAskAgain(activity, deniedPermissions);
+                        // 所有的权限都被勾上不再询问时，跳转到应用设置界面，引导用户手动打开权限
+                        if (allNeverAskAgain) {
+                            XPermissionUtils.showRefusePermissionDialog(activity, GlobalUtil.getString(R.string.message_permission_update_version_rationale));
+                        } else {
+                            ToastUtils.show(GlobalUtil.getString(R.string.message_permission_storage_denied));
+                        }
                     }
-                })
-                .start();
+                });
     }
 
 

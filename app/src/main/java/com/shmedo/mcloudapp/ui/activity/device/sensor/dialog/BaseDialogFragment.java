@@ -19,6 +19,8 @@ import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.ui.activity.ScanActivity;
 import com.shmedo.mcloudapp.util.XPermissionUtils;
 
+import java.util.List;
+
 import butterknife.ButterKnife;
 import timber.log.Timber;
 
@@ -76,7 +78,7 @@ public abstract class BaseDialogFragment extends DialogFragment {
                     }
 
                     @Override
-                    public void onPermissionDenied() {
+                    public void onPermissionDenied(List<String> deniedPermissions) {
                         XPermissionUtils.showRefusePermissionDialog(getActivity(),
                                 getActivity().getResources().getString(R.string.permission_request_camera_external_storage));
                     }

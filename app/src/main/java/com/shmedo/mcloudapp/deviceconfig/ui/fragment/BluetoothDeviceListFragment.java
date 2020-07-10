@@ -24,8 +24,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;
-import com.hjq.toast.ToastUtils;
 import com.dragon.core.MCloudApp;
+import com.hjq.toast.ToastUtils;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.base.BaseFragment;
 import com.shmedo.mcloudapp.bluetooth.BluetoothDeviceFindEventData;
@@ -48,6 +48,7 @@ import com.shmedo.mcloudapp.views.recycleviewitemdivider.DividerItemDecoration;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import butterknife.BindView;
@@ -241,7 +242,7 @@ public class BluetoothDeviceListFragment extends BaseFragment {
                     }
 
                     @Override
-                    public void onPermissionDenied() {
+                    public void onPermissionDenied(List<String> deniedPermissions) {
                         XPermissionUtils.showRefusePermissionDialog(getActivity(),
                                 getActivity().getResources().getString(R.string.permission_request_camera_external_storage));
                     }

@@ -15,6 +15,8 @@ import com.shmedo.mcloudapp.base.BaseActivity;
 import com.shmedo.mcloudapp.util.LocationUtils;
 import com.shmedo.mcloudapp.util.XPermissionUtils;
 
+import java.util.List;
+
 /**
  * 创建者:   gonghe <br/>
  * 创建时间:  2020/6/15 <br/>
@@ -89,7 +91,7 @@ public abstract class CheckMapNeedPermissionsActivity extends BaseActivity {
             }
 
             @Override
-            public void onPermissionDenied() {
+            public void onPermissionDenied(List<String> deniedPermissions) {
                 isNeedCheck = false;
                 showPermissionSettingDialog();
             }
