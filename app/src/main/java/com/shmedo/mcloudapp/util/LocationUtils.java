@@ -4,13 +4,8 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.location.LocationManager;
 import android.os.Build;
-import android.text.TextUtils;
-
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 
 import com.amap.api.location.AMapLocationClient;
 import com.amap.api.location.AMapLocationClientOption;
@@ -19,9 +14,7 @@ import com.dragon.core.util.GlobalUtil;
 import com.hjq.toast.ToastUtils;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.entity.SyncPositionBean;
-import com.shmedo.mcloudapp.util.permission.RuntimeRationale;
-import com.yanzhenjie.permission.Action;
-import com.yanzhenjie.permission.AndPermission;
+import com.shmedo.mcloudapp.util.permission.XPermissionUtils;
 import com.yanzhenjie.permission.runtime.Permission;
 
 import org.greenrobot.eventbus.EventBus;
@@ -88,25 +81,24 @@ public class LocationUtils {
             };
         }
 
-        AndPermission.with(activity)
-                .runtime()
-                .permission(locationNeedPermissions)
-                .rationale(new RuntimeRationale())
-                .onGranted(new Action<List<String>>() {
+        XPermissionUtils.requestPermissionsResult(activity, 200, locationNeedPermissions,
+                new XPermissionUtils.OnPermissionListener() {
                     @Override
-                    public void onAction(List<String> permissions) {
+                    public void onPermissionGranted() {
                         startLocalService();
                     }
-                })
-                .onDenied(new Action<List<String>>() {
+
                     @Override
-                    public void onAction(@NonNull List<String> permissions) {
-                        if (AndPermission.hasAlwaysDeniedPermission(activity, permissions)) {
-                            XPermissionUtils.showRefusePermissionDialog(activity, GlobalUtil.getString(R.string.permission_request_location));
+                    public void onPermissionDenied(List<String> deniedPermissions) {
+                        boolean allNeverAskAgain = XPermissionUtils.isAllNeverAskAgain(activity, deniedPermissions);
+                        // 所有的权限都被勾上不再询问时，跳转到应用设置界面，引导用户手动打开权限
+                        if (allNeverAskAgain) {
+                            XPermissionUtils.showRefusePermissionDialog(activity, GlobalUtil.getString(R.string.message_permission_location_rationale));
+                        } else {
+                            ToastUtils.show(GlobalUtil.getString(R.string.message_permission_location_denied));
                         }
                     }
-                })
-                .start();
+                });
     }
 
     public void startLocalService() {
@@ -171,28 +163,6 @@ public class LocationUtils {
         mOption.setLocationCacheEnable(true); //可选，设置是否使用缓存定位，默认为true
         mOption.setGeoLanguage(AMapLocationClientOption.GeoLanguage.DEFAULT);//可选，设置逆地理信息的语言，默认值为默认语言（根据所在地区选择语言）
         return mOption;
-    }
-
-    private void showSettingDialog(Activity context, final List<String> permissions) {
-        List<String> permissionNames = Permission.transformText(context, permissions);
-        @SuppressLint({"StringFormatInvalid", "LocalSuppress"})
-        String message = context.getString(R.string.message_permission_location_denied, TextUtils.join("\n", permissionNames));
-
-        new AlertDialog.Builder(context).setCancelable(false)
-                .setTitle("提示")
-                .setMessage(message)
-                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        AndPermission.with(context).runtime().setting().start(XPermissionUtils.REQUEST_CODE_OPEN_APPLICATION_SETTING);
-                    }
-                })
-                .setNegativeButton("取消", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                    }
-                })
-                .show();
     }
 
 }

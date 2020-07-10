@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.util;
+package com.shmedo.mcloudapp.util.permission;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
@@ -32,19 +32,16 @@ import java.util.List;
 public class XPermissionUtils {
 
     public static final int REQUEST_CODE_OPEN_APPLICATION_SETTING = 0x0010;
-
     public static final int REQUEST_CODE_SCAN = 0x1008;
 
     private static int mRequestCode = -1;
 
+    private static OnPermissionListener mOnPermissionListener;
+
+
     public static void requestPermissionsResult(Activity activity, int requestCode
             , String[] permission, OnPermissionListener callback) {
         requestPermissions(activity, requestCode, permission, callback);
-    }
-
-    public static void requestPermissionsResult(android.app.Fragment fragment, int requestCode
-            , String[] permission, OnPermissionListener callback) {
-        requestPermissions(fragment, requestCode, permission, callback);
     }
 
     public static void requestPermissionsResult(Fragment fragment, int requestCode
@@ -73,9 +70,6 @@ public class XPermissionUtils {
             if (object instanceof Activity) {
                 ((Activity) object).requestPermissions(deniedPermissions
                         .toArray(new String[deniedPermissions.size()]), requestCode);
-            } else if (object instanceof android.app.Fragment) {
-                ((android.app.Fragment) object).requestPermissions(deniedPermissions
-                        .toArray(new String[deniedPermissions.size()]), requestCode);
             } else if (object instanceof Fragment) {
                 ((Fragment) object).requestPermissions(deniedPermissions
                         .toArray(new String[deniedPermissions.size()]), requestCode);
@@ -93,9 +87,7 @@ public class XPermissionUtils {
      */
     private static Context getContext(Object object) {
         Context context;
-        if (object instanceof android.app.Fragment) {
-            context = ((android.app.Fragment) object).getActivity();
-        } else if (object instanceof Fragment) {
+        if (object instanceof Fragment) {
             context = ((Fragment) object).getActivity();
         } else {
             context = (Activity) object;
@@ -162,10 +154,9 @@ public class XPermissionUtils {
         }
 
         boolean isActivity = object instanceof Activity;
-        boolean isSupportFragment = object instanceof Fragment;
-        boolean isAppFragment = object instanceof android.app.Fragment;
+        boolean isFragment = object instanceof Fragment;
 
-        if (!(isActivity || isSupportFragment || isAppFragment)) {
+        if (!(isActivity || isFragment)) {
             throw new IllegalArgumentException("Caller must be an Activity or a Fragment");
         }
     }
@@ -187,7 +178,7 @@ public class XPermissionUtils {
         return true;
     }
 
-    public static boolean isAllNeverAskAgain(Activity activity,List<String> deniedPermissions){
+    public static boolean isAllNeverAskAgain(Activity activity, List<String> deniedPermissions) {
         boolean allNeverAskAgain = true;
         for (String deniedPermission : deniedPermissions) {
             if (ActivityCompat.shouldShowRequestPermissionRationale(activity, deniedPermission)) {
@@ -257,5 +248,4 @@ public class XPermissionUtils {
         void onPermissionDenied(List<String> deniedPermissions);
     }
 
-    private static OnPermissionListener mOnPermissionListener;
 }

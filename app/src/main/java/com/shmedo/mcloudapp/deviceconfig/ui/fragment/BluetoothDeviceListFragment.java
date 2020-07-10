@@ -1,6 +1,5 @@
 package com.shmedo.mcloudapp.deviceconfig.ui.fragment;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
@@ -42,13 +41,13 @@ import com.shmedo.mcloudapp.ui.activity.ConfigDASActivity;
 import com.shmedo.mcloudapp.ui.activity.ConfigE60Activity;
 import com.shmedo.mcloudapp.ui.activity.ScanActivity;
 import com.shmedo.mcloudapp.user.ui.activity.NewUserInfoActivity;
-import com.shmedo.mcloudapp.util.XPermissionUtils;
+import com.shmedo.mcloudapp.util.permission.PermissionHelper;
+import com.shmedo.mcloudapp.util.permission.XPermissionUtils;
 import com.shmedo.mcloudapp.views.recycleviewitemdivider.DividerItemDecoration;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 import butterknife.BindView;
@@ -167,7 +166,7 @@ public class BluetoothDeviceListFragment extends BaseFragment {
                 break;
 
             case R.id.iv_open_camera_scan:
-                doScanButtonClick();
+                PermissionHelper.requestScanPermissions(BluetoothDeviceListFragment.this);
                 break;
         }
     }
@@ -232,22 +231,6 @@ public class BluetoothDeviceListFragment extends BaseFragment {
         deviceAdapter.addData(eventData.getNewDevice());
     }
 
-    private void doScanButtonClick() {
-        XPermissionUtils.requestPermissionsResult(getActivity(), 200, new String[]{
-                        Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                new XPermissionUtils.OnPermissionListener() {
-                    @Override
-                    public void onPermissionGranted() {
-                        ScanActivity.startActivityForResultByFragment(BluetoothDeviceListFragment.this, XPermissionUtils.REQUEST_CODE_SCAN);
-                    }
-
-                    @Override
-                    public void onPermissionDenied(List<String> deniedPermissions) {
-                        XPermissionUtils.showRefusePermissionDialog(getActivity(),
-                                getActivity().getResources().getString(R.string.permission_request_camera_external_storage));
-                    }
-                });
-    }
 
     @SuppressLint("MissingSuperCall")
     @Override

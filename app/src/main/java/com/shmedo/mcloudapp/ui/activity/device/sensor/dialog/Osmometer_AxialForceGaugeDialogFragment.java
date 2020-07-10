@@ -1,5 +1,7 @@
 package com.shmedo.mcloudapp.ui.activity.device.sensor.dialog;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -20,10 +22,13 @@ import com.shmedo.core.model.SensorGudanPercolateInfo;
 import com.shmedo.core.model.SensorKangPercolateInfo;
 import com.shmedo.core.utils.StringUtil;
 import com.shmedo.mcloudapp.R;
+import com.shmedo.mcloudapp.ui.activity.ScanActivity;
 import com.shmedo.mcloudapp.ui.activity.device.sensor.BaseSensorConfigActivity;
 import com.shmedo.mcloudapp.ui.activity.device.sensor.view.SensorBGK4500View;
 import com.shmedo.mcloudapp.ui.activity.device.sensor.view.SensorVWP03View;
 import com.shmedo.mcloudapp.ui.activity.device.sensor.view.SensorZLJ300tView;
+import com.shmedo.mcloudapp.util.permission.PermissionHelper;
+import com.shmedo.mcloudapp.util.permission.XPermissionUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -189,7 +194,7 @@ public class Osmometer_AxialForceGaugeDialogFragment extends BaseDialogFragment 
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.rl_scan_config:
-                doScanButtonClick();
+                PermissionHelper.requestScanPermissions(Osmometer_AxialForceGaugeDialogFragment.this);
                 break;
 
             case R.id.tv_cancel:
@@ -240,8 +245,8 @@ public class Osmometer_AxialForceGaugeDialogFragment extends BaseDialogFragment 
         dismiss();
     }
 
-    @Override
-    protected void scanResult(String result) {
+
+    private void scanResult(String result) {
         if (TextUtils.isEmpty(result)) {
             ToastUtils.show("二维码不正确!");
             return;
@@ -324,5 +329,20 @@ public class Osmometer_AxialForceGaugeDialogFragment extends BaseDialogFragment 
                 });
         MaterialDialog mMaterialDialog = mBuilder.build();
         mMaterialDialog.show();
+    }
+
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == XPermissionUtils.REQUEST_CODE_SCAN) {
+            if (resultCode == Activity.RESULT_OK) {
+                if (data != null) {
+                    String content = data.getStringExtra(ScanActivity.CODED_CONTENT);
+                    Timber.d("扫描结果为：" + content);
+                    scanResult(content);
+                }
+            }
+        }
     }
 }

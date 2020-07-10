@@ -1,17 +1,8 @@
 package com.shmedo.mcloudapp.util;
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.DialogInterface;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
-
-import com.shmedo.mcloudapp.ui.activity.device.senior.LogPrintActivity;
-import com.shmedo.mcloudapp.util.permission.RuntimeRationale;
-import com.yanzhenjie.permission.Action;
-import com.yanzhenjie.permission.AndPermission;
-import com.yanzhenjie.permission.runtime.Permission;
 
 import java.io.File;
 import java.io.IOException;
@@ -138,7 +129,6 @@ public class LogFileUtil {
         return format.format(new Date(System.currentTimeMillis())) + ".txt";
     }
 
-
     public static File getLogDir(Context context) {
         File log = context.getExternalFilesDir("logs");
         if (log == null) {
@@ -149,7 +139,6 @@ public class LogFileUtil {
         }
         return log;
     }
-
 
     public static String getLogPath() {
         String logPath = "";
@@ -167,37 +156,4 @@ public class LogFileUtil {
         return logPath;
     }
 
-    public static void requestPermissionForSaveLog(final Activity activity) {
-        if (!FileUtils.externalAvailable()) {
-            new AlertDialog.Builder(activity)
-                    .setTitle("提示")
-                    .setMessage("请允许写入文件权限")
-                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                        }
-                    })
-                    .show();
-            return;
-        }
-
-        AndPermission.with(activity)
-                .runtime()
-                .permission(Permission.READ_EXTERNAL_STORAGE, Permission.WRITE_EXTERNAL_STORAGE)
-                .rationale(new RuntimeRationale())
-                .onGranted(new Action<List<String>>() {
-                    @Override
-                    public void onAction(List<String> data) {
-                        LogPrintActivity.startActivity(activity);
-                    }
-                })
-                .onDenied(new Action<List<String>>() {
-                    @Override
-                    public void onAction(List<String> data) {
-
-                    }
-                })
-                .start();
-    }
 }

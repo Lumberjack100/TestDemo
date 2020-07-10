@@ -22,7 +22,7 @@ import com.shmedo.mcloudapp.ui.PrivacyTipDialog;
 import com.shmedo.mcloudapp.util.DaoManager;
 import com.shmedo.mcloudapp.util.GsonFactory;
 import com.shmedo.mcloudapp.util.LoginManager;
-import com.shmedo.mcloudapp.util.XPermissionUtils;
+import com.shmedo.mcloudapp.util.permission.XPermissionUtils;
 
 import java.util.Date;
 import java.util.List;

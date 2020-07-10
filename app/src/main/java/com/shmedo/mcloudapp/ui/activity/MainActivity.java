@@ -65,7 +65,7 @@ import com.shmedo.mcloudapp.ui.SearchDataUI;
 import com.shmedo.mcloudapp.user.ui.activity.NewUserInfoActivity;
 import com.shmedo.mcloudapp.util.DaoManager;
 import com.shmedo.mcloudapp.util.GsonFactory;
-import com.shmedo.mcloudapp.util.XPermissionUtils;
+import com.shmedo.mcloudapp.util.permission.XPermissionUtils;
 import com.shmedo.mcloudapp.util.permission.UpdataManagerUtil;
 import com.yanzhenjie.permission.Action;
 import com.yanzhenjie.permission.AndPermission;
@@ -592,7 +592,7 @@ public class MainActivity extends BaseActivity {
                     @Override
                     public void onAction(@NonNull List<String> permissions) {
                         if (AndPermission.hasAlwaysDeniedPermission(MainActivity.this, permissions)) {
-                            XPermissionUtils.showRefusePermissionDialog(MainActivity.this, GlobalUtil.getString(R.string.permission_request_location));
+                            XPermissionUtils.showRefusePermissionDialog(MainActivity.this, GlobalUtil.getString(R.string.message_permission_location_rationale));
                         }
                     }
                 })

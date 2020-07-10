@@ -1,5 +1,6 @@
 package com.shmedo.mcloudapp.ui.activity.device;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -16,6 +17,8 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.dragon.core.MCloudApp;
+import com.dragon.core.util.GlobalUtil;
 import com.hjq.toast.ToastUtils;
 import com.kyleduo.switchbutton.SwitchButton;
 import com.shmedo.core.cmd.CommandManager;
@@ -26,21 +29,23 @@ import com.shmedo.core.enums.CommandType;
 import com.shmedo.core.enums.SetRemoteUpgrade;
 import com.shmedo.core.enums.WorkModel;
 import com.shmedo.core.utils.StringUtil;
-import com.dragon.core.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.entity.SyncPositionBean;
 import com.shmedo.mcloudapp.entity.event.BluetoothStateEvent;
 import com.shmedo.mcloudapp.interfaces.Extras;
 import com.shmedo.mcloudapp.ui.activity.device.senior.InstructionDebugActivity;
+import com.shmedo.mcloudapp.ui.activity.device.senior.LogPrintActivity;
 import com.shmedo.mcloudapp.ui.activity.device.senior.ProductRegistrationActivity;
 import com.shmedo.mcloudapp.util.AdvanceSetDialogUtils;
+import com.shmedo.mcloudapp.util.FileUtils;
 import com.shmedo.mcloudapp.util.KeyBordUtils;
 import com.shmedo.mcloudapp.util.LocationUtils;
-import com.shmedo.mcloudapp.util.LogFileUtil;
+import com.shmedo.mcloudapp.util.permission.XPermissionUtils;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.util.List;
 import java.util.Locale;
 
 import butterknife.BindView;
@@ -216,7 +221,7 @@ public class DeviceAdvanceConfigActivity extends BaseDeviceConnectActivity {
 
             case R.id.rl_log_print://日志输出
                 if (checkIsBluetoothConnected()) {
-                    LogFileUtil.requestPermissionForSaveLog(this);
+                    requestPermissionForSaveLog();
                 }
                 break;
 
@@ -226,6 +231,42 @@ public class DeviceAdvanceConfigActivity extends BaseDeviceConnectActivity {
                 }
                 break;
         }
+    }
+
+    private boolean checkIsBluetoothConnected() {
+        if (!MCloudApp.isIsBluetoothDeviceConnected()) {
+            ToastUtils.show(getString(R.string.param_config_bluetooth_disconnect_warn));
+            return false;
+        }
+
+        return true;
+    }
+
+    private void requestPermissionForSaveLog() {
+        if (!FileUtils.externalAvailable()) {
+            ToastUtils.show(getString(R.string.operation_failed_without_sdcard));
+            return;
+        }
+
+        XPermissionUtils.requestPermissionsResult(this, 200, new String[]{
+                        Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                new XPermissionUtils.OnPermissionListener() {
+                    @Override
+                    public void onPermissionGranted() {
+                        LogPrintActivity.startActivity(DeviceAdvanceConfigActivity.this);
+                    }
+
+                    @Override
+                    public void onPermissionDenied(List<String> deniedPermissions) {
+                        boolean allNeverAskAgain = XPermissionUtils.isAllNeverAskAgain(DeviceAdvanceConfigActivity.this, deniedPermissions);
+                        // 所有的权限都被勾上不再询问时，跳转到应用设置界面，引导用户手动打开权限
+                        if (allNeverAskAgain) {
+                            XPermissionUtils.showRefusePermissionDialog(DeviceAdvanceConfigActivity.this, GlobalUtil.getString(R.string.message_permission_storage_rationale));
+                        } else {
+                            ToastUtils.show(GlobalUtil.getString(R.string.message_permission_storage_denied));
+                        }
+                    }
+                });
     }
 
     private MaterialDialog.Builder mBuilder;
@@ -341,7 +382,6 @@ public class DeviceAdvanceConfigActivity extends BaseDeviceConnectActivity {
         }
     }
 
-
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void getConfig(String messageEvent) {
         if (!TextUtils.isEmpty(messageEvent) && messageEvent.startsWith("$$")) {
@@ -364,16 +404,6 @@ public class DeviceAdvanceConfigActivity extends BaseDeviceConnectActivity {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(BluetoothStateEvent bluetoothStateEvent) {
         mSpDebugMode.setEnabled(bluetoothStateEvent.isConnected);
-    }
-
-
-    private boolean checkIsBluetoothConnected() {
-        if (!MCloudApp.isIsBluetoothDeviceConnected()) {
-            ToastUtils.show(getString(R.string.param_config_bluetooth_disconnect_warn));
-            return false;
-        }
-
-        return true;
     }
 
     @Override

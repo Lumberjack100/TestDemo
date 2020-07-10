@@ -13,7 +13,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.base.BaseActivity;
 import com.shmedo.mcloudapp.util.LocationUtils;
-import com.shmedo.mcloudapp.util.XPermissionUtils;
+import com.shmedo.mcloudapp.util.permission.XPermissionUtils;
 
 import java.util.List;
 
@@ -100,7 +100,7 @@ public abstract class CheckMapNeedPermissionsActivity extends BaseActivity {
 
     private void showPermissionSettingDialog() {
         MaterialDialog.Builder mBuilder = new MaterialDialog.Builder(CheckMapNeedPermissionsActivity.this)
-                .title("权限申请").content(getResources().getString(R.string.permission_request_location))
+                .title("权限申请").content(getResources().getString(R.string.message_permission_location_rationale))
                 .positiveText("去设置")
                 .positiveColor(getResources().getColor(R.color.colorPrimary))
                 .cancelable(false)

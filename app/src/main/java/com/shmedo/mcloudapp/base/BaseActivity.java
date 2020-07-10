@@ -32,7 +32,7 @@ import com.shmedo.mcloudapp.util.ActivityCollector;
 import com.shmedo.mcloudapp.util.KeyBordUtils;
 import com.shmedo.mcloudapp.util.NetworkUtils;
 import com.shmedo.mcloudapp.util.UiUtils;
-import com.shmedo.mcloudapp.util.XPermissionUtils;
+import com.shmedo.mcloudapp.util.permission.XPermissionUtils;
 import com.shmedo.mcloudapp.util.common.HandleBackUtil;
 
 import org.greenrobot.eventbus.EventBus;

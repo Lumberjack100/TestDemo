@@ -1,9 +1,6 @@
 package com.shmedo.mcloudapp.ui.activity.device.sensor.dialog;
 
-import android.Manifest;
-import android.app.Activity;
 import android.app.Dialog;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -16,13 +13,8 @@ import androidx.fragment.app.DialogFragment;
 
 import com.shmedo.core.model.CollectorSensorParamsInfo;
 import com.shmedo.mcloudapp.R;
-import com.shmedo.mcloudapp.ui.activity.ScanActivity;
-import com.shmedo.mcloudapp.util.XPermissionUtils;
-
-import java.util.List;
 
 import butterknife.ButterKnife;
-import timber.log.Timber;
 
 
 /**
@@ -68,42 +60,6 @@ public abstract class BaseDialogFragment extends DialogFragment {
         window.setAttributes(wlp);
     }
 
-    protected void doScanButtonClick() {
-        XPermissionUtils.requestPermissionsResult(getActivity(), 200, new String[]{
-                        Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                new XPermissionUtils.OnPermissionListener() {
-                    @Override
-                    public void onPermissionGranted() {
-                        ScanActivity.startActivityForResultByFragment(BaseDialogFragment.this, XPermissionUtils.REQUEST_CODE_SCAN);
-                    }
-
-                    @Override
-                    public void onPermissionDenied(List<String> deniedPermissions) {
-                        XPermissionUtils.showRefusePermissionDialog(getActivity(),
-                                getActivity().getResources().getString(R.string.permission_request_camera_external_storage));
-                    }
-                });
-    }
-
-    protected void scanResult(String content) {
-
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        switch (requestCode) {
-            case XPermissionUtils.REQUEST_CODE_SCAN:
-                if (resultCode == Activity.RESULT_OK) {
-                    if (data != null) {
-                        String content = data.getStringExtra(ScanActivity.CODED_CONTENT);
-                        Timber.d("扫描结果为：" + content);
-                        scanResult(content);
-                    }
-                }
-                break;
-        }
-    }
 
     public interface DialogFragmentClickListener<T> {
 

@@ -15,7 +15,6 @@ import com.pgyersdk.update.UpdateManagerListener;
 import com.pgyersdk.update.javabean.AppBean;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.util.FileUtils;
-import com.shmedo.mcloudapp.util.XPermissionUtils;
 
 import java.io.File;
 import java.util.List;
