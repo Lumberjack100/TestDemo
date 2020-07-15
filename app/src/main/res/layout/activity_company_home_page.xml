@@ -50,9 +50,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_marginStart="@dimen/dimen_size_20"
-                android:background="@color/gray_f2f2f2" />
+                android:background="@color/gray_f2f2f2"
+                android:visibility="gone"/>
 
-            <LinearLayout style="@style/UserInfo_LinearLayoutStyle">
+            <LinearLayout style="@style/UserInfo_LinearLayoutStyle"
+                android:visibility="gone">
 
                 <TextView
                     android:layout_width="wrap_content"

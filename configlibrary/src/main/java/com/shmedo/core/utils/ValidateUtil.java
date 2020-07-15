@@ -21,6 +21,11 @@ public class ValidateUtil {
     private static final String REGEX_MOBILE = "^((13[0-9])|(14[5|7])|(15([0-3]|[5-9]))|(18[0,5-9]))\\d{8}$";
 
     /**
+     * 正则表达式：验证邮箱
+     */
+    private static final String REGEX_MAIL = "^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\\.[a-zA-Z0-9_-]+)+$";
+
+    /**
      * 正则表达式：验证数字
      */
     private static final String REGEX_NUMERIC = "^[0-9]*$";
@@ -38,7 +43,7 @@ public class ValidateUtil {
     /**
      * 正则表达式：URL
      */
-    private static final String REGEX_URL = "[-A-Za-z0-9+&@#/%?=~_|!:,.;]+[-A-Za-z0-9+&@#/%=~_|]";
+    private static final String REGEX_URL = "^[-A-Za-z0-9+&@#/%?=~_|!:,.;]+[-A-Za-z0-9+&@#/%=~_|]$";
 
 
     /***
@@ -47,17 +52,18 @@ public class ValidateUtil {
      * @param input
      * @return
      */
-    public static boolean isInteger(String input){
+    public static boolean isInteger(String input) {
         return Pattern.matches(REGEX_INTEGER, input);
     }
 
 
     /**
      * 判断 String 是否是 double<br>通过正则表达式判断
+     *
      * @param input
      * @return
      */
-    public static boolean isDouble(String input){
+    public static boolean isDouble(String input) {
         return Pattern.matches(REGEX_DOUBLE, input);
     }
 
@@ -114,6 +120,19 @@ public class ValidateUtil {
     }
 
     /**
+     * 验证邮箱是否正确
+     * @param mail
+     * @return
+     */
+    public static boolean checkMail(String mail){
+        if (TextUtils.isEmpty(mail)) {
+            return false;
+        }
+
+        return Pattern.matches(REGEX_MAIL, mail);
+    }
+
+    /**
      * 检查采集器地址是否合法；地址可以为空
      *
      * @param address
@@ -124,7 +143,7 @@ public class ValidateUtil {
             return true;
         }
 
-        if(!address.contains(":")){
+        if (!address.contains(":")) {
             return false;
         }
 
