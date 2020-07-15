@@ -72,6 +72,7 @@
         android:layout_height="45dp"
         android:layout_margin="20dp"
         android:background="@drawable/btn_select"
+        android:foreground="?attr/selectableItemBackground"
         android:text="保存通用配置"
         android:textColor="@color/white" />
 

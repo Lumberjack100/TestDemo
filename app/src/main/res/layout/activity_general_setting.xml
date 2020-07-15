@@ -177,13 +177,14 @@
     </LinearLayout>
 
     <Button
-        android:id="@+id/btn_confirm_complete"
+        android:id="@+id/btn_confirm"
         android:layout_width="match_parent"
         android:layout_height="45dp"
         android:layout_marginLeft="20dp"
         android:layout_marginTop="40dp"
         android:layout_marginRight="20dp"
         android:background="@drawable/btn_select"
+        android:foreground="?attr/selectableItemBackground"
         android:text="确定"
         android:textColor="@color/white" />
 

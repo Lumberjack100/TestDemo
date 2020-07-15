@@ -62,7 +62,7 @@ public class ADMESensorExecutiveAgencyConfigActivity extends BaseDeviceConnectAc
     @BindView(R.id.sensor_correction_value_layout)
     View sensorCorrectionValueLayout;
 
-    @BindView(R.id.btn_confirm_complete)
+    @BindView(R.id.btn_confirm)
     Button btnConfirm;
 
     private ImageView mIvCollectorAddress, mIvCollectorCollectInterval, mIvCollectorSolutionInterval, mIvCommunicationModuleSleepInterval, mIvSensorType, mIvSensorAddress, mIvSensorCorrectionValue;
@@ -555,7 +555,7 @@ public class ADMESensorExecutiveAgencyConfigActivity extends BaseDeviceConnectAc
                 showTipDialog(getResources().getString(R.string.adme_measuring_pitch));
                 break;
 
-            case R.id.btn_confirm_complete:
+            case R.id.btn_confirm:
                 if (!MCloudApp.isIsBluetoothDeviceConnected()) {
                     ToastUtils.show(getString(R.string.param_config_bluetooth_disconnect_warn));
                     return;

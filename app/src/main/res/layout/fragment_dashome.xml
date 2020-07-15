@@ -293,6 +293,7 @@
             android:layout_marginBottom="20dp"
             android:layout_marginRight="20dp"
             android:background="@drawable/btn_select"
+            android:foreground="?attr/selectableItemBackground"
             android:text="保存"
             android:textColor="@color/white" />
 

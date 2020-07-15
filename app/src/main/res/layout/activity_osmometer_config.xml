@@ -264,7 +264,7 @@
         android:layout_height="1dp" />
 
     <Button
-        android:id="@+id/btn_confirm_complete"
+        android:id="@+id/btn_confirm"
         android:layout_width="match_parent"
         android:layout_height="45dp"
         android:layout_marginLeft="20dp"
@@ -272,6 +272,7 @@
         android:layout_marginRight="20dp"
         android:layout_marginBottom="40dp"
         android:background="@drawable/btn_select"
+        android:foreground="?attr/selectableItemBackground"
         android:text="确定"
         android:textColor="@color/white"
         android:textSize="@dimen/text_size_16" />

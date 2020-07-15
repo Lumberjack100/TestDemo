@@ -179,6 +179,7 @@
                 android:layout_marginTop="30dp"
                 android:layout_marginRight="10dp"
                 android:background="@drawable/btn_select"
+                android:foreground="?attr/selectableItemBackground"
                 android:text="查 询"
                 android:textColor="@color/white"
                 android:textSize="18sp" />

@@ -38,6 +38,7 @@
             android:layout_width="match_parent"
             android:layout_height="45dp"
             android:background="@drawable/btn_select"
+            android:foreground="?attr/selectableItemBackground"
             android:text="同意"
             android:textColor="@color/white"
             android:textSize="@dimen/text_size_18" />

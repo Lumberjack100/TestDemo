@@ -156,6 +156,7 @@
             android:layout_height="40dp"
             android:layout_weight="1"
             android:background="@drawable/btn_select"
+            android:foreground="?attr/selectableItemBackground"
             android:text="遥 测"
             android:textColor="@color/white"
             android:textSize="18sp" />

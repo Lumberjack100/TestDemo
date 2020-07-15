@@ -45,7 +45,7 @@ public class RainConfigActivity extends BaseDeviceConnectActivity {
     @BindView(R.id.sp_rain)
     Spinner mSpRain;
 
-    @BindView(R.id.btn_confirm_complete)
+    @BindView(R.id.btn_confirm)
     Button mBtnConfirmComplete;
 
     private String rainResult;
@@ -117,14 +117,14 @@ public class RainConfigActivity extends BaseDeviceConnectActivity {
     }
 
 
-    @OnClick({R.id.back, R.id.btn_confirm_complete})
+    @OnClick({R.id.back, R.id.btn_confirm})
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.back:
                 onBackPressed();
                 break;
 
-            case R.id.btn_confirm_complete:
+            case R.id.btn_confirm:
                 if (!MCloudApp.isIsBluetoothDeviceConnected()) {
                     ToastUtils.show(getString(R.string.param_config_bluetooth_disconnect_warn));
                     return;

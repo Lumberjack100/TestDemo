@@ -71,7 +71,7 @@ public class GeneralSettingActivity extends BaseDeviceConnectActivity {
     @BindView(R.id.et_collect_time)
     EditText mEtCollectTime;
 
-    @BindView(R.id.btn_confirm_complete)
+    @BindView(R.id.btn_confirm)
     Button mBtnConfirmComplete;
 
     private String collectorModel;//采集器类型
@@ -150,7 +150,7 @@ public class GeneralSettingActivity extends BaseDeviceConnectActivity {
     }
 
 
-    @OnClick({R.id.back, R.id.iv_collector_address, R.id.iv_calculating_time, R.id.iv_standby_time, R.id.iv_collect_time, R.id.btn_confirm_complete})
+    @OnClick({R.id.back, R.id.iv_collector_address, R.id.iv_calculating_time, R.id.iv_standby_time, R.id.iv_collect_time, R.id.btn_confirm})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.back:
@@ -173,7 +173,7 @@ public class GeneralSettingActivity extends BaseDeviceConnectActivity {
                 showTipDialog(getResources().getString(R.string.collect_time));
                 break;
 
-            case R.id.btn_confirm_complete:
+            case R.id.btn_confirm:
                 if (!MCloudApp.isIsBluetoothDeviceConnected()) {
                     ToastUtils.show(getString(R.string.param_config_bluetooth_disconnect_warn));
                     return;

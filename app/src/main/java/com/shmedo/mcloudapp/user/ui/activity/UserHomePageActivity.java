@@ -13,9 +13,12 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Base64;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
@@ -61,7 +64,7 @@ import timber.log.Timber;
 /**
  * 用户个人详细信息页
  */
-public class UserHomePageActivity extends BaseActivity {
+public class UserHomePageActivity extends BaseActivity implements TextWatcher {
     private static final String TEMP_PHOTO = "taken_photo.jpg";
     private static final int TAKE_PHOTO = 0x1000;
     private static final int CHOOSE_FROM_ALBUM = 0x1001;
@@ -83,6 +86,9 @@ public class UserHomePageActivity extends BaseActivity {
 
     @BindView(R.id.tv_phone)
     TextView mTvPhone;
+
+    @BindView(R.id.btn_confirm)
+    Button mBtnConfirm;
 
     private UserInfo userInfo;
     private UserInfo.UserBean user;
@@ -109,6 +115,7 @@ public class UserHomePageActivity extends BaseActivity {
         setToolBar(R.id.toolbar);
         mToolbarTitle.setText("我的信息");
         initData();
+//        initListener();
     }
 
     private void initData() {
@@ -116,6 +123,33 @@ public class UserHomePageActivity extends BaseActivity {
         if (userInfo != null && userInfo.getUser() != null) {
             user = userInfo.getUser();
             GlideUtils.loadImage(this, user.getHeadPhotoPath(), mIvUserAvatar, R.drawable.ic_avatar_default);
+        }
+
+        mBtnConfirm.setEnabled(false);
+    }
+
+    private void initListener() {
+        mEtUserName.addTextChangedListener(this);
+        mEtTitle.addTextChangedListener(this);
+        mEtEmail.addTextChangedListener(this);
+    }
+
+    @Override
+    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+    }
+
+    @Override
+    public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+    }
+
+    @Override
+    public void afterTextChanged(Editable s) {
+        if (!mEtUserName.getText().toString().equals(userName) || !mEtTitle.getText().toString().equals(title) || !mEtEmail.getText().toString().equals(email)) {
+            mBtnConfirm.setEnabled(true);
+        } else {
+            mBtnConfirm.setEnabled(false);
         }
     }
 
@@ -127,11 +161,17 @@ public class UserHomePageActivity extends BaseActivity {
 
     private void updateView() {
         if (user != null) {
-            mEtUserName.setText(user.getName() != null ? user.getName() : "");
-            mEtTitle.setText(user.getPosition() != null ? user.getPosition() : "");
-            mEtEmail.setText(user.getEmail() != null ? user.getEmail() : "");
+            userName = user.getName() != null ? user.getName() : "";
+            title = user.getPosition() != null ? user.getPosition() : "";
+            email = user.getEmail() != null ? user.getEmail() : "";
+
+            mEtUserName.setText(userName);
+            mEtTitle.setText(title);
+            mEtEmail.setText(email);
             mTvPhone.setText(user.getCellPhone() != null ? user.getCellPhone() : "");
         }
+
+        initListener();
     }
 
 

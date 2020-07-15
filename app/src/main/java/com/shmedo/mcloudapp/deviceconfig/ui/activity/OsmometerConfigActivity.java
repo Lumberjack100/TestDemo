@@ -87,7 +87,7 @@ public class OsmometerConfigActivity extends BaseDeviceConnectActivity {
     @BindView(R.id.et_note)
     EditText mEtNote;
 
-    @BindView(R.id.btn_confirm_complete)
+    @BindView(R.id.btn_confirm)
     Button mBtnConfirmComplete;
 
     private String cmdOsmometerAddress;//渗压计地址
@@ -163,7 +163,7 @@ public class OsmometerConfigActivity extends BaseDeviceConnectActivity {
 
 
     @OnClick({R.id.back, R.id.iv_osmometer_address, R.id.iv_water_alarm_value, R.id.iv_water_revised,
-            R.id.iv_osmometer_cord, R.id.iv_nozzel_height, R.id.btn_confirm_complete})
+            R.id.iv_osmometer_cord, R.id.iv_nozzel_height, R.id.btn_confirm})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.back:
@@ -191,7 +191,7 @@ public class OsmometerConfigActivity extends BaseDeviceConnectActivity {
                 showDialog();
                 break;
 
-            case R.id.btn_confirm_complete:
+            case R.id.btn_confirm:
                 if (!MCloudApp.isIsBluetoothDeviceConnected()) {
                     ToastUtils.show(getString(R.string.param_config_bluetooth_disconnect_warn));
                     return;
