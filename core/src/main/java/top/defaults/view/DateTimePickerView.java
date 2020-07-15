@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.util.AttributeSet;
 
+import com.dragon.core.R;
+
 import java.lang.ref.WeakReference;
 import java.util.Calendar;
 import java.util.Locale;

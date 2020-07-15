@@ -16,10 +16,10 @@ import com.dragon.core.MCloudApp;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.hjq.toast.ToastUtils;
 import com.shmedo.mcloudapp.R;
-import com.shmedo.mcloudapp.interfaces.Extras;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.ADMEHomeFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.DeviceDetailsFragment;
-import com.shmedo.mcloudapp.deviceconfig.ui.fragment.QueryDataFragment;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.QueryDeviceDataFragment;
+import com.shmedo.mcloudapp.interfaces.Extras;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -42,7 +42,7 @@ public class ConfigADMEActivity extends BaseDeviceConnectActivity {
     BottomNavigationView bottomNavigationView;
 
     private ADMEHomeFragment admeHomeFragment;
-    private QueryDataFragment queryDataFragment;        //查询数据
+    private QueryDeviceDataFragment queryDataFragment;        //查询数据
     private DeviceDetailsFragment deviceDetailsFragment;//设备详情
     private Fragment currentFragment;
 
@@ -96,7 +96,7 @@ public class ConfigADMEActivity extends BaseDeviceConnectActivity {
             String curTag = savedInstanceState.getString("CurrentFragment");
             currentFragment = getSupportFragmentManager().findFragmentByTag(curTag);
             admeHomeFragment = (ADMEHomeFragment) getSupportFragmentManager().findFragmentByTag(ADMEHomeFragment.class.getName());
-            queryDataFragment = (QueryDataFragment) getSupportFragmentManager().findFragmentByTag(QueryDataFragment.class.getName());
+            queryDataFragment = (QueryDeviceDataFragment) getSupportFragmentManager().findFragmentByTag(QueryDeviceDataFragment.class.getName());
             deviceDetailsFragment = (DeviceDetailsFragment) getSupportFragmentManager().findFragmentByTag(DeviceDetailsFragment.class.getName());
 
             // 解决重叠问题
@@ -108,7 +108,7 @@ public class ConfigADMEActivity extends BaseDeviceConnectActivity {
                     .commit();
         } else {
             admeHomeFragment = new ADMEHomeFragment();
-            queryDataFragment = new QueryDataFragment();
+            queryDataFragment = new QueryDeviceDataFragment();
             deviceDetailsFragment = new DeviceDetailsFragment();
             switchFrgment(0);
         }

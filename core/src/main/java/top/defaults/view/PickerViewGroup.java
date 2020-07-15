@@ -7,6 +7,8 @@ import android.util.AttributeSet;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
+import com.dragon.core.R;
+
 import static top.defaults.view.PickerView.DEFAULT_MAX_OFFSET_ITEM_COUNT;
 
 @SuppressWarnings("unused")
@@ -80,7 +82,7 @@ public class PickerViewGroup extends LinearLayout {
     }
 
     protected void addPickerView(PickerView pickerView, boolean narrow) {
-        LinearLayout.LayoutParams layoutParams = new LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, narrow ? 1 : 2);
+        LayoutParams layoutParams = new LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, narrow ? 1 : 2);
         addView(pickerView, layoutParams);
     }
 }

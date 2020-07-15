@@ -1,2 +1,2 @@
-include ':app', ':picker-view',':configlibrary'
+include ':app',':configlibrary'
 include ':core'

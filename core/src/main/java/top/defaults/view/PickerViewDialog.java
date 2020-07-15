@@ -3,6 +3,8 @@ package top.defaults.view;
 import android.content.Context;
 import android.view.ViewStub;
 
+import com.dragon.core.R;
+
 public class PickerViewDialog extends BottomFullWidthDialog {
 
     public PickerViewDialog(Context context) {

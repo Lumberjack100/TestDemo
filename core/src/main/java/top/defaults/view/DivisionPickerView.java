@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.util.AttributeSet;
 
+import com.dragon.core.R;
+
 import java.util.List;
 
 public class DivisionPickerView extends PickerViewGroup {
