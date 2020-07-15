@@ -34,8 +34,6 @@ public class MCloudApp {
 
     private static String httpsNoApiVersionAddress="chaxun.shmedo.cn";
 
-    private static String httpServiceAddress = "chaxun.shmedo.cn";
-
     private static boolean isNetworkConnected = true;
 
     private static boolean isBluetoothDeviceConnected = false;
@@ -95,6 +93,7 @@ public class MCloudApp {
 
 
     public static String getHttpServiceAddress() {
+        String httpServiceAddress = "chaxun.shmedo.cn";
         if (TextUtils.isEmpty(httpServiceAddress))
             return httpServiceAddress;
         return "http://" + httpServiceAddress;
@@ -174,11 +173,4 @@ public class MCloudApp {
     }
 
 
-    public static String getUserHeadPhotoFileName() {
-        if (currentUserInfo == null) {
-            return null;
-        }
-
-        return AppContants.USER_HEAD_PHOTO_FILE_NAME;
-    }
 }

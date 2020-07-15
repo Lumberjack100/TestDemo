@@ -9,7 +9,6 @@ package com.dragon.core;
  *
  */
 public interface AppContants {
-    String APP_CONFIG_NAME = "mcloudApp";
     String SERVICE_ADDRESS = "service_address";
     String TOKEN_UPDATE_TIME = "token_update_time";
     //是否显示隐私协议

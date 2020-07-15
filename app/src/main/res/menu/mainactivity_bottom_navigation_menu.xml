@@ -23,6 +23,7 @@
     <item
         android:id="@+id/item_me_module"
         android:icon="@drawable/ic_me_module"
+        android:visible="false"
         android:title="@string/me_module" />
 
 </menu>
