@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.entity.event;
+package com.shmedo.mcloudapp.event;
 
 /**
  * 项目名：  mCloudapp

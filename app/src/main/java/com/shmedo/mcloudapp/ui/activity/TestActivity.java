@@ -27,7 +27,7 @@ import com.shmedo.mcloudapp.bluetooth.BluetoothEvent;
 import com.shmedo.mcloudapp.bluetooth.BluetoothEventHandler;
 import com.shmedo.mcloudapp.bluetooth.MdBluetoothManager;
 import com.shmedo.mcloudapp.bluetooth.Message;
-import com.shmedo.mcloudapp.entity.event.BluetoothStateEvent;
+import com.shmedo.mcloudapp.event.BluetoothStateEvent;
 import com.shmedo.mcloudapp.util.bleutil.ByteManagerUtil;
 import com.shmedo.mcloudapp.util.bleutil.Constants;
 

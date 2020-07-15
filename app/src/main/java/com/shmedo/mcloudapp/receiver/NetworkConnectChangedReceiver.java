@@ -5,7 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 
-import com.shmedo.mcloudapp.entity.event.NetworkChangeEvent;
+import com.shmedo.mcloudapp.event.NetworkChangeEvent;
 import com.shmedo.mcloudapp.util.NetworkUtils;
 
 import org.greenrobot.eventbus.EventBus;

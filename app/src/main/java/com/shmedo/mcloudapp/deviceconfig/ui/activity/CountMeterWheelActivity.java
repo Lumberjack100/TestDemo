@@ -15,7 +15,7 @@ import com.hjq.toast.ToastUtils;
 import com.shmedo.core.cmd.CommandResult;
 import com.dragon.core.MCloudApp;
 import com.shmedo.mcloudapp.R;
-import com.shmedo.mcloudapp.entity.event.BluetoothStateEvent;
+import com.shmedo.mcloudapp.event.BluetoothStateEvent;
 import com.shmedo.mcloudapp.interfaces.Extras;
 
 import org.greenrobot.eventbus.Subscribe;

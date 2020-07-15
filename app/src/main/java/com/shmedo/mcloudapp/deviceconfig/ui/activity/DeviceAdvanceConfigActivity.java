@@ -34,7 +34,7 @@ import com.shmedo.mcloudapp.deviceconfig.ui.activity.advanced.InstructionDebugAc
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.advanced.LogPrintActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.advanced.ProductRegistrationActivity;
 import com.shmedo.mcloudapp.entity.SyncPositionBean;
-import com.shmedo.mcloudapp.entity.event.BluetoothStateEvent;
+import com.shmedo.mcloudapp.event.BluetoothStateEvent;
 import com.shmedo.mcloudapp.interfaces.Extras;
 import com.shmedo.mcloudapp.util.AdvanceSetDialogUtils;
 import com.shmedo.mcloudapp.util.FileUtils;

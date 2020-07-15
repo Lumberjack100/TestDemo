@@ -25,7 +25,7 @@ import com.hjq.toast.ToastUtils;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.adapter.WifiListAdapter;
 import com.shmedo.mcloudapp.entity.WifiBean;
-import com.shmedo.mcloudapp.entity.event.WifiEvent;
+import com.shmedo.mcloudapp.event.WifiEvent;
 import com.shmedo.mcloudapp.util.ActivityCollector;
 import com.shmedo.mcloudapp.util.WifiSupport;
 import com.shmedo.mcloudapp.views.WifiLinkDialog;

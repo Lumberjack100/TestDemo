@@ -27,7 +27,7 @@ import com.dragon.core.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.adapter.recyclerviewbaseadapter.CommonAdapter;
 import com.shmedo.mcloudapp.adapter.recyclerviewbaseadapter.ViewHolder;
-import com.shmedo.mcloudapp.entity.event.BluetoothStateEvent;
+import com.shmedo.mcloudapp.event.BluetoothStateEvent;
 import com.shmedo.mcloudapp.interfaces.Extras;
 import com.shmedo.mcloudapp.views.PlayPauseView;
 

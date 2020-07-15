@@ -42,7 +42,7 @@ import com.shmedo.core.utils.StringUtil;
 import com.dragon.core.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.base.BaseFragment;
-import com.shmedo.mcloudapp.entity.event.BluetoothStateEvent;
+import com.shmedo.mcloudapp.event.BluetoothStateEvent;
 import com.shmedo.mcloudapp.interfaces.Extras;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.ConfigDASActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.DeviceAdvanceConfigActivity;

@@ -17,7 +17,7 @@ import com.shmedo.mcloudapp.deviceconfig.ui.activity.ConfigDASActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.ConfigE60Activity;
 import com.shmedo.mcloudapp.entity.DeviceBasicInfoResult;
 import com.shmedo.mcloudapp.entity.DeviceTypeEnum;
-import com.shmedo.mcloudapp.entity.event.MapDeviceEvent;
+import com.shmedo.mcloudapp.event.MapDeviceEvent;
 import com.shmedo.mcloudapp.views.ClearEditText;
 
 import org.greenrobot.eventbus.EventBus;

@@ -35,7 +35,7 @@ import com.shmedo.mcloudapp.deviceconfig.ui.activity.CountMeterWheelActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.advanced.InstructionDebugActivity;
 import com.shmedo.mcloudapp.entity.SystemDataInfo;
 import com.shmedo.mcloudapp.entity.SystemDataInfoDao;
-import com.shmedo.mcloudapp.entity.event.BluetoothStateEvent;
+import com.shmedo.mcloudapp.event.BluetoothStateEvent;
 import com.shmedo.mcloudapp.interfaces.Extras;
 import com.shmedo.mcloudapp.util.DaoManager;
 import com.shmedo.mcloudapp.views.ClearEditText;

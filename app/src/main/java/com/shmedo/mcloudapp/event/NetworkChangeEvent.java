@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.entity.event;
+package com.shmedo.mcloudapp.event;
 
 import com.shmedo.mcloudapp.util.NetworkUtils;
 
