@@ -9,9 +9,6 @@ import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
-import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -34,6 +31,7 @@ import com.shmedo.mcloudapp.base.BaseActivity;
 import com.shmedo.mcloudapp.interfaces.Extras;
 import com.shmedo.mcloudapp.maps.model.PageInfo;
 import com.shmedo.mcloudapp.maps.util.MapErrorUtil;
+import com.shmedo.mcloudapp.views.ClearEditText;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -48,13 +46,7 @@ public class PoiSearchActivity extends BaseActivity implements TextWatcher, PoiS
     private static final String ARG_PARAM1 = "param1";
 
     @BindView(R.id.et_search_tip)
-    EditText mEtSearchTip;
-
-    @BindView(R.id.progressBar)
-    ProgressBar mProgressBar;
-
-    @BindView(R.id.iv_clear_text)
-    ImageView mIvClearText;
+    ClearEditText mEtSearchTip;
 
     @BindView(R.id.rv_search_result)
     RecyclerView mRecyclerView;
@@ -65,7 +57,7 @@ public class PoiSearchActivity extends BaseActivity implements TextWatcher, PoiS
     private PoiSearch poiSearch;// POI搜索
     private PoiResult poiResult; // poi返回的结果
 
-    private static final int PAGE_SIZE = 10;
+    private static final int PAGE_SIZE = 15;
 
     private String keyWord;// 要输入的poi搜索关键字
     private String cityName;
@@ -107,10 +99,10 @@ public class PoiSearchActivity extends BaseActivity implements TextWatcher, PoiS
         mEtSearchTip.addTextChangedListener(this);
         mEtSearchTip.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+            public boolean onEditorAction(TextView textView, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                    if ("".equals(keyWord)) {
-                        ToastUtils.show("请输入搜索关键字");
+                    if (TextUtils.isEmpty(textView.getText())) {
+                        ToastUtils.show("请输入搜索内容");
                     } else {
                         doSearchQuery();
                     }
@@ -149,9 +141,9 @@ public class PoiSearchActivity extends BaseActivity implements TextWatcher, PoiS
             }
         });
         poiSearchAdapter.getLoadMoreModule().setEnableLoadMore(true);
-        poiSearchAdapter.getLoadMoreModule().setAutoLoadMore(true);
-        //当自动加载开启，同时数据不满一屏时，是否继续执行自动加载更多(默认为true)
-        poiSearchAdapter.getLoadMoreModule().setEnableLoadMoreIfNotFullPage(false);
+//        poiSearchAdapter.getLoadMoreModule().setAutoLoadMore(true);
+//        //当自动加载开启，同时数据不满一屏时，是否继续执行自动加载更多(默认为true)
+//        poiSearchAdapter.getLoadMoreModule().setEnableLoadMoreIfNotFullPage(false);
     }
 
     /**
@@ -165,21 +157,16 @@ public class PoiSearchActivity extends BaseActivity implements TextWatcher, PoiS
                 query.setPageNum(pageInfo.getPage());// 设置查后一页
                 poiSearch.searchPOIAsyn();
             } else {
-                ToastUtils.show(R.string.no_result);
+//                ToastUtils.show(R.string.no_result);
             }
         }
     }
 
-    @OnClick({R.id.tv_cancel_search, R.id.iv_clear_text})
+    @OnClick({R.id.tv_cancel_search})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.tv_cancel_search:
                 finish();
-                break;
-
-            case R.id.iv_clear_text:
-                mEtSearchTip.setText("");
-                mIvClearText.setVisibility(View.GONE);
                 break;
         }
     }
@@ -198,23 +185,14 @@ public class PoiSearchActivity extends BaseActivity implements TextWatcher, PoiS
     @Override
     public void afterTextChanged(Editable s) {
         if (s == null || TextUtils.isEmpty(s.toString())) {
-            mProgressBar.setVisibility(View.GONE);
-            mIvClearText.setVisibility(View.GONE);
-            // 需要重置页数
-            pageInfo.reset();
-            // 刷新RecycleView
-            poiSearchAdapter.setNewInstance(new ArrayList<>());
-            // 刷新RecycleView
+            resetData();
             return;
         }
 
         keyWord = s.toString();
         if (!TextUtils.isEmpty(keyWord) && !TextUtils.isEmpty(cityName)) {
-            // 需要重置页数
-            pageInfo.reset();
+            resetData();
             doSearchQuery();
-            mProgressBar.setVisibility(View.VISIBLE);
-            mIvClearText.setVisibility(View.GONE);
         }
     }
 
@@ -227,7 +205,6 @@ public class PoiSearchActivity extends BaseActivity implements TextWatcher, PoiS
         query = new PoiSearch.Query(keyWord, "", cityName);
         // 设置每页最多返回多少条poiitem
         query.setPageSize(PAGE_SIZE);
-        // 设置查第一页
         query.setPageNum(pageInfo.getPage());
 
         poiSearch = new PoiSearch(this, query);
@@ -240,9 +217,6 @@ public class PoiSearchActivity extends BaseActivity implements TextWatcher, PoiS
      */
     @Override
     public void onPoiSearched(PoiResult result, int errorCode) {
-        mProgressBar.setVisibility(View.GONE);
-        mIvClearText.setVisibility(View.VISIBLE);
-
         if (errorCode != AMapException.CODE_AMAP_SUCCESS) {
             ToastUtils.show(MapErrorUtil.getErrorMsg(errorCode));
             return;
@@ -253,34 +227,35 @@ public class PoiSearchActivity extends BaseActivity implements TextWatcher, PoiS
             return;
         }
 
-        if (result.getQuery().equals(query)) {// 是否是同一条
-            poiResult = result;
-            // 取得搜索到的poiitems有多少页
-            List<PoiItem> poiItems = poiResult.getPois();
-            // 当搜索不到poiitem数据时，会返回含有搜索关键字的城市信息
-            List<SuggestionCity> suggestionCities = poiResult.getSearchSuggestionCitys();
-            if (poiItems != null && poiItems.size() > 0) {
-                if (pageInfo.isFirstPage()) {
-                    //如果是加载的第一页数据，用setNew
-                    poiSearchAdapter.setNewInstance(poiItems);
-                } else {
-                    //不是第一页，则用add
-                    poiSearchAdapter.addData(poiItems);
-                }
+        if (!result.getQuery().equals(query)) {// 是否是同一个搜索
+            return;
+        }
 
-                if (poiItems.size() < PAGE_SIZE) {
-                    //如果不够一页,显示没有更多数据布局
-                    poiSearchAdapter.getLoadMoreModule().loadMoreEnd();
-                    ToastUtils.show("no more data");
-                } else {
-                    poiSearchAdapter.getLoadMoreModule().loadMoreComplete();
-                }
-
-            } else if (suggestionCities != null && suggestionCities.size() > 0) {
-                showSuggestCity(suggestionCities);
+        poiResult = result;
+        // 取得搜索到的poiitems有多少页
+        List<PoiItem> poiItems = poiResult.getPois();
+        // 当搜索不到poiitem数据时，会返回含有搜索关键字的城市信息
+        List<SuggestionCity> suggestionCities = poiResult.getSearchSuggestionCitys();
+        if (poiItems != null && poiItems.size() > 0) {
+            if (pageInfo.isFirstPage()) {
+                //如果是加载的第一页数据，用setNew
+                poiSearchAdapter.setNewInstance(poiItems);
             } else {
-                ToastUtils.show(R.string.no_result);
+                //不是第一页，则用add
+                poiSearchAdapter.addData(poiItems);
             }
+
+            if (poiItems.size() < PAGE_SIZE) {
+                //如果不够一页,显示没有更多数据布局
+                poiSearchAdapter.getLoadMoreModule().loadMoreEnd();
+            } else {
+                poiSearchAdapter.getLoadMoreModule().loadMoreComplete();
+            }
+
+        } else if (suggestionCities != null && suggestionCities.size() > 0) {
+            showSuggestCity(suggestionCities);
+        } else {
+            ToastUtils.show(R.string.no_result);
         }
     }
 
@@ -289,17 +264,28 @@ public class PoiSearchActivity extends BaseActivity implements TextWatcher, PoiS
 
     }
 
+    private void resetData() {
+        // 需要重置页数
+        pageInfo.reset();
+        // 刷新RecycleView
+        poiSearchAdapter.setNewInstance(new ArrayList<>());
+    }
+
     /**
      * poi没有搜索到数据，返回一些推荐城市的信息
      */
     private void showSuggestCity(List<SuggestionCity> cities) {
-        String infomation = "推荐城市\n";
+        StringBuilder infomation = new StringBuilder("推荐城市\n");
         for (int i = 0; i < cities.size(); i++) {
-            infomation += "城市名称:" + cities.get(i).getCityName() + "城市区号:"
-                    + cities.get(i).getCityCode() + "城市编码:"
-                    + cities.get(i).getAdCode() + "\n";
+            infomation.append("城市名称:")
+                    .append(cities.get(i).getCityName())
+                    .append("城市区号:")
+                    .append(cities.get(i).getCityCode())
+                    .append("城市编码:")
+                    .append(cities.get(i).getAdCode())
+                    .append("\n");
         }
-        ToastUtils.show(infomation);
+        ToastUtils.show(infomation.toString());
     }
 
     public class PoiSearchAdapter extends BaseQuickAdapter<PoiItem, BaseViewHolder> implements LoadMoreModule {
