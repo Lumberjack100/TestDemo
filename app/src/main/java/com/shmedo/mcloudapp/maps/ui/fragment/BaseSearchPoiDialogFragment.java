@@ -45,7 +45,7 @@ public abstract class BaseSearchPoiDialogFragment extends DialogFragment {
         Window window = mDialog.getWindow();
         //无标题  必须放在setContextView之前调用
         window.requestFeature(Window.FEATURE_NO_TITLE);
-        window.setWindowAnimations(R.style.share_animation);
+        window.setWindowAnimations(R.style.DialogFragmentAnimation);
         // 设置宽度为屏宽、靠近屏幕底部。
         window.setBackgroundDrawableResource(android.R.color.transparent);
         window.getDecorView().setPadding(0, 0, 0, 0);

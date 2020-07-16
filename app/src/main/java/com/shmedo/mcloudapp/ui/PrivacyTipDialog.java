@@ -56,7 +56,7 @@ public class PrivacyTipDialog extends DialogFragment {
         mDialog.setCanceledOnTouchOutside(false);
         //Sets whether this dialog is cancelable with the BACK key.
         setCancelable(false);
-        window.setWindowAnimations(R.style.share_animation);
+        window.setWindowAnimations(R.style.DialogFragmentAnimation);
         //window外可以点击,不拦截窗口外的事件
 //        window.addFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL);
         // 设置宽度为屏宽、靠近屏幕底部。

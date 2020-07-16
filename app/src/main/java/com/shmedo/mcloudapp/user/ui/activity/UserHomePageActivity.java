@@ -28,7 +28,6 @@ import com.dragon.core.model.UserInfo;
 import com.dragon.core.util.DeviceInfo;
 import com.dragon.core.util.GlobalUtil;
 import com.hjq.toast.ToastUtils;
-import com.shmedo.core.utils.ValidateUtil;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.base.BaseActivity;
 import com.shmedo.mcloudapp.entity.parameter.SetUserHeadPhotoParameter;
@@ -215,10 +214,12 @@ public class UserHomePageActivity extends BaseActivity implements TextWatcher {
             return;
         }
 
-        if (!ValidateUtil.checkMail(email)) {
-            ToastUtils.show("请输入正确的邮箱地址");
-            mEtEmail.requestFocus();
-        }
+//        if (!ValidateUtil.checkMail(email)) {
+//            ToastUtils.show("请输入正确的邮箱地址");
+//            mEtEmail.requestFocus();
+//            return;
+//        }
+
         updateMyInfo();
     }
 
