@@ -21,7 +21,7 @@ import com.amap.api.navi.AmapPageType;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.maps.model.MapMode;
 import com.shmedo.mcloudapp.maps.ui.activity.MapActivity;
-import com.shmedo.mcloudapp.maps.ui.view.PoiDetailBottomView;
+import com.shmedo.mcloudapp.maps.view.PoiDetailBottomView;
 import com.shmedo.mcloudapp.maps.util.MyAMapUtils;
 import com.shmedo.mcloudapp.util.permission.PermissionHelper;
 

@@ -6,7 +6,7 @@
     android:background="@color/transparent"
     android:fitsSystemWindows="true">
 
-    <com.shmedo.mcloudapp.maps.ui.view.DistanceToolbarView
+    <com.shmedo.mcloudapp.maps.view.DistanceToolbarView
         android:id="@+id/distance_toolbar_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -15,7 +15,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <com.shmedo.mcloudapp.maps.ui.view.LocationTitleView
+    <com.shmedo.mcloudapp.maps.view.LocationTitleView
         android:id="@+id/location_title_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -23,7 +23,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/distance_toolbar_view" />
 
-    <com.shmedo.mcloudapp.maps.ui.view.MapSearchView
+    <com.shmedo.mcloudapp.maps.view.MapSearchView
         android:id="@+id/map_search_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -32,7 +32,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/location_title_view" />
 
-    <com.shmedo.mcloudapp.maps.ui.view.SupendPartitionView
+    <com.shmedo.mcloudapp.maps.view.SupendPartitionView
         android:id="@+id/supend_partition_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -42,7 +42,7 @@
         app:layout_constraintTop_toBottomOf="@id/map_search_view" />
 
 
-    <com.shmedo.mcloudapp.maps.ui.view.ZoomView
+    <com.shmedo.mcloudapp.maps.view.ZoomView
         android:id="@+id/zoom_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -59,7 +59,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
-        <com.shmedo.mcloudapp.maps.ui.view.GPSView
+        <com.shmedo.mcloudapp.maps.view.GPSView
             android:id="@+id/gps_view"
             android:layout_width="40dp"
             android:layout_height="40dp"
@@ -68,7 +68,7 @@
             android:background="@drawable/gps_loc_selector"
             android:src="@drawable/icon_gps_unlocked" />
 
-        <com.shmedo.mcloudapp.maps.ui.view.RouteView
+        <com.shmedo.mcloudapp.maps.view.RouteView
             android:id="@+id/route_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -77,7 +77,7 @@
     </RelativeLayout>
 
 
-    <com.shmedo.mcloudapp.maps.ui.view.PoiDetailBottomView
+    <com.shmedo.mcloudapp.maps.view.PoiDetailBottomView
         android:id="@+id/poi_detail_bottom_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

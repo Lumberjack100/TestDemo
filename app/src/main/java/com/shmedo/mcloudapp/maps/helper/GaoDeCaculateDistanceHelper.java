@@ -22,7 +22,7 @@ import com.hjq.toast.ToastUtils;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.maps.model.MapMode;
 import com.shmedo.mcloudapp.maps.ui.activity.MapActivity;
-import com.shmedo.mcloudapp.maps.ui.view.DistanceToolbarView;
+import com.shmedo.mcloudapp.maps.view.DistanceToolbarView;
 import com.shmedo.mcloudapp.maps.util.MapErrorUtil;
 
 import java.text.DecimalFormat;

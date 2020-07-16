@@ -14,7 +14,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
 
-        <com.shmedo.mcloudapp.maps.ui.view.SupendViewContainer
+        <com.shmedo.mcloudapp.maps.view.SupendViewContainer
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
@@ -25,12 +25,12 @@
         android:layout_height="match_parent"
         android:layout_gravity="start">
 
-        <com.shmedo.mcloudapp.maps.ui.view.NaviToolView
+        <com.shmedo.mcloudapp.maps.view.NaviToolView
             android:id="@+id/nav_tool_view"
             android:layout_width="wrap_content"
             android:layout_height="match_parent" />
 
-        <com.shmedo.mcloudapp.maps.ui.view.NaviMapLayerView
+        <com.shmedo.mcloudapp.maps.view.NaviMapLayerView
             android:id="@+id/nav_map_layer_view"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"

@@ -1,8 +1,9 @@
-package com.shmedo.mcloudapp.maps.ui.view;
+package com.shmedo.mcloudapp.maps.view;
 
 import android.content.Context;
 import android.graphics.Canvas;
 import android.util.AttributeSet;
+import android.view.View;
 
 import com.shmedo.mcloudapp.R;
 
@@ -11,19 +12,25 @@ import timber.log.Timber;
 /**
  * 创建者:   gonghe <br/>
  * 创建时间:  2020/6/16 <br/>
- * 描述：    工具箱
+ * 描述：    拍照控件
  */
-public class MapToolView extends BaseIconView{
-    public MapToolView(Context context) {
+public class TakePhotoView extends BaseIconView{
+    public TakePhotoView(Context context) {
         this(context, null);
     }
 
-    public MapToolView(Context context, AttributeSet attrs) {
+    public TakePhotoView(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public MapToolView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public TakePhotoView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
     }
 
     @Override
@@ -34,14 +41,14 @@ public class MapToolView extends BaseIconView{
 
     @Override
     public boolean createBackground() {
-        setBackgroundResource(R.drawable.icon_up_selector);
+        setBackgroundResource(R.drawable.icon_down_selector);
         return true;
     }
 
     @Override
     public boolean createIcon() {
-        setIconResource(R.drawable.ic_map_tool);
-        setText("工具箱");
+        setIconResource(R.drawable.ic_map_camera);
+        setText("拍照");
         return true;
     }
 }

@@ -2,14 +2,12 @@ package com.shmedo.mcloudapp.maps.ui.activity;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.View;
-import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -69,7 +67,6 @@ public class PoiSearchActivity extends BaseActivity implements TextWatcher, PoiS
 
     private static final int PAGE_SIZE = 10;
 
-
     private String keyWord;// 要输入的poi搜索关键字
     private String cityName;
 
@@ -91,24 +88,12 @@ public class PoiSearchActivity extends BaseActivity implements TextWatcher, PoiS
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        initStates();
         parseIntent();
         initView();
         initAdapter();
         initLoadMore();
     }
 
-    /**
-     * 沉浸式状态栏
-     */
-    private void initStates() {
-        if (Build.VERSION.SDK_INT > 19 && getApplicationContext().getApplicationInfo().targetSdkVersion > 19) {
-            //透明状态栏
-            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-            //透明导航栏
-            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
-        }
-    }
 
     private void parseIntent() {
         Intent intent = getIntent();

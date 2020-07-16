@@ -56,7 +56,7 @@
     </LinearLayout>
 
     <View
-        style="@style/DividerCommon"
+        style="@style/DividerView"
         android:layout_marginLeft="@dimen/dimen_size_10"
         android:layout_marginRight="@dimen/dimen_size_10" />
 

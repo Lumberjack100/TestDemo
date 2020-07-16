@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.maps.ui.view;
+package com.shmedo.mcloudapp.maps.view;
 
 import android.content.Context;
 import android.content.res.TypedArray;

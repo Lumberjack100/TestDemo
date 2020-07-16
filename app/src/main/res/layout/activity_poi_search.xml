@@ -9,7 +9,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white"
+        android:background="@color/colorPrimary"
         android:fitsSystemWindows="true">
 
         <LinearLayout
@@ -25,7 +25,8 @@
                 android:id="@+id/iv_search_left"
                 android:layout_width="@dimen/dimen_size_25"
                 android:layout_height="@dimen/dimen_size_25"
-                android:background="@drawable/ic_chevron_left" />
+                android:src="@drawable/ic_chevron_left"
+                android:tint="@color/white" />
 
             <EditText
                 android:id="@+id/et_search_tip"
@@ -35,9 +36,11 @@
                 android:layout_weight="1"
                 android:background="@null"
                 android:gravity="center_vertical"
-                android:hint="@string/search"
+                android:hint="@string/search_poi_hint"
                 android:imeOptions="actionSearch"
                 android:inputType="text"
+                android:textColor="@color/white"
+                android:textColorHint="@color/white"
                 android:textSize="@dimen/text_size_16" />
 
             <ProgressBar

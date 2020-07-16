@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.maps.ui.view;
+package com.shmedo.mcloudapp.maps.view;
 
 /**
  * IconView相关接口

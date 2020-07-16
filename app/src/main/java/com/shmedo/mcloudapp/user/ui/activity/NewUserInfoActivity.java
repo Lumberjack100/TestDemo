@@ -73,7 +73,6 @@ public class NewUserInfoActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        overridePendingTransition(R.anim.translate_in_from_left, R.anim.translate_out);
         super.onCreate(savedInstanceState);
         setToolBar(R.id.toolbar);
         mToolbarTitle.setText("我的");
@@ -169,8 +168,6 @@ public class NewUserInfoActivity extends BaseActivity {
      * 查询单个公司信息
      */
     private void getCompanyInfo() {
-        showLoadingDialog("加载数据中...");
-
         RequestBody body = RequestBody.create(NetworkConst.JSON_TYPE, "");
         MDRetrofit.getInstance()
                 .createService()
@@ -189,16 +186,11 @@ public class NewUserInfoActivity extends BaseActivity {
 
                     @Override
                     public void Failure(String message) {
-                        dismissLoadingDialog();
                         Timber.w("服务器连接失败--%s", message);
                     }
                 });
     }
 
-    @Override
-    public void finish() {
-        super.finish();
-        overridePendingTransition(0, R.anim.translate_out_to_left);
-    }
+
 }
 
