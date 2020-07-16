@@ -8,20 +8,20 @@
 
     <com.shmedo.mcloudapp.maps.view.MapToolView
         android:id="@+id/mapToolView"
-        style="@style/IconViewStyle"
+        style="@style/MapToolIconView"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.shmedo.mcloudapp.maps.view.MapLayerView
         android:id="@+id/mapLayerView"
-        style="@style/IconViewStyle"
+        style="@style/MapToolIconView"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/mapToolView" />
 
 
     <com.shmedo.mcloudapp.maps.view.TakePhotoView
         android:id="@+id/takePhotoView"
-        style="@style/IconViewStyle"
+        style="@style/MapToolIconView"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/mapLayerView" />
 

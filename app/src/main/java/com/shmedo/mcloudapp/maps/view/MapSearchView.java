@@ -47,7 +47,7 @@ public class MapSearchView extends RelativeLayout  {
 
     }
 
-    @OnClick({R.id.iv_back,R.id.llty_search_normal, R.id.tv_search_LatLong})
+    @OnClick({R.id.iv_back,R.id.tv_search_normal, R.id.tv_search_LatLong})
     public void onClick(View view) {
         if (mListener == null) {
             return;
@@ -58,7 +58,7 @@ public class MapSearchView extends RelativeLayout  {
                 mListener.onBackClick();
                 break;
 
-            case R.id.llty_search_normal:
+            case R.id.tv_search_normal:
                 mListener.onSearchNormalClick();
                 break;
 

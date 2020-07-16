@@ -19,21 +19,13 @@
 
         <com.shmedo.mcloudapp.views.ClearEditText
             android:id="@+id/et_search_tip"
-            android:layout_width="0dp"
-            android:layout_height="35dp"
-            android:layout_weight="1"
+            style="@style/TextView_SearchInputBox"
             android:background="@drawable/search_rect_bg"
-            android:drawableLeft="@drawable/ic_search_24dp"
-            android:drawablePadding="@dimen/dimen_size_15"
-            android:drawableTint="@color/white"
-            android:gravity="center_vertical"
+            android:drawableLeft="@drawable/ic_search_white"
             android:hint="@string/search_poi_hint"
             android:imeOptions="actionSearch"
-            android:paddingStart="@dimen/dimen_size_15"
-            android:paddingEnd="@dimen/dimen_size_15"
-            android:singleLine="true"
             android:textColor="@color/white"
-            android:textColorHint="@color/white"
+            android:textColorHint="#99FFFFFF"
             android:textCursorDrawable="@drawable/edittext_cursor_white"
             android:textSize="@dimen/text_size_14" />
 
@@ -51,10 +43,6 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_search_result"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginLeft="@dimen/dimen_size_3"
-        android:layout_marginTop="@dimen/dimen_size_3"
-        android:layout_marginRight="@dimen/dimen_size_3" />
-    <!--    android:background="@drawable/shape_rect_bg"-->
+        android:layout_height="match_parent" />
 
 </LinearLayout>

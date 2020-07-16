@@ -40,7 +40,7 @@
         <item name="android:windowBackground">@android:color/transparent</item>
     </style>
 
-    <style name="CropImageActivity" parent="Base.Theme.AppCompat"/>
+    <style name="CropImageActivity" parent="Base.Theme.AppCompat" />
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
@@ -125,8 +125,8 @@
         <item name="android:paddingBottom">4dp</item>
     </style>
 
-    <!--地图模块-->
-    <style name="IconViewStyle">
+    <!--地图工具控件样式-->
+    <style name="MapToolIconView">
         <item name="android:layout_width">35dp</item>
         <item name="android:layout_height">45dp</item>
     </style>
@@ -156,6 +156,19 @@
         <item name="android:textSize">@dimen/text_size_16</item>
         <item name="android:layout_marginLeft">10dp</item>
         <item name="android:layout_marginRight">10dp</item>
+    </style>
+
+
+    <style name="TextView_SearchInputBox">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">35dp</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:drawableLeft">@drawable/ic_search_24dp</item>
+        <item name="android:drawablePadding">10dp</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:paddingStart">15dp</item>
+        <item name="android:paddingEnd">15dp</item>
+        <item name="android:singleLine">true</item>
     </style>
 
     <!--TextView相关样式-->

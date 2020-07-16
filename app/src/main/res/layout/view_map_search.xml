@@ -1,55 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginLeft="@dimen/dimen_size_10"
-    android:layout_marginRight="@dimen/dimen_size_10"
-    android:background="@color/transparent"
-    android:gravity="center_vertical">
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/iv_back"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/ic_back"
-        app:backgroundTint="@color/white"
-        app:fabSize="mini"
-        app:rippleColor="@color/floating_action_button_selected"
-        app:tint="@color/poi_detail_loc" />
-
+    android:layout_marginLeft="@dimen/dimen_size_6"
+    android:layout_marginRight="@dimen/dimen_size_6"
+    android:background="@color/transparent">
 
     <LinearLayout
-        android:id="@+id/llty_search_normal"
-        android:layout_width="0dp"
-        android:layout_height="@dimen/dimen_size_40"
-        android:layout_marginStart="@dimen/dimen_size_10"
-        android:layout_weight="1"
-        android:background="@drawable/search_textview_left_shape"
-        android:gravity="center">
+        android:id="@+id/ll_search_normal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical">
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/iv_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/dimen_size_10"
+            android:src="@drawable/ic_back"
+            app:backgroundTint="@color/white"
+            app:fabSize="mini"
+            app:rippleColor="@color/floating_action_button_selected"
+            app:tint="@color/black_333333" />
 
         <TextView
             android:id="@+id/tv_search_normal"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:drawableLeft="@drawable/ic_search_24dp"
-            android:gravity="center"
+            style="@style/TextView_SearchInputBox"
+            android:background="@drawable/search_textview_left_shape"
             android:text="搜索地址信息"
             android:textColor="@color/gray_807B7B"
-            android:textSize="@dimen/text_size_12" />
+            android:textSize="@dimen/text_size_13" />
+
+        <TextView
+            android:id="@+id/tv_search_LatLong"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/dimen_size_35"
+            android:background="@drawable/search_textview_right_selector"
+            android:gravity="center"
+            android:padding="@dimen/dimen_size_8"
+            android:text="经纬度搜索"
+            android:textColor="@color/poi_detail_loc"
+            android:textSize="@dimen/text_size_13" />
 
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/tv_search_LatLong"
-        android:layout_width="wrap_content"
-        android:layout_height="@dimen/dimen_size_40"
-        android:background="@drawable/search_textview_right_selector"
-        android:gravity="center"
-        android:padding="@dimen/dimen_size_8"
-        android:text="经纬度搜索"
-        android:textColor="@color/poi_detail_loc"
-        android:textSize="@dimen/text_size_12" />
 
-
-</LinearLayout>
+</FrameLayout>
