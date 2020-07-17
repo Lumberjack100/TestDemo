@@ -23,17 +23,17 @@ import androidx.annotation.NonNull;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.hjq.toast.ToastUtils;
+import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.R;
-import com.shmedo.mcloudapp.base.BaseActivity;
+import com.shmedo.mcloudapp.common.ui.activity.BaseActivity;
 import com.shmedo.mcloudapp.entity.DeviceBasicInfoResult;
 import com.shmedo.mcloudapp.entity.DeviceBasicInfoResultDao;
-import com.shmedo.mcloudapp.interfaces.Extras;
 import com.shmedo.mcloudapp.network.BaseObserver;
 import com.shmedo.mcloudapp.network.MDRetrofit;
 import com.shmedo.mcloudapp.network.api.ServiceAddressType;
 import com.shmedo.mcloudapp.util.DaoManager;
 import com.shmedo.mcloudapp.util.WifiSupport;
-import com.shmedo.mcloudapp.views.MyWebView;
+import com.shmedo.mcloudapp.common.view.MyWebView;
 
 import butterknife.BindView;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -63,7 +63,7 @@ public class ConfigE60Activity extends BaseActivity {
 
     public static void startActivity(Context context, DeviceBasicInfoResult deviceBasicInfoResult) {
         Intent intent = new Intent(context, ConfigE60Activity.class);
-        intent.putExtra(Extras.DEVICE_E60, deviceBasicInfoResult);
+        intent.putExtra(AppContants.Extras.DEVICE_E60, deviceBasicInfoResult);
         context.startActivity(intent);
     }
 
@@ -94,7 +94,7 @@ public class ConfigE60Activity extends BaseActivity {
 
 
     private void initView() {
-        DeviceBasicInfoResult deviceBasicInfoResult = (DeviceBasicInfoResult) (getIntent().getSerializableExtra(Extras.DEVICE_E60));
+        DeviceBasicInfoResult deviceBasicInfoResult = (DeviceBasicInfoResult) (getIntent().getSerializableExtra(AppContants.Extras.DEVICE_E60));
         if (deviceBasicInfoResult != null) {
             deviceToken = deviceBasicInfoResult.getDeviceToken() != null ? deviceBasicInfoResult.getDeviceToken() : "";
             deviceTypeName = deviceBasicInfoResult.getDeviceTypeName() != null ? deviceBasicInfoResult.getDeviceTypeName() : "";

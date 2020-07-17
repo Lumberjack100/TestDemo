@@ -14,9 +14,9 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.hjq.toast.ToastUtils;
-import com.dragon.core.MCloudApp;
+import com.shmedo.core.AppContants;
+import com.shmedo.core.MCloudApp;
 import com.shmedo.mcloudapp.R;
-import com.shmedo.mcloudapp.interfaces.Extras;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.DASHomeFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.DeviceDetailsFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.QueryDeviceDataFragment;
@@ -44,7 +44,7 @@ public class ConfigDASActivity extends BaseDeviceConnectActivity {
 
     public static void startActivity(Context context, String deviceInfo) {
         Intent intent = new Intent(context, ConfigDASActivity.class);
-        intent.putExtra(Extras.CUR_DEVICE_NAME, deviceInfo);
+        intent.putExtra(AppContants.Extras.CUR_DEVICE_NAME, deviceInfo);
         context.startActivity(intent);
     }
 

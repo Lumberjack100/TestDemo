@@ -10,18 +10,18 @@ import androidx.annotation.NonNull;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.dragon.core.MCloudApp;
-import com.dragon.core.model.UserInfo;
+import com.shmedo.core.MCloudApp;
+import com.shmedo.core.model.UserInfo;
 import com.shmedo.mcloudapp.R;
-import com.shmedo.mcloudapp.base.BaseActivity;
+import com.shmedo.mcloudapp.common.ui.activity.BaseActivity;
 import com.shmedo.mcloudapp.network.BaseObserver;
 import com.shmedo.mcloudapp.network.MDRetrofit;
 import com.shmedo.mcloudapp.network.NetworkConst;
-import com.shmedo.mcloudapp.ui.activity.LoginActivity;
+import com.shmedo.mcloudapp.common.ui.activity.LoginActivity;
 import com.shmedo.mcloudapp.user.model.CompanyInfo;
 import com.shmedo.mcloudapp.util.ActivityCollector;
 import com.shmedo.mcloudapp.util.GlideUtils;
-import com.dragon.core.util.GlobalUtil;
+import com.shmedo.core.util.GlobalUtil;
 import com.shmedo.mcloudapp.util.permission.UpdataManagerUtil;
 
 import butterknife.BindView;

@@ -15,6 +15,8 @@ import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.hjq.toast.ToastUtils;
 import com.kyleduo.switchbutton.SwitchButton;
+import com.shmedo.core.AppContants;
+import com.shmedo.core.MCloudApp;
 import com.shmedo.core.enums.CollectorModel;
 import com.shmedo.core.enums.SensorType;
 import com.shmedo.core.model.CollectorSensorParamsInfo;
@@ -28,13 +30,11 @@ import com.shmedo.core.model.SensorSoilMoistureInfo;
 import com.shmedo.core.model.SensorWireShiftInfo;
 import com.shmedo.core.utils.ResultParserUtil;
 import com.shmedo.core.utils.StringUtil;
-import com.dragon.core.MCloudApp;
 import com.shmedo.mcloudapp.R;
+import com.shmedo.mcloudapp.deviceconfig.ui.activity.BaseDeviceConnectActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.BaseDialogFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.CommonSensorConfigDialogFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.Osmometer_AxialForceGaugeDialogFragment;
-import com.shmedo.mcloudapp.interfaces.Extras;
-import com.shmedo.mcloudapp.deviceconfig.ui.activity.BaseDeviceConnectActivity;
 import com.shmedo.mcloudapp.util.KeyBordUtils;
 import com.shmedo.mcloudapp.util.bleutil.BlueResultParserUtil;
 
@@ -173,7 +173,7 @@ public abstract class BaseSensorConfigActivity extends BaseDeviceConnectActivity
      * $$1010002,02,58,2.000000e+00,4.597945e-08,3.000000e+00,5.000000e+00&&
      */
     private void initData() {
-        String collectorSensorConfig = getIntent().getStringExtra(Extras.SPLICE_SENSOR_PARAMS);
+        String collectorSensorConfig = getIntent().getStringExtra(AppContants.Extras.SPLICE_SENSOR_PARAMS);
         if (TextUtils.isEmpty(collectorSensorConfig)) {
             Timber.e("传递的传感器参数为空!");
             return;

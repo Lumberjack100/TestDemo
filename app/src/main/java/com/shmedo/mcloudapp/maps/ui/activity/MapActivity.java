@@ -40,12 +40,15 @@ import com.amap.api.services.core.LatLonPoint;
 import com.amap.api.services.core.PoiItem;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.hjq.toast.ToastUtils;
+import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.R;
-import com.shmedo.mcloudapp.interfaces.Extras;
 import com.shmedo.mcloudapp.maps.helper.GaoDeCaculateDistanceHelper;
 import com.shmedo.mcloudapp.maps.helper.GaoDePoiProcessHelper;
 import com.shmedo.mcloudapp.maps.model.MapLayerInfo;
 import com.shmedo.mcloudapp.maps.model.MapMode;
+import com.shmedo.mcloudapp.maps.util.AMapLocationUtil;
+import com.shmedo.mcloudapp.maps.util.CoordinateFormatUtils;
+import com.shmedo.mcloudapp.maps.util.SensorEventHelper;
 import com.shmedo.mcloudapp.maps.view.DistanceToolbarView;
 import com.shmedo.mcloudapp.maps.view.GPSView;
 import com.shmedo.mcloudapp.maps.view.LocationTitleView;
@@ -56,9 +59,6 @@ import com.shmedo.mcloudapp.maps.view.PoiDetailBottomView;
 import com.shmedo.mcloudapp.maps.view.RouteView;
 import com.shmedo.mcloudapp.maps.view.SupendPartitionView;
 import com.shmedo.mcloudapp.maps.view.ZoomView;
-import com.shmedo.mcloudapp.maps.util.AMapLocationUtil;
-import com.shmedo.mcloudapp.maps.util.CoordinateFormatUtils;
-import com.shmedo.mcloudapp.maps.util.SensorEventHelper;
 import com.shmedo.mcloudapp.util.permission.PermissionHelper;
 
 import butterknife.BindView;
@@ -740,7 +740,7 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
                 }
 
                 if (intent != null) {
-                    PoiItem poiItem = intent.getParcelableExtra(Extras.POIITEM_INFO);
+                    PoiItem poiItem = intent.getParcelableExtra(AppContants.Extras.POIITEM_INFO);
                     if (poiItem == null) {
                         return;
                     }

@@ -15,7 +15,7 @@ import android.widget.TextView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.dragon.core.MCloudApp;
+import com.shmedo.core.MCloudApp;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.hjq.toast.ToastUtils;
 import com.kyleduo.switchbutton.SwitchButton;
@@ -31,7 +31,7 @@ import com.shmedo.mcloudapp.adapter.recyclerviewbaseadapter.ViewHolder;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.BaseDeviceConnectActivity;
 import com.shmedo.mcloudapp.util.FileProviderUtils;
 import com.shmedo.mcloudapp.util.LogFileUtil;
-import com.shmedo.mcloudapp.views.ClearEditText;
+import com.shmedo.mcloudapp.common.view.ClearEditText;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;

@@ -22,14 +22,14 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.hjq.toast.ToastUtils;
+import com.shmedo.core.AppContants;
+import com.shmedo.core.MCloudApp;
 import com.shmedo.core.cmd.CommandResult;
-import com.dragon.core.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.adapter.recyclerviewbaseadapter.CommonAdapter;
 import com.shmedo.mcloudapp.adapter.recyclerviewbaseadapter.ViewHolder;
-import com.shmedo.mcloudapp.event.BluetoothStateEvent;
-import com.shmedo.mcloudapp.interfaces.Extras;
-import com.shmedo.mcloudapp.views.PlayPauseView;
+import com.shmedo.core.event.BluetoothStateEvent;
+import com.shmedo.mcloudapp.deviceconfig.view.PlayPauseView;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -132,7 +132,7 @@ public class ADMEMotorControlActivity extends BaseDeviceConnectActivity {
 
     public static void startActivity(Context context, String configInfo) {
         Intent intent = new Intent(context, ADMEMotorControlActivity.class);
-        intent.putExtra(Extras.ADME_MOTOR_CONTROL_CONFIG_INFO, configInfo);
+        intent.putExtra(AppContants.Extras.ADME_MOTOR_CONTROL_CONFIG_INFO, configInfo);
         context.startActivity(intent);
     }
 
@@ -204,8 +204,8 @@ public class ADMEMotorControlActivity extends BaseDeviceConnectActivity {
         UIHandler = new Handler();
 
         Intent intent = getIntent();
-        if (intent.getExtras() != null && intent.getExtras().containsKey(Extras.ADME_MOTOR_CONTROL_CONFIG_INFO)) {
-            configInfo = intent.getStringExtra(Extras.ADME_MOTOR_CONTROL_CONFIG_INFO);
+        if (intent.getExtras() != null && intent.getExtras().containsKey(AppContants.Extras.ADME_MOTOR_CONTROL_CONFIG_INFO)) {
+            configInfo = intent.getStringExtra(AppContants.Extras.ADME_MOTOR_CONTROL_CONFIG_INFO);
         }
 
         //##7020,电机测试状态（1：停止，2：上拉，3：下降）,电机测试距离（0：一直持续，其他数值为设定的运动距离单位：mm）,上拉速度,下降速度

@@ -15,14 +15,14 @@ import android.widget.TextView;
 import androidx.annotation.Nullable;
 
 import com.hjq.toast.ToastUtils;
+import com.shmedo.core.AppContants;
+import com.shmedo.core.MCloudApp;
 import com.shmedo.core.cmd.CommandManager;
 import com.shmedo.core.cmd.CommandResult;
 import com.shmedo.core.cmd.entity.SetRainPrecisionEntity;
 import com.shmedo.core.enums.CommandType;
 import com.shmedo.core.utils.StringUtil;
-import com.dragon.core.MCloudApp;
 import com.shmedo.mcloudapp.R;
-import com.shmedo.mcloudapp.interfaces.Extras;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -57,7 +57,7 @@ public class RainConfigActivity extends BaseDeviceConnectActivity {
 
     public static void startActivity(Context context, String configInfo) {
         Intent intent = new Intent(context, RainConfigActivity.class);
-        intent.putExtra(Extras.PARAM_CONFIG_INFO, configInfo);
+        intent.putExtra(AppContants.Extras.PARAM_CONFIG_INFO, configInfo);
         context.startActivity(intent);
     }
 
@@ -99,8 +99,8 @@ public class RainConfigActivity extends BaseDeviceConnectActivity {
 
     private void parseIntent() {
         Intent intent = getIntent();
-        if (intent.getExtras() != null && intent.getExtras().containsKey(Extras.PARAM_CONFIG_INFO)) {
-            rainAccury = intent.getStringExtra(Extras.PARAM_CONFIG_INFO);
+        if (intent.getExtras() != null && intent.getExtras().containsKey(AppContants.Extras.PARAM_CONFIG_INFO)) {
+            rainAccury = intent.getStringExtra(AppContants.Extras.PARAM_CONFIG_INFO);
             if (TextUtils.isEmpty(rainAccury)) {
                 return;
             }

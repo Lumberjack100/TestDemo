@@ -168,8 +168,7 @@ dependencies {
     //Material Dialog
     implementation "com.afollestad.material-dialogs:core:$rootProject.thirdLib.materialDialogsCore"
     implementation "com.lxj:xpopup:$rootProject.thirdLib.xpopup"
-    //eventbus
-    implementation "org.greenrobot:eventbus:$rootProject.thirdLib.eventbus"
+
     //stetho
     implementation "com.facebook.stetho:stetho:$rootProject.thirdLib.stetho"
     //fab

@@ -41,7 +41,7 @@
             android:layout_toLeftOf="@id/ce_find_sn"
             android:src="@drawable/icon_scans" />
 
-        <com.shmedo.mcloudapp.views.ClearEditText
+        <com.shmedo.mcloudapp.common.view.ClearEditText
             android:id="@+id/ce_find_sn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -117,7 +117,7 @@
             android:textColor="@color/white" />
     </LinearLayout>
 
-    <com.shmedo.mcloudapp.views.EmptyDataView
+    <com.shmedo.mcloudapp.common.view.EmptyDataView
         android:id="@+id/empty_data"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

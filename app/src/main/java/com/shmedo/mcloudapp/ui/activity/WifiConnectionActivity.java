@@ -20,15 +20,15 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.dragon.core.AppContants;
+import com.shmedo.core.AppContants;
 import com.hjq.toast.ToastUtils;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.adapter.WifiListAdapter;
-import com.shmedo.mcloudapp.entity.WifiBean;
-import com.shmedo.mcloudapp.event.WifiEvent;
+import com.shmedo.core.model.WifiBean;
+import com.shmedo.core.event.WifiEvent;
 import com.shmedo.mcloudapp.util.ActivityCollector;
 import com.shmedo.mcloudapp.util.WifiSupport;
-import com.shmedo.mcloudapp.views.WifiLinkDialog;
+import com.shmedo.mcloudapp.common.view.WifiLinkDialog;
 
 import org.greenrobot.eventbus.EventBus;
 

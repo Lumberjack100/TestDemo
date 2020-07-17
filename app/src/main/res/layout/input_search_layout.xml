@@ -11,7 +11,7 @@
     android:paddingStart="15dp"
     android:paddingEnd="8dp">
 
-    <com.shmedo.mcloudapp.views.ClearEditText
+    <com.shmedo.mcloudapp.common.view.ClearEditText
         android:id="@+id/et_search"
         android:layout_width="0dp"
         android:layout_height="match_parent"

@@ -26,12 +26,12 @@ import com.chad.library.adapter.base.listener.OnLoadMoreListener;
 import com.chad.library.adapter.base.module.LoadMoreModule;
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 import com.hjq.toast.ToastUtils;
+import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.R;
-import com.shmedo.mcloudapp.base.BaseActivity;
-import com.shmedo.mcloudapp.interfaces.Extras;
+import com.shmedo.mcloudapp.common.ui.activity.BaseActivity;
 import com.shmedo.mcloudapp.maps.model.PageInfo;
 import com.shmedo.mcloudapp.maps.util.MapErrorUtil;
-import com.shmedo.mcloudapp.views.ClearEditText;
+import com.shmedo.mcloudapp.common.view.ClearEditText;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -136,7 +136,7 @@ public class PoiSearchActivity extends BaseActivity implements TextWatcher, PoiS
             public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
                 PoiItem poiItem = poiSearchAdapter.getItem(position);
                 Intent intent = getIntent();
-                intent.putExtra(Extras.POIITEM_INFO, poiItem);
+                intent.putExtra(AppContants.Extras.POIITEM_INFO, poiItem);
                 setResult(RESULT_OK, intent);
                 finish();
             }

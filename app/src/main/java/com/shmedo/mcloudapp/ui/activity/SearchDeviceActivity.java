@@ -16,12 +16,12 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.shmedo.core.utils.StringUtil;
-import com.dragon.core.MCloudApp;
+import com.shmedo.core.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.adapter.recyclerviewbaseadapter.CommonAdapter;
 import com.shmedo.mcloudapp.adapter.recyclerviewbaseadapter.MultiItemTypeAdapter;
 import com.shmedo.mcloudapp.adapter.recyclerviewbaseadapter.ViewHolder;
-import com.shmedo.mcloudapp.base.BaseActivity;
+import com.shmedo.mcloudapp.common.ui.activity.BaseActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.ConfigADMEActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.ConfigDASActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.ConfigE60Activity;
@@ -32,9 +32,9 @@ import com.shmedo.mcloudapp.entity.StatusInfoResultDao;
 import com.shmedo.mcloudapp.util.DaoManager;
 import com.shmedo.mcloudapp.util.ImageUtil;
 import com.shmedo.mcloudapp.util.KeyBordUtils;
-import com.shmedo.mcloudapp.views.ClearEditText;
-import com.shmedo.mcloudapp.views.DeviceSensorDialog;
-import com.shmedo.mcloudapp.views.recycleviewitemdivider.DividerItemDecoration;
+import com.shmedo.mcloudapp.common.view.ClearEditText;
+import com.shmedo.mcloudapp.common.view.DeviceSensorDialog;
+import com.shmedo.mcloudapp.common.view.recycleviewitemdivider.DividerItemDecoration;
 
 import java.util.ArrayList;
 import java.util.List;

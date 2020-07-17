@@ -6,7 +6,7 @@ import android.content.DialogInterface;
 
 import androidx.appcompat.app.AlertDialog;
 
-import com.dragon.core.util.GlobalUtil;
+import com.shmedo.core.util.GlobalUtil;
 import com.hjq.toast.ToastUtils;
 import com.pgyersdk.crash.PgyCrashManager;
 import com.pgyersdk.update.DownloadFileListener;

@@ -23,7 +23,7 @@ import com.shmedo.core.cmd.CommandManager;
 import com.shmedo.core.cmd.entity.LocalTimeEntity;
 import com.shmedo.core.enums.CommandType;
 import com.shmedo.core.utils.StringUtil;
-import com.dragon.core.MCloudApp;
+import com.shmedo.core.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.BaseDeviceConnectActivity;
 import com.shmedo.mcloudapp.util.ImageUtil;

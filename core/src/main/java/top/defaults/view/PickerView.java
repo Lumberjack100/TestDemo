@@ -19,7 +19,7 @@ import android.view.View;
 import android.view.ViewConfiguration;
 import android.widget.OverScroller;
 
-import com.dragon.core.R;
+import com.shmedo.core.R;
 
 import java.lang.ref.WeakReference;
 import java.util.List;

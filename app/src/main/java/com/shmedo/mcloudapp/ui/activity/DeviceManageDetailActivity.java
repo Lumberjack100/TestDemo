@@ -17,23 +17,23 @@ import com.scwang.smartrefresh.layout.footer.ClassicsFooter;
 import com.scwang.smartrefresh.layout.header.ClassicsHeader;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 import com.scwang.smartrefresh.layout.listener.OnRefreshLoadMoreListener;
-import com.dragon.core.MCloudApp;
+import com.shmedo.core.AppContants;
+import com.shmedo.core.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.adapter.QueryProjectDeviceAdapter;
-import com.shmedo.mcloudapp.base.BaseActivity;
+import com.shmedo.mcloudapp.common.ui.activity.BaseActivity;
 import com.shmedo.mcloudapp.entity.PageResult;
 import com.shmedo.mcloudapp.entity.ProjectDeviceInfo;
 import com.shmedo.mcloudapp.entity.SystemDataInfo;
 import com.shmedo.mcloudapp.entity.parameter.QueryProjectDeviceParamter;
-import com.shmedo.mcloudapp.interfaces.Extras;
 import com.shmedo.mcloudapp.network.BaseObserver;
 import com.shmedo.mcloudapp.network.MDRetrofit;
 import com.shmedo.mcloudapp.network.NetworkConst;
 import com.shmedo.mcloudapp.util.GsonFactory;
-import com.shmedo.mcloudapp.views.ClearEditText;
-import com.shmedo.mcloudapp.views.EmptyDataView;
-import com.shmedo.mcloudapp.views.LoadingDialog;
-import com.shmedo.mcloudapp.views.recycleviewitemdivider.DividerItemDecoration;
+import com.shmedo.mcloudapp.common.view.ClearEditText;
+import com.shmedo.mcloudapp.common.view.EmptyDataView;
+import com.shmedo.mcloudapp.common.helper.LoadingDialog;
+import com.shmedo.mcloudapp.common.view.recycleviewitemdivider.DividerItemDecoration;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -101,7 +101,7 @@ public class DeviceManageDetailActivity extends BaseActivity implements OnRefres
      */
     public static void startActivity(Context context, SystemDataInfo systemDataInfo) {
         Intent intent = new Intent(context, DeviceManageDetailActivity.class);
-        intent.putExtra(Extras.QUERY_PROJECT_DEVICE, systemDataInfo);
+        intent.putExtra(AppContants.Extras.QUERY_PROJECT_DEVICE, systemDataInfo);
         context.startActivity(intent);
     }
 
@@ -139,7 +139,7 @@ public class DeviceManageDetailActivity extends BaseActivity implements OnRefres
 
         Intent intent = getIntent();
         if (intent != null) {
-            SystemDataInfo systemDataInfo = (SystemDataInfo) intent.getSerializableExtra(Extras.QUERY_PROJECT_DEVICE);
+            SystemDataInfo systemDataInfo = (SystemDataInfo) intent.getSerializableExtra(AppContants.Extras.QUERY_PROJECT_DEVICE);
             if (systemDataInfo == null) {
                 Timber.w("传递的参数 SystemDataInfo 值为 NULL!");
                 return;

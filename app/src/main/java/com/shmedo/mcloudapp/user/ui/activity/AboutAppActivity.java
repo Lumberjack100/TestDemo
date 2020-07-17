@@ -7,14 +7,14 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.dragon.core.util.GlobalUtil;
+import com.shmedo.core.util.GlobalUtil;
 import com.hjq.toast.ToastUtils;
 import com.pgyersdk.crash.PgyCrashManager;
 import com.pgyersdk.feedback.PgyerFeedbackManager;
 import com.shmedo.mcloudapp.R;
-import com.shmedo.mcloudapp.base.BaseActivity;
-import com.shmedo.mcloudapp.ui.activity.TestBluetoothListActivity;
-import com.shmedo.mcloudapp.ui.activity.WebViewActivity;
+import com.shmedo.mcloudapp.common.ui.activity.BaseActivity;
+import com.shmedo.mcloudapp.common.ui.activity.TestBluetoothListActivity;
+import com.shmedo.mcloudapp.common.ui.activity.WebViewActivity;
 import com.shmedo.mcloudapp.util.permission.RuntimeRationale;
 import com.yanzhenjie.permission.Action;
 import com.yanzhenjie.permission.AndPermission;

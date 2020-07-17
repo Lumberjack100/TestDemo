@@ -12,11 +12,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.hjq.toast.ToastUtils;
+import com.shmedo.core.AppContants;
+import com.shmedo.core.MCloudApp;
 import com.shmedo.core.cmd.CommandResult;
-import com.dragon.core.MCloudApp;
 import com.shmedo.mcloudapp.R;
-import com.shmedo.mcloudapp.event.BluetoothStateEvent;
-import com.shmedo.mcloudapp.interfaces.Extras;
+import com.shmedo.core.event.BluetoothStateEvent;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -62,8 +62,8 @@ public class CountMeterWheelActivity extends BaseDeviceConnectActivity {
 
     public static void startActivity(Context context, String countMeterParam, String correctionParam) {
         Intent intent = new Intent(context, CountMeterWheelActivity.class);
-        intent.putExtra(Extras.ADME_COUNT_METER_WHEEL_CONFIG_INFO, countMeterParam);
-        intent.putExtra(Extras.ENCODER_CORRECTION_PARAMETERS, correctionParam);
+        intent.putExtra(AppContants.Extras.ADME_COUNT_METER_WHEEL_CONFIG_INFO, countMeterParam);
+        intent.putExtra(AppContants.Extras.ENCODER_CORRECTION_PARAMETERS, correctionParam);
         context.startActivity(intent);
     }
 
@@ -117,8 +117,8 @@ public class CountMeterWheelActivity extends BaseDeviceConnectActivity {
 
     private void parseIntent() {
         Intent intent = getIntent();
-        if (intent.getExtras() != null && intent.getExtras().containsKey(Extras.ADME_COUNT_METER_WHEEL_CONFIG_INFO)) {
-            countMeterParam = intent.getStringExtra(Extras.ADME_COUNT_METER_WHEEL_CONFIG_INFO);
+        if (intent.getExtras() != null && intent.getExtras().containsKey(AppContants.Extras.ADME_COUNT_METER_WHEEL_CONFIG_INFO)) {
+            countMeterParam = intent.getStringExtra(AppContants.Extras.ADME_COUNT_METER_WHEEL_CONFIG_INFO);
             if (TextUtils.isEmpty(countMeterParam)) {
                 Timber.e("countMeterParam 为空或者null");
                 return;
@@ -139,8 +139,8 @@ public class CountMeterWheelActivity extends BaseDeviceConnectActivity {
             mEtWheelDiameter.setText(cmdArray[2]);
         }
 
-        if (intent.getExtras() != null && intent.getExtras().containsKey(Extras.ENCODER_CORRECTION_PARAMETERS)) {
-            correctionParam = intent.getStringExtra(Extras.ENCODER_CORRECTION_PARAMETERS);
+        if (intent.getExtras() != null && intent.getExtras().containsKey(AppContants.Extras.ENCODER_CORRECTION_PARAMETERS)) {
+            correctionParam = intent.getStringExtra(AppContants.Extras.ENCODER_CORRECTION_PARAMETERS);
             if (TextUtils.isEmpty(correctionParam)) {
                 Timber.e("correctionParam 为空或者null");
                 return;

@@ -1,16 +1,16 @@
 package com.shmedo.mcloudapp.adapter;
 
 import android.content.Context;
-import androidx.annotation.NonNull;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+
 import com.amap.api.maps.AMap;
 import com.amap.api.maps.model.LatLng;
 import com.amap.api.maps.model.Marker;
-import com.dragon.core.MCloudApp;
+import com.shmedo.core.MCloudApp;
 import com.shmedo.mcloudapp.R;
 
 /**

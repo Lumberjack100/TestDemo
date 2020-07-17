@@ -8,14 +8,14 @@ import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.adapter.recyclerviewbaseadapter.CommonAdapter;
-import com.shmedo.mcloudapp.base.BaseActivity;
+import com.shmedo.mcloudapp.common.ui.activity.BaseActivity;
 import com.shmedo.mcloudapp.entity.ProjectDeviceInfo;
 import com.shmedo.mcloudapp.entity.SystemDataInfo;
-import com.shmedo.mcloudapp.interfaces.Extras;
-import com.shmedo.mcloudapp.views.ClearEditText;
-import com.shmedo.mcloudapp.views.EmptyDataView;
+import com.shmedo.mcloudapp.common.view.ClearEditText;
+import com.shmedo.mcloudapp.common.view.EmptyDataView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,7 +60,7 @@ public class ProjectContainDevicesActivity extends BaseActivity {
      */
     public static void startActivity(Context context, SystemDataInfo systemDataInfo) {
         Intent intent = new Intent(context, ProjectContainDevicesActivity.class);
-        intent.putExtra(Extras.QUERY_PROJECT_DEVICE, systemDataInfo);
+        intent.putExtra(AppContants.Extras.QUERY_PROJECT_DEVICE, systemDataInfo);
         context.startActivity(intent);
     }
 
@@ -82,7 +82,7 @@ public class ProjectContainDevicesActivity extends BaseActivity {
     private void initView() {
         Intent intent = getIntent();
         if (intent != null) {
-            SystemDataInfo systemDataInfo = (SystemDataInfo) intent.getSerializableExtra(Extras.QUERY_PROJECT_DEVICE);
+            SystemDataInfo systemDataInfo = (SystemDataInfo) intent.getSerializableExtra(AppContants.Extras.QUERY_PROJECT_DEVICE);
             if (systemDataInfo == null) {
                 Timber.w("传递的参数 SystemDataInfo 值为 NULL!");
                 return;

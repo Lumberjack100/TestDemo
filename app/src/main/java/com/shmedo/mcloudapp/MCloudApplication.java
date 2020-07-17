@@ -6,7 +6,7 @@ import android.bluetooth.BluetoothManager;
 import android.content.Context;
 import android.widget.Toast;
 
-import com.dragon.core.MCloudApp;
+import com.shmedo.core.MCloudApp;
 import com.hjq.toast.ToastInterceptor;
 import com.hjq.toast.ToastUtils;
 import com.hjq.toast.style.ToastBlackStyle;

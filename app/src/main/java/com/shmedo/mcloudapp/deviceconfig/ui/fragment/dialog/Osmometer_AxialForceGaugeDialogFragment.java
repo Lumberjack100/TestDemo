@@ -22,11 +22,11 @@ import com.shmedo.core.model.SensorGudanPercolateInfo;
 import com.shmedo.core.model.SensorKangPercolateInfo;
 import com.shmedo.core.utils.StringUtil;
 import com.shmedo.mcloudapp.R;
-import com.shmedo.mcloudapp.ui.activity.ScanActivity;
+import com.shmedo.mcloudapp.common.ui.activity.ScanActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.sensor.BaseSensorConfigActivity;
-import com.shmedo.mcloudapp.deviceconfig.ui.view.sensor.SensorBGK4500View;
-import com.shmedo.mcloudapp.deviceconfig.ui.view.sensor.SensorVWP03View;
-import com.shmedo.mcloudapp.deviceconfig.ui.view.sensor.SensorZLJ300tView;
+import com.shmedo.mcloudapp.deviceconfig.view.sensor.SensorBGK4500View;
+import com.shmedo.mcloudapp.deviceconfig.view.sensor.SensorVWP03View;
+import com.shmedo.mcloudapp.deviceconfig.view.sensor.SensorZLJ300tView;
 import com.shmedo.mcloudapp.util.permission.PermissionHelper;
 import com.shmedo.mcloudapp.util.permission.XPermissionUtils;
 

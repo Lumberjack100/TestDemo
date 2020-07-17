@@ -7,12 +7,12 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.shmedo.mcloudapp.R;
-import com.shmedo.mcloudapp.base.BaseActivity;
+import com.shmedo.mcloudapp.common.ui.activity.BaseActivity;
 import com.shmedo.mcloudapp.entity.SyncPositionBean;
 import com.shmedo.mcloudapp.maps.model.NetWorkQuality;
 import com.shmedo.mcloudapp.maps.util.ScreenShotAction;
 import com.shmedo.mcloudapp.util.LocationUtils;
-import com.shmedo.mcloudapp.util.NetworkUtils;
+import com.shmedo.core.util.NetworkUtils;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;

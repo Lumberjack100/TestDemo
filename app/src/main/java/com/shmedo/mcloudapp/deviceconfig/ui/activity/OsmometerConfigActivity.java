@@ -17,6 +17,8 @@ import androidx.annotation.Nullable;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.hjq.toast.ToastUtils;
+import com.shmedo.core.AppContants;
+import com.shmedo.core.MCloudApp;
 import com.shmedo.core.cmd.CommandManager;
 import com.shmedo.core.cmd.CommandResult;
 import com.shmedo.core.cmd.entity.SetOsmometerAddressEntity;
@@ -26,14 +28,11 @@ import com.shmedo.core.cmd.entity.SetOsmometerNozzelHeightEntity;
 import com.shmedo.core.cmd.entity.SetOsmometerTriggerEntity;
 import com.shmedo.core.enums.CommandType;
 import com.shmedo.core.model.QueryOsmometerParameterInfo;
+import com.shmedo.core.util.SharedUtil;
 import com.shmedo.core.utils.ResultParserUtil;
 import com.shmedo.core.utils.StringUtil;
-import com.dragon.core.AppContants;
-import com.dragon.core.MCloudApp;
 import com.shmedo.mcloudapp.R;
-import com.shmedo.mcloudapp.interfaces.Extras;
 import com.shmedo.mcloudapp.util.AdvanceSetDialogUtils;
-import com.dragon.core.util.SharedUtil;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -103,7 +102,7 @@ public class OsmometerConfigActivity extends BaseDeviceConnectActivity {
 
     public static void startActivity(Context context, String osmometerParameterInfo) {
         Intent intent = new Intent(context, OsmometerConfigActivity.class);
-        intent.putExtra(Extras.PARAM_CONFIG_INFO, osmometerParameterInfo);
+        intent.putExtra(AppContants.Extras.PARAM_CONFIG_INFO, osmometerParameterInfo);
         context.startActivity(intent);
     }
 
@@ -144,8 +143,8 @@ public class OsmometerConfigActivity extends BaseDeviceConnectActivity {
         mEtNote.setText(SharedUtil.read(AppContants.OSMOMETER_NOTE));
 
         Intent intent = getIntent();
-        if (intent.getExtras() != null && intent.getExtras().containsKey(Extras.PARAM_CONFIG_INFO)) {
-            String configInfo = intent.getStringExtra(Extras.PARAM_CONFIG_INFO);
+        if (intent.getExtras() != null && intent.getExtras().containsKey(AppContants.Extras.PARAM_CONFIG_INFO)) {
+            String configInfo = intent.getStringExtra(AppContants.Extras.PARAM_CONFIG_INFO);
             if (!TextUtils.isEmpty(configInfo)) {
                 QueryOsmometerParameterInfo queryOsmometerParameterInfo = ResultParserUtil.getEntityObject(configInfo);
                 if (queryOsmometerParameterInfo != null) {

@@ -1,6 +1,6 @@
 package com.shmedo.mcloudapp.network.api;
 
-import com.dragon.core.model.UserInfo;
+import com.shmedo.core.model.UserInfo;
 import com.shmedo.mcloudapp.entity.DeviceBasicInfoResult;
 import com.shmedo.mcloudapp.entity.DeviceDetailInfo;
 import com.shmedo.mcloudapp.entity.PageResult;

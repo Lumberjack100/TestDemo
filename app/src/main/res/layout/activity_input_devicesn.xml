@@ -75,7 +75,7 @@
 
         </LinearLayout>
 
-        <com.shmedo.mcloudapp.views.ClearEditText
+        <com.shmedo.mcloudapp.common.view.ClearEditText
             android:id="@+id/input_sn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

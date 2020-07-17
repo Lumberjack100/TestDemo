@@ -23,13 +23,13 @@ import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 
-import com.dragon.core.MCloudApp;
-import com.dragon.core.model.UserInfo;
-import com.dragon.core.util.DeviceInfo;
-import com.dragon.core.util.GlobalUtil;
+import com.shmedo.core.MCloudApp;
+import com.shmedo.core.model.UserInfo;
+import com.shmedo.core.util.DeviceInfo;
+import com.shmedo.core.util.GlobalUtil;
 import com.hjq.toast.ToastUtils;
 import com.shmedo.mcloudapp.R;
-import com.shmedo.mcloudapp.base.BaseActivity;
+import com.shmedo.mcloudapp.common.ui.activity.BaseActivity;
 import com.shmedo.mcloudapp.entity.parameter.SetUserHeadPhotoParameter;
 import com.shmedo.mcloudapp.network.BaseObserver;
 import com.shmedo.mcloudapp.network.MDRetrofit;
@@ -40,7 +40,7 @@ import com.shmedo.mcloudapp.util.FileUtils;
 import com.shmedo.mcloudapp.util.GlideUtils;
 import com.shmedo.mcloudapp.util.GsonFactory;
 import com.shmedo.mcloudapp.util.permission.XPermissionUtils;
-import com.shmedo.mcloudapp.views.ClearEditText;
+import com.shmedo.mcloudapp.common.view.ClearEditText;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 import com.zhihu.matisse.Matisse;

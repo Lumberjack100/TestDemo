@@ -11,7 +11,7 @@ import android.net.wifi.WifiManager;
 import android.provider.Settings;
 import android.text.TextUtils;
 
-import com.shmedo.mcloudapp.entity.WifiBean;
+import com.shmedo.core.model.WifiBean;
 
 import java.util.ArrayList;
 import java.util.List;

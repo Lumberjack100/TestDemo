@@ -17,10 +17,10 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.dragon.core.MCloudApp;
-import com.dragon.core.util.GlobalUtil;
 import com.hjq.toast.ToastUtils;
 import com.kyleduo.switchbutton.SwitchButton;
+import com.shmedo.core.AppContants;
+import com.shmedo.core.MCloudApp;
 import com.shmedo.core.cmd.CommandManager;
 import com.shmedo.core.cmd.CommandResult;
 import com.shmedo.core.cmd.entity.InstallLocationEntity;
@@ -28,14 +28,14 @@ import com.shmedo.core.cmd.entity.WorkModeEntity;
 import com.shmedo.core.enums.CommandType;
 import com.shmedo.core.enums.SetRemoteUpgrade;
 import com.shmedo.core.enums.WorkModel;
+import com.shmedo.core.util.GlobalUtil;
 import com.shmedo.core.utils.StringUtil;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.advanced.InstructionDebugActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.advanced.LogPrintActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.advanced.ProductRegistrationActivity;
 import com.shmedo.mcloudapp.entity.SyncPositionBean;
-import com.shmedo.mcloudapp.event.BluetoothStateEvent;
-import com.shmedo.mcloudapp.interfaces.Extras;
+import com.shmedo.core.event.BluetoothStateEvent;
 import com.shmedo.mcloudapp.util.AdvanceSetDialogUtils;
 import com.shmedo.mcloudapp.util.FileUtils;
 import com.shmedo.mcloudapp.util.KeyBordUtils;
@@ -66,7 +66,7 @@ public class DeviceAdvanceConfigActivity extends BaseDeviceConnectActivity {
 
     public static void startActivity(Context context, int mode) {
         Intent intent = new Intent(context, DeviceAdvanceConfigActivity.class);
-        intent.putExtra(Extras.DEBUG_MODE, mode);
+        intent.putExtra(AppContants.Extras.DEBUG_MODE, mode);
         context.startActivity(intent);
     }
 
@@ -85,7 +85,7 @@ public class DeviceAdvanceConfigActivity extends BaseDeviceConnectActivity {
     }
 
     private void initData() {
-        int mode = getIntent().getIntExtra(Extras.DEBUG_MODE, 1);
+        int mode = getIntent().getIntExtra(AppContants.Extras.DEBUG_MODE, 1);
         //设备调试模式
         switch (WorkModel.valueOf(mode)) {
             case INITIALZE:

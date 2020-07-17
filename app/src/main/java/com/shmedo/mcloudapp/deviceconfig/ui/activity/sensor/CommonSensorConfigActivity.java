@@ -9,6 +9,7 @@ import android.view.View;
 import androidx.fragment.app.Fragment;
 
 import com.hjq.toast.ToastUtils;
+import com.shmedo.core.AppContants;
 import com.shmedo.core.cmd.CommandResult;
 import com.shmedo.core.enums.CollectorModel;
 import com.shmedo.core.enums.CommandType;
@@ -19,7 +20,6 @@ import com.shmedo.core.model.SensorRadarLevelInfo;
 import com.shmedo.core.model.SensorSoilMoistureInfo;
 import com.shmedo.core.model.SensorWireShiftInfo;
 import com.shmedo.core.utils.StringUtil;
-import com.shmedo.mcloudapp.interfaces.Extras;
 import com.shmedo.mcloudapp.util.KeyBordUtils;
 
 import org.greenrobot.eventbus.Subscribe;
@@ -39,14 +39,14 @@ public class CommonSensorConfigActivity extends BaseSensorConfigActivity {
 
     public static void startActivityForResultByFragment(Fragment context, String collectorSensorConfig, int requestCode) {
         Intent intent = new Intent(context.getActivity(), CommonSensorConfigActivity.class);
-        intent.putExtra(Extras.SPLICE_SENSOR_PARAMS, collectorSensorConfig);
+        intent.putExtra(AppContants.Extras.SPLICE_SENSOR_PARAMS, collectorSensorConfig);
         context.startActivityForResult(intent, requestCode);
     }
 
 
     public static void startActivityForResult(Activity context, String collectorSensorConfig, int requestCode) {
         Intent intent = new Intent(context, CommonSensorConfigActivity.class);
-        intent.putExtra(Extras.SPLICE_SENSOR_PARAMS, collectorSensorConfig);
+        intent.putExtra(AppContants.Extras.SPLICE_SENSOR_PARAMS, collectorSensorConfig);
         context.startActivityForResult(intent, requestCode);
     }
 
@@ -275,7 +275,7 @@ public class CommonSensorConfigActivity extends BaseSensorConfigActivity {
                         @Override
                         public void run() {
                             Intent intent = getIntent();
-                            intent.putExtra(Extras.SPLICE_SENSOR_PARAMS, sbCollectorSensorConfig.toString());
+                            intent.putExtra(AppContants.Extras.SPLICE_SENSOR_PARAMS, sbCollectorSensorConfig.toString());
                             setResult(RESULT_OK, intent);
                             finish();
                         }

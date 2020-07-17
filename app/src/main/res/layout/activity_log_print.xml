@@ -114,7 +114,7 @@
             android:layout_marginRight="8dp"
             android:orientation="horizontal">
 
-            <com.shmedo.mcloudapp.views.ClearEditText
+            <com.shmedo.mcloudapp.common.view.ClearEditText
                 android:id="@+id/ce_send_code"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.shmedo.mcloudapp.views.MaxHeightNestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.shmedo.mcloudapp.common.view.MaxHeightNestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/bottom_sheet"
     android:layout_width="match_parent"
@@ -29,7 +29,7 @@
                 android:layout_marginBottom="10dp"
                 android:background="@drawable/shape_divide_bg_gray"/>
 
-            <com.shmedo.mcloudapp.views.ClearEditText
+            <com.shmedo.mcloudapp.common.view.ClearEditText
                 android:id="@+id/et_device_sn"
                 android:layout_width="match_parent"
                 android:layout_height="35dp"
@@ -283,4 +283,4 @@
 
     </LinearLayout>
 
-</com.shmedo.mcloudapp.views.MaxHeightNestedScrollView>
+</com.shmedo.mcloudapp.common.view.MaxHeightNestedScrollView>

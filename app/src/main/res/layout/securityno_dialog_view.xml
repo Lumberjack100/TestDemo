@@ -5,7 +5,7 @@
     android:gravity="center"
     android:orientation="vertical">
 
-    <com.shmedo.mcloudapp.views.ClearEditText
+    <com.shmedo.mcloudapp.common.view.ClearEditText
         android:id="@+id/dialog_edit"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

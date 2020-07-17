@@ -5,10 +5,10 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 
-import com.dragon.core.util.GlobalUtil;
+import com.shmedo.core.util.GlobalUtil;
 import com.hjq.toast.ToastUtils;
 import com.shmedo.mcloudapp.R;
-import com.shmedo.mcloudapp.base.BaseActivity;
+import com.shmedo.mcloudapp.common.ui.activity.BaseActivity;
 import com.shmedo.mcloudapp.util.LocationUtils;
 import com.shmedo.mcloudapp.util.permission.PermissionHelper;
 import com.shmedo.mcloudapp.util.permission.XPermissionUtils;

@@ -22,6 +22,8 @@ import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.hjq.toast.ToastUtils;
 import com.kyleduo.switchbutton.SwitchButton;
+import com.shmedo.core.AppContants;
+import com.shmedo.core.MCloudApp;
 import com.shmedo.core.cmd.CommandManager;
 import com.shmedo.core.cmd.CommandResult;
 import com.shmedo.core.cmd.entity.CollectorConfigEntity;
@@ -39,17 +41,15 @@ import com.shmedo.core.model.QueryOsmometerParameterInfo;
 import com.shmedo.core.model.SetRainPrecisionInfo;
 import com.shmedo.core.utils.ResultParserUtil;
 import com.shmedo.core.utils.StringUtil;
-import com.dragon.core.MCloudApp;
 import com.shmedo.mcloudapp.R;
-import com.shmedo.mcloudapp.base.BaseFragment;
-import com.shmedo.mcloudapp.event.BluetoothStateEvent;
-import com.shmedo.mcloudapp.interfaces.Extras;
+import com.shmedo.mcloudapp.common.ui.fragment.BaseFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.ConfigDASActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.DeviceAdvanceConfigActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.GeneralSettingActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.MqttSettingActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.sensor.CommonSensorConfigActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.sensor.VibratingWireSensorConfigActivity;
+import com.shmedo.core.event.BluetoothStateEvent;
 import com.shmedo.mcloudapp.util.bleutil.BlueResultParserUtil;
 
 import org.greenrobot.eventbus.EventBus;
@@ -165,8 +165,8 @@ public class DASHomeFragment extends BaseFragment {
 
     private void getIntentData() {
         Intent intent = getActivity().getIntent();
-        if (intent.getExtras() != null && intent.getExtras().containsKey(Extras.CUR_DEVICE_NAME)) {
-            String deviceInfo = intent.getStringExtra(Extras.CUR_DEVICE_NAME);
+        if (intent.getExtras() != null && intent.getExtras().containsKey(AppContants.Extras.CUR_DEVICE_NAME)) {
+            String deviceInfo = intent.getStringExtra(AppContants.Extras.CUR_DEVICE_NAME);
             String[] scanData = deviceInfo.split(",");
             mTvDeviceName.setText("物联网数据采集器");
             mTvDeviceSn.setText(scanData[1]);//设备编号
@@ -660,14 +660,14 @@ public class DASHomeFragment extends BaseFragment {
         switch (requestCode) {
             case REQUEST_CODE_COLLECTOR_CONFIG:
                 if (intent != null) {
-                    collectorConfigInfo = (CollectorConfigInfo) intent.getSerializableExtra(Extras.PARAM_CONFIG_INFO);
+                    collectorConfigInfo = (CollectorConfigInfo) intent.getSerializableExtra(AppContants.Extras.PARAM_CONFIG_INFO);
                     configDASActivity.isConfigChange = true;
                 }
                 break;
 
             case REQUEST_CODE_SENSOR_CONFIG:
                 if (intent != null) {
-                    String ss = intent.getStringExtra(Extras.SPLICE_SENSOR_PARAMS);
+                    String ss = intent.getStringExtra(AppContants.Extras.SPLICE_SENSOR_PARAMS);
                     Timber.d("更新后的传感器拼接参数:" + ss);
                     sbcollectorSensor = new StringBuilder();
                     sbcollectorSensor.append(ss);

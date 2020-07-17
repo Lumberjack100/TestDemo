@@ -61,7 +61,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <com.shmedo.mcloudapp.views.EmptyDataView
+        <com.shmedo.mcloudapp.common.view.EmptyDataView
             android:id="@+id/empty_data"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

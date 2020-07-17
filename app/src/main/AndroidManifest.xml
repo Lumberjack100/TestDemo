@@ -68,7 +68,7 @@
             android:value="${pgyerKey}" />
 
         <provider
-            android:name=".provider.GenericFileProvider"
+            android:name="com.shmedo.core.provider.GenericFileProvider"
             android:authorities="${applicationId}.fileProvider"
             android:exported="false"
             android:grantUriPermissions="true">
@@ -79,7 +79,7 @@
         </provider>
 
         <activity
-            android:name=".ui.activity.WelcomeActivity"
+            android:name=".common.ui.activity.WelcomeActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:theme="@style/MCloud.WelcomeActivity">
             <intent-filter>
@@ -89,7 +89,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ui.activity.LoginActivity"
+            android:name=".common.ui.activity.LoginActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan|stateHidden" />
@@ -99,7 +99,7 @@
             android:label="主页面"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ui.activity.ServiceConfigActivity"
+            android:name=".common.ui.activity.ServiceConfigActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden|adjustResize" />
@@ -165,7 +165,7 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustResize" />
         <activity
-            android:name=".ui.activity.ScanActivity"
+            android:name=".common.ui.activity.ScanActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:screenOrientation="portrait"
             android:theme="@style/MCloud.ScanActivity" />
@@ -231,7 +231,7 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustResize" />
         <activity
-            android:name=".ui.activity.NewMainActivity"
+            android:name=".common.ui.activity.NewMainActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:screenOrientation="portrait" />
         <activity
@@ -291,7 +291,7 @@
             android:maxAspectRatio="2.4"
             android:screenOrientation="portrait" />
 
-        <activity android:name=".ui.activity.WebViewActivity" />
+        <activity android:name=".common.ui.activity.WebViewActivity" />
 
         <activity
             android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
@@ -299,12 +299,12 @@
             android:theme="@style/CropImageActivity"/>
 
         <activity
-            android:name=".ui.activity.TestBluetoothListActivity"
+            android:name=".common.ui.activity.TestBluetoothListActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:theme="@style/DialogActivity" />
 
         <activity
-            android:name=".ui.activity.TestActivity"
+            android:name=".common.ui.activity.TestActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:launchMode="singleTop"
             android:screenOrientation="portrait"

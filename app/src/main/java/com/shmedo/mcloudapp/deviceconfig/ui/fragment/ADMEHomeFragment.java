@@ -22,12 +22,13 @@ import androidx.annotation.NonNull;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.dragon.core.MCloudApp;
 import com.hjq.toast.ToastUtils;
 import com.kyleduo.switchbutton.SwitchButton;
+import com.shmedo.core.AppContants;
+import com.shmedo.core.MCloudApp;
 import com.shmedo.core.utils.ValidateUtil;
 import com.shmedo.mcloudapp.R;
-import com.shmedo.mcloudapp.base.BaseFragment;
+import com.shmedo.mcloudapp.common.ui.fragment.BaseFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.ADMEMotorControlActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.ADMESensorExecutiveAgencyConfigActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.ConfigADMEActivity;
@@ -35,11 +36,10 @@ import com.shmedo.mcloudapp.deviceconfig.ui.activity.CountMeterWheelActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.advanced.InstructionDebugActivity;
 import com.shmedo.mcloudapp.entity.SystemDataInfo;
 import com.shmedo.mcloudapp.entity.SystemDataInfoDao;
-import com.shmedo.mcloudapp.event.BluetoothStateEvent;
-import com.shmedo.mcloudapp.interfaces.Extras;
+import com.shmedo.core.event.BluetoothStateEvent;
 import com.shmedo.mcloudapp.util.DaoManager;
-import com.shmedo.mcloudapp.views.ClearEditText;
-import com.shmedo.mcloudapp.views.editspinner.EditSpinner;
+import com.shmedo.mcloudapp.common.view.ClearEditText;
+import com.shmedo.mcloudapp.common.view.editspinner.EditSpinner;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -193,8 +193,8 @@ public class ADMEHomeFragment extends BaseFragment {
 
     private void getIntentData() {
         Intent intent = getActivity().getIntent();
-        if (intent.getExtras() != null && intent.getExtras().containsKey(Extras.CUR_DEVICE_NAME)) {
-            String deviceInfo = intent.getStringExtra(Extras.CUR_DEVICE_NAME);
+        if (intent.getExtras() != null && intent.getExtras().containsKey(AppContants.Extras.CUR_DEVICE_NAME)) {
+            String deviceInfo = intent.getStringExtra(AppContants.Extras.CUR_DEVICE_NAME);
             String[] scanData = deviceInfo.split(",");
             mTvDeviceName.setText("自动化深层水平位移监测装置");
             mTvDeviceSn.setText(scanData[1]);//设备编号

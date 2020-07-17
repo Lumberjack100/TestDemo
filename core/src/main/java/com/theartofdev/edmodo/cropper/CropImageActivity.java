@@ -32,7 +32,7 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
-import com.dragon.core.R;
+import com.shmedo.core.R;
 
 import java.io.File;
 import java.io.IOException;

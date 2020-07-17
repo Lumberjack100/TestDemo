@@ -14,7 +14,7 @@
 
         <include layout="@layout/activity_support_actionbar_toolbar" />
 
-        <com.shmedo.mcloudapp.views.ClearEditText
+        <com.shmedo.mcloudapp.common.view.ClearEditText
             android:id="@+id/newPhoneET"
             android:layout_width="match_parent"
             android:layout_height="55dp"
@@ -42,7 +42,7 @@
             android:background="@drawable/update_password_edittext_shape"
             android:gravity="center_vertical">
 
-            <com.shmedo.mcloudapp.views.ClearEditText
+            <com.shmedo.mcloudapp.common.view.ClearEditText
                 android:id="@+id/codeET"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"

@@ -41,12 +41,12 @@ import com.shmedo.core.model.MqttConfigInfo;
 import com.shmedo.core.model.ServerAddressInfo;
 import com.shmedo.core.utils.ResultParserUtil;
 import com.shmedo.core.utils.StringUtil;
-import com.dragon.core.MCloudApp;
+import com.shmedo.core.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.BaseDialogFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.MqttConfigDialogFragment;
 import com.shmedo.mcloudapp.util.KeyBordUtils;
-import com.shmedo.mcloudapp.views.ClearEditText;
+import com.shmedo.mcloudapp.common.view.ClearEditText;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;

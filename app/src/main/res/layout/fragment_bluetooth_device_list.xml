@@ -27,7 +27,7 @@
                 android:fitsSystemWindows="true"
                 app:layout_collapseMode="parallax">
 
-                <com.shmedo.mcloudapp.deviceconfig.ui.view.DiffuseView
+                <com.shmedo.mcloudapp.deviceconfig.view.DiffuseView
                     android:id="@+id/ivDiscoveryDevice"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"

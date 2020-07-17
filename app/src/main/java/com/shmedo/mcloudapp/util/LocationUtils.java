@@ -9,8 +9,8 @@ import android.os.Build;
 
 import com.amap.api.location.AMapLocationClient;
 import com.amap.api.location.AMapLocationClientOption;
-import com.dragon.core.MCloudApp;
-import com.dragon.core.util.GlobalUtil;
+import com.shmedo.core.MCloudApp;
+import com.shmedo.core.util.GlobalUtil;
 import com.hjq.toast.ToastUtils;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.entity.SyncPositionBean;

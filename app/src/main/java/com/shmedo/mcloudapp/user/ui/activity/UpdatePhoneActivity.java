@@ -8,19 +8,19 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
-import com.dragon.core.MCloudApp;
-import com.dragon.core.model.UserInfo;
+import com.shmedo.core.MCloudApp;
+import com.shmedo.core.model.UserInfo;
 import com.hjq.toast.ToastUtils;
 import com.shmedo.core.utils.ValidateUtil;
 import com.shmedo.mcloudapp.R;
-import com.shmedo.mcloudapp.base.BaseActivity;
+import com.shmedo.mcloudapp.common.ui.activity.BaseActivity;
 import com.shmedo.mcloudapp.network.BaseObserver;
 import com.shmedo.mcloudapp.network.MDRetrofit;
 import com.shmedo.mcloudapp.network.NetworkConst;
 import com.shmedo.mcloudapp.user.model.UpdateMobileParam;
 import com.shmedo.mcloudapp.util.GsonFactory;
 import com.shmedo.mcloudapp.util.MyCountDownTimer;
-import com.shmedo.mcloudapp.views.ClearEditText;
+import com.shmedo.mcloudapp.common.view.ClearEditText;
 
 import butterknife.BindView;
 import butterknife.OnClick;

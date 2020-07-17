@@ -54,7 +54,7 @@
             android:text="数据服务器地址:"
             android:textSize="14sp" />
 
-        <com.shmedo.mcloudapp.views.ClearEditText
+        <com.shmedo.mcloudapp.common.view.ClearEditText
             android:id="@+id/cet_service_address"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -109,7 +109,7 @@
             android:text="AppKey:"
             android:textSize="14sp" />
 
-        <com.shmedo.mcloudapp.views.ClearEditText
+        <com.shmedo.mcloudapp.common.view.ClearEditText
             android:id="@+id/cet_app_Key"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -137,7 +137,7 @@
             android:text="注册平台地址:"
             android:textSize="14sp" />
 
-        <com.shmedo.mcloudapp.views.ClearEditText
+        <com.shmedo.mcloudapp.common.view.ClearEditText
             android:id="@+id/cet_register_address"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -165,7 +165,7 @@
             android:text="KeepAlive值:"
             android:textSize="14sp" />
 
-        <com.shmedo.mcloudapp.views.ClearEditText
+        <com.shmedo.mcloudapp.common.view.ClearEditText
             android:id="@+id/cet_KeepAlive_value"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -198,7 +198,7 @@
                 android:text="设备SN号:"
                 android:textSize="14sp" />
 
-            <com.shmedo.mcloudapp.views.ClearEditText
+            <com.shmedo.mcloudapp.common.view.ClearEditText
                 android:id="@+id/cet_device_sn"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -225,7 +225,7 @@
                 android:text="产品ID:"
                 android:textSize="14sp" />
 
-            <com.shmedo.mcloudapp.views.ClearEditText
+            <com.shmedo.mcloudapp.common.view.ClearEditText
                 android:id="@+id/cet_product_id"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -252,7 +252,7 @@
                 android:text="注册码:"
                 android:textSize="14sp" />
 
-            <com.shmedo.mcloudapp.views.ClearEditText
+            <com.shmedo.mcloudapp.common.view.ClearEditText
                 android:id="@+id/cet_registration_code"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -289,7 +289,7 @@
                 android:text="MQTT设备ID:"
                 android:textSize="14sp" />
 
-            <com.shmedo.mcloudapp.views.ClearEditText
+            <com.shmedo.mcloudapp.common.view.ClearEditText
                 android:id="@+id/cet_mqtt_device_id"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -316,7 +316,7 @@
                 android:text="MQTT用户名:"
                 android:textSize="14sp" />
 
-            <com.shmedo.mcloudapp.views.ClearEditText
+            <com.shmedo.mcloudapp.common.view.ClearEditText
                 android:id="@+id/cet_mqtt_username"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -343,7 +343,7 @@
                 android:text="MQTT密码:"
                 android:textSize="14sp" />
 
-            <com.shmedo.mcloudapp.views.ClearEditText
+            <com.shmedo.mcloudapp.common.view.ClearEditText
                 android:id="@+id/cet_mqtt_password"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"

@@ -81,7 +81,7 @@
             android:paddingRight="10dp"
             android:paddingBottom="5dp">
 
-            <com.shmedo.mcloudapp.views.editspinner.EditSpinner
+            <com.shmedo.mcloudapp.common.view.editspinner.EditSpinner
                 android:id="@+id/editSpinner1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -264,7 +264,7 @@
                 android:paddingTop="5dp"
                 android:paddingRight="15dp">
 
-                <com.shmedo.mcloudapp.views.ClearEditText
+                <com.shmedo.mcloudapp.common.view.ClearEditText
                     android:id="@+id/addressET1"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -317,7 +317,7 @@
                 android:paddingRight="15dp"
                 android:paddingBottom="5dp">
 
-                <com.shmedo.mcloudapp.views.ClearEditText
+                <com.shmedo.mcloudapp.common.view.ClearEditText
                     android:id="@+id/addressET2"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"

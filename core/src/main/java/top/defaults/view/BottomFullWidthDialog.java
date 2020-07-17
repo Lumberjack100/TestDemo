@@ -7,7 +7,7 @@ import android.view.Gravity;
 import android.view.Window;
 import android.view.WindowManager;
 
-import com.dragon.core.R;
+import com.shmedo.core.R;
 
 public class BottomFullWidthDialog extends Dialog {
     private Context context;

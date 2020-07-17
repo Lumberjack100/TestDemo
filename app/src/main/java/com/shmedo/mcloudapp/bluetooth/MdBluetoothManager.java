@@ -21,7 +21,7 @@ import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
 
-import com.dragon.core.util.GlobalUtil;
+import com.shmedo.core.util.GlobalUtil;
 import com.shmedo.core.interfaces.OnBytePackage;
 import com.shmedo.core.utils.ByteManager;
 import com.shmedo.mcloudapp.R;

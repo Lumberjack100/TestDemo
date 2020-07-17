@@ -17,7 +17,7 @@
         android:paddingEnd="@dimen/dimen_size_15"
         android:paddingBottom="@dimen/dimen_size_5">
 
-        <com.shmedo.mcloudapp.views.ClearEditText
+        <com.shmedo.mcloudapp.common.view.ClearEditText
             android:id="@+id/et_search_tip"
             style="@style/TextView_SearchInputBox"
             android:background="@drawable/search_rect_bg"

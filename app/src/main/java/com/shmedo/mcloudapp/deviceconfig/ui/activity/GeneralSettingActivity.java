@@ -15,6 +15,8 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.hjq.toast.ToastUtils;
+import com.shmedo.core.AppContants;
+import com.shmedo.core.MCloudApp;
 import com.shmedo.core.cmd.CommandManager;
 import com.shmedo.core.cmd.CommandResult;
 import com.shmedo.core.cmd.entity.CollectorFrequencyEntity;
@@ -24,9 +26,7 @@ import com.shmedo.core.cmd.entity.SetCollectorAddressEntity;
 import com.shmedo.core.enums.CommandType;
 import com.shmedo.core.model.CollectorConfigInfo;
 import com.shmedo.core.utils.StringUtil;
-import com.dragon.core.MCloudApp;
 import com.shmedo.mcloudapp.R;
-import com.shmedo.mcloudapp.interfaces.Extras;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -94,15 +94,15 @@ public class GeneralSettingActivity extends BaseDeviceConnectActivity {
 
     public static void startActivity(Context context, CollectorConfigInfo collectorConfigInfo, String collectorModel) {
         Intent intent = new Intent(context, GeneralSettingActivity.class);
-        intent.putExtra(Extras.PARAM_CONFIG_INFO, collectorConfigInfo);
-        intent.putExtra(Extras.COLLECTOR_MODE, collectorModel);
+        intent.putExtra(AppContants.Extras.PARAM_CONFIG_INFO, collectorConfigInfo);
+        intent.putExtra(AppContants.Extras.COLLECTOR_MODE, collectorModel);
         context.startActivity(intent);
     }
 
     public static void startActivityForResultByFragment(Fragment context, int requestCode, CollectorConfigInfo collectorConfigInfo, String collectorModel) {
         Intent intent = new Intent(context.getActivity(), GeneralSettingActivity.class);
-        intent.putExtra(Extras.PARAM_CONFIG_INFO, collectorConfigInfo);
-        intent.putExtra(Extras.COLLECTOR_MODE, collectorModel);
+        intent.putExtra(AppContants.Extras.PARAM_CONFIG_INFO, collectorConfigInfo);
+        intent.putExtra(AppContants.Extras.COLLECTOR_MODE, collectorModel);
         context.startActivityForResult(intent, requestCode);
     }
 
@@ -134,8 +134,8 @@ public class GeneralSettingActivity extends BaseDeviceConnectActivity {
         if (intent.getExtras() == null)
             return;
 
-        if (intent.getExtras().containsKey(Extras.PARAM_CONFIG_INFO)) {
-            collectorConfigInfo = (CollectorConfigInfo) intent.getSerializableExtra(Extras.PARAM_CONFIG_INFO);
+        if (intent.getExtras().containsKey(AppContants.Extras.PARAM_CONFIG_INFO)) {
+            collectorConfigInfo = (CollectorConfigInfo) intent.getSerializableExtra(AppContants.Extras.PARAM_CONFIG_INFO);
             if (collectorConfigInfo != null) {
                 mEtCollectorAddress.setText(collectorConfigInfo.getCollectorAddress());
                 mEtCalculatingTime.setText(collectorConfigInfo.getWorkTime());
@@ -144,8 +144,8 @@ public class GeneralSettingActivity extends BaseDeviceConnectActivity {
             }
         }
 
-        if (intent.getExtras().containsKey(Extras.COLLECTOR_MODE)) {
-            collectorModel = intent.getStringExtra(Extras.COLLECTOR_MODE);
+        if (intent.getExtras().containsKey(AppContants.Extras.COLLECTOR_MODE)) {
+            collectorModel = intent.getStringExtra(AppContants.Extras.COLLECTOR_MODE);
         }
     }
 
@@ -283,7 +283,7 @@ public class GeneralSettingActivity extends BaseDeviceConnectActivity {
                     @Override
                     public void run() {
                         Intent intent = getIntent();
-                        intent.putExtra(Extras.PARAM_CONFIG_INFO, collectorConfigInfo);
+                        intent.putExtra(AppContants.Extras.PARAM_CONFIG_INFO, collectorConfigInfo);
                         setResult(RESULT_OK, intent);
                         finish();
                     }

@@ -36,7 +36,7 @@ import android.widget.ProgressBar;
 
 import androidx.exifinterface.media.ExifInterface;
 
-import com.dragon.core.R;
+import com.shmedo.core.R;
 
 import java.lang.ref.WeakReference;
 import java.util.UUID;

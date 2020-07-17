@@ -23,7 +23,7 @@
             android:textColor="@color/app_color_blue_2"
             android:textSize="@dimen/text_size_16" />
 
-        <com.shmedo.mcloudapp.views.ClearEditText
+        <com.shmedo.mcloudapp.common.view.ClearEditText
             android:id="@+id/etServiceAddress"
             android:layout_width="match_parent"
             android:layout_height="50dp"

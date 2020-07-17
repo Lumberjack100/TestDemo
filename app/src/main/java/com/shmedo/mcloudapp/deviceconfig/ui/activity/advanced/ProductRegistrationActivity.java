@@ -19,10 +19,10 @@ import androidx.annotation.Nullable;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.hjq.toast.ToastUtils;
 import com.shmedo.mcloudapp.R;
-import com.shmedo.mcloudapp.base.BaseActivity;
+import com.shmedo.mcloudapp.common.ui.activity.BaseActivity;
 import com.shmedo.mcloudapp.util.KeyBordUtils;
 import com.shmedo.mcloudapp.util.TimeUtil;
-import com.shmedo.mcloudapp.views.TimePickerDialog;
+import com.shmedo.mcloudapp.common.view.TimePickerDialog;
 
 import butterknife.BindView;
 import butterknife.OnClick;

@@ -17,11 +17,11 @@ import android.widget.TextView;
 
 import com.hjq.toast.ToastUtils;
 import com.kyleduo.switchbutton.SwitchButton;
+import com.shmedo.core.AppContants;
+import com.shmedo.core.MCloudApp;
 import com.shmedo.core.cmd.CommandResult;
-import com.dragon.core.MCloudApp;
 import com.shmedo.mcloudapp.R;
-import com.shmedo.mcloudapp.event.BluetoothStateEvent;
-import com.shmedo.mcloudapp.interfaces.Extras;
+import com.shmedo.core.event.BluetoothStateEvent;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -126,8 +126,8 @@ public class ADMESensorExecutiveAgencyConfigActivity extends BaseDeviceConnectAc
 
     public static void startActivity(Context context, String sensorInfo, String executiveAgencyInfo) {
         Intent intent = new Intent(context, ADMESensorExecutiveAgencyConfigActivity.class);
-        intent.putExtra(Extras.ADME_SENSOR_CONFIG_INFO, sensorInfo);
-        intent.putExtra(Extras.ADME_EXECUTIVE_AGENCY_CONFIG_INFO, executiveAgencyInfo);
+        intent.putExtra(AppContants.Extras.ADME_SENSOR_CONFIG_INFO, sensorInfo);
+        intent.putExtra(AppContants.Extras.ADME_EXECUTIVE_AGENCY_CONFIG_INFO, executiveAgencyInfo);
         context.startActivity(intent);
     }
 
@@ -338,12 +338,12 @@ public class ADMESensorExecutiveAgencyConfigActivity extends BaseDeviceConnectAc
 
     private void parseIntent() {
         Intent intent = getIntent();
-        if (intent.getExtras() != null && intent.getExtras().containsKey(Extras.ADME_SENSOR_CONFIG_INFO)) {
-            dagConfigInfo = intent.getStringExtra(Extras.ADME_SENSOR_CONFIG_INFO);
+        if (intent.getExtras() != null && intent.getExtras().containsKey(AppContants.Extras.ADME_SENSOR_CONFIG_INFO)) {
+            dagConfigInfo = intent.getStringExtra(AppContants.Extras.ADME_SENSOR_CONFIG_INFO);
         }
 
-        if (intent.getExtras() != null && intent.getExtras().containsKey(Extras.ADME_EXECUTIVE_AGENCY_CONFIG_INFO)) {
-            executiveAgencyConfigInfo = intent.getStringExtra(Extras.ADME_EXECUTIVE_AGENCY_CONFIG_INFO);
+        if (intent.getExtras() != null && intent.getExtras().containsKey(AppContants.Extras.ADME_EXECUTIVE_AGENCY_CONFIG_INFO)) {
+            executiveAgencyConfigInfo = intent.getStringExtra(AppContants.Extras.ADME_EXECUTIVE_AGENCY_CONFIG_INFO);
         }
     }
 

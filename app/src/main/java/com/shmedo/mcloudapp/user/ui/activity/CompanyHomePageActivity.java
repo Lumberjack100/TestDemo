@@ -9,7 +9,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.shmedo.mcloudapp.R;
-import com.shmedo.mcloudapp.base.BaseActivity;
+import com.shmedo.mcloudapp.common.ui.activity.BaseActivity;
 import com.shmedo.mcloudapp.user.model.CompanyInfo;
 
 import butterknife.BindView;

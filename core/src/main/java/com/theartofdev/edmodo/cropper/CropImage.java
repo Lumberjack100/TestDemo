@@ -41,7 +41,7 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 
-import com.dragon.core.R;
+import com.shmedo.core.R;
 
 import java.io.File;
 import java.io.InputStream;

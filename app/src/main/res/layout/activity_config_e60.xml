@@ -8,7 +8,7 @@
 
     <include layout="@layout/activity_support_actionbar_toolbar" />
 
-    <com.shmedo.mcloudapp.views.MyWebView
+    <com.shmedo.mcloudapp.common.view.MyWebView
         android:id="@+id/mWebView"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />

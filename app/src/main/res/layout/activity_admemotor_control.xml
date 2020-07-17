@@ -224,7 +224,7 @@
                 android:text="清空"
                 android:textColor="@color/white" />
 
-            <com.shmedo.mcloudapp.views.PlayPauseView
+            <com.shmedo.mcloudapp.deviceconfig.view.PlayPauseView
                 android:id="@+id/play_pause_view"
                 android:layout_width="100dp"
                 android:layout_height="100dp"

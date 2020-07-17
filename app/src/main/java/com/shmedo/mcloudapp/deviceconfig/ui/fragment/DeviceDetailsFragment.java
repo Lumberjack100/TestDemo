@@ -34,14 +34,14 @@ import com.shmedo.core.model.SystemRunStateInfo;
 import com.shmedo.core.model.VersionMessageInfo;
 import com.shmedo.core.utils.ResultParserUtil;
 import com.shmedo.core.utils.StringUtil;
-import com.dragon.core.MCloudApp;
+import com.shmedo.core.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.adapter.recyclerviewbaseadapter.CommonAdapter;
 import com.shmedo.mcloudapp.adapter.recyclerviewbaseadapter.ViewHolder;
-import com.shmedo.mcloudapp.base.BaseFragment;
+import com.shmedo.mcloudapp.common.ui.fragment.BaseFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.BaseDeviceConnectActivity;
 import com.shmedo.mcloudapp.util.DeviceDetailInfoUtils;
-import com.shmedo.mcloudapp.views.VerticalSwipeRefreshLayout;
+import com.shmedo.mcloudapp.common.view.VerticalSwipeRefreshLayout;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;

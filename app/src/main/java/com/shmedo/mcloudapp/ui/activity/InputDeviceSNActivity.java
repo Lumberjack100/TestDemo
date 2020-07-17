@@ -8,17 +8,17 @@ import android.widget.Button;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
-import com.dragon.core.MCloudApp;
+import com.shmedo.core.MCloudApp;
 import com.hjq.toast.ToastUtils;
 import com.shmedo.mcloudapp.R;
-import com.shmedo.mcloudapp.base.BaseActivity;
+import com.shmedo.mcloudapp.common.ui.activity.BaseActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.ConfigADMEActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.ConfigDASActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.ConfigE60Activity;
 import com.shmedo.mcloudapp.entity.DeviceBasicInfoResult;
 import com.shmedo.mcloudapp.entity.DeviceTypeEnum;
-import com.shmedo.mcloudapp.event.MapDeviceEvent;
-import com.shmedo.mcloudapp.views.ClearEditText;
+import com.shmedo.core.event.MapDeviceEvent;
+import com.shmedo.mcloudapp.common.view.ClearEditText;
 
 import org.greenrobot.eventbus.EventBus;
 

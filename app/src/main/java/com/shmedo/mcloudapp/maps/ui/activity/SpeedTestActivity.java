@@ -17,7 +17,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.shmedo.mcloudapp.R;
-import com.shmedo.mcloudapp.base.BaseActivity;
+import com.shmedo.mcloudapp.common.ui.activity.BaseActivity;
 import com.shmedo.mcloudapp.maps.model.NetWorkQuality;
 import com.shmedo.mcloudapp.maps.testspeed.GetSpeedTestHostsHandler;
 import com.shmedo.mcloudapp.maps.testspeed.HttpDownloadTest;

@@ -136,7 +136,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
-                    <com.shmedo.mcloudapp.views.ClearEditText
+                    <com.shmedo.mcloudapp.common.view.ClearEditText
                         android:id="@+id/login_editText_account"
                         android:layout_width="match_parent"
                         android:layout_height="50dp"
@@ -170,7 +170,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
-                    <com.shmedo.mcloudapp.views.ClearEditText
+                    <com.shmedo.mcloudapp.common.view.ClearEditText
                         android:id="@+id/login_account_password"
                         android:layout_width="match_parent"
                         android:layout_height="50dp"
@@ -222,7 +222,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
-                    <com.shmedo.mcloudapp.views.ClearEditText
+                    <com.shmedo.mcloudapp.common.view.ClearEditText
                         android:id="@+id/login_editText_iphone"
                         android:layout_width="match_parent"
                         android:layout_height="50dp"
@@ -253,7 +253,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
-                    <com.shmedo.mcloudapp.views.ClearEditText
+                    <com.shmedo.mcloudapp.common.view.ClearEditText
                         android:id="@+id/login_phone_password"
                         android:layout_width="match_parent"
                         android:layout_height="50dp"

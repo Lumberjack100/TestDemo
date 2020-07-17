@@ -84,7 +84,7 @@
                     android:textColor="@color/black_333333"
                     android:textSize="@dimen/text_size_16" />
 
-                <com.shmedo.mcloudapp.views.ClearEditText
+                <com.shmedo.mcloudapp.common.view.ClearEditText
                     android:id="@+id/userNameET"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
@@ -118,7 +118,7 @@
                     android:textColor="@color/black_333333"
                     android:textSize="@dimen/text_size_16" />
 
-                <com.shmedo.mcloudapp.views.ClearEditText
+                <com.shmedo.mcloudapp.common.view.ClearEditText
                     android:id="@+id/titleET"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
@@ -186,7 +186,7 @@
                     android:textColor="@color/black_333333"
                     android:textSize="@dimen/text_size_16" />
 
-                <com.shmedo.mcloudapp.views.ClearEditText
+                <com.shmedo.mcloudapp.common.view.ClearEditText
                     android:id="@+id/emailET"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"

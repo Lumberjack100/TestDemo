@@ -10,11 +10,11 @@ import androidx.fragment.app.Fragment;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.dragon.core.util.GlobalUtil;
+import com.shmedo.core.util.GlobalUtil;
 import com.hjq.toast.ToastUtils;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.ui.activity.MainActivity;
-import com.shmedo.mcloudapp.ui.activity.ScanActivity;
+import com.shmedo.mcloudapp.common.ui.activity.ScanActivity;
 
 import java.util.List;
 

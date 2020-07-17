@@ -12,14 +12,14 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
-import com.dragon.core.MCloudApp;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.hjq.toast.ToastUtils;
+import com.shmedo.core.AppContants;
+import com.shmedo.core.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.ADMEHomeFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.DeviceDetailsFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.QueryDeviceDataFragment;
-import com.shmedo.mcloudapp.interfaces.Extras;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -51,7 +51,7 @@ public class ConfigADMEActivity extends BaseDeviceConnectActivity {
 
     public static void startActivity(Context context, String deviceInfo) {
         Intent intent = new Intent(context, ConfigADMEActivity.class);
-        intent.putExtra(Extras.CUR_DEVICE_NAME, deviceInfo);
+        intent.putExtra(AppContants.Extras.CUR_DEVICE_NAME, deviceInfo);
         context.startActivity(intent);
     }
 

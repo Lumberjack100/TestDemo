@@ -17,7 +17,7 @@ import com.amap.api.services.core.LatLonPoint;
 import com.amap.api.services.route.DistanceItem;
 import com.amap.api.services.route.DistanceResult;
 import com.amap.api.services.route.DistanceSearch;
-import com.dragon.core.util.DensityUtil;
+import com.shmedo.core.util.DensityUtil;
 import com.hjq.toast.ToastUtils;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.maps.model.MapMode;

@@ -18,7 +18,7 @@ import androidx.core.widget.NestedScrollView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.dragon.core.util.DensityUtil;
+import com.shmedo.core.util.DensityUtil;
 import com.github.clans.fab.FloatingActionButton;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.hjq.toast.ToastUtils;
@@ -36,8 +36,8 @@ import com.shmedo.mcloudapp.ui.activity.WifiConnectionActivity;
 import com.shmedo.mcloudapp.util.GsonFactory;
 import com.shmedo.mcloudapp.util.TimeUtil;
 import com.shmedo.mcloudapp.util.permission.PermissionHelper;
-import com.shmedo.mcloudapp.views.TimePickerDialog;
-import com.shmedo.mcloudapp.views.recycleviewitemdivider.DividerItemDecoration;
+import com.shmedo.mcloudapp.common.view.TimePickerDialog;
+import com.shmedo.mcloudapp.common.view.recycleviewitemdivider.DividerItemDecoration;
 
 import java.util.ArrayList;
 import java.util.List;

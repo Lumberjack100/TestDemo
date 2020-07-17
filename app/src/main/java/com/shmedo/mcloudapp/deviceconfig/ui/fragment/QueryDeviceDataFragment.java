@@ -19,24 +19,24 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.hjq.toast.ToastUtils;
+import com.shmedo.core.AppContants;
+import com.shmedo.core.MCloudApp;
 import com.shmedo.core.cmd.CommandManager;
 import com.shmedo.core.enums.CommandType;
-import com.dragon.core.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.adapter.recyclerviewbaseadapter.CommonAdapter;
 import com.shmedo.mcloudapp.adapter.recyclerviewbaseadapter.ViewHolder;
-import com.shmedo.mcloudapp.base.BaseFragment;
+import com.shmedo.mcloudapp.common.ui.fragment.BaseFragment;
+import com.shmedo.mcloudapp.deviceconfig.ui.activity.ConfigDASActivity;
 import com.shmedo.mcloudapp.entity.QueryCloudDataInfo;
 import com.shmedo.mcloudapp.entity.parameter.QueryCloudDataParameter;
-import com.shmedo.mcloudapp.interfaces.Extras;
 import com.shmedo.mcloudapp.network.BaseObserver;
 import com.shmedo.mcloudapp.network.MDRetrofit;
-import com.shmedo.mcloudapp.network.api.ServiceAddressType;
 import com.shmedo.mcloudapp.network.NetworkConst;
-import com.shmedo.mcloudapp.deviceconfig.ui.activity.ConfigDASActivity;
+import com.shmedo.mcloudapp.network.api.ServiceAddressType;
 import com.shmedo.mcloudapp.util.GsonFactory;
 import com.shmedo.mcloudapp.util.TimeUtil;
-import com.shmedo.mcloudapp.views.TimePickerDialog;
+import com.shmedo.mcloudapp.common.view.TimePickerDialog;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -117,8 +117,8 @@ public class QueryDeviceDataFragment extends BaseFragment {
 
     private void getIntentData() {
         Intent intent = getActivity().getIntent();
-        if (intent.getExtras() != null && intent.getExtras().containsKey(Extras.CUR_DEVICE_NAME)) {
-            String deviceInfo = intent.getStringExtra(Extras.CUR_DEVICE_NAME);
+        if (intent.getExtras() != null && intent.getExtras().containsKey(AppContants.Extras.CUR_DEVICE_NAME)) {
+            String deviceInfo = intent.getStringExtra(AppContants.Extras.CUR_DEVICE_NAME);
             String[] scanData = deviceInfo.split(",");
 
             tvDeviceNumber.setText("设备号：" + scanData[1]);//设备编号

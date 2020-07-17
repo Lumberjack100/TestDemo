@@ -7,7 +7,7 @@ import android.util.AttributeSet;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
-import com.dragon.core.R;
+import com.shmedo.core.R;
 
 import static top.defaults.view.PickerView.DEFAULT_MAX_OFFSET_ITEM_COUNT;
 
