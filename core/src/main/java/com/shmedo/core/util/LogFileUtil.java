@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.util;
+package com.shmedo.core.util;
 
 import android.content.Context;
 

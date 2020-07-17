@@ -30,7 +30,7 @@ import com.shmedo.mcloudapp.adapter.recyclerviewbaseadapter.CommonAdapter;
 import com.shmedo.mcloudapp.adapter.recyclerviewbaseadapter.ViewHolder;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.BaseDeviceConnectActivity;
 import com.shmedo.mcloudapp.util.FileProviderUtils;
-import com.shmedo.mcloudapp.util.LogFileUtil;
+import com.shmedo.core.util.LogFileUtil;
 import com.shmedo.mcloudapp.common.view.ClearEditText;
 
 import org.greenrobot.eventbus.Subscribe;

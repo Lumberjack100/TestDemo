@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.log.log4a;
+package com.shmedo.core.log.log4a;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;

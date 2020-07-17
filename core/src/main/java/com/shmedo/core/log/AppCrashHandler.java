@@ -1,10 +1,10 @@
-package com.shmedo.mcloudapp.log;
+package com.shmedo.core.log;
 
 import android.content.Context;
 import android.os.Looper;
 import android.widget.Toast;
 
-import com.shmedo.mcloudapp.util.ActivityCollector;
+import com.shmedo.core.util.ActivityCollector;
 
 import timber.log.Timber;
 

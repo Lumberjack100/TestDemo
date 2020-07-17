@@ -28,7 +28,7 @@ import com.shmedo.core.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.core.event.NetworkChangeEvent;
 import com.shmedo.core.receiver.NetworkConnectChangedReceiver;
-import com.shmedo.mcloudapp.util.ActivityCollector;
+import com.shmedo.core.util.ActivityCollector;
 import com.shmedo.mcloudapp.util.KeyBordUtils;
 import com.shmedo.core.util.NetworkUtils;
 import com.shmedo.mcloudapp.util.UiUtils;

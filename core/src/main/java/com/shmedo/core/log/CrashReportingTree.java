@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.log;
+package com.shmedo.core.log;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

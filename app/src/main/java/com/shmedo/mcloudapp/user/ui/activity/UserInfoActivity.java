@@ -19,7 +19,7 @@ import com.shmedo.mcloudapp.network.MDRetrofit;
 import com.shmedo.mcloudapp.network.NetworkConst;
 import com.shmedo.mcloudapp.common.ui.activity.LoginActivity;
 import com.shmedo.mcloudapp.user.model.CompanyInfo;
-import com.shmedo.mcloudapp.util.ActivityCollector;
+import com.shmedo.core.util.ActivityCollector;
 import com.shmedo.mcloudapp.util.GlideUtils;
 import com.shmedo.core.util.GlobalUtil;
 import com.shmedo.mcloudapp.util.permission.UpdataManagerUtil;

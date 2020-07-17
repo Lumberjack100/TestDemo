@@ -12,9 +12,9 @@ import com.hjq.toast.ToastUtils;
 import com.hjq.toast.style.ToastBlackStyle;
 import com.pgyersdk.crash.PgyCrashManager;
 import com.shmedo.mcloudapp.bluetooth.MdBluetoothManager;
-import com.shmedo.mcloudapp.log.AppCrashHandler;
-import com.shmedo.mcloudapp.log.CrashReportingTree;
-import com.shmedo.mcloudapp.log.log4a.LogInit;
+import com.shmedo.core.log.AppCrashHandler;
+import com.shmedo.core.log.CrashReportingTree;
+import com.shmedo.core.log.log4a.LogInit;
 import com.tencent.bugly.crashreport.CrashReport;
 
 import java.util.Objects;

@@ -26,7 +26,7 @@ import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.adapter.WifiListAdapter;
 import com.shmedo.core.model.WifiBean;
 import com.shmedo.core.event.WifiEvent;
-import com.shmedo.mcloudapp.util.ActivityCollector;
+import com.shmedo.core.util.ActivityCollector;
 import com.shmedo.mcloudapp.util.WifiSupport;
 import com.shmedo.mcloudapp.common.view.WifiLinkDialog;
 

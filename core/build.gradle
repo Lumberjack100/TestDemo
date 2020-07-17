@@ -29,6 +29,8 @@ dependencies {
     api "org.greenrobot:eventbus:$rootProject.thirdLib.eventbus"
     api 'androidx.exifinterface:exifinterface:1.2.0'
     api "com.jakewharton.timber:timber:$rootProject.thirdLib.timberVersion"
+    //一个基于 mmap, 高性能、高可用的 Android 日志收集框架
+    api "com.github.pqpo:Log4a:$rootProject.thirdLib.Log4a"
     api 'com.zhihu.android:matisse:0.5.3-beta3'
 
     testImplementation "junit:junit:$rootProject.thirdLib.junit"

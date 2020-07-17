@@ -1,8 +1,8 @@
-package com.shmedo.mcloudapp.log.log4a;
+package com.shmedo.core.log.log4a;
 
 import android.content.Context;
 
-import com.shmedo.mcloudapp.util.LogFileUtil;
+import com.shmedo.core.util.LogFileUtil;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -14,7 +14,6 @@ import me.pqpo.librarylog4a.Log4a;
 import me.pqpo.librarylog4a.LogData;
 import me.pqpo.librarylog4a.appender.AndroidAppender;
 import me.pqpo.librarylog4a.appender.FileAppender;
-import me.pqpo.librarylog4a.formatter.DateFileFormatter;
 import me.pqpo.librarylog4a.interceptor.Interceptor;
 import me.pqpo.librarylog4a.logger.AppenderLogger;
 
