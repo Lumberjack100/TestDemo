@@ -9,8 +9,6 @@
 
         <!--设置窗体无主题-->
         <item name="windowNoTitle">true</item>
-        <!--设置窗体透明-->
-        <item name="android:windowIsTranslucent">true</item>
         <!--设置窗体切换动画-->
         <item name="android:windowAnimationStyle">@style/ActivityAnimation</item>
     </style>
@@ -141,7 +139,8 @@
     <style name="LocationTitle_TextViewStyle">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:gravity">center</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:ellipsize">marquee</item>
         <item name="android:textColor">@color/gray_807B7B</item>
         <item name="android:textSize">11.5sp</item>
     </style>

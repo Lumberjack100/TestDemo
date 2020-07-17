@@ -263,7 +263,7 @@
             android:theme="@android:style/Theme.NoTitleBar" />
 
         <activity
-            android:name=".user.ui.activity.NewUserInfoActivity"
+            android:name=".user.ui.activity.UserInfoActivity"
             android:maxAspectRatio="2.4"
             android:screenOrientation="portrait" />
 

@@ -35,7 +35,7 @@ import timber.log.Timber;
 /**
  * 用户信息页面
  */
-public class NewUserInfoActivity extends BaseActivity {
+public class UserInfoActivity extends BaseActivity {
     @BindView(R.id.toolbar_title)
     TextView mToolbarTitle;
 
@@ -60,7 +60,7 @@ public class NewUserInfoActivity extends BaseActivity {
     private CompanyInfo mCompanyInfo;
 
     public static void startActivity(Context context) {
-        Intent intent = new Intent(context, NewUserInfoActivity.class);
+        Intent intent = new Intent(context, UserInfoActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         context.startActivity(intent);
     }

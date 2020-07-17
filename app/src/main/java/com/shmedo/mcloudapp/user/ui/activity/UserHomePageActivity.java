@@ -505,7 +505,8 @@ public class UserHomePageActivity extends BaseActivity implements TextWatcher {
                     @Override
                     public void Success(String result, String message) {
                         dismissLoadingDialog();
-                        ToastUtils.show("修改后的个人信息已保存");
+                        ToastUtils.show("已保存修改");
+                        mBtnConfirm.setEnabled(false);
 
                         UserInfo userInfo = MCloudApp.getCurrentUserInfo();
                         if (userInfo != null && userInfo.getUser() != null) {

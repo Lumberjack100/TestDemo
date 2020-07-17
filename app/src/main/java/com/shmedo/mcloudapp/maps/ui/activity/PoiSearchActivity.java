@@ -43,7 +43,9 @@ import butterknife.BindView;
 import butterknife.OnClick;
 
 public class PoiSearchActivity extends BaseActivity implements TextWatcher, PoiSearch.OnPoiSearchListener {
-    private static final String ARG_PARAM1 = "param1";
+    private static final String CITY_NAME = "city_name";
+    private static final String POI_TITLE = "poi_title";
+    private static final int PAGE_SIZE = 15;
 
     @BindView(R.id.et_search_tip)
     ClearEditText mEtSearchTip;
@@ -57,17 +59,23 @@ public class PoiSearchActivity extends BaseActivity implements TextWatcher, PoiS
     private PoiSearch poiSearch;// POI搜索
     private PoiResult poiResult; // poi返回的结果
 
-    private static final int PAGE_SIZE = 15;
-
     private String keyWord;// 要输入的poi搜索关键字
-    private String cityName;
-
     private PageInfo pageInfo = new PageInfo();
 
+    private String cityName;
+    private String poiTitle;
 
     public static void startActivityForResult(Activity activity, String cityName, int requestCode) {
         Intent intent = new Intent(activity, PoiSearchActivity.class);
-        intent.putExtra(ARG_PARAM1, cityName);
+        intent.putExtra(CITY_NAME, cityName);
+        intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        activity.startActivityForResult(intent, requestCode);
+    }
+
+    public static void startActivityForResult(Activity activity, String cityName, String poiTitle, int requestCode) {
+        Intent intent = new Intent(activity, PoiSearchActivity.class);
+        intent.putExtra(CITY_NAME, cityName);
+        intent.putExtra(POI_TITLE, poiTitle);
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         activity.startActivityForResult(intent, requestCode);
     }
@@ -80,17 +88,22 @@ public class PoiSearchActivity extends BaseActivity implements TextWatcher, PoiS
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        parseIntent();
+
         initView();
         initAdapter();
         initLoadMore();
+        parseIntent();
     }
 
 
     private void parseIntent() {
         Intent intent = getIntent();
         if (intent != null) {
-            cityName = intent.getStringExtra(ARG_PARAM1);
+            cityName = intent.getStringExtra(CITY_NAME);
+            poiTitle = intent.getStringExtra(POI_TITLE);
+            if (!TextUtils.isEmpty(poiTitle)) {
+                mEtSearchTip.setText(poiTitle);
+            }
         }
     }
 

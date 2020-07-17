@@ -14,7 +14,7 @@ public enum MapMode {
     /**
      * 搜索模式:显示搜索提示和搜索结果
      */
-    SEARCH,
+    SEARCH_POI,
 
     /**
      * 显示Poi 点信息模式

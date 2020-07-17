@@ -65,7 +65,7 @@ import butterknife.BindView;
 import butterknife.OnClick;
 import timber.log.Timber;
 
-public class MapActivity extends CheckMapNeedPermissionsActivity implements AMapGestureListener, AMapLocationListener, LocationSource, MapSearchView.OnMapHeaderViewClickListener, NaviMapLayerView.OnMapLayerItemClickListener, ZoomView.OnZoomViewClickListener {
+public class MapActivity extends CheckMapNeedPermissionsActivity implements AMapGestureListener, AMapLocationListener, LocationSource, MapSearchView.OnMapHeadSearchViewClickListener, NaviMapLayerView.OnMapLayerItemClickListener, ZoomView.OnZoomViewClickListener {
     public static final int REQUEST_CODE_POI_SEARCH = 0x011;
 
     @BindView(R.id.map)
@@ -153,20 +153,10 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        initStates();
         initView(savedInstanceState);
         setListener();
     }
 
-    /*//沉浸式状态栏
-    private void initStates() {
-        if (Build.VERSION.SDK_INT > 19 && getApplicationContext().getApplicationInfo().targetSdkVersion > 19) {
-            //透明状态栏
-            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-            //透明导航栏
-            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
-        }
-    }*/
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
@@ -598,10 +588,10 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
     }
 
     /**
-     * 点击返回箭头
+     * 点击退出地图页面
      */
     @Override
-    public void onBackClick() {
+    public void onLeaveMapClick() {
         finish();
     }
 
@@ -621,6 +611,35 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
     @Override
     public void onSearchLatLongClick() {
 
+    }
+
+    /**
+     * 点击返回 poi 搜索列表页面
+     */
+    @Override
+    public void onBackSearchListClick() {
+        mMapMode = MapMode.NORMAL;
+        gaoDePoiProcessHelper.onPoiCloseClick();
+        onSearchNormalClick();
+    }
+
+    /**
+     * 点击返回 poi 搜索列表页面并添上上次的Poi点位名称
+     */
+    @Override
+    public void onBackSearchListWithPoiInputClick() {
+        String poiTitle = mMapSearchView.getPoiInputText();
+        PoiSearchActivity.startActivityForResult(this, mCityName, poiTitle, REQUEST_CODE_POI_SEARCH);
+
+    }
+
+    /**
+     * 点击 恢复到显示正常搜索框
+     */
+    @Override
+    public void onRestoreNormalSearchClick() {
+        gaoDePoiProcessHelper.onPoiCloseClick();
+        mMapSearchView.setSearchMode(MapSearchView.SEARCH_NORMAL);
     }
 
     /**
@@ -712,20 +731,27 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
-        if (resultCode != Activity.RESULT_OK)
-            return;
 
         switch (requestCode) {
             case REQUEST_CODE_POI_SEARCH:
+                if (resultCode != Activity.RESULT_OK) {
+                    onRestoreNormalSearchClick();
+                    return;
+                }
+
                 if (intent != null) {
                     PoiItem poiItem = intent.getParcelableExtra(Extras.POIITEM_INFO);
                     if (poiItem == null) {
                         return;
                     }
+
                     isPoiClick = true;
                     LatLonPoint point = poiItem.getLatLonPoint();
                     LatLng latLng = new LatLng(point.getLatitude(), point.getLongitude());
                     gaoDePoiProcessHelper.addPOIMarderAndShowDetail(latLng, poiItem.getTitle());
+
+                    mMapSearchView.setSearchMode(MapSearchView.SEARCH_WITH_POI_INPUT);
+                    mMapSearchView.setPoiInputText(poiItem.getTitle());
                 }
                 break;
         }
@@ -735,23 +761,31 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         // 处理返回键
         if (keyCode == KeyEvent.KEYCODE_BACK) {
-            if (mMapMode == MapMode.NORMAL) {
-                if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
-                    mDrawerLayout.closeDrawer(GravityCompat.START);
+            switch (mMapMode) {
+                case NORMAL:
+                    if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
+                        mDrawerLayout.closeDrawer(GravityCompat.START);
+                        return true;
+                    } else {
+                        return super.onKeyDown(keyCode, event);
+                    }
+
+                case SHOW_POIDETAIL:
+                    mMapMode = MapMode.NORMAL;
+                    gaoDePoiProcessHelper.onPoiCloseClick();
+                    if (mMapSearchView.getSearchMode() == MapSearchView.SEARCH_WITH_POI_INPUT) {
+                        onSearchNormalClick();
+                    }
                     return true;
-                } else {
-                    return super.onKeyDown(keyCode, event);
-                }
-            } else if (mMapMode == MapMode.SHOW_POIDETAIL) {
-                mMapMode = MapMode.NORMAL;
-                gaoDePoiProcessHelper.onPoiCloseClick();
-                return true;
-            } else if (mMapMode == MapMode.CACULATE_DISTANCE) {
-                mMapMode = MapMode.NORMAL;
-                gaoDeCaculateDistanceHelper.onCancelDistanceClick();
-                return true;
+
+                case CACULATE_DISTANCE:
+                    mMapMode = MapMode.NORMAL;
+                    gaoDeCaculateDistanceHelper.onCancelDistanceClick();
+                    return true;
+
             }
         }
+
         return super.onKeyDown(keyCode, event);
     }
 

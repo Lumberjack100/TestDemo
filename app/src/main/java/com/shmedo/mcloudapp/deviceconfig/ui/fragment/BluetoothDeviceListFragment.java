@@ -42,7 +42,7 @@ import com.shmedo.mcloudapp.deviceconfig.ui.activity.ConfigADMEActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.ConfigDASActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.ConfigE60Activity;
 import com.shmedo.mcloudapp.ui.activity.ScanActivity;
-import com.shmedo.mcloudapp.user.ui.activity.NewUserInfoActivity;
+import com.shmedo.mcloudapp.user.ui.activity.UserInfoActivity;
 import com.shmedo.mcloudapp.util.permission.PermissionHelper;
 import com.shmedo.mcloudapp.util.permission.XPermissionUtils;
 import com.shmedo.mcloudapp.views.recycleviewitemdivider.DividerItemDecoration;
@@ -155,7 +155,7 @@ public class BluetoothDeviceListFragment extends BaseFragment {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.img_user://用户信息
-                NewUserInfoActivity.startActivity(getActivity());
+                UserInfoActivity.startActivity(getActivity());
                 break;
 
             case R.id.ivDiscoveryDevice:
