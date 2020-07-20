@@ -727,6 +727,7 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
         markerOptions.anchor(0.5f, 0.5f);
         markerOptions.position(latlng);
         mLocationMarker = aMap.addMarker(markerOptions);
+        mLocationMarker.setClickable(false);
     }
 
     /**
