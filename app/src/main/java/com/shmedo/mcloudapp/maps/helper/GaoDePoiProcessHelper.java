@@ -135,7 +135,6 @@ public class GaoDePoiProcessHelper implements AMap.OnPOIClickListener, PoiDetail
         if (!mapActivity.isFirstLocation) {
             mapActivity.mGpsView.setGpsState(mapActivity.mCurrentGpsState);
         }
-        mapActivity.isCanMoveToCenter = false;
         mapActivity.mPoiName = poiName;
         // 添加marker标记
         addPOIMarker(latLng);

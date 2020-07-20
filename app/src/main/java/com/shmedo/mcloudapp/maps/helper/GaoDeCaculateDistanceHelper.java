@@ -128,8 +128,6 @@ public class GaoDeCaculateDistanceHelper implements AMap.OnMapClickListener, Dis
         markerList.clear();
         polylineList.clear();
         aMap.clear();
-        aMap.addMarker(mapActivity.mLocationMarker.getOptions());
-        mapActivity.addCircle();
     }
 
 

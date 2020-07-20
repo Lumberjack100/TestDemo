@@ -127,7 +127,6 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
     public Circle mCircle;
 
     public boolean isFirstLocation = true;//第一次定位
-    public boolean isCanMoveToCenter = true;//是否可以移动地图到定位点
     public boolean onScrolling;//正在滑动地图
     // 当前是否正在处理POI点击
     public boolean isPoiClick;
@@ -274,7 +273,6 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
 
     private void processGpsViewClick() {
         CameraUpdate cameraUpdate = null;
-        isCanMoveToCenter = true;
         isPoiClick = false;
         //修改定位图标状态
         switch (mCurrentGpsState) {
@@ -334,6 +332,7 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
 
     /**
      * 切换展开抽屉时显示的视图
+     *
      * @param drawerLayoutType
      */
     private void switchDrawerLayoutView(DrawerLayoutType drawerLayoutType) {
@@ -360,6 +359,7 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
             }
             return;
         }
+        Timber.d("定位成功，onLocationChanged： Longitude=" + aMapLocation.getLongitude() + ",Latitude=" + aMapLocation.getLatitude() + ",poiName=" + aMapLocation.getPoiName());
 
         mAmapLocation = aMapLocation;
         //获取经纬度
@@ -385,7 +385,6 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
                 mPoiDetailBottomView.tvPoiDistance.setText(String.format("在%s附近", mPoiName));
             }
         }
-//        Timber.d("定位成功，onLocationChanged： Longitude=" + lng + ",Latitude=" + lat + ",poiName=" + aMapLocation.getPoiName() + ",getDescription=" + aMapLocation.getDescription() + ", address=" + aMapLocation.getAddress() + ",getLocationDetail" + aMapLocation.getLocationDetail() + ",street=" + aMapLocation.getStreet());
 
         //参数依次是：视角调整区域的中心点坐标、希望调整到的缩放级别、俯仰角0°~45°（垂直与地图时为0）、偏航角 0~360° (正北方为0)
         mLatLng = new LatLng(lat, lng);
@@ -419,13 +418,12 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
                 }
             });
         } else {
-            //BottomSheet顶上显示,地图缩小显示
-            mCircle.setCenter(mLatLng);
-            mCircle.setRadius(mAccuracy);
-            mLocationMarker.setPosition(mLatLng);
-            if (isCanMoveToCenter) {
-                aMap.animateCamera(CameraUpdateFactory.newLatLngZoom(mLatLng, mZoomLevel));
-            }
+//            mCircle.setCenter(mLatLng);
+//            mCircle.setRadius(mAccuracy);
+//            mLocationMarker.setPosition(mLatLng);
+//            if (isCanMoveToCenter) {
+//                aMap.animateCamera(CameraUpdateFactory.newLatLngZoom(mLatLng, mZoomLevel));
+//            }
         }
     }
 
@@ -470,7 +468,6 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
         mGpsView.setGpsState(mCurrentGpsState);
         setLocationStyle();
         resetLocationMarker();
-        isCanMoveToCenter = false;
     }
 
     @Override
@@ -499,7 +496,6 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
             if (!isFirstLocation) {
                 mGpsView.setGpsState(mCurrentGpsState);
             }
-            isCanMoveToCenter = false;
             setLocationStyle();
             resetLocationMarker();
         }
@@ -719,9 +715,13 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
         addCircle();
     }
 
-    public void addCircle() {
+    /**
+     * 添加定位蓝点精度圆圈
+     */
+    private void addCircle() {
         if (mCircle != null) {
             mCircle.remove();
+            mCircle = null;
         }
         CircleOptions options = new CircleOptions();
         options.strokeWidth(1f);
@@ -732,6 +732,11 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
         mCircle.setRadius(mAccuracy);
     }
 
+    /**
+     * 添加锁定定位小蓝点
+     *
+     * @param latlng
+     */
     private void addLocationLockedMarker(LatLng latlng) {
         if (mLocationMarker != null) {
             mLocationMarker.destroy();
@@ -746,6 +751,11 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
         mLocationMarker = aMap.addMarker(markerOptions);
     }
 
+    /**
+     * 添加旋转定位小蓝点
+     *
+     * @param latlng
+     */
     private void addLocationRotateMarker(LatLng latlng) {
         if (mLocationMarker != null) {
             mLocationMarker.destroy();
