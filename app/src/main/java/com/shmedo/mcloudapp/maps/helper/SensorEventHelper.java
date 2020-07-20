@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.maps.util;
+package com.shmedo.mcloudapp.maps.helper;
 
 import android.content.Context;
 import android.hardware.Sensor;
@@ -86,7 +86,7 @@ public class SensorEventHelper implements SensorEventListener {
      * @param context
      * @return 0表示是竖屏; 90表示是左横屏; 180表示是反向竖屏; 270表示是右横屏
      */
-    public static int getScreenRotationOnPhone(Context context) {
+    private static int getScreenRotationOnPhone(Context context) {
         final Display display = ((WindowManager) context.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
 
         switch (display.getRotation()) {

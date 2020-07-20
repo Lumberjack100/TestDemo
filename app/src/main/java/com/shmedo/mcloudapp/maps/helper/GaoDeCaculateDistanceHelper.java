@@ -35,13 +35,10 @@ import java.util.List;
  * 描述：    高德地图测量直线距离辅助类
  */
 public class GaoDeCaculateDistanceHelper implements AMap.OnMapClickListener, DistanceSearch.OnDistanceSearchListener, DistanceToolbarView.OnDistanceToolbarViewClickListener {
-
     private MapActivity mapActivity;
     private DistanceToolbarView mDistanceToolbarView;
-
     private TextureMapView mapView;
     private AMap aMap;
-
     private int markerHeight;
     private int markerWidth;
     private List<LatLng> latLngList = new ArrayList<>();
@@ -53,19 +50,8 @@ public class GaoDeCaculateDistanceHelper implements AMap.OnMapClickListener, Dis
         mapView = activity.mMapView;
         aMap = mapView.getMap();
         mDistanceToolbarView = activity.mDistanceToolbarView;
-        initView();
-        registerListeners();
-    }
-
-    private void initView() {
         initDistanceToolView();
-
-    }
-
-    private void registerListeners() {
-        // 对amap添加单击地图事件监听器
-        aMap.setOnMapClickListener(this);
-        mDistanceToolbarView.setOnDistanceToolbarViewClickListener(this);
+        registerListeners();
     }
 
     private void initDistanceToolView() {
@@ -74,6 +60,12 @@ public class GaoDeCaculateDistanceHelper implements AMap.OnMapClickListener, Dis
         mDistanceToolbarView.mIvRemoveMarker.setEnabled(false);
         mDistanceToolbarView.mIvClearMarkers.setEnabled(false);
         mDistanceToolbarView.mTvDistance.setText("0米");
+    }
+
+    private void registerListeners() {
+        // 对amap添加单击地图事件监听器
+        aMap.setOnMapClickListener(this);
+        mDistanceToolbarView.setOnDistanceToolbarViewClickListener(this);
     }
 
     /**

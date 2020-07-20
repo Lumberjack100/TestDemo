@@ -44,11 +44,12 @@ import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.maps.helper.GaoDeCaculateDistanceHelper;
 import com.shmedo.mcloudapp.maps.helper.GaoDePoiProcessHelper;
+import com.shmedo.mcloudapp.maps.helper.SensorEventHelper;
+import com.shmedo.mcloudapp.maps.model.DrawerLayoutType;
 import com.shmedo.mcloudapp.maps.model.MapLayerInfo;
 import com.shmedo.mcloudapp.maps.model.MapMode;
 import com.shmedo.mcloudapp.maps.util.AMapLocationUtil;
 import com.shmedo.mcloudapp.maps.util.CoordinateFormatUtils;
-import com.shmedo.mcloudapp.maps.util.SensorEventHelper;
 import com.shmedo.mcloudapp.maps.view.DistanceToolbarView;
 import com.shmedo.mcloudapp.maps.view.GPSView;
 import com.shmedo.mcloudapp.maps.view.LocationTitleView;
@@ -65,8 +66,8 @@ import butterknife.BindView;
 import butterknife.OnClick;
 import timber.log.Timber;
 
-public class MapActivity extends CheckMapNeedPermissionsActivity implements AMapGestureListener, AMapLocationListener, LocationSource, MapSearchView.OnMapHeadSearchViewClickListener, NaviMapLayerView.OnMapLayerItemClickListener, ZoomView.OnZoomViewClickListener {
-    public static final int REQUEST_CODE_POI_SEARCH = 0x011;
+public class MapActivity extends CheckMapNeedPermissionsActivity implements AMapGestureListener, AMapLocationListener, LocationSource, MapSearchView.OnMapHeadSearchViewClickListener, NaviMapLayerView.OnMapLayerItemClickListener, NaviToolView.OnMapToolItemClickListener, ZoomView.OnZoomViewClickListener {
+    private static final int REQUEST_CODE_POI_SEARCH = 0x1000;
 
     @BindView(R.id.map)
     public TextureMapView mMapView;
@@ -250,6 +251,7 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
         mSensorHelper.registerSensorListener();
         mMapSearchView.setOnMapHeaderViewClickListener(this);
         mNaviMapLayerView.setOnMapLayerItemClickListener(this);
+        mNaviToolView.setOnMapToolItemClickListener(this);
         mZoomView.setOnZoomViewClickListener(this);
 
         gaoDeCaculateDistanceHelper = new GaoDeCaculateDistanceHelper(this);
@@ -270,52 +272,6 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
         }
     }
 
-    @OnClick({R.id.gps_view, R.id.route_view, R.id.mapToolView, R.id.mapLayerView, R.id.testSpeedView, R.id.measureDistanceView})
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.gps_view://Gps 定位
-                Timber.d("checkPermissionForGPS call");
-                checkPermissionForGPS(PermissionHelper.REQUEST_CODE_GPS_LOCATION);
-                break;
-
-            case R.id.route_view://路线
-
-                break;
-
-            case R.id.mapToolView://退出/关闭工具箱抽屉
-                mNaviToolView.setVisibility(View.VISIBLE);
-                mNaviMapLayerView.setVisibility(View.GONE);
-
-                if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
-                    mDrawerLayout.closeDrawer(GravityCompat.START);
-                } else {
-                    mDrawerLayout.openDrawer(GravityCompat.START);
-                }
-                break;
-
-            case R.id.mapLayerView://退出/关闭图层抽屉
-                mNaviToolView.setVisibility(View.GONE);
-                mNaviMapLayerView.setVisibility(View.VISIBLE);
-
-                if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
-                    mDrawerLayout.closeDrawer(GravityCompat.START);
-                } else {
-                    mDrawerLayout.openDrawer(GravityCompat.START);
-                }
-                break;
-
-            case R.id.testSpeedView://路线
-                SpeedTestActivity.startActivity(this);
-                break;
-
-            case R.id.measureDistanceView://测距按钮
-                mMapMode = MapMode.CACULATE_DISTANCE;
-                setDistanceToolbarViewVisibility(true);
-                mDrawerLayout.closeDrawer(GravityCompat.START);
-                break;
-        }
-    }
-
     private void processGpsViewClick() {
         CameraUpdate cameraUpdate = null;
         isCanMoveToCenter = true;
@@ -326,7 +282,7 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
                 mZoomLevel = 18;
                 mCurrentGpsState = STATE_ROTATE;
                 //连续定位、且将视角移动到地图中心点，地图依照设备方向旋转，定位点会跟随设备移动。
-                mMapType = MyLocationStyle.LOCATION_TYPE_MAP_ROTATE;
+                mMapType = MyLocationStyle.LOCATION_TYPE_MAP_ROTATE_NO_CENTER;
                 cameraUpdate = CameraUpdateFactory.newCameraPosition(new CameraPosition(mLatLng, mZoomLevel, 30, 0));
                 break;
 
@@ -353,6 +309,47 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
         aMap.animateCamera(cameraUpdate, mAnimDuartion, null);
         setLocationStyle();
         resetLocationMarker();
+    }
+
+    @OnClick({R.id.gps_view, R.id.route_view, R.id.mapLayerView, R.id.mapToolView})
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.gps_view://Gps 定位
+                checkPermissionForGPS(PermissionHelper.REQUEST_CODE_GPS_LOCATION);
+                break;
+
+            case R.id.route_view://路线
+
+                break;
+
+            case R.id.mapLayerView://退出/关闭图层抽屉
+                switchDrawerLayoutView(DrawerLayoutType.DRAWER_MAP_LAYER);
+                break;
+
+            case R.id.mapToolView://退出/关闭工具箱抽屉
+                switchDrawerLayoutView(DrawerLayoutType.DRAWER_TOOL_BOX);
+                break;
+        }
+    }
+
+    /**
+     * 切换展开抽屉时显示的视图
+     * @param drawerLayoutType
+     */
+    private void switchDrawerLayoutView(DrawerLayoutType drawerLayoutType) {
+        if (drawerLayoutType == DrawerLayoutType.DRAWER_MAP_LAYER) {
+            mNaviToolView.setVisibility(View.GONE);
+            mNaviMapLayerView.setVisibility(View.VISIBLE);
+        } else {
+            mNaviToolView.setVisibility(View.VISIBLE);
+            mNaviMapLayerView.setVisibility(View.GONE);
+        }
+
+        if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
+            mDrawerLayout.closeDrawer(GravityCompat.START);
+        } else {
+            mDrawerLayout.openDrawer(GravityCompat.START);
+        }
     }
 
     @Override
@@ -406,7 +403,8 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
                 public void onFinish() {
                     mCurrentGpsState = STATE_LOCKED;
                     mGpsView.setGpsState(mCurrentGpsState);
-                    mMapType = MyLocationStyle.LOCATION_TYPE_LOCATE;
+//                    mMapType = MyLocationStyle.LOCATION_TYPE_LOCATE;
+                    mMapType = MyLocationStyle.LOCATION_TYPE_LOCATION_ROTATE_NO_CENTER;
                     addCircle();//添加定位精度圆
                     addLocationLockedMarker(mLatLng);//添加定位图标
                     if (null != mLocationMarker) {
@@ -563,14 +561,48 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
         }
     }
 
-    public void setDistanceToolbarViewVisibility(boolean isOpen) {
-        mDistanceToolbarView.setVisibility(isOpen ? View.VISIBLE : View.GONE);
-        mLocationTitleView.setVisibility(!isOpen ? View.VISIBLE : View.GONE);
-        mMapSearchView.setVisibility(!isOpen ? View.VISIBLE : View.GONE);
-        mSupendPartitionView.setVisibility(!isOpen ? View.VISIBLE : View.GONE);
-        mRouteView.setVisibility(!isOpen ? View.VISIBLE : View.GONE);
+    /**
+     * 网络测速按钮点击事件
+     */
+    @Override
+    public void onTestSpeedClick() {
+        SpeedTestActivity.startActivity(this);
+    }
+
+    /**
+     * 测量距离按钮点击事件
+     */
+    @Override
+    public void onMeasureDistanceClick() {
+        mMapMode = MapMode.CACULATE_DISTANCE;
+        mDrawerLayout.closeDrawer(GravityCompat.START);
+        setDistanceToolbarViewVisibility(true);
+    }
+
+    /**
+     * 测量面积按钮点击事件
+     */
+    @Override
+    public void onCalculateAreaClick() {
+
+    }
+
+    /**
+     * 指南针按钮点击事件
+     */
+    @Override
+    public void onCompassClick() {
+
+    }
+
+    public void setDistanceToolbarViewVisibility(boolean isShow) {
+        mDistanceToolbarView.setVisibility(isShow ? View.VISIBLE : View.GONE);
+        mLocationTitleView.setVisibility(!isShow ? View.VISIBLE : View.GONE);
+        mMapSearchView.setVisibility(!isShow ? View.VISIBLE : View.GONE);
+        mSupendPartitionView.setVisibility(!isShow ? View.VISIBLE : View.GONE);
+        mRouteView.setVisibility(!isShow ? View.VISIBLE : View.GONE);
         mPoiDetailBottomView.setVisibility(View.GONE);
-        if (isOpen) {
+        if (isShow) {
             gaoDePoiProcessHelper.destroyPoiMarker();
             gaoDePoiProcessHelper.resetGpsButtonPosition();
         }
@@ -579,12 +611,12 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
             public void onGlobalLayout() {
                 mDistanceToolbarView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
                 FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(mMapView.getLayoutParams());
-                layoutParams.topMargin = isOpen ? mDistanceToolbarView.getHeight() : 0;
+                layoutParams.topMargin = isShow ? mDistanceToolbarView.getHeight() : 0;
                 mMapView.setLayoutParams(layoutParams);
             }
         });
-        aMap.setAMapGestureListener(!isOpen ? this : null);
-        gaoDePoiProcessHelper.setOnPOIClickListener(!isOpen);
+        aMap.setAMapGestureListener(!isShow ? this : null);
+        gaoDePoiProcessHelper.setOnPOIClickListener(!isShow);
     }
 
     /**
@@ -703,6 +735,7 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
     private void addLocationLockedMarker(LatLng latlng) {
         if (mLocationMarker != null) {
             mLocationMarker.destroy();
+            mLocationMarker = null;
         }
         BitmapDescriptor bitmapDescriptor = BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(this.getResources(),
                 R.drawable.icon_map_gps_locked));
@@ -716,6 +749,7 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
     private void addLocationRotateMarker(LatLng latlng) {
         if (mLocationMarker != null) {
             mLocationMarker.destroy();
+            mLocationMarker = null;
         }
         BitmapDescriptor bitmapDescriptor = BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(this.getResources(),
                 R.drawable.icon_gps_rotate));
