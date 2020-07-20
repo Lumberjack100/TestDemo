@@ -120,17 +120,16 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
     public static final int STATE_ROTATE = 2;//根据地图方向旋转状态
     public int mCurrentGpsState = STATE_UNLOCKED;//当前定位状态
     public float mZoomLevel = 16;//地图的缩放级别一共分为 17 级，从 3 到 19。数字越大，展示的图面信息越精细。
-    public static long mAnimDuartion = 500L;//地图动效时长
-    public int mMapType = MyLocationStyle.LOCATION_TYPE_LOCATION_ROTATE_NO_CENTER;//地图状态类型
+    private long mAnimDuartion = 500L;//地图动效时长
+    public int mMapType = MyLocationStyle.LOCATION_TYPE_LOCATE;//地图状态类型
     public SensorEventHelper mSensorHelper;
     public Marker mLocationMarker;//自定义小蓝点
-    public Circle mCircle;
+    public Circle mCircle;//定位蓝点精度圆圈
 
-    public boolean isFirstLocation = true;//第一次定位
-    public boolean onScrolling;//正在滑动地图
-    // 当前是否正在处理POI点击
-    public boolean isPoiClick;
-    public float mAccuracy;
+    public boolean isFirstLocation = true;//是否是第一次定位
+    public boolean isOnScrolling;//正在滑动地图
+    public boolean isPoiClick; // 当前是否正在处理POI点击
+    public float mAccuracy;//定位精度
     public String mPoiName;//POI的名称
     public String mCityName;//定位所在城市
     public MapMode mMapMode = MapMode.NORMAL;
@@ -217,7 +216,6 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
         }
     }
 
-
     private void setUpMap() {
         aMap.setMapType(AMap.MAP_TYPE_SATELLITE);//卫星地图模式
         aMap.getUiSettings().setZoomControlsEnabled(false); //隐藏缩放控件
@@ -234,10 +232,8 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
      */
     private void setLocationStyle() {
         // 自定义系统定位蓝点
-        if (null == mLocationStyle) {
+        if (mLocationStyle == null) {
             mLocationStyle = new MyLocationStyle();
-            mLocationStyle.strokeColor(Color.argb(0, 0, 0, 0));
-            mLocationStyle.radiusFillColor(Color.argb(0, 0, 0, 0));//圆圈的颜色,设为透明
         }
         // 将自定义的 myLocationStyle 对象添加到地图上
         aMap.setMyLocationStyle(mLocationStyle.myLocationType(mMapType));
@@ -256,7 +252,6 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
         gaoDeCaculateDistanceHelper = new GaoDeCaculateDistanceHelper(this);
         gaoDePoiProcessHelper = new GaoDePoiProcessHelper(this);
     }
-
 
     @Override
     protected void doOnPermissionGranted(int requestCode) {
@@ -373,7 +368,7 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
             }
         });
 
-        if (onScrolling) {
+        if (isOnScrolling) {
             Timber.e("MapView is Scrolling by user,can not operate...");
             return;
         }
@@ -402,10 +397,9 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
                 public void onFinish() {
                     mCurrentGpsState = STATE_LOCKED;
                     mGpsView.setGpsState(mCurrentGpsState);
-//                    mMapType = MyLocationStyle.LOCATION_TYPE_LOCATE;
-                    mMapType = MyLocationStyle.LOCATION_TYPE_LOCATION_ROTATE_NO_CENTER;
-                    addCircle();//添加定位精度圆
+                    mMapType = MyLocationStyle.LOCATION_TYPE_LOCATE;
                     addLocationLockedMarker(mLatLng);//添加定位图标
+                    addCircle();//添加定位精度圆
                     if (null != mLocationMarker) {
                         mSensorHelper.setCurrentMarker(mLocationMarker);//定位图标旋转
                     }
@@ -418,9 +412,9 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
                 }
             });
         } else {
-//            mCircle.setCenter(mLatLng);
-//            mCircle.setRadius(mAccuracy);
-//            mLocationMarker.setPosition(mLatLng);
+            mCircle.setCenter(mLatLng);
+            mCircle.setRadius(mAccuracy);
+            mLocationMarker.setPosition(mLatLng);
 //            if (isCanMoveToCenter) {
 //                aMap.animateCamera(CameraUpdateFactory.newLatLngZoom(mLatLng, mZoomLevel));
 //            }
@@ -486,9 +480,9 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
     @Override
     public void onScroll(float v, float v1) {
         //避免重复调用闪屏，当手指up才重置为false
-        if (!onScrolling) {
+        if (!isOnScrolling) {
             Timber.d("onScroll,x=" + v + ",y=" + v1);
-            onScrolling = true;
+            isOnScrolling = true;
             //旋转不移动到中心点
             mMapType = MyLocationStyle.LOCATION_TYPE_LOCATION_ROTATE_NO_CENTER;
             mCurrentGpsState = STATE_UNLOCKED;
@@ -522,7 +516,7 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
      */
     @Override
     public void onUp(float v, float v1) {
-        onScrolling = false;
+        isOnScrolling = false;
     }
 
     /**
@@ -715,22 +709,6 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
         addCircle();
     }
 
-    /**
-     * 添加定位蓝点精度圆圈
-     */
-    private void addCircle() {
-        if (mCircle != null) {
-            mCircle.remove();
-            mCircle = null;
-        }
-        CircleOptions options = new CircleOptions();
-        options.strokeWidth(1f);
-        options.fillColor(Color.argb(10, 0, 0, 180));
-        options.strokeColor(Color.argb(240, 3, 145, 255));
-        mCircle = aMap.addCircle(options);
-        mCircle.setCenter(mLatLng);
-        mCircle.setRadius(mAccuracy);
-    }
 
     /**
      * 添加锁定定位小蓝点
@@ -771,6 +749,22 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
         mLocationMarker = aMap.addMarker(markerOptions);
     }
 
+    /**
+     * 添加定位蓝点精度圆圈
+     */
+    private void addCircle() {
+        if (mCircle != null) {
+            mCircle.remove();
+            mCircle = null;
+        }
+        CircleOptions options = new CircleOptions();
+        options.strokeWidth(1f);
+        options.strokeColor(Color.argb(180, 3, 145, 255));
+        options.fillColor(Color.argb(10, 0, 0, 180));
+        mCircle = aMap.addCircle(options);
+        mCircle.setCenter(mLatLng);
+        mCircle.setRadius(mAccuracy);
+    }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
