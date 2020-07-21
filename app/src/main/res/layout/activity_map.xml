@@ -12,7 +12,7 @@
         <com.amap.api.maps.TextureMapView
             android:id="@+id/map"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="match_parent" />
 
         <com.shmedo.mcloudapp.maps.view.SupendViewContainer
             android:layout_width="match_parent"
@@ -23,15 +23,16 @@
     <FrameLayout
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
+        android:clickable="true"
         android:layout_gravity="start">
 
-        <com.shmedo.mcloudapp.maps.view.NaviToolView
-            android:id="@+id/nav_tool_view"
+        <com.shmedo.mcloudapp.maps.view.ToolBoxDrawerView
+            android:id="@+id/toolbox_drawer_view"
             android:layout_width="wrap_content"
             android:layout_height="match_parent" />
 
-        <com.shmedo.mcloudapp.maps.view.NaviMapLayerView
-            android:id="@+id/nav_map_layer_view"
+        <com.shmedo.mcloudapp.maps.view.MapLayerDrawerView
+            android:id="@+id/map_layer_drawer_view"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:visibility="gone" />

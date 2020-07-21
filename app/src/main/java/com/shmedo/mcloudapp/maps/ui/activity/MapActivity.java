@@ -9,8 +9,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
-import android.view.ViewTreeObserver;
-import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
 import androidx.core.view.GravityCompat;
@@ -53,12 +51,12 @@ import com.shmedo.mcloudapp.maps.util.CoordinateFormatUtils;
 import com.shmedo.mcloudapp.maps.view.DistanceToolbarView;
 import com.shmedo.mcloudapp.maps.view.GPSView;
 import com.shmedo.mcloudapp.maps.view.LocationTitleView;
+import com.shmedo.mcloudapp.maps.view.MapLayerDrawerView;
 import com.shmedo.mcloudapp.maps.view.MapSearchView;
-import com.shmedo.mcloudapp.maps.view.NaviMapLayerView;
-import com.shmedo.mcloudapp.maps.view.NaviToolView;
 import com.shmedo.mcloudapp.maps.view.PoiDetailBottomView;
 import com.shmedo.mcloudapp.maps.view.RouteView;
 import com.shmedo.mcloudapp.maps.view.SupendPartitionView;
+import com.shmedo.mcloudapp.maps.view.ToolBoxDrawerView;
 import com.shmedo.mcloudapp.maps.view.ZoomView;
 import com.shmedo.mcloudapp.util.permission.PermissionHelper;
 
@@ -66,7 +64,7 @@ import butterknife.BindView;
 import butterknife.OnClick;
 import timber.log.Timber;
 
-public class MapActivity extends CheckMapNeedPermissionsActivity implements AMapGestureListener, AMapLocationListener, LocationSource, MapSearchView.OnMapHeadSearchViewClickListener, NaviMapLayerView.OnMapLayerItemClickListener, NaviToolView.OnMapToolItemClickListener, ZoomView.OnZoomViewClickListener {
+public class MapActivity extends CheckMapNeedPermissionsActivity implements AMapGestureListener, AMapLocationListener, LocationSource, MapSearchView.OnMapHeadSearchViewClickListener, MapLayerDrawerView.OnMapLayerItemClickListener, ToolBoxDrawerView.OnMapToolItemClickListener, ZoomView.OnZoomViewClickListener {
     private static final int REQUEST_CODE_POI_SEARCH = 0x1000;
 
     @BindView(R.id.map)
@@ -75,11 +73,11 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
     @BindView(R.id.id_drawer_layout)
     public DrawerLayout mDrawerLayout;
 
-    @BindView(R.id.nav_tool_view)
-    public NaviToolView mNaviToolView;
+    @BindView(R.id.toolbox_drawer_view)
+    public ToolBoxDrawerView mToolBoxDrawerView;
 
-    @BindView(R.id.nav_map_layer_view)
-    public NaviMapLayerView mNaviMapLayerView;
+    @BindView(R.id.map_layer_drawer_view)
+    public MapLayerDrawerView mMapLayerDrawerView;
 
     @BindView(R.id.distance_toolbar_view)
     public DistanceToolbarView mDistanceToolbarView;
@@ -245,8 +243,8 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
         mSensorHelper = new SensorEventHelper(this);
         mSensorHelper.registerSensorListener();
         mMapSearchView.setOnMapHeaderViewClickListener(this);
-        mNaviMapLayerView.setOnMapLayerItemClickListener(this);
-        mNaviToolView.setOnMapToolItemClickListener(this);
+        mMapLayerDrawerView.setOnMapLayerItemClickListener(this);
+        mToolBoxDrawerView.setOnMapToolItemClickListener(this);
         mZoomView.setOnZoomViewClickListener(this);
 
         gaoDeCaculateDistanceHelper = new GaoDeCaculateDistanceHelper(this);
@@ -332,11 +330,11 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
      */
     private void switchDrawerLayoutView(DrawerLayoutType drawerLayoutType) {
         if (drawerLayoutType == DrawerLayoutType.DRAWER_MAP_LAYER) {
-            mNaviToolView.setVisibility(View.GONE);
-            mNaviMapLayerView.setVisibility(View.VISIBLE);
+            mToolBoxDrawerView.setVisibility(View.GONE);
+            mMapLayerDrawerView.setVisibility(View.VISIBLE);
         } else {
-            mNaviToolView.setVisibility(View.VISIBLE);
-            mNaviMapLayerView.setVisibility(View.GONE);
+            mToolBoxDrawerView.setVisibility(View.VISIBLE);
+            mMapLayerDrawerView.setVisibility(View.GONE);
         }
 
         if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
@@ -596,15 +594,7 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
             gaoDePoiProcessHelper.destroyPoiMarker();
             gaoDePoiProcessHelper.resetGpsButtonPosition();
         }
-        mDistanceToolbarView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
-                mDistanceToolbarView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(mMapView.getLayoutParams());
-                layoutParams.topMargin = isShow ? mDistanceToolbarView.getHeight() : 0;
-                mMapView.setLayoutParams(layoutParams);
-            }
-        });
+
         aMap.setAMapGestureListener(!isShow ? this : null);
         gaoDePoiProcessHelper.setOnPOIClickListener(!isShow);
     }

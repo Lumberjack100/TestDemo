@@ -29,9 +29,11 @@ import com.shmedo.mcloudapp.projects.adapter.ProjectMultiItemAdapter;
 import com.shmedo.mcloudapp.projects.adapter.ProjectSimpleAdapter;
 import com.shmedo.mcloudapp.projects.model.ProjectBaseInfo;
 import com.shmedo.mcloudapp.projects.model.ProjectDetailInfo;
+import com.shmedo.mcloudapp.projects.model.ProjectFilterScope;
 import com.shmedo.mcloudapp.projects.model.ProjectViewMode;
 import com.shmedo.mcloudapp.projects.model.param.ProjectBaseInfoParam;
 import com.shmedo.mcloudapp.projects.ui.ViewProjectsInMapActivity;
+import com.shmedo.mcloudapp.projects.view.ProjectFilterDrawerView;
 import com.shmedo.mcloudapp.util.GsonFactory;
 
 import java.util.ArrayList;
@@ -46,9 +48,12 @@ import okhttp3.RequestBody;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class ProjectListFragment extends BaseFragment {
+public class ProjectListFragment extends BaseFragment implements ProjectFilterDrawerView.OnFilterResultListener {
     @BindView(R.id.drawer_layout)
     DrawerLayout mDrawerLayout;
+
+    @BindView(R.id.filter_drawer_layout)
+    ProjectFilterDrawerView filterDrawerView;
 
     @BindView(R.id.tv_title)
     TextView mToolbarTitle;
@@ -65,6 +70,7 @@ public class ProjectListFragment extends BaseFragment {
     private NewMainActivity activity;
 
     private ProjectViewMode curViewMode = ProjectViewMode.VIEW_SIMPLE;
+    private ProjectFilterScope curFilterScope = ProjectFilterScope.ALL;
 
     private ProjectSimpleAdapter projectSimpleAdapter;
     private ProjectMultiItemAdapter projectMultiItemAdapter;
@@ -140,6 +146,12 @@ public class ProjectListFragment extends BaseFragment {
                 }
                 break;
         }
+    }
+
+    @Override
+    public void onFilterResult(ProjectViewMode projectViewMode, ProjectFilterScope filterScope) {
+        curViewMode = projectViewMode;
+        refreshProjects();
     }
 
     private void refreshProjects() {

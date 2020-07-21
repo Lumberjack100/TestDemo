@@ -8,23 +8,23 @@ import com.shmedo.mcloudapp.R;
 
 import timber.log.Timber;
 
-
 /**
- * 图层
+ * 创建者:   gonghe <br/>
+ * 创建时间:  2020/6/16 <br/>
+ * 描述：    工具箱
  */
-public class MapLayerView extends BaseIconView {
-    public MapLayerView(Context context) {
+public class ToolBoxIconView extends BaseIconView{
+    public ToolBoxIconView(Context context) {
         this(context, null);
     }
 
-    public MapLayerView(Context context, AttributeSet attrs) {
+    public ToolBoxIconView(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public MapLayerView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public ToolBoxIconView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
-
 
     @Override
     protected void onDraw(Canvas canvas) {
@@ -34,14 +34,14 @@ public class MapLayerView extends BaseIconView {
 
     @Override
     public boolean createBackground() {
-        setBackgroundResource(R.drawable.icon_middle_selector);
+        setBackgroundResource(R.drawable.icon_up_selector);
         return true;
     }
 
     @Override
     public boolean createIcon() {
-        setIconResource(R.drawable.ic_map_layer);
-        setText("图层");
+        setIconResource(R.drawable.ic_map_tool);
+        setText("工具箱");
         return true;
     }
 }

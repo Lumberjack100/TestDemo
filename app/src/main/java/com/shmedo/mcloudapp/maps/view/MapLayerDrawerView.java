@@ -30,7 +30,7 @@ import butterknife.OnClick;
  * 创建时间:  2020/6/28 <br/>
  * 描述：    地图图层选择视图
  */
-public class NaviMapLayerView extends LinearLayout {
+public class MapLayerDrawerView extends LinearLayout {
     private Context mContext;
 
     @BindView(R.id.recyclerViewLayer)
@@ -40,15 +40,15 @@ public class NaviMapLayerView extends LinearLayout {
 
     private OnMapLayerItemClickListener mListener;
 
-    public NaviMapLayerView(Context context) {
+    public MapLayerDrawerView(Context context) {
         this(context, null);
     }
 
-    public NaviMapLayerView(Context context, @Nullable AttributeSet attrs) {
+    public MapLayerDrawerView(Context context, @Nullable AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public NaviMapLayerView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public MapLayerDrawerView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         ((LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE))
                 .inflate(R.layout.map_layer_navi_layout, this, true);

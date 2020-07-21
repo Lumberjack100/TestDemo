@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:card_view="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="250dp"
     android:layout_height="match_parent"
     android:background="@color/white"
@@ -20,66 +18,10 @@
         android:layout_height="0.5dp"
         android:background="@color/gray_f2f2f2" />
 
-    <LinearLayout
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView_project_type"
         android:layout_width="match_parent"
-        android:layout_height="35dp"
-        android:layout_margin="10dp">
-
-
-        <TextView
-            android:id="@+id/tv_simple"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="@drawable/checkable_btn_bg_checked"
-            android:gravity="center"
-            android:text="列表"
-            android:textColor="@color/text_primary_dark"
-            android:textSize="@dimen/text_size_14" />
-
-        <TextView
-            android:id="@+id/tv_group_level"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_marginStart="15dp"
-            android:layout_weight="1"
-            android:background="@drawable/checkable_btn_bg_normal"
-            android:gravity="center"
-            android:text="分级"
-            android:textColor="@color/text_primary_dark"
-            android:textSize="@dimen/text_size_14" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="35dp"
-        android:layout_margin="10dp">
-
-        <TextView
-            android:id="@+id/tv_group_region"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="@drawable/checkable_btn_bg_normal"
-            android:gravity="center"
-            android:text="行政区域"
-            android:textColor="@color/text_primary_dark"
-            android:textSize="@dimen/text_size_14" />
-
-        <TextView
-            android:id="@+id/tv_group_type"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_marginStart="15dp"
-            android:layout_weight="1"
-            android:background="@color/gray_f2f2f2"
-            android:gravity="center"
-            android:text="项目类型"
-            android:textColor="@color/text_primary_dark"
-            android:textSize="@dimen/text_size_14" />
-
-    </LinearLayout>
+        android:layout_height="wrap_content" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -94,70 +36,16 @@
         android:layout_height="0.5dp"
         android:background="@color/gray_f2f2f2" />
 
-    <LinearLayout
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView_project_state"
         android:layout_width="match_parent"
-        android:layout_height="35dp"
-        android:layout_margin="10dp">
-
-        <TextView
-            android:id="@+id/tv_all_device"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="@drawable/checkable_btn_bg_checked"
-            android:gravity="center"
-            android:text="全部"
-            android:textColor="@color/text_primary_dark"
-            android:textSize="@dimen/text_size_14" />
-
-        <TextView
-            android:id="@+id/tv_online_device"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_marginStart="15dp"
-            android:layout_weight="1"
-            android:background="@drawable/checkable_btn_bg_normal"
-            android:gravity="center"
-            android:text="在线"
-            android:textColor="@color/text_primary_dark"
-            android:textSize="@dimen/text_size_14" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="35dp"
-        android:layout_margin="10dp">
-
-        <TextView
-            android:id="@+id/tv_offline_device"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="@drawable/checkable_btn_bg_normal"
-            android:gravity="center"
-            android:text="离线"
-            android:textColor="@color/text_primary_dark"
-            android:textSize="@dimen/text_size_14" />
-
-        <TextView
-            android:id="@+id/tv_out_date_device"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_marginStart="15dp"
-            android:layout_weight="1"
-            android:background="@drawable/checkable_btn_bg_normal"
-            android:gravity="center"
-            android:text="过期"
-            android:textColor="@color/text_primary_dark"
-            android:textSize="@dimen/text_size_14" />
-
-    </LinearLayout>
+        android:layout_height="wrap_content" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
+        android:padding="10dp"
         android:gravity="bottom">
 
         <TextView
@@ -182,7 +70,6 @@
             android:text="确定"
             android:textColor="@color/white"
             android:textSize="@dimen/text_size_14" />
-
 
     </LinearLayout>
 

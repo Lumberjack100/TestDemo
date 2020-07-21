@@ -6,21 +6,18 @@ import android.view.View;
 import androidx.recyclerview.widget.RecyclerView;
 
 /**
- * Created by Administrator on 2015/12/7.
- * 网上找的，原谅我。不想重复造轮子
+ * GridLayoutManager（网格布局）设置item的间隔
+ *
+ * 作者： 周旭 on 2017年7月20日 0020.
+ * 邮箱：374952705@qq.com
+ * 博客：http://www.jianshu.com/u/56db5d78044d
  */
+
 public class GridSpacingItemDecoration extends RecyclerView.ItemDecoration {
 
-    /**
-     * 每行列数
-     */
-    private int spanCount;
-    /**
-     * 每个item的间距
-     */
-    private int spacing;
-    //如果设置成false那边缘地带就没有间距
-    private boolean includeEdge;
+    private int spanCount; //列数
+    private int spacing; //间隔
+    private boolean includeEdge; //是否包含边缘
 
     public GridSpacingItemDecoration(int spanCount, int spacing, boolean includeEdge) {
         this.spanCount = spanCount;
@@ -30,6 +27,8 @@ public class GridSpacingItemDecoration extends RecyclerView.ItemDecoration {
 
     @Override
     public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
+
+        //这里是关键，需要根据你有几列来判断
         int position = parent.getChildAdapterPosition(view); // item position
         int column = position % spanCount; // item column
 

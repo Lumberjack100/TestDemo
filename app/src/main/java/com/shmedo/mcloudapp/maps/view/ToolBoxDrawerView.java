@@ -18,21 +18,21 @@ import butterknife.OnClick;
  * 创建时间:  2020/6/22 <br/>
  * 描述：    工具箱视图
  */
-public class NaviToolView extends LinearLayout {
+public class ToolBoxDrawerView extends LinearLayout {
     private Context mContext;
 
     private OnMapToolItemClickListener mListener;
 
 
-    public NaviToolView(Context context) {
+    public ToolBoxDrawerView(Context context) {
         this(context, null);
     }
 
-    public NaviToolView(Context context, @Nullable AttributeSet attrs) {
+    public ToolBoxDrawerView(Context context, @Nullable AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public NaviToolView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public ToolBoxDrawerView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         ((LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE))
                 .inflate(R.layout.toolbox_navi_layout, this, true);

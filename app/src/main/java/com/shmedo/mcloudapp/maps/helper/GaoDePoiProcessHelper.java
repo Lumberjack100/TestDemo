@@ -3,7 +3,6 @@ package com.shmedo.mcloudapp.maps.helper;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewTreeObserver;
-import android.widget.FrameLayout;
 
 import com.amap.api.maps.AMap;
 import com.amap.api.maps.CameraUpdateFactory;
@@ -21,8 +20,8 @@ import com.amap.api.navi.AmapPageType;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.maps.model.MapMode;
 import com.shmedo.mcloudapp.maps.ui.activity.MapActivity;
-import com.shmedo.mcloudapp.maps.view.PoiDetailBottomView;
 import com.shmedo.mcloudapp.maps.util.MyAMapUtils;
+import com.shmedo.mcloudapp.maps.view.PoiDetailBottomView;
 import com.shmedo.mcloudapp.util.permission.PermissionHelper;
 
 import static com.shmedo.mcloudapp.maps.ui.activity.MapActivity.STATE_UNLOCKED;
@@ -206,11 +205,6 @@ public class GaoDePoiProcessHelper implements AMap.OnPOIClickListener, PoiDetail
                     mapActivity.mGspContainer.setTranslationY(-moveY);
                     mapActivity.mGpsView.setAbovePoiDetail(true);
                 }
-
-                //设置 MapView 的bottomMargin
-                FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(mapView.getLayoutParams());
-                layoutParams.bottomMargin = mPoiDetailBottomView.getHeight();
-                mapView.setLayoutParams(layoutParams);
             }
         });
     }
@@ -231,11 +225,6 @@ public class GaoDePoiProcessHelper implements AMap.OnPOIClickListener, PoiDetail
                 mapActivity.mZoomView.setTranslationY(0);
                 mapActivity.mGspContainer.setTranslationY(0);
                 mapActivity.mGpsView.setAbovePoiDetail(false);
-
-                //设置 MapView 的bottomMargin
-                FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(mapView.getLayoutParams());
-                layoutParams.bottomMargin = 0;
-                mapActivity.mMapView.setLayoutParams(layoutParams);
             }
         });
     }
