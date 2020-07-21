@@ -10,13 +10,13 @@
     android:paddingBottom="5dp">
 
     <ImageView
-        android:id="@+id/iv_head"
+        android:id="@+id/ic_thumbnail"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:layout_marginEnd="10dp"
         android:scaleType="centerCrop"
-        android:src="@drawable/ic_project" />
+        android:src="@drawable/ic_project_default" />
 
     <TextView
         android:id="@+id/tv_projectName"
@@ -24,7 +24,7 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="10dp"
         android:layout_toStartOf="@+id/iv_arrow"
-        android:layout_toEndOf="@+id/iv_head"
+        android:layout_toEndOf="@+id/ic_thumbnail"
         android:ellipsize="end"
         android:maxLines="1"
         android:textColor="@color/black_333333"

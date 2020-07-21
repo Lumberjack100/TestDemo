@@ -2,18 +2,19 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="?attr/actionBarSize"
     android:background="@color/colorPrimary"
     android:fitsSystemWindows="true"
-    android:minHeight="?attr/actionBarSize">
+    android:paddingStart="@dimen/dimen_size_15"
+    android:paddingEnd="@dimen/dimen_size_15">
 
     <ImageView
-        android:id="@+id/back"
+        android:id="@+id/iv_view_in_map"
         android:layout_width="35dp"
         android:layout_height="40dp"
+        android:layout_alignParentStart="true"
         android:layout_centerVertical="true"
-        android:layout_marginStart="15dp"
-        android:src="@drawable/ic_back" />
+        android:src="@drawable/ic_poi_in_map" />
 
     <TextView
         android:id="@+id/tv_title"
@@ -24,17 +25,13 @@
         android:textSize="@dimen/text_size_18"
         tools:text="参数配置" />
 
-    <TextView
-        android:id="@+id/tv_right"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
+    <ImageView
+        android:id="@+id/iv_filter"
+        android:layout_width="35dp"
+        android:layout_height="40dp"
         android:layout_centerVertical="true"
+        android:layout_alignParentEnd="true"
         android:layout_marginLeft="15dp"
-        android:layout_marginRight="15dp"
-        android:textColor="@color/white"
-        android:textSize="@dimen/text_size_15"
-        android:visibility="visible"
-        tools:text="设备管理" />
+        android:src="@drawable/ic_filter" />
 
 </RelativeLayout>

@@ -1,0 +1,63 @@
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/card_view"
+    android:layout_width="match_parent"
+    android:layout_height="60dip"
+    android:layout_marginLeft="10dp"
+    android:layout_marginTop="5dp"
+    android:layout_marginRight="10dp"
+    android:layout_marginBottom="5dp"
+    android:background="@color/white"
+    android:foreground="?android:attr/selectableItemBackground"
+    card_view:cardCornerRadius="4dp"
+    card_view:cardUseCompatPadding="false">
+
+    <TextView
+        android:id="@+id/tv_project_group_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:drawableEnd="@drawable/icon_arrow_down"
+        android:drawablePadding="@dimen/dimen_size_25"
+        android:ellipsize="end"
+        android:singleLine="true"
+        android:textColor="@color/text_primary_dark"
+        android:textSize="@dimen/text_size_15"
+        tools:text="传感器参数配置根据项目所在地进行分类展示，仅显示存在项目的省" />
+
+    <!--<LinearLayout
+        android:id="@+id/ll_group_layout"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:gravity="center_vertical"
+        android:paddingStart="@dimen/dimen_size_10"
+        android:paddingEnd="@dimen/dimen_size_10">
+
+        <TextView
+            android:id="@+id/tv_project_group_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/dimen_size_20"
+            android:layout_weight="1"
+            android:ellipsize="end"
+            android:singleLine="true"
+            android:textColor="@color/text_primary_dark"
+            android:textSize="@dimen/text_size_15"
+            tools:text="传感器参数配置根据项目所在地进行分类展示，仅显示存在项目的省" />
+
+        <ImageView
+            android:id="@+id/iv_expand"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:paddingLeft="10dp"
+            android:paddingTop="13dp"
+            android:paddingRight="10dp"
+            android:paddingBottom="13dp"
+            android:src="@drawable/icon_arrow_down" />
+
+    </LinearLayout>-->
+
+</androidx.cardview.widget.CardView>

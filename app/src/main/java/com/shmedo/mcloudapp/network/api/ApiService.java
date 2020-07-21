@@ -34,80 +34,86 @@ public interface ApiService {
 
     //获取api版本信息
     @Headers({NetworkConst.HEADER_ACCESS_TYPE})
-    @GET(ApiName.API_VERSION)
+    @GET("ApiVersion")
     Observable<ResultWrapper<String>> getApiVerson();
 
     //登录用户
     @Headers({NetworkConst.HEADER_ACCESS_TYPE})
-    @POST(ApiName.SIGNIN)
+    @POST("SignIn")
     Observable<ResultWrapper<String>> getSingIn(@Body RequestBody parameter);
 
     //获取用户信息
     @Headers({NetworkConst.HEADER_ACCESS_TYPE})
-    @GET(ApiName.GET_MY_INFO)
+    @GET("GetMyInfo")
     Observable<ResultWrapper<UserInfo>> getMyInfo(@Header(NetworkConst.ACCESS_TOKEN) String token);
 
     //发送登录验证码(间隔60秒，有效期15分钟)
     @Headers({NetworkConst.HEADER_ACCESS_TYPE, NetworkConst.HEADER_APP_KEY, NetworkConst.HEADER_APP_SECRET})
-    @POST(ApiName.SEND_SMS_CODE)
+    @POST("SendSmsCode")
     Observable<ResultWrapper<String>> sendSmsCode(@Body RequestBody parameter);
 
 
     //使用手机号和验证码登录
     @Headers({NetworkConst.HEADER_ACCESS_TYPE})
-    @POST(ApiName.SMS_LOGIN)
+    @POST("SmsLogin")
     Observable<ResultWrapper<String>> SmsLogin(@Body RequestBody parameter);
 
     //系统接口v2  修改当前登录用户的密码
     @Headers({NetworkConst.HEADER_ACCESS_TYPE})
-    @POST(ApiName.CHANGE_MY_PASSWORD)
+    @POST("ChangeMyPassword")
     Observable<ResultWrapper<String>> ChangeMyPassword(@Header(NetworkConst.ACCESS_TOKEN) String token, @Body RequestBody parameter);
 
     //系统接口v2  修改我的手机号码
     @Headers({NetworkConst.HEADER_ACCESS_TYPE})
-    @POST(ApiName.UPDATE_MY_CELL_PHONE)
+    @POST("UpdateMyCellPhone")
     Observable<ResultWrapper<String>> UpdateMyCellPhone(@Header(NetworkConst.ACCESS_TOKEN) String token, @Body RequestBody parameter);
 
     //系统接口v2  修改我的信息
     @Headers({NetworkConst.HEADER_ACCESS_TYPE})
-    @POST(ApiName.UPDATE_MY_INFO)
+    @POST("UpdateMyInfo")
     Observable<ResultWrapper<String>> UpdateMyInfo(@Header(NetworkConst.ACCESS_TOKEN) String token, @Body RequestBody parameter);
 
     //用户上传头像
     @Headers({NetworkConst.HEADER_ACCESS_TYPE})
-    @POST(ApiName.SET_USER_HEAD_PHOTO)
+    @POST("SetUserHeadPhoto")
     Observable<ResultWrapper<String>> setUserHeadPhoto(@Header(NetworkConst.ACCESS_TOKEN) String token, @Body RequestBody parameter);
 
 
     //系统接口v2  公司模块 4.查询单个公司信息
     @Headers({NetworkConst.HEADER_ACCESS_TYPE})
-    @POST(ApiName.GET_COMPANY_INFO)
+    @POST("GetCompanyInfo")
     Observable<ResultWrapper<CompanyInfo>> GetCompanyInfo(@Header(NetworkConst.ACCESS_TOKEN) String token, @Body RequestBody parameter);
 
 
     //系统接口v2  7.10 查询设备的详情信息
     @Headers({NetworkConst.HEADER_ACCESS_TYPE})
-    @POST(ApiName.GET_DEVICE_DETAIL_INFO)
+    @POST("GetDeviceDetailInfo")
     Observable<ResultWrapper<DeviceDetailInfo>> GetDeviceDetailInfo(@Header(NetworkConst.ACCESS_TOKEN) String token, @Body RequestBody parameter);
 
     //系统接口v2 7.3 查询当前用户的项目列表(项目类型方式) QueryUserListProjectEx
     @Headers({NetworkConst.HEADER_ACCESS_TYPE})
-    @POST(ApiName.QUERY_USER_LIST_PROJECTEX)
+    @POST("QueryUserListProjectEx")
     Observable<ResultWrapper<List<SystemDataInfo>>> QueryUserListProject(@Header(NetworkConst.ACCESS_TOKEN) String token, @Body RequestBody parameter);
+
+    //系统接口v2 7.3 查询当前用户的项目列表(项目类型方式) QueryUserListProjectEx
+    @Headers({NetworkConst.HEADER_ACCESS_TYPE})
+    @POST("QueryProjectListInfo")
+    Observable<ResultWrapper<List<SystemDataInfo>>> QueryProjectListInfo(@Header(NetworkConst.ACCESS_TOKEN) String token, @Body RequestBody parameter);
+
 
     //系统接口v2-2 4.3 查询设备状态信息列表 QueryDeviceStatusInfoList
     @Headers({NetworkConst.HEADER_ACCESS_TYPE})
-    @POST(ApiName.QUERY_DEVICE_STATUS_INFO_LIST)
+    @POST("QueryDeviceStatusInfoList")
     Observable<ResultWrapper<List<StatusInfoResult>>> QueryDeviceStatusInfoList(@Header(NetworkConst.ACCESS_TOKEN) String token, @Body RequestBody parameter);
 
-    //系统接口v2-2 4.2 查询设备基础信息列表 QueryDeviceBasicInfoList
+    //系统接口v2-2 4.2 查询设备基础信息列表——地图展示项目 QueryDeviceBasicInfoList
     @Headers({NetworkConst.HEADER_ACCESS_TYPE})
-    @POST(ApiName.QUERY_DEVICE_BASIC_INFO_LIST)
+    @POST("QueryDeviceBasicInfoList")
     Observable<ResultWrapper<List<DeviceBasicInfoResult>>> QueryDeviceBasicInfoList(@Header(NetworkConst.ACCESS_TOKEN) String token, @Body RequestBody parameter);
 
-    //系统接口v2  7.15 查询项目设备
+    //系统接口v2  7.15 根据系统列表信息查询用户设备
     @Headers({NetworkConst.HEADER_ACCESS_TYPE})
-    @POST(ApiName.QUERY_PROJECT_DEVICE)
+    @POST("QueryProjectDevice")
     Observable<ResultWrapper<PageResult<ProjectDeviceInfo>>> QueryProjectDevice(@Header(NetworkConst.ACCESS_TOKEN) String token, @Body RequestBody parameter);
 
     //验证E60设备,需传入一个完整的 Url，不需要调用接口
@@ -115,6 +121,6 @@ public interface ApiService {
     Observable<ResultWrapper<String>> ValidateDeviceE60(@Url String url);
 
     //查询数据
-    @POST(ApiName.QUERY_CLOUD_DATA)
+    @POST("queryCloudData")
     Observable<ResultWrapper<List<QueryCloudDataInfo>>> QueryCloudData(@Body RequestBody parameter);
 }

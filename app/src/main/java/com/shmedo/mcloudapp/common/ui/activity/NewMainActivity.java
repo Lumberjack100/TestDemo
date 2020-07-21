@@ -15,9 +15,9 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.BluetoothDeviceListFragment;
 import com.shmedo.mcloudapp.maps.ui.activity.MapActivity;
-import com.shmedo.mcloudapp.deviceconfig.ui.fragment.DASHomeFragment;
-import com.shmedo.mcloudapp.util.permission.XPermissionUtils;
+import com.shmedo.mcloudapp.projects.ui.fragment.ProjectListFragment;
 import com.shmedo.mcloudapp.util.permission.UpdataManagerUtil;
+import com.shmedo.mcloudapp.util.permission.XPermissionUtils;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -27,6 +27,7 @@ public class NewMainActivity extends BaseActivity {
     BottomNavigationView bottomNavigationView;
 
     private BluetoothDeviceListFragment bluetoothDeviceListFragment;
+    private ProjectListFragment projectListFragment;
     private Fragment currentFragment;
 
 
@@ -64,21 +65,25 @@ public class NewMainActivity extends BaseActivity {
         if (savedInstanceState != null) {  // “内存重启”时调用
             String curTag = savedInstanceState.getString("CurrentFragment");
             currentFragment = getSupportFragmentManager().findFragmentByTag(curTag);
-            bluetoothDeviceListFragment = (BluetoothDeviceListFragment) getSupportFragmentManager().findFragmentByTag(DASHomeFragment.class.getName());
+            bluetoothDeviceListFragment = (BluetoothDeviceListFragment) getSupportFragmentManager().findFragmentByTag(BluetoothDeviceListFragment.class.getName());
+            projectListFragment = (ProjectListFragment) getSupportFragmentManager().findFragmentByTag(ProjectListFragment.class.getName());
 
             if (bluetoothDeviceListFragment == null)
                 bluetoothDeviceListFragment = new BluetoothDeviceListFragment();
 
+            if (projectListFragment == null)
+                projectListFragment = new ProjectListFragment();
+
             // 解决重叠问题
             getSupportFragmentManager().beginTransaction()
                     .hide(bluetoothDeviceListFragment)
-//                    .hide(queryDataFragment)
+                    .hide(projectListFragment)
 //                    .hide(deviceDetailsFragment)
                     .show(currentFragment)
                     .commit();
         } else {
             bluetoothDeviceListFragment = new BluetoothDeviceListFragment();
-//            queryDataFragment = new QueryDeviceDataFragment();
+            projectListFragment = new ProjectListFragment();
 //            deviceDetailsFragment = new DeviceDetailsFragment();
             switchFrgment(0);
         }
@@ -97,15 +102,15 @@ public class NewMainActivity extends BaseActivity {
                         break;
 
                     case R.id.item_project_module:
-
+                        switchFrgment(1);
                         break;
 
                     case R.id.item_knowledge_module:
-
+                        switchFrgment(2);
                         break;
 
                     case R.id.item_me_module:
-
+                        switchFrgment(3);
                         break;
                 }
 
@@ -118,10 +123,8 @@ public class NewMainActivity extends BaseActivity {
 
     @OnClick({R.id.map_module_view})
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.map_module_view:
-                MapActivity.startActivity(NewMainActivity.this);
-                break;
+        if (v.getId() == R.id.map_module_view) {
+            MapActivity.startActivity(NewMainActivity.this);
         }
     }
 
@@ -134,7 +137,7 @@ public class NewMainActivity extends BaseActivity {
                 showFragment(bluetoothDeviceListFragment);
                 break;
             case 1:
-//                showFragment(queryDataFragment);
+                showFragment(projectListFragment);
                 break;
             case 2:
 //                showFragment(deviceDetailsFragment);

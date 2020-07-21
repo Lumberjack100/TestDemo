@@ -16,6 +16,7 @@
     <color name="menu_press_bg">#AAFFFFFF</color>
     <color name="menu_normal_bg">#FFFFFFFF</color>
     <color name="transparent">#00000000</color>
+    <color name="text_primary_dark">#de000000</color>
 
 
     <!-- common -->
