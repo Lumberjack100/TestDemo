@@ -13,6 +13,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.shmedo.mcloudapp.R;
+import com.shmedo.mcloudapp.common.ui.fragment.KnowledgeLibraryFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.BluetoothDeviceListFragment;
 import com.shmedo.mcloudapp.maps.ui.activity.MapActivity;
 import com.shmedo.mcloudapp.projects.ui.fragment.ProjectListFragment;
@@ -28,6 +29,7 @@ public class NewMainActivity extends BaseActivity {
 
     private BluetoothDeviceListFragment bluetoothDeviceListFragment;
     private ProjectListFragment projectListFragment;
+    private KnowledgeLibraryFragment knowledgeLibraryFragment;
     private Fragment currentFragment;
 
 
@@ -67,6 +69,7 @@ public class NewMainActivity extends BaseActivity {
             currentFragment = getSupportFragmentManager().findFragmentByTag(curTag);
             bluetoothDeviceListFragment = (BluetoothDeviceListFragment) getSupportFragmentManager().findFragmentByTag(BluetoothDeviceListFragment.class.getName());
             projectListFragment = (ProjectListFragment) getSupportFragmentManager().findFragmentByTag(ProjectListFragment.class.getName());
+            knowledgeLibraryFragment = (KnowledgeLibraryFragment) getSupportFragmentManager().findFragmentByTag(KnowledgeLibraryFragment.class.getName());
 
             if (bluetoothDeviceListFragment == null)
                 bluetoothDeviceListFragment = new BluetoothDeviceListFragment();
@@ -74,17 +77,20 @@ public class NewMainActivity extends BaseActivity {
             if (projectListFragment == null)
                 projectListFragment = new ProjectListFragment();
 
+            if (knowledgeLibraryFragment == null)
+                knowledgeLibraryFragment = new KnowledgeLibraryFragment();
+
             // 解决重叠问题
             getSupportFragmentManager().beginTransaction()
                     .hide(bluetoothDeviceListFragment)
                     .hide(projectListFragment)
-//                    .hide(deviceDetailsFragment)
+                    .hide(knowledgeLibraryFragment)
                     .show(currentFragment)
                     .commit();
         } else {
             bluetoothDeviceListFragment = new BluetoothDeviceListFragment();
             projectListFragment = new ProjectListFragment();
-//            deviceDetailsFragment = new DeviceDetailsFragment();
+            knowledgeLibraryFragment = new KnowledgeLibraryFragment();
             switchFrgment(0);
         }
 
@@ -140,7 +146,7 @@ public class NewMainActivity extends BaseActivity {
                 showFragment(projectListFragment);
                 break;
             case 2:
-//                showFragment(deviceDetailsFragment);
+                showFragment(knowledgeLibraryFragment);
                 break;
         }
     }

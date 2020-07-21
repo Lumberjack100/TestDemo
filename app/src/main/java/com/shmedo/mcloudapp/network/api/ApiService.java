@@ -8,8 +8,9 @@ import com.shmedo.mcloudapp.entity.ProjectDeviceInfo;
 import com.shmedo.mcloudapp.entity.QueryCloudDataInfo;
 import com.shmedo.mcloudapp.entity.ResultWrapper;
 import com.shmedo.mcloudapp.entity.StatusInfoResult;
-import com.shmedo.mcloudapp.entity.SystemDataInfo;
 import com.shmedo.mcloudapp.network.NetworkConst;
+import com.shmedo.mcloudapp.projects.model.ProjectBaseInfo;
+import com.shmedo.mcloudapp.projects.model.ProjectDetailInfo;
 import com.shmedo.mcloudapp.user.model.CompanyInfo;
 
 import java.util.List;
@@ -90,15 +91,16 @@ public interface ApiService {
     @POST("GetDeviceDetailInfo")
     Observable<ResultWrapper<DeviceDetailInfo>> GetDeviceDetailInfo(@Header(NetworkConst.ACCESS_TOKEN) String token, @Body RequestBody parameter);
 
-    //系统接口v2 7.3 查询当前用户的项目列表(项目类型方式) QueryUserListProjectEx
+    //项目接口V2 7.3 查询当前用户的项目列表(项目类型方式)
     @Headers({NetworkConst.HEADER_ACCESS_TYPE})
     @POST("QueryUserListProjectEx")
-    Observable<ResultWrapper<List<SystemDataInfo>>> QueryUserListProject(@Header(NetworkConst.ACCESS_TOKEN) String token, @Body RequestBody parameter);
+    Observable<ResultWrapper<List<ProjectBaseInfo>>> QueryUserListProject(@Header(NetworkConst.ACCESS_TOKEN) String token, @Body RequestBody parameter);
 
-    //系统接口v2 7.3 查询当前用户的项目列表(项目类型方式) QueryUserListProjectEx
+    //项目接口V2-4  查询警报阈值列表
     @Headers({NetworkConst.HEADER_ACCESS_TYPE})
     @POST("QueryProjectListInfo")
-    Observable<ResultWrapper<List<SystemDataInfo>>> QueryProjectListInfo(@Header(NetworkConst.ACCESS_TOKEN) String token, @Body RequestBody parameter);
+    Observable<ResultWrapper<List<ProjectDetailInfo>>> QueryProjectListInfo(@Header(NetworkConst.ACCESS_TOKEN) String token, @Body RequestBody parameter);
+
 
 
     //系统接口v2-2 4.3 查询设备状态信息列表 QueryDeviceStatusInfoList

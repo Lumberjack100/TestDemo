@@ -46,10 +46,14 @@
 
     <!--Activity进入和退出动画-->
     <!-- animation 样式 -->
-    <style name="ActivityAnimation" parent="@android:style/Animation">
+    <style name="ActivityAnimation" parent="@android:style/Animation.Activity">
+        <!--打开新的activity时新的activity动画-->
         <item name="android:activityOpenEnterAnimation">@anim/activity_open_enter</item>
+        <!--打开新的activity时旧的activity动画-->
         <item name="android:activityOpenExitAnimation">@anim/activity_open_exit</item>
+        <!--退出activity时新的activity动画-->
         <item name="android:activityCloseEnterAnimation">@anim/activity_close_enter</item>
+        <!--退出activity时旧的activity动画-->
         <item name="android:activityCloseExitAnimation">@anim/activity_close_exit</item>
     </style>
 

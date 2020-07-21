@@ -22,25 +22,16 @@ import com.shmedo.mcloudapp.adapter.recyclerviewbaseadapter.CommonAdapter;
 import com.shmedo.mcloudapp.adapter.recyclerviewbaseadapter.MultiItemTypeAdapter;
 import com.shmedo.mcloudapp.adapter.recyclerviewbaseadapter.ViewHolder;
 import com.shmedo.mcloudapp.common.ui.activity.BaseActivity;
-import com.shmedo.mcloudapp.entity.SystemDataInfo;
-import com.shmedo.mcloudapp.entity.parameter.SystemParameter;
-import com.shmedo.mcloudapp.network.BaseObserver;
-import com.shmedo.mcloudapp.network.MDRetrofit;
-import com.shmedo.mcloudapp.network.NetworkConst;
-import com.shmedo.mcloudapp.util.DaoManager;
-import com.shmedo.mcloudapp.util.GsonFactory;
 import com.shmedo.mcloudapp.common.view.EmptyDataView;
 import com.shmedo.mcloudapp.common.view.recycleviewitemdivider.DividerItemDecoration;
+import com.shmedo.mcloudapp.entity.SystemDataInfo;
+import com.shmedo.mcloudapp.util.DaoManager;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.schedulers.Schedulers;
-import okhttp3.RequestBody;
-import timber.log.Timber;
 
 /**
  * 创建者:   gh
@@ -193,39 +184,39 @@ public class ProjectListActivity extends BaseActivity implements MultiItemTypeAd
      * 获取当前用户的项目列表
      */
     private void getProjectList() {
-        showLoadingDialog("加载数据中...");
-        //获取系统
-        SystemParameter parameter = new SystemParameter(null);
-        String json = GsonFactory.getGson().toJson(parameter);
-        RequestBody body = RequestBody.create(NetworkConst.JSON_TYPE, json);
-        MDRetrofit.getInstance()
-                .createService()
-                .QueryUserListProject(MCloudApp.getAccessToken(), body)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new BaseObserver<List<SystemDataInfo>>() {
-                    @Override
-                    public void Success(List<SystemDataInfo> infoList, String message) {
-                        dismissLoadingDialog();
-
-                        if (null != infoList && infoList.size() != 0) {
-                            for (SystemDataInfo systemDataInfo : infoList) {
-                                systemDataInfo.setAccount(MCloudApp.getAccount());
-                            }
-                            manager.getDaoSession().getSystemDataInfoDao().insertOrReplaceInTx(infoList);
-
-                            projectList.clear();
-                            projectList.addAll(infoList);
-                            adapter.notifyDataSetChanged();
-                        }
-                    }
-
-                    @Override
-                    public void Failure(String message) {
-                        dismissLoadingDialog();
-                        Timber.w("服务器连接失败--" + message);
-                    }
-                });
+//        showLoadingDialog("加载数据中...");
+//        //获取系统
+//        SystemParameter parameter = new SystemParameter(null);
+//        String json = GsonFactory.getGson().toJson(parameter);
+//        RequestBody body = RequestBody.create(NetworkConst.JSON_TYPE, json);
+//        MDRetrofit.getInstance()
+//                .createService()
+//                .QueryUserListProject(MCloudApp.getAccessToken(), body)
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(new BaseObserver<List<SystemDataInfo>>() {
+//                    @Override
+//                    public void Success(List<SystemDataInfo> infoList, String message) {
+//                        dismissLoadingDialog();
+//
+//                        if (null != infoList && infoList.size() != 0) {
+//                            for (SystemDataInfo systemDataInfo : infoList) {
+//                                systemDataInfo.setAccount(MCloudApp.getAccount());
+//                            }
+//                            manager.getDaoSession().getSystemDataInfoDao().insertOrReplaceInTx(infoList);
+//
+//                            projectList.clear();
+//                            projectList.addAll(infoList);
+//                            adapter.notifyDataSetChanged();
+//                        }
+//                    }
+//
+//                    @Override
+//                    public void Failure(String message) {
+//                        dismissLoadingDialog();
+//                        Timber.w("服务器连接失败--" + message);
+//                    }
+//                });
     }
 
 }

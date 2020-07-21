@@ -177,10 +177,8 @@ public class PoiSearchActivity extends BaseActivity implements TextWatcher, PoiS
 
     @OnClick({R.id.tv_cancel_search})
     public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.tv_cancel_search:
-                finish();
-                break;
+        if (view.getId() == R.id.tv_cancel_search) {
+            finish();
         }
     }
 

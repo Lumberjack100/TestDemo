@@ -10,132 +10,90 @@
     android:layout_marginRight="10dp"
     android:layout_marginBottom="5dp"
     android:background="@color/white"
+    android:foreground="?android:attr/selectableItemBackground"
     card_view:cardCornerRadius="4dp"
     card_view:cardUseCompatPadding="false">
 
-    <LinearLayout
+    <FrameLayout
+        android:id="@+id/fl_content_item"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_height="wrap_content">
 
-        <LinearLayout
-            android:id="@+id/ll_group_layout"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:gravity="center_vertical"
-            android:paddingStart="@dimen/dimen_size_10"
-            android:paddingEnd="@dimen/dimen_size_10">
-
-            <TextView
-                android:id="@+id/tv_project_group_name"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/dimen_size_20"
-                android:layout_weight="1"
-                android:ellipsize="end"
-                android:singleLine="true"
-                android:textColor="@color/text_primary_dark"
-                android:textSize="@dimen/text_size_15"
-                tools:text="传感器参数配置根据项目所在地进行分类展示，仅显示存在项目的省" />
-
-            <ImageView
-                android:id="@+id/iv_expand"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:paddingLeft="10dp"
-                android:paddingTop="13dp"
-                android:paddingRight="10dp"
-                android:paddingBottom="13dp"
-                android:src="@drawable/icon_arrow_down" />
-
-        </LinearLayout>
-
-        <FrameLayout
-            android:id="@+id/fl_content_item"
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/white"
-            android:clickable="true"
-            android:focusable="true"
-            android:foreground="?android:selectableItemBackground">
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="25dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="15dp">
 
-            <RelativeLayout
+            <ImageView
+                android:id="@+id/ic_thumbnail"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                tools:src="@drawable/ic_project_default" />
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
-                android:layout_marginTop="25dp"
                 android:layout_marginEnd="10dp"
-                android:layout_marginBottom="15dp">
+                android:layout_toEndOf="@+id/ic_thumbnail"
+                android:orientation="vertical">
 
-                <ImageView
-                    android:id="@+id/ic_thumbnail"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:layout_alignParentStart="true"
-                    android:layout_centerVertical="true"
-                    android:src="@drawable/ic_project_default" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
+                <TextView
+                    android:id="@+id/tv_project_name"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginEnd="10dp"
-                    android:layout_toEndOf="@+id/ic_thumbnail"
-                    android:orientation="vertical">
+                    android:ellipsize="end"
+                    android:singleLine="true"
+                    android:textColor="@color/text_primary_dark"
+                    android:textSize="@dimen/text_size_14"
+                    tools:text="云南德宏州S318芒那线公路边坡监测系统xxx第三期中标" />
 
-                    <TextView
-                        android:id="@+id/tv_project_name"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:ellipsize="end"
-                        android:singleLine="true"
-                        android:textColor="@color/text_primary_dark"
-                        android:textSize="@dimen/text_size_14"
-                        tools:text="云南德宏州S318芒那线公路边坡监测系统xxx第三期中标" />
+                <TextView
+                    android:id="@+id/tv_create_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:ellipsize="end"
+                    android:singleLine="true"
+                    android:textColor="@color/gray_807B7B"
+                    android:textSize="@dimen/text_size_14"
+                    tools:text="2018.11.16 09:38" />
 
-                    <TextView
-                        android:id="@+id/tv_create_time"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp"
-                        android:ellipsize="end"
-                        android:singleLine="true"
-                        android:textColor="@color/gray_807B7B"
-                        android:textSize="@dimen/text_size_14"
-                        tools:text="2018.11.16 09:38" />
+                <TextView
+                    android:id="@+id/tv_company_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:ellipsize="end"
+                    android:singleLine="true"
+                    android:textColor="@color/gray_807B7B"
+                    android:textSize="@dimen/text_size_14"
+                    tools:text="惠山区洛社镇XX社区" />
 
-                    <TextView
-                        android:id="@+id/tv_company_name"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp"
-                        android:ellipsize="end"
-                        android:singleLine="true"
-                        android:textColor="@color/gray_807B7B"
-                        android:textSize="@dimen/text_size_14"
-                        tools:text="惠山区洛社镇XX社区" />
+            </LinearLayout>
 
-                </LinearLayout>
+        </RelativeLayout>
 
-            </RelativeLayout>
+        <TextView
+            android:id="@+id/tv_project_state"
+            android:layout_width="wrap_content"
+            android:layout_height="20dp"
+            android:layout_gravity="top|right"
+            android:background="@color/orange_FF7502"
+            android:gravity="center_vertical"
+            android:paddingStart="5dp"
+            android:paddingEnd="5dp"
+            android:textColor="@color/text_primary_dark"
+            android:textSize="@dimen/text_size_11"
+            android:visibility="invisible"
+            tools:text="已过期" />
 
-            <TextView
-                android:id="@+id/tv_project_state"
-                android:layout_width="wrap_content"
-                android:layout_height="20dp"
-                android:layout_gravity="top|right"
-                android:background="@color/orange_FF7502"
-                android:gravity="center_vertical"
-                android:paddingStart="5dp"
-                android:paddingEnd="5dp"
-                android:textColor="@color/text_primary_dark"
-                android:textSize="@dimen/text_size_11"
-                android:visibility="invisible"
-                tools:text="已过期" />
-
-        </FrameLayout>
-
-    </LinearLayout>
+    </FrameLayout>
 
 </androidx.cardview.widget.CardView>
 

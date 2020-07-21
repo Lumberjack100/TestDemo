@@ -12,6 +12,7 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -23,13 +24,14 @@ import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 
+import com.hjq.toast.ToastUtils;
 import com.shmedo.core.MCloudApp;
 import com.shmedo.core.model.UserInfo;
 import com.shmedo.core.util.DeviceInfo;
 import com.shmedo.core.util.GlobalUtil;
-import com.hjq.toast.ToastUtils;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.activity.BaseActivity;
+import com.shmedo.mcloudapp.common.view.ClearEditText;
 import com.shmedo.mcloudapp.entity.parameter.SetUserHeadPhotoParameter;
 import com.shmedo.mcloudapp.network.BaseObserver;
 import com.shmedo.mcloudapp.network.MDRetrofit;
@@ -40,7 +42,6 @@ import com.shmedo.mcloudapp.util.FileUtils;
 import com.shmedo.mcloudapp.util.GlideUtils;
 import com.shmedo.mcloudapp.util.GsonFactory;
 import com.shmedo.mcloudapp.util.permission.XPermissionUtils;
-import com.shmedo.mcloudapp.common.view.ClearEditText;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 import com.zhihu.matisse.Matisse;
@@ -114,7 +115,6 @@ public class UserHomePageActivity extends BaseActivity implements TextWatcher {
         setToolBar(R.id.toolbar);
         mToolbarTitle.setText("我的信息");
         initData();
-//        initListener();
     }
 
     private void initData() {
@@ -505,7 +505,6 @@ public class UserHomePageActivity extends BaseActivity implements TextWatcher {
                     @Override
                     public void Success(String result, String message) {
                         dismissLoadingDialog();
-                        ToastUtils.show("已保存修改");
                         mBtnConfirm.setEnabled(false);
 
                         UserInfo userInfo = MCloudApp.getCurrentUserInfo();
@@ -516,6 +515,9 @@ public class UserHomePageActivity extends BaseActivity implements TextWatcher {
                             user.setEmail(email);
                         }
                         MCloudApp.setCurrentUserInfo(userInfo);
+
+                        ToastUtils.show("已保存修改");
+                        exitActivcity();
                     }
 
                     @Override
@@ -525,5 +527,16 @@ public class UserHomePageActivity extends BaseActivity implements TextWatcher {
                         Timber.w("个人信息保存失败--%s", message);
                     }
                 });
+    }
+
+
+    private void exitActivcity() {
+        ToastUtils.show("设置完成");
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                finish();
+            }
+        }, 1000);
     }
 }

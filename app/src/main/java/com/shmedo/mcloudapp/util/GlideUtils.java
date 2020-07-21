@@ -46,6 +46,24 @@ public class GlideUtils {
                 .into(imageView);
     }
 
+    /**
+     * 加载普通的图片
+     *
+     * @param context
+     * @param strUrl
+     * @param imageView
+     */
+    public static void loadImage(Context context, final String strUrl, final ImageView imageView, @DrawableRes final int errorResId, @DrawableRes final int holdResId) {
+        Glide.with(context)
+                .load(strUrl)
+                .apply(new RequestOptions()
+                        .centerCrop()
+                        .error(errorResId)
+                        .placeholder(holdResId)
+                        .diskCacheStrategy(DiskCacheStrategy.ALL))
+                .into(imageView);
+    }
+
     public static void loadImageFitCenter(Context context, final String strUrl, final ImageView imageView, @DrawableRes final int id) {
         Glide.with(context)
                 .load(strUrl)

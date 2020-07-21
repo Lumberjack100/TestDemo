@@ -16,8 +16,8 @@ import java.util.List;
  * 创建时间:  2020/7/20 <br/>
  * 描述：     TODO
  */
-public class ProjectAdapter extends BaseNodeAdapter {
-    public ProjectAdapter() {
+public class ProjectMultiItemAdapter extends BaseNodeAdapter {
+    public ProjectMultiItemAdapter() {
         super();
         addFullSpanNodeProvider(new ProjectGroupProvider());
         addNodeProvider(new ProjectItemProvider());
