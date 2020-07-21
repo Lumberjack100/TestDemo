@@ -29,16 +29,10 @@
 
     </LinearLayout>
 
-    <FrameLayout
-        android:layout_width="wrap_content"
+    <include
+        layout="@layout/project_filter_set_layout"
+        android:layout_width="250dp"
         android:layout_height="match_parent"
-        android:layout_gravity="end">
-
-        <com.shmedo.mcloudapp.maps.view.NaviToolView
-            android:id="@+id/nav_tool_view"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent" />
-
-    </FrameLayout>
+        android:layout_gravity="end" />
 
 </androidx.drawerlayout.widget.DrawerLayout>
