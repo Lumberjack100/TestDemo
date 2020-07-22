@@ -9,8 +9,11 @@ import com.shmedo.mcloudapp.entity.QueryCloudDataInfo;
 import com.shmedo.mcloudapp.entity.ResultWrapper;
 import com.shmedo.mcloudapp.entity.StatusInfoResult;
 import com.shmedo.mcloudapp.network.NetworkConst;
+import com.shmedo.mcloudapp.projects.model.CustomLevelProjectInfo;
 import com.shmedo.mcloudapp.projects.model.ProjectBaseInfo;
 import com.shmedo.mcloudapp.projects.model.ProjectDetailInfo;
+import com.shmedo.mcloudapp.projects.model.RegionProjectInfo;
+import com.shmedo.mcloudapp.projects.model.TypeProjectInfo;
 import com.shmedo.mcloudapp.user.model.CompanyInfo;
 
 import java.util.List;
@@ -53,7 +56,6 @@ public interface ApiService {
     @POST("SendSmsCode")
     Observable<ResultWrapper<String>> sendSmsCode(@Body RequestBody parameter);
 
-
     //使用手机号和验证码登录
     @Headers({NetworkConst.HEADER_ACCESS_TYPE})
     @POST("SmsLogin")
@@ -79,28 +81,41 @@ public interface ApiService {
     @POST("SetUserHeadPhoto")
     Observable<ResultWrapper<String>> setUserHeadPhoto(@Header(NetworkConst.ACCESS_TOKEN) String token, @Body RequestBody parameter);
 
-
     //系统接口v2  公司模块 4.查询单个公司信息
     @Headers({NetworkConst.HEADER_ACCESS_TYPE})
     @POST("GetCompanyInfo")
     Observable<ResultWrapper<CompanyInfo>> GetCompanyInfo(@Header(NetworkConst.ACCESS_TOKEN) String token, @Body RequestBody parameter);
-
 
     //系统接口v2  7.10 查询设备的详情信息
     @Headers({NetworkConst.HEADER_ACCESS_TYPE})
     @POST("GetDeviceDetailInfo")
     Observable<ResultWrapper<DeviceDetailInfo>> GetDeviceDetailInfo(@Header(NetworkConst.ACCESS_TOKEN) String token, @Body RequestBody parameter);
 
-    //项目接口V2 7.3 查询当前用户的项目列表(项目类型方式)
+    //项目接口V2  查询当前用户的项目列表(列表方式、不分页)
     @Headers({NetworkConst.HEADER_ACCESS_TYPE})
     @POST("QueryUserListProjectEx")
     Observable<ResultWrapper<List<ProjectBaseInfo>>> QueryUserListProject(@Header(NetworkConst.ACCESS_TOKEN) String token, @Body RequestBody parameter);
+
+    //项目接口V2  查询当前用户的项目列表(项目类型方式)
+    @Headers({NetworkConst.HEADER_ACCESS_TYPE})
+    @POST("QueryUserTypeProject")
+    Observable<ResultWrapper<List<TypeProjectInfo>>> QueryUserTypeProject(@Header(NetworkConst.ACCESS_TOKEN) String token, @Body RequestBody parameter);
+
+    //项目接口V2  查询当前用户的项目列表(行政区域列表方式)
+    @Headers({NetworkConst.HEADER_ACCESS_TYPE})
+    @POST("QueryUserRegionListProject")
+    Observable<ResultWrapper<List<RegionProjectInfo>>> QueryUserRegionListProject(@Header(NetworkConst.ACCESS_TOKEN) String token, @Body RequestBody parameter);
+
+    //项目接口V2  查询当前用户的项目列表（自定义分级方式，不包含空节点）
+    @Headers({NetworkConst.HEADER_ACCESS_TYPE})
+    @POST("GetLevelProjList")
+    Observable<ResultWrapper<List<CustomLevelProjectInfo>>> GetLevelProjList(@Header(NetworkConst.ACCESS_TOKEN) String token, @Body RequestBody parameter);
+
 
     //项目接口V2-4  查询警报阈值列表
     @Headers({NetworkConst.HEADER_ACCESS_TYPE})
     @POST("QueryProjectListInfo")
     Observable<ResultWrapper<List<ProjectDetailInfo>>> QueryProjectListInfo(@Header(NetworkConst.ACCESS_TOKEN) String token, @Body RequestBody parameter);
-
 
 
     //系统接口v2-2 4.3 查询设备状态信息列表 QueryDeviceStatusInfoList

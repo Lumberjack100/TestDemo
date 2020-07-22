@@ -6,18 +6,18 @@ package com.shmedo.mcloudapp.projects.model;
  * 描述：     TODO
  */
 public class StateFilterItem extends  FilterItem {
-    private ProjectFilterScope filterScope;
+    private ProjectState filterScope;
 
-    public StateFilterItem(String name, ProjectFilterScope filterScope) {
+    public StateFilterItem(String name, ProjectState filterScope) {
         super(name);
         this.filterScope = filterScope;
     }
 
-    public ProjectFilterScope getFilterScope() {
+    public ProjectState getFilterScope() {
         return filterScope;
     }
 
-    public void setFilterScope(ProjectFilterScope filterScope) {
+    public void setFilterScope(ProjectState filterScope) {
         this.filterScope = filterScope;
     }
 }

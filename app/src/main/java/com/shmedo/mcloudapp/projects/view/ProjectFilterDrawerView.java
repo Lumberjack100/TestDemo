@@ -18,7 +18,7 @@ import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.view.recycleviewitemdivider.GridSpacingItemDecoration;
 import com.shmedo.mcloudapp.projects.adapter.FilterItemAdapter;
 import com.shmedo.mcloudapp.projects.model.FilterItem;
-import com.shmedo.mcloudapp.projects.model.ProjectFilterScope;
+import com.shmedo.mcloudapp.projects.model.ProjectState;
 import com.shmedo.mcloudapp.projects.model.ProjectViewMode;
 import com.shmedo.mcloudapp.projects.model.StateFilterItem;
 import com.shmedo.mcloudapp.projects.model.TypeFilterItem;
@@ -44,7 +44,7 @@ public class ProjectFilterDrawerView extends LinearLayout {
     private FilterItemAdapter adapterProjectType, adapterProjectState;
 
     private ProjectViewMode projectViewMode = ProjectViewMode.VIEW_SIMPLE;
-    private ProjectFilterScope filterScope = ProjectFilterScope.ALL;
+    private ProjectState filterScope = ProjectState.ALL;
 
     private OnFilterResultListener mListener;
 
@@ -130,7 +130,7 @@ public class ProjectFilterDrawerView extends LinearLayout {
 
         switch (view.getId()) {
             case R.id.tv_reset:
-                mListener.onFilterResult(ProjectViewMode.VIEW_SIMPLE, ProjectFilterScope.ALL);
+                mListener.onFilterResult(ProjectViewMode.VIEW_SIMPLE, ProjectState.ALL);
                 break;
 
             case R.id.tv_confirm:
@@ -156,17 +156,17 @@ public class ProjectFilterDrawerView extends LinearLayout {
     }
 
     private void initProjectStateData() {
-        StateFilterItem filterItem = new StateFilterItem("全部", ProjectFilterScope.ALL);
+        StateFilterItem filterItem = new StateFilterItem("全部", ProjectState.ALL);
         filterItem.setChecked(true);
         adapterProjectState.addData(filterItem);
 
-        filterItem = new StateFilterItem("在线", ProjectFilterScope.ON_LINE);
+        filterItem = new StateFilterItem("在线", ProjectState.ON_LINE);
         adapterProjectState.addData(filterItem);
 
-        filterItem = new StateFilterItem("离线", ProjectFilterScope.OFF_LINE);
+        filterItem = new StateFilterItem("离线", ProjectState.OFF_LINE);
         adapterProjectState.addData(filterItem);
 
-        filterItem = new StateFilterItem("过期", ProjectFilterScope.OUT_OF_DATE);
+        filterItem = new StateFilterItem("过期", ProjectState.OUT_OF_DATE);
         adapterProjectState.addData(filterItem);
     }
 
@@ -175,6 +175,6 @@ public class ProjectFilterDrawerView extends LinearLayout {
     }
 
     public interface OnFilterResultListener {
-        void onFilterResult(ProjectViewMode projectViewMode, ProjectFilterScope filterScope);
+        void onFilterResult(ProjectViewMode projectViewMode, ProjectState filterScope);
     }
 }

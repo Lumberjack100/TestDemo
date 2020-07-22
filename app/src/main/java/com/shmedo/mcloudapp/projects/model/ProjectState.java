@@ -5,7 +5,7 @@ package com.shmedo.mcloudapp.projects.model;
  * 创建时间:  2020/7/21 <br/>
  * 描述：     项目筛选范围
  */
-public enum ProjectFilterScope {
+public enum ProjectState {
 
     ALL,//
 

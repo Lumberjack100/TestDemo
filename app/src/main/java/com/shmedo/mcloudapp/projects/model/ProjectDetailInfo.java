@@ -1,9 +1,5 @@
 package com.shmedo.mcloudapp.projects.model;
 
-import com.chad.library.adapter.base.entity.node.BaseNode;
-
-import org.jetbrains.annotations.Nullable;
-
 import java.util.List;
 
 /**
@@ -11,7 +7,7 @@ import java.util.List;
  * 创建时间:  2020/7/20 <br/>
  * 描述：     TODO
  */
-public class ProjectDetailInfo extends BaseNode {
+public class ProjectDetailInfo {
 
     /**
      * projectID : 132
@@ -52,6 +48,7 @@ public class ProjectDetailInfo extends BaseNode {
     private String registerTime;//项目注册有效期
     private boolean isValid;//项目状态：在线，离线
     private List<OpenedMonitorTypeBean> openedMonitorType;//项目开启的监测类型
+    private boolean isOutOfDate = false;//是否过期
 
     public int getProjectID() {
         return projectID;
@@ -189,6 +186,14 @@ public class ProjectDetailInfo extends BaseNode {
         this.isValid = isValid;
     }
 
+    public boolean isOutOfDate() {
+        return isOutOfDate;
+    }
+
+    public void setOutOfDate(boolean outOfDate) {
+        isOutOfDate = outOfDate;
+    }
+
     public List<OpenedMonitorTypeBean> getOpenedMonitorType() {
         return openedMonitorType;
     }
@@ -293,9 +298,4 @@ public class ProjectDetailInfo extends BaseNode {
         }
     }
 
-    @Nullable
-    @Override
-    public List<BaseNode> getChildNode() {
-        return null;
-    }
 }
