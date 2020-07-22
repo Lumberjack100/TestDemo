@@ -130,6 +130,7 @@ public class ProjectFilterDrawerView extends LinearLayout {
 
         switch (view.getId()) {
             case R.id.tv_reset:
+                resetRecyclerViewItemState();
                 mListener.onFilterResult(ProjectViewMode.VIEW_SIMPLE, ProjectState.ALL);
                 break;
 
@@ -137,6 +138,20 @@ public class ProjectFilterDrawerView extends LinearLayout {
                 mListener.onFilterResult(projectViewMode, filterScope);
                 break;
         }
+    }
+
+    private void resetRecyclerViewItemState() {
+        for (FilterItem item : adapterProjectType.getData()) {
+            item.setChecked(false);
+        }
+        adapterProjectType.getData().get(0).setChecked(true);
+        adapterProjectType.notifyDataSetChanged();
+
+        for (FilterItem item : adapterProjectState.getData()) {
+            item.setChecked(false);
+        }
+        adapterProjectState.getData().get(0).setChecked(true);
+        adapterProjectState.notifyDataSetChanged();
     }
 
 
