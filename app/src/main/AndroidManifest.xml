@@ -48,7 +48,6 @@
         android:theme="@style/AppTheme"
         tools:ignore="LockedOrientationActivity"
         tools:targetApi="p">
-        <activity android:name=".projects.ui.activity.OutOfDateProjectGuideActivity"></activity>
         <!-- 声明最小宽高比 -->
         <meta-data
             android:name="android.min_aspect"
@@ -293,6 +292,11 @@
             android:name=".projects.ui.ViewProjectsInMapActivity"
             android:maxAspectRatio="2.4"
             android:screenOrientation="portrait" />
+        <activity
+            android:name=".projects.ui.activity.OutOfDateProjectGuideActivity"
+            android:maxAspectRatio="2.4"
+            android:screenOrientation="portrait" />
+
         <activity
             android:name=".common.ui.activity.TestBluetoothListActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
