@@ -47,8 +47,7 @@ public class KeyBordUtils {
      */
     public static void hideSoftKeyboard(View view) {
         Context context = view.getContext();
-        InputMethodManager imm = (InputMethodManager) context
-                .getSystemService(Context.INPUT_METHOD_SERVICE);
+        InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 

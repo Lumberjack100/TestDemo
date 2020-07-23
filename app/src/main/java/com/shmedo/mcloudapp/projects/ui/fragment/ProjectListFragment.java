@@ -36,6 +36,7 @@ import com.shmedo.mcloudapp.projects.model.TypeProjectInfo;
 import com.shmedo.mcloudapp.projects.model.param.ProjectBaseInfoParam;
 import com.shmedo.mcloudapp.projects.ui.ViewProjectsInMapActivity;
 import com.shmedo.mcloudapp.projects.ui.activity.OutOfDateProjectGuideActivity;
+import com.shmedo.mcloudapp.projects.view.HeaderSearchView;
 import com.shmedo.mcloudapp.projects.view.ProjectFilterDrawerView;
 import com.shmedo.mcloudapp.util.DateUtil;
 import com.shmedo.mcloudapp.util.GsonFactory;
@@ -55,12 +56,15 @@ import okhttp3.RequestBody;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class ProjectListFragment extends BaseFragment implements ProjectFilterDrawerView.OnFilterResultListener {
+public class ProjectListFragment extends BaseFragment implements ProjectFilterDrawerView.OnFilterResultListener, HeaderSearchView.OnSearchClickListener {
     @BindView(R.id.drawer_layout)
     DrawerLayout mDrawerLayout;
 
     @BindView(R.id.filter_drawer_layout)
     ProjectFilterDrawerView filterDrawerView;
+
+    @BindView(R.id.header_search_view)
+    HeaderSearchView headerSearchView;
 
     @BindView(R.id.tv_title)
     TextView mToolbarTitle;
@@ -99,6 +103,7 @@ public class ProjectListFragment extends BaseFragment implements ProjectFilterDr
 
     private void initView() {
         mToolbarTitle.setText("项目列表");
+        headerSearchView.setSearchHint("搜索项目");
     }
 
     @Override
@@ -113,14 +118,13 @@ public class ProjectListFragment extends BaseFragment implements ProjectFilterDr
                 refreshProjects();
             }
         });
-
-        filterDrawerView.setOnFilterSetListener(this);
-
         // 进入页面，刷新数据
         swipeRefresh.setRefreshing(true);
         refreshProjects();
-    }
 
+        filterDrawerView.setOnFilterSetListener(this);
+        headerSearchView.setOnSearchClickListener(this);
+    }
 
     private void initMultiItemAdapter() {
         mRecyclerProject.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -143,7 +147,6 @@ public class ProjectListFragment extends BaseFragment implements ProjectFilterDr
         });
         mRecyclerProject.setAdapter(itemAdapter);
     }
-
 
     @OnClick({R.id.iv_view_in_map, R.id.iv_filter})
     public void onClick(View v) {
@@ -169,6 +172,29 @@ public class ProjectListFragment extends BaseFragment implements ProjectFilterDr
         projectState = state;
         swipeRefresh.setRefreshing(true);
         refreshProjects();
+    }
+
+    @Override
+    public void onSearch(String keyWord) {
+        projectItems.clear();
+        for (ProjectItem item : tempProjectItems) {
+            if (item.getObject() instanceof ProjectDetailInfo) {
+                ProjectDetailInfo detailInfo = (ProjectDetailInfo) item.getObject();
+                if (detailInfo.getProjectName().contains(keyWord)) {
+                    projectItems.add(item);
+                }
+            }
+        }
+        itemAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onSearchViewSwitch(boolean isHolderView) {
+        swipeRefresh.setEnabled(isHolderView);
+
+        if (isHolderView) {
+            filterProjectsByState();
+        }
     }
 
     private void refreshProjects() {
@@ -367,7 +393,6 @@ public class ProjectListFragment extends BaseFragment implements ProjectFilterDr
             tempProjectItems.add(new ProjectItem(false, info));
         }
         filterProjectsByState();
-        itemAdapter.notifyDataSetChanged();
     }
 
     /**
@@ -388,7 +413,6 @@ public class ProjectListFragment extends BaseFragment implements ProjectFilterDr
             }
         }
         filterProjectsByState();
-        itemAdapter.notifyDataSetChanged();
     }
 
     /**
@@ -409,7 +433,6 @@ public class ProjectListFragment extends BaseFragment implements ProjectFilterDr
             }
         }
         filterProjectsByState();
-        itemAdapter.notifyDataSetChanged();
     }
 
     /**
@@ -431,12 +454,10 @@ public class ProjectListFragment extends BaseFragment implements ProjectFilterDr
         }
 
         filterProjectsByState();
-        itemAdapter.notifyDataSetChanged();
     }
 
     private void filterProjectsByState() {
         projectItems.clear();
-
         switch (projectState) {
             case ALL:
                 projectItems.addAll(tempProjectItems);
@@ -475,6 +496,8 @@ public class ProjectListFragment extends BaseFragment implements ProjectFilterDr
                 }
                 break;
         }
+
+        itemAdapter.notifyDataSetChanged();
     }
 
 }

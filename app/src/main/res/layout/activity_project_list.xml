@@ -8,7 +8,7 @@
 
     <include layout="@layout/activity_custom_toolbar2" />
 
-    <include layout="@layout/bg_search_layout" />
+    <include layout="@layout/place_holder_search_layout" />
 
     <FrameLayout
         android:layout_width="match_parent"

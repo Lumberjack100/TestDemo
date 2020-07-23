@@ -3,34 +3,38 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="35dp"
+    android:layout_marginLeft="10dp"
     android:layout_marginTop="5dp"
+    android:layout_marginRight="10dp"
     android:layout_marginBottom="5dp"
-    android:background="@color/white"
     android:gravity="center_vertical"
-    android:orientation="horizontal"
-    android:paddingStart="15dp"
-    android:paddingEnd="8dp">
+    android:orientation="horizontal">
 
     <com.shmedo.mcloudapp.common.view.ClearEditText
         android:id="@+id/et_search"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="8"
+        android:layout_weight="1"
         android:background="@drawable/search_edittext_shape"
+        android:drawableLeft="@drawable/ic_search_24dp"
+        android:drawablePadding="5dp"
         android:imeOptions="actionSearch"
         android:paddingStart="10dp"
-        android:paddingEnd="5dp"
+        android:paddingEnd="10dp"
         android:singleLine="true"
+        android:textColor="@color/text_primary_dark"
+        android:textColorHint="@color/gray_807B7B"
         android:textSize="@dimen/text_size_14"
-        tools:hint="请输入设备号" />
+        android:hint="搜索" />
 
     <TextView
         android:id="@+id/tv_cancel"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="5dp"
-        android:layout_weight="1"
+        android:layout_marginStart="15dp"
         android:gravity="center"
+        android:paddingStart="5dp"
+        android:paddingEnd="5dp"
         android:text="取消"
         android:textColor="@color/gray_807B7B"
         android:textSize="@dimen/text_size_16" />

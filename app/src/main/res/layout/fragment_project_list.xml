@@ -13,16 +13,10 @@
 
         <include layout="@layout/custom_toolbar_project_list" />
 
-        <FrameLayout
-            android:id="@+id/search_layout_container"
+        <com.shmedo.mcloudapp.projects.view.HeaderSearchView
+            android:id="@+id/header_search_view"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <include
-                android:id="@+id/holder_search_layout"
-                layout="@layout/bg_search_layout" />
-
-        </FrameLayout>
+            android:layout_height="wrap_content"/>
 
         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
             android:id="@+id/swipeLayout"
@@ -46,6 +40,5 @@
         android:layout_gravity="end"
         android:clickable="true"
         android:fitsSystemWindows="false" />
-
 
 </androidx.drawerlayout.widget.DrawerLayout>

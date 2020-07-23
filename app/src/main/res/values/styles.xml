@@ -40,9 +40,6 @@
 
     <style name="CropImageActivity" parent="Base.Theme.AppCompat" />
 
-    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
-
-    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
     <!--Activity进入和退出动画-->
     <!-- animation 样式 -->
