@@ -13,7 +13,16 @@
 
         <include layout="@layout/custom_toolbar_project_list" />
 
-        <include layout="@layout/bg_search_layout" />
+        <FrameLayout
+            android:id="@+id/search_layout_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <include
+                android:id="@+id/holder_search_layout"
+                layout="@layout/bg_search_layout" />
+
+        </FrameLayout>
 
         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
             android:id="@+id/swipeLayout"
@@ -34,9 +43,9 @@
         android:id="@+id/filter_drawer_layout"
         android:layout_width="250dp"
         android:layout_height="match_parent"
+        android:layout_gravity="end"
         android:clickable="true"
-        android:fitsSystemWindows="false"
-        android:layout_gravity="end" />
+        android:fitsSystemWindows="false" />
 
 
 </androidx.drawerlayout.widget.DrawerLayout>
