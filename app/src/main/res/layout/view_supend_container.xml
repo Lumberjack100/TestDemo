@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/transparent"
-    android:fitsSystemWindows="true">
+    android:fitsSystemWindows="false">
 
     <com.shmedo.mcloudapp.maps.view.DistanceToolbarView
         android:id="@+id/distance_toolbar_view"
