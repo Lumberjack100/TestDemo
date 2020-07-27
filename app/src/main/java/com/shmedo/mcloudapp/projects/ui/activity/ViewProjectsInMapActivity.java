@@ -183,7 +183,9 @@ public class ViewProjectsInMapActivity extends BaseActivity implements ClusterRe
         for (ClusterItem clusterItem : clusterItems) {
             builder.include(clusterItem.getPosition());
         }
+        // 地图显示经纬度范围
         LatLngBounds latLngBounds = builder.build();
+        //设置显示在规定屏幕范围内的地图经纬度范围
         aMap.animateCamera(CameraUpdateFactory.newLatLngBounds(latLngBounds, 0));
     }
 

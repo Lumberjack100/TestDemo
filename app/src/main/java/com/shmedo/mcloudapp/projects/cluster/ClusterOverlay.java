@@ -203,8 +203,7 @@ public class ClusterOverlay implements AMap.OnCameraChangeListener, AMap.OnMarke
     private void addSingleClusterToMap(Cluster cluster) {
         LatLng latlng = cluster.getCenterLatLng();
         MarkerOptions markerOptions = new MarkerOptions();
-        markerOptions.anchor(0.5f, 0.5f)
-                .icon(getBitmapDes(cluster.getClusterCount())).position(latlng);
+        markerOptions.anchor(0.5f, 0.5f).icon(getBitmapDes(cluster.getClusterCount())).position(latlng);
         Marker marker = mAMap.addMarker(markerOptions);
         marker.setAnimation(mADDAnimation);
         marker.setObject(cluster);
