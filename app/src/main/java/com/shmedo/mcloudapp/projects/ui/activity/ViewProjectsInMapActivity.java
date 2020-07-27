@@ -10,6 +10,7 @@ import android.graphics.RectF;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.widget.TextView;
 
 import com.amap.api.maps.AMap;
 import com.amap.api.maps.AMapOptions;
@@ -44,6 +45,9 @@ import java.util.Map;
 import butterknife.BindView;
 
 public class ViewProjectsInMapActivity extends BaseActivity implements ClusterRender, AMap.OnMapLoadedListener, ClusterClickListener {
+    @BindView(R.id.toolbar_title)
+    TextView mToolbarTitle;
+
     @BindView(R.id.mapView)
     public MapView mMapView;
 
@@ -71,6 +75,8 @@ public class ViewProjectsInMapActivity extends BaseActivity implements ClusterRe
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setToolBar(R.id.toolbar);
+        mToolbarTitle.setText("项目地图");
         //在activity执行onCreate时执行mMapView.onCreate(savedInstanceState)，创建地图
         mMapView.onCreate(savedInstanceState);
         initData();
@@ -97,7 +103,7 @@ public class ViewProjectsInMapActivity extends BaseActivity implements ClusterRe
     private void setUpMap() {
         setLocationStyle();
         aMap.getUiSettings().setMyLocationButtonEnabled(true);//设置默认定位按钮是否显示，非必需设置。
-        aMap.getUiSettings().setZoomControlsEnabled(false); //隐藏缩放控件
+        aMap.getUiSettings().setZoomControlsEnabled(true); //隐藏缩放控件
         aMap.getUiSettings().setLogoPosition(AMapOptions.LOGO_POSITION_BOTTOM_RIGHT);//设置logo位置
         // 设置为true表示启动显示定位蓝点，false表示隐藏定位蓝点并不进行定位，默认是false。
         aMap.setMyLocationEnabled(true);
@@ -136,6 +142,8 @@ public class ViewProjectsInMapActivity extends BaseActivity implements ClusterRe
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        //销毁资源
+        mClusterOverlay.onDestroy();
         //在activity执行onDestroy时执行mMapView.onDestroy()，销毁地图
         mMapView.onDestroy();
     }
@@ -148,7 +156,6 @@ public class ViewProjectsInMapActivity extends BaseActivity implements ClusterRe
         //添加测试数据
         new Thread() {
             public void run() {
-
 
                 List<ClusterItem> clusterItemList = new ArrayList<ClusterItem>();
                 for (ProjectDetailInfo detailInfo : detailInfoList) {
@@ -186,7 +193,7 @@ public class ViewProjectsInMapActivity extends BaseActivity implements ClusterRe
         if (clusterNum == 1) {
             Drawable bitmapDrawable = mBackDrawAbles.get(1);
             if (bitmapDrawable == null) {
-                bitmapDrawable = getApplication().getResources().getDrawable(R.drawable.icon_marker);
+                bitmapDrawable = getApplication().getResources().getDrawable(R.drawable.ic_marker_thumbtack);
                 mBackDrawAbles.put(1, bitmapDrawable);
             }
             return bitmapDrawable;
