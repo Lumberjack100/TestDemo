@@ -18,6 +18,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.shmedo.core.MCloudApp;
+import com.shmedo.core.model.UserInfo;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.activity.NewMainActivity;
 import com.shmedo.mcloudapp.common.ui.fragment.BaseFragment;
@@ -38,6 +39,7 @@ import com.shmedo.mcloudapp.projects.ui.ViewProjectsInMapActivity;
 import com.shmedo.mcloudapp.projects.ui.activity.OutOfDateProjectGuideActivity;
 import com.shmedo.mcloudapp.projects.view.HeaderSearchView;
 import com.shmedo.mcloudapp.projects.view.ProjectFilterDrawerView;
+import com.shmedo.mcloudapp.util.DaoManager;
 import com.shmedo.mcloudapp.util.DateUtil;
 import com.shmedo.mcloudapp.util.GsonFactory;
 
@@ -79,6 +81,8 @@ public class ProjectListFragment extends BaseFragment implements ProjectFilterDr
     RecyclerView mRecyclerProject;
 
     private NewMainActivity activity;
+    private int userId;
+    private UserInfo userInfo;
 
     private ProjectViewMode projectViewMode = ProjectViewMode.VIEW_SIMPLE;
     private ProjectState projectState = ProjectState.ALL;
@@ -110,6 +114,11 @@ public class ProjectListFragment extends BaseFragment implements ProjectFilterDr
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         activity = (NewMainActivity) getActivity();
+        userInfo = MCloudApp.getCurrentUserInfo();
+        if (userInfo != null && userInfo.getUser() != null) {
+            UserInfo.UserBean user = userInfo.getUser();
+            userId=user.getId();
+        }
         initMultiItemAdapter();
         swipeRefresh.setColorSchemeResources(android.R.color.holo_blue_light);
         swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -362,6 +371,7 @@ public class ProjectListFragment extends BaseFragment implements ProjectFilterDr
 
                         detailInfoMap.clear();
                         for (ProjectDetailInfo detailInfo : data) {
+                            detailInfo.setUserId(userId);
                             Date registerDate = new Date();
                             try {
                                 registerDate = DateUtil.stringToDate(detailInfo.getRegisterTime(), "yyyy-MM-dd HH:mm:ss");
@@ -373,6 +383,8 @@ public class ProjectListFragment extends BaseFragment implements ProjectFilterDr
                         }
 
                         setSimpleModeAdapterData(data);
+
+                        DaoManager.getInstance().getDaoSession().getProjectDetailInfoDao().insertOrReplaceInTx(data);
                     }
 
                     @Override

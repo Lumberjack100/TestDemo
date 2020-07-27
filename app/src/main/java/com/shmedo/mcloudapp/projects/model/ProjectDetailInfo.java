@@ -1,5 +1,11 @@
 package com.shmedo.mcloudapp.projects.model;
 
+import org.greenrobot.greendao.annotation.Entity;
+import org.greenrobot.greendao.annotation.Generated;
+import org.greenrobot.greendao.annotation.Id;
+import org.greenrobot.greendao.annotation.Transient;
+import org.greenrobot.greendao.annotation.Unique;
+
 import java.util.List;
 
 /**
@@ -7,6 +13,7 @@ import java.util.List;
  * 创建时间:  2020/7/20 <br/>
  * 描述：     TODO
  */
+@Entity
 public class ProjectDetailInfo {
 
     /**
@@ -30,6 +37,11 @@ public class ProjectDetailInfo {
      * isValid : true
      */
 
+    @Id
+    private Long id;//添加在 sqllite 中作为主键
+    private int userId;//添加在 sqllite 中，标识用户
+
+    @Unique
     private int projectID;//项目ID
     private String shortName;//项目短名称
     private String projectName;//项目名称
@@ -47,8 +59,38 @@ public class ProjectDetailInfo {
     private String location;//项目地址
     private String registerTime;//项目注册有效期
     private boolean isValid;//项目状态：在线，离线
+
+    @Transient
     private List<OpenedMonitorTypeBean> openedMonitorType;//项目开启的监测类型
     private boolean isOutOfDate = false;//是否过期
+
+    @Generated(hash = 1331684)
+    public ProjectDetailInfo(Long id, int userId, int projectID, String shortName, String projectName, String buildTime, String imagePath, int companyID, String companyName, int projectTypeID, String projectTypeName, int regionID, String regionFullName, int warnStatus, int lastMonthUnhandleWarn, String centerPoint, String location, String registerTime, boolean isValid, boolean isOutOfDate) {
+        this.id = id;
+        this.userId = userId;
+        this.projectID = projectID;
+        this.shortName = shortName;
+        this.projectName = projectName;
+        this.buildTime = buildTime;
+        this.imagePath = imagePath;
+        this.companyID = companyID;
+        this.companyName = companyName;
+        this.projectTypeID = projectTypeID;
+        this.projectTypeName = projectTypeName;
+        this.regionID = regionID;
+        this.regionFullName = regionFullName;
+        this.warnStatus = warnStatus;
+        this.lastMonthUnhandleWarn = lastMonthUnhandleWarn;
+        this.centerPoint = centerPoint;
+        this.location = location;
+        this.registerTime = registerTime;
+        this.isValid = isValid;
+        this.isOutOfDate = isOutOfDate;
+    }
+
+    @Generated(hash = 950442219)
+    public ProjectDetailInfo() {
+    }
 
     public int getProjectID() {
         return projectID;
@@ -202,100 +244,32 @@ public class ProjectDetailInfo {
         this.openedMonitorType = openedMonitorType;
     }
 
-    public static class OpenedMonitorTypeBean {
-        /**
-         * id : 66
-         * sensorType : 0
-         * typeName : 地表位移
-         * name : 地表位移
-         * displayOrder : 0
-         * exValues : 你好12
-         * iconImage : medo-icon-sensortype-0
-         * allowMultiSensorInPoint : false
-         * isValid : true
-         */
+    public Long getId() {
+        return this.id;
+    }
 
-        private int id;
-        private int sensorType;
-        private String typeName;
-        private String name;
-        private int displayOrder;
-        private String exValues;
-        private String iconImage;
-        private boolean allowMultiSensorInPoint;
-        private boolean isValid;
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-        public int getId() {
-            return id;
-        }
+    public int getUserId() {
+        return this.userId;
+    }
 
-        public void setId(int id) {
-            this.id = id;
-        }
+    public void setUserId(int userId) {
+        this.userId = userId;
+    }
 
-        public int getSensorType() {
-            return sensorType;
-        }
+    public boolean getIsValid() {
+        return this.isValid;
+    }
 
-        public void setSensorType(int sensorType) {
-            this.sensorType = sensorType;
-        }
+    public boolean getIsOutOfDate() {
+        return this.isOutOfDate;
+    }
 
-        public String getTypeName() {
-            return typeName;
-        }
-
-        public void setTypeName(String typeName) {
-            this.typeName = typeName;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public void setName(String name) {
-            this.name = name;
-        }
-
-        public int getDisplayOrder() {
-            return displayOrder;
-        }
-
-        public void setDisplayOrder(int displayOrder) {
-            this.displayOrder = displayOrder;
-        }
-
-        public String getExValues() {
-            return exValues;
-        }
-
-        public void setExValues(String exValues) {
-            this.exValues = exValues;
-        }
-
-        public String getIconImage() {
-            return iconImage;
-        }
-
-        public void setIconImage(String iconImage) {
-            this.iconImage = iconImage;
-        }
-
-        public boolean isAllowMultiSensorInPoint() {
-            return allowMultiSensorInPoint;
-        }
-
-        public void setAllowMultiSensorInPoint(boolean allowMultiSensorInPoint) {
-            this.allowMultiSensorInPoint = allowMultiSensorInPoint;
-        }
-
-        public boolean isIsValid() {
-            return isValid;
-        }
-
-        public void setIsValid(boolean isValid) {
-            this.isValid = isValid;
-        }
+    public void setIsOutOfDate(boolean isOutOfDate) {
+        this.isOutOfDate = isOutOfDate;
     }
 
 }
