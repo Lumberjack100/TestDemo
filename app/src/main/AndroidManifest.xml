@@ -289,7 +289,7 @@
             android:screenOrientation="portrait"
             android:theme="@style/CropImageActivity" />
         <activity
-            android:name=".projects.ui.ViewProjectsInMapActivity"
+            android:name=".projects.ui.activity.ViewProjectsInMapActivity"
             android:maxAspectRatio="2.4"
             android:screenOrientation="portrait" />
         <activity

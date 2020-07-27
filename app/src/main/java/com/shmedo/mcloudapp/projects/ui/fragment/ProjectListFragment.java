@@ -35,7 +35,7 @@ import com.shmedo.mcloudapp.projects.model.ProjectViewMode;
 import com.shmedo.mcloudapp.projects.model.RegionProjectInfo;
 import com.shmedo.mcloudapp.projects.model.TypeProjectInfo;
 import com.shmedo.mcloudapp.projects.model.param.ProjectBaseInfoParam;
-import com.shmedo.mcloudapp.projects.ui.ViewProjectsInMapActivity;
+import com.shmedo.mcloudapp.projects.ui.activity.ViewProjectsInMapActivity;
 import com.shmedo.mcloudapp.projects.ui.activity.OutOfDateProjectGuideActivity;
 import com.shmedo.mcloudapp.projects.view.HeaderSearchView;
 import com.shmedo.mcloudapp.projects.view.ProjectFilterDrawerView;
