@@ -52,7 +52,7 @@ public class ViewProjectsInMapActivity extends BaseActivity implements ClusterRe
 
     private AMap aMap; //地图控制器对象
     private MyLocationStyle mLocationStyle;
-    private int clusterRadius = 50;//聚合半径
+    private int clusterRadius = 100;//聚合半径
     private Map<Integer, Drawable> mBackDrawAbles = new HashMap<Integer, Drawable>();
 
     private ClusterOverlay mClusterOverlay;
@@ -104,7 +104,6 @@ public class ViewProjectsInMapActivity extends BaseActivity implements ClusterRe
         // 设置为true表示启动显示定位蓝点，false表示隐藏定位蓝点并不进行定位，默认是false。
         aMap.setMyLocationEnabled(true);
         aMap.setOnMapLoadedListener(this);
-        aMap.moveCamera(CameraUpdateFactory.zoomTo(10));
     }
 
 
@@ -112,10 +111,6 @@ public class ViewProjectsInMapActivity extends BaseActivity implements ClusterRe
         // 自定义系统定位蓝点
         if (mLocationStyle == null) {
             mLocationStyle = new MyLocationStyle();
-//            mLocationStyle.showMyLocation(true);//设置是否显示定位小蓝点，true 显示，false不显示。
-//            mLocationStyle.strokeColor(getResources().getColor(R.color.app_color_blue_2));  //设置定位小蓝点精度圆圈的边框颜色
-//            mLocationStyle.strokeWidth(1); //设置定位小蓝点精度圆圈的边框宽度
-//            mLocationStyle.radiusFillColor(Color.argb(100, 29, 161, 242)); // 设置定位小蓝点精度圆圈的填充颜色
         }
         // 将自定义的 myLocationStyle 对象添加到地图上
         aMap.setMyLocationStyle(mLocationStyle.myLocationType(MyLocationStyle.LOCATION_TYPE_LOCATE));
@@ -186,10 +181,13 @@ public class ViewProjectsInMapActivity extends BaseActivity implements ClusterRe
             RegionItem regionItem = (RegionItem) clusterItems.get(0);
 
         } else {
+            LatLng latLng = new LatLng(marker.getPosition().latitude,marker.getPosition().longitude);
+            aMap.moveCamera(CameraUpdateFactory.changeLatLng(latLng));
+
             // 地图显示经纬度范围
             LatLngBounds latLngBounds = getLatLngBounds(clusterItems);
             //设置显示在规定屏幕范围内的地图经纬度范围
-            aMap.moveCamera(CameraUpdateFactory.newLatLngBounds(latLngBounds, 30));
+            aMap.animateCamera(CameraUpdateFactory.newLatLngBounds(latLngBounds, 30));
         }
     }
 
