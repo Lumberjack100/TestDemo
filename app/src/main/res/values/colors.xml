@@ -17,6 +17,7 @@
     <color name="menu_normal_bg">#FFFFFFFF</color>
     <color name="transparent">#00000000</color>
     <color name="text_primary_dark">#de000000</color>
+    <color name="main_blue">#ff3072f6</color>
 
 
     <!-- common -->

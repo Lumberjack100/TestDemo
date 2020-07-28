@@ -117,7 +117,7 @@ public class ProjectListFragment extends BaseFragment implements ProjectFilterDr
         userInfo = MCloudApp.getCurrentUserInfo();
         if (userInfo != null && userInfo.getUser() != null) {
             UserInfo.UserBean user = userInfo.getUser();
-            userId=user.getId();
+            userId = user.getId();
         }
         initMultiItemAdapter();
         swipeRefresh.setColorSchemeResources(android.R.color.holo_blue_light);
@@ -179,8 +179,14 @@ public class ProjectListFragment extends BaseFragment implements ProjectFilterDr
         mDrawerLayout.closeDrawer(GravityCompat.END);
         projectViewMode = viewMode;
         projectState = state;
-        swipeRefresh.setRefreshing(true);
-        refreshProjects();
+        //列表模式时，直接筛选缓存的tempProjectItems
+        if (viewMode == ProjectViewMode.VIEW_SIMPLE) {
+            filterSimpleListProjectsByState();
+        } else {
+            //分组展示模式时，需要请求不同的分组接口刷新数据
+            swipeRefresh.setRefreshing(true);
+            refreshProjects();
+        }
     }
 
     @Override
@@ -198,11 +204,11 @@ public class ProjectListFragment extends BaseFragment implements ProjectFilterDr
     }
 
     @Override
-    public void onSearchViewSwitch(boolean isHolderView) {
-        swipeRefresh.setEnabled(isHolderView);
+    public void onSearchViewSwitch(boolean isHolderSearchView) {
+        swipeRefresh.setEnabled(isHolderSearchView);
 
-        if (isHolderView) {
-            filterProjectsByState();
+        if (isHolderSearchView) {
+            filterSimpleListProjectsByState();
         }
     }
 
@@ -404,7 +410,7 @@ public class ProjectListFragment extends BaseFragment implements ProjectFilterDr
         for (ProjectDetailInfo info : infos) {
             tempProjectItems.add(new ProjectItem(false, info));
         }
-        filterProjectsByState();
+        filterSimpleListProjectsByState();
     }
 
     /**
@@ -413,18 +419,15 @@ public class ProjectListFragment extends BaseFragment implements ProjectFilterDr
      * @param infos
      */
     private void setCustomLevelModeAdapterData(List<CustomLevelProjectInfo> infos) {
-        tempProjectItems.clear();
+        projectItems.clear();
         for (CustomLevelProjectInfo info : infos) {
-            tempProjectItems.add(new ProjectItem(true, info.getLevelName()));
-            if (info.getLevelProjs() != null) {
-                for (ProjectBaseInfo baseInfo : info.getLevelProjs()) {
-                    ProjectDetailInfo detailInfo = detailInfoMap.get(baseInfo.getProjID());
-                    if (detailInfo != null)
-                        tempProjectItems.add(new ProjectItem(false, detailInfo));
-                }
+            List<ProjectItem> subProjectItems = filterGroupListProjectsByState(info.getLevelProjs());
+            if (!subProjectItems.isEmpty()) {
+                projectItems.add(new ProjectItem(true, info.getLevelName()));
+                projectItems.addAll(subProjectItems);
             }
         }
-        filterProjectsByState();
+        itemAdapter.notifyDataSetChanged();
     }
 
     /**
@@ -433,18 +436,15 @@ public class ProjectListFragment extends BaseFragment implements ProjectFilterDr
      * @param infos
      */
     private void setRegionModeAdapterData(List<RegionProjectInfo> infos) {
-        tempProjectItems.clear();
+        projectItems.clear();
         for (RegionProjectInfo info : infos) {
-            tempProjectItems.add(new ProjectItem(true, info.getRegionFullName()));
-            if (info.getProjects() != null) {
-                for (ProjectBaseInfo baseInfo : info.getProjects()) {
-                    ProjectDetailInfo detailInfo = detailInfoMap.get(baseInfo.getProjID());
-                    if (detailInfo != null)
-                        tempProjectItems.add(new ProjectItem(false, detailInfo));
-                }
+            List<ProjectItem> subProjectItems = filterGroupListProjectsByState(info.getProjects());
+            if (!subProjectItems.isEmpty()) {
+                projectItems.add(new ProjectItem(true, info.getRegionFullName()));
+                projectItems.addAll(subProjectItems);
             }
         }
-        filterProjectsByState();
+        itemAdapter.notifyDataSetChanged();
     }
 
     /**
@@ -453,22 +453,21 @@ public class ProjectListFragment extends BaseFragment implements ProjectFilterDr
      * @param infos
      */
     private void setTypeModeAdapterData(List<TypeProjectInfo> infos) {
-        tempProjectItems.clear();
+        projectItems.clear();
         for (TypeProjectInfo info : infos) {
-            tempProjectItems.add(new ProjectItem(true, info.getProjTypeName()));
-            if (info.getProjects() != null) {
-                for (ProjectBaseInfo baseInfo : info.getProjects()) {
-                    ProjectDetailInfo detailInfo = detailInfoMap.get(baseInfo.getProjID());
-                    if (detailInfo != null)
-                        tempProjectItems.add(new ProjectItem(false, detailInfo));
-                }
+            List<ProjectItem> subProjectItems = filterGroupListProjectsByState(info.getProjects());
+            if (!subProjectItems.isEmpty()) {
+                projectItems.add(new ProjectItem(true, info.getProjTypeName()));
+                projectItems.addAll(subProjectItems);
             }
         }
-
-        filterProjectsByState();
+        itemAdapter.notifyDataSetChanged();
     }
 
-    private void filterProjectsByState() {
+    /**
+     * 根据项目状态过滤简单项目列表
+     */
+    private void filterSimpleListProjectsByState() {
         projectItems.clear();
         switch (projectState) {
             case ALL:
@@ -510,6 +509,49 @@ public class ProjectListFragment extends BaseFragment implements ProjectFilterDr
         }
 
         itemAdapter.notifyDataSetChanged();
+    }
+
+    /**
+     * 根据项目状态过滤分组项目列表
+     */
+    private List<ProjectItem> filterGroupListProjectsByState(List<ProjectBaseInfo> subBaseInfoList) {
+        if (subBaseInfoList == null) {
+            return new ArrayList<>();
+        }
+
+        List<ProjectItem> subProjectItems = new ArrayList<>();
+
+        for (ProjectBaseInfo baseInfo : subBaseInfoList) {
+            ProjectDetailInfo detailInfo = detailInfoMap.get(baseInfo.getProjID());
+            if (detailInfo == null)
+                continue;
+
+            switch (projectState) {
+                case ALL:
+                    subProjectItems.add(new ProjectItem(false, detailInfo));
+                    break;
+
+                case ON_LINE://筛选出在线的项目
+                    if (detailInfo.isIsValid()) {
+                        subProjectItems.add(new ProjectItem(false, detailInfo));
+                    }
+                    break;
+
+                case OFF_LINE://筛选出离线的项目
+                    if (!detailInfo.isIsValid()) {
+                        subProjectItems.add(new ProjectItem(false, detailInfo));
+                    }
+                    break;
+
+                case OUT_OF_DATE://筛选出过期的项目
+                    if (detailInfo.isOutOfDate()) {
+                        subProjectItems.add(new ProjectItem(false, detailInfo));
+                    }
+                    break;
+            }
+        }
+
+        return subProjectItems;
     }
 
 }

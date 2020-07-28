@@ -57,8 +57,8 @@ public class HeaderSearchView extends FrameLayout implements TextView.OnEditorAc
         setSearchView(true);
     }
 
-    private void setSearchView(boolean isHolderView) {
-        if (isHolderView) {
+    private void setSearchView(boolean isHolderSearchView) {
+        if (isHolderSearchView) {
             holderSearchLayout.setVisibility(View.VISIBLE);
             inputSearchLayout.setVisibility(View.GONE);
             etSearch.setText("");
@@ -70,7 +70,7 @@ public class HeaderSearchView extends FrameLayout implements TextView.OnEditorAc
         }
 
         if (mListener != null) {
-            mListener.onSearchViewSwitch(isHolderView);
+            mListener.onSearchViewSwitch(isHolderSearchView);
         }
     }
 

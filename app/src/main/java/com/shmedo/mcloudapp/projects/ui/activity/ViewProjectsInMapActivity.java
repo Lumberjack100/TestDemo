@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import android.graphics.drawable.BitmapDrawable;
@@ -53,7 +52,7 @@ public class ViewProjectsInMapActivity extends BaseActivity implements ClusterRe
 
     private AMap aMap; //地图控制器对象
     private MyLocationStyle mLocationStyle;
-    private int clusterRadius = 100;
+    private int clusterRadius = 50;//聚合半径
     private Map<Integer, Drawable> mBackDrawAbles = new HashMap<Integer, Drawable>();
 
     private ClusterOverlay mClusterOverlay;
@@ -80,7 +79,7 @@ public class ViewProjectsInMapActivity extends BaseActivity implements ClusterRe
         //在activity执行onCreate时执行mMapView.onCreate(savedInstanceState)，创建地图
         mMapView.onCreate(savedInstanceState);
         initData();
-        initView();
+        setUpMap();
     }
 
     private void initData() {
@@ -91,28 +90,32 @@ public class ViewProjectsInMapActivity extends BaseActivity implements ClusterRe
         }
     }
 
-    private void initView() {
+    private void setUpMap() {
         if (aMap == null) {
             //初始化地图控制器对象
             aMap = mMapView.getMap();
-            setUpMap();
+            aMap.getUiSettings().setRotateGesturesEnabled(false);//旋转手势关闭
+            aMap.getUiSettings().setTiltGesturesEnabled(false);//倾斜手势关闭
+            aMap.getUiSettings().setMyLocationButtonEnabled(false);//设置默认定位按钮是否显示，非必需设置。
+            aMap.getUiSettings().setZoomControlsEnabled(false); //隐藏缩放控件
+            aMap.getUiSettings().setLogoPosition(AMapOptions.LOGO_POSITION_BOTTOM_LEFT);//设置logo位置
+            setLocationStyle();
         }
-        aMap.setOnMapLoadedListener(this);
-    }
-
-    private void setUpMap() {
-        setLocationStyle();
-        aMap.getUiSettings().setMyLocationButtonEnabled(true);//设置默认定位按钮是否显示，非必需设置。
-        aMap.getUiSettings().setZoomControlsEnabled(true); //隐藏缩放控件
-        aMap.getUiSettings().setLogoPosition(AMapOptions.LOGO_POSITION_BOTTOM_RIGHT);//设置logo位置
         // 设置为true表示启动显示定位蓝点，false表示隐藏定位蓝点并不进行定位，默认是false。
         aMap.setMyLocationEnabled(true);
+        aMap.setOnMapLoadedListener(this);
+        aMap.moveCamera(CameraUpdateFactory.zoomTo(10));
     }
+
 
     private void setLocationStyle() {
         // 自定义系统定位蓝点
         if (mLocationStyle == null) {
             mLocationStyle = new MyLocationStyle();
+//            mLocationStyle.showMyLocation(true);//设置是否显示定位小蓝点，true 显示，false不显示。
+//            mLocationStyle.strokeColor(getResources().getColor(R.color.app_color_blue_2));  //设置定位小蓝点精度圆圈的边框颜色
+//            mLocationStyle.strokeWidth(1); //设置定位小蓝点精度圆圈的边框宽度
+//            mLocationStyle.radiusFillColor(Color.argb(100, 29, 161, 242)); // 设置定位小蓝点精度圆圈的填充颜色
         }
         // 将自定义的 myLocationStyle 对象添加到地图上
         aMap.setMyLocationStyle(mLocationStyle.myLocationType(MyLocationStyle.LOCATION_TYPE_LOCATE));
@@ -156,7 +159,6 @@ public class ViewProjectsInMapActivity extends BaseActivity implements ClusterRe
         //添加测试数据
         new Thread() {
             public void run() {
-
                 List<ClusterItem> clusterItemList = new ArrayList<ClusterItem>();
                 for (ProjectDetailInfo detailInfo : detailInfoList) {
                     LocationResult location = GsonFactory.getGson()
@@ -179,14 +181,24 @@ public class ViewProjectsInMapActivity extends BaseActivity implements ClusterRe
 
     @Override
     public void onClick(Marker marker, List<ClusterItem> clusterItems) {
-        LatLngBounds.Builder builder = new LatLngBounds.Builder();
+        if (clusterItems.size() == 1) {
+//            aMap.moveCamera(CameraUpdateFactory.newLatLngZoom(marker.getPosition(), 18f));
+            RegionItem regionItem = (RegionItem) clusterItems.get(0);
+
+        } else {
+            // 地图显示经纬度范围
+            LatLngBounds latLngBounds = getLatLngBounds(clusterItems);
+            //设置显示在规定屏幕范围内的地图经纬度范围
+            aMap.moveCamera(CameraUpdateFactory.newLatLngBounds(latLngBounds, 30));
+        }
+    }
+
+    private LatLngBounds getLatLngBounds(List<ClusterItem> clusterItems) {
+        LatLngBounds.Builder builder = LatLngBounds.builder();
         for (ClusterItem clusterItem : clusterItems) {
             builder.include(clusterItem.getPosition());
         }
-        // 地图显示经纬度范围
-        LatLngBounds latLngBounds = builder.build();
-        //设置显示在规定屏幕范围内的地图经纬度范围
-        aMap.animateCamera(CameraUpdateFactory.newLatLngBounds(latLngBounds, 0));
+        return builder.build();
     }
 
     @Override
@@ -195,32 +207,16 @@ public class ViewProjectsInMapActivity extends BaseActivity implements ClusterRe
         if (clusterNum == 1) {
             Drawable bitmapDrawable = mBackDrawAbles.get(1);
             if (bitmapDrawable == null) {
-                bitmapDrawable = getApplication().getResources().getDrawable(R.drawable.ic_marker_thumbtack);
+                bitmapDrawable = getApplication().getResources().getDrawable(R.drawable.project_bubble_sel_bg);
                 mBackDrawAbles.put(1, bitmapDrawable);
             }
             return bitmapDrawable;
 
-        } else if (clusterNum < 5) {
+        } else {
             Drawable bitmapDrawable = mBackDrawAbles.get(2);
             if (bitmapDrawable == null) {
-                bitmapDrawable = new BitmapDrawable(null, drawCircle(radius, Color.argb(159, 210, 154, 6)));
+                bitmapDrawable = new BitmapDrawable(null, drawCircle(radius, getApplication().getResources().getColor(R.color.main_blue)));
                 mBackDrawAbles.put(2, bitmapDrawable);
-            }
-            return bitmapDrawable;
-
-        } else if (clusterNum < 10) {
-            Drawable bitmapDrawable = mBackDrawAbles.get(3);
-            if (bitmapDrawable == null) {
-                bitmapDrawable = new BitmapDrawable(null, drawCircle(radius, Color.argb(199, 217, 114, 0)));
-                mBackDrawAbles.put(3, bitmapDrawable);
-            }
-            return bitmapDrawable;
-
-        } else {
-            Drawable bitmapDrawable = mBackDrawAbles.get(4);
-            if (bitmapDrawable == null) {
-                bitmapDrawable = new BitmapDrawable(null, drawCircle(radius, Color.argb(235, 215, 66, 2)));
-                mBackDrawAbles.put(4, bitmapDrawable);
             }
             return bitmapDrawable;
         }
