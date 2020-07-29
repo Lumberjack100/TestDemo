@@ -176,18 +176,13 @@ public class ViewProjectsInMapActivity extends BaseActivity implements ClusterRe
 
     @Override
     public void onClick(Marker marker, List<ClusterItem> clusterItems) {
-        if (clusterItems.size() == 1) {
-//            aMap.moveCamera(CameraUpdateFactory.newLatLngZoom(marker.getPosition(), 18f));
-            RegionItem regionItem = (RegionItem) clusterItems.get(0);
-
-        } else {
-            LatLng latLng = new LatLng(marker.getPosition().latitude,marker.getPosition().longitude);
-            aMap.moveCamera(CameraUpdateFactory.changeLatLng(latLng));
-
-            // 地图显示经纬度范围
-            LatLngBounds latLngBounds = getLatLngBounds(clusterItems);
-            //设置显示在规定屏幕范围内的地图经纬度范围
-            aMap.animateCamera(CameraUpdateFactory.newLatLngBounds(latLngBounds, 30));
+        // 地图显示经纬度范围
+        LatLngBounds bounds = getLatLngBounds(clusterItems);
+        // Animate camera to the bounds
+        try {
+            aMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, 100));
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
