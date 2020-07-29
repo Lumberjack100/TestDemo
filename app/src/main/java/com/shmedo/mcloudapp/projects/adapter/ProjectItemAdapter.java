@@ -23,6 +23,7 @@ import java.util.List;
 public class ProjectItemAdapter extends BaseSectionQuickAdapter<ProjectItem, BaseViewHolder> {
     public ProjectItemAdapter(int sectionHeadResId, int layoutResId, @Nullable List<ProjectItem> data) {
         super(sectionHeadResId, layoutResId, data);
+        addChildLongClickViewIds(R.id.card_view);
     }
 
 
@@ -48,5 +49,7 @@ public class ProjectItemAdapter extends BaseSectionQuickAdapter<ProjectItem, Bas
         } else {
             holder.setVisible(R.id.tv_project_state, false);
         }
+
+        holder.setGone(R.id.iv_top, !detailInfo.isTop());
     }
 }

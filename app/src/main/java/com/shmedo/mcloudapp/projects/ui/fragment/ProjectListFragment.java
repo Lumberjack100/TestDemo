@@ -16,7 +16,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.chad.library.adapter.base.listener.OnItemChildLongClickListener;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
+import com.lxj.xpopup.XPopup;
+import com.lxj.xpopup.enums.PopupPosition;
 import com.shmedo.core.MCloudApp;
 import com.shmedo.core.model.UserInfo;
 import com.shmedo.mcloudapp.R;
@@ -35,10 +38,11 @@ import com.shmedo.mcloudapp.projects.model.ProjectViewMode;
 import com.shmedo.mcloudapp.projects.model.RegionProjectInfo;
 import com.shmedo.mcloudapp.projects.model.TypeProjectInfo;
 import com.shmedo.mcloudapp.projects.model.param.ProjectBaseInfoParam;
-import com.shmedo.mcloudapp.projects.ui.activity.ViewProjectsInMapActivity;
 import com.shmedo.mcloudapp.projects.ui.activity.OutOfDateProjectGuideActivity;
+import com.shmedo.mcloudapp.projects.ui.activity.ViewProjectsInMapActivity;
 import com.shmedo.mcloudapp.projects.view.HeaderSearchView;
 import com.shmedo.mcloudapp.projects.view.ProjectFilterDrawerView;
+import com.shmedo.mcloudapp.projects.view.TopAttachPopup;
 import com.shmedo.mcloudapp.util.DaoManager;
 import com.shmedo.mcloudapp.util.DateUtil;
 import com.shmedo.mcloudapp.util.GsonFactory;
@@ -46,6 +50,7 @@ import com.shmedo.mcloudapp.util.GsonFactory;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -88,8 +93,9 @@ public class ProjectListFragment extends BaseFragment implements ProjectFilterDr
     private ProjectState projectState = ProjectState.ALL;
 
     private ProjectItemAdapter itemAdapter;
-    private List<ProjectBaseInfo> projectBaseInfoList = new ArrayList<>();
+    private Map<Integer, ProjectBaseInfo> baseInfoMap = new LinkedHashMap<>();
     private Map<Integer, ProjectDetailInfo> detailInfoMap = new LinkedHashMap<>();
+    private List<ProjectBaseInfo> tempBaseInfoList = new LinkedList<>();
     private List<ProjectItem> projectItems = new ArrayList<>();
     private List<ProjectItem> tempProjectItems = new ArrayList<>();
 
@@ -151,10 +157,44 @@ public class ProjectListFragment extends BaseFragment implements ProjectFilterDr
                 if (detailInfo.isOutOfDate()) {
                     OutOfDateProjectGuideActivity.startActivity(activity, detailInfo.getProjectName(), detailInfo.getRegisterTime());
                 }
+            }
+        });
+        itemAdapter.setOnItemChildLongClickListener(new OnItemChildLongClickListener() {
+            @Override
+            public boolean onItemChildLongClick(@NonNull BaseQuickAdapter adapter, @NonNull View view, int position) {
+                if (projectViewMode != ProjectViewMode.VIEW_SIMPLE) {
+                    return false;
+                }
+                ProjectItem projectItem = itemAdapter.getItem(position);
+                ProjectDetailInfo detailInfo = (ProjectDetailInfo) projectItem.getObject();
 
+                new XPopup.Builder(getContext())
+                        .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
+                        .offsetX(100)
+                        .popupPosition(PopupPosition.Top)
+                        .atView(view)
+                        .hasShadowBg(false) // 去掉半透明背景
+                        .asCustom(new TopAttachPopup(getContext(), detailInfo.isTop(), new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                updateTopState(detailInfo);
+                            }
+                        }))
+                        .show();
+                return true;
             }
         });
         mRecyclerProject.setAdapter(itemAdapter);
+    }
+
+    private void updateTopState(ProjectDetailInfo detailInfo) {
+        List<Integer> projectIDs = new ArrayList<>();
+        projectIDs.add(detailInfo.getProjectID());
+        if (detailInfo.isTop()) {
+            processUnTopUserProject(projectIDs);
+        } else {
+            processTopUserProject(projectIDs);
+        }
     }
 
     @OnClick({R.id.iv_view_in_map, R.id.iv_filter})
@@ -251,11 +291,14 @@ public class ProjectListFragment extends BaseFragment implements ProjectFilterDr
                             swipeRefresh.setRefreshing(false);
                             return;
                         }
+                        tempBaseInfoList.clear();
+                        baseInfoMap.clear();
 
-                        projectBaseInfoList.addAll(data);
+                        tempBaseInfoList.addAll(data);
                         List<Integer> projectIDs = new ArrayList<>();
                         for (ProjectBaseInfo baseInfo : data) {
                             projectIDs.add(baseInfo.getProjID());
+                            baseInfoMap.put(baseInfo.getProjID(), baseInfo);
                         }
                         QueryProjectListInfo(projectIDs);
                     }
@@ -375,21 +418,54 @@ public class ProjectListFragment extends BaseFragment implements ProjectFilterDr
                             return;
                         }
 
+
+                        //TODO 按照tempBaseInfoList列表顺序对data排序
+                        List<ProjectDetailInfo> tempDetailInfoList = new ArrayList<>();
                         detailInfoMap.clear();
-                        for (ProjectDetailInfo detailInfo : data) {
-                            detailInfo.setUserId(userId);
-                            Date registerDate = new Date();
-                            try {
-                                registerDate = DateUtil.stringToDate(detailInfo.getRegisterTime(), "yyyy-MM-dd HH:mm:ss");
-                            } catch (Exception ex) {
-                                ex.printStackTrace();
+                        for (ProjectBaseInfo baseInfo : tempBaseInfoList) {
+                            for (ProjectDetailInfo detailInfo : data) {
+                                if (baseInfo.getProjID() == detailInfo.getProjectID()) {
+                                    //设置置顶标识
+                                    detailInfo.setTop(baseInfo.isTop());
+                                    //设置用户 Id
+                                    detailInfo.setUserId(userId);
+                                    Date registerDate = new Date();
+                                    try {
+                                        registerDate = DateUtil.stringToDate(detailInfo.getRegisterTime(), "yyyy-MM-dd HH:mm:ss");
+                                    } catch (Exception ex) {
+                                        ex.printStackTrace();
+                                    }
+                                    //设置过期标识
+                                    detailInfo.setOutOfDate(registerDate.before(new Date()));
+                                    detailInfoMap.put(detailInfo.getProjectID(), detailInfo);
+                                    tempDetailInfoList.add(detailInfo);
+                                    break;
+                                }
                             }
-                            detailInfo.setOutOfDate(registerDate.before(new Date()));
-                            detailInfoMap.put(detailInfo.getProjectID(), detailInfo);
                         }
 
-                        setSimpleModeAdapterData(data);
+//                        detailInfoMap.clear();
+//                        for (ProjectDetailInfo detailInfo : data) {
+//                            ProjectBaseInfo baseInfo = baseInfoMap.get(detailInfo.getProjectID());
+//                            if (baseInfo != null) {
+//                                //设置置顶标识
+//                                detailInfo.setTop(baseInfo.isTop());
+//                            }
+//                            //设置用户 Id
+//                            detailInfo.setUserId(userId);
+//                            Date registerDate = new Date();
+//                            try {
+//                                registerDate = DateUtil.stringToDate(detailInfo.getRegisterTime(), "yyyy-MM-dd HH:mm:ss");
+//                            } catch (Exception ex) {
+//                                ex.printStackTrace();
+//                            }
+//                            //设置过期标识
+//                            detailInfo.setOutOfDate(registerDate.before(new Date()));
+//                            detailInfoMap.put(detailInfo.getProjectID(), detailInfo);
+//                        }
 
+                        setSimpleModeAdapterData(tempDetailInfoList);
+                        //更新到本地数据库
                         DaoManager.getInstance().getDaoSession().getProjectDetailInfoDao().insertOrReplaceInTx(data);
                     }
 
@@ -552,6 +628,50 @@ public class ProjectListFragment extends BaseFragment implements ProjectFilterDr
         }
 
         return subProjectItems;
+    }
+
+    private void processTopUserProject(List<Integer> projectIDs) {
+        String json = GsonFactory.getGson().toJson(projectIDs);
+        RequestBody body = RequestBody.create(NetworkConst.JSON_TYPE, json);
+        MDRetrofit.getInstance()
+                .createService()
+                .TopUserProject(MCloudApp.getAccessToken(), body)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new BaseObserver<String>() {
+                    @Override
+                    public void Success(String data, String message) {
+                        swipeRefresh.setRefreshing(true);
+                        refreshProjects();
+                    }
+
+                    @Override
+                    public void Failure(String message) {
+
+                    }
+                });
+    }
+
+    private void processUnTopUserProject(List<Integer> projectIDs) {
+        String json = GsonFactory.getGson().toJson(projectIDs);
+        RequestBody body = RequestBody.create(NetworkConst.JSON_TYPE, json);
+        MDRetrofit.getInstance()
+                .createService()
+                .UnTopUserProject(MCloudApp.getAccessToken(), body)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new BaseObserver<String>() {
+                    @Override
+                    public void Success(String data, String message) {
+                        swipeRefresh.setRefreshing(true);
+                        refreshProjects();
+                    }
+
+                    @Override
+                    public void Failure(String message) {
+
+                    }
+                });
     }
 
 }

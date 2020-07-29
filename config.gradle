@@ -21,7 +21,7 @@ ext {
             converterGson                : '2.4.0',
             loggingInterceptor           : '3.11.0',
             materialDialogsCore          : '0.9.3.0',
-            xpopup                       : '1.8.17',
+            xpopup                       : '2.0.8',
             eventbus                     : '3.1.1',
             stetho                       : '1.5.0',
             fab                          : '1.6.4',

@@ -40,6 +40,7 @@ public class ProjectDetailInfo {
     @Id
     private Long id;//添加在 sqllite 中作为主键
     private int userId;//添加在 sqllite 中，标识用户
+    private boolean top;//项目是否置顶
 
     @Unique
     private int projectID;//项目ID
@@ -64,10 +65,11 @@ public class ProjectDetailInfo {
     private List<OpenedMonitorTypeBean> openedMonitorType;//项目开启的监测类型
     private boolean isOutOfDate = false;//是否过期
 
-    @Generated(hash = 1331684)
-    public ProjectDetailInfo(Long id, int userId, int projectID, String shortName, String projectName, String buildTime, String imagePath, int companyID, String companyName, int projectTypeID, String projectTypeName, int regionID, String regionFullName, int warnStatus, int lastMonthUnhandleWarn, String centerPoint, String location, String registerTime, boolean isValid, boolean isOutOfDate) {
+    @Generated(hash = 1343148853)
+    public ProjectDetailInfo(Long id, int userId, boolean top, int projectID, String shortName, String projectName, String buildTime, String imagePath, int companyID, String companyName, int projectTypeID, String projectTypeName, int regionID, String regionFullName, int warnStatus, int lastMonthUnhandleWarn, String centerPoint, String location, String registerTime, boolean isValid, boolean isOutOfDate) {
         this.id = id;
         this.userId = userId;
+        this.top = top;
         this.projectID = projectID;
         this.shortName = shortName;
         this.projectName = projectName;
@@ -272,4 +274,15 @@ public class ProjectDetailInfo {
         this.isOutOfDate = isOutOfDate;
     }
 
+    public boolean isTop() {
+        return top;
+    }
+
+    public void setTop(boolean top) {
+        this.top = top;
+    }
+
+    public boolean getTop() {
+        return this.top;
+    }
 }

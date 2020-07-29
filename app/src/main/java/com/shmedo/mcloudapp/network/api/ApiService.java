@@ -111,11 +111,20 @@ public interface ApiService {
     @POST("GetLevelProjList")
     Observable<ResultWrapper<List<CustomLevelProjectInfo>>> GetLevelProjList(@Header(NetworkConst.ACCESS_TOKEN) String token, @Body RequestBody parameter);
 
-
     //项目接口V2-4  查询警报阈值列表
     @Headers({NetworkConst.HEADER_ACCESS_TYPE})
     @POST("QueryProjectListInfo")
     Observable<ResultWrapper<List<ProjectDetailInfo>>> QueryProjectListInfo(@Header(NetworkConst.ACCESS_TOKEN) String token, @Body RequestBody parameter);
+
+    //系统接口V2-5  用户项目置顶
+    @Headers({NetworkConst.HEADER_ACCESS_TYPE})
+    @POST("TopUserProject")
+    Observable<ResultWrapper<String>> TopUserProject(@Header(NetworkConst.ACCESS_TOKEN) String token, @Body RequestBody parameter);
+
+    //系统接口V2-5  用户项目取消置顶
+    @Headers({NetworkConst.HEADER_ACCESS_TYPE})
+    @POST("UnTopUserProject")
+    Observable<ResultWrapper<String>> UnTopUserProject(@Header(NetworkConst.ACCESS_TOKEN) String token, @Body RequestBody parameter);
 
 
     //系统接口v2-2 4.3 查询设备状态信息列表 QueryDeviceStatusInfoList
