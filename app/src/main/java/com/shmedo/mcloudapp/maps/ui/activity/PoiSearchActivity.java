@@ -65,12 +65,6 @@ public class PoiSearchActivity extends BaseActivity implements TextWatcher, PoiS
     private String cityName;
     private String poiTitle;
 
-    public static void startActivityForResult(Activity activity, String cityName, int requestCode) {
-        Intent intent = new Intent(activity, PoiSearchActivity.class);
-        intent.putExtra(CITY_NAME, cityName);
-        intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        activity.startActivityForResult(intent, requestCode);
-    }
 
     public static void startActivityForResult(Activity activity, String cityName, String poiTitle, int requestCode) {
         Intent intent = new Intent(activity, PoiSearchActivity.class);

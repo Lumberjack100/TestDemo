@@ -614,7 +614,7 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
     public void onSearchNormalClick() {
 //        SearchPoiFragment newFragment =  SearchPoiFragment.newInstance(mCity);
 //        newFragment.show(getSupportFragmentManager(), "dialog");
-        PoiSearchActivity.startActivityForResult(this, mCityName, REQUEST_CODE_POI_SEARCH);
+        PoiSearchActivity.startActivityForResult(this, mCityName, "", REQUEST_CODE_POI_SEARCH);
     }
 
     /**
