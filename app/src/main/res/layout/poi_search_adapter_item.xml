@@ -10,8 +10,8 @@
 
     <ImageView
         android:id="@+id/iv_loc"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
         android:layout_centerVertical="true"
         android:background="@drawable/ic_location" />
 
@@ -52,12 +52,12 @@
 
     <ImageView
         android:id="@+id/iv_route"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
         android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
         android:background="@drawable/route_circle_bg"
-        android:padding="4dp"
+        android:padding="5dp"
         android:src="@drawable/poi_indicator_route" />
 
     <View

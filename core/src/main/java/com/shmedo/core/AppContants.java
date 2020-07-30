@@ -65,6 +65,11 @@ public interface AppContants {
         //地图 Poi 点信息
         String POIITEM_INFO = "poiitem_info";
 
+        //地图 Poi 点坐标
+        String POI_LATLNG = "poi_latlng";
+
+        //地图 Poi 点名称
+        String POI_TITLE = "poi_title";
     }
 
 }

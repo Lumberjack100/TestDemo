@@ -21,20 +21,17 @@ import com.amap.api.services.core.SuggestionCity;
 import com.amap.api.services.poisearch.PoiResult;
 import com.amap.api.services.poisearch.PoiSearch;
 import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.chad.library.adapter.base.listener.OnItemChildClickListener;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.chad.library.adapter.base.listener.OnLoadMoreListener;
-import com.chad.library.adapter.base.module.LoadMoreModule;
-import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 import com.hjq.toast.ToastUtils;
 import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.activity.BaseActivity;
+import com.shmedo.mcloudapp.common.view.ClearEditText;
+import com.shmedo.mcloudapp.maps.adapter.PoiSearchAdapter;
 import com.shmedo.mcloudapp.maps.model.PageInfo;
 import com.shmedo.mcloudapp.maps.util.MapErrorUtil;
-import com.shmedo.mcloudapp.common.view.ClearEditText;
-
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -133,6 +130,12 @@ public class PoiSearchActivity extends BaseActivity implements TextWatcher, PoiS
                 intent.putExtra(AppContants.Extras.POIITEM_INFO, poiItem);
                 setResult(RESULT_OK, intent);
                 finish();
+            }
+        });
+        poiSearchAdapter.setOnItemChildClickListener(new OnItemChildClickListener() {
+            @Override
+            public void onItemChildClick(@NonNull BaseQuickAdapter adapter, @NonNull View view, int position) {
+                ToastUtils.show("点击了路线");
             }
         });
     }
@@ -293,21 +296,4 @@ public class PoiSearchActivity extends BaseActivity implements TextWatcher, PoiS
         ToastUtils.show(infomation.toString());
     }
 
-    public class PoiSearchAdapter extends BaseQuickAdapter<PoiItem, BaseViewHolder> implements LoadMoreModule {
-        public PoiSearchAdapter() {
-            super(R.layout.poi_search_adapter_item);
-        }
-
-        @Override
-        protected void convert(@NotNull BaseViewHolder holder, @Nullable PoiItem poiItem) {
-            holder.setText(R.id.tv_search_title, poiItem.getTitle());
-            holder.setText(R.id.tv_search_loc, poiItem.getSnippet());
-            holder.getView(R.id.iv_route).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    ToastUtils.show("点击了路线");
-                }
-            });
-        }
-    }
 }

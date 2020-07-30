@@ -1,10 +1,321 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".maps.ui.fragment.SearchPoiByLatLngFragment">
+    android:background="@color/gray_f2f2f2"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary"
+        android:fitsSystemWindows="false"
+        android:minHeight="?attr/actionBarSize">
+
+        <ImageView
+            android:id="@+id/back"
+            android:layout_width="35dp"
+            android:layout_height="40dp"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="15dp"
+            android:src="@drawable/ic_back" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="35dp"
+            android:layout_centerInParent="true"
+            android:background="@drawable/bg_corner_4dp_stroke_1dp_white">
+
+            <TextView
+                android:id="@+id/tv_left_tab"
+                android:layout_width="80dp"
+                android:layout_height="match_parent"
+                android:background="@drawable/bg_left_corner_4dp_white"
+                android:gravity="center"
+                android:text="度"
+                android:textColor="@color/colorPrimary"
+                android:textSize="@dimen/text_size_16" />
+
+            <TextView
+                android:id="@+id/tv_right_tab"
+                android:layout_width="80dp"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="度分秒"
+                android:textColor="@color/white"
+                android:textSize="@dimen/text_size_16" />
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_tab_left_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dimen_size_15"
+        android:background="@drawable/bg_corner_10dp_white"
+        android:orientation="vertical"
+        android:paddingTop="@dimen/dimen_size_15"
+        android:paddingBottom="@dimen/dimen_size_15"
+        android:visibility="gone">
+
+        <LinearLayout style="@style/UserInfo_EditItem_LinearLayoutStyle">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="20dp"
+                android:text="经度(0-180):"
+                android:textColor="@color/black_333333"
+                android:textSize="@dimen/text_size_16" />
+
+            <com.shmedo.mcloudapp.common.view.ClearEditText
+                android:id="@+id/longitudeET"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@null"
+                android:drawablePadding="@dimen/dimen_size_10"
+                android:gravity="center_vertical|left"
+                android:hint="请输入点位经度"
+                android:inputType="numberDecimal"
+                android:maxLength="10"
+                android:textColor="@color/black_333333"
+                android:textColorHint="@color/gray_818182"
+                android:textSize="@dimen/text_size_16" />
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginStart="@dimen/dimen_size_20"
+            android:background="@color/gray_f2f2f2" />
+
+        <LinearLayout style="@style/UserInfo_EditItem_LinearLayoutStyle">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="20dp"
+                android:text="纬度(0-90):"
+                android:textColor="@color/black_333333"
+                android:textSize="@dimen/text_size_16" />
+
+            <com.shmedo.mcloudapp.common.view.ClearEditText
+                android:id="@+id/latitudeET"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@null"
+                android:drawablePadding="@dimen/dimen_size_10"
+                android:gravity="center_vertical|left"
+                android:hint="请输入点位纬度"
+                android:inputType="numberDecimal"
+                android:maxLength="10"
+                android:textColor="@color/black_333333"
+                android:textColorHint="@color/gray_818182"
+                android:textSize="@dimen/text_size_16" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_tab_rightt_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dimen_size_15"
+        android:background="@drawable/bg_corner_10dp_white"
+        android:orientation="vertical"
+        android:paddingTop="@dimen/dimen_size_15"
+        android:paddingBottom="@dimen/dimen_size_15">
+
+        <LinearLayout style="@style/UserInfo_EditItem_LinearLayoutStyle">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="20dp"
+                android:text="经度(0-180):"
+                android:textColor="@color/black_333333"
+                android:textSize="@dimen/text_size_16" />
+
+            <com.shmedo.mcloudapp.common.view.ClearEditText
+                android:id="@+id/lngDegreeET"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@null"
+                android:drawablePadding="@dimen/dimen_size_5"
+                android:gravity="center_vertical|right"
+                android:hint="度"
+                android:inputType="numberDecimal"
+                android:maxLength="3"
+                android:textColor="@color/black_333333"
+                android:textColorHint="@color/gray_818182"
+                android:textSize="@dimen/text_size_16" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:text="°"
+                android:textColor="@color/black_333333"
+                android:textSize="@dimen/text_size_16" />
+
+            <com.shmedo.mcloudapp.common.view.ClearEditText
+                android:id="@+id/lngMinuteET"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@null"
+                android:drawablePadding="@dimen/dimen_size_5"
+                android:gravity="center_vertical|right"
+                android:hint="分"
+                android:inputType="numberDecimal"
+                android:maxLength="2"
+                android:textColor="@color/black_333333"
+                android:textColorHint="@color/gray_818182"
+                android:textSize="@dimen/text_size_16" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:text="'"
+                android:textColor="@color/black_333333"
+                android:textSize="@dimen/text_size_16" />
+
+            <com.shmedo.mcloudapp.common.view.ClearEditText
+                android:id="@+id/lngSecondET"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@null"
+                android:drawablePadding="@dimen/dimen_size_5"
+                android:gravity="center_vertical|right"
+                android:hint="秒"
+                android:inputType="numberDecimal"
+                android:maxLength="2"
+                android:textColor="@color/black_333333"
+                android:textColorHint="@color/gray_818182"
+                android:textSize="@dimen/text_size_16" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:text="&#034;"
+                android:textColor="@color/black_333333"
+                android:textSize="@dimen/text_size_16" />
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginStart="@dimen/dimen_size_20"
+            android:background="@color/gray_f2f2f2" />
+
+        <LinearLayout style="@style/UserInfo_EditItem_LinearLayoutStyle">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="20dp"
+                android:text="纬度(0-90):"
+                android:textColor="@color/black_333333"
+                android:textSize="@dimen/text_size_16" />
+
+            <com.shmedo.mcloudapp.common.view.ClearEditText
+                android:id="@+id/latDegreeET"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@null"
+                android:drawablePadding="@dimen/dimen_size_5"
+                android:gravity="center_vertical|right"
+                android:hint="度"
+                android:inputType="numberDecimal"
+                android:maxLength="2"
+                android:textColor="@color/black_333333"
+                android:textColorHint="@color/gray_818182"
+                android:textSize="@dimen/text_size_16" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:text="°"
+                android:textColor="@color/black_333333"
+                android:textSize="@dimen/text_size_16" />
+
+            <com.shmedo.mcloudapp.common.view.ClearEditText
+                android:id="@+id/latMinuteET"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@null"
+                android:drawablePadding="@dimen/dimen_size_5"
+                android:gravity="center_vertical|right"
+                android:hint="分"
+                android:inputType="numberDecimal"
+                android:maxLength="2"
+                android:textColor="@color/black_333333"
+                android:textColorHint="@color/gray_818182"
+                android:textSize="@dimen/text_size_16" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:text="'"
+                android:textColor="@color/black_333333"
+                android:textSize="@dimen/text_size_16" />
+
+            <com.shmedo.mcloudapp.common.view.ClearEditText
+                android:id="@+id/latSecondET"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@null"
+                android:drawablePadding="@dimen/dimen_size_5"
+                android:gravity="center_vertical|right"
+                android:hint="秒"
+                android:inputType="numberDecimal"
+                android:maxLength="2"
+                android:textColor="@color/black_333333"
+                android:textColorHint="@color/gray_818182"
+                android:textSize="@dimen/text_size_16" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:text="&#034;"
+                android:textColor="@color/black_333333"
+                android:textSize="@dimen/text_size_16" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/btn_confirm"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="50dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginBottom="20dp"
+        android:background="@drawable/btn_select"
+        android:foreground="?attr/selectableItemBackground"
+        android:text="搜索"
+        android:textColor="@color/white"
+        android:textSize="@dimen/text_size_20" />
 
 
-
-</FrameLayout>
+</LinearLayout>

@@ -38,7 +38,7 @@ public class ValidateUtil {
     /**
      * 正则表达式：验证双精度浮点数
      */
-    private static final String REGEX_DOUBLE = "^[+-]?[0-9.]+$";
+    private static final String REGEX_DOUBLE ="^[-+]?[0-9]*\\.?[0-9]+$";
 
     /**
      * 正则表达式：URL

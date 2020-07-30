@@ -48,6 +48,7 @@
         android:theme="@style/AppTheme"
         tools:ignore="LockedOrientationActivity"
         tools:targetApi="p">
+
         <!-- 声明最小宽高比 -->
         <meta-data
             android:name="android.min_aspect"
@@ -241,6 +242,12 @@
             android:name=".maps.ui.activity.PoiSearchActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".maps.ui.activity.SearchPoiActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:screenOrientation="portrait" />
+
         <activity
             android:name=".maps.ui.activity.SpeedTestActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
@@ -296,7 +303,6 @@
             android:name=".projects.ui.activity.OutOfDateProjectGuideActivity"
             android:maxAspectRatio="2.4"
             android:screenOrientation="portrait" />
-
         <activity
             android:name=".common.ui.activity.TestBluetoothListActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"

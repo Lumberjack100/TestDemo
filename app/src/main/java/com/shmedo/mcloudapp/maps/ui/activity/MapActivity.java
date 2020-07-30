@@ -46,6 +46,7 @@ import com.shmedo.mcloudapp.maps.helper.SensorEventHelper;
 import com.shmedo.mcloudapp.maps.model.DrawerLayoutType;
 import com.shmedo.mcloudapp.maps.model.MapLayerInfo;
 import com.shmedo.mcloudapp.maps.model.MapMode;
+import com.shmedo.mcloudapp.maps.model.PoiSearchType;
 import com.shmedo.mcloudapp.maps.util.AMapLocationUtil;
 import com.shmedo.mcloudapp.maps.util.CoordinateFormatUtils;
 import com.shmedo.mcloudapp.maps.view.DistanceToolbarView;
@@ -66,6 +67,7 @@ import timber.log.Timber;
 
 public class MapActivity extends CheckMapNeedPermissionsActivity implements AMapGestureListener, AMapLocationListener, LocationSource, MapSearchView.OnMapHeadSearchViewClickListener, MapLayerDrawerView.OnMapLayerItemClickListener, ToolBoxDrawerView.OnMapToolItemClickListener, ZoomView.OnZoomViewClickListener {
     private static final int REQUEST_CODE_POI_SEARCH = 0x1000;
+    private static final int REQUEST_CODE_LATLNG_SEARCH = 0x1001;
 
     @BindView(R.id.map)
     public TextureMapView mMapView;
@@ -612,9 +614,7 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
      */
     @Override
     public void onSearchNormalClick() {
-//        SearchPoiFragment newFragment =  SearchPoiFragment.newInstance(mCity);
-//        newFragment.show(getSupportFragmentManager(), "dialog");
-        PoiSearchActivity.startActivityForResult(this, mCityName, "", REQUEST_CODE_POI_SEARCH);
+        SearchPoiActivity.startActivityForResult(this, PoiSearchType.NORMAL_SEARCH, mCityName, "", REQUEST_CODE_POI_SEARCH);
     }
 
     /**
@@ -622,7 +622,7 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
      */
     @Override
     public void onSearchLatLongClick() {
-
+        SearchPoiActivity.startActivityForResult(this, PoiSearchType.LATLNG_SEARCH, mCityName, "", REQUEST_CODE_LATLNG_SEARCH);
     }
 
     /**
@@ -641,7 +641,7 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
     @Override
     public void onBackSearchListWithPoiInputClick() {
         String poiTitle = mMapSearchView.getPoiInputText();
-        PoiSearchActivity.startActivityForResult(this, mCityName, poiTitle, REQUEST_CODE_POI_SEARCH);
+        SearchPoiActivity.startActivityForResult(this, PoiSearchType.NORMAL_SEARCH, mCityName, poiTitle, REQUEST_CODE_POI_SEARCH);
 
     }
 
@@ -781,6 +781,26 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
 
                     mMapSearchView.setSearchMode(MapSearchView.SEARCH_WITH_POI_INPUT);
                     mMapSearchView.setPoiInputText(poiItem.getTitle());
+                }
+                break;
+
+            case REQUEST_CODE_LATLNG_SEARCH:
+                if (resultCode != Activity.RESULT_OK) {
+                    onRestoreNormalSearchClick();
+                    return;
+                }
+                if (intent != null) {
+                    LatLng latLng = intent.getParcelableExtra(AppContants.Extras.POI_LATLNG);
+                    String title = intent.getStringExtra(AppContants.Extras.POI_TITLE);
+                    if (latLng == null) {
+                        return;
+                    }
+
+                    isPoiClick = true;
+                    gaoDePoiProcessHelper.addPOIMarderAndShowDetail(latLng, title);
+
+                    mMapSearchView.setSearchMode(MapSearchView.SEARCH_WITH_POI_INPUT);
+                    mMapSearchView.setPoiInputText(title);
                 }
                 break;
         }

@@ -1,64 +1,476 @@
 package com.shmedo.mcloudapp.maps.ui.fragment;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
-import androidx.fragment.app.Fragment;
+import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 
+import com.amap.api.maps.model.LatLng;
+import com.amap.api.services.core.AMapException;
+import com.amap.api.services.core.LatLonPoint;
+import com.amap.api.services.geocoder.GeocodeResult;
+import com.amap.api.services.geocoder.GeocodeSearch;
+import com.amap.api.services.geocoder.RegeocodeQuery;
+import com.amap.api.services.geocoder.RegeocodeResult;
+import com.hjq.toast.ToastUtils;
+import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.R;
+import com.shmedo.mcloudapp.common.ui.fragment.BaseFragment;
+import com.shmedo.mcloudapp.common.view.ClearEditText;
+import com.shmedo.mcloudapp.maps.ui.activity.SearchPoiActivity;
+import com.shmedo.mcloudapp.maps.util.CoordinateFormatUtils;
+import com.shmedo.mcloudapp.maps.util.MapErrorUtil;
+
+import butterknife.BindView;
+import butterknife.OnClick;
 
 /**
- * A simple {@link Fragment} subclass.
- * Use the {@link SearchPoiByLatLngFragment#newInstance} factory method to
- * create an instance of this fragment.
+ * 按照经纬度搜索 Poi 点位
  */
-public class SearchPoiByLatLngFragment extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+public class SearchPoiByLatLngFragment extends BaseFragment implements GeocodeSearch.OnGeocodeSearchListener {
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    @BindView(R.id.tv_left_tab)
+    TextView tvLeftTab;
 
-    public SearchPoiByLatLngFragment() {
-        // Required empty public constructor
-    }
+    @BindView(R.id.tv_right_tab)
+    TextView tvRightTab;
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment SearchPoiByLatLngFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static SearchPoiByLatLngFragment newInstance(String param1, String param2) {
-        SearchPoiByLatLngFragment fragment = new SearchPoiByLatLngFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
+    @BindView(R.id.ll_tab_left_content)
+    ViewGroup tabLeftContent;
+
+    @BindView(R.id.ll_tab_rightt_content)
+    ViewGroup tabRightContent;
+
+    @BindView(R.id.longitudeET)
+    ClearEditText longitudeET;
+
+    @BindView(R.id.latitudeET)
+    ClearEditText latitudeET;
+
+    @BindView(R.id.lngDegreeET)
+    ClearEditText lngDegreeET;
+
+    @BindView(R.id.lngMinuteET)
+    ClearEditText lngMinuteET;
+
+    @BindView(R.id.lngSecondET)
+    ClearEditText lngSecondET;
+
+    @BindView(R.id.latDegreeET)
+    ClearEditText latDegreeET;
+
+    @BindView(R.id.latMinuteET)
+    ClearEditText latMinuteET;
+
+    @BindView(R.id.latSecondET)
+    ClearEditText latSecondET;
+
+    private static final int DEGREE = 0;//度
+    private static final int DEGREE_MINUTE_SECOND = 1;//度分秒
+
+    private int mCurrentMode = DEGREE;//当前定位状态
+
+    private SearchPoiActivity activity;
+
+    private LatLng latLng;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+
         }
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_search_poi_by_lat_lng, container, false);
+    protected int initContentView() {
+        return R.layout.fragment_search_poi_by_lat_lng;
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View rootView = super.onCreateView(inflater, container, savedInstanceState);
+
+        return rootView;
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        activity = (SearchPoiActivity) getActivity();
+        initView();
+    }
+
+    private void initView() {
+        mCurrentMode = DEGREE;
+        switchTab();
+        setListener();
+    }
+
+    private void setListener() {
+        longitudeET.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (s == null || TextUtils.isEmpty(s.toString())) {
+                    return;
+                }
+
+                String value = s.toString();
+                if (Double.parseDouble(value) > 180) {
+                    s.delete(value.length() - 1, value.length());
+                    ToastUtils.show("经度值应该小于等于180度!");
+                }
+            }
+        });
+
+        latitudeET.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (s == null || TextUtils.isEmpty(s.toString())) {
+                    return;
+                }
+
+                String value = s.toString();
+                if (Double.parseDouble(value) > 90) {
+                    s.delete(value.length() - 1, value.length());
+                    ToastUtils.show("纬度值应该小于等于90度!");
+                }
+            }
+        });
+
+        lngDegreeET.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (s == null || TextUtils.isEmpty(s.toString())) {
+                    return;
+                }
+
+                String value = s.toString();
+                if (Double.parseDouble(value) >= 180) {
+                    s.delete(value.length() - 1, value.length());
+                    ToastUtils.show("经度值应该小于180度!");
+                }
+            }
+        });
+
+        lngMinuteET.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (s == null || TextUtils.isEmpty(s.toString())) {
+                    return;
+                }
+
+                String value = s.toString();
+                if (Double.parseDouble(value) >= 60) {
+                    s.delete(value.length() - 1, value.length());
+                    ToastUtils.show("分数值应该小于60分!");
+                }
+            }
+        });
+
+        lngSecondET.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (s == null || TextUtils.isEmpty(s.toString())) {
+                    return;
+                }
+
+                String value = s.toString();
+                if (Double.parseDouble(value) >= 60) {
+                    s.delete(value.length() - 1, value.length());
+                    ToastUtils.show("秒数值应该小于60秒!");
+                }
+            }
+        });
+
+        latDegreeET.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (s == null || TextUtils.isEmpty(s.toString())) {
+                    return;
+                }
+
+                String value = s.toString();
+                if (Double.parseDouble(value) >= 90) {
+                    s.delete(value.length() - 1, value.length());
+                    ToastUtils.show("纬度值应该小于90度!");
+                }
+            }
+        });
+
+        latMinuteET.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (s == null || TextUtils.isEmpty(s.toString())) {
+                    return;
+                }
+
+                String value = s.toString();
+                if (Double.parseDouble(value) >= 60) {
+                    s.delete(value.length() - 1, value.length());
+                    ToastUtils.show("分数值应该小于60分!");
+                }
+            }
+        });
+
+        latSecondET.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (s == null || TextUtils.isEmpty(s.toString())) {
+                    return;
+                }
+
+                String value = s.toString();
+                if (Double.parseDouble(value) >= 60) {
+                    s.delete(value.length() - 1, value.length());
+                    ToastUtils.show("秒数值应该小于60秒!");
+                }
+            }
+        });
+    }
+
+    private void switchTab() {
+        if (mCurrentMode == DEGREE) {
+            tvLeftTab.setTextColor(ContextCompat.getColor(getActivity(), R.color.colorPrimary));
+            tvLeftTab.setBackgroundResource(R.drawable.bg_left_corner_4dp_white);
+
+            tvRightTab.setTextColor(ContextCompat.getColor(getActivity(), R.color.white));
+            tvRightTab.setBackground(null);
+            tabLeftContent.setVisibility(View.VISIBLE);
+            tabRightContent.setVisibility(View.GONE);
+        } else {
+            tvLeftTab.setTextColor(ContextCompat.getColor(getActivity(), R.color.white));
+            tvLeftTab.setBackground(null);
+
+            tvRightTab.setTextColor(ContextCompat.getColor(getActivity(), R.color.colorPrimary));
+            tvRightTab.setBackgroundResource(R.drawable.bg_right_corner_4dp_white);
+            tabLeftContent.setVisibility(View.GONE);
+            tabRightContent.setVisibility(View.VISIBLE);
+        }
+    }
+
+
+    @OnClick({R.id.back, R.id.tv_left_tab, R.id.tv_right_tab, R.id.btn_confirm})
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.back:
+                activity.finish();
+                break;
+
+            case R.id.tv_left_tab:
+                mCurrentMode = DEGREE;
+                switchTab();
+                break;
+
+            case R.id.tv_right_tab:
+                mCurrentMode = DEGREE_MINUTE_SECOND;
+                switchTab();
+                break;
+
+            case R.id.btn_confirm:
+                preProcessSearchText();
+                break;
+        }
+    }
+
+    private void preProcessSearchText() {
+        double longitude = 0;
+        double latitude = 0;
+
+        if (mCurrentMode == DEGREE) {
+            String longitudeStr = longitudeET.getText().toString().trim();
+            String latitudeStr = latitudeET.getText().toString().trim();
+
+            if (TextUtils.isEmpty(longitudeStr)) {
+                ToastUtils.show("请输入经度值!");
+                return;
+            }
+
+            if (TextUtils.isEmpty(latitudeStr)) {
+                ToastUtils.show("请输入纬度值!");
+                return;
+            }
+
+            try {
+                longitude = Double.parseDouble(longitudeStr);
+                latitude = Double.parseDouble(latitudeStr);
+            } catch (NumberFormatException ex) {
+                ex.printStackTrace();
+            }
+
+        } else {
+            String lngDegreeStr = lngDegreeET.getText().toString().trim();
+            String lngMinuteStr = lngMinuteET.getText().toString().trim();
+            String lngSecondStr = lngSecondET.getText().toString().trim();
+
+            String latDegreeStr = latDegreeET.getText().toString().trim();
+            String latMinuteStr = latMinuteET.getText().toString().trim();
+            String latSecondStr = latSecondET.getText().toString().trim();
+
+
+            if (TextUtils.isEmpty(lngDegreeStr)) {
+                ToastUtils.show("请输入经度度数值!");
+                return;
+            }
+            if (TextUtils.isEmpty(lngMinuteStr)) {
+                ToastUtils.show("请输入经度分数值!");
+                return;
+            }
+            if (TextUtils.isEmpty(lngSecondStr)) {
+                ToastUtils.show("请输入经度秒数值!");
+                return;
+            }
+
+            if (TextUtils.isEmpty(latDegreeStr)) {
+                ToastUtils.show("请输入纬度度数值!");
+                return;
+            }
+            if (TextUtils.isEmpty(latMinuteStr)) {
+                ToastUtils.show("请输入纬度分数值!");
+                return;
+            }
+            if (TextUtils.isEmpty(latSecondStr)) {
+                ToastUtils.show("请输入纬度秒数值!");
+                return;
+            }
+
+            String longitudeStr = lngDegreeStr + "°" + lngMinuteStr + "′" + lngSecondStr + "″";
+            String latitudeStr = latDegreeStr + "°" + latMinuteStr + "′" + latSecondStr + "″";
+
+            longitudeStr = CoordinateFormatUtils.DmsTurnDD(longitudeStr);
+            latitudeStr = CoordinateFormatUtils.DmsTurnDD(latitudeStr);
+
+            try {
+                longitude = Double.parseDouble(longitudeStr);
+                latitude = Double.parseDouble(latitudeStr);
+            } catch (NumberFormatException ex) {
+                ex.printStackTrace();
+            }
+        }
+
+        processSearchText(longitude, latitude);
+    }
+
+    private void processSearchText(double longitude, double latitude) {
+        latLng = new LatLng(latitude, longitude);
+        LatLonPoint latLonPoint = new LatLonPoint(latitude, longitude);
+        GeocodeSearch geocoderSearch = new GeocodeSearch(getActivity());
+        geocoderSearch.setOnGeocodeSearchListener(this);
+        // 第一个参数表示一个Latlng，第二参数表示范围多少米，第三个参数表示是火系坐标系还是GPS原生坐标系
+        RegeocodeQuery query = new RegeocodeQuery(latLonPoint, 100, GeocodeSearch.GPS);
+        geocoderSearch.getFromLocationAsyn(query);
+    }
+
+    @Override
+    public void onRegeocodeSearched(RegeocodeResult result, int errorCode) {
+        if (errorCode != AMapException.CODE_AMAP_SUCCESS) {
+            ToastUtils.show(MapErrorUtil.getErrorMsg(errorCode));
+            return;
+        }
+
+        if (result != null && result.getRegeocodeAddress() != null && result.getRegeocodeAddress().getFormatAddress() != null) {
+            String addressName = result.getRegeocodeAddress().getFormatAddress();
+
+            Intent intent = activity.getIntent();
+            intent.putExtra(AppContants.Extras.POI_LATLNG, latLng);
+            intent.putExtra(AppContants.Extras.POI_TITLE, addressName);
+            activity.setResult(Activity.RESULT_OK, intent);
+            activity.finish();
+        }
+    }
+
+    @Override
+    public void onGeocodeSearched(GeocodeResult geocodeResult, int errorCode) {
+
     }
 }

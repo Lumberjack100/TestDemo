@@ -8,7 +8,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/dimen_size_25"
-        android:background="@drawable/dialog_bg_white"
+        android:background="@drawable/bg_corner_10dp_white"
         android:orientation="vertical"
        android:padding="@dimen/dimen_size_25">
 
