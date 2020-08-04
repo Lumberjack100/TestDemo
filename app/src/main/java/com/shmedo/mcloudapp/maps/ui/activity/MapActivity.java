@@ -135,6 +135,8 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
     public MapMode mMapMode = MapMode.NORMAL;
     public LatLng mLatLng;//当前定位经纬度
 
+    public PoiItem sharePoi;//分享点位信息
+
 
     private GaoDeCaculateDistanceHelper gaoDeCaculateDistanceHelper;
     private GaoDePoiProcessHelper gaoDePoiProcessHelper;
@@ -293,6 +295,7 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
             gaoDePoiProcessHelper.destroyPoiMarker();
             //显示底部POI详情
             gaoDePoiProcessHelper.showPoiDetailBottomView("我的位置", String.format("在%s附近", mPoiName));
+            sharePoi = new PoiItem(null, new LatLonPoint(mLatLng.latitude, mLatLng.longitude), mPoiName, mPoiName);
         }
 
         aMap.setMyLocationEnabled(true);
@@ -774,6 +777,7 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
                         return;
                     }
 
+
                     isPoiClick = true;
                     LatLonPoint point = poiItem.getLatLonPoint();
                     LatLng latLng = new LatLng(point.getLatitude(), point.getLongitude());
@@ -781,6 +785,7 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
 
                     mMapSearchView.setSearchMode(MapSearchView.SEARCH_WITH_POI_INPUT);
                     mMapSearchView.setPoiInputText(poiItem.getTitle());
+                    sharePoi = poiItem;
                 }
                 break;
 
@@ -801,6 +806,7 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
 
                     mMapSearchView.setSearchMode(MapSearchView.SEARCH_WITH_POI_INPUT);
                     mMapSearchView.setPoiInputText(title);
+                    sharePoi = new PoiItem(null, new LatLonPoint(latLng.latitude, latLng.longitude), title, title);
                 }
                 break;
         }
