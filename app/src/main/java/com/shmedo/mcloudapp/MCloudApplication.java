@@ -6,15 +6,16 @@ import android.bluetooth.BluetoothManager;
 import android.content.Context;
 import android.widget.Toast;
 
-import com.shmedo.core.MCloudApp;
 import com.hjq.toast.ToastInterceptor;
 import com.hjq.toast.ToastUtils;
 import com.hjq.toast.style.ToastBlackStyle;
+import com.mob.MobSDK;
 import com.pgyersdk.crash.PgyCrashManager;
-import com.shmedo.mcloudapp.bluetooth.MdBluetoothManager;
+import com.shmedo.core.MCloudApp;
 import com.shmedo.core.log.AppCrashHandler;
 import com.shmedo.core.log.CrashReportingTree;
 import com.shmedo.core.log.log4a.LogInit;
+import com.shmedo.mcloudapp.bluetooth.MdBluetoothManager;
 import com.tencent.bugly.crashreport.CrashReport;
 
 import java.util.Objects;
@@ -27,7 +28,6 @@ import timber.log.Timber;
  * 文件名:   APP
  * 创建者:   dpc
  * 创建时间:  2019/1/8 09:16
- *
  */
 public class MCloudApplication extends Application {
     @Override
@@ -50,6 +50,9 @@ public class MCloudApplication extends Application {
         //异常上报和升级
         initCrashReport();
 
+        //初始化MobSDk,集成了ShareSDK等第三方分享组件
+        MobSDK.init(this);
+
         //初始化吐司消息组件
         initToastUtil();
 
@@ -66,7 +69,7 @@ public class MCloudApplication extends Application {
         AppCrashHandler.getInstance(this);// crash handler
 
         //初始化腾讯Bugly异常上报组件
-        CrashReport.initCrashReport(getApplicationContext(),  BuildConfig.BUGLY_APPKEY, false);
+        CrashReport.initCrashReport(getApplicationContext(), BuildConfig.BUGLY_APPKEY, false);
     }
 
 

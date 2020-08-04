@@ -1,8 +1,10 @@
 package com.shmedo.mcloudapp.maps.helper;
 
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewTreeObserver;
+import android.widget.Toast;
 
 import com.amap.api.maps.AMap;
 import com.amap.api.maps.CameraUpdateFactory;
@@ -17,12 +19,26 @@ import com.amap.api.navi.AmapNaviPage;
 import com.amap.api.navi.AmapNaviParams;
 import com.amap.api.navi.AmapNaviType;
 import com.amap.api.navi.AmapPageType;
+import com.amap.api.services.share.ShareSearch;
+import com.lxj.xpopup.XPopup;
+import com.lxj.xpopup.core.BasePopupView;
+import com.lxj.xpopup.interfaces.SimpleCallback;
+import com.mob.MobSDK;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.maps.model.MapMode;
 import com.shmedo.mcloudapp.maps.ui.activity.MapActivity;
 import com.shmedo.mcloudapp.maps.util.MyAMapUtils;
 import com.shmedo.mcloudapp.maps.view.PoiDetailBottomView;
+import com.shmedo.mcloudapp.maps.view.PoiSharePopup;
 import com.shmedo.mcloudapp.util.permission.PermissionHelper;
+
+import java.util.HashMap;
+
+import cn.sharesdk.dingding.friends.Dingding;
+import cn.sharesdk.framework.Platform;
+import cn.sharesdk.framework.PlatformActionListener;
+import cn.sharesdk.framework.ShareSDK;
+import cn.sharesdk.wechat.friends.Wechat;
 
 import static com.shmedo.mcloudapp.maps.ui.activity.MapActivity.STATE_UNLOCKED;
 
@@ -31,7 +47,7 @@ import static com.shmedo.mcloudapp.maps.ui.activity.MapActivity.STATE_UNLOCKED;
  * 创建时间:  2020/7/3 <br/>
  * 描述：    高德地图Poi点位打标记、显示信息辅助类
  */
-public class GaoDePoiProcessHelper implements AMap.OnPOIClickListener, PoiDetailBottomView.OnPoiDetailBottomClickListener {
+public class GaoDePoiProcessHelper implements AMap.OnPOIClickListener, PoiDetailBottomView.OnPoiDetailBottomClickListener, ShareSearch.OnShareSearchListener {
     private MapActivity mapActivity;
     private PoiDetailBottomView mPoiDetailBottomView;
     private TextureMapView mapView;
@@ -41,6 +57,7 @@ public class GaoDePoiProcessHelper implements AMap.OnPOIClickListener, PoiDetail
 
     private int moveY;
     private int[] mBottomSheetLoc = new int[2];
+    private ShareSearch mShareSearch;
 
 
     public GaoDePoiProcessHelper(MapActivity mapActivity) {
@@ -55,6 +72,8 @@ public class GaoDePoiProcessHelper implements AMap.OnPOIClickListener, PoiDetail
         // 地图poi点击
         aMap.setOnPOIClickListener(this);
         mPoiDetailBottomView.setOnPoiDetailBottomClickListener(this);
+        mShareSearch = new ShareSearch(mapActivity);
+        mShareSearch.setOnShareSearchListener(this);
     }
 
     public void setOnPOIClickListener(boolean isEnable) {
@@ -87,7 +106,7 @@ public class GaoDePoiProcessHelper implements AMap.OnPOIClickListener, PoiDetail
      */
     @Override
     public void onPoiShareClick() {
-
+        mShareSearch.searchPoiShareUrlAsyn(mapActivity.sharePoi);
     }
 
     /**
@@ -227,5 +246,103 @@ public class GaoDePoiProcessHelper implements AMap.OnPOIClickListener, PoiDetail
                 mapActivity.mGpsView.setAbovePoiDetail(false);
             }
         });
+    }
+
+    @Override
+    public void onPoiShareUrlSearched(String url, int errorCode) {
+        final PoiSharePopup poiSharePopup = new PoiSharePopup(mapActivity);
+        new XPopup.Builder(mapActivity)
+                .moveUpToKeyboard(false) //如果不加这个，评论弹窗会移动到软键盘上面
+                .enableDrag(false)
+                .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
+                .setPopupCallback(new SimpleCallback() {
+                    @Override
+                    public void onShow(BasePopupView popupView) {
+                    }
+
+                    @Override
+                    public void onDismiss(BasePopupView popupView) {
+                        int item = poiSharePopup.getSelectedShareItem();
+                        if (item == PoiSharePopup.SHARE_DINGDING) {
+                            shareText(Dingding.NAME, url);
+                        } else if (item == PoiSharePopup.SHARE_WX) {
+                            shareText(Wechat.NAME, url);
+                        }
+                    }
+                })
+                .asCustom(poiSharePopup)
+                .show();
+    }
+
+    @Override
+    public void onLocationShareUrlSearched(String url, int errorCode) {
+
+    }
+
+    @Override
+    public void onNaviShareUrlSearched(String url, int errorCode) {
+
+    }
+
+    @Override
+    public void onBusRouteShareUrlSearched(String url, int errorCode) {
+
+    }
+
+    @Override
+    public void onWalkRouteShareUrlSearched(String url, int errorCode) {
+
+    }
+
+    @Override
+    public void onDrivingRouteShareUrlSearched(String url, int errorCode) {
+
+    }
+
+    private void shareText(String name, String url) {
+        Platform platform = ShareSDK.getPlatform(name);
+        Platform.ShareParams shareParams = new Platform.ShareParams();
+        shareParams.setTitle(mapActivity.sharePoi.getTitle());
+        shareParams.setText(mapActivity.sharePoi.getSnippet());
+        shareParams.setUrl(url);
+        shareParams.setShareType(Platform.SHARE_WEBPAGE);
+        shareParams.setScence(0);
+        platform.setPlatformActionListener(new MyPlatformActionListener());
+        platform.share(shareParams);
+    }
+
+
+    class MyPlatformActionListener implements PlatformActionListener {
+        @Override
+        public void onComplete(final Platform platform, int i, HashMap<String, Object> hashMap) {
+            String ss = "";
+        }
+
+        @Override
+        public void onError(final Platform platform, int i, Throwable throwable) {
+            throwable.printStackTrace();
+            final String error = throwable.toString();
+            mapActivity.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+
+                        Toast.makeText(MobSDK.getContext(), "Share Failure" + error, Toast.LENGTH_LONG).show();
+                    } catch (Throwable t) {
+                        Log.e("QQQ", " ShareTypeManager  onError===> " + t);
+                    }
+                }
+            });
+        }
+
+        @Override
+        public void onCancel(Platform platform, int i) {
+            try {
+                Toast.makeText(MobSDK.getContext(), "Cancel Share", Toast.LENGTH_LONG).show();
+
+            } catch (Throwable t) {
+                Log.e("QQQ", " ShareTypeManager  onCancel===> " + t);
+            }
+        }
     }
 }

@@ -202,7 +202,7 @@ public class SearchPoiFragment extends BaseFragment implements TextWatcher, PoiS
         }
 
         keyWord = s.toString();
-        if (!TextUtils.isEmpty(keyWord) && !TextUtils.isEmpty(cityName)) {
+        if (!TextUtils.isEmpty(keyWord)) {
             resetData();
             doSearchQuery();
         }
@@ -264,9 +264,11 @@ public class SearchPoiFragment extends BaseFragment implements TextWatcher, PoiS
                 poiSearchAdapter.getLoadMoreModule().loadMoreComplete();
             }
 
-        } else if (suggestionCities != null && suggestionCities.size() > 0) {
+        }
+//        else if (suggestionCities != null && suggestionCities.size() > 0) {
 //            showSuggestCity(suggestionCities);
-        } else {
+//        }
+        else {
             ToastUtils.show(R.string.no_result);
         }
     }
