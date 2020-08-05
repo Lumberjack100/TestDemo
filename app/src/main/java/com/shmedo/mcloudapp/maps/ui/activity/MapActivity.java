@@ -123,18 +123,17 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
     private long mAnimDuartion = 500L;//地图动效时长
     public int mMapType = MyLocationStyle.LOCATION_TYPE_LOCATE;//地图状态类型
     public SensorEventHelper mSensorHelper;
-    public Marker mLocationMarker;//自定义小蓝点
-    public Circle mCircle;//定位蓝点精度圆圈
-
-    public boolean isFirstLocation = true;//是否是第一次定位
-    public boolean isOnScrolling;//正在滑动地图
-    public boolean isPoiClick; // 当前是否正在处理POI点击
-    public float mAccuracy;//定位精度
-    public String mPoiName;//POI的名称
-    public String mCityName;//定位所在城市
+    private Marker mLocationMarker;//自定义小蓝点
+    private Circle mCircle;//定位蓝点精度圆圈
     public MapMode mMapMode = MapMode.NORMAL;
-    public LatLng mLatLng;//当前定位经纬度
-
+    public boolean isFirstLocation = true;//是否是第一次定位
+    private boolean isOnScrolling;//正在滑动地图
+    public boolean isPoiClick; // 当前是否正在处理POI点击
+    private float mAccuracy;//定位精度
+    private String mCityName;//定位所在城市
+    public String mPoiName;//POI的名称
+    public LatLng myLatLng;//当前定位经纬度
+    public LatLng poiLatLng;//当前点击的poi经纬度
     public PoiItem sharePoi;//分享点位信息
 
 
@@ -263,7 +262,7 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
         } else if (requestCode == PermissionHelper.REQUEST_CODE_GPS_LOCATION) {
             processGpsViewClick();
 
-        } else if (requestCode == PermissionHelper.REQUEST_CODE_NAVI) {
+        } else if (requestCode == PermissionHelper.REQUEST_CODE_NAVI || requestCode == PermissionHelper.REQUEST_CODE_ROUTE) {
             gaoDePoiProcessHelper.doOnPermissionGranted(requestCode);
         }
     }
@@ -278,7 +277,7 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
                 mCurrentGpsState = STATE_ROTATE;
                 //连续定位、且将视角移动到地图中心点，地图依照设备方向旋转，定位点会跟随设备移动。
                 mMapType = MyLocationStyle.LOCATION_TYPE_MAP_ROTATE_NO_CENTER;
-                cameraUpdate = CameraUpdateFactory.newCameraPosition(new CameraPosition(mLatLng, mZoomLevel, 30, 0));
+                cameraUpdate = CameraUpdateFactory.newCameraPosition(new CameraPosition(myLatLng, mZoomLevel, 30, 0));
                 break;
 
             case STATE_UNLOCKED:
@@ -287,7 +286,7 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
                 mCurrentGpsState = STATE_LOCKED;
                 //连续定位、蓝点不会移动到地图中心点，定位点依照设备方向旋转，并且蓝点会跟随设备移动。
                 mMapType = MyLocationStyle.LOCATION_TYPE_LOCATION_ROTATE_NO_CENTER;
-                cameraUpdate = CameraUpdateFactory.newCameraPosition(new CameraPosition(mLatLng, mZoomLevel, 0, 0));
+                cameraUpdate = CameraUpdateFactory.newCameraPosition(new CameraPosition(myLatLng, mZoomLevel, 0, 0));
                 break;
         }
 
@@ -295,7 +294,7 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
             gaoDePoiProcessHelper.destroyPoiMarker();
             //显示底部POI详情
             gaoDePoiProcessHelper.showPoiDetailBottomView("我的位置", String.format("在%s附近", mPoiName));
-            sharePoi = new PoiItem(null, new LatLonPoint(mLatLng.latitude, mLatLng.longitude), mPoiName, mPoiName);
+            sharePoi = new PoiItem(null, new LatLonPoint(myLatLng.latitude, myLatLng.longitude), mPoiName, mPoiName);
         }
 
         aMap.setMyLocationEnabled(true);
@@ -315,7 +314,9 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
                 break;
 
             case R.id.route_view://路线
-
+                poiLatLng = null;
+                mPoiName = "";
+                checkPermissionForGPS(PermissionHelper.REQUEST_CODE_ROUTE);
                 break;
 
             case R.id.mapLayerView://退出/关闭图层抽屉
@@ -385,7 +386,7 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
         }
 
         //参数依次是：视角调整区域的中心点坐标、希望调整到的缩放级别、俯仰角0°~45°（垂直与地图时为0）、偏航角 0~360° (正北方为0)
-        mLatLng = new LatLng(lat, lng);
+        myLatLng = new LatLng(lat, lng);
         if (!aMapLocation.getCity().equals(mCityName)) {
             mCityName = aMapLocation.getCity();
         }
@@ -395,13 +396,13 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
         mAccuracy = aMapLocation.getAccuracy();
         Timber.d("accuracy=" + mAccuracy + ",isFirstLocation=" + isFirstLocation);
         if (isFirstLocation) {
-            aMap.animateCamera(CameraUpdateFactory.newLatLngZoom(mLatLng, mZoomLevel), new AMap.CancelableCallback() {
+            aMap.animateCamera(CameraUpdateFactory.newLatLngZoom(myLatLng, mZoomLevel), new AMap.CancelableCallback() {
                 @Override
                 public void onFinish() {
                     mCurrentGpsState = STATE_LOCKED;
                     mGpsView.setGpsState(mCurrentGpsState);
                     mMapType = MyLocationStyle.LOCATION_TYPE_LOCATE;
-                    addLocationLockedMarker(mLatLng);//添加定位图标
+                    addLocationLockedMarker(myLatLng);//添加定位图标
                     addCircle();//添加定位精度圆
                     if (null != mLocationMarker) {
                         mSensorHelper.setCurrentMarker(mLocationMarker);//定位图标旋转
@@ -415,9 +416,9 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
                 }
             });
         } else {
-            mCircle.setCenter(mLatLng);
+            mCircle.setCenter(myLatLng);
             mCircle.setRadius(mAccuracy);
-            mLocationMarker.setPosition(mLatLng);
+            mLocationMarker.setPosition(myLatLng);
 //            if (isCanMoveToCenter) {
 //                aMap.animateCamera(CameraUpdateFactory.newLatLngZoom(mLatLng, mZoomLevel));
 //            }
@@ -690,10 +691,10 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
         if (mGpsView.getGpsState() == GPSView.STATE_ROTATE) {
             //ROTATE模式不需要方向传感器
             //mSensorHelper.unRegisterSensorListener();
-            addLocationRotateMarker(mLatLng);
+            addLocationRotateMarker(myLatLng);
         } else {
             //mSensorHelper.registerSensorListener();
-            addLocationLockedMarker(mLatLng);
+            addLocationLockedMarker(myLatLng);
             if (null != mLocationMarker) {
                 mSensorHelper.setCurrentMarker(mLocationMarker);
             }
@@ -756,7 +757,7 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
         options.strokeColor(Color.argb(180, 3, 145, 255));
         options.fillColor(Color.argb(10, 0, 0, 180));
         mCircle = aMap.addCircle(options);
-        mCircle.setCenter(mLatLng);
+        mCircle.setCenter(myLatLng);
         mCircle.setRadius(mAccuracy);
     }
 

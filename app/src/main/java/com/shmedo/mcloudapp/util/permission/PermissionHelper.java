@@ -24,10 +24,12 @@ import java.util.List;
  * 描述：     权限申请帮助类
  */
 public class PermissionHelper {
-    public static final int REQUEST_CODE_OPEN_GPS = 0x0001;
-    public static final int REQUEST_CODE_LOCATION = 0x1000;
-    public static final int REQUEST_CODE_GPS_LOCATION = 0x1001;
+    public static final int REQUEST_CODE_OPEN_GPS = 0x1000;
+    public static final int REQUEST_CODE_LOCATION = 0x1001;
+    public static final int REQUEST_CODE_GPS_LOCATION = 0x1002;
     public static final int REQUEST_CODE_NAVI = 0x1002;
+    public static final int REQUEST_CODE_ROUTE = 0x1003;
+
 
     public static void requestScanPermissions(Activity activity) {
         XPermissionUtils.requestPermissionsResult(activity, 200, new String[]{

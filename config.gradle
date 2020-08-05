@@ -45,7 +45,6 @@ ext {
             glideCompilerVersion                 : '4.11.0',
             circleimageview              : '3.0.0',
 
-            amap3dMap                    : '7.4.0',
             amapLocation                 : '4.9.0',
             amapSearch                   : '7.3.0',
             amapNavi                     : '7.5.0_3dmap7.5.0',

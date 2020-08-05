@@ -55,7 +55,7 @@ public class GaoDePoiProcessHelper implements AMap.OnPOIClickListener, PoiDetail
     private TextureMapView mapView;
     private AMap aMap;
     private Marker poiMarker;
-    private LatLng mClickPoiLatLng;//当前点击的poi经纬度
+
 
     private int moveY;
     private int[] mBottomSheetLoc = new int[2];
@@ -128,12 +128,16 @@ public class GaoDePoiProcessHelper implements AMap.OnPOIClickListener, PoiDetail
      */
     @Override
     public void onPoiRouteClick() {
-
+        mapActivity.checkPermissionForGPS(PermissionHelper.REQUEST_CODE_ROUTE);
     }
 
     public void doOnPermissionGranted(int requestCode) {
         if (requestCode == PermissionHelper.REQUEST_CODE_NAVI) {
-            AmapNaviParams amapNaviParams = new AmapNaviParams(new Poi("我的位置", mapActivity.mLatLng, ""), null, new Poi(mapActivity.mPoiName, mClickPoiLatLng, ""), AmapNaviType.DRIVER, AmapPageType.NAVI);//, AmapPageType.NAVI
+            AmapNaviParams amapNaviParams = new AmapNaviParams(new Poi("我的位置", mapActivity.myLatLng, ""), null, new Poi(mapActivity.mPoiName, mapActivity.poiLatLng, ""), AmapNaviType.DRIVER, AmapPageType.NAVI);//, AmapPageType.NAVI
+            amapNaviParams.setUseInnerVoice(true);
+            AmapNaviPage.getInstance().showRouteActivity(mapActivity, amapNaviParams, null);
+        } else if (requestCode == PermissionHelper.REQUEST_CODE_ROUTE) {
+            AmapNaviParams amapNaviParams = new AmapNaviParams(new Poi("我的位置", mapActivity.myLatLng, ""), null, new Poi(mapActivity.mPoiName, mapActivity.poiLatLng, ""), AmapNaviType.DRIVER, AmapPageType.ROUTE);//, AmapPageType.NAVI
             amapNaviParams.setUseInnerVoice(true);
             AmapNaviPage.getInstance().showRouteActivity(mapActivity, amapNaviParams, null);
         }
@@ -142,6 +146,7 @@ public class GaoDePoiProcessHelper implements AMap.OnPOIClickListener, PoiDetail
     public void destroyPoiMarker() {
         if (poiMarker != null) {
             poiMarker.destroy();
+            poiMarker = null;
         }
     }
 
@@ -149,7 +154,8 @@ public class GaoDePoiProcessHelper implements AMap.OnPOIClickListener, PoiDetail
      * 添加POImarker
      */
     public void addPOIMarderAndShowDetail(LatLng latLng, String poiName) {
-        mClickPoiLatLng = latLng;
+        mapActivity.poiLatLng = latLng;
+        mapActivity.mPoiName = poiName;
 
         //移动地图中心点到指定位置
         aMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, mapActivity.mZoomLevel));
@@ -159,10 +165,9 @@ public class GaoDePoiProcessHelper implements AMap.OnPOIClickListener, PoiDetail
         if (!mapActivity.isFirstLocation) {
             mapActivity.mGpsView.setGpsState(mapActivity.mCurrentGpsState);
         }
-        mapActivity.mPoiName = poiName;
         // 添加marker标记
         addPOIMarker(latLng);
-        String distanceStr = MyAMapUtils.calculateDistanceStr(mapActivity.mLatLng, latLng);
+        String distanceStr = MyAMapUtils.calculateDistanceStr(mapActivity.myLatLng, latLng);
         showPoiDetailBottomView(poiName, String.format("距离您%s", distanceStr));
     }
 
@@ -201,10 +206,7 @@ public class GaoDePoiProcessHelper implements AMap.OnPOIClickListener, PoiDetail
         //gsp控件回退到原来位置、并显示底部其他控件
         mapActivity.mRouteView.setVisibility(View.VISIBLE);
         mPoiDetailBottomView.setVisibility(View.GONE);
-        if (poiMarker != null) {
-            poiMarker.destroy();
-            poiMarker = null;
-        }
+        destroyPoiMarker();
         resetGpsButtonPosition();
     }
 
