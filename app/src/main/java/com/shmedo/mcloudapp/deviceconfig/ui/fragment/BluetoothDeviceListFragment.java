@@ -24,28 +24,27 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;
+import com.hjq.toast.ToastUtils;
 import com.shmedo.core.MCloudApp;
 import com.shmedo.core.util.GlobalUtil;
-import com.hjq.toast.ToastUtils;
 import com.shmedo.mcloudapp.R;
-import com.shmedo.mcloudapp.common.ui.fragment.BaseFragment;
 import com.shmedo.mcloudapp.bluetooth.BluetoothDeviceFindEventData;
 import com.shmedo.mcloudapp.bluetooth.BluetoothEvent;
 import com.shmedo.mcloudapp.bluetooth.BluetoothEventHandler;
 import com.shmedo.mcloudapp.bluetooth.BluetoothEventType;
 import com.shmedo.mcloudapp.bluetooth.MdBluetoothManager;
+import com.shmedo.mcloudapp.common.ui.activity.ScanActivity;
+import com.shmedo.mcloudapp.common.ui.fragment.BaseFragment;
+import com.shmedo.mcloudapp.common.view.recycleviewitemdivider.DividerItemDecoration;
+import com.shmedo.mcloudapp.deviceconfig.ui.activity.ConfigADMEActivity;
+import com.shmedo.mcloudapp.deviceconfig.ui.activity.ConfigDASActivity;
+import com.shmedo.mcloudapp.deviceconfig.ui.activity.ConfigE60Activity;
 import com.shmedo.mcloudapp.deviceconfig.view.DiffuseView;
 import com.shmedo.mcloudapp.entity.DeviceBasicInfoResult;
 import com.shmedo.mcloudapp.entity.DeviceTypeEnum;
 import com.shmedo.mcloudapp.entity.ble.MDevice;
-import com.shmedo.mcloudapp.deviceconfig.ui.activity.ConfigADMEActivity;
-import com.shmedo.mcloudapp.deviceconfig.ui.activity.ConfigDASActivity;
-import com.shmedo.mcloudapp.deviceconfig.ui.activity.ConfigE60Activity;
-import com.shmedo.mcloudapp.common.ui.activity.ScanActivity;
-import com.shmedo.mcloudapp.user.ui.activity.UserInfoActivity;
 import com.shmedo.mcloudapp.util.permission.PermissionHelper;
 import com.shmedo.mcloudapp.util.permission.XPermissionUtils;
-import com.shmedo.mcloudapp.common.view.recycleviewitemdivider.DividerItemDecoration;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -155,7 +154,7 @@ public class BluetoothDeviceListFragment extends BaseFragment {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.img_user://用户信息
-                UserInfoActivity.startActivity(getActivity());
+//                UserInfoActivity.startActivity(getActivity());
                 break;
 
             case R.id.ivDiscoveryDevice:

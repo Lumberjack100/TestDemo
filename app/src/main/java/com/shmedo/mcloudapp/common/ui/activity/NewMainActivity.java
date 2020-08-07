@@ -13,7 +13,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.shmedo.mcloudapp.R;
-import com.shmedo.mcloudapp.common.ui.fragment.KnowledgeLibraryFragment;
+import com.shmedo.mcloudapp.common.ui.fragment.MineFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.BluetoothDeviceListFragment;
 import com.shmedo.mcloudapp.maps.ui.activity.MapActivity;
 import com.shmedo.mcloudapp.projects.ui.fragment.ProjectListFragment;
@@ -29,7 +29,7 @@ public class NewMainActivity extends BaseActivity {
 
     private BluetoothDeviceListFragment bluetoothDeviceListFragment;
     private ProjectListFragment projectListFragment;
-    private KnowledgeLibraryFragment knowledgeLibraryFragment;
+    private MineFragment mineFragment;
     private Fragment currentFragment;
 
 
@@ -69,7 +69,7 @@ public class NewMainActivity extends BaseActivity {
             currentFragment = getSupportFragmentManager().findFragmentByTag(curTag);
             bluetoothDeviceListFragment = (BluetoothDeviceListFragment) getSupportFragmentManager().findFragmentByTag(BluetoothDeviceListFragment.class.getName());
             projectListFragment = (ProjectListFragment) getSupportFragmentManager().findFragmentByTag(ProjectListFragment.class.getName());
-            knowledgeLibraryFragment = (KnowledgeLibraryFragment) getSupportFragmentManager().findFragmentByTag(KnowledgeLibraryFragment.class.getName());
+            mineFragment = (MineFragment) getSupportFragmentManager().findFragmentByTag(MineFragment.class.getName());
 
             if (bluetoothDeviceListFragment == null)
                 bluetoothDeviceListFragment = new BluetoothDeviceListFragment();
@@ -77,20 +77,20 @@ public class NewMainActivity extends BaseActivity {
             if (projectListFragment == null)
                 projectListFragment = new ProjectListFragment();
 
-            if (knowledgeLibraryFragment == null)
-                knowledgeLibraryFragment = new KnowledgeLibraryFragment();
+            if (mineFragment == null)
+                mineFragment = new MineFragment();
 
             // 解决重叠问题
             getSupportFragmentManager().beginTransaction()
                     .hide(bluetoothDeviceListFragment)
                     .hide(projectListFragment)
-                    .hide(knowledgeLibraryFragment)
+                    .hide(mineFragment)
                     .show(currentFragment)
                     .commit();
         } else {
             bluetoothDeviceListFragment = new BluetoothDeviceListFragment();
             projectListFragment = new ProjectListFragment();
-            knowledgeLibraryFragment = new KnowledgeLibraryFragment();
+            mineFragment = new MineFragment();
             switchFrgment(0);
         }
 
@@ -111,12 +111,8 @@ public class NewMainActivity extends BaseActivity {
                         switchFrgment(1);
                         break;
 
-                    case R.id.item_knowledge_module:
-                        switchFrgment(2);
-                        break;
-
                     case R.id.item_me_module:
-                        switchFrgment(3);
+                        switchFrgment(2);
                         break;
                 }
 
@@ -146,7 +142,7 @@ public class NewMainActivity extends BaseActivity {
                 showFragment(projectListFragment);
                 break;
             case 2:
-                showFragment(knowledgeLibraryFragment);
+                showFragment(mineFragment);
                 break;
         }
     }
