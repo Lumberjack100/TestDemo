@@ -1,5 +1,6 @@
 package com.shmedo.mcloudapp.maps.helper;
 
+import android.graphics.BitmapFactory;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewTreeObserver;
@@ -21,10 +22,16 @@ import com.amap.api.services.core.LatLonPoint;
 import com.amap.api.services.core.LatLonSharePoint;
 import com.amap.api.services.core.PoiItem;
 import com.amap.api.services.share.ShareSearch;
+import com.android.dingtalk.share.ddsharemodule.DDShareApiFactory;
+import com.android.dingtalk.share.ddsharemodule.IDDShareApi;
+import com.android.dingtalk.share.ddsharemodule.message.DDMediaMessage;
+import com.android.dingtalk.share.ddsharemodule.message.DDWebpageMessage;
+import com.android.dingtalk.share.ddsharemodule.message.SendMessageToDD;
 import com.hjq.toast.ToastUtils;
 import com.lxj.xpopup.XPopup;
 import com.lxj.xpopup.core.BasePopupView;
 import com.lxj.xpopup.interfaces.SimpleCallback;
+import com.shmedo.mcloudapp.BuildConfig;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.maps.model.MapMode;
 import com.shmedo.mcloudapp.maps.ui.activity.MapActivity;
@@ -35,7 +42,6 @@ import com.shmedo.mcloudapp.util.permission.PermissionHelper;
 
 import java.util.HashMap;
 
-import cn.sharesdk.dingding.friends.Dingding;
 import cn.sharesdk.framework.Platform;
 import cn.sharesdk.framework.PlatformActionListener;
 import cn.sharesdk.framework.ShareSDK;
@@ -301,7 +307,7 @@ public class GaoDePoiProcessHelper implements AMap.OnPOIClickListener, PoiDetail
                     public void onDismiss(BasePopupView popupView) {
                         int item = poiSharePopup.getSelectedShareItem();
                         if (item == PoiSharePopup.SHARE_DINGDING) {
-                            shareText(Dingding.NAME, url);
+                            processDingdingShare(url);
                         } else if (item == PoiSharePopup.SHARE_WX) {
                             shareText(Wechat.NAME, url);
                         }
@@ -347,4 +353,39 @@ public class GaoDePoiProcessHelper implements AMap.OnPOIClickListener, PoiDetail
             ToastUtils.show("分享取消");
         }
     }
+
+    private void processDingdingShare( String url) {
+        IDDShareApi iddShareApi = DDShareApiFactory.createDDShareApi(mapActivity, BuildConfig.Dingding_APP_ID, true);
+        if (!iddShareApi.isDDAppInstalled()) {
+            ToastUtils.show("您没有安装钉钉客户端");
+            return;
+        }
+        if (!iddShareApi.isDDSupportAPI()) {
+            ToastUtils.show("当前设备不支持分享到钉钉");
+            return;
+        }
+
+        //初始化一个DDWebpageMessage并填充网页链接地址
+        DDWebpageMessage webPageObject = new DDWebpageMessage();
+        webPageObject.mUrl = url;
+
+        //构造一个DDMediaMessage对象
+        DDMediaMessage webMessage = new DDMediaMessage();
+        webMessage.mMediaObject = webPageObject;
+        //填充网页分享必需参数，开发者需按照自己的数据进行填充
+        webMessage.mTitle = mapActivity.sharePoi.getTitle();
+        webMessage.mContent = mapActivity.sharePoi.getSnippet();
+        // 网页分享的缩略图也可以使用bitmap形式传输
+        webMessage.setThumbImage(BitmapFactory.decodeResource(mapActivity.getResources(), R.drawable.map_icon));
+
+        //构造一个Req
+        SendMessageToDD.Req webReq = new SendMessageToDD.Req();
+        webReq.mMediaMessage = webMessage;
+//        webReq.transaction = buildTransaction("webpage");
+
+        //调用api接口发送消息
+        iddShareApi.sendReq(webReq);
+    }
+
+
 }

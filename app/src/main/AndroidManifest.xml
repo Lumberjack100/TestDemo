@@ -304,6 +304,20 @@
             android:name=".projects.ui.activity.OutOfDateProjectGuideActivity"
             android:maxAspectRatio="2.4"
             android:screenOrientation="portrait" />
+
+        <activity
+            android:exported="true"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"
+            android:launchMode="singleInstance"
+            android:name="com.shmedo.mcloudapp.ddshare.DDShareActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
+
         <activity
             android:name=".common.ui.activity.TestBluetoothListActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"

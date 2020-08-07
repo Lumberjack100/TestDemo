@@ -42,3 +42,8 @@
     -dontwarn com.sina.**
     -dontwarn com.mob.**
     -dontwarn **.R$*
+
+      #钉钉分享混淆处理
+    -keep class  com.android.dingtalk.share.ddsharemodule.** {
+       *;
+    }
