@@ -120,4 +120,10 @@
         <item>上拉</item>
         <item>下降</item>
     </string-array>
+
+    <string-array name="coordinate_type">
+        <item>GPS坐标(WGS84)</item>
+        <item>火星坐标(GCJ02)</item>
+        <item>百度坐标(BD09)</item>
+    </string-array>
 </resources>

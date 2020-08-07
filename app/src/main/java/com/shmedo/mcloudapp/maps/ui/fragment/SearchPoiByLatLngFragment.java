@@ -9,11 +9,14 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 
+import com.amap.api.maps.CoordinateConverter;
 import com.amap.api.maps.model.LatLng;
 import com.amap.api.services.core.AMapException;
 import com.amap.api.services.core.LatLonPoint;
@@ -74,6 +77,9 @@ public class SearchPoiByLatLngFragment extends BaseFragment implements GeocodeSe
     @BindView(R.id.latSecondET)
     ClearEditText latSecondET;
 
+    @BindView(R.id.spinner_coord)
+    Spinner spinnerCoord;
+
     private static final int DEGREE = 0;//度
     private static final int DEGREE_MINUTE_SECOND = 1;//度分秒
 
@@ -114,7 +120,35 @@ public class SearchPoiByLatLngFragment extends BaseFragment implements GeocodeSe
     private void initView() {
         mCurrentMode = DEGREE;
         switchTab();
+        setSpinnerAdapter();
         setListener();
+    }
+
+    private void switchTab() {
+        if (mCurrentMode == DEGREE) {
+            tvLeftTab.setTextColor(ContextCompat.getColor(getActivity(), R.color.colorPrimary));
+            tvLeftTab.setBackgroundResource(R.drawable.bg_left_corner_4dp_white);
+
+            tvRightTab.setTextColor(ContextCompat.getColor(getActivity(), R.color.white));
+            tvRightTab.setBackground(null);
+            tabLeftContent.setVisibility(View.VISIBLE);
+            tabRightContent.setVisibility(View.GONE);
+        } else {
+            tvLeftTab.setTextColor(ContextCompat.getColor(getActivity(), R.color.white));
+            tvLeftTab.setBackground(null);
+
+            tvRightTab.setTextColor(ContextCompat.getColor(getActivity(), R.color.colorPrimary));
+            tvRightTab.setBackgroundResource(R.drawable.bg_right_corner_4dp_white);
+            tabLeftContent.setVisibility(View.GONE);
+            tabRightContent.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private void setSpinnerAdapter() {
+        String[] itemCoords = getResources().getStringArray(R.array.coordinate_type);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, itemCoords);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerCoord.setAdapter(adapter);
     }
 
     private void setListener() {
@@ -319,26 +353,6 @@ public class SearchPoiByLatLngFragment extends BaseFragment implements GeocodeSe
         });
     }
 
-    private void switchTab() {
-        if (mCurrentMode == DEGREE) {
-            tvLeftTab.setTextColor(ContextCompat.getColor(getActivity(), R.color.colorPrimary));
-            tvLeftTab.setBackgroundResource(R.drawable.bg_left_corner_4dp_white);
-
-            tvRightTab.setTextColor(ContextCompat.getColor(getActivity(), R.color.white));
-            tvRightTab.setBackground(null);
-            tabLeftContent.setVisibility(View.VISIBLE);
-            tabRightContent.setVisibility(View.GONE);
-        } else {
-            tvLeftTab.setTextColor(ContextCompat.getColor(getActivity(), R.color.white));
-            tvLeftTab.setBackground(null);
-
-            tvRightTab.setTextColor(ContextCompat.getColor(getActivity(), R.color.colorPrimary));
-            tvRightTab.setBackgroundResource(R.drawable.bg_right_corner_4dp_white);
-            tabLeftContent.setVisibility(View.GONE);
-            tabRightContent.setVisibility(View.VISIBLE);
-        }
-    }
-
 
     @OnClick({R.id.back, R.id.tv_left_tab, R.id.tv_right_tab, R.id.btn_confirm})
     public void onClick(View view) {
@@ -438,16 +452,39 @@ public class SearchPoiByLatLngFragment extends BaseFragment implements GeocodeSe
             }
         }
 
-        processSearchText(longitude, latitude);
+        latLng = new LatLng(latitude, longitude);
+        //坐标系转换
+        if (spinnerCoord.getSelectedItem().toString().contains("火星坐标")) {
+
+        } else if (spinnerCoord.getSelectedItem().toString().contains("GPS坐标")) {
+            latLng = convert(latLng, CoordinateConverter.CoordType.GPS);
+        } else if (spinnerCoord.getSelectedItem().toString().contains("百度坐标")) {
+            latLng = convert(latLng, CoordinateConverter.CoordType.BAIDU);
+        }
+
+        processSearchText();
     }
 
-    private void processSearchText(double longitude, double latitude) {
-        latLng = new LatLng(latitude, longitude);
-        LatLonPoint latLonPoint = new LatLonPoint(latitude, longitude);
+    /**
+     * 根据类型 转换 坐标
+     */
+    private LatLng convert(LatLng sourceLatLng, CoordinateConverter.CoordType coord) {
+        CoordinateConverter converter = new CoordinateConverter(getActivity());
+        // CoordType.GPS 待转换坐标类型
+        converter.from(coord);
+        // sourceLatLng待转换坐标点
+        converter.coord(sourceLatLng);
+        // 执行转换操作
+        LatLng desLatLng = converter.convert();
+        return desLatLng;
+    }
+
+    private void processSearchText() {
+        LatLonPoint latLonPoint = new LatLonPoint(latLng.latitude, latLng.longitude);
         GeocodeSearch geocoderSearch = new GeocodeSearch(getActivity());
         geocoderSearch.setOnGeocodeSearchListener(this);
         // 第一个参数表示一个Latlng，第二参数表示范围多少米，第三个参数表示是火系坐标系还是GPS原生坐标系
-        RegeocodeQuery query = new RegeocodeQuery(latLonPoint, 100, GeocodeSearch.GPS);
+        RegeocodeQuery query = new RegeocodeQuery(latLonPoint, 100, GeocodeSearch.AMAP);
         geocoderSearch.getFromLocationAsyn(query);
     }
 
