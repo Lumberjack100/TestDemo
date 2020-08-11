@@ -51,13 +51,13 @@ public class LoadMoreWrapper<T> extends RecyclerView.Adapter<RecyclerView.ViewHo
     {
         if (viewType == ITEM_TYPE_LOAD_MORE)
         {
-            ViewHolder holder;
+            CommonViewHolder holder;
             if (mLoadMoreView != null)
             {
-                holder = ViewHolder.createViewHolder(parent.getContext(), mLoadMoreView);
+                holder = CommonViewHolder.createViewHolder(parent.getContext(), mLoadMoreView);
             } else
             {
-                holder = ViewHolder.createViewHolder(parent.getContext(), parent, mLoadMoreLayoutId);
+                holder = CommonViewHolder.createViewHolder(parent.getContext(), parent, mLoadMoreLayoutId);
             }
             return holder;
         }

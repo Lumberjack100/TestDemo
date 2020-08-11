@@ -10,6 +10,6 @@ public interface ItemViewDelegate<T>
 
     boolean isForViewType(T item, int position);
 
-    void convert(ViewHolder holder, T t, int position);
+    void convert(CommonViewHolder holder, T t, int position);
 
 }

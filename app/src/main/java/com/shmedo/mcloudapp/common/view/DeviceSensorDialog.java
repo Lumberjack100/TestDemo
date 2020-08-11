@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.adapter.recyclerviewbaseadapter.CommonAdapter;
-import com.shmedo.mcloudapp.adapter.recyclerviewbaseadapter.ViewHolder;
+import com.shmedo.mcloudapp.adapter.recyclerviewbaseadapter.CommonViewHolder;
 import com.shmedo.mcloudapp.entity.SensorAndCount;
 import com.shmedo.mcloudapp.util.ImageUtil;
 
@@ -85,7 +85,7 @@ public class DeviceSensorDialog extends AlertDialog {
 //        mRecyclerView.addItemDecoration(new RecycleViewDivider(LinearLayoutManager.VERTICAL, DensityUtil.Dp2Px(mContext, 0.2f), mContext.getResources().getColor(R.color.color_split_line_d9d9d9)));
         adapter = new CommonAdapter<SensorAndCount>(mContext, R.layout.item_sensor_type, dataList) {
             @Override
-            protected void convert(ViewHolder holder, SensorAndCount bean, final int position) {
+            protected void convert(CommonViewHolder holder, SensorAndCount bean, final int position) {
                 holder.setImageResource(R.id.img_sensor, ImageUtil.getSensorResourceID(bean.getSensorType()));
                 holder.setText(R.id.tv_sensor_count, bean.getSensorCount() + "个");
             }

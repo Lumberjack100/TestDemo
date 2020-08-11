@@ -77,10 +77,20 @@
     <dimen name="dimen_size_50">50dp</dimen>
     <dimen name="dimen_size_55">55dp</dimen>
     <dimen name="dimen_size_60">60dp</dimen>
+    <dimen name="dimen_size_70">70dp</dimen>
 
     <dimen name="design_bottom_navigation_text_size" tools:override="true">12sp</dimen>
     <dimen name="design_bottom_navigation_active_text_size" tools:override="true">12sp</dimen>
     <!--圆角矩形-->
     <dimen name="rect_radius_medium">18dp</dimen>
     <dimen name="rect_height_medium">36dp</dimen>
+
+
+    <!--项目模块-->
+    <dimen name="project_title_item_height">40dp</dimen>
+    <dimen name="project_content_item_height">125dp</dimen>
+    <dimen name="card_item_side_margin">10dp</dimen>
+    <dimen name="card_item_bottom_margin">10dp</dimen>
+    <dimen name="card_item_side_padding">10dp</dimen>
+    <dimen name="card_item_bottom_padding">10dp</dimen>
 </resources>

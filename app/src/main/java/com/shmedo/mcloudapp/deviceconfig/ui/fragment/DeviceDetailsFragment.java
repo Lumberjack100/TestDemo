@@ -37,7 +37,7 @@ import com.shmedo.core.utils.StringUtil;
 import com.shmedo.core.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.adapter.recyclerviewbaseadapter.CommonAdapter;
-import com.shmedo.mcloudapp.adapter.recyclerviewbaseadapter.ViewHolder;
+import com.shmedo.mcloudapp.adapter.recyclerviewbaseadapter.CommonViewHolder;
 import com.shmedo.mcloudapp.common.ui.fragment.BaseFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.BaseDeviceConnectActivity;
 import com.shmedo.mcloudapp.util.DeviceDetailInfoUtils;
@@ -242,7 +242,7 @@ public class DeviceDetailsFragment extends BaseFragment implements SwipeRefreshL
         sensorRecycle.setLayoutManager(new LinearLayoutManager(getActivity()));
         adapter = new CommonAdapter<String>(getActivity(), R.layout.item_device_details, sensorList) {
             @Override
-            protected void convert(ViewHolder holder, String string, int position) {
+            protected void convert(CommonViewHolder holder, String string, int position) {
                 //①:②:③，其中①：传感器地址，②：传感器状态，0正常，1异常，③：传感器数据
                 String[] result = string.split(":");
                 holder.setText(R.id.sensor_channel_number, result[0]);

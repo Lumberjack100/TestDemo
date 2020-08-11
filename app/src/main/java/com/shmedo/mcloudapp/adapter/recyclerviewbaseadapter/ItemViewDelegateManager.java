@@ -76,7 +76,7 @@ public class ItemViewDelegateManager<T>
         throw new IllegalArgumentException("No ItemViewDelegate added that matches position=" + position + " in data source");
     }
 
-    public void convert(ViewHolder holder, T item, int position)
+    public void convert(CommonViewHolder holder, T item, int position)
     {
         int delegatesCount = delegates.size();
         for (int i = 0; i < delegatesCount; i++)

@@ -27,7 +27,7 @@ import com.shmedo.core.enums.LogOutputStatus;
 import com.shmedo.core.enums.WorkModel;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.adapter.recyclerviewbaseadapter.CommonAdapter;
-import com.shmedo.mcloudapp.adapter.recyclerviewbaseadapter.ViewHolder;
+import com.shmedo.mcloudapp.adapter.recyclerviewbaseadapter.CommonViewHolder;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.BaseDeviceConnectActivity;
 import com.shmedo.mcloudapp.util.FileProviderUtils;
 import com.shmedo.core.util.LogFileUtil;
@@ -193,7 +193,7 @@ public class LogPrintActivity extends BaseDeviceConnectActivity {
         recyclerLogPrint.setLayoutManager(new LinearLayoutManager(this));
         adapter = new CommonAdapter<String>(this, R.layout.item_log_print, logDataList) {
             @Override
-            protected void convert(ViewHolder holder, String string, int position) {
+            protected void convert(CommonViewHolder holder, String string, int position) {
                 holder.setText(R.id.tv_log, string);
             }
         };

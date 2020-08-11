@@ -20,7 +20,7 @@ import com.shmedo.core.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.adapter.recyclerviewbaseadapter.CommonAdapter;
 import com.shmedo.mcloudapp.adapter.recyclerviewbaseadapter.MultiItemTypeAdapter;
-import com.shmedo.mcloudapp.adapter.recyclerviewbaseadapter.ViewHolder;
+import com.shmedo.mcloudapp.adapter.recyclerviewbaseadapter.CommonViewHolder;
 import com.shmedo.mcloudapp.common.ui.activity.BaseActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.ConfigADMEActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.ConfigDASActivity;
@@ -112,7 +112,7 @@ public class SearchDeviceActivity extends BaseActivity implements MultiItemTypeA
         mRecyclerDevice.addItemDecoration(new DividerItemDecoration());
         adapter = new CommonAdapter<StatusInfoResult>(this, R.layout.item_all_device, statusInfoList) {
             @Override
-            protected void convert(ViewHolder holder, final StatusInfoResult statusInfoResult, final int position) {
+            protected void convert(CommonViewHolder holder, final StatusInfoResult statusInfoResult, final int position) {
                 holder.setText(R.id.tv_deviceToken, statusInfoResult.getDeviceToken() + "\n" + (statusInfoResult.getLocal() ? "本地设备" : "云端设备"));
                 holder.setText(R.id.tv_electricity, statusInfoResult.getVoltage() + "V");
                 holder.setText(R.id.tv_gprs, StringUtil.getByteSize(statusInfoResult.getGprs()));

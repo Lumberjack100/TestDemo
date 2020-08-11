@@ -25,7 +25,7 @@ import com.shmedo.core.cmd.CommandManager;
 import com.shmedo.core.enums.CommandType;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.adapter.recyclerviewbaseadapter.CommonAdapter;
-import com.shmedo.mcloudapp.adapter.recyclerviewbaseadapter.ViewHolder;
+import com.shmedo.mcloudapp.adapter.recyclerviewbaseadapter.CommonViewHolder;
 import com.shmedo.mcloudapp.common.ui.fragment.BaseFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.ConfigDASActivity;
 import com.shmedo.mcloudapp.entity.QueryCloudDataInfo;
@@ -155,7 +155,7 @@ public class QueryDeviceDataFragment extends BaseFragment {
         queryRecycleView.setLayoutManager(linearLayoutManager);
         adapter = new CommonAdapter<QueryCloudDataInfo>(getActivity(), R.layout.item_query_cloud_data, queryCloudDataInfoList) {
             @Override
-            protected void convert(ViewHolder holder, QueryCloudDataInfo info, int position) {
+            protected void convert(CommonViewHolder holder, QueryCloudDataInfo info, int position) {
                 holder.setText(R.id.tv_data_time, info.getTimeStr());
                 holder.setText(R.id.tv_data_content, info.getContent());
             }

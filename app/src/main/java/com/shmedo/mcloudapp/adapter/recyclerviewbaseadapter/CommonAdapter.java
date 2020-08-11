@@ -38,14 +38,14 @@ public abstract class CommonAdapter<T> extends MultiItemTypeAdapter<T>
             }
 
             @Override
-            public void convert(ViewHolder holder, T t, int position)
+            public void convert(CommonViewHolder holder, T t, int position)
             {
                 CommonAdapter.this.convert(holder, t, position);
             }
         });
     }
 
-    protected abstract void convert(ViewHolder holder, T t, int position);
+    protected abstract void convert(CommonViewHolder holder, T t, int position);
 
     public void removeItem(int position)
     {

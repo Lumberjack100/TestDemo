@@ -27,7 +27,7 @@ import com.shmedo.core.MCloudApp;
 import com.shmedo.core.cmd.CommandResult;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.adapter.recyclerviewbaseadapter.CommonAdapter;
-import com.shmedo.mcloudapp.adapter.recyclerviewbaseadapter.ViewHolder;
+import com.shmedo.mcloudapp.adapter.recyclerviewbaseadapter.CommonViewHolder;
 import com.shmedo.core.event.BluetoothStateEvent;
 import com.shmedo.mcloudapp.deviceconfig.view.PlayPauseView;
 
@@ -251,7 +251,7 @@ public class ADMEMotorControlActivity extends BaseDeviceConnectActivity {
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         adapter = new CommonAdapter<String>(this, R.layout.listitem_motor_distance, distanceList) {
             @Override
-            protected void convert(ViewHolder holder, final String distance, final int position) {
+            protected void convert(CommonViewHolder holder, final String distance, final int position) {
                 holder.setText(R.id.tv_number, "计次 " + (distanceList.size() - position));
                 holder.setText(R.id.tv_distance, distance + " mm");
 

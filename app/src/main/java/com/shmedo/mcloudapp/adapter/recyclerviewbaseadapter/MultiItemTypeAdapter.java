@@ -10,7 +10,7 @@ import java.util.List;
 /**
  * Created by zhy on 16/4/9.
  */
-public class MultiItemTypeAdapter<T> extends RecyclerView.Adapter<ViewHolder>
+public class MultiItemTypeAdapter<T> extends RecyclerView.Adapter<CommonViewHolder>
 {
     protected Context mContext;
     protected List<T> mDatas;
@@ -36,22 +36,22 @@ public class MultiItemTypeAdapter<T> extends RecyclerView.Adapter<ViewHolder>
 
 
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType)
+    public CommonViewHolder onCreateViewHolder(ViewGroup parent, int viewType)
     {
         ItemViewDelegate itemViewDelegate = mItemViewDelegateManager.getItemViewDelegate(viewType);
         int layoutId = itemViewDelegate.getItemViewLayoutId();
-        ViewHolder holder = ViewHolder.createViewHolder(mContext, parent, layoutId);
+        CommonViewHolder holder = CommonViewHolder.createViewHolder(mContext, parent, layoutId);
         onViewHolderCreated(holder, holder.getConvertView());
         setListener(parent, holder, viewType);
         return holder;
     }
 
-    public void onViewHolderCreated(ViewHolder holder, View itemView)
+    public void onViewHolderCreated(CommonViewHolder holder, View itemView)
     {
 
     }
 
-    public void convert(ViewHolder holder, T t)
+    public void convert(CommonViewHolder holder, T t)
     {
         mItemViewDelegateManager.convert(holder, t, holder.getAdapterPosition());
     }
@@ -62,7 +62,7 @@ public class MultiItemTypeAdapter<T> extends RecyclerView.Adapter<ViewHolder>
     }
 
 
-    protected void setListener(final ViewGroup parent, final ViewHolder viewHolder, int viewType)
+    protected void setListener(final ViewGroup parent, final CommonViewHolder viewHolder, int viewType)
     {
         if (!isEnabled(viewType))
             return;
@@ -95,7 +95,7 @@ public class MultiItemTypeAdapter<T> extends RecyclerView.Adapter<ViewHolder>
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position)
+    public void onBindViewHolder(CommonViewHolder holder, int position)
     {
         convert(holder, mDatas.get(position));
     }

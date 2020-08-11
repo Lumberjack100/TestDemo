@@ -1,22 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/card_view"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginLeft="10dp"
-    android:layout_marginRight="10dp"
-    android:layout_marginBottom="5dp"
-    android:background="@color/white"
-    android:foreground="?android:attr/selectableItemBackground"
-    card_view:cardCornerRadius="4dp"
-    card_view:cardUseCompatPadding="false">
+    android:background="@color/transparent">
 
     <FrameLayout
         android:id="@+id/fl_content_item"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:background="@drawable/bg_corner_5dp_white"
+        android:foreground="?android:attr/selectableItemBackground">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -83,7 +79,7 @@
             android:layout_width="25dp"
             android:layout_height="30dp"
             android:layout_gravity="top|left"
-            android:src="@drawable/ic_top"/>
+            android:src="@drawable/ic_top" />
 
         <TextView
             android:id="@+id/tv_project_state"
@@ -101,5 +97,5 @@
 
     </FrameLayout>
 
-</androidx.cardview.widget.CardView>
+</LinearLayout>
 

@@ -18,7 +18,7 @@ import com.shmedo.core.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.adapter.recyclerviewbaseadapter.CommonAdapter;
 import com.shmedo.mcloudapp.adapter.recyclerviewbaseadapter.MultiItemTypeAdapter;
-import com.shmedo.mcloudapp.adapter.recyclerviewbaseadapter.ViewHolder;
+import com.shmedo.mcloudapp.adapter.recyclerviewbaseadapter.CommonViewHolder;
 import com.shmedo.mcloudapp.common.ui.activity.BaseActivity;
 import com.shmedo.mcloudapp.entity.SystemDataInfo;
 import com.shmedo.mcloudapp.entity.SystemDataInfoDao;
@@ -97,7 +97,7 @@ public class SearchProjectActivity extends BaseActivity implements MultiItemType
         mRecyclerProject.addItemDecoration(new DividerItemDecoration());
         adapter = new CommonAdapter<SystemDataInfo>(this, R.layout.item_project, projectList) {
             @Override
-            protected void convert(ViewHolder holder, final SystemDataInfo systemDataInfo, final int position) {
+            protected void convert(CommonViewHolder holder, final SystemDataInfo systemDataInfo, final int position) {
                 holder.setText(R.id.tv_projectName, systemDataInfo.getProjName());
                 holder.setText(R.id.tv_companyName, "惠山区洛社镇XX社区");
                 holder.setText(R.id.tv_createTime, "2018.11.16 09:38");

@@ -24,7 +24,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.hjq.toast.ToastUtils;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.adapter.recyclerviewbaseadapter.CommonAdapter;
-import com.shmedo.mcloudapp.adapter.recyclerviewbaseadapter.ViewHolder;
+import com.shmedo.mcloudapp.adapter.recyclerviewbaseadapter.CommonViewHolder;
 import com.shmedo.mcloudapp.entity.QueryCloudDataInfo;
 import com.shmedo.mcloudapp.entity.parameter.QueryCloudDataParameter;
 import com.shmedo.mcloudapp.network.BaseObserver;
@@ -233,7 +233,7 @@ public class SearchDataUI implements View.OnClickListener {
         queryRecycleView.addItemDecoration(new DividerItemDecoration());
         adapter = new CommonAdapter<QueryCloudDataInfo>(mainActivity, R.layout.item_query_cloud_data, queryCloudDataInfoList) {
             @Override
-            protected void convert(ViewHolder holder, QueryCloudDataInfo info, int position) {
+            protected void convert(CommonViewHolder holder, QueryCloudDataInfo info, int position) {
                 holder.setText(R.id.tv_data_time, info.getTimeStr());
                 holder.setText(R.id.tv_data_content, info.getContent());
             }
