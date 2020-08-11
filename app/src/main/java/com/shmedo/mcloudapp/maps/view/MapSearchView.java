@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.shmedo.mcloudapp.R;
+import com.shmedo.mcloudapp.maps.model.PoiSearchType;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -21,8 +22,8 @@ import butterknife.OnClick;
  * 描述：    地图头部搜索框
  */
 public class MapSearchView extends RelativeLayout {
-    public static final int SEARCH_NORMAL = 0x0010;
-    public static final int SEARCH_WITH_POI_INPUT = 0x0011;
+    public static final int SEARCH_WITH_EMPTY = 0x0010;//搜索框没有输入内容
+    public static final int SEARCH_WITH_INPUT_TEXT = 0x0011;//搜索框填充了搜索内容
 
     @BindView(R.id.ll_search_normal)
     View llSearchNormal;
@@ -36,8 +37,9 @@ public class MapSearchView extends RelativeLayout {
     @BindView(R.id.tv_poi_title)
     TextView tvPoiTitle;
 
-    private int mode = SEARCH_NORMAL;
+    private int mode = SEARCH_WITH_EMPTY;
 
+    private PoiSearchType searchType;
 
     private OnMapHeadSearchViewClickListener mListener;
 
@@ -76,6 +78,14 @@ public class MapSearchView extends RelativeLayout {
                 mListener.onLeaveMapClick();
                 break;
 
+            case R.id.iv_goback:
+                if (searchType != null && searchType == PoiSearchType.LATLNG_SEARCH) {
+                    mListener.onCancelPoiSearchClick();
+                } else {
+                    mListener.onSearchNormalClick();
+                }
+                break;
+
             case R.id.tv_search_normal:
                 mListener.onSearchNormalClick();
                 break;
@@ -84,37 +94,39 @@ public class MapSearchView extends RelativeLayout {
                 mListener.onSearchLatLongClick();
                 break;
 
-            case R.id.iv_goback:
-                mListener.onBackSearchListClick();
-                break;
-
             case R.id.tv_poi_title:
-                mListener.onBackSearchListWithPoiInputClick();
+                mListener.onGoBackSearchListClick();
                 break;
 
             case R.id.tv_cancel_poi:
-                setSearchMode(SEARCH_NORMAL);
-                mListener.onRestoreNormalSearchClick();
+                mListener.onCancelPoiSearchClick();
                 break;
         }
     }
 
     public int getSearchMode() {
-
         return mode;
     }
 
     public void setSearchMode(int mode) {
         this.mode = mode;
 
-        if (mode == SEARCH_NORMAL) {
+        if (mode == SEARCH_WITH_EMPTY) {
             llSearchNormal.setVisibility(View.VISIBLE);
             llSearchWithPoiInput.setVisibility(View.GONE);
             tvPoiTitle.setText("");
-        } else if (mode == SEARCH_WITH_POI_INPUT) {
+        } else if (mode == SEARCH_WITH_INPUT_TEXT) {
             llSearchNormal.setVisibility(View.GONE);
             llSearchWithPoiInput.setVisibility(View.VISIBLE);
         }
+    }
+
+    public PoiSearchType getSearchType(){
+        return searchType;
+    }
+
+    public void setSearchType(PoiSearchType searchType) {
+        this.searchType = searchType;
     }
 
 
@@ -141,7 +153,7 @@ public class MapSearchView extends RelativeLayout {
      */
     public interface OnMapHeadSearchViewClickListener {
         /**
-         * 点击返回
+         * 点击返回，退出地图页面
          */
         void onLeaveMapClick();
 
@@ -158,17 +170,12 @@ public class MapSearchView extends RelativeLayout {
         /**
          * 点击返回 poi 搜索列表页面
          */
-        void onBackSearchListClick();
+        void onGoBackSearchListClick();
 
         /**
-         * 点击返回 poi 搜索列表页面并添上上次的Poi点位名称
+         * 点击取消按钮，恢复到显示正常搜索框
          */
-        void onBackSearchListWithPoiInputClick();
-
-        /**
-         * 点击 恢复到显示正常搜索框
-         */
-        void onRestoreNormalSearchClick();
+        void onCancelPoiSearchClick();
     }
 }
 

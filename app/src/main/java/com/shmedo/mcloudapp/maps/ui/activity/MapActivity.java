@@ -618,6 +618,7 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
      */
     @Override
     public void onSearchNormalClick() {
+        mMapSearchView.setSearchType(PoiSearchType.NORMAL_SEARCH);
         SearchPoiActivity.startActivityForResult(this, PoiSearchType.NORMAL_SEARCH, mCityName, "", REQUEST_CODE_POI_SEARCH);
     }
 
@@ -626,6 +627,7 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
      */
     @Override
     public void onSearchLatLongClick() {
+        mMapSearchView.setSearchType(PoiSearchType.LATLNG_SEARCH);
         SearchPoiActivity.startActivityForResult(this, PoiSearchType.LATLNG_SEARCH, mCityName, "", REQUEST_CODE_LATLNG_SEARCH);
     }
 
@@ -633,29 +635,19 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
      * 点击返回 poi 搜索列表页面
      */
     @Override
-    public void onBackSearchListClick() {
-        mMapMode = MapMode.NORMAL;
-        gaoDePoiProcessHelper.onPoiCloseClick();
-        onSearchNormalClick();
-    }
-
-    /**
-     * 点击返回 poi 搜索列表页面并添上上次的Poi点位名称
-     */
-    @Override
-    public void onBackSearchListWithPoiInputClick() {
+    public void onGoBackSearchListClick() {
         String poiTitle = mMapSearchView.getPoiInputText();
         SearchPoiActivity.startActivityForResult(this, PoiSearchType.NORMAL_SEARCH, mCityName, poiTitle, REQUEST_CODE_POI_SEARCH);
-
     }
+
 
     /**
      * 点击 恢复到显示正常搜索框
      */
     @Override
-    public void onRestoreNormalSearchClick() {
+    public void onCancelPoiSearchClick() {
+        mMapSearchView.setSearchMode(MapSearchView.SEARCH_WITH_EMPTY);
         gaoDePoiProcessHelper.onPoiCloseClick();
-        mMapSearchView.setSearchMode(MapSearchView.SEARCH_NORMAL);
     }
 
     /**
@@ -768,7 +760,7 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
         switch (requestCode) {
             case REQUEST_CODE_POI_SEARCH:
                 if (resultCode != Activity.RESULT_OK) {
-                    onRestoreNormalSearchClick();
+                    onCancelPoiSearchClick();
                     return;
                 }
 
@@ -784,7 +776,7 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
                     LatLng latLng = new LatLng(point.getLatitude(), point.getLongitude());
                     gaoDePoiProcessHelper.addPOIMarderAndShowDetail(latLng, poiItem.getTitle());
 
-                    mMapSearchView.setSearchMode(MapSearchView.SEARCH_WITH_POI_INPUT);
+                    mMapSearchView.setSearchMode(MapSearchView.SEARCH_WITH_INPUT_TEXT);
                     mMapSearchView.setPoiInputText(poiItem.getTitle());
                     sharePoi = poiItem;
                 }
@@ -792,7 +784,7 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
 
             case REQUEST_CODE_LATLNG_SEARCH:
                 if (resultCode != Activity.RESULT_OK) {
-                    onRestoreNormalSearchClick();
+                    onCancelPoiSearchClick();
                     return;
                 }
                 if (intent != null) {
@@ -805,7 +797,7 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
                     isPoiClick = true;
                     gaoDePoiProcessHelper.addPOIMarderAndShowDetail(latLng, title);
 
-                    mMapSearchView.setSearchMode(MapSearchView.SEARCH_WITH_POI_INPUT);
+                    mMapSearchView.setSearchMode(MapSearchView.SEARCH_WITH_INPUT_TEXT);
                     mMapSearchView.setPoiInputText(title);
                     sharePoi = new PoiItem(null, new LatLonPoint(latLng.latitude, latLng.longitude), title, title);
                 }
@@ -829,13 +821,17 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
                 case SHOW_POIDETAIL:
                     mMapMode = MapMode.NORMAL;
                     gaoDePoiProcessHelper.onPoiCloseClick();
-                    if (mMapSearchView.getSearchMode() == MapSearchView.SEARCH_WITH_POI_INPUT) {
-                        onSearchNormalClick();
+
+                    if (mMapSearchView.getSearchType() == PoiSearchType.LATLNG_SEARCH) {
+                        onCancelPoiSearchClick();
+                    } else {
+                        if (mMapSearchView.getSearchMode() == MapSearchView.SEARCH_WITH_INPUT_TEXT) {
+                            onSearchNormalClick();
+                        }
                     }
                     return true;
 
                 case CACULATE_DISTANCE:
-                    mMapMode = MapMode.NORMAL;
                     gaoDeCaculateDistanceHelper.onCancelDistanceClick();
                     return true;
 

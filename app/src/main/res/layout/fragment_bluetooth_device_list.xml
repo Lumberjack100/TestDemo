@@ -35,7 +35,7 @@
                     app:diffuse_coreColor="@color/white"
                     app:diffuse_coreImage="@drawable/icon_bluetooth_discovery"
                     app:diffuse_coreRadius="100"
-                    app:diffuse_maxWidth="200"
+                    app:diffuse_maxWidth="300"
                     app:diffuse_speed="2"
                     app:diffuse_width="4" />
 
