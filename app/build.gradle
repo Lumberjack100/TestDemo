@@ -1,7 +1,7 @@
 apply plugin: 'com.android.application'
 apply plugin: 'org.greenrobot.greendao'
 apply plugin: 'com.jakewharton.butterknife'
-apply plugin: 'com.mob.sdk' //集成了ShareSDK等第三方分享组件
+
 
 /**
  * 获取APP名字
@@ -143,33 +143,6 @@ greendao {
     daoPackage "com.shmedo.mcloudapp.entity" // set package of generated classes
 }
 
-//ShareSDK 集成配置
-
-MobSDK {
-    appKey "304ffee9c1d34"
-    appSecret "dc7a9cba3d840512d49175a9ef168f94"
-    ShareSDK {
-        loopShare true
-        devInfo {
-            Wechat {
-                id 1
-                sortId 1
-                appId "wx4868b35061f87885"
-                appSecret "64020361b8ec4c99936c0e3999a9f249"
-                bypassApproval false
-                enable true
-            }
-
-            Dingding {
-                id 2
-                sortId 2
-                appId "dingoa6lbfnghbtn0xeju0"
-                bypassApproval false
-                enable true
-            }
-        }
-    }
-}
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])

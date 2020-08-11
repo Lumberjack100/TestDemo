@@ -9,7 +9,6 @@ import android.widget.Toast;
 import com.hjq.toast.ToastInterceptor;
 import com.hjq.toast.ToastUtils;
 import com.hjq.toast.style.ToastBlackStyle;
-import com.mob.MobSDK;
 import com.pgyersdk.crash.PgyCrashManager;
 import com.shmedo.core.MCloudApp;
 import com.shmedo.core.log.AppCrashHandler;
@@ -49,9 +48,6 @@ public class MCloudApplication extends Application {
 
         //异常上报和升级
         initCrashReport();
-
-        //初始化MobSDk,集成了ShareSDK等第三方分享组件
-        MobSDK.init(this);
 
         //初始化吐司消息组件
         initToastUtil();

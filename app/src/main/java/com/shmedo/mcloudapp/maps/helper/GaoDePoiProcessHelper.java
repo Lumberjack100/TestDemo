@@ -40,14 +40,6 @@ import com.shmedo.mcloudapp.maps.view.PoiDetailBottomView;
 import com.shmedo.mcloudapp.maps.view.PoiSharePopup;
 import com.shmedo.mcloudapp.util.permission.PermissionHelper;
 
-import java.util.HashMap;
-
-import cn.sharesdk.framework.Platform;
-import cn.sharesdk.framework.PlatformActionListener;
-import cn.sharesdk.framework.ShareSDK;
-import cn.sharesdk.wechat.friends.Wechat;
-import timber.log.Timber;
-
 import static com.shmedo.mcloudapp.maps.ui.activity.MapActivity.STATE_UNLOCKED;
 
 /**
@@ -309,7 +301,7 @@ public class GaoDePoiProcessHelper implements AMap.OnPOIClickListener, PoiDetail
                         if (item == PoiSharePopup.SHARE_DINGDING) {
                             processDingdingShare(url);
                         } else if (item == PoiSharePopup.SHARE_WX) {
-                            shareText(Wechat.NAME, url);
+
                         }
                     }
                 })
@@ -317,42 +309,6 @@ public class GaoDePoiProcessHelper implements AMap.OnPOIClickListener, PoiDetail
                 .show();
     }
 
-    private void shareText(String name, String url) {
-        Platform platform = ShareSDK.getPlatform(name);
-        Platform.ShareParams shareParams = new Platform.ShareParams();
-        shareParams.setTitle(mapActivity.sharePoi.getTitle());
-        shareParams.setText(mapActivity.sharePoi.getSnippet());
-        shareParams.setUrl(url);
-//        Bitmap bmp = BitmapFactory.decodeResource(mapActivity.getResources(), R.drawable.map_icon);
-//        Bitmap thumbBmp = Bitmap.createScaledBitmap(bmp, 150, 150, true);
-//        bmp.recycle();
-//        shareParams.setImageData(thumbBmp);
-        shareParams.setShareType(Platform.SHARE_WEBPAGE);
-        shareParams.setScence(0);
-        platform.setPlatformActionListener(new MyPlatformActionListener());
-        platform.share(shareParams);
-    }
-
-
-    static class MyPlatformActionListener implements PlatformActionListener {
-        @Override
-        public void onComplete(final Platform platform, int i, HashMap<String, Object> hashMap) {
-            String ss = "";
-        }
-
-        @Override
-        public void onError(final Platform platform, int arg1, Throwable throwable) {
-            //失败的回调，platform:平台对象，arg1:表示当前的动作，throwable:异常信息
-            throwable.printStackTrace();
-            Timber.e("分享失败：%s", throwable.toString());
-            ToastUtils.show("分享失败：" + throwable.toString());
-        }
-
-        @Override
-        public void onCancel(Platform platform, int i) {
-            ToastUtils.show("分享取消");
-        }
-    }
 
     private void processDingdingShare( String url) {
         IDDShareApi iddShareApi = DDShareApiFactory.createDDShareApi(mapActivity, BuildConfig.Dingding_APP_ID, true);
