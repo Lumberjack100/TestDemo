@@ -1,21 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/gray_FEFEFE"
-    android:orientation="vertical">
+    android:fitsSystemWindows="true"
+    android:background="@color/gray_FEFEFE">
 
-    <include layout="@layout/custom_toolbar_project_list" />
-
-    <com.shmedo.mcloudapp.projects.view.HeaderSearchView
-        android:id="@+id/header_search_view"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_project_list_top">
+
+        <include layout="@layout/custom_toolbar_project_list" />
+
+    </LinearLayout>
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/swipeLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="108dp"
         android:orientation="vertical">
 
         <com.yanzhenjie.recyclerview.SwipeRecyclerView
@@ -31,4 +34,4 @@
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
-</LinearLayout>
+</FrameLayout>

@@ -19,12 +19,16 @@ public class FilterItemAdapter extends BaseQuickAdapter<FilterItem, BaseViewHold
 
     @Override
     protected void convert(@NotNull BaseViewHolder holder, @org.jetbrains.annotations.Nullable FilterItem filterItem) {
-        holder.setText(R.id.title, filterItem.getName());
+        holder.setText(R.id.tv_title, filterItem.getName());
 
         if (filterItem.isChecked()) {
-            holder.setBackgroundResource(R.id.title, R.drawable.checkable_btn_bg_checked);
+            holder.setBackgroundResource(R.id.fl_filter_item, R.drawable.bg_project_filter_item_checked);
+            holder.setVisible(R.id.iv_filter_tight,true);
+            holder.setTextColorRes(R.id.tv_title,R.color.project_blue_color);
         } else {
-            holder.setBackgroundResource(R.id.title, R.drawable.checkable_btn_bg_normal);
+            holder.setBackgroundResource(R.id.fl_filter_item, R.drawable.bg_project_filter_item_normal);
+            holder.setVisible(R.id.iv_filter_tight,false);
+            holder.setTextColorRes(R.id.tv_title,R.color.gray_808080);
         }
     }
 }

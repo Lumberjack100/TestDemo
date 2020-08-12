@@ -17,6 +17,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.hjq.toast.ToastUtils;
+import com.lxj.xpopup.XPopup;
 import com.shmedo.core.MCloudApp;
 import com.shmedo.core.model.UserInfo;
 import com.shmedo.core.util.DensityUtil;
@@ -39,6 +40,8 @@ import com.shmedo.mcloudapp.projects.model.RegionProjectInfo;
 import com.shmedo.mcloudapp.projects.model.TypeProjectInfo;
 import com.shmedo.mcloudapp.projects.model.param.ProjectBaseInfoParam;
 import com.shmedo.mcloudapp.projects.ui.activity.OutOfDateProjectGuideActivity;
+import com.shmedo.mcloudapp.projects.ui.activity.ProjectSearchActivity;
+import com.shmedo.mcloudapp.projects.view.ProjectFilterPopupView;
 import com.shmedo.mcloudapp.util.DaoManager;
 import com.shmedo.mcloudapp.util.DateUtil;
 import com.shmedo.mcloudapp.util.GlideUtils;
@@ -60,6 +63,7 @@ import java.util.List;
 import java.util.Map;
 
 import butterknife.BindView;
+import butterknife.OnClick;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.RequestBody;
@@ -76,6 +80,8 @@ public class NewProjectFragment extends BaseFragment {
 
     @BindView(R.id.recyclerview_group)
     RecyclerView mRecyclerViewGroup;
+
+    private ProjectFilterPopupView popupView;
 
     private NewMainActivity activity;
     private int userId;
@@ -143,7 +149,7 @@ public class NewProjectFragment extends BaseFragment {
                 }
                 ProjectDetailInfo detailInfo = (ProjectDetailInfo) projectItem.getObject();
                 ImageView mIvThumbnail = holder.getView(R.id.ic_thumbnail);
-                GlideUtils.loadImage(MCloudApp.getContext(), detailInfo.getImagePath(), mIvThumbnail, R.drawable.ic_project_default, R.drawable.ic_photo);
+                GlideUtils.loadImage(MCloudApp.getContext(), detailInfo.getImagePath(), mIvThumbnail, R.drawable.ic_project_default, R.drawable.ic_project_default);
                 holder.setText(R.id.tv_project_name, detailInfo.getProjectName());
                 holder.setText(R.id.tv_create_time, detailInfo.getBuildTime());
                 holder.setText(R.id.tv_company_name, detailInfo.getCompanyName());
@@ -169,7 +175,7 @@ public class NewProjectFragment extends BaseFragment {
 
     private void initMultiItemAdapter() {
         mRecyclerViewGroup.setLayoutManager(new LinearLayoutManager(getActivity()));
-        groupAdapter = new ProjectMultipleItemAdapter( projectItems);
+        groupAdapter = new ProjectMultipleItemAdapter(projectItems);
         groupAdapter.setAnimationEnable(true);
         groupAdapter.setAnimationFirstOnly(false);
         groupAdapter.setOnItemClickListener(new com.chad.library.adapter.base.listener.OnItemClickListener() {
@@ -228,6 +234,49 @@ public class NewProjectFragment extends BaseFragment {
             }
         }
     };
+
+    @OnClick({R.id.iv_view_in_map, R.id.iv_filter})
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.iv_view_in_map://在地图中浏览项目
+//                ViewProjectsInMapActivity.startActivity(getActivity());
+                ProjectSearchActivity.startActivity(getActivity());
+                break;
+
+            case R.id.iv_filter://推出项目筛选条件抽屉窗口
+                showFilterPopupView(v);
+                break;
+        }
+    }
+
+    private void showFilterPopupView(final View v) {
+        if (popupView == null) {
+            popupView = (ProjectFilterPopupView) new XPopup.Builder(getContext())
+                    .atView(v)
+                    .asCustom(new ProjectFilterPopupView(getContext(), new ProjectFilterPopupView.OnFilterResultListener() {
+                        @Override
+                        public void onFilterResult(ProjectViewMode viewMode, ProjectState state) {
+                            projectViewMode = viewMode;
+                            projectState = state;
+                            //列表模式时，直接筛选缓存的tempProjectItems
+                            if (viewMode == ProjectViewMode.VIEW_SIMPLE) {
+                                mRecyclerView.setVisibility(View.VISIBLE);
+                                mRecyclerViewGroup.setVisibility(View.GONE);
+                                filterSimpleListProjectsByState();
+                            } else {
+                                mRecyclerView.setVisibility(View.GONE);
+                                mRecyclerViewGroup.setVisibility(View.VISIBLE);
+                                //分组展示模式时，需要请求不同的分组接口刷新数据
+                                swipeRefresh.setRefreshing(true);
+                                refreshProjects();
+                            }
+                        }
+                    }));
+        }
+
+        popupView.show();
+    }
+
 
     private void refreshProjects() {
         switch (projectViewMode) {
@@ -456,7 +505,11 @@ public class NewProjectFragment extends BaseFragment {
                 projectItems.addAll(subProjectItems);
             }
         }
-        simpleAdapter.notifyDataSetChanged();
+
+        mRecyclerView.setVisibility(View.GONE);
+        mRecyclerViewGroup.setVisibility(View.VISIBLE);
+//        groupAdapter.notifyDataSetChanged();
+        groupAdapter.setNewInstance(projectItems);
     }
 
     /**
@@ -473,7 +526,10 @@ public class NewProjectFragment extends BaseFragment {
                 projectItems.addAll(subProjectItems);
             }
         }
-        simpleAdapter.notifyDataSetChanged();
+        mRecyclerView.setVisibility(View.GONE);
+        mRecyclerViewGroup.setVisibility(View.VISIBLE);
+//        groupAdapter.notifyDataSetChanged();
+        initMultiItemAdapter();
     }
 
     /**
@@ -490,7 +546,10 @@ public class NewProjectFragment extends BaseFragment {
                 projectItems.addAll(subProjectItems);
             }
         }
-        simpleAdapter.notifyDataSetChanged();
+//        groupAdapter.notifyDataSetChanged();
+//        initMultiItemAdapter();
+
+        groupAdapter.setNewInstance(projectItems);
     }
 
     /**

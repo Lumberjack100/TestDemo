@@ -54,6 +54,7 @@
     <color name="gray_616161">#616161</color>
     <color name="gray_757575">#757575</color>
     <color name="gray_797979">#797979</color>
+    <color name="gray_808080">#808080</color>
     <color name="gray_818182">#818182</color>
     <color name="gray_807B7B">#807B7B</color>
     <color name="gray_979797">#979797</color>
@@ -81,5 +82,8 @@
     <color name="testspeed_bg">#2d3a4a</color>
     <color name="testspeed_textColor">#3af3ff</color>
     <color name="testspeed_result_bg">#61a9fc</color>
+
+    <!-- 项目模块 -->
+    <color name="project_blue_color">#4D64FD</color>
 
 </resources>

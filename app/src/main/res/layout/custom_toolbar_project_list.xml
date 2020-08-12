@@ -1,37 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="?attr/actionBarSize"
-    android:background="@color/colorPrimary"
-    android:fitsSystemWindows="false"
-    android:paddingStart="@dimen/dimen_size_15"
-    android:paddingEnd="@dimen/dimen_size_15">
+    android:fitsSystemWindows="true"
+    android:gravity="center_vertical"
+    android:paddingStart="@dimen/dimen_size_16"
+    android:paddingEnd="@dimen/dimen_size_16">
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="30dp"
+        android:layout_weight="1"
+        android:background="@drawable/bg_search_project_small"
+        android:gravity="center_vertical">
+
+        <ImageView
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_marginStart="13dp"
+            android:src="@drawable/ic_search_project" />
+
+        <TextView
+            android:id="@+id/tv_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="搜索项目"
+            android:textColor="#ffb3b3b3"
+            android:textSize="@dimen/text_size_13" />
+
+    </LinearLayout>
+
 
     <ImageView
         android:id="@+id/iv_view_in_map"
-        android:layout_width="35dp"
-        android:layout_height="40dp"
-        android:layout_alignParentStart="true"
-        android:layout_centerVertical="true"
-        android:src="@drawable/ic_poi_in_map" />
+        android:layout_width="27dp"
+        android:layout_height="27dp"
+        android:layout_marginStart="31dp"
+        android:src="@drawable/ic_project_map" />
 
-    <TextView
-        android:id="@+id/tv_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:textColor="@color/white"
-        android:textSize="@dimen/text_size_18"
-        tools:text="参数配置" />
 
     <ImageView
         android:id="@+id/iv_filter"
-        android:layout_width="35dp"
-        android:layout_height="40dp"
-        android:layout_centerVertical="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginLeft="15dp"
-        android:src="@drawable/ic_filter" />
+        android:layout_width="27dp"
+        android:layout_height="27dp"
+        android:layout_marginStart="27dp"
+        android:src="@drawable/ic_filter_project_normal" />
 
-</RelativeLayout>
+</LinearLayout>
