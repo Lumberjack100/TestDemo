@@ -3,17 +3,17 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginStart="@dimen/card_item_side_margin"
+    android:layout_marginEnd="@dimen/card_item_side_margin"
     android:orientation="vertical">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="@dimen/project_content_item_height"
-        android:layout_marginLeft="@dimen/card_item_side_margin"
-        android:layout_marginRight="@dimen/card_item_side_margin"
         android:background="@color/white"
         android:foreground="?android:attr/selectableItemBackground"
-        android:paddingStart="@dimen/card_item_side_padding"
-        android:paddingEnd="@dimen/card_item_side_padding">
+        android:paddingStart="@dimen/card_item_padding_left"
+        android:paddingEnd="@dimen/card_item_padding_left">
 
         <ImageView
             android:id="@+id/ic_thumbnail"
@@ -37,9 +37,9 @@
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
                 android:singleLine="true"
-                android:textStyle="bold"
                 android:textColor="@color/title_text_color"
                 android:textSize="@dimen/text_size_18"
+                android:textStyle="bold"
                 tools:text="云南德宏州S318芒那线公路边坡监测系统xxx第三期中标" />
 
             <TextView
@@ -70,7 +70,9 @@
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="1dp"
+        android:layout_height="0.5dp"
+        android:layout_marginStart="@dimen/card_item_padding_left"
+        android:layout_marginEnd="@dimen/card_item_padding_left"
         android:background="@color/gray_FEFEFE" />
 
 </LinearLayout>

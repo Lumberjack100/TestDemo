@@ -11,8 +11,8 @@
         android:layout_marginRight="@dimen/card_item_side_margin"
         android:background="@drawable/bg_corner_6dp_white"
         android:foreground="?android:attr/selectableItemBackground"
-        android:paddingStart="@dimen/card_item_side_padding"
-        android:paddingEnd="@dimen/card_item_side_padding">
+        android:paddingStart="@dimen/card_item_padding_left"
+        android:paddingEnd="@dimen/card_item_padding_right">
 
         <ImageView
             android:id="@+id/ic_thumbnail"
@@ -36,9 +36,9 @@
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
                 android:singleLine="true"
-                android:textStyle="bold"
                 android:textColor="@color/title_text_color"
                 android:textSize="@dimen/text_size_18"
+                android:textStyle="bold"
                 tools:text="云南德宏州S318芒那线公路边坡监测系统xxx第三期中标" />
 
             <TextView
@@ -52,16 +52,37 @@
                 android:textSize="@dimen/text_size_13"
                 tools:text="惠山区洛社镇XX社区" />
 
-            <TextView
-                android:id="@+id/tv_create_time"
-                android:layout_width="wrap_content"
+            <RelativeLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="9dp"
-                android:ellipsize="end"
-                android:singleLine="true"
-                android:textColor="@color/sub_title_text_color"
-                android:textSize="@dimen/text_size_13"
-                tools:text="2018.11.16 09:38" />
+                android:layout_marginTop="9dp">
+
+                <TextView
+                    android:id="@+id/tv_create_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:ellipsize="end"
+                    android:singleLine="true"
+                    android:textColor="@color/sub_title_text_color"
+                    android:textSize="@dimen/text_size_13"
+                    tools:text="2018.11.16 09:38" />
+
+                <TextView
+                    android:id="@+id/tv_top_flag"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:background="@drawable/bg_corner_2dp_f6f6f6"
+                    android:paddingStart="5dp"
+                    android:paddingTop="3dp"
+                    android:paddingEnd="5dp"
+                    android:paddingBottom="3dp"
+                    android:text="已置顶"
+                    android:textColor="#ffa6a6a6"
+                    android:textSize="@dimen/text_size_11" />
+
+            </RelativeLayout>
 
         </LinearLayout>
 

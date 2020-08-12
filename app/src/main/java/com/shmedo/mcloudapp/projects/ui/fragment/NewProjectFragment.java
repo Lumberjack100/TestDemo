@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -16,7 +15,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
-import com.hjq.toast.ToastUtils;
 import com.lxj.xpopup.XPopup;
 import com.shmedo.core.MCloudApp;
 import com.shmedo.core.model.UserInfo;
@@ -30,6 +28,7 @@ import com.shmedo.mcloudapp.network.BaseObserver;
 import com.shmedo.mcloudapp.network.MDRetrofit;
 import com.shmedo.mcloudapp.network.NetworkConst;
 import com.shmedo.mcloudapp.projects.adapter.ProjectMultipleItemAdapter;
+import com.shmedo.mcloudapp.projects.helper.ProjectImageHelper;
 import com.shmedo.mcloudapp.projects.model.CustomLevelProjectInfo;
 import com.shmedo.mcloudapp.projects.model.ProjectBaseInfo;
 import com.shmedo.mcloudapp.projects.model.ProjectDetailInfo;
@@ -44,7 +43,6 @@ import com.shmedo.mcloudapp.projects.ui.activity.ProjectSearchActivity;
 import com.shmedo.mcloudapp.projects.view.ProjectFilterPopupView;
 import com.shmedo.mcloudapp.util.DaoManager;
 import com.shmedo.mcloudapp.util.DateUtil;
-import com.shmedo.mcloudapp.util.GlideUtils;
 import com.shmedo.mcloudapp.util.GsonFactory;
 import com.yanzhenjie.recyclerview.OnItemClickListener;
 import com.yanzhenjie.recyclerview.OnItemMenuClickListener;
@@ -91,11 +89,13 @@ public class NewProjectFragment extends BaseFragment {
     private ProjectState projectState = ProjectState.ALL;
 
     private CommonAdapter simpleAdapter;
-    private ProjectMultipleItemAdapter groupAdapter;
+    private ProjectMultipleItemAdapter multiAdapter;
     private Map<Integer, ProjectDetailInfo> detailInfoMap = new LinkedHashMap<>();
     private List<ProjectBaseInfo> tempBaseInfoList = new LinkedList<>();
-    private List<ProjectItem> projectItems = new ArrayList<>();
     private List<ProjectItem> tempProjectItems = new ArrayList<>();
+    private List<ProjectItem> simpleProjectItems = new ArrayList<>();
+    private List<ProjectItem> multiProjectItems = new ArrayList<>();
+
 
     @Override
     protected int initContentView() {
@@ -141,24 +141,25 @@ public class NewProjectFragment extends BaseFragment {
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         DefaultItemDecoration mItemDecoration = new DefaultItemDecoration(ContextCompat.getColor(getActivity(), R.color.transparent), 0, DensityUtil.Dp2Px(getActivity(), 14));
         mRecyclerView.addItemDecoration(mItemDecoration);
-        simpleAdapter = new CommonAdapter<ProjectItem>(getActivity(), R.layout.item_project_info_normal, projectItems) {
+        simpleAdapter = new CommonAdapter<ProjectItem>(getActivity(), R.layout.item_project_info_normal, simpleProjectItems) {
             @Override
             protected void convert(CommonViewHolder holder, final ProjectItem projectItem, final int position) {
                 if (projectItem.getObject() instanceof String) {
                     return;
                 }
+
                 ProjectDetailInfo detailInfo = (ProjectDetailInfo) projectItem.getObject();
-                ImageView mIvThumbnail = holder.getView(R.id.ic_thumbnail);
-                GlideUtils.loadImage(MCloudApp.getContext(), detailInfo.getImagePath(), mIvThumbnail, R.drawable.ic_project_default, R.drawable.ic_project_default);
+                holder.setImageResource(R.id.ic_thumbnail, ProjectImageHelper.getSensorResourceID(detailInfo.getProjectTypeID()));
                 holder.setText(R.id.tv_project_name, detailInfo.getProjectName());
-                holder.setText(R.id.tv_create_time, detailInfo.getBuildTime());
                 holder.setText(R.id.tv_company_name, detailInfo.getCompanyName());
+                holder.setText(R.id.tv_create_time, detailInfo.getBuildTime());
+                holder.setVisibleOrGone(R.id.tv_top_flag, detailInfo.isTop());
             }
         };
         mRecyclerView.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-                ProjectItem projectItem = projectItems.get(position);
+                ProjectItem projectItem = simpleProjectItems.get(position);
 //                if (projectItem.isHeader())
 //                    return;
 
@@ -175,13 +176,13 @@ public class NewProjectFragment extends BaseFragment {
 
     private void initMultiItemAdapter() {
         mRecyclerViewGroup.setLayoutManager(new LinearLayoutManager(getActivity()));
-        groupAdapter = new ProjectMultipleItemAdapter(projectItems);
-        groupAdapter.setAnimationEnable(true);
-        groupAdapter.setAnimationFirstOnly(false);
-        groupAdapter.setOnItemClickListener(new com.chad.library.adapter.base.listener.OnItemClickListener() {
+        multiAdapter = new ProjectMultipleItemAdapter(multiProjectItems);
+        multiAdapter.setAnimationEnable(true);
+        multiAdapter.setAnimationFirstOnly(false);
+        multiAdapter.setOnItemClickListener(new com.chad.library.adapter.base.listener.OnItemClickListener() {
             @Override
             public void onItemClick(@NonNull BaseQuickAdapter adapter, @NonNull View view, int position) {
-                ProjectItem projectItem = groupAdapter.getItem(position);
+                ProjectItem projectItem = multiAdapter.getItem(position);
 //                if (projectItem.isHeader())
 //                    return;
 
@@ -192,7 +193,7 @@ public class NewProjectFragment extends BaseFragment {
             }
         });
 
-        mRecyclerViewGroup.setAdapter(groupAdapter);
+        mRecyclerViewGroup.setAdapter(multiAdapter);
     }
 
     /**
@@ -228,12 +229,31 @@ public class NewProjectFragment extends BaseFragment {
 
             int direction = menuBridge.getDirection(); // 左侧还是右侧菜单。
             int menuPosition = menuBridge.getPosition(); // 菜单在RecyclerView的Item中的Position。
-
             if (direction == SwipeRecyclerView.RIGHT_DIRECTION) {
-                ToastUtils.show("list第" + position + "; 右侧菜单第" + menuPosition);
+//                ToastUtils.show("list第" + position + "; 右侧菜单第" + menuPosition);
+                ProjectItem projectItem = (ProjectItem) simpleAdapter.getDatas().get(position);
+                if (projectItem.getObject() instanceof ProjectDetailInfo) {
+                    ProjectDetailInfo detailInfo = (ProjectDetailInfo) projectItem.getObject();
+                    updateTopState(detailInfo);
+                }
             }
         }
     };
+
+    /**
+     * 置顶设置
+     *
+     * @param detailInfo
+     */
+    private void updateTopState(ProjectDetailInfo detailInfo) {
+        List<Integer> projectIDs = new ArrayList<>();
+        projectIDs.add(detailInfo.getProjectID());
+        if (detailInfo.isTop()) {
+            processUnTopUserProject(projectIDs);
+        } else {
+            processTopUserProject(projectIDs);
+        }
+    }
 
     @OnClick({R.id.iv_view_in_map, R.id.iv_filter})
     public void onClick(View v) {
@@ -497,19 +517,16 @@ public class NewProjectFragment extends BaseFragment {
      * @param infos
      */
     private void setCustomLevelModeAdapterData(List<CustomLevelProjectInfo> infos) {
-        projectItems.clear();
+        multiProjectItems.clear();
         for (CustomLevelProjectInfo info : infos) {
             List<ProjectItem> subProjectItems = filterGroupListProjectsByState(info.getLevelProjs());
             if (!subProjectItems.isEmpty()) {
-                projectItems.add(new ProjectItem(info.getLevelName(), ProjectItem.ITEM_TOP));
-                projectItems.addAll(subProjectItems);
+                multiProjectItems.add(new ProjectItem(info.getLevelName(), ProjectItem.ITEM_TOP));
+                multiProjectItems.addAll(subProjectItems);
             }
         }
 
-        mRecyclerView.setVisibility(View.GONE);
-        mRecyclerViewGroup.setVisibility(View.VISIBLE);
-//        groupAdapter.notifyDataSetChanged();
-        groupAdapter.setNewInstance(projectItems);
+        multiAdapter.notifyDataSetChanged();
     }
 
     /**
@@ -518,18 +535,15 @@ public class NewProjectFragment extends BaseFragment {
      * @param infos
      */
     private void setRegionModeAdapterData(List<RegionProjectInfo> infos) {
-        projectItems.clear();
+        multiProjectItems.clear();
         for (RegionProjectInfo info : infos) {
             List<ProjectItem> subProjectItems = filterGroupListProjectsByState(info.getProjects());
             if (!subProjectItems.isEmpty()) {
-                projectItems.add(new ProjectItem(info.getRegionFullName(), ProjectItem.ITEM_TOP));
-                projectItems.addAll(subProjectItems);
+                multiProjectItems.add(new ProjectItem(info.getRegionFullName(), ProjectItem.ITEM_TOP));
+                multiProjectItems.addAll(subProjectItems);
             }
         }
-        mRecyclerView.setVisibility(View.GONE);
-        mRecyclerViewGroup.setVisibility(View.VISIBLE);
-//        groupAdapter.notifyDataSetChanged();
-        initMultiItemAdapter();
+        multiAdapter.notifyDataSetChanged();
     }
 
     /**
@@ -538,28 +552,25 @@ public class NewProjectFragment extends BaseFragment {
      * @param infos
      */
     private void setTypeModeAdapterData(List<TypeProjectInfo> infos) {
-        projectItems.clear();
+        multiProjectItems.clear();
         for (TypeProjectInfo info : infos) {
             List<ProjectItem> subProjectItems = filterGroupListProjectsByState(info.getProjects());
             if (!subProjectItems.isEmpty()) {
-                projectItems.add(new ProjectItem(info.getProjTypeName(), ProjectItem.ITEM_TOP));
-                projectItems.addAll(subProjectItems);
+                multiProjectItems.add(new ProjectItem(info.getProjTypeName(), ProjectItem.ITEM_TOP));
+                multiProjectItems.addAll(subProjectItems);
             }
         }
-//        groupAdapter.notifyDataSetChanged();
-//        initMultiItemAdapter();
-
-        groupAdapter.setNewInstance(projectItems);
+        multiAdapter.notifyDataSetChanged();
     }
 
     /**
      * 根据项目状态过滤简单项目列表
      */
     private void filterSimpleListProjectsByState() {
-        projectItems.clear();
+        simpleProjectItems.clear();
         switch (projectState) {
             case ALL:
-                projectItems.addAll(tempProjectItems);
+                simpleProjectItems.addAll(tempProjectItems);
                 break;
 
             case ON_LINE://筛选出在线的项目
@@ -567,7 +578,7 @@ public class NewProjectFragment extends BaseFragment {
                     if (item.getObject() instanceof ProjectDetailInfo) {
                         ProjectDetailInfo detailInfo = (ProjectDetailInfo) item.getObject();
                         if (detailInfo.isIsValid()) {
-                            projectItems.add(item);
+                            simpleProjectItems.add(item);
                         }
                     }
                 }
@@ -578,7 +589,7 @@ public class NewProjectFragment extends BaseFragment {
                     if (item.getObject() instanceof ProjectDetailInfo) {
                         ProjectDetailInfo detailInfo = (ProjectDetailInfo) item.getObject();
                         if (!detailInfo.isIsValid()) {
-                            projectItems.add(item);
+                            simpleProjectItems.add(item);
                         }
                     }
                 }
@@ -589,7 +600,7 @@ public class NewProjectFragment extends BaseFragment {
                     if (item.getObject() instanceof ProjectDetailInfo) {
                         ProjectDetailInfo detailInfo = (ProjectDetailInfo) item.getObject();
                         if (detailInfo.isOutOfDate()) {
-                            projectItems.add(item);
+                            simpleProjectItems.add(item);
                         }
                     }
                 }

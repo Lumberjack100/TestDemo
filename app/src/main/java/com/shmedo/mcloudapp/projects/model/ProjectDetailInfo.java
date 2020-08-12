@@ -285,4 +285,5 @@ public class ProjectDetailInfo {
     public boolean getTop() {
         return this.top;
     }
+
 }
