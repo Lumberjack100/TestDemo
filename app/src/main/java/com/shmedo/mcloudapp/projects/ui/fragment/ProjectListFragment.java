@@ -82,7 +82,7 @@ public class ProjectListFragment extends BaseFragment implements ProjectFilterDr
     @BindView(R.id.swipeLayout)
     SwipeRefreshLayout swipeRefresh;
 
-    @BindView(R.id.recycler_project)
+    @BindView(R.id.recyclerview)
     RecyclerView mRecyclerProject;
 
     private NewMainActivity activity;
@@ -143,15 +143,15 @@ public class ProjectListFragment extends BaseFragment implements ProjectFilterDr
 
     private void initMultiItemAdapter() {
         mRecyclerProject.setLayoutManager(new LinearLayoutManager(getActivity()));
-        itemAdapter = new ProjectItemAdapter(R.layout.listitem_project_header, R.layout.listitem_project_baseinfo, projectItems);
+//        itemAdapter = new ProjectItemAdapter(R.layout.listitem_project_header, R.layout.item_project_info_normal, projectItems);
         itemAdapter.setAnimationEnable(true);
         itemAdapter.setAnimationFirstOnly(false);
         itemAdapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(@NonNull BaseQuickAdapter adapter, @NonNull View view, int position) {
                 ProjectItem projectItem = itemAdapter.getItem(position);
-                if (projectItem.isHeader())
-                    return;
+//                if (projectItem.isHeader())
+//                    return;
 
                 ProjectDetailInfo detailInfo = (ProjectDetailInfo) projectItem.getObject();
                 if (detailInfo.isOutOfDate()) {
@@ -484,7 +484,7 @@ public class ProjectListFragment extends BaseFragment implements ProjectFilterDr
     private void setSimpleModeAdapterData(List<ProjectDetailInfo> infos) {
         tempProjectItems.clear();
         for (ProjectDetailInfo info : infos) {
-            tempProjectItems.add(new ProjectItem(false, info));
+            tempProjectItems.add(new ProjectItem( info));
         }
         filterSimpleListProjectsByState();
     }
@@ -499,7 +499,7 @@ public class ProjectListFragment extends BaseFragment implements ProjectFilterDr
         for (CustomLevelProjectInfo info : infos) {
             List<ProjectItem> subProjectItems = filterGroupListProjectsByState(info.getLevelProjs());
             if (!subProjectItems.isEmpty()) {
-                projectItems.add(new ProjectItem(true, info.getLevelName()));
+                projectItems.add(new ProjectItem(info.getLevelName()));
                 projectItems.addAll(subProjectItems);
             }
         }
@@ -516,7 +516,7 @@ public class ProjectListFragment extends BaseFragment implements ProjectFilterDr
         for (RegionProjectInfo info : infos) {
             List<ProjectItem> subProjectItems = filterGroupListProjectsByState(info.getProjects());
             if (!subProjectItems.isEmpty()) {
-                projectItems.add(new ProjectItem(true, info.getRegionFullName()));
+                projectItems.add(new ProjectItem( info.getRegionFullName()));
                 projectItems.addAll(subProjectItems);
             }
         }
@@ -533,7 +533,7 @@ public class ProjectListFragment extends BaseFragment implements ProjectFilterDr
         for (TypeProjectInfo info : infos) {
             List<ProjectItem> subProjectItems = filterGroupListProjectsByState(info.getProjects());
             if (!subProjectItems.isEmpty()) {
-                projectItems.add(new ProjectItem(true, info.getProjTypeName()));
+                projectItems.add(new ProjectItem( info.getProjTypeName()));
                 projectItems.addAll(subProjectItems);
             }
         }
@@ -604,24 +604,24 @@ public class ProjectListFragment extends BaseFragment implements ProjectFilterDr
 
             switch (projectState) {
                 case ALL:
-                    subProjectItems.add(new ProjectItem(false, detailInfo));
+                    subProjectItems.add(new ProjectItem( detailInfo));
                     break;
 
                 case ON_LINE://筛选出在线的项目
                     if (detailInfo.isIsValid()) {
-                        subProjectItems.add(new ProjectItem(false, detailInfo));
+                        subProjectItems.add(new ProjectItem( detailInfo));
                     }
                     break;
 
                 case OFF_LINE://筛选出离线的项目
                     if (!detailInfo.isIsValid()) {
-                        subProjectItems.add(new ProjectItem(false, detailInfo));
+                        subProjectItems.add(new ProjectItem( detailInfo));
                     }
                     break;
 
                 case OUT_OF_DATE://筛选出过期的项目
                     if (detailInfo.isOutOfDate()) {
-                        subProjectItems.add(new ProjectItem(false, detailInfo));
+                        subProjectItems.add(new ProjectItem( detailInfo));
                     }
                     break;
             }

@@ -88,9 +88,10 @@
 
     <!--项目模块-->
     <dimen name="project_title_item_height">40dp</dimen>
-    <dimen name="project_content_item_height">125dp</dimen>
-    <dimen name="card_item_side_margin">10dp</dimen>
-    <dimen name="card_item_bottom_margin">10dp</dimen>
+    <dimen name="project_content_item_height">108dp</dimen>
+    <dimen name="card_item_side_margin">16dp</dimen>
+    <dimen name="card_item_bottom_margin">14dp</dimen>
     <dimen name="card_item_side_padding">10dp</dimen>
     <dimen name="card_item_bottom_padding">10dp</dimen>
+    <dimen name="project_info_icon_size">68dp</dimen>
 </resources>

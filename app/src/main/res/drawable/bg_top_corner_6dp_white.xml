@@ -6,6 +6,6 @@
 
     <!-- 圆角 -->
     <corners
-        android:bottomLeftRadius="5dp"
-        android:bottomRightRadius="5dp" />
+        android:topLeftRadius="6dp"
+        android:topRightRadius="6dp" />
 </shape>

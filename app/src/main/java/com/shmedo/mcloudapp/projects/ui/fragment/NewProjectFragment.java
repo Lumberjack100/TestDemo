@@ -7,12 +7,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.hjq.toast.ToastUtils;
 import com.shmedo.core.MCloudApp;
 import com.shmedo.core.model.UserInfo;
@@ -25,6 +28,7 @@ import com.shmedo.mcloudapp.common.ui.fragment.BaseFragment;
 import com.shmedo.mcloudapp.network.BaseObserver;
 import com.shmedo.mcloudapp.network.MDRetrofit;
 import com.shmedo.mcloudapp.network.NetworkConst;
+import com.shmedo.mcloudapp.projects.adapter.ProjectMultipleItemAdapter;
 import com.shmedo.mcloudapp.projects.model.CustomLevelProjectInfo;
 import com.shmedo.mcloudapp.projects.model.ProjectBaseInfo;
 import com.shmedo.mcloudapp.projects.model.ProjectDetailInfo;
@@ -67,8 +71,11 @@ public class NewProjectFragment extends BaseFragment {
     @BindView(R.id.swipeLayout)
     SwipeRefreshLayout swipeRefresh;
 
-    @BindView(R.id.recycler_project)
-    SwipeRecyclerView mRecyclerProject;
+    @BindView(R.id.recyclerview)
+    SwipeRecyclerView mRecyclerView;
+
+    @BindView(R.id.recyclerview_group)
+    RecyclerView mRecyclerViewGroup;
 
     private NewMainActivity activity;
     private int userId;
@@ -77,8 +84,8 @@ public class NewProjectFragment extends BaseFragment {
     private ProjectViewMode projectViewMode = ProjectViewMode.VIEW_SIMPLE;
     private ProjectState projectState = ProjectState.ALL;
 
-    private CommonAdapter adapter;
-    private Map<Integer, ProjectBaseInfo> baseInfoMap = new LinkedHashMap<>();
+    private CommonAdapter simpleAdapter;
+    private ProjectMultipleItemAdapter groupAdapter;
     private Map<Integer, ProjectDetailInfo> detailInfoMap = new LinkedHashMap<>();
     private List<ProjectBaseInfo> tempBaseInfoList = new LinkedList<>();
     private List<ProjectItem> projectItems = new ArrayList<>();
@@ -97,6 +104,8 @@ public class NewProjectFragment extends BaseFragment {
     }
 
     private void initView() {
+        mRecyclerView.setVisibility(View.VISIBLE);
+        mRecyclerViewGroup.setVisibility(View.GONE);
     }
 
     @Override
@@ -108,6 +117,7 @@ public class NewProjectFragment extends BaseFragment {
             UserInfo.UserBean user = userInfo.getUser();
             userId = user.getId();
         }
+        initSimpleAdapter();
         initMultiItemAdapter();
         swipeRefresh.setColorSchemeResources(android.R.color.holo_blue_light);
         swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -119,16 +129,13 @@ public class NewProjectFragment extends BaseFragment {
         // 进入页面，刷新数据
         swipeRefresh.setRefreshing(true);
         refreshProjects();
-
-//        filterDrawerView.setOnFilterSetListener(this);
-//        headerSearchView.setOnSearchClickListener(this);
     }
 
-    private void initMultiItemAdapter() {
-        mRecyclerProject.setLayoutManager(new LinearLayoutManager(getActivity()));
-        DefaultItemDecoration mItemDecoration = new DefaultItemDecoration(ContextCompat.getColor(getActivity(), R.color.transparent), 0, DensityUtil.Dp2Px(getActivity(), 5));
-        mRecyclerProject.addItemDecoration(mItemDecoration);
-        adapter = new CommonAdapter<ProjectItem>(getActivity(), R.layout.listitem_project_baseinfo, projectItems) {
+    private void initSimpleAdapter() {
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        DefaultItemDecoration mItemDecoration = new DefaultItemDecoration(ContextCompat.getColor(getActivity(), R.color.transparent), 0, DensityUtil.Dp2Px(getActivity(), 14));
+        mRecyclerView.addItemDecoration(mItemDecoration);
+        simpleAdapter = new CommonAdapter<ProjectItem>(getActivity(), R.layout.item_project_info_normal, projectItems) {
             @Override
             protected void convert(CommonViewHolder holder, final ProjectItem projectItem, final int position) {
                 if (projectItem.getObject() instanceof String) {
@@ -140,23 +147,14 @@ public class NewProjectFragment extends BaseFragment {
                 holder.setText(R.id.tv_project_name, detailInfo.getProjectName());
                 holder.setText(R.id.tv_create_time, detailInfo.getBuildTime());
                 holder.setText(R.id.tv_company_name, detailInfo.getCompanyName());
-
-                if (detailInfo.isOutOfDate()) {
-                    holder.setVisible(R.id.tv_project_state, true);
-                    holder.setText(R.id.tv_project_state, "已过期");
-                } else {
-                    holder.setVisible(R.id.tv_project_state, false);
-                }
-
-                holder.setVisibleOrGone(R.id.iv_top, detailInfo.isTop());
             }
         };
-        mRecyclerProject.setOnItemClickListener(new OnItemClickListener() {
+        mRecyclerView.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
                 ProjectItem projectItem = projectItems.get(position);
-                if (projectItem.isHeader())
-                    return;
+//                if (projectItem.isHeader())
+//                    return;
 
                 ProjectDetailInfo detailInfo = (ProjectDetailInfo) projectItem.getObject();
                 if (detailInfo.isOutOfDate()) {
@@ -164,9 +162,31 @@ public class NewProjectFragment extends BaseFragment {
                 }
             }
         });
-        mRecyclerProject.setSwipeMenuCreator(mSwipeMenuCreator);
-        mRecyclerProject.setOnItemMenuClickListener(mItemMenuClickListener);
-        mRecyclerProject.setAdapter(adapter);
+        mRecyclerView.setSwipeMenuCreator(mSwipeMenuCreator);
+        mRecyclerView.setOnItemMenuClickListener(mItemMenuClickListener);
+        mRecyclerView.setAdapter(simpleAdapter);
+    }
+
+    private void initMultiItemAdapter() {
+        mRecyclerViewGroup.setLayoutManager(new LinearLayoutManager(getActivity()));
+        groupAdapter = new ProjectMultipleItemAdapter( projectItems);
+        groupAdapter.setAnimationEnable(true);
+        groupAdapter.setAnimationFirstOnly(false);
+        groupAdapter.setOnItemClickListener(new com.chad.library.adapter.base.listener.OnItemClickListener() {
+            @Override
+            public void onItemClick(@NonNull BaseQuickAdapter adapter, @NonNull View view, int position) {
+                ProjectItem projectItem = groupAdapter.getItem(position);
+//                if (projectItem.isHeader())
+//                    return;
+
+                ProjectDetailInfo detailInfo = (ProjectDetailInfo) projectItem.getObject();
+                if (detailInfo.isOutOfDate()) {
+                    OutOfDateProjectGuideActivity.startActivity(activity, detailInfo.getProjectName(), detailInfo.getRegisterTime());
+                }
+            }
+        });
+
+        mRecyclerViewGroup.setAdapter(groupAdapter);
     }
 
     /**
@@ -182,7 +202,7 @@ public class NewProjectFragment extends BaseFragment {
             // 只添加Item右侧的菜单。
             {
                 SwipeMenuItem addItem = new SwipeMenuItem(getActivity())
-                        .setBackground(R.drawable.bg_corner_5dp_blue)
+                        .setBackground(R.drawable.bg_corner_6dp_blue)
                         .setText("置顶")
                         .setTextColor(Color.WHITE)
                         .setWidth(width)
@@ -191,7 +211,6 @@ public class NewProjectFragment extends BaseFragment {
             }
         }
     };
-
 
     /**
      * RecyclerView的Item的Menu点击监听。
@@ -208,7 +227,6 @@ public class NewProjectFragment extends BaseFragment {
                 ToastUtils.show("list第" + position + "; 右侧菜单第" + menuPosition);
             }
         }
-
     };
 
     private void refreshProjects() {
@@ -251,13 +269,10 @@ public class NewProjectFragment extends BaseFragment {
                             return;
                         }
                         tempBaseInfoList.clear();
-                        baseInfoMap.clear();
-
                         tempBaseInfoList.addAll(data);
                         List<Integer> projectIDs = new ArrayList<>();
                         for (ProjectBaseInfo baseInfo : data) {
                             projectIDs.add(baseInfo.getProjID());
-                            baseInfoMap.put(baseInfo.getProjID(), baseInfo);
                         }
                         QueryProjectListInfo(projectIDs);
                     }
@@ -377,7 +392,6 @@ public class NewProjectFragment extends BaseFragment {
                             return;
                         }
 
-
                         //TODO 按照tempBaseInfoList列表顺序对data排序
                         List<ProjectDetailInfo> tempDetailInfoList = new ArrayList<>();
                         detailInfoMap.clear();
@@ -403,26 +417,6 @@ public class NewProjectFragment extends BaseFragment {
                             }
                         }
 
-//                        detailInfoMap.clear();
-//                        for (ProjectDetailInfo detailInfo : data) {
-//                            ProjectBaseInfo baseInfo = baseInfoMap.get(detailInfo.getProjectID());
-//                            if (baseInfo != null) {
-//                                //设置置顶标识
-//                                detailInfo.setTop(baseInfo.isTop());
-//                            }
-//                            //设置用户 Id
-//                            detailInfo.setUserId(userId);
-//                            Date registerDate = new Date();
-//                            try {
-//                                registerDate = DateUtil.stringToDate(detailInfo.getRegisterTime(), "yyyy-MM-dd HH:mm:ss");
-//                            } catch (Exception ex) {
-//                                ex.printStackTrace();
-//                            }
-//                            //设置过期标识
-//                            detailInfo.setOutOfDate(registerDate.before(new Date()));
-//                            detailInfoMap.put(detailInfo.getProjectID(), detailInfo);
-//                        }
-
                         setSimpleModeAdapterData(tempDetailInfoList);
                         //更新到本地数据库
                         DaoManager.getInstance().getDaoSession().getProjectDetailInfoDao().insertOrReplaceInTx(data);
@@ -443,7 +437,7 @@ public class NewProjectFragment extends BaseFragment {
     private void setSimpleModeAdapterData(List<ProjectDetailInfo> infos) {
         tempProjectItems.clear();
         for (ProjectDetailInfo info : infos) {
-            tempProjectItems.add(new ProjectItem(false, info));
+            tempProjectItems.add(new ProjectItem(info));
         }
         filterSimpleListProjectsByState();
     }
@@ -458,11 +452,11 @@ public class NewProjectFragment extends BaseFragment {
         for (CustomLevelProjectInfo info : infos) {
             List<ProjectItem> subProjectItems = filterGroupListProjectsByState(info.getLevelProjs());
             if (!subProjectItems.isEmpty()) {
-                projectItems.add(new ProjectItem(true, info.getLevelName()));
+                projectItems.add(new ProjectItem(info.getLevelName(), ProjectItem.ITEM_TOP));
                 projectItems.addAll(subProjectItems);
             }
         }
-        adapter.notifyDataSetChanged();
+        simpleAdapter.notifyDataSetChanged();
     }
 
     /**
@@ -475,11 +469,11 @@ public class NewProjectFragment extends BaseFragment {
         for (RegionProjectInfo info : infos) {
             List<ProjectItem> subProjectItems = filterGroupListProjectsByState(info.getProjects());
             if (!subProjectItems.isEmpty()) {
-                projectItems.add(new ProjectItem(true, info.getRegionFullName()));
+                projectItems.add(new ProjectItem(info.getRegionFullName(), ProjectItem.ITEM_TOP));
                 projectItems.addAll(subProjectItems);
             }
         }
-        adapter.notifyDataSetChanged();
+        simpleAdapter.notifyDataSetChanged();
     }
 
     /**
@@ -492,11 +486,11 @@ public class NewProjectFragment extends BaseFragment {
         for (TypeProjectInfo info : infos) {
             List<ProjectItem> subProjectItems = filterGroupListProjectsByState(info.getProjects());
             if (!subProjectItems.isEmpty()) {
-                projectItems.add(new ProjectItem(true, info.getProjTypeName()));
+                projectItems.add(new ProjectItem(info.getProjTypeName(), ProjectItem.ITEM_TOP));
                 projectItems.addAll(subProjectItems);
             }
         }
-        adapter.notifyDataSetChanged();
+        simpleAdapter.notifyDataSetChanged();
     }
 
     /**
@@ -543,7 +537,7 @@ public class NewProjectFragment extends BaseFragment {
                 break;
         }
 
-        adapter.notifyDataSetChanged();
+        simpleAdapter.notifyDataSetChanged();
     }
 
     /**
@@ -553,9 +547,7 @@ public class NewProjectFragment extends BaseFragment {
         if (subBaseInfoList == null) {
             return new ArrayList<>();
         }
-
         List<ProjectItem> subProjectItems = new ArrayList<>();
-
         for (ProjectBaseInfo baseInfo : subBaseInfoList) {
             ProjectDetailInfo detailInfo = detailInfoMap.get(baseInfo.getProjID());
             if (detailInfo == null)
@@ -563,29 +555,30 @@ public class NewProjectFragment extends BaseFragment {
 
             switch (projectState) {
                 case ALL:
-                    subProjectItems.add(new ProjectItem(false, detailInfo));
+                    subProjectItems.add(new ProjectItem(detailInfo, ProjectItem.ITEM_MIDDLE));
                     break;
 
                 case ON_LINE://筛选出在线的项目
                     if (detailInfo.isIsValid()) {
-                        subProjectItems.add(new ProjectItem(false, detailInfo));
+                        subProjectItems.add(new ProjectItem(detailInfo, ProjectItem.ITEM_MIDDLE));
                     }
                     break;
 
                 case OFF_LINE://筛选出离线的项目
                     if (!detailInfo.isIsValid()) {
-                        subProjectItems.add(new ProjectItem(false, detailInfo));
+                        subProjectItems.add(new ProjectItem(detailInfo, ProjectItem.ITEM_MIDDLE));
                     }
                     break;
 
                 case OUT_OF_DATE://筛选出过期的项目
                     if (detailInfo.isOutOfDate()) {
-                        subProjectItems.add(new ProjectItem(false, detailInfo));
+                        subProjectItems.add(new ProjectItem(detailInfo, ProjectItem.ITEM_MIDDLE));
                     }
                     break;
             }
         }
 
+        subProjectItems.get(subProjectItems.size() - 1).setItemType(ProjectItem.ITEM_BOTTOM);
         return subProjectItems;
     }
 

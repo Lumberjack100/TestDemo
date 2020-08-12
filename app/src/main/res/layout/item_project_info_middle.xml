@@ -2,23 +2,23 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/project_content_item_height"
-    android:layout_marginLeft="@dimen/card_item_side_margin"
-    android:layout_marginRight="@dimen/card_item_side_margin"
-    android:background="@color/white"
-    android:foreground="?android:attr/selectableItemBackground"
-    android:orientation="vertical"
-    android:paddingStart="@dimen/card_item_side_padding"
-    android:paddingEnd="@dimen/card_item_side_padding">
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="@dimen/project_content_item_height"
+        android:layout_marginLeft="@dimen/card_item_side_margin"
+        android:layout_marginRight="@dimen/card_item_side_margin"
+        android:background="@color/white"
+        android:foreground="?android:attr/selectableItemBackground"
+        android:paddingStart="@dimen/card_item_side_padding"
+        android:paddingEnd="@dimen/card_item_side_padding">
 
         <ImageView
             android:id="@+id/ic_thumbnail"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:layout_width="@dimen/project_info_icon_size"
+            android:layout_height="@dimen/project_info_icon_size"
             android:layout_alignParentStart="true"
             android:layout_centerVertical="true"
             tools:src="@drawable/ic_project_default" />
@@ -26,8 +26,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="7dp"
             android:layout_centerVertical="true"
+            android:layout_marginStart="14dp"
             android:layout_toEndOf="@+id/ic_thumbnail"
             android:orientation="vertical">
 
@@ -37,30 +37,31 @@
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
                 android:singleLine="true"
-                android:textColor="@color/text_primary_dark"
-                android:textSize="@dimen/text_size_14"
+                android:textStyle="bold"
+                android:textColor="@color/title_text_color"
+                android:textSize="@dimen/text_size_18"
                 tools:text="云南德宏州S318芒那线公路边坡监测系统xxx第三期中标" />
 
             <TextView
                 android:id="@+id/tv_company_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
+                android:layout_marginTop="9dp"
                 android:ellipsize="end"
                 android:singleLine="true"
-                android:textColor="@color/gray_807B7B"
-                android:textSize="@dimen/text_size_14"
+                android:textColor="@color/sub_title_text_color"
+                android:textSize="@dimen/text_size_13"
                 tools:text="惠山区洛社镇XX社区" />
 
             <TextView
                 android:id="@+id/tv_create_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
+                android:layout_marginTop="9dp"
                 android:ellipsize="end"
                 android:singleLine="true"
-                android:textColor="@color/gray_807B7B"
-                android:textSize="@dimen/text_size_14"
+                android:textColor="@color/sub_title_text_color"
+                android:textSize="@dimen/text_size_13"
                 tools:text="2018.11.16 09:38" />
 
         </LinearLayout>
@@ -70,7 +71,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/gray_f2f2f2" />
+        android:background="@color/gray_FEFEFE" />
 
 </LinearLayout>
 

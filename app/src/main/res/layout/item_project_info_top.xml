@@ -5,25 +5,26 @@
     android:layout_height="@dimen/project_title_item_height"
     android:layout_marginLeft="@dimen/card_item_side_margin"
     android:layout_marginRight="@dimen/card_item_side_margin"
-    android:background="@drawable/bg_top_corner_5dp_white">
+    android:background="@drawable/bg_top_corner_6dp_white">
 
     <TextView
         android:id="@+id/tv_project_group_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:layout_marginStart="@dimen/card_item_side_padding"
-        android:layout_marginEnd="@dimen/card_item_side_padding"
+        android:layout_marginLeft="@dimen/card_item_side_padding"
+        android:layout_marginRight="@dimen/card_item_side_padding"
         android:ellipsize="end"
         android:singleLine="true"
-        android:textColor="@color/text_primary_dark"
-        android:textSize="@dimen/text_size_16"
+        android:textColor="@color/title_text_color"
+        android:textSize="@dimen/text_size_15"
+        android:textStyle="bold"
         tools:text="传感器参数配置根据项目所在地进行分类展示，仅显示存在项目的省" />
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_alignParentBottom="true"
-        android:background="@color/gray_f2f2f2" />
+        android:background="@color/gray_FEFEFE" />
 
 </RelativeLayout>

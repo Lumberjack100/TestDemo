@@ -16,7 +16,7 @@ import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.fragment.MineFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.BluetoothDeviceListFragment;
 import com.shmedo.mcloudapp.maps.ui.activity.MapActivity;
-import com.shmedo.mcloudapp.projects.ui.fragment.ProjectListFragment;
+import com.shmedo.mcloudapp.projects.ui.fragment.NewProjectFragment;
 import com.shmedo.mcloudapp.util.permission.UpdataManagerUtil;
 import com.shmedo.mcloudapp.util.permission.XPermissionUtils;
 
@@ -28,7 +28,7 @@ public class NewMainActivity extends BaseActivity {
     BottomNavigationView bottomNavigationView;
 
     private BluetoothDeviceListFragment bluetoothDeviceListFragment;
-    private ProjectListFragment projectListFragment;
+    private NewProjectFragment projectListFragment;
     private MineFragment mineFragment;
     private Fragment currentFragment;
 
@@ -68,14 +68,14 @@ public class NewMainActivity extends BaseActivity {
             String curTag = savedInstanceState.getString("CurrentFragment");
             currentFragment = getSupportFragmentManager().findFragmentByTag(curTag);
             bluetoothDeviceListFragment = (BluetoothDeviceListFragment) getSupportFragmentManager().findFragmentByTag(BluetoothDeviceListFragment.class.getName());
-            projectListFragment = (ProjectListFragment) getSupportFragmentManager().findFragmentByTag(ProjectListFragment.class.getName());
+            projectListFragment = (NewProjectFragment) getSupportFragmentManager().findFragmentByTag(NewProjectFragment.class.getName());
             mineFragment = (MineFragment) getSupportFragmentManager().findFragmentByTag(MineFragment.class.getName());
 
             if (bluetoothDeviceListFragment == null)
                 bluetoothDeviceListFragment = new BluetoothDeviceListFragment();
 
             if (projectListFragment == null)
-                projectListFragment = new ProjectListFragment();
+                projectListFragment = new NewProjectFragment();
 
             if (mineFragment == null)
                 mineFragment = new MineFragment();
@@ -89,7 +89,7 @@ public class NewMainActivity extends BaseActivity {
                     .commit();
         } else {
             bluetoothDeviceListFragment = new BluetoothDeviceListFragment();
-            projectListFragment = new ProjectListFragment();
+            projectListFragment = new NewProjectFragment();
             mineFragment = new MineFragment();
             switchFrgment(0);
         }
