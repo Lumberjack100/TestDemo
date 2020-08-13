@@ -9,10 +9,11 @@
     android:paddingEnd="@dimen/dimen_size_16">
 
     <LinearLayout
+        android:id="@+id/ll_search_container"
         android:layout_width="0dp"
         android:layout_height="30dp"
         android:layout_weight="1"
-        android:background="@drawable/bg_search_project_small"
+        android:background="@drawable/bg_search_project_white"
         android:gravity="center_vertical">
 
         <ImageView

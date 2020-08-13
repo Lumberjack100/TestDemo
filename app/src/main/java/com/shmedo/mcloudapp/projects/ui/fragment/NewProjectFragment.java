@@ -40,6 +40,7 @@ import com.shmedo.mcloudapp.projects.model.TypeProjectInfo;
 import com.shmedo.mcloudapp.projects.model.param.ProjectBaseInfoParam;
 import com.shmedo.mcloudapp.projects.ui.activity.OutOfDateProjectGuideActivity;
 import com.shmedo.mcloudapp.projects.ui.activity.ProjectSearchActivity;
+import com.shmedo.mcloudapp.projects.ui.activity.ViewProjectsInMapActivity;
 import com.shmedo.mcloudapp.projects.view.ProjectFilterPopupView;
 import com.shmedo.mcloudapp.util.DaoManager;
 import com.shmedo.mcloudapp.util.DateUtil;
@@ -255,12 +256,15 @@ public class NewProjectFragment extends BaseFragment {
         }
     }
 
-    @OnClick({R.id.iv_view_in_map, R.id.iv_filter})
+    @OnClick({R.id.ll_search_container, R.id.iv_view_in_map, R.id.iv_filter})
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.iv_view_in_map://在地图中浏览项目
-//                ViewProjectsInMapActivity.startActivity(getActivity());
+            case R.id.ll_search_container://在地图中浏览项目
                 ProjectSearchActivity.startActivity(getActivity());
+                break;
+
+            case R.id.iv_view_in_map://在地图中浏览项目
+                ViewProjectsInMapActivity.startActivity(getActivity());
                 break;
 
             case R.id.iv_filter://推出项目筛选条件抽屉窗口

@@ -67,7 +67,7 @@
     <color name="gray_E0E0E0">#E0E0E0</color>
     <color name="gray_EBEBEB">#EBEBEB</color>
     <color name="gray_F8F8F8">#F8F8F8</color>
-    <color name="gray_FEFEFE">#ffefefef</color>
+    <color name="gray_efefef">#ffefefef</color>
 
     <!-- 地图模块 -->
     <color name="map_primary">#5d86fb</color>
@@ -85,5 +85,6 @@
 
     <!-- 项目模块 -->
     <color name="project_blue_color">#4D64FD</color>
-
+    <color name="search_input_text_color">#ff333333</color>
+    <color name="search_hint_text_color">#B3B3B3</color>
 </resources>

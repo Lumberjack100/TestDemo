@@ -28,7 +28,7 @@ import com.shmedo.mcloudapp.common.ui.fragment.BaseFragment;
 import com.shmedo.mcloudapp.network.BaseObserver;
 import com.shmedo.mcloudapp.network.MDRetrofit;
 import com.shmedo.mcloudapp.network.NetworkConst;
-import com.shmedo.mcloudapp.projects.adapter.ProjectItemAdapter;
+import com.shmedo.mcloudapp.projects.adapter.ProjectSimpleItemAdapter;
 import com.shmedo.mcloudapp.projects.model.CustomLevelProjectInfo;
 import com.shmedo.mcloudapp.projects.model.ProjectBaseInfo;
 import com.shmedo.mcloudapp.projects.model.ProjectDetailInfo;
@@ -92,7 +92,7 @@ public class ProjectListFragment extends BaseFragment implements ProjectFilterDr
     private ProjectViewMode projectViewMode = ProjectViewMode.VIEW_SIMPLE;
     private ProjectState projectState = ProjectState.ALL;
 
-    private ProjectItemAdapter itemAdapter;
+    private ProjectSimpleItemAdapter itemAdapter;
     private Map<Integer, ProjectBaseInfo> baseInfoMap = new LinkedHashMap<>();
     private Map<Integer, ProjectDetailInfo> detailInfoMap = new LinkedHashMap<>();
     private List<ProjectBaseInfo> tempBaseInfoList = new LinkedList<>();

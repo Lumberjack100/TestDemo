@@ -80,7 +80,8 @@
                     android:paddingBottom="3dp"
                     android:text="已置顶"
                     android:textColor="#ffa6a6a6"
-                    android:textSize="@dimen/text_size_11" />
+                    android:textSize="@dimen/text_size_11"
+                    android:visibility="gone" />
 
             </RelativeLayout>
 
