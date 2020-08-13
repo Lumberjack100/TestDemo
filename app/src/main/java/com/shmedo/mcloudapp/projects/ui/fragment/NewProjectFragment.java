@@ -20,8 +20,6 @@ import com.shmedo.core.MCloudApp;
 import com.shmedo.core.model.UserInfo;
 import com.shmedo.core.util.DensityUtil;
 import com.shmedo.mcloudapp.R;
-import com.shmedo.mcloudapp.adapter.recyclerviewbaseadapter.CommonAdapter;
-import com.shmedo.mcloudapp.adapter.recyclerviewbaseadapter.CommonViewHolder;
 import com.shmedo.mcloudapp.common.ui.activity.NewMainActivity;
 import com.shmedo.mcloudapp.common.ui.fragment.BaseFragment;
 import com.shmedo.mcloudapp.network.BaseObserver;
@@ -53,6 +51,8 @@ import com.yanzhenjie.recyclerview.SwipeMenuCreator;
 import com.yanzhenjie.recyclerview.SwipeMenuItem;
 import com.yanzhenjie.recyclerview.SwipeRecyclerView;
 import com.yanzhenjie.recyclerview.widget.DefaultItemDecoration;
+import com.zhy.adapter.recyclerview.CommonAdapter;
+import com.zhy.adapter.recyclerview.base.CommonViewHolder;
 
 import java.util.ArrayList;
 import java.util.Date;

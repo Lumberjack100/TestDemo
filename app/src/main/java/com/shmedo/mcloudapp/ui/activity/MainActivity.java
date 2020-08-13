@@ -419,7 +419,7 @@ public class MainActivity extends BaseActivity {
                 break;
 
             case R.id.img_equipment://项目管理
-                ProjectListActivity.startActivity(this);
+
                 break;
         }
     }

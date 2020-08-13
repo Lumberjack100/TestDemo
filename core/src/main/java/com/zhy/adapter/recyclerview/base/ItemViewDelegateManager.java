@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.adapter.recyclerviewbaseadapter;
+package com.zhy.adapter.recyclerview.base;
 
 
 import androidx.collection.SparseArrayCompat;

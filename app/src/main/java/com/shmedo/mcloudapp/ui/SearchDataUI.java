@@ -18,13 +18,13 @@ import androidx.core.widget.NestedScrollView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.shmedo.core.util.DensityUtil;
 import com.github.clans.fab.FloatingActionButton;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.hjq.toast.ToastUtils;
+import com.shmedo.core.util.DensityUtil;
 import com.shmedo.mcloudapp.R;
-import com.shmedo.mcloudapp.adapter.recyclerviewbaseadapter.CommonAdapter;
-import com.shmedo.mcloudapp.adapter.recyclerviewbaseadapter.CommonViewHolder;
+import com.shmedo.mcloudapp.common.view.TimePickerDialog;
+import com.shmedo.mcloudapp.common.view.recycleviewitemdivider.DividerItemDecoration;
 import com.shmedo.mcloudapp.entity.QueryCloudDataInfo;
 import com.shmedo.mcloudapp.entity.parameter.QueryCloudDataParameter;
 import com.shmedo.mcloudapp.network.BaseObserver;
@@ -36,8 +36,8 @@ import com.shmedo.mcloudapp.ui.activity.WifiConnectionActivity;
 import com.shmedo.mcloudapp.util.GsonFactory;
 import com.shmedo.mcloudapp.util.TimeUtil;
 import com.shmedo.mcloudapp.util.permission.PermissionHelper;
-import com.shmedo.mcloudapp.common.view.TimePickerDialog;
-import com.shmedo.mcloudapp.common.view.recycleviewitemdivider.DividerItemDecoration;
+import com.zhy.adapter.recyclerview.CommonAdapter;
+import com.zhy.adapter.recyclerview.base.CommonViewHolder;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,7 +1,10 @@
-package com.shmedo.mcloudapp.adapter.recyclerviewbaseadapter;
+package com.zhy.adapter.recyclerview;
 
 import android.content.Context;
 import android.view.LayoutInflater;
+
+import com.zhy.adapter.recyclerview.base.CommonViewHolder;
+import com.zhy.adapter.recyclerview.base.ItemViewDelegate;
 
 import java.util.List;
 

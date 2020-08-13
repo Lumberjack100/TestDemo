@@ -26,6 +26,7 @@ dependencies {
     api fileTree(dir: 'libs', include: ['*.jar'])
 
     api "androidx.appcompat:appcompat:$rootProject.thirdLib.appcompat"
+    implementation "androidx.recyclerview:recyclerview:$rootProject.thirdLib.recyclerview"
     api "org.greenrobot:eventbus:$rootProject.thirdLib.eventbus"
     api 'androidx.exifinterface:exifinterface:1.2.0'
     api "com.jakewharton.timber:timber:$rootProject.thirdLib.timberVersion"

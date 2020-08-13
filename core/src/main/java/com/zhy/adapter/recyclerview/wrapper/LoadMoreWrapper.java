@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.adapter.recyclerviewbaseadapter;
+package com.zhy.adapter.recyclerview.wrapper;
 
 
 import android.view.View;
@@ -7,6 +7,9 @@ import android.view.ViewGroup;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
+
+import com.zhy.adapter.recyclerview.base.CommonViewHolder;
+import com.zhy.adapter.recyclerview.utils.WrapperUtils;
 
 
 /**

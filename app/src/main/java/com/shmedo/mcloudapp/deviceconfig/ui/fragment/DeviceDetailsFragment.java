@@ -20,6 +20,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.hjq.toast.ToastUtils;
+import com.shmedo.core.MCloudApp;
 import com.shmedo.core.cmd.CommandManager;
 import com.shmedo.core.cmd.CommandResult;
 import com.shmedo.core.cmd.entity.InstallLocationEntity;
@@ -34,14 +35,13 @@ import com.shmedo.core.model.SystemRunStateInfo;
 import com.shmedo.core.model.VersionMessageInfo;
 import com.shmedo.core.utils.ResultParserUtil;
 import com.shmedo.core.utils.StringUtil;
-import com.shmedo.core.MCloudApp;
 import com.shmedo.mcloudapp.R;
-import com.shmedo.mcloudapp.adapter.recyclerviewbaseadapter.CommonAdapter;
-import com.shmedo.mcloudapp.adapter.recyclerviewbaseadapter.CommonViewHolder;
 import com.shmedo.mcloudapp.common.ui.fragment.BaseFragment;
+import com.shmedo.mcloudapp.common.view.VerticalSwipeRefreshLayout;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.BaseDeviceConnectActivity;
 import com.shmedo.mcloudapp.util.DeviceDetailInfoUtils;
-import com.shmedo.mcloudapp.common.view.VerticalSwipeRefreshLayout;
+import com.zhy.adapter.recyclerview.CommonAdapter;
+import com.zhy.adapter.recyclerview.base.CommonViewHolder;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;

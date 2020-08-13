@@ -12,10 +12,10 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.shmedo.mcloudapp.R;
-import com.shmedo.mcloudapp.adapter.recyclerviewbaseadapter.CommonAdapter;
-import com.shmedo.mcloudapp.adapter.recyclerviewbaseadapter.CommonViewHolder;
 import com.shmedo.mcloudapp.entity.SensorAndCount;
 import com.shmedo.mcloudapp.util.ImageUtil;
+import com.zhy.adapter.recyclerview.CommonAdapter;
+import com.zhy.adapter.recyclerview.base.CommonViewHolder;
 
 import java.util.List;
 

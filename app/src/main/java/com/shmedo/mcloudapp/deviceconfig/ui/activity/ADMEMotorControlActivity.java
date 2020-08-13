@@ -25,11 +25,11 @@ import com.hjq.toast.ToastUtils;
 import com.shmedo.core.AppContants;
 import com.shmedo.core.MCloudApp;
 import com.shmedo.core.cmd.CommandResult;
-import com.shmedo.mcloudapp.R;
-import com.shmedo.mcloudapp.adapter.recyclerviewbaseadapter.CommonAdapter;
-import com.shmedo.mcloudapp.adapter.recyclerviewbaseadapter.CommonViewHolder;
 import com.shmedo.core.event.BluetoothStateEvent;
+import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.deviceconfig.view.PlayPauseView;
+import com.zhy.adapter.recyclerview.CommonAdapter;
+import com.zhy.adapter.recyclerview.base.CommonViewHolder;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -41,6 +41,8 @@ import java.util.Locale;
 import butterknife.BindView;
 import butterknife.OnClick;
 import timber.log.Timber;
+
+;
 
 public class ADMEMotorControlActivity extends BaseDeviceConnectActivity {
     private static final int PULL_AUTO = 0x0001;
