@@ -6,7 +6,6 @@
         <!-- 状态栏颜色-->
         <item name="colorPrimaryDark">@color/colorPrimary</item>
         <item name="colorAccent">@color/colorPrimary</item>
-
         <!--设置窗体无主题-->
         <item name="windowNoTitle">true</item>
         <!--设置窗体切换动画-->
@@ -25,7 +24,6 @@
         <item name="colorPrimaryDark">#2d2e2a</item>
     </style>
 
-
     <style name="MCloud.SpeedTestResultActivity" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="windowNoTitle">true</item>
         <!-- actionbar颜色-->
@@ -34,12 +32,20 @@
         <item name="colorPrimaryDark">#61a9fc</item>
     </style>
 
+    <style name="MCloud.ProjectSearchActivity" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="windowNoTitle">true</item>
+        <!-- actionbar颜色-->
+        <item name="colorPrimary">@color/white</item>
+        <!-- 状态栏颜色-->
+        <item name="colorPrimaryDark">@color/white</item>
+        <item name="android:windowLightStatusBar" tools:targetApi="23">true</item>
+    </style>
+
     <style name="DialogActivity" parent="Theme.AppCompat.Dialog">
         <item name="android:windowBackground">@android:color/transparent</item>
     </style>
 
     <style name="CropImageActivity" parent="Base.Theme.AppCompat" />
-
 
     <!--Activity进入和退出动画-->
     <!-- animation 样式 -->

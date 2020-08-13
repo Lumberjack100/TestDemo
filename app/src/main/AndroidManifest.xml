@@ -290,7 +290,8 @@
         <activity android:name=".projects.ui.activity.ProjectSearchActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:maxAspectRatio="2.4"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/MCloud.ProjectSearchActivity"/>
 
         <activity
             android:name=".ddshare.DDShareActivity"
