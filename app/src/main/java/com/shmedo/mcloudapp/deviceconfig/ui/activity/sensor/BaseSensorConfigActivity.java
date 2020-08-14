@@ -151,7 +151,7 @@ public abstract class BaseSensorConfigActivity extends BaseDeviceConnectActivity
     protected StringBuilder sbCollectorSensorConfig = new StringBuilder();
 
     @Override
-    protected int initContentView() {
+    protected int getLayoutId() {
         return R.layout.activity_sensor_bgk_config;
     }
 

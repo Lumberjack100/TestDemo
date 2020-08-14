@@ -133,7 +133,7 @@ public class ADMESensorExecutiveAgencyConfigActivity extends BaseDeviceConnectAc
 
 
     @Override
-    protected int initContentView() {
+    protected int getLayoutId() {
         return R.layout.activity_admesensor_executive_agency_config;
     }
 

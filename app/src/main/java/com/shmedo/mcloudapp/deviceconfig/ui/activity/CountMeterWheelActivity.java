@@ -69,7 +69,7 @@ public class CountMeterWheelActivity extends BaseDeviceConnectActivity {
 
 
     @Override
-    protected int initContentView() {
+    protected int getLayoutId() {
         return R.layout.activity_count_meter_wheel;
     }
 

@@ -69,7 +69,7 @@ public class ConfigE60Activity extends BaseActivity {
 
 
     @Override
-    protected int initContentView() {
+    protected int getLayoutId() {
         return R.layout.activity_config_e60;
     }
 

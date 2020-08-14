@@ -107,7 +107,7 @@ public class LoginActivity extends BaseActivity implements LoginManager.LoginCal
 
 
     @Override
-    protected int initContentView() {
+    protected int getLayoutId() {
         return R.layout.activity_login;
     }
 

@@ -105,7 +105,7 @@ public class UserHomePageActivity extends BaseActivity implements TextWatcher {
 
 
     @Override
-    protected int initContentView() {
+    protected int getLayoutId() {
         return R.layout.activity_user_home_page;
     }
 

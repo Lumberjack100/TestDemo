@@ -62,7 +62,7 @@ public class RainConfigActivity extends BaseDeviceConnectActivity {
     }
 
     @Override
-    protected int initContentView() {
+    protected int getLayoutId() {
         return R.layout.activity_rain_config;
     }
 

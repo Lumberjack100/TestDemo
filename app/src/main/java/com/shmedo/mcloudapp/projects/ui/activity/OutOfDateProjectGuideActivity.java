@@ -36,7 +36,7 @@ public class OutOfDateProjectGuideActivity extends BaseActivity {
 
 
     @Override
-    protected int initContentView() {
+    protected int getLayoutId() {
         return R.layout.activity_out_of_date_project_guide;
     }
 

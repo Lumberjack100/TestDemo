@@ -131,7 +131,7 @@ public class MqttSettingActivity extends BaseDeviceConnectActivity implements Vi
     private String curLinkNumber;
 
     @Override
-    protected int initContentView() {
+    protected int getLayoutId() {
         return R.layout.activity_mqtt_setting;
     }
 

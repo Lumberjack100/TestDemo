@@ -63,7 +63,7 @@ public class ProductRegistrationActivity extends BaseActivity {
     }
 
     @Override
-    protected int initContentView() {
+    protected int getLayoutId() {
         return R.layout.activity_product_registration;
     }
 

@@ -57,7 +57,7 @@ public class ConfigADMEActivity extends BaseDeviceConnectActivity {
 
 
     @Override
-    protected int initContentView() {
+    protected int getLayoutId() {
         return R.layout.activity_config_adme;
     }
 

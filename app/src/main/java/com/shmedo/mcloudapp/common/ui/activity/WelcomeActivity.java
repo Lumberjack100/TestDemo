@@ -42,7 +42,7 @@ public class WelcomeActivity extends BaseActivity implements LoginManager.LoginC
 
 
     @Override
-    protected int initContentView() {
+    protected int getLayoutId() {
         return R.layout.activity_welcome;
     }
 

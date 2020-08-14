@@ -146,7 +146,7 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
     }
 
     @Override
-    protected int initContentView() {
+    protected int getLayoutId() {
         return R.layout.activity_map;
     }
 

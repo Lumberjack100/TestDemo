@@ -25,15 +25,15 @@ import androidx.appcompat.widget.Toolbar;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.shmedo.core.MCloudApp;
-import com.shmedo.mcloudapp.R;
 import com.shmedo.core.event.NetworkChangeEvent;
 import com.shmedo.core.receiver.NetworkConnectChangedReceiver;
 import com.shmedo.core.util.ActivityCollector;
-import com.shmedo.mcloudapp.util.KeyBordUtils;
 import com.shmedo.core.util.NetworkUtils;
+import com.shmedo.mcloudapp.R;
+import com.shmedo.mcloudapp.util.KeyBordUtils;
 import com.shmedo.mcloudapp.util.UiUtils;
-import com.shmedo.mcloudapp.util.permission.XPermissionUtils;
 import com.shmedo.mcloudapp.util.common.HandleBackUtil;
+import com.shmedo.mcloudapp.util.permission.XPermissionUtils;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -72,7 +72,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     private WeakReference<Activity> weakRefActivity = null;
 
 
-    protected abstract int initContentView();
+    protected abstract int getLayoutId();
 
 
     @Override
@@ -85,8 +85,10 @@ public abstract class BaseActivity extends AppCompatActivity {
 
         weakRefActivity = new WeakReference<Activity>(this);
         ActivityCollector.add(weakRefActivity);
-        setContentView(initContentView());
+        setContentView(getLayoutId());
         ButterKnife.bind(this);
+        //初始化沉浸式
+        initImmersionBar();
 
         initTipView();//初始化提示View
         registerNetWorkChangReceiver();
@@ -101,6 +103,14 @@ public abstract class BaseActivity extends AppCompatActivity {
         super.setRequestedOrientation(requestedOrientation);
     }
 
+    /**
+     * 初始化沉浸式
+     * Init immersion bar.
+     */
+    protected void initImmersionBar() {
+        //设置共同沉浸式样式
+//        ImmersionBar.with(this).navigationBarColor(R.color.colorPrimary).init();
+    }
 
     /**
      * Use a Toolbar as an Action Bar
@@ -212,8 +222,6 @@ public abstract class BaseActivity extends AppCompatActivity {
         if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {  //把操作放在用户点击的时候
             View v = getCurrentFocus();      //得到当前页面的焦点,ps:有输入框的页面焦点一般会被输入框占据
             if (isShouldHideKeyboard(v, motionEvent)) { //判断用户点击的是否是输入框以外的区域
-//                hideKeyboard(v.getWindowToken());   //收起键盘
-
                 KeyBordUtils.hideSoftKeyboard(v);
             }
         }

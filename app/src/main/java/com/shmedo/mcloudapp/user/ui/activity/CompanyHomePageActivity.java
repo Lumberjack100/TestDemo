@@ -53,7 +53,7 @@ public class CompanyHomePageActivity extends BaseActivity {
 
 
     @Override
-    protected int initContentView() {
+    protected int getLayoutId() {
         return R.layout.activity_company_home_page;
     }
 

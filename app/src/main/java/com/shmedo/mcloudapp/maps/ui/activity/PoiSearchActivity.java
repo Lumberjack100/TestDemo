@@ -72,7 +72,7 @@ public class PoiSearchActivity extends BaseActivity implements TextWatcher, PoiS
     }
 
     @Override
-    protected int initContentView() {
+    protected int getLayoutId() {
         return R.layout.activity_poi_search;
     }
 

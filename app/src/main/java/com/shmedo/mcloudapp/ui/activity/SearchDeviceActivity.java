@@ -84,7 +84,7 @@ public class SearchDeviceActivity extends BaseActivity implements MultiItemTypeA
 
 
     @Override
-    protected int initContentView() {
+    protected int getLayoutId() {
         return R.layout.activity_search_device;
     }
 

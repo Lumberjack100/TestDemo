@@ -54,7 +54,7 @@ public class AboutAppActivity extends BaseActivity {
 
 
     @Override
-    protected int initContentView() {
+    protected int getLayoutId() {
         return R.layout.activity_about;
     }
 

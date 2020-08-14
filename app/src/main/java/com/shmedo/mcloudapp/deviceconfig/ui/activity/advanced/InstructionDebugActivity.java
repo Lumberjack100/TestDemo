@@ -94,7 +94,7 @@ public class InstructionDebugActivity extends BaseDeviceConnectActivity implemen
 
 
     @Override
-    protected int initContentView() {
+    protected int getLayoutId() {
         return R.layout.activity_instruction_debug;
     }
 
