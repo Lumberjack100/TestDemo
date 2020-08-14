@@ -16,6 +16,8 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.lxj.xpopup.XPopup;
+import com.lxj.xpopup.core.BasePopupView;
+import com.lxj.xpopup.interfaces.SimpleCallback;
 import com.shmedo.core.MCloudApp;
 import com.shmedo.core.model.UserInfo;
 import com.shmedo.core.util.DensityUtil;
@@ -70,7 +72,11 @@ import okhttp3.RequestBody;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class NewProjectFragment extends BaseFragment {
+public class NewProjectFragment extends BaseFragment implements ProjectFilterPopupView.OnFilterPopupViewListener {
+
+    @BindView(R.id.toolbar_top_divider)
+    View toolBarTopDivider;
+
     @BindView(R.id.swipeLayout)
     SwipeRefreshLayout swipeRefresh;
 
@@ -256,10 +262,10 @@ public class NewProjectFragment extends BaseFragment {
         }
     }
 
-    @OnClick({R.id.ll_search_container, R.id.iv_view_in_map, R.id.iv_filter})
+    @OnClick({R.id.search_container, R.id.iv_view_in_map, R.id.iv_filter})
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.ll_search_container://在地图中浏览项目
+            case R.id.search_container:
                 ProjectSearchActivity.startActivity(getActivity());
                 break;
 
@@ -273,34 +279,54 @@ public class NewProjectFragment extends BaseFragment {
         }
     }
 
-    private void showFilterPopupView(final View v) {
+    private void showFilterPopupView(final View view) {
         if (popupView == null) {
             popupView = (ProjectFilterPopupView) new XPopup.Builder(getContext())
-                    .atView(v)
-                    .asCustom(new ProjectFilterPopupView(getContext(), new ProjectFilterPopupView.OnFilterResultListener() {
+                    .atView(toolBarTopDivider)
+                    .setPopupCallback(new SimpleCallback() {
                         @Override
-                        public void onFilterResult(ProjectViewMode viewMode, ProjectState state) {
-                            projectViewMode = viewMode;
-                            projectState = state;
-                            //列表模式时，直接筛选缓存的tempProjectItems
-                            if (viewMode == ProjectViewMode.VIEW_SIMPLE) {
-                                mRecyclerView.setVisibility(View.VISIBLE);
-                                mRecyclerViewGroup.setVisibility(View.GONE);
-                                filterSimpleListProjectsByState();
-                            } else {
-                                mRecyclerView.setVisibility(View.GONE);
-                                mRecyclerViewGroup.setVisibility(View.VISIBLE);
-                                //分组展示模式时，需要请求不同的分组接口刷新数据
-                                swipeRefresh.setRefreshing(true);
-                                refreshProjects();
-                            }
+                        public void beforeShow(BasePopupView popupView) {
+                            toolBarTopDivider.setVisibility(View.VISIBLE);
                         }
-                    }));
+
+                        @Override
+                        public void beforeDismiss(BasePopupView popupView) {
+                            toolBarTopDivider.setVisibility(View.INVISIBLE);
+                        }
+                    })
+                    .asCustom(new ProjectFilterPopupView(getContext(), this));
         }
 
         popupView.show();
     }
 
+    @Override
+    public void onSearchClick() {
+        ProjectSearchActivity.startActivity(getActivity());
+    }
+
+    @Override
+    public void onMapClick() {
+        ViewProjectsInMapActivity.startActivity(getActivity());
+    }
+
+    @Override
+    public void onFilterResult(ProjectViewMode viewMode, ProjectState state) {
+        projectViewMode = viewMode;
+        projectState = state;
+        //列表模式时，直接筛选缓存的tempProjectItems
+        if (viewMode == ProjectViewMode.VIEW_SIMPLE) {
+            mRecyclerView.setVisibility(View.VISIBLE);
+            mRecyclerViewGroup.setVisibility(View.GONE);
+            filterSimpleListProjectsByState();
+        } else {
+            mRecyclerView.setVisibility(View.GONE);
+            mRecyclerViewGroup.setVisibility(View.VISIBLE);
+            //分组展示模式时，需要请求不同的分组接口刷新数据
+            swipeRefresh.setRefreshing(true);
+            refreshProjects();
+        }
+    }
 
     private void refreshProjects() {
         switch (projectViewMode) {
@@ -652,7 +678,9 @@ public class NewProjectFragment extends BaseFragment {
             }
         }
 
-        subProjectItems.get(subProjectItems.size() - 1).setItemType(ProjectItem.ITEM_BOTTOM);
+        if (subProjectItems.size() > 0) {
+            subProjectItems.get(subProjectItems.size() - 1).setItemType(ProjectItem.ITEM_BOTTOM);
+        }
         return subProjectItems;
     }
 

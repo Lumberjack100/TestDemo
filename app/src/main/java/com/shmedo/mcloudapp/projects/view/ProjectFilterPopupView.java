@@ -2,6 +2,8 @@ package com.shmedo.mcloudapp.projects.view;
 
 import android.content.Context;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -27,7 +29,10 @@ import butterknife.ButterKnife;
  * 创建时间:  2020/8/12 <br/>
  * 描述：    项目筛选阴影弹窗
  */
-public class ProjectFilterPopupView extends PartShadowPopupView  implements  View.OnClickListener{
+public class ProjectFilterPopupView extends PartShadowPopupView implements View.OnClickListener {
+    private ViewGroup searchLayout;
+    private ImageView ivMap;
+    private ImageView ivFilter;
     private RecyclerView mRecyclerViewProType;
     private RecyclerView mRecyclerViewProState;
 
@@ -37,10 +42,10 @@ public class ProjectFilterPopupView extends PartShadowPopupView  implements  Vie
     private ProjectViewMode projectViewMode = ProjectViewMode.VIEW_SIMPLE;
     private ProjectState filterScope = ProjectState.ALL;
 
-    private OnFilterResultListener mListener;
+    private OnFilterPopupViewListener mListener;
 
 
-    public ProjectFilterPopupView(@NonNull Context context, OnFilterResultListener listener) {
+    public ProjectFilterPopupView(@NonNull Context context, OnFilterPopupViewListener listener) {
         super(context);
         ButterKnife.bind(this);
         mContext = context;
@@ -63,9 +68,20 @@ public class ProjectFilterPopupView extends PartShadowPopupView  implements  Vie
         initProjectStateData();
     }
 
-    private void initView(){
-        mRecyclerViewProType= findViewById(R.id.recyclerView_project_type);
-        mRecyclerViewProState= findViewById(R.id.recyclerView_project_state);
+    private void initView() {
+        searchLayout = findViewById(R.id.search_container);
+        ivMap = findViewById(R.id.iv_view_in_map);
+        ivFilter = findViewById(R.id.iv_filter);
+        mRecyclerViewProType = findViewById(R.id.recyclerView_project_type);
+        mRecyclerViewProState = findViewById(R.id.recyclerView_project_state);
+
+        searchLayout.setBackgroundResource(R.drawable.bg_search_project_gray);
+        ivMap.setImageResource(R.drawable.ic_project_map_black);
+        ivFilter.setImageResource(R.drawable.ic_filter_project_checked);
+
+        searchLayout.setOnClickListener(this);
+        ivMap.setOnClickListener(this);
+        ivFilter.setOnClickListener(this);
         findViewById(R.id.ll_reset).setOnClickListener(this);
         findViewById(R.id.tv_confirm).setOnClickListener(this);
     }
@@ -127,6 +143,18 @@ public class ProjectFilterPopupView extends PartShadowPopupView  implements  Vie
             return;
 
         switch (view.getId()) {
+            case R.id.search_container:
+                mListener.onSearchClick();
+                break;
+
+            case R.id.iv_view_in_map:
+                mListener.onMapClick();
+                break;
+
+            case R.id.iv_filter:
+
+                break;
+
             case R.id.ll_reset:
                 resetRecyclerViewItemState();
                 mListener.onFilterResult(ProjectViewMode.VIEW_SIMPLE, ProjectState.ALL);
@@ -184,7 +212,11 @@ public class ProjectFilterPopupView extends PartShadowPopupView  implements  Vie
         projectStateAdapter.addData(filterItem);
     }
 
-    public interface OnFilterResultListener {
+    public interface OnFilterPopupViewListener {
+        void onSearchClick();
+
+        void onMapClick();
+
         void onFilterResult(ProjectViewMode projectViewMode, ProjectState filterScope);
     }
 }
