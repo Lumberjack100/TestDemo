@@ -91,7 +91,7 @@
             android:layout_weight="1"
             android:background="@color/project_blue_color"
             android:gravity="center"
-            android:text="查看24个项目"
+            android:text="确定"
             android:textColor="@color/white"
             android:textSize="@dimen/text_size_18"
             android:textStyle="bold" />

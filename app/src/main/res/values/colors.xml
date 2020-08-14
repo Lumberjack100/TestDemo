@@ -84,7 +84,8 @@
     <color name="testspeed_result_bg">#61a9fc</color>
 
     <!-- 项目模块 -->
-    <color name="project_blue_color">#4D64FD</color>
+    <color name="project_blue_color">#41CCF0</color>
+    <color name="project_light_blue_color">#ffebfafe</color>
     <color name="search_input_text_color">#ff333333</color>
     <color name="search_hint_text_color">#B3B3B3</color>
 </resources>

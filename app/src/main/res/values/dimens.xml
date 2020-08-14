@@ -92,5 +92,7 @@
     <dimen name="card_item_side_margin">16dp</dimen>
     <dimen name="card_item_padding_left">20dp</dimen>
     <dimen name="card_item_padding_right">10dp</dimen>
+    <dimen name="card_item_padding_top">20dp</dimen>
+    <dimen name="card_item_padding_bottom">20dp</dimen>
     <dimen name="project_info_icon_size">68dp</dimen>
 </resources>
