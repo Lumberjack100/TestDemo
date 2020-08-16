@@ -41,7 +41,7 @@ import timber.log.Timber;
 /**
  * 我的模块主页面
  */
-public class MineFragment extends BaseFragment {
+public class MineFragment extends BaseTranslucentFragment {
     @BindView(R.id.userAvatar)
     CircleImageView mIvUserAvatar;
 
@@ -64,7 +64,7 @@ public class MineFragment extends BaseFragment {
     private CompanyInfo mCompanyInfo;
 
     @Override
-    protected int initContentView() {
+    protected int getLayoutId() {
         return R.layout.fragment_mine;
     }
 

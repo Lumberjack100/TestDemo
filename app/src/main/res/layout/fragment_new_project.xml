@@ -10,18 +10,18 @@
         android:background="@drawable/bg_project_list_top"
         android:orientation="vertical">
 
-        <View
-            android:id="@+id/toolbar_top_divider"
-            android:layout_width="match_parent"
-            android:layout_height="0.5dp"
-            android:background="@color/divide_line_color"
-            android:visibility="invisible" />
+<!--        <View-->
+<!--            android:id="@+id/toolbar_top_divider"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="0.5dp"-->
+<!--            android:background="@color/divide_line_color"-->
+<!--            android:visibility="invisible" />-->
 
         <include
-            android:id="@+id/custom_toolbar_project_list"
-            layout="@layout/custom_toolbar_project_list" />
+            layout="@layout/toolbar_project_list" />
 
     </LinearLayout>
+
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/swipeLayout"

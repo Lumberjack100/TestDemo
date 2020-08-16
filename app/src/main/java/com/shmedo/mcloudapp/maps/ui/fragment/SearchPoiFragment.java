@@ -72,7 +72,7 @@ public class SearchPoiFragment extends BaseFragment implements TextWatcher, PoiS
 
 
     @Override
-    protected int initContentView() {
+    protected int getLayoutId() {
         return R.layout.fragment_search_poi;
     }
 
@@ -89,7 +89,7 @@ public class SearchPoiFragment extends BaseFragment implements TextWatcher, PoiS
         super.onActivityCreated(savedInstanceState);
         activity = (SearchPoiActivity)getActivity();
         initAdapter();
-        initView();
+        initListener();
         parseIntent();
     }
 
@@ -104,7 +104,7 @@ public class SearchPoiFragment extends BaseFragment implements TextWatcher, PoiS
         }
     }
 
-    private void initView() {
+    private void initListener() {
         mEtSearchTip.requestFocus();
         mEtSearchTip.addTextChangedListener(this);
         mEtSearchTip.setOnEditorActionListener(new TextView.OnEditorActionListener() {

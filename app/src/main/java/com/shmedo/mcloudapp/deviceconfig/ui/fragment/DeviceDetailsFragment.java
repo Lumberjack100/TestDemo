@@ -6,9 +6,7 @@ import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
@@ -205,23 +203,20 @@ public class DeviceDetailsFragment extends BaseFragment implements SwipeRefreshL
     private String channelNumber = "";
 
     @Override
-    protected int initContentView() {
+    protected int getLayoutId() {
         return R.layout.fragment_device_details;
     }
 
 
-    @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = super.onCreateView(inflater, container, savedInstanceState);
-
-        initView();
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        setupView();
         initData();
         initAdapter();
-        return view;
     }
 
-    private void initView() {
+    private void setupView() {
         deviceConnectActivity = (BaseDeviceConnectActivity) getActivity();
         refreshLayout.setColorSchemeResources(android.R.color.holo_blue_light,
                 android.R.color.holo_red_light, android.R.color.holo_orange_light,

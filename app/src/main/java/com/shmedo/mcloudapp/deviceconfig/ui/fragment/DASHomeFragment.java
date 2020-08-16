@@ -141,7 +141,7 @@ public class DASHomeFragment extends BaseFragment {
 
 
     @Override
-    protected int initContentView() {
+    protected int getLayoutId() {
         return R.layout.fragment_dashome;
     }
 
@@ -157,7 +157,7 @@ public class DASHomeFragment extends BaseFragment {
         View view = super.onCreateView(inflater, container, savedInstanceState);
 
         getIntentData();
-        initView();
+        setupView();
         setSwitchViewListener();
         initAdapter();
         return view;
@@ -177,7 +177,7 @@ public class DASHomeFragment extends BaseFragment {
     }
 
 
-    private void initView() {
+    private void setupView() {
         ((TextView) bluetoothConnectLayout.findViewById(R.id.tv_config_name)).setText("蓝牙连接");
         mTvBluetoothConnect = bluetoothConnectLayout.findViewById(R.id.tv_device_state);
         mSbBluetoothConnect = bluetoothConnectLayout.findViewById(R.id.switchButton);

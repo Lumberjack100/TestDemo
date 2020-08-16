@@ -6,7 +6,7 @@
     android:orientation="vertical">
 
     <include
-        layout="@layout/custom_toolbar_project_list" />
+        layout="@layout/toolbar_project_list" />
 
     <TextView
         android:layout_width="wrap_content"

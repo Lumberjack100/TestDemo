@@ -1,9 +1,7 @@
 package com.shmedo.mcloudapp.projects.ui.fragment;
 
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -100,18 +98,14 @@ public class ProjectListFragment extends BaseFragment implements ProjectFilterDr
     private List<ProjectItem> tempProjectItems = new ArrayList<>();
 
     @Override
-    protected int initContentView() {
+    protected int getLayoutId() {
         return R.layout.fragment_project_list;
     }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = super.onCreateView(inflater, container, savedInstanceState);
-        initView();
-        return view;
-    }
 
-    private void initView() {
+
+    @Override
+    protected void initView() {
         mToolbarTitle.setText("项目列表");
         headerSearchView.setSearchHint("搜索项目");
     }

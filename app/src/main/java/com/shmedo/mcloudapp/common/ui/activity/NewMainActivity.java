@@ -12,6 +12,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.gyf.immersionbar.ImmersionBar;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.fragment.MineFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.BluetoothDeviceListFragment;
@@ -42,7 +43,7 @@ public class NewMainActivity extends BaseActivity {
 
 
     @Override
-    protected int initContentView() {
+    protected int getLayoutId() {
         return R.layout.activity_new_main;
     }
 
@@ -116,7 +117,8 @@ public class NewMainActivity extends BaseActivity {
                         break;
                 }
 
-                return true;    //这里返回true，表示事件已经被处理。如果返回false，为了达到条目选中效果，还需要下面的代码
+                return true;
+                //这里返回true，表示事件已经被处理。如果返回false，为了达到条目选中效果，还需要下面的代码
                 // item.setChecked(true);  不论点击了哪一个，都手动设置为选中状态true（该控件并没有默认实现)
                 // 。如果不设置，只有第一个menu展示的时候是选中状态，其他的即便被点击选中了，图标和文字也不会做任何更改
             }
@@ -137,12 +139,31 @@ public class NewMainActivity extends BaseActivity {
         switch (i) {
             case 0:
                 showFragment(bluetoothDeviceListFragment);
+                ImmersionBar.with(this)
+//                        .statusBarView(status_bar_view)
+                        .statusBarColor(R.color.colorPrimary)
+                        .statusBarDarkFont(false)
+                        .navigationBarDarkIcon(true)
+                        .navigationBarColor(R.color.white)
+                        .init();
                 break;
             case 1:
                 showFragment(projectListFragment);
+                ImmersionBar.with(this)
+                        .statusBarDarkFont(false)
+                        .navigationBarDarkIcon(true)
+                        .navigationBarColor(R.color.white)
+                        .init();
                 break;
             case 2:
                 showFragment(mineFragment);
+                ImmersionBar.with(this)
+//                        .statusBarView(status_bar_view)
+                        .statusBarColor(R.color.white)
+                        .statusBarDarkFont(true)
+                        .navigationBarDarkIcon(true)
+                        .navigationBarColor(R.color.white)
+                        .init();
                 break;
         }
     }
@@ -164,13 +185,4 @@ public class NewMainActivity extends BaseActivity {
         }
     }
 
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-//        if (requestCode == XPermissionUtils.REQUEST_CODE_OPEN_APPLICATION_SETTING) {
-//            UpdataManagerUtil.requestPermissionForInstallPackage(this, false);//版本更新
-//        }
-    }
 }

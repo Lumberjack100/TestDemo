@@ -11,9 +11,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -34,7 +32,7 @@ import com.shmedo.mcloudapp.bluetooth.BluetoothEventHandler;
 import com.shmedo.mcloudapp.bluetooth.BluetoothEventType;
 import com.shmedo.mcloudapp.bluetooth.MdBluetoothManager;
 import com.shmedo.mcloudapp.common.ui.activity.ScanActivity;
-import com.shmedo.mcloudapp.common.ui.fragment.BaseFragment;
+import com.shmedo.mcloudapp.common.ui.fragment.BaseTranslucentFragment;
 import com.shmedo.mcloudapp.common.view.recycleviewitemdivider.DividerItemDecoration;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.ConfigADMEActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.ConfigDASActivity;
@@ -59,7 +57,7 @@ import timber.log.Timber;
 /**
  * 蓝牙设备列表页面
  */
-public class BluetoothDeviceListFragment extends BaseFragment {
+public class BluetoothDeviceListFragment extends BaseTranslucentFragment {
     private static final int REQUEST_ENABLE_BT = 0x002;
 
     @BindView(R.id.ivDiscoveryDevice)
@@ -99,27 +97,17 @@ public class BluetoothDeviceListFragment extends BaseFragment {
     }
 
     @Override
-    protected int initContentView() {
+    protected int getLayoutId() {
         return R.layout.fragment_bluetooth_device_list;
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = super.onCreateView(inflater, container, savedInstanceState);
-        initView();
-        initAdapter();
-        return view;
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        initAdapter();
         startDiscoveryDevice();
     }
 
-    private void initView() {
-
-    }
 
     private void initAdapter() {
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));

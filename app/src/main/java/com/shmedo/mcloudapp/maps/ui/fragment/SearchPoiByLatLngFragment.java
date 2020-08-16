@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -99,25 +98,19 @@ public class SearchPoiByLatLngFragment extends BaseFragment implements GeocodeSe
     }
 
     @Override
-    protected int initContentView() {
+    protected int getLayoutId() {
         return R.layout.fragment_search_poi_by_lat_lng;
     }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = super.onCreateView(inflater, container, savedInstanceState);
-
-        return rootView;
-    }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         activity = (SearchPoiActivity) getActivity();
-        initView();
     }
 
-    private void initView() {
+    @Override
+    protected void initView() {
         mCurrentMode = DEGREE;
         switchTab();
         setSpinnerAdapter();

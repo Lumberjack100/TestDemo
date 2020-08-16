@@ -168,7 +168,7 @@ public class ADMEHomeFragment extends BaseFragment {
 
 
     @Override
-    protected int initContentView() {
+    protected int getLayoutId() {
         return R.layout.fragment_admehome;
     }
 
@@ -183,7 +183,7 @@ public class ADMEHomeFragment extends BaseFragment {
         View view = super.onCreateView(inflater, container, savedInstanceState);
         getIntentData();
         queryProjectList();
-        initView();
+        setupView();
         initAnimation();
         setSwitchViewListener();
         initAdapter();
@@ -205,7 +205,7 @@ public class ADMEHomeFragment extends BaseFragment {
         hander = new Handler();
     }
 
-    private void initView() {
+    private void setupView() {
         ((TextView) bluetoothSwitchLayout.findViewById(R.id.tv_config_name)).setText("蓝牙连接");
         tvBluetoothState = bluetoothSwitchLayout.findViewById(R.id.tv_device_state);
         sbBluetoothState = bluetoothSwitchLayout.findViewById(R.id.switchButton);

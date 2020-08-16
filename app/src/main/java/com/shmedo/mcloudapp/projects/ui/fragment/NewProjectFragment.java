@@ -2,19 +2,22 @@ package com.shmedo.mcloudapp.projects.ui.fragment;
 
 import android.graphics.Color;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
+import androidx.core.graphics.ColorUtils;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.gyf.immersionbar.ImmersionBar;
 import com.lxj.xpopup.XPopup;
 import com.lxj.xpopup.core.BasePopupView;
 import com.lxj.xpopup.interfaces.SimpleCallback;
@@ -23,7 +26,7 @@ import com.shmedo.core.model.UserInfo;
 import com.shmedo.core.util.DensityUtil;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.activity.NewMainActivity;
-import com.shmedo.mcloudapp.common.ui.fragment.BaseFragment;
+import com.shmedo.mcloudapp.common.ui.fragment.BaseTranslucentFragment;
 import com.shmedo.mcloudapp.network.BaseObserver;
 import com.shmedo.mcloudapp.network.MDRetrofit;
 import com.shmedo.mcloudapp.network.NetworkConst;
@@ -72,10 +75,22 @@ import okhttp3.RequestBody;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class NewProjectFragment extends BaseFragment implements ProjectFilterPopupView.OnFilterPopupViewListener {
+public class NewProjectFragment extends BaseTranslucentFragment {
 
     @BindView(R.id.toolbar_top_divider)
     View toolBarTopDivider;
+
+    @BindView(R.id.toolbar)
+    Toolbar mToolbar;
+
+    @BindView(R.id.search_container)
+    ViewGroup searchLayout;
+
+    @BindView(R.id.iv_view_in_map)
+    ImageView ivMap;
+
+    @BindView(R.id.iv_filter)
+    ImageView ivFilter;
 
     @BindView(R.id.swipeLayout)
     SwipeRefreshLayout swipeRefresh;
@@ -103,20 +118,17 @@ public class NewProjectFragment extends BaseFragment implements ProjectFilterPop
     private List<ProjectItem> simpleProjectItems = new ArrayList<>();
     private List<ProjectItem> multiProjectItems = new ArrayList<>();
 
+    private int bannerHeight = 100;
+
 
     @Override
-    protected int initContentView() {
+    protected int getLayoutId() {
         return R.layout.fragment_new_project;
     }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = super.onCreateView(inflater, container, savedInstanceState);
-        initView();
-        return view;
-    }
 
-    private void initView() {
+    @Override
+    protected void initView() {
         mRecyclerView.setVisibility(View.VISIBLE);
         mRecyclerViewGroup.setVisibility(View.GONE);
     }
@@ -132,6 +144,7 @@ public class NewProjectFragment extends BaseFragment implements ProjectFilterPop
         }
         initSimpleAdapter();
         initMultiItemAdapter();
+        setListener();
         swipeRefresh.setColorSchemeResources(android.R.color.holo_blue_light);
         swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -201,6 +214,49 @@ public class NewProjectFragment extends BaseFragment implements ProjectFilterPop
         });
 
         mRecyclerViewGroup.setAdapter(multiAdapter);
+    }
+
+
+    private void setListener() {
+        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            private int totalDy = 0;
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                totalDy += dy;
+                if (totalDy <= bannerHeight) {
+                    float alpha = (float) totalDy / bannerHeight;
+                    mToolbar.setBackgroundColor(ColorUtils.blendARGB(Color.TRANSPARENT
+                            , ContextCompat.getColor(mActivity, R.color.white), alpha));
+
+                    searchLayout.setBackgroundResource(R.drawable.bg_search_project_white);
+                    ivMap.setImageResource(R.drawable.ic_project_map);
+                    ivFilter.setImageResource(R.drawable.ic_filter_project_normal);
+
+                    ImmersionBar.with(NewProjectFragment.this)
+                            .statusBarColor(R.color.transparent, alpha)
+                            .statusBarDarkFont(false)
+                            .navigationBarDarkIcon(true)
+                            .navigationBarColor(R.color.white)
+                            .init();
+                } else {
+                    mToolbar.setBackgroundColor(ColorUtils.blendARGB(Color.TRANSPARENT
+                            , ContextCompat.getColor(mActivity, R.color.white), 1));
+
+                    searchLayout.setBackgroundResource(R.drawable.bg_search_project_gray);
+                    ivMap.setImageResource(R.drawable.ic_project_map_black);
+                    ivFilter.setImageResource(R.drawable.ic_filter_project_checked);
+
+                    ImmersionBar.with(NewProjectFragment.this)
+                            .statusBarColor(R.color.white, 1)
+                            .statusBarDarkFont(true)
+                            .navigationBarDarkIcon(true)
+                            .navigationBarColor(R.color.white)
+                            .init();
+                }
+            }
+        });
     }
 
     /**
@@ -275,8 +331,42 @@ public class NewProjectFragment extends BaseFragment implements ProjectFilterPop
 
             case R.id.iv_filter://推出项目筛选条件抽屉窗口
                 showFilterPopupView(v);
+//                showFilterDialog();
                 break;
         }
+    }
+
+    private void showFilterDialog() {
+        FilterProjectDialog projectDialog = new FilterProjectDialog();
+        projectDialog.setOnFilterPopupViewListener(new FilterProjectDialog.OnFilterPopupViewListener() {
+            @Override
+            public void onSearchClick() {
+                ProjectSearchActivity.startActivity(getActivity());
+            }
+
+            @Override
+            public void onMapClick() {
+                ViewProjectsInMapActivity.startActivity(getActivity());
+            }
+            @Override
+            public void onFilterResult(ProjectViewMode viewMode, ProjectState state) {
+                projectViewMode = viewMode;
+                projectState = state;
+                //列表模式时，直接筛选缓存的tempProjectItems
+                if (viewMode == ProjectViewMode.VIEW_SIMPLE) {
+                    mRecyclerView.setVisibility(View.VISIBLE);
+                    mRecyclerViewGroup.setVisibility(View.GONE);
+                    filterSimpleListProjectsByState();
+                } else {
+                    mRecyclerView.setVisibility(View.GONE);
+                    mRecyclerViewGroup.setVisibility(View.VISIBLE);
+                    //分组展示模式时，需要请求不同的分组接口刷新数据
+                    swipeRefresh.setRefreshing(true);
+                    refreshProjects();
+                }
+            }
+        });
+        projectDialog.show(getChildFragmentManager(), "dialog");
     }
 
     private void showFilterPopupView(final View view) {
@@ -294,38 +384,39 @@ public class NewProjectFragment extends BaseFragment implements ProjectFilterPop
                             toolBarTopDivider.setVisibility(View.INVISIBLE);
                         }
                     })
-                    .asCustom(new ProjectFilterPopupView(getContext(), this));
+                    .asCustom(new ProjectFilterPopupView(getContext(), new ProjectFilterPopupView.OnFilterPopupViewListener() {
+                        @Override
+                        public void onSearchClick() {
+                            ProjectSearchActivity.startActivity(getActivity());
+                        }
+
+                        @Override
+                        public void onMapClick() {
+                            ViewProjectsInMapActivity.startActivity(getActivity());
+
+                        }
+
+                        @Override
+                        public void onFilterResult(ProjectViewMode viewMode, ProjectState state) {
+                            projectViewMode = viewMode;
+                            projectState = state;
+                            //列表模式时，直接筛选缓存的tempProjectItems
+                            if (viewMode == ProjectViewMode.VIEW_SIMPLE) {
+                                mRecyclerView.setVisibility(View.VISIBLE);
+                                mRecyclerViewGroup.setVisibility(View.GONE);
+                                filterSimpleListProjectsByState();
+                            } else {
+                                mRecyclerView.setVisibility(View.GONE);
+                                mRecyclerViewGroup.setVisibility(View.VISIBLE);
+                                //分组展示模式时，需要请求不同的分组接口刷新数据
+                                swipeRefresh.setRefreshing(true);
+                                refreshProjects();
+                            }
+                        }
+                    }));
         }
 
         popupView.show();
-    }
-
-    @Override
-    public void onSearchClick() {
-        ProjectSearchActivity.startActivity(getActivity());
-    }
-
-    @Override
-    public void onMapClick() {
-        ViewProjectsInMapActivity.startActivity(getActivity());
-    }
-
-    @Override
-    public void onFilterResult(ProjectViewMode viewMode, ProjectState state) {
-        projectViewMode = viewMode;
-        projectState = state;
-        //列表模式时，直接筛选缓存的tempProjectItems
-        if (viewMode == ProjectViewMode.VIEW_SIMPLE) {
-            mRecyclerView.setVisibility(View.VISIBLE);
-            mRecyclerViewGroup.setVisibility(View.GONE);
-            filterSimpleListProjectsByState();
-        } else {
-            mRecyclerView.setVisibility(View.GONE);
-            mRecyclerViewGroup.setVisibility(View.VISIBLE);
-            //分组展示模式时，需要请求不同的分组接口刷新数据
-            swipeRefresh.setRefreshing(true);
-            refreshProjects();
-        }
     }
 
     private void refreshProjects() {

@@ -1,6 +1,7 @@
-package com.shmedo.mcloudapp.projects.view;
+package com.shmedo.mcloudapp.projects.ui.fragment;
 
-import android.content.Context;
+import android.content.res.Configuration;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -12,9 +13,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
-import com.lxj.xpopup.impl.PartShadowPopupView;
+import com.gyf.immersionbar.ImmersionBar;
 import com.shmedo.core.util.DensityUtil;
 import com.shmedo.mcloudapp.R;
+import com.shmedo.mcloudapp.common.ui.fragment.dialog.BaseTranslucentDialogFragment;
 import com.shmedo.mcloudapp.common.view.recycleviewitemdivider.GridSpacingItemDecoration;
 import com.shmedo.mcloudapp.projects.adapter.FilterItemAdapter;
 import com.shmedo.mcloudapp.projects.model.FilterItem;
@@ -23,22 +25,33 @@ import com.shmedo.mcloudapp.projects.model.ProjectViewMode;
 import com.shmedo.mcloudapp.projects.model.StateFilterItem;
 import com.shmedo.mcloudapp.projects.model.TypeFilterItem;
 
-import butterknife.ButterKnife;
+import butterknife.BindView;
+import butterknife.OnClick;
 
 /**
  * 创建者:   gonghe <br/>
- * 创建时间:  2020/8/12 <br/>
- * 描述：    项目筛选阴影弹窗
+ * 创建时间:  2020/8/16 <br/>
+ * 描述：     TODO
  */
-public class ProjectFilterPopupView extends PartShadowPopupView implements View.OnClickListener {
-    private Toolbar mToolbar;
-    private ViewGroup searchLayout;
-    private ImageView ivMap;
-    private ImageView ivFilter;
-    private RecyclerView mRecyclerViewProType;
-    private RecyclerView mRecyclerViewProState;
+public class FilterProjectDialog extends BaseTranslucentDialogFragment {
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
 
-    private Context mContext;
+    @BindView(R.id.search_container)
+    ViewGroup searchLayout;
+
+    @BindView(R.id.iv_view_in_map)
+    ImageView ivMap;
+
+    @BindView(R.id.iv_filter)
+    ImageView ivFilter;
+
+    @BindView(R.id.recyclerView_project_type)
+    RecyclerView mRecyclerViewProType;
+
+    @BindView(R.id.recyclerView_project_state)
+    RecyclerView mRecyclerViewProState;
+
     private FilterItemAdapter projectTypeAdapter, projectStateAdapter;
 
     private ProjectViewMode projectViewMode = ProjectViewMode.VIEW_SIMPLE;
@@ -46,54 +59,61 @@ public class ProjectFilterPopupView extends PartShadowPopupView implements View.
 
     private OnFilterPopupViewListener mListener;
 
-
-    public ProjectFilterPopupView(@NonNull Context context, OnFilterPopupViewListener listener) {
-        super(context);
-        ButterKnife.bind(this);
-        mContext = context;
-        mListener = listener;
+    @Override
+    public void onStart() {
+        super.onStart();
+        mWindow.setGravity(Gravity.TOP);
+        mWindow.setWindowAnimations(R.style.TopAnimation);
+        mWindow.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, mWidthAndHeight[1] / 2);
     }
 
 
     @Override
-    protected int getImplLayoutId() {
+    protected int setLayoutId() {
         return R.layout.project_filter_popup;
     }
 
     @Override
-    protected void onCreate() {
-        super.onCreate();
-        initView();
+    protected void initImmersionBar() {
+        super.initImmersionBar();
+        ImmersionBar.with(this)
+                .titleBar(toolbar)
+                .statusBarColor(R.color.white)
+                .statusBarDarkFont(true)
+                .navigationBarWithKitkatEnable(getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE)
+                .init();
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        mWindow.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, mWidthAndHeight[1] / 2);
+        ImmersionBar.with(this)
+                .navigationBarWithKitkatEnable(newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE)
+                .init();
+    }
+
+
+    @Override
+    protected void initView() {
+        toolbar.setBackgroundResource(R.color.white);
+        searchLayout.setBackgroundResource(R.drawable.bg_search_project_gray);
+        ivMap.setImageResource(R.drawable.ic_project_map_black);
+        ivFilter.setImageResource(R.drawable.ic_filter_project_checked);
         setUpProjectTypeRecyclerView();
         setUpProjectStateRecyclerView();
+    }
+
+    @Override
+    protected void initData() {
         initProjectTypeData();
         initProjectStateData();
     }
 
-    private void initView() {
-        mToolbar = findViewById(R.id.toolbar);
-        searchLayout = findViewById(R.id.search_container);
-        ivMap = findViewById(R.id.iv_view_in_map);
-        ivFilter = findViewById(R.id.iv_filter);
-        mRecyclerViewProType = findViewById(R.id.recyclerView_project_type);
-        mRecyclerViewProState = findViewById(R.id.recyclerView_project_state);
-
-        mToolbar.setBackgroundResource(R.color.white);
-        searchLayout.setBackgroundResource(R.drawable.bg_search_project_gray);
-        ivMap.setImageResource(R.drawable.ic_project_map_black);
-        ivFilter.setImageResource(R.drawable.ic_filter_project_checked);
-
-        searchLayout.setOnClickListener(this);
-        ivMap.setOnClickListener(this);
-        ivFilter.setOnClickListener(this);
-        findViewById(R.id.ll_reset).setOnClickListener(this);
-        findViewById(R.id.tv_confirm).setOnClickListener(this);
-    }
-
     private void setUpProjectTypeRecyclerView() {
         int spanCount = 4;//跟布局里面的spanCount属性是一致的
-        int spacing = DensityUtil.Dp2Px(mContext, 7);//每一个矩形的间距
-        mRecyclerViewProType.setLayoutManager(new GridLayoutManager(mContext, spanCount));
+        int spacing = DensityUtil.Dp2Px(getActivity(), 7);//每一个矩形的间距
+        mRecyclerViewProType.setLayoutManager(new GridLayoutManager(getActivity(), spanCount));
         //设置每个item间距
         mRecyclerViewProType.addItemDecoration(new GridSpacingItemDecoration(spanCount, spacing, false));
         projectTypeAdapter = new FilterItemAdapter();
@@ -118,8 +138,8 @@ public class ProjectFilterPopupView extends PartShadowPopupView implements View.
 
     private void setUpProjectStateRecyclerView() {
         int spanCount = 4;//跟布局里面的spanCount属性是一致的
-        int spacing = DensityUtil.Dp2Px(mContext, 7);//每一个矩形的间距
-        mRecyclerViewProState.setLayoutManager(new GridLayoutManager(mContext, spanCount));
+        int spacing = DensityUtil.Dp2Px(getActivity(), 7);//每一个矩形的间距
+        mRecyclerViewProState.setLayoutManager(new GridLayoutManager(getActivity(), spanCount));
         //设置每个item间距
         mRecyclerViewProState.addItemDecoration(new GridSpacingItemDecoration(spanCount, spacing, false));
         projectStateAdapter = new FilterItemAdapter();
@@ -142,6 +162,8 @@ public class ProjectFilterPopupView extends PartShadowPopupView implements View.
         });
     }
 
+
+    @OnClick({R.id.search_container, R.id.iv_view_in_map, R.id.iv_filter, R.id.ll_reset, R.id.tv_confirm})
     public void onClick(View view) {
         if (mListener == null)
             return;
@@ -214,6 +236,10 @@ public class ProjectFilterPopupView extends PartShadowPopupView implements View.
 
         filterItem = new StateFilterItem("过期", ProjectState.OUT_OF_DATE);
         projectStateAdapter.addData(filterItem);
+    }
+
+    public void setOnFilterPopupViewListener(OnFilterPopupViewListener listener) {
+        this.mListener = listener;
     }
 
     public interface OnFilterPopupViewListener {

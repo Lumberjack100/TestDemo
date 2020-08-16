@@ -1,5 +1,7 @@
 package com.shmedo.mcloudapp.common.ui.fragment;
 
+import android.app.Activity;
+import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -12,11 +14,12 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.shmedo.mcloudapp.util.permission.XPermissionUtils;
 import com.shmedo.mcloudapp.common.callback.HandleBackInterface;
 import com.shmedo.mcloudapp.util.common.HandleBackUtil;
+import com.shmedo.mcloudapp.util.permission.XPermissionUtils;
 
 import butterknife.ButterKnife;
+import butterknife.Unbinder;
 import timber.log.Timber;
 
 /**
@@ -29,19 +32,58 @@ import timber.log.Timber;
  */
 
 public abstract class BaseFragment extends Fragment implements HandleBackInterface {
+    private Unbinder unbinder;
+    protected Activity mActivity;
+    protected View mRootView;
+    private MaterialDialog loadingDialog = null;
 
-    protected MaterialDialog loadingDialog = null;
 
-    protected abstract int initContentView();
-
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        mActivity = (Activity) context;
+    }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(initContentView(), container, false);
-        ButterKnife.bind(this, view);
+        if (mRootView == null) {
+            mRootView = inflater.inflate(getLayoutId(), container, false);
+        } else {
+            ViewGroup viewGroup = (ViewGroup) mRootView.getParent();
+            if (viewGroup != null) {
+                viewGroup.removeView(mRootView);
+            }
+        }
+        return mRootView;
+    }
 
-        return view;
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        unbinder = ButterKnife.bind(this, view);
+        initView();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        unbinder.unbind();
+    }
+
+
+    /**
+     * Gets layout id.
+     *
+     * @return the layout id
+     */
+    protected abstract int getLayoutId();
+
+    /**
+     * view与数据绑定
+     */
+    protected void initView() {
+
     }
 
 
@@ -67,7 +109,6 @@ public abstract class BaseFragment extends Fragment implements HandleBackInterfa
         String name = getClass().getName();
         Timber.i("endPage,Fragment=%s", name);
     }
-
 
     protected void showTipDialog(String content) {
         MaterialDialog.Builder mBuilder = new MaterialDialog.Builder(getActivity());

@@ -99,7 +99,7 @@ public class QueryDeviceDataFragment extends BaseFragment {
 
 
     @Override
-    protected int initContentView() {
+    protected int getLayoutId() {
         return R.layout.fragment_query_device_data;
     }
 
@@ -109,7 +109,7 @@ public class QueryDeviceDataFragment extends BaseFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = super.onCreateView(inflater, container, savedInstanceState);
         getIntentData();
-        initView();
+        setupView();
         initAdapter();
         initAnimation();
         return view;
@@ -128,7 +128,7 @@ public class QueryDeviceDataFragment extends BaseFragment {
         configDASActivity = (ConfigDASActivity) getActivity();
     }
 
-    private void initView() {
+    private void setupView() {
         String[] cmData = getResources().getStringArray(R.array.item_count);
         itemCountAdapter = new ArrayAdapter<>(configDASActivity, R.layout.spinner_item, cmData);
         itemCountAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);

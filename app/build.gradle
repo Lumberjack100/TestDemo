@@ -213,6 +213,11 @@ dependencies {
     //搜索
     implementation "com.amap.api:search:$rootProject.thirdLib.amapSearch"
 
+    // 基础依赖包，必须要依赖
+    implementation 'com.gyf.immersionbar:immersionbar:3.0.0'
+    // fragment快速实现（可选）
+    implementation 'com.gyf.immersionbar:immersionbar-components:3.0.0'
+
     testImplementation "junit:junit:$rootProject.thirdLib.junit"
     androidTestImplementation "androidx.test:runner:$rootProject.thirdLib.runner"
     androidTestImplementation "androidx.test.espresso:espresso-core:$rootProject.thirdLib.espresso"
