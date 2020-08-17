@@ -11,6 +11,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 import androidx.core.graphics.ColorUtils;
+import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -86,6 +87,9 @@ public class NewProjectFragment extends BaseTranslucentFragment {
     @BindView(R.id.search_container)
     ViewGroup searchLayout;
 
+    @BindView(R.id.iv_top_bg)
+    ImageView ivTopBg;
+
     @BindView(R.id.iv_view_in_map)
     ImageView ivMap;
 
@@ -94,6 +98,9 @@ public class NewProjectFragment extends BaseTranslucentFragment {
 
     @BindView(R.id.swipeLayout)
     SwipeRefreshLayout swipeRefresh;
+
+    @BindView(R.id.nestedScrollView)
+    NestedScrollView nestedScrollView;
 
     @BindView(R.id.recyclerview)
     SwipeRecyclerView mRecyclerView;
@@ -118,7 +125,7 @@ public class NewProjectFragment extends BaseTranslucentFragment {
     private List<ProjectItem> simpleProjectItems = new ArrayList<>();
     private List<ProjectItem> multiProjectItems = new ArrayList<>();
 
-    private int bannerHeight = 100;
+    private int bannerHeight;
 
 
     @Override
@@ -131,6 +138,11 @@ public class NewProjectFragment extends BaseTranslucentFragment {
     protected void initView() {
         mRecyclerView.setVisibility(View.VISIBLE);
         mRecyclerViewGroup.setVisibility(View.GONE);
+
+        ViewGroup.LayoutParams bannerParams = ivTopBg.getLayoutParams();
+        ViewGroup.LayoutParams titleBarParams = mToolbar.getLayoutParams();
+        bannerHeight = bannerParams.height - titleBarParams.height - ImmersionBar.getStatusBarHeight(mActivity) - DensityUtil.Dp2Px(getActivity(), 30);
+        String ss = "";
     }
 
     @Override
@@ -218,15 +230,51 @@ public class NewProjectFragment extends BaseTranslucentFragment {
 
 
     private void setListener() {
-        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            private int totalDy = 0;
-
+//        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+//            private int totalDy = 0;
+//
+//            @Override
+//            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+//                super.onScrolled(recyclerView, dx, dy);
+//                totalDy += dy;
+//                if (totalDy <= bannerHeight) {
+//                    float alpha = (float) totalDy / bannerHeight;
+//                    mToolbar.setBackgroundColor(ColorUtils.blendARGB(Color.TRANSPARENT
+//                            , ContextCompat.getColor(mActivity, R.color.white), alpha));
+//
+//                    searchLayout.setBackgroundResource(R.drawable.bg_search_project_white);
+//                    ivMap.setImageResource(R.drawable.ic_project_map);
+//                    ivFilter.setImageResource(R.drawable.ic_filter_project_normal);
+//
+//                    ImmersionBar.with(NewProjectFragment.this)
+//                            .statusBarColor(R.color.transparent, alpha)
+//                            .statusBarDarkFont(false)
+//                            .navigationBarDarkIcon(true)
+//                            .navigationBarColor(R.color.white)
+//                            .init();
+//                } else {
+//                    mToolbar.setBackgroundColor(ColorUtils.blendARGB(Color.TRANSPARENT
+//                            , ContextCompat.getColor(mActivity, R.color.white), 1));
+//
+//                    searchLayout.setBackgroundResource(R.drawable.bg_search_project_gray);
+//                    ivMap.setImageResource(R.drawable.ic_project_map_black);
+//                    ivFilter.setImageResource(R.drawable.ic_filter_project_checked);
+//
+//                    ImmersionBar.with(NewProjectFragment.this)
+//                            .statusBarColor(R.color.white, 1)
+//                            .statusBarDarkFont(true)
+//                            .navigationBarDarkIcon(true)
+//                            .navigationBarColor(R.color.white)
+//                            .init();
+//                }
+//            }
+//        });
+        nestedScrollView.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
             @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-                totalDy += dy;
-                if (totalDy <= bannerHeight) {
-                    float alpha = (float) totalDy / bannerHeight;
+            public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
+
+                if (scrollY <= bannerHeight) {
+                    float alpha = (float) scrollY / bannerHeight;
                     mToolbar.setBackgroundColor(ColorUtils.blendARGB(Color.TRANSPARENT
                             , ContextCompat.getColor(mActivity, R.color.white), alpha));
 
@@ -269,11 +317,14 @@ public class NewProjectFragment extends BaseTranslucentFragment {
             // 1. MATCH_PARENT 自适应高度，保持和Item一样高;
             int height = ViewGroup.LayoutParams.MATCH_PARENT;
 
+            ProjectItem projectItem = (ProjectItem) simpleAdapter.getDatas().get(position);
+            ProjectDetailInfo detailInfo = (ProjectDetailInfo) projectItem.getObject();
+
             // 只添加Item右侧的菜单。
             {
                 SwipeMenuItem addItem = new SwipeMenuItem(getActivity())
                         .setBackground(R.drawable.bg_corner_6dp_blue)
-                        .setText("置顶")
+                        .setText(detailInfo.isTop() ? "取消置顶" : "置顶")
                         .setTextColor(Color.WHITE)
                         .setWidth(width)
                         .setHeight(height);
@@ -348,6 +399,7 @@ public class NewProjectFragment extends BaseTranslucentFragment {
             public void onMapClick() {
                 ViewProjectsInMapActivity.startActivity(getActivity());
             }
+
             @Override
             public void onFilterResult(ProjectViewMode viewMode, ProjectState state) {
                 projectViewMode = viewMode;
@@ -819,4 +871,12 @@ public class NewProjectFragment extends BaseTranslucentFragment {
                 });
     }
 
+
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        if (!hidden) {
+            //TODO  fragment  显示或隐藏时会触发此事件
+        }
+    }
 }
