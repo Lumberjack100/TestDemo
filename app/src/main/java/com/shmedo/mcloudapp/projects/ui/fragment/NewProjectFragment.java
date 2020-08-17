@@ -136,14 +136,12 @@ public class NewProjectFragment extends BaseTranslucentFragment {
 
     @Override
     protected void initView() {
-        mRecyclerView.setVisibility(View.VISIBLE);
-        mRecyclerViewGroup.setVisibility(View.GONE);
-
         ViewGroup.LayoutParams bannerParams = ivTopBg.getLayoutParams();
         ViewGroup.LayoutParams titleBarParams = mToolbar.getLayoutParams();
         //计算公式=底图高度-toolbar高度-状态栏高度-人为定义的偏差(这里取值30)
         topBgImageTranslucentScrollDistance = bannerParams.height - titleBarParams.height - ImmersionBar.getStatusBarHeight(mActivity) - DensityUtil.Dp2Px(getActivity(), 30);
-        String ss = "";
+
+        swipeRefresh.setColorSchemeResources(android.R.color.holo_blue_light);
     }
 
     @Override
@@ -158,7 +156,7 @@ public class NewProjectFragment extends BaseTranslucentFragment {
         initSimpleAdapter();
         initMultiItemAdapter();
         setListener();
-        swipeRefresh.setColorSchemeResources(android.R.color.holo_blue_light);
+//        swipeRefresh.setColorSchemeResources(android.R.color.holo_blue_light);
         swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -231,7 +229,6 @@ public class NewProjectFragment extends BaseTranslucentFragment {
 
     private void setListener() {
         nestedScrollView.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
-
             @Override
             public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
                 if (scrollY <= topBgImageTranslucentScrollDistance) {

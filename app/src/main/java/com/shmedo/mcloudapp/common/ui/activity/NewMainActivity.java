@@ -149,11 +149,11 @@ public class NewMainActivity extends BaseActivity {
                 break;
             case 1:
                 showFragment(projectListFragment);
-                ImmersionBar.with(this)
-                        .statusBarDarkFont(false)
-                        .navigationBarDarkIcon(true)
-                        .navigationBarColor(R.color.white)
-                        .init();
+//                ImmersionBar.with(this)
+//                        .statusBarDarkFont(false)
+//                        .navigationBarDarkIcon(true)
+//                        .navigationBarColor(R.color.white)
+//                        .init();
                 break;
             case 2:
                 showFragment(mineFragment);
