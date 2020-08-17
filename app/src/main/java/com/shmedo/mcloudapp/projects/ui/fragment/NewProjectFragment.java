@@ -125,8 +125,8 @@ public class NewProjectFragment extends BaseTranslucentFragment {
     private List<ProjectItem> simpleProjectItems = new ArrayList<>();
     private List<ProjectItem> multiProjectItems = new ArrayList<>();
 
-    private int bannerHeight;
-
+    private int topBgImageTranslucentScrollDistance;//状态栏设置完全透明时顶部背景底图所需滚动的距离
+    private float alpha = 0;
 
     @Override
     protected int getLayoutId() {
@@ -141,7 +141,8 @@ public class NewProjectFragment extends BaseTranslucentFragment {
 
         ViewGroup.LayoutParams bannerParams = ivTopBg.getLayoutParams();
         ViewGroup.LayoutParams titleBarParams = mToolbar.getLayoutParams();
-        bannerHeight = bannerParams.height - titleBarParams.height - ImmersionBar.getStatusBarHeight(mActivity) - DensityUtil.Dp2Px(getActivity(), 30);
+        //计算公式=底图高度-toolbar高度-状态栏高度-人为定义的偏差(这里取值30)
+        topBgImageTranslucentScrollDistance = bannerParams.height - titleBarParams.height - ImmersionBar.getStatusBarHeight(mActivity) - DensityUtil.Dp2Px(getActivity(), 30);
         String ss = "";
     }
 
@@ -228,80 +229,21 @@ public class NewProjectFragment extends BaseTranslucentFragment {
         mRecyclerViewGroup.setAdapter(multiAdapter);
     }
 
-
     private void setListener() {
-//        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-//            private int totalDy = 0;
-//
-//            @Override
-//            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-//                super.onScrolled(recyclerView, dx, dy);
-//                totalDy += dy;
-//                if (totalDy <= bannerHeight) {
-//                    float alpha = (float) totalDy / bannerHeight;
-//                    mToolbar.setBackgroundColor(ColorUtils.blendARGB(Color.TRANSPARENT
-//                            , ContextCompat.getColor(mActivity, R.color.white), alpha));
-//
-//                    searchLayout.setBackgroundResource(R.drawable.bg_search_project_white);
-//                    ivMap.setImageResource(R.drawable.ic_project_map);
-//                    ivFilter.setImageResource(R.drawable.ic_filter_project_normal);
-//
-//                    ImmersionBar.with(NewProjectFragment.this)
-//                            .statusBarColor(R.color.transparent, alpha)
-//                            .statusBarDarkFont(false)
-//                            .navigationBarDarkIcon(true)
-//                            .navigationBarColor(R.color.white)
-//                            .init();
-//                } else {
-//                    mToolbar.setBackgroundColor(ColorUtils.blendARGB(Color.TRANSPARENT
-//                            , ContextCompat.getColor(mActivity, R.color.white), 1));
-//
-//                    searchLayout.setBackgroundResource(R.drawable.bg_search_project_gray);
-//                    ivMap.setImageResource(R.drawable.ic_project_map_black);
-//                    ivFilter.setImageResource(R.drawable.ic_filter_project_checked);
-//
-//                    ImmersionBar.with(NewProjectFragment.this)
-//                            .statusBarColor(R.color.white, 1)
-//                            .statusBarDarkFont(true)
-//                            .navigationBarDarkIcon(true)
-//                            .navigationBarColor(R.color.white)
-//                            .init();
-//                }
-//            }
-//        });
         nestedScrollView.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
+
             @Override
             public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
+                if (scrollY <= topBgImageTranslucentScrollDistance) {
+                    alpha = (float) scrollY / topBgImageTranslucentScrollDistance;
 
-                if (scrollY <= bannerHeight) {
-                    float alpha = (float) scrollY / bannerHeight;
-                    mToolbar.setBackgroundColor(ColorUtils.blendARGB(Color.TRANSPARENT
-                            , ContextCompat.getColor(mActivity, R.color.white), alpha));
-
-                    searchLayout.setBackgroundResource(R.drawable.bg_search_project_white);
-                    ivMap.setImageResource(R.drawable.ic_project_map);
-                    ivFilter.setImageResource(R.drawable.ic_filter_project_normal);
-
-                    ImmersionBar.with(NewProjectFragment.this)
-                            .statusBarColor(R.color.transparent, alpha)
-                            .statusBarDarkFont(false)
-                            .navigationBarDarkIcon(true)
-                            .navigationBarColor(R.color.white)
-                            .init();
+                    updateSystemBarColor();
                 } else {
-                    mToolbar.setBackgroundColor(ColorUtils.blendARGB(Color.TRANSPARENT
-                            , ContextCompat.getColor(mActivity, R.color.white), 1));
+                    if (alpha < 1) {
+                        alpha = 1;
 
-                    searchLayout.setBackgroundResource(R.drawable.bg_search_project_gray);
-                    ivMap.setImageResource(R.drawable.ic_project_map_black);
-                    ivFilter.setImageResource(R.drawable.ic_filter_project_checked);
-
-                    ImmersionBar.with(NewProjectFragment.this)
-                            .statusBarColor(R.color.white, 1)
-                            .statusBarDarkFont(true)
-                            .navigationBarDarkIcon(true)
-                            .navigationBarColor(R.color.white)
-                            .init();
+                        updateSystemBarColor();
+                    }
                 }
             }
         });
@@ -876,7 +818,37 @@ public class NewProjectFragment extends BaseTranslucentFragment {
     public void onHiddenChanged(boolean hidden) {
         super.onHiddenChanged(hidden);
         if (!hidden) {
-            //TODO  fragment  显示或隐藏时会触发此事件
+            updateSystemBarColor();
+        }
+    }
+
+    private void updateSystemBarColor() {
+        if (alpha < 1) {
+            mToolbar.setBackgroundColor(ColorUtils.blendARGB(Color.TRANSPARENT
+                    , ContextCompat.getColor(mActivity, R.color.white), alpha));
+            searchLayout.setBackgroundResource(R.drawable.bg_search_project_white);
+            ivMap.setImageResource(R.drawable.ic_project_map);
+            ivFilter.setImageResource(R.drawable.ic_filter_project_normal);
+
+            ImmersionBar.with(NewProjectFragment.this)
+                    .statusBarColor(R.color.transparent, alpha)
+                    .statusBarDarkFont(false)
+                    .navigationBarDarkIcon(true)
+                    .navigationBarColor(R.color.white)
+                    .init();
+        } else {
+            mToolbar.setBackgroundColor(ColorUtils.blendARGB(Color.TRANSPARENT
+                    , ContextCompat.getColor(mActivity, R.color.white), 1));
+            searchLayout.setBackgroundResource(R.drawable.bg_search_project_gray);
+            ivMap.setImageResource(R.drawable.ic_project_map_black);
+            ivFilter.setImageResource(R.drawable.ic_filter_project_checked);
+
+            ImmersionBar.with(NewProjectFragment.this)
+                    .statusBarColor(R.color.white, 1)
+                    .statusBarDarkFont(true)
+                    .navigationBarDarkIcon(true)
+                    .navigationBarColor(R.color.white)
+                    .init();
         }
     }
 }
