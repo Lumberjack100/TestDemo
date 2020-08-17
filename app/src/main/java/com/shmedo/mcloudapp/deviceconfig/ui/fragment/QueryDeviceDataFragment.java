@@ -3,9 +3,7 @@ package com.shmedo.mcloudapp.deviceconfig.ui.fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.RotateAnimation;
 import android.widget.AdapterView;
@@ -103,32 +101,16 @@ public class QueryDeviceDataFragment extends BaseFragment {
         return R.layout.fragment_query_device_data;
     }
 
-
-    @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = super.onCreateView(inflater, container, savedInstanceState);
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
         getIntentData();
-        setupView();
         initAdapter();
         initAnimation();
-        return view;
     }
 
-    private void getIntentData() {
-        Intent intent = getActivity().getIntent();
-        if (intent.getExtras() != null && intent.getExtras().containsKey(AppContants.Extras.CUR_DEVICE_NAME)) {
-            String deviceInfo = intent.getStringExtra(AppContants.Extras.CUR_DEVICE_NAME);
-            String[] scanData = deviceInfo.split(",");
-
-            tvDeviceNumber.setText("设备号：" + scanData[1]);//设备编号
-            snNubmer = scanData[1];
-            Timber.i("设备号====" + scanData[1]);
-        }
-        configDASActivity = (ConfigDASActivity) getActivity();
-    }
-
-    private void setupView() {
+    @Override
+    protected void initView() {
         String[] cmData = getResources().getStringArray(R.array.item_count);
         itemCountAdapter = new ArrayAdapter<>(configDASActivity, R.layout.spinner_item, cmData);
         itemCountAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -146,6 +128,19 @@ public class QueryDeviceDataFragment extends BaseFragment {
         //默认设置3天前的时间
         startTime.setText(TimeUtil.getDateBefore(3));
         endTime.setText(TimeUtil.getCurrentTime());
+    }
+
+    private void getIntentData() {
+        Intent intent = getActivity().getIntent();
+        if (intent.getExtras() != null && intent.getExtras().containsKey(AppContants.Extras.CUR_DEVICE_NAME)) {
+            String deviceInfo = intent.getStringExtra(AppContants.Extras.CUR_DEVICE_NAME);
+            String[] scanData = deviceInfo.split(",");
+
+            tvDeviceNumber.setText("设备号：" + scanData[1]);//设备编号
+            snNubmer = scanData[1];
+            Timber.i("设备号====" + scanData[1]);
+        }
+        configDASActivity = (ConfigDASActivity) getActivity();
     }
 
     private void initAdapter() {

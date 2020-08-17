@@ -6,9 +6,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.CompoundButton;
@@ -16,6 +14,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.afollestad.materialdialogs.DialogAction;
@@ -34,6 +33,7 @@ import com.shmedo.core.enums.BreakAlarmStatus;
 import com.shmedo.core.enums.CollectorModel;
 import com.shmedo.core.enums.CommandType;
 import com.shmedo.core.enums.RainStation;
+import com.shmedo.core.event.BluetoothStateEvent;
 import com.shmedo.core.model.BaseConfigInfo;
 import com.shmedo.core.model.BreakAlarmStatusInfo;
 import com.shmedo.core.model.CollectorConfigInfo;
@@ -49,7 +49,6 @@ import com.shmedo.mcloudapp.deviceconfig.ui.activity.GeneralSettingActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.MqttSettingActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.sensor.CommonSensorConfigActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.sensor.VibratingWireSensorConfigActivity;
-import com.shmedo.core.event.BluetoothStateEvent;
 import com.shmedo.mcloudapp.util.bleutil.BlueResultParserUtil;
 
 import org.greenrobot.eventbus.EventBus;
@@ -153,31 +152,15 @@ public class DASHomeFragment extends BaseFragment {
 
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = super.onCreateView(inflater, container, savedInstanceState);
-
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
         getIntentData();
-        setupView();
         setSwitchViewListener();
         initAdapter();
-        return view;
     }
 
-    private void getIntentData() {
-        Intent intent = getActivity().getIntent();
-        if (intent.getExtras() != null && intent.getExtras().containsKey(AppContants.Extras.CUR_DEVICE_NAME)) {
-            String deviceInfo = intent.getStringExtra(AppContants.Extras.CUR_DEVICE_NAME);
-            String[] scanData = deviceInfo.split(",");
-            mTvDeviceName.setText("物联网数据采集器");
-            mTvDeviceSn.setText(scanData[1]);//设备编号
-            mTvDeviceModel.setText(scanData[2]);//功能型号
-            mTvSensorType.setText("");
-        }
-        configDASActivity = (ConfigDASActivity) getActivity();
-    }
-
-
-    private void setupView() {
+    @Override
+    protected void initView() {
         ((TextView) bluetoothConnectLayout.findViewById(R.id.tv_config_name)).setText("蓝牙连接");
         mTvBluetoothConnect = bluetoothConnectLayout.findViewById(R.id.tv_device_state);
         mSbBluetoothConnect = bluetoothConnectLayout.findViewById(R.id.switchButton);
@@ -196,6 +179,19 @@ public class DASHomeFragment extends BaseFragment {
         mSbBleakAlarm = breakAlarmLayout.findViewById(R.id.sb_break_alarm);
 
         ((TextView) generalSensorParamConfigLayout.findViewById(R.id.tv_config_name)).setText("传感器参数配置");
+    }
+
+    private void getIntentData() {
+        Intent intent = getActivity().getIntent();
+        if (intent.getExtras() != null && intent.getExtras().containsKey(AppContants.Extras.CUR_DEVICE_NAME)) {
+            String deviceInfo = intent.getStringExtra(AppContants.Extras.CUR_DEVICE_NAME);
+            String[] scanData = deviceInfo.split(",");
+            mTvDeviceName.setText("物联网数据采集器");
+            mTvDeviceSn.setText(scanData[1]);//设备编号
+            mTvDeviceModel.setText(scanData[2]);//功能型号
+            mTvSensorType.setText("");
+        }
+        configDASActivity = (ConfigDASActivity) getActivity();
     }
 
     /**

@@ -6,9 +6,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.LinearInterpolator;
 import android.view.animation.RotateAnimation;
@@ -19,6 +17,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -26,9 +25,12 @@ import com.hjq.toast.ToastUtils;
 import com.kyleduo.switchbutton.SwitchButton;
 import com.shmedo.core.AppContants;
 import com.shmedo.core.MCloudApp;
+import com.shmedo.core.event.BluetoothStateEvent;
 import com.shmedo.core.utils.ValidateUtil;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.fragment.BaseFragment;
+import com.shmedo.mcloudapp.common.view.ClearEditText;
+import com.shmedo.mcloudapp.common.view.editspinner.EditSpinner;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.ADMEMotorControlActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.ADMESensorExecutiveAgencyConfigActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.ConfigADMEActivity;
@@ -36,10 +38,7 @@ import com.shmedo.mcloudapp.deviceconfig.ui.activity.CountMeterWheelActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.advanced.InstructionDebugActivity;
 import com.shmedo.mcloudapp.entity.SystemDataInfo;
 import com.shmedo.mcloudapp.entity.SystemDataInfoDao;
-import com.shmedo.core.event.BluetoothStateEvent;
 import com.shmedo.mcloudapp.util.DaoManager;
-import com.shmedo.mcloudapp.common.view.ClearEditText;
-import com.shmedo.mcloudapp.common.view.editspinner.EditSpinner;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -179,33 +178,17 @@ public class ADMEHomeFragment extends BaseFragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = super.onCreateView(inflater, container, savedInstanceState);
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
         getIntentData();
         queryProjectList();
-        setupView();
         initAnimation();
         setSwitchViewListener();
         initAdapter();
-
-        return view;
     }
 
-    private void getIntentData() {
-        Intent intent = getActivity().getIntent();
-        if (intent.getExtras() != null && intent.getExtras().containsKey(AppContants.Extras.CUR_DEVICE_NAME)) {
-            String deviceInfo = intent.getStringExtra(AppContants.Extras.CUR_DEVICE_NAME);
-            String[] scanData = deviceInfo.split(",");
-            mTvDeviceName.setText("自动化深层水平位移监测装置");
-            mTvDeviceSn.setText(scanData[1]);//设备编号
-            mTvDeviceModel.setText(scanData[2]);//功能型号
-            mTvSensorType.setText("S0260");
-        }
-        configADMEActivity = (ConfigADMEActivity) getActivity();
-        hander = new Handler();
-    }
-
-    private void setupView() {
+    @Override
+    protected void initView() {
         ((TextView) bluetoothSwitchLayout.findViewById(R.id.tv_config_name)).setText("蓝牙连接");
         tvBluetoothState = bluetoothSwitchLayout.findViewById(R.id.tv_device_state);
         sbBluetoothState = bluetoothSwitchLayout.findViewById(R.id.switchButton);
@@ -251,6 +234,19 @@ public class ADMEHomeFragment extends BaseFragment {
         }
     }
 
+    private void getIntentData() {
+        Intent intent = getActivity().getIntent();
+        if (intent.getExtras() != null && intent.getExtras().containsKey(AppContants.Extras.CUR_DEVICE_NAME)) {
+            String deviceInfo = intent.getStringExtra(AppContants.Extras.CUR_DEVICE_NAME);
+            String[] scanData = deviceInfo.split(",");
+            mTvDeviceName.setText("自动化深层水平位移监测装置");
+            mTvDeviceSn.setText(scanData[1]);//设备编号
+            mTvDeviceModel.setText(scanData[2]);//功能型号
+            mTvSensorType.setText("S0260");
+        }
+        configADMEActivity = (ConfigADMEActivity) getActivity();
+        hander = new Handler();
+    }
 
     private void initAnimation() {
         mExpandAnimation = new RotateAnimation(0, -180, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
