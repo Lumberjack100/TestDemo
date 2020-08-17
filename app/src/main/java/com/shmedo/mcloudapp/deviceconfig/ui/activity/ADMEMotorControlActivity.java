@@ -486,16 +486,16 @@ public class ADMEMotorControlActivity extends BaseDeviceConnectActivity {
             }
 
             //电机已经停止，不用再轮询电子状态
-            if (!TextUtils.isEmpty(pulseNumber) && pulseNumber.equals(cmdArray[1])) {
-                repeatNum++;
-                if (repeatNum >= 3) {
-                    ToastUtils.show("电机停止");
-                    stopRunnable();
-                    mBtnConfirm.setText("确定");
-                    mBtnConfirm.setEnabled(true);
-                    return;
-                }
-            }
+//            if (!TextUtils.isEmpty(pulseNumber) && pulseNumber.equals(cmdArray[1])) {
+//                repeatNum++;
+//                if (repeatNum >= 3) {
+//                    ToastUtils.show("电机停止");
+//                    stopRunnable();
+//                    mBtnConfirm.setText("确定");
+//                    mBtnConfirm.setEnabled(true);
+//                    return;
+//                }
+//            }
 
             distance = cmdArray[2];
             pulseNumber = cmdArray[1];
