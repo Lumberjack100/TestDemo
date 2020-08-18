@@ -73,7 +73,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="20dp"
                     android:text="经度(0-180):"
-                    android:textColor="@color/black_333333"
+                    android:textColor="@color/title_text_color"
                     android:textSize="@dimen/text_size_16" />
 
                 <com.shmedo.mcloudapp.common.view.ClearEditText
@@ -87,7 +87,7 @@
                     android:hint="请输入点位经度"
                     android:inputType="numberDecimal"
                     android:maxLength="10"
-                    android:textColor="@color/black_333333"
+                    android:textColor="@color/title_text_color"
                     android:textColorHint="@color/gray_818182"
                     android:textSize="@dimen/text_size_16" />
 
@@ -106,7 +106,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="20dp"
                     android:text="纬度(0-90):"
-                    android:textColor="@color/black_333333"
+                    android:textColor="@color/title_text_color"
                     android:textSize="@dimen/text_size_16" />
 
                 <com.shmedo.mcloudapp.common.view.ClearEditText
@@ -120,7 +120,7 @@
                     android:hint="请输入点位纬度"
                     android:inputType="numberDecimal"
                     android:maxLength="10"
-                    android:textColor="@color/black_333333"
+                    android:textColor="@color/title_text_color"
                     android:textColorHint="@color/gray_818182"
                     android:textSize="@dimen/text_size_16" />
 
@@ -141,7 +141,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="20dp"
                     android:text="经度(0-180):"
-                    android:textColor="@color/black_333333"
+                    android:textColor="@color/title_text_color"
                     android:textSize="@dimen/text_size_16" />
 
                 <com.shmedo.mcloudapp.common.view.ClearEditText
@@ -155,7 +155,7 @@
                     android:hint="度"
                     android:inputType="numberDecimal"
                     android:maxLength="3"
-                    android:textColor="@color/black_333333"
+                    android:textColor="@color/title_text_color"
                     android:textColorHint="@color/gray_818182"
                     android:textSize="@dimen/text_size_16" />
 
@@ -164,7 +164,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="5dp"
                     android:text="°"
-                    android:textColor="@color/black_333333"
+                    android:textColor="@color/title_text_color"
                     android:textSize="@dimen/text_size_16" />
 
                 <com.shmedo.mcloudapp.common.view.ClearEditText
@@ -178,7 +178,7 @@
                     android:hint="分"
                     android:inputType="numberDecimal"
                     android:maxLength="2"
-                    android:textColor="@color/black_333333"
+                    android:textColor="@color/title_text_color"
                     android:textColorHint="@color/gray_818182"
                     android:textSize="@dimen/text_size_16" />
 
@@ -187,7 +187,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="5dp"
                     android:text="'"
-                    android:textColor="@color/black_333333"
+                    android:textColor="@color/title_text_color"
                     android:textSize="@dimen/text_size_16" />
 
                 <com.shmedo.mcloudapp.common.view.ClearEditText
@@ -201,7 +201,7 @@
                     android:hint="秒"
                     android:inputType="numberDecimal"
                     android:maxLength="2"
-                    android:textColor="@color/black_333333"
+                    android:textColor="@color/title_text_color"
                     android:textColorHint="@color/gray_818182"
                     android:textSize="@dimen/text_size_16" />
 
@@ -210,7 +210,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="5dp"
                     android:text="&#034;"
-                    android:textColor="@color/black_333333"
+                    android:textColor="@color/title_text_color"
                     android:textSize="@dimen/text_size_16" />
 
             </LinearLayout>
@@ -228,7 +228,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="20dp"
                     android:text="纬度(0-90):"
-                    android:textColor="@color/black_333333"
+                    android:textColor="@color/title_text_color"
                     android:textSize="@dimen/text_size_16" />
 
                 <com.shmedo.mcloudapp.common.view.ClearEditText
@@ -242,7 +242,7 @@
                     android:hint="度"
                     android:inputType="numberDecimal"
                     android:maxLength="2"
-                    android:textColor="@color/black_333333"
+                    android:textColor="@color/title_text_color"
                     android:textColorHint="@color/gray_818182"
                     android:textSize="@dimen/text_size_16" />
 
@@ -251,7 +251,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="5dp"
                     android:text="°"
-                    android:textColor="@color/black_333333"
+                    android:textColor="@color/title_text_color"
                     android:textSize="@dimen/text_size_16" />
 
                 <com.shmedo.mcloudapp.common.view.ClearEditText
@@ -265,7 +265,7 @@
                     android:hint="分"
                     android:inputType="numberDecimal"
                     android:maxLength="2"
-                    android:textColor="@color/black_333333"
+                    android:textColor="@color/title_text_color"
                     android:textColorHint="@color/gray_818182"
                     android:textSize="@dimen/text_size_16" />
 
@@ -274,7 +274,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="5dp"
                     android:text="'"
-                    android:textColor="@color/black_333333"
+                    android:textColor="@color/title_text_color"
                     android:textSize="@dimen/text_size_16" />
 
                 <com.shmedo.mcloudapp.common.view.ClearEditText
@@ -288,7 +288,7 @@
                     android:hint="秒"
                     android:inputType="numberDecimal"
                     android:maxLength="2"
-                    android:textColor="@color/black_333333"
+                    android:textColor="@color/title_text_color"
                     android:textColorHint="@color/gray_818182"
                     android:textSize="@dimen/text_size_16" />
 
@@ -297,7 +297,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="5dp"
                     android:text="&#034;"
-                    android:textColor="@color/black_333333"
+                    android:textColor="@color/title_text_color"
                     android:textSize="@dimen/text_size_16" />
 
             </LinearLayout>
@@ -318,7 +318,7 @@
                 android:layout_marginEnd="20dp"
                 android:layout_weight="2"
                 android:text="坐标系:"
-                android:textColor="@color/black_333333"
+                android:textColor="@color/title_text_color"
                 android:textSize="@dimen/text_size_16" />
 
 

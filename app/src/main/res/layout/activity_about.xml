@@ -46,7 +46,7 @@
             android:layout_alignParentStart="true"
             android:layout_centerVertical="true"
             android:text="用户反馈"
-            android:textColor="@color/black_333333"
+            android:textColor="@color/title_text_color"
             android:textSize="14sp" />
 
         <ImageView
@@ -61,7 +61,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="0.5dp"
-        android:background="@color/divide_line_color"
+        android:background="@color/divider_line_color"
         android:visibility="gone"/>
 
     <RelativeLayout
@@ -80,7 +80,7 @@
             android:layout_alignParentStart="true"
             android:layout_centerVertical="true"
             android:text="用户协议和免责条款"
-            android:textColor="@color/black_333333"
+            android:textColor="@color/title_text_color"
             android:textSize="14sp" />
 
         <ImageView
@@ -95,7 +95,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="0.5dp"
-        android:background="@color/divide_line_color" />
+        android:background="@color/divider_line_color" />
 
     <RelativeLayout
         android:id="@+id/privacyPolicyLayout"
@@ -113,7 +113,7 @@
             android:layout_alignParentStart="true"
             android:layout_centerVertical="true"
             android:text="隐私政策"
-            android:textColor="@color/black_333333"
+            android:textColor="@color/title_text_color"
             android:textSize="14sp" />
 
         <ImageView
@@ -128,7 +128,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="0.5dp"
-        android:background="@color/divide_line_color" />
+        android:background="@color/divider_line_color" />
 
     <RelativeLayout
         android:id="@+id/appIntroLayout"
@@ -145,7 +145,7 @@
             android:layout_alignParentStart="true"
             android:layout_centerVertical="true"
             android:text="关于米易通"
-            android:textColor="@color/black_333333"
+            android:textColor="@color/title_text_color"
             android:textSize="14sp" />
 
         <ImageView
@@ -160,7 +160,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="0.5dp"
-        android:background="@color/divide_line_color" />
+        android:background="@color/divider_line_color" />
 
     <RelativeLayout
         android:id="@+id/connectTestLayout"
@@ -177,7 +177,7 @@
             android:layout_alignParentStart="true"
             android:layout_centerVertical="true"
             android:text="连接测试"
-            android:textColor="@color/black_333333"
+            android:textColor="@color/title_text_color"
             android:textSize="14sp" />
 
         <ImageView
@@ -193,6 +193,6 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="0.5dp"
-        android:background="@color/divide_line_color" />
+        android:background="@color/divider_line_color" />
 
 </LinearLayout>

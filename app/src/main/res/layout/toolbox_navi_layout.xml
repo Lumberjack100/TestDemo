@@ -38,7 +38,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/dimen_size_10"
             android:text="网络检测"
-            android:textColor="@color/black_333333"
+            android:textColor="@color/title_text_color"
             android:textSize="@dimen/text_size_16"
             app:layout_constraintLeft_toRightOf="@+id/iv_test_speed"
             app:layout_constraintTop_toTopOf="parent" />
@@ -77,7 +77,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/dimen_size_10"
             android:text="测距"
-            android:textColor="@color/black_333333"
+            android:textColor="@color/title_text_color"
             android:textSize="@dimen/text_size_16"
             app:layout_constraintLeft_toRightOf="@+id/iv_measure_distance"
             app:layout_constraintTop_toTopOf="parent" />
@@ -116,7 +116,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/dimen_size_10"
             android:text="面积计算"
-            android:textColor="@color/black_333333"
+            android:textColor="@color/title_text_color"
             android:textSize="@dimen/text_size_16"
             app:layout_constraintLeft_toRightOf="@+id/iv_calculated_area"
             app:layout_constraintTop_toTopOf="parent" />
@@ -155,7 +155,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/dimen_size_10"
             android:text="指南针"
-            android:textColor="@color/black_333333"
+            android:textColor="@color/title_text_color"
             android:textSize="@dimen/text_size_16"
             app:layout_constraintLeft_toRightOf="@+id/iv_compass"
             app:layout_constraintTop_toTopOf="parent" />

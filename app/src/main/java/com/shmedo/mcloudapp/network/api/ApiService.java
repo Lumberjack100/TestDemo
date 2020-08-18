@@ -12,6 +12,7 @@ import com.shmedo.mcloudapp.network.NetworkConst;
 import com.shmedo.mcloudapp.projects.model.CustomLevelProjectInfo;
 import com.shmedo.mcloudapp.projects.model.ProjectBaseInfo;
 import com.shmedo.mcloudapp.projects.model.ProjectDetailInfo;
+import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfoWrapper;
 import com.shmedo.mcloudapp.projects.model.RegionProjectInfo;
 import com.shmedo.mcloudapp.projects.model.TypeProjectInfo;
 import com.shmedo.mcloudapp.user.model.CompanyInfo;
@@ -125,6 +126,12 @@ public interface ApiService {
     @Headers({NetworkConst.HEADER_ACCESS_TYPE})
     @POST("UnTopUserProject")
     Observable<ResultWrapper<String>> UnTopUserProject(@Header(NetworkConst.ACCESS_TOKEN) String token, @Body RequestBody parameter);
+
+    //系统接口v2-2  查询公司设备列表 QueryCompanyDevice
+    @Headers({NetworkConst.HEADER_ACCESS_TYPE})
+    @POST("QueryCompanyDevice")
+    Observable<ResultWrapper<ProjectDeviceInfoWrapper>> QueryCompanyDevice(@Header(NetworkConst.ACCESS_TOKEN) String token, @Body RequestBody parameter);
+
 
 
     //系统接口v2-2 4.3 查询设备状态信息列表 QueryDeviceStatusInfoList

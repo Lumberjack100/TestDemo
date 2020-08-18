@@ -28,7 +28,7 @@ public class MapTypeAdapter extends BaseQuickAdapter<MapLayerInfo, BaseViewHolde
             holder.setTextColorRes(R.id.tv_layer_name, R.color.map_primary);
         } else {
             holder.setImageResource(R.id.iv_map_type, 0);
-            holder.setTextColorRes(R.id.tv_layer_name, R.color.black_333333);
+            holder.setTextColorRes(R.id.tv_layer_name, R.color.title_text_color);
         }
     }
 }

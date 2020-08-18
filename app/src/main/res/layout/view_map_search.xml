@@ -24,7 +24,7 @@
             app:backgroundTint="@color/white"
             app:fabCustomSize="40dp"
             app:rippleColor="@color/floating_action_button_selected"
-            app:tint="@color/black_333333" />
+            app:tint="@color/title_text_color" />
 
         <TextView
             android:id="@+id/tv_search_normal"
@@ -80,7 +80,7 @@
                 android:singleLine="true"
                 android:ellipsize="end"
                 tools:text="罗森"
-                android:textColor="@color/black_333333"
+                android:textColor="@color/title_text_color"
                 android:textSize="@dimen/text_size_14" />
 
         </LinearLayout>
@@ -94,7 +94,7 @@
             android:paddingStart="@dimen/dimen_size_15"
             android:paddingEnd="@dimen/dimen_size_15"
             android:text="取消"
-            android:textColor="@color/black_333333"
+            android:textColor="@color/title_text_color"
             android:textSize="@dimen/text_size_14" />
 
     </LinearLayout>

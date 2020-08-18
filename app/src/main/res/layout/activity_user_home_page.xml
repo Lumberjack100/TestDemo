@@ -48,7 +48,7 @@
                         android:layout_alignParentStart="true"
                         android:layout_centerVertical="true"
                         android:text="头像"
-                        android:textColor="@color/black_333333"
+                        android:textColor="@color/title_text_color"
                         android:textSize="@dimen/text_size_16" />
 
                     <de.hdodenhof.circleimageview.CircleImageView
@@ -86,7 +86,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="用户名"
-                        android:textColor="@color/black_333333"
+                        android:textColor="@color/title_text_color"
                         android:textSize="@dimen/text_size_16" />
 
                     <com.shmedo.mcloudapp.common.view.ClearEditText
@@ -102,7 +102,7 @@
                         android:hint="请输入用户名"
                         android:maxLength="10"
                         android:maxLines="1"
-                        android:textColor="@color/black_333333"
+                        android:textColor="@color/title_text_color"
                         android:textColorHint="@color/gray_818182"
                         android:textSize="@dimen/text_size_15" />
 
@@ -120,7 +120,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="职位"
-                        android:textColor="@color/black_333333"
+                        android:textColor="@color/title_text_color"
                         android:textSize="@dimen/text_size_16" />
 
                     <com.shmedo.mcloudapp.common.view.ClearEditText
@@ -136,7 +136,7 @@
                         android:hint="请输入职位"
                         android:maxLength="12"
                         android:maxLines="1"
-                        android:textColor="@color/black_333333"
+                        android:textColor="@color/title_text_color"
                         android:textColorHint="@color/gray_818182"
                         android:textSize="@dimen/text_size_15" />
 
@@ -157,7 +157,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="手机号"
-                        android:textColor="@color/black_333333"
+                        android:textColor="@color/title_text_color"
                         android:textSize="@dimen/text_size_16" />
 
                     <TextView
@@ -170,7 +170,7 @@
                         android:ellipsize="end"
                         android:gravity="right"
                         android:maxLines="1"
-                        android:textColor="@color/black_333333"
+                        android:textColor="@color/title_text_color"
                         android:textSize="@dimen/text_size_16"
                         tools:text="13915273356" />
 
@@ -188,7 +188,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="邮箱"
-                        android:textColor="@color/black_333333"
+                        android:textColor="@color/title_text_color"
                         android:textSize="@dimen/text_size_16" />
 
                     <com.shmedo.mcloudapp.common.view.ClearEditText
@@ -204,7 +204,7 @@
                         android:hint="请输入邮箱"
                         android:maxLength="30"
                         android:maxLines="1"
-                        android:textColor="@color/black_333333"
+                        android:textColor="@color/title_text_color"
                         android:textColorHint="@color/gray_818182"
                         android:textSize="@dimen/text_size_15" />
 

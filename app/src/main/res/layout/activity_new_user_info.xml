@@ -55,7 +55,7 @@
                         android:id="@+id/userName"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textColor="@color/black_333333"
+                        android:textColor="@color/title_text_color"
                         android:textSize="@dimen/text_size_18"
                         tools:text="张三丰" />
 
@@ -64,7 +64,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/dimen_size_7"
-                        android:textColor="@color/black_333333"
+                        android:textColor="@color/title_text_color"
                         android:textSize="@dimen/text_size_14"
                         tools:text="产品经理" />
 
@@ -104,7 +104,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/dimen_size_15"
                         android:text="所属企业"
-                        android:textColor="@color/black_333333"
+                        android:textColor="@color/title_text_color"
                         android:textSize="@dimen/text_size_16" />
 
                     <TextView
@@ -138,7 +138,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/dimen_size_15"
                         android:text="修改密码"
-                        android:textColor="@color/black_333333"
+                        android:textColor="@color/title_text_color"
                         android:textSize="@dimen/text_size_16" />
 
                     <TextView
@@ -170,7 +170,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/dimen_size_15"
                         android:text="版本检测"
-                        android:textColor="@color/black_333333"
+                        android:textColor="@color/title_text_color"
                         android:textSize="@dimen/text_size_16" />
 
                     <TextView
@@ -204,7 +204,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/dimen_size_15"
                         android:text="关于"
-                        android:textColor="@color/black_333333"
+                        android:textColor="@color/title_text_color"
                         android:textSize="@dimen/text_size_16" />
 
                     <TextView

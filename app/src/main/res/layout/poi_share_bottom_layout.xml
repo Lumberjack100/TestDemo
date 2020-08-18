@@ -13,7 +13,7 @@
         android:layout_marginBottom="15dp"
         android:gravity="center"
         android:text="分享到"
-        android:textColor="@color/text_primary_dark"
+        android:textColor="@color/title_text_color"
         android:textSize="18sp"
         android:textStyle="bold" />
 
@@ -43,7 +43,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dimen_size_5"
                 android:text="钉钉"
-                android:textColor="@color/text_primary_dark"
+                android:textColor="@color/title_text_color"
                 android:textSize="@dimen/text_size_14" />
 
         </LinearLayout>
@@ -67,7 +67,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dimen_size_5"
                 android:text="微信"
-                android:textColor="@color/text_primary_dark"
+                android:textColor="@color/title_text_color"
                 android:textSize="@dimen/text_size_14" />
 
         </LinearLayout>

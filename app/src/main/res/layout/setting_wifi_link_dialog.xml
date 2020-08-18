@@ -55,7 +55,7 @@
                 android:background="@drawable/selector_view"
                 android:gravity="center"
                 android:text="取消"
-                android:textColor="@color/black_333333"
+                android:textColor="@color/title_text_color"
                 android:textSize="14sp" />
 
             <View
@@ -71,7 +71,7 @@
                 android:background="@drawable/selector_view"
                 android:gravity="center"
                 android:text="确定"
-                android:textColor="@color/black_333333"
+                android:textColor="@color/title_text_color"
                 android:textSize="14sp" />
 
         </LinearLayout>
