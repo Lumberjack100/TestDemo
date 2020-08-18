@@ -41,6 +41,12 @@
         <item name="android:windowLightStatusBar" tools:targetApi="23">true</item>
     </style>
 
+    <style name="MCloud.DevicesInProjectActivity" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="windowNoTitle">true</item>
+        <item name="colorPrimaryDark">@color/white</item>
+        <item name="android:windowLightStatusBar" tools:targetApi="23">true</item>
+    </style>
+
     <style name="DialogActivity" parent="Theme.AppCompat.Dialog">
         <item name="android:windowBackground">@android:color/transparent</item>
     </style>
@@ -241,6 +247,11 @@
         <item name="android:background">@color/white</item>
         <item name="android:paddingLeft">@dimen/dimen_size_20</item>
         <item name="android:paddingRight">@dimen/dimen_size_20</item>
+    </style>
+
+    <style name="DevicesInProjectActivity_TextAppearance" parent="TextAppearance.Design.Tab">
+        <item name="android:textSize">@dimen/text_size_18</item>
+        <item name="android:textStyle">bold</item>
     </style>
 
 </resources>

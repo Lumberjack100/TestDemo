@@ -42,6 +42,7 @@ import com.shmedo.mcloudapp.projects.model.ProjectViewMode;
 import com.shmedo.mcloudapp.projects.model.RegionProjectInfo;
 import com.shmedo.mcloudapp.projects.model.TypeProjectInfo;
 import com.shmedo.mcloudapp.projects.model.param.ProjectBaseInfoParam;
+import com.shmedo.mcloudapp.projects.ui.activity.DevicesInProjectActivity;
 import com.shmedo.mcloudapp.projects.ui.activity.OutOfDateProjectGuideActivity;
 import com.shmedo.mcloudapp.projects.ui.activity.ProjectSearchActivity;
 import com.shmedo.mcloudapp.projects.ui.activity.ViewProjectsInMapActivity;
@@ -156,7 +157,7 @@ public class NewProjectFragment extends BaseTranslucentFragment {
         initSimpleAdapter();
         initMultiItemAdapter();
         setListener();
-//        swipeRefresh.setColorSchemeResources(android.R.color.holo_blue_light);
+
         swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -191,12 +192,12 @@ public class NewProjectFragment extends BaseTranslucentFragment {
             @Override
             public void onItemClick(View view, int position) {
                 ProjectItem projectItem = simpleProjectItems.get(position);
-//                if (projectItem.isHeader())
-//                    return;
 
                 ProjectDetailInfo detailInfo = (ProjectDetailInfo) projectItem.getObject();
                 if (detailInfo.isOutOfDate()) {
                     OutOfDateProjectGuideActivity.startActivity(activity, detailInfo.getProjectName(), detailInfo.getRegisterTime());
+                } else {
+                    DevicesInProjectActivity.startActivity(activity);
                 }
             }
         });
@@ -214,12 +215,14 @@ public class NewProjectFragment extends BaseTranslucentFragment {
             @Override
             public void onItemClick(@NonNull BaseQuickAdapter adapter, @NonNull View view, int position) {
                 ProjectItem projectItem = multiAdapter.getItem(position);
-//                if (projectItem.isHeader())
-//                    return;
+                if (projectItem.getItemType() == ProjectItem.ITEM_TOP)
+                    return;
 
                 ProjectDetailInfo detailInfo = (ProjectDetailInfo) projectItem.getObject();
                 if (detailInfo.isOutOfDate()) {
                     OutOfDateProjectGuideActivity.startActivity(activity, detailInfo.getProjectName(), detailInfo.getRegisterTime());
+                } else {
+                    DevicesInProjectActivity.startActivity(activity);
                 }
             }
         });

@@ -49,6 +49,7 @@
         tools:ignore="LockedOrientationActivity"
         tools:replace="android:name"
         tools:targetApi="p">
+
         <!-- 声明最小宽高比 -->
         <meta-data
             android:name="android.min_aspect"
@@ -286,12 +287,18 @@
             android:name=".projects.ui.activity.OutOfDateProjectGuideActivity"
             android:maxAspectRatio="2.4"
             android:screenOrientation="portrait" />
-
-        <activity android:name=".projects.ui.activity.ProjectSearchActivity"
+        <activity
+            android:name=".projects.ui.activity.ProjectSearchActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:maxAspectRatio="2.4"
             android:screenOrientation="portrait"
-            android:theme="@style/MCloud.ProjectSearchActivity"/>
+            android:theme="@style/MCloud.ProjectSearchActivity" />
+
+        <activity android:name=".projects.ui.activity.DevicesInProjectActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:maxAspectRatio="2.4"
+            android:screenOrientation="portrait"
+            android:theme="@style/MCloud.DevicesInProjectActivity" />
 
         <activity
             android:name=".ddshare.DDShareActivity"

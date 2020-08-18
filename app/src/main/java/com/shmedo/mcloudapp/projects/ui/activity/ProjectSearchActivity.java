@@ -122,12 +122,10 @@ public class ProjectSearchActivity extends BaseActivity implements TextWatcher {
             @Override
             public void onItemClick(@NonNull BaseQuickAdapter adapter, @NonNull View view, int position) {
                 ProjectSearchKeyWord searchKeyWord = historyKeyWordList.get(position);
-//                keyWords = searchKeyWord.getKeyWord();
                 mEtKeyWords.setText( searchKeyWord.getKeyWord());
                 mEtKeyWords.setSelection( searchKeyWord.getKeyWord().length());
                 // 当按了搜索之后关闭软键盘
                 KeyBordUtils.hideSoftKeyboard(mEtKeyWords);
-//                doSearchQuery(false);
             }
         });
         mRecyclerViewHistory.setAdapter(keyWordsAdapter);
