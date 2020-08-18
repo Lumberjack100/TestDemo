@@ -115,15 +115,15 @@ public class ProjectSearchActivity extends BaseActivity implements TextWatcher {
 
     private void initHistoryAdater() {
         mRecyclerViewHistory.setLayoutManager(new LinearLayoutManager(this));
-        keyWordsAdapter = new ProjectSearchKeyWordsAdapter(R.layout.item_project_search_keyword, historyKeyWordList);
+        keyWordsAdapter = new ProjectSearchKeyWordsAdapter(historyKeyWordList);
         keyWordsAdapter.setAnimationEnable(true);
         keyWordsAdapter.setAnimationFirstOnly(false);
         keyWordsAdapter.setOnItemClickListener(new com.chad.library.adapter.base.listener.OnItemClickListener() {
             @Override
             public void onItemClick(@NonNull BaseQuickAdapter adapter, @NonNull View view, int position) {
                 ProjectSearchKeyWord searchKeyWord = historyKeyWordList.get(position);
-                mEtKeyWords.setText( searchKeyWord.getKeyWord());
-                mEtKeyWords.setSelection( searchKeyWord.getKeyWord().length());
+                mEtKeyWords.setText(searchKeyWord.getKeyWord());
+                mEtKeyWords.setSelection(searchKeyWord.getKeyWord().length());
                 // 当按了搜索之后关闭软键盘
                 KeyBordUtils.hideSoftKeyboard(mEtKeyWords);
             }
@@ -215,9 +215,7 @@ public class ProjectSearchActivity extends BaseActivity implements TextWatcher {
         }
 
         setHistoryKeyWordsVisibility(false);
-//        searchResultAdapter.notifyDataSetChanged();
     }
-
 
     private void updateHistoryKeyWordsData() {
         for (ProjectSearchKeyWord searchKeyWord : historyKeyWordList) {

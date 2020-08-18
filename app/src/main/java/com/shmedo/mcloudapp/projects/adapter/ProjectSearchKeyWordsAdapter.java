@@ -17,8 +17,8 @@ import java.util.List;
  */
 public class ProjectSearchKeyWordsAdapter extends BaseQuickAdapter<ProjectSearchKeyWord, BaseViewHolder> {
 
-    public ProjectSearchKeyWordsAdapter(int layoutResId, @Nullable List<ProjectSearchKeyWord> data) {
-        super(layoutResId, data);
+    public ProjectSearchKeyWordsAdapter(@Nullable List<ProjectSearchKeyWord> data) {
+        super(R.layout.item_project_search_keyword, data);
     }
 
     @Override

@@ -29,7 +29,7 @@ import com.shmedo.mcloudapp.projects.model.DeviceTypeInfo;
 import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfo;
 import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfoWrapper;
 import com.shmedo.mcloudapp.projects.model.param.QueryProjectDevice;
-import com.shmedo.mcloudapp.projects.ui.activity.ProjectSearchActivity;
+import com.shmedo.mcloudapp.projects.ui.activity.DeviceSearchActivity;
 import com.shmedo.mcloudapp.util.GsonFactory;
 import com.yanzhenjie.recyclerview.widget.DefaultItemDecoration;
 
@@ -150,7 +150,7 @@ public class DevicesInProjectFragment extends BaseFragment {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.search_container:
-                ProjectSearchActivity.startActivity(getActivity());
+                DeviceSearchActivity.startActivity(getActivity());
                 break;
         }
     }

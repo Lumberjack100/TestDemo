@@ -4,7 +4,6 @@
     <!--  <string name="app_name"> 米易通</string>-->
     <string name="privacy_agreement_title">温馨提示</string>
     <string name="privacy_agreement_desc">欢迎您使用米易通！\n\n我们高度重视并保护您的个人隐私，我们将严格在国家法律允许范围内，且只以为您提供服务为目的，收集必要的相关信息。为了便于您详细了解您的权利和义务，请您仔细阅读米易通《用户协议和免责条款》，并做出是否同意授权的决定。</string>
-
     <string name="login_medo_copyright">©上海米度测控科技有限公司版权所有</string>
     <string name="login_input_username_hint">请输入用户名</string>
     <string name="login_input_password_hint">请输入密码</string>
@@ -14,21 +13,20 @@
     <string name="service_set_address">请输入服务器地址/域名：端口\n如：192.168.1.101:8081\nmCloud.shmedo.cn:9901</string>
     <string name="agent_addr">地址：%1$s</string>
     <string name="exit_login_tip">确定退出登录吗？</string>
-    <string name="take_photo">拍照</string>
-    <string name="your_album">你的相册</string>
     <string name="user_info_status_abnormal">当前登录状态存在异常</string>
     <string name="your_phone_does_not_install_qq">您的手机还没有安装QQ</string>
     <string name="your_phone_does_not_install_wechat">您的手机还没有安装微信</string>
     <string name="operation_failed_without_sdcard">您的手机没有SD卡，无法完成操作</string>
+    <string name="empty_no_data">没有数据</string>
+    <string name="empty_network_error">网络错误，点击重试</string>
+    <string name="loading_data">正在加载中...</string>
 
     <!-- 权限申请-->
     <string name="permission_request_location_hardware">需要打开系统定位开关，用于提供精确的定位及导航服务</string>
-
     <string name="message_permissions_denied">请求相关权限失败，无法继续操作</string>
     <string name="message_permission_camera_denied">请求相机权限失败，无法继续操作</string>
     <string name="message_permission_storage_denied">请求 SD 卡权限失败，无法继续操作</string>
     <string name="message_permission_location_denied">请求定位权限失败，无法继续操作</string>
-
     <string name="message_permission_bluetooth_location_rational">使用蓝牙功能需要开启定位权限，请前往设置页面授予权限</string>
     <string name="message_permission_camera_rationale">需要在系统 “权限” 中打开 “相机” 开关，才能使用相机拍照或扫描 </string>
     <string name="message_permission_storage_rationale">需要在系统 “权限” 中打开 “读写手机存储” 开关，才能继续操作 </string>
@@ -39,6 +37,8 @@
 
     <!-- 用户 -->
     <string name="edit_description">编辑个人简介</string>
+    <string name="take_photo">拍照</string>
+    <string name="your_album">你的相册</string>
     <string name="select_avatar">选择头像照片</string>
     <string name="hold_on_for_saving">保存中，请稍后</string>
     <string name="save_success">保存成功</string>
