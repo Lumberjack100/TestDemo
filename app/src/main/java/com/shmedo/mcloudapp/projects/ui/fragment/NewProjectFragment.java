@@ -148,6 +148,7 @@ public class NewProjectFragment extends BaseTranslucentFragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        updateSystemBarColor();
         activity = (NewMainActivity) getActivity();
         userInfo = MCloudApp.getCurrentUserInfo();
         if (userInfo != null && userInfo.getUser() != null) {
@@ -164,8 +165,7 @@ public class NewProjectFragment extends BaseTranslucentFragment {
                 refreshProjects();
             }
         });
-        // 进入页面，刷新数据
-        swipeRefresh.setRefreshing(true);
+
         refreshProjects();
     }
 
@@ -323,8 +323,8 @@ public class NewProjectFragment extends BaseTranslucentFragment {
                 break;
 
             case R.id.iv_filter://推出项目筛选条件抽屉窗口
-                showFilterPopupView(v);
-//                showFilterDialog();
+//                showFilterPopupView(v);
+                showFilterDialog();
                 break;
         }
     }
@@ -355,7 +355,6 @@ public class NewProjectFragment extends BaseTranslucentFragment {
                     mRecyclerView.setVisibility(View.GONE);
                     mRecyclerViewGroup.setVisibility(View.VISIBLE);
                     //分组展示模式时，需要请求不同的分组接口刷新数据
-                    swipeRefresh.setRefreshing(true);
                     refreshProjects();
                 }
             }
@@ -387,7 +386,6 @@ public class NewProjectFragment extends BaseTranslucentFragment {
                         @Override
                         public void onMapClick() {
                             ViewProjectsInMapActivity.startActivity(getActivity());
-
                         }
 
                         @Override
@@ -399,11 +397,11 @@ public class NewProjectFragment extends BaseTranslucentFragment {
                                 mRecyclerView.setVisibility(View.VISIBLE);
                                 mRecyclerViewGroup.setVisibility(View.GONE);
                                 filterSimpleListProjectsByState();
+
                             } else {
                                 mRecyclerView.setVisibility(View.GONE);
                                 mRecyclerViewGroup.setVisibility(View.VISIBLE);
                                 //分组展示模式时，需要请求不同的分组接口刷新数据
-                                swipeRefresh.setRefreshing(true);
                                 refreshProjects();
                             }
                         }
@@ -414,6 +412,9 @@ public class NewProjectFragment extends BaseTranslucentFragment {
     }
 
     private void refreshProjects() {
+        // 进入页面，刷新数据
+        swipeRefresh.setRefreshing(true);
+
         switch (projectViewMode) {
             case VIEW_SIMPLE:
                 queryUserListProject();
@@ -642,6 +643,12 @@ public class NewProjectFragment extends BaseTranslucentFragment {
         }
 
         multiAdapter.notifyDataSetChanged();
+        nestedScrollView.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                nestedScrollView.scrollTo(0, nestedScrollView.getTop());
+            }
+        },500);
     }
 
     /**
@@ -659,6 +666,12 @@ public class NewProjectFragment extends BaseTranslucentFragment {
             }
         }
         multiAdapter.notifyDataSetChanged();
+        nestedScrollView.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                nestedScrollView.scrollTo(0, nestedScrollView.getTop());
+            }
+        },500);
     }
 
     /**
@@ -676,6 +689,12 @@ public class NewProjectFragment extends BaseTranslucentFragment {
             }
         }
         multiAdapter.notifyDataSetChanged();
+        nestedScrollView.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                nestedScrollView.scrollTo(0, nestedScrollView.getTop());
+            }
+        },500);
     }
 
     /**
@@ -723,6 +742,12 @@ public class NewProjectFragment extends BaseTranslucentFragment {
         }
 
         simpleAdapter.notifyDataSetChanged();
+        nestedScrollView.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                nestedScrollView.scrollTo(0, nestedScrollView.getTop());
+            }
+        },500);
     }
 
     /**

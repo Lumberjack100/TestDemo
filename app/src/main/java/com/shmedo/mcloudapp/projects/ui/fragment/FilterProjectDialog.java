@@ -64,7 +64,7 @@ public class FilterProjectDialog extends BaseTranslucentDialogFragment {
         super.onStart();
         mWindow.setGravity(Gravity.TOP);
         mWindow.setWindowAnimations(R.style.TopAnimation);
-        mWindow.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, mWidthAndHeight[1] / 2);
+        mWindow.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
     }
 
 
@@ -75,7 +75,6 @@ public class FilterProjectDialog extends BaseTranslucentDialogFragment {
 
     @Override
     protected void initImmersionBar() {
-        super.initImmersionBar();
         ImmersionBar.with(this)
                 .titleBar(toolbar)
                 .statusBarColor(R.color.white)
@@ -87,7 +86,7 @@ public class FilterProjectDialog extends BaseTranslucentDialogFragment {
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        mWindow.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, mWidthAndHeight[1] / 2);
+        mWindow.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         ImmersionBar.with(this)
                 .navigationBarWithKitkatEnable(newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE)
                 .init();
