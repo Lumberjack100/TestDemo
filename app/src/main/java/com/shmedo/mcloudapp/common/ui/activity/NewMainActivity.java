@@ -140,7 +140,6 @@ public class NewMainActivity extends BaseActivity {
             case 0:
                 showFragment(bluetoothDeviceListFragment);
                 ImmersionBar.with(this)
-//                        .statusBarView(status_bar_view)
                         .statusBarColor(R.color.colorPrimary)
                         .statusBarDarkFont(false)
                         .navigationBarDarkIcon(true)
@@ -158,7 +157,6 @@ public class NewMainActivity extends BaseActivity {
             case 2:
                 showFragment(mineFragment);
                 ImmersionBar.with(this)
-//                        .statusBarView(status_bar_view)
                         .statusBarColor(R.color.white)
                         .statusBarDarkFont(true)
                         .navigationBarDarkIcon(true)

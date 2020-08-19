@@ -59,12 +59,13 @@
     <color name="divider_line_bg">#ffe5e5e5</color>
     <color name="divider_line_bg_e1e1e1">#e1e1e1</color>
     <color name="search_bg_gray_color">#fff1f1f1</color>
+    <color name="bottom_navigation_selected_color">#52b4f8</color>
+    <color name="bottom_navigation_normal_color">#ff999999</color>
 
     <!-- 地图模块 -->
     <color name="map_primary">#5d86fb</color>
     <color name="map_primary_dark">#3a5295</color>
     <color name="floating_action_button_selected">#7b7c79</color>
-    <color name="bottom_navigation_selected">#0DB3A6</color>
     <color name="map_icon_foreground">#616161</color>
     <color name="poi_detail_title">@color/title_text_color</color>
     <color name="poi_detail_loc">#3E3E3E</color>

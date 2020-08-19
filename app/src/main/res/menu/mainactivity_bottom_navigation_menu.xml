@@ -2,8 +2,13 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/item_config_module"
-        android:icon="@drawable/ic_param_config"
-        android:title="@string/config_module" />
+        android:icon="@drawable/bottom_navigation_device"
+        android:title="@string/device_module_navi" />
+
+    <item
+        android:id="@+id/item_project_module"
+        android:icon="@drawable/bottom_navigation_project"
+        android:title="@string/project_module_navi" />
 
     <item
         android:id="@+id/item_map_module"
@@ -11,18 +16,8 @@
         android:title="" />
 
     <item
-        android:id="@+id/item_project_module"
-        android:icon="@drawable/ic_project_module"
-        android:title="@string/project_module" />
-
-<!--    <item
-        android:id="@+id/item_knowledge_module"
-        android:icon="@drawable/ic_knowledge_module"
-        android:title="@string/knowledge_module" />-->
-
-    <item
         android:id="@+id/item_me_module"
-        android:icon="@drawable/ic_me_module"
-        android:title="@string/me_module" />
+        android:icon="@drawable/bottom_navigation_mine"
+        android:title="@string/mine_module_navi" />
 
 </menu>
