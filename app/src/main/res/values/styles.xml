@@ -24,6 +24,11 @@
         <item name="colorPrimaryDark">#2d2e2a</item>
     </style>
 
+    <style name="MCloud.MapActivity" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:statusBarColor">@android:color/white</item>
+        <item name="android:windowLightStatusBar" tools:targetApi="23">true</item>
+    </style>
+
     <style name="MCloud.SpeedTestResultActivity" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="windowNoTitle">true</item>
         <!-- actionbar颜色-->

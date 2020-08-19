@@ -222,7 +222,8 @@
             android:name=".maps.ui.activity.MapActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:launchMode="singleTop"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/MCloud.MapActivity" />
         <activity
             android:name=".maps.ui.activity.PoiSearchActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
