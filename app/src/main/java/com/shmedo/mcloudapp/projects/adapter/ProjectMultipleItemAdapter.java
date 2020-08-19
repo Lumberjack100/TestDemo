@@ -37,12 +37,11 @@ public class ProjectMultipleItemAdapter extends BaseMultiItemQuickAdapter<Projec
             case ProjectItem.ITEM_MIDDLE:
             case ProjectItem.ITEM_BOTTOM: {
                 ProjectDetailInfo detailInfo = (ProjectDetailInfo) item.getObject();
-//                ImageView mIvThumbnail = holder.getView(R.id.ic_thumbnail);
-//                GlideUtils.loadImage(MCloudApp.getContext(), detailInfo.getImagePath(), mIvThumbnail, R.drawable.ic_project_default, R.drawable.ic_project_default);
                 holder.setImageResource(R.id.ic_thumbnail, ProjectImageHelper.getSensorResourceID(detailInfo.getProjectTypeID()));
                 holder.setText(R.id.tv_project_name, detailInfo.getProjectName());
                 holder.setText(R.id.tv_company_name, detailInfo.getCompanyName());
                 holder.setText(R.id.tv_create_time, detailInfo.getBuildTime());
+                holder.setGone(R.id.iv_outdate_flag, !detailInfo.isOutOfDate());
             }
             break;
         }

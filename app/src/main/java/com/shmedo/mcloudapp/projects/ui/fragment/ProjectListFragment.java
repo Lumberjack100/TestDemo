@@ -186,6 +186,7 @@ public class ProjectListFragment extends BaseTranslucentFragment {
                 holder.setText(R.id.tv_company_name, detailInfo.getCompanyName());
                 holder.setText(R.id.tv_create_time, detailInfo.getBuildTime());
                 holder.setVisibleOrGone(R.id.tv_top_flag, detailInfo.isTop());
+                holder.setVisibleOrGone(R.id.iv_outdate_flag, detailInfo.isOutOfDate());
             }
         };
         mRecyclerView.setOnItemClickListener(new OnItemClickListener() {
