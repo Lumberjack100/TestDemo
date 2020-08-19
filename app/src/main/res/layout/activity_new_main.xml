@@ -31,7 +31,8 @@
             android:layout_height="match_parent"
             android:background="@color/white"
             app:itemIconSize="@dimen/dimen_size_27"
-            app:itemTextColor="@color/bottom_navigation_colors"
+            app:itemIconTint="@color/bottom_nav_icon_color"
+            app:itemTextColor="@color/bottom_nav_text_color"
             app:labelVisibilityMode="labeled"
             app:menu="@menu/mainactivity_bottom_navigation_menu" />
 
@@ -63,7 +64,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/map_module_navi"
-                    android:textColor="@color/bottom_navigation_normal_color"
+                    android:textColor="@color/bottom_nav_text_color_normal"
                     android:textSize="@dimen/text_size_12" />
 
             </LinearLayout>
