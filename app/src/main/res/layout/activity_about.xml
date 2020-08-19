@@ -61,7 +61,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="0.5dp"
-        android:background="@color/divider_line_color"
+        android:background="@color/divider_line_bg"
         android:visibility="gone"/>
 
     <RelativeLayout
@@ -95,7 +95,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="0.5dp"
-        android:background="@color/divider_line_color" />
+        android:background="@color/divider_line_bg" />
 
     <RelativeLayout
         android:id="@+id/privacyPolicyLayout"
@@ -128,7 +128,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="0.5dp"
-        android:background="@color/divider_line_color" />
+        android:background="@color/divider_line_bg" />
 
     <RelativeLayout
         android:id="@+id/appIntroLayout"
@@ -160,7 +160,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="0.5dp"
-        android:background="@color/divider_line_color" />
+        android:background="@color/divider_line_bg" />
 
     <RelativeLayout
         android:id="@+id/connectTestLayout"
@@ -193,6 +193,6 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="0.5dp"
-        android:background="@color/divider_line_color" />
+        android:background="@color/divider_line_bg" />
 
 </LinearLayout>

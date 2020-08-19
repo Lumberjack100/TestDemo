@@ -77,8 +77,8 @@ public class FilterProjectDialog extends BaseTranslucentDialogFragment {
     protected void initImmersionBar() {
         ImmersionBar.with(this)
                 .titleBar(toolbar)
-                .statusBarColor(R.color.white)
-                .statusBarDarkFont(true)
+                .statusBarColor(R.color.gray_909090)
+                .statusBarDarkFont(false)
                 .navigationBarWithKitkatEnable(getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE)
                 .init();
     }

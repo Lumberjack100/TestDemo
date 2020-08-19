@@ -25,5 +25,12 @@ public class DeviceInfoAdapter extends BaseQuickAdapter<ProjectDeviceInfo, BaseV
         holder.setText(R.id.tv_device_sn, projectDeviceInfo.getName());
         holder.setText(R.id.tv_device_type, projectDeviceInfo.getDeviceTypeName());
 
+        if (projectDeviceInfo.isOnline()) {
+            holder.setTextColorRes(R.id.tv_device_sn, R.color.title_text_color);
+        } else {
+            holder.setTextColorRes(R.id.tv_device_sn, R.color.text_color_gray_b3b3b3);
+
+        }
+
     }
 }

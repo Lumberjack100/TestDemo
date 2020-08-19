@@ -170,6 +170,7 @@ dependencies {
     //annotationProcessor "com.github.bumptech.glide:compiler:$rootProject.thirdLib.glideCompilerVersion"
     //CircleImageView
     implementation "de.hdodenhof:circleimageview:$rootProject.thirdLib.circleimageview"
+    implementation "com.youth.banner:banner:$rootProject.thirdLib.banner"
 
     //Material Dialog
     implementation "com.afollestad.material-dialogs:core:$rootProject.thirdLib.materialDialogsCore"

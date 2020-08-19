@@ -19,7 +19,7 @@
             android:layout_width="35dp"
             android:layout_height="40dp"
             android:layout_centerVertical="true"
-            android:src="@drawable/ic_back2" />
+            android:src="@drawable/ic_back" />
 
         <TextView
             android:id="@+id/tv_title"

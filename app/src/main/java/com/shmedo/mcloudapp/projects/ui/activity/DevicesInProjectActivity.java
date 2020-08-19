@@ -133,7 +133,7 @@ public class DevicesInProjectActivity extends BaseActivity implements TabLayout.
                 break;
 
             case R.id.view_icon:
-
+                ProjectIntroductionActivity.startActivity(this);
                 break;
         }
     }

@@ -73,7 +73,7 @@
         android:layout_height="0.5dp"
         android:layout_marginStart="@dimen/card_item_padding_left"
         android:layout_marginEnd="@dimen/card_item_padding_left"
-        android:background="@color/divider_line_color" />
+        android:background="@color/divider_line_bg" />
 
 </LinearLayout>
 
