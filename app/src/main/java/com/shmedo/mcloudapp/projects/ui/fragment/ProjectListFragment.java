@@ -109,6 +109,7 @@ public class ProjectListFragment extends BaseTranslucentFragment {
     @BindView(R.id.recyclerview_group)
     RecyclerView mRecyclerViewGroup;
 
+    private FilterProjectDialog projectDialog;
     private ProjectFilterPopupView popupView;
 
     private NewMainActivity activity;
@@ -183,7 +184,7 @@ public class ProjectListFragment extends BaseTranslucentFragment {
         simpleAdapter = new CommonAdapter<ProjectItem>(getActivity(), R.layout.item_project_info_normal, simpleProjectItems) {
             @Override
             protected void convert(CommonViewHolder holder, final ProjectItem projectItem, final int position) {
-                if (projectItem.getObject() instanceof String) {
+                if (!(projectItem.getObject() instanceof ProjectDetailInfo)) {
                     return;
                 }
 
@@ -200,6 +201,9 @@ public class ProjectListFragment extends BaseTranslucentFragment {
             @Override
             public void onItemClick(View view, int position) {
                 ProjectItem projectItem = simpleProjectItems.get(position);
+                if (!(projectItem.getObject() instanceof ProjectDetailInfo)) {
+                    return;
+                }
 
                 ProjectDetailInfo detailInfo = (ProjectDetailInfo) projectItem.getObject();
                 //已过期的项目，针对非米度公司的用户进行限制操作
@@ -346,35 +350,39 @@ public class ProjectListFragment extends BaseTranslucentFragment {
     }
 
     private void showFilterDialog() {
-        FilterProjectDialog projectDialog = new FilterProjectDialog();
-        projectDialog.setOnFilterPopupViewListener(new FilterProjectDialog.OnFilterPopupViewListener() {
-            @Override
-            public void onSearchClick() {
-                ProjectSearchActivity.startActivity(getActivity());
-            }
-
-            @Override
-            public void onMapClick() {
-                ViewProjectsInMapActivity.startActivity(getActivity());
-            }
-
-            @Override
-            public void onFilterResult(ProjectViewMode viewMode, ProjectState state) {
-                projectViewMode = viewMode;
-                projectState = state;
-                //列表模式时，直接筛选缓存的tempProjectItems
-                if (viewMode == ProjectViewMode.VIEW_SIMPLE) {
-                    mRecyclerView.setVisibility(View.VISIBLE);
-                    mRecyclerViewGroup.setVisibility(View.GONE);
-                    filterSimpleListProjectsByState();
-                } else {
-                    mRecyclerView.setVisibility(View.GONE);
-                    mRecyclerViewGroup.setVisibility(View.VISIBLE);
-                    //分组展示模式时，需要请求不同的分组接口刷新数据
-                    refreshProjects();
+        if (projectDialog == null) {
+            projectDialog = new FilterProjectDialog();
+            projectDialog.setOnFilterPopupViewListener(new FilterProjectDialog.OnFilterPopupViewListener() {
+                @Override
+                public void onSearchClick() {
+                    ProjectSearchActivity.startActivity(getActivity());
                 }
-            }
-        });
+
+                @Override
+                public void onMapClick() {
+                    ViewProjectsInMapActivity.startActivity(getActivity());
+                }
+
+                @Override
+                public void onFilterResult(ProjectViewMode viewMode, ProjectState state) {
+                    projectViewMode = viewMode;
+                    projectState = state;
+                    //列表模式时，直接筛选缓存的tempProjectItems
+                    if (viewMode == ProjectViewMode.VIEW_SIMPLE) {
+                        mRecyclerView.setVisibility(View.VISIBLE);
+                        mRecyclerViewGroup.setVisibility(View.GONE);
+                        filterSimpleListProjectsByState();
+                    } else {
+                        mRecyclerView.setVisibility(View.GONE);
+                        mRecyclerViewGroup.setVisibility(View.VISIBLE);
+                        //分组展示模式时，需要请求不同的分组接口刷新数据
+                        refreshProjects();
+                    }
+                }
+            });
+        }
+
+        projectDialog.setLastCheckedItem(projectViewMode, projectState);
         projectDialog.show(getChildFragmentManager(), "dialog");
     }
 

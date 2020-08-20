@@ -161,7 +161,6 @@ public class FilterProjectDialog extends BaseTranslucentDialogFragment {
         });
     }
 
-
     @OnClick({R.id.search_container, R.id.iv_view_in_map, R.id.iv_filter, R.id.ll_reset, R.id.tv_confirm})
     public void onClick(View view) {
         if (mListener == null)
@@ -209,7 +208,6 @@ public class FilterProjectDialog extends BaseTranslucentDialogFragment {
 
     private void initProjectTypeData() {
         TypeFilterItem filterItem = new TypeFilterItem("列表", ProjectViewMode.VIEW_SIMPLE);
-        filterItem.setChecked(true);
         projectTypeAdapter.addData(filterItem);
 
         filterItem = new TypeFilterItem("分级", ProjectViewMode.VIEW_GROUP_BY_LEVEL);
@@ -220,6 +218,15 @@ public class FilterProjectDialog extends BaseTranslucentDialogFragment {
 
         filterItem = new TypeFilterItem("项目类型", ProjectViewMode.VIEW_GROUP_BY_TYPE);
         projectTypeAdapter.addData(filterItem);
+
+        for (FilterItem item : projectTypeAdapter.getData()) {
+            item.setChecked(false);
+            TypeFilterItem typeFilterItem = (TypeFilterItem) item;
+            if (typeFilterItem.getProjectViewMode() == projectViewMode) {
+                typeFilterItem.setChecked(true);
+            }
+        }
+        projectTypeAdapter.notifyDataSetChanged();
     }
 
     private void initProjectStateData() {
@@ -235,6 +242,21 @@ public class FilterProjectDialog extends BaseTranslucentDialogFragment {
 
         filterItem = new StateFilterItem("过期", ProjectState.OUT_OF_DATE);
         projectStateAdapter.addData(filterItem);
+
+        for (FilterItem item : projectStateAdapter.getData()) {
+            item.setChecked(false);
+            StateFilterItem stateFilterItem = (StateFilterItem) item;
+            if (stateFilterItem.getFilterScope() == filterScope) {
+                stateFilterItem.setChecked(true);
+            }
+        }
+
+        projectStateAdapter.notifyDataSetChanged();
+    }
+
+    public void setLastCheckedItem(ProjectViewMode projectViewMode, ProjectState filterScope) {
+        this.projectViewMode = projectViewMode;
+        this.filterScope = filterScope;
     }
 
     public void setOnFilterPopupViewListener(OnFilterPopupViewListener listener) {
