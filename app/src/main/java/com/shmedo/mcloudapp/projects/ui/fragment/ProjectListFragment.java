@@ -37,10 +37,10 @@ import com.shmedo.mcloudapp.projects.model.CustomLevelProjectInfo;
 import com.shmedo.mcloudapp.projects.model.ProjectBaseInfo;
 import com.shmedo.mcloudapp.projects.model.ProjectDetailInfo;
 import com.shmedo.mcloudapp.projects.model.ProjectItem;
-import com.shmedo.mcloudapp.projects.model.ProjectState;
-import com.shmedo.mcloudapp.projects.model.ProjectViewMode;
+import com.shmedo.mcloudapp.projects.model.enums.ProjectState;
+import com.shmedo.mcloudapp.projects.model.enums.ProjectGroupViewMode;
 import com.shmedo.mcloudapp.projects.model.RegionProjectInfo;
-import com.shmedo.mcloudapp.projects.model.TypeProjectInfo;
+import com.shmedo.mcloudapp.projects.model.IndustryTypeProjectInfo;
 import com.shmedo.mcloudapp.projects.model.param.ProjectBaseInfoParam;
 import com.shmedo.mcloudapp.projects.ui.activity.DevicesInProjectActivity;
 import com.shmedo.mcloudapp.projects.ui.activity.ProjectSearchActivity;
@@ -117,7 +117,7 @@ public class ProjectListFragment extends BaseTranslucentFragment {
     private int companyID;
     private UserInfo userInfo;
 
-    private ProjectViewMode projectViewMode = ProjectViewMode.VIEW_SIMPLE;
+    private ProjectGroupViewMode projectGroupViewMode = ProjectGroupViewMode.SIMPLE_LIST;
     private ProjectState projectState = ProjectState.ALL;
 
     private CommonAdapter simpleAdapter;
@@ -364,11 +364,11 @@ public class ProjectListFragment extends BaseTranslucentFragment {
                 }
 
                 @Override
-                public void onFilterResult(ProjectViewMode viewMode, ProjectState state) {
-                    projectViewMode = viewMode;
+                public void onFilterResult(ProjectGroupViewMode viewMode, ProjectState state) {
+                    projectGroupViewMode = viewMode;
                     projectState = state;
                     //列表模式时，直接筛选缓存的tempProjectItems
-                    if (viewMode == ProjectViewMode.VIEW_SIMPLE) {
+                    if (viewMode == ProjectGroupViewMode.SIMPLE_LIST) {
                         mRecyclerView.setVisibility(View.VISIBLE);
                         mRecyclerViewGroup.setVisibility(View.GONE);
                         filterSimpleListProjectsByState();
@@ -382,7 +382,7 @@ public class ProjectListFragment extends BaseTranslucentFragment {
             });
         }
 
-        projectDialog.setLastCheckedItem(projectViewMode, projectState);
+        projectDialog.setLastCheckedItem(projectGroupViewMode, projectState);
         projectDialog.show(getChildFragmentManager(), "dialog");
     }
 
@@ -413,11 +413,11 @@ public class ProjectListFragment extends BaseTranslucentFragment {
                         }
 
                         @Override
-                        public void onFilterResult(ProjectViewMode viewMode, ProjectState state) {
-                            projectViewMode = viewMode;
+                        public void onFilterResult(ProjectGroupViewMode viewMode, ProjectState state) {
+                            projectGroupViewMode = viewMode;
                             projectState = state;
                             //列表模式时，直接筛选缓存的tempProjectItems
-                            if (viewMode == ProjectViewMode.VIEW_SIMPLE) {
+                            if (viewMode == ProjectGroupViewMode.SIMPLE_LIST) {
                                 mRecyclerView.setVisibility(View.VISIBLE);
                                 mRecyclerViewGroup.setVisibility(View.GONE);
                                 filterSimpleListProjectsByState();
@@ -439,20 +439,20 @@ public class ProjectListFragment extends BaseTranslucentFragment {
         // 进入页面，刷新数据
         swipeRefresh.setRefreshing(true);
 
-        switch (projectViewMode) {
-            case VIEW_SIMPLE:
+        switch (projectGroupViewMode) {
+            case SIMPLE_LIST:
                 queryUserListProject();
                 break;
 
-            case VIEW_GROUP_BY_LEVEL:
+            case GROUP_BY_LEVEL:
                 getLevelProjList();
                 break;
 
-            case VIEW_GROUP_BY_REGION:
+            case GROUP_BY_REGION:
                 queryUserRegionProject();
                 break;
 
-            case VIEW_GROUP_BY_TYPE:
+            case GROUP_BY_TYPE:
                 queryUserTypeProject();
                 break;
         }
@@ -563,9 +563,9 @@ public class ProjectListFragment extends BaseTranslucentFragment {
                 .QueryUserTypeProject(MCloudApp.getAccessToken(), body)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new BaseObserver<List<TypeProjectInfo>>() {
+                .subscribe(new BaseObserver<List<IndustryTypeProjectInfo>>() {
                     @Override
-                    public void Success(List<TypeProjectInfo> data, String message) {
+                    public void Success(List<IndustryTypeProjectInfo> data, String message) {
                         swipeRefresh.setRefreshing(false);
                         if (data == null || data.size() == 0) {
                             return;
@@ -703,9 +703,9 @@ public class ProjectListFragment extends BaseTranslucentFragment {
      *
      * @param infos
      */
-    private void setTypeModeAdapterData(List<TypeProjectInfo> infos) {
+    private void setTypeModeAdapterData(List<IndustryTypeProjectInfo> infos) {
         multiProjectItems.clear();
-        for (TypeProjectInfo info : infos) {
+        for (IndustryTypeProjectInfo info : infos) {
             List<ProjectItem> subProjectItems = filterGroupListProjectsByState(info.getProjects());
             if (!subProjectItems.isEmpty()) {
                 multiProjectItems.add(new ProjectItem(info.getProjTypeName(), ProjectItem.ITEM_TOP));

@@ -26,7 +26,7 @@ import com.shmedo.core.interfaces.OnBytePackage;
 import com.shmedo.core.utils.ByteManager;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.bluetooth.exception.ScanAlreadyStartException;
-import com.shmedo.mcloudapp.entity.ble.MDevice;
+import com.shmedo.mcloudapp.deviceconfig.model.MDevice;
 import com.shmedo.mcloudapp.util.TimeUtil;
 import com.shmedo.mcloudapp.util.bleutil.Constants;
 import com.shmedo.mcloudapp.util.bleutil.DescriptorParser;

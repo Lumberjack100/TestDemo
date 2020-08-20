@@ -14,7 +14,8 @@
         <com.youth.banner.Banner
             android:id="@+id/banner"
             android:layout_width="match_parent"
-            android:layout_height="270dp"
+            android:layout_height="0dp"
+            android:layout_weight="1"
             app:banner_indicator_marginBottom="25dp"
             app:banner_indicator_normal_color="#6b6b6b"
             app:banner_indicator_selected_color="@color/white" />
@@ -29,8 +30,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="32dp"
-                android:layout_marginBottom="40dp">
+                android:layout_marginTop="35dp">
 
                 <LinearLayout
                     android:layout_width="0dp"
@@ -130,50 +130,113 @@
 
             </LinearLayout>
 
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="20dp"
-                android:gravity="center">
+                android:layout_marginTop="35dp"
+                android:layout_marginBottom="40dp">
 
-                <View
-                    android:layout_width="28dp"
-                    android:layout_height="1dp"
-                    android:background="@color/divider_line_bg_e1e1e1" />
-
-                <TextView
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="14dp"
-                    android:layout_marginEnd="14dp"
-                    android:text="项目介绍"
-                    android:textColor="@color/text_color_gray_343434"
-                    android:textSize="@dimen/text_size_18" />
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:orientation="vertical">
 
-                <View
-                    android:layout_width="28dp"
-                    android:layout_height="1dp"
-                    android:background="@color/divider_line_bg_e1e1e1" />
+                    <ImageView
+                        android:layout_width="27dp"
+                        android:layout_height="27dp"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/ic_project_valid_period" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="9dp"
+                        android:text="项目有效期"
+                        android:textColor="@color/text_color_gray_343434"
+                        android:textSize="@dimen/text_size_15" />
+
+                    <TextView
+                        android:id="@+id/tv_project_valid_period"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:textColor="@color/sub_title_text_color"
+                        android:textSize="@dimen/text_size_13"
+                        tools:text="2020.10.23" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:layout_width="27dp"
+                        android:layout_height="27dp"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/ic_project_address" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="9dp"
+                        android:text="项目地址"
+                        android:textColor="@color/text_color_gray_343434"
+                        android:textSize="@dimen/text_size_15" />
+
+                    <TextView
+                        android:id="@+id/tv_project_address"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:ellipsize="end"
+                        android:maxLines="3"
+                        android:textColor="@color/sub_title_text_color"
+                        android:textSize="@dimen/text_size_13"
+                        tools:text="湖北省黄冈市高新区大通路5088" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:layout_width="27dp"
+                        android:layout_height="27dp"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/ic_project_location" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="9dp"
+                        android:text="项目经纬度"
+                        android:textColor="@color/text_color_gray_343434"
+                        android:textSize="@dimen/text_size_15" />
+
+                    <TextView
+                        android:id="@+id/tv_project_location"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:textColor="@color/sub_title_text_color"
+                        android:textSize="@dimen/text_size_13"
+                        tools:text="23.345554\n179.986634" />
+
+                </LinearLayout>
 
             </LinearLayout>
 
-            <androidx.core.widget.NestedScrollView
-                android:id="@+id/nestedScrollView"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <TextView
-                    android:id="@+id/tv_project_desc"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="20dp"
-                    android:layout_marginEnd="20dp"
-                    android:layout_marginBottom="40dp"
-                    android:textColor="@color/text_color_gray_343434"
-                    android:textSize="@dimen/text_size_16"
-                    tools:text="@string/project_desc_test" />
-
-            </androidx.core.widget.NestedScrollView>
 
         </LinearLayout>
 

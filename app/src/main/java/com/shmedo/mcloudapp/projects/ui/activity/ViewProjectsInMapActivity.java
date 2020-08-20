@@ -32,7 +32,7 @@ import com.shmedo.mcloudapp.projects.cluster.ClusterItem;
 import com.shmedo.mcloudapp.projects.cluster.ClusterOverlay;
 import com.shmedo.mcloudapp.projects.cluster.ClusterRender;
 import com.shmedo.mcloudapp.projects.model.ProjectDetailInfo;
-import com.shmedo.mcloudapp.projects.model.RegionItem;
+import com.shmedo.mcloudapp.projects.cluster.ClusterRegionItem;
 import com.shmedo.mcloudapp.util.DaoManager;
 import com.shmedo.mcloudapp.util.GsonFactory;
 
@@ -161,8 +161,8 @@ public class ViewProjectsInMapActivity extends BaseActivity implements ClusterRe
                             }.getType());
                     if (location != null) {
                         LatLng latLng = new LatLng(location.getLat(), location.getLng());
-                        RegionItem regionItem = new RegionItem(latLng, detailInfo.getProjectName());
-                        clusterItemList.add(regionItem);
+                        ClusterRegionItem clusterRegionItem = new ClusterRegionItem(latLng, detailInfo.getProjectName());
+                        clusterItemList.add(clusterRegionItem);
                     }
                 }
 

@@ -15,7 +15,7 @@ import com.shmedo.core.MCloudApp;
 import com.shmedo.core.model.UserInfo;
 import com.shmedo.core.util.SharedUtil;
 import com.shmedo.mcloudapp.R;
-import com.shmedo.mcloudapp.entity.UserInfoWrapper;
+import com.shmedo.mcloudapp.common.model.UserInfoWrapper;
 import com.shmedo.mcloudapp.network.NetworkConst;
 import com.shmedo.mcloudapp.common.ui.fragment.PrivacyTipDialog;
 import com.shmedo.mcloudapp.util.DaoManager;

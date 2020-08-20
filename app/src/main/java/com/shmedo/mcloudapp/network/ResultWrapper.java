@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.entity;
+package com.shmedo.mcloudapp.network;
 
 /**
  * 项目名：  CheckAndroid

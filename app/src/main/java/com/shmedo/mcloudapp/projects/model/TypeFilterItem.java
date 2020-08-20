@@ -1,23 +1,25 @@
 package com.shmedo.mcloudapp.projects.model;
 
+import com.shmedo.mcloudapp.projects.model.enums.ProjectGroupViewMode;
+
 /**
  * 创建者:   gonghe <br/>
  * 创建时间:  2020/7/21 <br/>
- * 描述：     TODO
+ * 描述：     按照项目分组方式筛选项目的实体参数类
  */
 public class TypeFilterItem extends  FilterItem {
-    private ProjectViewMode projectViewMode;
+    private ProjectGroupViewMode projectGroupViewMode;
 
-    public TypeFilterItem(String name, ProjectViewMode projectViewMode) {
+    public TypeFilterItem(String name, ProjectGroupViewMode projectGroupViewMode) {
         super(name);
-        this.projectViewMode = projectViewMode;
+        this.projectGroupViewMode = projectGroupViewMode;
     }
 
-    public ProjectViewMode getProjectViewMode() {
-        return projectViewMode;
+    public ProjectGroupViewMode getProjectGroupViewMode() {
+        return projectGroupViewMode;
     }
 
-    public void setProjectViewMode(ProjectViewMode projectViewMode) {
-        this.projectViewMode = projectViewMode;
+    public void setProjectGroupViewMode(ProjectGroupViewMode projectGroupViewMode) {
+        this.projectGroupViewMode = projectGroupViewMode;
     }
 }

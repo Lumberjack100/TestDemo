@@ -6,7 +6,7 @@ import android.text.TextUtils;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 import com.shmedo.mcloudapp.R;
-import com.shmedo.mcloudapp.entity.ble.MDevice;
+import com.shmedo.mcloudapp.deviceconfig.model.MDevice;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

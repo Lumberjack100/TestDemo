@@ -33,7 +33,7 @@ import com.shmedo.mcloudapp.bluetooth.BluetoothEvent;
 import com.shmedo.mcloudapp.bluetooth.BluetoothEventHandler;
 import com.shmedo.mcloudapp.bluetooth.MdBluetoothManager;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.ConfigADMEActivity;
-import com.shmedo.mcloudapp.entity.ble.MDevice;
+import com.shmedo.mcloudapp.deviceconfig.model.MDevice;
 import com.shmedo.core.util.ActivityCollector;
 import com.shmedo.mcloudapp.util.permission.XPermissionUtils;
 import com.shmedo.mcloudapp.common.view.recycleviewitemdivider.DividerItemDecoration;

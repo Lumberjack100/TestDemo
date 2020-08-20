@@ -39,8 +39,8 @@ import com.shmedo.mcloudapp.deviceconfig.ui.activity.ConfigDASActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.ConfigE60Activity;
 import com.shmedo.mcloudapp.deviceconfig.view.DiffuseView;
 import com.shmedo.mcloudapp.entity.DeviceBasicInfoResult;
-import com.shmedo.mcloudapp.entity.DeviceTypeEnum;
-import com.shmedo.mcloudapp.entity.ble.MDevice;
+import com.shmedo.mcloudapp.deviceconfig.model.DeviceTypeEnum;
+import com.shmedo.mcloudapp.deviceconfig.model.MDevice;
 import com.shmedo.mcloudapp.util.permission.PermissionHelper;
 import com.shmedo.mcloudapp.util.permission.XPermissionUtils;
 

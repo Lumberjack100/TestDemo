@@ -3,7 +3,7 @@ package com.shmedo.mcloudapp.projects.model;
 /**
  * 创建者:   gonghe <br/>
  * 创建时间:  2020/7/24 <br/>
- * 描述：     TODO
+ * 描述：    项目监测点实体类
  */
 public  class OpenedMonitorTypeBean {
     /**

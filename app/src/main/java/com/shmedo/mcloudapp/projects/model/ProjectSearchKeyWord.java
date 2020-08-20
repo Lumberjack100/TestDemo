@@ -8,7 +8,7 @@ import org.greenrobot.greendao.annotation.Generated;
 /**
  * 创建者:   gonghe <br/>
  * 创建时间:  2020/8/13 <br/>
- * 描述：     TODO
+ * 描述：     项目搜索关键字历史记录实体类
  */
 @Entity
 public class ProjectSearchKeyWord {

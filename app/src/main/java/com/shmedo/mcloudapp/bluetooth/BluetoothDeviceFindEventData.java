@@ -1,6 +1,6 @@
 package com.shmedo.mcloudapp.bluetooth;
 
-import com.shmedo.mcloudapp.entity.ble.MDevice;
+import com.shmedo.mcloudapp.deviceconfig.model.MDevice;
 
 import java.util.List;
 

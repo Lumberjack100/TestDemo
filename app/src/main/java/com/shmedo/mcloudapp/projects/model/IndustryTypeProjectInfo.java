@@ -5,9 +5,9 @@ import java.util.List;
 /**
  * 创建者:   gonghe <br/>
  * 创建时间:  2020/7/22 <br/>
- * 描述：     TODO
+ * 描述：     行业类型项目信息实体(矿山、国土地质灾害、水文水利、城市基建、其他)
  */
-public class TypeProjectInfo {
+public class IndustryTypeProjectInfo {
 
     /**
      * projTypeID : 1

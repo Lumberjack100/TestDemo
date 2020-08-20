@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.entity;
+package com.shmedo.mcloudapp.common.model;
 
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Generated;

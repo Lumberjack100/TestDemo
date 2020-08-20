@@ -1,9 +1,11 @@
 package com.shmedo.mcloudapp.projects.model;
 
+import com.shmedo.mcloudapp.projects.model.enums.ProjectState;
+
 /**
  * 创建者:   gonghe <br/>
  * 创建时间:  2020/7/21 <br/>
- * 描述：     TODO
+ * 描述：    按照项目状态筛选项目的实体参数类
  */
 public class StateFilterItem extends  FilterItem {
     private ProjectState filterScope;

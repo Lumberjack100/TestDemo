@@ -24,7 +24,6 @@ import com.amap.api.maps.model.MarkerOptions;
 import com.amap.api.maps.model.animation.AlphaAnimation;
 import com.amap.api.maps.model.animation.Animation;
 import com.shmedo.mcloudapp.R;
-import com.shmedo.mcloudapp.projects.model.RegionItem;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -319,14 +318,14 @@ public class ClusterOverlay implements AMap.OnCameraChangeListener, AMap.OnMarke
                 mLruCache.put(mCluster.getClusterCount(), bitmapDescriptor);
             }
         } else {//否则，设置名称
-            RegionItem mRegionItem = (RegionItem) mCluster.getClusterItems().get(0);
-            bitmapDescriptor = mLruCacheName.get(mRegionItem.getTitle());
+            ClusterRegionItem mClusterRegionItem = (ClusterRegionItem) mCluster.getClusterItems().get(0);
+            bitmapDescriptor = mLruCacheName.get(mClusterRegionItem.getTitle());
             if (bitmapDescriptor == null) {
                 View view = View.inflate(mContext, R.layout.view_bubble_poioverlay, null);
                 TextView textView = ((TextView) view.findViewById(R.id.title));
-                textView.setText(mRegionItem.getTitle());
+                textView.setText(mClusterRegionItem.getTitle());
                 bitmapDescriptor = BitmapDescriptorFactory.fromView(view);
-                mLruCacheName.put(mRegionItem.getTitle(), bitmapDescriptor);
+                mLruCacheName.put(mClusterRegionItem.getTitle(), bitmapDescriptor);
             }
         }
         return bitmapDescriptor;

@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.entity;
+package com.shmedo.mcloudapp.deviceconfig.model;
 
 /**
  * 项目名：  mCloudapp

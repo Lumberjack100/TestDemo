@@ -44,8 +44,14 @@ public class ProjectIntroductionActivity extends BaseActivity {
     @BindView(R.id.tv_project_create_time)
     TextView tvProjectCreateTime;
 
-    @BindView(R.id.tv_project_desc)
-    TextView tvProjectDesc;
+    @BindView(R.id.tv_project_valid_period)
+    TextView tvProjectValidPeriod;
+
+    @BindView(R.id.tv_project_address)
+    TextView tvProjectAddress;
+
+    @BindView(R.id.tv_project_location)
+    TextView tvProjectLoction;
 
     private List<String> imgUrlList = new ArrayList<>();
 
@@ -113,7 +119,9 @@ public class ProjectIntroductionActivity extends BaseActivity {
         tvProjectType.setText("地质灾害");
         tvProjectLevel.setText("3级");
         tvProjectCreateTime.setText("2019.10.22");
-        tvProjectDesc.setText(getResources().getString(R.string.project_desc_test));
+        tvProjectValidPeriod.setText("2019.10.22");
+        tvProjectAddress.setText("湖北省黄冈市高新区大通路5088联航路1188号浦江智谷32号楼");
+        tvProjectLoction.setText("23.345554\n179.986634");
     }
 
 

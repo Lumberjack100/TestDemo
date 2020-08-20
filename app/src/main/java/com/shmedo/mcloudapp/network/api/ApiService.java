@@ -6,7 +6,7 @@ import com.shmedo.mcloudapp.entity.DeviceDetailInfo;
 import com.shmedo.mcloudapp.entity.PageResult;
 import com.shmedo.mcloudapp.entity.ProjectDeviceInfo;
 import com.shmedo.mcloudapp.entity.QueryCloudDataInfo;
-import com.shmedo.mcloudapp.entity.ResultWrapper;
+import com.shmedo.mcloudapp.network.ResultWrapper;
 import com.shmedo.mcloudapp.entity.StatusInfoResult;
 import com.shmedo.mcloudapp.network.NetworkConst;
 import com.shmedo.mcloudapp.projects.model.CustomLevelProjectInfo;
@@ -14,7 +14,7 @@ import com.shmedo.mcloudapp.projects.model.ProjectBaseInfo;
 import com.shmedo.mcloudapp.projects.model.ProjectDetailInfo;
 import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfoWrapper;
 import com.shmedo.mcloudapp.projects.model.RegionProjectInfo;
-import com.shmedo.mcloudapp.projects.model.TypeProjectInfo;
+import com.shmedo.mcloudapp.projects.model.IndustryTypeProjectInfo;
 import com.shmedo.mcloudapp.user.model.CompanyInfo;
 
 import java.util.List;
@@ -47,6 +47,7 @@ public interface ApiService {
     @POST("SignIn")
     Observable<ResultWrapper<String>> getSingIn(@Body RequestBody parameter);
 
+    /**  我的模块   */
     //获取用户信息
     @Headers({NetworkConst.HEADER_ACCESS_TYPE})
     @GET("GetMyInfo")
@@ -87,11 +88,7 @@ public interface ApiService {
     @POST("GetCompanyInfo")
     Observable<ResultWrapper<CompanyInfo>> GetCompanyInfo(@Header(NetworkConst.ACCESS_TOKEN) String token, @Body RequestBody parameter);
 
-    //系统接口v2  7.10 查询设备的详情信息
-    @Headers({NetworkConst.HEADER_ACCESS_TYPE})
-    @POST("GetDeviceDetailInfo")
-    Observable<ResultWrapper<DeviceDetailInfo>> GetDeviceDetailInfo(@Header(NetworkConst.ACCESS_TOKEN) String token, @Body RequestBody parameter);
-
+    /**  项目模块   */
     //项目接口V2  查询当前用户的项目列表(列表方式、不分页)
     @Headers({NetworkConst.HEADER_ACCESS_TYPE})
     @POST("QueryUserListProjectEx")
@@ -100,7 +97,7 @@ public interface ApiService {
     //项目接口V2  查询当前用户的项目列表(项目类型方式)
     @Headers({NetworkConst.HEADER_ACCESS_TYPE})
     @POST("QueryUserTypeProject")
-    Observable<ResultWrapper<List<TypeProjectInfo>>> QueryUserTypeProject(@Header(NetworkConst.ACCESS_TOKEN) String token, @Body RequestBody parameter);
+    Observable<ResultWrapper<List<IndustryTypeProjectInfo>>> QueryUserTypeProject(@Header(NetworkConst.ACCESS_TOKEN) String token, @Body RequestBody parameter);
 
     //项目接口V2  查询当前用户的项目列表(行政区域列表方式)
     @Headers({NetworkConst.HEADER_ACCESS_TYPE})
@@ -127,19 +124,32 @@ public interface ApiService {
     @POST("UnTopUserProject")
     Observable<ResultWrapper<String>> UnTopUserProject(@Header(NetworkConst.ACCESS_TOKEN) String token, @Body RequestBody parameter);
 
-    //系统接口v2-2  查询公司设备列表 QueryCompanyDevice
+    //系统接口v2-2  查询公司设备列表
     @Headers({NetworkConst.HEADER_ACCESS_TYPE})
     @POST("QueryCompanyDevice")
     Observable<ResultWrapper<ProjectDeviceInfoWrapper>> QueryCompanyDevice(@Header(NetworkConst.ACCESS_TOKEN) String token, @Body RequestBody parameter);
 
+    //项目接口V2-4  获取单个项目的详细信息
+    @Headers({NetworkConst.HEADER_ACCESS_TYPE})
+    @POST("GetProjectByIDEx")
+    Observable<ResultWrapper<ProjectDeviceInfoWrapper>> GetProjectByIDEx(@Header(NetworkConst.ACCESS_TOKEN) String token, @Body RequestBody parameter);
 
 
-    //系统接口v2-2 4.3 查询设备状态信息列表 QueryDeviceStatusInfoList
+
+    //系统接口v2  7.10 查询设备的详情信息
+    @Headers({NetworkConst.HEADER_ACCESS_TYPE})
+    @POST("GetDeviceDetailInfo")
+    Observable<ResultWrapper<DeviceDetailInfo>> GetDeviceDetailInfo(@Header(NetworkConst.ACCESS_TOKEN) String token, @Body RequestBody parameter);
+
+
+    /**  设备模块   */
+
+    //系统接口v2-2 4.3 查询设备状态信息列表
     @Headers({NetworkConst.HEADER_ACCESS_TYPE})
     @POST("QueryDeviceStatusInfoList")
     Observable<ResultWrapper<List<StatusInfoResult>>> QueryDeviceStatusInfoList(@Header(NetworkConst.ACCESS_TOKEN) String token, @Body RequestBody parameter);
 
-    //系统接口v2-2 4.2 查询设备基础信息列表——地图展示项目 QueryDeviceBasicInfoList
+    //系统接口v2-2 4.2 查询设备基础信息列表——地图展示项目
     @Headers({NetworkConst.HEADER_ACCESS_TYPE})
     @POST("QueryDeviceBasicInfoList")
     Observable<ResultWrapper<List<DeviceBasicInfoResult>>> QueryDeviceBasicInfoList(@Header(NetworkConst.ACCESS_TOKEN) String token, @Body RequestBody parameter);

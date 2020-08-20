@@ -18,8 +18,8 @@ import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.view.recycleviewitemdivider.GridSpacingItemDecoration;
 import com.shmedo.mcloudapp.projects.adapter.FilterItemAdapter;
 import com.shmedo.mcloudapp.projects.model.FilterItem;
-import com.shmedo.mcloudapp.projects.model.ProjectState;
-import com.shmedo.mcloudapp.projects.model.ProjectViewMode;
+import com.shmedo.mcloudapp.projects.model.enums.ProjectState;
+import com.shmedo.mcloudapp.projects.model.enums.ProjectGroupViewMode;
 import com.shmedo.mcloudapp.projects.model.StateFilterItem;
 import com.shmedo.mcloudapp.projects.model.TypeFilterItem;
 
@@ -41,7 +41,7 @@ public class ProjectFilterPopupView extends PartShadowPopupView implements View.
     private Context mContext;
     private FilterItemAdapter projectTypeAdapter, projectStateAdapter;
 
-    private ProjectViewMode projectViewMode = ProjectViewMode.VIEW_SIMPLE;
+    private ProjectGroupViewMode projectGroupViewMode = ProjectGroupViewMode.SIMPLE_LIST;
     private ProjectState filterScope = ProjectState.ALL;
 
     private OnFilterPopupViewListener mListener;
@@ -111,7 +111,7 @@ public class ProjectFilterPopupView extends PartShadowPopupView implements View.
                 filterItem.setChecked(true);
                 projectTypeAdapter.notifyDataSetChanged();
 
-                projectViewMode = filterItem.getProjectViewMode();
+                projectGroupViewMode = filterItem.getProjectGroupViewMode();
             }
         });
     }
@@ -161,11 +161,11 @@ public class ProjectFilterPopupView extends PartShadowPopupView implements View.
 
             case R.id.ll_reset:
                 resetRecyclerViewItemState();
-                mListener.onFilterResult(ProjectViewMode.VIEW_SIMPLE, ProjectState.ALL);
+                mListener.onFilterResult(ProjectGroupViewMode.SIMPLE_LIST, ProjectState.ALL);
                 break;
 
             case R.id.tv_confirm:
-                mListener.onFilterResult(projectViewMode, filterScope);
+                mListener.onFilterResult(projectGroupViewMode, filterScope);
                 break;
         }
 
@@ -187,17 +187,17 @@ public class ProjectFilterPopupView extends PartShadowPopupView implements View.
     }
 
     private void initProjectTypeData() {
-        TypeFilterItem filterItem = new TypeFilterItem("列表", ProjectViewMode.VIEW_SIMPLE);
+        TypeFilterItem filterItem = new TypeFilterItem("列表", ProjectGroupViewMode.SIMPLE_LIST);
         filterItem.setChecked(true);
         projectTypeAdapter.addData(filterItem);
 
-        filterItem = new TypeFilterItem("分级", ProjectViewMode.VIEW_GROUP_BY_LEVEL);
+        filterItem = new TypeFilterItem("分级", ProjectGroupViewMode.GROUP_BY_LEVEL);
         projectTypeAdapter.addData(filterItem);
 
-        filterItem = new TypeFilterItem("行政区域", ProjectViewMode.VIEW_GROUP_BY_REGION);
+        filterItem = new TypeFilterItem("行政区域", ProjectGroupViewMode.GROUP_BY_REGION);
         projectTypeAdapter.addData(filterItem);
 
-        filterItem = new TypeFilterItem("项目类型", ProjectViewMode.VIEW_GROUP_BY_TYPE);
+        filterItem = new TypeFilterItem("项目类型", ProjectGroupViewMode.GROUP_BY_TYPE);
         projectTypeAdapter.addData(filterItem);
     }
 
@@ -221,6 +221,6 @@ public class ProjectFilterPopupView extends PartShadowPopupView implements View.
 
         void onMapClick();
 
-        void onFilterResult(ProjectViewMode projectViewMode, ProjectState filterScope);
+        void onFilterResult(ProjectGroupViewMode projectGroupViewMode, ProjectState filterScope);
     }
 }

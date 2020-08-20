@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.entity.ble;
+package com.shmedo.mcloudapp.deviceconfig.model;
 
 import android.bluetooth.BluetoothDevice;
 import android.os.Parcel;

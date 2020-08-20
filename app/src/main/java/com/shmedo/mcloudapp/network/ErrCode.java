@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.entity;
+package com.shmedo.mcloudapp.network;
 
 import android.text.TextUtils;
 

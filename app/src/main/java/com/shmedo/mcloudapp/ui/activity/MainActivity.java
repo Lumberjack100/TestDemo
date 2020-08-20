@@ -52,7 +52,7 @@ import com.shmedo.mcloudapp.deviceconfig.ui.activity.ConfigDASActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.ConfigE60Activity;
 import com.shmedo.mcloudapp.entity.DeviceBasicInfoResult;
 import com.shmedo.mcloudapp.entity.DeviceBasicInfoResultDao;
-import com.shmedo.mcloudapp.entity.DeviceTypeEnum;
+import com.shmedo.mcloudapp.deviceconfig.model.DeviceTypeEnum;
 import com.shmedo.mcloudapp.entity.StatusInfoResult;
 import com.shmedo.mcloudapp.entity.cluster.ClusterAnotherClickListener;
 import com.shmedo.mcloudapp.entity.cluster.ClusterAnotherRender;

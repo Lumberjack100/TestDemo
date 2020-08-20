@@ -16,7 +16,7 @@ import com.shmedo.mcloudapp.deviceconfig.ui.activity.ConfigADMEActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.ConfigDASActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.ConfigE60Activity;
 import com.shmedo.mcloudapp.entity.DeviceBasicInfoResult;
-import com.shmedo.mcloudapp.entity.DeviceTypeEnum;
+import com.shmedo.mcloudapp.deviceconfig.model.DeviceTypeEnum;
 import com.shmedo.core.event.MapDeviceEvent;
 import com.shmedo.mcloudapp.common.view.ClearEditText;
 
