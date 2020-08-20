@@ -19,7 +19,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:scaleType="centerCrop"
-            android:src="@drawable/ic_outdate_project"
+            android:src="@drawable/ic_expired_project"
             android:visibility="gone" />
 
         <RelativeLayout

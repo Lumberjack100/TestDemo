@@ -284,10 +284,6 @@
             android:maxAspectRatio="2.4"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".projects.ui.activity.OutOfDateProjectGuideActivity"
-            android:maxAspectRatio="2.4"
-            android:screenOrientation="portrait" />
-        <activity
             android:name=".projects.ui.activity.ProjectSearchActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:maxAspectRatio="2.4"

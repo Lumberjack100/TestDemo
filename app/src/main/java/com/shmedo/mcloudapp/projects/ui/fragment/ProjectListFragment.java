@@ -43,9 +43,9 @@ import com.shmedo.mcloudapp.projects.model.RegionProjectInfo;
 import com.shmedo.mcloudapp.projects.model.TypeProjectInfo;
 import com.shmedo.mcloudapp.projects.model.param.ProjectBaseInfoParam;
 import com.shmedo.mcloudapp.projects.ui.activity.DevicesInProjectActivity;
-import com.shmedo.mcloudapp.projects.ui.activity.OutOfDateProjectGuideActivity;
 import com.shmedo.mcloudapp.projects.ui.activity.ProjectSearchActivity;
 import com.shmedo.mcloudapp.projects.ui.activity.ViewProjectsInMapActivity;
+import com.shmedo.mcloudapp.projects.view.ProjectExpiredGuideDialog;
 import com.shmedo.mcloudapp.projects.view.ProjectFilterPopupView;
 import com.shmedo.mcloudapp.util.DaoManager;
 import com.shmedo.mcloudapp.util.DateUtil;
@@ -113,6 +113,7 @@ public class ProjectListFragment extends BaseTranslucentFragment {
 
     private NewMainActivity activity;
     private int userId;
+    private int companyID;
     private UserInfo userInfo;
 
     private ProjectViewMode projectViewMode = ProjectViewMode.VIEW_SIMPLE;
@@ -151,10 +152,16 @@ public class ProjectListFragment extends BaseTranslucentFragment {
         updateSystemBarColor();
         activity = (NewMainActivity) getActivity();
         userInfo = MCloudApp.getCurrentUserInfo();
-        if (userInfo != null && userInfo.getUser() != null) {
-            UserInfo.UserBean user = userInfo.getUser();
-            userId = user.getId();
+        if (userInfo != null) {
+            if (userInfo.getUser() != null) {
+                UserInfo.UserBean user = userInfo.getUser();
+                userId = user.getId();
+            }
+            if (userInfo.getDepartments() != null && userInfo.getDepartments().size() > 0) {
+                companyID = userInfo.getDepartments().get(0).getCompanyID();
+            }
         }
+
         initSimpleAdapter();
         initMultiItemAdapter();
         setListener();
@@ -195,8 +202,12 @@ public class ProjectListFragment extends BaseTranslucentFragment {
                 ProjectItem projectItem = simpleProjectItems.get(position);
 
                 ProjectDetailInfo detailInfo = (ProjectDetailInfo) projectItem.getObject();
-                if (detailInfo.isOutOfDate()) {
-                    OutOfDateProjectGuideActivity.startActivity(activity, detailInfo.getProjectName(), detailInfo.getRegisterTime());
+                //已过期的项目，针对非米度公司的用户进行限制操作
+                if (detailInfo.isOutOfDate() && companyID != 1) {
+                    ProjectExpiredGuideDialog customPopup = new ProjectExpiredGuideDialog(getActivity(), detailInfo.getRegisterTime());
+                    new XPopup.Builder(getContext())
+                            .asCustom(customPopup)
+                            .show();
                 } else {
                     DevicesInProjectActivity.startActivity(activity);
                 }
@@ -220,8 +231,12 @@ public class ProjectListFragment extends BaseTranslucentFragment {
                     return;
 
                 ProjectDetailInfo detailInfo = (ProjectDetailInfo) projectItem.getObject();
-                if (detailInfo.isOutOfDate()) {
-                    OutOfDateProjectGuideActivity.startActivity(activity, detailInfo.getProjectName(), detailInfo.getRegisterTime());
+                //已过期的项目，针对非米度公司的用户进行限制操作
+                if (detailInfo.isOutOfDate() && companyID != 1) {
+                    ProjectExpiredGuideDialog customPopup = new ProjectExpiredGuideDialog(getActivity(), detailInfo.getRegisterTime());
+                    new XPopup.Builder(getContext())
+                            .asCustom(customPopup)
+                            .show();
                 } else {
                     DevicesInProjectActivity.startActivity(activity);
                 }
@@ -649,7 +664,7 @@ public class ProjectListFragment extends BaseTranslucentFragment {
             public void run() {
                 nestedScrollView.scrollTo(0, nestedScrollView.getTop());
             }
-        },500);
+        }, 500);
     }
 
     /**
@@ -672,7 +687,7 @@ public class ProjectListFragment extends BaseTranslucentFragment {
             public void run() {
                 nestedScrollView.scrollTo(0, nestedScrollView.getTop());
             }
-        },500);
+        }, 500);
     }
 
     /**
@@ -695,7 +710,7 @@ public class ProjectListFragment extends BaseTranslucentFragment {
             public void run() {
                 nestedScrollView.scrollTo(0, nestedScrollView.getTop());
             }
-        },500);
+        }, 500);
     }
 
     /**
@@ -748,7 +763,7 @@ public class ProjectListFragment extends BaseTranslucentFragment {
             public void run() {
                 nestedScrollView.scrollTo(0, nestedScrollView.getTop());
             }
-        },500);
+        }, 500);
     }
 
     /**
