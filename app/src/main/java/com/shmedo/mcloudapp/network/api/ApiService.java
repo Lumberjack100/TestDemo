@@ -6,15 +6,16 @@ import com.shmedo.mcloudapp.entity.DeviceDetailInfo;
 import com.shmedo.mcloudapp.entity.PageResult;
 import com.shmedo.mcloudapp.entity.ProjectDeviceInfo;
 import com.shmedo.mcloudapp.entity.QueryCloudDataInfo;
-import com.shmedo.mcloudapp.network.ResultWrapper;
 import com.shmedo.mcloudapp.entity.StatusInfoResult;
 import com.shmedo.mcloudapp.network.NetworkConst;
+import com.shmedo.mcloudapp.network.ResultWrapper;
 import com.shmedo.mcloudapp.projects.model.CustomLevelProjectInfo;
+import com.shmedo.mcloudapp.projects.model.IndustryTypeProjectInfo;
 import com.shmedo.mcloudapp.projects.model.ProjectBaseInfo;
 import com.shmedo.mcloudapp.projects.model.ProjectDetailInfo;
 import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfoWrapper;
+import com.shmedo.mcloudapp.projects.model.ProjectInfoEx;
 import com.shmedo.mcloudapp.projects.model.RegionProjectInfo;
-import com.shmedo.mcloudapp.projects.model.IndustryTypeProjectInfo;
 import com.shmedo.mcloudapp.user.model.CompanyInfo;
 
 import java.util.List;
@@ -132,7 +133,7 @@ public interface ApiService {
     //项目接口V2-4  获取单个项目的详细信息
     @Headers({NetworkConst.HEADER_ACCESS_TYPE})
     @POST("GetProjectByIDEx")
-    Observable<ResultWrapper<ProjectDeviceInfoWrapper>> GetProjectByIDEx(@Header(NetworkConst.ACCESS_TOKEN) String token, @Body RequestBody parameter);
+    Observable<ResultWrapper<ProjectInfoEx>> GetProjectByIDEx(@Header(NetworkConst.ACCESS_TOKEN) String token, @Body RequestBody parameter);
 
 
 

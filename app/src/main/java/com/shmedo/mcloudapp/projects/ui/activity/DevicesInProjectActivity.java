@@ -28,6 +28,8 @@ import butterknife.BindView;
 import butterknife.OnClick;
 
 public class DevicesInProjectActivity extends BaseActivity implements TabLayout.OnTabSelectedListener {
+    private static final String PROJECT_ID = "project_id";
+
     @BindView(R.id.tabs)
     TabLayout tabLayout;
 
@@ -37,8 +39,11 @@ public class DevicesInProjectActivity extends BaseActivity implements TabLayout.
     private FragmentStateAdapter pagerAdapter;
     private TabLayoutMediator tabLayoutMediator;
 
-    public static void startActivity(Context context) {
+    private int projectID;
+
+    public static void startActivity(Context context, int projectID) {
         Intent intent = new Intent(context, DevicesInProjectActivity.class);
+        intent.putExtra(PROJECT_ID, projectID);
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         context.startActivity(intent);
     }
@@ -52,8 +57,17 @@ public class DevicesInProjectActivity extends BaseActivity implements TabLayout.
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        parseIntent();
         initView();
     }
+
+    private void parseIntent() {
+        Intent intent = getIntent();
+        if (intent.getExtras() != null && intent.getExtras().containsKey(PROJECT_ID)) {
+            projectID = intent.getIntExtra(PROJECT_ID, 0);
+        }
+    }
+
 
     private void setTabs() {
         View tabView = LayoutInflater.from(this).inflate(R.layout.custom_tab_text, null);
@@ -133,7 +147,7 @@ public class DevicesInProjectActivity extends BaseActivity implements TabLayout.
                 break;
 
             case R.id.view_icon:
-                ProjectIntroductionActivity.startActivity(this);
+                ProjectIntroductionActivity.startActivity(this, projectID);
                 break;
         }
     }

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.widget.TextView;
 
 import androidx.appcompat.widget.Toolbar;
@@ -12,8 +13,16 @@ import androidx.core.graphics.ColorUtils;
 
 import com.bumptech.glide.Glide;
 import com.gyf.immersionbar.ImmersionBar;
+import com.shmedo.core.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.activity.BaseActivity;
+import com.shmedo.mcloudapp.network.BaseObserver;
+import com.shmedo.mcloudapp.network.MDRetrofit;
+import com.shmedo.mcloudapp.network.NetworkConst;
+import com.shmedo.mcloudapp.projects.model.CenterPoint;
+import com.shmedo.mcloudapp.projects.model.ProjectInfoEx;
+import com.shmedo.mcloudapp.util.DateUtil;
+import com.shmedo.mcloudapp.util.GsonFactory;
 import com.youth.banner.Banner;
 import com.youth.banner.adapter.BannerImageAdapter;
 import com.youth.banner.config.IndicatorConfig;
@@ -24,8 +33,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
+import okhttp3.RequestBody;
+import timber.log.Timber;
 
 public class ProjectIntroductionActivity extends BaseActivity {
+    private static final String PROJECT_ID = "project_id";
+
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
 
@@ -55,8 +70,12 @@ public class ProjectIntroductionActivity extends BaseActivity {
 
     private List<String> imgUrlList = new ArrayList<>();
 
-    public static void startActivity(Context context) {
+    private int projectID;
+
+
+    public static void startActivity(Context context, int projectID) {
         Intent intent = new Intent(context, ProjectIntroductionActivity.class);
+        intent.putExtra(PROJECT_ID, projectID);
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         context.startActivity(intent);
     }
@@ -72,8 +91,9 @@ public class ProjectIntroductionActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setToolBar(R.id.toolbar);
         mToolbarTitle.setText("项目简介");
+        parseIntent();
         setBanner();
-        initData();
+        QueryProjectInfo();
     }
 
     /**
@@ -93,11 +113,18 @@ public class ProjectIntroductionActivity extends BaseActivity {
                 .init();
     }
 
+    private void parseIntent() {
+        Intent intent = getIntent();
+        if (intent.getExtras() != null && intent.getExtras().containsKey(PROJECT_ID)) {
+            projectID = intent.getIntExtra(PROJECT_ID, 0);
+        }
+    }
+
     private void setBanner() {
-        imgUrlList.add("https://img.zcool.cn/community/013de756fb63036ac7257948747896.jpg");
-        imgUrlList.add("https://img.zcool.cn/community/01639a56fb62ff6ac725794891960d.jpg");
-        imgUrlList.add("https://img.zcool.cn/community/01270156fb62fd6ac72579485aa893.jpg");
-        imgUrlList.add("https://img.zcool.cn/community/01233056fb62fe32f875a9447400e1.jpg");
+//        imgUrlList.add("https://img.zcool.cn/community/013de756fb63036ac7257948747896.jpg");
+//        imgUrlList.add("https://img.zcool.cn/community/01639a56fb62ff6ac725794891960d.jpg");
+//        imgUrlList.add("https://img.zcool.cn/community/01270156fb62fd6ac72579485aa893.jpg");
+//        imgUrlList.add("https://img.zcool.cn/community/01233056fb62fe32f875a9447400e1.jpg");
 
         banner.setAdapter(new BannerImageAdapter<String>(imgUrlList) {
             @Override
@@ -112,16 +139,76 @@ public class ProjectIntroductionActivity extends BaseActivity {
         banner.addBannerLifecycleObserver(this);
         banner.setIndicator(new CircleIndicator(this));
         banner.setIndicatorGravity(IndicatorConfig.Direction.CENTER);
-
     }
 
-    private void initData() {
-        tvProjectType.setText("地质灾害");
-        tvProjectLevel.setText("3级");
-        tvProjectCreateTime.setText("2019.10.22");
-        tvProjectValidPeriod.setText("2019.10.22");
-        tvProjectAddress.setText("湖北省黄冈市高新区大通路5088联航路1188号浦江智谷32号楼");
-        tvProjectLoction.setText("23.345554\n179.986634");
+    private void updateView(ProjectInfoEx projectInfoEx) {
+        if (projectInfoEx == null || projectInfoEx.getProjInfo() == null)
+            return;
+
+        ProjectInfoEx.ProjInfoBean projInfoBean = projectInfoEx.getProjInfo();
+        tvProjectType.setText(TextUtils.isEmpty(projectInfoEx.getProjTypeAlias()) ? "" : projectInfoEx.getProjTypeAlias());
+        tvProjectLevel.setText("");
+        tvProjectAddress.setText(TextUtils.isEmpty(projInfoBean.getLocation()) ? "" : projInfoBean.getLocation());
+
+        if (!TextUtils.isEmpty(projInfoBean.getCreateTime())) {
+            try {
+                String createTime = DateUtil.StrToStrFormat(projInfoBean.getCreateTime(), "yyyy-MM-dd HH:mm:ss", "yyyy.MM.dd");
+                tvProjectCreateTime.setText(createTime);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+
+        if (!TextUtils.isEmpty(projInfoBean.getRegisterValidTime())) {
+            try {
+                String validTime = DateUtil.StrToStrFormat(projInfoBean.getRegisterValidTime(), "yyyy-MM-dd HH:mm:ss", "yyyy.MM.dd");
+                tvProjectValidPeriod.setText(validTime);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        if (!TextUtils.isEmpty(projInfoBean.getCenterPoint())) {
+            try {
+                CenterPoint centerPoint = GsonFactory.getGson().fromJson(projInfoBean.getCenterPoint(), CenterPoint.class);
+                if (centerPoint != null) {
+                    tvProjectLoction.setText(centerPoint.getLat() + "\n" + centerPoint.getLng());
+                }
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+
+        if (projInfoBean.getImagePath() == null) {
+            imgUrlList.add("");
+        }
+//        banner.getAdapter().notifyDataSetChanged();
+    }
+
+    /**
+     * 查询警报阈值列表
+     */
+    private void QueryProjectInfo() {
+        showLoadingDialog("加载数据中...");
+
+        RequestBody body = RequestBody.create(NetworkConst.JSON_TYPE, String.valueOf(projectID));
+        MDRetrofit.getInstance()
+                .createService()
+                .GetProjectByIDEx(MCloudApp.getAccessToken(), body)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new BaseObserver<ProjectInfoEx>() {
+                    @Override
+                    public void Success(ProjectInfoEx data, String message) {
+                        dismissLoadingDialog();
+                        updateView(data);
+                    }
+
+                    @Override
+                    public void Failure(String message) {
+                        dismissLoadingDialog();
+                        Timber.w("服务器连接失败--%s", message);
+                    }
+                });
     }
 
 

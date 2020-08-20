@@ -213,7 +213,7 @@ public class ProjectListFragment extends BaseTranslucentFragment {
                             .asCustom(customPopup)
                             .show();
                 } else {
-                    DevicesInProjectActivity.startActivity(activity);
+                    DevicesInProjectActivity.startActivity(activity, detailInfo.getProjectID());
                 }
             }
         });
@@ -242,7 +242,7 @@ public class ProjectListFragment extends BaseTranslucentFragment {
                             .asCustom(customPopup)
                             .show();
                 } else {
-                    DevicesInProjectActivity.startActivity(activity);
+                    DevicesInProjectActivity.startActivity(activity, detailInfo.getProjectID());
                 }
             }
         });
