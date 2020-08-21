@@ -11,9 +11,11 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
+import com.chad.library.adapter.base.listener.OnLoadMoreListener;
 import com.shmedo.core.MCloudApp;
 import com.shmedo.core.model.UserInfo;
 import com.shmedo.core.util.DensityUtil;
@@ -26,6 +28,7 @@ import com.shmedo.mcloudapp.network.NetworkConst;
 import com.shmedo.mcloudapp.projects.adapter.DeviceInfoAdapter;
 import com.shmedo.mcloudapp.projects.adapter.DeviceTypeAdapter;
 import com.shmedo.mcloudapp.projects.model.DeviceTypeInfo;
+import com.shmedo.mcloudapp.projects.model.PageInfo;
 import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfo;
 import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfoWrapper;
 import com.shmedo.mcloudapp.projects.model.param.QueryProjectDevice;
@@ -51,6 +54,9 @@ import timber.log.Timber;
  * A simple {@link Fragment} subclass.
  */
 public class DevicesInProjectFragment extends BaseFragment {
+    @BindView(R.id.swipeLayout)
+    SwipeRefreshLayout swipeRefresh;
+
     @BindView(R.id.tv_online_num)
     TextView tvOnlineNum;
 
@@ -73,6 +79,8 @@ public class DevicesInProjectFragment extends BaseFragment {
     private List<ProjectDeviceInfo> tempDeviceInfoList = new ArrayList<>();
     private Map<String, Integer> deviceTypeMap = new HashMap<>();
 
+    private static final int PAGE_SIZE = 10;
+    private PageInfo pageInfo;
     private int userId;
 
     @Override
@@ -80,10 +88,6 @@ public class DevicesInProjectFragment extends BaseFragment {
         return R.layout.fragment_devices_in_project;
     }
 
-    @Override
-    protected void initView() {
-
-    }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
@@ -94,10 +98,29 @@ public class DevicesInProjectFragment extends BaseFragment {
             userId = user.getId();
         }
 
+        pageInfo = new PageInfo(1);
+        initRefreshLayout();
         initDeviceTypeAdapter();
         initDeviceInfoAdapter();
-//        initTestDeviceData();
-        queryCompanyDevice();
+        initLoadMore();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        // 进入页面，刷新数据
+        swipeRefresh.setRefreshing(true);
+        refresh();
+    }
+
+    private void initRefreshLayout() {
+        swipeRefresh.setColorSchemeResources(android.R.color.holo_blue_light);
+        swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                refresh();
+            }
+        });
     }
 
     private void initDeviceTypeAdapter() {
@@ -146,6 +169,22 @@ public class DevicesInProjectFragment extends BaseFragment {
         mRecyclerViewDevice.setAdapter(deviceInfoAdapter);
     }
 
+    /**
+     * 初始化加载更多
+     */
+    private void initLoadMore() {
+        deviceInfoAdapter.getLoadMoreModule().setOnLoadMoreListener(new OnLoadMoreListener() {
+            @Override
+            public void onLoadMore() {
+                loadMore();
+            }
+        });
+        deviceInfoAdapter.getLoadMoreModule().setEnableLoadMore(true);
+        // 是否自定加载下一页（默认为true）
+        deviceInfoAdapter.getLoadMoreModule().setAutoLoadMore(false);
+       // 当数据不满一页时，是否继续自动加载（默认为true）
+        deviceInfoAdapter.getLoadMoreModule().setEnableLoadMoreIfNotFullPage(false);
+    }
 
     @OnClick({R.id.search_container})
     public void onClick(View v) {
@@ -156,13 +195,31 @@ public class DevicesInProjectFragment extends BaseFragment {
         }
     }
 
+
+    /**
+     * 刷新
+     */
+    private void refresh() {
+        // 这里的作用是防止下拉刷新的时候还可以上拉加载
+        deviceInfoAdapter.getLoadMoreModule().setEnableLoadMore(false);
+        // 下拉刷新，需要重置页数
+        pageInfo.reset();
+        queryCompanyDevice();
+    }
+
+    /**
+     * 加载更多
+     */
+    private void loadMore() {
+        queryCompanyDevice();
+    }
+
     private void queryCompanyDevice() {
-        showLoadingDialog("加载中...");
         QueryProjectDevice parameter = new QueryProjectDevice();
         parameter.setCompanyID(1);
         parameter.setDeviceType(-1);
-        parameter.setPageSize(20);
-        parameter.setCurrentPage(1);
+        parameter.setPageSize(PAGE_SIZE);
+        parameter.setCurrentPage(pageInfo.getPage());
 
         String json = GsonFactory.getGson().toJson(parameter);
         RequestBody body = RequestBody.create(NetworkConst.JSON_TYPE, json);
@@ -174,26 +231,47 @@ public class DevicesInProjectFragment extends BaseFragment {
                 .subscribe(new BaseObserver<ProjectDeviceInfoWrapper>() {
                     @Override
                     public void Success(ProjectDeviceInfoWrapper data, String message) {
+                        swipeRefresh.setRefreshing(false);
+                        deviceInfoAdapter.getLoadMoreModule().setEnableLoadMore(true);
+
                         if (data == null || data.getCurrentPageData() == null) {
-                            dismissLoadingDialog();
                             return;
                         }
 
-                        tempDeviceInfoList.clear();
-                        deviceInfoList.clear();
-                        tempDeviceInfoList.addAll(data.getCurrentPageData());
-                        deviceInfoList.addAll(data.getCurrentPageData());
-                        deviceInfoAdapter.notifyDataSetChanged();
+                        if (pageInfo.isFirstPage()) {
+                            //如果是加载的第一页数据，用setNew
+                            tempDeviceInfoList.clear();
+                            deviceInfoList.clear();
+                            tempDeviceInfoList.addAll(data.getCurrentPageData());
+                            deviceInfoList.addAll(data.getCurrentPageData());
+                            deviceInfoAdapter.notifyDataSetChanged();
+                        } else {
+                            //不是第一页，则用add
+                            tempDeviceInfoList.addAll(data.getCurrentPageData());
+                            deviceInfoList.addAll(data.getCurrentPageData());
+                            deviceInfoAdapter.notifyDataSetChanged();
+                        }
+
+                        if (data.getCurrentPageData().size() < PAGE_SIZE) {
+                            //如果不够一页,显示没有更多数据布局
+                            deviceInfoAdapter.getLoadMoreModule().loadMoreEnd();
+
+                        } else {
+                            deviceInfoAdapter.getLoadMoreModule().loadMoreComplete();
+                        }
+                        // page加一
+                        pageInfo.nextPage();
 
                         updateTopView();
                         setDeviceTypeData();
-                        dismissLoadingDialog();
                     }
 
                     @Override
                     public void Failure(String message) {
-                        dismissLoadingDialog();
                         Timber.w("请求失败--%s", message);
+                        swipeRefresh.setRefreshing(false);
+                        deviceInfoAdapter.getLoadMoreModule().setEnableLoadMore(true);
+                        deviceInfoAdapter.getLoadMoreModule().loadMoreFail();
                     }
                 });
     }
@@ -217,6 +295,7 @@ public class DevicesInProjectFragment extends BaseFragment {
     }
 
     private void setDeviceTypeData() {
+        deviceTypeInfos.clear();
         deviceTypeMap.clear();
         for (ProjectDeviceInfo deviceInfo : deviceInfoList) {
             if (deviceTypeMap.containsKey(deviceInfo.getDeviceTypeName())) {

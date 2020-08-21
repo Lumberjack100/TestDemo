@@ -1,6 +1,7 @@
 package com.shmedo.mcloudapp.projects.adapter;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.chad.library.adapter.base.module.LoadMoreModule;
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfo;
@@ -15,7 +16,7 @@ import java.util.List;
  * 创建时间:  2020/8/18 <br/>
  * 描述：     TODO
  */
-public class DeviceInfoAdapter extends BaseQuickAdapter<ProjectDeviceInfo, BaseViewHolder> {
+public class DeviceInfoAdapter extends BaseQuickAdapter<ProjectDeviceInfo, BaseViewHolder> implements LoadMoreModule {
     public DeviceInfoAdapter(@Nullable List<ProjectDeviceInfo> data) {
         super(R.layout.item_device_info, data);
     }

@@ -30,7 +30,7 @@ import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.activity.BaseActivity;
 import com.shmedo.mcloudapp.common.view.ClearEditText;
 import com.shmedo.mcloudapp.maps.adapter.PoiSearchAdapter;
-import com.shmedo.mcloudapp.maps.model.PageInfo;
+import com.shmedo.mcloudapp.maps.model.PoiPageInfo;
 import com.shmedo.mcloudapp.maps.util.MapErrorUtil;
 
 import java.util.ArrayList;
@@ -57,7 +57,7 @@ public class PoiSearchActivity extends BaseActivity implements TextWatcher, PoiS
     private PoiResult poiResult; // poi返回的结果
 
     private String keyWord;// 要输入的poi搜索关键字
-    private PageInfo pageInfo = new PageInfo();
+    private PoiPageInfo poiPageInfo = new PoiPageInfo();
 
     private String cityName;
     private String poiTitle;
@@ -161,10 +161,10 @@ public class PoiSearchActivity extends BaseActivity implements TextWatcher, PoiS
      */
     private void loadMore() {
         if (query != null && poiSearch != null && poiResult != null) {
-            if (poiResult.getPageCount() - 1 > pageInfo.getPage()) {
+            if (poiResult.getPageCount() - 1 > poiPageInfo.getPage()) {
                 // page加一
-                pageInfo.nextPage();
-                query.setPageNum(pageInfo.getPage());// 设置查后一页
+                poiPageInfo.nextPage();
+                query.setPageNum(poiPageInfo.getPage());// 设置查后一页
                 poiSearch.searchPOIAsyn();
             } else {
 //                ToastUtils.show(R.string.no_result);
@@ -213,7 +213,7 @@ public class PoiSearchActivity extends BaseActivity implements TextWatcher, PoiS
         query = new PoiSearch.Query(keyWord, "", cityName);
         // 设置每页最多返回多少条poiitem
         query.setPageSize(PAGE_SIZE);
-        query.setPageNum(pageInfo.getPage());
+        query.setPageNum(poiPageInfo.getPage());
 
         poiSearch = new PoiSearch(this, query);
         poiSearch.setOnPoiSearchListener(this);
@@ -245,7 +245,7 @@ public class PoiSearchActivity extends BaseActivity implements TextWatcher, PoiS
         // 当搜索不到poiitem数据时，会返回含有搜索关键字的城市信息
         List<SuggestionCity> suggestionCities = poiResult.getSearchSuggestionCitys();
         if (poiItems != null && poiItems.size() > 0) {
-            if (pageInfo.isFirstPage()) {
+            if (poiPageInfo.isFirstPage()) {
                 //如果是加载的第一页数据，用setNew
                 poiSearchAdapter.setNewInstance(poiItems);
             } else {
@@ -274,7 +274,7 @@ public class PoiSearchActivity extends BaseActivity implements TextWatcher, PoiS
 
     private void resetData() {
         // 需要重置页数
-        pageInfo.reset();
+        poiPageInfo.reset();
         // 刷新RecycleView
         poiSearchAdapter.setNewInstance(new ArrayList<>());
     }

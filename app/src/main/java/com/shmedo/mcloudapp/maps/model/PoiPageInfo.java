@@ -5,22 +5,22 @@ package com.shmedo.mcloudapp.maps.model;
  * 创建时间:  2020/6/19 <br/>
  * 描述：    TODO
  */
-public class PageInfo {
+public class PoiPageInfo {
     private int page = 0;
 
-    public int getPage(){
+    public int getPage() {
         return page;
     }
 
-    public  void nextPage() {
+    public void nextPage() {
         page++;
     }
 
-    public  void reset() {
+    public void reset() {
         page = 0;
     }
 
-    public  boolean isFirstPage() {
+    public boolean isFirstPage() {
         return page == 0;
     }
 }
