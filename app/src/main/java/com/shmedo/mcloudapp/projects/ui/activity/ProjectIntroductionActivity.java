@@ -97,13 +97,11 @@ public class ProjectIntroductionActivity extends BaseActivity {
     }
 
     /**
-     * 初始化沉浸式
-     * Init immersion bar.
+     * 初始化系统栏
      */
     @Override
     protected void initImmersionBar() {
-        mToolbar.setBackgroundColor(ColorUtils.blendARGB(Color.TRANSPARENT
-                , ContextCompat.getColor(this, R.color.white), 0));
+        mToolbar.setBackgroundColor(ColorUtils.blendARGB(Color.TRANSPARENT, ContextCompat.getColor(this, R.color.white), 0));
         ImmersionBar.with(this)
                 .titleBar(mToolbar)
                 .statusBarColor(R.color.transparent, 0)
@@ -171,7 +169,7 @@ public class ProjectIntroductionActivity extends BaseActivity {
             try {
                 CenterPoint centerPoint = GsonFactory.getGson().fromJson(projInfoBean.getCenterPoint(), CenterPoint.class);
                 if (centerPoint != null) {
-                    tvProjectLoction.setText(centerPoint.getLat() + "\n" + centerPoint.getLng());
+                    tvProjectLoction.setText(String.format("%s\n%s", centerPoint.getLat(), centerPoint.getLng()));
                 }
             } catch (Exception ex) {
                 ex.printStackTrace();

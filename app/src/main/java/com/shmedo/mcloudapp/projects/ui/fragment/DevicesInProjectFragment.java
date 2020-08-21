@@ -30,6 +30,7 @@ import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfo;
 import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfoWrapper;
 import com.shmedo.mcloudapp.projects.model.param.QueryProjectDevice;
 import com.shmedo.mcloudapp.projects.ui.activity.DeviceSearchActivity;
+import com.shmedo.mcloudapp.projects.view.SlidingConflictRecyclerView;
 import com.shmedo.mcloudapp.util.GsonFactory;
 import com.yanzhenjie.recyclerview.widget.DefaultItemDecoration;
 
@@ -60,7 +61,7 @@ public class DevicesInProjectFragment extends BaseFragment {
     TextView tvOnlineRate;
 
     @BindView(R.id.recyclerview_device_type)
-    RecyclerView mRecyclerViewDeviceType;
+    SlidingConflictRecyclerView mRecyclerViewDeviceType;
 
     @BindView(R.id.recyclerview_device)
     RecyclerView mRecyclerViewDevice;
