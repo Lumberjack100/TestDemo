@@ -5,8 +5,8 @@
     android:layout_width="wrap_content"
     android:layout_height="35dp"
     android:gravity="center"
-    android:paddingStart="18dp"
-    android:paddingEnd="18dp"
+    android:paddingStart="16dp"
+    android:paddingEnd="16dp"
     tools:background="@drawable/bg_device_type_checked">
 
     <TextView
