@@ -232,7 +232,6 @@ public class NetWorkDeviceListFragment extends BaseFragment {
      * 查询公司设备在线统计信息
      */
     private void queryCompanyDeviceOnlineStatistics() {
-
         RequestBody body = RequestBody.create(NetworkConst.JSON_TYPE, String.valueOf(companyID));
         MDRetrofit.getInstance()
                 .createService()

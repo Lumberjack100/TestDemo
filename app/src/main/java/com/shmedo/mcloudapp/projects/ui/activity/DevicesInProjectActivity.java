@@ -29,6 +29,7 @@ import butterknife.OnClick;
 
 public class DevicesInProjectActivity extends BaseActivity implements TabLayout.OnTabSelectedListener {
     private static final String PROJECT_ID = "project_id";
+    private static final String PROJECT_NAME = "project_name";
 
     @BindView(R.id.tabs)
     TabLayout tabLayout;
@@ -40,10 +41,12 @@ public class DevicesInProjectActivity extends BaseActivity implements TabLayout.
     private TabLayoutMediator tabLayoutMediator;
 
     private int projectID;
+    private String projectName;
 
-    public static void startActivity(Context context, int projectID) {
+    public static void startActivity(Context context, int projectID, String projectName) {
         Intent intent = new Intent(context, DevicesInProjectActivity.class);
         intent.putExtra(PROJECT_ID, projectID);
+        intent.putExtra(PROJECT_NAME, projectName);
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         context.startActivity(intent);
     }
@@ -63,8 +66,14 @@ public class DevicesInProjectActivity extends BaseActivity implements TabLayout.
 
     private void parseIntent() {
         Intent intent = getIntent();
-        if (intent.getExtras() != null && intent.getExtras().containsKey(PROJECT_ID)) {
+        if (intent.getExtras() == null)
+            return;
+
+        if (intent.getExtras().containsKey(PROJECT_ID)) {
             projectID = intent.getIntExtra(PROJECT_ID, 0);
+        }
+        if (intent.getExtras().containsKey(PROJECT_NAME)) {
+            projectName = intent.getStringExtra(PROJECT_NAME);
         }
     }
 
@@ -92,7 +101,7 @@ public class DevicesInProjectActivity extends BaseActivity implements TabLayout.
 
     private void initView() {
         List<Fragment> mFragments = new ArrayList<>();
-        mFragments.add(new DevicesInProjectFragment());
+        mFragments.add(DevicesInProjectFragment.newInstance(projectName));
         mFragments.add(new ConstructionFragment());
         pagerAdapter = new ProjectPageAdapter(this, mFragments);
         viewPager.setAdapter(pagerAdapter);

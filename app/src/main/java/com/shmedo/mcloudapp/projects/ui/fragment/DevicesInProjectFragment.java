@@ -1,6 +1,11 @@
 package com.shmedo.mcloudapp.projects.ui.fragment;
 
 import android.os.Bundle;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.SpannedString;
+import android.text.TextUtils;
+import android.text.style.AbsoluteSizeSpan;
 import android.view.View;
 import android.widget.TextView;
 
@@ -22,12 +27,13 @@ import com.shmedo.core.util.DensityUtil;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.fragment.BaseFragment;
 import com.shmedo.mcloudapp.common.view.recycleviewitemdivider.GridSpacingItemDecoration;
+import com.shmedo.mcloudapp.deviceconfig.model.DeviceOnlineStatistic;
+import com.shmedo.mcloudapp.deviceconfig.model.DeviceOnlineTypeStatistic;
 import com.shmedo.mcloudapp.network.BaseObserver;
 import com.shmedo.mcloudapp.network.MDRetrofit;
 import com.shmedo.mcloudapp.network.NetworkConst;
 import com.shmedo.mcloudapp.projects.adapter.DeviceInfoAdapter;
 import com.shmedo.mcloudapp.projects.adapter.DeviceTypeAdapter;
-import com.shmedo.mcloudapp.projects.model.DeviceTypeInfo;
 import com.shmedo.mcloudapp.projects.model.PageInfo;
 import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfo;
 import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfoWrapper;
@@ -39,9 +45,7 @@ import com.yanzhenjie.recyclerview.widget.DefaultItemDecoration;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -54,6 +58,8 @@ import timber.log.Timber;
  * A simple {@link Fragment} subclass.
  */
 public class DevicesInProjectFragment extends BaseFragment {
+    private static final String PROJECT_NAME = "project_name";
+
     @BindView(R.id.swipeLayout)
     SwipeRefreshLayout swipeRefresh;
 
@@ -74,29 +80,41 @@ public class DevicesInProjectFragment extends BaseFragment {
 
     private DeviceTypeAdapter deviceTypeAdapter;
     private DeviceInfoAdapter deviceInfoAdapter;
-    private List<DeviceTypeInfo> deviceTypeInfos = new ArrayList<>();
+    private List<DeviceOnlineTypeStatistic> deviceTypeStatisticList = new ArrayList<>();
     private List<ProjectDeviceInfo> deviceInfoList = new ArrayList<>();
-    private List<ProjectDeviceInfo> tempDeviceInfoList = new ArrayList<>();
-    private Map<String, Integer> deviceTypeMap = new HashMap<>();
 
     private static final int PAGE_SIZE = 10;
     private PageInfo pageInfo;
-    private int userId;
+    private int companyID;
+    private String projectName;
+    private int deviceTypeID = -1;
+
+
+    public static DevicesInProjectFragment newInstance(String projectName) {
+        DevicesInProjectFragment fragment = new DevicesInProjectFragment();
+        Bundle args = new Bundle();
+        args.putString(PROJECT_NAME, projectName);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            projectName = getArguments().getString(PROJECT_NAME);
+        }
+    }
 
     @Override
     protected int getLayoutId() {
         return R.layout.fragment_devices_in_project;
     }
 
-
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        UserInfo userInfo = MCloudApp.getCurrentUserInfo();
-        if (userInfo != null && userInfo.getUser() != null) {
-            UserInfo.UserBean user = userInfo.getUser();
-            userId = user.getId();
-        }
+        initUserData();
 
         pageInfo = new PageInfo(1);
         initRefreshLayout();
@@ -110,7 +128,17 @@ public class DevicesInProjectFragment extends BaseFragment {
         super.onStart();
         // 进入页面，刷新数据
         swipeRefresh.setRefreshing(true);
+        queryCompanyDeviceOnlineStatistics();
+        queryCompanyDeviceOnlineTypeStatistics();
+        deviceTypeID = -1;
         refresh();
+    }
+
+    private void initUserData() {
+        UserInfo userInfo = MCloudApp.getCurrentUserInfo();
+        if (userInfo != null && userInfo.getDepartments() != null && userInfo.getDepartments().size() > 0) {
+            companyID = userInfo.getDepartments().get(0).getCompanyID();
+        }
     }
 
     private void initRefreshLayout() {
@@ -128,24 +156,30 @@ public class DevicesInProjectFragment extends BaseFragment {
         mRecyclerViewDeviceType.setLayoutManager(linearLayoutManager);
         DefaultItemDecoration mItemDecoration = new DefaultItemDecoration(ContextCompat.getColor(getActivity(), R.color.transparent), DensityUtil.Dp2Px(getActivity(), 20), 0);
         mRecyclerViewDeviceType.addItemDecoration(mItemDecoration);
-//        deviceTypeAdapter = new DeviceTypeAdapter(deviceTypeInfos);
+        deviceTypeAdapter = new DeviceTypeAdapter(deviceTypeStatisticList);
         deviceTypeAdapter.setAnimationEnable(true);
         deviceTypeAdapter.setAnimationFirstOnly(false);
         deviceTypeAdapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
-                DeviceTypeInfo deviceTypeInfo = (DeviceTypeInfo) deviceTypeInfos.get(position);
-                if (deviceTypeInfo.isChecked()) {
+                DeviceOnlineTypeStatistic deviceOnlineTypeStatistic = (DeviceOnlineTypeStatistic) deviceTypeStatisticList.get(position);
+                if (deviceOnlineTypeStatistic.isChecked()) {
                     return;
                 }
-
-                for (DeviceTypeInfo typeInfo : deviceTypeInfos) {
+                for (DeviceOnlineTypeStatistic typeInfo : deviceTypeStatisticList) {
                     typeInfo.setChecked(false);
                 }
-                deviceTypeInfo.setChecked(true);
+                deviceOnlineTypeStatistic.setChecked(true);
                 deviceTypeAdapter.notifyDataSetChanged();
 
-                filterDeviceDataByType(deviceTypeInfo.getName());
+                //点击选中最后一个 Item 时,使RecyclerView滚动到底
+                if (position == deviceTypeStatisticList.size() - 1) {
+                    mRecyclerViewDeviceType.scrollToPosition(adapter.getItemCount() - 1);
+                }
+
+                deviceTypeID = deviceOnlineTypeStatistic.getDeviceTypeID();
+                swipeRefresh.setRefreshing(true);
+                refresh();
             }
         });
         mRecyclerViewDeviceType.setAdapter(deviceTypeAdapter);
@@ -181,8 +215,8 @@ public class DevicesInProjectFragment extends BaseFragment {
         });
         deviceInfoAdapter.getLoadMoreModule().setEnableLoadMore(true);
         // 是否自定加载下一页（默认为true）
-        deviceInfoAdapter.getLoadMoreModule().setAutoLoadMore(false);
-       // 当数据不满一页时，是否继续自动加载（默认为true）
+        deviceInfoAdapter.getLoadMoreModule().setAutoLoadMore(true);
+        // 当数据不满一页时，是否继续自动加载（默认为true）
         deviceInfoAdapter.getLoadMoreModule().setEnableLoadMoreIfNotFullPage(false);
     }
 
@@ -194,7 +228,6 @@ public class DevicesInProjectFragment extends BaseFragment {
                 break;
         }
     }
-
 
     /**
      * 刷新
@@ -214,10 +247,58 @@ public class DevicesInProjectFragment extends BaseFragment {
         queryCompanyDevice();
     }
 
+
+    /**
+     * 查询公司设备在线统计信息
+     */
+    private void queryCompanyDeviceOnlineStatistics() {
+        RequestBody body = RequestBody.create(NetworkConst.JSON_TYPE, String.valueOf(companyID));
+        MDRetrofit.getInstance()
+                .createService()
+                .QueryCompanyDeviceOnlineStatistics(MCloudApp.getAccessToken(), body)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new BaseObserver<DeviceOnlineStatistic>() {
+                    @Override
+                    public void Success(DeviceOnlineStatistic data, String message) {
+                        updateTopView(data);
+                    }
+
+                    @Override
+                    public void Failure(String message) {
+                        Timber.w("服务器连接失败--%s", message);
+                    }
+                });
+    }
+
+    /**
+     * 查询公司设备类型在线统计信息
+     */
+    private void queryCompanyDeviceOnlineTypeStatistics() {
+        RequestBody body = RequestBody.create(NetworkConst.JSON_TYPE, String.valueOf(companyID));
+        MDRetrofit.getInstance()
+                .createService()
+                .QueryCompanyDeviceOnlineTypeStatistics(MCloudApp.getAccessToken(), body)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new BaseObserver<List<DeviceOnlineTypeStatistic>>() {
+                    @Override
+                    public void Success(List<DeviceOnlineTypeStatistic> data, String message) {
+                        setDeviceTypeData(data);
+                    }
+
+                    @Override
+                    public void Failure(String message) {
+                        Timber.w("服务器连接失败--%s", message);
+                    }
+                });
+    }
+
     private void queryCompanyDevice() {
         QueryProjectDevice parameter = new QueryProjectDevice();
-        parameter.setCompanyID(1);
-        parameter.setDeviceType(-1);
+        parameter.setCompanyID(companyID);
+        parameter.setDeviceType(deviceTypeID);
+        parameter.setProjectName(TextUtils.isEmpty(projectName) ? "" : projectName);
         parameter.setPageSize(PAGE_SIZE);
         parameter.setCurrentPage(pageInfo.getPage());
 
@@ -234,20 +315,17 @@ public class DevicesInProjectFragment extends BaseFragment {
                         swipeRefresh.setRefreshing(false);
                         deviceInfoAdapter.getLoadMoreModule().setEnableLoadMore(true);
 
-                        if (data == null || data.getCurrentPageData() == null) {
+                        if (data == null || data.getCurrentPageData() == null || data.getCurrentPageData().size() == 0) {
                             return;
                         }
 
                         if (pageInfo.isFirstPage()) {
                             //如果是加载的第一页数据，用setNew
-                            tempDeviceInfoList.clear();
                             deviceInfoList.clear();
-                            tempDeviceInfoList.addAll(data.getCurrentPageData());
                             deviceInfoList.addAll(data.getCurrentPageData());
                             deviceInfoAdapter.notifyDataSetChanged();
                         } else {
                             //不是第一页，则用add
-                            tempDeviceInfoList.addAll(data.getCurrentPageData());
                             deviceInfoList.addAll(data.getCurrentPageData());
                             deviceInfoAdapter.notifyDataSetChanged();
                         }
@@ -261,9 +339,6 @@ public class DevicesInProjectFragment extends BaseFragment {
                         }
                         // page加一
                         pageInfo.nextPage();
-
-                        updateTopView();
-                        setDeviceTypeData();
                     }
 
                     @Override
@@ -276,61 +351,33 @@ public class DevicesInProjectFragment extends BaseFragment {
                 });
     }
 
-    private void updateTopView() {
-        int onlineNum = 0;
-        int offlineNum = 0;
-        for (ProjectDeviceInfo deviceInfo : deviceInfoList) {
-            if (deviceInfo.isOnline()) {
-                onlineNum++;
-            }
-        }
-
-        offlineNum = deviceInfoList.size() - onlineNum;
-        DecimalFormat df = new DecimalFormat("#.#");//格式化小数
-        String rate = df.format(onlineNum / (float) deviceInfoList.size() * 100) + "%";
-
-        tvOnlineNum.setText(String.valueOf(onlineNum));
-        tvOfflineNum.setText(String.valueOf(offlineNum));
-        tvOnlineRate.setText(rate);
-    }
-
-    private void setDeviceTypeData() {
-        deviceTypeInfos.clear();
-        deviceTypeMap.clear();
-        for (ProjectDeviceInfo deviceInfo : deviceInfoList) {
-            if (deviceTypeMap.containsKey(deviceInfo.getDeviceTypeName())) {
-                int num = deviceTypeMap.get(deviceInfo.getDeviceTypeName());
-                num++;
-                deviceTypeMap.put(deviceInfo.getDeviceTypeName(), num);
-            } else {
-                deviceTypeMap.put(deviceInfo.getDeviceTypeName(), 1);
-            }
-        }
-
-        DeviceTypeInfo typeInfo = new DeviceTypeInfo("全部", 0);
-        typeInfo.setChecked(true);
-        deviceTypeInfos.add(typeInfo);
-        for (String key : deviceTypeMap.keySet()) {
-            typeInfo = new DeviceTypeInfo(key, deviceTypeMap.get(key));
-            deviceTypeInfos.add(typeInfo);
-        }
-        deviceTypeAdapter.notifyDataSetChanged();
-    }
-
-    private void filterDeviceDataByType(String typeName) {
-        deviceInfoList.clear();
-        if (typeName.equals("全部")) {
-            deviceInfoList.addAll(tempDeviceInfoList);
-            deviceInfoAdapter.notifyDataSetChanged();
+    private void updateTopView(DeviceOnlineStatistic deviceOnlineStatistic) {
+        if (deviceOnlineStatistic == null) {
             return;
         }
+        tvOnlineNum.setText(String.valueOf(deviceOnlineStatistic.getOnlineCount()));
+        tvOfflineNum.setText(String.valueOf(deviceOnlineStatistic.getOfflineCount()));
 
-        for (ProjectDeviceInfo deviceInfo : tempDeviceInfoList) {
-            if (deviceInfo.getDeviceTypeName().equals(typeName)) {
-                deviceInfoList.add(deviceInfo);
-            }
+        DecimalFormat df = new DecimalFormat("#.#");//格式化小数
+        String rate = df.format(deviceOnlineStatistic.getOnlinePercent() * 100) + "%";
+        SpannableString spannableString = new SpannableString(rate);
+        AbsoluteSizeSpan absoluteSizeSpan = new AbsoluteSizeSpan(18, true);
+        spannableString.setSpan(absoluteSizeSpan, rate.indexOf("%"), spannableString.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        tvOnlineRate.setText(new SpannedString(spannableString));
+    }
+
+    private void setDeviceTypeData(List<DeviceOnlineTypeStatistic> dataList) {
+        if (dataList == null || dataList.size() == 0) {
+            return;
         }
-        deviceInfoAdapter.notifyDataSetChanged();
+        deviceTypeStatisticList.clear();
+        DeviceOnlineTypeStatistic deviceOnlineTypeStatistic = new DeviceOnlineTypeStatistic();
+        deviceOnlineTypeStatistic.setDeviceTypeName("全部");
+        deviceOnlineTypeStatistic.setDeviceTypeID(-1);
+        deviceOnlineTypeStatistic.setChecked(true);
+        deviceTypeStatisticList.add(deviceOnlineTypeStatistic);
+        deviceTypeStatisticList.addAll(dataList);
+        deviceTypeAdapter.notifyDataSetChanged();
     }
 
 }
