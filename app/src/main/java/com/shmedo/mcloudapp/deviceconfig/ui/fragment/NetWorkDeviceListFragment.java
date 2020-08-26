@@ -169,7 +169,7 @@ public class NetWorkDeviceListFragment extends BaseFragment {
         int spacing = DensityUtil.Dp2Px(getActivity(), 15);//每一个矩形的间距
         mRecyclerViewDevice.setLayoutManager(new GridLayoutManager(getActivity(), spanCount));
         //设置每个item间距
-        mRecyclerViewDevice.addItemDecoration(new GridSpacingItemDecoration(spanCount, spacing, true));
+        mRecyclerViewDevice.addItemDecoration(new GridSpacingItemDecoration(spanCount, spacing, false));
         deviceInfoAdapter = new DeviceInfoAdapter(deviceInfoList);
         deviceInfoAdapter.setAnimationEnable(true);
         deviceInfoAdapter.setAnimationFirstOnly(false);
@@ -232,7 +232,6 @@ public class NetWorkDeviceListFragment extends BaseFragment {
      * 查询公司设备在线统计信息
      */
     private void queryCompanyDeviceOnlineStatistics() {
-        showLoadingDialog("加载数据中...");
 
         RequestBody body = RequestBody.create(NetworkConst.JSON_TYPE, String.valueOf(companyID));
         MDRetrofit.getInstance()
@@ -243,13 +242,11 @@ public class NetWorkDeviceListFragment extends BaseFragment {
                 .subscribe(new BaseObserver<DeviceOnlineStatistic>() {
                     @Override
                     public void Success(DeviceOnlineStatistic data, String message) {
-                        dismissLoadingDialog();
                         updateTopView(data);
                     }
 
                     @Override
                     public void Failure(String message) {
-                        dismissLoadingDialog();
                         Timber.w("服务器连接失败--%s", message);
                     }
                 });
@@ -259,8 +256,6 @@ public class NetWorkDeviceListFragment extends BaseFragment {
      * 查询公司设备类型在线统计信息
      */
     private void queryCompanyDeviceOnlineTypeStatistics() {
-        showLoadingDialog("加载数据中...");
-
         RequestBody body = RequestBody.create(NetworkConst.JSON_TYPE, String.valueOf(companyID));
         MDRetrofit.getInstance()
                 .createService()
@@ -270,13 +265,11 @@ public class NetWorkDeviceListFragment extends BaseFragment {
                 .subscribe(new BaseObserver<List<DeviceOnlineTypeStatistic>>() {
                     @Override
                     public void Success(List<DeviceOnlineTypeStatistic> data, String message) {
-                        dismissLoadingDialog();
                         setDeviceTypeData(data);
                     }
 
                     @Override
                     public void Failure(String message) {
-                        dismissLoadingDialog();
                         Timber.w("服务器连接失败--%s", message);
                     }
                 });
@@ -302,7 +295,7 @@ public class NetWorkDeviceListFragment extends BaseFragment {
                         swipeRefresh.setRefreshing(false);
                         deviceInfoAdapter.getLoadMoreModule().setEnableLoadMore(true);
 
-                        if (data == null || data.getCurrentPageData() == null) {
+                        if (data == null || data.getCurrentPageData() == null || data.getCurrentPageData().size() == 0) {
                             return;
                         }
 

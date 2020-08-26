@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
+import com.chad.library.adapter.base.listener.OnLoadMoreListener;
 import com.hjq.toast.ToastUtils;
 import com.shmedo.core.MCloudApp;
 import com.shmedo.core.model.UserInfo;
@@ -27,6 +28,7 @@ import com.shmedo.mcloudapp.network.BaseObserver;
 import com.shmedo.mcloudapp.network.MDRetrofit;
 import com.shmedo.mcloudapp.network.NetworkConst;
 import com.shmedo.mcloudapp.projects.adapter.DeviceInfoAdapter;
+import com.shmedo.mcloudapp.projects.model.PageInfo;
 import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfo;
 import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfoWrapper;
 import com.shmedo.mcloudapp.projects.model.param.QueryProjectDevice;
@@ -53,7 +55,8 @@ public class DeviceSearchActivity extends BaseActivity {
     private DeviceInfoAdapter deviceInfoAdapter;
     private List<ProjectDeviceInfo> deviceInfoList = new ArrayList<>();
 
-    private int userId;
+    private static final int PAGE_SIZE = 10;
+    private PageInfo pageInfo;
     private int companyID = 1;
     private String keyWords;// 要输入的poi搜索关键字
 
@@ -75,14 +78,12 @@ public class DeviceSearchActivity extends BaseActivity {
         initUserData();
         initView();
         initDeviceInfoAdapter();
+        initLoadMore();
+        pageInfo = new PageInfo(1);
     }
 
     private void initUserData() {
         UserInfo userInfo = MCloudApp.getCurrentUserInfo();
-        if (userInfo != null && userInfo.getUser() != null) {
-            UserInfo.UserBean user = userInfo.getUser();
-            userId = user.getId();
-        }
         if (userInfo != null && userInfo.getDepartments() != null && userInfo.getDepartments().size() > 0) {
             companyID = userInfo.getDepartments().get(0).getCompanyID();
         }
@@ -101,7 +102,7 @@ public class DeviceSearchActivity extends BaseActivity {
                         keyWords = textView.getText().toString();
                         // 当按了搜索之后关闭软键盘
                         KeyBordUtils.hideSoftKeyboard(mEtKeyWords);
-                        doSearchQuery();
+                        refresh();
                     }
                     return true;
                 }
@@ -116,7 +117,7 @@ public class DeviceSearchActivity extends BaseActivity {
         int spacing = DensityUtil.Dp2Px(this, 15);//每一个矩形的间距
         mRecyclerView.setLayoutManager(new GridLayoutManager(this, spanCount));
         //设置每个item间距
-        mRecyclerView.addItemDecoration(new GridSpacingItemDecoration(spanCount, spacing, false));
+        mRecyclerView.addItemDecoration(new GridSpacingItemDecoration(spanCount, spacing, true));
         deviceInfoAdapter = new DeviceInfoAdapter(deviceInfoList);
         deviceInfoAdapter.setAnimationEnable(true);
         deviceInfoAdapter.setAnimationFirstOnly(false);
@@ -127,6 +128,23 @@ public class DeviceSearchActivity extends BaseActivity {
             }
         });
         mRecyclerView.setAdapter(deviceInfoAdapter);
+    }
+
+    /**
+     * 初始化加载更多
+     */
+    private void initLoadMore() {
+        deviceInfoAdapter.getLoadMoreModule().setOnLoadMoreListener(new OnLoadMoreListener() {
+            @Override
+            public void onLoadMore() {
+                loadMore();
+            }
+        });
+        deviceInfoAdapter.getLoadMoreModule().setEnableLoadMore(true);
+        // 是否自定加载下一页（默认为true）
+        deviceInfoAdapter.getLoadMoreModule().setAutoLoadMore(true);
+        // 当数据不满一页时，是否继续自动加载（默认为true）
+        deviceInfoAdapter.getLoadMoreModule().setEnableLoadMoreIfNotFullPage(false);
     }
 
     @OnClick({R.id.iv_back, R.id.tv_search})
@@ -144,16 +162,31 @@ public class DeviceSearchActivity extends BaseActivity {
                 keyWords = mEtKeyWords.getText().toString();
                 // 当按了搜索之后关闭软键盘
                 KeyBordUtils.hideSoftKeyboard(mEtKeyWords);
-                doSearchQuery();
+                refresh();
                 break;
         }
     }
 
 
+    private void refresh() {
+        // 这里的作用是防止下拉刷新的时候还可以上拉加载
+        deviceInfoAdapter.getLoadMoreModule().setEnableLoadMore(false);
+        // 下拉刷新，需要重置页数
+        pageInfo.reset();
+        queryCompanyDevice();
+    }
+
     /**
-     * 开始进行poi搜索
+     * 加载更多
      */
-    private void doSearchQuery() {
+    private void loadMore() {
+        queryCompanyDevice();
+    }
+
+    /**
+     * 开始查询接口
+     */
+    private void queryCompanyDevice() {
         // 方式一：直接传入 layout id
         deviceInfoAdapter.setEmptyView(R.layout.loading_view);
 
@@ -161,8 +194,9 @@ public class DeviceSearchActivity extends BaseActivity {
         parameter.setCompanyID(companyID);
         parameter.setDeviceType(-1);
         parameter.setSn(keyWords);
-        parameter.setPageSize(20);
-        parameter.setCurrentPage(1);
+        parameter.setDeviceStatus("启用");
+        parameter.setPageSize(PAGE_SIZE);
+        parameter.setCurrentPage(pageInfo.getPage());
 
         String json = GsonFactory.getGson().toJson(parameter);
         RequestBody body = RequestBody.create(NetworkConst.JSON_TYPE, json);
@@ -174,21 +208,46 @@ public class DeviceSearchActivity extends BaseActivity {
                 .subscribe(new BaseObserver<ProjectDeviceInfoWrapper>() {
                     @Override
                     public void Success(ProjectDeviceInfoWrapper data, String message) {
+                        deviceInfoAdapter.getLoadMoreModule().setEnableLoadMore(true);
+
                         if (data == null || data.getCurrentPageData() == null || data.getCurrentPageData().size() == 0) {
-                            deviceInfoAdapter.setEmptyView(R.layout.empty_view);
+                            if (deviceInfoList.size() == 0) {
+                                deviceInfoAdapter.setEmptyView(R.layout.empty_view);
+                            }
                             return;
                         }
 
-                        deviceInfoList.clear();
-                        deviceInfoList.addAll(data.getCurrentPageData());
-                        deviceInfoAdapter.notifyDataSetChanged();
+                        if (pageInfo.isFirstPage()) {
+                            //如果是加载的第一页数据，用setNew
+                            deviceInfoList.clear();
+                            deviceInfoList.addAll(data.getCurrentPageData());
+                            deviceInfoAdapter.notifyDataSetChanged();
+                        } else {
+                            //不是第一页，则用add
+                            deviceInfoList.addAll(data.getCurrentPageData());
+                            deviceInfoAdapter.notifyDataSetChanged();
+                        }
+
+                        if (data.getCurrentPageData().size() < PAGE_SIZE) {
+                            //如果不够一页,显示没有更多数据布局
+                            deviceInfoAdapter.getLoadMoreModule().loadMoreEnd();
+
+                        } else {
+                            deviceInfoAdapter.getLoadMoreModule().loadMoreComplete();
+                        }
+                        // page加一
+                        pageInfo.nextPage();
                     }
 
                     @Override
                     public void Failure(String message) {
                         Timber.w("请求失败--%s", message);
-                        // 方式二：传入View
-                        deviceInfoAdapter.setEmptyView(getErrorView());
+                        deviceInfoAdapter.getLoadMoreModule().setEnableLoadMore(true);
+                        deviceInfoAdapter.getLoadMoreModule().loadMoreFail();
+
+                        if (deviceInfoList.size() == 0) {
+                            deviceInfoAdapter.setEmptyView(getErrorView());
+                        }
                     }
                 });
     }
@@ -198,7 +257,7 @@ public class DeviceSearchActivity extends BaseActivity {
         errorView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                doSearchQuery();
+                refresh();
             }
         });
         return errorView;
