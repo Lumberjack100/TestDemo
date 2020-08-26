@@ -1,6 +1,8 @@
 package com.shmedo.mcloudapp.network.api;
 
 import com.shmedo.core.model.UserInfo;
+import com.shmedo.mcloudapp.deviceconfig.model.DeviceOnlineStatistic;
+import com.shmedo.mcloudapp.deviceconfig.model.DeviceOnlineTypeStatistic;
 import com.shmedo.mcloudapp.entity.DeviceBasicInfoResult;
 import com.shmedo.mcloudapp.entity.DeviceDetailInfo;
 import com.shmedo.mcloudapp.entity.PageResult;
@@ -135,7 +137,15 @@ public interface ApiService {
     @POST("GetProjectByIDEx")
     Observable<ResultWrapper<ProjectInfoEx>> GetProjectByIDEx(@Header(NetworkConst.ACCESS_TOKEN) String token, @Body RequestBody parameter);
 
+    //系统接口V2  查询公司设备在线统计信息
+    @Headers({NetworkConst.HEADER_ACCESS_TYPE})
+    @POST("QueryCompanyDeviceOnlineStatistics")
+    Observable<ResultWrapper<DeviceOnlineStatistic>> QueryCompanyDeviceOnlineStatistics(@Header(NetworkConst.ACCESS_TOKEN) String token, @Body RequestBody parameter);
 
+    //系统接口V2  查询公司设备类型在线统计信息
+    @Headers({NetworkConst.HEADER_ACCESS_TYPE})
+    @POST("QueryCompanyDeviceOnlineTypeStatistics")
+    Observable<ResultWrapper<List<DeviceOnlineTypeStatistic>>> QueryCompanyDeviceOnlineTypeStatistics(@Header(NetworkConst.ACCESS_TOKEN) String token, @Body RequestBody parameter);
 
 
     /**  设备模块   */

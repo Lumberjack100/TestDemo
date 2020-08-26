@@ -128,7 +128,7 @@ public class DevicesInProjectFragment extends BaseFragment {
         mRecyclerViewDeviceType.setLayoutManager(linearLayoutManager);
         DefaultItemDecoration mItemDecoration = new DefaultItemDecoration(ContextCompat.getColor(getActivity(), R.color.transparent), DensityUtil.Dp2Px(getActivity(), 20), 0);
         mRecyclerViewDeviceType.addItemDecoration(mItemDecoration);
-        deviceTypeAdapter = new DeviceTypeAdapter(deviceTypeInfos);
+//        deviceTypeAdapter = new DeviceTypeAdapter(deviceTypeInfos);
         deviceTypeAdapter.setAnimationEnable(true);
         deviceTypeAdapter.setAnimationFirstOnly(false);
         deviceTypeAdapter.setOnItemClickListener(new OnItemClickListener() {

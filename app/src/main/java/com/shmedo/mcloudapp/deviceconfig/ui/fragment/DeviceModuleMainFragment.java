@@ -28,8 +28,6 @@ import com.shmedo.mcloudapp.deviceconfig.ui.activity.ConfigDASActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.ConfigE60Activity;
 import com.shmedo.mcloudapp.entity.DeviceBasicInfoResult;
 import com.shmedo.mcloudapp.projects.adapter.ProjectPageAdapter;
-import com.shmedo.mcloudapp.projects.ui.fragment.ConstructionFragment;
-import com.shmedo.mcloudapp.projects.ui.fragment.DevicesInProjectFragment;
 import com.shmedo.mcloudapp.util.permission.PermissionHelper;
 import com.shmedo.mcloudapp.util.permission.XPermissionUtils;
 
@@ -64,8 +62,8 @@ public class DeviceModuleMainFragment extends BaseTranslucentFragment implements
     @Override
     protected void initView() {
         List<Fragment> mFragments = new ArrayList<>();
-        mFragments.add(new DevicesInProjectFragment());
-        mFragments.add(new ConstructionFragment());
+        mFragments.add(new NetWorkDeviceListFragment());
+        mFragments.add(new BleDeviceListFragment());
         pagerAdapter = new ProjectPageAdapter((FragmentActivity) mActivity, mFragments);
         viewPager.setAdapter(pagerAdapter);
         tabLayoutMediator = new TabLayoutMediator(tabLayout, viewPager, new TabLayoutMediator.TabConfigurationStrategy() {
