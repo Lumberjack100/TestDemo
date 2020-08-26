@@ -38,39 +38,38 @@ import com.amap.api.maps.model.LatLngBounds;
 import com.amap.api.maps.model.Marker;
 import com.amap.api.maps.model.MarkerOptions;
 import com.amap.api.maps.model.MyLocationStyle;
-import com.shmedo.core.MCloudApp;
-import com.shmedo.core.util.DensityUtil;
-import com.shmedo.core.util.GlobalUtil;
 import com.google.gson.reflect.TypeToken;
 import com.hjq.toast.ToastUtils;
+import com.shmedo.core.MCloudApp;
+import com.shmedo.core.event.MapDeviceEvent;
+import com.shmedo.core.event.WifiEvent;
+import com.shmedo.core.util.DensityUtil;
+import com.shmedo.core.util.GlobalUtil;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.adapter.InfoWinAdapter;
 import com.shmedo.mcloudapp.common.ui.activity.BaseActivity;
 import com.shmedo.mcloudapp.common.ui.activity.ScanActivity;
+import com.shmedo.mcloudapp.deviceconfig.model.DeviceTypeEnum;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.ConfigADMEActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.ConfigDASActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.ConfigE60Activity;
 import com.shmedo.mcloudapp.entity.DeviceBasicInfoResult;
 import com.shmedo.mcloudapp.entity.DeviceBasicInfoResultDao;
-import com.shmedo.mcloudapp.deviceconfig.model.DeviceTypeEnum;
 import com.shmedo.mcloudapp.entity.StatusInfoResult;
 import com.shmedo.mcloudapp.entity.cluster.ClusterAnotherClickListener;
 import com.shmedo.mcloudapp.entity.cluster.ClusterAnotherRender;
 import com.shmedo.mcloudapp.entity.cluster.ClusterItem;
 import com.shmedo.mcloudapp.entity.cluster.ClusterItemImp;
 import com.shmedo.mcloudapp.entity.cluster.ClusterOverlayMerchant;
-import com.shmedo.core.event.MapDeviceEvent;
-import com.shmedo.core.event.WifiEvent;
 import com.shmedo.mcloudapp.entity.parameter.LocationResult;
 import com.shmedo.mcloudapp.network.BaseObserver;
 import com.shmedo.mcloudapp.network.MDRetrofit;
 import com.shmedo.mcloudapp.network.NetworkConst;
 import com.shmedo.mcloudapp.ui.SearchDataUI;
-import com.shmedo.mcloudapp.user.ui.activity.UserInfoActivity;
 import com.shmedo.mcloudapp.util.DaoManager;
 import com.shmedo.mcloudapp.util.GsonFactory;
-import com.shmedo.mcloudapp.util.permission.XPermissionUtils;
 import com.shmedo.mcloudapp.util.permission.UpdataManagerUtil;
+import com.shmedo.mcloudapp.util.permission.XPermissionUtils;
 import com.yanzhenjie.permission.Action;
 import com.yanzhenjie.permission.AndPermission;
 import com.yanzhenjie.permission.runtime.Permission;
@@ -415,7 +414,7 @@ public class MainActivity extends BaseActivity {
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.img_user://用户信息
-                UserInfoActivity.startActivity(this);
+
                 break;
 
             case R.id.img_equipment://项目管理

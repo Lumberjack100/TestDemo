@@ -15,7 +15,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.gyf.immersionbar.ImmersionBar;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.fragment.MineFragment;
-import com.shmedo.mcloudapp.deviceconfig.ui.fragment.BluetoothDeviceListFragment;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.DeviceModuleMainFragment;
 import com.shmedo.mcloudapp.maps.ui.activity.MapActivity;
 import com.shmedo.mcloudapp.projects.ui.fragment.ProjectListFragment;
 import com.shmedo.mcloudapp.util.permission.UpdataManagerUtil;
@@ -28,7 +28,7 @@ public class NewMainActivity extends BaseActivity {
     @BindView(R.id.bottom_navigation)
     BottomNavigationView bottomNavigationView;
 
-    private BluetoothDeviceListFragment bluetoothDeviceListFragment;
+    private DeviceModuleMainFragment deviceModuleMainFragment;
     private ProjectListFragment projectListFragment;
     private MineFragment mineFragment;
     private Fragment currentFragment;
@@ -68,12 +68,12 @@ public class NewMainActivity extends BaseActivity {
         if (savedInstanceState != null) {  // “内存重启”时调用
             String curTag = savedInstanceState.getString("CurrentFragment");
             currentFragment = getSupportFragmentManager().findFragmentByTag(curTag);
-            bluetoothDeviceListFragment = (BluetoothDeviceListFragment) getSupportFragmentManager().findFragmentByTag(BluetoothDeviceListFragment.class.getName());
+            deviceModuleMainFragment=(DeviceModuleMainFragment)getSupportFragmentManager().findFragmentByTag(DeviceModuleMainFragment.class.getName());
             projectListFragment = (ProjectListFragment) getSupportFragmentManager().findFragmentByTag(ProjectListFragment.class.getName());
             mineFragment = (MineFragment) getSupportFragmentManager().findFragmentByTag(MineFragment.class.getName());
 
-            if (bluetoothDeviceListFragment == null)
-                bluetoothDeviceListFragment = new BluetoothDeviceListFragment();
+            if (deviceModuleMainFragment == null)
+                deviceModuleMainFragment = new DeviceModuleMainFragment();
 
             if (projectListFragment == null)
                 projectListFragment = new ProjectListFragment();
@@ -83,13 +83,13 @@ public class NewMainActivity extends BaseActivity {
 
             // 解决重叠问题
             getSupportFragmentManager().beginTransaction()
-                    .hide(bluetoothDeviceListFragment)
+                    .hide(deviceModuleMainFragment)
                     .hide(projectListFragment)
                     .hide(mineFragment)
                     .show(currentFragment)
                     .commit();
         } else {
-            bluetoothDeviceListFragment = new BluetoothDeviceListFragment();
+            deviceModuleMainFragment = new DeviceModuleMainFragment();
             projectListFragment = new ProjectListFragment();
             mineFragment = new MineFragment();
             switchFrgment(0);
@@ -138,10 +138,11 @@ public class NewMainActivity extends BaseActivity {
     private void switchFrgment(int i) {
         switch (i) {
             case 0:
-                showFragment(bluetoothDeviceListFragment);
+                showFragment(deviceModuleMainFragment);
+                //设置系统栏(状态栏、导航栏)的背景色、字体等
                 ImmersionBar.with(this)
-                        .statusBarColor(R.color.colorPrimary)
-                        .statusBarDarkFont(false)
+                        .statusBarColor(R.color.white)
+                        .statusBarDarkFont(true)
                         .navigationBarDarkIcon(true)
                         .navigationBarColor(R.color.white)
                         .init();
@@ -156,6 +157,7 @@ public class NewMainActivity extends BaseActivity {
                 break;
             case 2:
                 showFragment(mineFragment);
+                //设置系统栏(状态栏、导航栏)的背景色、字体等
                 ImmersionBar.with(this)
                         .statusBarColor(R.color.white)
                         .statusBarDarkFont(true)
