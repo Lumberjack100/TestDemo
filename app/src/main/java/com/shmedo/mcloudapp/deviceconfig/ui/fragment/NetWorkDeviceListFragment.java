@@ -194,7 +194,7 @@ public class NetWorkDeviceListFragment extends BaseFragment {
         });
         deviceInfoAdapter.getLoadMoreModule().setEnableLoadMore(true);
         // 是否自定加载下一页（默认为true）
-        deviceInfoAdapter.getLoadMoreModule().setAutoLoadMore(false);
+        deviceInfoAdapter.getLoadMoreModule().setAutoLoadMore(true);
         // 当数据不满一页时，是否继续自动加载（默认为true）
         deviceInfoAdapter.getLoadMoreModule().setEnableLoadMoreIfNotFullPage(false);
     }
