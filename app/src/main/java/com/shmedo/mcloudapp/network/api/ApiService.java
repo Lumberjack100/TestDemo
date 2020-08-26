@@ -137,13 +137,17 @@ public interface ApiService {
 
 
 
+
+    /**  设备模块   */
+
+
+
+
+
     //系统接口v2  7.10 查询设备的详情信息
     @Headers({NetworkConst.HEADER_ACCESS_TYPE})
     @POST("GetDeviceDetailInfo")
     Observable<ResultWrapper<DeviceDetailInfo>> GetDeviceDetailInfo(@Header(NetworkConst.ACCESS_TOKEN) String token, @Body RequestBody parameter);
-
-
-    /**  设备模块   */
 
     //系统接口v2-2 4.3 查询设备状态信息列表
     @Headers({NetworkConst.HEADER_ACCESS_TYPE})
@@ -155,7 +159,7 @@ public interface ApiService {
     @POST("QueryDeviceBasicInfoList")
     Observable<ResultWrapper<List<DeviceBasicInfoResult>>> QueryDeviceBasicInfoList(@Header(NetworkConst.ACCESS_TOKEN) String token, @Body RequestBody parameter);
 
-    //系统接口v2  7.15 根据系统列表信息查询用户设备
+    //系统接口v2  15 查询项目设备
     @Headers({NetworkConst.HEADER_ACCESS_TYPE})
     @POST("QueryProjectDevice")
     Observable<ResultWrapper<PageResult<ProjectDeviceInfo>>> QueryProjectDevice(@Header(NetworkConst.ACCESS_TOKEN) String token, @Body RequestBody parameter);
