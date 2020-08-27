@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white">
+    android:background="@color/white"
+    android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -14,7 +15,7 @@
         android:layout_marginBottom="25dp">
 
         <ImageView
-            android:id="@+id/iv_device_barcode"
+            android:id="@+id/iv_device_logo"
             android:layout_width="62dp"
             android:layout_height="62dp"
             android:src="@drawable/ic_device_logo_def" />
@@ -40,7 +41,7 @@
                     android:singleLine="true"
                     android:textColor="@color/text_color_1f1f1f"
                     android:textSize="@dimen/text_size_17"
-                    tools:text="物联网数据采集器凤飞飞方法旺旺" />
+                    tools:text="物联网数据采集器凤飞飞方法旺旺sss" />
 
                 <TextView
                     android:id="@+id/tv_device_state_flag"
@@ -52,9 +53,9 @@
                     android:paddingStart="7dp"
                     android:paddingEnd="7dp"
                     android:singleLine="true"
+                    android:text="已连接"
                     android:textColor="@color/text_color_50E9B9"
-                    android:textSize="@dimen/text_size_11"
-                    tools:text="已连接" />
+                    android:textSize="@dimen/text_size_11" />
 
             </LinearLayout>
 
@@ -69,7 +70,7 @@
                 tools:text="设备编号：183123R" />
 
             <TextView
-                android:id="@+id/tv_device_mode"
+                android:id="@+id/tv_device_model"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="3dp"
@@ -86,7 +87,7 @@
                 android:singleLine="true"
                 android:textColor="@color/sub_title_text_color"
                 android:textSize="@dimen/text_size_13"
-                tools:text="采集器型号：裂缝采集器" />
+                tools:text="采集器型号：裂缝采集器凤飞飞方法旺旺sss" />
 
         </LinearLayout>
 
@@ -100,12 +101,13 @@
                 android:layout_height="27dp"
                 android:layout_alignParentBottom="true"
                 android:background="@drawable/bg_device_connect_mode"
+                android:drawableLeft="@drawable/ic_switch_device_connect_mode"
                 android:gravity="center"
                 android:paddingStart="9dp"
                 android:paddingEnd="9dp"
                 android:singleLine="true"
-                android:text="@string/device_connect_state"
-                android:textColor="@color/text_color_gray_b3b3b3"
+                android:text="蓝牙"
+                android:textColor="@color/text_color_b3b3b3"
                 android:textSize="@dimen/text_size_13" />
 
             <TextView
@@ -113,11 +115,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignEnd="@+id/tv_device_connect_mode"
-
+                android:layout_marginTop="5dp"
                 android:singleLine="true"
-                android:text="@string/device_connect_state"
-                android:textColor="@color/text_color_gray_b3b3b3"
-                android:textSize="@dimen/text_size_13" />
+                android:textColor="@color/text_color_b3b3b3"
+                android:textSize="@dimen/text_size_13"
+                android:visibility="invisible"
+                tools:text="@string/device_connect_state" />
 
         </RelativeLayout>
 
@@ -126,7 +129,6 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="0.5dp"
-        android:layout_alignParentBottom="true"
         android:background="@color/divider_line_bg_efefef" />
 
-</RelativeLayout>
+</LinearLayout>

@@ -283,25 +283,31 @@
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:maxAspectRatio="2.4"
             android:screenOrientation="portrait"
-            android:theme="@style/MCloud.ProjectSearchActivity" />
+            android:theme="@style/LightStatusBarActivity" />
         <activity
             android:name=".projects.ui.activity.DevicesInProjectActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:maxAspectRatio="2.4"
             android:screenOrientation="portrait"
-            android:theme="@style/MCloud.DevicesInProjectActivity" />
+            android:theme="@style/LightStatusBarActivity" />
         <activity
             android:name=".projects.ui.activity.DeviceSearchActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:maxAspectRatio="2.4"
             android:screenOrientation="portrait"
-            android:theme="@style/MCloud.ProjectSearchActivity" />
-
-        <activity android:name=".projects.ui.activity.ProjectIntroductionActivity"
+            android:theme="@style/LightStatusBarActivity" />
+        <activity
+            android:name=".projects.ui.activity.ProjectIntroductionActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:maxAspectRatio="2.4"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
 
+        <activity
+            android:name=".deviceconfig.ui.activity.DeviceNetWorkConfigActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:maxAspectRatio="2.4"
+            android:screenOrientation="portrait"
+            android:theme="@style/LightStatusBarActivity" />
 
         <activity
             android:name=".ddshare.DDShareActivity"

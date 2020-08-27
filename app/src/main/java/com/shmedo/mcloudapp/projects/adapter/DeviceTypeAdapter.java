@@ -46,7 +46,7 @@ public class DeviceTypeAdapter extends BaseQuickAdapter<DeviceOnlineTypeStatisti
 
         } else {
             holder.setBackgroundResource(R.id.ll_item, 0);
-            holder.setTextColorRes(R.id.tv_name, R.color.text_color_gray_666666);
+            holder.setTextColorRes(R.id.tv_name, R.color.text_color_666666);
             tvName.setTextSize(15);
             tvNum.setTextSize(15);
             tvName.setTypeface(tvName.getTypeface(), Typeface.NORMAL);

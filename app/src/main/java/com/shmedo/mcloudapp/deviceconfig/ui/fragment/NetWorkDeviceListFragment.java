@@ -28,6 +28,7 @@ import com.shmedo.mcloudapp.common.ui.fragment.BaseFragment;
 import com.shmedo.mcloudapp.common.view.recycleviewitemdivider.GridSpacingItemDecoration;
 import com.shmedo.mcloudapp.deviceconfig.model.DeviceOnlineStatistic;
 import com.shmedo.mcloudapp.deviceconfig.model.DeviceOnlineTypeStatistic;
+import com.shmedo.mcloudapp.deviceconfig.ui.activity.DeviceNetWorkConfigActivity;
 import com.shmedo.mcloudapp.network.BaseObserver;
 import com.shmedo.mcloudapp.network.MDRetrofit;
 import com.shmedo.mcloudapp.network.NetworkConst;
@@ -177,6 +178,7 @@ public class NetWorkDeviceListFragment extends BaseFragment {
             @Override
             public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
                 ProjectDeviceInfo deviceInfo = (ProjectDeviceInfo) deviceInfoList.get(position);
+                DeviceNetWorkConfigActivity.startActivity(mActivity);
             }
         });
         mRecyclerViewDevice.setAdapter(deviceInfoAdapter);

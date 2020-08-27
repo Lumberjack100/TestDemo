@@ -33,8 +33,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentStart="true"
                     android:layout_centerVertical="true"
-                    android:padding="3dp"
-                    android:src="@drawable/ic_back_def_gray" />
+                    android:src="@drawable/ic_query_device_data" />
 
                 <com.google.android.material.tabs.TabLayout
                     android:id="@+id/tabs"

@@ -32,7 +32,7 @@ public class DeviceInfoAdapter extends BaseQuickAdapter<ProjectDeviceInfo, BaseV
             holder.setImageResource(R.id.iv_signal, R.drawable.ic_device_signal_three);
             holder.setImageResource(R.id.iv_battery, R.drawable.ic_battery_full_online);
         } else {
-            holder.setTextColorRes(R.id.tv_device_sn, R.color.text_color_gray_b3b3b3);
+            holder.setTextColorRes(R.id.tv_device_sn, R.color.text_color_b3b3b3);
             holder.setImageResource(R.id.iv_signal, R.drawable.ic_device_signal_offline);
             holder.setImageResource(R.id.iv_battery, R.drawable.ic_battery_full_offline);
         }

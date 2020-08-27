@@ -23,7 +23,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="3dp"
-                android:src="@drawable/ic_back_def_gray" />
+                android:src="@drawable/ic_toolbar_back" />
 
             <LinearLayout
                 android:layout_width="0dp"

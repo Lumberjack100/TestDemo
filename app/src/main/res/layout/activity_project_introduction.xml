@@ -50,7 +50,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="9dp"
                         android:text="项目类型"
-                        android:textColor="@color/text_color_gray_343434"
+                        android:textColor="@color/text_color_343434"
                         android:textSize="@dimen/text_size_15" />
 
                     <TextView
@@ -82,7 +82,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="9dp"
                         android:text="项目等级"
-                        android:textColor="@color/text_color_gray_343434"
+                        android:textColor="@color/text_color_343434"
                         android:textSize="@dimen/text_size_15" />
 
                     <TextView
@@ -114,7 +114,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="9dp"
                         android:text="创建时间"
-                        android:textColor="@color/text_color_gray_343434"
+                        android:textColor="@color/text_color_343434"
                         android:textSize="@dimen/text_size_15" />
 
                     <TextView
@@ -155,7 +155,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="9dp"
                         android:text="项目有效期"
-                        android:textColor="@color/text_color_gray_343434"
+                        android:textColor="@color/text_color_343434"
                         android:textSize="@dimen/text_size_15" />
 
                     <TextView
@@ -187,7 +187,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="9dp"
                         android:text="项目地址"
-                        android:textColor="@color/text_color_gray_343434"
+                        android:textColor="@color/text_color_343434"
                         android:textSize="@dimen/text_size_15" />
 
                     <TextView
@@ -221,7 +221,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="9dp"
                         android:text="项目经纬度"
-                        android:textColor="@color/text_color_gray_343434"
+                        android:textColor="@color/text_color_343434"
                         android:textSize="@dimen/text_size_15" />
 
                     <TextView
