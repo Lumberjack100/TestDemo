@@ -5,7 +5,7 @@
     android:background="@color/white"
     android:orientation="vertical">
 
-    <include layout="@layout/activity_support_actionbar_toolbar" />
+    <include layout="@layout/common_toolbar_primary_bg" />
 
     <include layout="@layout/input_search_layout" />
 

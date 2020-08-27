@@ -188,4 +188,7 @@
     <!-- 设备模块 -->
     <string name="device_connect_state">断开连接</string>
 
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
 </resources>

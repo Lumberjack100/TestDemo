@@ -4,7 +4,7 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <include layout="@layout/activity_support_actionbar_toolbar" />
+    <include layout="@layout/common_toolbar_primary_bg" />
 
     <com.shmedo.mcloudapp.common.view.ClearEditText
         android:id="@+id/newPhoneET"
