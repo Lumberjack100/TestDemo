@@ -1,5 +1,9 @@
 package com.shmedo.mcloudapp.projects.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -7,7 +11,7 @@ import java.util.List;
  * 创建时间:  2020/8/18 <br/>
  * 描述：     项目设备信息
  */
-public class ProjectDeviceInfo {
+public class ProjectDeviceInfo implements Parcelable {
 
     /**
      * id : 181
@@ -47,7 +51,65 @@ public class ProjectDeviceInfo {
     private String deviceTag;
     private String lastActiveTime;
     private Object firmwareVersion;
-    private List<DeviceSimListBean> deviceSimList;
+    private List<DeviceSimListBean> deviceSimList = new ArrayList<>();
+
+    protected ProjectDeviceInfo(Parcel in) {
+        id = in.readInt();
+        token = in.readString();
+        name = in.readString();
+        deviceTypeID = in.readInt();
+        deviceTypeName = in.readString();
+        gpsLocation = in.readString();
+        installLocation = in.readString();
+        deviceStatus = in.readString();
+        desc = in.readString();
+        projectID = in.readInt();
+        projectName = in.readString();
+        online = in.readByte() != 0;
+        registerCompanyID = in.readInt();
+        registerCompanyName = in.readString();
+        deviceTag = in.readString();
+        lastActiveTime = in.readString();
+        deviceSimList = in.createTypedArrayList(DeviceSimListBean.CREATOR);
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(id);
+        dest.writeString(token);
+        dest.writeString(name);
+        dest.writeInt(deviceTypeID);
+        dest.writeString(deviceTypeName);
+        dest.writeString(gpsLocation);
+        dest.writeString(installLocation);
+        dest.writeString(deviceStatus);
+        dest.writeString(desc);
+        dest.writeInt(projectID);
+        dest.writeString(projectName);
+        dest.writeByte((byte) (online ? 1 : 0));
+        dest.writeInt(registerCompanyID);
+        dest.writeString(registerCompanyName);
+        dest.writeString(deviceTag);
+        dest.writeString(lastActiveTime);
+        dest.writeTypedList(deviceSimList);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<ProjectDeviceInfo> CREATOR = new Creator<ProjectDeviceInfo>() {
+        @Override
+        public ProjectDeviceInfo createFromParcel(Parcel in) {
+            return new ProjectDeviceInfo(in);
+        }
+
+        @Override
+        public ProjectDeviceInfo[] newArray(int size) {
+            return new ProjectDeviceInfo[size];
+        }
+    };
 
     public int getId() {
         return id;
@@ -193,7 +255,7 @@ public class ProjectDeviceInfo {
         this.deviceSimList = deviceSimList;
     }
 
-    public static class DeviceSimListBean {
+    public static class DeviceSimListBean implements Parcelable {
         /**
          * simID : 29
          * ccid : 89860445101970723691
@@ -207,6 +269,40 @@ public class ProjectDeviceInfo {
         private String simNO;
         private String simIsp;
         private String vendor;
+
+        protected DeviceSimListBean(Parcel in) {
+            simID = in.readInt();
+            ccid = in.readString();
+            simNO = in.readString();
+            simIsp = in.readString();
+            vendor = in.readString();
+        }
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            dest.writeInt(simID);
+            dest.writeString(ccid);
+            dest.writeString(simNO);
+            dest.writeString(simIsp);
+            dest.writeString(vendor);
+        }
+
+        public static final Creator<DeviceSimListBean> CREATOR = new Creator<DeviceSimListBean>() {
+            @Override
+            public DeviceSimListBean createFromParcel(Parcel in) {
+                return new DeviceSimListBean(in);
+            }
+
+            @Override
+            public DeviceSimListBean[] newArray(int size) {
+                return new DeviceSimListBean[size];
+            }
+        };
 
         public int getSimID() {
             return simID;
@@ -247,5 +343,7 @@ public class ProjectDeviceInfo {
         public void setVendor(String vendor) {
             this.vendor = vendor;
         }
+
+
     }
 }

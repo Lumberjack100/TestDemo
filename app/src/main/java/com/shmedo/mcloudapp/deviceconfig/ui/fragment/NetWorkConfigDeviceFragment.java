@@ -1,11 +1,13 @@
 package com.shmedo.mcloudapp.deviceconfig.ui.fragment;
 
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -18,6 +20,7 @@ import com.shmedo.mcloudapp.common.ui.fragment.BaseFragment;
 import com.shmedo.mcloudapp.common.view.recycleviewitemdivider.GridSpacingItemDecoration;
 import com.shmedo.mcloudapp.deviceconfig.adapter.ConfigModuleAdapter;
 import com.shmedo.mcloudapp.deviceconfig.model.ConfigModule;
+import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,6 +32,7 @@ import butterknife.OnClick;
  * A simple {@link Fragment} subclass.
  */
 public class NetWorkConfigDeviceFragment extends BaseFragment {
+    private static final String DEVICE_INFO = "device_info";
 
     @BindView(R.id.tv_device_name)
     TextView mTvDeviceName;
@@ -42,11 +46,14 @@ public class NetWorkConfigDeviceFragment extends BaseFragment {
     @BindView(R.id.tv_collector_mode)
     TextView mTvCollectorType;
 
-    @BindView(R.id.tv_device_state_flag)
-    TextView mTvDeviceStateFlag;
+    @BindView(R.id.tv_device_communication_state_flag)
+    TextView mTvDeviceCommunicationState;//通信状态(在线、离线、已连接、已断开)
 
-    @BindView(R.id.tv_device_connect_mode)
-    TextView mTvDeviceConnectMode;
+    @BindView(R.id.tv_device_connect_state)
+    TextView mTvDeviceConnectState;//蓝牙连接状态(断开连接、重新连接)
+
+    @BindView(R.id.tv_device_communication_way)
+    TextView mTvDeviceCommunicationWay;//通信方式(网络、蓝牙)
 
     @BindView(R.id.recyclerview)
     RecyclerView mRecyclerView;
@@ -55,6 +62,24 @@ public class NetWorkConfigDeviceFragment extends BaseFragment {
 
     private List<ConfigModule> configModuleList = new ArrayList<>();
 
+    private ProjectDeviceInfo projectDeviceInfo;
+
+
+    public static NetWorkConfigDeviceFragment newInstance(ProjectDeviceInfo projectDeviceInfo) {
+        NetWorkConfigDeviceFragment fragment = new NetWorkConfigDeviceFragment();
+        Bundle args = new Bundle();
+        args.putParcelable(DEVICE_INFO, projectDeviceInfo);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            projectDeviceInfo = getArguments().getParcelable(DEVICE_INFO);
+        }
+    }
 
     @Override
     protected int getLayoutId() {
@@ -64,8 +89,29 @@ public class NetWorkConfigDeviceFragment extends BaseFragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        initDeviceInfo();
         initAdapter();
         initConfigModuleData();
+    }
+
+    private void initDeviceInfo() {
+        if (projectDeviceInfo != null) {
+            mTvDeviceName.setText("物联网数据采集器");
+            mTvDeviceSn.setText(String.format("设备编号：%s", TextUtils.isEmpty(projectDeviceInfo.getName()) ? "" : projectDeviceInfo.getName()));
+            mTvDeviceModel.setText(String.format("产品型号：%s", TextUtils.isEmpty(projectDeviceInfo.getDeviceTypeName()) ? "" : projectDeviceInfo.getDeviceTypeName()));
+            mTvCollectorType.setText(String.format("更新时间：%s", TextUtils.isEmpty(projectDeviceInfo.getLastActiveTime()) ? "" : projectDeviceInfo.getLastActiveTime()));
+            if (projectDeviceInfo.isOnline()) {
+                mTvDeviceCommunicationState.setText("在线");
+                mTvDeviceCommunicationState.setTextColor(ContextCompat.getColor(mActivity, R.color.text_color_50E9B9));
+                mTvDeviceCommunicationState.setBackgroundResource(R.drawable.bg_device_online_state_flag);
+            } else {
+                mTvDeviceCommunicationState.setText("离线");
+                mTvDeviceCommunicationState.setTextColor(ContextCompat.getColor(mActivity, R.color.sub_title_text_color));
+                mTvDeviceCommunicationState.setBackgroundResource(R.drawable.bg_device_offline_state_flag);
+            }
+        }
+        mTvDeviceConnectState.setVisibility(View.INVISIBLE);
+        mTvDeviceCommunicationWay.setText("网络");
     }
 
     private void initAdapter() {
@@ -86,10 +132,12 @@ public class NetWorkConfigDeviceFragment extends BaseFragment {
         mRecyclerView.setAdapter(moduleAdapter);
     }
 
-
-    @OnClick({ R.id.rl_run_state_analysis})
+    @OnClick({R.id.tv_device_communication_way, R.id.rl_run_state_analysis})
     public void onClick(View v) {
         switch (v.getId()) {
+
+            case R.id.tv_device_communication_way://切换连接方式
+                break;
 
             case R.id.rl_run_state_analysis:
                 break;

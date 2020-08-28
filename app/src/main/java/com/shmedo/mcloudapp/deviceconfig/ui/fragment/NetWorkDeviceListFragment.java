@@ -177,8 +177,8 @@ public class NetWorkDeviceListFragment extends BaseFragment {
         deviceInfoAdapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
-                ProjectDeviceInfo deviceInfo = (ProjectDeviceInfo) deviceInfoList.get(position);
-                DeviceNetWorkConfigActivity.startActivity(mActivity);
+                ProjectDeviceInfo deviceInfo = deviceInfoList.get(position);
+                DeviceNetWorkConfigActivity.startActivity(mActivity, deviceInfo);
             }
         });
         mRecyclerViewDevice.setAdapter(deviceInfoAdapter);
@@ -203,10 +203,8 @@ public class NetWorkDeviceListFragment extends BaseFragment {
 
     @OnClick({R.id.search_container})
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.search_container:
-                DeviceSearchActivity.startActivity(getActivity());
-                break;
+        if (v.getId() == R.id.search_container) {
+            DeviceSearchActivity.startActivity(getActivity());
         }
     }
 

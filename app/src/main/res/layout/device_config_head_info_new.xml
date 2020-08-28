@@ -34,17 +34,16 @@
 
                 <TextView
                     android:id="@+id/tv_device_name"
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
                     android:ellipsize="end"
                     android:singleLine="true"
                     android:textColor="@color/text_color_1f1f1f"
                     android:textSize="@dimen/text_size_17"
-                    tools:text="物联网数据采集器凤飞飞方法旺旺sss" />
+                    tools:text="物联网数据采集器" />
 
                 <TextView
-                    android:id="@+id/tv_device_state_flag"
+                    android:id="@+id/tv_device_communication_state_flag"
                     android:layout_width="wrap_content"
                     android:layout_height="16dp"
                     android:layout_marginStart="8dp"
@@ -96,7 +95,7 @@
             android:layout_height="match_parent">
 
             <TextView
-                android:id="@+id/tv_device_connect_mode"
+                android:id="@+id/tv_device_communication_way"
                 android:layout_width="wrap_content"
                 android:layout_height="27dp"
                 android:layout_alignParentBottom="true"
@@ -114,7 +113,7 @@
                 android:id="@+id/tv_device_connect_state"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignEnd="@+id/tv_device_connect_mode"
+                android:layout_alignEnd="@+id/tv_device_communication_way"
                 android:layout_marginTop="5dp"
                 android:singleLine="true"
                 android:textColor="@color/text_color_b3b3b3"

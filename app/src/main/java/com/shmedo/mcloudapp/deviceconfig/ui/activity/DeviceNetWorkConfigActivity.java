@@ -13,18 +13,25 @@ import androidx.fragment.app.FragmentTransaction;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.activity.BaseActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.NetWorkConfigDeviceFragment;
+import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfo;
 
 import butterknife.BindView;
 import butterknife.OnClick;
 
 public class DeviceNetWorkConfigActivity extends BaseActivity {
+    private static final String DEVICE_INFO = "device_info";
+
     @BindView(R.id.tv_title)
     TextView mToolbarTitle;
 
     private NetWorkConfigDeviceFragment netWorkConfigDeviceFragment;
 
-    public static void startActivity(Context context) {
+    private ProjectDeviceInfo projectDeviceInfo;
+
+
+    public static void startActivity(Context context, ProjectDeviceInfo projectDeviceInfo) {
         Intent intent = new Intent(context, DeviceNetWorkConfigActivity.class);
+        intent.putExtra(DEVICE_INFO, projectDeviceInfo);
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         context.startActivity(intent);
     }
@@ -39,12 +46,9 @@ public class DeviceNetWorkConfigActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setToolBar(R.id.toolbar);
-        mToolbarTitle.setText("关于");
+        mToolbarTitle.setText("设备配置");
         parseIntent();
-
-        netWorkConfigDeviceFragment = new NetWorkConfigDeviceFragment();
-        replaceFragment(netWorkConfigDeviceFragment);
-
+        initFragment();
     }
 
     private void parseIntent() {
@@ -52,20 +56,19 @@ public class DeviceNetWorkConfigActivity extends BaseActivity {
         if (intent.getExtras() == null)
             return;
 
-//        if (intent.getExtras().containsKey(PROJECT_ID)) {
-//            projectID = intent.getIntExtra(PROJECT_ID, 0);
-//        }
-//        if (intent.getExtras().containsKey(PROJECT_NAME)) {
-//            projectName = intent.getStringExtra(PROJECT_NAME);
-//        }
+        if (intent.getExtras().containsKey(DEVICE_INFO)) {
+            projectDeviceInfo = intent.getParcelableExtra(DEVICE_INFO);
+        }
+    }
+
+    private void initFragment() {
+        netWorkConfigDeviceFragment = NetWorkConfigDeviceFragment.newInstance(projectDeviceInfo);
+        replaceFragment(netWorkConfigDeviceFragment);
     }
 
     @OnClick({R.id.right_icon})
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.right_icon:
-                break;
-
+        if (v.getId() == R.id.right_icon) {
         }
     }
 
