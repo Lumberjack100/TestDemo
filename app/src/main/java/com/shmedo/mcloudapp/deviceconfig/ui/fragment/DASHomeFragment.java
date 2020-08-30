@@ -225,7 +225,7 @@ public class DASHomeFragment extends BaseFragment {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, final boolean isChecked) {
                 if (!MCloudApp.isIsBluetoothDeviceConnected()) {
-                    ToastUtils.show(getString(R.string.param_config_bluetooth_disconnect_warn));
+                    ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
                     mSbDeviceActivation.setCheckedImmediatelyNoEvent(!isChecked);
                     return;
                 }
@@ -245,7 +245,7 @@ public class DASHomeFragment extends BaseFragment {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (!MCloudApp.isIsBluetoothDeviceConnected()) {
-                    ToastUtils.show(getString(R.string.param_config_bluetooth_disconnect_warn));
+                    ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
                     mSbBleakAlarm.setCheckedImmediatelyNoEvent(!isChecked);
                     return;
                 }
@@ -348,7 +348,7 @@ public class DASHomeFragment extends BaseFragment {
 
             case R.id.rl_mqtt_config:
                 if (!MCloudApp.isIsBluetoothDeviceConnected()) {
-                    ToastUtils.show(getString(R.string.param_config_bluetooth_disconnect_warn));
+                    ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
                     return;
                 }
                 MqttSettingActivity.startActivity(configDASActivity);
@@ -356,7 +356,7 @@ public class DASHomeFragment extends BaseFragment {
 
             case R.id.rl_collector_control:
                 if (!MCloudApp.isIsBluetoothDeviceConnected()) {
-                    ToastUtils.show(getString(R.string.param_config_bluetooth_disconnect_warn));
+                    ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
                     return;
                 }
                 GeneralSettingActivity.startActivityForResultByFragment(this, REQUEST_CODE_COLLECTOR_CONFIG, collectorConfigInfo, collectorModel);
@@ -364,7 +364,7 @@ public class DASHomeFragment extends BaseFragment {
 
             case R.id.rl_advanced_config:
                 if (!MCloudApp.isIsBluetoothDeviceConnected()) {
-                    ToastUtils.show(getString(R.string.param_config_bluetooth_disconnect_warn));
+                    ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
                     return;
                 }
                 DeviceAdvanceConfigActivity.startActivity(getActivity(), baseConfigInfo.getWorkModel().toInt());
@@ -372,7 +372,7 @@ public class DASHomeFragment extends BaseFragment {
 
             case R.id.btn_save:
                 if (!MCloudApp.isIsBluetoothDeviceConnected()) {
-                    ToastUtils.show(getString(R.string.param_config_bluetooth_disconnect_warn));
+                    ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
                     return;
                 }
 //                isExitMode = true;
@@ -383,7 +383,7 @@ public class DASHomeFragment extends BaseFragment {
 
     private void startSensorConfigActivity() {
         if (!MCloudApp.isIsBluetoothDeviceConnected()) {
-            ToastUtils.show(getString(R.string.param_config_bluetooth_disconnect_warn));
+            ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
             return;
         }
         CollectorModel model = CollectorModel.value(collectorModel);

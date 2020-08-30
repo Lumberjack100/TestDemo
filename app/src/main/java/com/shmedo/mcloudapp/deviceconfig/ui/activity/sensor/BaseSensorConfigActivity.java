@@ -381,7 +381,7 @@ public abstract class BaseSensorConfigActivity extends BaseDeviceConnectActivity
 
             case R.id.btn_confirm://确定发送指令
                 if (!MCloudApp.isIsBluetoothDeviceConnected()) {
-                    ToastUtils.show(getString(R.string.param_config_bluetooth_disconnect_warn));
+                    ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
                     finish();
                     return;
                 }

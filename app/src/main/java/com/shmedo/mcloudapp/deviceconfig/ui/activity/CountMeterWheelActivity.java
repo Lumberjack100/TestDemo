@@ -192,7 +192,7 @@ public class CountMeterWheelActivity extends BaseDeviceConnectActivity {
 
             case R.id.btn_confirm:
                 if (!MCloudApp.isIsBluetoothDeviceConnected()) {
-                    ToastUtils.show(getString(R.string.param_config_bluetooth_disconnect_warn));
+                    ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
                     return;
                 }
                 doConfirm();

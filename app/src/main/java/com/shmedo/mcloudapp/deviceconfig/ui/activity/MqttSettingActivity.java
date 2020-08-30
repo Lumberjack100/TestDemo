@@ -252,7 +252,7 @@ public class MqttSettingActivity extends BaseDeviceConnectActivity implements Vi
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (!MCloudApp.isIsBluetoothDeviceConnected()) {
-                    ToastUtils.show(getString(R.string.param_config_bluetooth_disconnect_warn));
+                    ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
                     mSbLinkOne.setCheckedImmediatelyNoEvent(!isChecked);
                     return;
                 }
@@ -274,7 +274,7 @@ public class MqttSettingActivity extends BaseDeviceConnectActivity implements Vi
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (!MCloudApp.isIsBluetoothDeviceConnected()) {
-                    ToastUtils.show(getString(R.string.param_config_bluetooth_disconnect_warn));
+                    ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
                     mSbLinkTwo.setCheckedImmediatelyNoEvent(!isChecked);
                     return;
                 }
@@ -296,7 +296,7 @@ public class MqttSettingActivity extends BaseDeviceConnectActivity implements Vi
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (!MCloudApp.isIsBluetoothDeviceConnected()) {
-                    ToastUtils.show(getString(R.string.param_config_bluetooth_disconnect_warn));
+                    ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
                     mSbLinkThree.setCheckedImmediatelyNoEvent(!isChecked);
                     return;
                 }
@@ -322,7 +322,7 @@ public class MqttSettingActivity extends BaseDeviceConnectActivity implements Vi
         switch (v.getId()) {
             case R.id.tv_link_one:
                 if (!MCloudApp.isIsBluetoothDeviceConnected()) {
-                    ToastUtils.show(getString(R.string.param_config_bluetooth_disconnect_warn));
+                    ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
                     return;
                 }
                 setLinkTextEnabled(mTvLinkOneStatus, false);
@@ -346,7 +346,7 @@ public class MqttSettingActivity extends BaseDeviceConnectActivity implements Vi
 
             case R.id.tv_link_two:
                 if (!MCloudApp.isIsBluetoothDeviceConnected()) {
-                    ToastUtils.show(getString(R.string.param_config_bluetooth_disconnect_warn));
+                    ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
                     return;
                 }
 
@@ -371,7 +371,7 @@ public class MqttSettingActivity extends BaseDeviceConnectActivity implements Vi
 
             case R.id.tv_link_three:
                 if (!MCloudApp.isIsBluetoothDeviceConnected()) {
-                    ToastUtils.show(getString(R.string.param_config_bluetooth_disconnect_warn));
+                    ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
                     return;
                 }
 
@@ -396,7 +396,7 @@ public class MqttSettingActivity extends BaseDeviceConnectActivity implements Vi
 
             case R.id.btn_confirm:
                 if (!MCloudApp.isIsBluetoothDeviceConnected()) {
-                    ToastUtils.show(getString(R.string.param_config_bluetooth_disconnect_warn));
+                    ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
                     return;
                 }
 
@@ -430,7 +430,7 @@ public class MqttSettingActivity extends BaseDeviceConnectActivity implements Vi
 
             case R.id.tv_save:
                 if (!MCloudApp.isIsBluetoothDeviceConnected()) {
-                    ToastUtils.show(getString(R.string.param_config_bluetooth_disconnect_warn));
+                    ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
                     return;
                 }
                 isExitMode = true;

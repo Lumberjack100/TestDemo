@@ -118,7 +118,7 @@ public class DeviceAdvanceConfigActivity extends BaseDeviceConnectActivity {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, final boolean isChecked) {
                 if (!MCloudApp.isIsBluetoothDeviceConnected()) {
-                    ToastUtils.show(getString(R.string.param_config_bluetooth_disconnect_warn));
+                    ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
                     mSbFirmwareUpgrade.setCheckedImmediatelyNoEvent(!isChecked);
                     return;
                 }
@@ -235,7 +235,7 @@ public class DeviceAdvanceConfigActivity extends BaseDeviceConnectActivity {
 
     private boolean checkIsBluetoothConnected() {
         if (!MCloudApp.isIsBluetoothDeviceConnected()) {
-            ToastUtils.show(getString(R.string.param_config_bluetooth_disconnect_warn));
+            ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
             return false;
         }
 

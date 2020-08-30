@@ -36,11 +36,11 @@
                     android:id="@+id/tv_device_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:ellipsize="end"
+                    android:maxEms="8"
                     android:singleLine="true"
                     android:textColor="@color/text_color_1f1f1f"
                     android:textSize="@dimen/text_size_17"
-                    tools:text="物联网数据采集器" />
+                    tools:text="物联网数据采集器凤飞飞方法旺旺sss" />
 
                 <TextView
                     android:id="@+id/tv_device_communication_state_flag"

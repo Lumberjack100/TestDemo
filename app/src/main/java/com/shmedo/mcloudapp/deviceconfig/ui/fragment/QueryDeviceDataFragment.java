@@ -189,7 +189,7 @@ public class QueryDeviceDataFragment extends BaseFragment {
 
             case R.id.btn_telemetry:
                 if (!MCloudApp.isIsBluetoothDeviceConnected()) {
-                    ToastUtils.show(getString(R.string.param_config_bluetooth_disconnect_warn));
+                    ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
                     return;
                 }
                 String command = CommandManager.getInstance().getCommand(CommandType.INSTANT_COLLEACTOR, null);

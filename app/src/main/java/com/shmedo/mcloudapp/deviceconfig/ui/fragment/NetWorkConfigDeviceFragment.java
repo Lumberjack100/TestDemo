@@ -126,6 +126,7 @@ public class NetWorkConfigDeviceFragment extends BaseFragment {
         moduleAdapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
+
                 ConfigModule configModule = (ConfigModule) configModuleList.get(position);
             }
         });

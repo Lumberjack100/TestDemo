@@ -101,17 +101,24 @@ public class NetWorkDeviceListFragment extends BaseFragment {
         initDeviceTypeAdapter();
         initDeviceInfoAdapter();
         initLoadMore();
+
+        // 进入页面，刷新数据
+        queryCompanyDeviceOnlineStatistics();
+        queryCompanyDeviceOnlineTypeStatistics();
+        swipeRefresh.setRefreshing(true);
+        deviceTypeID = -1;
+        refresh();
     }
 
     @Override
     public void onStart() {
         super.onStart();
         // 进入页面，刷新数据
-        swipeRefresh.setRefreshing(true);
-        queryCompanyDeviceOnlineStatistics();
-        queryCompanyDeviceOnlineTypeStatistics();
-        deviceTypeID = -1;
-        refresh();
+//        swipeRefresh.setRefreshing(true);
+//        queryCompanyDeviceOnlineStatistics();
+//        queryCompanyDeviceOnlineTypeStatistics();
+//        deviceTypeID = -1;
+//        refresh();
     }
 
     private void initUserData() {

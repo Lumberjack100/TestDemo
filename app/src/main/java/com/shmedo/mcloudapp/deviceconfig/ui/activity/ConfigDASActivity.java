@@ -160,7 +160,7 @@ public class ConfigDASActivity extends BaseDeviceConnectActivity {
 
             case R.id.tv_save:
                 if (!MCloudApp.isIsBluetoothDeviceConnected()) {
-                    ToastUtils.show(getString(R.string.param_config_bluetooth_disconnect_warn));
+                    ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
                     return;
                 }
                 saveConfigInfo();

@@ -313,7 +313,7 @@ public class ADMEHomeFragment extends BaseFragment {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, final boolean isChecked) {
                 if (!MCloudApp.isIsBluetoothDeviceConnected()) {
-                    ToastUtils.show(getString(R.string.param_config_bluetooth_disconnect_warn));
+                    ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
                     sbAutoMonitorState.setCheckedImmediatelyNoEvent(!isChecked);
                     return;
                 }
@@ -337,7 +337,7 @@ public class ADMEHomeFragment extends BaseFragment {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, final boolean isChecked) {
                 if (!MCloudApp.isIsBluetoothDeviceConnected()) {
-                    ToastUtils.show(getString(R.string.param_config_bluetooth_disconnect_warn));
+                    ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
                     sbDebugMode.setCheckedImmediatelyNoEvent(!isChecked);
                     return;
                 }
@@ -393,7 +393,7 @@ public class ADMEHomeFragment extends BaseFragment {
 
             case R.id.tv_motor_control:
                 if (!MCloudApp.isIsBluetoothDeviceConnected()) {
-                    ToastUtils.show(getString(R.string.param_config_bluetooth_disconnect_warn));
+                    ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
                     return;
                 }
                 ADMEMotorControlActivity.startActivity(getActivity(), motorControl);
@@ -401,7 +401,7 @@ public class ADMEHomeFragment extends BaseFragment {
 
             case R.id.tv_count_meter_wheel:
                 if (!MCloudApp.isIsBluetoothDeviceConnected()) {
-                    ToastUtils.show(getString(R.string.param_config_bluetooth_disconnect_warn));
+                    ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
                     return;
                 }
                 CountMeterWheelActivity.startActivity(getActivity(), countMeterWheel, correctionParam);
@@ -417,7 +417,7 @@ public class ADMEHomeFragment extends BaseFragment {
 
             case R.id.editBtn1:
                 if (!MCloudApp.isIsBluetoothDeviceConnected()) {
-                    ToastUtils.show(getString(R.string.param_config_bluetooth_disconnect_warn));
+                    ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
                     return;
                 }
 
@@ -440,7 +440,7 @@ public class ADMEHomeFragment extends BaseFragment {
 
             case R.id.editBtn2:
                 if (!MCloudApp.isIsBluetoothDeviceConnected()) {
-                    ToastUtils.show(getString(R.string.param_config_bluetooth_disconnect_warn));
+                    ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
                     return;
                 }
                 if (mBtnEdit2.getText().toString().contains("编辑")) {
@@ -458,7 +458,7 @@ public class ADMEHomeFragment extends BaseFragment {
 
             case R.id.dag_config_layout:
                 if (!MCloudApp.isIsBluetoothDeviceConnected()) {
-                    ToastUtils.show(getString(R.string.param_config_bluetooth_disconnect_warn));
+                    ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
                     return;
                 }
                 ADMESensorExecutiveAgencyConfigActivity.startActivity(getActivity(), dagConfigInfo, executiveAgencyConfigInfo);
@@ -466,7 +466,7 @@ public class ADMEHomeFragment extends BaseFragment {
 
             case R.id.custom_command_test_layout:
                 if (!MCloudApp.isIsBluetoothDeviceConnected()) {
-                    ToastUtils.show(getString(R.string.param_config_bluetooth_disconnect_warn));
+                    ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
                     return;
                 }
                 InstructionDebugActivity.startActivity(getActivity());

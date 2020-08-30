@@ -167,7 +167,7 @@ public class LogPrintActivity extends BaseDeviceConnectActivity {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, final boolean isChecked) {
                 if (!MCloudApp.isIsBluetoothDeviceConnected()) {
-                    ToastUtils.show(getString(R.string.param_config_bluetooth_disconnect_warn));
+                    ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
                     logSwitchButton.setCheckedImmediatelyNoEvent(!isChecked);
                     return;
                 }
@@ -210,7 +210,7 @@ public class LogPrintActivity extends BaseDeviceConnectActivity {
         switch (view.getId()) {
             case R.id.btn_send:
                 if (!MCloudApp.isIsBluetoothDeviceConnected()) {
-                    ToastUtils.show(getString(R.string.param_config_bluetooth_disconnect_warn));
+                    ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
                     return;
                 }
                 //发送指令
