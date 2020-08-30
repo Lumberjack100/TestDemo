@@ -14,19 +14,33 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
+import com.hjq.toast.ToastUtils;
+import com.shmedo.core.MCloudApp;
+import com.shmedo.core.model.UserInfo;
 import com.shmedo.core.util.DensityUtil;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.fragment.BaseFragment;
 import com.shmedo.mcloudapp.common.view.recycleviewitemdivider.GridSpacingItemDecoration;
 import com.shmedo.mcloudapp.deviceconfig.adapter.ConfigModuleAdapter;
 import com.shmedo.mcloudapp.deviceconfig.model.ConfigModule;
+import com.shmedo.mcloudapp.deviceconfig.model.DispatchCmdItem;
+import com.shmedo.mcloudapp.deviceconfig.model.params.DispatchCmdParam;
+import com.shmedo.mcloudapp.network.BaseObserver;
+import com.shmedo.mcloudapp.network.MDRetrofit;
+import com.shmedo.mcloudapp.network.NetworkConst;
 import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfo;
+import com.shmedo.mcloudapp.util.GsonFactory;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
+import okhttp3.RequestBody;
+import timber.log.Timber;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -64,6 +78,8 @@ public class NetWorkConfigDeviceFragment extends BaseFragment {
 
     private ProjectDeviceInfo projectDeviceInfo;
 
+    private int companyID;
+
 
     public static NetWorkConfigDeviceFragment newInstance(ProjectDeviceInfo projectDeviceInfo) {
         NetWorkConfigDeviceFragment fragment = new NetWorkConfigDeviceFragment();
@@ -89,9 +105,17 @@ public class NetWorkConfigDeviceFragment extends BaseFragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        initUserData();
         initDeviceInfo();
         initAdapter();
         initConfigModuleData();
+    }
+
+    private void initUserData() {
+        UserInfo userInfo = MCloudApp.getCurrentUserInfo();
+        if (userInfo != null && userInfo.getDepartments() != null && userInfo.getDepartments().size() > 0) {
+            companyID = userInfo.getDepartments().get(0).getCompanyID();
+        }
     }
 
     private void initDeviceInfo() {
@@ -128,6 +152,7 @@ public class NetWorkConfigDeviceFragment extends BaseFragment {
             public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
 
                 ConfigModule configModule = (ConfigModule) configModuleList.get(position);
+                processItemClick(configModule);
             }
         });
         mRecyclerView.setAdapter(moduleAdapter);
@@ -143,24 +168,50 @@ public class NetWorkConfigDeviceFragment extends BaseFragment {
             case R.id.rl_run_state_analysis:
                 break;
         }
+    }
 
+    private void processItemClick(ConfigModule configModule) {
+
+        switch (configModule.getName()) {
+            case "状态":
+                dispatchCmd(configModule.getCmdID());
+                break;
+
+            case "时间":
+                break;
+
+            case "遥测":
+                break;
+
+            case "重启":
+                break;
+
+            case "固件升级":
+                break;
+
+            case "采集器配置":
+                break;
+
+            default:
+                break;
+        }
     }
 
     private void initConfigModuleData() {
         configModuleList.clear();
-        ConfigModule configModule = new ConfigModule(R.drawable.ic_device_current_state, "状态", "获取当前设备状态");
+        ConfigModule configModule = new ConfigModule(R.drawable.ic_device_current_state, 5, "状态", "获取当前设备状态");
         configModuleList.add(configModule);
 
-        configModule = new ConfigModule(R.drawable.ic_device_current_time, "时间", "获取当前设备时间");
+        configModule = new ConfigModule(R.drawable.ic_device_current_time, 1, "时间", "获取当前设备时间");
         configModuleList.add(configModule);
 
-        configModule = new ConfigModule(R.drawable.ic_device_telemetry, "遥测", "远距离测量");
+        configModule = new ConfigModule(R.drawable.ic_device_telemetry, 6, "遥测", "远距离测量");
         configModuleList.add(configModule);
 
-        configModule = new ConfigModule(R.drawable.ic_device_reboot, "重启", "重新启动当前设备");
+        configModule = new ConfigModule(R.drawable.ic_device_reboot, 7, "重启", "重新启动当前设备");
         configModuleList.add(configModule);
 
-        configModule = new ConfigModule(R.drawable.ic_device_firmware_upgrade, "固件升级", "版本:01.0012");
+        configModule = new ConfigModule(R.drawable.ic_device_firmware_upgrade, 24, "固件升级", "版本:01.0012");
         configModuleList.add(configModule);
 
         configModule = new ConfigModule(R.drawable.ic_device_collector_config, "采集器配置", "采集器参数配置");
@@ -171,5 +222,34 @@ public class NetWorkConfigDeviceFragment extends BaseFragment {
 
         configModule = new ConfigModule(R.drawable.ic_device_advanced_setting, "设置", "高级设置");
         configModuleList.add(configModule);
+    }
+
+    private void dispatchCmd(int cmdID) {
+        DispatchCmdParam dispatchCmdParam = new DispatchCmdParam();
+        dispatchCmdParam.setCmdID(cmdID);
+        dispatchCmdParam.setCompanyID(companyID);
+        dispatchCmdParam.setDeviceIDList(Arrays.asList(projectDeviceInfo.getId()));
+
+        String json = GsonFactory.getGson().toJson(dispatchCmdParam);
+        RequestBody body = RequestBody.create(NetworkConst.JSON_TYPE, json);
+        MDRetrofit.getInstance()
+                .createService()
+                .DispatchCmd(MCloudApp.getAccessToken(), body)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new BaseObserver<List<DispatchCmdItem>>() {
+                    @Override
+                    public void Success(List<DispatchCmdItem> data, String message) {
+                        if (data == null || data.size() == 0) {
+                            return;
+                        }
+                    }
+
+                    @Override
+                    public void Failure(String message) {
+                        Timber.w("请求失败--%s", message);
+                        ToastUtils.show("下发指令失败");
+                    }
+                });
     }
 }

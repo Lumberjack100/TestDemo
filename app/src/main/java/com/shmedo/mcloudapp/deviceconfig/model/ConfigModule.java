@@ -8,11 +8,19 @@ package com.shmedo.mcloudapp.deviceconfig.model;
 public class ConfigModule {
 
     private int iconResId;
+    private int cmdID;
     private String name;
     private String desc;
 
     public ConfigModule(int iconResId, String name, String desc) {
         this.iconResId = iconResId;
+        this.name = name;
+        this.desc = desc;
+    }
+
+    public ConfigModule(int iconResId, int cmdID, String name, String desc) {
+        this.iconResId = iconResId;
+        this.cmdID = cmdID;
         this.name = name;
         this.desc = desc;
     }
@@ -39,5 +47,13 @@ public class ConfigModule {
 
     public void setDesc(String desc) {
         this.desc = desc;
+    }
+
+    public int getCmdID() {
+        return cmdID;
+    }
+
+    public void setCmdID(int cmdID) {
+        this.cmdID = cmdID;
     }
 }

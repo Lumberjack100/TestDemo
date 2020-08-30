@@ -299,6 +299,7 @@ public class DevicesInProjectFragment extends BaseFragment {
         parameter.setCompanyID(companyID);
         parameter.setDeviceType(deviceTypeID);
         parameter.setProjectName(TextUtils.isEmpty(projectName) ? "" : projectName);
+        parameter.setDeviceStatus("启用");
         parameter.setPageSize(PAGE_SIZE);
         parameter.setCurrentPage(pageInfo.getPage());
 

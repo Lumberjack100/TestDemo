@@ -23,7 +23,7 @@ public class DeviceInfoAdapter extends BaseQuickAdapter<ProjectDeviceInfo, BaseV
 
     @Override
     protected void convert(@NotNull BaseViewHolder holder, ProjectDeviceInfo projectDeviceInfo) {
-        holder.setText(R.id.tv_device_sn, projectDeviceInfo.getName());
+        holder.setText(R.id.tv_device_sn, projectDeviceInfo.getToken());
         holder.setText(R.id.tv_battery_value, "100%");
         holder.setText(R.id.tv_device_type, projectDeviceInfo.getDeviceTypeName());
 
