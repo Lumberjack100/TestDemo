@@ -23,7 +23,7 @@ import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.adapter.QueryProjectDeviceAdapter;
 import com.shmedo.mcloudapp.common.ui.activity.BaseActivity;
 import com.shmedo.mcloudapp.entity.PageResult;
-import com.shmedo.mcloudapp.entity.ProjectDeviceInfo;
+import com.shmedo.mcloudapp.entity.ProjectDeviceInfoOld;
 import com.shmedo.mcloudapp.entity.SystemDataInfo;
 import com.shmedo.mcloudapp.entity.parameter.QueryProjectDeviceParamter;
 import com.shmedo.mcloudapp.network.BaseObserver;
@@ -81,7 +81,7 @@ public class DeviceManageDetailActivity extends BaseActivity implements OnRefres
     SmartRefreshLayout mRefreshLayout;
 
     private LoadingDialog mLoadingDialog;
-    private List<ProjectDeviceInfo> deviceInfoList = new ArrayList<>();
+    private List<ProjectDeviceInfoOld> deviceInfoList = new ArrayList<>();
     private QueryProjectDeviceAdapter deviceAdapter;
 
     private static final int PAGE_SIZE = 5;//每页请求数据大小
@@ -170,10 +170,10 @@ public class DeviceManageDetailActivity extends BaseActivity implements OnRefres
                 .QueryProjectDevice(MCloudApp.getAccessToken(), body)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new BaseObserver<PageResult<ProjectDeviceInfo>>() {
+                .subscribe(new BaseObserver<PageResult<ProjectDeviceInfoOld>>() {
 
                     @Override
-                    public void Success(PageResult<ProjectDeviceInfo> infoList, String message) {
+                    public void Success(PageResult<ProjectDeviceInfoOld> infoList, String message) {
                         mLoadingDialog.dismiss();
                         //下拉刷新
                         if (isRefreshOrLoad) {

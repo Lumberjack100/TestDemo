@@ -8,7 +8,7 @@ package com.shmedo.mcloudapp.entity;
  * 创建时间:  2019/8/19 14:08
  * 描述：    项目 设备列表
  */
-public class ProjectDeviceInfo {
+public class ProjectDeviceInfoOld {
 
     private int ID;//关联ID
     private String uniqueToken;//唯一标识

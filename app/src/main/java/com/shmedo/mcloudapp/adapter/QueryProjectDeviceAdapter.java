@@ -11,7 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.shmedo.mcloudapp.R;
-import com.shmedo.mcloudapp.entity.ProjectDeviceInfo;
+import com.shmedo.mcloudapp.entity.ProjectDeviceInfoOld;
 import com.shmedo.mcloudapp.util.GlideUtils;
 
 import java.util.List;
@@ -27,9 +27,9 @@ import java.util.List;
 public class QueryProjectDeviceAdapter extends RecyclerView.Adapter<QueryProjectDeviceAdapter.MyViewHolder> {
 
     private Context mContext;
-    private List<ProjectDeviceInfo> data;
+    private List<ProjectDeviceInfoOld> data;
 
-    public QueryProjectDeviceAdapter(Context mContext, List<ProjectDeviceInfo>  data) {
+    public QueryProjectDeviceAdapter(Context mContext, List<ProjectDeviceInfoOld>  data) {
         this.mContext = mContext;
         this.data = data;
     }

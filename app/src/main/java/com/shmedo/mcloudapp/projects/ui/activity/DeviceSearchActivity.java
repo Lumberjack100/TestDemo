@@ -24,13 +24,13 @@ import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.activity.BaseActivity;
 import com.shmedo.mcloudapp.common.view.ClearEditText;
 import com.shmedo.mcloudapp.common.view.recycleviewitemdivider.GridSpacingItemDecoration;
+import com.shmedo.mcloudapp.entity.PageResult;
 import com.shmedo.mcloudapp.network.BaseObserver;
 import com.shmedo.mcloudapp.network.MDRetrofit;
 import com.shmedo.mcloudapp.network.NetworkConst;
 import com.shmedo.mcloudapp.projects.adapter.DeviceInfoAdapter;
 import com.shmedo.mcloudapp.projects.model.PageInfo;
 import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfo;
-import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfoWrapper;
 import com.shmedo.mcloudapp.projects.model.param.QueryProjectDevice;
 import com.shmedo.mcloudapp.util.GsonFactory;
 import com.shmedo.mcloudapp.util.KeyBordUtils;
@@ -205,9 +205,9 @@ public class DeviceSearchActivity extends BaseActivity {
                 .QueryCompanyDevice(MCloudApp.getAccessToken(), body)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new BaseObserver<ProjectDeviceInfoWrapper>() {
+                .subscribe(new BaseObserver<PageResult<ProjectDeviceInfo>>() {
                     @Override
-                    public void Success(ProjectDeviceInfoWrapper data, String message) {
+                    public void Success(PageResult<ProjectDeviceInfo> data, String message) {
                         deviceInfoAdapter.getLoadMoreModule().setEnableLoadMore(true);
 
                         if (data == null || data.getCurrentPageData() == null || data.getCurrentPageData().size() == 0) {

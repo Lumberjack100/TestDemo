@@ -36,6 +36,7 @@
                 <TextView
                     android:id="@+id/tv_iot_card_number"
                     style="@style/Device_RunAnalysis_ValueTextView_Style"
+                    android:text="--"
                     tools:text="430023489" />
 
             </LinearLayout>
@@ -58,6 +59,7 @@
                 <TextView
                     android:id="@+id/tv_4g_signal"
                     style="@style/Device_RunAnalysis_ValueTextView_Style"
+                    android:text="--"
                     tools:text="强" />
 
             </LinearLayout>
@@ -77,6 +79,7 @@
                 <TextView
                     android:id="@+id/tv_power"
                     style="@style/Device_RunAnalysis_ValueTextView_Style"
+                    android:text="--"
                     tools:text="69%" />
 
             </LinearLayout>
@@ -99,6 +102,7 @@
                 <TextView
                     android:id="@+id/tv_external_voltage"
                     style="@style/Device_RunAnalysis_ValueTextView_Style"
+                    android:text="--"
                     tools:text="28.4V" />
 
             </LinearLayout>
@@ -118,6 +122,7 @@
                 <TextView
                     android:id="@+id/tv_firmware_version"
                     style="@style/Device_RunAnalysis_ValueTextView_Style"
+                    android:text="--"
                     tools:text="01.3.10" />
 
             </LinearLayout>
@@ -140,6 +145,7 @@
                 <TextView
                     android:id="@+id/tv_location"
                     style="@style/Device_RunAnalysis_ValueTextView_Style"
+                    android:text="--"
                     tools:text="106.71，26.57" />
 
             </LinearLayout>
@@ -162,6 +168,7 @@
                 <TextView
                     android:id="@+id/tv_sensor_status"
                     style="@style/Device_RunAnalysis_ValueTextView_Style"
+                    android:text="--"
                     tools:text="解析中..." />
 
             </LinearLayout>

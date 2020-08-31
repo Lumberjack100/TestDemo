@@ -9,12 +9,28 @@ import android.widget.TextView;
 
 import androidx.core.content.ContextCompat;
 
+import com.shmedo.core.MCloudApp;
+import com.shmedo.core.model.UserInfo;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.activity.BaseActivity;
+import com.shmedo.mcloudapp.deviceconfig.model.DevcieRunState;
+import com.shmedo.mcloudapp.deviceconfig.model.params.QueryCmdStateParam;
+import com.shmedo.mcloudapp.entity.PageResult;
+import com.shmedo.mcloudapp.network.BaseObserver;
+import com.shmedo.mcloudapp.network.MDRetrofit;
+import com.shmedo.mcloudapp.network.NetworkConst;
 import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfo;
+import com.shmedo.mcloudapp.util.DateUtil;
+import com.shmedo.mcloudapp.util.GsonFactory;
+
+import java.text.DecimalFormat;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
+import okhttp3.RequestBody;
+import timber.log.Timber;
 
 public class DeviceRunAnalysisActivity extends BaseActivity {
     private static final String DEVICE_INFO = "device_info";
@@ -61,6 +77,9 @@ public class DeviceRunAnalysisActivity extends BaseActivity {
     @BindView(R.id.tv_sensor_status)
     TextView mTvSensorStatus;
 
+    private static final int PAGE_SIZE = 5;
+    private int companyID;
+
     private ProjectDeviceInfo projectDeviceInfo;
 
     public static void startActivity(Context context, ProjectDeviceInfo projectDeviceInfo) {
@@ -81,8 +100,10 @@ public class DeviceRunAnalysisActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setToolBar(R.id.toolbar);
         initView();
+        initUserData();
         parseIntent();
         setHeadInfo();
+        queryCmdState();
     }
 
     private void initView() {
@@ -90,6 +111,14 @@ public class DeviceRunAnalysisActivity extends BaseActivity {
         mTvDeviceSn.setVisibility(View.GONE);
         deviceConnectStateLayout.setVisibility(View.GONE);
     }
+
+    private void initUserData() {
+        UserInfo userInfo = MCloudApp.getCurrentUserInfo();
+        if (userInfo != null && userInfo.getDepartments() != null && userInfo.getDepartments().size() > 0) {
+            companyID = userInfo.getDepartments().get(0).getCompanyID();
+        }
+    }
+
 
     private void parseIntent() {
         Intent intent = getIntent();
@@ -121,7 +150,6 @@ public class DeviceRunAnalysisActivity extends BaseActivity {
 
     @OnClick({R.id.iotCardLayout, R.id.signalLayout, R.id.powerLayout, R.id.externalVoltageLayout, R.id.firmwareVersionLayout, R.id.locationLayout, R.id.sensorStatusLayout})
     public void onClick(View v) {
-
         switch (v.getId()) {
             case R.id.iotCardLayout:
                 break;
@@ -143,6 +171,61 @@ public class DeviceRunAnalysisActivity extends BaseActivity {
 
             case R.id.sensorStatusLayout:
                 break;
+        }
+    }
+
+    private void queryCmdState() {
+        showLoadingDialog("加载中...");
+
+        String begin = DateUtil.getDateAfterNowDateAddDays(-7, "yyyy-MM-dd HH:mm:ss");
+        String end = DateUtil.getNowDateString();
+
+        QueryCmdStateParam parameter = new QueryCmdStateParam();
+        parameter.setCompanyID(companyID);
+        parameter.setDeviceID(projectDeviceInfo.getId());
+        parameter.setBegin(begin);
+        parameter.setEnd(end);
+        parameter.setPageSize(PAGE_SIZE);
+        parameter.setCurrentPage(1);
+
+        String json = GsonFactory.getGson().toJson(parameter);
+        RequestBody body = RequestBody.create(NetworkConst.JSON_TYPE, json);
+        MDRetrofit.getInstance()
+                .createService()
+                .QueryCmdState(MCloudApp.getAccessToken(), body)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new BaseObserver<PageResult<DevcieRunState>>() {
+                    @Override
+                    public void Success(PageResult<DevcieRunState> data, String message) {
+                        dismissLoadingDialog();
+                        if (data == null || data.getCurrentPageData() == null || data.getCurrentPageData().size() == 0) {
+                            return;
+                        }
+                        updateDeviceState(data.getCurrentPageData().get(0));
+                    }
+
+                    @Override
+                    public void Failure(String message) {
+                        dismissLoadingDialog();
+                        Timber.w("请求失败--%s", message);
+                    }
+                });
+    }
+
+    private void updateDeviceState(DevcieRunState devcieRunState) {
+        if (devcieRunState != null) {
+            DecimalFormat df = new DecimalFormat("#.#");//格式化小数
+            String power = df.format(devcieRunState.getBatteryVolt() * 100) + "%";
+            String extPowerVolt = df.format(devcieRunState.getExtPowerVolt()) + "V";
+
+            mTvIotCardNum.setText("--");
+            mTv4gSignal.setText(String.format("%sdBm", devcieRunState.getFourGSignal()));
+            mTvPower.setText(power);
+            mTvExternalVoltage.setText(extPowerVolt);
+            mTvFirmwareVersion.setText(TextUtils.isEmpty(devcieRunState.getSwVersion()) ? "--" : devcieRunState.getSwVersion());
+            mTvLocation.setText(TextUtils.isEmpty(devcieRunState.getLocation()) ? "--" : devcieRunState.getLocation());
+            mTvSensorStatus.setText(TextUtils.isEmpty(devcieRunState.getSensorErrno()) ? "--" : "解析中...");
         }
     }
 }

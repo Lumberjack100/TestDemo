@@ -36,7 +36,7 @@ public class DevcieRunState {
     private String sensorErrno;//传感器状态码
     private double solarVolt;//太阳能板电压
     private double batteryVolt;//蓄电池电压
-    private double supplyPower;//补充过滤
+    private double supplyPower;//补充功率
     private double consumePower;//消耗功率
 
     public String getToken() {

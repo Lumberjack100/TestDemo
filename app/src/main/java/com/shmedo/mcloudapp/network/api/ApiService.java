@@ -1,6 +1,7 @@
 package com.shmedo.mcloudapp.network.api;
 
 import com.shmedo.core.model.UserInfo;
+import com.shmedo.mcloudapp.deviceconfig.model.DevcieRunState;
 import com.shmedo.mcloudapp.deviceconfig.model.DeviceOnlineStatistic;
 import com.shmedo.mcloudapp.deviceconfig.model.DeviceOnlineTypeStatistic;
 import com.shmedo.mcloudapp.deviceconfig.model.DispatchCmdItem;
@@ -8,7 +9,7 @@ import com.shmedo.mcloudapp.deviceconfig.model.QueryCmdResult;
 import com.shmedo.mcloudapp.entity.DeviceBasicInfoResult;
 import com.shmedo.mcloudapp.entity.DeviceDetailInfo;
 import com.shmedo.mcloudapp.entity.PageResult;
-import com.shmedo.mcloudapp.entity.ProjectDeviceInfo;
+import com.shmedo.mcloudapp.entity.ProjectDeviceInfoOld;
 import com.shmedo.mcloudapp.entity.QueryCloudDataInfo;
 import com.shmedo.mcloudapp.entity.StatusInfoResult;
 import com.shmedo.mcloudapp.network.NetworkConst;
@@ -17,7 +18,7 @@ import com.shmedo.mcloudapp.projects.model.CustomLevelProjectInfo;
 import com.shmedo.mcloudapp.projects.model.IndustryTypeProjectInfo;
 import com.shmedo.mcloudapp.projects.model.ProjectBaseInfo;
 import com.shmedo.mcloudapp.projects.model.ProjectDetailInfo;
-import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfoWrapper;
+import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfo;
 import com.shmedo.mcloudapp.projects.model.ProjectInfoEx;
 import com.shmedo.mcloudapp.projects.model.RegionProjectInfo;
 import com.shmedo.mcloudapp.user.model.CompanyInfo;
@@ -132,7 +133,7 @@ public interface ApiService {
     //系统接口v2-2  查询公司设备列表
     @Headers({NetworkConst.HEADER_ACCESS_TYPE})
     @POST("QueryCompanyDevice")
-    Observable<ResultWrapper<ProjectDeviceInfoWrapper>> QueryCompanyDevice(@Header(NetworkConst.ACCESS_TOKEN) String token, @Body RequestBody parameter);
+    Observable<ResultWrapper<PageResult<ProjectDeviceInfo>>> QueryCompanyDevice(@Header(NetworkConst.ACCESS_TOKEN) String token, @Body RequestBody parameter);
 
     //项目接口V2-4  获取单个项目的详细信息
     @Headers({NetworkConst.HEADER_ACCESS_TYPE})
@@ -153,7 +154,7 @@ public interface ApiService {
     //系统接口V2-4  查询设备状态历史
     @Headers({NetworkConst.HEADER_ACCESS_TYPE})
     @POST("QueryCmdState")
-    Observable<ResultWrapper<PageResult<ProjectDeviceInfo>>> QueryCmdState(@Header(NetworkConst.ACCESS_TOKEN) String token, @Body RequestBody parameter);
+    Observable<ResultWrapper<PageResult<DevcieRunState>>> QueryCmdState(@Header(NetworkConst.ACCESS_TOKEN) String token, @Body RequestBody parameter);
 
 
     /**  指令交互   */
@@ -189,7 +190,7 @@ public interface ApiService {
     //系统接口v2  15 查询项目设备
     @Headers({NetworkConst.HEADER_ACCESS_TYPE})
     @POST("QueryProjectDevice")
-    Observable<ResultWrapper<PageResult<ProjectDeviceInfo>>> QueryProjectDevice(@Header(NetworkConst.ACCESS_TOKEN) String token, @Body RequestBody parameter);
+    Observable<ResultWrapper<PageResult<ProjectDeviceInfoOld>>> QueryProjectDevice(@Header(NetworkConst.ACCESS_TOKEN) String token, @Body RequestBody parameter);
 
     //验证E60设备,需传入一个完整的 Url，不需要调用接口
     @GET

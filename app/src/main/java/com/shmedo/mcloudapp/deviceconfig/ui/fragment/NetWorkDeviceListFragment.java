@@ -29,6 +29,7 @@ import com.shmedo.mcloudapp.common.view.recycleviewitemdivider.GridSpacingItemDe
 import com.shmedo.mcloudapp.deviceconfig.model.DeviceOnlineStatistic;
 import com.shmedo.mcloudapp.deviceconfig.model.DeviceOnlineTypeStatistic;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.DeviceNetWorkConfigActivity;
+import com.shmedo.mcloudapp.entity.PageResult;
 import com.shmedo.mcloudapp.network.BaseObserver;
 import com.shmedo.mcloudapp.network.MDRetrofit;
 import com.shmedo.mcloudapp.network.NetworkConst;
@@ -36,7 +37,6 @@ import com.shmedo.mcloudapp.projects.adapter.DeviceInfoAdapter;
 import com.shmedo.mcloudapp.projects.adapter.DeviceTypeAdapter;
 import com.shmedo.mcloudapp.projects.model.PageInfo;
 import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfo;
-import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfoWrapper;
 import com.shmedo.mcloudapp.projects.model.param.QueryProjectDevice;
 import com.shmedo.mcloudapp.projects.ui.activity.DeviceSearchActivity;
 import com.shmedo.mcloudapp.projects.view.SlidingConflictRecyclerView;
@@ -296,9 +296,9 @@ public class NetWorkDeviceListFragment extends BaseFragment {
                 .QueryCompanyDevice(MCloudApp.getAccessToken(), body)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new BaseObserver<ProjectDeviceInfoWrapper>() {
+                .subscribe(new BaseObserver<PageResult<ProjectDeviceInfo>>() {
                     @Override
-                    public void Success(ProjectDeviceInfoWrapper data, String message) {
+                    public void Success(PageResult<ProjectDeviceInfo> data, String message) {
                         swipeRefresh.setRefreshing(false);
                         deviceInfoAdapter.getLoadMoreModule().setEnableLoadMore(true);
 
