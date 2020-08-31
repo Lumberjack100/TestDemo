@@ -15,7 +15,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.hjq.toast.ToastUtils;
-import com.lxj.xpopup.XPopup;
 import com.shmedo.core.MCloudApp;
 import com.shmedo.core.model.UserInfo;
 import com.shmedo.core.util.DensityUtil;
@@ -29,7 +28,8 @@ import com.shmedo.mcloudapp.deviceconfig.model.DispatchCmdItem;
 import com.shmedo.mcloudapp.deviceconfig.model.params.DispatchCmdParam;
 import com.shmedo.mcloudapp.deviceconfig.model.params.QueryCmdStateParam;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.DeviceRunAnalysisActivity;
-import com.shmedo.mcloudapp.deviceconfig.view.DispatchCmdDialog;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.BaseDispatchCmdDialog;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.QueryTerminalTimeDialog;
 import com.shmedo.mcloudapp.entity.PageResult;
 import com.shmedo.mcloudapp.network.BaseObserver;
 import com.shmedo.mcloudapp.network.MDRetrofit;
@@ -292,16 +292,19 @@ public class NetWorkConfigDeviceFragment extends BaseFragment {
     }
 
     private void showDialog() {
-        DispatchCmdDialog dispatchCmdDialog = new DispatchCmdDialog(mActivity, "遥测", msgIDList);
-        dispatchCmdDialog.setOnQueryCmdResultListener(new DispatchCmdDialog.OnQueryCmdResultListener() {
-            @Override
-            public void onSuccess() {
+//        DispatchCmdDialog dispatchCmdDialog = new DispatchCmdDialog(mActivity, "遥测", msgIDList);
+//        dispatchCmdDialog.setOnQueryCmdResultListener(new DispatchCmdDialog.OnQueryCmdResultListener() {
+//            @Override
+//            public void onSuccess() {
+//
+//            }
+//        });
+//        new XPopup.Builder(getContext())
+//                .asCustom(dispatchCmdDialog)
+//                .show();
 
-            }
-        });
-        new XPopup.Builder(getContext())
-                .asCustom(dispatchCmdDialog)
-                .show();
+        BaseDispatchCmdDialog newFragment = new QueryTerminalTimeDialog("遥测", msgIDList);
+        newFragment.show(getFragmentManager(), "dialog");
     }
 
     /**

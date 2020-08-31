@@ -45,7 +45,7 @@
             android:layout_width="99dp"
             android:layout_height="99dp"
             android:layout_gravity="center_horizontal"
-            android:src="@drawable/query_cmd_result_success"
+            android:src="@drawable/cmd_response_success"
             android:visibility="gone" />
 
         <ProgressBar

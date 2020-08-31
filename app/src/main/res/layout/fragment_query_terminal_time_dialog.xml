@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_corner_4dp_white"
+    android:orientation="vertical">
+
+
+    <include layout="@layout/cmd_response_dialog_title" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:id="@+id/contentView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawableLeft="@drawable/ic_dispatch_cmd_respone_small_circle"
+                android:drawablePadding="8dp"
+                android:text="设备时间"
+                android:textColor="@color/sub_title_text_color"
+                android:textSize="@dimen/text_size_13" />
+
+            <TextView
+                android:id="@+id/tv_device_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="13dp"
+                android:textColor="@color/title_text_color"
+                android:textSize="@dimen/text_size_17"
+                tools:text="2020-07-12  14:25:32" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginBottom="23dp"
+                android:background="#efefef" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawableLeft="@drawable/ic_dispatch_cmd_respone_small_circle"
+                android:drawablePadding="8dp"
+                android:text="当前时间"
+                android:textColor="@color/sub_title_text_color"
+                android:textSize="@dimen/text_size_13" />
+
+            <TextView
+                android:id="@+id/tv_system_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="13dp"
+                android:textColor="@color/title_text_color"
+                android:textSize="@dimen/text_size_17"
+                tools:text="2020-07-12  14:25:32" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginBottom="23dp"
+                android:background="#efefef" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawableLeft="@drawable/ic_dispatch_cmd_respone_small_circle"
+                android:drawablePadding="8dp"
+                android:text="时间差值"
+                android:textColor="@color/sub_title_text_color"
+                android:textSize="@dimen/text_size_13" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="13dp">
+
+                <TextView
+                    android:id="@+id/tv_time_diff_result"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="#3AD094"
+                    android:textSize="@dimen/text_size_17"
+                    tools:text="正常" />
+
+                <TextView
+                    android:id="@+id/tv_time_diff_result_desc"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:textColor="@color/text_color_b3b3b3"
+                    android:textSize="@dimen/text_size_13"
+                    tools:text="(差值小于10分钟)" />
+
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+        <include
+            android:id="@+id/cmdResponseLoadingView"
+            layout="@layout/cmd_response_loading_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:visibility="gone" />
+
+        <ViewStub
+            android:id="@+id/cmdResponseFailedView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout="@layout/cmd_response_failed_view" />
+
+    </FrameLayout>
+
+    <include layout="@layout/cmd_response_dialog_footer" />
+
+</LinearLayout>

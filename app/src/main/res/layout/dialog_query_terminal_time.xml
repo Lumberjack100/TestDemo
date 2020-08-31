@@ -37,8 +37,7 @@
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="25dp">
+        android:layout_height="wrap_content">
 
         <LinearLayout
             android:id="@+id/ll_"
@@ -55,7 +54,7 @@
                     android:layout_width="99dp"
                     android:layout_height="99dp"
                     android:layout_gravity="center_horizontal"
-                    android:src="@drawable/query_cmd_result_success"
+                    android:src="@drawable/cmd_response_success"
                     android:visibility="gone" />
 
                 <ProgressBar
@@ -73,6 +72,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
+                android:layout_marginTop="25dp"
                 android:textColor="@color/title_text_color"
                 android:textSize="@dimen/text_size_17"
                 tools:text="发送指令成功" />
