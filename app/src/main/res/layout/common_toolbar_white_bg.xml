@@ -34,7 +34,7 @@
             android:layout_gravity="center_vertical|end"
             android:layout_marginEnd="15dp"
             android:src="@drawable/ic_query_device_data"
-            android:visibility="visible" />
+            android:visibility="invisible" />
 
     </androidx.appcompat.widget.Toolbar>
 

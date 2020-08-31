@@ -245,9 +245,36 @@
         <item name="android:paddingRight">@dimen/dimen_size_20</item>
     </style>
 
-    <style name="DevicesInProjectActivity_TextAppearance" parent="TextAppearance.Design.Tab">
-        <item name="android:textSize">@dimen/text_size_18</item>
-        <item name="android:textStyle">bold</item>
+    <style name="Device_RunAnalysis_LinearLayoutStyle">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">55dp</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
+        <item name="android:foreground">?attr/selectableItemBackground</item>
+        <item name="android:background">@color/white</item>
+        <item name="android:paddingLeft">16dp</item>
+        <item name="android:paddingRight">18dp</item>
+    </style>
+
+    <style name="Device_RunAnalysis_TitleTextView_Style">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@color/title_text_color</item>
+        <item name="android:textSize">17sp</item>
+    </style>
+
+    <style name="Device_RunAnalysis_ValueTextView_Style">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:layout_marginStart">10dp</item>
+        <item name="android:drawableEnd">@drawable/icon_right</item>
+        <item name="android:drawablePadding">5dp</item>
+        <item name="android:gravity">right</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:textColor">@color/text_color_666666</item>
+        <item name="android:textSize">15sp</item>
     </style>
 
     <style name="bg_empty_view">

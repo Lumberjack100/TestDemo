@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.hjq.toast.ToastUtils;
+import com.lxj.xpopup.XPopup;
 import com.shmedo.core.MCloudApp;
 import com.shmedo.core.model.UserInfo;
 import com.shmedo.core.util.DensityUtil;
@@ -25,6 +26,8 @@ import com.shmedo.mcloudapp.deviceconfig.adapter.ConfigModuleAdapter;
 import com.shmedo.mcloudapp.deviceconfig.model.ConfigModule;
 import com.shmedo.mcloudapp.deviceconfig.model.DispatchCmdItem;
 import com.shmedo.mcloudapp.deviceconfig.model.params.DispatchCmdParam;
+import com.shmedo.mcloudapp.deviceconfig.ui.activity.DeviceRunAnalysisActivity;
+import com.shmedo.mcloudapp.deviceconfig.view.DispatchCmdDialog;
 import com.shmedo.mcloudapp.network.BaseObserver;
 import com.shmedo.mcloudapp.network.MDRetrofit;
 import com.shmedo.mcloudapp.network.NetworkConst;
@@ -57,8 +60,8 @@ public class NetWorkConfigDeviceFragment extends BaseFragment {
     @BindView(R.id.tv_device_model)
     TextView mTvDeviceModel;
 
-    @BindView(R.id.tv_collector_mode)
-    TextView mTvCollectorType;
+    @BindView(R.id.tv_time)
+    TextView mTvTime;
 
     @BindView(R.id.tv_device_communication_state_flag)
     TextView mTvDeviceCommunicationState;//通信状态(在线、离线、已连接、已断开)
@@ -75,10 +78,9 @@ public class NetWorkConfigDeviceFragment extends BaseFragment {
     private ConfigModuleAdapter moduleAdapter;
 
     private List<ConfigModule> configModuleList = new ArrayList<>();
-
     private ProjectDeviceInfo projectDeviceInfo;
-
     private int companyID;
+    private List<String> msgIDList = new ArrayList<>();
 
 
     public static NetWorkConfigDeviceFragment newInstance(ProjectDeviceInfo projectDeviceInfo) {
@@ -106,7 +108,7 @@ public class NetWorkConfigDeviceFragment extends BaseFragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         initUserData();
-        initDeviceInfo();
+        setHeadInfo();
         initAdapter();
         initConfigModuleData();
     }
@@ -118,12 +120,12 @@ public class NetWorkConfigDeviceFragment extends BaseFragment {
         }
     }
 
-    private void initDeviceInfo() {
+    private void setHeadInfo() {
         if (projectDeviceInfo != null) {
             mTvDeviceName.setText("物联网数据采集器");
             mTvDeviceSn.setText(String.format("设备编号：%s", TextUtils.isEmpty(projectDeviceInfo.getName()) ? "" : projectDeviceInfo.getName()));
             mTvDeviceModel.setText(String.format("产品型号：%s", TextUtils.isEmpty(projectDeviceInfo.getDeviceTypeName()) ? "" : projectDeviceInfo.getDeviceTypeName()));
-            mTvCollectorType.setText(String.format("更新时间：%s", TextUtils.isEmpty(projectDeviceInfo.getLastActiveTime()) ? "" : projectDeviceInfo.getLastActiveTime()));
+            mTvTime.setText(String.format("更新时间：%s", TextUtils.isEmpty(projectDeviceInfo.getLastActiveTime()) ? "" : projectDeviceInfo.getLastActiveTime()));
             if (projectDeviceInfo.isOnline()) {
                 mTvDeviceCommunicationState.setText("在线");
                 mTvDeviceCommunicationState.setTextColor(ContextCompat.getColor(mActivity, R.color.text_color_50E9B9));
@@ -166,6 +168,7 @@ public class NetWorkConfigDeviceFragment extends BaseFragment {
                 break;
 
             case R.id.rl_run_state_analysis:
+                DeviceRunAnalysisActivity.startActivity(mActivity, projectDeviceInfo);
                 break;
         }
     }
@@ -174,16 +177,10 @@ public class NetWorkConfigDeviceFragment extends BaseFragment {
 
         switch (configModule.getName()) {
             case "状态":
-                dispatchCmd(configModule.getCmdID());
-                break;
-
             case "时间":
-                break;
-
             case "遥测":
-                break;
-
             case "重启":
+                dispatchCmd(configModule.getCmdID());
                 break;
 
             case "固件升级":
@@ -224,6 +221,19 @@ public class NetWorkConfigDeviceFragment extends BaseFragment {
         configModuleList.add(configModule);
     }
 
+    private void showDialog() {
+        DispatchCmdDialog dispatchCmdDialog = new DispatchCmdDialog(mActivity, "遥测", msgIDList);
+        dispatchCmdDialog.setOnQueryCmdResultListener(new DispatchCmdDialog.OnQueryCmdResultListener() {
+            @Override
+            public void onSuccess() {
+
+            }
+        });
+        new XPopup.Builder(getContext())
+                .asCustom(dispatchCmdDialog)
+                .show();
+    }
+
     private void dispatchCmd(int cmdID) {
         DispatchCmdParam dispatchCmdParam = new DispatchCmdParam();
         dispatchCmdParam.setCmdID(cmdID);
@@ -243,6 +253,12 @@ public class NetWorkConfigDeviceFragment extends BaseFragment {
                         if (data == null || data.size() == 0) {
                             return;
                         }
+
+                        msgIDList.clear();
+                        for (DispatchCmdItem cmdItem : data) {
+                            msgIDList.add(cmdItem.getMsgID());
+                        }
+                        showDialog();
                     }
 
                     @Override

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
@@ -23,6 +24,9 @@ public class DeviceNetWorkConfigActivity extends BaseActivity {
 
     @BindView(R.id.tv_title)
     TextView mToolbarTitle;
+
+    @BindView(R.id.right_icon)
+    ImageView mIvRightIcon;
 
     private NetWorkConfigDeviceFragment netWorkConfigDeviceFragment;
 
@@ -47,6 +51,7 @@ public class DeviceNetWorkConfigActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setToolBar(R.id.toolbar);
         mToolbarTitle.setText("设备配置");
+        mIvRightIcon.setVisibility(View.VISIBLE);
         parseIntent();
         initFragment();
     }
