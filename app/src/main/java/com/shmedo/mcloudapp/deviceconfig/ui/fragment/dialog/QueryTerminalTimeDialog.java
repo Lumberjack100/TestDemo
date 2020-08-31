@@ -23,7 +23,7 @@ import butterknife.OnClick;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class QueryTerminalTimeDialog extends BaseDispatchCmdDialog implements View.OnClickListener {
+public class QueryTerminalTimeDialog extends BaseDispatchCmdDialog  {
     @BindView(R.id.tv_title)
     TextView mTvTitle;
 
@@ -71,10 +71,6 @@ public class QueryTerminalTimeDialog extends BaseDispatchCmdDialog implements Vi
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.iv_close:
-                stopRunnable();
-                dismiss();
-                break;
-
             case R.id.tv_confirm:
                 stopRunnable();
                 dismiss();
@@ -109,8 +105,4 @@ public class QueryTerminalTimeDialog extends BaseDispatchCmdDialog implements Vi
         }
     }
 
-    @Override
-    protected void onCmdResponeFailed(QueryCmdResult queryCmdResult) {
-
-    }
 }

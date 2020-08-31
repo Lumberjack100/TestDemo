@@ -14,7 +14,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
-import com.hjq.toast.ToastUtils;
 import com.shmedo.core.MCloudApp;
 import com.shmedo.core.model.UserInfo;
 import com.shmedo.core.util.DensityUtil;
@@ -29,7 +28,9 @@ import com.shmedo.mcloudapp.deviceconfig.model.params.DispatchCmdParam;
 import com.shmedo.mcloudapp.deviceconfig.model.params.QueryCmdStateParam;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.DeviceRunAnalysisActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.BaseDispatchCmdDialog;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.DispatchCmdFailedDialog;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.QueryTerminalTimeDialog;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.TelemetryDialog;
 import com.shmedo.mcloudapp.entity.PageResult;
 import com.shmedo.mcloudapp.network.BaseObserver;
 import com.shmedo.mcloudapp.network.MDRetrofit;
@@ -85,6 +86,8 @@ public class NetWorkConfigDeviceFragment extends BaseFragment {
     private List<ConfigModule> configModuleList = new ArrayList<>();
     private ProjectDeviceInfo projectDeviceInfo;
     private int companyID;
+
+    private ConfigModule selectedConfigModule;
     private List<String> msgIDList = new ArrayList<>();
 
 
@@ -158,9 +161,8 @@ public class NetWorkConfigDeviceFragment extends BaseFragment {
         moduleAdapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
-
-                ConfigModule configModule = (ConfigModule) configModuleList.get(position);
-                processItemClick(configModule);
+                selectedConfigModule = (ConfigModule) configModuleList.get(position);
+                processItemClick();
             }
         });
         mRecyclerView.setAdapter(moduleAdapter);
@@ -179,14 +181,13 @@ public class NetWorkConfigDeviceFragment extends BaseFragment {
         }
     }
 
-    private void processItemClick(ConfigModule configModule) {
-
-        switch (configModule.getName()) {
+    private void processItemClick() {
+        switch (selectedConfigModule.getName()) {
             case "状态":
             case "时间":
             case "遥测":
             case "重启":
-                dispatchCmd(configModule.getCmdID());
+                dispatchCmd(selectedConfigModule.getCmdID());
                 break;
 
             case "固件升级":
@@ -291,7 +292,7 @@ public class NetWorkConfigDeviceFragment extends BaseFragment {
         moduleAdapter.notifyDataSetChanged();
     }
 
-    private void showDialog() {
+    private void showDialog(boolean isSuccess) {
 //        DispatchCmdDialog dispatchCmdDialog = new DispatchCmdDialog(mActivity, "遥测", msgIDList);
 //        dispatchCmdDialog.setOnQueryCmdResultListener(new DispatchCmdDialog.OnQueryCmdResultListener() {
 //            @Override
@@ -303,7 +304,48 @@ public class NetWorkConfigDeviceFragment extends BaseFragment {
 //                .asCustom(dispatchCmdDialog)
 //                .show();
 
-        BaseDispatchCmdDialog newFragment = new QueryTerminalTimeDialog("遥测", msgIDList);
+        BaseDispatchCmdDialog newFragment = null;
+        if (!isSuccess) {
+            String title = "";
+            switch (selectedConfigModule.getName()) {
+                case "状态":
+                    title = "设备状态";
+                    break;
+
+                case "时间":
+                    title = "终端时间";
+                    break;
+
+                case "遥测":
+                    title = "遥测";
+                    break;
+
+                case "重启":
+                    title = "重新启动";
+                    break;
+            }
+            newFragment = new DispatchCmdFailedDialog(title);
+            newFragment.show(getFragmentManager(), "dialog");
+            return;
+        }
+
+
+        switch (selectedConfigModule.getName()) {
+            case "状态":
+                break;
+
+            case "时间":
+                newFragment = new QueryTerminalTimeDialog("终端时间", msgIDList);
+                break;
+
+            case "遥测":
+                newFragment = new TelemetryDialog("遥测", msgIDList);
+                break;
+
+            case "重启":
+                dispatchCmd(selectedConfigModule.getCmdID());
+                break;
+        }
         newFragment.show(getFragmentManager(), "dialog");
     }
 
@@ -311,6 +353,8 @@ public class NetWorkConfigDeviceFragment extends BaseFragment {
      * 指令下发
      */
     private void dispatchCmd(int cmdID) {
+        showLoadingDialog("处理中...");
+
         DispatchCmdParam dispatchCmdParam = new DispatchCmdParam();
         dispatchCmdParam.setCmdID(cmdID);
         dispatchCmdParam.setCompanyID(companyID);
@@ -326,7 +370,9 @@ public class NetWorkConfigDeviceFragment extends BaseFragment {
                 .subscribe(new BaseObserver<List<DispatchCmdItem>>() {
                     @Override
                     public void Success(List<DispatchCmdItem> data, String message) {
+                        dismissLoadingDialog();
                         if (data == null || data.size() == 0) {
+                            showDialog(false);
                             return;
                         }
 
@@ -334,13 +380,13 @@ public class NetWorkConfigDeviceFragment extends BaseFragment {
                         for (DispatchCmdItem cmdItem : data) {
                             msgIDList.add(cmdItem.getMsgID());
                         }
-                        showDialog();
+                        showDialog(true);
                     }
 
                     @Override
                     public void Failure(String message) {
-                        Timber.w("请求失败--%s", message);
-                        ToastUtils.show("下发指令失败");
+                        dismissLoadingDialog();
+                        showDialog(false);
                     }
                 });
     }

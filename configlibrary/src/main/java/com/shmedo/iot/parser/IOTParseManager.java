@@ -68,7 +68,8 @@ public class IOTParseManager {
     private void registerParse() {
         List<Class> clazzes = Arrays.asList(new Class[]{
                 TerminalTimeParser.class,
-                DeviceCurrentStateParser.class});
+                DeviceCurrentStateParser.class,
+                TelemetryParser.class});
 
         registerWithClass(clazzes);
     }

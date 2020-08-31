@@ -65,19 +65,18 @@ public abstract class BaseDispatchCmdDialog extends DialogFragment {
 
     private MyRunnable mRunnable;
 
-    private int repeatNum = 0;//当查询指令结果5次时，判断响应超时
+    private static int repeatNum = 0;//当查询指令结果5次时，判断响应超时
 
 
     private class MyRunnable implements Runnable {
         @Override
         public void run() {
-//            if (repeatNum > 5) {
-//                stopRunnable();
-//                progressBar.setVisibility(View.GONE);
-//                ivCmdResult.setVisibility(View.VISIBLE);
-//                tvCmdResult.setText("等待响应超时");
-//                return;
-//            }
+            if (repeatNum > 5) {
+                stopRunnable();
+                hideResponseLoadingView();
+                showResponseFailedView("响应超时");
+                return;
+            }
 
             Timber.d("当前时间");
             queryCmdResultByMsgID();
@@ -239,6 +238,7 @@ public abstract class BaseDispatchCmdDialog extends DialogFragment {
         } else {
             if (repeatNum >= 5) {//已经达到设定的10秒超时时间
                 Timber.d("当前时间已查询次数：%s", repeatNum);
+                stopRunnable();
                 hideResponseLoadingView();
                 showResponseFailedView("响应超时");
                 return;
@@ -250,6 +250,8 @@ public abstract class BaseDispatchCmdDialog extends DialogFragment {
 
     protected abstract void onCmdResponeSuccess(QueryCmdResult queryCmdResult);
 
-    protected abstract void onCmdResponeFailed(QueryCmdResult queryCmdResult);
+    protected void onCmdResponeFailed(QueryCmdResult queryCmdResult) {
+
+    }
 
 }

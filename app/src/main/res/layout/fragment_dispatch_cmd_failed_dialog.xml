@@ -6,8 +6,14 @@
     android:background="@drawable/bg_corner_4dp_white"
     android:orientation="vertical">
 
-
     <include layout="@layout/cmd_response_dialog_title" />
+
+    <include
+        android:id="@+id/dispatchCmdFailedView"
+        layout="@layout/dispatch_cmd_failed_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal" />
 
     <include layout="@layout/cmd_response_dialog_footer" />
 
