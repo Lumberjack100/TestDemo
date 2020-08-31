@@ -13,6 +13,8 @@ import androidx.annotation.NonNull;
 import com.hjq.toast.ToastUtils;
 import com.lxj.xpopup.core.CenterPopupView;
 import com.shmedo.core.MCloudApp;
+import com.shmedo.iot.model.TerminalTime;
+import com.shmedo.iot.parser.IOTParseManager;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.deviceconfig.model.QueryCmdResult;
 import com.shmedo.mcloudapp.network.BaseObserver;
@@ -190,6 +192,10 @@ public class DispatchCmdDialog extends CenterPopupView implements View.OnClickLi
             ivCmdResult.setVisibility(View.VISIBLE);
             tvCmdResult.setText("响应成功");
             tvDeviceStateDesc.setText(queryCmdResult.getResponseContent());
+
+            TerminalTime terminalTime = IOTParseManager.getInstance().parse(queryCmdResult.getResponseContent());
+
+            tvDeviceStateDesc.setText(terminalTime.getTime());
 
         } else {
             if (repeatNum >= 5) {//已经达到设定的10秒超时时间

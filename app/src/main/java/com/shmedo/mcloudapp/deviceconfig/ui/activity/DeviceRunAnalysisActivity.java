@@ -24,6 +24,7 @@ import com.shmedo.mcloudapp.util.DateUtil;
 import com.shmedo.mcloudapp.util.GsonFactory;
 
 import java.text.DecimalFormat;
+import java.util.Date;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -174,11 +175,16 @@ public class DeviceRunAnalysisActivity extends BaseActivity {
         }
     }
 
+
+    /**
+     * 查询设备状态历史
+     */
     private void queryCmdState() {
         showLoadingDialog("加载中...");
 
-        String begin = DateUtil.getDateAfterNowDateAddDays(-7, "yyyy-MM-dd HH:mm:ss");
-        String end = DateUtil.getNowDateString();
+        String end = TextUtils.isEmpty(projectDeviceInfo.getLastActiveTime()) ? DateUtil.getNowDateString() : projectDeviceInfo.getLastActiveTime();
+        Date beginDate = DateUtil.getBackOrAddDate2(DateUtil.stringToDate(end, "yyyy-MM-dd HH:mm:ss"), -5);
+        String begin = DateUtil.DateToStrFormat(beginDate, "yyyy-MM-dd HH:mm:ss");
 
         QueryCmdStateParam parameter = new QueryCmdStateParam();
         parameter.setCompanyID(companyID);
@@ -221,7 +227,7 @@ public class DeviceRunAnalysisActivity extends BaseActivity {
 
             mTvIotCardNum.setText("--");
             mTv4gSignal.setText(String.format("%sdBm", devcieRunState.getFourGSignal()));
-            mTvPower.setText(power);
+            mTvPower.setText("--");
             mTvExternalVoltage.setText(extPowerVolt);
             mTvFirmwareVersion.setText(TextUtils.isEmpty(devcieRunState.getSwVersion()) ? "--" : devcieRunState.getSwVersion());
             mTvLocation.setText(TextUtils.isEmpty(devcieRunState.getLocation()) ? "--" : devcieRunState.getLocation());

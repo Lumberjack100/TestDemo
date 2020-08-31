@@ -24,18 +24,23 @@ import com.shmedo.mcloudapp.common.ui.fragment.BaseFragment;
 import com.shmedo.mcloudapp.common.view.recycleviewitemdivider.GridSpacingItemDecoration;
 import com.shmedo.mcloudapp.deviceconfig.adapter.ConfigModuleAdapter;
 import com.shmedo.mcloudapp.deviceconfig.model.ConfigModule;
+import com.shmedo.mcloudapp.deviceconfig.model.DevcieRunState;
 import com.shmedo.mcloudapp.deviceconfig.model.DispatchCmdItem;
 import com.shmedo.mcloudapp.deviceconfig.model.params.DispatchCmdParam;
+import com.shmedo.mcloudapp.deviceconfig.model.params.QueryCmdStateParam;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.DeviceRunAnalysisActivity;
 import com.shmedo.mcloudapp.deviceconfig.view.DispatchCmdDialog;
+import com.shmedo.mcloudapp.entity.PageResult;
 import com.shmedo.mcloudapp.network.BaseObserver;
 import com.shmedo.mcloudapp.network.MDRetrofit;
 import com.shmedo.mcloudapp.network.NetworkConst;
 import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfo;
+import com.shmedo.mcloudapp.util.DateUtil;
 import com.shmedo.mcloudapp.util.GsonFactory;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 import butterknife.BindView;
@@ -111,6 +116,7 @@ public class NetWorkConfigDeviceFragment extends BaseFragment {
         setHeadInfo();
         initAdapter();
         initConfigModuleData();
+        queryCmdState();
     }
 
     private void initUserData() {
@@ -208,7 +214,7 @@ public class NetWorkConfigDeviceFragment extends BaseFragment {
         configModule = new ConfigModule(R.drawable.ic_device_reboot, 7, "重启", "重新启动当前设备");
         configModuleList.add(configModule);
 
-        configModule = new ConfigModule(R.drawable.ic_device_firmware_upgrade, 24, "固件升级", "版本:01.0012");
+        configModule = new ConfigModule(R.drawable.ic_device_firmware_upgrade, 24, "固件升级", "版本:--");
         configModuleList.add(configModule);
 
         configModule = new ConfigModule(R.drawable.ic_device_collector_config, "采集器配置", "采集器参数配置");
@@ -219,6 +225,70 @@ public class NetWorkConfigDeviceFragment extends BaseFragment {
 
         configModule = new ConfigModule(R.drawable.ic_device_advanced_setting, "设置", "高级设置");
         configModuleList.add(configModule);
+    }
+
+    /**
+     * 查询设备状态历史
+     */
+    private void queryCmdState() {
+        showLoadingDialog("加载中...");
+
+        String end = TextUtils.isEmpty(projectDeviceInfo.getLastActiveTime()) ? DateUtil.getNowDateString() : projectDeviceInfo.getLastActiveTime();
+        Date beginDate = DateUtil.getBackOrAddDate2(DateUtil.stringToDate(end, "yyyy-MM-dd HH:mm:ss"), -10);
+        String begin = DateUtil.DateToStrFormat(beginDate, "yyyy-MM-dd HH:mm:ss");
+
+        QueryCmdStateParam parameter = new QueryCmdStateParam();
+        parameter.setCompanyID(companyID);
+        parameter.setDeviceID(projectDeviceInfo.getId());
+        parameter.setBegin(begin);
+        parameter.setEnd(end);
+        parameter.setPageSize(5);
+        parameter.setCurrentPage(1);
+
+        String json = GsonFactory.getGson().toJson(parameter);
+        RequestBody body = RequestBody.create(NetworkConst.JSON_TYPE, json);
+        MDRetrofit.getInstance()
+                .createService()
+                .QueryCmdState(MCloudApp.getAccessToken(), body)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new BaseObserver<PageResult<DevcieRunState>>() {
+                    @Override
+                    public void Success(PageResult<DevcieRunState> data, String message) {
+                        dismissLoadingDialog();
+                        if (data == null || data.getCurrentPageData() == null || data.getCurrentPageData().size() == 0) {
+                            return;
+                        }
+
+                        updateConfigModuleData(data.getCurrentPageData().get(0));
+                    }
+
+                    @Override
+                    public void Failure(String message) {
+                        dismissLoadingDialog();
+                        Timber.w("请求失败--%s", message);
+                    }
+                });
+    }
+
+    /**
+     * 更新设备功能模块显示的信息
+     *
+     * @param devcieRunState
+     */
+    private void updateConfigModuleData(DevcieRunState devcieRunState) {
+        if (devcieRunState == null) {
+            return;
+        }
+
+        String firmwareVersion = TextUtils.isEmpty(devcieRunState.getSwVersion()) ? "--" : devcieRunState.getSwVersion();
+        for (ConfigModule configModule : configModuleList) {
+            if (configModule.getName().equals("固件升级")) {
+                configModule.setDesc("版本:" + firmwareVersion);
+                break;
+            }
+        }
+        moduleAdapter.notifyDataSetChanged();
     }
 
     private void showDialog() {
@@ -234,6 +304,9 @@ public class NetWorkConfigDeviceFragment extends BaseFragment {
                 .show();
     }
 
+    /**
+     * 指令下发
+     */
     private void dispatchCmd(int cmdID) {
         DispatchCmdParam dispatchCmdParam = new DispatchCmdParam();
         dispatchCmdParam.setCmdID(cmdID);
