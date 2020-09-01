@@ -9,32 +9,52 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
 import com.shmedo.core.model.CollectorSensorParamsInfo;
 import com.shmedo.mcloudapp.R;
 
 import butterknife.ButterKnife;
+import butterknife.Unbinder;
 
 
 /**
  *
  */
 public abstract class BaseDialogFragment extends DialogFragment {
+    private Unbinder unbinder;
+
+    private View mRootView;
+
     protected CollectorSensorParamsInfo collectorSensorParamsInfo;
 
     protected String selectedChannelNumber = "";
 
-    protected abstract int initContentView();
+    protected abstract int getLayoutId();
 
 
+    @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         setWindowStyle(Gravity.BOTTOM);
 
-        View rootView = inflater.inflate(initContentView(), container, false);
-        ButterKnife.bind(this, rootView);
-        return rootView;
+        if (mRootView == null) {
+            mRootView = inflater.inflate(getLayoutId(), container, false);
+        } else {
+            ViewGroup viewGroup = (ViewGroup) mRootView.getParent();
+            if (viewGroup != null) {
+                viewGroup.removeView(mRootView);
+            }
+        }
+        return mRootView;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        unbinder = ButterKnife.bind(this, view);
     }
 
 
@@ -60,6 +80,12 @@ public abstract class BaseDialogFragment extends DialogFragment {
         window.setAttributes(wlp);
     }
 
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        unbinder.unbind();
+    }
 
     public interface DialogFragmentClickListener<T> {
 

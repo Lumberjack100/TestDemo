@@ -114,7 +114,7 @@ public class MqttConfigDialogFragment extends BaseDialogFragment {
     }
 
     @Override
-    protected int initContentView() {
+    protected int getLayoutId() {
         return R.layout.fragment_mqtt_config_dialog;
     }
 

@@ -232,6 +232,7 @@ public abstract class BaseDispatchCmdDialog extends DialogFragment {
     private void processCmdResult(QueryCmdResult queryCmdResult) {
 
         if (queryCmdResult.getCmdStatus() == 2) {//已下发得到响应
+            stopRunnable();
             hideResponseLoadingView();
             onCmdResponeSuccess(queryCmdResult);
 

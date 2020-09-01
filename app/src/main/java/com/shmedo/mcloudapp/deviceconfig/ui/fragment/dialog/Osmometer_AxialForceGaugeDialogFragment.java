@@ -67,7 +67,7 @@ public class Osmometer_AxialForceGaugeDialogFragment extends BaseDialogFragment 
     private String selectedSensorType = "";
 
     @Override
-    protected int initContentView() {
+    protected int getLayoutId() {
         return R.layout.fragment_osmometer__axial_force_gauge_dialog;
     }
 

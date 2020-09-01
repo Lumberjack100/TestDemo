@@ -52,7 +52,7 @@ public class CommonSensorConfigDialogFragment extends BaseDialogFragment {
 
 
     @Override
-    protected int initContentView() {
+    protected int getLayoutId() {
         return R.layout.fragment_common_sensor_config_dialog;
     }
 

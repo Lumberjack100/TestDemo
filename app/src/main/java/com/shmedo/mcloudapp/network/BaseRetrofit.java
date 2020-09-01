@@ -30,7 +30,6 @@ public abstract class BaseRetrofit {
         HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
         interceptor.setLevel(level);
         OkHttpClient client = new OkHttpClient.Builder()
-                .addInterceptor(interceptor)
                 .retryOnConnectionFailure(true)
                 .connectTimeout(15, TimeUnit.SECONDS)
                 .addNetworkInterceptor(interceptor)
