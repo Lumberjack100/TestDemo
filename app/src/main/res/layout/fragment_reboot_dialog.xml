@@ -12,34 +12,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <LinearLayout
+        <include
             android:id="@+id/contentView"
+            layout="@layout/cmd_response_success_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            android:orientation="vertical">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:drawableLeft="@drawable/ic_dispatch_cmd_respone_small_circle"
-                android:drawablePadding="8dp"
-                android:text="响应成功"
-                android:textColor="@color/title_text_color"
-                android:textSize="@dimen/text_size_17" />
-
-            <TextView
-                android:id="@+id/tv_response_content"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="13dp"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
-                android:textColor="@color/sub_title_text_color"
-                android:textSize="@dimen/text_size_15"
-                tools:text="发送指令失败" />
-
-        </LinearLayout>
+            android:layout_gravity="center_horizontal" />
 
         <include
             android:id="@+id/cmdResponseLoadingView"

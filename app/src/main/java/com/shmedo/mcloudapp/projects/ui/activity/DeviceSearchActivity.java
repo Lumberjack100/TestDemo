@@ -194,7 +194,7 @@ public class DeviceSearchActivity extends BaseActivity {
         parameter.setCompanyID(companyID);
         parameter.setDeviceType(-1);
         parameter.setSn(keyWords);
-        parameter.setDeviceStatus("启用");
+//        parameter.setDeviceStatus("启用");
         parameter.setPageSize(PAGE_SIZE);
         parameter.setCurrentPage(pageInfo.getPage());
 

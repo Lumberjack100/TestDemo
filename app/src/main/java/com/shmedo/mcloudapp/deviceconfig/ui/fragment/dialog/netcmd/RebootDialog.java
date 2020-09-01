@@ -1,13 +1,11 @@
-package com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog;
+package com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd;
 
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 
-import com.shmedo.iot.parser.IOTParseManager;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.deviceconfig.model.QueryCmdResult;
 
@@ -17,26 +15,29 @@ import butterknife.BindView;
 import butterknife.OnClick;
 
 /**
- * A simple {@link Fragment} subclass.
+ * 设备重新启动响应弹框
  */
-public class TelemetryDialog extends BaseDispatchCmdDialog {
+public class RebootDialog extends BaseDispatchCmdDialog {
     @BindView(R.id.tv_title)
     TextView mTvTitle;
 
+    @BindView(R.id.contentView)
+    View contentView;
 
-    @BindView(R.id.tv_response_content)
-    TextView mTvResponseContent;
+    @BindView(R.id.tv_response_success_desc)
+    TextView mTvContent;
 
 
-    public TelemetryDialog(String title, List<String> msgIDList) {
+    public RebootDialog(String title, List<String> msgIDList) {
         this.title = title;
         this.msgIDList.clear();
         this.msgIDList.addAll(msgIDList);
     }
 
+
     @Override
     protected int getLayoutId() {
-        return R.layout.fragment_telemetry_dialog;
+        return R.layout.fragment_reboot_dialog;
     }
 
 
@@ -50,7 +51,7 @@ public class TelemetryDialog extends BaseDispatchCmdDialog {
 
     private void initView() {
         mTvTitle.setText(title);
-        mTvResponseContent.setVisibility(View.GONE);
+        contentView.setVisibility(View.GONE);
     }
 
     @OnClick({R.id.iv_close, R.id.tv_confirm})
@@ -64,20 +65,12 @@ public class TelemetryDialog extends BaseDispatchCmdDialog {
 
             default:
                 break;
-
-
         }
     }
 
     @Override
     protected void onCmdResponeSuccess(QueryCmdResult queryCmdResult) {
-        mTvResponseContent.setVisibility(View.VISIBLE);
-        String content = IOTParseManager.getInstance().parse(queryCmdResult.getResponseContent());
-        mTvResponseContent.setText(content);
-    }
-
-    @Override
-    protected void onCmdResponeFailed(QueryCmdResult queryCmdResult) {
-
+        contentView.setVisibility(View.VISIBLE);
+        mTvContent.setText("正在重启中...");
     }
 }

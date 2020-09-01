@@ -27,10 +27,11 @@ import com.shmedo.mcloudapp.deviceconfig.model.DispatchCmdItem;
 import com.shmedo.mcloudapp.deviceconfig.model.params.DispatchCmdParam;
 import com.shmedo.mcloudapp.deviceconfig.model.params.QueryCmdStateParam;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.DeviceRunAnalysisActivity;
-import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.BaseDispatchCmdDialog;
-import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.DispatchCmdFailedDialog;
-import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.QueryTerminalTimeDialog;
-import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.TelemetryDialog;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd.BaseDispatchCmdDialog;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd.DispatchCmdFailedDialog;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd.QueryTerminalTimeDialog;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd.RebootDialog;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd.TelemetryDialog;
 import com.shmedo.mcloudapp.entity.PageResult;
 import com.shmedo.mcloudapp.network.BaseObserver;
 import com.shmedo.mcloudapp.network.MDRetrofit;
@@ -187,7 +188,7 @@ public class NetWorkConfigDeviceFragment extends BaseFragment {
             case "时间":
             case "遥测":
             case "重启":
-                dispatchCmd(selectedConfigModule.getCmdID());
+                processDispatchCmd(selectedConfigModule.getCmdID());
                 break;
 
             case "固件升级":
@@ -343,7 +344,7 @@ public class NetWorkConfigDeviceFragment extends BaseFragment {
                 break;
 
             case "重启":
-                dispatchCmd(selectedConfigModule.getCmdID());
+                newFragment = new RebootDialog("重新启动", msgIDList);
                 break;
         }
         newFragment.show(getFragmentManager(), "dialog");
@@ -352,7 +353,7 @@ public class NetWorkConfigDeviceFragment extends BaseFragment {
     /**
      * 指令下发
      */
-    private void dispatchCmd(int cmdID) {
+    private void processDispatchCmd(int cmdID) {
         showLoadingDialog("处理中...");
 
         DispatchCmdParam dispatchCmdParam = new DispatchCmdParam();

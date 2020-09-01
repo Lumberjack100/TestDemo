@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog;
+package com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd;
 
 import android.os.Bundle;
 import android.view.View;
@@ -6,7 +6,6 @@ import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
-import androidx.fragment.app.Fragment;
 
 import com.shmedo.iot.model.TerminalTime;
 import com.shmedo.iot.parser.IOTParseManager;
@@ -21,7 +20,7 @@ import butterknife.BindView;
 import butterknife.OnClick;
 
 /**
- * A simple {@link Fragment} subclass.
+ * 查询设备终端时间响应弹框
  */
 public class QueryTerminalTimeDialog extends BaseDispatchCmdDialog  {
     @BindView(R.id.tv_title)

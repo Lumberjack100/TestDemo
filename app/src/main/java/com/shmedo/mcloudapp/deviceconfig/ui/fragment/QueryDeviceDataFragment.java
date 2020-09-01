@@ -1,5 +1,6 @@
 package com.shmedo.mcloudapp.deviceconfig.ui.fragment;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -101,6 +102,13 @@ public class QueryDeviceDataFragment extends BaseFragment {
         return R.layout.fragment_query_device_data;
     }
 
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        configDASActivity = (ConfigDASActivity) mActivity;
+    }
+
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -140,7 +148,7 @@ public class QueryDeviceDataFragment extends BaseFragment {
             snNubmer = scanData[1];
             Timber.i("设备号====" + scanData[1]);
         }
-        configDASActivity = (ConfigDASActivity) getActivity();
+
     }
 
     private void initAdapter() {

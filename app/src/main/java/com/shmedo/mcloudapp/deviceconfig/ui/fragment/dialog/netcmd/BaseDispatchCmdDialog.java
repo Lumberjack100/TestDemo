@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog;
+package com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd;
 
 import android.app.Dialog;
 import android.os.Bundle;
@@ -40,7 +40,7 @@ import timber.log.Timber;
 /**
  * 创建者:   gonghe <br/>
  * 创建时间:  2020/8/31 <br/>
- * 描述：     网络下发指令后查询响应弹框
+ * 描述：     网络下发指令后查询响应弹框基类
  */
 public abstract class BaseDispatchCmdDialog extends DialogFragment {
     private Unbinder unbinder;
@@ -160,7 +160,7 @@ public abstract class BaseDispatchCmdDialog extends DialogFragment {
             ViewStub viewStub = mRootView.findViewById(R.id.cmdResponseFailedView);
             if (viewStub != null) {
                 responseFailedView = viewStub.inflate();
-                TextView noContentText = responseFailedView.findViewById(R.id.tv_content);
+                TextView noContentText = responseFailedView.findViewById(R.id.tv_response_failed_desc);
                 noContentText.setText(tip);
             }
         }
