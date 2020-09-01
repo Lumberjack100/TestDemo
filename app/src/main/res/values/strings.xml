@@ -189,6 +189,8 @@
     <string name="disconnect_bluetooth_device_save_param_warn">您还没有保存设备的配置信息，是否保存？</string>
     <string name="device_enable_state_close_warn">关闭系统激活状态，将导致设备自动关机进入休眠状态。请确认是否关闭【激活状态】？</string>
 
+    <string name="device_config_module_current_state">状态</string>
+
     <string name="dispatch_cmd_failed_tip">响应超时</string>
     <string name="cmd_response_loading_tip">等待设备响应...</string>
     <string name="cmd_response_failed_tip">响应超时</string>

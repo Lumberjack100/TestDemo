@@ -27,9 +27,19 @@ public class RebootDialog extends BaseDispatchCmdDialog {
     @BindView(R.id.tv_response_success_desc)
     TextView mTvContent;
 
+    private String tip;
+
 
     public RebootDialog(String title, List<String> msgIDList) {
         this.title = title;
+        this.tip = "正在重启中...";
+        this.msgIDList.clear();
+        this.msgIDList.addAll(msgIDList);
+    }
+
+    public RebootDialog(String title, String tip, List<String> msgIDList) {
+        this.title = title;
+        this.tip = tip;
         this.msgIDList.clear();
         this.msgIDList.addAll(msgIDList);
     }
@@ -71,6 +81,6 @@ public class RebootDialog extends BaseDispatchCmdDialog {
     @Override
     protected void onCmdResponeSuccess(QueryCmdResult queryCmdResult) {
         contentView.setVisibility(View.VISIBLE);
-        mTvContent.setText("正在重启中...");
+        mTvContent.setText(tip);
     }
 }

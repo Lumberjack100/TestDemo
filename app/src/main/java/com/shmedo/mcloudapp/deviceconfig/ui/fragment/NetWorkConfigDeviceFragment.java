@@ -17,6 +17,7 @@ import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.shmedo.core.MCloudApp;
 import com.shmedo.core.model.UserInfo;
 import com.shmedo.core.util.DensityUtil;
+import com.shmedo.core.util.GlobalUtil;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.fragment.BaseFragment;
 import com.shmedo.mcloudapp.common.view.recycleviewitemdivider.GridSpacingItemDecoration;
@@ -24,14 +25,19 @@ import com.shmedo.mcloudapp.deviceconfig.adapter.ConfigModuleAdapter;
 import com.shmedo.mcloudapp.deviceconfig.model.ConfigModule;
 import com.shmedo.mcloudapp.deviceconfig.model.DevcieRunState;
 import com.shmedo.mcloudapp.deviceconfig.model.DispatchCmdItem;
+import com.shmedo.mcloudapp.deviceconfig.model.FirmWareInfo;
 import com.shmedo.mcloudapp.deviceconfig.model.params.DispatchCmdParam;
+import com.shmedo.mcloudapp.deviceconfig.model.params.DispatchRawCmdParam;
 import com.shmedo.mcloudapp.deviceconfig.model.params.QueryCmdStateParam;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.DeviceRunAnalysisActivity;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.BaseDialogFragment;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.FirmWareSelectDialog;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd.BaseDispatchCmdDialog;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd.DispatchCmdFailedDialog;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd.QueryTerminalTimeDialog;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd.RebootDialog;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd.TelemetryDialog;
+import com.shmedo.mcloudapp.deviceconfig.util.DispatchCmdHelper;
 import com.shmedo.mcloudapp.entity.PageResult;
 import com.shmedo.mcloudapp.network.BaseObserver;
 import com.shmedo.mcloudapp.network.MDRetrofit;
@@ -39,6 +45,10 @@ import com.shmedo.mcloudapp.network.NetworkConst;
 import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfo;
 import com.shmedo.mcloudapp.util.DateUtil;
 import com.shmedo.mcloudapp.util.GsonFactory;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -106,6 +116,33 @@ public class NetWorkConfigDeviceFragment extends BaseFragment {
         if (getArguments() != null) {
             projectDeviceInfo = getArguments().getParcelable(DEVICE_INFO);
         }
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        EventBus.getDefault().unregister(this);
+    }
+
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onMessageEvent(List<DispatchCmdItem> dispatchCmdItemList) {
+        if (dispatchCmdItemList == null || dispatchCmdItemList.size() == 0) {
+            showDialog(false);
+            return;
+        }
+
+        msgIDList.clear();
+        for (DispatchCmdItem cmdItem : dispatchCmdItemList) {
+            msgIDList.add(cmdItem.getMsgID());
+        }
+        showDialog(true);
     }
 
     @Override
@@ -192,6 +229,9 @@ public class NetWorkConfigDeviceFragment extends BaseFragment {
                 break;
 
             case "固件升级":
+                FirmWareSelectDialog newFragment = new FirmWareSelectDialog(companyID, projectDeviceInfo.getDeviceTypeID());
+                newFragment.setDialogFragmentClickListener(listener);
+                newFragment.show(getFragmentManager(), "dialog");
                 break;
 
             case "采集器配置":
@@ -202,9 +242,37 @@ public class NetWorkConfigDeviceFragment extends BaseFragment {
         }
     }
 
+    private BaseDialogFragment.DialogFragmentClickListener listener = new BaseDialogFragment.DialogFragmentClickListener<FirmWareInfo>() {
+        @Override
+        public boolean onPositiveClick(View view, FirmWareInfo firmWareInfo) {
+            StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder.append("$cmd=md_upgrade");
+            stringBuilder.append("&url=");
+            stringBuilder.append(firmWareInfo.getFwPath());
+            stringBuilder.append("&md5=");
+            stringBuilder.append(firmWareInfo.getFwMd5());
+            stringBuilder.append("&size=");
+            stringBuilder.append(firmWareInfo.getFwSize());
+
+            DispatchRawCmdParam param = new DispatchRawCmdParam();
+            param.setContent(stringBuilder.toString());
+            param.setCompanyID(companyID);
+            param.setDeviceIDList(Arrays.asList(projectDeviceInfo.getId()));
+            DispatchCmdHelper.getInstance().processDispatchRawCmd(param);
+
+            return true;
+        }
+
+
+        @Override
+        public void onNegativeClick(View view) {
+
+        }
+    };
+
     private void initConfigModuleData() {
         configModuleList.clear();
-        ConfigModule configModule = new ConfigModule(R.drawable.ic_device_current_state, 5, "状态", "获取当前设备状态");
+        ConfigModule configModule = new ConfigModule(R.drawable.ic_device_current_state, 5, GlobalUtil.getString(R.string.device_config_module_current_state), "获取当前设备状态");
         configModuleList.add(configModule);
 
         configModule = new ConfigModule(R.drawable.ic_device_current_time, 1, "时间", "获取当前设备时间");
@@ -346,6 +414,10 @@ public class NetWorkConfigDeviceFragment extends BaseFragment {
             case "重启":
                 newFragment = new RebootDialog("重新启动", msgIDList);
                 break;
+
+            case "固件升级":
+                newFragment = new RebootDialog("固件升级", "设备下载固件升级中...", msgIDList);
+                break;
         }
         newFragment.show(getFragmentManager(), "dialog");
     }
@@ -391,4 +463,6 @@ public class NetWorkConfigDeviceFragment extends BaseFragment {
                     }
                 });
     }
+
+
 }

@@ -5,6 +5,7 @@ import com.shmedo.mcloudapp.deviceconfig.model.DevcieRunState;
 import com.shmedo.mcloudapp.deviceconfig.model.DeviceOnlineStatistic;
 import com.shmedo.mcloudapp.deviceconfig.model.DeviceOnlineTypeStatistic;
 import com.shmedo.mcloudapp.deviceconfig.model.DispatchCmdItem;
+import com.shmedo.mcloudapp.deviceconfig.model.FirmWareInfo;
 import com.shmedo.mcloudapp.deviceconfig.model.QueryCmdResult;
 import com.shmedo.mcloudapp.entity.DeviceBasicInfoResult;
 import com.shmedo.mcloudapp.entity.DeviceDetailInfo;
@@ -156,6 +157,12 @@ public interface ApiService {
     @POST("QueryCmdState")
     Observable<ResultWrapper<PageResult<DevcieRunState>>> QueryCmdState(@Header(NetworkConst.ACCESS_TOKEN) String token, @Body RequestBody parameter);
 
+    //系统接口V2-4  查询公司固件列表
+    @Headers({NetworkConst.HEADER_ACCESS_TYPE})
+    @POST("QueryFirmwareList")
+    Observable<ResultWrapper<PageResult<FirmWareInfo>>> QueryFirmwareList(@Header(NetworkConst.ACCESS_TOKEN) String token, @Body RequestBody parameter);
+
+
 
     /**  指令交互   */
     //系统接口V2-4  指令下发
@@ -163,7 +170,13 @@ public interface ApiService {
     @POST("DispatchCmd")
     Observable<ResultWrapper<List<DispatchCmdItem>>> DispatchCmd(@Header(NetworkConst.ACCESS_TOKEN) String token, @Body RequestBody parameter);
 
-    //系统接口V2-4  查询指令结果
+    //系统接口V2-4  指令透传
+    @Headers({NetworkConst.HEADER_ACCESS_TYPE})
+    @POST("DispatchRawCmd")
+    Observable<ResultWrapper<List<DispatchCmdItem>>> DispatchRawCmd(@Header(NetworkConst.ACCESS_TOKEN) String token, @Body RequestBody parameter);
+
+
+    //系统接口V2-4  查询指令响应结果
     @Headers({NetworkConst.HEADER_ACCESS_TYPE})
     @POST("QueryCmdResultByMsgID")
     Observable<ResultWrapper<List<QueryCmdResult>>> QueryCmdResultByMsgID(@Header(NetworkConst.ACCESS_TOKEN) String token, @Body RequestBody parameter);
