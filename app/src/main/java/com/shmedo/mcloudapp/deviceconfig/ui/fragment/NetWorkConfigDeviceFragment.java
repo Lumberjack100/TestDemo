@@ -22,6 +22,7 @@ import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.fragment.BaseFragment;
 import com.shmedo.mcloudapp.common.view.recycleviewitemdivider.GridSpacingItemDecoration;
 import com.shmedo.mcloudapp.deviceconfig.adapter.ConfigModuleAdapter;
+import com.shmedo.mcloudapp.deviceconfig.helper.DispatchCmdHelper;
 import com.shmedo.mcloudapp.deviceconfig.model.ConfigModule;
 import com.shmedo.mcloudapp.deviceconfig.model.DevcieRunState;
 import com.shmedo.mcloudapp.deviceconfig.model.DispatchCmdItem;
@@ -33,11 +34,10 @@ import com.shmedo.mcloudapp.deviceconfig.ui.activity.DeviceRunAnalysisActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.BaseDialogFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.FirmWareSelectDialog;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd.BaseDispatchCmdDialog;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd.CommonCmdDialog;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd.DispatchCmdFailedDialog;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd.QueryTerminalTimeDialog;
-import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd.CommonCmdDialog;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd.TelemetryDialog;
-import com.shmedo.mcloudapp.deviceconfig.helper.DispatchCmdHelper;
 import com.shmedo.mcloudapp.entity.PageResult;
 import com.shmedo.mcloudapp.network.BaseObserver;
 import com.shmedo.mcloudapp.network.MDRetrofit;
@@ -125,10 +125,16 @@ public class NetWorkConfigDeviceFragment extends BaseFragment {
     }
 
     @Override
-    public void onStop() {
-        super.onStop();
+    public void onPause() {
+        super.onPause();
         EventBus.getDefault().unregister(this);
     }
+
+//    @Override
+//    public void onStop() {
+//        super.onStop();
+//        EventBus.getDefault().unregister(this);
+//    }
 
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -242,6 +248,7 @@ public class NetWorkConfigDeviceFragment extends BaseFragment {
                 break;
 
             case "采集器配置":
+//                IOTCollectorSettingActivity.startActivity(mActivity, IOTCollectorSettingActivity.NET_CONNECT, projectDeviceInfo.getId());
                 break;
 
             default:

@@ -1,13 +1,13 @@
 package com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd;
 
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 
 import com.shmedo.mcloudapp.R;
-import com.shmedo.mcloudapp.deviceconfig.model.QueryCmdResult;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -19,9 +19,18 @@ public class DispatchCmdFailedDialog extends BaseDispatchCmdDialog {
     @BindView(R.id.tv_title)
     TextView mTvTitle;
 
+    @BindView(R.id.tv_description)
+    TextView mTvDesc;//描述信息
+
+    private String desc;
 
     public DispatchCmdFailedDialog(String title) {
         this.title = title;
+    }
+
+    public DispatchCmdFailedDialog(String title, String desc) {
+        this.title = title;
+        this.desc = desc;
     }
 
 
@@ -38,6 +47,9 @@ public class DispatchCmdFailedDialog extends BaseDispatchCmdDialog {
 
     private void initView() {
         mTvTitle.setText(title);
+        if (!TextUtils.isEmpty(desc)) {
+            mTvDesc.setText(desc);
+        }
     }
 
     @OnClick({R.id.iv_close, R.id.tv_confirm})
@@ -53,9 +65,5 @@ public class DispatchCmdFailedDialog extends BaseDispatchCmdDialog {
         }
     }
 
-    @Override
-    protected void onCmdResponeSuccess(QueryCmdResult queryCmdResult) {
-
-    }
 
 }

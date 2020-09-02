@@ -307,8 +307,14 @@
             android:maxAspectRatio="2.4"
             android:screenOrientation="portrait"
             android:theme="@style/LightStatusBarActivity" />
+        <activity
+            android:name=".deviceconfig.ui.activity.DeviceRunAnalysisActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:maxAspectRatio="2.4"
+            android:screenOrientation="portrait"
+            android:theme="@style/LightStatusBarActivity" />
 
-        <activity android:name=".deviceconfig.ui.activity.DeviceRunAnalysisActivity"
+        <activity android:name=".deviceconfig.ui.activity.IOTCollectorSettingActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:maxAspectRatio="2.4"
             android:screenOrientation="portrait"

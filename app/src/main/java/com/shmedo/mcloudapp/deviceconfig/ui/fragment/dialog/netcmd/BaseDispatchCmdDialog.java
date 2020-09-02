@@ -248,7 +248,9 @@ public abstract class BaseDispatchCmdDialog extends DialogFragment {
         }
     }
 
-    protected abstract void onCmdResponeSuccess(QueryCmdResult queryCmdResult);
+    protected void onCmdResponeSuccess(QueryCmdResult queryCmdResult) {
+
+    }
 
     protected void onCmdResponeFailed(QueryCmdResult queryCmdResult) {
 

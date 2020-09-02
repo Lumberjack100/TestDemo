@@ -11,6 +11,7 @@ import com.shmedo.mcloudapp.util.GsonFactory;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -35,7 +36,7 @@ public class DispatchCmdHelper {
     /**
      * 指令下发
      */
-    public void processDispatchCmd( DispatchCmdParam dispatchCmdParam) {
+    public void processDispatchCmd(DispatchCmdParam dispatchCmdParam) {
         if (dispatchCmdParam == null) {
             throw new IllegalArgumentException("dispatchCmdParam 为null");
         }
@@ -51,7 +52,7 @@ public class DispatchCmdHelper {
                     @Override
                     public void Success(List<DispatchCmdItem> data, String message) {
                         if (data == null || data.size() == 0) {
-                            EventBus.getDefault().post(null);
+                            EventBus.getDefault().post(new ArrayList<DispatchCmdItem>());
                             return;
                         }
 
@@ -60,7 +61,7 @@ public class DispatchCmdHelper {
 
                     @Override
                     public void Failure(String message) {
-                        EventBus.getDefault().post(null);
+                        EventBus.getDefault().post(new ArrayList<DispatchCmdItem>());
                     }
                 });
     }
@@ -84,7 +85,7 @@ public class DispatchCmdHelper {
                     @Override
                     public void Success(List<DispatchCmdItem> data, String message) {
                         if (data == null || data.size() == 0) {
-                            EventBus.getDefault().post(null);
+                            EventBus.getDefault().post(new ArrayList<DispatchCmdItem>());
                             return;
                         }
 
@@ -93,7 +94,7 @@ public class DispatchCmdHelper {
 
                     @Override
                     public void Failure(String message) {
-                        EventBus.getDefault().post(null);
+                        EventBus.getDefault().post(new ArrayList<DispatchCmdItem>());
                     }
                 });
     }
