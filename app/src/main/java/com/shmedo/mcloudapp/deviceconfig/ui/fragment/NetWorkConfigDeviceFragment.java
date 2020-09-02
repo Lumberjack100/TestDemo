@@ -35,9 +35,9 @@ import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.FirmWareSelectDialog
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd.BaseDispatchCmdDialog;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd.DispatchCmdFailedDialog;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd.QueryTerminalTimeDialog;
-import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd.RebootDialog;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd.CommonCmdDialog;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd.TelemetryDialog;
-import com.shmedo.mcloudapp.deviceconfig.util.DispatchCmdHelper;
+import com.shmedo.mcloudapp.deviceconfig.helper.DispatchCmdHelper;
 import com.shmedo.mcloudapp.entity.PageResult;
 import com.shmedo.mcloudapp.network.BaseObserver;
 import com.shmedo.mcloudapp.network.MDRetrofit;
@@ -133,8 +133,9 @@ public class NetWorkConfigDeviceFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(List<DispatchCmdItem> dispatchCmdItemList) {
+        dismissLoadingDialog();
         if (dispatchCmdItemList == null || dispatchCmdItemList.size() == 0) {
-            showDialog(false);
+            showDispatchFailedDialog();
             return;
         }
 
@@ -142,7 +143,7 @@ public class NetWorkConfigDeviceFragment extends BaseFragment {
         for (DispatchCmdItem cmdItem : dispatchCmdItemList) {
             msgIDList.add(cmdItem.getMsgID());
         }
-        showDialog(true);
+        showDispatchSuccessDialog();
     }
 
     @Override
@@ -225,7 +226,13 @@ public class NetWorkConfigDeviceFragment extends BaseFragment {
             case "时间":
             case "遥测":
             case "重启":
-                processDispatchCmd(selectedConfigModule.getCmdID());
+                DispatchCmdParam dispatchCmdParam = new DispatchCmdParam();
+                dispatchCmdParam.setCmdID(selectedConfigModule.getCmdID());
+                dispatchCmdParam.setCompanyID(companyID);
+                dispatchCmdParam.setDeviceIDList(Arrays.asList(projectDeviceInfo.getId()));
+
+                showLoadingDialog("处理中...");
+                DispatchCmdHelper.getInstance().processDispatchCmd(dispatchCmdParam);
                 break;
 
             case "固件升级":
@@ -258,6 +265,8 @@ public class NetWorkConfigDeviceFragment extends BaseFragment {
             param.setContent(stringBuilder.toString());
             param.setCompanyID(companyID);
             param.setDeviceIDList(Arrays.asList(projectDeviceInfo.getId()));
+
+            showLoadingDialog("处理中...");
             DispatchCmdHelper.getInstance().processDispatchRawCmd(param);
 
             return true;
@@ -361,7 +370,30 @@ public class NetWorkConfigDeviceFragment extends BaseFragment {
         moduleAdapter.notifyDataSetChanged();
     }
 
-    private void showDialog(boolean isSuccess) {
+    private void showDispatchFailedDialog() {
+        String title = "";
+        switch (selectedConfigModule.getName()) {
+            case "状态":
+                title = "设备状态";
+                break;
+
+            case "时间":
+                title = "终端时间";
+                break;
+
+            case "遥测":
+                title = "遥测";
+                break;
+
+            case "重启":
+                title = "重新启动";
+                break;
+        }
+        BaseDispatchCmdDialog newFragment = new DispatchCmdFailedDialog(title);
+        newFragment.show(getFragmentManager(), "dialog");
+    }
+
+    private void showDispatchSuccessDialog() {
 //        DispatchCmdDialog dispatchCmdDialog = new DispatchCmdDialog(mActivity, "遥测", msgIDList);
 //        dispatchCmdDialog.setOnQueryCmdResultListener(new DispatchCmdDialog.OnQueryCmdResultListener() {
 //            @Override
@@ -373,32 +405,9 @@ public class NetWorkConfigDeviceFragment extends BaseFragment {
 //                .asCustom(dispatchCmdDialog)
 //                .show();
 
+
         BaseDispatchCmdDialog newFragment = null;
-        if (!isSuccess) {
-            String title = "";
-            switch (selectedConfigModule.getName()) {
-                case "状态":
-                    title = "设备状态";
-                    break;
-
-                case "时间":
-                    title = "终端时间";
-                    break;
-
-                case "遥测":
-                    title = "遥测";
-                    break;
-
-                case "重启":
-                    title = "重新启动";
-                    break;
-            }
-            newFragment = new DispatchCmdFailedDialog(title);
-            newFragment.show(getFragmentManager(), "dialog");
-            return;
-        }
-
-
+        //下发指令成功，弹出对话框开始轮询查询指令响应
         switch (selectedConfigModule.getName()) {
             case "状态":
                 break;
@@ -412,56 +421,14 @@ public class NetWorkConfigDeviceFragment extends BaseFragment {
                 break;
 
             case "重启":
-                newFragment = new RebootDialog("重新启动", msgIDList);
+                newFragment = new CommonCmdDialog("重新启动", "正在重启中...", "预计耗时三分钟,请耐心等待", msgIDList);
                 break;
 
             case "固件升级":
-                newFragment = new RebootDialog("固件升级", "设备下载固件升级中...", msgIDList);
+                newFragment = new CommonCmdDialog("固件升级", "固件升级中...", "此过程耗时较长,请耐心等待", msgIDList);
                 break;
         }
         newFragment.show(getFragmentManager(), "dialog");
-    }
-
-    /**
-     * 指令下发
-     */
-    private void processDispatchCmd(int cmdID) {
-        showLoadingDialog("处理中...");
-
-        DispatchCmdParam dispatchCmdParam = new DispatchCmdParam();
-        dispatchCmdParam.setCmdID(cmdID);
-        dispatchCmdParam.setCompanyID(companyID);
-        dispatchCmdParam.setDeviceIDList(Arrays.asList(projectDeviceInfo.getId()));
-
-        String json = GsonFactory.getGson().toJson(dispatchCmdParam);
-        RequestBody body = RequestBody.create(NetworkConst.JSON_TYPE, json);
-        MDRetrofit.getInstance()
-                .createService()
-                .DispatchCmd(MCloudApp.getAccessToken(), body)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new BaseObserver<List<DispatchCmdItem>>() {
-                    @Override
-                    public void Success(List<DispatchCmdItem> data, String message) {
-                        dismissLoadingDialog();
-                        if (data == null || data.size() == 0) {
-                            showDialog(false);
-                            return;
-                        }
-
-                        msgIDList.clear();
-                        for (DispatchCmdItem cmdItem : data) {
-                            msgIDList.add(cmdItem.getMsgID());
-                        }
-                        showDialog(true);
-                    }
-
-                    @Override
-                    public void Failure(String message) {
-                        dismissLoadingDialog();
-                        showDialog(false);
-                    }
-                });
     }
 
 

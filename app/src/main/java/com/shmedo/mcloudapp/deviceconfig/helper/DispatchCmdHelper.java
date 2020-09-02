@@ -1,7 +1,8 @@
-package com.shmedo.mcloudapp.deviceconfig.util;
+package com.shmedo.mcloudapp.deviceconfig.helper;
 
 import com.shmedo.core.MCloudApp;
 import com.shmedo.mcloudapp.deviceconfig.model.DispatchCmdItem;
+import com.shmedo.mcloudapp.deviceconfig.model.params.DispatchCmdParam;
 import com.shmedo.mcloudapp.deviceconfig.model.params.DispatchRawCmdParam;
 import com.shmedo.mcloudapp.network.BaseObserver;
 import com.shmedo.mcloudapp.network.MDRetrofit;
@@ -19,7 +20,7 @@ import okhttp3.RequestBody;
 /**
  * 创建者:   gonghe <br/>
  * 创建时间:  2020/9/1 <br/>
- * 描述：     TODO
+ * 描述：    调用物联网平台接口下发米度物联网设备指令
  */
 public class DispatchCmdHelper {
     private static final DispatchCmdHelper ourInstance = new DispatchCmdHelper();
@@ -29,6 +30,39 @@ public class DispatchCmdHelper {
     }
 
     private DispatchCmdHelper() {
+    }
+
+    /**
+     * 指令下发
+     */
+    public void processDispatchCmd( DispatchCmdParam dispatchCmdParam) {
+        if (dispatchCmdParam == null) {
+            throw new IllegalArgumentException("dispatchCmdParam 为null");
+        }
+
+        String json = GsonFactory.getGson().toJson(dispatchCmdParam);
+        RequestBody body = RequestBody.create(NetworkConst.JSON_TYPE, json);
+        MDRetrofit.getInstance()
+                .createService()
+                .DispatchCmd(MCloudApp.getAccessToken(), body)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new BaseObserver<List<DispatchCmdItem>>() {
+                    @Override
+                    public void Success(List<DispatchCmdItem> data, String message) {
+                        if (data == null || data.size() == 0) {
+                            EventBus.getDefault().post(null);
+                            return;
+                        }
+
+                        EventBus.getDefault().post(data);
+                    }
+
+                    @Override
+                    public void Failure(String message) {
+                        EventBus.getDefault().post(null);
+                    }
+                });
     }
 
     /**

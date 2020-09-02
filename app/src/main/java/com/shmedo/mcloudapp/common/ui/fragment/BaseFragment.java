@@ -132,7 +132,9 @@ public abstract class BaseFragment extends Fragment implements HandleBackInterfa
                     .progress(true, 0)
                     .progressIndeterminateStyle(false)
                     .build();
-//            loadingDialog.setCancelable(false);
+            //Sets whether this dialog is cancelable with the BACK key.
+            loadingDialog.setCancelable(true);
+            //Sets whether this dialog is canceled when touched outside the window's bounds.
             loadingDialog.setCanceledOnTouchOutside(false);
         }
 

@@ -5,6 +5,7 @@ import android.text.TextUtils;
 import com.shmedo.iot.IOTCommandResult;
 import com.shmedo.iot.enums.IOTCommandType;
 import com.shmedo.iot.interfaces.IOTResultParser;
+import com.shmedo.iot.model.CommonCmdResponseResult;
 import com.shmedo.iot.utils.IOTStringUtil;
 
 import java.util.Arrays;
@@ -43,6 +44,29 @@ public class IOTParseManager {
 
         parser.validate(result);
         T data = (T) parser.parse(result);
+
+        return data;
+    }
+
+    /**
+     * 解析设置类指令
+     *
+     * @param result
+     * @return
+     */
+    public CommonCmdResponseResult parseSettingCmd(String result) {
+        if (TextUtils.isEmpty(result)) {
+            return null;
+        }
+        if (result.length() < IOTCommandResult.RESULT_MIN_LENGTH) {
+            return null;
+        }
+        if (!result.startsWith(IOTCommandResult.COMMAND_HEADER)) {
+            return null;
+        }
+
+        CommonCmdResponseResultParser.getInstance().validate(result);
+        CommonCmdResponseResult data = CommonCmdResponseResultParser.getInstance().parse(result);
 
         return data;
     }

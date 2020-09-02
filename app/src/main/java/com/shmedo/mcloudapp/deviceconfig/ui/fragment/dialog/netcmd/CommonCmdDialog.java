@@ -1,11 +1,14 @@
 package com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd;
 
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 
+import com.shmedo.iot.model.CommonCmdResponseResult;
+import com.shmedo.iot.parser.IOTParseManager;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.deviceconfig.model.QueryCmdResult;
 
@@ -17,7 +20,7 @@ import butterknife.OnClick;
 /**
  * 设备重新启动响应弹框
  */
-public class RebootDialog extends BaseDispatchCmdDialog {
+public class CommonCmdDialog extends BaseDispatchCmdDialog {
     @BindView(R.id.tv_title)
     TextView mTvTitle;
 
@@ -25,20 +28,39 @@ public class RebootDialog extends BaseDispatchCmdDialog {
     View contentView;
 
     @BindView(R.id.tv_response_success_desc)
-    TextView mTvContent;
+    TextView mTvDesc;//描述信息
 
+    @BindView(R.id.tv_response_success_tip)
+    TextView mTvTip;//温馨提示
+
+    private String desc;
     private String tip;
 
 
-    public RebootDialog(String title, List<String> msgIDList) {
+    /**
+     *
+     * @param title 标题
+     * @param desc 响应成功显示内容
+     * @param msgIDList
+     */
+    public CommonCmdDialog(String title, String desc, List<String> msgIDList) {
         this.title = title;
-        this.tip = "正在重启中...";
+        this.desc = desc;
+        this.tip = null;
         this.msgIDList.clear();
         this.msgIDList.addAll(msgIDList);
     }
 
-    public RebootDialog(String title, String tip, List<String> msgIDList) {
+    /**
+     *
+     * @param title 标题
+     * @param desc 响应成功显示内容
+     * @param tip 响应成功温馨提示
+     * @param msgIDList
+     */
+    public CommonCmdDialog(String title, String desc, String tip, List<String> msgIDList) {
         this.title = title;
+        this.desc = desc;
         this.tip = tip;
         this.msgIDList.clear();
         this.msgIDList.addAll(msgIDList);
@@ -81,6 +103,18 @@ public class RebootDialog extends BaseDispatchCmdDialog {
     @Override
     protected void onCmdResponeSuccess(QueryCmdResult queryCmdResult) {
         contentView.setVisibility(View.VISIBLE);
-        mTvContent.setText(tip);
+
+        CommonCmdResponseResult cmdResponseResult = IOTParseManager.getInstance().parseSettingCmd(queryCmdResult.getResponseContent());
+        if (cmdResponseResult.isSucceed()) {
+            mTvDesc.setText(desc);
+            if (!TextUtils.isEmpty(tip)) {
+                mTvTip.setVisibility(View.VISIBLE);
+                mTvTip.setText(tip);
+            } else {
+                mTvTip.setVisibility(View.GONE);
+            }
+        } else {
+            mTvDesc.setText(String.format("%s失败! %s", title, cmdResponseResult.getReason()));
+        }
     }
 }
