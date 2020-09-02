@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_corner_5dp_white"
+    android:orientation="vertical">
+
+    <include layout="@layout/cmd_response_dialog_title" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:id="@+id/contentView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:drawableLeft="@drawable/ic_dispatch_cmd_respone_small_circle"
+                        android:drawablePadding="8dp"
+                        android:singleLine="true"
+                        android:text="外部电压"
+                        android:textColor="@color/sub_title_text_color"
+                        android:textSize="@dimen/text_size_13" />
+
+                    <TextView
+                        android:id="@+id/tv_ext_power_volt"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginTop="13dp"
+                        android:singleLine="true"
+                        android:textColor="@color/title_text_color"
+                        android:textSize="@dimen/text_size_17"
+                        tools:text="32.5 V" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:drawableLeft="@drawable/ic_dispatch_cmd_respone_small_circle"
+                        android:drawablePadding="8dp"
+                        android:singleLine="true"
+                        android:text="版本信息"
+                        android:textColor="@color/sub_title_text_color"
+                        android:textSize="@dimen/text_size_13" />
+
+                    <TextView
+                        android:id="@+id/tv_firmware_version"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginTop="13dp"
+                        android:singleLine="true"
+                        android:textColor="@color/title_text_color"
+                        android:textSize="@dimen/text_size_17"
+                        tools:text="1.1.30" />
+
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginBottom="23dp"
+                android:background="#efefef" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:drawableLeft="@drawable/ic_dispatch_cmd_respone_small_circle"
+                        android:drawablePadding="8dp"
+                        android:singleLine="true"
+                        android:text="状态"
+                        android:textColor="@color/sub_title_text_color"
+                        android:textSize="@dimen/text_size_13" />
+
+                    <TextView
+                        android:id="@+id/tv_online_state"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginTop="13dp"
+                        android:singleLine="true"
+                        android:textColor="@color/text_color_3AD094"
+                        android:textSize="@dimen/text_size_17"
+                        tools:text="在线" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:drawableLeft="@drawable/ic_dispatch_cmd_respone_small_circle"
+                        android:drawablePadding="8dp"
+                        android:singleLine="true"
+                        android:text="4G信号强度"
+                        android:textColor="@color/sub_title_text_color"
+                        android:textSize="@dimen/text_size_13" />
+
+                    <TextView
+                        android:id="@+id/tv_4g_signal"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginTop="13dp"
+                        android:singleLine="true"
+                        android:textColor="@color/title_text_color"
+                        android:textSize="@dimen/text_size_17"
+                        tools:text="强" />
+
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginBottom="23dp"
+                android:background="#efefef" />
+
+        </LinearLayout>
+
+        <include
+            android:id="@+id/cmdResponseLoadingView"
+            layout="@layout/cmd_response_loading_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:visibility="gone" />
+
+        <ViewStub
+            android:id="@+id/cmdResponseFailedView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout="@layout/cmd_response_failed_view" />
+
+    </FrameLayout>
+
+    <include layout="@layout/cmd_response_dialog_footer" />
+
+</LinearLayout>

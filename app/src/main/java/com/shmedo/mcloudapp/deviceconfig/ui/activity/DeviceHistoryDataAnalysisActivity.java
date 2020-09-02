@@ -13,7 +13,7 @@ import com.shmedo.core.MCloudApp;
 import com.shmedo.core.model.UserInfo;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.activity.BaseActivity;
-import com.shmedo.mcloudapp.deviceconfig.model.DevcieRunState;
+import com.shmedo.mcloudapp.deviceconfig.model.DevcieHistoryState;
 import com.shmedo.mcloudapp.deviceconfig.model.params.QueryCmdStateParam;
 import com.shmedo.mcloudapp.entity.PageResult;
 import com.shmedo.mcloudapp.network.BaseObserver;
@@ -33,7 +33,7 @@ import io.reactivex.schedulers.Schedulers;
 import okhttp3.RequestBody;
 import timber.log.Timber;
 
-public class DeviceRunAnalysisActivity extends BaseActivity {
+public class DeviceHistoryDataAnalysisActivity extends BaseActivity {
     private static final String DEVICE_INFO = "device_info";
 
     @BindView(R.id.tv_title)
@@ -84,7 +84,7 @@ public class DeviceRunAnalysisActivity extends BaseActivity {
     private ProjectDeviceInfo projectDeviceInfo;
 
     public static void startActivity(Context context, ProjectDeviceInfo projectDeviceInfo) {
-        Intent intent = new Intent(context, DeviceRunAnalysisActivity.class);
+        Intent intent = new Intent(context, DeviceHistoryDataAnalysisActivity.class);
         intent.putExtra(DEVICE_INFO, projectDeviceInfo);
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         context.startActivity(intent);
@@ -108,7 +108,7 @@ public class DeviceRunAnalysisActivity extends BaseActivity {
     }
 
     private void initView() {
-        mToolbarTitle.setText("运行分析");
+        mToolbarTitle.setText("数据分析");
         mTvDeviceSn.setVisibility(View.GONE);
         deviceConnectStateLayout.setVisibility(View.GONE);
     }
@@ -201,9 +201,9 @@ public class DeviceRunAnalysisActivity extends BaseActivity {
                 .QueryCmdState(MCloudApp.getAccessToken(), body)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new BaseObserver<PageResult<DevcieRunState>>() {
+                .subscribe(new BaseObserver<PageResult<DevcieHistoryState>>() {
                     @Override
-                    public void Success(PageResult<DevcieRunState> data, String message) {
+                    public void Success(PageResult<DevcieHistoryState> data, String message) {
                         dismissLoadingDialog();
                         if (data == null || data.getCurrentPageData() == null || data.getCurrentPageData().size() == 0) {
                             return;
@@ -219,19 +219,19 @@ public class DeviceRunAnalysisActivity extends BaseActivity {
                 });
     }
 
-    private void updateDeviceState(DevcieRunState devcieRunState) {
-        if (devcieRunState != null) {
+    private void updateDeviceState(DevcieHistoryState devcieHistoryState) {
+        if (devcieHistoryState != null) {
             DecimalFormat df = new DecimalFormat("#.#");//格式化小数
-            String power = df.format(devcieRunState.getBatteryVolt() * 100) + "%";
-            String extPowerVolt = df.format(devcieRunState.getExtPowerVolt()) + "V";
+            String power = df.format(devcieHistoryState.getBatteryVolt() * 100) + "%";
+            String extPowerVolt = df.format(devcieHistoryState.getExtPowerVolt()) + "V";
 
             mTvIotCardNum.setText("--");
-            mTv4gSignal.setText(String.format("%sdBm", devcieRunState.getFourGSignal()));
+            mTv4gSignal.setText(String.format("%sdBm", devcieHistoryState.getFourGSignal()));
             mTvPower.setText("--");
             mTvExternalVoltage.setText(extPowerVolt);
-            mTvFirmwareVersion.setText(TextUtils.isEmpty(devcieRunState.getSwVersion()) ? "--" : devcieRunState.getSwVersion());
-            mTvLocation.setText(TextUtils.isEmpty(devcieRunState.getLocation()) ? "--" : devcieRunState.getLocation());
-            mTvSensorStatus.setText(TextUtils.isEmpty(devcieRunState.getSensorErrno()) ? "--" : "解析中...");
+            mTvFirmwareVersion.setText(TextUtils.isEmpty(devcieHistoryState.getSwVersion()) ? "--" : devcieHistoryState.getSwVersion());
+            mTvLocation.setText(TextUtils.isEmpty(devcieHistoryState.getLocation()) ? "--" : devcieHistoryState.getLocation());
+            mTvSensorStatus.setText(TextUtils.isEmpty(devcieHistoryState.getSensorErrno()) ? "--" : "解析中...");
         }
     }
 }

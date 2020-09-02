@@ -6,7 +6,7 @@
     android:paddingStart="20dp"
     android:paddingTop="24dp"
     android:paddingEnd="20dp"
-    android:paddingBottom="49dp">
+    android:paddingBottom="34dp">
 
     <TextView
         android:id="@+id/tv_title"

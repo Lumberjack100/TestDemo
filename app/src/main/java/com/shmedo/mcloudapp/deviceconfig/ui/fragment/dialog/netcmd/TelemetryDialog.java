@@ -78,8 +78,5 @@ public class TelemetryDialog extends BaseDispatchCmdDialog {
         mTvResponseContent.setText(content);
     }
 
-    @Override
-    protected void onCmdResponeFailed(QueryCmdResult queryCmdResult) {
 
-    }
 }

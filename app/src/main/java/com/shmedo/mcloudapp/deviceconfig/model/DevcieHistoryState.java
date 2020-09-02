@@ -3,9 +3,9 @@ package com.shmedo.mcloudapp.deviceconfig.model;
 /**
  * 创建者:   gonghe <br/>
  * 创建时间:  2020/8/31 <br/>
- * 描述：     设备运行状态信息
+ * 描述：     设备历史状态信息
  */
-public class DevcieRunState {
+public class DevcieHistoryState {
 
     /**
      * token : 110028L

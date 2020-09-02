@@ -1,7 +1,7 @@
 package com.shmedo.mcloudapp.network.api;
 
 import com.shmedo.core.model.UserInfo;
-import com.shmedo.mcloudapp.deviceconfig.model.DevcieRunState;
+import com.shmedo.mcloudapp.deviceconfig.model.DevcieHistoryState;
 import com.shmedo.mcloudapp.deviceconfig.model.DeviceOnlineStatistic;
 import com.shmedo.mcloudapp.deviceconfig.model.DeviceOnlineTypeStatistic;
 import com.shmedo.mcloudapp.deviceconfig.model.DispatchCmdItem;
@@ -155,7 +155,7 @@ public interface ApiService {
     //系统接口V2-4  查询设备状态历史
     @Headers({NetworkConst.HEADER_ACCESS_TYPE})
     @POST("QueryCmdState")
-    Observable<ResultWrapper<PageResult<DevcieRunState>>> QueryCmdState(@Header(NetworkConst.ACCESS_TOKEN) String token, @Body RequestBody parameter);
+    Observable<ResultWrapper<PageResult<DevcieHistoryState>>> QueryCmdState(@Header(NetworkConst.ACCESS_TOKEN) String token, @Body RequestBody parameter);
 
     //系统接口V2-4  查询公司固件列表
     @Headers({NetworkConst.HEADER_ACCESS_TYPE})

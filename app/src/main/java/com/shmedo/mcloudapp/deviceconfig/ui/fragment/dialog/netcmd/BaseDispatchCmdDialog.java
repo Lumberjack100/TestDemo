@@ -241,6 +241,7 @@ public abstract class BaseDispatchCmdDialog extends DialogFragment {
                 stopRunnable();
                 hideResponseLoadingView();
                 showResponseFailedView("响应超时");
+                onCmdResponeFailed(queryCmdResult);
                 return;
             }
             //延迟2秒后再次查询响应结果

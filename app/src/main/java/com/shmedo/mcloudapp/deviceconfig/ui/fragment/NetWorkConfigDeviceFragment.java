@@ -24,18 +24,21 @@ import com.shmedo.mcloudapp.common.view.recycleviewitemdivider.GridSpacingItemDe
 import com.shmedo.mcloudapp.deviceconfig.adapter.ConfigModuleAdapter;
 import com.shmedo.mcloudapp.deviceconfig.helper.DispatchCmdHelper;
 import com.shmedo.mcloudapp.deviceconfig.model.ConfigModule;
-import com.shmedo.mcloudapp.deviceconfig.model.DevcieRunState;
+import com.shmedo.mcloudapp.deviceconfig.model.DevcieCurrentState;
+import com.shmedo.mcloudapp.deviceconfig.model.DevcieHistoryState;
 import com.shmedo.mcloudapp.deviceconfig.model.DispatchCmdItem;
 import com.shmedo.mcloudapp.deviceconfig.model.FirmWareInfo;
 import com.shmedo.mcloudapp.deviceconfig.model.params.DispatchCmdParam;
 import com.shmedo.mcloudapp.deviceconfig.model.params.DispatchRawCmdParam;
 import com.shmedo.mcloudapp.deviceconfig.model.params.QueryCmdStateParam;
-import com.shmedo.mcloudapp.deviceconfig.ui.activity.DeviceRunAnalysisActivity;
+import com.shmedo.mcloudapp.deviceconfig.ui.activity.DeviceCurrentStateActivity;
+import com.shmedo.mcloudapp.deviceconfig.ui.activity.DeviceHistoryDataAnalysisActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.BaseDialogFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.FirmWareSelectDialog;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd.BaseDispatchCmdDialog;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd.CommonCmdDialog;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd.DispatchCmdFailedDialog;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd.QueryCurrentStateDialog;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd.QueryTerminalTimeDialog;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd.TelemetryDialog;
 import com.shmedo.mcloudapp.entity.PageResult;
@@ -221,7 +224,7 @@ public class NetWorkConfigDeviceFragment extends BaseFragment {
                 break;
 
             case R.id.rl_run_state_analysis:
-                DeviceRunAnalysisActivity.startActivity(mActivity, projectDeviceInfo);
+                DeviceHistoryDataAnalysisActivity.startActivity(mActivity, projectDeviceInfo);
                 break;
         }
     }
@@ -338,9 +341,9 @@ public class NetWorkConfigDeviceFragment extends BaseFragment {
                 .QueryCmdState(MCloudApp.getAccessToken(), body)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new BaseObserver<PageResult<DevcieRunState>>() {
+                .subscribe(new BaseObserver<PageResult<DevcieHistoryState>>() {
                     @Override
-                    public void Success(PageResult<DevcieRunState> data, String message) {
+                    public void Success(PageResult<DevcieHistoryState> data, String message) {
                         dismissLoadingDialog();
                         if (data == null || data.getCurrentPageData() == null || data.getCurrentPageData().size() == 0) {
                             return;
@@ -360,14 +363,14 @@ public class NetWorkConfigDeviceFragment extends BaseFragment {
     /**
      * 更新设备功能模块显示的信息
      *
-     * @param devcieRunState
+     * @param devcieHistoryState
      */
-    private void updateConfigModuleData(DevcieRunState devcieRunState) {
-        if (devcieRunState == null) {
+    private void updateConfigModuleData(DevcieHistoryState devcieHistoryState) {
+        if (devcieHistoryState == null) {
             return;
         }
 
-        String firmwareVersion = TextUtils.isEmpty(devcieRunState.getSwVersion()) ? "--" : devcieRunState.getSwVersion();
+        String firmwareVersion = TextUtils.isEmpty(devcieHistoryState.getSwVersion()) ? "--" : devcieHistoryState.getSwVersion();
         for (ConfigModule configModule : configModuleList) {
             if (configModule.getName().equals("固件升级")) {
                 configModule.setDesc("版本:" + firmwareVersion);
@@ -381,7 +384,7 @@ public class NetWorkConfigDeviceFragment extends BaseFragment {
         String title = "";
         switch (selectedConfigModule.getName()) {
             case "状态":
-                title = "设备状态";
+                title = "运行状态";
                 break;
 
             case "时间":
@@ -417,6 +420,13 @@ public class NetWorkConfigDeviceFragment extends BaseFragment {
         //下发指令成功，弹出对话框开始轮询查询指令响应
         switch (selectedConfigModule.getName()) {
             case "状态":
+                newFragment = new QueryCurrentStateDialog("运行状态", msgIDList);
+                ((QueryCurrentStateDialog) newFragment).setOnSeeDetailClickListener(new QueryCurrentStateDialog.OnSeeDetailClickListener() {
+                    @Override
+                    public void onSeeDetailClick(DevcieCurrentState devcieCurrentState) {
+                        DeviceCurrentStateActivity.startActivity(mActivity, DeviceCurrentStateActivity.NET_CONNECT);
+                    }
+                });
                 break;
 
             case "时间":

@@ -15,7 +15,6 @@
         android:id="@+id/tv_confirm"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white"
         android:foreground="?attr/selectableItemBackground"
         android:gravity="center"
         android:paddingTop="18dp"
