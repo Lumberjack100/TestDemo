@@ -306,14 +306,23 @@ public class NetConfigDeviceFragment extends BaseFragment {
         configModule = new ConfigModule(R.drawable.ic_device_firmware_upgrade, 24, "固件升级", "版本:--");
         configModuleList.add(configModule);
 
-        configModule = new ConfigModule(R.drawable.ic_device_collector_config, "采集器配置", "采集器参数配置");
-        configModuleList.add(configModule);
+        //DAS 具有采集器配置项
+        if (projectDeviceInfo.getDeviceTypeID() == 4) {
+            configModule = new ConfigModule(R.drawable.ic_device_collector_config, "采集器配置", "采集器参数配置");
+            configModuleList.add(configModule);
+        }
 
         configModule = new ConfigModule(R.drawable.ic_device_instruction_send, "指令下发", "服务端代码指令下发");
         configModuleList.add(configModule);
 
-        configModule = new ConfigModule(R.drawable.ic_device_advanced_setting, "设置", "高级设置");
-        configModuleList.add(configModule);
+        //DAS、ADME
+        if (projectDeviceInfo.getDeviceTypeID() == 4 || projectDeviceInfo.getDeviceTypeID() == 14) {
+            configModule = new ConfigModule(R.drawable.ic_device_advanced_setting, "设置", "高级设置");
+            configModuleList.add(configModule);
+        } else {
+            configModule = new ConfigModule(R.drawable.ic_device_advanced_setting, "恢复出厂设置", "恢复出厂设置");
+            configModuleList.add(configModule);
+        }
     }
 
     /**

@@ -259,6 +259,27 @@ public class NetDeviceListFragment extends BaseFragment {
     }
 
     /**
+     * 更新头部统计信息数据
+     *
+     * @param deviceOnlineStatistic
+     */
+    private void updateTopView(DeviceOnlineStatistic deviceOnlineStatistic) {
+        if (deviceOnlineStatistic == null) {
+            return;
+        }
+        tvOnlineNum.setText(String.valueOf(deviceOnlineStatistic.getOnlineCount()));
+        tvOfflineNum.setText(String.valueOf(deviceOnlineStatistic.getOfflineCount()));
+
+        DecimalFormat df = new DecimalFormat("#.#");//格式化小数
+        String rate = df.format(deviceOnlineStatistic.getOnlinePercent() * 100) + "%";
+        SpannableString spannableString = new SpannableString(rate);
+        AbsoluteSizeSpan absoluteSizeSpan = new AbsoluteSizeSpan(18, true);
+        spannableString.setSpan(absoluteSizeSpan, rate.indexOf("%"), spannableString.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        tvOnlineRate.setText(new SpannedString(spannableString));
+    }
+
+
+    /**
      * 查询公司设备类型在线统计信息
      */
     private void queryCompanyDeviceOnlineTypeStatistics() {
@@ -281,6 +302,27 @@ public class NetDeviceListFragment extends BaseFragment {
                 });
     }
 
+    private void setDeviceTypeData(List<DeviceOnlineTypeStatistic> dataList) {
+        if (dataList == null || dataList.size() == 0) {
+            return;
+        }
+        deviceTypeStatisticList.clear();
+        DeviceOnlineTypeStatistic deviceOnlineTypeStatistic = new DeviceOnlineTypeStatistic();
+        deviceOnlineTypeStatistic.setDeviceTypeName("全部");
+        deviceOnlineTypeStatistic.setDeviceTypeID(-1);
+        deviceOnlineTypeStatistic.setChecked(true);
+        deviceTypeStatisticList.add(deviceOnlineTypeStatistic);
+
+        for (DeviceOnlineTypeStatistic typeStatistic : dataList) {
+            //去除不支持物联网协议的 DAG、TPS、VIR 设备
+            if (typeStatistic.getDeviceTypeID() == 5 || typeStatistic.getDeviceTypeID() == 7 || typeStatistic.getDeviceTypeID() == 9)
+                continue;
+
+            deviceTypeStatisticList.add(typeStatistic);
+        }
+        deviceTypeAdapter.notifyDataSetChanged();
+    }
+
     private void queryCompanyDevice() {
         QueryProjectDevice parameter = new QueryProjectDevice();
         parameter.setCompanyID(companyID);
@@ -301,21 +343,15 @@ public class NetDeviceListFragment extends BaseFragment {
                     public void Success(PageResult<ProjectDeviceInfo> data, String message) {
                         swipeRefresh.setRefreshing(false);
                         deviceInfoAdapter.getLoadMoreModule().setEnableLoadMore(true);
-
                         if (data == null || data.getCurrentPageData() == null || data.getCurrentPageData().size() == 0) {
                             return;
                         }
 
                         if (pageInfo.isFirstPage()) {
-                            //如果是加载的第一页数据，用setNew
                             deviceInfoList.clear();
-                            deviceInfoList.addAll(data.getCurrentPageData());
-                            deviceInfoAdapter.notifyDataSetChanged();
-                        } else {
-                            //不是第一页，则用add
-                            deviceInfoList.addAll(data.getCurrentPageData());
-                            deviceInfoAdapter.notifyDataSetChanged();
                         }
+                        filterIOTProtocolDevices(data.getCurrentPageData());
+                        deviceInfoAdapter.notifyDataSetChanged();
 
                         if (data.getCurrentPageData().size() < PAGE_SIZE) {
                             //如果不够一页,显示没有更多数据布局
@@ -338,33 +374,17 @@ public class NetDeviceListFragment extends BaseFragment {
                 });
     }
 
-    private void updateTopView(DeviceOnlineStatistic deviceOnlineStatistic) {
-        if (deviceOnlineStatistic == null) {
-            return;
-        }
-        tvOnlineNum.setText(String.valueOf(deviceOnlineStatistic.getOnlineCount()));
-        tvOfflineNum.setText(String.valueOf(deviceOnlineStatistic.getOfflineCount()));
+    /**
+     * 筛选出支持米度物联网协议的设备
+     */
+    private void filterIOTProtocolDevices(List<ProjectDeviceInfo> deviceInfos) {
+        for (ProjectDeviceInfo deviceInfo : deviceInfos) {
+            //去除不支持物联网协议的 DAG、TPS、VIR 设备
+            if (deviceInfo.getDeviceTypeID() == 5 || deviceInfo.getDeviceTypeID() == 7 || deviceInfo.getDeviceTypeID() == 9)
+                continue;
 
-        DecimalFormat df = new DecimalFormat("#.#");//格式化小数
-        String rate = df.format(deviceOnlineStatistic.getOnlinePercent() * 100) + "%";
-        SpannableString spannableString = new SpannableString(rate);
-        AbsoluteSizeSpan absoluteSizeSpan = new AbsoluteSizeSpan(18, true);
-        spannableString.setSpan(absoluteSizeSpan, rate.indexOf("%"), spannableString.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        tvOnlineRate.setText(new SpannedString(spannableString));
-    }
-
-    private void setDeviceTypeData(List<DeviceOnlineTypeStatistic> dataList) {
-        if (dataList == null || dataList.size() == 0) {
-            return;
+            deviceInfoList.add(deviceInfo);
         }
-        deviceTypeStatisticList.clear();
-        DeviceOnlineTypeStatistic deviceOnlineTypeStatistic = new DeviceOnlineTypeStatistic();
-        deviceOnlineTypeStatistic.setDeviceTypeName("全部");
-        deviceOnlineTypeStatistic.setDeviceTypeID(-1);
-        deviceOnlineTypeStatistic.setChecked(true);
-        deviceTypeStatisticList.add(deviceOnlineTypeStatistic);
-        deviceTypeStatisticList.addAll(dataList);
-        deviceTypeAdapter.notifyDataSetChanged();
     }
 
 
