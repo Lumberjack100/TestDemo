@@ -62,7 +62,7 @@ public class DeviceModuleMainFragment extends BaseTranslucentFragment implements
     @Override
     protected void initView() {
         List<Fragment> mFragments = new ArrayList<>();
-        mFragments.add(new NetWorkDeviceListFragment());
+        mFragments.add(new NetDeviceListFragment());
         mFragments.add(new BleDeviceListFragment());
         pagerAdapter = new ProjectPageAdapter((FragmentActivity) mActivity, mFragments);
         viewPager.setAdapter(pagerAdapter);

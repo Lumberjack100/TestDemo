@@ -28,7 +28,7 @@ import com.shmedo.mcloudapp.common.ui.fragment.BaseFragment;
 import com.shmedo.mcloudapp.common.view.recycleviewitemdivider.GridSpacingItemDecoration;
 import com.shmedo.mcloudapp.deviceconfig.model.DeviceOnlineStatistic;
 import com.shmedo.mcloudapp.deviceconfig.model.DeviceOnlineTypeStatistic;
-import com.shmedo.mcloudapp.deviceconfig.ui.activity.DeviceNetWorkConfigActivity;
+import com.shmedo.mcloudapp.deviceconfig.ui.activity.DeviceConfigActivity;
 import com.shmedo.mcloudapp.entity.PageResult;
 import com.shmedo.mcloudapp.network.BaseObserver;
 import com.shmedo.mcloudapp.network.MDRetrofit;
@@ -57,7 +57,7 @@ import timber.log.Timber;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class NetWorkDeviceListFragment extends BaseFragment {
+public class NetDeviceListFragment extends BaseFragment {
     @BindView(R.id.swipeLayout)
     SwipeRefreshLayout swipeRefresh;
 
@@ -185,7 +185,7 @@ public class NetWorkDeviceListFragment extends BaseFragment {
             @Override
             public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
                 ProjectDeviceInfo deviceInfo = deviceInfoList.get(position);
-                DeviceNetWorkConfigActivity.startActivity(mActivity, deviceInfo);
+                DeviceConfigActivity.startActivity(mActivity, deviceInfo);
             }
         });
         mRecyclerViewDevice.setAdapter(deviceInfoAdapter);

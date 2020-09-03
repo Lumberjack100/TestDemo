@@ -13,6 +13,7 @@ import com.shmedo.core.MCloudApp;
 import com.shmedo.core.model.UserInfo;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.activity.BaseActivity;
+import com.shmedo.mcloudapp.deviceconfig.model.DevcieCurrentState;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.NetDeviceCurrentState;
 import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfo;
 
@@ -21,6 +22,7 @@ import butterknife.BindView;
 public class DeviceCurrentStateActivity extends BaseActivity {
     private static final String CONNECT_WAY = "connect_way";
     private static final String DEVICE_INFO = "device_info";
+    private static final String DEVICE_CURRENT_STATE = "device_current_state";
 
     public static final int NET_CONNECT = 0x001;//网络连接
     public static final int BLE_CONNECT = 0x002;//蓝牙连接
@@ -30,13 +32,13 @@ public class DeviceCurrentStateActivity extends BaseActivity {
 
     private int connectWay = NET_CONNECT;
 
-    private int deviceid;
-
     private int companyID;
 
     private Fragment fragment;
 
     private ProjectDeviceInfo projectDeviceInfo;
+
+    private DevcieCurrentState devcieCurrentState;
 
 
     public static void startActivity(Context context, int connectWay) {
@@ -46,10 +48,11 @@ public class DeviceCurrentStateActivity extends BaseActivity {
         context.startActivity(intent);
     }
 
-    public static void startActivity(Context context, int connectWay, ProjectDeviceInfo projectDeviceInfo) {
+    public static void startActivity(Context context, int connectWay, ProjectDeviceInfo projectDeviceInfo, DevcieCurrentState devcieCurrentState) {
         Intent intent = new Intent(context, DeviceCurrentStateActivity.class);
         intent.putExtra(CONNECT_WAY, connectWay);
         intent.putExtra(DEVICE_INFO, projectDeviceInfo);
+        intent.putExtra(DEVICE_CURRENT_STATE, devcieCurrentState);
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         context.startActivity(intent);
     }
@@ -89,11 +92,15 @@ public class DeviceCurrentStateActivity extends BaseActivity {
         if (intent.getExtras().containsKey(DEVICE_INFO)) {
             projectDeviceInfo = intent.getParcelableExtra(DEVICE_INFO);
         }
+
+        if (intent.getExtras().containsKey(DEVICE_CURRENT_STATE)) {
+            devcieCurrentState = intent.getParcelableExtra(DEVICE_CURRENT_STATE);
+        }
     }
 
     private void initFragment() {
         if (connectWay == NET_CONNECT) {
-            fragment = NetDeviceCurrentState.newInstance("", "");
+            fragment = NetDeviceCurrentState.newInstance(projectDeviceInfo, devcieCurrentState);
 
         } else {
 

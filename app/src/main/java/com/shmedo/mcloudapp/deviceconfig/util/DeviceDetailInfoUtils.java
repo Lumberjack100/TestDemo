@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.util;
+package com.shmedo.mcloudapp.deviceconfig.util;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -18,6 +18,7 @@ import com.shmedo.mcloudapp.R;
 public class DeviceDetailInfoUtils {
     /**
      * 计算内部电压
+     *
      * @param internalBattery
      * @return
      */
@@ -36,6 +37,7 @@ public class DeviceDetailInfoUtils {
 
     /**
      * 设置设备状态
+     *
      * @param textView
      * @param status
      */
@@ -51,6 +53,7 @@ public class DeviceDetailInfoUtils {
 
     /**
      * 修改传感器数据状态
+     *
      * @param status
      * @return
      */
@@ -67,6 +70,7 @@ public class DeviceDetailInfoUtils {
 
     /**
      * 修改中心状态
+     *
      * @param
      * @param status
      */
@@ -144,8 +148,42 @@ public class DeviceDetailInfoUtils {
             imageView.setBackgroundResource(R.drawable.signalstrengthtwo);
         } else if (status >= 19 && status <= 25) {
             imageView.setBackgroundResource(R.drawable.signalstrengththree);
-        } else if (status >= 16 && status <= 31) {
+        } else if (status >= 26 && status <= 31) {
             imageView.setBackgroundResource(R.drawable.signalstrengthfour);
+        }
+    }
+
+    /**
+     * 根据  RSSI(=2CSQ-113) 值判断信号强度
+     * @param value
+     * @return
+     */
+    public static int getSignalResIdByRSSIValue(int value) {
+        if (value >= -111 && value <= -91) {
+            return R.drawable.signalstrengthone;
+        } else if (value >= -89 && value <= -77) {
+            return R.drawable.signalstrengthtwo;
+        } else if (value >= -75 && value <= -63) {
+            return R.drawable.signalstrengththree;
+        } else {
+            return R.drawable.signalstrengthfour;
+        }
+    }
+
+    /**
+     * 根据  CSQ 值判断信号强度
+     * @param value
+     * @return
+     */
+    public static int getSignalResIdByCSQValue(int value) {
+        if (value >= 1 && value <= 11) {
+            return R.drawable.signalstrengthone;
+        } else if (value >= 12 && value <= 18) {
+            return R.drawable.signalstrengthtwo;
+        } else if (value >= 19 && value <= 25) {
+            return R.drawable.signalstrengththree;
+        } else {
+            return R.drawable.signalstrengthfour;
         }
     }
 }

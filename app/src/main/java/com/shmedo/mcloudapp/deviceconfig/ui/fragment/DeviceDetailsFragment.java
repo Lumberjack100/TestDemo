@@ -37,7 +37,7 @@ import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.fragment.BaseFragment;
 import com.shmedo.mcloudapp.common.view.VerticalSwipeRefreshLayout;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.BaseDeviceConnectActivity;
-import com.shmedo.mcloudapp.util.DeviceDetailInfoUtils;
+import com.shmedo.mcloudapp.deviceconfig.util.DeviceDetailInfoUtils;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.base.CommonViewHolder;
 

@@ -13,13 +13,13 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.activity.BaseActivity;
-import com.shmedo.mcloudapp.deviceconfig.ui.fragment.NetWorkConfigDeviceFragment;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.NetConfigDeviceFragment;
 import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfo;
 
 import butterknife.BindView;
 import butterknife.OnClick;
 
-public class DeviceNetWorkConfigActivity extends BaseActivity {
+public class DeviceConfigActivity extends BaseActivity {
     private static final String DEVICE_INFO = "device_info";
 
     @BindView(R.id.tv_title)
@@ -28,13 +28,13 @@ public class DeviceNetWorkConfigActivity extends BaseActivity {
     @BindView(R.id.right_icon)
     ImageView mIvRightIcon;
 
-    private NetWorkConfigDeviceFragment netWorkConfigDeviceFragment;
+    private NetConfigDeviceFragment netConfigDeviceFragment;
 
     private ProjectDeviceInfo projectDeviceInfo;
 
 
     public static void startActivity(Context context, ProjectDeviceInfo projectDeviceInfo) {
-        Intent intent = new Intent(context, DeviceNetWorkConfigActivity.class);
+        Intent intent = new Intent(context, DeviceConfigActivity.class);
         intent.putExtra(DEVICE_INFO, projectDeviceInfo);
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         context.startActivity(intent);
@@ -67,8 +67,8 @@ public class DeviceNetWorkConfigActivity extends BaseActivity {
     }
 
     private void initFragment() {
-        netWorkConfigDeviceFragment = NetWorkConfigDeviceFragment.newInstance(projectDeviceInfo);
-        replaceFragment(netWorkConfigDeviceFragment);
+        netConfigDeviceFragment = NetConfigDeviceFragment.newInstance(projectDeviceInfo);
+        replaceFragment(netConfigDeviceFragment);
     }
 
     @OnClick({R.id.right_icon})

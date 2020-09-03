@@ -302,7 +302,7 @@
             android:maxAspectRatio="2.4"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".deviceconfig.ui.activity.DeviceNetWorkConfigActivity"
+            android:name=".deviceconfig.ui.activity.DeviceConfigActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:maxAspectRatio="2.4"
             android:screenOrientation="portrait"

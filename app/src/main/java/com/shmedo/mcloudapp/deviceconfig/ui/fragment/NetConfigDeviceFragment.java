@@ -68,7 +68,7 @@ import timber.log.Timber;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class NetWorkConfigDeviceFragment extends BaseFragment {
+public class NetConfigDeviceFragment extends BaseFragment {
     private static final String DEVICE_INFO = "device_info";
 
     @BindView(R.id.tv_device_name)
@@ -105,8 +105,8 @@ public class NetWorkConfigDeviceFragment extends BaseFragment {
     private List<String> msgIDList = new ArrayList<>();
 
 
-    public static NetWorkConfigDeviceFragment newInstance(ProjectDeviceInfo projectDeviceInfo) {
-        NetWorkConfigDeviceFragment fragment = new NetWorkConfigDeviceFragment();
+    public static NetConfigDeviceFragment newInstance(ProjectDeviceInfo projectDeviceInfo) {
+        NetConfigDeviceFragment fragment = new NetConfigDeviceFragment();
         Bundle args = new Bundle();
         args.putParcelable(DEVICE_INFO, projectDeviceInfo);
         fragment.setArguments(args);
@@ -180,7 +180,7 @@ public class NetWorkConfigDeviceFragment extends BaseFragment {
     private void setHeadInfo() {
         if (projectDeviceInfo != null) {
             mTvDeviceName.setText("物联网数据采集器");
-            mTvDeviceSn.setText(String.format("设备编号：%s", TextUtils.isEmpty(projectDeviceInfo.getName()) ? "" : projectDeviceInfo.getName()));
+            mTvDeviceSn.setText(String.format("设备编号：%s", TextUtils.isEmpty(projectDeviceInfo.getToken()) ? "" : projectDeviceInfo.getToken()));
             mTvDeviceModel.setText(String.format("产品型号：%s", TextUtils.isEmpty(projectDeviceInfo.getDeviceTypeName()) ? "" : projectDeviceInfo.getDeviceTypeName()));
             mTvTime.setText(String.format("更新时间：%s", TextUtils.isEmpty(projectDeviceInfo.getLastActiveTime()) ? "" : projectDeviceInfo.getLastActiveTime()));
             if (projectDeviceInfo.isOnline()) {
@@ -424,7 +424,7 @@ public class NetWorkConfigDeviceFragment extends BaseFragment {
                 ((QueryCurrentStateDialog) newFragment).setOnSeeDetailClickListener(new QueryCurrentStateDialog.OnSeeDetailClickListener() {
                     @Override
                     public void onSeeDetailClick(DevcieCurrentState devcieCurrentState) {
-                        DeviceCurrentStateActivity.startActivity(mActivity, DeviceCurrentStateActivity.NET_CONNECT);
+                        DeviceCurrentStateActivity.startActivity(mActivity, DeviceCurrentStateActivity.NET_CONNECT, projectDeviceInfo, devcieCurrentState);
                     }
                 });
                 break;

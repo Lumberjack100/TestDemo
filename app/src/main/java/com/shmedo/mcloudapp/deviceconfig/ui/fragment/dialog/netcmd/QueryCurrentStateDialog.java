@@ -113,7 +113,7 @@ public class QueryCurrentStateDialog extends BaseDispatchCmdDialog {
         contentView.setVisibility(View.VISIBLE);
         String content = IOTParseManager.getInstance().parse(queryCmdResult.getResponseContent());
         content = content.replace("state=", "").replace("\\", "");
-
+        content = content.replace("000_1:", "");
         try {
             devcieCurrentState = GsonFactory.getGson().fromJson(content, DevcieCurrentState.class);
             if (devcieCurrentState != null) {
