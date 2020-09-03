@@ -235,12 +235,13 @@ public class NetConfigDeviceFragment extends BaseFragment {
             case "时间":
             case "遥测":
             case "重启":
+            case "恢复出厂设置":
                 DispatchCmdParam dispatchCmdParam = new DispatchCmdParam();
                 dispatchCmdParam.setCmdID(selectedConfigModule.getCmdID());
                 dispatchCmdParam.setCompanyID(companyID);
                 dispatchCmdParam.setDeviceIDList(Arrays.asList(projectDeviceInfo.getId()));
 
-                showLoadingDialog("处理中...");
+                showLoadingDialog("指令下发中...");
                 DispatchCmdHelper.getInstance().processDispatchCmd(dispatchCmdParam);
                 break;
 
@@ -252,9 +253,6 @@ public class NetConfigDeviceFragment extends BaseFragment {
 
             case "采集器配置":
 //                IOTCollectorSettingActivity.startActivity(mActivity, IOTCollectorSettingActivity.NET_CONNECT, projectDeviceInfo.getId());
-                break;
-
-            default:
                 break;
         }
     }
@@ -320,7 +318,7 @@ public class NetConfigDeviceFragment extends BaseFragment {
             configModule = new ConfigModule(R.drawable.ic_device_advanced_setting, "设置", "高级设置");
             configModuleList.add(configModule);
         } else {
-            configModule = new ConfigModule(R.drawable.ic_device_advanced_setting, "恢复出厂设置", "恢复出厂设置");
+            configModule = new ConfigModule(R.drawable.ic_device_advanced_setting, 107, "恢复出厂设置", "恢复出厂设置");
             configModuleList.add(configModule);
         }
     }
@@ -390,7 +388,7 @@ public class NetConfigDeviceFragment extends BaseFragment {
     }
 
     private void showDispatchFailedDialog() {
-        String title = "";
+        String title = selectedConfigModule.getName();
         switch (selectedConfigModule.getName()) {
             case "状态":
                 title = "运行状态";
@@ -452,6 +450,10 @@ public class NetConfigDeviceFragment extends BaseFragment {
 
             case "固件升级":
                 newFragment = new CommonCmdDialog("固件升级", "固件升级中...", "此过程耗时较长,请耐心等待", msgIDList);
+                break;
+
+            case "恢复出厂设置":
+                newFragment = new CommonCmdDialog("恢复出厂设置", "设备开始恢复出厂设置...", "此过程耗时较长,请耐心等待", msgIDList);
                 break;
         }
         newFragment.show(getFragmentManager(), "dialog");
