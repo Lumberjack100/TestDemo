@@ -12,6 +12,8 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.shmedo.core.MCloudApp;
@@ -235,14 +237,11 @@ public class NetConfigDeviceFragment extends BaseFragment {
             case "时间":
             case "遥测":
             case "重启":
-            case "恢复出厂设置":
-                DispatchCmdParam dispatchCmdParam = new DispatchCmdParam();
-                dispatchCmdParam.setCmdID(selectedConfigModule.getCmdID());
-                dispatchCmdParam.setCompanyID(companyID);
-                dispatchCmdParam.setDeviceIDList(Arrays.asList(projectDeviceInfo.getId()));
+                processDispatchCommonCmd();
+                break;
 
-                showLoadingDialog("指令下发中...");
-                DispatchCmdHelper.getInstance().processDispatchCmd(dispatchCmdParam);
+            case "恢复出厂设置":
+                showResetWarnDialog();
                 break;
 
             case "固件升级":
@@ -255,6 +254,16 @@ public class NetConfigDeviceFragment extends BaseFragment {
 //                IOTCollectorSettingActivity.startActivity(mActivity, IOTCollectorSettingActivity.NET_CONNECT, projectDeviceInfo.getId());
                 break;
         }
+    }
+
+    private void processDispatchCommonCmd() {
+        DispatchCmdParam dispatchCmdParam = new DispatchCmdParam();
+        dispatchCmdParam.setCmdID(selectedConfigModule.getCmdID());
+        dispatchCmdParam.setCompanyID(companyID);
+        dispatchCmdParam.setDeviceIDList(Arrays.asList(projectDeviceInfo.getId()));
+
+        showLoadingDialog("指令下发中...");
+        DispatchCmdHelper.getInstance().processDispatchCmd(dispatchCmdParam);
     }
 
     private BaseDialogFragment.DialogFragmentClickListener listener = new BaseDialogFragment.DialogFragmentClickListener<FirmWareInfo>() {
@@ -274,9 +283,8 @@ public class NetConfigDeviceFragment extends BaseFragment {
             param.setCompanyID(companyID);
             param.setDeviceIDList(Arrays.asList(projectDeviceInfo.getId()));
 
-            showLoadingDialog("处理中...");
+            showLoadingDialog("指令下发中...");
             DispatchCmdHelper.getInstance().processDispatchRawCmd(param);
-
             return true;
         }
 
@@ -457,6 +465,27 @@ public class NetConfigDeviceFragment extends BaseFragment {
                 break;
         }
         newFragment.show(getFragmentManager(), "dialog");
+    }
+
+    private void showResetWarnDialog() {
+        MaterialDialog.Builder mBuilder = new MaterialDialog.Builder(mActivity)
+                .title("提示").content("确定恢复出厂设置吗？")
+                .negativeText("取消")
+                .positiveText("确定")
+                .negativeColor(getResources().getColor(R.color.font_main))
+                .positiveColor(getResources().getColor(R.color.colorPrimary))
+                .cancelable(false)
+                .canceledOnTouchOutside(false)
+                .onPositive(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        dialog.dismiss();
+                        processDispatchCommonCmd();
+                    }
+                });
+
+        MaterialDialog mMaterialDialog = mBuilder.build();
+        mMaterialDialog.show();
     }
 
 
