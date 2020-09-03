@@ -58,6 +58,29 @@ public class DevcieCurrentState implements Parcelable {
     private List<SensorErrnoBean> sensor_errno;//传感器错误码，
 
 
+    private String IMEI;
+    private String CCID;
+    private String uptime;
+    @SerializedName("1minload")
+    private String _$1minload;
+    private String freeram;
+    private String memunit;
+    private String procs;
+    private String poweroffcount;
+    private String socket1;
+    private String socket1stat;
+    private String socket2;
+    private String socket2stat;
+    private String socket3;
+    private String socket3stat;
+    private String socket4;
+    private String socket4stat;
+    private String socketRes;
+    private String socketResstat;
+    private String gnsscom1sfdog;
+    private String gnsscom2sfdog;
+    private String gnsscom3sfdog;
+
     protected DevcieCurrentState(Parcel in) {
         ext_power_volt = in.readDouble();
         inner_power_volt = in.readDouble();
@@ -80,36 +103,27 @@ public class DevcieCurrentState implements Parcelable {
         video_battery_volt = in.readDouble();
         video_wind_power = in.readDouble();
         sensor_errno = in.createTypedArrayList(SensorErrnoBean.CREATOR);
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeDouble(ext_power_volt);
-        dest.writeDouble(inner_power_volt);
-        dest.writeDouble(temp);
-        dest.writeDouble(humidity);
-        dest.writeDouble(temp_out);
-        dest.writeDouble(humidity_out);
-        dest.writeInt(_$4g_signal);
-        dest.writeByte((byte) (on_4g ? 1 : 0));
-        dest.writeDouble(bd_signal);
-        dest.writeDouble(nb_signal);
-        dest.writeString(sw_version);
-        dest.writeString(location);
-        dest.writeDouble(solar_volt);
-        dest.writeDouble(battery_volt);
-        dest.writeDouble(supply_power);
-        dest.writeDouble(consume_power);
-        dest.writeDouble(work_current);
-        dest.writeDouble(video_sun_volt);
-        dest.writeDouble(video_battery_volt);
-        dest.writeDouble(video_wind_power);
-        dest.writeTypedList(sensor_errno);
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
+        IMEI = in.readString();
+        CCID = in.readString();
+        uptime = in.readString();
+        _$1minload = in.readString();
+        freeram = in.readString();
+        memunit = in.readString();
+        procs = in.readString();
+        poweroffcount = in.readString();
+        socket1 = in.readString();
+        socket1stat = in.readString();
+        socket2 = in.readString();
+        socket2stat = in.readString();
+        socket3 = in.readString();
+        socket3stat = in.readString();
+        socket4 = in.readString();
+        socket4stat = in.readString();
+        socketRes = in.readString();
+        socketResstat = in.readString();
+        gnsscom1sfdog = in.readString();
+        gnsscom2sfdog = in.readString();
+        gnsscom3sfdog = in.readString();
     }
 
     public static final Creator<DevcieCurrentState> CREATOR = new Creator<DevcieCurrentState>() {
@@ -292,4 +306,222 @@ public class DevcieCurrentState implements Parcelable {
         this.sensor_errno = sensor_errno;
     }
 
+    public String getIMEI() {
+        return IMEI;
+    }
+
+    public void setIMEI(String IMEI) {
+        this.IMEI = IMEI;
+    }
+
+    public String getCCID() {
+        return CCID;
+    }
+
+    public void setCCID(String CCID) {
+        this.CCID = CCID;
+    }
+
+    public String getUptime() {
+        return uptime;
+    }
+
+    public void setUptime(String uptime) {
+        this.uptime = uptime;
+    }
+
+    public String get_$1minload() {
+        return _$1minload;
+    }
+
+    public void set_$1minload(String _$1minload) {
+        this._$1minload = _$1minload;
+    }
+
+    public String getFreeram() {
+        return freeram;
+    }
+
+    public void setFreeram(String freeram) {
+        this.freeram = freeram;
+    }
+
+    public String getMemunit() {
+        return memunit;
+    }
+
+    public void setMemunit(String memunit) {
+        this.memunit = memunit;
+    }
+
+    public String getProcs() {
+        return procs;
+    }
+
+    public void setProcs(String procs) {
+        this.procs = procs;
+    }
+
+    public String getPoweroffcount() {
+        return poweroffcount;
+    }
+
+    public void setPoweroffcount(String poweroffcount) {
+        this.poweroffcount = poweroffcount;
+    }
+
+    public String getSocket1() {
+        return socket1;
+    }
+
+    public void setSocket1(String socket1) {
+        this.socket1 = socket1;
+    }
+
+    public String getSocket1stat() {
+        return socket1stat;
+    }
+
+    public void setSocket1stat(String socket1stat) {
+        this.socket1stat = socket1stat;
+    }
+
+    public String getSocket2() {
+        return socket2;
+    }
+
+    public void setSocket2(String socket2) {
+        this.socket2 = socket2;
+    }
+
+    public String getSocket2stat() {
+        return socket2stat;
+    }
+
+    public void setSocket2stat(String socket2stat) {
+        this.socket2stat = socket2stat;
+    }
+
+    public String getSocket3() {
+        return socket3;
+    }
+
+    public void setSocket3(String socket3) {
+        this.socket3 = socket3;
+    }
+
+    public String getSocket3stat() {
+        return socket3stat;
+    }
+
+    public void setSocket3stat(String socket3stat) {
+        this.socket3stat = socket3stat;
+    }
+
+    public String getSocket4() {
+        return socket4;
+    }
+
+    public void setSocket4(String socket4) {
+        this.socket4 = socket4;
+    }
+
+    public String getSocket4stat() {
+        return socket4stat;
+    }
+
+    public void setSocket4stat(String socket4stat) {
+        this.socket4stat = socket4stat;
+    }
+
+    public String getSocketRes() {
+        return socketRes;
+    }
+
+    public void setSocketRes(String socketRes) {
+        this.socketRes = socketRes;
+    }
+
+    public String getSocketResstat() {
+        return socketResstat;
+    }
+
+    public void setSocketResstat(String socketResstat) {
+        this.socketResstat = socketResstat;
+    }
+
+    public String getGnsscom1sfdog() {
+        return gnsscom1sfdog;
+    }
+
+    public void setGnsscom1sfdog(String gnsscom1sfdog) {
+        this.gnsscom1sfdog = gnsscom1sfdog;
+    }
+
+    public String getGnsscom2sfdog() {
+        return gnsscom2sfdog;
+    }
+
+    public void setGnsscom2sfdog(String gnsscom2sfdog) {
+        this.gnsscom2sfdog = gnsscom2sfdog;
+    }
+
+    public String getGnsscom3sfdog() {
+        return gnsscom3sfdog;
+    }
+
+    public void setGnsscom3sfdog(String gnsscom3sfdog) {
+        this.gnsscom3sfdog = gnsscom3sfdog;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeDouble(ext_power_volt);
+        dest.writeDouble(inner_power_volt);
+        dest.writeDouble(temp);
+        dest.writeDouble(humidity);
+        dest.writeDouble(temp_out);
+        dest.writeDouble(humidity_out);
+        dest.writeInt(_$4g_signal);
+        dest.writeByte((byte) (on_4g ? 1 : 0));
+        dest.writeDouble(bd_signal);
+        dest.writeDouble(nb_signal);
+        dest.writeString(sw_version);
+        dest.writeString(location);
+        dest.writeDouble(solar_volt);
+        dest.writeDouble(battery_volt);
+        dest.writeDouble(supply_power);
+        dest.writeDouble(consume_power);
+        dest.writeDouble(work_current);
+        dest.writeDouble(video_sun_volt);
+        dest.writeDouble(video_battery_volt);
+        dest.writeDouble(video_wind_power);
+        dest.writeTypedList(sensor_errno);
+        dest.writeString(IMEI);
+        dest.writeString(CCID);
+        dest.writeString(uptime);
+        dest.writeString(_$1minload);
+        dest.writeString(freeram);
+        dest.writeString(memunit);
+        dest.writeString(procs);
+        dest.writeString(poweroffcount);
+        dest.writeString(socket1);
+        dest.writeString(socket1stat);
+        dest.writeString(socket2);
+        dest.writeString(socket2stat);
+        dest.writeString(socket3);
+        dest.writeString(socket3stat);
+        dest.writeString(socket4);
+        dest.writeString(socket4stat);
+        dest.writeString(socketRes);
+        dest.writeString(socketResstat);
+        dest.writeString(gnsscom1sfdog);
+        dest.writeString(gnsscom2sfdog);
+        dest.writeString(gnsscom3sfdog);
+    }
 }

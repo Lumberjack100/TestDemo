@@ -208,10 +208,10 @@ public class NetDeviceCurrentState extends BaseFragment {
                 mTVSimCardNumber.setText(TextUtils.isEmpty(simListBean.getCcid()) ? "--" : simListBean.getCcid());
             }
         }
-        mTvImeiNumber.setText("--");
+        mTvImeiNumber.setText(TextUtils.isEmpty(devcieCurrentState.getIMEI()) ? "--" : devcieCurrentState.getIMEI());
         mTvDeviceStartCode.setText("--");
         mTvFirmwareVersion.setText(TextUtils.isEmpty(devcieCurrentState.getSw_version()) ? "--" : devcieCurrentState.getSw_version());
-        mTvInstallPosition.setText(TextUtils.isEmpty(projectDeviceInfo.getInstallLocation()) ? "--" : projectDeviceInfo.getInstallLocation());
+        mTvInstallPosition.setText(TextUtils.isEmpty(devcieCurrentState.getLocation()) ? "--" : devcieCurrentState.getLocation());
     }
 
     /**
@@ -276,11 +276,16 @@ public class NetDeviceCurrentState extends BaseFragment {
      * 设备电压
      */
     private void initDevicePowerAndVoltage() {
-        mTvDeviceInternalPower.setText("--");
+        String powerStr = DeviceDetailInfoUtils.setDeviceInternalBattery(devcieCurrentState.getInner_power_volt());
+        double power = Double.parseDouble(powerStr.replace("%", ""));
+        SpannableStringBuilder builder = new SpannableStringBuilder(powerStr);
+        ForegroundColorSpan colorSpan = new ForegroundColorSpan(power <= 10 ? getContext().getResources().getColor(R.color.red) : getContext().getResources().getColor(R.color.green_53a659));
+        builder.setSpan(colorSpan, 0, builder.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        mTvDeviceInternalPower.setText(builder);
 
         double voltage = devcieCurrentState.getExt_power_volt();
-        SpannableStringBuilder builder = new SpannableStringBuilder(voltage + "V");
-        ForegroundColorSpan colorSpan = new ForegroundColorSpan(voltage <= 5 ? getContext().getResources().getColor(R.color.red) : getContext().getResources().getColor(R.color.text_color_3AD094));
+        builder = new SpannableStringBuilder(voltage + "V");
+        colorSpan = new ForegroundColorSpan(voltage <= 5 ? getContext().getResources().getColor(R.color.red) : getContext().getResources().getColor(R.color.text_color_3AD094));
         builder.setSpan(colorSpan, 0, builder.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         mTvDeviceExternalVoltage.setText(builder);
     }
