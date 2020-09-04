@@ -27,15 +27,15 @@
 
             <LinearLayout
                 android:id="@+id/iotCardLayout"
-                style="@style/Device_HistoryData_Analysis_LinearLayout_Style">
+                style="@style/Common_ClickableItem_LayoutStyle">
 
                 <TextView
-                    style="@style/Device_HistoryData_Analysis_TitleText_Style"
+                    style="@style/Common_ClickableItem_TitleStyle"
                     android:text="物联网卡" />
 
                 <TextView
                     android:id="@+id/tv_iot_card_number"
-                    style="@style/Device_HistoryData_Analysis_ValueText_Style"
+                    style="@style/Common_ClickableItem_ValueStyle"
                     android:text="--"
                     tools:text="430023489" />
 
@@ -50,15 +50,15 @@
 
             <LinearLayout
                 android:id="@+id/signalLayout"
-                style="@style/Device_HistoryData_Analysis_LinearLayout_Style">
+                style="@style/Common_ClickableItem_LayoutStyle">
 
                 <TextView
-                    style="@style/Device_HistoryData_Analysis_TitleText_Style"
+                    style="@style/Common_ClickableItem_TitleStyle"
                     android:text="4g信号" />
 
                 <TextView
                     android:id="@+id/tv_4g_signal"
-                    style="@style/Device_HistoryData_Analysis_ValueText_Style"
+                    style="@style/Common_ClickableItem_ValueStyle"
                     android:text="--"
                     tools:text="强" />
 
@@ -70,15 +70,15 @@
 
             <LinearLayout
                 android:id="@+id/powerLayout"
-                style="@style/Device_HistoryData_Analysis_LinearLayout_Style">
+                style="@style/Common_ClickableItem_LayoutStyle">
 
                 <TextView
-                    style="@style/Device_HistoryData_Analysis_TitleText_Style"
+                    style="@style/Common_ClickableItem_TitleStyle"
                     android:text="设备电量" />
 
                 <TextView
                     android:id="@+id/tv_power"
-                    style="@style/Device_HistoryData_Analysis_ValueText_Style"
+                    style="@style/Common_ClickableItem_ValueStyle"
                     android:text="--"
                     tools:text="69%" />
 
@@ -93,15 +93,15 @@
 
             <LinearLayout
                 android:id="@+id/externalVoltageLayout"
-                style="@style/Device_HistoryData_Analysis_LinearLayout_Style">
+                style="@style/Common_ClickableItem_LayoutStyle">
 
                 <TextView
-                    style="@style/Device_HistoryData_Analysis_TitleText_Style"
+                    style="@style/Common_ClickableItem_TitleStyle"
                     android:text="外部电压" />
 
                 <TextView
                     android:id="@+id/tv_external_voltage"
-                    style="@style/Device_HistoryData_Analysis_ValueText_Style"
+                    style="@style/Common_ClickableItem_ValueStyle"
                     android:text="--"
                     tools:text="28.4V" />
 
@@ -113,15 +113,15 @@
 
             <LinearLayout
                 android:id="@+id/firmwareVersionLayout"
-                style="@style/Device_HistoryData_Analysis_LinearLayout_Style">
+                style="@style/Common_ClickableItem_LayoutStyle">
 
                 <TextView
-                    style="@style/Device_HistoryData_Analysis_TitleText_Style"
+                    style="@style/Common_ClickableItem_TitleStyle"
                     android:text="固件版本" />
 
                 <TextView
                     android:id="@+id/tv_firmware_version"
-                    style="@style/Device_HistoryData_Analysis_ValueText_Style"
+                    style="@style/Common_ClickableItem_ValueStyle"
                     android:text="--"
                     tools:text="01.3.10" />
 
@@ -136,15 +136,15 @@
 
             <LinearLayout
                 android:id="@+id/locationLayout"
-                style="@style/Device_HistoryData_Analysis_LinearLayout_Style">
+                style="@style/Common_ClickableItem_LayoutStyle">
 
                 <TextView
-                    style="@style/Device_HistoryData_Analysis_TitleText_Style"
+                    style="@style/Common_ClickableItem_TitleStyle"
                     android:text="位置信息" />
 
                 <TextView
                     android:id="@+id/tv_location"
-                    style="@style/Device_HistoryData_Analysis_ValueText_Style"
+                    style="@style/Common_ClickableItem_ValueStyle"
                     android:text="--"
                     tools:text="106.71，26.57" />
 
@@ -159,15 +159,15 @@
 
             <LinearLayout
                 android:id="@+id/sensorStatusLayout"
-                style="@style/Device_HistoryData_Analysis_LinearLayout_Style">
+                style="@style/Common_ClickableItem_LayoutStyle">
 
                 <TextView
-                    style="@style/Device_HistoryData_Analysis_TitleText_Style"
+                    style="@style/Common_ClickableItem_TitleStyle"
                     android:text="传感器状态" />
 
                 <TextView
                     android:id="@+id/tv_sensor_status"
-                    style="@style/Device_HistoryData_Analysis_ValueText_Style"
+                    style="@style/Common_ClickableItem_ValueStyle"
                     android:text="--"
                     tools:text="解析中..." />
 

@@ -66,7 +66,7 @@
             android:orientation="vertical"
             android:visibility="gone">
 
-            <LinearLayout style="@style/UserInfo_EditItem_LinearLayoutStyle">
+            <LinearLayout style="@style/Common_EditItem_LayoutStyle">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -99,7 +99,7 @@
                 android:layout_marginStart="@dimen/dimen_size_20"
                 android:background="@color/gray_f2f2f2" />
 
-            <LinearLayout style="@style/UserInfo_EditItem_LinearLayoutStyle">
+            <LinearLayout style="@style/Common_EditItem_LayoutStyle">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -134,7 +134,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <LinearLayout style="@style/UserInfo_EditItem_LinearLayoutStyle">
+            <LinearLayout style="@style/Common_EditItem_LayoutStyle">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -221,7 +221,7 @@
                 android:layout_marginStart="@dimen/dimen_size_20"
                 android:background="@color/gray_f2f2f2" />
 
-            <LinearLayout style="@style/UserInfo_EditItem_LinearLayoutStyle">
+            <LinearLayout style="@style/Common_EditItem_LayoutStyle">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -310,7 +310,7 @@
             android:layout_marginStart="@dimen/dimen_size_20"
             android:background="@color/gray_f2f2f2" />
 
-        <LinearLayout style="@style/UserInfo_EditItem_LinearLayoutStyle">
+        <LinearLayout style="@style/Common_EditItem_LayoutStyle">
 
             <TextView
                 android:layout_width="0dp"

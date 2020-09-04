@@ -52,6 +52,7 @@ public class DeviceConfigActivity extends BaseActivity {
         setToolBar(R.id.toolbar);
         mToolbarTitle.setText("设备配置");
         mIvRightIcon.setVisibility(View.VISIBLE);
+        mIvRightIcon.setImageResource(R.drawable.ic_query_device_data);
         parseIntent();
         initFragment();
     }
@@ -74,6 +75,7 @@ public class DeviceConfigActivity extends BaseActivity {
     @OnClick({R.id.right_icon})
     public void onClick(View v) {
         if (v.getId() == R.id.right_icon) {
+            QueryDeviceDataActivity.startActivity(DeviceConfigActivity.this, projectDeviceInfo.getToken());
         }
     }
 

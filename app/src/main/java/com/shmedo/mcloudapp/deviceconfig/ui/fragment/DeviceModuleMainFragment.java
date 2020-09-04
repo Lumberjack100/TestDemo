@@ -26,6 +26,7 @@ import com.shmedo.mcloudapp.deviceconfig.model.DeviceTypeEnum;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.ConfigADMEActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.ConfigDASActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.ConfigE60Activity;
+import com.shmedo.mcloudapp.deviceconfig.ui.activity.QueryDeviceDataActivity;
 import com.shmedo.mcloudapp.entity.DeviceBasicInfoResult;
 import com.shmedo.mcloudapp.projects.adapter.ProjectPageAdapter;
 import com.shmedo.mcloudapp.util.permission.PermissionHelper;
@@ -119,7 +120,7 @@ public class DeviceModuleMainFragment extends BaseTranslucentFragment implements
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.iv_query_data:
-
+                QueryDeviceDataActivity.startActivity(mActivity, "");
                 break;
 
             case R.id.iv_scan_device_code:

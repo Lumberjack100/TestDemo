@@ -21,7 +21,7 @@
             android:textColor="@color/sub_title_text_color"
             android:textSize="15sp" />
 
-        <LinearLayout style="@style/Device_CurrentState_SingleItem_Style">
+        <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -32,13 +32,13 @@
 
             <TextView
                 android:id="@+id/tv_device_sn"
-                style="@style/Device_CurrentState_SingleItem_Value_Style"
+                style="@style/DeviceCurrentState_SingleItem_ValueStyle"
                 android:textColor="@color/text_color_3AD094"
                 tools:text="19F00L" />
 
         </LinearLayout>
 
-        <LinearLayout style="@style/Device_CurrentState_SingleItem_Style">
+        <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -49,12 +49,12 @@
 
             <TextView
                 android:id="@+id/tv_sim_card_number"
-                style="@style/Device_CurrentState_SingleItem_Value_Style"
+                style="@style/DeviceCurrentState_SingleItem_ValueStyle"
                 tools:text="19902102313" />
 
         </LinearLayout>
 
-        <LinearLayout style="@style/Device_CurrentState_SingleItem_Style">
+        <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -65,12 +65,12 @@
 
             <TextView
                 android:id="@+id/tv_imei_number"
-                style="@style/Device_CurrentState_SingleItem_Value_Style"
+                style="@style/DeviceCurrentState_SingleItem_ValueStyle"
                 tools:text="19902102313" />
 
         </LinearLayout>
 
-        <LinearLayout style="@style/Device_CurrentState_SingleItem_Style">
+        <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -81,12 +81,12 @@
 
             <TextView
                 android:id="@+id/tv_device_start_code"
-                style="@style/Device_CurrentState_SingleItem_Value_Style"
+                style="@style/DeviceCurrentState_SingleItem_ValueStyle"
                 tools:text="19902102313" />
 
         </LinearLayout>
 
-        <LinearLayout style="@style/Device_CurrentState_SingleItem_Style">
+        <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -97,12 +97,12 @@
 
             <TextView
                 android:id="@+id/tv_firmware_version"
-                style="@style/Device_CurrentState_SingleItem_Value_Style"
+                style="@style/DeviceCurrentState_SingleItem_ValueStyle"
                 tools:text="19902102313" />
 
         </LinearLayout>
 
-        <LinearLayout style="@style/Device_CurrentState_SingleItem_Style">
+        <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -113,7 +113,7 @@
 
             <TextView
                 android:id="@+id/tv_install_position"
-                style="@style/Device_CurrentState_SingleItem_Value_Style"
+                style="@style/DeviceCurrentState_SingleItem_ValueStyle"
                 tools:text="19902102313" />
 
         </LinearLayout>
@@ -127,7 +127,7 @@
             android:textColor="@color/sub_title_text_color"
             android:textSize="15sp" />
 
-        <LinearLayout style="@style/Device_CurrentState_SingleItem_Style">
+        <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -138,7 +138,7 @@
 
             <TextView
                 android:id="@+id/tv_signal_strength"
-                style="@style/Device_CurrentState_SingleItem_Value_Style"
+                style="@style/DeviceCurrentState_SingleItem_ValueStyle"
                 android:drawablePadding="10dp"
                 tools:drawableRight="@drawable/signalstrengthfour"
                 tools:text="19902102313" />
@@ -550,7 +550,7 @@
             android:textColor="@color/sub_title_text_color"
             android:textSize="15sp" />
 
-        <LinearLayout style="@style/Device_CurrentState_SingleItem_Style">
+        <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -561,12 +561,12 @@
 
             <TextView
                 android:id="@+id/tv_solar_status"
-                style="@style/Device_CurrentState_SingleItem_Value_Style"
+                style="@style/DeviceCurrentState_SingleItem_ValueStyle"
                 tools:text="19F00L" />
 
         </LinearLayout>
 
-        <LinearLayout style="@style/Device_CurrentState_SingleItem_Style">
+        <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -577,12 +577,12 @@
 
             <TextView
                 android:id="@+id/tv_solar_voltage"
-                style="@style/Device_CurrentState_SingleItem_Value_Style"
+                style="@style/DeviceCurrentState_SingleItem_ValueStyle"
                 tools:text="19902102313" />
 
         </LinearLayout>
 
-        <LinearLayout style="@style/Device_CurrentState_SingleItem_Style">
+        <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -593,12 +593,12 @@
 
             <TextView
                 android:id="@+id/tv_battery_voltage"
-                style="@style/Device_CurrentState_SingleItem_Value_Style"
+                style="@style/DeviceCurrentState_SingleItem_ValueStyle"
                 tools:text="19902102313" />
 
         </LinearLayout>
 
-        <LinearLayout style="@style/Device_CurrentState_SingleItem_Style">
+        <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -609,12 +609,12 @@
 
             <TextView
                 android:id="@+id/tv_supply_power"
-                style="@style/Device_CurrentState_SingleItem_Value_Style"
+                style="@style/DeviceCurrentState_SingleItem_ValueStyle"
                 tools:text="19902102313" />
 
         </LinearLayout>
 
-        <LinearLayout style="@style/Device_CurrentState_SingleItem_Style">
+        <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -625,7 +625,7 @@
 
             <TextView
                 android:id="@+id/tv_consume_power"
-                style="@style/Device_CurrentState_SingleItem_Value_Style"
+                style="@style/DeviceCurrentState_SingleItem_ValueStyle"
                 tools:text="19902102313" />
 
         </LinearLayout>
@@ -639,7 +639,7 @@
             android:textColor="@color/sub_title_text_color"
             android:textSize="15sp" />
 
-        <LinearLayout style="@style/Device_CurrentState_SingleItem_Style">
+        <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -650,12 +650,12 @@
 
             <TextView
                 android:id="@+id/tv_internal_status"
-                style="@style/Device_CurrentState_SingleItem_Value_Style"
+                style="@style/DeviceCurrentState_SingleItem_ValueStyle"
                 tools:text="19F00L" />
 
         </LinearLayout>
 
-        <LinearLayout style="@style/Device_CurrentState_SingleItem_Style">
+        <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -666,12 +666,12 @@
 
             <TextView
                 android:id="@+id/tv_internal_temperature"
-                style="@style/Device_CurrentState_SingleItem_Value_Style"
+                style="@style/DeviceCurrentState_SingleItem_ValueStyle"
                 tools:text="19902102313" />
 
         </LinearLayout>
 
-        <LinearLayout style="@style/Device_CurrentState_SingleItem_Style">
+        <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -682,7 +682,7 @@
 
             <TextView
                 android:id="@+id/tv_internal_humidity"
-                style="@style/Device_CurrentState_SingleItem_Value_Style"
+                style="@style/DeviceCurrentState_SingleItem_ValueStyle"
                 tools:text="19902102313" />
 
         </LinearLayout>
@@ -696,7 +696,7 @@
             android:textColor="@color/sub_title_text_color"
             android:textSize="15sp" />
 
-        <LinearLayout style="@style/Device_CurrentState_SingleItem_Style">
+        <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -707,12 +707,12 @@
 
             <TextView
                 android:id="@+id/tv_external_status"
-                style="@style/Device_CurrentState_SingleItem_Value_Style"
+                style="@style/DeviceCurrentState_SingleItem_ValueStyle"
                 tools:text="19F00L" />
 
         </LinearLayout>
 
-        <LinearLayout style="@style/Device_CurrentState_SingleItem_Style">
+        <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -723,12 +723,12 @@
 
             <TextView
                 android:id="@+id/tv_external_temperature"
-                style="@style/Device_CurrentState_SingleItem_Value_Style"
+                style="@style/DeviceCurrentState_SingleItem_ValueStyle"
                 tools:text="19902102313" />
 
         </LinearLayout>
 
-        <LinearLayout style="@style/Device_CurrentState_SingleItem_Style">
+        <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -739,7 +739,7 @@
 
             <TextView
                 android:id="@+id/tv_external_humidity"
-                style="@style/Device_CurrentState_SingleItem_Value_Style"
+                style="@style/DeviceCurrentState_SingleItem_ValueStyle"
                 tools:text="19902102313" />
 
         </LinearLayout>
@@ -753,7 +753,7 @@
             android:textColor="@color/sub_title_text_color"
             android:textSize="15sp" />
 
-        <LinearLayout style="@style/Device_CurrentState_SingleItem_Style">
+        <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -764,12 +764,12 @@
 
             <TextView
                 android:id="@+id/tv_device_internal_power"
-                style="@style/Device_CurrentState_SingleItem_Value_Style"
+                style="@style/DeviceCurrentState_SingleItem_ValueStyle"
                 tools:text="19F00L" />
 
         </LinearLayout>
 
-        <LinearLayout style="@style/Device_CurrentState_SingleItem_Style">
+        <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -780,7 +780,7 @@
 
             <TextView
                 android:id="@+id/tv_device_external_voltage"
-                style="@style/Device_CurrentState_SingleItem_Value_Style"
+                style="@style/DeviceCurrentState_SingleItem_ValueStyle"
                 tools:text="19902102313" />
 
         </LinearLayout>

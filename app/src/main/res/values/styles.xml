@@ -236,16 +236,16 @@
         <item name="android:paddingBottom">@dimen/dimen_size_15</item>
     </style>
 
-    <style name="UserInfo_EditItem_LinearLayoutStyle">
+    <style name="Common_EditItem_LayoutStyle">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">55dp</item>
         <item name="android:gravity">center_vertical</item>
         <item name="android:background">@color/white</item>
         <item name="android:paddingLeft">16dp</item>
-        <item name="android:paddingRight">18dp</item>
+        <item name="android:paddingRight">16dp</item>
     </style>
 
-    <style name="Device_HistoryData_Analysis_LinearLayout_Style">
+    <style name="Common_ClickableItem_LayoutStyle">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">55dp</item>
         <item name="android:gravity">center_vertical</item>
@@ -254,17 +254,17 @@
         <item name="android:foreground">?attr/selectableItemBackground</item>
         <item name="android:background">@color/white</item>
         <item name="android:paddingLeft">16dp</item>
-        <item name="android:paddingRight">18dp</item>
+        <item name="android:paddingRight">16dp</item>
     </style>
 
-    <style name="Device_HistoryData_Analysis_TitleText_Style">
+    <style name="Common_ClickableItem_TitleStyle">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textColor">@color/title_text_color</item>
         <item name="android:textSize">17sp</item>
     </style>
 
-    <style name="Device_HistoryData_Analysis_ValueText_Style">
+    <style name="Common_ClickableItem_ValueStyle">
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_weight">1</item>
@@ -278,7 +278,7 @@
     </style>
 
     <!--设备当前运行状态单条基本信息样式-->
-    <style name="Device_CurrentState_SingleItem_Style">
+    <style name="DeviceCurrentState_SingleItem_Style">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">45dp</item>
         <item name="android:gravity">center_vertical</item>
@@ -288,7 +288,7 @@
         <item name="android:paddingRight">16dp</item>
     </style>
 
-    <style name="Device_CurrentState_SingleItem_Value_Style">
+    <style name="DeviceCurrentState_SingleItem_ValueStyle">
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_weight">1</item>

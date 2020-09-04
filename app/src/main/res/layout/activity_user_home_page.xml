@@ -80,7 +80,7 @@
                     android:layout_marginStart="@dimen/dimen_size_20"
                     android:background="@color/gray_f2f2f2" />
 
-                <LinearLayout style="@style/UserInfo_EditItem_LinearLayoutStyle">
+                <LinearLayout style="@style/Common_EditItem_LayoutStyle">
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -114,7 +114,7 @@
                     android:layout_marginStart="@dimen/dimen_size_20"
                     android:background="@color/gray_f2f2f2" />
 
-                <LinearLayout style="@style/UserInfo_EditItem_LinearLayoutStyle">
+                <LinearLayout style="@style/Common_EditItem_LayoutStyle">
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -150,7 +150,7 @@
 
                 <LinearLayout
                     android:id="@+id/mobileLayout"
-                    style="@style/UserInfo_EditItem_LinearLayoutStyle"
+                    style="@style/Common_EditItem_LayoutStyle"
                     android:foreground="?attr/selectableItemBackground">
 
                     <TextView
@@ -182,7 +182,7 @@
                     android:layout_marginStart="@dimen/dimen_size_20"
                     android:background="@color/gray_f2f2f2" />
 
-                <LinearLayout style="@style/UserInfo_EditItem_LinearLayoutStyle">
+                <LinearLayout style="@style/Common_EditItem_LayoutStyle">
 
                     <TextView
                         android:layout_width="wrap_content"

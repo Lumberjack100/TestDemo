@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/main_bg_gray"
+    android:orientation="vertical">
+
+    <include layout="@layout/common_toolbar_white_bg" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="14dp"
+        android:background="@color/white"
+        android:orientation="vertical">
+
+        <LinearLayout style="@style/Common_EditItem_LayoutStyle">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="设备SN号"
+                android:textColor="@color/title_text_color"
+                android:textSize="@dimen/text_size_17" />
+
+            <com.shmedo.mcloudapp.common.view.ClearEditText
+                android:id="@+id/snET"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginStart="@dimen/dimen_size_25"
+                android:layout_weight="1"
+                android:background="@null"
+                android:drawablePadding="@dimen/dimen_size_15"
+                android:ellipsize="end"
+                android:gravity="center_vertical|right"
+                android:hint="请输入"
+                android:maxLength="10"
+                android:maxLines="1"
+                android:textColor="@color/title_text_color"
+                android:textColorHint="@color/text_color_cccccc"
+                android:textSize="@dimen/text_size_17" />
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:background="@color/divider_line_bg_efefef" />
+
+        <LinearLayout style="@style/Common_EditItem_LayoutStyle">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tv_start_time"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:hint="开始时间"
+                    android:singleLine="true"
+                    android:textColor="@color/title_text_color"
+                    android:textColorHint="@color/text_color_cccccc"
+                    android:textSize="@dimen/text_size_15" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.5dp"
+                    android:layout_marginTop="12dp"
+                    android:background="@color/divider_line_bg_efefef" />
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="12dp"
+                android:layout_height="2dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:background="@color/blue_52B4F8" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tv_end_time"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:hint="结束时间"
+                    android:singleLine="true"
+                    android:textColor="@color/title_text_color"
+                    android:textColorHint="@color/text_color_cccccc"
+                    android:textSize="@dimen/text_size_15" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.5dp"
+                    android:layout_marginTop="12dp"
+                    android:background="@color/divider_line_bg_efefef" />
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tv_search"
+                android:layout_width="60dp"
+                android:layout_height="30dp"
+                android:layout_marginStart="12dp"
+                android:background="@drawable/bg_corner_15dp_blue"
+                android:gravity="center"
+                android:text="搜索"
+                android:textColor="@color/white"
+                android:textSize="@dimen/text_size_15" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingTop="20dp"
+        android:clipToPadding="false" />
+</LinearLayout>
