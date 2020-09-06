@@ -33,6 +33,8 @@ public interface AppContants {
 
         String QUERY_PROJECT_DEVICE = "queryProjectDevice";
 
+        String CUR_DEVICE_SN = "cur_device_sn";
+
         String CUR_DEVICE_NAME = "cur_device_name";
 
         String DEVICE_MAC_ADDRESS = "cur_device_mac_address";

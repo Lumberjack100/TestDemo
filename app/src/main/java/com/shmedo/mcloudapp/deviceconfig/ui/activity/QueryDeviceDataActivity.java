@@ -17,6 +17,7 @@ import com.shmedo.mcloudapp.common.ui.activity.BaseActivity;
 import com.shmedo.mcloudapp.common.view.ClearEditText;
 import com.shmedo.mcloudapp.common.view.TimePickerDialog;
 import com.shmedo.mcloudapp.deviceconfig.adapter.DeviceReportDataAdapter;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.MyDatePicker;
 import com.shmedo.mcloudapp.entity.QueryCloudDataInfo;
 import com.shmedo.mcloudapp.entity.parameter.QueryCloudDataParameter;
 import com.shmedo.mcloudapp.network.BaseObserver;
@@ -120,35 +121,79 @@ public class QueryDeviceDataActivity extends BaseActivity {
     @OnClick({R.id.tv_start_time, R.id.tv_end_time, R.id.tv_search})
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.tv_start_time:
-                timeDialog = null;
-                timeDialog = new TimePickerDialog(this);
-                timeDialog.setTimeLisinter(mTvStartTime);
-                timeDialog.build();
-                break;
+            case R.id.tv_start_time: {
+//                timeDialog = null;
+//                timeDialog = new TimePickerDialog(this);
+//                timeDialog.setTimeLisinter(mTvStartTime);
+//                timeDialog.build();
 
-            case R.id.tv_end_time:
-                timeDialog = null;
-                timeDialog = new TimePickerDialog(this);
-                timeDialog.setTimeLisinter(mTvEndTime);
-                timeDialog.build();
-                break;
+                MyDatePicker newFragment = new MyDatePicker(this, mTvStartTime.getText().toString(), "选择开始时间");
+                newFragment.setOnPositiveClickListener(new MyDatePicker.OnPositiveClickListener() {
+                    @Override
+                    public void onPositiveClick(String date) {
+                        mTvStartTime.setText(date);
+                    }
+                });
+                newFragment.show(getSupportFragmentManager(), "dialog");
+            }
+            break;
+
+            case R.id.tv_end_time: {
+                MyDatePicker newFragment = new MyDatePicker(this, mTvEndTime.getText().toString(), "选择结束时间");
+                newFragment.setOnPositiveClickListener(new MyDatePicker.OnPositiveClickListener() {
+                    @Override
+                    public void onPositiveClick(String date) {
+                        mTvEndTime.setText(date);
+                    }
+                });
+                newFragment.show(getSupportFragmentManager(), "dialog");
+            }
+            break;
 
             case R.id.tv_search:
-                if (TextUtils.isEmpty(mEtSn.getText().toString().trim())) {
-                    ToastUtils.show("请输入SN号");
+                if (!checkValue()) {
                     return;
                 }
-                snNubmer = mEtSn.getText().toString();
-                startTime = mTvStartTime.getText().toString() + " 00:00:00";
-                endTime = mTvEndTime.getText().toString() + " 23:59:59";
-                // 当按了搜索之后关闭软键盘
-                KeyBordUtils.hideSoftKeyboard(mEtSn);
+
+                startTime = startTime + " 00:00:00";
+                endTime = endTime + " 23:59:59";
                 queryCloudData();
                 break;
-
         }
     }
+
+    private boolean checkValue() {
+        snNubmer = mEtSn.getText().toString();
+        startTime = mTvStartTime.getText().toString();
+        endTime = mTvEndTime.getText().toString();
+
+        if (TextUtils.isEmpty(snNubmer)) {
+            ToastUtils.show("请输入SN号");
+            return false;
+        }
+        // 当按了搜索之后关闭软键盘
+        KeyBordUtils.hideSoftKeyboard(mEtSn);
+
+        if (TextUtils.isEmpty(startTime)) {
+            ToastUtils.show("请选择开始时间");
+            return false;
+        }
+
+        if (TextUtils.isEmpty(endTime)) {
+            ToastUtils.show("请选择结束时间");
+            return false;
+        }
+
+        Date start = DateUtil.stringToDate(startTime, "yyyy-MM-d");
+        Date end = DateUtil.stringToDate(endTime, "yyyy-MM-d");
+        if (start.after(end)) {
+            ToastUtils.show("开始时间必须小于等于结束时间");
+            return false;
+        }
+
+        return true;
+    }
+
 
     private void queryCloudData() {
         QueryCloudDataParameter paramter = new QueryCloudDataParameter();

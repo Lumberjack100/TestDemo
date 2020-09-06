@@ -247,7 +247,7 @@ public class NetConfigDeviceFragment extends BaseFragment {
             case "固件升级":
                 FirmWareSelectDialog newFragment = new FirmWareSelectDialog(companyID, projectDeviceInfo.getDeviceTypeID());
                 newFragment.setDialogFragmentClickListener(listener);
-                newFragment.show(getFragmentManager(), "dialog");
+                newFragment.show(getChildFragmentManager(), "dialog");
                 break;
 
             case "采集器配置":
@@ -415,7 +415,7 @@ public class NetConfigDeviceFragment extends BaseFragment {
                 break;
         }
         BaseDispatchCmdDialog newFragment = new DispatchCmdFailedDialog(title);
-        newFragment.show(getFragmentManager(), "dialog");
+        newFragment.show(getChildFragmentManager(), "dialog");
     }
 
     private void showDispatchSuccessDialog() {
@@ -464,7 +464,7 @@ public class NetConfigDeviceFragment extends BaseFragment {
                 newFragment = new CommonCmdDialog("恢复出厂设置", "设备开始恢复出厂设置...", "此过程耗时较长,请耐心等待", msgIDList);
                 break;
         }
-        newFragment.show(getFragmentManager(), "dialog");
+        newFragment.show(getChildFragmentManager(), "dialog");
     }
 
     private void showResetWarnDialog() {

@@ -27,7 +27,7 @@ import timber.log.Timber;
 /**
  * 数字式传感器配置参数对话框
  */
-public class CommonSensorConfigDialogFragment extends BaseDialogFragment {
+public class CommonSensorConfigDialogFragment extends BaseSensorConfigDialog {
     @BindView(R.id.tv_triggerThreshold)
     TextView mTvAlarmValue;
     @BindView(R.id.tv_correctionValue)

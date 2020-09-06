@@ -13,7 +13,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
-import com.shmedo.core.model.CollectorSensorParamsInfo;
 import com.shmedo.mcloudapp.R;
 
 import butterknife.ButterKnife;
@@ -28,9 +27,6 @@ public abstract class BaseDialogFragment extends DialogFragment {
 
     private View mRootView;
 
-    protected CollectorSensorParamsInfo collectorSensorParamsInfo;
-
-    protected String selectedChannelNumber = "";
 
     protected abstract int getLayoutId();
 
@@ -64,9 +60,9 @@ public abstract class BaseDialogFragment extends DialogFragment {
         //无标题  必须放在setContextView之前调用
         window.requestFeature(Window.FEATURE_NO_TITLE);
         //Sets whether this dialog is canceled when touched outside the window's bounds.
-        mDialog.setCanceledOnTouchOutside(true);
+        mDialog.setCanceledOnTouchOutside(false);
         //Sets whether this dialog is cancelable with the BACK key.
-        mDialog.setCancelable(false);
+        this.setCancelable(true);
         window.setWindowAnimations(R.style.DialogFragmentAnimation);
         //window外可以点击,不拦截窗口外的事件
 //        window.addFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL);

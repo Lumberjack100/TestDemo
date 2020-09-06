@@ -42,7 +42,7 @@ import timber.log.Timber;
  * 振弦式传感器配置参数对话框
  * 基康渗压计(BGK-4500)、葛南渗压计(VWP-03)、轴力计(ZLJ-300T)
  */
-public class Osmometer_AxialForceGaugeDialogFragment extends BaseDialogFragment {
+public class Osmometer_AxialForceGaugeDialogFragment extends BaseSensorConfigDialog {
 
     @BindView(R.id.spinnerType)
     Spinner spinnerType;
