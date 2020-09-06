@@ -27,7 +27,6 @@ import com.shmedo.core.util.DensityUtil;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.fragment.BaseFragment;
 import com.shmedo.mcloudapp.common.view.recycleviewitemdivider.GridSpacingItemDecoration;
-import com.shmedo.mcloudapp.deviceconfig.model.DeviceOnlineStatistic;
 import com.shmedo.mcloudapp.deviceconfig.model.DeviceOnlineTypeStatistic;
 import com.shmedo.mcloudapp.entity.PageResult;
 import com.shmedo.mcloudapp.network.BaseObserver;
@@ -115,24 +114,29 @@ public class DevicesInProjectFragment extends BaseFragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         initUserData();
-
         pageInfo = new PageInfo(1);
         initRefreshLayout();
         initDeviceTypeAdapter();
         initDeviceInfoAdapter();
         initLoadMore();
-    }
 
-    @Override
-    public void onStart() {
-        super.onStart();
         // 进入页面，刷新数据
-        swipeRefresh.setRefreshing(true);
-        queryCompanyDeviceOnlineStatistics();
         queryCompanyDeviceOnlineTypeStatistics();
+        swipeRefresh.setRefreshing(true);
         deviceTypeID = -1;
         refresh();
     }
+
+//    @Override
+//    public void onStart() {
+//        super.onStart();
+//        // 进入页面，刷新数据
+//        swipeRefresh.setRefreshing(true);
+//        queryCompanyDeviceOnlineStatistics();
+//        queryCompanyDeviceOnlineTypeStatistics();
+//        deviceTypeID = -1;
+//        refresh();
+//    }
 
     private void initUserData() {
         UserInfo userInfo = MCloudApp.getCurrentUserInfo();
@@ -162,7 +166,7 @@ public class DevicesInProjectFragment extends BaseFragment {
         deviceTypeAdapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
-                DeviceOnlineTypeStatistic deviceOnlineTypeStatistic = (DeviceOnlineTypeStatistic) deviceTypeStatisticList.get(position);
+                DeviceOnlineTypeStatistic deviceOnlineTypeStatistic = deviceTypeStatisticList.get(position);
                 if (deviceOnlineTypeStatistic.isChecked()) {
                     return;
                 }
@@ -179,6 +183,7 @@ public class DevicesInProjectFragment extends BaseFragment {
 
                 deviceTypeID = deviceOnlineTypeStatistic.getDeviceTypeID();
                 swipeRefresh.setRefreshing(true);
+                updateTopView(deviceOnlineTypeStatistic);
                 refresh();
             }
         });
@@ -197,7 +202,7 @@ public class DevicesInProjectFragment extends BaseFragment {
         deviceInfoAdapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
-                ProjectDeviceInfo deviceInfo = (ProjectDeviceInfo) deviceInfoList.get(position);
+                ProjectDeviceInfo deviceInfo = deviceInfoList.get(position);
             }
         });
         mRecyclerViewDevice.setAdapter(deviceInfoAdapter);
@@ -222,10 +227,8 @@ public class DevicesInProjectFragment extends BaseFragment {
 
     @OnClick({R.id.search_container})
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.search_container:
-                DeviceSearchActivity.startActivity(getActivity());
-                break;
+        if (v.getId() == R.id.search_container) {
+            DeviceSearchActivity.startActivity(getActivity());
         }
     }
 
@@ -247,28 +250,32 @@ public class DevicesInProjectFragment extends BaseFragment {
         queryCompanyDevice();
     }
 
+    private void updateTopView(DeviceOnlineTypeStatistic deviceOnlineTypeStatistic) {
+        int onlineCount = 0;
+        int offlineCount = 0;
 
-    /**
-     * 查询公司设备在线统计信息
-     */
-    private void queryCompanyDeviceOnlineStatistics() {
-        RequestBody body = RequestBody.create(NetworkConst.JSON_TYPE, String.valueOf(companyID));
-        MDRetrofit.getInstance()
-                .createService()
-                .QueryCompanyDeviceOnlineStatistics(MCloudApp.getAccessToken(), body)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new BaseObserver<DeviceOnlineStatistic>() {
-                    @Override
-                    public void Success(DeviceOnlineStatistic data, String message) {
-                        updateTopView(data);
-                    }
+        if (deviceOnlineTypeStatistic.getDeviceTypeName().equals("全部")) {
+            for (DeviceOnlineTypeStatistic typeStatistic : deviceTypeStatisticList) {
+                if (typeStatistic.getDeviceTypeName().equals("全部")) {
+                    continue;
+                }
+                onlineCount += typeStatistic.getOnlineCount();
+                offlineCount += typeStatistic.getOfflineCount();
+            }
+        } else {
+            onlineCount = deviceOnlineTypeStatistic.getOnlineCount();
+            offlineCount = deviceOnlineTypeStatistic.getOfflineCount();
+        }
 
-                    @Override
-                    public void Failure(String message) {
-                        Timber.w("服务器连接失败--%s", message);
-                    }
-                });
+        tvOnlineNum.setText(String.valueOf(onlineCount));
+        tvOfflineNum.setText(String.valueOf(offlineCount));
+        DecimalFormat df = new DecimalFormat("#.#");//格式化小数
+
+        String rate = df.format((float) onlineCount / (onlineCount + offlineCount) * 100) + "%";
+        SpannableString spannableString = new SpannableString(rate);
+        AbsoluteSizeSpan absoluteSizeSpan = new AbsoluteSizeSpan(18, true);
+        spannableString.setSpan(absoluteSizeSpan, rate.indexOf("%"), spannableString.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        tvOnlineRate.setText(new SpannedString(spannableString));
     }
 
     /**
@@ -285,6 +292,7 @@ public class DevicesInProjectFragment extends BaseFragment {
                     @Override
                     public void Success(List<DeviceOnlineTypeStatistic> data, String message) {
                         setDeviceTypeData(data);
+                        updateTopView(deviceTypeStatisticList.get(0));
                     }
 
                     @Override
@@ -292,6 +300,20 @@ public class DevicesInProjectFragment extends BaseFragment {
                         Timber.w("服务器连接失败--%s", message);
                     }
                 });
+    }
+
+    private void setDeviceTypeData(List<DeviceOnlineTypeStatistic> dataList) {
+        if (dataList == null || dataList.size() == 0) {
+            return;
+        }
+        deviceTypeStatisticList.clear();
+        DeviceOnlineTypeStatistic deviceOnlineTypeStatistic = new DeviceOnlineTypeStatistic();
+        deviceOnlineTypeStatistic.setDeviceTypeName("全部");
+        deviceOnlineTypeStatistic.setDeviceTypeID(-1);
+        deviceOnlineTypeStatistic.setChecked(true);
+        deviceTypeStatisticList.add(deviceOnlineTypeStatistic);
+        deviceTypeStatisticList.addAll(dataList);
+        deviceTypeAdapter.notifyDataSetChanged();
     }
 
     private void queryCompanyDevice() {
@@ -317,6 +339,9 @@ public class DevicesInProjectFragment extends BaseFragment {
                         deviceInfoAdapter.getLoadMoreModule().setEnableLoadMore(true);
 
                         if (data == null || data.getCurrentPageData() == null || data.getCurrentPageData().size() == 0) {
+                            if (deviceInfoList.size() == 0) {
+                                deviceInfoAdapter.setEmptyView(R.layout.empty_view);
+                            }
                             return;
                         }
 
@@ -348,37 +373,21 @@ public class DevicesInProjectFragment extends BaseFragment {
                         swipeRefresh.setRefreshing(false);
                         deviceInfoAdapter.getLoadMoreModule().setEnableLoadMore(true);
                         deviceInfoAdapter.getLoadMoreModule().loadMoreFail();
+                        if (deviceInfoList.size() == 0) {
+                            deviceInfoAdapter.setEmptyView(getErrorView());
+                        }
                     }
                 });
     }
 
-    private void updateTopView(DeviceOnlineStatistic deviceOnlineStatistic) {
-        if (deviceOnlineStatistic == null) {
-            return;
-        }
-        tvOnlineNum.setText(String.valueOf(deviceOnlineStatistic.getOnlineCount()));
-        tvOfflineNum.setText(String.valueOf(deviceOnlineStatistic.getOfflineCount()));
-
-        DecimalFormat df = new DecimalFormat("#.#");//格式化小数
-        String rate = df.format(deviceOnlineStatistic.getOnlinePercent() * 100) + "%";
-        SpannableString spannableString = new SpannableString(rate);
-        AbsoluteSizeSpan absoluteSizeSpan = new AbsoluteSizeSpan(18, true);
-        spannableString.setSpan(absoluteSizeSpan, rate.indexOf("%"), spannableString.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        tvOnlineRate.setText(new SpannedString(spannableString));
+    private View getErrorView() {
+        View errorView = getLayoutInflater().inflate(R.layout.error_view, mRecyclerViewDevice, false);
+        errorView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                refresh();
+            }
+        });
+        return errorView;
     }
-
-    private void setDeviceTypeData(List<DeviceOnlineTypeStatistic> dataList) {
-        if (dataList == null || dataList.size() == 0) {
-            return;
-        }
-        deviceTypeStatisticList.clear();
-        DeviceOnlineTypeStatistic deviceOnlineTypeStatistic = new DeviceOnlineTypeStatistic();
-        deviceOnlineTypeStatistic.setDeviceTypeName("全部");
-        deviceOnlineTypeStatistic.setDeviceTypeID(-1);
-        deviceOnlineTypeStatistic.setChecked(true);
-        deviceTypeStatisticList.add(deviceOnlineTypeStatistic);
-        deviceTypeStatisticList.addAll(dataList);
-        deviceTypeAdapter.notifyDataSetChanged();
-    }
-
 }
