@@ -12,8 +12,6 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.afollestad.materialdialogs.DialogAction;
-import com.afollestad.materialdialogs.MaterialDialog;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.shmedo.core.MCloudApp;
@@ -33,6 +31,7 @@ import com.shmedo.mcloudapp.deviceconfig.model.FirmWareInfo;
 import com.shmedo.mcloudapp.deviceconfig.model.params.DispatchCmdParam;
 import com.shmedo.mcloudapp.deviceconfig.model.params.DispatchRawCmdParam;
 import com.shmedo.mcloudapp.deviceconfig.model.params.QueryCmdStateParam;
+import com.shmedo.mcloudapp.deviceconfig.ui.activity.AdvancedSettingActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.DeviceCurrentStateActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.DeviceHistoryDataAnalysisActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.BaseDialogFragment;
@@ -240,10 +239,6 @@ public class NetConfigDeviceFragment extends BaseFragment {
                 processDispatchCommonCmd();
                 break;
 
-            case "恢复出厂设置":
-                showResetWarnDialog();
-                break;
-
             case "固件升级":
                 FirmWareSelectDialog newFragment = new FirmWareSelectDialog(companyID, projectDeviceInfo.getDeviceTypeID());
                 newFragment.setDialogFragmentClickListener(listener);
@@ -253,6 +248,11 @@ public class NetConfigDeviceFragment extends BaseFragment {
             case "采集器配置":
 //                IOTCollectorSettingActivity.startActivity(mActivity, IOTCollectorSettingActivity.NET_CONNECT, projectDeviceInfo.getId());
                 break;
+
+            case "设置":
+                AdvancedSettingActivity.startActivity(mActivity, projectDeviceInfo);
+                break;
+
         }
     }
 
@@ -312,23 +312,19 @@ public class NetConfigDeviceFragment extends BaseFragment {
         configModule = new ConfigModule(R.drawable.ic_device_firmware_upgrade, 24, "固件升级", "版本:--");
         configModuleList.add(configModule);
 
-        //DAS 具有采集器配置项
-        if (projectDeviceInfo.getDeviceTypeID() == 4) {
-            configModule = new ConfigModule(R.drawable.ic_device_collector_config, "采集器配置", "采集器参数配置");
-            configModuleList.add(configModule);
-        }
+        // TODO(设备暂不支持网络配置)
+        //DAS具有采集器配置项
+//        if (projectDeviceInfo.getDeviceTypeID() == 4) {
+//            configModule = new ConfigModule(R.drawable.ic_device_collector_config, "采集器配置", "采集器参数配置");
+//            configModuleList.add(configModule);
+//        }
 
-        configModule = new ConfigModule(R.drawable.ic_device_instruction_send, "指令下发", "服务端代码指令下发");
+        // TODO(下次版本迭代再开发)
+//        configModule = new ConfigModule(R.drawable.ic_device_instruction_send, "指令下发", "服务端代码指令下发");
+//        configModuleList.add(configModule);
+
+        configModule = new ConfigModule(R.drawable.ic_device_advanced_setting, "设置", "高级设置");
         configModuleList.add(configModule);
-
-        //DAS、ADME
-        if (projectDeviceInfo.getDeviceTypeID() == 4 || projectDeviceInfo.getDeviceTypeID() == 14) {
-            configModule = new ConfigModule(R.drawable.ic_device_advanced_setting, "设置", "高级设置");
-            configModuleList.add(configModule);
-        } else {
-            configModule = new ConfigModule(R.drawable.ic_device_advanced_setting, 107, "恢复出厂设置", "恢复出厂设置");
-            configModuleList.add(configModule);
-        }
     }
 
     /**
@@ -419,18 +415,6 @@ public class NetConfigDeviceFragment extends BaseFragment {
     }
 
     private void showDispatchSuccessDialog() {
-//        DispatchCmdDialog dispatchCmdDialog = new DispatchCmdDialog(mActivity, "遥测", msgIDList);
-//        dispatchCmdDialog.setOnQueryCmdResultListener(new DispatchCmdDialog.OnQueryCmdResultListener() {
-//            @Override
-//            public void onSuccess() {
-//
-//            }
-//        });
-//        new XPopup.Builder(getContext())
-//                .asCustom(dispatchCmdDialog)
-//                .show();
-
-
         BaseDispatchCmdDialog newFragment = null;
         //下发指令成功，弹出对话框开始轮询查询指令响应
         switch (selectedConfigModule.getName()) {
@@ -459,34 +443,8 @@ public class NetConfigDeviceFragment extends BaseFragment {
             case "固件升级":
                 newFragment = new CommonCmdDialog("固件升级", "固件升级中...", "此过程耗时较长,请耐心等待", msgIDList);
                 break;
-
-            case "恢复出厂设置":
-                newFragment = new CommonCmdDialog("恢复出厂设置", "设备开始恢复出厂设置...", "此过程耗时较长,请耐心等待", msgIDList);
-                break;
         }
         newFragment.show(getChildFragmentManager(), "dialog");
     }
-
-    private void showResetWarnDialog() {
-        MaterialDialog.Builder mBuilder = new MaterialDialog.Builder(mActivity)
-                .title("提示").content("确定恢复出厂设置吗？")
-                .negativeText("取消")
-                .positiveText("确定")
-                .negativeColor(getResources().getColor(R.color.font_main))
-                .positiveColor(getResources().getColor(R.color.colorPrimary))
-                .cancelable(false)
-                .canceledOnTouchOutside(false)
-                .onPositive(new MaterialDialog.SingleButtonCallback() {
-                    @Override
-                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        dialog.dismiss();
-                        processDispatchCommonCmd();
-                    }
-                });
-
-        MaterialDialog mMaterialDialog = mBuilder.build();
-        mMaterialDialog.show();
-    }
-
 
 }
