@@ -298,7 +298,7 @@ public class NetDeviceListFragment extends BaseFragment {
         QueryProjectDevice parameter = new QueryProjectDevice();
         parameter.setCompanyID(companyID);
         parameter.setDeviceType(deviceTypeID);
-        parameter.setDeviceStatus("启用");
+//        parameter.setDeviceStatus("启用");
         parameter.setPageSize(PAGE_SIZE);
         parameter.setCurrentPage(pageInfo.getPage());
 

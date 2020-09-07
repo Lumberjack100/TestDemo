@@ -49,7 +49,7 @@
     <string name="crop_failed">裁剪失败</string>
 
     <string name="bottom_sheet_behavior" translatable="false">com.google.android.material.bottomsheet.BottomSheetBehavior</string>
-    <string name="network_error_tip">网络不给力，请稍后再试！</string>
+    <string name="network_error_tip">当前网络不可用，请检查您的网络设置！</string>
     <string name="open_flash">打开闪光灯</string>
     <string name="close_flash">关闭闪光灯</string>
     <string name="gallery">相册</string>

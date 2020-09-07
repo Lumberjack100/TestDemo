@@ -57,7 +57,7 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     protected MaterialDialog loadingDialog = null;
 
-    protected boolean mCheckNetwork = false;/*默认检查网络状态*/
+    protected boolean mCheckNetwork = true;/*默认检查网络状态*/
 
     protected boolean mNetConnected;/*网络连接的状态，true表示有网络，flase表示无网络连接*/
 
@@ -269,8 +269,8 @@ public abstract class BaseActivity extends AppCompatActivity {
         LayoutInflater inflater = getLayoutInflater();
         mTipView = inflater.inflate(R.layout.layout_network_tip, null); //提示View布局
         mWindowManager = (WindowManager) this.getSystemService(Context.WINDOW_SERVICE);
-        mLayoutParams = new WindowManager.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT,
+        mLayoutParams = new WindowManager.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT,
                 WindowManager.LayoutParams.TYPE_APPLICATION,
                 WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
                 PixelFormat.TRANSLUCENT);
