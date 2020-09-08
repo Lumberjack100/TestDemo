@@ -42,6 +42,12 @@ public class ProjectMultipleItemAdapter extends BaseMultiItemQuickAdapter<Projec
                 holder.setText(R.id.tv_company_name, detailInfo.getCompanyName());
                 holder.setText(R.id.tv_create_time, detailInfo.getBuildTime());
                 holder.setGone(R.id.iv_outdate_flag, !detailInfo.isOutOfDate());
+
+                if (detailInfo.isIsValid()) {
+                    holder.setTextColorRes(R.id.tv_project_name, R.color.title_text_color);
+                } else {
+                    holder.setTextColorRes(R.id.tv_project_name, R.color.sub_title_text_color);
+                }
             }
             break;
         }

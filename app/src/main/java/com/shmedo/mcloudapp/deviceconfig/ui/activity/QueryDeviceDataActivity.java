@@ -15,7 +15,6 @@ import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.activity.BaseActivity;
 import com.shmedo.mcloudapp.common.view.ClearEditText;
-import com.shmedo.mcloudapp.common.view.TimePickerDialog;
 import com.shmedo.mcloudapp.deviceconfig.adapter.DeviceReportDataAdapter;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.MyDatePicker;
 import com.shmedo.mcloudapp.entity.QueryCloudDataInfo;
@@ -57,9 +56,6 @@ public class QueryDeviceDataActivity extends BaseActivity {
     private String startTime;
     private String endTime;
     private String snNubmer;
-
-    private TimePickerDialog timeDialog;
-
 
     private DeviceReportDataAdapter adapter;
     private List<QueryCloudDataInfo> queryCloudDataInfoList = new ArrayList<>();
@@ -211,19 +207,22 @@ public class QueryDeviceDataActivity extends BaseActivity {
                 .subscribe(new BaseObserver<List<QueryCloudDataInfo>>() {
                     @Override
                     public void Success(List<QueryCloudDataInfo> queryCloudDataInfos, String message) {
+                        queryCloudDataInfoList.clear();
                         if (queryCloudDataInfos == null || queryCloudDataInfos.size() == 0) {
                             adapter.setEmptyView(R.layout.empty_view);
+                            adapter.notifyDataSetChanged();
                             return;
                         }
 
-                        queryCloudDataInfoList.clear();
                         queryCloudDataInfoList.addAll(queryCloudDataInfos);
                         adapter.notifyDataSetChanged();
                     }
 
                     @Override
                     public void Failure(String message) {
+                        queryCloudDataInfoList.clear();
                         adapter.setEmptyView(getErrorView());
+                        adapter.notifyDataSetChanged();
                     }
                 });
     }

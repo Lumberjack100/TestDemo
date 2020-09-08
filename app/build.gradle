@@ -214,10 +214,13 @@ dependencies {
     //搜索
     implementation "com.amap.api:search:$rootProject.thirdLib.amapSearch"
 
-    // 基础依赖包，必须要依赖
+    // 透明系统栏设置基础依赖包，必须要依赖
     implementation 'com.gyf.immersionbar:immersionbar:3.0.0'
     // fragment快速实现（可选）
     implementation 'com.gyf.immersionbar:immersionbar-components:3.0.0'
+
+    //The Scanner Compat library solves the problem with scanning for Bluetooth Low Energy devices on Android.
+    implementation 'no.nordicsemi.android.support.v18:scanner:1.4.2'
 
     testImplementation "junit:junit:$rootProject.thirdLib.junit"
     androidTestImplementation "androidx.test:runner:$rootProject.thirdLib.runner"

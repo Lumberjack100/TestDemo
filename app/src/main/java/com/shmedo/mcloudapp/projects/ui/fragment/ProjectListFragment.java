@@ -195,6 +195,12 @@ public class ProjectListFragment extends BaseTranslucentFragment {
                 holder.setText(R.id.tv_create_time, detailInfo.getBuildTime());
                 holder.setVisibleOrGone(R.id.tv_top_flag, detailInfo.isTop());
                 holder.setVisibleOrGone(R.id.iv_outdate_flag, detailInfo.isOutOfDate());
+
+                if (detailInfo.isIsValid()) {
+                    holder.setTextColorRes(R.id.tv_project_name, R.color.title_text_color);
+                } else {
+                    holder.setTextColorRes(R.id.tv_project_name, R.color.sub_title_text_color);
+                }
             }
         };
         mRecyclerView.setOnItemClickListener(new OnItemClickListener() {

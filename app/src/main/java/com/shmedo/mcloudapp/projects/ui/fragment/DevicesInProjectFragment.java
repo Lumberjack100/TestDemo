@@ -230,7 +230,7 @@ public class DevicesInProjectFragment extends BaseFragment {
     @OnClick({R.id.search_container})
     public void onClick(View v) {
         if (v.getId() == R.id.search_container) {
-            DeviceSearchActivity.startActivity(getActivity());
+            DeviceSearchActivity.startActivity(getActivity(), projectName);
         }
     }
 

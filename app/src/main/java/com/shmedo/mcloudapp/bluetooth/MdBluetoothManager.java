@@ -499,8 +499,7 @@ public class MdBluetoothManager {
         }
 
         private void enableRead(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic) {
-            BluetoothGattDescriptor descriptor = characteristic.getDescriptor(UUID
-                    .fromString(GattAttributes.CLIENT_CHARACTERISTIC_CONFIG));
+            BluetoothGattDescriptor descriptor = characteristic.getDescriptor(UUID.fromString(GattAttributes.CLIENT_CHARACTERISTIC_CONFIG));
             descriptor.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);
             gatt.writeDescriptor(descriptor);
             gatt.setCharacteristicNotification(characteristic, true);

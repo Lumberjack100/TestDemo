@@ -46,6 +46,8 @@ import okhttp3.RequestBody;
 import timber.log.Timber;
 
 public class DeviceSearchActivity extends BaseActivity {
+    private static final String PROJECT_NAME = "project_name";
+
     @BindView(R.id.et_keywords)
     ClearEditText mEtKeyWords;
 
@@ -59,9 +61,17 @@ public class DeviceSearchActivity extends BaseActivity {
     private PageInfo pageInfo;
     private int companyID = 1;
     private String keyWords;// 要输入的poi搜索关键字
+    private String projectName;
 
     public static void startActivity(Context context) {
         Intent intent = new Intent(context, DeviceSearchActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        context.startActivity(intent);
+    }
+
+    public static void startActivity(Context context, String projectName) {
+        Intent intent = new Intent(context, DeviceSearchActivity.class);
+        intent.putExtra(PROJECT_NAME, projectName);
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         context.startActivity(intent);
     }
@@ -77,6 +87,7 @@ public class DeviceSearchActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setToolBar(R.id.toolbar);
         initUserData();
+        parseIntent();
         initView();
         initDeviceInfoAdapter();
         initLoadMore();
@@ -87,6 +98,16 @@ public class DeviceSearchActivity extends BaseActivity {
         UserInfo userInfo = MCloudApp.getCurrentUserInfo();
         if (userInfo != null && userInfo.getDepartments() != null && userInfo.getDepartments().size() > 0) {
             companyID = userInfo.getDepartments().get(0).getCompanyID();
+        }
+    }
+
+    private void parseIntent() {
+        Intent intent = getIntent();
+        if (intent.getExtras() == null)
+            return;
+
+        if (intent.getExtras().containsKey(PROJECT_NAME)) {
+            projectName = intent.getStringExtra(PROJECT_NAME);
         }
     }
 
@@ -187,6 +208,7 @@ public class DeviceSearchActivity extends BaseActivity {
 
         QueryProjectDevice parameter = new QueryProjectDevice();
         parameter.setCompanyID(companyID);
+        parameter.setProjectName(TextUtils.isEmpty(projectName) ? "" : projectName);
         parameter.setDeviceType(-1);
         parameter.setSn(keyWords);
         parameter.setDeviceStatus("启用");
