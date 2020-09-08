@@ -29,10 +29,12 @@ import com.shmedo.mcloudapp.deviceconfig.ui.activity.ConfigDASActivity;
 import com.shmedo.mcloudapp.entity.QueryCloudDataInfo;
 import com.shmedo.mcloudapp.entity.parameter.QueryCloudDataParameter;
 import com.shmedo.mcloudapp.network.BaseObserver;
+import com.shmedo.mcloudapp.network.ErrCode;
 import com.shmedo.mcloudapp.network.MDRetrofit;
 import com.shmedo.mcloudapp.network.NetworkConst;
 import com.shmedo.mcloudapp.network.api.ServiceAddressType;
 import com.shmedo.mcloudapp.util.GsonFactory;
+import com.shmedo.mcloudapp.util.ResponseHandler;
 import com.shmedo.mcloudapp.util.TimeUtil;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.base.CommonViewHolder;
@@ -269,21 +271,25 @@ public class QueryDeviceDataFragment extends BaseFragment {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new BaseObserver<List<QueryCloudDataInfo>>() {
                     @Override
-                    public void Success(List<QueryCloudDataInfo> queryCloudDataInfos, String message) {
-                        Timber.i(message + "===queryCloudDataInfos==" + queryCloudDataInfos.size());
-                        ToastUtils.show("查询成功");
-                        if (queryCloudDataInfos.size() != 0) {
-                            queryCloudDataInfoList.clear();
-                            queryCloudDataInfoList.addAll(queryCloudDataInfos);
-                            adapter.notifyDataSetChanged();
-                        } else {
-                            ToastUtils.show("暂无数据！");
+                    protected void onResponse(List<QueryCloudDataInfo> queryCloudDataInfos, ErrCode errCode) {
+                        if (!ResponseHandler.getInstance().handleResponse(errCode)) {
+                            if (errCode.getCode() == 0) {
+                                if (queryCloudDataInfos.size() != 0) {
+                                    queryCloudDataInfoList.clear();
+                                    queryCloudDataInfoList.addAll(queryCloudDataInfos);
+                                    adapter.notifyDataSetChanged();
+                                }
+                            }
+                        }else {
+                            if (!TextUtils.isEmpty(errCode.getErrMessage())) {
+                                ToastUtils.show(errCode.getErrMessage());
+                            }
                         }
                     }
 
                     @Override
-                    public void Failure(String message) {
-                        ToastUtils.show(message);
+                    public void onError(Throwable e) {
+                        ResponseHandler.getInstance().handleFailure((Exception) e);
                     }
                 });
     }

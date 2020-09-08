@@ -20,12 +20,14 @@ import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.MyDatePicker;
 import com.shmedo.mcloudapp.entity.QueryCloudDataInfo;
 import com.shmedo.mcloudapp.entity.parameter.QueryCloudDataParameter;
 import com.shmedo.mcloudapp.network.BaseObserver;
+import com.shmedo.mcloudapp.network.ErrCode;
 import com.shmedo.mcloudapp.network.MDRetrofit;
 import com.shmedo.mcloudapp.network.NetworkConst;
 import com.shmedo.mcloudapp.network.api.ServiceAddressType;
 import com.shmedo.mcloudapp.util.DateUtil;
 import com.shmedo.mcloudapp.util.GsonFactory;
 import com.shmedo.mcloudapp.util.KeyBordUtils;
+import com.shmedo.mcloudapp.util.ResponseHandler;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -91,6 +93,7 @@ public class QueryDeviceDataActivity extends BaseActivity {
         if (intent.getExtras().containsKey(AppContants.Extras.CUR_DEVICE_SN)) {
             snNubmer = intent.getStringExtra(AppContants.Extras.CUR_DEVICE_SN);
             if (!TextUtils.isEmpty(snNubmer)) {
+                mEtSn.setEnabled(false);
                 mEtSn.setText(snNubmer);
                 startTime = mTvStartTime.getText().toString() + " 00:00:00";
                 endTime = mTvEndTime.getText().toString() + " 23:59:59";
@@ -206,23 +209,35 @@ public class QueryDeviceDataActivity extends BaseActivity {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new BaseObserver<List<QueryCloudDataInfo>>() {
                     @Override
-                    public void Success(List<QueryCloudDataInfo> queryCloudDataInfos, String message) {
+                    protected void onResponse(List<QueryCloudDataInfo> queryCloudDataInfos, ErrCode errCode) {
                         queryCloudDataInfoList.clear();
-                        if (queryCloudDataInfos == null || queryCloudDataInfos.size() == 0) {
-                            adapter.setEmptyView(R.layout.empty_view);
-                            adapter.notifyDataSetChanged();
-                            return;
-                        }
+                        if (!ResponseHandler.getInstance().handleResponse(errCode)) {
+                            if (errCode.getCode() == 0) {
+                                if (queryCloudDataInfos == null || queryCloudDataInfos.size() == 0) {
+                                    adapter.setEmptyView(R.layout.empty_view);
+                                    adapter.notifyDataSetChanged();
+                                    return;
+                                }
 
-                        queryCloudDataInfoList.addAll(queryCloudDataInfos);
-                        adapter.notifyDataSetChanged();
+                                queryCloudDataInfoList.addAll(queryCloudDataInfos);
+                                adapter.notifyDataSetChanged();
+                            } else {
+                                adapter.setEmptyView(getErrorView());
+                                adapter.notifyDataSetChanged();
+
+                                if (!TextUtils.isEmpty(errCode.getErrMessage())) {
+                                    ToastUtils.show(errCode.getErrMessage());
+                                }
+                            }
+                        }
                     }
 
                     @Override
-                    public void Failure(String message) {
+                    public void onError(Throwable e) {
                         queryCloudDataInfoList.clear();
                         adapter.setEmptyView(getErrorView());
                         adapter.notifyDataSetChanged();
+                        ResponseHandler.getInstance().handleFailure((Exception) e);
                     }
                 });
     }

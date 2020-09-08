@@ -12,11 +12,13 @@ import androidx.annotation.Nullable;
 import com.hjq.toast.ToastUtils;
 import com.shmedo.core.AppContants;
 import com.shmedo.core.MCloudApp;
-import com.shmedo.mcloudapp.R;
-import com.shmedo.mcloudapp.network.BaseObserver;
-import com.shmedo.mcloudapp.network.MDRetrofit;
 import com.shmedo.core.util.SharedUtil;
+import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.view.ClearEditText;
+import com.shmedo.mcloudapp.network.BaseObserver;
+import com.shmedo.mcloudapp.network.ErrCode;
+import com.shmedo.mcloudapp.network.MDRetrofit;
+import com.shmedo.mcloudapp.util.ResponseHandler;
 
 import java.util.Objects;
 
@@ -24,7 +26,6 @@ import butterknife.BindView;
 import butterknife.OnClick;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
-import timber.log.Timber;
 
 /**
  * 项目名：  mCloudapp
@@ -100,20 +101,26 @@ public class ServiceConfigActivity extends BaseActivity {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new BaseObserver<String>() {
                     @Override
-                    public void Success(String s, String message) {
+                    protected void onResponse(String s, ErrCode errCode) {
                         dismissLoadingDialog();
-                        ToastUtils.show("服务端已连接，API版本为：" + s);
-
-                        SharedUtil.save(AppContants.SERVICE_ADDRESS, serviceAddress);
-                        MCloudApp.setHttpsServiceAddress(serviceAddress);
-                        finish();
+                        if (!ResponseHandler.getInstance().handleResponse(errCode)) {
+                            if (errCode.getCode() == 0) {
+                                ToastUtils.show("服务端已连接，API版本为：" + s);
+                                SharedUtil.save(AppContants.SERVICE_ADDRESS, serviceAddress);
+                                MCloudApp.setHttpsServiceAddress(serviceAddress);
+                                finish();
+                            } else {
+                                if (!TextUtils.isEmpty(errCode.getErrMessage())) {
+                                    ToastUtils.show(errCode.getErrMessage());
+                                }
+                            }
+                        }
                     }
 
                     @Override
-                    public void Failure(String message) {
-                        Timber.w("服务端连接错误: %s", message);
+                    public void onError(Throwable e) {
                         dismissLoadingDialog();
-                        ToastUtils.show("服务端连接错误");
+                        ResponseHandler.getInstance().handleFailure((Exception) e);
                     }
                 });
     }

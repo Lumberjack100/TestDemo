@@ -15,18 +15,20 @@ import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 
 import com.hjq.toast.ToastUtils;
-import com.shmedo.core.utils.ValidateUtil;
 import com.shmedo.core.AppContants;
 import com.shmedo.core.MCloudApp;
+import com.shmedo.core.util.SharedUtil;
+import com.shmedo.core.utils.ValidateUtil;
 import com.shmedo.mcloudapp.R;
+import com.shmedo.mcloudapp.common.view.ClearEditText;
 import com.shmedo.mcloudapp.network.BaseObserver;
+import com.shmedo.mcloudapp.network.ErrCode;
 import com.shmedo.mcloudapp.network.MDRetrofit;
 import com.shmedo.mcloudapp.network.NetworkConst;
 import com.shmedo.mcloudapp.ui.activity.MainActivity;
 import com.shmedo.mcloudapp.util.LoginManager;
 import com.shmedo.mcloudapp.util.MyCountDownTimer;
-import com.shmedo.core.util.SharedUtil;
-import com.shmedo.mcloudapp.common.view.ClearEditText;
+import com.shmedo.mcloudapp.util.ResponseHandler;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -131,13 +133,13 @@ public class LoginActivity extends BaseActivity implements LoginManager.LoginCal
 
 
     private void initServiceAddressAndUser() {
-        String addr =  SharedUtil.read(AppContants.SERVICE_ADDRESS);
+        String addr = SharedUtil.read(AppContants.SERVICE_ADDRESS);
         if (!TextUtils.isEmpty(addr)) {
             MCloudApp.setHttpsServiceAddress(addr);
         }
 
-        String uid =  SharedUtil.read(AppContants.User.UID);
-        String pwd =  SharedUtil.read(AppContants.User.PWD);
+        String uid = SharedUtil.read(AppContants.User.UID);
+        String pwd = SharedUtil.read(AppContants.User.PWD);
         if (!TextUtils.isEmpty(uid)) {
             mLoginEditTextAccount.setText(uid);
             mLoginEditTextAccount.setSelection(uid.length());
@@ -250,8 +252,10 @@ public class LoginActivity extends BaseActivity implements LoginManager.LoginCal
             NewMainActivity.start(LoginActivity.this);
             finish();
 
-        } else {
+        } else if (LoginManager.LOGIN_CODE_FAIL_BUSINESS == code) {
             ToastUtils.show("登录失败\n" + data);
+        } else {
+
         }
     }
 
@@ -269,21 +273,28 @@ public class LoginActivity extends BaseActivity implements LoginManager.LoginCal
                 .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new BaseObserver<String>() {
                     @Override
-                    public void Success(String data, String message) {
+                    protected void onResponse(String data, ErrCode errCode) {
                         dismissLoadingDialog();
-
-                        if (data.contains("已发送")) {
-                            MyCountDownTimer timer = new MyCountDownTimer(mBtnGetCode, 60000, 1000);
-                            timer.start();
-                        } else {
-                            ToastUtils.show(data);
+                        if (!ResponseHandler.getInstance().handleResponse(errCode)) {
+                            if (errCode.getCode() == 0) {
+                                if (data.contains("已发送")) {
+                                    MyCountDownTimer timer = new MyCountDownTimer(mBtnGetCode, 60000, 1000);
+                                    timer.start();
+                                } else {
+                                    ToastUtils.show(data);
+                                }
+                            } else {
+                                if (!TextUtils.isEmpty(errCode.getErrMessage())) {
+                                    ToastUtils.show(errCode.getErrMessage());
+                                }
+                            }
                         }
                     }
 
                     @Override
-                    public void Failure(String message) {
+                    public void onError(Throwable e) {
                         dismissLoadingDialog();
-                        ToastUtils.show(message);
+                        ResponseHandler.getInstance().handleFailure((Exception) e);
                     }
                 });
     }

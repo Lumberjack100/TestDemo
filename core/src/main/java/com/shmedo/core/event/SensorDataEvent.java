@@ -8,7 +8,7 @@ package com.shmedo.core.event;
  * 创建时间:  2019/6/19 14:07
  * 描述：    传感器事件类
  */
-public class SensorDataEvent {
+public class SensorDataEvent extends MessageEvent{
     private String message;
     private String type;
 

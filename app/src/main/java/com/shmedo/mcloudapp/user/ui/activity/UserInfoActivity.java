@@ -3,6 +3,7 @@ package com.shmedo.mcloudapp.user.ui.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
@@ -10,18 +11,21 @@ import androidx.annotation.NonNull;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.hjq.toast.ToastUtils;
 import com.shmedo.core.MCloudApp;
 import com.shmedo.core.model.UserInfo;
+import com.shmedo.core.util.ActivityCollector;
+import com.shmedo.core.util.GlobalUtil;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.activity.BaseActivity;
+import com.shmedo.mcloudapp.common.ui.activity.LoginActivity;
 import com.shmedo.mcloudapp.network.BaseObserver;
+import com.shmedo.mcloudapp.network.ErrCode;
 import com.shmedo.mcloudapp.network.MDRetrofit;
 import com.shmedo.mcloudapp.network.NetworkConst;
-import com.shmedo.mcloudapp.common.ui.activity.LoginActivity;
 import com.shmedo.mcloudapp.user.model.CompanyInfo;
-import com.shmedo.core.util.ActivityCollector;
 import com.shmedo.mcloudapp.util.GlideUtils;
-import com.shmedo.core.util.GlobalUtil;
+import com.shmedo.mcloudapp.util.ResponseHandler;
 import com.shmedo.mcloudapp.util.permission.UpdataManagerUtil;
 
 import butterknife.BindView;
@@ -30,7 +34,6 @@ import de.hdodenhof.circleimageview.CircleImageView;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.RequestBody;
-import timber.log.Timber;
 
 /**
  * 用户信息页面
@@ -146,7 +149,7 @@ public class UserInfoActivity extends BaseActivity {
 
                         MCloudApp.logout();
                         ActivityCollector.finishAll();
-                        exitLogin();   //注销账号
+                        redirectToLoginActivity();   //注销账号
                     }
                 });
 
@@ -157,17 +160,21 @@ public class UserInfoActivity extends BaseActivity {
     /**
      * 跳转到登录页面
      */
-    private void exitLogin() {
-        Intent in = new Intent(this, LoginActivity.class);
-        in.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        startActivity(in);
-        finish();
+    private void redirectToLoginActivity() {
+//        Intent in = new Intent(this, LoginActivity.class);
+//        in.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+//        startActivity(in);
+//        finish();
+
+        LoginActivity.startActivity(this);
     }
 
     /**
      * 查询单个公司信息
      */
     private void getCompanyInfo() {
+        showLoadingDialog("加载中...");
+
         RequestBody body = RequestBody.create(NetworkConst.JSON_TYPE, "");
         MDRetrofit.getInstance()
                 .createService()
@@ -176,17 +183,26 @@ public class UserInfoActivity extends BaseActivity {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new BaseObserver<CompanyInfo>() {
                     @Override
-                    public void Success(CompanyInfo companyInfo, String message) {
+                    protected void onResponse(CompanyInfo companyInfo, ErrCode errCode) {
                         dismissLoadingDialog();
-                        mCompanyInfo = companyInfo;
-                        if(mCompanyInfo!=null) {
-                            mTvCompanyName.setText(mCompanyInfo.getFullName() != null ? mCompanyInfo.getFullName() : "");
+                        if (!ResponseHandler.getInstance().handleResponse(errCode)) {
+                            if (errCode.getCode() == 0) {
+                                mCompanyInfo = companyInfo;
+                                if (mCompanyInfo != null) {
+                                    mTvCompanyName.setText(mCompanyInfo.getFullName() != null ? mCompanyInfo.getFullName() : "");
+                                }
+                            }else{
+                                if (!TextUtils.isEmpty(errCode.getErrMessage())) {
+                                    ToastUtils.show(errCode.getErrMessage());
+                                }
+                            }
                         }
                     }
 
                     @Override
-                    public void Failure(String message) {
-                        Timber.w("服务器连接失败--%s", message);
+                    public void onError(Throwable e) {
+                        dismissLoadingDialog();
+                        ResponseHandler.getInstance().handleFailure((Exception) e);
                     }
                 });
     }

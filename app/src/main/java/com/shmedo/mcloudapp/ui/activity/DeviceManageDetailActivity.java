@@ -10,7 +10,6 @@ import android.widget.TextView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.hjq.toast.ToastUtils;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.footer.ClassicsFooter;
@@ -18,31 +17,21 @@ import com.scwang.smartrefresh.layout.header.ClassicsHeader;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 import com.scwang.smartrefresh.layout.listener.OnRefreshLoadMoreListener;
 import com.shmedo.core.AppContants;
-import com.shmedo.core.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.adapter.QueryProjectDeviceAdapter;
+import com.shmedo.mcloudapp.common.helper.LoadingDialog;
 import com.shmedo.mcloudapp.common.ui.activity.BaseActivity;
-import com.shmedo.mcloudapp.entity.PageResult;
-import com.shmedo.mcloudapp.entity.ProjectDeviceInfoOld;
-import com.shmedo.mcloudapp.entity.SystemDataInfo;
-import com.shmedo.mcloudapp.entity.parameter.QueryProjectDeviceParamter;
-import com.shmedo.mcloudapp.network.BaseObserver;
-import com.shmedo.mcloudapp.network.MDRetrofit;
-import com.shmedo.mcloudapp.network.NetworkConst;
-import com.shmedo.mcloudapp.util.GsonFactory;
 import com.shmedo.mcloudapp.common.view.ClearEditText;
 import com.shmedo.mcloudapp.common.view.EmptyDataView;
-import com.shmedo.mcloudapp.common.helper.LoadingDialog;
 import com.shmedo.mcloudapp.common.view.recycleviewitemdivider.DividerItemDecoration;
+import com.shmedo.mcloudapp.entity.ProjectDeviceInfoOld;
+import com.shmedo.mcloudapp.entity.SystemDataInfo;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.schedulers.Schedulers;
-import okhttp3.RequestBody;
 import timber.log.Timber;
 
 /**
@@ -157,80 +146,80 @@ public class DeviceManageDetailActivity extends BaseActivity implements OnRefres
      * 查询项目设备
      */
     private void queryProjectDevice(int projId, String deviceName, int pageSize, int currentPage) {
-        mLoadingDialog.showNoCancelDialog("数据加载中...");
-        QueryProjectDeviceParamter paramter = new QueryProjectDeviceParamter();
-        paramter.setProjectID(projId);
-        paramter.setDeviceName(deviceName);
-        paramter.setPageSize(pageSize);
-        paramter.setCurrentPage(currentPage);
-        String json = GsonFactory.getGson().toJson(paramter);
-        RequestBody body = RequestBody.create(NetworkConst.JSON_TYPE, json);
-        MDRetrofit.getInstance()
-                .createService()
-                .QueryProjectDevice(MCloudApp.getAccessToken(), body)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new BaseObserver<PageResult<ProjectDeviceInfoOld>>() {
-
-                    @Override
-                    public void Success(PageResult<ProjectDeviceInfoOld> infoList, String message) {
-                        mLoadingDialog.dismiss();
-                        //下拉刷新
-                        if (isRefreshOrLoad) {
-
-                            if (infoList == null || infoList.getCurrentPageData() == null || infoList.getCurrentPageData().size() == 0) {
-                                mRefreshLayout.finishRefresh(false);
-                                mRefreshLayout.finishRefreshWithNoMoreData();//完成刷新并标记没有更多数据
-
-                            } else {
-                                deviceInfoList.clear();
-                                deviceInfoList.addAll(infoList.getCurrentPageData());
-                                deviceAdapter.notifyDataSetChanged();
-
-                                mRefreshLayout.finishRefresh();
-                                if (infoList.getCurrentPageData().size() < PAGE_SIZE) {
-                                    mRefreshLayout.finishRefreshWithNoMoreData();//完成刷新并标记没有更多数据
-                                }
-                            }
-
-                        } else {//上拉加载
-
-                            if (infoList == null || infoList.getCurrentPageData() == null || infoList.getCurrentPageData().size() == 0) {
-                                mRefreshLayout.finishLoadMoreWithNoMoreData();//完成加载并标记没有更多数据
-
-                            } else {
-                                int oldItemCount = deviceInfoList.size();
-                                deviceInfoList.addAll(infoList.getCurrentPageData());
-                                deviceAdapter.notifyItemRangeInserted(oldItemCount, infoList.getCurrentPageData().size());
-
-                                if (infoList.getCurrentPageData().size() < PAGE_SIZE) {
-                                    mRefreshLayout.finishLoadMoreWithNoMoreData();//完成加载并标记没有更多数据
-
-                                } else {
-                                    mRefreshLayout.finishLoadMore();
-                                }
-                            }
-                        }
-
-                        mEmptyData.setVisibility(deviceInfoList.size() == 0 ? View.VISIBLE : View.GONE);
-                        mRefreshLayout.setVisibility(deviceInfoList.size() == 0 ? View.GONE : View.VISIBLE);
-                    }
-
-                    @Override
-                    public void Failure(String message) {
-                        mLoadingDialog.dismiss();
-
-                        if (isRefreshOrLoad) {
-                            mRefreshLayout.finishRefresh(false);//表示刷新失败（不会更新时间）
-                            mRefreshLayout.finishLoadMoreWithNoMoreData();
-                        } else {
-                            mRefreshLayout.finishLoadMore(false);//表示加载失败
-                        }
-
-                        Timber.w("服务器连接失败--" + message);
-                        ToastUtils.show("服务器连接失败");
-                    }
-                });
+//        mLoadingDialog.showNoCancelDialog("数据加载中...");
+//        QueryProjectDeviceParamter paramter = new QueryProjectDeviceParamter();
+//        paramter.setProjectID(projId);
+//        paramter.setDeviceName(deviceName);
+//        paramter.setPageSize(pageSize);
+//        paramter.setCurrentPage(currentPage);
+//        String json = GsonFactory.getGson().toJson(paramter);
+//        RequestBody body = RequestBody.create(NetworkConst.JSON_TYPE, json);
+//        MDRetrofit.getInstance()
+//                .createService()
+//                .QueryProjectDevice(MCloudApp.getAccessToken(), body)
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(new BaseObserver<PageResult<ProjectDeviceInfoOld>>() {
+//
+//                    @Override
+//                    public void onSuccess(PageResult<ProjectDeviceInfoOld> infoList, String message) {
+//                        mLoadingDialog.dismiss();
+//                        //下拉刷新
+//                        if (isRefreshOrLoad) {
+//
+//                            if (infoList == null || infoList.getCurrentPageData() == null || infoList.getCurrentPageData().size() == 0) {
+//                                mRefreshLayout.finishRefresh(false);
+//                                mRefreshLayout.finishRefreshWithNoMoreData();//完成刷新并标记没有更多数据
+//
+//                            } else {
+//                                deviceInfoList.clear();
+//                                deviceInfoList.addAll(infoList.getCurrentPageData());
+//                                deviceAdapter.notifyDataSetChanged();
+//
+//                                mRefreshLayout.finishRefresh();
+//                                if (infoList.getCurrentPageData().size() < PAGE_SIZE) {
+//                                    mRefreshLayout.finishRefreshWithNoMoreData();//完成刷新并标记没有更多数据
+//                                }
+//                            }
+//
+//                        } else {//上拉加载
+//
+//                            if (infoList == null || infoList.getCurrentPageData() == null || infoList.getCurrentPageData().size() == 0) {
+//                                mRefreshLayout.finishLoadMoreWithNoMoreData();//完成加载并标记没有更多数据
+//
+//                            } else {
+//                                int oldItemCount = deviceInfoList.size();
+//                                deviceInfoList.addAll(infoList.getCurrentPageData());
+//                                deviceAdapter.notifyItemRangeInserted(oldItemCount, infoList.getCurrentPageData().size());
+//
+//                                if (infoList.getCurrentPageData().size() < PAGE_SIZE) {
+//                                    mRefreshLayout.finishLoadMoreWithNoMoreData();//完成加载并标记没有更多数据
+//
+//                                } else {
+//                                    mRefreshLayout.finishLoadMore();
+//                                }
+//                            }
+//                        }
+//
+//                        mEmptyData.setVisibility(deviceInfoList.size() == 0 ? View.VISIBLE : View.GONE);
+//                        mRefreshLayout.setVisibility(deviceInfoList.size() == 0 ? View.GONE : View.VISIBLE);
+//                    }
+//
+//                    @Override
+//                    public void Failure(String message) {
+//                        mLoadingDialog.dismiss();
+//
+//                        if (isRefreshOrLoad) {
+//                            mRefreshLayout.finishRefresh(false);//表示刷新失败（不会更新时间）
+//                            mRefreshLayout.finishLoadMoreWithNoMoreData();
+//                        } else {
+//                            mRefreshLayout.finishLoadMore(false);//表示加载失败
+//                        }
+//
+//                        Timber.w("服务器连接失败--" + message);
+//                        ToastUtils.show("服务器连接失败");
+//                    }
+//                });
     }
 
 

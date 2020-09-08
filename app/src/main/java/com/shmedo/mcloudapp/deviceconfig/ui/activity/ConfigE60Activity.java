@@ -26,18 +26,13 @@ import com.hjq.toast.ToastUtils;
 import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.activity.BaseActivity;
+import com.shmedo.mcloudapp.common.view.MyWebView;
 import com.shmedo.mcloudapp.entity.DeviceBasicInfoResult;
 import com.shmedo.mcloudapp.entity.DeviceBasicInfoResultDao;
-import com.shmedo.mcloudapp.network.BaseObserver;
-import com.shmedo.mcloudapp.network.MDRetrofit;
-import com.shmedo.mcloudapp.network.api.ServiceAddressType;
 import com.shmedo.mcloudapp.util.DaoManager;
 import com.shmedo.mcloudapp.util.WifiSupport;
-import com.shmedo.mcloudapp.common.view.MyWebView;
 
 import butterknife.BindView;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.schedulers.Schedulers;
 import timber.log.Timber;
 
 public class ConfigE60Activity extends BaseActivity {
@@ -126,44 +121,44 @@ public class ConfigE60Activity extends BaseActivity {
     private void getDeviceJson(final String ipAddr) {
         String url = "http://" + ipAddr + "/device.json";
 
-        showLoadingDialog("正在验证设备...");
-        MDRetrofit.getInstance()
-                .createService(ServiceAddressType.HTTP)
-                .ValidateDeviceE60(url)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new BaseObserver<String>() {
-                    @Override
-                    public void Success(String result, String message) {
-                        dismissLoadingDialog();
-
-                        if (TextUtils.isEmpty(result)) {
-                            showPopWindow();
-                            return;
-                        }
-
-                        if (!result.startsWith("MEDO")) {
-                            showLoadResultDialog("设备验证失败,请选择正确的设备进行验证");
-                            return;
-                        }
-
-                        String[] data = result.split(",");
-                        Timber.d("Call getDeviceJson," + result + "--" + data[1] + "--" + deviceToken + "--" + data[2] + "--" + deviceTypeName);
-
-                        if (data[1].equals(deviceToken) && data[2].equals(deviceTypeName)) {
-                            setWebView(ipAddr, deviceToken);
-                        } else {
-                            showLoadResultDialog("设备验证失败,请选择正确的设备进行验证");
-                        }
-                    }
-
-                    @Override
-                    public void Failure(String message) {
-                        Timber.w(message);
-                        dismissLoadingDialog();
-                        showPopWindow();
-                    }
-                });
+//        showLoadingDialog("正在验证设备...");
+//        MDRetrofit.getInstance()
+//                .createService(ServiceAddressType.HTTP)
+//                .ValidateDeviceE60(url)
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(new BaseObserver<String>() {
+//                    @Override
+//                    public void onSuccess(String result, String message) {
+//                        dismissLoadingDialog();
+//
+//                        if (TextUtils.isEmpty(result)) {
+//                            showPopWindow();
+//                            return;
+//                        }
+//
+//                        if (!result.startsWith("MEDO")) {
+//                            showLoadResultDialog("设备验证失败,请选择正确的设备进行验证");
+//                            return;
+//                        }
+//
+//                        String[] data = result.split(",");
+//                        Timber.d("Call getDeviceJson," + result + "--" + data[1] + "--" + deviceToken + "--" + data[2] + "--" + deviceTypeName);
+//
+//                        if (data[1].equals(deviceToken) && data[2].equals(deviceTypeName)) {
+//                            setWebView(ipAddr, deviceToken);
+//                        } else {
+//                            showLoadResultDialog("设备验证失败,请选择正确的设备进行验证");
+//                        }
+//                    }
+//
+//                    @Override
+//                    public void Failure(String message) {
+//                        Timber.w(message);
+//                        dismissLoadingDialog();
+//                        showPopWindow();
+//                    }
+//                });
     }
 
 

@@ -27,6 +27,7 @@ import com.shmedo.mcloudapp.common.view.recycleviewitemdivider.GridSpacingItemDe
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.DeviceConfigActivity;
 import com.shmedo.mcloudapp.entity.PageResult;
 import com.shmedo.mcloudapp.network.BaseObserver;
+import com.shmedo.mcloudapp.network.ErrCode;
 import com.shmedo.mcloudapp.network.MDRetrofit;
 import com.shmedo.mcloudapp.network.NetworkConst;
 import com.shmedo.mcloudapp.projects.adapter.DeviceInfoAdapter;
@@ -35,6 +36,7 @@ import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfo;
 import com.shmedo.mcloudapp.projects.model.param.QueryProjectDevice;
 import com.shmedo.mcloudapp.util.GsonFactory;
 import com.shmedo.mcloudapp.util.KeyBordUtils;
+import com.shmedo.mcloudapp.util.ResponseHandler;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,7 +46,6 @@ import butterknife.OnClick;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.RequestBody;
-import timber.log.Timber;
 
 public class DeviceSearchActivity extends BaseActivity {
     private static final String PROJECT_NAME = "project_name";
@@ -226,47 +227,53 @@ public class DeviceSearchActivity extends BaseActivity {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new BaseObserver<PageResult<ProjectDeviceInfo>>() {
                     @Override
-                    public void Success(PageResult<ProjectDeviceInfo> data, String message) {
+                    protected void onResponse(PageResult<ProjectDeviceInfo> data, ErrCode errCode) {
                         deviceInfoAdapter.getLoadMoreModule().setEnableLoadMore(true);
+                        if (!ResponseHandler.getInstance().handleResponse(errCode)) {
+                            if (errCode.getCode() == 0) {
+                                if (data == null || data.getCurrentPageData() == null || data.getCurrentPageData().size() == 0) {
+                                    if (deviceInfoList.size() == 0) {
+                                        deviceInfoAdapter.setEmptyView(R.layout.empty_view);
+                                    } else {
+                                        //显示没有更多数据布局
+                                        deviceInfoAdapter.getLoadMoreModule().loadMoreEnd();
+                                    }
+                                    return;
+                                }
 
-                        if (data == null || data.getCurrentPageData() == null || data.getCurrentPageData().size() == 0) {
-                            if (deviceInfoList.size() == 0) {
-                                deviceInfoAdapter.setEmptyView(R.layout.empty_view);
+                                //如果是加载的第一页数据，清空列表
+                                if (pageInfo.isFirstPage()) {
+                                    deviceInfoList.clear();
+                                }
+                                deviceInfoList.addAll(data.getCurrentPageData());
+                                deviceInfoAdapter.notifyDataSetChanged();
+
+                                if (data.getCurrentPageData().size() < PAGE_SIZE) {
+                                    //如果不够一页,显示没有更多数据布局
+                                    deviceInfoAdapter.getLoadMoreModule().loadMoreEnd();
+
+                                } else {
+                                    deviceInfoAdapter.getLoadMoreModule().loadMoreComplete();
+                                }
+                                // page加一
+                                pageInfo.nextPage();
+                            } else {
+                                deviceInfoAdapter.getLoadMoreModule().loadMoreFail();
+                                if (!TextUtils.isEmpty(errCode.getErrMessage())) {
+                                    ToastUtils.show(errCode.getErrMessage());
+                                }
                             }
-                            return;
                         }
-
-                        if (pageInfo.isFirstPage()) {
-                            //如果是加载的第一页数据，用setNew
-                            deviceInfoList.clear();
-                            deviceInfoList.addAll(data.getCurrentPageData());
-                            deviceInfoAdapter.notifyDataSetChanged();
-                        } else {
-                            //不是第一页，则用add
-                            deviceInfoList.addAll(data.getCurrentPageData());
-                            deviceInfoAdapter.notifyDataSetChanged();
-                        }
-
-                        if (data.getCurrentPageData().size() < PAGE_SIZE) {
-                            //如果不够一页,显示没有更多数据布局
-                            deviceInfoAdapter.getLoadMoreModule().loadMoreEnd();
-
-                        } else {
-                            deviceInfoAdapter.getLoadMoreModule().loadMoreComplete();
-                        }
-                        // page加一
-                        pageInfo.nextPage();
                     }
 
                     @Override
-                    public void Failure(String message) {
-                        Timber.w("请求失败--%s", message);
+                    public void onError(Throwable e) {
                         deviceInfoAdapter.getLoadMoreModule().setEnableLoadMore(true);
                         deviceInfoAdapter.getLoadMoreModule().loadMoreFail();
-
-                        if (deviceInfoList.size() == 0) {
-                            deviceInfoAdapter.setEmptyView(getErrorView());
-                        }
+//                        if (deviceInfoList.size() == 0) {
+//                            deviceInfoAdapter.setEmptyView(getErrorView());
+//                        }
+                        ResponseHandler.getInstance().handleFailure((Exception) e);
                     }
                 });
     }

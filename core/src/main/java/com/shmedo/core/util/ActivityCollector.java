@@ -22,9 +22,7 @@ public class ActivityCollector {
         return activityList.size();
     }
 
-
     public static void add(WeakReference<Activity> weakRefActivity) {
-
         if (weakRefActivity != null) {
             activityList.add(weakRefActivity);
         }
@@ -33,7 +31,7 @@ public class ActivityCollector {
     public static void remove(WeakReference<Activity> weakRefActivity) {
         if (weakRefActivity != null) {
             boolean result = activityList.remove(weakRefActivity);
-            Timber.d("remove activity reference " + result);
+            Timber.d("remove activity reference %s", result);
         }
     }
 

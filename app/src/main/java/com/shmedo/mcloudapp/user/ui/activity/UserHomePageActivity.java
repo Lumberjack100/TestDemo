@@ -34,6 +34,7 @@ import com.shmedo.mcloudapp.common.ui.activity.BaseActivity;
 import com.shmedo.mcloudapp.common.view.ClearEditText;
 import com.shmedo.mcloudapp.entity.parameter.SetUserHeadPhotoParameter;
 import com.shmedo.mcloudapp.network.BaseObserver;
+import com.shmedo.mcloudapp.network.ErrCode;
 import com.shmedo.mcloudapp.network.MDRetrofit;
 import com.shmedo.mcloudapp.network.NetworkConst;
 import com.shmedo.mcloudapp.user.model.UpdateMyInfoParam;
@@ -41,6 +42,7 @@ import com.shmedo.mcloudapp.util.FileProviderUtils;
 import com.shmedo.mcloudapp.util.FileUtils;
 import com.shmedo.mcloudapp.util.GlideUtils;
 import com.shmedo.mcloudapp.util.GsonFactory;
+import com.shmedo.mcloudapp.util.ResponseHandler;
 import com.shmedo.mcloudapp.util.permission.XPermissionUtils;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
@@ -469,19 +471,26 @@ public class UserHomePageActivity extends BaseActivity implements TextWatcher {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new BaseObserver<String>() {
                     @Override
-                    public void Success(String data, String message) {
+                    protected void onResponse(String data, ErrCode errCode) {
                         dismissLoadingDialog();
-                        ToastUtils.show("头像已上传");
-
-                        if (!TextUtils.isEmpty(data))
-                            user.setHeadPhotoPath(data);
+                        if (!ResponseHandler.getInstance().handleResponse(errCode)) {
+                            if (errCode.getCode() == 0) {
+                                ToastUtils.show("头像已上传");
+                                if (!TextUtils.isEmpty(data)) {
+                                    user.setHeadPhotoPath(data);
+                                }
+                            } else {
+                                if (!TextUtils.isEmpty(errCode.getErrMessage())) {
+                                    ToastUtils.show(errCode.getErrMessage());
+                                }
+                            }
+                        }
                     }
 
                     @Override
-                    public void Failure(String message) {
+                    public void onError(Throwable e) {
                         dismissLoadingDialog();
-                        ToastUtils.show("上传头像失败," + message);
-                        Timber.w("上传头像失败--%s", message);
+                        ResponseHandler.getInstance().handleFailure((Exception) e);
                     }
                 });
     }
@@ -503,30 +512,39 @@ public class UserHomePageActivity extends BaseActivity implements TextWatcher {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new BaseObserver<String>() {
                     @Override
-                    public void Success(String result, String message) {
+                    protected void onResponse(String s, ErrCode errCode) {
                         dismissLoadingDialog();
-                        mBtnConfirm.setEnabled(false);
-
-                        UserInfo userInfo = MCloudApp.getCurrentUserInfo();
-                        if (userInfo != null && userInfo.getUser() != null) {
-                            UserInfo.UserBean user = userInfo.getUser();
-                            user.setName(userName);
-                            user.setPosition(title);
-                            user.setEmail(email);
+                        if (!ResponseHandler.getInstance().handleResponse(errCode)) {
+                            if (errCode.getCode() == 0) {
+                                ToastUtils.show("修改已保存");
+                                mBtnConfirm.setEnabled(false);
+                                updateUserInfoCache();
+                                exitActivcity();
+                            } else {
+                                if (!TextUtils.isEmpty(errCode.getErrMessage())) {
+                                    ToastUtils.show(errCode.getErrMessage());
+                                }
+                            }
                         }
-                        MCloudApp.setCurrentUserInfo(userInfo);
-
-                        ToastUtils.show("已保存修改");
-                        exitActivcity();
                     }
 
                     @Override
-                    public void Failure(String message) {
+                    public void onError(Throwable e) {
                         dismissLoadingDialog();
-                        ToastUtils.show(message);
-                        Timber.w("个人信息保存失败--%s", message);
+                        ResponseHandler.getInstance().handleFailure((Exception) e);
                     }
                 });
+    }
+
+    private void updateUserInfoCache() {
+        UserInfo userInfo = MCloudApp.getCurrentUserInfo();
+        if (userInfo != null && userInfo.getUser() != null) {
+            UserInfo.UserBean user = userInfo.getUser();
+            user.setName(userName);
+            user.setPosition(title);
+            user.setEmail(email);
+        }
+        MCloudApp.setCurrentUserInfo(userInfo);
     }
 
 

@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.hjq.toast.ToastUtils;
+import com.lxj.xpopup.XPopup;
 import com.shmedo.core.MCloudApp;
 import com.shmedo.core.model.UserInfo;
 import com.shmedo.core.util.DensityUtil;
@@ -32,6 +33,7 @@ import com.shmedo.mcloudapp.projects.adapter.ProjectSimpleItemAdapter;
 import com.shmedo.mcloudapp.projects.model.ProjectDetailInfo;
 import com.shmedo.mcloudapp.projects.model.ProjectItem;
 import com.shmedo.mcloudapp.projects.model.ProjectSearchKeyWord;
+import com.shmedo.mcloudapp.projects.view.ProjectExpiredGuideDialog;
 import com.shmedo.mcloudapp.util.DaoManager;
 import com.shmedo.mcloudapp.util.KeyBordUtils;
 import com.yanzhenjie.recyclerview.widget.DefaultItemDecoration;
@@ -61,6 +63,7 @@ public class ProjectSearchActivity extends BaseActivity implements TextWatcher {
     private List<ProjectSearchKeyWord> historyKeyWordList = new ArrayList<>();
 
     private int userId;
+    private int companyID;
     private String keyWords;// 要输入的poi搜索关键字
 
 
@@ -93,6 +96,9 @@ public class ProjectSearchActivity extends BaseActivity implements TextWatcher {
         if (userInfo != null && userInfo.getUser() != null) {
             UserInfo.UserBean user = userInfo.getUser();
             userId = user.getId();
+        }
+        if (userInfo.getDepartments() != null && userInfo.getDepartments().size() > 0) {
+            companyID = userInfo.getDepartments().get(0).getCompanyID();
         }
     }
 
@@ -145,7 +151,21 @@ public class ProjectSearchActivity extends BaseActivity implements TextWatcher {
         searchResultAdapter.setOnItemClickListener(new com.chad.library.adapter.base.listener.OnItemClickListener() {
             @Override
             public void onItemClick(@NonNull BaseQuickAdapter adapter, @NonNull View view, int position) {
+                ProjectItem projectItem = projectItems.get(position);
+                if (!(projectItem.getObject() instanceof ProjectDetailInfo)) {
+                    return;
+                }
 
+                ProjectDetailInfo detailInfo = (ProjectDetailInfo) projectItem.getObject();
+                //已过期的项目，针对非米度公司的用户进行限制操作
+                if (detailInfo.isOutOfDate() && companyID != 1) {
+                    ProjectExpiredGuideDialog customPopup = new ProjectExpiredGuideDialog(ProjectSearchActivity.this, detailInfo.getRegisterTime());
+                    new XPopup.Builder(ProjectSearchActivity.this)
+                            .asCustom(customPopup)
+                            .show();
+                } else {
+                    DevicesInProjectActivity.startActivity(ProjectSearchActivity.this, detailInfo.getProjectID(), detailInfo.getProjectName());
+                }
             }
         });
         mRecyclerView.setAdapter(searchResultAdapter);
@@ -196,7 +216,7 @@ public class ProjectSearchActivity extends BaseActivity implements TextWatcher {
     }
 
     /**
-     * 开始进行poi搜索
+     * 开始进行搜索
      */
     private void doSearchQuery(boolean isDoSaveKeyWordAction) {
         List<ProjectDetailInfo> resultList = DaoManager.getInstance().getDaoSession().getProjectDetailInfoDao().queryBuilder()
@@ -212,7 +232,10 @@ public class ProjectSearchActivity extends BaseActivity implements TextWatcher {
             if (isDoSaveKeyWordAction) {
                 updateHistoryKeyWordsData();
             }
+        } else {
+            searchResultAdapter.setEmptyView(R.layout.empty_view);
         }
+
 
         setHistoryKeyWordsVisibility(false);
     }

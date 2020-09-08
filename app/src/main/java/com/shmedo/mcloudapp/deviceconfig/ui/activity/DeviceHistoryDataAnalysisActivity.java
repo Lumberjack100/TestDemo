@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import androidx.core.content.ContextCompat;
 
+import com.hjq.toast.ToastUtils;
 import com.shmedo.core.MCloudApp;
 import com.shmedo.core.model.UserInfo;
 import com.shmedo.mcloudapp.R;
@@ -17,11 +18,13 @@ import com.shmedo.mcloudapp.deviceconfig.model.DevcieHistoryState;
 import com.shmedo.mcloudapp.deviceconfig.model.params.QueryCmdStateParam;
 import com.shmedo.mcloudapp.entity.PageResult;
 import com.shmedo.mcloudapp.network.BaseObserver;
+import com.shmedo.mcloudapp.network.ErrCode;
 import com.shmedo.mcloudapp.network.MDRetrofit;
 import com.shmedo.mcloudapp.network.NetworkConst;
 import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfo;
 import com.shmedo.mcloudapp.util.DateUtil;
 import com.shmedo.mcloudapp.util.GsonFactory;
+import com.shmedo.mcloudapp.util.ResponseHandler;
 
 import java.text.DecimalFormat;
 import java.util.Date;
@@ -31,7 +34,6 @@ import butterknife.OnClick;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.RequestBody;
-import timber.log.Timber;
 
 public class DeviceHistoryDataAnalysisActivity extends BaseActivity {
     private static final String DEVICE_INFO = "device_info";
@@ -203,18 +205,26 @@ public class DeviceHistoryDataAnalysisActivity extends BaseActivity {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new BaseObserver<PageResult<DevcieHistoryState>>() {
                     @Override
-                    public void Success(PageResult<DevcieHistoryState> data, String message) {
+                    protected void onResponse(PageResult<DevcieHistoryState> data, ErrCode errCode) {
                         dismissLoadingDialog();
-                        if (data == null || data.getCurrentPageData() == null || data.getCurrentPageData().size() == 0) {
-                            return;
+                        if (!ResponseHandler.getInstance().handleResponse(errCode)) {
+                            if (errCode.getCode() == 0) {
+                                if (data == null || data.getCurrentPageData() == null || data.getCurrentPageData().size() == 0) {
+                                    return;
+                                }
+                                updateDeviceState(data.getCurrentPageData().get(0));
+                            }else{
+                                if (!TextUtils.isEmpty(errCode.getErrMessage())) {
+                                    ToastUtils.show(errCode.getErrMessage());
+                                }
+                            }
                         }
-                        updateDeviceState(data.getCurrentPageData().get(0));
                     }
 
                     @Override
-                    public void Failure(String message) {
+                    public void onError(Throwable e) {
                         dismissLoadingDialog();
-                        Timber.w("请求失败--%s", message);
+                        ResponseHandler.getInstance().handleFailure((Exception) e);
                     }
                 });
     }

@@ -8,25 +8,26 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
+import com.hjq.toast.ToastUtils;
 import com.shmedo.core.MCloudApp;
 import com.shmedo.core.model.UserInfo;
-import com.hjq.toast.ToastUtils;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.activity.BaseActivity;
+import com.shmedo.mcloudapp.common.view.ClearEditText;
 import com.shmedo.mcloudapp.network.BaseObserver;
+import com.shmedo.mcloudapp.network.ErrCode;
 import com.shmedo.mcloudapp.network.MDRetrofit;
 import com.shmedo.mcloudapp.network.NetworkConst;
 import com.shmedo.mcloudapp.user.model.UpdatePasswordParam;
 import com.shmedo.mcloudapp.util.GsonFactory;
 import com.shmedo.mcloudapp.util.MD5Util;
-import com.shmedo.mcloudapp.common.view.ClearEditText;
+import com.shmedo.mcloudapp.util.ResponseHandler;
 
 import butterknife.BindView;
 import butterknife.OnClick;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.RequestBody;
-import timber.log.Timber;
 
 public class UpdatePasswordActivity extends BaseActivity {
     @BindView(R.id.toolbar_title)
@@ -130,22 +131,29 @@ public class UpdatePasswordActivity extends BaseActivity {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new BaseObserver<String>() {
                     @Override
-                    public void Success(String result, String message) {
+                    protected void onResponse(String s, ErrCode errCode) {
                         dismissLoadingDialog();
-                        ToastUtils.show("修改完成");
-                        hander.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                finish();
+                        if (!ResponseHandler.getInstance().handleResponse(errCode)) {
+                            if (errCode.getCode() == 0) {
+                                ToastUtils.show("修改完成");
+                                hander.postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        finish();
+                                    }
+                                }, 1500);
+                            } else {
+                                if (!TextUtils.isEmpty(errCode.getErrMessage())) {
+                                    ToastUtils.show(errCode.getErrMessage());
+                                }
                             }
-                        }, 1500);
+                        }
                     }
 
                     @Override
-                    public void Failure(String message) {
+                    public void onError(Throwable e) {
                         dismissLoadingDialog();
-                        ToastUtils.show(message);
-                        Timber.w("请求失败--%s", message);
+                        ResponseHandler.getInstance().handleFailure((Exception) e);
                     }
                 });
     }

@@ -13,16 +13,19 @@ import androidx.core.graphics.ColorUtils;
 
 import com.bumptech.glide.Glide;
 import com.gyf.immersionbar.ImmersionBar;
+import com.hjq.toast.ToastUtils;
 import com.shmedo.core.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.activity.BaseActivity;
 import com.shmedo.mcloudapp.network.BaseObserver;
+import com.shmedo.mcloudapp.network.ErrCode;
 import com.shmedo.mcloudapp.network.MDRetrofit;
 import com.shmedo.mcloudapp.network.NetworkConst;
 import com.shmedo.mcloudapp.projects.model.CenterPoint;
 import com.shmedo.mcloudapp.projects.model.ProjectInfoEx;
 import com.shmedo.mcloudapp.util.DateUtil;
 import com.shmedo.mcloudapp.util.GsonFactory;
+import com.shmedo.mcloudapp.util.ResponseHandler;
 import com.youth.banner.Banner;
 import com.youth.banner.adapter.BannerImageAdapter;
 import com.youth.banner.config.IndicatorConfig;
@@ -36,7 +39,6 @@ import butterknife.BindView;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.RequestBody;
-import timber.log.Timber;
 
 public class ProjectIntroductionActivity extends BaseActivity {
     private static final String PROJECT_ID = "project_id";
@@ -196,15 +198,23 @@ public class ProjectIntroductionActivity extends BaseActivity {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new BaseObserver<ProjectInfoEx>() {
                     @Override
-                    public void Success(ProjectInfoEx data, String message) {
+                    protected void onResponse(ProjectInfoEx data, ErrCode errCode) {
                         dismissLoadingDialog();
-                        updateView(data);
+                        if (!ResponseHandler.getInstance().handleResponse(errCode)) {
+                            if (errCode.getCode() == 0) {
+                                updateView(data);
+                            }else{
+                                if (!TextUtils.isEmpty(errCode.getErrMessage())) {
+                                    ToastUtils.show(errCode.getErrMessage());
+                                }
+                            }
+                        }
                     }
 
                     @Override
-                    public void Failure(String message) {
+                    public void onError(Throwable e) {
                         dismissLoadingDialog();
-                        Timber.w("服务器连接失败--%s", message);
+                        ResponseHandler.getInstance().handleFailure((Exception) e);
                     }
                 });
     }

@@ -62,9 +62,6 @@ import com.shmedo.mcloudapp.entity.cluster.ClusterItem;
 import com.shmedo.mcloudapp.entity.cluster.ClusterItemImp;
 import com.shmedo.mcloudapp.entity.cluster.ClusterOverlayMerchant;
 import com.shmedo.mcloudapp.entity.parameter.LocationResult;
-import com.shmedo.mcloudapp.network.BaseObserver;
-import com.shmedo.mcloudapp.network.MDRetrofit;
-import com.shmedo.mcloudapp.network.NetworkConst;
 import com.shmedo.mcloudapp.ui.SearchDataUI;
 import com.shmedo.mcloudapp.util.DaoManager;
 import com.shmedo.mcloudapp.util.GsonFactory;
@@ -84,9 +81,6 @@ import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.schedulers.Schedulers;
-import okhttp3.RequestBody;
 import timber.log.Timber;
 
 public class MainActivity extends BaseActivity {
@@ -299,30 +293,30 @@ public class MainActivity extends BaseActivity {
      * @param currentCompanyID
      */
     private void getDeviceBasicInfoList(String currentCompanyID) {
-        RequestBody body = RequestBody.create(NetworkConst.JSON_TYPE, currentCompanyID);
-        MDRetrofit.getInstance()
-                .createService()
-                .QueryDeviceBasicInfoList(MCloudApp.getAccessToken(), body)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new BaseObserver<List<DeviceBasicInfoResult>>() {
-                    @Override
-                    public void Success(List<DeviceBasicInfoResult> infoList, String message) {
-                        if (null != infoList && infoList.size() != 0) {
-                            for (DeviceBasicInfoResult deviceBasicInfoResult : infoList) {
-                                deviceBasicInfoResult.setAccount(MCloudApp.getAccount());
-                            }
-                            manager.getDaoSession().getDeviceBasicInfoResultDao().insertOrReplaceInTx(infoList);
-                        }
-
-                        addMerchantClustersToMap(queryLocalDeviceList());
-                    }
-
-                    @Override
-                    public void Failure(String message) {
-                        Timber.w("服务器连接失败--" + message);
-                    }
-                });
+//        RequestBody body = RequestBody.create(NetworkConst.JSON_TYPE, currentCompanyID);
+//        MDRetrofit.getInstance()
+//                .createService()
+//                .QueryDeviceBasicInfoList(MCloudApp.getAccessToken(), body)
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(new BaseObserver<List<DeviceBasicInfoResult>>() {
+//                    @Override
+//                    public void onSuccess(List<DeviceBasicInfoResult> infoList, String message) {
+//                        if (null != infoList && infoList.size() != 0) {
+//                            for (DeviceBasicInfoResult deviceBasicInfoResult : infoList) {
+//                                deviceBasicInfoResult.setAccount(MCloudApp.getAccount());
+//                            }
+//                            manager.getDaoSession().getDeviceBasicInfoResultDao().insertOrReplaceInTx(infoList);
+//                        }
+//
+//                        addMerchantClustersToMap(queryLocalDeviceList());
+//                    }
+//
+//                    @Override
+//                    public void Failure(String message) {
+//                        Timber.w("服务器连接失败--" + message);
+//                    }
+//                });
     }
 
 

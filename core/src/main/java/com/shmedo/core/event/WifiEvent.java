@@ -11,7 +11,7 @@ import com.shmedo.core.model.WifiBean;
  * 创建时间:  2019/1/25 15:12
  *
  */
-public class WifiEvent {
+public class WifiEvent extends MessageEvent{
     private String message;
     private WifiBean wifiBean;
 

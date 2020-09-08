@@ -2,6 +2,7 @@ package com.shmedo.mcloudapp.common.ui.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +13,7 @@ import androidx.annotation.Nullable;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.hjq.toast.ToastUtils;
 import com.shmedo.core.MCloudApp;
 import com.shmedo.core.model.UserInfo;
 import com.shmedo.core.util.ActivityCollector;
@@ -20,6 +22,7 @@ import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.activity.LoginActivity;
 import com.shmedo.mcloudapp.common.ui.activity.NewMainActivity;
 import com.shmedo.mcloudapp.network.BaseObserver;
+import com.shmedo.mcloudapp.network.ErrCode;
 import com.shmedo.mcloudapp.network.MDRetrofit;
 import com.shmedo.mcloudapp.network.NetworkConst;
 import com.shmedo.mcloudapp.user.model.CompanyInfo;
@@ -28,6 +31,7 @@ import com.shmedo.mcloudapp.user.ui.activity.CompanyHomePageActivity;
 import com.shmedo.mcloudapp.user.ui.activity.UpdatePasswordActivity;
 import com.shmedo.mcloudapp.user.ui.activity.UserHomePageActivity;
 import com.shmedo.mcloudapp.util.GlideUtils;
+import com.shmedo.mcloudapp.util.ResponseHandler;
 import com.shmedo.mcloudapp.util.permission.UpdataManagerUtil;
 
 import butterknife.BindView;
@@ -36,7 +40,6 @@ import de.hdodenhof.circleimageview.CircleImageView;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.RequestBody;
-import timber.log.Timber;
 
 /**
  * 我的模块主页面
@@ -179,17 +182,24 @@ public class MineFragment extends BaseTranslucentFragment {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new BaseObserver<CompanyInfo>() {
                     @Override
-                    public void Success(CompanyInfo companyInfo, String message) {
-                        dismissLoadingDialog();
-                        mCompanyInfo = companyInfo;
-                        if(mCompanyInfo!=null) {
-                            mTvCompanyName.setText(mCompanyInfo.getFullName() != null ? mCompanyInfo.getFullName() : "");
+                    protected void onResponse(CompanyInfo companyInfo, ErrCode errCode) {
+                        if (!ResponseHandler.getInstance().handleResponse(errCode)) {
+                            if (errCode.getCode() == 0) {
+                                mCompanyInfo = companyInfo;
+                                if (mCompanyInfo != null) {
+                                    mTvCompanyName.setText(mCompanyInfo.getFullName() != null ? mCompanyInfo.getFullName() : "");
+                                }
+                            } else {
+                                if (!TextUtils.isEmpty(errCode.getErrMessage())) {
+                                    ToastUtils.show(errCode.getErrMessage());
+                                }
+                            }
                         }
                     }
 
                     @Override
-                    public void Failure(String message) {
-                        Timber.w("服务器连接失败--%s", message);
+                    public void onError(Throwable e) {
+                        ResponseHandler.getInstance().handleFailure((Exception) e);
                     }
                 });
     }

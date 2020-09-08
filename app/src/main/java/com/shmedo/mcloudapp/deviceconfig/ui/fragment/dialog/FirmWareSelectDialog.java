@@ -2,6 +2,7 @@ package com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog;
 
 import android.app.Dialog;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -25,10 +26,12 @@ import com.shmedo.mcloudapp.deviceconfig.model.FirmWareInfo;
 import com.shmedo.mcloudapp.deviceconfig.model.params.QueryFirmwareListParam;
 import com.shmedo.mcloudapp.entity.PageResult;
 import com.shmedo.mcloudapp.network.BaseObserver;
+import com.shmedo.mcloudapp.network.ErrCode;
 import com.shmedo.mcloudapp.network.MDRetrofit;
 import com.shmedo.mcloudapp.network.NetworkConst;
 import com.shmedo.mcloudapp.projects.model.PageInfo;
 import com.shmedo.mcloudapp.util.GsonFactory;
+import com.shmedo.mcloudapp.util.ResponseHandler;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,7 +41,6 @@ import butterknife.OnClick;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.RequestBody;
-import timber.log.Timber;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -194,40 +196,44 @@ public class FirmWareSelectDialog extends BaseDialogFragment {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new BaseObserver<PageResult<FirmWareInfo>>() {
                     @Override
-                    public void Success(PageResult<FirmWareInfo> data, String message) {
+                    protected void onResponse(PageResult<FirmWareInfo> data, ErrCode errCode) {
                         adpter.getLoadMoreModule().setEnableLoadMore(true);
+                        if (!ResponseHandler.getInstance().handleResponse(errCode)) {
+                            if (errCode.getCode() == 0) {
+                                if (data == null || data.getCurrentPageData() == null) {
+                                    return;
+                                }
 
-                        if (data == null || data.getCurrentPageData() == null || data.getCurrentPageData().size() == 0) {
-                            return;
+                                if (pageInfo.isFirstPage()) {
+                                    //如果是加载的第一页数据，用setNew
+                                    firmWareInfoList.clear();
+                                }
+                                firmWareInfoList.addAll(data.getCurrentPageData());
+                                adpter.notifyDataSetChanged();
+
+                                if (data.getCurrentPageData().size() < PAGE_SIZE) {
+                                    //如果不够一页,显示没有更多数据布局
+                                    adpter.getLoadMoreModule().loadMoreEnd();
+
+                                } else {
+                                    adpter.getLoadMoreModule().loadMoreComplete();
+                                }
+                                // page加一
+                                pageInfo.nextPage();
+                            } else {
+                                adpter.getLoadMoreModule().loadMoreFail();
+                                if (!TextUtils.isEmpty(errCode.getErrMessage())) {
+                                    ToastUtils.show(errCode.getErrMessage());
+                                }
+                            }
                         }
-
-                        if (pageInfo.isFirstPage()) {
-                            //如果是加载的第一页数据，用setNew
-                            firmWareInfoList.clear();
-                            firmWareInfoList.addAll(data.getCurrentPageData());
-                            adpter.notifyDataSetChanged();
-                        } else {
-                            //不是第一页，则用add
-                            firmWareInfoList.addAll(data.getCurrentPageData());
-                            adpter.notifyDataSetChanged();
-                        }
-
-                        if (data.getCurrentPageData().size() < PAGE_SIZE) {
-                            //如果不够一页,显示没有更多数据布局
-                            adpter.getLoadMoreModule().loadMoreEnd();
-
-                        } else {
-                            adpter.getLoadMoreModule().loadMoreComplete();
-                        }
-                        // page加一
-                        pageInfo.nextPage();
                     }
 
                     @Override
-                    public void Failure(String message) {
-                        Timber.w("请求失败--%s", message);
+                    public void onError(Throwable e) {
                         adpter.getLoadMoreModule().setEnableLoadMore(true);
                         adpter.getLoadMoreModule().loadMoreFail();
+                        ResponseHandler.getInstance().handleFailure((Exception) e);
                     }
                 });
     }

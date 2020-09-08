@@ -8,7 +8,7 @@ package com.shmedo.core.event;
  * 创建时间:  2019/7/30 14:25
  * 描述：
  */
-public class MapDeviceEvent {
+public class MapDeviceEvent extends MessageEvent{
     private String type;
     private String deviceName;
 

@@ -8,26 +8,27 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
+import com.hjq.toast.ToastUtils;
 import com.shmedo.core.MCloudApp;
 import com.shmedo.core.model.UserInfo;
-import com.hjq.toast.ToastUtils;
 import com.shmedo.core.utils.ValidateUtil;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.activity.BaseActivity;
+import com.shmedo.mcloudapp.common.view.ClearEditText;
 import com.shmedo.mcloudapp.network.BaseObserver;
+import com.shmedo.mcloudapp.network.ErrCode;
 import com.shmedo.mcloudapp.network.MDRetrofit;
 import com.shmedo.mcloudapp.network.NetworkConst;
 import com.shmedo.mcloudapp.user.model.UpdateMobileParam;
 import com.shmedo.mcloudapp.util.GsonFactory;
 import com.shmedo.mcloudapp.util.MyCountDownTimer;
-import com.shmedo.mcloudapp.common.view.ClearEditText;
+import com.shmedo.mcloudapp.util.ResponseHandler;
 
 import butterknife.BindView;
 import butterknife.OnClick;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.RequestBody;
-import timber.log.Timber;
 
 /**
  * 修改手机号
@@ -107,21 +108,24 @@ public class UpdatePhoneActivity extends BaseActivity {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new BaseObserver<String>() {
                     @Override
-                    public void Success(String data, String message) {
+                    protected void onResponse(String s, ErrCode errCode) {
                         dismissLoadingDialog();
-
-                        if (data.contains("已发送")) {
-                            MyCountDownTimer timer = new MyCountDownTimer(mBtnGetCode, 60000, 1000);
-                            timer.start();
-                        } else {
-                            ToastUtils.show(data);
+                        if (!ResponseHandler.getInstance().handleResponse(errCode)) {
+                            if (errCode.getCode() == 0) {
+                                MyCountDownTimer timer = new MyCountDownTimer(mBtnGetCode, 60000, 1000);
+                                timer.start();
+                            } else {
+                                if (!TextUtils.isEmpty(errCode.getErrMessage())) {
+                                    ToastUtils.show(errCode.getErrMessage());
+                                }
+                            }
                         }
                     }
 
                     @Override
-                    public void Failure(String message) {
+                    public void onError(Throwable e) {
                         dismissLoadingDialog();
-                        ToastUtils.show(message);
+                        ResponseHandler.getInstance().handleFailure((Exception) e);
                     }
                 });
     }
@@ -174,31 +178,40 @@ public class UpdatePhoneActivity extends BaseActivity {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new BaseObserver<String>() {
                     @Override
-                    public void Success(String result, String message) {
+                    protected void onResponse(String s, ErrCode errCode) {
                         dismissLoadingDialog();
-                        ToastUtils.show("修改完成");
-
-                        UserInfo userInfo = MCloudApp.getCurrentUserInfo();
-                        if (userInfo != null && userInfo.getUser() != null) {
-                            UserInfo.UserBean user = userInfo.getUser();
-                            user.setCellPhone(newPhone);
-                        }
-                        MCloudApp.setCurrentUserInfo(userInfo);
-
-                        hander.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                finish();
+                        if (!ResponseHandler.getInstance().handleResponse(errCode)) {
+                            if (errCode.getCode() == 0) {
+                                ToastUtils.show("修改已保存");
+                                updateUserInfoCache();
+                                hander.postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        finish();
+                                    }
+                                }, 1500);
+                            } else {
+                                if (!TextUtils.isEmpty(errCode.getErrMessage())) {
+                                    ToastUtils.show(errCode.getErrMessage());
+                                }
                             }
-                        }, 1500);
+                        }
                     }
 
                     @Override
-                    public void Failure(String message) {
+                    public void onError(Throwable e) {
                         dismissLoadingDialog();
-                        ToastUtils.show(message);
-                        Timber.w("请求失败--%s", message);
+                        ResponseHandler.getInstance().handleFailure((Exception) e);
                     }
                 });
+    }
+
+    private void updateUserInfoCache() {
+        UserInfo userInfo = MCloudApp.getCurrentUserInfo();
+        if (userInfo != null && userInfo.getUser() != null) {
+            UserInfo.UserBean user = userInfo.getUser();
+            user.setCellPhone(newPhone);
+        }
+        MCloudApp.setCurrentUserInfo(userInfo);
     }
 }

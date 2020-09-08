@@ -100,11 +100,13 @@ public class WelcomeActivity extends BaseActivity implements LoginManager.LoginC
     }
 
     private void makeAutoLogin(String account, String password) {
-        if (MCloudApp.isIsNetworkConnected()) {
-            LoginManager.getInstance().login(account, password, this);
-        } else {
-            loginForOffline();
-        }
+        LoginManager.getInstance().login(account, password, this);
+
+//        if (MCloudApp.isIsNetworkConnected()) {
+//            LoginManager.getInstance().login(account, password, this);
+//        } else {
+//            loginForOffline();
+//        }
     }
 
     /**

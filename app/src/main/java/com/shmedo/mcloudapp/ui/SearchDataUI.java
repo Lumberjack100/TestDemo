@@ -26,14 +26,8 @@ import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.view.TimePickerDialog;
 import com.shmedo.mcloudapp.common.view.recycleviewitemdivider.DividerItemDecoration;
 import com.shmedo.mcloudapp.entity.QueryCloudDataInfo;
-import com.shmedo.mcloudapp.entity.parameter.QueryCloudDataParameter;
-import com.shmedo.mcloudapp.network.BaseObserver;
-import com.shmedo.mcloudapp.network.MDRetrofit;
-import com.shmedo.mcloudapp.network.NetworkConst;
-import com.shmedo.mcloudapp.network.api.ServiceAddressType;
 import com.shmedo.mcloudapp.ui.activity.MainActivity;
 import com.shmedo.mcloudapp.ui.activity.WifiConnectionActivity;
-import com.shmedo.mcloudapp.util.GsonFactory;
 import com.shmedo.mcloudapp.util.TimeUtil;
 import com.shmedo.mcloudapp.util.permission.PermissionHelper;
 import com.zhy.adapter.recyclerview.CommonAdapter;
@@ -41,11 +35,6 @@ import com.zhy.adapter.recyclerview.base.CommonViewHolder;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.schedulers.Schedulers;
-import okhttp3.RequestBody;
-import timber.log.Timber;
 
 /**
  * 项目名：  mCloudapp
@@ -328,37 +317,37 @@ public class SearchDataUI implements View.OnClickListener {
             ToastUtils.show("请输入正确的设备编号");
             return;
         }
-        QueryCloudDataParameter paramter = new QueryCloudDataParameter();
-        paramter.setSn(snNubmer);
-        paramter.setBegin(begin);
-        paramter.setEnd(end);
-        paramter.setNumber(itemCount);
-        String json = GsonFactory.getGson().toJson(paramter);
-        RequestBody body = RequestBody.create(NetworkConst.JSON_TYPE, json);
-
-        MDRetrofit.getInstance().createService(ServiceAddressType.HTTPS_NO_API_VERSION)
-                .QueryCloudData(body)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new BaseObserver<List<QueryCloudDataInfo>>() {
-                    @Override
-                    public void Success(List<QueryCloudDataInfo> queryCloudDataInfos, String message) {
-                        Timber.i(message + "===queryCloudDataInfos==" + queryCloudDataInfos.size());
-                        ToastUtils.show("查询成功");
-                        queryCloudDataInfoList.clear();
-                        if (queryCloudDataInfos.size() != 0) {
-                            queryCloudDataInfoList.addAll(queryCloudDataInfos);
-                        } else {
-                            ToastUtils.show("暂无数据！");
-                        }
-                        adapter.notifyDataSetChanged();
-                    }
-
-                    @Override
-                    public void Failure(String message) {
-                        ToastUtils.show(message);
-                    }
-                });
+//        QueryCloudDataParameter paramter = new QueryCloudDataParameter();
+//        paramter.setSn(snNubmer);
+//        paramter.setBegin(begin);
+//        paramter.setEnd(end);
+//        paramter.setNumber(itemCount);
+//        String json = GsonFactory.getGson().toJson(paramter);
+//        RequestBody body = RequestBody.create(NetworkConst.JSON_TYPE, json);
+//
+//        MDRetrofit.getInstance().createService(ServiceAddressType.HTTPS_NO_API_VERSION)
+//                .QueryCloudData(body)
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(new BaseObserver<List<QueryCloudDataInfo>>() {
+//                    @Override
+//                    public void onSuccess(List<QueryCloudDataInfo> queryCloudDataInfos, String message) {
+//                        Timber.i(message + "===queryCloudDataInfos==" + queryCloudDataInfos.size());
+//                        ToastUtils.show("查询成功");
+//                        queryCloudDataInfoList.clear();
+//                        if (queryCloudDataInfos.size() != 0) {
+//                            queryCloudDataInfoList.addAll(queryCloudDataInfos);
+//                        } else {
+//                            ToastUtils.show("暂无数据！");
+//                        }
+//                        adapter.notifyDataSetChanged();
+//                    }
+//
+//                    @Override
+//                    public void Failure(String message) {
+//                        ToastUtils.show(message);
+//                    }
+//                });
     }
 
 }

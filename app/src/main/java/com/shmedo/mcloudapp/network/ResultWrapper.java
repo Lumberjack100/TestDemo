@@ -14,14 +14,13 @@ public class ResultWrapper<T> {
     private ErrCode errCode;
     private T data;
 
-    public ResultWrapper()
-    {}
+    public ResultWrapper() {
+    }
 
-    public ResultWrapper(boolean isSuccess, ErrCode errInfo, T data)
-    {
-        this.success=isSuccess;
+    public ResultWrapper(boolean isSuccess, ErrCode errInfo, T data) {
+        this.success = isSuccess;
         this.errCode = errInfo;
-        this.data=data;
+        this.data = data;
     }
 
 
@@ -49,19 +48,16 @@ public class ResultWrapper<T> {
         this.data = data;
     }
 
-    public static<U> ResultWrapper<U> success(U data)
-    {
-        return new ResultWrapper<U>(true,ErrCode.success(),data);
+    public static <U> ResultWrapper<U> success(U data) {
+        return new ResultWrapper<U>(true, ErrCode.success(), data);
     }
 
-    public static ResultWrapper serverException(String exceptionMessage)
-    {
-        return  new ResultWrapper(false,ErrCode.fail(ErrCode.ERR_SERVER_INTERNAL_ERROR,exceptionMessage),null);
+    public static ResultWrapper serverException(String exceptionMessage) {
+        return new ResultWrapper(false, ErrCode.fail(ErrCode.ERR_SERVER_INTERNAL_ERROR, exceptionMessage), null);
     }
 
-    public static ResultWrapper fail(int errCode)
-    {
-        return  new ResultWrapper(false,new ErrCode(errCode,null),null);
+    public static ResultWrapper fail(int errCode) {
+        return new ResultWrapper(false, new ErrCode(errCode, null), null);
     }
 
 

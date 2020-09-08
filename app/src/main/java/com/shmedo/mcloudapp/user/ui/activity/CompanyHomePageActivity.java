@@ -97,31 +97,4 @@ public class CompanyHomePageActivity extends BaseActivity {
             }
         }
     }
-
-    /**
-     * 查询单个公司信息
-     */
-   /* private void getCompanyInfo() {
-        showLoadingDialog("加载数据中...");
-
-        RequestBody body = RequestBody.create(NetworkConst.JSON_TYPE, "");
-        MDRetrofit.getInstance()
-                .createService()
-                .GetCompanyInfo(MCloudApp.getAccessToken(), body)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new BaseObserver<CompanyInfo>() {
-                    @Override
-                    public void Success(CompanyInfo companyInfo, String message) {
-                        dismissLoadingDialog();
-                        updateView(companyInfo);
-                    }
-
-                    @Override
-                    public void Failure(String message) {
-                        dismissLoadingDialog();
-                        Timber.w("服务器连接失败--%s", message);
-                    }
-                });
-    }*/
 }

@@ -10,7 +10,7 @@ import com.shmedo.core.util.NetworkUtils;
  * 创建时间:  2019-10-18
  *
  */
-public class NetworkChangeEvent {
+public class NetworkChangeEvent extends MessageEvent{
     public boolean isConnected; //是否存在网络
 
     public NetworkUtils.NetworkType networkType;

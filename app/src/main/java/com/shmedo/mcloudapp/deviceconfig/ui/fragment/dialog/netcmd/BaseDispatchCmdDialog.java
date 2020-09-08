@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,9 +24,11 @@ import com.shmedo.core.util.DeviceInfo;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.deviceconfig.model.QueryCmdResult;
 import com.shmedo.mcloudapp.network.BaseObserver;
+import com.shmedo.mcloudapp.network.ErrCode;
 import com.shmedo.mcloudapp.network.MDRetrofit;
 import com.shmedo.mcloudapp.network.NetworkConst;
 import com.shmedo.mcloudapp.util.GsonFactory;
+import com.shmedo.mcloudapp.util.ResponseHandler;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -212,20 +215,43 @@ public abstract class BaseDispatchCmdDialog extends DialogFragment {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new BaseObserver<List<QueryCmdResult>>() {
                     @Override
-                    public void Success(List<QueryCmdResult> data, String message) {
-                        if (data == null || data.size() == 0) {
-                            return;
-                        }
+                    protected void onResponse(List<QueryCmdResult> data, ErrCode errCode) {
+                        if (!ResponseHandler.getInstance().handleResponse(errCode)) {
+                            if (errCode.getCode() == 0) {
+                                if (data == null || data.size() == 0) {
+                                    return;
+                                }
 
-                        QueryCmdResult queryCmdResult = data.get(0);
-                        processCmdResult(queryCmdResult);
+                                QueryCmdResult queryCmdResult = data.get(0);
+                                processCmdResult(queryCmdResult);
+                            }else{
+                                if (!TextUtils.isEmpty(errCode.getErrMessage())) {
+                                    ToastUtils.show(errCode.getErrMessage());
+                                }
+                            }
+                        }
                     }
 
                     @Override
-                    public void Failure(String message) {
-                        Timber.w("请求失败--%s", message);
-                        ToastUtils.show("下发指令失败");
+                    public void onError(Throwable e) {
+                        ResponseHandler.getInstance().handleFailure((Exception) e);
                     }
+
+//                    @Override
+//                    public void onSuccess(List<QueryCmdResult> data, String message) {
+//                        if (data == null || data.size() == 0) {
+//                            return;
+//                        }
+//
+//                        QueryCmdResult queryCmdResult = data.get(0);
+//                        processCmdResult(queryCmdResult);
+//                    }
+//
+//                    @Override
+//                    public void Failure(String message) {
+//                        Timber.w("请求失败--%s", message);
+//                        ToastUtils.show("下发指令失败");
+//                    }
                 });
     }
 

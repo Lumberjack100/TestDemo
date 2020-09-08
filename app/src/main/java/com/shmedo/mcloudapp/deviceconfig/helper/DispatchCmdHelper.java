@@ -1,13 +1,18 @@
 package com.shmedo.mcloudapp.deviceconfig.helper;
 
+import android.text.TextUtils;
+
+import com.hjq.toast.ToastUtils;
 import com.shmedo.core.MCloudApp;
 import com.shmedo.mcloudapp.deviceconfig.model.DispatchCmdItem;
 import com.shmedo.mcloudapp.deviceconfig.model.params.DispatchCmdParam;
 import com.shmedo.mcloudapp.deviceconfig.model.params.DispatchRawCmdParam;
 import com.shmedo.mcloudapp.network.BaseObserver;
+import com.shmedo.mcloudapp.network.ErrCode;
 import com.shmedo.mcloudapp.network.MDRetrofit;
 import com.shmedo.mcloudapp.network.NetworkConst;
 import com.shmedo.mcloudapp.util.GsonFactory;
+import com.shmedo.mcloudapp.util.ResponseHandler;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -50,18 +55,28 @@ public class DispatchCmdHelper {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new BaseObserver<List<DispatchCmdItem>>() {
                     @Override
-                    public void Success(List<DispatchCmdItem> data, String message) {
-                        if (data == null || data.size() == 0) {
-                            EventBus.getDefault().post(new ArrayList<DispatchCmdItem>());
-                            return;
-                        }
+                    protected void onResponse(List<DispatchCmdItem> data, ErrCode errCode) {
+                        if (!ResponseHandler.getInstance().handleResponse(errCode)) {
+                            if (errCode.getCode() == 0) {
+                                if (data == null || data.size() == 0) {
+                                    EventBus.getDefault().post(new ArrayList<DispatchCmdItem>());
+                                    return;
+                                }
 
-                        EventBus.getDefault().post(data);
+                                EventBus.getDefault().post(data);
+                            } else {
+                                EventBus.getDefault().post(new ArrayList<DispatchCmdItem>());
+                                if (!TextUtils.isEmpty(errCode.getErrMessage())) {
+                                    ToastUtils.show(errCode.getErrMessage());
+                                }
+                            }
+                        }
                     }
 
                     @Override
-                    public void Failure(String message) {
+                    public void onError(Throwable e) {
                         EventBus.getDefault().post(new ArrayList<DispatchCmdItem>());
+                        ResponseHandler.getInstance().handleFailure((Exception) e);
                     }
                 });
     }
@@ -83,18 +98,28 @@ public class DispatchCmdHelper {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new BaseObserver<List<DispatchCmdItem>>() {
                     @Override
-                    public void Success(List<DispatchCmdItem> data, String message) {
-                        if (data == null || data.size() == 0) {
-                            EventBus.getDefault().post(new ArrayList<DispatchCmdItem>());
-                            return;
-                        }
+                    protected void onResponse(List<DispatchCmdItem> data, ErrCode errCode) {
+                        if (!ResponseHandler.getInstance().handleResponse(errCode)) {
+                            if (errCode.getCode() == 0) {
+                                if (data == null || data.size() == 0) {
+                                    EventBus.getDefault().post(new ArrayList<DispatchCmdItem>());
+                                    return;
+                                }
 
-                        EventBus.getDefault().post(data);
+                                EventBus.getDefault().post(data);
+                            } else {
+                                EventBus.getDefault().post(new ArrayList<DispatchCmdItem>());
+                                if (!TextUtils.isEmpty(errCode.getErrMessage())) {
+                                    ToastUtils.show(errCode.getErrMessage());
+                                }
+                            }
+                        }
                     }
 
                     @Override
-                    public void Failure(String message) {
+                    public void onError(Throwable e) {
                         EventBus.getDefault().post(new ArrayList<DispatchCmdItem>());
+                        ResponseHandler.getInstance().handleFailure((Exception) e);
                     }
                 });
     }

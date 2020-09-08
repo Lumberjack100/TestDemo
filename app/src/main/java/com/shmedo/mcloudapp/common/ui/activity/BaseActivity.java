@@ -25,6 +25,8 @@ import androidx.appcompat.widget.Toolbar;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.shmedo.core.MCloudApp;
+import com.shmedo.core.event.ForceToLoginEvent;
+import com.shmedo.core.event.MessageEvent;
 import com.shmedo.core.event.NetworkChangeEvent;
 import com.shmedo.core.receiver.NetworkConnectChangedReceiver;
 import com.shmedo.core.util.ActivityCollector;
@@ -55,7 +57,19 @@ import timber.log.Timber;
  */
 public abstract class BaseActivity extends AppCompatActivity {
 
+    private View mTipView;
+
+    private WindowManager mWindowManager;
+
+    private WindowManager.LayoutParams mLayoutParams;
+
+
     protected MaterialDialog loadingDialog = null;
+
+    /**
+     * 判断当前Activity是否在前台。
+     */
+    protected boolean isActive = false;
 
     protected boolean mCheckNetwork = true;/*默认检查网络状态*/
 
@@ -63,14 +77,7 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     private NetworkConnectChangedReceiver mNetWorkChangReceiver;/*网络状态变化的广播接收器*/
 
-    private View mTipView;
-
-    private WindowManager mWindowManager;
-
-    private WindowManager.LayoutParams mLayoutParams;
-
     private WeakReference<Activity> weakRefActivity = null;
-
 
     protected abstract int getLayoutId();
 
@@ -132,6 +139,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        isActive = true;
         String name = getClass().getName();
         Timber.i("startPage,activity=%s", name);
 
@@ -143,6 +151,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
+        isActive = false;
         String name = getClass().getName();
         Timber.i("endPage,activity=%s", name);
     }
@@ -304,14 +313,24 @@ public abstract class BaseActivity extends AppCompatActivity {
     /**
      * 网络状态发生变化时的处理
      *
-     * @param event
+     * @param messageEvent
      */
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onNetworkChangeEvent(NetworkChangeEvent event) {
-        Timber.i("网络发生变化:%s", event.toString());
-        mNetConnected = event.isConnected;
-        MCloudApp.setIsNetworkConnected(mNetConnected);
-        netStateChangedUI(event.isConnected);
+    public void onNetworkChangeEvent(MessageEvent messageEvent) {
+        if (messageEvent instanceof NetworkChangeEvent) {
+            NetworkChangeEvent networkChangeEvent = (NetworkChangeEvent) messageEvent;
+            Timber.i("网络发生变化:%s", networkChangeEvent.toString());
+            mNetConnected = networkChangeEvent.isConnected;
+            MCloudApp.setIsNetworkConnected(mNetConnected);
+            netStateChangedUI(networkChangeEvent.isConnected);
+
+        } else if (messageEvent instanceof ForceToLoginEvent) {
+            if (isActive) { // 判断Activity是否在前台，防止非前台的Activity也处理这个事件，造成打开多个LoginActivity的问题。
+                // force to login
+                ActivityCollector.finishAll();
+                LoginActivity.startActivity(this);
+            }
+        }
     }
 
     protected void setCheckNetWork(boolean checkNetWork) {

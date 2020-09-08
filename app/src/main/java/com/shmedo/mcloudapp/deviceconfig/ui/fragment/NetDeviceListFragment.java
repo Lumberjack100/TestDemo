@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.SpannedString;
+import android.text.TextUtils;
 import android.text.style.AbsoluteSizeSpan;
 import android.view.View;
 import android.widget.TextView;
@@ -20,6 +21,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.chad.library.adapter.base.listener.OnLoadMoreListener;
+import com.hjq.toast.ToastUtils;
 import com.shmedo.core.MCloudApp;
 import com.shmedo.core.model.UserInfo;
 import com.shmedo.core.util.DensityUtil;
@@ -30,6 +32,7 @@ import com.shmedo.mcloudapp.deviceconfig.model.DeviceOnlineTypeStatistic;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.DeviceConfigActivity;
 import com.shmedo.mcloudapp.entity.PageResult;
 import com.shmedo.mcloudapp.network.BaseObserver;
+import com.shmedo.mcloudapp.network.ErrCode;
 import com.shmedo.mcloudapp.network.MDRetrofit;
 import com.shmedo.mcloudapp.network.NetworkConst;
 import com.shmedo.mcloudapp.projects.adapter.DeviceInfoAdapter;
@@ -40,6 +43,7 @@ import com.shmedo.mcloudapp.projects.model.param.QueryProjectDevice;
 import com.shmedo.mcloudapp.projects.ui.activity.DeviceSearchActivity;
 import com.shmedo.mcloudapp.projects.view.SlidingConflictRecyclerView;
 import com.shmedo.mcloudapp.util.GsonFactory;
+import com.shmedo.mcloudapp.util.ResponseHandler;
 import com.yanzhenjie.recyclerview.widget.DefaultItemDecoration;
 
 import java.text.DecimalFormat;
@@ -51,7 +55,6 @@ import butterknife.OnClick;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.RequestBody;
-import timber.log.Timber;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -93,11 +96,11 @@ public class NetDeviceListFragment extends BaseFragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        initUserData();
         pageInfo = new PageInfo(1);
-        initRefreshLayout();
+        initUserData();
         initDeviceTypeAdapter();
         initDeviceInfoAdapter();
+        initRefreshLayout();
         initLoadMore();
 
         // 进入页面，刷新数据
@@ -106,7 +109,6 @@ public class NetDeviceListFragment extends BaseFragment {
         deviceTypeID = -1;
         refresh();
     }
-
 
     private void initUserData() {
         UserInfo userInfo = MCloudApp.getCurrentUserInfo();
@@ -261,14 +263,22 @@ public class NetDeviceListFragment extends BaseFragment {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new BaseObserver<List<DeviceOnlineTypeStatistic>>() {
                     @Override
-                    public void Success(List<DeviceOnlineTypeStatistic> data, String message) {
-                        setDeviceTypeData(data);
-                        updateTopView(deviceTypeStatisticList.get(0));
+                    protected void onResponse(List<DeviceOnlineTypeStatistic> data, ErrCode errCode) {
+                        if (!ResponseHandler.getInstance().handleResponse(errCode)) {
+                            if (errCode.getCode() == 0) {
+                                setDeviceTypeData(data);
+                                updateTopView(deviceTypeStatisticList.get(0));
+                            } else {
+                                if (!TextUtils.isEmpty(errCode.getErrMessage())) {
+                                    ToastUtils.show(errCode.getErrMessage());
+                                }
+                            }
+                        }
                     }
 
                     @Override
-                    public void Failure(String message) {
-                        Timber.w("服务器连接失败--%s", message);
+                    public void onError(Throwable e) {
+                        ResponseHandler.getInstance().handleFailure((Exception) e);
                     }
                 });
     }
@@ -311,43 +321,54 @@ public class NetDeviceListFragment extends BaseFragment {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new BaseObserver<PageResult<ProjectDeviceInfo>>() {
                     @Override
-                    public void Success(PageResult<ProjectDeviceInfo> data, String message) {
+                    protected void onResponse(PageResult<ProjectDeviceInfo> data, ErrCode errCode) {
                         swipeRefresh.setRefreshing(false);
                         deviceInfoAdapter.getLoadMoreModule().setEnableLoadMore(true);
-                        if (data == null || data.getCurrentPageData() == null || data.getCurrentPageData().size() == 0) {
-                            if (deviceInfoList.size() == 0) {
-                                deviceInfoAdapter.setEmptyView(R.layout.empty_view);
+                        if (!ResponseHandler.getInstance().handleResponse(errCode)) {
+                            if (errCode.getCode() == 0) {
+                                if (data == null || data.getCurrentPageData() == null || data.getCurrentPageData().size() == 0) {
+                                    if (deviceInfoList.size() == 0) {
+                                        deviceInfoAdapter.setEmptyView(R.layout.empty_view);
+                                    } else {
+                                        //显示没有更多数据布局
+                                        deviceInfoAdapter.getLoadMoreModule().loadMoreEnd();
+                                    }
+                                    return;
+                                }
+
+                                //如果是加载的第一页数据，清空列表
+                                if (pageInfo.isFirstPage()) {
+                                    deviceInfoList.clear();
+                                }
+                                filterIOTProtocolDevices(data.getCurrentPageData());
+                                deviceInfoAdapter.notifyDataSetChanged();
+
+                                if (data.getCurrentPageData().size() < PAGE_SIZE) {
+                                    //如果不够一页,显示没有更多数据布局
+                                    deviceInfoAdapter.getLoadMoreModule().loadMoreEnd();
+
+                                } else {
+                                    deviceInfoAdapter.getLoadMoreModule().loadMoreComplete();
+                                }
+                                // page加一
+                                pageInfo.nextPage();
+                            } else {
+                                deviceInfoAdapter.getLoadMoreModule().loadMoreFail();
+                                if (!TextUtils.isEmpty(errCode.getErrMessage())) {
+                                    ToastUtils.show(errCode.getErrMessage());
+                                }
                             }
-                            return;
                         }
-
-                        if (pageInfo.isFirstPage()) {
-                            deviceInfoList.clear();
-                        }
-                        filterIOTProtocolDevices(data.getCurrentPageData());
-                        deviceInfoAdapter.notifyDataSetChanged();
-
-                        if (data.getCurrentPageData().size() < PAGE_SIZE) {
-                            //如果不够一页,显示没有更多数据布局
-                            deviceInfoAdapter.getLoadMoreModule().loadMoreEnd();
-
-                        } else {
-                            deviceInfoAdapter.getLoadMoreModule().loadMoreComplete();
-                        }
-                        // page加一
-                        pageInfo.nextPage();
                     }
 
                     @Override
-                    public void Failure(String message) {
-                        Timber.w("请求失败--%s", message);
+                    public void onError(Throwable e) {
                         swipeRefresh.setRefreshing(false);
                         deviceInfoAdapter.getLoadMoreModule().setEnableLoadMore(true);
                         deviceInfoAdapter.getLoadMoreModule().loadMoreFail();
-                        if (deviceInfoList.size() == 0) {
-                            deviceInfoAdapter.setEmptyView(getErrorView());
-                        }
+                        ResponseHandler.getInstance().handleFailure((Exception) e);
                     }
+
                 });
     }
 
