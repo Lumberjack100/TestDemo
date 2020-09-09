@@ -223,8 +223,8 @@ public class ProjectSearchActivity extends BaseActivity implements TextWatcher {
                 .where(ProjectDetailInfoDao.Properties.UserId.eq(userId), ProjectDetailInfoDao.Properties.ProjectName.like("%" + keyWords + "%"))
                 .list();
 
+        projectItems.clear();
         if (resultList != null && resultList.size() > 0) {
-            projectItems.clear();
             for (ProjectDetailInfo projectDetailInfo : resultList) {
                 projectItems.add(new ProjectItem(projectDetailInfo));
             }
@@ -234,6 +234,7 @@ public class ProjectSearchActivity extends BaseActivity implements TextWatcher {
             }
         } else {
             searchResultAdapter.setEmptyView(R.layout.empty_view);
+            searchResultAdapter.notifyDataSetChanged();
         }
 
 

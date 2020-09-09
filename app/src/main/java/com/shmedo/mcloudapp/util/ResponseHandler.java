@@ -39,6 +39,11 @@ public class ResponseHandler {
      */
     public boolean handleResponse(ErrCode errCode) {
         switch (errCode.getCode()) {
+            case 8:
+                Timber.w("handleResponse: errCode code is 8");
+                ToastUtils.show(GlobalUtil.getString(R.string.server_internal_error));
+                return true;
+
             case 10:
             case 11:
                 Timber.w("handleResponse: errCode code is %s", errCode.getCode());

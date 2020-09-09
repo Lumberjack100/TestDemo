@@ -263,6 +263,8 @@ public class DeviceSearchActivity extends BaseActivity {
                                     ToastUtils.show(errCode.getErrMessage());
                                 }
                             }
+                        }else{
+                            deviceInfoAdapter.setEmptyView(getErrorView());
                         }
                     }
 
