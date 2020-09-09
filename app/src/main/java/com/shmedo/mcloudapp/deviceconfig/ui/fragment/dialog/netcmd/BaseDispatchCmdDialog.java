@@ -129,7 +129,7 @@ public abstract class BaseDispatchCmdDialog extends DialogFragment {
         //无标题  必须放在setContextView之前调用
         window.requestFeature(Window.FEATURE_NO_TITLE);
         //Sets whether this dialog is canceled when touched outside the window's bounds.
-        mDialog.setCanceledOnTouchOutside(true);
+        mDialog.setCanceledOnTouchOutside(false);
         //Sets whether this dialog is cancelable with the BACK key.
         mDialog.setCancelable(false);
         window.setWindowAnimations(R.style.DialogFragmentAnimation);
@@ -236,22 +236,6 @@ public abstract class BaseDispatchCmdDialog extends DialogFragment {
                     public void onError(Throwable e) {
                         ResponseHandler.getInstance().handleFailure((Exception) e);
                     }
-
-//                    @Override
-//                    public void onSuccess(List<QueryCmdResult> data, String message) {
-//                        if (data == null || data.size() == 0) {
-//                            return;
-//                        }
-//
-//                        QueryCmdResult queryCmdResult = data.get(0);
-//                        processCmdResult(queryCmdResult);
-//                    }
-//
-//                    @Override
-//                    public void Failure(String message) {
-//                        Timber.w("请求失败--%s", message);
-//                        ToastUtils.show("下发指令失败");
-//                    }
                 });
     }
 
