@@ -1,10 +1,12 @@
 package com.shmedo.mcloudapp.bluetooth;
 
+import com.shmedo.core.event.MessageEvent;
+
 /**
  * Created by Liudongdong on 18/2/1.
  */
 
-public class BluetoothEvent {
+public class BluetoothEvent extends MessageEvent {
     private BluetoothEventType eventType;
     private Object eventData;
 

@@ -33,9 +33,14 @@ import timber.log.Timber;
 
 public abstract class BaseFragment extends Fragment implements HandleBackInterface {
     private Unbinder unbinder;
+
     protected Activity mActivity;
+
     protected View mRootView;
-    private MaterialDialog loadingDialog = null;
+
+    protected MaterialDialog loadingDialog = null;
+
+    protected boolean isActive = false;
 
 
     @Override
@@ -98,6 +103,7 @@ public abstract class BaseFragment extends Fragment implements HandleBackInterfa
     @Override
     public void onResume() {
         super.onResume();
+        isActive = true;
         String name = getClass().getName();
         Timber.i("startPage,Fragment=%s", name);
     }
@@ -106,6 +112,7 @@ public abstract class BaseFragment extends Fragment implements HandleBackInterfa
     @Override
     public void onPause() {
         super.onPause();
+        isActive = false;
         String name = getClass().getName();
         Timber.i("endPage,Fragment=%s", name);
     }
@@ -133,7 +140,7 @@ public abstract class BaseFragment extends Fragment implements HandleBackInterfa
                     .progressIndeterminateStyle(false)
                     .build();
             //Sets whether this dialog is cancelable with the BACK key.
-            loadingDialog.setCancelable(true);
+//            loadingDialog.setCancelable(true);
             //Sets whether this dialog is canceled when touched outside the window's bounds.
             loadingDialog.setCanceledOnTouchOutside(false);
         }

@@ -145,6 +145,11 @@ public class NetConfigDeviceFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(List<DispatchCmdItem> dispatchCmdItemList) {
+        //判断此页面是否处于前台
+        if (!isActive) {
+            return;
+        }
+
         dismissLoadingDialog();
         if (dispatchCmdItemList == null || dispatchCmdItemList.size() == 0) {
             showDispatchFailedDialog();
@@ -364,7 +369,7 @@ public class NetConfigDeviceFragment extends BaseFragment {
                                     return;
                                 }
                                 updateConfigModuleData(data.getCurrentPageData().get(0));
-                            }else{
+                            } else {
                                 if (!TextUtils.isEmpty(errCode.getErrMessage())) {
                                     ToastUtils.show(errCode.getErrMessage());
                                 }

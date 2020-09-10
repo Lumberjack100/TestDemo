@@ -31,12 +31,14 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.hjq.toast.ToastUtils;
+import com.shmedo.core.MCloudApp;
 import com.shmedo.core.util.GlobalUtil;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.bluetooth.MdBluetoothManager;
 import com.shmedo.mcloudapp.common.ui.fragment.BaseFragment;
 import com.shmedo.mcloudapp.common.view.ClearEditText;
 import com.shmedo.mcloudapp.deviceconfig.adapter.BleDeviceAdapter;
+import com.shmedo.mcloudapp.deviceconfig.ui.activity.DeviceConfigActivity;
 import com.shmedo.mcloudapp.util.KeyBordUtils;
 import com.shmedo.mcloudapp.util.permission.XPermissionUtils;
 
@@ -144,7 +146,20 @@ public class BleDeviceListFragment extends BaseFragment implements TextWatcher, 
         bleDeviceAdapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(@NonNull BaseQuickAdapter adapter, @NonNull View view, int position) {
+                scanLeDevice(false);
+                BluetoothDevice bluetoothDevice = bleDeviceAdapter.getItem(position);
+                String macAddress = bluetoothDevice.getAddress();
+                String deviceName = bluetoothDevice.getName();
+                MCloudApp.setCurDeviceToken(deviceName.substring(3));
+                MCloudApp.setCurDeviceMacAddr(macAddress);
 
+                String deviceInfo = "";
+                if (deviceName.endsWith("T")) {
+                    deviceInfo = "MEDO," + deviceName.substring(3) + ",ADME";
+                } else if (deviceName.endsWith("L")) {
+                    deviceInfo = "MEDO," + deviceName.substring(3) + ",DAS";
+                }
+                DeviceConfigActivity.startActivity(getActivity(), DeviceConfigActivity.BLE_CONNECT, deviceInfo);
             }
         });
     }

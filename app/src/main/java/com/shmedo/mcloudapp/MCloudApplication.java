@@ -1,9 +1,6 @@
 package com.shmedo.mcloudapp;
 
 import android.app.Application;
-import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothManager;
-import android.content.Context;
 import android.widget.Toast;
 
 import com.hjq.toast.ToastInterceptor;
@@ -14,10 +11,8 @@ import com.shmedo.core.MCloudApp;
 import com.shmedo.core.log.AppCrashHandler;
 import com.shmedo.core.log.CrashReportingTree;
 import com.shmedo.core.log.log4a.LogInit;
-import com.shmedo.mcloudapp.bluetooth.MdBluetoothManager;
+import com.shmedo.mcloudapp.bluetooth.NewBleManager;
 import com.tencent.bugly.crashreport.CrashReport;
-
-import java.util.Objects;
 
 import timber.log.Timber;
 
@@ -104,9 +99,11 @@ public class MCloudApplication extends Application {
     }
 
     private void initMdBluetoothManager() {
-        BluetoothManager bluetoothManager = (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
-        BluetoothAdapter mBluetoothAdapter = Objects.requireNonNull(bluetoothManager).getAdapter();
-        MdBluetoothManager.init(mBluetoothAdapter, bluetoothManager);
+//        BluetoothManager bluetoothManager = (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
+//        BluetoothAdapter mBluetoothAdapter = Objects.requireNonNull(bluetoothManager).getAdapter();
+//        MdBluetoothManager.init(mBluetoothAdapter, bluetoothManager);
+
+        NewBleManager.init();
     }
 
 }

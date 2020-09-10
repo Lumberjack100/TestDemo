@@ -37,6 +37,8 @@ public interface AppContants {
 
         String CUR_DEVICE_NAME = "cur_device_name";
 
+        String CUR_BLE_DEVICE_INFO = "cur_ble_device_info";
+
         String DEVICE_MAC_ADDRESS = "cur_device_mac_address";
 
         String DEVICE_E60 = "device_e60";

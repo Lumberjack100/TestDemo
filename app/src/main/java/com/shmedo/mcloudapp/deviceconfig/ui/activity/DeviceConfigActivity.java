@@ -11,8 +11,10 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.activity.BaseActivity;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.BleConfigDeviceFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.NetConfigDeviceFragment;
 import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfo;
 
@@ -20,7 +22,11 @@ import butterknife.BindView;
 import butterknife.OnClick;
 
 public class DeviceConfigActivity extends BaseActivity {
+    private static final String CONNECT_WAY = "connect_way";
     private static final String DEVICE_INFO = "device_info";
+
+    public static final int NET_CONNECT = 0x001;//网络连接
+    public static final int BLE_CONNECT = 0x002;//蓝牙连接
 
     @BindView(R.id.tv_title)
     TextView mToolbarTitle;
@@ -28,15 +34,26 @@ public class DeviceConfigActivity extends BaseActivity {
     @BindView(R.id.right_icon)
     ImageView mIvRightIcon;
 
-    private NetConfigDeviceFragment netConfigDeviceFragment;
+    private int connectWay = NET_CONNECT;
+
+    private Fragment fragment;
 
     private ProjectDeviceInfo projectDeviceInfo;
+
+    private String bleInfo;
 
 
     public static void startActivity(Context context, ProjectDeviceInfo projectDeviceInfo) {
         Intent intent = new Intent(context, DeviceConfigActivity.class);
         intent.putExtra(DEVICE_INFO, projectDeviceInfo);
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        context.startActivity(intent);
+    }
+
+    public static void startActivity(Context context, int connectWay, String deviceInfo) {
+        Intent intent = new Intent(context, DeviceConfigActivity.class);
+        intent.putExtra(CONNECT_WAY, connectWay);
+        intent.putExtra(AppContants.Extras.CUR_BLE_DEVICE_INFO, deviceInfo);
         context.startActivity(intent);
     }
 
@@ -62,14 +79,27 @@ public class DeviceConfigActivity extends BaseActivity {
         if (intent.getExtras() == null)
             return;
 
+        if (intent.getExtras().containsKey(CONNECT_WAY)) {
+            connectWay = intent.getIntExtra(CONNECT_WAY, NET_CONNECT);
+        }
+
         if (intent.getExtras().containsKey(DEVICE_INFO)) {
             projectDeviceInfo = intent.getParcelableExtra(DEVICE_INFO);
+        }
+
+        if (intent.getExtras().containsKey(AppContants.Extras.CUR_BLE_DEVICE_INFO)) {
+            bleInfo = intent.getStringExtra(AppContants.Extras.CUR_BLE_DEVICE_INFO);
         }
     }
 
     private void initFragment() {
-        netConfigDeviceFragment = NetConfigDeviceFragment.newInstance(projectDeviceInfo);
-        replaceFragment(netConfigDeviceFragment);
+        if (connectWay == NET_CONNECT) {
+            fragment = NetConfigDeviceFragment.newInstance(projectDeviceInfo);
+
+        } else {
+            fragment = BleConfigDeviceFragment.newInstance(bleInfo);
+        }
+        replaceFragment(fragment);
     }
 
     @OnClick({R.id.right_icon})
