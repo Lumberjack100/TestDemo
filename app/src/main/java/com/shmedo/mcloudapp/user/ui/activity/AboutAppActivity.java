@@ -7,13 +7,12 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.shmedo.core.util.GlobalUtil;
 import com.hjq.toast.ToastUtils;
 import com.pgyersdk.crash.PgyCrashManager;
 import com.pgyersdk.feedback.PgyerFeedbackManager;
+import com.shmedo.core.util.GlobalUtil;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.activity.BaseActivity;
-import com.shmedo.mcloudapp.common.ui.activity.TestBluetoothListActivity;
 import com.shmedo.mcloudapp.common.ui.activity.WebViewActivity;
 import com.shmedo.mcloudapp.util.permission.RuntimeRationale;
 import com.yanzhenjie.permission.Action;
@@ -115,7 +114,6 @@ public class AboutAppActivity extends BaseActivity {
             break;
 
             case R.id.connectTestLayout: //连接测试
-                TestBluetoothListActivity.startActivity(this);
                 break;
         }
     }
