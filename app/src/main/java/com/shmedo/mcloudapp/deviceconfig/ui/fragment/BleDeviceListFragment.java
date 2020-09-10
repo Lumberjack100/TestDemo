@@ -13,7 +13,12 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.text.Editable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -30,8 +35,9 @@ import com.shmedo.core.util.GlobalUtil;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.bluetooth.MdBluetoothManager;
 import com.shmedo.mcloudapp.common.ui.fragment.BaseFragment;
+import com.shmedo.mcloudapp.common.view.ClearEditText;
 import com.shmedo.mcloudapp.deviceconfig.adapter.BleDeviceAdapter;
-import com.shmedo.mcloudapp.deviceconfig.model.MDevice;
+import com.shmedo.mcloudapp.util.KeyBordUtils;
 import com.shmedo.mcloudapp.util.permission.XPermissionUtils;
 
 import java.util.ArrayList;
@@ -50,11 +56,23 @@ import timber.log.Timber;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class BleDeviceListFragment extends BaseFragment {
+public class BleDeviceListFragment extends BaseFragment implements TextWatcher, TextView.OnEditorActionListener {
     private static final int REQUEST_ENABLE_BT = 0x002;
 
     // Stops scanning after 10 seconds.
     private static final long SCAN_PERIOD = 10000;
+
+    @BindView(R.id.search_placeholder)
+    View searchPlaceholder;
+
+    @BindView(R.id.search_container)
+    View searchContainer;
+
+    @BindView(R.id.ll_refresh)
+    View refreshLayout;
+
+    @BindView(R.id.et_keywords)
+    ClearEditText mEtKeyWords;
 
     @BindView(R.id.tv_ble_device_count)
     TextView mTvDeviceCount;
@@ -82,6 +100,8 @@ public class BleDeviceListFragment extends BaseFragment {
 
     private boolean mScanning;
 
+    private List<BluetoothDevice> tempDeviceList = new ArrayList<>();
+
     private Animator animator;
 
 
@@ -97,6 +117,7 @@ public class BleDeviceListFragment extends BaseFragment {
         initBluetooth();
         initAdapter();
         initRefreshAnimation();
+        setEditTextListener();
         startDiscoveryDevice();
     }
 
@@ -133,6 +154,11 @@ public class BleDeviceListFragment extends BaseFragment {
         animator.setTarget(mIvBleScanRefresh);
     }
 
+    private void setEditTextListener() {
+        mEtKeyWords.addTextChangedListener(this);
+        mEtKeyWords.setOnEditorActionListener(this);
+    }
+
     /**
      * 扫描蓝牙设备，主要用来判断要连接的设备是否能被搜索到
      */
@@ -153,6 +179,7 @@ public class BleDeviceListFragment extends BaseFragment {
                 new XPermissionUtils.OnPermissionListener() {
                     @Override
                     public void onPermissionGranted() {
+                        tempDeviceList.clear();
                         bleDeviceAdapter.setNewInstance(new ArrayList<>());
                         scanLeDevice(true);
                     }
@@ -220,10 +247,24 @@ public class BleDeviceListFragment extends BaseFragment {
         scanner.startScan(null, settings, scanCallback);
     }
 
-    @OnClick({R.id.search_container, R.id.ll_scan_refresh})
+    @OnClick({R.id.search_placeholder, R.id.tv_cancel, R.id.ll_scan_refresh})
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.search_container:
+            case R.id.search_placeholder:
+                scanLeDevice(false);
+                searchPlaceholder.setVisibility(View.GONE);
+                searchContainer.setVisibility(View.VISIBLE);
+                refreshLayout.setVisibility(View.GONE);
+                mEtKeyWords.setText("");
+                break;
+
+            case R.id.tv_cancel:
+                // 当按了搜索之后关闭软键盘
+                KeyBordUtils.hideSoftKeyboard(mEtKeyWords);
+                searchPlaceholder.setVisibility(View.VISIBLE);
+                searchContainer.setVisibility(View.GONE);
+                refreshLayout.setVisibility(View.VISIBLE);
+                bleDeviceAdapter.setNewInstance(tempDeviceList);
                 break;
 
             case R.id.ll_scan_refresh:
@@ -268,14 +309,14 @@ public class BleDeviceListFragment extends BaseFragment {
                         return;
                     }
 
-                    for (MDevice mDevice : bleDeviceAdapter.getData()) {
-                        if (device.getAddress().equals(mDevice.getDevice().getAddress())) {
+                    for (BluetoothDevice mDevice : bleDeviceAdapter.getData()) {
+                        if (device.getAddress().equals(mDevice.getAddress())) {
                             return;
                         }
                     }
 
-                    MDevice mDev = new MDevice(device, result.getRssi());
-                    bleDeviceAdapter.addData(mDev);
+                    tempDeviceList.add(device);
+                    bleDeviceAdapter.addData(device);
                     mTvDeviceCount.setText(String.format(Locale.getDefault(), "(%d)", bleDeviceAdapter.getItemCount()));
                 }
             });
@@ -292,4 +333,51 @@ public class BleDeviceListFragment extends BaseFragment {
         }
     }
 
+    @Override
+    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+    }
+
+    @Override
+    public void onTextChanged(CharSequence text, int start, int before, int count) {
+        if (!TextUtils.isEmpty(text)) {
+            searchProcess(text.toString().trim());
+
+        } else {
+            KeyBordUtils.popSoftKeyboard(mEtKeyWords, true);
+            bleDeviceAdapter.setNewInstance(tempDeviceList);
+        }
+    }
+
+    @Override
+    public void afterTextChanged(Editable s) {
+
+    }
+
+    @Override
+    public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+        if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+            // 当按了搜索之后关闭软键盘
+            KeyBordUtils.hideSoftKeyboard(mEtKeyWords);
+
+            String text = mEtKeyWords.getText().toString();
+            if (TextUtils.isEmpty(text)) {
+                mEtKeyWords.clearFocus();
+                return true;
+            }
+
+            searchProcess(text.trim());
+            return true;
+        }
+        return false;
+    }
+
+    private void searchProcess(String queryText) {
+        bleDeviceAdapter.setNewInstance(new ArrayList<>());
+        for (BluetoothDevice device : tempDeviceList) {
+            if (!TextUtils.isEmpty(device.getName()) && device.getName().contains(queryText)) {
+                bleDeviceAdapter.addData(device);
+            }
+        }
+    }
 }
