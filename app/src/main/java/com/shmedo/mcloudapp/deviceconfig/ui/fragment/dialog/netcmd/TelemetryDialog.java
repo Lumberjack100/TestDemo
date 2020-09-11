@@ -1,6 +1,7 @@
 package com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd;
 
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
@@ -28,11 +29,18 @@ public class TelemetryDialog extends BaseDispatchCmdDialog {
     @BindView(R.id.tv_response_content)
     TextView mTvResponseContent;
 
+    private String result;
+
 
     public TelemetryDialog(String title, List<String> msgIDList) {
         this.title = title;
         this.msgIDList.clear();
         this.msgIDList.addAll(msgIDList);
+    }
+
+    public TelemetryDialog(String title, String result) {
+        this.title = title;
+        this.result = result;
     }
 
     @Override
@@ -45,13 +53,19 @@ public class TelemetryDialog extends BaseDispatchCmdDialog {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         initView();
-        showResponseLoadingView();
-        startRunnable(2000);
+        //msgIDList不为空时，表示当前是网络指令模式
+        if (msgIDList != null && msgIDList.size() > 0) {
+            startQueryCmdResponse();
+        }
     }
 
     private void initView() {
         mTvTitle.setText(title);
         contentView.setVisibility(View.GONE);
+        if (!TextUtils.isEmpty(result)) {
+            contentView.setVisibility(View.VISIBLE);
+            mTvResponseContent.setText(result);
+        }
     }
 
     @OnClick({R.id.iv_close, R.id.tv_confirm})
@@ -65,8 +79,6 @@ public class TelemetryDialog extends BaseDispatchCmdDialog {
 
             default:
                 break;
-
-
         }
     }
 
@@ -77,6 +89,4 @@ public class TelemetryDialog extends BaseDispatchCmdDialog {
         content = content.replace("datastreams=", "");
         mTvResponseContent.setText(content);
     }
-
-
 }

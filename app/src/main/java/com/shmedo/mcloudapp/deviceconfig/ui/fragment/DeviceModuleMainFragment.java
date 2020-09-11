@@ -24,8 +24,8 @@ import com.shmedo.mcloudapp.common.ui.activity.ScanActivity;
 import com.shmedo.mcloudapp.common.ui.fragment.BaseTranslucentFragment;
 import com.shmedo.mcloudapp.deviceconfig.model.DeviceTypeEnum;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.ConfigADMEActivity;
-import com.shmedo.mcloudapp.deviceconfig.ui.activity.ConfigDASActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.ConfigE60Activity;
+import com.shmedo.mcloudapp.deviceconfig.ui.activity.DeviceConfigActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.QueryDeviceDataActivity;
 import com.shmedo.mcloudapp.entity.DeviceBasicInfoResult;
 import com.shmedo.mcloudapp.projects.adapter.ProjectPageAdapter;
@@ -196,7 +196,7 @@ public class DeviceModuleMainFragment extends BaseTranslucentFragment implements
 
         switch (localData[2]) {
             case "DAS":
-                ConfigDASActivity.startActivity(getActivity(), deviceInfo);
+                DeviceConfigActivity.startActivity(getActivity(), DeviceConfigActivity.BLE_CONNECT, deviceInfo);
                 break;
 
             case "ADME":

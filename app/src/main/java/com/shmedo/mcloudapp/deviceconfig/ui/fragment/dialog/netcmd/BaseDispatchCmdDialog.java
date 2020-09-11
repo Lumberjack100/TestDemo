@@ -205,6 +205,14 @@ public abstract class BaseDispatchCmdDialog extends DialogFragment {
         unbinder.unbind();
     }
 
+    /**
+     * 开始轮询指令响应结果
+     */
+    protected void startQueryCmdResponse() {
+        showResponseLoadingView();
+        startRunnable(2000);
+    }
+
     private void queryCmdResultByMsgID() {
         String json = GsonFactory.getGson().toJson(msgIDList);
         RequestBody body = RequestBody.create(NetworkConst.JSON_TYPE, json);

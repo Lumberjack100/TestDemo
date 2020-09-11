@@ -21,6 +21,7 @@ import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.hjq.toast.ToastUtils;
 import com.kyleduo.switchbutton.SwitchButton;
 import com.shmedo.core.MCloudApp;
+import com.shmedo.core.cmd.CommandManager;
 import com.shmedo.core.cmd.CommandResult;
 import com.shmedo.core.enums.CollectorModel;
 import com.shmedo.core.enums.CommandType;
@@ -30,6 +31,7 @@ import com.shmedo.core.event.MessageEvent;
 import com.shmedo.core.model.BaseConfigInfo;
 import com.shmedo.core.model.BreakAlarmStatusInfo;
 import com.shmedo.core.model.CollectorConfigInfo;
+import com.shmedo.core.model.LoaclTimeInfo;
 import com.shmedo.core.model.QueryOsmometerParameterInfo;
 import com.shmedo.core.model.SetRainPrecisionInfo;
 import com.shmedo.core.model.VersionMessageInfo;
@@ -41,6 +43,9 @@ import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.view.recycleviewitemdivider.GridSpacingItemDecoration;
 import com.shmedo.mcloudapp.deviceconfig.adapter.ConfigModuleAdapter;
 import com.shmedo.mcloudapp.deviceconfig.model.ConfigModule;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd.BaseDispatchCmdDialog;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd.QueryTerminalTimeDialog;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd.TelemetryDialog;
 import com.shmedo.mcloudapp.util.bleutil.BlueResultParserUtil;
 
 import org.greenrobot.eventbus.Subscribe;
@@ -184,8 +189,8 @@ public class BleConfigDeviceFragment extends BaseBleConnectFragment {
         //设置每个item间距
         mRecyclerView.addItemDecoration(new GridSpacingItemDecoration(spanCount, spacing, true));
         moduleAdapter = new ConfigModuleAdapter(configModuleList);
-        moduleAdapter.setAnimationEnable(true);
-        moduleAdapter.setAnimationFirstOnly(false);
+//        moduleAdapter.setAnimationEnable(true);
+//        moduleAdapter.setAnimationFirstOnly(false);
         moduleAdapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
@@ -199,12 +204,35 @@ public class BleConfigDeviceFragment extends BaseBleConnectFragment {
     private void processItemClick() {
         switch (selectedConfigModule.getName()) {
             case "状态":
+
+                break;
+
             case "时间":
+                queryTimeCmd();
+                break;
+
             case "遥测":
+                telemetryCmd();
+                break;
+
             case "重启":
 
                 break;
         }
+    }
+
+    private void queryTimeCmd() {
+        showLoadingDialog("指令下发中...");
+        String command = CommandManager.getInstance().getCommand(CommandType.LOCAL_TIME, null);
+        sendCommonCommandImmediately(command);
+        Timber.d("获取设备时间信息指令===%s", command);
+    }
+
+    private void telemetryCmd() {
+        showLoadingDialog("指令下发中...");
+        String command = CommandManager.getInstance().getCommand(CommandType.INSTANT_COLLEACTOR, null);
+        sendCommonCommandImmediately(command);
+        Timber.d("遥测设备指令===%s", command);
     }
 
     @OnClick({R.id.tv_device_connect_state, R.id.tv_device_communication_way})
@@ -302,8 +330,43 @@ public class BleConfigDeviceFragment extends BaseBleConnectFragment {
                 }
                 VersionMessageInfo versionMessageInfo = ResultParserUtil.getEntityObject(cmdStr);
                 initVersionInfo(versionMessageInfo);
-
                 break;
+
+            case LOCAL_TIME:
+                dismissLoadingDialog();
+                if (tempStr.endsWith(CommandResult.ERROR_END)) {
+                    Timber.e("查询版本信息指令出错!");
+                    ToastUtils.show("查询时间指令出错!");
+                    return;
+                }
+                LoaclTimeInfo timeInfo = ResultParserUtil.getEntityObject(cmdStr);
+                if (timeInfo != null && !TextUtils.isEmpty(timeInfo.getTime())) {
+                    String time = timeInfo.getTime();
+                    if (time.length() == 12) {
+                        StringBuilder sb = new StringBuilder();
+                        sb.append("20" + time.substring(0, 2));
+                        sb.append("-" + time.substring(2, 4));
+                        sb.append("-" + time.substring(4, 6));
+                        sb.append(" " + time.substring(6, 8));
+                        sb.append(":" + time.substring(8, 10));
+                        sb.append(":" + time.substring(10, 12));
+                        BaseDispatchCmdDialog newFragment = new QueryTerminalTimeDialog("终端时间", sb.toString());
+                        newFragment.show(getChildFragmentManager(), "dialog");
+                    }
+                }
+                break;
+
+            case INSTANT_COLLEACTOR: {
+                dismissLoadingDialog();
+                if (tempStr.endsWith(CommandResult.ERROR_END)) {
+                    Timber.e("遥测指令出错!");
+                    ToastUtils.show("遥测指令出错!");
+                    return;
+                }
+                BaseDispatchCmdDialog newFragment = new TelemetryDialog("遥测", tempStr);
+                newFragment.show(getChildFragmentManager(), "dialog");
+            }
+            break;
         }
     }
 
@@ -403,5 +466,10 @@ public class BleConfigDeviceFragment extends BaseBleConnectFragment {
 
         configModule = new ConfigModule(R.drawable.ic_device_advanced_setting, "设置", "高级设置");
         configModuleList.add(configModule);
+    }
+
+    @Override
+    public boolean onBackPressed() {
+        return false;
     }
 }
