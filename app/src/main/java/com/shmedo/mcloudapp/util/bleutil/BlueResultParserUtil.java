@@ -14,6 +14,7 @@ public class BlueResultParserUtil {
 
     /**
      * 根据采集器型号得到采集器名称
+     *
      * @param collectorModel
      * @return
      */
@@ -21,7 +22,7 @@ public class BlueResultParserUtil {
         String collectorName = "";
         switch (collectorModel) {
             case VW08:
-                collectorName = "采集器";
+                collectorName = "振弦式采集器";
                 break;
 
             case DS08:

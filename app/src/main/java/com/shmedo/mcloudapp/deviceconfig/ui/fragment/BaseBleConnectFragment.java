@@ -8,6 +8,7 @@ import android.bluetooth.BluetoothManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
@@ -15,6 +16,8 @@ import android.text.TextUtils;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.hjq.toast.ToastUtils;
 import com.shmedo.core.MCloudApp;
 import com.shmedo.core.cmd.CommandManager;
@@ -32,6 +35,7 @@ import com.shmedo.core.enums.SaveConfigMode;
 import com.shmedo.core.enums.ServerNumber;
 import com.shmedo.core.enums.SetRemoteUpgrade;
 import com.shmedo.core.event.BluetoothStateEvent;
+import com.shmedo.core.event.CmdResponseMessage;
 import com.shmedo.core.event.MessageEvent;
 import com.shmedo.core.interfaces.OnBytePackage;
 import com.shmedo.core.util.GlobalUtil;
@@ -42,8 +46,6 @@ import com.shmedo.mcloudapp.bluetooth.BluetoothEvent;
 import com.shmedo.mcloudapp.bluetooth.Message;
 import com.shmedo.mcloudapp.bluetooth.NewBleManager;
 import com.shmedo.mcloudapp.common.ui.fragment.BaseFragment;
-import com.shmedo.mcloudapp.deviceconfig.ui.activity.ConfigADMEActivity;
-import com.shmedo.mcloudapp.deviceconfig.ui.activity.ConfigDASActivity;
 import com.shmedo.mcloudapp.util.bleutil.ByteManagerUtil;
 import com.shmedo.mcloudapp.util.bleutil.Constants;
 import com.shmedo.mcloudapp.util.permission.XPermissionUtils;
@@ -150,6 +152,7 @@ public abstract class BaseBleConnectFragment extends BaseFragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        dismissLoadingDialog();
         EventBus.getDefault().unregister(this);
         MCloudApp.setCurDeviceToken(null);
         MCloudApp.setCurDeviceMacAddr(null);
@@ -257,7 +260,8 @@ public abstract class BaseBleConnectFragment extends BaseFragment {
             initScan();
         } else {
             mScanning = false;
-            scanner.stopScan(scanCallback);
+            if (scanner != null)
+                scanner.stopScan(scanCallback);
         }
     }
 
@@ -471,8 +475,8 @@ public abstract class BaseBleConnectFragment extends BaseFragment {
                         break;
                     }
 
-                    errMsg = "查询设备配置参数超时，请尝试重新连接";
-                    if (mActivity instanceof ConfigDASActivity || mActivity instanceof ConfigADMEActivity) {
+                    if (BaseBleConnectFragment.this instanceof BleConfigDeviceFragment) {
+                        errMsg = "查询设备配置参数超时，请尝试重新连接";
                         startProgressRunnable("初始化设备配置信息...", CONFIG_PARAMS_DELAY_MILLIS);
                         queryDeviceConfigInfoCmd();
                     }
@@ -532,7 +536,6 @@ public abstract class BaseBleConnectFragment extends BaseFragment {
                 if (cmdStr.startsWith("$$223")) {
                     sendHandleMessage(Constants.VERIFY_RESULT, cmdArray[1]);
                     Timber.d("设备登录验证状态===%s", cmdArray[1].contains("1"));
-
                     return;
                 }
 
@@ -563,6 +566,8 @@ public abstract class BaseBleConnectFragment extends BaseFragment {
      * 解析设备的参数指令
      */
     private void parserResult(String cmdStr) {
+        stopProgressRunnable();
+
         if (SN.endsWith("T")) {//ADME 设备应答指令预处理
             parserADMECmdResult(cmdStr);
 
@@ -587,7 +592,8 @@ public abstract class BaseBleConnectFragment extends BaseFragment {
             }
         }
 
-        EventBus.getDefault().post(cmdStr);
+        CmdResponseMessage responseMessage = new CmdResponseMessage(cmdStr);
+        EventBus.getDefault().post(responseMessage);
     }
 
     /**
@@ -686,11 +692,6 @@ public abstract class BaseBleConnectFragment extends BaseFragment {
         String command = CommandManager.getInstance().getCommand(CommandType.BASE_CONFIG);
         sendCommonCommandImmediately(command);
         Timber.d("获取基础配置信息指令===%s", command);
-
-        //查询数字式渗压计参数 ##400
-//        String shenyajiCommand = CommandManager.getInstance().getCommand(CommandType.QUERY_OSMOMETER_PARAMETER, null);
-//        sendCommonCommand(shenyajiCommand);
-//        Timber.d("查询渗压计指令===" + shenyajiCommand);
     }
 
 
@@ -812,6 +813,70 @@ public abstract class BaseBleConnectFragment extends BaseFragment {
         String command = CommandManager.getInstance().getCommand(CommandType.SETTING_REMOTE_UPGRADE, setRemoteUpgradeEntity);
         sendCommonCommandImmediately(command);
         Timber.d("设置远程升级指令==%s", command);
+    }
+
+    public void queryDeviceVersionInfo() {
+        String command = CommandManager.getInstance().getCommand(CommandType.VERSION_MESSAGE);
+        sendCommonCommandImmediately(command);
+        Timber.i("查询设备版本信息：%s", command);
+    }
+
+    public void showSaveDialog(String content) {
+        MaterialDialog.Builder mBuilder = new MaterialDialog.Builder(Objects.requireNonNull(getContext()))
+                .title("温馨提示：")
+                .content(content)
+                .contentColor(Color.parseColor("#000000"))
+                .canceledOnTouchOutside(false)
+                .neutralText("取消")
+                .positiveText("保存")
+                .negativeText("不保存")
+                .negativeColor(Color.parseColor("#807B7B"))
+                .onPositive(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        dialog.dismiss();
+                        saveConfigInfo();
+                    }
+                }).onNegative(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        dialog.dismiss();
+                        isConfigChange = false;
+                        disconnectDevice();
+                        if (isExitMode) {
+                            mActivity.finish();
+                        }
+                    }
+                }).onNeutral(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        dialog.dismiss();
+                    }
+                });
+        MaterialDialog mMaterialDialog = mBuilder.build();
+        mMaterialDialog.show();
+    }
+
+
+    private void showDisconnectDialog(String content) {
+        MaterialDialog.Builder mBuilder = new MaterialDialog.Builder(Objects.requireNonNull(getContext()))
+                .title("温馨提示：")
+                .content(content)
+                .contentColor(Color.parseColor("#000000"))
+                .canceledOnTouchOutside(false)
+                .positiveText("确定")
+                .negativeText("取消")
+                .negativeColor(Color.parseColor("#807B7B"))
+                .onPositive(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        dialog.dismiss();
+                        disconnectDevice();
+                        mActivity.finish();
+                    }
+                });
+        MaterialDialog mMaterialDialog = mBuilder.build();
+        mMaterialDialog.show();
     }
 
     @Override

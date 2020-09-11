@@ -53,7 +53,6 @@ import no.nordicsemi.android.support.v18.scanner.BluetoothLeScannerCompat;
 import no.nordicsemi.android.support.v18.scanner.ScanCallback;
 import no.nordicsemi.android.support.v18.scanner.ScanResult;
 import no.nordicsemi.android.support.v18.scanner.ScanSettings;
-import timber.log.Timber;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -312,13 +311,11 @@ public class BleDeviceListFragment extends BaseFragment implements TextWatcher, 
     private class MdLeScanCallback extends ScanCallback {
         @Override
         public void onScanResult(int callbackType, @NonNull ScanResult result) {
-            Timber.d("在线程 " + Thread.currentThread().getName() + " 中扫描到设备");
+//            Timber.d("在线程 Name= " + Thread.currentThread().getName() + ";Id= " + Thread.currentThread().getId() + " 中扫描到设备");
 
             mActivity.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    Timber.d("在线程 " + Thread.currentThread().getId() + " 中扫描到设备");
-
                     BluetoothDevice device = result.getDevice();
                     if (device.getName() == null || !device.getName().startsWith("MD")) {
                         return;

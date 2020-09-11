@@ -80,10 +80,10 @@ public class NetConfigDeviceFragment extends BaseFragment {
     @BindView(R.id.tv_device_sn)
     TextView mTvDeviceSn;
 
-    @BindView(R.id.tv_device_model)
-    TextView mTvDeviceModel;
+    @BindView(R.id.tv_product_model)
+    TextView mTvProductModel;
 
-    @BindView(R.id.tv_time)
+    @BindView(R.id.tv_time_or_sub_model)
     TextView mTvTime;
 
     @BindView(R.id.tv_device_communication_state_flag)
@@ -189,7 +189,7 @@ public class NetConfigDeviceFragment extends BaseFragment {
         if (projectDeviceInfo != null) {
             mTvDeviceName.setText("物联网数据采集器");
             mTvDeviceSn.setText(String.format("设备编号：%s", TextUtils.isEmpty(projectDeviceInfo.getToken()) ? "" : projectDeviceInfo.getToken()));
-            mTvDeviceModel.setText(String.format("产品型号：%s", TextUtils.isEmpty(projectDeviceInfo.getDeviceTypeName()) ? "" : projectDeviceInfo.getDeviceTypeName()));
+            mTvProductModel.setText(String.format("产品型号：%s", TextUtils.isEmpty(projectDeviceInfo.getDeviceTypeName()) ? "" : projectDeviceInfo.getDeviceTypeName()));
             mTvTime.setText(String.format("更新时间：%s", TextUtils.isEmpty(projectDeviceInfo.getLastActiveTime()) ? "" : projectDeviceInfo.getLastActiveTime()));
             if (projectDeviceInfo.isOnline()) {
                 mTvDeviceCommunicationState.setText("在线");

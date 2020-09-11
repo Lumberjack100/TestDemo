@@ -1,8 +1,10 @@
 package com.shmedo.mcloudapp.deviceconfig.ui.fragment;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -12,22 +14,44 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
+import com.hjq.toast.ToastUtils;
+import com.kyleduo.switchbutton.SwitchButton;
+import com.shmedo.core.MCloudApp;
+import com.shmedo.core.cmd.CommandResult;
+import com.shmedo.core.enums.CollectorModel;
+import com.shmedo.core.enums.CommandType;
+import com.shmedo.core.event.BluetoothStateEvent;
+import com.shmedo.core.event.CmdResponseMessage;
+import com.shmedo.core.event.MessageEvent;
+import com.shmedo.core.model.BaseConfigInfo;
+import com.shmedo.core.model.BreakAlarmStatusInfo;
+import com.shmedo.core.model.CollectorConfigInfo;
+import com.shmedo.core.model.QueryOsmometerParameterInfo;
+import com.shmedo.core.model.SetRainPrecisionInfo;
+import com.shmedo.core.model.VersionMessageInfo;
 import com.shmedo.core.util.DensityUtil;
 import com.shmedo.core.util.GlobalUtil;
+import com.shmedo.core.utils.ResultParserUtil;
+import com.shmedo.core.utils.StringUtil;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.view.recycleviewitemdivider.GridSpacingItemDecoration;
 import com.shmedo.mcloudapp.deviceconfig.adapter.ConfigModuleAdapter;
 import com.shmedo.mcloudapp.deviceconfig.model.ConfigModule;
-import com.shmedo.mcloudapp.deviceconfig.ui.activity.DeviceHistoryDataAnalysisActivity;
-import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfo;
+import com.shmedo.mcloudapp.util.bleutil.BlueResultParserUtil;
+
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import timber.log.Timber;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -35,17 +59,19 @@ import butterknife.OnClick;
 public class BleConfigDeviceFragment extends BaseBleConnectFragment {
     private static final String DEVICE_INFO = "device_info";
 
+    private static final int DEVICE_ACTIVE = 0x0002;
+
     @BindView(R.id.tv_device_name)
     TextView mTvDeviceName;
 
     @BindView(R.id.tv_device_sn)
     TextView mTvDeviceSn;
 
-    @BindView(R.id.tv_device_model)
-    TextView mTvDeviceModel;
+    @BindView(R.id.tv_product_model)
+    TextView mTvProductModel;
 
-    @BindView(R.id.tv_time)
-    TextView mTvTime;
+    @BindView(R.id.tv_time_or_sub_model)
+    TextView mTvSubModel;
 
     @BindView(R.id.tv_device_communication_state_flag)
     TextView mTvDeviceCommunicationState;//通信状态(在线、离线、已连接、已断开)
@@ -56,6 +82,12 @@ public class BleConfigDeviceFragment extends BaseBleConnectFragment {
     @BindView(R.id.tv_device_communication_way)
     TextView mTvDeviceCommunicationWay;//通信方式(网络、蓝牙)
 
+    @BindView(R.id.tv_active_state)
+    TextView mTvActiveState;
+
+    @BindView(R.id.activeStateSwBtn)
+    SwitchButton mSbActiveState;
+
     @BindView(R.id.recyclerview)
     RecyclerView mRecyclerView;
 
@@ -63,12 +95,18 @@ public class BleConfigDeviceFragment extends BaseBleConnectFragment {
 
     private List<ConfigModule> configModuleList = new ArrayList<>();
 
-    private String bleInfo;
-    private ProjectDeviceInfo projectDeviceInfo;
-    private int companyID;
+    private String bleNameInfo;
 
     private ConfigModule selectedConfigModule;
-    private List<String> msgIDList = new ArrayList<>();
+
+    private boolean isConnected; //是否连接
+
+    private String collectorModel = "";//采集器类型
+    private SetRainPrecisionInfo setRainPrecisionInfo;
+    private CollectorConfigInfo collectorConfigInfo;
+    private BaseConfigInfo baseConfigInfo;
+    private BreakAlarmStatusInfo breakAlarmStatusInfo;
+    private QueryOsmometerParameterInfo queryOsmometerParameterInfo;
 
 
     public static BleConfigDeviceFragment newInstance(String deviceInfo) {
@@ -83,7 +121,7 @@ public class BleConfigDeviceFragment extends BaseBleConnectFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            bleInfo = getArguments().getString(DEVICE_INFO);
+            bleNameInfo = getArguments().getString(DEVICE_INFO);
         }
     }
 
@@ -96,30 +134,47 @@ public class BleConfigDeviceFragment extends BaseBleConnectFragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         setHeadInfo();
+        initSwitchViewListener();
         initAdapter();
         initConfigModuleData();
-//        queryCmdState();
+
         findAndConnectSpecificDevice();
     }
 
     private void setHeadInfo() {
-        if (projectDeviceInfo != null) {
-            mTvDeviceName.setText("物联网数据采集器");
-            mTvDeviceSn.setText(String.format("设备编号：%s", TextUtils.isEmpty(projectDeviceInfo.getToken()) ? "" : projectDeviceInfo.getToken()));
-            mTvDeviceModel.setText(String.format("产品型号：%s", TextUtils.isEmpty(projectDeviceInfo.getDeviceTypeName()) ? "" : projectDeviceInfo.getDeviceTypeName()));
-            mTvTime.setText(String.format("更新时间：%s", TextUtils.isEmpty(projectDeviceInfo.getLastActiveTime()) ? "" : projectDeviceInfo.getLastActiveTime()));
-            if (projectDeviceInfo.isOnline()) {
-                mTvDeviceCommunicationState.setText("在线");
-                mTvDeviceCommunicationState.setTextColor(ContextCompat.getColor(mActivity, R.color.text_color_50E9B9));
-                mTvDeviceCommunicationState.setBackgroundResource(R.drawable.bg_device_online_state_flag);
-            } else {
-                mTvDeviceCommunicationState.setText("离线");
-                mTvDeviceCommunicationState.setTextColor(ContextCompat.getColor(mActivity, R.color.sub_title_text_color));
-                mTvDeviceCommunicationState.setBackgroundResource(R.drawable.bg_device_offline_state_flag);
-            }
+        String[] infos = bleNameInfo.split(",");
+        mTvDeviceName.setText("物联网数据采集器");
+        if (infos.length >= 3) {
+            mTvDeviceSn.setText(String.format("设备编号：%s", TextUtils.isEmpty(infos[1]) ? "" : infos[1]));
+            mTvProductModel.setText(String.format("产品型号：%s", TextUtils.isEmpty(infos[2]) ? "" : infos[2]));
         }
-        mTvDeviceConnectState.setVisibility(View.INVISIBLE);
-        mTvDeviceCommunicationWay.setText("网络");
+        mTvDeviceConnectState.setVisibility(View.VISIBLE);
+        mTvDeviceCommunicationWay.setText("蓝牙");
+    }
+
+    /**
+     * switch按钮事件
+     */
+    private void initSwitchViewListener() {
+        //设备启用状态开关
+        mSbActiveState.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, final boolean isChecked) {
+                if (!MCloudApp.isIsBluetoothDeviceConnected()) {
+                    ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
+                    mSbActiveState.setCheckedImmediatelyNoEvent(!isChecked);
+                    return;
+                }
+
+                if (isChecked) {
+                    //发送激活DAS命令
+                    setLowEnergyModel(true);
+                    mTvActiveState.setText("已激活");
+                } else {
+                    showCloseSwitchButtonDialog(getString(R.string.device_enable_state_close_warn), DEVICE_ACTIVE);
+                }
+            }
+        });
     }
 
     private void initAdapter() {
@@ -152,16 +207,169 @@ public class BleConfigDeviceFragment extends BaseBleConnectFragment {
         }
     }
 
-    @OnClick({R.id.tv_device_communication_way, R.id.rl_run_state_analysis})
+    @OnClick({R.id.tv_device_connect_state, R.id.tv_device_communication_way})
     public void onClick(View v) {
         switch (v.getId()) {
+            case R.id.tv_device_connect_state://断开/重新连接
+                if (!isConnected) {
+                    findAndConnectSpecificDevice();
+                } else {//断开连接处理
+                    if (isConfigChange) {
+                        isExitMode = false;
+                        showSaveDialog(getResources().getString(R.string.disconnect_bluetooth_device_save_param_warn));
+                    } else {
+                        disconnectDevice();
+                        updateViewStateByConnectState(false);
+                    }
+
+                }
+                break;
 
             case R.id.tv_device_communication_way://切换连接方式
                 break;
+        }
+    }
 
-            case R.id.rl_run_state_analysis:
-                DeviceHistoryDataAnalysisActivity.startActivity(mActivity, projectDeviceInfo);
+    /**
+     * 关闭SwitchButton
+     */
+    public void showCloseSwitchButtonDialog(String content, final int index) {
+        MaterialDialog.Builder mBuilder = new MaterialDialog.Builder(getActivity())
+                .title("温馨提示：")
+                .content(content)
+                .contentColor(Color.parseColor("#000000"))
+                .canceledOnTouchOutside(false)
+                .positiveText("确定")
+                .negativeText("取消")
+                .onPositive(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        dialog.dismiss();
+                        switch (index) {
+                            case DEVICE_ACTIVE:
+                                //发送关闭DAS命令
+                                setLowEnergyModel(false);
+                                mTvActiveState.setText("已待机");
+                                break;
+                        }
+                    }
+                }).onNegative(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        dialog.dismiss();
+                        switch (index) {
+                            case DEVICE_ACTIVE:
+                                mSbActiveState.setCheckedImmediatelyNoEvent(true);
+                                break;
+                        }
+                    }
+                });
+        MaterialDialog mMaterialDialog = mBuilder.build();
+        mMaterialDialog.show();
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onMessageEvent(MessageEvent messageEvent) {
+        super.onMessageEvent(messageEvent);
+
+        if (messageEvent instanceof CmdResponseMessage) {
+            setResultData((CmdResponseMessage) messageEvent);
+        } else if (messageEvent instanceof BluetoothStateEvent) {
+            isConnected = ((BluetoothStateEvent) messageEvent).isConnected;
+            updateViewStateByConnectState(isConnected);
+        }
+    }
+
+    private void setResultData(CmdResponseMessage responseMessage) {
+        String cmdStr = responseMessage.getResult();
+        String tempStr = cmdStr.replace("$$", "").replace("\r\n", "");
+        CommandType type = StringUtil.extractCommandType(cmdStr);
+        switch (type) {
+            case BASE_CONFIG://基础配置信息 000
+                if (tempStr.endsWith(CommandResult.ERROR_END)) {
+                    Timber.e("查询基础配置信息指令出错!");
+                    return;
+                }
+                baseConfigInfo = ResultParserUtil.getEntityObject(cmdStr);
+                initBaseConfigInfo();
+                queryDeviceVersionInfo();
                 break;
+
+            case VERSION_MESSAGE:
+                if (tempStr.endsWith(CommandResult.ERROR_END)) {
+                    Timber.e("查询版本信息指令出错!");
+                    return;
+                }
+                VersionMessageInfo versionMessageInfo = ResultParserUtil.getEntityObject(cmdStr);
+                initVersionInfo(versionMessageInfo);
+
+                break;
+        }
+    }
+
+    /**
+     * 处理基础配置信息
+     */
+    private void initBaseConfigInfo() {
+        if (baseConfigInfo == null) {
+            Timber.e("基础配置信息为空!");
+            return;
+        }
+
+        setRainPrecisionInfo = new SetRainPrecisionInfo();
+        setRainPrecisionInfo.setPrecision((double) baseConfigInfo.getRainAccuracy() / 100);
+        collectorModel = baseConfigInfo.getCollectorModel().toString();
+
+        //获取采集器类型
+        if (!TextUtils.isEmpty(collectorModel)) {
+            CollectorModel model = CollectorModel.value(collectorModel);
+            String collectorName = BlueResultParserUtil.getCollectorName(model);
+            mTvSubModel.setText(String.format("采集器型号：%s", TextUtils.isEmpty(collectorName) ? "" : collectorName));
+        }
+
+        //设备状态
+        switch (baseConfigInfo.getEquipmentStatus()) {
+            case STANDBY:   //待机
+                mSbActiveState.setCheckedImmediatelyNoEvent(false);
+                mTvActiveState.setText("已待机");
+                break;
+            case ACTIVATION:    //激活
+                mSbActiveState.setCheckedImmediatelyNoEvent(true);
+                mTvActiveState.setText("已激活");
+                break;
+        }
+    }
+
+    private void initVersionInfo(VersionMessageInfo versionInfo) {
+        if (versionInfo == null) {
+            return;
+        }
+
+        String firmwareVersion = TextUtils.isEmpty(versionInfo.getFirmwareVersion()) ? "--" : versionInfo.getFirmwareVersion();
+        for (ConfigModule configModule : configModuleList) {
+            if (configModule.getName().equals("固件升级")) {
+                configModule.setDesc("版本:" + firmwareVersion);
+                break;
+            }
+        }
+        moduleAdapter.notifyDataSetChanged();
+    }
+
+    private void updateViewStateByConnectState(boolean isConnected) {
+        if (isConnected) {
+            mTvDeviceCommunicationState.setText("已连接");
+            mTvDeviceCommunicationState.setTextColor(ContextCompat.getColor(mActivity, R.color.text_color_50E9B9));
+            mTvDeviceCommunicationState.setBackgroundResource(R.drawable.bg_device_online_state_flag);
+
+            mTvDeviceConnectState.setText("断开连接");
+            mTvDeviceConnectState.setTextColor(ContextCompat.getColor(mActivity, R.color.text_color_b3b3b3));
+        } else {
+            mTvDeviceCommunicationState.setText("已断开");
+            mTvDeviceCommunicationState.setTextColor(ContextCompat.getColor(mActivity, R.color.sub_title_text_color));
+            mTvDeviceCommunicationState.setBackgroundResource(R.drawable.bg_device_offline_state_flag);
+
+            mTvDeviceConnectState.setText("重新连接");
+            mTvDeviceConnectState.setTextColor(ContextCompat.getColor(mActivity, R.color.blue_52B4F8));
         }
     }
 
