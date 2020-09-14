@@ -1,6 +1,7 @@
 package com.shmedo.mcloudapp.deviceconfig.ui.fragment;
 
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -105,8 +106,6 @@ public class BleConfigDeviceFragment extends BaseBleConnectFragment {
 
     private ConfigModule selectedConfigModule;
 
-    private boolean isConnected; //是否连接
-
     private String collectorModel = "";//采集器类型
     private SetRainPrecisionInfo setRainPrecisionInfo;
     private CollectorConfigInfo collectorConfigInfo;
@@ -147,6 +146,13 @@ public class BleConfigDeviceFragment extends BaseBleConnectFragment {
         findAndConnectSpecificDevice();
     }
 
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        updateViewStateByConnectState(MCloudApp.isIsBluetoothDeviceConnected());
+    }
+
     private void setHeadInfo() {
         String[] infos = bleNameInfo.split(",");
         mTvDeviceName.setText("物联网数据采集器");
@@ -155,6 +161,7 @@ public class BleConfigDeviceFragment extends BaseBleConnectFragment {
             mTvProductModel.setText(String.format("产品型号：%s", TextUtils.isEmpty(infos[2]) ? "" : infos[2]));
         }
         mTvDeviceConnectState.setVisibility(View.VISIBLE);
+        mTvDeviceConnectState.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG);
         mTvDeviceCommunicationWay.setText("蓝牙");
     }
 
@@ -195,6 +202,11 @@ public class BleConfigDeviceFragment extends BaseBleConnectFragment {
         moduleAdapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
+                if (!MCloudApp.isIsBluetoothDeviceConnected()) {
+                    ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
+                    return;
+                }
+
                 selectedConfigModule = (ConfigModule) configModuleList.get(position);
                 processItemClick();
             }
@@ -240,7 +252,7 @@ public class BleConfigDeviceFragment extends BaseBleConnectFragment {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.tv_device_connect_state://断开/重新连接
-                if (!isConnected) {
+                if (!MCloudApp.isIsBluetoothDeviceConnected()) {
                     findAndConnectSpecificDevice();
                 } else {//断开连接处理
                     if (isConfigChange) {
@@ -304,7 +316,7 @@ public class BleConfigDeviceFragment extends BaseBleConnectFragment {
         if (messageEvent instanceof CmdResponseMessage) {
             setResultData((CmdResponseMessage) messageEvent);
         } else if (messageEvent instanceof BluetoothConnectStateEvent) {
-            isConnected = ((BluetoothConnectStateEvent) messageEvent).isConnected;
+            boolean isConnected = ((BluetoothConnectStateEvent) messageEvent).isConnected;
             updateViewStateByConnectState(isConnected);
         }
     }
@@ -434,6 +446,8 @@ public class BleConfigDeviceFragment extends BaseBleConnectFragment {
 
             mTvDeviceConnectState.setText("重新连接");
             mTvDeviceConnectState.setTextColor(ContextCompat.getColor(mActivity, R.color.blue_52B4F8));
+
+            mSbActiveState.setCheckedImmediatelyNoEvent(false);
         }
     }
 

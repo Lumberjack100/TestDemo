@@ -216,7 +216,7 @@ public class BleDeviceCurrentStateFragment extends BaseBleConnectFragment {
             protected void convert(CommonViewHolder holder, String string, int position) {
                 //①:②:③，其中①：传感器地址，②：传感器状态，0正常，1异常，③：传感器数据
                 String[] result = string.split(":");
-                holder.setText(R.id.tv_address, result[0]);
+                holder.setText(R.id.tv_address, "通道" + result[0]);
 
                 if (result[1].equals("0")) {
                     holder.setText(R.id.tv_status, "正常");
@@ -240,7 +240,8 @@ public class BleDeviceCurrentStateFragment extends BaseBleConnectFragment {
     }
 
     private void initData() {
-        showLoadingDialog("加载中...");
+        errMsg = "查询数据超时,请稍后尝试";
+        startProgressRunnable("加载中...", 20000);
         String command = CommandManager.getInstance().getCommand(CommandType.QUERY_DAS_STATUS_1);
         sendCommonCommandImmediately(command);
         Timber.i("查询设备状态1：%s", command);
@@ -264,7 +265,7 @@ public class BleDeviceCurrentStateFragment extends BaseBleConnectFragment {
         switch (type) {
             case QUERY_DAS_STATUS_1:
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
-                    dismissLoadingDialog();
+                    stopProgressRunnable();
                     Timber.e("查询设备状态1指令出错!");
                     ToastUtils.show("查询设备状态1出错!");
                     return;
@@ -279,7 +280,7 @@ public class BleDeviceCurrentStateFragment extends BaseBleConnectFragment {
 
             case VERSION_MESSAGE:
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
-                    dismissLoadingDialog();
+                    stopProgressRunnable();
                     Timber.e("查询设备版本信息出错!");
                     ToastUtils.show("查询设备版本信息出错!");
                     return;
@@ -297,7 +298,7 @@ public class BleDeviceCurrentStateFragment extends BaseBleConnectFragment {
 
             case INSTALL_LOCATION:
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
-                    dismissLoadingDialog();
+                    stopProgressRunnable();
                     Timber.e("查询安装位置出错!");
                     ToastUtils.show("查询安装位置出错!");
                     return;
@@ -312,7 +313,7 @@ public class BleDeviceCurrentStateFragment extends BaseBleConnectFragment {
 
             case SYSTEM_RUN_STATE:
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
-                    dismissLoadingDialog();
+                    stopProgressRunnable();
                     Timber.e("查询运行状态出错!");
                     ToastUtils.show("查询运行状态出错!");
                     return;
@@ -328,7 +329,7 @@ public class BleDeviceCurrentStateFragment extends BaseBleConnectFragment {
 
             case QUERY_NETWORK_STATUS://数据中心网络状态
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
-                    dismissLoadingDialog();
+                    stopProgressRunnable();
                     Timber.e("查询数据中心网络状态出错!");
                     ToastUtils.show("查询数据中心网络状态出错!");
                     return;
@@ -369,7 +370,7 @@ public class BleDeviceCurrentStateFragment extends BaseBleConnectFragment {
 
             case QUERY_DAS_STATUS_2:
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
-                    dismissLoadingDialog();
+                    stopProgressRunnable();
                     Timber.e("查询设备状态2出错!");
                     ToastUtils.show("查询设备状态2出错!");
                     return;
@@ -384,12 +385,12 @@ public class BleDeviceCurrentStateFragment extends BaseBleConnectFragment {
 
             case QUERY_DAS_STATUS_3:
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
-                    dismissLoadingDialog();
+                    stopProgressRunnable();
                     Timber.e("查询设备状态3出错!");
                     ToastUtils.show("查询设备状态3出错!");
                     return;
                 }
-                dismissLoadingDialog();
+                stopProgressRunnable();
                 DeviceStatusInfoThree statusThree = ResultParserUtil.getEntityObject(cmdStr);
                 collectorModel = statusThree.getCollectorModel();
                 setDeviceStatusThree(statusThree);
