@@ -35,7 +35,7 @@ import com.shmedo.mcloudapp.deviceconfig.ui.activity.advanced.InstructionDebugAc
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.advanced.LogPrintActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.advanced.ProductRegistrationActivity;
 import com.shmedo.mcloudapp.entity.SyncPositionBean;
-import com.shmedo.core.event.BluetoothStateEvent;
+import com.shmedo.core.event.BluetoothConnectStateEvent;
 import com.shmedo.mcloudapp.util.AdvanceSetDialogUtils;
 import com.shmedo.mcloudapp.util.FileUtils;
 import com.shmedo.mcloudapp.util.KeyBordUtils;
@@ -402,8 +402,8 @@ public class DeviceAdvanceConfigActivity extends BaseDeviceConnectActivity {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onMessageEvent(BluetoothStateEvent bluetoothStateEvent) {
-        mSpDebugMode.setEnabled(bluetoothStateEvent.isConnected);
+    public void onMessageEvent(BluetoothConnectStateEvent bluetoothConnectStateEvent) {
+        mSpDebugMode.setEnabled(bluetoothConnectStateEvent.isConnected);
     }
 
     @Override

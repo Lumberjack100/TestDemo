@@ -25,7 +25,7 @@ import com.shmedo.core.cmd.CommandManager;
 import com.shmedo.core.cmd.CommandResult;
 import com.shmedo.core.enums.CollectorModel;
 import com.shmedo.core.enums.CommandType;
-import com.shmedo.core.event.BluetoothStateEvent;
+import com.shmedo.core.event.BluetoothConnectStateEvent;
 import com.shmedo.core.event.CmdResponseMessage;
 import com.shmedo.core.event.MessageEvent;
 import com.shmedo.core.model.BaseConfigInfo;
@@ -303,8 +303,8 @@ public class BleConfigDeviceFragment extends BaseBleConnectFragment {
 
         if (messageEvent instanceof CmdResponseMessage) {
             setResultData((CmdResponseMessage) messageEvent);
-        } else if (messageEvent instanceof BluetoothStateEvent) {
-            isConnected = ((BluetoothStateEvent) messageEvent).isConnected;
+        } else if (messageEvent instanceof BluetoothConnectStateEvent) {
+            isConnected = ((BluetoothConnectStateEvent) messageEvent).isConnected;
             updateViewStateByConnectState(isConnected);
         }
     }

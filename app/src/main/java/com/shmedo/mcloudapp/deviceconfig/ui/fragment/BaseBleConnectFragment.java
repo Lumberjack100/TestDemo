@@ -34,7 +34,7 @@ import com.shmedo.core.enums.LowEnergyModel;
 import com.shmedo.core.enums.SaveConfigMode;
 import com.shmedo.core.enums.ServerNumber;
 import com.shmedo.core.enums.SetRemoteUpgrade;
-import com.shmedo.core.event.BluetoothStateEvent;
+import com.shmedo.core.event.BluetoothConnectStateEvent;
 import com.shmedo.core.event.CmdResponseMessage;
 import com.shmedo.core.event.MessageEvent;
 import com.shmedo.core.interfaces.OnBytePackage;
@@ -128,7 +128,7 @@ public abstract class BaseBleConnectFragment extends BaseFragment {
                 if (errMsg.contains("连接超时") || errMsg.contains("认证超时")) {
                     disconnectDevice();
                     MCloudApp.setIsBluetoothDeviceConnected(false);
-                    EventBus.getDefault().post(new BluetoothStateEvent(false));
+                    EventBus.getDefault().post(new BluetoothConnectStateEvent(false));
                 }
             }
         }
@@ -343,6 +343,10 @@ public abstract class BaseBleConnectFragment extends BaseFragment {
     @Subscribe(threadMode = ThreadMode.POSTING)
     public void onMessageEvent(MessageEvent messageEvent) {
         if (messageEvent instanceof BluetoothEvent) {
+            if(!isActive){
+                return;
+            }
+
             BluetoothEvent event = (BluetoothEvent) messageEvent;
             switch (event.getEventType()) {
 
@@ -437,7 +441,7 @@ public abstract class BaseBleConnectFragment extends BaseFragment {
                     isAutoConnectBlue = true;
                     stopProgressRunnable();
                     MCloudApp.setIsBluetoothDeviceConnected(true);
-                    EventBus.getDefault().post(new BluetoothStateEvent(true));
+                    EventBus.getDefault().post(new BluetoothConnectStateEvent(true));
                     errMsg = "认证超时,请稍后尝试";
                     startProgressRunnable("蓝牙已连接,设备认证中...", AUTHENTICATE_DELAY_MILLIS);
                     setAuthenticateWay();//蓝牙连接成功开始进行验证
@@ -447,7 +451,7 @@ public abstract class BaseBleConnectFragment extends BaseFragment {
                     ToastUtils.show("设备断开连接");
                     stopProgressRunnable();
                     MCloudApp.setIsBluetoothDeviceConnected(false);
-                    EventBus.getDefault().post(new BluetoothStateEvent(false));
+                    EventBus.getDefault().post(new BluetoothConnectStateEvent(false));
                     //断开蓝牙后重新连接
                     if (isAutoConnectBlue) {
                         findAndConnectSpecificDevice();
@@ -566,7 +570,7 @@ public abstract class BaseBleConnectFragment extends BaseFragment {
      * 解析设备的参数指令
      */
     private void parserResult(String cmdStr) {
-        stopProgressRunnable();
+//        stopProgressRunnable();
 
         if (SN.endsWith("T")) {//ADME 设备应答指令预处理
             parserADMECmdResult(cmdStr);
@@ -603,7 +607,7 @@ public abstract class BaseBleConnectFragment extends BaseFragment {
      */
     private void parserADMECmdResult(String cmdStr) {
         //查询执行机构参数应答
-        if (cmdStr.startsWith("$$7002") && cmdStr.endsWith("\r\n")) {
+        if (cmdStr.startsWith("$$7002")) {
             stopProgressRunnable();
         }
 
@@ -621,10 +625,10 @@ public abstract class BaseBleConnectFragment extends BaseFragment {
      * @param cmdStr
      */
     private void parserDASCmdResult(String cmdStr) {
-        //查询数字式渗压计参数
-//        if (cmdStr.startsWith("$$333") && cmdStr.endsWith("\r\n")) {
-//            stopProgressRunnable();
-//        }
+        //查询基础配置信息
+        if (cmdStr.startsWith("$$000")) {
+            stopProgressRunnable();
+        }
 
         //此处是各个配置指令应答，表示已经更改配置了
         if ((cmdStr.startsWith("$$006")//调试模式
@@ -665,7 +669,7 @@ public abstract class BaseBleConnectFragment extends BaseFragment {
      */
     private void queryADMEConfigInfoCmd() {
         sendCommonCommand("##7010\r\n");
-        Timber.d("查询工作模式指令===" + "##7010");
+        Timber.d("查询工作模式指令===##7010");
 
         ServerNumberEntity serverNumberEntity = new ServerNumberEntity(ServerNumber.NUMBER_ONE.toInt());
         String cmdAddress1 = CommandManager.getInstance().getCommand(CommandType.SERVER_ADDRESS, serverNumberEntity);
@@ -678,10 +682,10 @@ public abstract class BaseBleConnectFragment extends BaseFragment {
         Timber.d("查询服务器地址2指令===%s", cmdAddress2);
 
         sendCommonCommand("##7000\r\n");
-        Timber.d("查询采集器参数指令===" + "##7000");
+        Timber.d("查询采集器参数指令===##7000");
 
         sendCommonCommand("##7002\r\n");
-        Timber.d("查询执行机构参数指令===" + "##7002");
+        Timber.d("查询执行机构参数指令===##7002");
     }
 
     /**

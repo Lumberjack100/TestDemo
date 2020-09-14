@@ -25,7 +25,7 @@ import com.hjq.toast.ToastUtils;
 import com.shmedo.core.AppContants;
 import com.shmedo.core.MCloudApp;
 import com.shmedo.core.cmd.CommandResult;
-import com.shmedo.core.event.BluetoothStateEvent;
+import com.shmedo.core.event.BluetoothConnectStateEvent;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.deviceconfig.view.PlayPauseView;
 import com.zhy.adapter.recyclerview.CommonAdapter;
@@ -520,9 +520,9 @@ public class ADMEMotorControlActivity extends BaseDeviceConnectActivity {
 
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onMessageEvent(BluetoothStateEvent bluetoothStateEvent) {
-        mIvBluetooth.setImageResource(bluetoothStateEvent.isConnected ? R.drawable.ic_bluetooth_connected : R.drawable.ic_bluetooth);
-        playPauseView.setEnabled(bluetoothStateEvent.isConnected);
+    public void onMessageEvent(BluetoothConnectStateEvent bluetoothConnectStateEvent) {
+        mIvBluetooth.setImageResource(bluetoothConnectStateEvent.isConnected ? R.drawable.ic_bluetooth_connected : R.drawable.ic_bluetooth);
+        playPauseView.setEnabled(bluetoothConnectStateEvent.isConnected);
     }
 
 

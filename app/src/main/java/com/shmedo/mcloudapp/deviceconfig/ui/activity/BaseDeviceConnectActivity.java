@@ -43,7 +43,7 @@ import com.shmedo.mcloudapp.bluetooth.BluetoothEvent;
 import com.shmedo.mcloudapp.bluetooth.BluetoothEventHandler;
 import com.shmedo.mcloudapp.bluetooth.MdBluetoothManager;
 import com.shmedo.mcloudapp.bluetooth.Message;
-import com.shmedo.core.event.BluetoothStateEvent;
+import com.shmedo.core.event.BluetoothConnectStateEvent;
 import com.shmedo.mcloudapp.util.bleutil.ByteManagerUtil;
 import com.shmedo.mcloudapp.util.bleutil.Constants;
 import com.shmedo.mcloudapp.util.common.HandleBackUtil;
@@ -119,7 +119,7 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
                 if (errMsg.contains("连接超时") || errMsg.contains("认证超时")) {
                     disconnectDevice();
                     MCloudApp.setIsBluetoothDeviceConnected(false);
-                    EventBus.getDefault().post(new BluetoothStateEvent(false));
+                    EventBus.getDefault().post(new BluetoothConnectStateEvent(false));
                 }
             }
         }
@@ -391,7 +391,7 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
                     isAutoConnectBlue = true;
                     stopProgressRunnable();
                     MCloudApp.setIsBluetoothDeviceConnected(true);
-                    EventBus.getDefault().post(new BluetoothStateEvent(true));
+                    EventBus.getDefault().post(new BluetoothConnectStateEvent(true));
                     errMsg = "认证超时,请稍后尝试";
                     startProgressRunnable("蓝牙已连接,设备认证中...", AUTHENTICATE_DELAY_MILLIS);
                     setAuthenticateWay();//蓝牙连接成功开始进行验证
@@ -401,7 +401,7 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
                     ToastUtils.show("设备断开连接");
                     stopProgressRunnable();
                     MCloudApp.setIsBluetoothDeviceConnected(false);
-                    EventBus.getDefault().post(new BluetoothStateEvent(false));
+                    EventBus.getDefault().post(new BluetoothConnectStateEvent(false));
                     //断开蓝牙后重新连接
                     if (isAutoConnectBlue) {
                         findAndConnectSpecificDevice();

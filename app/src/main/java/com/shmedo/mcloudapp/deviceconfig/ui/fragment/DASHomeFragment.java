@@ -33,7 +33,7 @@ import com.shmedo.core.enums.BreakAlarmStatus;
 import com.shmedo.core.enums.CollectorModel;
 import com.shmedo.core.enums.CommandType;
 import com.shmedo.core.enums.RainStation;
-import com.shmedo.core.event.BluetoothStateEvent;
+import com.shmedo.core.event.BluetoothConnectStateEvent;
 import com.shmedo.core.model.BaseConfigInfo;
 import com.shmedo.core.model.BreakAlarmStatusInfo;
 import com.shmedo.core.model.CollectorConfigInfo;
@@ -572,8 +572,8 @@ public class DASHomeFragment extends BaseFragment {
 
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onMessageEvent(BluetoothStateEvent bluetoothStateEvent) {
-        setViewStateByConnectState(bluetoothStateEvent.isConnected);
+    public void onMessageEvent(BluetoothConnectStateEvent bluetoothConnectStateEvent) {
+        setViewStateByConnectState(bluetoothConnectStateEvent.isConnected);
     }
 
     private void setViewStateByConnectState(boolean isConnected) {

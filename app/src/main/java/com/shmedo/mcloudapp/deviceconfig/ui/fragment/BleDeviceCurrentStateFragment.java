@@ -20,7 +20,6 @@ import com.shmedo.core.cmd.entity.InstallLocationEntity;
 import com.shmedo.core.cmd.entity.ServerNumberEntity;
 import com.shmedo.core.enums.CommandType;
 import com.shmedo.core.enums.ServerNumber;
-import com.shmedo.core.event.BluetoothStateEvent;
 import com.shmedo.core.event.CmdResponseMessage;
 import com.shmedo.core.event.MessageEvent;
 import com.shmedo.core.model.DeviceNetStatus;
@@ -191,7 +190,6 @@ public class BleDeviceCurrentStateFragment extends BaseBleConnectFragment {
     @BindView(R.id.sensor_recyclerView)
     RecyclerView sensorRecyclerView;
 
-    private boolean isConnected; //是否连接
     private String collectorModel = "";//采集器类型
 
     private List<String> sensorList = new ArrayList<>();
@@ -255,9 +253,6 @@ public class BleDeviceCurrentStateFragment extends BaseBleConnectFragment {
 
         if (messageEvent instanceof CmdResponseMessage) {
             setResultData((CmdResponseMessage) messageEvent);
-        } else if (messageEvent instanceof BluetoothStateEvent) {
-            isConnected = ((BluetoothStateEvent) messageEvent).isConnected;
-//            updateViewStateByConnectState(isConnected);
         }
     }
 
@@ -595,7 +590,7 @@ public class BleDeviceCurrentStateFragment extends BaseBleConnectFragment {
                     ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
                     return;
                 }
-                ToastUtils.show("刷新");
+                initData();
                 break;
 
         }

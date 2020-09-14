@@ -25,7 +25,7 @@ import com.hjq.toast.ToastUtils;
 import com.kyleduo.switchbutton.SwitchButton;
 import com.shmedo.core.AppContants;
 import com.shmedo.core.MCloudApp;
-import com.shmedo.core.event.BluetoothStateEvent;
+import com.shmedo.core.event.BluetoothConnectStateEvent;
 import com.shmedo.core.utils.ValidateUtil;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.fragment.BaseFragment;
@@ -722,8 +722,8 @@ public class ADMEHomeFragment extends BaseFragment {
 
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onMessageEvent(BluetoothStateEvent bluetoothStateEvent) {
-        setViewStateByConnectState(bluetoothStateEvent.isConnected);
+    public void onMessageEvent(BluetoothConnectStateEvent bluetoothConnectStateEvent) {
+        setViewStateByConnectState(bluetoothConnectStateEvent.isConnected);
     }
 
 
