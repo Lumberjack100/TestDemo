@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.hjq.toast.ToastUtils;
+import com.shmedo.core.MCloudApp;
 import com.shmedo.core.cmd.CommandManager;
 import com.shmedo.core.cmd.CommandResult;
 import com.shmedo.core.cmd.entity.InstallLocationEntity;
@@ -28,10 +29,12 @@ import com.shmedo.core.model.DeviceStatusInfoThree;
 import com.shmedo.core.model.DeviceStatusInfoTwo;
 import com.shmedo.core.model.SystemRunStateInfo;
 import com.shmedo.core.model.VersionMessageInfo;
+import com.shmedo.core.util.DensityUtil;
 import com.shmedo.core.util.GlobalUtil;
 import com.shmedo.core.utils.ResultParserUtil;
 import com.shmedo.core.utils.StringUtil;
 import com.shmedo.mcloudapp.R;
+import com.shmedo.mcloudapp.common.view.recycleviewitemdivider.RecycleViewDivider;
 import com.shmedo.mcloudapp.deviceconfig.util.DeviceCurrentRunStateUtils;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.base.CommonViewHolder;
@@ -43,6 +46,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
+import butterknife.OnClick;
 import timber.log.Timber;
 
 /**
@@ -208,6 +212,7 @@ public class BleDeviceCurrentStateFragment extends BaseBleConnectFragment {
 
     private void initAdapter() {
         sensorRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        sensorRecyclerView.addItemDecoration(new RecycleViewDivider(LinearLayoutManager.VERTICAL, DensityUtil.Dp2Px(mActivity, 10f), getResources().getColor(R.color.transparent)));
         sensorAdapter = new CommonAdapter<String>(getActivity(), R.layout.item_sensor_status, sensorList) {
             @Override
             protected void convert(CommonViewHolder holder, String string, int position) {
@@ -376,6 +381,7 @@ public class BleDeviceCurrentStateFragment extends BaseBleConnectFragment {
                 }
                 DeviceStatusInfoTwo statusTwo = ResultParserUtil.getEntityObject(cmdStr);
                 setDeviceStatusTwo(statusTwo);
+
                 command = CommandManager.getInstance().getCommand(CommandType.QUERY_DAS_STATUS_3);
                 sendCommonCommandImmediately(command);
                 Timber.i("查询设备状态3：%s", command);
@@ -578,6 +584,20 @@ public class BleDeviceCurrentStateFragment extends BaseBleConnectFragment {
             sensorList.clear();
             sensorList.addAll(list);
             sensorAdapter.notifyDataSetChanged();
+        }
+    }
+
+    @OnClick({R.id.fab_refresh})
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.fab_refresh://断开/重新连接
+                if (!MCloudApp.isIsBluetoothDeviceConnected()) {
+                    ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
+                    return;
+                }
+                ToastUtils.show("刷新");
+                break;
+
         }
     }
 
