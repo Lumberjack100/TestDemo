@@ -14,7 +14,7 @@
         android:layout_marginStart="5dp"
         android:layout_gravity="center_vertical"
         android:scaleType="centerCrop"
-        tools:src="@drawable/ic_dot_assigned" />
+       />
 
     <TextView
         android:id="@+id/tv_deviceToken"

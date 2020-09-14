@@ -37,7 +37,7 @@ import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.fragment.BaseFragment;
 import com.shmedo.mcloudapp.common.view.VerticalSwipeRefreshLayout;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.BaseDeviceConnectActivity;
-import com.shmedo.mcloudapp.deviceconfig.util.DeviceDetailInfoUtils;
+import com.shmedo.mcloudapp.deviceconfig.util.DeviceCurrentRunStateUtils;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.base.CommonViewHolder;
 
@@ -241,7 +241,7 @@ public class DeviceDetailsFragment extends BaseFragment implements SwipeRefreshL
                 //①:②:③，其中①：传感器地址，②：传感器状态，0正常，1异常，③：传感器数据
                 String[] result = string.split(":");
                 holder.setText(R.id.sensor_channel_number, result[0]);
-                holder.setText(R.id.sensor_status, DeviceDetailInfoUtils.setSensorDataStatus(holder.getView(R.id.sensor_status), result[1], deviceConnectActivity));
+                holder.setText(R.id.sensor_status, DeviceCurrentRunStateUtils.setSensorDataStatus(holder.getView(R.id.sensor_status), result[1], deviceConnectActivity));
                 if (channelNumber.equals("3")) {
                     holder.setText(R.id.sensor_data, result[2] + "%rh");
                 } else if (channelNumber.equals("21")) {
@@ -378,7 +378,7 @@ public class DeviceDetailsFragment extends BaseFragment implements SwipeRefreshL
     //设置设备状态2  ##042
     private void setDeviceStatusTwo(DeviceStatusInfoTwo statusTwo) {
         //太阳能控制器
-        DeviceDetailInfoUtils.setDeviceStatus(solarStatus, statusTwo.getSolarControllerStatus(), deviceConnectActivity);
+        DeviceCurrentRunStateUtils.setDeviceStatus(solarStatus, statusTwo.getSolarControllerStatus(), deviceConnectActivity);
         //solarStatus.setText(statusTwo.getSolarControllerStatus());
         solarVoltage.setText(statusTwo.getSolarPanelVoltage() + "V");
         batteryVoltage.setText(statusTwo.getBatteryVoltage() + "V");
@@ -386,13 +386,13 @@ public class DeviceDetailsFragment extends BaseFragment implements SwipeRefreshL
         rihaoBattery.setText(statusTwo.getDailyPowerConsumption() + "W");
 
         //机箱内部温湿度
-        DeviceDetailInfoUtils.setDeviceStatus(caseInternalStatus, statusTwo.getInternalTempHumidityStatus(), deviceConnectActivity);
+        DeviceCurrentRunStateUtils.setDeviceStatus(caseInternalStatus, statusTwo.getInternalTempHumidityStatus(), deviceConnectActivity);
         //caseInternalStatus.setText(statusTwo.getInternalTempHumidityStatus());
         caseInternalTemperature.setText(statusTwo.getInternalTemperature() + "°");
         caseInternalHumidity.setText(statusTwo.getInternalHumidity() + "%");
 
         //机箱外部温湿度
-        DeviceDetailInfoUtils.setDeviceStatus(caseExternalStatus, statusTwo.getExternalTempHumidityStatus(), deviceConnectActivity);
+        DeviceCurrentRunStateUtils.setDeviceStatus(caseExternalStatus, statusTwo.getExternalTempHumidityStatus(), deviceConnectActivity);
         //caseExternalStatus.setText(statusTwo.getExternalTempHumidityStatus());
         caseExternalTemperature.setText(statusTwo.getExternalTemperature() + "°");
         caseExternalHumidity.setText(statusTwo.getExternalHumidity() + "%");
@@ -423,7 +423,7 @@ public class DeviceDetailsFragment extends BaseFragment implements SwipeRefreshL
                     alarmStatus.setTextColor(Color.RED);
                 } else if (statusTwo.getRainfallStatus().equals("0.0") || statusTwo.getRainfallStatus().equals("0")) {
                     alarmStatus.setText("未断线");
-                    alarmStatus.setTextColor(getResources().getColor(R.color.green_53a659));
+                    alarmStatus.setTextColor(getResources().getColor(R.color.text_color_3AD094));
                 }
                 break;
         }
@@ -433,24 +433,24 @@ public class DeviceDetailsFragment extends BaseFragment implements SwipeRefreshL
      * 设备电量、电压警戒值处理
      */
     private void processPowerAndVoltage(DeviceStatusInfoTwo statusTwo) {
-        String powerStr = DeviceDetailInfoUtils.setDeviceInternalBattery(statusTwo.getInternalVoltage());
+        String powerStr = DeviceCurrentRunStateUtils.setDeviceInternalBattery(statusTwo.getInternalVoltage());
         double power = Double.parseDouble(powerStr.replace("%", ""));
         SpannableStringBuilder builder = new SpannableStringBuilder(powerStr);
-        ForegroundColorSpan colorSpan = new ForegroundColorSpan(power <= 10 ? getContext().getResources().getColor(R.color.red) : getContext().getResources().getColor(R.color.green_53a659));
+        ForegroundColorSpan colorSpan = new ForegroundColorSpan(power <= 10 ? getContext().getResources().getColor(R.color.red) : getContext().getResources().getColor(R.color.text_color_3AD094));
         builder.setSpan(colorSpan, 0, builder.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         internalBattery.setText(builder);
 
         String voltageStr = statusTwo.getExternalVoltage();
         double voltage = Double.parseDouble(voltageStr);
         builder = new SpannableStringBuilder(voltageStr + "V");
-        colorSpan = new ForegroundColorSpan(voltage <= 5 ? getContext().getResources().getColor(R.color.red) : getContext().getResources().getColor(R.color.green_53a659));
+        colorSpan = new ForegroundColorSpan(voltage <= 5 ? getContext().getResources().getColor(R.color.red) : getContext().getResources().getColor(R.color.text_color_3AD094));
         builder.setSpan(colorSpan, 0, builder.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         externalBattery.setText(builder);
     }
 
     //设置设备状态3  $$043,150000L,2,   3:0:3.1,   5:0:3.1\r\n
     private void setDeviceStatusThree(DeviceStatusInfoThree statusThree) {
-        DeviceDetailInfoUtils.setChannelNumber(tvChannelNumber, statusThree.getCollectorModel());
+        DeviceCurrentRunStateUtils.setChannelNumber(tvChannelNumber, statusThree.getCollectorModel());
         if (statusThree.getCollectorAddress().equals("0")) {
             llSensor.setVisibility(View.GONE);
         } else {
@@ -466,21 +466,21 @@ public class DeviceDetailsFragment extends BaseFragment implements SwipeRefreshL
     private void setInternetStatus(DeviceNetStatus internetStatus, String linkNumber) {
         switch (linkNumber) {
             case "1":
-                DeviceDetailInfoUtils.setLinkStatus(linkOneStatus, linkOneSendData, linkOneUnsendData, internetStatus.getLinkStatus(),
-                        internetStatus.getLinkEnable(), internetStatus.getSentData(), internetStatus.getGeneratedData(), deviceConnectActivity);
+                DeviceCurrentRunStateUtils.setLinkStatus(linkOneStatus, linkOneSendData, linkOneUnsendData, internetStatus.getLinkStatus(),
+                        internetStatus.getLinkEnable(), internetStatus.getSentData(), internetStatus.getGeneratedData());
                 if (internetStatus.getOnlineRate() != null) {
                     linkOneOnlineRate.setText(internetStatus.getOnlineRate() + "%");
                 }
                 break;
             case "2":
-                DeviceDetailInfoUtils.setLinkStatus(linkTwoStatus, linkTwoSendData, linkTwoUnsendData, internetStatus.getLinkStatus(),
-                        internetStatus.getLinkEnable(), internetStatus.getSentData(), internetStatus.getGeneratedData(), deviceConnectActivity);
+                DeviceCurrentRunStateUtils.setLinkStatus(linkTwoStatus, linkTwoSendData, linkTwoUnsendData, internetStatus.getLinkStatus(),
+                        internetStatus.getLinkEnable(), internetStatus.getSentData(), internetStatus.getGeneratedData());
                 if (internetStatus.getOnlineRate() != null)
                     linkTwoOnlineRate.setText(internetStatus.getOnlineRate() + "%");
                 break;
             case "3":
-                DeviceDetailInfoUtils.setLinkStatus(linkThreeStatus, linkThreeSendData, linkThreeUnsendData, internetStatus.getLinkStatus(),
-                        internetStatus.getLinkEnable(), internetStatus.getSentData(), internetStatus.getGeneratedData(), deviceConnectActivity);
+                DeviceCurrentRunStateUtils.setLinkStatus(linkThreeStatus, linkThreeSendData, linkThreeUnsendData, internetStatus.getLinkStatus(),
+                        internetStatus.getLinkEnable(), internetStatus.getSentData(), internetStatus.getGeneratedData());
                 if (internetStatus.getOnlineRate() != null)
                     linkThreeOnlineRate.setText(internetStatus.getOnlineRate() + "%");
                 break;
@@ -489,8 +489,8 @@ public class DeviceDetailsFragment extends BaseFragment implements SwipeRefreshL
 
     //设置运营商信息  ##014
     private void setOperatorInformation(SystemRunStateInfo runStateInfo) {
-        DeviceDetailInfoUtils.setSignalStrength(imgSignalStrength, Integer.parseInt(runStateInfo.getGprsSignal()));
-        signalStrength.setText(DeviceDetailInfoUtils.setOperatorType(runStateInfo.getOperator()));
+        DeviceCurrentRunStateUtils.setSignalStrength(imgSignalStrength, Integer.parseInt(runStateInfo.getGprsSignal()));
+        signalStrength.setText(DeviceCurrentRunStateUtils.setOperatorType(runStateInfo.getOperator()));
     }
 
 

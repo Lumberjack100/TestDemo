@@ -43,6 +43,7 @@ import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.view.recycleviewitemdivider.GridSpacingItemDecoration;
 import com.shmedo.mcloudapp.deviceconfig.adapter.ConfigModuleAdapter;
 import com.shmedo.mcloudapp.deviceconfig.model.ConfigModule;
+import com.shmedo.mcloudapp.deviceconfig.ui.activity.DeviceCurrentStateActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd.BaseDispatchCmdDialog;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd.QueryTerminalTimeDialog;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd.TelemetryDialog;
@@ -204,7 +205,7 @@ public class BleConfigDeviceFragment extends BaseBleConnectFragment {
     private void processItemClick() {
         switch (selectedConfigModule.getName()) {
             case "状态":
-
+                DeviceCurrentStateActivity.startActivity(mActivity, DeviceCurrentStateActivity.BLE_CONNECT);
                 break;
 
             case "时间":
@@ -335,8 +336,8 @@ public class BleConfigDeviceFragment extends BaseBleConnectFragment {
             case LOCAL_TIME:
                 dismissLoadingDialog();
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
-                    Timber.e("查询版本信息指令出错!");
-                    ToastUtils.show("查询时间指令出错!");
+                    Timber.e("查询终端时间指令出错!");
+                    ToastUtils.show("查询终端时间指令出错!");
                     return;
                 }
                 LoaclTimeInfo timeInfo = ResultParserUtil.getEntityObject(cmdStr);

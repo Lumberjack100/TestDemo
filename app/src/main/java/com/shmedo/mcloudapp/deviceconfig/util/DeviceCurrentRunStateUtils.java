@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.shmedo.core.util.GlobalUtil;
 import com.shmedo.mcloudapp.R;
 
 
@@ -13,9 +14,9 @@ import com.shmedo.mcloudapp.R;
  * 包名：    com.shmedo.mcloudapp.util
  * 创建者:   dpc
  * 创建时间:  2019-12-12
- * 描述：   设备详情页面工具类
+ * 描述：   设备当前运行状态页面工具类
  */
-public class DeviceDetailInfoUtils {
+public class DeviceCurrentRunStateUtils {
     /**
      * 计算内部电压
      *
@@ -47,7 +48,7 @@ public class DeviceDetailInfoUtils {
             textView.setTextColor(Color.RED);
         } else if (status.equals("0")) {
             textView.setText("正常");
-            textView.setTextColor(context.getResources().getColor(R.color.green_53a659));
+            textView.setTextColor(context.getResources().getColor(R.color.text_color_3AD094));
         }
     }
 
@@ -59,7 +60,7 @@ public class DeviceDetailInfoUtils {
      */
     public static String setSensorDataStatus(TextView textView, String status, Context context) {
         if (status.equals("0")) {
-            textView.setTextColor(context.getResources().getColor(R.color.green_53a659));
+            textView.setTextColor(context.getResources().getColor(R.color.text_color_3AD094));
             return "正常";
         } else if (status.equals("1")) {
             textView.setTextColor(Color.RED);
@@ -75,13 +76,13 @@ public class DeviceDetailInfoUtils {
      * @param status
      */
     public static void setLinkStatus(TextView tvLinkStatus, TextView tvSendData, TextView tvUnSend, String status, String enable,
-                                     String sendData, String generatedData, Context context) {
+                                     String sendData, String generatedData) {
         String unSendData = String.valueOf(Integer.parseInt(generatedData) - Integer.parseInt(sendData));
         //如果中心使能
         if (enable.equals("1")) {
             if (status.equals("1")) {
                 tvLinkStatus.setText("已上线");
-                tvLinkStatus.setTextColor(context.getResources().getColor(R.color.green_53a659));
+                tvLinkStatus.setTextColor( GlobalUtil.getColor(R.color.text_color_3AD094));
             } else if (status.equals("0")) {
                 tvLinkStatus.setText("未上线");
                 tvLinkStatus.setTextColor(Color.RED);

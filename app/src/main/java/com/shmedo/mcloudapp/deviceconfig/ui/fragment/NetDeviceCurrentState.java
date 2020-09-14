@@ -8,21 +8,18 @@ import android.text.style.ForegroundColorSpan;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.fragment.BaseFragment;
 import com.shmedo.mcloudapp.deviceconfig.model.DevcieCurrentState;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.DeviceCurrentStateActivity;
-import com.shmedo.mcloudapp.deviceconfig.util.DeviceDetailInfoUtils;
+import com.shmedo.mcloudapp.deviceconfig.util.DeviceCurrentRunStateUtils;
 import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfo;
 
 import butterknife.BindView;
 
 /**
- * A simple {@link Fragment} subclass.
- * Use the {@link NetDeviceCurrentState#newInstance} factory method to
- * create an instance of this fragment.
+ * 通过网络下发指令查看设备当前运行状态
  */
 public class NetDeviceCurrentState extends BaseFragment {
     private static final String DEVICE_INFO = "device_info";
@@ -222,7 +219,7 @@ public class NetDeviceCurrentState extends BaseFragment {
                 mTvSignalStrength.setText(TextUtils.isEmpty(simListBean.getSimIsp()) ? "--" : simListBean.getSimIsp());
             }
         }
-        mTvSignalStrength.setCompoundDrawablesWithIntrinsicBounds(0, 0, DeviceDetailInfoUtils.getSignalResIdByRSSIValue(devcieCurrentState.get_$4g_signal()), 0);
+        mTvSignalStrength.setCompoundDrawablesWithIntrinsicBounds(0, 0, DeviceCurrentRunStateUtils.getSignalResIdByRSSIValue(devcieCurrentState.get_$4g_signal()), 0);
 
         mTvLinkOneStatus.setText("--");
         mTvLinkOneSendData.setText("--");
@@ -273,10 +270,10 @@ public class NetDeviceCurrentState extends BaseFragment {
      * 设备电压
      */
     private void initDevicePowerAndVoltage() {
-        String powerStr = DeviceDetailInfoUtils.setDeviceInternalBattery(devcieCurrentState.getInner_power_volt());
+        String powerStr = DeviceCurrentRunStateUtils.setDeviceInternalBattery(devcieCurrentState.getInner_power_volt());
         double power = Double.parseDouble(powerStr.replace("%", ""));
         SpannableStringBuilder builder = new SpannableStringBuilder(powerStr);
-        ForegroundColorSpan colorSpan = new ForegroundColorSpan(power <= 10 ? getContext().getResources().getColor(R.color.red) : getContext().getResources().getColor(R.color.green_53a659));
+        ForegroundColorSpan colorSpan = new ForegroundColorSpan(power <= 10 ? getContext().getResources().getColor(R.color.red) : getContext().getResources().getColor(R.color.text_color_3AD094));
         builder.setSpan(colorSpan, 0, builder.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         mTvDeviceInternalPower.setText(builder);
 

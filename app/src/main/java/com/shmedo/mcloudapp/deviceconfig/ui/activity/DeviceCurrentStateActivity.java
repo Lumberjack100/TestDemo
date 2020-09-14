@@ -9,11 +9,10 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-import com.shmedo.core.MCloudApp;
-import com.shmedo.core.model.UserInfo;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.activity.BaseActivity;
 import com.shmedo.mcloudapp.deviceconfig.model.DevcieCurrentState;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.BleDeviceCurrentStateFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.NetDeviceCurrentState;
 import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfo;
 
@@ -31,8 +30,6 @@ public class DeviceCurrentStateActivity extends BaseActivity {
     TextView mToolbarTitle;
 
     private int connectWay = NET_CONNECT;
-
-    private int companyID;
 
     private Fragment fragment;
 
@@ -68,17 +65,10 @@ public class DeviceCurrentStateActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setToolBar(R.id.toolbar);
         mToolbarTitle.setText("运行状态");
-        initUserData();
         parseIntent();
         initFragment();
     }
 
-    private void initUserData() {
-        UserInfo userInfo = MCloudApp.getCurrentUserInfo();
-        if (userInfo != null && userInfo.getDepartments() != null && userInfo.getDepartments().size() > 0) {
-            companyID = userInfo.getDepartments().get(0).getCompanyID();
-        }
-    }
 
     private void parseIntent() {
         Intent intent = getIntent();
@@ -103,7 +93,7 @@ public class DeviceCurrentStateActivity extends BaseActivity {
             fragment = NetDeviceCurrentState.newInstance(projectDeviceInfo, devcieCurrentState);
 
         } else {
-
+            fragment = new BleDeviceCurrentStateFragment();
         }
 
         replaceFragment(fragment);
