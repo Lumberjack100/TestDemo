@@ -45,9 +45,8 @@ public class DeviceCurrentStateActivity extends BaseActivity {
         context.startActivity(intent);
     }
 
-    public static void startActivity(Context context, int connectWay, ProjectDeviceInfo projectDeviceInfo, DevcieCurrentState devcieCurrentState) {
+    public static void startActivity(Context context, ProjectDeviceInfo projectDeviceInfo, DevcieCurrentState devcieCurrentState) {
         Intent intent = new Intent(context, DeviceCurrentStateActivity.class);
-        intent.putExtra(CONNECT_WAY, connectWay);
         intent.putExtra(DEVICE_INFO, projectDeviceInfo);
         intent.putExtra(DEVICE_CURRENT_STATE, devcieCurrentState);
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);

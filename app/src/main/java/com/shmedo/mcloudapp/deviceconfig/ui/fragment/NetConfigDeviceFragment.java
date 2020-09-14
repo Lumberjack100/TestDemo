@@ -35,6 +35,7 @@ import com.shmedo.mcloudapp.deviceconfig.model.params.QueryCmdStateParam;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.AdvancedSettingActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.DeviceCurrentStateActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.DeviceHistoryDataAnalysisActivity;
+import com.shmedo.mcloudapp.deviceconfig.ui.activity.IOTCollectorSettingActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.BaseDialogFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.FirmWareSelectDialog;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd.BaseDispatchCmdDialog;
@@ -227,7 +228,6 @@ public class NetConfigDeviceFragment extends BaseFragment {
     @OnClick({R.id.tv_device_communication_way, R.id.rl_run_state_analysis})
     public void onClick(View v) {
         switch (v.getId()) {
-
             case R.id.tv_device_communication_way://切换连接方式
                 break;
 
@@ -253,7 +253,7 @@ public class NetConfigDeviceFragment extends BaseFragment {
                 break;
 
             case "采集器配置":
-//                IOTCollectorSettingActivity.startActivity(mActivity, IOTCollectorSettingActivity.NET_CONNECT, projectDeviceInfo.getId());
+                IOTCollectorSettingActivity.startActivity(mActivity, projectDeviceInfo.getId());
                 break;
 
             case "设置":
@@ -437,7 +437,7 @@ public class NetConfigDeviceFragment extends BaseFragment {
                 ((QueryCurrentStateDialog) newFragment).setOnSeeDetailClickListener(new QueryCurrentStateDialog.OnSeeDetailClickListener() {
                     @Override
                     public void onSeeDetailClick(DevcieCurrentState devcieCurrentState) {
-                        DeviceCurrentStateActivity.startActivity(mActivity, DeviceCurrentStateActivity.NET_CONNECT, projectDeviceInfo, devcieCurrentState);
+                        DeviceCurrentStateActivity.startActivity(mActivity, projectDeviceInfo, devcieCurrentState);
                     }
                 });
                 break;

@@ -1,0 +1,266 @@
+package com.shmedo.mcloudapp.deviceconfig.ui.fragment;
+
+import android.content.Intent;
+import android.os.Bundle;
+import android.text.InputFilter;
+import android.text.TextUtils;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+
+import androidx.annotation.Nullable;
+
+import com.hjq.toast.ToastUtils;
+import com.shmedo.core.AppContants;
+import com.shmedo.core.MCloudApp;
+import com.shmedo.core.cmd.CommandManager;
+import com.shmedo.core.cmd.CommandResult;
+import com.shmedo.core.cmd.entity.CollectorConfigEntity;
+import com.shmedo.core.cmd.entity.CollectorFrequencyEntity;
+import com.shmedo.core.cmd.entity.CollectorSolutionFrequencyEntity;
+import com.shmedo.core.cmd.entity.CollectorStandbyTimeEntity;
+import com.shmedo.core.cmd.entity.SetCollectorAddressEntity;
+import com.shmedo.core.enums.CommandType;
+import com.shmedo.core.event.CmdResponseMessage;
+import com.shmedo.core.event.MessageEvent;
+import com.shmedo.core.model.CollectorConfigInfo;
+import com.shmedo.core.utils.ResultParserUtil;
+import com.shmedo.core.utils.StringUtil;
+import com.shmedo.mcloudapp.R;
+
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
+import butterknife.BindView;
+import butterknife.OnClick;
+import timber.log.Timber;
+
+import static android.app.Activity.RESULT_OK;
+
+/**
+ * 通过物联网平台蓝牙配置采集器
+ */
+public class BleCollectorSettingFragment extends BaseBleConnectFragment {
+    private static final String COLLECTOR_MODEL = "collector_model";
+
+    @BindView(R.id.collectorAddressET)
+    EditText mEtCollectorAddress;
+
+    @BindView(R.id.calculatingTimeET)
+    EditText mEtCalculatingTime;
+
+    @BindView(R.id.standbyTimeET)
+    EditText mEtStandbyTime;
+
+    @BindView(R.id.collectTimeET)
+    EditText mEtCollectTime;
+
+    @BindView(R.id.btn_confirm)
+    Button mBtnConfirmComplete;
+
+    private CollectorConfigInfo collectorConfigInfo;
+    private String collectorModel;//采集器类型
+
+    private String collectorAddress;//采集器地址
+    private String calculatTime;//解算时间频度
+    private String standbyTime;//待机时间
+    private String collectTime;//采集时间频度
+
+    private String cmdCollectorAddress;//采集器地址
+    private String cmdCalculatTime;//解算时间频度
+    private String cmdStandbyTime;//待机时间
+    private String cmdCollectTime;//采集时间频度
+
+
+    public static BleCollectorSettingFragment newInstance(String model) {
+        BleCollectorSettingFragment fragment = new BleCollectorSettingFragment();
+        Bundle args = new Bundle();
+        args.putString(COLLECTOR_MODEL, model);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            collectorModel = getArguments().getString(COLLECTOR_MODEL);
+        }
+    }
+
+
+    @Override
+    protected int getLayoutId() {
+        return R.layout.fragment_ble_collector_setting;
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        setFilter();
+        queryCollectorInfo();
+    }
+
+    private void setFilter() {
+        mEtCollectorAddress.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
+        mEtCalculatingTime.setFilters(new InputFilter[]{new InputFilter.LengthFilter(4)});
+        mEtStandbyTime.setFilters(new InputFilter[]{new InputFilter.LengthFilter(4)});
+        mEtCollectTime.setFilters(new InputFilter[]{new InputFilter.LengthFilter(5)});
+    }
+
+    /**
+     * 查询采集器配置信息
+     */
+    private void queryCollectorInfo() {
+        CollectorConfigEntity collectorConfigEntity = new CollectorConfigEntity(collectorModel);
+        String command = CommandManager.getInstance().getCommand(CommandType.COLLECTOR_CONFIG, collectorConfigEntity);
+        sendCommonCommandImmediately(command);
+        Timber.d("查询采集器配置信息===%s", command);
+    }
+
+    private void initValue(){
+        if(collectorConfigInfo==null) {
+            return;
+        }
+
+        mEtCollectorAddress.setText(collectorConfigInfo.getCollectorAddress());
+        mEtCalculatingTime.setText(collectorConfigInfo.getWorkTime());
+        mEtStandbyTime.setText(collectorConfigInfo.getStandbyTime());
+        mEtCollectTime.setText(collectorConfigInfo.getCollectorInterval());
+    }
+
+    @OnClick({R.id.btn_confirm})
+    public void onClick(View v) {
+        if (v.getId() == R.id.btn_confirm) {
+            if (!MCloudApp.isIsBluetoothDeviceConnected()) {
+                ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
+                return;
+            }
+            sendCollector();
+        }
+    }
+
+    private void sendCollector() {
+        collectorAddress = mEtCollectorAddress.getText().toString().trim();
+        calculatTime = mEtCalculatingTime.getText().toString().trim();
+        standbyTime = mEtStandbyTime.getText().toString().trim();
+        collectTime = mEtCollectTime.getText().toString().trim();
+
+        if (TextUtils.isEmpty(collectorAddress) || Integer.parseInt(collectorAddress) < 0 || Integer.parseInt(collectorAddress) > 255) {
+            ToastUtils.show("请输入正确的采集器地址");
+            return;
+        }
+
+        if (TextUtils.isEmpty(calculatTime)) {
+            ToastUtils.show("解算时间不能为空");
+            return;
+        }
+
+        if (TextUtils.isEmpty(standbyTime)) {
+            ToastUtils.show("待机时间不能为空");
+            return;
+        }
+
+        if (TextUtils.isEmpty(collectTime)) {
+            ToastUtils.show("采集时间不能为空");
+            return;
+        }
+
+        SetCollectorAddressEntity collectorAddressEntity = new SetCollectorAddressEntity(Integer.parseInt(collectorAddress));
+        cmdCollectorAddress = CommandManager.getInstance().getCommand(CommandType.SET_COLLECTOR_ADDRESS, collectorAddressEntity);
+
+        CollectorSolutionFrequencyEntity frequencyEntity = new CollectorSolutionFrequencyEntity(collectorModel, StringUtil.formatStringFour(calculatTime));
+        cmdCalculatTime = CommandManager.getInstance().getCommand(CommandType.COLLECTOR_SOLUTION_FREQUENCY, frequencyEntity);
+
+        CollectorStandbyTimeEntity collectorStandbyTimeEntity = new CollectorStandbyTimeEntity(collectorModel, StringUtil.formatStringFour(standbyTime));
+        cmdStandbyTime = CommandManager.getInstance().getCommand(CommandType.COLLECTOR_STANDBY_TIME, collectorStandbyTimeEntity);
+
+        CollectorFrequencyEntity collectorFrequencyEntity = new CollectorFrequencyEntity(collectorModel, StringUtil.formatStringFive(collectTime));
+        cmdCollectTime = CommandManager.getInstance().getCommand(CommandType.COLLECTOR_FREQUENCY, collectorFrequencyEntity);
+
+        errMsg = "发送指令超时,请稍后尝试";
+        startProgressRunnable("正在发送配置指令...", CONFIG_PARAMS_DELAY_MILLIS);
+        sendCommonCommandImmediately(cmdCollectorAddress);
+        Timber.d("设置采集器地址指令===%s", cmdCollectorAddress);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onMessageEvent(MessageEvent messageEvent) {
+        super.onMessageEvent(messageEvent);
+
+        if (messageEvent instanceof CmdResponseMessage) {
+            setResultData((CmdResponseMessage) messageEvent);
+        }
+    }
+
+    private void setResultData(CmdResponseMessage responseMessage) {
+        String cmdStr = responseMessage.getResult();
+        String tempStr = cmdStr.replace("$$", "").replace("\r\n", "");
+        CommandType type = StringUtil.extractCommandType(cmdStr);
+        switch (type) {
+            case COLLECTOR_CONFIG://采集器配置信息 100
+                if (tempStr.endsWith(CommandResult.ERROR_END)) {
+                    Timber.e("查询采集器配置信息指令出错!");
+                    return;
+                }
+                collectorConfigInfo = ResultParserUtil.getEntityObject(cmdStr);
+                initValue();
+                break;
+
+            case SET_COLLECTOR_ADDRESS:
+                if (tempStr.endsWith(CommandResult.ERROR_END)) {
+                    ToastUtils.show("采集器地址配置错误!");
+                    stopProgressRunnable();
+                    return;
+                }
+                sendCommonCommandImmediately(cmdCalculatTime);
+                Timber.d("设置采集器解算频度指令===%s", cmdCalculatTime);
+                break;
+
+            case COLLECTOR_SOLUTION_FREQUENCY:
+                if (tempStr.endsWith(CommandResult.ERROR_END)) {
+                    ToastUtils.show("采集器解算频度配置错误!");
+                    stopProgressRunnable();
+                    return;
+                }
+                sendCommonCommandImmediately(cmdStandbyTime);
+                Timber.d("设置采集器待机时长指令===%s", cmdStandbyTime);
+                break;
+
+            case COLLECTOR_STANDBY_TIME:
+                if (tempStr.endsWith(CommandResult.ERROR_END)) {
+                    ToastUtils.show("采集器待机时长配置错误!");
+                    stopProgressRunnable();
+                    return;
+                }
+                sendCommonCommandImmediately(cmdCollectTime);
+                Timber.d("设置采集器采集频度指令===%s", cmdCollectTime);
+                break;
+
+            case COLLECTOR_FREQUENCY:
+                if (tempStr.endsWith(CommandResult.ERROR_END)) {
+                    ToastUtils.show("采集器采集频度配置错误!");
+                    stopProgressRunnable();
+                    return;
+                }
+                collectorConfigInfo.setCollectorAddress(collectorAddress);
+                collectorConfigInfo.setWorkTime(calculatTime);
+                collectorConfigInfo.setStandbyTime(standbyTime);
+                collectorConfigInfo.setCollectorInterval(collectTime);
+
+                stopProgressRunnable();
+                ToastUtils.show("设置完成");
+                uiHander.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        Intent intent = mActivity.getIntent();
+                        intent.putExtra(AppContants.Extras.PARAM_CONFIG_INFO, collectorConfigInfo);
+                        mActivity.setResult(RESULT_OK, intent);
+                        mActivity.finish();
+                    }
+                }, 2000);
+                break;
+        }
+    }
+
+}

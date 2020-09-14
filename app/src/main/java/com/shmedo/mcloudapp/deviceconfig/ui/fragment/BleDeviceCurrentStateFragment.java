@@ -585,15 +585,12 @@ public class BleDeviceCurrentStateFragment extends BaseBleConnectFragment {
 
     @OnClick({R.id.fab_refresh})
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.fab_refresh://断开/重新连接
-                if (!MCloudApp.isIsBluetoothDeviceConnected()) {
-                    ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
-                    return;
-                }
-                initData();
-                break;
-
+        if (v.getId() == R.id.fab_refresh) {//断开/重新连接
+            if (!MCloudApp.isIsBluetoothDeviceConnected()) {
+                ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
+                return;
+            }
+            initData();
         }
     }
 

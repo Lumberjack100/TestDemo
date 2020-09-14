@@ -7,7 +7,6 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.fragment.BaseFragment;
@@ -30,7 +29,7 @@ import butterknife.BindView;
 import butterknife.OnClick;
 
 /**
- * A simple {@link Fragment} subclass.
+ * 通过物联网平台配置采集器
  */
 public class NetCollectorSettingFragment extends BaseFragment {
     private static final String COMPANY_ID = "company_id";
@@ -96,9 +95,7 @@ public class NetCollectorSettingFragment extends BaseFragment {
 
     @OnClick({R.id.btn_confirm})
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.btn_confirm://切换连接方式
-                break;
+        if (v.getId() == R.id.btn_confirm) {
         }
     }
 

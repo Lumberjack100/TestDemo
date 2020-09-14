@@ -44,7 +44,9 @@ import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.view.recycleviewitemdivider.GridSpacingItemDecoration;
 import com.shmedo.mcloudapp.deviceconfig.adapter.ConfigModuleAdapter;
 import com.shmedo.mcloudapp.deviceconfig.model.ConfigModule;
+import com.shmedo.mcloudapp.deviceconfig.ui.activity.AdvancedSettingActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.DeviceCurrentStateActivity;
+import com.shmedo.mcloudapp.deviceconfig.ui.activity.IOTCollectorSettingActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd.BaseDispatchCmdDialog;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd.QueryTerminalTimeDialog;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd.TelemetryDialog;
@@ -231,6 +233,26 @@ public class BleConfigDeviceFragment extends BaseBleConnectFragment {
             case "重启":
 
                 break;
+
+            case "固件升级":
+
+                break;
+
+            case "采集器配置":
+                IOTCollectorSettingActivity.startActivity(mActivity, IOTCollectorSettingActivity.BLE_CONNECT, collectorModel);
+                break;
+
+            case "传感器配置":
+
+                break;
+
+            case "数据中心":
+
+                break;
+
+            case "设置":
+                AdvancedSettingActivity.startActivity(mActivity, null);
+                break;
         }
     }
 
@@ -262,7 +284,6 @@ public class BleConfigDeviceFragment extends BaseBleConnectFragment {
                         disconnectDevice();
                         updateViewStateByConnectState(false);
                     }
-
                 }
                 break;
 
@@ -274,7 +295,7 @@ public class BleConfigDeviceFragment extends BaseBleConnectFragment {
     /**
      * 关闭SwitchButton
      */
-    public void showCloseSwitchButtonDialog(String content, final int index) {
+    private void showCloseSwitchButtonDialog(String content, final int index) {
         MaterialDialog.Builder mBuilder = new MaterialDialog.Builder(getActivity())
                 .title("温馨提示：")
                 .content(content)
@@ -286,22 +307,17 @@ public class BleConfigDeviceFragment extends BaseBleConnectFragment {
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                         dialog.dismiss();
-                        switch (index) {
-                            case DEVICE_ACTIVE:
-                                //发送关闭DAS命令
-                                setLowEnergyModel(false);
-                                mTvActiveState.setText("已待机");
-                                break;
+                        if (index == DEVICE_ACTIVE) {//发送关闭DAS命令
+                            setLowEnergyModel(false);
+                            mTvActiveState.setText("已待机");
                         }
                     }
                 }).onNegative(new MaterialDialog.SingleButtonCallback() {
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                         dialog.dismiss();
-                        switch (index) {
-                            case DEVICE_ACTIVE:
-                                mSbActiveState.setCheckedImmediatelyNoEvent(true);
-                                break;
+                        if (index == DEVICE_ACTIVE) {
+                            mSbActiveState.setCheckedImmediatelyNoEvent(true);
                         }
                     }
                 });
@@ -468,16 +484,17 @@ public class BleConfigDeviceFragment extends BaseBleConnectFragment {
         configModule = new ConfigModule(R.drawable.ic_device_firmware_upgrade, 24, "固件升级", "版本:--");
         configModuleList.add(configModule);
 
-        // TODO(设备暂不支持网络配置)
         //DAS具有采集器配置项
-//        if (projectDeviceInfo.getDeviceTypeID() == 4) {
-//            configModule = new ConfigModule(R.drawable.ic_device_collector_config, "采集器配置", "采集器参数配置");
-//            configModuleList.add(configModule);
-//        }
+        if (mTvProductModel.getText().toString().contains("DAS")) {
+            configModule = new ConfigModule(R.drawable.ic_device_collector_config, "采集器配置", "采集器参数配置");
+            configModuleList.add(configModule);
 
-        // TODO(下次版本迭代再开发)
-//        configModule = new ConfigModule(R.drawable.ic_device_instruction_send, "指令下发", "服务端代码指令下发");
-//        configModuleList.add(configModule);
+            configModule = new ConfigModule(R.drawable.ic_device_sensor_config, "传感器配置", "传感器参数配置");
+            configModuleList.add(configModule);
+
+            configModule = new ConfigModule(R.drawable.ic_device_data_center, "数据中心", "MQTT协议配置");
+            configModuleList.add(configModule);
+        }
 
         configModule = new ConfigModule(R.drawable.ic_device_advanced_setting, "设置", "高级设置");
         configModuleList.add(configModule);
@@ -485,6 +502,18 @@ public class BleConfigDeviceFragment extends BaseBleConnectFragment {
 
     @Override
     public boolean onBackPressed() {
+        if (MCloudApp.isIsBluetoothDeviceConnected()) {
+            if (isConfigChange) {
+                isExitMode = true;
+                showSaveDialog(getResources().getString(R.string.disconnect_bluetooth_device_save_param_warn));
+
+            } else {
+                showDisconnectDialog(getResources().getString(R.string.finish_activity_disconnect_bluetooth_device));
+            }
+        } else {
+            mActivity.finish();
+        }
+
         return false;
     }
 }

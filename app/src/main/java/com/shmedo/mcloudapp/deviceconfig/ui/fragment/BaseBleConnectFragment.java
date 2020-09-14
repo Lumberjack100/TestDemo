@@ -713,7 +713,7 @@ public abstract class BaseBleConnectFragment extends BaseFragment {
      *
      * @param cmdStr
      */
-    public void sendCommonCommand(final String cmdStr) {
+    protected void sendCommonCommand(final String cmdStr) {
         final Message msg = new Message(UUID.randomUUID().toString(), cmdStr, true);
         uiHander.postDelayed(new Runnable() {
             @Override
@@ -730,7 +730,7 @@ public abstract class BaseBleConnectFragment extends BaseFragment {
      *
      * @param cmdStr
      */
-    public void sendCommonCommandImmediately(final String cmdStr) {
+    protected void sendCommonCommandImmediately(final String cmdStr) {
         final Message msg = new Message(UUID.randomUUID().toString(), cmdStr, true);
         if (bleManager != null) {
             bleManager.writeMessage(msg);
@@ -781,7 +781,7 @@ public abstract class BaseBleConnectFragment extends BaseFragment {
     /**
      * 保存配置信息指令
      */
-    public void saveConfigInfo() {
+    protected void saveConfigInfo() {
         SaveConfigInfoEntity saveConfigInfoEntity = new SaveConfigInfoEntity(SaveConfigMode.SAVE_REBOOT.toInt());
         String command = CommandManager.getInstance().getCommand(CommandType.SAVE_CONFIG_INFO, saveConfigInfoEntity);
 
@@ -793,7 +793,7 @@ public abstract class BaseBleConnectFragment extends BaseFragment {
     /**
      * 打开/关闭设备低功耗模式
      */
-    public void setLowEnergyModel(boolean isOpen) {
+    protected void setLowEnergyModel(boolean isOpen) {
         LowEnergyModelEntity entity = new LowEnergyModelEntity(isOpen ? LowEnergyModel.ACTIVATE.toInt() : LowEnergyModel.STANDBY.toInt());
         String command = CommandManager.getInstance().getCommand(CommandType.LOW_ENERGY, entity);
         sendCommonCommandImmediately(command);
@@ -802,7 +802,7 @@ public abstract class BaseBleConnectFragment extends BaseFragment {
     /**
      * 设置断线报警器状态
      */
-    public void setBreakAlarmStatus(BreakAlarmStatus breakAlarmStatus) {
+    protected void setBreakAlarmStatus(BreakAlarmStatus breakAlarmStatus) {
         BreakAlarmStatusEntity entity = new BreakAlarmStatusEntity(breakAlarmStatus.toInt());
         String command = CommandManager.getInstance().getCommand(CommandType.BREAK_ALARM_STATUS, entity);
         sendCommonCommandImmediately(command);
@@ -812,20 +812,20 @@ public abstract class BaseBleConnectFragment extends BaseFragment {
     /**
      * 设置远程升级
      */
-    public void setSetRemoteUpgrade(SetRemoteUpgrade remoteUpgrade, String address, int port) {
+    protected void setSetRemoteUpgrade(SetRemoteUpgrade remoteUpgrade, String address, int port) {
         SetRemoteUpgradeEntity setRemoteUpgradeEntity = new SetRemoteUpgradeEntity(remoteUpgrade.toInt(), address, port);
         String command = CommandManager.getInstance().getCommand(CommandType.SETTING_REMOTE_UPGRADE, setRemoteUpgradeEntity);
         sendCommonCommandImmediately(command);
         Timber.d("设置远程升级指令==%s", command);
     }
 
-    public void queryDeviceVersionInfo() {
+    protected void queryDeviceVersionInfo() {
         String command = CommandManager.getInstance().getCommand(CommandType.VERSION_MESSAGE);
         sendCommonCommandImmediately(command);
         Timber.i("查询设备版本信息：%s", command);
     }
 
-    public void showSaveDialog(String content) {
+    protected void showSaveDialog(String content) {
         MaterialDialog.Builder mBuilder = new MaterialDialog.Builder(Objects.requireNonNull(getContext()))
                 .title("温馨提示：")
                 .content(content)
@@ -862,7 +862,7 @@ public abstract class BaseBleConnectFragment extends BaseFragment {
     }
 
 
-    private void showDisconnectDialog(String content) {
+    protected void showDisconnectDialog(String content) {
         MaterialDialog.Builder mBuilder = new MaterialDialog.Builder(Objects.requireNonNull(getContext()))
                 .title("温馨提示：")
                 .content(content)
