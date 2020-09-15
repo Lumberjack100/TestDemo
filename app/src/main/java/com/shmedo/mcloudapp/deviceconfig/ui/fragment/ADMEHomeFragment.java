@@ -26,7 +26,7 @@ import com.kyleduo.switchbutton.SwitchButton;
 import com.shmedo.core.AppContants;
 import com.shmedo.core.MCloudApp;
 import com.shmedo.core.event.BluetoothConnectStateEvent;
-import com.shmedo.core.utils.ValidateUtil;
+import com.shmedo.configlibrary.ble.utils.ValidateUtil;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.fragment.BaseFragment;
 import com.shmedo.mcloudapp.common.view.ClearEditText;

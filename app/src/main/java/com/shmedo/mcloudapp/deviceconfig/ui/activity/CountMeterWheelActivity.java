@@ -14,7 +14,7 @@ import android.widget.TextView;
 import com.hjq.toast.ToastUtils;
 import com.shmedo.core.AppContants;
 import com.shmedo.core.MCloudApp;
-import com.shmedo.core.cmd.CommandResult;
+import com.shmedo.configlibrary.ble.cmd.CommandResult;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.core.event.BluetoothConnectStateEvent;
 

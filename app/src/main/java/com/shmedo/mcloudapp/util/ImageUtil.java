@@ -11,7 +11,7 @@ import android.text.TextUtils;
 
 import androidx.core.content.ContextCompat;
 
-import com.shmedo.core.utils.StringUtil;
+import com.shmedo.configlibrary.ble.utils.StringUtil;
 import com.shmedo.mcloudapp.R;
 
 import org.jetbrains.annotations.NotNull;

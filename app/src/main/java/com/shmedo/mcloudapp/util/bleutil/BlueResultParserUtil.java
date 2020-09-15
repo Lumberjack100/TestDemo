@@ -1,6 +1,6 @@
 package com.shmedo.mcloudapp.util.bleutil;
 
-import com.shmedo.core.enums.CollectorModel;
+import com.shmedo.configlibrary.ble.enums.CollectorModel;
 
 /**
  * 项目名：  mCloudapp

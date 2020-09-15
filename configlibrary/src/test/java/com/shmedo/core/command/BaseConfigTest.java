@@ -1,7 +1,7 @@
 package com.shmedo.core.command;
 
 
-import com.shmedo.core.utils.ValidateUtil;
+import com.shmedo.configlibrary.ble.utils.ValidateUtil;
 
 import org.junit.Test;
 

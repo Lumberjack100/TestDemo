@@ -12,7 +12,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.hjq.toast.ToastUtils;
-import com.shmedo.core.model.MqttConfigInfo;
+import com.shmedo.configlibrary.ble.model.MqttConfigInfo;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.view.ClearEditText;
 

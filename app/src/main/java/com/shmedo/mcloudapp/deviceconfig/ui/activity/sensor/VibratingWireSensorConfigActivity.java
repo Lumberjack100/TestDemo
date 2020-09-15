@@ -10,14 +10,14 @@ import androidx.fragment.app.Fragment;
 
 import com.hjq.toast.ToastUtils;
 import com.shmedo.core.AppContants;
-import com.shmedo.core.cmd.CommandResult;
-import com.shmedo.core.enums.CommandType;
-import com.shmedo.core.enums.SensorType;
-import com.shmedo.core.model.CollectorSensorParamsInfo;
-import com.shmedo.core.model.SensorGudanPercolateInfo;
-import com.shmedo.core.model.SensorJunXingZljInfo;
-import com.shmedo.core.model.SensorKangPercolateInfo;
-import com.shmedo.core.utils.StringUtil;
+import com.shmedo.configlibrary.ble.cmd.CommandResult;
+import com.shmedo.configlibrary.ble.enums.CommandType;
+import com.shmedo.configlibrary.ble.enums.SensorType;
+import com.shmedo.configlibrary.ble.model.CollectorSensorParamsInfo;
+import com.shmedo.configlibrary.ble.model.SensorGudanPercolateInfo;
+import com.shmedo.configlibrary.ble.model.SensorJunXingZljInfo;
+import com.shmedo.configlibrary.ble.model.SensorKangPercolateInfo;
+import com.shmedo.configlibrary.ble.utils.StringUtil;
 import com.shmedo.mcloudapp.util.KeyBordUtils;
 
 import org.greenrobot.eventbus.Subscribe;

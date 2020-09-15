@@ -24,7 +24,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.hjq.toast.ToastUtils;
 import com.shmedo.core.AppContants;
 import com.shmedo.core.MCloudApp;
-import com.shmedo.core.cmd.CommandResult;
+import com.shmedo.configlibrary.ble.cmd.CommandResult;
 import com.shmedo.core.event.BluetoothConnectStateEvent;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.deviceconfig.view.PlayPauseView;

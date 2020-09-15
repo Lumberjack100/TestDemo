@@ -10,13 +10,13 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.hjq.toast.ToastUtils;
-import com.shmedo.core.enums.SensorType;
-import com.shmedo.core.model.SensorInclinometerInfo;
-import com.shmedo.core.model.SensorInfrasoundInfo;
-import com.shmedo.core.model.SensorRadarLevelInfo;
-import com.shmedo.core.model.SensorSoilMoistureInfo;
-import com.shmedo.core.model.SensorWireShiftInfo;
-import com.shmedo.core.utils.ValidateUtil;
+import com.shmedo.configlibrary.ble.enums.SensorType;
+import com.shmedo.configlibrary.ble.model.SensorInclinometerInfo;
+import com.shmedo.configlibrary.ble.model.SensorInfrasoundInfo;
+import com.shmedo.configlibrary.ble.model.SensorRadarLevelInfo;
+import com.shmedo.configlibrary.ble.model.SensorSoilMoistureInfo;
+import com.shmedo.configlibrary.ble.model.SensorWireShiftInfo;
+import com.shmedo.configlibrary.ble.utils.ValidateUtil;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.sensor.BaseSensorConfigActivity;
 

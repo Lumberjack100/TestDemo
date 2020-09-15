@@ -21,11 +21,11 @@ import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.hjq.toast.ToastUtils;
 import com.kyleduo.switchbutton.SwitchButton;
-import com.shmedo.core.cmd.CommandManager;
-import com.shmedo.core.cmd.entity.RebootDeviceEntity;
-import com.shmedo.core.enums.CommandType;
-import com.shmedo.core.enums.SetRemoteUpgrade;
-import com.shmedo.core.utils.ValidateUtil;
+import com.shmedo.configlibrary.ble.cmd.CommandManager;
+import com.shmedo.configlibrary.ble.cmd.entity.RebootDeviceEntity;
+import com.shmedo.configlibrary.ble.enums.CommandType;
+import com.shmedo.configlibrary.ble.enums.SetRemoteUpgrade;
+import com.shmedo.configlibrary.ble.utils.ValidateUtil;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.BaseDeviceConnectActivity;
 

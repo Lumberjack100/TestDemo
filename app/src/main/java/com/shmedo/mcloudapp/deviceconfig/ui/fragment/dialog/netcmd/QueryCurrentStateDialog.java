@@ -8,7 +8,7 @@ import android.widget.TextView;
 import androidx.annotation.Nullable;
 
 import com.shmedo.core.util.GlobalUtil;
-import com.shmedo.iot.parser.IOTParseManager;
+import com.shmedo.configlibrary.iot.parser.IOTParseManager;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.deviceconfig.model.DevcieCurrentState;
 import com.shmedo.mcloudapp.deviceconfig.model.QueryCmdResult;

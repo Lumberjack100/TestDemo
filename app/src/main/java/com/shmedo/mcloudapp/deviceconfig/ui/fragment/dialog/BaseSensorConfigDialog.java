@@ -1,6 +1,6 @@
 package com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog;
 
-import com.shmedo.core.model.CollectorSensorParamsInfo;
+import com.shmedo.configlibrary.ble.model.CollectorSensorParamsInfo;
 
 /**
  * 创建者:   gonghe <br/>

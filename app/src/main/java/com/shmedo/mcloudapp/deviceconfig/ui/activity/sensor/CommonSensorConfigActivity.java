@@ -10,16 +10,16 @@ import androidx.fragment.app.Fragment;
 
 import com.hjq.toast.ToastUtils;
 import com.shmedo.core.AppContants;
-import com.shmedo.core.cmd.CommandResult;
-import com.shmedo.core.enums.CollectorModel;
-import com.shmedo.core.enums.CommandType;
-import com.shmedo.core.model.CollectorSensorParamsInfo;
-import com.shmedo.core.model.SensorInclinometerInfo;
-import com.shmedo.core.model.SensorInfrasoundInfo;
-import com.shmedo.core.model.SensorRadarLevelInfo;
-import com.shmedo.core.model.SensorSoilMoistureInfo;
-import com.shmedo.core.model.SensorWireShiftInfo;
-import com.shmedo.core.utils.StringUtil;
+import com.shmedo.configlibrary.ble.cmd.CommandResult;
+import com.shmedo.configlibrary.ble.enums.CollectorModel;
+import com.shmedo.configlibrary.ble.enums.CommandType;
+import com.shmedo.configlibrary.ble.model.CollectorSensorParamsInfo;
+import com.shmedo.configlibrary.ble.model.SensorInclinometerInfo;
+import com.shmedo.configlibrary.ble.model.SensorInfrasoundInfo;
+import com.shmedo.configlibrary.ble.model.SensorRadarLevelInfo;
+import com.shmedo.configlibrary.ble.model.SensorSoilMoistureInfo;
+import com.shmedo.configlibrary.ble.model.SensorWireShiftInfo;
+import com.shmedo.configlibrary.ble.utils.StringUtil;
 import com.shmedo.mcloudapp.util.KeyBordUtils;
 
 import org.greenrobot.eventbus.Subscribe;

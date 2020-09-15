@@ -12,10 +12,10 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.hjq.toast.ToastUtils;
-import com.shmedo.core.model.CollectorSensorParamsInfo;
-import com.shmedo.core.model.SensorGudanPercolateInfo;
-import com.shmedo.core.utils.StringUtil;
-import com.shmedo.core.utils.ValidateUtil;
+import com.shmedo.configlibrary.ble.model.CollectorSensorParamsInfo;
+import com.shmedo.configlibrary.ble.model.SensorGudanPercolateInfo;
+import com.shmedo.configlibrary.ble.utils.StringUtil;
+import com.shmedo.configlibrary.ble.utils.ValidateUtil;
 import com.shmedo.mcloudapp.R;
 
 import java.util.Locale;

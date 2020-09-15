@@ -12,8 +12,8 @@ import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 
-import com.shmedo.core.interfaces.OnBytePackage;
-import com.shmedo.core.utils.ByteManager;
+import com.shmedo.configlibrary.ble.interfaces.OnBytePackage;
+import com.shmedo.configlibrary.ble.utils.ByteManager;
 import com.shmedo.mcloudapp.util.TimeUtil;
 import com.shmedo.mcloudapp.util.bleutil.Constants;
 import com.shmedo.mcloudapp.util.bleutil.DescriptorParser;

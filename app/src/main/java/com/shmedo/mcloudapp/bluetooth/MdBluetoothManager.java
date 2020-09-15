@@ -22,8 +22,8 @@ import android.text.TextUtils;
 import androidx.annotation.NonNull;
 
 import com.shmedo.core.util.GlobalUtil;
-import com.shmedo.core.interfaces.OnBytePackage;
-import com.shmedo.core.utils.ByteManager;
+import com.shmedo.configlibrary.ble.interfaces.OnBytePackage;
+import com.shmedo.configlibrary.ble.utils.ByteManager;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.bluetooth.exception.ScanAlreadyStartException;
 import com.shmedo.mcloudapp.deviceconfig.model.MDevice;

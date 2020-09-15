@@ -17,11 +17,11 @@ import androidx.annotation.Nullable;
 import com.hjq.toast.ToastUtils;
 import com.shmedo.core.AppContants;
 import com.shmedo.core.MCloudApp;
-import com.shmedo.core.cmd.CommandManager;
-import com.shmedo.core.cmd.CommandResult;
-import com.shmedo.core.cmd.entity.SetRainPrecisionEntity;
-import com.shmedo.core.enums.CommandType;
-import com.shmedo.core.utils.StringUtil;
+import com.shmedo.configlibrary.ble.cmd.CommandManager;
+import com.shmedo.configlibrary.ble.cmd.CommandResult;
+import com.shmedo.configlibrary.ble.cmd.entity.SetRainPrecisionEntity;
+import com.shmedo.configlibrary.ble.enums.CommandType;
+import com.shmedo.configlibrary.ble.utils.StringUtil;
 import com.shmedo.mcloudapp.R;
 
 import org.greenrobot.eventbus.Subscribe;

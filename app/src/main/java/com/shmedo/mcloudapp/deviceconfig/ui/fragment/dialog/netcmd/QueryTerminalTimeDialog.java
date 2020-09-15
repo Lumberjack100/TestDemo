@@ -8,8 +8,8 @@ import android.widget.TextView;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 
-import com.shmedo.iot.model.TerminalTime;
-import com.shmedo.iot.parser.IOTParseManager;
+import com.shmedo.configlibrary.iot.model.TerminalTime;
+import com.shmedo.configlibrary.iot.parser.IOTParseManager;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.deviceconfig.model.QueryCmdResult;
 import com.shmedo.mcloudapp.util.DateUtil;
