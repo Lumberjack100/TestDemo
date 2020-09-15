@@ -65,6 +65,8 @@ public class QueryDeviceDataActivity extends BaseActivity {
     private String endTime;
     private String itemCount = "30";
 
+    private int pos = 1;
+
     private DeviceReportDataAdapter adapter;
     private List<QueryCloudDataInfo> queryCloudDataInfoList = new ArrayList<>();
 
@@ -157,16 +159,18 @@ public class QueryDeviceDataActivity extends BaseActivity {
             break;
 
             case R.id.itemCountLayout:
+                XPopup.setPrimaryColor(getResources().getColor(R.color.blue_52B4F8));
                 new XPopup.Builder(QueryDeviceDataActivity.this)
                         .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
                         .asBottomList("", new String[]{"10", "30", "100", "500"},
-                                null, 1,
+                                null, pos, true,
                                 new OnSelectListener() {
                                     @Override
                                     public void onSelect(int position, String text) {
+                                        pos = position;
                                         mTvItemCount.setText(text);
                                     }
-                                })
+                                }, 0, R.layout.custom_xpopup_adapter_text_match)
                         .show();
                 break;
 

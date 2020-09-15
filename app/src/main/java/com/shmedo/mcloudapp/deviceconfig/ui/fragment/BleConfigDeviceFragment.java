@@ -527,8 +527,9 @@ public class BleConfigDeviceFragment extends BaseBleConnectFragment {
         configModule = new ConfigModule(R.drawable.ic_device_reboot, 7, "重启", "重新启动当前设备");
         configModuleList.add(configModule);
 
-        configModule = new ConfigModule(R.drawable.ic_device_firmware_upgrade, 24, "固件升级", "版本:--");
-        configModuleList.add(configModule);
+//        TODO 后期换成物联网协议再开放
+//        configModule = new ConfigModule(R.drawable.ic_device_firmware_upgrade, 24, "固件升级", "版本:--");
+//        configModuleList.add(configModule);
 
         //DAS具有采集器配置项
         if (mTvProductModel.getText().toString().contains("DAS")) {
