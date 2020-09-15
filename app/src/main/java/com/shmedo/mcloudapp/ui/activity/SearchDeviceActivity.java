@@ -15,8 +15,8 @@ import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.shmedo.core.MCloudApp;
 import com.shmedo.configlibrary.ble.utils.StringUtil;
+import com.shmedo.core.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.activity.BaseActivity;
 import com.shmedo.mcloudapp.common.view.ClearEditText;
@@ -24,8 +24,6 @@ import com.shmedo.mcloudapp.common.view.DeviceSensorDialog;
 import com.shmedo.mcloudapp.common.view.recycleviewitemdivider.DividerItemDecoration;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.ConfigADMEActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.ConfigDASActivity;
-import com.shmedo.mcloudapp.deviceconfig.ui.activity.ConfigE60Activity;
-import com.shmedo.mcloudapp.entity.DeviceBasicInfoResult;
 import com.shmedo.mcloudapp.entity.SensorAndCount;
 import com.shmedo.mcloudapp.entity.StatusInfoResult;
 import com.shmedo.mcloudapp.entity.StatusInfoResultDao;
@@ -184,13 +182,6 @@ public class SearchDeviceActivity extends BaseActivity implements MultiItemTypeA
             SearchDeviceActivity.this.finish();
         }
 
-        if (!TextUtils.isEmpty(statusInfoResult.getDeviceName()) && statusInfoResult.getDeviceName().toUpperCase().contains("E60")) {
-            DeviceBasicInfoResult deviceBasicInfoResult = new DeviceBasicInfoResult();
-            deviceBasicInfoResult.setDeviceToken(statusInfoResult.getDeviceToken());
-            deviceBasicInfoResult.setDeviceName(statusInfoResult.getDeviceName());
-            ConfigE60Activity.startActivity(SearchDeviceActivity.this, deviceBasicInfoResult);
-            SearchDeviceActivity.this.finish();
-        }
     }
 
     @Override

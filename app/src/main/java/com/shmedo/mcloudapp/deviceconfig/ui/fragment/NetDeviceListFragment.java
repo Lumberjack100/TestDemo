@@ -29,6 +29,8 @@ import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.fragment.BaseFragment;
 import com.shmedo.mcloudapp.common.view.recycleviewitemdivider.GridSpacingItemDecoration;
 import com.shmedo.mcloudapp.deviceconfig.model.DeviceOnlineTypeStatistic;
+import com.shmedo.mcloudapp.deviceconfig.model.DeviceTypeInfo;
+import com.shmedo.mcloudapp.deviceconfig.model.params.QueryDeviceTypeParam;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.DeviceConfigActivity;
 import com.shmedo.mcloudapp.entity.PageResult;
 import com.shmedo.mcloudapp.network.BaseObserver;
@@ -42,6 +44,7 @@ import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfo;
 import com.shmedo.mcloudapp.projects.model.param.QueryProjectDevice;
 import com.shmedo.mcloudapp.projects.ui.activity.DeviceSearchActivity;
 import com.shmedo.mcloudapp.projects.view.SlidingConflictRecyclerView;
+import com.shmedo.mcloudapp.util.DaoManager;
 import com.shmedo.mcloudapp.util.GsonFactory;
 import com.shmedo.mcloudapp.util.ResponseHandler;
 import com.yanzhenjie.recyclerview.widget.DefaultItemDecoration;
@@ -104,6 +107,7 @@ public class NetDeviceListFragment extends BaseFragment {
         initLoadMore();
 
         // 进入页面，刷新数据
+        queryDeviceType();
         queryCompanyDeviceOnlineTypeStatistics();
         swipeRefresh.setRefreshing(true);
         deviceTypeID = -1;
@@ -252,6 +256,48 @@ public class NetDeviceListFragment extends BaseFragment {
     }
 
     /**
+     * 查询设备类型列表
+     */
+    private void queryDeviceType() {
+        QueryDeviceTypeParam parameter =new QueryDeviceTypeParam() ;
+        parameter.setDeviceTypeName(null);
+        parameter.setPageSize(20);
+        parameter.setCurrentPage(1);
+
+        String json = GsonFactory.getGson().toJson(parameter);
+        RequestBody body = RequestBody.create(NetworkConst.JSON_TYPE, json);
+        MDRetrofit.getInstance()
+                .createService()
+                .QueryDeviceType(MCloudApp.getAccessToken(), body)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new BaseObserver<PageResult<DeviceTypeInfo>>() {
+                    @Override
+                    protected void onResponse(PageResult<DeviceTypeInfo> data, ErrCode errCode) {
+                        if (!ResponseHandler.getInstance().handleResponse(errCode)) {
+                            if (errCode.getCode() == 0) {
+                                if (data == null || data.getCurrentPageData() == null || data.getCurrentPageData().size() == 0) {
+                                    return;
+                                }
+
+                                //更新到本地数据库
+                                DaoManager.getInstance().getDaoSession().getDeviceTypeInfoDao().insertOrReplaceInTx(data.getCurrentPageData());
+                            } else {
+                                if (!TextUtils.isEmpty(errCode.getErrMessage())) {
+                                    ToastUtils.show(errCode.getErrMessage());
+                                }
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        ResponseHandler.getInstance().handleFailure((Exception) e);
+                    }
+                });
+    }
+
+    /**
      * 查询公司设备类型在线统计信息
      */
     private void queryCompanyDeviceOnlineTypeStatistics() {
@@ -304,6 +350,9 @@ public class NetDeviceListFragment extends BaseFragment {
         deviceTypeAdapter.notifyDataSetChanged();
     }
 
+    /**
+     * 查询公司设备列表
+     */
     private void queryCompanyDevice() {
         QueryProjectDevice parameter = new QueryProjectDevice();
         parameter.setCompanyID(companyID);

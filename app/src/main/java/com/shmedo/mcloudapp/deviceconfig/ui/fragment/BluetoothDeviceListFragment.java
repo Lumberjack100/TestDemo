@@ -34,13 +34,11 @@ import com.shmedo.mcloudapp.bluetooth.MdBluetoothManager;
 import com.shmedo.mcloudapp.common.ui.activity.ScanActivity;
 import com.shmedo.mcloudapp.common.ui.fragment.BaseTranslucentFragment;
 import com.shmedo.mcloudapp.common.view.recycleviewitemdivider.DividerItemDecoration;
-import com.shmedo.mcloudapp.deviceconfig.ui.activity.ConfigADMEActivity;
-import com.shmedo.mcloudapp.deviceconfig.ui.activity.ConfigDASActivity;
-import com.shmedo.mcloudapp.deviceconfig.ui.activity.ConfigE60Activity;
-import com.shmedo.mcloudapp.deviceconfig.view.DiffuseView;
-import com.shmedo.mcloudapp.entity.DeviceBasicInfoResult;
 import com.shmedo.mcloudapp.deviceconfig.model.DeviceTypeEnum;
 import com.shmedo.mcloudapp.deviceconfig.model.MDevice;
+import com.shmedo.mcloudapp.deviceconfig.ui.activity.ConfigADMEActivity;
+import com.shmedo.mcloudapp.deviceconfig.ui.activity.ConfigDASActivity;
+import com.shmedo.mcloudapp.deviceconfig.view.DiffuseView;
 import com.shmedo.mcloudapp.util.permission.PermissionHelper;
 import com.shmedo.mcloudapp.util.permission.XPermissionUtils;
 
@@ -327,12 +325,6 @@ public class BluetoothDeviceListFragment extends BaseTranslucentFragment {
                 ConfigADMEActivity.startActivity(getActivity(), deviceInfo);
                 break;
 
-            case "E60":
-                DeviceBasicInfoResult deviceBasicInfoResult = new DeviceBasicInfoResult();
-                deviceBasicInfoResult.setDeviceToken(localData[2]);
-                deviceBasicInfoResult.setDeviceTypeName(localData[1]);
-                ConfigE60Activity.startActivity(getActivity(), deviceBasicInfoResult);
-                break;
         }
     }
 

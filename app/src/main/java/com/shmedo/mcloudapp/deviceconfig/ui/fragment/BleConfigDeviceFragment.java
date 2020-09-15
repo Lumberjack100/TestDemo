@@ -21,35 +21,39 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.hjq.toast.ToastUtils;
 import com.kyleduo.switchbutton.SwitchButton;
-import com.shmedo.core.MCloudApp;
 import com.shmedo.configlibrary.ble.cmd.CommandManager;
 import com.shmedo.configlibrary.ble.cmd.CommandResult;
 import com.shmedo.configlibrary.ble.enums.CollectorModel;
 import com.shmedo.configlibrary.ble.enums.CommandType;
+import com.shmedo.configlibrary.ble.model.BaseConfigInfo;
+import com.shmedo.configlibrary.ble.model.LoaclTimeInfo;
+import com.shmedo.configlibrary.ble.model.SetRainPrecisionInfo;
+import com.shmedo.configlibrary.ble.model.VersionMessageInfo;
+import com.shmedo.configlibrary.ble.utils.ResultParserUtil;
+import com.shmedo.configlibrary.ble.utils.StringUtil;
+import com.shmedo.core.MCloudApp;
 import com.shmedo.core.event.BluetoothConnectStateEvent;
 import com.shmedo.core.event.CmdResponseMessage;
 import com.shmedo.core.event.MessageEvent;
-import com.shmedo.configlibrary.ble.model.BaseConfigInfo;
-import com.shmedo.configlibrary.ble.model.BreakAlarmStatusInfo;
-import com.shmedo.configlibrary.ble.model.CollectorConfigInfo;
-import com.shmedo.configlibrary.ble.model.LoaclTimeInfo;
-import com.shmedo.configlibrary.ble.model.QueryOsmometerParameterInfo;
-import com.shmedo.configlibrary.ble.model.SetRainPrecisionInfo;
-import com.shmedo.configlibrary.ble.model.VersionMessageInfo;
+import com.shmedo.core.model.UserInfo;
 import com.shmedo.core.util.DensityUtil;
 import com.shmedo.core.util.GlobalUtil;
-import com.shmedo.configlibrary.ble.utils.ResultParserUtil;
-import com.shmedo.configlibrary.ble.utils.StringUtil;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.view.recycleviewitemdivider.GridSpacingItemDecoration;
 import com.shmedo.mcloudapp.deviceconfig.adapter.ConfigModuleAdapter;
 import com.shmedo.mcloudapp.deviceconfig.model.ConfigModule;
+import com.shmedo.mcloudapp.deviceconfig.model.DeviceTypeInfo;
+import com.shmedo.mcloudapp.deviceconfig.model.FirmWareInfo;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.AdvancedSettingActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.DeviceCurrentStateActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.IOTCollectorSettingActivity;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.BaseDialogFragment;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.FirmWareSelectDialog;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd.BaseDispatchCmdDialog;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd.QueryTerminalTimeDialog;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd.TelemetryDialog;
+import com.shmedo.mcloudapp.entity.DeviceTypeInfoDao;
+import com.shmedo.mcloudapp.util.DaoManager;
 import com.shmedo.mcloudapp.util.bleutil.BlueResultParserUtil;
 
 import org.greenrobot.eventbus.Subscribe;
@@ -101,19 +105,18 @@ public class BleConfigDeviceFragment extends BaseBleConnectFragment {
     RecyclerView mRecyclerView;
 
     private ConfigModuleAdapter moduleAdapter;
-
     private List<ConfigModule> configModuleList = new ArrayList<>();
+    private ConfigModule selectedConfigModule;
 
     private String bleNameInfo;
 
-    private ConfigModule selectedConfigModule;
-
     private String collectorModel = "";//采集器类型
+    private int companyID;
+    private int deviceTypeID;
+    private String deviceTypeName;
+
     private SetRainPrecisionInfo setRainPrecisionInfo;
-    private CollectorConfigInfo collectorConfigInfo;
     private BaseConfigInfo baseConfigInfo;
-    private BreakAlarmStatusInfo breakAlarmStatusInfo;
-    private QueryOsmometerParameterInfo queryOsmometerParameterInfo;
 
 
     public static BleConfigDeviceFragment newInstance(String deviceInfo) {
@@ -140,14 +143,15 @@ public class BleConfigDeviceFragment extends BaseBleConnectFragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        initUserData();
         setHeadInfo();
         initSwitchViewListener();
         initAdapter();
         initConfigModuleData();
 
+        //连接设备
         findAndConnectSpecificDevice();
     }
-
 
     @Override
     public void onResume() {
@@ -155,16 +159,39 @@ public class BleConfigDeviceFragment extends BaseBleConnectFragment {
         updateViewStateByConnectState(MCloudApp.isIsBluetoothDeviceConnected());
     }
 
+    private void initUserData() {
+        UserInfo userInfo = MCloudApp.getCurrentUserInfo();
+        if (userInfo != null && userInfo.getDepartments() != null && userInfo.getDepartments().size() > 0) {
+            companyID = userInfo.getDepartments().get(0).getCompanyID();
+        }
+    }
+
     private void setHeadInfo() {
         String[] infos = bleNameInfo.split(",");
-        mTvDeviceName.setText("物联网数据采集器");
         if (infos.length >= 3) {
             mTvDeviceSn.setText(String.format("设备编号：%s", TextUtils.isEmpty(infos[1]) ? "" : infos[1]));
             mTvProductModel.setText(String.format("产品型号：%s", TextUtils.isEmpty(infos[2]) ? "" : infos[2]));
+            searchDeviceTypeInfo(TextUtils.isEmpty(infos[2]) ? "" : infos[2]);
         }
         mTvDeviceConnectState.setVisibility(View.VISIBLE);
         mTvDeviceConnectState.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG);
         mTvDeviceCommunicationWay.setText("蓝牙");
+    }
+
+    private void searchDeviceTypeInfo(String typeName) {
+        DeviceTypeInfo deviceTypeInfo = DaoManager.getInstance().getDaoSession().getDeviceTypeInfoDao().queryBuilder()
+                .where(DeviceTypeInfoDao.Properties.DeviceTypeName.like("%" + typeName + "%"))
+                .unique();
+
+        if (deviceTypeInfo != null) {
+            mTvDeviceName.setText(TextUtils.isEmpty(deviceTypeInfo.getDesc()) ? "" : deviceTypeInfo.getDesc());
+            deviceTypeID = deviceTypeInfo.getId();
+            deviceTypeName = deviceTypeInfo.getDeviceTypeName();
+        } else {
+            mTvDeviceName.setText("物联网数据采集器");
+            deviceTypeID = -1;
+            deviceTypeName = typeName;
+        }
     }
 
     /**
@@ -235,7 +262,9 @@ public class BleConfigDeviceFragment extends BaseBleConnectFragment {
                 break;
 
             case "固件升级":
-
+                FirmWareSelectDialog newFragment = new FirmWareSelectDialog(companyID, deviceTypeID);
+                newFragment.setDialogFragmentClickListener(firmWareSelectListener);
+                newFragment.show(getChildFragmentManager(), "dialog");
                 break;
 
             case "采集器配置":
@@ -269,6 +298,21 @@ public class BleConfigDeviceFragment extends BaseBleConnectFragment {
         sendCommonCommandImmediately(command);
         Timber.d("遥测设备指令===%s", command);
     }
+
+    private BaseDialogFragment.DialogFragmentClickListener firmWareSelectListener = new BaseDialogFragment.DialogFragmentClickListener<FirmWareInfo>() {
+        @Override
+        public boolean onPositiveClick(View view, FirmWareInfo firmWareInfo) {
+
+            return true;
+        }
+
+
+        @Override
+        public void onNegativeClick(View view) {
+
+        }
+    };
+
 
     @OnClick({R.id.tv_device_connect_state, R.id.tv_device_communication_way})
     public void onClick(View v) {
@@ -438,6 +482,8 @@ public class BleConfigDeviceFragment extends BaseBleConnectFragment {
         }
 
         String firmwareVersion = TextUtils.isEmpty(versionInfo.getFirmwareVersion()) ? "--" : versionInfo.getFirmwareVersion();
+        firmwareVersion = firmwareVersion.replace(deviceTypeName + "-", "").replace(deviceTypeName, "");
+
         for (ConfigModule configModule : configModuleList) {
             if (configModule.getName().equals("固件升级")) {
                 configModule.setDesc("版本:" + firmwareVersion);

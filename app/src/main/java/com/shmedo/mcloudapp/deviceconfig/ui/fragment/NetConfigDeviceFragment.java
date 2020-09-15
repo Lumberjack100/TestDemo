@@ -132,16 +132,10 @@ public class NetConfigDeviceFragment extends BaseFragment {
     }
 
     @Override
-    public void onPause() {
-        super.onPause();
+    public void onStop() {
+        super.onStop();
         EventBus.getDefault().unregister(this);
     }
-
-//    @Override
-//    public void onStop() {
-//        super.onStop();
-//        EventBus.getDefault().unregister(this);
-//    }
 
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -405,6 +399,9 @@ public class NetConfigDeviceFragment extends BaseFragment {
         moduleAdapter.notifyDataSetChanged();
     }
 
+    /**
+     * 指令下发失败弹框
+     */
     private void showDispatchFailedDialog() {
         String title = selectedConfigModule.getName();
         switch (selectedConfigModule.getName()) {
@@ -428,6 +425,9 @@ public class NetConfigDeviceFragment extends BaseFragment {
         newFragment.show(getChildFragmentManager(), "dialog");
     }
 
+    /**
+     * 指令下发成功弹框
+     */
     private void showDispatchSuccessDialog() {
         BaseDispatchCmdDialog newFragment = null;
         //下发指令成功，弹出对话框开始轮询查询指令响应

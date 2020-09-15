@@ -8,17 +8,15 @@ import android.widget.Button;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
-import com.shmedo.core.MCloudApp;
 import com.hjq.toast.ToastUtils;
+import com.shmedo.core.MCloudApp;
+import com.shmedo.core.event.MapDeviceEvent;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.activity.BaseActivity;
+import com.shmedo.mcloudapp.common.view.ClearEditText;
+import com.shmedo.mcloudapp.deviceconfig.model.DeviceTypeEnum;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.ConfigADMEActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.ConfigDASActivity;
-import com.shmedo.mcloudapp.deviceconfig.ui.activity.ConfigE60Activity;
-import com.shmedo.mcloudapp.entity.DeviceBasicInfoResult;
-import com.shmedo.mcloudapp.deviceconfig.model.DeviceTypeEnum;
-import com.shmedo.core.event.MapDeviceEvent;
-import com.shmedo.mcloudapp.common.view.ClearEditText;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -120,14 +118,6 @@ public class InputDeviceSNActivity extends BaseActivity {
         } else if (deviceType.equals("ADME")) {
             ConfigADMEActivity.startActivity(InputDeviceSNActivity.this, deviceInfo);
 
-        } else if (deviceType.equals("E60")) {
-            DeviceBasicInfoResult deviceBasicInfoResult = new DeviceBasicInfoResult();
-            deviceBasicInfoResult.setDeviceToken(snNumber);
-            deviceBasicInfoResult.setDeviceTypeName(deviceType);
-            ConfigE60Activity.startActivity(InputDeviceSNActivity.this, deviceBasicInfoResult);
-
-        } else if (deviceType.equals("PVS")) {
-            ToastUtils.show("pvs==" + snNumber + "==" + deviceType);
         }
 
         if (!TextUtils.isEmpty(deviceInfo) && deviceInfo.split(",").length > 0) {

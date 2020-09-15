@@ -1,7 +1,6 @@
 package com.shmedo.mcloudapp.deviceconfig.ui.activity;
 
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
@@ -23,11 +22,9 @@ import androidx.annotation.NonNull;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.hjq.toast.ToastUtils;
-import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.activity.BaseActivity;
 import com.shmedo.mcloudapp.common.view.MyWebView;
-import com.shmedo.mcloudapp.entity.DeviceBasicInfoResult;
 import com.shmedo.mcloudapp.entity.DeviceBasicInfoResultDao;
 import com.shmedo.mcloudapp.util.DaoManager;
 import com.shmedo.mcloudapp.util.WifiSupport;
@@ -56,11 +53,6 @@ public class ConfigE60Activity extends BaseActivity {
     private String securityNo;
 
 
-    public static void startActivity(Context context, DeviceBasicInfoResult deviceBasicInfoResult) {
-        Intent intent = new Intent(context, ConfigE60Activity.class);
-        intent.putExtra(AppContants.Extras.DEVICE_E60, deviceBasicInfoResult);
-        context.startActivity(intent);
-    }
 
 
     @Override
@@ -89,13 +81,6 @@ public class ConfigE60Activity extends BaseActivity {
 
 
     private void initView() {
-        DeviceBasicInfoResult deviceBasicInfoResult = (DeviceBasicInfoResult) (getIntent().getSerializableExtra(AppContants.Extras.DEVICE_E60));
-        if (deviceBasicInfoResult != null) {
-            deviceToken = deviceBasicInfoResult.getDeviceToken() != null ? deviceBasicInfoResult.getDeviceToken() : "";
-            deviceTypeName = deviceBasicInfoResult.getDeviceTypeName() != null ? deviceBasicInfoResult.getDeviceTypeName() : "";
-
-            mToolbarTitle.setText(deviceTypeName + ":" + deviceToken);
-        }
     }
 
     private void initData() {

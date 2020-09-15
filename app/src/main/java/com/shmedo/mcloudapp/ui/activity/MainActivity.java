@@ -34,16 +34,12 @@ import com.amap.api.maps.MapView;
 import com.amap.api.maps.UiSettings;
 import com.amap.api.maps.model.BitmapDescriptorFactory;
 import com.amap.api.maps.model.LatLng;
-import com.amap.api.maps.model.LatLngBounds;
-import com.amap.api.maps.model.Marker;
 import com.amap.api.maps.model.MarkerOptions;
 import com.amap.api.maps.model.MyLocationStyle;
-import com.google.gson.reflect.TypeToken;
 import com.hjq.toast.ToastUtils;
 import com.shmedo.core.MCloudApp;
 import com.shmedo.core.event.MapDeviceEvent;
 import com.shmedo.core.event.WifiEvent;
-import com.shmedo.core.util.DensityUtil;
 import com.shmedo.core.util.GlobalUtil;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.adapter.InfoWinAdapter;
@@ -52,19 +48,11 @@ import com.shmedo.mcloudapp.common.ui.activity.ScanActivity;
 import com.shmedo.mcloudapp.deviceconfig.model.DeviceTypeEnum;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.ConfigADMEActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.ConfigDASActivity;
-import com.shmedo.mcloudapp.deviceconfig.ui.activity.ConfigE60Activity;
-import com.shmedo.mcloudapp.entity.DeviceBasicInfoResult;
-import com.shmedo.mcloudapp.entity.DeviceBasicInfoResultDao;
 import com.shmedo.mcloudapp.entity.StatusInfoResult;
-import com.shmedo.mcloudapp.entity.cluster.ClusterAnotherClickListener;
-import com.shmedo.mcloudapp.entity.cluster.ClusterAnotherRender;
 import com.shmedo.mcloudapp.entity.cluster.ClusterItem;
-import com.shmedo.mcloudapp.entity.cluster.ClusterItemImp;
 import com.shmedo.mcloudapp.entity.cluster.ClusterOverlayMerchant;
-import com.shmedo.mcloudapp.entity.parameter.LocationResult;
 import com.shmedo.mcloudapp.ui.SearchDataUI;
 import com.shmedo.mcloudapp.util.DaoManager;
-import com.shmedo.mcloudapp.util.GsonFactory;
 import com.shmedo.mcloudapp.util.permission.UpdataManagerUtil;
 import com.shmedo.mcloudapp.util.permission.XPermissionUtils;
 import com.yanzhenjie.permission.Action;
@@ -320,88 +308,6 @@ public class MainActivity extends BaseActivity {
     }
 
 
-    /**
-     * 添加设备的 marker 点
-     *
-     * @param deviceList
-     */
-    private void addMerchantClustersToMap(final List<DeviceBasicInfoResult> deviceList) {
-        LatLng latLng = null;
-        for (int i = 0; i < deviceList.size(); i++) {
-            LocationResult location = GsonFactory.getGson()
-                    .fromJson(deviceList.get(i).getInstallLocation(), new TypeToken<LocationResult>() {
-                    }.getType());
-            if (location != null) {
-                latLng = new LatLng(location.getLat(), location.getLng());
-                ClusterItemImp clusterImp = new ClusterItemImp(latLng, deviceList.get(i).getDeviceName());
-                clusterItemsMerchant.add(clusterImp);
-            }
-        }
-
-        if (clusterOverlayMerchant == null) {
-            clusterOverlayMerchant = new ClusterOverlayMerchant(aMap, clusterItemsMerchant, DensityUtil.Dp2Px(getApplicationContext(), clusterRadius), getApplicationContext());
-        } else {
-            clusterOverlayMerchant.onDestroy();
-            clusterOverlayMerchant = null;
-            clusterOverlayMerchant = new ClusterOverlayMerchant(aMap, clusterItemsMerchant, DensityUtil.Dp2Px(getApplicationContext(), clusterRadius), getApplicationContext());
-        }
-
-        clusterOverlayMerchant.setClusterAnotherRenderer(new ClusterAnotherRender() {
-            @Override
-            public Drawable getAnotherDrawAble(int clusterNum) {
-                if (clusterNum <= 5) {
-                    Drawable bitmapDrawable = mBackDrawAblesMerchant.get(2);
-                    if (bitmapDrawable == null) {
-                        //bitmapDrawable = getApplication().getResources().getDrawable(checkMarkerIcon(sensorType));
-                        bitmapDrawable = getApplication().getResources().getDrawable(R.drawable.icon_marker_das);
-                        mBackDrawAblesMerchant.put(2, bitmapDrawable);
-                    }
-                    return bitmapDrawable;
-                } else {
-                    Drawable bitmapDrawable = mBackDrawAblesMerchant.get(3);
-                    if (bitmapDrawable == null) {
-                        bitmapDrawable =
-                                getApplication().getResources().getDrawable(R.drawable.icon_marker_das);
-                        mBackDrawAblesMerchant.put(3, bitmapDrawable);
-                    }
-                    return bitmapDrawable;
-                }
-            }
-        });
-        clusterOverlayMerchant.setOnClusterAnotherClickListener(new ClusterAnotherClickListener() {
-            @Override
-            public void onAnotherClick(Marker marker, List<ClusterItem> clusterItems) {
-                Toast.makeText(MainActivity.this, ">>>>>>>点击了商家聚合点", Toast.LENGTH_SHORT).show();
-                if (aMap.getCameraPosition().zoom <= 18) {
-                    LatLngBounds.Builder builder = new LatLngBounds.Builder();
-                    for (ClusterItem clusterItem : clusterItems) {
-                        builder.include(clusterItem.getPosition());
-                    }
-                    LatLngBounds latLngBounds = builder.build();
-                    aMap.animateCamera(CameraUpdateFactory.newLatLngBounds(latLngBounds, 10));
-                }
-
-            }
-        });
-
-    }
-
-
-    private int checkMarkerIcon(String sensorType) {
-        switch (sensorType) {
-            case "DAS":
-                return R.drawable.icon_marker_das;
-
-            case "DAG":
-                return R.drawable.icon_marker_dag;
-
-            case "E60":
-                return R.drawable.icon_marker_e60;
-
-            default:
-                return R.drawable.icon_marker;
-        }
-    }
 
 
     @OnClick({R.id.img_user, R.id.img_equipment})
@@ -476,10 +382,10 @@ public class MainActivity extends BaseActivity {
      * 添加新设备到本地数据库，并且在地图上标记设备
      */
     private void addDeviceOnMap(String[] device) {
-        if (null != queryExistDevice(device[1])) {
-            Timber.d("此设备已存在本地数据库中！");
-            return;
-        }
+//        if (null != queryExistDevice(device[1])) {
+//            Timber.d("此设备已存在本地数据库中！");
+//            return;
+//        }
 
         LatLng latLng = myLatLng;
         aMap.addMarker(new MarkerOptions().anchor(0.5f, 0.5f)
@@ -489,19 +395,19 @@ public class MainActivity extends BaseActivity {
                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.icon_marker))
         );
 
-        String installLocation = GsonFactory.getGson().toJson(latLng);
-        DeviceBasicInfoResult result = new DeviceBasicInfoResult();
+//        String installLocation = GsonFactory.getGson().toJson(latLng);
+//        DeviceBasicInfoResult result = new DeviceBasicInfoResult();
         Long proId = System.currentTimeMillis();
-        result.setId(proId);
-        result.setDeviceName(device[1]);
-        result.setDeviceToken(device[1]);
-        result.setDeviceTypeID(0);
-        result.setDeviceTypeName(device[2]);
-        result.setGpsLocation(installLocation);
-        result.setInstallLocation(installLocation);
-        result.setSecurityNO(null);
-        result.setAccount(MCloudApp.getAccount());
-        result.setLocal(true);
+//        result.setId(proId);
+//        result.setDeviceName(device[1]);
+//        result.setDeviceToken(device[1]);
+//        result.setDeviceTypeID(0);
+//        result.setDeviceTypeName(device[2]);
+//        result.setGpsLocation(installLocation);
+//        result.setInstallLocation(installLocation);
+//        result.setSecurityNO(null);
+//        result.setAccount(MCloudApp.getAccount());
+//        result.setLocal(true);
 
         StatusInfoResult infoResult = new StatusInfoResult();
         infoResult.setId(proId);
@@ -517,35 +423,11 @@ public class MainActivity extends BaseActivity {
         infoResult.setAccount(MCloudApp.getAccount());
         infoResult.setLocal(true);
 
-        manager.getDaoSession().getDeviceBasicInfoResultDao().insertOrReplaceInTx(result);
+//        manager.getDaoSession().getDeviceBasicInfoResultDao().insertOrReplaceInTx(result);
         manager.getDaoSession().getStatusInfoResultDao().insertOrReplaceInTx(infoResult);
     }
 
 
-    /**
-     * 查询本地数据库设备列表中是否有这个设备
-     */
-    private DeviceBasicInfoResult queryExistDevice(String deviceName) {
-        return manager.getDaoSession()
-                .getDeviceBasicInfoResultDao()
-                .queryBuilder()
-                .where(DeviceBasicInfoResultDao.Properties.DeviceName.eq(deviceName))
-                .unique();
-    }
-
-
-    /**
-     * 查询位置信息不为空的当前用户的设备
-     */
-    private List<DeviceBasicInfoResult> queryLocalDeviceList() {
-        return manager.getDaoSession()
-                .getDeviceBasicInfoResultDao()
-                .queryBuilder()
-                .where(DeviceBasicInfoResultDao.Properties.GpsLocation.notEq(""),
-                        DeviceBasicInfoResultDao.Properties.Account.isNotNull(),
-                        DeviceBasicInfoResultDao.Properties.Account.eq(MCloudApp.getAccount()))
-                .list();
-    }
 
 
     public void showConnectionView(String str) {
@@ -716,12 +598,13 @@ public class MainActivity extends BaseActivity {
         } else if (localData[2].equals("ADME")) {
             ConfigADMEActivity.startActivity(MainActivity.this, deviceInfo);
 
-        } else if (localData[2].equals("E60")) {
-            DeviceBasicInfoResult deviceBasicInfoResult = new DeviceBasicInfoResult();
-            deviceBasicInfoResult.setDeviceToken(localData[2]);
-            deviceBasicInfoResult.setDeviceTypeName(localData[1]);
-            ConfigE60Activity.startActivity(MainActivity.this, deviceBasicInfoResult);
         }
+//        else if (localData[2].equals("E60")) {
+//            DeviceBasicInfoResult deviceBasicInfoResult = new DeviceBasicInfoResult();
+//            deviceBasicInfoResult.setDeviceToken(localData[2]);
+//            deviceBasicInfoResult.setDeviceTypeName(localData[1]);
+//            ConfigE60Activity.startActivity(MainActivity.this, deviceBasicInfoResult);
+//        }
 
         //如果是新设备，添加到本地数据库并标记在地图上
         String[] device = deviceInfo.split(",");
