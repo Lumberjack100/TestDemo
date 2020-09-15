@@ -34,7 +34,6 @@ import com.hjq.toast.ToastUtils;
 import com.shmedo.core.MCloudApp;
 import com.shmedo.core.util.GlobalUtil;
 import com.shmedo.mcloudapp.R;
-import com.shmedo.mcloudapp.bluetooth.MdBluetoothManager;
 import com.shmedo.mcloudapp.common.ui.fragment.BaseFragment;
 import com.shmedo.mcloudapp.common.view.ClearEditText;
 import com.shmedo.mcloudapp.deviceconfig.adapter.BleDeviceAdapter;
@@ -91,8 +90,6 @@ public class BleDeviceListFragment extends BaseFragment implements TextWatcher, 
 
     private BluetoothAdapter mBluetoothAdapter;
 
-    private MdBluetoothManager mdBluetoothManager;
-
     private BluetoothLeScannerCompat scanner;
 
     private ScanCallback scanCallback = new MdLeScanCallback();
@@ -119,15 +116,21 @@ public class BleDeviceListFragment extends BaseFragment implements TextWatcher, 
         initAdapter();
         initRefreshAnimation();
         setEditTextListener();
+//        startDiscoveryDevice();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
         startDiscoveryDevice();
     }
 
-
     @Override
-    public void onPause() {
-        super.onPause();
+    public void onStop() {
+        super.onStop();
         scanLeDevice(false);
     }
+
 
     /**
      * 初始化蓝牙
@@ -135,7 +138,6 @@ public class BleDeviceListFragment extends BaseFragment implements TextWatcher, 
     private void initBluetooth() {
         final BluetoothManager bluetoothManager = (BluetoothManager) getActivity().getSystemService(Context.BLUETOOTH_SERVICE);
         mBluetoothAdapter = Objects.requireNonNull(bluetoothManager).getAdapter();
-//        mdBluetoothManager = MdBluetoothManager.getInstance();
     }
 
     private void initAdapter() {

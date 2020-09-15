@@ -514,6 +514,6 @@ public class BleConfigDeviceFragment extends BaseBleConnectFragment {
             mActivity.finish();
         }
 
-        return false;
+        return true;
     }
 }

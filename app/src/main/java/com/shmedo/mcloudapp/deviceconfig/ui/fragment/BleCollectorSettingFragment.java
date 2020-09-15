@@ -112,6 +112,8 @@ public class BleCollectorSettingFragment extends BaseBleConnectFragment {
      * 查询采集器配置信息
      */
     private void queryCollectorInfo() {
+        errMsg = "查询数据超时,请稍后尝试";
+        startProgressRunnable("加载中...", 20000);
         CollectorConfigEntity collectorConfigEntity = new CollectorConfigEntity(collectorModel);
         String command = CommandManager.getInstance().getCommand(CommandType.COLLECTOR_CONFIG, collectorConfigEntity);
         sendCommonCommandImmediately(command);
@@ -200,9 +202,11 @@ public class BleCollectorSettingFragment extends BaseBleConnectFragment {
         switch (type) {
             case COLLECTOR_CONFIG://采集器配置信息 100
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
+                    stopProgressRunnable();
                     Timber.e("查询采集器配置信息指令出错!");
                     return;
                 }
+                stopProgressRunnable();
                 collectorConfigInfo = ResultParserUtil.getEntityObject(cmdStr);
                 initValue();
                 break;
