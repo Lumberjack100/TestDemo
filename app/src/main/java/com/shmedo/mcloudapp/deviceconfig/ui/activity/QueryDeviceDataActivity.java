@@ -11,6 +11,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.hjq.toast.ToastUtils;
+import com.lxj.xpopup.XPopup;
+import com.lxj.xpopup.interfaces.OnSelectListener;
 import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.activity.BaseActivity;
@@ -52,12 +54,16 @@ public class QueryDeviceDataActivity extends BaseActivity {
     @BindView(R.id.tv_end_time)
     TextView mTvEndTime;
 
+    @BindView(R.id.tv_item_count)
+    TextView mTvItemCount;
+
     @BindView(R.id.recyclerview)
     RecyclerView mRecyclerView;
 
+    private String snNubmer;
     private String startTime;
     private String endTime;
-    private String snNubmer;
+    private String itemCount = "30";
 
     private DeviceReportDataAdapter adapter;
     private List<QueryCloudDataInfo> queryCloudDataInfoList = new ArrayList<>();
@@ -106,6 +112,7 @@ public class QueryDeviceDataActivity extends BaseActivity {
         //默认设置3天前的时间
         mTvStartTime.setText(String.format("%s", DateUtil.getBackOrAddDate(new Date(), -3)));
         mTvEndTime.setText(String.format("%s", DateUtil.getNowDateYYYYMMDDString()));
+        mTvItemCount.setText("30");
     }
 
     private void initAdapter() {
@@ -117,7 +124,7 @@ public class QueryDeviceDataActivity extends BaseActivity {
     }
 
 
-    @OnClick({R.id.tv_start_time, R.id.tv_end_time, R.id.tv_search})
+    @OnClick({R.id.tv_start_time, R.id.tv_end_time, R.id.itemCountLayout, R.id.tv_search})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.tv_start_time: {
@@ -149,6 +156,20 @@ public class QueryDeviceDataActivity extends BaseActivity {
             }
             break;
 
+            case R.id.itemCountLayout:
+                new XPopup.Builder(QueryDeviceDataActivity.this)
+                        .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
+                        .asBottomList("", new String[]{"10", "30", "100", "500"},
+                                null, 1,
+                                new OnSelectListener() {
+                                    @Override
+                                    public void onSelect(int position, String text) {
+                                        mTvItemCount.setText(text);
+                                    }
+                                })
+                        .show();
+                break;
+
             case R.id.tv_search:
                 if (!checkValue()) {
                     return;
@@ -156,6 +177,7 @@ public class QueryDeviceDataActivity extends BaseActivity {
 
                 startTime = startTime + " 00:00:00";
                 endTime = endTime + " 23:59:59";
+                itemCount = mTvItemCount.getText().toString();
                 queryCloudData();
                 break;
         }
@@ -199,7 +221,7 @@ public class QueryDeviceDataActivity extends BaseActivity {
         paramter.setSn(snNubmer);
         paramter.setBegin(startTime);
         paramter.setEnd(endTime);
-        paramter.setNumber("30");
+        paramter.setNumber(itemCount);
 
         String json = GsonFactory.getGson().toJson(paramter);
         RequestBody body = RequestBody.create(NetworkConst.JSON_TYPE, json);
