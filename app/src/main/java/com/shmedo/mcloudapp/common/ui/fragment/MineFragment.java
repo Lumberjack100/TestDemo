@@ -20,7 +20,7 @@ import com.shmedo.core.util.ActivityCollector;
 import com.shmedo.core.util.GlobalUtil;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.activity.LoginActivity;
-import com.shmedo.mcloudapp.common.ui.activity.NewMainActivity;
+import com.shmedo.mcloudapp.common.ui.activity.MainActivity;
 import com.shmedo.mcloudapp.network.BaseObserver;
 import com.shmedo.mcloudapp.network.ErrCode;
 import com.shmedo.mcloudapp.network.MDRetrofit;
@@ -60,7 +60,7 @@ public class MineFragment extends BaseTranslucentFragment {
     @BindView(R.id.tv_versionName)
     TextView mTvVersionName;
 
-    private NewMainActivity activity;
+    private MainActivity activity;
     private UserInfo userInfo;
     private UserInfo.UserBean user;
 
@@ -81,7 +81,7 @@ public class MineFragment extends BaseTranslucentFragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        activity = (NewMainActivity) getActivity();
+        activity = (MainActivity) getActivity();
         getCompanyInfo();
     }
 

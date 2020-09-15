@@ -93,6 +93,13 @@
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan|stateHidden" />
+
+        <activity
+            android:name=".common.ui.activity.NewLoginActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan|stateHidden" />
+
         <activity
             android:name=".common.ui.activity.ServiceConfigActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
@@ -195,7 +202,7 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustResize" />
         <activity
-            android:name=".common.ui.activity.NewMainActivity"
+            android:name=".common.ui.activity.MainActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:screenOrientation="portrait" />
         <activity
@@ -316,13 +323,12 @@
             android:maxAspectRatio="2.4"
             android:screenOrientation="portrait"
             android:theme="@style/LightStatusBarActivity" />
-
-        <activity android:name=".deviceconfig.ui.activity.AdvancedSettingActivity"
+        <activity
+            android:name=".deviceconfig.ui.activity.AdvancedSettingActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:maxAspectRatio="2.4"
             android:screenOrientation="portrait"
             android:theme="@style/LightStatusBarActivity" />
-
         <activity
             android:name=".ddshare.DDShareActivity"
             android:exported="true"

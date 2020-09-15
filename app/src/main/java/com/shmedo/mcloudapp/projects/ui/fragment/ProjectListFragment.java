@@ -28,7 +28,7 @@ import com.shmedo.core.MCloudApp;
 import com.shmedo.core.model.UserInfo;
 import com.shmedo.core.util.DensityUtil;
 import com.shmedo.mcloudapp.R;
-import com.shmedo.mcloudapp.common.ui.activity.NewMainActivity;
+import com.shmedo.mcloudapp.common.ui.activity.MainActivity;
 import com.shmedo.mcloudapp.common.ui.fragment.BaseTranslucentFragment;
 import com.shmedo.mcloudapp.network.BaseObserver;
 import com.shmedo.mcloudapp.network.ErrCode;
@@ -116,7 +116,7 @@ public class ProjectListFragment extends BaseTranslucentFragment {
     private FilterProjectDialog projectDialog;
     private ProjectFilterPopupView popupView;
 
-    private NewMainActivity activity;
+    private MainActivity activity;
     private int userId;
     private int companyID;
 
@@ -154,7 +154,7 @@ public class ProjectListFragment extends BaseTranslucentFragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         updateSystemBarColor();
-        activity = (NewMainActivity) getActivity();
+        activity = (MainActivity) getActivity();
         initUserData();
         initSimpleAdapter();
         initMultiItemAdapter();

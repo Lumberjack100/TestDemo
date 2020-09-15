@@ -24,7 +24,7 @@ import com.shmedo.mcloudapp.util.permission.XPermissionUtils;
 import butterknife.BindView;
 import butterknife.OnClick;
 
-public class NewMainActivity extends BaseActivity {
+public class MainActivity extends BaseActivity {
     @BindView(R.id.bottom_navigation)
     BottomNavigationView bottomNavigationView;
 
@@ -36,7 +36,7 @@ public class NewMainActivity extends BaseActivity {
 
     public static void start(Context context) {
         Intent intent = new Intent();
-        intent.setClass(context, NewMainActivity.class);
+        intent.setClass(context, MainActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         context.startActivity(intent);
     }
@@ -44,7 +44,7 @@ public class NewMainActivity extends BaseActivity {
 
     @Override
     protected int getLayoutId() {
-        return R.layout.activity_new_main;
+        return R.layout.activity_main;
     }
 
 
@@ -128,7 +128,7 @@ public class NewMainActivity extends BaseActivity {
     @OnClick({R.id.map_module_view})
     public void onClick(View v) {
         if (v.getId() == R.id.map_module_view) {
-            MapActivity.startActivity(NewMainActivity.this);
+            MapActivity.startActivity(MainActivity.this);
         }
     }
 
