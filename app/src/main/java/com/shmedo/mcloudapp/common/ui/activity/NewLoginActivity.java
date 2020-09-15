@@ -3,17 +3,11 @@ package com.shmedo.mcloudapp.common.ui.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 
 import com.gyf.immersionbar.ImmersionBar;
 import com.shmedo.mcloudapp.R;
 
-import butterknife.BindView;
-
 public class NewLoginActivity extends BaseActivity {
-    @BindView(R.id.status_bar_view)
-    View statusBarView;
-
 
     public static void startActivity(Context context) {
         Intent intent = new Intent(context, NewLoginActivity.class);
@@ -41,7 +35,6 @@ public class NewLoginActivity extends BaseActivity {
     @Override
     protected void initImmersionBar() {
         ImmersionBar.with(this)
-                .titleBar(statusBarView)
                 .statusBarColor(R.color.transparent, 0)
                 .statusBarDarkFont(false)
                 .navigationBarDarkIcon(true)
