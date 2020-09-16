@@ -4,6 +4,12 @@
     <!--  <string name="app_name"> 米易通</string>-->
     <string name="privacy_agreement_title">温馨提示</string>
     <string name="privacy_agreement_desc">欢迎您使用米易通！\n\n我们高度重视并保护您的个人隐私，我们将严格在国家法律允许范围内，且只以为您提供服务为目的，收集必要的相关信息。为了便于您详细了解您的权利和义务，请您仔细阅读米易通《用户协议和免责条款》，并做出是否同意授权的决定。</string>
+    <string name="login_protocol_desc">登录即代表已阅读并同意《用户协议与免责条款》</string>
+    <string name="login_way_account_zh">账号登录</string>
+    <string name="login_way_account_en">Account Login</string>
+    <string name="login_way_phone_zh">手机登录</string>
+    <string name="login_way_phone_en">Phone Number Login</string>
+
     <string name="login_medo_copyright">©上海米度测控科技有限公司版权所有</string>
     <string name="login_input_username_hint">请输入用户名</string>
     <string name="login_input_password_hint">请输入密码</string>
