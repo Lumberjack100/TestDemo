@@ -1,6 +1,5 @@
 package com.shmedo.mcloudapp.common.ui.fragment;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -19,8 +18,7 @@ import com.shmedo.core.model.UserInfo;
 import com.shmedo.core.util.ActivityCollector;
 import com.shmedo.core.util.GlobalUtil;
 import com.shmedo.mcloudapp.R;
-import com.shmedo.mcloudapp.common.ui.activity.LoginActivity;
-import com.shmedo.mcloudapp.common.ui.activity.MainActivity;
+import com.shmedo.mcloudapp.common.ui.activity.NewLoginActivity;
 import com.shmedo.mcloudapp.network.BaseObserver;
 import com.shmedo.mcloudapp.network.ErrCode;
 import com.shmedo.mcloudapp.network.MDRetrofit;
@@ -60,7 +58,6 @@ public class MineFragment extends BaseTranslucentFragment {
     @BindView(R.id.tv_versionName)
     TextView mTvVersionName;
 
-    private MainActivity activity;
     private UserInfo userInfo;
     private UserInfo.UserBean user;
 
@@ -81,7 +78,6 @@ public class MineFragment extends BaseTranslucentFragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        activity = (MainActivity) getActivity();
         getCompanyInfo();
     }
 
@@ -164,10 +160,12 @@ public class MineFragment extends BaseTranslucentFragment {
      * 跳转到登录页面
      */
     private void exitLogin() {
-        Intent in = new Intent(getActivity(), LoginActivity.class);
-        in.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        startActivity(in);
-        activity.finish();
+//        Intent intent = new Intent(getActivity(), LoginActivity.class);
+//        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+//        startActivity(intent);
+//        mActivity.finish();
+
+        NewLoginActivity.startActivity(getActivity());
     }
 
     /**
