@@ -19,7 +19,6 @@ import com.shmedo.core.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.DASHomeFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.DeviceDetailsFragment;
-import com.shmedo.mcloudapp.deviceconfig.ui.fragment.QueryDeviceDataFragment;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -35,7 +34,6 @@ public class ConfigDASActivity extends BaseDeviceConnectActivity {
     BottomNavigationView bottomNavigationView;
 
     private DASHomeFragment DASHomeFragment;
-    private QueryDeviceDataFragment queryDataFragment;        //查询数据
     private DeviceDetailsFragment deviceDetailsFragment;//设备详情
     private Fragment currentFragment;
 
@@ -90,14 +88,10 @@ public class ConfigDASActivity extends BaseDeviceConnectActivity {
             String curTag = savedInstanceState.getString("CurrentFragment");
             currentFragment = getSupportFragmentManager().findFragmentByTag(curTag);
             DASHomeFragment = (DASHomeFragment) getSupportFragmentManager().findFragmentByTag(DASHomeFragment.class.getName());
-            queryDataFragment = (QueryDeviceDataFragment) getSupportFragmentManager().findFragmentByTag(QueryDeviceDataFragment.class.getName());
             deviceDetailsFragment = (DeviceDetailsFragment) getSupportFragmentManager().findFragmentByTag(DeviceDetailsFragment.class.getName());
 
             if(DASHomeFragment==null)
                 DASHomeFragment = new DASHomeFragment();
-
-            if(queryDataFragment==null)
-                queryDataFragment=new QueryDeviceDataFragment();
 
             if(deviceDetailsFragment==null)
                 deviceDetailsFragment = new DeviceDetailsFragment();
@@ -105,13 +99,11 @@ public class ConfigDASActivity extends BaseDeviceConnectActivity {
             // 解决重叠问题
             getSupportFragmentManager().beginTransaction()
                     .hide(DASHomeFragment)
-                    .hide(queryDataFragment)
                     .hide(deviceDetailsFragment)
                     .show(currentFragment)
                     .commit();
         } else {
             DASHomeFragment = new DASHomeFragment();
-            queryDataFragment = new QueryDeviceDataFragment();
             deviceDetailsFragment = new DeviceDetailsFragment();
             switchFrgment(0);
         }
@@ -194,7 +186,6 @@ public class ConfigDASActivity extends BaseDeviceConnectActivity {
                 showFragment(DASHomeFragment);
                 break;
             case 1:
-                showFragment(queryDataFragment);
                 break;
             case 2:
                 showFragment(deviceDetailsFragment);

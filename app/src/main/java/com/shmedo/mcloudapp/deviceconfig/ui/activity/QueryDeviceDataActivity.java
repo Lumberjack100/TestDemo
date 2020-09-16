@@ -19,7 +19,7 @@ import com.shmedo.mcloudapp.common.ui.activity.BaseActivity;
 import com.shmedo.mcloudapp.common.view.ClearEditText;
 import com.shmedo.mcloudapp.deviceconfig.adapter.DeviceReportDataAdapter;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.MyDatePicker;
-import com.shmedo.mcloudapp.entity.QueryCloudDataInfo;
+import com.shmedo.mcloudapp.deviceconfig.model.QueryCloudDataInfo;
 import com.shmedo.mcloudapp.entity.parameter.QueryCloudDataParameter;
 import com.shmedo.mcloudapp.network.BaseObserver;
 import com.shmedo.mcloudapp.network.ErrCode;

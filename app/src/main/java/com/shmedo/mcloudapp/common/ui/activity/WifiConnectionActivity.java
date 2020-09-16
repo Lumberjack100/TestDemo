@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.ui.activity;
+package com.shmedo.mcloudapp.common.ui.activity;
 
 import android.app.Activity;
 import android.content.BroadcastReceiver;
@@ -23,7 +23,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.shmedo.core.AppContants;
 import com.hjq.toast.ToastUtils;
 import com.shmedo.mcloudapp.R;
-import com.shmedo.mcloudapp.adapter.WifiListAdapter;
+import com.shmedo.mcloudapp.common.ui.WifiListAdapter;
 import com.shmedo.core.model.WifiBean;
 import com.shmedo.core.event.WifiEvent;
 import com.shmedo.core.util.ActivityCollector;

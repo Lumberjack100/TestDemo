@@ -3,7 +3,7 @@ package com.shmedo.mcloudapp.deviceconfig.adapter;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 import com.shmedo.mcloudapp.R;
-import com.shmedo.mcloudapp.entity.QueryCloudDataInfo;
+import com.shmedo.mcloudapp.deviceconfig.model.QueryCloudDataInfo;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

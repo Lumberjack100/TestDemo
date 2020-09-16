@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.adapter;
+package com.shmedo.mcloudapp.common.ui;
 
 import android.content.Context;
 import android.view.LayoutInflater;

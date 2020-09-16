@@ -88,11 +88,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".common.ui.activity.LoginActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustPan|stateHidden" />
 
         <activity
             android:name=".common.ui.activity.NewLoginActivity"
@@ -106,13 +101,13 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden|adjustResize" />
         <activity
-            android:name=".ui.activity.InputDeviceSNActivity"
+            android:name=".common.ui.activity.InputDeviceSNActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="添加设备"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan|stateHidden" />
         <activity
-            android:name=".ui.activity.WifiConnectionActivity"
+            android:name=".common.ui.activity.WifiConnectionActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:theme="@style/DialogActivity" />
         <activity

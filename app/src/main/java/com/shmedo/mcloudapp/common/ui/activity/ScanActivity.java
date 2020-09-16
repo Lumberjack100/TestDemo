@@ -11,7 +11,6 @@ import android.widget.TextView;
 import androidx.fragment.app.Fragment;
 
 import com.shmedo.mcloudapp.R;
-import com.shmedo.mcloudapp.ui.activity.InputDeviceSNActivity;
 
 import butterknife.BindView;
 import butterknife.OnClick;
