@@ -17,14 +17,12 @@ import android.widget.TextView;
 
 import com.gyf.immersionbar.ImmersionBar;
 import com.hjq.toast.ToastUtils;
-import com.lxj.xpopup.XPopup;
 import com.shmedo.configlibrary.ble.utils.ValidateUtil;
 import com.shmedo.core.AppContants;
 import com.shmedo.core.util.GlobalUtil;
 import com.shmedo.core.util.SharedUtil;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.view.ClearEditText;
-import com.shmedo.mcloudapp.common.view.UserProtocolPopup;
 import com.shmedo.mcloudapp.network.BaseObserver;
 import com.shmedo.mcloudapp.network.ErrCode;
 import com.shmedo.mcloudapp.network.MDRetrofit;
@@ -153,7 +151,7 @@ public class NewLoginActivity extends BaseActivity implements LoginManager.Login
     }
 
     @OnClick({R.id.iv_eye_password, R.id.tv_get_code, R.id.btn_confirm, R.id.iv_login_way})
-    public void onViewClicked(View view) {
+    public void onClick(View view) {
         switch (view.getId()) {
             case R.id.iv_eye_password://查看密码
                 if (!isPasswordVisible) {
@@ -170,10 +168,16 @@ public class NewLoginActivity extends BaseActivity implements LoginManager.Login
 
             case R.id.tv_get_code://获取验证码
                 String mPhoneNumber = mEtPhone.getText().toString().trim();
+                if (TextUtils.isEmpty(mPhoneNumber)) {
+                    ToastUtils.show("请输入手机号");
+                    mEtPhone.requestFocus();
+                    return;
+                }
+
                 if (ValidateUtil.checkMobileNumber(mPhoneNumber)) {
                     sendSmsCode(mPhoneNumber);
                 } else {
-                    ToastUtils.show("手机号输入格式错误！");
+                    ToastUtils.show("手机号格式错误！");
                 }
                 break;
 
@@ -291,6 +295,7 @@ public class NewLoginActivity extends BaseActivity implements LoginManager.Login
                             if (errCode.getCode() == 0) {
                                 if (data.contains("已发送")) {
                                     MyCountDownTimer timer = new MyCountDownTimer(mTvGetCode, 60000, 1000);
+                                    timer.setTextColor(R.color.title_text_color, R.color.text_color_b3b3b3);
                                     timer.start();
                                 } else {
                                     ToastUtils.show(data);
@@ -334,20 +339,11 @@ public class NewLoginActivity extends BaseActivity implements LoginManager.Login
         public void onClick(View view) {
             if (contentType == ContentType.USER_PROTOCOL) {
                 String url = "file:///android_asset/private/UserProtocol.html";
-                showDialog(url);
+                WebViewActivity.startActivity(context, url);
             } else {
-
+                String url = "file:///android_asset/private/PrivacyPolicy.html";
+                WebViewActivity.startActivity(context, url);
             }
-        }
-
-        void showDialog(String url) {
-            final UserProtocolPopup popup = new UserProtocolPopup(context, "《用户协议与免责条款》", url);
-            new XPopup.Builder(context)
-                    .moveUpToKeyboard(false) //如果不加这个，评论弹窗会移动到软键盘上面
-                    .enableDrag(false)
-                    .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
-                    .asCustom(popup)
-                    .show();
         }
     }
 
