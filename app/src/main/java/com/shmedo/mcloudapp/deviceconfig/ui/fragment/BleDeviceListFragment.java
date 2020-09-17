@@ -102,6 +102,12 @@ public class BleDeviceListFragment extends BaseFragment implements TextWatcher, 
 
     private Animator animator;
 
+    private final Runnable sRunnable = new Runnable() {
+        @Override
+        public void run() {
+            stopScan();
+        }
+    };
 
     @Override
     protected int getLayoutId() {
@@ -129,8 +135,14 @@ public class BleDeviceListFragment extends BaseFragment implements TextWatcher, 
     public void onStop() {
         super.onStop();
         scanLeDevice(false);
+        mHandler.removeCallbacksAndMessages(null);
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mHandler.removeCallbacksAndMessages(null);
+    }
 
     /**
      * 初始化蓝牙
@@ -213,40 +225,16 @@ public class BleDeviceListFragment extends BaseFragment implements TextWatcher, 
                 });
     }
 
-    private void updateRefreshView(boolean isRefresh) {
-        if (isRefresh) {
-            if (animator != null) {
-                animator.start();
-            }
-            mTvScanState.setText("刷新中...");
-        } else {
-            if (animator != null) {
-                animator.end();
-            }
-            mTvScanState.setText("重新刷新");
-        }
-    }
-
     private void scanLeDevice(final boolean enable) {
         if (enable) {
             // Stops scanning after a pre-defined scan period.
-            mHandler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    mScanning = false;
-                    scanner.stopScan(scanCallback);
-                    updateRefreshView(false);
-                }
-            }, SCAN_PERIOD);
-
+            mHandler.postDelayed(sRunnable, SCAN_PERIOD);
             mScanning = true;
             initScan();
             updateRefreshView(true);
         } else {
             if (mScanning) {
-                mScanning = false;
-                scanner.stopScan(scanCallback);
-                updateRefreshView(false);
+                stopScan();
             }
         }
     }
@@ -261,6 +249,29 @@ public class BleDeviceListFragment extends BaseFragment implements TextWatcher, 
 //        List<ScanFilter> filters = new ArrayList<>();
 //        filters.add(new ScanFilter.Builder().setServiceUuid(ParcelUuid.fromString(GattAttributes.USR_SERVICE)).build());
         scanner.startScan(null, settings, scanCallback);
+    }
+
+    private void stopScan() {
+        mScanning = false;
+        scanner.stopScan(scanCallback);
+        updateRefreshView(false);
+    }
+
+    private void updateRefreshView(boolean isRefresh) {
+        if (isRefresh) {
+            if (animator != null) {
+                animator.start();
+            }
+            mTvDeviceCount.setText("(0)");
+//            if (mTvScanState != null)
+            mTvScanState.setText("刷新中...");
+        } else {
+            if (animator != null) {
+                animator.end();
+            }
+//            if (mTvScanState != null)
+            mTvScanState.setText("重新刷新");
+        }
     }
 
     @OnClick({R.id.search_placeholder, R.id.tv_cancel, R.id.ll_scan_refresh})
