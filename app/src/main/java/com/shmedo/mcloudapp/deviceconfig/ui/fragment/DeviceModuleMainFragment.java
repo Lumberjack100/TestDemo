@@ -195,7 +195,7 @@ public class DeviceModuleMainFragment extends BaseTranslucentFragment implements
 
         switch (localData[2]) {
             case "DAS":
-                DeviceConfigActivity.startActivity(getActivity(), AppContants.CommunicationWay.NET_CONNECT, deviceInfo);
+                DeviceConfigActivity.startActivity(getActivity(), AppContants.CommunicationWay.BLE_CONNECT, deviceInfo);
                 break;
 
             case "ADME":

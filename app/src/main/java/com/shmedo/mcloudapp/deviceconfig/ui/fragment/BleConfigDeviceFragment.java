@@ -248,7 +248,7 @@ public class BleConfigDeviceFragment extends BaseBleConnectFragment {
     private void processItemClick() {
         switch (selectedConfigModule.getName()) {
             case "状态":
-                DeviceCurrentStateActivity.startActivity(mActivity, AppContants.CommunicationWay.NET_CONNECT);
+                DeviceCurrentStateActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT);
                 break;
 
             case "时间":
@@ -270,7 +270,7 @@ public class BleConfigDeviceFragment extends BaseBleConnectFragment {
                 break;
 
             case "采集器配置":
-                IOTCollectorSettingActivity.startActivity(mActivity, AppContants.CommunicationWay.NET_CONNECT, collectorModel);
+                IOTCollectorSettingActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT, collectorModel);
                 break;
 
             case "传感器配置":
@@ -278,7 +278,7 @@ public class BleConfigDeviceFragment extends BaseBleConnectFragment {
                 break;
 
             case "数据中心":
-                DataCenterActivity.startActivity(mActivity, AppContants.CommunicationWay.NET_CONNECT);
+                DataCenterActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT);
                 break;
 
             case "设置":
