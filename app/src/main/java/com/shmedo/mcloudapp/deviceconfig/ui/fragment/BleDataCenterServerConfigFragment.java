@@ -113,9 +113,6 @@ public class BleDataCenterServerConfigFragment extends BaseBleConnectFragment {
     private ServerNumber serverNumber;
     private MqttConfigInfo mqttConfigInfo = new MqttConfigInfo();
 
-    private int communicationProtocolPosOld;
-    private int registerPlatformPosOld;
-
     private int communicationProtocolPos;
     private int registerPlatformPos;
 
@@ -139,8 +136,7 @@ public class BleDataCenterServerConfigFragment extends BaseBleConnectFragment {
     private String cmdKeepAliveValue;//
     private String cmdPlatformParam;//手动/自动注册平台参数
     private String cmdAppKey;//米度平台 AppKey
-    private String cmdDataReport;//数据上报间隔
-    private String cmdBDCardNumber;//北斗卡号
+
 
     public static BleDataCenterServerConfigFragment newInstance(ServerNumber serverNumber) {
         BleDataCenterServerConfigFragment fragment = new BleDataCenterServerConfigFragment();
@@ -609,17 +605,14 @@ public class BleDataCenterServerConfigFragment extends BaseBleConnectFragment {
 
         switch (mqttConfigInfo.getCommunicationProtocol()) {
             case "2":
-                communicationProtocolPosOld = 0;
                 updateViewByCommunicationProtocol(0, "MDM协议");
                 break;
 
             case "4":
-                communicationProtocolPosOld = 1;
                 updateViewByCommunicationProtocol(1, "MQTT自动注册");
                 break;
 
             case "5":
-                communicationProtocolPosOld = 2;
                 updateViewByCommunicationProtocol(1, "MQTT手动注册");
                 break;
         }
@@ -654,29 +647,76 @@ public class BleDataCenterServerConfigFragment extends BaseBleConnectFragment {
     @Override
     public boolean onBackPressed() {
         if (MCloudApp.isIsBluetoothDeviceConnected()) {
-//            if (TextUtils.isEmpty(dataCommunicationModeOld)) {
-//                mActivity.finish();
-//                return true;
-//            }
-//
-//            if (TextUtils.isEmpty(reportingInterval)) {
-//                mActivity.finish();
-//                return true;
-//            }
-//
-//            if (TextUtils.isEmpty(bdCardNumber)) {
-//                mActivity.finish();
-//                return true;
-//            }
-//
-//            if (!dataCommunicationModeOld.equals(dataCommunicationMode) || !reportingInterval.equals(mEtReportingInterval.getText()) || !bdCardNumber.equals(mEtBdCardNumber.getText())) {
-//                warnNotYetSave();
-//            }
+            if (checkValueIsChange()) {
+                warnNotYetSave();
+            } else {
+                mActivity.finish();
+            }
         } else {
             mActivity.finish();
         }
 
         return true;
+    }
+
+    private boolean checkValueIsChange() {
+        if (!mqttConfigInfo.getCommunicationProtocol().equals(communicationProtocol)) {
+            return true;
+        }
+
+        if (!mqttConfigInfo.getDataPlatformAddress().equals(mEtDataServerAddress.getText())) {
+            return true;
+        }
+
+        if (communicationProtocol.equals("4")) {//MQTT自动注册
+            if (!mqttConfigInfo.getRegisterPlatform().equals(registerPlatform)) {
+                return true;
+            }
+
+            if (!mqttConfigInfo.getRegisterPlatformAddress().equals(mEtDataServerAddress.getText())) {
+                return true;
+            }
+
+            if (!mqttConfigInfo.getKeepAliveValue().equals(mEtKeepAlive.getText())) {
+                return true;
+            }
+
+            if (!mqttConfigInfo.getDeviceSn().equals(mEtDeviceSN.getText())) {
+                return true;
+            }
+
+            if (!mqttConfigInfo.getProductId().equals(mEtProductId.getText())) {
+                return true;
+            }
+
+            if (!mqttConfigInfo.getRegisterCode().equals(mEtRegisterCode.getText())) {
+                return true;
+            }
+
+            if (registerPlatform.equals("2")) {
+                if (!mqttConfigInfo.getAppKey().equals(mEtAppKey.getText())) {
+                    return true;
+                }
+            }
+        } else if (communicationProtocol.equals("5")) {//MQTT手动注册
+            if (!mqttConfigInfo.getKeepAliveValue().equals(mEtKeepAlive.getText())) {
+                return true;
+            }
+
+            if (!mqttConfigInfo.getMqttDeviceId().equals(mEtMqttDeviceId.getText())) {
+                return true;
+            }
+
+            if (!mqttConfigInfo.getMqttUsername().equals(mEtMqttUsername.getText())) {
+                return true;
+            }
+
+            if (!mqttConfigInfo.getMqttPassword().equals(mEtMqttPwd.getText())) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private void warnNotYetSave() {

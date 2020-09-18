@@ -236,18 +236,19 @@ public class BleDataCenterFragment extends BaseBleConnectFragment {
                 return true;
             }
 
-            if (TextUtils.isEmpty(reportingInterval)) {
-                mActivity.finish();
+            if (TextUtils.isEmpty(reportingInterval) && mEtReportingInterval.getText().length() > 0) {
+                warnNotYetSave();
                 return true;
             }
 
-            if (TextUtils.isEmpty(bdCardNumber)) {
-                mActivity.finish();
+            if (TextUtils.isEmpty(bdCardNumber) && mEtBdCardNumber.getText().length() > 0) {
+                warnNotYetSave();
                 return true;
             }
 
             if (!dataCommunicationModeOld.equals(dataCommunicationMode) || !reportingInterval.equals(mEtReportingInterval.getText()) || !bdCardNumber.equals(mEtBdCardNumber.getText())) {
                 warnNotYetSave();
+                return true;
             }
         } else {
             mActivity.finish();
