@@ -31,6 +31,7 @@ import com.shmedo.configlibrary.ble.model.SetRainPrecisionInfo;
 import com.shmedo.configlibrary.ble.model.VersionMessageInfo;
 import com.shmedo.configlibrary.ble.utils.ResultParserUtil;
 import com.shmedo.configlibrary.ble.utils.StringUtil;
+import com.shmedo.core.AppContants;
 import com.shmedo.core.MCloudApp;
 import com.shmedo.core.event.BluetoothConnectStateEvent;
 import com.shmedo.core.event.CmdResponseMessage;
@@ -247,7 +248,7 @@ public class BleConfigDeviceFragment extends BaseBleConnectFragment {
     private void processItemClick() {
         switch (selectedConfigModule.getName()) {
             case "状态":
-                DeviceCurrentStateActivity.startActivity(mActivity, DeviceCurrentStateActivity.BLE_CONNECT);
+                DeviceCurrentStateActivity.startActivity(mActivity, AppContants.CommunicationWay.NET_CONNECT);
                 break;
 
             case "时间":
@@ -269,7 +270,7 @@ public class BleConfigDeviceFragment extends BaseBleConnectFragment {
                 break;
 
             case "采集器配置":
-                IOTCollectorSettingActivity.startActivity(mActivity, IOTCollectorSettingActivity.BLE_CONNECT, collectorModel);
+                IOTCollectorSettingActivity.startActivity(mActivity, AppContants.CommunicationWay.NET_CONNECT, collectorModel);
                 break;
 
             case "传感器配置":
@@ -277,7 +278,7 @@ public class BleConfigDeviceFragment extends BaseBleConnectFragment {
                 break;
 
             case "数据中心":
-                DataCenterActivity.startActivity(mActivity, IOTCollectorSettingActivity.BLE_CONNECT);
+                DataCenterActivity.startActivity(mActivity, AppContants.CommunicationWay.NET_CONNECT);
                 break;
 
             case "设置":

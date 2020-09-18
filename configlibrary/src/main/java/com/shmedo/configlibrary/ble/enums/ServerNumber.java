@@ -1,10 +1,12 @@
 package com.shmedo.configlibrary.ble.enums;
 
+import java.io.Serializable;
+
 /**
  * Created by adu on 2017/12/15.
  * 服务器(数据中心)编号
  */
-public enum ServerNumber {
+public enum ServerNumber implements Serializable {
     NUMBER_ONE(1),
     NUMBER_TWO(2),
     NUMBER_THREE(3);

@@ -20,16 +20,12 @@ import com.shmedo.mcloudapp.deviceconfig.ui.fragment.NetCollectorSettingFragment
 import butterknife.BindView;
 
 public class IOTCollectorSettingActivity extends BaseActivity {
-    private static final String CONNECT_WAY = "connect_way";
     private static final String DEVICE_ID = "device_id";
 
     @BindView(R.id.tv_title)
     TextView mToolbarTitle;
 
-    public static final int NET_CONNECT = 0x001;//网络连接
-    public static final int BLE_CONNECT = 0x002;//蓝牙连接
-
-    private int connectWay = NET_CONNECT;
+    private int connectWay = AppContants.CommunicationWay.NET_CONNECT;
 
     private int deviceid;
 
@@ -49,7 +45,7 @@ public class IOTCollectorSettingActivity extends BaseActivity {
 
     public static void startActivity(Context context, int connectWay, String collectorModel) {
         Intent intent = new Intent(context, IOTCollectorSettingActivity.class);
-        intent.putExtra(CONNECT_WAY, connectWay);
+        intent.putExtra(AppContants.Extras.COMMUNICATION_WAY, connectWay);
         intent.putExtra(AppContants.Extras.COLLECTOR_MODE, collectorModel);
         context.startActivity(intent);
     }
@@ -82,8 +78,8 @@ public class IOTCollectorSettingActivity extends BaseActivity {
         if (intent.getExtras() == null)
             return;
 
-        if (intent.getExtras().containsKey(CONNECT_WAY)) {
-            connectWay = intent.getIntExtra(CONNECT_WAY, NET_CONNECT);
+        if (intent.getExtras().containsKey(AppContants.Extras.COMMUNICATION_WAY)) {
+            connectWay = intent.getIntExtra(AppContants.Extras.COMMUNICATION_WAY, AppContants.CommunicationWay.NET_CONNECT);
         }
 
         if (intent.getExtras().containsKey(DEVICE_ID)) {
@@ -96,7 +92,7 @@ public class IOTCollectorSettingActivity extends BaseActivity {
     }
 
     private void initFragment() {
-        if (connectWay == NET_CONNECT) {
+        if (connectWay == AppContants.CommunicationWay.NET_CONNECT) {
             fragment = NetCollectorSettingFragment.newInstance(companyID, deviceid);
         } else {
             fragment = BleCollectorSettingFragment.newInstance(collectorModel);

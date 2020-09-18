@@ -31,6 +31,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.hjq.toast.ToastUtils;
+import com.shmedo.core.AppContants;
 import com.shmedo.core.MCloudApp;
 import com.shmedo.core.util.GlobalUtil;
 import com.shmedo.mcloudapp.R;
@@ -172,7 +173,7 @@ public class BleDeviceListFragment extends BaseFragment implements TextWatcher, 
                 } else if (deviceName.endsWith("L")) {
                     deviceInfo = "MEDO," + deviceName.substring(3) + ",DAS";
                 }
-                DeviceConfigActivity.startActivity(getActivity(), DeviceConfigActivity.BLE_CONNECT, deviceInfo);
+                DeviceConfigActivity.startActivity(getActivity(), AppContants.CommunicationWay.NET_CONNECT, deviceInfo);
             }
         });
     }

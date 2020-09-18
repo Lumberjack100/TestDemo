@@ -18,6 +18,7 @@ import androidx.viewpager2.widget.ViewPager2;
 
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
+import com.shmedo.core.AppContants;
 import com.shmedo.core.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.activity.ScanActivity;
@@ -194,7 +195,7 @@ public class DeviceModuleMainFragment extends BaseTranslucentFragment implements
 
         switch (localData[2]) {
             case "DAS":
-                DeviceConfigActivity.startActivity(getActivity(), DeviceConfigActivity.BLE_CONNECT, deviceInfo);
+                DeviceConfigActivity.startActivity(getActivity(), AppContants.CommunicationWay.NET_CONNECT, deviceInfo);
                 break;
 
             case "ADME":

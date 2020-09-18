@@ -22,11 +22,8 @@ import butterknife.BindView;
 import butterknife.OnClick;
 
 public class DeviceConfigActivity extends BaseActivity {
-    private static final String CONNECT_WAY = "connect_way";
     private static final String DEVICE_INFO = "device_info";
-
-    public static final int NET_CONNECT = 0x001;//网络连接
-    public static final int BLE_CONNECT = 0x002;//蓝牙连接
+    
 
     @BindView(R.id.tv_title)
     TextView mToolbarTitle;
@@ -34,7 +31,7 @@ public class DeviceConfigActivity extends BaseActivity {
     @BindView(R.id.right_icon)
     ImageView mIvRightIcon;
 
-    private int connectWay = NET_CONNECT;
+    private int connectWay = AppContants.CommunicationWay.NET_CONNECT;
 
     private Fragment fragment;
 
@@ -52,7 +49,7 @@ public class DeviceConfigActivity extends BaseActivity {
 
     public static void startActivity(Context context, int connectWay, String deviceInfo) {
         Intent intent = new Intent(context, DeviceConfigActivity.class);
-        intent.putExtra(CONNECT_WAY, connectWay);
+        intent.putExtra(AppContants.Extras.COMMUNICATION_WAY, connectWay);
         intent.putExtra(AppContants.Extras.CUR_BLE_DEVICE_INFO, deviceInfo);
         context.startActivity(intent);
     }
@@ -79,8 +76,8 @@ public class DeviceConfigActivity extends BaseActivity {
         if (intent.getExtras() == null)
             return;
 
-        if (intent.getExtras().containsKey(CONNECT_WAY)) {
-            connectWay = intent.getIntExtra(CONNECT_WAY, NET_CONNECT);
+        if (intent.getExtras().containsKey(AppContants.Extras.COMMUNICATION_WAY)) {
+            connectWay = intent.getIntExtra(AppContants.Extras.COMMUNICATION_WAY, AppContants.CommunicationWay.NET_CONNECT);
         }
 
         if (intent.getExtras().containsKey(DEVICE_INFO)) {
@@ -93,7 +90,7 @@ public class DeviceConfigActivity extends BaseActivity {
     }
 
     private void initFragment() {
-        if (connectWay == NET_CONNECT) {
+        if (connectWay == AppContants.CommunicationWay.NET_CONNECT) {
             fragment = NetConfigDeviceFragment.newInstance(projectDeviceInfo);
 
         } else {

@@ -17,8 +17,6 @@ import androidx.annotation.Nullable;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.hjq.toast.ToastUtils;
-import com.shmedo.core.AppContants;
-import com.shmedo.core.MCloudApp;
 import com.shmedo.configlibrary.ble.cmd.CommandManager;
 import com.shmedo.configlibrary.ble.cmd.CommandResult;
 import com.shmedo.configlibrary.ble.cmd.entity.SetOsmometerAddressEntity;
@@ -28,9 +26,10 @@ import com.shmedo.configlibrary.ble.cmd.entity.SetOsmometerNozzelHeightEntity;
 import com.shmedo.configlibrary.ble.cmd.entity.SetOsmometerTriggerEntity;
 import com.shmedo.configlibrary.ble.enums.CommandType;
 import com.shmedo.configlibrary.ble.model.QueryOsmometerParameterInfo;
-import com.shmedo.core.util.SharedUtil;
 import com.shmedo.configlibrary.ble.utils.ResultParserUtil;
 import com.shmedo.configlibrary.ble.utils.StringUtil;
+import com.shmedo.core.AppContants;
+import com.shmedo.core.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.util.AdvanceSetDialogUtils;
 
@@ -140,7 +139,6 @@ public class OsmometerConfigActivity extends BaseDeviceConnectActivity {
     }
 
     private void parseIntent() {
-        mEtNote.setText(SharedUtil.read(AppContants.OSMOMETER_NOTE));
 
         Intent intent = getIntent();
         if (intent.getExtras() != null && intent.getExtras().containsKey(AppContants.Extras.PARAM_CONFIG_INFO)) {
@@ -224,7 +222,7 @@ public class OsmometerConfigActivity extends BaseDeviceConnectActivity {
         String nozzelHeight = mEtNozzelHeight.getText().toString().trim();
 
         String note = mEtNote.getText().toString().trim();
-        SharedUtil.save(AppContants.OSMOMETER_NOTE, note);
+//        SharedUtil.save(AppContants.OSMOMETER_NOTE, note);
 
         if (TextUtils.isEmpty(osmometerAddress) || Integer.parseInt(osmometerAddress) <= 0 || Integer.parseInt(osmometerAddress) > 255) {
             ToastUtils.show("请输入正确的渗压计地址");

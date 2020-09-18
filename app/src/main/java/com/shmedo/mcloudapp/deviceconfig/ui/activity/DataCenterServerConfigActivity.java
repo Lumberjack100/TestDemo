@@ -9,63 +9,46 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.shmedo.configlibrary.ble.enums.ServerNumber;
 import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.activity.BaseActivity;
-import com.shmedo.mcloudapp.deviceconfig.model.DevcieCurrentState;
-import com.shmedo.mcloudapp.deviceconfig.ui.fragment.BleDeviceCurrentStateFragment;
-import com.shmedo.mcloudapp.deviceconfig.ui.fragment.NetDeviceCurrentState;
-import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfo;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.BleDataCenterServerConfigFragment;
 
 import butterknife.BindView;
 
-public class DeviceCurrentStateActivity extends BaseActivity {
-    private static final String DEVICE_INFO = "device_info";
-    private static final String DEVICE_CURRENT_STATE = "device_current_state";
-    
+public class DataCenterServerConfigActivity extends BaseActivity {
+    private static final String SERVER_NUMBER = "server_number";
 
     @BindView(R.id.tv_title)
     TextView mToolbarTitle;
 
     private int connectWay = AppContants.CommunicationWay.NET_CONNECT;
 
+    private ServerNumber serverNumber;
+
     private Fragment fragment;
 
-    private ProjectDeviceInfo projectDeviceInfo;
 
-    private DevcieCurrentState devcieCurrentState;
-
-
-    public static void startActivity(Context context, int connectWay) {
-        Intent intent = new Intent(context, DeviceCurrentStateActivity.class);
+    public static void startActivity(Context context, int connectWay, ServerNumber serverNumber) {
+        Intent intent = new Intent(context, DataCenterActivity.class);
         intent.putExtra(AppContants.Extras.COMMUNICATION_WAY, connectWay);
-        intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        intent.putExtra(SERVER_NUMBER, serverNumber);
         context.startActivity(intent);
     }
-
-    public static void startActivity(Context context, ProjectDeviceInfo projectDeviceInfo, DevcieCurrentState devcieCurrentState) {
-        Intent intent = new Intent(context, DeviceCurrentStateActivity.class);
-        intent.putExtra(DEVICE_INFO, projectDeviceInfo);
-        intent.putExtra(DEVICE_CURRENT_STATE, devcieCurrentState);
-        intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        context.startActivity(intent);
-    }
-
 
     @Override
     protected int getLayoutId() {
-        return R.layout.activity_device_current_state;
+        return R.layout.activity_data_center_server_config;
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setToolBar(R.id.toolbar);
-        mToolbarTitle.setText("运行状态");
         parseIntent();
         initFragment();
     }
-
 
     private void parseIntent() {
         Intent intent = getIntent();
@@ -76,21 +59,23 @@ public class DeviceCurrentStateActivity extends BaseActivity {
             connectWay = intent.getIntExtra(AppContants.Extras.COMMUNICATION_WAY, AppContants.CommunicationWay.NET_CONNECT);
         }
 
-        if (intent.getExtras().containsKey(DEVICE_INFO)) {
-            projectDeviceInfo = intent.getParcelableExtra(DEVICE_INFO);
-        }
-
-        if (intent.getExtras().containsKey(DEVICE_CURRENT_STATE)) {
-            devcieCurrentState = intent.getParcelableExtra(DEVICE_CURRENT_STATE);
+        if (intent.getExtras().containsKey(SERVER_NUMBER)) {
+            serverNumber = (ServerNumber) intent.getSerializableExtra(SERVER_NUMBER);
+            if (serverNumber == ServerNumber.NUMBER_ONE) {
+                mToolbarTitle.setText("数据中心1");
+            } else if (serverNumber == ServerNumber.NUMBER_TWO) {
+                mToolbarTitle.setText("数据中心2");
+            } else if (serverNumber == ServerNumber.NUMBER_THREE) {
+                mToolbarTitle.setText("数据中心3");
+            }
         }
     }
 
     private void initFragment() {
         if (connectWay == AppContants.CommunicationWay.NET_CONNECT) {
-            fragment = NetDeviceCurrentState.newInstance(projectDeviceInfo, devcieCurrentState);
 
         } else {
-            fragment = new BleDeviceCurrentStateFragment();
+            fragment = BleDataCenterServerConfigFragment.newInstance(serverNumber);
         }
 
         replaceFragment(fragment);

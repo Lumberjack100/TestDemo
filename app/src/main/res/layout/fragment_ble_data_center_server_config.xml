@@ -1,0 +1,353 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/scrollView"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/main_bg_gray">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:background="@color/white"
+            android:paddingStart="18dp"
+            android:paddingEnd="16dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:text="中心1配置"
+                android:textColor="@color/title_text_color"
+                android:textSize="@dimen/text_size_15" />
+
+
+            <com.kyleduo.switchbutton.SwitchButton
+                android:id="@+id/centerEnableSBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                app:kswAnimationDuration="100"
+                app:kswBackDrawable="@drawable/sl_switchbutton_back"
+                app:kswThumbDrawable="@drawable/shape_switchbutton_thumb"
+                app:kswThumbHeight="28dp"
+                app:kswThumbRangeRatio="2"
+                app:kswThumbWidth="28dp" />
+
+        </RelativeLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="@color/divider_line_bg_efefef" />
+
+        <LinearLayout
+            android:id="@+id/communicationProtocolLayout"
+            style="@style/Common_ClickableItem_LayoutStyle">
+
+            <TextView
+                style="@style/Common_ClickableItem_TitleStyle"
+                android:text="通讯协议" />
+
+            <TextView
+                android:id="@+id/tv_communication_protocol"
+                style="@style/Common_ClickableItem_ValueStyle"
+                android:textSize="17sp"
+                tools:text="4g" />
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:background="@color/divider_line_bg_efefef" />
+
+        <LinearLayout style="@style/Common_EditItem_LayoutStyle">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="数据服务器地址"
+                android:textColor="@color/text_color_343434"
+                android:textSize="@dimen/text_size_17" />
+
+            <com.shmedo.mcloudapp.common.view.ClearEditText
+                android:id="@+id/et_data_server_address"
+                style="@style/DataCenter_EditText_Style" />
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:background="@color/divider_line_bg_efefef" />
+
+        <LinearLayout
+            android:id="@+id/ll_register_platform"
+            style="@style/Common_ClickableItem_LayoutStyle">
+
+            <TextView
+                style="@style/Common_ClickableItem_TitleStyle"
+                android:text="注册平台" />
+
+            <TextView
+                android:id="@+id/tv_register_platform"
+                style="@style/Common_ClickableItem_ValueStyle"
+                android:textSize="17sp"
+                tools:text="地大平台" />
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:background="@color/divider_line_bg_efefef" />
+
+        <LinearLayout
+            android:id="@+id/ll_app_key"
+            style="@style/Common_EditItem_LayoutStyle">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="AppKey"
+                android:textColor="@color/text_color_343434"
+                android:textSize="@dimen/text_size_17" />
+
+            <com.shmedo.mcloudapp.common.view.ClearEditText
+                android:id="@+id/appKeyET"
+                style="@style/DataCenter_EditText_Style"
+                android:hint="请输入App密钥" />
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:background="@color/divider_line_bg_efefef" />
+
+        <LinearLayout
+            android:id="@+id/ll_register_platform_address"
+            style="@style/Common_EditItem_LayoutStyle">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="注册平台地址"
+                android:textColor="@color/text_color_343434"
+                android:textSize="@dimen/text_size_17" />
+
+            <com.shmedo.mcloudapp.common.view.ClearEditText
+                android:id="@+id/et_register_platform_address"
+                style="@style/DataCenter_EditText_Style"
+                android:hint="服务器地址 端口" />
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:background="@color/divider_line_bg_efefef" />
+
+        <LinearLayout
+            android:id="@+id/ll_keep_alive"
+            style="@style/Common_EditItem_LayoutStyle">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="KeepAlive值"
+                android:textColor="@color/text_color_343434"
+                android:textSize="@dimen/text_size_17" />
+
+            <com.shmedo.mcloudapp.common.view.ClearEditText
+                android:id="@+id/et_keep_alive"
+                style="@style/DataCenter_EditText_Style"
+                android:hint="默认120s"
+                android:inputType="number" />
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:background="@color/divider_line_bg_efefef" />
+
+        <LinearLayout
+            android:id="@+id/ll_auto_register_special_info"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout style="@style/Common_EditItem_LayoutStyle">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="设备SN号"
+                    android:textColor="@color/text_color_343434"
+                    android:textSize="@dimen/text_size_17" />
+
+                <com.shmedo.mcloudapp.common.view.ClearEditText
+                    android:id="@+id/et_device_sn"
+                    style="@style/DataCenter_EditText_Style"
+                    android:hint="请输入设备SN号" />
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:background="@color/divider_line_bg_efefef" />
+
+            <LinearLayout style="@style/Common_EditItem_LayoutStyle">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="产品ID"
+                    android:textColor="@color/text_color_343434"
+                    android:textSize="@dimen/text_size_17" />
+
+                <com.shmedo.mcloudapp.common.view.ClearEditText
+                    android:id="@+id/et_product_id"
+                    style="@style/DataCenter_EditText_Style"
+                    android:hint="请输入产品ID" />
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:background="@color/divider_line_bg_efefef" />
+
+            <LinearLayout style="@style/Common_EditItem_LayoutStyle">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="注册码"
+                    android:textColor="@color/text_color_343434"
+                    android:textSize="@dimen/text_size_17" />
+
+                <com.shmedo.mcloudapp.common.view.ClearEditText
+                    android:id="@+id/et_register_code"
+                    style="@style/DataCenter_EditText_Style"
+                    android:hint="请输入注册码" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_manual_register_special_info"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <LinearLayout style="@style/Common_EditItem_LayoutStyle">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="MQTT设备ID"
+                    android:textColor="@color/text_color_343434"
+                    android:textSize="@dimen/text_size_17" />
+
+                <com.shmedo.mcloudapp.common.view.ClearEditText
+                    android:id="@+id/et_mqtt_device_id"
+                    style="@style/DataCenter_EditText_Style"
+                    android:hint="请输入Client ID" />
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:background="@color/divider_line_bg_efefef" />
+
+            <LinearLayout style="@style/Common_EditItem_LayoutStyle">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="MQTT用户名"
+                    android:textColor="@color/text_color_343434"
+                    android:textSize="@dimen/text_size_17" />
+
+                <com.shmedo.mcloudapp.common.view.ClearEditText
+                    android:id="@+id/et_mqtt_username"
+                    style="@style/DataCenter_EditText_Style"
+                    android:hint="请输入project ID" />
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:background="@color/divider_line_bg_efefef" />
+
+            <LinearLayout style="@style/Common_EditItem_LayoutStyle">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="MQTT密码"
+                    android:textColor="@color/text_color_343434"
+                    android:textSize="@dimen/text_size_17" />
+
+                <com.shmedo.mcloudapp.common.view.ClearEditText
+                    android:id="@+id/et_mqtt_password"
+                    style="@style/DataCenter_EditText_Style"
+                    android:hint="请输入APIKey" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+
+        <Button
+            android:id="@+id/btn_confirm"
+            android:layout_width="match_parent"
+            android:layout_height="46dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="34dp"
+            android:layout_marginEnd="18dp"
+            android:layout_marginBottom="20dp"
+            android:background="@drawable/btn_select"
+            android:text="保存"
+            android:textColor="@color/white"
+            android:textSize="17sp" />
+
+    </LinearLayout>
+
+</androidx.core.widget.NestedScrollView>

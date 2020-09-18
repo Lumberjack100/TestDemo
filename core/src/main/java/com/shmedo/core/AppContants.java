@@ -13,25 +13,33 @@ public interface AppContants {
     //是否显示隐私协议
     String PRIVACY_AGREEMENT = "privacy_agreement";
 
-    String OSMOMETER_NOTE = "osmometer";
-    String USER_HEAD_PHOTO_FILE_NAME = "/mnt/sdcard/tupian.png";
-
-
+    /**
+     * 用户信息
+     */
     interface User {
         String UID = "uid";
         String PWD = "pwd";
     }
 
+    /**
+     * WiFi
+     */
     interface WiFi {
         String WIFI_STATE_CONNECT = "已连接";
         String WIFI_STATE_ON_CONNECTING = "正在连接";
         String WIFI_STATE_UNCONNECT = "未连接";
     }
 
+    /**
+     * 通讯方式
+     */
+    interface CommunicationWay {
+        int NET_CONNECT = 0x001;//网络连接
+        int BLE_CONNECT = 0x002;//蓝牙连接
+    }
+
 
     interface Extras {
-
-        String QUERY_PROJECT_DEVICE = "queryProjectDevice";
 
         String CUR_DEVICE_SN = "cur_device_sn";
 
@@ -74,6 +82,9 @@ public interface AppContants {
 
         //地图 Poi 点名称
         String POI_TITLE = "poi_title";
+
+        //与设备通讯方式
+        String COMMUNICATION_WAY = "communication_way";
     }
 
 }
