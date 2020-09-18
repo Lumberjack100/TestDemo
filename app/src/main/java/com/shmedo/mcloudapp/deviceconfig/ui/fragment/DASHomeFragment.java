@@ -21,8 +21,6 @@ import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.hjq.toast.ToastUtils;
 import com.kyleduo.switchbutton.SwitchButton;
-import com.shmedo.core.AppContants;
-import com.shmedo.core.MCloudApp;
 import com.shmedo.configlibrary.ble.cmd.CommandManager;
 import com.shmedo.configlibrary.ble.cmd.CommandResult;
 import com.shmedo.configlibrary.ble.cmd.entity.CollectorConfigEntity;
@@ -33,7 +31,6 @@ import com.shmedo.configlibrary.ble.enums.BreakAlarmStatus;
 import com.shmedo.configlibrary.ble.enums.CollectorModel;
 import com.shmedo.configlibrary.ble.enums.CommandType;
 import com.shmedo.configlibrary.ble.enums.RainStation;
-import com.shmedo.core.event.BluetoothConnectStateEvent;
 import com.shmedo.configlibrary.ble.model.BaseConfigInfo;
 import com.shmedo.configlibrary.ble.model.BreakAlarmStatusInfo;
 import com.shmedo.configlibrary.ble.model.CollectorConfigInfo;
@@ -41,11 +38,13 @@ import com.shmedo.configlibrary.ble.model.QueryOsmometerParameterInfo;
 import com.shmedo.configlibrary.ble.model.SetRainPrecisionInfo;
 import com.shmedo.configlibrary.ble.utils.ResultParserUtil;
 import com.shmedo.configlibrary.ble.utils.StringUtil;
+import com.shmedo.core.AppContants;
+import com.shmedo.core.MCloudApp;
+import com.shmedo.core.event.BluetoothConnectStateEvent;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.fragment.BaseFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.ConfigDASActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.DeviceAdvanceConfigActivity;
-import com.shmedo.mcloudapp.deviceconfig.ui.activity.GeneralSettingActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.MqttSettingActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.sensor.CommonSensorConfigActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.sensor.VibratingWireSensorConfigActivity;
@@ -355,12 +354,7 @@ public class DASHomeFragment extends BaseFragment {
                 break;
 
             case R.id.rl_collector_control:
-                if (!MCloudApp.isIsBluetoothDeviceConnected()) {
-                    ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
-                    return;
-                }
-                GeneralSettingActivity.startActivityForResultByFragment(this, REQUEST_CODE_COLLECTOR_CONFIG, collectorConfigInfo, collectorModel);
-                break;
+                 break;
 
             case R.id.rl_advanced_config:
                 if (!MCloudApp.isIsBluetoothDeviceConnected()) {

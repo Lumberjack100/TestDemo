@@ -45,6 +45,7 @@ import com.shmedo.mcloudapp.deviceconfig.model.ConfigModule;
 import com.shmedo.mcloudapp.deviceconfig.model.DeviceTypeInfo;
 import com.shmedo.mcloudapp.deviceconfig.model.FirmWareInfo;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.AdvancedSettingActivity;
+import com.shmedo.mcloudapp.deviceconfig.ui.activity.DataCenterActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.DeviceCurrentStateActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.IOTCollectorSettingActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.BaseDialogFragment;
@@ -276,7 +277,7 @@ public class BleConfigDeviceFragment extends BaseBleConnectFragment {
                 break;
 
             case "数据中心":
-
+                DataCenterActivity.startActivity(mActivity, IOTCollectorSettingActivity.BLE_CONNECT);
                 break;
 
             case "设置":
