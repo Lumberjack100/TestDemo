@@ -113,7 +113,6 @@ public class BleConfigDeviceFragment extends BaseBleConnectFragment {
     private String bleNameInfo;
 
     private String collectorModel = "";//采集器类型
-    private int companyID;
     private int deviceTypeID;
     private String deviceTypeName;
 
@@ -145,7 +144,6 @@ public class BleConfigDeviceFragment extends BaseBleConnectFragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        companyID = MCloudApp.getCompanyID();
         setHeadInfo();
         initSwitchViewListener();
         initAdapter();
@@ -257,7 +255,7 @@ public class BleConfigDeviceFragment extends BaseBleConnectFragment {
                 break;
 
             case "固件升级":
-                FirmWareSelectDialog newFragment = new FirmWareSelectDialog(companyID, deviceTypeID);
+                FirmWareSelectDialog newFragment = new FirmWareSelectDialog(MCloudApp.getCompanyID(), deviceTypeID);
                 newFragment.setDialogFragmentClickListener(firmWareSelectListener);
                 newFragment.show(getChildFragmentManager(), "dialog");
                 break;

@@ -139,14 +139,12 @@ public class ProjectListFragment extends BaseTranslucentFragment {
         return R.layout.fragment_project_list;
     }
 
-
     @Override
     protected void initView() {
         ViewGroup.LayoutParams bannerParams = ivTopBg.getLayoutParams();
         ViewGroup.LayoutParams titleBarParams = mToolbar.getLayoutParams();
         //计算公式=底图高度-toolbar高度-状态栏高度-人为定义的偏差(这里取值30)
         topBgImageTranslucentScrollDistance = bannerParams.height - titleBarParams.height - ImmersionBar.getStatusBarHeight(mActivity) - DensityUtil.Dp2Px(getActivity(), 30);
-
         swipeRefresh.setColorSchemeResources(android.R.color.holo_blue_light);
     }
 
@@ -164,6 +162,14 @@ public class ProjectListFragment extends BaseTranslucentFragment {
         refreshProjects();
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        if (companyID != MCloudApp.getCompanyID()) {
+            companyID = MCloudApp.getCompanyID();
+        }
+    }
+
     private void initUserData() {
         UserInfo userInfo = MCloudApp.getCurrentUserInfo();
         if (userInfo != null) {
@@ -171,7 +177,6 @@ public class ProjectListFragment extends BaseTranslucentFragment {
                 UserInfo.UserBean user = userInfo.getUser();
                 userId = user.getId();
             }
-            companyID = MCloudApp.getCompanyID();
         }
     }
 
@@ -476,7 +481,7 @@ public class ProjectListFragment extends BaseTranslucentFragment {
      * 查询当前用户的项目列表(列表方式、不分页)
      */
     private void queryUserListProject() {
-        ProjectBaseInfoParam parameter = new ProjectBaseInfoParam(companyID, "");
+        ProjectBaseInfoParam parameter = new ProjectBaseInfoParam(null, "");
         String json = GsonFactory.getGson().toJson(parameter);
         RequestBody body = RequestBody.create(NetworkConst.JSON_TYPE, json);
         MDRetrofit.getInstance()

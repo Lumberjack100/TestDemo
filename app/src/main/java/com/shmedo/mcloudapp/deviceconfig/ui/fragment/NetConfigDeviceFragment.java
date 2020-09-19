@@ -103,7 +103,6 @@ public class NetConfigDeviceFragment extends BaseFragment {
 
     private List<ConfigModule> configModuleList = new ArrayList<>();
     private ProjectDeviceInfo projectDeviceInfo;
-    private int companyID;
 
     private ConfigModule selectedConfigModule;
     private List<String> msgIDList = new ArrayList<>();
@@ -166,7 +165,6 @@ public class NetConfigDeviceFragment extends BaseFragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        companyID = MCloudApp.getCompanyID();
         setHeadInfo();
         initAdapter();
         initConfigModuleData();
@@ -235,7 +233,7 @@ public class NetConfigDeviceFragment extends BaseFragment {
                 break;
 
             case "固件升级":
-                FirmWareSelectDialog newFragment = new FirmWareSelectDialog(companyID, projectDeviceInfo.getDeviceTypeID());
+                FirmWareSelectDialog newFragment = new FirmWareSelectDialog(MCloudApp.getCompanyID(), projectDeviceInfo.getDeviceTypeID());
                 newFragment.setDialogFragmentClickListener(listener);
                 newFragment.show(getChildFragmentManager(), "dialog");
                 break;
@@ -254,7 +252,7 @@ public class NetConfigDeviceFragment extends BaseFragment {
     private void processDispatchCommonCmd() {
         DispatchCmdParam dispatchCmdParam = new DispatchCmdParam();
         dispatchCmdParam.setCmdID(selectedConfigModule.getCmdID());
-        dispatchCmdParam.setCompanyID(companyID);
+        dispatchCmdParam.setCompanyID(MCloudApp.getCompanyID());
         dispatchCmdParam.setDeviceIDList(Arrays.asList(projectDeviceInfo.getId()));
 
         showLoadingDialog("指令下发中...");
@@ -275,7 +273,7 @@ public class NetConfigDeviceFragment extends BaseFragment {
 
             DispatchRawCmdParam param = new DispatchRawCmdParam();
             param.setContent(stringBuilder.toString());
-            param.setCompanyID(companyID);
+            param.setCompanyID(MCloudApp.getCompanyID());
             param.setDeviceIDList(Arrays.asList(projectDeviceInfo.getId()));
 
             showLoadingDialog("指令下发中...");
@@ -333,7 +331,7 @@ public class NetConfigDeviceFragment extends BaseFragment {
         String begin = DateUtil.DateToStrFormat(beginDate, "yyyy-MM-dd HH:mm:ss");
 
         QueryCmdStateParam parameter = new QueryCmdStateParam();
-        parameter.setCompanyID(companyID);
+        parameter.setCompanyID(MCloudApp.getCompanyID());
         parameter.setDeviceID(projectDeviceInfo.getId());
         parameter.setBegin(begin);
         parameter.setEnd(end);

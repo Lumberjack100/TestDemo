@@ -8,6 +8,7 @@ import android.widget.EditText;
 
 import androidx.annotation.Nullable;
 
+import com.shmedo.core.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.fragment.BaseFragment;
 import com.shmedo.mcloudapp.deviceconfig.helper.DispatchCmdHelper;
@@ -51,15 +52,13 @@ public class NetCollectorSettingFragment extends BaseFragment {
     Button mBtnConfirmComplete;
 
 
-    private int companyID;
     private int deviceid;
     private List<String> msgIDList = new ArrayList<>();
 
 
-    public static NetCollectorSettingFragment newInstance(int companyID, int deviceid) {
+    public static NetCollectorSettingFragment newInstance(int deviceid) {
         NetCollectorSettingFragment fragment = new NetCollectorSettingFragment();
         Bundle args = new Bundle();
-        args.putInt(COMPANY_ID, companyID);
         args.putInt(DEVICE_ID, deviceid);
         fragment.setArguments(args);
         return fragment;
@@ -69,10 +68,10 @@ public class NetCollectorSettingFragment extends BaseFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            companyID = getArguments().getInt(COMPANY_ID, -1);
             deviceid = getArguments().getInt(DEVICE_ID, -1);
         }
     }
+
 
     @Override
     protected int getLayoutId() {
@@ -102,7 +101,7 @@ public class NetCollectorSettingFragment extends BaseFragment {
     private void queryCollectorInfo() {
         DispatchRawCmdParam param = new DispatchRawCmdParam();
         param.setContent("$cmd=md_getcollctrl");
-        param.setCompanyID(companyID);
+        param.setCompanyID(MCloudApp.getCompanyID());
         param.setDeviceIDList(Arrays.asList(deviceid));
 
         showLoadingDialog("加载中...");
@@ -121,7 +120,6 @@ public class NetCollectorSettingFragment extends BaseFragment {
         super.onStop();
         EventBus.getDefault().unregister(this);
     }
-
 
 
     @Subscribe(threadMode = ThreadMode.MAIN)

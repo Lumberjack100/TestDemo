@@ -37,7 +37,6 @@ public class NetAdvancedSettingFragment extends BaseFragment {
     private static final String DEVICE_INFO = "device_info";
 
     private ProjectDeviceInfo projectDeviceInfo;
-    private int companyID;
 
     private List<String> msgIDList = new ArrayList<>();
 
@@ -94,7 +93,6 @@ public class NetAdvancedSettingFragment extends BaseFragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        companyID = MCloudApp.getCompanyID();
     }
 
 
@@ -153,7 +151,7 @@ public class NetAdvancedSettingFragment extends BaseFragment {
     private void processDispatchCommonCmd() {
         DispatchCmdParam dispatchCmdParam = new DispatchCmdParam();
         dispatchCmdParam.setCmdID(107);
-        dispatchCmdParam.setCompanyID(companyID);
+        dispatchCmdParam.setCompanyID(MCloudApp.getCompanyID());
         dispatchCmdParam.setDeviceIDList(Arrays.asList(projectDeviceInfo.getId()));
 
         showLoadingDialog("指令下发中...");

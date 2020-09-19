@@ -102,11 +102,18 @@ public class DeviceHistoryDataAnalysisActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setToolBar(R.id.toolbar);
-        companyID = MCloudApp.getCompanyID();
         initView();
         parseIntent();
         setHeadInfo();
-        queryCmdState();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        if (companyID != MCloudApp.getCompanyID()) {
+            companyID = MCloudApp.getCompanyID();
+            queryCmdState();
+        }
     }
 
     private void initView() {

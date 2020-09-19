@@ -88,7 +88,7 @@ public class NetDeviceListFragment extends BaseFragment {
 
     private static final int PAGE_SIZE = 10;
     private PageInfo pageInfo;
-    private int companyID;
+    private int companyID = -100;
     private int deviceTypeID = -1;
 
     @Override
@@ -100,7 +100,6 @@ public class NetDeviceListFragment extends BaseFragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         pageInfo = new PageInfo(1);
-        companyID = MCloudApp.getCompanyID();
         initDeviceTypeAdapter();
         initDeviceInfoAdapter();
         initRefreshLayout();
@@ -108,10 +107,18 @@ public class NetDeviceListFragment extends BaseFragment {
 
         // 进入页面，刷新数据
         queryDeviceType();
-        queryCompanyDeviceOnlineTypeStatistics();
-        swipeRefresh.setRefreshing(true);
-        deviceTypeID = -1;
-        refresh();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        if (companyID != MCloudApp.getCompanyID()) {
+            companyID = MCloudApp.getCompanyID();
+            queryCompanyDeviceOnlineTypeStatistics();
+            swipeRefresh.setRefreshing(true);
+            deviceTypeID = -1;
+            refresh();
+        }
     }
 
     private void initRefreshLayout() {
@@ -252,7 +259,7 @@ public class NetDeviceListFragment extends BaseFragment {
      * 查询设备类型列表
      */
     private void queryDeviceType() {
-        QueryDeviceTypeParam parameter =new QueryDeviceTypeParam() ;
+        QueryDeviceTypeParam parameter = new QueryDeviceTypeParam();
         parameter.setDeviceTypeName(null);
         parameter.setPageSize(20);
         parameter.setCurrentPage(1);

@@ -31,8 +31,6 @@ public class IOTCollectorSettingActivity extends BaseActivity {
 
     private String collectorModel = "";//采集器类型
 
-    private int companyID;
-
     private Fragment fragment;
 
 
@@ -61,7 +59,6 @@ public class IOTCollectorSettingActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setToolBar(R.id.toolbar);
         mToolbarTitle.setText("采集器配置");
-        companyID = MCloudApp.getCompanyID();
         parseIntent();
         initFragment();
     }
@@ -86,7 +83,7 @@ public class IOTCollectorSettingActivity extends BaseActivity {
 
     private void initFragment() {
         if (connectWay == AppContants.CommunicationWay.NET_CONNECT) {
-            fragment = NetCollectorSettingFragment.newInstance(companyID, deviceid);
+            fragment = NetCollectorSettingFragment.newInstance(deviceid);
         } else {
             fragment = BleCollectorSettingFragment.newInstance(collectorModel);
         }
