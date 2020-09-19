@@ -178,7 +178,7 @@ public class FirmWareSelectDialog extends BaseDialogFragment {
 
 
     /**
-     * 查询公司设备在线统计信息
+     * 查询公司固件列表
      */
     private void processQueryFirmwareList() {
         QueryFirmwareListParam parameter = new QueryFirmwareListParam();

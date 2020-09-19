@@ -30,6 +30,8 @@ public class MCloudApp {
 
     private static String account;
 
+    private static int companyID;
+
     private static String httpsServiceAddress = "mdnetservice.shmedo.cn";
 
     private static String httpsNoApiVersionAddress="chaxun.shmedo.cn";
@@ -125,6 +127,13 @@ public class MCloudApp {
         MCloudApp.account = account;
     }
 
+    public static int getCompanyID() {
+        return companyID;
+    }
+
+    public static void setCompanyID(int companyID) {
+        MCloudApp.companyID = companyID;
+    }
 
     public static boolean isIsNetworkConnected() {
         return isNetworkConnected;

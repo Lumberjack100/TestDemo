@@ -160,7 +160,7 @@ public class LoginManager {
                             MCloudApp.setAccount(userInfo.getUser().getAccount());
                             MCloudApp.setCurrentUserInfo(userInfo);
 
-                            //下面是持久化保存用户数据
+                            //持久化保存用户信息数据到本地数据库
                             Long id = (long) userInfo.getUser().getId();
                             UserInfoWrapper userInfoWrapper = new UserInfoWrapper();
                             userInfoWrapper.setId(id);
@@ -168,6 +168,7 @@ public class LoginManager {
                             DaoManager manager = DaoManager.getInstance();
                             manager.getDaoSession().getUserInfoWrapperDao().insertOrReplace(userInfoWrapper);
 
+                            //持久化保存用户数据到SharedPreferences文件中
                             SharedUtil.save(NetworkConst.ACCESS_TOKEN, token);
                             SharedUtil.save(AppContants.TOKEN_UPDATE_TIME, new Date().getTime() + "");
                             if (mAccount != null && mPassword != null) {
