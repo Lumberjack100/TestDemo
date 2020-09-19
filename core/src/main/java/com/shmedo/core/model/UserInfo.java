@@ -1,5 +1,7 @@
 package com.shmedo.core.model;
 
+import android.text.TextUtils;
+
 import java.util.List;
 
 /**
@@ -8,7 +10,6 @@ import java.util.List;
  * 文件名:   UserInfo
  * 创建者:   dpc
  * 创建时间:  2018/11/27 14:48
- *
  */
 
 public class UserInfo {
@@ -22,18 +23,24 @@ public class UserInfo {
     private List<DepartmentsBean> departments;
 
 
-    public UserBean getUser() { return user;}
+    public UserBean getUser() {
+        return user;
+    }
 
 
-    public void setUser(UserBean user) { this.user = user;}
+    public void setUser(UserBean user) {
+        this.user = user;
+    }
 
 
-    public List<DepartmentsBean> getDepartments() { return departments;}
+    public List<DepartmentsBean> getDepartments() {
+        return departments;
+    }
 
 
-    public void setDepartments(List<DepartmentsBean> departments) { this.departments = departments;}
-
-
+    public void setDepartments(List<DepartmentsBean> departments) {
+        this.departments = departments;
+    }
 
 
     public static class UserBean {
@@ -76,61 +83,99 @@ public class UserInfo {
         private boolean userEnable;
 
 
-        public int getId() { return id;}
+        public int getId() {
+            return id;
+        }
 
 
-        public void setId(int id) { this.id = id;}
+        public void setId(int id) {
+            this.id = id;
+        }
 
 
-        public String getAccount() { return account;}
+        public String getAccount() {
+            return TextUtils.isEmpty(account) ? "" : account;
+        }
 
 
-        public void setAccount(String account) { this.account = account;}
+        public void setAccount(String account) {
+            this.account = account;
+        }
 
 
-        public String getName() { return name;}
+        public String getName() {
+            return TextUtils.isEmpty(name) ? "" : name;
+        }
 
 
-        public void setName(String name) { this.name = name;}
+        public void setName(String name) {
+            this.name = name;
+        }
 
 
-        public String getPassword() { return password;}
+        public String getPassword() {
+            return TextUtils.isEmpty(password) ? "" : password;
+        }
 
 
-        public void setPassword(String password) { this.password = password;}
+        public void setPassword(String password) {
+            this.password = password;
+        }
 
 
-        public String getPosition() { return position;}
+        public String getPosition() {
+            return TextUtils.isEmpty(position) ? "" : position;
+        }
 
 
-        public void setPosition(String position) { this.position = position;}
+        public void setPosition(String position) {
+            this.position = position;
+        }
 
 
-        public String getEmail() { return email;}
+        public String getEmail() {
+            return TextUtils.isEmpty(email) ? "" : email;
+        }
 
 
-        public void setEmail(String email) { this.email = email;}
+        public void setEmail(String email) {
+            this.email = email;
+        }
 
 
-        public String getCellPhone() { return cellPhone;}
+        public String getCellPhone() {
+            return TextUtils.isEmpty(cellPhone) ? "" : cellPhone;
+        }
 
 
-        public void setCellPhone(String cellPhone) { this.cellPhone = cellPhone;}
+        public void setCellPhone(String cellPhone) {
+            this.cellPhone = cellPhone;
+        }
 
 
-        public String getPhone() { return phone;}
+        public String getPhone() {
+            return TextUtils.isEmpty(phone) ? "" : phone;
+        }
 
 
-        public void setPhone(String phone) { this.phone = phone;}
+        public void setPhone(String phone) {
+            this.phone = phone;
+        }
 
 
-        public String getAddress() { return address;}
+        public String getAddress() {
+            return TextUtils.isEmpty(address) ? "" : address;
+        }
 
 
-        public void setAddress(String address) { this.address = address;}
+        public void setAddress(String address) {
+            this.address = address;
+        }
 
 
-        public int getAllowAccessType() { return allowAccessType;}
+        public int getAllowAccessType() {
+            return allowAccessType;
+        }
 
 
         public void setAllowAccessType(int allowAccessType) {
@@ -138,46 +183,74 @@ public class UserInfo {
         }
 
 
-        public String getHeadPhotoPath() { return headPhotoPath;}
+        public String getHeadPhotoPath() {
+            return TextUtils.isEmpty(headPhotoPath) ? "" : headPhotoPath;
+        }
 
 
-        public void setHeadPhotoPath(String headPhotoPath) { this.headPhotoPath = headPhotoPath;}
+        public void setHeadPhotoPath(String headPhotoPath) {
+            this.headPhotoPath = headPhotoPath;
+        }
 
 
-        public int getWarnLevel() { return warnLevel;}
+        public int getWarnLevel() {
+            return warnLevel;
+        }
 
 
-        public void setWarnLevel(int warnLevel) { this.warnLevel = warnLevel;}
+        public void setWarnLevel(int warnLevel) {
+            this.warnLevel = warnLevel;
+        }
 
 
-        public int getCreateUserID() { return createUserID;}
+        public int getCreateUserID() {
+            return createUserID;
+        }
 
 
-        public void setCreateUserID(int createUserID) { this.createUserID = createUserID;}
+        public void setCreateUserID(int createUserID) {
+            this.createUserID = createUserID;
+        }
 
 
-        public String getCreateTime() { return createTime;}
+        public String getCreateTime() {
+            return TextUtils.isEmpty(createTime) ? "" : createTime;
+        }
 
 
-        public void setCreateTime(String createTime) { this.createTime = createTime;}
+        public void setCreateTime(String createTime) {
+            this.createTime = createTime;
+        }
 
 
-        public int getUpdateUserID() { return updateUserID;}
+        public int getUpdateUserID() {
+            return updateUserID;
+        }
 
 
-        public void setUpdateUserID(int updateUserID) { this.updateUserID = updateUserID;}
+        public void setUpdateUserID(int updateUserID) {
+            this.updateUserID = updateUserID;
+        }
 
 
-        public String getUpdateTime() { return updateTime;}
+        public String getUpdateTime() {
+            return TextUtils.isEmpty(updateTime) ? "" : updateTime;
+        }
 
 
-        public void setUpdateTime(String updateTime) { this.updateTime = updateTime;}
+        public void setUpdateTime(String updateTime) {
+            this.updateTime = updateTime;
+        }
 
 
-        public boolean isUserEnable() { return userEnable;}
+        public boolean isUserEnable() {
+            return userEnable;
+        }
 
 
-        public void setUserEnable(boolean userEnable) { this.userEnable = userEnable;}
+        public void setUserEnable(boolean userEnable) {
+            this.userEnable = userEnable;
+        }
     }
 
 
@@ -211,75 +284,123 @@ public class UserInfo {
         private boolean hasChild;
 
 
-        public int getId() { return id;}
+        public int getId() {
+            return id;
+        }
 
 
-        public void setId(int id) { this.id = id;}
+        public void setId(int id) {
+            this.id = id;
+        }
 
 
-        public String getName() { return name;}
+        public String getName() {
+            return TextUtils.isEmpty(name) ? "" : name;
+        }
 
 
-        public void setName(String name) { this.name = name;}
+        public void setName(String name) {
+            this.name = name;
+        }
 
 
-        public int getCompanyID() { return companyID;}
+        public int getCompanyID() {
+            return companyID;
+        }
 
 
-        public void setCompanyID(int companyID) { this.companyID = companyID;}
+        public void setCompanyID(int companyID) {
+            this.companyID = companyID;
+        }
 
 
-        public Object getParentID() { return parentID;}
+        public Object getParentID() {
+            return parentID;
+        }
 
 
-        public void setParentID(Object parentID) { this.parentID = parentID;}
+        public void setParentID(Object parentID) {
+            this.parentID = parentID;
+        }
 
 
-        public String getDesc() { return desc;}
+        public String getDesc() {
+            return TextUtils.isEmpty(desc) ? "" : desc;
+        }
 
 
-        public void setDesc(String desc) { this.desc = desc;}
+        public void setDesc(String desc) {
+            this.desc = desc;
+        }
 
 
-        public int getLevel() { return level;}
+        public int getLevel() {
+            return level;
+        }
 
 
-        public void setLevel(int level) { this.level = level;}
+        public void setLevel(int level) {
+            this.level = level;
+        }
 
 
-        public boolean isReadOnly() { return readOnly;}
+        public boolean isReadOnly() {
+            return readOnly;
+        }
 
 
-        public void setReadOnly(boolean readOnly) { this.readOnly = readOnly;}
+        public void setReadOnly(boolean readOnly) {
+            this.readOnly = readOnly;
+        }
 
 
-        public int getCreateUserID() { return createUserID;}
+        public int getCreateUserID() {
+            return createUserID;
+        }
 
 
-        public void setCreateUserID(int createUserID) { this.createUserID = createUserID;}
+        public void setCreateUserID(int createUserID) {
+            this.createUserID = createUserID;
+        }
 
 
-        public String getCreateTime() { return createTime;}
+        public String getCreateTime() {
+            return TextUtils.isEmpty(createTime) ? "" : createTime;
+        }
 
 
-        public void setCreateTime(String createTime) { this.createTime = createTime;}
+        public void setCreateTime(String createTime) {
+            this.createTime = createTime;
+        }
 
 
-        public int getUpdateUserID() { return updateUserID;}
+        public int getUpdateUserID() {
+            return updateUserID;
+        }
 
 
-        public void setUpdateUserID(int updateUserID) { this.updateUserID = updateUserID;}
+        public void setUpdateUserID(int updateUserID) {
+            this.updateUserID = updateUserID;
+        }
 
 
-        public String getUpdateTime() { return updateTime;}
+        public String getUpdateTime() {
+            return TextUtils.isEmpty(updateTime) ? "" : updateTime;
+        }
 
 
-        public void setUpdateTime(String updateTime) { this.updateTime = updateTime;}
+        public void setUpdateTime(String updateTime) {
+            this.updateTime = updateTime;
+        }
 
 
-        public boolean isHasChild() { return hasChild;}
+        public boolean isHasChild() {
+            return hasChild;
+        }
 
 
-        public void setHasChild(boolean hasChild) { this.hasChild = hasChild;}
+        public void setHasChild(boolean hasChild) {
+            this.hasChild = hasChild;
+        }
     }
 }

@@ -145,7 +145,7 @@ public class BleConfigDeviceFragment extends BaseBleConnectFragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        initUserData();
+        companyID = MCloudApp.getCompanyID();
         setHeadInfo();
         initSwitchViewListener();
         initAdapter();
@@ -159,13 +159,6 @@ public class BleConfigDeviceFragment extends BaseBleConnectFragment {
     public void onResume() {
         super.onResume();
         updateViewStateByConnectState(MCloudApp.isIsBluetoothDeviceConnected());
-    }
-
-    private void initUserData() {
-        UserInfo userInfo = MCloudApp.getCurrentUserInfo();
-        if (userInfo != null && userInfo.getDepartments() != null && userInfo.getDepartments().size() > 0) {
-            companyID = userInfo.getDepartments().get(0).getCompanyID();
-        }
     }
 
     private void setHeadInfo() {

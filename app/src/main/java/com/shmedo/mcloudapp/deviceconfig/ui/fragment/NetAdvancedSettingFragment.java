@@ -94,14 +94,7 @@ public class NetAdvancedSettingFragment extends BaseFragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        initUserData();
-    }
-
-    private void initUserData() {
-        UserInfo userInfo = MCloudApp.getCurrentUserInfo();
-        if (userInfo != null && userInfo.getDepartments() != null && userInfo.getDepartments().size() > 0) {
-            companyID = userInfo.getDepartments().get(0).getCompanyID();
-        }
+        companyID = MCloudApp.getCompanyID();
     }
 
 

@@ -20,6 +20,7 @@ import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfo;
 import com.shmedo.mcloudapp.projects.model.ProjectInfoEx;
 import com.shmedo.mcloudapp.projects.model.RegionProjectInfo;
 import com.shmedo.mcloudapp.user.model.CompanyInfo;
+import com.shmedo.mcloudapp.user.model.CompanySimpleInfo;
 
 import java.util.List;
 
@@ -50,7 +51,9 @@ public interface ApiService {
     @POST("SignIn")
     Observable<ResultWrapper<String>> getSingIn(@Body RequestBody parameter);
 
-    /**  我的模块   */
+    /**
+     * 我的模块
+     */
     //获取用户信息
     @Headers({NetworkConst.HEADER_ACCESS_TYPE})
     @GET("GetMyInfo")
@@ -91,7 +94,15 @@ public interface ApiService {
     @POST("GetCompanyInfo")
     Observable<ResultWrapper<CompanyInfo>> GetCompanyInfo(@Header(NetworkConst.ACCESS_TOKEN) String token, @Body RequestBody parameter);
 
-    /**  项目模块   */
+    //系统接口v2  查询用户在其中具有权限的公司，包括该公司的子公司(用于设备分配)
+    @Headers({NetworkConst.HEADER_ACCESS_TYPE})
+    @POST("QueryUserInCompany")
+    Observable<ResultWrapper<PageResult<CompanySimpleInfo>>> QueryUserInCompany(@Header(NetworkConst.ACCESS_TOKEN) String token, @Body RequestBody parameter);
+
+
+    /**
+     * 项目模块
+     */
     //项目接口V2  查询当前用户的项目列表(列表方式、不分页)
     @Headers({NetworkConst.HEADER_ACCESS_TYPE})
     @POST("QueryUserListProjectEx")
@@ -142,7 +153,9 @@ public interface ApiService {
     @POST("QueryCompanyDeviceOnlineTypeStatistics")
     Observable<ResultWrapper<List<DeviceOnlineTypeStatistic>>> QueryCompanyDeviceOnlineTypeStatistics(@Header(NetworkConst.ACCESS_TOKEN) String token, @Body RequestBody parameter);
 
-    /**  设备模块   */
+    /**
+     * 设备模块
+     */
     //系统接口V2-4  查询设备状态历史
     @Headers({NetworkConst.HEADER_ACCESS_TYPE})
     @POST("QueryCmdState")
@@ -159,8 +172,9 @@ public interface ApiService {
     Observable<ResultWrapper<PageResult<DeviceTypeInfo>>> QueryDeviceType(@Header(NetworkConst.ACCESS_TOKEN) String token, @Body RequestBody parameter);
 
 
-
-    /**  指令交互   */
+    /**
+     * 指令交互
+     */
     //系统接口V2-4  指令下发
     @Headers({NetworkConst.HEADER_ACCESS_TYPE})
     @POST("DispatchCmd")
@@ -175,9 +189,6 @@ public interface ApiService {
     @Headers({NetworkConst.HEADER_ACCESS_TYPE})
     @POST("QueryCmdResultByMsgID")
     Observable<ResultWrapper<List<QueryCmdResult>>> QueryCmdResultByMsgID(@Header(NetworkConst.ACCESS_TOKEN) String token, @Body RequestBody parameter);
-
-
-
 
 
     //系统接口v2  7.10 查询设备的详情信息

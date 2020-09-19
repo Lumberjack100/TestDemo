@@ -116,7 +116,7 @@ public class DevicesInProjectFragment extends BaseFragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        initUserData();
+        companyID = MCloudApp.getCompanyID();
         pageInfo = new PageInfo(1);
         initRefreshLayout();
         initDeviceTypeAdapter();
@@ -141,12 +141,6 @@ public class DevicesInProjectFragment extends BaseFragment {
 //        refresh();
 //    }
 
-    private void initUserData() {
-        UserInfo userInfo = MCloudApp.getCurrentUserInfo();
-        if (userInfo != null && userInfo.getDepartments() != null && userInfo.getDepartments().size() > 0) {
-            companyID = userInfo.getDepartments().get(0).getCompanyID();
-        }
-    }
 
     private void initRefreshLayout() {
         swipeRefresh.setColorSchemeResources(android.R.color.holo_blue_light);

@@ -88,19 +88,12 @@ public class DeviceSearchActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setToolBar(R.id.toolbar);
-        initUserData();
+        companyID = MCloudApp.getCompanyID();
         parseIntent();
         initView();
         initDeviceInfoAdapter();
         initLoadMore();
         pageInfo = new PageInfo(1);
-    }
-
-    private void initUserData() {
-        UserInfo userInfo = MCloudApp.getCurrentUserInfo();
-        if (userInfo != null && userInfo.getDepartments() != null && userInfo.getDepartments().size() > 0) {
-            companyID = userInfo.getDepartments().get(0).getCompanyID();
-        }
     }
 
     private void parseIntent() {

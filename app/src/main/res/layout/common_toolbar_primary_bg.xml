@@ -20,4 +20,18 @@
         android:textStyle="bold"
         tools:text="参数配置" />
 
+    <TextView
+        android:id="@+id/tv_action"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical|end"
+        android:layout_marginEnd="15dp"
+        android:background="?attr/selectableItemBackground"
+        android:padding="5dp"
+        android:singleLine="true"
+        android:textColor="@color/white"
+        android:textSize="@dimen/text_size_16"
+        android:visibility="invisible"
+        tools:text="切换企业" />
+
 </androidx.appcompat.widget.Toolbar>

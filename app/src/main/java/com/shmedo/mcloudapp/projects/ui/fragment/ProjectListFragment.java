@@ -171,9 +171,7 @@ public class ProjectListFragment extends BaseTranslucentFragment {
                 UserInfo.UserBean user = userInfo.getUser();
                 userId = user.getId();
             }
-            if (userInfo.getDepartments() != null && userInfo.getDepartments().size() > 0) {
-                companyID = userInfo.getDepartments().get(0).getCompanyID();
-            }
+            companyID = MCloudApp.getCompanyID();
         }
     }
 

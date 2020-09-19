@@ -100,7 +100,7 @@ public class NetDeviceListFragment extends BaseFragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         pageInfo = new PageInfo(1);
-        initUserData();
+        companyID = MCloudApp.getCompanyID();
         initDeviceTypeAdapter();
         initDeviceInfoAdapter();
         initRefreshLayout();
@@ -112,13 +112,6 @@ public class NetDeviceListFragment extends BaseFragment {
         swipeRefresh.setRefreshing(true);
         deviceTypeID = -1;
         refresh();
-    }
-
-    private void initUserData() {
-        UserInfo userInfo = MCloudApp.getCurrentUserInfo();
-        if (userInfo != null && userInfo.getDepartments() != null && userInfo.getDepartments().size() > 0) {
-            companyID = userInfo.getDepartments().get(0).getCompanyID();
-        }
     }
 
     private void initRefreshLayout() {

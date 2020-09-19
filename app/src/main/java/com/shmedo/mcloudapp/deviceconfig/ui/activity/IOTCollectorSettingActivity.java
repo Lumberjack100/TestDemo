@@ -61,16 +61,9 @@ public class IOTCollectorSettingActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setToolBar(R.id.toolbar);
         mToolbarTitle.setText("采集器配置");
-        initUserData();
+        companyID = MCloudApp.getCompanyID();
         parseIntent();
         initFragment();
-    }
-
-    private void initUserData() {
-        UserInfo userInfo = MCloudApp.getCurrentUserInfo();
-        if (userInfo != null && userInfo.getDepartments() != null && userInfo.getDepartments().size() > 0) {
-            companyID = userInfo.getDepartments().get(0).getCompanyID();
-        }
     }
 
     private void parseIntent() {

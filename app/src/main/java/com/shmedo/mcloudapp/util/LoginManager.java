@@ -155,10 +155,15 @@ public class LoginManager {
                     @Override
                     protected void onResponse(UserInfo userInfo, ErrCode errCode) {
                         if (errCode.getCode() == 0) {
+
                             //在内存中保存用户数据为全局变量
                             MCloudApp.setAccessToken(token);
                             MCloudApp.setAccount(userInfo.getUser().getAccount());
                             MCloudApp.setCurrentUserInfo(userInfo);
+                            if (userInfo.getDepartments() != null && userInfo.getDepartments().size() > 0) {
+                                int companyID = userInfo.getDepartments().get(0).getCompanyID();
+                                MCloudApp.setCompanyID(companyID);
+                            }
 
                             //持久化保存用户信息数据到本地数据库
                             Long id = (long) userInfo.getUser().getId();

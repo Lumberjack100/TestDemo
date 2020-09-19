@@ -102,8 +102,8 @@ public class DeviceHistoryDataAnalysisActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setToolBar(R.id.toolbar);
+        companyID = MCloudApp.getCompanyID();
         initView();
-        initUserData();
         parseIntent();
         setHeadInfo();
         queryCmdState();
@@ -114,14 +114,6 @@ public class DeviceHistoryDataAnalysisActivity extends BaseActivity {
         mTvDeviceSn.setVisibility(View.GONE);
         deviceConnectStateLayout.setVisibility(View.GONE);
     }
-
-    private void initUserData() {
-        UserInfo userInfo = MCloudApp.getCurrentUserInfo();
-        if (userInfo != null && userInfo.getDepartments() != null && userInfo.getDepartments().size() > 0) {
-            companyID = userInfo.getDepartments().get(0).getCompanyID();
-        }
-    }
-
 
     private void parseIntent() {
         Intent intent = getIntent();

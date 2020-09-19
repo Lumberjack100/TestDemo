@@ -60,6 +60,7 @@ public class DevicesInProjectActivity extends BaseActivity implements TabLayout.
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setToolBar(R.id.toolbar);
         parseIntent();
         initView();
     }
@@ -148,12 +149,9 @@ public class DevicesInProjectActivity extends BaseActivity implements TabLayout.
 
     }
 
-    @OnClick({R.id.iv_back, R.id.view_icon})
+    @OnClick({ R.id.view_icon})
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.iv_back:
-                finish();
-                break;
 
             case R.id.view_icon:
                 ProjectIntroductionActivity.startActivity(this, projectID);
