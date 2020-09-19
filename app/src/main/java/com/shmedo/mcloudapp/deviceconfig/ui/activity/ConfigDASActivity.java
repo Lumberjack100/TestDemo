@@ -18,7 +18,6 @@ import com.shmedo.core.AppContants;
 import com.shmedo.core.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.DASHomeFragment;
-import com.shmedo.mcloudapp.deviceconfig.ui.fragment.DeviceDetailsFragment;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -34,7 +33,6 @@ public class ConfigDASActivity extends BaseDeviceConnectActivity {
     BottomNavigationView bottomNavigationView;
 
     private DASHomeFragment DASHomeFragment;
-    private DeviceDetailsFragment deviceDetailsFragment;//设备详情
     private Fragment currentFragment;
 
     private boolean isFirstCall = true;
@@ -88,23 +86,18 @@ public class ConfigDASActivity extends BaseDeviceConnectActivity {
             String curTag = savedInstanceState.getString("CurrentFragment");
             currentFragment = getSupportFragmentManager().findFragmentByTag(curTag);
             DASHomeFragment = (DASHomeFragment) getSupportFragmentManager().findFragmentByTag(DASHomeFragment.class.getName());
-            deviceDetailsFragment = (DeviceDetailsFragment) getSupportFragmentManager().findFragmentByTag(DeviceDetailsFragment.class.getName());
 
             if(DASHomeFragment==null)
                 DASHomeFragment = new DASHomeFragment();
 
-            if(deviceDetailsFragment==null)
-                deviceDetailsFragment = new DeviceDetailsFragment();
 
             // 解决重叠问题
             getSupportFragmentManager().beginTransaction()
                     .hide(DASHomeFragment)
-                    .hide(deviceDetailsFragment)
                     .show(currentFragment)
                     .commit();
         } else {
             DASHomeFragment = new DASHomeFragment();
-            deviceDetailsFragment = new DeviceDetailsFragment();
             switchFrgment(0);
         }
 
@@ -188,7 +181,6 @@ public class ConfigDASActivity extends BaseDeviceConnectActivity {
             case 1:
                 break;
             case 2:
-                showFragment(deviceDetailsFragment);
                 break;
         }
     }

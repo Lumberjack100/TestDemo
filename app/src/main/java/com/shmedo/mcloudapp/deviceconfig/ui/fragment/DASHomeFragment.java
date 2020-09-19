@@ -44,7 +44,7 @@ import com.shmedo.core.event.BluetoothConnectStateEvent;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.fragment.BaseFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.ConfigDASActivity;
-import com.shmedo.mcloudapp.deviceconfig.ui.activity.DeviceAdvanceConfigActivity;
+import com.shmedo.mcloudapp.deviceconfig.ui.activity.DeviceAdvanceSettingActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.MqttSettingActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.sensor.CommonSensorConfigActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.sensor.VibratingWireSensorConfigActivity;
@@ -361,7 +361,7 @@ public class DASHomeFragment extends BaseFragment {
                     ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
                     return;
                 }
-                DeviceAdvanceConfigActivity.startActivity(getActivity(), baseConfigInfo.getWorkModel().toInt());
+                DeviceAdvanceSettingActivity.startActivity(getActivity(), baseConfigInfo.getWorkModel().toInt());
                 break;
 
             case R.id.btn_save:

@@ -17,6 +17,9 @@ import com.lxj.xpopup.XPopup;
 import com.lxj.xpopup.interfaces.OnSelectListener;
 import com.shmedo.configlibrary.ble.cmd.CommandManager;
 import com.shmedo.configlibrary.ble.cmd.CommandResult;
+import com.shmedo.configlibrary.ble.cmd.entity.DataCommunicateModeEntity;
+import com.shmedo.configlibrary.ble.cmd.entity.DataReportIntervalEntity;
+import com.shmedo.configlibrary.ble.cmd.entity.SixTargerBDNumberEntity;
 import com.shmedo.configlibrary.ble.cmd.parser.ParseManager;
 import com.shmedo.configlibrary.ble.enums.CommandType;
 import com.shmedo.configlibrary.ble.enums.ServerNumber;
@@ -59,6 +62,9 @@ public class BleDataCenterFragment extends BaseBleConnectFragment {
     private String dataCommunicationMode;
     private String reportingInterval;
     private String bdCardNumber;
+
+    private String cmdDataReport;//数据上报间隔
+    private String cmdBDCardNumber;//北斗卡号
 
     @Override
     protected int getLayoutId() {
@@ -159,7 +165,28 @@ public class BleDataCenterFragment extends BaseBleConnectFragment {
     }
 
     private void processSave() {
+        if (dataCommunicationMode.equals("3") || dataCommunicationMode.equals("4")) {
+            String bdNumber =  mEtBdCardNumber.getText().toString().trim();
+            if (bdNumber.equals("")) {
+                ToastUtils.show("北斗目标卡号不能为空");
+                return;
+            }
+            //设置六位目标北斗卡号
+            SixTargerBDNumberEntity bdNumberEntity = new SixTargerBDNumberEntity(bdNumber);
+            cmdBDCardNumber = CommandManager.getInstance().getCommand(CommandType.SIX_TARGER_BD_NUMBER, bdNumberEntity);
+        }
 
+        //设置数据上报间隔
+        String report = mEtReportingInterval.getText() == null ? "" : mEtReportingInterval.getText().toString().trim();
+        DataReportIntervalEntity intervalEntity = new DataReportIntervalEntity(report.equals("") ? 120 : Integer.parseInt(report));
+        cmdDataReport = CommandManager.getInstance().getCommand(CommandType.DATA_REPORT_INTERVAL, intervalEntity);
+
+        errMsg = "发送指令超时,请稍后尝试";
+        startProgressRunnable("正在发送配置指令...", CONFIG_PARAMS_DELAY_MILLIS);
+        DataCommunicateModeEntity communicateModeEntity = new DataCommunicateModeEntity(Integer.parseInt(dataCommunicationMode));
+        String cmd = CommandManager.getInstance().getCommand(CommandType.DATA_MASSAGE_MODEL, communicateModeEntity);
+        sendCommonCommandImmediately(cmd);
+        Timber.d("设置数据通讯模式===%s", cmd);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -177,15 +204,14 @@ public class BleDataCenterFragment extends BaseBleConnectFragment {
         CommandType type = StringUtil.extractCommandType(cmdStr);
         switch (type) {
             case BASE_CONFIG://获取基础配置信息
+                stopProgressRunnable();
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
-                    stopProgressRunnable();
                     Timber.e("查询基础配置信息指令出错!");
                     ToastUtils.show("查询基础配置信息指令出错!");
                     return;
                 }
                 CommandResult<BaseConfigInfo> bean = ParseManager.getInstance().parse(cmdStr);
                 if (!bean.isSuccess()) {
-                    stopProgressRunnable();
                     return;
                 }
                 BaseConfigInfo baseConfigInfo = bean.getResult();
@@ -222,8 +248,41 @@ public class BleDataCenterFragment extends BaseBleConnectFragment {
                 bdCardNumber = baseConfigInfo.getTargetBGNum();
                 mEtReportingInterval.setText(reportingInterval);
                 mEtBdCardNumber.setText(bdCardNumber);
+                break;
 
+            case DATA_MASSAGE_MODEL://设置数据通讯方式
+                if (tempStr.endsWith(CommandResult.ERROR_END)) {
+                    ToastUtils.show("数据通讯方式配置错误!");
+                    stopProgressRunnable();
+                    return;
+                }
+                sendCommonCommandImmediately(cmdDataReport);
+                Timber.d("设置数据上报间隔===%s", cmdDataReport);
+                break;
+
+            case DATA_REPORT_INTERVAL://设置数据上报间隔
+                if (tempStr.endsWith(CommandResult.ERROR_END)) {
+                    ToastUtils.show("数据上报配置错误!");
+                    stopProgressRunnable();
+                    return;
+                }
+                if (dataCommunicationMode.equals("3") || dataCommunicationMode.equals("4")) {
+                    sendCommonCommandImmediately(cmdBDCardNumber);
+                    Timber.d("北斗配置参数===%s", cmdBDCardNumber);
+                    return;
+                }
                 stopProgressRunnable();
+                ToastUtils.show("设置完成");
+                break;
+
+            case SIX_TARGER_BD_NUMBER://北斗配置
+                if (tempStr.endsWith(CommandResult.ERROR_END)) {
+                    ToastUtils.show("北斗配置错误!");
+                    stopProgressRunnable();
+                    return;
+                }
+                stopProgressRunnable();
+                ToastUtils.show("设置完成");
                 break;
         }
     }

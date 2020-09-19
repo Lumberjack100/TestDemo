@@ -186,7 +186,7 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden|adjustResize" />
         <activity
-            android:name=".deviceconfig.ui.activity.DeviceAdvanceConfigActivity"
+            android:name=".deviceconfig.ui.activity.DeviceAdvanceSettingActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustResize" />

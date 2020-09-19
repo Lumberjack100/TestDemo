@@ -18,7 +18,6 @@ import com.shmedo.core.AppContants;
 import com.shmedo.core.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.ADMEHomeFragment;
-import com.shmedo.mcloudapp.deviceconfig.ui.fragment.DeviceDetailsFragment;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -41,7 +40,6 @@ public class ConfigADMEActivity extends BaseDeviceConnectActivity {
     BottomNavigationView bottomNavigationView;
 
     private ADMEHomeFragment admeHomeFragment;
-    private DeviceDetailsFragment deviceDetailsFragment;//设备详情
     private Fragment currentFragment;
 
     private boolean isFirstCall = true;
@@ -94,17 +92,14 @@ public class ConfigADMEActivity extends BaseDeviceConnectActivity {
             String curTag = savedInstanceState.getString("CurrentFragment");
             currentFragment = getSupportFragmentManager().findFragmentByTag(curTag);
             admeHomeFragment = (ADMEHomeFragment) getSupportFragmentManager().findFragmentByTag(ADMEHomeFragment.class.getName());
-            deviceDetailsFragment = (DeviceDetailsFragment) getSupportFragmentManager().findFragmentByTag(DeviceDetailsFragment.class.getName());
 
             // 解决重叠问题
             getSupportFragmentManager().beginTransaction()
                     .hide(admeHomeFragment)
-                    .hide(deviceDetailsFragment)
                     .show(currentFragment)
                     .commit();
         } else {
             admeHomeFragment = new ADMEHomeFragment();
-            deviceDetailsFragment = new DeviceDetailsFragment();
             switchFrgment(0);
         }
 
@@ -184,7 +179,6 @@ public class ConfigADMEActivity extends BaseDeviceConnectActivity {
                 break;
 
             case 2:
-                showFragment(deviceDetailsFragment);
                 break;
         }
     }

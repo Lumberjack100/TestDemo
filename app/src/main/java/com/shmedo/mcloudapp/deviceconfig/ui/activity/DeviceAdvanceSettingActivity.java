@@ -52,7 +52,7 @@ import butterknife.BindView;
 import butterknife.OnClick;
 import timber.log.Timber;
 
-public class DeviceAdvanceConfigActivity extends BaseDeviceConnectActivity {
+public class DeviceAdvanceSettingActivity extends BaseDeviceConnectActivity {
     @BindView(R.id.tv_title)
     TextView mToolbarTitle;
 
@@ -65,14 +65,14 @@ public class DeviceAdvanceConfigActivity extends BaseDeviceConnectActivity {
     private int debugModeCheck = 0;//标志位，Avoid onItemSelected calls during initialization
 
     public static void startActivity(Context context, int mode) {
-        Intent intent = new Intent(context, DeviceAdvanceConfigActivity.class);
+        Intent intent = new Intent(context, DeviceAdvanceSettingActivity.class);
         intent.putExtra(AppContants.Extras.DEBUG_MODE, mode);
         context.startActivity(intent);
     }
 
     @Override
     protected int getLayoutId() {
-        return R.layout.activity_device_advance_config;
+        return R.layout.activity_device_advance_setting;
     }
 
     @Override
@@ -123,7 +123,7 @@ public class DeviceAdvanceConfigActivity extends BaseDeviceConnectActivity {
                     return;
                 }
                 if (isChecked) {
-                    AdvanceSetDialogUtils.showReStartDialog(DeviceAdvanceConfigActivity.this, "固件升级", "固件", mSbFirmwareUpgrade);
+                    AdvanceSetDialogUtils.showReStartDialog(DeviceAdvanceSettingActivity.this, "固件升级", "固件", mSbFirmwareUpgrade);
                 } else {
                     setSetRemoteUpgrade(SetRemoteUpgrade.CLOSE_UPGRADE_MODEL, null, 0);
                     ToastUtils.show("关闭固件升级");
@@ -209,13 +209,13 @@ public class DeviceAdvanceConfigActivity extends BaseDeviceConnectActivity {
 
             case R.id.rl_product_register://产品注册
                 if (checkIsBluetoothConnected()) {
-                    ProductRegistrationActivity.startActivity(DeviceAdvanceConfigActivity.this);
+                    ProductRegistrationActivity.startActivity(DeviceAdvanceSettingActivity.this);
                 }
                 break;
 
             case R.id.rl_instruction_debug://指令交互调试模式
                 if (checkIsBluetoothConnected()) {
-                    InstructionDebugActivity.startActivity(DeviceAdvanceConfigActivity.this);
+                    InstructionDebugActivity.startActivity(DeviceAdvanceSettingActivity.this);
                 }
                 break;
 
@@ -227,7 +227,7 @@ public class DeviceAdvanceConfigActivity extends BaseDeviceConnectActivity {
 
             case R.id.rl_sync_position: //同步安装位置
                 if (checkIsBluetoothConnected()) {
-                    showSyncPositionDialog(DeviceAdvanceConfigActivity.this);
+                    showSyncPositionDialog(DeviceAdvanceSettingActivity.this);
                 }
                 break;
         }
@@ -253,15 +253,15 @@ public class DeviceAdvanceConfigActivity extends BaseDeviceConnectActivity {
                 new XPermissionUtils.OnPermissionListener() {
                     @Override
                     public void onPermissionGranted() {
-                        LogPrintActivity.startActivity(DeviceAdvanceConfigActivity.this);
+                        LogPrintActivity.startActivity(DeviceAdvanceSettingActivity.this);
                     }
 
                     @Override
                     public void onPermissionDenied(List<String> deniedPermissions) {
-                        boolean allNeverAskAgain = XPermissionUtils.isAllNeverAskAgain(DeviceAdvanceConfigActivity.this, deniedPermissions);
+                        boolean allNeverAskAgain = XPermissionUtils.isAllNeverAskAgain(DeviceAdvanceSettingActivity.this, deniedPermissions);
                         // 所有的权限都被勾上不再询问时，跳转到应用设置界面，引导用户手动打开权限
                         if (allNeverAskAgain) {
-                            XPermissionUtils.showRefusePermissionDialog(DeviceAdvanceConfigActivity.this, GlobalUtil.getString(R.string.message_permission_storage_rationale));
+                            XPermissionUtils.showRefusePermissionDialog(DeviceAdvanceSettingActivity.this, GlobalUtil.getString(R.string.message_permission_storage_rationale));
                         } else {
                             ToastUtils.show(GlobalUtil.getString(R.string.message_permission_storage_denied));
                         }
