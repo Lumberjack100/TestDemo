@@ -89,8 +89,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="right|bottom"
-                android:layout_marginEnd="20dp"
-                android:layout_marginBottom="100dp"
+                android:layout_marginEnd="15dp"
+                android:layout_marginBottom="80dp"
                 android:orientation="vertical">
 
                 <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -98,19 +98,15 @@
                     style="@style/Widget.Design.FloatingActionButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:backgroundTint="@color/white"
                     app:fab_size="mini"
                     app:srcCompat="@drawable/ic_clear_log" />
 
-                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                <ImageView
                     android:id="@+id/fab_start_pause"
-                    style="@style/Widget.Design.FloatingActionButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="47dp"
+                    android:layout_height="47dp"
                     android:layout_marginTop="20dp"
-                    app:backgroundTint="@color/white"
-                    app:fab_size="mini"
-                    app:srcCompat="@drawable/icon_command_log_print_play" />
+                    android:src="@drawable/icon_command_log_print_play" />
 
             </LinearLayout>
 
@@ -121,33 +117,38 @@
     <LinearLayout
         android:id="@+id/ll_send"
         android:layout_width="match_parent"
-        android:layout_height="35dp"
+        android:layout_height="58dp"
         android:layout_gravity="bottom"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="5dp"
-        android:layout_marginRight="8dp"
-        android:orientation="horizontal">
+        android:background="@color/white"
+        android:gravity="center_vertical"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp">
 
         <com.shmedo.mcloudapp.common.view.ClearEditText
-            android:id="@+id/ce_send_code"
+            android:id="@+id/et_custom_command"
             android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="8"
-            android:background="@color/white"
+            android:layout_height="38dp"
+            android:layout_weight="1"
+            android:background="@drawable/bg_search_project_gray"
             android:hint="请输入指令(##开头)"
-            android:paddingLeft="9dp"
-            android:paddingRight="8dp"
+            android:paddingStart="15dp"
+            android:paddingEnd="10dp"
             android:singleLine="true"
-            android:textSize="@dimen/text_size_16" />
+            android:textColor="@color/search_input_text_color"
+            android:textColorHint="@color/text_color_b3b3b3"
+            android:textSize="@dimen/text_size_17" />
 
         <Button
             android:id="@+id/btn_send"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="2"
-            android:background="@drawable/edit_bg2"
-            android:text="发送"
-            android:textColor="@color/white" />
+            android:layout_width="80dp"
+            android:layout_height="38dp"
+            android:layout_marginStart="8dp"
+            android:background="@drawable/bg_corner_20dp_blue"
+            android:gravity="center"
+            android:text="搜索"
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_size_17" />
+
     </LinearLayout>
 
 </FrameLayout>

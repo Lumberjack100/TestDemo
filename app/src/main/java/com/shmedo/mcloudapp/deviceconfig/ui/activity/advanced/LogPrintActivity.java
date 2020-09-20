@@ -70,7 +70,7 @@ public class LogPrintActivity extends BaseDeviceConnectActivity {
     @BindView(R.id.log_switchButton)
     SwitchButton logSwitchButton;
 
-    @BindView(R.id.ce_send_code)
+    @BindView(R.id.et_custom_command)
     ClearEditText ceSendCode;
 
     @BindView(R.id.recycler_log_print)

@@ -7,11 +7,10 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.CompoundButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.hjq.toast.ToastUtils;
 import com.kyleduo.switchbutton.SwitchButton;
 import com.lxj.xpopup.XPopup;
@@ -23,7 +22,6 @@ import com.shmedo.configlibrary.ble.enums.CommandType;
 import com.shmedo.configlibrary.ble.enums.LogOutputStatus;
 import com.shmedo.configlibrary.ble.enums.WorkModel;
 import com.shmedo.core.MCloudApp;
-import com.shmedo.core.event.BluetoothConnectStateEvent;
 import com.shmedo.core.event.CmdResponseMessage;
 import com.shmedo.core.event.MessageEvent;
 import com.shmedo.mcloudapp.R;
@@ -54,14 +52,14 @@ public class BleCustomCommandLogPrintFragment extends BaseBleConnectFragment {
     @BindView(R.id.logPrintEnableSBtn)
     SwitchButton logSwitchButton;
 
-    @BindView(R.id.ce_send_code)
+    @BindView(R.id.et_custom_command)
     ClearEditText ceSendCode;
 
     @BindView(R.id.recyclerView_log)
     RecyclerView mRecyclerView;
 
     @BindView(R.id.fab_start_pause)
-    FloatingActionButton fabStartPause;
+    ImageView fabStartPause;
 
     private CommonAdapter adapter;
 

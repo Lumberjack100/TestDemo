@@ -115,7 +115,7 @@
             android:orientation="horizontal">
 
             <com.shmedo.mcloudapp.common.view.ClearEditText
-                android:id="@+id/ce_send_code"
+                android:id="@+id/et_custom_command"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="8"

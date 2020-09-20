@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -163,7 +164,62 @@ public class BleDataCenterServerConfigFragment extends BaseBleConnectFragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        setSwitchViewListener();
         queryServerData();
+    }
+
+    private void setSwitchViewListener() {
+        mSbCenterEnable.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (!MCloudApp.isIsBluetoothDeviceConnected()) {
+                    ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
+                    mSbCenterEnable.setCheckedImmediatelyNoEvent(!isChecked);
+                    return;
+                }
+
+                if (!isChecked) {
+                    showCloseSwitchButtonDialog("确定要关闭数据中心？");
+                } else {
+                    ServerNumberEntity serverNumberEntity = new ServerNumberEntity(serverNumber.toInt());
+                    String command = CommandManager.getInstance().getCommand(CommandType.QUERY_DATA_CENTER_PARAM, serverNumberEntity);
+                    sendCommonCommandImmediately(command);//查询数据中心1参数
+                }
+                Timber.i("mSbLinkOne===%s", isChecked);
+            }
+        });
+    }
+
+    /**
+     * 关闭SwitchButton
+     */
+    private void showCloseSwitchButtonDialog(String content) {
+        MaterialDialog.Builder mBuilder = new MaterialDialog.Builder(mActivity)
+                .title("温馨提示：")
+                .content(content)
+                .contentColor(Color.parseColor("#000000"))
+                .canceledOnTouchOutside(false)
+                .positiveText("确定")
+                .negativeText("取消")
+                .onPositive(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        dialog.dismiss();
+                        //确定关闭sb按钮。隐藏编辑字体
+                        //发送对应关闭中心
+                        ServerNumberEntity serverNumberEntity = new ServerNumberEntity(serverNumber.toInt());
+                        String cmdAddress1 = CommandManager.getInstance().getCommand(CommandType.SET_SERVER_ADDRESS_PORT, serverNumberEntity);
+                        sendCommonCommandImmediately(cmdAddress1);//关闭服务器
+                    }
+                }).onNegative(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        dialog.dismiss();
+                        mSbCenterEnable.setCheckedImmediatelyNoEvent(true);
+                    }
+                });
+        MaterialDialog mMaterialDialog = mBuilder.build();
+        mMaterialDialog.show();
     }
 
     private void queryServerData() {
@@ -513,9 +569,14 @@ public class BleDataCenterServerConfigFragment extends BaseBleConnectFragment {
                     return;
                 }
                 //处理关闭中心1、2、3的开关时，接收到的应答指令
-                if (TextUtils.isEmpty(communicationProtocol)) {
+                if (!mSbCenterEnable.isChecked()) {
                     return;
                 }
+                //处理关闭中心1、2、3的开关时，接收到的应答指令
+//                if (TextUtils.isEmpty(communicationProtocol)) {
+//                    return;
+//                }
+
                 if (communicationProtocol.equals("4")) {//MQTT自动注册
                     sendCommonCommandImmediately(cmdRegistrationPlatform);
                     Timber.d("选择平台配置===%s", cmdRegistrationPlatform);
