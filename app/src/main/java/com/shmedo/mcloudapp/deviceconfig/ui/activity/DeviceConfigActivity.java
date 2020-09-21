@@ -23,7 +23,7 @@ import butterknife.OnClick;
 
 public class DeviceConfigActivity extends BaseActivity {
     private static final String DEVICE_INFO = "device_info";
-    
+
 
     @BindView(R.id.tv_title)
     TextView mToolbarTitle;
@@ -113,6 +113,11 @@ public class DeviceConfigActivity extends BaseActivity {
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         transaction.replace(R.id.container, fragment);
         transaction.commitAllowingStateLoss();
+    }
+
+    public void switchToNetConfigPage(ProjectDeviceInfo projectDeviceInfo) {
+        fragment = NetConfigDeviceFragment.newInstance(projectDeviceInfo);
+        replaceFragment(fragment);
     }
 
 }

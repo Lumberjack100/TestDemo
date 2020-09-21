@@ -35,6 +35,7 @@ import com.shmedo.core.AppContants;
 import com.shmedo.core.MCloudApp;
 import com.shmedo.core.event.BluetoothConnectStateEvent;
 import com.shmedo.core.event.CmdResponseMessage;
+import com.shmedo.core.event.DeviceModuleSwitchTabEvent;
 import com.shmedo.core.event.MessageEvent;
 import com.shmedo.core.model.UserInfo;
 import com.shmedo.core.util.DensityUtil;
@@ -47,6 +48,7 @@ import com.shmedo.mcloudapp.deviceconfig.model.DeviceTypeInfo;
 import com.shmedo.mcloudapp.deviceconfig.model.FirmWareInfo;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.AdvancedSettingActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.DataCenterActivity;
+import com.shmedo.mcloudapp.deviceconfig.ui.activity.DeviceConfigActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.DeviceCurrentStateActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.IOTCollectorSettingActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.BaseDialogFragment;
@@ -55,7 +57,16 @@ import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd.BaseDispatchC
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd.QueryTerminalTimeDialog;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd.TelemetryDialog;
 import com.shmedo.mcloudapp.entity.DeviceTypeInfoDao;
+import com.shmedo.mcloudapp.entity.PageResult;
+import com.shmedo.mcloudapp.network.BaseObserver;
+import com.shmedo.mcloudapp.network.ErrCode;
+import com.shmedo.mcloudapp.network.MDRetrofit;
+import com.shmedo.mcloudapp.network.NetworkConst;
+import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfo;
+import com.shmedo.mcloudapp.projects.model.param.QueryProjectDevice;
 import com.shmedo.mcloudapp.util.DaoManager;
+import com.shmedo.mcloudapp.util.GsonFactory;
+import com.shmedo.mcloudapp.util.ResponseHandler;
 import com.shmedo.mcloudapp.util.bleutil.BlueResultParserUtil;
 
 import org.greenrobot.eventbus.EventBus;
@@ -67,6 +78,9 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
+import okhttp3.RequestBody;
 import timber.log.Timber;
 
 /**
@@ -326,6 +340,7 @@ public class BleConfigDeviceFragment extends BaseBleConnectFragment {
                 break;
 
             case R.id.tv_device_communication_way://切换连接方式
+                showSwitchConnectionDialog("确定切换到网络模式？");
                 break;
         }
     }
@@ -568,5 +583,110 @@ public class BleConfigDeviceFragment extends BaseBleConnectFragment {
         super.onDestroy();
         MCloudApp.setCurDeviceToken(null);
         MCloudApp.setCurDeviceMacAddr(null);
+    }
+
+    /**
+     * 切换连接方式弹框提醒
+     */
+    private void showSwitchConnectionDialog(String content) {
+        MaterialDialog.Builder mBuilder = new MaterialDialog.Builder(mActivity)
+                .title("温馨提示：")
+                .content(content)
+                .contentColor(Color.parseColor("#000000"))
+                .canceledOnTouchOutside(false)
+                .positiveText("确定")
+                .negativeText("取消")
+                .positiveColorRes(R.color.blue_52B4F8)
+                .negativeColorRes(R.color.sub_title_text_color)
+                .onPositive(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        dialog.dismiss();
+                        disconnectDevice();
+
+                        MCloudApp.getMainHandler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                queryCompanyDevice();
+                            }
+                        }, 3000);
+
+                    }
+                });
+        MaterialDialog mMaterialDialog = mBuilder.build();
+        mMaterialDialog.show();
+    }
+
+    /**
+     * 开始查询接口
+     */
+    private void queryCompanyDevice() {
+        showLoadingDialog("在服务器中查询此设备的置信息...");
+
+        QueryProjectDevice parameter = new QueryProjectDevice();
+        parameter.setCompanyID(MCloudApp.getCompanyID());
+        parameter.setProjectName("");
+        parameter.setDeviceType(-1);
+        parameter.setSn(MCloudApp.getCurDeviceToken());
+//        parameter.setDeviceStatus("启用");
+        parameter.setPageSize(10);
+        parameter.setCurrentPage(1);
+
+        String json = GsonFactory.getGson().toJson(parameter);
+        RequestBody body = RequestBody.create(NetworkConst.JSON_TYPE, json);
+        MDRetrofit.getInstance()
+                .createService()
+                .QueryCompanyDevice(MCloudApp.getAccessToken(), body)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new BaseObserver<PageResult<ProjectDeviceInfo>>() {
+                    @Override
+                    protected void onResponse(PageResult<ProjectDeviceInfo> data, ErrCode errCode) {
+                        dismissLoadingDialog();
+                        if (!ResponseHandler.getInstance().handleResponse(errCode)) {
+                            if (errCode.getCode() == 0) {
+                                if (data == null || data.getCurrentPageData() == null || data.getCurrentPageData().size() == 0) {
+                                    ToastUtils.show("未在服务器中查询到此设备的信息");
+                                    goToNetDeviceListPage();
+                                    return;
+                                }
+
+                                goToNetConfigDevicePage(data.getCurrentPageData().get(0));
+
+                            } else {
+                                if (!TextUtils.isEmpty(errCode.getErrMessage())) {
+                                    ToastUtils.show(errCode.getErrMessage());
+                                    goToNetDeviceListPage();
+                                }
+                            }
+                        } else {
+                            goToNetDeviceListPage();
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        dismissLoadingDialog();
+                        ResponseHandler.getInstance().handleFailure((Exception) e);
+                        goToNetDeviceListPage();
+                    }
+                });
+    }
+
+
+    private void goToNetConfigDevicePage(ProjectDeviceInfo projectDeviceInfo) {
+        ((DeviceConfigActivity) mActivity).switchToNetConfigPage(projectDeviceInfo);
+        ToastUtils.show("已切换到网络模式");
+    }
+
+    private void goToNetDeviceListPage() {
+        MCloudApp.getMainHandler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                DeviceModuleSwitchTabEvent switchTabEvent = new DeviceModuleSwitchTabEvent(0);
+                EventBus.getDefault().post(switchTabEvent);
+                mActivity.finish();
+            }
+        }, 3500);
     }
 }

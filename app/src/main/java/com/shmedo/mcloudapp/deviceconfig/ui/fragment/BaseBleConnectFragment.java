@@ -341,7 +341,7 @@ public abstract class BaseBleConnectFragment extends BaseFragment {
     @Subscribe(threadMode = ThreadMode.POSTING)
     public void onMessageEvent(MessageEvent messageEvent) {
         if (messageEvent instanceof BluetoothEvent) {
-            if(!isActive){
+            if (!isActive) {
                 return;
             }
 
@@ -446,7 +446,7 @@ public abstract class BaseBleConnectFragment extends BaseFragment {
                     break;
 
                 case Constants.BT_DISCONNECTED:
-                    ToastUtils.show("设备断开连接");
+                    ToastUtils.show("蓝牙连接断开");
                     stopProgressRunnable();
                     MCloudApp.setIsBluetoothDeviceConnected(false);
                     EventBus.getDefault().post(new BluetoothConnectStateEvent(false));

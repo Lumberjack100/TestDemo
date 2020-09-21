@@ -19,6 +19,7 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.hjq.toast.ToastUtils;
 import com.shmedo.core.MCloudApp;
+import com.shmedo.core.event.DeviceModuleSwitchTabEvent;
 import com.shmedo.core.model.UserInfo;
 import com.shmedo.core.util.DensityUtil;
 import com.shmedo.core.util.GlobalUtil;
@@ -474,6 +475,8 @@ public class NetConfigDeviceFragment extends BaseFragment {
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                         dialog.dismiss();
+                        DeviceModuleSwitchTabEvent switchTabEvent = new DeviceModuleSwitchTabEvent(1);
+                        EventBus.getDefault().post(switchTabEvent);
                         mActivity.finish();
                     }
                 });
