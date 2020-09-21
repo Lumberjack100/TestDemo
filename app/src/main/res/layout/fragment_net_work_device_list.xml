@@ -32,7 +32,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:text="搜索设备"
+                android:text="设备SN搜索"
                 android:textColor="#ffb3b3b3"
                 android:textSize="@dimen/text_size_13" />
 
@@ -145,7 +145,7 @@
             android:clipToPadding="false"
             android:paddingStart="15dp"
             android:paddingRight="15dp"
-            android:paddingBottom="15dp"/>
+            android:paddingBottom="15dp" />
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 

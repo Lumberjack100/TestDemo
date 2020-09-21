@@ -101,6 +101,7 @@ public class ProjectSearchActivity extends BaseActivity implements TextWatcher {
     }
 
     private void initView() {
+        mEtKeyWords.setHint("项目名称搜索");
         mEtKeyWords.requestFocus();
         mEtKeyWords.addTextChangedListener(this);
         mEtKeyWords.setOnEditorActionListener(new TextView.OnEditorActionListener() {

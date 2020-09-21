@@ -58,6 +58,7 @@ import com.shmedo.mcloudapp.entity.DeviceTypeInfoDao;
 import com.shmedo.mcloudapp.util.DaoManager;
 import com.shmedo.mcloudapp.util.bleutil.BlueResultParserUtil;
 
+import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
@@ -69,7 +70,7 @@ import butterknife.OnClick;
 import timber.log.Timber;
 
 /**
- * A simple {@link Fragment} subclass.
+ * 蓝牙配置设备主页面
  */
 public class BleConfigDeviceFragment extends BaseBleConnectFragment {
     private static final String DEVICE_INFO = "device_info";
@@ -265,7 +266,7 @@ public class BleConfigDeviceFragment extends BaseBleConnectFragment {
                 break;
 
             case "传感器配置":
-
+                ToastUtils.show("正在研发中,敬请期待...");
                 break;
 
             case "数据中心":
@@ -367,7 +368,7 @@ public class BleConfigDeviceFragment extends BaseBleConnectFragment {
         super.onMessageEvent(messageEvent);
 
         if (messageEvent instanceof CmdResponseMessage) {
-            if(!isActive){
+            if (!isActive) {
                 return;
             }
             setResultData((CmdResponseMessage) messageEvent);
@@ -558,5 +559,12 @@ public class BleConfigDeviceFragment extends BaseBleConnectFragment {
         }
 
         return true;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        MCloudApp.setCurDeviceToken(null);
+        MCloudApp.setCurDeviceMacAddr(null);
     }
 }

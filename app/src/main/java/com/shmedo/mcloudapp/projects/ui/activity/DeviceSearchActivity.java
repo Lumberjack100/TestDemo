@@ -107,7 +107,7 @@ public class DeviceSearchActivity extends BaseActivity {
     }
 
     private void initView() {
-        mEtKeyWords.setHint("搜索设备");
+        mEtKeyWords.setHint("设备SN搜索");
         mEtKeyWords.requestFocus();
         mEtKeyWords.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override

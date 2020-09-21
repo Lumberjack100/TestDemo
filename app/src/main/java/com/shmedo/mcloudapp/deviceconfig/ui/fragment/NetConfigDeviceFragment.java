@@ -1,5 +1,6 @@
 package com.shmedo.mcloudapp.deviceconfig.ui.fragment;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -12,6 +13,8 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.hjq.toast.ToastUtils;
@@ -70,7 +73,7 @@ import io.reactivex.schedulers.Schedulers;
 import okhttp3.RequestBody;
 
 /**
- * A simple {@link Fragment} subclass.
+ * 网络配置设备主页面
  */
 public class NetConfigDeviceFragment extends BaseFragment {
     private static final String DEVICE_INFO = "device_info";
@@ -171,7 +174,6 @@ public class NetConfigDeviceFragment extends BaseFragment {
         queryCmdState();
     }
 
-
     private void setHeadInfo() {
         if (projectDeviceInfo != null) {
             mTvDeviceName.setText("物联网数据采集器");
@@ -215,6 +217,7 @@ public class NetConfigDeviceFragment extends BaseFragment {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.tv_device_communication_way://切换连接方式
+                showSwitchConnectionDialog("确定切换到蓝牙模式？");
                 break;
 
             case R.id.rl_run_state_analysis:
@@ -453,4 +456,26 @@ public class NetConfigDeviceFragment extends BaseFragment {
         newFragment.show(getChildFragmentManager(), "dialog");
     }
 
+
+    /**
+     * 切换连接方式弹框提醒
+     */
+    private void showSwitchConnectionDialog(String content) {
+        MaterialDialog.Builder mBuilder = new MaterialDialog.Builder(mActivity)
+                .title("温馨提示：")
+                .content(content)
+                .contentColor(Color.parseColor("#000000"))
+                .canceledOnTouchOutside(false)
+                .positiveText("确定")
+                .negativeText("取消")
+                .onPositive(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        dialog.dismiss();
+                        mActivity.finish();
+                    }
+                });
+        MaterialDialog mMaterialDialog = mBuilder.build();
+        mMaterialDialog.show();
+    }
 }

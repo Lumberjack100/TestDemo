@@ -154,8 +154,6 @@ public abstract class BaseBleConnectFragment extends BaseFragment {
         super.onDestroy();
         dismissLoadingDialog();
         EventBus.getDefault().unregister(this);
-        MCloudApp.setCurDeviceToken(null);
-        MCloudApp.setCurDeviceMacAddr(null);
     }
 
     @Override

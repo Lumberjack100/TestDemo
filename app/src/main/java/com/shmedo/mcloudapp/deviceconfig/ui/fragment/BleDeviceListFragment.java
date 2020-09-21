@@ -331,7 +331,7 @@ public class BleDeviceListFragment extends BaseFragment implements TextWatcher, 
                 @Override
                 public void run() {
                     BluetoothDevice device = result.getDevice();
-                    if (device.getName() == null || !device.getName().startsWith("MD")) {
+                    if (device.getName() == null || !device.getName().startsWith("MD")|| !device.getName().endsWith("L")) {
                         return;
                     }
 
