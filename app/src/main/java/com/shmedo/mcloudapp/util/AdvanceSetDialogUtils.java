@@ -197,7 +197,8 @@ public class AdvanceSetDialogUtils {
                 .canceledOnTouchOutside(false)
                 .positiveText("确定")
                 .negativeText("取消")
-                .negativeColor(Color.parseColor("#807B7B"))
+                .positiveColorRes(R.color.blue_52B4F8)
+                .negativeColorRes(R.color.sub_title_text_color)
                 .onPositive(new MaterialDialog.SingleButtonCallback() {
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {

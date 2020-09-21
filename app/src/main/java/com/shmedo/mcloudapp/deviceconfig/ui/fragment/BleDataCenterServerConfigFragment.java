@@ -1,5 +1,6 @@
 package com.shmedo.mcloudapp.deviceconfig.ui.fragment;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -33,6 +34,7 @@ import com.shmedo.configlibrary.ble.model.MqttConfigInfo;
 import com.shmedo.configlibrary.ble.model.ServerAddressInfo;
 import com.shmedo.configlibrary.ble.utils.ResultParserUtil;
 import com.shmedo.configlibrary.ble.utils.StringUtil;
+import com.shmedo.core.AppContants;
 import com.shmedo.core.MCloudApp;
 import com.shmedo.core.event.CmdResponseMessage;
 import com.shmedo.core.event.MessageEvent;
@@ -168,8 +170,13 @@ public class BleDataCenterServerConfigFragment extends BaseBleConnectFragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        setView();
         setSwitchViewListener();
-        queryServerData();
+        queryDataServerInfo();
+    }
+
+    private void setView() {
+        mTvRegisterPlatform.setText("地大平台");
     }
 
     private void setSwitchViewListener() {
@@ -186,11 +193,11 @@ public class BleDataCenterServerConfigFragment extends BaseBleConnectFragment {
                     showCloseSwitchButtonDialog("确定要关闭数据中心？");
                 } else {
                     childItemsLayout.setVisibility(View.VISIBLE);
-                    ServerNumberEntity serverNumberEntity = new ServerNumberEntity(serverNumber.toInt());
-                    String command = CommandManager.getInstance().getCommand(CommandType.QUERY_DATA_CENTER_PARAM, serverNumberEntity);
-                    sendCommonCommandImmediately(command);//查询数据中心1参数
+
+                    errMsg = "查询数据超时,请稍后尝试";
+                    startProgressRunnable("正在获取参数...", 25000);
+                    queryDataCenterInfo();
                 }
-                Timber.i("mSbLinkOne===%s", isChecked);
             }
         });
     }
@@ -206,16 +213,14 @@ public class BleDataCenterServerConfigFragment extends BaseBleConnectFragment {
                 .canceledOnTouchOutside(false)
                 .positiveText("确定")
                 .negativeText("取消")
+                .positiveColorRes(R.color.blue_52B4F8)
+                .negativeColorRes(R.color.sub_title_text_color)
                 .onPositive(new MaterialDialog.SingleButtonCallback() {
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                         dialog.dismiss();
                         childItemsLayout.setVisibility(View.GONE);
-                        //确定关闭sb按钮。隐藏编辑字体
-                        //发送对应关闭中心
-                        ServerNumberEntity serverNumberEntity = new ServerNumberEntity(serverNumber.toInt());
-                        String cmdAddress1 = CommandManager.getInstance().getCommand(CommandType.SET_SERVER_ADDRESS_PORT, serverNumberEntity);
-                        sendCommonCommandImmediately(cmdAddress1);//关闭服务器
+                        closeDataServer();//关闭服务器
                     }
                 }).onNegative(new MaterialDialog.SingleButtonCallback() {
                     @Override
@@ -228,61 +233,35 @@ public class BleDataCenterServerConfigFragment extends BaseBleConnectFragment {
         mMaterialDialog.show();
     }
 
-    private void queryServerData() {
+    /**
+     * 查询数据服务器地址、端口
+     */
+    private void queryDataServerInfo() {
         errMsg = "查询数据超时,请稍后尝试";
         startProgressRunnable("正在获取参数...", 25000);
-        ServerNumberEntity serverNumberEntity;
 
-        switch (serverNumber) {
-            case NUMBER_ONE:
-                //获取服务器地址,查询中心开启状态
-                serverNumberEntity = new ServerNumberEntity(ServerNumber.NUMBER_ONE.toInt());
-                String cmdAddress1 = CommandManager.getInstance().getCommand(CommandType.SERVER_ADDRESS, serverNumberEntity);
-                sendCommonCommand(cmdAddress1);
-                Timber.d("查询服务器地址1指令===%s", cmdAddress1);
-                break;
-
-            case NUMBER_TWO:
-                serverNumberEntity = new ServerNumberEntity(ServerNumber.NUMBER_TWO.toInt());
-                String cmdAddress2 = CommandManager.getInstance().getCommand(CommandType.SERVER_ADDRESS, serverNumberEntity);
-                sendCommonCommand(cmdAddress2);
-                Timber.d("查询服务器地址2指令===%s", cmdAddress2);
-                break;
-
-            case NUMBER_THREE:
-                serverNumberEntity = new ServerNumberEntity(ServerNumber.NUMBER_THREE.toInt());
-                String cmdAddress3 = CommandManager.getInstance().getCommand(CommandType.SERVER_ADDRESS, serverNumberEntity);
-                sendCommonCommand(cmdAddress3);
-                Timber.d("查询服务器地址3指令===%s", cmdAddress3);
-                break;
-        }
+        //获取服务器地址,查询中心开启状态
+        ServerNumberEntity serverNumberEntity = new ServerNumberEntity(serverNumber.toInt());
+        String command = CommandManager.getInstance().getCommand(CommandType.SERVER_ADDRESS, serverNumberEntity);
+        sendCommonCommandImmediately(command);
+        Timber.d("查询数据服务器%s的地址指令===%s", serverNumber.toInt(), command);
     }
 
-    private void queryDataCenterData() {
-        ServerNumberEntity serverNumberEntity;
-        String command;
-        switch (serverNumber) {
-            case NUMBER_ONE:
-                serverNumberEntity = new ServerNumberEntity(ServerNumber.NUMBER_ONE.toInt());
-                command = CommandManager.getInstance().getCommand(CommandType.QUERY_DATA_CENTER_PARAM, serverNumberEntity);
-                sendCommonCommandImmediately(command);//查询数据中心1参数
-                Timber.d("查询数据中心1参数===%s", command);
-                break;
+    private void closeDataServer() {
+        ServerNumberEntity serverNumberEntity = new ServerNumberEntity(serverNumber.toInt());
+        String command = CommandManager.getInstance().getCommand(CommandType.SET_SERVER_ADDRESS_PORT, serverNumberEntity);
+        sendCommonCommandImmediately(command);//关闭服务器
+        Timber.d("关闭数据服务器%s指令===%s", serverNumber.toInt(), command);
+    }
 
-            case NUMBER_TWO:
-                serverNumberEntity = new ServerNumberEntity(ServerNumber.NUMBER_TWO.toInt());
-                command = CommandManager.getInstance().getCommand(CommandType.QUERY_DATA_CENTER_PARAM, serverNumberEntity);
-                sendCommonCommandImmediately(command);//查询数据中心2参数
-                Timber.d("查询数据中心2参数===%s", command);
-                break;
-
-            case NUMBER_THREE:
-                serverNumberEntity = new ServerNumberEntity(ServerNumber.NUMBER_THREE.toInt());
-                command = CommandManager.getInstance().getCommand(CommandType.QUERY_DATA_CENTER_PARAM, serverNumberEntity);
-                sendCommonCommandImmediately(command);//查询数据中心3参数
-                Timber.d("查询数据中心3参数===%s", command);
-                break;
-        }
+    /**
+     * 查询数据中心参数
+     */
+    private void queryDataCenterInfo() {
+        ServerNumberEntity serverNumberEntity = new ServerNumberEntity(serverNumber.toInt());
+        String command = CommandManager.getInstance().getCommand(CommandType.QUERY_DATA_CENTER_PARAM, serverNumberEntity);
+        sendCommonCommandImmediately(command);
+        Timber.d("查询数据中心%s的参数===%s", serverNumber.toInt(), command);
     }
 
 
@@ -547,12 +526,12 @@ public class BleDataCenterServerConfigFragment extends BaseBleConnectFragment {
                 if (!serverAddressInfo.getAddress().equals("0.0.0.0")) {
                     mSbCenterEnable.setCheckedImmediatelyNoEvent(true);
                     childItemsLayout.setVisibility(View.VISIBLE);
+                    queryDataCenterInfo();
                 } else {
                     mSbCenterEnable.setCheckedImmediatelyNoEvent(false);
                     childItemsLayout.setVisibility(View.GONE);
+                    stopProgressRunnable();
                 }
-
-                queryDataCenterData();
                 break;
 
             case QUERY_DATA_CENTER_PARAM://查询数据中心 1、2、3 参数
@@ -585,12 +564,10 @@ public class BleDataCenterServerConfigFragment extends BaseBleConnectFragment {
                 if (!mSbCenterEnable.isChecked()) {
                     return;
                 }
-                //处理关闭中心1、2、3的开关时，接收到的应答指令
-//                if (TextUtils.isEmpty(communicationProtocol)) {
-//                    return;
-//                }
 
-                if (communicationProtocol.equals("4")) {//MQTT自动注册
+                if (communicationProtocol.equals("2")) {//MDM协议
+                    doAfterSetting();
+                } else if (communicationProtocol.equals("4")) {//MQTT自动注册
                     sendCommonCommandImmediately(cmdRegistrationPlatform);
                     Timber.d("选择平台配置===%s", cmdRegistrationPlatform);
                     return;
@@ -643,8 +620,7 @@ public class BleDataCenterServerConfigFragment extends BaseBleConnectFragment {
                     Timber.d("设置 AppKey===%s", cmdAppKey);
                     return;
                 } else {
-                    stopProgressRunnable();
-                    ToastUtils.show("设置完成");
+                    doAfterSetting();
                 }
                 break;
 
@@ -654,8 +630,7 @@ public class BleDataCenterServerConfigFragment extends BaseBleConnectFragment {
                     stopProgressRunnable();
                     return;
                 }
-                stopProgressRunnable();
-                ToastUtils.show("设置完成");
+                doAfterSetting();
                 break;
 
             case SET_MANUAL_REGISTRATION_PLATFORM_PARAM:// MQTT 手动注册设置参数时应答
@@ -664,8 +639,7 @@ public class BleDataCenterServerConfigFragment extends BaseBleConnectFragment {
                     stopProgressRunnable();
                     return;
                 }
-                stopProgressRunnable();
-                ToastUtils.show("设置完成");
+                doAfterSetting();
                 break;
         }
     }
@@ -716,6 +690,17 @@ public class BleDataCenterServerConfigFragment extends BaseBleConnectFragment {
         mEtMqttDeviceId.setText(TextUtils.isEmpty(mqttConfigInfo.getMqttDeviceId()) ? "" : mqttConfigInfo.getMqttDeviceId().trim());
         mEtMqttUsername.setText(TextUtils.isEmpty(mqttConfigInfo.getMqttUsername()) ? "" : mqttConfigInfo.getMqttUsername().trim());
         mEtMqttPwd.setText(TextUtils.isEmpty(mqttConfigInfo.getMqttPassword()) ? "" : mqttConfigInfo.getMqttPassword().trim());
+    }
+
+    private void doAfterSetting() {
+        stopProgressRunnable();
+        ToastUtils.show("设置完成");
+        MCloudApp.getMainHandler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                mActivity.finish();
+            }
+        }, 2000);
     }
 
     @Override
@@ -801,7 +786,8 @@ public class BleDataCenterServerConfigFragment extends BaseBleConnectFragment {
                 .canceledOnTouchOutside(false)
                 .positiveText("确定")
                 .negativeText("取消")
-                .negativeColor(Color.parseColor("#807B7B"))
+                .positiveColorRes(R.color.blue_52B4F8)
+                .negativeColorRes(R.color.sub_title_text_color)
                 .onPositive(new MaterialDialog.SingleButtonCallback() {
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {

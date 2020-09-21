@@ -341,6 +341,8 @@ public class BleConfigDeviceFragment extends BaseBleConnectFragment {
                 .canceledOnTouchOutside(false)
                 .positiveText("确定")
                 .negativeText("取消")
+                .positiveColorRes(R.color.blue_52B4F8)
+                .negativeColorRes(R.color.sub_title_text_color)
                 .onPositive(new MaterialDialog.SingleButtonCallback() {
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {

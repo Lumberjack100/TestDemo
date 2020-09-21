@@ -44,8 +44,8 @@ public final class RuntimeRationale implements Rationale<List<String>> {
                 .title("提示").content(message)
                 .negativeText("取消")
                 .positiveText("确定")
-                .negativeColor(context.getResources().getColor(R.color.gray_797979))
-                .positiveColor(context.getResources().getColor(R.color.colorPrimary))
+                .positiveColorRes(R.color.blue_52B4F8)
+                .negativeColorRes(R.color.sub_title_text_color)
                 .cancelable(false)
                 .canceledOnTouchOutside(false)
                 .onPositive(new MaterialDialog.SingleButtonCallback() {

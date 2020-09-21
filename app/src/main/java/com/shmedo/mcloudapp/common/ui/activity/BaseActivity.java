@@ -217,7 +217,8 @@ public abstract class BaseActivity extends AppCompatActivity {
                 .content(content)
                 .contentColor(Color.parseColor("#000000"))
                 .canceledOnTouchOutside(false)
-                .positiveText("确定");
+                .positiveText("确定")
+                .positiveColorRes(R.color.blue_52B4F8);
         MaterialDialog mMaterialDialog = mBuilder.build();
         mMaterialDialog.show();
     }

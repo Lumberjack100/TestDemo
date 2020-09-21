@@ -14,6 +14,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.callback.HandleBackInterface;
 import com.shmedo.mcloudapp.util.common.HandleBackUtil;
 import com.shmedo.mcloudapp.util.permission.XPermissionUtils;
@@ -123,7 +124,8 @@ public abstract class BaseFragment extends Fragment implements HandleBackInterfa
                 .content(content)
                 .contentColor(Color.parseColor("#000000"))
                 .canceledOnTouchOutside(false)
-                .positiveText("确定");
+                .positiveText("确定")
+                .positiveColorRes(R.color.blue_52B4F8);
         MaterialDialog mMaterialDialog = mBuilder.build();
         mMaterialDialog.show();
     }

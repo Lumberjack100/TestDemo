@@ -304,28 +304,6 @@ public class ConfigE60Activity extends BaseActivity {
                 .getSecurityNO();
     }
 
-    /**
-     * 如果验证错误，提示用户
-     *
-     * @param content
-     */
-    private void showLoadResultDialog(String content) {
-        MaterialDialog.Builder  mBuilder = new MaterialDialog.Builder(this);
-        mBuilder.title("温馨提示：")
-                .content(content)
-                .contentColor(Color.parseColor("#000000"))
-                .canceledOnTouchOutside(false)
-                .positiveText("确定")
-                .onPositive(new MaterialDialog.SingleButtonCallback() {
-            @Override
-            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                dialog.dismiss();
-                finish();
-            }
-        });
-        MaterialDialog mMaterialDialog = mBuilder.build();
-        mMaterialDialog.show();
-    }
 
 
     @Override

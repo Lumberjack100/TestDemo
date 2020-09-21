@@ -415,7 +415,9 @@ public abstract class BaseSensorConfigActivity extends BaseDeviceConnectActivity
                 .contentColor(Color.parseColor("#000000"))
                 .canceledOnTouchOutside(false)
                 .positiveText("确定")
-                .negativeText("取消");
+                .negativeText("取消")
+                .positiveColorRes(R.color.blue_52B4F8)
+                .negativeColorRes(R.color.sub_title_text_color);
         MaterialDialog mMaterialDialog = mBuilder.build();
         mMaterialDialog.show();
         mBuilder.onPositive(new MaterialDialog.SingleButtonCallback() {

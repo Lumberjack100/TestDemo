@@ -136,8 +136,8 @@ public class MineFragment extends BaseTranslucentFragment {
                 .canceledOnTouchOutside(false)
                 .negativeText("取消")
                 .positiveText("确定")
-                .negativeColor(getResources().getColor(R.color.font_main))
-                .positiveColor(getResources().getColor(R.color.colorPrimary))
+                .positiveColorRes(R.color.blue_52B4F8)
+                .negativeColorRes(R.color.sub_title_text_color)
                 .onPositive(new MaterialDialog.SingleButtonCallback() {
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
