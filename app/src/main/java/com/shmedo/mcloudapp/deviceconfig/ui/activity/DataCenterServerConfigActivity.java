@@ -31,9 +31,10 @@ public class DataCenterServerConfigActivity extends BaseActivity {
 
 
     public static void startActivity(Context context, int connectWay, ServerNumber serverNumber) {
-        Intent intent = new Intent(context, DataCenterActivity.class);
+        Intent intent = new Intent(context, DataCenterServerConfigActivity.class);
         intent.putExtra(AppContants.Extras.COMMUNICATION_WAY, connectWay);
         intent.putExtra(SERVER_NUMBER, serverNumber);
+        intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         context.startActivity(intent);
     }
 

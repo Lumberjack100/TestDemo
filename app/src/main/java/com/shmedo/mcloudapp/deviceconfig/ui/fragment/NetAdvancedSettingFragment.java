@@ -8,6 +8,7 @@ import androidx.annotation.Nullable;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.hjq.toast.ToastUtils;
 import com.shmedo.core.MCloudApp;
 import com.shmedo.core.model.UserInfo;
 import com.shmedo.mcloudapp.R;
@@ -100,19 +101,24 @@ public class NetAdvancedSettingFragment extends BaseFragment {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.resetLayout://切换连接方式
-                showResetWarnDialog();
+                ToastUtils.show("正在研发中,敬请期待...");
+//                showResetWarnDialog();
                 break;
 
             case R.id.workModeLayout:
+                ToastUtils.show("正在研发中,敬请期待...");
                 break;
 
             case R.id.productRegisterLayout:
+                ToastUtils.show("正在研发中,敬请期待...");
                 break;
 
             case R.id.modifyAuthCodeLayout:
+                ToastUtils.show("正在研发中,敬请期待...");
                 break;
 
             case R.id.syncInstallLocationLayout:
+                ToastUtils.show("正在研发中,敬请期待...");
                 break;
         }
     }

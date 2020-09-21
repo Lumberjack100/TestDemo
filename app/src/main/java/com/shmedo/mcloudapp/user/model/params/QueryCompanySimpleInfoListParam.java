@@ -10,6 +10,7 @@ public class QueryCompanySimpleInfoListParam {
     private String companyName;
     private int pageSize;
     private int currentPage;
+    private boolean includeSubCompany=false;
 
     public String getCompanyName() {
         return companyName;
@@ -33,5 +34,13 @@ public class QueryCompanySimpleInfoListParam {
 
     public void setCurrentPage(int currentPage) {
         this.currentPage = currentPage;
+    }
+
+    public boolean isIncludeSubCompany() {
+        return includeSubCompany;
+    }
+
+    public void setIncludeSubCompany(boolean includeSubCompany) {
+        this.includeSubCompany = includeSubCompany;
     }
 }

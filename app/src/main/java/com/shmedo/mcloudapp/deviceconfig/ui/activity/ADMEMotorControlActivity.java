@@ -135,6 +135,7 @@ public class ADMEMotorControlActivity extends BaseDeviceConnectActivity {
     public static void startActivity(Context context, String configInfo) {
         Intent intent = new Intent(context, ADMEMotorControlActivity.class);
         intent.putExtra(AppContants.Extras.ADME_MOTOR_CONTROL_CONFIG_INFO, configInfo);
+        intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         context.startActivity(intent);
     }
 

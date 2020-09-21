@@ -64,6 +64,7 @@ public class CountMeterWheelActivity extends BaseDeviceConnectActivity {
         Intent intent = new Intent(context, CountMeterWheelActivity.class);
         intent.putExtra(AppContants.Extras.ADME_COUNT_METER_WHEEL_CONFIG_INFO, countMeterParam);
         intent.putExtra(AppContants.Extras.ENCODER_CORRECTION_PARAMETERS, correctionParam);
+        intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         context.startActivity(intent);
     }
 

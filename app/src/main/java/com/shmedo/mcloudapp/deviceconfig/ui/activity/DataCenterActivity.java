@@ -29,6 +29,7 @@ public class DataCenterActivity extends BaseActivity {
     public static void startActivity(Context context, int connectWay) {
         Intent intent = new Intent(context, DataCenterActivity.class);
         intent.putExtra(AppContants.Extras.COMMUNICATION_WAY, connectWay);
+        intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         context.startActivity(intent);
     }
 

@@ -128,6 +128,7 @@ public class ADMESensorExecutiveAgencyConfigActivity extends BaseDeviceConnectAc
         Intent intent = new Intent(context, ADMESensorExecutiveAgencyConfigActivity.class);
         intent.putExtra(AppContants.Extras.ADME_SENSOR_CONFIG_INFO, sensorInfo);
         intent.putExtra(AppContants.Extras.ADME_EXECUTIVE_AGENCY_CONFIG_INFO, executiveAgencyInfo);
+        intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         context.startActivity(intent);
     }
 

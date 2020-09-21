@@ -60,7 +60,7 @@ public class MineFragment extends BaseTranslucentFragment {
 
     private UserInfo userInfo;
     private UserInfo.UserBean user;
-
+    private int companyID;
     private CompanyInfo mCompanyInfo;
 
     @Override
@@ -68,23 +68,20 @@ public class MineFragment extends BaseTranslucentFragment {
         return R.layout.fragment_mine;
     }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = super.onCreateView(inflater, container, savedInstanceState);
-
-        return view;
-    }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        getCompanyInfo();
     }
 
     @Override
     public void onStart() {
         super.onStart();
         updateView();
+        if (companyID != MCloudApp.getCompanyID()) {
+            companyID = MCloudApp.getCompanyID();
+            getCompanyInfo();
+        }
     }
 
     private void updateView() {
@@ -172,7 +169,7 @@ public class MineFragment extends BaseTranslucentFragment {
      * 查询单个公司信息
      */
     private void getCompanyInfo() {
-        RequestBody body = RequestBody.create(NetworkConst.JSON_TYPE, "");
+        RequestBody body = RequestBody.create(NetworkConst.JSON_TYPE, String.valueOf(companyID));
         MDRetrofit.getInstance()
                 .createService()
                 .GetCompanyInfo(MCloudApp.getAccessToken(), body)

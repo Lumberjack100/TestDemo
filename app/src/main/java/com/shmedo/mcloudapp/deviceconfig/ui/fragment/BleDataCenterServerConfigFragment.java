@@ -53,6 +53,10 @@ import timber.log.Timber;
  * A simple {@link Fragment} subclass.
  */
 public class BleDataCenterServerConfigFragment extends BaseBleConnectFragment {
+
+    @BindView(R.id.ll_child_items)
+    ViewGroup childItemsLayout;
+
     @BindView(R.id.centerEnableSBtn)
     SwitchButton mSbCenterEnable;
 
@@ -181,6 +185,7 @@ public class BleDataCenterServerConfigFragment extends BaseBleConnectFragment {
                 if (!isChecked) {
                     showCloseSwitchButtonDialog("确定要关闭数据中心？");
                 } else {
+                    childItemsLayout.setVisibility(View.VISIBLE);
                     ServerNumberEntity serverNumberEntity = new ServerNumberEntity(serverNumber.toInt());
                     String command = CommandManager.getInstance().getCommand(CommandType.QUERY_DATA_CENTER_PARAM, serverNumberEntity);
                     sendCommonCommandImmediately(command);//查询数据中心1参数
@@ -205,6 +210,7 @@ public class BleDataCenterServerConfigFragment extends BaseBleConnectFragment {
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                         dialog.dismiss();
+                        childItemsLayout.setVisibility(View.GONE);
                         //确定关闭sb按钮。隐藏编辑字体
                         //发送对应关闭中心
                         ServerNumberEntity serverNumberEntity = new ServerNumberEntity(serverNumber.toInt());
@@ -518,7 +524,7 @@ public class BleDataCenterServerConfigFragment extends BaseBleConnectFragment {
         super.onMessageEvent(messageEvent);
 
         if (messageEvent instanceof CmdResponseMessage) {
-            if(!isActive){
+            if (!isActive) {
                 return;
             }
             setResultData((CmdResponseMessage) messageEvent);
@@ -540,6 +546,10 @@ public class BleDataCenterServerConfigFragment extends BaseBleConnectFragment {
                 ServerAddressInfo serverAddressInfo = ResultParserUtil.getEntityObject(cmdStr);
                 if (!serverAddressInfo.getAddress().equals("0.0.0.0")) {
                     mSbCenterEnable.setCheckedImmediatelyNoEvent(true);
+                    childItemsLayout.setVisibility(View.VISIBLE);
+                } else {
+                    mSbCenterEnable.setCheckedImmediatelyNoEvent(false);
+                    childItemsLayout.setVisibility(View.GONE);
                 }
 
                 queryDataCenterData();

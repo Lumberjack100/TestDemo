@@ -159,7 +159,7 @@ public class ProjectListFragment extends BaseTranslucentFragment {
         initRefreshLayout();
         setListener();
 
-        refreshProjects();
+//        refreshProjects();
     }
 
     @Override
@@ -167,6 +167,7 @@ public class ProjectListFragment extends BaseTranslucentFragment {
         super.onStart();
         if (companyID != MCloudApp.getCompanyID()) {
             companyID = MCloudApp.getCompanyID();
+            refreshProjects();
         }
     }
 
@@ -481,7 +482,7 @@ public class ProjectListFragment extends BaseTranslucentFragment {
      * 查询当前用户的项目列表(列表方式、不分页)
      */
     private void queryUserListProject() {
-        ProjectBaseInfoParam parameter = new ProjectBaseInfoParam(null, "");
+        ProjectBaseInfoParam parameter = new ProjectBaseInfoParam(String.valueOf(companyID), "");
         String json = GsonFactory.getGson().toJson(parameter);
         RequestBody body = RequestBody.create(NetworkConst.JSON_TYPE, json);
         MDRetrofit.getInstance()
@@ -527,7 +528,7 @@ public class ProjectListFragment extends BaseTranslucentFragment {
      * 查询当前用户的项目列表（自定义分级方式，不包含空节点）
      */
     private void getLevelProjList() {
-        ProjectBaseInfoParam parameter = new ProjectBaseInfoParam(null, "");
+        ProjectBaseInfoParam parameter = new ProjectBaseInfoParam(String.valueOf(companyID), "");
         String json = GsonFactory.getGson().toJson(parameter);
         RequestBody body = RequestBody.create(NetworkConst.JSON_TYPE, json);
         MDRetrofit.getInstance()
@@ -565,7 +566,7 @@ public class ProjectListFragment extends BaseTranslucentFragment {
      * 查询当前用户的项目列表(行政区域方式)
      */
     private void queryUserRegionProject() {
-        ProjectBaseInfoParam parameter = new ProjectBaseInfoParam(null, "");
+        ProjectBaseInfoParam parameter = new ProjectBaseInfoParam(String.valueOf(companyID), "");
         String json = GsonFactory.getGson().toJson(parameter);
         RequestBody body = RequestBody.create(NetworkConst.JSON_TYPE, json);
         MDRetrofit.getInstance()
@@ -604,7 +605,7 @@ public class ProjectListFragment extends BaseTranslucentFragment {
      * 查询当前用户的项目列表(项目类型方式)
      */
     private void queryUserTypeProject() {
-        ProjectBaseInfoParam parameter = new ProjectBaseInfoParam(null, "");
+        ProjectBaseInfoParam parameter = new ProjectBaseInfoParam(String.valueOf(companyID), "");
         String json = GsonFactory.getGson().toJson(parameter);
         RequestBody body = RequestBody.create(NetworkConst.JSON_TYPE, json);
         MDRetrofit.getInstance()
@@ -701,43 +702,6 @@ public class ProjectListFragment extends BaseTranslucentFragment {
                         swipeRefresh.setRefreshing(false);
                         ResponseHandler.getInstance().handleFailure((Exception) e);
                     }
-
-//                    @Override
-//                    public void onSuccess(List<ProjectDetailInfo> data, String message) {
-//                        swipeRefresh.setRefreshing(false);
-//                        if (data == null || data.size() == 0) {
-//                            return;
-//                        }
-//
-//                        //TODO 按照tempBaseInfoList列表顺序对data排序
-//                        List<ProjectDetailInfo> tempDetailInfoList = new ArrayList<>();
-//                        detailInfoMap.clear();
-//                        for (ProjectBaseInfo baseInfo : tempBaseInfoList) {
-//                            for (ProjectDetailInfo detailInfo : data) {
-//                                if (baseInfo.getProjID() == detailInfo.getProjectID()) {
-//                                    //设置置顶标识
-//                                    detailInfo.setTop(baseInfo.isTop());
-//                                    //设置用户 Id
-//                                    detailInfo.setUserId(userId);
-//                                    Date registerDate = new Date();
-//                                    try {
-//                                        registerDate = DateUtil.stringToDate(detailInfo.getRegisterTime(), "yyyy-MM-dd HH:mm:ss");
-//                                    } catch (Exception ex) {
-//                                        ex.printStackTrace();
-//                                    }
-//                                    //设置过期标识
-//                                    detailInfo.setOutOfDate(registerDate.before(new Date()));
-//                                    detailInfoMap.put(detailInfo.getProjectID(), detailInfo);
-//                                    tempDetailInfoList.add(detailInfo);
-//                                    break;
-//                                }
-//                            }
-//                        }
-//
-//                        setSimpleModeAdapterData(tempDetailInfoList);
-//                        //更新到本地数据库
-//                        DaoManager.getInstance().getDaoSession().getProjectDetailInfoDao().insertOrReplaceInTx(data);
-//                    }
                 });
     }
 
@@ -923,6 +887,7 @@ public class ProjectListFragment extends BaseTranslucentFragment {
 
     /**
      * 用户项目置顶
+     *
      * @param projectIDs
      */
     private void processTopUserProject(List<Integer> projectIDs) {
@@ -957,6 +922,7 @@ public class ProjectListFragment extends BaseTranslucentFragment {
 
     /**
      * 用户项目取消置顶
+     *
      * @param projectIDs
      */
     private void processUnTopUserProject(List<Integer> projectIDs) {

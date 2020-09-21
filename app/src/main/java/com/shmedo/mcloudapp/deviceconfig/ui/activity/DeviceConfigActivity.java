@@ -51,6 +51,7 @@ public class DeviceConfigActivity extends BaseActivity {
         Intent intent = new Intent(context, DeviceConfigActivity.class);
         intent.putExtra(AppContants.Extras.COMMUNICATION_WAY, connectWay);
         intent.putExtra(AppContants.Extras.CUR_BLE_DEVICE_INFO, deviceInfo);
+        intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         context.startActivity(intent);
     }
 

@@ -147,7 +147,7 @@ public class CompanySwitchDialogFragment extends BaseDialogFragment {
 
     private void doPositiveClick(View view) {
         if (companySimpleInfo == null) {
-            ToastUtils.show("您还没选中固件!");
+            ToastUtils.show("您还没选中企业!");
             return;
         }
 
@@ -176,6 +176,7 @@ public class CompanySwitchDialogFragment extends BaseDialogFragment {
         parameter.setCompanyName(null);
         parameter.setPageSize(PAGE_SIZE);
         parameter.setCurrentPage(pageInfo.getPage());
+        parameter.setIncludeSubCompany(false);
 
         String json = GsonFactory.getGson().toJson(parameter);
         RequestBody body = RequestBody.create(NetworkConst.JSON_TYPE, json);
