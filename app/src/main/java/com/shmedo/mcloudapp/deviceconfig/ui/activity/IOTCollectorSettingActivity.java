@@ -45,6 +45,7 @@ public class IOTCollectorSettingActivity extends BaseActivity {
         Intent intent = new Intent(context, IOTCollectorSettingActivity.class);
         intent.putExtra(AppContants.Extras.COMMUNICATION_WAY, connectWay);
         intent.putExtra(AppContants.Extras.COLLECTOR_MODE, collectorModel);
+        intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         context.startActivity(intent);
     }
 

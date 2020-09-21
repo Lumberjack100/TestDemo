@@ -253,6 +253,9 @@ public class BleDeviceCurrentStateFragment extends BaseBleConnectFragment {
         super.onMessageEvent(messageEvent);
 
         if (messageEvent instanceof CmdResponseMessage) {
+            if(!isActive){
+                return;
+            }
             setResultData((CmdResponseMessage) messageEvent);
         }
     }

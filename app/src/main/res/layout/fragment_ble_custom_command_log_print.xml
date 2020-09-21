@@ -78,8 +78,9 @@
                 android:id="@+id/recyclerView_log"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginBottom="5dp"
-                android:paddingEnd="5dp"
+                android:paddingStart="15dp"
+                android:paddingEnd="15dp"
+                android:paddingBottom="85dp"
                 android:scrollbarSize="3dp"
                 android:scrollbarStyle="outsideOverlay"
                 android:scrollbarThumbVertical="@drawable/scrollbar_vertical_thumb"
@@ -145,7 +146,7 @@
             android:layout_marginStart="8dp"
             android:background="@drawable/bg_corner_20dp_blue"
             android:gravity="center"
-            android:text="搜索"
+            android:text="发送"
             android:textColor="@color/white"
             android:textSize="@dimen/text_size_17" />
 

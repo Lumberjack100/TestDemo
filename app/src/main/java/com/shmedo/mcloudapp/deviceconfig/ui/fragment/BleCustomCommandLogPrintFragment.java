@@ -26,6 +26,7 @@ import com.shmedo.core.event.CmdResponseMessage;
 import com.shmedo.core.event.MessageEvent;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.view.ClearEditText;
+import com.shmedo.mcloudapp.util.KeyBordUtils;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.base.CommonViewHolder;
 
@@ -53,7 +54,7 @@ public class BleCustomCommandLogPrintFragment extends BaseBleConnectFragment {
     SwitchButton logSwitchButton;
 
     @BindView(R.id.et_custom_command)
-    ClearEditText ceSendCode;
+    ClearEditText mEtcommand;
 
     @BindView(R.id.recyclerView_log)
     RecyclerView mRecyclerView;
@@ -165,7 +166,7 @@ public class BleCustomCommandLogPrintFragment extends BaseBleConnectFragment {
                     return;
                 }
                 //发送指令
-                String sendCode = ceSendCode.getText().toString().trim();
+                String sendCode = mEtcommand.getText().toString().trim();
                 String result = sendCode + "\r\n";
                 if (!sendCode.startsWith("##")) {
                     ToastUtils.show("指令格式不正确，请重新输入");
@@ -228,12 +229,11 @@ public class BleCustomCommandLogPrintFragment extends BaseBleConnectFragment {
         super.onMessageEvent(messageEvent);
 
         if (messageEvent instanceof CmdResponseMessage) {
+            if(!isActive){
+                return;
+            }
             setResultData((CmdResponseMessage) messageEvent);
         }
-//        else if (messageEvent instanceof BluetoothConnectStateEvent) {
-//            boolean isConnected = ((BluetoothConnectStateEvent) messageEvent).isConnected;
-//            updateViewStateByConnectState(isConnected);
-//        }
     }
 
     private void setResultData(CmdResponseMessage responseMessage) {

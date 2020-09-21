@@ -9,9 +9,13 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.activity.BaseActivity;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.BleAdvancedSettingFragment;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.BleCollectorSettingFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.NetAdvancedSettingFragment;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.NetCollectorSettingFragment;
 import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfo;
 
 import butterknife.BindView;
@@ -22,14 +26,23 @@ public class AdvancedSettingActivity extends BaseActivity {
     @BindView(R.id.tv_title)
     TextView mToolbarTitle;
 
-    private NetAdvancedSettingFragment fragment;
+    private Fragment fragment;
 
     private ProjectDeviceInfo projectDeviceInfo;
+
+    private int connectWay = AppContants.CommunicationWay.NET_CONNECT;
 
 
     public static void startActivity(Context context, ProjectDeviceInfo projectDeviceInfo) {
         Intent intent = new Intent(context, AdvancedSettingActivity.class);
         intent.putExtra(DEVICE_INFO, projectDeviceInfo);
+        intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        context.startActivity(intent);
+    }
+
+    public static void startActivity(Context context, int connectWay) {
+        Intent intent = new Intent(context, AdvancedSettingActivity.class);
+        intent.putExtra(AppContants.Extras.COMMUNICATION_WAY, connectWay);
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         context.startActivity(intent);
     }
@@ -53,13 +66,22 @@ public class AdvancedSettingActivity extends BaseActivity {
         if (intent.getExtras() == null)
             return;
 
+        if (intent.getExtras().containsKey(AppContants.Extras.COMMUNICATION_WAY)) {
+            connectWay = intent.getIntExtra(AppContants.Extras.COMMUNICATION_WAY, AppContants.CommunicationWay.NET_CONNECT);
+        }
+
         if (intent.getExtras().containsKey(DEVICE_INFO)) {
             projectDeviceInfo = intent.getParcelableExtra(DEVICE_INFO);
         }
     }
 
     private void initFragment() {
-        fragment = NetAdvancedSettingFragment.newInstance(projectDeviceInfo);
+        if (connectWay == AppContants.CommunicationWay.NET_CONNECT) {
+            fragment = NetAdvancedSettingFragment.newInstance(projectDeviceInfo);
+        } else {
+            fragment = new BleAdvancedSettingFragment();
+        }
+
         replaceFragment(fragment);
     }
 

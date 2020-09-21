@@ -273,7 +273,7 @@ public class BleConfigDeviceFragment extends BaseBleConnectFragment {
                 break;
 
             case "设置":
-                AdvancedSettingActivity.startActivity(mActivity, null);
+                AdvancedSettingActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT);
                 break;
         }
     }
@@ -367,6 +367,9 @@ public class BleConfigDeviceFragment extends BaseBleConnectFragment {
         super.onMessageEvent(messageEvent);
 
         if (messageEvent instanceof CmdResponseMessage) {
+            if(!isActive){
+                return;
+            }
             setResultData((CmdResponseMessage) messageEvent);
         } else if (messageEvent instanceof BluetoothConnectStateEvent) {
             boolean isConnected = ((BluetoothConnectStateEvent) messageEvent).isConnected;
