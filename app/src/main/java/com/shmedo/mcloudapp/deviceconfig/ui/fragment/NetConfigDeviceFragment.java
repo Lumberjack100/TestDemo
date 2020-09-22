@@ -193,7 +193,7 @@ public class NetConfigDeviceFragment extends BaseFragment {
             }
         }
         mTvDeviceConnectState.setVisibility(View.INVISIBLE);
-        mTvDeviceCommunicationWay.setText("网络");
+        mTvDeviceCommunicationWay.setText("蓝牙");
     }
 
     private void initAdapter() {

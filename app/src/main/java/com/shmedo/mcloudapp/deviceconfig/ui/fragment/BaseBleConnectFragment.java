@@ -533,32 +533,29 @@ public abstract class BaseBleConnectFragment extends BaseFragment {
                     }
                     sendAuthenticateCodeCmd(cmdArray[3]);
                     return;
-                }
 
-                //设备登录验证结果指令
-                if (cmdStr.startsWith("$$223")) {
+                } else if (cmdStr.startsWith("$$223")) {//设备登录验证结果指令
                     sendHandleMessage(Constants.VERIFY_RESULT, cmdArray[1]);
                     Timber.d("设备登录验证状态===%s", cmdArray[1].contains("1"));
                     return;
-                }
 
-                //需要验证设备
-                if (cmdStr.equals("Please verify the equipment.\r\n")) {
+                } else if (cmdStr.equals("Please verify the equipment.\r\n")) {
                     sendHandleMessage(Constants.VERIFY_RESULT, "0");
                     return;
-                }
 
-                if (cmdStr.equals("Equipment Verify OK.\r\n")) {
+                } else if (cmdStr.equals("Equipment Verify OK.\r\n")) {
                     sendHandleMessage(Constants.MESSAGE_LOCK_REBOOT_DEVICE, null);
                     return;
+
+                } else {
+                    uiHander.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            parserResult(cmdStr);
+                        }
+                    });
                 }
 
-                uiHander.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        parserResult(cmdStr);
-                    }
-                });
             } catch (Exception ex) {
                 Timber.e(ex);
             }

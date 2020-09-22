@@ -184,7 +184,7 @@ public class BleConfigDeviceFragment extends BaseBleConnectFragment {
         }
         mTvDeviceConnectState.setVisibility(View.VISIBLE);
         mTvDeviceConnectState.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG);
-        mTvDeviceCommunicationWay.setText("蓝牙");
+        mTvDeviceCommunicationWay.setText("网络");
     }
 
     private void searchDeviceTypeInfo(String typeName) {
