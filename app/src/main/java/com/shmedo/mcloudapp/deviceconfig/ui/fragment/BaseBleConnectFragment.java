@@ -532,6 +532,7 @@ public abstract class BaseBleConnectFragment extends BaseFragment {
                         return;
                     }
                     sendAuthenticateCodeCmd(cmdArray[3]);
+                    return;
                 }
 
                 //设备登录验证结果指令
@@ -568,8 +569,6 @@ public abstract class BaseBleConnectFragment extends BaseFragment {
      * 解析设备的参数指令
      */
     private void parserResult(String cmdStr) {
-//        stopProgressRunnable();
-
         if (SN.endsWith("T")) {//ADME 设备应答指令预处理
             parserADMECmdResult(cmdStr);
 

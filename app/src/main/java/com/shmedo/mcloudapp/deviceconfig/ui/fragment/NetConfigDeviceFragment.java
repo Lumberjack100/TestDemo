@@ -9,7 +9,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
-import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -20,7 +19,6 @@ import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.hjq.toast.ToastUtils;
 import com.shmedo.core.MCloudApp;
 import com.shmedo.core.event.DeviceModuleSwitchTabEvent;
-import com.shmedo.core.model.UserInfo;
 import com.shmedo.core.util.DensityUtil;
 import com.shmedo.core.util.GlobalUtil;
 import com.shmedo.mcloudapp.R;
@@ -78,6 +76,9 @@ import okhttp3.RequestBody;
  */
 public class NetConfigDeviceFragment extends BaseFragment {
     private static final String DEVICE_INFO = "device_info";
+
+    private static final int REBOOT = 0x0002;
+    private static final int SWITCH_TO_BLE = 0x0003;
 
     @BindView(R.id.tv_device_name)
     TextView mTvDeviceName;
@@ -218,7 +219,7 @@ public class NetConfigDeviceFragment extends BaseFragment {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.tv_device_communication_way://切换连接方式
-                showSwitchConnectionDialog("确定切换到蓝牙模式？");
+                showWarnDialog("连接方式", "确定切换至蓝牙连接？", SWITCH_TO_BLE);
                 break;
 
             case R.id.rl_run_state_analysis:
@@ -232,8 +233,11 @@ public class NetConfigDeviceFragment extends BaseFragment {
             case "状态":
             case "时间":
             case "遥测":
-            case "重启":
                 processDispatchCommonCmd();
+                break;
+
+            case "重启":
+                showWarnDialog("温馨提示", "确定重启设备吗？", REBOOT);
                 break;
 
             case "固件升级":
@@ -457,13 +461,12 @@ public class NetConfigDeviceFragment extends BaseFragment {
         newFragment.show(getChildFragmentManager(), "dialog");
     }
 
-
     /**
-     * 切换连接方式弹框提醒
+     * 危险操作前弹框提醒
      */
-    private void showSwitchConnectionDialog(String content) {
+    private void showWarnDialog(String title, String content, int operateType) {
         MaterialDialog.Builder mBuilder = new MaterialDialog.Builder(mActivity)
-                .title("温馨提示：")
+                .title(title)
                 .content(content)
                 .contentColor(Color.parseColor("#000000"))
                 .canceledOnTouchOutside(false)
@@ -475,9 +478,29 @@ public class NetConfigDeviceFragment extends BaseFragment {
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                         dialog.dismiss();
-                        DeviceModuleSwitchTabEvent switchTabEvent = new DeviceModuleSwitchTabEvent(1);
-                        EventBus.getDefault().post(switchTabEvent);
-                        mActivity.finish();
+                        switch (operateType) {
+                            case REBOOT:
+                                processDispatchCommonCmd();
+                                break;
+
+                            case SWITCH_TO_BLE:
+                                DeviceModuleSwitchTabEvent switchTabEvent = new DeviceModuleSwitchTabEvent(1);
+                                EventBus.getDefault().post(switchTabEvent);
+                                mActivity.finish();
+                                break;
+                        }
+                    }
+                }).onNegative(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        dialog.dismiss();
+                        switch (operateType) {
+                            case REBOOT:
+                                break;
+
+                            case SWITCH_TO_BLE:
+                                break;
+                        }
                     }
                 });
         MaterialDialog mMaterialDialog = mBuilder.build();

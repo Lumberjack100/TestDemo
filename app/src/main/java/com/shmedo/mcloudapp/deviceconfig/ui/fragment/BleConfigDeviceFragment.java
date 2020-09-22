@@ -11,7 +11,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
-import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -23,6 +22,7 @@ import com.hjq.toast.ToastUtils;
 import com.kyleduo.switchbutton.SwitchButton;
 import com.shmedo.configlibrary.ble.cmd.CommandManager;
 import com.shmedo.configlibrary.ble.cmd.CommandResult;
+import com.shmedo.configlibrary.ble.cmd.entity.RebootDeviceEntity;
 import com.shmedo.configlibrary.ble.enums.CollectorModel;
 import com.shmedo.configlibrary.ble.enums.CommandType;
 import com.shmedo.configlibrary.ble.model.BaseConfigInfo;
@@ -37,7 +37,6 @@ import com.shmedo.core.event.BluetoothConnectStateEvent;
 import com.shmedo.core.event.CmdResponseMessage;
 import com.shmedo.core.event.DeviceModuleSwitchTabEvent;
 import com.shmedo.core.event.MessageEvent;
-import com.shmedo.core.model.UserInfo;
 import com.shmedo.core.util.DensityUtil;
 import com.shmedo.core.util.GlobalUtil;
 import com.shmedo.mcloudapp.R;
@@ -89,7 +88,9 @@ import timber.log.Timber;
 public class BleConfigDeviceFragment extends BaseBleConnectFragment {
     private static final String DEVICE_INFO = "device_info";
 
-    private static final int DEVICE_ACTIVE = 0x0002;
+    private static final int LOW_ENERGY_MODEL = 0x0001;
+    private static final int REBOOT = 0x0002;
+    private static final int SWITCH_TO_NET = 0x0003;
 
     @BindView(R.id.tv_device_name)
     TextView mTvDeviceName;
@@ -221,7 +222,7 @@ public class BleConfigDeviceFragment extends BaseBleConnectFragment {
                     setLowEnergyModel(true);
                     mTvActiveState.setText("已激活");
                 } else {
-                    showCloseSwitchButtonDialog(getString(R.string.device_enable_state_close_warn), DEVICE_ACTIVE);
+                    showWarnDialog("温馨提示", getString(R.string.device_enable_state_close_warn), LOW_ENERGY_MODEL);
                 }
             }
         });
@@ -258,15 +259,15 @@ public class BleConfigDeviceFragment extends BaseBleConnectFragment {
                 break;
 
             case "时间":
-                queryTimeCmd();
+                doQueryTimeCmd();
                 break;
 
             case "遥测":
-                telemetryCmd();
+                doTelemetryCmd();
                 break;
 
             case "重启":
-
+                showWarnDialog("温馨提示", "确定重启设备吗？", REBOOT);
                 break;
 
             case "固件升级":
@@ -293,18 +294,25 @@ public class BleConfigDeviceFragment extends BaseBleConnectFragment {
         }
     }
 
-    private void queryTimeCmd() {
+    private void doQueryTimeCmd() {
         showLoadingDialog("指令下发中...");
         String command = CommandManager.getInstance().getCommand(CommandType.LOCAL_TIME, null);
         sendCommonCommandImmediately(command);
         Timber.d("获取设备时间信息指令===%s", command);
     }
 
-    private void telemetryCmd() {
+    private void doTelemetryCmd() {
         showLoadingDialog("指令下发中...");
         String command = CommandManager.getInstance().getCommand(CommandType.INSTANT_COLLEACTOR, null);
         sendCommonCommandImmediately(command);
         Timber.d("遥测设备指令===%s", command);
+    }
+
+    private void doRebootCmd() {
+        showLoadingDialog("指令下发中...");
+        RebootDeviceEntity rebootDeviceEntity = new RebootDeviceEntity(2);
+        String command = CommandManager.getInstance().getCommand(CommandType.REBOOT_DEVICE, rebootDeviceEntity);
+        Timber.d("重启设备指令===%s", command);
     }
 
     private BaseDialogFragment.DialogFragmentClickListener firmWareSelectListener = new BaseDialogFragment.DialogFragmentClickListener<FirmWareInfo>() {
@@ -314,13 +322,11 @@ public class BleConfigDeviceFragment extends BaseBleConnectFragment {
             return true;
         }
 
-
         @Override
         public void onNegativeClick(View view) {
 
         }
     };
-
 
     @OnClick({R.id.tv_device_connect_state, R.id.tv_device_communication_way})
     public void onClick(View v) {
@@ -340,44 +346,9 @@ public class BleConfigDeviceFragment extends BaseBleConnectFragment {
                 break;
 
             case R.id.tv_device_communication_way://切换连接方式
-                showSwitchConnectionDialog("确定切换到网络模式？");
+                showWarnDialog("连接方式", "确定切换至网络连接？", SWITCH_TO_NET);
                 break;
         }
-    }
-
-    /**
-     * 关闭SwitchButton
-     */
-    private void showCloseSwitchButtonDialog(String content, final int index) {
-        MaterialDialog.Builder mBuilder = new MaterialDialog.Builder(getActivity())
-                .title("温馨提示：")
-                .content(content)
-                .contentColor(Color.parseColor("#000000"))
-                .canceledOnTouchOutside(false)
-                .positiveText("确定")
-                .negativeText("取消")
-                .positiveColorRes(R.color.blue_52B4F8)
-                .negativeColorRes(R.color.sub_title_text_color)
-                .onPositive(new MaterialDialog.SingleButtonCallback() {
-                    @Override
-                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        dialog.dismiss();
-                        if (index == DEVICE_ACTIVE) {//发送关闭DAS命令
-                            setLowEnergyModel(false);
-                            mTvActiveState.setText("已待机");
-                        }
-                    }
-                }).onNegative(new MaterialDialog.SingleButtonCallback() {
-                    @Override
-                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        dialog.dismiss();
-                        if (index == DEVICE_ACTIVE) {
-                            mSbActiveState.setCheckedImmediatelyNoEvent(true);
-                        }
-                    }
-                });
-        MaterialDialog mMaterialDialog = mBuilder.build();
-        mMaterialDialog.show();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -454,6 +425,19 @@ public class BleConfigDeviceFragment extends BaseBleConnectFragment {
                 newFragment.show(getChildFragmentManager(), "dialog");
             }
             break;
+
+            case REBOOT_DEVICE: {
+                dismissLoadingDialog();
+                if (tempStr.endsWith(CommandResult.ERROR_END)) {
+                    Timber.e("重启指令出错!");
+                    ToastUtils.show("重启指令出错!");
+                    return;
+                }
+            }
+            break;
+
+            default:
+                break;
         }
     }
 
@@ -586,11 +570,11 @@ public class BleConfigDeviceFragment extends BaseBleConnectFragment {
     }
 
     /**
-     * 切换连接方式弹框提醒
+     * 危险操作前弹框提醒
      */
-    private void showSwitchConnectionDialog(String content) {
+    private void showWarnDialog(String title, String content, int operateType) {
         MaterialDialog.Builder mBuilder = new MaterialDialog.Builder(mActivity)
-                .title("温馨提示：")
+                .title(title)
                 .content(content)
                 .contentColor(Color.parseColor("#000000"))
                 .canceledOnTouchOutside(false)
@@ -602,15 +586,42 @@ public class BleConfigDeviceFragment extends BaseBleConnectFragment {
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                         dialog.dismiss();
-                        disconnectDevice();
+                        switch (operateType) {
+                            case LOW_ENERGY_MODEL:
+                                setLowEnergyModel(false);
+                                mTvActiveState.setText("已待机");
+                                break;
 
-                        MCloudApp.getMainHandler().postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                queryCompanyDevice();
-                            }
-                        }, 3000);
+                            case REBOOT:
+                                doRebootCmd();
+                                break;
 
+                            case SWITCH_TO_NET:
+                                disconnectDevice();
+                                MCloudApp.getMainHandler().postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        queryCompanyDevice();
+                                    }
+                                }, 3000);
+                                break;
+                        }
+                    }
+                }).onNegative(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        dialog.dismiss();
+                        switch (operateType) {
+                            case LOW_ENERGY_MODEL:
+                                mSbActiveState.setCheckedImmediatelyNoEvent(true);
+                                break;
+
+                            case REBOOT:
+                                break;
+
+                            case SWITCH_TO_NET:
+                                break;
+                        }
                     }
                 });
         MaterialDialog mMaterialDialog = mBuilder.build();
@@ -672,7 +683,6 @@ public class BleConfigDeviceFragment extends BaseBleConnectFragment {
                     }
                 });
     }
-
 
     private void goToNetConfigDevicePage(ProjectDeviceInfo projectDeviceInfo) {
         ((DeviceConfigActivity) mActivity).switchToNetConfigPage(projectDeviceInfo);
