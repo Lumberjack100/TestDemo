@@ -164,7 +164,7 @@ public class WelcomeActivity extends BaseActivity implements LoginManager.LoginC
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                NewLoginActivity.startActivity(WelcomeActivity.this);
+                LoginActivity.startActivity(WelcomeActivity.this);
                 finish();
             }
         }, delayMillis);

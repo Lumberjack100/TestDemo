@@ -63,7 +63,7 @@ public class AboutAppActivity extends BaseActivity {
         setToolBar(R.id.toolbar);
         mToolbarTitle.setText("关于");
         initData();
-        initTouchListener();
+//        initTouchListener();
     }
 
     private void initTouchListener() {

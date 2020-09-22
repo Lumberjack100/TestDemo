@@ -4,8 +4,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.InputType;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.hjq.toast.ToastUtils;
@@ -42,9 +44,23 @@ public class UpdatePasswordActivity extends BaseActivity {
     @BindView(R.id.confirmNewPasswordET)
     ClearEditText mEtConfirmPassword;
 
-    private Handler hander = new Handler();
+    @BindView(R.id.iv_eye_old_password)
+    ImageView mIvEyeOldPwd;
+
+    @BindView(R.id.iv_eye_new_password)
+    ImageView mIvEyeNewPwd;
+
+    @BindView(R.id.iv_eye_confirm_password)
+    ImageView mIvEyeConfirmPwd;
+
+    private boolean isOldPasswordVisible = false;
+    private boolean isNewPasswordVisible = false;
+    private boolean isConfirmPasswordVisible = false;
 
     private String mAccount;
+
+    private String oldPasswordMD5;
+
     private String oldPassword, newPassword, confirmNewPassword;
 
     public static void startActivity(Context context) {
@@ -72,42 +88,96 @@ public class UpdatePasswordActivity extends BaseActivity {
         if (userInfo != null && userInfo.getUser() != null) {
             UserInfo.UserBean user = userInfo.getUser();
             mAccount = user.getAccount();
+            oldPasswordMD5 = user.getPassword();
         }
     }
 
 
-    @OnClick({R.id.btn_confirm})
+    @OnClick({R.id.iv_eye_old_password, R.id.iv_eye_new_password, R.id.iv_eye_confirm_password, R.id.btn_confirm})
     public void onClick(View view) {
-        if (view.getId() == R.id.btn_confirm) {
-            oldPassword = mEtOldPassword.getText().toString();
-            newPassword = mEtNewPassword.getText().toString();
-            confirmNewPassword = mEtConfirmPassword.getText().toString();
+        switch (view.getId()) {
+            case R.id.iv_eye_old_password:
+                if (!isOldPasswordVisible) {
+                    isOldPasswordVisible = true;
+                    mIvEyeOldPwd.setImageResource(R.drawable.icon_eye_open);
+                    mEtOldPassword.setInputType(InputType.TYPE_CLASS_TEXT);
+                } else {
+                    isOldPasswordVisible = false;
+                    mIvEyeOldPwd.setImageResource(R.drawable.icon_eye_close);
+                    mEtOldPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+                }
+                mEtOldPassword.setSelection(mEtOldPassword.getText().toString().length());
+                break;
 
-            if (TextUtils.isEmpty(oldPassword)) {
-                ToastUtils.show("请输入当前密码");
-                mEtOldPassword.requestFocus();
-                return;
-            }
+            case R.id.iv_eye_new_password:
+                if (!isNewPasswordVisible) {
+                    isNewPasswordVisible = true;
+                    mIvEyeNewPwd.setImageResource(R.drawable.icon_eye_open);
+                    mEtNewPassword.setInputType(InputType.TYPE_CLASS_TEXT);
+                } else {
+                    isNewPasswordVisible = false;
+                    mIvEyeNewPwd.setImageResource(R.drawable.icon_eye_close);
+                    mEtNewPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+                }
+                mEtNewPassword.setSelection(mEtNewPassword.getText().toString().length());
+                break;
 
-            if (TextUtils.isEmpty(newPassword)) {
-                ToastUtils.show("请输入新密码");
-                mEtNewPassword.requestFocus();
-                return;
-            }
+            case R.id.iv_eye_confirm_password:
+                if (!isConfirmPasswordVisible) {
+                    isConfirmPasswordVisible = true;
+                    mIvEyeConfirmPwd.setImageResource(R.drawable.icon_eye_open);
+                    mEtConfirmPassword.setInputType(InputType.TYPE_CLASS_TEXT);
+                } else {
+                    isConfirmPasswordVisible = false;
+                    mIvEyeConfirmPwd.setImageResource(R.drawable.icon_eye_close);
+                    mEtConfirmPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+                }
+                mEtConfirmPassword.setSelection(mEtConfirmPassword.getText().toString().length());
+                break;
 
-            if (TextUtils.isEmpty(confirmNewPassword)) {
-                ToastUtils.show("请输入确认密码");
-                mEtConfirmPassword.requestFocus();
-                return;
-            }
-
-            if (!newPassword.equals(confirmNewPassword)) {
-                ToastUtils.show("确认密码与新密码不一致");
-                return;
-            }
-
-            updatePassword();
+            case R.id.btn_confirm:
+                if (checkValue()) {
+                    updatePassword();
+                }
+                break;
         }
+    }
+
+    private boolean checkValue() {
+        oldPassword = mEtOldPassword.getText().toString();
+        newPassword = mEtNewPassword.getText().toString();
+        confirmNewPassword = mEtConfirmPassword.getText().toString();
+
+        if (TextUtils.isEmpty(oldPassword)) {
+            ToastUtils.show("请输入当前密码");
+            mEtOldPassword.requestFocus();
+            return false;
+        }
+
+        if (TextUtils.isEmpty(newPassword)) {
+            ToastUtils.show("请输入新密码");
+            mEtNewPassword.requestFocus();
+            return false;
+        }
+
+        if (TextUtils.isEmpty(confirmNewPassword)) {
+            ToastUtils.show("请输入确认密码");
+            mEtConfirmPassword.requestFocus();
+            return false;
+        }
+
+        if (!oldPasswordMD5.equals(MD5Util.MD5(mAccount + oldPassword))) {
+            ToastUtils.show("当前密码不正确");
+            mEtOldPassword.requestFocus();
+            return false;
+        }
+
+        if (!newPassword.equals(confirmNewPassword)) {
+            ToastUtils.show("确认密码与新密码不一致");
+            return false;
+        }
+
+        return true;
     }
 
     /**
@@ -136,12 +206,13 @@ public class UpdatePasswordActivity extends BaseActivity {
                         if (!ResponseHandler.getInstance().handleResponse(errCode)) {
                             if (errCode.getCode() == 0) {
                                 ToastUtils.show("修改完成");
-                                hander.postDelayed(new Runnable() {
+                                MCloudApp.getMainHandler().postDelayed(new Runnable() {
                                     @Override
                                     public void run() {
                                         finish();
                                     }
                                 }, 1500);
+
                             } else {
                                 if (!TextUtils.isEmpty(errCode.getErrMessage())) {
                                     ToastUtils.show(errCode.getErrMessage());

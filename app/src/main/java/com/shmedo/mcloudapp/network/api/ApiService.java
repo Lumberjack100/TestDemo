@@ -69,6 +69,11 @@ public interface ApiService {
     @POST("SmsLogin")
     Observable<ResultWrapper<String>> SmsLogin(@Body RequestBody parameter);
 
+    //系统接口V2-5  检测手机号是否存在
+    @Headers({NetworkConst.HEADER_ACCESS_TYPE})
+    @POST("CellPhoneExists")
+    Observable<ResultWrapper<Boolean>> CellPhoneExists(@Body RequestBody parameter);
+
     //系统接口v2  修改当前登录用户的密码
     @Headers({NetworkConst.HEADER_ACCESS_TYPE})
     @POST("ChangeMyPassword")

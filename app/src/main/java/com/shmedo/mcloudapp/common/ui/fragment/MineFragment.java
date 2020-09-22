@@ -2,9 +2,7 @@ package com.shmedo.mcloudapp.common.ui.fragment;
 
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -18,7 +16,7 @@ import com.shmedo.core.model.UserInfo;
 import com.shmedo.core.util.ActivityCollector;
 import com.shmedo.core.util.GlobalUtil;
 import com.shmedo.mcloudapp.R;
-import com.shmedo.mcloudapp.common.ui.activity.NewLoginActivity;
+import com.shmedo.mcloudapp.common.ui.activity.LoginActivity;
 import com.shmedo.mcloudapp.network.BaseObserver;
 import com.shmedo.mcloudapp.network.ErrCode;
 import com.shmedo.mcloudapp.network.MDRetrofit;
@@ -162,7 +160,7 @@ public class MineFragment extends BaseTranslucentFragment {
 //        startActivity(intent);
 //        mActivity.finish();
 
-        NewLoginActivity.startActivity(getActivity());
+        LoginActivity.startActivity(getActivity());
     }
 
     /**

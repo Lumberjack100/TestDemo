@@ -130,17 +130,6 @@ public class DevicesInProjectFragment extends BaseFragment {
         refresh();
     }
 
-//    @Override
-//    public void onStart() {
-//        super.onStart();
-//        // 进入页面，刷新数据
-//        swipeRefresh.setRefreshing(true);
-//        queryCompanyDeviceOnlineStatistics();
-//        queryCompanyDeviceOnlineTypeStatistics();
-//        deviceTypeID = -1;
-//        refresh();
-//    }
-
 
     private void initRefreshLayout() {
         swipeRefresh.setColorSchemeResources(android.R.color.holo_blue_light);
@@ -291,6 +280,10 @@ public class DevicesInProjectFragment extends BaseFragment {
                     protected void onResponse(List<DeviceOnlineTypeStatistic> data, ErrCode errCode) {
                         if (!ResponseHandler.getInstance().handleResponse(errCode)) {
                             if (errCode.getCode() == 0) {
+                                if (data == null || data.size() == 0) {
+
+                                    return;
+                                }
                                 setDeviceTypeData(data);
                                 updateTopView(deviceTypeStatisticList.get(0));
                             } else {
@@ -321,10 +314,9 @@ public class DevicesInProjectFragment extends BaseFragment {
 
         for (DeviceOnlineTypeStatistic typeStatistic : dataList) {
             //去除不支持物联网协议的 DAG、TPS、VIR 设备
-            if (typeStatistic.getDeviceTypeID() == 5 || typeStatistic.getDeviceTypeID() == 7 || typeStatistic.getDeviceTypeID() == 9)
-                continue;
-
-            deviceTypeStatisticList.add(typeStatistic);
+            if (typeStatistic.getDeviceTypeID() == 4 || typeStatistic.getDeviceTypeID() == 10 || typeStatistic.getDeviceTypeID() == 13 || typeStatistic.getDeviceTypeID() == 14) {
+                deviceTypeStatisticList.add(typeStatistic);
+            }
         }
         deviceTypeAdapter.notifyDataSetChanged();
     }

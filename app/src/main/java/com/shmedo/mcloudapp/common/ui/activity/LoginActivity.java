@@ -39,7 +39,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.RequestBody;
 
-public class NewLoginActivity extends BaseActivity implements LoginManager.LoginCallback {
+public class LoginActivity extends BaseActivity implements LoginManager.LoginCallback {
     @BindView(R.id.tv_login_way_title_zh)
     TextView mTvLoginWayTitleZh;
 
@@ -93,14 +93,14 @@ public class NewLoginActivity extends BaseActivity implements LoginManager.Login
 
 
     public static void startActivity(Context context) {
-        Intent intent = new Intent(context, NewLoginActivity.class);
+        Intent intent = new Intent(context, LoginActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         context.startActivity(intent);
     }
 
     @Override
     protected int getLayoutId() {
-        return R.layout.activity_new_login;
+        return R.layout.activity_login;
     }
 
     @Override
@@ -167,18 +167,19 @@ public class NewLoginActivity extends BaseActivity implements LoginManager.Login
                 break;
 
             case R.id.tv_get_code://获取验证码
-                String mPhoneNumber = mEtPhone.getText().toString().trim();
-                if (TextUtils.isEmpty(mPhoneNumber)) {
+                mobile = mEtPhone.getText().toString();
+                if (TextUtils.isEmpty(mobile)) {
                     ToastUtils.show("请输入手机号");
                     mEtPhone.requestFocus();
                     return;
                 }
 
-                if (ValidateUtil.checkMobileNumber(mPhoneNumber)) {
-                    sendSmsCode(mPhoneNumber);
-                } else {
+                if (!ValidateUtil.checkMobileNumber(mobile)) {
                     ToastUtils.show("手机号格式错误！");
+                    return;
                 }
+
+                doCellPhoneExists();
                 break;
 
             case R.id.btn_confirm:
@@ -224,7 +225,7 @@ public class NewLoginActivity extends BaseActivity implements LoginManager.Login
         dismissLoadingDialog();
 
         if (LoginManager.LOGIN_CODE_SUCCESS == code) {
-            MainActivity.start(NewLoginActivity.this);
+            MainActivity.start(LoginActivity.this);
             finish();
         } else if (LoginManager.LOGIN_CODE_FAIL_BUSINESS == code) {
             ToastUtils.show("登录失败\n" + data);
@@ -277,10 +278,45 @@ public class NewLoginActivity extends BaseActivity implements LoginManager.Login
     }
 
     /**
+     * 检测手机号是否存在
+     */
+    private void doCellPhoneExists() {
+        RequestBody body = RequestBody.create(NetworkConst.JSON_TYPE, mobile);
+
+        MDRetrofit.getInstance()
+                .createService()
+                .CellPhoneExists(body)
+                .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new BaseObserver<Boolean>() {
+                    @Override
+                    protected void onResponse(Boolean data, ErrCode errCode) {
+                        if (!ResponseHandler.getInstance().handleResponse(errCode)) {
+                            if (errCode.getCode() == 0) {
+                                if (data) {
+                                    doSendSmsCode();
+                                } else {
+                                    ToastUtils.show("此手机号未在系统中注册！");
+                                }
+                            } else {
+                                if (!TextUtils.isEmpty(errCode.getErrMessage())) {
+                                    ToastUtils.show(errCode.getErrMessage());
+                                }
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        ResponseHandler.getInstance().handleFailure((Exception) e);
+                    }
+                });
+    }
+
+    /**
      * 发送验证码
      */
-    private void sendSmsCode(String mPhoneNumber) {
-        RequestBody body = RequestBody.create(NetworkConst.JSON_TYPE, mPhoneNumber);
+    private void doSendSmsCode() {
+        RequestBody body = RequestBody.create(NetworkConst.JSON_TYPE, mobile);
 
         showLoadingDialog("正在获取验证码...");
         MDRetrofit.getInstance()
@@ -294,6 +330,7 @@ public class NewLoginActivity extends BaseActivity implements LoginManager.Login
                         if (!ResponseHandler.getInstance().handleResponse(errCode)) {
                             if (errCode.getCode() == 0) {
                                 if (data.contains("已发送")) {
+                                    ToastUtils.show(data);
                                     MyCountDownTimer timer = new MyCountDownTimer(mTvGetCode, 60000, 1000);
                                     timer.setTextColor(R.color.title_text_color, R.color.text_color_b3b3b3);
                                     timer.start();
