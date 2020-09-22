@@ -6,6 +6,7 @@ import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -27,6 +28,7 @@ import com.lxj.xpopup.interfaces.SimpleCallback;
 import com.shmedo.core.MCloudApp;
 import com.shmedo.core.model.UserInfo;
 import com.shmedo.core.util.DensityUtil;
+import com.shmedo.core.util.GlobalUtil;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.activity.MainActivity;
 import com.shmedo.mcloudapp.common.ui.fragment.BaseTranslucentFragment;
@@ -91,6 +93,12 @@ public class ProjectListFragment extends BaseTranslucentFragment {
 
     @BindView(R.id.search_container)
     ViewGroup searchLayout;
+
+    @BindView(R.id.iv_search_icon)
+    ImageView mIvSearchIcon;
+
+    @BindView(R.id.tv_search_hint)
+    TextView mTvSearchHint;
 
     @BindView(R.id.iv_top_bg)
     ImageView ivTopBg;
@@ -158,8 +166,6 @@ public class ProjectListFragment extends BaseTranslucentFragment {
         initMultiItemAdapter();
         initRefreshLayout();
         setListener();
-
-//        refreshProjects();
     }
 
     @Override
@@ -969,6 +975,8 @@ public class ProjectListFragment extends BaseTranslucentFragment {
             mToolbar.setBackgroundColor(ColorUtils.blendARGB(Color.TRANSPARENT
                     , ContextCompat.getColor(mActivity, R.color.white), alpha));
             searchLayout.setBackgroundResource(R.drawable.bg_search_project_white);
+            mIvSearchIcon.setImageResource(R.drawable.ic_search_project_white);
+            mTvSearchHint.setTextColor(GlobalUtil.getColor(R.color.white));
             ivMap.setImageResource(R.drawable.ic_project_map);
             ivFilter.setImageResource(R.drawable.ic_filter_project_normal);
 
@@ -982,6 +990,8 @@ public class ProjectListFragment extends BaseTranslucentFragment {
             mToolbar.setBackgroundColor(ColorUtils.blendARGB(Color.TRANSPARENT
                     , ContextCompat.getColor(mActivity, R.color.white), 1));
             searchLayout.setBackgroundResource(R.drawable.bg_search_project_gray);
+            mIvSearchIcon.setImageResource(R.drawable.ic_search_project);
+            mTvSearchHint.setTextColor(GlobalUtil.getColor(R.color.text_color_b3b3b3));
             ivMap.setImageResource(R.drawable.ic_project_map_black);
             ivFilter.setImageResource(R.drawable.ic_filter_project_checked);
 
