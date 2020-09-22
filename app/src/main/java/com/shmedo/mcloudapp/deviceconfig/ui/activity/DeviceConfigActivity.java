@@ -12,6 +12,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.shmedo.core.AppContants;
+import com.shmedo.core.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.activity.BaseActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.BleConfigDeviceFragment;
@@ -103,7 +104,13 @@ public class DeviceConfigActivity extends BaseActivity {
     @OnClick({R.id.right_icon})
     public void onClick(View v) {
         if (v.getId() == R.id.right_icon) {
-            QueryDeviceDataActivity.startActivity(DeviceConfigActivity.this, projectDeviceInfo.getToken());
+            String sn;
+            if (connectWay == AppContants.CommunicationWay.NET_CONNECT) {
+                sn = projectDeviceInfo.getToken();
+            } else {
+                sn = MCloudApp.getCurDeviceToken();
+            }
+            QueryDeviceDataActivity.startActivity(DeviceConfigActivity.this, sn);
         }
     }
 

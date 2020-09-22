@@ -318,7 +318,14 @@ public class DevicesInProjectFragment extends BaseFragment {
         deviceOnlineTypeStatistic.setDeviceTypeID(-1);
         deviceOnlineTypeStatistic.setChecked(true);
         deviceTypeStatisticList.add(deviceOnlineTypeStatistic);
-        deviceTypeStatisticList.addAll(dataList);
+
+        for (DeviceOnlineTypeStatistic typeStatistic : dataList) {
+            //去除不支持物联网协议的 DAG、TPS、VIR 设备
+            if (typeStatistic.getDeviceTypeID() == 5 || typeStatistic.getDeviceTypeID() == 7 || typeStatistic.getDeviceTypeID() == 9)
+                continue;
+
+            deviceTypeStatisticList.add(typeStatistic);
+        }
         deviceTypeAdapter.notifyDataSetChanged();
     }
 
@@ -359,7 +366,7 @@ public class DevicesInProjectFragment extends BaseFragment {
                                 if (pageInfo.isFirstPage()) {
                                     deviceInfoList.clear();
                                 }
-                                deviceInfoList.addAll(data.getCurrentPageData());
+                                filterIOTProtocolDevices(data.getCurrentPageData());
                                 deviceInfoAdapter.notifyDataSetChanged();
 
                                 if (data.getCurrentPageData().size() < PAGE_SIZE) {
@@ -402,5 +409,18 @@ public class DevicesInProjectFragment extends BaseFragment {
             }
         });
         return errorView;
+    }
+
+    /**
+     * 筛选出支持米度物联网协议的设备
+     */
+    private void filterIOTProtocolDevices(List<ProjectDeviceInfo> deviceInfos) {
+        for (ProjectDeviceInfo deviceInfo : deviceInfos) {
+            //去除不支持物联网协议的 DAG、TPS、VIR 设备
+            if (deviceInfo.getDeviceTypeID() == 5 || deviceInfo.getDeviceTypeID() == 7 || deviceInfo.getDeviceTypeID() == 9)
+                continue;
+
+            deviceInfoList.add(deviceInfo);
+        }
     }
 }

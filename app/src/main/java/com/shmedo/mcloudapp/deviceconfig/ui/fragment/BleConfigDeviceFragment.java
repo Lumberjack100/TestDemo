@@ -382,8 +382,6 @@ public class BleConfigDeviceFragment extends BaseBleConnectFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(MessageEvent messageEvent) {
-        super.onMessageEvent(messageEvent);
-
         if (messageEvent instanceof CmdResponseMessage) {
             if (!isActive) {
                 return;
@@ -392,6 +390,8 @@ public class BleConfigDeviceFragment extends BaseBleConnectFragment {
         } else if (messageEvent instanceof BluetoothConnectStateEvent) {
             boolean isConnected = ((BluetoothConnectStateEvent) messageEvent).isConnected;
             updateViewStateByConnectState(isConnected);
+        } else {
+            super.onMessageEvent(messageEvent);
         }
     }
 

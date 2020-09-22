@@ -25,7 +25,7 @@ public class NetworkConnectChangedReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
 
         if (intent.getAction() == ConnectivityManager.CONNECTIVITY_ACTION) {
-            /*判断当前网络时候可用以及网络类型*/
+            /*判断当前网络是否可用以及网络类型*/
             boolean isConnected = NetworkUtils.isConnected();
             NetworkUtils.NetworkType networkType = NetworkUtils.getNetworkType();
             EventBus.getDefault().post(new NetworkChangeEvent(isConnected, networkType));
