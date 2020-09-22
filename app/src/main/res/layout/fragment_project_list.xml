@@ -29,8 +29,8 @@
                 <FrameLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="20dp"
-                    android:layout_marginTop="-100dp">
+                    android:layout_marginTop="-100dp"
+                    android:layout_marginBottom="20dp">
 
                     <com.yanzhenjie.recyclerview.SwipeRecyclerView
                         android:id="@+id/recyclerview"
@@ -51,6 +51,9 @@
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
-    <include layout="@layout/toolbar_project_list" />
+    <include
+        layout="@layout/toolbar_project_list" />
+
+    <include layout="@layout/view_stub_holder" />
 
 </FrameLayout>

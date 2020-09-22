@@ -8,7 +8,11 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewStub;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
+import androidx.annotation.CallSuper;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -38,6 +42,26 @@ public abstract class BaseFragment extends Fragment implements HandleBackInterfa
     protected Activity mActivity;
 
     protected View mRootView;
+
+    /**
+     * Fragment中显示加载等待的控件。
+     */
+    protected ProgressBar loading = null;
+
+    /**
+     * Fragment中由于服务器异常导致加载失败显示的布局。
+     */
+    private View loadErrorView = null;
+
+    /**
+     * Fragment中由于网络异常导致加载失败显示的布局。
+     */
+    private View badNetworkView = null;
+
+    /**
+     * Fragment中当界面上没有任何内容时展示的布局。
+     */
+    private View noContentView = null;
 
     protected MaterialDialog loadingDialog = null;
 
@@ -90,6 +114,123 @@ public abstract class BaseFragment extends Fragment implements HandleBackInterfa
      */
     protected void initView() {
 
+    }
+
+    /**
+     * 当Fragment中的加载内容服务器返回失败，通过此方法显示提示界面给用户。
+     *
+     * @param tip 界面中的提示信息
+     */
+    protected void showLoadErrorView(String tip) {
+        if (loadErrorView != null) {
+            loadErrorView.setVisibility(View.VISIBLE);
+            return;
+        }
+        if (mRootView != null) {
+            ViewStub viewStub = mRootView.findViewById(R.id.loadErrorView);
+            if (viewStub != null) {
+                loadErrorView = viewStub.inflate();
+                TextView loadErrorText = loadErrorView.findViewById(R.id.loadErrorText);
+                loadErrorText.setText(tip);
+            }
+        }
+    }
+
+    /**
+     * 当Fragment中的内容因为网络原因无法显示的时候，通过此方法显示提示界面给用户。
+     *
+     * @param listener 重新加载点击事件回调
+     */
+    protected void showBadNetworkView(View.OnClickListener listener) {
+        if (badNetworkView != null) {
+            badNetworkView.setVisibility(View.VISIBLE);
+            return;
+        }
+        if (mRootView != null) {
+            ViewStub viewStub = mRootView.findViewById(R.id.badNetworkView);
+            if (viewStub != null) {
+                badNetworkView = viewStub.inflate();
+                View badNetworkRootView = badNetworkView.findViewById(R.id.badNetworkRootView);
+                badNetworkRootView.setOnClickListener(listener);
+            }
+        }
+    }
+
+    /**
+     * 当Fragment中没有任何内容的时候，通过此方法显示提示界面给用户。
+     *
+     * @param tip 界面中的提示信息
+     */
+    protected void showNoContentView(String tip) {
+        if (noContentView != null) {
+            noContentView.setVisibility(View.VISIBLE);
+            return;
+        }
+        if (mRootView != null) {
+            ViewStub viewStub = mRootView.findViewById(R.id.noContentView);
+            if (viewStub != null) {
+                noContentView = viewStub.inflate();
+                TextView noContentText = noContentView.findViewById(R.id.noContentText);
+                noContentText.setText(tip);
+            }
+        }
+    }
+
+    /**
+     * 将load error view进行隐藏。
+     */
+    protected void hideLoadErrorView() {
+        if (loadErrorView != null) {
+            loadErrorView.setVisibility(View.GONE);
+        }
+    }
+
+    /**
+     * 将no content view进行隐藏。
+     */
+    protected void hideNoContentView() {
+        if (noContentView != null) {
+            noContentView.setVisibility(View.GONE);
+        }
+    }
+
+    /**
+     * 将bad network view进行隐藏。
+     */
+    protected void hideBadNetworkView() {
+        if (badNetworkView != null) {
+            badNetworkView.setVisibility(View.GONE);
+        }
+    }
+
+    /**
+     * 开始加载，将加载等待控件显示。
+     */
+    protected void startLoading() {
+        if (loading != null) {
+            loading.setVisibility(View.VISIBLE);
+        }
+        hideBadNetworkView();
+        hideNoContentView();
+        hideLoadErrorView();
+    }
+
+    /**
+     * 加载完成，将加载等待控件隐藏。
+     */
+    protected void loadFinished() {
+        if (loading != null) {
+            loading.setVisibility(View.GONE);
+        }
+    }
+
+    /**
+     * 加载失败，将加载等待控件隐藏。
+     */
+    protected void loadFailed(String msg) {
+        if (loading != null) {
+            loading.setVisibility(View.GONE);
+        }
     }
 
 

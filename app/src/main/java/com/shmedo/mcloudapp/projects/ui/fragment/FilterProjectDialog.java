@@ -5,6 +5,7 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.Toolbar;
@@ -15,6 +16,7 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.gyf.immersionbar.ImmersionBar;
 import com.shmedo.core.util.DensityUtil;
+import com.shmedo.core.util.GlobalUtil;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.fragment.dialog.BaseTranslucentDialogFragment;
 import com.shmedo.mcloudapp.common.view.recycleviewitemdivider.GridSpacingItemDecoration;
@@ -39,6 +41,12 @@ public class FilterProjectDialog extends BaseTranslucentDialogFragment {
 
     @BindView(R.id.search_container)
     ViewGroup searchLayout;
+
+    @BindView(R.id.iv_search_icon)
+    ImageView mIvSearchIcon;
+
+    @BindView(R.id.tv_search_hint)
+    TextView mTvSearchHint;
 
     @BindView(R.id.iv_view_in_map)
     ImageView ivMap;
@@ -97,6 +105,8 @@ public class FilterProjectDialog extends BaseTranslucentDialogFragment {
     protected void initView() {
         toolbar.setBackgroundResource(R.color.white);
         searchLayout.setBackgroundResource(R.drawable.bg_search_project_gray);
+        mIvSearchIcon.setImageResource(R.drawable.ic_search_project);
+        mTvSearchHint.setTextColor(GlobalUtil.getColor(R.color.text_color_b3b3b3));
         ivMap.setImageResource(R.drawable.ic_project_map_black);
         ivFilter.setImageResource(R.drawable.ic_filter_project_checked);
         setUpProjectTypeRecyclerView();

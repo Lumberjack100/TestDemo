@@ -14,7 +14,6 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 import androidx.core.graphics.ColorUtils;
 import androidx.core.widget.NestedScrollView;
-import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -23,8 +22,6 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.gyf.immersionbar.ImmersionBar;
 import com.hjq.toast.ToastUtils;
 import com.lxj.xpopup.XPopup;
-import com.lxj.xpopup.core.BasePopupView;
-import com.lxj.xpopup.interfaces.SimpleCallback;
 import com.shmedo.core.MCloudApp;
 import com.shmedo.core.model.UserInfo;
 import com.shmedo.core.util.DensityUtil;
@@ -51,7 +48,6 @@ import com.shmedo.mcloudapp.projects.ui.activity.DevicesInProjectActivity;
 import com.shmedo.mcloudapp.projects.ui.activity.ProjectSearchActivity;
 import com.shmedo.mcloudapp.projects.ui.activity.ViewProjectsInMapActivity;
 import com.shmedo.mcloudapp.projects.view.ProjectExpiredGuideDialog;
-import com.shmedo.mcloudapp.projects.view.ProjectFilterPopupView;
 import com.shmedo.mcloudapp.util.DaoManager;
 import com.shmedo.mcloudapp.util.DateUtil;
 import com.shmedo.mcloudapp.util.GsonFactory;
@@ -81,7 +77,7 @@ import io.reactivex.schedulers.Schedulers;
 import okhttp3.RequestBody;
 
 /**
- * A simple {@link Fragment} subclass.
+ * 项目列表页面
  */
 public class ProjectListFragment extends BaseTranslucentFragment {
 
@@ -122,7 +118,6 @@ public class ProjectListFragment extends BaseTranslucentFragment {
     RecyclerView mRecyclerViewGroup;
 
     private FilterProjectDialog projectDialog;
-    private ProjectFilterPopupView popupView;
 
     private MainActivity activity;
     private int userId;
@@ -134,7 +129,7 @@ public class ProjectListFragment extends BaseTranslucentFragment {
     private CommonAdapter simpleAdapter;
     private ProjectMultipleItemAdapter multiAdapter;
     private Map<Integer, ProjectDetailInfo> detailInfoMap = new LinkedHashMap<>();
-    private List<ProjectBaseInfo> tempBaseInfoList = new LinkedList<>();
+    private List<ProjectBaseInfo> baseInfoList = new LinkedList<>();
     private List<ProjectItem> tempProjectItems = new ArrayList<>();
     private List<ProjectItem> simpleProjectItems = new ArrayList<>();
     private List<ProjectItem> multiProjectItems = new ArrayList<>();
@@ -173,6 +168,10 @@ public class ProjectListFragment extends BaseTranslucentFragment {
         super.onStart();
         if (companyID != MCloudApp.getCompanyID()) {
             companyID = MCloudApp.getCompanyID();
+            projectGroupViewMode = ProjectGroupViewMode.SIMPLE_LIST;
+            projectState = ProjectState.ALL;
+            mRecyclerView.setVisibility(View.VISIBLE);
+            mRecyclerViewGroup.setVisibility(View.GONE);
             refreshProjects();
         }
     }
@@ -412,56 +411,9 @@ public class ProjectListFragment extends BaseTranslucentFragment {
         projectDialog.show(getChildFragmentManager(), "dialog");
     }
 
-    private void showFilterPopupView(final View view) {
-        if (popupView == null) {
-            popupView = (ProjectFilterPopupView) new XPopup.Builder(getContext())
-                    .atView(toolBarTopDivider)
-                    .setPopupCallback(new SimpleCallback() {
-                        @Override
-                        public void beforeShow(BasePopupView popupView) {
-                            toolBarTopDivider.setVisibility(View.VISIBLE);
-                        }
-
-                        @Override
-                        public void beforeDismiss(BasePopupView popupView) {
-                            toolBarTopDivider.setVisibility(View.INVISIBLE);
-                        }
-                    })
-                    .asCustom(new ProjectFilterPopupView(getContext(), new ProjectFilterPopupView.OnFilterPopupViewListener() {
-                        @Override
-                        public void onSearchClick() {
-                            ProjectSearchActivity.startActivity(getActivity());
-                        }
-
-                        @Override
-                        public void onMapClick() {
-                            ViewProjectsInMapActivity.startActivity(getActivity());
-                        }
-
-                        @Override
-                        public void onFilterResult(ProjectGroupViewMode viewMode, ProjectState state) {
-                            projectGroupViewMode = viewMode;
-                            projectState = state;
-                            //列表模式时，直接筛选缓存的tempProjectItems
-                            if (viewMode == ProjectGroupViewMode.SIMPLE_LIST) {
-                                mRecyclerView.setVisibility(View.VISIBLE);
-                                mRecyclerViewGroup.setVisibility(View.GONE);
-                                filterSimpleListProjectsByState();
-
-                            } else {
-                                mRecyclerView.setVisibility(View.GONE);
-                                mRecyclerViewGroup.setVisibility(View.VISIBLE);
-                                //分组展示模式时，需要请求不同的分组接口刷新数据
-                                refreshProjects();
-                            }
-                        }
-                    }));
-        }
-
-        popupView.show();
-    }
-
     private void refreshProjects() {
+        startLoading();
+
         // 进入页面，刷新数据
         swipeRefresh.setRefreshing(true);
 
@@ -503,10 +455,11 @@ public class ProjectListFragment extends BaseTranslucentFragment {
                             if (errCode.getCode() == 0) {
                                 if (data == null || data.size() == 0) {
                                     swipeRefresh.setRefreshing(false);
+                                    showNoContentView(GlobalUtil.getString(R.string.empty_no_data));
                                     return;
                                 }
-                                tempBaseInfoList.clear();
-                                tempBaseInfoList.addAll(data);
+                                baseInfoList.clear();
+                                baseInfoList.addAll(data);
                                 List<Integer> projectIDs = new ArrayList<>();
                                 for (ProjectBaseInfo baseInfo : data) {
                                     projectIDs.add(baseInfo.getProjID());
@@ -518,7 +471,10 @@ public class ProjectListFragment extends BaseTranslucentFragment {
                                 if (!TextUtils.isEmpty(errCode.getErrMessage())) {
                                     ToastUtils.show(errCode.getErrMessage());
                                 }
+                                loadFailed(GlobalUtil.getString(R.string.fetch_data_failed) + ": " + errCode.getCode());
                             }
+                        } else {
+                            loadFailed(GlobalUtil.getString(R.string.unknown_error) + ": " + errCode.getCode());
                         }
                     }
 
@@ -526,6 +482,7 @@ public class ProjectListFragment extends BaseTranslucentFragment {
                     public void onError(Throwable e) {
                         swipeRefresh.setRefreshing(false);
                         ResponseHandler.getInstance().handleFailure((Exception) e);
+                        loadFailed(null);
                     }
                 });
     }
@@ -549,14 +506,19 @@ public class ProjectListFragment extends BaseTranslucentFragment {
                         if (!ResponseHandler.getInstance().handleResponse(errCode)) {
                             if (errCode.getCode() == 0) {
                                 if (data == null || data.size() == 0) {
+                                    showNoContentView(GlobalUtil.getString(R.string.empty_no_data));
                                     return;
                                 }
                                 setCustomLevelModeAdapterData(data);
+                                loadFinished();
                             } else {
                                 if (!TextUtils.isEmpty(errCode.getErrMessage())) {
                                     ToastUtils.show(errCode.getErrMessage());
                                 }
+                                loadFailed(GlobalUtil.getString(R.string.fetch_data_failed) + ": " + errCode.getCode());
                             }
+                        } else {
+                            loadFailed(GlobalUtil.getString(R.string.unknown_error) + ": " + errCode.getCode());
                         }
                     }
 
@@ -564,6 +526,7 @@ public class ProjectListFragment extends BaseTranslucentFragment {
                     public void onError(Throwable e) {
                         swipeRefresh.setRefreshing(false);
                         ResponseHandler.getInstance().handleFailure((Exception) e);
+                        loadFailed(null);
                     }
                 });
     }
@@ -587,14 +550,19 @@ public class ProjectListFragment extends BaseTranslucentFragment {
                         if (!ResponseHandler.getInstance().handleResponse(errCode)) {
                             if (errCode.getCode() == 0) {
                                 if (data == null || data.size() == 0) {
+                                    showNoContentView(GlobalUtil.getString(R.string.empty_no_data));
                                     return;
                                 }
                                 setRegionModeAdapterData(data);
+                                loadFinished();
                             } else {
                                 if (!TextUtils.isEmpty(errCode.getErrMessage())) {
                                     ToastUtils.show(errCode.getErrMessage());
                                 }
+                                loadFailed(GlobalUtil.getString(R.string.fetch_data_failed) + ": " + errCode.getCode());
                             }
+                        } else {
+                            loadFailed(GlobalUtil.getString(R.string.unknown_error) + ": " + errCode.getCode());
                         }
                     }
 
@@ -602,6 +570,7 @@ public class ProjectListFragment extends BaseTranslucentFragment {
                     public void onError(Throwable e) {
                         swipeRefresh.setRefreshing(false);
                         ResponseHandler.getInstance().handleFailure((Exception) e);
+                        loadFailed(null);
                     }
 
                 });
@@ -626,14 +595,19 @@ public class ProjectListFragment extends BaseTranslucentFragment {
                         if (!ResponseHandler.getInstance().handleResponse(errCode)) {
                             if (errCode.getCode() == 0) {
                                 if (data == null || data.size() == 0) {
+                                    showNoContentView(GlobalUtil.getString(R.string.empty_no_data));
                                     return;
                                 }
                                 setTypeModeAdapterData(data);
+                                loadFinished();
                             } else {
                                 if (!TextUtils.isEmpty(errCode.getErrMessage())) {
                                     ToastUtils.show(errCode.getErrMessage());
                                 }
+                                loadFailed(GlobalUtil.getString(R.string.fetch_data_failed) + ": " + errCode.getCode());
                             }
+                        } else {
+                            loadFailed(GlobalUtil.getString(R.string.unknown_error) + ": " + errCode.getCode());
                         }
                     }
 
@@ -641,6 +615,7 @@ public class ProjectListFragment extends BaseTranslucentFragment {
                     public void onError(Throwable e) {
                         swipeRefresh.setRefreshing(false);
                         ResponseHandler.getInstance().handleFailure((Exception) e);
+                        loadFailed(null);
                     }
                 });
     }
@@ -665,12 +640,14 @@ public class ProjectListFragment extends BaseTranslucentFragment {
                         if (!ResponseHandler.getInstance().handleResponse(errCode)) {
                             if (errCode.getCode() == 0) {
                                 if (data == null || data.size() == 0) {
+                                    showNoContentView(GlobalUtil.getString(R.string.empty_no_data));
                                     return;
                                 }
+
                                 //TODO 按照tempBaseInfoList列表顺序对data排序
                                 List<ProjectDetailInfo> tempDetailInfoList = new ArrayList<>();
                                 detailInfoMap.clear();
-                                for (ProjectBaseInfo baseInfo : tempBaseInfoList) {
+                                for (ProjectBaseInfo baseInfo : baseInfoList) {
                                     for (ProjectDetailInfo detailInfo : data) {
                                         if (baseInfo.getProjID() == detailInfo.getProjectID()) {
                                             //设置置顶标识
@@ -695,11 +672,16 @@ public class ProjectListFragment extends BaseTranslucentFragment {
                                 setSimpleModeAdapterData(tempDetailInfoList);
                                 //更新到本地数据库
                                 DaoManager.getInstance().getDaoSession().getProjectDetailInfoDao().insertOrReplaceInTx(data);
+                                loadFinished();
+
                             } else {
                                 if (!TextUtils.isEmpty(errCode.getErrMessage())) {
                                     ToastUtils.show(errCode.getErrMessage());
                                 }
+                                loadFailed(GlobalUtil.getString(R.string.fetch_data_failed) + ": " + errCode.getCode());
                             }
+                        } else {
+                            loadFailed(GlobalUtil.getString(R.string.unknown_error) + ": " + errCode.getCode());
                         }
                     }
 
@@ -707,6 +689,7 @@ public class ProjectListFragment extends BaseTranslucentFragment {
                     public void onError(Throwable e) {
                         swipeRefresh.setRefreshing(false);
                         ResponseHandler.getInstance().handleFailure((Exception) e);
+                        loadFailed(null);
                     }
                 });
     }
@@ -961,7 +944,6 @@ public class ProjectListFragment extends BaseTranslucentFragment {
                 });
     }
 
-
     @Override
     public void onHiddenChanged(boolean hidden) {
         super.onHiddenChanged(hidden);
@@ -1001,6 +983,34 @@ public class ProjectListFragment extends BaseTranslucentFragment {
                     .navigationBarDarkIcon(true)
                     .navigationBarColor(R.color.white)
                     .init();
+        }
+    }
+
+    @Override
+    protected void loadFailed(String msg) {
+        super.loadFailed(msg);
+        if (msg == null) {
+            swipeRefresh.setVisibility(View.GONE);
+            showBadNetworkView(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    refreshProjects();
+                }
+            });
+        } else {
+            showLoadErrorView(msg);
+        }
+    }
+
+    /**
+     * 加载feeds完成，将feeds显示出来，将加载等待控件隐藏。
+     */
+    @Override
+    protected void loadFinished() {
+        super.loadFinished();
+        swipeRefresh.setVisibility(View.VISIBLE);
+        if (swipeRefresh.isRefreshing()) {
+            swipeRefresh.setRefreshing(false);
         }
     }
 }
