@@ -202,7 +202,7 @@ public class OsmometerConfigActivity extends BaseDeviceConnectActivity {
         MaterialDialog.Builder mBuilder = new MaterialDialog.Builder(this);
         mBuilder.title("温馨提示：")
                 .customView(R.layout.dialog_test, false)
-                .contentColor(Color.parseColor("#000000"))
+                .contentColorRes(R.color.title_text_color)
                 .canceledOnTouchOutside(false)
                 .positiveText("确定");
         MaterialDialog mMaterialDialog = mBuilder.build();

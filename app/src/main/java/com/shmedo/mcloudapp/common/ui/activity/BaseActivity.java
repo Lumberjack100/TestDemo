@@ -215,7 +215,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         MaterialDialog.Builder mBuilder = new MaterialDialog.Builder(this);
         mBuilder.title("温馨提示：")
                 .content(content)
-                .contentColor(Color.parseColor("#000000"))
+                .contentColorRes(R.color.title_text_color)
                 .canceledOnTouchOutside(false)
                 .positiveText("确定")
                 .positiveColorRes(R.color.blue_52B4F8);

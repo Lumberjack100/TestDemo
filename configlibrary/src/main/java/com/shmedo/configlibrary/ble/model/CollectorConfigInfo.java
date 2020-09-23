@@ -1,5 +1,7 @@
 package com.shmedo.configlibrary.ble.model;
 
+import android.text.TextUtils;
+
 import java.io.Serializable;
 
 /**
@@ -25,7 +27,7 @@ public class CollectorConfigInfo implements Serializable {
     }
 
     public String getCollectorAddress() {
-        return collectorAddress;
+        return TextUtils.isEmpty(collectorAddress) ? "" : collectorAddress;
     }
 
     public void setCollectorAddress(String collectorAddress) {
@@ -33,7 +35,7 @@ public class CollectorConfigInfo implements Serializable {
     }
 
     public String getStandbyTime() {
-        return standbyTime;
+        return TextUtils.isEmpty(standbyTime) ? "" : standbyTime;
     }
 
     public void setStandbyTime(String standbyTime) {
@@ -41,7 +43,7 @@ public class CollectorConfigInfo implements Serializable {
     }
 
     public String getWorkTime() {
-        return workTime;
+        return TextUtils.isEmpty(workTime) ? "" : workTime;
     }
 
     public void setWorkTime(String workTime) {
@@ -49,7 +51,7 @@ public class CollectorConfigInfo implements Serializable {
     }
 
     public String getCollectorInterval() {
-        return collectorInterval;
+        return TextUtils.isEmpty(collectorInterval) ? "" : collectorInterval;
     }
 
     public void setCollectorInterval(String collectorInterval) {

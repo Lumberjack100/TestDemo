@@ -1,6 +1,5 @@
 package com.shmedo.mcloudapp.deviceconfig.ui.fragment;
 
-import android.graphics.Color;
 import android.os.Bundle;
 import android.text.InputFilter;
 import android.text.TextUtils;
@@ -8,11 +7,8 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.afollestad.materialdialogs.DialogAction;
-import com.afollestad.materialdialogs.MaterialDialog;
 import com.hjq.toast.ToastUtils;
 import com.lxj.xpopup.XPopup;
 import com.lxj.xpopup.interfaces.OnSelectListener;
@@ -36,8 +32,6 @@ import com.shmedo.mcloudapp.deviceconfig.ui.activity.DataCenterServerConfigActiv
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
-
-import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -317,67 +311,36 @@ public class BleDataCenterFragment extends BaseBleConnectFragment {
 
     private void doAfterSetting() {
         stopProgressRunnable();
-        ToastUtils.show("设置完成");
-        MCloudApp.getMainHandler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                mActivity.finish();
-            }
-        }, 2000);
+        isExitMode = true;
+        warnNotYetRebootToSaveParam();
     }
 
     @Override
     public boolean onBackPressed() {
         if (MCloudApp.isIsBluetoothDeviceConnected()) {
             if (TextUtils.isEmpty(dataCommunicationModeOld)) {
-                mActivity.finish();
-                return true;
+                return false;
             }
 
             if (TextUtils.isEmpty(reportingInterval) && mEtReportingInterval.getText().length() > 0) {
-                warnNotYetSave();
+                warnNotYetSettingBeforeLeavePage();
                 return true;
             }
 
             if (TextUtils.isEmpty(bdCardNumber) && mEtBdCardNumber.getText().length() > 0) {
-                warnNotYetSave();
+                warnNotYetSettingBeforeLeavePage();
                 return true;
             }
 
-            if (!dataCommunicationModeOld.equals(dataCommunicationMode) || !reportingInterval.equals(mEtReportingInterval.getText()) || !bdCardNumber.equals(mEtBdCardNumber.getText())) {
-                warnNotYetSave();
+            if (!dataCommunicationModeOld.equals(dataCommunicationMode)
+                    || !reportingInterval.equals(mEtReportingInterval.getText().toString().trim())
+                    || !bdCardNumber.equals(mEtBdCardNumber.getText().toString().trim())) {
+
+                warnNotYetSettingBeforeLeavePage();
                 return true;
             }
-        } else {
-            mActivity.finish();
         }
 
-        return true;
-    }
-
-    private void warnNotYetSave() {
-        MaterialDialog.Builder mBuilder = new MaterialDialog.Builder(Objects.requireNonNull(getContext()))
-                .title("温馨提示：")
-                .content("您已经修改了参数，还未保存，是否确定离开页面？")
-                .contentColor(Color.parseColor("#000000"))
-                .canceledOnTouchOutside(false)
-                .positiveText("确定")
-                .negativeText("取消")
-                .positiveColorRes(R.color.blue_52B4F8)
-                .negativeColorRes(R.color.sub_title_text_color)
-                .onPositive(new MaterialDialog.SingleButtonCallback() {
-                    @Override
-                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        dialog.dismiss();
-                        mActivity.finish();
-                    }
-                }).onNegative(new MaterialDialog.SingleButtonCallback() {
-                    @Override
-                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        dialog.dismiss();
-                    }
-                });
-        MaterialDialog mMaterialDialog = mBuilder.build();
-        mMaterialDialog.show();
+        return false;
     }
 }

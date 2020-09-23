@@ -25,8 +25,8 @@ public class Command<T extends Validater> {
 
     @Override
     public String toString() {
-        if (parameters != null)
-            parameters.validate();
+//        if (parameters != null)
+//            parameters.validate();
 
         String paraString = parameters == null ? "" : parameters.toString();
 

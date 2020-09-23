@@ -1,6 +1,5 @@
 package com.shmedo.mcloudapp.deviceconfig.ui.fragment;
 
-import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -34,7 +33,6 @@ import com.shmedo.configlibrary.ble.model.MqttConfigInfo;
 import com.shmedo.configlibrary.ble.model.ServerAddressInfo;
 import com.shmedo.configlibrary.ble.utils.ResultParserUtil;
 import com.shmedo.configlibrary.ble.utils.StringUtil;
-import com.shmedo.core.AppContants;
 import com.shmedo.core.MCloudApp;
 import com.shmedo.core.event.CmdResponseMessage;
 import com.shmedo.core.event.MessageEvent;
@@ -44,8 +42,6 @@ import com.shmedo.mcloudapp.util.KeyBordUtils;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
-
-import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -209,7 +205,7 @@ public class BleDataCenterServerConfigFragment extends BaseBleConnectFragment {
         MaterialDialog.Builder mBuilder = new MaterialDialog.Builder(mActivity)
                 .title("温馨提示：")
                 .content(content)
-                .contentColor(Color.parseColor("#000000"))
+                .contentColorRes(R.color.title_text_color)
                 .canceledOnTouchOutside(false)
                 .positiveText("确定")
                 .negativeText("取消")
@@ -694,7 +690,7 @@ public class BleDataCenterServerConfigFragment extends BaseBleConnectFragment {
 
     private void doAfterSetting() {
         stopProgressRunnable();
-        ToastUtils.show("设置完成");
+        ToastUtils.show("已设置");
         MCloudApp.getMainHandler().postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -707,15 +703,14 @@ public class BleDataCenterServerConfigFragment extends BaseBleConnectFragment {
     public boolean onBackPressed() {
         if (MCloudApp.isIsBluetoothDeviceConnected()) {
             if (checkValueIsChange()) {
-                warnNotYetSave();
+                warnNotYetSettingBeforeLeavePage();
+                return true;
             } else {
-                mActivity.finish();
+                return false;
             }
-        } else {
-            mActivity.finish();
         }
 
-        return true;
+        return false;
     }
 
     private boolean checkValueIsChange() {
@@ -723,7 +718,7 @@ public class BleDataCenterServerConfigFragment extends BaseBleConnectFragment {
             return true;
         }
 
-        if (!mqttConfigInfo.getDataPlatformAddress().equals(mEtDataServerAddress.getText())) {
+        if (!mqttConfigInfo.getDataPlatformAddress().equals(mEtDataServerAddress.getText().toString().trim())) {
             return true;
         }
 
@@ -732,76 +727,50 @@ public class BleDataCenterServerConfigFragment extends BaseBleConnectFragment {
                 return true;
             }
 
-            if (!mqttConfigInfo.getRegisterPlatformAddress().equals(mEtDataServerAddress.getText())) {
+            if (!mqttConfigInfo.getRegisterPlatformAddress().equals(mEtDataServerAddress.getText().toString().trim())) {
                 return true;
             }
 
-            if (!mqttConfigInfo.getKeepAliveValue().equals(mEtKeepAlive.getText())) {
+            if (!mqttConfigInfo.getKeepAliveValue().equals(mEtKeepAlive.getText().toString().trim())) {
                 return true;
             }
 
-            if (!mqttConfigInfo.getDeviceSn().equals(mEtDeviceSN.getText())) {
+            if (!mqttConfigInfo.getDeviceSn().equals(mEtDeviceSN.getText().toString().trim())) {
                 return true;
             }
 
-            if (!mqttConfigInfo.getProductId().equals(mEtProductId.getText())) {
+            if (!mqttConfigInfo.getProductId().equals(mEtProductId.getText().toString().trim())) {
                 return true;
             }
 
-            if (!mqttConfigInfo.getRegisterCode().equals(mEtRegisterCode.getText())) {
+            if (!mqttConfigInfo.getRegisterCode().equals(mEtRegisterCode.getText().toString().trim())) {
                 return true;
             }
 
             if (registerPlatform.equals("2")) {
-                if (!mqttConfigInfo.getAppKey().equals(mEtAppKey.getText())) {
+                if (!mqttConfigInfo.getAppKey().equals(mEtAppKey.getText().toString().trim())) {
                     return true;
                 }
             }
         } else if (communicationProtocol.equals("5")) {//MQTT手动注册
-            if (!mqttConfigInfo.getKeepAliveValue().equals(mEtKeepAlive.getText())) {
+            if (!mqttConfigInfo.getKeepAliveValue().equals(mEtKeepAlive.getText().toString().trim())) {
                 return true;
             }
 
-            if (!mqttConfigInfo.getMqttDeviceId().equals(mEtMqttDeviceId.getText())) {
+            if (!mqttConfigInfo.getMqttDeviceId().equals(mEtMqttDeviceId.getText().toString().trim())) {
                 return true;
             }
 
-            if (!mqttConfigInfo.getMqttUsername().equals(mEtMqttUsername.getText())) {
+            if (!mqttConfigInfo.getMqttUsername().equals(mEtMqttUsername.getText().toString().trim())) {
                 return true;
             }
 
-            if (!mqttConfigInfo.getMqttPassword().equals(mEtMqttPwd.getText())) {
+            if (!mqttConfigInfo.getMqttPassword().equals(mEtMqttPwd.getText().toString().trim())) {
                 return true;
             }
         }
 
         return false;
-    }
-
-    private void warnNotYetSave() {
-        MaterialDialog.Builder mBuilder = new MaterialDialog.Builder(Objects.requireNonNull(getContext()))
-                .title("温馨提示：")
-                .content("您已经修改了参数，还未保存，是否确定离开页面？")
-                .contentColor(Color.parseColor("#000000"))
-                .canceledOnTouchOutside(false)
-                .positiveText("确定")
-                .negativeText("取消")
-                .positiveColorRes(R.color.blue_52B4F8)
-                .negativeColorRes(R.color.sub_title_text_color)
-                .onPositive(new MaterialDialog.SingleButtonCallback() {
-                    @Override
-                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        dialog.dismiss();
-                        mActivity.finish();
-                    }
-                }).onNegative(new MaterialDialog.SingleButtonCallback() {
-                    @Override
-                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        dialog.dismiss();
-                    }
-                });
-        MaterialDialog mMaterialDialog = mBuilder.build();
-        mMaterialDialog.show();
     }
 
 }

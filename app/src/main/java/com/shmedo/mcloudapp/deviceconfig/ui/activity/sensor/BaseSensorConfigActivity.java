@@ -412,7 +412,7 @@ public abstract class BaseSensorConfigActivity extends BaseDeviceConnectActivity
         MaterialDialog.Builder mBuilder = new MaterialDialog.Builder(this);
         mBuilder.title("温馨提示：")
                 .content("确认要停用该传感器吗？")
-                .contentColor(Color.parseColor("#000000"))
+                .contentColorRes(R.color.title_text_color)
                 .canceledOnTouchOutside(false)
                 .positiveText("确定")
                 .negativeText("取消")

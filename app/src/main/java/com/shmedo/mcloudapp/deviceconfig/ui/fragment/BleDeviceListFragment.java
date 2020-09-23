@@ -123,13 +123,17 @@ public class BleDeviceListFragment extends BaseFragment implements TextWatcher, 
         initAdapter();
         initRefreshAnimation();
         setEditTextListener();
-//        startDiscoveryDevice();
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        startDiscoveryDevice();
+        MCloudApp.getMainHandler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                startDiscoveryDevice();
+            }
+        }, 500);
     }
 
     @Override
@@ -331,7 +335,7 @@ public class BleDeviceListFragment extends BaseFragment implements TextWatcher, 
                 @Override
                 public void run() {
                     BluetoothDevice device = result.getDevice();
-                    if (device.getName() == null || !device.getName().startsWith("MD")|| !device.getName().endsWith("L")) {
+                    if (device.getName() == null || !device.getName().startsWith("MD") || !device.getName().endsWith("L")) {
                         return;
                     }
 

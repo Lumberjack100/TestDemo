@@ -122,7 +122,7 @@ public class ProductRegistrationActivity extends BaseActivity {
         mBuilder = new MaterialDialog.Builder(this);
         mBuilder.customView(R.layout.dialog_registered_apply, false)
                 .title("注册码申请表：")
-                .contentColor(Color.parseColor("#000000"))
+                .contentColorRes(R.color.title_text_color)
                 .canceledOnTouchOutside(false);
         mMaterialDialog = mBuilder.build();
         mMaterialDialog.show();

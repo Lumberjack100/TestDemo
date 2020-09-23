@@ -819,48 +819,11 @@ public abstract class BaseBleConnectFragment extends BaseFragment {
         Timber.i("查询设备版本信息：%s", command);
     }
 
-    protected void showSaveDialog(String content) {
-        MaterialDialog.Builder mBuilder = new MaterialDialog.Builder(Objects.requireNonNull(getContext()))
-                .title("温馨提示：")
-                .content(content)
-                .contentColor(Color.parseColor("#000000"))
-                .canceledOnTouchOutside(false)
-                .neutralText("取消")
-                .positiveText("保存")
-                .negativeText("不保存")
-                .negativeColor(Color.parseColor("#807B7B"))
-                .onPositive(new MaterialDialog.SingleButtonCallback() {
-                    @Override
-                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        dialog.dismiss();
-                        saveConfigInfo();
-                    }
-                }).onNegative(new MaterialDialog.SingleButtonCallback() {
-                    @Override
-                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        dialog.dismiss();
-                        isConfigChange = false;
-                        disconnectDevice();
-                        if (isExitMode) {
-                            mActivity.finish();
-                        }
-                    }
-                }).onNeutral(new MaterialDialog.SingleButtonCallback() {
-                    @Override
-                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        dialog.dismiss();
-                    }
-                });
-        MaterialDialog mMaterialDialog = mBuilder.build();
-        mMaterialDialog.show();
-    }
-
-
     protected void showDisconnectDialog(String content) {
         MaterialDialog.Builder mBuilder = new MaterialDialog.Builder(Objects.requireNonNull(getContext()))
                 .title("温馨提示：")
                 .content(content)
-                .contentColor(Color.parseColor("#000000"))
+                .contentColorRes(R.color.title_text_color)
                 .canceledOnTouchOutside(false)
                 .positiveText("确定")
                 .negativeText("取消")
@@ -871,25 +834,80 @@ public abstract class BaseBleConnectFragment extends BaseFragment {
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                         dialog.dismiss();
                         disconnectDevice();
-                        mActivity.finish();
+                        if (isExitMode) {
+                            mActivity.finish();
+                        }
                     }
                 });
         MaterialDialog mMaterialDialog = mBuilder.build();
         mMaterialDialog.show();
     }
 
+    protected void warnNotYetSettingBeforeLeavePage() {
+        MaterialDialog.Builder mBuilder = new MaterialDialog.Builder(Objects.requireNonNull(getContext()))
+                .title("温馨提示：")
+                .content("您已经修改了参数，还未配置到设备，确定离开页面吗？")
+                .contentColorRes(R.color.title_text_color)
+                .canceledOnTouchOutside(false)
+                .positiveText("确定")
+                .negativeText("取消")
+                .positiveColorRes(R.color.blue_52B4F8)
+                .negativeColorRes(R.color.sub_title_text_color)
+                .onPositive(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        dialog.dismiss();
+                        mActivity.finish();
+                    }
+                }).onNegative(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        dialog.dismiss();
+                    }
+                });
+        MaterialDialog mMaterialDialog = mBuilder.build();
+        mMaterialDialog.show();
+    }
+
+    protected void warnNotYetRebootToSaveParam() {
+        MaterialDialog.Builder mBuilder = new MaterialDialog.Builder(Objects.requireNonNull(getContext()))
+                .title("温馨提示")
+                .content(GlobalUtil.getString(R.string.reboot_device_save_param_warn))
+                .contentColorRes(R.color.title_text_color)
+                .canceledOnTouchOutside(false)
+                .positiveText("立即重启")
+                .negativeText("稍后重启")
+                .positiveColorRes(R.color.blue_52B4F8)
+                .negativeColorRes(R.color.sub_title_text_color)
+                .onPositive(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        dialog.dismiss();
+                        saveConfigInfo();
+                    }
+                }).onNegative(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        dialog.dismiss();
+                        if (isExitMode) {
+                            mActivity.finish();
+                        }
+                    }
+                });
+        MaterialDialog mMaterialDialog = mBuilder.build();
+        mMaterialDialog.show();
+    }
+
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        switch (requestCode) {
-            case REQUEST_ENABLE_BT:
-                // 蓝牙已经开启
-                if (resultCode != Activity.RESULT_OK) {
-                    ToastUtils.show("蓝牙未启用");
-                    return;
-                }
-                findAndConnectSpecificDevice();
-                break;
+        if (requestCode == REQUEST_ENABLE_BT) {// 蓝牙已经开启
+            if (resultCode != Activity.RESULT_OK) {
+                ToastUtils.show("蓝牙未启用");
+                return;
+            }
+            findAndConnectSpecificDevice();
         }
     }
 }

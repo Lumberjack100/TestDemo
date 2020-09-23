@@ -48,7 +48,7 @@ public class AdvanceSetDialogUtils {
         MaterialDialog.Builder mBuilder = new MaterialDialog.Builder(activity);
         mBuilder.customView(view, false)
                 .title(title)
-                .contentColor(Color.parseColor("#000000"))
+                .contentColorRes(R.color.title_text_color)
                 .canceledOnTouchOutside(false);
         final MaterialDialog mMaterialDialog = mBuilder.build();
         mMaterialDialog.show();
@@ -130,7 +130,7 @@ public class AdvanceSetDialogUtils {
         MaterialDialog.Builder mBuilder = new MaterialDialog.Builder(activity);
         mBuilder.customView(view, false)
                 .title("修改授权码")
-                .contentColor(Color.parseColor("#000000"))
+                .contentColorRes(R.color.title_text_color)
                 .canceledOnTouchOutside(false);
         final MaterialDialog mMaterialDialog = mBuilder.build();
         mMaterialDialog.show();
@@ -193,7 +193,7 @@ public class AdvanceSetDialogUtils {
         MaterialDialog.Builder mBuilder = new MaterialDialog.Builder(activity);
         mBuilder.title("温馨提示：")
                 .content("产品将恢复出厂设置状态，请确认是否继续？")
-                .contentColor(Color.parseColor("#000000"))
+                .contentColorRes(R.color.title_text_color)
                 .canceledOnTouchOutside(false)
                 .positiveText("确定")
                 .negativeText("取消")

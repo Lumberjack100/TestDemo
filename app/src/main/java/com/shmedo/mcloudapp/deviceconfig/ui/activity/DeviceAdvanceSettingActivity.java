@@ -280,7 +280,7 @@ public class DeviceAdvanceSettingActivity extends BaseDeviceConnectActivity {
         mBuilder = new MaterialDialog.Builder(activity);
         mBuilder.customView(R.layout.dialog_sync_position, false)
                 .title("同步安装位置")
-                .contentColor(Color.parseColor("#000000"))
+                .contentColorRes(R.color.title_text_color)
                 .canceledOnTouchOutside(false);
         mMaterialDialog = mBuilder.build();
         mMaterialDialog.show();

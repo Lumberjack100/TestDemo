@@ -786,7 +786,7 @@ public class ADMEHomeFragment extends BaseFragment {
         MaterialDialog.Builder mBuilder = new MaterialDialog.Builder(getActivity())
                 .title("温馨提示：")
                 .content(msg)
-                .contentColor(Color.parseColor("#000000"))
+                .contentColorRes(R.color.title_text_color)
                 .canceledOnTouchOutside(false)
                 .positiveText("确定")
                 .negativeText("取消")

@@ -303,7 +303,7 @@ public class Osmometer_AxialForceGaugeDialogFragment extends BaseSensorConfigDia
         MaterialDialog.Builder mBuilder = new MaterialDialog.Builder(getActivity())
                 .title("温馨提示：")
                 .content("扫描条码获取的传感器类型与当前不一致，是否切换？")
-                .contentColor(Color.parseColor("#000000"))
+                .contentColorRes(R.color.title_text_color)
                 .canceledOnTouchOutside(false)
                 .positiveText("确定")
                 .negativeText("取消")

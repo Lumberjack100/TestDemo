@@ -1,6 +1,5 @@
 package com.shmedo.mcloudapp.deviceconfig.ui.fragment;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.text.InputFilter;
 import android.text.TextUtils;
@@ -11,7 +10,6 @@ import android.widget.EditText;
 import androidx.annotation.Nullable;
 
 import com.hjq.toast.ToastUtils;
-import com.shmedo.core.AppContants;
 import com.shmedo.core.MCloudApp;
 import com.shmedo.configlibrary.ble.cmd.CommandManager;
 import com.shmedo.configlibrary.ble.cmd.CommandResult;
@@ -34,8 +32,6 @@ import org.greenrobot.eventbus.ThreadMode;
 import butterknife.BindView;
 import butterknife.OnClick;
 import timber.log.Timber;
-
-import static android.app.Activity.RESULT_OK;
 
 /**
  * 通过物联网平台蓝牙配置采集器
@@ -88,7 +84,6 @@ public class BleCollectorSettingFragment extends BaseBleConnectFragment {
         }
     }
 
-
     @Override
     protected int getLayoutId() {
         return R.layout.fragment_ble_collector_setting;
@@ -124,6 +119,7 @@ public class BleCollectorSettingFragment extends BaseBleConnectFragment {
 
     private void initValue() {
         if (collectorConfigInfo == null) {
+            collectorConfigInfo = new CollectorConfigInfo();
             return;
         }
 
@@ -204,13 +200,13 @@ public class BleCollectorSettingFragment extends BaseBleConnectFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(MessageEvent messageEvent) {
-        super.onMessageEvent(messageEvent);
-
         if (messageEvent instanceof CmdResponseMessage) {
             if (!isActive) {
                 return;
             }
             setResultData((CmdResponseMessage) messageEvent);
+        } else {
+            super.onMessageEvent(messageEvent);
         }
     }
 
@@ -261,29 +257,49 @@ public class BleCollectorSettingFragment extends BaseBleConnectFragment {
                 break;
 
             case COLLECTOR_FREQUENCY:
+                stopProgressRunnable();
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
                     ToastUtils.show("采集器采集频度配置错误!");
-                    stopProgressRunnable();
                     return;
                 }
-                collectorConfigInfo.setCollectorAddress(collectorAddress);
-                collectorConfigInfo.setWorkTime(calculatTime);
-                collectorConfigInfo.setStandbyTime(standbyTime);
-                collectorConfigInfo.setCollectorInterval(collectTime);
 
-                stopProgressRunnable();
-                ToastUtils.show("设置完成");
-                uiHander.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        Intent intent = mActivity.getIntent();
-                        intent.putExtra(AppContants.Extras.PARAM_CONFIG_INFO, collectorConfigInfo);
-                        mActivity.setResult(RESULT_OK, intent);
-                        mActivity.finish();
-                    }
-                }, 2000);
+                isExitMode = true;
+                warnNotYetRebootToSaveParam();
                 break;
         }
     }
 
+    @Override
+    public boolean onBackPressed() {
+        if (MCloudApp.isIsBluetoothDeviceConnected()) {
+            if (checkValueIsChange()) {
+                warnNotYetSettingBeforeLeavePage();
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+        return false;
+    }
+
+    private boolean checkValueIsChange() {
+        if (!collectorConfigInfo.getCollectorAddress().equals(mEtCollectorAddress.getText().toString().trim())) {
+            return true;
+        }
+
+        if (!collectorConfigInfo.getWorkTime().equals(mEtCalculatingTime.getText().toString().trim())) {
+            return true;
+        }
+
+        if (!collectorConfigInfo.getStandbyTime().equals(mEtStandbyTime.getText().toString().trim())) {
+            return true;
+        }
+
+        if (!collectorConfigInfo.getCollectorInterval().equals(mEtCollectTime.getText().toString().trim())) {
+            return true;
+        }
+
+        return false;
+    }
 }

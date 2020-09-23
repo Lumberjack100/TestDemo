@@ -23,8 +23,10 @@ import com.kyleduo.switchbutton.SwitchButton;
 import com.shmedo.configlibrary.ble.cmd.CommandManager;
 import com.shmedo.configlibrary.ble.cmd.CommandResult;
 import com.shmedo.configlibrary.ble.cmd.entity.RebootDeviceEntity;
+import com.shmedo.configlibrary.ble.cmd.entity.SaveConfigInfoEntity;
 import com.shmedo.configlibrary.ble.enums.CollectorModel;
 import com.shmedo.configlibrary.ble.enums.CommandType;
+import com.shmedo.configlibrary.ble.enums.SaveConfigMode;
 import com.shmedo.configlibrary.ble.model.BaseConfigInfo;
 import com.shmedo.configlibrary.ble.model.LoaclTimeInfo;
 import com.shmedo.configlibrary.ble.model.SetRainPrecisionInfo;
@@ -310,8 +312,8 @@ public class BleConfigDeviceFragment extends BaseBleConnectFragment {
 
     private void doRebootCmd() {
         showLoadingDialog("指令下发中...");
-        RebootDeviceEntity rebootDeviceEntity = new RebootDeviceEntity(2);
-        String command = CommandManager.getInstance().getCommand(CommandType.REBOOT_DEVICE, rebootDeviceEntity);
+        SaveConfigInfoEntity saveConfigInfoEntity = new SaveConfigInfoEntity(SaveConfigMode.SAVE_REBOOT.toInt());
+        String command = CommandManager.getInstance().getCommand(CommandType.SAVE_CONFIG_INFO, saveConfigInfoEntity);
         Timber.d("重启设备指令===%s", command);
     }
 
@@ -335,13 +337,15 @@ public class BleConfigDeviceFragment extends BaseBleConnectFragment {
                 if (!MCloudApp.isIsBluetoothDeviceConnected()) {
                     findAndConnectSpecificDevice();
                 } else {//断开连接处理
-                    if (isConfigChange) {
-                        isExitMode = false;
-                        showSaveDialog(getResources().getString(R.string.disconnect_bluetooth_device_save_param_warn));
-                    } else {
-                        disconnectDevice();
-                        updateViewStateByConnectState(false);
-                    }
+//                    if (isConfigChange) {
+//                        isExitMode = false;
+//                        warnNotYetRebootToSaveParam();
+//                    } else {
+//                        disconnectDevice();
+//                        updateViewStateByConnectState(false);
+//                    }
+                    isExitMode = false;
+                    showDisconnectDialog(getResources().getString(R.string.finish_activity_disconnect_bluetooth_device));
                 }
                 break;
 
@@ -548,18 +552,12 @@ public class BleConfigDeviceFragment extends BaseBleConnectFragment {
     @Override
     public boolean onBackPressed() {
         if (MCloudApp.isIsBluetoothDeviceConnected()) {
-            if (isConfigChange) {
-                isExitMode = true;
-                showSaveDialog(getResources().getString(R.string.disconnect_bluetooth_device_save_param_warn));
-
-            } else {
-                showDisconnectDialog(getResources().getString(R.string.finish_activity_disconnect_bluetooth_device));
-            }
-        } else {
-            mActivity.finish();
+            isExitMode = true;
+            showDisconnectDialog(getResources().getString(R.string.finish_activity_disconnect_bluetooth_device));
+            return true;
         }
 
-        return true;
+        return false;
     }
 
     @Override
@@ -576,7 +574,7 @@ public class BleConfigDeviceFragment extends BaseBleConnectFragment {
         MaterialDialog.Builder mBuilder = new MaterialDialog.Builder(mActivity)
                 .title(title)
                 .content(content)
-                .contentColor(Color.parseColor("#000000"))
+                .contentColorRes(R.color.title_text_color)
                 .canceledOnTouchOutside(false)
                 .positiveText("确定")
                 .negativeText("取消")
