@@ -226,12 +226,13 @@
 
         </FrameLayout>
 
-        <Button
+        <TextView
             android:id="@+id/btn_confirm"
             android:layout_width="match_parent"
             android:layout_height="46dp"
             android:layout_marginTop="32dp"
             android:background="@drawable/login_button_gradient_bg"
+            android:gravity="center"
             android:text="登录"
             android:textColor="@color/white"
             android:textSize="@dimen/text_size_17" />
