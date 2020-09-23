@@ -12,7 +12,6 @@ import android.view.ViewStub;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import androidx.annotation.CallSuper;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -22,6 +21,8 @@ import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.callback.HandleBackInterface;
 import com.shmedo.mcloudapp.util.common.HandleBackUtil;
 import com.shmedo.mcloudapp.util.permission.XPermissionUtils;
+
+import java.util.Calendar;
 
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
@@ -37,11 +38,14 @@ import timber.log.Timber;
  */
 
 public abstract class BaseFragment extends Fragment implements HandleBackInterface {
+    //防止按钮重复点击设置的时间间隔
+    private static final int DOUBLE_CLICK_TIME_INTERVAL = 1000;
+
     private Unbinder unbinder;
 
     protected Activity mActivity;
 
-    protected View mRootView;
+    private View rootView;
 
     /**
      * Fragment中显示加载等待的控件。
@@ -65,6 +69,9 @@ public abstract class BaseFragment extends Fragment implements HandleBackInterfa
 
     protected MaterialDialog loadingDialog = null;
 
+    /**
+     * 判断当前Fragment是否处于已恢复状态。
+     */
     protected boolean isActive = false;
 
 
@@ -77,15 +84,15 @@ public abstract class BaseFragment extends Fragment implements HandleBackInterfa
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        if (mRootView == null) {
-            mRootView = inflater.inflate(getLayoutId(), container, false);
+        if (rootView == null) {
+            rootView = inflater.inflate(getLayoutId(), container, false);
         } else {
-            ViewGroup viewGroup = (ViewGroup) mRootView.getParent();
+            ViewGroup viewGroup = (ViewGroup) rootView.getParent();
             if (viewGroup != null) {
-                viewGroup.removeView(mRootView);
+                viewGroup.removeView(rootView);
             }
         }
-        return mRootView;
+        return rootView;
     }
 
     @Override
@@ -103,8 +110,6 @@ public abstract class BaseFragment extends Fragment implements HandleBackInterfa
 
 
     /**
-     * Gets layout id.
-     *
      * @return the layout id
      */
     protected abstract int getLayoutId();
@@ -113,7 +118,6 @@ public abstract class BaseFragment extends Fragment implements HandleBackInterfa
      * view与数据绑定
      */
     protected void initView() {
-
     }
 
     /**
@@ -126,8 +130,8 @@ public abstract class BaseFragment extends Fragment implements HandleBackInterfa
             loadErrorView.setVisibility(View.VISIBLE);
             return;
         }
-        if (mRootView != null) {
-            ViewStub viewStub = mRootView.findViewById(R.id.loadErrorView);
+        if (rootView != null) {
+            ViewStub viewStub = rootView.findViewById(R.id.loadErrorView);
             if (viewStub != null) {
                 loadErrorView = viewStub.inflate();
                 TextView loadErrorText = loadErrorView.findViewById(R.id.loadErrorText);
@@ -146,8 +150,8 @@ public abstract class BaseFragment extends Fragment implements HandleBackInterfa
             badNetworkView.setVisibility(View.VISIBLE);
             return;
         }
-        if (mRootView != null) {
-            ViewStub viewStub = mRootView.findViewById(R.id.badNetworkView);
+        if (rootView != null) {
+            ViewStub viewStub = rootView.findViewById(R.id.badNetworkView);
             if (viewStub != null) {
                 badNetworkView = viewStub.inflate();
                 View badNetworkRootView = badNetworkView.findViewById(R.id.badNetworkRootView);
@@ -166,8 +170,8 @@ public abstract class BaseFragment extends Fragment implements HandleBackInterfa
             noContentView.setVisibility(View.VISIBLE);
             return;
         }
-        if (mRootView != null) {
-            ViewStub viewStub = mRootView.findViewById(R.id.noContentView);
+        if (rootView != null) {
+            ViewStub viewStub = rootView.findViewById(R.id.noContentView);
             if (viewStub != null) {
                 noContentView = viewStub.inflate();
                 TextView noContentText = noContentView.findViewById(R.id.noContentText);
@@ -235,14 +239,6 @@ public abstract class BaseFragment extends Fragment implements HandleBackInterfa
 
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull
-            int[] grantResults) {
-        XPermissionUtils.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-    }
-
-
-    @Override
     public void onResume() {
         super.onResume();
         isActive = true;
@@ -298,6 +294,25 @@ public abstract class BaseFragment extends Fragment implements HandleBackInterfa
             loadingDialog.dismiss();
             loadingDialog = null;
         }
+    }
+
+
+    protected boolean isDoubleClick(View v) {
+        Object tag = v.getTag(v.getId());
+        long beforeTimeMillis = tag != null ? (long) tag : 0;
+        long timeInMillis = System.currentTimeMillis();
+        v.setTag(v.getId(), timeInMillis);
+
+        long interval = timeInMillis - beforeTimeMillis;
+        Timber.d("isDoubleClick点击了=" + interval);
+        return interval < DOUBLE_CLICK_TIME_INTERVAL;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull
+            int[] grantResults) {
+        XPermissionUtils.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
 

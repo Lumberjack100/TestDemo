@@ -106,6 +106,8 @@ public class BleCollectorSettingFragment extends BaseBleConnectFragment {
         mEtCalculatingTime.setFilters(new InputFilter[]{new InputFilter.LengthFilter(4)});
         mEtStandbyTime.setFilters(new InputFilter[]{new InputFilter.LengthFilter(4)});
         mEtCollectTime.setFilters(new InputFilter[]{new InputFilter.LengthFilter(5)});
+
+        mEtCollectorAddress.setHint("0-255");
     }
 
     /**
@@ -120,8 +122,8 @@ public class BleCollectorSettingFragment extends BaseBleConnectFragment {
         Timber.d("查询采集器配置信息===%s", command);
     }
 
-    private void initValue(){
-        if(collectorConfigInfo==null) {
+    private void initValue() {
+        if (collectorConfigInfo == null) {
             return;
         }
 
@@ -148,23 +150,37 @@ public class BleCollectorSettingFragment extends BaseBleConnectFragment {
         standbyTime = mEtStandbyTime.getText().toString().trim();
         collectTime = mEtCollectTime.getText().toString().trim();
 
-        if (TextUtils.isEmpty(collectorAddress) || Integer.parseInt(collectorAddress) < 0 || Integer.parseInt(collectorAddress) > 255) {
-            ToastUtils.show("请输入正确的采集器地址");
+        if (TextUtils.isEmpty(collectorAddress)) {
+            ToastUtils.show("采集器地址不能为空");
+            mEtCollectorAddress.requestFocus();
+            return;
+        }
+        if (Integer.parseInt(collectorAddress) < 0) {
+            ToastUtils.show("采集器地址不能小于0");
+            mEtCollectorAddress.requestFocus();
+            return;
+        }
+        if (Integer.parseInt(collectorAddress) > 255) {
+            ToastUtils.show("采集器地址不能大于255");
+            mEtCollectorAddress.requestFocus();
             return;
         }
 
         if (TextUtils.isEmpty(calculatTime)) {
-            ToastUtils.show("解算时间不能为空");
+            ToastUtils.show("解算频度不能为空");
+            mEtCalculatingTime.requestFocus();
             return;
         }
 
         if (TextUtils.isEmpty(standbyTime)) {
-            ToastUtils.show("待机时间不能为空");
+            ToastUtils.show("待机时长不能为空");
+            mEtStandbyTime.requestFocus();
             return;
         }
 
         if (TextUtils.isEmpty(collectTime)) {
-            ToastUtils.show("采集时间不能为空");
+            ToastUtils.show("采集频度不能为空");
+            mEtCollectTime.requestFocus();
             return;
         }
 
@@ -191,7 +207,7 @@ public class BleCollectorSettingFragment extends BaseBleConnectFragment {
         super.onMessageEvent(messageEvent);
 
         if (messageEvent instanceof CmdResponseMessage) {
-            if(!isActive){
+            if (!isActive) {
                 return;
             }
             setResultData((CmdResponseMessage) messageEvent);

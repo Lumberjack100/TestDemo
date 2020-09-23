@@ -208,7 +208,11 @@ public class NetConfigDeviceFragment extends BaseFragment {
         moduleAdapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
-                selectedConfigModule = (ConfigModule) configModuleList.get(position);
+                if (isDoubleClick(view)) {
+                    return;
+                }
+
+                selectedConfigModule = configModuleList.get(position);
                 processItemClick();
             }
         });
@@ -217,6 +221,10 @@ public class NetConfigDeviceFragment extends BaseFragment {
 
     @OnClick({R.id.tv_device_communication_way, R.id.rl_run_state_analysis})
     public void onClick(View v) {
+        if (isDoubleClick(v)) {
+            return;
+        }
+
         switch (v.getId()) {
             case R.id.tv_device_communication_way://切换连接方式
                 showWarnDialog("连接方式", "确定切换至蓝牙连接？", SWITCH_TO_BLE);

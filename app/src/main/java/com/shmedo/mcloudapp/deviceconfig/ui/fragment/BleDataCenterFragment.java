@@ -2,6 +2,7 @@ package com.shmedo.mcloudapp.deviceconfig.ui.fragment;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.text.InputFilter;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
@@ -25,6 +26,7 @@ import com.shmedo.configlibrary.ble.enums.CommandType;
 import com.shmedo.configlibrary.ble.enums.ServerNumber;
 import com.shmedo.configlibrary.ble.model.BaseConfigInfo;
 import com.shmedo.configlibrary.ble.utils.StringUtil;
+import com.shmedo.configlibrary.ble.utils.ValidateUtil;
 import com.shmedo.core.AppContants;
 import com.shmedo.core.MCloudApp;
 import com.shmedo.core.event.CmdResponseMessage;
@@ -74,7 +76,13 @@ public class BleDataCenterFragment extends BaseBleConnectFragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        setFilter();
         queryData();
+    }
+
+    private void setFilter() {
+        mEtReportingInterval.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
+        mEtBdCardNumber.setFilters(new InputFilter[]{new InputFilter.LengthFilter(6)});
     }
 
     private void queryData() {
@@ -165,20 +173,40 @@ public class BleDataCenterFragment extends BaseBleConnectFragment {
     }
 
     private void processSave() {
+        //设置数据上报间隔
+        String report = mEtReportingInterval.getText().toString().trim();
+        if (TextUtils.isEmpty(report)) {
+            ToastUtils.show("数据上报间隔参数不能为空");
+            mEtReportingInterval.requestFocus();
+            return;
+        }
+
+        if (Integer.parseInt(report) < 0 || Integer.parseInt(report) > 9999) {
+            ToastUtils.show("数据上报间隔参数错误");
+            mEtReportingInterval.requestFocus();
+            return;
+        }
+
         if (dataCommunicationMode.equals("3") || dataCommunicationMode.equals("4")) {
-            String bdNumber =  mEtBdCardNumber.getText().toString().trim();
-            if (bdNumber.equals("")) {
-                ToastUtils.show("北斗目标卡号不能为空");
+            String bdNumber = mEtBdCardNumber.getText().toString().trim();
+            if (TextUtils.isEmpty(bdNumber)) {
+                ToastUtils.show("北斗卡号不能为空");
+                mEtBdCardNumber.requestFocus();
                 return;
             }
+
+            if (!ValidateUtil.isNumberSix(bdNumber)) {
+                ToastUtils.show("北斗卡号参数错误");
+                mEtBdCardNumber.requestFocus();
+                return;
+            }
+
             //设置六位目标北斗卡号
             SixTargerBDNumberEntity bdNumberEntity = new SixTargerBDNumberEntity(bdNumber);
             cmdBDCardNumber = CommandManager.getInstance().getCommand(CommandType.SIX_TARGER_BD_NUMBER, bdNumberEntity);
         }
 
-        //设置数据上报间隔
-        String report = mEtReportingInterval.getText() == null ? "" : mEtReportingInterval.getText().toString().trim();
-        DataReportIntervalEntity intervalEntity = new DataReportIntervalEntity(report.equals("") ? 120 : Integer.parseInt(report));
+        DataReportIntervalEntity intervalEntity = new DataReportIntervalEntity(Integer.parseInt(report));
         cmdDataReport = CommandManager.getInstance().getCommand(CommandType.DATA_REPORT_INTERVAL, intervalEntity);
 
         errMsg = "发送指令超时,请稍后尝试";
@@ -192,9 +220,8 @@ public class BleDataCenterFragment extends BaseBleConnectFragment {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(MessageEvent messageEvent) {
         super.onMessageEvent(messageEvent);
-
         if (messageEvent instanceof CmdResponseMessage) {
-            if(!isActive){
+            if (!isActive) {
                 return;
             }
             setResultData((CmdResponseMessage) messageEvent);

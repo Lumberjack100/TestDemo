@@ -56,7 +56,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="解算时间(s)"
+                    android:text="解算频度(s)"
                     android:textColor="@color/text_color_343434"
                     android:textSize="@dimen/text_size_17" />
 
@@ -90,7 +90,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="待机时间(s)"
+                    android:text="待机时长(s)"
                     android:textColor="@color/text_color_343434"
                     android:textSize="@dimen/text_size_17" />
 
@@ -124,7 +124,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="采集时间(s)"
+                    android:text="采集频度(ms)"
                     android:textColor="@color/text_color_343434"
                     android:textSize="@dimen/text_size_17" />
 
