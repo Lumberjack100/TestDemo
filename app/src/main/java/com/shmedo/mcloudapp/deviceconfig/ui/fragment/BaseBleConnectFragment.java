@@ -469,7 +469,7 @@ public abstract class BaseBleConnectFragment extends BaseFragment {
                     stopProgressRunnable();
                     if (!msg.obj.equals("1")) {
                         ToastUtils.show("设备认证失败!");
-                        if (authenticateNum < 5) {
+                        if (authenticateNum < 4) {
                             setAuthenticateWay();//重新认证
                         } else {
                             disconnectDevice();
@@ -780,8 +780,9 @@ public abstract class BaseBleConnectFragment extends BaseFragment {
         String command = CommandManager.getInstance().getCommand(CommandType.SAVE_CONFIG_INFO, saveConfigInfoEntity);
 
         errMsg = "发送指令超时,请稍后尝试";
-        startProgressRunnable("正在发送保存命令...", CONFIG_PARAMS_DELAY_MILLIS);
+        startProgressRunnable("正在发送保存重启指令...", CONFIG_PARAMS_DELAY_MILLIS);
         sendCommonCommandImmediately(command);
+        Timber.d("保存配置重启设备指令===%s", command);
     }
 
     /**

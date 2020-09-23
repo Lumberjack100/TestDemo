@@ -242,6 +242,11 @@ public class BleConfigDeviceFragment extends BaseBleConnectFragment {
         moduleAdapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
+                if (isDoubleClick(view)) {
+                    return;
+                }
+
+
                 if (!MCloudApp.isIsBluetoothDeviceConnected()) {
                     ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
                     return;
@@ -311,10 +316,7 @@ public class BleConfigDeviceFragment extends BaseBleConnectFragment {
     }
 
     private void doRebootCmd() {
-        showLoadingDialog("指令下发中...");
-        SaveConfigInfoEntity saveConfigInfoEntity = new SaveConfigInfoEntity(SaveConfigMode.SAVE_REBOOT.toInt());
-        String command = CommandManager.getInstance().getCommand(CommandType.SAVE_CONFIG_INFO, saveConfigInfoEntity);
-        Timber.d("重启设备指令===%s", command);
+        saveConfigInfo();
     }
 
     private BaseDialogFragment.DialogFragmentClickListener firmWareSelectListener = new BaseDialogFragment.DialogFragmentClickListener<FirmWareInfo>() {
@@ -332,6 +334,10 @@ public class BleConfigDeviceFragment extends BaseBleConnectFragment {
 
     @OnClick({R.id.tv_device_connect_state, R.id.tv_device_communication_way})
     public void onClick(View v) {
+        if (isDoubleClick(v)) {
+            return;
+        }
+
         switch (v.getId()) {
             case R.id.tv_device_connect_state://断开/重新连接
                 if (!MCloudApp.isIsBluetoothDeviceConnected()) {
