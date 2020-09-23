@@ -23,8 +23,8 @@ import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.chad.library.adapter.base.listener.OnLoadMoreListener;
 import com.hjq.toast.ToastUtils;
 import com.shmedo.core.MCloudApp;
-import com.shmedo.core.model.UserInfo;
 import com.shmedo.core.util.DensityUtil;
+import com.shmedo.core.util.GlobalUtil;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.fragment.BaseFragment;
 import com.shmedo.mcloudapp.common.view.recycleviewitemdivider.GridSpacingItemDecoration;
@@ -63,6 +63,9 @@ import okhttp3.RequestBody;
  * A simple {@link Fragment} subclass.
  */
 public class NetDeviceListFragment extends BaseFragment {
+    @BindView(R.id.contentLayout)
+    View contentLayout;
+
     @BindView(R.id.swipeLayout)
     SwipeRefreshLayout swipeRefresh;
 
@@ -114,10 +117,10 @@ public class NetDeviceListFragment extends BaseFragment {
         super.onStart();
         if (companyID != MCloudApp.getCompanyID()) {
             companyID = MCloudApp.getCompanyID();
-            queryCompanyDeviceOnlineTypeStatistics();
-            swipeRefresh.setRefreshing(true);
             deviceTypeID = -1;
-            refresh();
+            startLoading();
+            swipeRefresh.setRefreshing(true);
+            queryCompanyDeviceOnlineTypeStatistics();
         }
     }
 
@@ -126,7 +129,7 @@ public class NetDeviceListFragment extends BaseFragment {
         swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                refresh();
+                refreshDevices();
             }
         });
     }
@@ -159,8 +162,8 @@ public class NetDeviceListFragment extends BaseFragment {
 
                 deviceTypeID = deviceOnlineTypeStatistic.getDeviceTypeID();
                 swipeRefresh.setRefreshing(true);
-                updateTopView(deviceOnlineTypeStatistic);
-                refresh();
+//                updateTopView(deviceOnlineTypeStatistic);
+                refreshDevices();
             }
         });
         mRecyclerViewDeviceType.setAdapter(deviceTypeAdapter);
@@ -212,7 +215,7 @@ public class NetDeviceListFragment extends BaseFragment {
     /**
      * 刷新
      */
-    private void refresh() {
+    private void refreshDevices() {
         // 这里的作用是防止下拉刷新的时候还可以上拉加载
         deviceInfoAdapter.getLoadMoreModule().setEnableLoadMore(false);
         // 下拉刷新，需要重置页数
@@ -246,9 +249,15 @@ public class NetDeviceListFragment extends BaseFragment {
 
         tvOnlineNum.setText(String.valueOf(onlineCount));
         tvOfflineNum.setText(String.valueOf(offlineCount));
-        DecimalFormat df = new DecimalFormat("#.#");//格式化小数
 
-        String rate = df.format((float) onlineCount / (onlineCount + offlineCount) * 100) + "%";
+        DecimalFormat df = new DecimalFormat("#.#");//格式化小数
+        String rate;
+        if ((onlineCount + offlineCount) == 0) {
+            rate = "0%";
+        } else {
+            rate = df.format((float) onlineCount / (onlineCount + offlineCount) * 100) + "%";
+        }
+
         SpannableString spannableString = new SpannableString(rate);
         AbsoluteSizeSpan absoluteSizeSpan = new AbsoluteSizeSpan(18, true);
         spannableString.setSpan(absoluteSizeSpan, rate.indexOf("%"), spannableString.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
@@ -312,28 +321,43 @@ public class NetDeviceListFragment extends BaseFragment {
                     protected void onResponse(List<DeviceOnlineTypeStatistic> data, ErrCode errCode) {
                         if (!ResponseHandler.getInstance().handleResponse(errCode)) {
                             if (errCode.getCode() == 0) {
+                                if (data == null || data.size() == 0) {
+                                    swipeRefresh.setRefreshing(false);
+                                    showNoContentView(GlobalUtil.getString(R.string.empty_no_data));
+                                    return;
+                                }
                                 setDeviceTypeData(data);
-                                updateTopView(deviceTypeStatisticList.get(0));
+
                             } else {
+                                swipeRefresh.setRefreshing(false);
                                 if (!TextUtils.isEmpty(errCode.getErrMessage())) {
                                     ToastUtils.show(errCode.getErrMessage());
                                 }
+                                loadFailed(GlobalUtil.getString(R.string.fetch_data_failed) + ": " + errCode.getCode());
                             }
+                        } else {
+                            loadFailed(GlobalUtil.getString(R.string.unknown_error) + ": " + errCode.getCode());
                         }
                     }
 
                     @Override
                     public void onError(Throwable e) {
                         ResponseHandler.getInstance().handleFailure((Exception) e);
+                        loadFailed(null);
                     }
                 });
     }
 
+    /**
+     * 过滤掉不支持物联网协议的设备
+     *
+     * @param dataList
+     */
     private void setDeviceTypeData(List<DeviceOnlineTypeStatistic> dataList) {
+        deviceTypeStatisticList.clear();
         if (dataList == null || dataList.size() == 0) {
             return;
         }
-        deviceTypeStatisticList.clear();
         DeviceOnlineTypeStatistic deviceOnlineTypeStatistic = new DeviceOnlineTypeStatistic();
         deviceOnlineTypeStatistic.setDeviceTypeName("全部");
         deviceOnlineTypeStatistic.setDeviceTypeID(-1);
@@ -341,13 +365,25 @@ public class NetDeviceListFragment extends BaseFragment {
         deviceTypeStatisticList.add(deviceOnlineTypeStatistic);
 
         for (DeviceOnlineTypeStatistic typeStatistic : dataList) {
-            //去除不支持物联网协议的 DAG、TPS、VIR 设备
-            if (typeStatistic.getDeviceTypeID() == 5 || typeStatistic.getDeviceTypeID() == 7 || typeStatistic.getDeviceTypeID() == 9)
+            //去除不支持物联网协议的 DAG、TPS、VIR 等设备
+            if (typeStatistic.getDeviceTypeID() == 5 || typeStatistic.getDeviceTypeID() == 8
+                    || typeStatistic.getDeviceTypeID() == 9
+                    || typeStatistic.getDeviceTypeID() == 11
+                    || typeStatistic.getDeviceTypeID() == 12
+                    || typeStatistic.getDeviceTypeID() == 15) {
                 continue;
+            }
 
             deviceTypeStatisticList.add(typeStatistic);
         }
         deviceTypeAdapter.notifyDataSetChanged();
+        if (deviceTypeStatisticList.size() <= 1) {
+            swipeRefresh.setRefreshing(false);
+            showNoContentView(GlobalUtil.getString(R.string.empty_no_data));
+        } else {
+            updateTopView(deviceTypeStatisticList.get(0));
+            refreshDevices();
+        }
     }
 
     /**
@@ -417,20 +453,9 @@ public class NetDeviceListFragment extends BaseFragment {
                         deviceInfoAdapter.getLoadMoreModule().loadMoreFail();
                         ResponseHandler.getInstance().handleFailure((Exception) e);
                     }
-
                 });
     }
 
-    private View getErrorView() {
-        View errorView = getLayoutInflater().inflate(R.layout.error_view, mRecyclerViewDevice, false);
-        errorView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                refresh();
-            }
-        });
-        return errorView;
-    }
 
     /**
      * 筛选出支持米度物联网协议的设备
@@ -438,12 +463,42 @@ public class NetDeviceListFragment extends BaseFragment {
     private void filterIOTProtocolDevices(List<ProjectDeviceInfo> deviceInfos) {
         for (ProjectDeviceInfo deviceInfo : deviceInfos) {
             //去除不支持物联网协议的 DAG、TPS、VIR 设备
-            if (deviceInfo.getDeviceTypeID() == 5 || deviceInfo.getDeviceTypeID() == 7 || deviceInfo.getDeviceTypeID() == 9)
+            if (deviceInfo.getDeviceTypeID() == 5 || deviceInfo.getDeviceTypeID() == 8
+                    || deviceInfo.getDeviceTypeID() == 9
+                    || deviceInfo.getDeviceTypeID() == 11
+                    || deviceInfo.getDeviceTypeID() == 12
+                    || deviceInfo.getDeviceTypeID() == 15) {
                 continue;
+            }
 
             deviceInfoList.add(deviceInfo);
         }
     }
 
+    @Override
+    protected void loadFailed(String msg) {
+        super.loadFailed(msg);
+        if (msg == null) {
+            contentLayout.setVisibility(View.GONE);
+            showBadNetworkView(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    startLoading();
+                    swipeRefresh.setRefreshing(true);
+                    queryCompanyDeviceOnlineTypeStatistics();
+                }
+            });
+        } else {
+            showLoadErrorView(msg);
+        }
+    }
 
+    /**
+     * 加载feeds完成，将feeds显示出来，将加载等待控件隐藏。
+     */
+    @Override
+    protected void loadFinished() {
+        super.loadFinished();
+        contentLayout.setVisibility(View.VISIBLE);
+    }
 }

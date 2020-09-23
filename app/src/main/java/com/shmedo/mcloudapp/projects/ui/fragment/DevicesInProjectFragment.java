@@ -23,8 +23,8 @@ import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.chad.library.adapter.base.listener.OnLoadMoreListener;
 import com.hjq.toast.ToastUtils;
 import com.shmedo.core.MCloudApp;
-import com.shmedo.core.model.UserInfo;
 import com.shmedo.core.util.DensityUtil;
+import com.shmedo.core.util.GlobalUtil;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.fragment.BaseFragment;
 import com.shmedo.mcloudapp.common.view.recycleviewitemdivider.GridSpacingItemDecoration;
@@ -61,6 +61,9 @@ import okhttp3.RequestBody;
  */
 public class DevicesInProjectFragment extends BaseFragment {
     private static final String PROJECT_NAME = "project_name";
+
+    @BindView(R.id.contentLayout)
+    View contentLayout;
 
     @BindView(R.id.swipeLayout)
     SwipeRefreshLayout swipeRefresh;
@@ -124,10 +127,10 @@ public class DevicesInProjectFragment extends BaseFragment {
         initLoadMore();
 
         // 进入页面，刷新数据
-        queryCompanyDeviceOnlineTypeStatistics();
-        swipeRefresh.setRefreshing(true);
         deviceTypeID = -1;
-        refresh();
+        startLoading();
+        swipeRefresh.setRefreshing(true);
+        queryCompanyDeviceOnlineTypeStatistics();
     }
 
 
@@ -136,7 +139,7 @@ public class DevicesInProjectFragment extends BaseFragment {
         swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                refresh();
+                refreshDevices();
             }
         });
     }
@@ -169,8 +172,8 @@ public class DevicesInProjectFragment extends BaseFragment {
 
                 deviceTypeID = deviceOnlineTypeStatistic.getDeviceTypeID();
                 swipeRefresh.setRefreshing(true);
-                updateTopView(deviceOnlineTypeStatistic);
-                refresh();
+//                updateTopView(deviceOnlineTypeStatistic);
+                refreshDevices();
             }
         });
         mRecyclerViewDeviceType.setAdapter(deviceTypeAdapter);
@@ -222,7 +225,7 @@ public class DevicesInProjectFragment extends BaseFragment {
     /**
      * 刷新
      */
-    private void refresh() {
+    private void refreshDevices() {
         // 这里的作用是防止下拉刷新的时候还可以上拉加载
         deviceInfoAdapter.getLoadMoreModule().setEnableLoadMore(false);
         // 下拉刷新，需要重置页数
@@ -256,9 +259,15 @@ public class DevicesInProjectFragment extends BaseFragment {
 
         tvOnlineNum.setText(String.valueOf(onlineCount));
         tvOfflineNum.setText(String.valueOf(offlineCount));
-        DecimalFormat df = new DecimalFormat("#.#");//格式化小数
 
-        String rate = df.format((float) onlineCount / (onlineCount + offlineCount) * 100) + "%";
+        DecimalFormat df = new DecimalFormat("#.#");//格式化小数
+        String rate;
+        if ((onlineCount + offlineCount) == 0) {
+            rate = "0%";
+        } else {
+            rate = df.format((float) onlineCount / (onlineCount + offlineCount) * 100) + "%";
+        }
+
         SpannableString spannableString = new SpannableString(rate);
         AbsoluteSizeSpan absoluteSizeSpan = new AbsoluteSizeSpan(18, true);
         spannableString.setSpan(absoluteSizeSpan, rate.indexOf("%"), spannableString.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
@@ -281,31 +290,41 @@ public class DevicesInProjectFragment extends BaseFragment {
                         if (!ResponseHandler.getInstance().handleResponse(errCode)) {
                             if (errCode.getCode() == 0) {
                                 if (data == null || data.size() == 0) {
-
+                                    swipeRefresh.setRefreshing(false);
+                                    showNoContentView(GlobalUtil.getString(R.string.empty_no_data));
                                     return;
                                 }
                                 setDeviceTypeData(data);
-                                updateTopView(deviceTypeStatisticList.get(0));
                             } else {
+                                swipeRefresh.setRefreshing(false);
                                 if (!TextUtils.isEmpty(errCode.getErrMessage())) {
                                     ToastUtils.show(errCode.getErrMessage());
                                 }
+                                loadFailed(GlobalUtil.getString(R.string.fetch_data_failed) + ": " + errCode.getCode());
                             }
+                        }else {
+                            loadFailed(GlobalUtil.getString(R.string.unknown_error) + ": " + errCode.getCode());
                         }
                     }
 
                     @Override
                     public void onError(Throwable e) {
                         ResponseHandler.getInstance().handleFailure((Exception) e);
+                        loadFailed(null);
                     }
                 });
     }
 
+    /**
+     * 过滤掉不支持物联网协议的设备
+     *
+     * @param dataList
+     */
     private void setDeviceTypeData(List<DeviceOnlineTypeStatistic> dataList) {
+        deviceTypeStatisticList.clear();
         if (dataList == null || dataList.size() == 0) {
             return;
         }
-        deviceTypeStatisticList.clear();
         DeviceOnlineTypeStatistic deviceOnlineTypeStatistic = new DeviceOnlineTypeStatistic();
         deviceOnlineTypeStatistic.setDeviceTypeName("全部");
         deviceOnlineTypeStatistic.setDeviceTypeID(-1);
@@ -313,12 +332,25 @@ public class DevicesInProjectFragment extends BaseFragment {
         deviceTypeStatisticList.add(deviceOnlineTypeStatistic);
 
         for (DeviceOnlineTypeStatistic typeStatistic : dataList) {
-            //去除不支持物联网协议的 DAG、TPS、VIR 设备
-            if (typeStatistic.getDeviceTypeID() == 4 || typeStatistic.getDeviceTypeID() == 10 || typeStatistic.getDeviceTypeID() == 13 || typeStatistic.getDeviceTypeID() == 14) {
-                deviceTypeStatisticList.add(typeStatistic);
+            //去除不支持物联网协议的 DAG、TPS、VIR 等设备
+            if (typeStatistic.getDeviceTypeID() == 5 || typeStatistic.getDeviceTypeID() == 8
+                    || typeStatistic.getDeviceTypeID() == 9
+                    || typeStatistic.getDeviceTypeID() == 11
+                    || typeStatistic.getDeviceTypeID() == 12
+                    || typeStatistic.getDeviceTypeID() == 15) {
+                continue;
             }
+
+            deviceTypeStatisticList.add(typeStatistic);
         }
         deviceTypeAdapter.notifyDataSetChanged();
+        if (deviceTypeStatisticList.size() <= 1) {
+            swipeRefresh.setRefreshing(false);
+            showNoContentView(GlobalUtil.getString(R.string.empty_no_data));
+        } else {
+            updateTopView(deviceTypeStatisticList.get(0));
+            refreshDevices();
+        }
     }
 
     private void queryCompanyDevice() {
@@ -358,8 +390,12 @@ public class DevicesInProjectFragment extends BaseFragment {
                                 if (pageInfo.isFirstPage()) {
                                     deviceInfoList.clear();
                                 }
+
                                 filterIOTProtocolDevices(data.getCurrentPageData());
-                                deviceInfoAdapter.notifyDataSetChanged();
+                                if (deviceInfoList.size() == 0) {
+                                    deviceInfoAdapter.setEmptyView(R.layout.empty_view);
+                                    return;
+                                }
 
                                 if (data.getCurrentPageData().size() < PAGE_SIZE) {
                                     //如果不够一页,显示没有更多数据布局
@@ -397,7 +433,7 @@ public class DevicesInProjectFragment extends BaseFragment {
         errorView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                refresh();
+                refreshDevices();
             }
         });
         return errorView;
@@ -409,10 +445,43 @@ public class DevicesInProjectFragment extends BaseFragment {
     private void filterIOTProtocolDevices(List<ProjectDeviceInfo> deviceInfos) {
         for (ProjectDeviceInfo deviceInfo : deviceInfos) {
             //去除不支持物联网协议的 DAG、TPS、VIR 设备
-            if (deviceInfo.getDeviceTypeID() == 5 || deviceInfo.getDeviceTypeID() == 7 || deviceInfo.getDeviceTypeID() == 9)
+            if (deviceInfo.getDeviceTypeID() == 5 || deviceInfo.getDeviceTypeID() == 8
+                    || deviceInfo.getDeviceTypeID() == 9
+                    || deviceInfo.getDeviceTypeID() == 11
+                    || deviceInfo.getDeviceTypeID() == 12
+                    || deviceInfo.getDeviceTypeID() == 15) {
                 continue;
+            }
 
             deviceInfoList.add(deviceInfo);
         }
+        deviceInfoAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    protected void loadFailed(String msg) {
+        super.loadFailed(msg);
+        if (msg == null) {
+            contentLayout.setVisibility(View.GONE);
+            showBadNetworkView(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    startLoading();
+                    swipeRefresh.setRefreshing(true);
+                    queryCompanyDeviceOnlineTypeStatistics();
+                }
+            });
+        } else {
+            showLoadErrorView(msg);
+        }
+    }
+
+    /**
+     * 加载feeds完成，将feeds显示出来，将加载等待控件隐藏。
+     */
+    @Override
+    protected void loadFinished() {
+        super.loadFinished();
+        contentLayout.setVisibility(View.VISIBLE);
     }
 }
