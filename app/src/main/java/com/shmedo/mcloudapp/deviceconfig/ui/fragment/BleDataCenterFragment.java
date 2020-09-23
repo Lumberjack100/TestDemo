@@ -175,7 +175,13 @@ public class BleDataCenterFragment extends BaseBleConnectFragment {
             return;
         }
 
-        if (Integer.parseInt(report) < 0 || Integer.parseInt(report) > 9999) {
+        if (Integer.parseInt(report) < 1) {
+            ToastUtils.show("数据上报间隔必须为正整数");
+            mEtReportingInterval.requestFocus();
+            return;
+        }
+
+        if (Integer.parseInt(report) > 9999) {
             ToastUtils.show("数据上报间隔参数错误");
             mEtReportingInterval.requestFocus();
             return;

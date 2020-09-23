@@ -54,7 +54,7 @@ public class BleCollectorSettingFragment extends BaseBleConnectFragment {
     @BindView(R.id.btn_confirm)
     Button mBtnConfirmComplete;
 
-    private CollectorConfigInfo collectorConfigInfo;
+    private CollectorConfigInfo collectorConfigInfo = new CollectorConfigInfo();
     private String collectorModel;//采集器类型
 
     private String collectorAddress;//采集器地址

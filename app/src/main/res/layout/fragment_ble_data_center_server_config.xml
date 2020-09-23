@@ -88,7 +88,8 @@
 
                 <com.shmedo.mcloudapp.common.view.ClearEditText
                     android:id="@+id/et_data_server_address"
-                    style="@style/DataCenter_EditText_Style" />
+                    style="@style/DataCenter_EditText_Style"
+                    android:hint="服务器地址 端口"/>
 
             </LinearLayout>
 
@@ -179,7 +180,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="KeepAlive值"
+                    android:text="KeepAlive值(s)"
                     android:textColor="@color/text_color_343434"
                     android:textSize="@dimen/text_size_17" />
 

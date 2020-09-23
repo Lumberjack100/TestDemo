@@ -28,8 +28,7 @@
                 android:id="@+id/userLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dimen_size_15"
-                android:background="@drawable/bg_corner_10dp_white"
+                android:background="@color/white"
                 android:clickable="true"
                 android:focusable="true"
                 android:foreground="?attr/selectableItemBackground"
@@ -88,7 +87,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dimen_size_15"
-                android:background="@drawable/bg_corner_10dp_white"
+                android:background="@color/white"
                 android:orientation="vertical"
                 android:paddingTop="@dimen/dimen_size_20"
                 android:paddingBottom="@dimen/dimen_size_30">

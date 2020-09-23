@@ -2,6 +2,7 @@ package com.shmedo.mcloudapp.deviceconfig.ui.fragment;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.text.InputFilter;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
@@ -173,6 +174,17 @@ public class BleDataCenterServerConfigFragment extends BaseBleConnectFragment {
 
     private void setView() {
         mTvRegisterPlatform.setText("地大平台");
+        mEtAppKey.setFilters(new InputFilter[]{new InputFilter.LengthFilter(50)});
+        mEtKeepAlive.setFilters(new InputFilter[]{new InputFilter.LengthFilter(5)});
+        mEtDeviceSN.setFilters(new InputFilter[]{new InputFilter.LengthFilter(15)});
+        mEtProductId.setFilters(new InputFilter[]{new InputFilter.LengthFilter(50)});
+        mEtRegisterCode.setFilters(new InputFilter[]{new InputFilter.LengthFilter(50)});
+        mEtMqttDeviceId.setFilters(new InputFilter[]{new InputFilter.LengthFilter(50)});
+        mEtMqttUsername.setFilters(new InputFilter[]{new InputFilter.LengthFilter(30)});
+        mEtMqttPwd.setFilters(new InputFilter[]{new InputFilter.LengthFilter(50)});
+
+        mEtDataServerAddress.setHint("服务器地址 端口");
+        mEtRegisterPlatformAddress.setHint("服务器地址 端口");
     }
 
     private void setSwitchViewListener() {
@@ -392,53 +404,103 @@ public class BleDataCenterServerConfigFragment extends BaseBleConnectFragment {
 
         if (TextUtils.isEmpty(dataServerAddress)) {
             ToastUtils.show("数据服务器地址不能为空!");
+            mEtDataServerAddress.requestFocus();
+            return false;
+        }
+
+        String[] strs = dataServerAddress.trim().split(" ");
+        if (strs.length < 2) {
+            ToastUtils.show("数据服务器地址格式错误!");
+            mEtDataServerAddress.requestFocus();
             return false;
         }
 
         if (communicationProtocol.equals("4")) {//MQTT自动注册
             if (TextUtils.isEmpty(registerPlatformAddress)) {
                 ToastUtils.show("注册平台地址不能为空!");
+                mEtRegisterPlatformAddress.requestFocus();
+                return false;
+            }
+
+            strs = dataServerAddress.trim().split(" ");
+            if (strs.length < 2) {
+                ToastUtils.show("注册平台地址格式错误!");
+                mEtRegisterPlatformAddress.requestFocus();
                 return false;
             }
 
             if (TextUtils.isEmpty(keepAliveValue)) {
                 ToastUtils.show("KeepAlive值不能为空!");
+                mEtKeepAlive.requestFocus();
                 return false;
             }
+            if (Integer.parseInt(keepAliveValue) < 0) {
+                ToastUtils.show("KeepAlive值不能小于0");
+                mEtKeepAlive.requestFocus();
+                return false;
+            }
+
+            if (Integer.parseInt(keepAliveValue) > 65535) {
+                ToastUtils.show("KeepAlive值不能大于65535");
+                mEtKeepAlive.requestFocus();
+                return false;
+            }
+
             if (TextUtils.isEmpty(deviceSn)) {
                 ToastUtils.show("设备SN号不能为空!");
+                mEtDeviceSN.requestFocus();
                 return false;
             }
             if (TextUtils.isEmpty(productId)) {
                 ToastUtils.show("产品ID不能为空!");
+                mEtProductId.requestFocus();
                 return false;
             }
             if (TextUtils.isEmpty(registerCode)) {
                 ToastUtils.show("注册码不能为空!");
+                mEtRegisterCode.requestFocus();
                 return false;
             }
 
             if (registerPlatform.equals("2")) {//米度平台
                 if (TextUtils.isEmpty(appKey)) {
                     ToastUtils.show("AppKey不能为空!");
+                    mEtAppKey.requestFocus();
                     return false;
                 }
             }
         } else if (communicationProtocol.equals("5")) {//MQTT手动注册
             if (TextUtils.isEmpty(keepAliveValue)) {
                 ToastUtils.show("KeepAlive值不能为空!");
+                mEtKeepAlive.requestFocus();
                 return false;
             }
+
+            if (Integer.parseInt(keepAliveValue) < 0) {
+                ToastUtils.show("KeepAlive值不能小于0");
+                mEtKeepAlive.requestFocus();
+                return false;
+            }
+
+            if (Integer.parseInt(keepAliveValue) > 65535) {
+                ToastUtils.show("KeepAlive值不能大于65535");
+                mEtKeepAlive.requestFocus();
+                return false;
+            }
+
             if (TextUtils.isEmpty(mqttDeviceId)) {
                 ToastUtils.show("MQTT设备ID不能为空!");
+                mEtMqttDeviceId.requestFocus();
                 return false;
             }
             if (TextUtils.isEmpty(mqttUsername)) {
                 ToastUtils.show("MQTT用户名不能为空!");
+                mEtMqttUsername.requestFocus();
                 return false;
             }
             if (TextUtils.isEmpty(mqttPassword)) {
                 ToastUtils.show("MQTT密码不能为空!");
+                mEtMqttPwd.requestFocus();
                 return false;
             }
         }
@@ -644,6 +706,7 @@ public class BleDataCenterServerConfigFragment extends BaseBleConnectFragment {
         mqttConfigInfo = ResultParserUtil.getEntityObject(cmdStr);
         if (mqttConfigInfo == null) {
             Timber.w(" MqttConfigInfo 为空!");
+            mqttConfigInfo = new MqttConfigInfo();
             return;
         }
 

@@ -63,8 +63,6 @@ import okhttp3.RequestBody;
  * A simple {@link Fragment} subclass.
  */
 public class NetDeviceListFragment extends BaseFragment {
-    @BindView(R.id.contentLayout)
-    View contentLayout;
 
     @BindView(R.id.swipeLayout)
     SwipeRefreshLayout swipeRefresh;
@@ -118,6 +116,7 @@ public class NetDeviceListFragment extends BaseFragment {
         if (companyID != MCloudApp.getCompanyID()) {
             companyID = MCloudApp.getCompanyID();
             deviceTypeID = -1;
+            clearData();
             startLoading();
             swipeRefresh.setRefreshing(true);
             queryCompanyDeviceOnlineTypeStatistics();
@@ -230,7 +229,7 @@ public class NetDeviceListFragment extends BaseFragment {
         queryCompanyDevice();
     }
 
-    private void updateTopView(DeviceOnlineTypeStatistic deviceOnlineTypeStatistic) {
+    private void processOnlineData(DeviceOnlineTypeStatistic deviceOnlineTypeStatistic) {
         int onlineCount = 0;
         int offlineCount = 0;
 
@@ -247,9 +246,6 @@ public class NetDeviceListFragment extends BaseFragment {
             offlineCount = deviceOnlineTypeStatistic.getOfflineCount();
         }
 
-        tvOnlineNum.setText(String.valueOf(onlineCount));
-        tvOfflineNum.setText(String.valueOf(offlineCount));
-
         DecimalFormat df = new DecimalFormat("#.#");//格式化小数
         String rate;
         if ((onlineCount + offlineCount) == 0) {
@@ -257,6 +253,13 @@ public class NetDeviceListFragment extends BaseFragment {
         } else {
             rate = df.format((float) onlineCount / (onlineCount + offlineCount) * 100) + "%";
         }
+
+        updateTopView(onlineCount, offlineCount, rate);
+    }
+
+    private void updateTopView(int onlineCount, int offlineCount, String rate) {
+        tvOnlineNum.setText(String.valueOf(onlineCount));
+        tvOfflineNum.setText(String.valueOf(offlineCount));
 
         SpannableString spannableString = new SpannableString(rate);
         AbsoluteSizeSpan absoluteSizeSpan = new AbsoluteSizeSpan(18, true);
@@ -381,7 +384,7 @@ public class NetDeviceListFragment extends BaseFragment {
             swipeRefresh.setRefreshing(false);
             showNoContentView(GlobalUtil.getString(R.string.empty_no_data));
         } else {
-            updateTopView(deviceTypeStatisticList.get(0));
+            processOnlineData(deviceTypeStatisticList.get(0));
             refreshDevices();
         }
     }
@@ -479,7 +482,9 @@ public class NetDeviceListFragment extends BaseFragment {
     protected void loadFailed(String msg) {
         super.loadFailed(msg);
         if (msg == null) {
-            contentLayout.setVisibility(View.GONE);
+            mRecyclerViewDeviceType.setVisibility(View.GONE);
+            swipeRefresh.setVisibility(View.GONE);
+            mRecyclerViewDevice.setVisibility(View.GONE);
             showBadNetworkView(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -499,6 +504,17 @@ public class NetDeviceListFragment extends BaseFragment {
     @Override
     protected void loadFinished() {
         super.loadFinished();
-        contentLayout.setVisibility(View.VISIBLE);
+        mRecyclerViewDeviceType.setVisibility(View.VISIBLE);
+        swipeRefresh.setVisibility(View.VISIBLE);
+        mRecyclerViewDevice.setVisibility(View.VISIBLE);
+    }
+
+    private void clearData() {
+        updateTopView(0, 0, "0%");
+
+        deviceTypeStatisticList.clear();
+        deviceInfoList.clear();
+        deviceTypeAdapter.notifyDataSetChanged();
+        deviceInfoAdapter.notifyDataSetChanged();
     }
 }

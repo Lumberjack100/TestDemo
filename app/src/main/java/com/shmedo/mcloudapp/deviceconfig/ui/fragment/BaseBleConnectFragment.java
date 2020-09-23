@@ -489,19 +489,19 @@ public abstract class BaseBleConnectFragment extends BaseFragment {
                     break;
 
                 case Constants.BT_REQUEST_MTU_FAIL:
-                    ToastUtils.show("MTU请求设置失败！");
+//                    ToastUtils.show("MTU请求设置失败！");
                     break;
 
                 case Constants.BT_SERVICE_FIND_FAIL:
-                    ToastUtils.show("蓝牙服务发现失败！");
+//                    ToastUtils.show("蓝牙服务发现失败！");
                     break;
 
                 case Constants.BT_CHARACTERISTICS_FIND_FAIL:
-                    ToastUtils.show("蓝牙特征读取失败！");
+//                    ToastUtils.show("蓝牙特征读取失败！");
                     break;
 
                 case Constants.BT_ENABLE_READ_FAIL:
-                    ToastUtils.show("设置读取Descriptor失败！");
+//                    ToastUtils.show("设置读取Descriptor失败！");
                     break;
 
                 case Constants.MESSAGE_LOCK_REBOOT_DEVICE:

@@ -80,7 +80,7 @@ public class ValidateUtil {
      */
     public static boolean isNumberSix(String str) throws DASParameterException {
         if (str.trim().length() != 6) {
-            throw new DASParameterException("参数异常");
+            return false;
         }
 
         return Pattern.matches(REGEX_NUMERIC, str);
