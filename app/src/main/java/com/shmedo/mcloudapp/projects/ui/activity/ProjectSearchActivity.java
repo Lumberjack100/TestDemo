@@ -82,7 +82,6 @@ public class ProjectSearchActivity extends BaseActivity implements TextWatcher {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setToolBar(R.id.toolbar);
         initUserData();
         initView();
         initHistoryAdater();
@@ -170,9 +169,13 @@ public class ProjectSearchActivity extends BaseActivity implements TextWatcher {
         mRecyclerView.setAdapter(searchResultAdapter);
     }
 
-    @OnClick({R.id.tv_search, R.id.iv_clear_history_keywords})
+    @OnClick({R.id.iv_back, R.id.tv_search, R.id.iv_clear_history_keywords})
     public void onClick(View v) {
         switch (v.getId()) {
+            case R.id.iv_back:
+                finish();
+                break;
+
             case R.id.tv_search:
                 if (TextUtils.isEmpty(mEtKeyWords.getText().toString().trim())) {
                     ToastUtils.show("请输入搜索内容");

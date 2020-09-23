@@ -959,8 +959,8 @@ public class ProjectListFragment extends BaseTranslucentFragment {
             searchLayout.setBackgroundResource(R.drawable.bg_search_project_white);
             mIvSearchIcon.setImageResource(R.drawable.ic_search_project_white);
             mTvSearchHint.setTextColor(GlobalUtil.getColor(R.color.white));
-            ivMap.setImageResource(R.drawable.ic_project_map);
-            ivFilter.setImageResource(R.drawable.ic_filter_project_normal);
+            ivMap.setImageResource(R.drawable.ic_project_map_light);
+            ivFilter.setImageResource(R.drawable.ic_filter_project_light);
 
             ImmersionBar.with(ProjectListFragment.this)
                     .statusBarColor(R.color.transparent, alpha)
@@ -974,8 +974,8 @@ public class ProjectListFragment extends BaseTranslucentFragment {
             searchLayout.setBackgroundResource(R.drawable.bg_search_project_gray);
             mIvSearchIcon.setImageResource(R.drawable.ic_search_project);
             mTvSearchHint.setTextColor(GlobalUtil.getColor(R.color.text_color_b3b3b3));
-            ivMap.setImageResource(R.drawable.ic_project_map_black);
-            ivFilter.setImageResource(R.drawable.ic_filter_project_checked);
+            ivMap.setImageResource(R.drawable.ic_project_map_dark);
+            ivFilter.setImageResource(R.drawable.ic_filter_project_dark);
 
             ImmersionBar.with(ProjectListFragment.this)
                     .statusBarColor(R.color.white, 1)

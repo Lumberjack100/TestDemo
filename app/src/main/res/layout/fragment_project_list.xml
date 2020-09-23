@@ -29,7 +29,7 @@
                 <FrameLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="-100dp"
+                    android:layout_marginTop="-86dp"
                     android:layout_marginBottom="20dp">
 
                     <com.yanzhenjie.recyclerview.SwipeRecyclerView

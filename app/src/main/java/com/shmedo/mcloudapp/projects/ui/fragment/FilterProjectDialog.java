@@ -107,7 +107,7 @@ public class FilterProjectDialog extends BaseTranslucentDialogFragment {
         searchLayout.setBackgroundResource(R.drawable.bg_search_project_gray);
         mIvSearchIcon.setImageResource(R.drawable.ic_search_project);
         mTvSearchHint.setTextColor(GlobalUtil.getColor(R.color.text_color_b3b3b3));
-        ivMap.setImageResource(R.drawable.ic_project_map_black);
+        ivMap.setImageResource(R.drawable.ic_project_map_dark);
         ivFilter.setImageResource(R.drawable.ic_filter_project_checked);
         setUpProjectTypeRecyclerView();
         setUpProjectStateRecyclerView();

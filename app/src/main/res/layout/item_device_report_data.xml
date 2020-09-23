@@ -16,7 +16,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:singleLine="true"
-        android:textColor="@color/text_color_666666"
+        android:textColor="@color/title_text_color"
         android:textSize="15sp"
         tools:text="2020.07.18 17:23:32" />
 
@@ -24,7 +24,7 @@
         android:id="@+id/tv_data_content"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="5dp"
         android:textColor="@color/sub_title_text_color"
         android:textSize="15sp"
         tools:text="//_string : 加密之后的偏移量

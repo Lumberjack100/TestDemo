@@ -87,7 +87,6 @@ public class DeviceSearchActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setToolBar(R.id.toolbar);
         companyID = MCloudApp.getCompanyID();
         parseIntent();
         initView();
@@ -165,17 +164,23 @@ public class DeviceSearchActivity extends BaseActivity {
         deviceInfoAdapter.getLoadMoreModule().setEnableLoadMoreIfNotFullPage(false);
     }
 
-    @OnClick({R.id.tv_search})
+    @OnClick({R.id.iv_back, R.id.tv_search})
     public void onClick(View v) {
-        if (v.getId() == R.id.tv_search) {
-            if (TextUtils.isEmpty(mEtKeyWords.getText().toString().trim())) {
-                ToastUtils.show("请输入搜索内容");
-                return;
-            }
-            keyWords = mEtKeyWords.getText().toString();
-            // 当按了搜索之后关闭软键盘
-            KeyBordUtils.hideSoftKeyboard(mEtKeyWords);
-            refresh();
+        switch (v.getId()) {
+            case R.id.iv_back:
+                finish();
+                break;
+
+            case R.id.tv_search:
+                if (TextUtils.isEmpty(mEtKeyWords.getText().toString().trim())) {
+                    ToastUtils.show("请输入搜索内容");
+                    return;
+                }
+                keyWords = mEtKeyWords.getText().toString();
+                // 当按了搜索之后关闭软键盘
+                KeyBordUtils.hideSoftKeyboard(mEtKeyWords);
+                refresh();
+                break;
         }
     }
 
@@ -256,7 +261,7 @@ public class DeviceSearchActivity extends BaseActivity {
                                     ToastUtils.show(errCode.getErrMessage());
                                 }
                             }
-                        }else{
+                        } else {
                             deviceInfoAdapter.setEmptyView(getErrorView());
                         }
                     }
