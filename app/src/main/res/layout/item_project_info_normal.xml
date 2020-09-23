@@ -53,13 +53,13 @@
                     android:textColor="@color/title_text_color"
                     android:textSize="@dimen/text_size_17"
                     android:textStyle="bold"
-                    tools:text="云南德宏州S318芒那线公路边坡监测系统xxx第三期中标" />
+                    tools:text="云南德宏州S318芒那线" />
 
                 <TextView
                     android:id="@+id/tv_company_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="9dp"
+                    android:layout_marginTop="5dp"
                     android:ellipsize="end"
                     android:singleLine="true"
                     android:textColor="@color/text_color_9a9a9a"
@@ -69,7 +69,7 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="9dp">
+                    android:layout_marginTop="5dp">
 
                     <TextView
                         android:id="@+id/tv_create_time"

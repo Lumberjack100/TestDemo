@@ -5,16 +5,17 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.View;
 import android.widget.TextView;
 
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.content.ContextCompat;
 import androidx.core.graphics.ColorUtils;
 
 import com.bumptech.glide.Glide;
 import com.gyf.immersionbar.ImmersionBar;
 import com.hjq.toast.ToastUtils;
 import com.shmedo.core.MCloudApp;
+import com.shmedo.core.util.GlobalUtil;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.activity.BaseActivity;
 import com.shmedo.mcloudapp.network.BaseObserver;
@@ -48,6 +49,9 @@ public class ProjectIntroductionActivity extends BaseActivity {
 
     @BindView(R.id.toolbar_title)
     TextView mToolbarTitle;
+
+    @BindView(R.id.ll_no_image)
+    View noImageLayout;
 
     @BindView(R.id.banner)
     Banner banner;
@@ -103,14 +107,34 @@ public class ProjectIntroductionActivity extends BaseActivity {
      */
     @Override
     protected void initImmersionBar() {
-        mToolbar.setBackgroundColor(ColorUtils.blendARGB(Color.TRANSPARENT, ContextCompat.getColor(this, R.color.white), 0));
-        ImmersionBar.with(this)
-                .titleBar(mToolbar)
-                .statusBarColor(R.color.transparent, 0)
-                .statusBarDarkFont(false)
-                .navigationBarDarkIcon(true)
-                .navigationBarColor(R.color.white)
-                .init();
+        updateSystemBarColor(true);
+    }
+
+    private void updateSystemBarColor(boolean isLightMode) {
+        mToolbar.setBackgroundColor(ColorUtils.blendARGB(Color.TRANSPARENT, GlobalUtil.getColor(R.color.white), 0));
+        if (isLightMode) {
+            mToolbar.setNavigationIcon(R.drawable.ic_navi_def_light);
+            mToolbarTitle.setTextColor(GlobalUtil.getColor(R.color.white));
+
+            ImmersionBar.with(this)
+                    .titleBar(mToolbar)
+                    .statusBarColor(R.color.transparent, 0)
+                    .statusBarDarkFont(false)
+                    .navigationBarDarkIcon(true)
+                    .navigationBarColor(R.color.white)
+                    .init();
+        } else {
+            mToolbar.setNavigationIcon(R.drawable.ic_navi_def_dark);
+            mToolbarTitle.setTextColor(GlobalUtil.getColor(R.color.title_text_color));
+
+            ImmersionBar.with(this)
+                    .titleBar(mToolbar)
+                    .statusBarColor(R.color.transparent, 0)
+                    .statusBarDarkFont(true)
+                    .navigationBarDarkIcon(true)
+                    .navigationBarColor(R.color.white)
+                    .init();
+        }
     }
 
     private void parseIntent() {
@@ -121,11 +145,6 @@ public class ProjectIntroductionActivity extends BaseActivity {
     }
 
     private void setBanner() {
-//        imgUrlList.add("https://img.zcool.cn/community/013de756fb63036ac7257948747896.jpg");
-//        imgUrlList.add("https://img.zcool.cn/community/01639a56fb62ff6ac725794891960d.jpg");
-//        imgUrlList.add("https://img.zcool.cn/community/01270156fb62fd6ac72579485aa893.jpg");
-//        imgUrlList.add("https://img.zcool.cn/community/01233056fb62fe32f875a9447400e1.jpg");
-
         banner.setAdapter(new BannerImageAdapter<String>(imgUrlList) {
             @Override
             public void onBindView(BannerImageHolder holder, String imageUrl, int position, int size) {
@@ -146,9 +165,9 @@ public class ProjectIntroductionActivity extends BaseActivity {
             return;
 
         ProjectInfoEx.ProjInfoBean projInfoBean = projectInfoEx.getProjInfo();
-        tvProjectType.setText(TextUtils.isEmpty(projectInfoEx.getProjTypeAlias()) ? "" : projectInfoEx.getProjTypeAlias());
-        tvProjectLevel.setText("");
-        tvProjectAddress.setText(TextUtils.isEmpty(projInfoBean.getLocation()) ? "" : projInfoBean.getLocation());
+        tvProjectType.setText(TextUtils.isEmpty(projectInfoEx.getProjTypeAlias()) ? "--" : projectInfoEx.getProjTypeAlias());
+        tvProjectLevel.setText("--");
+        tvProjectAddress.setText(TextUtils.isEmpty(projInfoBean.getLocation()) ? "--" : projInfoBean.getLocation());
 
         if (!TextUtils.isEmpty(projInfoBean.getCreateTime())) {
             try {
@@ -180,8 +199,10 @@ public class ProjectIntroductionActivity extends BaseActivity {
 
         if (projInfoBean.getImagePath() == null) {
             imgUrlList.add("");
+            banner.setVisibility(View.GONE);
+            noImageLayout.setVisibility(View.VISIBLE);
+            updateSystemBarColor(false);
         }
-//        banner.getAdapter().notifyDataSetChanged();
     }
 
     /**
@@ -203,7 +224,7 @@ public class ProjectIntroductionActivity extends BaseActivity {
                         if (!ResponseHandler.getInstance().handleResponse(errCode)) {
                             if (errCode.getCode() == 0) {
                                 updateView(data);
-                            }else{
+                            } else {
                                 if (!TextUtils.isEmpty(errCode.getErrMessage())) {
                                     ToastUtils.show(errCode.getErrMessage());
                                 }

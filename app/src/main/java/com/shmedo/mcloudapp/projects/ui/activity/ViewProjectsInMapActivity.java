@@ -44,7 +44,7 @@ import java.util.Map;
 import butterknife.BindView;
 
 public class ViewProjectsInMapActivity extends BaseActivity implements ClusterRender, AMap.OnMapLoadedListener, ClusterClickListener {
-    @BindView(R.id.toolbar_title)
+    @BindView(R.id.tv_title)
     TextView mToolbarTitle;
 
     @BindView(R.id.mapView)

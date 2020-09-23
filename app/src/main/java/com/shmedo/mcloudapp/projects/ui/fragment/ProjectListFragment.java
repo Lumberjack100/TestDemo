@@ -282,14 +282,13 @@ public class ProjectListFragment extends BaseTranslucentFragment {
                 if (scrollY <= topBgImageTranslucentScrollDistance) {
                     alpha = (float) scrollY / topBgImageTranslucentScrollDistance;
 
-                    updateSystemBarColor();
                 } else {
                     if (alpha < 1) {
                         alpha = 1;
-
-                        updateSystemBarColor();
                     }
                 }
+
+                updateSystemBarColor();
             }
         });
     }
@@ -310,7 +309,7 @@ public class ProjectListFragment extends BaseTranslucentFragment {
             // 只添加Item右侧的菜单。
             {
                 SwipeMenuItem addItem = new SwipeMenuItem(getActivity())
-                        .setBackground(R.drawable.bg_corner_6dp_blue)
+                        .setBackground(detailInfo.isTop() ? R.drawable.bg_corner_6dp_f54f4f : R.drawable.bg_corner_6dp_41ccf0)
                         .setText(detailInfo.isTop() ? "取消置顶" : "置顶")
                         .setTextColor(Color.WHITE)
                         .setWidth(width)
@@ -954,8 +953,7 @@ public class ProjectListFragment extends BaseTranslucentFragment {
 
     private void updateSystemBarColor() {
         if (alpha < 1) {
-            mToolbar.setBackgroundColor(ColorUtils.blendARGB(Color.TRANSPARENT
-                    , ContextCompat.getColor(mActivity, R.color.white), alpha));
+            mToolbar.setBackgroundColor(ColorUtils.blendARGB(Color.TRANSPARENT, GlobalUtil.getColor(R.color.white), alpha));
             searchLayout.setBackgroundResource(R.drawable.bg_search_project_white);
             mIvSearchIcon.setImageResource(R.drawable.ic_search_project_white);
             mTvSearchHint.setTextColor(GlobalUtil.getColor(R.color.white));
@@ -969,8 +967,7 @@ public class ProjectListFragment extends BaseTranslucentFragment {
                     .navigationBarColor(R.color.white)
                     .init();
         } else {
-            mToolbar.setBackgroundColor(ColorUtils.blendARGB(Color.TRANSPARENT
-                    , ContextCompat.getColor(mActivity, R.color.white), 1));
+            mToolbar.setBackgroundColor(ColorUtils.blendARGB(Color.TRANSPARENT, GlobalUtil.getColor(R.color.white), 1));
             searchLayout.setBackgroundResource(R.drawable.bg_search_project_gray);
             mIvSearchIcon.setImageResource(R.drawable.ic_search_project);
             mTvSearchHint.setTextColor(GlobalUtil.getColor(R.color.text_color_b3b3b3));

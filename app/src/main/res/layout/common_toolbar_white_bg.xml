@@ -14,7 +14,7 @@
         android:layout_height="?attr/actionBarSize"
         android:background="@color/white"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-        app:navigationIcon="@drawable/ic_toolbar_back">
+        app:navigationIcon="@drawable/ic_navi_def_dark">
 
         <TextView
             android:id="@+id/tv_title"

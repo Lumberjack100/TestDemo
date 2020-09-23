@@ -27,7 +27,7 @@
                 android:id="@+id/iv_back"
                 android:layout_width="24dp"
                 android:layout_height="27dp"
-                android:src="@drawable/ic_toolbar_back" />
+                android:src="@drawable/ic_navi_def_dark" />
 
             <LinearLayout
                 android:layout_width="0dp"

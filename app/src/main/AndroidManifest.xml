@@ -254,7 +254,8 @@
         <activity
             android:name=".projects.ui.activity.ViewProjectsInMapActivity"
             android:maxAspectRatio="2.4"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/LightStatusBarActivity" />
         <activity
             android:name=".projects.ui.activity.ProjectSearchActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"

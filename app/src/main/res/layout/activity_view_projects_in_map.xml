@@ -5,7 +5,7 @@
     android:background="@color/white"
     android:orientation="vertical">
 
-    <include layout="@layout/common_toolbar_primary_bg" />
+    <include layout="@layout/common_toolbar_white_bg" />
 
     <com.amap.api.maps.MapView
         android:id="@+id/mapView"

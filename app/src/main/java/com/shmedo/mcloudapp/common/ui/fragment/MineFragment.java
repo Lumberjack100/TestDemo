@@ -95,7 +95,7 @@ public class MineFragment extends BaseTranslucentFragment {
         }
     }
 
-    @OnClick({R.id.userLayout, R.id.companyLayout, R.id.updatePwdLayout, R.id.checkVersionLayout, R.id.aboutLayout, R.id.btn_exit})
+    @OnClick({R.id.userLayout, R.id.companyLayout, R.id.updatePwdLayout, R.id.checkVersionLayout, R.id.aboutLayout, R.id.loginOutLayout})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.userLayout:
@@ -118,7 +118,7 @@ public class MineFragment extends BaseTranslucentFragment {
                 AboutAppActivity.startActivity(getActivity());
                 break;
 
-            case R.id.btn_exit:
+            case R.id.loginOutLayout:
                 exitApp();
                 break;
         }

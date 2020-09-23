@@ -11,19 +11,49 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <com.youth.banner.Banner
-            android:id="@+id/banner"
+        <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1"
-            app:banner_indicator_marginBottom="25dp"
-            app:banner_indicator_normal_color="#6b6b6b"
-            app:banner_indicator_selected_color="@color/white" />
+            android:layout_weight="1">
+
+            <com.youth.banner.Banner
+                android:id="@+id/banner"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:banner_indicator_marginBottom="25dp"
+                app:banner_indicator_normal_color="#6b6b6b"
+                app:banner_indicator_selected_color="@color/white" />
+
+            <LinearLayout
+                android:id="@+id/ll_no_image"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center_horizontal"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/project_place_image" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:text="暂无图片"
+                    android:textColor="@color/sub_title_text_color"
+                    android:textSize="13sp" />
+
+            </LinearLayout>
+
+        </FrameLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="-5dp"
+            android:layout_marginTop="-10dp"
             android:background="@drawable/bg_top_corner_10dp_white"
             android:orientation="vertical">
 

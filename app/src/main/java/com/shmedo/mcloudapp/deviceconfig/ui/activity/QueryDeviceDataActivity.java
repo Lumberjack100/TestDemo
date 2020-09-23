@@ -14,6 +14,7 @@ import com.hjq.toast.ToastUtils;
 import com.lxj.xpopup.XPopup;
 import com.lxj.xpopup.interfaces.OnSelectListener;
 import com.shmedo.core.AppContants;
+import com.shmedo.core.util.GlobalUtil;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.activity.BaseActivity;
 import com.shmedo.mcloudapp.common.view.ClearEditText;
@@ -103,6 +104,7 @@ public class QueryDeviceDataActivity extends BaseActivity {
             if (!TextUtils.isEmpty(snNubmer)) {
                 mEtSn.setEnabled(false);
                 mEtSn.setText(snNubmer);
+                mEtSn.setTextColor(GlobalUtil.getColor(R.color.sub_title_text_color));
                 startTime = mTvStartTime.getText().toString() + " 00:00:00";
                 endTime = mTvEndTime.getText().toString() + " 23:59:59";
                 queryCloudData();
