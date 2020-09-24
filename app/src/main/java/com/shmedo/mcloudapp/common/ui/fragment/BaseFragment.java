@@ -1,7 +1,9 @@
 package com.shmedo.mcloudapp.common.ui.fragment;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -293,6 +295,30 @@ public abstract class BaseFragment extends Fragment implements HandleBackInterfa
         if (loadingDialog != null && loadingDialog.isShowing()) {
             loadingDialog.dismiss();
             loadingDialog = null;
+        }
+    }
+
+
+    protected ProgressDialog progressDialog = null;
+
+    protected void showProgressDialog(String message, String buttonText, DialogInterface.OnClickListener listener) {
+        progressDialog = new ProgressDialog(getActivity());
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        progressDialog.setMessage(message);
+        progressDialog.setIndeterminate(false);
+        progressDialog.setCancelable(false);
+        progressDialog.setButton(DialogInterface.BUTTON_POSITIVE, buttonText, listener);
+        progressDialog.show();
+    }
+
+    protected void dismissProgressDialog() {
+        if (progressDialog != null) {
+            try {
+                progressDialog.dismiss();
+                progressDialog = null;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 

@@ -119,7 +119,8 @@ public abstract class BaseBleConnectFragment extends BaseFragment {
         @Override
         public void run() {
             isTimeOut = true;
-            dismissLoadingDialog();
+//            dismissLoadingDialog();
+            dismissProgressDialog();
             progressRunnable = null;
 
             if (!TextUtils.isEmpty(errMsg)) {
@@ -136,7 +137,8 @@ public abstract class BaseBleConnectFragment extends BaseFragment {
 
     protected void startProgressRunnable(String dialogContent, long delayMillis) {
         isTimeOut = false;
-        showLoadingDialog(dialogContent);
+//        showLoadingDialog(dialogContent);
+        showProgressDialog(dialogContent, null, null);
         if (progressRunnable == null) {
             progressRunnable = new ProgressRunnable();
             uiHander.postDelayed(progressRunnable, delayMillis);
@@ -144,7 +146,8 @@ public abstract class BaseBleConnectFragment extends BaseFragment {
     }
 
     public void stopProgressRunnable() {
-        dismissLoadingDialog();
+//        dismissLoadingDialog();
+        dismissProgressDialog();
         uiHander.removeCallbacksAndMessages(null);
         progressRunnable = null;
     }
@@ -152,7 +155,8 @@ public abstract class BaseBleConnectFragment extends BaseFragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        dismissLoadingDialog();
+//        dismissLoadingDialog();
+        dismissProgressDialog();
         EventBus.getDefault().unregister(this);
     }
 
