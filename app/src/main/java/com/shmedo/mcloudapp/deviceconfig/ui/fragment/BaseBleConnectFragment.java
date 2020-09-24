@@ -145,7 +145,7 @@ public abstract class BaseBleConnectFragment extends BaseFragment {
 
     public void stopProgressRunnable() {
         dismissLoadingDialog();
-        uiHander.removeCallbacks(progressRunnable);
+        uiHander.removeCallbacksAndMessages(null);
         progressRunnable = null;
     }
 
@@ -436,7 +436,7 @@ public abstract class BaseBleConnectFragment extends BaseFragment {
             switch (msg.what) {
                 case Constants.BT_CONNECT:
                     authenticateNum = 0;
-                    isAutoConnectBlue = true;
+//                    isAutoConnectBlue = true;
                     stopProgressRunnable();
                     MCloudApp.setIsBluetoothDeviceConnected(true);
                     EventBus.getDefault().post(new BluetoothConnectStateEvent(true));
@@ -452,7 +452,12 @@ public abstract class BaseBleConnectFragment extends BaseFragment {
                     EventBus.getDefault().post(new BluetoothConnectStateEvent(false));
                     //断开蓝牙后重新连接
                     if (isAutoConnectBlue) {
-                        findAndConnectSpecificDevice();
+                        MCloudApp.getMainHandler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                findAndConnectSpecificDevice();
+                            }
+                        }, 1500);
                     }
                     break;
 
@@ -467,20 +472,27 @@ public abstract class BaseBleConnectFragment extends BaseFragment {
 
                 case Constants.VERIFY_RESULT:
                     stopProgressRunnable();
+                    //设备认证失败处理
                     if (!msg.obj.equals("1")) {
-                        ToastUtils.show("设备认证失败!");
                         if (authenticateNum < 4) {
-                            setAuthenticateWay();//重新认证
+                            MCloudApp.getMainHandler().postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    setAuthenticateWay();//重新认证
+                                }
+                            }, 1000);
                         } else {
+                            ToastUtils.show("设备认证失败!");
                             disconnectDevice();
                         }
                         break;
-                    }
-
-                    if (BaseBleConnectFragment.this instanceof BleConfigDeviceFragment) {
-                        errMsg = "查询设备配置参数超时，请尝试重新连接";
-                        startProgressRunnable("初始化设备配置信息...", CONFIG_PARAMS_DELAY_MILLIS);
-                        queryDeviceConfigInfoCmd();
+                    } else {
+                        isAutoConnectBlue = true;//
+                        if (BaseBleConnectFragment.this instanceof BleConfigDeviceFragment) {
+                            errMsg = "查询设备配置参数超时，请尝试重新连接";
+                            startProgressRunnable("初始化设备配置信息...", CONFIG_PARAMS_DELAY_MILLIS);
+                            queryDeviceConfigInfoCmd();
+                        }
                     }
                     break;
 
@@ -817,7 +829,7 @@ public abstract class BaseBleConnectFragment extends BaseFragment {
     protected void queryDeviceVersionInfo() {
         String command = CommandManager.getInstance().getCommand(CommandType.VERSION_MESSAGE);
         sendCommonCommandImmediately(command);
-        Timber.i("查询设备版本信息：%s", command);
+        Timber.d("查询设备版本信息：%s", command);
     }
 
     protected void showDisconnectDialog(String content) {

@@ -278,7 +278,7 @@ public class BleDeviceCurrentStateFragment extends BaseBleConnectFragment {
 
                 command = CommandManager.getInstance().getCommand(CommandType.VERSION_MESSAGE);
                 sendCommonCommandImmediately(command);
-                Timber.i("查询设备版本信息：%s", command);
+                Timber.d("查询设备版本信息：%s", command);
                 break;
 
             case VERSION_MESSAGE:
