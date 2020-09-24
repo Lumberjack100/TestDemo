@@ -34,6 +34,7 @@ import com.shmedo.configlibrary.ble.model.MqttConfigInfo;
 import com.shmedo.configlibrary.ble.model.ServerAddressInfo;
 import com.shmedo.configlibrary.ble.utils.ResultParserUtil;
 import com.shmedo.configlibrary.ble.utils.StringUtil;
+import com.shmedo.configlibrary.ble.utils.ValidateUtil;
 import com.shmedo.core.MCloudApp;
 import com.shmedo.core.event.CmdResponseMessage;
 import com.shmedo.core.event.MessageEvent;
@@ -174,6 +175,8 @@ public class BleDataCenterServerConfigFragment extends BaseBleConnectFragment {
 
     private void setView() {
         mTvRegisterPlatform.setText("地大平台");
+        registerPlatform = "0";
+
         mEtAppKey.setFilters(new InputFilter[]{new InputFilter.LengthFilter(50)});
         mEtKeepAlive.setFilters(new InputFilter[]{new InputFilter.LengthFilter(5)});
         mEtDeviceSN.setFilters(new InputFilter[]{new InputFilter.LengthFilter(15)});
@@ -408,9 +411,23 @@ public class BleDataCenterServerConfigFragment extends BaseBleConnectFragment {
             return false;
         }
 
-        String[] strs = dataServerAddress.trim().split(" ");
+        String[] strs = dataServerAddress.split(" ");
         if (strs.length < 2) {
             ToastUtils.show("数据服务器地址格式错误!");
+            mEtDataServerAddress.requestFocus();
+            return false;
+        }
+
+        try {
+            int port = Integer.parseInt(strs[1]);
+            if (port < 0 || port > 65535) {
+                ToastUtils.show("数据服务器地址端口号错误!");
+                mEtDataServerAddress.requestFocus();
+                return false;
+            }
+
+        } catch (Exception ex) {
+            ToastUtils.show("数据服务器地址端口号错误!");
             mEtDataServerAddress.requestFocus();
             return false;
         }
@@ -422,9 +439,23 @@ public class BleDataCenterServerConfigFragment extends BaseBleConnectFragment {
                 return false;
             }
 
-            strs = dataServerAddress.trim().split(" ");
+            strs = registerPlatformAddress.split(" ");
             if (strs.length < 2) {
                 ToastUtils.show("注册平台地址格式错误!");
+                mEtRegisterPlatformAddress.requestFocus();
+                return false;
+            }
+
+            try {
+                int port = Integer.parseInt(strs[1]);
+                if (port < 0 || port > 65535) {
+                    ToastUtils.show("注册平台地址端口号错误!");
+                    mEtRegisterPlatformAddress.requestFocus();
+                    return false;
+                }
+
+            } catch (Exception ex) {
+                ToastUtils.show("注册平台地址端口号错误!");
                 mEtRegisterPlatformAddress.requestFocus();
                 return false;
             }
@@ -434,17 +465,21 @@ public class BleDataCenterServerConfigFragment extends BaseBleConnectFragment {
                 mEtKeepAlive.requestFocus();
                 return false;
             }
-            if (Integer.parseInt(keepAliveValue) < 0) {
-                ToastUtils.show("KeepAlive值不能小于0");
+
+            try {
+                int value = Integer.parseInt(keepAliveValue);
+                if (value < 0 || value > 65535) {
+                    ToastUtils.show("KeepAlive值错误!");
+                    mEtKeepAlive.requestFocus();
+                    return false;
+                }
+
+            } catch (Exception ex) {
+                ToastUtils.show("KeepAlive值错误!");
                 mEtKeepAlive.requestFocus();
                 return false;
             }
 
-            if (Integer.parseInt(keepAliveValue) > 65535) {
-                ToastUtils.show("KeepAlive值不能大于65535");
-                mEtKeepAlive.requestFocus();
-                return false;
-            }
 
             if (TextUtils.isEmpty(deviceSn)) {
                 ToastUtils.show("设备SN号不能为空!");
@@ -476,14 +511,16 @@ public class BleDataCenterServerConfigFragment extends BaseBleConnectFragment {
                 return false;
             }
 
-            if (Integer.parseInt(keepAliveValue) < 0) {
-                ToastUtils.show("KeepAlive值不能小于0");
-                mEtKeepAlive.requestFocus();
-                return false;
-            }
+            try {
+                int value = Integer.parseInt(keepAliveValue);
+                if (value < 0 || value > 65535) {
+                    ToastUtils.show("KeepAlive值错误!");
+                    mEtKeepAlive.requestFocus();
+                    return false;
+                }
 
-            if (Integer.parseInt(keepAliveValue) > 65535) {
-                ToastUtils.show("KeepAlive值不能大于65535");
+            } catch (Exception ex) {
+                ToastUtils.show("KeepAlive值错误!");
                 mEtKeepAlive.requestFocus();
                 return false;
             }
