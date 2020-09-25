@@ -83,8 +83,7 @@
 
             <View
                 android:layout_width="match_parent"
-                android:layout_height="14dp"
-                android:background="@color/divider_line_bg_efefef" />
+                android:layout_height="14dp" />
 
             <LinearLayout
                 android:id="@+id/companyLayout"
@@ -127,6 +126,7 @@
                 android:layout_marginEnd="18dp"
                 android:background="@color/divider_line_bg_efefef" />
 
+
             <LinearLayout
                 android:id="@+id/updatePwdLayout"
                 style="@style/Common_ClickableItem_LayoutStyle">
@@ -161,8 +161,7 @@
 
             <View
                 android:layout_width="match_parent"
-                android:layout_height="14dp"
-                android:background="@color/divider_line_bg_efefef" />
+                android:layout_height="14dp" />
 
             <LinearLayout
                 android:id="@+id/checkVersionLayout"
