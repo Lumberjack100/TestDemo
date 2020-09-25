@@ -73,7 +73,7 @@ public class NetAdvancedSettingFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(List<DispatchCmdItem> dispatchCmdItemList) {
-        dismissLoadingDialog();
+        dismissProgressDialog();
         if (dispatchCmdItemList == null || dispatchCmdItemList.size() == 0) {
             showDispatchFailedDialog();
             return;
@@ -160,7 +160,7 @@ public class NetAdvancedSettingFragment extends BaseFragment {
         dispatchCmdParam.setCompanyID(MCloudApp.getCompanyID());
         dispatchCmdParam.setDeviceIDList(Arrays.asList(projectDeviceInfo.getId()));
 
-        showLoadingDialog("指令下发中...");
+        showProgressDialog("指令下发中...");
         DispatchCmdHelper.getInstance().processDispatchCmd(dispatchCmdParam);
     }
 }

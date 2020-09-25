@@ -149,7 +149,7 @@ public class NetConfigDeviceFragment extends BaseFragment {
             return;
         }
 
-        dismissLoadingDialog();
+        dismissProgressDialog();
         if (dispatchCmdItemList == null || dispatchCmdItemList.size() == 0) {
             showDispatchFailedDialog();
             return;
@@ -271,7 +271,7 @@ public class NetConfigDeviceFragment extends BaseFragment {
         dispatchCmdParam.setCompanyID(MCloudApp.getCompanyID());
         dispatchCmdParam.setDeviceIDList(Arrays.asList(projectDeviceInfo.getId()));
 
-        showLoadingDialog("指令下发中...");
+        showProgressDialog("指令下发中...");
         DispatchCmdHelper.getInstance().processDispatchCmd(dispatchCmdParam);
     }
 
@@ -292,7 +292,7 @@ public class NetConfigDeviceFragment extends BaseFragment {
             param.setCompanyID(MCloudApp.getCompanyID());
             param.setDeviceIDList(Arrays.asList(projectDeviceInfo.getId()));
 
-            showLoadingDialog("指令下发中...");
+            showProgressDialog("指令下发中...");
             DispatchCmdHelper.getInstance().processDispatchRawCmd(param);
             return true;
         }
@@ -340,7 +340,7 @@ public class NetConfigDeviceFragment extends BaseFragment {
      * 查询设备状态历史
      */
     private void queryCmdState() {
-        showLoadingDialog("加载中...");
+        showProgressDialog("加载中...");
 
         String end = TextUtils.isEmpty(projectDeviceInfo.getLastActiveTime()) ? DateUtil.getNowDateString() : projectDeviceInfo.getLastActiveTime();
         Date beginDate = DateUtil.getBackOrAddDate2(DateUtil.stringToDate(end, "yyyy-MM-dd HH:mm:ss"), -10);
@@ -364,7 +364,7 @@ public class NetConfigDeviceFragment extends BaseFragment {
                 .subscribe(new BaseObserver<PageResult<DevcieHistoryState>>() {
                     @Override
                     protected void onResponse(PageResult<DevcieHistoryState> data, ErrCode errCode) {
-                        dismissLoadingDialog();
+                        dismissProgressDialog();
                         if (!ResponseHandler.getInstance().handleResponse(errCode)) {
                             if (errCode.getCode() == 0) {
                                 if (data == null || data.getCurrentPageData() == null || data.getCurrentPageData().size() == 0) {
@@ -381,7 +381,7 @@ public class NetConfigDeviceFragment extends BaseFragment {
 
                     @Override
                     public void onError(Throwable e) {
-                        dismissLoadingDialog();
+                        dismissProgressDialog();
                         ResponseHandler.getInstance().handleFailure((Exception) e);
                     }
                 });

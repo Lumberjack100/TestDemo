@@ -302,14 +302,14 @@ public class BleConfigDeviceFragment extends BaseBleConnectFragment {
     }
 
     private void doQueryTimeCmd() {
-        showLoadingDialog("指令下发中...");
+        showProgressDialog("指令下发中...");
         String command = CommandManager.getInstance().getCommand(CommandType.LOCAL_TIME, null);
         sendCommonCommandImmediately(command);
         Timber.d("获取设备时间信息指令===%s", command);
     }
 
     private void doTelemetryCmd() {
-        showLoadingDialog("指令下发中...");
+        showProgressDialog("指令下发中...");
         String command = CommandManager.getInstance().getCommand(CommandType.INSTANT_COLLEACTOR, null);
         sendCommonCommandImmediately(command);
         Timber.d("遥测设备指令===%s", command);
@@ -401,7 +401,7 @@ public class BleConfigDeviceFragment extends BaseBleConnectFragment {
                 break;
 
             case LOCAL_TIME:
-                dismissLoadingDialog();
+                dismissProgressDialog();
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
                     Timber.e("查询终端时间指令出错!");
                     ToastUtils.show("查询终端时间指令出错!");
@@ -425,7 +425,7 @@ public class BleConfigDeviceFragment extends BaseBleConnectFragment {
                 break;
 
             case INSTANT_COLLEACTOR: {
-                dismissLoadingDialog();
+                dismissProgressDialog();
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
                     Timber.e("遥测指令出错!");
                     ToastUtils.show("遥测指令出错!");
@@ -437,7 +437,7 @@ public class BleConfigDeviceFragment extends BaseBleConnectFragment {
             break;
 
             case REBOOT_DEVICE: {
-                dismissLoadingDialog();
+                dismissProgressDialog();
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
                     Timber.e("重启指令出错!");
                     ToastUtils.show("重启指令出错!");
@@ -636,7 +636,7 @@ public class BleConfigDeviceFragment extends BaseBleConnectFragment {
      * 开始查询接口
      */
     private void queryCompanyDevice() {
-        showLoadingDialog("在服务器中查询此设备的置信息...");
+        showProgressDialog("在服务器中查询此设备的置信息...");
 
         QueryProjectDevice parameter = new QueryProjectDevice();
         parameter.setCompanyID(MCloudApp.getCompanyID());
@@ -657,7 +657,7 @@ public class BleConfigDeviceFragment extends BaseBleConnectFragment {
                 .subscribe(new BaseObserver<PageResult<ProjectDeviceInfo>>() {
                     @Override
                     protected void onResponse(PageResult<ProjectDeviceInfo> data, ErrCode errCode) {
-                        dismissLoadingDialog();
+                        dismissProgressDialog();
                         if (!ResponseHandler.getInstance().handleResponse(errCode)) {
                             if (errCode.getCode() == 0) {
                                 if (data == null || data.getCurrentPageData() == null || data.getCurrentPageData().size() == 0) {
@@ -681,7 +681,7 @@ public class BleConfigDeviceFragment extends BaseBleConnectFragment {
 
                     @Override
                     public void onError(Throwable e) {
-                        dismissLoadingDialog();
+                        dismissProgressDialog();
                         ResponseHandler.getInstance().handleFailure((Exception) e);
                         goToNetDeviceListPage();
                     }

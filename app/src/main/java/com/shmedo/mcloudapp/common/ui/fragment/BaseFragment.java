@@ -76,6 +76,9 @@ public abstract class BaseFragment extends Fragment implements HandleBackInterfa
      */
     protected boolean isActive = false;
 
+    protected ProgressDialog progressDialog = null;
+
+
 
     @Override
     public void onAttach(Context context) {
@@ -298,15 +301,23 @@ public abstract class BaseFragment extends Fragment implements HandleBackInterfa
         }
     }
 
-
-    protected ProgressDialog progressDialog = null;
+    protected void showProgressDialog(String message) {
+        progressDialog = new ProgressDialog(getActivity());
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        progressDialog.setMessage(message);
+        progressDialog.setIndeterminate(false);
+        progressDialog.setCancelable(true);
+        progressDialog.setCanceledOnTouchOutside(false);
+        progressDialog.show();
+    }
 
     protected void showProgressDialog(String message, String buttonText, DialogInterface.OnClickListener listener) {
         progressDialog = new ProgressDialog(getActivity());
         progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
         progressDialog.setMessage(message);
         progressDialog.setIndeterminate(false);
-        progressDialog.setCancelable(false);
+        progressDialog.setCancelable(true);
+        progressDialog.setCanceledOnTouchOutside(false);
         progressDialog.setButton(DialogInterface.BUTTON_POSITIVE, buttonText, listener);
         progressDialog.show();
     }
@@ -330,7 +341,6 @@ public abstract class BaseFragment extends Fragment implements HandleBackInterfa
         v.setTag(v.getId(), timeInMillis);
 
         long interval = timeInMillis - beforeTimeMillis;
-        Timber.d("isDoubleClick点击了=%s", interval);
         return interval < DOUBLE_CLICK_TIME_INTERVAL;
     }
 

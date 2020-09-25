@@ -104,7 +104,7 @@ public class NetCollectorSettingFragment extends BaseFragment {
         param.setCompanyID(MCloudApp.getCompanyID());
         param.setDeviceIDList(Arrays.asList(deviceid));
 
-        showLoadingDialog("加载中...");
+        showProgressDialog("加载中...");
         DispatchCmdHelper.getInstance().processDispatchRawCmd(param);
     }
 
@@ -124,7 +124,7 @@ public class NetCollectorSettingFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(List<DispatchCmdItem> dispatchCmdItemList) {
-        dismissLoadingDialog();
+        dismissProgressDialog();
         if (dispatchCmdItemList == null || dispatchCmdItemList.size() == 0) {
             showDispatchFailedDialog();
             return;

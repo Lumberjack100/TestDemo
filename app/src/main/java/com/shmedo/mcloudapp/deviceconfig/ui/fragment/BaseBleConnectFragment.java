@@ -76,9 +76,9 @@ public abstract class BaseBleConnectFragment extends BaseFragment {
 
     public static final int SCAN_SPECIFIC_DEVICE_DELAY_MILLIS = 10000;//搜索指定蓝牙设备超时时间
 
-    public static final int AUTHENTICATE_DELAY_MILLIS = 15000;//认证超时时间
+    public static final int AUTHENTICATE_DELAY_MILLIS = 10000;//认证超时时间
 
-    public static final int CONNECT_DELAY_MILLIS = 20000;//连接设备超时时间
+    public static final int CONNECT_DELAY_MILLIS = 10000;//连接设备超时时间
 
     public static final int SEND_SINGLE_COMMAND_DELAY_MILLIS = 3000;//发送单条指令超时时间
 
@@ -439,7 +439,7 @@ public abstract class BaseBleConnectFragment extends BaseFragment {
         public boolean handleMessage(android.os.Message msg) {
             switch (msg.what) {
                 case Constants.BT_CONNECT:
-                    authenticateNum = 0;
+//                    authenticateNum = 0;
 //                    isAutoConnectBlue = true;
                     stopProgressRunnable();
                     MCloudApp.setIsBluetoothDeviceConnected(true);
@@ -491,6 +491,7 @@ public abstract class BaseBleConnectFragment extends BaseFragment {
                         }
                         break;
                     } else {
+                        authenticateNum = 0;
                         isAutoConnectBlue = true;//
                         if (BaseBleConnectFragment.this instanceof BleConfigDeviceFragment) {
                             errMsg = "查询设备配置参数超时，请尝试重新连接";

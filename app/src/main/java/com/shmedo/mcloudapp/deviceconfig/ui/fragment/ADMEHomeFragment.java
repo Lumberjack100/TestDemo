@@ -160,7 +160,7 @@ public class ADMEHomeFragment extends BaseFragment {
     private Runnable dismssDialogRunnable = new Runnable() {
         @Override
         public void run() {
-            dismissLoadingDialog();
+            dismissProgressDialog();
             ToastUtils.show("发送指令超时,请稍后尝试");
         }
     };
@@ -527,7 +527,7 @@ public class ADMEHomeFragment extends BaseFragment {
             cmdStr = "##2011 " + addrArray[0] + " " + addrArray[1] + "\r\n";
         }
         configADMEActivity.sendCommonCommand(cmdStr);
-        showLoadingDialog("正在发送配置指令...");
+        showProgressDialog("正在发送配置指令...", null, null);
         hander.postDelayed(dismssDialogRunnable, 5000);
     }
 
@@ -546,7 +546,7 @@ public class ADMEHomeFragment extends BaseFragment {
             cmdStr = "##2012 " + addrArray[0] + " " + addrArray[1] + "\r\n";
         }
         configADMEActivity.sendCommonCommand(cmdStr);
-        showLoadingDialog("正在发送配置指令...");
+        showProgressDialog("正在发送配置指令...", null, null);
         hander.postDelayed(dismssDialogRunnable, 5000);
     }
 
@@ -668,7 +668,7 @@ public class ADMEHomeFragment extends BaseFragment {
         //设置服务器地址1应答
         if (cmdStr.startsWith("$$2011") && cmdStr.endsWith("\r\n")) {
             ToastUtils.show("设置MD-NET服务器地址完成");
-            dismissLoadingDialog();
+            dismissProgressDialog();
             hander.removeCallbacks(dismssDialogRunnable);
             return;
         }
@@ -676,7 +676,7 @@ public class ADMEHomeFragment extends BaseFragment {
         //设置服务器地址2应答
         if (cmdStr.startsWith("$$2012") && cmdStr.endsWith("\r\n")) {
             ToastUtils.show("设置mCloud服务器地址完成");
-            dismissLoadingDialog();
+            dismissProgressDialog();
             hander.removeCallbacks(dismssDialogRunnable);
             return;
         }
