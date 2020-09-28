@@ -95,31 +95,26 @@ public abstract class BaseBleConnectFragment extends BaseFragment {
 
     private boolean mScanning;
 
-    protected Handler uiHander = new Handler();
+    private Handler uiHander = new Handler();
+
+    private int authenticateNum = 0;
 
     private boolean isAutoConnectBlue = true;//是否自动连接蓝牙
 
-    public boolean isConfigChange = false;
-
     public boolean isExitMode = false;
-
-    public boolean isTimeOut = false;
 
     protected String errMsg = "";
 
-    protected String SN = MCloudApp.getCurDeviceToken();
+    private String SN = MCloudApp.getCurDeviceToken();
 
     private String macAddress = MCloudApp.getCurDeviceMacAddr();
 
     private ProgressRunnable progressRunnable;
 
-    private int authenticateNum = 0;
 
     private class ProgressRunnable implements Runnable {
         @Override
         public void run() {
-            isTimeOut = true;
-//            dismissLoadingDialog();
             dismissProgressDialog();
             progressRunnable = null;
 
@@ -136,8 +131,6 @@ public abstract class BaseBleConnectFragment extends BaseFragment {
     }
 
     protected void startProgressRunnable(String dialogContent, long delayMillis) {
-        isTimeOut = false;
-//        showLoadingDialog(dialogContent);
         showProgressDialog(dialogContent, null, null);
         if (progressRunnable == null) {
             progressRunnable = new ProgressRunnable();
@@ -146,7 +139,6 @@ public abstract class BaseBleConnectFragment extends BaseFragment {
     }
 
     public void stopProgressRunnable() {
-//        dismissLoadingDialog();
         dismissProgressDialog();
         uiHander.removeCallbacksAndMessages(null);
         progressRunnable = null;
@@ -155,7 +147,6 @@ public abstract class BaseBleConnectFragment extends BaseFragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-//        dismissLoadingDialog();
         dismissProgressDialog();
         EventBus.getDefault().unregister(this);
     }
@@ -325,6 +316,7 @@ public abstract class BaseBleConnectFragment extends BaseFragment {
         if (null != bleManager) {
             bleManager.disconnect();
             isAutoConnectBlue = false;//
+            authenticateNum = 0;
         }
     }
 
@@ -351,7 +343,6 @@ public abstract class BaseBleConnectFragment extends BaseFragment {
 
             BluetoothEvent event = (BluetoothEvent) messageEvent;
             switch (event.getEventType()) {
-
                 case CONNECTED:
 //                    ByteManagerUtil.init(new MyOnBytePackage());
                     mHandler.sendEmptyMessage(Constants.BT_CONNECT);
@@ -603,7 +594,6 @@ public abstract class BaseBleConnectFragment extends BaseFragment {
         //设置保存参数应答
         if (cmdStr.startsWith("$$0191") && cmdStr.endsWith("\r\n")) {
             ToastUtils.show("已发送保存命令,设备即将断开连接重启");
-            isConfigChange = false;
             stopProgressRunnable();
             disconnectDevice();
 
@@ -631,13 +621,6 @@ public abstract class BaseBleConnectFragment extends BaseFragment {
         if (cmdStr.startsWith("$$7002")) {
             stopProgressRunnable();
         }
-
-        if ((cmdStr.startsWith("$$2011")
-                || cmdStr.startsWith("$$2012")
-                || cmdStr.startsWith("$$7001")
-                || cmdStr.startsWith("$$7003")) && cmdStr.endsWith("\r\n")) {
-            isConfigChange = true;
-        }
     }
 
     /**
@@ -649,26 +632,6 @@ public abstract class BaseBleConnectFragment extends BaseFragment {
         //查询基础配置信息
         if (cmdStr.startsWith("$$000")) {
             stopProgressRunnable();
-        }
-
-        //此处是各个配置指令应答，表示已经更改配置了
-        if ((cmdStr.startsWith("$$006")//调试模式
-                || cmdStr.startsWith("$$005")//开关量功能
-                || cmdStr.startsWith("$$121")//雨量计精度
-                || cmdStr.startsWith("$$227")//断线报警器
-                || (cmdStr.startsWith("$$40") && !cmdStr.equals("$$400\r\n"))//设置数字渗压计
-                || cmdStr.startsWith("$$150")//采集器接入的传感器
-                || cmdStr.startsWith("$$16")//采集器
-                || cmdStr.startsWith("$$147")//采集器地址
-                || cmdStr.startsWith("$$201")//平台服务器地址端口
-                || (cmdStr.startsWith("$$202") && !cmdStr.equals("$$2020\r\n"))//网络中心通信协议
-                || (cmdStr.startsWith("$$810") && !cmdStr.equals("$$8100\r\n"))//自动注册平台选择
-                || cmdStr.startsWith("$$803")//自动注册平台参数
-                || cmdStr.startsWith("$$807")//自动注册服务器地址端口
-                || cmdStr.startsWith("$$805")//手动注册平台参数
-                || (cmdStr.startsWith("$$809") && !cmdStr.equals("$$8090\r\n"))//MQTT KeepAlive 值
-        ) && cmdStr.endsWith("\r\n")) {
-            isConfigChange = true;
         }
     }
 
@@ -762,7 +725,8 @@ public abstract class BaseBleConnectFragment extends BaseFragment {
      * 蓝牙连接成功,发送认证方式
      */
     private void setAuthenticateWay() {
-        if (authenticateNum >= 5) {
+        if (authenticateNum >= 4) {
+            Timber.w("达到最大设定认证次数");
             return;
         }
         authenticateNum++;

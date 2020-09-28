@@ -76,7 +76,7 @@ public abstract class BaseFragment extends Fragment implements HandleBackInterfa
      */
     protected boolean isActive = false;
 
-    protected ProgressDialog progressDialog = null;
+    private ProgressDialog progressDialog = null;
 
 
 
@@ -270,35 +270,6 @@ public abstract class BaseFragment extends Fragment implements HandleBackInterfa
                 .positiveColorRes(R.color.blue_52B4F8);
         MaterialDialog mMaterialDialog = mBuilder.build();
         mMaterialDialog.show();
-    }
-
-    protected void showLoadingDialog(String tip) {
-        if (loadingDialog != null && loadingDialog.isShowing()) {
-            return;
-        }
-
-        if (loadingDialog == null) {
-            loadingDialog = new MaterialDialog.Builder(getActivity())
-                    .content(TextUtils.isEmpty(tip) ? "正在加载..." : tip)
-                    .progress(true, 0)
-                    .progressIndeterminateStyle(false)
-                    .build();
-            //Sets whether this dialog is cancelable with the BACK key.
-//            loadingDialog.setCancelable(true);
-            //Sets whether this dialog is canceled when touched outside the window's bounds.
-            loadingDialog.setCanceledOnTouchOutside(false);
-        }
-
-        if (!loadingDialog.isShowing()) {
-            loadingDialog.show();
-        }
-    }
-
-    protected void dismissLoadingDialog() {
-        if (loadingDialog != null && loadingDialog.isShowing()) {
-            loadingDialog.dismiss();
-            loadingDialog = null;
-        }
     }
 
     protected void showProgressDialog(String message) {
