@@ -156,7 +156,7 @@ public abstract class BaseBleConnectFragment extends BaseFragment {
         super.onActivityCreated(savedInstanceState);
         EventBus.getDefault().register(this);
         initBluetooth();
-        ByteManagerUtil.init(new MyOnBytePackage());
+//        ByteManagerUtil.init(new MyOnBytePackage());
     }
 
     /**
@@ -344,7 +344,7 @@ public abstract class BaseBleConnectFragment extends BaseFragment {
             BluetoothEvent event = (BluetoothEvent) messageEvent;
             switch (event.getEventType()) {
                 case CONNECTED:
-//                    ByteManagerUtil.init(new MyOnBytePackage());
+                    ByteManagerUtil.init(new MyOnBytePackage());
                     mHandler.sendEmptyMessage(Constants.BT_CONNECT);
                     break;
 
@@ -525,7 +525,6 @@ public abstract class BaseBleConnectFragment extends BaseFragment {
         }
     });
 
-
     public class MyOnBytePackage implements OnBytePackage {
         @Override
         public void onPackageArrived(final byte[] data) {
@@ -534,7 +533,7 @@ public abstract class BaseBleConnectFragment extends BaseFragment {
                 if (!cmdStr.startsWith("$$")) {
                     Timber.w("不匹配标准响应头的应答指令===%s", cmdStr);
                 } else {
-                    Timber.d("应答指令===%s", cmdStr);
+                    Timber.i("应答指令===%s", cmdStr);
                 }
 
                 String cmdArray[] = cmdStr.replace("\r\n", "").split(",");
