@@ -540,7 +540,12 @@ public abstract class BaseBleConnectFragment extends BaseFragment {
         public void onPackageArrived(final byte[] data) {
             try {
                 final String cmdStr = new String(data, StandardCharsets.UTF_8);
-                Timber.d("应答指令===%s", cmdStr);
+                if (!cmdStr.startsWith("$$")) {
+                    Timber.w("不匹配标准响应头的应答指令===%s", cmdStr);
+                } else {
+                    Timber.d("应答指令===%s", cmdStr);
+                }
+
                 String cmdArray[] = cmdStr.replace("\r\n", "").split(",");
 
                 if (cmdStr.startsWith("$$224")) {//认证方式
@@ -556,15 +561,20 @@ public abstract class BaseBleConnectFragment extends BaseFragment {
                     Timber.d("设备登录验证状态===%s", cmdArray[1].contains("1"));
                     return;
 
-                } else if (cmdStr.equals("Please verify the equipment.\r\n")) {
+                } else if (cmdStr.contains("Please verify the equipment.\r\n")) {
                     sendHandleMessage(Constants.VERIFY_RESULT, "0");
                     return;
 
-                } else if (cmdStr.equals("Equipment Verify OK.\r\n")) {
+                } else if (cmdStr.contains("Equipment Verify OK.\r\n")) {
                     sendHandleMessage(Constants.MESSAGE_LOCK_REBOOT_DEVICE, null);
                     return;
 
                 } else {
+                    //过滤掉不匹配标准响应头的应答指令
+                    if (!cmdStr.startsWith("$$")) {
+                        return;
+                    }
+
                     uiHander.post(new Runnable() {
                         @Override
                         public void run() {
@@ -781,7 +791,7 @@ public abstract class BaseBleConnectFragment extends BaseFragment {
                 //加密后认证码
                 String strEncryt = StringUtil.bytesToHexString(byteEncryt);
                 String cmd = "##222," + SN + ",0," + strEncryt.toUpperCase() + "\r\n";
-                sendCommonCommand(cmd);
+                sendCommonCommandImmediately(cmd);
                 Timber.d("设备登录验证指令===%s", cmd);
             }
         } catch (Exception e) {
