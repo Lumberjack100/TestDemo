@@ -8,7 +8,7 @@ import com.shmedo.mcloudapp.deviceconfig.model.DispatchCmdItem;
 import com.shmedo.mcloudapp.deviceconfig.model.FirmWareInfo;
 import com.shmedo.mcloudapp.deviceconfig.model.QueryCmdResult;
 import com.shmedo.mcloudapp.entity.DeviceDetailInfo;
-import com.shmedo.mcloudapp.entity.PageResult;
+import com.shmedo.mcloudapp.common.model.PageResult;
 import com.shmedo.mcloudapp.deviceconfig.model.QueryCloudDataInfo;
 import com.shmedo.mcloudapp.network.NetworkConst;
 import com.shmedo.mcloudapp.network.ResultWrapper;

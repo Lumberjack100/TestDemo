@@ -11,7 +11,6 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -32,7 +31,7 @@ import com.shmedo.mcloudapp.deviceconfig.model.DeviceOnlineTypeStatistic;
 import com.shmedo.mcloudapp.deviceconfig.model.DeviceTypeInfo;
 import com.shmedo.mcloudapp.deviceconfig.model.params.QueryDeviceTypeParam;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.DeviceConfigActivity;
-import com.shmedo.mcloudapp.entity.PageResult;
+import com.shmedo.mcloudapp.common.model.PageResult;
 import com.shmedo.mcloudapp.network.BaseObserver;
 import com.shmedo.mcloudapp.network.ErrCode;
 import com.shmedo.mcloudapp.network.MDRetrofit;
@@ -47,7 +46,6 @@ import com.shmedo.mcloudapp.projects.view.SlidingConflictRecyclerView;
 import com.shmedo.mcloudapp.util.DaoManager;
 import com.shmedo.mcloudapp.util.GsonFactory;
 import com.shmedo.mcloudapp.util.ResponseHandler;
-import com.yanzhenjie.recyclerview.widget.DefaultItemDecoration;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;

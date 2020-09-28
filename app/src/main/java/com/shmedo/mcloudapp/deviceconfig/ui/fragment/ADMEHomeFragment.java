@@ -2,7 +2,6 @@ package com.shmedo.mcloudapp.deviceconfig.ui.fragment;
 
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
@@ -35,9 +34,7 @@ import com.shmedo.mcloudapp.deviceconfig.ui.activity.ADMEMotorControlActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.ADMESensorExecutiveAgencyConfigActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.ConfigADMEActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.CountMeterWheelActivity;
-import com.shmedo.mcloudapp.deviceconfig.ui.activity.advanced.InstructionDebugActivity;
-import com.shmedo.mcloudapp.entity.SystemDataInfo;
-import com.shmedo.mcloudapp.entity.SystemDataInfoDao;
+
 import com.shmedo.mcloudapp.util.DaoManager;
 
 import org.greenrobot.eventbus.EventBus;
@@ -132,7 +129,6 @@ public class ADMEHomeFragment extends BaseFragment {
 
     private List<String> systemDataInfoList = new ArrayList<>();//项目信息列表
 
-    private HashMap<String, SystemDataInfo> systemDataInfoHashMap = new HashMap<>();
 
     private String dagConfigInfo;//DAG 采集器配置指令
 
@@ -181,7 +177,6 @@ public class ADMEHomeFragment extends BaseFragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         getIntentData();
-        queryProjectList();
         initAnimation();
         setSwitchViewListener();
         initAdapter();
@@ -465,11 +460,7 @@ public class ADMEHomeFragment extends BaseFragment {
                 break;
 
             case R.id.custom_command_test_layout:
-                if (!MCloudApp.isIsBluetoothDeviceConnected()) {
-                    ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
-                    return;
-                }
-                InstructionDebugActivity.startActivity(getActivity());
+
                 break;
 
             case R.id.firmware_upgrade_layout:
@@ -842,24 +833,7 @@ public class ADMEHomeFragment extends BaseFragment {
     }
 
 
-    /**
-     * 查询本地数据库中当前用户的项目信息
-     */
-    private void queryProjectList() {
-        List<SystemDataInfo> infoList = manager.getDaoSession().getSystemDataInfoDao().queryBuilder()
-                .where(SystemDataInfoDao.Properties.Account.isNotNull(),
-                        SystemDataInfoDao.Properties.Account.eq(MCloudApp.getAccount()))
-                .list();
 
-        systemDataInfoList.clear();
-        systemDataInfoHashMap.clear();
-        if (null != infoList && infoList.size() > 0) {
-            for (SystemDataInfo systemDataInfo : infoList) {
-                systemDataInfoList.add(systemDataInfo.getProjName());
-                systemDataInfoHashMap.put(systemDataInfo.getProjName(), systemDataInfo);
-            }
-        }
-    }
 
 
     @Override

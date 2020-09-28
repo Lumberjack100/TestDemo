@@ -32,7 +32,7 @@ import com.shmedo.core.util.GlobalUtil;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.activity.BaseActivity;
 import com.shmedo.mcloudapp.common.view.ClearEditText;
-import com.shmedo.mcloudapp.entity.parameter.SetUserHeadPhotoParameter;
+import com.shmedo.mcloudapp.user.model.params.SetUserHeadPhotoParameter;
 import com.shmedo.mcloudapp.network.BaseObserver;
 import com.shmedo.mcloudapp.network.ErrCode;
 import com.shmedo.mcloudapp.network.MDRetrofit;

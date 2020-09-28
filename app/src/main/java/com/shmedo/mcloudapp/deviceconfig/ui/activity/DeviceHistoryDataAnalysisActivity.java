@@ -11,12 +11,11 @@ import androidx.core.content.ContextCompat;
 
 import com.hjq.toast.ToastUtils;
 import com.shmedo.core.MCloudApp;
-import com.shmedo.core.model.UserInfo;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.activity.BaseActivity;
 import com.shmedo.mcloudapp.deviceconfig.model.DevcieHistoryState;
 import com.shmedo.mcloudapp.deviceconfig.model.params.QueryCmdStateParam;
-import com.shmedo.mcloudapp.entity.PageResult;
+import com.shmedo.mcloudapp.common.model.PageResult;
 import com.shmedo.mcloudapp.network.BaseObserver;
 import com.shmedo.mcloudapp.network.ErrCode;
 import com.shmedo.mcloudapp.network.MDRetrofit;

@@ -3,7 +3,6 @@ package com.shmedo.mcloudapp.deviceconfig.ui.activity;
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -31,7 +30,6 @@ import com.shmedo.configlibrary.ble.enums.WorkModel;
 import com.shmedo.core.util.GlobalUtil;
 import com.shmedo.configlibrary.ble.utils.StringUtil;
 import com.shmedo.mcloudapp.R;
-import com.shmedo.mcloudapp.deviceconfig.ui.activity.advanced.InstructionDebugActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.advanced.LogPrintActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.advanced.ProductRegistrationActivity;
 import com.shmedo.mcloudapp.entity.SyncPositionBean;
@@ -214,9 +212,7 @@ public class DeviceAdvanceSettingActivity extends BaseDeviceConnectActivity {
                 break;
 
             case R.id.rl_instruction_debug://指令交互调试模式
-                if (checkIsBluetoothConnected()) {
-                    InstructionDebugActivity.startActivity(DeviceAdvanceSettingActivity.this);
-                }
+
                 break;
 
             case R.id.rl_log_print://日志输出
@@ -253,7 +249,7 @@ public class DeviceAdvanceSettingActivity extends BaseDeviceConnectActivity {
                 new XPermissionUtils.OnPermissionListener() {
                     @Override
                     public void onPermissionGranted() {
-                        LogPrintActivity.startActivity(DeviceAdvanceSettingActivity.this);
+
                     }
 
                     @Override

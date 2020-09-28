@@ -10,7 +10,6 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -24,7 +23,7 @@ import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.deviceconfig.adapter.DeviceFirmWareAdpter;
 import com.shmedo.mcloudapp.deviceconfig.model.FirmWareInfo;
 import com.shmedo.mcloudapp.deviceconfig.model.params.QueryFirmwareListParam;
-import com.shmedo.mcloudapp.entity.PageResult;
+import com.shmedo.mcloudapp.common.model.PageResult;
 import com.shmedo.mcloudapp.network.BaseObserver;
 import com.shmedo.mcloudapp.network.ErrCode;
 import com.shmedo.mcloudapp.network.MDRetrofit;

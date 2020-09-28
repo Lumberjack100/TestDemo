@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.entity;
+package com.shmedo.mcloudapp.common.model;
 
 import java.util.List;
 

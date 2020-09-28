@@ -26,7 +26,7 @@ import com.shmedo.core.util.DensityUtil;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.activity.BaseActivity;
 import com.shmedo.mcloudapp.entity.ProjectDetailInfoDao;
-import com.shmedo.mcloudapp.entity.parameter.LocationResult;
+import com.shmedo.mcloudapp.projects.model.LocationResult;
 import com.shmedo.mcloudapp.projects.cluster.ClusterClickListener;
 import com.shmedo.mcloudapp.projects.cluster.ClusterItem;
 import com.shmedo.mcloudapp.projects.cluster.ClusterOverlay;

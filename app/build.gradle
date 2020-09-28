@@ -139,7 +139,7 @@ android {
 //greendao配置
 greendao {
     //数据库版本号，升级时修改
-    schemaVersion 16
+    schemaVersion 17
     daoPackage "com.shmedo.mcloudapp.entity" // set package of generated classes
 }
 

@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.entity.parameter;
+package com.shmedo.mcloudapp.projects.model;
 
 /**
  * 项目名：  mCloudapp

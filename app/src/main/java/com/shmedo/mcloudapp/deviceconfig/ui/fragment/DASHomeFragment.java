@@ -3,7 +3,6 @@ package com.shmedo.mcloudapp.deviceconfig.ui.fragment;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -45,7 +44,6 @@ import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.fragment.BaseFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.ConfigDASActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.DeviceAdvanceSettingActivity;
-import com.shmedo.mcloudapp.deviceconfig.ui.activity.MqttSettingActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.sensor.CommonSensorConfigActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.sensor.VibratingWireSensorConfigActivity;
 import com.shmedo.mcloudapp.util.bleutil.BlueResultParserUtil;
@@ -350,7 +348,7 @@ public class DASHomeFragment extends BaseFragment {
                     ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
                     return;
                 }
-                MqttSettingActivity.startActivity(configDASActivity);
+
                 break;
 
             case R.id.rl_collector_control:

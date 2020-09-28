@@ -1,6 +1,5 @@
 package com.shmedo.mcloudapp.deviceconfig.ui.fragment;
 
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -22,11 +21,8 @@ import com.hjq.toast.ToastUtils;
 import com.kyleduo.switchbutton.SwitchButton;
 import com.shmedo.configlibrary.ble.cmd.CommandManager;
 import com.shmedo.configlibrary.ble.cmd.CommandResult;
-import com.shmedo.configlibrary.ble.cmd.entity.RebootDeviceEntity;
-import com.shmedo.configlibrary.ble.cmd.entity.SaveConfigInfoEntity;
 import com.shmedo.configlibrary.ble.enums.CollectorModel;
 import com.shmedo.configlibrary.ble.enums.CommandType;
-import com.shmedo.configlibrary.ble.enums.SaveConfigMode;
 import com.shmedo.configlibrary.ble.model.BaseConfigInfo;
 import com.shmedo.configlibrary.ble.model.LoaclTimeInfo;
 import com.shmedo.configlibrary.ble.model.SetRainPrecisionInfo;
@@ -58,7 +54,7 @@ import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd.BaseDispatchC
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd.QueryTerminalTimeDialog;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd.TelemetryDialog;
 import com.shmedo.mcloudapp.entity.DeviceTypeInfoDao;
-import com.shmedo.mcloudapp.entity.PageResult;
+import com.shmedo.mcloudapp.common.model.PageResult;
 import com.shmedo.mcloudapp.network.BaseObserver;
 import com.shmedo.mcloudapp.network.ErrCode;
 import com.shmedo.mcloudapp.network.MDRetrofit;

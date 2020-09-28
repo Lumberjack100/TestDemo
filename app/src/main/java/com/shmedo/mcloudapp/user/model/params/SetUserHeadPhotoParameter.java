@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.entity.parameter;
+package com.shmedo.mcloudapp.user.model.params;
 
 /**
  * 项目名：  das-config-app

@@ -2,7 +2,6 @@ package com.shmedo.mcloudapp.util;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.DefaultLifecycleObserver;
-import androidx.lifecycle.LifecycleObserver;
 import androidx.lifecycle.LifecycleOwner;
 
 import com.hjq.toast.ToastUtils;
@@ -11,7 +10,7 @@ import com.shmedo.core.MCloudApp;
 import com.shmedo.core.model.UserInfo;
 import com.shmedo.core.util.SharedUtil;
 import com.shmedo.mcloudapp.common.model.UserInfoWrapper;
-import com.shmedo.mcloudapp.entity.parameter.SignInParameter;
+import com.shmedo.mcloudapp.common.model.params.SignInParameter;
 import com.shmedo.mcloudapp.network.BaseObserver;
 import com.shmedo.mcloudapp.network.ErrCode;
 import com.shmedo.mcloudapp.network.MDRetrofit;
