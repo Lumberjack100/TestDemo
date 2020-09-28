@@ -108,6 +108,7 @@ public class LoginActivity extends BaseActivity implements LoginManager.LoginCal
         super.onCreate(savedInstanceState);
         initLastAccount();
         initLoginUserProtocol();
+        getLifecycle().addObserver(LoginManager.getInstance());
     }
 
     /**

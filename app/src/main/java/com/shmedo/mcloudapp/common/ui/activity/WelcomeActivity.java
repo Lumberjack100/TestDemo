@@ -51,6 +51,7 @@ public class WelcomeActivity extends BaseActivity implements LoginManager.LoginC
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initStates();
+        getLifecycle().addObserver(LoginManager.getInstance());
         setCheckNetWork(false);
         initData();
     }

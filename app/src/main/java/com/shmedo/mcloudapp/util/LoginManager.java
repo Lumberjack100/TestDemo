@@ -1,5 +1,10 @@
 package com.shmedo.mcloudapp.util;
 
+import androidx.annotation.NonNull;
+import androidx.lifecycle.DefaultLifecycleObserver;
+import androidx.lifecycle.LifecycleObserver;
+import androidx.lifecycle.LifecycleOwner;
+
 import com.hjq.toast.ToastUtils;
 import com.shmedo.core.AppContants;
 import com.shmedo.core.MCloudApp;
@@ -24,7 +29,7 @@ import okhttp3.RequestBody;
  * 创建者:   gonghe
  * 创建时间:  2019-10-17
  */
-public class LoginManager {
+public class LoginManager implements DefaultLifecycleObserver {
 
     public static final int LOGIN_CODE_SUCCESS = 0;
 
@@ -204,5 +209,10 @@ public class LoginManager {
 
     public interface LoginCallback {
         void callback(int code, Object data);
+    }
+
+    @Override
+    public void onDestroy(@NonNull LifecycleOwner owner) {
+        loginCallback = null;
     }
 }
