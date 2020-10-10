@@ -784,25 +784,6 @@ public abstract class BaseBleConnectFragment extends BaseFragment {
         sendCommonCommandImmediately(command);
     }
 
-    /**
-     * 设置断线报警器状态
-     */
-    protected void setBreakAlarmStatus(BreakAlarmStatus breakAlarmStatus) {
-        BreakAlarmStatusEntity entity = new BreakAlarmStatusEntity(breakAlarmStatus.toInt());
-        String command = CommandManager.getInstance().getCommand(CommandType.BREAK_ALARM_STATUS, entity);
-        sendCommonCommandImmediately(command);
-        Timber.d("设置断线报警器指令==%s", command);
-    }
-
-    /**
-     * 设置远程升级
-     */
-    protected void setSetRemoteUpgrade(SetRemoteUpgrade remoteUpgrade, String address, int port) {
-        SetRemoteUpgradeEntity setRemoteUpgradeEntity = new SetRemoteUpgradeEntity(remoteUpgrade.toInt(), address, port);
-        String command = CommandManager.getInstance().getCommand(CommandType.SETTING_REMOTE_UPGRADE, setRemoteUpgradeEntity);
-        sendCommonCommandImmediately(command);
-        Timber.d("设置远程升级指令==%s", command);
-    }
 
     protected void queryDeviceVersionInfo() {
         String command = CommandManager.getInstance().getCommand(CommandType.VERSION_MESSAGE);

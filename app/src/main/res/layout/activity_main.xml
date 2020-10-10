@@ -31,8 +31,8 @@
             android:layout_height="match_parent"
             android:background="@color/white"
             app:itemIconSize="@dimen/dimen_size_27"
-            app:itemIconTint="@color/bottom_nav_icon_color"
-            app:itemTextColor="@color/bottom_nav_text_color"
+            app:itemIconTint="@color/bottom_nav_icon"
+            app:itemTextColor="@color/bottom_nav_text"
             app:labelVisibilityMode="labeled"
             app:menu="@menu/mainactivity_bottom_navigation_menu" />
 

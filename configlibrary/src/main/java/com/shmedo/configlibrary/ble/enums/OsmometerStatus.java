@@ -6,21 +6,26 @@ package com.shmedo.configlibrary.ble.enums;
  */
 public enum OsmometerStatus {
 
-    OSMOMETER_OPEN(1),OSMOMETER_CLOSE(2);
+    OSMOMETER_OPEN(1), OSMOMETER_CLOSE(2);
     //1、开启      2、关闭
     private int status;
+
     OsmometerStatus(int i) {
         this.status = i;
     }
+
     public int toInt() {
         return status;
     }
 
     public static OsmometerStatus valueOf(int status) {
         switch (status) {
-            case 1: return OSMOMETER_OPEN;
-            case 2: return OSMOMETER_CLOSE;
-            default: return OSMOMETER_CLOSE;
+            case 1:
+                return OSMOMETER_OPEN;
+            case 2:
+                return OSMOMETER_CLOSE;
+            default:
+                return OSMOMETER_CLOSE;
         }
     }
 }

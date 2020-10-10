@@ -18,11 +18,12 @@ public class QueryOsmometerParameterParser implements ResultParser<QueryOsmomete
         String [] strs = result.split(",");
         info.setOsmometerStatus(OsmometerStatus.valueOf(Integer.valueOf(strs[1])));
         info.setOsmometerAddress(strs[2]);
-        info.setDepthTrigger(Integer.valueOf(strs[3]));
-        info.setDepthCorrect(Double.valueOf(strs[4]));
-        info.setTemperatureTrigger(Integer.parseInt(strs[5]));
-        info.setTemperatureCorrect(Double.valueOf(strs[6]));
-        info.setCordLenght(Double.valueOf(strs[7]));
+        info.setDepthTrigger(strs[3]);
+        info.setDepthCorrect(strs[4]);
+        info.setTemperatureTrigger(strs[5]);
+        info.setTemperatureCorrect(strs[6]);
+        info.setCordLenght(strs[7]);
+        info.setInstallHeight(strs[8]);
         return info;
     }
 
