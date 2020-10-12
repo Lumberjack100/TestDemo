@@ -20,7 +20,7 @@
             android:layout_width="match_parent"
             android:layout_height="60dp"
             android:background="@color/white"
-            android:paddingStart="18dp"
+            android:paddingStart="16dp"
             android:paddingEnd="16dp">
 
             <TextView
@@ -92,7 +92,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="0.5dp"
                 android:layout_marginStart="16dp"
-                android:layout_marginEnd="18dp"
+                android:layout_marginEnd="16dp"
                 android:background="@color/divider_line_bg_efefef" />
 
             <RadioButton
@@ -221,7 +221,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="0.5dp"
                 android:layout_marginStart="16dp"
-                android:layout_marginEnd="18dp"
+                android:layout_marginEnd="16dp"
                 android:background="@color/divider_line_bg_efefef" />
 
             <LinearLayout style="@style/Common_EditItem_LayoutStyle">
@@ -255,7 +255,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="0.5dp"
                 android:layout_marginStart="16dp"
-                android:layout_marginEnd="18dp"
+                android:layout_marginEnd="16dp"
                 android:background="@color/divider_line_bg_efefef" />
 
             <LinearLayout style="@style/Common_EditItem_LayoutStyle">
@@ -289,7 +289,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="0.5dp"
                 android:layout_marginStart="16dp"
-                android:layout_marginEnd="18dp"
+                android:layout_marginEnd="16dp"
                 android:background="@color/divider_line_bg_efefef" />
 
             <LinearLayout style="@style/Common_EditItem_LayoutStyle">
@@ -323,7 +323,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="0.5dp"
                 android:layout_marginStart="16dp"
-                android:layout_marginEnd="18dp"
+                android:layout_marginEnd="16dp"
                 android:background="@color/divider_line_bg_efefef" />
 
             <LinearLayout style="@style/Common_EditItem_LayoutStyle">
@@ -361,19 +361,33 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="60dp"
+            android:layout_height="70dp"
             android:background="@color/white"
-            android:paddingStart="18dp"
+            android:paddingStart="16dp"
             android:paddingEnd="16dp">
 
-            <TextView
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
                 android:layout_centerVertical="true"
-                android:text="扩展传感器"
-                android:textColor="@color/title_text_color"
-                android:textSize="@dimen/text_size_17" />
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="扩展传感器"
+                    android:textColor="@color/title_text_color"
+                    android:textSize="@dimen/text_size_17" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="9dp"
+                    android:text="支持8个同类型传感器"
+                    android:textColor="@color/sub_title_text_color"
+                    android:textSize="@dimen/text_size_13" />
+            </LinearLayout>
 
 
             <com.kyleduo.switchbutton.SwitchButton
@@ -391,10 +405,29 @@
 
         </RelativeLayout>
 
-        <View
+        <LinearLayout
+            android:id="@+id/extendedSensorChildsLayout"
             android:layout_width="match_parent"
-            android:layout_height="14dp" />
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:orientation="vertical">
 
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:background="@color/divider_line_bg_efefef" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerview_sensor"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clipToPadding="false"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:paddingTop="20dp"
+                android:paddingBottom="28dp" />
+
+        </LinearLayout>
 
         <Button
             android:id="@+id/btn_confirm"
@@ -402,7 +435,7 @@
             android:layout_height="46dp"
             android:layout_marginStart="16dp"
             android:layout_marginTop="24dp"
-            android:layout_marginEnd="18dp"
+            android:layout_marginEnd="16dp"
             android:layout_marginBottom="20dp"
             android:background="@drawable/btn_select"
             android:text="发送"
