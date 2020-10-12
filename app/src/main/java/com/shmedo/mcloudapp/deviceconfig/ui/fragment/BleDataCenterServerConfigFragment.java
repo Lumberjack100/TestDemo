@@ -296,7 +296,7 @@ public class BleDataCenterServerConfigFragment extends BaseBleConnectFragment {
                 }
 
                 if (!checkValue()) {
-                    Timber.w("传感器参数存在错误!");
+                    Timber.w("数据中心参数存在错误!");
                     return;
                 }
 

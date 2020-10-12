@@ -359,73 +359,17 @@
             android:layout_width="match_parent"
             android:layout_height="14dp" />
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="70dp"
-            android:background="@color/white"
-            android:paddingStart="16dp"
-            android:paddingEnd="16dp">
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:layout_centerVertical="true"
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="扩展传感器"
-                    android:textColor="@color/title_text_color"
-                    android:textSize="@dimen/text_size_17" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="9dp"
-                    android:text="支持8个同类型传感器"
-                    android:textColor="@color/sub_title_text_color"
-                    android:textSize="@dimen/text_size_13" />
-            </LinearLayout>
-
-
-            <com.kyleduo.switchbutton.SwitchButton
-                android:id="@+id/extendedSensorEnableSBtn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_centerVertical="true"
-                app:kswAnimationDuration="100"
-                app:kswBackDrawable="@drawable/sl_switchbutton_back"
-                app:kswThumbDrawable="@drawable/shape_switchbutton_thumb"
-                app:kswThumbHeight="28dp"
-                app:kswThumbRangeRatio="2"
-                app:kswThumbWidth="28dp" />
-
-        </RelativeLayout>
-
         <LinearLayout
-            android:id="@+id/extendedSensorChildsLayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/white"
-            android:orientation="vertical">
+            android:id="@+id/extendSensorLayout"
+            style="@style/Common_ClickableItem_LayoutStyle">
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="0.5dp"
-                android:background="@color/divider_line_bg_efefef" />
+            <TextView
+                style="@style/Common_ClickableItem_TitleStyle"
+                android:text="扩展传感器配置" />
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recyclerview_sensor"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:clipToPadding="false"
-                android:paddingStart="16dp"
-                android:paddingEnd="16dp"
-                android:paddingTop="20dp"
-                android:paddingBottom="28dp" />
+            <TextView
+                style="@style/Common_ClickableItem_ValueStyle"
+                android:textSize="17sp" />
 
         </LinearLayout>
 
@@ -436,7 +380,7 @@
             android:layout_marginStart="16dp"
             android:layout_marginTop="24dp"
             android:layout_marginEnd="16dp"
-            android:layout_marginBottom="20dp"
+            android:layout_marginBottom="30dp"
             android:background="@drawable/btn_select"
             android:text="发送"
             android:textColor="@color/white"
