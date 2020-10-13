@@ -95,8 +95,6 @@ public abstract class BaseBleConnectFragment extends BaseFragment {
 
     private boolean mScanning;
 
-    private Handler uiHander = new Handler();
-
     private int authenticateNum = 0;
 
     private boolean isAutoConnectBlue = true;//是否自动连接蓝牙
@@ -109,7 +107,13 @@ public abstract class BaseBleConnectFragment extends BaseFragment {
 
     private String macAddress = MCloudApp.getCurDeviceMacAddr();
 
-    private ProgressRunnable progressRunnable;
+    private static Handler uiHander = new Handler();
+
+    private static Handler heartHander = new Handler();
+
+    private static ProgressRunnable progressRunnable;
+
+    private static HeartRunnable heartRunnable;
 
 
     private class ProgressRunnable implements Runnable {
@@ -142,6 +146,32 @@ public abstract class BaseBleConnectFragment extends BaseFragment {
         dismissProgressDialog();
         uiHander.removeCallbacksAndMessages(null);
         progressRunnable = null;
+    }
+
+
+    /**
+     * 发送心跳包任务
+     */
+    private class HeartRunnable implements Runnable {
+        @Override
+        public void run() {
+            if (MCloudApp.isIsBluetoothDeviceConnected()) {
+                sendHeartData();
+                heartHander.postDelayed(this, 5000);
+            }
+        }
+    }
+
+    protected void startHeartRunnable() {
+        if (heartRunnable == null) {
+            heartRunnable = new HeartRunnable();
+            heartHander.postDelayed(heartRunnable, 3000);
+        }
+    }
+
+    protected void stopHeartRunnable() {
+        heartHander.removeCallbacksAndMessages(null);
+        heartRunnable = null;
     }
 
     @Override
@@ -443,6 +473,7 @@ public abstract class BaseBleConnectFragment extends BaseFragment {
                 case Constants.BT_DISCONNECTED:
                     ToastUtils.show("蓝牙连接断开");
                     stopProgressRunnable();
+                    stopHeartRunnable();
                     MCloudApp.setIsBluetoothDeviceConnected(false);
                     EventBus.getDefault().post(new BluetoothConnectStateEvent(false));
                     //断开蓝牙后重新连接
@@ -584,10 +615,22 @@ public abstract class BaseBleConnectFragment extends BaseFragment {
      */
     private void parserResult(String cmdStr) {
         if (SN.endsWith("T")) {//ADME 设备应答指令预处理
-            parserADMECmdResult(cmdStr);
+            //ADME 设备初始化参数查询完成后，取消进度框
+            if (cmdStr.startsWith("$$7002")) {
+                stopProgressRunnable();
+            }
 
         } else if (SN.endsWith("L")) {//DAS 设备应答指令预处理
-            parserDASCmdResult(cmdStr);
+            //DAS 设备初始化参数查询完成后，取消进度框
+            if (cmdStr.startsWith("$$000")) {
+                stopProgressRunnable();
+                startHeartRunnable();
+            }
+        }
+
+        //处理心跳包应答指令，不分发指令
+        if (cmdStr.startsWith("$$888")) {
+            return;
         }
 
         //设置保存参数应答
@@ -604,34 +647,11 @@ public abstract class BaseBleConnectFragment extends BaseFragment {
                     }
                 }, 3000);
             }
+            return;
         }
 
         CmdResponseMessage responseMessage = new CmdResponseMessage(cmdStr);
         EventBus.getDefault().post(responseMessage);
-    }
-
-    /**
-     * 解析 ADME 的参数指令
-     *
-     * @param cmdStr
-     */
-    private void parserADMECmdResult(String cmdStr) {
-        //查询执行机构参数应答
-        if (cmdStr.startsWith("$$7002")) {
-            stopProgressRunnable();
-        }
-    }
-
-    /**
-     * 解析 DAS 的参数指令
-     *
-     * @param cmdStr
-     */
-    private void parserDASCmdResult(String cmdStr) {
-        //查询基础配置信息
-        if (cmdStr.startsWith("$$000")) {
-            stopProgressRunnable();
-        }
     }
 
 
@@ -789,6 +809,15 @@ public abstract class BaseBleConnectFragment extends BaseFragment {
         String command = CommandManager.getInstance().getCommand(CommandType.VERSION_MESSAGE);
         sendCommonCommandImmediately(command);
         Timber.d("查询设备版本信息：%s", command);
+    }
+
+    /**
+     * 发送心跳数据(未定义的指令)
+     */
+    protected void sendHeartData() {
+        String command = "##888\r\n";
+        sendCommonCommandImmediately(command);
+        Timber.d("发送心跳数据：%s", command);
     }
 
     protected void showDisconnectDialog(String content) {

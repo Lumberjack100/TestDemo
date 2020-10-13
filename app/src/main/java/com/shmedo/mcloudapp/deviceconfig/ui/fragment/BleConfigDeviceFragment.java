@@ -285,7 +285,7 @@ public class BleConfigDeviceFragment extends BaseBleConnectFragment {
                 break;
 
             case "传感器配置":
-//                DASSensorConfigActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT);
+                DASSensorConfigActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT);
                 break;
 
             case "数据中心":
