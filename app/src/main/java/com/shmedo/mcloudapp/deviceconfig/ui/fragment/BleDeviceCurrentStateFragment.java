@@ -250,13 +250,13 @@ public class BleDeviceCurrentStateFragment extends BaseBleConnectFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(MessageEvent messageEvent) {
-        super.onMessageEvent(messageEvent);
-
         if (messageEvent instanceof CmdResponseMessage) {
-            if(!isActive){
+            if (!isActive) {
                 return;
             }
             setResultData((CmdResponseMessage) messageEvent);
+        } else {
+            super.onMessageEvent(messageEvent);
         }
     }
 
