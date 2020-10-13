@@ -131,7 +131,6 @@ public class BleConfigDeviceFragment extends BaseBleConnectFragment {
     private int deviceTypeID;
     private String deviceTypeName;
 
-    private SetRainPrecisionInfo setRainPrecisionInfo;
     private BaseConfigInfo baseConfigInfo;
 
 
@@ -457,8 +456,6 @@ public class BleConfigDeviceFragment extends BaseBleConnectFragment {
             return;
         }
 
-        setRainPrecisionInfo = new SetRainPrecisionInfo();
-        setRainPrecisionInfo.setPrecision((double) baseConfigInfo.getRainAccuracy() / 100);
         collectorModel = baseConfigInfo.getCollectorModel().toString();
 
         //获取采集器类型

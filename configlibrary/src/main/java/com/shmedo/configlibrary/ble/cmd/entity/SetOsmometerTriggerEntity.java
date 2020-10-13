@@ -8,10 +8,10 @@ import com.shmedo.configlibrary.ble.interfaces.Validater;
  * 设置数字渗压计触发值
  */
 public class SetOsmometerTriggerEntity implements Validater {
-    private double depthTrigger; //深度触发值 mm
-    private double temperatureTrigger; //温度触发值 ℃
+    private int depthTrigger; //深度触发值 mm
+    private int temperatureTrigger; //温度触发值 ℃
 
-    public SetOsmometerTriggerEntity(double depthTrigger, double temperatureTrigger) {
+    public SetOsmometerTriggerEntity(int depthTrigger, int temperatureTrigger) {
         this.depthTrigger = depthTrigger;
         this.temperatureTrigger = temperatureTrigger;
     }

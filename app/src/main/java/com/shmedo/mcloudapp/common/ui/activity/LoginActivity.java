@@ -262,15 +262,15 @@ public class LoginActivity extends BaseActivity implements LoginManager.LoginCal
                 return false;
             }
 
+            if (!ValidateUtil.checkMobileNumber(mobile)) {
+                ToastUtils.show("手机号格式错误！");
+                return false;
+            }
+
             if (TextUtils.isEmpty(code)) {
 //                mEtCode.setError("请输入验证码");
                 ToastUtils.show("请输入验证码");
                 mEtCode.requestFocus();
-                return false;
-            }
-
-            if (!ValidateUtil.checkMobileNumber(mobile)) {
-                ToastUtils.show("手机号格式错误！");
                 return false;
             }
         }

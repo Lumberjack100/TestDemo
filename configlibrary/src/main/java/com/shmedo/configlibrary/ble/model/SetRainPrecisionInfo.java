@@ -6,13 +6,13 @@ package com.shmedo.configlibrary.ble.model;
  */
 public class SetRainPrecisionInfo {
 
-    private double precision;
+    private int precision;
 
-    public double getPrecision() {
+    public int getPrecision() {
         return precision;
     }
 
-    public void setPrecision(double precision) {
+    public void setPrecision(int precision) {
         this.precision = precision;
     }
 

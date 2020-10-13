@@ -470,9 +470,9 @@ public class DASHomeFragment extends BaseFragment {
             return;
         }
 
-        setRainPrecisionInfo = new SetRainPrecisionInfo();
-        setRainPrecisionInfo.setPrecision((double) baseConfigInfo.getRainAccuracy() / 100);
         collectorModel = baseConfigInfo.getCollectorModel().toString();
+        setRainPrecisionInfo = new SetRainPrecisionInfo();
+        setRainPrecisionInfo.setPrecision(baseConfigInfo.getRainAccuracy());
 
         //获取采集器类型
         if (!TextUtils.isEmpty(collectorModel)) {
