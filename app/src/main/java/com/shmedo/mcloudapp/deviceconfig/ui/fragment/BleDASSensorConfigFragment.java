@@ -67,6 +67,7 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -146,6 +147,11 @@ public class BleDASSensorConfigFragment extends BaseBleConnectFragment {
     private String cmdDepthCorrection;//深度修正值配置指令
     private String cmdOsmometerLength;//渗压计绳长配置指令
     private String cmdNozzelHeight;//管口高程配置指令
+
+    //参数配置指令集合
+    private List<String> cmdList = new LinkedList<>();
+    //参数配置项名称
+    private List<String> configItemNameList = new ArrayList<>();
 
     @Override
     protected int getLayoutId() {
@@ -327,37 +333,42 @@ public class BleDASSensorConfigFragment extends BaseBleConnectFragment {
                     ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
                     return;
                 }
-//                if (!checkValue()) {
-//                    Timber.w("参数存在错误!");
-//                    return;
-//                }
 
+                cmdRainPrecision = "";
+                cmdOsmometerAddress = "";
+                cmdDepthTriggerValue = "";
+                cmdDepthCorrection = "";
+                cmdOsmometerLength = "";
+                cmdNozzelHeight = "";
+
+                if (!processRainPrecisionParam() || !processDigitalOsmometerParam()) {
+                    return;
+                }
                 processSave();
                 break;
         }
     }
 
-//    private boolean checkValue() {
-//        rainPrecision = mEtRainPrecision.getText().toString().trim();
-//    }
 
-    private void processRainPrecisionParam() {
+    /**
+     * 处理雨量计精度参数
+     *
+     * @return
+     */
+    private boolean processRainPrecisionParam() {
         rainPrecision = mEtRainPrecision.getText().toString().trim();
-
         if (!mSbSwitchSensor.isChecked() || !rbRainGauge.isChecked()) {
-            cmdRainPrecision = "";
-            return;
+            return true;
         }
 
         if (decimalFormat.format((double) baseConfigInfo.getRainAccuracy() / 100).equals(rainPrecision)) {
-            cmdRainPrecision = "";
-            return;
+            return true;
         }
 
         if (TextUtils.isEmpty(rainPrecision)) {
             ToastUtils.show("雨量计精度不能为空");
             mEtRainPrecision.requestFocus();
-            return;
+            return false;
         }
 
         try {
@@ -365,146 +376,179 @@ public class BleDASSensorConfigFragment extends BaseBleConnectFragment {
             if (value >= 1) {
                 ToastUtils.show("请输入有效的雨量计精度!");
                 mEtRainPrecision.requestFocus();
-                return;
+                return false;
             }
         } catch (Exception ex) {
             ToastUtils.show("请输入有效的雨量计精度!");
             mEtRainPrecision.requestFocus();
-            return;
+            return false;
         }
+
+        int precision = (int) (Double.parseDouble(rainPrecision) * 100);
+        SetRainPrecisionEntity entity = new SetRainPrecisionEntity(precision);
+        cmdRainPrecision = CommandManager.getInstance().getCommand(CommandType.SETTING_RAIN_PRECISION, entity);
+        return true;
     }
 
-    private void processDigitalOsmometerParam() {
+    private boolean processDigitalOsmometerParam() {
+        if (!mSbDigitalOsmometerEnable.isChecked()) {
+            return true;
+        }
 
-    }
-
-
-    private void processSave() {
-        rainPrecision = mEtRainPrecision.getText().toString().trim();
         osmometerAddress = mEtOsmometerAddress.getText().toString().trim();
         depthTriggerValue = mEtWaterAlarmValue.getText().toString().trim();
         depthCorrection = mEtWaterRevised.getText().toString().trim();
         osmometerLength = mEtOsmometerCord.getText().toString().trim();
         nozzelHeight = mEtNozzelHeight.getText().toString().trim();
 
-        if (TextUtils.isEmpty(rainPrecision)) {
-            ToastUtils.show("雨量计精度不能为空");
-            mEtRainPrecision.requestFocus();
-            return;
-        }
-
-        try {
-            double value = Double.parseDouble(rainPrecision);
-            if (value >= 1) {
-                ToastUtils.show("请输入有效的雨量计精度!");
-                mEtRainPrecision.requestFocus();
-                return;
+        if (!queryOsmometerParameterInfo.getOsmometerAddress().equals(osmometerAddress)) {
+            if (TextUtils.isEmpty(osmometerAddress)) {
+                ToastUtils.show("渗压计地址不能为空");
+                mEtOsmometerAddress.requestFocus();
+                return false;
             }
-        } catch (Exception ex) {
-            ToastUtils.show("请输入有效的雨量计精度!");
-            mEtRainPrecision.requestFocus();
-            return;
+            if (Integer.parseInt(osmometerAddress) < 0) {
+                ToastUtils.show("渗压计地址不能小于0");
+                mEtOsmometerAddress.requestFocus();
+                return false;
+            }
+            if (Integer.parseInt(osmometerAddress) > 255) {
+                ToastUtils.show("渗压计地址不能大于255");
+                mEtOsmometerAddress.requestFocus();
+                return false;
+            }
+
+            SetOsmometerAddressEntity addressEntity = new SetOsmometerAddressEntity(Integer.parseInt(osmometerAddress));
+            cmdOsmometerAddress = CommandManager.getInstance().getCommand(CommandType.SET_OSMOMETER_ADDRESS, addressEntity);
         }
 
-        if (TextUtils.isEmpty(osmometerAddress)) {
-            ToastUtils.show("渗压计地址不能为空");
-            mEtOsmometerAddress.requestFocus();
-            return;
-        }
-        if (Integer.parseInt(osmometerAddress) < 0) {
-            ToastUtils.show("渗压计地址不能小于0");
-            mEtOsmometerAddress.requestFocus();
-            return;
-        }
-        if (Integer.parseInt(osmometerAddress) > 255) {
-            ToastUtils.show("渗压计地址不能大于255");
-            mEtOsmometerAddress.requestFocus();
-            return;
-        }
+        if (!queryOsmometerParameterInfo.getDepthTrigger().equals(depthTriggerValue)) {
+            if (TextUtils.isEmpty(depthTriggerValue)) {
+                ToastUtils.show("水位报警值不能为空");
+                return false;
+            }
 
-        if (TextUtils.isEmpty(depthTriggerValue)) {
-            ToastUtils.show("水位报警值不能为空");
-            return;
-        }
+            try {
+                int value = Integer.parseInt(depthTriggerValue);
+                if (value < 1 || value > 65535) {
+                    ToastUtils.show("请输入有效的水位报警值!");
+                    mEtWaterAlarmValue.requestFocus();
+                    return false;
+                }
 
-        try {
-            int value = Integer.parseInt(depthTriggerValue);
-            if (value < 1 || value > 65535) {
+            } catch (Exception ex) {
                 ToastUtils.show("请输入有效的水位报警值!");
                 mEtWaterAlarmValue.requestFocus();
-                return;
+                return false;
             }
 
-        } catch (Exception ex) {
-            ToastUtils.show("请输入有效的水位报警值!");
-            mEtWaterAlarmValue.requestFocus();
+            SetOsmometerTriggerEntity triggerEntity = new SetOsmometerTriggerEntity(Integer.parseInt(depthTriggerValue), 10);
+            cmdDepthTriggerValue = CommandManager.getInstance().getCommand(CommandType.SET_OSMOMETER_TRIGGER, triggerEntity);
+        }
+
+        if (!queryOsmometerParameterInfo.getDepthCorrect().equals(depthCorrection)) {
+            if (TextUtils.isEmpty(depthCorrection)) {
+                ToastUtils.show("水深修正值不能为空");
+                return false;
+            }
+
+            try {
+                double value = Double.parseDouble(depthCorrection);
+
+            } catch (Exception ex) {
+                ToastUtils.show("请输入有效的水深修正值!");
+                mEtWaterRevised.requestFocus();
+                return false;
+            }
+
+            SetOsmometerCorrectEntity correctEntity = new SetOsmometerCorrectEntity(Double.parseDouble(depthCorrection), 10);
+            cmdDepthCorrection = CommandManager.getInstance().getCommand(CommandType.SET_OSMOMETR_CORRECT, correctEntity);
+        }
+
+        if (!queryOsmometerParameterInfo.getCordLenght().equals(osmometerLength)) {
+            if (TextUtils.isEmpty(osmometerLength)) {
+                ToastUtils.show("渗压计绳长不能为空");
+                return false;
+            }
+
+            try {
+                double value = Double.parseDouble(osmometerLength);
+
+            } catch (Exception ex) {
+                ToastUtils.show("请输入有效的渗压计绳长!");
+                mEtOsmometerCord.requestFocus();
+                return false;
+            }
+
+            SetOsmometerCordLengthEntity cordLengthEntity = new SetOsmometerCordLengthEntity(Double.parseDouble(osmometerLength));
+            cmdOsmometerLength = CommandManager.getInstance().getCommand(CommandType.SET_CORD_LENGTH, cordLengthEntity);
+        }
+
+        if (!queryOsmometerParameterInfo.getInstallHeight().equals(nozzelHeight)) {
+            if (TextUtils.isEmpty(nozzelHeight)) {
+                ToastUtils.show("管口高程值不能为空");
+                return false;
+            }
+
+            try {
+                double value = Double.parseDouble(nozzelHeight);
+
+            } catch (Exception ex) {
+                ToastUtils.show("请输入有效的管口高程值!");
+                mEtNozzelHeight.requestFocus();
+                return false;
+            }
+
+            SetOsmometerNozzelHeightEntity nozzelHeightEntity = new SetOsmometerNozzelHeightEntity(Double.parseDouble(nozzelHeight));
+            cmdNozzelHeight = CommandManager.getInstance().getCommand(CommandType.SET_OSMOMETR_NOZZEL_HEIGHT, nozzelHeightEntity);
+        }
+
+        return true;
+    }
+
+
+    private void processSave() {
+        cmdList.clear();
+        if (!TextUtils.isEmpty(cmdRainPrecision)) {
+            cmdList.add(cmdRainPrecision);
+        }
+        if (!TextUtils.isEmpty(cmdOsmometerAddress)) {
+            cmdList.add(cmdOsmometerAddress);
+        }
+        if (!TextUtils.isEmpty(cmdDepthTriggerValue)) {
+            cmdList.add(cmdDepthTriggerValue);
+        }
+        if (!TextUtils.isEmpty(cmdDepthCorrection)) {
+            cmdList.add(cmdDepthCorrection);
+        }
+        if (!TextUtils.isEmpty(cmdOsmometerLength)) {
+            cmdList.add(cmdOsmometerLength);
+        }
+        if (!TextUtils.isEmpty(cmdNozzelHeight)) {
+            cmdList.add(cmdNozzelHeight);
+        }
+
+        if (!cmdList.isEmpty()) {
+            errMsg = "发送指令超时,请稍后尝试";
+            startProgressRunnable("正在发送配置指令...", CONFIG_PARAMS_DELAY_MILLIS);
+        }
+        sendParamConfigCmd();
+    }
+
+    /**
+     * 从修正参数指令集合中逐个取出发送
+     */
+    private void sendParamConfigCmd() {
+        if (cmdList.isEmpty()) {
+            Timber.d("雨量计或渗压计配置参数指令已发送完毕");
             return;
         }
 
-        if (TextUtils.isEmpty(depthCorrection)) {
-            ToastUtils.show("水深修正值不能为空");
-            return;
-        }
-
-        try {
-            double value = Double.parseDouble(depthCorrection);
-
-        } catch (Exception ex) {
-            ToastUtils.show("请输入有效的水深修正值!");
-            mEtWaterRevised.requestFocus();
-            return;
-        }
-
-        if (TextUtils.isEmpty(osmometerLength)) {
-            ToastUtils.show("渗压计绳长不能为空");
-            return;
-        }
-
-        try {
-            double value = Double.parseDouble(osmometerLength);
-
-        } catch (Exception ex) {
-            ToastUtils.show("请输入有效的渗压计绳长!");
-            mEtOsmometerCord.requestFocus();
-            return;
-        }
-
-        if (TextUtils.isEmpty(nozzelHeight)) {
-            ToastUtils.show("管口高程值不能为空");
-            return;
-        }
-
-        try {
-            double value = Double.parseDouble(nozzelHeight);
-
-        } catch (Exception ex) {
-            ToastUtils.show("请输入有效的管口高程值!");
-            mEtNozzelHeight.requestFocus();
-            return;
-        }
-
-        SetOsmometerAddressEntity addressEntity = new SetOsmometerAddressEntity(Integer.parseInt(osmometerAddress));
-        cmdOsmometerAddress = CommandManager.getInstance().getCommand(CommandType.SET_OSMOMETER_ADDRESS, addressEntity);
-
-        SetOsmometerTriggerEntity triggerEntity = new SetOsmometerTriggerEntity(Integer.parseInt(depthTriggerValue), 10);
-        cmdDepthTriggerValue = CommandManager.getInstance().getCommand(CommandType.SET_OSMOMETER_TRIGGER, triggerEntity);
-
-        SetOsmometerCorrectEntity correctEntity = new SetOsmometerCorrectEntity(Double.parseDouble(depthCorrection), 10);
-        cmdDepthCorrection = CommandManager.getInstance().getCommand(CommandType.SET_OSMOMETR_CORRECT, correctEntity);
-
-        SetOsmometerCordLengthEntity cordLengthEntity = new SetOsmometerCordLengthEntity(Double.parseDouble(osmometerLength));
-        cmdOsmometerLength = CommandManager.getInstance().getCommand(CommandType.SET_CORD_LENGTH, cordLengthEntity);
-
-        SetOsmometerNozzelHeightEntity nozzelHeightEntity = new SetOsmometerNozzelHeightEntity(Double.parseDouble(nozzelHeight));
-        cmdNozzelHeight = CommandManager.getInstance().getCommand(CommandType.SET_OSMOMETR_NOZZEL_HEIGHT, nozzelHeightEntity);
-
-        int precision = (int) (Double.parseDouble(rainPrecision) * 100);
-        SetRainPrecisionEntity entity = new SetRainPrecisionEntity(precision);
-        String command = CommandManager.getInstance().getCommand(CommandType.SETTING_RAIN_PRECISION, entity);
-        errMsg = "发送指令超时,请稍后尝试";
-        startProgressRunnable("正在发送配置指令...", CONFIG_PARAMS_DELAY_MILLIS);
+        String command = cmdList.get(0);
         sendCommonCommandImmediately(command);
-        Timber.d("设置雨量计精度指令==%s", command);
+        Timber.d("设置雨量计或渗压计配置参数指令===%s", command);
+        //移除已发送的指令
+        cmdList.remove(0);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -594,8 +638,14 @@ public class BleDASSensorConfigFragment extends BaseBleConnectFragment {
                     stopProgressRunnable();
                     return;
                 }
-                sendCommonCommandImmediately(cmdOsmometerAddress);
-                Timber.d("设置数字渗压计地址指令===%s", cmdOsmometerAddress);
+                if (!cmdList.isEmpty()) {
+                    sendParamConfigCmd();
+                    return;
+                } else {
+                    stopProgressRunnable();
+                    isExitMode = true;
+                    warnNotYetRebootToSaveParam();
+                }
                 break;
 
             case SET_OSMOMETER_ADDRESS:
@@ -604,8 +654,14 @@ public class BleDASSensorConfigFragment extends BaseBleConnectFragment {
                     stopProgressRunnable();
                     return;
                 }
-                sendCommonCommandImmediately(cmdDepthTriggerValue);
-                Timber.d("设置数字渗压计水位报警值指令===%s", cmdDepthTriggerValue);
+                if (!cmdList.isEmpty()) {
+                    sendParamConfigCmd();
+                    return;
+                } else {
+                    stopProgressRunnable();
+                    isExitMode = true;
+                    warnNotYetRebootToSaveParam();
+                }
                 break;
 
             case SET_OSMOMETER_TRIGGER:
@@ -614,8 +670,14 @@ public class BleDASSensorConfigFragment extends BaseBleConnectFragment {
                     stopProgressRunnable();
                     return;
                 }
-                sendCommonCommandImmediately(cmdDepthCorrection);
-                Timber.d("设置数字渗压计水深修正值指令===%s", cmdDepthCorrection);
+                if (!cmdList.isEmpty()) {
+                    sendParamConfigCmd();
+                    return;
+                } else {
+                    stopProgressRunnable();
+                    isExitMode = true;
+                    warnNotYetRebootToSaveParam();
+                }
                 break;
 
             case SET_OSMOMETR_CORRECT:
@@ -624,8 +686,14 @@ public class BleDASSensorConfigFragment extends BaseBleConnectFragment {
                     stopProgressRunnable();
                     return;
                 }
-                sendCommonCommandImmediately(cmdOsmometerLength);
-                Timber.d("数字渗压计绳长指令===%s", cmdOsmometerLength);
+                if (!cmdList.isEmpty()) {
+                    sendParamConfigCmd();
+                    return;
+                } else {
+                    stopProgressRunnable();
+                    isExitMode = true;
+                    warnNotYetRebootToSaveParam();
+                }
                 break;
 
             case SET_CORD_LENGTH:
@@ -634,18 +702,30 @@ public class BleDASSensorConfigFragment extends BaseBleConnectFragment {
                     stopProgressRunnable();
                     return;
                 }
-                sendCommonCommandImmediately(cmdNozzelHeight);
-                Timber.d("数字渗压计安装高程指令===%s", cmdNozzelHeight);
+                if (!cmdList.isEmpty()) {
+                    sendParamConfigCmd();
+                    return;
+                } else {
+                    stopProgressRunnable();
+                    isExitMode = true;
+                    warnNotYetRebootToSaveParam();
+                }
                 break;
 
             case SET_OSMOMETR_NOZZEL_HEIGHT:
-                stopProgressRunnable();
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
+                    stopProgressRunnable();
                     ToastUtils.show("数字渗压计安装高程配置错误!");
                     return;
                 }
-                isExitMode = true;
-                warnNotYetRebootToSaveParam();
+                if (!cmdList.isEmpty()) {
+                    sendParamConfigCmd();
+                    return;
+                } else {
+                    stopProgressRunnable();
+                    isExitMode = true;
+                    warnNotYetRebootToSaveParam();
+                }
                 break;
         }
     }
@@ -659,7 +739,10 @@ public class BleDASSensorConfigFragment extends BaseBleConnectFragment {
             return;
         }
         collectorModel = baseConfigInfo.getCollectorModel().toString();
+        initSwitchSensor();
+    }
 
+    private void initSwitchSensor() {
         try {
             mEtRainPrecision.setText(decimalFormat.format((double) baseConfigInfo.getRainAccuracy() / 100));
         } catch (Exception ex) {
