@@ -34,9 +34,9 @@ import com.shmedo.mcloudapp.deviceconfig.model.params.DispatchCmdParam;
 import com.shmedo.mcloudapp.deviceconfig.model.params.DispatchRawCmdParam;
 import com.shmedo.mcloudapp.deviceconfig.model.params.QueryCmdStateParam;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.AdvancedSettingActivity;
+import com.shmedo.mcloudapp.deviceconfig.ui.activity.DASCollectorSettingActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.DeviceCurrentStateActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.DeviceHistoryDataAnalysisActivity;
-import com.shmedo.mcloudapp.deviceconfig.ui.activity.IOTCollectorSettingActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.BaseDialogFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.FirmWareSelectDialog;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd.BaseDispatchCmdDialog;
@@ -254,7 +254,7 @@ public class NetConfigDeviceFragment extends BaseFragment {
                 break;
 
             case "采集器配置":
-                IOTCollectorSettingActivity.startActivity(mActivity, projectDeviceInfo.getId());
+                DASCollectorSettingActivity.startActivity(mActivity, projectDeviceInfo.getId());
                 break;
 
             case "设置":

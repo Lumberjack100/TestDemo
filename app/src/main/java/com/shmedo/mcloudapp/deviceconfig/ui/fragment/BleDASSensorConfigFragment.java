@@ -2,10 +2,7 @@ package com.shmedo.mcloudapp.deviceconfig.ui.fragment;
 
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import android.text.InputFilter;
 import android.text.TextUtils;
@@ -17,17 +14,11 @@ import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
-import com.afollestad.materialdialogs.DialogAction;
-import com.afollestad.materialdialogs.MaterialDialog;
-import com.chad.library.adapter.base.BaseQuickAdapter;
-import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.hjq.toast.ToastUtils;
 import com.kyleduo.switchbutton.SwitchButton;
 import com.shmedo.configlibrary.ble.cmd.CommandManager;
 import com.shmedo.configlibrary.ble.cmd.CommandResult;
 import com.shmedo.configlibrary.ble.cmd.entity.BreakAlarmStatusEntity;
-import com.shmedo.configlibrary.ble.cmd.entity.CollectorConfigEntity;
-import com.shmedo.configlibrary.ble.cmd.entity.CollectorSensorParamsEntity;
 import com.shmedo.configlibrary.ble.cmd.entity.DigitalOsmometerFunctionEntity;
 import com.shmedo.configlibrary.ble.cmd.entity.RainStationEntity;
 import com.shmedo.configlibrary.ble.cmd.entity.SetOsmometerAddressEntity;
@@ -40,33 +31,24 @@ import com.shmedo.configlibrary.ble.enums.BreakAlarmStatus;
 import com.shmedo.configlibrary.ble.enums.CommandType;
 import com.shmedo.configlibrary.ble.enums.OsmometerStatus;
 import com.shmedo.configlibrary.ble.enums.RainStation;
-import com.shmedo.configlibrary.ble.enums.ServerNumber;
 import com.shmedo.configlibrary.ble.model.BaseConfigInfo;
 import com.shmedo.configlibrary.ble.model.BreakAlarmStatusInfo;
-import com.shmedo.configlibrary.ble.model.CollectorConfigInfo;
 import com.shmedo.configlibrary.ble.model.QueryOsmometerParameterInfo;
-import com.shmedo.configlibrary.ble.model.SetRainPrecisionInfo;
 import com.shmedo.configlibrary.ble.utils.ResultParserUtil;
 import com.shmedo.configlibrary.ble.utils.StringUtil;
-import com.shmedo.configlibrary.ble.utils.ValidateUtil;
 import com.shmedo.core.AppContants;
 import com.shmedo.core.MCloudApp;
 import com.shmedo.core.event.CmdResponseMessage;
 import com.shmedo.core.event.MessageEvent;
-import com.shmedo.core.util.DensityUtil;
 import com.shmedo.core.util.GlobalUtil;
 import com.shmedo.mcloudapp.R;
-import com.shmedo.mcloudapp.common.view.recycleviewitemdivider.GridSpacingItemDecoration;
-import com.shmedo.mcloudapp.deviceconfig.ui.activity.DataCenterServerConfigActivity;
-import com.shmedo.mcloudapp.projects.adapter.DASSensorAdapter;
-import com.shmedo.mcloudapp.projects.model.DASSensorItem;
+import com.shmedo.mcloudapp.deviceconfig.ui.activity.DASExternalSensorConfigActivity;
 import com.shmedo.mcloudapp.util.KeyBordUtils;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.text.DecimalFormat;
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -130,7 +112,6 @@ public class BleDASSensorConfigFragment extends BaseBleConnectFragment {
 
     private String collectorModel = "";//采集器类型
     private BaseConfigInfo baseConfigInfo;
-    private SetRainPrecisionInfo setRainPrecisionInfo;
     private BreakAlarmStatusInfo breakAlarmStatusInfo;
     private QueryOsmometerParameterInfo queryOsmometerParameterInfo;//数字式渗压计参数
 
@@ -150,8 +131,7 @@ public class BleDASSensorConfigFragment extends BaseBleConnectFragment {
 
     //参数配置指令集合
     private List<String> cmdList = new LinkedList<>();
-    //参数配置项名称
-    private List<String> configItemNameList = new ArrayList<>();
+
 
     @Override
     protected int getLayoutId() {
@@ -192,10 +172,11 @@ public class BleDASSensorConfigFragment extends BaseBleConnectFragment {
                 if (!isChecked) {
                     setSwitchSensorCmd(RainStation.CLOSE);
                     switchSensorChildsLayout.setVisibility(View.GONE);
-
                     if (!mSbDigitalOsmometerEnable.isChecked()) {
                         btnConfirm.setEnabled(false);
                     }
+                    //恢复刚进入页面时的开关传感器原始数据
+                    initSwitchSensor();
                 } else {
                     setSwitchSensorCmd(RainStation.ALARM_OPEN);
                     switchSensorChildsLayout.setVisibility(View.VISIBLE);
@@ -219,10 +200,12 @@ public class BleDASSensorConfigFragment extends BaseBleConnectFragment {
                 if (!isChecked) {
                     enableOrDisableDigitalOsmometerCmd(OsmometerStatus.OSMOMETER_CLOSE);
                     digitalOsmometerChildsLayout.setVisibility(View.GONE);
-
                     if (!mSbSwitchSensor.isChecked()) {
                         btnConfirm.setEnabled(false);
                     }
+
+                    //恢复刚进入页面时的渗压计原始数据
+                    initDigitalOsmometerInfo();
                 } else {
                     enableOrDisableDigitalOsmometerCmd(OsmometerStatus.OSMOMETER_OPEN);
                     digitalOsmometerChildsLayout.setVisibility(View.VISIBLE);
@@ -323,7 +306,7 @@ public class BleDASSensorConfigFragment extends BaseBleConnectFragment {
                     ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
                     return;
                 }
-                DataCenterServerConfigActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT, ServerNumber.NUMBER_ONE);
+                DASExternalSensorConfigActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT, collectorModel);
                 break;
 
             case R.id.btn_confirm:
@@ -568,7 +551,7 @@ public class BleDASSensorConfigFragment extends BaseBleConnectFragment {
         String tempStr = cmdStr.replace("$$", "").replace("\r\n", "");
         CommandType type = StringUtil.extractCommandType(cmdStr);
         switch (type) {
-            case BASE_CONFIG://基础配置信息
+            case BASE_CONFIG://基础配置信息 000
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
                     stopProgressRunnable();
                     Timber.e("查询基础配置信息指令出错!");
@@ -580,7 +563,7 @@ public class BleDASSensorConfigFragment extends BaseBleConnectFragment {
                 queryDigitalOsmometerCmd();
                 break;
 
-            case QUERY_OSMOMETER_PARAMETER://查询数字式渗压计参数
+            case QUERY_OSMOMETER_PARAMETER://查询数字式渗压计参数 400
                 stopProgressRunnable();
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
                     Timber.e("查询数字式渗压计参数指令出错!");
@@ -632,7 +615,7 @@ public class BleDASSensorConfigFragment extends BaseBleConnectFragment {
                 }
                 break;
 
-            case SETTING_RAIN_PRECISION:
+            case SETTING_RAIN_PRECISION://设置雨量计精度 121
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
                     ToastUtils.show("雨量计精度配置错误!");
                     stopProgressRunnable();
@@ -648,7 +631,7 @@ public class BleDASSensorConfigFragment extends BaseBleConnectFragment {
                 }
                 break;
 
-            case SET_OSMOMETER_ADDRESS:
+            case SET_OSMOMETER_ADDRESS://设置数字渗压计地址 402
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
                     ToastUtils.show("数字渗压计地址配置错误!");
                     stopProgressRunnable();
@@ -664,7 +647,7 @@ public class BleDASSensorConfigFragment extends BaseBleConnectFragment {
                 }
                 break;
 
-            case SET_OSMOMETER_TRIGGER:
+            case SET_OSMOMETER_TRIGGER://设置数字渗压计水位报警值 403
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
                     ToastUtils.show("数字渗压计水位报警值配置错误!");
                     stopProgressRunnable();
@@ -680,7 +663,7 @@ public class BleDASSensorConfigFragment extends BaseBleConnectFragment {
                 }
                 break;
 
-            case SET_OSMOMETR_CORRECT:
+            case SET_OSMOMETR_CORRECT://设置数字渗压计水深修正值 404
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
                     ToastUtils.show("数字渗压计水深修正值配置错误!");
                     stopProgressRunnable();
@@ -696,7 +679,7 @@ public class BleDASSensorConfigFragment extends BaseBleConnectFragment {
                 }
                 break;
 
-            case SET_CORD_LENGTH:
+            case SET_CORD_LENGTH://设置数字渗压计绳长 405
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
                     ToastUtils.show("数字渗压计绳长配置错误!");
                     stopProgressRunnable();
@@ -712,7 +695,7 @@ public class BleDASSensorConfigFragment extends BaseBleConnectFragment {
                 }
                 break;
 
-            case SET_OSMOMETR_NOZZEL_HEIGHT:
+            case SET_OSMOMETR_NOZZEL_HEIGHT://设置数字渗压计安装高程 406
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
                     stopProgressRunnable();
                     ToastUtils.show("数字渗压计安装高程配置错误!");

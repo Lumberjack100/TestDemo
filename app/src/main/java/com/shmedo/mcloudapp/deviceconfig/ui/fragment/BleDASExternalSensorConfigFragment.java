@@ -4,13 +4,10 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
@@ -19,13 +16,13 @@ import com.shmedo.configlibrary.ble.cmd.CommandManager;
 import com.shmedo.configlibrary.ble.cmd.CommandResult;
 import com.shmedo.configlibrary.ble.cmd.entity.CollectorConfigEntity;
 import com.shmedo.configlibrary.ble.cmd.entity.CollectorSensorParamsEntity;
+import com.shmedo.configlibrary.ble.enums.CollectorModel;
 import com.shmedo.configlibrary.ble.enums.CommandType;
-import com.shmedo.configlibrary.ble.model.BaseConfigInfo;
-import com.shmedo.configlibrary.ble.model.BreakAlarmStatusInfo;
 import com.shmedo.configlibrary.ble.model.CollectorConfigInfo;
-import com.shmedo.configlibrary.ble.model.QueryOsmometerParameterInfo;
+import com.shmedo.configlibrary.ble.model.CollectorSensorParamsInfo;
 import com.shmedo.configlibrary.ble.utils.ResultParserUtil;
 import com.shmedo.configlibrary.ble.utils.StringUtil;
+import com.shmedo.core.AppContants;
 import com.shmedo.core.MCloudApp;
 import com.shmedo.core.event.CmdResponseMessage;
 import com.shmedo.core.event.MessageEvent;
@@ -34,11 +31,13 @@ import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.view.recycleviewitemdivider.GridSpacingItemDecoration;
 import com.shmedo.mcloudapp.projects.adapter.DASSensorAdapter;
 import com.shmedo.mcloudapp.projects.model.DASSensorItem;
+import com.shmedo.mcloudapp.util.bleutil.BlueResultParserUtil;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import butterknife.BindView;
@@ -46,32 +45,52 @@ import butterknife.OnClick;
 import timber.log.Timber;
 
 /**
- * A simple {@link Fragment} subclass.
+ * DAS扩展传感器配置页面
  */
-public class BleDASExtendSensorConfigFragment extends BaseBleConnectFragment {
+public class BleDASExternalSensorConfigFragment extends BaseBleConnectFragment {
     @BindView(R.id.recyclerview_sensor)
     RecyclerView mRecyclerViewSensor;
-
-    private String collectorModel = "";//采集器类型
-    private BaseConfigInfo baseConfigInfo;
-    private int accessSum;              //接入扩展传感器总数
-    private int sensorIndex = 0;//接入的传感器索引号
-    private StringBuilder sbcollectorSensor;//采集器接入扩展传感器配置信息
 
     private DASSensorAdapter sensorAdapter;
     private List<DASSensorItem> sensorItemList = new ArrayList<>();
 
+    private String collectorName;
+    private String collectorModel = "";//采集器类型
+    private int accessSum;              //接入扩展传感器总数
+    private int sensorIndex = 0;//接入的传感器索引号
+    private StringBuilder sbcollectorSensor;//采集器接入扩展传感器配置信息
+
+    //以传感器的通道号为 Key,CollectorSensorParamsInfo 对象为 Value
+    protected HashMap<String, CollectorSensorParamsInfo> collectorSensorHashMap = new HashMap<>();
+    protected CollectorSensorParamsInfo defaultCollectorSensorParamsInfo = new CollectorSensorParamsInfo();
+
+
+    public static BleDASExternalSensorConfigFragment newInstance(String collectorModel) {
+        BleDASExternalSensorConfigFragment fragment = new BleDASExternalSensorConfigFragment();
+        Bundle args = new Bundle();
+        args.putString(AppContants.Extras.COLLECTOR_MODE, collectorModel);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            collectorModel = getArguments().getString(AppContants.Extras.COLLECTOR_MODE);
+            collectorName = BlueResultParserUtil.getCollectorName(CollectorModel.value(collectorModel));
+        }
+    }
 
     @Override
     protected int getLayoutId() {
-        return R.layout.fragment_ble_d_a_s_extend_sensor_config;
+        return R.layout.fragment_ble_d_a_s_external_sensor_config;
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         initExtendSensorAdapter();
-        initTestData();
         queryCollectorInfo();
     }
 
@@ -93,33 +112,13 @@ public class BleDASExtendSensorConfigFragment extends BaseBleConnectFragment {
         mRecyclerViewSensor.setAdapter(sensorAdapter);
     }
 
-    private void initTestData() {
-        DASSensorItem sensorItem = new DASSensorItem(R.drawable.ic_sensor_holder);
-        sensorItem.setRemoveState(true);
-        sensorItemList.add(sensorItem);
-
-        sensorItem = new DASSensorItem(R.drawable.ic_sensor_holder);
-        sensorItemList.add(sensorItem);
-
-        sensorItem = new DASSensorItem(R.drawable.ic_sensor_holder);
-        sensorItemList.add(sensorItem);
-
-        sensorItem = new DASSensorItem(R.drawable.ic_sensor_holder);
-        sensorItemList.add(sensorItem);
-
-        sensorItem = new DASSensorItem(R.drawable.ic_sensor_holder);
-        sensorItemList.add(sensorItem);
-
-        sensorItem = new DASSensorItem(R.drawable.ic_add_sensor);
-        sensorItemList.add(sensorItem);
-        sensorAdapter.notifyDataSetChanged();
-    }
-
 
     /**
      * 查询采集器配置信息
      */
     private void queryCollectorInfo() {
+        errMsg = "查询数据超时,请稍后尝试";
+        startProgressRunnable("加载中...", 20000);
         CollectorConfigEntity collectorConfigEntity = new CollectorConfigEntity(collectorModel);
         String command = CommandManager.getInstance().getCommand(CommandType.COLLECTOR_CONFIG, collectorConfigEntity);
         sendCommonCommandImmediately(command);
@@ -131,7 +130,6 @@ public class BleDASExtendSensorConfigFragment extends BaseBleConnectFragment {
      */
     private void queryExtendSensorConfigInfo() {
         if (sensorIndex >= accessSum) {
-            stopProgressRunnable();
             return;
         }
 
@@ -139,7 +137,7 @@ public class BleDASExtendSensorConfigFragment extends BaseBleConnectFragment {
         CollectorSensorParamsEntity entity = new CollectorSensorParamsEntity(collectorModel, address);
         String command = CommandManager.getInstance().getCommand(CommandType.COLLECTOR_CHANNEL_SENSOR_PARAMETER, entity);
         sendCommonCommand(command);
-        Timber.d("获取 %s 采集器 %s 通道的传感器参数===%s", collectorModel, address, command);
+        Timber.d("获取 %s 采集器 %s 通道的传感器参数===%s", collectorName, address, command);
     }
 
     @OnClick({R.id.btn_confirm})
@@ -196,11 +194,46 @@ public class BleDASExtendSensorConfigFragment extends BaseBleConnectFragment {
                     Timber.e("查询采集器配置信息指令出错!");
                     return;
                 }
-                sbcollectorSensor.append(cmdStr.replace("\r\n", "") + "&&");
+
+                processCollectorSensorParamsInfo(cmdStr);
                 sensorIndex++;
                 queryExtendSensorConfigInfo();
+
+                if (sensorIndex >= accessSum) {
+                    stopProgressRunnable();
+                    if (!collectorSensorHashMap.values().isEmpty()) {
+                        defaultCollectorSensorParamsInfo = (CollectorSensorParamsInfo) collectorSensorHashMap.values().toArray()[0];
+                    }
+                    initSensorItems();
+                    return;
+                }
                 break;
         }
+    }
 
+    /**
+     * 初始化数字渗压计参数
+     */
+    private void processCollectorSensorParamsInfo(String cmdStr) {
+        CollectorSensorParamsInfo mCollectorParamsInfoSub = ResultParserUtil.getEntityObject(cmdStr);
+        if (mCollectorParamsInfoSub == null) {
+            Timber.e("%s 采集器 %s 通道的传感器参数为空!", collectorModel, StringUtil.formatStringTwo(sensorIndex + ""));
+//            queryOsmometerParameterInfo = new QueryOsmometerParameterInfo();
+            return;
+        }
+        Timber.d("%s 采集器 %s 通道的传感器参数-------%s", collectorModel, StringUtil.formatStringTwo(sensorIndex + ""), mCollectorParamsInfoSub.toString());
+        collectorSensorHashMap.put(mCollectorParamsInfoSub.getChannelNumber(), mCollectorParamsInfoSub);
+    }
+
+    private void initSensorItems() {
+        DASSensorItem sensorItem;
+        int num = collectorSensorHashMap.values().size();
+        for (int i = 0; i < num; i++) {
+            sensorItem = new DASSensorItem(R.drawable.ic_sensor_holder);
+            sensorItemList.add(sensorItem);
+        }
+        sensorItem = new DASSensorItem(R.drawable.ic_add_sensor);
+        sensorItemList.add(sensorItem);
+        sensorAdapter.notifyDataSetChanged();
     }
 }

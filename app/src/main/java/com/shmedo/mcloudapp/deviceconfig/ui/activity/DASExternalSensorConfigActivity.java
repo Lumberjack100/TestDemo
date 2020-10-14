@@ -1,65 +1,52 @@
 package com.shmedo.mcloudapp.deviceconfig.ui.activity;
 
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.TextView;
 
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-
+import com.shmedo.configlibrary.ble.enums.CollectorModel;
 import com.shmedo.core.AppContants;
-import com.shmedo.core.MCloudApp;
-import com.shmedo.core.model.UserInfo;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.activity.BaseActivity;
-import com.shmedo.mcloudapp.deviceconfig.ui.fragment.BleCollectorSettingFragment;
-import com.shmedo.mcloudapp.deviceconfig.ui.fragment.NetCollectorSettingFragment;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.BleDASExternalSensorConfigFragment;
+import com.shmedo.mcloudapp.util.bleutil.BlueResultParserUtil;
 
 import butterknife.BindView;
 
-public class IOTCollectorSettingActivity extends BaseActivity {
-    private static final String DEVICE_ID = "device_id";
-
+public class DASExternalSensorConfigActivity extends BaseActivity {
     @BindView(R.id.tv_title)
     TextView mToolbarTitle;
 
     private int connectWay = AppContants.CommunicationWay.NET_CONNECT;
 
-    private int deviceid;
+    private Fragment fragment;
 
     private String collectorModel = "";//采集器类型
 
-    private Fragment fragment;
-
-
-    public static void startActivity(Context context, int deviceid) {
-        Intent intent = new Intent(context, IOTCollectorSettingActivity.class);
-        intent.putExtra(DEVICE_ID, deviceid);
-        intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        context.startActivity(intent);
-    }
 
     public static void startActivity(Context context, int connectWay, String collectorModel) {
-        Intent intent = new Intent(context, IOTCollectorSettingActivity.class);
+        Intent intent = new Intent(context, DASExternalSensorConfigActivity.class);
         intent.putExtra(AppContants.Extras.COMMUNICATION_WAY, connectWay);
         intent.putExtra(AppContants.Extras.COLLECTOR_MODE, collectorModel);
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         context.startActivity(intent);
     }
 
-
     @Override
     protected int getLayoutId() {
-        return R.layout.activity_i_o_t_collector_setting;
+        return R.layout.activity_d_a_s_external_sensor_config;
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setToolBar(R.id.toolbar);
-        mToolbarTitle.setText("采集器配置");
+        mToolbarTitle.setText("扩展传感器配置");
         parseIntent();
         initFragment();
     }
@@ -73,20 +60,18 @@ public class IOTCollectorSettingActivity extends BaseActivity {
             connectWay = intent.getIntExtra(AppContants.Extras.COMMUNICATION_WAY, AppContants.CommunicationWay.NET_CONNECT);
         }
 
-        if (intent.getExtras().containsKey(DEVICE_ID)) {
-            deviceid = intent.getIntExtra(DEVICE_ID, -1);
-        }
-
         if (intent.getExtras().containsKey(AppContants.Extras.COLLECTOR_MODE)) {
             collectorModel = intent.getStringExtra(AppContants.Extras.COLLECTOR_MODE);
+            String collectorName = BlueResultParserUtil.getCollectorName(CollectorModel.value(collectorModel));
+            mToolbarTitle.setText(collectorName);
         }
     }
 
     private void initFragment() {
         if (connectWay == AppContants.CommunicationWay.NET_CONNECT) {
-            fragment = NetCollectorSettingFragment.newInstance(deviceid);
+
         } else {
-            fragment = BleCollectorSettingFragment.newInstance(collectorModel);
+            fragment = BleDASExternalSensorConfigFragment.newInstance(collectorModel);
         }
 
         replaceFragment(fragment);

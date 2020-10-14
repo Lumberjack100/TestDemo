@@ -70,6 +70,7 @@ public class BlueResultParserUtil {
                 break;
 
             default:
+                collectorName = "未知采集器";
                 break;
         }
 
