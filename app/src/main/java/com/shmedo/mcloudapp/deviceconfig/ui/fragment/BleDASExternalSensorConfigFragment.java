@@ -407,17 +407,19 @@ public class BleDASExternalSensorConfigFragment extends BaseBleConnectFragment {
                     return;
                 }
 
+                //处理此通道的传感器配置参数
                 processCollectorSensorParamsInfo(cmdStr);
                 sensorIndex++;
-                queryExtendSensorConfigInfo();
-                if (sensorIndex >= accessSum) {
+                //还有待查询通道的传感器
+                if (sensorIndex < accessSum) {
+                    queryExtendSensorConfigInfo();
+                } else {//所有通道的传感器参数都查询了
                     stopProgressRunnable();
                     if (!collectorSensorHashMap.values().isEmpty()) {
                         defaultCollectorSensorParamsInfo = (CollectorSensorParamsInfo) collectorSensorHashMap.values().toArray()[0];
                     } else {
                         initEmptyDefaultCollectorSensorParamsInfo();
                     }
-                    return;
                 }
                 break;
 
