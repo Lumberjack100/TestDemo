@@ -1,6 +1,9 @@
 package com.shmedo.configlibrary.ble.model;
 
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.shmedo.configlibrary.ble.enums.SensorType;
 import com.shmedo.configlibrary.ble.interfaces.SensorParameter;
 
@@ -8,7 +11,7 @@ import com.shmedo.configlibrary.ble.interfaces.SensorParameter;
  * Created by adu on 2017/12/14.
  * 传感器类型为葛南渗压计 VWP-03
  */
-public class SensorGudanPercolateInfo implements SensorParameter {
+public class SensorGudanPercolateInfo implements SensorParameter, Parcelable {
     private String triggerThreshold;   //触发阈值
     private String sensitivityK;   //灵敏度K
     private String temperatureCoefficientB;//温度系数b
@@ -17,6 +20,49 @@ public class SensorGudanPercolateInfo implements SensorParameter {
     private String manualCorrection;    //手动纠偏
     private String cordLenght;  //绳长
     private String installElevation;  //安装高程
+
+    public SensorGudanPercolateInfo() {
+    }
+
+    protected SensorGudanPercolateInfo(Parcel in) {
+        triggerThreshold = in.readString();
+        sensitivityK = in.readString();
+        temperatureCoefficientB = in.readString();
+        referenceValue = in.readString();
+        CreateTemperature = in.readString();
+        manualCorrection = in.readString();
+        cordLenght = in.readString();
+        installElevation = in.readString();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(triggerThreshold);
+        dest.writeString(sensitivityK);
+        dest.writeString(temperatureCoefficientB);
+        dest.writeString(referenceValue);
+        dest.writeString(CreateTemperature);
+        dest.writeString(manualCorrection);
+        dest.writeString(cordLenght);
+        dest.writeString(installElevation);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<SensorGudanPercolateInfo> CREATOR = new Creator<SensorGudanPercolateInfo>() {
+        @Override
+        public SensorGudanPercolateInfo createFromParcel(Parcel in) {
+            return new SensorGudanPercolateInfo(in);
+        }
+
+        @Override
+        public SensorGudanPercolateInfo[] newArray(int size) {
+            return new SensorGudanPercolateInfo[size];
+        }
+    };
 
     public String getTriggerThreshold() {
         return triggerThreshold;

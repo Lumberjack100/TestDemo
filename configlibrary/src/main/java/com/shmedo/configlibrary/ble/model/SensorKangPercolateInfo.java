@@ -1,5 +1,8 @@
 package com.shmedo.configlibrary.ble.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.shmedo.configlibrary.ble.enums.SensorType;
 import com.shmedo.configlibrary.ble.interfaces.SensorParameter;
 
@@ -7,7 +10,7 @@ import com.shmedo.configlibrary.ble.interfaces.SensorParameter;
  * Created by adu on 2017/12/14.
  * 传感器为基康渗压计 BGK-4500
  */
-public class SensorKangPercolateInfo implements SensorParameter {
+public class SensorKangPercolateInfo implements SensorParameter, Parcelable {
 
     private String triggerThreshold;   //触发阈值
     private String polynomialRatioA;//多项式系数A
@@ -18,6 +21,51 @@ public class SensorKangPercolateInfo implements SensorParameter {
     private String manualCorrection;    //手动纠偏
     private String cordLenght;  //绳长
     private String installElevation;  //安装高程
+
+    public SensorKangPercolateInfo() {
+    }
+
+    protected SensorKangPercolateInfo(Parcel in) {
+        triggerThreshold = in.readString();
+        polynomialRatioA = in.readString();
+        polynomialRatioB = in.readString();
+        polynomialRatioC = in.readString();
+        temperatureCoefficientK = in.readString();
+        CreateTemperature = in.readString();
+        manualCorrection = in.readString();
+        cordLenght = in.readString();
+        installElevation = in.readString();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(triggerThreshold);
+        dest.writeString(polynomialRatioA);
+        dest.writeString(polynomialRatioB);
+        dest.writeString(polynomialRatioC);
+        dest.writeString(temperatureCoefficientK);
+        dest.writeString(CreateTemperature);
+        dest.writeString(manualCorrection);
+        dest.writeString(cordLenght);
+        dest.writeString(installElevation);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<SensorKangPercolateInfo> CREATOR = new Creator<SensorKangPercolateInfo>() {
+        @Override
+        public SensorKangPercolateInfo createFromParcel(Parcel in) {
+            return new SensorKangPercolateInfo(in);
+        }
+
+        @Override
+        public SensorKangPercolateInfo[] newArray(int size) {
+            return new SensorKangPercolateInfo[size];
+        }
+    };
 
     public String getTriggerThreshold() {
         return triggerThreshold;

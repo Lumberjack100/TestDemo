@@ -131,7 +131,7 @@
                 android:textSize="@dimen/text_size_17" />
 
             <com.shmedo.mcloudapp.common.view.ClearEditText
-                android:id="@+id/collectTimeET"
+                android:id="@+id/et_measure_long"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_marginStart="@dimen/dimen_size_25"

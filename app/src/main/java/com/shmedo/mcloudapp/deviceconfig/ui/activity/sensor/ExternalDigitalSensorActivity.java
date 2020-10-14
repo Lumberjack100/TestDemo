@@ -60,17 +60,16 @@ public class ExternalDigitalSensorActivity extends BaseActivity {
     ViewGroup measureLongLayout;
 
     private String sensorAddress;   //传感器通道号
-    private String sensorTypeValue;//传感器类型
     private SensorType sensorType;//传感器类型
     private Parcelable parcelableData;
 
     private String address, triggerThreshold, correctValue, measureLong;
 
 
-    public static void startActivityForResultByFragment(Fragment context, int requestCode, String sensorAddress, String sensorTypeValue, Parcelable parcelable) {
+    public static void startActivityForResultByFragment(Fragment context, int requestCode, String sensorAddress, SensorType sensorType, Parcelable parcelable) {
         Intent intent = new Intent(context.getActivity(), ExternalDigitalSensorActivity.class);
         intent.putExtra(AppContants.Extras.SENSOR_ADDRESS, sensorAddress);
-        intent.putExtra(AppContants.Extras.SENSOR_TYPE, sensorTypeValue);
+        intent.putExtra(AppContants.Extras.SENSOR_TYPE, sensorType);
         intent.putExtra(AppContants.Extras.SENSOR_PARAM, parcelable);
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         context.startActivityForResult(intent, requestCode);
@@ -101,18 +100,15 @@ public class ExternalDigitalSensorActivity extends BaseActivity {
         }
 
         if (intent.getExtras().containsKey(AppContants.Extras.SENSOR_TYPE)) {
-            sensorTypeValue = intent.getStringExtra(AppContants.Extras.SENSOR_TYPE);
+            sensorType = (SensorType) intent.getSerializableExtra(AppContants.Extras.SENSOR_TYPE);
         }
 
         if (intent.getExtras().containsKey(AppContants.Extras.SENSOR_PARAM)) {
             parcelableData = intent.getParcelableExtra(AppContants.Extras.SENSOR_PARAM);
         }
 
-        if (!TextUtils.isEmpty(sensorTypeValue)) {
-            sensorType = SensorType.value(sensorTypeValue);
-            String sensorName = BlueResultParserUtil.getSensorName(sensorType);
-            mToolbarTitle.setText(sensorName);
-        }
+        String sensorName = BlueResultParserUtil.getSensorName(sensorType);
+        mToolbarTitle.setText(sensorName);
     }
 
     private void initView() {

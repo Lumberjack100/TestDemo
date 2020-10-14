@@ -785,6 +785,8 @@ public class BleDASSensorConfigFragment extends BaseBleConnectFragment {
         if (queryOsmometerParameterInfo == null) {
             Timber.e("数字渗压计信息为空!");
             queryOsmometerParameterInfo = new QueryOsmometerParameterInfo();
+            mSbDigitalOsmometerEnable.setCheckedImmediatelyNoEvent(false);
+            digitalOsmometerChildsLayout.setVisibility(View.GONE);
             return;
         }
 
