@@ -15,16 +15,22 @@ public class QueryOsmometerParameterParser implements ResultParser<QueryOsmomete
     @Override
     public QueryOsmometerParameterInfo parse(String result) {
         QueryOsmometerParameterInfo info = new QueryOsmometerParameterInfo();
-        String [] strs = result.split(",");
-        info.setOsmometerStatus(OsmometerStatus.valueOf(Integer.valueOf(strs[1])));
-        info.setOsmometerAddress(strs[2]);
-        info.setDepthTrigger(strs[3]);
-        info.setDepthCorrect(strs[4]);
-        info.setTemperatureTrigger(strs[5]);
-        info.setTemperatureCorrect(strs[6]);
-        info.setCordLenght(strs[7]);
-        info.setInstallHeight(strs[8]);
-        return info;
+
+        try {
+            String[] strs = result.split(",");
+            info.setOsmometerStatus(OsmometerStatus.valueOf(Integer.parseInt(strs[1])));
+            info.setOsmometerAddress(strs[2]);
+            info.setDepthTrigger(strs[3]);
+            info.setDepthCorrect(strs[4]);
+            info.setTemperatureTrigger(strs[5]);
+            info.setTemperatureCorrect(strs[6]);
+            info.setCordLenght(strs[7]);
+            info.setInstallHeight(strs[8]);
+            return info;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return null;
+        }
     }
 
     @Override

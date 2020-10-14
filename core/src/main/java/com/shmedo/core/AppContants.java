@@ -47,15 +47,17 @@ public interface AppContants {
 
         String CUR_BLE_DEVICE_INFO = "cur_ble_device_info";
 
-        String DEVICE_MAC_ADDRESS = "cur_device_mac_address";
-
-        String DEVICE_E60 = "device_e60";
-
         String PARAM_CONFIG_INFO = "param_config_info";
 
         String DEBUG_MODE = "debug_mode";
 
         String COLLECTOR_MODE = "collector_mode";
+
+        String SENSOR_TYPE = "sensor_type";
+
+        String SENSOR_ADDRESS = "sensor_address";
+
+        String SENSOR_PARAM = "sensor_param";
 
         String SPLICE_SENSOR_PARAMS = "splice_sensor_params";
 

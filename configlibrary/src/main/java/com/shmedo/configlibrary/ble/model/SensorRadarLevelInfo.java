@@ -1,5 +1,8 @@
 package com.shmedo.configlibrary.ble.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.shmedo.configlibrary.ble.enums.SensorType;
 import com.shmedo.configlibrary.ble.interfaces.SensorParameter;
 
@@ -12,11 +15,40 @@ import com.shmedo.configlibrary.ble.interfaces.SensorParameter;
  * 描述：    传感器类型为 雷达物位计  07
  */
 
-public class SensorRadarLevelInfo implements SensorParameter {
+public class SensorRadarLevelInfo implements SensorParameter, Parcelable {
     private String triggerThreshold;   //触发阈值
     private String correctionValue;     //修正值
 
+    public SensorRadarLevelInfo() {
+    }
 
+    protected SensorRadarLevelInfo(Parcel in) {
+        triggerThreshold = in.readString();
+        correctionValue = in.readString();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(triggerThreshold);
+        dest.writeString(correctionValue);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<SensorRadarLevelInfo> CREATOR = new Creator<SensorRadarLevelInfo>() {
+        @Override
+        public SensorRadarLevelInfo createFromParcel(Parcel in) {
+            return new SensorRadarLevelInfo(in);
+        }
+
+        @Override
+        public SensorRadarLevelInfo[] newArray(int size) {
+            return new SensorRadarLevelInfo[size];
+        }
+    };
 
     public String getTriggerThreshold() {
         return triggerThreshold;
@@ -38,10 +70,8 @@ public class SensorRadarLevelInfo implements SensorParameter {
     }
 
 
-
-
-
-    @Override public SensorType getSensorType() {
+    @Override
+    public SensorType getSensorType() {
         return SensorType.RADAR_LEVEL_GAUGE;
     }
 
