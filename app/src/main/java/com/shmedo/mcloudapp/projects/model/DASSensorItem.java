@@ -6,6 +6,7 @@ package com.shmedo.mcloudapp.projects.model;
  * 描述：     TODO
  */
 public class DASSensorItem {
+    private String sensorAddress;
     private int resId;
     private boolean isRemoveState = false;//是否处于可移除状态
     private boolean isAddButton = false;
@@ -17,6 +18,14 @@ public class DASSensorItem {
     public DASSensorItem(int resId, boolean isAddButton) {
         this.resId = resId;
         this.isAddButton = isAddButton;
+    }
+
+    public String getSensorAddress() {
+        return sensorAddress;
+    }
+
+    public void setSensorAddress(String sensorAddress) {
+        this.sensorAddress = sensorAddress;
     }
 
     public int getResId() {

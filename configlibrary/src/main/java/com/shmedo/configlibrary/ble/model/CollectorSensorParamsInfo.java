@@ -8,7 +8,7 @@ import com.shmedo.configlibrary.ble.enums.SensorType;
  * XX采集器YY通道的传感器参数
  */
 public class CollectorSensorParamsInfo<T> {
-    private String sensorAddress;   //传感器通道号
+    private String sensorAddress;   //传感器地址/通道号
     private T sensorData;
     private SensorType sensorType;//传感器类型
     private CollectorModel collectorModel; //采集器类型

@@ -12,7 +12,7 @@ import java.util.List;
  */
 public enum CollectorModel {
     /**
-     *
+     * 振弦式采集器
      */
     VW08("00"),
     /**

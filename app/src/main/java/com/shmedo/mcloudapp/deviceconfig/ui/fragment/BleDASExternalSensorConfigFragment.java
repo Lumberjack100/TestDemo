@@ -10,10 +10,14 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Parcelable;
+import android.text.TextUtils;
 import android.view.View;
 
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
+import com.chad.library.adapter.base.listener.OnItemLongClickListener;
 import com.hjq.toast.ToastUtils;
 import com.shmedo.configlibrary.ble.cmd.CommandManager;
 import com.shmedo.configlibrary.ble.cmd.CommandResult;
@@ -36,6 +40,7 @@ import com.shmedo.core.MCloudApp;
 import com.shmedo.core.event.CmdResponseMessage;
 import com.shmedo.core.event.MessageEvent;
 import com.shmedo.core.util.DensityUtil;
+import com.shmedo.core.util.GlobalUtil;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.view.recycleviewitemdivider.GridSpacingItemDecoration;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.sensor.ExternalDigitalSensorActivity;
@@ -49,6 +54,7 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -77,7 +83,9 @@ public class BleDASExternalSensorConfigFragment extends BaseBleConnectFragment {
     protected CollectorSensorParamsInfo defaultCollectorSensorParamsInfo = new CollectorSensorParamsInfo();
     private boolean isEnableNewSensor = false;//是启用新传感器还是编辑现有传感器
     private CollectorSensorParamsInfo curCollectorSensorParamsInfo;
-    private String curChannelNumber;
+    private String curSensorAddress;
+    private ArrayList<String> addressList = new ArrayList<>();
+    private DASSensorItem curSensorItem;
 
     public static BleDASExternalSensorConfigFragment newInstance(String collectorModel) {
         BleDASExternalSensorConfigFragment fragment = new BleDASExternalSensorConfigFragment();
@@ -85,6 +93,13 @@ public class BleDASExternalSensorConfigFragment extends BaseBleConnectFragment {
         args.putString(AppContants.Extras.COLLECTOR_MODE, collectorModel);
         fragment.setArguments(args);
         return fragment;
+    }
+
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        isActive = true;
     }
 
     @Override
@@ -127,31 +142,77 @@ public class BleDASExternalSensorConfigFragment extends BaseBleConnectFragment {
                 processItemClick(position);
             }
         });
+        sensorAdapter.setOnItemLongClickListener(new OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(@NonNull BaseQuickAdapter adapter, @NonNull View view, int position) {
+                DASSensorItem sensorItem = sensorItemList.get(position);
+                if (sensorItem.isAddButton()) {
+                    return true;
+                }
+
+                if (!MCloudApp.isIsBluetoothDeviceConnected()) {
+                    ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
+                    return true;
+                }
+
+                warnDeleteSensorItem(position);
+                return true;
+            }
+        });
         mRecyclerViewSensor.setAdapter(sensorAdapter);
     }
 
     private void processItemClick(int position) {
-        Parcelable parcelable;
+        Parcelable parcelableData;
         SensorType sensorType;
-        DASSensorItem sensorItem = sensorItemList.get(position);
-        curChannelNumber = StringUtil.formatStringTwo(position + "");
+        curSensorItem = sensorItemList.get(position);
+        curSensorAddress = curSensorItem.getSensorAddress();
 
-        if (sensorItem.isAddButton()) {
+        addressList.clear();
+        for (DASSensorItem item : sensorItemList) {
+            if (!TextUtils.isEmpty(item.getSensorAddress())) {
+                addressList.add(item.getSensorAddress());
+            }
+        }
+
+        if (curSensorItem.isAddButton()) {
             isEnableNewSensor = true;
             sensorType = defaultCollectorSensorParamsInfo.getSensorType();
-            parcelable = defaultCollectorSensorParamsInfo.getSensorData() == null ? null : (Parcelable) defaultCollectorSensorParamsInfo.getSensorData();
+            parcelableData = defaultCollectorSensorParamsInfo.getSensorData() == null ? null : (Parcelable) defaultCollectorSensorParamsInfo.getSensorData();
         } else {
             isEnableNewSensor = false;
-            curCollectorSensorParamsInfo = collectorSensorHashMap.get(curChannelNumber);
+            curCollectorSensorParamsInfo = collectorSensorHashMap.get(curSensorAddress);
             sensorType = curCollectorSensorParamsInfo.getSensorType();
-            parcelable = (Parcelable) curCollectorSensorParamsInfo.getSensorData();
+            parcelableData = (Parcelable) curCollectorSensorParamsInfo.getSensorData();
         }
 
         if (CollectorModel.value(collectorModelValue) == CollectorModel.VW08) {//振弦式传感器
 
         } else { //数字式传感器
-            ExternalDigitalSensorActivity.startActivityForResultByFragment(this, REQUEST_CODE_SENSOR_CONFIG, curChannelNumber, sensorType, parcelable);
+            ExternalDigitalSensorActivity.startActivityForResultByFragment(this, REQUEST_CODE_SENSOR_CONFIG, addressList, curSensorAddress, sensorType, parcelableData);
         }
+    }
+
+    private void warnDeleteSensorItem(int position) {
+        MaterialDialog.Builder mBuilder = new MaterialDialog.Builder(Objects.requireNonNull(getContext()))
+                .title("温馨提示")
+                .content("确定删除?")
+                .contentColorRes(R.color.title_text_color)
+                .canceledOnTouchOutside(false)
+                .positiveText("确定")
+                .negativeText("取消")
+                .positiveColorRes(R.color.blue_52B4F8)
+                .negativeColorRes(R.color.sub_title_text_color)
+                .onPositive(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        dialog.dismiss();
+                        sensorItemList.remove(position);
+                        sensorAdapter.notifyDataSetChanged();
+                    }
+                });
+        MaterialDialog mMaterialDialog = mBuilder.build();
+        mMaterialDialog.show();
     }
 
     /**
@@ -214,7 +275,6 @@ public class BleDASExternalSensorConfigFragment extends BaseBleConnectFragment {
         builderFirst.append("##150");
         builderFirst.append(defaultCollectorSensorParamsInfo.getCollectorModel() + StringUtil.formatStringTwo(String.valueOf(collectorSensorParamsInfoSubs.size())));
         for (CollectorSensorParamsInfo paramsInfoSub : collectorSensorHashMap.values()) {
-//            spliceStringCollectorSensorParams(paramsInfoSub);
             builderFirst.append(StringUtil.formatStringTwo(paramsInfoSub.getSensorAddress()) + StringUtil.formatStringTwo(paramsInfoSub.getSensorType().toString()));
         }
         builderFirst.append("\r\n");
@@ -377,8 +437,10 @@ public class BleDASExternalSensorConfigFragment extends BaseBleConnectFragment {
         switch (type) {
             case COLLECTOR_CONFIG://采集器配置信息 100
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
-                    stopProgressRunnable();
                     Timber.e("查询采集器配置信息指令出错!");
+                    stopProgressRunnable();
+                    initSensorItems();
+                    initEmptyDefaultCollectorSensorParamsInfo();
                     return;
                 }
                 CollectorConfigInfo collectorConfigInfo = ResultParserUtil.getEntityObject(cmdStr);
@@ -425,7 +487,7 @@ public class BleDASExternalSensorConfigFragment extends BaseBleConnectFragment {
 
             case SET_COLLECTOR_SENSOR://设置采集器接入的传感器 150
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
-                    ToastUtils.show(collectorName + "接入传感器配置错误!");
+                    ToastUtils.show("接入传感器设置错误!");
                     stopProgressRunnable();
                     return;
                 }
@@ -434,7 +496,7 @@ public class BleDASExternalSensorConfigFragment extends BaseBleConnectFragment {
 
             case COLLECTOR_SENSOR_THRESHOLD_SOLI://传感器触发阈值 168
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
-                    ToastUtils.show(collectorName + "的传感器触发阈值配置错误!");
+                    ToastUtils.show("传感器触发阈值设置错误!");
                     stopProgressRunnable();
                     return;
                 }
@@ -443,7 +505,7 @@ public class BleDASExternalSensorConfigFragment extends BaseBleConnectFragment {
 
             case COLLECTOR_SENSOR_REVISED: //传感器修正值 165
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
-                    ToastUtils.show(collectorName + "的传感器修正值配置错误!");
+                    ToastUtils.show("传感器修正值设置错误!");
                     stopProgressRunnable();
                     return;
                 }
@@ -462,7 +524,7 @@ public class BleDASExternalSensorConfigFragment extends BaseBleConnectFragment {
 
             case SET_INCLINOMETER_LONG: //设置测斜仪测段长 166
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
-                    ToastUtils.show(collectorName + "的测段长配置错误!");
+                    ToastUtils.show("测段长设置错误!");
                     stopProgressRunnable();
                     return;
                 }
@@ -515,12 +577,12 @@ public class BleDASExternalSensorConfigFragment extends BaseBleConnectFragment {
             return;
         }
         Timber.d("%s 采集器 %s 通道的传感器参数-------%s", collectorModelValue, StringUtil.formatStringTwo(sensorIndex + ""), mCollectorParamsInfoSub.toString());
-        collectorSensorHashMap.put(mCollectorParamsInfoSub.getChannelNumber(), mCollectorParamsInfoSub);
+        collectorSensorHashMap.put(mCollectorParamsInfoSub.getSensorAddress(), mCollectorParamsInfoSub);
     }
 
     private void initSensorItems() {
+        sensorItemList.clear();
         DASSensorItem sensorItem;
-        int num = collectorSensorHashMap.values().size();
         for (int i = 0; i < accessSum; i++) {
             sensorItem = new DASSensorItem(R.drawable.ic_sensor_holder);
             sensorItemList.add(sensorItem);
@@ -550,14 +612,15 @@ public class BleDASExternalSensorConfigFragment extends BaseBleConnectFragment {
                     if (isEnableNewSensor) {
                         CollectorSensorParamsInfo collectorSensorParamsInfoSub = new CollectorSensorParamsInfo();
                         collectorSensorParamsInfoSub.setCollectorModel(defaultCollectorSensorParamsInfo.getCollectorModel());
-                        collectorSensorParamsInfoSub.setChannelNumber(curChannelNumber);
+//                        collectorSensorParamsInfoSub.setChannelNumber(curChannelNumber);
                         collectorSensorParamsInfoSub.setSensorAddress(sensorAddress);
                         collectorSensorParamsInfoSub.setSensorType(defaultCollectorSensorParamsInfo.getSensorType());
                         collectorSensorParamsInfoSub.setSensorData(parcelableData);
-                        collectorSensorHashMap.put(curChannelNumber, collectorSensorParamsInfoSub);
+                        collectorSensorHashMap.put(sensorAddress, collectorSensorParamsInfoSub);
 
                         sensorItemList.remove(sensorItemList.size() - 1);
                         DASSensorItem sensorItem = new DASSensorItem(R.drawable.ic_sensor_holder);
+                        sensorItem.setSensorAddress(sensorAddress);
                         sensorItemList.add(sensorItem);
                         if (sensorItemList.size() < 8) {
                             sensorItem = new DASSensorItem(R.drawable.ic_add_sensor, true);
@@ -566,8 +629,12 @@ public class BleDASExternalSensorConfigFragment extends BaseBleConnectFragment {
                         sensorAdapter.notifyDataSetChanged();
 
                     } else {
+                        collectorSensorHashMap.remove(curSensorAddress);
                         curCollectorSensorParamsInfo.setSensorAddress(sensorAddress);
                         curCollectorSensorParamsInfo.setSensorData(parcelableData);
+                        collectorSensorHashMap.put(sensorAddress, curCollectorSensorParamsInfo);
+                        curSensorItem.setSensorAddress(sensorAddress);
+                        curSensorAddress = sensorAddress;
                     }
                 }
                 break;

@@ -17,7 +17,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Modbus地址"
+            android:text="传感器地址"
             android:textColor="@color/text_color_343434"
             android:textSize="@dimen/text_size_17" />
 
@@ -55,9 +55,9 @@
                 android:id="@+id/tv_triggerThreshold"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                tools:text="报警值(mm)"
                 android:textColor="@color/text_color_343434"
-                android:textSize="@dimen/text_size_17" />
+                android:textSize="@dimen/text_size_17"
+                tools:text="报警值(mm)" />
 
             <com.shmedo.mcloudapp.common.view.ClearEditText
                 android:id="@+id/et_trigger_threshold"
@@ -90,9 +90,9 @@
                 android:id="@+id/tv_correctionValue"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                tools:text="修正值"
                 android:textColor="@color/text_color_343434"
-                android:textSize="@dimen/text_size_17" />
+                android:textSize="@dimen/text_size_17"
+                tools:text="修正值" />
 
             <com.shmedo.mcloudapp.common.view.ClearEditText
                 android:id="@+id/et_revised"
@@ -104,6 +104,7 @@
                 android:drawablePadding="@dimen/dimen_size_15"
                 android:gravity="center_vertical|right"
                 android:hint="请输入"
+                android:inputType="numberDecimal"
                 android:singleLine="true"
                 android:textColor="@color/text_color_666666"
                 android:textColorHint="@color/text_color_cccccc"
@@ -126,9 +127,9 @@
                 android:id="@+id/tv_measure_long"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                tools:text="测段长"
                 android:textColor="@color/text_color_343434"
-                android:textSize="@dimen/text_size_17" />
+                android:textSize="@dimen/text_size_17"
+                tools:text="测段长" />
 
             <com.shmedo.mcloudapp.common.view.ClearEditText
                 android:id="@+id/et_measure_long"
@@ -140,6 +141,7 @@
                 android:drawablePadding="@dimen/dimen_size_15"
                 android:gravity="center_vertical|right"
                 android:hint="请输入"
+                android:inputType="numberDecimal"
                 android:singleLine="true"
                 android:textColor="@color/text_color_666666"
                 android:textColorHint="@color/text_color_cccccc"
