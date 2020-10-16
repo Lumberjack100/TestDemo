@@ -12,7 +12,7 @@ import android.widget.TextView;
 import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.activity.BaseActivity;
-import com.shmedo.mcloudapp.deviceconfig.ui.fragment.BleDASSensorConfigFragment;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.sensor.BleDASSensorFragment;
 
 import butterknife.BindView;
 
@@ -63,7 +63,7 @@ public class DASSensorConfigActivity extends BaseActivity {
         if (connectWay == AppContants.CommunicationWay.NET_CONNECT) {
 
         } else {
-            fragment = new BleDASSensorConfigFragment();
+            fragment = new BleDASSensorFragment();
         }
 
         replaceFragment(fragment);

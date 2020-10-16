@@ -230,6 +230,7 @@ public class ExternalDigitalSensorActivity extends BaseActivity {
 
         Intent intent = getIntent();
         intent.putExtra(AppContants.Extras.SENSOR_ADDRESS, sensorAddress);
+        intent.putExtra(AppContants.Extras.SENSOR_TYPE, sensorType);
         switch (sensorType) {
             case WIRE_SHIFT://拉线位移计
                 SensorWireShiftInfo sensorWireShiftInfo = new SensorWireShiftInfo();

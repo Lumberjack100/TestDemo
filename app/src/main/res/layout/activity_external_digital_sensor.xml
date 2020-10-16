@@ -81,7 +81,7 @@
             android:layout_width="match_parent"
             android:layout_height="0.5dp"
             android:layout_marginStart="16dp"
-            android:layout_marginEnd="18dp"
+            android:layout_marginEnd="16dp"
             android:background="@color/divider_line_bg_efefef" />
 
         <LinearLayout style="@style/Common_EditItem_LayoutStyle">
@@ -116,7 +116,7 @@
             android:layout_width="match_parent"
             android:layout_height="0.5dp"
             android:layout_marginStart="16dp"
-            android:layout_marginEnd="18dp"
+            android:layout_marginEnd="16dp"
             android:background="@color/divider_line_bg_efefef" />
 
         <LinearLayout
@@ -153,7 +153,7 @@
             android:layout_width="match_parent"
             android:layout_height="0.5dp"
             android:layout_marginStart="16dp"
-            android:layout_marginEnd="18dp"
+            android:layout_marginEnd="16dp"
             android:background="@color/divider_line_bg_efefef" />
 
     </LinearLayout>
@@ -164,7 +164,7 @@
         android:layout_height="46dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="24dp"
-        android:layout_marginEnd="18dp"
+        android:layout_marginEnd="16dp"
         android:layout_marginBottom="20dp"
         android:background="@drawable/btn_select"
         android:text="确认保存"

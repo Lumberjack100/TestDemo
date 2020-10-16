@@ -29,6 +29,28 @@ public class PermissionHelper {
     public static final int REQUEST_CODE_NAVI = 0x1002;
     public static final int REQUEST_CODE_ROUTE = 0x1003;
 
+    public static void requestScanPermissions(Activity activity) {
+        XPermissionUtils.requestPermissionsResult(activity, 200, new String[]{
+                        Manifest.permission.CAMERA},
+                new XPermissionUtils.OnPermissionListener() {
+                    @Override
+                    public void onPermissionGranted() {
+                        ScanActivity.startActivityForResult(activity, XPermissionUtils.REQUEST_CODE_SCAN);
+                    }
+
+                    @Override
+                    public void onPermissionDenied(List<String> deniedPermissions) {
+
+                        boolean allNeverAskAgain = XPermissionUtils.isAllNeverAskAgain(activity, deniedPermissions);
+                        // 所有的权限都被勾上不再询问时，跳转到应用设置界面，引导用户手动打开权限
+                        if (allNeverAskAgain) {
+                            XPermissionUtils.showRefusePermissionDialog(activity, GlobalUtil.getString(R.string.message_permission_camera_rationale));
+                        } else {
+                            ToastUtils.show(GlobalUtil.getString(R.string.message_permission_camera_denied));
+                        }
+                    }
+                });
+    }
 
     public static void requestScanPermissions(Fragment fragment) {
         XPermissionUtils.requestPermissionsResult(fragment, 200, new String[]{

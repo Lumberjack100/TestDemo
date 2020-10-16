@@ -13,12 +13,14 @@ import com.shmedo.configlibrary.ble.enums.CollectorModel;
 import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.activity.BaseActivity;
-import com.shmedo.mcloudapp.deviceconfig.ui.fragment.BleDASExternalSensorConfigFragment;
+import com.shmedo.mcloudapp.deviceconfig.ui.activity.sensor.ExternalDigitalSensorActivity;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.sensor.BleDASExternalDigtalSensorFragment;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.sensor.BleDASExternalVibratingWireSensorFragment;
 import com.shmedo.mcloudapp.util.bleutil.BlueResultParserUtil;
 
 import butterknife.BindView;
 
-public class DASExternalSensorConfigActivity extends BaseActivity {
+public class DASExternalSensorActivity extends BaseActivity {
     @BindView(R.id.tv_title)
     TextView mToolbarTitle;
 
@@ -30,7 +32,7 @@ public class DASExternalSensorConfigActivity extends BaseActivity {
 
 
     public static void startActivity(Context context, int connectWay, String collectorModel) {
-        Intent intent = new Intent(context, DASExternalSensorConfigActivity.class);
+        Intent intent = new Intent(context, DASExternalSensorActivity.class);
         intent.putExtra(AppContants.Extras.COMMUNICATION_WAY, connectWay);
         intent.putExtra(AppContants.Extras.COLLECTOR_MODE, collectorModel);
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
@@ -39,7 +41,7 @@ public class DASExternalSensorConfigActivity extends BaseActivity {
 
     @Override
     protected int getLayoutId() {
-        return R.layout.activity_d_a_s_external_sensor_config;
+        return R.layout.activity_d_a_s_external_sensor;
     }
 
     @Override
@@ -68,17 +70,20 @@ public class DASExternalSensorConfigActivity extends BaseActivity {
     }
 
     private void initFragment() {
-        if (connectWay == AppContants.CommunicationWay.NET_CONNECT) {
-
-        } else {
-            fragment = BleDASExternalSensorConfigFragment.newInstance(collectorModel);
+        if (connectWay == AppContants.CommunicationWay.BLE_CONNECT) {
+            if (CollectorModel.value(collectorModel) == CollectorModel.VW08) {//振弦式传感器
+                fragment = BleDASExternalVibratingWireSensorFragment.newInstance(collectorModel);
+            } else { //数字式传感器
+                fragment = BleDASExternalDigtalSensorFragment.newInstance(collectorModel);
+            }
         }
-
         replaceFragment(fragment);
     }
 
 
     private void replaceFragment(Fragment fragment) {
+        if (fragment == null)
+            return;
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         transaction.replace(R.id.container, fragment);

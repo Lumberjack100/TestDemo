@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.deviceconfig.ui.fragment;
+package com.shmedo.mcloudapp.deviceconfig.ui.fragment.sensor;
 
 import android.os.Bundle;
 
@@ -42,7 +42,8 @@ import com.shmedo.core.event.CmdResponseMessage;
 import com.shmedo.core.event.MessageEvent;
 import com.shmedo.core.util.GlobalUtil;
 import com.shmedo.mcloudapp.R;
-import com.shmedo.mcloudapp.deviceconfig.ui.activity.DASExternalSensorConfigActivity;
+import com.shmedo.mcloudapp.deviceconfig.ui.activity.DASExternalSensorActivity;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.BaseBleConnectFragment;
 import com.shmedo.mcloudapp.util.KeyBordUtils;
 
 import org.greenrobot.eventbus.Subscribe;
@@ -59,7 +60,7 @@ import timber.log.Timber;
 /**
  * DAS 传感器配置页面
  */
-public class BleDASSensorConfigFragment extends BaseBleConnectFragment {
+public class BleDASSensorFragment extends BaseBleConnectFragment {
     @BindView(R.id.switchSensorEnableSBtn)
     SwitchButton mSbSwitchSensor;//开关量传感器
 
@@ -135,7 +136,7 @@ public class BleDASSensorConfigFragment extends BaseBleConnectFragment {
 
     @Override
     protected int getLayoutId() {
-        return R.layout.fragment_ble_d_a_s_sensor_config;
+        return R.layout.fragment_ble_d_a_s_sensor;
     }
 
     @Override
@@ -306,7 +307,7 @@ public class BleDASSensorConfigFragment extends BaseBleConnectFragment {
                     ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
                     return;
                 }
-                DASExternalSensorConfigActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT, collectorModel);
+                DASExternalSensorActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT, collectorModel);
                 break;
 
             case R.id.btn_confirm:
