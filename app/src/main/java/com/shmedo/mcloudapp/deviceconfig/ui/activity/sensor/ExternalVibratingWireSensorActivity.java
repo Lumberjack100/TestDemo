@@ -20,6 +20,7 @@ import com.lxj.xpopup.XPopup;
 import com.lxj.xpopup.interfaces.OnSelectListener;
 import com.shmedo.configlibrary.ble.enums.SensorType;
 import com.shmedo.configlibrary.ble.model.SensorGudanPercolateInfo;
+import com.shmedo.configlibrary.ble.model.SensorJunXingZljInfo;
 import com.shmedo.configlibrary.ble.model.SensorKangPercolateInfo;
 import com.shmedo.configlibrary.ble.utils.StringUtil;
 import com.shmedo.core.AppContants;
@@ -27,6 +28,10 @@ import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.activity.BaseActivity;
 import com.shmedo.mcloudapp.common.ui.activity.ScanActivity;
 import com.shmedo.mcloudapp.deviceconfig.view.sensor.NewSensorBGK4500View;
+import com.shmedo.mcloudapp.deviceconfig.view.sensor.NewSensorVWP03View;
+import com.shmedo.mcloudapp.deviceconfig.view.sensor.NewSensorZLJ300tView;
+import com.shmedo.mcloudapp.deviceconfig.view.sensor.SensorVWP03View;
+import com.shmedo.mcloudapp.deviceconfig.view.sensor.SensorZLJ300tView;
 import com.shmedo.mcloudapp.util.bleutil.BlueResultParserUtil;
 import com.shmedo.mcloudapp.util.permission.PermissionHelper;
 import com.shmedo.mcloudapp.util.permission.XPermissionUtils;
@@ -63,6 +68,12 @@ public class ExternalVibratingWireSensorActivity extends BaseActivity {
     @BindView(R.id.sensorBGK4500View)
     NewSensorBGK4500View sensorBGK4500View;
 
+    @BindView(R.id.sensorVWP03View)
+    NewSensorVWP03View sensorVWP03View;
+
+    @BindView(R.id.sensorZLJ300tView)
+    NewSensorZLJ300tView sensorZLJ300tView;
+
     private DecimalFormat decimalFormat = new DecimalFormat("#.##");
 
     private List<String> sensorAisleList = Arrays.asList("1", "2", "3", "4", "5", "6", "7", "8");
@@ -95,12 +106,11 @@ public class ExternalVibratingWireSensorActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setToolBar(R.id.toolbar);
-        mToolbarTitle.setText("扩展传感器配置");
+        mToolbarTitle.setText("振弦式传感器配置");
         mIvRightIcon.setVisibility(View.VISIBLE);
         mIvRightIcon.setImageResource(R.drawable.ic_scan_device_code);
         parseIntent();
         initView();
-//        initValue();
     }
 
     private void parseIntent() {
@@ -183,8 +193,8 @@ public class ExternalVibratingWireSensorActivity extends BaseActivity {
                 sensorTypePos = 0;
                 mTvSensorType.setText(sensorTypeList.get(0));
                 sensorBGK4500View.setVisibility(View.VISIBLE);
-//                sensorVWP03View.setVisibility(View.GONE);
-//                sensorZLJ300tView.setVisibility(View.GONE);
+                sensorVWP03View.setVisibility(View.GONE);
+                sensorZLJ300tView.setVisibility(View.GONE);
                 sensorBGK4500View.bindSensorData(parcelableData == null ? null : (SensorKangPercolateInfo) parcelableData);
                 break;
 
@@ -192,18 +202,18 @@ public class ExternalVibratingWireSensorActivity extends BaseActivity {
                 sensorTypePos = 1;
                 mTvSensorType.setText(sensorTypeList.get(1));
                 sensorBGK4500View.setVisibility(View.GONE);
-//                sensorVWP03View.setVisibility(View.VISIBLE);
-//                sensorZLJ300tView.setVisibility(View.GONE);
-//                sensorVWP03View.bindSensorData(collectorSensorParamsInfo);
+                sensorVWP03View.setVisibility(View.VISIBLE);
+                sensorZLJ300tView.setVisibility(View.GONE);
+                sensorVWP03View.bindSensorData(parcelableData == null ? null : (SensorGudanPercolateInfo) parcelableData);
                 break;
 
             case JUNXING_ZLJ_300T://轴力计(ZLJ-300T)
                 sensorTypePos = 2;
                 mTvSensorType.setText(sensorTypeList.get(2));
                 sensorBGK4500View.setVisibility(View.GONE);
-//                sensorVWP03View.setVisibility(View.GONE);
-//                sensorZLJ300tView.setVisibility(View.VISIBLE);
-//                sensorZLJ300tView.bindSensorData(collectorSensorParamsInfo);
+                sensorVWP03View.setVisibility(View.GONE);
+                sensorZLJ300tView.setVisibility(View.VISIBLE);
+                sensorZLJ300tView.bindSensorData(parcelableData == null ? null : (SensorJunXingZljInfo) parcelableData);
                 break;
         }
     }
@@ -231,10 +241,11 @@ public class ExternalVibratingWireSensorActivity extends BaseActivity {
     }
 
     private void showSensorAisleChooseDialog() {
+        XPopup.setPrimaryColor(getResources().getColor(R.color.blue_52B4F8));
         new XPopup.Builder(this)
                 .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
                 .asBottomList("", (String[]) sensorAisleList.toArray(),
-                        null, sensorTypePos, true,
+                        null, sensorAislePos, true,
                         new OnSelectListener() {
                             @Override
                             public void onSelect(int position, String text) {
@@ -260,19 +271,22 @@ public class ExternalVibratingWireSensorActivity extends BaseActivity {
                                 if (text.contains("基康渗压计")) {
                                     selectedSensorType = SensorType.KANG_PERCOLATE;
                                     sensorBGK4500View.setVisibility(View.VISIBLE);
-//                                                sensorVWP03View.setVisibility(View.GONE);
-//                                                sensorZLJ300tView.setVisibility(View.GONE);
+                                    sensorVWP03View.setVisibility(View.GONE);
+                                    sensorZLJ300tView.setVisibility(View.GONE);
                                 } else if (text.contains("葛南渗压计")) {
                                     selectedSensorType = SensorType.GUDAN_PERCOLATE;
                                     sensorBGK4500View.setVisibility(View.GONE);
-//                                                sensorVWP03View.setVisibility(View.VISIBLE);
-//                                                sensorZLJ300tView.setVisibility(View.GONE);
+                                    sensorVWP03View.setVisibility(View.VISIBLE);
+                                    sensorZLJ300tView.setVisibility(View.GONE);
                                 } else if (text.contains("轴力计")) {
                                     selectedSensorType = SensorType.JUNXING_ZLJ_300T;
                                     sensorBGK4500View.setVisibility(View.GONE);
-//                                                sensorVWP03View.setVisibility(View.GONE);
-//                                                sensorZLJ300tView.setVisibility(View.VISIBLE);
+                                    sensorVWP03View.setVisibility(View.GONE);
+                                    sensorZLJ300tView.setVisibility(View.VISIBLE);
                                 }
+
+                                String sensorName = BlueResultParserUtil.getSensorName(selectedSensorType);
+                                mToolbarTitle.setText(sensorName);
                             }
                         }, 0, R.layout.custom_xpopup_adapter_text_match)
                 .show();
@@ -295,11 +309,17 @@ public class ExternalVibratingWireSensorActivity extends BaseActivity {
                 break;
 
             case GUDAN_PERCOLATE:
-//                updateDataSuccess = sensorVWP03View.updateSensorData(collectorSensorParamsInfo);
+                if (parcelableData == null) {
+                    parcelableData = new SensorGudanPercolateInfo();
+                }
+                updateDataSuccess = sensorVWP03View.updateSensorData((SensorGudanPercolateInfo) parcelableData);
                 break;
 
             case JUNXING_ZLJ_300T:
-//                updateDataSuccess = sensorZLJ300tView.updateSensorData(collectorSensorParamsInfo);
+                if (parcelableData == null) {
+                    parcelableData = new SensorJunXingZljInfo();
+                }
+                updateDataSuccess = sensorZLJ300tView.updateSensorData((SensorJunXingZljInfo) parcelableData);
                 break;
         }
 
@@ -380,9 +400,6 @@ public class ExternalVibratingWireSensorActivity extends BaseActivity {
                     showSwitchSensorTypeDialog(localData[2], sensorInfo);
                     return;
                 }
-
-                sensorTypePos = 0;
-                mTvSensorType.setText(sensorTypeList.get(0));
                 sensorBGK4500View.initDataByScan(sensorInfo);
             }
             break;
@@ -395,9 +412,7 @@ public class ExternalVibratingWireSensorActivity extends BaseActivity {
                     showSwitchSensorTypeDialog(localData[2], sensorInfo);
                     return;
                 }
-                sensorTypePos = 1;
-                mTvSensorType.setText(sensorTypeList.get(1));
-//                sensorVWP03View.initDataByScan(sensorInfo);
+                sensorVWP03View.initDataByScan(sensorInfo);
             }
             break;
 
@@ -424,20 +439,24 @@ public class ExternalVibratingWireSensorActivity extends BaseActivity {
                         dialog.dismiss();
                         switch (type) {
                             case "BGK":
+                                selectedSensorType = SensorType.KANG_PERCOLATE;
                                 sensorTypePos = 0;
                                 mTvSensorType.setText(sensorTypeList.get(0));
                                 sensorBGK4500View.initDataByScan((SensorKangPercolateInfo) object);
                                 break;
 
                             case "NGN":
+                                selectedSensorType = SensorType.GUDAN_PERCOLATE;
                                 sensorTypePos = 1;
                                 mTvSensorType.setText(sensorTypeList.get(1));
-//                                sensorVWP03View.initDataByScan((SensorGudanPercolateInfo) object);
+                                sensorVWP03View.initDataByScan((SensorGudanPercolateInfo) object);
                                 break;
 
                             default:
                                 break;
                         }
+                        String sensorName = BlueResultParserUtil.getSensorName(selectedSensorType);
+                        mToolbarTitle.setText(sensorName);
                     }
                 });
         MaterialDialog mMaterialDialog = mBuilder.build();

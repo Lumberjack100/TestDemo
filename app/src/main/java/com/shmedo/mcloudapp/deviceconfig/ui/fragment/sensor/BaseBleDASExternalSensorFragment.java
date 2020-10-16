@@ -59,7 +59,7 @@ import timber.log.Timber;
 /**
  * DAS扩展传感器配置页面
  */
-public abstract class BleDASExternalSensorFragment extends BaseBleConnectFragment {
+public abstract class BaseBleDASExternalSensorFragment extends BaseBleConnectFragment {
     private static final int REQUEST_CODE_SENSOR_CONFIG = 0x0102;
 
     @BindView(R.id.recyclerview_sensor)
@@ -167,7 +167,7 @@ public abstract class BleDASExternalSensorFragment extends BaseBleConnectFragmen
             isEnableNewSensor = true;
             sensorType = defaultCollectorSensorParamsInfo.getSensorType();
 //            parcelableData = defaultCollectorSensorParamsInfo.getSensorData() == null ? null : (Parcelable) defaultCollectorSensorParamsInfo.getSensorData();
-            parcelableData =null;
+            parcelableData = null;
         } else {
             isEnableNewSensor = false;
             curCollectorSensorParamsInfo = collectorSensorHashMap.get(curSensorAddress);
@@ -186,7 +186,7 @@ public abstract class BleDASExternalSensorFragment extends BaseBleConnectFragmen
     private void warnDeleteSensorItem(int position) {
         MaterialDialog.Builder mBuilder = new MaterialDialog.Builder(Objects.requireNonNull(getContext()))
                 .title("温馨提示")
-                .content("确定删除?")
+                .content("确定移除传感器?")
                 .contentColorRes(R.color.title_text_color)
                 .canceledOnTouchOutside(false)
                 .positiveText("确定")
@@ -197,6 +197,8 @@ public abstract class BleDASExternalSensorFragment extends BaseBleConnectFragmen
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                         dialog.dismiss();
+                        String address = sensorItemList.get(position).getSensorAddress();
+                        collectorSensorHashMap.remove(address);
                         sensorItemList.remove(position);
                         sensorAdapter.notifyDataSetChanged();
                     }
@@ -375,7 +377,7 @@ public abstract class BleDASExternalSensorFragment extends BaseBleConnectFragmen
         sensorAdapter.notifyDataSetChanged();
     }
 
-    private void addSensorItem(String address){
+    private void addSensorItem(String address) {
         DASSensorItem sensorItem = new DASSensorItem(R.drawable.ic_sensor_holder);
         sensorItem.setSensorAddress(address);
         sensorItemList.add(sensorItem);

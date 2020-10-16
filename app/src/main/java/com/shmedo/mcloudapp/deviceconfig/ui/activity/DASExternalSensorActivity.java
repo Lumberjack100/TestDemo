@@ -13,7 +13,6 @@ import com.shmedo.configlibrary.ble.enums.CollectorModel;
 import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.activity.BaseActivity;
-import com.shmedo.mcloudapp.deviceconfig.ui.activity.sensor.ExternalDigitalSensorActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.sensor.BleDASExternalDigtalSensorFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.sensor.BleDASExternalVibratingWireSensorFragment;
 import com.shmedo.mcloudapp.util.bleutil.BlueResultParserUtil;
@@ -64,8 +63,11 @@ public class DASExternalSensorActivity extends BaseActivity {
 
         if (intent.getExtras().containsKey(AppContants.Extras.COLLECTOR_MODE)) {
             collectorModel = intent.getStringExtra(AppContants.Extras.COLLECTOR_MODE);
-            String collectorName = BlueResultParserUtil.getCollectorName(CollectorModel.value(collectorModel));
-            mToolbarTitle.setText(collectorName);
+            if (CollectorModel.value(collectorModel) == CollectorModel.VW08) {//振弦式传感器
+                mToolbarTitle.setText("振弦式传感器");
+            } else {
+                mToolbarTitle.setText("数字式传感器");
+            }
         }
     }
 

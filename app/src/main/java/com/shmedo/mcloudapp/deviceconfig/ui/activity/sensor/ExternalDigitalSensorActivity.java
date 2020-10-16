@@ -93,7 +93,7 @@ public class ExternalDigitalSensorActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setToolBar(R.id.toolbar);
-        mToolbarTitle.setText("扩展传感器配置");
+        mToolbarTitle.setText("数字式传感器配置");
         parseIntent();
         initView();
         initValue();
