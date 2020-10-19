@@ -12,7 +12,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.hjq.toast.ToastUtils;
-import com.shmedo.configlibrary.ble.model.CollectorSensorParamsInfo;
 import com.shmedo.configlibrary.ble.model.SensorJunXingZljInfo;
 import com.shmedo.configlibrary.ble.utils.StringUtil;
 import com.shmedo.configlibrary.ble.utils.ValidateUtil;
@@ -28,7 +27,7 @@ import butterknife.ButterKnife;
  * 创建时间:  2020/10/16 <br/>
  * 描述：     轴力计(ZLJ-300T)配置项视图
  */
-public class NewSensorZLJ300tView extends FrameLayout {
+public class SensorZLJ300tView extends FrameLayout {
     @BindView(R.id.et_trigger_threshold)
     EditText mEtTriggerThreshold;//触发阀值
     @BindView(R.id.polynomialRatioA)
@@ -44,18 +43,18 @@ public class NewSensorZLJ300tView extends FrameLayout {
 
     private String triggerThreshold, coefficientA, coefficientB, referenceValue, initialTemperature, correctValue;
 
-    public NewSensorZLJ300tView(@NonNull Context context) {
+    public SensorZLJ300tView(@NonNull Context context) {
         this(context, null);
     }
 
-    public NewSensorZLJ300tView(@NonNull Context context, @Nullable AttributeSet attrs) {
+    public SensorZLJ300tView(@NonNull Context context, @Nullable AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public NewSensorZLJ300tView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public SensorZLJ300tView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         //关联布局文件
-        ((LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.new_axialforcegauge_config, this, true);
+        ((LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.axialforcegauge_config, this, true);
         ButterKnife.bind(this);
         initView();
     }

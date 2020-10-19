@@ -89,17 +89,17 @@
             android:layout_width="match_parent"
             android:layout_height="14dp" />
 
-        <com.shmedo.mcloudapp.deviceconfig.view.sensor.NewSensorBGK4500View
+        <com.shmedo.mcloudapp.deviceconfig.view.sensor.SensorBGK4500View
             android:id="@+id/sensorBGK4500View"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
-        <com.shmedo.mcloudapp.deviceconfig.view.sensor.NewSensorVWP03View
+        <com.shmedo.mcloudapp.deviceconfig.view.sensor.SensorVWP03View
             android:id="@+id/sensorVWP03View"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
-        <com.shmedo.mcloudapp.deviceconfig.view.sensor.NewSensorZLJ300tView
+        <com.shmedo.mcloudapp.deviceconfig.view.sensor.SensorZLJ300tView
             android:id="@+id/sensorZLJ300tView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />

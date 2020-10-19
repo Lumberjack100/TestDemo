@@ -27,9 +27,9 @@ import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.activity.BaseActivity;
 import com.shmedo.mcloudapp.common.ui.activity.ScanActivity;
-import com.shmedo.mcloudapp.deviceconfig.view.sensor.NewSensorBGK4500View;
-import com.shmedo.mcloudapp.deviceconfig.view.sensor.NewSensorVWP03View;
-import com.shmedo.mcloudapp.deviceconfig.view.sensor.NewSensorZLJ300tView;
+import com.shmedo.mcloudapp.deviceconfig.view.sensor.SensorBGK4500View;
+import com.shmedo.mcloudapp.deviceconfig.view.sensor.SensorVWP03View;
+import com.shmedo.mcloudapp.deviceconfig.view.sensor.SensorZLJ300tView;
 import com.shmedo.mcloudapp.util.bleutil.BlueResultParserUtil;
 import com.shmedo.mcloudapp.util.permission.PermissionHelper;
 import com.shmedo.mcloudapp.util.permission.XPermissionUtils;
@@ -64,13 +64,13 @@ public class ExternalVibratingWireSensorActivity extends BaseActivity {
     TextView mTvSensorType;
 
     @BindView(R.id.sensorBGK4500View)
-    NewSensorBGK4500View sensorBGK4500View;
+    SensorBGK4500View sensorBGK4500View;
 
     @BindView(R.id.sensorVWP03View)
-    NewSensorVWP03View sensorVWP03View;
+    SensorVWP03View sensorVWP03View;
 
     @BindView(R.id.sensorZLJ300tView)
-    NewSensorZLJ300tView sensorZLJ300tView;
+    SensorZLJ300tView sensorZLJ300tView;
 
     private DecimalFormat decimalFormat = new DecimalFormat("#.##");
 
