@@ -1,9 +1,6 @@
 package com.shmedo.mcloudapp.deviceconfig.ui.fragment.sensor;
 
 import android.os.Bundle;
-
-import androidx.annotation.Nullable;
-
 import android.text.InputFilter;
 import android.text.TextUtils;
 import android.view.View;
@@ -13,6 +10,8 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+
+import androidx.annotation.Nullable;
 
 import com.hjq.toast.ToastUtils;
 import com.kyleduo.switchbutton.SwitchButton;
@@ -728,7 +727,7 @@ public class BleDASSensorFragment extends BaseBleConnectFragment {
 
     private void initSwitchSensor() {
         try {
-            mEtRainPrecision.setText(decimalFormat.format((double) baseConfigInfo.getRainAccuracy() / 100));
+            mEtRainPrecision.setText(decimalFormat.format((double) baseConfigInfo.getRainAccuracy() / 10000));
         } catch (Exception ex) {
             ex.printStackTrace();
         }
