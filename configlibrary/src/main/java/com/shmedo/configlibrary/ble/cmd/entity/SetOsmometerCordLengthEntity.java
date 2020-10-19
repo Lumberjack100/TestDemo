@@ -1,6 +1,5 @@
 package com.shmedo.configlibrary.ble.cmd.entity;
 
-import com.shmedo.configlibrary.ble.exception.DASParameterException;
 import com.shmedo.configlibrary.ble.interfaces.Validater;
 
 /**
@@ -11,16 +10,16 @@ import com.shmedo.configlibrary.ble.interfaces.Validater;
  * 描述：   设置渗压计绳长
  */
 public class SetOsmometerCordLengthEntity implements Validater {
-    private double cordLength;
+    private String cordLength;
 
-    public SetOsmometerCordLengthEntity(double cordLength) {
+    public SetOsmometerCordLengthEntity(String cordLength) {
         this.cordLength = cordLength;
     }
 
     @Override
     public void validate() {
-        if (cordLength > 65535)
-            throw new DASParameterException("绳长参数错误");
+//        if (cordLength > 65535)
+//            throw new DASParameterException("绳长参数错误");
     }
 
     @Override
