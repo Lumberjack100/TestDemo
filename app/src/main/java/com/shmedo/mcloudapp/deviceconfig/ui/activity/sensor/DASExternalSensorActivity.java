@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.deviceconfig.ui.activity;
+package com.shmedo.mcloudapp.deviceconfig.ui.activity.sensor;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -15,7 +15,6 @@ import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.activity.BaseActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.sensor.BleDASExternalDigtalSensorFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.sensor.BleDASExternalVibratingWireSensorFragment;
-import com.shmedo.mcloudapp.util.bleutil.BlueResultParserUtil;
 
 import butterknife.BindView;
 

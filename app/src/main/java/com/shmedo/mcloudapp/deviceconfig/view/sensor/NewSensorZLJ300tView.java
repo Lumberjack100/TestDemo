@@ -94,7 +94,7 @@ public class NewSensorZLJ300tView extends FrameLayout {
         if (sensorInfo != null) {
             mEtCoefficientA.setText(sensorInfo.getPolynomialRatioA());
             mEtTemperatureCoefficient.setText(sensorInfo.getTemperatureCoefficientB());
-            mEtReferenceValue.setText(sensorInfo.getReferenceValue());
+            mEtReferenceValue.setText(TextUtils.isEmpty(sensorInfo.getReferenceValue()) ? "0" : sensorInfo.getReferenceValue());
         }
     }
 

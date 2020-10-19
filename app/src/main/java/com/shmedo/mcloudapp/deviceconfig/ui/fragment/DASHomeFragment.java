@@ -44,8 +44,6 @@ import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.fragment.BaseFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.ConfigDASActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.DeviceAdvanceSettingActivity;
-import com.shmedo.mcloudapp.deviceconfig.ui.activity.sensor.CommonSensorConfigActivity;
-import com.shmedo.mcloudapp.deviceconfig.ui.activity.sensor.VibratingWireSensorConfigActivity;
 import com.shmedo.mcloudapp.util.bleutil.BlueResultParserUtil;
 
 import org.greenrobot.eventbus.EventBus;
@@ -377,16 +375,6 @@ public class DASHomeFragment extends BaseFragment {
         if (!MCloudApp.isIsBluetoothDeviceConnected()) {
             ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
             return;
-        }
-        CollectorModel model = CollectorModel.value(collectorModel);
-        switch (model) {
-            case VW08://同时接入多种类型传感器的采集器
-                VibratingWireSensorConfigActivity.startActivityForResultByFragment(this, sbcollectorSensor.toString(), REQUEST_CODE_SENSOR_CONFIG);
-                break;
-
-            default:
-                CommonSensorConfigActivity.startActivityForResultByFragment(this, sbcollectorSensor.toString(), REQUEST_CODE_SENSOR_CONFIG);
-                break;
         }
     }
 

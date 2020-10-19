@@ -30,8 +30,6 @@ import com.shmedo.mcloudapp.common.ui.activity.ScanActivity;
 import com.shmedo.mcloudapp.deviceconfig.view.sensor.NewSensorBGK4500View;
 import com.shmedo.mcloudapp.deviceconfig.view.sensor.NewSensorVWP03View;
 import com.shmedo.mcloudapp.deviceconfig.view.sensor.NewSensorZLJ300tView;
-import com.shmedo.mcloudapp.deviceconfig.view.sensor.SensorVWP03View;
-import com.shmedo.mcloudapp.deviceconfig.view.sensor.SensorZLJ300tView;
 import com.shmedo.mcloudapp.util.bleutil.BlueResultParserUtil;
 import com.shmedo.mcloudapp.util.permission.PermissionHelper;
 import com.shmedo.mcloudapp.util.permission.XPermissionUtils;
@@ -439,16 +437,22 @@ public class ExternalVibratingWireSensorActivity extends BaseActivity {
                         dialog.dismiss();
                         switch (type) {
                             case "BGK":
-                                selectedSensorType = SensorType.KANG_PERCOLATE;
                                 sensorTypePos = 0;
                                 mTvSensorType.setText(sensorTypeList.get(0));
+                                selectedSensorType = SensorType.KANG_PERCOLATE;
+                                sensorBGK4500View.setVisibility(View.VISIBLE);
+                                sensorVWP03View.setVisibility(View.GONE);
+                                sensorZLJ300tView.setVisibility(View.GONE);
                                 sensorBGK4500View.initDataByScan((SensorKangPercolateInfo) object);
                                 break;
 
                             case "NGN":
-                                selectedSensorType = SensorType.GUDAN_PERCOLATE;
                                 sensorTypePos = 1;
                                 mTvSensorType.setText(sensorTypeList.get(1));
+                                selectedSensorType = SensorType.GUDAN_PERCOLATE;
+                                sensorBGK4500View.setVisibility(View.GONE);
+                                sensorVWP03View.setVisibility(View.VISIBLE);
+                                sensorZLJ300tView.setVisibility(View.GONE);
                                 sensorVWP03View.initDataByScan((SensorGudanPercolateInfo) object);
                                 break;
 

@@ -148,7 +148,7 @@ public class BleDASExternalVibratingWireSensorFragment extends BaseBleDASExterna
     }
 
     private void getCorrectionValueParamCommands(CollectorSensorParamsInfo infoSub) {
-        String channelNumber = StringUtil.formatStringTwo(infoSub.getChannelNumber());
+        String channelNumber = StringUtil.formatStringTwo(infoSub.getSensorAddress());
         String cmdCorrectionValueFormat = "##167" + channelNumber + "{}\r\n";//修正参数
         String cmdInstallElevationFormat = "##169" + channelNumber + "{}\r\n";//安装高程
         SensorType sensorType = infoSub.getSensorType();

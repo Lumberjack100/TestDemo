@@ -99,7 +99,7 @@ public class NewSensorVWP03View extends FrameLayout {
         if (sensorInfo != null) {
             mEtSensitivityCoefficient.setText(sensorInfo.getSensitivityK());
             mEtTemperatureCoefficient.setText(sensorInfo.getTemperatureCoefficientB());
-            mEtReferenceValue.setText(sensorInfo.getReferenceValue());
+            mEtReferenceValue.setText(TextUtils.isEmpty(sensorInfo.getReferenceValue()) ? "0" : sensorInfo.getReferenceValue());
         }
     }
 

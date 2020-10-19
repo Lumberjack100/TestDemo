@@ -113,7 +113,6 @@ public class NewSensorBGK4500View extends FrameLayout {
         if (!checkValue()) {
             return false;
         }
-
         sensorInfo.setTriggerThreshold(triggerThreshold);
         sensorInfo.setPolynomialRatioA(coefficientA);
         sensorInfo.setPolynomialRatioB(coefficientB);

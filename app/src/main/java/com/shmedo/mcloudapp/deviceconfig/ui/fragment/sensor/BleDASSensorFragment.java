@@ -42,7 +42,7 @@ import com.shmedo.core.event.CmdResponseMessage;
 import com.shmedo.core.event.MessageEvent;
 import com.shmedo.core.util.GlobalUtil;
 import com.shmedo.mcloudapp.R;
-import com.shmedo.mcloudapp.deviceconfig.ui.activity.DASExternalSensorActivity;
+import com.shmedo.mcloudapp.deviceconfig.ui.activity.sensor.DASExternalSensorActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.BaseBleConnectFragment;
 import com.shmedo.mcloudapp.util.KeyBordUtils;
 
