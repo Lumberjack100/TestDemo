@@ -8,7 +8,6 @@ import android.bluetooth.BluetoothManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
@@ -19,28 +18,24 @@ import androidx.annotation.Nullable;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.hjq.toast.ToastUtils;
-import com.shmedo.core.MCloudApp;
 import com.shmedo.configlibrary.ble.cmd.CommandManager;
 import com.shmedo.configlibrary.ble.cmd.CommandResult;
 import com.shmedo.configlibrary.ble.cmd.entity.AuthenticationConfigEntity;
-import com.shmedo.configlibrary.ble.cmd.entity.BreakAlarmStatusEntity;
 import com.shmedo.configlibrary.ble.cmd.entity.LowEnergyModelEntity;
 import com.shmedo.configlibrary.ble.cmd.entity.SaveConfigInfoEntity;
 import com.shmedo.configlibrary.ble.cmd.entity.ServerNumberEntity;
-import com.shmedo.configlibrary.ble.cmd.entity.SetRemoteUpgradeEntity;
-import com.shmedo.configlibrary.ble.enums.BreakAlarmStatus;
 import com.shmedo.configlibrary.ble.enums.CommandType;
 import com.shmedo.configlibrary.ble.enums.LowEnergyModel;
 import com.shmedo.configlibrary.ble.enums.SaveConfigMode;
 import com.shmedo.configlibrary.ble.enums.ServerNumber;
-import com.shmedo.configlibrary.ble.enums.SetRemoteUpgrade;
+import com.shmedo.configlibrary.ble.interfaces.OnBytePackage;
+import com.shmedo.configlibrary.ble.utils.DesUtil;
+import com.shmedo.configlibrary.ble.utils.StringUtil;
+import com.shmedo.core.MCloudApp;
 import com.shmedo.core.event.BluetoothConnectStateEvent;
 import com.shmedo.core.event.CmdResponseMessage;
 import com.shmedo.core.event.MessageEvent;
-import com.shmedo.configlibrary.ble.interfaces.OnBytePackage;
 import com.shmedo.core.util.GlobalUtil;
-import com.shmedo.configlibrary.ble.utils.DesUtil;
-import com.shmedo.configlibrary.ble.utils.StringUtil;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.bluetooth.BluetoothEvent;
 import com.shmedo.mcloudapp.bluetooth.Message;
@@ -82,7 +77,7 @@ public abstract class BaseBleConnectFragment extends BaseFragment {
 
     public static final int SEND_SINGLE_COMMAND_DELAY_MILLIS = 3000;//发送单条指令超时时间
 
-    public static final int CONFIG_PARAMS_DELAY_MILLIS = 25000;//发送配置参数指令超时时间
+    public static final int CONFIG_PARAMS_DELAY_MILLIS = 30000;//发送配置参数指令超时时间
 
 
     private NewBleManager bleManager = NewBleManager.getInstance();

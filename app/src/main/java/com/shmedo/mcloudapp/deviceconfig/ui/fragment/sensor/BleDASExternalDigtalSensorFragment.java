@@ -185,7 +185,6 @@ public class BleDASExternalDigtalSensorFragment extends BaseBleDASExternalSensor
      * 设置测斜仪的测段长
      */
     private void setMeasureLongValue() {
-        //##150zzxxXXXX\r\n：设置采集器接入的传感器
         StringBuilder builderFirst = new StringBuilder();
         builderFirst.append("##166");
         builderFirst.append(defaultCollectorSensorParamsInfo.getSensorType());
