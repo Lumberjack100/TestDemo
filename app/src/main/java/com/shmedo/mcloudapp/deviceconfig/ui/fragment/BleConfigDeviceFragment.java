@@ -241,7 +241,6 @@ public class BleConfigDeviceFragment extends BaseBleConnectFragment {
                     return;
                 }
 
-
                 if (!MCloudApp.isIsBluetoothDeviceConnected()) {
                     ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
                     return;

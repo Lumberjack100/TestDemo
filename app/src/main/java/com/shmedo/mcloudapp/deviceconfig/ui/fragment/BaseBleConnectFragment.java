@@ -251,9 +251,9 @@ public abstract class BaseBleConnectFragment extends BaseFragment {
 
         //因设备问题会造成长时间搜索设备，在此操作过程中无法中断和进行其他操作，进度框会长时间在页面停留
         //新增操作返回，中断当前蓝牙操作并关闭进度框
-        if (loadingDialog != null) {
-            loadingDialog.setCancelable(true);
-            loadingDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+        if (progressDialog != null) {
+            progressDialog.setCancelable(true);
+            progressDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
                 @Override
                 public void onCancel(DialogInterface dialog) {
                     stopProgressRunnable();
