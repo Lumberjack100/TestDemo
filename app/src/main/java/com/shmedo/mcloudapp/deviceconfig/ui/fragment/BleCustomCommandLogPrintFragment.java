@@ -60,7 +60,7 @@ public class BleCustomCommandLogPrintFragment extends BaseBleConnectFragment {
     @BindView(R.id.fab_start_pause)
     ImageView fabStartPause;
 
-    private CommonAdapter adapter;
+    private CommonAdapter cmdAdapter;
 
     private List<String> logDataList = new ArrayList<>();
 
@@ -79,15 +79,13 @@ public class BleCustomCommandLogPrintFragment extends BaseBleConnectFragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         setView();
-        setSwitchViewListener();
         initAdapter();
+        setSwitchViewListener();
     }
 
     private void setView() {
         snNumber = MCloudApp.getCurDeviceToken();
-        String content = String.format("====开始调试设备：%s", snNumber);
-        Log4a.i(TAG, content);
-
+        Log4a.i(TAG, String.format("====开始调试设备：%s", snNumber));
         mTvDebugMode.setText("关闭");
     }
 
@@ -107,16 +105,14 @@ public class BleCustomCommandLogPrintFragment extends BaseBleConnectFragment {
 
                 if (isChecked) {
                     switchLogOutputMode(true);
-//                    setSwitchViewState(true, logSwitchButton, "已开启");
                     ToastUtils.show("开始日志输出");
-                    isPause = false;
-                    fabStartPause.setImageResource(R.drawable.icon_command_log_print_pause);
+//                    isPause = false;
+//                    fabStartPause.setImageResource(R.drawable.icon_command_log_print_pause);
                 } else {
                     switchLogOutputMode(false);
-//                    setSwitchViewState(false, logSwitchButton, "已关闭");
                     ToastUtils.show("关闭日志输出");
-                    isPause = true;
-                    fabStartPause.setImageResource(R.drawable.icon_command_log_print_play);
+//                    isPause = true;
+//                    fabStartPause.setImageResource(R.drawable.icon_command_log_print_play);
                 }
             }
         });
@@ -124,13 +120,13 @@ public class BleCustomCommandLogPrintFragment extends BaseBleConnectFragment {
 
     private void initAdapter() {
         mRecyclerView.setLayoutManager(new LinearLayoutManager(mActivity));
-        adapter = new CommonAdapter<String>(mActivity, R.layout.item_log_print, logDataList) {
+        cmdAdapter = new CommonAdapter<String>(mActivity, R.layout.item_log_print, logDataList) {
             @Override
             protected void convert(CommonViewHolder holder, String string, int position) {
                 holder.setText(R.id.tv_log, string);
             }
         };
-        mRecyclerView.setAdapter(adapter);
+        mRecyclerView.setAdapter(cmdAdapter);
     }
 
 
@@ -143,7 +139,7 @@ public class BleCustomCommandLogPrintFragment extends BaseBleConnectFragment {
 
             case R.id.fab_clear_log:
                 logDataList.clear();
-                adapter.notifyDataSetChanged();
+                cmdAdapter.notifyDataSetChanged();
                 break;
 
             case R.id.fab_start_pause:
@@ -170,9 +166,10 @@ public class BleCustomCommandLogPrintFragment extends BaseBleConnectFragment {
                     ToastUtils.show("指令格式不正确，请重新输入");
                     return;
                 }
+                Timber.d("发送指令==%s", result);
                 sendCommonCommandImmediately(result);
                 logDataList.add(sendCode);
-                adapter.notifyDataSetChanged();
+                cmdAdapter.notifyDataSetChanged();
                 break;
 
         }
@@ -220,7 +217,7 @@ public class BleCustomCommandLogPrintFragment extends BaseBleConnectFragment {
         sendCommonCommandImmediately(command);
         Timber.d("设置日志输出模式指令==%s", command);
         logDataList.add(command.replace("\r\n",""));
-        adapter.notifyDataSetChanged();
+        cmdAdapter.notifyDataSetChanged();
     }
 
     private void setWorkMode(WorkModel workMode) {
@@ -229,7 +226,7 @@ public class BleCustomCommandLogPrintFragment extends BaseBleConnectFragment {
         sendCommonCommandImmediately(command);
         Timber.d("设置调试模式指令==%s", command);
         logDataList.add(command.replace("\r\n",""));
-        adapter.notifyDataSetChanged();
+        cmdAdapter.notifyDataSetChanged();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -247,7 +244,6 @@ public class BleCustomCommandLogPrintFragment extends BaseBleConnectFragment {
     private void setResultData(CmdResponseMessage responseMessage) {
         String cmdStr = responseMessage.getResult();
         String content = cmdStr.replace("\r\n", "");
-        Timber.i("====日志内容%s", content);
         Log4a.i(TAG, content);
         Log4a.flush();
 
@@ -256,9 +252,9 @@ public class BleCustomCommandLogPrintFragment extends BaseBleConnectFragment {
 
         } else {
             Timber.i("=====开始了");
-            logDataList.add(content);
-            adapter.notifyDataSetChanged();
-            mRecyclerView.scrollToPosition(adapter.getItemCount() - 1);
+            logDataList.add(cmdStr);
+            cmdAdapter.notifyDataSetChanged();
+            mRecyclerView.scrollToPosition(cmdAdapter.getItemCount() - 1);
         }
     }
 
