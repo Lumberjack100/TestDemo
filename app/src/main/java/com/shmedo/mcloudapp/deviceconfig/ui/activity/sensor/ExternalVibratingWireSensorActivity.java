@@ -1,8 +1,5 @@
 package com.shmedo.mcloudapp.deviceconfig.ui.activity.sensor;
 
-import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
-
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
@@ -12,6 +9,9 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -34,7 +34,6 @@ import com.shmedo.mcloudapp.util.bleutil.BlueResultParserUtil;
 import com.shmedo.mcloudapp.util.permission.PermissionHelper;
 import com.shmedo.mcloudapp.util.permission.XPermissionUtils;
 
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -72,14 +71,13 @@ public class ExternalVibratingWireSensorActivity extends BaseActivity {
     @BindView(R.id.sensorZLJ300tView)
     SensorZLJ300tView sensorZLJ300tView;
 
-    private DecimalFormat decimalFormat = new DecimalFormat("#.##");
-
-    private List<String> sensorAisleList = Arrays.asList("1", "2", "3", "4", "5", "6", "7", "8");
     private List<String> sensorTypeList = Arrays.asList("基康渗压计(BGK-4500)", "葛南渗压计(VWP-03)", "轴力计(ZLJ-300T)");
+    private List<String> allAisleList = Arrays.asList("1", "2", "3", "4", "5", "6", "7", "8");//所有通道
+    private ArrayList<String> usedAisleList = new ArrayList<>();//已占用的通道
+    private List<String> unUsedAisleList = new ArrayList<>();//未使用的通道
 
     private SensorType selectedSensorType;//传感器类型
     private Parcelable parcelableData;
-    private ArrayList<String> usedAisleList = new ArrayList<>();
     private String sensorAisle;//传感器通道
     private int sensorAislePos = 0;//传感器通道选择项索引
     private int sensorTypePos = 0;//传感器类型选择项索引
@@ -136,54 +134,34 @@ public class ExternalVibratingWireSensorActivity extends BaseActivity {
             usedAisleList.remove(sensorAisle);
         }
 
+        unUsedAisleList.clear();
+        unUsedAisleList.addAll(allAisleList);
+        for (String aisle : usedAisleList) {
+            for (String ss : allAisleList) {
+                if (aisle.equals(StringUtil.formatStringTwo(String.valueOf(Integer.parseInt(ss) - 1)))) {
+                    unUsedAisleList.remove(ss);
+                }
+            }
+        }
+
         String sensorName = BlueResultParserUtil.getSensorName(selectedSensorType);
         mToolbarTitle.setText(sensorName);
     }
 
     private void initView() {
         if (TextUtils.isEmpty(sensorAisle)) {
-            sensorAisle = "00";
-        }
-        switch (sensorAisle) {
-            case "00":
-                sensorAislePos = 0;
-                mTvSensorAisle.setText(sensorAisleList.get(0));
-                break;
-
-            case "01":
-                sensorAislePos = 1;
-                mTvSensorAisle.setText(sensorAisleList.get(1));
-                break;
-
-            case "02":
-                sensorAislePos = 2;
-                mTvSensorAisle.setText(sensorAisleList.get(2));
-                break;
-
-            case "03":
-                sensorAislePos = 3;
-                mTvSensorAisle.setText(sensorAisleList.get(3));
-                break;
-
-            case "04":
-                sensorAislePos = 4;
-                mTvSensorAisle.setText(sensorAisleList.get(4));
-                break;
-
-            case "05":
-                sensorAislePos = 5;
-                mTvSensorAisle.setText(sensorAisleList.get(5));
-                break;
-
-            case "06":
-                sensorAislePos = 6;
-                mTvSensorAisle.setText(sensorAisleList.get(6));
-                break;
-
-            case "07":
-                sensorAislePos = 7;
-                mTvSensorAisle.setText(sensorAisleList.get(7));
-                break;
+            sensorAisle = StringUtil.formatStringTwo(String.valueOf(Integer.parseInt(unUsedAisleList.get(0)) - 1));
+            sensorAislePos = 0;
+            mTvSensorAisle.setText(unUsedAisleList.get(0));
+        } else {
+            for (int i = 0; i < unUsedAisleList.size(); i++) {
+                String aisle = StringUtil.formatStringTwo(String.valueOf(Integer.parseInt(unUsedAisleList.get(i)) - 1));
+                if (aisle.equals(sensorAisle)) {
+                    sensorAislePos = i;
+                    mTvSensorAisle.setText(unUsedAisleList.get(i));
+                    break;
+                }
+            }
         }
 
         switch (selectedSensorType) {
@@ -242,7 +220,7 @@ public class ExternalVibratingWireSensorActivity extends BaseActivity {
         XPopup.setPrimaryColor(getResources().getColor(R.color.blue_52B4F8));
         new XPopup.Builder(this)
                 .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
-                .asBottomList("", (String[]) sensorAisleList.toArray(),
+                .asBottomList("", unUsedAisleList.toArray(new String[unUsedAisleList.size()]),
                         null, sensorAislePos, true,
                         new OnSelectListener() {
                             @Override
