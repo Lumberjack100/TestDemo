@@ -854,7 +854,8 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/sensor_recyclerView"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:splitMotionEvents="false"/>
 
         </LinearLayout>
 

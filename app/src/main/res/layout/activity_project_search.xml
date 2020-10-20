@@ -17,6 +17,7 @@
             android:layout_height="match_parent"
             android:paddingTop="15dp"
             android:clipToPadding="false"
+            android:splitMotionEvents="false"
             android:visibility="gone" />
 
         <androidx.core.widget.NestedScrollView
@@ -60,7 +61,8 @@
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/recyclerview_history"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:splitMotionEvents="false"/>
 
             </LinearLayout>
 

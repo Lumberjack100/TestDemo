@@ -201,6 +201,7 @@ public abstract class BaseDispatchCmdDialog extends DialogFragment {
 
     @Override
     public void onDestroy() {
+        stopRunnable();
         super.onDestroy();
         unbinder.unbind();
     }

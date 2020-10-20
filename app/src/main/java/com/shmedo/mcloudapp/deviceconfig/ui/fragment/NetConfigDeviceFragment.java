@@ -143,12 +143,12 @@ public class NetConfigDeviceFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(List<DispatchCmdItem> dispatchCmdItemList) {
+        dismissProgressDialog();
         //判断此页面是否处于前台
         if (!isActive) {
             return;
         }
 
-        dismissProgressDialog();
         if (dispatchCmdItemList == null || dispatchCmdItemList.size() == 0) {
             showDispatchFailedDialog();
             return;
