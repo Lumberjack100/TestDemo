@@ -14,7 +14,6 @@ import com.shmedo.configlibrary.ble.model.SensorSoilMoistureInfo;
 import com.shmedo.configlibrary.ble.model.SensorWireShiftInfo;
 import com.shmedo.configlibrary.ble.utils.StringUtil;
 import com.shmedo.core.AppContants;
-import com.shmedo.core.MCloudApp;
 import com.shmedo.core.event.CmdResponseMessage;
 
 import timber.log.Timber;
@@ -48,7 +47,8 @@ public class BleDASExternalDigtalSensorFragment extends BaseBleDASExternalSensor
         collectorSensorParamsInfoSubs.clear();
         collectorSensorParamsInfoSubs.addAll(collectorSensorHashMap.values());
         if (collectorSensorParamsInfoSubs.isEmpty()) {
-            Timber.e("%s 采集器接入的传感器信息为空!", collectorName);
+            Timber.i("%s 采集器接入的传感器信息为空!", collectorName);
+            sendCloseCollectorCmd();
             return;
         }
 
@@ -257,14 +257,4 @@ public class BleDASExternalDigtalSensorFragment extends BaseBleDASExternalSensor
         }
     }
 
-    private void doAfterSetting() {
-        stopProgressRunnable();
-        ToastUtils.show("已设置");
-        MCloudApp.getMainHandler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                mActivity.finish();
-            }
-        }, 2000);
-    }
 }

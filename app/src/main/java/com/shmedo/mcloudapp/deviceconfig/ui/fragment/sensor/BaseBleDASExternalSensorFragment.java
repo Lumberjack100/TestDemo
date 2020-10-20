@@ -3,15 +3,14 @@ package com.shmedo.mcloudapp.deviceconfig.ui.fragment.sensor;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
+import android.text.TextUtils;
+import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import android.os.Parcelable;
-import android.text.TextUtils;
-import android.view.View;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -23,6 +22,7 @@ import com.shmedo.configlibrary.ble.cmd.CommandManager;
 import com.shmedo.configlibrary.ble.cmd.CommandResult;
 import com.shmedo.configlibrary.ble.cmd.entity.CollectorConfigEntity;
 import com.shmedo.configlibrary.ble.cmd.entity.CollectorSensorParamsEntity;
+import com.shmedo.configlibrary.ble.cmd.entity.SetCollectorAddressEntity;
 import com.shmedo.configlibrary.ble.enums.CollectorModel;
 import com.shmedo.configlibrary.ble.enums.CommandType;
 import com.shmedo.configlibrary.ble.enums.SensorType;
@@ -243,6 +243,15 @@ public abstract class BaseBleDASExternalSensorFragment extends BaseBleConnectFra
 
     protected abstract void sendInstruction();
 
+    protected void sendCloseCollectorCmd() {
+        SetCollectorAddressEntity collectorAddressEntity = new SetCollectorAddressEntity(0);
+        String cmdCollectorAddress = CommandManager.getInstance().getCommand(CommandType.SET_COLLECTOR_ADDRESS, collectorAddressEntity);
+        errMsg = "发送指令超时,请稍后尝试";
+        startProgressRunnable("正在发送配置指令...", CONFIG_PARAMS_DELAY_MILLIS);
+        sendCommonCommandImmediately(cmdCollectorAddress);
+        Timber.d("设置采集器地址指令===%s", cmdCollectorAddress);
+    }
+
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(MessageEvent messageEvent) {
         if (messageEvent instanceof CmdResponseMessage) {
@@ -272,6 +281,11 @@ public abstract class BaseBleDASExternalSensorFragment extends BaseBleConnectFra
                 if (collectorConfigInfo == null) {
                     Timber.e("采集器配置信息为空!");
                 } else {
+                    if (collectorConfigInfo.getCollectorAddress().equals("0")) {
+                        stopProgressRunnable();
+                        collectorCloseWarn();
+                        return;
+                    }
                     accessSum = collectorConfigInfo.getAccessSum();
                 }
 
@@ -313,6 +327,15 @@ public abstract class BaseBleDASExternalSensorFragment extends BaseBleConnectFra
                         initEmptyDefaultCollectorSensorParamsInfo();
                     }
                 }
+                break;
+
+            case SET_COLLECTOR_ADDRESS://当接入的传感器为0时，设置采集器地址为0
+                stopProgressRunnable();
+                if (tempStr.endsWith(CommandResult.ERROR_END)) {
+                    ToastUtils.show("采集器地址配置错误!");
+                    return;
+                }
+                doAfterSetting();
                 break;
         }
     }
@@ -381,6 +404,37 @@ public abstract class BaseBleDASExternalSensorFragment extends BaseBleConnectFra
         DASSensorItem sensorItem = new DASSensorItem(R.drawable.ic_sensor_holder);
         sensorItem.setSensorAddress(address);
         sensorItemList.add(sensorItem);
+    }
+
+    protected void doAfterSetting() {
+        stopProgressRunnable();
+        ToastUtils.show("已设置");
+        MCloudApp.getMainHandler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                mActivity.finish();
+            }
+        }, 2000);
+    }
+
+    protected void collectorCloseWarn() {
+        MaterialDialog.Builder mBuilder = new MaterialDialog.Builder(getActivity());
+        mBuilder.title("温馨提示：")
+                .content("采集器地址为0，无法配置扩展传感器，请先修改采集器地址")
+                .contentColorRes(R.color.title_text_color)
+                .cancelable(false)
+                .canceledOnTouchOutside(false)
+                .positiveText("确定")
+                .positiveColorRes(R.color.blue_52B4F8)
+                .onPositive(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        dialog.dismiss();
+                        mActivity.finish();
+                    }
+                });
+        MaterialDialog mMaterialDialog = mBuilder.build();
+        mMaterialDialog.show();
     }
 
     @Override
