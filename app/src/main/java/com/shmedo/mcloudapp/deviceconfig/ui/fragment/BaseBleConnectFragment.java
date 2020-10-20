@@ -77,8 +77,9 @@ public abstract class BaseBleConnectFragment extends BaseFragment {
 
     public static final int SEND_SINGLE_COMMAND_DELAY_MILLIS = 3000;//发送单条指令超时时间
 
-    public static final int CONFIG_PARAMS_DELAY_MILLIS = 30000;//发送配置参数指令超时时间
+    public static final int CONFIG_PARAMS_DELAY_MILLIS = 20000;//发送配置参数指令超时时间
 
+    public static final int CONFIG_PARAMS_LONG_DELAY_MILLIS = 30000;//发送配置参数指令超时时间
 
     private NewBleManager bleManager = NewBleManager.getInstance();
 
@@ -152,7 +153,7 @@ public abstract class BaseBleConnectFragment extends BaseFragment {
         public void run() {
             if (MCloudApp.isIsBluetoothDeviceConnected()) {
                 sendHeartData();
-                heartHander.postDelayed(this, 5000);
+                heartHander.postDelayed(this, 10000);
             }
         }
     }

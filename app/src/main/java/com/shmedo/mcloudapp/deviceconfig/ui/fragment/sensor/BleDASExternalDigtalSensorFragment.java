@@ -63,7 +63,7 @@ public class BleDASExternalDigtalSensorFragment extends BaseBleDASExternalSensor
         String command = String.valueOf(builderFirst);
 
         errMsg = "发送指令超时,请稍后尝试";
-        startProgressRunnable("正在发送配置指令...", CONFIG_PARAMS_DELAY_MILLIS);
+        startProgressRunnable("正在发送配置指令...", CONFIG_PARAMS_LONG_DELAY_MILLIS);
         sendCommonCommandImmediately(command);
         Timber.d("设置 %s 接入的传感器指令===%s", collectorName, command);
     }

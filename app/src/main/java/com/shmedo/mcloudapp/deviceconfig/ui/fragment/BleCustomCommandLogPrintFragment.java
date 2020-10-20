@@ -1,15 +1,14 @@
 package com.shmedo.mcloudapp.deviceconfig.ui.fragment;
 
 import android.os.Bundle;
-
-import androidx.annotation.Nullable;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.hjq.toast.ToastUtils;
 import com.kyleduo.switchbutton.SwitchButton;
@@ -26,7 +25,6 @@ import com.shmedo.core.event.CmdResponseMessage;
 import com.shmedo.core.event.MessageEvent;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.view.ClearEditText;
-import com.shmedo.mcloudapp.util.KeyBordUtils;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.base.CommonViewHolder;
 
@@ -209,10 +207,8 @@ public class BleCustomCommandLogPrintFragment extends BaseBleConnectFragment {
                                         workModel = WorkModel.WORK;
                                         break;
                                 }
-                                WorkModeEntity workModeEntity = new WorkModeEntity(workModel.toInt());
-                                String command = CommandManager.getInstance().getCommand(CommandType.WORK_MODE, workModeEntity);
-                                sendCommonCommandImmediately(command);
-                                Timber.d("设置调试模式指令==%s", command);
+
+                                setWorkMode(workModel);
                             }
                         }, 0, R.layout.custom_xpopup_adapter_text_match)
                 .show();
@@ -220,18 +216,30 @@ public class BleCustomCommandLogPrintFragment extends BaseBleConnectFragment {
 
     private void switchLogOutputMode(boolean isOpen) {
         LogOutputEntity logOutputEntity = new LogOutputEntity(isOpen ? LogOutputStatus.OPEN.toInt() : LogOutputStatus.CLOSE.toInt());
-        String cmd = CommandManager.getInstance().getCommand(CommandType.LOG_OUTPUT_STATUS, logOutputEntity);
-        sendCommonCommandImmediately(cmd);
+        String command = CommandManager.getInstance().getCommand(CommandType.LOG_OUTPUT_STATUS, logOutputEntity);
+        sendCommonCommandImmediately(command);
+        Timber.d("设置日志输出模式指令==%s", command);
+        logDataList.add(command.replace("\r\n",""));
+        adapter.notifyDataSetChanged();
+    }
+
+    private void setWorkMode(WorkModel workMode) {
+        WorkModeEntity workModeEntity = new WorkModeEntity(workMode.toInt());
+        String command = CommandManager.getInstance().getCommand(CommandType.WORK_MODE, workModeEntity);
+        sendCommonCommandImmediately(command);
+        Timber.d("设置调试模式指令==%s", command);
+        logDataList.add(command.replace("\r\n",""));
+        adapter.notifyDataSetChanged();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(MessageEvent messageEvent) {
         if (messageEvent instanceof CmdResponseMessage) {
-            if(!isActive){
+            if (!isActive) {
                 return;
             }
             setResultData((CmdResponseMessage) messageEvent);
-        }else {
+        } else {
             super.onMessageEvent(messageEvent);
         }
     }
@@ -254,6 +262,13 @@ public class BleCustomCommandLogPrintFragment extends BaseBleConnectFragment {
         }
     }
 
+    @Override
+    public void onDestroy() {
+        switchLogOutputMode(false);
+        setWorkMode(WorkModel.WORK);
+
+        super.onDestroy();
+    }
 
     @Override
     public boolean onBackPressed() {

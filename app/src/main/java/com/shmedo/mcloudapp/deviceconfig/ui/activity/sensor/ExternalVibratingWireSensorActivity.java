@@ -278,23 +278,17 @@ public class ExternalVibratingWireSensorActivity extends BaseActivity {
         boolean updateDataSuccess = false;
         switch (selectedSensorType) {
             case KANG_PERCOLATE:
-                if (parcelableData == null) {
-                    parcelableData = new SensorKangPercolateInfo();
-                }
+                parcelableData = new SensorKangPercolateInfo();
                 updateDataSuccess = sensorBGK4500View.updateSensorData((SensorKangPercolateInfo) parcelableData);
                 break;
 
             case GUDAN_PERCOLATE:
-                if (parcelableData == null) {
-                    parcelableData = new SensorGudanPercolateInfo();
-                }
+                parcelableData = new SensorGudanPercolateInfo();
                 updateDataSuccess = sensorVWP03View.updateSensorData((SensorGudanPercolateInfo) parcelableData);
                 break;
 
             case JUNXING_ZLJ_300T:
-                if (parcelableData == null) {
-                    parcelableData = new SensorJunXingZljInfo();
-                }
+                parcelableData = new SensorJunXingZljInfo();
                 updateDataSuccess = sensorZLJ300tView.updateSensorData((SensorJunXingZljInfo) parcelableData);
                 break;
         }
