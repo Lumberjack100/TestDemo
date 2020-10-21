@@ -170,6 +170,7 @@ public class BleCustomCommandLogPrintFragment extends BaseBleConnectFragment {
                 sendCommonCommandImmediately(result);
                 logDataList.add(sendCode);
                 cmdAdapter.notifyDataSetChanged();
+                Log4a.i(TAG, String.format("发送指令==%s", result.replace("\r\n", "")));
                 break;
 
         }
@@ -215,18 +216,20 @@ public class BleCustomCommandLogPrintFragment extends BaseBleConnectFragment {
         LogOutputEntity logOutputEntity = new LogOutputEntity(isOpen ? LogOutputStatus.OPEN.toInt() : LogOutputStatus.CLOSE.toInt());
         String command = CommandManager.getInstance().getCommand(CommandType.LOG_OUTPUT_STATUS, logOutputEntity);
         sendCommonCommandImmediately(command);
-        Timber.d("设置日志输出模式指令==%s", command);
         logDataList.add(command.replace("\r\n",""));
         cmdAdapter.notifyDataSetChanged();
+        Timber.d("设置日志输出模式指令==%s", command);
+        Log4a.i(TAG, String.format("发送指令==%s", command.replace("\r\n", "")));
     }
 
     private void setWorkMode(WorkModel workMode) {
         WorkModeEntity workModeEntity = new WorkModeEntity(workMode.toInt());
         String command = CommandManager.getInstance().getCommand(CommandType.WORK_MODE, workModeEntity);
         sendCommonCommandImmediately(command);
-        Timber.d("设置调试模式指令==%s", command);
         logDataList.add(command.replace("\r\n",""));
         cmdAdapter.notifyDataSetChanged();
+        Timber.d("设置调试模式指令==%s", command);
+        Log4a.i(TAG, String.format("设置调试模式指令==%s", command.replace("\r\n", "")));
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -244,14 +247,14 @@ public class BleCustomCommandLogPrintFragment extends BaseBleConnectFragment {
     private void setResultData(CmdResponseMessage responseMessage) {
         String cmdStr = responseMessage.getResult();
         String content = cmdStr.replace("\r\n", "");
-        Log4a.i(TAG, content);
+        Log4a.i(TAG, cmdStr);
         Log4a.flush();
 
-        if (isPause) { //
-            Timber.i("=====暂停了");
+        if (isPause) {
+            Timber.i("=====屏幕打印暂停了");
 
         } else {
-            Timber.i("=====开始了");
+            Timber.i("=====屏幕打印开始了");
             logDataList.add(cmdStr);
             cmdAdapter.notifyDataSetChanged();
             mRecyclerView.scrollToPosition(cmdAdapter.getItemCount() - 1);
