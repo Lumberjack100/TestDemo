@@ -713,7 +713,7 @@ public abstract class BaseBleConnectFragment extends BaseFragment {
      * @param cmdStr
      */
     protected void sendCommonCommand(final String cmdStr) {
-        final Message msg = new Message(UUID.randomUUID().toString(), cmdStr, true);
+        final Message msg = new Message(UUID.randomUUID().toString(), cmdStr);
         uiHander.postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -730,7 +730,7 @@ public abstract class BaseBleConnectFragment extends BaseFragment {
      * @param cmdStr
      */
     protected void sendCommonCommandImmediately(final String cmdStr) {
-        final Message msg = new Message(UUID.randomUUID().toString(), cmdStr, true);
+        final Message msg = new Message(UUID.randomUUID().toString(), cmdStr);
         if (bleManager != null) {
             bleManager.writeMessage(msg);
         }

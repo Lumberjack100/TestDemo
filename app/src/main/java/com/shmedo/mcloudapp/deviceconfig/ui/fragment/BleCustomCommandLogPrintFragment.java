@@ -166,7 +166,6 @@ public class BleCustomCommandLogPrintFragment extends BaseBleConnectFragment {
                     ToastUtils.show("指令格式不正确，请重新输入");
                     return;
                 }
-                Timber.d("发送指令==%s", result);
                 sendCommonCommandImmediately(result);
                 logDataList.add(sendCode);
                 cmdAdapter.notifyDataSetChanged();
@@ -218,8 +217,7 @@ public class BleCustomCommandLogPrintFragment extends BaseBleConnectFragment {
         sendCommonCommandImmediately(command);
         logDataList.add(command.replace("\r\n",""));
         cmdAdapter.notifyDataSetChanged();
-        Timber.d("设置日志输出模式指令==%s", command);
-        Log4a.i(TAG, String.format("发送指令==%s", command.replace("\r\n", "")));
+        Log4a.i(TAG, String.format("设置日志输出模式指令==%s", command.replace("\r\n", "")));
     }
 
     private void setWorkMode(WorkModel workMode) {
@@ -228,7 +226,6 @@ public class BleCustomCommandLogPrintFragment extends BaseBleConnectFragment {
         sendCommonCommandImmediately(command);
         logDataList.add(command.replace("\r\n",""));
         cmdAdapter.notifyDataSetChanged();
-        Timber.d("设置调试模式指令==%s", command);
         Log4a.i(TAG, String.format("设置调试模式指令==%s", command.replace("\r\n", "")));
     }
 
@@ -254,7 +251,6 @@ public class BleCustomCommandLogPrintFragment extends BaseBleConnectFragment {
             Timber.i("=====屏幕打印暂停了");
 
         } else {
-            Timber.i("=====屏幕打印开始了");
             logDataList.add(cmdStr);
             cmdAdapter.notifyDataSetChanged();
             mRecyclerView.scrollToPosition(cmdAdapter.getItemCount() - 1);
