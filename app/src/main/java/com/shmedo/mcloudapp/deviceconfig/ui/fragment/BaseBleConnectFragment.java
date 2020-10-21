@@ -541,7 +541,14 @@ public abstract class BaseBleConnectFragment extends BaseFragment {
 
                 case Constants.MESSAGE_LOCK_REBOOT_DEVICE:
                     Timber.i("蓝牙通讯已就绪");
-                    queryDeviceConfigInfoCmd();
+                    stopProgressRunnable();
+                    authenticateNum = 0;
+                    isAutoConnectBlue = true;//
+                    if (BaseBleConnectFragment.this instanceof BleConfigDeviceFragment) {
+                        errMsg = "查询设备配置参数超时，请尝试重新连接";
+                        startProgressRunnable("初始化设备配置信息...", CONFIG_PARAMS_DELAY_MILLIS);
+                        queryDeviceConfigInfoCmd();
+                    }
                     break;
 
                 default:
@@ -742,6 +749,8 @@ public abstract class BaseBleConnectFragment extends BaseFragment {
     private void setAuthenticateWay() {
         if (authenticateNum >= 4) {
             Timber.w("达到最大设定认证次数");
+            ToastUtils.show("设备认证失败!");
+            disconnectDevice();
             return;
         }
         authenticateNum++;
