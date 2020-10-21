@@ -435,14 +435,14 @@ public abstract class BaseBleConnectFragment extends BaseFragment {
 
                 case RESPONSE_WITH_NO_MESSAGE:
                     Timber.i("RESPONSE_WITH_NO_MESSAGE");
-                    try {
-                        byte[] data = ((String) event.getEventData()).getBytes();
-                        if (data.length > 0) {
-                            ByteManagerUtil.getInstance().writeByte(data);
-                        }
-                    } catch (Exception ex) {
-                        Timber.e(ex);
-                    }
+//                    try {
+//                        byte[] data = ((String) event.getEventData()).getBytes();
+//                        if (data.length > 0) {
+//                            ByteManagerUtil.getInstance().writeByte(data);
+//                        }
+//                    } catch (Exception ex) {
+//                        Timber.e(ex);
+//                    }
                     break;
 
                 default:
