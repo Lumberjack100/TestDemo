@@ -97,6 +97,8 @@ public abstract class BaseBleConnectFragment extends BaseFragment {
 
     public boolean isExitMode = false;
 
+    protected static boolean isLogOutputMode = false;//设备是否打开了内部日志输出模式
+
     protected String errMsg = "";
 
     private String SN = MCloudApp.getCurDeviceToken();
@@ -153,7 +155,7 @@ public abstract class BaseBleConnectFragment extends BaseFragment {
         public void run() {
             if (MCloudApp.isIsBluetoothDeviceConnected()) {
                 sendHeartData();
-                heartHander.postDelayed(this, 10000);
+                heartHander.postDelayed(this, 30000);
             }
         }
     }
@@ -161,7 +163,7 @@ public abstract class BaseBleConnectFragment extends BaseFragment {
     protected void startHeartRunnable() {
         if (heartRunnable == null) {
             heartRunnable = new HeartRunnable();
-            heartHander.postDelayed(heartRunnable, 3000);
+            heartHander.postDelayed(heartRunnable, 10000);
         }
     }
 
@@ -435,14 +437,16 @@ public abstract class BaseBleConnectFragment extends BaseFragment {
 
                 case RESPONSE_WITH_NO_MESSAGE:
                     Timber.i("RESPONSE_WITH_NO_MESSAGE");
-//                    try {
-//                        byte[] data = ((String) event.getEventData()).getBytes();
-//                        if (data.length > 0) {
-//                            ByteManagerUtil.getInstance().writeByte(data);
-//                        }
-//                    } catch (Exception ex) {
-//                        Timber.e(ex);
-//                    }
+                    if(isLogOutputMode) {
+                        try {
+                            byte[] data = ((String) event.getEventData()).getBytes();
+                            if (data.length > 0) {
+                                ByteManagerUtil.getInstance().writeByte(data);
+                            }
+                        } catch (Exception ex) {
+                            Timber.e(ex);
+                        }
+                    }
                     break;
 
                 default:
@@ -473,14 +477,14 @@ public abstract class BaseBleConnectFragment extends BaseFragment {
                     MCloudApp.setIsBluetoothDeviceConnected(false);
                     EventBus.getDefault().post(new BluetoothConnectStateEvent(false));
                     //断开蓝牙后重新连接
-                    if (isAutoConnectBlue) {
-                        MCloudApp.getMainHandler().postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                findAndConnectSpecificDevice();
-                            }
-                        }, 1500);
-                    }
+//                    if (isAutoConnectBlue) {
+//                        MCloudApp.getMainHandler().postDelayed(new Runnable() {
+//                            @Override
+//                            public void run() {
+//                                findAndConnectSpecificDevice();
+//                            }
+//                        }, 1500);
+//                    }
                     break;
 
                 case Constants.BT_MESSAGE_WRITE_FAIL:
@@ -489,7 +493,8 @@ public abstract class BaseBleConnectFragment extends BaseFragment {
 
                 case Constants.BT_WRITE_TIME_OUT:
                     ToastUtils.show("指令发送超时");
-                    autoConnectAfterDisconnect();
+//                    autoConnectAfterDisconnect();
+                    disconnectDevice();
                     break;
 
                 case Constants.VERIFY_RESULT:
@@ -520,7 +525,8 @@ public abstract class BaseBleConnectFragment extends BaseFragment {
                     break;
 
                 case Constants.MESSAGE_RESPONSE_TIME_OUT://消息等待响应超时
-                    autoConnectAfterDisconnect();
+//                    autoConnectAfterDisconnect();
+                    disconnectDevice();
                     break;
 
                 case Constants.BT_REQUEST_MTU_FAIL:

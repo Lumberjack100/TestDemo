@@ -87,6 +87,7 @@ public class BleCustomCommandLogPrintFragment extends BaseBleConnectFragment {
         snNumber = MCloudApp.getCurDeviceToken();
         Log4a.i(TAG, String.format("====开始调试设备：%s", snNumber));
         mTvDebugMode.setText("关闭");
+        isLogOutputMode = true;
     }
 
     /**
@@ -259,6 +260,7 @@ public class BleCustomCommandLogPrintFragment extends BaseBleConnectFragment {
 
     @Override
     public void onDestroy() {
+        isLogOutputMode = false;
         switchLogOutputMode(false);
         setWorkMode(WorkModel.WORK);
 

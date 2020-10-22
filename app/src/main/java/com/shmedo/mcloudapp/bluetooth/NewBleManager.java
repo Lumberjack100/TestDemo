@@ -61,7 +61,7 @@ public class NewBleManager {
     /**
      * 等待消息响应的超时时间
      */
-    private static final int WAIT_FOR_RESPONSE_TIME_OUT_SECOND = 60;
+    private static final int WAIT_FOR_RESPONSE_TIME_OUT_SECOND = 120;
 
     private static NewBleManager bleManager = null;
 
@@ -473,6 +473,7 @@ public class NewBleManager {
         }
 
         public void writeData(byte[] data) {
+//            Timber.d("调用writeCharacteristic");
             if (data == null || data.length == 0)
                 return;
             if (writeCharacteristic == null || mBluetoothGatt == null) {
