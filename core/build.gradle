@@ -34,6 +34,8 @@ dependencies {
     api "com.github.pqpo:Log4a:$rootProject.thirdLib.Log4a"
     api 'com.zhihu.android:matisse:0.5.3-beta3'
 
+    implementation 'io.netty:netty-all:4.1.53.Final'
+
     testImplementation "junit:junit:$rootProject.thirdLib.junit"
     androidTestImplementation "androidx.test.ext:junit:$rootProject.thirdLib.testExtJunit"
     androidTestImplementation "androidx.test.espresso:espresso-core:$rootProject.thirdLib.espresso"
