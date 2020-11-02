@@ -162,8 +162,11 @@ public class CollectorSensorParamsParser implements ResultParser<CollectorSensor
         bean.setSensorType(SensorType.ULTRASONIC_LEVEL_GAUGE);
         info.setTriggerThreshold(strs[3]);
         info.setCorrectionValue((TextUtils.isEmpty(strs[4]) || strs[4].contains("nan")) ? "0" : strs[4]);
-        info.setProbeElevation(strs[5]);
+        if (strs.length == 6)
+            info.setProbeElevation(strs[5]);
+
         bean.setSensorData(info);
+
         return bean;
     }
 

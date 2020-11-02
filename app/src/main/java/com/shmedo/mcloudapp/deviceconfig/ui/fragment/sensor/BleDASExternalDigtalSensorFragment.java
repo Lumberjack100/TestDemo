@@ -11,6 +11,7 @@ import com.shmedo.configlibrary.ble.model.SensorInclinometerInfo;
 import com.shmedo.configlibrary.ble.model.SensorInfrasoundInfo;
 import com.shmedo.configlibrary.ble.model.SensorRadarLevelInfo;
 import com.shmedo.configlibrary.ble.model.SensorSoilMoistureInfo;
+import com.shmedo.configlibrary.ble.model.SensorUltrasonicLevelInfo;
 import com.shmedo.configlibrary.ble.model.SensorWireShiftInfo;
 import com.shmedo.configlibrary.ble.utils.StringUtil;
 import com.shmedo.core.AppContants;
@@ -104,6 +105,14 @@ public class BleDASExternalDigtalSensorFragment extends BaseBleDASExternalSensor
                         sensorSoilMoistureInfo.getTriggerThreshold() + "\r\n";
                 break;
 
+            case UDS08://超声波采集器
+                SensorUltrasonicLevelInfo sensorUltrasonicLevelInfo = (SensorUltrasonicLevelInfo) paramsInfoSub.getSensorData();
+                command = "##168" +
+                        StringUtil.formatStringTwo(paramsInfoSub.getCollectorModel().toString()) +
+                        StringUtil.formatStringTwo(paramsInfoSub.getSensorAddress()) +
+                        sensorUltrasonicLevelInfo.getTriggerThreshold() + "\r\n";
+                break;
+
             case RD08://雷达采集器
                 SensorRadarLevelInfo sensorRadarLevelInfo = (SensorRadarLevelInfo) paramsInfoSub.getSensorData();
                 command = "##168" +
@@ -159,6 +168,14 @@ public class BleDASExternalDigtalSensorFragment extends BaseBleDASExternalSensor
                         StringUtil.formatStringTwo(paramsInfoSub.getCollectorModel().toString()) +
                         StringUtil.formatStringTwo(paramsInfoSub.getSensorAddress()) +
                         sensorSoilMoistureInfo.getCorrectionValue() + "\r\n";
+                break;
+
+            case UDS08://超声波采集器
+                SensorUltrasonicLevelInfo sensorUltrasonicLevelInfo = (SensorUltrasonicLevelInfo) paramsInfoSub.getSensorData();
+                command = "##165" +
+                        StringUtil.formatStringTwo(paramsInfoSub.getCollectorModel().toString()) +
+                        StringUtil.formatStringTwo(paramsInfoSub.getSensorAddress()) +
+                        sensorUltrasonicLevelInfo.getCorrectionValue() + "\r\n";
                 break;
 
             case RD08://雷达采集器

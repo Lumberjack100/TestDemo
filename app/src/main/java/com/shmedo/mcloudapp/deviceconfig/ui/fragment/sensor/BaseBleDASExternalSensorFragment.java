@@ -361,6 +361,10 @@ public abstract class BaseBleDASExternalSensorFragment extends BaseBleConnectFra
                 defaultCollectorSensorParamsInfo.setSensorType(SensorType.INCLINOMETER);
                 break;
 
+            case UDS08:
+                defaultCollectorSensorParamsInfo.setSensorType(SensorType.ULTRASONIC_LEVEL_GAUGE);
+                break;
+
             case RD08:
                 defaultCollectorSensorParamsInfo.setSensorType(SensorType.RADAR_LEVEL_GAUGE);
                 break;

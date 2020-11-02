@@ -1,5 +1,8 @@
 package com.shmedo.configlibrary.ble.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.shmedo.configlibrary.ble.enums.SensorType;
 import com.shmedo.configlibrary.ble.interfaces.SensorParameter;
 
@@ -12,11 +15,43 @@ import com.shmedo.configlibrary.ble.interfaces.SensorParameter;
  * 描述：    传感器类型为 超声波物位计  06
  */
 
-public class SensorUltrasonicLevelInfo implements SensorParameter {
+public class SensorUltrasonicLevelInfo implements SensorParameter, Parcelable {
     private String triggerThreshold;   //触发阈值
     private String correctionValue;     //修正值
     private String probeElevation;  //探头高程
 
+    public SensorUltrasonicLevelInfo() {
+    }
+
+    protected SensorUltrasonicLevelInfo(Parcel in) {
+        triggerThreshold = in.readString();
+        correctionValue = in.readString();
+        probeElevation = in.readString();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(triggerThreshold);
+        dest.writeString(correctionValue);
+        dest.writeString(probeElevation);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<SensorUltrasonicLevelInfo> CREATOR = new Creator<SensorUltrasonicLevelInfo>() {
+        @Override
+        public SensorUltrasonicLevelInfo createFromParcel(Parcel in) {
+            return new SensorUltrasonicLevelInfo(in);
+        }
+
+        @Override
+        public SensorUltrasonicLevelInfo[] newArray(int size) {
+            return new SensorUltrasonicLevelInfo[size];
+        }
+    };
 
     public String getTriggerThreshold() {
         return triggerThreshold;

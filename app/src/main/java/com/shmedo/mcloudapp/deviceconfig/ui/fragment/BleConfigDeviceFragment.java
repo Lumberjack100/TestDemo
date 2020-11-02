@@ -44,7 +44,7 @@ import com.shmedo.mcloudapp.deviceconfig.model.DeviceTypeInfo;
 import com.shmedo.mcloudapp.deviceconfig.model.FirmWareInfo;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.AdvancedSettingActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.DASCollectorSettingActivity;
-import com.shmedo.mcloudapp.deviceconfig.ui.activity.DASSensorConfigActivity;
+import com.shmedo.mcloudapp.deviceconfig.ui.activity.sensor.DASSensorConfigActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.DataCenterActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.DeviceConfigActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.DeviceCurrentStateActivity;

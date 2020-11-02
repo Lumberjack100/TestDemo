@@ -286,7 +286,7 @@
             android:screenOrientation="portrait"
             android:theme="@style/LightStatusBarActivity" />
         <activity
-            android:name=".deviceconfig.ui.activity.DASSensorConfigActivity"
+            android:name=".deviceconfig.ui.activity.sensor.DASSensorConfigActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:maxAspectRatio="2.4"
             android:screenOrientation="portrait"

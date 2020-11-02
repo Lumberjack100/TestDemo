@@ -1,6 +1,5 @@
 package com.shmedo.mcloudapp.deviceconfig.ui.activity.sensor;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -14,23 +13,21 @@ import android.widget.TextView;
 import androidx.fragment.app.Fragment;
 
 import com.hjq.toast.ToastUtils;
-import com.shmedo.configlibrary.ble.enums.CollectorModel;
 import com.shmedo.configlibrary.ble.enums.SensorType;
 import com.shmedo.configlibrary.ble.model.SensorInclinometerInfo;
 import com.shmedo.configlibrary.ble.model.SensorInfrasoundInfo;
 import com.shmedo.configlibrary.ble.model.SensorRadarLevelInfo;
 import com.shmedo.configlibrary.ble.model.SensorSoilMoistureInfo;
+import com.shmedo.configlibrary.ble.model.SensorUltrasonicLevelInfo;
 import com.shmedo.configlibrary.ble.model.SensorWireShiftInfo;
 import com.shmedo.configlibrary.ble.utils.ValidateUtil;
 import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.activity.BaseActivity;
-import com.shmedo.mcloudapp.projects.model.DASSensorItem;
 import com.shmedo.mcloudapp.util.bleutil.BlueResultParserUtil;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -176,6 +173,16 @@ public class ExternalDigitalSensorActivity extends BaseActivity {
                 }
                 break;
 
+            case ULTRASONIC_LEVEL_GAUGE://超声波物位计
+                mTvAlarmValue.setText("触发阈值(单位:mm)");
+                mTvCorrectValue.setText("修正值(单位:mm)");
+                if (parcelableData != null) {
+                    SensorUltrasonicLevelInfo sensorUltrasonicLevelInfo = (SensorUltrasonicLevelInfo) parcelableData;
+                    triggerThreshold = sensorUltrasonicLevelInfo.getTriggerThreshold();
+                    correctValue = sensorUltrasonicLevelInfo.getCorrectionValue();
+                }
+                break;
+
             case RADAR_LEVEL_GAUGE://雷达物位计
                 mTvAlarmValue.setText("触发阈值(单位:mm)");
                 mTvCorrectValue.setText("修正值(单位:mm)");
@@ -252,6 +259,13 @@ public class ExternalDigitalSensorActivity extends BaseActivity {
                 sensorInclinometerInfo.setCorrectionValue(correctValue);
                 sensorInclinometerInfo.setMeasureLength(measureLong);
                 intent.putExtra(AppContants.Extras.SENSOR_PARAM, sensorInclinometerInfo);
+                break;
+
+            case ULTRASONIC_LEVEL_GAUGE://超声波物位计
+                SensorUltrasonicLevelInfo sensorUltrasonicLevelInfo = new SensorUltrasonicLevelInfo();
+                sensorUltrasonicLevelInfo.setTriggerThreshold(triggerThreshold);
+                sensorUltrasonicLevelInfo.setCorrectionValue(correctValue);
+                intent.putExtra(AppContants.Extras.SENSOR_PARAM, sensorUltrasonicLevelInfo);
                 break;
 
             case RADAR_LEVEL_GAUGE://雷达物位计
