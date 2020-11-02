@@ -244,6 +244,7 @@ public class BleDASExternalVibratingWireSensorFragment extends BaseBleDASExterna
                     stopProgressRunnable();
                     return;
                 }
+                sensorIndex = 0;
                 setTriggerThreshold();
                 break;
 

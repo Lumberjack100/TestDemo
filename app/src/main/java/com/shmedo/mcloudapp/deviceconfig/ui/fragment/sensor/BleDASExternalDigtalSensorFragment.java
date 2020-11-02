@@ -6,6 +6,7 @@ import com.hjq.toast.ToastUtils;
 import com.shmedo.configlibrary.ble.cmd.CommandResult;
 import com.shmedo.configlibrary.ble.enums.CollectorModel;
 import com.shmedo.configlibrary.ble.enums.CommandType;
+import com.shmedo.configlibrary.ble.enums.SensorType;
 import com.shmedo.configlibrary.ble.model.CollectorSensorParamsInfo;
 import com.shmedo.configlibrary.ble.model.SensorInclinometerInfo;
 import com.shmedo.configlibrary.ble.model.SensorInfrasoundInfo;
@@ -70,9 +71,9 @@ public class BleDASExternalDigtalSensorFragment extends BaseBleDASExternalSensor
     }
 
     /**
-     * 设置采集器接入传感器触发阈值
+     * 设置采集器接入传感器触发阈值(通用)
      */
-    private void setTriggerThreshold() {
+    private void setSingleTriggerThreshold() {
         if (sensorIndex >= collectorSensorParamsInfoSubs.size()) {
             return;
         }
@@ -132,6 +133,27 @@ public class BleDASExternalDigtalSensorFragment extends BaseBleDASExternalSensor
 
         sendCommonCommandImmediately(command);
         Timber.d("设置 %s %s 通道号的传感器触发阈值参数===%s", collectorName, StringUtil.formatStringTwo(paramsInfoSub.getSensorAddress()), command);
+    }
+
+    /**
+     * 设置 超声波物位计 接入传感器触发阈值<br/>
+     * 指令格式: ##162xxX…X\r\n<br/>
+     * xx表示采集器类型，X…X表示阀值，X…X由接入传感器数量N决定（4*N）<br/>
+     * 例如：裂缝采集器接入两只拉线位移计，触发阀值分别30mm、40mm<br/>
+     * 设置举例：##1620200300040\r\n<br/>
+     * 返回信息：$$1620200300040\r\n<br/>
+     */
+    private void setMultiTriggerThreshold() {
+        StringBuilder builderFirst = new StringBuilder();
+        builderFirst.append("##162");
+        builderFirst.append(defaultCollectorSensorParamsInfo.getCollectorModel());
+        for (CollectorSensorParamsInfo paramsInfoSub : collectorSensorParamsInfoSubs) {
+            builderFirst.append(getTriggerThresholdBySensorType(paramsInfoSub));
+        }
+        builderFirst.append("\r\n");
+        String command = String.valueOf(builderFirst);
+        sendCommonCommandImmediately(command);
+        Timber.d("设置传感器触发阈值===%s", command);
     }
 
     /**
@@ -216,6 +238,20 @@ public class BleDASExternalDigtalSensorFragment extends BaseBleDASExternalSensor
         Timber.d("设置 %s 的测段长指令===%s", collectorName, command);
     }
 
+    private String getTriggerThresholdBySensorType(CollectorSensorParamsInfo infoSub) {
+        String value = "";
+        SensorType sensorType = infoSub.getSensorType();
+        switch (sensorType) {
+            case ULTRASONIC_LEVEL_GAUGE: {//超声波采集器
+                SensorUltrasonicLevelInfo sensorInfo = (SensorUltrasonicLevelInfo) infoSub.getSensorData();
+                value = StringUtil.formatStringFour((int) Double.parseDouble(sensorInfo.getTriggerThreshold()) + "");
+            }
+            break;
+        }
+
+        return value;
+    }
+
     @Override
     protected void setResultData(CmdResponseMessage responseMessage) {
         String cmdStr = responseMessage.getResult();
@@ -228,10 +264,25 @@ public class BleDASExternalDigtalSensorFragment extends BaseBleDASExternalSensor
                     stopProgressRunnable();
                     return;
                 }
-                setTriggerThreshold();
+                sensorIndex = 0;
+                //超声波物位计使用多传感器触发阈值配置指令
+                if (CollectorModel.value(collectorModelValue) == CollectorModel.UDS08) {
+                    setMultiTriggerThreshold();
+                } else {
+                    setSingleTriggerThreshold();
+                }
                 break;
 
-            case COLLECTOR_SENSOR_THRESHOLD_SOLI://传感器触发阈值 168
+            case COLLECTOR_SENSOR_THRESHOLD_SOLI://传感器触发阈值(单传感器设置) 168
+                if (tempStr.endsWith(CommandResult.ERROR_END)) {
+                    ToastUtils.show("传感器触发阈值设置错误!");
+                    stopProgressRunnable();
+                    return;
+                }
+                setCorrectionValue();
+                break;
+
+            case COLLECTOR_SENSOR_THRESHOLD://传感器触发阈值(多传感器设置) 162
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
                     ToastUtils.show("传感器触发阈值设置错误!");
                     stopProgressRunnable();
@@ -247,7 +298,11 @@ public class BleDASExternalDigtalSensorFragment extends BaseBleDASExternalSensor
                     return;
                 }
                 sensorIndex++;
-                setTriggerThreshold();
+                if (CollectorModel.value(collectorModelValue) == CollectorModel.UDS08) {
+                    setCorrectionValue();
+                } else {
+                    setSingleTriggerThreshold();
+                }
 
                 if (sensorIndex >= collectorSensorParamsInfoSubs.size()) {
                     //测斜仪需要设置测段长
