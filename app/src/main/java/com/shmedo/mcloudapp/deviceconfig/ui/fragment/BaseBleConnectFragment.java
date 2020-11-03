@@ -601,7 +601,7 @@ public abstract class BaseBleConnectFragment extends BaseFragment {
 
                 } else {
                     //过滤掉不匹配标准响应头的应答指令
-                    if (!cmdStr.startsWith("$$")) {
+                    if (!isLogOutputMode && !cmdStr.startsWith("$$")) {
                         return;
                     }
 

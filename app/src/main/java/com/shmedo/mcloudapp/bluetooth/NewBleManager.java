@@ -383,6 +383,8 @@ public class NewBleManager {
                 //                BluetoothEvent event = new BluetoothEvent(BluetoothEventType.DATA_AVAILABLE, value);
                 //                fireEvent(event);
                 try {
+//                    String result = new String(value, StandardCharsets.UTF_8);
+//                    Timber.d("onCharacteristicChanged:%s", result);
                     byteManager.writeByte(value);
                 } catch (Exception ex) {
                     Timber.e(ex);

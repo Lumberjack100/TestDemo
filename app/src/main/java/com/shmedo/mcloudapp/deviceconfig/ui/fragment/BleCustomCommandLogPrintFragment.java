@@ -170,6 +170,7 @@ public class BleCustomCommandLogPrintFragment extends BaseBleConnectFragment {
                 sendCommonCommandImmediately(result);
                 logDataList.add(sendCode);
                 cmdAdapter.notifyDataSetChanged();
+                mRecyclerView.scrollToPosition(cmdAdapter.getItemCount() - 1);
                 Log4a.i(TAG, String.format("发送指令==%s", result.replace("\r\n", "")));
                 break;
 
@@ -218,6 +219,7 @@ public class BleCustomCommandLogPrintFragment extends BaseBleConnectFragment {
         sendCommonCommandImmediately(command);
         logDataList.add(command.replace("\r\n",""));
         cmdAdapter.notifyDataSetChanged();
+        mRecyclerView.scrollToPosition(cmdAdapter.getItemCount() - 1);
         Log4a.i(TAG, String.format("设置日志输出模式指令==%s", command.replace("\r\n", "")));
     }
 
@@ -227,6 +229,7 @@ public class BleCustomCommandLogPrintFragment extends BaseBleConnectFragment {
         sendCommonCommandImmediately(command);
         logDataList.add(command.replace("\r\n",""));
         cmdAdapter.notifyDataSetChanged();
+        mRecyclerView.scrollToPosition(cmdAdapter.getItemCount() - 1);
         Log4a.i(TAG, String.format("设置调试模式指令==%s", command.replace("\r\n", "")));
     }
 
@@ -244,7 +247,6 @@ public class BleCustomCommandLogPrintFragment extends BaseBleConnectFragment {
 
     private void setResultData(CmdResponseMessage responseMessage) {
         String cmdStr = responseMessage.getResult();
-        String content = cmdStr.replace("\r\n", "");
         Log4a.i(TAG, cmdStr);
         Log4a.flush();
 
