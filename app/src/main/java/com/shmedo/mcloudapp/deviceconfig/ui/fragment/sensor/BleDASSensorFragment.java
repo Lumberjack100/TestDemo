@@ -858,27 +858,27 @@ public class BleDASSensorFragment extends BaseBleConnectFragment {
     }
 
     private boolean checkValueIsChange() {
-        if (!mEtRainPrecision.getText().toString().trim().equals(decimalFormat.format((double) baseConfigInfo.getRainAccuracy() / 10000))) {
+        if (baseConfigInfo != null && !mEtRainPrecision.getText().toString().trim().equals(decimalFormat.format((double) baseConfigInfo.getRainAccuracy() / 10000))) {
             return true;
         }
 
-        if (!osmometerAddress.equals(mEtOsmometerAddress.getText().toString().trim())) {
+        if (osmometerAddress != null && !osmometerAddress.equals(mEtOsmometerAddress.getText().toString().trim())) {
             return true;
         }
 
-        if (!depthTriggerValue.equals(mEtWaterAlarmValue.getText().toString().trim())) {
+        if (depthTriggerValue != null && !depthTriggerValue.equals(mEtWaterAlarmValue.getText().toString().trim())) {
             return true;
         }
 
-        if (!depthCorrection.equals(mEtWaterRevised.getText().toString().trim())) {
+        if (depthCorrection != null && !depthCorrection.equals(mEtWaterRevised.getText().toString().trim())) {
             return true;
         }
 
-        if (!osmometerLength.equals(mEtOsmometerCord.getText().toString().trim())) {
+        if (osmometerLength != null && !osmometerLength.equals(mEtOsmometerCord.getText().toString().trim())) {
             return true;
         }
 
-        if (!nozzelHeight.equals(mEtNozzelHeight.getText().toString().trim())) {
+        if (nozzelHeight != null && !nozzelHeight.equals(mEtNozzelHeight.getText().toString().trim())) {
             return true;
         }
 

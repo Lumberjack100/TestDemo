@@ -284,19 +284,19 @@ public class BleCollectorSettingFragment extends BaseBleConnectFragment {
     }
 
     private boolean checkValueIsChange() {
-        if (!collectorConfigInfo.getCollectorAddress().equals(mEtCollectorAddress.getText().toString().trim())) {
+        if (collectorConfigInfo != null && !collectorConfigInfo.getCollectorAddress().equals(mEtCollectorAddress.getText().toString().trim())) {
             return true;
         }
 
-        if (!collectorConfigInfo.getWorkTime().equals(mEtCalculatingTime.getText().toString().trim())) {
+        if (collectorConfigInfo != null && !collectorConfigInfo.getWorkTime().equals(mEtCalculatingTime.getText().toString().trim())) {
             return true;
         }
 
-        if (!collectorConfigInfo.getStandbyTime().equals(mEtStandbyTime.getText().toString().trim())) {
+        if (collectorConfigInfo != null && !collectorConfigInfo.getStandbyTime().equals(mEtStandbyTime.getText().toString().trim())) {
             return true;
         }
 
-        if (!collectorConfigInfo.getCollectorInterval().equals(mEtCollectTime.getText().toString().trim())) {
+        if (collectorConfigInfo != null && !collectorConfigInfo.getCollectorInterval().equals(mEtCollectTime.getText().toString().trim())) {
             return true;
         }
 
