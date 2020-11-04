@@ -1,7 +1,6 @@
 package com.littlegreens.netty.client.handler;
 
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.littlegreens.netty.client.listener.NettyClientListener;
 import com.littlegreens.netty.client.status.ConnectState;
@@ -12,6 +11,7 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.timeout.IdleState;
 import io.netty.handler.timeout.IdleStateEvent;
+import timber.log.Timber;
 
 
 public class NettyClientHandler extends SimpleChannelInboundHandler<String> {
@@ -29,7 +29,7 @@ public class NettyClientHandler extends SimpleChannelInboundHandler<String> {
 
 
     public NettyClientHandler(NettyClientListener listener, int index, boolean isSendheartBeat, Object heartBeatData) {
-        this(listener,index,isSendheartBeat,heartBeatData,null);
+        this(listener, index, isSendheartBeat, heartBeatData, null);
     }
 
     public NettyClientHandler(NettyClientListener listener, int index, boolean isSendheartBeat, Object heartBeatData, String separator) {
@@ -65,11 +65,11 @@ public class NettyClientHandler extends SimpleChannelInboundHandler<String> {
                             ByteBuf buf = Unpooled.copiedBuffer((byte[]) heartBeatData);
                             ctx.channel().writeAndFlush(buf);
                         } else {
-                            Log.e(TAG, "userEventTriggered: heartBeatData type error");
+                            Timber.e("userEventTriggered: heartBeatData type error");
                         }
                     }
                 } else {
-                    Log.e(TAG, "不发送心跳");
+                    Timber.e("不发送心跳");
                 }
             }
         }
@@ -82,7 +82,7 @@ public class NettyClientHandler extends SimpleChannelInboundHandler<String> {
      */
     @Override
     public void channelActive(ChannelHandlerContext ctx) {
-        Log.e(TAG, "channelActive");
+        Timber.e("channelActive");
 //        NettyTcpClient.getInstance().setConnectStatus(true);
         listener.onClientStatusConnectChanged(ConnectState.STATUS_CONNECT_SUCCESS, index);
     }
@@ -94,7 +94,7 @@ public class NettyClientHandler extends SimpleChannelInboundHandler<String> {
      */
     @Override
     public void channelInactive(ChannelHandlerContext ctx) {
-        Log.e(TAG, "channelInactive");
+        Timber.e("channelInactive");
 //        NettyTcpClient.getInstance().setConnectStatus(false);
 //        listener.onServiceStatusConnectChanged(NettyClientListener.STATUS_CONNECT_CLOSED);
         // NettyTcpClient.getInstance().reconnect();
@@ -108,7 +108,7 @@ public class NettyClientHandler extends SimpleChannelInboundHandler<String> {
      */
     @Override
     protected void channelRead0(ChannelHandlerContext channelHandlerContext, String msg) {
-        Log.e(TAG, "channelRead0:"+msg);
+        Timber.e("channelRead0:" + msg);
         listener.onMessageResponseClient(msg, index);
     }
 
@@ -120,7 +120,7 @@ public class NettyClientHandler extends SimpleChannelInboundHandler<String> {
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
         // Close the connection when an exception is raised.
 //        NettyTcpClient.getInstance().setConnectStatus(false);
-        Log.e(TAG, "exceptionCaught");
+        Timber.e("exceptionCaught");
         listener.onClientStatusConnectChanged(ConnectState.STATUS_CONNECT_ERROR, index);
         cause.printStackTrace();
         ctx.close();

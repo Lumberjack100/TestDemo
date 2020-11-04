@@ -12,11 +12,11 @@ import com.shmedo.mcloudapp.deviceconfig.TcpManager;
  * 创建时间:  2020/11/4 <br/>
  * 描述：     TODO
  */
-public class TcpViewModel extends AndroidViewModel {
+public class TcpShareViewModel extends AndroidViewModel {
 
     public final TcpManager tcpManager = new TcpManager();
 
-    public TcpViewModel(@NonNull Application application) {
+    public TcpShareViewModel(@NonNull Application application) {
         super(application);
     }
 
