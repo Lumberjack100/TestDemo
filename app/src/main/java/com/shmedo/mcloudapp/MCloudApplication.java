@@ -3,6 +3,10 @@ package com.shmedo.mcloudapp;
 import android.app.Application;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.lifecycle.ViewModelStore;
+import androidx.lifecycle.ViewModelStoreOwner;
+
 import com.hjq.toast.ToastInterceptor;
 import com.hjq.toast.ToastUtils;
 import com.hjq.toast.style.ToastBlackStyle;
@@ -23,10 +27,15 @@ import timber.log.Timber;
  * 创建者:   dpc
  * 创建时间:  2019/1/8 09:16
  */
-public class MCloudApplication extends Application {
+public class MCloudApplication extends Application implements ViewModelStoreOwner {
+    private ViewModelStore mAppViewModelStore;
+
     @Override
     public void onCreate() {
         super.onCreate();
+
+        mAppViewModelStore = new ViewModelStore();
+
         MCloudApp.initialize(this);
 
         //初始化facebook.stetho
@@ -51,6 +60,11 @@ public class MCloudApplication extends Application {
         initMdBluetoothManager();
     }
 
+    @NonNull
+    @Override
+    public ViewModelStore getViewModelStore() {
+        return mAppViewModelStore;
+    }
 
     /**
      * 初始化异常上报
@@ -63,7 +77,6 @@ public class MCloudApplication extends Application {
         CrashReport.initCrashReport(getApplicationContext(), BuildConfig.BUGLY_APPKEY, false);
     }
 
-
     /**
      * 设置日志输出
      */
@@ -74,7 +87,6 @@ public class MCloudApplication extends Application {
             Timber.plant(new CrashReportingTree());
         }
     }
-
 
     /**
      * 初始化 Toast 工具类

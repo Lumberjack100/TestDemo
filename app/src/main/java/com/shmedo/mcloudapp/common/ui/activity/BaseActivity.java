@@ -1,9 +1,9 @@
 package com.shmedo.mcloudapp.common.ui.activity;
 
 import android.app.Activity;
+import android.app.Application;
 import android.content.Context;
 import android.content.IntentFilter;
-import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.net.ConnectivityManager;
 import android.os.Build;
@@ -22,6 +22,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.lifecycle.ViewModel;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.shmedo.core.MCloudApp;
@@ -31,6 +33,7 @@ import com.shmedo.core.event.NetworkChangeEvent;
 import com.shmedo.core.receiver.NetworkConnectChangedReceiver;
 import com.shmedo.core.util.ActivityCollector;
 import com.shmedo.core.util.NetworkUtils;
+import com.shmedo.mcloudapp.MCloudApplication;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.util.KeyBordUtils;
 import com.shmedo.mcloudapp.util.UiUtils;
@@ -57,12 +60,14 @@ import timber.log.Timber;
  */
 public abstract class BaseActivity extends AppCompatActivity {
 
+    private ViewModelProvider mActivityProvider;
+    private ViewModelProvider mApplicationProvider;
+
     private View mTipView;
 
     private WindowManager mWindowManager;
 
     private WindowManager.LayoutParams mLayoutParams;
-
 
     protected MaterialDialog loadingDialog = null;
 
@@ -135,7 +140,6 @@ public abstract class BaseActivity extends AppCompatActivity {
         EventBus.getDefault().register(this);
     }
 
-
     @Override
     protected void onResume() {
         super.onResume();
@@ -146,7 +150,6 @@ public abstract class BaseActivity extends AppCompatActivity {
         //在无网络情况下打开APP时，系统不会发送网络状况变更的Intent，需要自己手动检查
         netStateChangedUI(NetworkUtils.isConnected());
     }
-
 
     @Override
     protected void onPause() {
@@ -162,7 +165,6 @@ public abstract class BaseActivity extends AppCompatActivity {
         EventBus.getDefault().unregister(this);
     }
 
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         //ActionBar Home按钮返回事件
@@ -174,14 +176,12 @@ public abstract class BaseActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull
             int[] grantResults) {
         XPermissionUtils.onRequestPermissionsResult(requestCode, permissions, grantResults);
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
-
 
     protected void showLoadingDialog(String tip) {
         if (loadingDialog != null && loadingDialog.isShowing()) {
@@ -210,7 +210,6 @@ public abstract class BaseActivity extends AppCompatActivity {
         }
     }
 
-
     protected void showTipDialog(String content) {
         MaterialDialog.Builder mBuilder = new MaterialDialog.Builder(this);
         mBuilder.title("温馨提示：")
@@ -222,7 +221,6 @@ public abstract class BaseActivity extends AppCompatActivity {
         MaterialDialog mMaterialDialog = mBuilder.build();
         mMaterialDialog.show();
     }
-
 
     /**
      * 点击空白区域隐藏键盘.
@@ -265,7 +263,6 @@ public abstract class BaseActivity extends AppCompatActivity {
         return false;
     }
 
-
     private void registerNetWorkChangReceiver() {
         //注册网络状态监听广播
         mNetWorkChangReceiver = new NetworkConnectChangedReceiver();
@@ -273,7 +270,6 @@ public abstract class BaseActivity extends AppCompatActivity {
         filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
         registerReceiver(mNetWorkChangReceiver, filter);
     }
-
 
     private void initTipView() {
         LayoutInflater inflater = getLayoutInflater();
@@ -289,7 +285,6 @@ public abstract class BaseActivity extends AppCompatActivity {
         mLayoutParams.x = 0;
         mLayoutParams.y = 0;
     }
-
 
     /**
      * 根据网络状态显示或者隐藏提示对话框
@@ -309,7 +304,6 @@ public abstract class BaseActivity extends AppCompatActivity {
             }
         }
     }
-
 
     /**
      * 网络状态发生变化时的处理
@@ -338,6 +332,34 @@ public abstract class BaseActivity extends AppCompatActivity {
         mCheckNetwork = checkNetWork;
     }
 
+    protected <T extends ViewModel> T getActivityScopeViewModel(@NonNull Class<T> modelClass) {
+        if (mActivityProvider == null) {
+            mActivityProvider = new ViewModelProvider(this);
+        }
+        return mActivityProvider.get(modelClass);
+    }
+
+    protected <T extends ViewModel> T getApplicationScopeViewModel(@NonNull Class<T> modelClass) {
+        if (mApplicationProvider == null) {
+            mApplicationProvider = new ViewModelProvider((MCloudApplication) this.getApplicationContext(),
+                    getAppFactory(this));
+        }
+        return mApplicationProvider.get(modelClass);
+    }
+
+    private ViewModelProvider.Factory getAppFactory(Activity activity) {
+        Application application = checkApplication(activity);
+        return ViewModelProvider.AndroidViewModelFactory.getInstance(application);
+    }
+
+    private Application checkApplication(Activity activity) {
+        Application application = activity.getApplication();
+        if (application == null) {
+            throw new IllegalStateException("Your activity/fragment is not yet attached to "
+                    + "Application. You can't request ViewModel before onCreate call.");
+        }
+        return application;
+    }
 
     @Override
     protected void onDestroy() {
@@ -345,7 +367,6 @@ public abstract class BaseActivity extends AppCompatActivity {
         ActivityCollector.remove(weakRefActivity);
         unregisterReceiver(mNetWorkChangReceiver);
     }
-
 
     @Override
     public void finish() {
@@ -355,7 +376,6 @@ public abstract class BaseActivity extends AppCompatActivity {
             mWindowManager.removeView(mTipView);
         }
     }
-
 
     @Override
     public void onBackPressed() {

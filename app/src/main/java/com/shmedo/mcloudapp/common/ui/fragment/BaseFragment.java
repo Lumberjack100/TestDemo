@@ -1,6 +1,7 @@
 package com.shmedo.mcloudapp.common.ui.fragment;
 
 import android.app.Activity;
+import android.app.Application;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -14,9 +15,13 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModel;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.shmedo.mcloudapp.MCloudApplication;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.callback.HandleBackInterface;
 import com.shmedo.mcloudapp.util.common.HandleBackUtil;
@@ -39,11 +44,13 @@ public abstract class BaseFragment extends Fragment implements HandleBackInterfa
     //防止按钮重复点击设置的时间间隔
     private static final int DOUBLE_CLICK_TIME_INTERVAL = 1500;
 
-    private Unbinder unbinder;
-
-    protected Activity mActivity;
+    protected AppCompatActivity mActivity;
+    private ViewModelProvider mFragmentProvider;
+    private ViewModelProvider mActivityProvider;
+    private ViewModelProvider mApplicationProvider;
 
     private View rootView;
+    private Unbinder unbinder;
 
     /**
      * Fragment中显示加载等待的控件。
@@ -65,7 +72,6 @@ public abstract class BaseFragment extends Fragment implements HandleBackInterfa
      */
     private View noContentView = null;
 
-
     /**
      * 判断当前Fragment是否处于已恢复状态。
      */
@@ -77,7 +83,7 @@ public abstract class BaseFragment extends Fragment implements HandleBackInterfa
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        mActivity = (Activity) context;
+        mActivity = (AppCompatActivity) context;
     }
 
     @Nullable
@@ -106,7 +112,6 @@ public abstract class BaseFragment extends Fragment implements HandleBackInterfa
         super.onDestroy();
         unbinder.unbind();
     }
-
 
     /**
      * @return the layout id
@@ -236,7 +241,6 @@ public abstract class BaseFragment extends Fragment implements HandleBackInterfa
         }
     }
 
-
     @Override
     public void onResume() {
         super.onResume();
@@ -244,7 +248,6 @@ public abstract class BaseFragment extends Fragment implements HandleBackInterfa
         String name = getClass().getName();
         Timber.i("startPage,Fragment=%s", name);
     }
-
 
     @Override
     public void onPause() {
@@ -314,7 +317,6 @@ public abstract class BaseFragment extends Fragment implements HandleBackInterfa
         }
     }
 
-
     protected boolean isDoubleClick(View v) {
         Object tag = v.getTag(v.getId());
         long beforeTimeMillis = tag != null ? (long) tag : 0;
@@ -332,9 +334,52 @@ public abstract class BaseFragment extends Fragment implements HandleBackInterfa
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
-
     @Override
     public boolean onBackPressed() {
         return HandleBackUtil.handleBackPress(this);
+    }
+
+    protected <T extends ViewModel> T getFragmentScopeViewModel(@NonNull Class<T> modelClass) {
+        if (mFragmentProvider == null) {
+            mFragmentProvider = new ViewModelProvider(this);
+        }
+        return mFragmentProvider.get(modelClass);
+    }
+
+    protected <T extends ViewModel> T getActivityScopeViewModel(@NonNull Class<T> modelClass) {
+        if (mActivityProvider == null) {
+            mActivityProvider = new ViewModelProvider(mActivity);
+        }
+        return mActivityProvider.get(modelClass);
+    }
+
+    protected <T extends ViewModel> T getApplicationScopeViewModel(@NonNull Class<T> modelClass) {
+        if (mApplicationProvider == null) {
+            mApplicationProvider = new ViewModelProvider(
+                    (MCloudApplication) mActivity.getApplicationContext(), getApplicationFactory(mActivity));
+        }
+        return mApplicationProvider.get(modelClass);
+    }
+
+    private ViewModelProvider.Factory getApplicationFactory(Activity activity) {
+        checkActivity(this);
+        Application application = checkApplication(activity);
+        return ViewModelProvider.AndroidViewModelFactory.getInstance(application);
+    }
+
+    private Application checkApplication(Activity activity) {
+        Application application = activity.getApplication();
+        if (application == null) {
+            throw new IllegalStateException("Your activity/fragment is not yet attached to "
+                    + "Application. You can't request ViewModel before onCreate call.");
+        }
+        return application;
+    }
+
+    private void checkActivity(Fragment fragment) {
+        Activity activity = fragment.getActivity();
+        if (activity == null) {
+            throw new IllegalStateException("Can't create ViewModelProvider for detached fragment");
+        }
     }
 }
