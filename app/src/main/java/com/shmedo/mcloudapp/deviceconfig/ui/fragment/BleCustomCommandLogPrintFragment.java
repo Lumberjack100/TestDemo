@@ -105,12 +105,12 @@ public class BleCustomCommandLogPrintFragment extends BaseBleConnectFragment {
                 }
 
                 if (isChecked) {
-                    switchLogOutputMode(true);
+                    setLogOutputMode(true);
                     ToastUtils.show("开始日志输出");
 //                    isPause = false;
 //                    fabStartPause.setImageResource(R.drawable.icon_command_log_print_pause);
                 } else {
-                    switchLogOutputMode(false);
+                    setLogOutputMode(false);
                     ToastUtils.show("关闭日志输出");
 //                    isPause = true;
 //                    fabStartPause.setImageResource(R.drawable.icon_command_log_print_play);
@@ -213,7 +213,7 @@ public class BleCustomCommandLogPrintFragment extends BaseBleConnectFragment {
                 .show();
     }
 
-    private void switchLogOutputMode(boolean isOpen) {
+    private void  setLogOutputMode(boolean isOpen) {
         LogOutputEntity logOutputEntity = new LogOutputEntity(isOpen ? LogOutputStatus.OPEN.toInt() : LogOutputStatus.CLOSE.toInt());
         String command = CommandManager.getInstance().getCommand(CommandType.LOG_OUTPUT_STATUS, logOutputEntity);
         sendCommonCommandImmediately(command);
@@ -263,8 +263,7 @@ public class BleCustomCommandLogPrintFragment extends BaseBleConnectFragment {
     @Override
     public void onDestroy() {
         isLogOutputMode = false;
-        switchLogOutputMode(false);
-        setWorkMode(WorkModel.WORK);
+        setLogOutputMode(false);
 
         super.onDestroy();
     }

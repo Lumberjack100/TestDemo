@@ -1,6 +1,5 @@
 package com.shmedo.mcloudapp.deviceconfig.ui.fragment;
 
-import android.graphics.Color;
 import android.os.Bundle;
 import android.text.InputFilter;
 import android.text.TextUtils;
@@ -34,7 +33,6 @@ import com.shmedo.configlibrary.ble.model.MqttConfigInfo;
 import com.shmedo.configlibrary.ble.model.ServerAddressInfo;
 import com.shmedo.configlibrary.ble.utils.ResultParserUtil;
 import com.shmedo.configlibrary.ble.utils.StringUtil;
-import com.shmedo.configlibrary.ble.utils.ValidateUtil;
 import com.shmedo.core.MCloudApp;
 import com.shmedo.core.event.CmdResponseMessage;
 import com.shmedo.core.event.MessageEvent;
@@ -618,7 +616,7 @@ public class BleDataCenterServerConfigFragment extends BaseBleConnectFragment {
                     return;
                 }
                 ServerAddressInfo serverAddressInfo = ResultParserUtil.getEntityObject(cmdStr);
-                if (!serverAddressInfo.getAddress().equals("0.0.0.0")) {
+                if (!serverAddressInfo.getAddress().equals("0.0.0.0")) {//地址为0.0.0.0，表示数据中心未启用
                     mSbCenterEnable.setCheckedImmediatelyNoEvent(true);
                     childItemsLayout.setVisibility(View.VISIBLE);
                     queryDataCenterInfo();
