@@ -306,9 +306,9 @@ public class BleDataCenterFragment extends BaseBleConnectFragment {
                 break;
 
             case SIX_TARGER_BD_NUMBER://北斗配置
+                stopProgressRunnable();
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
                     ToastUtils.show("北斗配置错误!");
-                    stopProgressRunnable();
                     return;
                 }
                 doAfterSetting();
@@ -319,7 +319,7 @@ public class BleDataCenterFragment extends BaseBleConnectFragment {
     private void doAfterSetting() {
         stopProgressRunnable();
         isExitMode = true;
-        warnNotYetRebootToSaveParam();
+        saveConfigInfoNoReboot();
     }
 
     @Override

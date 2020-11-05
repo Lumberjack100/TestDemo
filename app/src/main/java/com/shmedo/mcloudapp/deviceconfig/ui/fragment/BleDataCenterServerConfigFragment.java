@@ -788,13 +788,8 @@ public class BleDataCenterServerConfigFragment extends BaseBleConnectFragment {
 
     private void doAfterSetting() {
         stopProgressRunnable();
-        ToastUtils.show("已设置");
-        MCloudApp.getMainHandler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                mActivity.finish();
-            }
-        }, 2000);
+        isExitMode = true;
+        saveConfigInfoNoReboot();
     }
 
     @Override

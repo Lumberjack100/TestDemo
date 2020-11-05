@@ -262,11 +262,15 @@ public class BleCollectorSettingFragment extends BaseBleConnectFragment {
                     ToastUtils.show("采集器采集频度配置错误!");
                     return;
                 }
-
-                isExitMode = true;
-                warnNotYetRebootToSaveParam();
+                doAfterSetting();
                 break;
         }
+    }
+
+    private void doAfterSetting() {
+        stopProgressRunnable();
+        isExitMode = true;
+        saveConfigInfoNoReboot();
     }
 
     @Override

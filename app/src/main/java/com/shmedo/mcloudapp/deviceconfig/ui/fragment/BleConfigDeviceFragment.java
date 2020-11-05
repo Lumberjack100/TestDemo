@@ -219,7 +219,8 @@ public class BleConfigDeviceFragment extends BaseBleConnectFragment {
                     setLowEnergyModel(true);
                     mTvActiveState.setText("已激活");
                 } else {
-                    showWarnDialog("温馨提示", getString(R.string.device_enable_state_close_warn), LOW_ENERGY_MODEL);
+                    setLowEnergyModel(false);
+                    mTvActiveState.setText("已待机");
                 }
             }
         });
@@ -345,7 +346,7 @@ public class BleConfigDeviceFragment extends BaseBleConnectFragment {
 //                        updateViewStateByConnectState(false);
 //                    }
                     isExitMode = false;
-                    showDisconnectDialog(getResources().getString(R.string.finish_activity_disconnect_bluetooth_device));
+                    showDisconnectDialog(getResources().getString(R.string.disconnect_bluetooth_device));
                 }
                 break;
 

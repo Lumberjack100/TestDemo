@@ -21,10 +21,12 @@ import com.hjq.toast.ToastUtils;
 import com.shmedo.configlibrary.ble.cmd.CommandManager;
 import com.shmedo.configlibrary.ble.cmd.CommandResult;
 import com.shmedo.configlibrary.ble.cmd.entity.AuthenticationConfigEntity;
+import com.shmedo.configlibrary.ble.cmd.entity.LogOutputEntity;
 import com.shmedo.configlibrary.ble.cmd.entity.LowEnergyModelEntity;
 import com.shmedo.configlibrary.ble.cmd.entity.SaveConfigInfoEntity;
 import com.shmedo.configlibrary.ble.cmd.entity.ServerNumberEntity;
 import com.shmedo.configlibrary.ble.enums.CommandType;
+import com.shmedo.configlibrary.ble.enums.LogOutputStatus;
 import com.shmedo.configlibrary.ble.enums.LowEnergyModel;
 import com.shmedo.configlibrary.ble.enums.SaveConfigMode;
 import com.shmedo.configlibrary.ble.enums.ServerNumber;
@@ -446,6 +448,8 @@ public abstract class BaseBleConnectFragment extends BaseFragment {
                         } catch (Exception ex) {
                             Timber.e(ex);
                         }
+                    }else{
+                        switchLogOutputMode(false);
                     }
                     break;
 
@@ -643,10 +647,8 @@ public abstract class BaseBleConnectFragment extends BaseFragment {
         }
 
         //设置保存参数应答
-        if (cmdStr.startsWith("$$0191") && cmdStr.endsWith("\r\n")) {
-            ToastUtils.show("已发送保存命令,设备即将断开连接重启");
-            stopProgressRunnable();
-            disconnectDevice();
+        if (cmdStr.startsWith("$$0192") && cmdStr.endsWith("\r\n")) {
+            ToastUtils.show("已保存");
 
             if (isExitMode) {
                 uiHander.postDelayed(new Runnable() {
@@ -803,7 +805,14 @@ public abstract class BaseBleConnectFragment extends BaseFragment {
         errMsg = "发送指令超时,请稍后尝试";
         startProgressRunnable("正在发送保存重启指令...", CONFIG_PARAMS_DELAY_MILLIS);
         sendCommonCommandImmediately(command);
-        Timber.d("保存配置重启设备指令===%s", command);
+        Timber.d("发送保存配置重启设备指令===%s", command);
+    }
+
+    protected void saveConfigInfoNoReboot() {
+        SaveConfigInfoEntity saveConfigInfoEntity = new SaveConfigInfoEntity(SaveConfigMode.SAVE_NO_REBOOT.toInt());
+        String command = CommandManager.getInstance().getCommand(CommandType.SAVE_CONFIG_INFO, saveConfigInfoEntity);
+        sendCommonCommandImmediately(command);
+        Timber.d("发送保存配置不重启设备指令===%s", command);
     }
 
     /**
@@ -813,6 +822,17 @@ public abstract class BaseBleConnectFragment extends BaseFragment {
         LowEnergyModelEntity entity = new LowEnergyModelEntity(isOpen ? LowEnergyModel.ACTIVATE.toInt() : LowEnergyModel.STANDBY.toInt());
         String command = CommandManager.getInstance().getCommand(CommandType.LOW_ENERGY, entity);
         sendCommonCommandImmediately(command);
+        Timber.d("打开/关闭设备低功耗模式指令===%s", command);
+    }
+
+    /**
+     * 打开/关闭设备日志通过蓝牙输出
+     */
+    protected void switchLogOutputMode(boolean isOpen) {
+        LogOutputEntity logOutputEntity = new LogOutputEntity(isOpen ? LogOutputStatus.OPEN.toInt() : LogOutputStatus.CLOSE.toInt());
+        String command = CommandManager.getInstance().getCommand(CommandType.LOG_OUTPUT_STATUS, logOutputEntity);
+        sendCommonCommandImmediately(command);
+        Timber.d("设置日志输出状态指令===%s", command);
     }
 
 
@@ -881,7 +901,7 @@ public abstract class BaseBleConnectFragment extends BaseFragment {
         mMaterialDialog.show();
     }
 
-    protected void warnNotYetRebootToSaveParam() {
+    private void warnNotYetRebootToSaveParam() {
         MaterialDialog.Builder mBuilder = new MaterialDialog.Builder(Objects.requireNonNull(getContext()))
                 .title("温馨提示")
                 .content(GlobalUtil.getString(R.string.reboot_device_save_param_warn))

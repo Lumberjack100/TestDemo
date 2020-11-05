@@ -649,9 +649,7 @@ public class BleDASSensorFragment extends BaseBleConnectFragment {
                     sendParamConfigCmd();
                     return;
                 } else {
-                    stopProgressRunnable();
-                    isExitMode = true;
-                    warnNotYetRebootToSaveParam();
+                    doAfterSetting();
                 }
                 break;
 
@@ -665,9 +663,7 @@ public class BleDASSensorFragment extends BaseBleConnectFragment {
                     sendParamConfigCmd();
                     return;
                 } else {
-                    stopProgressRunnable();
-                    isExitMode = true;
-                    warnNotYetRebootToSaveParam();
+                    doAfterSetting();
                 }
                 break;
 
@@ -681,9 +677,7 @@ public class BleDASSensorFragment extends BaseBleConnectFragment {
                     sendParamConfigCmd();
                     return;
                 } else {
-                    stopProgressRunnable();
-                    isExitMode = true;
-                    warnNotYetRebootToSaveParam();
+                    doAfterSetting();
                 }
                 break;
 
@@ -697,9 +691,7 @@ public class BleDASSensorFragment extends BaseBleConnectFragment {
                     sendParamConfigCmd();
                     return;
                 } else {
-                    stopProgressRunnable();
-                    isExitMode = true;
-                    warnNotYetRebootToSaveParam();
+                    doAfterSetting();
                 }
                 break;
 
@@ -713,9 +705,7 @@ public class BleDASSensorFragment extends BaseBleConnectFragment {
                     sendParamConfigCmd();
                     return;
                 } else {
-                    stopProgressRunnable();
-                    isExitMode = true;
-                    warnNotYetRebootToSaveParam();
+                    doAfterSetting();
                 }
                 break;
 
@@ -729,9 +719,7 @@ public class BleDASSensorFragment extends BaseBleConnectFragment {
                     sendParamConfigCmd();
                     return;
                 } else {
-                    stopProgressRunnable();
-                    isExitMode = true;
-                    warnNotYetRebootToSaveParam();
+                    doAfterSetting();
                 }
                 break;
         }
@@ -842,6 +830,12 @@ public class BleDASSensorFragment extends BaseBleConnectFragment {
         }
     }
 
+
+    private void doAfterSetting() {
+        stopProgressRunnable();
+        isExitMode = true;
+        saveConfigInfoNoReboot();
+    }
 
     @Override
     public boolean onBackPressed() {

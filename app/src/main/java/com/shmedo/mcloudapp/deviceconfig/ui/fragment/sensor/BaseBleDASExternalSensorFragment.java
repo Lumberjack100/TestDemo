@@ -412,13 +412,8 @@ public abstract class BaseBleDASExternalSensorFragment extends BaseBleConnectFra
 
     protected void doAfterSetting() {
         stopProgressRunnable();
-        ToastUtils.show("已设置");
-        MCloudApp.getMainHandler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                mActivity.finish();
-            }
-        }, 2000);
+        isExitMode = true;
+        saveConfigInfoNoReboot();
     }
 
     protected void collectorCloseWarn() {
