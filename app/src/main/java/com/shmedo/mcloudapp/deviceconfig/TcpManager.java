@@ -17,7 +17,7 @@ import timber.log.Timber;
  */
 public class TcpManager implements NettyClientListener<String> {
 
-    private UnPeekLiveData<TcpConnectionState> tcpConnectionState;
+    private final UnPeekLiveData<TcpConnectionState> tcpConnectionState = new UnPeekLiveData<>();
 
     private UnPeekLiveData<String> receivedMessage;
 
@@ -45,9 +45,6 @@ public class TcpManager implements NettyClientListener<String> {
     }
 
     public ProtectedUnPeekLiveData<TcpConnectionState> getTcpConnectionState() {
-        if (tcpConnectionState == null) {
-            tcpConnectionState = new UnPeekLiveData<>();
-        }
         return tcpConnectionState;
     }
 
