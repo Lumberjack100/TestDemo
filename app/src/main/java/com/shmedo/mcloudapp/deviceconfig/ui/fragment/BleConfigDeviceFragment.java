@@ -394,6 +394,21 @@ public class BleConfigDeviceFragment extends BaseBleConnectFragment {
                 initVersionInfo(versionMessageInfo);
                 break;
 
+            case LOW_ENERGY:
+                if (tempStr.endsWith(CommandResult.ERROR_END)) {
+                    Timber.e("激活/待机指令出错!");
+                    return;
+                }
+//                switchLogOutputMode(false);
+                break;
+
+            case LOG_OUTPUT_STATUS:
+                if (tempStr.endsWith(CommandResult.ERROR_END)) {
+                    Timber.e("设置日志输出状态指令出错!");
+                    return;
+                }
+                break;
+
             case LOCAL_TIME:
                 dismissProgressDialog();
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {

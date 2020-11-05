@@ -380,11 +380,9 @@ public class NewBleManager {
             super.onCharacteristicChanged(gatt, characteristic);
             byte[] value = characteristic.getValue();
             if (value != null && value.length > 0) {
-                //                BluetoothEvent event = new BluetoothEvent(BluetoothEventType.DATA_AVAILABLE, value);
-                //                fireEvent(event);
                 try {
-//                    String result = new String(value, StandardCharsets.UTF_8);
-//                    Timber.d("onCharacteristicChanged:%s", result);
+                    String result = new String(value, StandardCharsets.UTF_8);
+                    Timber.d("onCharacteristicChanged:%s", result);
                     byteManager.writeByte(value);
                 } catch (Exception ex) {
                     Timber.e(ex);
