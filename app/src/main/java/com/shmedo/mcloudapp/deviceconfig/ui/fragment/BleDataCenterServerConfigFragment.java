@@ -170,13 +170,13 @@ public class BleDataCenterServerConfigFragment extends BaseBleConnectFragment {
         mTvRegisterPlatform.setText("地大平台");
         registerPlatform = "0";
 
-        mEtAppKey.setFilters(new InputFilter[]{new InputFilter.LengthFilter(50)});
+        mEtAppKey.setFilters(new InputFilter[]{new InputFilter.LengthFilter(100)});
         mEtKeepAlive.setFilters(new InputFilter[]{new InputFilter.LengthFilter(5)});
         mEtDeviceSN.setFilters(new InputFilter[]{new InputFilter.LengthFilter(15)});
-        mEtProductId.setFilters(new InputFilter[]{new InputFilter.LengthFilter(50)});
-        mEtRegisterCode.setFilters(new InputFilter[]{new InputFilter.LengthFilter(50)});
-        mEtMqttDeviceId.setFilters(new InputFilter[]{new InputFilter.LengthFilter(50)});
-        mEtMqttUsername.setFilters(new InputFilter[]{new InputFilter.LengthFilter(30)});
+        mEtProductId.setFilters(new InputFilter[]{new InputFilter.LengthFilter(100)});
+        mEtRegisterCode.setFilters(new InputFilter[]{new InputFilter.LengthFilter(100)});
+        mEtMqttDeviceId.setFilters(new InputFilter[]{new InputFilter.LengthFilter(100)});
+        mEtMqttUsername.setFilters(new InputFilter[]{new InputFilter.LengthFilter(50)});
         mEtMqttPwd.setFilters(new InputFilter[]{new InputFilter.LengthFilter(50)});
 
         mEtDataServerAddress.setHint("服务器地址 端口");
@@ -800,6 +800,9 @@ public class BleDataCenterServerConfigFragment extends BaseBleConnectFragment {
     }
 
     private boolean checkValueIsChange() {
+        if (!mSbCenterEnable.isChecked()) {
+            return false;
+        }
         if (!mqttConfigInfo.getCommunicationProtocol().equals(communicationProtocol)) {
             return true;
         }
@@ -813,7 +816,13 @@ public class BleDataCenterServerConfigFragment extends BaseBleConnectFragment {
                 return true;
             }
 
-            if (!mqttConfigInfo.getRegisterPlatformAddress().equals(mEtDataServerAddress.getText().toString().trim())) {
+            if (registerPlatform.equals("2")) {//米度平台
+                if (!mqttConfigInfo.getAppKey().equals(mEtAppKey.getText().toString().trim())) {
+                    return true;
+                }
+            }
+
+            if (!mqttConfigInfo.getRegisterPlatformAddress().equals(mEtRegisterPlatformAddress.getText().toString().trim())) {
                 return true;
             }
 
@@ -833,11 +842,6 @@ public class BleDataCenterServerConfigFragment extends BaseBleConnectFragment {
                 return true;
             }
 
-            if (registerPlatform.equals("2")) {
-                if (!mqttConfigInfo.getAppKey().equals(mEtAppKey.getText().toString().trim())) {
-                    return true;
-                }
-            }
         } else if (communicationProtocol.equals("5")) {//MQTT手动注册
             if (!mqttConfigInfo.getKeepAliveValue().equals(mEtKeepAlive.getText().toString().trim())) {
                 return true;
