@@ -10,7 +10,6 @@ import android.widget.EditText;
 import androidx.annotation.Nullable;
 
 import com.hjq.toast.ToastUtils;
-import com.shmedo.core.MCloudApp;
 import com.shmedo.configlibrary.ble.cmd.CommandManager;
 import com.shmedo.configlibrary.ble.cmd.CommandResult;
 import com.shmedo.configlibrary.ble.cmd.entity.CollectorConfigEntity;
@@ -19,15 +18,11 @@ import com.shmedo.configlibrary.ble.cmd.entity.CollectorSolutionFrequencyEntity;
 import com.shmedo.configlibrary.ble.cmd.entity.CollectorStandbyTimeEntity;
 import com.shmedo.configlibrary.ble.cmd.entity.SetCollectorAddressEntity;
 import com.shmedo.configlibrary.ble.enums.CommandType;
-import com.shmedo.core.event.CmdResponseMessage;
-import com.shmedo.core.event.MessageEvent;
 import com.shmedo.configlibrary.ble.model.CollectorConfigInfo;
 import com.shmedo.configlibrary.ble.utils.ResultParserUtil;
 import com.shmedo.configlibrary.ble.utils.StringUtil;
+import com.shmedo.core.MCloudApp;
 import com.shmedo.mcloudapp.R;
-
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -198,20 +193,16 @@ public class BleCollectorSettingFragment extends BaseBleConnectFragment {
         Timber.d("设置采集器地址指令===%s", cmdCollectorAddress);
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onMessageEvent(MessageEvent messageEvent) {
-        if (messageEvent instanceof CmdResponseMessage) {
-            if (!isActive) {
-                return;
-            }
-            setResultData((CmdResponseMessage) messageEvent);
-        } else {
-//            super.onMessageEvent(messageEvent);
+    @Override
+    protected void parseResponseMessage(String cmdStr) {
+        super.parseResponseMessage(cmdStr);
+        if (!isActive) {
+            return;
         }
+        setResultData(cmdStr);
     }
 
-    private void setResultData(CmdResponseMessage responseMessage) {
-        String cmdStr = responseMessage.getResult();
+    private void setResultData(final String cmdStr) {
         String tempStr = cmdStr.replace("$$", "").replace("\r\n", "");
         CommandType type = StringUtil.extractCommandType(cmdStr);
         switch (type) {
@@ -263,6 +254,9 @@ public class BleCollectorSettingFragment extends BaseBleConnectFragment {
                     return;
                 }
                 doAfterSetting();
+                break;
+
+            default:
                 break;
         }
     }

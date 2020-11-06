@@ -13,33 +13,28 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.hjq.toast.ToastUtils;
-import com.shmedo.core.MCloudApp;
 import com.shmedo.configlibrary.ble.cmd.CommandManager;
 import com.shmedo.configlibrary.ble.cmd.CommandResult;
 import com.shmedo.configlibrary.ble.cmd.entity.InstallLocationEntity;
 import com.shmedo.configlibrary.ble.cmd.entity.ServerNumberEntity;
 import com.shmedo.configlibrary.ble.enums.CommandType;
 import com.shmedo.configlibrary.ble.enums.ServerNumber;
-import com.shmedo.core.event.CmdResponseMessage;
-import com.shmedo.core.event.MessageEvent;
 import com.shmedo.configlibrary.ble.model.DeviceNetStatus;
 import com.shmedo.configlibrary.ble.model.DeviceStatusInfoOne;
 import com.shmedo.configlibrary.ble.model.DeviceStatusInfoThree;
 import com.shmedo.configlibrary.ble.model.DeviceStatusInfoTwo;
 import com.shmedo.configlibrary.ble.model.SystemRunStateInfo;
 import com.shmedo.configlibrary.ble.model.VersionMessageInfo;
-import com.shmedo.core.util.DensityUtil;
-import com.shmedo.core.util.GlobalUtil;
 import com.shmedo.configlibrary.ble.utils.ResultParserUtil;
 import com.shmedo.configlibrary.ble.utils.StringUtil;
+import com.shmedo.core.MCloudApp;
+import com.shmedo.core.util.DensityUtil;
+import com.shmedo.core.util.GlobalUtil;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.view.recycleviewitemdivider.RecycleViewDivider;
 import com.shmedo.mcloudapp.deviceconfig.util.DeviceCurrentRunStateUtils;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.base.CommonViewHolder;
-
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -248,21 +243,17 @@ public class BleDeviceCurrentStateFragment extends BaseBleConnectFragment {
     }
 
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onMessageEvent(MessageEvent messageEvent) {
-        if (messageEvent instanceof CmdResponseMessage) {
-            if (!isActive) {
-                return;
-            }
-            setResultData((CmdResponseMessage) messageEvent);
-        } else {
-//            super.onMessageEvent(messageEvent);
+    @Override
+    protected void parseResponseMessage(String cmdStr) {
+        super.parseResponseMessage(cmdStr);
+        if (!isActive) {
+            return;
         }
+        setResultData(cmdStr);
     }
 
-    private void setResultData(CmdResponseMessage responseMessage) {
+    private void setResultData(final String cmdStr) {
         String command;
-        String cmdStr = responseMessage.getResult();
         String tempStr = cmdStr.replace(CommandResult.COMMAND_RESULT_HEADER, "").replace("\r\n", "");
         CommandType type = StringUtil.extractCommandType(cmdStr);
         switch (type) {
@@ -397,6 +388,8 @@ public class BleDeviceCurrentStateFragment extends BaseBleConnectFragment {
                 DeviceStatusInfoThree statusThree = ResultParserUtil.getEntityObject(cmdStr);
                 collectorModel = statusThree.getCollectorModel();
                 setDeviceStatusThree(statusThree);
+                break;
+            default:
                 break;
         }
     }

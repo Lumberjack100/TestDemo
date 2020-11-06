@@ -32,19 +32,16 @@ import com.shmedo.configlibrary.ble.enums.LogOutputStatus;
 import com.shmedo.configlibrary.ble.enums.LowEnergyModel;
 import com.shmedo.configlibrary.ble.enums.SaveConfigMode;
 import com.shmedo.configlibrary.ble.enums.ServerNumber;
-import com.shmedo.configlibrary.ble.interfaces.OnBytePackage;
 import com.shmedo.configlibrary.ble.utils.DesUtil;
 import com.shmedo.configlibrary.ble.utils.StringUtil;
 import com.shmedo.core.MCloudApp;
 import com.shmedo.core.event.BluetoothConnectStateEvent;
-import com.shmedo.core.event.CmdResponseMessage;
 import com.shmedo.core.util.GlobalUtil;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.bluetooth.BluetoothEvent;
 import com.shmedo.mcloudapp.bluetooth.Message;
 import com.shmedo.mcloudapp.common.ui.fragment.BaseFragment;
 import com.shmedo.mcloudapp.deviceconfig.viewmodels.BleViewModel;
-import com.shmedo.mcloudapp.util.bleutil.ByteManagerUtil;
 import com.shmedo.mcloudapp.util.bleutil.Constants;
 import com.shmedo.mcloudapp.util.permission.XPermissionUtils;
 
@@ -117,6 +114,10 @@ public abstract class BaseBleConnectFragment extends BaseFragment {
     protected BleViewModel bleViewModel;
 
 
+    protected void updateViewStateByConnectState(boolean isConnected){
+
+    }
+
     private class ProgressRunnable implements Runnable {
         @Override
         public void run() {
@@ -178,23 +179,16 @@ public abstract class BaseBleConnectFragment extends BaseFragment {
     @Override
     public void onStop() {
         super.onStop();
+        dismissProgressDialog();
         bleViewModel.clearLastValue();
     }
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        dismissProgressDialog();
-        EventBus.getDefault().unregister(this);
-    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EventBus.getDefault().register(this);
         initBluetooth();
         bleViewModel = getApplicationScopeViewModel(BleViewModel.class);
-        ByteManagerUtil.init(new MyOnBytePackage());
     }
 
 
@@ -367,6 +361,7 @@ public abstract class BaseBleConnectFragment extends BaseFragment {
      * ble 取消连接
      */
     public void disconnectDevice() {
+        Timber.w("disconnectDevice() 调用");
         if (null != bleViewModel.bleManager) {
             bleViewModel.bleManager.disconnect();
             isAutoConnectBlue = false;//
@@ -388,7 +383,7 @@ public abstract class BaseBleConnectFragment extends BaseFragment {
     }
 
 
-    private void handleBluetoothEvent(BluetoothEvent event){
+    private void handleBluetoothEvent(BluetoothEvent event) {
         switch (event.getEventType()) {
             case CONNECTED:
 //                ByteManagerUtil.init(new MyOnBytePackage());
@@ -435,10 +430,13 @@ public abstract class BaseBleConnectFragment extends BaseFragment {
                 mHandler.sendEmptyMessage(Constants.BT_MESSAGE_WRITE_SUCCESS);
                 try {
                     String msg = ((Message) event.getEventData()).getResponseMessage();
-                    byte[] data = (byte[]) msg.getBytes();
-                    if (data.length > 0) {
-                        ByteManagerUtil.getInstance().writeByte(data);
+                    if (!TextUtils.isEmpty(msg)) {
+                        handleResponseMessage(msg);
                     }
+//                    byte[] data = (byte[]) msg.getBytes();
+//                    if (data.length > 0) {
+//                        ByteManagerUtil.getInstance().writeByte(data);
+//                    }
                 } catch (Exception ex) {
                     Timber.e(ex);
                 }
@@ -458,9 +456,14 @@ public abstract class BaseBleConnectFragment extends BaseFragment {
                 Timber.i("RESPONSE_WITH_NO_MESSAGE");
                 if (isLogOutputMode) {
                     try {
-                        byte[] data = ((String) event.getEventData()).getBytes();
-                        if (data.length > 0) {
-                            ByteManagerUtil.getInstance().writeByte(data);
+//                        byte[] data = ((String) event.getEventData()).getBytes();
+//                        if (data.length > 0) {
+//                            ByteManagerUtil.getInstance().writeByte(data);
+//                        }
+
+                        String msg = ((String) event.getEventData());
+                        if (!TextUtils.isEmpty(msg)) {
+                            handleResponseMessage(msg);
                         }
                     } catch (Exception ex) {
                         Timber.e(ex);
@@ -480,11 +483,9 @@ public abstract class BaseBleConnectFragment extends BaseFragment {
         public boolean handleMessage(android.os.Message msg) {
             switch (msg.what) {
                 case Constants.BT_CONNECT:
-//                    authenticateNum = 0;
-//                    isAutoConnectBlue = true;
                     stopProgressRunnable();
                     MCloudApp.setIsBluetoothDeviceConnected(true);
-                    EventBus.getDefault().post(new BluetoothConnectStateEvent(true));
+                    updateViewStateByConnectState(true);
                     errMsg = "认证超时,请稍后尝试";
                     startProgressRunnable("蓝牙已连接,设备认证中...", AUTHENTICATE_DELAY_MILLIS);
                     setAuthenticateWay();//蓝牙连接成功开始进行验证
@@ -495,7 +496,7 @@ public abstract class BaseBleConnectFragment extends BaseFragment {
                     stopProgressRunnable();
                     stopHeartRunnable();
                     MCloudApp.setIsBluetoothDeviceConnected(false);
-                    EventBus.getDefault().post(new BluetoothConnectStateEvent(false));
+                    updateViewStateByConnectState(false);
                     //断开蓝牙后重新连接
 //                    if (isAutoConnectBlue) {
 //                        MCloudApp.getMainHandler().postDelayed(new Runnable() {
@@ -585,64 +586,115 @@ public abstract class BaseBleConnectFragment extends BaseFragment {
         }
     });
 
-    public class MyOnBytePackage implements OnBytePackage {
-        @Override
-        public void onPackageArrived(final byte[] data) {
-            try {
-                final String cmdStr = new String(data, StandardCharsets.UTF_8);
-                if (!cmdStr.startsWith("$$")) {
-                    Timber.w("不匹配标准响应头的应答指令===%s", cmdStr);
-                } else {
-                    Timber.i("应答指令===%s", cmdStr);
-                }
 
-                String cmdArray[] = cmdStr.replace("\r\n", "").split(",");
-
-                if (cmdStr.startsWith("$$224")) {//认证方式
-                    if (cmdStr.replace("\r\n", "").endsWith(CommandResult.ERROR_END)) {
-                        setAuthenticateWay();//重新认证
-                        return;
-                    }
-                    sendAuthenticateCodeCmd(cmdArray[3]);
-                    return;
-
-                } else if (cmdStr.startsWith("$$223")) {//设备登录验证结果指令
-                    sendHandleMessage(Constants.VERIFY_RESULT, cmdArray[1]);
-                    Timber.d("设备登录验证状态===%s", cmdArray[1].contains("1"));
-                    return;
-
-                } else if (cmdStr.contains("Please verify the equipment.\r\n")) {
-                    sendHandleMessage(Constants.VERIFY_RESULT, "0");
-                    return;
-
-                } else if (cmdStr.contains("Equipment Verify OK.\r\n")) {
-                    sendHandleMessage(Constants.MESSAGE_LOCK_REBOOT_DEVICE, null);
-                    return;
-
-                } else {
-                    //过滤掉不匹配标准响应头的应答指令
-                    if (!isLogOutputMode && !cmdStr.startsWith("$$")) {
-                        return;
-                    }
-
-                    uiHander.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            parserResult(cmdStr);
-                        }
-                    });
-                }
-
-            } catch (Exception ex) {
-                Timber.e(ex);
+    private void handleResponseMessage(final String cmdStr) {
+        try {
+            if (!cmdStr.startsWith("$$")) {
+                Timber.w("不匹配标准响应头的应答指令===%s", cmdStr);
+            } else {
+                Timber.i("应答指令===%s", cmdStr);
             }
+
+            String cmdArray[] = cmdStr.replace("\r\n", "").split(",");
+
+            if (cmdStr.startsWith("$$224")) {//认证方式
+                if (cmdStr.replace("\r\n", "").endsWith(CommandResult.ERROR_END)) {
+                    setAuthenticateWay();//重新认证
+                    return;
+                }
+                sendAuthenticateCodeCmd(cmdArray[3]);
+                return;
+
+            } else if (cmdStr.startsWith("$$223")) {//设备登录验证结果指令
+                sendHandleMessage(Constants.VERIFY_RESULT, cmdArray[1]);
+                Timber.d("设备登录验证状态===%s", cmdArray[1].contains("1"));
+                return;
+
+            } else if (cmdStr.contains("Please verify the equipment.\r\n")) {
+                sendHandleMessage(Constants.VERIFY_RESULT, "0");
+                return;
+
+            } else if (cmdStr.contains("Equipment Verify OK.\r\n")) {
+                sendHandleMessage(Constants.MESSAGE_LOCK_REBOOT_DEVICE, null);
+                return;
+
+            } else {
+                //过滤掉不匹配标准响应头的应答指令
+                if (!isLogOutputMode && !cmdStr.startsWith("$$")) {
+                    return;
+                }
+
+                uiHander.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        parseResponseMessage(cmdStr);
+                    }
+                });
+            }
+
+        } catch (Exception ex) {
+            Timber.e(ex);
         }
     }
+
+//    public class MyOnBytePackage implements OnBytePackage {
+//        @Override
+//        public void onPackageArrived(final byte[] data) {
+//            try {
+//                final String cmdStr = new String(data, StandardCharsets.UTF_8);
+//                if (!cmdStr.startsWith("$$")) {
+//                    Timber.w("不匹配标准响应头的应答指令===%s", cmdStr);
+//                } else {
+//                    Timber.i("应答指令===%s", cmdStr);
+//                }
+//
+//                String cmdArray[] = cmdStr.replace("\r\n", "").split(",");
+//
+//                if (cmdStr.startsWith("$$224")) {//认证方式
+//                    if (cmdStr.replace("\r\n", "").endsWith(CommandResult.ERROR_END)) {
+//                        setAuthenticateWay();//重新认证
+//                        return;
+//                    }
+//                    sendAuthenticateCodeCmd(cmdArray[3]);
+//                    return;
+//
+//                } else if (cmdStr.startsWith("$$223")) {//设备登录验证结果指令
+//                    sendHandleMessage(Constants.VERIFY_RESULT, cmdArray[1]);
+//                    Timber.d("设备登录验证状态===%s", cmdArray[1].contains("1"));
+//                    return;
+//
+//                } else if (cmdStr.contains("Please verify the equipment.\r\n")) {
+//                    sendHandleMessage(Constants.VERIFY_RESULT, "0");
+//                    return;
+//
+//                } else if (cmdStr.contains("Equipment Verify OK.\r\n")) {
+//                    sendHandleMessage(Constants.MESSAGE_LOCK_REBOOT_DEVICE, null);
+//                    return;
+//
+//                } else {
+//                    //过滤掉不匹配标准响应头的应答指令
+//                    if (!isLogOutputMode && !cmdStr.startsWith("$$")) {
+//                        return;
+//                    }
+//
+//                    uiHander.post(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            parserResult(cmdStr);
+//                        }
+//                    });
+//                }
+//
+//            } catch (Exception ex) {
+//                Timber.e(ex);
+//            }
+//        }
+//    }
 
     /**
      * 解析设备的参数指令
      */
-    private void parserResult(String cmdStr) {
+    protected void parseResponseMessage(String cmdStr) {
         if (SN.endsWith("T")) {//ADME 设备应答指令预处理
             //ADME 设备初始化参数查询完成后，取消进度框
             if (cmdStr.startsWith("$$7002")) {
@@ -665,7 +717,6 @@ public abstract class BaseBleConnectFragment extends BaseFragment {
         //设置保存参数应答
         if (cmdStr.startsWith("$$0192") && cmdStr.endsWith("\r\n")) {
             ToastUtils.show("已保存");
-
             if (isExitMode) {
                 uiHander.postDelayed(new Runnable() {
                     @Override
@@ -676,9 +727,6 @@ public abstract class BaseBleConnectFragment extends BaseFragment {
             }
             return;
         }
-
-        CmdResponseMessage responseMessage = new CmdResponseMessage(cmdStr);
-        EventBus.getDefault().post(responseMessage);
     }
 
 
@@ -862,7 +910,7 @@ public abstract class BaseBleConnectFragment extends BaseFragment {
      * 发送心跳数据(未定义的指令)
      */
     protected void sendHeartData() {
-        String command = "##888\r\n";
+        String command = CommandManager.getInstance().getCommand(CommandType.HEARTBEAT);
         sendCommonCommandImmediately(command);
         Timber.d("发送心跳数据：%s", command);
     }

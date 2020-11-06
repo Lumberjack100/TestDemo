@@ -7,13 +7,8 @@ import androidx.annotation.Nullable;
 
 import com.hjq.toast.ToastUtils;
 import com.shmedo.core.AppContants;
-import com.shmedo.core.event.CmdResponseMessage;
-import com.shmedo.core.event.MessageEvent;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.CustomCommandLogPrintActivity;
-
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
 
 import butterknife.OnClick;
 
@@ -60,17 +55,4 @@ public class BleAdvancedSettingFragment extends BaseBleConnectFragment {
                 break;
         }
     }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onMessageEvent(MessageEvent messageEvent) {
-        if (messageEvent instanceof CmdResponseMessage) {
-            if (!isActive) {
-                return;
-            }
-//            setResultData((CmdResponseMessage) messageEvent);
-        } else {
-//            super.onMessageEvent(messageEvent);
-        }
-    }
-
 }

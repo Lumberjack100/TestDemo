@@ -34,14 +34,9 @@ import com.shmedo.configlibrary.ble.model.ServerAddressInfo;
 import com.shmedo.configlibrary.ble.utils.ResultParserUtil;
 import com.shmedo.configlibrary.ble.utils.StringUtil;
 import com.shmedo.core.MCloudApp;
-import com.shmedo.core.event.CmdResponseMessage;
-import com.shmedo.core.event.MessageEvent;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.view.ClearEditText;
 import com.shmedo.mcloudapp.util.KeyBordUtils;
-
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -591,20 +586,16 @@ public class BleDataCenterServerConfigFragment extends BaseBleConnectFragment {
         Timber.d("设置网络中心通讯协议===%s", cmdCommunicationProtocol);
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onMessageEvent(MessageEvent messageEvent) {
-        if (messageEvent instanceof CmdResponseMessage) {
-            if (!isActive) {
-                return;
-            }
-            setResultData((CmdResponseMessage) messageEvent);
-        } else {
-//            super.onMessageEvent(messageEvent);
+    @Override
+    protected void parseResponseMessage(String cmdStr) {
+        super.parseResponseMessage(cmdStr);
+        if (!isActive) {
+            return;
         }
+        setResultData(cmdStr);
     }
 
-    private void setResultData(CmdResponseMessage responseMessage) {
-        String cmdStr = responseMessage.getResult();
+    private void setResultData(final String cmdStr) {
         String tempStr = cmdStr.replace("$$", "").replace("\r\n", "");
         CommandType type = StringUtil.extractCommandType(cmdStr);
         switch (type) {
@@ -733,6 +724,8 @@ public class BleDataCenterServerConfigFragment extends BaseBleConnectFragment {
                     return;
                 }
                 doAfterSetting();
+                break;
+            default:
                 break;
         }
     }

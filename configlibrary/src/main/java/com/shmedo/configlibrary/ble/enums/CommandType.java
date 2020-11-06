@@ -308,7 +308,10 @@ public enum CommandType {
      */
     QUERY_DATA_CENTER_PARAM("889"),
 
-
+    /**
+     * 自定义心跳包指令
+     */
+    HEARTBEAT("888"),
     /**
      * 批处理结束指令
      */

@@ -21,15 +21,10 @@ import com.shmedo.configlibrary.ble.enums.CommandType;
 import com.shmedo.configlibrary.ble.enums.LogOutputStatus;
 import com.shmedo.configlibrary.ble.enums.WorkModel;
 import com.shmedo.core.MCloudApp;
-import com.shmedo.core.event.CmdResponseMessage;
-import com.shmedo.core.event.MessageEvent;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.view.ClearEditText;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.base.CommonViewHolder;
-
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -233,20 +228,16 @@ public class BleCustomCommandLogPrintFragment extends BaseBleConnectFragment {
         Log4a.i(TAG, String.format("设置调试模式指令==%s", command.replace("\r\n", "")));
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onMessageEvent(MessageEvent messageEvent) {
-        if (messageEvent instanceof CmdResponseMessage) {
-            if (!isActive) {
-                return;
-            }
-            setResultData((CmdResponseMessage) messageEvent);
-        } else {
-//            super.onMessageEvent(messageEvent);
+    @Override
+    protected void parseResponseMessage(String cmdStr) {
+        super.parseResponseMessage(cmdStr);
+        if (!isActive) {
+            return;
         }
+        setResultData(cmdStr);
     }
 
-    private void setResultData(CmdResponseMessage responseMessage) {
-        String cmdStr = responseMessage.getResult();
+    private void setResultData(final String cmdStr) {
         Log4a.i(TAG, cmdStr);
         Log4a.flush();
 
