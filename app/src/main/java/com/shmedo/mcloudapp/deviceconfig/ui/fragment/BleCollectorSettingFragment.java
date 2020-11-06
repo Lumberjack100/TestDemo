@@ -263,7 +263,7 @@ public class BleCollectorSettingFragment extends BaseBleConnectFragment {
 
     private void doAfterSetting() {
         stopProgressRunnable();
-        isExitMode = true;
+//        isExitMode = true;
         saveConfigInfoNoReboot();
     }
 

@@ -412,7 +412,7 @@ public abstract class BaseBleDASExternalSensorFragment extends BaseBleConnectFra
 
     protected void doAfterSetting() {
         stopProgressRunnable();
-        isExitMode = true;
+//        isExitMode = true;
         saveConfigInfoNoReboot();
     }
 

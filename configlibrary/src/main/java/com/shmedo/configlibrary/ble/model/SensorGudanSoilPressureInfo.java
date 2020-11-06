@@ -18,7 +18,7 @@ public class SensorGudanSoilPressureInfo implements SensorParameter {
     private String temperatureCoefficientB;//温度系数b
     private String datumValueF0; //基准值
     private String CreateTemperature;   //初始化温度T0
-    private String manualCorrection;    //手动纠偏
+    private String manualCorrection;    //修正值
 
 
     public String getTriggerThreshold() {

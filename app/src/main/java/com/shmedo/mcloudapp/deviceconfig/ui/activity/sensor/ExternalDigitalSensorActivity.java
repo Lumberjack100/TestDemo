@@ -142,7 +142,7 @@ public class ExternalDigitalSensorActivity extends BaseActivity {
         mEtModbusAddress.setText(sensorAddress);
         switch (sensorType) {
             case WIRE_SHIFT://拉线位移计
-                mTvAlarmValue.setText("触发阈值(单位:mm)");
+                mTvAlarmValue.setText("报警值(单位:mm)");
                 mTvCorrectValue.setText("修正值(单位:m)");
                 if (parcelableData != null) {
                     SensorWireShiftInfo sensorWireShiftInfo = (SensorWireShiftInfo) parcelableData;
@@ -152,7 +152,7 @@ public class ExternalDigitalSensorActivity extends BaseActivity {
                 break;
 
             case SOIL_MOISTURE://土壤含水率
-                mTvAlarmValue.setText("触发阈值(单位:%rh)");
+                mTvAlarmValue.setText("报警值(单位:%rh)");
                 mTvCorrectValue.setText("修正值(单位:%rh)");
                 if (parcelableData != null) {
                     SensorSoilMoistureInfo sensorSoilMoistureInfo = (SensorSoilMoistureInfo) parcelableData;
@@ -162,7 +162,7 @@ public class ExternalDigitalSensorActivity extends BaseActivity {
                 break;
 
             case INCLINOMETER://测斜仪
-                mTvAlarmValue.setText("触发阈值(单位:mm)");
+                mTvAlarmValue.setText("报警值(单位:mm)");
                 mTvCorrectValue.setText("修正值(单位:m)");
                 mTvMeasureLong.setText("测段长(单位:mm)");
                 if (parcelableData != null) {
@@ -174,7 +174,7 @@ public class ExternalDigitalSensorActivity extends BaseActivity {
                 break;
 
             case ULTRASONIC_LEVEL_GAUGE://超声波物位计
-                mTvAlarmValue.setText("触发阈值(单位:mm)");
+                mTvAlarmValue.setText("报警值(单位:mm)");
                 mTvCorrectValue.setText("修正值(单位:m)");
                 if (parcelableData != null) {
                     SensorUltrasonicLevelInfo sensorUltrasonicLevelInfo = (SensorUltrasonicLevelInfo) parcelableData;
@@ -184,7 +184,7 @@ public class ExternalDigitalSensorActivity extends BaseActivity {
                 break;
 
             case RADAR_LEVEL_GAUGE://雷达物位计
-                mTvAlarmValue.setText("触发阈值(单位:mm)");
+                mTvAlarmValue.setText("报警值(单位:mm)");
                 mTvCorrectValue.setText("修正值(单位:m)");
                 if (parcelableData != null) {
                     SensorRadarLevelInfo sensorRadarLevelInfo = (SensorRadarLevelInfo) parcelableData;
@@ -194,7 +194,7 @@ public class ExternalDigitalSensorActivity extends BaseActivity {
                 break;
 
             case INFRASOUND_SENSOR://次声
-                mTvAlarmValue.setText("触发阈值(单位:Hz)");
+                mTvAlarmValue.setText("报警值(单位:Hz)");
                 mTvCorrectValue.setText("修正值(单位:Hz)");
                 if (parcelableData != null) {
                     SensorInfrasoundInfo sensorInfrasoundInfo = (SensorInfrasoundInfo) parcelableData;

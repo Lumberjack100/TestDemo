@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -95,6 +96,8 @@ public abstract class BaseBleConnectFragment extends BaseFragment {
 
     public boolean isExitMode = false;
 
+    protected boolean isParamSaved = false;
+
     protected static boolean isLogOutputMode = false;//设备是否打开了内部日志输出模式
 
     protected String errMsg = "";
@@ -114,7 +117,7 @@ public abstract class BaseBleConnectFragment extends BaseFragment {
     protected BleViewModel bleViewModel;
 
 
-    protected void updateViewStateByConnectState(boolean isConnected){
+    protected void updateViewStateByConnectState(boolean isConnected) {
 
     }
 
@@ -716,7 +719,8 @@ public abstract class BaseBleConnectFragment extends BaseFragment {
 
         //设置保存参数应答
         if (cmdStr.startsWith("$$0192") && cmdStr.endsWith("\r\n")) {
-            ToastUtils.show("已保存");
+//            ToastUtils.show("已保存");
+            Toast.makeText(getActivity(), "已保存", Toast.LENGTH_LONG).show();
             if (isExitMode) {
                 uiHander.postDelayed(new Runnable() {
                     @Override

@@ -17,7 +17,7 @@ public class SensorGudanPercolateInfo implements SensorParameter, Parcelable {
     private String temperatureCoefficientB;//温度系数b
     private String referenceValue; //基准值
     private String CreateTemperature;   //初始化温度T0
-    private String manualCorrection;    //手动纠偏
+    private String manualCorrection;    //修正值
     private String cordLenght;  //绳长
     private String installElevation;  //安装高程
 

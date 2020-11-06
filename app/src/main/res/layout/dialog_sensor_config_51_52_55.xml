@@ -208,7 +208,7 @@
             android:layout_gravity="center_vertical"
             android:layout_marginLeft="20dp"
             android:layout_weight="2"
-            android:text="手动纠偏"
+            android:text="修正值"
             android:textSize="14sp" />
 
         <EditText

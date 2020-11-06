@@ -833,7 +833,7 @@ public class BleDASSensorFragment extends BaseBleConnectFragment {
 
     private void doAfterSetting() {
         stopProgressRunnable();
-        isExitMode = true;
+//        isExitMode = true;
         saveConfigInfoNoReboot();
     }
 

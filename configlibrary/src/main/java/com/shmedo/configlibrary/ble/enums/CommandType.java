@@ -149,7 +149,7 @@ public enum CommandType {
      */
     COLLECTOR_FREQUENCY("161"),
     /**
-     * 设置采集器接入传感器的触发阀值（单位由传感器类型决定）。
+     * 设置采集器接入传感器的报警值（单位由传感器类型决定）。
      */
     COLLECTOR_SENSOR_THRESHOLD("162"),
     /**

@@ -29,7 +29,7 @@ import butterknife.ButterKnife;
  */
 public class SensorZLJ300tView extends FrameLayout {
     @BindView(R.id.et_trigger_threshold)
-    EditText mEtTriggerThreshold;//触发阀值
+    EditText mEtTriggerThreshold;//报警值
     @BindView(R.id.polynomialRatioA)
     EditText mEtCoefficientA;//标定系数A
     @BindView(R.id.temperatureCoefficient)
@@ -39,7 +39,7 @@ public class SensorZLJ300tView extends FrameLayout {
     @BindView(R.id.et_initialtemperature)
     EditText mEtInitialTemperature;//初始温度
     @BindView(R.id.et_correct_value)
-    EditText mEtCorrectValue;//手动纠偏
+    EditText mEtCorrectValue;//修正值
 
     private String triggerThreshold, coefficientA, coefficientB, referenceValue, initialTemperature, correctValue;
 
@@ -121,12 +121,17 @@ public class SensorZLJ300tView extends FrameLayout {
         correctValue = mEtCorrectValue.getText().toString().trim();
 
         if (TextUtils.isEmpty(triggerThreshold)) {
-            ToastUtils.show("触发阀值不能为空!");
+            ToastUtils.show("报警值不能为空!");
             return false;
         }
 
         if (!ValidateUtil.isInteger(triggerThreshold)) {
-            ToastUtils.show("请输入正确的触发阀值!");
+            ToastUtils.show("请输入正确的报警值!");
+            return false;
+        }
+
+        if (!TextUtils.isEmpty(correctValue) && !ValidateUtil.isDouble(correctValue)) {
+            ToastUtils.show("请输入正确的修正值!");
             return false;
         }
 
@@ -147,11 +152,6 @@ public class SensorZLJ300tView extends FrameLayout {
 
         if (!TextUtils.isEmpty(initialTemperature) && !ValidateUtil.isDouble(initialTemperature)) {
             ToastUtils.show("请输入正确的初始温度!");
-            return false;
-        }
-
-        if (!TextUtils.isEmpty(correctValue) && !ValidateUtil.isDouble(correctValue)) {
-            ToastUtils.show("请输入正确的手动纠偏!");
             return false;
         }
 

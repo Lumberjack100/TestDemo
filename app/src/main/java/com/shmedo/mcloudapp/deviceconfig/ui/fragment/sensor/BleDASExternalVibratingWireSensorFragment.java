@@ -27,12 +27,12 @@ import timber.log.Timber;
  */
 public class BleDASExternalVibratingWireSensorFragment extends BaseBleDASExternalSensorFragment {
     /**
-     * 传感器除了触发阀值外其他修正参数配置指令集合
+     * 传感器除了报警值外其他修正参数配置指令集合
      */
     private List<String> correctValueCmdList = new LinkedList<>();
 
     /**
-     * 传感器除了触发阀值外,其他参数配置项名称
+     * 传感器除了报警值外,其他参数配置项名称
      */
     private List<String> configItemNameList = new ArrayList<>();
 
@@ -88,7 +88,7 @@ public class BleDASExternalVibratingWireSensorFragment extends BaseBleDASExterna
      * 设置采集器接入传感器触发阈值<br/>
      * 指令格式: ##162xxX…X\r\n<br/>
      * xx表示采集器类型，X…X表示阀值，X…X由接入传感器数量N决定（4*N）<br/>
-     * 例如：裂缝采集器接入两只拉线位移计，触发阀值分别30mm、40mm<br/>
+     * 例如：裂缝采集器接入两只拉线位移计，报警值分别30mm、40mm<br/>
      * 设置举例：##1620200300040\r\n<br/>
      * 返回信息：$$1620200300040\r\n<br/>
      */
@@ -169,7 +169,7 @@ public class BleDASExternalVibratingWireSensorFragment extends BaseBleDASExterna
                 configItemNameList.add("基康渗压计 多项式系数C");
                 configItemNameList.add("基康渗压计 温度系数K");
                 configItemNameList.add("基康渗压计 初始温度T0");
-                configItemNameList.add("基康渗压计 手动纠偏");
+                configItemNameList.add("基康渗压计 修正值");
                 configItemNameList.add("基康渗压计 绳长");
                 configItemNameList.add("基康渗压计 安装高程");
             }
@@ -189,7 +189,7 @@ public class BleDASExternalVibratingWireSensorFragment extends BaseBleDASExterna
                 configItemNameList.add("葛南渗压计 温修系数b");
                 configItemNameList.add("葛南渗压计 基准值F0");
                 configItemNameList.add("葛南渗压计 初始温度T0");
-                configItemNameList.add("葛南渗压计 手动纠偏");
+                configItemNameList.add("葛南渗压计 修正值");
                 configItemNameList.add("葛南渗压计 绳长");
                 configItemNameList.add("葛南渗压计 安装高程");
             }
@@ -207,7 +207,7 @@ public class BleDASExternalVibratingWireSensorFragment extends BaseBleDASExterna
                 configItemNameList.add("轴力计 温修系数b");
                 configItemNameList.add("轴力计 基准值F0");
                 configItemNameList.add("轴力计 初始温度T0");
-                configItemNameList.add("轴力计 手动纠偏");
+                configItemNameList.add("轴力计 修正值");
             }
             break;
         }

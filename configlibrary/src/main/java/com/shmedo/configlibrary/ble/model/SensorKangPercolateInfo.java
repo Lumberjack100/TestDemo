@@ -18,7 +18,7 @@ public class SensorKangPercolateInfo implements SensorParameter, Parcelable {
     private String polynomialRatioC;//多项式系数C
     private String temperatureCoefficientK;//温度系数K
     private String CreateTemperature;   //初始化温度T0
-    private String manualCorrection;    //手动纠偏
+    private String manualCorrection;    //修正值
     private String cordLenght;  //绳长
     private String installElevation;  //安装高程
 

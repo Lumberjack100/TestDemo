@@ -139,7 +139,7 @@ public class BleDASExternalDigtalSensorFragment extends BaseBleDASExternalSensor
      * 设置 超声波物位计 接入传感器触发阈值<br/>
      * 指令格式: ##162xxX…X\r\n<br/>
      * xx表示采集器类型，X…X表示阀值，X…X由接入传感器数量N决定（4*N）<br/>
-     * 例如：裂缝采集器接入两只拉线位移计，触发阀值分别30mm、40mm<br/>
+     * 例如：裂缝采集器接入两只拉线位移计，报警值分别30mm、40mm<br/>
      * 设置举例：##1620200300040\r\n<br/>
      * 返回信息：$$1620200300040\r\n<br/>
      */
