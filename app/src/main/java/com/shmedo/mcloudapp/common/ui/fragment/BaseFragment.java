@@ -246,7 +246,7 @@ public abstract class BaseFragment extends Fragment implements HandleBackInterfa
         super.onResume();
         isActive = true;
         String name = getClass().getName();
-        Timber.i("startPage,Fragment=%s", name);
+        Timber.i("onResume,Fragment=%s", name);
     }
 
     @Override
@@ -254,7 +254,14 @@ public abstract class BaseFragment extends Fragment implements HandleBackInterfa
         super.onPause();
         isActive = false;
         String name = getClass().getName();
-        Timber.i("endPage,Fragment=%s", name);
+        Timber.i("onPause,Fragment=%s", name);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        String name = getClass().getName();
+        Timber.i("onStop,Fragment=%s", name);
     }
 
     protected void showTipDialog(String content) {

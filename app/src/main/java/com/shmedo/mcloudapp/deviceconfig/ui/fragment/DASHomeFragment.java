@@ -43,7 +43,6 @@ import com.shmedo.core.event.BluetoothConnectStateEvent;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.fragment.BaseFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.ConfigDASActivity;
-import com.shmedo.mcloudapp.deviceconfig.ui.activity.DeviceAdvanceSettingActivity;
 import com.shmedo.mcloudapp.util.bleutil.BlueResultParserUtil;
 
 import org.greenrobot.eventbus.EventBus;
@@ -357,7 +356,6 @@ public class DASHomeFragment extends BaseFragment {
                     ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
                     return;
                 }
-                DeviceAdvanceSettingActivity.startActivity(getActivity(), baseConfigInfo.getWorkModel().toInt());
                 break;
 
             case R.id.btn_save:

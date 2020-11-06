@@ -12,6 +12,8 @@ import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 
+import com.kunminx.architecture.ui.callback.ProtectedUnPeekLiveData;
+import com.kunminx.architecture.ui.callback.UnPeekLiveData;
 import com.shmedo.configlibrary.ble.interfaces.OnBytePackage;
 import com.shmedo.configlibrary.ble.utils.ByteManager;
 import com.shmedo.mcloudapp.util.TimeUtil;
@@ -87,6 +89,15 @@ public class NewBleManager {
     private Object syncRoot = new Object();
     private Timestamp lastWriteTime;
 
+    private final UnPeekLiveData<BluetoothEvent> bluetoothEventLiveData = new UnPeekLiveData<>();
+
+    public ProtectedUnPeekLiveData<BluetoothEvent> getBluetoothEventLiveData() {
+        return bluetoothEventLiveData;
+    }
+
+    public void clearLastValue(){
+        bluetoothEventLiveData.postValue(null);
+    }
 
     /**
      * 连接设备
@@ -262,11 +273,13 @@ public class NewBleManager {
                 .setEventData(eventData)
                 .build();
 
-        notifyBluetoothEvent(event);
+        bluetoothEventLiveData.postValue(event);
+//        notifyBluetoothEvent(event);
     }
 
     private void fireEvent(final BluetoothEvent event) {
-        notifyBluetoothEvent(event);
+        bluetoothEventLiveData.postValue(event);
+//        notifyBluetoothEvent(event);
     }
 
     private void notifyBluetoothEvent(final BluetoothEvent event) {

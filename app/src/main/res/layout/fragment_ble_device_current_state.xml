@@ -868,6 +868,7 @@
         android:layout_gravity="bottom|end"
         android:layout_marginEnd="20dp"
         android:layout_marginBottom="60dp"
+        android:visibility="gone"
         app:backgroundTint="@color/white"
         app:fab_size="mini"
         app:srcCompat="@drawable/ic_ble_scan_refresh" />

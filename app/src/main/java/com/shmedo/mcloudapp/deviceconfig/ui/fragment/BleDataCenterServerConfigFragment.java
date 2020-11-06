@@ -599,7 +599,7 @@ public class BleDataCenterServerConfigFragment extends BaseBleConnectFragment {
             }
             setResultData((CmdResponseMessage) messageEvent);
         } else {
-            super.onMessageEvent(messageEvent);
+//            super.onMessageEvent(messageEvent);
         }
     }
 

@@ -367,7 +367,7 @@ public class BleConfigDeviceFragment extends BaseBleConnectFragment {
             boolean isConnected = ((BluetoothConnectStateEvent) messageEvent).isConnected;
             updateViewStateByConnectState(isConnected);
         } else {
-            super.onMessageEvent(messageEvent);
+//            super.onMessageEvent(messageEvent);
         }
     }
 

@@ -260,7 +260,7 @@ public abstract class BaseBleDASExternalSensorFragment extends BaseBleConnectFra
             }
             setResultData((CmdResponseMessage) messageEvent);
         } else {
-            super.onMessageEvent(messageEvent);
+//            super.onMessageEvent(messageEvent);
         }
     }
 

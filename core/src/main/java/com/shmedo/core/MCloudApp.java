@@ -36,8 +36,6 @@ public class MCloudApp {
 
     private static String httpsNoApiVersionAddress="chaxun.shmedo.cn";
 
-    private static boolean isNetworkConnected = true;
-
     private static boolean isBluetoothDeviceConnected = false;
 
     private static String curDeviceToken;//设备名称
@@ -93,7 +91,6 @@ public class MCloudApp {
     }
 
 
-
     public static String getHttpServiceAddress() {
         String httpServiceAddress = "chaxun.shmedo.cn";
         if (TextUtils.isEmpty(httpServiceAddress))
@@ -127,20 +124,13 @@ public class MCloudApp {
         MCloudApp.account = account;
     }
 
+
     public static int getCompanyID() {
         return companyID;
     }
 
     public static void setCompanyID(int companyID) {
         MCloudApp.companyID = companyID;
-    }
-
-    public static boolean isIsNetworkConnected() {
-        return isNetworkConnected;
-    }
-
-    public static void setIsNetworkConnected(boolean isNetworkConnected) {
-        MCloudApp.isNetworkConnected = isNetworkConnected;
     }
 
 
@@ -153,7 +143,6 @@ public class MCloudApp {
     }
 
 
-
     public static String getCurDeviceToken() {
         return curDeviceToken;
     }
@@ -161,6 +150,7 @@ public class MCloudApp {
     public static void setCurDeviceToken(String curDeviceToken) {
         MCloudApp.curDeviceToken = curDeviceToken;
     }
+
 
     public static String getCurDeviceMacAddr() {
         return curDeviceMacAddr;

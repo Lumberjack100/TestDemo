@@ -11,9 +11,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
+import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.lifecycle.Observer;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -36,20 +38,17 @@ import com.shmedo.configlibrary.ble.utils.StringUtil;
 import com.shmedo.core.MCloudApp;
 import com.shmedo.core.event.BluetoothConnectStateEvent;
 import com.shmedo.core.event.CmdResponseMessage;
-import com.shmedo.core.event.MessageEvent;
 import com.shmedo.core.util.GlobalUtil;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.bluetooth.BluetoothEvent;
 import com.shmedo.mcloudapp.bluetooth.Message;
-import com.shmedo.mcloudapp.bluetooth.NewBleManager;
 import com.shmedo.mcloudapp.common.ui.fragment.BaseFragment;
+import com.shmedo.mcloudapp.deviceconfig.viewmodels.BleViewModel;
 import com.shmedo.mcloudapp.util.bleutil.ByteManagerUtil;
 import com.shmedo.mcloudapp.util.bleutil.Constants;
 import com.shmedo.mcloudapp.util.permission.XPermissionUtils;
 
 import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
 
 import java.nio.charset.StandardCharsets;
 import java.util.List;
@@ -83,7 +82,7 @@ public abstract class BaseBleConnectFragment extends BaseFragment {
 
     public static final int CONFIG_PARAMS_LONG_DELAY_MILLIS = 30000;//发送配置参数指令超时时间
 
-    private NewBleManager bleManager = NewBleManager.getInstance();
+//    private NewBleManager bleViewModel.bleManager = NewBleManager.getInstance();
 
     private BluetoothAdapter mBluetoothAdapter;
 
@@ -93,7 +92,7 @@ public abstract class BaseBleConnectFragment extends BaseFragment {
 
     private boolean mScanning;
 
-    private int authenticateNum = 0;
+    private static int authenticateNum = 0;
 
     private boolean isAutoConnectBlue = true;//是否自动连接蓝牙
 
@@ -114,6 +113,8 @@ public abstract class BaseBleConnectFragment extends BaseFragment {
     private static ProgressRunnable progressRunnable;
 
     private static HeartRunnable heartRunnable;
+
+    protected BleViewModel bleViewModel;
 
 
     private class ProgressRunnable implements Runnable {
@@ -175,6 +176,12 @@ public abstract class BaseBleConnectFragment extends BaseFragment {
     }
 
     @Override
+    public void onStop() {
+        super.onStop();
+        bleViewModel.clearLastValue();
+    }
+
+    @Override
     public void onDestroy() {
         super.onDestroy();
         dismissProgressDialog();
@@ -182,12 +189,14 @@ public abstract class BaseBleConnectFragment extends BaseFragment {
     }
 
     @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         EventBus.getDefault().register(this);
         initBluetooth();
-//        ByteManagerUtil.init(new MyOnBytePackage());
+        bleViewModel = getApplicationScopeViewModel(BleViewModel.class);
+        ByteManagerUtil.init(new MyOnBytePackage());
     }
+
 
     /**
      * 初始化蓝牙
@@ -195,6 +204,22 @@ public abstract class BaseBleConnectFragment extends BaseFragment {
     private void initBluetooth() {
         BluetoothManager bluetoothManager = (BluetoothManager) mActivity.getSystemService(Context.BLUETOOTH_SERVICE);
         mBluetoothAdapter = Objects.requireNonNull(bluetoothManager).getAdapter();
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        bleViewModel.getBluetoothEventLiveData().observeInFragment(this, new Observer<BluetoothEvent>() {
+            @Override
+            public void onChanged(BluetoothEvent bluetoothEvent) {
+                if (!isActive) {
+                    return;
+                }
+                handleBluetoothEvent(bluetoothEvent);
+            }
+        });
+
     }
 
     /**
@@ -328,13 +353,12 @@ public abstract class BaseBleConnectFragment extends BaseFragment {
         }
     }
 
-
     /**
      * ble 建立连接
      */
     private void doConnect(BluetoothDevice device) {
         scanLeDevice(false);
-        bleManager.connectDevice(device, getContext());
+        bleViewModel.bleManager.connectDevice(device, getContext());
         errMsg = "连接超时,请稍后尝试";
         startProgressRunnable("正在连接设备：" + SN, CONNECT_DELAY_MILLIS);
     }
@@ -343,8 +367,8 @@ public abstract class BaseBleConnectFragment extends BaseFragment {
      * ble 取消连接
      */
     public void disconnectDevice() {
-        if (null != bleManager) {
-            bleManager.disconnect();
+        if (null != bleViewModel.bleManager) {
+            bleViewModel.bleManager.disconnect();
             isAutoConnectBlue = false;//
             authenticateNum = 0;
         }
@@ -364,98 +388,90 @@ public abstract class BaseBleConnectFragment extends BaseFragment {
     }
 
 
-    @Subscribe(threadMode = ThreadMode.POSTING)
-    public void onMessageEvent(MessageEvent messageEvent) {
-        if (messageEvent instanceof BluetoothEvent) {
-            if (!isActive) {
-                return;
-            }
+    private void handleBluetoothEvent(BluetoothEvent event){
+        switch (event.getEventType()) {
+            case CONNECTED:
+//                ByteManagerUtil.init(new MyOnBytePackage());
+                mHandler.sendEmptyMessage(Constants.BT_CONNECT);
+                break;
 
-            BluetoothEvent event = (BluetoothEvent) messageEvent;
-            switch (event.getEventType()) {
-                case CONNECTED:
-                    ByteManagerUtil.init(new MyOnBytePackage());
-                    mHandler.sendEmptyMessage(Constants.BT_CONNECT);
-                    break;
+            case DISCONNECTED:
+                Timber.e("蓝牙连接断开");
+                mHandler.sendEmptyMessage(Constants.BT_DISCONNECTED);
+                break;
 
-                case DISCONNECTED:
-                    Timber.e("蓝牙连接断开");
-                    mHandler.sendEmptyMessage(Constants.BT_DISCONNECTED);
-                    break;
+            case REQUEST_MTU_FAIL:
+                Timber.e("MTU请求设置失败");
+                mHandler.sendEmptyMessage(Constants.BT_REQUEST_MTU_FAIL);
+                break;
 
-                case REQUEST_MTU_FAIL:
-                    Timber.e("MTU请求设置失败");
-                    mHandler.sendEmptyMessage(Constants.BT_REQUEST_MTU_FAIL);
-                    break;
+            case SERVICE_FIND_FAIL:
+                Timber.e("蓝牙服务发现失败");
+                mHandler.sendEmptyMessage(Constants.BT_SERVICE_FIND_FAIL);
+                break;
 
-                case SERVICE_FIND_FAIL:
-                    Timber.e("蓝牙服务发现失败");
-                    mHandler.sendEmptyMessage(Constants.BT_SERVICE_FIND_FAIL);
-                    break;
+            case CHARACTERISTICS_FIND_FAIL:
+                Timber.e("特征读取失败");
+                mHandler.sendEmptyMessage(Constants.BT_CHARACTERISTICS_FIND_FAIL);
+                break;
 
-                case CHARACTERISTICS_FIND_FAIL:
-                    Timber.e("特征读取失败");
-                    mHandler.sendEmptyMessage(Constants.BT_CHARACTERISTICS_FIND_FAIL);
-                    break;
+            case ENABLE_READ_SUCCESS:
+                Timber.i("设置读取Descriptor成功");
+                mHandler.sendEmptyMessage(Constants.BT_ENABLE_READ_SUCCESS);
+                break;
 
-                case ENABLE_READ_SUCCESS:
-                    Timber.i("设置读取Descriptor成功");
-                    mHandler.sendEmptyMessage(Constants.BT_ENABLE_READ_SUCCESS);
-                    break;
+            case ENABLE_READ_FAIL:
+                Timber.e("设置读取Descriptor失败");
+                mHandler.sendEmptyMessage(Constants.BT_ENABLE_READ_FAIL);
+                break;
 
-                case ENABLE_READ_FAIL:
-                    Timber.e("设置读取Descriptor失败");
-                    mHandler.sendEmptyMessage(Constants.BT_ENABLE_READ_FAIL);
-                    break;
+            case WRITE_TIME_OUT:
+                Timber.e("写入等待超时");
+                mHandler.sendEmptyMessage(Constants.BT_WRITE_TIME_OUT);
+                break;
 
-                case WRITE_TIME_OUT:
-                    Timber.e("写入等待超时");
-                    mHandler.sendEmptyMessage(Constants.BT_WRITE_TIME_OUT);
-                    break;
-
-                case MESSAGE_WRITE_SUCCESS:
+            case MESSAGE_WRITE_SUCCESS:
 //                    Timber.i("消息写入成功");
-                    mHandler.sendEmptyMessage(Constants.BT_MESSAGE_WRITE_SUCCESS);
+                mHandler.sendEmptyMessage(Constants.BT_MESSAGE_WRITE_SUCCESS);
+                try {
+                    String msg = ((Message) event.getEventData()).getResponseMessage();
+                    byte[] data = (byte[]) msg.getBytes();
+                    if (data.length > 0) {
+                        ByteManagerUtil.getInstance().writeByte(data);
+                    }
+                } catch (Exception ex) {
+                    Timber.e(ex);
+                }
+                break;
+
+            case MESSAGE_RESPONSE_TIME_OUT:
+                Timber.e("消息等待响应超时");
+                mHandler.sendEmptyMessage(Constants.MESSAGE_RESPONSE_TIME_OUT);
+                break;
+
+            case MESSAGE_WRITE_FAIL:
+                Timber.e("消息写入失败");
+                mHandler.sendEmptyMessage(Constants.BT_MESSAGE_WRITE_FAIL);
+                break;
+
+            case RESPONSE_WITH_NO_MESSAGE:
+                Timber.i("RESPONSE_WITH_NO_MESSAGE");
+                if (isLogOutputMode) {
                     try {
-                        String msg = ((Message) event.getEventData()).getResponseMessage();
-                        byte[] data = (byte[]) msg.getBytes();
+                        byte[] data = ((String) event.getEventData()).getBytes();
                         if (data.length > 0) {
                             ByteManagerUtil.getInstance().writeByte(data);
                         }
                     } catch (Exception ex) {
                         Timber.e(ex);
                     }
-                    break;
+                } else {
+                    switchLogOutputMode(false);
+                }
+                break;
 
-                case MESSAGE_RESPONSE_TIME_OUT:
-                    Timber.e("消息等待响应超时");
-                    mHandler.sendEmptyMessage(Constants.MESSAGE_RESPONSE_TIME_OUT);
-                    break;
-
-                case MESSAGE_WRITE_FAIL:
-                    Timber.e("消息写入失败");
-                    mHandler.sendEmptyMessage(Constants.BT_MESSAGE_WRITE_FAIL);
-                    break;
-
-                case RESPONSE_WITH_NO_MESSAGE:
-                    Timber.i("RESPONSE_WITH_NO_MESSAGE");
-                    if(isLogOutputMode) {
-                        try {
-                            byte[] data = ((String) event.getEventData()).getBytes();
-                            if (data.length > 0) {
-                                ByteManagerUtil.getInstance().writeByte(data);
-                            }
-                        } catch (Exception ex) {
-                            Timber.e(ex);
-                        }
-                    }else{
-                        switchLogOutputMode(false);
-                    }
-                    break;
-
-                default:
-                    break;
-            }
+            default:
+                break;
         }
     }
 
@@ -732,8 +748,8 @@ public abstract class BaseBleConnectFragment extends BaseFragment {
         uiHander.postDelayed(new Runnable() {
             @Override
             public void run() {
-                if (bleManager != null) {
-                    bleManager.writeMessage(msg);
+                if (bleViewModel.bleManager != null) {
+                    bleViewModel.bleManager.writeMessage(msg);
                 }
             }
         }, 200);
@@ -746,8 +762,8 @@ public abstract class BaseBleConnectFragment extends BaseFragment {
      */
     protected void sendCommonCommandImmediately(final String cmdStr) {
         final Message msg = new Message(UUID.randomUUID().toString(), cmdStr);
-        if (bleManager != null) {
-            bleManager.writeMessage(msg);
+        if (bleViewModel.bleManager != null) {
+            bleViewModel.bleManager.writeMessage(msg);
         }
     }
 
@@ -942,4 +958,6 @@ public abstract class BaseBleConnectFragment extends BaseFragment {
             findAndConnectSpecificDevice();
         }
     }
+
+
 }

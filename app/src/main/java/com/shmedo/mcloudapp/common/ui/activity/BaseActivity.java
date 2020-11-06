@@ -3,9 +3,7 @@ package com.shmedo.mcloudapp.common.ui.activity;
 import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
-import android.content.IntentFilter;
 import android.graphics.PixelFormat;
-import android.net.ConnectivityManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -22,27 +20,22 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.shmedo.core.MCloudApp;
 import com.shmedo.core.event.ForceToLoginEvent;
-import com.shmedo.core.event.MessageEvent;
 import com.shmedo.core.event.NetworkChangeEvent;
-import com.shmedo.core.receiver.NetworkConnectChangedReceiver;
 import com.shmedo.core.util.ActivityCollector;
 import com.shmedo.core.util.NetworkUtils;
 import com.shmedo.mcloudapp.MCloudApplication;
 import com.shmedo.mcloudapp.R;
+import com.shmedo.mcloudapp.common.viewmodels.ShareViewModel;
 import com.shmedo.mcloudapp.util.KeyBordUtils;
 import com.shmedo.mcloudapp.util.UiUtils;
 import com.shmedo.mcloudapp.util.common.HandleBackUtil;
 import com.shmedo.mcloudapp.util.permission.XPermissionUtils;
-
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
 
 import java.lang.ref.WeakReference;
 import java.util.Objects;
@@ -80,9 +73,9 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     protected boolean mNetConnected;/*网络连接的状态，true表示有网络，flase表示无网络连接*/
 
-    private NetworkConnectChangedReceiver mNetWorkChangReceiver;/*网络状态变化的广播接收器*/
-
     private WeakReference<Activity> weakRefActivity = null;
+
+    protected ShareViewModel shareViewModel;
 
     protected abstract int getLayoutId();
 
@@ -101,9 +94,28 @@ public abstract class BaseActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         //初始化沉浸式
         initImmersionBar();
-
         initTipView();//初始化提示View
-        registerNetWorkChangReceiver();
+
+        shareViewModel = getApplicationScopeViewModel(ShareViewModel.class);
+        shareViewModel.getNetworkChangeEvent().observeInActivity(this, new Observer<NetworkChangeEvent>() {
+            @Override
+            public void onChanged(NetworkChangeEvent networkChangeEvent) {
+                Timber.i("网络发生变化:%s", networkChangeEvent.toString());
+                mNetConnected = networkChangeEvent.isConnected;
+                netStateChangedUI(networkChangeEvent.isConnected);
+            }
+        });
+
+        shareViewModel.getForceToLoginEvent().observeInActivity(this, new Observer<ForceToLoginEvent>() {
+            @Override
+            public void onChanged(ForceToLoginEvent forceToLoginEvent) {
+                if (isActive) { // 判断Activity是否在前台，防止非前台的Activity也处理这个事件，造成打开多个LoginActivity的问题。
+                    // force to login
+                    ActivityCollector.finishAll();
+                    LoginActivity.startActivity(BaseActivity.this);
+                }
+            }
+        });
     }
 
     @Override
@@ -134,18 +146,13 @@ public abstract class BaseActivity extends AppCompatActivity {
         getSupportActionBar().setTitle("");
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        EventBus.getDefault().register(this);
-    }
 
     @Override
     protected void onResume() {
         super.onResume();
         isActive = true;
         String name = getClass().getName();
-        Timber.i("startPage,activity=%s", name);
+        Timber.i("onResume,activity=%s", name);
 
         //在无网络情况下打开APP时，系统不会发送网络状况变更的Intent，需要自己手动检查
         netStateChangedUI(NetworkUtils.isConnected());
@@ -156,13 +163,14 @@ public abstract class BaseActivity extends AppCompatActivity {
         super.onPause();
         isActive = false;
         String name = getClass().getName();
-        Timber.i("endPage,activity=%s", name);
+        Timber.i("onPause,activity=%s", name);
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        EventBus.getDefault().unregister(this);
+        String name = getClass().getName();
+        Timber.i("onStop,activity=%s", name);
     }
 
     @Override
@@ -244,7 +252,7 @@ public abstract class BaseActivity extends AppCompatActivity {
      * @return
      */
     private boolean isShouldHideKeyboard(View v, MotionEvent event) {
-        if (v != null && (v instanceof EditText)) {  //判断得到的焦点控件是否包含EditText
+        if ((v instanceof EditText)) {  //判断得到的焦点控件是否包含EditText
             int[] l = {0, 0};
             v.getLocationInWindow(l);
             int left = l[0],    //得到输入框在屏幕中上下左右的位置
@@ -261,14 +269,6 @@ public abstract class BaseActivity extends AppCompatActivity {
         }
         // 如果焦点不是EditText则忽略
         return false;
-    }
-
-    private void registerNetWorkChangReceiver() {
-        //注册网络状态监听广播
-        mNetWorkChangReceiver = new NetworkConnectChangedReceiver();
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
-        registerReceiver(mNetWorkChangReceiver, filter);
     }
 
     private void initTipView() {
@@ -301,29 +301,6 @@ public abstract class BaseActivity extends AppCompatActivity {
                 if (mTipView.getParent() == null) {
                     mWindowManager.addView(mTipView, mLayoutParams);
                 }
-            }
-        }
-    }
-
-    /**
-     * 网络状态发生变化时的处理
-     *
-     * @param messageEvent
-     */
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onNetworkChangeEvent(MessageEvent messageEvent) {
-        if (messageEvent instanceof NetworkChangeEvent) {
-            NetworkChangeEvent networkChangeEvent = (NetworkChangeEvent) messageEvent;
-            Timber.i("网络发生变化:%s", networkChangeEvent.toString());
-            mNetConnected = networkChangeEvent.isConnected;
-            MCloudApp.setIsNetworkConnected(mNetConnected);
-            netStateChangedUI(networkChangeEvent.isConnected);
-
-        } else if (messageEvent instanceof ForceToLoginEvent) {
-            if (isActive) { // 判断Activity是否在前台，防止非前台的Activity也处理这个事件，造成打开多个LoginActivity的问题。
-                // force to login
-                ActivityCollector.finishAll();
-                LoginActivity.startActivity(this);
             }
         }
     }
@@ -365,7 +342,6 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         ActivityCollector.remove(weakRefActivity);
-        unregisterReceiver(mNetWorkChangReceiver);
     }
 
     @Override

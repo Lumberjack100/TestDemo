@@ -22,17 +22,13 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.hjq.toast.ToastUtils;
+import com.shmedo.configlibrary.ble.cmd.CommandResult;
 import com.shmedo.core.AppContants;
 import com.shmedo.core.MCloudApp;
-import com.shmedo.configlibrary.ble.cmd.CommandResult;
-import com.shmedo.core.event.BluetoothConnectStateEvent;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.deviceconfig.view.PlayPauseView;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.base.CommonViewHolder;
-
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -512,19 +508,19 @@ public class ADMEMotorControlActivity extends BaseDeviceConnectActivity {
         }
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void getConfig(String messageEvent) {
-        if (!TextUtils.isEmpty(messageEvent) && messageEvent.startsWith("$$")) {
-            setResultData(messageEvent);
-        }
-    }
+//    @Subscribe(threadMode = ThreadMode.MAIN)
+//    public void getConfig(String messageEvent) {
+//        if (!TextUtils.isEmpty(messageEvent) && messageEvent.startsWith("$$")) {
+//            setResultData(messageEvent);
+//        }
+//    }
 
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onMessageEvent(BluetoothConnectStateEvent bluetoothConnectStateEvent) {
-        mIvBluetooth.setImageResource(bluetoothConnectStateEvent.isConnected ? R.drawable.ic_bluetooth_connected : R.drawable.ic_bluetooth);
-        playPauseView.setEnabled(bluetoothConnectStateEvent.isConnected);
-    }
+//    @Subscribe(threadMode = ThreadMode.MAIN)
+//    public void onMessageEvent(BluetoothConnectStateEvent bluetoothConnectStateEvent) {
+//        mIvBluetooth.setImageResource(bluetoothConnectStateEvent.isConnected ? R.drawable.ic_bluetooth_connected : R.drawable.ic_bluetooth);
+//        playPauseView.setEnabled(bluetoothConnectStateEvent.isConnected);
+//    }
 
 
     private void updateDistanceAndPulseNumber(String distance, String number) {

@@ -1,13 +1,13 @@
 package com.shmedo.mcloudapp.util;
 
 import com.hjq.toast.ToastUtils;
+import com.kunminx.architecture.ui.callback.ProtectedUnPeekLiveData;
+import com.kunminx.architecture.ui.callback.UnPeekLiveData;
 import com.shmedo.core.MCloudApp;
 import com.shmedo.core.event.ForceToLoginEvent;
 import com.shmedo.core.util.GlobalUtil;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.network.ErrCode;
-
-import org.greenrobot.eventbus.EventBus;
 
 import java.net.ConnectException;
 import java.net.NoRouteToHostException;
@@ -24,11 +24,18 @@ import timber.log.Timber;
 public class ResponseHandler {
     private static final ResponseHandler ourInstance = new ResponseHandler();
 
+    private final UnPeekLiveData<ForceToLoginEvent> forceToLoginEventLiveData = new UnPeekLiveData<>();
+
+
     public static ResponseHandler getInstance() {
         return ourInstance;
     }
 
     private ResponseHandler() {
+    }
+
+    public final ProtectedUnPeekLiveData<ForceToLoginEvent> getForceToLoginEvent() {
+        return forceToLoginEventLiveData;
     }
 
     /**
@@ -49,7 +56,7 @@ public class ResponseHandler {
                 Timber.w("handleResponse: errCode code is %s", errCode.getCode());
                 ToastUtils.show(GlobalUtil.getString(R.string.login_status_expired));
                 MCloudApp.logout();
-                EventBus.getDefault().post(new ForceToLoginEvent());
+                forceToLoginEventLiveData.postValue(new ForceToLoginEvent());
                 return true;
 
             default:
