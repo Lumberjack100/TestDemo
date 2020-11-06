@@ -6,6 +6,7 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
@@ -118,10 +119,15 @@ public class BleCollectorSettingFragment extends BaseBleConnectFragment {
             return;
         }
 
-        mEtCollectorAddress.setText(collectorConfigInfo.getCollectorAddress());
-        mEtCalculatingTime.setText(collectorConfigInfo.getWorkTime());
-        mEtStandbyTime.setText(collectorConfigInfo.getStandbyTime());
-        mEtCollectTime.setText(collectorConfigInfo.getCollectorInterval());
+        collectorAddress = collectorConfigInfo.getCollectorAddress();
+        calculatTime = collectorConfigInfo.getWorkTime();
+        standbyTime = collectorConfigInfo.getStandbyTime();
+        collectTime = collectorConfigInfo.getCollectorInterval();
+
+        mEtCollectorAddress.setText(collectorAddress);
+        mEtCalculatingTime.setText(calculatTime);
+        mEtStandbyTime.setText(standbyTime);
+        mEtCollectTime.setText(collectTime);
     }
 
     @OnClick({R.id.btn_confirm})
@@ -195,7 +201,6 @@ public class BleCollectorSettingFragment extends BaseBleConnectFragment {
 
     @Override
     protected void parseResponseMessage(String cmdStr) {
-        super.parseResponseMessage(cmdStr);
         if (!isActive) {
             return;
         }
@@ -256,16 +261,25 @@ public class BleCollectorSettingFragment extends BaseBleConnectFragment {
                 doAfterSetting();
                 break;
 
+            case SAVE_CONFIG_INFO:
+                if (tempStr.endsWith(CommandResult.ERROR_END)) {
+                    ToastUtils.show("保存参数指令错误!");
+                    return;
+                }
+                Toast.makeText(getActivity(), "已保存", Toast.LENGTH_LONG).show();
+                break;
+
             default:
+                super.parseResponseMessage(cmdStr);
                 break;
         }
     }
 
     private void doAfterSetting() {
         stopProgressRunnable();
-//        isExitMode = true;
         saveConfigInfoNoReboot();
     }
+
 
     @Override
     public boolean onBackPressed() {
@@ -282,19 +296,19 @@ public class BleCollectorSettingFragment extends BaseBleConnectFragment {
     }
 
     private boolean checkValueIsChange() {
-        if (collectorConfigInfo != null && !collectorConfigInfo.getCollectorAddress().equals(mEtCollectorAddress.getText().toString().trim())) {
+        if (collectorAddress != null && !collectorAddress.equals(mEtCollectorAddress.getText().toString().trim())) {
             return true;
         }
 
-        if (collectorConfigInfo != null && !collectorConfigInfo.getWorkTime().equals(mEtCalculatingTime.getText().toString().trim())) {
+        if (calculatTime != null && !calculatTime.equals(mEtCalculatingTime.getText().toString().trim())) {
             return true;
         }
 
-        if (collectorConfigInfo != null && !collectorConfigInfo.getStandbyTime().equals(mEtStandbyTime.getText().toString().trim())) {
+        if (standbyTime != null && !standbyTime.equals(mEtStandbyTime.getText().toString().trim())) {
             return true;
         }
 
-        if (collectorConfigInfo != null && !collectorConfigInfo.getCollectorInterval().equals(mEtCollectTime.getText().toString().trim())) {
+        if (collectTime != null && !collectTime.equals(mEtCollectTime.getText().toString().trim())) {
             return true;
         }
 

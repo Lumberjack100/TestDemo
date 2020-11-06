@@ -6,6 +6,7 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
@@ -162,46 +163,46 @@ public class BleDataCenterFragment extends BaseBleConnectFragment {
     }
 
     private void processSave() {
-        //设置数据上报间隔
-        String report = mEtReportingInterval.getText().toString().trim();
-        if (TextUtils.isEmpty(report)) {
+        reportingInterval = mEtReportingInterval.getText().toString().trim();
+
+        if (TextUtils.isEmpty(reportingInterval)) {
             ToastUtils.show("数据上报间隔参数不能为空");
             mEtReportingInterval.requestFocus();
             return;
         }
 
-        if (Integer.parseInt(report) < 1) {
+        if (Integer.parseInt(reportingInterval) < 1) {
             ToastUtils.show("数据上报间隔必须为正整数");
             mEtReportingInterval.requestFocus();
             return;
         }
 
-        if (Integer.parseInt(report) > 9999) {
+        if (Integer.parseInt(reportingInterval) > 9999) {
             ToastUtils.show("数据上报间隔参数错误");
             mEtReportingInterval.requestFocus();
             return;
         }
 
         if (dataCommunicationMode.equals("3") || dataCommunicationMode.equals("4")) {
-            String bdNumber = mEtBdCardNumber.getText().toString().trim();
-            if (TextUtils.isEmpty(bdNumber)) {
+            bdCardNumber = mEtBdCardNumber.getText().toString().trim();
+            if (TextUtils.isEmpty(bdCardNumber)) {
                 ToastUtils.show("北斗卡号不能为空");
                 mEtBdCardNumber.requestFocus();
                 return;
             }
 
-            if (!ValidateUtil.isNumberSix(bdNumber)) {
+            if (!ValidateUtil.isNumberSix(bdCardNumber)) {
                 ToastUtils.show("北斗卡号参数错误");
                 mEtBdCardNumber.requestFocus();
                 return;
             }
 
             //设置六位目标北斗卡号
-            SixTargerBDNumberEntity bdNumberEntity = new SixTargerBDNumberEntity(bdNumber);
+            SixTargerBDNumberEntity bdNumberEntity = new SixTargerBDNumberEntity(bdCardNumber);
             cmdBDCardNumber = CommandManager.getInstance().getCommand(CommandType.SIX_TARGER_BD_NUMBER, bdNumberEntity);
         }
 
-        DataReportIntervalEntity intervalEntity = new DataReportIntervalEntity(Integer.parseInt(report));
+        DataReportIntervalEntity intervalEntity = new DataReportIntervalEntity(Integer.parseInt(reportingInterval));
         cmdDataReport = CommandManager.getInstance().getCommand(CommandType.DATA_REPORT_INTERVAL, intervalEntity);
 
         errMsg = "发送指令超时,请稍后尝试";
@@ -211,9 +212,9 @@ public class BleDataCenterFragment extends BaseBleConnectFragment {
         sendCommonCommandImmediately(cmd);
         Timber.d("设置数据通讯模式===%s", cmd);
     }
+
     @Override
     protected void parseResponseMessage(String cmdStr) {
-        super.parseResponseMessage(cmdStr);
         if (!isActive) {
             return;
         }
@@ -304,41 +305,50 @@ public class BleDataCenterFragment extends BaseBleConnectFragment {
                 doAfterSetting();
                 break;
 
+            case SAVE_CONFIG_INFO:
+                if (tempStr.endsWith(CommandResult.ERROR_END)) {
+                    ToastUtils.show("保存参数指令错误!");
+                    return;
+                }
+                Toast.makeText(getActivity(), "已保存", Toast.LENGTH_LONG).show();
+                dataCommunicationModeOld = dataCommunicationMode;
+                break;
+
             default:
+                super.parseResponseMessage(cmdStr);
                 break;
         }
     }
 
     private void doAfterSetting() {
         stopProgressRunnable();
-//        isExitMode = true;
         saveConfigInfoNoReboot();
     }
 
     @Override
     public boolean onBackPressed() {
         if (MCloudApp.isIsBluetoothDeviceConnected()) {
-            if (TextUtils.isEmpty(dataCommunicationModeOld)) {
+            if (checkValueIsChange()) {
+                warnNotYetSettingBeforeLeavePage();
+                return true;
+            } else {
                 return false;
             }
+        }
+        return false;
+    }
 
-            if (TextUtils.isEmpty(reportingInterval) && mEtReportingInterval.getText().length() > 0) {
-                warnNotYetSettingBeforeLeavePage();
-                return true;
-            }
+    private boolean checkValueIsChange() {
+        if (dataCommunicationModeOld != null && dataCommunicationMode != null && !dataCommunicationModeOld.equals(dataCommunicationMode)) {
+            return true;
+        }
 
-            if (TextUtils.isEmpty(bdCardNumber) && mEtBdCardNumber.getText().length() > 0) {
-                warnNotYetSettingBeforeLeavePage();
-                return true;
-            }
+        if (reportingInterval != null && !reportingInterval.equals(mEtReportingInterval.getText().toString().trim())) {
+            return true;
+        }
 
-            if (!dataCommunicationModeOld.equals(dataCommunicationMode)
-                    || !reportingInterval.equals(mEtReportingInterval.getText().toString().trim())
-                    || !bdCardNumber.equals(mEtBdCardNumber.getText().toString().trim())) {
-
-                warnNotYetSettingBeforeLeavePage();
-                return true;
-            }
+        if (bdCardNumber != null && !bdCardNumber.equals(mEtBdCardNumber.getText().toString().trim())) {
+            return true;
         }
 
         return false;

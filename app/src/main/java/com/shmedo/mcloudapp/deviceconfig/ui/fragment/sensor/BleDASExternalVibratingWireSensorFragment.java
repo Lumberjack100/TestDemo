@@ -12,7 +12,6 @@ import com.shmedo.configlibrary.ble.model.SensorJunXingZljInfo;
 import com.shmedo.configlibrary.ble.model.SensorKangPercolateInfo;
 import com.shmedo.configlibrary.ble.utils.StringUtil;
 import com.shmedo.core.AppContants;
-import com.shmedo.core.event.CmdResponseMessage;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -233,8 +232,7 @@ public class BleDASExternalVibratingWireSensorFragment extends BaseBleDASExterna
     }
 
     @Override
-    protected void setResultData(CmdResponseMessage responseMessage) {
-        String cmdStr = responseMessage.getResult();
+    protected void setResultData(final String cmdStr) {
         String tempStr = cmdStr.replace("$$", "").replace("\r\n", "");
         CommandType type = StringUtil.extractCommandType(cmdStr);
         switch (type) {
@@ -280,7 +278,7 @@ public class BleDASExternalVibratingWireSensorFragment extends BaseBleDASExterna
                 break;
 
             default:
-                super.setResultData(responseMessage);
+                super.setResultData(cmdStr);
                 break;
         }
     }

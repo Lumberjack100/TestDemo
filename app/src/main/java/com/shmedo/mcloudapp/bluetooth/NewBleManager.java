@@ -68,15 +68,12 @@ public class NewBleManager {
     private static NewBleManager bleManager = null;
 
     public static NewBleManager getInstance() {
-        return bleManager;
-    }
-
-    public static void init() {
         if (bleManager == null) {
             bleManager = new NewBleManager();
+            bleManager.initCheck();
         }
 
-        bleManager.initCheck();
+        return bleManager;
     }
 
     private BluetoothGatt mBluetoothGatt;

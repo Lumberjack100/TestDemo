@@ -12,7 +12,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
 import android.view.View;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -95,8 +94,6 @@ public abstract class BaseBleConnectFragment extends BaseFragment {
     private boolean isAutoConnectBlue = true;//是否自动连接蓝牙
 
     public boolean isExitMode = false;
-
-    protected boolean isParamSaved = false;
 
     protected static boolean isLogOutputMode = false;//设备是否打开了内部日志输出模式
 
@@ -716,21 +713,6 @@ public abstract class BaseBleConnectFragment extends BaseFragment {
         if (cmdStr.startsWith("$$888")) {
             return;
         }
-
-        //设置保存参数应答
-        if (cmdStr.startsWith("$$0192") && cmdStr.endsWith("\r\n")) {
-//            ToastUtils.show("已保存");
-            Toast.makeText(getActivity(), "已保存", Toast.LENGTH_LONG).show();
-            if (isExitMode) {
-                uiHander.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        mActivity.finish();
-                    }
-                }, 3000);
-            }
-            return;
-        }
     }
 
 
@@ -969,34 +951,34 @@ public abstract class BaseBleConnectFragment extends BaseFragment {
         mMaterialDialog.show();
     }
 
-    private void warnNotYetRebootToSaveParam() {
-        MaterialDialog.Builder mBuilder = new MaterialDialog.Builder(Objects.requireNonNull(getContext()))
-                .title("温馨提示")
-                .content(GlobalUtil.getString(R.string.reboot_device_save_param_warn))
-                .contentColorRes(R.color.title_text_color)
-                .canceledOnTouchOutside(false)
-                .positiveText("立即重启")
-                .negativeText("稍后重启")
-                .positiveColorRes(R.color.blue_52B4F8)
-                .negativeColorRes(R.color.sub_title_text_color)
-                .onPositive(new MaterialDialog.SingleButtonCallback() {
-                    @Override
-                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        dialog.dismiss();
-                        saveConfigInfo();
-                    }
-                }).onNegative(new MaterialDialog.SingleButtonCallback() {
-                    @Override
-                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        dialog.dismiss();
-                        if (isExitMode) {
-                            mActivity.finish();
-                        }
-                    }
-                });
-        MaterialDialog mMaterialDialog = mBuilder.build();
-        mMaterialDialog.show();
-    }
+//    private void warnNotYetRebootToSaveParam() {
+//        MaterialDialog.Builder mBuilder = new MaterialDialog.Builder(Objects.requireNonNull(getContext()))
+//                .title("温馨提示")
+//                .content(GlobalUtil.getString(R.string.reboot_device_save_param_warn))
+//                .contentColorRes(R.color.title_text_color)
+//                .canceledOnTouchOutside(false)
+//                .positiveText("立即重启")
+//                .negativeText("稍后重启")
+//                .positiveColorRes(R.color.blue_52B4F8)
+//                .negativeColorRes(R.color.sub_title_text_color)
+//                .onPositive(new MaterialDialog.SingleButtonCallback() {
+//                    @Override
+//                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+//                        dialog.dismiss();
+//                        saveConfigInfo();
+//                    }
+//                }).onNegative(new MaterialDialog.SingleButtonCallback() {
+//                    @Override
+//                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+//                        dialog.dismiss();
+//                        if (isExitMode) {
+//                            mActivity.finish();
+//                        }
+//                    }
+//                });
+//        MaterialDialog mMaterialDialog = mBuilder.build();
+//        mMaterialDialog.show();
+//    }
 
 
     @Override

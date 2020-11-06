@@ -5,8 +5,10 @@ import android.text.InputFilter;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -107,12 +109,18 @@ public class BleDataCenterServerConfigFragment extends BaseBleConnectFragment {
     @BindView(R.id.ll_manual_register_special_info)
     ViewGroup manualRegisterSpecialInfoLayout;
 
+    @BindView(R.id.btn_confirm)
+    Button mBtnSave;
+
     private static final String SERVER_NUMBER = "server_number";
     private ServerNumber serverNumber;
     private MqttConfigInfo mqttConfigInfo = new MqttConfigInfo();
 
     private int communicationProtocolPos;
     private int registerPlatformPos;
+
+    private String communicationProtocolOld;//网络中心通讯协议
+    private String registerPlatformOld;//网络中心通讯协议
 
     private String communicationProtocol;//网络中心通讯协议
     private String dataServerAddress;//数据服务器地址、端口
@@ -197,6 +205,7 @@ public class BleDataCenterServerConfigFragment extends BaseBleConnectFragment {
                     showCloseSwitchButtonDialog("确定要关闭数据中心？");
                 } else {
                     childItemsLayout.setVisibility(View.VISIBLE);
+                    mBtnSave.setEnabled(true);
 
                     errMsg = "查询数据超时,请稍后尝试";
                     startProgressRunnable("正在获取参数...", 25000);
@@ -588,7 +597,6 @@ public class BleDataCenterServerConfigFragment extends BaseBleConnectFragment {
 
     @Override
     protected void parseResponseMessage(String cmdStr) {
-        super.parseResponseMessage(cmdStr);
         if (!isActive) {
             return;
         }
@@ -610,10 +618,12 @@ public class BleDataCenterServerConfigFragment extends BaseBleConnectFragment {
                 if (!serverAddressInfo.getAddress().equals("0.0.0.0")) {//地址为0.0.0.0，表示数据中心未启用
                     mSbCenterEnable.setCheckedImmediatelyNoEvent(true);
                     childItemsLayout.setVisibility(View.VISIBLE);
+                    mBtnSave.setEnabled(true);
                     queryDataCenterInfo();
                 } else {
                     mSbCenterEnable.setCheckedImmediatelyNoEvent(false);
                     childItemsLayout.setVisibility(View.GONE);
+                    mBtnSave.setEnabled(false);
                     stopProgressRunnable();
                 }
                 break;
@@ -725,7 +735,19 @@ public class BleDataCenterServerConfigFragment extends BaseBleConnectFragment {
                 }
                 doAfterSetting();
                 break;
+
+            case SAVE_CONFIG_INFO:
+                if (tempStr.endsWith(CommandResult.ERROR_END)) {
+                    ToastUtils.show("保存参数指令错误!");
+                    return;
+                }
+                Toast.makeText(getActivity(), "已保存", Toast.LENGTH_LONG).show();
+                communicationProtocolOld = communicationProtocol;
+                registerPlatformOld = registerPlatform;
+                break;
+
             default:
+                super.parseResponseMessage(cmdStr);
                 break;
         }
     }
@@ -740,43 +762,59 @@ public class BleDataCenterServerConfigFragment extends BaseBleConnectFragment {
 
         switch (mqttConfigInfo.getCommunicationProtocol()) {
             case "2":
+                communicationProtocolOld = "2";
                 updateViewByCommunicationProtocol(0, "MDM协议");
                 break;
 
             case "4":
+                communicationProtocolOld = "4";
                 updateViewByCommunicationProtocol(1, "MQTT自动注册");
                 break;
 
             case "5":
+                communicationProtocolOld = "5";
                 updateViewByCommunicationProtocol(1, "MQTT手动注册");
                 break;
         }
 
         switch (mqttConfigInfo.getRegisterPlatform()) {
             case "0"://地大平台
+                registerPlatformOld = "0";
                 updateViewByRegisterPlatform(0, "地大平台");
                 break;
 
             case "1"://成都理工平台
+                registerPlatformOld = "1";
                 updateViewByRegisterPlatform(0, "成都理工平台");
                 break;
 
             case "2"://米度平台
+                registerPlatformOld = "2";
                 updateViewByRegisterPlatform(0, "米度平台");
                 break;
         }
 
-        mEtDataServerAddress.setText(TextUtils.isEmpty(mqttConfigInfo.getDataPlatformAddress()) ? "" : mqttConfigInfo.getDataPlatformAddress().trim());
-        mEtAppKey.setText(TextUtils.isEmpty(mqttConfigInfo.getAppKey()) ? "" : mqttConfigInfo.getAppKey().trim());
-        mEtRegisterPlatformAddress.setText(TextUtils.isEmpty(mqttConfigInfo.getRegisterPlatformAddress()) ? "" : mqttConfigInfo.getRegisterPlatformAddress().trim());
-        mEtKeepAlive.setText(TextUtils.isEmpty(mqttConfigInfo.getKeepAliveValue()) ? "" : mqttConfigInfo.getKeepAliveValue().trim());
-        mEtDeviceSN.setText(TextUtils.isEmpty(mqttConfigInfo.getDeviceSn()) ? "" : mqttConfigInfo.getDeviceSn().trim());
-        mEtProductId.setText(TextUtils.isEmpty(mqttConfigInfo.getProductId()) ? "" : mqttConfigInfo.getProductId().trim());
-        mEtRegisterCode.setText(TextUtils.isEmpty(mqttConfigInfo.getRegisterCode()) ? "" : mqttConfigInfo.getRegisterCode().trim());
+        dataServerAddress = mqttConfigInfo.getDataPlatformAddress().trim();
+        appKey = mqttConfigInfo.getAppKey().trim();
+        registerPlatformAddress = mqttConfigInfo.getRegisterPlatformAddress().trim();
+        keepAliveValue = mqttConfigInfo.getKeepAliveValue().trim();
+        deviceSn = mqttConfigInfo.getDeviceSn().trim();
+        productId = mqttConfigInfo.getProductId().trim();
+        registerCode = mqttConfigInfo.getRegisterCode().trim();
+        mqttDeviceId = mqttConfigInfo.getMqttDeviceId().trim();
+        mqttUsername = mqttConfigInfo.getMqttUsername().trim();
+        mqttPassword = mqttConfigInfo.getMqttPassword().trim();
 
-        mEtMqttDeviceId.setText(TextUtils.isEmpty(mqttConfigInfo.getMqttDeviceId()) ? "" : mqttConfigInfo.getMqttDeviceId().trim());
-        mEtMqttUsername.setText(TextUtils.isEmpty(mqttConfigInfo.getMqttUsername()) ? "" : mqttConfigInfo.getMqttUsername().trim());
-        mEtMqttPwd.setText(TextUtils.isEmpty(mqttConfigInfo.getMqttPassword()) ? "" : mqttConfigInfo.getMqttPassword().trim());
+        mEtDataServerAddress.setText(dataServerAddress);
+        mEtAppKey.setText(appKey);
+        mEtRegisterPlatformAddress.setText(registerPlatformAddress);
+        mEtKeepAlive.setText(keepAliveValue);
+        mEtDeviceSN.setText(deviceSn);
+        mEtProductId.setText(productId);
+        mEtRegisterCode.setText(registerCode);
+        mEtMqttDeviceId.setText(mqttDeviceId);
+        mEtMqttUsername.setText(mqttUsername);
+        mEtMqttPwd.setText(mqttPassword);
     }
 
     private void doAfterSetting() {
@@ -803,59 +841,60 @@ public class BleDataCenterServerConfigFragment extends BaseBleConnectFragment {
         if (!mSbCenterEnable.isChecked()) {
             return false;
         }
-        if (!mqttConfigInfo.getCommunicationProtocol().equals(communicationProtocol)) {
+
+        if (communicationProtocolOld != null && communicationProtocol != null && !communicationProtocolOld.equals(communicationProtocol)) {
             return true;
         }
 
-        if (!mqttConfigInfo.getDataPlatformAddress().equals(mEtDataServerAddress.getText().toString().trim())) {
+        if (dataServerAddress != null && !dataServerAddress.equals(mEtDataServerAddress.getText().toString().trim())) {
             return true;
         }
 
         if (communicationProtocol.equals("4")) {//MQTT自动注册
-            if (!mqttConfigInfo.getRegisterPlatform().equals(registerPlatform)) {
+            if (registerPlatformOld != null && registerPlatform != null && !registerPlatformOld.equals(registerPlatform)) {
                 return true;
             }
 
             if (registerPlatform.equals("2")) {//米度平台
-                if (!mqttConfigInfo.getAppKey().equals(mEtAppKey.getText().toString().trim())) {
+                if (appKey != null && !appKey.equals(mEtAppKey.getText().toString().trim())) {
                     return true;
                 }
             }
 
-            if (!mqttConfigInfo.getRegisterPlatformAddress().equals(mEtRegisterPlatformAddress.getText().toString().trim())) {
+            if (registerPlatformAddress != null && !registerPlatformAddress.equals(mEtRegisterPlatformAddress.getText().toString().trim())) {
                 return true;
             }
 
-            if (!mqttConfigInfo.getKeepAliveValue().equals(mEtKeepAlive.getText().toString().trim())) {
+            if (keepAliveValue != null && !keepAliveValue.equals(mEtKeepAlive.getText().toString().trim())) {
                 return true;
             }
 
-            if (!mqttConfigInfo.getDeviceSn().equals(mEtDeviceSN.getText().toString().trim())) {
+            if (deviceSn != null && !deviceSn.equals(mEtDeviceSN.getText().toString().trim())) {
                 return true;
             }
 
-            if (!mqttConfigInfo.getProductId().equals(mEtProductId.getText().toString().trim())) {
+            if (productId != null && !productId.equals(mEtProductId.getText().toString().trim())) {
                 return true;
             }
 
-            if (!mqttConfigInfo.getRegisterCode().equals(mEtRegisterCode.getText().toString().trim())) {
+            if (registerCode != null && !registerCode.equals(mEtRegisterCode.getText().toString().trim())) {
                 return true;
             }
 
         } else if (communicationProtocol.equals("5")) {//MQTT手动注册
-            if (!mqttConfigInfo.getKeepAliveValue().equals(mEtKeepAlive.getText().toString().trim())) {
+            if (keepAliveValue != null && !keepAliveValue.equals(mEtKeepAlive.getText().toString().trim())) {
                 return true;
             }
 
-            if (!mqttConfigInfo.getMqttDeviceId().equals(mEtMqttDeviceId.getText().toString().trim())) {
+            if (mqttDeviceId != null && !mqttDeviceId.equals(mEtMqttDeviceId.getText().toString().trim())) {
                 return true;
             }
 
-            if (!mqttConfigInfo.getMqttUsername().equals(mEtMqttUsername.getText().toString().trim())) {
+            if (mqttUsername != null && !mqttUsername.equals(mEtMqttUsername.getText().toString().trim())) {
                 return true;
             }
 
-            if (!mqttConfigInfo.getMqttPassword().equals(mEtMqttPwd.getText().toString().trim())) {
+            if (mqttPassword != null && !mqttPassword.equals(mEtMqttPwd.getText().toString().trim())) {
                 return true;
             }
         }

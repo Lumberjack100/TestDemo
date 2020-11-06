@@ -10,6 +10,7 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
@@ -37,16 +38,11 @@ import com.shmedo.configlibrary.ble.utils.ResultParserUtil;
 import com.shmedo.configlibrary.ble.utils.StringUtil;
 import com.shmedo.core.AppContants;
 import com.shmedo.core.MCloudApp;
-import com.shmedo.core.event.CmdResponseMessage;
-import com.shmedo.core.event.MessageEvent;
 import com.shmedo.core.util.GlobalUtil;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.sensor.DASExternalSensorActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.BaseBleConnectFragment;
 import com.shmedo.mcloudapp.util.KeyBordUtils;
-
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
 
 import java.text.DecimalFormat;
 import java.util.LinkedList;
@@ -363,10 +359,6 @@ public class BleDASSensorFragment extends BaseBleConnectFragment {
             return true;
         }
 
-//        if (decimalFormat.format((double) baseConfigInfo.getRainAccuracy() / 10000).equals(rainPrecision)) {
-//            return true;
-//        }
-
         if (TextUtils.isEmpty(rainPrecision)) {
             ToastUtils.show("雨量计精度不能为空");
             mEtRainPrecision.requestFocus();
@@ -556,20 +548,15 @@ public class BleDASSensorFragment extends BaseBleConnectFragment {
         cmdList.remove(0);
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onMessageEvent(MessageEvent messageEvent) {
-        if (messageEvent instanceof CmdResponseMessage) {
-            if (!isActive) {
-                return;
-            }
-            setResultData((CmdResponseMessage) messageEvent);
-        } else {
-//            super.onMessageEvent(messageEvent);
+    @Override
+    protected void parseResponseMessage(String cmdStr) {
+        if (!isActive) {
+            return;
         }
+        setResultData(cmdStr);
     }
 
-    private void setResultData(CmdResponseMessage responseMessage) {
-        String cmdStr = responseMessage.getResult();
+    private void setResultData(final String cmdStr) {
         String tempStr = cmdStr.replace("$$", "").replace("\r\n", "");
         CommandType type = StringUtil.extractCommandType(cmdStr);
         switch (type) {
@@ -722,6 +709,18 @@ public class BleDASSensorFragment extends BaseBleConnectFragment {
                     doAfterSetting();
                 }
                 break;
+
+            case SAVE_CONFIG_INFO:
+                if (tempStr.endsWith(CommandResult.ERROR_END)) {
+                    ToastUtils.show("保存参数指令错误!");
+                    return;
+                }
+                Toast.makeText(getActivity(), "已保存", Toast.LENGTH_LONG).show();
+                break;
+
+            default:
+                super.parseResponseMessage(cmdStr);
+                break;
         }
     }
 
@@ -739,7 +738,8 @@ public class BleDASSensorFragment extends BaseBleConnectFragment {
 
     private void initSwitchSensor() {
         try {
-            mEtRainPrecision.setText(decimalFormat.format((double) baseConfigInfo.getRainAccuracy() / 10000));
+            rainPrecision = decimalFormat.format((double) baseConfigInfo.getRainAccuracy() / 10000);
+            mEtRainPrecision.setText(rainPrecision);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -783,7 +783,6 @@ public class BleDASSensorFragment extends BaseBleConnectFragment {
             Timber.e("断线报警器状态为空!");
             return;
         }
-
         switch (breakAlarmStatusInfo.getStatus()) {
             case OPEN:
                 rbBreakAlarmOpen.setChecked(true);
@@ -852,7 +851,7 @@ public class BleDASSensorFragment extends BaseBleConnectFragment {
     }
 
     private boolean checkValueIsChange() {
-        if (baseConfigInfo != null && !mEtRainPrecision.getText().toString().trim().equals(decimalFormat.format((double) baseConfigInfo.getRainAccuracy() / 10000))) {
+        if (rainPrecision != null && !rainPrecision.equals(mEtRainPrecision.getText().toString().trim())) {
             return true;
         }
 

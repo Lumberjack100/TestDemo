@@ -16,7 +16,6 @@ import com.shmedo.configlibrary.ble.model.SensorUltrasonicLevelInfo;
 import com.shmedo.configlibrary.ble.model.SensorWireShiftInfo;
 import com.shmedo.configlibrary.ble.utils.StringUtil;
 import com.shmedo.core.AppContants;
-import com.shmedo.core.event.CmdResponseMessage;
 
 import timber.log.Timber;
 
@@ -253,8 +252,7 @@ public class BleDASExternalDigtalSensorFragment extends BaseBleDASExternalSensor
     }
 
     @Override
-    protected void setResultData(CmdResponseMessage responseMessage) {
-        String cmdStr = responseMessage.getResult();
+    protected void setResultData(final String cmdStr) {
         String tempStr = cmdStr.replace("$$", "").replace("\r\n", "");
         CommandType type = StringUtil.extractCommandType(cmdStr);
         switch (type) {
@@ -324,7 +322,7 @@ public class BleDASExternalDigtalSensorFragment extends BaseBleDASExternalSensor
                 break;
 
             default:
-                super.setResultData(responseMessage);
+                super.setResultData(cmdStr);
                 break;
         }
     }

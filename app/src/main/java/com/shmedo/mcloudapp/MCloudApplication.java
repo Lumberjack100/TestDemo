@@ -15,7 +15,6 @@ import com.shmedo.core.MCloudApp;
 import com.shmedo.core.log.AppCrashHandler;
 import com.shmedo.core.log.CrashReportingTree;
 import com.shmedo.core.log.log4a.LogInit;
-import com.shmedo.mcloudapp.bluetooth.NewBleManager;
 import com.tencent.bugly.crashreport.CrashReport;
 
 import timber.log.Timber;
@@ -101,7 +100,7 @@ public class MCloudApplication extends Application implements ViewModelStoreOwne
                 if (intercept) {
                     Timber.e("空 Toast");
                 } else {
-                    Timber.i(text.toString());
+                    Timber.i("Toast: %s", text.toString());
                 }
                 return intercept;
             }
@@ -115,7 +114,7 @@ public class MCloudApplication extends Application implements ViewModelStoreOwne
 //        BluetoothAdapter mBluetoothAdapter = Objects.requireNonNull(bluetoothManager).getAdapter();
 //        MdBluetoothManager.init(mBluetoothAdapter, bluetoothManager);
 
-        NewBleManager.init();
+//        NewBleManager.init();
     }
 
 }
