@@ -133,8 +133,8 @@ public class ScanActivity extends BaseActivity implements QRCodeView.Delegate {
                 break;
 
             case R.id.inputSNLayout:
-                InputDeviceSNActivity.startActivity(this);
-                finish();
+//                InputDeviceSNActivity.startActivity(this);
+//                finish();
                 break;
 
             case R.id.albumLayout:

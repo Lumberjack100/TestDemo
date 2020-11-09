@@ -106,7 +106,7 @@
             android:textSize="@dimen/text_size_15" />
 
         <TextView
-            android:id="@+id/tv_ble_device_count"
+            android:id="@+id/tv_wifi_count"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="15dp"
@@ -124,13 +124,13 @@
             android:paddingBottom="5dp">
 
             <ImageView
-                android:id="@+id/iv_ble_scan_refresh"
+                android:id="@+id/iv_refresh_scan"
                 android:layout_width="18dp"
                 android:layout_height="18dp"
                 android:src="@drawable/ic_ble_scan_refresh" />
 
             <TextView
-                android:id="@+id/tv_ble_scan_state"
+                android:id="@+id/tv_scan_state"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="5dp"

@@ -231,6 +231,9 @@ dependencies {
     //The Scanner Compat library solves the problem with scanning for Bluetooth Low Energy devices on Android.
     implementation 'no.nordicsemi.android.support.v18:scanner:1.4.3'
 
+    //Easily Connect to WiFi Networks
+    implementation 'com.thanosfisherman.wifiutils:wifiutils:1.6.4'
+
     testImplementation "junit:junit:$rootProject.thirdLib.junit"
     androidTestImplementation "androidx.test:runner:$rootProject.thirdLib.runner"
     androidTestImplementation "androidx.test.espresso:espresso-core:$rootProject.thirdLib.espresso"

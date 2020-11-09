@@ -103,7 +103,7 @@ public class BleDeviceListFragment extends BaseFragment implements TextWatcher, 
 
     private Animator animator;
 
-    private final Runnable sRunnable = new Runnable() {
+    private final Runnable mStopScanRunnable = new Runnable() {
         @Override
         public void run() {
             stopScan();
@@ -236,9 +236,9 @@ public class BleDeviceListFragment extends BaseFragment implements TextWatcher, 
     private void scanLeDevice(final boolean enable) {
         if (enable) {
             // Stops scanning after a pre-defined scan period.
-            mHandler.postDelayed(sRunnable, SCAN_PERIOD);
+            mHandler.postDelayed(mStopScanRunnable, SCAN_PERIOD);
             mScanning = true;
-            initScan();
+            startScan();
             updateRefreshView(true);
         } else {
             if (mScanning) {
@@ -247,7 +247,7 @@ public class BleDeviceListFragment extends BaseFragment implements TextWatcher, 
         }
     }
 
-    private void initScan() {
+    private void startScan() {
         if (scanner == null) {
             scanner = BluetoothLeScannerCompat.getScanner();
         }
@@ -271,44 +271,36 @@ public class BleDeviceListFragment extends BaseFragment implements TextWatcher, 
                 animator.start();
             }
             mTvDeviceCount.setText("(0)");
-//            if (mTvScanState != null)
             mTvScanState.setText("刷新中...");
         } else {
             if (animator != null) {
                 animator.end();
             }
-//            if (mTvScanState != null)
             mTvScanState.setText("重新刷新");
         }
     }
 
     @OnClick({R.id.search_placeholder, R.id.tv_cancel, R.id.ll_scan_refresh})
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.search_placeholder:
+        int id = v.getId();
+        if (id == R.id.search_placeholder) {
+            scanLeDevice(false);
+            searchPlaceholder.setVisibility(View.GONE);
+            searchContainer.setVisibility(View.VISIBLE);
+            refreshLayout.setVisibility(View.GONE);
+            mEtKeyWords.setText("");
+        } else if (id == R.id.tv_cancel) {// 当按了搜索之后关闭软键盘
+            KeyBordUtils.hideSoftKeyboard(mEtKeyWords);
+            searchPlaceholder.setVisibility(View.VISIBLE);
+            searchContainer.setVisibility(View.GONE);
+            refreshLayout.setVisibility(View.VISIBLE);
+            bleDeviceAdapter.setNewInstance(tempDeviceList);
+        } else if (id == R.id.ll_scan_refresh) {
+            if (mTvScanState.getText().toString().contains("刷新中")) {
                 scanLeDevice(false);
-                searchPlaceholder.setVisibility(View.GONE);
-                searchContainer.setVisibility(View.VISIBLE);
-                refreshLayout.setVisibility(View.GONE);
-                mEtKeyWords.setText("");
-                break;
-
-            case R.id.tv_cancel:
-                // 当按了搜索之后关闭软键盘
-                KeyBordUtils.hideSoftKeyboard(mEtKeyWords);
-                searchPlaceholder.setVisibility(View.VISIBLE);
-                searchContainer.setVisibility(View.GONE);
-                refreshLayout.setVisibility(View.VISIBLE);
-                bleDeviceAdapter.setNewInstance(tempDeviceList);
-                break;
-
-            case R.id.ll_scan_refresh:
-                if (mTvScanState.getText().toString().contains("刷新中")) {
-                    scanLeDevice(false);
-                } else {
-                    startDiscoveryDevice();
-                }
-                break;
+            } else {
+                startDiscoveryDevice();
+            }
         }
     }
 
@@ -333,7 +325,6 @@ public class BleDeviceListFragment extends BaseFragment implements TextWatcher, 
         @Override
         public void onScanResult(int callbackType, @NonNull ScanResult result) {
 //            Timber.d("在线程 Name= " + Thread.currentThread().getName() + ";Id= " + Thread.currentThread().getId() + " 中扫描到设备");
-
             mActivity.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
@@ -341,13 +332,11 @@ public class BleDeviceListFragment extends BaseFragment implements TextWatcher, 
                     if (device.getName() == null || !device.getName().startsWith("MD") || !device.getName().endsWith("L")) {
                         return;
                     }
-
                     for (BluetoothDevice mDevice : bleDeviceAdapter.getData()) {
                         if (device.getAddress().equals(mDevice.getAddress())) {
                             return;
                         }
                     }
-
                     tempDeviceList.add(device);
                     bleDeviceAdapter.addData(device);
                     mTvDeviceCount.setText(String.format(Locale.getDefault(), "(%d)", bleDeviceAdapter.getItemCount()));
@@ -375,7 +364,6 @@ public class BleDeviceListFragment extends BaseFragment implements TextWatcher, 
     public void onTextChanged(CharSequence text, int start, int before, int count) {
         if (!TextUtils.isEmpty(text)) {
             searchProcess(text.toString().trim());
-
         } else {
             KeyBordUtils.popSoftKeyboard(mEtKeyWords, true);
             bleDeviceAdapter.setNewInstance(tempDeviceList);
@@ -384,7 +372,6 @@ public class BleDeviceListFragment extends BaseFragment implements TextWatcher, 
 
     @Override
     public void afterTextChanged(Editable s) {
-
     }
 
     @Override
@@ -398,7 +385,6 @@ public class BleDeviceListFragment extends BaseFragment implements TextWatcher, 
                 mEtKeyWords.clearFocus();
                 return true;
             }
-
             searchProcess(text.trim());
             return true;
         }
