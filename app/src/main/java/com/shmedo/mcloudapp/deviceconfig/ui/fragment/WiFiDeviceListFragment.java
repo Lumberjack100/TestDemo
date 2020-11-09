@@ -24,7 +24,6 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -55,9 +54,10 @@ import no.nordicsemi.android.support.v18.scanner.ScanResult;
 import no.nordicsemi.android.support.v18.scanner.ScanSettings;
 
 /**
- * A simple {@link Fragment} subclass.
+ * WiFi设备列表页面
  */
-public class BleDeviceListFragment extends BaseFragment implements TextWatcher, TextView.OnEditorActionListener {
+public class WiFiDeviceListFragment  extends BaseFragment implements TextWatcher, TextView.OnEditorActionListener {
+
     private static final int REQUEST_ENABLE_BT = 0x002;
 
     // Stops scanning after 10 seconds.
@@ -97,7 +97,7 @@ public class BleDeviceListFragment extends BaseFragment implements TextWatcher, 
 
     private Handler mHandler;
 
-    private boolean mScanning = false;
+    private boolean mScanning;
 
     private List<BluetoothDevice> tempDeviceList = new ArrayList<>();
 
@@ -112,7 +112,7 @@ public class BleDeviceListFragment extends BaseFragment implements TextWatcher, 
 
     @Override
     protected int getLayoutId() {
-        return R.layout.fragment_ble_device_list;
+        return R.layout.fragment_wi_fi_device_list;
     }
 
     @Override
@@ -128,9 +128,6 @@ public class BleDeviceListFragment extends BaseFragment implements TextWatcher, 
     @Override
     public void onStart() {
         super.onStart();
-        if (mScanning) {
-            return;
-        }
         MCloudApp.getMainHandler().postDelayed(new Runnable() {
             @Override
             public void run() {

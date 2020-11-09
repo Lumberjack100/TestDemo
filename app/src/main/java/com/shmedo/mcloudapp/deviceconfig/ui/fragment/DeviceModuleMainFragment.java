@@ -72,6 +72,7 @@ public class DeviceModuleMainFragment extends BaseTranslucentFragment implements
         List<Fragment> mFragments = new ArrayList<>();
         mFragments.add(new NetDeviceListFragment());
         mFragments.add(new BleDeviceListFragment());
+        mFragments.add(new WiFiDeviceListFragment());
         pagerAdapter = new ProjectPageAdapter((FragmentActivity) mActivity, mFragments);
         viewPager.setAdapter(pagerAdapter);
         tabLayoutMediator = new TabLayoutMediator(tabLayout, viewPager, new TabLayoutMediator.TabConfigurationStrategy() {
@@ -84,10 +85,17 @@ public class DeviceModuleMainFragment extends BaseTranslucentFragment implements
                     textView.setTextColor(ContextCompat.getColor(mActivity, R.color.title_text_color));
                     textView.setTextSize(18);
                     tab.setCustomView(textView);
-                } else {
+                } else if (position == 1) {
                     View tabView = LayoutInflater.from(mActivity).inflate(R.layout.custom_tab_text, null);
                     TextView textView = tabView.findViewById(R.id.tabText);
                     textView.setText("蓝牙");
+                    textView.setTextColor(ContextCompat.getColor(mActivity, R.color.sub_title_text_color));
+                    textView.setTextSize(17);
+                    tab.setCustomView(textView);
+                } else if (position == 2) {
+                    View tabView = LayoutInflater.from(mActivity).inflate(R.layout.custom_tab_text, null);
+                    TextView textView = tabView.findViewById(R.id.tabText);
+                    textView.setText("WIFI");
                     textView.setTextColor(ContextCompat.getColor(mActivity, R.color.sub_title_text_color));
                     textView.setTextSize(17);
                     tab.setCustomView(textView);
@@ -104,7 +112,7 @@ public class DeviceModuleMainFragment extends BaseTranslucentFragment implements
         textView.setTextColor(ContextCompat.getColor(mActivity, R.color.title_text_color));
         textView.setTextSize(18);
 
-        if (tab.getPosition() == 0) {
+        if (tab.getPosition() == 0 || tab.getPosition() == 2) {
             ivScanDeviceCode.setVisibility(View.INVISIBLE);
         } else {
             ivScanDeviceCode.setVisibility(View.VISIBLE);
