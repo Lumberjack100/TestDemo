@@ -30,6 +30,7 @@
             android:id="@+id/tv_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:singleLine="true"
             android:textColor="@color/title_text_color"
             android:textSize="17sp"
             tools:text="WIFI" />

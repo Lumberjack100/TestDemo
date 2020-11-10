@@ -49,6 +49,7 @@ import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import timber.log.Timber;
 
 /**
  * WiFi设备列表页面
@@ -148,13 +149,14 @@ public class WiFiDeviceListFragment extends BaseFragment implements TextWatcher,
     private ConnectionSuccessListener successListener = new ConnectionSuccessListener() {
         @Override
         public void success() {
-
-            ToastUtils.show("SUCCESS!");
+            ToastUtils.show("连接成功!");
+            modifyWifi();
         }
 
         @Override
         public void failed(@NonNull ConnectionErrorCode errorCode) {
-            ToastUtils.show("EPIC FAIL!" + errorCode.toString());
+            ToastUtils.show("连接失败!" + errorCode.toString());
+            modifyWifi();
         }
     };
 
@@ -211,24 +213,17 @@ public class WiFiDeviceListFragment extends BaseFragment implements TextWatcher,
     private final ScanResultsListener scanResultsListener = new ScanResultsListener() {
         @Override
         public void onScanResults(@NonNull List<ScanResult> scanResults) {
-//            Timber.d("在线程 Name= " + Thread.currentThread().getName() + ";Id= " + Thread.currentThread().getId() + " 中扫描到设备");
+            Timber.d("在线程 Name= " + Thread.currentThread().getName() + ";Id= " + Thread.currentThread().getId() + " 中扫描到设备");
             updateRefreshView(false);
-            modifyWifi(scanResults);
-//            for (ScanResult scanResult : scanResults) {
-//                if (!TextUtils.isEmpty(scanResult.SSID)) {//&& scanResult.SSID.startsWith("medo")
-//                    tempScanResults.add(scanResult);
-//                    wiFiAdapter.addData(scanResult);
-//
-//                    Timber.e("ScanResult=" + scanResult.SSID + "->" + scanResult.BSSID);
-//                }
-//            }
+            modifyWifi();
             mTvWiFiCount.setText(String.format(Locale.getDefault(), "(%d)", wiFiAdapter.getItemCount()));
         }
     };
 
 
-    private void modifyWifi(List<ScanResult> results) {
+    private void modifyWifi() {
         synchronized (tempWiFiList) {
+            List<ScanResult> results = manager.getScanResults();
             List<IWifi> wifiList = new LinkedList<>();
             List<IWifi> mergeList = new ArrayList<>();
             List<WifiConfiguration> configurations = manager.getConfiguredNetworks();
@@ -266,6 +261,7 @@ public class WiFiDeviceListFragment extends BaseFragment implements TextWatcher,
         } else {
             if (animator != null) {
                 animator.end();
+                animator.cancel();
             }
             mTvScanState.setText("重新刷新");
         }
@@ -287,6 +283,7 @@ public class WiFiDeviceListFragment extends BaseFragment implements TextWatcher,
             wiFiAdapter.setList(tempWiFiList);
         } else if (id == R.id.ll_scan_refresh) {
             if (mTvScanState.getText().toString().contains("刷新中")) {
+                updateRefreshView(false);
 
             } else {
                 doConditionsCheckBeforeScan();
