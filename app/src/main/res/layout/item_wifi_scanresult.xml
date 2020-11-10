@@ -2,33 +2,58 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="55dp"
+    android:layout_height="wrap_content"
     android:background="@color/white"
-    android:gravity="center_vertical"
     android:clickable="true"
     android:focusable="false"
     android:foreground="?attr/selectableItemBackground"
-    android:paddingStart="36dp"
-    android:paddingEnd="36dp">
+    android:gravity="center_vertical"
+    android:paddingStart="16dp"
+    android:paddingEnd="16dp">
 
     <ImageView
         android:id="@+id/iv_device_icon"
         android:layout_width="24dp"
         android:layout_height="24dp"
-        android:src="@drawable/ic_ble_device" />
+        android:scaleType="centerCrop"
+        android:src="@drawable/ic_wifi_device" />
 
-    <TextView
-        android:id="@+id/tv_dev_name"
+    <LinearLayout
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="70dp"
         android:layout_marginStart="14dp"
         android:layout_weight="1"
-        android:drawableEnd="@drawable/icon_right"
-        android:drawablePadding="5dp"
-        android:singleLine="true"
-        android:textColor="@color/title_text_color"
-        android:textSize="17sp"
-        tools:text="MEDO-Tech001" />
+        android:gravity="center_vertical"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tv_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/title_text_color"
+            android:textSize="17sp"
+            tools:text="WIFI" />
+
+        <TextView
+            android:id="@+id/tv_desc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            tools:text="以保存" />
+    </LinearLayout>
+
+    <!--    <TextView-->
+    <!--        android:id="@+id/tv_dev_name"-->
+    <!--        android:layout_width="0dp"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:layout_marginStart="14dp"-->
+    <!--        android:layout_weight="1"-->
+    <!--        android:drawableEnd="@drawable/icon_right"-->
+    <!--        android:drawablePadding="5dp"-->
+    <!--        android:singleLine="true"-->
+    <!--        android:textColor="@color/title_text_color"-->
+    <!--        android:textSize="17sp"-->
+    <!--        tools:text="MEDO-Tech001" />-->
 
 
 </LinearLayout>

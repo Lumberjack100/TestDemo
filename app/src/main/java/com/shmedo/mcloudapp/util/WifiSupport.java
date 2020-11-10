@@ -11,8 +11,6 @@ import android.net.wifi.WifiManager;
 import android.provider.Settings;
 import android.text.TextUtils;
 
-import com.shmedo.core.model.WifiBean;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -238,20 +236,6 @@ public class WifiSupport {
     }
 
 
-    public static void getReplace(Context context, List<WifiBean> list) {
-        WifiInfo wifi = WifiSupport.getConnectedWifiInfo(context);
-        List<WifiBean> listCopy = new ArrayList<>();
-        listCopy.addAll(list);
-        for (int i = 0; i < list.size(); i++) {
-            if (("\"" + list.get(i).getWifiName() + "\"").equals(wifi.getSSID())) {
-                listCopy.add(0, list.get(i));
-                listCopy.remove(i + 1);
-                listCopy.get(0).setState("已连接");
-            }
-        }
-        list.clear();
-        list.addAll(listCopy);
-    }
 
     /**
      * 去除同名WIFI
