@@ -34,6 +34,7 @@ import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.fragment.BaseFragment;
 import com.shmedo.mcloudapp.common.view.ClearEditText;
 import com.shmedo.mcloudapp.deviceconfig.adapter.WiFiAdapter;
+import com.shmedo.mcloudapp.deviceconfig.ui.TestAActivity;
 import com.shmedo.mcloudapp.util.KeyBordUtils;
 import com.shmedo.mcloudapp.util.permission.XPermissionUtils;
 import com.thanosfisherman.wifiutils.WifiUtils;
@@ -88,6 +89,8 @@ public class WiFiDeviceListFragment extends BaseFragment implements TextWatcher,
 
     private WifiManager manager;
 
+    private IWifi curWiFi;
+
 
     @Override
     protected int getLayoutId() {
@@ -112,6 +115,7 @@ public class WiFiDeviceListFragment extends BaseFragment implements TextWatcher,
 
     @Override
     public void onDestroy() {
+        manager = null;
         super.onDestroy();
     }
 
@@ -132,25 +136,33 @@ public class WiFiDeviceListFragment extends BaseFragment implements TextWatcher,
         wiFiAdapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(@NonNull BaseQuickAdapter adapter, @NonNull View view, int position) {
-                IWifi iWifi = wiFiAdapter.getItem(position);
-                processConnectWiFi(iWifi);
+                curWiFi = wiFiAdapter.getItem(position);
+                if (curWiFi.isConnected()) {
+                    TestAActivity.startActivity(getContext(), "192.168.5.2");
+                } else if (curWiFi.isSaved()) {
+
+                } else if (!curWiFi.isEncrypt()) {
+                    WifiUtils.withContext(getContext().getApplicationContext())
+                            .connectWith(curWiFi.name(), "")
+                            .setTimeout(40000)
+                            .onConnectionResult(successListener)
+                            .start();
+                } else {
+                    WifiUtils.withContext(getContext().getApplicationContext())
+                            .connectWith(curWiFi.name(), "")
+                            .setTimeout(40000)
+                            .onConnectionResult(successListener)
+                            .start();
+                }
             }
         });
-    }
-
-    private void processConnectWiFi(IWifi iWifi) {
-        WifiUtils.withContext(getContext().getApplicationContext())
-                .connectWith(iWifi.name(), "medo33923627")
-                .setTimeout(40000)
-                .onConnectionResult(successListener)
-                .start();
     }
 
     private ConnectionSuccessListener successListener = new ConnectionSuccessListener() {
         @Override
         public void success() {
-            ToastUtils.show("连接成功!");
             modifyWifi();
+            TestAActivity.startActivity(getContext(), "192.168.5.2");
         }
 
         @Override
@@ -261,7 +273,6 @@ public class WiFiDeviceListFragment extends BaseFragment implements TextWatcher,
         } else {
             if (animator != null) {
                 animator.end();
-                animator.cancel();
             }
             mTvScanState.setText("重新刷新");
         }
