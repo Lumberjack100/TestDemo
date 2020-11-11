@@ -28,7 +28,6 @@ import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.activity.ScanActivity;
 import com.shmedo.mcloudapp.common.ui.fragment.BaseTranslucentFragment;
 import com.shmedo.mcloudapp.deviceconfig.model.DeviceTypeEnum;
-import com.shmedo.mcloudapp.deviceconfig.ui.activity.ConfigADMEActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.DeviceConfigActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.QueryDeviceDataActivity;
 import com.shmedo.mcloudapp.projects.adapter.ProjectPageAdapter;
@@ -236,7 +235,7 @@ public class DeviceModuleMainFragment extends BaseTranslucentFragment implements
                 break;
 
             case "ADME":
-                ConfigADMEActivity.startActivity(getActivity(), deviceInfo);
+
                 break;
 
         }

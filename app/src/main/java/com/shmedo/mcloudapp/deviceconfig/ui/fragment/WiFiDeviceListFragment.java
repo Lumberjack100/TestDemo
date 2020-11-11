@@ -50,7 +50,6 @@ import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-import timber.log.Timber;
 
 /**
  * WiFi设备列表页面
@@ -212,9 +211,12 @@ public class WiFiDeviceListFragment extends BaseFragment implements TextWatcher,
         WifiUtils.withContext(getContext().getApplicationContext()).enableWifi(new WifiStateListener() {
             @Override
             public void isSuccess(boolean isSuccess) {
+//                Timber.d("enableWiFi 在线程 Name= " + Thread.currentThread().getName() + ";Id= " + Thread.currentThread().getId() + " 中扫描到设备");
+
                 if (isSuccess) {
-                    WifiUtils.withContext(getContext().getApplicationContext()).scanWifi(scanResultsListener).start();
                     updateRefreshView(true);
+                    WifiUtils.withContext(getContext().getApplicationContext()).scanWifi(scanResultsListener).start();
+
                 } else {
                     ToastUtils.show("无法开启 WiFi");
                 }
@@ -225,7 +227,7 @@ public class WiFiDeviceListFragment extends BaseFragment implements TextWatcher,
     private final ScanResultsListener scanResultsListener = new ScanResultsListener() {
         @Override
         public void onScanResults(@NonNull List<ScanResult> scanResults) {
-            Timber.d("在线程 Name= " + Thread.currentThread().getName() + ";Id= " + Thread.currentThread().getId() + " 中扫描到设备");
+//            Timber.d("onScanResults 在线程 Name= " + Thread.currentThread().getName() + ";Id= " + Thread.currentThread().getId() + " 中扫描到设备");
             updateRefreshView(false);
             modifyWifi();
             mTvWiFiCount.setText(String.format(Locale.getDefault(), "(%d)", wiFiAdapter.getItemCount()));

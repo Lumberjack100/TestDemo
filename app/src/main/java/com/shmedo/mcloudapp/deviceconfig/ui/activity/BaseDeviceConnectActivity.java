@@ -430,10 +430,10 @@ public abstract class BaseDeviceConnectActivity extends BaseActivity {
                     }
 
                     errMsg = "查询设备配置参数超时，请尝试重新连接";
-                    if (BaseDeviceConnectActivity.this instanceof ConfigDASActivity || BaseDeviceConnectActivity.this instanceof ConfigADMEActivity) {
-                        startProgressRunnable("初始化设备配置信息...", CONFIG_PARAMS_DELAY_MILLIS);
-                        queryDeviceConfigInfoCmd();
-                    }
+//                    if (BaseDeviceConnectActivity.this instanceof ConfigDASActivity || BaseDeviceConnectActivity.this instanceof ConfigADMEActivity) {
+//                        startProgressRunnable("初始化设备配置信息...", CONFIG_PARAMS_DELAY_MILLIS);
+//                        queryDeviceConfigInfoCmd();
+//                    }
                     break;
 
                 case Constants.MESSAGE_RESPONSE_TIME_OUT://消息等待响应超时
