@@ -34,8 +34,9 @@ public interface AppContants {
      * 通讯方式
      */
     interface CommunicationWay {
-        int NET_CONNECT = 0x001;//网络连接
-        int BLE_CONNECT = 0x002;//蓝牙连接
+        int NET_PLATFORM_CONNECT = 0x001;//通过物联网平台连接
+        int BLE_CONNECT = 0x002;//通过蓝牙连接
+        int TCP_CONNECT = 0x003;//通过本地TCP连接
     }
 
 

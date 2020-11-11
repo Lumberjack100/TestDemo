@@ -160,6 +160,9 @@ dependencies {
 //    implementation 'androidx.navigation:navigation-runtime:2.3.1'
     implementation 'com.kunminx.archi:unpeek-livedata:4.4.1-beta1'
 
+    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.2.0'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0'
+
     implementation "org.greenrobot:greendao:$rootProject.thirdLib.greendao"
     implementation "com.jakewharton:butterknife:$rootProject.thirdLib.butterknife"
     annotationProcessor "com.jakewharton:butterknife-compiler:$rootProject.thirdLib.butterknifeCompiler"

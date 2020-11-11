@@ -12,19 +12,14 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.shmedo.core.AppContants;
-import com.shmedo.core.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.activity.BaseActivity;
-import com.shmedo.mcloudapp.deviceconfig.ui.fragment.BleConfigDeviceFragment;
-import com.shmedo.mcloudapp.deviceconfig.ui.fragment.NetConfigDeviceFragment;
-import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfo;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.TcpVmsHomeFragment;
 
 import butterknife.BindView;
 import butterknife.OnClick;
 
-public class DeviceConfigActivity extends BaseActivity {
-    private static final String DEVICE_INFO = "device_info";
-
+public class VmsHomeActivity extends BaseActivity {
 
     @BindView(R.id.tv_title)
     TextView mToolbarTitle;
@@ -36,39 +31,25 @@ public class DeviceConfigActivity extends BaseActivity {
 
     private Fragment fragment;
 
-    private ProjectDeviceInfo projectDeviceInfo;
-
-    private String bleInfo;
-
-
-    public static void startActivity(Context context, ProjectDeviceInfo projectDeviceInfo) {
-        Intent intent = new Intent(context, DeviceConfigActivity.class);
-        intent.putExtra(DEVICE_INFO, projectDeviceInfo);
-        intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        context.startActivity(intent);
-    }
-
-    public static void startActivity(Context context, int connectWay, String deviceInfo) {
-        Intent intent = new Intent(context, DeviceConfigActivity.class);
+    public static void startActivity(Context context, int connectWay) {
+        Intent intent = new Intent(context, VmsHomeActivity.class);
         intent.putExtra(AppContants.Extras.COMMUNICATION_WAY, connectWay);
-        intent.putExtra(AppContants.Extras.CUR_BLE_DEVICE_INFO, deviceInfo);
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         context.startActivity(intent);
     }
-
 
     @Override
     protected int getLayoutId() {
-        return R.layout.activity_device_config;
+        return R.layout.vms_home_activity;
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setToolBar(R.id.toolbar);
-        mToolbarTitle.setText("设备配置");
+        mToolbarTitle.setText("网关连接");
         mIvRightIcon.setVisibility(View.VISIBLE);
-        mIvRightIcon.setImageResource(R.drawable.ic_query_device_data);
+        mIvRightIcon.setImageResource(R.drawable.ic_vms_advanced_settings);
         parseIntent();
         initFragment();
     }
@@ -81,22 +62,13 @@ public class DeviceConfigActivity extends BaseActivity {
         if (intent.getExtras().containsKey(AppContants.Extras.COMMUNICATION_WAY)) {
             connectWay = intent.getIntExtra(AppContants.Extras.COMMUNICATION_WAY, AppContants.CommunicationWay.NET_PLATFORM_CONNECT);
         }
-
-        if (intent.getExtras().containsKey(DEVICE_INFO)) {
-            projectDeviceInfo = intent.getParcelableExtra(DEVICE_INFO);
-        }
-
-        if (intent.getExtras().containsKey(AppContants.Extras.CUR_BLE_DEVICE_INFO)) {
-            bleInfo = intent.getStringExtra(AppContants.Extras.CUR_BLE_DEVICE_INFO);
-        }
     }
 
     private void initFragment() {
         if (connectWay == AppContants.CommunicationWay.NET_PLATFORM_CONNECT) {
-            fragment = NetConfigDeviceFragment.newInstance(projectDeviceInfo);
 
-        } else {
-            fragment = BleConfigDeviceFragment.newInstance(bleInfo);
+        } else if (connectWay == AppContants.CommunicationWay.TCP_CONNECT) {
+            fragment = TcpVmsHomeFragment.newInstance();
         }
         replaceFragment(fragment);
     }
@@ -104,16 +76,15 @@ public class DeviceConfigActivity extends BaseActivity {
     @OnClick({R.id.right_icon})
     public void onClick(View v) {
         if (v.getId() == R.id.right_icon) {
-            String sn;
-            if (connectWay == AppContants.CommunicationWay.NET_PLATFORM_CONNECT) {
-                sn = projectDeviceInfo.getToken();
-            } else {
-                sn = MCloudApp.getCurDeviceToken();
-            }
-            QueryDeviceDataActivity.startActivity(DeviceConfigActivity.this, sn);
+//            String sn;
+//            if (connectWay == AppContants.CommunicationWay.NET_PLATFORM_CONNECT) {
+//                sn = projectDeviceInfo.getToken();
+//            } else {
+//                sn = MCloudApp.getCurDeviceToken();
+//            }
+//            QueryDeviceDataActivity.startActivity(VmsHomeActivity.this, sn);
         }
     }
-
 
     private void replaceFragment(Fragment fragment) {
         FragmentManager fragmentManager = getSupportFragmentManager();
@@ -121,10 +92,4 @@ public class DeviceConfigActivity extends BaseActivity {
         transaction.replace(R.id.container, fragment);
         transaction.commitAllowingStateLoss();
     }
-
-    public void switchToNetConfigPage(ProjectDeviceInfo projectDeviceInfo) {
-        fragment = NetConfigDeviceFragment.newInstance(projectDeviceInfo);
-        replaceFragment(fragment);
-    }
-
 }

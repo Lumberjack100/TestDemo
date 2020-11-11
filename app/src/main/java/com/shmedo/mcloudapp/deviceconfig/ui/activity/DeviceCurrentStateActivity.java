@@ -27,7 +27,7 @@ public class DeviceCurrentStateActivity extends BaseActivity {
     @BindView(R.id.tv_title)
     TextView mToolbarTitle;
 
-    private int connectWay = AppContants.CommunicationWay.NET_CONNECT;
+    private int connectWay = AppContants.CommunicationWay.NET_PLATFORM_CONNECT;
 
     private Fragment fragment;
 
@@ -73,7 +73,7 @@ public class DeviceCurrentStateActivity extends BaseActivity {
             return;
 
         if (intent.getExtras().containsKey(AppContants.Extras.COMMUNICATION_WAY)) {
-            connectWay = intent.getIntExtra(AppContants.Extras.COMMUNICATION_WAY, AppContants.CommunicationWay.NET_CONNECT);
+            connectWay = intent.getIntExtra(AppContants.Extras.COMMUNICATION_WAY, AppContants.CommunicationWay.NET_PLATFORM_CONNECT);
         }
 
         if (intent.getExtras().containsKey(DEVICE_INFO)) {
@@ -86,7 +86,7 @@ public class DeviceCurrentStateActivity extends BaseActivity {
     }
 
     private void initFragment() {
-        if (connectWay == AppContants.CommunicationWay.NET_CONNECT) {
+        if (connectWay == AppContants.CommunicationWay.NET_PLATFORM_CONNECT) {
             fragment = NetDeviceCurrentState.newInstance(projectDeviceInfo, devcieCurrentState);
 
         } else {

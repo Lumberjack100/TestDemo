@@ -1,10 +1,5 @@
 package com.shmedo.mcloudapp.deviceconfig.ui.activity;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -13,14 +8,16 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+
 import com.hjq.toast.ToastUtils;
 import com.shmedo.core.AppContants;
 import com.shmedo.core.util.LogFileUtil;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.activity.BaseActivity;
-import com.shmedo.mcloudapp.deviceconfig.ui.fragment.BleCollectorSettingFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.BleCustomCommandLogPrintFragment;
-import com.shmedo.mcloudapp.deviceconfig.ui.fragment.NetCollectorSettingFragment;
 import com.shmedo.mcloudapp.util.FileProviderUtils;
 
 import java.io.File;
@@ -40,7 +37,7 @@ public class CustomCommandLogPrintActivity extends BaseActivity {
     @BindView(R.id.right_icon)
     ImageView mIvRightIcon;
 
-    private int connectWay = AppContants.CommunicationWay.NET_CONNECT;
+    private int connectWay = AppContants.CommunicationWay.NET_PLATFORM_CONNECT;
 
     private Fragment fragment;
 
@@ -80,12 +77,12 @@ public class CustomCommandLogPrintActivity extends BaseActivity {
             return;
 
         if (intent.getExtras().containsKey(AppContants.Extras.COMMUNICATION_WAY)) {
-            connectWay = intent.getIntExtra(AppContants.Extras.COMMUNICATION_WAY, AppContants.CommunicationWay.NET_CONNECT);
+            connectWay = intent.getIntExtra(AppContants.Extras.COMMUNICATION_WAY, AppContants.CommunicationWay.NET_PLATFORM_CONNECT);
         }
     }
 
     private void initFragment() {
-        if (connectWay == AppContants.CommunicationWay.NET_CONNECT) {
+        if (connectWay == AppContants.CommunicationWay.NET_PLATFORM_CONNECT) {
         } else {
             fragment = new BleCustomCommandLogPrintFragment();
         }

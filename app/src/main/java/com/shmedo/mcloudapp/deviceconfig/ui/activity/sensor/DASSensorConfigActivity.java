@@ -24,7 +24,7 @@ public class DASSensorConfigActivity extends BaseActivity {
     @BindView(R.id.tv_title)
     TextView mToolbarTitle;
 
-    private int connectWay = AppContants.CommunicationWay.NET_CONNECT;
+    private int connectWay = AppContants.CommunicationWay.NET_PLATFORM_CONNECT;
 
     private Fragment fragment;
 
@@ -55,12 +55,12 @@ public class DASSensorConfigActivity extends BaseActivity {
             return;
 
         if (intent.getExtras().containsKey(AppContants.Extras.COMMUNICATION_WAY)) {
-            connectWay = intent.getIntExtra(AppContants.Extras.COMMUNICATION_WAY, AppContants.CommunicationWay.NET_CONNECT);
+            connectWay = intent.getIntExtra(AppContants.Extras.COMMUNICATION_WAY, AppContants.CommunicationWay.NET_PLATFORM_CONNECT);
         }
     }
 
     private void initFragment() {
-        if (connectWay == AppContants.CommunicationWay.NET_CONNECT) {
+        if (connectWay == AppContants.CommunicationWay.NET_PLATFORM_CONNECT) {
 
         } else {
             fragment = new BleDASSensorFragment();

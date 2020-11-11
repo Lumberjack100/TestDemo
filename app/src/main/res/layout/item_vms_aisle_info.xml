@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:focusable="true"
+    android:foreground="?android:selectableItemBackground"
+    app:cardCornerRadius="3dp"
+    app:cardElevation="1dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="15dp"
+        android:layout_marginEnd="15dp"
+        android:layout_marginBottom="18dp"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/tv_aisle_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:textColor="@color/text_color_1f1f1f"
+                android:textSize="17sp"
+                android:textStyle="bold"
+                tools:text="通道01" />
+
+            <TextView
+                android:id="@+id/tv_terminal_equipment_count"
+                android:layout_width="wrap_content"
+                android:layout_height="28dp"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:background="@drawable/bg_terminal_equipment_count"
+                android:drawableEnd="@drawable/icon_right"
+                android:drawablePadding="5dp"
+                android:gravity="center"
+                android:paddingStart="12dp"
+                android:paddingEnd="9dp"
+                android:singleLine="true"
+                android:textColor="@color/text_color_51B4F8"
+                android:textSize="@dimen/text_size_13"
+                tools:text="设备(14)" />
+
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="17dp">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/bg_corner_3dp_gray_f9f9f9"
+                android:orientation="vertical"
+                android:paddingStart="13dp"
+                android:paddingTop="14dp"
+                android:paddingEnd="13dp"
+                android:paddingBottom="13dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="网络号"
+                    android:textColor="@color/sub_title_text_color"
+                    android:textSize="15sp" />
+
+                <TextView
+                    android:id="@+id/tv_network_number"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="11dp"
+                    android:ellipsize="end"
+                    android:singleLine="true"
+                    android:textColor="@color/title_text_color"
+                    android:textSize="18sp"
+                    tools:text="3225" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/bg_corner_3dp_gray_f9f9f9"
+                android:orientation="vertical"
+                android:layout_marginStart="6dp"
+                android:paddingStart="13dp"
+                android:paddingTop="14dp"
+                android:paddingEnd="13dp"
+                android:paddingBottom="13dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="地址"
+                    android:textColor="@color/sub_title_text_color"
+                    android:textSize="15sp" />
+
+                <TextView
+                    android:id="@+id/tv_address"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="11dp"
+                    android:ellipsize="end"
+                    android:singleLine="true"
+                    android:textColor="@color/title_text_color"
+                    android:textSize="18sp"
+                    tools:text="1002" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/bg_corner_3dp_gray_f9f9f9"
+                android:orientation="vertical"
+                android:paddingStart="13dp"
+                android:paddingTop="14dp"
+                android:paddingEnd="13dp"
+                android:paddingBottom="13dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="通讯信道"
+                    android:textColor="@color/sub_title_text_color"
+                    android:textSize="15sp" />
+
+                <TextView
+                    android:id="@+id/tv_communication_channel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="11dp"
+                    android:ellipsize="end"
+                    android:singleLine="true"
+                    android:textColor="@color/title_text_color"
+                    android:textSize="18sp"
+                    tools:text="02" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/bg_corner_3dp_gray_f9f9f9"
+                android:orientation="vertical"
+                android:layout_marginStart="6dp"
+                android:paddingStart="13dp"
+                android:paddingTop="14dp"
+                android:paddingEnd="13dp"
+                android:paddingBottom="13dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="信号强度"
+                    android:textColor="@color/sub_title_text_color"
+                    android:textSize="15sp" />
+
+                <TextView
+                    android:id="@+id/tv_signal_strength"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="11dp"
+                    android:ellipsize="end"
+                    android:singleLine="true"
+                    android:textColor="@color/title_text_color"
+                    android:textSize="18sp"
+                    tools:text="强" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>

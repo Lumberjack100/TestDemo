@@ -202,9 +202,9 @@ public class NetDeviceListFragment extends BaseFragment {
         deviceInfoAdapter.getLoadMoreModule().setEnableLoadMoreIfNotFullPage(false);
     }
 
-    @OnClick({R.id.search_container})
+    @OnClick({R.id.search_placeholder})
     public void onClick(View v) {
-        if (v.getId() == R.id.search_container) {
+        if (v.getId() == R.id.search_placeholder) {
             DeviceSearchActivity.startActivity(getActivity());
         }
     }

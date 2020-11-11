@@ -13,9 +13,7 @@ import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.activity.BaseActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.BleAdvancedSettingFragment;
-import com.shmedo.mcloudapp.deviceconfig.ui.fragment.BleCollectorSettingFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.NetAdvancedSettingFragment;
-import com.shmedo.mcloudapp.deviceconfig.ui.fragment.NetCollectorSettingFragment;
 import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfo;
 
 import butterknife.BindView;
@@ -30,7 +28,7 @@ public class AdvancedSettingActivity extends BaseActivity {
 
     private ProjectDeviceInfo projectDeviceInfo;
 
-    private int connectWay = AppContants.CommunicationWay.NET_CONNECT;
+    private int connectWay = AppContants.CommunicationWay.NET_PLATFORM_CONNECT;
 
 
     public static void startActivity(Context context, ProjectDeviceInfo projectDeviceInfo) {
@@ -67,7 +65,7 @@ public class AdvancedSettingActivity extends BaseActivity {
             return;
 
         if (intent.getExtras().containsKey(AppContants.Extras.COMMUNICATION_WAY)) {
-            connectWay = intent.getIntExtra(AppContants.Extras.COMMUNICATION_WAY, AppContants.CommunicationWay.NET_CONNECT);
+            connectWay = intent.getIntExtra(AppContants.Extras.COMMUNICATION_WAY, AppContants.CommunicationWay.NET_PLATFORM_CONNECT);
         }
 
         if (intent.getExtras().containsKey(DEVICE_INFO)) {
@@ -76,7 +74,7 @@ public class AdvancedSettingActivity extends BaseActivity {
     }
 
     private void initFragment() {
-        if (connectWay == AppContants.CommunicationWay.NET_CONNECT) {
+        if (connectWay == AppContants.CommunicationWay.NET_PLATFORM_CONNECT) {
             fragment = NetAdvancedSettingFragment.newInstance(projectDeviceInfo);
         } else {
             fragment = new BleAdvancedSettingFragment();
