@@ -40,7 +40,7 @@ public class IOTCommand<T extends Validater> {
         return COMMAND_HEADER + commandType.toString() + "&"
                 + paraString
                 + "&apikey=" + apiKey
-                + "&msgid=" + UUID.randomUUID().toString()
-                + "&&";
+                + "&msgid=" + UUID.randomUUID().toString();
+//                + "&&";
     }
 }

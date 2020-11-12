@@ -57,7 +57,7 @@ public class NettyClientHandler extends SimpleChannelInboundHandler<String> {
                         ctx.channel().writeAndFlush("Heartbeat" + packetSeparator);
                     } else {
                         if (heartBeatData instanceof String) {
-//                            Log.d(TAG, "userEventTriggered: String");
+                            Timber.d("发送心跳包：" + heartBeatData + packetSeparator);
                             ctx.channel().writeAndFlush(heartBeatData + packetSeparator);
                         } else if (heartBeatData instanceof byte[]) {
 //                            Log.d(TAG, "userEventTriggered: byte");

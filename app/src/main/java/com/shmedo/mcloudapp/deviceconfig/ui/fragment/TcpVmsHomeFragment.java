@@ -1,6 +1,8 @@
 package com.shmedo.mcloudapp.deviceconfig.ui.fragment;
 
+import android.content.Context;
 import android.graphics.Paint;
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
@@ -16,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.hjq.toast.ToastUtils;
+import com.shmedo.configlibrary.iot.cmd.IOTCommandManager;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandResult;
 import com.shmedo.configlibrary.iot.cmd.parser.IOTParseManager;
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
@@ -28,11 +31,13 @@ import com.shmedo.mcloudapp.common.view.recycleviewitemdivider.GridSpacingItemDe
 import com.shmedo.mcloudapp.deviceconfig.adapter.VmsAisleAdapter;
 import com.shmedo.mcloudapp.deviceconfig.model.TcpConnectionState;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.ui.VmsViewModel;
+import com.thanosfisherman.wifiutils.WifiUtils;
+import com.thanosfisherman.wifiutils.wifiRemove.RemoveErrorCode;
+import com.thanosfisherman.wifiutils.wifiRemove.RemoveSuccessListener;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
-import java.util.UUID;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -110,7 +115,8 @@ public class TcpVmsHomeFragment extends BaseTcpConnectFragment {
                     mTvDeviceConnectOperate.setTextColor(ContextCompat.getColor(mActivity, R.color.text_color_b3b3b3));
 
                     startProgressRunnable("初始化信息...", SEND_CMD_DELAY_MILLIS);
-                    String command = String.format("$cmd=md_getgatewaybase&apikey=%s&msgid=%s", "b12aac6b-0bd2-4a01-80fd-97fe4f5d4ff9", UUID.randomUUID().toString());
+                    String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.MD_GET_GATEWAY_BASE);
+//                    String command = String.format("$cmd=md_getgatewaybase&apikey=%s&msgid=%s", "b12aac6b-0bd2-4a01-80fd-97fe4f5d4ff9", UUID.randomUUID().toString());
                     sendCommand(command);
                 } else if (tcpConnectionState == TcpConnectionState.CONNECT_CLOSED) {
                     mTvDeviceConnectOperate.setText("重新连接");
@@ -118,13 +124,6 @@ public class TcpVmsHomeFragment extends BaseTcpConnectFragment {
                 }
             }
         });
-
-//        tcpShareViewModel.getReceivedMessage().observeInFragment(this, new Observer<String>() {
-//            @Override
-//            public void onChanged(String msg) {
-//                parseResponseMessage(msg);
-//            }
-//        });
 
         startProgressRunnable("建立通讯连接...", TCP_CONNECT_DELAY_MILLIS);
         tcpShareViewModel.connect();
@@ -185,7 +184,7 @@ public class TcpVmsHomeFragment extends BaseTcpConnectFragment {
                 tcpShareViewModel.connect();
             } else {
                 isExitMode = false;
-                showDisconnectDialog(getResources().getString(R.string.disconnect_bluetooth_device));
+                showDisconnectDialog(getResources().getString(R.string.disconnect_device));
             }
         }
     }
@@ -199,7 +198,6 @@ public class TcpVmsHomeFragment extends BaseTcpConnectFragment {
     }
 
     private void setResultData(final String cmdStr) {
-        String tempStr = cmdStr.replace("$$", "").replace("&&", "");
         IOTCommandType type = IOTStringUtil.extractCommandType(cmdStr);
         switch (type) {
             case MD_GET_GATEWAY_BASE://获取网关的基本信息
@@ -216,11 +214,42 @@ public class TcpVmsHomeFragment extends BaseTcpConnectFragment {
                 setHeadInfo();
                 break;
 
-
             default:
                 super.parseResponseMessage(cmdStr);
                 break;
         }
+    }
+
+    @Override
+    public boolean onBackPressed() {
+        if (tcpShareViewModel.getConnectStatus()) {
+            isExitMode = true;
+            showDisconnectDialog(getResources().getString(R.string.finish_activity_disconnect_tcp_device));
+            return true;
+        }
+
+        return false;
+    }
+
+    @Override
+    public void onDestroy() {
+        WifiManager manager = (WifiManager) getContext().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+        String connectedSSID = manager.getConnectionInfo().getSSID();
+        WifiUtils.withContext(getContext())
+                .remove(connectedSSID, new RemoveSuccessListener() {
+                    @Override
+                    public void success() {
+                        ToastUtils.show(connectedSSID + " 热点已断开");
+                    }
+
+                    @Override
+                    public void failed(@NonNull RemoveErrorCode errorCode) {
+                        ToastUtils.show(connectedSSID + " 热点断开失败;" + errorCode);
+//                        Toast.makeText(getContext(), "Failed to disconnect and remove: $errorCode", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+        super.onDestroy();
     }
 
 }

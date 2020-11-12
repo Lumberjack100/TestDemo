@@ -2,7 +2,6 @@ package com.littlegreens.netty.client;
 
 import android.os.SystemClock;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.littlegreens.netty.client.handler.NettyClientHandler;
 import com.littlegreens.netty.client.listener.MessageStateListener;
@@ -29,6 +28,7 @@ import io.netty.handler.codec.string.StringDecoder;
 import io.netty.handler.codec.string.StringEncoder;
 import io.netty.handler.timeout.IdleStateHandler;
 import io.netty.util.CharsetUtil;
+import timber.log.Timber;
 
 /**
  * Created by littleGreens on 2018-11-10.
@@ -177,12 +177,12 @@ public class NettyTcpClient {
                         @Override
                         public void operationComplete(ChannelFuture channelFuture) throws Exception {
                             if (channelFuture.isSuccess()) {
-                                Log.e(TAG, "连接成功");
+                                Timber.e("连接成功");
                                 reconnectNum = MAX_CONNECT_TIMES;
                                 isConnect = true;
                                 channel = channelFuture.channel();
                             } else {
-                                Log.e(TAG, "连接失败");
+                                Timber.e("连接失败");
                                 isConnect = false;
                             }
                             isConnecting = false;
@@ -191,7 +191,7 @@ public class NettyTcpClient {
 
                     // Wait until the connection is closed.
                     channelFuture.channel().closeFuture().sync();
-                    Log.e(TAG, " 断开连接");
+                    Timber.e(" 断开连接");
                 } catch (Exception e) {
                     e.printStackTrace();
                 } finally {
@@ -211,18 +211,18 @@ public class NettyTcpClient {
 
 
     public void disconnect() {
-        Log.e(TAG, "disconnect");
+        Timber.e("call disconnect()");
         isNeedReconnect = false;
         group.shutdownGracefully();
     }
 
     public void reconnect() {
-        Log.e(TAG, "reconnect");
+        Timber.e("call reconnect()");
         if (isNeedReconnect && reconnectNum > 0 && !isConnect) {
             reconnectNum--;
             SystemClock.sleep(reconnectIntervalTime);
             if (isNeedReconnect && reconnectNum > 0 && !isConnect) {
-                Log.e(TAG, "重新连接");
+                Timber.e("重新连接Tcp");
                 connectServer();
             }
         }

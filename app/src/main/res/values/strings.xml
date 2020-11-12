@@ -202,8 +202,9 @@
     <string name="device_connect_state">断开连接</string>
     <string name="network_config_offline_warn">设备已离线，暂无法进行操作</string>
     <string name="ble_config_disconnect_warn">设备已断开连接，暂无法进行操作</string>
-    <string name="disconnect_bluetooth_device">确定要断开连接？</string>
+    <string name="disconnect_device">确定要断开连接？</string>
     <string name="finish_activity_disconnect_bluetooth_device">确定要退出该页面，并断开蓝牙连接吗？</string>
+    <string name="finish_activity_disconnect_tcp_device">确定要退出该页面，并断开连接吗？</string>
     <string name="disconnect_bluetooth_device_save_param_warn">您还没有保存设备的配置信息，是否保存？</string>
     <string name="device_enable_state_close_warn">关闭系统激活状态，将导致设备自动关机进入休眠状态。请确认是否关闭【激活状态】？</string>
     <string name="device_config_module_current_state">状态</string>

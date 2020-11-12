@@ -88,16 +88,18 @@ public abstract class BaseTcpConnectFragment extends BaseFragment {
     /**
      * 解析设备的参数指令
      */
-    protected void parseResponseMessage(String cmdStr) { }
+    protected void parseResponseMessage(String cmdStr) {
+    }
 
     protected void sendCommand(String cmdStr) {
+        Timber.d("发送指令：%s", cmdStr);
         tcpShareViewModel.sendMsgToServer(cmdStr, new MessageStateListener() {
             @Override
             public void isSendSuccss(boolean isSuccess) {
                 if (isSuccess) {
-                    Timber.d("发送指令成功");
+//                    Timber.d("发送指令成功");
                 } else {
-                    Timber.d("发送指令失败");
+                    Timber.e("发送指令失败");
                 }
             }
         });

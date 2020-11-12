@@ -139,7 +139,6 @@ public class WiFiDeviceListFragment extends BaseFragment implements TextWatcher,
                 curWiFi = wiFiAdapter.getItem(position);
                 if (curWiFi.isConnected()) {//已连接
                     VmsHomeActivity.startActivity(getContext(), AppContants.CommunicationWay.TCP_CONNECT);
-//                    TestAActivity.startActivity(getContext(),"192.168.5.2");
 
                 } else if (curWiFi.isSaved()) {//已保存
                     WifiUtils.withContext(getContext().getApplicationContext())
@@ -171,8 +170,9 @@ public class WiFiDeviceListFragment extends BaseFragment implements TextWatcher,
                 @Override
                 public void run() {
                     modifyWifi();
-                    VmsHomeActivity.startActivity(getContext(), AppContants.CommunicationWay.TCP_CONNECT);
-//                    TestAActivity.startActivity(getContext(),"192.168.5.2");
+                    if (curWiFi.ip().contains("192.168.5.")) {
+                        VmsHomeActivity.startActivity(getContext(), AppContants.CommunicationWay.TCP_CONNECT);
+                    }
                 }
             });
         }
@@ -242,7 +242,6 @@ public class WiFiDeviceListFragment extends BaseFragment implements TextWatcher,
     private final ScanResultsListener scanResultsListener = new ScanResultsListener() {
         @Override
         public void onScanResults(@NonNull List<ScanResult> scanResults) {
-//            Timber.d("onScanResults 在线程 Name= " + Thread.currentThread().getName() + ";Id= " + Thread.currentThread().getId() + " 中扫描到设备");
             mActivity.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {

@@ -341,7 +341,7 @@ public class BleConfigDeviceFragment extends BaseBleConnectFragment {
 //                        updateViewStateByConnectState(false);
 //                    }
                     isExitMode = false;
-                    showDisconnectDialog(getResources().getString(R.string.disconnect_bluetooth_device));
+                    showDisconnectDialog(getResources().getString(R.string.disconnect_device));
                 }
                 break;
 

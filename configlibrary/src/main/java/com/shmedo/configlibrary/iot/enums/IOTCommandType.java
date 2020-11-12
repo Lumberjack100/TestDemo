@@ -48,6 +48,11 @@ public enum IOTCommandType {
     MD_GET_GATEWAY_BASE("md_getgatewaybase"),
 
     /**
+     * 自定义心跳包
+     */
+    HEART_BEAT("HeartBeatData"),
+
+    /**
      * 批处理结束指令
      */
     BATCH_END("");

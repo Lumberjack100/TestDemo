@@ -6,6 +6,8 @@ import com.littlegreens.netty.client.NettyTcpClient;
 import com.littlegreens.netty.client.listener.MessageStateListener;
 import com.littlegreens.netty.client.listener.NettyClientListener;
 import com.littlegreens.netty.client.status.ConnectState;
+import com.shmedo.configlibrary.iot.cmd.IOTCommandManager;
+import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.mcloudapp.deviceconfig.model.TcpConnectionState;
 
 import timber.log.Timber;
@@ -17,7 +19,8 @@ import timber.log.Timber;
  */
 public class TcpManager implements NettyClientListener<String> {
 
-    private final String heartBeat = "$cmd=I'm HeartBeatData";
+    //自定义心跳包指令
+    private final String heartBeat = IOTCommandManager.getInstance().getCommand(IOTCommandType.HEART_BEAT);
 
     private final UnPeekLiveData<TcpConnectionState> tcpConnectionState = new UnPeekLiveData<>();
 
