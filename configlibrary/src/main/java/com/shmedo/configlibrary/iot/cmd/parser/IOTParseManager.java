@@ -34,28 +34,15 @@ public class IOTParseManager {
         registerParse();
     }
 
-
-//    public <T> T parse(String result) {
-//        baseValidate(result);
-//        IOTCommandType cmdType = IOTStringUtil.extractCommandType(result);
-//        IOTResultParser parser = parserMap.get(cmdType);
-//        if (parser == null)
-//            throw new RuntimeException("未找到命令：" + cmdType + "的解析器");
-//
-//        parser.validate(result);
-//        T data = (T) parser.parse(result);
-//
-//        return data;
-//    }
-
     public <T> IOTCommandResult<T> parse(String result) {
         baseValidate(result);
         IOTCommandResult commandResult = new IOTCommandResult();
         String temp = result.replace("&&", "");
         //失败的指令处理
         if (temp.contains(IOTCommandResult.ERROR_FLAG)) {
+            CommonSettingCmdResult cmdResult = CommonSettingCmdResultParser.getInstance().parse(result);
             commandResult.setSuccess(false);
-            commandResult.setMessage(temp);
+            commandResult.setMessage(cmdResult.getReason());
             return commandResult;
         }
 

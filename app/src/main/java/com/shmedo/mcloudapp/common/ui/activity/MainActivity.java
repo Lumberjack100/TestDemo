@@ -61,6 +61,7 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setCheckNetWork(true);
         initView(savedInstanceState);
         if (XPermissionUtils.checkPermissions(this, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE)) {
             UpdataManagerUtil.requestPermissionForInstallPackage(this, false);//版本更新

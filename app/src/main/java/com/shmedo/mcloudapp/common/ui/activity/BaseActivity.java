@@ -69,7 +69,7 @@ public abstract class BaseActivity extends AppCompatActivity {
      */
     protected boolean isActive = false;
 
-    protected boolean mCheckNetwork = true;/*默认检查网络状态*/
+    private boolean mCheckNetwork = false;/*默认检查网络状态*/
 
     protected boolean mNetConnected;/*网络连接的状态，true表示有网络，flase表示无网络连接*/
 

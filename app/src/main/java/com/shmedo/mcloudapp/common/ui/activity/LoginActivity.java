@@ -106,6 +106,7 @@ public class LoginActivity extends BaseActivity implements LoginManager.LoginCal
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setCheckNetWork(true);
         initLastAccount();
         initLoginUserProtocol();
         getLifecycle().addObserver(LoginManager.getInstance());

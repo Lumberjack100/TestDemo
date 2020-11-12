@@ -116,7 +116,6 @@ public class TcpVmsHomeFragment extends BaseTcpConnectFragment {
 
                     startProgressRunnable("初始化信息...", SEND_CMD_DELAY_MILLIS);
                     String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.MD_GET_GATEWAY_BASE);
-//                    String command = String.format("$cmd=md_getgatewaybase&apikey=%s&msgid=%s", "b12aac6b-0bd2-4a01-80fd-97fe4f5d4ff9", UUID.randomUUID().toString());
                     sendCommand(command);
                 } else if (tcpConnectionState == TcpConnectionState.CONNECT_CLOSED) {
                     mTvDeviceConnectOperate.setText("重新连接");
@@ -206,8 +205,9 @@ public class TcpVmsHomeFragment extends BaseTcpConnectFragment {
                 IOTCommandResult<GatewayBaseInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
                     stopProgressRunnable();
-                    Timber.e("查询网关基本信息出错!");
-                    ToastUtils.show("查询网关基本信息出错!");
+                    String errMsg = "查询网关基本信息出错!";
+                    Timber.e("%s%s", errMsg, commandResult.getMessage());
+                    ToastUtils.show(errMsg);
                     return;
                 }
                 gatewayBaseInfo = commandResult.getResult();
