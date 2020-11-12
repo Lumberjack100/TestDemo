@@ -1,6 +1,6 @@
 package com.shmedo.mcloudapp.util;
 
-import android.graphics.Color;
+import android.app.Activity;
 import android.text.InputFilter;
 import android.text.SpannableString;
 import android.text.Spanned;
@@ -24,10 +24,8 @@ import com.kyleduo.switchbutton.SwitchButton;
 import com.shmedo.configlibrary.ble.cmd.CommandManager;
 import com.shmedo.configlibrary.ble.cmd.entity.RebootDeviceEntity;
 import com.shmedo.configlibrary.ble.enums.CommandType;
-import com.shmedo.configlibrary.ble.enums.SetRemoteUpgrade;
 import com.shmedo.configlibrary.ble.utils.ValidateUtil;
 import com.shmedo.mcloudapp.R;
-import com.shmedo.mcloudapp.deviceconfig.ui.activity.BaseDeviceConnectActivity;
 
 /**
  * 项目名：  mCloudapp
@@ -42,7 +40,7 @@ public class AdvanceSetDialogUtils {
     /**
      * 固件升级 or 重启系统
      */
-    public static void showReStartDialog(BaseDeviceConnectActivity activity, String title, String instructions, SwitchButton swFirmwareUpgrade) {
+    public static void showReStartDialog(Activity activity, String title, String instructions, SwitchButton swFirmwareUpgrade) {
         LayoutInflater inflater = LayoutInflater.from(activity);
         View view = inflater.inflate(R.layout.dialog_restart_system, null);
         MaterialDialog.Builder mBuilder = new MaterialDialog.Builder(activity);
@@ -86,7 +84,7 @@ public class AdvanceSetDialogUtils {
                     }
                     RebootDeviceEntity rebootDeviceEntity = new RebootDeviceEntity(Integer.parseInt(time));
                     String command = CommandManager.getInstance().getCommand(CommandType.REBOOT_DEVICE, rebootDeviceEntity);
-                    activity.sendCommonCommand(command);
+//                    activity.sendCommonCommand(command);
                     ToastUtils.show("指令已发送，设备将在 " + time + "s 后重启");
                     KeyBordUtils.hideSoftKeyboard(etRestartTime);
                 } else if (instructions.equals("固件")) {
@@ -100,7 +98,7 @@ public class AdvanceSetDialogUtils {
                         ToastUtils.show("端口号格式只能为数字");
                         return;
                     }
-                    activity.setSetRemoteUpgrade(SetRemoteUpgrade.OPEN_UPGRADE_MODEL1, null, Integer.parseInt(port));
+//                    activity.setSetRemoteUpgrade(SetRemoteUpgrade.OPEN_UPGRADE_MODEL1, null, Integer.parseInt(port));
                     KeyBordUtils.hideSoftKeyboard(etPortNumber);
                 }
                 mMaterialDialog.dismiss();
@@ -124,7 +122,7 @@ public class AdvanceSetDialogUtils {
     /**
      * 修改授权码
      */
-    public static void showModifyAuthorizationDialog(BaseDeviceConnectActivity activity) {
+    public static void showModifyAuthorizationDialog(Activity activity) {
         LayoutInflater inflater = LayoutInflater.from(activity);
         View view = inflater.inflate(R.layout.dialog_modify_authorization, null);
         MaterialDialog.Builder mBuilder = new MaterialDialog.Builder(activity);
@@ -189,7 +187,7 @@ public class AdvanceSetDialogUtils {
     /**
      * 恢复出厂设置
      */
-    public static void showRestoreDataDialog(BaseDeviceConnectActivity activity) {
+    public static void showRestoreDataDialog(Activity activity) {
         MaterialDialog.Builder mBuilder = new MaterialDialog.Builder(activity);
         mBuilder.title("温馨提示：")
                 .content("产品将恢复出厂设置状态，请确认是否继续？")
@@ -204,7 +202,7 @@ public class AdvanceSetDialogUtils {
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                         dialog.dismiss();
                         String baseInfoCommand = CommandManager.getInstance().getCommand(CommandType.RESTORE_FACTORY_SETTING, null);
-                        activity.sendCommonCommand(baseInfoCommand);
+//                        activity.sendCommonCommand(baseInfoCommand);
                     }
                 }).onNegative(new MaterialDialog.SingleButtonCallback() {
             @Override

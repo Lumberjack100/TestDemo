@@ -97,14 +97,14 @@ public class BleConfigDeviceFragment extends BaseBleConnectFragment {
     @BindView(R.id.tv_time_or_sub_model)
     TextView mTvSubModel;
 
-    @BindView(R.id.tv_device_communication_state_flag)
-    TextView mTvDeviceCommunicationState;//通信状态(在线、离线、已连接、已断开)
+    @BindView(R.id.tv_device_state_flag)
+    TextView mTvDeviceState;//通信状态(在线、离线、已连接、已断开)
 
-    @BindView(R.id.tv_device_connect_state)
-    TextView mTvDeviceConnectState;//蓝牙连接状态(断开连接、重新连接)
+    @BindView(R.id.tv_device_connect_operate)
+    TextView mTvDeviceConnectOperate;//蓝牙连接状态(断开连接、重新连接)
 
-    @BindView(R.id.tv_device_communication_way)
-    TextView mTvDeviceCommunicationWay;//通信方式(网络、蓝牙)
+    @BindView(R.id.tv_device_communication_way_switch)
+    TextView mTvDeviceCommunicationWaySwitch;//通信方式(网络、蓝牙)
 
     @BindView(R.id.tv_active_state)
     TextView mTvActiveState;
@@ -174,9 +174,9 @@ public class BleConfigDeviceFragment extends BaseBleConnectFragment {
             mTvProductModel.setText(String.format("产品型号：%s", TextUtils.isEmpty(infos[2]) ? "" : infos[2]));
             searchDeviceTypeInfo(TextUtils.isEmpty(infos[2]) ? "" : infos[2]);
         }
-        mTvDeviceConnectState.setVisibility(View.VISIBLE);
-        mTvDeviceConnectState.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG);
-        mTvDeviceCommunicationWay.setText("网络");
+        mTvDeviceConnectOperate.setVisibility(View.VISIBLE);
+        mTvDeviceConnectOperate.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG);
+        mTvDeviceCommunicationWaySwitch.setText("网络");
     }
 
     private void searchDeviceTypeInfo(String typeName) {
@@ -322,14 +322,14 @@ public class BleConfigDeviceFragment extends BaseBleConnectFragment {
         }
     };
 
-    @OnClick({R.id.tv_device_connect_state, R.id.tv_device_communication_way})
+    @OnClick({R.id.tv_device_connect_operate, R.id.tv_device_communication_way_switch})
     public void onClick(View v) {
         if (isDoubleClick(v)) {
             return;
         }
 
         switch (v.getId()) {
-            case R.id.tv_device_connect_state://断开/重新连接
+            case R.id.tv_device_connect_operate://断开/重新连接
                 if (!MCloudApp.isIsBluetoothDeviceConnected()) {
                     findAndConnectSpecificDevice();
                 } else {//断开连接处理
@@ -345,7 +345,7 @@ public class BleConfigDeviceFragment extends BaseBleConnectFragment {
                 }
                 break;
 
-            case R.id.tv_device_communication_way://切换连接方式
+            case R.id.tv_device_communication_way_switch://切换连接方式
                 showWarnDialog("连接方式", "确定切换至网络连接？", SWITCH_TO_NET);
                 break;
         }
@@ -353,7 +353,6 @@ public class BleConfigDeviceFragment extends BaseBleConnectFragment {
 
     @Override
     protected void parseResponseMessage(String cmdStr) {
-        super.parseResponseMessage(cmdStr);
         if (!isActive) {
             return;
         }
@@ -445,6 +444,7 @@ public class BleConfigDeviceFragment extends BaseBleConnectFragment {
             break;
 
             default:
+                super.parseResponseMessage(cmdStr);
                 break;
         }
     }
@@ -500,19 +500,19 @@ public class BleConfigDeviceFragment extends BaseBleConnectFragment {
     @Override
     protected void updateViewStateByConnectState(boolean isConnected) {
         if (isConnected) {
-            mTvDeviceCommunicationState.setText("已连接");
-            mTvDeviceCommunicationState.setTextColor(ContextCompat.getColor(mActivity, R.color.text_color_50E9B9));
-            mTvDeviceCommunicationState.setBackgroundResource(R.drawable.bg_device_online_state_flag);
+            mTvDeviceState.setText("已连接");
+            mTvDeviceState.setTextColor(ContextCompat.getColor(mActivity, R.color.text_color_50E9B9));
+            mTvDeviceState.setBackgroundResource(R.drawable.bg_device_online_state_flag);
 
-            mTvDeviceConnectState.setText("断开连接");
-            mTvDeviceConnectState.setTextColor(ContextCompat.getColor(mActivity, R.color.text_color_b3b3b3));
+            mTvDeviceConnectOperate.setText("断开连接");
+            mTvDeviceConnectOperate.setTextColor(ContextCompat.getColor(mActivity, R.color.text_color_b3b3b3));
         } else {
-            mTvDeviceCommunicationState.setText("已断开");
-            mTvDeviceCommunicationState.setTextColor(ContextCompat.getColor(mActivity, R.color.sub_title_text_color));
-            mTvDeviceCommunicationState.setBackgroundResource(R.drawable.bg_device_offline_state_flag);
+            mTvDeviceState.setText("已断开");
+            mTvDeviceState.setTextColor(ContextCompat.getColor(mActivity, R.color.sub_title_text_color));
+            mTvDeviceState.setBackgroundResource(R.drawable.bg_device_offline_state_flag);
 
-            mTvDeviceConnectState.setText("重新连接");
-            mTvDeviceConnectState.setTextColor(ContextCompat.getColor(mActivity, R.color.blue_52B4F8));
+            mTvDeviceConnectOperate.setText("重新连接");
+            mTvDeviceConnectOperate.setTextColor(ContextCompat.getColor(mActivity, R.color.blue_52B4F8));
 
             mSbActiveState.setCheckedImmediatelyNoEvent(false);
         }

@@ -52,7 +52,7 @@ public class DeviceHistoryDataAnalysisActivity extends BaseActivity {
     @BindView(R.id.tv_time_or_sub_model)
     TextView mTvTime;
 
-    @BindView(R.id.tv_device_communication_state_flag)
+    @BindView(R.id.tv_device_state_flag)
     TextView mTvDeviceCommunicationState;//通信状态(在线、离线、已连接、已断开)
 
     @BindView(R.id.rl_device_connect_state)

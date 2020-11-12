@@ -11,7 +11,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
-import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -35,7 +34,6 @@ import com.shmedo.configlibrary.ble.enums.ServerNumber;
 import com.shmedo.configlibrary.ble.utils.DesUtil;
 import com.shmedo.configlibrary.ble.utils.StringUtil;
 import com.shmedo.core.MCloudApp;
-import com.shmedo.core.event.BluetoothConnectStateEvent;
 import com.shmedo.core.util.GlobalUtil;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.bluetooth.BluetoothEvent;
@@ -44,8 +42,6 @@ import com.shmedo.mcloudapp.common.ui.fragment.BaseFragment;
 import com.shmedo.mcloudapp.deviceconfig.viewmodels.BleViewModel;
 import com.shmedo.mcloudapp.util.bleutil.Constants;
 import com.shmedo.mcloudapp.util.permission.XPermissionUtils;
-
-import org.greenrobot.eventbus.EventBus;
 
 import java.nio.charset.StandardCharsets;
 import java.util.List;
@@ -130,7 +126,6 @@ public abstract class BaseBleConnectFragment extends BaseFragment {
                 if (errMsg.contains("连接超时") || errMsg.contains("认证超时")) {
                     disconnectDevice();
                     MCloudApp.setIsBluetoothDeviceConnected(false);
-                    EventBus.getDefault().post(new BluetoothConnectStateEvent(false));
                 }
             }
         }
@@ -185,25 +180,10 @@ public abstract class BaseBleConnectFragment extends BaseFragment {
 
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
         initBluetooth();
         bleViewModel = getApplicationScopeViewModel(BleViewModel.class);
-    }
-
-
-    /**
-     * 初始化蓝牙
-     */
-    private void initBluetooth() {
-        BluetoothManager bluetoothManager = (BluetoothManager) mActivity.getSystemService(Context.BLUETOOTH_SERVICE);
-        mBluetoothAdapter = Objects.requireNonNull(bluetoothManager).getAdapter();
-    }
-
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-
         bleViewModel.getBluetoothEventLiveData().observeInFragment(this, new Observer<BluetoothEvent>() {
             @Override
             public void onChanged(BluetoothEvent bluetoothEvent) {
@@ -213,8 +193,16 @@ public abstract class BaseBleConnectFragment extends BaseFragment {
                 handleBluetoothEvent(bluetoothEvent);
             }
         });
-
     }
+
+    /**
+     * 初始化蓝牙
+     */
+    private void initBluetooth() {
+        BluetoothManager bluetoothManager = (BluetoothManager) mActivity.getSystemService(Context.BLUETOOTH_SERVICE);
+        mBluetoothAdapter = Objects.requireNonNull(bluetoothManager).getAdapter();
+    }
+
 
     /**
      * 搜索并连接指定的蓝牙设备

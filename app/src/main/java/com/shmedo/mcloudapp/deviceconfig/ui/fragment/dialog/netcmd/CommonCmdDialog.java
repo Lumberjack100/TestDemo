@@ -7,8 +7,8 @@ import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 
-import com.shmedo.configlibrary.iot.model.CommonCmdResponseResult;
-import com.shmedo.configlibrary.iot.parser.IOTParseManager;
+import com.shmedo.configlibrary.iot.model.CommonSettingCmdResult;
+import com.shmedo.configlibrary.iot.cmd.parser.IOTParseManager;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.deviceconfig.model.QueryCmdResult;
 
@@ -104,7 +104,7 @@ public class CommonCmdDialog extends BaseDispatchCmdDialog {
     protected void onCmdResponeSuccess(QueryCmdResult queryCmdResult) {
         contentView.setVisibility(View.VISIBLE);
 
-        CommonCmdResponseResult cmdResponseResult = IOTParseManager.getInstance().parseSettingCmd(queryCmdResult.getResponseContent());
+        CommonSettingCmdResult cmdResponseResult = IOTParseManager.getInstance().parseSettingCmd(queryCmdResult.getResponseContent());
         if (cmdResponseResult.isSucceed()) {
             mTvDesc.setText(desc);
             if (!TextUtils.isEmpty(tip)) {

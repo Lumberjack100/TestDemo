@@ -41,7 +41,11 @@ public enum IOTCommandType {
      */
     SET_WORK_MODE("setworkmode"),
 
-
+    /**　VMS-LoRa网关指令  **/
+    /**
+     * 获取网关的基本信息
+     */
+    MD_GET_GATEWAY_BASE("md_getgatewaybase"),
 
     /**
      * 批处理结束指令

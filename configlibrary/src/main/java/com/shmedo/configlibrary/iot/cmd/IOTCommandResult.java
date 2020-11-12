@@ -1,15 +1,16 @@
-package com.shmedo.configlibrary.ble.cmd;
+package com.shmedo.configlibrary.iot.cmd;
 
-import com.shmedo.configlibrary.ble.enums.CommandType;
+import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 
 /**
- * Created by Liudongdong on 17/12/11.
- * 命令返回结果封装类
+ * 创建者:   gonghe <br/>
+ * 创建时间:  2020/8/31 <br/>
+ * 描述：     TODO
  */
-public class CommandResult<T> {
-    public static final String COMMAND_RESULT_HEADER = "$$";
+public class IOTCommandResult<T> {
+    public static final String COMMAND_HEADER = "$cmd=";
     public static final int RESULT_MIN_LENGTH = 5;
-    public static final String ERROR_END = "e";
+    public static final String ERROR_FLAG = "result=fail";
 
     /**
      * 命令执行是否成功
@@ -23,12 +24,11 @@ public class CommandResult<T> {
     /**
      * 命令类型
      */
-    private CommandType commandType;
+    private IOTCommandType commandType;
     /**
      * 解析结果数据
      */
     private T result;
-
 
     public boolean isSuccess() {
         return success;
@@ -46,11 +46,11 @@ public class CommandResult<T> {
         this.message = message;
     }
 
-    public CommandType getCommandType() {
+    public IOTCommandType getCommandType() {
         return commandType;
     }
 
-    public void setCommandType(CommandType commandType) {
+    public void setCommandType(IOTCommandType commandType) {
         this.commandType = commandType;
     }
 
@@ -61,5 +61,4 @@ public class CommandResult<T> {
     public void setResult(T result) {
         this.result = result;
     }
-
 }

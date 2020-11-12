@@ -1,11 +1,14 @@
 package com.shmedo.mcloudapp.deviceconfig.ui.fragment;
 
+import android.graphics.Paint;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -13,41 +16,50 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.hjq.toast.ToastUtils;
+import com.shmedo.configlibrary.iot.cmd.IOTCommandResult;
+import com.shmedo.configlibrary.iot.cmd.parser.IOTParseManager;
+import com.shmedo.configlibrary.iot.enums.IOTCommandType;
+import com.shmedo.configlibrary.iot.model.GatewayBaseInfo;
+import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
 import com.shmedo.core.MCloudApp;
 import com.shmedo.core.util.DensityUtil;
 import com.shmedo.mcloudapp.R;
-import com.shmedo.mcloudapp.common.ui.fragment.BaseFragment;
 import com.shmedo.mcloudapp.common.view.recycleviewitemdivider.GridSpacingItemDecoration;
 import com.shmedo.mcloudapp.deviceconfig.adapter.VmsAisleAdapter;
-import com.shmedo.mcloudapp.deviceconfig.model.DeviceTypeInfo;
+import com.shmedo.mcloudapp.deviceconfig.model.TcpConnectionState;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.ui.VmsViewModel;
-import com.shmedo.mcloudapp.entity.DeviceTypeInfoDao;
-import com.shmedo.mcloudapp.util.DaoManager;
+
+import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
+import java.util.UUID;
 
 import butterknife.BindView;
+import butterknife.OnClick;
+import timber.log.Timber;
 
 
-public class TcpVmsHomeFragment extends BaseFragment {
+public class TcpVmsHomeFragment extends BaseTcpConnectFragment {
     @BindView(R.id.tv_device_name)
-    TextView mTvDeviceName;
+    TextView mTvDeviceName;//设备名称
 
     @BindView(R.id.tv_device_sn)
-    TextView mTvDeviceSn;
+    TextView mTvDeviceSn;//设备SN号
 
     @BindView(R.id.tv_product_model)
-    TextView mTvProductModel;
+    TextView mTvProductModel;//版本信息
 
     @BindView(R.id.tv_time_or_sub_model)
-    TextView mTvSubModel;
+    TextView mTvSubModel;//网关电压
 
-    @BindView(R.id.tv_device_communication_state_flag)
-    TextView mTvDeviceCommunicationState;//通信状态(在线、离线、已连接、已断开)
+    @BindView(R.id.tv_device_state_flag)
+    TextView mTvDeviceState;//通信状态(在线、离线、已连接、已断开)
 
-    @BindView(R.id.tv_device_connect_state)
-    TextView mTvDeviceConnectState;//Tcp连接状态(断开连接、重新连接)
+    @BindView(R.id.tv_device_connect_operate)
+    TextView mTvDeviceConnectOperate;//Tcp连接状态(断开连接、重新连接)
 
-    @BindView(R.id.tv_device_communication_way)
-    TextView mTvDeviceCommunicationWay;//通信方式(网络、蓝牙)
+    @BindView(R.id.tv_device_communication_way_switch)
+    TextView mTvDeviceCommunicationWaySwitch;//通信方式(网络、蓝牙)
 
     @BindView(R.id.recyclerview)
     RecyclerView mRecyclerView;
@@ -56,18 +68,13 @@ public class TcpVmsHomeFragment extends BaseFragment {
 
     private VmsViewModel mViewModel;
 
+    private String ipAddress = "192.168.5.2";
     private int deviceTypeID;
     private String deviceTypeName;
+    private GatewayBaseInfo gatewayBaseInfo = new GatewayBaseInfo();
 
     public static TcpVmsHomeFragment newInstance() {
         return new TcpVmsHomeFragment();
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-        }
     }
 
     @Override
@@ -80,54 +87,82 @@ public class TcpVmsHomeFragment extends BaseFragment {
         super.onActivityCreated(savedInstanceState);
         mViewModel = new ViewModelProvider(this).get(VmsViewModel.class);
 
-        setHeadInfo();
-//        initAdapter();
+        setupTcpConnect();
+        initAdapter();
 //        initConfigModuleData();
-//        //连接设备
-//        findAndConnectSpecificDevice();
     }
+
+    @Override
+    protected void initView() {
+        mTvDeviceConnectOperate.setVisibility(View.VISIBLE);
+        mTvDeviceConnectOperate.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG);
+        mTvDeviceCommunicationWaySwitch.setVisibility(View.INVISIBLE);
+    }
+
+    private void setupTcpConnect() {
+        tcpShareViewModel.initTcpClient(ipAddress, 10002);
+        tcpShareViewModel.getTcpConnectionState().observeInFragment(this, new Observer<TcpConnectionState>() {
+            @Override
+            public void onChanged(TcpConnectionState tcpConnectionState) {
+                dismissProgressDialog();
+                if (tcpConnectionState == TcpConnectionState.CONNECT_SUCCESS) {
+                    mTvDeviceConnectOperate.setText("断开连接");
+                    mTvDeviceConnectOperate.setTextColor(ContextCompat.getColor(mActivity, R.color.text_color_b3b3b3));
+
+                    startProgressRunnable("初始化信息...", SEND_CMD_DELAY_MILLIS);
+                    String command = String.format("$cmd=md_getgatewaybase&apikey=%s&msgid=%s", "b12aac6b-0bd2-4a01-80fd-97fe4f5d4ff9", UUID.randomUUID().toString());
+                    sendCommand(command);
+                } else if (tcpConnectionState == TcpConnectionState.CONNECT_CLOSED) {
+                    mTvDeviceConnectOperate.setText("重新连接");
+                    mTvDeviceConnectOperate.setTextColor(ContextCompat.getColor(mActivity, R.color.blue_52B4F8));
+                }
+            }
+        });
+
+//        tcpShareViewModel.getReceivedMessage().observeInFragment(this, new Observer<String>() {
+//            @Override
+//            public void onChanged(String msg) {
+//                parseResponseMessage(msg);
+//            }
+//        });
+
+        startProgressRunnable("建立通讯连接...", TCP_CONNECT_DELAY_MILLIS);
+        tcpShareViewModel.connect();
+    }
+
 
     private void setHeadInfo() {
-//        String[] infos = bleNameInfo.split(",");
-//        if (infos.length >= 3) {
-//            mTvDeviceSn.setText(String.format("设备编号：%s", TextUtils.isEmpty(infos[1]) ? "" : infos[1]));
-//            mTvProductModel.setText(String.format("产品型号：%s", TextUtils.isEmpty(infos[2]) ? "" : infos[2]));
-//            searchDeviceTypeInfo(TextUtils.isEmpty(infos[2]) ? "" : infos[2]);
-//        }
-//        mTvDeviceConnectState.setVisibility(View.VISIBLE);
-//        mTvDeviceConnectState.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG);
-//        mTvDeviceCommunicationWay.setText("网络");
-    }
-
-    private void searchDeviceTypeInfo(String typeName) {
-        DeviceTypeInfo deviceTypeInfo = DaoManager.getInstance().getDaoSession().getDeviceTypeInfoDao().queryBuilder()
-                .where(DeviceTypeInfoDao.Properties.DeviceTypeName.like("%" + typeName + "%"))
-                .unique();
-
-        mTvDeviceName.setText("VMS网关");
-        if (deviceTypeInfo != null) {
-            deviceTypeID = deviceTypeInfo.getId();
-            deviceTypeName = deviceTypeInfo.getDeviceTypeName();
-        } else {
-            deviceTypeID = -1;
-            deviceTypeName = typeName;
+        if (gatewayBaseInfo != null) {
+            mTvDeviceName.setText("VMS网关");
+            mTvDeviceSn.setText(String.format("设备SN号：%s", gatewayBaseInfo.getSn()));
+            mTvProductModel.setText(String.format("版本信息：%s", gatewayBaseInfo.getSwVersion()));
+            mTvSubModel.setText(String.format("网关电压：%s", gatewayBaseInfo.getVolt() + "V"));
+            if (!gatewayBaseInfo.getOnline().trim().equals("0")) {
+                mTvDeviceState.setText("在线");
+                mTvDeviceState.setTextColor(ContextCompat.getColor(mActivity, R.color.text_color_50E9B9));
+                mTvDeviceState.setBackgroundResource(R.drawable.bg_device_online_state_flag);
+            } else {
+                mTvDeviceState.setText("离线");
+                mTvDeviceState.setTextColor(ContextCompat.getColor(mActivity, R.color.sub_title_text_color));
+                mTvDeviceState.setBackgroundResource(R.drawable.bg_device_offline_state_flag);
+            }
         }
     }
 
+
     private void initAdapter() {
         int spanCount = 1;//跟布局里面的spanCount属性是一致的
-        int spacing = DensityUtil.Dp2Px(mActivity, 15);//每一个矩形的间距
+        int spacing = DensityUtil.Dp2Px(mActivity, 14);//每一个矩形的间距
         mRecyclerView.setLayoutManager(new GridLayoutManager(mActivity, spanCount));
         //设置每个item间距
-        mRecyclerView.addItemDecoration(new GridSpacingItemDecoration(spanCount, spacing, true));
-//        vmsAisleAdapter = new VmsAisleAdapter(configModuleList);
+        mRecyclerView.addItemDecoration(new GridSpacingItemDecoration(spanCount, spacing, false));
+        vmsAisleAdapter = new VmsAisleAdapter(new ArrayList<>());
         vmsAisleAdapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
                 if (isDoubleClick(view)) {
                     return;
                 }
-
                 if (!MCloudApp.isIsBluetoothDeviceConnected()) {
                     ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
                     return;
@@ -136,6 +171,56 @@ public class TcpVmsHomeFragment extends BaseFragment {
             }
         });
         mRecyclerView.setAdapter(vmsAisleAdapter);
+    }
+
+    @OnClick({R.id.tv_device_connect_operate})
+    public void onClick(View v) {
+        if (isDoubleClick(v)) {
+            return;
+        }
+        //断开/重新连接
+        if (v.getId() == R.id.tv_device_connect_operate) {
+            if (!tcpShareViewModel.getConnectStatus()) {
+                startProgressRunnable("建立通讯连接...", TCP_CONNECT_DELAY_MILLIS);
+                tcpShareViewModel.connect();
+            } else {
+                isExitMode = false;
+                showDisconnectDialog(getResources().getString(R.string.disconnect_bluetooth_device));
+            }
+        }
+    }
+
+    @Override
+    protected void parseResponseMessage(@NotNull String cmdStr) {
+        if (!isActive) {
+            return;
+        }
+        setResultData(cmdStr);
+    }
+
+    private void setResultData(final String cmdStr) {
+        String tempStr = cmdStr.replace("$$", "").replace("&&", "");
+        IOTCommandType type = IOTStringUtil.extractCommandType(cmdStr);
+        switch (type) {
+            case MD_GET_GATEWAY_BASE://获取网关的基本信息
+                stopProgressRunnable();
+
+                IOTCommandResult<GatewayBaseInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
+                if (!commandResult.isSuccess()) {
+                    stopProgressRunnable();
+                    Timber.e("查询网关基本信息出错!");
+                    ToastUtils.show("查询网关基本信息出错!");
+                    return;
+                }
+                gatewayBaseInfo = commandResult.getResult();
+                setHeadInfo();
+                break;
+
+
+            default:
+                super.parseResponseMessage(cmdStr);
+                break;
+        }
     }
 
 }

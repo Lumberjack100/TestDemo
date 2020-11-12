@@ -7,8 +7,9 @@ import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 
+import com.shmedo.configlibrary.iot.cmd.IOTCommandResult;
+import com.shmedo.configlibrary.iot.cmd.parser.IOTParseManager;
 import com.shmedo.core.util.GlobalUtil;
-import com.shmedo.configlibrary.iot.parser.IOTParseManager;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.deviceconfig.model.DevcieCurrentState;
 import com.shmedo.mcloudapp.deviceconfig.model.QueryCmdResult;
@@ -111,8 +112,13 @@ public class QueryCurrentStateDialog extends BaseDispatchCmdDialog {
     @Override
     protected void onCmdResponeSuccess(QueryCmdResult queryCmdResult) {
         contentView.setVisibility(View.VISIBLE);
-        String content = IOTParseManager.getInstance().parse(queryCmdResult.getResponseContent());
-        content = content.replace("state=", "").replace("\\", "");
+
+        IOTCommandResult<String> commandResult = IOTParseManager.getInstance().parse(queryCmdResult.getResponseContent());
+        if (!commandResult.isSuccess()) {
+            return;
+        }
+        String content = commandResult.getResult();
+        content = content.replace("\\", "");
         content = content.replace("000_1:", "");
         try {
             devcieCurrentState = GsonFactory.getGson().fromJson(content, DevcieCurrentState.class);

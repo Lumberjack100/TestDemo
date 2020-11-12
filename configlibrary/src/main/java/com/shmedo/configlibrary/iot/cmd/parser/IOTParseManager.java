@@ -1,11 +1,11 @@
-package com.shmedo.configlibrary.iot.parser;
+package com.shmedo.configlibrary.iot.cmd.parser;
 
 import android.text.TextUtils;
 
-import com.shmedo.configlibrary.iot.IOTCommandResult;
+import com.shmedo.configlibrary.iot.cmd.IOTCommandResult;
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.interfaces.IOTResultParser;
-import com.shmedo.configlibrary.iot.model.CommonCmdResponseResult;
+import com.shmedo.configlibrary.iot.model.CommonSettingCmdResult;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
 
 import java.util.Arrays;
@@ -35,17 +35,42 @@ public class IOTParseManager {
     }
 
 
-    public <T> T parse(String result) {
+//    public <T> T parse(String result) {
+//        baseValidate(result);
+//        IOTCommandType cmdType = IOTStringUtil.extractCommandType(result);
+//        IOTResultParser parser = parserMap.get(cmdType);
+//        if (parser == null)
+//            throw new RuntimeException("未找到命令：" + cmdType + "的解析器");
+//
+//        parser.validate(result);
+//        T data = (T) parser.parse(result);
+//
+//        return data;
+//    }
+
+    public <T> IOTCommandResult<T> parse(String result) {
         baseValidate(result);
-        IOTCommandType cmdType = IOTStringUtil.extractCommandType(result);
+        IOTCommandResult commandResult = new IOTCommandResult();
+        String temp = result.replace("&&", "");
+        //失败的指令处理
+        if (temp.contains(IOTCommandResult.ERROR_FLAG)) {
+            commandResult.setSuccess(false);
+            commandResult.setMessage(temp);
+            return commandResult;
+        }
+
+        IOTCommandType cmdType = IOTStringUtil.extractCommandType(temp);
         IOTResultParser parser = parserMap.get(cmdType);
         if (parser == null)
             throw new RuntimeException("未找到命令：" + cmdType + "的解析器");
 
-        parser.validate(result);
-        T data = (T) parser.parse(result);
+        parser.validate(temp);
+        T data = (T) parser.parse(temp);
+        commandResult.setSuccess(true);
+        commandResult.setCommandType(cmdType);
+        commandResult.setResult(data);
 
-        return data;
+        return commandResult;
     }
 
     /**
@@ -54,7 +79,7 @@ public class IOTParseManager {
      * @param result
      * @return
      */
-    public CommonCmdResponseResult parseSettingCmd(String result) {
+    public CommonSettingCmdResult parseSettingCmd(String result) {
         if (TextUtils.isEmpty(result)) {
             return null;
         }
@@ -65,8 +90,8 @@ public class IOTParseManager {
             return null;
         }
 
-        CommonCmdResponseResultParser.getInstance().validate(result);
-        CommonCmdResponseResult data = CommonCmdResponseResultParser.getInstance().parse(result);
+        CommonSettingCmdResultParser.getInstance().validate(result);
+        CommonSettingCmdResult data = CommonSettingCmdResultParser.getInstance().parse(result);
 
         return data;
     }
@@ -93,7 +118,8 @@ public class IOTParseManager {
         List<Class> clazzes = Arrays.asList(new Class[]{
                 TerminalTimeParser.class,
                 DeviceCurrentStateParser.class,
-                TelemetryParser.class});
+                TelemetryParser.class,
+                GatewayBaseInfoParser.class});
 
         registerWithClass(clazzes);
     }

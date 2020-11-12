@@ -17,6 +17,8 @@ import timber.log.Timber;
  */
 public class TcpManager implements NettyClientListener<String> {
 
+    private final String heartBeat = "$cmd=I'm HeartBeatData";
+
     private final UnPeekLiveData<TcpConnectionState> tcpConnectionState = new UnPeekLiveData<>();
 
     private UnPeekLiveData<String> receivedMessage;
@@ -35,10 +37,10 @@ public class TcpManager implements NettyClientListener<String> {
                 .setReconnectIntervalTime(5)    //设置重连间隔时间。单位：秒
                 .setSendheartBeat(true) //设置是否发送心跳
                 .setHeartBeatInterval(15)    //设置心跳间隔时间。单位：秒
-                .setHeartBeatData("I'm HeartBeatData") //设置心跳数据，可以是String类型，也可以是byte[]，以后设置的为准
+                .setHeartBeatData(heartBeat) //设置心跳数据，可以是String类型，也可以是byte[]，以后设置的为准
                 .setIndex(0)    //设置客户端标识.(因为可能存在多个tcp连接)
-//                .setPacketSeparator("#")//用特殊字符，作为分隔符，解决粘包问题，默认是用换行符作为分隔符
-                .setMaxPacketLong(1024)//设置一次发送数据的最大长度，默认是1024
+//                .setPacketSeparator("&&")//用特殊字符，作为分隔符，解决粘包问题，默认是用换行符作为分隔符
+                .setMaxPacketLong(2000)//设置一次发送数据的最大长度，默认是1024
                 .build();
 
         mNettyTcpClient.setListener(this); //设置TCP监听
@@ -60,7 +62,10 @@ public class TcpManager implements NettyClientListener<String> {
 
     @Override
     public void onMessageResponseClient(String msg, int index) {
-        Timber.d("onMessageResponseClient:%s", msg);
+//        Timber.d("onMessageResponseClient:%s", msg);
+        if (msg.contains(heartBeat))
+            return;
+
         receivedMessage.postValue(msg);
     }
 
@@ -81,7 +86,6 @@ public class TcpManager implements NettyClientListener<String> {
     }
 
     public void connect() {
-        Timber.d("connect");
         if (!mNettyTcpClient.getConnectStatus()) {
             mNettyTcpClient.connect();//连接服务器
         } else {
@@ -103,7 +107,6 @@ public class TcpManager implements NettyClientListener<String> {
             public void isSendSuccss(boolean isSuccess) {
                 if (isSuccess) {
                     Timber.d("Write auth successful");
-//                    logSend(msg);
                 } else {
                     Timber.d("Write auth error");
                 }

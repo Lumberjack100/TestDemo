@@ -1,35 +1,35 @@
-package com.shmedo.configlibrary.iot.parser;
+package com.shmedo.configlibrary.iot.cmd.parser;
 
 import android.text.TextUtils;
 
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.interfaces.IOTResultParser;
-import com.shmedo.configlibrary.iot.model.CommonCmdResponseResult;
+import com.shmedo.configlibrary.iot.model.CommonSettingCmdResult;
 
 /**
  * 创建者:   gonghe <br/>
  * 创建时间:  2020/9/2 <br/>
- * 描述：     解析设置指令响应结果
+ * 描述：     解析通用的设置指令响应结果
  */
-public class CommonCmdResponseResultParser implements IOTResultParser<CommonCmdResponseResult> {
+public class CommonSettingCmdResultParser implements IOTResultParser<CommonSettingCmdResult> {
 
-    private static final CommonCmdResponseResultParser ourInstance = new CommonCmdResponseResultParser();
+    private static final CommonSettingCmdResultParser ourInstance = new CommonSettingCmdResultParser();
 
-    public static CommonCmdResponseResultParser getInstance() {
+    public static CommonSettingCmdResultParser getInstance() {
         return ourInstance;
     }
 
 
     @Override
-    public CommonCmdResponseResult parse(String result) {
-        CommonCmdResponseResult commonCmdResponseResult = new CommonCmdResponseResult();
+    public CommonSettingCmdResult parse(String result) {
+        CommonSettingCmdResult commonSettingCmdResult = new CommonSettingCmdResult();
         String[] strs = result.split("&");
 
         for (String ss : strs) {
             if (ss.startsWith("result=")) {
                 String value = ss.replace("result=", "");
                 if (!TextUtils.isEmpty(value) && value.equals("succ")) {
-                    commonCmdResponseResult.setSucceed(true);
+                    commonSettingCmdResult.setSucceed(true);
                 }
                 continue;
             }
@@ -37,12 +37,12 @@ public class CommonCmdResponseResultParser implements IOTResultParser<CommonCmdR
             if (ss.startsWith("reason=")) {
                 String value = ss.replace("reason=", "");
                 if (!TextUtils.isEmpty(value)) {
-                    commonCmdResponseResult.setReason(value);
+                    commonSettingCmdResult.setReason(value);
                 }
             }
         }
 
-        return commonCmdResponseResult;
+        return commonSettingCmdResult;
     }
 
     @Override

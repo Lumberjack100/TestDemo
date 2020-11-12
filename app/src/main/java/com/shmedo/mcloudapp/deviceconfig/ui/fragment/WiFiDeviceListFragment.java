@@ -25,6 +25,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.hjq.toast.ToastUtils;
+import com.shmedo.core.AppContants;
 import com.shmedo.core.MCloudApp;
 import com.shmedo.core.util.GlobalUtil;
 import com.shmedo.core.wifimanager.IWifi;
@@ -34,7 +35,7 @@ import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.fragment.BaseFragment;
 import com.shmedo.mcloudapp.common.view.ClearEditText;
 import com.shmedo.mcloudapp.deviceconfig.adapter.WiFiAdapter;
-import com.shmedo.mcloudapp.deviceconfig.ui.TestAActivity;
+import com.shmedo.mcloudapp.deviceconfig.ui.activity.VmsHomeActivity;
 import com.shmedo.mcloudapp.util.KeyBordUtils;
 import com.shmedo.mcloudapp.util.permission.XPermissionUtils;
 import com.thanosfisherman.wifiutils.WifiUtils;
@@ -136,20 +137,26 @@ public class WiFiDeviceListFragment extends BaseFragment implements TextWatcher,
             @Override
             public void onItemClick(@NonNull BaseQuickAdapter adapter, @NonNull View view, int position) {
                 curWiFi = wiFiAdapter.getItem(position);
-                if (curWiFi.isConnected()) {
-                    TestAActivity.startActivity(getContext(), "192.168.5.2");
-                } else if (curWiFi.isSaved()) {
+                if (curWiFi.isConnected()) {//已连接
+                    VmsHomeActivity.startActivity(getContext(), AppContants.CommunicationWay.TCP_CONNECT);
+//                    TestAActivity.startActivity(getContext(),"192.168.5.2");
 
-                } else if (!curWiFi.isEncrypt()) {
+                } else if (curWiFi.isSaved()) {//已保存
                     WifiUtils.withContext(getContext().getApplicationContext())
                             .connectWith(curWiFi.name(), "")
-                            .setTimeout(40000)
+                            .setTimeout(15000)
                             .onConnectionResult(successListener)
                             .start();
-                } else {
+                } else if (!curWiFi.isEncrypt()) {//未加密
                     WifiUtils.withContext(getContext().getApplicationContext())
                             .connectWith(curWiFi.name(), "")
-                            .setTimeout(40000)
+                            .setTimeout(15000)
+                            .onConnectionResult(successListener)
+                            .start();
+                } else {//加密
+                    WifiUtils.withContext(getContext().getApplicationContext())
+                            .connectWith(curWiFi.name(), "medo33923627")
+                            .setTimeout(15000)
                             .onConnectionResult(successListener)
                             .start();
                 }
@@ -160,14 +167,25 @@ public class WiFiDeviceListFragment extends BaseFragment implements TextWatcher,
     private ConnectionSuccessListener successListener = new ConnectionSuccessListener() {
         @Override
         public void success() {
-            modifyWifi();
-            TestAActivity.startActivity(getContext(), "192.168.5.2");
+            mActivity.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    modifyWifi();
+                    VmsHomeActivity.startActivity(getContext(), AppContants.CommunicationWay.TCP_CONNECT);
+//                    TestAActivity.startActivity(getContext(),"192.168.5.2");
+                }
+            });
         }
 
         @Override
         public void failed(@NonNull ConnectionErrorCode errorCode) {
-            ToastUtils.show("连接失败!" + errorCode.toString());
-            modifyWifi();
+            mActivity.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    ToastUtils.show("连接失败!" + errorCode.toString());
+                    modifyWifi();
+                }
+            });
         }
     };
 
@@ -211,12 +229,9 @@ public class WiFiDeviceListFragment extends BaseFragment implements TextWatcher,
         WifiUtils.withContext(getContext().getApplicationContext()).enableWifi(new WifiStateListener() {
             @Override
             public void isSuccess(boolean isSuccess) {
-//                Timber.d("enableWiFi 在线程 Name= " + Thread.currentThread().getName() + ";Id= " + Thread.currentThread().getId() + " 中扫描到设备");
-
                 if (isSuccess) {
                     updateRefreshView(true);
                     WifiUtils.withContext(getContext().getApplicationContext()).scanWifi(scanResultsListener).start();
-
                 } else {
                     ToastUtils.show("无法开启 WiFi");
                 }
@@ -228,9 +243,14 @@ public class WiFiDeviceListFragment extends BaseFragment implements TextWatcher,
         @Override
         public void onScanResults(@NonNull List<ScanResult> scanResults) {
 //            Timber.d("onScanResults 在线程 Name= " + Thread.currentThread().getName() + ";Id= " + Thread.currentThread().getId() + " 中扫描到设备");
-            updateRefreshView(false);
-            modifyWifi();
-            mTvWiFiCount.setText(String.format(Locale.getDefault(), "(%d)", wiFiAdapter.getItemCount()));
+            mActivity.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    updateRefreshView(false);
+                    modifyWifi();
+                    mTvWiFiCount.setText(String.format(Locale.getDefault(), "(%d)", wiFiAdapter.getItemCount()));
+                }
+            });
         }
     };
 

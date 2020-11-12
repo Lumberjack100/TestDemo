@@ -52,7 +52,6 @@ public class NettyClientHandler extends SimpleChannelInboundHandler<String> {
         if (evt instanceof IdleStateEvent) {
             IdleStateEvent event = (IdleStateEvent) evt;
             if (event.state() == IdleState.WRITER_IDLE) {   //发送心跳
-//                ctx.channel().writeAndFlush("Heartbeat" + System.getProperty("line.separator"));
                 if (isSendheartBeat) {
                     if (heartBeatData == null) {
                         ctx.channel().writeAndFlush("Heartbeat" + packetSeparator);
@@ -108,7 +107,7 @@ public class NettyClientHandler extends SimpleChannelInboundHandler<String> {
      */
     @Override
     protected void channelRead0(ChannelHandlerContext channelHandlerContext, String msg) {
-        Timber.e("channelRead0:" + msg);
+        Timber.d("channelRead0:" + msg);
         listener.onMessageResponseClient(msg, index);
     }
 

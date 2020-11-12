@@ -91,14 +91,14 @@ public class NetConfigDeviceFragment extends BaseFragment {
     @BindView(R.id.tv_time_or_sub_model)
     TextView mTvTime;
 
-    @BindView(R.id.tv_device_communication_state_flag)
-    TextView mTvDeviceCommunicationState;//通信状态(在线、离线、已连接、已断开)
+    @BindView(R.id.tv_device_state_flag)
+    TextView mTvDeviceState;//通信状态(在线、离线、已连接、已断开)
 
-    @BindView(R.id.tv_device_connect_state)
-    TextView mTvDeviceConnectState;//蓝牙连接状态(断开连接、重新连接)
+    @BindView(R.id.tv_device_connect_operate)
+    TextView mTvDeviceConnectOperate;//蓝牙连接状态(断开连接、重新连接)
 
-    @BindView(R.id.tv_device_communication_way)
-    TextView mTvDeviceCommunicationWay;//通信方式(网络、蓝牙)
+    @BindView(R.id.tv_device_communication_way_switch)
+    TextView mTvDeviceCommunicationWaySwitch;//通信方式(网络、蓝牙)
 
     @BindView(R.id.recyclerview)
     RecyclerView mRecyclerView;
@@ -182,17 +182,17 @@ public class NetConfigDeviceFragment extends BaseFragment {
             mTvProductModel.setText(String.format("产品型号：%s", TextUtils.isEmpty(projectDeviceInfo.getDeviceTypeName()) ? "" : projectDeviceInfo.getDeviceTypeName()));
             mTvTime.setText(String.format("更新时间：%s", TextUtils.isEmpty(projectDeviceInfo.getLastActiveTime()) ? "" : projectDeviceInfo.getLastActiveTime()));
             if (projectDeviceInfo.isOnline()) {
-                mTvDeviceCommunicationState.setText("在线");
-                mTvDeviceCommunicationState.setTextColor(ContextCompat.getColor(mActivity, R.color.text_color_50E9B9));
-                mTvDeviceCommunicationState.setBackgroundResource(R.drawable.bg_device_online_state_flag);
+                mTvDeviceState.setText("在线");
+                mTvDeviceState.setTextColor(ContextCompat.getColor(mActivity, R.color.text_color_50E9B9));
+                mTvDeviceState.setBackgroundResource(R.drawable.bg_device_online_state_flag);
             } else {
-                mTvDeviceCommunicationState.setText("离线");
-                mTvDeviceCommunicationState.setTextColor(ContextCompat.getColor(mActivity, R.color.sub_title_text_color));
-                mTvDeviceCommunicationState.setBackgroundResource(R.drawable.bg_device_offline_state_flag);
+                mTvDeviceState.setText("离线");
+                mTvDeviceState.setTextColor(ContextCompat.getColor(mActivity, R.color.sub_title_text_color));
+                mTvDeviceState.setBackgroundResource(R.drawable.bg_device_offline_state_flag);
             }
         }
-        mTvDeviceConnectState.setVisibility(View.INVISIBLE);
-        mTvDeviceCommunicationWay.setText("蓝牙");
+        mTvDeviceConnectOperate.setVisibility(View.INVISIBLE);
+        mTvDeviceCommunicationWaySwitch.setText("蓝牙");
     }
 
     private void initAdapter() {
@@ -218,14 +218,14 @@ public class NetConfigDeviceFragment extends BaseFragment {
         mRecyclerView.setAdapter(moduleAdapter);
     }
 
-    @OnClick({R.id.tv_device_communication_way, R.id.rl_run_state_analysis})
+    @OnClick({R.id.tv_device_communication_way_switch, R.id.rl_run_state_analysis})
     public void onClick(View v) {
         if (isDoubleClick(v)) {
             return;
         }
 
         switch (v.getId()) {
-            case R.id.tv_device_communication_way://切换连接方式
+            case R.id.tv_device_communication_way_switch://切换连接方式
                 showWarnDialog("连接方式", "确定切换至蓝牙连接？", SWITCH_TO_BLE);
                 break;
 

@@ -1,7 +1,9 @@
 package com.shmedo.configlibrary.iot.utils;
 
+import android.text.TextUtils;
+
 import com.shmedo.configlibrary.ble.utils.Holder;
-import com.shmedo.configlibrary.iot.IOTCommandResult;
+import com.shmedo.configlibrary.iot.cmd.IOTCommandResult;
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 
 /**
@@ -18,6 +20,8 @@ public class IOTStringUtil {
      * @return 从DAS返回结果中提取指令类型
      */
     public static IOTCommandType extractCommandType(String result) {
+        if (TextUtils.isEmpty(result) || result.length() < IOTCommandResult.RESULT_MIN_LENGTH)
+            throw new IllegalArgumentException("指令结果格式错误:" + result);
 
         String[] strs = result.split("&");
         String cmd = strs[0].replace(IOTCommandResult.COMMAND_HEADER, "").trim();
