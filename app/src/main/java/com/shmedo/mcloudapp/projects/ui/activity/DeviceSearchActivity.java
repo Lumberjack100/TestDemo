@@ -61,7 +61,7 @@ public class DeviceSearchActivity extends BaseActivity {
     private static final int PAGE_SIZE = 10;
     private PageInfo pageInfo;
     private int companyID = 1;
-    private String keyWords;// 要输入的poi搜索关键字
+    private String keyWords;// 要输入的搜索关键字
     private String projectName;
 
     public static void startActivity(Context context) {

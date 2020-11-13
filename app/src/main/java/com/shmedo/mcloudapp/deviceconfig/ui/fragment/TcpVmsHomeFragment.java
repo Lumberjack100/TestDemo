@@ -11,7 +11,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -33,7 +32,8 @@ import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.view.recycleviewitemdivider.GridSpacingItemDecoration;
 import com.shmedo.mcloudapp.deviceconfig.adapter.VmsAisleAdapter;
 import com.shmedo.mcloudapp.deviceconfig.model.TcpConnectionState;
-import com.shmedo.mcloudapp.deviceconfig.ui.activity.ui.VmsViewModel;
+import com.shmedo.mcloudapp.deviceconfig.ui.activity.VmsTerminalSearchActivity;
+import com.shmedo.mcloudapp.deviceconfig.viewmodels.VmsViewModel;
 import com.thanosfisherman.wifiutils.WifiUtils;
 import com.thanosfisherman.wifiutils.wifiRemove.RemoveErrorCode;
 import com.thanosfisherman.wifiutils.wifiRemove.RemoveSuccessListener;
@@ -95,11 +95,10 @@ public class TcpVmsHomeFragment extends BaseTcpConnectFragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mViewModel = new ViewModelProvider(this).get(VmsViewModel.class);
+        mViewModel = getApplicationScopeViewModel(VmsViewModel.class);
 
         setupTcpConnect();
         initAdapter();
-//        initConfigModuleData();
     }
 
     @Override
@@ -176,13 +175,14 @@ public class TcpVmsHomeFragment extends BaseTcpConnectFragment {
         mRecyclerView.setAdapter(vmsAisleAdapter);
     }
 
-    @OnClick({R.id.tv_device_connect_operate})
+    @OnClick({R.id.search_placeholder, R.id.tv_device_connect_operate})
     public void onClick(View v) {
         if (isDoubleClick(v)) {
             return;
         }
         //断开/重新连接
-        if (v.getId() == R.id.tv_device_connect_operate) {
+        int id = v.getId();
+        if (id == R.id.tv_device_connect_operate) {
             if (!tcpShareViewModel.getConnectStatus()) {
                 startProgressRunnable("建立通讯连接...", TCP_CONNECT_DELAY_MILLIS);
                 tcpShareViewModel.connect();
@@ -190,6 +190,8 @@ public class TcpVmsHomeFragment extends BaseTcpConnectFragment {
                 isExitMode = false;
                 showDisconnectDialog(getResources().getString(R.string.disconnect_device));
             }
+        } else if (id == R.id.search_placeholder) {
+            VmsTerminalSearchActivity.startActivity(mActivity);
         }
     }
 
@@ -242,13 +244,19 @@ public class TcpVmsHomeFragment extends BaseTcpConnectFragment {
                 }
                 VmsAisleTerminalInfo vmsAisleTerminalInfo = commandResult.getResult();
                 vmsAisleTerminalInfoList.add(vmsAisleTerminalInfo);
+
                 if (vmsAisleTerminalInfo.getChannel() == 0) {
+                    mViewModel.clearTerminalList();
                     getGatewayStatus(VmsAisleNumber.NUMBER_TWO);
+
                 } else if (vmsAisleTerminalInfo.getChannel() == 1) {
+                    mViewModel.addTerminalList(vmsAisleTerminalInfo.getTerminal());
                     getGatewayStatus(VmsAisleNumber.NUMBER_THREE);
+
                 } else if (vmsAisleTerminalInfo.getChannel() == 2) {
                     stopProgressRunnable();
                     vmsAisleAdapter.notifyDataSetChanged();
+                    mViewModel.addTerminalList(vmsAisleTerminalInfo.getTerminal());
                 }
             }
             break;

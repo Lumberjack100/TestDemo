@@ -66,6 +66,7 @@ public class TcpManager implements NettyClientListener<String> {
     @Override
     public void onMessageResponseClient(String msg, int index) {
 //        Timber.d("onMessageResponseClient:%s", msg);
+        //跳过心跳包数据的分发处理
         if (msg.contains(heartBeat))
             return;
 

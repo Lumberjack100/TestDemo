@@ -49,6 +49,7 @@
         tools:ignore="LockedOrientationActivity"
         tools:replace="android:name"
         tools:targetApi="p">
+
         <activity android:name=".deviceconfig.ui.TestBActivity" />
         <activity android:name=".deviceconfig.ui.TestAActivity" /> <!-- 声明最小宽高比 -->
         <meta-data
@@ -278,6 +279,13 @@
             android:theme="@style/LightStatusBarActivity" />
         <activity
             android:name=".deviceconfig.ui.activity.VmsHomeActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:maxAspectRatio="2.4"
+            android:screenOrientation="portrait"
+            android:theme="@style/LightStatusBarActivity" />
+
+        <activity
+            android:name=".deviceconfig.ui.activity.VmsTerminalSearchActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:maxAspectRatio="2.4"
             android:screenOrientation="portrait"

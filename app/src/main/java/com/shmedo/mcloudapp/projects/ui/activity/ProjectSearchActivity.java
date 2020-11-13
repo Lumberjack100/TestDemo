@@ -64,7 +64,7 @@ public class ProjectSearchActivity extends BaseActivity implements TextWatcher {
 
     private int userId;
     private int companyID;
-    private String keyWords;// 要输入的poi搜索关键字
+    private String keyWords;// 要输入的搜索关键字
 
 
     public static void startActivity(Context context) {
