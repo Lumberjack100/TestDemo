@@ -2,17 +2,16 @@ package com.shmedo.mcloudapp.user.ui.fragment;
 
 import android.app.Dialog;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.text.TextUtils;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
@@ -20,9 +19,10 @@ import com.chad.library.adapter.base.listener.OnLoadMoreListener;
 import com.hjq.toast.ToastUtils;
 import com.shmedo.core.MCloudApp;
 import com.shmedo.core.util.DeviceInfo;
+import com.shmedo.core.util.GsonFactory;
 import com.shmedo.mcloudapp.R;
-import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.BaseDialogFragment;
 import com.shmedo.mcloudapp.common.model.PageResult;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.BaseDialogFragment;
 import com.shmedo.mcloudapp.network.BaseObserver;
 import com.shmedo.mcloudapp.network.ErrCode;
 import com.shmedo.mcloudapp.network.MDRetrofit;
@@ -31,7 +31,6 @@ import com.shmedo.mcloudapp.projects.model.PageInfo;
 import com.shmedo.mcloudapp.user.adapter.CompanySimpleInfoAdapter;
 import com.shmedo.mcloudapp.user.model.CompanySimpleInfo;
 import com.shmedo.mcloudapp.user.model.params.QueryCompanySimpleInfoListParam;
-import com.shmedo.mcloudapp.util.GsonFactory;
 import com.shmedo.mcloudapp.util.ResponseHandler;
 
 import java.util.ArrayList;

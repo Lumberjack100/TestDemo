@@ -13,13 +13,13 @@ import androidx.fragment.app.DialogFragment;
 import com.shmedo.core.AppContants;
 import com.shmedo.core.MCloudApp;
 import com.shmedo.core.model.UserInfo;
+import com.shmedo.core.util.GsonFactory;
 import com.shmedo.core.util.SharedUtil;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.model.UserInfoWrapper;
-import com.shmedo.mcloudapp.network.NetworkConst;
 import com.shmedo.mcloudapp.common.ui.fragment.PrivacyTipDialog;
+import com.shmedo.mcloudapp.network.NetworkConst;
 import com.shmedo.mcloudapp.util.DaoManager;
-import com.shmedo.mcloudapp.util.GsonFactory;
 import com.shmedo.mcloudapp.util.LoginManager;
 import com.shmedo.mcloudapp.util.permission.XPermissionUtils;
 

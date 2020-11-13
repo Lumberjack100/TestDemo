@@ -1,4 +1,5 @@
-package com.shmedo.mcloudapp.util;
+package com.shmedo.core.util;
+
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;

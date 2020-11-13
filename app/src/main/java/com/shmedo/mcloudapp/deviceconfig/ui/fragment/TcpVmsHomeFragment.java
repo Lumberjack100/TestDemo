@@ -20,9 +20,12 @@ import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.hjq.toast.ToastUtils;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandManager;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandResult;
+import com.shmedo.configlibrary.iot.cmd.entity.AisleNumberEntity;
 import com.shmedo.configlibrary.iot.cmd.parser.IOTParseManager;
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
+import com.shmedo.configlibrary.iot.enums.VmsAisleNumber;
 import com.shmedo.configlibrary.iot.model.GatewayBaseInfo;
+import com.shmedo.configlibrary.iot.model.VmsAisleTerminalInfo;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
 import com.shmedo.core.MCloudApp;
 import com.shmedo.core.util.DensityUtil;
@@ -38,6 +41,7 @@ import com.thanosfisherman.wifiutils.wifiRemove.RemoveSuccessListener;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -74,9 +78,10 @@ public class TcpVmsHomeFragment extends BaseTcpConnectFragment {
     private VmsViewModel mViewModel;
 
     private String ipAddress = "192.168.5.2";
-    private int deviceTypeID;
-    private String deviceTypeName;
+
     private GatewayBaseInfo gatewayBaseInfo = new GatewayBaseInfo();
+
+    private List<VmsAisleTerminalInfo> vmsAisleTerminalInfoList = new ArrayList<>();
 
     public static TcpVmsHomeFragment newInstance() {
         return new TcpVmsHomeFragment();
@@ -153,8 +158,8 @@ public class TcpVmsHomeFragment extends BaseTcpConnectFragment {
         int spacing = DensityUtil.Dp2Px(mActivity, 14);//每一个矩形的间距
         mRecyclerView.setLayoutManager(new GridLayoutManager(mActivity, spanCount));
         //设置每个item间距
-        mRecyclerView.addItemDecoration(new GridSpacingItemDecoration(spanCount, spacing, false));
-        vmsAisleAdapter = new VmsAisleAdapter(new ArrayList<>());
+        mRecyclerView.addItemDecoration(new GridSpacingItemDecoration(spanCount, spacing, true));
+        vmsAisleAdapter = new VmsAisleAdapter(vmsAisleTerminalInfoList);
         vmsAisleAdapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
@@ -188,6 +193,18 @@ public class TcpVmsHomeFragment extends BaseTcpConnectFragment {
         }
     }
 
+    /**
+     * 获取网关不同通道下，挂载终端的运行情况
+     *
+     * @param vmsAisleNumber
+     */
+    private void getGatewayStatus(VmsAisleNumber vmsAisleNumber) {
+        AisleNumberEntity aisleNumberEntity = new AisleNumberEntity(vmsAisleNumber.toInt());
+        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.MD_GET_GATEWAY_STATUS, aisleNumberEntity);
+        sendCommand(command);
+    }
+
+
     @Override
     protected void parseResponseMessage(@NotNull String cmdStr) {
         if (!isActive) {
@@ -199,9 +216,7 @@ public class TcpVmsHomeFragment extends BaseTcpConnectFragment {
     private void setResultData(final String cmdStr) {
         IOTCommandType type = IOTStringUtil.extractCommandType(cmdStr);
         switch (type) {
-            case MD_GET_GATEWAY_BASE://获取网关的基本信息
-                stopProgressRunnable();
-
+            case MD_GET_GATEWAY_BASE: {//获取网关的基本信息
                 IOTCommandResult<GatewayBaseInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
                     stopProgressRunnable();
@@ -212,7 +227,31 @@ public class TcpVmsHomeFragment extends BaseTcpConnectFragment {
                 }
                 gatewayBaseInfo = commandResult.getResult();
                 setHeadInfo();
-                break;
+                getGatewayStatus(VmsAisleNumber.NUMBER_ONE);
+            }
+            break;
+
+            case MD_GET_GATEWAY_STATUS: {//获取网关的基本信息
+                IOTCommandResult<VmsAisleTerminalInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
+                if (!commandResult.isSuccess()) {
+                    stopProgressRunnable();
+                    String errMsg = "查询网关基本信息出错!";
+                    Timber.e("%s%s", errMsg, commandResult.getMessage());
+                    ToastUtils.show(errMsg);
+                    return;
+                }
+                VmsAisleTerminalInfo vmsAisleTerminalInfo = commandResult.getResult();
+                vmsAisleTerminalInfoList.add(vmsAisleTerminalInfo);
+                if (vmsAisleTerminalInfo.getChannel() == 0) {
+                    getGatewayStatus(VmsAisleNumber.NUMBER_TWO);
+                } else if (vmsAisleTerminalInfo.getChannel() == 1) {
+                    getGatewayStatus(VmsAisleNumber.NUMBER_THREE);
+                } else if (vmsAisleTerminalInfo.getChannel() == 2) {
+                    stopProgressRunnable();
+                    vmsAisleAdapter.notifyDataSetChanged();
+                }
+            }
+            break;
 
             default:
                 super.parseResponseMessage(cmdStr);

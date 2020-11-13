@@ -8,6 +8,7 @@ import com.hjq.toast.ToastUtils;
 import com.shmedo.core.AppContants;
 import com.shmedo.core.MCloudApp;
 import com.shmedo.core.model.UserInfo;
+import com.shmedo.core.util.GsonFactory;
 import com.shmedo.core.util.SharedUtil;
 import com.shmedo.mcloudapp.common.model.UserInfoWrapper;
 import com.shmedo.mcloudapp.common.model.params.SignInParameter;
