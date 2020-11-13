@@ -29,11 +29,11 @@ public class VmsTerminalInfoAdapter extends BaseQuickAdapter<TerminalBean, BaseV
         holder.setText(R.id.tv_last_data_time, terminalBean.getLastpackagetime());
 
         if (terminalBean.getStatus() == 1) {//在线
-            holder.setTextColorRes(R.id.tv_device_sn, R.color.title_text_color);
+            holder.setTextColorRes(R.id.tv_terminal_sn, R.color.title_text_color);
             holder.setImageResource(R.id.iv_signal, R.drawable.ic_device_signal_three);
             holder.setImageResource(R.id.iv_battery, R.drawable.ic_battery_full_online);
         } else {
-            holder.setTextColorRes(R.id.tv_device_sn, R.color.text_color_b3b3b3);
+            holder.setTextColorRes(R.id.tv_terminal_sn, R.color.text_color_b3b3b3);
             holder.setImageResource(R.id.iv_signal, R.drawable.ic_device_signal_offline);
             holder.setImageResource(R.id.iv_battery, R.drawable.ic_battery_full_offline);
         }

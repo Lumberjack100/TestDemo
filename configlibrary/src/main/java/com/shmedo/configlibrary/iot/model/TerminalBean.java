@@ -1,5 +1,7 @@
 package com.shmedo.configlibrary.iot.model;
 
+import android.text.TextUtils;
+
 import java.util.List;
 
 /**
@@ -35,7 +37,7 @@ public class TerminalBean {
     private List<SensorErrnoBean> sensor_errno;
 
     public String getSn() {
-        return sn;
+        return TextUtils.isEmpty(sn) ? "" : sn;
     }
 
     public void setSn(String sn) {
@@ -99,7 +101,7 @@ public class TerminalBean {
     }
 
     public String getLogintime() {
-        return logintime;
+        return TextUtils.isEmpty(logintime) ? "" : logintime;
     }
 
     public void setLogintime(String logintime) {
@@ -107,7 +109,7 @@ public class TerminalBean {
     }
 
     public String getLastpackagetime() {
-        return lastpackagetime;
+        return TextUtils.isEmpty(lastpackagetime) ? "" : lastpackagetime;
     }
 
     public void setLastpackagetime(String lastpackagetime) {
