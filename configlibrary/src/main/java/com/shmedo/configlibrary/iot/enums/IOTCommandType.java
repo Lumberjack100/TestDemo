@@ -53,6 +53,16 @@ public enum IOTCommandType {
     MD_GET_GATEWAY_STATUS("md_getgatewaystatus"),
 
     /**
+     * 获取网关相关的控制参数
+     */
+    MD_GET_GATEWAY_PARAM("md_getgatewayparam"),
+
+    /**
+     * 设置网关相关的控制参数
+     */
+    MD_SET_GATEWAY_PARAM("md_setgatewayparam"),
+
+    /**
      * 自定义心跳包
      */
     HEART_BEAT("HeartBeatData"),

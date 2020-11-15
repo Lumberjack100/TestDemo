@@ -12,7 +12,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -45,7 +44,7 @@ import butterknife.OnClick;
 import timber.log.Timber;
 
 /**
- * A simple {@link Fragment} subclass.
+ * Das数据中心参数配置页面
  */
 public class BleDataCenterServerConfigFragment extends BaseBleConnectFragment {
 

@@ -212,6 +212,7 @@
     <string name="cmd_response_loading_tip">等待设备响应...</string>
     <string name="cmd_response_failed_tip">响应超时</string>
     <string name="reboot_device_save_param_warn">设备参数已配置，需要重启生效，是否现在重启？</string>
+    <string name="tcp_config_disconnect_warn">设备已断开连接，暂无法进行操作</string>
 
 
     <!-- TODO: Remove or change this placeholder text -->

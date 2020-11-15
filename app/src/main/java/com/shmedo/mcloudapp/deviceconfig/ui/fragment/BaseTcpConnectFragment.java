@@ -30,8 +30,6 @@ public abstract class BaseTcpConnectFragment extends BaseFragment {
 
     public static final int SEND_CMD_DELAY_MILLIS = 20000;//发送配置参数指令超时时间
 
-    public static final int SEND_CMD_LONG_DELAY_MILLIS = 30000;//发送配置参数指令超时时间
-
     private static Handler uiHander = new Handler();
 
     protected String errMsg = "";

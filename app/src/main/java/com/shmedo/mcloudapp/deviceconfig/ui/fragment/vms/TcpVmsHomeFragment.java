@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.deviceconfig.ui.fragment;
+package com.shmedo.mcloudapp.deviceconfig.ui.fragment.vms;
 
 import android.content.Context;
 import android.graphics.Paint;
@@ -23,7 +23,7 @@ import com.shmedo.configlibrary.iot.cmd.entity.AisleNumberEntity;
 import com.shmedo.configlibrary.iot.cmd.parser.IOTParseManager;
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.enums.VmsAisleNumber;
-import com.shmedo.configlibrary.iot.model.GatewayBaseInfo;
+import com.shmedo.configlibrary.iot.model.VmsBaseInfo;
 import com.shmedo.configlibrary.iot.model.VmsAisleTerminalInfo;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
 import com.shmedo.core.MCloudApp;
@@ -33,6 +33,7 @@ import com.shmedo.mcloudapp.common.view.recycleviewitemdivider.GridSpacingItemDe
 import com.shmedo.mcloudapp.deviceconfig.adapter.VmsAisleAdapter;
 import com.shmedo.mcloudapp.deviceconfig.model.TcpConnectionState;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.VmsTerminalSearchActivity;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.BaseTcpConnectFragment;
 import com.shmedo.mcloudapp.deviceconfig.viewmodels.VmsViewModel;
 import com.thanosfisherman.wifiutils.WifiUtils;
 import com.thanosfisherman.wifiutils.wifiRemove.RemoveErrorCode;
@@ -79,7 +80,7 @@ public class TcpVmsHomeFragment extends BaseTcpConnectFragment {
 
     private String ipAddress = "192.168.5.2";
 
-    private GatewayBaseInfo gatewayBaseInfo = new GatewayBaseInfo();
+    private VmsBaseInfo vmsBaseInfo = new VmsBaseInfo();
 
     private List<VmsAisleTerminalInfo> vmsAisleTerminalInfoList = new ArrayList<>();
 
@@ -132,14 +133,13 @@ public class TcpVmsHomeFragment extends BaseTcpConnectFragment {
         tcpShareViewModel.connect();
     }
 
-
     private void setHeadInfo() {
-        if (gatewayBaseInfo != null) {
+        if (vmsBaseInfo != null) {
             mTvDeviceName.setText("VMS网关");
-            mTvDeviceSn.setText(String.format("设备SN号：%s", gatewayBaseInfo.getSn()));
-            mTvProductModel.setText(String.format("版本信息：%s", gatewayBaseInfo.getSwVersion()));
-            mTvSubModel.setText(String.format("网关电压：%s", gatewayBaseInfo.getVolt() + "V"));
-            if (!gatewayBaseInfo.getOnline().trim().equals("0")) {
+            mTvDeviceSn.setText(String.format("设备SN号：%s", vmsBaseInfo.getSn()));
+            mTvProductModel.setText(String.format("版本信息：%s", vmsBaseInfo.getSwVersion()));
+            mTvSubModel.setText(String.format("网关电压：%s", vmsBaseInfo.getVolt() + "V"));
+            if (!vmsBaseInfo.getOnline().trim().equals("0")) {
                 mTvDeviceState.setText("在线");
                 mTvDeviceState.setTextColor(ContextCompat.getColor(mActivity, R.color.text_color_50E9B9));
                 mTvDeviceState.setBackgroundResource(R.drawable.bg_device_online_state_flag);
@@ -150,7 +150,6 @@ public class TcpVmsHomeFragment extends BaseTcpConnectFragment {
             }
         }
     }
-
 
     private void initAdapter() {
         int spanCount = 1;//跟布局里面的spanCount属性是一致的
@@ -206,7 +205,6 @@ public class TcpVmsHomeFragment extends BaseTcpConnectFragment {
         sendCommand(command);
     }
 
-
     @Override
     protected void parseResponseMessage(@NotNull String cmdStr) {
         if (!isActive) {
@@ -219,7 +217,7 @@ public class TcpVmsHomeFragment extends BaseTcpConnectFragment {
         IOTCommandType type = IOTStringUtil.extractCommandType(cmdStr);
         switch (type) {
             case MD_GET_GATEWAY_BASE: {//获取网关的基本信息
-                IOTCommandResult<GatewayBaseInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
+                IOTCommandResult<VmsBaseInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
                     stopProgressRunnable();
                     String errMsg = "查询网关基本信息出错!";
@@ -227,7 +225,7 @@ public class TcpVmsHomeFragment extends BaseTcpConnectFragment {
                     ToastUtils.show(errMsg);
                     return;
                 }
-                gatewayBaseInfo = commandResult.getResult();
+                vmsBaseInfo = commandResult.getResult();
                 setHeadInfo();
                 getGatewayStatus(VmsAisleNumber.NUMBER_ONE);
             }

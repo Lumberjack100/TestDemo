@@ -5,11 +5,11 @@ package com.shmedo.configlibrary.iot.model;
  * 创建时间:  2020/11/12 <br/>
  * 描述：    Vms网关的基本信息
  */
-public class GatewayBaseInfo {
+public class VmsBaseInfo {
     private String sn;
     private String swVersion;//固件版本号
     private String volt;//供电电压
-    private String online;//在线状态（0：离线，非0:在线
+    private String online;//在线状态（0：离线，非0:在线)
 
     public String getSn() {
         return sn;

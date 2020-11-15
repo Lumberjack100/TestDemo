@@ -27,9 +27,10 @@ public class CommonSettingCmdResultParser implements IOTResultParser<CommonSetti
 
         for (String ss : strs) {
             if (ss.startsWith("result=")) {
-                String value = ss.replace("result=", "");
-                if (!TextUtils.isEmpty(value) && value.equals("succ")) {
+                if (ss.endsWith("=succ")) {
                     commonSettingCmdResult.setSucceed(true);
+                } else {
+                    commonSettingCmdResult.setSucceed(false);
                 }
                 continue;
             }
