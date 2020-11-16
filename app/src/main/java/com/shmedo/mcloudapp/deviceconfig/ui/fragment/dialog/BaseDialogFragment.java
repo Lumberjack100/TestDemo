@@ -1,6 +1,9 @@
 package com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog;
 
+import android.app.Activity;
+import android.app.Application;
 import android.app.Dialog;
+import android.content.Context;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -11,8 +14,13 @@ import android.view.WindowManager;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModel;
+import androidx.lifecycle.ViewModelProvider;
 
+import com.shmedo.mcloudapp.MCloudApplication;
 import com.shmedo.mcloudapp.R;
 
 import butterknife.ButterKnife;
@@ -23,6 +31,11 @@ import butterknife.Unbinder;
  *
  */
 public abstract class BaseDialogFragment extends DialogFragment {
+    protected AppCompatActivity mActivity;
+    private ViewModelProvider mFragmentProvider;
+    private ViewModelProvider mActivityProvider;
+    private ViewModelProvider mApplicationProvider;
+
     private Unbinder unbinder;
 
     private View mRootView;
@@ -30,6 +43,11 @@ public abstract class BaseDialogFragment extends DialogFragment {
 
     protected abstract int getLayoutId();
 
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        mActivity = (AppCompatActivity) context;
+    }
 
     @Nullable
     @Override
@@ -81,6 +99,50 @@ public abstract class BaseDialogFragment extends DialogFragment {
     public void onDestroy() {
         super.onDestroy();
         unbinder.unbind();
+    }
+
+    protected <T extends ViewModel> T getFragmentScopeViewModel(@NonNull Class<T> modelClass) {
+        if (mFragmentProvider == null) {
+            mFragmentProvider = new ViewModelProvider(this);
+        }
+        return mFragmentProvider.get(modelClass);
+    }
+
+    protected <T extends ViewModel> T getActivityScopeViewModel(@NonNull Class<T> modelClass) {
+        if (mActivityProvider == null) {
+            mActivityProvider = new ViewModelProvider(mActivity);
+        }
+        return mActivityProvider.get(modelClass);
+    }
+
+    protected <T extends ViewModel> T getApplicationScopeViewModel(@NonNull Class<T> modelClass) {
+        if (mApplicationProvider == null) {
+            mApplicationProvider = new ViewModelProvider(
+                    (MCloudApplication) mActivity.getApplicationContext(), getApplicationFactory(mActivity));
+        }
+        return mApplicationProvider.get(modelClass);
+    }
+
+    private ViewModelProvider.Factory getApplicationFactory(Activity activity) {
+        checkActivity(this);
+        Application application = checkApplication(activity);
+        return ViewModelProvider.AndroidViewModelFactory.getInstance(application);
+    }
+
+    private Application checkApplication(Activity activity) {
+        Application application = activity.getApplication();
+        if (application == null) {
+            throw new IllegalStateException("Your activity/fragment is not yet attached to "
+                    + "Application. You can't request ViewModel before onCreate call.");
+        }
+        return application;
+    }
+
+    private void checkActivity(Fragment fragment) {
+        Activity activity = fragment.getActivity();
+        if (activity == null) {
+            throw new IllegalStateException("Can't create ViewModelProvider for detached fragment");
+        }
     }
 
     public interface DialogFragmentClickListener<T> {

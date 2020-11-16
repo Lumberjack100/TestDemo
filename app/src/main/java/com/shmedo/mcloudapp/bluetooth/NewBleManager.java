@@ -22,8 +22,6 @@ import com.shmedo.mcloudapp.util.bleutil.DescriptorParser;
 import com.shmedo.mcloudapp.util.bleutil.GattAttributes;
 import com.shmedo.mcloudapp.util.bleutil.UUIDDatabase;
 
-import org.greenrobot.eventbus.EventBus;
-
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.sql.Timestamp;
@@ -271,17 +269,10 @@ public class NewBleManager {
                 .build();
 
         bluetoothEventLiveData.postValue(event);
-//        notifyBluetoothEvent(event);
     }
 
     private void fireEvent(final BluetoothEvent event) {
         bluetoothEventLiveData.postValue(event);
-//        notifyBluetoothEvent(event);
-    }
-
-    private void notifyBluetoothEvent(final BluetoothEvent event) {
-//        Timber.d(event.getEventType().name() + "->Thread Name: " + Thread.currentThread().getName() + ",Thread Id: " + Thread.currentThread().getId());
-        EventBus.getDefault().post(event);
     }
 
 

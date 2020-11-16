@@ -9,15 +9,15 @@ import android.os.Build;
 
 import com.amap.api.location.AMapLocationClient;
 import com.amap.api.location.AMapLocationClientOption;
+import com.hjq.toast.ToastUtils;
+import com.kunminx.architecture.ui.callback.ProtectedUnPeekLiveData;
+import com.kunminx.architecture.ui.callback.UnPeekLiveData;
 import com.shmedo.core.MCloudApp;
 import com.shmedo.core.util.GlobalUtil;
-import com.hjq.toast.ToastUtils;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.entity.SyncPositionBean;
 import com.shmedo.mcloudapp.util.permission.XPermissionUtils;
 import com.yanzhenjie.permission.runtime.Permission;
-
-import org.greenrobot.eventbus.EventBus;
 
 import java.util.List;
 
@@ -48,8 +48,16 @@ public class LocationUtils {
         private static final LocationUtils INSTANCE = new LocationUtils();
     }
 
+    private final UnPeekLiveData<SyncPositionBean> syncPositionBeanLiveData = new UnPeekLiveData<>();
+
+
     public static LocationUtils getInstance() {
         return LocationHolder.INSTANCE;
+    }
+
+
+    public ProtectedUnPeekLiveData<SyncPositionBean> getSyncPositionBean() {
+        return syncPositionBeanLiveData;
     }
 
 
@@ -70,7 +78,6 @@ public class LocationUtils {
 
         return false;
     }
-
 
     public void getPositionPermission(Activity activity) {
         if (Build.VERSION.SDK_INT > 28 && MCloudApp.getContext().getApplicationInfo().targetSdkVersion > 28) {
@@ -124,7 +131,8 @@ public class LocationUtils {
                     bean.setLongitude(location.getLongitude());
                     bean.setAddress(location.getAddress());
                     bean.setType("location");
-                    EventBus.getDefault().post(bean);
+                    syncPositionBeanLiveData.postValue(bean);
+
                     stopLocalService();
                 } else {
                     Timber.i("定位失败\n错误码：" + location.getErrorCode()

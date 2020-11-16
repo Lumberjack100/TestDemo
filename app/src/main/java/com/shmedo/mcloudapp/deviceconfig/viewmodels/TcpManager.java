@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.deviceconfig;
+package com.shmedo.mcloudapp.deviceconfig.viewmodels;
 
 import com.kunminx.architecture.ui.callback.ProtectedUnPeekLiveData;
 import com.kunminx.architecture.ui.callback.UnPeekLiveData;

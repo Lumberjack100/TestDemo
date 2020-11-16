@@ -7,8 +7,10 @@ import androidx.annotation.Nullable;
 
 import com.hjq.toast.ToastUtils;
 import com.shmedo.core.AppContants;
+import com.shmedo.core.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.CustomCommandLogPrintActivity;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.SyncInstallationLocationDialog;
 
 import butterknife.OnClick;
 
@@ -47,10 +49,20 @@ public class BleAdvancedSettingFragment extends BaseBleConnectFragment {
                 break;
 
             case R.id.syncInstallLocationLayout:
-                ToastUtils.show("正在研发中,敬请期待...");
+                if (!MCloudApp.isIsBluetoothDeviceConnected()) {
+                    ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
+                    return;
+                }
+                SyncInstallationLocationDialog newFragment = new SyncInstallationLocationDialog(mActivity);
+//                newFragment.setDialogFragmentClickListener(firmWareSelectListener);
+                newFragment.show(getChildFragmentManager(), "dialog");
                 break;
 
             case R.id.customCommandLogPrintLayout:
+                if (!MCloudApp.isIsBluetoothDeviceConnected()) {
+                    ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
+                    return;
+                }
                 CustomCommandLogPrintActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT);
                 break;
         }

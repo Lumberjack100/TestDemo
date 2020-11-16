@@ -6,17 +6,16 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
+import androidx.lifecycle.Observer;
+
 import com.shmedo.core.util.NetworkUtils;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.activity.BaseActivity;
+import com.shmedo.mcloudapp.deviceconfig.viewmodels.LocationViewModel;
 import com.shmedo.mcloudapp.entity.SyncPositionBean;
 import com.shmedo.mcloudapp.maps.model.NetWorkQuality;
 import com.shmedo.mcloudapp.maps.util.ScreenShotAction;
 import com.shmedo.mcloudapp.util.LocationUtils;
-
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -24,7 +23,6 @@ import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-import timber.log.Timber;
 
 public class SpeedTestResultActivity extends BaseActivity {
     private static final String RESULT_PARAM = "result_param";
@@ -56,6 +54,8 @@ public class SpeedTestResultActivity extends BaseActivity {
 
     private NetWorkQuality netWorkQuality;
 
+    private LocationViewModel locationViewModel;
+
     public static void startActivity(Context context, NetWorkQuality netWorkQuality) {
         Intent intent = new Intent(context, SpeedTestResultActivity.class);
         intent.putExtra(RESULT_PARAM, netWorkQuality);
@@ -70,7 +70,18 @@ public class SpeedTestResultActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        locationViewModel=getApplicationScopeViewModel(LocationViewModel.class);
+        locationViewModel.getSyncPositionBean().observeInActivity(this, new Observer<SyncPositionBean>() {
+            @Override
+            public void onChanged(SyncPositionBean syncPositionBean) {
+                String latLong = String.format(Locale.getDefault(), "%.6f", syncPositionBean.getLongitude()) + "," + String.format(Locale.getDefault(), "%.6f", syncPositionBean.getLatitude());
+                mTvLocation.setText(latLong);
+                LocationUtils.getInstance().stopLocalService();
+            }
+        });
+
         initView();
+        LocationUtils.getInstance().startLocalService();
     }
 
     private void initView() {
@@ -85,7 +96,6 @@ public class SpeedTestResultActivity extends BaseActivity {
                 mTvUploadSpeed.setText(netWorkQuality.getUploadSpeed().replace(" ", "\n"));
             }
         }
-        LocationUtils.getInstance().startLocalService();
         showNetType();
         processOperatorName();
     }
@@ -173,15 +183,6 @@ public class SpeedTestResultActivity extends BaseActivity {
         }
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onMessageEvent(SyncPositionBean event) {
-        Timber.i("==位置来了==%s", event.toString());
-        if (event.getType().equals("location")) {
-            String latLong = String.format(Locale.getDefault(), "%.6f", event.getLongitude()) + "," + String.format(Locale.getDefault(), "%.6f", event.getLatitude());
-            mTvLocation.setText(latLong);
-            LocationUtils.getInstance().stopLocalService();
-        }
-    }
 
    /* *//**
      * 定位需要进行检测的权限数组
@@ -271,16 +272,4 @@ public class SpeedTestResultActivity extends BaseActivity {
                 break;
         }
     }*/
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        EventBus.getDefault().register(this);
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        EventBus.getDefault().unregister(this);
-    }
 }

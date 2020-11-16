@@ -7,7 +7,6 @@ import androidx.lifecycle.AndroidViewModel;
 
 import com.kunminx.architecture.ui.callback.ProtectedUnPeekLiveData;
 import com.littlegreens.netty.client.listener.MessageStateListener;
-import com.shmedo.mcloudapp.deviceconfig.TcpManager;
 import com.shmedo.mcloudapp.deviceconfig.model.TcpConnectionState;
 
 /**
