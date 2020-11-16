@@ -22,11 +22,11 @@ public enum VmsAisleNumber implements Serializable {
 
     public static VmsAisleNumber valueOf(int port) {
         switch (port) {
-            case 1:
+            case 0:
                 return NUMBER_ONE;
-            case 2:
+            case 1:
                 return NUMBER_TWO;
-            case 3:
+            case 2:
                 return NUMBER_THREE;
             default:
                 return NUMBER_ONE;

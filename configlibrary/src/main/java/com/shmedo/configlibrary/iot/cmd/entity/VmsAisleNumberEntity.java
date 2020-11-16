@@ -8,10 +8,10 @@ import com.shmedo.configlibrary.ble.interfaces.Validater;
  * 创建时间:  2020/11/13 <br/>
  * 描述：      Vms网关通道编号参数
  */
-public class AisleNumberEntity implements Validater {
+public class VmsAisleNumberEntity implements Validater {
     private int number;
 
-    public AisleNumberEntity(int number) {
+    public VmsAisleNumberEntity(int number) {
         this.number = number;
     }
 

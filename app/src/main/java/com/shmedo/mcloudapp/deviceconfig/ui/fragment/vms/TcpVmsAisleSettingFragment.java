@@ -7,12 +7,11 @@ import android.view.View;
 import android.widget.Button;
 
 import androidx.annotation.Nullable;
-import androidx.lifecycle.ViewModelProvider;
 
 import com.hjq.toast.ToastUtils;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandManager;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandResult;
-import com.shmedo.configlibrary.iot.cmd.entity.AisleNumberEntity;
+import com.shmedo.configlibrary.iot.cmd.entity.VmsAisleNumberEntity;
 import com.shmedo.configlibrary.iot.cmd.entity.VmsAisleParamEntity;
 import com.shmedo.configlibrary.iot.cmd.parser.IOTParseManager;
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
@@ -68,8 +67,6 @@ public class TcpVmsAisleSettingFragment extends BaseTcpConnectFragment {
     @BindView(R.id.btn_confirm)
     Button mBtnSave;
 
-    private TcpVmsAisleSettingViewModel mViewModel;
-
     private static final String VMS_AISLE_NUMBER = "vms_aisle_number";
     private VmsAisleNumber vmsAisleNumber;
     private VmsAisleParamInfo vmsAisleParamInfo;
@@ -109,10 +106,8 @@ public class TcpVmsAisleSettingFragment extends BaseTcpConnectFragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mViewModel = new ViewModelProvider(this).get(TcpVmsAisleSettingViewModel.class);
-        // TODO: Use the ViewModel
         setView();
-        queryVmsSisleInfo(vmsAisleNumber);
+        queryVmsAisleInfo();
     }
 
     private void setView() {
@@ -141,35 +136,31 @@ public class TcpVmsAisleSettingFragment extends BaseTcpConnectFragment {
 
     /**
      * 获取网关不同通道下的控制参数
-     *
-     * @param vmsAisleNumber
      */
-    private void queryVmsSisleInfo(VmsAisleNumber vmsAisleNumber) {
+    private void queryVmsAisleInfo() {
         startProgressRunnable("初始化数据...", QUERY_CMD_DELAY_MILLIS);
 
-        AisleNumberEntity aisleNumberEntity = new AisleNumberEntity(vmsAisleNumber.toInt());
-        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.MD_GET_GATEWAY_PARAM, aisleNumberEntity);
+        VmsAisleNumberEntity vmsAisleNumberEntity = new VmsAisleNumberEntity(vmsAisleNumber.toInt());
+        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.MD_GET_GATEWAY_PARAM, vmsAisleNumberEntity);
         sendCommand(command);
     }
 
     @OnClick({R.id.btn_confirm})
     public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.btn_confirm:
-                KeyBordUtils.hideSoftKeyboard(view);
+        if (view.getId() == R.id.btn_confirm) {
+            KeyBordUtils.hideSoftKeyboard(view);
 
-                if (!tcpShareViewModel.getConnectStatus()) {
-                    ToastUtils.show(getString(R.string.tcp_config_disconnect_warn));
-                    return;
-                }
+            if (!tcpShareViewModel.getConnectStatus()) {
+                ToastUtils.show(getString(R.string.tcp_config_disconnect_warn));
+                return;
+            }
 
-                if (!checkValue()) {
-                    Timber.w("通道参数存在错误!");
-                    return;
-                }
+            if (!checkValue()) {
+                Timber.w("通道参数存在错误!");
+                return;
+            }
 
-                processSave();
-                break;
+            processSave();
         }
     }
 
