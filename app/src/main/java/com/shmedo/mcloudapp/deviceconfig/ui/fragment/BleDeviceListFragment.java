@@ -40,6 +40,8 @@ import com.shmedo.mcloudapp.common.view.ClearEditText;
 import com.shmedo.mcloudapp.deviceconfig.adapter.BleDeviceAdapter;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.DeviceConfigActivity;
 import com.shmedo.mcloudapp.util.KeyBordUtils;
+import com.shmedo.mcloudapp.util.LocationUtils;
+import com.shmedo.mcloudapp.util.permission.PermissionHelper;
 import com.shmedo.mcloudapp.util.permission.XPermissionUtils;
 
 import java.util.ArrayList;
@@ -206,10 +208,22 @@ public class BleDeviceListFragment extends BaseFragment implements TextWatcher, 
             return;
         }
 
-        checkBluetoothPermissions();
+        checkPermissionForGPS();
     }
 
-    private void checkBluetoothPermissions() {
+    /**
+     * 检查是否打开系统位置服务，如果开启了，接着检查是否授予 APP 定位权限
+     */
+    public void checkPermissionForGPS() {
+        if (LocationUtils.getInstance().isGpsEnabled()) {
+            checkPermissionForLocation();
+
+        } else {
+            PermissionHelper.showGPSSettingDialog(mActivity);
+        }
+    }
+
+    private void checkPermissionForLocation() {
         XPermissionUtils.requestPermissionsResult(getActivity(), 200, new String[]{
                         Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION},
                 new XPermissionUtils.OnPermissionListener() {

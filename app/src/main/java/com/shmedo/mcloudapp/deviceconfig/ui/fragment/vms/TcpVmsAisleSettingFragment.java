@@ -145,7 +145,7 @@ public class TcpVmsAisleSettingFragment extends BaseTcpConnectFragment {
      * @param vmsAisleNumber
      */
     private void queryVmsSisleInfo(VmsAisleNumber vmsAisleNumber) {
-        startProgressRunnable("初始化信息...", SEND_CMD_DELAY_MILLIS);
+        startProgressRunnable("初始化数据...", QUERY_CMD_DELAY_MILLIS);
 
         AisleNumberEntity aisleNumberEntity = new AisleNumberEntity(vmsAisleNumber.toInt());
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.MD_GET_GATEWAY_PARAM, aisleNumberEntity);
@@ -359,8 +359,9 @@ public class TcpVmsAisleSettingFragment extends BaseTcpConnectFragment {
         vmsAisleParamEntity.setWakeupgap(terminalWakeTime);
         vmsAisleParamEntity.setAirbaud(airSpeed);
 
-        errMsg = "发送指令超时,请稍后尝试";
-        startProgressRunnable("正在发送配置指令...", SEND_CMD_DELAY_MILLIS);
+        mBtnSave.setEnabled(false);
+//        errMsg = "发送指令超时,请稍后尝试";
+//        startProgressRunnable("正在发送配置指令...", SEND_CMD_DELAY_MILLIS);
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.MD_SET_GATEWAY_PARAM, vmsAisleParamEntity);
         sendCommand(command);
     }
@@ -377,7 +378,7 @@ public class TcpVmsAisleSettingFragment extends BaseTcpConnectFragment {
         IOTCommandType type = IOTStringUtil.extractCommandType(cmdStr);
         switch (type) {
             case MD_GET_GATEWAY_PARAM: {//获取网关通道的控制参数
-                stopProgressRunnable();
+//                stopProgressRunnable();
                 IOTCommandResult<VmsAisleParamInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
                     String errMsg = "查询网关通道的控制参数出错!";
@@ -391,12 +392,13 @@ public class TcpVmsAisleSettingFragment extends BaseTcpConnectFragment {
             break;
 
             case MD_SET_GATEWAY_PARAM: {//设置网关通道的控制参数
-                stopProgressRunnable();
+//                stopProgressRunnable();
                 CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
                 if (!cmdResult.isSucceed()) {
                     String errMsg = "设置参数失败!";
                     Timber.e("%s%s", errMsg, cmdResult.getReason());
                     ToastUtils.show(errMsg);
+                    mBtnSave.setEnabled(true);
                     return;
                 }
                 doAfterSetting();
@@ -412,6 +414,7 @@ public class TcpVmsAisleSettingFragment extends BaseTcpConnectFragment {
 
     private void doAfterSetting() {
         ToastUtils.show("设置成功");
+        mBtnSave.setEnabled(true);
     }
 
     private void initViewData() {
