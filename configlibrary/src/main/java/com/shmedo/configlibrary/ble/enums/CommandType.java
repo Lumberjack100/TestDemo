@@ -107,7 +107,7 @@ public enum CommandType {
      */
     SETTING_REMOTE_UPGRADE("120"),
     /**
-     * 查询安装位置
+     * 查询/同步安装位置
      */
     INSTALL_LOCATION("916"),
 

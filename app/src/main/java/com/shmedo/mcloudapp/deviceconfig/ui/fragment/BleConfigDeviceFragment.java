@@ -156,6 +156,7 @@ public class BleConfigDeviceFragment extends BaseBleConnectFragment {
         initSwitchViewListener();
         initAdapter();
         initConfigModuleData();
+        bleViewModel.updateLogOutputMode(false);
 
         //连接设备
         findAndConnectSpecificDevice();

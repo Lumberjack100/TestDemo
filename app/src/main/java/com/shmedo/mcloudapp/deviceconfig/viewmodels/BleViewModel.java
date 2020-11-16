@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 
 import com.kunminx.architecture.ui.callback.ProtectedUnPeekLiveData;
+import com.kunminx.architecture.ui.callback.UnPeekLiveData;
 import com.shmedo.mcloudapp.bluetooth.BluetoothEvent;
 import com.shmedo.mcloudapp.bluetooth.NewBleManager;
 
@@ -22,12 +23,19 @@ public class BleViewModel extends AndroidViewModel {
     }
 
 
-    public ProtectedUnPeekLiveData<BluetoothEvent> getBluetoothEventLiveData() {
-        return bleManager.getBluetoothEventLiveData();
+    public ProtectedUnPeekLiveData<BluetoothEvent> getBluetoothEvent() {
+        return bleManager.getBluetoothEvent();
     }
 
     public void clearLastValue(){
         bleManager.clearLastValue();
     }
 
+    public UnPeekLiveData<Boolean> getLogOutputMode() {
+        return bleManager.getLogOutputMode();
+    }
+
+    public void updateLogOutputMode(boolean isLogOutputMode) {
+        bleManager.updateLogOutputMode(isLogOutputMode);
+    }
 }

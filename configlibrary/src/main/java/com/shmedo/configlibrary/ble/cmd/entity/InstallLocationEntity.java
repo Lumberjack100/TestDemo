@@ -11,7 +11,7 @@ import com.shmedo.configlibrary.ble.interfaces.Validater;
  */
 public class InstallLocationEntity implements Validater {
 
-    private int model;
+    private int model;//1:同步位置  2:查询位置
 
     public InstallLocationEntity(int model) {
         this.model = model;

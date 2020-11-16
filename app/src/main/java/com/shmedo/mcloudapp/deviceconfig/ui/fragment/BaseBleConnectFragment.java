@@ -89,8 +89,6 @@ public abstract class BaseBleConnectFragment extends BaseFragment {
 
     public boolean isExitMode = false;
 
-    protected static boolean isLogOutputMode = false;//设备是否打开了内部日志输出模式
-
     protected String errMsg = "";
 
     private String SN = MCloudApp.getCurDeviceToken();
@@ -182,7 +180,7 @@ public abstract class BaseBleConnectFragment extends BaseFragment {
         super.onActivityCreated(savedInstanceState);
         initBluetooth();
         bleViewModel = getApplicationScopeViewModel(BleViewModel.class);
-        bleViewModel.getBluetoothEventLiveData().observeInFragment(this, new Observer<BluetoothEvent>() {
+        bleViewModel.getBluetoothEvent().observeInFragment(this, new Observer<BluetoothEvent>() {
             @Override
             public void onChanged(BluetoothEvent bluetoothEvent) {
                 if (!isActive) {
@@ -417,10 +415,6 @@ public abstract class BaseBleConnectFragment extends BaseFragment {
                     if (!TextUtils.isEmpty(msg)) {
                         handleResponseMessage(msg);
                     }
-//                    byte[] data = (byte[]) msg.getBytes();
-//                    if (data.length > 0) {
-//                        ByteManagerUtil.getInstance().writeByte(data);
-//                    }
                 } catch (Exception ex) {
                     Timber.e(ex);
                 }
@@ -438,13 +432,8 @@ public abstract class BaseBleConnectFragment extends BaseFragment {
 
             case RESPONSE_WITH_NO_MESSAGE:
                 Timber.i("RESPONSE_WITH_NO_MESSAGE");
-                if (isLogOutputMode) {
+                if (bleViewModel.getLogOutputMode().getValue()) {
                     try {
-//                        byte[] data = ((String) event.getEventData()).getBytes();
-//                        if (data.length > 0) {
-//                            ByteManagerUtil.getInstance().writeByte(data);
-//                        }
-
                         String msg = ((String) event.getEventData());
                         if (!TextUtils.isEmpty(msg)) {
                             handleResponseMessage(msg);
@@ -604,9 +593,9 @@ public abstract class BaseBleConnectFragment extends BaseFragment {
 
             } else {
                 //过滤掉不匹配标准响应头的应答指令
-                if (!isLogOutputMode && !cmdStr.startsWith("$$")) {
-                    return;
-                }
+//                if (bleViewModel.getLogOutputMode().getValue() != null && !bleViewModel.getLogOutputMode().getValue() && !cmdStr.startsWith("$$")) {
+//                    return;
+//                }
 
                 uiHander.post(new Runnable() {
                     @Override

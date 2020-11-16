@@ -85,13 +85,22 @@ public class NewBleManager {
     private Timestamp lastWriteTime;
 
     private final UnPeekLiveData<BluetoothEvent> bluetoothEventLiveData = new UnPeekLiveData<>();
+    private final UnPeekLiveData<Boolean> logOutputModeLiveData = new UnPeekLiveData<>();
 
-    public ProtectedUnPeekLiveData<BluetoothEvent> getBluetoothEventLiveData() {
+    public ProtectedUnPeekLiveData<BluetoothEvent> getBluetoothEvent() {
         return bluetoothEventLiveData;
     }
 
-    public void clearLastValue(){
+    public void clearLastValue() {
         bluetoothEventLiveData.postValue(null);
+    }
+
+    public UnPeekLiveData<Boolean> getLogOutputMode() {
+        return logOutputModeLiveData;
+    }
+
+    public void updateLogOutputMode(boolean isLogOutputMode) {
+        logOutputModeLiveData.postValue(isLogOutputMode);
     }
 
     /**
@@ -384,6 +393,12 @@ public class NewBleManager {
                 try {
                     String result = new String(value, StandardCharsets.UTF_8);
                     Timber.d("onCharacteristicChanged:%s", result);
+
+                    //非日志输出模式下，过滤掉不匹配标准响应头的应答指令
+                    if (!logOutputModeLiveData.getValue() && !result.startsWith("$$")) {
+                        Timber.d("onCharacteristicChanged:%s", "非日志输出模式");
+                        return;
+                    }
                     byteManager.writeByte(value);
                 } catch (Exception ex) {
                     Timber.e(ex);
