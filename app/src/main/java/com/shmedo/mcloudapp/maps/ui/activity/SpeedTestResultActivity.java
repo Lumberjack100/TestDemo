@@ -76,7 +76,6 @@ public class SpeedTestResultActivity extends BaseActivity {
             public void onChanged(SyncPositionBean syncPositionBean) {
                 String latLong = String.format(Locale.getDefault(), "%.6f", syncPositionBean.getLongitude()) + "," + String.format(Locale.getDefault(), "%.6f", syncPositionBean.getLatitude());
                 mTvLocation.setText(latLong);
-                LocationUtils.getInstance().stopLocalService();
             }
         });
 

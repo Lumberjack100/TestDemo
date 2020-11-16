@@ -365,6 +365,7 @@ public class BleConfigDeviceFragment extends BaseBleConnectFragment {
         switch (type) {
             case BASE_CONFIG://基础配置信息 000
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
+                    stopProgressRunnable();
                     Timber.e("查询基础配置信息指令出错!");
                     return;
                 }
@@ -374,6 +375,8 @@ public class BleConfigDeviceFragment extends BaseBleConnectFragment {
                 break;
 
             case VERSION_MESSAGE:
+                stopProgressRunnable();
+                startHeartRunnable();
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
                     Timber.e("查询版本信息指令出错!");
                     return;

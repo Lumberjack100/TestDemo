@@ -39,8 +39,8 @@ public class SyncInstallationLocationDialog extends BaseDialogFragment {
     @BindView(R.id.et_latitude_longitude)
     ClearEditText mEtLatLong;
 
-    @BindView(R.id.et_location)
-    ClearEditText mEtLocation;
+    @BindView(R.id.tv_address)
+    TextView mTvAddress;
 
     private Activity activity;
 
@@ -80,8 +80,7 @@ public class SyncInstallationLocationDialog extends BaseDialogFragment {
                 String address = syncPositionBean.getAddress();
                 String latLong = String.format(Locale.getDefault(), "%.6f", syncPositionBean.getLongitude()) + "," + String.format(Locale.getDefault(), "%.6f", syncPositionBean.getLatitude());
                 mEtLatLong.setText(latLong);
-                mEtLocation.setText(address);
-                LocationUtils.getInstance().stopLocalService();
+                mTvAddress.setText(address);
             }
         });
     }
@@ -92,11 +91,10 @@ public class SyncInstallationLocationDialog extends BaseDialogFragment {
 
 
     @OnClick({R.id.iv_close, R.id.iv_locate, R.id.tv_cancel, R.id.tv_confirm})
-    public void onClick(View v) {
-        int id = v.getId();
+    public void onClick(View view) {
+        int id = view.getId();
         if (id == R.id.iv_close) {
             KeyBordUtils.hideSoftKeyboard(mEtLatLong);
-            LocationUtils.getInstance().stopLocalService();
             dismiss();
 
         } else if (id == R.id.iv_locate) {
@@ -104,27 +102,24 @@ public class SyncInstallationLocationDialog extends BaseDialogFragment {
 
         } else if (id == R.id.tv_cancel) {
             KeyBordUtils.hideSoftKeyboard(mEtLatLong);
-            LocationUtils.getInstance().stopLocalService();
             dismiss();
 
         } else if (id == R.id.tv_confirm) {
+            KeyBordUtils.hideSoftKeyboard(mEtLatLong);
+
             String result = mEtLatLong.getText().toString().trim();
             if (TextUtils.isEmpty(result)) {
-                ToastUtils.show("位置信息不能为空");
+                ToastUtils.show("经纬度不能为空");
                 return;
             }
-//            try {
-//                InstallLocationEntity installLocationEntity = new InstallLocationEntity(1);
-//                String command = CommandManager.getInstance().getCommand(CommandType.INSTALL_LOCATION, installLocationEntity);
-//                activity.sendCommonCommandImmediately(command);
-//                Timber.i("查询安装位置：%s", command);
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
-//            ToastUtils.show("位置信息同步成功");
-//            KeyBordUtils.hideSoftKeyboard(mEtLatLong);
-//            LocationUtils.getInstance().stopLocalService();
-//            dismiss();
+
+            if (mListener == null) {
+                return;
+            }
+
+            if (mListener.onPositiveClick(view, result)) {
+                dismiss();
+            }
         }
     }
 

@@ -147,7 +147,7 @@ public class LocationUtils {
         mLocationClient.startLocation();
     }
 
-    public void stopLocalService() {
+    private void stopLocalService() {
         if (null != mLocationClient) {
             mLocationClient.onDestroy();
             mLocationClient.stopLocation();

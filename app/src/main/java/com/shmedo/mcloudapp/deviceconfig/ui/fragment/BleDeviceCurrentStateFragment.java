@@ -245,7 +245,6 @@ public class BleDeviceCurrentStateFragment extends BaseBleConnectFragment {
 
     @Override
     protected void parseResponseMessage(String cmdStr) {
-        super.parseResponseMessage(cmdStr);
         if (!isActive) {
             return;
         }
@@ -389,7 +388,9 @@ public class BleDeviceCurrentStateFragment extends BaseBleConnectFragment {
                 collectorModel = statusThree.getCollectorModel();
                 setDeviceStatusThree(statusThree);
                 break;
+
             default:
+                super.parseResponseMessage(cmdStr);
                 break;
         }
     }

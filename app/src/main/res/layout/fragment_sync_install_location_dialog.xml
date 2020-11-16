@@ -71,23 +71,11 @@
             android:id="@+id/tv_address"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="@color/title_text_color"
-            android:textSize="@dimen/text_size_17"/>
-
-        <com.shmedo.mcloudapp.common.view.ClearEditText
-            android:id="@+id/et_location"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
             android:minHeight="55dp"
-            android:background="@null"
-            android:drawablePadding="@dimen/dimen_size_15"
-            android:ellipsize="end"
             android:gravity="center_vertical|left"
-            android:hint="请输入位置"
-            android:maxLines="3"
             android:textColor="@color/title_text_color"
-            android:textColorHint="@color/text_color_cccccc"
-            android:textSize="@dimen/text_size_17" />
+            android:textSize="@dimen/text_size_17"
+            tools:text="闵行区联航路"/>
 
         <View
             android:layout_width="match_parent"

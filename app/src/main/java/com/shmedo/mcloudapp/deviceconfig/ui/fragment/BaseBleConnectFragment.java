@@ -75,8 +75,6 @@ public abstract class BaseBleConnectFragment extends BaseFragment {
 
     public static final int CONFIG_PARAMS_LONG_DELAY_MILLIS = 30000;//发送配置参数指令超时时间
 
-//    private NewBleManager bleViewModel.bleManager = NewBleManager.getInstance();
-
     private BluetoothAdapter mBluetoothAdapter;
 
     private BluetoothLeScannerCompat scanner;
@@ -202,7 +200,6 @@ public abstract class BaseBleConnectFragment extends BaseFragment {
         BluetoothManager bluetoothManager = (BluetoothManager) mActivity.getSystemService(Context.BLUETOOTH_SERVICE);
         mBluetoothAdapter = Objects.requireNonNull(bluetoothManager).getAdapter();
     }
-
 
     /**
      * 搜索并连接指定的蓝牙设备
@@ -374,7 +371,6 @@ public abstract class BaseBleConnectFragment extends BaseFragment {
     private void handleBluetoothEvent(BluetoothEvent event) {
         switch (event.getEventType()) {
             case CONNECTED:
-//                ByteManagerUtil.init(new MyOnBytePackage());
                 mHandler.sendEmptyMessage(Constants.BT_CONNECT);
                 break;
 
@@ -625,59 +621,6 @@ public abstract class BaseBleConnectFragment extends BaseFragment {
         }
     }
 
-//    public class MyOnBytePackage implements OnBytePackage {
-//        @Override
-//        public void onPackageArrived(final byte[] data) {
-//            try {
-//                final String cmdStr = new String(data, StandardCharsets.UTF_8);
-//                if (!cmdStr.startsWith("$$")) {
-//                    Timber.w("不匹配标准响应头的应答指令===%s", cmdStr);
-//                } else {
-//                    Timber.i("应答指令===%s", cmdStr);
-//                }
-//
-//                String cmdArray[] = cmdStr.replace("\r\n", "").split(",");
-//
-//                if (cmdStr.startsWith("$$224")) {//认证方式
-//                    if (cmdStr.replace("\r\n", "").endsWith(CommandResult.ERROR_END)) {
-//                        setAuthenticateWay();//重新认证
-//                        return;
-//                    }
-//                    sendAuthenticateCodeCmd(cmdArray[3]);
-//                    return;
-//
-//                } else if (cmdStr.startsWith("$$223")) {//设备登录验证结果指令
-//                    sendHandleMessage(Constants.VERIFY_RESULT, cmdArray[1]);
-//                    Timber.d("设备登录验证状态===%s", cmdArray[1].contains("1"));
-//                    return;
-//
-//                } else if (cmdStr.contains("Please verify the equipment.\r\n")) {
-//                    sendHandleMessage(Constants.VERIFY_RESULT, "0");
-//                    return;
-//
-//                } else if (cmdStr.contains("Equipment Verify OK.\r\n")) {
-//                    sendHandleMessage(Constants.MESSAGE_LOCK_REBOOT_DEVICE, null);
-//                    return;
-//
-//                } else {
-//                    //过滤掉不匹配标准响应头的应答指令
-//                    if (!isLogOutputMode && !cmdStr.startsWith("$$")) {
-//                        return;
-//                    }
-//
-//                    uiHander.post(new Runnable() {
-//                        @Override
-//                        public void run() {
-//                            parserResult(cmdStr);
-//                        }
-//                    });
-//                }
-//
-//            } catch (Exception ex) {
-//                Timber.e(ex);
-//            }
-//        }
-//    }
 
     /**
      * 解析设备的参数指令
@@ -750,7 +693,6 @@ public abstract class BaseBleConnectFragment extends BaseFragment {
         Timber.d("获取基础配置信息指令===%s", command);
     }
 
-
     private void sendHandleMessage(int what, Object obj) {
         android.os.Message message = new android.os.Message();
         message.what = what;
@@ -810,13 +752,13 @@ public abstract class BaseBleConnectFragment extends BaseFragment {
      * 开始认证流程
      */
     private void sendAuthenticateCodeCmd(String authenticateParam) {
-        Timber.d("解密前:%s", authenticateParam);
+//        Timber.d("解密前:%s", authenticateParam);
         byte[] resultData = StringUtil.hexStringToBytes(authenticateParam);
         try {
             String deskey = "12345678";
             //解密后认证码
             String strDecrypt = new String(DesUtil.decrypt(resultData, deskey), StandardCharsets.UTF_8);
-            Timber.d("解密后:%s", strDecrypt);
+//            Timber.d("解密后:%s", strDecrypt);
 
             if (!TextUtils.isEmpty(strDecrypt)) {
                 //反转6位随机码
