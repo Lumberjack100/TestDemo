@@ -170,7 +170,7 @@ public class BleDataCenterServerConfigFragment extends BaseBleConnectFragment {
         super.onActivityCreated(savedInstanceState);
         setView();
         setSwitchViewListener();
-        queryDataServerInfo();
+        queryDataServerAddress();
     }
 
     private void setView() {
@@ -248,7 +248,7 @@ public class BleDataCenterServerConfigFragment extends BaseBleConnectFragment {
     /**
      * 查询数据服务器地址、端口
      */
-    private void queryDataServerInfo() {
+    private void queryDataServerAddress() {
         errMsg = "查询数据超时,请稍后尝试";
         startProgressRunnable("正在获取参数...", 25000);
 

@@ -436,7 +436,55 @@ public class TcpVmsAisleSettingFragment extends BaseTcpConnectFragment {
         mEtOfflineInterval.setText(offlineInterval);
         mEtTerminalSleepTime.setText(terminalSleepTime);
         mEtTerminalWakeTime.setText(terminalWakeTime);
+    }
 
+    @Override
+    public boolean onBackPressed() {
+        if (tcpShareViewModel.getConnectStatus()) {
+            if (checkValueIsChange()) {
+                warnNotYetSettingBeforeLeavePage();
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+        return false;
+    }
+
+    private boolean checkValueIsChange() {
+        if (networkNumber != null && !networkNumber.equals(mEtNetworkNumber.getText().toString().trim())) {
+            return true;
+        }
+        if (aisleAddress != null && !aisleAddress.equals(mEtAisleAddress.getText().toString().trim())) {
+            return true;
+        }
+        if (channelNumber != null && !channelNumber.equals(mEtChannelNumber.getText().toString().trim())) {
+            return true;
+        }
+        if (airSpeed != null && !airSpeed.equals(mEtAirSpeed.getText().toString().trim())) {
+            return true;
+        }
+        if (airWakeTime != null && !airWakeTime.equals(mEtAirWakeTime.getText().toString().trim())) {
+            return true;
+        }
+        if (terminalWorkingMode != null && !terminalWorkingMode.equals(mEtTerminalWorkingMode.getText().toString().trim())) {
+            return true;
+        }
+        if (dataRequestInterval != null && !dataRequestInterval.equals(mEtDataRequestInterval.getText().toString().trim())) {
+            return true;
+        }
+        if (offlineInterval != null && !offlineInterval.equals(mEtOfflineInterval.getText().toString().trim())) {
+            return true;
+        }
+        if (terminalSleepTime != null && !terminalSleepTime.equals(mEtTerminalSleepTime.getText().toString().trim())) {
+            return true;
+        }
+        if (terminalWakeTime != null && !terminalWakeTime.equals(mEtTerminalWakeTime.getText().toString().trim())) {
+            return true;
+        }
+
+        return false;
     }
 
 

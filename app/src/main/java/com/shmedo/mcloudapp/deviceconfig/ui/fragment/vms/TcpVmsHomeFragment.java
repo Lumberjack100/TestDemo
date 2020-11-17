@@ -104,6 +104,7 @@ public class TcpVmsHomeFragment extends BaseTcpConnectFragment {
 
     @Override
     protected void initView() {
+        mTvDeviceState.setVisibility(View.INVISIBLE);
         mTvDeviceConnectOperate.setVisibility(View.VISIBLE);
         mTvDeviceConnectOperate.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG);
         mTvDeviceCommunicationWaySwitch.setVisibility(View.INVISIBLE);
@@ -123,6 +124,7 @@ public class TcpVmsHomeFragment extends BaseTcpConnectFragment {
                     String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.MD_GET_GATEWAY_BASE);
                     sendCommand(command);
                 } else if (tcpConnectionState == TcpConnectionState.CONNECT_CLOSED) {
+                    ToastUtils.show("通讯断开");
                     mTvDeviceConnectOperate.setText("重新连接");
                     mTvDeviceConnectOperate.setTextColor(ContextCompat.getColor(mActivity, R.color.blue_52B4F8));
                 }
@@ -133,7 +135,7 @@ public class TcpVmsHomeFragment extends BaseTcpConnectFragment {
         tcpShareViewModel.connect();
     }
 
-    private void setHeadInfo() {
+    private void updateHeadInfo() {
         if (vmsBaseInfo != null) {
             mTvDeviceName.setText("VMS网关");
             mTvDeviceSn.setText(String.format("设备SN号：%s", vmsBaseInfo.getSn()));
@@ -226,7 +228,7 @@ public class TcpVmsHomeFragment extends BaseTcpConnectFragment {
                     return;
                 }
                 vmsBaseInfo = commandResult.getResult();
-                setHeadInfo();
+                updateHeadInfo();
                 getGatewayStatus(VmsAisleNumber.NUMBER_ONE);
             }
             break;

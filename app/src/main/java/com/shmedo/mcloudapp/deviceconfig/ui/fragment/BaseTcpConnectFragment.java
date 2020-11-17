@@ -105,6 +105,10 @@ public abstract class BaseTcpConnectFragment extends BaseFragment {
         });
     }
 
+    /**
+     * 断开 Tcp 连接警告
+     * @param content
+     */
     protected void showDisconnectDialog(String content) {
         MaterialDialog.Builder mBuilder = new MaterialDialog.Builder(Objects.requireNonNull(getContext()))
                 .title("温馨提示：")
@@ -128,4 +132,34 @@ public abstract class BaseTcpConnectFragment extends BaseFragment {
         MaterialDialog mMaterialDialog = mBuilder.build();
         mMaterialDialog.show();
     }
+
+    /**
+     * 页面数据修改未保存警告
+     */
+    protected void warnNotYetSettingBeforeLeavePage() {
+        MaterialDialog.Builder mBuilder = new MaterialDialog.Builder(Objects.requireNonNull(getContext()))
+                .title("温馨提示：")
+                .content("您已经修改了参数，还未配置到设备，确定离开页面吗？")
+                .contentColorRes(R.color.title_text_color)
+                .canceledOnTouchOutside(false)
+                .positiveText("确定")
+                .negativeText("取消")
+                .positiveColorRes(R.color.blue_52B4F8)
+                .negativeColorRes(R.color.sub_title_text_color)
+                .onPositive(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        dialog.dismiss();
+                        mActivity.finish();
+                    }
+                }).onNegative(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        dialog.dismiss();
+                    }
+                });
+        MaterialDialog mMaterialDialog = mBuilder.build();
+        mMaterialDialog.show();
+    }
+
 }
