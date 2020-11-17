@@ -13,12 +13,21 @@ import android.widget.TextView;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.Observer;
 
+import com.amap.api.maps.model.LatLng;
+import com.amap.api.services.core.AMapException;
+import com.amap.api.services.core.LatLonPoint;
+import com.amap.api.services.geocoder.GeocodeResult;
+import com.amap.api.services.geocoder.GeocodeSearch;
+import com.amap.api.services.geocoder.RegeocodeQuery;
+import com.amap.api.services.geocoder.RegeocodeResult;
 import com.hjq.toast.ToastUtils;
 import com.shmedo.core.util.DeviceInfo;
+import com.shmedo.core.util.JZLocationConverter;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.view.ClearEditText;
 import com.shmedo.mcloudapp.deviceconfig.viewmodels.LocationViewModel;
 import com.shmedo.mcloudapp.entity.SyncPositionBean;
+import com.shmedo.mcloudapp.maps.util.MapErrorUtil;
 import com.shmedo.mcloudapp.util.KeyBordUtils;
 import com.shmedo.mcloudapp.util.LocationUtils;
 
@@ -48,9 +57,16 @@ public class SyncInstallationLocationDialog extends BaseDialogFragment {
 
     private DialogFragmentClickListener mListener;
 
+    private String installLocation;
+    private LatLng latLng;
 
     public SyncInstallationLocationDialog(Activity activity) {
         this.activity = activity;
+    }
+
+    public SyncInstallationLocationDialog(Activity activity, String installLocation) {
+        this.activity = activity;
+        this.installLocation = installLocation;
     }
 
     @Override
@@ -73,22 +89,75 @@ public class SyncInstallationLocationDialog extends BaseDialogFragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         locationViewModel = getApplicationScopeViewModel(LocationViewModel.class);
-        initView();
         locationViewModel.getSyncPositionBean().observeInFragment(this, new Observer<SyncPositionBean>() {
             @Override
             public void onChanged(SyncPositionBean syncPositionBean) {
                 String address = syncPositionBean.getAddress();
-                String latLong = String.format(Locale.getDefault(), "%.6f", syncPositionBean.getLongitude()) + "," + String.format(Locale.getDefault(), "%.6f", syncPositionBean.getLatitude());
-                mEtLatLong.setText(latLong);
                 mTvAddress.setText(address);
+                try {
+                    //将高德坐标(即GCJ-02火星坐标)转换为WGS-84世界标准地理坐标
+                    JZLocationConverter.LatLng latLng = new JZLocationConverter.LatLng(syncPositionBean.getLatitude(), syncPositionBean.getLongitude());
+                    latLng = JZLocationConverter.gcj02ToWgs84(latLng);
+
+                    String position = String.format(Locale.getDefault(), "%.8f", latLng.longitude) + "," + String.format(Locale.getDefault(), "%.8f", latLng.latitude);
+                    mEtLatLong.setText(position);
+
+                } catch (NumberFormatException ex) {
+                    ex.printStackTrace();
+                    latLng = null;
+                }
             }
         });
+        initView();
     }
 
     private void initView() {
         mTvTitle.setText("同步安装位置");
+        if (!TextUtils.isEmpty(installLocation)) {
+            mEtLatLong.setText(installLocation);
+            String[] strs = installLocation.split(",");
+            try {
+                double longitude = Double.parseDouble(strs[0]);
+                double latitude = Double.parseDouble(strs[1]);
+                latLng = new LatLng(latitude, longitude);
+            } catch (NumberFormatException ex) {
+                ex.printStackTrace();
+                latLng = null;
+            }
+
+        }
+        if (latLng != null) {
+            mEtLatLong.setText(latLng.longitude + "," + latLng.latitude);
+            processSearchAddressByLatLng();
+        }
     }
 
+    private void processSearchAddressByLatLng() {
+        LatLonPoint latLonPoint = new LatLonPoint(latLng.latitude, latLng.longitude);
+        GeocodeSearch geocoderSearch = new GeocodeSearch(getActivity());
+        geocoderSearch.setOnGeocodeSearchListener(new GeocodeSearch.OnGeocodeSearchListener() {
+            @Override
+            public void onRegeocodeSearched(RegeocodeResult result, int errorCode) {
+                if (errorCode != AMapException.CODE_AMAP_SUCCESS) {
+                    ToastUtils.show(MapErrorUtil.getErrorMsg(errorCode));
+                    return;
+                }
+
+                if (result != null && result.getRegeocodeAddress() != null && result.getRegeocodeAddress().getFormatAddress() != null) {
+                    String address = result.getRegeocodeAddress().getFormatAddress();
+                    mTvAddress.setText(address);
+                }
+            }
+
+            @Override
+            public void onGeocodeSearched(GeocodeResult geocodeResult, int i) {
+
+            }
+        });
+        // 第一个参数表示一个Latlng，第二参数表示范围多少米，第三个参数表示是火系坐标系还是GPS原生坐标系
+        RegeocodeQuery query = new RegeocodeQuery(latLonPoint, 100, GeocodeSearch.GPS);
+        geocoderSearch.getFromLocationAsyn(query);
+    }
 
     @OnClick({R.id.iv_close, R.id.iv_locate, R.id.tv_cancel, R.id.tv_confirm})
     public void onClick(View view) {

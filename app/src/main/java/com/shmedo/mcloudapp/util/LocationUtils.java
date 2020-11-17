@@ -128,7 +128,7 @@ public class LocationUtils {
                         bean.setType("location");
                         syncPositionBeanLiveData.postValue(bean);
 
-                    }else{
+                    } else {
                         ToastUtils.show("卫星定位信号弱");
                     }
 

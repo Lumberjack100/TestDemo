@@ -7,8 +7,11 @@ import android.view.View;
 import androidx.annotation.Nullable;
 
 import com.hjq.toast.ToastUtils;
+import com.shmedo.configlibrary.ble.cmd.CommandManager;
 import com.shmedo.configlibrary.ble.cmd.CommandResult;
+import com.shmedo.configlibrary.ble.cmd.entity.InstallLocationEntity;
 import com.shmedo.configlibrary.ble.enums.CommandType;
+import com.shmedo.configlibrary.ble.utils.ResultParserUtil;
 import com.shmedo.configlibrary.ble.utils.StringUtil;
 import com.shmedo.core.AppContants;
 import com.shmedo.core.MCloudApp;
@@ -25,6 +28,8 @@ import timber.log.Timber;
  * 蓝牙模式高级设置
  */
 public class BleAdvancedSettingFragment extends BaseBleConnectFragment {
+    private String installLocation;
+
 
     @Override
     protected int getLayoutId() {
@@ -34,6 +39,17 @@ public class BleAdvancedSettingFragment extends BaseBleConnectFragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        queryInstallLocation();
+    }
+
+    /**
+     * 查询设备安装位置
+     */
+    private void queryInstallLocation() {
+        InstallLocationEntity installLocationEntity = new InstallLocationEntity(2);
+        String command = CommandManager.getInstance().getCommand(CommandType.INSTALL_LOCATION, installLocationEntity);
+        sendCommonCommandImmediately(command);
+        Timber.i("查询安装位置：%s", command);
     }
 
     @OnClick({R.id.resetLayout, R.id.workModeLayout, R.id.productRegisterLayout, R.id.modifyAuthCodeLayout, R.id.syncInstallLocationLayout, R.id.customCommandLogPrintLayout})
@@ -60,7 +76,7 @@ public class BleAdvancedSettingFragment extends BaseBleConnectFragment {
                     ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
                     return;
                 }
-                SyncInstallationLocationDialog newFragment = new SyncInstallationLocationDialog(mActivity);
+                SyncInstallationLocationDialog newFragment = new SyncInstallationLocationDialog(mActivity, installLocation);
                 newFragment.setDialogFragmentClickListener(LocationFragmentClickListener);
                 newFragment.show(getChildFragmentManager(), "dialog");
                 break;
@@ -79,6 +95,8 @@ public class BleAdvancedSettingFragment extends BaseBleConnectFragment {
         @Override
         public boolean onPositiveClick(View view, String location) {
             if (!TextUtils.isEmpty(location)) {
+                installLocation = location;
+
                 showProgressDialog("指令下发中...");
                 String command = "##9161" + location + "\r\n";
                 sendCommonCommandImmediately(command);
@@ -109,12 +127,23 @@ public class BleAdvancedSettingFragment extends BaseBleConnectFragment {
             case INSTALL_LOCATION: {
                 dismissProgressDialog();
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
-                    Timber.e("同步安装位置出错!");
-                    ToastUtils.show("同步安装位置出错!");
+                    String msg;
+                    if (tempStr.charAt(3) == '1') {
+                        msg = "同步安装位置出错!";
+                    } else {
+                        msg = "查询安装位置出错!";
+                    }
+
+                    Timber.e(msg);
+                    ToastUtils.show(msg);
                     return;
                 }
-                ToastUtils.show("同步安装位置成功!");
-                saveConfigInfoNoReboot();
+                if (tempStr.charAt(3) == '1') {
+                    ToastUtils.show("同步安装位置成功!");
+                    saveConfigInfoNoReboot();
+                } else {
+                    installLocation = ResultParserUtil.getEntityObject(cmdStr);
+                }
             }
             break;
 

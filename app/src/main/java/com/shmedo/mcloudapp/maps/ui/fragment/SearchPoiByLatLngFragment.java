@@ -31,6 +31,7 @@ import com.shmedo.mcloudapp.common.view.ClearEditText;
 import com.shmedo.mcloudapp.maps.ui.activity.SearchPoiActivity;
 import com.shmedo.mcloudapp.maps.util.CoordinateFormatUtils;
 import com.shmedo.mcloudapp.maps.util.MapErrorUtil;
+import com.shmedo.mcloudapp.maps.util.MyAMapUtils;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -450,27 +451,14 @@ public class SearchPoiByLatLngFragment extends BaseFragment implements GeocodeSe
         if (spinnerCoord.getSelectedItem().toString().contains("火星坐标")) {
 
         } else if (spinnerCoord.getSelectedItem().toString().contains("GPS坐标")) {
-            latLng = convert(latLng, CoordinateConverter.CoordType.GPS);
+            latLng = MyAMapUtils.convertToAmap(latLng, CoordinateConverter.CoordType.GPS);
         } else if (spinnerCoord.getSelectedItem().toString().contains("百度坐标")) {
-            latLng = convert(latLng, CoordinateConverter.CoordType.BAIDU);
+            latLng = MyAMapUtils.convertToAmap(latLng, CoordinateConverter.CoordType.BAIDU);
         }
 
         processSearchText();
     }
 
-    /**
-     * 根据类型 转换 坐标
-     */
-    private LatLng convert(LatLng sourceLatLng, CoordinateConverter.CoordType coord) {
-        CoordinateConverter converter = new CoordinateConverter(getActivity());
-        // CoordType.GPS 待转换坐标类型
-        converter.from(coord);
-        // sourceLatLng待转换坐标点
-        converter.coord(sourceLatLng);
-        // 执行转换操作
-        LatLng desLatLng = converter.convert();
-        return desLatLng;
-    }
 
     private void processSearchText() {
         LatLonPoint latLonPoint = new LatLonPoint(latLng.latitude, latLng.longitude);

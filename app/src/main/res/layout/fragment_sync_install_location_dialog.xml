@@ -40,7 +40,7 @@
                 android:ellipsize="end"
                 android:gravity="center_vertical|left"
                 android:hint="请输入"
-                android:maxLines="1"
+                android:maxLines="2"
                 android:textColor="@color/title_text_color"
                 android:textColorHint="@color/text_color_cccccc"
                 android:textSize="@dimen/text_size_17" />

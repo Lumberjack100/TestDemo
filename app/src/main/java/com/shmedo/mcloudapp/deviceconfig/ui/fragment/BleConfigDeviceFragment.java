@@ -35,6 +35,7 @@ import com.shmedo.core.event.DeviceModuleSwitchTabEvent;
 import com.shmedo.core.util.DensityUtil;
 import com.shmedo.core.util.GlobalUtil;
 import com.shmedo.core.util.GsonFactory;
+import com.shmedo.core.util.JZLocationConverter;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.model.PageResult;
 import com.shmedo.mcloudapp.common.view.recycleviewitemdivider.GridSpacingItemDecoration;
@@ -168,12 +169,19 @@ public class BleConfigDeviceFragment extends BaseBleConnectFragment {
         locationViewModel.getSyncPositionBean().observeInFragment(this, new Observer<SyncPositionBean>() {
             @Override
             public void onChanged(SyncPositionBean syncPositionBean) {
-                String latLong = String.format(Locale.getDefault(), "%.6f", syncPositionBean.getLongitude()) + "," + String.format(Locale.getDefault(), "%.6f", syncPositionBean.getLatitude());
-                String command = "##9161" + latLong + "\r\n";
+                try {
+                    //将高德坐标(即GCJ-02火星坐标)转换为WGS-84世界标准地理坐标
+                    JZLocationConverter.LatLng latLng = new JZLocationConverter.LatLng(syncPositionBean.getLatitude(), syncPositionBean.getLongitude());
+                    latLng = JZLocationConverter.gcj02ToWgs84(latLng);
 
-                if (MCloudApp.isIsBluetoothDeviceConnected()) {
-                    sendCommonCommandImmediately(command);
-                    Timber.i("同步安装位置指令：%s", command);
+                    String position = String.format(Locale.getDefault(), "%.8f", latLng.longitude) + "," + String.format(Locale.getDefault(), "%.8f", latLng.latitude);
+                    if (MCloudApp.isIsBluetoothDeviceConnected()) {
+                        String command = "##9161" + position + "\r\n";
+                        sendCommonCommandImmediately(command);
+                        Timber.i("同步安装位置指令：%s", command);
+                    }
+                } catch (NumberFormatException ex) {
+                    ex.printStackTrace();
                 }
             }
         });
