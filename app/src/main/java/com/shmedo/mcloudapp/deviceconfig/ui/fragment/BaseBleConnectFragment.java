@@ -765,7 +765,7 @@ public abstract class BaseBleConnectFragment extends BaseFragment {
     }
 
     /**
-     * 保存配置信息指令
+     * 保存配置信息重启设备指令
      */
     protected void saveConfigInfo() {
         SaveConfigInfoEntity saveConfigInfoEntity = new SaveConfigInfoEntity(SaveConfigMode.SAVE_REBOOT.toInt());
@@ -777,6 +777,9 @@ public abstract class BaseBleConnectFragment extends BaseFragment {
         Timber.d("发送保存配置重启设备指令===%s", command);
     }
 
+    /**
+     * 保存配置信息，但不会重启设备指令
+     */
     protected void saveConfigInfoNoReboot() {
         SaveConfigInfoEntity saveConfigInfoEntity = new SaveConfigInfoEntity(SaveConfigMode.SAVE_NO_REBOOT.toInt());
         String command = CommandManager.getInstance().getCommand(CommandType.SAVE_CONFIG_INFO, saveConfigInfoEntity);
