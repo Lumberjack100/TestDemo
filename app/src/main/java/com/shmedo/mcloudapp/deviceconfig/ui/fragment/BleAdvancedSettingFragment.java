@@ -16,6 +16,7 @@ import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.CustomCommandLogPrintActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.BaseDialogFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.SyncInstallationLocationDialog;
+import com.shmedo.mcloudapp.util.LocationUtils;
 
 import butterknife.OnClick;
 import timber.log.Timber;
@@ -78,10 +79,8 @@ public class BleAdvancedSettingFragment extends BaseBleConnectFragment {
         @Override
         public boolean onPositiveClick(View view, String location) {
             if (!TextUtils.isEmpty(location)) {
-                String[] strs = location.split(",");
-
                 showProgressDialog("指令下发中...");
-                String command = "##9161" + strs[0] + "," + strs[1] + "\r\n";
+                String command = "##9161" + location + "\r\n";
                 sendCommonCommandImmediately(command);
                 Timber.i("同步安装位置指令：%s", command);
             }
@@ -110,11 +109,12 @@ public class BleAdvancedSettingFragment extends BaseBleConnectFragment {
             case INSTALL_LOCATION: {
                 dismissProgressDialog();
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
-                    Timber.e("同步安装位置指令出错!");
-                    ToastUtils.show("同步安装位置指令出错!");
+                    Timber.e("同步安装位置出错!");
+                    ToastUtils.show("同步安装位置出错!");
                     return;
                 }
-                ToastUtils.show("同步安装位置完成!");
+                ToastUtils.show("同步安装位置成功!");
+                saveConfigInfoNoReboot();
             }
             break;
 
@@ -122,5 +122,11 @@ public class BleAdvancedSettingFragment extends BaseBleConnectFragment {
                 super.parseResponseMessage(cmdStr);
                 break;
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        LocationUtils.getInstance().stopLocalService();
     }
 }

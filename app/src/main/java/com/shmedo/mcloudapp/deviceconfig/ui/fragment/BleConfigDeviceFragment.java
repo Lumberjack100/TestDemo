@@ -10,6 +10,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
+import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -52,7 +53,9 @@ import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.FirmWareSelectDialog
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd.BaseDispatchCmdDialog;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd.QueryTerminalTimeDialog;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd.TelemetryDialog;
+import com.shmedo.mcloudapp.deviceconfig.viewmodels.LocationViewModel;
 import com.shmedo.mcloudapp.entity.DeviceTypeInfoDao;
+import com.shmedo.mcloudapp.entity.SyncPositionBean;
 import com.shmedo.mcloudapp.network.BaseObserver;
 import com.shmedo.mcloudapp.network.ErrCode;
 import com.shmedo.mcloudapp.network.MDRetrofit;
@@ -60,6 +63,7 @@ import com.shmedo.mcloudapp.network.NetworkConst;
 import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfo;
 import com.shmedo.mcloudapp.projects.model.param.QueryProjectDevice;
 import com.shmedo.mcloudapp.util.DaoManager;
+import com.shmedo.mcloudapp.util.LocationUtils;
 import com.shmedo.mcloudapp.util.ResponseHandler;
 import com.shmedo.mcloudapp.util.bleutil.BlueResultParserUtil;
 
@@ -67,6 +71,7 @@ import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -120,12 +125,13 @@ public class BleConfigDeviceFragment extends BaseBleConnectFragment {
     private ConfigModule selectedConfigModule;
 
     private String bleNameInfo;
-
     private String collectorModel = "";//采集器类型
     private int deviceTypeID;
     private String deviceTypeName;
-
     private BaseConfigInfo baseConfigInfo;
+
+    private LocationViewModel locationViewModel;
+
 
 
     public static BleConfigDeviceFragment newInstance(String deviceInfo) {
@@ -156,7 +162,21 @@ public class BleConfigDeviceFragment extends BaseBleConnectFragment {
         initSwitchViewListener();
         initAdapter();
         initConfigModuleData();
+
         bleViewModel.updateLogOutputMode(false);
+        locationViewModel = getApplicationScopeViewModel(LocationViewModel.class);
+        locationViewModel.getSyncPositionBean().observeInFragment(this, new Observer<SyncPositionBean>() {
+            @Override
+            public void onChanged(SyncPositionBean syncPositionBean) {
+                String latLong = String.format(Locale.getDefault(), "%.6f", syncPositionBean.getLongitude()) + "," + String.format(Locale.getDefault(), "%.6f", syncPositionBean.getLatitude());
+                String command = "##9161" + latLong + "\r\n";
+
+                if (MCloudApp.isIsBluetoothDeviceConnected()) {
+                    sendCommonCommandImmediately(command);
+                    Timber.i("同步安装位置指令：%s", command);
+                }
+            }
+        });
 
         //连接设备
         findAndConnectSpecificDevice();
@@ -334,13 +354,6 @@ public class BleConfigDeviceFragment extends BaseBleConnectFragment {
                 if (!MCloudApp.isIsBluetoothDeviceConnected()) {
                     findAndConnectSpecificDevice();
                 } else {//断开连接处理
-//                    if (isConfigChange) {
-//                        isExitMode = false;
-//                        warnNotYetRebootToSaveParam();
-//                    } else {
-//                        disconnectDevice();
-//                        updateViewStateByConnectState(false);
-//                    }
                     isExitMode = false;
                     showDisconnectDialog(getResources().getString(R.string.disconnect_device));
                 }
@@ -384,6 +397,7 @@ public class BleConfigDeviceFragment extends BaseBleConnectFragment {
                 }
                 VersionMessageInfo versionMessageInfo = ResultParserUtil.getEntityObject(cmdStr);
                 initVersionInfo(versionMessageInfo);
+                LocationUtils.getInstance().getPositionPermission(mActivity);
                 break;
 
             case LOW_ENERGY:
@@ -391,7 +405,6 @@ public class BleConfigDeviceFragment extends BaseBleConnectFragment {
                     Timber.e("激活/待机指令出错!");
                     return;
                 }
-//                switchLogOutputMode(false);
                 break;
 
             case LOG_OUTPUT_STATUS:
@@ -444,6 +457,16 @@ public class BleConfigDeviceFragment extends BaseBleConnectFragment {
                     ToastUtils.show("重启指令出错!");
                     return;
                 }
+            }
+            break;
+
+            case INSTALL_LOCATION: {
+                if (tempStr.endsWith(CommandResult.ERROR_END)) {
+                    Timber.e("同步安装位置出错!");
+                    ToastUtils.show("同步安装位置出错!");
+                    return;
+                }
+                saveConfigInfoNoReboot();
             }
             break;
 
@@ -572,6 +595,7 @@ public class BleConfigDeviceFragment extends BaseBleConnectFragment {
         super.onDestroy();
         MCloudApp.setCurDeviceToken(null);
         MCloudApp.setCurDeviceMacAddr(null);
+        LocationUtils.getInstance().stopLocalService();
     }
 
     /**
@@ -704,4 +728,5 @@ public class BleConfigDeviceFragment extends BaseBleConnectFragment {
             }
         }, 3500);
     }
+
 }

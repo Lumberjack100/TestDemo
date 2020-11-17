@@ -7,6 +7,7 @@ import android.content.Context;
 import android.location.LocationManager;
 import android.os.Build;
 
+import com.amap.api.location.AMapLocation;
 import com.amap.api.location.AMapLocationClient;
 import com.amap.api.location.AMapLocationClientOption;
 import com.hjq.toast.ToastUtils;
@@ -67,7 +68,7 @@ public class LocationUtils {
      * @return true 表示开启
      */
     public boolean isGpsEnabled() {
-        LocationManager locationManager = (LocationManager)  MCloudApp.getContext().getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
+        LocationManager locationManager = (LocationManager) MCloudApp.getContext().getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
         // 通过GPS卫星定位，定位级别可以精确到街（通过24颗卫星定位，在室外和空旷的地方定位准确、速度快）
         boolean gps = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
         // 通过WLAN或移动网络(3G/2G)确定的位置（也称作AGPS，辅助GPS定位。主要用于在室内或遮盖物（建筑群或茂密的深林等）密集的地方定位）
@@ -117,40 +118,38 @@ public class LocationUtils {
         mLocationClient.setLocationListener(location -> {
             if (null != location) {
                 if (location.getErrorCode() == 0) {
-                    //latitude=31.080949#longitude=121.526511#
-                    // province=上海市#coordType=GCJ02#
-                    // city=上海市#district=闵行区#cityCode=021#adCode=310112#
-                    // address=上海市闵行区万里路1188号靠近浦江智谷#country=中国#
-                    // road=万里路#poiName=浦江智谷#street=万里路#streetNum=1188号#
-                    // aoiName=浦江智谷#poiid=#floor=#errorCode=0#errorInfo=success#
-                    // locationDetail=#csid:95d47daae7dc4ee3b2af8e0ec17be6ce#
-                    // description=在浦江智谷附近#locationType=5
-                    Timber.i("定位成功===" + location.toString());
-                    SyncPositionBean bean = new SyncPositionBean();
-                    bean.setLatitude(location.getLatitude());
-                    bean.setLongitude(location.getLongitude());
-                    bean.setAddress(location.getAddress());
-                    bean.setType("location");
-                    syncPositionBeanLiveData.postValue(bean);
+                    Timber.i("定位成功\n星数: " + location.getSatellites());
+                    //卫星信号强
+                    if (location.getGpsAccuracyStatus() == AMapLocation.GPS_ACCURACY_GOOD) {
+                        SyncPositionBean bean = new SyncPositionBean();
+                        bean.setLatitude(location.getLatitude());
+                        bean.setLongitude(location.getLongitude());
+                        bean.setAddress(location.getAddress());
+                        bean.setType("location");
+                        syncPositionBeanLiveData.postValue(bean);
 
-                    stopLocalService();
+                    }else{
+                        ToastUtils.show("卫星定位信号弱");
+                    }
+
                 } else {
                     Timber.i("定位失败\n错误码：" + location.getErrorCode()
                             + "\n错误信息:" + location.getErrorInfo()
                             + "\n错误描述:" + location.getLocationDetail());
-                    stopLocalService();
+                    ToastUtils.show("定位失败");
                 }
             } else {
-                ToastUtils.show("定位失败，loc is null");
+                Timber.i("定位失败，location is null");
+                ToastUtils.show("定位失败");
             }
+            stopLocalService();
         });
         mLocationClient.startLocation();
     }
 
-    private void stopLocalService() {
+    public void stopLocalService() {
         if (null != mLocationClient) {
             mLocationClient.onDestroy();
-            mLocationClient.stopLocation();
             mLocationClient = null;
             mLocationOption = null;
         }
@@ -159,7 +158,7 @@ public class LocationUtils {
     private AMapLocationClientOption getDefaultOption() {
         AMapLocationClientOption mOption = new AMapLocationClientOption();
         mOption.setLocationMode(AMapLocationClientOption.AMapLocationMode.Hight_Accuracy);//可选，设置定位模式，可选的模式有高精度、仅设备、仅网络。默认为高精度模式
-        mOption.setGpsFirst(false);//可选，设置是否gps优先，只在高精度模式下有效。默认关闭
+        mOption.setGpsFirst(true);//可选，设置是否gps优先，只在高精度模式下有效。默认关闭
         mOption.setHttpTimeOut(30000);//可选，设置网络请求超时时间。默认为30秒。在仅设备模式下无效
         mOption.setInterval(2000);//可选，设置定位间隔。默认为2秒
         mOption.setNeedAddress(true);//可选，设置是否返回逆地理地址信息。默认是true
