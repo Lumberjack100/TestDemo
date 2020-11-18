@@ -259,6 +259,10 @@ public class BleDataCenterServerConfigFragment extends BaseBleConnectFragment {
         Timber.d("查询数据服务器%s的地址指令===%s", serverNumber.toInt(), command);
     }
 
+    /**
+     * 关闭数据中心</br>
+     * addr和port设置为空时，关闭该数据中心
+     */
     private void closeDataServer() {
         ServerNumberEntity serverNumberEntity = new ServerNumberEntity(serverNumber.toInt());
         String command = CommandManager.getInstance().getCommand(CommandType.SET_SERVER_ADDRESS_PORT, serverNumberEntity);

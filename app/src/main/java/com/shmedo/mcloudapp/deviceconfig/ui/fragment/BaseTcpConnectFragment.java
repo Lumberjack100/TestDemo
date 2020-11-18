@@ -32,7 +32,7 @@ public abstract class BaseTcpConnectFragment extends BaseFragment {
 
     public static final int QUERY_CMD_DELAY_MILLIS = 1500;//查询配置参数指令超时时间
 
-    public static final int SEND_CMD_DELAY_MILLIS = 20000;//发送配置参数指令超时时间
+    public static final int SEND_CMD_DELAY_MILLIS = 10000;//发送配置参数指令超时时间
 
     private static Handler uiHander = new Handler();
 

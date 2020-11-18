@@ -138,7 +138,7 @@ public class TcpVmsAisleSettingFragment extends BaseTcpConnectFragment {
      * 获取网关不同通道下的控制参数
      */
     private void queryVmsAisleInfo() {
-        startProgressRunnable("加载数据...", QUERY_CMD_DELAY_MILLIS);
+//        startProgressRunnable("加载数据...", QUERY_CMD_DELAY_MILLIS);
 
         VmsAisleNumberEntity vmsAisleNumberEntity = new VmsAisleNumberEntity(vmsAisleNumber.toInt());
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.MD_GET_GATEWAY_PARAM, vmsAisleNumberEntity);
@@ -351,7 +351,6 @@ public class TcpVmsAisleSettingFragment extends BaseTcpConnectFragment {
         vmsAisleParamEntity.setAirbaud(airSpeed);
 
         mBtnSave.setEnabled(false);
-//        errMsg = "发送指令超时,请稍后尝试";
 //        startProgressRunnable("正在发送配置指令...", SEND_CMD_DELAY_MILLIS);
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.MD_SET_GATEWAY_PARAM, vmsAisleParamEntity);
         sendCommand(command);

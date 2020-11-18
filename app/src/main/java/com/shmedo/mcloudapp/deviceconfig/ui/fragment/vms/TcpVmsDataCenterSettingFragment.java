@@ -43,6 +43,12 @@ import timber.log.Timber;
  * Vms网关数据中心参数配置
  */
 public class TcpVmsDataCenterSettingFragment extends BaseTcpConnectFragment {
+    @BindView(R.id.page1)
+    ViewGroup pageOneLayout;
+
+    @BindView(R.id.page2)
+    ViewGroup pageTwoaLyout;
+
     @BindView(R.id.centerEnableSBtn)
     SwitchButton mSbCenterEnable;
 
@@ -82,8 +88,8 @@ public class TcpVmsDataCenterSettingFragment extends BaseTcpConnectFragment {
     @BindView(R.id.btn_confirm)
     Button mBtnSave;
 
-    @BindView(R.id.ll_child_items)
-    ViewGroup childItemsLayout;
+    @BindView(R.id.ll_mqtt_child_items)
+    ViewGroup mqttChildItemsLayout;
 
     @BindView(R.id.ll_transfer_protocol)
     ViewGroup transferProtocolLayout;
@@ -148,14 +154,6 @@ public class TcpVmsDataCenterSettingFragment extends BaseTcpConnectFragment {
         mEtDeviceRegisterCode.setFilters(new InputFilter[]{new InputFilter.LengthFilter(100)});
     }
 
-    private void updateViewState(boolean isDisabled) {
-        if (isDisabled) {
-            transferProtocolLayout.setEnabled(isDisabled);
-        } else {
-
-        }
-    }
-
     private void setSwitchViewListener() {
         mSbCenterEnable.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -169,10 +167,7 @@ public class TcpVmsDataCenterSettingFragment extends BaseTcpConnectFragment {
                 if (!isChecked) {
                     showCloseSwitchButtonDialog("确定要关闭数据中心？");
                 } else {
-                    childItemsLayout.setVisibility(View.VISIBLE);
-                    mBtnSave.setEnabled(true);
-
-                    queryDataCenterInfo();
+                    pageTwoaLyout.setVisibility(View.GONE);
                 }
             }
         });
@@ -195,8 +190,9 @@ public class TcpVmsDataCenterSettingFragment extends BaseTcpConnectFragment {
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                         dialog.dismiss();
-                        childItemsLayout.setVisibility(View.GONE);
                         closeDataServer();//关闭服务器
+                        pageTwoaLyout.setVisibility(View.VISIBLE);
+                        pageTwoaLyout.setOnClickListener(null);
                     }
                 }).onNegative(new MaterialDialog.SingleButtonCallback() {
                     @Override
@@ -213,7 +209,6 @@ public class TcpVmsDataCenterSettingFragment extends BaseTcpConnectFragment {
      * 获取设备的数据中心参数
      */
     private void queryDataCenterInfo() {
-
         ServerNumberEntity serverNumberEntity = new ServerNumberEntity(serverNumber.toInt());
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.MD_GET_DATA_CENTER, serverNumberEntity);
         sendCommand(command);
@@ -278,9 +273,9 @@ public class TcpVmsDataCenterSettingFragment extends BaseTcpConnectFragment {
         mTvTransferProtocol.setText(text);
 
         if (!text.contains("MQTT")) {
-            childItemsLayout.setVisibility(View.GONE);
+            mqttChildItemsLayout.setVisibility(View.GONE);
         } else {
-            childItemsLayout.setVisibility(View.VISIBLE);
+            mqttChildItemsLayout.setVisibility(View.VISIBLE);
         }
     }
 
@@ -384,8 +379,6 @@ public class TcpVmsDataCenterSettingFragment extends BaseTcpConnectFragment {
         dataCenterEntity.setRegcode(registerCode);
 
         mBtnSave.setEnabled(false);
-//        errMsg = "发送指令超时,请稍后尝试";
-//        startProgressRunnable("正在发送配置指令...", SEND_CMD_DELAY_MILLIS);
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.MD_SET_DATA_CENTER, dataCenterEntity);
         sendCommand(command);
     }
@@ -472,21 +465,25 @@ public class TcpVmsDataCenterSettingFragment extends BaseTcpConnectFragment {
         mEtProductId.setText(productId);
         mEtDeviceRegisterCode.setText(registerCode);
 
-        if (!transferProtocolOld.contains("MQTT")) {
-            childItemsLayout.setVisibility(View.GONE);
-        } else {
-            childItemsLayout.setVisibility(View.VISIBLE);
+        if (transferProtocolOld.contains("TCP-C")) {
+            mqttChildItemsLayout.setVisibility(View.GONE);
+            transferProtocolPos = 0;
+        } else if (transferProtocolOld.contains("TCP-S")) {
+            mqttChildItemsLayout.setVisibility(View.GONE);
+            transferProtocolPos = 1;
+        } else if (transferProtocolOld.contains("MQTT")) {
+            mqttChildItemsLayout.setVisibility(View.VISIBLE);
+            transferProtocolPos = 2;
         }
 
         //数据中心地址为空表示数据中心未启用
         if (TextUtils.isEmpty(dataServerAddress)) {
             mSbCenterEnable.setCheckedImmediatelyNoEvent(false);
-            childItemsLayout.setVisibility(View.GONE);
-            mBtnSave.setEnabled(false);
+            pageTwoaLyout.setVisibility(View.VISIBLE);
+            pageTwoaLyout.setOnClickListener(null);
         } else {
             mSbCenterEnable.setCheckedImmediatelyNoEvent(true);
-            childItemsLayout.setVisibility(View.VISIBLE);
-            mBtnSave.setEnabled(true);
+            pageTwoaLyout.setVisibility(View.GONE);
         }
     }
 
@@ -545,7 +542,6 @@ public class TcpVmsDataCenterSettingFragment extends BaseTcpConnectFragment {
             if (registerCode != null && !registerCode.equals(mEtDeviceRegisterCode.getText().toString().trim())) {
                 return true;
             }
-
         }
 
         return false;
