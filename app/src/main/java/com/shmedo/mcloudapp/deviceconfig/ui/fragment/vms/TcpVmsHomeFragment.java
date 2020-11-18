@@ -23,8 +23,8 @@ import com.shmedo.configlibrary.iot.cmd.entity.VmsAisleNumberEntity;
 import com.shmedo.configlibrary.iot.cmd.parser.IOTParseManager;
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.enums.VmsAisleNumber;
-import com.shmedo.configlibrary.iot.model.VmsBaseInfo;
 import com.shmedo.configlibrary.iot.model.VmsAisleTerminalInfo;
+import com.shmedo.configlibrary.iot.model.VmsBaseInfo;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
 import com.shmedo.core.MCloudApp;
 import com.shmedo.core.util.DensityUtil;
@@ -34,7 +34,6 @@ import com.shmedo.mcloudapp.deviceconfig.adapter.VmsAisleAdapter;
 import com.shmedo.mcloudapp.deviceconfig.model.TcpConnectionState;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.VmsTerminalSearchActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.BaseTcpConnectFragment;
-import com.shmedo.mcloudapp.deviceconfig.viewmodels.VmsViewModel;
 import com.thanosfisherman.wifiutils.WifiUtils;
 import com.thanosfisherman.wifiutils.wifiRemove.RemoveErrorCode;
 import com.thanosfisherman.wifiutils.wifiRemove.RemoveSuccessListener;
@@ -76,9 +75,7 @@ public class TcpVmsHomeFragment extends BaseTcpConnectFragment {
 
     private VmsAisleAdapter vmsAisleAdapter;
 
-    private VmsViewModel mViewModel;
-
-    private String ipAddress = "192.168.5.2";
+    private String ipAddress = "192.168.5.2";//172.168.5.250   192.168.5.2
 
     private VmsBaseInfo vmsBaseInfo = new VmsBaseInfo();
 
@@ -96,8 +93,6 @@ public class TcpVmsHomeFragment extends BaseTcpConnectFragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mViewModel = getApplicationScopeViewModel(VmsViewModel.class);
-
         setupTcpConnect();
         initAdapter();
     }
@@ -115,8 +110,8 @@ public class TcpVmsHomeFragment extends BaseTcpConnectFragment {
         tcpShareViewModel.getTcpConnectionState().observeInFragment(this, new Observer<TcpConnectionState>() {
             @Override
             public void onChanged(TcpConnectionState tcpConnectionState) {
-                dismissProgressDialog();
                 if (tcpConnectionState == TcpConnectionState.CONNECT_SUCCESS) {
+                    dismissProgressDialog();
                     mTvDeviceConnectOperate.setText("断开连接");
                     mTvDeviceConnectOperate.setTextColor(ContextCompat.getColor(mActivity, R.color.text_color_b3b3b3));
 
@@ -246,17 +241,17 @@ public class TcpVmsHomeFragment extends BaseTcpConnectFragment {
                 vmsAisleTerminalInfoList.add(vmsAisleTerminalInfo);
 
                 if (vmsAisleTerminalInfo.getChannel() == 0) {
-                    mViewModel.clearTerminalList();
+                    vmsViewModel.clearTerminalList();
                     getGatewayStatus(VmsAisleNumber.NUMBER_TWO);
 
                 } else if (vmsAisleTerminalInfo.getChannel() == 1) {
-                    mViewModel.addTerminalList(vmsAisleTerminalInfo.getTerminal());
+                    vmsViewModel.addTerminalList(vmsAisleTerminalInfo.getTerminal());
                     getGatewayStatus(VmsAisleNumber.NUMBER_THREE);
 
                 } else if (vmsAisleTerminalInfo.getChannel() == 2) {
                     stopProgressRunnable();
                     vmsAisleAdapter.notifyDataSetChanged();
-                    mViewModel.addTerminalList(vmsAisleTerminalInfo.getTerminal());
+                    vmsViewModel.addTerminalList(vmsAisleTerminalInfo.getTerminal());
                 }
             }
             break;

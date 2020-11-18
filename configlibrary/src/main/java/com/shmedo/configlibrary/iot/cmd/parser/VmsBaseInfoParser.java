@@ -23,7 +23,11 @@ public class VmsBaseInfoParser implements IOTResultParser<VmsBaseInfo> {
 
             for (String keyValue : keyValues) {
                 String[] strs = keyValue.split("=");
-                keyValueMap.put(strs[0], strs[1]);
+                if (strs.length < 2) {
+                    keyValueMap.put(strs[0], "");
+                } else {
+                    keyValueMap.put(strs[0], strs[1]);
+                }
             }
             info.setSn(TextUtils.isEmpty(keyValueMap.get("sn")) ? "" : keyValueMap.get("sn"));
             info.setOnline(TextUtils.isEmpty(keyValueMap.get("online")) ? "" : keyValueMap.get("online"));

@@ -36,6 +36,7 @@ import com.shmedo.mcloudapp.common.ui.fragment.BaseFragment;
 import com.shmedo.mcloudapp.common.view.ClearEditText;
 import com.shmedo.mcloudapp.deviceconfig.adapter.WiFiAdapter;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.vms.VmsHomeActivity;
+import com.shmedo.mcloudapp.deviceconfig.viewmodels.VmsViewModel;
 import com.shmedo.mcloudapp.util.KeyBordUtils;
 import com.shmedo.mcloudapp.util.permission.XPermissionUtils;
 import com.thanosfisherman.wifiutils.WifiUtils;
@@ -91,6 +92,8 @@ public class WiFiDeviceListFragment extends BaseFragment implements TextWatcher,
 
     private IWifi curWiFi;
 
+    private VmsViewModel vmsViewModel;
+
 
     @Override
     protected int getLayoutId() {
@@ -116,6 +119,7 @@ public class WiFiDeviceListFragment extends BaseFragment implements TextWatcher,
     @Override
     public void onDestroy() {
         manager = null;
+        vmsViewModel.clearDeviceApiKey();
         super.onDestroy();
     }
 
@@ -123,10 +127,16 @@ public class WiFiDeviceListFragment extends BaseFragment implements TextWatcher,
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         manager = (WifiManager) getContext().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+        vmsViewModel = getActivityScopeViewModel(VmsViewModel.class);
 
         initAdapter();
         initRefreshAnimation();
         setEditTextListener();
+
+        //TODO  测试用
+//        vmsViewModel.updateDeviceApiKey("2f6beefd-f137-4599-ac1c-49c35d00a891");
+        vmsViewModel.updateDeviceApiKey("a217c2f2-57b0-438a-9f29-8e21654f9d10");
+
     }
 
     private void initAdapter() {
@@ -259,14 +269,21 @@ public class WiFiDeviceListFragment extends BaseFragment implements TextWatcher,
             List<ScanResult> results = manager.getScanResults();
             List<IWifi> wifiList = new LinkedList<>();
             List<IWifi> mergeList = new ArrayList<>();
+
             List<WifiConfiguration> configurations = manager.getConfiguredNetworks();
             String connectedSSID = manager.getConnectionInfo().getSSID();
             int ipAddress = manager.getConnectionInfo().getIpAddress();
             for (ScanResult result : results) {
+                if (result.SSID == null || (!result.SSID.toUpperCase().startsWith("VMS") && !result.SSID.toUpperCase().startsWith("MEDO"))) {
+                    continue;
+                }
                 IWifi mergeObj = Wifi.create(result, configurations, connectedSSID, ipAddress);
-                if (mergeObj == null) continue;
+                if (mergeObj == null) {
+                    continue;
+                }
                 mergeList.add(mergeObj);
             }
+
             mergeList = WifiHelper.removeDuplicate(mergeList);
             for (IWifi merge : mergeList) {
                 boolean isMerge = false;

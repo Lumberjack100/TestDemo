@@ -47,7 +47,7 @@ public class VmsTerminalSearchActivity extends BaseActivity implements TextWatch
 
     private String keyWords;// 要输入的搜索关键字
 
-    private VmsViewModel mViewModel;
+    private VmsViewModel vmsViewModel;
 
     public static void startActivity(Context context) {
         Intent intent = new Intent(context, VmsTerminalSearchActivity.class);
@@ -63,7 +63,7 @@ public class VmsTerminalSearchActivity extends BaseActivity implements TextWatch
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mViewModel = getApplicationScopeViewModel(VmsViewModel.class);
+        vmsViewModel = getApplicationScopeViewModel(VmsViewModel.class);
         initView();
         initAdapter();
     }
@@ -155,7 +155,7 @@ public class VmsTerminalSearchActivity extends BaseActivity implements TextWatch
      * 开始进行搜索
      */
     private void doSearchQuery() {
-        List<TerminalBean> allTerminals = mViewModel.getVmsTerminalList().getValue();
+        List<TerminalBean> allTerminals = vmsViewModel.getVmsTerminalList().getValue();
         if (allTerminals == null) {
             adapter.setEmptyView(R.layout.empty_view);
             adapter.notifyDataSetChanged();

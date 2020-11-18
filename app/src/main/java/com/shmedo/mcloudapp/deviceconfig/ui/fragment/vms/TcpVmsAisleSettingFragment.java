@@ -138,7 +138,7 @@ public class TcpVmsAisleSettingFragment extends BaseTcpConnectFragment {
      * 获取网关不同通道下的控制参数
      */
     private void queryVmsAisleInfo() {
-        startProgressRunnable("初始化数据...", QUERY_CMD_DELAY_MILLIS);
+        startProgressRunnable("加载数据...", QUERY_CMD_DELAY_MILLIS);
 
         VmsAisleNumberEntity vmsAisleNumberEntity = new VmsAisleNumberEntity(vmsAisleNumber.toInt());
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.MD_GET_GATEWAY_PARAM, vmsAisleNumberEntity);
@@ -155,7 +155,7 @@ public class TcpVmsAisleSettingFragment extends BaseTcpConnectFragment {
                 return;
             }
 
-            if (!checkValue()) {
+            if (!checkValueIsValid()) {
                 Timber.w("通道参数存在错误!");
                 return;
             }
@@ -164,7 +164,7 @@ public class TcpVmsAisleSettingFragment extends BaseTcpConnectFragment {
         }
     }
 
-    private boolean checkValue() {
+    private boolean checkValueIsValid() {
         networkNumber = mEtNetworkNumber.getText().toString().trim();
         aisleAddress = mEtAisleAddress.getText().toString().trim();
         channelNumber = mEtChannelNumber.getText().toString().trim();
@@ -410,7 +410,7 @@ public class TcpVmsAisleSettingFragment extends BaseTcpConnectFragment {
 
     private void initViewData() {
         if (vmsAisleParamInfo == null) {
-            Timber.e(" VmsAisleParamInfo 为空!");
+            Timber.e("VmsAisleParamInfo 为空!");
             vmsAisleParamInfo = new VmsAisleParamInfo();
             return;
         }

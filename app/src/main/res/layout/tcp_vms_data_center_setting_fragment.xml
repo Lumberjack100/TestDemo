@@ -107,6 +107,7 @@
             <TextView
                 android:id="@+id/tv_data_protocol"
                 style="@style/Common_ClickableItem_ValueStyle"
+                android:drawableEnd="@null"
                 android:textSize="17sp"
                 tools:text="RES_OUT" />
 
@@ -151,13 +152,37 @@
             <com.shmedo.mcloudapp.common.view.ClearEditText
                 android:id="@+id/et_data_server_port"
                 style="@style/DataCenter_EditText_Style"
-                android:hint="请输入" />
+                android:hint="请输入"
+                android:inputType="number" />
 
         </LinearLayout>
 
         <View
             android:layout_width="match_parent"
             android:layout_height="14dp" />
+
+        <LinearLayout style="@style/Common_EditItem_LayoutStyle">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="产品ID"
+                android:textColor="@color/text_color_343434"
+                android:textSize="@dimen/text_size_17" />
+
+            <com.shmedo.mcloudapp.common.view.ClearEditText
+                android:id="@+id/et_product_id"
+                style="@style/DataCenter_EditText_Style"
+                android:hint="请输入" />
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:background="@color/divider_line_bg_efefef" />
 
         <LinearLayout
             android:id="@+id/ll_child_items"
@@ -204,6 +229,10 @@
 
             </LinearLayout>
 
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="14dp" />
+
             <LinearLayout style="@style/Common_EditItem_LayoutStyle">
 
                 <TextView
@@ -239,27 +268,8 @@
                 <com.shmedo.mcloudapp.common.view.ClearEditText
                     android:id="@+id/et_device_register_port"
                     style="@style/DataCenter_EditText_Style"
-                    android:hint="请输入" />
-
-            </LinearLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="14dp" />
-
-            <LinearLayout style="@style/Common_EditItem_LayoutStyle">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="产品ID"
-                    android:textColor="@color/text_color_343434"
-                    android:textSize="@dimen/text_size_17" />
-
-                <com.shmedo.mcloudapp.common.view.ClearEditText
-                    android:id="@+id/et_product_id"
-                    style="@style/DataCenter_EditText_Style"
-                    android:hint="请输入" />
+                    android:hint="请输入"
+                    android:inputType="number" />
 
             </LinearLayout>
 

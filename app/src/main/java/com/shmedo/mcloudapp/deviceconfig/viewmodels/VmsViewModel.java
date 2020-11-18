@@ -16,6 +16,8 @@ import java.util.List;
  */
 public class VmsViewModel extends ViewModel {
     private final UnPeekLiveData<List<TerminalBean>> VmsTerminalListLiveData = new UnPeekLiveData<>();
+    private final UnPeekLiveData<String> deviceApiKey = new UnPeekLiveData<>();
+
 
     public ProtectedUnPeekLiveData<List<TerminalBean>> getVmsTerminalList() {
         return VmsTerminalListLiveData;
@@ -35,5 +37,19 @@ public class VmsViewModel extends ViewModel {
 
     public void clearTerminalList() {
         VmsTerminalListLiveData.postValue(null);
+    }
+
+
+    public UnPeekLiveData<String> getDeviceApiKey() {
+        return deviceApiKey;
+    }
+
+    public void updateDeviceApiKey(String appKey) {
+        deviceApiKey.postValue(appKey);
+    }
+
+    public void clearDeviceApiKey() {
+        deviceApiKey.postValue(null);
+
     }
 }

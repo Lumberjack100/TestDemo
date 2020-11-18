@@ -29,7 +29,7 @@ public class TestAActivity extends BaseActivity {
 
     private String ipAddress;
 
-    public static void startActivity(Context context, String ip) {
+    public static void DataCenterInfo(Context context, String ip) {
         Intent intent = new Intent(context, TestAActivity.class);
         intent.putExtra(ARG_PARAM1, ip);
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
@@ -104,7 +104,6 @@ public class TestAActivity extends BaseActivity {
                 break;
 
             case R.id.btn_jump:
-                TestBActivity.startActivity(this);
                 break;
 
             case R.id.btn_connect:

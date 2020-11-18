@@ -15,8 +15,10 @@ import com.littlegreens.netty.client.listener.MessageStateListener;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.fragment.BaseFragment;
 import com.shmedo.mcloudapp.deviceconfig.viewmodels.TcpShareViewModel;
+import com.shmedo.mcloudapp.deviceconfig.viewmodels.VmsViewModel;
 
 import java.util.Objects;
+import java.util.UUID;
 
 import timber.log.Timber;
 
@@ -28,7 +30,7 @@ import timber.log.Timber;
 public abstract class BaseTcpConnectFragment extends BaseFragment {
     public static final int TCP_CONNECT_DELAY_MILLIS = 5000;//Tcp 连接超时时间
 
-    public static final int QUERY_CMD_DELAY_MILLIS = 2000;//查询配置参数指令超时时间
+    public static final int QUERY_CMD_DELAY_MILLIS = 1500;//查询配置参数指令超时时间
 
     public static final int SEND_CMD_DELAY_MILLIS = 20000;//发送配置参数指令超时时间
 
@@ -39,6 +41,8 @@ public abstract class BaseTcpConnectFragment extends BaseFragment {
     protected boolean isExitMode = false;
 
     protected TcpShareViewModel tcpShareViewModel;
+
+    protected VmsViewModel vmsViewModel;
 
     private static ProgressRunnable progressRunnable;
 
@@ -76,6 +80,8 @@ public abstract class BaseTcpConnectFragment extends BaseFragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        vmsViewModel = getActivityScopeViewModel(VmsViewModel.class);
+
         tcpShareViewModel = getApplicationScopeViewModel(TcpShareViewModel.class);
         tcpShareViewModel.getReceivedMessage().observeInFragment(this, new Observer<String>() {
             @Override
@@ -92,6 +98,13 @@ public abstract class BaseTcpConnectFragment extends BaseFragment {
     }
 
     protected void sendCommand(String cmdStr) {
+        String apiKey = "b12aac6b-0bd2-4a01-80fd-97fe4f5d4ff9";
+        if (!TextUtils.isEmpty(vmsViewModel.getDeviceApiKey().getValue())) {
+            apiKey = vmsViewModel.getDeviceApiKey().getValue();
+        }
+        cmdStr += "&apikey=" + apiKey
+                + "&msgid=" + UUID.randomUUID().toString();
+
         Timber.d("发送指令：%s", cmdStr);
         tcpShareViewModel.sendMsgToServer(cmdStr, new MessageStateListener() {
             @Override
@@ -107,6 +120,7 @@ public abstract class BaseTcpConnectFragment extends BaseFragment {
 
     /**
      * 断开 Tcp 连接警告
+     *
      * @param content
      */
     protected void showDisconnectDialog(String content) {

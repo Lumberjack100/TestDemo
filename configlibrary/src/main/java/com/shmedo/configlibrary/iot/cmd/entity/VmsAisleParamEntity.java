@@ -8,7 +8,7 @@ import com.shmedo.configlibrary.iot.enums.VmsAisleNumber;
 /**
  * 创建者:   gonghe <br/>
  * 创建时间:  11/15/20 <br/>
- * 描述：     TODO
+ * 描述：    Vms网关通道参数
  */
 public class VmsAisleParamEntity implements Validater {
     private VmsAisleNumber vmsAisleNumber;

@@ -296,7 +296,7 @@ public class BleDataCenterServerConfigFragment extends BaseBleConnectFragment {
                     return;
                 }
 
-                if (!checkValue()) {
+                if (!checkValueIsValid()) {
                     Timber.w("数据中心参数存在错误!");
                     return;
                 }
@@ -394,7 +394,7 @@ public class BleDataCenterServerConfigFragment extends BaseBleConnectFragment {
         }
     }
 
-    private boolean checkValue() {
+    private boolean checkValueIsValid() {
         dataServerAddress = mEtDataServerAddress.getText().toString().trim();
         appKey = mEtAppKey.getText().toString().trim();
         registerPlatformAddress = mEtRegisterPlatformAddress.getText().toString().trim();

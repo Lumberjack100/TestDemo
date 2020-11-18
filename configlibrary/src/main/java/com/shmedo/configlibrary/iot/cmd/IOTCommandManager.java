@@ -20,22 +20,14 @@ public class IOTCommandManager {
     }
 
     public String getCommand(IOTCommandType commandType) {
-        IOTCommand cmd = new IOTCommand(commandType,"");
-        return cmd.toString();
-    }
-
-    public String getCommand(IOTCommandType commandType, String apiKey) {
-        IOTCommand cmd = new IOTCommand(commandType,apiKey);
+        IOTCommand cmd = new IOTCommand(commandType);
         return cmd.toString();
     }
 
     public <T extends Validater> String getCommand(IOTCommandType commandType, T parameter) {
-        IOTCommand cmd = new IOTCommand(commandType, parameter,"");
+        IOTCommand cmd = new IOTCommand(commandType, parameter);
         return cmd.toString();
     }
 
-    public <T extends Validater> String getCommand(IOTCommandType commandType, T parameter, String apiKey) {
-        IOTCommand cmd = new IOTCommand(commandType, parameter,apiKey);
-        return cmd.toString();
-    }
+
 }

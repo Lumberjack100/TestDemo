@@ -23,7 +23,11 @@ public class VmsAisleTerminalInfoParser implements IOTResultParser<VmsAisleTermi
 
             for (String keyValue : keyValues) {
                 String[] strs = keyValue.split("=");
-                keyValueMap.put(strs[0], strs[1]);
+                if (strs.length < 2) {
+                    keyValueMap.put(strs[0], "");
+                } else {
+                    keyValueMap.put(strs[0], strs[1]);
+                }
             }
 
             String status = keyValueMap.get("status");

@@ -23,7 +23,11 @@ public class VmsAisleParamInfoParser implements IOTResultParser<VmsAisleParamInf
 
             for (String keyValue : keyValues) {
                 String[] strs = keyValue.split("=");
-                keyValueMap.put(strs[0], strs[1]);
+                if (strs.length < 2) {
+                    keyValueMap.put(strs[0], "");
+                } else {
+                    keyValueMap.put(strs[0], strs[1]);
+                }
             }
             info.setNetid(TextUtils.isEmpty(keyValueMap.get("netid")) ? "" : keyValueMap.get("netid"));
             info.setPpt(TextUtils.isEmpty(keyValueMap.get("ppt")) ? "" : keyValueMap.get("ppt"));

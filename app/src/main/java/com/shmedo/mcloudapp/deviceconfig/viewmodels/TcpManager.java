@@ -10,6 +10,8 @@ import com.shmedo.configlibrary.iot.cmd.IOTCommandManager;
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.mcloudapp.deviceconfig.model.TcpConnectionState;
 
+import java.util.UUID;
+
 import timber.log.Timber;
 
 /**
@@ -20,7 +22,9 @@ import timber.log.Timber;
 public class TcpManager implements NettyClientListener<String> {
 
     //自定义心跳包指令
-    private final String heartBeat = IOTCommandManager.getInstance().getCommand(IOTCommandType.HEART_BEAT);
+    private final String heartBeat = IOTCommandManager.getInstance().getCommand(IOTCommandType.HEART_BEAT)
+            + "&apikey=b12aac6b-0bd2-4a01-80fd-97fe4f5d4ff9"
+            + "&msgid=" + UUID.randomUUID().toString();
 
     private final UnPeekLiveData<TcpConnectionState> tcpConnectionState = new UnPeekLiveData<>();
 
@@ -36,7 +40,7 @@ public class TcpManager implements NettyClientListener<String> {
         mNettyTcpClient = new NettyTcpClient.Builder()
                 .setHost(host)    //设置服务端地址
                 .setTcpPort(port) //设置服务端端口号
-                .setMaxReconnectTimes(5)    //设置最大重连次数
+                .setMaxReconnectTimes(3)    //设置最大重连次数
                 .setReconnectIntervalTime(5)    //设置重连间隔时间。单位：秒
                 .setSendheartBeat(true) //设置是否发送心跳
                 .setHeartBeatInterval(15)    //设置心跳间隔时间。单位：秒
