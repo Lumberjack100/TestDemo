@@ -127,7 +127,7 @@ public class WiFiDeviceListFragment extends BaseFragment implements TextWatcher,
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         manager = (WifiManager) getContext().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-        vmsViewModel = getActivityScopeViewModel(VmsViewModel.class);
+        vmsViewModel = getApplicationScopeViewModel(VmsViewModel.class);
 
         initAdapter();
         initRefreshAnimation();
@@ -135,7 +135,7 @@ public class WiFiDeviceListFragment extends BaseFragment implements TextWatcher,
 
         //TODO  测试用
 //        vmsViewModel.updateDeviceApiKey("2f6beefd-f137-4599-ac1c-49c35d00a891");
-        vmsViewModel.updateDeviceApiKey("a217c2f2-57b0-438a-9f29-8e21654f9d10");
+//        vmsViewModel.updateDeviceApiKey("a217c2f2-57b0-438a-9f29-8e21654f9d10");//
 
     }
 
@@ -148,24 +148,26 @@ public class WiFiDeviceListFragment extends BaseFragment implements TextWatcher,
             public void onItemClick(@NonNull BaseQuickAdapter adapter, @NonNull View view, int position) {
                 curWiFi = wiFiAdapter.getItem(position);
                 if (curWiFi.isConnected()) {//已连接
-                    VmsHomeActivity.startActivity(getContext(), AppContants.CommunicationWay.TCP_CONNECT);
+                    if (curWiFi.name().contains("VMS")) {
+                        VmsHomeActivity.startActivity(getContext(), AppContants.CommunicationWay.TCP_CONNECT);
+                    }
 
                 } else if (curWiFi.isSaved()) {//已保存
                     WifiUtils.withContext(getContext().getApplicationContext())
                             .connectWith(curWiFi.name(), "")
-                            .setTimeout(15000)
+                            .setTimeout(25000)
                             .onConnectionResult(successListener)
                             .start();
                 } else if (!curWiFi.isEncrypt()) {//未加密
                     WifiUtils.withContext(getContext().getApplicationContext())
                             .connectWith(curWiFi.name(), "")
-                            .setTimeout(15000)
+                            .setTimeout(25000)
                             .onConnectionResult(successListener)
                             .start();
                 } else {//加密
                     WifiUtils.withContext(getContext().getApplicationContext())
                             .connectWith(curWiFi.name(), "medo33923627")
-                            .setTimeout(15000)
+                            .setTimeout(25000)
                             .onConnectionResult(successListener)
                             .start();
                 }
@@ -180,7 +182,7 @@ public class WiFiDeviceListFragment extends BaseFragment implements TextWatcher,
                 @Override
                 public void run() {
                     modifyWifi();
-                    if (curWiFi.ip().contains("192.168.5.")) {
+                    if (curWiFi.name().contains("VMS")) {
                         VmsHomeActivity.startActivity(getContext(), AppContants.CommunicationWay.TCP_CONNECT);
                     }
                 }

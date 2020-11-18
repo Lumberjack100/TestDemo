@@ -26,7 +26,6 @@ import com.shmedo.configlibrary.iot.enums.VmsAisleNumber;
 import com.shmedo.configlibrary.iot.model.VmsAisleTerminalInfo;
 import com.shmedo.configlibrary.iot.model.VmsBaseInfo;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
-import com.shmedo.core.MCloudApp;
 import com.shmedo.core.util.DensityUtil;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.view.recycleviewitemdivider.GridSpacingItemDecoration;
@@ -111,15 +110,16 @@ public class TcpVmsHomeFragment extends BaseTcpConnectFragment {
             @Override
             public void onChanged(TcpConnectionState tcpConnectionState) {
                 if (tcpConnectionState == TcpConnectionState.CONNECT_SUCCESS) {
-                    dismissProgressDialog();
+//                    dismissProgressDialog();
                     mTvDeviceConnectOperate.setText("断开连接");
                     mTvDeviceConnectOperate.setTextColor(ContextCompat.getColor(mActivity, R.color.text_color_b3b3b3));
 
-                    startProgressRunnable("初始化信息...", SEND_CMD_DELAY_MILLIS);
+//                    startProgressRunnable("初始化信息...", SEND_CMD_DELAY_MILLIS);
                     String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.MD_GET_GATEWAY_BASE);
                     sendCommand(command);
                 } else if (tcpConnectionState == TcpConnectionState.CONNECT_CLOSED) {
                     ToastUtils.show("通讯断开");
+                    dismissProgressDialog();
                     mTvDeviceConnectOperate.setText("重新连接");
                     mTvDeviceConnectOperate.setTextColor(ContextCompat.getColor(mActivity, R.color.blue_52B4F8));
                 }
@@ -137,10 +137,12 @@ public class TcpVmsHomeFragment extends BaseTcpConnectFragment {
             mTvProductModel.setText(String.format("版本信息：%s", vmsBaseInfo.getSwVersion()));
             mTvSubModel.setText(String.format("网关电压：%s", vmsBaseInfo.getVolt() + "V"));
             if (!vmsBaseInfo.getOnline().trim().equals("0")) {
+                mTvDeviceState.setVisibility(View.VISIBLE);
                 mTvDeviceState.setText("在线");
                 mTvDeviceState.setTextColor(ContextCompat.getColor(mActivity, R.color.text_color_50E9B9));
                 mTvDeviceState.setBackgroundResource(R.drawable.bg_device_online_state_flag);
             } else {
+                mTvDeviceState.setVisibility(View.VISIBLE);
                 mTvDeviceState.setText("离线");
                 mTvDeviceState.setTextColor(ContextCompat.getColor(mActivity, R.color.sub_title_text_color));
                 mTvDeviceState.setBackgroundResource(R.drawable.bg_device_offline_state_flag);
@@ -161,7 +163,7 @@ public class TcpVmsHomeFragment extends BaseTcpConnectFragment {
                 if (isDoubleClick(view)) {
                     return;
                 }
-                if (!MCloudApp.isIsBluetoothDeviceConnected()) {
+                if (!tcpShareViewModel.getConnectStatus()) {
                     ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
                     return;
                 }
@@ -228,7 +230,7 @@ public class TcpVmsHomeFragment extends BaseTcpConnectFragment {
             }
             break;
 
-            case MD_GET_GATEWAY_STATUS: {//获取网关的基本信息
+            case MD_GET_GATEWAY_STATUS: {//获取网关的状态
                 IOTCommandResult<VmsAisleTerminalInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
                     stopProgressRunnable();

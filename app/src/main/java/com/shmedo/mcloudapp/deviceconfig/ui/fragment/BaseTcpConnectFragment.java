@@ -80,7 +80,7 @@ public abstract class BaseTcpConnectFragment extends BaseFragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        vmsViewModel = getActivityScopeViewModel(VmsViewModel.class);
+        vmsViewModel = getApplicationScopeViewModel(VmsViewModel.class);
 
         tcpShareViewModel = getApplicationScopeViewModel(TcpShareViewModel.class);
         tcpShareViewModel.getReceivedMessage().observeInFragment(this, new Observer<String>() {
