@@ -74,11 +74,12 @@ public class TcpVmsHomeFragment extends BaseTcpConnectFragment {
 
     private VmsAisleAdapter vmsAisleAdapter;
 
+    private List<VmsAisleTerminalInfo> vmsAisleTerminalInfoList = new ArrayList<>();
+
     private String ipAddress = "192.168.5.2";//172.168.5.250   192.168.5.2
 
     private VmsBaseInfo vmsBaseInfo = new VmsBaseInfo();
 
-    private List<VmsAisleTerminalInfo> vmsAisleTerminalInfoList = new ArrayList<>();
 
     public static TcpVmsHomeFragment newInstance() {
         return new TcpVmsHomeFragment();
@@ -92,8 +93,9 @@ public class TcpVmsHomeFragment extends BaseTcpConnectFragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        setupTcpConnect();
         initAdapter();
+        setupTcpConnect();
+        observerRefreshTerminal();
     }
 
     @Override
@@ -128,6 +130,17 @@ public class TcpVmsHomeFragment extends BaseTcpConnectFragment {
 
         startProgressRunnable("建立通讯连接...", TCP_CONNECT_DELAY_MILLIS);
         tcpShareViewModel.connect();
+    }
+
+    private void observerRefreshTerminal() {
+        vmsViewModel.getVmsRefreshTerminal().observeInFragment(this, new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean isRefresh) {
+                if (isRefresh) {
+                    getGatewayStatus(VmsAisleNumber.NUMBER_ONE);
+                }
+            }
+        });
     }
 
     private void updateHeadInfo() {
@@ -243,20 +256,23 @@ public class TcpVmsHomeFragment extends BaseTcpConnectFragment {
                     return;
                 }
                 VmsAisleTerminalInfo vmsAisleTerminalInfo = commandResult.getResult();
-                vmsAisleTerminalInfoList.add(vmsAisleTerminalInfo);
 
                 if (vmsAisleTerminalInfo.getChannel() == 0) {
                     vmsViewModel.clearTerminalList();
+                    vmsAisleTerminalInfoList.clear();
+                    vmsAisleTerminalInfoList.add(vmsAisleTerminalInfo);
                     getGatewayStatus(VmsAisleNumber.NUMBER_TWO);
 
                 } else if (vmsAisleTerminalInfo.getChannel() == 1) {
                     vmsViewModel.addTerminalList(vmsAisleTerminalInfo.getTerminal());
+                    vmsAisleTerminalInfoList.add(vmsAisleTerminalInfo);
                     getGatewayStatus(VmsAisleNumber.NUMBER_THREE);
 
                 } else if (vmsAisleTerminalInfo.getChannel() == 2) {
                     stopProgressRunnable();
-                    vmsAisleAdapter.notifyDataSetChanged();
                     vmsViewModel.addTerminalList(vmsAisleTerminalInfo.getTerminal());
+                    vmsAisleTerminalInfoList.add(vmsAisleTerminalInfo);
+                    vmsAisleAdapter.notifyDataSetChanged();
                 }
             }
             break;

@@ -15,8 +15,22 @@ import java.util.List;
  * 描述：     TODO
  */
 public class VmsViewModel extends ViewModel {
-    private final UnPeekLiveData<List<TerminalBean>> VmsTerminalListLiveData = new UnPeekLiveData<>();
     private final UnPeekLiveData<String> deviceApiKey = new UnPeekLiveData<>();
+    private final UnPeekLiveData<List<TerminalBean>> VmsTerminalListLiveData = new UnPeekLiveData<>();
+    private UnPeekLiveData<Boolean> vmsRefreshTerminal;
+
+    public UnPeekLiveData<String> getDeviceApiKey() {
+        return deviceApiKey;
+    }
+
+    public void updateDeviceApiKey(String appKey) {
+        deviceApiKey.postValue(appKey);
+    }
+
+    public void clearDeviceApiKey() {
+        deviceApiKey.postValue(null);
+
+    }
 
 
     public ProtectedUnPeekLiveData<List<TerminalBean>> getVmsTerminalList() {
@@ -40,16 +54,15 @@ public class VmsViewModel extends ViewModel {
     }
 
 
-    public UnPeekLiveData<String> getDeviceApiKey() {
-        return deviceApiKey;
+    public UnPeekLiveData<Boolean> getVmsRefreshTerminal() {
+        if (vmsRefreshTerminal == null) {
+            vmsRefreshTerminal = new UnPeekLiveData<>();
+            vmsRefreshTerminal.setValue(false);
+        }
+        return vmsRefreshTerminal;
     }
 
-    public void updateDeviceApiKey(String appKey) {
-        deviceApiKey.postValue(appKey);
-    }
-
-    public void clearDeviceApiKey() {
-        deviceApiKey.postValue(null);
-
+    public void setVmsRefreshTerminal(boolean isRefresh) {
+        vmsRefreshTerminal.postValue(isRefresh);
     }
 }

@@ -73,6 +73,11 @@ public enum IOTCommandType {
     MD_SET_DATA_CENTER("md_setdatacenter"),
 
     /**
+     * 删除Vms终端
+     */
+    MD_DELETE_TERMINAL("md_delterminal"),
+
+    /**
      * 自定义心跳包
      */
     HEART_BEAT("HeartBeatData"),

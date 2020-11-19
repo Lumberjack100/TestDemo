@@ -25,17 +25,20 @@ public class VmsTerminalInfoAdapter extends BaseQuickAdapter<TerminalBean, BaseV
     protected void convert(@NotNull BaseViewHolder holder, TerminalBean terminalBean) {
         holder.setText(R.id.tv_terminal_sn, terminalBean.getSn());
         holder.setText(R.id.tv_battery_value, String.valueOf(terminalBean.getVolt()));
-        holder.setText(R.id.tv_terminal_state, "正常");
         holder.setText(R.id.tv_last_data_time, terminalBean.getLastpackagetime());
 
         if (terminalBean.getStatus() == 1) {//在线
             holder.setTextColorRes(R.id.tv_terminal_sn, R.color.title_text_color);
             holder.setImageResource(R.id.iv_signal, R.drawable.ic_device_signal_three);
             holder.setImageResource(R.id.iv_battery, R.drawable.ic_battery_full_online);
+
+            holder.setText(R.id.tv_terminal_state, "在线");
         } else {
             holder.setTextColorRes(R.id.tv_terminal_sn, R.color.text_color_b3b3b3);
             holder.setImageResource(R.id.iv_signal, R.drawable.ic_device_signal_offline);
             holder.setImageResource(R.id.iv_battery, R.drawable.ic_battery_full_offline);
+
+            holder.setText(R.id.tv_terminal_state, "离线");
         }
 
     }
