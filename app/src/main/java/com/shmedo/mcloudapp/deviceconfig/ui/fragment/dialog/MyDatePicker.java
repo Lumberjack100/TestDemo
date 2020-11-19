@@ -1,6 +1,5 @@
 package com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog;
 
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -50,7 +49,6 @@ public class MyDatePicker extends BaseDialogFragment {
 
     private String[] dateType;
 
-    private Context mContext;
     private String age;
     private String title;
 
@@ -59,12 +57,7 @@ public class MyDatePicker extends BaseDialogFragment {
     private OnPositiveClickListener mListener;
 
 
-    public MyDatePicker(Activity context, String date) {
-        this(context, date, "");
-    }
-
-    public MyDatePicker(Activity context, String date, String title) {
-        this.mContext = context;
+    public MyDatePicker(String date, String title) {
         this.age = TextUtils.isEmpty(date) ? DateUtil.getNowDateYYYYMMDDString() : date;
         this.title = title;
     }
@@ -99,24 +92,24 @@ public class MyDatePicker extends BaseDialogFragment {
             mCurMonth = Integer.parseInt(str[1]) - 1;
             mCurDay = Integer.parseInt(str[2]) - 1;
         }
-        dateType = mContext.getResources().getStringArray(R.array.date);
+        dateType = mActivity.getResources().getStringArray(R.array.date);
 
         // year
-        yearAdapter = new MyDatePicker.DateNumericAdapter(mContext, curYear - YEAR_MAX, curYear + 100);
+        yearAdapter = new MyDatePicker.DateNumericAdapter(mActivity, curYear - YEAR_MAX, curYear + 100);
         yearAdapter.setDataType(dateType[0]);
         year.setViewAdapter(yearAdapter);
         year.setCurrentItem(mCurYear);
         year.addChangingListener(listener);
 
         //month
-        monthAdapter = new DateNumericAdapter(mContext, 1, 12);
+        monthAdapter = new DateNumericAdapter(mActivity, 1, 12);
         monthAdapter.setDataType(dateType[1]);
         month.setViewAdapter(monthAdapter);
         month.setCurrentItem(mCurMonth);
         month.addChangingListener(listener);
 
         //day
-        dayAdapter = new DateNumericAdapter(mContext, 1, 31);
+        dayAdapter = new DateNumericAdapter(mActivity, 1, 31);
         dayAdapter.setDataType(dateType[2]);
         day.setViewAdapter(dayAdapter);
         day.setCurrentItem(mCurDay);
@@ -152,7 +145,7 @@ public class MyDatePicker extends BaseDialogFragment {
         calendar.set(Calendar.DAY_OF_MONTH, 0);
 
         int maxDays = calendar.get(Calendar.DAY_OF_MONTH);
-        dayAdapter = new DateNumericAdapter(mContext, 1, maxDays);
+        dayAdapter = new DateNumericAdapter(mActivity, 1, maxDays);
         dayAdapter.setDataType(dateType[2]);
         day.setViewAdapter(dayAdapter);
 

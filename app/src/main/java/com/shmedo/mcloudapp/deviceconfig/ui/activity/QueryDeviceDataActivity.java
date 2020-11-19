@@ -137,7 +137,7 @@ public class QueryDeviceDataActivity extends BaseActivity {
 //                timeDialog.setTimeLisinter(mTvStartTime);
 //                timeDialog.build();
 
-                MyDatePicker newFragment = new MyDatePicker(this, mTvStartTime.getText().toString(), "选择开始时间");
+                MyDatePicker newFragment = new MyDatePicker(mTvStartTime.getText().toString(), "选择开始时间");
                 newFragment.setOnPositiveClickListener(new MyDatePicker.OnPositiveClickListener() {
                     @Override
                     public void onPositiveClick(String date) {
@@ -149,7 +149,7 @@ public class QueryDeviceDataActivity extends BaseActivity {
             break;
 
             case R.id.tv_end_time: {
-                MyDatePicker newFragment = new MyDatePicker(this, mTvEndTime.getText().toString(), "选择结束时间");
+                MyDatePicker newFragment = new MyDatePicker(mTvEndTime.getText().toString(), "选择结束时间");
                 newFragment.setOnPositiveClickListener(new MyDatePicker.OnPositiveClickListener() {
                     @Override
                     public void onPositiveClick(String date) {

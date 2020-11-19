@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.projects.adapter;
+package com.shmedo.mcloudapp.deviceconfig.adapter;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;

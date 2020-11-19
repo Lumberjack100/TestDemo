@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.deviceconfig.ui.activity;
+package com.shmedo.mcloudapp.deviceconfig.ui.activity.vms;
 
 import android.content.Context;
 import android.content.Intent;
@@ -25,7 +25,7 @@ import com.shmedo.mcloudapp.common.ui.activity.BaseActivity;
 import com.shmedo.mcloudapp.common.view.ClearEditText;
 import com.shmedo.mcloudapp.common.view.recycleviewitemdivider.GridSpacingItemDecoration;
 import com.shmedo.mcloudapp.deviceconfig.viewmodels.VmsViewModel;
-import com.shmedo.mcloudapp.projects.adapter.VmsTerminalInfoAdapter;
+import com.shmedo.mcloudapp.deviceconfig.adapter.VmsTerminalInfoAdapter;
 import com.shmedo.mcloudapp.util.KeyBordUtils;
 
 import java.util.ArrayList;
@@ -67,7 +67,6 @@ public class VmsTerminalSearchActivity extends BaseActivity implements TextWatch
         initView();
         initAdapter();
     }
-
 
     private void initView() {
         mEtKeyWords.setHint("项目名称搜索");

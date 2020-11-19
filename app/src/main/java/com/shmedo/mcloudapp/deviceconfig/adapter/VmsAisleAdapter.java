@@ -20,6 +20,7 @@ public class VmsAisleAdapter extends BaseQuickAdapter<VmsAisleTerminalInfo, Base
 
     public VmsAisleAdapter(@Nullable List<VmsAisleTerminalInfo> data) {
         super(R.layout.item_vms_aisle_info, data);
+        addChildClickViewIds(R.id.tv_terminal_equipment_count);
     }
 
     @Override

@@ -15,7 +15,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
-import com.chad.library.adapter.base.listener.OnItemClickListener;
+import com.chad.library.adapter.base.listener.OnItemChildClickListener;
 import com.hjq.toast.ToastUtils;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandManager;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandResult;
@@ -31,7 +31,7 @@ import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.view.recycleviewitemdivider.GridSpacingItemDecoration;
 import com.shmedo.mcloudapp.deviceconfig.adapter.VmsAisleAdapter;
 import com.shmedo.mcloudapp.deviceconfig.model.TcpConnectionState;
-import com.shmedo.mcloudapp.deviceconfig.ui.activity.VmsTerminalSearchActivity;
+import com.shmedo.mcloudapp.deviceconfig.ui.activity.vms.VmsTerminalSearchActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.BaseTcpConnectFragment;
 import com.thanosfisherman.wifiutils.WifiUtils;
 import com.thanosfisherman.wifiutils.wifiRemove.RemoveErrorCode;
@@ -157,9 +157,9 @@ public class TcpVmsHomeFragment extends BaseTcpConnectFragment {
         //设置每个item间距
         mRecyclerView.addItemDecoration(new GridSpacingItemDecoration(spanCount, spacing, true));
         vmsAisleAdapter = new VmsAisleAdapter(vmsAisleTerminalInfoList);
-        vmsAisleAdapter.setOnItemClickListener(new OnItemClickListener() {
+        vmsAisleAdapter.setOnItemChildClickListener(new OnItemChildClickListener() {
             @Override
-            public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
+            public void onItemChildClick(@NonNull BaseQuickAdapter adapter, @NonNull View view, int position) {
                 if (isDoubleClick(view)) {
                     return;
                 }
@@ -168,6 +168,9 @@ public class TcpVmsHomeFragment extends BaseTcpConnectFragment {
                     return;
                 }
 
+                VmsAisleTerminalInfo vmsAisleTerminalInfo = vmsAisleTerminalInfoList.get(position);
+                TcpVmsTerminalListFragment newFragment = new TcpVmsTerminalListFragment(vmsAisleTerminalInfo);
+                newFragment.show(getChildFragmentManager(), "dialog");
             }
         });
         mRecyclerView.setAdapter(vmsAisleAdapter);

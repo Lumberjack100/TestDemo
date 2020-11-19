@@ -74,6 +74,7 @@ public class SyncInstallationLocationDialog extends BaseDialogFragment {
         return R.layout.fragment_sync_install_location_dialog;
     }
 
+    @Override
     protected void setWindowStyle(int gravity) {
         super.setWindowStyle(Gravity.CENTER);
         Dialog mDialog = getDialog();

@@ -76,6 +76,7 @@ public class FirmWareSelectDialog extends BaseDialogFragment {
         return R.layout.fragment_firm_ware_select_dialog;
     }
 
+    @Override
     protected void setWindowStyle(int gravity) {
         super.setWindowStyle(gravity);
         Dialog mDialog = getDialog();
