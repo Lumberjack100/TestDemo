@@ -1,5 +1,7 @@
 package com.shmedo.configlibrary.iot.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.text.TextUtils;
 
 import java.util.List;
@@ -9,7 +11,7 @@ import java.util.List;
  * 创建时间:  2020/11/13 <br/>
  * 描述：    Vms网关挂载的终端设备信息
  */
-public class TerminalBean {
+public class TerminalBean implements Parcelable {
     /**
      * sn : 253333D
      * addr : 64
@@ -35,6 +37,60 @@ public class TerminalBean {
     private String logintime;//注册时间
     private String lastpackagetime;//最后交互时间
     private List<SensorErrnoBean> sensor_errno;
+
+
+    protected TerminalBean(Parcel in) {
+        sn = in.readString();
+        addr = in.readInt();
+        uprssi = in.readInt();
+        downrssi = in.readInt();
+        tx = in.readInt();
+        rx = in.readInt();
+        if (in.readByte() == 0) {
+            volt = null;
+        } else {
+            volt = in.readDouble();
+        }
+        status = in.readInt();
+        logintime = in.readString();
+        lastpackagetime = in.readString();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(sn);
+        dest.writeInt(addr);
+        dest.writeInt(uprssi);
+        dest.writeInt(downrssi);
+        dest.writeInt(tx);
+        dest.writeInt(rx);
+        if (volt == null) {
+            dest.writeByte((byte) 0);
+        } else {
+            dest.writeByte((byte) 1);
+            dest.writeDouble(volt);
+        }
+        dest.writeInt(status);
+        dest.writeString(logintime);
+        dest.writeString(lastpackagetime);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<TerminalBean> CREATOR = new Creator<TerminalBean>() {
+        @Override
+        public TerminalBean createFromParcel(Parcel in) {
+            return new TerminalBean(in);
+        }
+
+        @Override
+        public TerminalBean[] newArray(int size) {
+            return new TerminalBean[size];
+        }
+    };
 
     public String getSn() {
         return TextUtils.isEmpty(sn) ? "" : sn;

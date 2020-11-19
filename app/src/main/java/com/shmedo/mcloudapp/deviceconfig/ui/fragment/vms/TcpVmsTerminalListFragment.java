@@ -29,10 +29,12 @@ import com.shmedo.configlibrary.iot.model.CommonSettingCmdResult;
 import com.shmedo.configlibrary.iot.model.TerminalBean;
 import com.shmedo.configlibrary.iot.model.VmsAisleTerminalInfo;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
+import com.shmedo.core.AppContants;
 import com.shmedo.core.util.DensityUtil;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.view.recycleviewitemdivider.GridSpacingItemDecoration;
 import com.shmedo.mcloudapp.deviceconfig.adapter.VmsTerminalInfoAdapter;
+import com.shmedo.mcloudapp.deviceconfig.ui.activity.vms.VmsTerminalHomeActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.BaseBottomSheetDialogFragment;
 import com.shmedo.mcloudapp.deviceconfig.viewmodels.TcpShareViewModel;
 import com.shmedo.mcloudapp.deviceconfig.viewmodels.VmsViewModel;
@@ -113,6 +115,7 @@ public class TcpVmsTerminalListFragment extends BaseBottomSheetDialogFragment {
             @Override
             public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
                 terminalBean = terminalBeanList.get(position);
+                VmsTerminalHomeActivity.startActivity(mActivity, AppContants.CommunicationWay.TCP_CONNECT, terminalBean);
             }
         });
         adapter.setOnItemLongClickListener(new OnItemLongClickListener() {

@@ -78,6 +78,11 @@ public enum IOTCommandType {
     MD_DELETE_TERMINAL("md_delterminal"),
 
     /**
+     *  重启Vms终端
+     */
+    MD_REBOOT_TERMINAL("md_rebootterminal"),
+
+    /**
      * 自定义心跳包
      */
     HEART_BEAT("HeartBeatData"),

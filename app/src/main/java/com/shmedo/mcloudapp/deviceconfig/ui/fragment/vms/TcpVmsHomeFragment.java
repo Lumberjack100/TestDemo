@@ -61,7 +61,7 @@ public class TcpVmsHomeFragment extends BaseTcpConnectFragment {
     TextView mTvSubModel;//网关电压
 
     @BindView(R.id.tv_device_state_flag)
-    TextView mTvDeviceState;//通信状态(在线、离线、已连接、已断开)
+    TextView mTvDeviceState;//通信状态(在线、离线)
 
     @BindView(R.id.tv_device_connect_operate)
     TextView mTvDeviceConnectOperate;//Tcp连接状态(断开连接、重新连接)
