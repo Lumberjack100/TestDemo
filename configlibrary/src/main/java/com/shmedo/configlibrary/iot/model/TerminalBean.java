@@ -26,6 +26,9 @@ public class TerminalBean implements Parcelable {
      * lastpackagetime : 2020/09/28 11:23:24
      */
 
+    private int netid;//网络号
+    private int chl;//信道
+
     private String sn;//终端SN号
     private int addr;//终端地址
     private int uprssi;//上行信号强度
@@ -40,6 +43,8 @@ public class TerminalBean implements Parcelable {
 
 
     protected TerminalBean(Parcel in) {
+        netid = in.readInt();
+        chl = in.readInt();
         sn = in.readString();
         addr = in.readInt();
         uprssi = in.readInt();
@@ -58,6 +63,8 @@ public class TerminalBean implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(netid);
+        dest.writeInt(chl);
         dest.writeString(sn);
         dest.writeInt(addr);
         dest.writeInt(uprssi);
@@ -91,6 +98,22 @@ public class TerminalBean implements Parcelable {
             return new TerminalBean[size];
         }
     };
+
+    public int getNetid() {
+        return netid;
+    }
+
+    public void setNetid(int netid) {
+        this.netid = netid;
+    }
+
+    public int getChl() {
+        return chl;
+    }
+
+    public void setChl(int chl) {
+        this.chl = chl;
+    }
 
     public String getSn() {
         return TextUtils.isEmpty(sn) ? "" : sn;

@@ -23,6 +23,7 @@ import com.shmedo.configlibrary.iot.cmd.entity.VmsAisleNumberEntity;
 import com.shmedo.configlibrary.iot.cmd.parser.IOTParseManager;
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.enums.VmsAisleNumber;
+import com.shmedo.configlibrary.iot.model.TerminalBean;
 import com.shmedo.configlibrary.iot.model.VmsAisleTerminalInfo;
 import com.shmedo.configlibrary.iot.model.VmsBaseInfo;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
@@ -256,6 +257,7 @@ public class TcpVmsHomeFragment extends BaseTcpConnectFragment {
                     return;
                 }
                 VmsAisleTerminalInfo vmsAisleTerminalInfo = commandResult.getResult();
+                modifyAisleTerminalInfo(vmsAisleTerminalInfo);
 
                 if (vmsAisleTerminalInfo.getChannel() == 0) {
                     vmsViewModel.clearTerminalList();
@@ -280,6 +282,24 @@ public class TcpVmsHomeFragment extends BaseTcpConnectFragment {
             default:
                 super.parseResponseMessage(cmdStr);
                 break;
+        }
+    }
+
+    /**
+     * 修改某个通道下接入的的终端信息，设置终端的网络号、信道号与所属通道一致
+     *
+     * @param vmsAisleTerminalInfo
+     */
+    private void modifyAisleTerminalInfo(VmsAisleTerminalInfo vmsAisleTerminalInfo) {
+        if (vmsAisleTerminalInfo == null)
+            return;
+
+        if (vmsAisleTerminalInfo.getTerminal() == null)
+            return;
+
+        for (TerminalBean terminalBean : vmsAisleTerminalInfo.getTerminal()) {
+            terminalBean.setNetid(vmsAisleTerminalInfo.getNetid());
+            terminalBean.setChl(vmsAisleTerminalInfo.getChl());
         }
     }
 

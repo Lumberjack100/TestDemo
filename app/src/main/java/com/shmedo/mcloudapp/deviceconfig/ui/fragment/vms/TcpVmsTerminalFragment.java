@@ -29,6 +29,7 @@ import com.shmedo.mcloudapp.common.view.recycleviewitemdivider.GridSpacingItemDe
 import com.shmedo.mcloudapp.deviceconfig.adapter.ConfigModuleAdapter;
 import com.shmedo.mcloudapp.deviceconfig.model.ConfigModule;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.BaseTcpConnectFragment;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.BaseDialogFragment;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -117,7 +118,7 @@ public class TcpVmsTerminalFragment extends BaseTcpConnectFragment {
         if (terminalBean != null) {
             mTvDeviceName.setText("VMS终端");
             mTvDeviceSn.setText(String.format("设备编号：%s", terminalBean.getSn()));
-            mTvProductModel.setText(String.format("固件版本：%s", terminalBean.getSn()));
+            mTvProductModel.setText(String.format("固件版本：%s", ""));
             mTvTime.setText(String.format("接入网关时间：%s", terminalBean.getLogintime()));
             if (terminalBean.getStatus() != 0) {
                 mTvDeviceState.setVisibility(View.VISIBLE);
@@ -156,8 +157,11 @@ public class TcpVmsTerminalFragment extends BaseTcpConnectFragment {
     }
 
     private void processItemClick() {
+        BaseDialogFragment newFragment = null;
         switch (selectedConfigModule.getName()) {
             case "状态":
+                newFragment = VmsTerminalCurrentStateDialog.newInstance(terminalBean);
+                newFragment.show(getChildFragmentManager(), "dialog");
                 break;
 
             case "遥测":
@@ -254,7 +258,6 @@ public class TcpVmsTerminalFragment extends BaseTcpConnectFragment {
 
         }
     }
-
 
 
 }
