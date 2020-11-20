@@ -18,7 +18,9 @@ import com.shmedo.mcloudapp.deviceconfig.ui.fragment.vms.TcpVmsTerminalCurrentSt
 import butterknife.BindView;
 
 /**
- * Vms 终端运行状态
+ * 创建者:   gonghe <br/>
+ * 创建时间:  2020/11/20 <br/>
+ * 描述：     Vms 网关终端运行状态详情页面
  */
 public class VmsTerminalCurrentStateActivity extends BaseActivity {
     private static final String DEVICE_INFO = "device_info";

@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.deviceconfig.ui.activity;
+package com.shmedo.mcloudapp.deviceconfig.ui.activity.sensor;
 
 import android.content.Context;
 import android.content.Intent;
@@ -12,57 +12,39 @@ import androidx.fragment.app.FragmentTransaction;
 import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.activity.BaseActivity;
-import com.shmedo.mcloudapp.deviceconfig.ui.fragment.BleCollectorSettingFragment;
-import com.shmedo.mcloudapp.deviceconfig.ui.fragment.NetCollectorSettingFragment;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.sensor.BleDasSensorConfigFragment;
 
 import butterknife.BindView;
 
 /**
- * 创建者:   gonghe <br/>
- * 创建时间:  2020/11/20<br/>
- * 描述：     Das 采集器配置主页面
+ * DAS 传感器配置页面
  */
-public class DASCollectorSettingActivity extends BaseActivity {
-    private static final String DEVICE_ID = "device_id";
+public class DasSensorConfigActivity extends BaseActivity {
 
     @BindView(R.id.tv_title)
     TextView mToolbarTitle;
 
     private int connectWay = AppContants.CommunicationWay.NET_PLATFORM_CONNECT;
 
-    private int deviceid;
-
-    private String collectorModel = "";//采集器类型
-
     private Fragment fragment;
 
-
-    public static void startActivity(Context context, int deviceid) {
-        Intent intent = new Intent(context, DASCollectorSettingActivity.class);
-        intent.putExtra(DEVICE_ID, deviceid);
-        intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        context.startActivity(intent);
-    }
-
-    public static void startActivity(Context context, int connectWay, String collectorModel) {
-        Intent intent = new Intent(context, DASCollectorSettingActivity.class);
+    public static void startActivity(Context context, int connectWay) {
+        Intent intent = new Intent(context, DasSensorConfigActivity.class);
         intent.putExtra(AppContants.Extras.COMMUNICATION_WAY, connectWay);
-        intent.putExtra(AppContants.Extras.COLLECTOR_MODE, collectorModel);
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         context.startActivity(intent);
     }
-
 
     @Override
     protected int getLayoutId() {
-        return R.layout.activity_das_collector_setting;
+        return R.layout.activity_das_sensor_config;
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setToolBar(R.id.toolbar);
-        mToolbarTitle.setText("采集器配置");
+        mToolbarTitle.setText("传感器配置");
         parseIntent();
         initFragment();
     }
@@ -75,21 +57,13 @@ public class DASCollectorSettingActivity extends BaseActivity {
         if (intent.getExtras().containsKey(AppContants.Extras.COMMUNICATION_WAY)) {
             connectWay = intent.getIntExtra(AppContants.Extras.COMMUNICATION_WAY, AppContants.CommunicationWay.NET_PLATFORM_CONNECT);
         }
-
-        if (intent.getExtras().containsKey(DEVICE_ID)) {
-            deviceid = intent.getIntExtra(DEVICE_ID, -1);
-        }
-
-        if (intent.getExtras().containsKey(AppContants.Extras.COLLECTOR_MODE)) {
-            collectorModel = intent.getStringExtra(AppContants.Extras.COLLECTOR_MODE);
-        }
     }
 
     private void initFragment() {
         if (connectWay == AppContants.CommunicationWay.NET_PLATFORM_CONNECT) {
-            fragment = NetCollectorSettingFragment.newInstance(deviceid);
+
         } else {
-            fragment = BleCollectorSettingFragment.newInstance(collectorModel);
+            fragment = new BleDasSensorConfigFragment();
         }
 
         replaceFragment(fragment);

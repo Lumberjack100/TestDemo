@@ -17,6 +17,11 @@ import com.shmedo.mcloudapp.deviceconfig.ui.fragment.vms.TcpVmsAisleSettingFragm
 
 import butterknife.BindView;
 
+/**
+ * 创建者:   gonghe <br/>
+ * 创建时间:  2020/11/20 <br/>
+ * 描述：     Vms 网关通道控制参数配置
+ */
 public class VmsAisleSettingActivity extends BaseActivity {
     private static final String VMS_AISLE_NUMBER = "vms_aisle_number";
 

@@ -42,6 +42,11 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.RequestBody;
 
+/**
+ * 创建者:   gonghe <br/>
+ * 创建时间:  2020/11/20<br/>
+ * 描述：    查询设备数据页面
+ */
 public class QueryDeviceDataActivity extends BaseActivity {
     @BindView(R.id.tv_title)
     TextView mToolbarTitle;

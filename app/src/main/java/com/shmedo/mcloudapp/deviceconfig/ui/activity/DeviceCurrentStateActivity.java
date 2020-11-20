@@ -19,10 +19,15 @@ import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfo;
 
 import butterknife.BindView;
 
+/**
+ * 创建者:   gonghe <br/>
+ * 创建时间:  2020/11/20<br/>
+ * 描述：     Das运行状态页面
+ */
 public class DeviceCurrentStateActivity extends BaseActivity {
     private static final String DEVICE_INFO = "device_info";
     private static final String DEVICE_CURRENT_STATE = "device_current_state";
-    
+
 
     @BindView(R.id.tv_title)
     TextView mToolbarTitle;

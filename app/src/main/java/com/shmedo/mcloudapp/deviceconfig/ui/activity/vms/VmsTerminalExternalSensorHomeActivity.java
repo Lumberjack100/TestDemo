@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.deviceconfig.ui.activity.sensor;
+package com.shmedo.mcloudapp.deviceconfig.ui.activity.vms;
 
 import android.content.Context;
 import android.content.Intent;
@@ -12,15 +12,16 @@ import androidx.fragment.app.FragmentTransaction;
 import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.activity.BaseActivity;
-import com.shmedo.mcloudapp.deviceconfig.ui.fragment.sensor.BleDASSensorFragment;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.vms.TcpVmsTerminalExternalSensorHomeFragment;
 
 import butterknife.BindView;
 
 /**
- * DAS 传感器配置
+ * 创建者:   gonghe <br/>
+ * 创建时间:  2020/11/20<br/>
+ * 描述：     Vms网关挂载的终端扩展传感器主页面
  */
-public class DASSensorConfigActivity extends BaseActivity {
-
+public class VmsTerminalExternalSensorHomeActivity extends BaseActivity {
     @BindView(R.id.tv_title)
     TextView mToolbarTitle;
 
@@ -29,7 +30,7 @@ public class DASSensorConfigActivity extends BaseActivity {
     private Fragment fragment;
 
     public static void startActivity(Context context, int connectWay) {
-        Intent intent = new Intent(context, DASSensorConfigActivity.class);
+        Intent intent = new Intent(context, VmsTerminalExternalSensorHomeActivity.class);
         intent.putExtra(AppContants.Extras.COMMUNICATION_WAY, connectWay);
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         context.startActivity(intent);
@@ -37,14 +38,15 @@ public class DASSensorConfigActivity extends BaseActivity {
 
     @Override
     protected int getLayoutId() {
-        return R.layout.activity_d_a_s_sensor_config;
+        return R.layout.vms_terminal_sensor_home_activity;
     }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setToolBar(R.id.toolbar);
-        mToolbarTitle.setText("传感器配置");
+        mToolbarTitle.setText("扩展传感器配置");
         parseIntent();
         initFragment();
     }
@@ -62,13 +64,12 @@ public class DASSensorConfigActivity extends BaseActivity {
     private void initFragment() {
         if (connectWay == AppContants.CommunicationWay.NET_PLATFORM_CONNECT) {
 
-        } else {
-            fragment = new BleDASSensorFragment();
+        } else if (connectWay == AppContants.CommunicationWay.TCP_CONNECT) {
+            fragment = TcpVmsTerminalExternalSensorHomeFragment.newInstance();
         }
 
         replaceFragment(fragment);
     }
-
 
     private void replaceFragment(Fragment fragment) {
         FragmentManager fragmentManager = getSupportFragmentManager();

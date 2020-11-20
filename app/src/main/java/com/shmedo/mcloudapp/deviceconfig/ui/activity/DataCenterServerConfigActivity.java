@@ -17,6 +17,11 @@ import com.shmedo.mcloudapp.deviceconfig.ui.fragment.BleDataCenterServerConfigFr
 
 import butterknife.BindView;
 
+/**
+ * 创建者:   gonghe <br/>
+ * 创建时间:  2020/11/20<br/>
+ * 描述：     Das 数据中心参数配置页面
+ */
 public class DataCenterServerConfigActivity extends BaseActivity {
     private static final String SERVER_NUMBER = "server_number";
 

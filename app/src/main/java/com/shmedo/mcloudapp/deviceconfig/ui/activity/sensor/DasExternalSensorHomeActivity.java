@@ -1,24 +1,29 @@
 package com.shmedo.mcloudapp.deviceconfig.ui.activity.sensor;
 
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.TextView;
 
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+
 import com.shmedo.configlibrary.ble.enums.CollectorModel;
 import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.activity.BaseActivity;
-import com.shmedo.mcloudapp.deviceconfig.ui.fragment.sensor.BleDASExternalDigtalSensorFragment;
-import com.shmedo.mcloudapp.deviceconfig.ui.fragment.sensor.BleDASExternalVibratingWireSensorFragment;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.sensor.BleDasExternalDigtalSensorFragment;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.sensor.BleDasExternalVibratingWireSensorFragment;
 
 import butterknife.BindView;
 
-public class DASExternalSensorActivity extends BaseActivity {
+/**
+ * 创建者:   gonghe <br/>
+ * 创建时间:  2020/11/20<br/>
+ * 描述：     Das 扩展传感器配置主页面
+ */
+public class DasExternalSensorHomeActivity extends BaseActivity {
     @BindView(R.id.tv_title)
     TextView mToolbarTitle;
 
@@ -30,7 +35,7 @@ public class DASExternalSensorActivity extends BaseActivity {
 
 
     public static void startActivity(Context context, int connectWay, String collectorModel) {
-        Intent intent = new Intent(context, DASExternalSensorActivity.class);
+        Intent intent = new Intent(context, DasExternalSensorHomeActivity.class);
         intent.putExtra(AppContants.Extras.COMMUNICATION_WAY, connectWay);
         intent.putExtra(AppContants.Extras.COLLECTOR_MODE, collectorModel);
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
@@ -39,7 +44,7 @@ public class DASExternalSensorActivity extends BaseActivity {
 
     @Override
     protected int getLayoutId() {
-        return R.layout.activity_d_a_s_external_sensor;
+        return R.layout.activity_das_external_sensor_home;
     }
 
     @Override
@@ -73,9 +78,9 @@ public class DASExternalSensorActivity extends BaseActivity {
     private void initFragment() {
         if (connectWay == AppContants.CommunicationWay.BLE_CONNECT) {
             if (CollectorModel.value(collectorModel) == CollectorModel.VW08) {//振弦式传感器
-                fragment = BleDASExternalVibratingWireSensorFragment.newInstance(collectorModel);
+                fragment = BleDasExternalVibratingWireSensorFragment.newInstance(collectorModel);
             } else { //数字式传感器
-                fragment = BleDASExternalDigtalSensorFragment.newInstance(collectorModel);
+                fragment = BleDasExternalDigtalSensorFragment.newInstance(collectorModel);
             }
         }
         replaceFragment(fragment);

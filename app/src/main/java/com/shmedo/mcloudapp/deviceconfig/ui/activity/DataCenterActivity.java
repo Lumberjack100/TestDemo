@@ -16,6 +16,11 @@ import com.shmedo.mcloudapp.deviceconfig.ui.fragment.BleDataCenterFragment;
 
 import butterknife.BindView;
 
+/**
+ * 创建者:   gonghe <br/>
+ * 创建时间:  2020/11/20<br/>
+ * 描述：     Das 数据中心配置主页面
+ */
 public class DataCenterActivity extends BaseActivity {
 
     @BindView(R.id.tv_title)

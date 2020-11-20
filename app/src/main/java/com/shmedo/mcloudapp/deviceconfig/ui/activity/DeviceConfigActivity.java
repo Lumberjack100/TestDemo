@@ -21,10 +21,13 @@ import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfo;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-
+/**
+ * 创建者:   gonghe <br/>
+ * 创建时间:  2020/11/20<br/>
+ * 描述：     Das设备配置页面
+ */
 public class DeviceConfigActivity extends BaseActivity {
     private static final String DEVICE_INFO = "device_info";
-
 
     @BindView(R.id.tv_title)
     TextView mToolbarTitle;

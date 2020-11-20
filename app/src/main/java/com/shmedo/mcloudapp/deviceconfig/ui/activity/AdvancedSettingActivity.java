@@ -18,6 +18,11 @@ import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfo;
 
 import butterknife.BindView;
 
+/**
+ * 创建者:   gonghe <br/>
+ * 创建时间:  2020/11/20<br/>
+ * 描述：     Das高级设置页面
+ */
 public class AdvancedSettingActivity extends BaseActivity {
     private static final String DEVICE_INFO = "device_info";
 

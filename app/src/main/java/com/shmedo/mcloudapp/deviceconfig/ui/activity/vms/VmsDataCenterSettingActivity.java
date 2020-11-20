@@ -17,6 +17,11 @@ import com.shmedo.mcloudapp.deviceconfig.ui.fragment.vms.TcpVmsDataCenterSetting
 
 import butterknife.BindView;
 
+/**
+ * 创建者:   gonghe <br/>
+ * 创建时间:  2020/11/20 <br/>
+ * 描述：     Vms 网关数据中心参数配置
+ */
 public class VmsDataCenterSettingActivity extends BaseActivity {
     private static final String SERVER_NUMBER = "server_number";
 

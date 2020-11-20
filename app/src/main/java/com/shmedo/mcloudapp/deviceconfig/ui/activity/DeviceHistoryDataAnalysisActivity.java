@@ -34,6 +34,11 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.RequestBody;
 
+/**
+ * 创建者:   gonghe <br/>
+ * 创建时间:  2020/11/20<br/>
+ * 描述：     Das 运行数据分析页面
+ */
 public class DeviceHistoryDataAnalysisActivity extends BaseActivity {
     private static final String DEVICE_INFO = "device_info";
 
@@ -211,7 +216,7 @@ public class DeviceHistoryDataAnalysisActivity extends BaseActivity {
                                     return;
                                 }
                                 updateDeviceState(data.getCurrentPageData().get(0));
-                            }else{
+                            } else {
                                 if (!TextUtils.isEmpty(errCode.getErrMessage())) {
                                     ToastUtils.show(errCode.getErrMessage());
                                 }

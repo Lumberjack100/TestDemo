@@ -36,8 +36,8 @@ import com.shmedo.core.MCloudApp;
 import com.shmedo.core.util.DensityUtil;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.view.recycleviewitemdivider.GridSpacingItemDecoration;
-import com.shmedo.mcloudapp.deviceconfig.ui.activity.sensor.ExternalDigitalSensorActivity;
-import com.shmedo.mcloudapp.deviceconfig.ui.activity.sensor.ExternalVibratingWireSensorActivity;
+import com.shmedo.mcloudapp.deviceconfig.ui.activity.sensor.DasExternalDigitalSensorActivity;
+import com.shmedo.mcloudapp.deviceconfig.ui.activity.sensor.DasExternalVibratingWireSensorActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.BaseBleConnectFragment;
 import com.shmedo.mcloudapp.projects.adapter.DASSensorAdapter;
 import com.shmedo.mcloudapp.projects.model.DASSensorItem;
@@ -55,7 +55,7 @@ import timber.log.Timber;
 /**
  * DAS扩展传感器配置页面
  */
-public abstract class BaseBleDASExternalSensorFragment extends BaseBleConnectFragment {
+public abstract class BaseBleDasExternalSensorFragment extends BaseBleConnectFragment {
     private static final int REQUEST_CODE_SENSOR_CONFIG = 0x0102;
 
     @BindView(R.id.recyclerview_sensor)
@@ -172,10 +172,10 @@ public abstract class BaseBleDASExternalSensorFragment extends BaseBleConnectFra
         }
 
         if (CollectorModel.value(collectorModelValue) == CollectorModel.VW08) {//振弦式传感器
-            ExternalVibratingWireSensorActivity.startActivityForResultByFragment(this, REQUEST_CODE_SENSOR_CONFIG, addressList, curSensorAddress, sensorType, parcelableData);
+            DasExternalVibratingWireSensorActivity.startActivityForResultByFragment(this, REQUEST_CODE_SENSOR_CONFIG, addressList, curSensorAddress, sensorType, parcelableData);
 
         } else { //数字式传感器
-            ExternalDigitalSensorActivity.startActivityForResultByFragment(this, REQUEST_CODE_SENSOR_CONFIG, addressList, curSensorAddress, sensorType, parcelableData);
+            DasExternalDigitalSensorActivity.startActivityForResultByFragment(this, REQUEST_CODE_SENSOR_CONFIG, addressList, curSensorAddress, sensorType, parcelableData);
         }
     }
 

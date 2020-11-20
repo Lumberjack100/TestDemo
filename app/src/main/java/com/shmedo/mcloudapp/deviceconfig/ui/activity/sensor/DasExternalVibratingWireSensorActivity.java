@@ -45,9 +45,9 @@ import timber.log.Timber;
 /**
  * 创建者:   gonghe <br/>
  * 创建时间:  2020/10/14 <br/>
- * 描述：     振弦式传感器参数配置页面
+ * 描述：     Das振弦式传感器参数配置页面
  */
-public class ExternalVibratingWireSensorActivity extends BaseActivity {
+public class DasExternalVibratingWireSensorActivity extends BaseActivity {
     private static final String SENSOR_ITEM_LIST = "sensor_item_list";
 
     @BindView(R.id.tv_title)
@@ -84,7 +84,7 @@ public class ExternalVibratingWireSensorActivity extends BaseActivity {
 
 
     public static void startActivityForResultByFragment(Fragment context, int requestCode, ArrayList<String> addressList, String sensorAddress, SensorType sensorType, Parcelable parcelable) {
-        Intent intent = new Intent(context.getActivity(), ExternalVibratingWireSensorActivity.class);
+        Intent intent = new Intent(context.getActivity(), DasExternalVibratingWireSensorActivity.class);
         intent.putStringArrayListExtra(SENSOR_ITEM_LIST, addressList);
         intent.putExtra(AppContants.Extras.SENSOR_ADDRESS, sensorAddress);
         intent.putExtra(AppContants.Extras.SENSOR_TYPE, sensorType);
@@ -95,7 +95,7 @@ public class ExternalVibratingWireSensorActivity extends BaseActivity {
 
     @Override
     protected int getLayoutId() {
-        return R.layout.activity_external_vibrating_wire_sensor;
+        return R.layout.activity_das_external_vibrating_wire_sensor;
     }
 
     @Override
@@ -206,7 +206,7 @@ public class ExternalVibratingWireSensorActivity extends BaseActivity {
                 break;
 
             case R.id.right_icon:
-                PermissionHelper.requestScanPermissions(ExternalVibratingWireSensorActivity.this);
+                PermissionHelper.requestScanPermissions(DasExternalVibratingWireSensorActivity.this);
                 break;
 
             case R.id.btn_confirm:

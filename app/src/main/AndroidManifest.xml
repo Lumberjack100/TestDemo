@@ -49,6 +49,7 @@
         tools:ignore="LockedOrientationActivity"
         tools:replace="android:name"
         tools:targetApi="p">
+        <activity android:name=".deviceconfig.ui.activity.vms.VmsTerminalExternalSensorHomeActivity"></activity>
         <activity android:name=".deviceconfig.ui.TestAActivity" /> <!-- 声明最小宽高比 -->
         <meta-data
             android:name="android.min_aspect"
@@ -240,7 +241,7 @@
             android:screenOrientation="portrait"
             android:theme="@style/LightStatusBarActivity" />
         <activity
-            android:name=".deviceconfig.ui.activity.sensor.DASSensorConfigActivity"
+            android:name=".deviceconfig.ui.activity.sensor.DasSensorConfigActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:maxAspectRatio="2.4"
             android:screenOrientation="portrait"
@@ -258,19 +259,19 @@
             android:screenOrientation="portrait"
             android:theme="@style/LightStatusBarActivity" />
         <activity
-            android:name=".deviceconfig.ui.activity.sensor.DASExternalSensorActivity"
+            android:name=".deviceconfig.ui.activity.sensor.DasExternalSensorHomeActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:maxAspectRatio="2.4"
             android:screenOrientation="portrait"
             android:theme="@style/LightStatusBarActivity" />
         <activity
-            android:name=".deviceconfig.ui.activity.sensor.ExternalVibratingWireSensorActivity"
+            android:name=".deviceconfig.ui.activity.sensor.DasExternalVibratingWireSensorActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:maxAspectRatio="2.4"
             android:screenOrientation="portrait"
             android:theme="@style/LightStatusBarActivity" />
         <activity
-            android:name=".deviceconfig.ui.activity.sensor.ExternalDigitalSensorActivity"
+            android:name=".deviceconfig.ui.activity.sensor.DasExternalDigitalSensorActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:maxAspectRatio="2.4"
             android:screenOrientation="portrait"
@@ -317,7 +318,6 @@
             android:maxAspectRatio="2.4"
             android:screenOrientation="portrait"
             android:theme="@style/LightStatusBarActivity" />
-
         <activity
             android:name=".ddshare.DDShareActivity"
             android:exported="true"

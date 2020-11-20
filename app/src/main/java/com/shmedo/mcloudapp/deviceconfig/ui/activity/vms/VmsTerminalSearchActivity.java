@@ -34,6 +34,11 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.OnClick;
 
+/**
+ * 创建者:   gonghe <br/>
+ * 创建时间:  2020/11/19 <br/>
+ * 描述：     Vms网关挂载的终端设备搜索页面
+ */
 public class VmsTerminalSearchActivity extends BaseActivity implements TextWatcher {
     @BindView(R.id.et_keywords)
     ClearEditText mEtKeyWords;

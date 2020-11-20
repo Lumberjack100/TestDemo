@@ -24,7 +24,7 @@ import timber.log.Timber;
  * 创建时间:  2020/10/15 <br/>
  * 描述：    外接振弦式传感器
  */
-public class BleDASExternalVibratingWireSensorFragment extends BaseBleDASExternalSensorFragment {
+public class BleDasExternalVibratingWireSensorFragment extends BaseBleDasExternalSensorFragment {
     /**
      * 传感器除了报警值外其他修正参数配置指令集合
      */
@@ -40,8 +40,8 @@ public class BleDASExternalVibratingWireSensorFragment extends BaseBleDASExterna
      */
     private String curConfigItemName;
 
-    public static BaseBleDASExternalSensorFragment newInstance(String collectorModel) {
-        BaseBleDASExternalSensorFragment fragment = new BleDASExternalVibratingWireSensorFragment();
+    public static BaseBleDasExternalSensorFragment newInstance(String collectorModel) {
+        BaseBleDasExternalSensorFragment fragment = new BleDasExternalVibratingWireSensorFragment();
         Bundle args = new Bundle();
         args.putString(AppContants.Extras.COLLECTOR_MODE, collectorModel);
         fragment.setArguments(args);

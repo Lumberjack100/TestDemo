@@ -48,7 +48,7 @@ import com.shmedo.mcloudapp.deviceconfig.ui.activity.DASCollectorSettingActivity
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.DataCenterActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.DeviceConfigActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.DeviceCurrentStateActivity;
-import com.shmedo.mcloudapp.deviceconfig.ui.activity.sensor.DASSensorConfigActivity;
+import com.shmedo.mcloudapp.deviceconfig.ui.activity.sensor.DasSensorConfigActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.BaseDialogFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.FirmWareSelectDialog;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd.BaseDispatchCmdDialog;
@@ -307,7 +307,7 @@ public class BleConfigDeviceFragment extends BaseBleConnectFragment {
                 break;
 
             case "传感器配置":
-                DASSensorConfigActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT);
+                DasSensorConfigActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT);
                 break;
 
             case "数据中心":

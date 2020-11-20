@@ -19,6 +19,11 @@ import com.shmedo.mcloudapp.deviceconfig.ui.fragment.vms.TcpVmsHomeFragment;
 import butterknife.BindView;
 import butterknife.OnClick;
 
+/**
+ * 创建者:   gonghe <br/>
+ * 创建时间:  2020/11/20 <br/>
+ * 描述：     Vms 网关主页面
+ */
 public class VmsHomeActivity extends BaseActivity {
 
     @BindView(R.id.tv_title)

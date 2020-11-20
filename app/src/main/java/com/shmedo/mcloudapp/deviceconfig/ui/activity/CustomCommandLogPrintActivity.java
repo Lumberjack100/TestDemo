@@ -28,7 +28,7 @@ import gdut.bsx.share2.Share2;
 import gdut.bsx.share2.ShareContentType;
 
 /**
- *
+ * 指令日志调试页面
  */
 public class CustomCommandLogPrintActivity extends BaseActivity {
     @BindView(R.id.tv_title)

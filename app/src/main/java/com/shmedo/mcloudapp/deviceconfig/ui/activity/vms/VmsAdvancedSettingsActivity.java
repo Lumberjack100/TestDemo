@@ -15,7 +15,11 @@ import com.shmedo.mcloudapp.common.ui.activity.BaseActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.vms.TcpVmsAdvancedSettingsFragment;
 
 import butterknife.BindView;
-
+/**
+ * 创建者:   gonghe <br/>
+ * 创建时间:  2020/11/20 <br/>
+ * 描述：     Vms 网关高级设置页面
+ */
 public class VmsAdvancedSettingsActivity extends BaseActivity {
     @BindView(R.id.tv_title)
     TextView mToolbarTitle;

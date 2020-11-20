@@ -36,9 +36,9 @@ import timber.log.Timber;
 /**
  * 创建者:   gonghe <br/>
  * 创建时间:  2020/10/14 <br/>
- * 描述：    数字传感器参数配置页面
+ * 描述：     Das数字传感器参数配置页面
  */
-public class ExternalDigitalSensorActivity extends BaseActivity {
+public class DasExternalDigitalSensorActivity extends BaseActivity {
     private static final String SENSOR_ITEM_LIST = "sensor_item_list";
 
     @BindView(R.id.tv_title)
@@ -72,7 +72,7 @@ public class ExternalDigitalSensorActivity extends BaseActivity {
 
 
     public static void startActivityForResultByFragment(Fragment context, int requestCode, ArrayList<String> addressList, String sensorAddress, SensorType sensorType, Parcelable parcelable) {
-        Intent intent = new Intent(context.getActivity(), ExternalDigitalSensorActivity.class);
+        Intent intent = new Intent(context.getActivity(), DasExternalDigitalSensorActivity.class);
         intent.putStringArrayListExtra(SENSOR_ITEM_LIST, addressList);
         intent.putExtra(AppContants.Extras.SENSOR_ADDRESS, sensorAddress);
         intent.putExtra(AppContants.Extras.SENSOR_TYPE, sensorType);
@@ -83,7 +83,7 @@ public class ExternalDigitalSensorActivity extends BaseActivity {
 
     @Override
     protected int getLayoutId() {
-        return R.layout.activity_external_digital_sensor;
+        return R.layout.activity_das_external_digital_sensor;
     }
 
     @Override
