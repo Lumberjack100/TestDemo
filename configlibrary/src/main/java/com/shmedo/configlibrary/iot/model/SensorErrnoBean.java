@@ -1,52 +1,116 @@
 package com.shmedo.configlibrary.iot.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * 创建者:   gonghe <br/>
  * 创建时间:  2020/11/13 <br/>
  * 描述：    传感器错误码实体
  */
-public class SensorErrnoBean {
+public class SensorErrnoBean implements Parcelable {
+
     /**
-     * sensoraddr : 0
-     * sensortype : 58
+     * id : 0
+     * name : 10005_1
      * errno : -4
-     * sensorval : 0
+     * val : 14213
      */
 
-    private int sensoraddr;
-    private int sensortype;
-    private int errno;//传感器错误码
-    private int sensorval;
+    private Integer id;//传感器通道号
+    private String name;//传感器名称
+    private Integer errno;//错误码
+    private Integer val;//值
 
-    public int getSensoraddr() {
-        return sensoraddr;
+
+    protected SensorErrnoBean(Parcel in) {
+        if (in.readByte() == 0) {
+            id = null;
+        } else {
+            id = in.readInt();
+        }
+        name = in.readString();
+        if (in.readByte() == 0) {
+            errno = null;
+        } else {
+            errno = in.readInt();
+        }
+        if (in.readByte() == 0) {
+            val = null;
+        } else {
+            val = in.readInt();
+        }
     }
 
-    public void setSensoraddr(int sensoraddr) {
-        this.sensoraddr = sensoraddr;
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        if (id == null) {
+            dest.writeByte((byte) 0);
+        } else {
+            dest.writeByte((byte) 1);
+            dest.writeInt(id);
+        }
+        dest.writeString(name);
+        if (errno == null) {
+            dest.writeByte((byte) 0);
+        } else {
+            dest.writeByte((byte) 1);
+            dest.writeInt(errno);
+        }
+        if (val == null) {
+            dest.writeByte((byte) 0);
+        } else {
+            dest.writeByte((byte) 1);
+            dest.writeInt(val);
+        }
     }
 
-    public int getSensortype() {
-        return sensortype;
+    @Override
+    public int describeContents() {
+        return 0;
     }
 
-    public void setSensortype(int sensortype) {
-        this.sensortype = sensortype;
+    public static final Creator<SensorErrnoBean> CREATOR = new Creator<SensorErrnoBean>() {
+        @Override
+        public SensorErrnoBean createFromParcel(Parcel in) {
+            return new SensorErrnoBean(in);
+        }
+
+        @Override
+        public SensorErrnoBean[] newArray(int size) {
+            return new SensorErrnoBean[size];
+        }
+    };
+
+    public Integer getId() {
+        return id;
     }
 
-    public int getErrno() {
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Integer getErrno() {
         return errno;
     }
 
-    public void setErrno(int errno) {
+    public void setErrno(Integer errno) {
         this.errno = errno;
     }
 
-    public int getSensorval() {
-        return sensorval;
+    public Integer getVal() {
+        return val;
     }
 
-    public void setSensorval(int sensorval) {
-        this.sensorval = sensorval;
+    public void setVal(Integer val) {
+        this.val = val;
     }
 }

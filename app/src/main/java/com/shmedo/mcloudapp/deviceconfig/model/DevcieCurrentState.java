@@ -4,8 +4,10 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.google.gson.annotations.SerializedName;
+import com.shmedo.configlibrary.iot.model.SensorErrnoBean;
 
 import java.util.List;
+
 
 /**
  * 创建者:   gonghe <br/>

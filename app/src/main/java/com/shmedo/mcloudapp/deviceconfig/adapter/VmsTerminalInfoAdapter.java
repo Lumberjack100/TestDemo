@@ -13,7 +13,7 @@ import java.util.List;
 /**
  * 创建者:   gonghe <br/>
  * 创建时间:  2020/11/13 <br/>
- * 描述：     TODO
+ * 描述：       Vms 终端信息适配器
  */
 public class VmsTerminalInfoAdapter extends BaseQuickAdapter<TerminalBean, BaseViewHolder> {
 

@@ -39,7 +39,7 @@ public class TerminalBean implements Parcelable {
     private int status;//终端在线状态 0:离线，1：在线
     private String logintime;//注册时间
     private String lastpackagetime;//最后交互时间
-    private List<SensorErrnoBean> sensor_errno;
+    private List<SensorErrnoBean> sensor;
 
 
     protected TerminalBean(Parcel in) {
@@ -59,6 +59,7 @@ public class TerminalBean implements Parcelable {
         status = in.readInt();
         logintime = in.readString();
         lastpackagetime = in.readString();
+        sensor = in.createTypedArrayList(SensorErrnoBean.CREATOR);
     }
 
     @Override
@@ -80,6 +81,7 @@ public class TerminalBean implements Parcelable {
         dest.writeInt(status);
         dest.writeString(logintime);
         dest.writeString(lastpackagetime);
+        dest.writeTypedList(sensor);
     }
 
     @Override
@@ -195,12 +197,12 @@ public class TerminalBean implements Parcelable {
         this.lastpackagetime = lastpackagetime;
     }
 
-    public List<SensorErrnoBean> getSensor_errno() {
-        return sensor_errno;
+    public List<SensorErrnoBean> getSensor() {
+        return sensor;
     }
 
-    public void setSensor_errno(List<SensorErrnoBean> sensor_errno) {
-        this.sensor_errno = sensor_errno;
+    public void setSensor(List<SensorErrnoBean> sensor) {
+        this.sensor = sensor;
     }
 
 }
