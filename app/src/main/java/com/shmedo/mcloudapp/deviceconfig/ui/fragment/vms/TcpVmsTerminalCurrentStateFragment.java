@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.shmedo.configlibrary.iot.model.SensorErrnoBean;
 import com.shmedo.configlibrary.iot.model.TerminalBean;
+import com.shmedo.configlibrary.iot.utils.IOTSensorUtil;
 import com.shmedo.core.util.DensityUtil;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.fragment.BaseFragment;
@@ -22,7 +23,9 @@ import java.util.List;
 import butterknife.BindView;
 
 /**
- * Vms 终端运行状态
+ * 创建者:   gonghe <br/>
+ * 创建时间:  2020/11/20 <br/>
+ * 描述：     Vms 网关终端运行状态详情页面
  */
 public class TcpVmsTerminalCurrentStateFragment extends BaseFragment {
     private static final String DEVICE_INFO = "device_info";
@@ -111,10 +114,16 @@ public class TcpVmsTerminalCurrentStateFragment extends BaseFragment {
         sensorAdapter = new CommonAdapter<SensorErrnoBean>(getActivity(), R.layout.item_vms_terminal_sensor_state, sensorList) {
             @Override
             protected void convert(CommonViewHolder holder, SensorErrnoBean errnoBean, int position) {
-                holder.setText(R.id.tv_number, "地址" + errnoBean.getId());
+                holder.setText(R.id.tv_number, "地址 " + errnoBean.getId());
+                holder.setText(R.id.tv_sensor_name, IOTSensorUtil.getInstance().getSensorNameByTypeNo(errnoBean.getName()));
                 holder.setText(R.id.tv_sensor_value, String.valueOf(errnoBean.getVal()));
-                holder.setText(R.id.tv_sensor_state, String.valueOf(errnoBean.getErrno()));
-                holder.setText(R.id.tv_sensor_name, String.valueOf(errnoBean.getName()));
+                holder.setText(R.id.tv_sensor_state, IOTSensorUtil.getInstance().getErrorMessageByNo(String.valueOf(errnoBean.getErrno())));
+
+                if (errnoBean.getErrno() == 0) {
+                    holder.setTextColorRes(R.id.tv_sensor_state, R.color.text_color_3AD094);
+                } else {
+                    holder.setTextColorRes(R.id.tv_sensor_state, R.color.red);
+                }
             }
         };
         sensorRecyclerView.setAdapter(sensorAdapter);

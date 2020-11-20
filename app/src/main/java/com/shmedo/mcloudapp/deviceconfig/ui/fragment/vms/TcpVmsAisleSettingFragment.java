@@ -30,8 +30,11 @@ import butterknife.BindView;
 import butterknife.OnClick;
 import timber.log.Timber;
 
+
 /**
- * Vms 网关通道控制参数配置
+ * 创建者:   gonghe <br/>
+ * 创建时间:  2020/11/20 <br/>
+ * 描述：     Vms 网关通道控制参数配置
  */
 public class TcpVmsAisleSettingFragment extends BaseTcpConnectFragment {
     @BindView(R.id.et_network_number)

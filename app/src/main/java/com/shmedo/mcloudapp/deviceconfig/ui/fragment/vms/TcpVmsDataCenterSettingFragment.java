@@ -39,8 +39,11 @@ import butterknife.BindView;
 import butterknife.OnClick;
 import timber.log.Timber;
 
+
 /**
- * Vms网关数据中心参数配置
+ * 创建者:   gonghe <br/>
+ * 创建时间:  2020/11/20 <br/>
+ * 描述：     Vms 网关数据中心参数配置
  */
 public class TcpVmsDataCenterSettingFragment extends BaseTcpConnectFragment {
     @BindView(R.id.page1)

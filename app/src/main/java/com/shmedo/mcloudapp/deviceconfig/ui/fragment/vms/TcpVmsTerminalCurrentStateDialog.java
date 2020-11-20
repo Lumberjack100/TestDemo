@@ -21,10 +21,13 @@ import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.BaseDialogFragment;
 import butterknife.BindView;
 import butterknife.OnClick;
 
+
 /**
- * Vms 终端状态信息弹框
+ * 创建者:   gonghe <br/>
+ * 创建时间:  2020/11/20 <br/>
+ * 描述：     Vms 网关终端运行状态弹框
  */
-public class VmsTerminalCurrentStateDialog extends BaseDialogFragment {
+public class TcpVmsTerminalCurrentStateDialog extends BaseDialogFragment {
     private static final String DEVICE_INFO = "device_info";
     @BindView(R.id.tv_title)
     TextView mTvTitle;
@@ -53,8 +56,8 @@ public class VmsTerminalCurrentStateDialog extends BaseDialogFragment {
     private TerminalBean terminalBean;
 
 
-    public static VmsTerminalCurrentStateDialog newInstance(TerminalBean terminalBean) {
-        VmsTerminalCurrentStateDialog fragment = new VmsTerminalCurrentStateDialog();
+    public static TcpVmsTerminalCurrentStateDialog newInstance(TerminalBean terminalBean) {
+        TcpVmsTerminalCurrentStateDialog fragment = new TcpVmsTerminalCurrentStateDialog();
         Bundle args = new Bundle();
         args.putParcelable(DEVICE_INFO, terminalBean);
         fragment.setArguments(args);
@@ -71,7 +74,7 @@ public class VmsTerminalCurrentStateDialog extends BaseDialogFragment {
 
     @Override
     protected int getLayoutId() {
-        return R.layout.fragment_vms_terminal_current_state_dialog;
+        return R.layout.tcp_vms_terminal_current_state_dialog;
     }
 
     @Override
@@ -89,7 +92,6 @@ public class VmsTerminalCurrentStateDialog extends BaseDialogFragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         initView();
-
     }
 
     private void initView() {
@@ -102,7 +104,7 @@ public class VmsTerminalCurrentStateDialog extends BaseDialogFragment {
         mTvSendData.setText(String.valueOf(terminalBean.getTx()));
         mTvReceiveData.setText(String.valueOf(terminalBean.getRx()));
         mTvSensorState.setText(String.valueOf(terminalBean.getUprssi()));
-        mTvPowerVolt.setText(String.valueOf(terminalBean.getVolt()));
+        mTvPowerVolt.setText(terminalBean.getVolt() + "V");
     }
 
     @OnClick({R.id.iv_close, R.id.tv_confirm})

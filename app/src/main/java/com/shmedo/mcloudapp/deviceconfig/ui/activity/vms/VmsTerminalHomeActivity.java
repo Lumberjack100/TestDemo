@@ -16,7 +16,7 @@ import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.activity.BaseActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.QueryDeviceDataActivity;
-import com.shmedo.mcloudapp.deviceconfig.ui.fragment.vms.TcpVmsTerminalFragment;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.vms.TcpVmsTerminalHomeFragment;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -85,7 +85,7 @@ public class VmsTerminalHomeActivity extends BaseActivity {
         if (connectWay == AppContants.CommunicationWay.NET_PLATFORM_CONNECT) {
 
         } else if (connectWay == AppContants.CommunicationWay.TCP_CONNECT) {
-            fragment = TcpVmsTerminalFragment.newInstance(terminalBean);
+            fragment = TcpVmsTerminalHomeFragment.newInstance(terminalBean);
         }
         replaceFragment(fragment);
     }

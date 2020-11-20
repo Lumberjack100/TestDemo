@@ -4,8 +4,11 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.enums.ServerNumber;
 import com.shmedo.configlibrary.iot.enums.VmsAisleNumber;
@@ -21,7 +24,11 @@ import org.jetbrains.annotations.NotNull;
 import butterknife.BindView;
 import butterknife.OnClick;
 
-
+/**
+ * 创建者:   gonghe <br/>
+ * 创建时间:  2020/11/20 <br/>
+ * 描述：     Vms 网关高级设置页面
+ */
 public class TcpVmsAdvancedSettingsFragment extends BaseTcpConnectFragment {
     @BindView(R.id.tv_data_center_one)
     TextView mTvDataCenterOne;
@@ -46,13 +53,10 @@ public class TcpVmsAdvancedSettingsFragment extends BaseTcpConnectFragment {
         return R.layout.tcp_vms_advanced_settings_fragment;
     }
 
-
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
     }
-
 
     @OnClick({R.id.dataCenterOneLayout, R.id.dataCenterTwoLayout, R.id.dataCenterThreeLayout, R.id.dataCenterFourLayout, R.id.vmsAisleOneLayout, R.id.vmsAisleTwoLayout, R.id.vmsAisleThreeLayout, R.id.vmsResetLayout})
     public void onClick(View v) {
@@ -79,11 +83,42 @@ public class TcpVmsAdvancedSettingsFragment extends BaseTcpConnectFragment {
             VmsAisleSettingActivity.startActivity(mActivity, AppContants.CommunicationWay.TCP_CONNECT, VmsAisleNumber.NUMBER_THREE);
 
         } else if (id == R.id.vmsResetLayout) {
-
+            showWarnDialog("确定恢复出厂设置吗？");
         }
-
     }
 
+    /**
+     * 恢复出厂设置指令
+     */
+    private void resetTerminal() {
+//        TerminalSNEntity entity = new TerminalSNEntity(terminalBean.getSn());
+//        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.MD_REBOOT_TERMINAL, entity);
+//        sendCommand(command);
+    }
+
+    /**
+     * 危险操作前弹框提醒
+     */
+    private void showWarnDialog(String content) {
+        MaterialDialog.Builder mBuilder = new MaterialDialog.Builder(mActivity)
+                .title("温馨提示")
+                .content(content)
+                .contentColorRes(R.color.title_text_color)
+                .canceledOnTouchOutside(false)
+                .positiveText("确定")
+                .negativeText("取消")
+                .positiveColorRes(R.color.blue_52B4F8)
+                .negativeColorRes(R.color.sub_title_text_color)
+                .onPositive(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        dialog.dismiss();
+                        resetTerminal();
+                    }
+                });
+        MaterialDialog mMaterialDialog = mBuilder.build();
+        mMaterialDialog.show();
+    }
 
     @Override
     protected void parseResponseMessage(@NotNull String cmdStr) {

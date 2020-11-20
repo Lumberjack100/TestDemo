@@ -44,7 +44,7 @@ import timber.log.Timber;
  * 创建时间:  2020/11/19 <br/>
  * 描述：     Vms 网关挂载的终端设备主页面
  */
-public class TcpVmsTerminalFragment extends BaseTcpConnectFragment {
+public class TcpVmsTerminalHomeFragment extends BaseTcpConnectFragment {
     private static final String DEVICE_INFO = "device_info";
     private static final int REBOOT = 0x0002;
 
@@ -78,8 +78,8 @@ public class TcpVmsTerminalFragment extends BaseTcpConnectFragment {
 
     private TerminalBean terminalBean;
 
-    public static TcpVmsTerminalFragment newInstance(TerminalBean terminalBean) {
-        TcpVmsTerminalFragment fragment = new TcpVmsTerminalFragment();
+    public static TcpVmsTerminalHomeFragment newInstance(TerminalBean terminalBean) {
+        TcpVmsTerminalHomeFragment fragment = new TcpVmsTerminalHomeFragment();
         Bundle args = new Bundle();
         args.putParcelable(DEVICE_INFO, terminalBean);
         fragment.setArguments(args);
@@ -96,7 +96,7 @@ public class TcpVmsTerminalFragment extends BaseTcpConnectFragment {
 
     @Override
     protected int getLayoutId() {
-        return R.layout.tcp_vms_terminal_fragment;
+        return R.layout.tcp_vms_terminal_home_fragment;
     }
 
     @Override
@@ -160,7 +160,7 @@ public class TcpVmsTerminalFragment extends BaseTcpConnectFragment {
         BaseDialogFragment newFragment = null;
         switch (selectedConfigModule.getName()) {
             case "状态":
-                newFragment = VmsTerminalCurrentStateDialog.newInstance(terminalBean);
+                newFragment = TcpVmsTerminalCurrentStateDialog.newInstance(terminalBean);
                 newFragment.show(getChildFragmentManager(), "dialog");
                 break;
 
