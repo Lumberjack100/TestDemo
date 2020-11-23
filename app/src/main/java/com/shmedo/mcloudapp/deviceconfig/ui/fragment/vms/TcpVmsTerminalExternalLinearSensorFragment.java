@@ -126,6 +126,7 @@ public class TcpVmsTerminalExternalLinearSensorFragment extends BaseTcpConnectFr
                 if (!isChecked) {
                     showCloseSwitchButtonDialog("确定不接入此通道传感器吗？");
                 } else {
+                    enableSensor();
                     pageTwoaLyout.setVisibility(View.GONE);
                 }
             }
@@ -190,6 +191,17 @@ public class TcpVmsTerminalExternalLinearSensorFragment extends BaseTcpConnectFr
             mSbCenterEnable.setCheckedImmediatelyNoEvent(true);
             pageTwoaLyout.setVisibility(View.GONE);
         }
+    }
+
+    private void enableSensor() {
+        SetTerminalSensorParamsEntity entity = new SetTerminalSensorParamsEntity();
+        entity.setSn(sensorInfo.getSn());
+        entity.setChannel(sensorInfo.getChannel());
+        entity.setInstert("1");
+
+        mBtnSave.setEnabled(false);
+        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.MD_SET_TERMINAL_CHL, entity);
+        sendCommand(command);
     }
 
     /**
