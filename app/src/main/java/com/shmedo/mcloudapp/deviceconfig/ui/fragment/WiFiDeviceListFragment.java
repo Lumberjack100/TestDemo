@@ -276,7 +276,7 @@ public class WiFiDeviceListFragment extends BaseFragment implements TextWatcher,
             String connectedSSID = manager.getConnectionInfo().getSSID();
             int ipAddress = manager.getConnectionInfo().getIpAddress();
             for (ScanResult result : results) {
-                if (result.SSID == null || (!result.SSID.toUpperCase().startsWith("VMS") && !result.SSID.toUpperCase().startsWith("MEDO"))) {
+                if (result.SSID == null || (!result.SSID.toUpperCase().startsWith("VMS"))) {
                     continue;
                 }
                 IWifi mergeObj = Wifi.create(result, configurations, connectedSSID, ipAddress);

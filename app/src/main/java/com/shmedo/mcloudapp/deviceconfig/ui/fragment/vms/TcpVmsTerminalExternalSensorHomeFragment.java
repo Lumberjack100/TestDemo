@@ -94,10 +94,10 @@ public class TcpVmsTerminalExternalSensorHomeFragment extends BaseTcpConnectFrag
         mRecyclerViewSensor.setLayoutManager(new GridLayoutManager(getActivity(), spanCount));
         //设置每个item间距
         mRecyclerViewSensor.addItemDecoration(new GridSpacingItemDecoration(spanCount, spacing, false));
-        sensorAdapter = new CommonAdapter<VmsTerminalSensorItem>(mActivity, R.layout.item_das_sensor, sensorItemList) {
+        sensorAdapter = new CommonAdapter<VmsTerminalSensorItem>(mActivity, R.layout.item_vms_terminal_sensor, sensorItemList) {
             @Override
             protected void convert(CommonViewHolder holder, VmsTerminalSensorItem sensorItem, int position) {
-                holder.setImageResource(R.id.iv_das_sensor, sensorItem.getResId());
+                holder.setImageResource(R.id.iv_vms_terminal_sensor, sensorItem.getResId());
             }
         };
         sensorAdapter.setOnItemClickListener(new MultiItemTypeAdapter.OnItemClickListener() {

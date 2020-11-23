@@ -3,12 +3,18 @@ package com.shmedo.mcloudapp.deviceconfig.ui.fragment.vms;
 import android.os.Bundle;
 import android.text.InputFilter;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.hjq.toast.ToastUtils;
+import com.kyleduo.switchbutton.SwitchButton;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandManager;
 import com.shmedo.configlibrary.iot.cmd.entity.SetTerminalSensorParamsEntity;
 import com.shmedo.configlibrary.iot.cmd.parser.IOTParseManager;
@@ -33,6 +39,15 @@ import timber.log.Timber;
  * 描述：      Vms终端直线式扩展传感器配置页面
  */
 public class TcpVmsTerminalExternalLinearSensorFragment extends BaseTcpConnectFragment {
+    @BindView(R.id.page1)
+    ViewGroup pageOneLayout;
+
+    @BindView(R.id.page2)
+    ViewGroup pageTwoaLyout;
+
+    @BindView(R.id.centerEnableSBtn)
+    SwitchButton mSbCenterEnable;
+
     @BindView(R.id.temperatureCoefficient)
     EditText mEtTemperatureCoefficient;//温度修正系数B
 
@@ -85,18 +100,68 @@ public class TcpVmsTerminalExternalLinearSensorFragment extends BaseTcpConnectFr
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        // TODO: Use the ViewModel
-
-        setView();
+        setSwitchViewListener();
         initViewData();
     }
 
-    private void setView() {
+    @Override
+    protected void initView() {
         mEtTemperatureCoefficient.setFilters(new InputFilter[]{new InputFilter.LengthFilter(30)});
         mEtSensitivityCoefficient.setFilters(new InputFilter[]{new InputFilter.LengthFilter(30)});
         mEtInitialTemperature.setFilters(new InputFilter[]{new InputFilter.LengthFilter(30)});
         mEtInitModulus.setFilters(new InputFilter[]{new InputFilter.LengthFilter(30)});
         mEtCorrectValue.setFilters(new InputFilter[]{new InputFilter.LengthFilter(30)});
+    }
+
+    private void setSwitchViewListener() {
+        mSbCenterEnable.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (!tcpShareViewModel.getConnectStatus()) {
+                    ToastUtils.show(getString(R.string.tcp_config_disconnect_warn));
+                    mSbCenterEnable.setCheckedImmediatelyNoEvent(!isChecked);
+                    return;
+                }
+
+                if (!isChecked) {
+                    showCloseSwitchButtonDialog("确定不接入此通道传感器吗？");
+                } else {
+                    pageTwoaLyout.setVisibility(View.GONE);
+                }
+            }
+        });
+    }
+
+    /**
+     * 关闭SwitchButton
+     */
+    private void showCloseSwitchButtonDialog(String content) {
+        MaterialDialog.Builder mBuilder = new MaterialDialog.Builder(mActivity)
+                .title("温馨提示：")
+                .content(content)
+                .contentColorRes(R.color.title_text_color)
+                .canceledOnTouchOutside(false)
+                .positiveText("确定")
+                .negativeText("取消")
+                .positiveColorRes(R.color.blue_52B4F8)
+                .negativeColorRes(R.color.sub_title_text_color)
+                .onPositive(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        dialog.dismiss();
+                        disableSensor();
+                        pageTwoaLyout.setVisibility(View.VISIBLE);
+                        pageTwoaLyout.setOnClickListener(null);
+                    }
+                }).onNegative(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        dialog.dismiss();
+                        mSbCenterEnable.setCheckedImmediatelyNoEvent(true);
+                    }
+                });
+        MaterialDialog mMaterialDialog = mBuilder.build();
+        mMaterialDialog.show();
     }
 
     private void initViewData() {
@@ -115,6 +180,30 @@ public class TcpVmsTerminalExternalLinearSensorFragment extends BaseTcpConnectFr
         mEtInitialTemperature.setText(initialTemperature);
         mEtInitModulus.setText(initialModulus);
         mEtCorrectValue.setText(correctValue);
+
+        //为0表示未接入传感器
+        if (sensorInfo.getInstert().trim().equals("0")) {
+            mSbCenterEnable.setCheckedImmediatelyNoEvent(false);
+            pageTwoaLyout.setVisibility(View.VISIBLE);
+            pageTwoaLyout.setOnClickListener(null);
+        } else {
+            mSbCenterEnable.setCheckedImmediatelyNoEvent(true);
+            pageTwoaLyout.setVisibility(View.GONE);
+        }
+    }
+
+    /**
+     * 不接入传感器</br>
+     */
+    private void disableSensor() {
+        SetTerminalSensorParamsEntity entity = new SetTerminalSensorParamsEntity();
+        entity.setSn(sensorInfo.getSn());
+        entity.setChannel(sensorInfo.getChannel());
+        entity.setInstert("0");
+
+        mBtnSave.setEnabled(false);
+        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.MD_SET_TERMINAL_CHL, entity);
+        sendCommand(command);
     }
 
     @OnClick({R.id.btn_confirm})
@@ -203,6 +292,10 @@ public class TcpVmsTerminalExternalLinearSensorFragment extends BaseTcpConnectFr
     }
 
     private boolean checkValueIsChange() {
+        if (!mSbCenterEnable.isChecked()) {
+            return false;
+        }
+
         if (temperatureCoefficient != null && !temperatureCoefficient.equals(mEtTemperatureCoefficient.getText().toString().trim())) {
             return true;
         }

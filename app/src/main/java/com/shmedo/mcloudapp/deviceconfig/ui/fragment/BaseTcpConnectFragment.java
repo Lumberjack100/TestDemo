@@ -14,6 +14,7 @@ import com.hjq.toast.ToastUtils;
 import com.littlegreens.netty.client.listener.MessageStateListener;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.fragment.BaseFragment;
+import com.shmedo.mcloudapp.deviceconfig.model.TcpConnectionState;
 import com.shmedo.mcloudapp.deviceconfig.viewmodels.TcpShareViewModel;
 import com.shmedo.mcloudapp.deviceconfig.viewmodels.VmsViewModel;
 
@@ -82,6 +83,15 @@ public abstract class BaseTcpConnectFragment extends BaseFragment {
         super.onActivityCreated(savedInstanceState);
         vmsViewModel = getApplicationScopeViewModel(VmsViewModel.class);
         tcpShareViewModel = getApplicationScopeViewModel(TcpShareViewModel.class);
+        tcpShareViewModel.getTcpConnectionState().observeInFragment(this, new Observer<TcpConnectionState>() {
+            @Override
+            public void onChanged(TcpConnectionState tcpConnectionState) {
+                if (!isActive) {
+                    return;
+                }
+                onConnectionChange(tcpConnectionState);
+            }
+        });
         tcpShareViewModel.getReceivedMessage().observeInFragment(this, new Observer<String>() {
             @Override
             public void onChanged(String msg) {
@@ -91,6 +101,17 @@ public abstract class BaseTcpConnectFragment extends BaseFragment {
                 parseResponseMessage(msg);
             }
         });
+    }
+
+    /**
+     * 连接状态改变事件
+     *
+     * @param tcpConnectionState
+     */
+    protected void onConnectionChange(TcpConnectionState tcpConnectionState) {
+        if (tcpConnectionState == TcpConnectionState.CONNECT_CLOSED) {
+            ToastUtils.show("通讯断开");
+        }
     }
 
     /**

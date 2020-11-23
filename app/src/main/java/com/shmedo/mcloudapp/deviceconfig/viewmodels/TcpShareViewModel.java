@@ -54,11 +54,11 @@ public class TcpShareViewModel extends AndroidViewModel {
         tcpManager.sendMsgToServer(msg, messageStateListener);
     }
 
-    @Override
-    protected void onCleared() {
-        super.onCleared();
-        if (tcpManager.getConnectStatus()) {
-            disconnect();
-        }
-    }
+//    @Override
+//    protected void onCleared() {
+//        super.onCleared();
+//        if (tcpManager.getConnectStatus()) {
+//            disconnect();
+//        }
+//    }
 }

@@ -114,28 +114,26 @@ public class TcpVmsHomeFragment extends BaseTcpConnectFragment {
 
     private void setupTcpConnect() {
         tcpShareViewModel.initTcpClient(ipAddress, 10002);
-        tcpShareViewModel.getTcpConnectionState().observeInFragment(this, new Observer<TcpConnectionState>() {
-            @Override
-            public void onChanged(TcpConnectionState tcpConnectionState) {
-                if (tcpConnectionState == TcpConnectionState.CONNECT_SUCCESS) {
-//                    dismissProgressDialog();
-                    mTvDeviceConnectOperate.setText("断开连接");
-                    mTvDeviceConnectOperate.setTextColor(ContextCompat.getColor(mActivity, R.color.text_color_b3b3b3));
-
-//                    startProgressRunnable("初始化信息...", SEND_CMD_DELAY_MILLIS);
-                    String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.MD_GET_GATEWAY_BASE);
-                    sendCommand(command);
-                } else if (tcpConnectionState == TcpConnectionState.CONNECT_CLOSED) {
-                    ToastUtils.show("通讯断开");
-                    dismissProgressDialog();
-                    mTvDeviceConnectOperate.setText("重新连接");
-                    mTvDeviceConnectOperate.setTextColor(ContextCompat.getColor(mActivity, R.color.blue_52B4F8));
-                }
-            }
-        });
-
         startProgressRunnable("建立通讯连接...", TCP_CONNECT_DELAY_MILLIS);
         tcpShareViewModel.connect();
+    }
+
+    @Override
+    protected void onConnectionChange(TcpConnectionState tcpConnectionState) {
+        if (tcpConnectionState == TcpConnectionState.CONNECT_SUCCESS) {
+//                    dismissProgressDialog();
+            mTvDeviceConnectOperate.setText("断开连接");
+            mTvDeviceConnectOperate.setTextColor(ContextCompat.getColor(mActivity, R.color.text_color_b3b3b3));
+
+//                    startProgressRunnable("初始化信息...", SEND_CMD_DELAY_MILLIS);
+            String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.MD_GET_GATEWAY_BASE);
+            sendCommand(command);
+        } else if (tcpConnectionState == TcpConnectionState.CONNECT_CLOSED) {
+            ToastUtils.show("通讯断开");
+            dismissProgressDialog();
+            mTvDeviceConnectOperate.setText("重新连接");
+            mTvDeviceConnectOperate.setTextColor(ContextCompat.getColor(mActivity, R.color.blue_52B4F8));
+        }
     }
 
     private void observerRefreshTerminal() {

@@ -29,7 +29,7 @@ public class TerminalSensorInfoParser implements IOTResultParser<TerminalSensorI
                     keyValueMap.put(strs[0], strs[1]);
                 }
             }
-            info.setChannel(TextUtils.isEmpty(keyValueMap.get("sn")) ? "" : keyValueMap.get("sn"));
+            info.setSn(TextUtils.isEmpty(keyValueMap.get("sn")) ? "" : keyValueMap.get("sn"));
             info.setChannel(TextUtils.isEmpty(keyValueMap.get("channel")) ? "" : keyValueMap.get("channel"));
             info.setInstert(TextUtils.isEmpty(keyValueMap.get("instert")) ? "" : keyValueMap.get("instert"));
             info.setFreqtype(TextUtils.isEmpty(keyValueMap.get("freqtype")) ? "" : keyValueMap.get("freqtype"));
