@@ -122,6 +122,10 @@ public class TcpVmsTerminalListFragment extends BaseBottomSheetDialogFragment {
                 if (isDoubleClick(view)) {
                     return;
                 }
+                if (!tcpShareViewModel.getConnectStatus()) {
+                    ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
+                    return;
+                }
                 terminalInfo = terminalInfoList.get(position);
                 VmsTerminalHomeActivity.startActivity(mActivity, AppContants.CommunicationWay.TCP_CONNECT, terminalInfo);
             }

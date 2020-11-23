@@ -9,6 +9,7 @@ import androidx.annotation.Nullable;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.hjq.toast.ToastUtils;
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.enums.ServerNumber;
 import com.shmedo.configlibrary.iot.enums.VmsAisleNumber;
@@ -59,8 +60,16 @@ public class TcpVmsAdvancedSettingsFragment extends BaseTcpConnectFragment {
     }
 
     @OnClick({R.id.dataCenterOneLayout, R.id.dataCenterTwoLayout, R.id.dataCenterThreeLayout, R.id.dataCenterFourLayout, R.id.vmsAisleOneLayout, R.id.vmsAisleTwoLayout, R.id.vmsAisleThreeLayout, R.id.vmsResetLayout})
-    public void onClick(View v) {
-        int id = v.getId();
+    public void onClick(View view) {
+        if (isDoubleClick(view)) {
+            return;
+        }
+        if (!tcpShareViewModel.getConnectStatus()) {
+            ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
+            return;
+        }
+
+        int id = view.getId();
         if (id == R.id.dataCenterOneLayout) {
             VmsDataCenterSettingActivity.startActivity(mActivity, AppContants.CommunicationWay.TCP_CONNECT, ServerNumber.NUMBER_ONE);
 

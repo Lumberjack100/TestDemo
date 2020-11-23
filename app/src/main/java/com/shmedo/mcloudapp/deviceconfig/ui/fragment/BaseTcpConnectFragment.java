@@ -86,15 +86,13 @@ public abstract class BaseTcpConnectFragment extends BaseFragment {
         tcpShareViewModel.getTcpConnectionState().observeInFragment(this, new Observer<TcpConnectionState>() {
             @Override
             public void onChanged(TcpConnectionState tcpConnectionState) {
-                if (!isActive) {
-                    return;
-                }
                 onConnectionChange(tcpConnectionState);
             }
         });
         tcpShareViewModel.getReceivedMessage().observeInFragment(this, new Observer<String>() {
             @Override
             public void onChanged(String msg) {
+                //只供当前处于Active的页面观察者消费此事件
                 if (!isActive) {
                     return;
                 }
@@ -109,6 +107,10 @@ public abstract class BaseTcpConnectFragment extends BaseFragment {
      * @param tcpConnectionState
      */
     protected void onConnectionChange(TcpConnectionState tcpConnectionState) {
+        //只供当前处于Active的页面观察者消费此事件
+        if (!isActive) {
+            return;
+        }
         if (tcpConnectionState == TcpConnectionState.CONNECT_CLOSED) {
             ToastUtils.show("通讯断开");
         }
