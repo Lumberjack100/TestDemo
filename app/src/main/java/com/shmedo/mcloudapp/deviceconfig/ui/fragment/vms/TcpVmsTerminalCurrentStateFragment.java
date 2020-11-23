@@ -7,8 +7,8 @@ import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.shmedo.configlibrary.iot.model.SensorErrnoBean;
-import com.shmedo.configlibrary.iot.model.TerminalBean;
+import com.shmedo.configlibrary.iot.model.SensorErrnoInfo;
+import com.shmedo.configlibrary.iot.model.TerminalInfo;
 import com.shmedo.configlibrary.iot.utils.IOTSensorUtil;
 import com.shmedo.core.util.DensityUtil;
 import com.shmedo.mcloudapp.R;
@@ -72,14 +72,14 @@ public class TcpVmsTerminalCurrentStateFragment extends BaseFragment {
     RecyclerView sensorRecyclerView;
 
     private CommonAdapter sensorAdapter;
-    private List<SensorErrnoBean> sensorList = new ArrayList<>();
+    private List<SensorErrnoInfo> sensorList = new ArrayList<>();
 
-    private TerminalBean terminalBean;
+    private TerminalInfo terminalInfo;
 
-    public static TcpVmsTerminalCurrentStateFragment newInstance(TerminalBean terminalBean) {
+    public static TcpVmsTerminalCurrentStateFragment newInstance(TerminalInfo terminalInfo) {
         TcpVmsTerminalCurrentStateFragment fragment = new TcpVmsTerminalCurrentStateFragment();
         Bundle args = new Bundle();
-        args.putParcelable(DEVICE_INFO, terminalBean);
+        args.putParcelable(DEVICE_INFO, terminalInfo);
         fragment.setArguments(args);
         return fragment;
     }
@@ -88,7 +88,7 @@ public class TcpVmsTerminalCurrentStateFragment extends BaseFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            terminalBean = getArguments().getParcelable(DEVICE_INFO);
+            terminalInfo = getArguments().getParcelable(DEVICE_INFO);
         }
     }
 
@@ -111,9 +111,9 @@ public class TcpVmsTerminalCurrentStateFragment extends BaseFragment {
         sensorRecyclerView.setLayoutManager(new GridLayoutManager(mActivity, spanCount));
         //设置每个item间距
         sensorRecyclerView.addItemDecoration(new GridSpacingItemDecoration(spanCount, spacing, true));
-        sensorAdapter = new CommonAdapter<SensorErrnoBean>(getActivity(), R.layout.item_vms_terminal_sensor_state, sensorList) {
+        sensorAdapter = new CommonAdapter<SensorErrnoInfo>(getActivity(), R.layout.item_vms_terminal_sensor_state, sensorList) {
             @Override
-            protected void convert(CommonViewHolder holder, SensorErrnoBean errnoBean, int position) {
+            protected void convert(CommonViewHolder holder, SensorErrnoInfo errnoBean, int position) {
                 holder.setText(R.id.tv_number, "地址 " + errnoBean.getId());
                 holder.setText(R.id.tv_sensor_name, IOTSensorUtil.getInstance().getSensorNameByTypeNo(errnoBean.getName()));
                 holder.setText(R.id.tv_sensor_value, String.valueOf(errnoBean.getVal()));
@@ -130,25 +130,25 @@ public class TcpVmsTerminalCurrentStateFragment extends BaseFragment {
     }
 
     private void initData() {
-        if (terminalBean == null)
+        if (terminalInfo == null)
             return;
 
-        mTvDeviceSn.setText(terminalBean.getSn());
-        mTvNetId.setText(String.valueOf(terminalBean.getNetid()));
-        mTvAddress.setText(String.valueOf(terminalBean.getAddr()));
-        mTvChannel.setText(String.valueOf(terminalBean.getChl()));
-        mTvRegisterTime.setText(String.valueOf(terminalBean.getLogintime()));
-        mTvUpdateTime.setText(String.valueOf(terminalBean.getLastpackagetime()));
+        mTvDeviceSn.setText(terminalInfo.getSn());
+        mTvNetId.setText(String.valueOf(terminalInfo.getNetid()));
+        mTvAddress.setText(String.valueOf(terminalInfo.getAddr()));
+        mTvChannel.setText(String.valueOf(terminalInfo.getChl()));
+        mTvRegisterTime.setText(String.valueOf(terminalInfo.getLogintime()));
+        mTvUpdateTime.setText(String.valueOf(terminalInfo.getLastpackagetime()));
 
-        mTvUplinkSignalStrength.setText(String.valueOf(terminalBean.getUprssi()));
-        mTvDownlinkSignalStrength.setText(String.valueOf(terminalBean.getDownrssi()));
-        mTvSendData.setText(String.valueOf(terminalBean.getTx()));
-        mTvReceiveData.setText(String.valueOf(terminalBean.getRx()));
-        mTvPowerVolt.setText(terminalBean.getVolt() + "V");
+        mTvUplinkSignalStrength.setText(String.valueOf(terminalInfo.getUprssi()));
+        mTvDownlinkSignalStrength.setText(String.valueOf(terminalInfo.getDownrssi()));
+        mTvSendData.setText(String.valueOf(terminalInfo.getTx()));
+        mTvReceiveData.setText(String.valueOf(terminalInfo.getRx()));
+        mTvPowerVolt.setText(terminalInfo.getVolt() + "V");
 
-        if (terminalBean.getSensor() != null) {
+        if (terminalInfo.getSensor() != null) {
             sensorList.clear();
-            sensorList.addAll(terminalBean.getSensor());
+            sensorList.addAll(terminalInfo.getSensor());
             sensorAdapter.notifyDataSetChanged();
         }
     }

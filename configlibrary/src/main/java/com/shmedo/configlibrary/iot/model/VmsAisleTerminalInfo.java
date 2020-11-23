@@ -27,7 +27,7 @@ public class VmsAisleTerminalInfo {
     private int addr;//地址
     private int terminalnum;//终端接入数量
     private int airbaud;//空中速率
-    private List<TerminalBean> terminal;//终端列表
+    private List<TerminalInfo> terminal;//终端列表
 
     public int getChannel() {
         return channel;
@@ -77,11 +77,11 @@ public class VmsAisleTerminalInfo {
         this.terminalnum = terminalnum;
     }
 
-    public List<TerminalBean> getTerminal() {
-        return terminal == null ? new ArrayList<TerminalBean>() : terminal;
+    public List<TerminalInfo> getTerminal() {
+        return terminal == null ? new ArrayList<TerminalInfo>() : terminal;
     }
 
-    public void setTerminal(List<TerminalBean> terminal) {
+    public void setTerminal(List<TerminalInfo> terminal) {
         this.terminal = terminal;
     }
 

@@ -5,7 +5,7 @@ package com.shmedo.configlibrary.iot.model;
  * 创建时间:  2020/8/31 <br/>
  * 描述：    设备终端时间实体类
  */
-public class TerminalTime {
+public class TerminalTimeInfo {
     private String time;
 
     public String getTime() {

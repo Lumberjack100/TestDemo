@@ -49,7 +49,6 @@
         tools:ignore="LockedOrientationActivity"
         tools:replace="android:name"
         tools:targetApi="p">
-        <activity android:name=".deviceconfig.ui.activity.vms.VmsTerminalExternalSensorHomeActivity"></activity>
         <activity android:name=".deviceconfig.ui.TestAActivity" /> <!-- 声明最小宽高比 -->
         <meta-data
             android:name="android.min_aspect"
@@ -318,6 +317,19 @@
             android:maxAspectRatio="2.4"
             android:screenOrientation="portrait"
             android:theme="@style/LightStatusBarActivity" />
+        <activity
+            android:name=".deviceconfig.ui.activity.vms.VmsTerminalExternalSensorHomeActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:maxAspectRatio="2.4"
+            android:screenOrientation="portrait"
+            android:theme="@style/LightStatusBarActivity" />
+        <activity
+            android:name=".deviceconfig.ui.activity.vms.VmsTerminalExternalSensorConfigActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:maxAspectRatio="2.4"
+            android:screenOrientation="portrait"
+            android:theme="@style/LightStatusBarActivity" />
+
         <activity
             android:name=".ddshare.DDShareActivity"
             android:exported="true"

@@ -10,7 +10,7 @@ import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 
-import com.shmedo.configlibrary.iot.model.TerminalBean;
+import com.shmedo.configlibrary.iot.model.TerminalInfo;
 import com.shmedo.core.AppContants;
 import com.shmedo.core.util.DeviceInfo;
 import com.shmedo.core.util.GlobalUtil;
@@ -53,13 +53,13 @@ public class TcpVmsTerminalCurrentStateDialog extends BaseDialogFragment {
     @BindView(R.id.tv_confirm)
     TextView mTvConfirm;
 
-    private TerminalBean terminalBean;
+    private TerminalInfo terminalInfo;
 
 
-    public static TcpVmsTerminalCurrentStateDialog newInstance(TerminalBean terminalBean) {
+    public static TcpVmsTerminalCurrentStateDialog newInstance(TerminalInfo terminalInfo) {
         TcpVmsTerminalCurrentStateDialog fragment = new TcpVmsTerminalCurrentStateDialog();
         Bundle args = new Bundle();
-        args.putParcelable(DEVICE_INFO, terminalBean);
+        args.putParcelable(DEVICE_INFO, terminalInfo);
         fragment.setArguments(args);
         return fragment;
     }
@@ -68,7 +68,7 @@ public class TcpVmsTerminalCurrentStateDialog extends BaseDialogFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            terminalBean = getArguments().getParcelable(DEVICE_INFO);
+            terminalInfo = getArguments().getParcelable(DEVICE_INFO);
         }
     }
 
@@ -99,12 +99,12 @@ public class TcpVmsTerminalCurrentStateDialog extends BaseDialogFragment {
         mTvConfirm.setText("查看详情");
         mTvConfirm.setTextColor(GlobalUtil.getColor(R.color.blue_52B4F8));
 
-        mTvUplinkSignalStrength.setText(String.valueOf(terminalBean.getUprssi()));
-        mTvDownlinkSignalStrength.setText(String.valueOf(terminalBean.getDownrssi()));
-        mTvSendData.setText(String.valueOf(terminalBean.getTx()));
-        mTvReceiveData.setText(String.valueOf(terminalBean.getRx()));
-        mTvSensorState.setText(String.valueOf(terminalBean.getUprssi()));
-        mTvPowerVolt.setText(terminalBean.getVolt() + "V");
+        mTvUplinkSignalStrength.setText(String.valueOf(terminalInfo.getUprssi()));
+        mTvDownlinkSignalStrength.setText(String.valueOf(terminalInfo.getDownrssi()));
+        mTvSendData.setText(String.valueOf(terminalInfo.getTx()));
+        mTvReceiveData.setText(String.valueOf(terminalInfo.getRx()));
+        mTvSensorState.setText(String.valueOf(terminalInfo.getUprssi()));
+        mTvPowerVolt.setText(terminalInfo.getVolt() + "V");
     }
 
     @OnClick({R.id.iv_close, R.id.tv_confirm})
@@ -116,7 +116,7 @@ public class TcpVmsTerminalCurrentStateDialog extends BaseDialogFragment {
 
             case R.id.tv_confirm:
                 dismiss();
-                VmsTerminalCurrentStateActivity.startActivity(mActivity, AppContants.CommunicationWay.TCP_CONNECT, terminalBean);
+                VmsTerminalCurrentStateActivity.startActivity(mActivity, AppContants.CommunicationWay.TCP_CONNECT, terminalInfo);
                 break;
         }
     }

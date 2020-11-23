@@ -17,7 +17,7 @@ import com.shmedo.configlibrary.iot.cmd.parser.IOTParseManager;
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.enums.VmsAisleNumber;
 import com.shmedo.configlibrary.iot.model.CommonSettingCmdResult;
-import com.shmedo.configlibrary.iot.model.VmsAisleParamInfo;
+import com.shmedo.configlibrary.iot.model.VmsAisleInfo;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.view.ClearEditText;
@@ -72,7 +72,7 @@ public class TcpVmsAisleSettingFragment extends BaseTcpConnectFragment {
 
     private static final String VMS_AISLE_NUMBER = "vms_aisle_number";
     private VmsAisleNumber vmsAisleNumber;
-    private VmsAisleParamInfo vmsAisleParamInfo;
+    private VmsAisleInfo vmsAisleInfo;
 
     private String networkNumber;//网络号
     private String aisleAddress;//通道的地址
@@ -361,9 +361,6 @@ public class TcpVmsAisleSettingFragment extends BaseTcpConnectFragment {
 
     @Override
     protected void parseResponseMessage(@NotNull String cmdStr) {
-        if (!isActive) {
-            return;
-        }
         setResultData(cmdStr);
     }
 
@@ -372,14 +369,14 @@ public class TcpVmsAisleSettingFragment extends BaseTcpConnectFragment {
         switch (type) {
             case MD_GET_GATEWAY_PARAM: {//获取网关通道的控制参数
 //                stopProgressRunnable();
-                IOTCommandResult<VmsAisleParamInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
+                IOTCommandResult<VmsAisleInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
                     String errMsg = "查询网关通道的控制参数出错!";
                     Timber.e("%s%s", errMsg, commandResult.getMessage());
                     ToastUtils.show(errMsg);
                     return;
                 }
-                vmsAisleParamInfo = commandResult.getResult();
+                vmsAisleInfo = commandResult.getResult();
                 initViewData();
             }
             break;
@@ -411,22 +408,22 @@ public class TcpVmsAisleSettingFragment extends BaseTcpConnectFragment {
     }
 
     private void initViewData() {
-        if (vmsAisleParamInfo == null) {
+        if (vmsAisleInfo == null) {
             Timber.e("VmsAisleParamInfo 为空!");
-            vmsAisleParamInfo = new VmsAisleParamInfo();
+            vmsAisleInfo = new VmsAisleInfo();
             return;
         }
 
-        networkNumber = vmsAisleParamInfo.getNetid().trim();
-        aisleAddress = vmsAisleParamInfo.getAddr().trim();
-        channelNumber = vmsAisleParamInfo.getChl().trim();
-        airSpeed = vmsAisleParamInfo.getAirbaud().trim();
-        airWakeTime = vmsAisleParamInfo.getPpt().trim();
-        terminalWorkingMode = vmsAisleParamInfo.getTerminalmode().trim();
-        dataRequestInterval = vmsAisleParamInfo.getSendgap().trim();
-        offlineInterval = vmsAisleParamInfo.getOffline().trim();
-        terminalSleepTime = vmsAisleParamInfo.getSleepgap().trim();
-        terminalWakeTime = vmsAisleParamInfo.getWakeupgap().trim();
+        networkNumber = vmsAisleInfo.getNetid().trim();
+        aisleAddress = vmsAisleInfo.getAddr().trim();
+        channelNumber = vmsAisleInfo.getChl().trim();
+        airSpeed = vmsAisleInfo.getAirbaud().trim();
+        airWakeTime = vmsAisleInfo.getPpt().trim();
+        terminalWorkingMode = vmsAisleInfo.getTerminalmode().trim();
+        dataRequestInterval = vmsAisleInfo.getSendgap().trim();
+        offlineInterval = vmsAisleInfo.getOffline().trim();
+        terminalSleepTime = vmsAisleInfo.getSleepgap().trim();
+        terminalWakeTime = vmsAisleInfo.getWakeupgap().trim();
 
         mEtNetworkNumber.setText(networkNumber);
         mEtAisleAddress.setText(aisleAddress);

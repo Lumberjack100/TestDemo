@@ -32,7 +32,7 @@ public abstract class BaseTcpConnectFragment extends BaseFragment {
 
     public static final int QUERY_CMD_DELAY_MILLIS = 1500;//查询配置参数指令超时时间
 
-    public static final int SEND_CMD_DELAY_MILLIS = 10000;//发送配置参数指令超时时间
+    public static final int SEND_CMD_DELAY_MILLIS = 5000;//发送配置参数指令超时时间
 
     private static Handler uiHander = new Handler();
 
@@ -81,11 +81,13 @@ public abstract class BaseTcpConnectFragment extends BaseFragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         vmsViewModel = getApplicationScopeViewModel(VmsViewModel.class);
-
         tcpShareViewModel = getApplicationScopeViewModel(TcpShareViewModel.class);
         tcpShareViewModel.getReceivedMessage().observeInFragment(this, new Observer<String>() {
             @Override
             public void onChanged(String msg) {
+                if (!isActive) {
+                    return;
+                }
                 parseResponseMessage(msg);
             }
         });

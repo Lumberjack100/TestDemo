@@ -8,7 +8,7 @@ import android.os.Parcelable;
  * 创建时间:  2020/11/13 <br/>
  * 描述：    传感器错误码实体
  */
-public class SensorErrnoBean implements Parcelable {
+public class SensorErrnoInfo implements Parcelable {
 
     /**
      * id : 0
@@ -23,7 +23,7 @@ public class SensorErrnoBean implements Parcelable {
     private Integer val;//值
 
 
-    protected SensorErrnoBean(Parcel in) {
+    protected SensorErrnoInfo(Parcel in) {
         if (in.readByte() == 0) {
             id = null;
         } else {
@@ -70,15 +70,15 @@ public class SensorErrnoBean implements Parcelable {
         return 0;
     }
 
-    public static final Creator<SensorErrnoBean> CREATOR = new Creator<SensorErrnoBean>() {
+    public static final Creator<SensorErrnoInfo> CREATOR = new Creator<SensorErrnoInfo>() {
         @Override
-        public SensorErrnoBean createFromParcel(Parcel in) {
-            return new SensorErrnoBean(in);
+        public SensorErrnoInfo createFromParcel(Parcel in) {
+            return new SensorErrnoInfo(in);
         }
 
         @Override
-        public SensorErrnoBean[] newArray(int size) {
-            return new SensorErrnoBean[size];
+        public SensorErrnoInfo[] newArray(int size) {
+            return new SensorErrnoInfo[size];
         }
     };
 

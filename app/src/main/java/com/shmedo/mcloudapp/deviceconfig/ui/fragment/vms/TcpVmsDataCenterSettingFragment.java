@@ -388,9 +388,6 @@ public class TcpVmsDataCenterSettingFragment extends BaseTcpConnectFragment {
 
     @Override
     protected void parseResponseMessage(@NotNull String cmdStr) {
-        if (!isActive) {
-            return;
-        }
         setResultData(cmdStr);
     }
 

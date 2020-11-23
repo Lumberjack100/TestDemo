@@ -226,6 +226,18 @@ public abstract class BaseBleDasExternalSensorFragment extends BaseBleConnectFra
         Timber.d("获取 %s 采集器 %s 通道的传感器参数===%s", collectorName, address, command);
     }
 
+    /**
+     * 当接入的传感器个数为0时，设置采集器地址为0，关闭采集器
+     */
+    protected void sendCloseCollectorCmd() {
+        SetCollectorAddressEntity collectorAddressEntity = new SetCollectorAddressEntity(0);
+        String cmdCollectorAddress = CommandManager.getInstance().getCommand(CommandType.SET_COLLECTOR_ADDRESS, collectorAddressEntity);
+        errMsg = "发送指令超时,请稍后尝试";
+        startProgressRunnable("正在发送配置指令...", CONFIG_PARAMS_DELAY_MILLIS);
+        sendCommonCommandImmediately(cmdCollectorAddress);
+        Timber.d("设置采集器地址指令===%s", cmdCollectorAddress);
+    }
+
     @OnClick({R.id.btn_confirm})
     public void onClick(View v) {
         if (v.getId() == R.id.btn_confirm) {
@@ -238,16 +250,6 @@ public abstract class BaseBleDasExternalSensorFragment extends BaseBleConnectFra
     }
 
     protected abstract void sendInstruction();
-
-    protected void sendCloseCollectorCmd() {
-        SetCollectorAddressEntity collectorAddressEntity = new SetCollectorAddressEntity(0);
-        String cmdCollectorAddress = CommandManager.getInstance().getCommand(CommandType.SET_COLLECTOR_ADDRESS, collectorAddressEntity);
-        errMsg = "发送指令超时,请稍后尝试";
-        startProgressRunnable("正在发送配置指令...", CONFIG_PARAMS_DELAY_MILLIS);
-        sendCommonCommandImmediately(cmdCollectorAddress);
-        Timber.d("设置采集器地址指令===%s", cmdCollectorAddress);
-    }
-
 
     @Override
     protected void parseResponseMessage(String cmdStr) {

@@ -84,6 +84,17 @@ public enum IOTCommandType {
     MD_REBOOT_TERMINAL("md_rebootterminal"),
 
     /**
+     * 获取Vms终端某个通道下传感器参数
+     */
+    MD_GET_TERMINAL_CHL("md_getterminalchl"),
+
+    /**
+     * 设置Vms终端某个通道下传感器参数
+     */
+    MD_SET_TERMINAL_CHL("md_setterminalchl"),
+
+
+    /**
      * 自定义心跳包
      */
     HEART_BEAT("HeartBeatData"),

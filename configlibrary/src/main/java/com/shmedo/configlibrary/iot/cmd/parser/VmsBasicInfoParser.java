@@ -4,7 +4,7 @@ import android.text.TextUtils;
 
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.interfaces.IOTResultParser;
-import com.shmedo.configlibrary.iot.model.VmsBaseInfo;
+import com.shmedo.configlibrary.iot.model.VmsBasicInfo;
 
 import java.util.HashMap;
 
@@ -13,10 +13,10 @@ import java.util.HashMap;
  * 创建时间:  2020/11/12 <br/>
  * 描述：   解析Vms网关基础信息
  */
-public class VmsBaseInfoParser implements IOTResultParser<VmsBaseInfo> {
+public class VmsBasicInfoParser implements IOTResultParser<VmsBasicInfo> {
     @Override
-    public VmsBaseInfo parse(String result) {
-        VmsBaseInfo info = new VmsBaseInfo();
+    public VmsBasicInfo parse(String result) {
+        VmsBasicInfo info = new VmsBasicInfo();
         try {
             String[] keyValues = result.split("&");
             HashMap<String, String> keyValueMap = new HashMap<>();

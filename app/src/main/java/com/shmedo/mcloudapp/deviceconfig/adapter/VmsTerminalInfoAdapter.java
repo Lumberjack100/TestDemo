@@ -2,7 +2,7 @@ package com.shmedo.mcloudapp.deviceconfig.adapter;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;
-import com.shmedo.configlibrary.iot.model.TerminalBean;
+import com.shmedo.configlibrary.iot.model.TerminalInfo;
 import com.shmedo.mcloudapp.R;
 
 import org.jetbrains.annotations.NotNull;
@@ -15,19 +15,19 @@ import java.util.List;
  * 创建时间:  2020/11/13 <br/>
  * 描述：       Vms 终端信息适配器
  */
-public class VmsTerminalInfoAdapter extends BaseQuickAdapter<TerminalBean, BaseViewHolder> {
+public class VmsTerminalInfoAdapter extends BaseQuickAdapter<TerminalInfo, BaseViewHolder> {
 
-    public VmsTerminalInfoAdapter(@Nullable List<TerminalBean> data) {
+    public VmsTerminalInfoAdapter(@Nullable List<TerminalInfo> data) {
         super(R.layout.item_vms_terminal_info, data);
     }
 
     @Override
-    protected void convert(@NotNull BaseViewHolder holder, TerminalBean terminalBean) {
-        holder.setText(R.id.tv_terminal_sn, terminalBean.getSn());
-        holder.setText(R.id.tv_battery_value, String.valueOf(terminalBean.getVolt()));
-        holder.setText(R.id.tv_last_data_time, terminalBean.getLastpackagetime());
+    protected void convert(@NotNull BaseViewHolder holder, TerminalInfo terminalInfo) {
+        holder.setText(R.id.tv_terminal_sn, terminalInfo.getSn());
+        holder.setText(R.id.tv_battery_value, String.valueOf(terminalInfo.getVolt()));
+        holder.setText(R.id.tv_last_data_time, terminalInfo.getLastpackagetime());
 
-        if (terminalBean.getStatus() == 1) {//在线
+        if (terminalInfo.getStatus() == 1) {//在线
             holder.setTextColorRes(R.id.tv_terminal_sn, R.color.title_text_color);
             holder.setImageResource(R.id.iv_signal, R.drawable.ic_device_signal_three);
             holder.setImageResource(R.id.iv_battery, R.drawable.ic_battery_full_online);

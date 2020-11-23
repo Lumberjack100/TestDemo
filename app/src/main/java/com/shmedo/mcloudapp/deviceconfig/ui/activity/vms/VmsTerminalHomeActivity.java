@@ -11,7 +11,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-import com.shmedo.configlibrary.iot.model.TerminalBean;
+import com.shmedo.configlibrary.iot.model.TerminalInfo;
 import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.activity.BaseActivity;
@@ -39,13 +39,13 @@ public class VmsTerminalHomeActivity extends BaseActivity {
 
     private Fragment fragment;
 
-    private TerminalBean terminalBean;
+    private TerminalInfo terminalInfo;
 
 
-    public static void startActivity(Context context, int connectWay, TerminalBean terminalBean) {
+    public static void startActivity(Context context, int connectWay, TerminalInfo terminalInfo) {
         Intent intent = new Intent(context, VmsTerminalHomeActivity.class);
         intent.putExtra(AppContants.Extras.COMMUNICATION_WAY, connectWay);
-        intent.putExtra(DEVICE_INFO, terminalBean);
+        intent.putExtra(DEVICE_INFO, terminalInfo);
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         context.startActivity(intent);
     }
@@ -77,7 +77,7 @@ public class VmsTerminalHomeActivity extends BaseActivity {
         }
 
         if (intent.getExtras().containsKey(DEVICE_INFO)) {
-            terminalBean = intent.getParcelableExtra(DEVICE_INFO);
+            terminalInfo = intent.getParcelableExtra(DEVICE_INFO);
         }
     }
 
@@ -85,7 +85,7 @@ public class VmsTerminalHomeActivity extends BaseActivity {
         if (connectWay == AppContants.CommunicationWay.NET_PLATFORM_CONNECT) {
 
         } else if (connectWay == AppContants.CommunicationWay.TCP_CONNECT) {
-            fragment = TcpVmsTerminalHomeFragment.newInstance(terminalBean);
+            fragment = TcpVmsTerminalHomeFragment.newInstance(terminalInfo);
         }
         replaceFragment(fragment);
     }
@@ -94,7 +94,7 @@ public class VmsTerminalHomeActivity extends BaseActivity {
     public void onClick(View v) {
         if (v.getId() == R.id.right_icon) {
             if (connectWay == AppContants.CommunicationWay.TCP_CONNECT) {
-                QueryDeviceDataActivity.startActivity(VmsTerminalHomeActivity.this, terminalBean.getSn());
+                QueryDeviceDataActivity.startActivity(VmsTerminalHomeActivity.this, terminalInfo.getSn());
             }
         }
     }

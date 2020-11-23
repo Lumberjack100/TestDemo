@@ -2,7 +2,7 @@ package com.shmedo.configlibrary.iot.cmd.parser;
 
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.interfaces.IOTResultParser;
-import com.shmedo.configlibrary.iot.model.TerminalTime;
+import com.shmedo.configlibrary.iot.model.TerminalTimeInfo;
 
 import java.util.HashMap;
 
@@ -11,10 +11,10 @@ import java.util.HashMap;
  * 创建时间:  2020/8/31 <br/>
  * 描述：    解析设备终端时间
  */
-public class TerminalTimeParser implements IOTResultParser<TerminalTime> {
+public class TerminalTimeParser implements IOTResultParser<TerminalTimeInfo> {
     @Override
-    public TerminalTime parse(String result) {
-        TerminalTime info = new TerminalTime();
+    public TerminalTimeInfo parse(String result) {
+        TerminalTimeInfo info = new TerminalTimeInfo();
         try {
             String[] keyValues = result.split("&");
             HashMap<String, String> keyValueMap = new HashMap<>();

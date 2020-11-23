@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel;
 
 import com.kunminx.architecture.ui.callback.ProtectedUnPeekLiveData;
 import com.kunminx.architecture.ui.callback.UnPeekLiveData;
-import com.shmedo.configlibrary.iot.model.TerminalBean;
+import com.shmedo.configlibrary.iot.model.TerminalInfo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +16,7 @@ import java.util.List;
  */
 public class VmsViewModel extends ViewModel {
     private final UnPeekLiveData<String> deviceApiKey = new UnPeekLiveData<>();
-    private final UnPeekLiveData<List<TerminalBean>> VmsTerminalListLiveData = new UnPeekLiveData<>();
+    private final UnPeekLiveData<List<TerminalInfo>> VmsTerminalListLiveData = new UnPeekLiveData<>();
     private UnPeekLiveData<Boolean> vmsRefreshTerminal;
 
     public UnPeekLiveData<String> getDeviceApiKey() {
@@ -33,15 +33,15 @@ public class VmsViewModel extends ViewModel {
     }
 
 
-    public ProtectedUnPeekLiveData<List<TerminalBean>> getVmsTerminalList() {
+    public ProtectedUnPeekLiveData<List<TerminalInfo>> getVmsTerminalList() {
         return VmsTerminalListLiveData;
     }
 
-    public void addTerminalList(List<TerminalBean> tempList) {
+    public void addTerminalList(List<TerminalInfo> tempList) {
         if (tempList == null || tempList.size() == 0)
             return;
 
-        List<TerminalBean> cacheList = VmsTerminalListLiveData.getValue();
+        List<TerminalInfo> cacheList = VmsTerminalListLiveData.getValue();
         if (cacheList == null)
             cacheList = new ArrayList<>();
 

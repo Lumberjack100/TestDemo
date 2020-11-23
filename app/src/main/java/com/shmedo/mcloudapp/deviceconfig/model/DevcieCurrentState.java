@@ -4,7 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.google.gson.annotations.SerializedName;
-import com.shmedo.configlibrary.iot.model.SensorErrnoBean;
+import com.shmedo.configlibrary.iot.model.SensorErrnoInfo;
 
 import java.util.List;
 
@@ -57,7 +57,7 @@ public class DevcieCurrentState implements Parcelable {
     private double video_sun_volt;
     private double video_battery_volt;
     private double video_wind_power;
-    private List<SensorErrnoBean> sensor_errno;//传感器错误码，
+    private List<SensorErrnoInfo> sensor_errno;//传感器错误码，
 
 
     private String IMEI;
@@ -104,7 +104,7 @@ public class DevcieCurrentState implements Parcelable {
         video_sun_volt = in.readDouble();
         video_battery_volt = in.readDouble();
         video_wind_power = in.readDouble();
-        sensor_errno = in.createTypedArrayList(SensorErrnoBean.CREATOR);
+        sensor_errno = in.createTypedArrayList(SensorErrnoInfo.CREATOR);
         IMEI = in.readString();
         CCID = in.readString();
         uptime = in.readString();
@@ -300,11 +300,11 @@ public class DevcieCurrentState implements Parcelable {
         this.video_wind_power = video_wind_power;
     }
 
-    public List<SensorErrnoBean> getSensor_errno() {
+    public List<SensorErrnoInfo> getSensor_errno() {
         return sensor_errno;
     }
 
-    public void setSensor_errno(List<SensorErrnoBean> sensor_errno) {
+    public void setSensor_errno(List<SensorErrnoInfo> sensor_errno) {
         this.sensor_errno = sensor_errno;
     }
 

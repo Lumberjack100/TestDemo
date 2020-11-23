@@ -26,7 +26,7 @@ import com.shmedo.configlibrary.iot.cmd.entity.TerminalSNEntity;
 import com.shmedo.configlibrary.iot.cmd.parser.IOTParseManager;
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.model.CommonSettingCmdResult;
-import com.shmedo.configlibrary.iot.model.TerminalBean;
+import com.shmedo.configlibrary.iot.model.TerminalInfo;
 import com.shmedo.configlibrary.iot.model.VmsAisleTerminalInfo;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
 import com.shmedo.core.AppContants;
@@ -62,11 +62,11 @@ public class TcpVmsTerminalListFragment extends BaseBottomSheetDialogFragment {
 
     private VmsTerminalInfoAdapter adapter;
 
-    private List<TerminalBean> terminalBeanList = new ArrayList<>();
+    private List<TerminalInfo> terminalInfoList = new ArrayList<>();
 
     private VmsAisleTerminalInfo vmsAisleTerminalInfo;
 
-    private TerminalBean terminalBean;
+    private TerminalInfo terminalInfo;
 
     private TcpShareViewModel tcpShareViewModel;
     private VmsViewModel vmsViewModel;
@@ -113,20 +113,23 @@ public class TcpVmsTerminalListFragment extends BaseBottomSheetDialogFragment {
         mRecyclerView.setLayoutManager(new GridLayoutManager(mActivity, spanCount));
         //设置每个item间距
         mRecyclerView.addItemDecoration(new GridSpacingItemDecoration(spanCount, spacing, true));
-        adapter = new VmsTerminalInfoAdapter(terminalBeanList);
+        adapter = new VmsTerminalInfoAdapter(terminalInfoList);
         adapter.setAnimationEnable(true);
         adapter.setAnimationFirstOnly(false);
         adapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
-                terminalBean = terminalBeanList.get(position);
-                VmsTerminalHomeActivity.startActivity(mActivity, AppContants.CommunicationWay.TCP_CONNECT, terminalBean);
+                if (isDoubleClick(view)) {
+                    return;
+                }
+                terminalInfo = terminalInfoList.get(position);
+                VmsTerminalHomeActivity.startActivity(mActivity, AppContants.CommunicationWay.TCP_CONNECT, terminalInfo);
             }
         });
         adapter.setOnItemLongClickListener(new OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(@NonNull BaseQuickAdapter adapter, @NonNull View view, int position) {
-                terminalBean = terminalBeanList.get(position);
+                terminalInfo = terminalInfoList.get(position);
                 showRemoveTerminalDialog();
                 return true;
             }
@@ -153,8 +156,8 @@ public class TcpVmsTerminalListFragment extends BaseBottomSheetDialogFragment {
             adapter.setEmptyView(R.layout.empty_view);
             return;
         }
-        terminalBeanList.clear();
-        terminalBeanList.addAll(vmsAisleTerminalInfo.getTerminal());
+        terminalInfoList.clear();
+        terminalInfoList.addAll(vmsAisleTerminalInfo.getTerminal());
 //        terminalBeanList.addAll(vmsAisleTerminalInfo.getTerminal());
         adapter.notifyDataSetChanged();
     }
@@ -188,13 +191,13 @@ public class TcpVmsTerminalListFragment extends BaseBottomSheetDialogFragment {
 
     private void doAfterSetting() {
         ToastUtils.show("删除成功");
-        terminalBeanList.remove(terminalBean);
+        terminalInfoList.remove(terminalInfo);
         adapter.notifyDataSetChanged();
         vmsViewModel.getVmsRefreshTerminal().postValue(true);
     }
 
     private CharSequence getWarnMessage() {
-        SpannableStringBuilder builder = new SpannableStringBuilder(terminalBean.getSn());
+        SpannableStringBuilder builder = new SpannableStringBuilder(terminalInfo.getSn());
         ForegroundColorSpan colorSpan = new ForegroundColorSpan(getContext().getResources().getColor(R.color.blue_52B4F8));
         builder.setSpan(colorSpan, 0, builder.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         builder.insert(0, "确认移除 ");
@@ -231,7 +234,7 @@ public class TcpVmsTerminalListFragment extends BaseBottomSheetDialogFragment {
      * 移除网关挂载的终端
      */
     private void removeTerminal() {
-        TerminalSNEntity entity = new TerminalSNEntity(terminalBean.getSn());
+        TerminalSNEntity entity = new TerminalSNEntity(terminalInfo.getSn());
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.MD_DELETE_TERMINAL, entity);
         sendCommand(command);
     }

@@ -19,7 +19,7 @@ import butterknife.BindView;
 /**
  * 创建者:   gonghe <br/>
  * 创建时间:  2020/11/20<br/>
- * 描述：     Vms网关挂载的终端扩展传感器主页面
+ * 描述：     Vms终端扩展传感器主页面
  */
 public class VmsTerminalExternalSensorHomeActivity extends BaseActivity {
     @BindView(R.id.tv_title)
@@ -29,9 +29,12 @@ public class VmsTerminalExternalSensorHomeActivity extends BaseActivity {
 
     private Fragment fragment;
 
-    public static void startActivity(Context context, int connectWay) {
+    private String sn;
+
+    public static void startActivity(Context context, int connectWay, String sn) {
         Intent intent = new Intent(context, VmsTerminalExternalSensorHomeActivity.class);
         intent.putExtra(AppContants.Extras.COMMUNICATION_WAY, connectWay);
+        intent.putExtra(AppContants.Extras.CUR_DEVICE_SN, sn);
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         context.startActivity(intent);
     }
@@ -59,13 +62,17 @@ public class VmsTerminalExternalSensorHomeActivity extends BaseActivity {
         if (intent.getExtras().containsKey(AppContants.Extras.COMMUNICATION_WAY)) {
             connectWay = intent.getIntExtra(AppContants.Extras.COMMUNICATION_WAY, AppContants.CommunicationWay.NET_PLATFORM_CONNECT);
         }
+
+        if (intent.getExtras().containsKey(AppContants.Extras.CUR_DEVICE_SN)) {
+            sn = intent.getStringExtra(AppContants.Extras.CUR_DEVICE_SN);
+        }
     }
 
     private void initFragment() {
         if (connectWay == AppContants.CommunicationWay.NET_PLATFORM_CONNECT) {
 
         } else if (connectWay == AppContants.CommunicationWay.TCP_CONNECT) {
-            fragment = TcpVmsTerminalExternalSensorHomeFragment.newInstance();
+            fragment = TcpVmsTerminalExternalSensorHomeFragment.newInstance(sn);
         }
 
         replaceFragment(fragment);

@@ -23,9 +23,9 @@ import com.shmedo.configlibrary.iot.cmd.entity.VmsAisleNumberEntity;
 import com.shmedo.configlibrary.iot.cmd.parser.IOTParseManager;
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.enums.VmsAisleNumber;
-import com.shmedo.configlibrary.iot.model.TerminalBean;
+import com.shmedo.configlibrary.iot.model.TerminalInfo;
 import com.shmedo.configlibrary.iot.model.VmsAisleTerminalInfo;
-import com.shmedo.configlibrary.iot.model.VmsBaseInfo;
+import com.shmedo.configlibrary.iot.model.VmsBasicInfo;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
 import com.shmedo.core.util.DensityUtil;
 import com.shmedo.mcloudapp.R;
@@ -84,7 +84,7 @@ public class TcpVmsHomeFragment extends BaseTcpConnectFragment {
 
     private String ipAddress = "192.168.5.2";//172.168.5.250   192.168.5.2
 
-    private VmsBaseInfo vmsBaseInfo = new VmsBaseInfo();
+    private VmsBasicInfo vmsBasicInfo = new VmsBasicInfo();
 
 
     public static TcpVmsHomeFragment newInstance() {
@@ -150,12 +150,12 @@ public class TcpVmsHomeFragment extends BaseTcpConnectFragment {
     }
 
     private void updateHeadInfo() {
-        if (vmsBaseInfo != null) {
+        if (vmsBasicInfo != null) {
             mTvDeviceName.setText("VMS网关");
-            mTvDeviceSn.setText(String.format("设备SN号：%s", vmsBaseInfo.getSn()));
-            mTvProductModel.setText(String.format("版本信息：%s", vmsBaseInfo.getSwVersion()));
-            mTvSubModel.setText(String.format("网关电压：%s", vmsBaseInfo.getVolt() + "V"));
-            if (!vmsBaseInfo.getOnline().trim().equals("0")) {
+            mTvDeviceSn.setText(String.format("设备SN号：%s", vmsBasicInfo.getSn()));
+            mTvProductModel.setText(String.format("版本信息：%s", vmsBasicInfo.getSwVersion()));
+            mTvSubModel.setText(String.format("网关电压：%s", vmsBasicInfo.getVolt() + "V"));
+            if (!vmsBasicInfo.getOnline().trim().equals("0")) {
                 mTvDeviceState.setVisibility(View.VISIBLE);
                 mTvDeviceState.setText("在线");
                 mTvDeviceState.setTextColor(ContextCompat.getColor(mActivity, R.color.text_color_50E9B9));
@@ -228,9 +228,6 @@ public class TcpVmsHomeFragment extends BaseTcpConnectFragment {
 
     @Override
     protected void parseResponseMessage(@NotNull String cmdStr) {
-        if (!isActive) {
-            return;
-        }
         setResultData(cmdStr);
     }
 
@@ -238,7 +235,7 @@ public class TcpVmsHomeFragment extends BaseTcpConnectFragment {
         IOTCommandType type = IOTStringUtil.extractCommandType(cmdStr);
         switch (type) {
             case MD_GET_GATEWAY_BASE: {//获取网关的基本信息
-                IOTCommandResult<VmsBaseInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
+                IOTCommandResult<VmsBasicInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
                     stopProgressRunnable();
                     String errMsg = "查询网关基本信息出错!";
@@ -246,7 +243,7 @@ public class TcpVmsHomeFragment extends BaseTcpConnectFragment {
                     ToastUtils.show(errMsg);
                     return;
                 }
-                vmsBaseInfo = commandResult.getResult();
+                vmsBasicInfo = commandResult.getResult();
                 updateHeadInfo();
                 getGatewayStatus(VmsAisleNumber.NUMBER_ONE);
             }
@@ -302,9 +299,9 @@ public class TcpVmsHomeFragment extends BaseTcpConnectFragment {
         if (vmsAisleTerminalInfo.getTerminal() == null)
             return;
 
-        for (TerminalBean terminalBean : vmsAisleTerminalInfo.getTerminal()) {
-            terminalBean.setNetid(vmsAisleTerminalInfo.getNetid());
-            terminalBean.setChl(vmsAisleTerminalInfo.getChl());
+        for (TerminalInfo terminalInfo : vmsAisleTerminalInfo.getTerminal()) {
+            terminalInfo.setNetid(vmsAisleTerminalInfo.getNetid());
+            terminalInfo.setChl(vmsAisleTerminalInfo.getChl());
         }
     }
 

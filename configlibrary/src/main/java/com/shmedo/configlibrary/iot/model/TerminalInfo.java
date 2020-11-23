@@ -11,7 +11,7 @@ import java.util.List;
  * 创建时间:  2020/11/13 <br/>
  * 描述：    Vms网关挂载的终端设备信息
  */
-public class TerminalBean implements Parcelable {
+public class TerminalInfo implements Parcelable {
     /**
      * sn : 253333D
      * addr : 64
@@ -39,10 +39,10 @@ public class TerminalBean implements Parcelable {
     private int status;//终端在线状态 0:离线，1：在线
     private String logintime;//注册时间
     private String lastpackagetime;//最后交互时间
-    private List<SensorErrnoBean> sensor;
+    private List<SensorErrnoInfo> sensor;
 
 
-    protected TerminalBean(Parcel in) {
+    protected TerminalInfo(Parcel in) {
         netid = in.readInt();
         chl = in.readInt();
         sn = in.readString();
@@ -59,7 +59,7 @@ public class TerminalBean implements Parcelable {
         status = in.readInt();
         logintime = in.readString();
         lastpackagetime = in.readString();
-        sensor = in.createTypedArrayList(SensorErrnoBean.CREATOR);
+        sensor = in.createTypedArrayList(SensorErrnoInfo.CREATOR);
     }
 
     @Override
@@ -89,15 +89,15 @@ public class TerminalBean implements Parcelable {
         return 0;
     }
 
-    public static final Creator<TerminalBean> CREATOR = new Creator<TerminalBean>() {
+    public static final Creator<TerminalInfo> CREATOR = new Creator<TerminalInfo>() {
         @Override
-        public TerminalBean createFromParcel(Parcel in) {
-            return new TerminalBean(in);
+        public TerminalInfo createFromParcel(Parcel in) {
+            return new TerminalInfo(in);
         }
 
         @Override
-        public TerminalBean[] newArray(int size) {
-            return new TerminalBean[size];
+        public TerminalInfo[] newArray(int size) {
+            return new TerminalInfo[size];
         }
     };
 
@@ -197,11 +197,11 @@ public class TerminalBean implements Parcelable {
         this.lastpackagetime = lastpackagetime;
     }
 
-    public List<SensorErrnoBean> getSensor() {
+    public List<SensorErrnoInfo> getSensor() {
         return sensor;
     }
 
-    public void setSensor(List<SensorErrnoBean> sensor) {
+    public void setSensor(List<SensorErrnoInfo> sensor) {
         this.sensor = sensor;
     }
 

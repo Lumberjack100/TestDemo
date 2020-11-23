@@ -18,7 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.hjq.toast.ToastUtils;
-import com.shmedo.configlibrary.iot.model.TerminalBean;
+import com.shmedo.configlibrary.iot.model.TerminalInfo;
 import com.shmedo.core.util.DensityUtil;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.activity.BaseActivity;
@@ -48,7 +48,7 @@ public class VmsTerminalSearchActivity extends BaseActivity implements TextWatch
 
     private VmsTerminalInfoAdapter adapter;
 
-    private List<TerminalBean> terminalBeanList = new ArrayList<>();
+    private List<TerminalInfo> terminalInfoList = new ArrayList<>();
 
     private String keyWords;// 要输入的搜索关键字
 
@@ -101,13 +101,13 @@ public class VmsTerminalSearchActivity extends BaseActivity implements TextWatch
         mRecyclerView.setLayoutManager(new GridLayoutManager(this, spanCount));
         //设置每个item间距
         mRecyclerView.addItemDecoration(new GridSpacingItemDecoration(spanCount, spacing, true));
-        adapter = new VmsTerminalInfoAdapter(terminalBeanList);
+        adapter = new VmsTerminalInfoAdapter(terminalInfoList);
         adapter.setAnimationEnable(true);
         adapter.setAnimationFirstOnly(false);
         adapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
-                TerminalBean terminalBean = terminalBeanList.get(position);
+                TerminalInfo terminalInfo = terminalInfoList.get(position);
             }
         });
         mRecyclerView.setAdapter(adapter);
@@ -159,20 +159,20 @@ public class VmsTerminalSearchActivity extends BaseActivity implements TextWatch
      * 开始进行搜索
      */
     private void doSearchQuery() {
-        List<TerminalBean> allTerminals = vmsViewModel.getVmsTerminalList().getValue();
+        List<TerminalInfo> allTerminals = vmsViewModel.getVmsTerminalList().getValue();
         if (allTerminals == null) {
             adapter.setEmptyView(R.layout.empty_view);
             adapter.notifyDataSetChanged();
             return;
         }
 
-        terminalBeanList.clear();
-        for (TerminalBean terminalBean : allTerminals) {
-            if (terminalBean.getSn().contains(keyWords)) {
-                terminalBeanList.add(terminalBean);
+        terminalInfoList.clear();
+        for (TerminalInfo terminalInfo : allTerminals) {
+            if (terminalInfo.getSn().contains(keyWords)) {
+                terminalInfoList.add(terminalInfo);
             }
         }
-        if (terminalBeanList.size() == 0) {
+        if (terminalInfoList.size() == 0) {
             adapter.setEmptyView(R.layout.empty_view);
         }
         adapter.notifyDataSetChanged();

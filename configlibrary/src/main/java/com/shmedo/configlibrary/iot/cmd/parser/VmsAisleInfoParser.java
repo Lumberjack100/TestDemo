@@ -4,7 +4,7 @@ import android.text.TextUtils;
 
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.interfaces.IOTResultParser;
-import com.shmedo.configlibrary.iot.model.VmsAisleParamInfo;
+import com.shmedo.configlibrary.iot.model.VmsAisleInfo;
 
 import java.util.HashMap;
 
@@ -13,10 +13,10 @@ import java.util.HashMap;
  * 创建时间:  11/15/20 <br/>
  * 描述：    解析Vms网关通道参数
  */
-public class VmsAisleParamInfoParser implements IOTResultParser<VmsAisleParamInfo> {
+public class VmsAisleInfoParser implements IOTResultParser<VmsAisleInfo> {
     @Override
-    public VmsAisleParamInfo parse(String result) {
-        VmsAisleParamInfo info = new VmsAisleParamInfo();
+    public VmsAisleInfo parse(String result) {
+        VmsAisleInfo info = new VmsAisleInfo();
         try {
             String[] keyValues = result.split("&");
             HashMap<String, String> keyValueMap = new HashMap<>();

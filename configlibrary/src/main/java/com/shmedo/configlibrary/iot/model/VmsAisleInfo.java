@@ -7,7 +7,7 @@ import android.text.TextUtils;
  * 创建时间:  11/15/20 <br/>
  * 描述：   Vms网关通道的控制参数信息
  */
-public class VmsAisleParamInfo {
+public class VmsAisleInfo {
     private String netid;//网关配置通道的网络号,取值[1,65535]，默认为1
     private String ppt;//空中唤醒时间，取值[0,5]s，默认2，当为0时，lora模块不休眠
     private String addr;//网关配置通道的地址,取值[0,63]，channel=0，默认为1；channel=1，默认为2；channel=2，默认为3

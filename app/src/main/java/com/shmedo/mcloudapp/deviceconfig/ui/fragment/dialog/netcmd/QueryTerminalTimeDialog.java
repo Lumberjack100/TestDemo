@@ -10,7 +10,7 @@ import androidx.core.content.ContextCompat;
 
 import com.shmedo.configlibrary.iot.cmd.IOTCommandResult;
 import com.shmedo.configlibrary.iot.cmd.parser.IOTParseManager;
-import com.shmedo.configlibrary.iot.model.TerminalTime;
+import com.shmedo.configlibrary.iot.model.TerminalTimeInfo;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.deviceconfig.model.QueryCmdResult;
 import com.shmedo.mcloudapp.util.DateUtil;
@@ -116,12 +116,12 @@ public class QueryTerminalTimeDialog extends BaseDispatchCmdDialog {
     @Override
     protected void onCmdResponeSuccess(QueryCmdResult queryCmdResult) {
         contentView.setVisibility(View.VISIBLE);
-        IOTCommandResult<TerminalTime> commandResult = IOTParseManager.getInstance().parse(queryCmdResult.getResponseContent());
+        IOTCommandResult<TerminalTimeInfo> commandResult = IOTParseManager.getInstance().parse(queryCmdResult.getResponseContent());
         if (!commandResult.isSuccess()) {
             return;
         }
-        TerminalTime terminalTime = commandResult.getResult();
-        deviceTime = terminalTime.getTime();
+        TerminalTimeInfo terminalTimeInfo = commandResult.getResult();
+        deviceTime = terminalTimeInfo.getTime();
         setTimeInfo();
     }
 
