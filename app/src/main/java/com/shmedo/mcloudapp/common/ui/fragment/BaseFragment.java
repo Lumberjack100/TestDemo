@@ -76,6 +76,7 @@ public abstract class BaseFragment extends Fragment implements HandleBackInterfa
      * 判断当前Fragment是否处于已恢复状态。
      */
     protected boolean isActive = false;
+    protected String name;
 
     protected ProgressDialog progressDialog = null;
 
@@ -104,6 +105,7 @@ public abstract class BaseFragment extends Fragment implements HandleBackInterfa
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         unbinder = ButterKnife.bind(this, view);
+        name = getClass().getSimpleName();
         initView();
     }
 
@@ -245,7 +247,6 @@ public abstract class BaseFragment extends Fragment implements HandleBackInterfa
     public void onResume() {
         super.onResume();
         isActive = true;
-        String name = getClass().getName();
         Timber.i("onResume,Fragment=%s", name);
     }
 
@@ -253,14 +254,12 @@ public abstract class BaseFragment extends Fragment implements HandleBackInterfa
     public void onPause() {
         super.onPause();
         isActive = false;
-        String name = getClass().getName();
         Timber.i("onPause,Fragment=%s", name);
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        String name = getClass().getName();
         Timber.i("onStop,Fragment=%s", name);
     }
 

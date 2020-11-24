@@ -143,6 +143,7 @@ public class TcpVmsHomeFragment extends BaseTcpConnectFragment {
             sendCommand(command);
         } else if (tcpConnectionState == TcpConnectionState.CONNECT_CLOSED) {
             dismissProgressDialog();
+            ToastUtils.show("通讯连接断开");
         }
 
         updateViewStateByConnectState(tcpConnectionState == TcpConnectionState.CONNECT_SUCCESS);
