@@ -63,10 +63,9 @@ public class TcpVmsTerminalListFragment extends BaseBottomSheetDialogFragment {
     private VmsTerminalInfoAdapter adapter;
 
     private List<TerminalInfo> terminalInfoList = new ArrayList<>();
+    private TerminalInfo terminalInfo;
 
     private VmsAisleTerminalInfo vmsAisleTerminalInfo;
-
-    private TerminalInfo terminalInfo;
 
     private TcpShareViewModel tcpShareViewModel;
     private VmsViewModel vmsViewModel;
@@ -162,7 +161,6 @@ public class TcpVmsTerminalListFragment extends BaseBottomSheetDialogFragment {
         }
         terminalInfoList.clear();
         terminalInfoList.addAll(vmsAisleTerminalInfo.getTerminal());
-//        terminalBeanList.addAll(vmsAisleTerminalInfo.getTerminal());
         adapter.notifyDataSetChanged();
     }
 

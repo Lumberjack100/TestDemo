@@ -172,6 +172,7 @@ public class TcpVmsTerminalHomeFragment extends BaseTcpConnectFragment {
                 break;
 
             case "遥测":
+                ToastUtils.show("正在研发中,敬请期待...");
                 break;
 
             case "重启":

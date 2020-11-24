@@ -92,7 +92,8 @@ public class TcpVmsAdvancedSettingsFragment extends BaseTcpConnectFragment {
             VmsAisleSettingActivity.startActivity(mActivity, AppContants.CommunicationWay.TCP_CONNECT, VmsAisleNumber.NUMBER_THREE);
 
         } else if (id == R.id.vmsResetLayout) {
-            showWarnDialog("确定恢复出厂设置吗？");
+            ToastUtils.show("正在研发中,敬请期待...");
+//            showWarnDialog("确定恢复出厂设置吗？");
         }
     }
 

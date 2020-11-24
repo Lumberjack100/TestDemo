@@ -52,6 +52,8 @@ import timber.log.Timber;
  * 描述：
  */
 public abstract class BaseActivity extends AppCompatActivity {
+    //防止按钮重复点击设置的时间间隔
+    private static final int DOUBLE_CLICK_TIME_INTERVAL = 1500;
 
     private ViewModelProvider mActivityProvider;
     private ViewModelProvider mApplicationProvider;
@@ -105,7 +107,6 @@ public abstract class BaseActivity extends AppCompatActivity {
                 netStateChangedUI(networkChangeEvent.isConnected);
             }
         });
-
         shareViewModel.getForceToLoginEvent().observeInActivity(this, new Observer<ForceToLoginEvent>() {
             @Override
             public void onChanged(ForceToLoginEvent forceToLoginEvent) {
@@ -307,6 +308,16 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     protected void setCheckNetWork(boolean checkNetWork) {
         mCheckNetwork = checkNetWork;
+    }
+
+    protected boolean isDoubleClick(View v) {
+        Object tag = v.getTag(v.getId());
+        long beforeTimeMillis = tag != null ? (long) tag : 0;
+        long timeInMillis = System.currentTimeMillis();
+        v.setTag(v.getId(), timeInMillis);
+
+        long interval = timeInMillis - beforeTimeMillis;
+        return interval < DOUBLE_CLICK_TIME_INTERVAL;
     }
 
     protected <T extends ViewModel> T getActivityScopeViewModel(@NonNull Class<T> modelClass) {

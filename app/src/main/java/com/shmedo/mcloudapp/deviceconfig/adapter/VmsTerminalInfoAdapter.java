@@ -24,7 +24,7 @@ public class VmsTerminalInfoAdapter extends BaseQuickAdapter<TerminalInfo, BaseV
     @Override
     protected void convert(@NotNull BaseViewHolder holder, TerminalInfo terminalInfo) {
         holder.setText(R.id.tv_terminal_sn, terminalInfo.getSn());
-        holder.setText(R.id.tv_battery_value, String.valueOf(terminalInfo.getVolt()));
+        holder.setText(R.id.tv_battery_value, terminalInfo.getVolt() + "V");
         holder.setText(R.id.tv_last_data_time, terminalInfo.getLastpackagetime());
 
         if (terminalInfo.getStatus() == 1) {//在线
