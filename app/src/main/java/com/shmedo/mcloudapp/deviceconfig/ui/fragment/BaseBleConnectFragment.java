@@ -168,12 +168,10 @@ public abstract class BaseBleConnectFragment extends BaseFragment {
     }
 
     @Override
-    public void onStop() {
-        super.onStop();
+    public void onPause() {
+        super.onPause();
         dismissProgressDialog();
-        bleViewModel.clearLastValue();
     }
-
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {

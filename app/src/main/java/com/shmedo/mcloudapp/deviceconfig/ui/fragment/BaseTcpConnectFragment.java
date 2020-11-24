@@ -73,11 +73,9 @@ public abstract class BaseTcpConnectFragment extends BaseFragment {
     }
 
     @Override
-    public void onStop() {
-        super.onStop();
+    public void onPause() {
+        super.onPause();
         dismissProgressDialog();
-        //清除最后接收到的消息，防止返回到上一级页面时被消费
-        tcpShareViewModel.clearLastReceivedMessage();
     }
 
     @Override
@@ -88,6 +86,11 @@ public abstract class BaseTcpConnectFragment extends BaseFragment {
         tcpShareViewModel.getTcpConnectionState().observeInFragment(this, new Observer<TcpConnectionState>() {
             @Override
             public void onChanged(TcpConnectionState tcpConnectionState) {
+                //只供当前处于Active(即处于onResume状态)的页面观察者消费此事件
+                // TODO 返到上一级页面时，LiveData事件会早于上一级页面的onResume()方法分发，即上级页面处于isActive前事件就来了
+                if (!isActive) {
+                    return;
+                }
                 onConnectionChange(tcpConnectionState);
             }
         });
@@ -110,13 +113,8 @@ public abstract class BaseTcpConnectFragment extends BaseFragment {
      * @param tcpConnectionState
      */
     protected void onConnectionChange(TcpConnectionState tcpConnectionState) {
-        //只供当前处于Active(即处于onResume状态)的页面观察者消费此事件
-        // TODO 返到上一级页面时，LiveData事件会早于上一级页面的onResume()方法分发，即上级页面处于isActive前事件就来了
-        if (!isActive) {
-            return;
-        }
         if (tcpConnectionState == TcpConnectionState.CONNECT_CLOSED) {
-            ToastUtils.show("通讯断开");
+            ToastUtils.show("通讯连接断开");
         }
     }
 
