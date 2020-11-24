@@ -100,8 +100,14 @@ public class TcpVmsHomeFragment extends BaseTcpConnectFragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         initAdapter();
-        setupTcpConnect();
         observerRefreshTerminal();
+        setupTcpConnect();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        updateViewStateByConnectState(tcpShareViewModel.getConnectStatus());
     }
 
     @Override
@@ -110,30 +116,6 @@ public class TcpVmsHomeFragment extends BaseTcpConnectFragment {
         mTvDeviceConnectOperate.setVisibility(View.VISIBLE);
         mTvDeviceConnectOperate.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG);
         mTvDeviceCommunicationWaySwitch.setVisibility(View.INVISIBLE);
-    }
-
-    private void setupTcpConnect() {
-        tcpShareViewModel.initTcpClient(ipAddress, 10002);
-        startProgressRunnable("建立通讯连接...", TCP_CONNECT_DELAY_MILLIS);
-        tcpShareViewModel.connect();
-    }
-
-    @Override
-    protected void onConnectionChange(TcpConnectionState tcpConnectionState) {
-        super.onConnectionChange(tcpConnectionState);
-        if (tcpConnectionState == TcpConnectionState.CONNECT_SUCCESS) {
-            //dismissProgressDialog();
-            mTvDeviceConnectOperate.setText("断开连接");
-            mTvDeviceConnectOperate.setTextColor(ContextCompat.getColor(mActivity, R.color.text_color_b3b3b3));
-
-            //startProgressRunnable("初始化信息...", SEND_CMD_DELAY_MILLIS);
-            String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.MD_GET_GATEWAY_BASE);
-            sendCommand(command);
-        } else if (tcpConnectionState == TcpConnectionState.CONNECT_CLOSED) {
-            dismissProgressDialog();
-            mTvDeviceConnectOperate.setText("重新连接");
-            mTvDeviceConnectOperate.setTextColor(ContextCompat.getColor(mActivity, R.color.blue_52B4F8));
-        }
     }
 
     private void observerRefreshTerminal() {
@@ -147,23 +129,32 @@ public class TcpVmsHomeFragment extends BaseTcpConnectFragment {
         });
     }
 
-    private void updateHeadInfo() {
-        if (vmsBasicInfo != null) {
-            mTvDeviceName.setText("VMS网关");
-            mTvDeviceSn.setText(String.format("设备SN号：%s", vmsBasicInfo.getSn()));
-            mTvProductModel.setText(String.format("版本信息：%s", vmsBasicInfo.getSwVersion()));
-            mTvSubModel.setText(String.format("网关电压：%s", vmsBasicInfo.getVolt() + "V"));
-            if (!vmsBasicInfo.getOnline().trim().equals("0")) {
-                mTvDeviceState.setVisibility(View.VISIBLE);
-                mTvDeviceState.setText("在线");
-                mTvDeviceState.setTextColor(ContextCompat.getColor(mActivity, R.color.text_color_50E9B9));
-                mTvDeviceState.setBackgroundResource(R.drawable.bg_device_online_state_flag);
-            } else {
-                mTvDeviceState.setVisibility(View.VISIBLE);
-                mTvDeviceState.setText("离线");
-                mTvDeviceState.setTextColor(ContextCompat.getColor(mActivity, R.color.sub_title_text_color));
-                mTvDeviceState.setBackgroundResource(R.drawable.bg_device_offline_state_flag);
-            }
+    private void setupTcpConnect() {
+        tcpShareViewModel.initTcpClient(ipAddress, 10002);
+        startProgressRunnable("建立通讯连接...", TCP_CONNECT_DELAY_MILLIS);
+        tcpShareViewModel.connect();
+    }
+
+    @Override
+    protected void onConnectionChange(TcpConnectionState tcpConnectionState) {
+        if (tcpConnectionState == TcpConnectionState.CONNECT_SUCCESS) {
+            //建立通讯连接后，查询网关基本信息
+            String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.MD_GET_GATEWAY_BASE);
+            sendCommand(command);
+        } else if (tcpConnectionState == TcpConnectionState.CONNECT_CLOSED) {
+            dismissProgressDialog();
+        }
+
+        updateViewStateByConnectState(tcpConnectionState == TcpConnectionState.CONNECT_SUCCESS);
+    }
+
+    private void updateViewStateByConnectState(boolean isConnected) {
+        if (isConnected) {
+            mTvDeviceConnectOperate.setText("断开连接");
+            mTvDeviceConnectOperate.setTextColor(ContextCompat.getColor(mActivity, R.color.text_color_b3b3b3));
+        } else {
+            mTvDeviceConnectOperate.setText("重新连接");
+            mTvDeviceConnectOperate.setTextColor(ContextCompat.getColor(mActivity, R.color.blue_52B4F8));
         }
     }
 
@@ -282,6 +273,26 @@ public class TcpVmsHomeFragment extends BaseTcpConnectFragment {
             default:
                 super.parseResponseMessage(cmdStr);
                 break;
+        }
+    }
+
+    private void updateHeadInfo() {
+        if (vmsBasicInfo != null) {
+            mTvDeviceName.setText("VMS网关");
+            mTvDeviceSn.setText(String.format("设备SN号：%s", vmsBasicInfo.getSn()));
+            mTvProductModel.setText(String.format("版本信息：%s", vmsBasicInfo.getSwVersion()));
+            mTvSubModel.setText(String.format("网关电压：%s", vmsBasicInfo.getVolt() + "V"));
+            if (!vmsBasicInfo.getOnline().trim().equals("0")) {
+                mTvDeviceState.setVisibility(View.VISIBLE);
+                mTvDeviceState.setText("在线");
+                mTvDeviceState.setTextColor(ContextCompat.getColor(mActivity, R.color.text_color_50E9B9));
+                mTvDeviceState.setBackgroundResource(R.drawable.bg_device_online_state_flag);
+            } else {
+                mTvDeviceState.setVisibility(View.VISIBLE);
+                mTvDeviceState.setText("离线");
+                mTvDeviceState.setTextColor(ContextCompat.getColor(mActivity, R.color.sub_title_text_color));
+                mTvDeviceState.setBackgroundResource(R.drawable.bg_device_offline_state_flag);
+            }
         }
     }
 

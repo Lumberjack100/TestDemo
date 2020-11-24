@@ -67,6 +67,10 @@ public class TcpManager implements NettyClientListener<String> {
         return receivedMessage;
     }
 
+    public void clearLastReceivedMessage() {
+        receivedMessage.postValue(null);
+    }
+
     @Override
     public void onMessageResponseClient(String msg, int index) {
 //        Timber.d("onMessageResponseClient:%s", msg);

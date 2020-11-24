@@ -174,7 +174,7 @@ public class TcpVmsTerminalExternalLinearSensorFragment extends BaseTcpConnectFr
         sensitivityCoefficient = sensorInfo.getParamk();
         initialTemperature = sensorInfo.getParamt();
         initialModulus = sensorInfo.getParamf();
-        correctValue = sensorInfo.getCorral();
+        correctValue = sensorInfo.getParamm();
 
         mEtTemperatureCoefficient.setText(temperatureCoefficient);
         mEtSensitivityCoefficient.setText(sensitivityCoefficient);
@@ -183,7 +183,7 @@ public class TcpVmsTerminalExternalLinearSensorFragment extends BaseTcpConnectFr
         mEtCorrectValue.setText(correctValue);
 
         //为0表示未接入传感器
-        if (sensorInfo.getInstert().trim().equals("0")) {
+        if (sensorInfo.getInsert().trim().equals("0")) {
             mSbCenterEnable.setCheckedImmediatelyNoEvent(false);
             pageTwoaLyout.setVisibility(View.VISIBLE);
             pageTwoaLyout.setOnClickListener(null);
@@ -197,7 +197,7 @@ public class TcpVmsTerminalExternalLinearSensorFragment extends BaseTcpConnectFr
         SetTerminalSensorParamsEntity entity = new SetTerminalSensorParamsEntity();
         entity.setSn(sensorInfo.getSn());
         entity.setChannel(sensorInfo.getChannel());
-        entity.setInstert("1");
+        entity.setInsert("1");
 
         mBtnSave.setEnabled(false);
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.MD_SET_TERMINAL_CHL, entity);
@@ -211,7 +211,7 @@ public class TcpVmsTerminalExternalLinearSensorFragment extends BaseTcpConnectFr
         SetTerminalSensorParamsEntity entity = new SetTerminalSensorParamsEntity();
         entity.setSn(sensorInfo.getSn());
         entity.setChannel(sensorInfo.getChannel());
-        entity.setInstert("0");
+        entity.setInsert("0");
 
         mBtnSave.setEnabled(false);
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.MD_SET_TERMINAL_CHL, entity);
@@ -250,7 +250,7 @@ public class TcpVmsTerminalExternalLinearSensorFragment extends BaseTcpConnectFr
         entity.setParamk(sensitivityCoefficient);
         entity.setParamt(initialTemperature);
         entity.setParamf(initialModulus);
-        entity.setCorral(correctValue);
+        entity.setParamm(correctValue);
 
         mBtnSave.setEnabled(false);
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.MD_SET_TERMINAL_CHL, entity);

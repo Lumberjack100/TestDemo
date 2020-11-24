@@ -97,7 +97,12 @@ public class TcpVmsTerminalExternalSensorHomeFragment extends BaseTcpConnectFrag
         sensorAdapter = new CommonAdapter<VmsTerminalSensorItem>(mActivity, R.layout.item_vms_terminal_sensor, sensorItemList) {
             @Override
             protected void convert(CommonViewHolder holder, VmsTerminalSensorItem sensorItem, int position) {
-                holder.setImageResource(R.id.iv_vms_terminal_sensor, sensorItem.getResId());
+                if (sensorItem.isInsert()) {
+                    holder.setImageResource(R.id.iv_vms_terminal_sensor, R.drawable.ic_sensor_holder_bright);
+
+                } else {
+                    holder.setImageResource(R.id.iv_vms_terminal_sensor, R.drawable.ic_sensor_holder_gray);
+                }
             }
         };
         sensorAdapter.setOnItemClickListener(new MultiItemTypeAdapter.OnItemClickListener() {
@@ -169,13 +174,14 @@ public class TcpVmsTerminalExternalSensorHomeFragment extends BaseTcpConnectFrag
 
     private void processSensorParamsInfo(TerminalSensorInfo sensorInfo) {
         sensorHashMap.put(sensorInfo.getChannel(), sensorInfo);
-        addSensorItem(sensorInfo.getChannel());
+        addSensorItem(sensorInfo);
     }
 
-    private void addSensorItem(String channel) {
+    private void addSensorItem(TerminalSensorInfo sensorInfo) {
         VmsTerminalSensorItem sensorItem = new VmsTerminalSensorItem();
-        sensorItem.setChannel(channel);
-        sensorItem.setResId(R.drawable.ic_sensor_holder);
+        sensorItem.setChannel(sensorInfo.getChannel());
+        sensorItem.setInsert(sensorInfo.getInsert().trim().equals("1"));
+        sensorItem.setResId(R.drawable.ic_sensor_holder_bright);
         sensorItemList.add(sensorItem);
     }
 }

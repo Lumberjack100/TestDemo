@@ -15,19 +15,10 @@ import com.shmedo.mcloudapp.deviceconfig.model.TcpConnectionState;
  * 描述：     TODO
  */
 public class TcpShareViewModel extends AndroidViewModel {
-
     private final TcpManager tcpManager = new TcpManager();
 
     public TcpShareViewModel(@NonNull Application application) {
         super(application);
-    }
-
-    public ProtectedUnPeekLiveData<TcpConnectionState> getTcpConnectionState() {
-        return tcpManager.getTcpConnectionState();
-    }
-
-    public ProtectedUnPeekLiveData<String> getReceivedMessage() {
-        return tcpManager.getReceivedMessage();
     }
 
     public void initTcpClient(String host, int port) {
@@ -44,6 +35,19 @@ public class TcpShareViewModel extends AndroidViewModel {
 
     public boolean getConnectStatus() {
         return tcpManager.getConnectStatus();
+    }
+
+
+    public ProtectedUnPeekLiveData<TcpConnectionState> getTcpConnectionState() {
+        return tcpManager.getTcpConnectionState();
+    }
+
+    public ProtectedUnPeekLiveData<String> getReceivedMessage() {
+        return tcpManager.getReceivedMessage();
+    }
+
+    public void clearLastReceivedMessage(){
+        tcpManager.clearLastReceivedMessage();
     }
 
     public void sendMsgToServer(String msg) {

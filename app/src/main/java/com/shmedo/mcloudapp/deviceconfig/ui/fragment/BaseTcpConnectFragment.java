@@ -76,6 +76,8 @@ public abstract class BaseTcpConnectFragment extends BaseFragment {
     public void onStop() {
         super.onStop();
         dismissProgressDialog();
+        //清除最后接收到的消息，防止返回到上一级页面时被消费
+        tcpShareViewModel.clearLastReceivedMessage();
     }
 
     @Override
@@ -92,7 +94,8 @@ public abstract class BaseTcpConnectFragment extends BaseFragment {
         tcpShareViewModel.getReceivedMessage().observeInFragment(this, new Observer<String>() {
             @Override
             public void onChanged(String msg) {
-                //只供当前处于Active的页面观察者消费此事件
+                //只供当前处于Active(即处于onResume状态)的页面观察者消费此事件
+                // TODO 返到上一级页面时，LiveData事件会早于上一级页面的onResume()方法分发，即上级页面处于isActive前事件就来了
                 if (!isActive) {
                     return;
                 }
@@ -107,7 +110,8 @@ public abstract class BaseTcpConnectFragment extends BaseFragment {
      * @param tcpConnectionState
      */
     protected void onConnectionChange(TcpConnectionState tcpConnectionState) {
-        //只供当前处于Active的页面观察者消费此事件
+        //只供当前处于Active(即处于onResume状态)的页面观察者消费此事件
+        // TODO 返到上一级页面时，LiveData事件会早于上一级页面的onResume()方法分发，即上级页面处于isActive前事件就来了
         if (!isActive) {
             return;
         }

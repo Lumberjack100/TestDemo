@@ -12,7 +12,7 @@ import com.shmedo.configlibrary.ble.interfaces.Validater;
 public class SetTerminalSensorParamsEntity implements Validater {
     private String sn;
     private String channel;//传感器所在通道
-    private String instert;//接入判断，0：未接入，1：接入
+    private String insert;//接入判断，0：未接入，1：接入
     private String freqtype;//激励类型，默认4（频率反馈固定频率扫频法）
     private String freqmax;//频率上限，默认2000
     private String freqmin;//频率下限，默认1000
@@ -40,8 +40,8 @@ public class SetTerminalSensorParamsEntity implements Validater {
         this.channel = channel;
     }
 
-    public void setInstert(String instert) {
-        this.instert = instert;
+    public void setInsert(String insert) {
+        this.insert = insert;
     }
 
     public void setFreqtype(String freqtype) {
@@ -130,8 +130,8 @@ public class SetTerminalSensorParamsEntity implements Validater {
         stringBuilder.append("channel=" + channel);
         stringBuilder.append("&");
 
-        if (!TextUtils.isEmpty(instert)) {
-            stringBuilder.append("instert=" + instert);
+        if (!TextUtils.isEmpty(insert)) {
+            stringBuilder.append("insert=" + insert);
             stringBuilder.append("&");
         }
         if (!TextUtils.isEmpty(freqtype)) {

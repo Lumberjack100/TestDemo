@@ -12,7 +12,7 @@ import android.text.TextUtils;
 public class TerminalSensorInfo implements Parcelable {
     private String sn;
     private String channel;//传感器所在通道
-    private String instert;//接入判断，0：未接入，1：接入
+    private String insert;//接入判断，0：未接入，1：接入
     private String freqtype;//激励类型，默认4（频率反馈固定频率扫频法）
     private String freqmax;//频率上限，默认2000
     private String freqmin;//频率下限，默认1000
@@ -39,7 +39,7 @@ public class TerminalSensorInfo implements Parcelable {
     protected TerminalSensorInfo(Parcel in) {
         sn = in.readString();
         channel = in.readString();
-        instert = in.readString();
+        insert = in.readString();
         freqtype = in.readString();
         freqmax = in.readString();
         freqmin = in.readString();
@@ -64,7 +64,7 @@ public class TerminalSensorInfo implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(sn);
         dest.writeString(channel);
-        dest.writeString(instert);
+        dest.writeString(insert);
         dest.writeString(freqtype);
         dest.writeString(freqmax);
         dest.writeString(freqmin);
@@ -118,12 +118,12 @@ public class TerminalSensorInfo implements Parcelable {
         this.channel = channel;
     }
 
-    public String getInstert() {
-        return TextUtils.isEmpty(instert) ? "" : instert;
+    public String getInsert() {
+        return TextUtils.isEmpty(insert) ? "" : insert;
     }
 
-    public void setInstert(String instert) {
-        this.instert = instert;
+    public void setInsert(String insert) {
+        this.insert = insert;
     }
 
     public String getFreqtype() {

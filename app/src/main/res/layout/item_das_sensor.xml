@@ -9,7 +9,7 @@
         android:id="@+id/iv_das_sensor"
         android:layout_width="74dp"
         android:layout_height="74dp"
-        tools:src="@drawable/ic_sensor_holder" />
+        tools:src="@drawable/ic_sensor_holder_bright" />
 
     <ImageView
         android:id="@+id/iv_del_item"

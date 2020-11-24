@@ -402,7 +402,7 @@ public abstract class BaseBleDasExternalSensorFragment extends BaseBleConnectFra
         sensorItemList.clear();
         DASSensorItem sensorItem;
         for (int i = 0; i < accessSum; i++) {
-            sensorItem = new DASSensorItem(R.drawable.ic_sensor_holder);
+            sensorItem = new DASSensorItem(R.drawable.ic_sensor_holder_bright);
             sensorItemList.add(sensorItem);
         }
         sensorItem = new DASSensorItem(R.drawable.ic_add_sensor, true);
@@ -411,7 +411,7 @@ public abstract class BaseBleDasExternalSensorFragment extends BaseBleConnectFra
     }
 
     private void addSensorItem(String address) {
-        DASSensorItem sensorItem = new DASSensorItem(R.drawable.ic_sensor_holder);
+        DASSensorItem sensorItem = new DASSensorItem(R.drawable.ic_sensor_holder_bright);
         sensorItem.setSensorAddress(address);
         sensorItemList.add(sensorItem);
     }
@@ -465,7 +465,7 @@ public abstract class BaseBleDasExternalSensorFragment extends BaseBleConnectFra
                         collectorSensorHashMap.put(sensorAddress, collectorSensorParamsInfoSub);
 
                         sensorItemList.remove(sensorItemList.size() - 1);
-                        DASSensorItem sensorItem = new DASSensorItem(R.drawable.ic_sensor_holder);
+                        DASSensorItem sensorItem = new DASSensorItem(R.drawable.ic_sensor_holder_bright);
                         sensorItem.setSensorAddress(sensorAddress);
                         sensorItemList.add(sensorItem);
                         if (sensorItemList.size() < 8) {
