@@ -1,11 +1,10 @@
-package com.shmedo.core.wifimanager;
+package com.hacknife.wifimanager;
 
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiConfiguration;
 import android.text.TextUtils;
 
 import java.util.List;
-import java.util.Locale;
 
 public class Wifi implements IWifi {
     protected String name;
@@ -35,7 +34,7 @@ public class Wifi implements IWifi {
         wifi.isEncrypt = true;
         wifi.encryption = "";
         wifi.level = result.level;
-        wifi.ip = wifi.isConnected ? String.format(Locale.getDefault(), "%d.%d.%d.%d", (ipAddress & 0xff), (ipAddress >> 8 & 0xff), (ipAddress >> 16 & 0xff), (ipAddress >> 24 & 0xff)) : "";
+        wifi.ip = wifi.isConnected ? String.format("%d.%d.%d.%d", (ipAddress & 0xff), (ipAddress >> 8 & 0xff), (ipAddress >> 16 & 0xff), (ipAddress >> 24 & 0xff)) : "";
         if (wifi.capabilities.toUpperCase().contains("WPA2-PSK") && wifi.capabilities.toUpperCase().contains("WPA-PSK")) {
             wifi.encryption = "WPA/WPA2";
         } else if (wifi.capabilities.toUpperCase().contains("WPA-PSK")) {
@@ -141,9 +140,7 @@ public class Wifi implements IWifi {
 
     @Override
     public boolean equals(Object obj) {
-        if ((!(obj instanceof Wifi)))
-            return false;
-
+        if (obj == null || (!(obj instanceof Wifi))) return false;
         return ((Wifi) obj).SSID.equals(this.SSID);
     }
 

@@ -1,18 +1,12 @@
-package com.shmedo.core.wifimanager;
+package com.hacknife.wifimanager;
 
 import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiManager;
-
-import androidx.annotation.RequiresPermission;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-
-import static android.Manifest.permission.ACCESS_FINE_LOCATION;
-import static android.Manifest.permission.ACCESS_WIFI_STATE;
-import static android.Manifest.permission.CHANGE_WIFI_STATE;
 
 public class WifiHelper {
     public static final String WEP = "WEP";
@@ -20,7 +14,7 @@ public class WifiHelper {
     public static final String EAP = "EAP";
     public static final String WPA = "WPA";
 
-    @RequiresPermission(allOf = {ACCESS_FINE_LOCATION, ACCESS_WIFI_STATE, CHANGE_WIFI_STATE})
+
     public static int configOrCreateWifi(WifiManager manager, IWifi wifi, String password) {
         List<WifiConfiguration> configurations = manager.getConfiguredNetworks();
         for (WifiConfiguration configuration : configurations) {
@@ -31,7 +25,6 @@ public class WifiHelper {
         return saveWifiConfiguration(manager, configuration);
     }
 
-    @RequiresPermission(allOf = {ACCESS_FINE_LOCATION, ACCESS_WIFI_STATE, CHANGE_WIFI_STATE})
     public static boolean deleteWifiConfiguration(WifiManager manager, IWifi wifi) {
         List<WifiConfiguration> configurations = manager.getConfiguredNetworks();
         for (WifiConfiguration configuration : configurations) {
@@ -104,7 +97,7 @@ public class WifiHelper {
         return configuration;
     }
 
-    @RequiresPermission(allOf = {ACCESS_FINE_LOCATION, ACCESS_WIFI_STATE, CHANGE_WIFI_STATE})
+
     private static int saveWifiConfiguration(WifiManager manager, WifiConfiguration configuration) {
         int networkId = manager.addNetwork(configuration);
         manager.saveConfiguration();

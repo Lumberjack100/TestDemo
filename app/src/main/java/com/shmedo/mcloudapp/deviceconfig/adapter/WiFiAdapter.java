@@ -2,7 +2,7 @@ package com.shmedo.mcloudapp.deviceconfig.adapter;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;
-import com.shmedo.core.wifimanager.IWifi;
+import com.hacknife.wifimanager.IWifi;
 import com.shmedo.mcloudapp.R;
 
 import org.jetbrains.annotations.NotNull;

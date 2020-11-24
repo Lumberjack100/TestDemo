@@ -1,4 +1,4 @@
-package com.shmedo.core.wifimanager;
+package com.hacknife.wifimanager;
 
 public interface IWifi {
 
