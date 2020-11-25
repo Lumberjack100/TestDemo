@@ -7,6 +7,7 @@ import android.content.IntentFilter;
 import android.net.NetworkInfo;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiConfiguration;
+import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Handler;
 import android.os.Looper;
@@ -117,7 +118,8 @@ public abstract class BaseWifiManager implements IWifiManager {
         @Override
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
-            if (TextUtils.isEmpty(action)) return;
+            if (TextUtils.isEmpty(action))
+                return;
             if (action.equals(WifiManager.WIFI_STATE_CHANGED_ACTION)) {
                 int state = intent.getIntExtra(WifiManager.EXTRA_WIFI_STATE, WifiManager.WIFI_STATE_UNKNOWN);
                 int what = 0;
@@ -150,45 +152,68 @@ public abstract class BaseWifiManager implements IWifiManager {
                 }
             } else if (action.equals(WifiManager.NETWORK_STATE_CHANGED_ACTION)) {
                 NetworkInfo info = intent.getParcelableExtra(WifiManager.EXTRA_NETWORK_INFO);
-                if (info == null) return;
+                if (info == null)
+                    return;
+
                 NetworkInfo.DetailedState state = info.getDetailedState();
-                if (state == null) return;
-                String SSID = info.getExtraInfo();
-                if (TextUtils.isEmpty(SSID)) return;
+                if (state == null)
+                    return;
+
+
+                WifiInfo wifiInfo = manager.getConnectionInfo();
+                if (wifiInfo == null)
+                    return;
+
+                String SSID = wifiInfo.getSSID();
+                if (TextUtils.isEmpty(SSID))
+                    return;
+
                 if (state == NetworkInfo.DetailedState.IDLE) {
+
                 } else if (state == NetworkInfo.DetailedState.SCANNING) {
+
                 } else if (state == NetworkInfo.DetailedState.AUTHENTICATING) {
                     modifyWifi(SSID, "身份验证中...");
+
                 } else if (state == NetworkInfo.DetailedState.OBTAINING_IPADDR) {
                     modifyWifi(SSID, "获取地址信息...");
-                } else if (state == NetworkInfo.DetailedState.CONNECTED) {
-//                    modifyWifi(SSID, "已连接");
+
+                } else if (state == NetworkInfo.DetailedState.CONNECTED) {//
                     modifyWifi();
                     handler.sendEmptyMessage(WIFI_STATE_CONNECTED);
-                } else if (state == NetworkInfo.DetailedState.SUSPENDED) {
+
+                } else if (state == NetworkInfo.DetailedState.SUSPENDED) {//
                     modifyWifi(SSID, "连接中断");
+
                 } else if (state == NetworkInfo.DetailedState.DISCONNECTING) {
                     modifyWifi(SSID, "断开中...");
+
                 } else if (state == NetworkInfo.DetailedState.DISCONNECTED) {
-//                    modifyWifi(SSID, "已断开");
-                    modifyWifi();
+                    modifyWifi(SSID, "已断开");
                     handler.sendEmptyMessage(WIFI_STATE_UNCONNECTED);
+
                 } else if (state == NetworkInfo.DetailedState.FAILED) {
                     modifyWifi(SSID, "连接失败");
-                } else if (state == NetworkInfo.DetailedState.BLOCKED) {
+
+                } else if (state == NetworkInfo.DetailedState.BLOCKED) {//
                     modifyWifi(SSID, "wifi无效");
-                } else if (state == NetworkInfo.DetailedState.VERIFYING_POOR_LINK) {
+
+                } else if (state == NetworkInfo.DetailedState.VERIFYING_POOR_LINK) {//
                     modifyWifi(SSID, "信号差");
-                } else if (state == NetworkInfo.DetailedState.CAPTIVE_PORTAL_CHECK) {
+
+                } else if (state == NetworkInfo.DetailedState.CAPTIVE_PORTAL_CHECK) {//
                     modifyWifi(SSID, "强制登陆门户");
                 }
             } else if (action.equals(WifiManager.SUPPLICANT_STATE_CHANGED_ACTION)) {
                 NetworkInfo info = intent.getParcelableExtra(WifiManager.EXTRA_NETWORK_INFO);
-                if (info == null) return;
+                if (info == null)
+                    return;
                 NetworkInfo.DetailedState state = info.getDetailedState();
-                if (state == null) return;
+                if (state == null)
+                    return;
                 String SSID = info.getExtraInfo();
-                if (TextUtils.isEmpty(SSID)) return;
+                if (TextUtils.isEmpty(SSID))
+                    return;
                 int code = intent.getIntExtra(WifiManager.EXTRA_SUPPLICANT_ERROR, -1);
                 if (code == WifiManager.ERROR_AUTHENTICATING) {
                     modifyWifi(SSID, "密码错误");

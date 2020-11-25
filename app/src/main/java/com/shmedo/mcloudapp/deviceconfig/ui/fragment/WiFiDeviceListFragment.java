@@ -3,10 +3,7 @@ package com.shmedo.mcloudapp.deviceconfig.ui.fragment;
 import android.Manifest;
 import android.animation.Animator;
 import android.animation.AnimatorInflater;
-import android.content.Context;
 import android.net.wifi.ScanResult;
-import android.net.wifi.WifiConfiguration;
-import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -24,13 +21,14 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
+import com.hacknife.wifimanager.HackWifiManager;
+import com.hacknife.wifimanager.IWifi;
+import com.hacknife.wifimanager.IWifiManager;
+import com.hacknife.wifimanager.OnWifiChangeListener;
 import com.hjq.toast.ToastUtils;
 import com.shmedo.core.AppContants;
 import com.shmedo.core.MCloudApp;
 import com.shmedo.core.util.GlobalUtil;
-import com.shmedo.core.wifimanager.IWifi;
-import com.shmedo.core.wifimanager.Wifi;
-import com.shmedo.core.wifimanager.WifiHelper;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.fragment.BaseFragment;
 import com.shmedo.mcloudapp.common.view.ClearEditText;
@@ -46,7 +44,6 @@ import com.thanosfisherman.wifiutils.wifiScan.ScanResultsListener;
 import com.thanosfisherman.wifiutils.wifiState.WifiStateListener;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 
@@ -88,7 +85,7 @@ public class WiFiDeviceListFragment extends BaseFragment implements TextWatcher,
 
     private Animator animator;
 
-    private WifiManager manager;
+    private IWifiManager hackWiFiManager;
 
     private IWifi curWiFi;
 
@@ -118,7 +115,6 @@ public class WiFiDeviceListFragment extends BaseFragment implements TextWatcher,
 
     @Override
     public void onDestroy() {
-        manager = null;
         vmsViewModel.clearDeviceApiKey();
         super.onDestroy();
     }
@@ -126,17 +122,16 @@ public class WiFiDeviceListFragment extends BaseFragment implements TextWatcher,
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        manager = (WifiManager) getContext().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         vmsViewModel = getApplicationScopeViewModel(VmsViewModel.class);
 
         initAdapter();
         initRefreshAnimation();
         setEditTextListener();
+        initThirdWiFiManager();
 
         //TODO  测试用
 //        vmsViewModel.updateDeviceApiKey("2f6beefd-f137-4599-ac1c-49c35d00a891");
 //        vmsViewModel.updateDeviceApiKey("a217c2f2-57b0-438a-9f29-8e21654f9d10");//
-
     }
 
     private void initAdapter() {
@@ -147,32 +142,53 @@ public class WiFiDeviceListFragment extends BaseFragment implements TextWatcher,
             @Override
             public void onItemClick(@NonNull BaseQuickAdapter adapter, @NonNull View view, int position) {
                 curWiFi = wiFiAdapter.getItem(position);
-                if (curWiFi.isConnected()) {//已连接
-                    if (curWiFi.name().contains("VMS")) {
-                        VmsHomeActivity.startActivity(getContext(), AppContants.CommunicationWay.TCP_CONNECT);
-                    }
-
-                } else if (curWiFi.isSaved()) {//已保存
-                    WifiUtils.withContext(getContext().getApplicationContext())
-                            .connectWith(curWiFi.name(), "")
-                            .setTimeout(25000)
-                            .onConnectionResult(successListener)
-                            .start();
-                } else if (!curWiFi.isEncrypt()) {//未加密
-                    WifiUtils.withContext(getContext().getApplicationContext())
-                            .connectWith(curWiFi.name(), "")
-                            .setTimeout(25000)
-                            .onConnectionResult(successListener)
-                            .start();
-                } else {//加密
-                    WifiUtils.withContext(getContext().getApplicationContext())
-                            .connectWith(curWiFi.name(), "medo33923627")
-                            .setTimeout(25000)
-                            .onConnectionResult(successListener)
-                            .start();
-                }
+                processWiFiUseFirstLibrary(curWiFi);
             }
         });
+    }
+
+    private void processWiFiUseFirstLibrary(IWifi curWiFi) {
+        if (curWiFi.isConnected()) {//已连接
+            if (curWiFi.name().contains("VMS")) {
+                VmsHomeActivity.startActivity(getContext(), AppContants.CommunicationWay.TCP_CONNECT);
+            }
+
+        } else if (curWiFi.isSaved()) {//已保存
+            hackWiFiManager.connectSavedWifi(curWiFi);
+
+        } else if (!curWiFi.isEncrypt()) {//未加密
+            hackWiFiManager.connectOpenWifi(curWiFi);
+
+        } else {//加密
+            hackWiFiManager.connectEncryptWifi(curWiFi, "medo33923627");
+        }
+    }
+
+    private void processWiFiUseSecondLibrary(IWifi curWiFi) {
+        if (curWiFi.isConnected()) {//已连接
+            if (curWiFi.name().contains("VMS")) {
+                VmsHomeActivity.startActivity(getContext(), AppContants.CommunicationWay.TCP_CONNECT);
+            }
+
+        } else if (curWiFi.isSaved()) {//已保存
+            WifiUtils.withContext(getContext().getApplicationContext())
+                    .connectWith(curWiFi.name(), "")
+                    .setTimeout(25000)
+                    .onConnectionResult(successListener)
+                    .start();
+        } else if (!curWiFi.isEncrypt()) {//未加密
+            WifiUtils.withContext(getContext().getApplicationContext())
+                    .connectWith(curWiFi.name(), "")
+                    .setTimeout(25000)
+                    .onConnectionResult(successListener)
+                    .start();
+        } else {//加密
+            WifiUtils.withContext(getContext().getApplicationContext())
+                    .connectWith(curWiFi.name(), "medo33923627")
+                    .setTimeout(25000)
+                    .onConnectionResult(successListener)
+                    .start();
+        }
     }
 
     private ConnectionSuccessListener successListener = new ConnectionSuccessListener() {
@@ -181,7 +197,7 @@ public class WiFiDeviceListFragment extends BaseFragment implements TextWatcher,
             mActivity.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    modifyWifi();
+//                    modifyWifi();
                     if (curWiFi.name().contains("VMS")) {
                         VmsHomeActivity.startActivity(getContext(), AppContants.CommunicationWay.TCP_CONNECT);
                     }
@@ -195,7 +211,7 @@ public class WiFiDeviceListFragment extends BaseFragment implements TextWatcher,
                 @Override
                 public void run() {
                     ToastUtils.show("连接失败!" + errorCode.toString());
-                    modifyWifi();
+//                    modifyWifi();
                 }
             });
         }
@@ -210,6 +226,23 @@ public class WiFiDeviceListFragment extends BaseFragment implements TextWatcher,
         mTvWiFiCount.setText("(0)");
         mEtKeyWords.addTextChangedListener(this);
         mEtKeyWords.setOnEditorActionListener(this);
+    }
+
+    private void initThirdWiFiManager() {
+        hackWiFiManager = HackWifiManager.create(mActivity);
+        hackWiFiManager.setOnWifiChangeListener(new OnWifiChangeListener() {
+            @Override
+            public void onWifiChanged(List<IWifi> wifiList) {
+                tempWiFiList.clear();
+                for (IWifi iWifi : wifiList) {
+                    if (iWifi.name() == null || (!iWifi.name().toUpperCase().startsWith("VMS") && !iWifi.name().toUpperCase().startsWith("MEDO"))) {
+                        continue;
+                    }
+                    tempWiFiList.add(iWifi);
+                }
+                wiFiAdapter.setList(tempWiFiList);
+            }
+        });
     }
 
     /**
@@ -258,51 +291,12 @@ public class WiFiDeviceListFragment extends BaseFragment implements TextWatcher,
                 @Override
                 public void run() {
                     updateRefreshView(false);
-                    modifyWifi();
+//                    modifyWifi();
                     mTvWiFiCount.setText(String.format(Locale.getDefault(), "(%d)", wiFiAdapter.getItemCount()));
                 }
             });
         }
     };
-
-
-    private void modifyWifi() {
-        synchronized (tempWiFiList) {
-            List<ScanResult> results = manager.getScanResults();
-            List<IWifi> wifiList = new LinkedList<>();
-            List<IWifi> mergeList = new ArrayList<>();
-
-            List<WifiConfiguration> configurations = manager.getConfiguredNetworks();
-            String connectedSSID = manager.getConnectionInfo().getSSID();
-            int ipAddress = manager.getConnectionInfo().getIpAddress();
-            for (ScanResult result : results) {
-                if (result.SSID == null || (!result.SSID.toUpperCase().startsWith("VMS"))) {
-                    continue;
-                }
-                IWifi mergeObj = Wifi.create(result, configurations, connectedSSID, ipAddress);
-                if (mergeObj == null) {
-                    continue;
-                }
-                mergeList.add(mergeObj);
-            }
-
-            mergeList = WifiHelper.removeDuplicate(mergeList);
-            for (IWifi merge : mergeList) {
-                boolean isMerge = false;
-                for (IWifi wifi : tempWiFiList) {
-                    if (wifi.equals(merge)) {
-                        wifiList.add(wifi.merge(merge));
-                        isMerge = true;
-                    }
-                }
-                if (!isMerge)
-                    wifiList.add(merge);
-            }
-            tempWiFiList.clear();
-            tempWiFiList.addAll(wifiList);
-            wiFiAdapter.setList(wifiList);
-        }
-    }
 
     private void updateRefreshView(boolean isRefresh) {
         if (isRefresh) {
@@ -312,7 +306,12 @@ public class WiFiDeviceListFragment extends BaseFragment implements TextWatcher,
             mTvScanState.setText("刷新中...");
         } else {
             if (animator != null) {
-                animator.end();
+                MCloudApp.getMainHandler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        animator.end();
+                    }
+                }, 500);
             }
             mTvScanState.setText("重新刷新");
         }
