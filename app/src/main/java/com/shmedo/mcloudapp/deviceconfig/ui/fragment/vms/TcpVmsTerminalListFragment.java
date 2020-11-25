@@ -195,7 +195,7 @@ public class TcpVmsTerminalListFragment extends BaseBottomSheetDialogFragment {
         ToastUtils.show("删除成功");
         terminalInfoList.remove(terminalInfo);
         adapter.notifyDataSetChanged();
-        vmsViewModel.getVmsRefreshTerminal().postValue(true);
+        vmsViewModel.setVmsRefreshTerminal(true);
     }
 
     private CharSequence getWarnMessage() {

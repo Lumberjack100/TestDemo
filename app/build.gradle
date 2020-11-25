@@ -95,15 +95,6 @@ android {
     // Specifies one flavor dimension.
     flavorDimensions "version"
     productFlavors {
-//        dev_gz {//贵州专版
-//            dimension "version"
-//            applicationId "com.shmedo.mcloudappgz"
-//            resValue "string", "app_name", getAppName() + "贵州"   // 设置默认的app_name
-//            manifestPlaceholders = ["mapApikey": "6694cc57b25bd627c6c4e7aa2df0a081",
-//                                    "pgyerKey" : "5cc3cf1c0c3c3e204015fa232eedb439"]
-//
-//            buildConfigField "String", "BUGLY_APPKEY", "\"6ff91a2c12\""
-//        }
 
         production {//正式发布版本
             dimension "version"
@@ -139,7 +130,7 @@ android {
 //greendao配置
 greendao {
     //数据库版本号，升级时修改
-    schemaVersion 17
+    schemaVersion 19
     daoPackage "com.shmedo.mcloudapp.entity" // set package of generated classes
 }
 

@@ -16,6 +16,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -123,15 +124,18 @@ public class WiFiDeviceListFragment extends BaseFragment implements TextWatcher,
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         vmsViewModel = getApplicationScopeViewModel(VmsViewModel.class);
+        vmsViewModel.getDeviceApiKey().observeInFragment(this, new Observer<String>() {
+            @Override
+            public void onChanged(String apiKey) {
+                dismissProgressDialog();
+                processWiFiUseSecondLibrary(curWiFi);
+            }
+        });
 
         initAdapter();
         initRefreshAnimation();
         setEditTextListener();
         initThirdWiFiManager();
-
-        //TODO  测试用
-//        vmsViewModel.updateDeviceApiKey("2f6beefd-f137-4599-ac1c-49c35d00a891");
-//        vmsViewModel.updateDeviceApiKey("a217c2f2-57b0-438a-9f29-8e21654f9d10");//
     }
 
     private void initAdapter() {
@@ -142,26 +146,13 @@ public class WiFiDeviceListFragment extends BaseFragment implements TextWatcher,
             @Override
             public void onItemClick(@NonNull BaseQuickAdapter adapter, @NonNull View view, int position) {
                 curWiFi = wiFiAdapter.getItem(position);
-                processWiFiUseFirstLibrary(curWiFi);
+                String[] strs = curWiFi.name().split("-");
+                if (strs != null) {
+                    showProgressDialog("查询设备Key...");
+                    vmsViewModel.getDeviceApiKeyBySn(strs[strs.length - 1]);
+                }
             }
         });
-    }
-
-    private void processWiFiUseFirstLibrary(IWifi curWiFi) {
-        if (curWiFi.isConnected()) {//已连接
-            if (curWiFi.name().contains("VMS")) {
-                VmsHomeActivity.startActivity(getContext(), AppContants.CommunicationWay.TCP_CONNECT);
-            }
-
-        } else if (curWiFi.isSaved()) {//已保存
-            hackWiFiManager.connectSavedWifi(curWiFi);
-
-        } else if (!curWiFi.isEncrypt()) {//未加密
-            hackWiFiManager.connectOpenWifi(curWiFi);
-
-        } else {//加密
-            hackWiFiManager.connectEncryptWifi(curWiFi, "medo33923627");
-        }
     }
 
     private void processWiFiUseSecondLibrary(IWifi curWiFi) {
@@ -197,7 +188,6 @@ public class WiFiDeviceListFragment extends BaseFragment implements TextWatcher,
             mActivity.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-//                    modifyWifi();
                     if (curWiFi.name().contains("VMS")) {
                         VmsHomeActivity.startActivity(getContext(), AppContants.CommunicationWay.TCP_CONNECT);
                     }
@@ -211,7 +201,6 @@ public class WiFiDeviceListFragment extends BaseFragment implements TextWatcher,
                 @Override
                 public void run() {
                     ToastUtils.show("连接失败!" + errorCode.toString());
-//                    modifyWifi();
                 }
             });
         }
@@ -235,7 +224,7 @@ public class WiFiDeviceListFragment extends BaseFragment implements TextWatcher,
             public void onWifiChanged(List<IWifi> wifiList) {
                 tempWiFiList.clear();
                 for (IWifi iWifi : wifiList) {
-                    if (iWifi.name() == null || (!iWifi.name().toUpperCase().startsWith("VMS") && !iWifi.name().toUpperCase().startsWith("MEDO"))) {
+                    if (iWifi.name() == null || (!iWifi.name().toUpperCase().startsWith("VMS"))) {
                         continue;
                     }
                     tempWiFiList.add(iWifi);

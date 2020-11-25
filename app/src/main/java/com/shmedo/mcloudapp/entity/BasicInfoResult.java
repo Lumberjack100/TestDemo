@@ -24,6 +24,8 @@ public class BasicInfoResult {
     private String createTime;      //设备添加时间
     private String updateTime;    //设备修改时间
     private String cpuID;           //设备cpuID
+    private String apiKey;
+    private Object deviceTag;
 
 
     public Integer getDeviceID() {
@@ -173,5 +175,22 @@ public class BasicInfoResult {
 
     public void setCpuID(String cpuID) {
         this.cpuID = cpuID;
+    }
+
+
+    public String getApiKey() {
+        return apiKey;
+    }
+
+    public void setApiKey(String apiKey) {
+        this.apiKey = apiKey;
+    }
+
+    public Object getDeviceTag() {
+        return deviceTag;
+    }
+
+    public void setDeviceTag(Object deviceTag) {
+        this.deviceTag = deviceTag;
     }
 }
