@@ -459,7 +459,12 @@ public abstract class BaseBleConnectFragment extends BaseFragment {
                     updateViewStateByConnectState(true);
                     errMsg = "认证超时,请稍后尝试";
                     startProgressRunnable("蓝牙已连接,设备认证中...", AUTHENTICATE_DELAY_MILLIS);
-                    setAuthenticateWay();//蓝牙连接成功开始进行验证
+                    uiHander.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            setAuthenticateWay();//蓝牙连接成功后，延迟1.5s开始进行验证
+                        }
+                    }, 1500);
                     break;
 
                 case Constants.BT_DISCONNECTED:
