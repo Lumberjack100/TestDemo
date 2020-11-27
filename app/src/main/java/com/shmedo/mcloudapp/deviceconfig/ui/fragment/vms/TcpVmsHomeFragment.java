@@ -249,6 +249,10 @@ public class TcpVmsHomeFragment extends BaseTcpConnectFragment {
                     return;
                 }
                 VmsAisleTerminalInfo vmsAisleTerminalInfo = commandResult.getResult();
+                if(vmsAisleTerminalInfo==null){
+                    stopProgressRunnable();
+                    return;
+                }
                 modifyAisleTerminalInfo(vmsAisleTerminalInfo);
 
                 if (vmsAisleTerminalInfo.getChannel() == 0) {

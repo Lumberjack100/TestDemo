@@ -173,6 +173,9 @@ public class TcpVmsTerminalExternalSensorHomeFragment extends BaseTcpConnectFrag
     }
 
     private void processSensorParamsInfo(TerminalSensorInfo sensorInfo) {
+        if (sensorInfo == null)
+            return;
+
         sensorHashMap.put(sensorInfo.getChannel(), sensorInfo);
         addSensorItem(sensorInfo);
     }

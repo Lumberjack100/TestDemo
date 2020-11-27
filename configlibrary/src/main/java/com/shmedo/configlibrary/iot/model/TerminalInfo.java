@@ -35,7 +35,7 @@ public class TerminalInfo implements Parcelable {
     private int downrssi;//下行信号强度
     private int tx;//发送数据
     private int rx;//接收数据
-    private Double volt;//终端电压
+    private double volt;//终端电压
     private int status;//终端在线状态 0:离线，1：在线
     private String logintime;//注册时间
     private String lastpackagetime;//最后交互时间
@@ -51,11 +51,7 @@ public class TerminalInfo implements Parcelable {
         downrssi = in.readInt();
         tx = in.readInt();
         rx = in.readInt();
-        if (in.readByte() == 0) {
-            volt = null;
-        } else {
-            volt = in.readDouble();
-        }
+        volt = in.readDouble();
         status = in.readInt();
         logintime = in.readString();
         lastpackagetime = in.readString();
@@ -72,12 +68,7 @@ public class TerminalInfo implements Parcelable {
         dest.writeInt(downrssi);
         dest.writeInt(tx);
         dest.writeInt(rx);
-        if (volt == null) {
-            dest.writeByte((byte) 0);
-        } else {
-            dest.writeByte((byte) 1);
-            dest.writeDouble(volt);
-        }
+        dest.writeDouble(volt);
         dest.writeInt(status);
         dest.writeString(logintime);
         dest.writeString(lastpackagetime);
@@ -165,11 +156,11 @@ public class TerminalInfo implements Parcelable {
         this.rx = rx;
     }
 
-    public Double getVolt() {
+    public double getVolt() {
         return volt;
     }
 
-    public void setVolt(Double volt) {
+    public void setVolt(double volt) {
         this.volt = volt;
     }
 
