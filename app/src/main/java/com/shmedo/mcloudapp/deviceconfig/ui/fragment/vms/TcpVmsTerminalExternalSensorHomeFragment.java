@@ -80,11 +80,15 @@ public class TcpVmsTerminalExternalSensorHomeFragment extends BaseTcpConnectFrag
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
         initSensorAdapter();
         sensorIndex = 0;
         sensorItemList.clear();
-        startProgressRunnable("加载数据...", QUERY_CMD_DELAY_MILLIS);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        startProgressRunnable("刷新数据...", QUERY_CMD_DELAY_MILLIS);
         queryTerminalAisleParamInfo();
     }
 

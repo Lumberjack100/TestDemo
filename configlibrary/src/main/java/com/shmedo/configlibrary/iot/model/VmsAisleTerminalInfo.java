@@ -19,7 +19,7 @@ public class VmsAisleTerminalInfo {
      * airbaud : 3
      * terminal : [{"sn":"253333D","addr":64,"uprssi":-74,"downrssi":-72,"tx":160,"rx":36,"volt":4.3,"status":1,"sensor_errno":[{"sensoraddr":0,"sensortype":58,"errno":-4,"sensorval":0},{"sensoraddr":1,"sensortype":58,"errno":-4,"sensorval":-0.448},{"sensoraddr":2,"sensortype":58,"errno":0,"sensorval":0.06},{"sensoraddr":3,"sensortype":58,"errno":0,"sensorval":0}],"logintime":"2020/09/28 11:23:24","lastpackagetime":"2020/09/28 11:23:24"}]
      */
-    private int channel;
+    private int channel;//通道号
 
     private int mode;//通道工作模式 0：配置，1：数据
     private int netid;//网络号

@@ -72,8 +72,9 @@ public class TcpVmsTerminalExternalLinearSensorFragment extends BaseTcpConnectFr
     private String initialModulus;
     private String correctValue;
 
-
     private TerminalSensorInfo sensorInfo;
+
+    private boolean isSaveParamOperation = false;//判断当前是保存参数操作，还是打开传感器开关操作
 
 
     public static TcpVmsTerminalExternalLinearSensorFragment newInstance(TerminalSensorInfo sensorInfo) {
@@ -252,6 +253,7 @@ public class TcpVmsTerminalExternalLinearSensorFragment extends BaseTcpConnectFr
         entity.setParamf(initialModulus);
         entity.setParamm(correctValue);
 
+        isSaveParamOperation = true;
         mBtnSave.setEnabled(false);
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.MD_SET_TERMINAL_CHL, entity);
         sendCommand(command);
@@ -272,6 +274,8 @@ public class TcpVmsTerminalExternalLinearSensorFragment extends BaseTcpConnectFr
                     Timber.e("%s%s", errMsg, cmdResult.getReason());
                     ToastUtils.show(errMsg);
                     mBtnSave.setEnabled(true);
+                    if (isSaveParamOperation)
+                        isSaveParamOperation = false;
                     return;
                 }
                 doAfterSetting();
@@ -285,7 +289,10 @@ public class TcpVmsTerminalExternalLinearSensorFragment extends BaseTcpConnectFr
     }
 
     private void doAfterSetting() {
-        ToastUtils.show("设置成功");
+        if (isSaveParamOperation) {
+            isSaveParamOperation = false;
+            ToastUtils.show("设置成功");
+        }
         mBtnSave.setEnabled(true);
     }
 

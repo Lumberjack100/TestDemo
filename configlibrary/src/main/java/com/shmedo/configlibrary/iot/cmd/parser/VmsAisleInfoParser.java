@@ -29,6 +29,7 @@ public class VmsAisleInfoParser implements IOTResultParser<VmsAisleInfo> {
                     keyValueMap.put(strs[0], strs[1]);
                 }
             }
+            info.setChannel(Integer.parseInt(keyValueMap.get("channel")));
             info.setNetid(TextUtils.isEmpty(keyValueMap.get("netid")) ? "" : keyValueMap.get("netid"));
             info.setPpt(TextUtils.isEmpty(keyValueMap.get("ppt")) ? "" : keyValueMap.get("ppt"));
             info.setAddr(TextUtils.isEmpty(keyValueMap.get("addr")) ? "" : keyValueMap.get("addr"));
@@ -39,6 +40,8 @@ public class VmsAisleInfoParser implements IOTResultParser<VmsAisleInfo> {
             info.setSleepgap(TextUtils.isEmpty(keyValueMap.get("sleepgap")) ? "" : keyValueMap.get("sleepgap"));
             info.setWakeupgap(TextUtils.isEmpty(keyValueMap.get("wakeupgap")) ? "" : keyValueMap.get("wakeupgap"));
             info.setAirbaud(TextUtils.isEmpty(keyValueMap.get("airbaud")) ? "" : keyValueMap.get("airbaud"));
+            info.setTerminalnum(TextUtils.isEmpty(keyValueMap.get("terminalnum")) ? "" : keyValueMap.get("terminalnum"));
+            info.setRssi(TextUtils.isEmpty(keyValueMap.get("rssi")) ? "" : keyValueMap.get("rssi"));
 
             return info;
         } catch (Exception ex) {

@@ -147,7 +147,7 @@
                     android:textSize="15sp" />
 
                 <TextView
-                    android:id="@+id/tv_communication_channel"
+                    android:id="@+id/tv_communication_chl"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="11dp"

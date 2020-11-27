@@ -24,6 +24,7 @@ import com.shmedo.configlibrary.iot.cmd.parser.IOTParseManager;
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.enums.VmsAisleNumber;
 import com.shmedo.configlibrary.iot.model.TerminalInfo;
+import com.shmedo.configlibrary.iot.model.VmsAisleInfo;
 import com.shmedo.configlibrary.iot.model.VmsAisleTerminalInfo;
 import com.shmedo.configlibrary.iot.model.VmsBasicInfo;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
@@ -80,9 +81,9 @@ public class TcpVmsHomeFragment extends BaseTcpConnectFragment {
 
     private VmsAisleAdapter vmsAisleAdapter;
 
-    private List<VmsAisleTerminalInfo> vmsAisleTerminalInfoList = new ArrayList<>();
+    private List<VmsAisleInfo> vmsAisleInfoList = new ArrayList<>();
 
-    private String ipAddress = "192.168.5.2";//172.168.5.250   192.168.5.2
+    private final String ipAddress = "192.168.5.2";//172.168.5.250   192.168.5.2
 
     private VmsBasicInfo vmsBasicInfo = new VmsBasicInfo();
 
@@ -139,8 +140,8 @@ public class TcpVmsHomeFragment extends BaseTcpConnectFragment {
     protected void onConnectionChange(TcpConnectionState tcpConnectionState) {
         if (tcpConnectionState == TcpConnectionState.CONNECT_SUCCESS) {
             //建立通讯连接后，查询网关基本信息
-            String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.MD_GET_GATEWAY_BASE);
-            sendCommand(command);
+            getGatewayBaseInfo();
+
         } else if (tcpConnectionState == TcpConnectionState.CONNECT_CLOSED) {
             dismissProgressDialog();
             ToastUtils.show("通讯连接断开");
@@ -165,7 +166,7 @@ public class TcpVmsHomeFragment extends BaseTcpConnectFragment {
         mRecyclerView.setLayoutManager(new GridLayoutManager(mActivity, spanCount));
         //设置每个item间距
         mRecyclerView.addItemDecoration(new GridSpacingItemDecoration(spanCount, spacing, true));
-        vmsAisleAdapter = new VmsAisleAdapter(vmsAisleTerminalInfoList);
+        vmsAisleAdapter = new VmsAisleAdapter(vmsAisleInfoList);
         vmsAisleAdapter.setOnItemChildClickListener(new OnItemChildClickListener() {
             @Override
             public void onItemChildClick(@NonNull BaseQuickAdapter adapter, @NonNull View view, int position) {
@@ -177,8 +178,8 @@ public class TcpVmsHomeFragment extends BaseTcpConnectFragment {
                     return;
                 }
 
-                VmsAisleTerminalInfo vmsAisleTerminalInfo = vmsAisleTerminalInfoList.get(position);
-                TcpVmsTerminalListFragment newFragment = new TcpVmsTerminalListFragment(vmsAisleTerminalInfo);
+                VmsAisleInfo vmsAisleInfo = vmsAisleInfoList.get(position);
+                TcpVmsTerminalListFragment newFragment = new TcpVmsTerminalListFragment(vmsAisleInfo);
                 newFragment.show(getChildFragmentManager(), "dialog");
             }
         });
@@ -203,6 +204,23 @@ public class TcpVmsHomeFragment extends BaseTcpConnectFragment {
         } else if (id == R.id.search_placeholder) {
             VmsTerminalSearchActivity.startActivity(mActivity);
         }
+    }
+
+    /**
+     * 获取网关的基本信息
+     */
+    private void getGatewayBaseInfo() {
+        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.MD_GET_GATEWAY_BASE);
+        sendCommand(command);
+    }
+
+    /**
+     * 获取网关不同通道下的控制参数
+     */
+    private void getGatewayAisleInfo(VmsAisleNumber vmsAisleNumber) {
+        VmsAisleNumberEntity vmsAisleNumberEntity = new VmsAisleNumberEntity(vmsAisleNumber.toInt());
+        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.MD_GET_GATEWAY_PARAM, vmsAisleNumberEntity);
+        sendCommand(command);
     }
 
     /**
@@ -235,7 +253,36 @@ public class TcpVmsHomeFragment extends BaseTcpConnectFragment {
                 }
                 vmsBasicInfo = commandResult.getResult();
                 updateHeadInfo();
-                getGatewayStatus(VmsAisleNumber.NUMBER_ONE);
+                vmsAisleInfoList.clear();
+                //获取网关不同通道的控制参数
+                getGatewayAisleInfo(VmsAisleNumber.NUMBER_ONE);
+            }
+            break;
+
+            case MD_GET_GATEWAY_PARAM: {//获取网关通道的控制参数
+                IOTCommandResult<VmsAisleInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
+                if (!commandResult.isSuccess()) {
+                    stopProgressRunnable();
+                    String errMsg = "查询网关通道的控制参数出错!";
+                    Timber.e("%s%s", errMsg, commandResult.getMessage());
+                    ToastUtils.show(errMsg);
+                    return;
+                }
+                VmsAisleInfo vmsAisleInfo = commandResult.getResult();
+                vmsAisleInfoList.add(vmsAisleInfo);
+                if (vmsAisleInfo.getChannel() == 0) {
+                    getGatewayAisleInfo(VmsAisleNumber.NUMBER_TWO);
+
+                } else if (vmsAisleInfo.getChannel() == 1) {
+                    getGatewayAisleInfo(VmsAisleNumber.NUMBER_THREE);
+
+                } else if (vmsAisleInfo.getChannel() == 2) {
+//                    stopProgressRunnable();
+                    vmsAisleAdapter.notifyDataSetChanged();
+                    //获取3网
+                    // 关的状态
+                    getGatewayStatus(VmsAisleNumber.NUMBER_TWO);
+                }
             }
             break;
 
@@ -249,28 +296,19 @@ public class TcpVmsHomeFragment extends BaseTcpConnectFragment {
                     return;
                 }
                 VmsAisleTerminalInfo vmsAisleTerminalInfo = commandResult.getResult();
-                if(vmsAisleTerminalInfo==null){
+                if (vmsAisleTerminalInfo == null) {
                     stopProgressRunnable();
                     return;
                 }
                 modifyAisleTerminalInfo(vmsAisleTerminalInfo);
-
-                if (vmsAisleTerminalInfo.getChannel() == 0) {
+                if (vmsAisleTerminalInfo.getChannel() == 1) {
                     vmsViewModel.clearTerminalList();
-                    vmsAisleTerminalInfoList.clear();
-                    vmsAisleTerminalInfoList.add(vmsAisleTerminalInfo);
-                    getGatewayStatus(VmsAisleNumber.NUMBER_TWO);
-
-                } else if (vmsAisleTerminalInfo.getChannel() == 1) {
                     vmsViewModel.addTerminalList(vmsAisleTerminalInfo.getTerminal());
-                    vmsAisleTerminalInfoList.add(vmsAisleTerminalInfo);
                     getGatewayStatus(VmsAisleNumber.NUMBER_THREE);
 
                 } else if (vmsAisleTerminalInfo.getChannel() == 2) {
                     stopProgressRunnable();
                     vmsViewModel.addTerminalList(vmsAisleTerminalInfo.getTerminal());
-                    vmsAisleTerminalInfoList.add(vmsAisleTerminalInfo);
-                    vmsAisleAdapter.notifyDataSetChanged();
                 }
             }
             break;

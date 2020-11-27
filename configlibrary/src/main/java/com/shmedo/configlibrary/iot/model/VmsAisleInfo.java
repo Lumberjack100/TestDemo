@@ -8,6 +8,8 @@ import android.text.TextUtils;
  * 描述：   Vms网关通道的控制参数信息
  */
 public class VmsAisleInfo {
+    private int channel;//通道号
+
     private String netid;//网关配置通道的网络号,取值[1,65535]，默认为1
     private String ppt;//空中唤醒时间，取值[0,5]s，默认2，当为0时，lora模块不休眠
     private String addr;//网关配置通道的地址,取值[0,63]，channel=0，默认为1；channel=1，默认为2；channel=2，默认为3
@@ -18,6 +20,17 @@ public class VmsAisleInfo {
     private String sleepgap;//终端休眠时间，取值[0,5]s，默认为2
     private String wakeupgap;//终端唤醒时间，取值[0,65535]ms，默认100
     private String airbaud;//空中速率，取值[1~6]
+    private String terminalnum;//终端接入数量
+    private String rssi;//信号强度
+
+
+    public int getChannel() {
+        return channel;
+    }
+
+    public void setChannel(int channel) {
+        this.channel = channel;
+    }
 
     public String getNetid() {
         return TextUtils.isEmpty(netid) ? "" : netid;
@@ -97,5 +110,21 @@ public class VmsAisleInfo {
 
     public void setAirbaud(String airbaud) {
         this.airbaud = airbaud;
+    }
+
+    public String getTerminalnum() {
+        return TextUtils.isEmpty(terminalnum) ? "" : terminalnum;
+    }
+
+    public void setTerminalnum(String terminalnum) {
+        this.terminalnum = terminalnum;
+    }
+
+    public String getRssi() {
+        return TextUtils.isEmpty(rssi) ? "" : rssi;
+    }
+
+    public void setRssi(String rssi) {
+        this.rssi = rssi;
     }
 }

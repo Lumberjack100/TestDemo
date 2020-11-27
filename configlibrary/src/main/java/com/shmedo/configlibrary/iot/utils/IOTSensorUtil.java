@@ -78,11 +78,11 @@ public class IOTSensorUtil {
         errorNoMap.clear();
         errorNoMap.put("0", "无错误");
         errorNoMap.put("-1", "供电异常");
-        errorNoMap.put("-2", "传感器数据异常");
+        errorNoMap.put("-2", "数据异常");
         errorNoMap.put("-3", "未采集到数据");
-        errorNoMap.put("-4", "未接入传感器");
-        errorNoMap.put("-5", "传感器短路");
-        errorNoMap.put("-6", "传感器接触不良");
+        errorNoMap.put("-4", "未接入");
+        errorNoMap.put("-5", "短路");
+        errorNoMap.put("-6", "接触不良");
     }
 
     /**

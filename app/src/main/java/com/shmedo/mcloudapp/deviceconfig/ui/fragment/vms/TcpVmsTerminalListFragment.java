@@ -22,11 +22,15 @@ import com.chad.library.adapter.base.listener.OnItemLongClickListener;
 import com.hjq.toast.ToastUtils;
 import com.littlegreens.netty.client.listener.MessageStateListener;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandManager;
+import com.shmedo.configlibrary.iot.cmd.IOTCommandResult;
 import com.shmedo.configlibrary.iot.cmd.entity.TerminalSNEntity;
+import com.shmedo.configlibrary.iot.cmd.entity.VmsAisleNumberEntity;
 import com.shmedo.configlibrary.iot.cmd.parser.IOTParseManager;
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
+import com.shmedo.configlibrary.iot.enums.VmsAisleNumber;
 import com.shmedo.configlibrary.iot.model.CommonSettingCmdResult;
 import com.shmedo.configlibrary.iot.model.TerminalInfo;
+import com.shmedo.configlibrary.iot.model.VmsAisleInfo;
 import com.shmedo.configlibrary.iot.model.VmsAisleTerminalInfo;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
 import com.shmedo.core.AppContants;
@@ -65,14 +69,14 @@ public class TcpVmsTerminalListFragment extends BaseBottomSheetDialogFragment {
     private List<TerminalInfo> terminalInfoList = new ArrayList<>();
     private TerminalInfo terminalInfo;
 
-    private VmsAisleTerminalInfo vmsAisleTerminalInfo;
+    private VmsAisleInfo vmsAisleInfo;
 
     private TcpShareViewModel tcpShareViewModel;
     private VmsViewModel vmsViewModel;
 
 
-    public TcpVmsTerminalListFragment(VmsAisleTerminalInfo vmsAisleTerminalInfo) {
-        this.vmsAisleTerminalInfo = vmsAisleTerminalInfo;
+    public TcpVmsTerminalListFragment(VmsAisleInfo vmsAisleInfo) {
+        this.vmsAisleInfo = vmsAisleInfo;
     }
 
 
@@ -95,7 +99,6 @@ public class TcpVmsTerminalListFragment extends BaseBottomSheetDialogFragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         initAdapter();
-        initView();
         vmsViewModel = getApplicationScopeViewModel(VmsViewModel.class);
         tcpShareViewModel = getApplicationScopeViewModel(TcpShareViewModel.class);
         tcpShareViewModel.getReceivedMessage().observeInFragment(this, new Observer<String>() {
@@ -104,6 +107,7 @@ public class TcpVmsTerminalListFragment extends BaseBottomSheetDialogFragment {
                 parseResponseMessage(msg);
             }
         });
+        initView();
     }
 
     private void initAdapter() {
@@ -141,27 +145,38 @@ public class TcpVmsTerminalListFragment extends BaseBottomSheetDialogFragment {
     }
 
     private void initView() {
-        if (vmsAisleTerminalInfo == null)
+        if (vmsAisleInfo == null) {
             return;
+        }
 
+        VmsAisleNumber vmsAisleNumber;
         String title;
-        if (vmsAisleTerminalInfo.getChannel() == 0) {
+        if (vmsAisleInfo.getChannel() == 0) {
             title = "通道01-设备(";
-        } else if (vmsAisleTerminalInfo.getChannel() == 1) {
+            vmsAisleNumber = VmsAisleNumber.valueOf(0);
+        } else if (vmsAisleInfo.getChannel() == 1) {
             title = "通道02-设备(";
+            vmsAisleNumber = VmsAisleNumber.valueOf(1);
+
         } else {
             title = "通道03-设备(";
+            vmsAisleNumber = VmsAisleNumber.valueOf(2);
         }
-        title += vmsAisleTerminalInfo.getTerminal().size() + ")";
+        title += vmsAisleInfo.getTerminalnum() + ")";
         mTvTitle.setText(title);
 
-        if (vmsAisleTerminalInfo.getTerminal().size() == 0) {
-            adapter.setEmptyView(R.layout.empty_view);
-            return;
-        }
-        terminalInfoList.clear();
-        terminalInfoList.addAll(vmsAisleTerminalInfo.getTerminal());
-        adapter.notifyDataSetChanged();
+        getGatewayStatus(vmsAisleNumber);
+    }
+
+    /**
+     * 获取网关不同通道下，挂载终端的运行情况
+     *
+     * @param vmsAisleNumber
+     */
+    private void getGatewayStatus(VmsAisleNumber vmsAisleNumber) {
+        VmsAisleNumberEntity vmsAisleNumberEntity = new VmsAisleNumberEntity(vmsAisleNumber.toInt());
+        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.MD_GET_GATEWAY_STATUS, vmsAisleNumberEntity);
+        sendCommand(command);
     }
 
     @OnClick({R.id.iv_close})
@@ -177,7 +192,7 @@ public class TcpVmsTerminalListFragment extends BaseBottomSheetDialogFragment {
     private void parseResponseMessage(String cmdStr) {
         IOTCommandType type = IOTStringUtil.extractCommandType(cmdStr);
         switch (type) {
-            case MD_DELETE_TERMINAL: {//获取网关的基本信息
+            case MD_DELETE_TERMINAL: {//删除终端设备
                 CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
                 if (!cmdResult.isSucceed()) {
                     String errMsg = "删除终端出错!";
@@ -186,6 +201,25 @@ public class TcpVmsTerminalListFragment extends BaseBottomSheetDialogFragment {
                     return;
                 }
                 doAfterSetting();
+            }
+            break;
+
+            case MD_GET_GATEWAY_STATUS: {//获取网关的状态
+                IOTCommandResult<VmsAisleTerminalInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
+                if (!commandResult.isSuccess()) {
+                    String errMsg = "查询网关基本信息出错!";
+                    Timber.e("%s%s", errMsg, commandResult.getMessage());
+                    ToastUtils.show(errMsg);
+                    return;
+                }
+                VmsAisleTerminalInfo vmsAisleTerminalInfo = commandResult.getResult();
+                if (vmsAisleTerminalInfo.getTerminal().size() == 0) {
+                    adapter.setEmptyView(R.layout.empty_view);
+                    return;
+                }
+                terminalInfoList.clear();
+                terminalInfoList.addAll(vmsAisleTerminalInfo.getTerminal());
+                adapter.notifyDataSetChanged();
             }
             break;
         }
@@ -253,9 +287,7 @@ public class TcpVmsTerminalListFragment extends BaseBottomSheetDialogFragment {
         tcpShareViewModel.sendMsgToServer(cmdStr, new MessageStateListener() {
             @Override
             public void isSendSuccss(boolean isSuccess) {
-                if (isSuccess) {
-//                    Timber.d("发送指令成功");
-                } else {
+                if (!isSuccess) {
                     Timber.e("发送指令失败");
                 }
             }

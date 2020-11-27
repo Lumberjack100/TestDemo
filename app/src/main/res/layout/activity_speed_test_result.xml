@@ -175,7 +175,7 @@
             android:layout_marginBottom="@dimen/dimen_size_20"
             android:textColor="@color/poi_detail_title"
             android:textSize="@dimen/text_size_17"
-            tools:text="-98dbm   35asu" />
+            tools:text="-98dBm   35asu" />
 
     </LinearLayout>
 
