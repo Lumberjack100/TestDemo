@@ -18,7 +18,7 @@ public class SaveConfigInfoParser implements ResultParser<SaveConfigInfo> {
 
     @Override public SaveConfigInfo parse(String result) {
         SaveConfigInfo info = new SaveConfigInfo();
-        info.setMode(SaveConfigMode.valueOf(Integer.parseInt(result.substring(5,6))));
+        info.setMode(SaveConfigMode.value(Integer.parseInt(result.substring(5,6))));
         return info;
     }
 

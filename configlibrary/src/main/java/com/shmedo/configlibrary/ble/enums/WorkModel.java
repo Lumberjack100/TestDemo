@@ -24,7 +24,7 @@ public enum WorkModel {
         return model;
     }
 
-    public static WorkModel valueOf(int model) {
+    public static WorkModel value(int model) {
         switch (model) {
             case 0:
                 return INITIALZE;

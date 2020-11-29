@@ -18,7 +18,7 @@ public enum OsmometerStatus {
         return status;
     }
 
-    public static OsmometerStatus valueOf(int status) {
+    public static OsmometerStatus value(int status) {
         switch (status) {
             case 1:
                 return OSMOMETER_OPEN;

@@ -3,7 +3,6 @@ package com.shmedo.mcloudapp.deviceconfig.ui.activity.vms;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
@@ -11,12 +10,10 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.shmedo.configlibrary.iot.model.TerminalSensorInfo;
-import com.shmedo.configlibrary.iot.utils.IOTSensorUtil;
 import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.activity.BaseActivity;
-import com.shmedo.mcloudapp.deviceconfig.ui.fragment.vms.TcpVmsTerminalExternalLinearSensorFragment;
-import com.shmedo.mcloudapp.deviceconfig.ui.fragment.vms.TcpVmsTerminalExternalPolynomialSensorFragment;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.vms.TcpVmsTerminalExternalSensorParamFragment;
 
 import butterknife.BindView;
 
@@ -53,6 +50,7 @@ public class VmsTerminalExternalSensorConfigActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setToolBar(R.id.toolbar);
+        mToolbarTitle.setText("传感器配置");
         parseIntent();
         initFragment();
     }
@@ -68,8 +66,8 @@ public class VmsTerminalExternalSensorConfigActivity extends BaseActivity {
 
         if (intent.getExtras().containsKey(AppContants.Extras.SENSOR_PARAM)) {
             sensorInfo = intent.getParcelableExtra(AppContants.Extras.SENSOR_PARAM);
-            String sensorName = IOTSensorUtil.getInstance().getSensorNameByTypeNo(sensorInfo.getName());
-            mToolbarTitle.setText(sensorName);
+//            String sensorName = IOTSensorUtil.getInstance().getSensorNameByTypeNo(sensorInfo.getName());
+//            mToolbarTitle.setText(sensorName);
         }
     }
 
@@ -77,13 +75,14 @@ public class VmsTerminalExternalSensorConfigActivity extends BaseActivity {
         if (connectWay == AppContants.CommunicationWay.NET_PLATFORM_CONNECT) {
 
         } else if (connectWay == AppContants.CommunicationWay.TCP_CONNECT) {
-            if (TextUtils.isEmpty(sensorInfo.getType()) || sensorInfo.getType().trim().equals("55")) {
-                //55，多项式振弦式裂缝计
-                fragment = TcpVmsTerminalExternalPolynomialSensorFragment.newInstance(sensorInfo);
-            } else if (TextUtils.isEmpty(sensorInfo.getType()) || sensorInfo.getType().trim().equals("58")) {
-                //58 直线式钢筋计
-                fragment = TcpVmsTerminalExternalLinearSensorFragment.newInstance(sensorInfo);
-            }
+//            if (TextUtils.isEmpty(sensorInfo.getType()) || sensorInfo.getType().trim().equals("55")) {
+//                //55，多项式振弦式裂缝计
+//                fragment = TcpVmsTerminalExternalPolynomialSensorFragment.newInstance(sensorInfo);
+//            } else if (TextUtils.isEmpty(sensorInfo.getType()) || sensorInfo.getType().trim().equals("58")) {
+//                //58 直线式钢筋计
+//                fragment = TcpVmsTerminalExternalLinearSensorFragment.newInstance(sensorInfo);
+//            }
+            fragment = TcpVmsTerminalExternalSensorParamFragment.newInstance(sensorInfo);
         }
 
         if (fragment != null)

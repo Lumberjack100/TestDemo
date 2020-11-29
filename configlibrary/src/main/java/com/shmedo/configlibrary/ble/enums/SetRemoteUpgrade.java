@@ -29,7 +29,7 @@ public enum SetRemoteUpgrade {
         return model;
     }
 
-    public static SetRemoteUpgrade valueOf(int model) {
+    public static SetRemoteUpgrade value(int model) {
         switch (model) {
             case 0:
                 return CLOSE_UPGRADE_MODEL;

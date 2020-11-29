@@ -73,7 +73,7 @@ public class SensorZLJ300tView extends FrameLayout {
         mEtCorrectValue.setText("0");
     }
 
-    public void bindSensorData(SensorJunXingZljInfo sensorInfo) {
+    public void initData(SensorJunXingZljInfo sensorInfo) {
         if (sensorInfo != null) {
             mEtTriggerThreshold.setText(String.format(Locale.getDefault(), "%.0f", Double.parseDouble(sensorInfo.getTriggerThreshold())));
             mEtCoefficientA.setText(sensorInfo.getPolynomialRatioA());

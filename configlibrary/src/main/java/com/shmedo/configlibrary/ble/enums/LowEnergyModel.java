@@ -21,7 +21,7 @@ public enum LowEnergyModel {
         return model;
     }
 
-    public static LowEnergyModel valueOf(int model) {
+    public static LowEnergyModel value(int model) {
         switch (model) {
             case 1:
                 return STANDBY;

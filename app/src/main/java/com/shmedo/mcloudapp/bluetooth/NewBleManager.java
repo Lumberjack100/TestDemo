@@ -63,16 +63,10 @@ public class NewBleManager {
      */
     private static final int WAIT_FOR_RESPONSE_TIME_OUT_SECOND = 120;
 
-    private static NewBleManager bleManager = null;
-
-    public static NewBleManager getInstance() {
-        if (bleManager == null) {
-            bleManager = new NewBleManager();
-            bleManager.initCheck();
-        }
-
-        return bleManager;
+    public NewBleManager() {
+        initCheck();
     }
+
 
     private BluetoothGatt mBluetoothGatt;
     private MdBluetoothGattCallback gattCallback = new MdBluetoothGattCallback();

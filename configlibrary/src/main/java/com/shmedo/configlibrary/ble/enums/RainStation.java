@@ -30,7 +30,7 @@ public enum RainStation {
         return state;
     }
 
-    public static RainStation valueOf(int state) {
+    public static RainStation value(int state) {
         switch (state) {
             case 1:
                 return OPEN;

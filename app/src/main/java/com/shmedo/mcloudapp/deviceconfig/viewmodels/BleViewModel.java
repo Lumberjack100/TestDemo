@@ -16,7 +16,7 @@ import com.shmedo.mcloudapp.bluetooth.NewBleManager;
  * 描述：     TODO
  */
 public class BleViewModel extends AndroidViewModel {
-    public final NewBleManager bleManager = NewBleManager.getInstance();
+    public final NewBleManager bleManager = new NewBleManager();
 
     public BleViewModel(@NonNull Application application) {
         super(application);

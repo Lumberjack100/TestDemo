@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Paint;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
@@ -87,6 +88,7 @@ public class TcpVmsHomeFragment extends BaseTcpConnectFragment {
 
     private VmsBasicInfo vmsBasicInfo = new VmsBasicInfo();
 
+    private TcpVmsTerminalListFragment tcpVmsTerminalListFragment;
 
     public static TcpVmsHomeFragment newInstance() {
         return new TcpVmsHomeFragment();
@@ -179,8 +181,8 @@ public class TcpVmsHomeFragment extends BaseTcpConnectFragment {
                 }
 
                 VmsAisleInfo vmsAisleInfo = vmsAisleInfoList.get(position);
-                TcpVmsTerminalListFragment newFragment = new TcpVmsTerminalListFragment(vmsAisleInfo);
-                newFragment.show(getChildFragmentManager(), "dialog");
+                tcpVmsTerminalListFragment = new TcpVmsTerminalListFragment(vmsAisleInfo);
+                tcpVmsTerminalListFragment.show(getChildFragmentManager(), "dialog");
             }
         });
         mRecyclerView.setAdapter(vmsAisleAdapter);
@@ -287,6 +289,10 @@ public class TcpVmsHomeFragment extends BaseTcpConnectFragment {
             break;
 
             case MD_GET_GATEWAY_STATUS: {//获取网关的状态
+                //Bug修复，TcpVmsTerminalListFragment 查询观察终端数据时，会触发这里的回调
+                if (tcpVmsTerminalListFragment != null && tcpVmsTerminalListFragment.isAdded()) {
+                    return;
+                }
                 IOTCommandResult<VmsAisleTerminalInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
                     stopProgressRunnable();
@@ -325,12 +331,12 @@ public class TcpVmsHomeFragment extends BaseTcpConnectFragment {
             mTvDeviceSn.setText(String.format("设备SN号：%s", vmsBasicInfo.getSn()));
             mTvProductModel.setText(String.format("版本信息：%s", vmsBasicInfo.getSwVersion()));
             mTvSubModel.setText(String.format("网关电压：%s", vmsBasicInfo.getVolt() + "V"));
-            if (!vmsBasicInfo.getOnline().trim().equals("0")) {
+            if (!TextUtils.isEmpty(vmsBasicInfo.getOnline()) && !vmsBasicInfo.getOnline().equals("0")) {
                 mTvDeviceState.setVisibility(View.VISIBLE);
                 mTvDeviceState.setText("在线");
                 mTvDeviceState.setTextColor(ContextCompat.getColor(mActivity, R.color.text_color_50E9B9));
                 mTvDeviceState.setBackgroundResource(R.drawable.bg_device_online_state_flag);
-            } else {
+            } else if (vmsBasicInfo.getOnline().equals("0")) {
                 mTvDeviceState.setVisibility(View.VISIBLE);
                 mTvDeviceState.setText("离线");
                 mTvDeviceState.setTextColor(ContextCompat.getColor(mActivity, R.color.sub_title_text_color));

@@ -81,7 +81,7 @@ public class SensorBGK4500View extends FrameLayout {
         mEtCorrectValue.setText("0");
     }
 
-    public void bindSensorData(SensorKangPercolateInfo sensorInfo) {
+    public void initData(SensorKangPercolateInfo sensorInfo) {
         if (sensorInfo != null) {
             mEtTriggerThreshold.setText(String.format(Locale.getDefault(), "%d", (int) Double.parseDouble(sensorInfo.getTriggerThreshold())));
             mEtCoefficientA.setText(sensorInfo.getPolynomialRatioA());

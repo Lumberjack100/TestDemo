@@ -171,7 +171,7 @@ public class DasExternalVibratingWireSensorActivity extends BaseActivity {
                 sensorBGK4500View.setVisibility(View.VISIBLE);
                 sensorVWP03View.setVisibility(View.GONE);
                 sensorZLJ300tView.setVisibility(View.GONE);
-                sensorBGK4500View.bindSensorData(parcelableData == null ? null : (SensorKangPercolateInfo) parcelableData);
+                sensorBGK4500View.initData(parcelableData == null ? null : (SensorKangPercolateInfo) parcelableData);
                 break;
 
             case GUDAN_PERCOLATE://葛南渗压计(VWP-03)
@@ -180,7 +180,7 @@ public class DasExternalVibratingWireSensorActivity extends BaseActivity {
                 sensorBGK4500View.setVisibility(View.GONE);
                 sensorVWP03View.setVisibility(View.VISIBLE);
                 sensorZLJ300tView.setVisibility(View.GONE);
-                sensorVWP03View.bindSensorData(parcelableData == null ? null : (SensorGudanPercolateInfo) parcelableData);
+                sensorVWP03View.initData(parcelableData == null ? null : (SensorGudanPercolateInfo) parcelableData);
                 break;
 
             case JUNXING_ZLJ_300T://轴力计(ZLJ-300T)
@@ -189,30 +189,22 @@ public class DasExternalVibratingWireSensorActivity extends BaseActivity {
                 sensorBGK4500View.setVisibility(View.GONE);
                 sensorVWP03View.setVisibility(View.GONE);
                 sensorZLJ300tView.setVisibility(View.VISIBLE);
-                sensorZLJ300tView.bindSensorData(parcelableData == null ? null : (SensorJunXingZljInfo) parcelableData);
+                sensorZLJ300tView.initData(parcelableData == null ? null : (SensorJunXingZljInfo) parcelableData);
                 break;
         }
     }
 
     @OnClick({R.id.sensorAisleLayout, R.id.sensorTypeLayout, R.id.right_icon, R.id.btn_confirm})
     public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.sensorAisleLayout:
-                showSensorAisleChooseDialog();
-                break;
-
-            case R.id.sensorTypeLayout:
-                showSensorTypeChooseDialog();
-                break;
-
-            case R.id.right_icon:
-                PermissionHelper.requestScanPermissions(DasExternalVibratingWireSensorActivity.this);
-                break;
-
-            case R.id.btn_confirm:
-                processSave();
-                break;
-
+        int id = view.getId();
+        if (id == R.id.sensorAisleLayout) {
+            showSensorAisleChooseDialog();
+        } else if (id == R.id.sensorTypeLayout) {
+            showSensorTypeChooseDialog();
+        } else if (id == R.id.right_icon) {
+            PermissionHelper.requestScanPermissions(DasExternalVibratingWireSensorActivity.this);
+        } else if (id == R.id.btn_confirm) {
+            processSave();
         }
     }
 

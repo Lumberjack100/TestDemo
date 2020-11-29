@@ -15,7 +15,7 @@ public class SensorInterfaceTypeParser implements ResultParser<SensorInterfaceTy
     @Override
     public SensorInterfaceTypeInfo parse(String result) {
         SensorInterfaceTypeInfo info = new SensorInterfaceTypeInfo();
-        info.setType(SensorInterfaceType.valueOf(Integer.valueOf(result.substring(5))));
+        info.setType(SensorInterfaceType.value(Integer.valueOf(result.substring(5))));
         return info;
     }
 

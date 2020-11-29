@@ -16,7 +16,7 @@ public enum SensorInterfaceType {
         return type;
     }
 
-    public static SensorInterfaceType valueOf(int type) {
+    public static SensorInterfaceType value(int type) {
         switch (type) {
             case 1: return RS485;
             case 2: return SDI12;

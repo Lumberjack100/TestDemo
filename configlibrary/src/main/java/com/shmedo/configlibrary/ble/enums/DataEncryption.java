@@ -16,7 +16,7 @@ public enum DataEncryption {
         return model;
     }
 
-    public static DataEncryption valueOf(int model) {
+    public static DataEncryption value(int model) {
         switch (model) {
             case 1: return CLEAR;
             case 2: return CIPHER;

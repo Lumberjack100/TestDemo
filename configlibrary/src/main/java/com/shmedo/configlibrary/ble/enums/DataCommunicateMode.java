@@ -32,7 +32,7 @@ public enum DataCommunicateMode {
         return mode;
     }
 
-    public static DataCommunicateMode valueOf(int mode) {
+    public static DataCommunicateMode value(int mode) {
         switch (mode) {
             case 1:
                 return GPRS;

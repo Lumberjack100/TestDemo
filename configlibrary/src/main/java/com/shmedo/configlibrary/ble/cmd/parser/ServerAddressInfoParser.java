@@ -16,7 +16,7 @@ public class ServerAddressInfoParser implements ResultParser<ServerAddressInfo> 
     public ServerAddressInfo parse(String result) {
         ServerAddressInfo info = new ServerAddressInfo();
         String [] strs = result.split(" ");
-        info.setNumber(ServerNumber.valueOf(Integer.parseInt(strs[0].substring(5))));
+        info.setNumber(ServerNumber.value(Integer.parseInt(strs[0].substring(5))));
         info.setAddress(strs[1]);
         info.setPort(Integer.parseInt(strs[2]));
         return info;

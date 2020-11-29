@@ -21,7 +21,7 @@ public enum EquipmentStatus {
         return status;
     }
 
-    public static EquipmentStatus valueOf(int status) {
+    public static EquipmentStatus value(int status) {
         switch (status) {
             case 2:
                 return ACTIVATION;

@@ -41,13 +41,13 @@ public class ParserUtils {
             throw new DASParameterException("目标北斗卡号异常");
         }
         int equipmentStatus = Integer.parseInt(strs[4]);
-        bean.setEquipmentStatus(EquipmentStatus.valueOf(equipmentStatus));
+        bean.setEquipmentStatus(EquipmentStatus.value(equipmentStatus));
 
         int dataCommunicateMode = Integer.parseInt(strs[5]);
-        bean.setDataCommunicateMode(DataCommunicateMode.valueOf(dataCommunicateMode));
+        bean.setDataCommunicateMode(DataCommunicateMode.value(dataCommunicateMode));
 
         int rainfallStation = Integer.parseInt(strs[6]);
-        bean.setRainStation(RainStation.valueOf(rainfallStation));
+        bean.setRainStation(RainStation.value(rainfallStation));
 
         int rainAccuracy = Integer.parseInt(strs[7]);
         bean.setRainAccuracy(rainAccuracy);
@@ -75,16 +75,16 @@ public class ParserUtils {
         bean.setBatteryOverProtect(strs[15]);
 
         int debugModel = Integer.parseInt(strs[16]);
-        bean.setWorkModel(WorkModel.valueOf(debugModel));
+        bean.setWorkModel(WorkModel.value(debugModel));
 
         int sensorInterfaceType = Integer.parseInt(strs[17]);
-        bean.setSensorInterfaceType(SensorInterfaceType.valueOf(sensorInterfaceType));
+        bean.setSensorInterfaceType(SensorInterfaceType.value(sensorInterfaceType));
 
         int dataEncryption = Integer.parseInt(strs[18]);
-        bean.setDataEncryption(DataEncryption.valueOf(dataEncryption));
+        bean.setDataEncryption(DataEncryption.value(dataEncryption));
 
         int simChoose = Integer.parseInt(strs[19]);
-        bean.setSIMChoose(SIMChoose.valueOf(simChoose));
+        bean.setSIMChoose(SIMChoose.value(simChoose));
 
         return bean;
     }
@@ -110,7 +110,7 @@ public class ParserUtils {
 
     public static ServerAddressInfo startParserServerAddress(String[] strs) {
         ServerAddressInfo info = new ServerAddressInfo();
-        info.setNumber(ServerNumber.valueOf(Integer.parseInt(strs[0].substring(5))));
+        info.setNumber(ServerNumber.value(Integer.parseInt(strs[0].substring(5))));
         info.setAddress(strs[1]);
         info.setPort(Integer.parseInt(strs[2]));
         return info;

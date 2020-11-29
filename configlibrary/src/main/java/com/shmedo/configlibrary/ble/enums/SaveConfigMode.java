@@ -24,7 +24,7 @@ public enum SaveConfigMode {
         return model;
     }
 
-    public static SaveConfigMode valueOf(int model) {
+    public static SaveConfigMode value(int model) {
         switch (model) {
             case 2:
                 return SAVE_NO_REBOOT;

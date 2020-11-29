@@ -20,7 +20,7 @@ public enum VmsAisleNumber implements Serializable {
         return number;
     }
 
-    public static VmsAisleNumber valueOf(int port) {
+    public static VmsAisleNumber value(int port) {
         switch (port) {
             case 0:
                 return NUMBER_ONE;

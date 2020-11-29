@@ -10,7 +10,7 @@ public class BreakAlarmStatusParser implements ResultParser<BreakAlarmStatusInfo
     @Override
     public BreakAlarmStatusInfo parse(String result) {
         BreakAlarmStatusInfo info = new BreakAlarmStatusInfo();
-        info.setStatus(BreakAlarmStatus.valueOf(Integer.valueOf(result.substring(5))));
+        info.setStatus(BreakAlarmStatus.value(Integer.valueOf(result.substring(5))));
         return info;
     }
 

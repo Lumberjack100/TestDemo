@@ -14,7 +14,7 @@ public enum SIMChoose {
         return model;
     }
 
-    public static SIMChoose valueOf(int model) {
+    public static SIMChoose value(int model) {
         switch (model) {
             case 1: return SIM1;
             case 2: return SIM2;

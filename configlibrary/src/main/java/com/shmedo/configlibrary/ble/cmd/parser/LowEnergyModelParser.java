@@ -17,7 +17,7 @@ public class LowEnergyModelParser implements ResultParser<LowEnergyModelInfo> {
     public LowEnergyModelInfo parse(String result) {
         result.replace("\r\n","");
         LowEnergyModelInfo info = new LowEnergyModelInfo();
-        info.setLowEnergyModel(LowEnergyModel.valueOf(Integer.parseInt(result.substring(5))));
+        info.setLowEnergyModel(LowEnergyModel.value(Integer.parseInt(result.substring(5))));
         return info;
     }
 

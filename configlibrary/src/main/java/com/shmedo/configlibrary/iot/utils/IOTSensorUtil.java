@@ -88,20 +88,40 @@ public class IOTSensorUtil {
     /**
      * 根据传感器的编号返回对应的名称
      *
-     * @param typeNo
+     * @param typeCode
      * @return
      */
-    public String getSensorNameByTypeNo(String typeNo) {
-        if (typeNo.contains("_")) {
-            String[] strs = typeNo.split("_");
-            typeNo = strs[0];
+    public String getSensorNameByTypeCode(String typeCode) {
+        if (typeCode.contains("_")) {
+            String[] strs = typeCode.split("_");
+            typeCode = strs[0];
         }
-        String name = typeNameMap.get(typeNo);
+        String name = typeNameMap.get(typeCode);
         if (TextUtils.isEmpty(name)) {
             name = "未知类型";
         }
 
         return name;
+    }
+
+    /**
+     * 根据传感器的名称返回对应的编号
+     * @param sensorName
+     * @return
+     */
+    public String getSensorTypeCodeByName(String sensorName) {
+        if (TextUtils.isEmpty(sensorName))
+            return null;
+
+        String code = "";
+        for (Map.Entry<String, String> entry : typeNameMap.entrySet()) {
+            if (entry.getValue().equals(sensorName)) {
+                code = entry.getKey();
+                break;
+            }
+        }
+
+        return code;
     }
 
     /**

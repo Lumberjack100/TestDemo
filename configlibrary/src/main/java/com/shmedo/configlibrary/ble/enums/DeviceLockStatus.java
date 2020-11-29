@@ -9,7 +9,7 @@ package com.shmedo.configlibrary.ble.enums;
  * 描述：    TODO
  */
 
-public enum  DeviceLockStatus {
+public enum DeviceLockStatus {
     /**
      * 开启
      */
@@ -25,11 +25,15 @@ public enum  DeviceLockStatus {
     DeviceLockStatus(int status) {
         this.status = status;
     }
+
     public static DeviceLockStatus valueOf(int status) {
         switch (status) {
-            case 0: return UNLOCK;
-            case 1: return LOCK;
-            default: return UNLOCK;
+            case 0:
+                return UNLOCK;
+            case 1:
+                return LOCK;
+            default:
+                return UNLOCK;
         }
     }
 }

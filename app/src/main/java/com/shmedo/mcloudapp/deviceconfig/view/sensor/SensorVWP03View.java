@@ -78,7 +78,7 @@ public class SensorVWP03View extends FrameLayout {
         mEtCorrectValue.setText("0");
     }
 
-    public void bindSensorData(SensorGudanPercolateInfo sensorInfo) {
+    public void initData(SensorGudanPercolateInfo sensorInfo) {
         if (sensorInfo != null) {
             mEtTriggerThreshold.setText(String.format(Locale.getDefault(), "%d", (int) Double.parseDouble(sensorInfo.getTriggerThreshold())));
             mEtSensitivityCoefficient.setText(sensorInfo.getSensitivityK());

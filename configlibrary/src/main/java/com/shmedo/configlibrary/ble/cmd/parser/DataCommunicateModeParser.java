@@ -15,7 +15,7 @@ public class DataCommunicateModeParser implements ResultParser<DataCommunicateMo
     @Override
     public DataCommunicateModeInfo parse(String result) {
         DataCommunicateModeInfo info = new DataCommunicateModeInfo();
-        info.setDataCommunicateMode(DataCommunicateMode.valueOf(Integer.parseInt(result.substring(5))));
+        info.setDataCommunicateMode(DataCommunicateMode.value(Integer.parseInt(result.substring(5))));
         return info;
     }
 

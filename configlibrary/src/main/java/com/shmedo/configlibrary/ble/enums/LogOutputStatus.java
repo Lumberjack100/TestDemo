@@ -23,7 +23,7 @@ public enum LogOutputStatus {
         return status;
     }
 
-    public static LogOutputStatus valueOf(int status) {
+    public static LogOutputStatus value(int status) {
         switch (status) {
             case 0:
                 return CLOSE;

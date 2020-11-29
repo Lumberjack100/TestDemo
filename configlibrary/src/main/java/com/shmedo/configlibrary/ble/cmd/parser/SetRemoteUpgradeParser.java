@@ -16,7 +16,7 @@ public class SetRemoteUpgradeParser implements ResultParser<SetRemoteUpgradeInfo
     @Override
     public SetRemoteUpgradeInfo parse(String result) {
         SetRemoteUpgradeInfo info = new SetRemoteUpgradeInfo();
-        info.setModel(SetRemoteUpgrade.valueOf(Integer.parseInt(result.substring(5))));
+        info.setModel(SetRemoteUpgrade.value(Integer.parseInt(result.substring(5))));
         info.setPort(Integer.parseInt(result.substring(6)));
         return info;
     }

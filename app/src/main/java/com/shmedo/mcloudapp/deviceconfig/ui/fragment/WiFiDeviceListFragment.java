@@ -230,6 +230,7 @@ public class WiFiDeviceListFragment extends BaseFragment implements TextWatcher,
                     tempWiFiList.add(iWifi);
                 }
                 wiFiAdapter.setList(tempWiFiList);
+                mTvWiFiCount.setText(String.format(Locale.getDefault(), "(%d)", wiFiAdapter.getItemCount()));
             }
         });
     }
@@ -281,7 +282,7 @@ public class WiFiDeviceListFragment extends BaseFragment implements TextWatcher,
                 public void run() {
                     updateRefreshView(false);
 //                    modifyWifi();
-                    mTvWiFiCount.setText(String.format(Locale.getDefault(), "(%d)", wiFiAdapter.getItemCount()));
+//                    mTvWiFiCount.setText(String.format(Locale.getDefault(), "(%d)", wiFiAdapter.getItemCount()));
                 }
             });
         }

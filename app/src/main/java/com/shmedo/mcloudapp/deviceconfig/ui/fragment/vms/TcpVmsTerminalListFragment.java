@@ -153,14 +153,14 @@ public class TcpVmsTerminalListFragment extends BaseBottomSheetDialogFragment {
         String title;
         if (vmsAisleInfo.getChannel() == 0) {
             title = "通道01-设备(";
-            vmsAisleNumber = VmsAisleNumber.valueOf(0);
+            vmsAisleNumber = VmsAisleNumber.value(0);
         } else if (vmsAisleInfo.getChannel() == 1) {
             title = "通道02-设备(";
-            vmsAisleNumber = VmsAisleNumber.valueOf(1);
+            vmsAisleNumber = VmsAisleNumber.value(1);
 
         } else {
             title = "通道03-设备(";
-            vmsAisleNumber = VmsAisleNumber.valueOf(2);
+            vmsAisleNumber = VmsAisleNumber.value(2);
         }
         title += vmsAisleInfo.getTerminalnum() + ")";
         mTvTitle.setText(title);

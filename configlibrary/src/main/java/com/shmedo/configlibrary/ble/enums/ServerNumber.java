@@ -21,7 +21,7 @@ public enum ServerNumber implements Serializable {
         return number;
     }
 
-    public static ServerNumber valueOf(int port) {
+    public static ServerNumber value(int port) {
         switch (port) {
             case 1:
                 return NUMBER_ONE;

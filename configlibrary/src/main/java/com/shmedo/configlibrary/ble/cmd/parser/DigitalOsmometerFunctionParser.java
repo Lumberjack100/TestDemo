@@ -15,7 +15,7 @@ public class DigitalOsmometerFunctionParser implements ResultParser<DigitalOsmom
     @Override
     public DigitalOsmometerFunctionInfo parse(String result) {
         DigitalOsmometerFunctionInfo info = new DigitalOsmometerFunctionInfo();
-        info.setOsmometerStatus(OsmometerStatus.valueOf(Integer.parseInt(result.substring(5))));
+        info.setOsmometerStatus(OsmometerStatus.value(Integer.parseInt(result.substring(5))));
         return info;
     }
 

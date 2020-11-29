@@ -17,7 +17,7 @@ public enum BreakAlarmStatus {
         return status;
     }
 
-    public static BreakAlarmStatus valueOf(int status) {
+    public static BreakAlarmStatus value(int status) {
         switch (status) {
             case 0:
                 return QUERY;

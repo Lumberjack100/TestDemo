@@ -18,7 +18,7 @@ public class QueryOsmometerParameterParser implements ResultParser<QueryOsmomete
 
         try {
             String[] strs = result.split(",");
-            info.setOsmometerStatus(OsmometerStatus.valueOf(Integer.parseInt(strs[1])));
+            info.setOsmometerStatus(OsmometerStatus.value(Integer.parseInt(strs[1])));
             info.setOsmometerAddress(strs[2]);
             info.setDepthTrigger(strs[3]);
             info.setDepthCorrect(strs[4]);

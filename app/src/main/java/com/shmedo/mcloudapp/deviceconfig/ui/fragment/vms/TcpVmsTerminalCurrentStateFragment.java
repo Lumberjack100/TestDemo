@@ -115,7 +115,7 @@ public class TcpVmsTerminalCurrentStateFragment extends BaseFragment {
             @Override
             protected void convert(CommonViewHolder holder, SensorErrnoInfo errnoBean, int position) {
                 holder.setText(R.id.tv_number, "地址 " + errnoBean.getId());
-                holder.setText(R.id.tv_sensor_name, IOTSensorUtil.getInstance().getSensorNameByTypeNo(errnoBean.getName()));
+                holder.setText(R.id.tv_sensor_name, IOTSensorUtil.getInstance().getSensorNameByTypeCode(errnoBean.getName()));
                 holder.setText(R.id.tv_sensor_value, String.valueOf(errnoBean.getVal()));
                 holder.setText(R.id.tv_sensor_state, IOTSensorUtil.getInstance().getErrorMessageByNo(String.valueOf(errnoBean.getErrno())));
 
