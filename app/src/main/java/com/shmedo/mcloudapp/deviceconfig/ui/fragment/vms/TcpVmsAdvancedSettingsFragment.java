@@ -10,9 +10,14 @@ import androidx.annotation.Nullable;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.hjq.toast.ToastUtils;
+import com.shmedo.configlibrary.iot.cmd.IOTCommandManager;
+import com.shmedo.configlibrary.iot.cmd.IOTCommandResult;
+import com.shmedo.configlibrary.iot.cmd.entity.ServerNumberEntity;
+import com.shmedo.configlibrary.iot.cmd.parser.IOTParseManager;
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.enums.ServerNumber;
 import com.shmedo.configlibrary.iot.enums.VmsAisleNumber;
+import com.shmedo.configlibrary.iot.model.DataCenterStatus;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
 import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.R;
@@ -24,6 +29,7 @@ import org.jetbrains.annotations.NotNull;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import timber.log.Timber;
 
 /**
  * 创建者:   gonghe <br/>
@@ -48,7 +54,6 @@ public class TcpVmsAdvancedSettingsFragment extends BaseTcpConnectFragment {
         return new TcpVmsAdvancedSettingsFragment();
     }
 
-
     @Override
     protected int getLayoutId() {
         return R.layout.tcp_vms_advanced_settings_fragment;
@@ -57,6 +62,9 @@ public class TcpVmsAdvancedSettingsFragment extends BaseTcpConnectFragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        startProgressRunnable("加载数据...", QUERY_CMD_DELAY_MILLIS);
+        //获取网关不同数据中心的状态
+        getDataCenterStatus(ServerNumber.NUMBER_ONE);
     }
 
     @OnClick({R.id.dataCenterOneLayout, R.id.dataCenterTwoLayout, R.id.dataCenterThreeLayout, R.id.dataCenterFourLayout, R.id.vmsAisleOneLayout, R.id.vmsAisleTwoLayout, R.id.vmsAisleThreeLayout, R.id.vmsResetLayout})
@@ -95,6 +103,15 @@ public class TcpVmsAdvancedSettingsFragment extends BaseTcpConnectFragment {
             ToastUtils.show("正在研发中,敬请期待...");
 //            showWarnDialog("确定恢复出厂设置吗？");
         }
+    }
+
+    /**
+     * 获取网关数据中心状态
+     */
+    private void getDataCenterStatus(ServerNumber serverNumber) {
+        ServerNumberEntity serverNumberEntity = new ServerNumberEntity(serverNumber.toInt());
+        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.VMS_MD_GET_DATA_CENTER_STATUS, serverNumberEntity);
+        sendCommand(command);
     }
 
     /**
@@ -138,26 +155,61 @@ public class TcpVmsAdvancedSettingsFragment extends BaseTcpConnectFragment {
     private void setResultData(final String cmdStr) {
         IOTCommandType type = IOTStringUtil.extractCommandType(cmdStr);
         switch (type) {
-            case MD_GET_GATEWAY_BASE: {//获取网关的基本信息
-//                IOTCommandResult<GatewayBaseInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
-//                if (!commandResult.isSuccess()) {
-//                    stopProgressRunnable();
-//                    String errMsg = "查询网关基本信息出错!";
-//                    Timber.e("%s%s", errMsg, commandResult.getMessage());
-//                    ToastUtils.show(errMsg);
-//                    return;
-//                }
-//                gatewayBaseInfo = commandResult.getResult();
-//                setHeadInfo();
-//                getGatewayStatus(VmsAisleNumber.NUMBER_ONE);
+            case VMS_MD_GET_DATA_CENTER_STATUS: {//获取Vms数据中心状态
+                IOTCommandResult<DataCenterStatus> commandResult = IOTParseManager.getInstance().parse(cmdStr);
+                if (!commandResult.isSuccess()) {
+                    stopProgressRunnable();
+                    String errMsg = "查询网关数据中心状态出错!";
+                    Timber.e("%s%s", errMsg, commandResult.getMessage());
+                    ToastUtils.show(errMsg);
+                    return;
+                }
+                DataCenterStatus centerStatus = commandResult.getResult();
+                if (centerStatus.getCenterid() == 1) {
+                    mTvDataCenterOne.setText(getStatusTextById(centerStatus.getStatus()));
+                    getDataCenterStatus(ServerNumber.NUMBER_TWO);
+                } else if (centerStatus.getCenterid() == 2) {
+                    mTvDataCenterTwo.setText(getStatusTextById(centerStatus.getStatus()));
+                    getDataCenterStatus(ServerNumber.NUMBER_THREE);
+                } else if (centerStatus.getCenterid() == 3) {
+                    mTvDataCenterThree.setText(getStatusTextById(centerStatus.getStatus()));
+                    getDataCenterStatus(ServerNumber.NUMBER_FOUR);
+                } else if (centerStatus.getCenterid() == 4) {
+                    mTvDataCenterFour.setText(getStatusTextById(centerStatus.getStatus()));
+                }
             }
             break;
 
+//            case VMS_MD_REBOOT_TERMINAL: {//
+//                stopProgressRunnable();
+//                CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
+//                if (!cmdResult.isSucceed()) {
+//                    String errMsg = "重启终端失败!";
+//                    Timber.e("%s%s", errMsg, cmdResult.getReason());
+//                    ToastUtils.show(errMsg);
+//                    return;
+//                }
+//                ToastUtils.show("发送重启指令成功,终端设备稍后将重启");
+//            }
+//            break;
 
             default:
                 super.parseResponseMessage(cmdStr);
                 break;
         }
+    }
+
+    private String getStatusTextById(String statusId) {
+        String status = "未知状态";
+        if (statusId.equals("0")) {
+            status = "未开启";
+        } else if (statusId.equals("1")) {
+            status = "已上线";
+        } else if (statusId.equals("2")) {
+            status = "未上线";
+        }
+
+        return status;
     }
 
 }

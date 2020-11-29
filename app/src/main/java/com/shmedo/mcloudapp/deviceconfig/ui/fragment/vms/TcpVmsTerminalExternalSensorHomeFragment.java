@@ -138,7 +138,7 @@ public class TcpVmsTerminalExternalSensorHomeFragment extends BaseTcpConnectFrag
      */
     private void queryTerminalAisleParamInfo() {
         GetTerminalSensorParamsEntity entity = new GetTerminalSensorParamsEntity(sn, sensorIndex);
-        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.MD_GET_TERMINAL_CHL, entity);
+        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.VMS_MD_GET_TERMINAL_CHL, entity);
         sendCommand(command);
     }
 
@@ -150,7 +150,7 @@ public class TcpVmsTerminalExternalSensorHomeFragment extends BaseTcpConnectFrag
     private void setResultData(final String cmdStr) {
         IOTCommandType type = IOTStringUtil.extractCommandType(cmdStr);
         switch (type) {
-            case MD_GET_TERMINAL_CHL: {//获取终端传感器的参数
+            case VMS_MD_GET_TERMINAL_CHL: {//获取终端传感器的参数
                 IOTCommandResult<TerminalSensorInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
                     String errMsg = "查询获取终端传感器参数出错!";

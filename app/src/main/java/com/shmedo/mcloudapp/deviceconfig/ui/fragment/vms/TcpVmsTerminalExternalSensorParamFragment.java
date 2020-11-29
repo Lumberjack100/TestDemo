@@ -90,6 +90,9 @@ public class TcpVmsTerminalExternalSensorParamFragment extends BaseTcpConnectFra
     private int calculationPosOld;//计算方式索引
     private int sensorNamePosOld;// 传感器名称索引
 
+    private boolean isSaveParamOperation = false;//判断当前是保存参数操作，还是打开传感器开关操作
+
+
 
     public static TcpVmsTerminalExternalSensorParamFragment newInstance(TerminalSensorInfo sensorInfo) {
         TcpVmsTerminalExternalSensorParamFragment fragment = new TcpVmsTerminalExternalSensorParamFragment();
@@ -227,7 +230,7 @@ public class TcpVmsTerminalExternalSensorParamFragment extends BaseTcpConnectFra
         entity.setInsert("1");
 
         mBtnSave.setEnabled(false);
-        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.MD_SET_TERMINAL_CHL, entity);
+        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.VMS_MD_SET_TERMINAL_CHL, entity);
         sendCommand(command);
     }
 
@@ -240,8 +243,9 @@ public class TcpVmsTerminalExternalSensorParamFragment extends BaseTcpConnectFra
         entity.setChannel(sensorInfo.getChannel());
         entity.setInsert("0");
 
+        isSaveParamOperation = true;
         mBtnSave.setEnabled(false);
-        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.MD_SET_TERMINAL_CHL, entity);
+        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.VMS_MD_SET_TERMINAL_CHL, entity);
         sendCommand(command);
     }
 
@@ -351,7 +355,7 @@ public class TcpVmsTerminalExternalSensorParamFragment extends BaseTcpConnectFra
         sensorParamsEntity.setName(sensorNameNo);
 
         mBtnSave.setEnabled(false);
-        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.MD_SET_TERMINAL_CHL, sensorParamsEntity);
+        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.VMS_MD_SET_TERMINAL_CHL, sensorParamsEntity);
         sendCommand(command);
     }
 
@@ -363,13 +367,15 @@ public class TcpVmsTerminalExternalSensorParamFragment extends BaseTcpConnectFra
     private void setResultData(final String cmdStr) {
         IOTCommandType type = IOTStringUtil.extractCommandType(cmdStr);
         switch (type) {
-            case MD_SET_TERMINAL_CHL: {//设置Vms终端某个通道下传感器参数
+            case VMS_MD_SET_TERMINAL_CHL: {//设置Vms终端某个通道下传感器参数
                 CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
                 if (!cmdResult.isSucceed()) {
                     String errMsg = "设置参数失败!";
                     Timber.e("%s%s", errMsg, cmdResult.getReason());
                     ToastUtils.show(errMsg);
                     mBtnSave.setEnabled(true);
+                    if (isSaveParamOperation)
+                        isSaveParamOperation = false;
                     return;
                 }
                 doAfterSetting();
@@ -383,8 +389,13 @@ public class TcpVmsTerminalExternalSensorParamFragment extends BaseTcpConnectFra
     }
 
     private void doAfterSetting() {
-        ToastUtils.show("设置成功");
+        if (isSaveParamOperation) {
+            isSaveParamOperation = false;
+            ToastUtils.show("设置成功");
+        }
         mBtnSave.setEnabled(true);
+        calculationPosOld = calculationPos;
+        sensorNamePosOld = sensorNamePos;
     }
 
     @Override

@@ -110,7 +110,8 @@ public class IOTParseManager {
                 VmsAisleTerminalInfoParser.class,
                 VmsAisleInfoParser.class,
                 DataCenterInfoParser.class,
-                TerminalSensorInfoParser.class});
+                TerminalSensorInfoParser.class,
+                DataCenterStatusParser.class});
 
         registerWithClass(clazzes);
     }

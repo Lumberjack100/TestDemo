@@ -190,7 +190,7 @@ public class TcpVmsTerminalHomeFragment extends BaseTcpConnectFragment {
      */
     private void rebootTerminal() {
         TerminalSNEntity entity = new TerminalSNEntity(terminalInfo.getSn());
-        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.MD_REBOOT_TERMINAL, entity);
+        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.VMS_MD_REBOOT_TERMINAL, entity);
         sendCommand(command);
     }
 
@@ -245,7 +245,7 @@ public class TcpVmsTerminalHomeFragment extends BaseTcpConnectFragment {
     private void setResultData(final String cmdStr) {
         IOTCommandType type = IOTStringUtil.extractCommandType(cmdStr);
         switch (type) {
-            case MD_REBOOT_TERMINAL: {//设置网关通道的控制参数
+            case VMS_MD_REBOOT_TERMINAL: {//重启Vms终端
                 stopProgressRunnable();
                 CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
                 if (!cmdResult.isSucceed()) {

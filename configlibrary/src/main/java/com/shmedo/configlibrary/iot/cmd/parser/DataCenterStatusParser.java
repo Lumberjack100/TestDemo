@@ -1,22 +1,22 @@
 package com.shmedo.configlibrary.iot.cmd.parser;
 
+import android.text.TextUtils;
+
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.interfaces.IOTResultParser;
-import com.shmedo.configlibrary.iot.model.VmsAisleTerminalInfo;
-import com.shmedo.core.util.GsonFactory;
+import com.shmedo.configlibrary.iot.model.DataCenterStatus;
 
 import java.util.HashMap;
 
-
 /**
  * 创建者:   gonghe <br/>
- * 创建时间:  2020/11/13 <br/>
- * 描述：     TODO
+ * 创建时间:  11/29/20 <br/>
+ * 描述：      解析数据中心状态
  */
-public class VmsAisleTerminalInfoParser implements IOTResultParser<VmsAisleTerminalInfo> {
+public class DataCenterStatusParser implements IOTResultParser<DataCenterStatus> {
     @Override
-    public VmsAisleTerminalInfo parse(String result) {
-        VmsAisleTerminalInfo info;
+    public DataCenterStatus parse(String result) {
+        DataCenterStatus info = new DataCenterStatus();
         try {
             String[] keyValues = result.split("&");
             HashMap<String, String> keyValueMap = new HashMap<>();
@@ -29,10 +29,8 @@ public class VmsAisleTerminalInfoParser implements IOTResultParser<VmsAisleTermi
                     keyValueMap.put(strs[0], strs[1]);
                 }
             }
-
-            String status = keyValueMap.get("status");
-            info = GsonFactory.getGson().fromJson(status, VmsAisleTerminalInfo.class);
-            info.setChannel(Integer.parseInt(keyValueMap.get("channel")));
+            info.setCenterid(Integer.parseInt(keyValueMap.get("centerid")));
+            info.setStatus(TextUtils.isEmpty(keyValueMap.get("status")) ? "" : keyValueMap.get("status"));
 
             return info;
         } catch (Exception ex) {
@@ -48,6 +46,6 @@ public class VmsAisleTerminalInfoParser implements IOTResultParser<VmsAisleTermi
 
     @Override
     public IOTCommandType commandType() {
-        return IOTCommandType.VMS_MD_GET_GATEWAY_STATUS;
+        return IOTCommandType.VMS_MD_GET_DATA_CENTER_STATUS;
     }
 }

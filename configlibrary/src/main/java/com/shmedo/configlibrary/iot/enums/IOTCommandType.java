@@ -6,6 +6,7 @@ package com.shmedo.configlibrary.iot.enums;
  * 描述：    米度物联网设备指令
  */
 public enum IOTCommandType {
+    /**　米度物联网设备通用指令  **/
     /**
      * 获取设备终端时间
      */
@@ -46,63 +47,63 @@ public enum IOTCommandType {
     /**
      * 获取网关的基本信息
      */
-    MD_GET_GATEWAY_BASE("md_getgatewaybase"),
+    VMS_MD_GET_GATEWAY_BASE("md_getgatewaybase"),
 
     /**
      * 获取网关不同通道下，挂载终端的运行情况
      */
-    MD_GET_GATEWAY_STATUS("md_getgatewaystatus"),
+    VMS_MD_GET_GATEWAY_STATUS("md_getgatewaystatus"),
 
     /**
      * 获取网关相关的控制参数
      */
-    MD_GET_GATEWAY_PARAM("md_getgatewayparam"),
+    VMS_MD_GET_GATEWAY_PARAM("md_getgatewayparam"),
 
     /**
      * 设置网关相关的控制参数
      */
-    MD_SET_GATEWAY_PARAM("md_setgatewayparam"),
+    VMS_MD_SET_GATEWAY_PARAM("md_setgatewayparam"),
 
     /**
-     * 获取设备的数据中心参数
+     * 获取数据中心参数
      */
     MD_GET_DATA_CENTER("md_getdatacenter"),
 
     /**
-     * 设置设备的数据中心参数
+     * 设置数据中心参数
      */
     MD_SET_DATA_CENTER("md_setdatacenter"),
 
     /**
+     * 获取Vms数据中心状态
+     */
+    VMS_MD_GET_DATA_CENTER_STATUS("md_getdatacenterstatus"),
+
+    /**
      * 删除Vms终端
      */
-    MD_DELETE_TERMINAL("md_delterminal"),
+    VMS_MD_DELETE_TERMINAL("md_delterminal"),
 
     /**
      * 重启Vms终端
      */
-    MD_REBOOT_TERMINAL("md_rebootterminal"),
+    VMS_MD_REBOOT_TERMINAL("md_rebootterminal"),
 
     /**
      * 获取Vms终端某个通道下传感器参数
      */
-    MD_GET_TERMINAL_CHL("md_getterminalchl"),
+    VMS_MD_GET_TERMINAL_CHL("md_getterminalchl"),
 
     /**
      * 设置Vms终端某个通道下传感器参数
      */
-    MD_SET_TERMINAL_CHL("md_setterminalchl"),
+    VMS_MD_SET_TERMINAL_CHL("md_setterminalchl"),
 
 
     /**
      * 自定义心跳包
      */
-    HEART_BEAT("HeartBeatData"),
-
-    /**
-     * 批处理结束指令
-     */
-    BATCH_END("");
+    HEART_BEAT("HeartBeatData");
 
 
     private String commandCode;

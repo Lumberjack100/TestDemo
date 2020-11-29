@@ -144,7 +144,7 @@ public class TcpVmsAisleSettingFragment extends BaseTcpConnectFragment {
 //        startProgressRunnable("加载数据...", QUERY_CMD_DELAY_MILLIS);
 
         VmsAisleNumberEntity vmsAisleNumberEntity = new VmsAisleNumberEntity(vmsAisleNumber.toInt());
-        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.MD_GET_GATEWAY_PARAM, vmsAisleNumberEntity);
+        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.VMS_MD_GET_GATEWAY_PARAM, vmsAisleNumberEntity);
         sendCommand(command);
     }
 
@@ -355,7 +355,7 @@ public class TcpVmsAisleSettingFragment extends BaseTcpConnectFragment {
 
         mBtnSave.setEnabled(false);
 //        startProgressRunnable("正在发送配置指令...", SEND_CMD_DELAY_MILLIS);
-        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.MD_SET_GATEWAY_PARAM, vmsAisleParamEntity);
+        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.VMS_MD_SET_GATEWAY_PARAM, vmsAisleParamEntity);
         sendCommand(command);
     }
 
@@ -367,7 +367,7 @@ public class TcpVmsAisleSettingFragment extends BaseTcpConnectFragment {
     private void setResultData(final String cmdStr) {
         IOTCommandType type = IOTStringUtil.extractCommandType(cmdStr);
         switch (type) {
-            case MD_GET_GATEWAY_PARAM: {//获取网关通道的控制参数
+            case VMS_MD_GET_GATEWAY_PARAM: {//获取网关通道的控制参数
 //                stopProgressRunnable();
                 IOTCommandResult<VmsAisleInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
@@ -381,7 +381,7 @@ public class TcpVmsAisleSettingFragment extends BaseTcpConnectFragment {
             }
             break;
 
-            case MD_SET_GATEWAY_PARAM: {//设置网关通道的控制参数
+            case VMS_MD_SET_GATEWAY_PARAM: {//设置网关通道的控制参数
 //                stopProgressRunnable();
                 CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
                 if (!cmdResult.isSucceed()) {

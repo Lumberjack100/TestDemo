@@ -316,7 +316,7 @@ public class TcpVmsDataCenterSettingFragment extends BaseTcpConnectFragment {
             return false;
         }
 
-        if (transferProtocol.equals("MQTT")) {
+//        if (transferProtocol.equals("MQTT")) {
 //            if (TextUtils.isEmpty(productId)) {
 //                ToastUtils.show("产品ID不能为空!");
 //                mEtProductId.requestFocus();
@@ -332,8 +332,8 @@ public class TcpVmsDataCenterSettingFragment extends BaseTcpConnectFragment {
 //                mEtDeviceKey.requestFocus();
 //                return false;
 //            }
-
-
+//
+//
 //            if (TextUtils.isEmpty(registerAddress)) {
 //                ToastUtils.show("设备注册地址不能为空!");
 //                mEtDeviceRegisterAddress.requestFocus();
@@ -362,7 +362,7 @@ public class TcpVmsDataCenterSettingFragment extends BaseTcpConnectFragment {
 //                mEtDeviceRegisterCode.requestFocus();
 //                return false;
 //            }
-        }
+//        }
 
         return true;
     }

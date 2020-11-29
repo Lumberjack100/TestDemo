@@ -48,6 +48,6 @@ public class VmsBasicInfoParser implements IOTResultParser<VmsBasicInfo> {
 
     @Override
     public IOTCommandType commandType() {
-        return IOTCommandType.MD_GET_GATEWAY_BASE;
+        return IOTCommandType.VMS_MD_GET_GATEWAY_BASE;
     }
 }

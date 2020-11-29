@@ -175,7 +175,7 @@ public class TcpVmsTerminalListFragment extends BaseBottomSheetDialogFragment {
      */
     private void getGatewayStatus(VmsAisleNumber vmsAisleNumber) {
         VmsAisleNumberEntity vmsAisleNumberEntity = new VmsAisleNumberEntity(vmsAisleNumber.toInt());
-        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.MD_GET_GATEWAY_STATUS, vmsAisleNumberEntity);
+        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.VMS_MD_GET_GATEWAY_STATUS, vmsAisleNumberEntity);
         sendCommand(command);
     }
 
@@ -192,7 +192,7 @@ public class TcpVmsTerminalListFragment extends BaseBottomSheetDialogFragment {
     private void parseResponseMessage(String cmdStr) {
         IOTCommandType type = IOTStringUtil.extractCommandType(cmdStr);
         switch (type) {
-            case MD_DELETE_TERMINAL: {//删除终端设备
+            case VMS_MD_DELETE_TERMINAL: {//删除终端设备
                 CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
                 if (!cmdResult.isSucceed()) {
                     String errMsg = "删除终端出错!";
@@ -204,7 +204,7 @@ public class TcpVmsTerminalListFragment extends BaseBottomSheetDialogFragment {
             }
             break;
 
-            case MD_GET_GATEWAY_STATUS: {//获取网关的状态
+            case VMS_MD_GET_GATEWAY_STATUS: {//获取网关的状态
                 IOTCommandResult<VmsAisleTerminalInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
                     String errMsg = "查询网关基本信息出错!";
@@ -271,7 +271,7 @@ public class TcpVmsTerminalListFragment extends BaseBottomSheetDialogFragment {
      */
     private void removeTerminal() {
         TerminalSNEntity entity = new TerminalSNEntity(terminalInfo.getSn());
-        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.MD_DELETE_TERMINAL, entity);
+        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.VMS_MD_DELETE_TERMINAL, entity);
         sendCommand(command);
     }
 

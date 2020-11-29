@@ -65,6 +65,6 @@ public class TerminalSensorInfoParser implements IOTResultParser<TerminalSensorI
 
     @Override
     public IOTCommandType commandType() {
-        return IOTCommandType.MD_GET_TERMINAL_CHL;
+        return IOTCommandType.VMS_MD_GET_TERMINAL_CHL;
     }
 }

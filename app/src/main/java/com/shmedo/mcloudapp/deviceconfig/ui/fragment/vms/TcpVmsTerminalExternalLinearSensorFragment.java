@@ -201,7 +201,7 @@ public class TcpVmsTerminalExternalLinearSensorFragment extends BaseTcpConnectFr
         entity.setInsert("1");
 
         mBtnSave.setEnabled(false);
-        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.MD_SET_TERMINAL_CHL, entity);
+        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.VMS_MD_SET_TERMINAL_CHL, entity);
         sendCommand(command);
     }
 
@@ -215,7 +215,7 @@ public class TcpVmsTerminalExternalLinearSensorFragment extends BaseTcpConnectFr
         entity.setInsert("0");
 
         mBtnSave.setEnabled(false);
-        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.MD_SET_TERMINAL_CHL, entity);
+        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.VMS_MD_SET_TERMINAL_CHL, entity);
         sendCommand(command);
     }
 
@@ -255,7 +255,7 @@ public class TcpVmsTerminalExternalLinearSensorFragment extends BaseTcpConnectFr
 
         isSaveParamOperation = true;
         mBtnSave.setEnabled(false);
-        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.MD_SET_TERMINAL_CHL, entity);
+        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.VMS_MD_SET_TERMINAL_CHL, entity);
         sendCommand(command);
     }
 
@@ -267,7 +267,7 @@ public class TcpVmsTerminalExternalLinearSensorFragment extends BaseTcpConnectFr
     private void setResultData(final String cmdStr) {
         IOTCommandType type = IOTStringUtil.extractCommandType(cmdStr);
         switch (type) {
-            case MD_SET_TERMINAL_CHL: {//设置Vms终端某个通道下传感器参数
+            case VMS_MD_SET_TERMINAL_CHL: {//设置Vms终端某个通道下传感器参数
                 CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
                 if (!cmdResult.isSucceed()) {
                     String errMsg = "设置参数失败!";

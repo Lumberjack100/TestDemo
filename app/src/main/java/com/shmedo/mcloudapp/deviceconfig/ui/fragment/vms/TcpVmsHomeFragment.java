@@ -212,7 +212,7 @@ public class TcpVmsHomeFragment extends BaseTcpConnectFragment {
      * 获取网关的基本信息
      */
     private void getGatewayBaseInfo() {
-        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.MD_GET_GATEWAY_BASE);
+        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.VMS_MD_GET_GATEWAY_BASE);
         sendCommand(command);
     }
 
@@ -221,7 +221,7 @@ public class TcpVmsHomeFragment extends BaseTcpConnectFragment {
      */
     private void getGatewayAisleInfo(VmsAisleNumber vmsAisleNumber) {
         VmsAisleNumberEntity vmsAisleNumberEntity = new VmsAisleNumberEntity(vmsAisleNumber.toInt());
-        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.MD_GET_GATEWAY_PARAM, vmsAisleNumberEntity);
+        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.VMS_MD_GET_GATEWAY_PARAM, vmsAisleNumberEntity);
         sendCommand(command);
     }
 
@@ -232,7 +232,7 @@ public class TcpVmsHomeFragment extends BaseTcpConnectFragment {
      */
     private void getGatewayStatus(VmsAisleNumber vmsAisleNumber) {
         VmsAisleNumberEntity vmsAisleNumberEntity = new VmsAisleNumberEntity(vmsAisleNumber.toInt());
-        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.MD_GET_GATEWAY_STATUS, vmsAisleNumberEntity);
+        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.VMS_MD_GET_GATEWAY_STATUS, vmsAisleNumberEntity);
         sendCommand(command);
     }
 
@@ -244,7 +244,7 @@ public class TcpVmsHomeFragment extends BaseTcpConnectFragment {
     private void setResultData(final String cmdStr) {
         IOTCommandType type = IOTStringUtil.extractCommandType(cmdStr);
         switch (type) {
-            case MD_GET_GATEWAY_BASE: {//获取网关的基本信息
+            case VMS_MD_GET_GATEWAY_BASE: {//获取网关的基本信息
                 IOTCommandResult<VmsBasicInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
                     stopProgressRunnable();
@@ -261,7 +261,7 @@ public class TcpVmsHomeFragment extends BaseTcpConnectFragment {
             }
             break;
 
-            case MD_GET_GATEWAY_PARAM: {//获取网关通道的控制参数
+            case VMS_MD_GET_GATEWAY_PARAM: {//获取网关通道的控制参数
                 IOTCommandResult<VmsAisleInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
                     stopProgressRunnable();
@@ -279,16 +279,14 @@ public class TcpVmsHomeFragment extends BaseTcpConnectFragment {
                     getGatewayAisleInfo(VmsAisleNumber.NUMBER_THREE);
 
                 } else if (vmsAisleInfo.getChannel() == 2) {
-//                    stopProgressRunnable();
                     vmsAisleAdapter.notifyDataSetChanged();
-                    //获取3网
-                    // 关的状态
+                    //获取网关的状态
                     getGatewayStatus(VmsAisleNumber.NUMBER_TWO);
                 }
             }
             break;
 
-            case MD_GET_GATEWAY_STATUS: {//获取网关的状态
+            case VMS_MD_GET_GATEWAY_STATUS: {//获取网关的状态
                 //Bug修复，TcpVmsTerminalListFragment 查询观察终端数据时，会触发这里的回调
                 if (tcpVmsTerminalListFragment != null && tcpVmsTerminalListFragment.isAdded()) {
                     return;

@@ -57,6 +57,6 @@ public class VmsAisleInfoParser implements IOTResultParser<VmsAisleInfo> {
 
     @Override
     public IOTCommandType commandType() {
-        return IOTCommandType.MD_GET_GATEWAY_PARAM;
+        return IOTCommandType.VMS_MD_GET_GATEWAY_PARAM;
     }
 }

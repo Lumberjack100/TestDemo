@@ -228,7 +228,7 @@ public class VmsTerminalSearchActivity extends BaseActivity implements TextWatch
     private void parseResponseMessage(String cmdStr) {
         IOTCommandType type = IOTStringUtil.extractCommandType(cmdStr);
         switch (type) {
-            case MD_DELETE_TERMINAL: {//获取网关的基本信息
+            case VMS_MD_DELETE_TERMINAL: {//获取网关的基本信息
                 CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
                 if (!cmdResult.isSucceed()) {
                     String errMsg = "删除终端出错!";
@@ -288,7 +288,7 @@ public class VmsTerminalSearchActivity extends BaseActivity implements TextWatch
      */
     private void removeTerminal() {
         TerminalSNEntity entity = new TerminalSNEntity(terminalInfo.getSn());
-        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.MD_DELETE_TERMINAL, entity);
+        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.VMS_MD_DELETE_TERMINAL, entity);
         sendCommand(command);
     }
 

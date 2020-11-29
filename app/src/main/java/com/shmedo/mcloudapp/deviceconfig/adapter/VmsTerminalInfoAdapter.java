@@ -8,6 +8,7 @@ import com.shmedo.mcloudapp.R;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.text.DecimalFormat;
 import java.util.List;
 
 /**
@@ -24,18 +25,23 @@ public class VmsTerminalInfoAdapter extends BaseQuickAdapter<TerminalInfo, BaseV
     @Override
     protected void convert(@NotNull BaseViewHolder holder, TerminalInfo terminalInfo) {
         holder.setText(R.id.tv_terminal_sn, terminalInfo.getSn());
-        holder.setText(R.id.tv_battery_value, terminalInfo.getVolt() + "V");
+        holder.setText(R.id.tv_signal_strength, terminalInfo.getUprssi() + "dBm");
+//        holder.setText(R.id.tv_battery_value, terminalInfo.getVolt() + "%");
         holder.setText(R.id.tv_last_data_time, terminalInfo.getLastpackagetime());
+
+        DecimalFormat df = new DecimalFormat("#");//格式化小数
+        String rate = df.format(terminalInfo.getVolt()) + "%";
+        holder.setText(R.id.tv_battery_value, rate);
 
         if (terminalInfo.getStatus() == 1) {//在线
             holder.setTextColorRes(R.id.tv_terminal_sn, R.color.title_text_color);
-            holder.setImageResource(R.id.iv_signal, R.drawable.ic_device_signal_three);
+//            holder.setImageResource(R.id.iv_signal, R.drawable.ic_device_signal_three);
             holder.setImageResource(R.id.iv_battery, R.drawable.ic_battery_full_online);
 
             holder.setText(R.id.tv_terminal_state, "在线");
         } else {
             holder.setTextColorRes(R.id.tv_terminal_sn, R.color.text_color_b3b3b3);
-            holder.setImageResource(R.id.iv_signal, R.drawable.ic_device_signal_offline);
+//            holder.setImageResource(R.id.iv_signal, R.drawable.ic_device_signal_offline);
             holder.setImageResource(R.id.iv_battery, R.drawable.ic_battery_full_offline);
 
             holder.setText(R.id.tv_terminal_state, "离线");
