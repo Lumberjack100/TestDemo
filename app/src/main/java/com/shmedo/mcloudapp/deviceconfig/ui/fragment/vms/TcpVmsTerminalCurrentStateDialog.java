@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 
+import com.shmedo.configlibrary.iot.model.SensorErrnoInfo;
 import com.shmedo.configlibrary.iot.model.TerminalInfo;
 import com.shmedo.core.AppContants;
 import com.shmedo.core.util.DeviceInfo;
@@ -17,6 +18,8 @@ import com.shmedo.core.util.GlobalUtil;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.vms.VmsTerminalCurrentStateActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.BaseDialogFragment;
+
+import java.text.DecimalFormat;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -103,8 +106,21 @@ public class TcpVmsTerminalCurrentStateDialog extends BaseDialogFragment {
         mTvDownlinkSignalStrength.setText(String.valueOf(terminalInfo.getDownrssi()));
         mTvSendData.setText(String.valueOf(terminalInfo.getTx()));
         mTvReceiveData.setText(String.valueOf(terminalInfo.getRx()));
-        mTvSensorState.setText(String.valueOf(terminalInfo.getUprssi()));
-        mTvPowerVolt.setText(terminalInfo.getVolt() + "V");
+
+        DecimalFormat df = new DecimalFormat("#");//格式化小数
+        String rate = df.format(terminalInfo.getVolt()) + "%";
+        mTvPowerVolt.setText(rate);
+
+        boolean sensorAbnormal = false;
+        if (terminalInfo.getSensor() != null) {
+            for (SensorErrnoInfo errnoInfo : terminalInfo.getSensor()) {
+                if (errnoInfo.getErrno() != 0) {
+                    sensorAbnormal = true;
+                }
+            }
+            mTvSensorState.setText(sensorAbnormal ? "异常" : "正常");
+            mTvSensorState.setTextColor(sensorAbnormal ? GlobalUtil.getColor(R.color.red) : GlobalUtil.getColor(R.color.text_color_3AD094));
+        }
     }
 
     @OnClick({R.id.iv_close, R.id.tv_confirm})

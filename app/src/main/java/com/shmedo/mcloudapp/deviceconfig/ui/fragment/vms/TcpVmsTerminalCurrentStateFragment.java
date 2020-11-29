@@ -17,6 +17,7 @@ import com.shmedo.mcloudapp.common.view.recycleviewitemdivider.GridSpacingItemDe
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.base.CommonViewHolder;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -116,7 +117,9 @@ public class TcpVmsTerminalCurrentStateFragment extends BaseFragment {
             protected void convert(CommonViewHolder holder, SensorErrnoInfo errnoBean, int position) {
                 holder.setText(R.id.tv_number, "地址 " + errnoBean.getId());
                 holder.setText(R.id.tv_sensor_name, IOTSensorUtil.getInstance().getSensorNameByTypeCode(errnoBean.getName()));
-                holder.setText(R.id.tv_sensor_value, String.valueOf(errnoBean.getVal()));
+                DecimalFormat df = new DecimalFormat("#.###");//格式化小数
+                String value = df.format(Double.valueOf(errnoBean.getVal()));
+                holder.setText(R.id.tv_sensor_value, value);
                 holder.setText(R.id.tv_sensor_state, IOTSensorUtil.getInstance().getErrorMessageByNo(String.valueOf(errnoBean.getErrno())));
 
                 if (errnoBean.getErrno() == 0) {
@@ -144,7 +147,10 @@ public class TcpVmsTerminalCurrentStateFragment extends BaseFragment {
         mTvDownlinkSignalStrength.setText(String.valueOf(terminalInfo.getDownrssi()));
         mTvSendData.setText(String.valueOf(terminalInfo.getTx()));
         mTvReceiveData.setText(String.valueOf(terminalInfo.getRx()));
-        mTvPowerVolt.setText(terminalInfo.getVolt() + "V");
+
+        DecimalFormat df = new DecimalFormat("#");//格式化小数
+        String rate = df.format(terminalInfo.getVolt()) + "%";
+        mTvPowerVolt.setText(rate);
 
         if (terminalInfo.getSensor() != null) {
             sensorList.clear();

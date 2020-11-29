@@ -14,6 +14,7 @@ import androidx.core.content.ContextCompat;
 import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemChildClickListener;
@@ -56,6 +57,9 @@ import timber.log.Timber;
  * 描述：     Vms 网关主页面
  */
 public class TcpVmsHomeFragment extends BaseTcpConnectFragment {
+    @BindView(R.id.swipeLayout)
+    SwipeRefreshLayout swipeRefresh;
+
     @BindView(R.id.tv_device_name)
     TextView mTvDeviceName;//设备名称
 
@@ -119,6 +123,22 @@ public class TcpVmsHomeFragment extends BaseTcpConnectFragment {
         mTvDeviceConnectOperate.setVisibility(View.VISIBLE);
         mTvDeviceConnectOperate.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG);
         mTvDeviceCommunicationWaySwitch.setVisibility(View.INVISIBLE);
+        initRefreshLayout();
+    }
+
+    private void initRefreshLayout() {
+        swipeRefresh.setColorSchemeResources(android.R.color.holo_blue_light);
+        swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                if (!tcpShareViewModel.getConnectStatus()) {
+                    ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
+                    swipeRefresh.setRefreshing(false);
+                    return;
+                }
+                getGatewayBaseInfo();
+            }
+        });
     }
 
     private void observerRefreshTerminal() {
@@ -248,6 +268,7 @@ public class TcpVmsHomeFragment extends BaseTcpConnectFragment {
                 IOTCommandResult<VmsBasicInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
                     stopProgressRunnable();
+                    swipeRefresh.setRefreshing(false);
                     String errMsg = "查询网关基本信息出错!";
                     Timber.e("%s%s", errMsg, commandResult.getMessage());
                     ToastUtils.show(errMsg);
@@ -265,6 +286,7 @@ public class TcpVmsHomeFragment extends BaseTcpConnectFragment {
                 IOTCommandResult<VmsAisleInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
                     stopProgressRunnable();
+                    swipeRefresh.setRefreshing(false);
                     String errMsg = "查询网关通道的控制参数出错!";
                     Timber.e("%s%s", errMsg, commandResult.getMessage());
                     ToastUtils.show(errMsg);
@@ -294,6 +316,7 @@ public class TcpVmsHomeFragment extends BaseTcpConnectFragment {
                 IOTCommandResult<VmsAisleTerminalInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
                     stopProgressRunnable();
+                    swipeRefresh.setRefreshing(false);
                     String errMsg = "查询网关基本信息出错!";
                     Timber.e("%s%s", errMsg, commandResult.getMessage());
                     ToastUtils.show(errMsg);
@@ -302,6 +325,7 @@ public class TcpVmsHomeFragment extends BaseTcpConnectFragment {
                 VmsAisleTerminalInfo vmsAisleTerminalInfo = commandResult.getResult();
                 if (vmsAisleTerminalInfo == null) {
                     stopProgressRunnable();
+                    swipeRefresh.setRefreshing(false);
                     return;
                 }
                 modifyAisleTerminalInfo(vmsAisleTerminalInfo);
@@ -312,6 +336,7 @@ public class TcpVmsHomeFragment extends BaseTcpConnectFragment {
 
                 } else if (vmsAisleTerminalInfo.getChannel() == 2) {
                     stopProgressRunnable();
+                    swipeRefresh.setRefreshing(false);
                     vmsViewModel.addTerminalList(vmsAisleTerminalInfo.getTerminal());
                 }
             }
