@@ -189,6 +189,8 @@ public class TcpVmsHomeFragment extends BaseTcpConnectFragment {
         //设置每个item间距
         mRecyclerView.addItemDecoration(new GridSpacingItemDecoration(spanCount, spacing, true));
         vmsAisleAdapter = new VmsAisleAdapter(vmsAisleInfoList);
+        vmsAisleAdapter.setAnimationEnable(true);
+        vmsAisleAdapter.setAnimationFirstOnly(false);
         vmsAisleAdapter.setOnItemChildClickListener(new OnItemChildClickListener() {
             @Override
             public void onItemChildClick(@NonNull BaseQuickAdapter adapter, @NonNull View view, int position) {
