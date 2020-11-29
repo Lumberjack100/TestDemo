@@ -126,13 +126,16 @@ public class TcpVmsHomeFragment extends BaseTcpConnectFragment {
         initRefreshLayout();
     }
 
+    /**
+     * 因为终端列表页面移除了设备，所有网关主页面需要刷新数据
+     */
     private void initRefreshLayout() {
         swipeRefresh.setColorSchemeResources(android.R.color.holo_blue_light);
         swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 if (!tcpShareViewModel.getConnectStatus()) {
-                    ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
+                    ToastUtils.show("设备已断开连接，刷新失败");
                     swipeRefresh.setRefreshing(false);
                     return;
                 }

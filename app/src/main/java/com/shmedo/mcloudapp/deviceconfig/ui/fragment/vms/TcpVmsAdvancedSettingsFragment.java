@@ -20,6 +20,7 @@ import com.shmedo.configlibrary.iot.enums.VmsAisleNumber;
 import com.shmedo.configlibrary.iot.model.DataCenterStatus;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
 import com.shmedo.core.AppContants;
+import com.shmedo.core.util.GlobalUtil;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.vms.VmsAisleSettingActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.vms.VmsDataCenterSettingActivity;
@@ -73,7 +74,7 @@ public class TcpVmsAdvancedSettingsFragment extends BaseTcpConnectFragment {
             return;
         }
         if (!tcpShareViewModel.getConnectStatus()) {
-            ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
+            ToastUtils.show(getString(R.string.tcp_config_disconnect_warn));
             return;
         }
 
@@ -167,15 +168,19 @@ public class TcpVmsAdvancedSettingsFragment extends BaseTcpConnectFragment {
                 DataCenterStatus centerStatus = commandResult.getResult();
                 if (centerStatus.getCenterid() == 1) {
                     mTvDataCenterOne.setText(getStatusTextById(centerStatus.getStatus()));
+                    mTvDataCenterOne.setTextColor(GlobalUtil.getColor(getStatusColorResId(centerStatus.getStatus())));
                     getDataCenterStatus(ServerNumber.NUMBER_TWO);
                 } else if (centerStatus.getCenterid() == 2) {
                     mTvDataCenterTwo.setText(getStatusTextById(centerStatus.getStatus()));
+                    mTvDataCenterTwo.setTextColor(GlobalUtil.getColor(getStatusColorResId(centerStatus.getStatus())));
                     getDataCenterStatus(ServerNumber.NUMBER_THREE);
                 } else if (centerStatus.getCenterid() == 3) {
                     mTvDataCenterThree.setText(getStatusTextById(centerStatus.getStatus()));
+                    mTvDataCenterThree.setTextColor(GlobalUtil.getColor(getStatusColorResId(centerStatus.getStatus())));
                     getDataCenterStatus(ServerNumber.NUMBER_FOUR);
                 } else if (centerStatus.getCenterid() == 4) {
                     mTvDataCenterFour.setText(getStatusTextById(centerStatus.getStatus()));
+                    mTvDataCenterFour.setTextColor(GlobalUtil.getColor(getStatusColorResId(centerStatus.getStatus())));
                 }
             }
             break;
@@ -210,6 +215,19 @@ public class TcpVmsAdvancedSettingsFragment extends BaseTcpConnectFragment {
         }
 
         return status;
+    }
+
+    private int getStatusColorResId(String statusId) {
+        int resId = R.color.text_color_666666;
+        if (statusId.equals("0")) {
+            resId = R.color.sub_title_text_color;
+        } else if (statusId.equals("1")) {
+            resId = R.color.text_color_3AD094;
+        } else if (statusId.equals("2")) {
+            resId = R.color.red;
+        }
+
+        return resId;
     }
 
 }

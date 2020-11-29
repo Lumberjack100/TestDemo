@@ -140,7 +140,7 @@ public class VmsTerminalSearchActivity extends BaseActivity implements TextWatch
                     return;
                 }
                 if (!tcpShareViewModel.getConnectStatus()) {
-                    ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
+                    ToastUtils.show(getString(R.string.tcp_config_disconnect_warn));
                     return;
                 }
                 terminalInfo = terminalInfoList.get(position);

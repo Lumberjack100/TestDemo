@@ -126,7 +126,7 @@ public class TcpVmsTerminalListFragment extends BaseBottomSheetDialogFragment {
                     return;
                 }
                 if (!tcpShareViewModel.getConnectStatus()) {
-                    ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
+                    ToastUtils.show(getString(R.string.tcp_config_disconnect_warn));
                     return;
                 }
                 terminalInfo = terminalInfoList.get(position);
@@ -213,6 +213,8 @@ public class TcpVmsTerminalListFragment extends BaseBottomSheetDialogFragment {
                     return;
                 }
                 VmsAisleTerminalInfo vmsAisleTerminalInfo = commandResult.getResult();
+                modifyAisleTerminalInfo(vmsAisleTerminalInfo);
+
                 if (vmsAisleTerminalInfo.getTerminal().size() == 0) {
                     adapter.setEmptyView(R.layout.empty_view);
                     return;
@@ -225,11 +227,41 @@ public class TcpVmsTerminalListFragment extends BaseBottomSheetDialogFragment {
         }
     }
 
+    /**
+     * 修改某个通道下接入的的终端信息，设置终端的网络号、信道号与所属通道一致
+     *
+     * @param vmsAisleTerminalInfo
+     */
+    private void modifyAisleTerminalInfo(VmsAisleTerminalInfo vmsAisleTerminalInfo) {
+        if (vmsAisleTerminalInfo == null)
+            return;
+
+        if (vmsAisleTerminalInfo.getTerminal() == null)
+            return;
+
+        for (TerminalInfo terminalInfo : vmsAisleTerminalInfo.getTerminal()) {
+            terminalInfo.setNetid(vmsAisleTerminalInfo.getNetid());
+            terminalInfo.setChl(vmsAisleTerminalInfo.getChl());
+        }
+    }
+
+
     private void doAfterSetting() {
         ToastUtils.show("删除成功");
         terminalInfoList.remove(terminalInfo);
         adapter.notifyDataSetChanged();
         vmsViewModel.setVmsRefreshTerminal(true);
+
+        String title;
+        if (vmsAisleInfo.getChannel() == 0) {
+            title = "通道01-设备(";
+        } else if (vmsAisleInfo.getChannel() == 1) {
+            title = "通道02-设备(";
+        } else {
+            title = "通道03-设备(";
+        }
+        title += terminalInfoList.size() + ")";
+        mTvTitle.setText(title);
     }
 
     private CharSequence getWarnMessage() {
