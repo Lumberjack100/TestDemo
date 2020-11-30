@@ -305,7 +305,7 @@ public abstract class BaseBleConnectFragment extends BaseFragment {
                 @Override
                 public void run() {
                     BluetoothDevice device = result.getDevice();
-                    if (TextUtils.isEmpty(device.getName())) {
+                    if (device != null && TextUtils.isEmpty(device.getName())) {
                         return;
                     }
 

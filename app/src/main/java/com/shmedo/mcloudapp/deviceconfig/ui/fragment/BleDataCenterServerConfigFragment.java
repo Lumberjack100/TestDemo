@@ -853,12 +853,12 @@ public class BleDataCenterServerConfigFragment extends BaseBleConnectFragment {
             return true;
         }
 
-        if (communicationProtocol.equals("4")) {//MQTT自动注册
+        if (communicationProtocol != null && communicationProtocol.equals("4")) {//MQTT自动注册
             if (registerPlatformOld != null && registerPlatform != null && !registerPlatformOld.equals(registerPlatform)) {
                 return true;
             }
 
-            if (registerPlatform.equals("2")) {//米度平台
+            if (registerPlatform != null && registerPlatform.equals("2")) {//米度平台
                 if (appKey != null && !appKey.equals(mEtAppKey.getText().toString().trim())) {
                     return true;
                 }
@@ -884,7 +884,7 @@ public class BleDataCenterServerConfigFragment extends BaseBleConnectFragment {
                 return true;
             }
 
-        } else if (communicationProtocol.equals("5")) {//MQTT手动注册
+        } else if (communicationProtocol != null && communicationProtocol.equals("5")) {//MQTT手动注册
             if (keepAliveValue != null && !keepAliveValue.equals(mEtKeepAlive.getText().toString().trim())) {
                 return true;
             }

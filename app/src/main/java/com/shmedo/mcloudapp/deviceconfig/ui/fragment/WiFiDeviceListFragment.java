@@ -3,8 +3,13 @@ package com.shmedo.mcloudapp.deviceconfig.ui.fragment;
 import android.Manifest;
 import android.animation.Animator;
 import android.animation.AnimatorInflater;
+import android.content.Context;
+import android.content.Intent;
 import android.net.wifi.ScanResult;
+import android.net.wifi.WifiManager;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -55,6 +60,7 @@ import butterknife.OnClick;
  * WiFi设备列表页面
  */
 public class WiFiDeviceListFragment extends BaseFragment implements TextWatcher, TextView.OnEditorActionListener {
+    private static final int REQUEST_CODE_INTERNET_CONNECTIVITY = 0x1000;
 
     @BindView(R.id.search_placeholder)
     View searchPlaceholder;
@@ -86,6 +92,8 @@ public class WiFiDeviceListFragment extends BaseFragment implements TextWatcher,
 
     private Animator animator;
 
+    private WifiManager manager;
+
     private IWifiManager hackWiFiManager;
 
     private IWifi curWiFi;
@@ -115,6 +123,7 @@ public class WiFiDeviceListFragment extends BaseFragment implements TextWatcher,
                 processWiFiUseSecondLibrary(curWiFi);
             }
         });
+        manager = (WifiManager) mActivity.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
 
         initAdapter();
         initRefreshAnimation();
@@ -220,7 +229,7 @@ public class WiFiDeviceListFragment extends BaseFragment implements TextWatcher,
     }
 
     /**
-     * 执行扫描前需要满足的条件检查
+     * 执行WiFi扫描前检查需要满足的权限
      */
     private void doConditionsCheckBeforeScan() {
         XPermissionUtils.requestPermissionsResult(getActivity(), 200, new String[]{
@@ -228,12 +237,7 @@ public class WiFiDeviceListFragment extends BaseFragment implements TextWatcher,
                 new XPermissionUtils.OnPermissionListener() {
                     @Override
                     public void onPermissionGranted() {
-//                        enableWiFi();
-                        updateRefreshView(true);
-                        WifiUtils.withContext(getContext().getApplicationContext()).scanWifi(scanResultsListener).start();
-                        if (hackWiFiManager == null) {
-                            initThirdWiFiManager();
-                        }
+                        checkWiFiIsEnabled();
                     }
 
                     @Override
@@ -249,18 +253,44 @@ public class WiFiDeviceListFragment extends BaseFragment implements TextWatcher,
                 });
     }
 
-    private void enableWiFi() {
-        WifiUtils.withContext(getContext().getApplicationContext()).enableWifi(new WifiStateListener() {
-            @Override
-            public void isSuccess(boolean isSuccess) {
-                if (isSuccess) {
-                    updateRefreshView(true);
-                    WifiUtils.withContext(getContext().getApplicationContext()).scanWifi(scanResultsListener).start();
-                } else {
-                    ToastUtils.show("无法开启 WiFi");
+    /**
+     * 检测 WiFI 是否开启<br>
+     * 注意：Android Q 以上无法通过代码 mWifiManager.setWifiEnabled(true) 打开 WiFi
+     */
+    private void checkWiFiIsEnabled() {
+        if (manager.isWifiEnabled()) {
+            refreshWifi();
+            return;
+        }
+
+        //Android Q以上通过代码 mWifiManager.setWifiEnabled(true) 打开 WiFi 无效
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            Intent panelIntent = new Intent(Settings.Panel.ACTION_WIFI);
+            startActivityForResult(panelIntent, REQUEST_CODE_INTERNET_CONNECTIVITY);
+        } else {
+            WifiUtils.withContext(getContext().getApplicationContext()).enableWifi(new WifiStateListener() {
+                @Override
+                public void isSuccess(boolean isSuccess) {
+                    if (isSuccess) {
+                        updateRefreshView(true);
+                        WifiUtils.withContext(getContext().getApplicationContext()).scanWifi(scanResultsListener).start();
+                    } else {
+                        ToastUtils.show("无法开启 WiFi");
+                    }
                 }
-            }
-        });
+            });
+        }
+    }
+
+    /**
+     * 扫描刷新 WiFi 列表
+     */
+    private void refreshWifi() {
+        updateRefreshView(true);
+        WifiUtils.withContext(getContext().getApplicationContext()).scanWifi(scanResultsListener).start();
+        if (hackWiFiManager == null) {
+            initThirdWiFiManager();
+        }
     }
 
     private final ScanResultsListener scanResultsListener = new ScanResultsListener() {
@@ -276,6 +306,11 @@ public class WiFiDeviceListFragment extends BaseFragment implements TextWatcher,
         }
     };
 
+    /**
+     * 刷新动画处理
+     *
+     * @param isRefresh
+     */
     private void updateRefreshView(boolean isRefresh) {
         if (isRefresh) {
             if (animator != null) {
@@ -319,6 +354,19 @@ public class WiFiDeviceListFragment extends BaseFragment implements TextWatcher,
         }
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        super.onActivityResult(requestCode, resultCode, intent);
+        switch (requestCode) {
+            case REQUEST_CODE_INTERNET_CONNECTIVITY:
+                if (manager.isWifiEnabled()) {
+                    refreshWifi();
+                }
+                break;
+        }
+    }
+
+    /*** 以下是WiFi搜索逻辑代码 ***/
     @Override
     public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
