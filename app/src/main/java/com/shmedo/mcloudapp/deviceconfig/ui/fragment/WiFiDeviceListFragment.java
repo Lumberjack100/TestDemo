@@ -99,22 +99,6 @@ public class WiFiDeviceListFragment extends BaseFragment implements TextWatcher,
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
-        MCloudApp.getMainHandler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                doConditionsCheckBeforeScan();
-            }
-        }, 500);
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-    }
-
-    @Override
     public void onDestroy() {
         vmsViewModel.clearDeviceApiKey();
         super.onDestroy();
@@ -135,7 +119,7 @@ public class WiFiDeviceListFragment extends BaseFragment implements TextWatcher,
         initAdapter();
         initRefreshAnimation();
         setEditTextListener();
-        initThirdWiFiManager();
+        doConditionsCheckBeforeScan();
     }
 
     private void initAdapter() {
@@ -244,7 +228,12 @@ public class WiFiDeviceListFragment extends BaseFragment implements TextWatcher,
                 new XPermissionUtils.OnPermissionListener() {
                     @Override
                     public void onPermissionGranted() {
-                        enableWiFi();
+//                        enableWiFi();
+                        updateRefreshView(true);
+                        WifiUtils.withContext(getContext().getApplicationContext()).scanWifi(scanResultsListener).start();
+                        if (hackWiFiManager == null) {
+                            initThirdWiFiManager();
+                        }
                     }
 
                     @Override
@@ -281,7 +270,6 @@ public class WiFiDeviceListFragment extends BaseFragment implements TextWatcher,
                 @Override
                 public void run() {
                     updateRefreshView(false);
-//                    modifyWifi();
 //                    mTvWiFiCount.setText(String.format(Locale.getDefault(), "(%d)", wiFiAdapter.getItemCount()));
                 }
             });

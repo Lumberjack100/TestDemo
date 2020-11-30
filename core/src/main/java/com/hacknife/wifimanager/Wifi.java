@@ -46,10 +46,12 @@ public class Wifi implements IWifi {
             wifi.isEncrypt = false;
         }
         wifi.description = wifi.encryption;
-        for (WifiConfiguration configuration : configurations) {
-            if (configuration.SSID.equals(wifi.SSID)) {
-                wifi.isSaved = true;
-                break;
+        if (configurations != null) {
+            for (WifiConfiguration configuration : configurations) {
+                if (configuration.SSID.equals(wifi.SSID)) {
+                    wifi.isSaved = true;
+                    break;
+                }
             }
         }
         if (wifi.isSaved) {
