@@ -157,19 +157,19 @@ public class WiFiDeviceListFragment extends BaseFragment implements TextWatcher,
         } else if (curWiFi.isSaved()) {//已保存
             WifiUtils.withContext(getContext().getApplicationContext())
                     .connectWith(curWiFi.name(), "")
-                    .setTimeout(25000)
+                    .setTimeout(30000)
                     .onConnectionResult(successListener)
                     .start();
         } else if (!curWiFi.isEncrypt()) {//未加密
             WifiUtils.withContext(getContext().getApplicationContext())
                     .connectWith(curWiFi.name(), "")
-                    .setTimeout(25000)
+                    .setTimeout(30000)
                     .onConnectionResult(successListener)
                     .start();
         } else {//加密
             WifiUtils.withContext(getContext().getApplicationContext())
                     .connectWith(curWiFi.name(), "medo33923627")
-                    .setTimeout(25000)
+                    .setTimeout(30000)
                     .onConnectionResult(successListener)
                     .start();
         }
@@ -217,7 +217,7 @@ public class WiFiDeviceListFragment extends BaseFragment implements TextWatcher,
             public void onWifiChanged(List<IWifi> wifiList) {
                 tempWiFiList.clear();
                 for (IWifi iWifi : wifiList) {
-                    if (iWifi.name() == null || (!iWifi.name().toUpperCase().startsWith("VMS"))) {
+                    if (iWifi.name() == null || (!iWifi.name().toUpperCase().startsWith("VMS")&&!iWifi.name().toUpperCase().startsWith("MEDO"))) {
                         continue;
                     }
                     tempWiFiList.add(iWifi);
