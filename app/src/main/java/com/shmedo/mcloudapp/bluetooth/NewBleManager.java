@@ -328,7 +328,7 @@ public class NewBleManager {
                 String uuid = gattService.getUuid().toString();
                 if (uuid.equals(GattAttributes.GENERIC_ACCESS_SERVICE) || uuid.equals(GattAttributes.GENERIC_ATTRIBUTE_SERVICE))
                     continue;
-                String name = GattAttributes.lookup(uuid, "UnkonwService");
+                String name = GattAttributes.lookup(uuid, "UnknownService");
                 if (USR_SERVICE.equals(name)) {
                     usrGattService = gattService;
                 }
@@ -389,8 +389,7 @@ public class NewBleManager {
                     Timber.d("onCharacteristicChanged:%s", result);
 
                     //非日志输出模式下，过滤掉不匹配标准响应头的应答指令
-                    if (!logOutputModeLiveData.getValue() && !result.startsWith("$$")) {
-                        Timber.d("onCharacteristicChanged:%s", "非日志输出模式");
+                    if (!logOutputModeLiveData.getValue() && !result.contains("$$")) {
                         return;
                     }
                     byteManager.writeByte(value);
@@ -501,6 +500,7 @@ public class NewBleManager {
         @Override
         public void onPackageArrived(byte[] data) {
             String result = new String(data, DEFAULT_CHARSET);
+//            Timber.e("onPackageArrived:%s", result);
             Message message = NewBleManager.this.writeMessageManager.getFront();
             if (message != null) {
                 //消息还没发完，但是响应已经来了

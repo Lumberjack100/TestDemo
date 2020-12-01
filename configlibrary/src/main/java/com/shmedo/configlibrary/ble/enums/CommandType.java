@@ -312,6 +312,8 @@ public enum CommandType {
      * 自定义心跳包指令
      */
     HEARTBEAT("888"),
+
+    UNKNOWN(""),
     /**
      * 批处理结束指令
      */

@@ -11,6 +11,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Random;
 
+import timber.log.Timber;
+
 /**
  * Created by Liudongdong on 17/12/12.
  */
@@ -39,8 +41,11 @@ public class StringUtil {
         }
 
         CommandType cmdType = cmdTypeHolder.getData();
-        if (cmdType == null)
-            throw new IllegalArgumentException("未找到命令:" + result);
+        if (cmdType == null) {
+//            throw new IllegalArgumentException("未找到命令:" + result);
+            Timber.e("未找到命令:" + result);
+            return CommandType.UNKNOWN;
+        }
 
         return cmdType;
     }

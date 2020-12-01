@@ -65,7 +65,7 @@ public abstract class BaseBleConnectFragment extends BaseFragment {
 
     public static final int SCAN_SPECIFIC_DEVICE_DELAY_MILLIS = 10000;//搜索指定蓝牙设备超时时间
 
-    public static final int AUTHENTICATE_DELAY_MILLIS = 10000;//认证超时时间
+    public static final int AUTHENTICATE_DELAY_MILLIS = 15000;//认证超时时间
 
     public static final int CONNECT_DELAY_MILLIS = 10000;//连接设备超时时间
 
@@ -440,7 +440,7 @@ public abstract class BaseBleConnectFragment extends BaseFragment {
                         Timber.e(ex);
                     }
                 } else {
-                    switchLogOutputMode(false);
+//                    switchLogOutputMode(false);
                 }
                 break;
 
@@ -566,7 +566,7 @@ public abstract class BaseBleConnectFragment extends BaseFragment {
     private void handleResponseMessage(final String cmdStr) {
         try {
             if (!cmdStr.startsWith("$$")) {
-                Timber.w("不匹配标准响应头的应答指令===%s", cmdStr);
+                Timber.w("不匹配$$开头的应答指令===%s", cmdStr);
             } else {
                 Timber.i("应答指令===%s", cmdStr);
             }
