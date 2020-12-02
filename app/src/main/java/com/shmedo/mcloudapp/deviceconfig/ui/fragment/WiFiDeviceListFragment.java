@@ -217,7 +217,7 @@ public class WiFiDeviceListFragment extends BaseFragment implements TextWatcher,
             public void onWifiChanged(List<IWifi> wifiList) {
                 tempWiFiList.clear();
                 for (IWifi iWifi : wifiList) {
-                    if (iWifi.name() == null || (!iWifi.name().toUpperCase().startsWith("VMS")&&!iWifi.name().toUpperCase().startsWith("MEDO"))) {
+                    if (iWifi.name() == null || (!iWifi.name().toUpperCase().startsWith("VMS"))) {
                         continue;
                     }
                     tempWiFiList.add(iWifi);

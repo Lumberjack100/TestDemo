@@ -16,7 +16,7 @@ import java.util.List;
  * 描述：     TODO
  */
 public class VmsViewModel extends ViewModel {
-    private final UnPeekLiveData<List<TerminalInfo>> VmsTerminalListLiveData = new UnPeekLiveData<>();
+    private final UnPeekLiveData<List<TerminalInfo>> cacheVmsTerminalListLiveData = new UnPeekLiveData<>();
     private UnPeekLiveData<Boolean> vmsRefreshTerminal;
 
     public ProtectedUnPeekLiveData<String> getDeviceApiKey() {
@@ -32,24 +32,35 @@ public class VmsViewModel extends ViewModel {
     }
 
 
-    public ProtectedUnPeekLiveData<List<TerminalInfo>> getVmsTerminalList() {
-        return VmsTerminalListLiveData;
+    public ProtectedUnPeekLiveData<List<TerminalInfo>> getCacheVmsTerminalList() {
+        return cacheVmsTerminalListLiveData;
     }
 
-    public void addTerminalList(List<TerminalInfo> tempList) {
+    public void addCacheTerminalList(List<TerminalInfo> tempList) {
         if (tempList == null || tempList.size() == 0)
             return;
 
-        List<TerminalInfo> cacheList = VmsTerminalListLiveData.getValue();
+        List<TerminalInfo> cacheList = cacheVmsTerminalListLiveData.getValue();
         if (cacheList == null)
             cacheList = new ArrayList<>();
 
-        cacheList.addAll(tempList);
-        VmsTerminalListLiveData.postValue(cacheList);
+        for (TerminalInfo tempInfo : tempList) {
+            boolean isExist = false;
+            for (TerminalInfo cacheInfo : cacheList) {
+                if (cacheInfo.getSn().equals(tempInfo.getSn())) {
+                    isExist = false;
+                    break;
+                }
+            }
+            if (!isExist) {
+                cacheList.add(tempInfo);
+            }
+        }
+        cacheVmsTerminalListLiveData.postValue(cacheList);
     }
 
-    public void clearTerminalList() {
-        VmsTerminalListLiveData.postValue(null);
+    public void clearCacheTerminalList() {
+        cacheVmsTerminalListLiveData.postValue(null);
     }
 
 

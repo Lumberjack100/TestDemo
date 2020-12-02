@@ -40,21 +40,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
+            android:visibility="visible"
             tools:text="以保存" />
     </LinearLayout>
-
-    <!--    <TextView-->
-    <!--        android:id="@+id/tv_dev_name"-->
-    <!--        android:layout_width="0dp"-->
-    <!--        android:layout_height="wrap_content"-->
-    <!--        android:layout_marginStart="14dp"-->
-    <!--        android:layout_weight="1"-->
-    <!--        android:drawableEnd="@drawable/icon_right"-->
-    <!--        android:drawablePadding="5dp"-->
-    <!--        android:singleLine="true"-->
-    <!--        android:textColor="@color/title_text_color"-->
-    <!--        android:textSize="17sp"-->
-    <!--        tools:text="MEDO-Tech001" />-->
-
 
 </LinearLayout>

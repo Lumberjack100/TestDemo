@@ -203,7 +203,7 @@ public class VmsTerminalSearchActivity extends BaseActivity implements TextWatch
      * 开始进行搜索
      */
     private void doSearchQuery() {
-        List<TerminalInfo> allTerminals = vmsViewModel.getVmsTerminalList().getValue();
+        List<TerminalInfo> allTerminals = vmsViewModel.getCacheVmsTerminalList().getValue();
         if (allTerminals == null) {
             adapter.setEmptyView(R.layout.empty_view);
             adapter.notifyDataSetChanged();

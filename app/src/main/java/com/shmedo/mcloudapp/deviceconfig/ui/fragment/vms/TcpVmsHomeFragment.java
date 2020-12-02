@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Paint;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
@@ -93,10 +94,37 @@ public class TcpVmsHomeFragment extends BaseTcpConnectFragment {
     private VmsBasicInfo vmsBasicInfo = new VmsBasicInfo();
 
     private TcpVmsTerminalListFragment tcpVmsTerminalListFragment;
+    private static Handler myHander = new Handler();
+    private static RefreshRunnable refreshRunnable;
+
 
     public static TcpVmsHomeFragment newInstance() {
         return new TcpVmsHomeFragment();
     }
+
+
+    private class RefreshRunnable implements Runnable {
+        @Override
+        public void run() {
+            refreshRunnable = null;
+            swipeRefresh.setRefreshing(false);
+            ToastUtils.show("查询数据超时");
+        }
+    }
+
+    private void startRefreshRunnable(long delayMillis) {
+        if (refreshRunnable == null) {
+            refreshRunnable = new RefreshRunnable();
+            myHander.postDelayed(refreshRunnable, delayMillis);
+        }
+    }
+
+    private void stopRefreshRunnable() {
+        myHander.removeCallbacksAndMessages(null);
+        refreshRunnable = null;
+        swipeRefresh.setRefreshing(false);
+    }
+
 
     @Override
     protected int getLayoutId() {
@@ -126,9 +154,6 @@ public class TcpVmsHomeFragment extends BaseTcpConnectFragment {
         initRefreshLayout();
     }
 
-    /**
-     * 因为终端列表页面移除了设备，所有网关主页面需要刷新数据
-     */
     private void initRefreshLayout() {
         swipeRefresh.setColorSchemeResources(android.R.color.holo_blue_light);
         swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -144,6 +169,10 @@ public class TcpVmsHomeFragment extends BaseTcpConnectFragment {
         });
     }
 
+    /**
+     * 观察终端设备刷新<br>
+     * 因为终端列表页面移除了设备，所有网关主页面需要刷新数据
+     */
     private void observerRefreshTerminal() {
         vmsViewModel.getVmsRefreshTerminal().observeInFragment(this, new Observer<Boolean>() {
             @Override
@@ -155,24 +184,31 @@ public class TcpVmsHomeFragment extends BaseTcpConnectFragment {
         });
     }
 
+    /**
+     * 建立 Tcp 通讯连接
+     */
     private void setupTcpConnect() {
         tcpShareViewModel.initTcpClient(ipAddress, 10002);
-        startProgressRunnable("建立通讯连接...", TCP_CONNECT_DELAY_MILLIS);
+//        startProgressRunnable("建立通讯连接...", TCP_CONNECT_DELAY_MILLIS);
         tcpShareViewModel.connect();
     }
 
+    /**
+     * Tcp连接状态变更事件
+     */
     @Override
     protected void onConnectionChange(TcpConnectionState tcpConnectionState) {
+//        stopProgressRunnable();
+        updateViewStateByConnectState(tcpConnectionState == TcpConnectionState.CONNECT_SUCCESS);
+
         if (tcpConnectionState == TcpConnectionState.CONNECT_SUCCESS) {
+            swipeRefresh.setRefreshing(true);
             //建立通讯连接后，查询网关基本信息
             getGatewayBaseInfo();
 
         } else if (tcpConnectionState == TcpConnectionState.CONNECT_CLOSED) {
-            dismissProgressDialog();
             ToastUtils.show("通讯连接断开");
         }
-
-        updateViewStateByConnectState(tcpConnectionState == TcpConnectionState.CONNECT_SUCCESS);
     }
 
     private void updateViewStateByConnectState(boolean isConnected) {
@@ -237,6 +273,7 @@ public class TcpVmsHomeFragment extends BaseTcpConnectFragment {
      * 获取网关的基本信息
      */
     private void getGatewayBaseInfo() {
+        startRefreshRunnable(10000);
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.VMS_MD_GET_GATEWAY_BASE);
         sendCommand(command);
     }
@@ -272,8 +309,7 @@ public class TcpVmsHomeFragment extends BaseTcpConnectFragment {
             case VMS_MD_GET_GATEWAY_BASE: {//获取网关的基本信息
                 IOTCommandResult<VmsBasicInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
-                    stopProgressRunnable();
-                    swipeRefresh.setRefreshing(false);
+                    stopRefreshRunnable();
                     String errMsg = "查询网关基本信息出错!";
                     Timber.e("%s%s", errMsg, commandResult.getMessage());
                     ToastUtils.show(errMsg);
@@ -290,8 +326,7 @@ public class TcpVmsHomeFragment extends BaseTcpConnectFragment {
             case VMS_MD_GET_GATEWAY_PARAM: {//获取网关通道的控制参数
                 IOTCommandResult<VmsAisleInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
-                    stopProgressRunnable();
-                    swipeRefresh.setRefreshing(false);
+                    stopRefreshRunnable();
                     String errMsg = "查询网关通道的控制参数出错!";
                     Timber.e("%s%s", errMsg, commandResult.getMessage());
                     ToastUtils.show(errMsg);
@@ -320,8 +355,7 @@ public class TcpVmsHomeFragment extends BaseTcpConnectFragment {
                 }
                 IOTCommandResult<VmsAisleTerminalInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
-                    stopProgressRunnable();
-                    swipeRefresh.setRefreshing(false);
+                    stopRefreshRunnable();
                     String errMsg = "查询网关基本信息出错!";
                     Timber.e("%s%s", errMsg, commandResult.getMessage());
                     ToastUtils.show(errMsg);
@@ -329,20 +363,18 @@ public class TcpVmsHomeFragment extends BaseTcpConnectFragment {
                 }
                 VmsAisleTerminalInfo vmsAisleTerminalInfo = commandResult.getResult();
                 if (vmsAisleTerminalInfo == null) {
-                    stopProgressRunnable();
-                    swipeRefresh.setRefreshing(false);
+                    stopRefreshRunnable();
                     return;
                 }
                 modifyAisleTerminalInfo(vmsAisleTerminalInfo);
                 if (vmsAisleTerminalInfo.getChannel() == 1) {
-                    vmsViewModel.clearTerminalList();
-                    vmsViewModel.addTerminalList(vmsAisleTerminalInfo.getTerminal());
+                    vmsViewModel.clearCacheTerminalList();
+                    vmsViewModel.addCacheTerminalList(vmsAisleTerminalInfo.getTerminal());
                     getGatewayStatus(VmsAisleNumber.NUMBER_THREE);
 
                 } else if (vmsAisleTerminalInfo.getChannel() == 2) {
-                    stopProgressRunnable();
-                    swipeRefresh.setRefreshing(false);
-                    vmsViewModel.addTerminalList(vmsAisleTerminalInfo.getTerminal());
+                    stopRefreshRunnable();
+                    vmsViewModel.addCacheTerminalList(vmsAisleTerminalInfo.getTerminal());
                 }
             }
             break;

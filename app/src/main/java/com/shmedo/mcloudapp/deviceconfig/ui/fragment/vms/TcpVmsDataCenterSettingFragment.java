@@ -115,6 +115,9 @@ public class TcpVmsDataCenterSettingFragment extends BaseTcpConnectFragment {
     private String productId;//产品 Id
     private String registerCode;//注册码
 
+    private boolean isSaveParamOperation = false;//判断当前是保存参数操作，还是开启数据中心操作
+
+
 
     public static TcpVmsDataCenterSettingFragment newInstance(ServerNumber serverNumber) {
         TcpVmsDataCenterSettingFragment fragment = new TcpVmsDataCenterSettingFragment();
@@ -227,6 +230,7 @@ public class TcpVmsDataCenterSettingFragment extends BaseTcpConnectFragment {
         dataCenterEntity.setAddr("");
         dataCenterEntity.setPort("");
 
+        isSaveParamOperation = true;
         mBtnSave.setEnabled(false);
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.MD_SET_DATA_CENTER, dataCenterEntity);
         sendCommand(command);
@@ -416,6 +420,8 @@ public class TcpVmsDataCenterSettingFragment extends BaseTcpConnectFragment {
                     Timber.e("%s%s", errMsg, cmdResult.getReason());
                     ToastUtils.show(errMsg);
                     mBtnSave.setEnabled(true);
+                    if (isSaveParamOperation)
+                        isSaveParamOperation = false;
                     return;
                 }
                 doAfterSetting();
@@ -430,9 +436,12 @@ public class TcpVmsDataCenterSettingFragment extends BaseTcpConnectFragment {
     }
 
     private void doAfterSetting() {
-        ToastUtils.show("设置成功");
-        transferProtocolOld = transferProtocol;
+        if (isSaveParamOperation) {
+            isSaveParamOperation = false;
+            ToastUtils.show("设置成功");
+        }
         mBtnSave.setEnabled(true);
+        transferProtocolOld = transferProtocol;
     }
 
     private void initDataCenterData() {

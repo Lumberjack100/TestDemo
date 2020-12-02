@@ -1,5 +1,7 @@
 package com.shmedo.mcloudapp.deviceconfig.adapter;
 
+import android.text.TextUtils;
+
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 import com.hacknife.wifimanager.IWifi;
@@ -22,5 +24,6 @@ public class WiFiAdapter extends BaseQuickAdapter<IWifi, BaseViewHolder> {
     protected void convert(@NotNull BaseViewHolder holder, IWifi iWifi) {
         holder.setText(R.id.tv_name, iWifi.name());
         holder.setText(R.id.tv_desc, iWifi.description2());
+        holder.setGone(R.id.tv_desc, TextUtils.isEmpty(iWifi.description2()));
     }
 }
