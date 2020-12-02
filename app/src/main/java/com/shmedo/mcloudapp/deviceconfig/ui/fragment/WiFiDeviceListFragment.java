@@ -16,6 +16,7 @@ import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -31,6 +32,8 @@ import com.hacknife.wifimanager.HackWifiManager;
 import com.hacknife.wifimanager.IWifi;
 import com.hacknife.wifimanager.IWifiManager;
 import com.hacknife.wifimanager.OnWifiChangeListener;
+import com.hacknife.wifimanager.OnWifiStateChangeListener;
+import com.hacknife.wifimanager.State;
 import com.hjq.toast.ToastUtils;
 import com.shmedo.core.AppContants;
 import com.shmedo.core.MCloudApp;
@@ -61,6 +64,12 @@ import butterknife.OnClick;
  */
 public class WiFiDeviceListFragment extends BaseFragment implements TextWatcher, TextView.OnEditorActionListener {
     private static final int REQUEST_CODE_INTERNET_CONNECTIVITY = 0x1000;
+
+    @BindView(R.id.normalView)
+    View normalView;
+
+    @BindView(R.id.wifiDisabledView)
+    View wifiDisabledView;
 
     @BindView(R.id.search_placeholder)
     View searchPlaceholder;
@@ -226,44 +235,36 @@ public class WiFiDeviceListFragment extends BaseFragment implements TextWatcher,
                 mTvWiFiCount.setText(String.format(Locale.getDefault(), "(%d)", wiFiAdapter.getItemCount()));
             }
         });
+        hackWiFiManager.setOnWifiStateChangeListener(new OnWifiStateChangeListener() {
+            @Override
+            public void onStateChanged(State state) {
+                if (state == State.DISABLED) {
+                    ToastUtils.show("WiFi 未开启");
+                    normalView.setVisibility(View.GONE);
+                    wifiDisabledView.setVisibility(View.VISIBLE);
+                    Button openWiFi = wifiDisabledView.findViewById(R.id.btn_open_wifi);
+                    openWiFi.setOnClickListener(openWiFiListener);
+
+                } else if (state == State.ENABLED) {
+                    normalView.setVisibility(View.VISIBLE);
+                    wifiDisabledView.setVisibility(View.GONE);
+                }
+            }
+        });
     }
 
-    /**
-     * 执行WiFi扫描前检查需要满足的权限
-     */
-    private void doConditionsCheckBeforeScan() {
-        XPermissionUtils.requestPermissionsResult(getActivity(), 200, new String[]{
-                        Manifest.permission.ACCESS_FINE_LOCATION},
-                new XPermissionUtils.OnPermissionListener() {
-                    @Override
-                    public void onPermissionGranted() {
-                        checkWiFiIsEnabled();
-                    }
-
-                    @Override
-                    public void onPermissionDenied(List<String> deniedPermissions) {
-                        boolean allNeverAskAgain = XPermissionUtils.isAllNeverAskAgain(getActivity(), deniedPermissions);
-                        // 所有的权限都被勾上不再询问时，跳转到应用设置界面，引导用户手动打开权限
-                        if (allNeverAskAgain) {
-                            XPermissionUtils.showRefusePermissionDialog(getActivity(), GlobalUtil.getString(R.string.message_permission_wifi_location_rational));
-                        } else {
-                            ToastUtils.show(GlobalUtil.getString(R.string.message_permission_location_denied));
-                        }
-                    }
-                });
-    }
+    private View.OnClickListener openWiFiListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            prrocessEnableWiFi();
+        }
+    };
 
     /**
      * 检测 WiFI 是否开启<br>
      * 注意：Android Q 以上无法通过代码 mWifiManager.setWifiEnabled(true) 打开 WiFi
      */
-    private void checkWiFiIsEnabled() {
-        if (manager.isWifiEnabled()) {
-            refreshWifi();
-            return;
-        }
-
-        //Android Q以上通过代码 mWifiManager.setWifiEnabled(true) 打开 WiFi 无效
+    private void prrocessEnableWiFi() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             Intent panelIntent = new Intent(Settings.Panel.ACTION_WIFI);
             startActivityForResult(panelIntent, REQUEST_CODE_INTERNET_CONNECTIVITY);
@@ -281,6 +282,44 @@ public class WiFiDeviceListFragment extends BaseFragment implements TextWatcher,
             });
         }
     }
+
+    /**
+     * 执行WiFi扫描前检查需要满足的权限
+     */
+    private void doConditionsCheckBeforeScan() {
+        XPermissionUtils.requestPermissionsResult(getActivity(), 200, new String[]{
+                        Manifest.permission.ACCESS_FINE_LOCATION},
+                new XPermissionUtils.OnPermissionListener() {
+                    @Override
+                    public void onPermissionGranted() {
+//                        checkWiFiIsEnabled();
+                        refreshWifi();
+                    }
+
+                    @Override
+                    public void onPermissionDenied(List<String> deniedPermissions) {
+                        boolean allNeverAskAgain = XPermissionUtils.isAllNeverAskAgain(getActivity(), deniedPermissions);
+                        // 所有的权限都被勾上不再询问时，跳转到应用设置界面，引导用户手动打开权限
+                        if (allNeverAskAgain) {
+                            XPermissionUtils.showRefusePermissionDialog(getActivity(), GlobalUtil.getString(R.string.message_permission_wifi_location_rational));
+                        } else {
+                            ToastUtils.show(GlobalUtil.getString(R.string.message_permission_location_denied));
+                        }
+                    }
+                });
+    }
+
+//    /**
+//     * 检测 WiFI 是否开启<br>
+//     * 注意：Android Q 以上无法通过代码 mWifiManager.setWifiEnabled(true) 打开 WiFi
+//     */
+//    private void checkWiFiIsEnabled() {
+//        if (manager.isWifiEnabled()) {
+//            refreshWifi();
+//            return;
+//        }
+//        prrocessEnableWiFi();
+//    }
 
     /**
      * 扫描刷新 WiFi 列表
