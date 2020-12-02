@@ -116,19 +116,13 @@ public class WiFiDeviceListFragment extends BaseFragment implements TextWatcher,
     }
 
     @Override
-    public void onDestroy() {
-        vmsViewModel.clearDeviceApiKey();
-        super.onDestroy();
-    }
-
-    @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         vmsViewModel = getApplicationScopeViewModel(VmsViewModel.class);
         vmsViewModel.getDeviceApiKey().observeInFragment(this, new Observer<String>() {
             @Override
             public void onChanged(String apiKey) {
-                dismissProgressDialog();
+//                dismissProgressDialog();
                 processWiFiUseSecondLibrary(curWiFi);
             }
         });
@@ -150,7 +144,7 @@ public class WiFiDeviceListFragment extends BaseFragment implements TextWatcher,
                 curWiFi = wiFiAdapter.getItem(position);
                 String[] strs = curWiFi.name().split("-");
                 if (strs != null) {
-                    showProgressDialog("查询设备Key...");
+                    showProgressDialog("处理中...");
                     vmsViewModel.getDeviceApiKeyBySn(strs[strs.length - 1]);
                 }
             }
@@ -159,6 +153,7 @@ public class WiFiDeviceListFragment extends BaseFragment implements TextWatcher,
 
     private void processWiFiUseSecondLibrary(IWifi curWiFi) {
         if (curWiFi.isConnected()) {//已连接
+            dismissProgressDialog();
             if (curWiFi.name().contains("VMS")) {
                 VmsHomeActivity.startActivity(getContext(), AppContants.CommunicationWay.TCP_CONNECT);
             }
@@ -190,6 +185,7 @@ public class WiFiDeviceListFragment extends BaseFragment implements TextWatcher,
             mActivity.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
+                    dismissProgressDialog();
                     if (curWiFi.name().contains("VMS")) {
                         VmsHomeActivity.startActivity(getContext(), AppContants.CommunicationWay.TCP_CONNECT);
                     }
@@ -202,6 +198,7 @@ public class WiFiDeviceListFragment extends BaseFragment implements TextWatcher,
             mActivity.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
+                    dismissProgressDialog();
                     ToastUtils.show("连接失败!" + errorCode.toString());
                 }
             });
@@ -403,6 +400,18 @@ public class WiFiDeviceListFragment extends BaseFragment implements TextWatcher,
                 }
                 break;
         }
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        dismissProgressDialog();
+    }
+
+    @Override
+    public void onDestroy() {
+        vmsViewModel.clearDeviceApiKey();
+        super.onDestroy();
     }
 
     /*** 以下是WiFi搜索逻辑代码 ***/

@@ -109,10 +109,14 @@ public final class WifiUtils implements WifiConnectorBuilder,
                 if (mWifiManager.startScan()) {
                     registerReceiver(mContext, mWifiScanReceiver, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
                 } else {
-                    of(mScanResultsListener).ifPresent(resultsListener -> resultsListener.onScanResults(new ArrayList<>()));
-                    of(mConnectionWpsListener).ifPresent(wpsListener -> wpsListener.isSuccessful(false));
-                    mWifiConnectionCallback.errorConnect(ConnectionErrorCode.COULD_NOT_SCAN);
-                    wifiLog("ERROR COULDN'T SCAN");
+                    if (mWifiManager.getScanResults() != null) {
+                        registerReceiver(mContext, mWifiScanReceiver, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
+                    } else {
+                        of(mScanResultsListener).ifPresent(resultsListener -> resultsListener.onScanResults(new ArrayList<>()));
+                        of(mConnectionWpsListener).ifPresent(wpsListener -> wpsListener.isSuccessful(false));
+                        mWifiConnectionCallback.errorConnect(ConnectionErrorCode.COULD_NOT_SCAN);
+                        wifiLog("ERROR COULDN'T SCAN");
+                    }
                 }
             }
         }

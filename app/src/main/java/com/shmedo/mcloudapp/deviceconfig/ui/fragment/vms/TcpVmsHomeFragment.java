@@ -26,10 +26,10 @@ import com.shmedo.configlibrary.iot.cmd.entity.VmsAisleNumberEntity;
 import com.shmedo.configlibrary.iot.cmd.parser.IOTParseManager;
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.enums.VmsAisleNumber;
-import com.shmedo.configlibrary.iot.model.VmsTerminalInfo;
 import com.shmedo.configlibrary.iot.model.VmsAisleInfo;
 import com.shmedo.configlibrary.iot.model.VmsAisleTerminalInfo;
 import com.shmedo.configlibrary.iot.model.VmsBasicInfo;
+import com.shmedo.configlibrary.iot.model.VmsTerminalInfo;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
 import com.shmedo.core.util.DensityUtil;
 import com.shmedo.mcloudapp.R;
@@ -435,7 +435,18 @@ public class TcpVmsHomeFragment extends BaseTcpConnectFragment {
     }
 
     @Override
+    public void onStop() {
+        super.onStop();
+        stopRefreshRunnable();
+        processRemoveConnectedSSID();
+    }
+
+    @Override
     public void onDestroy() {
+        super.onDestroy();
+    }
+
+    private void processRemoveConnectedSSID() {
         WifiManager manager = (WifiManager) getContext().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         String connectedSSID = manager.getConnectionInfo().getSSID();
         WifiUtils.withContext(getContext())
@@ -451,8 +462,6 @@ public class TcpVmsHomeFragment extends BaseTcpConnectFragment {
 //                        Toast.makeText(getContext(), "Failed to disconnect and remove: $errorCode", Toast.LENGTH_SHORT).show();
                     }
                 });
-
-        super.onDestroy();
     }
 
 }
