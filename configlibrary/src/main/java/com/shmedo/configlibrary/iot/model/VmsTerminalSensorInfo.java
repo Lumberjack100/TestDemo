@@ -9,7 +9,7 @@ import android.text.TextUtils;
  * 创建时间:  11/23/20 <br/>
  * 描述：    终端接入的传感器信息
  */
-public class TerminalSensorInfo implements Parcelable {
+public class VmsTerminalSensorInfo implements Parcelable {
     private String sn;
     private String channel;//传感器所在通道
     private String insert;//接入判断，0：未接入，1：接入
@@ -32,11 +32,11 @@ public class TerminalSensorInfo implements Parcelable {
     private String paramf;//基准值
     private String paramt;//初始温度
 
-    public TerminalSensorInfo() {
+    public VmsTerminalSensorInfo() {
     }
 
 
-    protected TerminalSensorInfo(Parcel in) {
+    protected VmsTerminalSensorInfo(Parcel in) {
         sn = in.readString();
         channel = in.readString();
         insert = in.readString();
@@ -90,15 +90,15 @@ public class TerminalSensorInfo implements Parcelable {
         return 0;
     }
 
-    public static final Creator<TerminalSensorInfo> CREATOR = new Creator<TerminalSensorInfo>() {
+    public static final Creator<VmsTerminalSensorInfo> CREATOR = new Creator<VmsTerminalSensorInfo>() {
         @Override
-        public TerminalSensorInfo createFromParcel(Parcel in) {
-            return new TerminalSensorInfo(in);
+        public VmsTerminalSensorInfo createFromParcel(Parcel in) {
+            return new VmsTerminalSensorInfo(in);
         }
 
         @Override
-        public TerminalSensorInfo[] newArray(int size) {
-            return new TerminalSensorInfo[size];
+        public VmsTerminalSensorInfo[] newArray(int size) {
+            return new VmsTerminalSensorInfo[size];
         }
     };
 

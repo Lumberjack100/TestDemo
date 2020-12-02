@@ -20,7 +20,7 @@ import com.shmedo.configlibrary.iot.cmd.entity.TerminalSNEntity;
 import com.shmedo.configlibrary.iot.cmd.parser.IOTParseManager;
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.model.CommonSettingCmdResult;
-import com.shmedo.configlibrary.iot.model.TerminalInfo;
+import com.shmedo.configlibrary.iot.model.VmsTerminalInfo;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
 import com.shmedo.core.AppContants;
 import com.shmedo.core.util.DensityUtil;
@@ -30,6 +30,7 @@ import com.shmedo.mcloudapp.common.view.recycleviewitemdivider.GridSpacingItemDe
 import com.shmedo.mcloudapp.deviceconfig.adapter.ConfigModuleAdapter;
 import com.shmedo.mcloudapp.deviceconfig.model.ConfigModule;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.vms.VmsTerminalExternalSensorHomeActivity;
+import com.shmedo.mcloudapp.deviceconfig.ui.activity.vms.VmsTerminalParamSettingActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.BaseTcpConnectFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.BaseDialogFragment;
 
@@ -78,12 +79,12 @@ public class TcpVmsTerminalHomeFragment extends BaseTcpConnectFragment {
     private List<ConfigModule> configModuleList = new ArrayList<>();
     private ConfigModule selectedConfigModule;
 
-    private TerminalInfo terminalInfo;
+    private VmsTerminalInfo vmsTerminalInfo;
 
-    public static TcpVmsTerminalHomeFragment newInstance(TerminalInfo terminalInfo) {
+    public static TcpVmsTerminalHomeFragment newInstance(VmsTerminalInfo vmsTerminalInfo) {
         TcpVmsTerminalHomeFragment fragment = new TcpVmsTerminalHomeFragment();
         Bundle args = new Bundle();
-        args.putParcelable(DEVICE_INFO, terminalInfo);
+        args.putParcelable(DEVICE_INFO, vmsTerminalInfo);
         fragment.setArguments(args);
         return fragment;
     }
@@ -92,7 +93,7 @@ public class TcpVmsTerminalHomeFragment extends BaseTcpConnectFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            terminalInfo = getArguments().getParcelable(DEVICE_INFO);
+            vmsTerminalInfo = getArguments().getParcelable(DEVICE_INFO);
         }
     }
 
@@ -117,12 +118,12 @@ public class TcpVmsTerminalHomeFragment extends BaseTcpConnectFragment {
     }
 
     private void setHeadInfo() {
-        if (terminalInfo != null) {
+        if (vmsTerminalInfo != null) {
             mTvDeviceName.setText("VMS终端");
-            mTvDeviceSn.setText(String.format("设备编号：%s", terminalInfo.getSn()));
+            mTvDeviceSn.setText(String.format("设备编号：%s", vmsTerminalInfo.getSn()));
             mTvProductModel.setText(String.format("固件版本：%s", ""));
-            mTvTime.setText(String.format("接入网关时间：%s", terminalInfo.getLogintime()));
-            if (terminalInfo.getStatus() != 0) {
+            mTvTime.setText(String.format("接入网关时间：%s", vmsTerminalInfo.getLogintime()));
+            if (vmsTerminalInfo.getStatus() != 0) {
                 mTvDeviceState.setVisibility(View.VISIBLE);
                 mTvDeviceState.setText("在线");
                 mTvDeviceState.setTextColor(ContextCompat.getColor(mActivity, R.color.text_color_50E9B9));
@@ -167,7 +168,7 @@ public class TcpVmsTerminalHomeFragment extends BaseTcpConnectFragment {
         BaseDialogFragment newFragment = null;
         switch (selectedConfigModule.getName()) {
             case "状态":
-                newFragment = TcpVmsTerminalCurrentStateDialog.newInstance(terminalInfo);
+                newFragment = TcpVmsTerminalCurrentStateDialog.newInstance(vmsTerminalInfo);
                 newFragment.show(getChildFragmentManager(), "dialog");
                 break;
 
@@ -180,7 +181,11 @@ public class TcpVmsTerminalHomeFragment extends BaseTcpConnectFragment {
                 break;
 
             case "传感器配置":
-                VmsTerminalExternalSensorHomeActivity.startActivity(mActivity, AppContants.CommunicationWay.TCP_CONNECT, terminalInfo.getSn());
+                VmsTerminalExternalSensorHomeActivity.startActivity(mActivity, AppContants.CommunicationWay.TCP_CONNECT, vmsTerminalInfo.getSn());
+                break;
+
+            case "终端配置":
+                VmsTerminalParamSettingActivity.startActivity(mActivity, AppContants.CommunicationWay.TCP_CONNECT, vmsTerminalInfo);
                 break;
         }
     }
@@ -189,7 +194,7 @@ public class TcpVmsTerminalHomeFragment extends BaseTcpConnectFragment {
      * 重启终端指令
      */
     private void rebootTerminal() {
-        TerminalSNEntity entity = new TerminalSNEntity(terminalInfo.getSn());
+        TerminalSNEntity entity = new TerminalSNEntity(vmsTerminalInfo.getSn());
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.VMS_MD_REBOOT_TERMINAL, entity);
         sendCommand(command);
     }
@@ -234,6 +239,9 @@ public class TcpVmsTerminalHomeFragment extends BaseTcpConnectFragment {
         configModuleList.add(configModule);
 
         configModule = new ConfigModule(R.drawable.ic_device_sensor_config, "传感器配置", "传感器参数配置");
+        configModuleList.add(configModule);
+
+        configModule = new ConfigModule(R.drawable.ic_device_sensor_config, "终端配置", "终端参数配置");
         configModuleList.add(configModule);
     }
 

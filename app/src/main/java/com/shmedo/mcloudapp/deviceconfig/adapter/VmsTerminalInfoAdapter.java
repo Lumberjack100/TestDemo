@@ -2,7 +2,7 @@ package com.shmedo.mcloudapp.deviceconfig.adapter;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;
-import com.shmedo.configlibrary.iot.model.TerminalInfo;
+import com.shmedo.configlibrary.iot.model.VmsTerminalInfo;
 import com.shmedo.mcloudapp.R;
 
 import org.jetbrains.annotations.NotNull;
@@ -16,24 +16,24 @@ import java.util.List;
  * 创建时间:  2020/11/13 <br/>
  * 描述：       Vms 终端信息适配器
  */
-public class VmsTerminalInfoAdapter extends BaseQuickAdapter<TerminalInfo, BaseViewHolder> {
+public class VmsTerminalInfoAdapter extends BaseQuickAdapter<VmsTerminalInfo, BaseViewHolder> {
 
-    public VmsTerminalInfoAdapter(@Nullable List<TerminalInfo> data) {
+    public VmsTerminalInfoAdapter(@Nullable List<VmsTerminalInfo> data) {
         super(R.layout.item_vms_terminal_info, data);
     }
 
     @Override
-    protected void convert(@NotNull BaseViewHolder holder, TerminalInfo terminalInfo) {
-        holder.setText(R.id.tv_terminal_sn, terminalInfo.getSn());
-        holder.setText(R.id.tv_signal_strength, terminalInfo.getUprssi() + "dBm");
+    protected void convert(@NotNull BaseViewHolder holder, VmsTerminalInfo vmsTerminalInfo) {
+        holder.setText(R.id.tv_terminal_sn, vmsTerminalInfo.getSn());
+        holder.setText(R.id.tv_signal_strength, vmsTerminalInfo.getUprssi() + "dBm");
 //        holder.setText(R.id.tv_battery_value, terminalInfo.getVolt() + "%");
-        holder.setText(R.id.tv_last_data_time, terminalInfo.getLastpackagetime());
+        holder.setText(R.id.tv_last_data_time, vmsTerminalInfo.getLastpackagetime());
 
         DecimalFormat df = new DecimalFormat("#");//格式化小数
-        String rate = df.format(terminalInfo.getVolt()) + "%";
+        String rate = df.format(vmsTerminalInfo.getVolt()) + "%";
         holder.setText(R.id.tv_battery_value, rate);
 
-        if (terminalInfo.getStatus() == 1) {//在线
+        if (vmsTerminalInfo.getStatus() == 1) {//在线
             holder.setTextColorRes(R.id.tv_terminal_sn, R.color.title_text_color);
 //            holder.setImageResource(R.id.iv_signal, R.drawable.ic_device_signal_three);
             holder.setImageResource(R.id.iv_battery, R.drawable.ic_battery_full_online);

@@ -9,7 +9,7 @@ import com.shmedo.configlibrary.ble.interfaces.Validater;
  * 创建时间:  11/23/20 <br/>
  * 描述：     设置Vms终端某个通道下传感器参数
  */
-public class SetTerminalSensorParamsEntity implements Validater {
+public class SetVmsTerminalSensorParamsEntity implements Validater {
     private String sn;
     private String channel;//传感器所在通道
     private String insert;//接入判断，0：未接入，1：接入

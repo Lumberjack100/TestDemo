@@ -26,7 +26,7 @@ import com.shmedo.configlibrary.iot.cmd.entity.VmsAisleNumberEntity;
 import com.shmedo.configlibrary.iot.cmd.parser.IOTParseManager;
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.enums.VmsAisleNumber;
-import com.shmedo.configlibrary.iot.model.TerminalInfo;
+import com.shmedo.configlibrary.iot.model.VmsTerminalInfo;
 import com.shmedo.configlibrary.iot.model.VmsAisleInfo;
 import com.shmedo.configlibrary.iot.model.VmsAisleTerminalInfo;
 import com.shmedo.configlibrary.iot.model.VmsBasicInfo;
@@ -189,7 +189,7 @@ public class TcpVmsHomeFragment extends BaseTcpConnectFragment {
      */
     private void setupTcpConnect() {
         tcpShareViewModel.initTcpClient(ipAddress, 10002);
-//        startProgressRunnable("建立通讯连接...", TCP_CONNECT_DELAY_MILLIS);
+        startProgressRunnable("建立通讯连接...", TCP_CONNECT_DELAY_MILLIS);
         tcpShareViewModel.connect();
     }
 
@@ -198,7 +198,7 @@ public class TcpVmsHomeFragment extends BaseTcpConnectFragment {
      */
     @Override
     protected void onConnectionChange(TcpConnectionState tcpConnectionState) {
-//        stopProgressRunnable();
+        stopProgressRunnable();
         updateViewStateByConnectState(tcpConnectionState == TcpConnectionState.CONNECT_SUCCESS);
 
         if (tcpConnectionState == TcpConnectionState.CONNECT_SUCCESS) {
@@ -417,9 +417,9 @@ public class TcpVmsHomeFragment extends BaseTcpConnectFragment {
         if (vmsAisleTerminalInfo.getTerminal() == null)
             return;
 
-        for (TerminalInfo terminalInfo : vmsAisleTerminalInfo.getTerminal()) {
-            terminalInfo.setNetid(vmsAisleTerminalInfo.getNetid());
-            terminalInfo.setChl(vmsAisleTerminalInfo.getChl());
+        for (VmsTerminalInfo vmsTerminalInfo : vmsAisleTerminalInfo.getTerminal()) {
+            vmsTerminalInfo.setNetid(vmsAisleTerminalInfo.getNetid());
+            vmsTerminalInfo.setChl(vmsAisleTerminalInfo.getChl());
         }
     }
 

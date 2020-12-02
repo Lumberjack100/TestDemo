@@ -9,7 +9,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-import com.shmedo.configlibrary.iot.model.TerminalSensorInfo;
+import com.shmedo.configlibrary.iot.model.VmsTerminalSensorInfo;
 import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.activity.BaseActivity;
@@ -30,10 +30,10 @@ public class VmsTerminalExternalSensorConfigActivity extends BaseActivity {
 
     private Fragment fragment;
 
-    private TerminalSensorInfo sensorInfo;
+    private VmsTerminalSensorInfo sensorInfo;
 
 
-    public static void startActivity(Context context, int connectWay, TerminalSensorInfo sensorInfo) {
+    public static void startActivity(Context context, int connectWay, VmsTerminalSensorInfo sensorInfo) {
         Intent intent = new Intent(context, VmsTerminalExternalSensorConfigActivity.class);
         intent.putExtra(AppContants.Extras.COMMUNICATION_WAY, connectWay);
         intent.putExtra(AppContants.Extras.SENSOR_PARAM, sensorInfo);

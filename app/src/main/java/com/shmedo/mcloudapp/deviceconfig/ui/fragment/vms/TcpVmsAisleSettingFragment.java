@@ -214,13 +214,13 @@ public class TcpVmsAisleSettingFragment extends BaseTcpConnectFragment {
                 int port = Integer.parseInt(channelNumber);
                 if (port < 0 || port > 31) {
                     ToastUtils.show("请输入有效的信道号!");
-                    mEtAisleAddress.requestFocus();
+                    mEtChannelNumber.requestFocus();
                     return false;
                 }
 
             } catch (Exception ex) {
                 ToastUtils.show("请输入有效的信道号!");
-                mEtAisleAddress.requestFocus();
+                mEtChannelNumber.requestFocus();
                 return false;
             }
         }
@@ -280,13 +280,13 @@ public class TcpVmsAisleSettingFragment extends BaseTcpConnectFragment {
                 int port = Integer.parseInt(dataRequestInterval);
                 if (port < 3) {
                     ToastUtils.show("请输入有效的数据请求间隔!");
-                    mEtAirWakeTime.requestFocus();
+                    mEtDataRequestInterval.requestFocus();
                     return false;
                 }
 
             } catch (Exception ex) {
                 ToastUtils.show("请输入有效的数据请求间隔!");
-                mEtAirWakeTime.requestFocus();
+                mEtDataRequestInterval.requestFocus();
                 return false;
             }
         }

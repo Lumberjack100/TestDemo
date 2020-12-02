@@ -29,7 +29,7 @@ import com.shmedo.configlibrary.iot.cmd.parser.IOTParseManager;
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.enums.VmsAisleNumber;
 import com.shmedo.configlibrary.iot.model.CommonSettingCmdResult;
-import com.shmedo.configlibrary.iot.model.TerminalInfo;
+import com.shmedo.configlibrary.iot.model.VmsTerminalInfo;
 import com.shmedo.configlibrary.iot.model.VmsAisleInfo;
 import com.shmedo.configlibrary.iot.model.VmsAisleTerminalInfo;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
@@ -66,8 +66,8 @@ public class TcpVmsTerminalListFragment extends BaseBottomSheetDialogFragment {
 
     private VmsTerminalInfoAdapter adapter;
 
-    private List<TerminalInfo> terminalInfoList = new ArrayList<>();
-    private TerminalInfo terminalInfo;
+    private List<VmsTerminalInfo> vmsTerminalInfoList = new ArrayList<>();
+    private VmsTerminalInfo vmsTerminalInfo;
 
     private VmsAisleInfo vmsAisleInfo;
 
@@ -116,7 +116,7 @@ public class TcpVmsTerminalListFragment extends BaseBottomSheetDialogFragment {
         mRecyclerView.setLayoutManager(new GridLayoutManager(mActivity, spanCount));
         //设置每个item间距
         mRecyclerView.addItemDecoration(new GridSpacingItemDecoration(spanCount, spacing, true));
-        adapter = new VmsTerminalInfoAdapter(terminalInfoList);
+        adapter = new VmsTerminalInfoAdapter(vmsTerminalInfoList);
         adapter.setAnimationEnable(true);
         adapter.setAnimationFirstOnly(false);
         adapter.setOnItemClickListener(new OnItemClickListener() {
@@ -129,14 +129,14 @@ public class TcpVmsTerminalListFragment extends BaseBottomSheetDialogFragment {
                     ToastUtils.show(getString(R.string.tcp_config_disconnect_warn));
                     return;
                 }
-                terminalInfo = terminalInfoList.get(position);
-                VmsTerminalHomeActivity.startActivity(mActivity, AppContants.CommunicationWay.TCP_CONNECT, terminalInfo);
+                vmsTerminalInfo = vmsTerminalInfoList.get(position);
+                VmsTerminalHomeActivity.startActivity(mActivity, AppContants.CommunicationWay.TCP_CONNECT, vmsTerminalInfo);
             }
         });
         adapter.setOnItemLongClickListener(new OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(@NonNull BaseQuickAdapter adapter, @NonNull View view, int position) {
-                terminalInfo = terminalInfoList.get(position);
+                vmsTerminalInfo = vmsTerminalInfoList.get(position);
                 showRemoveTerminalDialog();
                 return true;
             }
@@ -219,8 +219,8 @@ public class TcpVmsTerminalListFragment extends BaseBottomSheetDialogFragment {
                     adapter.setEmptyView(R.layout.empty_view);
                     return;
                 }
-                terminalInfoList.clear();
-                terminalInfoList.addAll(vmsAisleTerminalInfo.getTerminal());
+                vmsTerminalInfoList.clear();
+                vmsTerminalInfoList.addAll(vmsAisleTerminalInfo.getTerminal());
                 adapter.notifyDataSetChanged();
             }
             break;
@@ -239,16 +239,16 @@ public class TcpVmsTerminalListFragment extends BaseBottomSheetDialogFragment {
         if (vmsAisleTerminalInfo.getTerminal() == null)
             return;
 
-        for (TerminalInfo terminalInfo : vmsAisleTerminalInfo.getTerminal()) {
-            terminalInfo.setNetid(vmsAisleTerminalInfo.getNetid());
-            terminalInfo.setChl(vmsAisleTerminalInfo.getChl());
+        for (VmsTerminalInfo vmsTerminalInfo : vmsAisleTerminalInfo.getTerminal()) {
+            vmsTerminalInfo.setNetid(vmsAisleTerminalInfo.getNetid());
+            vmsTerminalInfo.setChl(vmsAisleTerminalInfo.getChl());
         }
     }
 
 
     private void doAfterSetting() {
         ToastUtils.show("删除成功");
-        terminalInfoList.remove(terminalInfo);
+        vmsTerminalInfoList.remove(vmsTerminalInfo);
         adapter.notifyDataSetChanged();
         vmsViewModel.setVmsRefreshTerminal(true);
 
@@ -260,12 +260,12 @@ public class TcpVmsTerminalListFragment extends BaseBottomSheetDialogFragment {
         } else {
             title = "通道03-设备(";
         }
-        title += terminalInfoList.size() + ")";
+        title += vmsTerminalInfoList.size() + ")";
         mTvTitle.setText(title);
     }
 
     private CharSequence getWarnMessage() {
-        SpannableStringBuilder builder = new SpannableStringBuilder(terminalInfo.getSn());
+        SpannableStringBuilder builder = new SpannableStringBuilder(vmsTerminalInfo.getSn());
         ForegroundColorSpan colorSpan = new ForegroundColorSpan(getContext().getResources().getColor(R.color.blue_52B4F8));
         builder.setSpan(colorSpan, 0, builder.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         builder.insert(0, "确认移除 ");
@@ -302,7 +302,7 @@ public class TcpVmsTerminalListFragment extends BaseBottomSheetDialogFragment {
      * 移除网关挂载的终端
      */
     private void removeTerminal() {
-        TerminalSNEntity entity = new TerminalSNEntity(terminalInfo.getSn());
+        TerminalSNEntity entity = new TerminalSNEntity(vmsTerminalInfo.getSn());
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.VMS_MD_DELETE_TERMINAL, entity);
         sendCommand(command);
     }

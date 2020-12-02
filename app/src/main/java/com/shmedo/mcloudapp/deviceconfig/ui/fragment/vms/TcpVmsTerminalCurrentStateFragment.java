@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.shmedo.configlibrary.iot.model.SensorErrnoInfo;
-import com.shmedo.configlibrary.iot.model.TerminalInfo;
+import com.shmedo.configlibrary.iot.model.VmsTerminalInfo;
 import com.shmedo.configlibrary.iot.utils.IOTSensorUtil;
 import com.shmedo.core.util.DensityUtil;
 import com.shmedo.mcloudapp.R;
@@ -75,12 +75,12 @@ public class TcpVmsTerminalCurrentStateFragment extends BaseFragment {
     private CommonAdapter sensorAdapter;
     private List<SensorErrnoInfo> sensorList = new ArrayList<>();
 
-    private TerminalInfo terminalInfo;
+    private VmsTerminalInfo vmsTerminalInfo;
 
-    public static TcpVmsTerminalCurrentStateFragment newInstance(TerminalInfo terminalInfo) {
+    public static TcpVmsTerminalCurrentStateFragment newInstance(VmsTerminalInfo vmsTerminalInfo) {
         TcpVmsTerminalCurrentStateFragment fragment = new TcpVmsTerminalCurrentStateFragment();
         Bundle args = new Bundle();
-        args.putParcelable(DEVICE_INFO, terminalInfo);
+        args.putParcelable(DEVICE_INFO, vmsTerminalInfo);
         fragment.setArguments(args);
         return fragment;
     }
@@ -89,7 +89,7 @@ public class TcpVmsTerminalCurrentStateFragment extends BaseFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            terminalInfo = getArguments().getParcelable(DEVICE_INFO);
+            vmsTerminalInfo = getArguments().getParcelable(DEVICE_INFO);
         }
     }
 
@@ -133,28 +133,28 @@ public class TcpVmsTerminalCurrentStateFragment extends BaseFragment {
     }
 
     private void initData() {
-        if (terminalInfo == null)
+        if (vmsTerminalInfo == null)
             return;
 
-        mTvDeviceSn.setText(terminalInfo.getSn());
-        mTvNetId.setText(String.valueOf(terminalInfo.getNetid()));
-        mTvAddress.setText(String.valueOf(terminalInfo.getAddr()));
-        mTvChannel.setText(String.valueOf(terminalInfo.getChl()));
-        mTvRegisterTime.setText(String.valueOf(terminalInfo.getLogintime()));
-        mTvUpdateTime.setText(String.valueOf(terminalInfo.getLastpackagetime()));
+        mTvDeviceSn.setText(vmsTerminalInfo.getSn());
+        mTvNetId.setText(String.valueOf(vmsTerminalInfo.getNetid()));
+        mTvAddress.setText(String.valueOf(vmsTerminalInfo.getAddr()));
+        mTvChannel.setText(String.valueOf(vmsTerminalInfo.getChl()));
+        mTvRegisterTime.setText(String.valueOf(vmsTerminalInfo.getLogintime()));
+        mTvUpdateTime.setText(String.valueOf(vmsTerminalInfo.getLastpackagetime()));
 
-        mTvUplinkSignalStrength.setText(String.valueOf(terminalInfo.getUprssi()));
-        mTvDownlinkSignalStrength.setText(String.valueOf(terminalInfo.getDownrssi()));
-        mTvSendData.setText(String.valueOf(terminalInfo.getTx()));
-        mTvReceiveData.setText(String.valueOf(terminalInfo.getRx()));
+        mTvUplinkSignalStrength.setText(String.valueOf(vmsTerminalInfo.getUprssi()));
+        mTvDownlinkSignalStrength.setText(String.valueOf(vmsTerminalInfo.getDownrssi()));
+        mTvSendData.setText(String.valueOf(vmsTerminalInfo.getTx()));
+        mTvReceiveData.setText(String.valueOf(vmsTerminalInfo.getRx()));
 
         DecimalFormat df = new DecimalFormat("#");//格式化小数
-        String rate = df.format(terminalInfo.getVolt()) + "%";
+        String rate = df.format(vmsTerminalInfo.getVolt()) + "%";
         mTvPowerVolt.setText(rate);
 
-        if (terminalInfo.getSensor() != null) {
+        if (vmsTerminalInfo.getSensor() != null) {
             sensorList.clear();
-            sensorList.addAll(terminalInfo.getSensor());
+            sensorList.addAll(vmsTerminalInfo.getSensor());
             sensorAdapter.notifyDataSetChanged();
         }
     }

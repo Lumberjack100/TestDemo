@@ -4,19 +4,19 @@ import android.text.TextUtils;
 
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.interfaces.IOTResultParser;
-import com.shmedo.configlibrary.iot.model.TerminalSensorInfo;
+import com.shmedo.configlibrary.iot.model.VmsTerminalSensorInfo;
 
 import java.util.HashMap;
 
 /**
  * 创建者:   gonghe <br/>
  * 创建时间:  11/23/20 <br/>
- * 描述：     TODO
+ * 描述：     解析Vms终端传感器数据
  */
-public class TerminalSensorInfoParser implements IOTResultParser<TerminalSensorInfo> {
+public class VmsTerminalSensorInfoParser implements IOTResultParser<VmsTerminalSensorInfo> {
     @Override
-    public TerminalSensorInfo parse(String result) {
-        TerminalSensorInfo info = new TerminalSensorInfo();
+    public VmsTerminalSensorInfo parse(String result) {
+        VmsTerminalSensorInfo info = new VmsTerminalSensorInfo();
         try {
             String[] keyValues = result.split("&");
             HashMap<String, String> keyValueMap = new HashMap<>();

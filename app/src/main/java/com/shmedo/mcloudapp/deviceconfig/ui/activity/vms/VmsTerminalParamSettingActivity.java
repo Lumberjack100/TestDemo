@@ -3,8 +3,6 @@ package com.shmedo.mcloudapp.deviceconfig.ui.activity.vms;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
@@ -15,25 +13,20 @@ import com.shmedo.configlibrary.iot.model.VmsTerminalInfo;
 import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.activity.BaseActivity;
-import com.shmedo.mcloudapp.deviceconfig.ui.activity.QueryDeviceDataActivity;
-import com.shmedo.mcloudapp.deviceconfig.ui.fragment.vms.TcpVmsTerminalHomeFragment;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.vms.TcpVmsTerminalParamSettingFragment;
 
 import butterknife.BindView;
-import butterknife.OnClick;
 
 /**
  * 创建者:   gonghe <br/>
- * 创建时间:  2020/11/19 <br/>
- * 描述：     Vms 网关挂载的终端设备主页面
+ * 创建时间:  2020/12/2 <br/>
+ * 描述：     Vms 终端参数配置
  */
-public class VmsTerminalHomeActivity extends BaseActivity {
+public class VmsTerminalParamSettingActivity extends BaseActivity {
     private static final String DEVICE_INFO = "device_info";
 
     @BindView(R.id.tv_title)
     TextView mToolbarTitle;
-
-    @BindView(R.id.right_icon)
-    ImageView mIvRightIcon;
 
     private int connectWay = AppContants.CommunicationWay.NET_PLATFORM_CONNECT;
 
@@ -43,26 +36,22 @@ public class VmsTerminalHomeActivity extends BaseActivity {
 
 
     public static void startActivity(Context context, int connectWay, VmsTerminalInfo vmsTerminalInfo) {
-        Intent intent = new Intent(context, VmsTerminalHomeActivity.class);
+        Intent intent = new Intent(context, VmsTerminalParamSettingActivity.class);
         intent.putExtra(AppContants.Extras.COMMUNICATION_WAY, connectWay);
         intent.putExtra(DEVICE_INFO, vmsTerminalInfo);
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         context.startActivity(intent);
     }
 
-
     @Override
     protected int getLayoutId() {
-        return R.layout.activity_vms_terminal_home;
+        return R.layout.vms_terminal_param_setting_activity;
     }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setToolBar(R.id.toolbar);
-        mToolbarTitle.setText("设备配置");
-        mIvRightIcon.setVisibility(View.INVISIBLE);
-        mIvRightIcon.setImageResource(R.drawable.ic_query_device_data);
+        mToolbarTitle.setText("终端配置");
         parseIntent();
         initFragment();
     }
@@ -85,18 +74,10 @@ public class VmsTerminalHomeActivity extends BaseActivity {
         if (connectWay == AppContants.CommunicationWay.NET_PLATFORM_CONNECT) {
 
         } else if (connectWay == AppContants.CommunicationWay.TCP_CONNECT) {
-            fragment = TcpVmsTerminalHomeFragment.newInstance(vmsTerminalInfo);
+            fragment = TcpVmsTerminalParamSettingFragment.newInstance(vmsTerminalInfo);
         }
-        replaceFragment(fragment);
-    }
 
-    @OnClick({R.id.right_icon})
-    public void onClick(View v) {
-        if (v.getId() == R.id.right_icon) {
-            if (connectWay == AppContants.CommunicationWay.TCP_CONNECT) {
-                QueryDeviceDataActivity.startActivity(VmsTerminalHomeActivity.this, vmsTerminalInfo.getSn());
-            }
-        }
+        replaceFragment(fragment);
     }
 
     private void replaceFragment(Fragment fragment) {
@@ -105,5 +86,4 @@ public class VmsTerminalHomeActivity extends BaseActivity {
         transaction.replace(R.id.container, fragment);
         transaction.commitAllowingStateLoss();
     }
-
 }

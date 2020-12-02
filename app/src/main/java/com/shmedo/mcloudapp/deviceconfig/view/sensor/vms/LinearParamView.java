@@ -10,8 +10,8 @@ import android.widget.FrameLayout;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.shmedo.configlibrary.iot.cmd.entity.SetTerminalSensorParamsEntity;
-import com.shmedo.configlibrary.iot.model.TerminalSensorInfo;
+import com.shmedo.configlibrary.iot.cmd.entity.SetVmsTerminalSensorParamsEntity;
+import com.shmedo.configlibrary.iot.model.VmsTerminalSensorInfo;
 import com.shmedo.mcloudapp.R;
 
 import butterknife.BindView;
@@ -68,7 +68,7 @@ public class LinearParamView extends FrameLayout {
         mEtCorrectValue.setFilters(new InputFilter[]{new InputFilter.LengthFilter(30)});
     }
 
-    public void initData(TerminalSensorInfo sensorInfo) {
+    public void initData(VmsTerminalSensorInfo sensorInfo) {
         if (sensorInfo == null) {
             return;
         }
@@ -85,7 +85,7 @@ public class LinearParamView extends FrameLayout {
         mEtCorrectValue.setText(correctValue);
     }
 
-    public boolean updateSensorData(SetTerminalSensorParamsEntity sensorParamsEntity) {
+    public boolean updateSensorData(SetVmsTerminalSensorParamsEntity sensorParamsEntity) {
         if (!checkValueValid()) {
             return false;
         }

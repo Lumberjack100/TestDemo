@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel;
 
 import com.kunminx.architecture.ui.callback.ProtectedUnPeekLiveData;
 import com.kunminx.architecture.ui.callback.UnPeekLiveData;
-import com.shmedo.configlibrary.iot.model.TerminalInfo;
+import com.shmedo.configlibrary.iot.model.VmsTerminalInfo;
 import com.shmedo.mcloudapp.deviceconfig.data.repository.DeviceRepository;
 
 import java.util.ArrayList;
@@ -16,7 +16,7 @@ import java.util.List;
  * 描述：     TODO
  */
 public class VmsViewModel extends ViewModel {
-    private final UnPeekLiveData<List<TerminalInfo>> cacheVmsTerminalListLiveData = new UnPeekLiveData<>();
+    private final UnPeekLiveData<List<VmsTerminalInfo>> cacheVmsTerminalListLiveData = new UnPeekLiveData<>();
     private UnPeekLiveData<Boolean> vmsRefreshTerminal;
 
     public ProtectedUnPeekLiveData<String> getDeviceApiKey() {
@@ -32,21 +32,21 @@ public class VmsViewModel extends ViewModel {
     }
 
 
-    public ProtectedUnPeekLiveData<List<TerminalInfo>> getCacheVmsTerminalList() {
+    public ProtectedUnPeekLiveData<List<VmsTerminalInfo>> getCacheVmsTerminalList() {
         return cacheVmsTerminalListLiveData;
     }
 
-    public void addCacheTerminalList(List<TerminalInfo> tempList) {
+    public void addCacheTerminalList(List<VmsTerminalInfo> tempList) {
         if (tempList == null || tempList.size() == 0)
             return;
 
-        List<TerminalInfo> cacheList = cacheVmsTerminalListLiveData.getValue();
+        List<VmsTerminalInfo> cacheList = cacheVmsTerminalListLiveData.getValue();
         if (cacheList == null)
             cacheList = new ArrayList<>();
 
-        for (TerminalInfo tempInfo : tempList) {
+        for (VmsTerminalInfo tempInfo : tempList) {
             boolean isExist = false;
-            for (TerminalInfo cacheInfo : cacheList) {
+            for (VmsTerminalInfo cacheInfo : cacheList) {
                 if (cacheInfo.getSn().equals(tempInfo.getSn())) {
                     isExist = false;
                     break;

@@ -9,7 +9,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-import com.shmedo.configlibrary.iot.model.TerminalInfo;
+import com.shmedo.configlibrary.iot.model.VmsTerminalInfo;
 import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.activity.BaseActivity;
@@ -32,13 +32,13 @@ public class VmsTerminalCurrentStateActivity extends BaseActivity {
 
     private Fragment fragment;
 
-    private TerminalInfo terminalInfo;
+    private VmsTerminalInfo vmsTerminalInfo;
 
 
-    public static void startActivity(Context context, int connectWay, TerminalInfo terminalInfo) {
+    public static void startActivity(Context context, int connectWay, VmsTerminalInfo vmsTerminalInfo) {
         Intent intent = new Intent(context, VmsTerminalCurrentStateActivity.class);
         intent.putExtra(AppContants.Extras.COMMUNICATION_WAY, connectWay);
-        intent.putExtra(DEVICE_INFO, terminalInfo);
+        intent.putExtra(DEVICE_INFO, vmsTerminalInfo);
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         context.startActivity(intent);
     }
@@ -68,7 +68,7 @@ public class VmsTerminalCurrentStateActivity extends BaseActivity {
         }
 
         if (intent.getExtras().containsKey(DEVICE_INFO)) {
-            terminalInfo = intent.getParcelableExtra(DEVICE_INFO);
+            vmsTerminalInfo = intent.getParcelableExtra(DEVICE_INFO);
         }
     }
 
@@ -76,7 +76,7 @@ public class VmsTerminalCurrentStateActivity extends BaseActivity {
         if (connectWay == AppContants.CommunicationWay.NET_PLATFORM_CONNECT) {
 
         } else if (connectWay == AppContants.CommunicationWay.TCP_CONNECT) {
-            fragment = TcpVmsTerminalCurrentStateFragment.newInstance(terminalInfo);
+            fragment = TcpVmsTerminalCurrentStateFragment.newInstance(vmsTerminalInfo);
         }
         replaceFragment(fragment);
     }

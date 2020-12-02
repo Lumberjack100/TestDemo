@@ -11,7 +11,7 @@ import java.util.List;
  * 创建时间:  2020/11/13 <br/>
  * 描述：    Vms网关挂载的终端设备信息
  */
-public class TerminalInfo implements Parcelable {
+public class VmsTerminalInfo implements Parcelable {
     /**
      * sn : 253333D
      * addr : 64
@@ -42,7 +42,7 @@ public class TerminalInfo implements Parcelable {
     private List<SensorErrnoInfo> sensor;
 
 
-    protected TerminalInfo(Parcel in) {
+    protected VmsTerminalInfo(Parcel in) {
         netid = in.readInt();
         chl = in.readInt();
         sn = in.readString();
@@ -80,15 +80,15 @@ public class TerminalInfo implements Parcelable {
         return 0;
     }
 
-    public static final Creator<TerminalInfo> CREATOR = new Creator<TerminalInfo>() {
+    public static final Creator<VmsTerminalInfo> CREATOR = new Creator<VmsTerminalInfo>() {
         @Override
-        public TerminalInfo createFromParcel(Parcel in) {
-            return new TerminalInfo(in);
+        public VmsTerminalInfo createFromParcel(Parcel in) {
+            return new VmsTerminalInfo(in);
         }
 
         @Override
-        public TerminalInfo[] newArray(int size) {
-            return new TerminalInfo[size];
+        public VmsTerminalInfo[] newArray(int size) {
+            return new VmsTerminalInfo[size];
         }
     };
 

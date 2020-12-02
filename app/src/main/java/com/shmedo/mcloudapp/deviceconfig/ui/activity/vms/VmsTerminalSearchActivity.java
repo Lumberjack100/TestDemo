@@ -31,7 +31,7 @@ import com.shmedo.configlibrary.iot.cmd.entity.TerminalSNEntity;
 import com.shmedo.configlibrary.iot.cmd.parser.IOTParseManager;
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.model.CommonSettingCmdResult;
-import com.shmedo.configlibrary.iot.model.TerminalInfo;
+import com.shmedo.configlibrary.iot.model.VmsTerminalInfo;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
 import com.shmedo.core.AppContants;
 import com.shmedo.core.util.DensityUtil;
@@ -66,11 +66,11 @@ public class VmsTerminalSearchActivity extends BaseActivity implements TextWatch
 
     private VmsTerminalInfoAdapter adapter;
 
-    private List<TerminalInfo> terminalInfoList = new ArrayList<>();
+    private List<VmsTerminalInfo> vmsTerminalInfoList = new ArrayList<>();
 
     private String keyWords;// 要输入的搜索关键字
 
-    private TerminalInfo terminalInfo;
+    private VmsTerminalInfo vmsTerminalInfo;
 
     private TcpShareViewModel tcpShareViewModel;
     private VmsViewModel vmsViewModel;
@@ -130,7 +130,7 @@ public class VmsTerminalSearchActivity extends BaseActivity implements TextWatch
         mRecyclerView.setLayoutManager(new GridLayoutManager(this, spanCount));
         //设置每个item间距
         mRecyclerView.addItemDecoration(new GridSpacingItemDecoration(spanCount, spacing, true));
-        adapter = new VmsTerminalInfoAdapter(terminalInfoList);
+        adapter = new VmsTerminalInfoAdapter(vmsTerminalInfoList);
         adapter.setAnimationEnable(true);
         adapter.setAnimationFirstOnly(false);
         adapter.setOnItemClickListener(new OnItemClickListener() {
@@ -143,14 +143,14 @@ public class VmsTerminalSearchActivity extends BaseActivity implements TextWatch
                     ToastUtils.show(getString(R.string.tcp_config_disconnect_warn));
                     return;
                 }
-                terminalInfo = terminalInfoList.get(position);
-                VmsTerminalHomeActivity.startActivity(VmsTerminalSearchActivity.this, AppContants.CommunicationWay.TCP_CONNECT, terminalInfo);
+                vmsTerminalInfo = vmsTerminalInfoList.get(position);
+                VmsTerminalHomeActivity.startActivity(VmsTerminalSearchActivity.this, AppContants.CommunicationWay.TCP_CONNECT, vmsTerminalInfo);
             }
         });
         adapter.setOnItemLongClickListener(new OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(@NonNull BaseQuickAdapter adapter, @NonNull View view, int position) {
-                terminalInfo = terminalInfoList.get(position);
+                vmsTerminalInfo = vmsTerminalInfoList.get(position);
                 showRemoveTerminalDialog();
                 return true;
             }
@@ -203,20 +203,20 @@ public class VmsTerminalSearchActivity extends BaseActivity implements TextWatch
      * 开始进行搜索
      */
     private void doSearchQuery() {
-        List<TerminalInfo> allTerminals = vmsViewModel.getCacheVmsTerminalList().getValue();
+        List<VmsTerminalInfo> allTerminals = vmsViewModel.getCacheVmsTerminalList().getValue();
         if (allTerminals == null) {
             adapter.setEmptyView(R.layout.empty_view);
             adapter.notifyDataSetChanged();
             return;
         }
 
-        terminalInfoList.clear();
-        for (TerminalInfo terminalInfo : allTerminals) {
-            if (terminalInfo.getSn().contains(keyWords)) {
-                terminalInfoList.add(terminalInfo);
+        vmsTerminalInfoList.clear();
+        for (VmsTerminalInfo vmsTerminalInfo : allTerminals) {
+            if (vmsTerminalInfo.getSn().contains(keyWords)) {
+                vmsTerminalInfoList.add(vmsTerminalInfo);
             }
         }
-        if (terminalInfoList.size() == 0) {
+        if (vmsTerminalInfoList.size() == 0) {
             adapter.setEmptyView(R.layout.empty_view);
         }
         adapter.notifyDataSetChanged();
@@ -244,13 +244,13 @@ public class VmsTerminalSearchActivity extends BaseActivity implements TextWatch
 
     private void doAfterSetting() {
         ToastUtils.show("删除成功");
-        terminalInfoList.remove(terminalInfo);
+        vmsTerminalInfoList.remove(vmsTerminalInfo);
         adapter.notifyDataSetChanged();
         vmsViewModel.setVmsRefreshTerminal(true);
     }
 
     private CharSequence getWarnMessage() {
-        SpannableStringBuilder builder = new SpannableStringBuilder(terminalInfo.getSn());
+        SpannableStringBuilder builder = new SpannableStringBuilder(vmsTerminalInfo.getSn());
         ForegroundColorSpan colorSpan = new ForegroundColorSpan(getResources().getColor(R.color.blue_52B4F8));
         builder.setSpan(colorSpan, 0, builder.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         builder.insert(0, "确认移除 ");
@@ -287,7 +287,7 @@ public class VmsTerminalSearchActivity extends BaseActivity implements TextWatch
      * 移除网关挂载的终端
      */
     private void removeTerminal() {
-        TerminalSNEntity entity = new TerminalSNEntity(terminalInfo.getSn());
+        TerminalSNEntity entity = new TerminalSNEntity(vmsTerminalInfo.getSn());
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.VMS_MD_DELETE_TERMINAL, entity);
         sendCommand(command);
     }

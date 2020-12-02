@@ -90,15 +90,34 @@ public enum IOTCommandType {
     VMS_MD_REBOOT_TERMINAL("md_rebootterminal"),
 
     /**
-     * 获取Vms终端某个通道下传感器参数
+     * 获取Vms终端传感器参数
      */
     VMS_MD_GET_TERMINAL_CHL("md_getterminalchl"),
 
     /**
-     * 设置Vms终端某个通道下传感器参数
+     * 设置Vms终端传感器参数
      */
     VMS_MD_SET_TERMINAL_CHL("md_setterminalchl"),
 
+    /**
+     * 获取Vms终端采集参数
+     */
+    VMS_MD_GET_TERMINAL_COLLECTOR("md_getterminalcoll"),
+
+    /**
+     * 设置Vms终端采集参数
+     */
+    VMS_MD_SET_TERMINAL_COLLECTOR("md_setterminalcoll"),
+
+    /**
+     * 获取Vms终端通信参数
+     */
+    VMS_MD_GET_TERMINAL_COMMUNICATE("md_getterminalcom"),
+
+    /**
+     * 设置Vms终端通信参数
+     */
+    VMS_MD_SET_TERMINAL_COMMUNICATE("md_setterminalcom"),
 
     /**
      * 自定义心跳包

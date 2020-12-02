@@ -389,7 +389,7 @@ public class NewBleManager {
                     Timber.d("onCharacteristicChanged:%s", result);
 
                     //非日志输出模式下，过滤掉不匹配标准响应头的应答指令
-                    if (!logOutputModeLiveData.getValue() && !result.contains("$$")) {
+                    if (!logOutputModeLiveData.getValue() && !result.startsWith("$$")) {
                         return;
                     }
                     byteManager.writeByte(value);

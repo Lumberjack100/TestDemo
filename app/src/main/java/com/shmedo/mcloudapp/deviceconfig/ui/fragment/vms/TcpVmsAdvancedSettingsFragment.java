@@ -17,7 +17,7 @@ import com.shmedo.configlibrary.iot.cmd.parser.IOTParseManager;
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.enums.ServerNumber;
 import com.shmedo.configlibrary.iot.enums.VmsAisleNumber;
-import com.shmedo.configlibrary.iot.model.DataCenterStatus;
+import com.shmedo.configlibrary.iot.model.VmsDataCenterStatus;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
 import com.shmedo.core.AppContants;
 import com.shmedo.core.util.GlobalUtil;
@@ -162,7 +162,7 @@ public class TcpVmsAdvancedSettingsFragment extends BaseTcpConnectFragment {
         IOTCommandType type = IOTStringUtil.extractCommandType(cmdStr);
         switch (type) {
             case VMS_MD_GET_DATA_CENTER_STATUS: {//获取Vms数据中心状态
-                IOTCommandResult<DataCenterStatus> commandResult = IOTParseManager.getInstance().parse(cmdStr);
+                IOTCommandResult<VmsDataCenterStatus> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
                     stopProgressRunnable();
                     String errMsg = "查询网关数据中心状态出错!";
@@ -170,7 +170,7 @@ public class TcpVmsAdvancedSettingsFragment extends BaseTcpConnectFragment {
                     ToastUtils.show(errMsg);
                     return;
                 }
-                DataCenterStatus centerStatus = commandResult.getResult();
+                VmsDataCenterStatus centerStatus = commandResult.getResult();
                 if (centerStatus.getCenterid() == 1) {
                     mTvDataCenterOne.setText(getStatusTextById(centerStatus.getStatus()));
                     mTvDataCenterOne.setTextColor(GlobalUtil.getColor(getStatusColorResId(centerStatus.getStatus())));

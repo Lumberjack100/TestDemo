@@ -21,12 +21,12 @@ import com.lxj.xpopup.XPopup;
 import com.lxj.xpopup.interfaces.OnSelectListener;
 import com.shmedo.configlibrary.ble.utils.ValidateUtil;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandManager;
-import com.shmedo.configlibrary.iot.cmd.entity.SetTerminalSensorParamsEntity;
+import com.shmedo.configlibrary.iot.cmd.entity.SetVmsTerminalSensorParamsEntity;
 import com.shmedo.configlibrary.iot.cmd.parser.IOTParseManager;
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.enums.VmsSensorCalculation;
 import com.shmedo.configlibrary.iot.model.CommonSettingCmdResult;
-import com.shmedo.configlibrary.iot.model.TerminalSensorInfo;
+import com.shmedo.configlibrary.iot.model.VmsTerminalSensorInfo;
 import com.shmedo.configlibrary.iot.utils.IOTSensorUtil;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
 import com.shmedo.core.AppContants;
@@ -78,7 +78,7 @@ public class TcpVmsTerminalExternalSensorParamFragment extends BaseTcpConnectFra
     @BindView(R.id.btn_confirm)
     Button mBtnSave;
 
-    private TerminalSensorInfo sensorInfo;
+    private VmsTerminalSensorInfo sensorInfo;
 
     private List<String> calculationList = Arrays.asList("直线式", "多项式");
     private List<String> sensorNameList = Arrays.asList("墙裂缝计", "轴力");
@@ -94,7 +94,7 @@ public class TcpVmsTerminalExternalSensorParamFragment extends BaseTcpConnectFra
     private boolean isSaveParamOperation = false;//判断当前是保存参数操作，还是关闭传感器开关操作
 
 
-    public static TcpVmsTerminalExternalSensorParamFragment newInstance(TerminalSensorInfo sensorInfo) {
+    public static TcpVmsTerminalExternalSensorParamFragment newInstance(VmsTerminalSensorInfo sensorInfo) {
         TcpVmsTerminalExternalSensorParamFragment fragment = new TcpVmsTerminalExternalSensorParamFragment();
         Bundle args = new Bundle();
         args.putParcelable(AppContants.Extras.SENSOR_PARAM, sensorInfo);
@@ -129,7 +129,7 @@ public class TcpVmsTerminalExternalSensorParamFragment extends BaseTcpConnectFra
 
     private void initData() {
         if (sensorInfo == null) {
-            sensorInfo = new TerminalSensorInfo();
+            sensorInfo = new VmsTerminalSensorInfo();
             return;
         }
 
@@ -229,7 +229,7 @@ public class TcpVmsTerminalExternalSensorParamFragment extends BaseTcpConnectFra
     }
 
     private void enableSensor() {
-        SetTerminalSensorParamsEntity entity = new SetTerminalSensorParamsEntity();
+        SetVmsTerminalSensorParamsEntity entity = new SetVmsTerminalSensorParamsEntity();
         entity.setSn(sensorInfo.getSn());
         entity.setChannel(sensorInfo.getChannel());
         entity.setInsert("1");
@@ -243,7 +243,7 @@ public class TcpVmsTerminalExternalSensorParamFragment extends BaseTcpConnectFra
      * 不接入传感器</br>
      */
     private void disableSensor() {
-        SetTerminalSensorParamsEntity entity = new SetTerminalSensorParamsEntity();
+        SetVmsTerminalSensorParamsEntity entity = new SetVmsTerminalSensorParamsEntity();
         entity.setSn(sensorInfo.getSn());
         entity.setChannel(sensorInfo.getChannel());
         entity.setInsert("0");
@@ -336,7 +336,7 @@ public class TcpVmsTerminalExternalSensorParamFragment extends BaseTcpConnectFra
     }
 
     private void processSave() {
-        SetTerminalSensorParamsEntity sensorParamsEntity = new SetTerminalSensorParamsEntity();
+        SetVmsTerminalSensorParamsEntity sensorParamsEntity = new SetVmsTerminalSensorParamsEntity();
         boolean updateDataSuccess = false;
         switch (sensorCalculation) {
             case LINEAR:

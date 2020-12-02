@@ -103,15 +103,18 @@ public class IOTParseManager {
      */
     private void registerParse() {
         List<Class> clazzes = Arrays.asList(new Class[]{
-                TerminalTimeParser.class,
+                VmsTerminalTimeParser.class,
                 DeviceCurrentStateParser.class,
                 TelemetryParser.class,
                 VmsBasicInfoParser.class,
                 VmsAisleTerminalInfoParser.class,
                 VmsAisleInfoParser.class,
                 DataCenterInfoParser.class,
-                TerminalSensorInfoParser.class,
-                DataCenterStatusParser.class});
+                VmsTerminalSensorInfoParser.class,
+                DataCenterStatusParser.class,
+                VmsTerminalCollectorInfoParser.class,
+                VmsTerminalCommInfoParser.class
+        });
 
         registerWithClass(clazzes);
     }

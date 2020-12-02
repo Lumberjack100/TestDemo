@@ -10,10 +10,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.hjq.toast.ToastUtils;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandManager;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandResult;
-import com.shmedo.configlibrary.iot.cmd.entity.GetTerminalSensorParamsEntity;
+import com.shmedo.configlibrary.iot.cmd.entity.GetVmsTerminalSensorParamsEntity;
 import com.shmedo.configlibrary.iot.cmd.parser.IOTParseManager;
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
-import com.shmedo.configlibrary.iot.model.TerminalSensorInfo;
+import com.shmedo.configlibrary.iot.model.VmsTerminalSensorInfo;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
 import com.shmedo.core.AppContants;
 import com.shmedo.core.util.DensityUtil;
@@ -49,7 +49,7 @@ public class TcpVmsTerminalExternalSensorHomeFragment extends BaseTcpConnectFrag
 
     private List<VmsTerminalSensorItem> sensorItemList = new ArrayList<>();
     //以传感器的通道号为 Key,TerminalSensorInfo 对象为 Value
-    protected HashMap<String, TerminalSensorInfo> sensorHashMap = new HashMap<>();
+    protected HashMap<String, VmsTerminalSensorInfo> sensorHashMap = new HashMap<>();
 
     private String sn;
     private int accessSum = 4;              //接入扩展传感器总数
@@ -121,7 +121,7 @@ public class TcpVmsTerminalExternalSensorHomeFragment extends BaseTcpConnectFrag
                     return;
                 }
                 VmsTerminalSensorItem sensorItem = sensorItemList.get(position);
-                TerminalSensorInfo sensorInfo = sensorHashMap.get(sensorItem.getChannel());
+                VmsTerminalSensorInfo sensorInfo = sensorHashMap.get(sensorItem.getChannel());
                 VmsTerminalExternalSensorConfigActivity.startActivity(mActivity, AppContants.CommunicationWay.TCP_CONNECT, sensorInfo);
             }
 
@@ -137,7 +137,7 @@ public class TcpVmsTerminalExternalSensorHomeFragment extends BaseTcpConnectFrag
      * 获取Vms终端某个通道下传感器参数
      */
     private void queryTerminalAisleParamInfo() {
-        GetTerminalSensorParamsEntity entity = new GetTerminalSensorParamsEntity(sn, sensorIndex);
+        GetVmsTerminalSensorParamsEntity entity = new GetVmsTerminalSensorParamsEntity(sn, sensorIndex);
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.VMS_MD_GET_TERMINAL_CHL, entity);
         sendCommand(command);
     }
@@ -151,14 +151,14 @@ public class TcpVmsTerminalExternalSensorHomeFragment extends BaseTcpConnectFrag
         IOTCommandType type = IOTStringUtil.extractCommandType(cmdStr);
         switch (type) {
             case VMS_MD_GET_TERMINAL_CHL: {//获取终端传感器的参数
-                IOTCommandResult<TerminalSensorInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
+                IOTCommandResult<VmsTerminalSensorInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
                     String errMsg = "查询获取终端传感器参数出错!";
                     Timber.e("%s%s", errMsg, commandResult.getMessage());
                     ToastUtils.show(errMsg);
                     return;
                 }
-                TerminalSensorInfo sensorInfo = commandResult.getResult();
+                VmsTerminalSensorInfo sensorInfo = commandResult.getResult();
                 //处理此通道的传感器配置参数
                 processSensorParamsInfo(sensorInfo);
                 sensorIndex++;
@@ -177,7 +177,7 @@ public class TcpVmsTerminalExternalSensorHomeFragment extends BaseTcpConnectFrag
         }
     }
 
-    private void processSensorParamsInfo(TerminalSensorInfo sensorInfo) {
+    private void processSensorParamsInfo(VmsTerminalSensorInfo sensorInfo) {
         if (sensorInfo == null)
             return;
 
@@ -185,7 +185,7 @@ public class TcpVmsTerminalExternalSensorHomeFragment extends BaseTcpConnectFrag
         addSensorItem(sensorInfo);
     }
 
-    private void addSensorItem(TerminalSensorInfo sensorInfo) {
+    private void addSensorItem(VmsTerminalSensorInfo sensorInfo) {
         VmsTerminalSensorItem sensorItem = new VmsTerminalSensorItem();
         sensorItem.setChannel(sensorInfo.getChannel());
         sensorItem.setInsert(sensorInfo.getInsert().trim().equals("1"));
