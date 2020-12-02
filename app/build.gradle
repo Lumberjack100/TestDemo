@@ -226,7 +226,7 @@ dependencies {
     implementation 'no.nordicsemi.android.support.v18:scanner:1.4.3'
 
     //Easily Connect to WiFi Networks
-    implementation 'com.thanosfisherman.wifiutils:wifiutils:1.6.4'
+//    implementation 'com.thanosfisherman.wifiutils:wifiutils:1.6.4'
 
     testImplementation "junit:junit:$rootProject.thirdLib.junit"
     androidTestImplementation "androidx.test:runner:$rootProject.thirdLib.runner"
