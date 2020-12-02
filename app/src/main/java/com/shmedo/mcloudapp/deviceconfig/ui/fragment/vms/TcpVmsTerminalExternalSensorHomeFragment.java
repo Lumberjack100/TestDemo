@@ -89,7 +89,7 @@ public class TcpVmsTerminalExternalSensorHomeFragment extends BaseTcpConnectFrag
         sensorIndex = 0;
         sensorHashMap.clear();
         sensorItemList.clear();
-//        startProgressRunnable("加载数据...", QUERY_CMD_DELAY_MILLIS);
+//        startProgressRunnable("刷新数据...", QUERY_CMD_DELAY_MILLIS);
         queryTerminalAisleParamInfo();
     }
 

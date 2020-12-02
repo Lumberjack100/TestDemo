@@ -98,8 +98,10 @@ public class TcpVmsDataCenterSettingFragment extends BaseTcpConnectFragment {
     ViewGroup transferProtocolLayout;
 
     private static final String DATA_SERVER_NUMBER = "data_server_number";
+    private static final String DATA_SERVER_STATUS = "data_server_status";
     private ServerNumber serverNumber;
     private DataCenterInfo dataCenterInfo;
+    private String serverStatus;
 
     private int transferProtocolPos;
     private String transferProtocolOld;//
@@ -115,14 +117,15 @@ public class TcpVmsDataCenterSettingFragment extends BaseTcpConnectFragment {
     private String productId;//产品 Id
     private String registerCode;//注册码
 
-    private boolean isSaveParamOperation = false;//判断当前是保存参数操作，还是开启数据中心操作
+    private boolean centerEnableInitial;//数据中心开关初始状态，用于判断开关是否有打开后没有设置参数就返回
+    private boolean isSaveParamOperation = false;//判断当前是保存参数操作，还是关闭数据中心操作
 
 
-
-    public static TcpVmsDataCenterSettingFragment newInstance(ServerNumber serverNumber) {
+    public static TcpVmsDataCenterSettingFragment newInstance(ServerNumber serverNumber, String status) {
         TcpVmsDataCenterSettingFragment fragment = new TcpVmsDataCenterSettingFragment();
         Bundle args = new Bundle();
         args.putSerializable(DATA_SERVER_NUMBER, serverNumber);
+        args.putSerializable(DATA_SERVER_STATUS, status);
         fragment.setArguments(args);
         return fragment;
     }
@@ -132,6 +135,7 @@ public class TcpVmsDataCenterSettingFragment extends BaseTcpConnectFragment {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             serverNumber = (ServerNumber) getArguments().getSerializable(DATA_SERVER_NUMBER);
+            serverStatus = getArguments().getString(DATA_SERVER_STATUS);
         }
     }
 
@@ -158,6 +162,18 @@ public class TcpVmsDataCenterSettingFragment extends BaseTcpConnectFragment {
         mEtDeviceRegisterPort.setFilters(new InputFilter[]{new InputFilter.LengthFilter(5)});
         mEtProductId.setFilters(new InputFilter[]{new InputFilter.LengthFilter(100)});
         mEtDeviceRegisterCode.setFilters(new InputFilter[]{new InputFilter.LengthFilter(100)});
+
+        //数据中心地址为空表示数据中心未启用
+        if (!TextUtils.isEmpty(serverStatus) && serverStatus.contains("未开启")) {
+            centerEnableInitial = false;
+            mSbCenterEnable.setCheckedImmediatelyNoEvent(false);
+            pageTwoaLyout.setVisibility(View.VISIBLE);
+            pageTwoaLyout.setOnClickListener(null);
+        } else {
+            centerEnableInitial = true;
+            mSbCenterEnable.setCheckedImmediatelyNoEvent(true);
+            pageTwoaLyout.setVisibility(View.GONE);
+        }
     }
 
     private void setSwitchViewListener() {
@@ -199,6 +215,7 @@ public class TcpVmsDataCenterSettingFragment extends BaseTcpConnectFragment {
                         closeDataServer();//关闭服务器
                         pageTwoaLyout.setVisibility(View.VISIBLE);
                         pageTwoaLyout.setOnClickListener(null);
+                        centerEnableInitial = mSbCenterEnable.isChecked();
                     }
                 }).onNegative(new MaterialDialog.SingleButtonCallback() {
                     @Override
@@ -230,7 +247,7 @@ public class TcpVmsDataCenterSettingFragment extends BaseTcpConnectFragment {
         dataCenterEntity.setAddr("");
         dataCenterEntity.setPort("");
 
-        isSaveParamOperation = true;
+        isSaveParamOperation = false;
         mBtnSave.setEnabled(false);
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.MD_SET_DATA_CENTER, dataCenterEntity);
         sendCommand(command);
@@ -249,7 +266,6 @@ public class TcpVmsDataCenterSettingFragment extends BaseTcpConnectFragment {
                 ToastUtils.show(getString(R.string.tcp_config_disconnect_warn));
                 return;
             }
-
             if (!checkValueIsValid()) {
                 Timber.w("通道参数存在错误!");
                 return;
@@ -385,6 +401,8 @@ public class TcpVmsDataCenterSettingFragment extends BaseTcpConnectFragment {
         dataCenterEntity.setProjid(productId);
         dataCenterEntity.setRegcode(registerCode);
 
+        centerEnableInitial = mSbCenterEnable.isChecked();
+        isSaveParamOperation = true;
         mBtnSave.setEnabled(false);
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.MD_SET_DATA_CENTER, dataCenterEntity);
         sendCommand(command);
@@ -399,7 +417,6 @@ public class TcpVmsDataCenterSettingFragment extends BaseTcpConnectFragment {
         IOTCommandType type = IOTStringUtil.extractCommandType(cmdStr);
         switch (type) {
             case MD_GET_DATA_CENTER: {//获取网关的数据中心参数
-//                stopProgressRunnable();
                 IOTCommandResult<DataCenterInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
                     String errMsg = "查询网关的数据中心参数出错!";
@@ -413,7 +430,6 @@ public class TcpVmsDataCenterSettingFragment extends BaseTcpConnectFragment {
             break;
 
             case MD_SET_DATA_CENTER: {//设置网关通道的控制参数
-//                stopProgressRunnable();
                 CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
                 if (!cmdResult.isSucceed()) {
                     String errMsg = "设置参数失败!";
@@ -484,16 +500,6 @@ public class TcpVmsDataCenterSettingFragment extends BaseTcpConnectFragment {
             mqttChildItemsLayout.setVisibility(View.VISIBLE);
             transferProtocolPos = 2;
         }
-
-        //数据中心地址为空表示数据中心未启用
-        if (TextUtils.isEmpty(dataServerAddress)) {
-            mSbCenterEnable.setCheckedImmediatelyNoEvent(false);
-            pageTwoaLyout.setVisibility(View.VISIBLE);
-            pageTwoaLyout.setOnClickListener(null);
-        } else {
-            mSbCenterEnable.setCheckedImmediatelyNoEvent(true);
-            pageTwoaLyout.setVisibility(View.GONE);
-        }
     }
 
     @Override
@@ -511,8 +517,8 @@ public class TcpVmsDataCenterSettingFragment extends BaseTcpConnectFragment {
     }
 
     private boolean checkValueIsChange() {
-        if (!mSbCenterEnable.isChecked()) {
-            return false;
+        if (centerEnableInitial != mSbCenterEnable.isChecked()) {
+            return true;
         }
 
         if (transferProtocolOld != null && transferProtocolOld != null && !transferProtocolOld.equals(transferProtocol)) {

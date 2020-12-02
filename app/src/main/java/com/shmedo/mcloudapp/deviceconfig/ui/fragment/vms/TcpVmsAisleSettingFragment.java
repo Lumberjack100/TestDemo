@@ -134,7 +134,7 @@ public class TcpVmsAisleSettingFragment extends BaseTcpConnectFragment {
         mEtDataRequestInterval.setHint("≥3s");
         mEtOfflineInterval.setHint("≥7200s");
         mEtTerminalSleepTime.setHint("0~5");
-        mEtTerminalSleepTime.setHint("0~65535");
+        mEtTerminalWakeTime.setHint("0~65535");
     }
 
     /**

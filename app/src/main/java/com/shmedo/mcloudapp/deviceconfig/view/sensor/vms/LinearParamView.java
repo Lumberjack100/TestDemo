@@ -105,10 +105,8 @@ public class LinearParamView extends FrameLayout {
         initialModulus = mEtInitModulus.getText().toString().trim();
         correctValue = mEtCorrectValue.getText().toString().trim();
 
-
         return true;
     }
-
 
     public boolean checkValueIsChange() {
         if (temperatureCoefficient != null && !temperatureCoefficient.equals(mEtTemperatureCoefficient.getText().toString().trim())) {
@@ -132,5 +130,4 @@ public class LinearParamView extends FrameLayout {
         }
         return false;
     }
-
 }

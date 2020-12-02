@@ -23,7 +23,9 @@ import butterknife.BindView;
  * 描述：     Vms 网关数据中心参数配置
  */
 public class VmsDataCenterSettingActivity extends BaseActivity {
-    private static final String SERVER_NUMBER = "server_number";
+    private static final String DATA_SERVER_NUMBER = "data_server_number";
+    private static final String DATA_SERVER_STATUS = "data_server_status";
+
 
     @BindView(R.id.tv_title)
     TextView mToolbarTitle;
@@ -31,14 +33,17 @@ public class VmsDataCenterSettingActivity extends BaseActivity {
     private int connectWay = AppContants.CommunicationWay.NET_PLATFORM_CONNECT;
 
     private ServerNumber serverNumber;
+    private String serverStatus;
+
 
     private Fragment fragment;
 
 
-    public static void startActivity(Context context, int connectWay, ServerNumber serverNumber) {
+    public static void startActivity(Context context, int connectWay, ServerNumber serverNumber, String status) {
         Intent intent = new Intent(context, VmsDataCenterSettingActivity.class);
         intent.putExtra(AppContants.Extras.COMMUNICATION_WAY, connectWay);
-        intent.putExtra(SERVER_NUMBER, serverNumber);
+        intent.putExtra(DATA_SERVER_NUMBER, serverNumber);
+        intent.putExtra(DATA_SERVER_STATUS, status);
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         context.startActivity(intent);
     }
@@ -65,8 +70,8 @@ public class VmsDataCenterSettingActivity extends BaseActivity {
             connectWay = intent.getIntExtra(AppContants.Extras.COMMUNICATION_WAY, AppContants.CommunicationWay.NET_PLATFORM_CONNECT);
         }
 
-        if (intent.getExtras().containsKey(SERVER_NUMBER)) {
-            serverNumber = (ServerNumber) intent.getSerializableExtra(SERVER_NUMBER);
+        if (intent.getExtras().containsKey(DATA_SERVER_NUMBER)) {
+            serverNumber = (ServerNumber) intent.getSerializableExtra(DATA_SERVER_NUMBER);
             if (serverNumber == ServerNumber.NUMBER_ONE) {
                 mToolbarTitle.setText("数据中心1");
             } else if (serverNumber == ServerNumber.NUMBER_TWO) {
@@ -77,13 +82,16 @@ public class VmsDataCenterSettingActivity extends BaseActivity {
                 mToolbarTitle.setText("数据中心4");
             }
         }
+        if (intent.getExtras().containsKey(DATA_SERVER_STATUS)) {
+            serverStatus = intent.getStringExtra(DATA_SERVER_STATUS);
+        }
     }
 
     private void initFragment() {
         if (connectWay == AppContants.CommunicationWay.NET_PLATFORM_CONNECT) {
 
         } else if (connectWay == AppContants.CommunicationWay.TCP_CONNECT) {
-            fragment = TcpVmsDataCenterSettingFragment.newInstance(serverNumber);
+            fragment = TcpVmsDataCenterSettingFragment.newInstance(serverNumber, serverStatus);
         }
 
         replaceFragment(fragment);

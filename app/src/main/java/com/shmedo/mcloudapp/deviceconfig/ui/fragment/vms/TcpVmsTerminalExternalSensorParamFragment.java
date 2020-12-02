@@ -1,6 +1,7 @@
 package com.shmedo.mcloudapp.deviceconfig.ui.fragment.vms;
 
 import android.os.Bundle;
+import android.text.InputFilter;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
@@ -56,8 +57,8 @@ public class TcpVmsTerminalExternalSensorParamFragment extends BaseTcpConnectFra
     @BindView(R.id.page2)
     ViewGroup pageTwoaLyout;
 
-    @BindView(R.id.centerEnableSBtn)
-    SwitchButton mSbCenterEnable;
+    @BindView(R.id.sensorEnableSBtn)
+    SwitchButton mSbSensorEnable;
 
     @BindView(R.id.tv_sensor_calculation)
     TextView mTvSensorCalculation;//计算方式
@@ -90,8 +91,7 @@ public class TcpVmsTerminalExternalSensorParamFragment extends BaseTcpConnectFra
     private int calculationPosOld;//计算方式索引
     private int sensorNamePosOld;// 传感器名称索引
 
-    private boolean isSaveParamOperation = false;//判断当前是保存参数操作，还是打开传感器开关操作
-
+    private boolean isSaveParamOperation = false;//判断当前是保存参数操作，还是关闭传感器开关操作
 
 
     public static TcpVmsTerminalExternalSensorParamFragment newInstance(TerminalSensorInfo sensorInfo) {
@@ -118,8 +118,13 @@ public class TcpVmsTerminalExternalSensorParamFragment extends BaseTcpConnectFra
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        setView();
         initData();
         setSwitchViewListener();
+    }
+
+    private void setView() {
+        mEtSensorSerialNumber.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
     }
 
     private void initData() {
@@ -162,22 +167,22 @@ public class TcpVmsTerminalExternalSensorParamFragment extends BaseTcpConnectFra
 
         //为0表示未接入传感器
         if (sensorInfo.getInsert().trim().equals("0")) {
-            mSbCenterEnable.setCheckedImmediatelyNoEvent(false);
+            mSbSensorEnable.setCheckedImmediatelyNoEvent(false);
             pageTwoaLyout.setVisibility(View.VISIBLE);
             pageTwoaLyout.setOnClickListener(null);
         } else {
-            mSbCenterEnable.setCheckedImmediatelyNoEvent(true);
+            mSbSensorEnable.setCheckedImmediatelyNoEvent(true);
             pageTwoaLyout.setVisibility(View.GONE);
         }
     }
 
     private void setSwitchViewListener() {
-        mSbCenterEnable.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        mSbSensorEnable.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (!tcpShareViewModel.getConnectStatus()) {
                     ToastUtils.show(getString(R.string.tcp_config_disconnect_warn));
-                    mSbCenterEnable.setCheckedImmediatelyNoEvent(!isChecked);
+                    mSbSensorEnable.setCheckedImmediatelyNoEvent(!isChecked);
                     return;
                 }
 
@@ -216,7 +221,7 @@ public class TcpVmsTerminalExternalSensorParamFragment extends BaseTcpConnectFra
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                         dialog.dismiss();
-                        mSbCenterEnable.setCheckedImmediatelyNoEvent(true);
+                        mSbSensorEnable.setCheckedImmediatelyNoEvent(true);
                     }
                 });
         MaterialDialog mMaterialDialog = mBuilder.build();
@@ -243,7 +248,7 @@ public class TcpVmsTerminalExternalSensorParamFragment extends BaseTcpConnectFra
         entity.setChannel(sensorInfo.getChannel());
         entity.setInsert("0");
 
-        isSaveParamOperation = true;
+        isSaveParamOperation = false;
         mBtnSave.setEnabled(false);
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.VMS_MD_SET_TERMINAL_CHL, entity);
         sendCommand(command);
@@ -354,6 +359,7 @@ public class TcpVmsTerminalExternalSensorParamFragment extends BaseTcpConnectFra
         String sensorNameNo = IOTSensorUtil.getInstance().getSensorTypeCodeByName(sensorName) + "_" + sensorSerialNumber;
         sensorParamsEntity.setName(sensorNameNo);
 
+        isSaveParamOperation = true;
         mBtnSave.setEnabled(false);
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.VMS_MD_SET_TERMINAL_CHL, sensorParamsEntity);
         sendCommand(command);
@@ -413,7 +419,7 @@ public class TcpVmsTerminalExternalSensorParamFragment extends BaseTcpConnectFra
     }
 
     private boolean checkValueIsChange() {
-        if (!mSbCenterEnable.isChecked()) {
+        if (!mSbSensorEnable.isChecked()) {
             return false;
         }
 

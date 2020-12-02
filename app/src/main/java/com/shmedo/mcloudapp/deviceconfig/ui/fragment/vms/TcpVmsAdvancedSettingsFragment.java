@@ -63,8 +63,13 @@ public class TcpVmsAdvancedSettingsFragment extends BaseTcpConnectFragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        startProgressRunnable("加载数据...", QUERY_CMD_DELAY_MILLIS);
-        //获取网关不同数据中心的状态
+
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+//        startProgressRunnable("刷新数据...", QUERY_CMD_DELAY_MILLIS);
         getDataCenterStatus(ServerNumber.NUMBER_ONE);
     }
 
@@ -80,16 +85,16 @@ public class TcpVmsAdvancedSettingsFragment extends BaseTcpConnectFragment {
 
         int id = view.getId();
         if (id == R.id.dataCenterOneLayout) {
-            VmsDataCenterSettingActivity.startActivity(mActivity, AppContants.CommunicationWay.TCP_CONNECT, ServerNumber.NUMBER_ONE);
+            VmsDataCenterSettingActivity.startActivity(mActivity, AppContants.CommunicationWay.TCP_CONNECT, ServerNumber.NUMBER_ONE, mTvDataCenterOne.getText().toString());
 
         } else if (id == R.id.dataCenterTwoLayout) {
-            VmsDataCenterSettingActivity.startActivity(mActivity, AppContants.CommunicationWay.TCP_CONNECT, ServerNumber.NUMBER_TWO);
+            VmsDataCenterSettingActivity.startActivity(mActivity, AppContants.CommunicationWay.TCP_CONNECT, ServerNumber.NUMBER_TWO, mTvDataCenterTwo.getText().toString());
 
         } else if (id == R.id.dataCenterThreeLayout) {
-            VmsDataCenterSettingActivity.startActivity(mActivity, AppContants.CommunicationWay.TCP_CONNECT, ServerNumber.NUMBER_THREE);
+            VmsDataCenterSettingActivity.startActivity(mActivity, AppContants.CommunicationWay.TCP_CONNECT, ServerNumber.NUMBER_THREE, mTvDataCenterThree.getText().toString());
 
         } else if (id == R.id.dataCenterFourLayout) {
-            VmsDataCenterSettingActivity.startActivity(mActivity, AppContants.CommunicationWay.TCP_CONNECT, ServerNumber.NUMBER_FOUR);
+            VmsDataCenterSettingActivity.startActivity(mActivity, AppContants.CommunicationWay.TCP_CONNECT, ServerNumber.NUMBER_FOUR, mTvDataCenterFour.getText().toString());
 
         } else if (id == R.id.vmsAisleOneLayout) {
             VmsAisleSettingActivity.startActivity(mActivity, AppContants.CommunicationWay.TCP_CONNECT, VmsAisleNumber.NUMBER_ONE);
@@ -179,6 +184,7 @@ public class TcpVmsAdvancedSettingsFragment extends BaseTcpConnectFragment {
                     mTvDataCenterThree.setTextColor(GlobalUtil.getColor(getStatusColorResId(centerStatus.getStatus())));
                     getDataCenterStatus(ServerNumber.NUMBER_FOUR);
                 } else if (centerStatus.getCenterid() == 4) {
+                    stopProgressRunnable();
                     mTvDataCenterFour.setText(getStatusTextById(centerStatus.getStatus()));
                     mTvDataCenterFour.setTextColor(GlobalUtil.getColor(getStatusColorResId(centerStatus.getStatus())));
                 }
