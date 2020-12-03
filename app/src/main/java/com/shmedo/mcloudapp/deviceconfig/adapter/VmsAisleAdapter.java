@@ -25,9 +25,9 @@ public class VmsAisleAdapter extends BaseQuickAdapter<VmsAisleInfo, BaseViewHold
 
     @Override
     protected void convert(@NotNull BaseViewHolder holder, VmsAisleInfo vmsAisleInfo) {
-        if (vmsAisleInfo.getChannel() == 0) {
+        if (vmsAisleInfo.getChannel() == 1) {
             holder.setText(R.id.tv_aisle_name, "通道01");
-        } else if (vmsAisleInfo.getChannel() == 1) {
+        } else if (vmsAisleInfo.getChannel() == 2) {
             holder.setText(R.id.tv_aisle_name, "通道02");
         }
 

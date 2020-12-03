@@ -228,14 +228,14 @@ public class TcpVmsHomeFragment extends BaseTcpConnectFragment {
     private void updateViewStateByConnectState(boolean isConnected) {
         mTvDeviceState.setVisibility(View.VISIBLE);
         if (isConnected) {
-            mTvDeviceState.setText("在线");
+            mTvDeviceState.setText("已连接");
             mTvDeviceState.setTextColor(ContextCompat.getColor(mActivity, R.color.text_color_50E9B9));
             mTvDeviceState.setBackgroundResource(R.drawable.bg_device_online_state_flag);
 
             mTvDeviceConnectOperate.setText("断开连接");
             mTvDeviceConnectOperate.setTextColor(ContextCompat.getColor(mActivity, R.color.text_color_b3b3b3));
         } else {
-            mTvDeviceState.setText("离线");
+            mTvDeviceState.setText("已断开");
             mTvDeviceState.setTextColor(ContextCompat.getColor(mActivity, R.color.sub_title_text_color));
             mTvDeviceState.setBackgroundResource(R.drawable.bg_device_offline_state_flag);
 
