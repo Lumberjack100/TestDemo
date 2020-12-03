@@ -5,7 +5,10 @@ import android.graphics.Paint;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
+import android.text.style.ForegroundColorSpan;
 import android.view.View;
 import android.widget.TextView;
 
@@ -73,14 +76,14 @@ public class TcpVmsHomeFragment extends BaseTcpConnectFragment {
     @BindView(R.id.tv_time_or_sub_model)
     TextView mTvSubModel;//网关电压
 
+    @BindView(R.id.tv_platform_communication_state)
+    TextView mTvPlatformCommunicationState;// 与平台通信状态
+
     @BindView(R.id.tv_device_state_flag)
     TextView mTvDeviceState;//通信状态(在线、离线)
 
     @BindView(R.id.tv_device_connect_operate)
     TextView mTvDeviceConnectOperate;//Tcp连接状态(断开连接、重新连接)
-
-    @BindView(R.id.tv_device_communication_way_switch)
-    TextView mTvDeviceCommunicationWaySwitch;//通信方式(网络、蓝牙)
 
     @BindView(R.id.recyclerview)
     RecyclerView mRecyclerView;
@@ -150,7 +153,6 @@ public class TcpVmsHomeFragment extends BaseTcpConnectFragment {
         mTvDeviceState.setVisibility(View.INVISIBLE);
         mTvDeviceConnectOperate.setVisibility(View.VISIBLE);
         mTvDeviceConnectOperate.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG);
-        mTvDeviceCommunicationWaySwitch.setVisibility(View.INVISIBLE);
         initRefreshLayout();
     }
 
@@ -212,10 +214,19 @@ public class TcpVmsHomeFragment extends BaseTcpConnectFragment {
     }
 
     private void updateViewStateByConnectState(boolean isConnected) {
+        mTvDeviceState.setVisibility(View.VISIBLE);
         if (isConnected) {
+            mTvDeviceState.setText("在线");
+            mTvDeviceState.setTextColor(ContextCompat.getColor(mActivity, R.color.text_color_50E9B9));
+            mTvDeviceState.setBackgroundResource(R.drawable.bg_device_online_state_flag);
+
             mTvDeviceConnectOperate.setText("断开连接");
             mTvDeviceConnectOperate.setTextColor(ContextCompat.getColor(mActivity, R.color.text_color_b3b3b3));
         } else {
+            mTvDeviceState.setText("离线");
+            mTvDeviceState.setTextColor(ContextCompat.getColor(mActivity, R.color.sub_title_text_color));
+            mTvDeviceState.setBackgroundResource(R.drawable.bg_device_offline_state_flag);
+
             mTvDeviceConnectOperate.setText("重新连接");
             mTvDeviceConnectOperate.setTextColor(ContextCompat.getColor(mActivity, R.color.blue_52B4F8));
         }
@@ -392,17 +403,22 @@ public class TcpVmsHomeFragment extends BaseTcpConnectFragment {
             mTvProductModel.setText(String.format("版本信息：%s", vmsBasicInfo.getSwVersion()));
             mTvSubModel.setText(String.format("网关电压：%s", vmsBasicInfo.getVolt() + "V"));
             if (!TextUtils.isEmpty(vmsBasicInfo.getOnline()) && !vmsBasicInfo.getOnline().equals("0")) {
-                mTvDeviceState.setVisibility(View.VISIBLE);
-                mTvDeviceState.setText("在线");
-                mTvDeviceState.setTextColor(ContextCompat.getColor(mActivity, R.color.text_color_50E9B9));
-                mTvDeviceState.setBackgroundResource(R.drawable.bg_device_online_state_flag);
-            } else if (vmsBasicInfo.getOnline().equals("0")) {
-                mTvDeviceState.setVisibility(View.VISIBLE);
-                mTvDeviceState.setText("离线");
+                mTvPlatformCommunicationState.setText("平台连接状态：在线");
                 mTvDeviceState.setTextColor(ContextCompat.getColor(mActivity, R.color.sub_title_text_color));
-                mTvDeviceState.setBackgroundResource(R.drawable.bg_device_offline_state_flag);
+
+            } else if (vmsBasicInfo.getOnline().equals("0")) {
+                mTvPlatformCommunicationState.setText(getPlatformAbnormalMessage("离线"));
             }
         }
+    }
+
+    private CharSequence getPlatformAbnormalMessage(String state) {
+        SpannableStringBuilder builder = new SpannableStringBuilder(state);
+        ForegroundColorSpan colorSpan = new ForegroundColorSpan(getResources().getColor(R.color.red));
+        builder.setSpan(colorSpan, 0, builder.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        builder.insert(0, "平台连接状态：");
+
+        return builder;
     }
 
     /**

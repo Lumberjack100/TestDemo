@@ -17,7 +17,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="14dp" />
 
-        <include layout="@layout/device_config_head_info" />
+        <include layout="@layout/vms_device_config_head_info" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerview"
