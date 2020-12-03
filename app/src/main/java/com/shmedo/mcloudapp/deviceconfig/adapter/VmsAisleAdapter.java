@@ -27,11 +27,8 @@ public class VmsAisleAdapter extends BaseQuickAdapter<VmsAisleInfo, BaseViewHold
     protected void convert(@NotNull BaseViewHolder holder, VmsAisleInfo vmsAisleInfo) {
         if (vmsAisleInfo.getChannel() == 0) {
             holder.setText(R.id.tv_aisle_name, "通道01");
-            holder.setGone(R.id.tv_terminal_equipment_count, true);
         } else if (vmsAisleInfo.getChannel() == 1) {
             holder.setText(R.id.tv_aisle_name, "通道02");
-        } else if (vmsAisleInfo.getChannel() == 2) {
-            holder.setText(R.id.tv_aisle_name, "通道03");
         }
 
         String terminalCount = String.format("设备(%s)", vmsAisleInfo.getTerminalnum());

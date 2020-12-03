@@ -85,6 +85,18 @@ public class TcpVmsHomeFragment extends BaseTcpConnectFragment {
     @BindView(R.id.tv_device_connect_operate)
     TextView mTvDeviceConnectOperate;//Tcp连接状态(断开连接、重新连接)
 
+    @BindView(R.id.tv_aisle_one_network_number)
+    TextView mTvAisleOneNetworkNumber;//通道1网络号
+
+    @BindView(R.id.tv_aisle_one_address)
+    TextView mTvAisleOneAddress;//通道1地址
+
+    @BindView(R.id.tv_aisle_one_communication_chl)
+    TextView mTvAisleOneCommuChl;//通道1通信信道
+
+    @BindView(R.id.tv_aisle_one_signal_strength)
+    TextView mTvAisleOneSignalStrength;//通道1信号强度
+
     @BindView(R.id.recyclerview)
     RecyclerView mRecyclerView;
 
@@ -328,8 +340,7 @@ public class TcpVmsHomeFragment extends BaseTcpConnectFragment {
                 }
                 vmsBasicInfo = commandResult.getResult();
                 updateHeadInfo();
-                vmsAisleInfoList.clear();
-                //获取网关不同通道的控制参数
+                //获取网关通道1的控制参数
                 getGatewayAisleInfo(VmsAisleNumber.NUMBER_ONE);
             }
             break;
@@ -344,14 +355,19 @@ public class TcpVmsHomeFragment extends BaseTcpConnectFragment {
                     return;
                 }
                 VmsAisleInfo vmsAisleInfo = commandResult.getResult();
-                vmsAisleInfoList.add(vmsAisleInfo);
                 if (vmsAisleInfo.getChannel() == 0) {
+                    updateAisleOneInfo(vmsAisleInfo);
+                    //获取网关通道2的控制参数
                     getGatewayAisleInfo(VmsAisleNumber.NUMBER_TWO);
 
                 } else if (vmsAisleInfo.getChannel() == 1) {
+                    vmsAisleInfoList.clear();
+                    vmsAisleInfoList.add(vmsAisleInfo);
+                    //获取网关通道3的控制参数
                     getGatewayAisleInfo(VmsAisleNumber.NUMBER_THREE);
 
                 } else if (vmsAisleInfo.getChannel() == 2) {
+                    vmsAisleInfoList.add(vmsAisleInfo);
                     vmsAisleAdapter.notifyDataSetChanged();
                     //获取网关的状态
                     getGatewayStatus(VmsAisleNumber.NUMBER_TWO);
@@ -396,6 +412,9 @@ public class TcpVmsHomeFragment extends BaseTcpConnectFragment {
         }
     }
 
+    /**
+     * 更新头部信息
+     */
     private void updateHeadInfo() {
         if (vmsBasicInfo != null) {
             mTvDeviceName.setText("VMS网关");
@@ -419,6 +438,18 @@ public class TcpVmsHomeFragment extends BaseTcpConnectFragment {
         builder.insert(0, "平台连接状态：");
 
         return builder;
+    }
+
+    /**
+     * 更新注册通道的信息
+     *
+     * @param vmsAisleInfo
+     */
+    private void updateAisleOneInfo(VmsAisleInfo vmsAisleInfo) {
+        mTvAisleOneNetworkNumber.setText(String.valueOf(vmsAisleInfo.getNetid()));
+        mTvAisleOneAddress.setText(String.valueOf(vmsAisleInfo.getAddr()));
+        mTvAisleOneCommuChl.setText( String.valueOf(vmsAisleInfo.getChl()));
+        mTvAisleOneSignalStrength.setText(vmsAisleInfo.getRssi() + "dBm");
     }
 
     /**
