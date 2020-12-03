@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/main_bg_gray">
+    android:background="@color/white">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -11,17 +11,27 @@
         android:orientation="vertical">
 
         <ImageView
-            android:layout_width="80dp"
-            android:layout_height="80dp"
+            android:layout_width="84dp"
+            android:layout_height="84dp"
             android:layout_gravity="center_horizontal"
-            android:src="@drawable/empty_icon" />
+            android:scaleType="centerCrop"
+            android:src="@drawable/icon_wifi_disabled" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="15dp"
+            android:text="WiFi未开启，点击打开WiFi"
+            android:textColor="@color/sub_title_text_color"
+            android:textSize="@dimen/dimen_size_15" />
 
         <Button
             android:id="@+id/btn_open_wifi"
             android:layout_width="200dp"
             android:layout_height="46dp"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="23dp"
             android:layout_marginBottom="20dp"
             android:background="@drawable/btn_select"
             android:text="打开WiFi"

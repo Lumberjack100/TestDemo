@@ -25,5 +25,6 @@ public class WiFiAdapter extends BaseQuickAdapter<IWifi, BaseViewHolder> {
         holder.setText(R.id.tv_name, iWifi.name());
         holder.setText(R.id.tv_desc, iWifi.description2());
         holder.setGone(R.id.tv_desc, TextUtils.isEmpty(iWifi.description2()));
+        holder.setGone(R.id.iv_wifi_lock, !iWifi.isEncrypt());
     }
 }

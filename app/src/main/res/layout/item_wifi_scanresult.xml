@@ -44,4 +44,17 @@
             tools:text="以保存" />
     </LinearLayout>
 
+    <ImageView
+        android:id="@+id/iv_wifi_lock"
+        android:layout_width="18dp"
+        android:layout_height="18dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/ic_wifi_lock" />
+
+    <ImageView
+        android:layout_width="7dp"
+        android:layout_height="13dp"
+        android:layout_marginStart="11dp"
+        android:src="@drawable/icon_right" />
+
 </LinearLayout>
