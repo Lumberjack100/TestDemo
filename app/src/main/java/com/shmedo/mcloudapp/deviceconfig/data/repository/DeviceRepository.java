@@ -109,7 +109,7 @@ public class DeviceRepository {
 
                     @Override
                     public void onError(Throwable e) {
-                        ResponseHandler.getInstance().handleFailure((Exception) e);
+//                        ResponseHandler.getInstance().handleFailure((Exception) e);
                         deviceApiKey.postValue(null);
                     }
                 });
@@ -150,7 +150,7 @@ public class DeviceRepository {
 
                     @Override
                     public void onError(Throwable e) {
-                        ResponseHandler.getInstance().handleFailure((Exception) e);
+//                        ResponseHandler.getInstance().handleFailure((Exception) e);
                         deviceApiKey.postValue(null);
                     }
                 });

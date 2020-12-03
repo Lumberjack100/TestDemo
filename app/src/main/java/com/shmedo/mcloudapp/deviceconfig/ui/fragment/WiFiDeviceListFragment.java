@@ -32,6 +32,7 @@ import com.hacknife.wifimanager.HackWifiManager;
 import com.hacknife.wifimanager.IWifi;
 import com.hacknife.wifimanager.IWifiManager;
 import com.hacknife.wifimanager.OnWifiChangeListener;
+import com.hacknife.wifimanager.OnWifiConnectListener;
 import com.hacknife.wifimanager.OnWifiStateChangeListener;
 import com.hacknife.wifimanager.State;
 import com.hjq.toast.ToastUtils;
@@ -182,26 +183,16 @@ public class WiFiDeviceListFragment extends BaseFragment implements TextWatcher,
     private ConnectionSuccessListener successListener = new ConnectionSuccessListener() {
         @Override
         public void success() {
-            mActivity.runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    dismissProgressDialog();
-                    if (curWiFi.name().contains("VMS")) {
-                        VmsHomeActivity.startActivity(getContext(), AppContants.CommunicationWay.TCP_CONNECT);
-                    }
-                }
-            });
+            dismissProgressDialog();
+            if (curWiFi.name().contains("VMS")) {
+                VmsHomeActivity.startActivity(getContext(), AppContants.CommunicationWay.TCP_CONNECT);
+            }
         }
 
         @Override
         public void failed(@NonNull ConnectionErrorCode errorCode) {
-            mActivity.runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    dismissProgressDialog();
-                    ToastUtils.show("连接失败!" + errorCode.toString());
-                }
-            });
+            dismissProgressDialog();
+            ToastUtils.show("连接失败!" + errorCode.toString());
         }
     };
 
@@ -246,6 +237,13 @@ public class WiFiDeviceListFragment extends BaseFragment implements TextWatcher,
                     normalView.setVisibility(View.VISIBLE);
                     wifiDisabledView.setVisibility(View.GONE);
                 }
+            }
+        });
+
+        hackWiFiManager.setOnWifiConnectListener(new OnWifiConnectListener() {
+            @Override
+            public void onConnectChanged(boolean status) {
+//                dismissProgressDialog();
             }
         });
     }
