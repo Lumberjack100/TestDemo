@@ -80,7 +80,7 @@
                             android:singleLine="true"
                             android:textColor="@color/title_text_color"
                             android:textSize="18sp"
-                            tools:text="3225" />
+                            android:text="--" />
 
                     </LinearLayout>
 
@@ -106,7 +106,7 @@
                             android:singleLine="true"
                             android:textColor="@color/title_text_color"
                             android:textSize="18sp"
-                            tools:text="1002" />
+                            android:text="--"  />
 
                     </LinearLayout>
 
@@ -132,7 +132,7 @@
                             android:singleLine="true"
                             android:textColor="@color/title_text_color"
                             android:textSize="18sp"
-                            tools:text="02" />
+                            android:text="--"  />
 
                     </LinearLayout>
 
@@ -158,7 +158,7 @@
                             android:singleLine="true"
                             android:textColor="@color/title_text_color"
                             android:textSize="18sp"
-                            tools:text="强" />
+                            android:text="--"  />
 
                     </LinearLayout>
 

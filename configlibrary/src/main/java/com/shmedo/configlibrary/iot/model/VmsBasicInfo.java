@@ -1,5 +1,7 @@
 package com.shmedo.configlibrary.iot.model;
 
+import android.text.TextUtils;
+
 /**
  * 创建者:   gonghe <br/>
  * 创建时间:  2020/11/12 <br/>
@@ -12,7 +14,7 @@ public class VmsBasicInfo {
     private String online;//在线状态（0：离线，非0:在线)
 
     public String getSn() {
-        return sn;
+        return TextUtils.isEmpty(sn) ? "" : sn;
     }
 
     public void setSn(String sn) {
@@ -20,7 +22,7 @@ public class VmsBasicInfo {
     }
 
     public String getSwVersion() {
-        return swVersion;
+        return TextUtils.isEmpty(swVersion) ? "" : swVersion;
     }
 
     public void setSwVersion(String swVersion) {
@@ -28,7 +30,7 @@ public class VmsBasicInfo {
     }
 
     public String getVolt() {
-        return volt;
+        return TextUtils.isEmpty(volt) ? "" : volt;
     }
 
     public void setVolt(String volt) {
@@ -36,7 +38,7 @@ public class VmsBasicInfo {
     }
 
     public String getOnline() {
-        return online;
+        return TextUtils.isEmpty(online) ? "" : online;
     }
 
     public void setOnline(String online) {

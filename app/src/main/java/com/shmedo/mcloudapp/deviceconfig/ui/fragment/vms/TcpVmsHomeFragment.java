@@ -106,7 +106,7 @@ public class TcpVmsHomeFragment extends BaseTcpConnectFragment {
 
     private final String ipAddress = "192.168.5.2";//172.168.5.250   192.168.5.2
 
-    private VmsBasicInfo vmsBasicInfo = new VmsBasicInfo();
+    private VmsBasicInfo vmsBasicInfo;
 
     private TcpVmsTerminalListFragment tcpVmsTerminalListFragment;
     private static Handler myHander = new Handler();
@@ -123,6 +123,7 @@ public class TcpVmsHomeFragment extends BaseTcpConnectFragment {
         public void run() {
             refreshRunnable = null;
             swipeRefresh.setRefreshing(false);
+            updateHeadInfo();
             ToastUtils.show("查询数据超时");
         }
     }
@@ -428,6 +429,12 @@ public class TcpVmsHomeFragment extends BaseTcpConnectFragment {
             } else if (vmsBasicInfo.getOnline().equals("0")) {
                 mTvPlatformCommunicationState.setText(getPlatformAbnormalMessage("离线"));
             }
+        } else {
+            mTvDeviceName.setText("VMS网关");
+            mTvDeviceSn.setText("设备SN号：--");
+            mTvProductModel.setText("版本信息：--");
+            mTvSubModel.setText("网关电压：--");
+            mTvPlatformCommunicationState.setText("平台连接状态：--");
         }
     }
 
@@ -448,7 +455,7 @@ public class TcpVmsHomeFragment extends BaseTcpConnectFragment {
     private void updateAisleOneInfo(VmsAisleInfo vmsAisleInfo) {
         mTvAisleOneNetworkNumber.setText(String.valueOf(vmsAisleInfo.getNetid()));
         mTvAisleOneAddress.setText(String.valueOf(vmsAisleInfo.getAddr()));
-        mTvAisleOneCommuChl.setText( String.valueOf(vmsAisleInfo.getChl()));
+        mTvAisleOneCommuChl.setText(String.valueOf(vmsAisleInfo.getChl()));
         mTvAisleOneSignalStrength.setText(vmsAisleInfo.getRssi() + "dBm");
     }
 
@@ -485,11 +492,11 @@ public class TcpVmsHomeFragment extends BaseTcpConnectFragment {
     public void onStop() {
         super.onStop();
         stopRefreshRunnable();
-        processRemoveConnectedSSID();
     }
 
     @Override
     public void onDestroy() {
+        processRemoveConnectedSSID();
         super.onDestroy();
     }
 

@@ -533,7 +533,7 @@ public class TcpVmsDataCenterSettingFragment extends BaseTcpConnectFragment {
             return true;
         }
 
-        if (transferProtocol.equals("MQTT")) {//MQTT自动注册
+        if (transferProtocol != null && transferProtocol.equals("MQTT")) {//MQTT自动注册
 
             if (deviceId != null && !deviceId.equals(mEtDeviceId.getText().toString().trim())) {
                 return true;
