@@ -48,7 +48,7 @@ public class VmsViewModel extends ViewModel {
             boolean isExist = false;
             for (VmsTerminalInfo cacheInfo : cacheList) {
                 if (cacheInfo.getSn().equals(tempInfo.getSn())) {
-                    isExist = false;
+                    isExist = true;
                     break;
                 }
             }

@@ -360,6 +360,8 @@ public class TcpVmsTerminalParamSettingFragment extends BaseTcpConnectFragment {
             mTvReportingMethod.setText("主动上报");
         }
         reportingInterval = vmsTerminalCollectorInfo.getReptgap();
+        mEtReportingInterval.setText(reportingInterval);
+
     }
 
     private void initCommData() {

@@ -75,7 +75,7 @@ public class VmsDataCenterSettingActivity extends BaseActivity {
             if (serverNumber == ServerNumber.NUMBER_ONE) {
                 mToolbarTitle.setText("数据中心1");
             } else if (serverNumber == ServerNumber.NUMBER_TWO) {
-                mToolbarTitle.setText("数据中心3");
+                mToolbarTitle.setText("数据中心2");
             } else if (serverNumber == ServerNumber.NUMBER_THREE) {
                 mToolbarTitle.setText("数据中心3");
             } else if (serverNumber == ServerNumber.NUMBER_FOUR) {
