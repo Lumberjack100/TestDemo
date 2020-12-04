@@ -247,7 +247,7 @@ public class TcpVmsHomeFragment extends BaseTcpConnectFragment {
 
     private void initAdapter() {
         int spanCount = 1;//跟布局里面的spanCount属性是一致的
-        int spacing = DensityUtil.Dp2Px(mActivity, 14);//每一个矩形的间距
+        int spacing = DensityUtil.Dp2Px(mActivity, 10);//每一个矩形的间距
         mRecyclerView.setLayoutManager(new GridLayoutManager(mActivity, spanCount));
         //设置每个item间距
         mRecyclerView.addItemDecoration(new GridSpacingItemDecoration(spanCount, spacing, true));
