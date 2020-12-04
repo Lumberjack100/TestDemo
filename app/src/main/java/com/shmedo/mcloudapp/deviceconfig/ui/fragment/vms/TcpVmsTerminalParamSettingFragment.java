@@ -104,6 +104,7 @@ public class TcpVmsTerminalParamSettingFragment extends BaseTcpConnectFragment {
         mEtChannelNumber.setFilters(new InputFilter[]{new InputFilter.LengthFilter(5)});
         mEtAirBaudRate.setFilters(new InputFilter[]{new InputFilter.LengthFilter(5)});
 
+        mEtReportingInterval.setHint("≥60s");
         mEtNetworkNumber.setHint("1~65535");
         mEtChannelNumber.setHint("0~31");
         mEtAirBaudRate.setHint("1~6");
@@ -179,7 +180,7 @@ public class TcpVmsTerminalParamSettingFragment extends BaseTcpConnectFragment {
         if (!TextUtils.isEmpty(reportingInterval)) {
             try {
                 int port = Integer.parseInt(reportingInterval);
-                if (port < 3) {
+                if (port < 60) {
                     ToastUtils.show("请输入有效的数据上报间隔!");
                     mEtReportingInterval.requestFocus();
                     return false;
