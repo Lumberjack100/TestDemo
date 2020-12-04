@@ -334,8 +334,8 @@ public class TcpVmsHomeFragment extends BaseTcpConnectFragment {
                 IOTCommandResult<VmsBasicInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
                     stopRefreshRunnable();
-                    String errMsg = "查询网关基本信息出错!";
-                    Timber.e("%s%s", errMsg, commandResult.getMessage());
+                    String errMsg = String.format("%s %s", "查询网关基本信息出错!", commandResult.getMessage());
+                    Timber.e(errMsg);
                     ToastUtils.show(errMsg);
                     return;
                 }
@@ -350,8 +350,8 @@ public class TcpVmsHomeFragment extends BaseTcpConnectFragment {
                 IOTCommandResult<VmsAisleInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
                     stopRefreshRunnable();
-                    String errMsg = "查询网关通道的控制参数出错!";
-                    Timber.e("%s%s", errMsg, commandResult.getMessage());
+                    String errMsg = String.format("%s %s", "查询网关通道的控制参数出错!", commandResult.getMessage());
+                    Timber.e(errMsg);
                     ToastUtils.show(errMsg);
                     return;
                 }
@@ -384,8 +384,8 @@ public class TcpVmsHomeFragment extends BaseTcpConnectFragment {
                 IOTCommandResult<VmsAisleTerminalInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
                     stopRefreshRunnable();
-                    String errMsg = "查询网关基本信息出错!";
-                    Timber.e("%s%s", errMsg, commandResult.getMessage());
+                    String errMsg = String.format("%s %s", "查询网关基本信息出错!", commandResult.getMessage());
+                    Timber.e(errMsg);
                     ToastUtils.show(errMsg);
                     return;
                 }

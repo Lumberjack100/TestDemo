@@ -165,8 +165,8 @@ public class TcpVmsAdvancedSettingsFragment extends BaseTcpConnectFragment {
                 IOTCommandResult<VmsDataCenterStatus> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
                     stopProgressRunnable();
-                    String errMsg = "查询网关数据中心状态出错!";
-                    Timber.e("%s%s", errMsg, commandResult.getMessage());
+                    String errMsg = String.format("%s %s", "查询网关数据中心状态出错!", commandResult.getMessage());
+                    Timber.e(errMsg);
                     ToastUtils.show(errMsg);
                     return;
                 }

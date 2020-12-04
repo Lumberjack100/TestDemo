@@ -371,8 +371,8 @@ public class TcpVmsAisleSettingFragment extends BaseTcpConnectFragment {
 //                stopProgressRunnable();
                 IOTCommandResult<VmsAisleInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
-                    String errMsg = "查询网关通道的控制参数出错!";
-                    Timber.e("%s%s", errMsg, commandResult.getMessage());
+                    String errMsg = String.format("%s %s", "查询网关通道的控制参数出错!", commandResult.getMessage());
+                    Timber.e(errMsg);
                     ToastUtils.show(errMsg);
                     return;
                 }
@@ -385,8 +385,8 @@ public class TcpVmsAisleSettingFragment extends BaseTcpConnectFragment {
 //                stopProgressRunnable();
                 CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
                 if (!cmdResult.isSucceed()) {
-                    String errMsg = "设置参数失败!";
-                    Timber.e("%s%s", errMsg, cmdResult.getReason());
+                    String errMsg = String.format("%s %s", "设置参数失败!", cmdResult.getReason());
+                    Timber.e(errMsg);
                     ToastUtils.show(errMsg);
                     mBtnSave.setEnabled(true);
                     return;

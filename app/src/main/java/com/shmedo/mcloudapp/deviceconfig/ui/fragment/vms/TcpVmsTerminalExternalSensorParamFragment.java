@@ -376,8 +376,8 @@ public class TcpVmsTerminalExternalSensorParamFragment extends BaseTcpConnectFra
             case VMS_MD_SET_TERMINAL_CHL: {//设置Vms终端某个通道下传感器参数
                 CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
                 if (!cmdResult.isSucceed()) {
-                    String errMsg = "设置参数失败!";
-                    Timber.e("%s%s", errMsg, cmdResult.getReason());
+                    String errMsg = String.format("%s %s", "设置参数失败!", cmdResult.getReason());
+                    Timber.e(errMsg);
                     ToastUtils.show(errMsg);
                     mBtnSave.setEnabled(true);
                     if (isSaveParamOperation)

@@ -195,8 +195,8 @@ public class TcpVmsTerminalListFragment extends BaseBottomSheetDialogFragment {
             case VMS_MD_DELETE_TERMINAL: {//删除终端设备
                 CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
                 if (!cmdResult.isSucceed()) {
-                    String errMsg = "删除终端出错!";
-                    Timber.e("%s%s", errMsg, cmdResult.getReason());
+                    String errMsg = String.format("%s %s", "删除终端出错!", cmdResult.getReason());
+                    Timber.e(errMsg);
                     ToastUtils.show(errMsg);
                     return;
                 }
@@ -207,8 +207,8 @@ public class TcpVmsTerminalListFragment extends BaseBottomSheetDialogFragment {
             case VMS_MD_GET_GATEWAY_STATUS: {//获取网关的状态
                 IOTCommandResult<VmsAisleTerminalInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
-                    String errMsg = "查询网关基本信息出错!";
-                    Timber.e("%s%s", errMsg, commandResult.getMessage());
+                    String errMsg = String.format("%s %s", "查询网关基本信息出错!", commandResult.getMessage());
+                    Timber.e(errMsg);
                     ToastUtils.show(errMsg);
                     return;
                 }

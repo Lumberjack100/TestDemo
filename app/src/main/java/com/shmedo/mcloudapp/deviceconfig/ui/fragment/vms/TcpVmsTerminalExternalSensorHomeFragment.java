@@ -153,8 +153,8 @@ public class TcpVmsTerminalExternalSensorHomeFragment extends BaseTcpConnectFrag
             case VMS_MD_GET_TERMINAL_CHL: {//获取终端传感器的参数
                 IOTCommandResult<VmsTerminalSensorInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
-                    String errMsg = "查询获取终端传感器参数出错!";
-                    Timber.e("%s%s", errMsg, commandResult.getMessage());
+                    String errMsg = String.format("%s %s", "查询获取终端传感器参数出错!", commandResult.getMessage());
+                    Timber.e(errMsg);
                     ToastUtils.show(errMsg);
                     return;
                 }

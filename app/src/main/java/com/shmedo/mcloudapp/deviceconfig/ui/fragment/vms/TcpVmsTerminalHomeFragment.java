@@ -257,8 +257,8 @@ public class TcpVmsTerminalHomeFragment extends BaseTcpConnectFragment {
                 stopProgressRunnable();
                 CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
                 if (!cmdResult.isSucceed()) {
-                    String errMsg = "重启终端失败!";
-                    Timber.e("%s%s", errMsg, cmdResult.getReason());
+                    String errMsg = String.format("%s %s", "发送重启指令失败!", cmdResult.getReason());
+                    Timber.e(errMsg);
                     ToastUtils.show(errMsg);
                     return;
                 }

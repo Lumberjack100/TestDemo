@@ -419,8 +419,8 @@ public class TcpVmsDataCenterSettingFragment extends BaseTcpConnectFragment {
             case MD_GET_DATA_CENTER: {//获取网关的数据中心参数
                 IOTCommandResult<DataCenterInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
-                    String errMsg = "查询网关的数据中心参数出错!";
-                    Timber.e("%s%s", errMsg, commandResult.getMessage());
+                    String errMsg = String.format("%s %s", "查询网关的数据中心参数出错!", commandResult.getMessage());
+                    Timber.e(errMsg);
                     ToastUtils.show(errMsg);
                     return;
                 }
@@ -432,8 +432,8 @@ public class TcpVmsDataCenterSettingFragment extends BaseTcpConnectFragment {
             case MD_SET_DATA_CENTER: {//设置网关通道的控制参数
                 CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
                 if (!cmdResult.isSucceed()) {
-                    String errMsg = "设置参数失败!";
-                    Timber.e("%s%s", errMsg, cmdResult.getReason());
+                    String errMsg = String.format("%s %s", "设置参数失败!", cmdResult.getReason());
+                    Timber.e(errMsg);
                     ToastUtils.show(errMsg);
                     mBtnSave.setEnabled(true);
                     if (isSaveParamOperation)

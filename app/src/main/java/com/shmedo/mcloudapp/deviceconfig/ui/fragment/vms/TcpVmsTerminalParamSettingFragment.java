@@ -285,8 +285,8 @@ public class TcpVmsTerminalParamSettingFragment extends BaseTcpConnectFragment {
             case VMS_MD_GET_TERMINAL_COLLECTOR: {//获取Vms终端采集参数
                 IOTCommandResult<VmsTerminalCollectorInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
-                    String errMsg = "查询终端采集参数出错!";
-                    Timber.e("%s%s", errMsg, commandResult.getMessage());
+                    String errMsg = String.format("%s %s", "查询终端采集参数出错!", commandResult.getMessage());
+                    Timber.e(errMsg);
                     ToastUtils.show(errMsg);
                     return;
                 }
@@ -299,8 +299,8 @@ public class TcpVmsTerminalParamSettingFragment extends BaseTcpConnectFragment {
             case VMS_MD_GET_TERMINAL_COMMUNICATE: {//获取Vms终端通信参数
                 IOTCommandResult<VmsTerminalCommInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
-                    String errMsg = "查询终端通信参数出错!";
-                    Timber.e("%s%s", errMsg, commandResult.getMessage());
+                    String errMsg = String.format("%s %s", "查询终端通信参数出错!", commandResult.getMessage());
+                    Timber.e(errMsg);
                     ToastUtils.show(errMsg);
                     return;
                 }
@@ -312,8 +312,8 @@ public class TcpVmsTerminalParamSettingFragment extends BaseTcpConnectFragment {
             case VMS_MD_SET_TERMINAL_COLLECTOR: {//设置Vms终端采集参数
                 CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
                 if (!cmdResult.isSucceed()) {
-                    String errMsg = "设置参数失败!";
-                    Timber.e("%s%s", errMsg, cmdResult.getReason());
+                    String errMsg = String.format("%s %s", "设置参数失败!", cmdResult.getReason());
+                    Timber.e(errMsg);
                     ToastUtils.show(errMsg);
                     return;
                 }
@@ -324,8 +324,8 @@ public class TcpVmsTerminalParamSettingFragment extends BaseTcpConnectFragment {
             case VMS_MD_SET_TERMINAL_COMMUNICATE: {//设置Vms终端通信参数
                 CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
                 if (!cmdResult.isSucceed()) {
-                    String errMsg = "设置参数失败!";
-                    Timber.e("%s%s", errMsg, cmdResult.getReason());
+                    String errMsg = String.format("%s %s", "设置参数失败!", cmdResult.getReason());
+                    Timber.e(errMsg);
                     ToastUtils.show(errMsg);
                     return;
                 }
