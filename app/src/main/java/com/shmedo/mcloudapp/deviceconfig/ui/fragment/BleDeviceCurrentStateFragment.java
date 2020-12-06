@@ -415,7 +415,7 @@ public class BleDeviceCurrentStateFragment extends BaseBleConnectFragment {
                 }
 
                 //裂缝计采集器，查询倾角计信息
-                if (collectorModel.equals("2") && versionMessageInfo != null) {
+                if (collectorModel.trim().equals("2")) {
                     processQueryInclinometerInfo();
                 }
                 break;
