@@ -749,6 +749,89 @@
 
             </LinearLayout>
 
+            <LinearLayout
+                android:id="@+id/dasInclinometerInfo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                tools:visibility="visible"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/main_bg_gray"
+                    android:padding="16dp"
+                    android:text="倾角计"
+                    android:textColor="@color/sub_title_text_color"
+                    android:textSize="15sp" />
+
+                <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="状态"
+                        android:textColor="@color/title_text_color"
+                        android:textSize="16sp" />
+
+                    <TextView
+                        android:id="@+id/tv_inclinometer_status"
+                        style="@style/DeviceCurrentState_SingleItem_ValueStyle"
+                        tools:text="正常" />
+
+                </LinearLayout>
+
+                <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="X轴"
+                        android:textColor="@color/title_text_color"
+                        android:textSize="15sp" />
+
+                    <TextView
+                        android:id="@+id/tv_inclinometer_x_axis"
+                        style="@style/DeviceCurrentState_SingleItem_ValueStyle"
+                        tools:text="19902102313" />
+
+                </LinearLayout>
+
+                <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Y轴"
+                        android:textColor="@color/title_text_color"
+                        android:textSize="15sp" />
+
+                    <TextView
+                        android:id="@+id/tv_inclinometer_y_axis"
+                        style="@style/DeviceCurrentState_SingleItem_ValueStyle"
+                        tools:text="19902102313" />
+
+                </LinearLayout>
+
+                <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Z轴"
+                        android:textColor="@color/title_text_color"
+                        android:textSize="15sp" />
+
+                    <TextView
+                        android:id="@+id/tv_inclinometer_z_axis"
+                        style="@style/DeviceCurrentState_SingleItem_ValueStyle"
+                        tools:text="19902102313" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

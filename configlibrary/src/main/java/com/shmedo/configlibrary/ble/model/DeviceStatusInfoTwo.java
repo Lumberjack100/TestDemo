@@ -1,5 +1,7 @@
 package com.shmedo.configlibrary.ble.model;
 
+import android.text.TextUtils;
+
 /**
  * 创建者:   gonghe <br/>
  * 创建时间:  2020/4/24 <br/>
@@ -49,7 +51,7 @@ public class DeviceStatusInfoTwo {
     private String rainfallStatus;
 
     public String getSnNumber() {
-        return snNumber;
+        return TextUtils.isEmpty(snNumber) ? "" : snNumber;
     }
 
     public void setSnNumber(String snNumber) {
@@ -57,7 +59,7 @@ public class DeviceStatusInfoTwo {
     }
 
     public String getLongitude() {
-        return longitude;
+        return TextUtils.isEmpty(longitude) ? "" : longitude;
     }
 
     public void setLongitude(String longitude) {
@@ -65,7 +67,7 @@ public class DeviceStatusInfoTwo {
     }
 
     public String getLatitude() {
-        return latitude;
+        return TextUtils.isEmpty(latitude) ? "" : latitude;
     }
 
     public void setLatitude(String latitude) {
@@ -81,7 +83,7 @@ public class DeviceStatusInfoTwo {
     }
 
     public String getExternalVoltage() {
-        return externalVoltage;
+        return TextUtils.isEmpty(externalVoltage) ? "" : externalVoltage;
     }
 
     public void setExternalVoltage(String externalVoltage) {
@@ -89,7 +91,7 @@ public class DeviceStatusInfoTwo {
     }
 
     public String getSolarControllerStatus() {
-        return solarControllerStatus;
+        return TextUtils.isEmpty(solarControllerStatus) ? "" : solarControllerStatus;
     }
 
     public void setSolarControllerStatus(String solarControllerStatus) {
@@ -97,7 +99,7 @@ public class DeviceStatusInfoTwo {
     }
 
     public String getSolarPanelVoltage() {
-        return solarPanelVoltage;
+        return TextUtils.isEmpty(solarPanelVoltage) ? "" : solarPanelVoltage;
     }
 
     public void setSolarPanelVoltage(String solarPanelVoltage) {
@@ -105,7 +107,7 @@ public class DeviceStatusInfoTwo {
     }
 
     public String getBatteryVoltage() {
-        return batteryVoltage;
+        return TextUtils.isEmpty(batteryVoltage) ? "" : batteryVoltage;
     }
 
     public void setBatteryVoltage(String batteryVoltage) {
@@ -113,7 +115,7 @@ public class DeviceStatusInfoTwo {
     }
 
     public String getDailyPowerGeneration() {
-        return dailyPowerGeneration;
+        return TextUtils.isEmpty(dailyPowerGeneration) ? "" : dailyPowerGeneration;
     }
 
     public void setDailyPowerGeneration(String dailyPowerGeneration) {
@@ -121,7 +123,7 @@ public class DeviceStatusInfoTwo {
     }
 
     public String getDailyPowerConsumption() {
-        return dailyPowerConsumption;
+        return TextUtils.isEmpty(dailyPowerConsumption) ? "" : dailyPowerConsumption;
     }
 
     public void setDailyPowerConsumption(String dailyPowerConsumption) {
@@ -129,7 +131,7 @@ public class DeviceStatusInfoTwo {
     }
 
     public String getInternalTempHumidityStatus() {
-        return internalTempHumidityStatus;
+        return TextUtils.isEmpty(internalTempHumidityStatus) ? "" : internalTempHumidityStatus;
     }
 
     public void setInternalTempHumidityStatus(String internalTempHumidityStatus) {
@@ -137,7 +139,7 @@ public class DeviceStatusInfoTwo {
     }
 
     public String getInternalTemperature() {
-        return internalTemperature;
+        return TextUtils.isEmpty(internalTemperature) ? "" : internalTemperature;
     }
 
     public void setInternalTemperature(String internalTemperature) {
@@ -145,7 +147,7 @@ public class DeviceStatusInfoTwo {
     }
 
     public String getInternalHumidity() {
-        return internalHumidity;
+        return TextUtils.isEmpty(internalHumidity) ? "" : internalHumidity;
     }
 
     public void setInternalHumidity(String internalHumidity) {
@@ -153,7 +155,7 @@ public class DeviceStatusInfoTwo {
     }
 
     public String getExternalTempHumidityStatus() {
-        return externalTempHumidityStatus;
+        return TextUtils.isEmpty(externalTempHumidityStatus) ? "" : externalTempHumidityStatus;
     }
 
     public void setExternalTempHumidityStatus(String externalTempHumidityStatus) {
@@ -161,7 +163,7 @@ public class DeviceStatusInfoTwo {
     }
 
     public String getExternalTemperature() {
-        return externalTemperature;
+        return TextUtils.isEmpty(externalTemperature) ? "" : externalTemperature;
     }
 
     public void setExternalTemperature(String externalTemperature) {
@@ -169,7 +171,7 @@ public class DeviceStatusInfoTwo {
     }
 
     public String getExternalHumidity() {
-        return externalHumidity;
+        return TextUtils.isEmpty(externalHumidity) ? "" : externalHumidity;
     }
 
     public void setExternalHumidity(String externalHumidity) {
@@ -177,7 +179,7 @@ public class DeviceStatusInfoTwo {
     }
 
     public String getSwitchType() {
-        return switchType;
+        return TextUtils.isEmpty(switchType) ? "" : switchType;
     }
 
     public void setSwitchType(String switchType) {
@@ -185,7 +187,7 @@ public class DeviceStatusInfoTwo {
     }
 
     public String getRainfallStatus() {
-        return rainfallStatus;
+        return TextUtils.isEmpty(rainfallStatus) ? "" : rainfallStatus;
     }
 
     public void setRainfallStatus(String rainfallStatus) {

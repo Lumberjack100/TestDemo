@@ -4,6 +4,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
+import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
 import android.view.View;
 import android.widget.TextView;
@@ -23,6 +24,7 @@ import com.shmedo.configlibrary.ble.model.DeviceNetStatus;
 import com.shmedo.configlibrary.ble.model.DeviceStatusInfoOne;
 import com.shmedo.configlibrary.ble.model.DeviceStatusInfoThree;
 import com.shmedo.configlibrary.ble.model.DeviceStatusInfoTwo;
+import com.shmedo.configlibrary.ble.model.InclinometerInfo;
 import com.shmedo.configlibrary.ble.model.SystemRunStateInfo;
 import com.shmedo.configlibrary.ble.model.VersionMessageInfo;
 import com.shmedo.configlibrary.ble.utils.ResultParserUtil;
@@ -156,6 +158,24 @@ public class BleDeviceCurrentStateFragment extends BaseBleConnectFragment {
     TextView mTvExternalHumidity;
 
     /**
+     * Das倾角计
+     */
+    @BindView(R.id.dasInclinometerInfo)
+    View inclinometerLayout;
+
+    @BindView(R.id.tv_inclinometer_status)
+    TextView mTvInclinometerStatus;
+
+    @BindView(R.id.tv_inclinometer_x_axis)
+    TextView mTvInclinometerXaxis;
+
+    @BindView(R.id.tv_inclinometer_y_axis)
+    TextView mTvInclinometerYaxis;
+
+    @BindView(R.id.tv_inclinometer_z_axis)
+    TextView mTvInclinometerZaxis;
+
+    /**
      * 设备电压
      */
     @BindView(R.id.tv_device_internal_power)
@@ -189,6 +209,8 @@ public class BleDeviceCurrentStateFragment extends BaseBleConnectFragment {
 
     private List<String> sensorList = new ArrayList<>();
     private CommonAdapter sensorAdapter;
+
+    private VersionMessageInfo versionMessageInfo;
 
 
     @Override
@@ -278,7 +300,7 @@ public class BleDeviceCurrentStateFragment extends BaseBleConnectFragment {
                     ToastUtils.show("查询设备版本信息出错!");
                     return;
                 }
-                VersionMessageInfo versionMessageInfo = ResultParserUtil.getEntityObject(cmdStr);
+                versionMessageInfo = ResultParserUtil.getEntityObject(cmdStr);
                 if (versionMessageInfo != null) {
                     mTvFirmwareVersion.setText(versionMessageInfo.getFirmwareVersion());
                 }
@@ -297,7 +319,9 @@ public class BleDeviceCurrentStateFragment extends BaseBleConnectFragment {
                     return;
                 }
                 String position = ResultParserUtil.getEntityObject(cmdStr);
-                mTvInstallPosition.setText(position);
+                if (!TextUtils.isEmpty(position)) {
+                    mTvInstallPosition.setText(position);
+                }
 
                 command = CommandManager.getInstance().getCommand(CommandType.SYSTEM_RUN_STATE);
                 sendCommonCommandImmediately(command);
@@ -385,8 +409,26 @@ public class BleDeviceCurrentStateFragment extends BaseBleConnectFragment {
                 }
                 stopProgressRunnable();
                 DeviceStatusInfoThree statusThree = ResultParserUtil.getEntityObject(cmdStr);
-                collectorModel = statusThree.getCollectorModel();
-                setDeviceStatusThree(statusThree);
+                if (statusThree != null) {
+                    collectorModel = statusThree.getCollectorModel();
+                    setDeviceStatusThree(statusThree);
+                }
+
+                //裂缝计采集器，查询倾角计信息
+                if (collectorModel.equals("2") && versionMessageInfo != null) {
+                    processQueryInclinometerInfo();
+                }
+                break;
+
+            case QUERY_INCLINOMETER_INFO:
+                if (tempStr.endsWith(CommandResult.ERROR_END)) {
+                    stopProgressRunnable();
+                    Timber.e("查询倾角计信息出错!");
+                    return;
+                }
+                stopProgressRunnable();
+                InclinometerInfo inclinometerInfo = ResultParserUtil.getEntityObject(cmdStr);
+                setInclinometerInfo(inclinometerInfo);
                 break;
 
             default:
@@ -402,6 +444,9 @@ public class BleDeviceCurrentStateFragment extends BaseBleConnectFragment {
      * @param statusOne
      */
     private void initDeviceStatusOne(DeviceStatusInfoOne statusOne) {
+        if (statusOne == null)
+            return;
+
         mTvDeviceSn.setText(statusOne.getSnNumber());
         mTVSimCardNumber.setText(statusOne.getSimNumber());
         mTvImeiNumber.setText(statusOne.getImeiNumber());
@@ -418,6 +463,9 @@ public class BleDeviceCurrentStateFragment extends BaseBleConnectFragment {
      * @param runStateInfo
      */
     private void initOperatorInformation(SystemRunStateInfo runStateInfo) {
+        if (runStateInfo == null)
+            return;
+
         mTvSignalStrength.setCompoundDrawablesWithIntrinsicBounds(0, 0, DeviceCurrentRunStateUtils.getSignalResIdByCSQValue(Integer.parseInt(runStateInfo.getGprsSignal())), 0);
         mTvSignalStrength.setText(DeviceCurrentRunStateUtils.setOperatorType(runStateInfo.getOperator()));
     }
@@ -426,6 +474,9 @@ public class BleDeviceCurrentStateFragment extends BaseBleConnectFragment {
      * 设置网络状态  ##044
      */
     private void initDataCenterNetStatus(DeviceNetStatus internetStatus, String linkNumber) {
+        if (internetStatus == null)
+            return;
+
         switch (linkNumber) {
             case "1":
                 initLinkStatus(mTvLinkOneStatus, mTvLinkOneSendData, mTvLinkOneUnsendData, internetStatus.getLinkStatus(),
@@ -483,6 +534,9 @@ public class BleDeviceCurrentStateFragment extends BaseBleConnectFragment {
      * @param statusTwo
      */
     private void setDeviceStatusTwo(DeviceStatusInfoTwo statusTwo) {
+        if (statusTwo == null)
+            return;
+
         //太阳能控制器
         setDeviceStatus(mTvSolarStatus, statusTwo.getSolarControllerStatus());
         mTvSolarVoltage.setText(statusTwo.getSolarPanelVoltage() + "V");
@@ -548,6 +602,9 @@ public class BleDeviceCurrentStateFragment extends BaseBleConnectFragment {
      * 设备电量、电压警戒值处理
      */
     private void processPowerAndVoltage(DeviceStatusInfoTwo statusTwo) {
+        if (statusTwo == null)
+            return;
+
         String powerStr = DeviceCurrentRunStateUtils.setDeviceInternalBattery(statusTwo.getInternalVoltage());
         double power = Double.parseDouble(powerStr.replace("%", ""));
         SpannableStringBuilder builder = new SpannableStringBuilder(powerStr);
@@ -569,6 +626,9 @@ public class BleDeviceCurrentStateFragment extends BaseBleConnectFragment {
      * @param statusThree
      */
     private void setDeviceStatusThree(DeviceStatusInfoThree statusThree) {
+        if (statusThree == null)
+            return;
+
         if (statusThree.getCollectorAddress().equals("0")) {
             sensorRecyclerView.setVisibility(View.GONE);
         } else {
@@ -578,6 +638,50 @@ public class BleDeviceCurrentStateFragment extends BaseBleConnectFragment {
             sensorList.addAll(list);
             sensorAdapter.notifyDataSetChanged();
         }
+    }
+
+    /**
+     * 查询倾角计信息
+     */
+    private void processQueryInclinometerInfo() {
+        String command = CommandManager.getInstance().getCommand(CommandType.QUERY_INCLINOMETER_INFO);
+        sendCommonCommandImmediately(command);
+        Timber.i("查询倾角计信息：%s", command);
+
+//        if (TextUtils.isEmpty(versionMessageInfo.getFirmwareVersion()))
+//            return;
+//
+//        String firmwareVersion = versionMessageInfo.getFirmwareVersion();
+//        firmwareVersion = firmwareVersion.trim().toUpperCase().replace("V", "").replace(".", "");
+//        if (ValidateUtil.isNumeric(firmwareVersion)) {
+//            try {
+//                int version = Integer.parseInt(firmwareVersion);
+//                if (version >= 314) {
+//                    String command = CommandManager.getInstance().getCommand(CommandType.QUERY_INCLINOMETER_INFO);
+//                    sendCommonCommandImmediately(command);
+//                    Timber.i("查询倾角计信息：%s", command);
+//                }
+//
+//            } catch (Exception ex) {
+//                ex.printStackTrace();
+//            }
+//        }
+    }
+
+    /**
+     * 设置倾角计信息
+     */
+    private void setInclinometerInfo(InclinometerInfo inclinometerInfo) {
+        if (inclinometerInfo == null) {
+            inclinometerLayout.setVisibility(View.GONE);
+            return;
+        }
+
+        inclinometerLayout.setVisibility(View.VISIBLE);
+        setDeviceStatus(mTvInclinometerStatus, inclinometerInfo.getStatus());
+        mTvInclinometerXaxis.setText(inclinometerInfo.getxAxis());
+        mTvInclinometerYaxis.setText(inclinometerInfo.getyAxis());
+        mTvInclinometerZaxis.setText(inclinometerInfo.getzAxis());
     }
 
     @OnClick({R.id.fab_refresh})

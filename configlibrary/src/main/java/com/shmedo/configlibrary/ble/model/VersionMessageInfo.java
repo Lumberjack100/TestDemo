@@ -1,5 +1,7 @@
 package com.shmedo.configlibrary.ble.model;
 
+import android.text.TextUtils;
+
 /**
  * Created by adu on 2017/12/14.
  *  版本信息实体类
@@ -17,7 +19,7 @@ public class VersionMessageInfo {
     private String produceDate;     //生产日期
 
     public String getProductID() {
-        return productID;
+        return TextUtils.isEmpty(productID) ? "" : productID;
     }
 
     public void setProductID(String productID) {
@@ -25,7 +27,7 @@ public class VersionMessageInfo {
     }
 
     public String getFirmwareVersion() {
-        return firmwareVersion;
+        return TextUtils.isEmpty(firmwareVersion) ? "" : firmwareVersion;
     }
 
     public void setFirmwareVersion(String firmwareVersion) {
@@ -33,7 +35,7 @@ public class VersionMessageInfo {
     }
 
     public String getProduceDate() {
-        return produceDate;
+        return TextUtils.isEmpty(produceDate) ? "" : produceDate;
     }
 
     public void setProduceDate(String produceDate) {

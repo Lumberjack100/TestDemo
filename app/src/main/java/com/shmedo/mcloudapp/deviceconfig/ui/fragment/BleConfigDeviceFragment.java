@@ -599,11 +599,16 @@ public class BleConfigDeviceFragment extends BaseBleConnectFragment {
     }
 
     @Override
+    public void onStop() {
+        super.onStop();
+        LocationUtils.getInstance().stopLocalService();
+    }
+
+    @Override
     public void onDestroy() {
         super.onDestroy();
         MCloudApp.setCurDeviceToken(null);
         MCloudApp.setCurDeviceMacAddr(null);
-        LocationUtils.getInstance().stopLocalService();
     }
 
     /**

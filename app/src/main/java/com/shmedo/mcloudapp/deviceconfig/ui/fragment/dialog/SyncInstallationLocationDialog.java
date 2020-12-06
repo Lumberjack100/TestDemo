@@ -196,4 +196,11 @@ public class SyncInstallationLocationDialog extends BaseDialogFragment {
     public void setDialogFragmentClickListener(DialogFragmentClickListener listener) {
         mListener = listener;
     }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        LocationUtils.getInstance().stopLocalService();
+    }
+
 }

@@ -90,6 +90,11 @@ public enum CommandType {
      * 查询太阳能控制器信息
      */
     QUERY_SOLAR_CONTROLLER_INFO("045"),
+
+    /**
+     * 查询倾角计信息
+     */
+    QUERY_INCLINOMETER_INFO("046"),
     /**
      * 即时采集
      */

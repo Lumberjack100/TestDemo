@@ -1,5 +1,8 @@
 package com.shmedo.configlibrary.ble.model;
 
+import android.text.TextUtils;
+
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -10,9 +13,9 @@ import java.util.List;
 public class DeviceStatusInfoThree {
     /**
      * $$043,(1),(2),(3),(4)
-     *  (1) sn号
+     * (1) sn号
      * （2）采集器型号
-     *  (3)采集器地址
+     * (3)采集器地址
      * （4）传感器状态，用冒号分隔的字符串
      * ①:②:③，其中①：传感器地址，②：传感器状态，0正常，1异常，③：传感器数据
      * （5）传感器状态，和（2）格式相同，
@@ -26,7 +29,7 @@ public class DeviceStatusInfoThree {
     private List<String> sensorStatus;
 
     public String getSnNumber() {
-        return snNumber;
+        return TextUtils.isEmpty(snNumber) ? "" : snNumber;
     }
 
     public void setSnNumber(String snNumber) {
@@ -34,7 +37,7 @@ public class DeviceStatusInfoThree {
     }
 
     public String getCollectorModel() {
-        return collectorModel;
+        return TextUtils.isEmpty(collectorModel) ? "" : collectorModel;
     }
 
     public void setCollectorModel(String collectorModel) {
@@ -42,7 +45,7 @@ public class DeviceStatusInfoThree {
     }
 
     public String getCollectorAddress() {
-        return collectorAddress;
+        return TextUtils.isEmpty(collectorAddress) ? "" : collectorAddress;
     }
 
     public void setCollectorAddress(String collectorAddress) {
@@ -50,7 +53,7 @@ public class DeviceStatusInfoThree {
     }
 
     public List<String> getSensorStatus() {
-        return sensorStatus;
+        return sensorStatus == null ? new ArrayList<String>() : sensorStatus;
     }
 
     public void setSensorStatus(List<String> sensorStatus) {

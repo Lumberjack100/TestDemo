@@ -128,7 +128,8 @@ public class ParseManager {
                 DeviceStatusInfoTwoParse.class,
                 DeviceStatusInfoThreeParse.class,
                 DeviceNetStatusParser.class,
-                MqttConfigInfoParser.class
+                MqttConfigInfoParser.class,
+                InclinometerInfoParser.class
         });
 
 //        List<Class> temp = ClassUtil.getAllClassByInterface("com.shmedo.core.cmd.parser", ResultParser.class);

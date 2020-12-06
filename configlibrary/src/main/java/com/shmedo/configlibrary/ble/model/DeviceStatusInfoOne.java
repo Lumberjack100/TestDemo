@@ -1,5 +1,7 @@
 package com.shmedo.configlibrary.ble.model;
 
+import android.text.TextUtils;
+
 /**
  * 创建者:   gonghe <br/>
  * 创建时间:  2020/4/24 <br/>
@@ -26,7 +28,7 @@ public class DeviceStatusInfoOne {
     private String signalStrength;
 
     public String getSnNumber() {
-        return snNumber;
+        return TextUtils.isEmpty(snNumber) ? "" : snNumber;
     }
 
     public void setSnNumber(String snNumber) {
@@ -34,7 +36,7 @@ public class DeviceStatusInfoOne {
     }
 
     public String getImeiNumber() {
-        return imeiNumber;
+        return TextUtils.isEmpty(imeiNumber) ? "" : imeiNumber;
     }
 
     public void setImeiNumber(String imeiNumber) {
@@ -42,7 +44,7 @@ public class DeviceStatusInfoOne {
     }
 
     public String getSimNumber() {
-        return simNumber;
+        return TextUtils.isEmpty(simNumber) ? "" : simNumber;
     }
 
     public void setSimNumber(String simNumber) {
@@ -50,7 +52,7 @@ public class DeviceStatusInfoOne {
     }
 
     public String getStartCodeOne() {
-        return startCodeOne;
+        return TextUtils.isEmpty(startCodeOne) ? "" : startCodeOne;
     }
 
     public void setStartCodeOne(String startCodeOne) {
@@ -58,7 +60,7 @@ public class DeviceStatusInfoOne {
     }
 
     public String getStartCodeTwo() {
-        return startCodeTwo;
+        return TextUtils.isEmpty(startCodeTwo) ? "" : startCodeTwo;
     }
 
     public void setStartCodeTwo(String startCodeTwo) {
@@ -66,7 +68,7 @@ public class DeviceStatusInfoOne {
     }
 
     public String getSignalStrength() {
-        return signalStrength;
+        return TextUtils.isEmpty(signalStrength) ? "" : signalStrength;
     }
 
     public void setSignalStrength(String signalStrength) {
