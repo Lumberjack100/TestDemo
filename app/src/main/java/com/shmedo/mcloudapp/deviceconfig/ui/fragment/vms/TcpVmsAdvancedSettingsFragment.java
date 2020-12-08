@@ -17,6 +17,7 @@ import com.shmedo.configlibrary.iot.cmd.parser.IOTParseManager;
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.enums.ServerNumber;
 import com.shmedo.configlibrary.iot.enums.VmsAisleNumber;
+import com.shmedo.configlibrary.iot.model.CommonSettingCmdResult;
 import com.shmedo.configlibrary.iot.model.VmsDataCenterStatus;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
 import com.shmedo.core.AppContants;
@@ -38,6 +39,9 @@ import timber.log.Timber;
  * 描述：     Vms 网关高级设置页面
  */
 public class TcpVmsAdvancedSettingsFragment extends BaseTcpConnectFragment {
+    private static final int VMS_REBOOT = 0x1000;
+    private static final int VMS_RESET = 0x1001;
+
     @BindView(R.id.tv_data_center_one)
     TextView mTvDataCenterOne;
 
@@ -73,7 +77,7 @@ public class TcpVmsAdvancedSettingsFragment extends BaseTcpConnectFragment {
         getDataCenterStatus(ServerNumber.NUMBER_ONE);
     }
 
-    @OnClick({R.id.dataCenterOneLayout, R.id.dataCenterTwoLayout, R.id.dataCenterThreeLayout, R.id.dataCenterFourLayout, R.id.vmsAisleOneLayout, R.id.vmsAisleTwoLayout, R.id.vmsAisleThreeLayout, R.id.vmsResetLayout})
+    @OnClick({R.id.dataCenterOneLayout, R.id.dataCenterTwoLayout, R.id.dataCenterThreeLayout, R.id.dataCenterFourLayout, R.id.vmsAisleOneLayout, R.id.vmsAisleTwoLayout, R.id.vmsAisleThreeLayout, R.id.vmsRebootLayout, R.id.vmsResetLayout})
     public void onClick(View view) {
         if (isDoubleClick(view)) {
             return;
@@ -105,6 +109,8 @@ public class TcpVmsAdvancedSettingsFragment extends BaseTcpConnectFragment {
         } else if (id == R.id.vmsAisleThreeLayout) {
             VmsAisleSettingActivity.startActivity(mActivity, AppContants.CommunicationWay.TCP_CONNECT, VmsAisleNumber.NUMBER_THREE);
 
+        } else if (id == R.id.vmsRebootLayout) {
+            showWarnDialog("确定重启网关吗？", VMS_REBOOT);
         } else if (id == R.id.vmsResetLayout) {
             ToastUtils.show("正在研发中,敬请期待...");
 //            showWarnDialog("确定恢复出厂设置吗？");
@@ -121,18 +127,26 @@ public class TcpVmsAdvancedSettingsFragment extends BaseTcpConnectFragment {
     }
 
     /**
-     * 恢复出厂设置指令
+     * 网关重启指令
      */
-    private void resetTerminal() {
+    private void rebootGateWay() {
+        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.REBOOT);
+        sendCommand(command);
+    }
+
+    /**
+     * 网关恢复出厂设置指令
+     */
+    private void resetGateWay() {
 //        TerminalSNEntity entity = new TerminalSNEntity(terminalBean.getSn());
-//        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.MD_REBOOT_TERMINAL, entity);
+//        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.RESET, entity);
 //        sendCommand(command);
     }
 
     /**
      * 危险操作前弹框提醒
      */
-    private void showWarnDialog(String content) {
+    private void showWarnDialog(String content, int operateType) {
         MaterialDialog.Builder mBuilder = new MaterialDialog.Builder(mActivity)
                 .title("温馨提示")
                 .content(content)
@@ -146,7 +160,15 @@ public class TcpVmsAdvancedSettingsFragment extends BaseTcpConnectFragment {
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                         dialog.dismiss();
-                        resetTerminal();
+                        switch (operateType) {
+                            case VMS_REBOOT:
+                                rebootGateWay();
+                                break;
+
+                            case VMS_RESET:
+                                resetGateWay();
+                                break;
+                        }
                     }
                 });
         MaterialDialog mMaterialDialog = mBuilder.build();
@@ -191,18 +213,18 @@ public class TcpVmsAdvancedSettingsFragment extends BaseTcpConnectFragment {
             }
             break;
 
-//            case VMS_MD_REBOOT_TERMINAL: {//
-//                stopProgressRunnable();
-//                CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
-//                if (!cmdResult.isSucceed()) {
-//                    String errMsg = "重启终端失败!";
-//                    Timber.e("%s%s", errMsg, cmdResult.getReason());
-//                    ToastUtils.show(errMsg);
-//                    return;
-//                }
-//                ToastUtils.show("发送重启指令成功,终端设备稍后将重启");
-//            }
-//            break;
+            case REBOOT: {//重启网关
+                stopProgressRunnable();
+                CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
+                if (!cmdResult.isSucceed()) {
+                    String errMsg = "发送重启指令失败!";
+                    Timber.e("%s%s", errMsg, cmdResult.getReason());
+                    ToastUtils.show(errMsg);
+                    return;
+                }
+                ToastUtils.show("发送重启指令成功,网关稍后将重启");
+            }
+            break;
 
             default:
                 super.parseResponseMessage(cmdStr);

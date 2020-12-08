@@ -122,7 +122,7 @@ public class TcpVmsTerminalHomeFragment extends BaseTcpConnectFragment {
             mTvDeviceName.setText("VMS终端");
             mTvDeviceSn.setText(String.format("设备编号：%s", vmsTerminalInfo.getSn()));
             mTvProductModel.setText(String.format("固件版本：%s", ""));
-            mTvTime.setText(String.format("接入网关时间：%s", vmsTerminalInfo.getLogintime()));
+            mTvTime.setText(String.format("接入时间：%s", vmsTerminalInfo.getLogintime()));
             if (vmsTerminalInfo.getStatus() != 0) {
                 mTvDeviceState.setVisibility(View.VISIBLE);
                 mTvDeviceState.setText("在线");
