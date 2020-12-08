@@ -224,6 +224,10 @@ dependencies {
 
     //The Scanner Compat library solves the problem with scanning for Bluetooth Low Energy devices on Android.
     implementation 'no.nordicsemi.android.support.v18:scanner:1.4.3'
+    // Log Bluetooth LE events in nRF Logger
+    implementation 'no.nordicsemi.android:log:2.3.0'
+    // BLE library
+    implementation 'no.nordicsemi.android:ble-livedata:2.2.0'
 
     //Easily Connect to WiFi Networks
 //    implementation 'com.thanosfisherman.wifiutils:wifiutils:1.6.4'

@@ -1,0 +1,115 @@
+package com.shmedo.mcloudapp.profile;
+
+import android.app.Application;
+import android.bluetooth.BluetoothDevice;
+
+import androidx.annotation.NonNull;
+import androidx.lifecycle.AndroidViewModel;
+import androidx.lifecycle.LiveData;
+
+import com.kunminx.architecture.ui.callback.ProtectedUnPeekLiveData;
+import com.kunminx.architecture.ui.callback.UnPeekLiveData;
+
+import no.nordicsemi.android.ble.livedata.state.ConnectionState;
+import no.nordicsemi.android.log.LogSession;
+import no.nordicsemi.android.log.Logger;
+import timber.log.Timber;
+
+/**
+ * 创建者:   gonghe <br/>
+ * 创建时间:  12/7/20 <br/>
+ * 描述：     TODO
+ */
+public class USRBleViewModel extends AndroidViewModel {
+    private final USRManager usrManager;
+    private BluetoothDevice device;
+
+    public USRBleViewModel(@NonNull Application application) {
+        super(application);
+        // Initialize the manager.
+        usrManager = new USRManager(getApplication());
+    }
+
+    public LiveData<ConnectionState> getConnectionState() {
+        return usrManager.getState();
+    }
+
+    public ProtectedUnPeekLiveData<String> getResponseMsg() {
+        return usrManager.getResponseMsg();
+    }
+
+    public void clearLastResponseValue(){
+        usrManager.clearLastResponseValue();
+    }
+
+    public UnPeekLiveData<Boolean> getLogOutputMode() {
+        return usrManager.getLogOutputMode();
+    }
+
+    public void updateLogOutputMode(boolean isLogOutputMode) {
+        usrManager.updateLogOutputMode(isLogOutputMode);
+    }
+
+    /**
+     * Connect to the given peripheral.
+     *
+     * @param target the target device.
+     */
+    public void connect(@NonNull final BluetoothDevice target) {
+        // Prevent from calling again when called again (screen orientation changed).
+        if (device == null) {
+            device = target;
+            final LogSession logSession = Logger.newSession(getApplication(), null, target.getAddress(), target.getName());
+            usrManager.setLogger(logSession);
+            reconnect();
+        }
+    }
+
+    /**
+     * Reconnects to previously connected device.
+     * If this device was not supported, its services were cleared on disconnection, so
+     * reconnection may help.
+     */
+    public void reconnect() {
+        if (device != null) {
+            usrManager.connect(device)
+                    .retry(3, 100)
+                    .useAutoConnect(false)
+                    .enqueue();
+        }
+    }
+
+    /**
+     * Disconnect from peripheral.
+     */
+    public void disconnect() {
+        device = null;
+        usrManager.disconnect().enqueue();
+    }
+
+    /**
+     * This method returns true if the device is connected. Services could have not been
+     * discovered yet.
+     */
+    public final boolean isConnected() {
+        return usrManager.isConnected();
+    }
+
+    /**
+     *发送物联网协议指令
+     */
+    public void sendIOTProtocolCommand(final String command) {
+
+        Timber.v("发送指令：%s", command);
+        usrManager.writeMessage(command);
+    }
+
+    @Override
+    protected void onCleared() {
+        super.onCleared();
+        if (usrManager.isConnected()) {
+            disconnect();
+        }
+    }
+
+}
