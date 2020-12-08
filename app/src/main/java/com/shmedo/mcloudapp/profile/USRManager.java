@@ -18,6 +18,8 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;
 
+import no.nordicsemi.android.ble.callback.FailCallback;
+import no.nordicsemi.android.ble.callback.SuccessCallback;
 import no.nordicsemi.android.ble.data.Data;
 import no.nordicsemi.android.ble.livedata.ObservableBleManager;
 import no.nordicsemi.android.log.LogContract;
@@ -102,7 +104,8 @@ public class USRManager extends ObservableBleManager {
     private final IOTCommandDataCallback buttonCallback = new IOTCommandDataCallback() {
         @Override
         public void onResponseReceived(@NonNull BluetoothDevice device, String result) {
-            Timber.d("onResponseReceived: %s", result);
+            Timber.d("接收数据(onResponseReceived): %s", result);
+            log(LogContract.Log.Level.APPLICATION, "接收数据(onResponseReceived): " + result);
             responseMsg.setValue(result);
         }
 
@@ -116,7 +119,6 @@ public class USRManager extends ObservableBleManager {
      * BluetoothGatt callbacks object.
      */
     private class USRBleManagerGattCallback extends BleManagerGattCallback {
-
         @Override
         protected void initialize() {
             // Increase the MTU
@@ -133,7 +135,7 @@ public class USRManager extends ObservableBleManager {
             // Enable notifications
             enableNotifications(notifyCharacteristic)
                     // Method called after the data were sent (data will contain 0x0100 in this case)
-                    .with((device, data) -> log(Log.DEBUG, "Data sent: " + data))
+                    .with((device, data) -> log(Log.DEBUG, "Data sent: " + data.toString()))
                     // Method called when the request finished successfully. This will be called after .with(..) callback
                     .done(device -> log(LogContract.Log.Level.APPLICATION, "Notifications enabled successfully"))
                     // Methods called in case of an error, for example when the characteristic does not have Notify property
@@ -175,7 +177,7 @@ public class USRManager extends ObservableBleManager {
         if (writeCharacteristic == null)
             return;
 
-        log(Log.DEBUG, "send command=== " + command);
+        Timber.d("发送数据(writeMessage): %s", command);
         // Write some data to the characteristic.
         writeCharacteristic(writeCharacteristic, Data.from(command))
                 // If data are longer than MTU-3, they will be chunked into multiple packets.
@@ -186,9 +188,21 @@ public class USRManager extends ObservableBleManager {
                 .with((device, data) -> log(Log.DEBUG, data.size() + " bytes were sent"))
                 // Callback called when data were sent, or added to outgoing queue in case
                 // Write Without Request type was used. This is called after .with(...) callback.
-                .done(device -> log(LogContract.Log.Level.APPLICATION, "Device name set to \"" + command + "\""))
+                .done(new SuccessCallback() {
+                    @Override
+                    public void onRequestCompleted(@NonNull BluetoothDevice device) {
+                        Timber.d("已发送数据(writeMessage): %s", command);
+                        log(LogContract.Log.Level.APPLICATION, "已发送数据(writeMessage): " + command);
+                    }
+                })
                 // Callback called when write has failed.
-                .fail((device, status) -> log(Log.WARN, "Failed to change device name"))
+                .fail(new FailCallback() {
+                    @Override
+                    public void onRequestFailed(@NonNull BluetoothDevice device, int status) {
+                        Timber.d("未发送数据(writeMessage): %s", command);
+                        log(Log.WARN, "未发送数据(writeMessage): " + command);
+                    }
+                })
                 .enqueue();
     }
 }
