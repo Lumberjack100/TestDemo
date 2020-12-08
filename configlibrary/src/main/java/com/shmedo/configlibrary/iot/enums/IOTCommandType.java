@@ -28,6 +28,11 @@ public enum IOTCommandType {
     REBOOT("reboot"),
 
     /**
+     * 恢复出厂设置
+     */
+    RESET("md_reset"),
+
+    /**
      * 获取接入传感器类型
      */
     QUERY_SENSOR_TYPE("getsensorID"),
