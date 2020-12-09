@@ -55,7 +55,7 @@ import butterknife.OnClick;
  *
  */
 public class BleScannerListFragment extends BaseFragment implements TextWatcher, TextView.OnEditorActionListener {
-    private static final int REQUEST_ACCESS_FINE_LOCATION = 1022; // random number
+    private static final int REQUEST_ACCESS_FINE_LOCATION = 1022;
 
     // Stops scanning after 10 seconds.
     private static final long SCAN_PERIOD = 10000;
@@ -249,7 +249,8 @@ public class BleScannerListFragment extends BaseFragment implements TextWatcher,
      */
     private void startScan(final BleScannerStateLiveData state) {
         //位置服务开关未开启
-        if (BleScannerUtils.isLocationRequired(mActivity) && !BleScannerUtils.isLocationEnabled(mActivity)) {
+        //        if (BleScannerUtils.isLocationRequired(mActivity) && !BleScannerUtils.isLocationEnabled(mActivity)) {
+        if (!BleScannerUtils.isLocationEnabled(mActivity)) {
             PermissionHelper.showGPSSettingDialog(mActivity);
         } else {
             //缺少定位权限

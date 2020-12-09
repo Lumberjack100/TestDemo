@@ -6,7 +6,6 @@ import android.animation.AnimatorInflater;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothManager;
 import android.content.Context;
 import android.content.Intent;
@@ -38,6 +37,7 @@ import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.fragment.BaseFragment;
 import com.shmedo.mcloudapp.common.view.ClearEditText;
 import com.shmedo.mcloudapp.deviceconfig.adapter.BleDeviceAdapter;
+import com.shmedo.mcloudapp.deviceconfig.model.DiscoveredBluetoothDevice;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.DeviceConfigActivity;
 import com.shmedo.mcloudapp.util.KeyBordUtils;
 import com.shmedo.mcloudapp.util.LocationUtils;
@@ -101,7 +101,7 @@ public class BleDeviceListFragment extends BaseFragment implements TextWatcher, 
 
     private boolean mScanning = false;
 
-    private List<BluetoothDevice> tempDeviceList = new ArrayList<>();
+    private List<DiscoveredBluetoothDevice> tempDeviceList = new ArrayList<>();
 
     private Animator animator;
 
@@ -170,7 +170,7 @@ public class BleDeviceListFragment extends BaseFragment implements TextWatcher, 
             @Override
             public void onItemClick(@NonNull BaseQuickAdapter adapter, @NonNull View view, int position) {
                 scanLeDevice(false);
-                BluetoothDevice bluetoothDevice = bleDeviceAdapter.getItem(position);
+                DiscoveredBluetoothDevice bluetoothDevice = bleDeviceAdapter.getItem(position);
                 String macAddress = bluetoothDevice.getAddress();
                 String deviceName = bluetoothDevice.getName();
                 MCloudApp.setCurDeviceToken(deviceName.substring(3));
@@ -182,7 +182,7 @@ public class BleDeviceListFragment extends BaseFragment implements TextWatcher, 
                 } else if (deviceName.endsWith("L")) {
                     deviceInfo = "MEDO," + deviceName.substring(3) + ",DAS";
                 }
-                DeviceConfigActivity.startActivity(getActivity(), AppContants.CommunicationWay.BLE_CONNECT, deviceInfo);
+                DeviceConfigActivity.startActivity(getActivity(), AppContants.CommunicationWay.BLE_CONNECT, bluetoothDevice);
             }
         });
     }
@@ -342,17 +342,18 @@ public class BleDeviceListFragment extends BaseFragment implements TextWatcher, 
             mActivity.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    BluetoothDevice device = result.getDevice();
-                    if (device.getName() == null || !device.getName().startsWith("MD") || !device.getName().endsWith("L")) {
+                    if (result.getDevice().getName() == null || !result.getDevice().getName().startsWith("MD") || !result.getDevice().getName().endsWith("L")) {
                         return;
                     }
-                    for (BluetoothDevice mDevice : bleDeviceAdapter.getData()) {
-                        if (device.getAddress().equals(mDevice.getAddress())) {
+                    for (DiscoveredBluetoothDevice mDevice : bleDeviceAdapter.getData()) {
+                        if (result.getDevice().getAddress().equals(mDevice.getAddress())) {
                             return;
                         }
                     }
-                    tempDeviceList.add(device);
-                    bleDeviceAdapter.addData(device);
+
+                    DiscoveredBluetoothDevice discoveredBluetoothDevice=new DiscoveredBluetoothDevice(result) ;
+                    tempDeviceList.add(discoveredBluetoothDevice);
+                    bleDeviceAdapter.addData(discoveredBluetoothDevice);
                     mTvDeviceCount.setText(String.format(Locale.getDefault(), "(%d)", bleDeviceAdapter.getItemCount()));
                 }
             });
@@ -407,7 +408,7 @@ public class BleDeviceListFragment extends BaseFragment implements TextWatcher, 
 
     private void searchProcess(String queryText) {
         bleDeviceAdapter.setNewInstance(new ArrayList<>());
-        for (BluetoothDevice device : tempDeviceList) {
+        for (DiscoveredBluetoothDevice device : tempDeviceList) {
             if (!TextUtils.isEmpty(device.getName()) && device.getName().contains(queryText)) {
                 bleDeviceAdapter.addData(device);
             }

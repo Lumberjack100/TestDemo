@@ -15,19 +15,22 @@ import com.shmedo.core.AppContants;
 import com.shmedo.core.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.activity.BaseActivity;
-import com.shmedo.mcloudapp.deviceconfig.ui.fragment.BleConfigDeviceFragment;
+import com.shmedo.mcloudapp.deviceconfig.model.DiscoveredBluetoothDevice;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.NetConfigDeviceFragment;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.adme.BleAdmeHomeFragment;
 import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfo;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+
 /**
  * 创建者:   gonghe <br/>
  * 创建时间:  2020/11/20<br/>
  * 描述：     Das设备配置页面
  */
 public class DeviceConfigActivity extends BaseActivity {
-    private static final String DEVICE_INFO = "device_info";
+    public static final String EXTRA_DEVICE = "com.shmedo.mcloudapp.EXTRA_DEVICE";
+
 
     @BindView(R.id.tv_title)
     TextView mToolbarTitle;
@@ -41,20 +44,20 @@ public class DeviceConfigActivity extends BaseActivity {
 
     private ProjectDeviceInfo projectDeviceInfo;
 
-    private String bleInfo;
+    private DiscoveredBluetoothDevice device;
 
 
     public static void startActivity(Context context, ProjectDeviceInfo projectDeviceInfo) {
         Intent intent = new Intent(context, DeviceConfigActivity.class);
-        intent.putExtra(DEVICE_INFO, projectDeviceInfo);
+        intent.putExtra(EXTRA_DEVICE, projectDeviceInfo);
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         context.startActivity(intent);
     }
 
-    public static void startActivity(Context context, int connectWay, String deviceInfo) {
+    public static void startActivity(Context context, int connectWay, DiscoveredBluetoothDevice device) {
         Intent intent = new Intent(context, DeviceConfigActivity.class);
         intent.putExtra(AppContants.Extras.COMMUNICATION_WAY, connectWay);
-        intent.putExtra(AppContants.Extras.CUR_BLE_DEVICE_INFO, deviceInfo);
+        intent.putExtra(EXTRA_DEVICE, device);
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         context.startActivity(intent);
     }
@@ -85,12 +88,10 @@ public class DeviceConfigActivity extends BaseActivity {
             connectWay = intent.getIntExtra(AppContants.Extras.COMMUNICATION_WAY, AppContants.CommunicationWay.NET_PLATFORM_CONNECT);
         }
 
-        if (intent.getExtras().containsKey(DEVICE_INFO)) {
-            projectDeviceInfo = intent.getParcelableExtra(DEVICE_INFO);
-        }
-
-        if (intent.getExtras().containsKey(AppContants.Extras.CUR_BLE_DEVICE_INFO)) {
-            bleInfo = intent.getStringExtra(AppContants.Extras.CUR_BLE_DEVICE_INFO);
+        if (connectWay == AppContants.CommunicationWay.NET_PLATFORM_CONNECT) {
+            projectDeviceInfo = intent.getParcelableExtra(EXTRA_DEVICE);
+        } else if (connectWay == AppContants.CommunicationWay.BLE_CONNECT) {
+            device = intent.getParcelableExtra(EXTRA_DEVICE);
         }
     }
 
@@ -99,7 +100,9 @@ public class DeviceConfigActivity extends BaseActivity {
             fragment = NetConfigDeviceFragment.newInstance(projectDeviceInfo);
 
         } else {
-            fragment = BleConfigDeviceFragment.newInstance(bleInfo);
+//            fragment = BleConfigDeviceFragment.newInstance(bleInfo);
+
+            fragment = BleAdmeHomeFragment.newInstance(device);
         }
         replaceFragment(fragment);
     }
