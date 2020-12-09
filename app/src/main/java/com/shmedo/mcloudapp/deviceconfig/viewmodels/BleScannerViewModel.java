@@ -160,8 +160,9 @@ public class BleScannerViewModel extends AndroidViewModel {
                 BleScannerUtils.markLocationNotRequired(getApplication());
 
             boolean atLeastOneMatchedFilter = false;
-            for (final ScanResult result : results)
+            for (final ScanResult result : results) {
                 atLeastOneMatchedFilter = devicesLiveData.deviceDiscovered(result) || atLeastOneMatchedFilter;
+            }
             if (atLeastOneMatchedFilter) {
                 devicesLiveData.applyFilter();
                 bleScannerStateLiveData.recordFound();

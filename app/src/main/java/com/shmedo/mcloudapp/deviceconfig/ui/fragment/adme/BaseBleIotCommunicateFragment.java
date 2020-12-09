@@ -18,8 +18,6 @@ import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.fragment.BaseFragment;
 import com.shmedo.mcloudapp.profile.USRBleViewModel;
 
-import java.util.Objects;
-
 import timber.log.Timber;
 
 /**
@@ -88,7 +86,7 @@ public abstract class BaseBleIotCommunicateFragment extends BaseFragment {
     }
 
     protected void showDisconnectDialog(String content) {
-        MaterialDialog.Builder mBuilder = new MaterialDialog.Builder(Objects.requireNonNull(getContext()))
+        MaterialDialog.Builder mBuilder = new MaterialDialog.Builder(requireContext())
                 .title("温馨提示：")
                 .content(content)
                 .contentColorRes(R.color.title_text_color)
@@ -112,7 +110,7 @@ public abstract class BaseBleIotCommunicateFragment extends BaseFragment {
     }
 
     protected void warnNotYetSettingBeforeLeavePage() {
-        MaterialDialog.Builder mBuilder = new MaterialDialog.Builder(Objects.requireNonNull(getContext()))
+        MaterialDialog.Builder mBuilder = new MaterialDialog.Builder(requireContext())
                 .title("温馨提示：")
                 .content("您已经修改了参数，还未配置到设备，确定离开页面吗？")
                 .contentColorRes(R.color.title_text_color)

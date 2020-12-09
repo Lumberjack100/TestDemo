@@ -27,6 +27,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.hjq.toast.ToastUtils;
+import com.shmedo.core.AppContants;
+import com.shmedo.core.MCloudApp;
 import com.shmedo.core.util.GlobalUtil;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.fragment.BaseFragment;
@@ -34,6 +36,7 @@ import com.shmedo.mcloudapp.common.view.ClearEditText;
 import com.shmedo.mcloudapp.deviceconfig.adapter.BleDeviceAdapter;
 import com.shmedo.mcloudapp.deviceconfig.model.DeviceDiffCallback;
 import com.shmedo.mcloudapp.deviceconfig.model.DiscoveredBluetoothDevice;
+import com.shmedo.mcloudapp.deviceconfig.ui.activity.DeviceConfigActivity;
 import com.shmedo.mcloudapp.deviceconfig.util.BleScannerUtils;
 import com.shmedo.mcloudapp.deviceconfig.viewmodels.BleScannerStateLiveData;
 import com.shmedo.mcloudapp.deviceconfig.viewmodels.BleScannerViewModel;
@@ -43,6 +46,7 @@ import com.shmedo.mcloudapp.util.permission.XPermissionUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -83,18 +87,17 @@ public class BleScannerListFragment extends BaseFragment implements TextWatcher,
     @BindView(R.id.recyclerView)
     RecyclerView mRecyclerView;
 
-    private BleDeviceAdapter bleDeviceAdapter;
-
-    private List<DiscoveredBluetoothDevice> tempDeviceList = new ArrayList<>();
-
-    private Animator animator;
-
-
     @BindView(R.id.no_devices)
     View emptyView;
 
     @BindView(R.id.bluetooth_off)
     View noBluetoothView;
+
+    private BleDeviceAdapter bleDeviceAdapter;
+
+    private List<DiscoveredBluetoothDevice> tempDeviceList = new ArrayList<>();
+
+    private Animator animator;
 
     private BleScannerViewModel scannerViewModel;
 
@@ -129,11 +132,15 @@ public class BleScannerListFragment extends BaseFragment implements TextWatcher,
             public void onChanged(List<DiscoveredBluetoothDevice> newDevices) {
                 final DiffUtil.DiffResult result = DiffUtil.calculateDiff(
                         new DeviceDiffCallback(bleDeviceAdapter.getData(), newDevices), false);
-                tempDeviceList.clear();
-                tempDeviceList.addAll(newDevices);
-                bleDeviceAdapter.setNewInstance(newDevices);
 
+                tempDeviceList.clear();
+                if (newDevices != null) {
+                    tempDeviceList.addAll(newDevices);
+                }
+                bleDeviceAdapter.setNewInstance(tempDeviceList);
                 result.dispatchUpdatesTo(bleDeviceAdapter);
+
+                mTvDeviceCount.setText(String.format(Locale.getDefault(), "(%d)", tempDeviceList.size()));
             }
         });
     }
@@ -159,22 +166,13 @@ public class BleScannerListFragment extends BaseFragment implements TextWatcher,
         bleDeviceAdapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(@NonNull BaseQuickAdapter adapter, @NonNull View view, int position) {
-//                scanLeDevice(false);
-//                BluetoothDevice bluetoothDevice = bleDeviceAdapter.getItem(position);
-//                String macAddress = bluetoothDevice.getAddress();
-//                String deviceName = bluetoothDevice.getName();
-//                MCloudApp.setCurDeviceToken(deviceName.substring(3));
-//                MCloudApp.setCurDeviceMacAddr(macAddress);
-//
-////                String deviceInfo = "";
-////                if (deviceName.endsWith("T")) {
-////                    deviceInfo = "MEDO," + deviceName.substring(3) + ",ADME";
-////                } else if (deviceName.endsWith("L")) {
-////                    deviceInfo = "MEDO," + deviceName.substring(3) + ",DAS";
-////                }
-////                DeviceConfigActivity.startActivity(getActivity(), AppContants.CommunicationWay.BLE_CONNECT, deviceInfo);
-//
-//                DeviceConfigActivity.startActivity(getActivity(), AppContants.CommunicationWay.BLE_CONNECT, bluetoothDevice);
+                DiscoveredBluetoothDevice bluetoothDevice = bleDeviceAdapter.getItem(position);
+                String macAddress = bluetoothDevice.getAddress();
+                String deviceName = bluetoothDevice.getName();
+                MCloudApp.setCurDeviceToken(deviceName.substring(3));
+                MCloudApp.setCurDeviceMacAddr(macAddress);
+
+                DeviceConfigActivity.startActivity(getActivity(), AppContants.CommunicationWay.BLE_CONNECT, bluetoothDevice);
             }
         });
     }
@@ -208,13 +206,10 @@ public class BleScannerListFragment extends BaseFragment implements TextWatcher,
     public void onClick(View v) {
         int id = v.getId();
         if (id == R.id.search_placeholder) {
-//            searchPlaceholder.setVisibility(View.GONE);
-//            searchContainer.setVisibility(View.VISIBLE);
-//            refreshLayout.setVisibility(View.GONE);
-//            mEtKeyWords.setText("");
-
-            clear();
-
+            searchPlaceholder.setVisibility(View.GONE);
+            searchContainer.setVisibility(View.VISIBLE);
+            refreshLayout.setVisibility(View.GONE);
+            mEtKeyWords.setText("");
 
         } else if (id == R.id.tv_cancel) {// 当按了搜索之后关闭软键盘
             KeyBordUtils.hideSoftKeyboard(mEtKeyWords);
@@ -237,10 +232,7 @@ public class BleScannerListFragment extends BaseFragment implements TextWatcher,
 
     private void processStartScan() {
         enableScan = true;
-        scannerViewModel.refresh();
-//        mHandler.postDelayed(mStopScanRunnable, SCAN_PERIOD);
-//        scannerViewModel.startScan();
-//        updateRefreshView(true);
+        clear();
     }
 
     private void processStopScan() {
@@ -252,6 +244,8 @@ public class BleScannerListFragment extends BaseFragment implements TextWatcher,
 
     /**
      * Start scanning for Bluetooth devices or displays a message based on the scanner state.
+     * <br>
+     * BleScannerStateLiveData 实例每次更新值时，回调此方法
      */
     private void startScan(final BleScannerStateLiveData state) {
         //位置服务开关未开启
@@ -269,7 +263,7 @@ public class BleScannerListFragment extends BaseFragment implements TextWatcher,
                     refreshLayout.setVisibility(View.VISIBLE);
                     mRecyclerView.setVisibility(View.VISIBLE);
 
-                    if (enableScan) {
+                    if (enableScan && !scannerViewModel.isScanning()) {
                         // We are now OK to start scanning.
                         scannerViewModel.startScan();
                         updateRefreshView(true);
@@ -280,8 +274,7 @@ public class BleScannerListFragment extends BaseFragment implements TextWatcher,
                     searchLayoutGroup.setVisibility(View.GONE);
                     refreshLayout.setVisibility(View.GONE);
                     mRecyclerView.setVisibility(View.GONE);
-
-                    emptyView.setVisibility(View.GONE);
+//                    emptyView.setVisibility(View.GONE);
                     clear();
                 }
             }
@@ -319,9 +312,7 @@ public class BleScannerListFragment extends BaseFragment implements TextWatcher,
     }
 
     @Override
-    public void onRequestPermissionsResult(final int requestCode,
-                                           @NonNull final String[] permissions,
-                                           @NonNull final int[] grantResults) {
+    public void onRequestPermissionsResult(final int requestCode, @NonNull final String[] permissions, @NonNull final int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == REQUEST_ACCESS_FINE_LOCATION) {
             scannerViewModel.refresh();

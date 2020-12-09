@@ -1,6 +1,5 @@
 package com.shmedo.mcloudapp.deviceconfig.ui.fragment.adme;
 
-import android.bluetooth.BluetoothDevice;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
@@ -23,6 +22,7 @@ import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.view.recycleviewitemdivider.GridSpacingItemDecoration;
 import com.shmedo.mcloudapp.deviceconfig.adapter.ConfigModuleAdapter;
 import com.shmedo.mcloudapp.deviceconfig.model.ConfigModule;
+import com.shmedo.mcloudapp.deviceconfig.model.DiscoveredBluetoothDevice;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.DeviceCurrentStateActivity;
 
 import java.util.ArrayList;
@@ -74,14 +74,14 @@ public class BleAdmeHomeFragment extends BaseBleIotCommunicateFragment {
     private List<ConfigModule> configModuleList = new ArrayList<>();
     private ConfigModule selectedConfigModule;
 
-    private BluetoothDevice bluetoothDevice;
+    private DiscoveredBluetoothDevice bluetoothDevice;
     private String bleNameInfo;
     private String collectorModel = "";//采集器类型
     private int deviceTypeID;
     private String deviceTypeName;
 
 
-    public static BleAdmeHomeFragment newInstance(BluetoothDevice device) {
+    public static BleAdmeHomeFragment newInstance(DiscoveredBluetoothDevice device) {
         BleAdmeHomeFragment fragment = new BleAdmeHomeFragment();
         Bundle args = new Bundle();
         args.putParcelable(EXTRA_DEVICE, device);
@@ -107,7 +107,7 @@ public class BleAdmeHomeFragment extends BaseBleIotCommunicateFragment {
         super.onActivityCreated(savedInstanceState);
         initAdapter();
         initConfigModuleData();
-        connectDevice(bluetoothDevice);
+        connectDevice(bluetoothDevice.getDevice());
         observerConnectionState();
     }
 
@@ -188,7 +188,7 @@ public class BleAdmeHomeFragment extends BaseBleIotCommunicateFragment {
     }
 
     private void observerConnectionState() {
-        usrBleViewModel.getConnectionState().observe(this, new Observer<ConnectionState>() {
+        usrBleViewModel.getConnectionState().observe(getViewLifecycleOwner(), new Observer<ConnectionState>() {
             @Override
             public void onChanged(ConnectionState connectionState) {
                 switch (connectionState.getState()) {
@@ -251,7 +251,7 @@ public class BleAdmeHomeFragment extends BaseBleIotCommunicateFragment {
             case R.id.tv_device_connect_operate://断开/重新连接
                 if (!isConnected()) {
 //                    findAndConnectSpecificDevice();
-                    connectDevice(bluetoothDevice);
+                    connectDevice(bluetoothDevice.getDevice());
                 } else {//断开连接处理
                     isExitMode = false;
                     showDisconnectDialog(getResources().getString(R.string.disconnect_device));

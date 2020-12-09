@@ -61,6 +61,7 @@ public class BleDevicesLiveData extends UnPeekLiveData<List<DiscoveredBluetoothD
         this.filterPrefixRequired = filterPrefixRequired;
         this.filterUuidRequired = filterUuidRequired;
         this.filterNearbyOnly = filterNearbyOnly;
+        this.isAllowNullValue = true;
     }
 
     public synchronized void bluetoothDisabled() {
