@@ -16,6 +16,7 @@ import com.shmedo.core.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.activity.BaseActivity;
 import com.shmedo.mcloudapp.deviceconfig.model.DiscoveredBluetoothDevice;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.BleConfigDeviceFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.NetConfigDeviceFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.adme.BleAdmeHomeFragment;
 import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfo;
@@ -62,7 +63,6 @@ public class DeviceConfigActivity extends BaseActivity {
         context.startActivity(intent);
     }
 
-
     @Override
     protected int getLayoutId() {
         return R.layout.activity_device_config;
@@ -100,9 +100,11 @@ public class DeviceConfigActivity extends BaseActivity {
             fragment = NetConfigDeviceFragment.newInstance(projectDeviceInfo);
 
         } else {
-//            fragment = BleConfigDeviceFragment.newInstance(bleInfo);
-
-            fragment = BleAdmeHomeFragment.newInstance(device);
+            if (device.getName().toUpperCase().endsWith("L")) {
+                fragment = BleConfigDeviceFragment.newInstance(device);
+            } else if (device.getName().toUpperCase().endsWith("T")) {
+                fragment = BleAdmeHomeFragment.newInstance(device);
+            }
         }
         replaceFragment(fragment);
     }
@@ -119,7 +121,6 @@ public class DeviceConfigActivity extends BaseActivity {
             QueryDeviceDataActivity.startActivity(DeviceConfigActivity.this, sn);
         }
     }
-
 
     private void replaceFragment(Fragment fragment) {
         FragmentManager fragmentManager = getSupportFragmentManager();

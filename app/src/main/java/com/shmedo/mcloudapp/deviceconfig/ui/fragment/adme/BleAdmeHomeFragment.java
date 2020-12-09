@@ -74,7 +74,7 @@ public class BleAdmeHomeFragment extends BaseBleIotCommunicateFragment {
     private List<ConfigModule> configModuleList = new ArrayList<>();
     private ConfigModule selectedConfigModule;
 
-    private DiscoveredBluetoothDevice bluetoothDevice;
+    private DiscoveredBluetoothDevice device;
     private String bleNameInfo;
     private String collectorModel = "";//采集器类型
     private int deviceTypeID;
@@ -93,7 +93,7 @@ public class BleAdmeHomeFragment extends BaseBleIotCommunicateFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            bluetoothDevice = getArguments().getParcelable(EXTRA_DEVICE);
+            device = getArguments().getParcelable(EXTRA_DEVICE);
         }
     }
 
@@ -107,7 +107,7 @@ public class BleAdmeHomeFragment extends BaseBleIotCommunicateFragment {
         super.onActivityCreated(savedInstanceState);
         initAdapter();
         initConfigModuleData();
-        connectDevice(bluetoothDevice.getDevice());
+        connectDevice(device.getDevice());
         observerConnectionState();
     }
 
@@ -251,7 +251,7 @@ public class BleAdmeHomeFragment extends BaseBleIotCommunicateFragment {
             case R.id.tv_device_connect_operate://断开/重新连接
                 if (!isConnected()) {
 //                    findAndConnectSpecificDevice();
-                    connectDevice(bluetoothDevice.getDevice());
+                    connectDevice(device.getDevice());
                 } else {//断开连接处理
                     isExitMode = false;
                     showDisconnectDialog(getResources().getString(R.string.disconnect_device));

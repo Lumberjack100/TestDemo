@@ -331,8 +331,8 @@ public abstract class BaseBleConnectFragment extends BaseFragment {
     /**
      * ble 建立连接
      */
-    private void doConnect(BluetoothDevice device) {
-        scanLeDevice(false);
+    public void doConnect(BluetoothDevice device) {
+//        scanLeDevice(false);
         bleViewModel.bleManager.connectDevice(device, getContext());
         errMsg = "连接超时,请稍后尝试";
         startProgressRunnable("正在连接设备：" + SN, CONNECT_DELAY_MILLIS);
@@ -343,11 +343,9 @@ public abstract class BaseBleConnectFragment extends BaseFragment {
      */
     public void disconnectDevice() {
         Timber.w("disconnectDevice() 调用");
-        if (null != bleViewModel.bleManager) {
-            bleViewModel.bleManager.disconnect();
-            isAutoConnectBlue = false;//
-            authenticateNum = 0;
-        }
+        bleViewModel.bleManager.disconnect();
+        isAutoConnectBlue = false;//
+        authenticateNum = 0;
     }
 
     /**
@@ -827,7 +825,7 @@ public abstract class BaseBleConnectFragment extends BaseFragment {
     }
 
     protected void showDisconnectDialog(String content) {
-        MaterialDialog.Builder mBuilder = new MaterialDialog.Builder(Objects.requireNonNull(getContext()))
+        MaterialDialog.Builder mBuilder = new MaterialDialog.Builder(requireContext())
                 .title("温馨提示：")
                 .content(content)
                 .contentColorRes(R.color.title_text_color)
@@ -851,7 +849,7 @@ public abstract class BaseBleConnectFragment extends BaseFragment {
     }
 
     protected void warnNotYetSettingBeforeLeavePage() {
-        MaterialDialog.Builder mBuilder = new MaterialDialog.Builder(Objects.requireNonNull(getContext()))
+        MaterialDialog.Builder mBuilder = new MaterialDialog.Builder(requireContext())
                 .title("温馨提示：")
                 .content("您已经修改了参数，还未配置到设备，确定离开页面吗？")
                 .contentColorRes(R.color.title_text_color)
@@ -914,7 +912,7 @@ public abstract class BaseBleConnectFragment extends BaseFragment {
                 ToastUtils.show("蓝牙未启用");
                 return;
             }
-            findAndConnectSpecificDevice();
+//            findAndConnectSpecificDevice();
         }
     }
 

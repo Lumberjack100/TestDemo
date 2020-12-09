@@ -42,6 +42,7 @@ import com.shmedo.mcloudapp.common.view.recycleviewitemdivider.GridSpacingItemDe
 import com.shmedo.mcloudapp.deviceconfig.adapter.ConfigModuleAdapter;
 import com.shmedo.mcloudapp.deviceconfig.model.ConfigModule;
 import com.shmedo.mcloudapp.deviceconfig.model.DeviceTypeInfo;
+import com.shmedo.mcloudapp.deviceconfig.model.DiscoveredBluetoothDevice;
 import com.shmedo.mcloudapp.deviceconfig.model.FirmWareInfo;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.AdvancedSettingActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.DASCollectorSettingActivity;
@@ -85,7 +86,8 @@ import timber.log.Timber;
  * 蓝牙配置设备主页面
  */
 public class BleConfigDeviceFragment extends BaseBleConnectFragment {
-    private static final String DEVICE_INFO = "device_info";
+    public static final String EXTRA_DEVICE = "com.shmedo.mcloudapp.EXTRA_DEVICE";
+
 
     private static final int LOW_ENERGY_MODEL = 0x0001;
     private static final int REBOOT = 0x0002;
@@ -125,7 +127,7 @@ public class BleConfigDeviceFragment extends BaseBleConnectFragment {
     private List<ConfigModule> configModuleList = new ArrayList<>();
     private ConfigModule selectedConfigModule;
 
-    private String bleNameInfo;
+    private DiscoveredBluetoothDevice device;
     private String collectorModel = "";//采集器类型
     private int deviceTypeID;
     private String deviceTypeName;
@@ -135,10 +137,10 @@ public class BleConfigDeviceFragment extends BaseBleConnectFragment {
 
 
 
-    public static BleConfigDeviceFragment newInstance(String deviceInfo) {
+    public static BleConfigDeviceFragment newInstance(DiscoveredBluetoothDevice device) {
         BleConfigDeviceFragment fragment = new BleConfigDeviceFragment();
         Bundle args = new Bundle();
-        args.putString(DEVICE_INFO, deviceInfo);
+        args.putParcelable(EXTRA_DEVICE, device);
         fragment.setArguments(args);
         return fragment;
     }
@@ -147,7 +149,7 @@ public class BleConfigDeviceFragment extends BaseBleConnectFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            bleNameInfo = getArguments().getString(DEVICE_INFO);
+            device = getArguments().getParcelable(EXTRA_DEVICE);
         }
     }
 
@@ -187,7 +189,8 @@ public class BleConfigDeviceFragment extends BaseBleConnectFragment {
         });
 
         //连接设备
-        findAndConnectSpecificDevice();
+//        findAndConnectSpecificDevice();
+        doConnect(device.getDevice());
     }
 
     @Override
@@ -197,11 +200,10 @@ public class BleConfigDeviceFragment extends BaseBleConnectFragment {
     }
 
     private void setHeadInfo() {
-        String[] infos = bleNameInfo.split(",");
-        if (infos.length >= 3) {
-            mTvDeviceSn.setText(String.format("设备编号：%s", TextUtils.isEmpty(infos[1]) ? "" : infos[1]));
-            mTvProductModel.setText(String.format("产品型号：%s", TextUtils.isEmpty(infos[2]) ? "" : infos[2]));
-            searchDeviceTypeInfo(TextUtils.isEmpty(infos[2]) ? "" : infos[2]);
+        if (device !=null) {
+            mTvDeviceSn.setText(String.format("设备编号：%s", device.getName().substring(3)));
+            mTvProductModel.setText(String.format("产品型号：%s", "DAS"));
+            searchDeviceTypeInfo("DAS");
         }
         mTvDeviceConnectOperate.setVisibility(View.VISIBLE);
         mTvDeviceConnectOperate.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG);
@@ -360,7 +362,9 @@ public class BleConfigDeviceFragment extends BaseBleConnectFragment {
         switch (v.getId()) {
             case R.id.tv_device_connect_operate://断开/重新连接
                 if (!MCloudApp.isIsBluetoothDeviceConnected()) {
-                    findAndConnectSpecificDevice();
+//                    findAndConnectSpecificDevice();
+                    doConnect(device.getDevice());
+
                 } else {//断开连接处理
                     isExitMode = false;
                     showDisconnectDialog(getResources().getString(R.string.disconnect_device));
