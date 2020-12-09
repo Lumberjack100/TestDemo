@@ -23,6 +23,7 @@
 package com.shmedo.mcloudapp.deviceconfig.viewmodels;
 
 import android.os.ParcelUuid;
+import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -44,6 +45,7 @@ import no.nordicsemi.android.support.v18.scanner.ScanResult;
  */
 @SuppressWarnings("unused")
 public class BleDevicesLiveData extends UnPeekLiveData<List<DiscoveredBluetoothDevice>> {
+    private static final String FILTER_PREFIX = "MD";
     private static final ParcelUuid FILTER_UUID = new ParcelUuid(USRManager.USR_SERVICE_UUID);
     private static final int FILTER_RSSI = -50; // [dBm]
 
@@ -51,33 +53,38 @@ public class BleDevicesLiveData extends UnPeekLiveData<List<DiscoveredBluetoothD
     private final List<DiscoveredBluetoothDevice> devices = new ArrayList<>();
     @Nullable
     private List<DiscoveredBluetoothDevice> filteredDevices = null;
+    private boolean filterPrefixRequired;
     private boolean filterUuidRequired;
     private boolean filterNearbyOnly;
 
-    /* package */ BleDevicesLiveData(final boolean filterUuidRequired, final boolean filterNearbyOnly) {
+    public BleDevicesLiveData(final boolean filterPrefixRequired, final boolean filterUuidRequired, final boolean filterNearbyOnly) {
+        this.filterPrefixRequired = filterPrefixRequired;
         this.filterUuidRequired = filterUuidRequired;
         this.filterNearbyOnly = filterNearbyOnly;
     }
 
-    /* package */
-    synchronized void bluetoothDisabled() {
+    public synchronized void bluetoothDisabled() {
         devices.clear();
         filteredDevices = null;
         postValue(null);
     }
 
-    /* package */  boolean filterByUuid(final boolean uuidRequired) {
+    public boolean filterByPrefix(final boolean prefixRequired) {
+        filterPrefixRequired = prefixRequired;
+        return applyFilter();
+    }
+
+    public boolean filterByUuid(final boolean uuidRequired) {
         filterUuidRequired = uuidRequired;
         return applyFilter();
     }
 
-    /* package */  boolean filterByDistance(final boolean nearbyOnly) {
+    public boolean filterByDistance(final boolean nearbyOnly) {
         filterNearbyOnly = nearbyOnly;
         return applyFilter();
     }
 
-    /* package */
-    synchronized boolean deviceDiscovered(@NonNull final ScanResult result) {
+    public synchronized boolean deviceDiscovered(@NonNull final ScanResult result) {
         DiscoveredBluetoothDevice device;
 
         // Check if it's a new device.
@@ -94,7 +101,7 @@ public class BleDevicesLiveData extends UnPeekLiveData<List<DiscoveredBluetoothD
 
         // Return true if the device was on the filtered list or is to be added.
         return (filteredDevices != null && filteredDevices.contains(device))
-                || (matchesUuidFilter(result) && matchesNearbyFilter(device.getHighestRssi()));
+                || (matchesPrefixFilter(result) && matchesUuidFilter(result) && matchesNearbyFilter(device.getHighestRssi()));
     }
 
     /**
@@ -109,12 +116,11 @@ public class BleDevicesLiveData extends UnPeekLiveData<List<DiscoveredBluetoothD
     /**
      * Refreshes the filtered device list based on the filter flags.
      */
-    /* package */
-    synchronized boolean applyFilter() {
+    public synchronized boolean applyFilter() {
         final List<DiscoveredBluetoothDevice> tmp = new ArrayList<>();
         for (final DiscoveredBluetoothDevice device : devices) {
             final ScanResult result = device.getScanResult();
-            if (matchesUuidFilter(result) && matchesNearbyFilter(device.getHighestRssi())) {
+            if (matchesPrefixFilter(result) && matchesUuidFilter(result) && matchesNearbyFilter(device.getHighestRssi())) {
                 tmp.add(device);
             }
         }
@@ -137,6 +143,21 @@ public class BleDevicesLiveData extends UnPeekLiveData<List<DiscoveredBluetoothD
             i++;
         }
         return -1;
+    }
+
+    private boolean matchesPrefixFilter(@NonNull final ScanResult result) {
+        if (!filterPrefixRequired)
+            return true;
+
+        final ScanRecord record = result.getScanRecord();
+        if (record == null)
+            return false;
+
+        String deviceName = record.getDeviceName();
+        if (TextUtils.isEmpty(deviceName))
+            return false;
+
+        return deviceName.contains(FILTER_PREFIX);
     }
 
     @SuppressWarnings("SimplifiableIfStatement")

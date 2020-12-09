@@ -29,87 +29,86 @@ import com.kunminx.architecture.ui.callback.UnPeekLiveData;
  */
 @SuppressWarnings("unused")
 public class BleScannerStateLiveData extends UnPeekLiveData<BleScannerStateLiveData> {
-	private boolean scanningStarted;
-	private boolean hasRecords;
-	private boolean bluetoothEnabled;
-	private boolean locationEnabled;
+    private boolean scanningStarted;
+    private boolean hasRecords;
+    private boolean bluetoothEnabled;
+    private boolean locationEnabled;
 
-	/* package */ BleScannerStateLiveData(final boolean bluetoothEnabled,
-										  final boolean locationEnabled) {
-		this.scanningStarted = false;
-		this.bluetoothEnabled = bluetoothEnabled;
-		this.locationEnabled = locationEnabled;
-		postValue(this);
-	}
+    public BleScannerStateLiveData(final boolean bluetoothEnabled, final boolean locationEnabled) {
+        this.scanningStarted = false;
+        this.bluetoothEnabled = bluetoothEnabled;
+        this.locationEnabled = locationEnabled;
+//		postValue(this);
+    }
 
-	/* package */ void refresh() {
-		postValue(this);
-	}
+    public void refresh() {
+        postValue(this);
+    }
 
-	/* package */ void scanningStarted() {
-		scanningStarted = true;
-		postValue(this);
-	}
+    public void scanningStarted() {
+        scanningStarted = true;
+//		postValue(this);
+    }
 
-	/* package */ void scanningStopped() {
-		scanningStarted = false;
-		postValue(this);
-	}
+    public void scanningStopped() {
+        scanningStarted = false;
+//		postValue(this);
+    }
 
-	/* package */ void bluetoothEnabled() {
-		bluetoothEnabled = true;
-		postValue(this);
-	}
+    public void bluetoothEnabled() {
+        bluetoothEnabled = true;
+        postValue(this);
+    }
 
-	/* package */ synchronized void bluetoothDisabled() {
-		bluetoothEnabled = false;
-		hasRecords = false;
-		postValue(this);
-	}
+    public synchronized void bluetoothDisabled() {
+        bluetoothEnabled = false;
+        hasRecords = false;
+        postValue(this);
+    }
 
-	/* package */ void setLocationEnabled(final boolean enabled) {
-		locationEnabled = enabled;
-		postValue(this);
-	}
+    public void setLocationEnabled(final boolean enabled) {
+        locationEnabled = enabled;
+//		postValue(this);
+    }
 
-	/* package */ void recordFound() {
-		hasRecords = true;
-		postValue(this);
-	}
+    public void recordFound() {
+        hasRecords = true;
+        postValue(this);
+    }
 
-	/**
-	 * Returns whether scanning is in progress.
-	 */
-	boolean isScanning() {
-		return scanningStarted;
-	}
+    /**
+     * Returns whether scanning is in progress.
+     */
+    public boolean isScanning() {
+        return scanningStarted;
+    }
 
-	/**
-	 * Returns whether any records matching filter criteria has been found.
-	 */
-	public boolean hasRecords() {
-		return hasRecords;
-	}
+    /**
+     * Returns whether any records matching filter criteria has been found.
+     */
+    public boolean hasRecords() {
+        return hasRecords;
+    }
 
-	/**
-	 * Returns whether Bluetooth adapter is enabled.
-	 */
-	public boolean isBluetoothEnabled() {
-		return bluetoothEnabled;
-	}
+    /**
+     * Returns whether Bluetooth adapter is enabled.
+     */
+    public boolean isBluetoothEnabled() {
+        return bluetoothEnabled;
+    }
 
-	/**
-	 * Returns whether Location is enabled.
-	 */
-	public boolean isLocationEnabled() {
-		return locationEnabled;
-	}
+    /**
+     * Returns whether Location is enabled.
+     */
+    public boolean isLocationEnabled() {
+        return locationEnabled;
+    }
 
-	/**
-	 * Notifies the observer that scanner has no records to show.
-	 */
-	public void clearRecords() {
-		hasRecords = false;
-		postValue(this);
-	}
+    /**
+     * Notifies the observer that scanner has no records to show.
+     */
+    public void clearRecords() {
+        hasRecords = false;
+        postValue(this);
+    }
 }

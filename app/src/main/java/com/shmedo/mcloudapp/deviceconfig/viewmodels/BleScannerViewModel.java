@@ -33,23 +33,23 @@ public class BleScannerViewModel extends AndroidViewModel {
     /**
      * MutableLiveData containing the scanner state.
      */
-    private final BleScannerStateLiveData scannerStateLiveData;
+    private final BleScannerStateLiveData bleScannerStateLiveData;
 
 
     public BleDevicesLiveData getDevices() {
         return devicesLiveData;
     }
 
-    public BleScannerStateLiveData getScannerState() {
-        return scannerStateLiveData;
+    public BleScannerStateLiveData getBleScannerState() {
+        return bleScannerStateLiveData;
     }
 
     public BleScannerViewModel(@NonNull Application application) {
         super(application);
 
-        scannerStateLiveData = new BleScannerStateLiveData(BleScannerUtils.isBleEnabled(),
+        bleScannerStateLiveData = new BleScannerStateLiveData(BleScannerUtils.isBleEnabled(),
                 BleScannerUtils.isLocationEnabled(application));
-        devicesLiveData = new BleDevicesLiveData(false, false);
+        devicesLiveData = new BleDevicesLiveData(true, false, false);
         registerBroadcastReceivers(application);
     }
 
@@ -69,7 +69,7 @@ public class BleScannerViewModel extends AndroidViewModel {
      * {@link com.shmedo.mcloudapp.deviceconfig.ui.fragment.BleScannerListFragment} will try to start scanning.
      */
     public void refresh() {
-        scannerStateLiveData.refresh();
+        bleScannerStateLiveData.refresh();
     }
 
     /**
@@ -80,12 +80,12 @@ public class BleScannerViewModel extends AndroidViewModel {
      * @param uuidRequired if true, the list will display only devices with Led-Button Service UUID
      *                     in the advertising packet.
      */
-    public void filterByUuid(final boolean uuidRequired) {
-        if (devicesLiveData.filterByUuid(uuidRequired))
-            scannerStateLiveData.recordFound();
-        else
-            scannerStateLiveData.clearRecords();
-    }
+//    public void filterByUuid(final boolean uuidRequired) {
+//        if (devicesLiveData.filterByUuid(uuidRequired))
+//            bleScannerStateLiveData.recordFound();
+//        else
+//            bleScannerStateLiveData.clearRecords();
+//    }
 
     /**
      * Updates the device filter. Devices that once passed the filter will still be shown
@@ -94,18 +94,18 @@ public class BleScannerViewModel extends AndroidViewModel {
      *
      * @param nearbyOnly if true, the list will show only devices with high RSSI.
      */
-    public void filterByDistance(final boolean nearbyOnly) {
-        if (devicesLiveData.filterByDistance(nearbyOnly))
-            scannerStateLiveData.recordFound();
-        else
-            scannerStateLiveData.clearRecords();
-    }
+//    public void filterByDistance(final boolean nearbyOnly) {
+//        if (devicesLiveData.filterByDistance(nearbyOnly))
+//            bleScannerStateLiveData.recordFound();
+//        else
+//            bleScannerStateLiveData.clearRecords();
+//    }
 
     /**
      * Start scanning for Bluetooth devices.
      */
     public void startScan() {
-        if (scannerStateLiveData.isScanning()) {
+        if (bleScannerStateLiveData.isScanning()) {
             return;
         }
 
@@ -118,18 +118,22 @@ public class BleScannerViewModel extends AndroidViewModel {
 
         final BluetoothLeScannerCompat scanner = BluetoothLeScannerCompat.getScanner();
         scanner.startScan(null, settings, scanCallback);
-        scannerStateLiveData.scanningStarted();
+        bleScannerStateLiveData.scanningStarted();
     }
 
     /**
      * Stop scanning for bluetooth devices.
      */
     public void stopScan() {
-        if (scannerStateLiveData.isScanning() && scannerStateLiveData.isBluetoothEnabled()) {
+        if (bleScannerStateLiveData.isScanning() && bleScannerStateLiveData.isBluetoothEnabled()) {
             final BluetoothLeScannerCompat scanner = BluetoothLeScannerCompat.getScanner();
             scanner.stopScan(scanCallback);
-            scannerStateLiveData.scanningStopped();
+            bleScannerStateLiveData.scanningStopped();
         }
+    }
+
+    public boolean isScanning() {
+        return bleScannerStateLiveData.isScanning();
     }
 
     private final ScanCallback scanCallback = new ScanCallback() {
@@ -143,7 +147,7 @@ public class BleScannerViewModel extends AndroidViewModel {
 
             if (devicesLiveData.deviceDiscovered(result)) {
                 devicesLiveData.applyFilter();
-                scannerStateLiveData.recordFound();
+                bleScannerStateLiveData.recordFound();
             }
         }
 
@@ -160,14 +164,14 @@ public class BleScannerViewModel extends AndroidViewModel {
                 atLeastOneMatchedFilter = devicesLiveData.deviceDiscovered(result) || atLeastOneMatchedFilter;
             if (atLeastOneMatchedFilter) {
                 devicesLiveData.applyFilter();
-                scannerStateLiveData.recordFound();
+                bleScannerStateLiveData.recordFound();
             }
         }
 
         @Override
         public void onScanFailed(final int errorCode) {
             // TODO This should be handled
-            scannerStateLiveData.scanningStopped();
+            bleScannerStateLiveData.scanningStopped();
         }
     };
 
@@ -188,7 +192,7 @@ public class BleScannerViewModel extends AndroidViewModel {
         @Override
         public void onReceive(final Context context, final Intent intent) {
             final boolean enabled = BleScannerUtils.isLocationEnabled(context);
-            scannerStateLiveData.setLocationEnabled(enabled);
+            bleScannerStateLiveData.setLocationEnabled(enabled);
         }
     };
 
@@ -203,13 +207,13 @@ public class BleScannerViewModel extends AndroidViewModel {
 
             switch (state) {
                 case BluetoothAdapter.STATE_ON:
-                    scannerStateLiveData.bluetoothEnabled();
+                    bleScannerStateLiveData.bluetoothEnabled();
                     break;
                 case BluetoothAdapter.STATE_TURNING_OFF:
                 case BluetoothAdapter.STATE_OFF:
                     if (previousState != BluetoothAdapter.STATE_TURNING_OFF && previousState != BluetoothAdapter.STATE_OFF) {
                         stopScan();
-                        scannerStateLiveData.bluetoothDisabled();
+                        bleScannerStateLiveData.bluetoothDisabled();
                     }
                     break;
             }

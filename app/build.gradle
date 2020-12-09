@@ -2,7 +2,6 @@ apply plugin: 'com.android.application'
 apply plugin: 'org.greenrobot.greendao'
 apply plugin: 'com.jakewharton.butterknife'
 
-
 /**
  * 获取APP名字
  * @return
@@ -142,6 +141,7 @@ dependencies {
 
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'androidx.appcompat:appcompat:1.2.0'
+    implementation 'androidx.fragment:fragment:1.2.5'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
     implementation "com.google.android.material:material:$rootProject.thirdLib.material"
     implementation "androidx.lifecycle:lifecycle-runtime:2.2.0"

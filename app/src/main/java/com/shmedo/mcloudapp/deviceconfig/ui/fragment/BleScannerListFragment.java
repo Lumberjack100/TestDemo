@@ -3,12 +3,7 @@ package com.shmedo.mcloudapp.deviceconfig.ui.fragment;
 import android.Manifest;
 import android.animation.Animator;
 import android.animation.AnimatorInflater;
-import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothDevice;
-import android.bluetooth.BluetoothManager;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -24,45 +19,45 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.lifecycle.Observer;
+import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.hjq.toast.ToastUtils;
-import com.shmedo.core.AppContants;
-import com.shmedo.core.MCloudApp;
 import com.shmedo.core.util.GlobalUtil;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.fragment.BaseFragment;
 import com.shmedo.mcloudapp.common.view.ClearEditText;
 import com.shmedo.mcloudapp.deviceconfig.adapter.BleDeviceAdapter;
-import com.shmedo.mcloudapp.deviceconfig.ui.activity.DeviceConfigActivity;
+import com.shmedo.mcloudapp.deviceconfig.model.DeviceDiffCallback;
+import com.shmedo.mcloudapp.deviceconfig.model.DiscoveredBluetoothDevice;
+import com.shmedo.mcloudapp.deviceconfig.util.BleScannerUtils;
+import com.shmedo.mcloudapp.deviceconfig.viewmodels.BleScannerStateLiveData;
+import com.shmedo.mcloudapp.deviceconfig.viewmodels.BleScannerViewModel;
 import com.shmedo.mcloudapp.util.KeyBordUtils;
-import com.shmedo.mcloudapp.util.LocationUtils;
 import com.shmedo.mcloudapp.util.permission.PermissionHelper;
 import com.shmedo.mcloudapp.util.permission.XPermissionUtils;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
-import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-import no.nordicsemi.android.support.v18.scanner.BluetoothLeScannerCompat;
-import no.nordicsemi.android.support.v18.scanner.ScanCallback;
-import no.nordicsemi.android.support.v18.scanner.ScanResult;
-import no.nordicsemi.android.support.v18.scanner.ScanSettings;
 
 /**
  *
  */
-public class BleScannerListFragment extends BaseFragment implements TextWatcher, TextView.OnEditorActionListener{
-    private static final int REQUEST_ENABLE_BT = 0x002;
+public class BleScannerListFragment extends BaseFragment implements TextWatcher, TextView.OnEditorActionListener {
+    private static final int REQUEST_ACCESS_FINE_LOCATION = 1022; // random number
 
     // Stops scanning after 10 seconds.
     private static final long SCAN_PERIOD = 10000;
+
+    @BindView(R.id.search_layout_group)
+    View searchLayoutGroup;
 
     @BindView(R.id.search_placeholder)
     View searchPlaceholder;
@@ -90,24 +85,27 @@ public class BleScannerListFragment extends BaseFragment implements TextWatcher,
 
     private BleDeviceAdapter bleDeviceAdapter;
 
-    private BluetoothAdapter mBluetoothAdapter;
-
-    private BluetoothLeScannerCompat scanner;
-
-    private ScanCallback scanCallback = new MdLeScanCallback();
-
-    private Handler mHandler;
-
-    private boolean mScanning = false;
-
-    private List<BluetoothDevice> tempDeviceList = new ArrayList<>();
+    private List<DiscoveredBluetoothDevice> tempDeviceList = new ArrayList<>();
 
     private Animator animator;
+
+
+    @BindView(R.id.no_devices)
+    View emptyView;
+
+    @BindView(R.id.bluetooth_off)
+    View noBluetoothView;
+
+    private BleScannerViewModel scannerViewModel;
+
+    private boolean enableScan = false;
+
+    private Handler mHandler;
 
     private final Runnable mStopScanRunnable = new Runnable() {
         @Override
         public void run() {
-            stopScan();
+            processStopScan();
         }
     };
 
@@ -120,45 +118,38 @@ public class BleScannerListFragment extends BaseFragment implements TextWatcher,
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         mHandler = new Handler(Looper.getMainLooper());
-        initBluetooth();
         initAdapter();
         initRefreshAnimation();
         setEditTextListener();
+
+        scannerViewModel = getFragmentScopeViewModel(BleScannerViewModel.class);
+        scannerViewModel.getBleScannerState().observeInFragment(this, this::startScan);
+        scannerViewModel.getDevices().observeInFragment(this, new Observer<List<DiscoveredBluetoothDevice>>() {
+            @Override
+            public void onChanged(List<DiscoveredBluetoothDevice> newDevices) {
+                final DiffUtil.DiffResult result = DiffUtil.calculateDiff(
+                        new DeviceDiffCallback(bleDeviceAdapter.getData(), newDevices), false);
+                tempDeviceList.clear();
+                tempDeviceList.addAll(newDevices);
+                bleDeviceAdapter.setNewInstance(newDevices);
+
+                result.dispatchUpdatesTo(bleDeviceAdapter);
+            }
+        });
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        if (mScanning) {
-            return;
+        if (!scannerViewModel.isScanning()) {
+            processStartScan();
         }
-        MCloudApp.getMainHandler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                startDiscoveryDevice();
-            }
-        }, 500);
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        scanLeDevice(false);
-        mHandler.removeCallbacksAndMessages(null);
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        mHandler.removeCallbacksAndMessages(null);
-    }
-
-    /**
-     * 初始化蓝牙
-     */
-    private void initBluetooth() {
-        final BluetoothManager bluetoothManager = (BluetoothManager) getActivity().getSystemService(Context.BLUETOOTH_SERVICE);
-        mBluetoothAdapter = Objects.requireNonNull(bluetoothManager).getAdapter();
+        processStopScan();
     }
 
     private void initAdapter() {
@@ -168,22 +159,22 @@ public class BleScannerListFragment extends BaseFragment implements TextWatcher,
         bleDeviceAdapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(@NonNull BaseQuickAdapter adapter, @NonNull View view, int position) {
-                scanLeDevice(false);
-                BluetoothDevice bluetoothDevice = bleDeviceAdapter.getItem(position);
-                String macAddress = bluetoothDevice.getAddress();
-                String deviceName = bluetoothDevice.getName();
-                MCloudApp.setCurDeviceToken(deviceName.substring(3));
-                MCloudApp.setCurDeviceMacAddr(macAddress);
-
-//                String deviceInfo = "";
-//                if (deviceName.endsWith("T")) {
-//                    deviceInfo = "MEDO," + deviceName.substring(3) + ",ADME";
-//                } else if (deviceName.endsWith("L")) {
-//                    deviceInfo = "MEDO," + deviceName.substring(3) + ",DAS";
-//                }
-//                DeviceConfigActivity.startActivity(getActivity(), AppContants.CommunicationWay.BLE_CONNECT, deviceInfo);
-
-                DeviceConfigActivity.startActivity(getActivity(), AppContants.CommunicationWay.BLE_CONNECT, bluetoothDevice);
+//                scanLeDevice(false);
+//                BluetoothDevice bluetoothDevice = bleDeviceAdapter.getItem(position);
+//                String macAddress = bluetoothDevice.getAddress();
+//                String deviceName = bluetoothDevice.getName();
+//                MCloudApp.setCurDeviceToken(deviceName.substring(3));
+//                MCloudApp.setCurDeviceMacAddr(macAddress);
+//
+////                String deviceInfo = "";
+////                if (deviceName.endsWith("T")) {
+////                    deviceInfo = "MEDO," + deviceName.substring(3) + ",ADME";
+////                } else if (deviceName.endsWith("L")) {
+////                    deviceInfo = "MEDO," + deviceName.substring(3) + ",DAS";
+////                }
+////                DeviceConfigActivity.startActivity(getActivity(), AppContants.CommunicationWay.BLE_CONNECT, deviceInfo);
+//
+//                DeviceConfigActivity.startActivity(getActivity(), AppContants.CommunicationWay.BLE_CONNECT, bluetoothDevice);
             }
         });
     }
@@ -198,41 +189,112 @@ public class BleScannerListFragment extends BaseFragment implements TextWatcher,
         mEtKeyWords.setOnEditorActionListener(this);
     }
 
-    /**
-     * 扫描蓝牙设备，主要用来判断要连接的设备是否能被搜索到
-     */
-    private void startDiscoveryDevice() {
-        //未打开蓝牙
-        if (!mBluetoothAdapter.isEnabled()) {
-            Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-            startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
-            return;
+    private void updateRefreshView(boolean isScanning) {
+        if (isScanning) {
+            if (animator != null) {
+                animator.start();
+            }
+            mTvDeviceCount.setText("(0)");
+            mTvScanState.setText("刷新中...");
+        } else {
+            if (animator != null) {
+                animator.end();
+            }
+            mTvScanState.setText("重新刷新");
         }
+    }
 
-        checkPermissionForGPS();
+    @OnClick({R.id.search_placeholder, R.id.tv_cancel, R.id.ll_scan_refresh, R.id.action_enable_bluetooth})
+    public void onClick(View v) {
+        int id = v.getId();
+        if (id == R.id.search_placeholder) {
+//            searchPlaceholder.setVisibility(View.GONE);
+//            searchContainer.setVisibility(View.VISIBLE);
+//            refreshLayout.setVisibility(View.GONE);
+//            mEtKeyWords.setText("");
+
+            clear();
+
+
+        } else if (id == R.id.tv_cancel) {// 当按了搜索之后关闭软键盘
+            KeyBordUtils.hideSoftKeyboard(mEtKeyWords);
+            searchPlaceholder.setVisibility(View.VISIBLE);
+            searchContainer.setVisibility(View.GONE);
+            refreshLayout.setVisibility(View.VISIBLE);
+            bleDeviceAdapter.setNewInstance(tempDeviceList);
+
+        } else if (id == R.id.ll_scan_refresh) {
+            if (scannerViewModel.isScanning()) {
+                processStopScan();
+            } else {
+                processStartScan();
+            }
+        } else if (id == R.id.action_enable_bluetooth) {
+            final Intent enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+            startActivity(enableIntent);
+        }
+    }
+
+    private void processStartScan() {
+        enableScan = true;
+        scannerViewModel.refresh();
+//        mHandler.postDelayed(mStopScanRunnable, SCAN_PERIOD);
+//        scannerViewModel.startScan();
+//        updateRefreshView(true);
+    }
+
+    private void processStopScan() {
+        enableScan = false;
+        scannerViewModel.stopScan();
+        mHandler.removeCallbacksAndMessages(null);
+        updateRefreshView(false);
     }
 
     /**
-     * 检查是否打开系统位置服务，如果开启了，接着检查是否授予 APP 定位权限
+     * Start scanning for Bluetooth devices or displays a message based on the scanner state.
      */
-    public void checkPermissionForGPS() {
-        if (LocationUtils.getInstance().isGpsEnabled()) {
-            checkPermissionForLocation();
-
-        } else {
+    private void startScan(final BleScannerStateLiveData state) {
+        //位置服务开关未开启
+        if (BleScannerUtils.isLocationRequired(mActivity) && !BleScannerUtils.isLocationEnabled(mActivity)) {
             PermissionHelper.showGPSSettingDialog(mActivity);
+        } else {
+            //缺少定位权限
+            if (!BleScannerUtils.isLocationPermissionsGranted(mActivity)) {
+                checkPermissionForLocation();
+            } else {
+                // Bluetooth must be enabled.
+                if (state.isBluetoothEnabled()) {
+                    noBluetoothView.setVisibility(View.GONE);
+                    searchLayoutGroup.setVisibility(View.VISIBLE);
+                    refreshLayout.setVisibility(View.VISIBLE);
+                    mRecyclerView.setVisibility(View.VISIBLE);
+
+                    if (enableScan) {
+                        // We are now OK to start scanning.
+                        scannerViewModel.startScan();
+                        updateRefreshView(true);
+                        mHandler.postDelayed(mStopScanRunnable, SCAN_PERIOD);
+                    }
+                } else {
+                    noBluetoothView.setVisibility(View.VISIBLE);
+                    searchLayoutGroup.setVisibility(View.GONE);
+                    refreshLayout.setVisibility(View.GONE);
+                    mRecyclerView.setVisibility(View.GONE);
+
+                    emptyView.setVisibility(View.GONE);
+                    clear();
+                }
+            }
         }
     }
 
     private void checkPermissionForLocation() {
-        XPermissionUtils.requestPermissionsResult(getActivity(), 200, new String[]{
-                        Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION},
+        XPermissionUtils.requestPermissionsResult(getActivity(), REQUEST_ACCESS_FINE_LOCATION, new String[]{
+                        Manifest.permission.ACCESS_FINE_LOCATION},
                 new XPermissionUtils.OnPermissionListener() {
                     @Override
                     public void onPermissionGranted() {
-                        tempDeviceList.clear();
-                        bleDeviceAdapter.setNewInstance(new ArrayList<>());
-                        scanLeDevice(true);
+
                     }
 
                     @Override
@@ -248,125 +310,21 @@ public class BleScannerListFragment extends BaseFragment implements TextWatcher,
                 });
     }
 
-    private void scanLeDevice(final boolean enable) {
-        if (enable) {
-            // Stops scanning after a pre-defined scan period.
-            mHandler.postDelayed(mStopScanRunnable, SCAN_PERIOD);
-            mScanning = true;
-            startScan();
-            updateRefreshView(true);
-        } else {
-            if (mScanning) {
-                stopScan();
-            }
-        }
+    /**
+     * Clears the list of devices, which will notify the observer.
+     */
+    private void clear() {
+        scannerViewModel.getDevices().clear();
+        scannerViewModel.getBleScannerState().clearRecords();
     }
 
-    private void startScan() {
-        if (scanner == null) {
-            scanner = BluetoothLeScannerCompat.getScanner();
-        }
-        ScanSettings settings = new ScanSettings.Builder()
-                .setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY)
-                .build();
-//        List<ScanFilter> filters = new ArrayList<>();
-//        filters.add(new ScanFilter.Builder().setServiceUuid(ParcelUuid.fromString(GattAttributes.USR_SERVICE)).build());
-        scanner.startScan(null, settings, scanCallback);
-    }
-
-    private void stopScan() {
-        mScanning = false;
-        scanner.stopScan(scanCallback);
-        updateRefreshView(false);
-    }
-
-    private void updateRefreshView(boolean isRefresh) {
-        if (isRefresh) {
-            if (animator != null) {
-                animator.start();
-            }
-            mTvDeviceCount.setText("(0)");
-            mTvScanState.setText("刷新中...");
-        } else {
-            if (animator != null) {
-                animator.end();
-            }
-            mTvScanState.setText("重新刷新");
-        }
-    }
-
-    @OnClick({R.id.search_placeholder, R.id.tv_cancel, R.id.ll_scan_refresh})
-    public void onClick(View v) {
-        int id = v.getId();
-        if (id == R.id.search_placeholder) {
-            scanLeDevice(false);
-            searchPlaceholder.setVisibility(View.GONE);
-            searchContainer.setVisibility(View.VISIBLE);
-            refreshLayout.setVisibility(View.GONE);
-            mEtKeyWords.setText("");
-        } else if (id == R.id.tv_cancel) {// 当按了搜索之后关闭软键盘
-            KeyBordUtils.hideSoftKeyboard(mEtKeyWords);
-            searchPlaceholder.setVisibility(View.VISIBLE);
-            searchContainer.setVisibility(View.GONE);
-            refreshLayout.setVisibility(View.VISIBLE);
-            bleDeviceAdapter.setNewInstance(tempDeviceList);
-        } else if (id == R.id.ll_scan_refresh) {
-            if (mTvScanState.getText().toString().contains("刷新中")) {
-                scanLeDevice(false);
-            } else {
-                startDiscoveryDevice();
-            }
-        }
-    }
-
-    @SuppressLint("MissingSuperCall")
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        switch (requestCode) {
-            case REQUEST_ENABLE_BT:
-                // 判断蓝牙是否启用
-                if (resultCode != Activity.RESULT_OK) {
-                    ToastUtils.show("蓝牙未启用");
-                    return;
-                }
-                startDiscoveryDevice();
-                break;
-        }
-    }
-
-    private class MdLeScanCallback extends ScanCallback {
-        @Override
-        public void onScanResult(int callbackType, @NonNull ScanResult result) {
-//            Timber.d("在线程 Name= " + Thread.currentThread().getName() + ";Id= " + Thread.currentThread().getId() + " 中扫描到设备");
-            mActivity.runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    BluetoothDevice device = result.getDevice();
-                    if (device.getName() == null || !device.getName().startsWith("MD") || !device.getName().endsWith("L")) {
-                        return;
-                    }
-                    for (BluetoothDevice mDevice : bleDeviceAdapter.getData()) {
-                        if (device.getAddress().equals(mDevice.getAddress())) {
-                            return;
-                        }
-                    }
-                    tempDeviceList.add(device);
-                    bleDeviceAdapter.addData(device);
-                    mTvDeviceCount.setText(String.format(Locale.getDefault(), "(%d)", bleDeviceAdapter.getItemCount()));
-                }
-            });
-        }
-
-        @Override
-        public void onBatchScanResults(@NonNull List<ScanResult> results) {
-            super.onBatchScanResults(results);
-        }
-
-        @Override
-        public void onScanFailed(int errorCode) {
-            super.onScanFailed(errorCode);
+    public void onRequestPermissionsResult(final int requestCode,
+                                           @NonNull final String[] permissions,
+                                           @NonNull final int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == REQUEST_ACCESS_FINE_LOCATION) {
+            scannerViewModel.refresh();
         }
     }
 
@@ -408,7 +366,7 @@ public class BleScannerListFragment extends BaseFragment implements TextWatcher,
 
     private void searchProcess(String queryText) {
         bleDeviceAdapter.setNewInstance(new ArrayList<>());
-        for (BluetoothDevice device : tempDeviceList) {
+        for (DiscoveredBluetoothDevice device : tempDeviceList) {
             if (!TextUtils.isEmpty(device.getName()) && device.getName().contains(queryText)) {
                 bleDeviceAdapter.addData(device);
             }

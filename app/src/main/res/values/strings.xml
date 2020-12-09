@@ -219,6 +219,16 @@
     <string name="ble_state_initializing">初始化中…</string>
 
 
+    <string name="location_permission_title">LOCATION PERMISSION REQUIRED</string>
+    <string name="location_permission_info">From Android 6.0 Marshmallow onwards the application requires Location permission in order to scan for Bluetooth Low Energy devices.
+      \n\nThis is because Bluetooth LE beacons, for example iBeacons or Eddystone, may be used to determine the phone\'s and user\'s location. <b>nRF Blinky</b> will not use this information in any way.</string>
+    <string name="location_permission_action">Grant permission</string>
+    <string name="location_permission_settings">Settings</string>
+
+    <string name="bluetooth_disabled_title">BLUETOOTH DISABLED</string>
+    <string name="bluetooth_disabled_info">The Bluetooth adapter is turned off. Click the button below to enable it.</string>
+    <string name="bluetooth_disabled_action">Enable</string>
+
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
