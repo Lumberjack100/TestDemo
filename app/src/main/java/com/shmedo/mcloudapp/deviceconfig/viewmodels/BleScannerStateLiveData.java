@@ -73,7 +73,7 @@ public class BleScannerStateLiveData extends UnPeekLiveData<BleScannerStateLiveD
 
     public void recordFound() {
         hasRecords = true;
-        postValue(this);
+//        postValue(this);
     }
 
     /**

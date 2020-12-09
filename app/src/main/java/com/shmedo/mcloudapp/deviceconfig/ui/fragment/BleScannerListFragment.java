@@ -275,7 +275,9 @@ public class BleScannerListFragment extends BaseFragment implements TextWatcher,
                     refreshLayout.setVisibility(View.GONE);
                     mRecyclerView.setVisibility(View.GONE);
 //                    emptyView.setVisibility(View.GONE);
-                    clear();
+                    if (bleDeviceAdapter.getItemCount() > 0) {
+                        clear();
+                    }
                 }
             }
         }
