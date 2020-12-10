@@ -74,7 +74,6 @@ public class USRManager extends ObservableBleManager {
         logOutputModeLiveData.postValue(isLogOutputMode);
     }
 
-
     @NonNull
     @Override
     protected BleManagerGattCallback getGattCallback() {
@@ -104,7 +103,7 @@ public class USRManager extends ObservableBleManager {
     private final IOTCommandDataCallback buttonCallback = new IOTCommandDataCallback() {
         @Override
         public void onResponseReceived(@NonNull BluetoothDevice device, String result) {
-            Timber.d("接收数据(onResponseReceived): %s", result);
+            Timber.d("接收数据(onResponseReceived): length=%s bytes;content: %s", result.getBytes().length, result);
             log(LogContract.Log.Level.APPLICATION, "接收数据(onResponseReceived): " + result);
             responseMsg.setValue(result);
         }
@@ -177,7 +176,6 @@ public class USRManager extends ObservableBleManager {
         if (writeCharacteristic == null)
             return;
 
-        Timber.d("发送数据(writeMessage): %s", command);
         // Write some data to the characteristic.
         writeCharacteristic(writeCharacteristic, Data.from(command))
                 // If data are longer than MTU-3, they will be chunked into multiple packets.
@@ -191,7 +189,7 @@ public class USRManager extends ObservableBleManager {
                 .done(new SuccessCallback() {
                     @Override
                     public void onRequestCompleted(@NonNull BluetoothDevice device) {
-                        Timber.d("已发送数据(writeMessage): %s", command);
+                        Timber.d("已发送数据(writeMessage): length=%s bytes;content: %s", command.getBytes().length, command);
                         log(LogContract.Log.Level.APPLICATION, "已发送数据(writeMessage): " + command);
                     }
                 })
@@ -199,7 +197,7 @@ public class USRManager extends ObservableBleManager {
                 .fail(new FailCallback() {
                     @Override
                     public void onRequestFailed(@NonNull BluetoothDevice device, int status) {
-                        Timber.d("未发送数据(writeMessage): %s", command);
+                        Timber.d("未发送数据(writeMessage): length=%s bytes;content: %s", command.getBytes().length, command);
                         log(Log.WARN, "未发送数据(writeMessage): " + command);
                     }
                 })

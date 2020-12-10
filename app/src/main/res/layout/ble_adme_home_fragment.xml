@@ -11,7 +11,7 @@
         android:layout_height="match_parent"
         android:background="@color/main_bg_gray"
         android:orientation="vertical"
-        android:visibility="gone"
+        android:visibility="visible"
         tools:visibility="visible">
 
         <include layout="@layout/vms_device_config_head_info" />
@@ -51,20 +51,24 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:clipToPadding="false"
-            android:splitMotionEvents="false" />
+            android:splitMotionEvents="false"
+            tools:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+            tools:spanCount="2"
+            tools:listitem="@layout/item_device_config_module"/>
 
     </LinearLayout>
 
     <LinearLayout
         android:id="@+id/progress_container"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:gravity="center_horizontal"
+        android:layout_height="match_parent"
+        android:background="#4d000000"
+        android:gravity="center"
+        android:clickable="true"
+        android:focusable="true"
         android:orientation="vertical"
-        android:padding="@dimen/activity_horizontal_margin"
         android:visibility="gone"
-        tools:visibility="gone">
+        tools:visibility="visible">
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/connection_state"
