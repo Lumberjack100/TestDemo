@@ -170,7 +170,7 @@ public class BleScannerListFragment extends BaseFragment implements TextWatcher,
                 String macAddress = bluetoothDevice.getAddress();
                 String deviceName = bluetoothDevice.getName();
                 MCloudApp.setCurDeviceToken(deviceName.substring(3));
-                MCloudApp.setCurDeviceMacAddr(macAddress);
+//                MCloudApp.setCurDeviceMacAddr(macAddress);
 
                 DeviceConfigActivity.startActivity(getActivity(), AppContants.CommunicationWay.BLE_CONNECT, bluetoothDevice);
             }

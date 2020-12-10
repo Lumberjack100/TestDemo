@@ -612,7 +612,7 @@ public class BleConfigDeviceFragment extends BaseBleConnectFragment {
     public void onDestroy() {
         super.onDestroy();
         MCloudApp.setCurDeviceToken(null);
-        MCloudApp.setCurDeviceMacAddr(null);
+//        MCloudApp.setCurDeviceMacAddr(null);
     }
 
     /**

@@ -1,12 +1,10 @@
 package com.shmedo.mcloudapp.deviceconfig.ui.fragment;
 
-import android.Manifest;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothManager;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -34,24 +32,18 @@ import com.shmedo.configlibrary.ble.enums.ServerNumber;
 import com.shmedo.configlibrary.ble.utils.DesUtil;
 import com.shmedo.configlibrary.ble.utils.StringUtil;
 import com.shmedo.core.MCloudApp;
-import com.shmedo.core.util.GlobalUtil;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.bluetooth.BluetoothEvent;
 import com.shmedo.mcloudapp.bluetooth.Message;
 import com.shmedo.mcloudapp.common.ui.fragment.BaseFragment;
 import com.shmedo.mcloudapp.deviceconfig.viewmodels.BleViewModel;
 import com.shmedo.mcloudapp.util.bleutil.Constants;
-import com.shmedo.mcloudapp.util.permission.XPermissionUtils;
 
 import java.nio.charset.StandardCharsets;
-import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
 import no.nordicsemi.android.support.v18.scanner.BluetoothLeScannerCompat;
-import no.nordicsemi.android.support.v18.scanner.ScanCallback;
-import no.nordicsemi.android.support.v18.scanner.ScanResult;
-import no.nordicsemi.android.support.v18.scanner.ScanSettings;
 import timber.log.Timber;
 
 /**
@@ -79,7 +71,7 @@ public abstract class BaseBleConnectFragment extends BaseFragment {
 
     private BluetoothLeScannerCompat scanner;
 
-    private ScanCallback scanCallback = new MdLeScanCallback();
+//    private ScanCallback scanCallback = new MdLeScanCallback();
 
     private boolean mScanning;
 
@@ -93,7 +85,7 @@ public abstract class BaseBleConnectFragment extends BaseFragment {
 
     private String SN = MCloudApp.getCurDeviceToken();
 
-    private String macAddress = MCloudApp.getCurDeviceMacAddr();
+//    private String macAddress = MCloudApp.getCurDeviceMacAddr();
 
     private static Handler uiHander = new Handler();
 
@@ -200,133 +192,133 @@ public abstract class BaseBleConnectFragment extends BaseFragment {
     /**
      * 搜索并连接指定的蓝牙设备
      */
-    public void findAndConnectSpecificDevice() {
-        //蓝牙未打开
-        if (!mBluetoothAdapter.isEnabled()) {
-            Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-            startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
-            return;
-        }
+//    public void findAndConnectSpecificDevice() {
+//        //蓝牙未打开
+//        if (!mBluetoothAdapter.isEnabled()) {
+//            Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+//            startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
+//            return;
+//        }
+//
+//        //通过蓝牙设备列表页面跳转过来时，直接连接设备
+//        if (!TextUtils.isEmpty(macAddress)) {
+//            BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(macAddress);
+//            if (device == null) {
+//                Timber.e("Device not found.  Unable to connect.");
+//                return;
+//            }
+//            doConnect(device);
+//            return;
+//        }
+//
+//        checkBluetoothPermissions();
+//    }
 
-        //通过蓝牙设备列表页面跳转过来时，直接连接设备
-        if (!TextUtils.isEmpty(macAddress)) {
-            BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(macAddress);
-            if (device == null) {
-                Timber.e("Device not found.  Unable to connect.");
-                return;
-            }
-            doConnect(device);
-            return;
-        }
-
-        checkBluetoothPermissions();
-    }
-
-    private void checkBluetoothPermissions() {
-        XPermissionUtils.requestPermissionsResult(mActivity, 200, new String[]{
-                        Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION},
-                new XPermissionUtils.OnPermissionListener() {
-                    @Override
-                    public void onPermissionGranted() {
-                        //搜索附近蓝牙设备，避免指定的设备不在蓝牙范围内
-                        startDiscoveryDevice();
-                    }
-
-                    @Override
-                    public void onPermissionDenied(List<String> deniedPermissions) {
-                        boolean allNeverAskAgain = XPermissionUtils.isAllNeverAskAgain(mActivity, deniedPermissions);
-                        // 所有的权限都被勾上不再询问时，跳转到应用设置界面，引导用户手动打开权限
-                        if (allNeverAskAgain) {
-                            XPermissionUtils.showRefusePermissionDialog(mActivity, GlobalUtil.getString(R.string.message_permission_bluetooth_location_rational));
-                        } else {
-                            ToastUtils.show(GlobalUtil.getString(R.string.message_permission_location_denied));
-                        }
-                    }
-                });
-    }
+//    private void checkBluetoothPermissions() {
+//        XPermissionUtils.requestPermissionsResult(mActivity, 200, new String[]{
+//                        Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION},
+//                new XPermissionUtils.OnPermissionListener() {
+//                    @Override
+//                    public void onPermissionGranted() {
+//                        //搜索附近蓝牙设备，避免指定的设备不在蓝牙范围内
+//                        startDiscoveryDevice();
+//                    }
+//
+//                    @Override
+//                    public void onPermissionDenied(List<String> deniedPermissions) {
+//                        boolean allNeverAskAgain = XPermissionUtils.isAllNeverAskAgain(mActivity, deniedPermissions);
+//                        // 所有的权限都被勾上不再询问时，跳转到应用设置界面，引导用户手动打开权限
+//                        if (allNeverAskAgain) {
+//                            XPermissionUtils.showRefusePermissionDialog(mActivity, GlobalUtil.getString(R.string.message_permission_bluetooth_location_rational));
+//                        } else {
+//                            ToastUtils.show(GlobalUtil.getString(R.string.message_permission_location_denied));
+//                        }
+//                    }
+//                });
+//    }
 
     /**
      * 扫描蓝牙设备，主要用来判断要连接的设备是否能被搜索到
      */
-    private void startDiscoveryDevice() {
-        //蓝牙已打开时，开始扫描蓝牙设备
-        scanLeDevice(true);
-        errMsg = "未搜索到此设备，请稍后尝试";
-        startProgressRunnable("正在搜索设备：" + SN, SCAN_SPECIFIC_DEVICE_DELAY_MILLIS);
+//    private void startDiscoveryDevice() {
+//        //蓝牙已打开时，开始扫描蓝牙设备
+//        scanLeDevice(true);
+//        errMsg = "未搜索到此设备，请稍后尝试";
+//        startProgressRunnable("正在搜索设备：" + SN, SCAN_SPECIFIC_DEVICE_DELAY_MILLIS);
+//
+//        //因设备问题会造成长时间搜索设备，在此操作过程中无法中断和进行其他操作，进度框会长时间在页面停留
+//        //新增操作返回，中断当前蓝牙操作并关闭进度框
+//        if (progressDialog != null) {
+//            progressDialog.setCancelable(true);
+//            progressDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+//                @Override
+//                public void onCancel(DialogInterface dialog) {
+//                    stopProgressRunnable();
+//                    scanLeDevice(false);
+//                }
+//            });
+//        }
+//    }
 
-        //因设备问题会造成长时间搜索设备，在此操作过程中无法中断和进行其他操作，进度框会长时间在页面停留
-        //新增操作返回，中断当前蓝牙操作并关闭进度框
-        if (progressDialog != null) {
-            progressDialog.setCancelable(true);
-            progressDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
-                @Override
-                public void onCancel(DialogInterface dialog) {
-                    stopProgressRunnable();
-                    scanLeDevice(false);
-                }
-            });
-        }
-    }
+//    private void scanLeDevice(final boolean enable) {
+//        if (enable) {
+//            // Stops scanning after a pre-defined scan period.
+//            uiHander.postDelayed(new Runnable() {
+//                @Override
+//                public void run() {
+//                    mScanning = false;
+//                    scanner.stopScan(scanCallback);
+//                }
+//            }, SCAN_SPECIFIC_DEVICE_DELAY_MILLIS);
+//
+//            mScanning = true;
+//            initScan();
+//        } else {
+//            mScanning = false;
+//            if (scanner != null)
+//                scanner.stopScan(scanCallback);
+//        }
+//    }
 
-    private void scanLeDevice(final boolean enable) {
-        if (enable) {
-            // Stops scanning after a pre-defined scan period.
-            uiHander.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    mScanning = false;
-                    scanner.stopScan(scanCallback);
-                }
-            }, SCAN_SPECIFIC_DEVICE_DELAY_MILLIS);
+//    private void initScan() {
+//        if (scanner == null) {
+//            scanner = BluetoothLeScannerCompat.getScanner();
+//        }
+//        ScanSettings settings = new ScanSettings.Builder()
+//                .setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY)
+//                .build();
+//        scanner.startScan(null, settings, scanCallback);
+//    }
 
-            mScanning = true;
-            initScan();
-        } else {
-            mScanning = false;
-            if (scanner != null)
-                scanner.stopScan(scanCallback);
-        }
-    }
-
-    private void initScan() {
-        if (scanner == null) {
-            scanner = BluetoothLeScannerCompat.getScanner();
-        }
-        ScanSettings settings = new ScanSettings.Builder()
-                .setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY)
-                .build();
-        scanner.startScan(null, settings, scanCallback);
-    }
-
-    private class MdLeScanCallback extends ScanCallback {
-        @Override
-        public void onScanResult(int callbackType, @NonNull ScanResult result) {
-            mActivity.runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    BluetoothDevice device = result.getDevice();
-                    if (device != null && TextUtils.isEmpty(device.getName())) {
-                        return;
-                    }
-
-                    if (device.getName().contains(SN)) {
-                        stopProgressRunnable();
-                        doConnect(device);
-                    }
-                }
-            });
-        }
-
-        @Override
-        public void onBatchScanResults(@NonNull List<ScanResult> results) {
-            super.onBatchScanResults(results);
-        }
-
-        @Override
-        public void onScanFailed(int errorCode) {
-            super.onScanFailed(errorCode);
-        }
-    }
+//    private class MdLeScanCallback extends ScanCallback {
+//        @Override
+//        public void onScanResult(int callbackType, @NonNull ScanResult result) {
+//            mActivity.runOnUiThread(new Runnable() {
+//                @Override
+//                public void run() {
+//                    BluetoothDevice device = result.getDevice();
+//                    if (device != null && TextUtils.isEmpty(device.getName())) {
+//                        return;
+//                    }
+//
+//                    if (device.getName().contains(SN)) {
+//                        stopProgressRunnable();
+//                        doConnect(device);
+//                    }
+//                }
+//            });
+//        }
+//
+//        @Override
+//        public void onBatchScanResults(@NonNull List<ScanResult> results) {
+//            super.onBatchScanResults(results);
+//        }
+//
+//        @Override
+//        public void onScanFailed(int errorCode) {
+//            super.onScanFailed(errorCode);
+//        }
+//    }
 
     /**
      * ble 建立连接
@@ -360,7 +352,6 @@ public abstract class BaseBleConnectFragment extends BaseFragment {
             e.printStackTrace();
         }
     }
-
 
     private void handleBluetoothEvent(BluetoothEvent event) {
         switch (event.getEventType()) {

@@ -29,7 +29,6 @@ public abstract class BaseBleIotCommunicateFragment extends BaseFragment {
     protected USRBleViewModel usrBleViewModel;
 
     private String SN = MCloudApp.getCurDeviceToken();
-    private String macAddress = MCloudApp.getCurDeviceMacAddr();
 
     public boolean isExitMode = false;
 

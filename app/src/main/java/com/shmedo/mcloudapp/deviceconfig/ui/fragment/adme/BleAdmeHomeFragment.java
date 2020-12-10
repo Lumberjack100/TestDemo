@@ -35,7 +35,6 @@ import no.nordicsemi.android.ble.livedata.state.ConnectionState;
 public class BleAdmeHomeFragment extends BaseBleIotCommunicateFragment {
     public static final String EXTRA_DEVICE = "com.shmedo.mcloudapp.EXTRA_DEVICE";
 
-
     @BindView(R.id.device_container)
     View content;
 
@@ -66,7 +65,6 @@ public class BleAdmeHomeFragment extends BaseBleIotCommunicateFragment {
     @BindView(R.id.tv_device_connect_operate)
     TextView mTvDeviceConnectOperate;//蓝牙连接操作(断开连接、重新连接)
 
-
     @BindView(R.id.recyclerview)
     RecyclerView mRecyclerView;
 
@@ -75,10 +73,6 @@ public class BleAdmeHomeFragment extends BaseBleIotCommunicateFragment {
     private ConfigModule selectedConfigModule;
 
     private DiscoveredBluetoothDevice device;
-    private String bleNameInfo;
-    private String collectorModel = "";//采集器类型
-    private int deviceTypeID;
-    private String deviceTypeName;
 
 
     public static BleAdmeHomeFragment newInstance(DiscoveredBluetoothDevice device) {
@@ -106,9 +100,9 @@ public class BleAdmeHomeFragment extends BaseBleIotCommunicateFragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         initAdapter();
+        observerConnectionState();
         initConfigModuleData();
         connectDevice(device.getDevice());
-        observerConnectionState();
     }
 
     @Override
@@ -218,7 +212,6 @@ public class BleAdmeHomeFragment extends BaseBleIotCommunicateFragment {
                 }
             }
         });
-
     }
 
     @Override
@@ -246,7 +239,6 @@ public class BleAdmeHomeFragment extends BaseBleIotCommunicateFragment {
         if (isDoubleClick(v)) {
             return;
         }
-
         switch (v.getId()) {
             case R.id.tv_device_connect_operate://断开/重新连接
                 if (!isConnected()) {
@@ -280,6 +272,6 @@ public class BleAdmeHomeFragment extends BaseBleIotCommunicateFragment {
     public void onDestroy() {
         super.onDestroy();
         MCloudApp.setCurDeviceToken(null);
-        MCloudApp.setCurDeviceMacAddr(null);
+//        MCloudApp.setCurDeviceMacAddr(null);
     }
 }
