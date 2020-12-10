@@ -52,8 +52,8 @@
                     android:paddingStart="7dp"
                     android:paddingEnd="7dp"
                     android:singleLine="true"
-                    android:text="已连接"
-                    android:textColor="@color/text_color_50E9B9"
+                    tools:text="已连接"
+                    tools:textColor="@color/text_color_50E9B9"
                     android:textSize="@dimen/text_size_11" />
 
             </LinearLayout>

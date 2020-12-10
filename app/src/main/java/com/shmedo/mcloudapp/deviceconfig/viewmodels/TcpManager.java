@@ -20,6 +20,7 @@ import timber.log.Timber;
  * 描述：     TODO
  */
 public class TcpManager implements NettyClientListener<String> {
+    private final int maxPacketLong = 1024 * 60;//设置一次发送数据的最大长度 60K
 
     //自定义心跳包指令
     private final String heartBeat = IOTCommandManager.getInstance().getCommand(IOTCommandType.HEART_BEAT)
@@ -47,7 +48,7 @@ public class TcpManager implements NettyClientListener<String> {
                 .setHeartBeatData(heartBeat) //设置心跳数据，可以是String类型，也可以是byte[]，以后设置的为准
                 .setIndex(0)    //设置客户端标识.(因为可能存在多个tcp连接)
 //                .setPacketSeparator("&&")//用特殊字符，作为分隔符，解决粘包问题，默认是用换行符作为分隔符
-                .setMaxPacketLong(2000)//设置一次发送数据的最大长度，默认是1024
+                .setMaxPacketLong(maxPacketLong)//设置一次发送数据的最大长度，默认是1024
                 .build();
 
         mNettyTcpClient.setListener(this); //设置TCP监听
@@ -71,9 +72,14 @@ public class TcpManager implements NettyClientListener<String> {
         receivedMessage.postValue(null);
     }
 
+    /**
+     * 当接收到系统消息
+     * @param msg 消息
+     * @param index tcp 客户端的标识，因为一个应用程序可能有很多个长链接
+     */
     @Override
     public void onMessageResponseClient(String msg, int index) {
-//        Timber.d("onMessageResponseClient:%s", msg);
+//        Timber.d("onMessageResponseClient data length: %s", msg.getBytes().length);
         //跳过心跳包数据的分发处理
         if (msg.contains(heartBeat))
             return;
@@ -114,6 +120,7 @@ public class TcpManager implements NettyClientListener<String> {
     }
 
     public void sendMsgToServer(String msg) {
+        Timber.d("发送消息: length=%s bytes;content: %s", msg.getBytes().length, msg);
         mNettyTcpClient.sendMsgToServer(msg, new MessageStateListener() {
             @Override
             public void isSendSuccss(boolean isSuccess) {
@@ -127,6 +134,7 @@ public class TcpManager implements NettyClientListener<String> {
     }
 
     public void sendMsgToServer(String msg, MessageStateListener messageStateListener) {
+        Timber.d("发送消息: length=%s bytes;content: %s", msg.getBytes().length, msg);
         mNettyTcpClient.sendMsgToServer(msg, messageStateListener);
     }
 }

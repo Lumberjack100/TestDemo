@@ -132,7 +132,7 @@ public abstract class BaseTcpConnectFragment extends BaseFragment {
         cmdStr += "&apikey=" + apiKey
                 + "&msgid=" + UUID.randomUUID().toString();
 
-        Timber.d("发送指令：%s", cmdStr);
+//        Timber.d("发送指令: %s", cmdStr);
         tcpShareViewModel.sendMsgToServer(cmdStr, new MessageStateListener() {
             @Override
             public void isSendSuccss(boolean isSuccess) {

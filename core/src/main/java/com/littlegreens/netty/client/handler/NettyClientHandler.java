@@ -107,7 +107,7 @@ public class NettyClientHandler extends SimpleChannelInboundHandler<String> {
      */
     @Override
     protected void channelRead0(ChannelHandlerContext channelHandlerContext, String msg) {
-        Timber.d("channelRead0:" + msg);
+        Timber.d("Received Data(channelRead0): length=%s bytes;content: %s", msg.getBytes().length, msg);
         listener.onMessageResponseClient(msg, index);
     }
 
@@ -119,7 +119,7 @@ public class NettyClientHandler extends SimpleChannelInboundHandler<String> {
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
         // Close the connection when an exception is raised.
 //        NettyTcpClient.getInstance().setConnectStatus(false);
-        Timber.e("exceptionCaught");
+        Timber.e("Callback exceptionCaught()");
         listener.onClientStatusConnectChanged(ConnectState.STATUS_CONNECT_ERROR, index);
         cause.printStackTrace();
         ctx.close();
