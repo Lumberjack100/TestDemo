@@ -77,13 +77,13 @@ public class TcpVmsHomeFragment extends BaseTcpConnectFragment {
     TextView mTvSubModel;//网关电压
 
     @BindView(R.id.tv_platform_communication_state)
-    TextView mTvPlatformCommunicationState;// 与平台通信状态
+    TextView mTvPlatformCommunicationState;// 与数据平台的通信状态
 
     @BindView(R.id.tv_device_state_flag)
-    TextView mTvDeviceState;//通信状态(在线、离线)
+    TextView mTvDeviceState;//Tcp连接状态(已连接、已断开)
 
     @BindView(R.id.tv_device_connect_operate)
-    TextView mTvDeviceConnectOperate;//Tcp连接状态(断开连接、重新连接)
+    TextView mTvDeviceConnectOperate;//Tcp连接操作(断开连接、重新连接)
 
     @BindView(R.id.tv_aisle_one_network_number)
     TextView mTvAisleOneNetworkNumber;//通道1网络号
@@ -424,7 +424,6 @@ public class TcpVmsHomeFragment extends BaseTcpConnectFragment {
             mTvSubModel.setText(String.format("网关电压：%s", vmsBasicInfo.getVolt() + "V"));
             if (!TextUtils.isEmpty(vmsBasicInfo.getOnline()) && !vmsBasicInfo.getOnline().equals("0")) {
                 mTvPlatformCommunicationState.setText("平台连接状态：在线");
-                mTvDeviceState.setTextColor(ContextCompat.getColor(mActivity, R.color.sub_title_text_color));
 
             } else if (vmsBasicInfo.getOnline().equals("0")) {
                 mTvPlatformCommunicationState.setText(getPlatformAbnormalMessage("离线"));
