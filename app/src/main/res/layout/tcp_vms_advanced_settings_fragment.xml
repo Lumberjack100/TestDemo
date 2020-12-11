@@ -121,7 +121,7 @@
 
             <TextView
                 style="@style/Common_ClickableItem_TitleStyle"
-                android:text="通道1" />
+                android:text="注册通道" />
 
             <TextView
                 android:id="@+id/tv_vms_aisle_one"
@@ -143,7 +143,7 @@
 
             <TextView
                 style="@style/Common_ClickableItem_TitleStyle"
-                android:text="通道2" />
+                android:text="数据通道1" />
 
             <TextView
                 android:id="@+id/tv_vms_aisle_two"
@@ -165,7 +165,7 @@
 
             <TextView
                 style="@style/Common_ClickableItem_TitleStyle"
-                android:text="通道3" />
+                android:text="数据通道2" />
 
             <TextView
                 android:id="@+id/tv_vms_aisle_three"

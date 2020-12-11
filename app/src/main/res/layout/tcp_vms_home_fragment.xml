@@ -26,6 +26,7 @@
         <include layout="@layout/vms_device_config_head_info" />
 
         <androidx.core.widget.NestedScrollView
+            android:id="@+id/scrollView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
@@ -57,7 +58,7 @@
                             android:id="@+id/tv_aisle_name"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="注册信道"
+                            android:text="注册通道"
                             android:textColor="@color/text_color_1f1f1f"
                             android:textSize="17sp"
                             android:textStyle="bold" />
