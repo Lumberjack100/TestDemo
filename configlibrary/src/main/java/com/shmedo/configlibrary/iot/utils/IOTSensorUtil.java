@@ -76,7 +76,7 @@ public class IOTSensorUtil {
      */
     private void initErrorNOData() {
         errorNoMap.clear();
-        errorNoMap.put("0", "无错误");
+        errorNoMap.put("0", "正常");
         errorNoMap.put("-1", "供电异常");
         errorNoMap.put("-2", "数据异常");
         errorNoMap.put("-3", "未采集到数据");
