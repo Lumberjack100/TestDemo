@@ -95,11 +95,14 @@ public class USRBleViewModel extends AndroidViewModel {
         return usrManager.isConnected();
     }
 
+    public void clearDevice(){
+        device = null;
+    }
+
     /**
      *发送物联网协议指令
      */
     public void sendIOTProtocolCommand(final String command) {
-
         Timber.v("发送指令：%s", command);
         usrManager.writeMessage(command);
     }

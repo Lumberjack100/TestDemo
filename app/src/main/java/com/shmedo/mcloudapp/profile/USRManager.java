@@ -151,12 +151,14 @@ public class USRManager extends ObservableBleManager {
             }
 
             boolean writeRequest = false;
+            boolean writeCommand = false;
             if (writeCharacteristic != null) {
                 final int rxProperties = writeCharacteristic.getProperties();
                 writeRequest = (rxProperties & BluetoothGattCharacteristic.PROPERTY_WRITE) > 0;
+                writeCommand = (rxProperties & BluetoothGattCharacteristic.PROPERTY_WRITE_NO_RESPONSE) > 0;
             }
 
-            supported = notifyCharacteristic != null && writeCharacteristic != null && writeRequest;
+            supported = notifyCharacteristic != null && writeCharacteristic != null && (writeRequest || writeCommand);
             return supported;
         }
 
@@ -165,6 +167,7 @@ public class USRManager extends ObservableBleManager {
             notifyCharacteristic = null;
             writeCharacteristic = null;
         }
+
     }
 
     /**
@@ -175,7 +178,7 @@ public class USRManager extends ObservableBleManager {
     public void writeMessage(final String command) {
         if (writeCharacteristic == null)
             return;
-
+//        Timber.d("准备发送数据(writeMessage): length=%s bytes;content: %s", command.getBytes().length, command);
         // Write some data to the characteristic.
         writeCharacteristic(writeCharacteristic, Data.from(command))
                 // If data are longer than MTU-3, they will be chunked into multiple packets.
