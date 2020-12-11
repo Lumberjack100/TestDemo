@@ -21,6 +21,7 @@ import com.shmedo.configlibrary.iot.model.CommonSettingCmdResult;
 import com.shmedo.configlibrary.iot.model.VmsDataCenterStatus;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
 import com.shmedo.core.AppContants;
+import com.shmedo.core.MCloudApp;
 import com.shmedo.core.util.GlobalUtil;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.vms.VmsAisleSettingActivity;
@@ -112,8 +113,7 @@ public class TcpVmsAdvancedSettingsFragment extends BaseTcpConnectFragment {
         } else if (id == R.id.vmsRebootLayout) {
             showWarnDialog("确定重启网关吗？", VMS_REBOOT);
         } else if (id == R.id.vmsResetLayout) {
-            ToastUtils.show("正在研发中,敬请期待...");
-//            showWarnDialog("确定恢复出厂设置吗？");
+            showWarnDialog("确定恢复出厂设置吗？", VMS_RESET);
         }
     }
 
@@ -138,9 +138,8 @@ public class TcpVmsAdvancedSettingsFragment extends BaseTcpConnectFragment {
      * 网关恢复出厂设置指令
      */
     private void resetGateWay() {
-//        TerminalSNEntity entity = new TerminalSNEntity(terminalBean.getSn());
-//        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.RESET, entity);
-//        sendCommand(command);
+        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.RESET);
+        sendCommand(command);
     }
 
     /**
@@ -222,7 +221,32 @@ public class TcpVmsAdvancedSettingsFragment extends BaseTcpConnectFragment {
                     ToastUtils.show(errMsg);
                     return;
                 }
-                ToastUtils.show("发送重启指令成功,网关稍后将重启");
+                ToastUtils.show("发送重启指令成功,网关稍后将重启,请稍候重新连接");
+                MCloudApp.getMainHandler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        tcpShareViewModel.disconnect();
+                    }
+                }, 3000);
+            }
+            break;
+
+            case RESET: {//恢复出厂设置
+                stopProgressRunnable();
+                CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
+                if (!cmdResult.isSucceed()) {
+                    String errMsg = "发送恢复出厂设置指令失败!";
+                    Timber.e("%s%s", errMsg, cmdResult.getReason());
+                    ToastUtils.show(errMsg);
+                    return;
+                }
+                ToastUtils.show("发送指令成功,网关5秒后将重启,请稍候重新连接");
+                MCloudApp.getMainHandler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        tcpShareViewModel.disconnect();
+                    }
+                }, 3000);
             }
             break;
 

@@ -15,6 +15,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
+import androidx.core.widget.NestedScrollView;
 import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -63,6 +64,9 @@ import timber.log.Timber;
 public class TcpVmsHomeFragment extends BaseTcpConnectFragment {
     @BindView(R.id.swipeLayout)
     SwipeRefreshLayout swipeRefresh;
+
+    @BindView(R.id.scrollView)
+    NestedScrollView nestedScrollView;
 
     @BindView(R.id.tv_device_name)
     TextView mTvDeviceName;//设备名称
@@ -117,7 +121,6 @@ public class TcpVmsHomeFragment extends BaseTcpConnectFragment {
         return new TcpVmsHomeFragment();
     }
 
-
     private class RefreshRunnable implements Runnable {
         @Override
         public void run() {
@@ -140,7 +143,6 @@ public class TcpVmsHomeFragment extends BaseTcpConnectFragment {
         refreshRunnable = null;
         swipeRefresh.setRefreshing(false);
     }
-
 
     @Override
     protected int getLayoutId() {
@@ -370,6 +372,7 @@ public class TcpVmsHomeFragment extends BaseTcpConnectFragment {
                 } else if (vmsAisleInfo.getChannel() == 2) {
                     vmsAisleInfoList.add(vmsAisleInfo);
                     vmsAisleAdapter.notifyDataSetChanged();
+                    scrollToEnd();
                     //获取网关的状态
                     getGatewayStatus(VmsAisleNumber.NUMBER_TWO);
                 }
@@ -474,6 +477,15 @@ public class TcpVmsHomeFragment extends BaseTcpConnectFragment {
             vmsTerminalInfo.setNetid(vmsAisleTerminalInfo.getNetid());
             vmsTerminalInfo.setChl(vmsAisleTerminalInfo.getChl());
         }
+    }
+
+    private void scrollToEnd(){
+        nestedScrollView.post(new Runnable() {
+            @Override
+            public void run() {
+                nestedScrollView.fullScroll(View.FOCUS_DOWN);
+            }
+        });
     }
 
     @Override
