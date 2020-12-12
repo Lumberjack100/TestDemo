@@ -52,7 +52,7 @@ import butterknife.BindView;
 import butterknife.OnClick;
 
 /**
- *
+ * 低功耗蓝牙设备扫描列表页面
  */
 public class BleScannerListFragment extends BaseFragment implements TextWatcher, TextView.OnEditorActionListener {
     private static final int REQUEST_ACCESS_FINE_LOCATION = 1022;

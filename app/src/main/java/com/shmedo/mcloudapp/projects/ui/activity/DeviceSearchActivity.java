@@ -269,9 +269,9 @@ public class DeviceSearchActivity extends BaseActivity {
                     public void onError(Throwable e) {
                         deviceInfoAdapter.getLoadMoreModule().setEnableLoadMore(true);
                         deviceInfoAdapter.getLoadMoreModule().loadMoreFail();
-//                        if (deviceInfoList.size() == 0) {
-//                            deviceInfoAdapter.setEmptyView(getErrorView());
-//                        }
+                        if (deviceInfoList.size() == 0) {
+                            deviceInfoAdapter.setEmptyView(getErrorView());
+                        }
                         ResponseHandler.getInstance().handleFailure((Exception) e);
                     }
                 });

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/contentLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -136,7 +137,10 @@
                     android:paddingStart="15dp"
                     android:paddingRight="15dp"
                     android:paddingBottom="15dp"
-                    android:splitMotionEvents="false" />
+                    android:splitMotionEvents="false"
+                    tools:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+                    tools:listitem="@layout/item_device_info"
+                    tools:spanCount="2" />
 
             </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 

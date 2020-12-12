@@ -100,8 +100,8 @@
             android:id="@+id/ll_refresh"
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:layout_marginStart="36dp"
-            android:layout_marginEnd="36dp"
+            android:layout_marginStart="31dp"
+            android:layout_marginEnd="31dp"
             android:gravity="center_vertical">
 
             <TextView
@@ -154,7 +154,8 @@
             android:layout_height="match_parent"
             android:clipToPadding="false"
             android:paddingBottom="25dp"
-            android:splitMotionEvents="false" />
+            android:splitMotionEvents="false"
+            tools:listitem="@layout/item_wifi_scanresult"/>
 
     </LinearLayout>
 

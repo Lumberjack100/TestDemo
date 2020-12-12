@@ -23,7 +23,6 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -57,7 +56,7 @@ import no.nordicsemi.android.support.v18.scanner.ScanResult;
 import no.nordicsemi.android.support.v18.scanner.ScanSettings;
 
 /**
- * A simple {@link Fragment} subclass.
+ * @deprecated Use {@link BleScannerListFragment} instead.
  */
 public class BleDeviceListFragment extends BaseFragment implements TextWatcher, TextView.OnEditorActionListener {
     private static final int REQUEST_ENABLE_BT = 0x002;
@@ -351,7 +350,7 @@ public class BleDeviceListFragment extends BaseFragment implements TextWatcher, 
                         }
                     }
 
-                    DiscoveredBluetoothDevice discoveredBluetoothDevice=new DiscoveredBluetoothDevice(result) ;
+                    DiscoveredBluetoothDevice discoveredBluetoothDevice = new DiscoveredBluetoothDevice(result);
                     tempDeviceList.add(discoveredBluetoothDevice);
                     bleDeviceAdapter.addData(discoveredBluetoothDevice);
                     mTvDeviceCount.setText(String.format(Locale.getDefault(), "(%d)", bleDeviceAdapter.getItemCount()));
