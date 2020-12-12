@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.deviceconfig.ui.fragment.adme;
+package com.shmedo.mcloudapp.deviceconfig.ui.fragment.das;
 
 import android.graphics.Paint;
 import android.os.Bundle;
@@ -49,7 +49,8 @@ import butterknife.OnClick;
 import no.nordicsemi.android.ble.livedata.state.ConnectionState;
 import timber.log.Timber;
 
-public class BleAdmeHomeFragment extends BaseBleIotCommunicateFragment {
+public class TestBleDasHomeFragment extends TestBaseBleCommunicateFragment {
+
     public static final String EXTRA_DEVICE = "com.shmedo.mcloudapp.EXTRA_DEVICE";
 
     @BindView(R.id.device_container)
@@ -94,8 +95,8 @@ public class BleAdmeHomeFragment extends BaseBleIotCommunicateFragment {
     private String collectorModel = "";//采集器类型
     private String deviceTypeName;
 
-    public static BleAdmeHomeFragment newInstance(DiscoveredBluetoothDevice device) {
-        BleAdmeHomeFragment fragment = new BleAdmeHomeFragment();
+    public static TestBleDasHomeFragment newInstance(DiscoveredBluetoothDevice device) {
+        TestBleDasHomeFragment fragment = new TestBleDasHomeFragment();
         Bundle args = new Bundle();
         args.putParcelable(EXTRA_DEVICE, device);
         fragment.setArguments(args);
@@ -112,7 +113,7 @@ public class BleAdmeHomeFragment extends BaseBleIotCommunicateFragment {
 
     @Override
     protected int getLayoutId() {
-        return R.layout.ble_adme_home_fragment;
+        return R.layout.test_ble_das_home_fragment;
     }
 
     @Override
@@ -124,7 +125,6 @@ public class BleAdmeHomeFragment extends BaseBleIotCommunicateFragment {
         observerConnectionState();
         connectDevice(device.getDevice());
     }
-
     @Override
     public void onResume() {
         super.onResume();
@@ -135,7 +135,7 @@ public class BleAdmeHomeFragment extends BaseBleIotCommunicateFragment {
         if (device != null) {
             mTvDeviceSn.setText(String.format("设备编号：%s", device.getName().substring(3)));
             mTvProductModel.setText(String.format("产品型号：%s", "DAS"));
-            mTvDeviceName.setText("物联网数据采集器");
+            mTvDeviceName.setText("测试");
             deviceTypeName = "DAS";
         }
         mTvDeviceConnectOperate.setVisibility(View.VISIBLE);

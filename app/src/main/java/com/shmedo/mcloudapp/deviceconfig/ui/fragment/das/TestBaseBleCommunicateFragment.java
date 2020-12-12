@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.deviceconfig.ui.fragment.adme;
+package com.shmedo.mcloudapp.deviceconfig.ui.fragment.das;
 
 import android.bluetooth.BluetoothDevice;
 import android.os.Bundle;
@@ -32,7 +32,7 @@ import timber.log.Timber;
  * 创建时间:  12/7/20 <br/>
  * 描述：     TODO
  */
-public abstract class BaseBleIotCommunicateFragment extends BaseFragment {
+public abstract class TestBaseBleCommunicateFragment extends BaseFragment {
     protected USRBleViewModel usrBleViewModel;
 
     private String SN = MCloudApp.getCurDeviceToken();
