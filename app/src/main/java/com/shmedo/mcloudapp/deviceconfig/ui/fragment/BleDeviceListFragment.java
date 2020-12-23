@@ -170,10 +170,8 @@ public class BleDeviceListFragment extends BaseFragment implements TextWatcher, 
             public void onItemClick(@NonNull BaseQuickAdapter adapter, @NonNull View view, int position) {
                 scanLeDevice(false);
                 DiscoveredBluetoothDevice bluetoothDevice = bleDeviceAdapter.getItem(position);
-                String macAddress = bluetoothDevice.getAddress();
                 String deviceName = bluetoothDevice.getName();
                 MCloudApp.setCurDeviceToken(deviceName.substring(3));
-//                MCloudApp.setCurDeviceMacAddr(macAddress);
 //
 //                String deviceInfo = "";
 //                if (deviceName.endsWith("T")) {

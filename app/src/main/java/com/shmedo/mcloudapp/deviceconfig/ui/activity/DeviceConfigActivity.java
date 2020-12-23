@@ -16,7 +16,6 @@ import com.shmedo.core.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.activity.BaseActivity;
 import com.shmedo.mcloudapp.deviceconfig.model.DiscoveredBluetoothDevice;
-import com.shmedo.mcloudapp.deviceconfig.ui.fragment.BleConfigDeviceFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.NetConfigDeviceFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.adme.BleAdmeHomeFragment;
 import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfo;
@@ -100,11 +99,16 @@ public class DeviceConfigActivity extends BaseActivity {
             fragment = NetConfigDeviceFragment.newInstance(projectDeviceInfo);
 
         } else {
-            if (device.getName().toUpperCase().endsWith("L")) {
-                fragment = BleConfigDeviceFragment.newInstance(device);
-            } else if (device.getName().toUpperCase().endsWith("T")) {
-                fragment = BleAdmeHomeFragment.newInstance(device);
-            }
+//            if (device.getName().toUpperCase().endsWith("L")) {
+//                fragment = BleConfigDeviceFragment.newInstance(device);
+//            } else if (device.getName().toUpperCase().endsWith("T")) {
+//                fragment = BleAdmeHomeFragment.newInstance(device);
+//            }
+
+            fragment = BleAdmeHomeFragment.newInstance(device);
+
+//            fragment = TestBleDasHomeFragment.newInstance(device);
+
         }
         replaceFragment(fragment);
     }

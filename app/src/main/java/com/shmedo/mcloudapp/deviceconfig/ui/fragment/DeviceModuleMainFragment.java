@@ -267,7 +267,6 @@ public class DeviceModuleMainFragment extends BaseTranslucentFragment implements
         }
 
         MCloudApp.setCurDeviceToken(localData[1]);
-//        MCloudApp.setCurDeviceMacAddr(null);
 
         processStartScan();
     }

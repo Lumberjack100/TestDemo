@@ -458,7 +458,6 @@ public class TestBleDasHomeFragment extends TestBaseBleCommunicateFragment {
     public void onDestroy() {
         super.onDestroy();
         MCloudApp.setCurDeviceToken(null);
-//        MCloudApp.setCurDeviceMacAddr(null);
     }
 
     /**

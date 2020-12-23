@@ -121,7 +121,9 @@ public class BleAdmeHomeFragment extends BaseBleIotCommunicateFragment {
         setHeadInfo();
         initAdapter();
         initConfigModuleData();
+        //观察连接状态变化
         observerConnectionState();
+        //建立蓝牙连接
         connectDevice(device.getDevice());
     }
 
@@ -149,8 +151,8 @@ public class BleAdmeHomeFragment extends BaseBleIotCommunicateFragment {
         //设置每个item间距
         mRecyclerView.addItemDecoration(new GridSpacingItemDecoration(spanCount, spacing, true));
         moduleAdapter = new ConfigModuleAdapter(configModuleList);
-//        moduleAdapter.setAnimationEnable(true);
-//        moduleAdapter.setAnimationFirstOnly(false);
+        moduleAdapter.setAnimationEnable(true);
+        moduleAdapter.setAnimationFirstOnly(false);
         moduleAdapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
@@ -228,16 +230,16 @@ public class BleAdmeHomeFragment extends BaseBleIotCommunicateFragment {
             @Override
             public void onChanged(ConnectionState connectionState) {
                 switch (connectionState.getState()) {
-                    case CONNECTING:
+                    case CONNECTING://A connection to the device was initiated.
                         showProgressBar();
                         mTvConnectState.setText(R.string.ble_state_connecting);
                         break;
 
-                    case INITIALIZING:
+                    case INITIALIZING://The device has connected and begun service discovery and initialization.
 //                        mTvConnectState.setText(R.string.ble_state_initializing);
                         break;
 
-                    case READY:
+                    case READY://The initialization is complete, and the device is ready to use.
 //                        content.setVisibility(View.VISIBLE);
                         onConnectionStateChanged(true);
 //                        mTvConnectState.setText("设备认证中...");
@@ -245,7 +247,7 @@ public class BleAdmeHomeFragment extends BaseBleIotCommunicateFragment {
                         hideProgressBar();
                         break;
 
-                    case DISCONNECTED:
+                    case DISCONNECTED://The device disconnected or failed to connect.
                         if (connectionState instanceof ConnectionState.Disconnected) {
                             final ConnectionState.Disconnected stateWithReason = (ConnectionState.Disconnected) connectionState;
                             if (stateWithReason.isNotSupported()) {
@@ -254,7 +256,6 @@ public class BleAdmeHomeFragment extends BaseBleIotCommunicateFragment {
                                 ToastUtils.show("连接超时");
                             }
                         }
-//                        disconnectDevice();
                         clearDevice();
                         onConnectionStateChanged(false);
                         hideProgressBar();
@@ -284,7 +285,10 @@ public class BleAdmeHomeFragment extends BaseBleIotCommunicateFragment {
         mActivity.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
     }
 
-    //    @Override
+    /**
+     * 蓝牙连接/断开回调，更新页面头部信息
+     * @param isConnected
+     */
     private void onConnectionStateChanged(boolean isConnected) {
         if (isConnected) {
             mTvDeviceState.setText("已连接");
@@ -327,7 +331,6 @@ public class BleAdmeHomeFragment extends BaseBleIotCommunicateFragment {
         switch (v.getId()) {
             case R.id.tv_device_connect_operate://断开/重新连接
                 if (!isConnected()) {
-//                    findAndConnectSpecificDevice();
                     connectDevice(device.getDevice());
                 } else {//断开连接处理
                     isExitMode = false;
@@ -458,7 +461,6 @@ public class BleAdmeHomeFragment extends BaseBleIotCommunicateFragment {
     public void onDestroy() {
         super.onDestroy();
         MCloudApp.setCurDeviceToken(null);
-//        MCloudApp.setCurDeviceMacAddr(null);
     }
 
     /**

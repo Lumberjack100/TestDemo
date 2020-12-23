@@ -40,8 +40,6 @@ public class MCloudApp {
 
     private static String curDeviceToken;//设备名称
 
-    private static String curDeviceMacAddr;//设备名称
-
 
 
     /**
@@ -151,15 +149,6 @@ public class MCloudApp {
         MCloudApp.curDeviceToken = curDeviceToken;
     }
 
-
-    public static String getCurDeviceMacAddr() {
-        return curDeviceMacAddr;
-    }
-
-    public static void setCurDeviceMacAddr(String curDeviceMacAddr) {
-        MCloudApp.curDeviceMacAddr = curDeviceMacAddr;
-    }
-
     /**
      * 注销用户登录。
      */
@@ -170,6 +159,4 @@ public class MCloudApp {
 
         SharedUtil.clear(AppContants.User.PWD);
     }
-
-
 }
