@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel;
 
 import com.kunminx.architecture.ui.callback.ProtectedUnPeekLiveData;
 import com.kunminx.architecture.ui.callback.UnPeekLiveData;
-import com.shmedo.configlibrary.iot.model.VmsTerminalInfo;
+import com.shmedo.configlibrary.iot.model.vms.VmsTerminalInfo;
 import com.shmedo.mcloudapp.deviceconfig.data.repository.DeviceRepository;
 
 import java.util.ArrayList;
@@ -27,8 +27,8 @@ public class VmsViewModel extends ViewModel {
         DeviceRepository.getInstance().clearDeviceApiKey();
     }
 
-    public String getDeviceApiKeyBySn(String sn) {
-        return DeviceRepository.getInstance().getDeviceApiKeyBySn(sn);
+    public void queryDeviceApiKeyBySn(String sn) {
+        DeviceRepository.getInstance().queryDeviceApiKeyBySn(sn);
     }
 
 

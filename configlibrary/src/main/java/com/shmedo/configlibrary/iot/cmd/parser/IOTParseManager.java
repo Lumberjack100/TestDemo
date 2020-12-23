@@ -3,6 +3,14 @@ package com.shmedo.configlibrary.iot.cmd.parser;
 import android.text.TextUtils;
 
 import com.shmedo.configlibrary.iot.cmd.IOTCommandResult;
+import com.shmedo.configlibrary.iot.cmd.parser.adme.AdmeBasicInfoParser;
+import com.shmedo.configlibrary.iot.cmd.parser.vms.VmsAisleInfoParser;
+import com.shmedo.configlibrary.iot.cmd.parser.vms.VmsAisleTerminalInfoParser;
+import com.shmedo.configlibrary.iot.cmd.parser.vms.VmsBasicInfoParser;
+import com.shmedo.configlibrary.iot.cmd.parser.vms.VmsTerminalCollectorInfoParser;
+import com.shmedo.configlibrary.iot.cmd.parser.vms.VmsTerminalCommInfoParser;
+import com.shmedo.configlibrary.iot.cmd.parser.vms.VmsTerminalSensorInfoParser;
+import com.shmedo.configlibrary.iot.cmd.parser.vms.VmsTerminalTimeParser;
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.interfaces.IOTResultParser;
 import com.shmedo.configlibrary.iot.model.CommonSettingCmdResult;
@@ -113,7 +121,8 @@ public class IOTParseManager {
                 VmsTerminalSensorInfoParser.class,
                 DataCenterStatusParser.class,
                 VmsTerminalCollectorInfoParser.class,
-                VmsTerminalCommInfoParser.class
+                VmsTerminalCommInfoParser.class,
+                AdmeBasicInfoParser.class
         });
 
         registerWithClass(clazzes);

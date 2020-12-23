@@ -146,7 +146,7 @@ public class WiFiDeviceListFragment extends BaseFragment implements TextWatcher,
                 String[] strs = curWiFi.name().split("-");
                 if (strs != null) {
                     showProgressDialog("处理中...");
-                    vmsViewModel.getDeviceApiKeyBySn(strs[strs.length - 1]);
+                    vmsViewModel.queryDeviceApiKeyBySn(strs[strs.length - 1]);
                 }
             }
         });

@@ -2,7 +2,7 @@ package com.shmedo.mcloudapp.deviceconfig.adapter;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;
-import com.shmedo.configlibrary.iot.model.VmsTerminalInfo;
+import com.shmedo.configlibrary.iot.model.vms.VmsTerminalInfo;
 import com.shmedo.mcloudapp.R;
 
 import org.jetbrains.annotations.NotNull;

@@ -1,22 +1,22 @@
-package com.shmedo.configlibrary.iot.cmd.parser;
+package com.shmedo.configlibrary.iot.cmd.parser.adme;
 
 import android.text.TextUtils;
 
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.interfaces.IOTResultParser;
-import com.shmedo.configlibrary.iot.model.VmsTerminalCommInfo;
+import com.shmedo.configlibrary.iot.model.adme.AdmeBasicInfo;
 
 import java.util.HashMap;
 
 /**
  * 创建者:   gonghe <br/>
- * 创建时间:  12/2/20 <br/>
- * 描述：    解析Vms终端通信参数
+ * 创建时间:  12/23/20 <br/>
+ * 描述：      解析ADME基础信息
  */
-public class VmsTerminalCommInfoParser implements IOTResultParser<VmsTerminalCommInfo> {
+public class AdmeBasicInfoParser implements IOTResultParser<AdmeBasicInfo> {
     @Override
-    public VmsTerminalCommInfo parse(String result) {
-        VmsTerminalCommInfo info = new VmsTerminalCommInfo();
+    public AdmeBasicInfo parse(String result) {
+        AdmeBasicInfo info = new AdmeBasicInfo();
         try {
             String[] keyValues = result.split("&");
             HashMap<String, String> keyValueMap = new HashMap<>();
@@ -29,10 +29,9 @@ public class VmsTerminalCommInfoParser implements IOTResultParser<VmsTerminalCom
                     keyValueMap.put(strs[0], strs[1]);
                 }
             }
-            info.setNetid(TextUtils.isEmpty(keyValueMap.get("netid")) ? "" : keyValueMap.get("netid"));
-            info.setDstaddr(TextUtils.isEmpty(keyValueMap.get("dstaddr")) ? "" : keyValueMap.get("dstaddr"));
-            info.setChannel(TextUtils.isEmpty(keyValueMap.get("channel")) ? "" : keyValueMap.get("channel"));
-            info.setAirbaud(TextUtils.isEmpty(keyValueMap.get("airbaud")) ? "" : keyValueMap.get("airbaud"));
+            info.setSn(TextUtils.isEmpty(keyValueMap.get("sn")) ? "" : keyValueMap.get("sn"));
+            info.setProductid(TextUtils.isEmpty(keyValueMap.get("productid")) ? "" : keyValueMap.get("productid"));
+            info.setEquimodel(TextUtils.isEmpty(keyValueMap.get("equimodel")) ? "" : keyValueMap.get("equimodel"));
 
             return info;
         } catch (Exception ex) {
@@ -48,6 +47,6 @@ public class VmsTerminalCommInfoParser implements IOTResultParser<VmsTerminalCom
 
     @Override
     public IOTCommandType commandType() {
-        return IOTCommandType.VMS_MD_GET_TERMINAL_COMMUNICATE;
+        return IOTCommandType.ADME_MD_GET_EQUIPMENT_BASIS;
     }
 }

@@ -192,7 +192,7 @@ public class USRManager extends ObservableBleManager {
                 .done(new SuccessCallback() {
                     @Override
                     public void onRequestCompleted(@NonNull BluetoothDevice device) {
-                        Timber.d("已发送数据(writeMessage): length=%s bytes;content: %s", command.getBytes().length, command);
+                        Timber.d("已写入数据(writeMessage): length=%s bytes;content: %s", command.getBytes().length, command);
                         log(LogContract.Log.Level.APPLICATION, "已发送数据(writeMessage): " + command);
                     }
                 })
@@ -200,7 +200,7 @@ public class USRManager extends ObservableBleManager {
                 .fail(new FailCallback() {
                     @Override
                     public void onRequestFailed(@NonNull BluetoothDevice device, int status) {
-                        Timber.d("未发送数据(writeMessage): length=%s bytes;content: %s", command.getBytes().length, command);
+                        Timber.d("未写入数据(writeMessage): length=%s bytes;content: %s", command.getBytes().length, command);
                         log(Log.WARN, "未发送数据(writeMessage): " + command);
                     }
                 })

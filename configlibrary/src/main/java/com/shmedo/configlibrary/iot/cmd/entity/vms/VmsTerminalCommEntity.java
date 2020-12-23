@@ -1,4 +1,4 @@
-package com.shmedo.configlibrary.iot.cmd.entity;
+package com.shmedo.configlibrary.iot.cmd.entity.vms;
 
 import android.text.TextUtils;
 

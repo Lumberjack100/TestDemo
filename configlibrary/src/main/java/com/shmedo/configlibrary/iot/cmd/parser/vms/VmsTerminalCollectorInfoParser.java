@@ -1,10 +1,10 @@
-package com.shmedo.configlibrary.iot.cmd.parser;
+package com.shmedo.configlibrary.iot.cmd.parser.vms;
 
 import android.text.TextUtils;
 
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.interfaces.IOTResultParser;
-import com.shmedo.configlibrary.iot.model.VmsTerminalCollectorInfo;
+import com.shmedo.configlibrary.iot.model.vms.VmsTerminalCollectorInfo;
 
 import java.util.HashMap;
 

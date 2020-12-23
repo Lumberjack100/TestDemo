@@ -24,14 +24,14 @@ import com.littlegreens.netty.client.listener.MessageStateListener;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandManager;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandResult;
 import com.shmedo.configlibrary.iot.cmd.entity.TerminalSNEntity;
-import com.shmedo.configlibrary.iot.cmd.entity.VmsAisleNumberEntity;
+import com.shmedo.configlibrary.iot.cmd.entity.vms.VmsAisleNumberEntity;
 import com.shmedo.configlibrary.iot.cmd.parser.IOTParseManager;
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.enums.VmsAisleNumber;
 import com.shmedo.configlibrary.iot.model.CommonSettingCmdResult;
-import com.shmedo.configlibrary.iot.model.VmsTerminalInfo;
-import com.shmedo.configlibrary.iot.model.VmsAisleInfo;
-import com.shmedo.configlibrary.iot.model.VmsAisleTerminalInfo;
+import com.shmedo.configlibrary.iot.model.vms.VmsTerminalInfo;
+import com.shmedo.configlibrary.iot.model.vms.VmsAisleInfo;
+import com.shmedo.configlibrary.iot.model.vms.VmsAisleTerminalInfo;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
 import com.shmedo.core.AppContants;
 import com.shmedo.core.util.DensityUtil;
@@ -278,7 +278,7 @@ public class TcpVmsTerminalListFragment extends BaseBottomSheetDialogFragment {
      * 删除终端警告
      */
     private void showRemoveTerminalDialog() {
-        MaterialDialog.Builder mBuilder = new MaterialDialog.Builder(Objects.requireNonNull(getContext()))
+        MaterialDialog.Builder mBuilder = new MaterialDialog.Builder(requireContext())
                 .title("温馨提示：")
                 .content(getWarnMessage())
                 .contentColorRes(R.color.title_text_color)

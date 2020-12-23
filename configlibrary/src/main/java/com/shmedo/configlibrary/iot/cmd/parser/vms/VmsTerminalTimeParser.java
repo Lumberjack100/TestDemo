@@ -1,22 +1,20 @@
-package com.shmedo.configlibrary.iot.cmd.parser;
-
-import android.text.TextUtils;
+package com.shmedo.configlibrary.iot.cmd.parser.vms;
 
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.interfaces.IOTResultParser;
-import com.shmedo.configlibrary.iot.model.vms.VmsDataCenterStatus;
+import com.shmedo.configlibrary.iot.model.vms.VmsTerminalTimeInfo;
 
 import java.util.HashMap;
 
 /**
  * 创建者:   gonghe <br/>
- * 创建时间:  11/29/20 <br/>
- * 描述：      解析数据中心状态
+ * 创建时间:  2020/8/31 <br/>
+ * 描述：    解析设备终端时间
  */
-public class DataCenterStatusParser implements IOTResultParser<VmsDataCenterStatus> {
+public class VmsTerminalTimeParser implements IOTResultParser<VmsTerminalTimeInfo> {
     @Override
-    public VmsDataCenterStatus parse(String result) {
-        VmsDataCenterStatus info = new VmsDataCenterStatus();
+    public VmsTerminalTimeInfo parse(String result) {
+        VmsTerminalTimeInfo info = new VmsTerminalTimeInfo();
         try {
             String[] keyValues = result.split("&");
             HashMap<String, String> keyValueMap = new HashMap<>();
@@ -29,8 +27,7 @@ public class DataCenterStatusParser implements IOTResultParser<VmsDataCenterStat
                     keyValueMap.put(strs[0], strs[1]);
                 }
             }
-            info.setCenterid(Integer.parseInt(keyValueMap.get("centerid")));
-            info.setStatus(TextUtils.isEmpty(keyValueMap.get("status")) ? "" : keyValueMap.get("status"));
+            info.setTime(keyValueMap.get("time"));
 
             return info;
         } catch (Exception ex) {
@@ -46,6 +43,6 @@ public class DataCenterStatusParser implements IOTResultParser<VmsDataCenterStat
 
     @Override
     public IOTCommandType commandType() {
-        return IOTCommandType.VMS_MD_GET_DATA_CENTER_STATUS;
+        return IOTCommandType.QUERY_TERMINAL_TIME;
     }
 }

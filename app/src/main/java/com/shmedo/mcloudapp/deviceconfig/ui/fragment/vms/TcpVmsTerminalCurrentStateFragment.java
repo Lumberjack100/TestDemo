@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.shmedo.configlibrary.iot.model.SensorErrnoInfo;
-import com.shmedo.configlibrary.iot.model.VmsTerminalInfo;
+import com.shmedo.configlibrary.iot.model.vms.VmsTerminalInfo;
 import com.shmedo.configlibrary.iot.utils.IOTSensorUtil;
 import com.shmedo.core.util.DensityUtil;
 import com.shmedo.mcloudapp.R;

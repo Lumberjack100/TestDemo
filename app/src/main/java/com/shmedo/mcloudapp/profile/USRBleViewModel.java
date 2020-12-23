@@ -9,6 +9,7 @@ import androidx.lifecycle.LiveData;
 
 import com.kunminx.architecture.ui.callback.ProtectedUnPeekLiveData;
 import com.kunminx.architecture.ui.callback.UnPeekLiveData;
+import com.shmedo.mcloudapp.deviceconfig.data.repository.DeviceRepository;
 
 import no.nordicsemi.android.ble.livedata.state.ConnectionState;
 import no.nordicsemi.android.log.LogSession;
@@ -38,7 +39,7 @@ public class USRBleViewModel extends AndroidViewModel {
         return usrManager.getResponseMsg();
     }
 
-    public void clearLastResponseValue(){
+    public void clearLastResponseValue() {
         usrManager.clearLastResponseValue();
     }
 
@@ -49,6 +50,19 @@ public class USRBleViewModel extends AndroidViewModel {
     public void updateLogOutputMode(boolean isLogOutputMode) {
         usrManager.updateLogOutputMode(isLogOutputMode);
     }
+
+    public ProtectedUnPeekLiveData<String> getDeviceApiKey() {
+        return DeviceRepository.getInstance().getDeviceApiKeyLiveData();
+    }
+
+    public void clearDeviceApiKey() {
+        DeviceRepository.getInstance().clearDeviceApiKey();
+    }
+
+    public void queryDeviceApiKeyBySn(String sn) {
+        DeviceRepository.getInstance().queryDeviceApiKeyBySn(sn);
+    }
+
 
     /**
      * Connect to the given peripheral.
@@ -95,15 +109,15 @@ public class USRBleViewModel extends AndroidViewModel {
         return usrManager.isConnected();
     }
 
-    public void clearDevice(){
+    public void clearDevice() {
         device = null;
     }
 
     /**
-     *发送物联网协议指令
+     * 发送物联网协议指令
      */
     public void sendIOTProtocolCommand(final String command) {
-        Timber.v("发送指令：%s", command);
+        Timber.v("准备发送指令：%s", command);
         usrManager.writeMessage(command);
     }
 

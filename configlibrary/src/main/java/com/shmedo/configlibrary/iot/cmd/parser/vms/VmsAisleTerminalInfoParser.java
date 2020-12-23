@@ -1,20 +1,22 @@
-package com.shmedo.configlibrary.iot.cmd.parser;
+package com.shmedo.configlibrary.iot.cmd.parser.vms;
 
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.interfaces.IOTResultParser;
-import com.shmedo.configlibrary.iot.model.VmsTerminalTimeInfo;
+import com.shmedo.configlibrary.iot.model.vms.VmsAisleTerminalInfo;
+import com.shmedo.core.util.GsonFactory;
 
 import java.util.HashMap;
 
+
 /**
  * 创建者:   gonghe <br/>
- * 创建时间:  2020/8/31 <br/>
- * 描述：    解析设备终端时间
+ * 创建时间:  2020/11/13 <br/>
+ * 描述：     TODO
  */
-public class VmsTerminalTimeParser implements IOTResultParser<VmsTerminalTimeInfo> {
+public class VmsAisleTerminalInfoParser implements IOTResultParser<VmsAisleTerminalInfo> {
     @Override
-    public VmsTerminalTimeInfo parse(String result) {
-        VmsTerminalTimeInfo info = new VmsTerminalTimeInfo();
+    public VmsAisleTerminalInfo parse(String result) {
+        VmsAisleTerminalInfo info;
         try {
             String[] keyValues = result.split("&");
             HashMap<String, String> keyValueMap = new HashMap<>();
@@ -27,7 +29,10 @@ public class VmsTerminalTimeParser implements IOTResultParser<VmsTerminalTimeInf
                     keyValueMap.put(strs[0], strs[1]);
                 }
             }
-            info.setTime(keyValueMap.get("time"));
+
+            String status = keyValueMap.get("status");
+            info = GsonFactory.getGson().fromJson(status, VmsAisleTerminalInfo.class);
+            info.setChannel(Integer.parseInt(keyValueMap.get("channel")));
 
             return info;
         } catch (Exception ex) {
@@ -43,6 +48,6 @@ public class VmsTerminalTimeParser implements IOTResultParser<VmsTerminalTimeInf
 
     @Override
     public IOTCommandType commandType() {
-        return IOTCommandType.QUERY_TERMINAL_TIME;
+        return IOTCommandType.VMS_MD_GET_GATEWAY_STATUS;
     }
 }

@@ -1,4 +1,4 @@
-package com.shmedo.configlibrary.iot.model;
+package com.shmedo.configlibrary.iot.model.vms;
 
 /**
  * 创建者:   gonghe <br/>

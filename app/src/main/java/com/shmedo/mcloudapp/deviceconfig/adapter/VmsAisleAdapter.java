@@ -4,7 +4,7 @@ import androidx.annotation.Nullable;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;
-import com.shmedo.configlibrary.iot.model.VmsAisleInfo;
+import com.shmedo.configlibrary.iot.model.vms.VmsAisleInfo;
 import com.shmedo.mcloudapp.R;
 
 import org.jetbrains.annotations.NotNull;

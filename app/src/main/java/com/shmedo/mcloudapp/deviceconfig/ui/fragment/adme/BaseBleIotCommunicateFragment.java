@@ -11,19 +11,16 @@ import androidx.lifecycle.Observer;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.hjq.toast.ToastUtils;
 import com.shmedo.configlibrary.ble.cmd.CommandManager;
-import com.shmedo.configlibrary.ble.cmd.CommandResult;
-import com.shmedo.configlibrary.ble.cmd.entity.AuthenticationConfigEntity;
 import com.shmedo.configlibrary.ble.enums.CommandType;
-import com.shmedo.configlibrary.ble.utils.DesUtil;
-import com.shmedo.configlibrary.ble.utils.StringUtil;
+import com.shmedo.configlibrary.iot.cmd.IOTCommandManager;
+import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.core.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.fragment.BaseFragment;
 import com.shmedo.mcloudapp.profile.USRBleViewModel;
 
-import java.nio.charset.StandardCharsets;
+import java.util.UUID;
 
 import timber.log.Timber;
 
@@ -33,6 +30,11 @@ import timber.log.Timber;
  * 描述：     TODO
  */
 public abstract class BaseBleIotCommunicateFragment extends BaseFragment {
+    //自定义心跳包指令
+    private final String heartBeat = IOTCommandManager.getInstance().getCommand(IOTCommandType.HEART_BEAT)
+            + "&apikey=b12aac6b-0bd2-4a01-80fd-97fe4f5d4ff9"
+            + "&msgid=" + UUID.randomUUID().toString();
+
     protected USRBleViewModel usrBleViewModel;
 
     private String SN = MCloudApp.getCurDeviceToken();
@@ -75,53 +77,18 @@ public abstract class BaseBleIotCommunicateFragment extends BaseFragment {
         usrBleViewModel.getResponseMsg().observeInFragment(this, new Observer<String>() {
             @Override
             public void onChanged(String result) {
-                if (!result.startsWith("$$")) {
+                //跳过心跳包数据的分发处理
+                if (result.contains(heartBeat))
                     return;
+
+                try {
+                    parseResponseMessage(result);
+
+                } catch (Exception ex) {
+                    Timber.e(ex);
                 }
-                handleResponseMessage(result);
             }
         });
-    }
-
-    private void handleResponseMessage(final String cmdStr) {
-        try {
-            String cmdArray[] = cmdStr.replace("\r\n", "").split(",");
-            if (cmdStr.startsWith("$$224")) {//认证方式
-                if (cmdStr.replace("\r\n", "").endsWith(CommandResult.ERROR_END)) {
-                    setAuthenticateWay();//重新认证
-                    return;
-                }
-                sendAuthenticateCodeCmd(cmdArray[3]);
-                return;
-
-            } else if (cmdStr.startsWith("$$223")) {//设备登录验证结果指令
-                Timber.d("设备登录验证状态===%s", cmdArray[1].contains("1"));
-                if (cmdArray[1].contains("1")) {
-                    onAuthenticateResult(true);
-                } else {
-                    ToastUtils.show("设备认证失败!");
-                    disconnectDevice();
-                    onAuthenticateResult(false);
-                }
-                return;
-
-            } else if (cmdStr.contains("Please verify the equipment.\r\n")) {
-                ToastUtils.show("设备认证失败!");
-                disconnectDevice();
-                onAuthenticateResult(false);
-                return;
-
-            } else if (cmdStr.contains("Equipment Verify OK.\r\n")) {
-                onAuthenticateResult(true);
-                return;
-
-            } else {
-                parseResponseMessage(cmdStr);
-            }
-
-        } catch (Exception ex) {
-            Timber.e(ex);
-        }
     }
 
     /**
@@ -151,17 +118,11 @@ public abstract class BaseBleIotCommunicateFragment extends BaseFragment {
         usrBleViewModel.clearDevice();
     }
 
-    protected void onAuthenticateResult(boolean isSuccess) {
-    }
-
     /**
      * 解析设备的参数指令
      */
     protected void parseResponseMessage(String cmdStr) {
-        //处理心跳包应答指令，不分发指令
-        if (cmdStr.startsWith("$$888")) {
-            return;
-        }
+
     }
 
     /**
@@ -170,61 +131,26 @@ public abstract class BaseBleIotCommunicateFragment extends BaseFragment {
     protected void sendHeartData() {
         String command = CommandManager.getInstance().getCommand(CommandType.HEARTBEAT);
         Timber.d("发送心跳数据：%s", command);
-        usrBleViewModel.sendIOTProtocolCommand(command);
+        sendCommand(command);
     }
 
     /**
-     * 查询 DAS 设备的配置参数信息
+     * 获取设备的基本信息
      */
-    protected void queryDASConfigInfoCmd() {
-        //获取基础配置信息  ##000
-        String command = CommandManager.getInstance().getCommand(CommandType.BASE_CONFIG);
-        Timber.d("获取基础配置信息指令===%s", command);
-        usrBleViewModel.sendIOTProtocolCommand(command);
+    protected void getEquipmentBaseInfo() {
+        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_GET_EQUIPMENT_BASIS);
+        sendCommand(command);
     }
 
-    /**
-     * 蓝牙连接成功,发送认证方式
-     */
-    protected void setAuthenticateWay() {
-        AuthenticationConfigEntity configEntity = new AuthenticationConfigEntity(SN, 0);
-        String command = CommandManager.getInstance().getCommand(CommandType.AUTHENTICATION_CONFIG, configEntity);
-        Timber.d("设置认证类型指令===%s", command);
-        usrBleViewModel.sendIOTProtocolCommand("\r\n" + command);
-    }
-
-    /**
-     * 开始认证流程
-     */
-    private void sendAuthenticateCodeCmd(String authenticateParam) {
-//        Timber.d("解密前:%s", authenticateParam);
-        byte[] resultData = StringUtil.hexStringToBytes(authenticateParam);
-        try {
-            String deskey = "12345678";
-            //解密后认证码
-            String strDecrypt = new String(DesUtil.decrypt(resultData, deskey), StandardCharsets.UTF_8);
-//            Timber.d("解密后:%s", strDecrypt);
-
-            if (!TextUtils.isEmpty(strDecrypt)) {
-                //反转6位随机码
-                String reverseRandomCode = StringUtil.reverseString(strDecrypt.substring(0, 6));
-                byte[] byteEncryt = DesUtil.encrypt((reverseRandomCode + deskey).getBytes(), deskey);
-                //加密后认证码
-                String strEncryt = StringUtil.bytesToHexString(byteEncryt);
-                String cmd = "##222," + SN + ",0," + strEncryt.toUpperCase() + "\r\n";
-                Timber.d("设备登录验证指令===%s", cmd);
-                usrBleViewModel.sendIOTProtocolCommand(cmd);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+    protected void sendCommand(String cmdStr) {
+        String apiKey = "b12aac6b-0bd2-4a01-80fd-97fe4f5d4ff9";
+        if (!TextUtils.isEmpty(usrBleViewModel.getDeviceApiKey().getValue())) {
+            apiKey = usrBleViewModel.getDeviceApiKey().getValue();
         }
-    }
+        cmdStr += "&apikey=" + apiKey
+                + "&msgid=" + UUID.randomUUID().toString();
 
-
-    protected void queryDeviceVersionInfo() {
-        String command = CommandManager.getInstance().getCommand(CommandType.VERSION_MESSAGE);
-        Timber.d("查询设备版本信息：%s", command);
-        usrBleViewModel.sendIOTProtocolCommand(command);
+        usrBleViewModel.sendIOTProtocolCommand(cmdStr);
     }
 
     protected void showDisconnectDialog(String content) {

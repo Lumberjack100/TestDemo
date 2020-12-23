@@ -48,7 +48,7 @@ public enum IOTCommandType {
     SET_WORK_MODE("setworkmode"),
 
 
-    /**　VMS-LoRa网关指令  **/
+    /*　VMS-LoRa网关指令  */
     /**
      * 获取网关的基本信息
      */
@@ -123,6 +123,23 @@ public enum IOTCommandType {
      * 设置Vms终端通信参数
      */
     VMS_MD_SET_TERMINAL_COMMUNICATE("md_setterminalcom"),
+
+
+    /*　 ADME 指令  */
+    /**
+     * 获取设备的基本信息
+     */
+    ADME_MD_GET_EQUIPMENT_BASIS("md_getequipmentbasis"),
+
+    /**
+     * 获取设备的运行状态
+     */
+    ADME_MD_GET_MOTION_STATE("md_getmotionstate"),
+
+    /**
+     * 设置设备模式（0：设备配置模式，1：自动检测模式）
+     */
+    ADME_MD_SET_EQUIPMENT_MODEL("md_setequimodel"),
 
     /**
      * 自定义心跳包

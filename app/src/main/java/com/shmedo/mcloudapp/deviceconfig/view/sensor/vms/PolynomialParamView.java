@@ -10,8 +10,8 @@ import android.widget.FrameLayout;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.shmedo.configlibrary.iot.cmd.entity.SetVmsTerminalSensorParamsEntity;
-import com.shmedo.configlibrary.iot.model.VmsTerminalSensorInfo;
+import com.shmedo.configlibrary.iot.cmd.entity.vms.SetVmsTerminalSensorParamsEntity;
+import com.shmedo.configlibrary.iot.model.vms.VmsTerminalSensorInfo;
 import com.shmedo.mcloudapp.R;
 
 import butterknife.BindView;

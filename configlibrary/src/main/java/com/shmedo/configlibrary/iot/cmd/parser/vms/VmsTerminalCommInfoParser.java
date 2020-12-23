@@ -1,22 +1,22 @@
-package com.shmedo.configlibrary.iot.cmd.parser;
+package com.shmedo.configlibrary.iot.cmd.parser.vms;
 
 import android.text.TextUtils;
 
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.interfaces.IOTResultParser;
-import com.shmedo.configlibrary.iot.model.VmsBasicInfo;
+import com.shmedo.configlibrary.iot.model.vms.VmsTerminalCommInfo;
 
 import java.util.HashMap;
 
 /**
  * 创建者:   gonghe <br/>
- * 创建时间:  2020/11/12 <br/>
- * 描述：   解析Vms网关基础信息
+ * 创建时间:  12/2/20 <br/>
+ * 描述：    解析Vms终端通信参数
  */
-public class VmsBasicInfoParser implements IOTResultParser<VmsBasicInfo> {
+public class VmsTerminalCommInfoParser implements IOTResultParser<VmsTerminalCommInfo> {
     @Override
-    public VmsBasicInfo parse(String result) {
-        VmsBasicInfo info = new VmsBasicInfo();
+    public VmsTerminalCommInfo parse(String result) {
+        VmsTerminalCommInfo info = new VmsTerminalCommInfo();
         try {
             String[] keyValues = result.split("&");
             HashMap<String, String> keyValueMap = new HashMap<>();
@@ -29,10 +29,10 @@ public class VmsBasicInfoParser implements IOTResultParser<VmsBasicInfo> {
                     keyValueMap.put(strs[0], strs[1]);
                 }
             }
-            info.setSn(TextUtils.isEmpty(keyValueMap.get("sn")) ? "" : keyValueMap.get("sn"));
-            info.setOnline(TextUtils.isEmpty(keyValueMap.get("online")) ? "" : keyValueMap.get("online"));
-            info.setSwVersion(TextUtils.isEmpty(keyValueMap.get("sw")) ? "" : keyValueMap.get("sw"));
-            info.setVolt(TextUtils.isEmpty(keyValueMap.get("volt")) ? "" : keyValueMap.get("volt"));
+            info.setNetid(TextUtils.isEmpty(keyValueMap.get("netid")) ? "" : keyValueMap.get("netid"));
+            info.setDstaddr(TextUtils.isEmpty(keyValueMap.get("dstaddr")) ? "" : keyValueMap.get("dstaddr"));
+            info.setChannel(TextUtils.isEmpty(keyValueMap.get("channel")) ? "" : keyValueMap.get("channel"));
+            info.setAirbaud(TextUtils.isEmpty(keyValueMap.get("airbaud")) ? "" : keyValueMap.get("airbaud"));
 
             return info;
         } catch (Exception ex) {
@@ -48,6 +48,6 @@ public class VmsBasicInfoParser implements IOTResultParser<VmsBasicInfo> {
 
     @Override
     public IOTCommandType commandType() {
-        return IOTCommandType.VMS_MD_GET_GATEWAY_BASE;
+        return IOTCommandType.VMS_MD_GET_TERMINAL_COMMUNICATE;
     }
 }

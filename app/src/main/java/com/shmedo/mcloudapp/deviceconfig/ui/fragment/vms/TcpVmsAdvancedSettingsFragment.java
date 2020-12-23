@@ -18,7 +18,7 @@ import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.enums.ServerNumber;
 import com.shmedo.configlibrary.iot.enums.VmsAisleNumber;
 import com.shmedo.configlibrary.iot.model.CommonSettingCmdResult;
-import com.shmedo.configlibrary.iot.model.VmsDataCenterStatus;
+import com.shmedo.configlibrary.iot.model.vms.VmsDataCenterStatus;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
 import com.shmedo.core.AppContants;
 import com.shmedo.core.MCloudApp;

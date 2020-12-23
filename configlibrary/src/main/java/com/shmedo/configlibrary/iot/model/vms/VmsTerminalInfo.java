@@ -1,8 +1,10 @@
-package com.shmedo.configlibrary.iot.model;
+package com.shmedo.configlibrary.iot.model.vms;
 
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.TextUtils;
+
+import com.shmedo.configlibrary.iot.model.SensorErrnoInfo;
 
 import java.util.List;
 

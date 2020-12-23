@@ -20,7 +20,7 @@ import com.shmedo.configlibrary.iot.cmd.entity.TerminalSNEntity;
 import com.shmedo.configlibrary.iot.cmd.parser.IOTParseManager;
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.model.CommonSettingCmdResult;
-import com.shmedo.configlibrary.iot.model.VmsTerminalInfo;
+import com.shmedo.configlibrary.iot.model.vms.VmsTerminalInfo;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
 import com.shmedo.core.AppContants;
 import com.shmedo.core.util.DensityUtil;

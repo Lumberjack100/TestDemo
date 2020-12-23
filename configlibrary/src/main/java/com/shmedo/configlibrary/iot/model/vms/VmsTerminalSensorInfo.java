@@ -1,4 +1,4 @@
-package com.shmedo.configlibrary.iot.model;
+package com.shmedo.configlibrary.iot.model.vms;
 
 import android.os.Parcel;
 import android.os.Parcelable;

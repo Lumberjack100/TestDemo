@@ -25,7 +25,6 @@ import okhttp3.RequestBody;
  * 描述：     TODO
  */
 public class DeviceRepository {
-
     private static final DeviceRepository instance = new DeviceRepository();
     private UnPeekLiveData<String> deviceApiKey;
 
@@ -55,17 +54,14 @@ public class DeviceRepository {
      * 根据设备 SN号 返回设备的 apiKey
      *
      * @param sn
-     * @return
      */
-    public String getDeviceApiKeyBySn(String sn) {
+    public void queryDeviceApiKeyBySn(String sn) {
         String apiKey = DeviceDao.getInstance().getCachedDeviceApiKeyBySn(sn);
         if (apiKey == null) {
             queryCompanyDevice(sn);
         }else {
             deviceApiKey.postValue(apiKey);
         }
-
-        return apiKey;
     }
 
 

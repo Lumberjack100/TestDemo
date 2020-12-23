@@ -1,22 +1,22 @@
-package com.shmedo.configlibrary.iot.cmd.parser;
+package com.shmedo.configlibrary.iot.cmd.parser.vms;
+
+import android.text.TextUtils;
 
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.interfaces.IOTResultParser;
-import com.shmedo.configlibrary.iot.model.VmsAisleTerminalInfo;
-import com.shmedo.core.util.GsonFactory;
+import com.shmedo.configlibrary.iot.model.vms.VmsBasicInfo;
 
 import java.util.HashMap;
 
-
 /**
  * 创建者:   gonghe <br/>
- * 创建时间:  2020/11/13 <br/>
- * 描述：     TODO
+ * 创建时间:  2020/11/12 <br/>
+ * 描述：   解析Vms网关基础信息
  */
-public class VmsAisleTerminalInfoParser implements IOTResultParser<VmsAisleTerminalInfo> {
+public class VmsBasicInfoParser implements IOTResultParser<VmsBasicInfo> {
     @Override
-    public VmsAisleTerminalInfo parse(String result) {
-        VmsAisleTerminalInfo info;
+    public VmsBasicInfo parse(String result) {
+        VmsBasicInfo info = new VmsBasicInfo();
         try {
             String[] keyValues = result.split("&");
             HashMap<String, String> keyValueMap = new HashMap<>();
@@ -29,10 +29,10 @@ public class VmsAisleTerminalInfoParser implements IOTResultParser<VmsAisleTermi
                     keyValueMap.put(strs[0], strs[1]);
                 }
             }
-
-            String status = keyValueMap.get("status");
-            info = GsonFactory.getGson().fromJson(status, VmsAisleTerminalInfo.class);
-            info.setChannel(Integer.parseInt(keyValueMap.get("channel")));
+            info.setSn(TextUtils.isEmpty(keyValueMap.get("sn")) ? "" : keyValueMap.get("sn"));
+            info.setOnline(TextUtils.isEmpty(keyValueMap.get("online")) ? "" : keyValueMap.get("online"));
+            info.setSwVersion(TextUtils.isEmpty(keyValueMap.get("sw")) ? "" : keyValueMap.get("sw"));
+            info.setVolt(TextUtils.isEmpty(keyValueMap.get("volt")) ? "" : keyValueMap.get("volt"));
 
             return info;
         } catch (Exception ex) {
@@ -48,6 +48,6 @@ public class VmsAisleTerminalInfoParser implements IOTResultParser<VmsAisleTermi
 
     @Override
     public IOTCommandType commandType() {
-        return IOTCommandType.VMS_MD_GET_GATEWAY_STATUS;
+        return IOTCommandType.VMS_MD_GET_GATEWAY_BASE;
     }
 }

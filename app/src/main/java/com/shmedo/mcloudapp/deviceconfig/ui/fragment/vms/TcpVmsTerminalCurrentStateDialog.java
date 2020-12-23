@@ -11,7 +11,7 @@ import android.widget.TextView;
 import androidx.annotation.Nullable;
 
 import com.shmedo.configlibrary.iot.model.SensorErrnoInfo;
-import com.shmedo.configlibrary.iot.model.VmsTerminalInfo;
+import com.shmedo.configlibrary.iot.model.vms.VmsTerminalInfo;
 import com.shmedo.core.AppContants;
 import com.shmedo.core.util.DeviceInfo;
 import com.shmedo.core.util.GlobalUtil;
