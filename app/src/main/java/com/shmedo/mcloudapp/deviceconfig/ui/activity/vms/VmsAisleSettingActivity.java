@@ -68,11 +68,11 @@ public class VmsAisleSettingActivity extends BaseActivity {
         if (intent.getExtras().containsKey(VMS_AISLE_NUMBER)) {
             vmsAisleNumber = (VmsAisleNumber) intent.getSerializableExtra(VMS_AISLE_NUMBER);
             if (vmsAisleNumber == VmsAisleNumber.NUMBER_ONE) {
-                mToolbarTitle.setText("通道1");
+                mToolbarTitle.setText("注册通道");
             } else if (vmsAisleNumber == VmsAisleNumber.NUMBER_TWO) {
-                mToolbarTitle.setText("通道2");
+                mToolbarTitle.setText("数据通道1");
             } else if (vmsAisleNumber == VmsAisleNumber.NUMBER_THREE) {
-                mToolbarTitle.setText("通道3");
+                mToolbarTitle.setText("数据通道2");
             }
         }
     }
