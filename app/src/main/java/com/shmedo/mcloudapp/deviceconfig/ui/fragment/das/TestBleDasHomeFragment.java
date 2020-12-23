@@ -219,7 +219,7 @@ public class TestBleDasHomeFragment extends TestBaseBleCommunicateFragment {
             configModuleList.add(configModule);
         }
 
-        configModule = new ConfigModule(R.drawable.ic_device_advanced_setting, "设置", "高级设置");
+        configModule = new ConfigModule(R.drawable.ic_device_setting, "设置", "高级设置");
         configModuleList.add(configModule);
     }
 

@@ -331,7 +331,7 @@ public class NetConfigDeviceFragment extends BaseFragment {
 //        configModule = new ConfigModule(R.drawable.ic_device_instruction_send, "指令下发", "服务端代码指令下发");
 //        configModuleList.add(configModule);
 
-        configModule = new ConfigModule(R.drawable.ic_device_advanced_setting, "设置", "高级设置");
+        configModule = new ConfigModule(R.drawable.ic_device_setting, "设置", "高级设置");
         configModuleList.add(configModule);
     }
 
