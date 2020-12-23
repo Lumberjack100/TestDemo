@@ -130,9 +130,9 @@ public class BleConfigDeviceFragment extends BaseBleConnectFragment {
     private int deviceTypeID;
     private String deviceTypeName;
     private BaseConfigInfo baseConfigInfo;
+    private boolean isInitialSensorOpera = false;//是否初始化传感器操作
 
     private LocationViewModel locationViewModel;
-
 
 
     public static BleConfigDeviceFragment newInstance(String deviceInfo) {
@@ -284,6 +284,13 @@ public class BleConfigDeviceFragment extends BaseBleConnectFragment {
                 DeviceCurrentStateActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT);
                 break;
 
+            case "传感器初始化":
+                isInitialSensorOpera = true;
+                showProgressDialog("指令下发中...");
+                //发送激活DAS命令
+                setLowEnergyModel(true);
+                break;
+
             case "时间":
                 doQueryTimeCmd();
                 break;
@@ -409,9 +416,18 @@ public class BleConfigDeviceFragment extends BaseBleConnectFragment {
                 break;
 
             case LOW_ENERGY:
+                dismissProgressDialog();
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
+                    if (isInitialSensorOpera) {
+                        isInitialSensorOpera = false;
+                        ToastUtils.show("传感器初始化失败!");
+                    }
                     Timber.e("激活/待机指令出错!");
                     return;
+                }
+                if (isInitialSensorOpera) {
+                    isInitialSensorOpera = false;
+                    ToastUtils.show("传感器已初始化,设备即将重启!");
                 }
                 break;
 
@@ -555,16 +571,19 @@ public class BleConfigDeviceFragment extends BaseBleConnectFragment {
 
     private void initConfigModuleData() {
         configModuleList.clear();
-        ConfigModule configModule = new ConfigModule(R.drawable.ic_device_current_state, 5, GlobalUtil.getString(R.string.device_config_module_current_state), "获取当前设备状态");
+        ConfigModule configModule = new ConfigModule(R.drawable.ic_device_current_state, GlobalUtil.getString(R.string.device_config_module_current_state), "获取当前设备状态");
         configModuleList.add(configModule);
 
-        configModule = new ConfigModule(R.drawable.ic_device_current_time, 1, "时间", "获取当前设备时间");
+        configModule = new ConfigModule(R.drawable.ic_device_reboot, "传感器初始化", "传感器初始化");
         configModuleList.add(configModule);
 
-        configModule = new ConfigModule(R.drawable.ic_device_telemetry, 6, "遥测", "远距离测量");
+        configModule = new ConfigModule(R.drawable.ic_device_current_time, "时间", "获取当前设备时间");
         configModuleList.add(configModule);
 
-        configModule = new ConfigModule(R.drawable.ic_device_reboot, 7, "重启", "重新启动当前设备");
+        configModule = new ConfigModule(R.drawable.ic_device_telemetry, "遥测", "远距离测量");
+        configModuleList.add(configModule);
+
+        configModule = new ConfigModule(R.drawable.ic_device_reboot, "重启", "重新启动当前设备");
         configModuleList.add(configModule);
 
 //        TODO 后期换成物联网协议再开放

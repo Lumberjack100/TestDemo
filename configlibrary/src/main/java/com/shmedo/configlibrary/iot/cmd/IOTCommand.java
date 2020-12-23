@@ -29,10 +29,14 @@ public class IOTCommand<T extends Validater> {
 //        if (parameters != null)
 //            parameters.validate();
 
-        String paraString = parameters == null ? "" : parameters.toString();
+        if (parameters == null)
+            return COMMAND_HEADER + commandType.toString();
+        else
+            return COMMAND_HEADER + commandType.toString() + "&"
+                    + parameters.toString();
 
-        return COMMAND_HEADER + commandType.toString() + "&"
-                + paraString;
+//        return COMMAND_HEADER + commandType.toString() + "&"
+//                + parameters.toString()
 //                + "&apikey=" + apiKey
 //                + "&msgid=" + UUID.randomUUID().toString();
 //                + "&&";
