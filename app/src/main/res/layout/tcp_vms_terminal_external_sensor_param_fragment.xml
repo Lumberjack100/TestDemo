@@ -94,7 +94,7 @@
 
                     <TextView
                         style="@style/Common_ClickableItem_TitleStyle"
-                        android:text="传感器名称" />
+                        android:text="监测类型" />
 
                     <TextView
                         android:id="@+id/tv_sensor_name"

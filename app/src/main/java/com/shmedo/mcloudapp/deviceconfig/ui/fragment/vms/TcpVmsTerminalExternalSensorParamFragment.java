@@ -81,7 +81,7 @@ public class TcpVmsTerminalExternalSensorParamFragment extends BaseTcpConnectFra
     private VmsTerminalSensorInfo sensorInfo;
 
     private List<String> calculationList = Arrays.asList("直线式", "多项式");
-    private List<String> sensorNameList = Arrays.asList("墙裂缝计", "轴力");
+    private List<String> sensorNameList = Arrays.asList("墙裂缝计", "轴力", "水压力", "地下水水位", "渗压计");
 
     private VmsSensorCalculation sensorCalculation;
     private String sensorName;
