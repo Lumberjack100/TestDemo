@@ -17,9 +17,14 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.hjq.toast.ToastUtils;
+import com.lxj.xpopup.XPopup;
+import com.lxj.xpopup.interfaces.OnSelectListener;
+import com.shmedo.configlibrary.iot.cmd.IOTCommandManager;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandResult;
+import com.shmedo.configlibrary.iot.cmd.entity.adme.AdmeEquipModelEntity;
 import com.shmedo.configlibrary.iot.cmd.parser.IOTParseManager;
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
+import com.shmedo.configlibrary.iot.model.CommonSettingCmdResult;
 import com.shmedo.configlibrary.iot.model.adme.AdmeBasicInfo;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
 import com.shmedo.core.AppContants;
@@ -74,6 +79,9 @@ public class BleAdmeHomeFragment extends BaseBleIotCommunicateFragment {
     @BindView(R.id.tv_device_connect_operate)
     TextView mTvDeviceConnectOperate;//蓝牙连接操作(断开连接、重新连接)
 
+    @BindView(R.id.tv_config_model)
+    TextView mTvConfigModel;//设备模式
+
     @BindView(R.id.recyclerview)
     RecyclerView mRecyclerView;
 
@@ -82,8 +90,11 @@ public class BleAdmeHomeFragment extends BaseBleIotCommunicateFragment {
     private ConfigModule selectedConfigModule;
 
     private DiscoveredBluetoothDevice device;
-
     private AdmeBasicInfo admeBasicInfo;
+
+    private int equipModellPos;
+    private String equipModel;//设备模式
+
 
     public static BleAdmeHomeFragment newInstance(DiscoveredBluetoothDevice device) {
         BleAdmeHomeFragment fragment = new BleAdmeHomeFragment();
@@ -286,9 +297,41 @@ public class BleAdmeHomeFragment extends BaseBleIotCommunicateFragment {
                 break;
 
             case R.id.ll_switch_config_model://切换设备模式
-
+                showSwitchConfigModelDialog();
                 break;
         }
+    }
+
+    private void showSwitchConfigModelDialog() {
+        XPopup.setPrimaryColor(getResources().getColor(R.color.blue_52B4F8));
+        new XPopup.Builder(mActivity)
+                .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
+                .asBottomList("", new String[]{"设备配置模式", "自动监测模式"},
+                        null, equipModellPos, true,
+                        new OnSelectListener() {
+                            @Override
+                            public void onSelect(int position, String text) {
+                                equipModellPos = position;
+                                mTvConfigModel.setText(text);
+                                if (text.equals("设备配置模式")) {
+                                    equipModel = "0";
+                                } else {
+                                    equipModel = "1";
+                                }
+                                setEquipModel();
+//                                updateConfigModuleData();
+                            }
+                        }, 0, R.layout.custom_xpopup_adapter_text_match)
+                .show();
+    }
+
+    /**
+     * 设置设备模式
+     */
+    private void setEquipModel() {
+        AdmeEquipModelEntity entity = new AdmeEquipModelEntity(equipModel);
+        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_SET_EQUIPMENT_MODEL, entity);
+        sendCommand(command);
     }
 
     @Override
@@ -321,7 +364,14 @@ public class BleAdmeHomeFragment extends BaseBleIotCommunicateFragment {
             break;
 
             case ADME_MD_SET_EQUIPMENT_MODEL: {//设置设备模式
-
+                CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
+                if (!cmdResult.isSucceed()) {
+                    String errMsg = String.format("%s %s", "设置设备模式出错!", cmdResult.getReason());
+                    Timber.e(errMsg);
+                    ToastUtils.show(errMsg);
+                    return;
+                }
+                updateConfigModuleData();
             }
             break;
 
@@ -342,7 +392,17 @@ public class BleAdmeHomeFragment extends BaseBleIotCommunicateFragment {
             mTvSubModel.setText("运行状态：--");
             mTvPlatformCommunicationState.setText("平台连接状态：--");
 
-            updateConfigModuleData(admeBasicInfo.getEquimodel());
+            if (!TextUtils.isEmpty(admeBasicInfo.getEquimodel())) {
+                equipModel = admeBasicInfo.getEquimodel();
+                if (equipModel.equals("0")) {
+                    equipModellPos = 0;
+                    mTvConfigModel.setText("设备配置模式");
+                } else {
+                    equipModellPos = 1;
+                    mTvConfigModel.setText("自动监测模式");
+                }
+                updateConfigModuleData();
+            }
         } else {
             mTvDeviceName.setText("水平自动监测设备");
             mTvDeviceSn.setText("设备编号：--");
@@ -352,8 +412,8 @@ public class BleAdmeHomeFragment extends BaseBleIotCommunicateFragment {
         }
     }
 
-    private void updateConfigModuleData(String equimodel) {
-        if (TextUtils.isEmpty(equimodel))
+    private void updateConfigModuleData() {
+        if (TextUtils.isEmpty(equipModel))
             return;
 
         configModuleList.clear();
@@ -363,7 +423,7 @@ public class BleAdmeHomeFragment extends BaseBleIotCommunicateFragment {
         configModule = new ConfigModule(R.drawable.ic_basic_config, "基础配置", "设备基础参数配置");
         configModuleList.add(configModule);
 
-        if (equimodel.equals("0")) {//0：设备配置模式，1：自动检测模式
+        if (equipModel.equals("0")) {//0：设备配置模式，1：自动监测模式
             configModule = new ConfigModule(R.drawable.ic_measuring_hole_depth, "测孔深", "测量测斜管深度");
             configModuleList.add(configModule);
 

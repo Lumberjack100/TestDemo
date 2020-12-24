@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.deviceconfig.ui.fragment;
+package com.shmedo.mcloudapp.deviceconfig.ui.fragment.das;
 
 import android.graphics.Color;
 import android.os.Bundle;
@@ -48,7 +48,7 @@ import timber.log.Timber;
 /**
  * 通过下发指令查看设备当前运行状态
  */
-public class BleDeviceCurrentStateFragment extends BaseBleConnectFragment {
+public class BleDasDeviceCurrentStateFragment extends BaseBleConnectFragment {
     /**
      * 基本信息
      */
@@ -215,7 +215,7 @@ public class BleDeviceCurrentStateFragment extends BaseBleConnectFragment {
 
     @Override
     protected int getLayoutId() {
-        return R.layout.fragment_ble_device_current_state;
+        return R.layout.fragment_ble_das_device_current_state;
     }
 
     @Override

@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.deviceconfig.ui.fragment;
+package com.shmedo.mcloudapp.deviceconfig.ui.fragment.das;
 
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -27,13 +27,13 @@ import timber.log.Timber;
 /**
  * 蓝牙模式高级设置
  */
-public class BleAdvancedSettingFragment extends BaseBleConnectFragment {
+public class BleDasAdvancedSettingFragment extends BaseBleConnectFragment {
     private String installLocation;
 
 
     @Override
     protected int getLayoutId() {
-        return R.layout.fragment_ble_advanced_setting;
+        return R.layout.fragment_ble_das_advanced_setting;
     }
 
     @Override

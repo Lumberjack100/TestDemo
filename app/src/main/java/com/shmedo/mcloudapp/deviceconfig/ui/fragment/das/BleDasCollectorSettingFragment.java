@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.deviceconfig.ui.fragment;
+package com.shmedo.mcloudapp.deviceconfig.ui.fragment.das;
 
 import android.os.Bundle;
 import android.text.InputFilter;
@@ -32,7 +32,7 @@ import timber.log.Timber;
 /**
  * 通过物联网平台蓝牙配置采集器
  */
-public class BleCollectorSettingFragment extends BaseBleConnectFragment {
+public class BleDasCollectorSettingFragment extends BaseBleConnectFragment {
     private static final String COLLECTOR_MODEL = "collector_model";
 
     @BindView(R.id.collectorAddressET)
@@ -64,8 +64,8 @@ public class BleCollectorSettingFragment extends BaseBleConnectFragment {
     private String cmdCollectTime;//采集时间频度
 
 
-    public static BleCollectorSettingFragment newInstance(String model) {
-        BleCollectorSettingFragment fragment = new BleCollectorSettingFragment();
+    public static BleDasCollectorSettingFragment newInstance(String model) {
+        BleDasCollectorSettingFragment fragment = new BleDasCollectorSettingFragment();
         Bundle args = new Bundle();
         args.putString(COLLECTOR_MODEL, model);
         fragment.setArguments(args);
@@ -82,7 +82,7 @@ public class BleCollectorSettingFragment extends BaseBleConnectFragment {
 
     @Override
     protected int getLayoutId() {
-        return R.layout.fragment_ble_collector_setting;
+        return R.layout.fragment_ble_das_collector_setting;
     }
 
     @Override

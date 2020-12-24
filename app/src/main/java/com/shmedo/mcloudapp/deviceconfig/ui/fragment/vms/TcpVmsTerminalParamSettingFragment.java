@@ -26,7 +26,6 @@ import com.shmedo.configlibrary.iot.model.vms.VmsTerminalInfo;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.view.ClearEditText;
-import com.shmedo.mcloudapp.deviceconfig.ui.fragment.BaseTcpConnectFragment;
 import com.shmedo.mcloudapp.util.KeyBordUtils;
 
 import org.jetbrains.annotations.NotNull;
@@ -62,7 +61,6 @@ public class TcpVmsTerminalParamSettingFragment extends BaseTcpConnectFragment {
 
     private int reportingMethodPos;
     private String reportingMethodOld;//
-
     private String reportingMethod;//  上报方式
     private String reportingInterval;//上报间隔
     private String networkNumber;//网络号

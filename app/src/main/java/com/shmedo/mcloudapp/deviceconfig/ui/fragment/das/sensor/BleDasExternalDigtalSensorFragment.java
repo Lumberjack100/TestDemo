@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.deviceconfig.ui.fragment.sensor;
+package com.shmedo.mcloudapp.deviceconfig.ui.fragment.das.sensor;
 
 import android.os.Bundle;
 

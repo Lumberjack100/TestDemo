@@ -17,7 +17,7 @@ import com.shmedo.core.AppContants;
 import com.shmedo.core.util.LogFileUtil;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.activity.BaseActivity;
-import com.shmedo.mcloudapp.deviceconfig.ui.fragment.BleCustomCommandLogPrintFragment;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.das.BleDasCustomCommandLogPrintFragment;
 import com.shmedo.mcloudapp.util.FileProviderUtils;
 
 import java.io.File;
@@ -84,7 +84,7 @@ public class CustomCommandLogPrintActivity extends BaseActivity {
     private void initFragment() {
         if (connectWay == AppContants.CommunicationWay.NET_PLATFORM_CONNECT) {
         } else {
-            fragment = new BleCustomCommandLogPrintFragment();
+            fragment = new BleDasCustomCommandLogPrintFragment();
         }
 
         replaceFragment(fragment);

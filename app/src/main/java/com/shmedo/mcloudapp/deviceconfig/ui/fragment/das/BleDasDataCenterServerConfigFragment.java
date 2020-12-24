@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.deviceconfig.ui.fragment;
+package com.shmedo.mcloudapp.deviceconfig.ui.fragment.das;
 
 import android.os.Bundle;
 import android.text.InputFilter;
@@ -46,7 +46,7 @@ import timber.log.Timber;
 /**
  * Das数据中心参数配置页面
  */
-public class BleDataCenterServerConfigFragment extends BaseBleConnectFragment {
+public class BleDasDataCenterServerConfigFragment extends BaseBleConnectFragment {
 
     @BindView(R.id.ll_child_items)
     ViewGroup childItemsLayout;
@@ -143,8 +143,8 @@ public class BleDataCenterServerConfigFragment extends BaseBleConnectFragment {
     private String cmdAppKey;//米度平台 AppKey
 
 
-    public static BleDataCenterServerConfigFragment newInstance(ServerNumber serverNumber) {
-        BleDataCenterServerConfigFragment fragment = new BleDataCenterServerConfigFragment();
+    public static BleDasDataCenterServerConfigFragment newInstance(ServerNumber serverNumber) {
+        BleDasDataCenterServerConfigFragment fragment = new BleDasDataCenterServerConfigFragment();
         Bundle args = new Bundle();
         args.putSerializable(SERVER_NUMBER, serverNumber);
         fragment.setArguments(args);
@@ -162,7 +162,7 @@ public class BleDataCenterServerConfigFragment extends BaseBleConnectFragment {
 
     @Override
     protected int getLayoutId() {
-        return R.layout.fragment_ble_data_center_server_config;
+        return R.layout.fragment_ble_das_data_center_server_config;
     }
 
     @Override

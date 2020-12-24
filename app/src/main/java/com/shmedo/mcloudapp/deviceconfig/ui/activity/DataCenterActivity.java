@@ -12,7 +12,7 @@ import androidx.fragment.app.FragmentTransaction;
 import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.activity.BaseActivity;
-import com.shmedo.mcloudapp.deviceconfig.ui.fragment.BleDataCenterFragment;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.das.BleDasDataCenterFragment;
 
 import butterknife.BindView;
 
@@ -66,7 +66,7 @@ public class DataCenterActivity extends BaseActivity {
         if (connectWay == AppContants.CommunicationWay.NET_PLATFORM_CONNECT) {
 
         } else {
-            fragment = new BleDataCenterFragment();
+            fragment = new BleDasDataCenterFragment();
         }
 
         replaceFragment(fragment);

@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.deviceconfig.ui.activity.sensor;
+package com.shmedo.mcloudapp.deviceconfig.ui.activity.das.sensor;
 
 import android.content.Context;
 import android.content.Intent;
@@ -12,7 +12,7 @@ import androidx.fragment.app.FragmentTransaction;
 import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.activity.BaseActivity;
-import com.shmedo.mcloudapp.deviceconfig.ui.fragment.sensor.BleDasSensorConfigFragment;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.das.sensor.BleDasSensorConfigFragment;
 
 import butterknife.BindView;
 

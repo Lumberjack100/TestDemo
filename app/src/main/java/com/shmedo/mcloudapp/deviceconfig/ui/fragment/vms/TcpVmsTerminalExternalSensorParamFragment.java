@@ -31,7 +31,6 @@ import com.shmedo.configlibrary.iot.utils.IOTSensorUtil;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
 import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.R;
-import com.shmedo.mcloudapp.deviceconfig.ui.fragment.BaseTcpConnectFragment;
 import com.shmedo.mcloudapp.deviceconfig.view.sensor.vms.LinearParamView;
 import com.shmedo.mcloudapp.deviceconfig.view.sensor.vms.PolynomialParamView;
 import com.shmedo.mcloudapp.util.KeyBordUtils;

@@ -12,8 +12,8 @@ import androidx.fragment.app.FragmentTransaction;
 import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.activity.BaseActivity;
-import com.shmedo.mcloudapp.deviceconfig.ui.fragment.BleAdvancedSettingFragment;
-import com.shmedo.mcloudapp.deviceconfig.ui.fragment.NetAdvancedSettingFragment;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.das.BleDasAdvancedSettingFragment;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.das.NetDasAdvancedSettingFragment;
 import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfo;
 
 import butterknife.BindView;
@@ -80,9 +80,9 @@ public class AdvancedSettingActivity extends BaseActivity {
 
     private void initFragment() {
         if (connectWay == AppContants.CommunicationWay.NET_PLATFORM_CONNECT) {
-            fragment = NetAdvancedSettingFragment.newInstance(projectDeviceInfo);
+            fragment = NetDasAdvancedSettingFragment.newInstance(projectDeviceInfo);
         } else {
-            fragment = new BleAdvancedSettingFragment();
+            fragment = new BleDasAdvancedSettingFragment();
         }
 
         replaceFragment(fragment);

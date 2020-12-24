@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.deviceconfig.ui.fragment;
+package com.shmedo.mcloudapp.deviceconfig.ui.fragment.das;
 
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
@@ -36,6 +36,7 @@ import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.bluetooth.BluetoothEvent;
 import com.shmedo.mcloudapp.bluetooth.Message;
 import com.shmedo.mcloudapp.common.ui.fragment.BaseFragment;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.BleConfigDeviceFragment;
 import com.shmedo.mcloudapp.deviceconfig.viewmodels.BleViewModel;
 import com.shmedo.mcloudapp.util.bleutil.Constants;
 

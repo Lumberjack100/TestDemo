@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.deviceconfig.ui.fragment;
+package com.shmedo.mcloudapp.deviceconfig.ui.fragment.das;
 
 import android.os.Bundle;
 import android.text.InputFilter;
@@ -36,7 +36,7 @@ import timber.log.Timber;
 /**
  * 蓝牙配置数据中心
  */
-public class BleDataCenterFragment extends BaseBleConnectFragment {
+public class BleDasDataCenterFragment extends BaseBleConnectFragment {
     @BindView(R.id.tv_communication_method)
     TextView mTvCommunicationMethod;
 
@@ -60,7 +60,7 @@ public class BleDataCenterFragment extends BaseBleConnectFragment {
 
     @Override
     protected int getLayoutId() {
-        return R.layout.fragment_ble_data_center;
+        return R.layout.fragment_ble_das_data_center;
     }
 
     @Override

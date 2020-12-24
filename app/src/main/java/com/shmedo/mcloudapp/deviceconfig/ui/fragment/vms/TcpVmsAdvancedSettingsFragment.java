@@ -26,7 +26,6 @@ import com.shmedo.core.util.GlobalUtil;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.vms.VmsAisleSettingActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.vms.VmsDataCenterSettingActivity;
-import com.shmedo.mcloudapp.deviceconfig.ui.fragment.BaseTcpConnectFragment;
 
 import org.jetbrains.annotations.NotNull;
 

@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.deviceconfig.ui.fragment.sensor;
+package com.shmedo.mcloudapp.deviceconfig.ui.fragment.das.sensor;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -36,9 +36,9 @@ import com.shmedo.core.MCloudApp;
 import com.shmedo.core.util.DensityUtil;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.view.recycleviewitemdivider.GridSpacingItemDecoration;
-import com.shmedo.mcloudapp.deviceconfig.ui.activity.sensor.DasExternalDigitalSensorActivity;
-import com.shmedo.mcloudapp.deviceconfig.ui.activity.sensor.DasExternalVibratingWireSensorActivity;
-import com.shmedo.mcloudapp.deviceconfig.ui.fragment.BaseBleConnectFragment;
+import com.shmedo.mcloudapp.deviceconfig.ui.activity.das.sensor.DasExternalDigitalSensorActivity;
+import com.shmedo.mcloudapp.deviceconfig.ui.activity.das.sensor.DasExternalVibratingWireSensorActivity;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.das.BaseBleConnectFragment;
 import com.shmedo.mcloudapp.projects.adapter.DASSensorAdapter;
 import com.shmedo.mcloudapp.projects.model.DASSensorItem;
 import com.shmedo.mcloudapp.util.bleutil.BlueResultParserUtil;

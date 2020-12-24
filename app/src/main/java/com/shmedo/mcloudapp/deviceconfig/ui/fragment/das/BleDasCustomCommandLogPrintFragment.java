@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.deviceconfig.ui.fragment;
+package com.shmedo.mcloudapp.deviceconfig.ui.fragment.das;
 
 import android.os.Bundle;
 import android.view.View;
@@ -37,7 +37,7 @@ import timber.log.Timber;
 /**
  * 自定义蓝牙指令交互输出并保存日志文件
  */
-public class BleCustomCommandLogPrintFragment extends BaseBleConnectFragment {
+public class BleDasCustomCommandLogPrintFragment extends BaseBleConnectFragment {
     private static final String TAG = "BleCustomCommandLogPrintFragment";
 
     @BindView(R.id.tv_debug_mode)
@@ -67,7 +67,7 @@ public class BleCustomCommandLogPrintFragment extends BaseBleConnectFragment {
 
     @Override
     protected int getLayoutId() {
-        return R.layout.fragment_ble_custom_command_log_print;
+        return R.layout.fragment_ble_das_custom_command_log_print;
     }
 
     @Override

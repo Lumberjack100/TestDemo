@@ -13,7 +13,7 @@ import com.shmedo.configlibrary.ble.enums.ServerNumber;
 import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.activity.BaseActivity;
-import com.shmedo.mcloudapp.deviceconfig.ui.fragment.BleDataCenterServerConfigFragment;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.das.BleDasDataCenterServerConfigFragment;
 
 import butterknife.BindView;
 
@@ -81,7 +81,7 @@ public class DataCenterServerConfigActivity extends BaseActivity {
         if (connectWay == AppContants.CommunicationWay.NET_PLATFORM_CONNECT) {
 
         } else {
-            fragment = BleDataCenterServerConfigFragment.newInstance(serverNumber);
+            fragment = BleDasDataCenterServerConfigFragment.newInstance(serverNumber);
         }
 
         replaceFragment(fragment);

@@ -36,11 +36,12 @@
                 android:src="@drawable/ic_switch_adme_config_model" />
 
             <TextView
+                android:id="@+id/tv_config_model"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="12dp"
                 android:layout_marginEnd="8dp"
-                android:text="设备配置模式"
+                tools:text="设备配置模式"
                 android:textColor="@color/title_text_color"
                 android:textSize="@dimen/text_size_17" />
 

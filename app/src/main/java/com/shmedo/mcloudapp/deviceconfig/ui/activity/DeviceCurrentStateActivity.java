@@ -13,8 +13,8 @@ import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.activity.BaseActivity;
 import com.shmedo.mcloudapp.deviceconfig.model.DevcieCurrentState;
-import com.shmedo.mcloudapp.deviceconfig.ui.fragment.BleDeviceCurrentStateFragment;
-import com.shmedo.mcloudapp.deviceconfig.ui.fragment.NetDeviceCurrentState;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.das.BleDasDeviceCurrentStateFragment;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.das.NetDasDeviceCurrentState;
 import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfo;
 
 import butterknife.BindView;
@@ -92,10 +92,10 @@ public class DeviceCurrentStateActivity extends BaseActivity {
 
     private void initFragment() {
         if (connectWay == AppContants.CommunicationWay.NET_PLATFORM_CONNECT) {
-            fragment = NetDeviceCurrentState.newInstance(projectDeviceInfo, devcieCurrentState);
+            fragment = NetDasDeviceCurrentState.newInstance(projectDeviceInfo, devcieCurrentState);
 
         } else {
-            fragment = new BleDeviceCurrentStateFragment();
+            fragment = new BleDasDeviceCurrentStateFragment();
         }
 
         replaceFragment(fragment);

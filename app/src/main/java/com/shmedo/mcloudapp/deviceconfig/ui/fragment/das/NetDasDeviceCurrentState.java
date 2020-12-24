@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.deviceconfig.ui.fragment;
+package com.shmedo.mcloudapp.deviceconfig.ui.fragment.das;
 
 import android.os.Bundle;
 import android.text.Spannable;
@@ -21,7 +21,7 @@ import butterknife.BindView;
 /**
  * 通过网络下发指令查看设备当前运行状态
  */
-public class NetDeviceCurrentState extends BaseFragment {
+public class NetDasDeviceCurrentState extends BaseFragment {
     private static final String DEVICE_INFO = "device_info";
     private static final String DEVICE_CURRENT_STATE = "device_current_state";
 
@@ -152,8 +152,8 @@ public class NetDeviceCurrentState extends BaseFragment {
     private DevcieCurrentState devcieCurrentState;
 
 
-    public static NetDeviceCurrentState newInstance(ProjectDeviceInfo projectDeviceInfo, DevcieCurrentState devcieCurrentState) {
-        NetDeviceCurrentState fragment = new NetDeviceCurrentState();
+    public static NetDasDeviceCurrentState newInstance(ProjectDeviceInfo projectDeviceInfo, DevcieCurrentState devcieCurrentState) {
+        NetDasDeviceCurrentState fragment = new NetDasDeviceCurrentState();
         Bundle args = new Bundle();
         args.putParcelable(DEVICE_INFO, projectDeviceInfo);
         args.putParcelable(DEVICE_CURRENT_STATE, devcieCurrentState);
@@ -172,7 +172,7 @@ public class NetDeviceCurrentState extends BaseFragment {
 
     @Override
     protected int getLayoutId() {
-        return R.layout.fragment_net_device_current_state;
+        return R.layout.fragment_net_das_device_current_state;
     }
 
     @Override

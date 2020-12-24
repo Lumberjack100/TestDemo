@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.deviceconfig.ui.activity.sensor;
+package com.shmedo.mcloudapp.deviceconfig.ui.activity.das.sensor;
 
 import android.content.Intent;
 import android.os.Bundle;

@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.deviceconfig.ui.fragment;
+package com.shmedo.mcloudapp.deviceconfig.ui.fragment.das;
 
 import android.os.Bundle;
 import android.view.View;
@@ -10,7 +10,6 @@ import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.hjq.toast.ToastUtils;
 import com.shmedo.core.MCloudApp;
-import com.shmedo.core.model.UserInfo;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.fragment.BaseFragment;
 import com.shmedo.mcloudapp.deviceconfig.helper.DispatchCmdHelper;
@@ -34,7 +33,7 @@ import butterknife.OnClick;
 /**
  * 网络模式高级设置
  */
-public class NetAdvancedSettingFragment extends BaseFragment {
+public class NetDasAdvancedSettingFragment extends BaseFragment {
     private static final String DEVICE_INFO = "device_info";
 
     private ProjectDeviceInfo projectDeviceInfo;
@@ -42,8 +41,8 @@ public class NetAdvancedSettingFragment extends BaseFragment {
     private List<String> msgIDList = new ArrayList<>();
 
 
-    public static NetAdvancedSettingFragment newInstance(ProjectDeviceInfo projectDeviceInfo) {
-        NetAdvancedSettingFragment fragment = new NetAdvancedSettingFragment();
+    public static NetDasAdvancedSettingFragment newInstance(ProjectDeviceInfo projectDeviceInfo) {
+        NetDasAdvancedSettingFragment fragment = new NetDasAdvancedSettingFragment();
         Bundle args = new Bundle();
         args.putParcelable(DEVICE_INFO, projectDeviceInfo);
         fragment.setArguments(args);
@@ -88,7 +87,7 @@ public class NetAdvancedSettingFragment extends BaseFragment {
 
     @Override
     protected int getLayoutId() {
-        return R.layout.fragment_net_advanced_setting;
+        return R.layout.fragment_net_das_advanced_setting;
     }
 
     @Override

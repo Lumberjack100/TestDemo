@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.deviceconfig.ui.fragment.sensor;
+package com.shmedo.mcloudapp.deviceconfig.ui.fragment.das.sensor;
 
 import android.os.Bundle;
 import android.text.InputFilter;
@@ -40,8 +40,8 @@ import com.shmedo.core.AppContants;
 import com.shmedo.core.MCloudApp;
 import com.shmedo.core.util.GlobalUtil;
 import com.shmedo.mcloudapp.R;
-import com.shmedo.mcloudapp.deviceconfig.ui.activity.sensor.DasExternalSensorHomeActivity;
-import com.shmedo.mcloudapp.deviceconfig.ui.fragment.BaseBleConnectFragment;
+import com.shmedo.mcloudapp.deviceconfig.ui.activity.das.sensor.DasExternalSensorHomeActivity;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.das.BaseBleConnectFragment;
 import com.shmedo.mcloudapp.util.KeyBordUtils;
 
 import java.text.DecimalFormat;
