@@ -22,6 +22,8 @@ import no.nordicsemi.android.ble.callback.FailCallback;
 import no.nordicsemi.android.ble.callback.MtuCallback;
 import no.nordicsemi.android.ble.callback.SuccessCallback;
 import no.nordicsemi.android.ble.data.Data;
+import no.nordicsemi.android.ble.data.DataMerger;
+import no.nordicsemi.android.ble.data.DataStream;
 import no.nordicsemi.android.ble.livedata.ObservableBleManager;
 import no.nordicsemi.android.log.LogContract;
 import no.nordicsemi.android.log.LogSession;
@@ -54,6 +56,8 @@ public class USRManager extends ObservableBleManager {
     private BluetoothGattCharacteristic notifyCharacteristic, writeCharacteristic;
     private LogSession logSession;
     private boolean supported;
+    private static final int MAX_PACKAGE_SIZE = 512;//最大蓝牙包数据
+    private int mtu = MAX_PACKAGE_SIZE;//默认设置最大蓝牙包数据，实际因设备而异
 
     public USRManager(@NotNull Context context) {
         super(context);
@@ -111,7 +115,9 @@ public class USRManager extends ObservableBleManager {
 
         @Override
         public void onInvalidDataReceived(@NonNull final BluetoothDevice device, @NonNull final Data data) {
+            Timber.d("接收数据(onInvalidDataReceived): length=%s bytes;content: %s", data.getValue() == null ? 0 : data.getValue().length, data.getValue() == null ? "Null" : data.getStringValue(0));
             log(Log.WARN, "Invalid data received: " + data);
+            responseMsg.setValue("");
         }
     };
 
@@ -122,10 +128,11 @@ public class USRManager extends ObservableBleManager {
         @Override
         protected void initialize() {
             // Increase the MTU
-            requestMtu(512)
+            requestMtu(MAX_PACKAGE_SIZE)
                     .with(new MtuCallback() {
                         @Override
                         public void onMtuChanged(@NonNull BluetoothDevice device, int mtu) {
+                            USRManager.this.mtu = mtu;
                             log(LogContract.Log.Level.APPLICATION, "MTU changed to " + mtu);
                         }
                     })
@@ -139,7 +146,15 @@ public class USRManager extends ObservableBleManager {
                     })
                     .fail((device, status) -> log(Log.WARN, "MTU change not supported"))
                     .enqueue();
-            setNotificationCallback(notifyCharacteristic).with(notifyCallback);
+            setNotificationCallback(notifyCharacteristic)
+                    .with(notifyCallback)
+                    .merge(new DataMerger() {
+                        @Override
+                        public boolean merge(@NonNull DataStream output, @Nullable byte[] lastPacket, int index) {
+                            output.write(lastPacket);
+                            return lastPacket == null || (lastPacket[lastPacket.length - 1] == 38 && lastPacket[lastPacket.length - 2] == 38);
+                        }
+                    });
             // Enable notifications
             enableNotifications(notifyCharacteristic)
                     // Method called after the data were sent (data will contain 0x0100 in this case)

@@ -31,7 +31,7 @@ public abstract class BaseBleIotCommunicateFragment extends BaseFragment {
     //自定义心跳包指令
     private final String heartBeat = IOTCommandManager.getInstance().getCommand(IOTCommandType.HEART_BEAT)
             + "&apikey=b12aac6b-0bd2-4a01-80fd-97fe4f5d4ff9"
-            + "&msgid=" + UUID.randomUUID().toString();
+            + "&msgid=" + UUID.randomUUID().toString().substring(30);
 
     protected USRBleViewModel usrBleViewModel;
 
@@ -140,7 +140,6 @@ public abstract class BaseBleIotCommunicateFragment extends BaseFragment {
      */
     protected void getEquipmentBaseInfo() {
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_GET_EQUIPMENT_BASIS);
-//        String command ="$cmd=md_setbasicparameters&inctype=ae6d7118-ec5b-4573-a8eb-6fa15caf33&address=ae6d7118-ec5b-4573-a8eb-6fa15caf33&interdeep=ae6d7118-ec5b-4573-a8eb-6fa15caf33&downspeed=ae6d7118-ec5b-4573-a8eb-6fa15caf33&downwaitetime=ae6d7118-ec5b-4573-a8eb-6fa15caf33";
         sendCommand(command);
     }
 
@@ -150,7 +149,7 @@ public abstract class BaseBleIotCommunicateFragment extends BaseFragment {
             apiKey = usrBleViewModel.getDeviceApiKey().getValue();
         }
         cmdStr += "&apikey=" + apiKey
-                + "&msgid=" + UUID.randomUUID().toString();
+                + "&msgid=" + UUID.randomUUID().toString().substring(30);
 
         usrBleViewModel.sendIOTProtocolCommand(cmdStr);
     }
