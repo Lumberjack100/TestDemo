@@ -520,7 +520,7 @@ public class TcpVmsDataCenterSettingFragment extends BaseTcpConnectFragment {
             return true;
         }
 
-        if (transferProtocolOld != null && transferProtocolOld != null && !transferProtocolOld.equals(transferProtocol)) {
+        if (transferProtocolOld != null && transferProtocol != null && !transferProtocolOld.equals(transferProtocol)) {
             return true;
         }
 

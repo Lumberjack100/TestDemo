@@ -148,11 +148,11 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-common-java8:2.2.0"
     implementation 'androidx.lifecycle:lifecycle-viewmodel:2.2.0'
     implementation 'androidx.lifecycle:lifecycle-livedata:2.2.0'
-//    implementation 'androidx.navigation:navigation-runtime:2.3.1'
-    implementation 'com.kunminx.archi:unpeek-livedata:4.4.1-beta1'
 
     implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.2.0'
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0'
+
+    implementation 'com.kunminx.archi:unpeek-livedata:4.4.1-beta1'
 
     implementation "org.greenrobot:greendao:$rootProject.thirdLib.greendao"
     implementation "com.jakewharton:butterknife:$rootProject.thirdLib.butterknife"
@@ -229,8 +229,6 @@ dependencies {
     // BLE library
     implementation 'no.nordicsemi.android:ble-livedata:2.2.0'
 
-    //Easily Connect to WiFi Networks
-//    implementation 'com.thanosfisherman.wifiutils:wifiutils:1.6.4'
 
     testImplementation "junit:junit:$rootProject.thirdLib.junit"
     androidTestImplementation "androidx.test:runner:$rootProject.thirdLib.runner"

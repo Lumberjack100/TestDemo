@@ -142,6 +142,16 @@ public enum IOTCommandType {
     ADME_MD_SET_EQUIPMENT_MODEL("md_setequimodel"),
 
     /**
+     * 获取设备的基础配置参数
+     */
+    ADME_MD_GET_BASIC_PARAMETERS("md_getbasicparameters"),
+
+    /**
+     * 设置设备的基础配置参数
+     */
+    ADME_MD_SET_BASIC_PARAMETERS("md_setbasicparameters"),
+
+    /**
      * 自定义心跳包
      */
     HEART_BEAT("HeartBeatData");

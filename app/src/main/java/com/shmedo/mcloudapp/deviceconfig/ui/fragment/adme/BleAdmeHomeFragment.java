@@ -37,6 +37,7 @@ import com.shmedo.mcloudapp.deviceconfig.adapter.ConfigModuleAdapter;
 import com.shmedo.mcloudapp.deviceconfig.model.ConfigModule;
 import com.shmedo.mcloudapp.deviceconfig.model.DiscoveredBluetoothDevice;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.DeviceCurrentStateActivity;
+import com.shmedo.mcloudapp.deviceconfig.ui.activity.adme.AdmeBasicParamConfigActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -126,6 +127,8 @@ public class BleAdmeHomeFragment extends BaseBleIotCommunicateFragment {
         initConfigModuleData();
         //观察连接状态变化
         observerConnectionState();
+        //观察获取 ApiKey
+        observerApiKey();
         //建立蓝牙连接
         connectDevice(device.getDevice());
     }
@@ -170,35 +173,13 @@ public class BleAdmeHomeFragment extends BaseBleIotCommunicateFragment {
                 DeviceCurrentStateActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT);
                 break;
 
+            case "基础配置":
+                AdmeBasicParamConfigActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT);
+                break;
+
+            case "高级配置":
+                break;
         }
-    }
-
-    private void initConfigModuleData() {
-        configModuleList.clear();
-
-        ConfigModule configModule = new ConfigModule(R.drawable.ic_device_current_state, GlobalUtil.getString(R.string.device_config_module_current_state), "获取当前设备状态");
-        configModuleList.add(configModule);
-
-        configModule = new ConfigModule(R.drawable.ic_basic_config, "基础配置", "设备基础参数配置");
-        configModuleList.add(configModule);
-
-        configModule = new ConfigModule(R.drawable.ic_measuring_hole_depth, "测孔深", "测量测斜管深度");
-        configModuleList.add(configModule);
-
-        configModule = new ConfigModule(R.drawable.ic_positive_and_negative_test, "正反测", "正反测起点校准");
-        configModuleList.add(configModule);
-
-        configModule = new ConfigModule(R.drawable.ic_device_data_center, "数据中心", "基础参数配置");
-        configModuleList.add(configModule);
-
-        configModule = new ConfigModule(R.drawable.ic_device_instruction_send, "指令下发", "自定义指令下发");
-        configModuleList.add(configModule);
-
-        configModule = new ConfigModule(R.drawable.ic_device_advanced_setting, "高级配置", "设备高级参数配置");
-        configModuleList.add(configModule);
-
-        configModule = new ConfigModule(R.drawable.ic_device_setting, "设置", "高级设置");
-        configModuleList.add(configModule);
     }
 
     private void observerConnectionState() {
@@ -218,7 +199,8 @@ public class BleAdmeHomeFragment extends BaseBleIotCommunicateFragment {
                     case READY://The initialization is complete, and the device is ready to use.
                         onConnectionStateChanged(true);
                         mTvConnectState.setText("初始化中...");
-                        getEquipmentBaseInfo();
+                        usrBleViewModel.queryDeviceApiKeyBySn(device.getDevice().getName().substring(3));
+//                        getEquipmentBaseInfo();
                         break;
 
                     case DISCONNECTED://The device disconnected or failed to connect.
@@ -240,6 +222,16 @@ public class BleAdmeHomeFragment extends BaseBleIotCommunicateFragment {
                         stopHeartRunnable();
                         break;
                 }
+            }
+        });
+    }
+
+    private void observerApiKey() {
+        usrBleViewModel.getDeviceApiKey().observeInFragment(this, new Observer<String>() {
+            @Override
+            public void onChanged(String apiKey) {
+                dismissProgressDialog();
+                getEquipmentBaseInfo();
             }
         });
     }
@@ -281,6 +273,34 @@ public class BleAdmeHomeFragment extends BaseBleIotCommunicateFragment {
         mActivity.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
     }
 
+    private void initConfigModuleData() {
+        configModuleList.clear();
+
+        ConfigModule configModule = new ConfigModule(R.drawable.ic_device_current_state, GlobalUtil.getString(R.string.device_config_module_current_state), "获取当前设备状态");
+        configModuleList.add(configModule);
+
+        configModule = new ConfigModule(R.drawable.ic_basic_config, "基础配置", "设备基础参数配置");
+        configModuleList.add(configModule);
+
+        configModule = new ConfigModule(R.drawable.ic_measuring_hole_depth, "测孔深", "测量测斜管深度");
+        configModuleList.add(configModule);
+
+        configModule = new ConfigModule(R.drawable.ic_positive_and_negative_test, "正反测", "正反测起点校准");
+        configModuleList.add(configModule);
+
+        configModule = new ConfigModule(R.drawable.ic_device_data_center, "数据中心", "基础参数配置");
+        configModuleList.add(configModule);
+
+        configModule = new ConfigModule(R.drawable.ic_device_instruction_send, "指令下发", "自定义指令下发");
+        configModuleList.add(configModule);
+
+        configModule = new ConfigModule(R.drawable.ic_device_advanced_setting, "高级配置", "设备高级参数配置");
+        configModuleList.add(configModule);
+
+        configModule = new ConfigModule(R.drawable.ic_device_setting, "设置", "高级设置");
+        configModuleList.add(configModule);
+    }
+
     @OnClick({R.id.tv_device_connect_operate, R.id.ll_switch_config_model})
     public void onClick(View v) {
         if (isDoubleClick(v)) {
@@ -319,7 +339,6 @@ public class BleAdmeHomeFragment extends BaseBleIotCommunicateFragment {
                                     equipModel = "1";
                                 }
                                 setEquipModel();
-//                                updateConfigModuleData();
                             }
                         }, 0, R.layout.custom_xpopup_adapter_text_match)
                 .show();
@@ -347,7 +366,6 @@ public class BleAdmeHomeFragment extends BaseBleIotCommunicateFragment {
         switch (type) {
             case ADME_MD_GET_EQUIPMENT_BASIS: {//获取设备的基本信息
                 hideProgressBar();
-                startHeartRunnable();
                 IOTCommandResult<AdmeBasicInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
                     hideProgressBar();
