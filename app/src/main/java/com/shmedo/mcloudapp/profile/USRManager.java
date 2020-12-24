@@ -19,6 +19,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.UUID;
 
 import no.nordicsemi.android.ble.callback.FailCallback;
+import no.nordicsemi.android.ble.callback.MtuCallback;
 import no.nordicsemi.android.ble.callback.SuccessCallback;
 import no.nordicsemi.android.ble.data.Data;
 import no.nordicsemi.android.ble.livedata.ObservableBleManager;
@@ -100,7 +101,7 @@ public class USRManager extends ObservableBleManager {
         return !supported;
     }
 
-    private final IOTCommandDataCallback buttonCallback = new IOTCommandDataCallback() {
+    private final IOTCommandDataCallback notifyCallback = new IOTCommandDataCallback() {
         @Override
         public void onResponseReceived(@NonNull BluetoothDevice device, String result) {
             Timber.d("接收数据(onResponseReceived): length=%s bytes;content: %s", result.getBytes().length, result);
@@ -122,15 +123,23 @@ public class USRManager extends ObservableBleManager {
         protected void initialize() {
             // Increase the MTU
             requestMtu(512)
-                    .with((device, mtu) -> log(LogContract.Log.Level.APPLICATION, "MTU changed to " + mtu))
-                    .done(device -> {
-                        // You may do some logic in here that should be done when the request finished successfully.
-                        // In case of MTU this method is called also when the MTU hasn't changed, or has changed
-                        // to a different (lower) value. Use .with(...) to get the MTU value.
+                    .with(new MtuCallback() {
+                        @Override
+                        public void onMtuChanged(@NonNull BluetoothDevice device, int mtu) {
+                            log(LogContract.Log.Level.APPLICATION, "MTU changed to " + mtu);
+                        }
+                    })
+                    .done(new SuccessCallback() {
+                        @Override
+                        public void onRequestCompleted(@NonNull BluetoothDevice device) {
+                            // You may do some logic in here that should be done when the request finished successfully.
+                            // In case of MTU this method is called also when the MTU hasn't changed, or has changed
+                            // to a different (lower) value. Use .with(...) to get the MTU value.
+                        }
                     })
                     .fail((device, status) -> log(Log.WARN, "MTU change not supported"))
                     .enqueue();
-            setNotificationCallback(notifyCharacteristic).with(buttonCallback);
+            setNotificationCallback(notifyCharacteristic).with(notifyCallback);
             // Enable notifications
             enableNotifications(notifyCharacteristic)
                     // Method called after the data were sent (data will contain 0x0100 in this case)

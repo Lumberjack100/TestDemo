@@ -11,8 +11,6 @@ import androidx.lifecycle.Observer;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.shmedo.configlibrary.ble.cmd.CommandManager;
-import com.shmedo.configlibrary.ble.enums.CommandType;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandManager;
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.core.MCloudApp;
@@ -77,7 +75,7 @@ public abstract class BaseBleIotCommunicateFragment extends BaseFragment {
         usrBleViewModel.getResponseMsg().observeInFragment(this, new Observer<String>() {
             @Override
             public void onChanged(String result) {
-                if(result.startsWith("$$"))
+                if (result.startsWith("$$"))
                     return;
 
                 //跳过心跳包数据的分发处理
@@ -132,7 +130,7 @@ public abstract class BaseBleIotCommunicateFragment extends BaseFragment {
      * 发送心跳数据(未定义的指令)
      */
     protected void sendHeartData() {
-        String command = CommandManager.getInstance().getCommand(CommandType.HEARTBEAT);
+        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.HEART_BEAT);
         Timber.d("发送心跳数据：%s", command);
         sendCommand(command);
     }
@@ -142,6 +140,7 @@ public abstract class BaseBleIotCommunicateFragment extends BaseFragment {
      */
     protected void getEquipmentBaseInfo() {
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_GET_EQUIPMENT_BASIS);
+//        String command ="$cmd=md_setbasicparameters&inctype=ae6d7118-ec5b-4573-a8eb-6fa15caf33&address=ae6d7118-ec5b-4573-a8eb-6fa15caf33&interdeep=ae6d7118-ec5b-4573-a8eb-6fa15caf33&downspeed=ae6d7118-ec5b-4573-a8eb-6fa15caf33&downwaitetime=ae6d7118-ec5b-4573-a8eb-6fa15caf33";
         sendCommand(command);
     }
 

@@ -51,7 +51,7 @@ public class BleAdmeBasicParamConfigFragment extends BaseBleIotCommunicateFragme
     @BindView(R.id.et_decentralization_waiting_time)
     ClearEditText mEtDecentralizationWaitingTime;//下放等待时间(min)
 
-    @BindView(R.id.ll_data_reporting_method)
+    @BindView(R.id.tv_data_reporting_method)
     TextView mTvDataReportingMethod;
 
     @BindView(R.id.btn_confirm)
@@ -155,7 +155,25 @@ public class BleAdmeBasicParamConfigFragment extends BaseBleIotCommunicateFragme
     }
 
     private void showDataReportingMethodDialog() {
+        XPopup.setPrimaryColor(getResources().getColor(R.color.blue_52B4F8));
+        new XPopup.Builder(mActivity)
+                .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
+                .asBottomList("", new String[]{"顶固定法", "底固定法"},
+                        null, dataReportingMethodPos, true,
+                        new OnSelectListener() {
+                            @Override
+                            public void onSelect(int position, String text) {
+                                dataReportingMethodPos = position;
+                                dataReportingMethod = text;
+                                mTvDataReportingMethod.setText(text);
+                                if(position==0){
 
+                                }else{
+
+                                }
+                            }
+                        }, 0, R.layout.custom_xpopup_adapter_text_match)
+                .show();
     }
 
     private boolean checkValueIsValid() {
