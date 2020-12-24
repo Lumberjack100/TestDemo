@@ -123,8 +123,10 @@ public class WiFiDeviceListFragment extends BaseFragment implements TextWatcher,
         vmsViewModel.getDeviceApiKey().observeInFragment(this, new Observer<String>() {
             @Override
             public void onChanged(String apiKey) {
-//                dismissProgressDialog();
-                processWiFiUseSecondLibrary(curWiFi);
+                if (WiFiDeviceListFragment.this.isVisible() && curWiFi != null) {
+//                    dismissProgressDialog();
+                    processWiFiUseSecondLibrary(curWiFi);
+                }
             }
         });
         manager = (WifiManager) mActivity.getApplicationContext().getSystemService(Context.WIFI_SERVICE);

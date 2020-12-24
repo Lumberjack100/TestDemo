@@ -77,6 +77,9 @@ public abstract class BaseBleIotCommunicateFragment extends BaseFragment {
         usrBleViewModel.getResponseMsg().observeInFragment(this, new Observer<String>() {
             @Override
             public void onChanged(String result) {
+                if(result.startsWith("$$"))
+                    return;
+
                 //跳过心跳包数据的分发处理
                 if (result.contains(heartBeat))
                     return;
