@@ -88,13 +88,13 @@ public abstract class BaseBleConnectFragment extends BaseFragment {
 
 //    private String macAddress = MCloudApp.getCurDeviceMacAddr();
 
-    private static Handler uiHander = new Handler();
+    private Handler uiHander = new Handler();
 
-    private static Handler heartHander = new Handler();
+    private Handler heartHander = new Handler();
 
-    private static ProgressRunnable progressRunnable;
+    private ProgressRunnable progressRunnable;
 
-    private static HeartRunnable heartRunnable;
+    private HeartRunnable heartRunnable;
 
     protected BleViewModel bleViewModel;
 

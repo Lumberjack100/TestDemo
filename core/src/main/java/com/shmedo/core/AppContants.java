@@ -22,15 +22,6 @@ public interface AppContants {
     }
 
     /**
-     * WiFi
-     */
-    interface WiFi {
-        String WIFI_STATE_CONNECT = "已连接";
-        String WIFI_STATE_ON_CONNECTING = "正在连接";
-        String WIFI_STATE_UNCONNECT = "未连接";
-    }
-
-    /**
      * 通讯方式
      */
     interface CommunicationWay {
@@ -39,18 +30,18 @@ public interface AppContants {
         int TCP_CONNECT = 0x003;//通过本地TCP连接
     }
 
+    /**
+     * 数据中心配置方式
+     */
+    interface DataCenterConfigMethod {
+        int BASIC_CONFIG = 0x001;//基本配置
+        int ADVANCED_CONFIG = 0x002;//高级配置
+    }
+
 
     interface Extras {
 
         String CUR_DEVICE_SN = "cur_device_sn";
-
-        String CUR_DEVICE_NAME = "cur_device_name";
-
-        String CUR_BLE_DEVICE_INFO = "cur_ble_device_info";
-
-        String PARAM_CONFIG_INFO = "param_config_info";
-
-        String DEBUG_MODE = "debug_mode";
 
         String COLLECTOR_MODE = "collector_mode";
 
@@ -59,23 +50,6 @@ public interface AppContants {
         String SENSOR_ADDRESS = "sensor_address";
 
         String SENSOR_PARAM = "sensor_param";
-
-        String SPLICE_SENSOR_PARAMS = "splice_sensor_params";
-
-        //ADME的 DAG 采集器配置
-        String ADME_SENSOR_CONFIG_INFO = "adme_sensor_config_info";
-
-        //ADME的执行机构配置
-        String ADME_EXECUTIVE_AGENCY_CONFIG_INFO = "adme_executive_agency_config_info";
-
-        //ADME的控制电机配置
-        String ADME_MOTOR_CONTROL_CONFIG_INFO = "adme_motor_control_config_info";
-
-        //ADME的计米轮参数配置
-        String ADME_COUNT_METER_WHEEL_CONFIG_INFO = "adme_count_meter_wheel_config_info";
-
-        //编码器修正参数
-        String ENCODER_CORRECTION_PARAMETERS = "encoder_correction_parameters";
 
         //地图 Poi 点信息
         String POIITEM_INFO = "poiitem_info";
@@ -88,6 +62,9 @@ public interface AppContants {
 
         //与设备通讯方式
         String COMMUNICATION_WAY = "communication_way";
+
+        //数据中心配置方式
+        String DATA_CENTER_CONFIG_METHOD = "data_center_config_method";
     }
 
 }
