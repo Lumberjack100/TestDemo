@@ -36,10 +36,11 @@
             android:layout_width="match_parent"
             android:layout_height="14dp" />
 
-        <LinearLayout style="@style/Common_EditItem_LayoutStyle">
+        <LinearLayout
+            android:id="@+id/ll_collector_address"
+            style="@style/Common_EditItem_LayoutStyle">
 
             <TextView
-                android:id="@+id/tv_address_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="采集器地址"
@@ -47,10 +48,29 @@
                 android:textSize="@dimen/text_size_17" />
 
             <com.shmedo.mcloudapp.common.view.ClearEditText
-                android:id="@+id/et_address"
+                android:id="@+id/et_collector_address"
                 style="@style/DataCenter_EditText_Style"
                 android:hint="请输入"
-                android:inputType="number"/>
+                android:inputType="number" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_mac_address"
+            style="@style/Common_EditItem_LayoutStyle"
+            android:visibility="gone">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Mac地址"
+                android:textColor="@color/text_color_343434"
+                android:textSize="@dimen/text_size_17" />
+
+            <com.shmedo.mcloudapp.common.view.ClearEditText
+                android:id="@+id/et_mac_address"
+                style="@style/DataCenter_EditText_Style"
+                android:hint="请输入" />
 
         </LinearLayout>
 
@@ -95,7 +115,7 @@
                 android:id="@+id/et_decentralization_speed"
                 style="@style/DataCenter_EditText_Style"
                 android:hint="请输入"
-                android:inputType="number"/>
+                android:inputType="number" />
 
         </LinearLayout>
 

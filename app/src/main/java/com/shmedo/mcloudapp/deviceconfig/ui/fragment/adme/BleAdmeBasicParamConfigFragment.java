@@ -2,9 +2,9 @@ package com.shmedo.mcloudapp.deviceconfig.ui.fragment.adme;
 
 import android.os.Bundle;
 import android.text.InputFilter;
-import android.text.InputType;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -36,11 +36,11 @@ public class BleAdmeBasicParamConfigFragment extends BaseBleIotCommunicateFragme
     @BindView(R.id.tv_inclinometer_type)
     TextView mTvInclinometerType;
 
-    @BindView(R.id.tv_address_title)
-    TextView mTvAddressTitle;
+    @BindView(R.id.et_collector_address)
+    ClearEditText mEtCollectorAddress;//采集器地址
 
-    @BindView(R.id.et_address)
-    ClearEditText mEtAddress;//采集器地址/Mac 地址
+    @BindView(R.id.et_mac_address)
+    ClearEditText mEtMacAddress;//Mac 地址
 
     @BindView(R.id.et_inclination_tube_hole_depth)
     ClearEditText mEtInclinometerTubeHoleDepth;//测斜管孔深(m)
@@ -57,11 +57,16 @@ public class BleAdmeBasicParamConfigFragment extends BaseBleIotCommunicateFragme
     @BindView(R.id.btn_confirm)
     Button mBtnSave;
 
+    @BindView(R.id.ll_collector_address)
+    ViewGroup collectorAddressLayout;
+
+    @BindView(R.id.ll_mac_address)
+    ViewGroup macAddressLayout;
+
     private AdmeBasicConfigParam basicConfigParam;
 
     private int inclinometerTypePos;
     private int dataReportingMethodPos;
-
 
     private String inclinometerTypeOld;//测斜仪类型
     private String inclinometerType;// 测斜仪类型
@@ -90,7 +95,8 @@ public class BleAdmeBasicParamConfigFragment extends BaseBleIotCommunicateFragme
     }
 
     private void setView() {
-
+        mEtCollectorAddress.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
+        mEtMacAddress.setFilters(new InputFilter[]{new InputFilter.LengthFilter(17)});
         mEtInclinometerTubeHoleDepth.setFilters(new InputFilter[]{new InputFilter.LengthFilter(6)});
         mEtDecentralizationSpeed.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
         mEtDecentralizationWaitingTime.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
@@ -100,6 +106,8 @@ public class BleAdmeBasicParamConfigFragment extends BaseBleIotCommunicateFragme
      * 获取设备的基础配置参数
      */
     private void queryBasicParamConfigInfo() {
+        errMsg = "查询数据超时,请稍后尝试";
+        startProgressRunnable("加载中...", DELAY_MILLIS);
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_GET_BASIC_PARAMETERS);
         sendCommand(command);
     }
@@ -115,13 +123,12 @@ public class BleAdmeBasicParamConfigFragment extends BaseBleIotCommunicateFragme
 
         } else if (id == R.id.btn_confirm) {
             KeyBordUtils.hideSoftKeyboard(view);
-
             if (!isConnected()) {
                 ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
                 return;
             }
             if (!checkValueIsValid()) {
-                Timber.w("通道参数存在错误!");
+                Timber.w("基础配置参数错误!");
                 return;
             }
 
@@ -142,12 +149,15 @@ public class BleAdmeBasicParamConfigFragment extends BaseBleIotCommunicateFragme
                             @Override
                             public void onSelect(int position, String text) {
                                 inclinometerTypePos = position;
-                                inclinometerType = text;
                                 mTvInclinometerType.setText(text);
-                                if(position==0){
-
-                                }else{
-
+                                if (position == 0) {
+                                    inclinometerType = "0";
+                                    collectorAddressLayout.setVisibility(View.VISIBLE);
+                                    macAddressLayout.setVisibility(View.GONE);
+                                } else {
+                                    inclinometerType = "1";
+                                    collectorAddressLayout.setVisibility(View.GONE);
+                                    macAddressLayout.setVisibility(View.VISIBLE);
                                 }
                             }
                         }, 0, R.layout.custom_xpopup_adapter_text_match)
@@ -164,12 +174,11 @@ public class BleAdmeBasicParamConfigFragment extends BaseBleIotCommunicateFragme
                             @Override
                             public void onSelect(int position, String text) {
                                 dataReportingMethodPos = position;
-                                dataReportingMethod = text;
                                 mTvDataReportingMethod.setText(text);
-                                if(position==0){
-
-                                }else{
-
+                                if (position == 0) {
+                                    dataReportingMethod = "0";
+                                } else {
+                                    dataReportingMethod = "1";
                                 }
                             }
                         }, 0, R.layout.custom_xpopup_adapter_text_match)
@@ -177,15 +186,34 @@ public class BleAdmeBasicParamConfigFragment extends BaseBleIotCommunicateFragme
     }
 
     private boolean checkValueIsValid() {
-        address = mEtAddress.getText().toString().trim();
+        address = mEtCollectorAddress.getText().toString().trim();
         inclinometerTubeHoleDepth = mEtInclinometerTubeHoleDepth.getText().toString().trim();
         decentralizationSpeed = mEtDecentralizationSpeed.getText().toString().trim();
         decentralizationWaitingTime = mEtDecentralizationWaitingTime.getText().toString().trim();
 
-        if (TextUtils.isEmpty(address)) {
-            ToastUtils.show("采集器地址不能为空!");
-            mEtAddress.requestFocus();
-            return false;
+        if (inclinometerType.equals("0")) {
+            if (TextUtils.isEmpty(address)) {
+                ToastUtils.show("采集器地址不能为空!");
+                mEtCollectorAddress.requestFocus();
+                return false;
+            }
+            if (Integer.parseInt(address) < 0) {
+                ToastUtils.show("采集器地址不能小于0");
+                mEtCollectorAddress.requestFocus();
+                return false;
+            }
+        } else {
+            if (TextUtils.isEmpty(address)) {
+                ToastUtils.show("Mac地址不能为空!");
+                mEtMacAddress.requestFocus();
+                return false;
+            }
+
+            if (!address.contains(":")) {
+                ToastUtils.show("请输入正确的Mac地址!");
+                mEtMacAddress.requestFocus();
+                return false;
+            }
         }
 
         if (TextUtils.isEmpty(inclinometerTubeHoleDepth)) {
@@ -239,6 +267,8 @@ public class BleAdmeBasicParamConfigFragment extends BaseBleIotCommunicateFragme
         entity.setDownwaitetime(decentralizationWaitingTime);
         entity.setDatatype(dataReportingMethod);
 
+        errMsg = "发送指令超时,请稍后尝试";
+        startProgressRunnable("正在发送配置指令...", DELAY_MILLIS);
         mBtnSave.setEnabled(false);
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_SET_BASIC_PARAMETERS, entity);
         sendCommand(command);
@@ -253,6 +283,7 @@ public class BleAdmeBasicParamConfigFragment extends BaseBleIotCommunicateFragme
         IOTCommandType type = IOTStringUtil.extractCommandType(cmdStr);
         switch (type) {
             case ADME_MD_GET_BASIC_PARAMETERS: {//获取设备的基础配置参数
+                stopProgressRunnable();
                 IOTCommandResult<AdmeBasicConfigParam> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
                     String errMsg = String.format("%s %s", "获取设备的基础配置参数出错!", commandResult.getMessage());
@@ -266,6 +297,7 @@ public class BleAdmeBasicParamConfigFragment extends BaseBleIotCommunicateFragme
             break;
 
             case ADME_MD_SET_BASIC_PARAMETERS: {//设置设备的基础配置参数
+                stopProgressRunnable();
                 CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
                 if (!cmdResult.isSucceed()) {
                     String errMsg = String.format("%s %s", "保存基础配置参数出错!", cmdResult.getReason());
@@ -279,6 +311,7 @@ public class BleAdmeBasicParamConfigFragment extends BaseBleIotCommunicateFragme
             break;
 
             default:
+                stopProgressRunnable();
                 super.parseResponseMessage(cmdStr);
                 break;
         }
@@ -297,7 +330,6 @@ public class BleAdmeBasicParamConfigFragment extends BaseBleIotCommunicateFragme
             basicConfigParam = new AdmeBasicConfigParam();
             return;
         }
-
         inclinometerTypeOld = basicConfigParam.getInctype().trim();
         inclinometerType = basicConfigParam.getInctype().trim();
         address = basicConfigParam.getAddress().trim();
@@ -307,8 +339,6 @@ public class BleAdmeBasicParamConfigFragment extends BaseBleIotCommunicateFragme
         dataReportingMethodOld = basicConfigParam.getDatatype().trim();
         dataReportingMethod = basicConfigParam.getDatatype().trim();
 
-        mTvInclinometerType.setText(inclinometerTypeOld);
-        mEtAddress.setText(address);
         mEtInclinometerTubeHoleDepth.setText(inclinometerTubeHoleDepth);
         mEtDecentralizationSpeed.setText(decentralizationSpeed);
         mEtDecentralizationWaitingTime.setText(decentralizationWaitingTime);
@@ -316,22 +346,25 @@ public class BleAdmeBasicParamConfigFragment extends BaseBleIotCommunicateFragme
 
         if (inclinometerTypeOld.equals("0")) {
             inclinometerTypePos = 0;
-            mTvAddressTitle.setText("采集器地址");
-            mEtAddress.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
-            mEtAddress.setInputType(InputType.TYPE_CLASS_NUMBER);
+            mTvInclinometerType.setText("433测斜仪");
+            mEtCollectorAddress.setText(address);
+            collectorAddressLayout.setVisibility(View.VISIBLE);
+            macAddressLayout.setVisibility(View.GONE);
 
         } else {
             inclinometerTypePos = 1;
-            mTvAddressTitle.setText("Mac地址");
-            mEtAddress.setFilters(new InputFilter[]{new InputFilter.LengthFilter(17)});
-            mEtAddress.setInputType(InputType.TYPE_CLASS_TEXT);
+            mTvInclinometerType.setText("蓝牙测斜仪");
+            mEtMacAddress.setText(address);
+            collectorAddressLayout.setVisibility(View.GONE);
+            macAddressLayout.setVisibility(View.VISIBLE);
         }
 
         if (dataReportingMethodOld.equals("0")) {
             dataReportingMethodPos = 0;
-
+            mTvDataReportingMethod.setText("顶固定法");
         } else {
             dataReportingMethodPos = 1;
+            mTvDataReportingMethod.setText("底固定法");
         }
     }
 
@@ -345,7 +378,6 @@ public class BleAdmeBasicParamConfigFragment extends BaseBleIotCommunicateFragme
                 return false;
             }
         }
-
         return false;
     }
 
@@ -354,8 +386,13 @@ public class BleAdmeBasicParamConfigFragment extends BaseBleIotCommunicateFragme
             return true;
         }
 
-        if (address != null && !address.equals(mEtAddress.getText().toString().trim())) {
-            return true;
+        if (address != null) {
+            if (inclinometerTypeOld.equals("0") && !address.equals(mEtCollectorAddress.getText().toString().trim())) {
+                return true;
+            }
+            if (inclinometerTypeOld.equals("1") && !address.equals(mEtMacAddress.getText().toString().trim())) {
+                return true;
+            }
         }
 
         if (inclinometerTubeHoleDepth != null && !inclinometerTubeHoleDepth.equals(mEtInclinometerTubeHoleDepth.getText().toString().trim())) {

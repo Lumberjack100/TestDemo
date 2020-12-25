@@ -11,9 +11,9 @@ import androidx.lifecycle.Observer;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.hjq.toast.ToastUtils;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandManager;
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
-import com.shmedo.core.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.fragment.BaseFragment;
 import com.shmedo.mcloudapp.profile.USRBleViewModel;
@@ -28,6 +28,8 @@ import timber.log.Timber;
  * 描述：     TODO
  */
 public abstract class BaseBleIotCommunicateFragment extends BaseFragment {
+    public static final int DELAY_MILLIS = 10000;//发送指令超时时间
+
     //自定义心跳包指令
     private final String heartBeat = IOTCommandManager.getInstance().getCommand(IOTCommandType.HEART_BEAT)
             + "&apikey=b12aac6b-0bd2-4a01-80fd-97fe4f5d4ff9"
@@ -35,13 +37,17 @@ public abstract class BaseBleIotCommunicateFragment extends BaseFragment {
 
     protected USRBleViewModel usrBleViewModel;
 
-    private String SN = MCloudApp.getCurDeviceToken();
-
     public boolean isExitMode = false;
 
-    private static Handler heartHander = new Handler();
+    protected String errMsg;
 
-    private static HeartRunnable heartRunnable;
+    private Handler uiHander = new Handler();
+
+    private Handler heartHander = new Handler();
+
+    private ProgressRunnable progressRunnable;
+
+    private HeartRunnable heartRunnable;
 
     /**
      * 发送心跳包任务
@@ -68,6 +74,32 @@ public abstract class BaseBleIotCommunicateFragment extends BaseFragment {
         heartRunnable = null;
     }
 
+    private class ProgressRunnable implements Runnable {
+        @Override
+        public void run() {
+            dismissProgressDialog();
+            progressRunnable = null;
+
+            if (!TextUtils.isEmpty(errMsg)) {
+                ToastUtils.show(errMsg);
+            }
+        }
+    }
+
+    protected void startProgressRunnable(String dialogContent, long delayMillis) {
+        showProgressDialog(dialogContent, null, null);
+        if (progressRunnable == null) {
+            progressRunnable = new ProgressRunnable();
+            uiHander.postDelayed(progressRunnable, delayMillis);
+        }
+    }
+
+    public void stopProgressRunnable() {
+        dismissProgressDialog();
+        uiHander.removeCallbacksAndMessages(null);
+        progressRunnable = null;
+    }
+
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -90,6 +122,12 @@ public abstract class BaseBleIotCommunicateFragment extends BaseFragment {
                 }
             }
         });
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        stopProgressRunnable();
     }
 
     /**
