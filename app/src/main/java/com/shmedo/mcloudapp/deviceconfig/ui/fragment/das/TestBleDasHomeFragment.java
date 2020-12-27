@@ -49,6 +49,12 @@ import butterknife.OnClick;
 import no.nordicsemi.android.ble.livedata.state.ConnectionState;
 import timber.log.Timber;
 
+/**
+ * 创建者:   gonghe <br/>
+ * 创建时间:  12/7/20 <br/>
+ * 描述：     TODO
+ * @deprecated
+ */
 public class TestBleDasHomeFragment extends TestBaseBleCommunicateFragment {
 
     public static final String EXTRA_DEVICE = "com.shmedo.mcloudapp.EXTRA_DEVICE";

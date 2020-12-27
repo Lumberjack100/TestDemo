@@ -31,6 +31,7 @@ import timber.log.Timber;
  * 创建者:   gonghe <br/>
  * 创建时间:  12/7/20 <br/>
  * 描述：     TODO
+ * @deprecated
  */
 public abstract class TestBaseBleCommunicateFragment extends BaseFragment {
     protected USRBleViewModel usrBleViewModel;
@@ -39,9 +40,15 @@ public abstract class TestBaseBleCommunicateFragment extends BaseFragment {
 
     public boolean isExitMode = false;
 
-    private static Handler heartHander = new Handler();
+    protected String errMsg;
 
-    private static HeartRunnable heartRunnable;
+    private Handler uiHander = new Handler();
+
+    private Handler heartHander = new Handler();
+
+    private ProgressRunnable progressRunnable;
+
+    private HeartRunnable heartRunnable;
 
     /**
      * 发送心跳包任务
@@ -66,6 +73,32 @@ public abstract class TestBaseBleCommunicateFragment extends BaseFragment {
     protected void stopHeartRunnable() {
         heartHander.removeCallbacksAndMessages(null);
         heartRunnable = null;
+    }
+
+    private class ProgressRunnable implements Runnable {
+        @Override
+        public void run() {
+            dismissProgressDialog();
+            progressRunnable = null;
+
+            if (!TextUtils.isEmpty(errMsg)) {
+                ToastUtils.show(errMsg);
+            }
+        }
+    }
+
+    protected void startProgressRunnable(String dialogContent, long delayMillis) {
+        showProgressDialog(dialogContent, null, null);
+        if (progressRunnable == null) {
+            progressRunnable = new ProgressRunnable();
+            uiHander.postDelayed(progressRunnable, delayMillis);
+        }
+    }
+
+    public void stopProgressRunnable() {
+        dismissProgressDialog();
+        uiHander.removeCallbacksAndMessages(null);
+        progressRunnable = null;
     }
 
     @Override
@@ -170,7 +203,7 @@ public abstract class TestBaseBleCommunicateFragment extends BaseFragment {
     protected void sendHeartData() {
         String command = CommandManager.getInstance().getCommand(CommandType.HEARTBEAT);
         Timber.d("发送心跳数据：%s", command);
-        usrBleViewModel.sendIOTProtocolCommand(command);
+        sendCommand(command);
     }
 
     /**
@@ -180,7 +213,7 @@ public abstract class TestBaseBleCommunicateFragment extends BaseFragment {
         //获取基础配置信息  ##000
         String command = CommandManager.getInstance().getCommand(CommandType.BASE_CONFIG);
         Timber.d("获取基础配置信息指令===%s", command);
-        usrBleViewModel.sendIOTProtocolCommand(command);
+        sendCommand(command);
     }
 
     /**
@@ -190,7 +223,7 @@ public abstract class TestBaseBleCommunicateFragment extends BaseFragment {
         AuthenticationConfigEntity configEntity = new AuthenticationConfigEntity(SN, 0);
         String command = CommandManager.getInstance().getCommand(CommandType.AUTHENTICATION_CONFIG, configEntity);
         Timber.d("设置认证类型指令===%s", command);
-        usrBleViewModel.sendIOTProtocolCommand("\r\n" + command);
+        sendCommand("\r\n" + command);
     }
 
     /**
@@ -213,7 +246,7 @@ public abstract class TestBaseBleCommunicateFragment extends BaseFragment {
                 String strEncryt = StringUtil.bytesToHexString(byteEncryt);
                 String cmd = "##222," + SN + ",0," + strEncryt.toUpperCase() + "\r\n";
                 Timber.d("设备登录验证指令===%s", cmd);
-                usrBleViewModel.sendIOTProtocolCommand(cmd);
+                sendCommand(cmd);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -224,7 +257,12 @@ public abstract class TestBaseBleCommunicateFragment extends BaseFragment {
     protected void queryDeviceVersionInfo() {
         String command = CommandManager.getInstance().getCommand(CommandType.VERSION_MESSAGE);
         Timber.d("查询设备版本信息：%s", command);
-        usrBleViewModel.sendIOTProtocolCommand(command);
+        sendCommand(command);
+    }
+
+    protected void sendCommand(String cmdStr) {
+
+        usrBleViewModel.sendIOTProtocolCommand(cmdStr);
     }
 
     protected void showDisconnectDialog(String content) {
