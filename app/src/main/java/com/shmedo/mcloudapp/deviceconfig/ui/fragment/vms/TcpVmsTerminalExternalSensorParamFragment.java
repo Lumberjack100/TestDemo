@@ -50,9 +50,6 @@ import timber.log.Timber;
  * 描述：      Vms终端扩展传感器配置页面
  */
 public class TcpVmsTerminalExternalSensorParamFragment extends BaseTcpConnectFragment {
-    @BindView(R.id.contentLayout)
-    ViewGroup contentLayout;
-
     @BindView(R.id.maskLayer)
     ViewGroup maskLayerLayout;
 
@@ -168,7 +165,6 @@ public class TcpVmsTerminalExternalSensorParamFragment extends BaseTcpConnectFra
         if (sensorInfo.getInsert().trim().equals("0")) {
             mSbSensorEnable.setCheckedImmediatelyNoEvent(false);
             maskLayerLayout.setVisibility(View.VISIBLE);
-            maskLayerLayout.setOnClickListener(null);
         } else {
             mSbSensorEnable.setCheckedImmediatelyNoEvent(true);
             maskLayerLayout.setVisibility(View.GONE);
@@ -214,7 +210,6 @@ public class TcpVmsTerminalExternalSensorParamFragment extends BaseTcpConnectFra
                         dialog.dismiss();
                         disableSensor();
                         maskLayerLayout.setVisibility(View.VISIBLE);
-                        maskLayerLayout.setOnClickListener(null);
                     }
                 }).onNegative(new MaterialDialog.SingleButtonCallback() {
                     @Override

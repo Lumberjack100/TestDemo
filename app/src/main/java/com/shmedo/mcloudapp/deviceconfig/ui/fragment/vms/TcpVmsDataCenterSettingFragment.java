@@ -45,17 +45,12 @@ import timber.log.Timber;
  * 描述：     Vms 网关数据中心参数配置
  */
 public class TcpVmsDataCenterSettingFragment extends BaseTcpConnectFragment {
-    @BindView(R.id.contentLayout)
-    ViewGroup contentLayout;
 
     @BindView(R.id.maskLayer)
     ViewGroup maskLayerLayout;
 
     @BindView(R.id.centerEnableSBtn)
     SwitchButton mSbCenterEnable;
-
-    @BindView(R.id.tv_state)
-    TextView mTvState;
 
     @BindView(R.id.tv_transfer_protocol)
     TextView mTvTransferProtocol;
@@ -92,9 +87,6 @@ public class TcpVmsDataCenterSettingFragment extends BaseTcpConnectFragment {
 
     @BindView(R.id.ll_mqtt_child_items)
     ViewGroup mqttChildItemsLayout;
-
-    @BindView(R.id.ll_transfer_protocol)
-    ViewGroup transferProtocolLayout;
 
     private static final String DATA_SERVER_NUMBER = "data_server_number";
     private static final String DATA_SERVER_STATUS = "data_server_status";
@@ -167,7 +159,6 @@ public class TcpVmsDataCenterSettingFragment extends BaseTcpConnectFragment {
             centerEnableInitial = false;
             mSbCenterEnable.setCheckedImmediatelyNoEvent(false);
             maskLayerLayout.setVisibility(View.VISIBLE);
-            maskLayerLayout.setOnClickListener(null);
         } else {
             centerEnableInitial = true;
             mSbCenterEnable.setCheckedImmediatelyNoEvent(true);
@@ -213,7 +204,6 @@ public class TcpVmsDataCenterSettingFragment extends BaseTcpConnectFragment {
                         dialog.dismiss();
                         closeDataServer();//关闭服务器
                         maskLayerLayout.setVisibility(View.VISIBLE);
-                        maskLayerLayout.setOnClickListener(null);
                         centerEnableInitial = mSbCenterEnable.isChecked();
                     }
                 }).onNegative(new MaterialDialog.SingleButtonCallback() {

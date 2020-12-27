@@ -79,7 +79,7 @@ public class BleAdmeAdvancedConfigFragment extends BaseBleIotCommunicateFragment
     private void processItemClick() {
         switch (selectedConfigModule.getName()) {
             case "数据中心":
-                AdmeDataCenterHomeActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT,AppContants.DataCenterConfigMethod.ADVANCED_CONFIG);
+                AdmeDataCenterHomeActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT, AppContants.DataCenterConfigMethod.ADVANCED_CONFIG);
                 break;
 
             case "计米轮":

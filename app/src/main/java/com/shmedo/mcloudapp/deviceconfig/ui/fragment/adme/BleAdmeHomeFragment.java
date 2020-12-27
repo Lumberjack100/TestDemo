@@ -38,6 +38,7 @@ import com.shmedo.mcloudapp.deviceconfig.model.ConfigModule;
 import com.shmedo.mcloudapp.deviceconfig.model.DiscoveredBluetoothDevice;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.adme.AdmeAdvancedConfigActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.adme.AdmeBasicParamConfigActivity;
+import com.shmedo.mcloudapp.deviceconfig.ui.activity.adme.AdmeDataCenterHomeActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -177,8 +178,28 @@ public class BleAdmeHomeFragment extends BaseBleIotCommunicateFragment {
                 AdmeBasicParamConfigActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT);
                 break;
 
+            case "测孔深":
+
+                break;
+
+            case "正反测":
+
+                break;
+
+            case "数据中心":
+                AdmeDataCenterHomeActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT, AppContants.DataCenterConfigMethod.BASIC_CONFIG);
+                break;
+
+            case "指令下发":
+
+                break;
+
             case "高级配置":
                 AdmeAdvancedConfigActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT);
+                break;
+
+            case "设置":
+
                 break;
         }
     }

@@ -91,10 +91,10 @@ public class BleAdmeDataCenterHomeFragment extends BaseBleIotCommunicateFragment
 
         int id = view.getId();
         if (id == R.id.dataCenterOneLayout) {
-            AdmeDataCenterConfigActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT, AppContants.DataCenterConfigMethod.ADVANCED_CONFIG, ServerNumber.NUMBER_ONE, mTvDataCenterOne.getText().toString());
+            AdmeDataCenterConfigActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT, configMethod, ServerNumber.NUMBER_ONE, mTvDataCenterOne.getText().toString());
 
         } else if (id == R.id.dataCenterTwoLayout) {
-            AdmeDataCenterConfigActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT, AppContants.DataCenterConfigMethod.ADVANCED_CONFIG, ServerNumber.NUMBER_TWO, mTvDataCenterTwo.getText().toString());
+            AdmeDataCenterConfigActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT, configMethod, ServerNumber.NUMBER_TWO, mTvDataCenterTwo.getText().toString());
         }
     }
 

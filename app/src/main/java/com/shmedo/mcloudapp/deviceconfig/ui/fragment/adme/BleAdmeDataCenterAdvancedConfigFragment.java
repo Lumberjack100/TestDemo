@@ -49,9 +49,6 @@ public class BleAdmeDataCenterAdvancedConfigFragment extends BaseBleIotCommunica
     @BindView(R.id.centerEnableSBtn)
     SwitchButton mSbCenterEnable;
 
-    @BindView(R.id.tv_state)
-    TextView mTvState;
-
     @BindView(R.id.tv_transfer_protocol)
     TextView mTvTransferProtocol;
 
@@ -88,9 +85,6 @@ public class BleAdmeDataCenterAdvancedConfigFragment extends BaseBleIotCommunica
     @BindView(R.id.ll_mqtt_child_items)
     ViewGroup mqttChildItemsLayout;
 
-    @BindView(R.id.ll_transfer_protocol)
-    ViewGroup transferProtocolLayout;
-
     private ServerNumber serverNumber;
     private String serverStatus;
     private DataCenterInfo dataCenterInfo;
@@ -112,8 +106,8 @@ public class BleAdmeDataCenterAdvancedConfigFragment extends BaseBleIotCommunica
     private boolean centerEnableInitial;//数据中心开关初始状态，用于判断开关是否有打开后没有设置参数就返回
     private boolean isSaveParamOperation = false;//判断当前是保存参数操作，还是关闭数据中心操作
 
-    public static BleAdmeDataCenterBasicConfigFragment newInstance(ServerNumber serverNumber, String status) {
-        BleAdmeDataCenterBasicConfigFragment fragment = new BleAdmeDataCenterBasicConfigFragment();
+    public static BleAdmeDataCenterAdvancedConfigFragment newInstance(ServerNumber serverNumber, String status) {
+        BleAdmeDataCenterAdvancedConfigFragment fragment = new BleAdmeDataCenterAdvancedConfigFragment();
         Bundle args = new Bundle();
         args.putSerializable(AppContants.Extras.DATA_SERVER_NUMBER, serverNumber);
         args.putSerializable(AppContants.Extras.DATA_SERVER_STATUS, status);
@@ -157,7 +151,6 @@ public class BleAdmeDataCenterAdvancedConfigFragment extends BaseBleIotCommunica
             centerEnableInitial = false;
             mSbCenterEnable.setCheckedImmediatelyNoEvent(false);
             maskLayerLayout.setVisibility(View.VISIBLE);
-            maskLayerLayout.setOnClickListener(null);
         } else {
             centerEnableInitial = true;
             mSbCenterEnable.setCheckedImmediatelyNoEvent(true);
@@ -203,7 +196,6 @@ public class BleAdmeDataCenterAdvancedConfigFragment extends BaseBleIotCommunica
                         dialog.dismiss();
                         closeDataServer();//关闭服务器
                         maskLayerLayout.setVisibility(View.VISIBLE);
-                        maskLayerLayout.setOnClickListener(null);
                         centerEnableInitial = mSbCenterEnable.isChecked();
                     }
                 }).onNegative(new MaterialDialog.SingleButtonCallback() {
@@ -221,6 +213,8 @@ public class BleAdmeDataCenterAdvancedConfigFragment extends BaseBleIotCommunica
      * 获取设备的数据中心参数
      */
     private void queryDataCenterInfo() {
+        errMsg = "查询数据超时,请稍后尝试";
+        startProgressRunnable("加载中...", DELAY_MILLIS);
         ServerNumberEntity serverNumberEntity = new ServerNumberEntity(serverNumber.toInt());
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.MD_GET_DATA_CENTER, serverNumberEntity);
         sendCommand(command);
@@ -392,6 +386,9 @@ public class BleAdmeDataCenterAdvancedConfigFragment extends BaseBleIotCommunica
         centerEnableInitial = mSbCenterEnable.isChecked();
         isSaveParamOperation = true;
         mBtnSave.setEnabled(false);
+
+        errMsg = "发送指令超时,请稍后尝试";
+        startProgressRunnable("正在发送配置指令...", DELAY_MILLIS);
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.MD_SET_DATA_CENTER, dataCenterEntity);
         sendCommand(command);
     }
@@ -404,10 +401,11 @@ public class BleAdmeDataCenterAdvancedConfigFragment extends BaseBleIotCommunica
     private void setResultData(final String cmdStr) {
         IOTCommandType type = IOTStringUtil.extractCommandType(cmdStr);
         switch (type) {
-            case MD_GET_DATA_CENTER: {//获取网关的数据中心参数
+            case MD_GET_DATA_CENTER: {//获取设备的数据中心参数
+                stopProgressRunnable();
                 IOTCommandResult<DataCenterInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
-                    String errMsg = String.format("%s %s", "查询网关的数据中心参数出错!", commandResult.getMessage());
+                    String errMsg = String.format("%s %s", "查询数据中心参数出错!", commandResult.getMessage());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
                     return;
@@ -417,10 +415,11 @@ public class BleAdmeDataCenterAdvancedConfigFragment extends BaseBleIotCommunica
             }
             break;
 
-            case MD_SET_DATA_CENTER: {//设置网关通道的控制参数
+            case MD_SET_DATA_CENTER: {//设置设备的数据中心参数
+                stopProgressRunnable();
                 CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
                 if (!cmdResult.isSucceed()) {
-                    String errMsg = String.format("%s %s", "设置参数失败!", cmdResult.getReason());
+                    String errMsg = String.format("%s %s", "设置数据中心参数出错!", cmdResult.getReason());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
                     mBtnSave.setEnabled(true);
@@ -549,5 +548,4 @@ public class BleAdmeDataCenterAdvancedConfigFragment extends BaseBleIotCommunica
 
         return false;
     }
-
 }
