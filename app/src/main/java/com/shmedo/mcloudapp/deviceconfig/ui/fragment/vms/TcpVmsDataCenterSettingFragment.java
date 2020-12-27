@@ -45,11 +45,11 @@ import timber.log.Timber;
  * 描述：     Vms 网关数据中心参数配置
  */
 public class TcpVmsDataCenterSettingFragment extends BaseTcpConnectFragment {
-    @BindView(R.id.page1)
-    ViewGroup pageOneLayout;
+    @BindView(R.id.contentLayout)
+    ViewGroup contentLayout;
 
-    @BindView(R.id.page2)
-    ViewGroup pageTwoaLyout;
+    @BindView(R.id.maskLayer)
+    ViewGroup maskLayerLayout;
 
     @BindView(R.id.centerEnableSBtn)
     SwitchButton mSbCenterEnable;
@@ -166,12 +166,12 @@ public class TcpVmsDataCenterSettingFragment extends BaseTcpConnectFragment {
         if (!TextUtils.isEmpty(serverStatus) && serverStatus.contains("未开启")) {
             centerEnableInitial = false;
             mSbCenterEnable.setCheckedImmediatelyNoEvent(false);
-            pageTwoaLyout.setVisibility(View.VISIBLE);
-            pageTwoaLyout.setOnClickListener(null);
+            maskLayerLayout.setVisibility(View.VISIBLE);
+            maskLayerLayout.setOnClickListener(null);
         } else {
             centerEnableInitial = true;
             mSbCenterEnable.setCheckedImmediatelyNoEvent(true);
-            pageTwoaLyout.setVisibility(View.GONE);
+            maskLayerLayout.setVisibility(View.GONE);
         }
     }
 
@@ -188,7 +188,7 @@ public class TcpVmsDataCenterSettingFragment extends BaseTcpConnectFragment {
                 if (!isChecked) {
                     showCloseSwitchButtonDialog("确定要关闭数据中心？");
                 } else {
-                    pageTwoaLyout.setVisibility(View.GONE);
+                    maskLayerLayout.setVisibility(View.GONE);
                 }
             }
         });
@@ -212,8 +212,8 @@ public class TcpVmsDataCenterSettingFragment extends BaseTcpConnectFragment {
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                         dialog.dismiss();
                         closeDataServer();//关闭服务器
-                        pageTwoaLyout.setVisibility(View.VISIBLE);
-                        pageTwoaLyout.setOnClickListener(null);
+                        maskLayerLayout.setVisibility(View.VISIBLE);
+                        maskLayerLayout.setOnClickListener(null);
                         centerEnableInitial = mSbCenterEnable.isChecked();
                     }
                 }).onNegative(new MaterialDialog.SingleButtonCallback() {

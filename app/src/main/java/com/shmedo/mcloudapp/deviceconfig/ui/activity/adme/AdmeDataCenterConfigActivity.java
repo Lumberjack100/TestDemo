@@ -9,11 +9,12 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.shmedo.configlibrary.iot.enums.ServerNumber;
 import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.activity.BaseActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.adme.BleAdmeDataCenterAdvancedConfigFragment;
-import com.shmedo.mcloudapp.deviceconfig.ui.fragment.adme.BleAdmeDataCenterConfigFragment;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.adme.BleAdmeDataCenterBasicConfigFragment;
 
 import butterknife.BindView;
 
@@ -25,12 +26,17 @@ public class AdmeDataCenterConfigActivity extends BaseActivity {
 
     private int configMethod = AppContants.DataCenterConfigMethod.BASIC_CONFIG;
 
+    private ServerNumber serverNumber;
+    private String serverStatus;
+
     private Fragment fragment;
 
-    public static void startActivity(Context context, int connectWay, int configMethod) {
+    public static void startActivity(Context context, int connectWay, int configMethod, ServerNumber serverNumber, String status) {
         Intent intent = new Intent(context, AdmeDataCenterConfigActivity.class);
         intent.putExtra(AppContants.Extras.COMMUNICATION_WAY, connectWay);
         intent.putExtra(AppContants.Extras.DATA_CENTER_CONFIG_METHOD, configMethod);
+        intent.putExtra(AppContants.Extras.DATA_SERVER_NUMBER, serverNumber);
+        intent.putExtra(AppContants.Extras.DATA_SERVER_STATUS, status);
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         context.startActivity(intent);
     }
@@ -39,6 +45,7 @@ public class AdmeDataCenterConfigActivity extends BaseActivity {
     protected int getLayoutId() {
         return R.layout.activity_adme_data_center_config;
     }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,11 +65,39 @@ public class AdmeDataCenterConfigActivity extends BaseActivity {
 
         if (intent.getExtras().containsKey(AppContants.Extras.DATA_CENTER_CONFIG_METHOD)) {
             configMethod = intent.getIntExtra(AppContants.Extras.DATA_CENTER_CONFIG_METHOD, AppContants.DataCenterConfigMethod.BASIC_CONFIG);
-            if (configMethod == AppContants.DataCenterConfigMethod.BASIC_CONFIG) {
-                mToolbarTitle.setText("中心基础配置");
-            } else {
-                mToolbarTitle.setText("中心高级配置");
+        }
+
+        if (intent.getExtras().containsKey(AppContants.Extras.DATA_SERVER_NUMBER)) {
+            serverNumber = (ServerNumber) intent.getSerializableExtra(AppContants.Extras.DATA_SERVER_NUMBER);
+            if (serverNumber == ServerNumber.NUMBER_ONE) {
+                if (configMethod == AppContants.DataCenterConfigMethod.BASIC_CONFIG) {
+                    mToolbarTitle.setText("中心1基础配置");
+                } else {
+                    mToolbarTitle.setText("中心1高级配置");
+                }
+            } else if (serverNumber == ServerNumber.NUMBER_TWO) {
+                if (configMethod == AppContants.DataCenterConfigMethod.BASIC_CONFIG) {
+                    mToolbarTitle.setText("中心2基础配置");
+                } else {
+                    mToolbarTitle.setText("中心2高级配置");
+                }
+            } else if (serverNumber == ServerNumber.NUMBER_THREE) {
+                if (configMethod == AppContants.DataCenterConfigMethod.BASIC_CONFIG) {
+                    mToolbarTitle.setText("中心3基础配置");
+                } else {
+                    mToolbarTitle.setText("中心3高级配置");
+                }
+            } else if (serverNumber == ServerNumber.NUMBER_FOUR) {
+                if (configMethod == AppContants.DataCenterConfigMethod.BASIC_CONFIG) {
+                    mToolbarTitle.setText("中心4基础配置");
+                } else {
+                    mToolbarTitle.setText("中心4高级配置");
+                }
             }
+        }
+
+        if (intent.getExtras().containsKey(AppContants.Extras.DATA_SERVER_STATUS)) {
+            serverStatus = intent.getStringExtra(AppContants.Extras.DATA_SERVER_STATUS);
         }
     }
 
@@ -71,9 +106,9 @@ public class AdmeDataCenterConfigActivity extends BaseActivity {
 
         } else {
             if (configMethod == AppContants.DataCenterConfigMethod.BASIC_CONFIG) {
-                fragment = BleAdmeDataCenterConfigFragment.newInstance(configMethod);
-            }else{
-                fragment = BleAdmeDataCenterAdvancedConfigFragment.newInstance(configMethod);
+                fragment = BleAdmeDataCenterBasicConfigFragment.newInstance(serverNumber, serverStatus);
+            } else {
+                fragment = BleAdmeDataCenterAdvancedConfigFragment.newInstance(serverNumber, serverStatus);
             }
         }
 

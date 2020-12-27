@@ -65,6 +65,12 @@ public interface AppContants {
 
         //数据中心配置方式
         String DATA_CENTER_CONFIG_METHOD = "data_center_config_method";
+
+        //数据中心编号
+        String DATA_SERVER_NUMBER = "data_server_number";
+
+        //数据中心状态
+        String DATA_SERVER_STATUS = "data_server_status";
     }
 
 }

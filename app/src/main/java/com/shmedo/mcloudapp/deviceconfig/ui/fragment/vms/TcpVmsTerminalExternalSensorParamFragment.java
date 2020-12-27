@@ -50,11 +50,11 @@ import timber.log.Timber;
  * 描述：      Vms终端扩展传感器配置页面
  */
 public class TcpVmsTerminalExternalSensorParamFragment extends BaseTcpConnectFragment {
-    @BindView(R.id.page1)
-    ViewGroup pageOneLayout;
+    @BindView(R.id.contentLayout)
+    ViewGroup contentLayout;
 
-    @BindView(R.id.page2)
-    ViewGroup pageTwoaLyout;
+    @BindView(R.id.maskLayer)
+    ViewGroup maskLayerLayout;
 
     @BindView(R.id.sensorEnableSBtn)
     SwitchButton mSbSensorEnable;
@@ -167,11 +167,11 @@ public class TcpVmsTerminalExternalSensorParamFragment extends BaseTcpConnectFra
         //为0表示未接入传感器
         if (sensorInfo.getInsert().trim().equals("0")) {
             mSbSensorEnable.setCheckedImmediatelyNoEvent(false);
-            pageTwoaLyout.setVisibility(View.VISIBLE);
-            pageTwoaLyout.setOnClickListener(null);
+            maskLayerLayout.setVisibility(View.VISIBLE);
+            maskLayerLayout.setOnClickListener(null);
         } else {
             mSbSensorEnable.setCheckedImmediatelyNoEvent(true);
-            pageTwoaLyout.setVisibility(View.GONE);
+            maskLayerLayout.setVisibility(View.GONE);
         }
     }
 
@@ -189,7 +189,7 @@ public class TcpVmsTerminalExternalSensorParamFragment extends BaseTcpConnectFra
                     showCloseSwitchButtonDialog("确定不接入此通道传感器吗？");
                 } else {
                     enableSensor();
-                    pageTwoaLyout.setVisibility(View.GONE);
+                    maskLayerLayout.setVisibility(View.GONE);
                 }
             }
         });
@@ -213,8 +213,8 @@ public class TcpVmsTerminalExternalSensorParamFragment extends BaseTcpConnectFra
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                         dialog.dismiss();
                         disableSensor();
-                        pageTwoaLyout.setVisibility(View.VISIBLE);
-                        pageTwoaLyout.setOnClickListener(null);
+                        maskLayerLayout.setVisibility(View.VISIBLE);
+                        maskLayerLayout.setOnClickListener(null);
                     }
                 }).onNegative(new MaterialDialog.SingleButtonCallback() {
                     @Override

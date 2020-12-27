@@ -18,6 +18,7 @@ import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
 import com.shmedo.core.AppContants;
 import com.shmedo.core.util.GlobalUtil;
 import com.shmedo.mcloudapp.R;
+import com.shmedo.mcloudapp.deviceconfig.ui.activity.adme.AdmeDataCenterConfigActivity;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -90,8 +91,10 @@ public class BleAdmeDataCenterHomeFragment extends BaseBleIotCommunicateFragment
 
         int id = view.getId();
         if (id == R.id.dataCenterOneLayout) {
+            AdmeDataCenterConfigActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT, AppContants.DataCenterConfigMethod.ADVANCED_CONFIG, ServerNumber.NUMBER_ONE, mTvDataCenterOne.getText().toString());
 
         } else if (id == R.id.dataCenterTwoLayout) {
+            AdmeDataCenterConfigActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT, AppContants.DataCenterConfigMethod.ADVANCED_CONFIG, ServerNumber.NUMBER_TWO, mTvDataCenterTwo.getText().toString());
         }
     }
 
