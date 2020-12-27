@@ -132,7 +132,8 @@ public class USRManager extends ObservableBleManager {
                     .with(new MtuCallback() {
                         @Override
                         public void onMtuChanged(@NonNull BluetoothDevice device, int mtu) {
-                            USRManager.this.mtu = mtu;
+//                            USRManager.this.mtu = mtu;
+                            Timber.d("MTU changed to %s", mtu);
                             log(LogContract.Log.Level.APPLICATION, "MTU changed to " + mtu);
                         }
                     })
@@ -144,8 +145,15 @@ public class USRManager extends ObservableBleManager {
                             // to a different (lower) value. Use .with(...) to get the MTU value.
                         }
                     })
-                    .fail((device, status) -> log(Log.WARN, "MTU change not supported"))
+                    .fail(new FailCallback() {
+                        @Override
+                        public void onRequestFailed(@NonNull BluetoothDevice device, int status) {
+                            Timber.w("MTU change not supported");
+                            log(Log.WARN, "MTU change not supported");
+                        }
+                    })
                     .enqueue();
+
             setNotificationCallback(notifyCharacteristic)
                     .with(notifyCallback)
                     .merge(new DataMerger() {
@@ -155,6 +163,7 @@ public class USRManager extends ObservableBleManager {
                             return lastPacket == null || (lastPacket[lastPacket.length - 1] == 38 && lastPacket[lastPacket.length - 2] == 38);
                         }
                     });
+
             // Enable notifications
             enableNotifications(notifyCharacteristic)
                     // Method called after the data were sent (data will contain 0x0100 in this case)
@@ -191,7 +200,6 @@ public class USRManager extends ObservableBleManager {
             notifyCharacteristic = null;
             writeCharacteristic = null;
         }
-
     }
 
     /**
@@ -202,7 +210,6 @@ public class USRManager extends ObservableBleManager {
     public void writeMessage(final String command) {
         if (writeCharacteristic == null)
             return;
-//        Timber.d("准备发送数据(writeMessage): length=%s bytes;content: %s", command.getBytes().length, command);
         // Write some data to the characteristic.
         writeCharacteristic(writeCharacteristic, Data.from(command))
                 // If data are longer than MTU-3, they will be chunked into multiple packets.
@@ -217,15 +224,15 @@ public class USRManager extends ObservableBleManager {
                     @Override
                     public void onRequestCompleted(@NonNull BluetoothDevice device) {
                         Timber.d("已写入数据(writeMessage): length=%s bytes;content: %s", command.getBytes().length, command);
-                        log(LogContract.Log.Level.APPLICATION, "已发送数据(writeMessage): " + command);
+                        log(LogContract.Log.Level.APPLICATION, "已写入数据(writeMessage): " + command);
                     }
                 })
                 // Callback called when write has failed.
                 .fail(new FailCallback() {
                     @Override
                     public void onRequestFailed(@NonNull BluetoothDevice device, int status) {
-                        Timber.d("未写入数据(writeMessage): length=%s bytes;content: %s", command.getBytes().length, command);
-                        log(Log.WARN, "未发送数据(writeMessage): " + command);
+                        Timber.w("未写入数据(writeMessage): length=%s bytes;content: %s", command.getBytes().length, command);
+                        log(Log.WARN, "未写入数据(writeMessage): " + command);
                     }
                 })
                 .enqueue();

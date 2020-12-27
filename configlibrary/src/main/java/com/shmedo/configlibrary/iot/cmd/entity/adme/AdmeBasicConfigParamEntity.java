@@ -70,7 +70,6 @@ public class AdmeBasicConfigParamEntity implements Validater {
         }
         if (!TextUtils.isEmpty(datatype)) {
             stringBuilder.append("datatype=" + datatype);
-            stringBuilder.append("&");
         }
 
         if (stringBuilder.toString().endsWith("&")) {

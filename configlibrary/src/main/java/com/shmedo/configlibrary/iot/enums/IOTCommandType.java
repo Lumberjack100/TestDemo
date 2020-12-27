@@ -127,29 +127,39 @@ public enum IOTCommandType {
 
     /*　 ADME 指令  */
     /**
-     * 获取设备的基本信息
+     * 获取ADME的基本信息
      */
     ADME_MD_GET_EQUIPMENT_BASIS("md_getequipmentbasis"),
 
     /**
-     * 获取设备的运行状态
+     * 获取ADME的运行状态
      */
     ADME_MD_GET_MOTION_STATE("md_getmotionstate"),
 
     /**
-     * 设置设备模式（0：设备配置模式，1：自动检测模式）
+     * 设置ADME模式（0：设备配置模式，1：自动检测模式）
      */
     ADME_MD_SET_EQUIPMENT_MODEL("md_setequimodel"),
 
     /**
-     * 获取设备的基础配置参数
+     * 获取ADME的基础配置参数
      */
     ADME_MD_GET_BASIC_PARAMETERS("md_getbasicparameters"),
 
     /**
-     * 设置设备的基础配置参数
+     * 设置ADME的基础配置参数
      */
     ADME_MD_SET_BASIC_PARAMETERS("md_setbasicparameters"),
+
+    /**
+     * 获取ADME的计米轮配置参数
+     */
+    ADME_MD_GET_METER_WHEEL_PARAMETERS("md_getjmqparameter"),
+
+    /**
+     * 设置ADME的计米轮配置参数
+     */
+    ADME_MD_SET_METER_WHEEL_PARAMETERS("md_setjmqparameter"),
 
     /**
      * 自定义心跳包

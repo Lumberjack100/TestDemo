@@ -18,6 +18,7 @@ import com.shmedo.mcloudapp.common.view.recycleviewitemdivider.GridSpacingItemDe
 import com.shmedo.mcloudapp.deviceconfig.adapter.AdmeAdvancedConfigModuleAdapter;
 import com.shmedo.mcloudapp.deviceconfig.model.ConfigModule;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.adme.AdmeDataCenterHomeActivity;
+import com.shmedo.mcloudapp.deviceconfig.ui.activity.adme.AdmeMeterWheelActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -83,6 +84,7 @@ public class BleAdmeAdvancedConfigFragment extends BaseBleIotCommunicateFragment
                 break;
 
             case "计米轮":
+                AdmeMeterWheelActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT);
                 break;
 
             case "测斜仪":
