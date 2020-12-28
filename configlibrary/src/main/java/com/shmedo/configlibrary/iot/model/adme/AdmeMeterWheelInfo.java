@@ -7,7 +7,7 @@ import android.text.TextUtils;
  * 创建时间:  12/27/20 <br/>
  * 描述：    ADME 计米轮配置参数
  */
-public class AdmeMeterWheelParam {
+public class AdmeMeterWheelInfo {
     private String enclinenum;//编码器线数
     private String outline;//外径
     private String uptiona;//上拉一次修正参数

@@ -4,7 +4,7 @@ import android.text.TextUtils;
 
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.interfaces.IOTResultParser;
-import com.shmedo.configlibrary.iot.model.adme.AdmeMeterWheelParam;
+import com.shmedo.configlibrary.iot.model.adme.AdmeMeterWheelInfo;
 
 import java.util.HashMap;
 
@@ -13,10 +13,10 @@ import java.util.HashMap;
  * 创建时间:  12/27/20 <br/>
  * 描述：      解析ADME计米轮配置参数
  */
-public class AdmeMeterWheelParamParser implements IOTResultParser<AdmeMeterWheelParam> {
+public class AdmeMeterWheelParamParser implements IOTResultParser<AdmeMeterWheelInfo> {
     @Override
-    public AdmeMeterWheelParam parse(String result) {
-        AdmeMeterWheelParam info = new AdmeMeterWheelParam();
+    public AdmeMeterWheelInfo parse(String result) {
+        AdmeMeterWheelInfo info = new AdmeMeterWheelInfo();
         try {
             String[] keyValues = result.split("&");
             HashMap<String, String> keyValueMap = new HashMap<>();

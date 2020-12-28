@@ -11,11 +11,11 @@ import androidx.annotation.Nullable;
 import com.hjq.toast.ToastUtils;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandManager;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandResult;
-import com.shmedo.configlibrary.iot.cmd.entity.adme.AdmeMeterWheelParamEntity;
+import com.shmedo.configlibrary.iot.cmd.entity.adme.AdmeMeterWheelEntity;
 import com.shmedo.configlibrary.iot.cmd.parser.IOTParseManager;
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.model.CommonSettingCmdResult;
-import com.shmedo.configlibrary.iot.model.adme.AdmeMeterWheelParam;
+import com.shmedo.configlibrary.iot.model.adme.AdmeMeterWheelInfo;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.view.ClearEditText;
@@ -66,7 +66,7 @@ public class BleAdmeMeterWheelFragment extends BaseBleIotCommunicateFragment {
     @BindView(R.id.btn_confirm)
     Button mBtnSave;
 
-    private AdmeMeterWheelParam admeMeterWheelParam;
+    private AdmeMeterWheelInfo admeMeterWheelInfo;
 
     private String encoderLineNumber;//编码器线数
     private String outerDiameter;//外径
@@ -298,7 +298,7 @@ public class BleAdmeMeterWheelFragment extends BaseBleIotCommunicateFragment {
     }
 
     private void processSave() {
-        AdmeMeterWheelParamEntity entity =new AdmeMeterWheelParamEntity() ;
+        AdmeMeterWheelEntity entity =new AdmeMeterWheelEntity() ;
         entity.setEnclinenum(encoderLineNumber);
         entity.setOutline(outerDiameter);
         entity.setUptiona(upCorrectionParametersOne);
@@ -327,14 +327,14 @@ public class BleAdmeMeterWheelFragment extends BaseBleIotCommunicateFragment {
         switch (type) {
             case ADME_MD_GET_METER_WHEEL_PARAMETERS: {//获取ADME的计米轮配置参数
                 stopProgressRunnable();
-                IOTCommandResult<AdmeMeterWheelParam> commandResult = IOTParseManager.getInstance().parse(cmdStr);
+                IOTCommandResult<AdmeMeterWheelInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
                     String errMsg = String.format("%s %s", "获取计米轮配置参数出错!", commandResult.getMessage());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
                     return;
                 }
-                admeMeterWheelParam=commandResult.getResult();
+                admeMeterWheelInfo =commandResult.getResult();
                 initParamConfigInfo();
             }
             break;
@@ -366,22 +366,22 @@ public class BleAdmeMeterWheelFragment extends BaseBleIotCommunicateFragment {
     }
 
     private void initParamConfigInfo() {
-        if (admeMeterWheelParam == null) {
+        if (admeMeterWheelInfo == null) {
             Timber.e("AdmeMeterWheelParam is Null!");
-            admeMeterWheelParam = new AdmeMeterWheelParam();
+            admeMeterWheelInfo = new AdmeMeterWheelInfo();
             return;
         }
 
-        encoderLineNumber = admeMeterWheelParam.getEnclinenum().trim();
-        outerDiameter = admeMeterWheelParam.getOutline().trim();
-        upCorrectionParametersOne = admeMeterWheelParam.getUptiona().trim();
-        upCorrectionParametersTwo = admeMeterWheelParam.getUptionb().trim();
-        upConstant = admeMeterWheelParam.getUpconstant().trim();
-        upFilterCoefficient = admeMeterWheelParam.getUpfilter().trim();
-        downCorrectionParametersOne = admeMeterWheelParam.getDowntiona().trim();
-        downCorrectionParametersTwo = admeMeterWheelParam.getDowntionb().trim();
-        downConstant = admeMeterWheelParam.getDownconstant().trim();
-        downFilterCoefficient = admeMeterWheelParam.getDownfilter().trim();
+        encoderLineNumber = admeMeterWheelInfo.getEnclinenum().trim();
+        outerDiameter = admeMeterWheelInfo.getOutline().trim();
+        upCorrectionParametersOne = admeMeterWheelInfo.getUptiona().trim();
+        upCorrectionParametersTwo = admeMeterWheelInfo.getUptionb().trim();
+        upConstant = admeMeterWheelInfo.getUpconstant().trim();
+        upFilterCoefficient = admeMeterWheelInfo.getUpfilter().trim();
+        downCorrectionParametersOne = admeMeterWheelInfo.getDowntiona().trim();
+        downCorrectionParametersTwo = admeMeterWheelInfo.getDowntionb().trim();
+        downConstant = admeMeterWheelInfo.getDownconstant().trim();
+        downFilterCoefficient = admeMeterWheelInfo.getDownfilter().trim();
 
         mEtEncoderLineNumber.setText(encoderLineNumber);
         mEtOuterDiameter.setText(outerDiameter);

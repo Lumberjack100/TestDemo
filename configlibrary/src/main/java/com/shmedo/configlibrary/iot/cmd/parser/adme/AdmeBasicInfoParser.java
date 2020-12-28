@@ -4,7 +4,7 @@ import android.text.TextUtils;
 
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.interfaces.IOTResultParser;
-import com.shmedo.configlibrary.iot.model.adme.AdmeBasicInfo;
+import com.shmedo.configlibrary.iot.model.adme.AdmeBaseInfo;
 
 import java.util.HashMap;
 
@@ -13,10 +13,10 @@ import java.util.HashMap;
  * 创建时间:  12/23/20 <br/>
  * 描述：      解析ADME基础信息
  */
-public class AdmeBasicInfoParser implements IOTResultParser<AdmeBasicInfo> {
+public class AdmeBasicInfoParser implements IOTResultParser<AdmeBaseInfo> {
     @Override
-    public AdmeBasicInfo parse(String result) {
-        AdmeBasicInfo info = new AdmeBasicInfo();
+    public AdmeBaseInfo parse(String result) {
+        AdmeBaseInfo info = new AdmeBaseInfo();
         try {
             String[] keyValues = result.split("&");
             HashMap<String, String> keyValueMap = new HashMap<>();

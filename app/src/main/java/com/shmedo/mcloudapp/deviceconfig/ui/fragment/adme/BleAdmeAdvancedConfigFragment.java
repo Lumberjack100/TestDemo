@@ -18,6 +18,7 @@ import com.shmedo.mcloudapp.common.view.recycleviewitemdivider.GridSpacingItemDe
 import com.shmedo.mcloudapp.deviceconfig.adapter.AdmeAdvancedConfigModuleAdapter;
 import com.shmedo.mcloudapp.deviceconfig.model.ConfigModule;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.adme.AdmeDataCenterHomeActivity;
+import com.shmedo.mcloudapp.deviceconfig.ui.activity.adme.AdmeInclinometerActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.adme.AdmeMeterWheelActivity;
 
 import java.util.ArrayList;
@@ -88,12 +89,15 @@ public class BleAdmeAdvancedConfigFragment extends BaseBleIotCommunicateFragment
                 break;
 
             case "测斜仪":
+                AdmeInclinometerActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT);
                 break;
 
             case "执行机构":
+                AdmeMeterWheelActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT);
                 break;
 
             case "步进电机":
+                AdmeMeterWheelActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT);
                 break;
         }
     }

@@ -7,7 +7,7 @@ import android.text.TextUtils;
  * 创建时间:  12/23/20 <br/>
  * 描述：     ADME的基本信息
  */
-public class AdmeBasicInfo {
+public class AdmeBaseInfo {
     private String sn;
     private String productid;//产品型号
     private String equimodel;//设备模式（0：设备配置模式，1：自动检测模式）

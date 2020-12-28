@@ -360,6 +360,12 @@
             android:maxAspectRatio="2.4"
             android:screenOrientation="portrait"
             android:theme="@style/LightStatusBarActivity" />
+        <activity
+            android:name=".deviceconfig.ui.activity.adme.AdmeInclinometerActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:maxAspectRatio="2.4"
+            android:screenOrientation="portrait"
+            android:theme="@style/LightStatusBarActivity" />
 
         <activity
             android:name=".ddshare.DDShareActivity"

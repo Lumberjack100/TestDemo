@@ -5,6 +5,7 @@ import android.text.TextUtils;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandResult;
 import com.shmedo.configlibrary.iot.cmd.parser.adme.AdmeBasicConfigParamParser;
 import com.shmedo.configlibrary.iot.cmd.parser.adme.AdmeBasicInfoParser;
+import com.shmedo.configlibrary.iot.cmd.parser.adme.AdmeInclinometerInfoParser;
 import com.shmedo.configlibrary.iot.cmd.parser.adme.AdmeMeterWheelParamParser;
 import com.shmedo.configlibrary.iot.cmd.parser.vms.VmsAisleInfoParser;
 import com.shmedo.configlibrary.iot.cmd.parser.vms.VmsAisleTerminalInfoParser;
@@ -126,7 +127,8 @@ public class IOTParseManager {
                 VmsTerminalCommInfoParser.class,
                 AdmeBasicInfoParser.class,
                 AdmeBasicConfigParamParser.class,
-                AdmeMeterWheelParamParser.class
+                AdmeMeterWheelParamParser.class,
+                AdmeInclinometerInfoParser.class
         });
 
         registerWithClass(clazzes);

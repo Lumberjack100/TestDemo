@@ -4,19 +4,19 @@ import android.text.TextUtils;
 
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.interfaces.IOTResultParser;
-import com.shmedo.configlibrary.iot.model.adme.AdmeBasicConfigInfo;
+import com.shmedo.configlibrary.iot.model.adme.AdmeInclinometerInfo;
 
 import java.util.HashMap;
 
 /**
  * 创建者:   gonghe <br/>
- * 创建时间:  12/24/20 <br/>
- * 描述：     解析ADME基础配置参数
+ * 创建时间:  12/28/20 <br/>
+ * 描述：    解析ADME测斜仪配置参数
  */
-public class AdmeBasicConfigParamParser implements IOTResultParser<AdmeBasicConfigInfo> {
+public class AdmeInclinometerInfoParser implements IOTResultParser<AdmeInclinometerInfo> {
     @Override
-    public AdmeBasicConfigInfo parse(String result) {
-        AdmeBasicConfigInfo info = new AdmeBasicConfigInfo();
+    public AdmeInclinometerInfo parse(String result) {
+        AdmeInclinometerInfo info = new AdmeInclinometerInfo();
         try {
             String[] keyValues = result.split("&");
             HashMap<String, String> keyValueMap = new HashMap<>();
@@ -30,11 +30,12 @@ public class AdmeBasicConfigParamParser implements IOTResultParser<AdmeBasicConf
                 }
             }
             info.setInctype(TextUtils.isEmpty(keyValueMap.get("inctype")) ? "" : keyValueMap.get("inctype"));
+            info.setLowpower(TextUtils.isEmpty(keyValueMap.get("lowpower")) ? "" : keyValueMap.get("lowpower"));
             info.setAddress(TextUtils.isEmpty(keyValueMap.get("address")) ? "" : keyValueMap.get("address"));
-            info.setInterdeep(TextUtils.isEmpty(keyValueMap.get("interdeep")) ? "" : keyValueMap.get("interdeep"));
-            info.setDownspeed(TextUtils.isEmpty(keyValueMap.get("downspeed")) ? "" : keyValueMap.get("downspeed"));
-            info.setDownwaitetime(TextUtils.isEmpty(keyValueMap.get("downwaitetime")) ? "" : keyValueMap.get("downwaitetime"));
-            info.setDatatype(TextUtils.isEmpty(keyValueMap.get("datatype")) ? "" : keyValueMap.get("datatype"));
+            info.setCollinval(TextUtils.isEmpty(keyValueMap.get("collinval")) ? "" : keyValueMap.get("collinval"));
+            info.setCalcinval(TextUtils.isEmpty(keyValueMap.get("calcinval")) ? "" : keyValueMap.get("calcinval"));
+            info.setDormancytime(TextUtils.isEmpty(keyValueMap.get("dormancytime")) ? "" : keyValueMap.get("dormancytime"));
+            info.setInterupdate(TextUtils.isEmpty(keyValueMap.get("interupdate")) ? "" : keyValueMap.get("interupdate"));
 
             return info;
         } catch (Exception ex) {
@@ -50,6 +51,6 @@ public class AdmeBasicConfigParamParser implements IOTResultParser<AdmeBasicConf
 
     @Override
     public IOTCommandType commandType() {
-        return IOTCommandType.ADME_MD_GET_BASIC_PARAMETERS;
+        return IOTCommandType.ADME_MD_GET_INCLINOMETER_PARAMETERS;
     }
 }

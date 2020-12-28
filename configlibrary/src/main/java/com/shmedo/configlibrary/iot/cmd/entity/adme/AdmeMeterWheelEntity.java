@@ -9,7 +9,7 @@ import com.shmedo.configlibrary.ble.interfaces.Validater;
  * 创建时间:  12/27/20 <br/>
  * 描述：    生成ADME 计米轮配置参数拼接指令
  */
-public class AdmeMeterWheelParamEntity implements Validater {
+public class AdmeMeterWheelEntity implements Validater {
     private String enclinenum;//编码器线数
     private String outline;//外径
     private String uptiona;//上拉一次修正参数

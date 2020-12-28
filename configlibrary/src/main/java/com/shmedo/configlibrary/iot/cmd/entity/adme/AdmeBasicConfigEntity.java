@@ -9,7 +9,7 @@ import com.shmedo.configlibrary.ble.interfaces.Validater;
  * 创建时间:  12/24/20 <br/>
  * 描述：    生成ADME 基础配置参数拼接指令
  */
-public class AdmeBasicConfigParamEntity implements Validater {
+public class AdmeBasicConfigEntity implements Validater {
     private String inctype;//测斜仪类型（0：433测斜仪，1：蓝牙测斜仪）
     private String address;//采集器 / MAC 地址
     private String interdeep;//测斜管孔深

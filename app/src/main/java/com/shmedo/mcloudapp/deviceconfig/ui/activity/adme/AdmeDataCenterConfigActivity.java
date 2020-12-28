@@ -2,34 +2,21 @@ package com.shmedo.mcloudapp.deviceconfig.ui.activity.adme;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
-import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 
 import com.shmedo.configlibrary.iot.enums.ServerNumber;
 import com.shmedo.core.AppContants;
-import com.shmedo.mcloudapp.R;
-import com.shmedo.mcloudapp.common.ui.activity.BaseActivity;
+import com.shmedo.mcloudapp.deviceconfig.ui.activity.BaseConfigFragmentContainerActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.adme.BleAdmeDataCenterAdvancedConfigFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.adme.BleAdmeDataCenterBasicConfigFragment;
 
-import butterknife.BindView;
-
-public class AdmeDataCenterConfigActivity extends BaseActivity {
-    @BindView(R.id.tv_title)
-    TextView mToolbarTitle;
-
-    private int connectWay = AppContants.CommunicationWay.NET_PLATFORM_CONNECT;
-
+public class AdmeDataCenterConfigActivity extends BaseConfigFragmentContainerActivity {
     private int configMethod = AppContants.DataCenterConfigMethod.BASIC_CONFIG;
 
     private ServerNumber serverNumber;
     private String serverStatus;
 
-    private Fragment fragment;
 
     public static void startActivity(Context context, int connectWay, int configMethod, ServerNumber serverNumber, String status) {
         Intent intent = new Intent(context, AdmeDataCenterConfigActivity.class);
@@ -42,26 +29,10 @@ public class AdmeDataCenterConfigActivity extends BaseActivity {
     }
 
     @Override
-    protected int getLayoutId() {
-        return R.layout.activity_adme_data_center_config;
-    }
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setToolBar(R.id.toolbar);
-        parseIntent();
-        initFragment();
-    }
-
-    private void parseIntent() {
-        Intent intent = getIntent();
+    protected void parseIntent() {
+        super.parseIntent();
         if (intent.getExtras() == null)
             return;
-
-        if (intent.getExtras().containsKey(AppContants.Extras.COMMUNICATION_WAY)) {
-            connectWay = intent.getIntExtra(AppContants.Extras.COMMUNICATION_WAY, AppContants.CommunicationWay.NET_PLATFORM_CONNECT);
-        }
 
         if (intent.getExtras().containsKey(AppContants.Extras.DATA_CENTER_CONFIG_METHOD)) {
             configMethod = intent.getIntExtra(AppContants.Extras.DATA_CENTER_CONFIG_METHOD, AppContants.DataCenterConfigMethod.BASIC_CONFIG);
@@ -101,7 +72,8 @@ public class AdmeDataCenterConfigActivity extends BaseActivity {
         }
     }
 
-    private void initFragment() {
+    @Override
+    protected Fragment initFragment() {
         if (connectWay == AppContants.CommunicationWay.NET_PLATFORM_CONNECT) {
 
         } else {
@@ -112,13 +84,6 @@ public class AdmeDataCenterConfigActivity extends BaseActivity {
             }
         }
 
-        replaceFragment(fragment);
-    }
-
-    private void replaceFragment(Fragment fragment) {
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentTransaction transaction = fragmentManager.beginTransaction();
-        transaction.replace(R.id.container, fragment);
-        transaction.commitAllowingStateLoss();
+        return fragment;
     }
 }

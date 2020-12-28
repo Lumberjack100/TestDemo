@@ -25,7 +25,7 @@ import com.shmedo.configlibrary.iot.cmd.entity.adme.AdmeEquipModelEntity;
 import com.shmedo.configlibrary.iot.cmd.parser.IOTParseManager;
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.model.CommonSettingCmdResult;
-import com.shmedo.configlibrary.iot.model.adme.AdmeBasicInfo;
+import com.shmedo.configlibrary.iot.model.adme.AdmeBaseInfo;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
 import com.shmedo.core.AppContants;
 import com.shmedo.core.MCloudApp;
@@ -92,7 +92,7 @@ public class BleAdmeHomeFragment extends BaseBleIotCommunicateFragment {
     private ConfigModule selectedConfigModule;
 
     private DiscoveredBluetoothDevice device;
-    private AdmeBasicInfo admeBasicInfo;
+    private AdmeBaseInfo admeBaseInfo;
 
     private int equipModellPos;
     private String equipModel;//设备模式
@@ -388,7 +388,7 @@ public class BleAdmeHomeFragment extends BaseBleIotCommunicateFragment {
         switch (type) {
             case ADME_MD_GET_EQUIPMENT_BASIS: {//获取设备的基本信息
                 hideProgressBar();
-                IOTCommandResult<AdmeBasicInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
+                IOTCommandResult<AdmeBaseInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
                     hideProgressBar();
                     String errMsg = String.format("%s %s", "获取设备的基本信息出错!", commandResult.getMessage());
@@ -396,7 +396,7 @@ public class BleAdmeHomeFragment extends BaseBleIotCommunicateFragment {
                     ToastUtils.show(errMsg);
                     return;
                 }
-                admeBasicInfo = commandResult.getResult();
+                admeBaseInfo = commandResult.getResult();
                 updateHeadInfo();
                 //获取设备的运行状态
 //                getGatewayAisleInfo(VmsAisleNumber.NUMBER_ONE);
@@ -425,15 +425,15 @@ public class BleAdmeHomeFragment extends BaseBleIotCommunicateFragment {
      * 更新头部信息
      */
     private void updateHeadInfo() {
-        if (admeBasicInfo != null) {
+        if (admeBaseInfo != null) {
             mTvDeviceName.setText("水平自动监测设备");
-            mTvDeviceSn.setText(String.format("设备编号：%s", admeBasicInfo.getSn()));
-            mTvProductModel.setText(String.format("产品型号：%s", admeBasicInfo.getProductid()));
+            mTvDeviceSn.setText(String.format("设备编号：%s", admeBaseInfo.getSn()));
+            mTvProductModel.setText(String.format("产品型号：%s", admeBaseInfo.getProductid()));
             mTvSubModel.setText("运行状态：--");
             mTvPlatformCommunicationState.setText("平台连接状态：--");
 
-            if (!TextUtils.isEmpty(admeBasicInfo.getEquimodel())) {
-                equipModel = admeBasicInfo.getEquimodel();
+            if (!TextUtils.isEmpty(admeBaseInfo.getEquimodel())) {
+                equipModel = admeBaseInfo.getEquimodel();
                 if (equipModel.equals("0")) {
                     equipModellPos = 0;
                     mTvConfigModel.setText("设备配置模式");
