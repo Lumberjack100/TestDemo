@@ -2,6 +2,7 @@ package com.shmedo.mcloudapp.deviceconfig.ui.fragment.adme;
 
 import android.graphics.Paint;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.WindowManager;
@@ -98,6 +99,33 @@ public class BleAdmeHomeFragment extends BaseBleIotCommunicateFragment {
     private int equipModellPos;
     private String equipModel;//设备模式
 
+    private Handler motionStateHander = new Handler();
+    private MotionStateRunnable motionStateRunnable;
+
+    /**
+     * 发送心跳包任务
+     */
+    private class MotionStateRunnable implements Runnable {
+        @Override
+        public void run() {
+//            if (isConnected()) {
+//                queryMotionState();
+//                motionStateHander.postDelayed(this, 2000);
+//            }
+        }
+    }
+
+    private void startMotionStateRunnable() {
+        if (motionStateRunnable == null) {
+            motionStateRunnable = new MotionStateRunnable();
+            motionStateHander.postDelayed(motionStateRunnable, 2000);
+        }
+    }
+
+    private void stopMotionStateRunnable() {
+        motionStateHander.removeCallbacksAndMessages(null);
+        motionStateRunnable = null;
+    }
 
     public static BleAdmeHomeFragment newInstance(DiscoveredBluetoothDevice device) {
         BleAdmeHomeFragment fragment = new BleAdmeHomeFragment();
@@ -139,6 +167,7 @@ public class BleAdmeHomeFragment extends BaseBleIotCommunicateFragment {
     public void onResume() {
         super.onResume();
         onConnectionStateChanged(isConnected());
+        startMotionStateRunnable();
     }
 
     private void initAdapter() {
@@ -179,11 +208,11 @@ public class BleAdmeHomeFragment extends BaseBleIotCommunicateFragment {
                 AdmeBasicParamConfigActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT);
                 break;
 
-            case "测孔深":
+            case "测量孔深":
 
                 break;
 
-            case "正反测":
+            case "导槽校准":
 
                 break;
 
@@ -241,7 +270,6 @@ public class BleAdmeHomeFragment extends BaseBleIotCommunicateFragment {
 
                     // fallthrough
                     case DISCONNECTING://The disconnection was initiated.
-                        stopHeartRunnable();
                         break;
                 }
             }
@@ -253,8 +281,7 @@ public class BleAdmeHomeFragment extends BaseBleIotCommunicateFragment {
             @Override
             public void onChanged(String apiKey) {
                 dismissProgressDialog();
-//                queryEquipmentBaseInfo();
-                queryMotionState();
+                queryEquipmentBaseInfo();
             }
         });
     }
@@ -305,10 +332,10 @@ public class BleAdmeHomeFragment extends BaseBleIotCommunicateFragment {
         configModule = new ConfigModule(R.drawable.ic_basic_config, "基础配置", "设备基础参数配置");
         configModuleList.add(configModule);
 
-        configModule = new ConfigModule(R.drawable.ic_measuring_hole_depth, "测孔深", "测量测斜管深度");
+        configModule = new ConfigModule(R.drawable.ic_measuring_hole_depth, "测量孔深", "测量测斜管深度");
         configModuleList.add(configModule);
 
-        configModule = new ConfigModule(R.drawable.ic_positive_and_negative_test, "正反测", "正反测起点校准");
+        configModule = new ConfigModule(R.drawable.ic_positive_and_negative_test, "导槽校准", "正反测起点校准");
         configModuleList.add(configModule);
 
         configModule = new ConfigModule(R.drawable.ic_device_data_center, "数据中心", "基础参数配置");
@@ -335,7 +362,7 @@ public class BleAdmeHomeFragment extends BaseBleIotCommunicateFragment {
     /**
      * 获取设备的运行状态
      */
-    private void queryMotionState(){
+    private void queryMotionState() {
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_GET_MOTION_STATE);
         sendCommand(command);
     }
@@ -416,11 +443,11 @@ public class BleAdmeHomeFragment extends BaseBleIotCommunicateFragment {
                 admeBaseInfo = commandResult.getResult();
                 updateHeadInfo();
                 //获取设备的运行状态
-//                getGatewayAisleInfo(VmsAisleNumber.NUMBER_ONE);
+                startMotionStateRunnable();
             }
             break;
 
-            case ADME_MD_GET_MOTION_STATE:{//获取ADME的运行状态
+            case ADME_MD_GET_MOTION_STATE: {//获取ADME的运行状态
                 hideProgressBar();
                 IOTCommandResult<AdmeMotionState> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
@@ -495,10 +522,10 @@ public class BleAdmeHomeFragment extends BaseBleIotCommunicateFragment {
         configModuleList.add(configModule);
 
         if (equipModel.equals("0")) {//0：设备配置模式，1：自动监测模式
-            configModule = new ConfigModule(R.drawable.ic_measuring_hole_depth, "测孔深", "测量测斜管深度");
+            configModule = new ConfigModule(R.drawable.ic_measuring_hole_depth, "测量孔深", "测量测斜管深度");
             configModuleList.add(configModule);
 
-            configModule = new ConfigModule(R.drawable.ic_positive_and_negative_test, "正反测", "正反测起点校准");
+            configModule = new ConfigModule(R.drawable.ic_positive_and_negative_test, "导槽校准", "正反测起点校准");
             configModuleList.add(configModule);
 
             configModule = new ConfigModule(R.drawable.ic_device_data_center, "数据中心", "基础参数配置");
@@ -534,6 +561,7 @@ public class BleAdmeHomeFragment extends BaseBleIotCommunicateFragment {
     @Override
     public void onStop() {
         super.onStop();
+        stopMotionStateRunnable();
     }
 
     @Override
