@@ -96,7 +96,6 @@ public class DeviceCurrentStateActivity extends BaseActivity {
 
         } else {
             fragment = new BleDasDeviceCurrentStateFragment();
-//            fragment = new TestBleDasDeviceCurrentStateFragment();
         }
 
         replaceFragment(fragment);
