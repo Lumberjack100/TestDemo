@@ -173,14 +173,6 @@ public abstract class BaseBleIotCommunicateFragment extends BaseFragment {
         sendCommand(command);
     }
 
-    /**
-     * 获取设备的基本信息
-     */
-    protected void getEquipmentBaseInfo() {
-        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_GET_EQUIPMENT_BASIS);
-        sendCommand(command);
-    }
-
     protected void sendCommand(String cmdStr) {
         String apiKey = "b12aac6b-0bd2-4a01-80fd-97fe4f5d4ff9";
         if (!TextUtils.isEmpty(usrBleViewModel.getDeviceApiKey().getValue())) {

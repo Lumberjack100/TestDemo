@@ -26,6 +26,7 @@ import com.shmedo.configlibrary.iot.cmd.parser.IOTParseManager;
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.model.CommonSettingCmdResult;
 import com.shmedo.configlibrary.iot.model.adme.AdmeBaseInfo;
+import com.shmedo.configlibrary.iot.model.adme.AdmeMotionState;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
 import com.shmedo.core.AppContants;
 import com.shmedo.core.MCloudApp;
@@ -222,7 +223,6 @@ public class BleAdmeHomeFragment extends BaseBleIotCommunicateFragment {
                         onConnectionStateChanged(true);
                         mTvConnectState.setText("初始化中...");
                         usrBleViewModel.queryDeviceApiKeyBySn(device.getDevice().getName().substring(3));
-//                        getEquipmentBaseInfo();
                         break;
 
                     case DISCONNECTED://The device disconnected or failed to connect.
@@ -253,7 +253,8 @@ public class BleAdmeHomeFragment extends BaseBleIotCommunicateFragment {
             @Override
             public void onChanged(String apiKey) {
                 dismissProgressDialog();
-                getEquipmentBaseInfo();
+//                queryEquipmentBaseInfo();
+                queryMotionState();
             }
         });
     }
@@ -321,6 +322,22 @@ public class BleAdmeHomeFragment extends BaseBleIotCommunicateFragment {
 
         configModule = new ConfigModule(R.drawable.ic_device_setting, "设置", "高级设置");
         configModuleList.add(configModule);
+    }
+
+    /**
+     * 获取设备的基本信息
+     */
+    private void queryEquipmentBaseInfo() {
+        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_GET_EQUIPMENT_BASIS);
+        sendCommand(command);
+    }
+
+    /**
+     * 获取设备的运行状态
+     */
+    private void queryMotionState(){
+        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_GET_MOTION_STATE);
+        sendCommand(command);
     }
 
     @OnClick({R.id.tv_device_connect_operate, R.id.ll_switch_config_model})
@@ -400,6 +417,20 @@ public class BleAdmeHomeFragment extends BaseBleIotCommunicateFragment {
                 updateHeadInfo();
                 //获取设备的运行状态
 //                getGatewayAisleInfo(VmsAisleNumber.NUMBER_ONE);
+            }
+            break;
+
+            case ADME_MD_GET_MOTION_STATE:{//获取ADME的运行状态
+                hideProgressBar();
+                IOTCommandResult<AdmeMotionState> commandResult = IOTParseManager.getInstance().parse(cmdStr);
+                if (!commandResult.isSuccess()) {
+                    hideProgressBar();
+                    String errMsg = String.format("%s %s", "获取设备的运行状态出错!", commandResult.getMessage());
+                    Timber.e(errMsg);
+                    ToastUtils.show(errMsg);
+                    return;
+                }
+                AdmeMotionState admeMotionState = commandResult.getResult();
             }
             break;
 

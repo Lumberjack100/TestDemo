@@ -160,7 +160,8 @@ public class USRManager extends ObservableBleManager {
                         @Override
                         public boolean merge(@NonNull DataStream output, @Nullable byte[] lastPacket, int index) {
                             output.write(lastPacket);
-                            return lastPacket == null || (lastPacket[lastPacket.length - 1] == 38 && lastPacket[lastPacket.length - 2] == 38);
+                            //每条响应命令结尾以&&(物联网指令)或\r\n(##指令)作为分隔符
+                            return lastPacket == null || (lastPacket[lastPacket.length - 1] == 38 && lastPacket[lastPacket.length - 2] == 38)|| (lastPacket[lastPacket.length - 1] == 10 && lastPacket[lastPacket.length - 2] == 13);
                         }
                     });
 
