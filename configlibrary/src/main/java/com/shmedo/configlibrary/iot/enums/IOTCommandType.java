@@ -172,6 +172,16 @@ public enum IOTCommandType {
     ADME_MD_SET_INCLINOMETER_PARAMETERS("md_setinter"),
 
     /**
+     * 获取ADME的步进电机配置参数
+     */
+    ADME_MD_GET_STEPPER_MOTOR_PARAMETERS("md_getsteppermotor"),
+
+    /**
+     * 设置ADME的步进电机配置参数
+     */
+    ADME_MD_SET_STEPPER_MOTOR_PARAMETERS("md_setsteppermotor"),
+
+    /**
      * 自定义心跳包
      */
     HEART_BEAT("HeartBeatData");

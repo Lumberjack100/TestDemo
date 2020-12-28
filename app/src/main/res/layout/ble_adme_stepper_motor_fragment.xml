@@ -27,13 +27,13 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
                 android:layout_centerVertical="true"
-                android:text="开启状态"
+                android:text="参数生效"
                 android:textColor="@color/title_text_color"
                 android:textSize="@dimen/text_size_17" />
 
 
             <com.kyleduo.switchbutton.SwitchButton
-                android:id="@+id/centerEnableSBtn"
+                android:id="@+id/paramEnableSBtn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
@@ -73,14 +73,15 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="数据中心地址"
+                        android:text="绝对精度修正值(°)"
                         android:textColor="@color/text_color_343434"
                         android:textSize="@dimen/text_size_17" />
 
                     <com.shmedo.mcloudapp.common.view.ClearEditText
-                        android:id="@+id/et_data_server_address"
+                        android:id="@+id/et_accuracy_correction_value"
                         style="@style/DataCenter_EditText_Style"
-                        android:hint="请输入" />
+                        android:hint="请输入"
+                        android:inputType="numberDecimal" />
 
                 </LinearLayout>
 
@@ -96,12 +97,12 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="数据中心端口"
+                        android:text="电机运动速度(r/min)"
                         android:textColor="@color/text_color_343434"
                         android:textSize="@dimen/text_size_17" />
 
                     <com.shmedo.mcloudapp.common.view.ClearEditText
-                        android:id="@+id/et_data_server_port"
+                        android:id="@+id/et_movement_speed"
                         style="@style/DataCenter_EditText_Style"
                         android:hint="请输入"
                         android:inputType="number" />

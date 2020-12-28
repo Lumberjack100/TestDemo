@@ -8,6 +8,7 @@ import com.shmedo.configlibrary.iot.cmd.parser.adme.AdmeBasicInfoParser;
 import com.shmedo.configlibrary.iot.cmd.parser.adme.AdmeInclinometerInfoParser;
 import com.shmedo.configlibrary.iot.cmd.parser.adme.AdmeMeterWheelParamParser;
 import com.shmedo.configlibrary.iot.cmd.parser.adme.AdmeMotionStateParser;
+import com.shmedo.configlibrary.iot.cmd.parser.adme.AdmeStepperMotorInfoParser;
 import com.shmedo.configlibrary.iot.cmd.parser.vms.VmsAisleInfoParser;
 import com.shmedo.configlibrary.iot.cmd.parser.vms.VmsAisleTerminalInfoParser;
 import com.shmedo.configlibrary.iot.cmd.parser.vms.VmsBasicInfoParser;
@@ -130,7 +131,8 @@ public class IOTParseManager {
                 AdmeBasicConfigParamParser.class,
                 AdmeMeterWheelParamParser.class,
                 AdmeInclinometerInfoParser.class,
-                AdmeMotionStateParser.class
+                AdmeMotionStateParser.class,
+                AdmeStepperMotorInfoParser.class
         });
 
         registerWithClass(clazzes);

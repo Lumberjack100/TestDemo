@@ -17,15 +17,12 @@ import com.hjq.toast.ToastUtils;
 import com.kyleduo.switchbutton.SwitchButton;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandManager;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandResult;
-import com.shmedo.configlibrary.iot.cmd.entity.DataCenterEntity;
-import com.shmedo.configlibrary.iot.cmd.entity.ServerNumberEntity;
+import com.shmedo.configlibrary.iot.cmd.entity.adme.AdmeStepperMotorEntity;
 import com.shmedo.configlibrary.iot.cmd.parser.IOTParseManager;
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
-import com.shmedo.configlibrary.iot.enums.ServerNumber;
 import com.shmedo.configlibrary.iot.model.CommonSettingCmdResult;
-import com.shmedo.configlibrary.iot.model.DataCenterInfo;
+import com.shmedo.configlibrary.iot.model.adme.AdmeStepperMotorInfo;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
-import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.view.ClearEditText;
 import com.shmedo.mcloudapp.util.KeyBordUtils;
@@ -35,100 +32,75 @@ import org.jetbrains.annotations.NotNull;
 import butterknife.BindView;
 import butterknife.OnClick;
 import timber.log.Timber;
+
 /**
  * 创建者:   gonghe <br/>
  * 创建时间:  2020/12/28<br/>
- * 描述：     ADME 数据中心基本参数配置页面
+ * 描述：     ADME 步进电机参数配置页面
  */
-public class BleAdmeDataCenterBasicConfigFragment extends BaseBleIotCommunicateFragment {
+public class BleAdmeStepperMotorFragment extends BaseBleIotCommunicateFragment {
     @BindView(R.id.contentLayout)
     ViewGroup contentLayout;
 
     @BindView(R.id.maskLayer)
     ViewGroup maskLayerLayout;
 
-    @BindView(R.id.centerEnableSBtn)
-    SwitchButton mSbCenterEnable;
+    @BindView(R.id.paramEnableSBtn)
+    SwitchButton mSbParamEnable;
 
-    @BindView(R.id.et_data_server_address)
-    ClearEditText mEtDataServerAddress;
+    @BindView(R.id.et_accuracy_correction_value)
+    ClearEditText mEtAccuracyCorrectionValue;
 
-    @BindView(R.id.et_data_server_port)
-    ClearEditText mEtDataServerPort;
+    @BindView(R.id.et_movement_speed)
+    ClearEditText mEtMovementSpeed;
 
     @BindView(R.id.btn_confirm)
     Button mBtnSave;
 
-    private ServerNumber serverNumber;
-    private String serverStatus;
-    private DataCenterInfo dataCenterInfo;
+    private AdmeStepperMotorInfo admeStepperMotorInfo;
 
-    private String dataServerAddress;//数据服务器地址
-    private String dataServerPort;//数据服务器端口
+    private String accuracyCorrectionValue;//绝对精度修正值
+    private String movementSpeed;//电机运动速度(r/min)
 
-    private boolean centerEnableInitial;//数据中心开关初始状态，用于判断开关是否有打开后没有设置参数就返回
-    private boolean isSaveParamOperation = false;//判断当前是保存参数操作，还是关闭数据中心操作
+    private boolean paramEnableInitial;//开关初始状态，用于判断开关是否有打开后没有设置参数就返回
+    private boolean isSaveParamOperation = false;//判断当前是保存参数操作，还是关闭开关操作
 
-    public static BleAdmeDataCenterBasicConfigFragment newInstance(ServerNumber serverNumber, String status) {
-        BleAdmeDataCenterBasicConfigFragment fragment = new BleAdmeDataCenterBasicConfigFragment();
-        Bundle args = new Bundle();
-        args.putSerializable(AppContants.Extras.DATA_SERVER_NUMBER, serverNumber);
-        args.putSerializable(AppContants.Extras.DATA_SERVER_STATUS, status);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            serverNumber = (ServerNumber) getArguments().getSerializable(AppContants.Extras.DATA_SERVER_NUMBER);
-            serverStatus = getArguments().getString(AppContants.Extras.DATA_SERVER_STATUS);
-        }
+    public static BleAdmeStepperMotorFragment newInstance() {
+        return new BleAdmeStepperMotorFragment();
     }
 
     @Override
     protected int getLayoutId() {
-        return R.layout.ble_adme_data_center_basic_config_fragment;
+        return R.layout.ble_adme_stepper_motor_fragment;
     }
-
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         setView();
         setSwitchViewListener();
-        queryDataCenterInfo();
+        queryParamInfo();
     }
 
     private void setView() {
-        mEtDataServerAddress.setFilters(new InputFilter[]{new InputFilter.LengthFilter(100)});
-        mEtDataServerPort.setFilters(new InputFilter[]{new InputFilter.LengthFilter(5)});
+        mEtAccuracyCorrectionValue.setFilters(new InputFilter[]{new InputFilter.LengthFilter(8)});
+        mEtMovementSpeed.setFilters(new InputFilter[]{new InputFilter.LengthFilter(2)});
 
-        //数据中心地址为空表示数据中心未启用
-        if (!TextUtils.isEmpty(serverStatus) && serverStatus.contains("未开启")) {
-            centerEnableInitial = false;
-            mSbCenterEnable.setCheckedImmediatelyNoEvent(false);
-            maskLayerLayout.setVisibility(View.VISIBLE);
-        } else {
-            centerEnableInitial = true;
-            mSbCenterEnable.setCheckedImmediatelyNoEvent(true);
-            maskLayerLayout.setVisibility(View.GONE);
-        }
+        mEtMovementSpeed.setHint("1-99");
     }
 
     private void setSwitchViewListener() {
-        mSbCenterEnable.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        mSbParamEnable.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (!isConnected()) {
                     ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
-                    mSbCenterEnable.setCheckedImmediatelyNoEvent(!isChecked);
+                    mSbParamEnable.setCheckedImmediatelyNoEvent(!isChecked);
                     return;
                 }
 
                 if (!isChecked) {
-                    showCloseSwitchButtonDialog("确定要关闭数据中心？");
+                    showCloseSwitchButtonDialog("确定使参数不生效？");
                 } else {
                     maskLayerLayout.setVisibility(View.GONE);
                 }
@@ -153,15 +125,15 @@ public class BleAdmeDataCenterBasicConfigFragment extends BaseBleIotCommunicateF
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                         dialog.dismiss();
-                        closeDataServer();//关闭服务器
+                        disableStepperMotorParam();
                         maskLayerLayout.setVisibility(View.VISIBLE);
-                        centerEnableInitial = mSbCenterEnable.isChecked();
+                        paramEnableInitial = mSbParamEnable.isChecked();
                     }
                 }).onNegative(new MaterialDialog.SingleButtonCallback() {
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                         dialog.dismiss();
-                        mSbCenterEnable.setCheckedImmediatelyNoEvent(true);
+                        mSbParamEnable.setCheckedImmediatelyNoEvent(true);
                     }
                 });
         MaterialDialog mMaterialDialog = mBuilder.build();
@@ -169,29 +141,25 @@ public class BleAdmeDataCenterBasicConfigFragment extends BaseBleIotCommunicateF
     }
 
     /**
-     * 获取设备的数据中心参数
+     * 获取设备的步进电机参数
      */
-    private void queryDataCenterInfo() {
+    private void queryParamInfo() {
         errMsg = "查询数据超时,请稍后尝试";
         startProgressRunnable("加载中...", DELAY_MILLIS);
-        ServerNumberEntity serverNumberEntity = new ServerNumberEntity(serverNumber.toInt());
-        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.MD_GET_DATA_CENTER, serverNumberEntity);
+        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_GET_STEPPER_MOTOR_PARAMETERS);
         sendCommand(command);
     }
 
     /**
-     * 关闭数据中心</br>
-     * addr和port设置为空时，关闭该数据中心
+     * 禁用步进电机参数</br>
      */
-    private void closeDataServer() {
-        DataCenterEntity dataCenterEntity = new DataCenterEntity();
-        dataCenterEntity.setServerNumber(serverNumber);
-        dataCenterEntity.setAddr("");
-        dataCenterEntity.setPort("");
+    private void disableStepperMotorParam() {
+        AdmeStepperMotorEntity entity = new AdmeStepperMotorEntity();
+        entity.setPosnegtest("0");
 
         isSaveParamOperation = false;
         mBtnSave.setEnabled(false);
-        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.MD_SET_DATA_CENTER, dataCenterEntity);
+        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_SET_STEPPER_MOTOR_PARAMETERS, entity);
         sendCommand(command);
     }
 
@@ -214,49 +182,56 @@ public class BleAdmeDataCenterBasicConfigFragment extends BaseBleIotCommunicateF
     }
 
     private boolean checkValueIsValid() {
-        dataServerAddress = mEtDataServerAddress.getText().toString().trim();
-        dataServerPort = mEtDataServerPort.getText().toString().trim();
+        accuracyCorrectionValue = mEtAccuracyCorrectionValue.getText().toString().trim();
+        movementSpeed = mEtMovementSpeed.getText().toString().trim();
 
-        if (TextUtils.isEmpty(dataServerAddress)) {
-            ToastUtils.show("数据中心地址不能为空!");
-            mEtDataServerAddress.requestFocus();
-            return false;
-        }
-
-        if (TextUtils.isEmpty(dataServerPort)) {
-            ToastUtils.show("数据中心端口不能为空!");
-            mEtDataServerPort.requestFocus();
+        if (TextUtils.isEmpty(accuracyCorrectionValue)) {
+            ToastUtils.show("绝对精度修正值不能为空!");
+            mEtAccuracyCorrectionValue.requestFocus();
             return false;
         }
         try {
-            int port = Integer.parseInt(dataServerPort);
-            if (port < 0 || port > 65535) {
-                ToastUtils.show("请输入有效的数据中心端口号!");
-                mEtDataServerPort.requestFocus();
-                return false;
-            }
+            double value = Double.parseDouble(accuracyCorrectionValue);
+
         } catch (Exception ex) {
-            ToastUtils.show("请输入有效的数据中心端口号!");
-            mEtDataServerPort.requestFocus();
+            ToastUtils.show("请输入正确的绝对精度修正值!");
+            mEtAccuracyCorrectionValue.requestFocus();
             return false;
         }
 
+        if (TextUtils.isEmpty(movementSpeed)) {
+            ToastUtils.show("电机运动速度不能为空!");
+            mEtMovementSpeed.requestFocus();
+            return false;
+        }
+        try {
+            int port = Integer.parseInt(movementSpeed);
+            if (port < 0 || port > 100) {
+                ToastUtils.show("请输入有效的电机运动速度!");
+                mEtMovementSpeed.requestFocus();
+                return false;
+            }
+        } catch (Exception ex) {
+            ToastUtils.show("请输入有效的电机运动速度!");
+            mEtMovementSpeed.requestFocus();
+            return false;
+        }
         return true;
     }
 
     private void processSave() {
-        DataCenterEntity dataCenterEntity = new DataCenterEntity();
-        dataCenterEntity.setServerNumber(serverNumber);
-        dataCenterEntity.setAddr(dataServerAddress);
-        dataCenterEntity.setPort(dataServerPort);
+        AdmeStepperMotorEntity entity = new AdmeStepperMotorEntity();
+        entity.setPosnegtest("1");
+        entity.setAbsprsion(accuracyCorrectionValue);
+        entity.setMovspeed(movementSpeed);
 
-        centerEnableInitial = mSbCenterEnable.isChecked();
+        paramEnableInitial = mSbParamEnable.isChecked();
         isSaveParamOperation = true;
         mBtnSave.setEnabled(false);
 
         errMsg = "发送指令超时,请稍后尝试";
         startProgressRunnable("正在发送配置指令...", DELAY_MILLIS);
-        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.MD_SET_DATA_CENTER, dataCenterEntity);
+        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_SET_STEPPER_MOTOR_PARAMETERS, entity);
         sendCommand(command);
     }
 
@@ -268,25 +243,25 @@ public class BleAdmeDataCenterBasicConfigFragment extends BaseBleIotCommunicateF
     private void setResultData(final String cmdStr) {
         IOTCommandType type = IOTStringUtil.extractCommandType(cmdStr);
         switch (type) {
-            case MD_GET_DATA_CENTER: {//获取设备的数据中心参数
+            case ADME_MD_GET_STEPPER_MOTOR_PARAMETERS: {//获取ADME的步进电机配置参数
                 stopProgressRunnable();
-                IOTCommandResult<DataCenterInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
+                IOTCommandResult<AdmeStepperMotorInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
-                    String errMsg = String.format("%s %s", "查询数据中心参数出错!", commandResult.getMessage());
+                    String errMsg = String.format("%s %s", "查询步进电机参数出错!", commandResult.getMessage());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
                     return;
                 }
-                dataCenterInfo = commandResult.getResult();
-                initDataCenterData();
+                admeStepperMotorInfo = commandResult.getResult();
+                initParamConfigInfo();
             }
             break;
 
-            case MD_SET_DATA_CENTER: {//设置设备的数据中心参数
+            case ADME_MD_SET_STEPPER_MOTOR_PARAMETERS: {//设置ADME的步进电机配置参数
                 stopProgressRunnable();
                 CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
                 if (!cmdResult.isSucceed()) {
-                    String errMsg = String.format("%s %s", "设置数据中心参数出错!", cmdResult.getReason());
+                    String errMsg = String.format("%s %s", "设置步进电机参数出错!", cmdResult.getReason());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
                     mBtnSave.setEnabled(true);
@@ -313,17 +288,27 @@ public class BleAdmeDataCenterBasicConfigFragment extends BaseBleIotCommunicateF
         mBtnSave.setEnabled(true);
     }
 
-    private void initDataCenterData() {
-        if (dataCenterInfo == null) {
-            Timber.e("DataCenterInfo 为空!");
-            dataCenterInfo = new DataCenterInfo();
+    private void initParamConfigInfo() {
+        if (admeStepperMotorInfo == null) {
+            Timber.e("AdmeStepperMotorInfo is Null!");
+            admeStepperMotorInfo = new AdmeStepperMotorInfo();
             return;
         }
 
-        dataServerAddress = dataCenterInfo.getAddr().trim();
-        dataServerPort = dataCenterInfo.getPort().trim();
-        mEtDataServerAddress.setText(dataServerAddress);
-        mEtDataServerPort.setText(dataServerPort);
+        accuracyCorrectionValue = admeStepperMotorInfo.getAbsprsion().trim();
+        movementSpeed = admeStepperMotorInfo.getMovspeed().trim();
+        mEtAccuracyCorrectionValue.setText(accuracyCorrectionValue);
+        mEtMovementSpeed.setText(movementSpeed);
+
+        if (admeStepperMotorInfo.getPosnegtest().trim().equals("0")) {
+            paramEnableInitial = false;
+            mSbParamEnable.setCheckedImmediatelyNoEvent(false);
+            maskLayerLayout.setVisibility(View.VISIBLE);
+        } else {
+            paramEnableInitial = true;
+            mSbParamEnable.setCheckedImmediatelyNoEvent(true);
+            maskLayerLayout.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -341,18 +326,19 @@ public class BleAdmeDataCenterBasicConfigFragment extends BaseBleIotCommunicateF
     }
 
     private boolean checkValueIsChange() {
-        if (centerEnableInitial != mSbCenterEnable.isChecked()) {
+        if (paramEnableInitial != mSbParamEnable.isChecked()) {
             return true;
         }
 
-        if (dataServerAddress != null && !dataServerAddress.equals(mEtDataServerAddress.getText().toString().trim())) {
+        if (accuracyCorrectionValue != null && !accuracyCorrectionValue.equals(mEtAccuracyCorrectionValue.getText().toString().trim())) {
             return true;
         }
 
-        if (dataServerPort != null && !dataServerPort.equals(mEtDataServerPort.getText().toString().trim())) {
+        if (movementSpeed != null && !movementSpeed.equals(mEtMovementSpeed.getText().toString().trim())) {
             return true;
         }
 
         return false;
     }
+
 }
