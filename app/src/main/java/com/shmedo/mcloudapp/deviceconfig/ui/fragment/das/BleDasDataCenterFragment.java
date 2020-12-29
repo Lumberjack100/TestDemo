@@ -27,7 +27,7 @@ import com.shmedo.configlibrary.ble.utils.ValidateUtil;
 import com.shmedo.core.AppContants;
 import com.shmedo.core.MCloudApp;
 import com.shmedo.mcloudapp.R;
-import com.shmedo.mcloudapp.deviceconfig.ui.activity.DataCenterServerConfigActivity;
+import com.shmedo.mcloudapp.deviceconfig.ui.activity.das.DataCenterServerConfigActivity;
 
 import butterknife.BindView;
 import butterknife.OnClick;
