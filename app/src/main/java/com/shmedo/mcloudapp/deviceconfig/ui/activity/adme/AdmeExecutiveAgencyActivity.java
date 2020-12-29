@@ -8,12 +8,17 @@ import androidx.fragment.app.Fragment;
 
 import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.BaseConfigFragmentContainerActivity;
-import com.shmedo.mcloudapp.deviceconfig.ui.fragment.adme.BleAdmeBasicParamConfigFragment;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.adme.BleAdmeExecutiveAgencyFragment;
 
-public class AdmeBasicParamConfigActivity extends BaseConfigFragmentContainerActivity {
+/**
+ * 创建者:   gonghe <br/>
+ * 创建时间:  2020/12/29<br/>
+ * 描述：     ADME 执行机构参数配置页面
+ */
+public class AdmeExecutiveAgencyActivity extends BaseConfigFragmentContainerActivity {
 
     public static void startActivity(Context context, int connectWay) {
-        Intent intent = new Intent(context, AdmeBasicParamConfigActivity.class);
+        Intent intent = new Intent(context, AdmeExecutiveAgencyActivity.class);
         intent.putExtra(AppContants.Extras.COMMUNICATION_WAY, connectWay);
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         context.startActivity(intent);
@@ -22,7 +27,7 @@ public class AdmeBasicParamConfigActivity extends BaseConfigFragmentContainerAct
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mToolbarTitle.setText("基础配置");
+        mToolbarTitle.setText("执行机构参数配置");
     }
 
     @Override
@@ -30,7 +35,7 @@ public class AdmeBasicParamConfigActivity extends BaseConfigFragmentContainerAct
         if (connectWay == AppContants.CommunicationWay.NET_PLATFORM_CONNECT) {
 
         } else {
-            fragment = BleAdmeBasicParamConfigFragment.newInstance();
+            fragment = BleAdmeExecutiveAgencyFragment.newInstance();
         }
 
         return fragment;

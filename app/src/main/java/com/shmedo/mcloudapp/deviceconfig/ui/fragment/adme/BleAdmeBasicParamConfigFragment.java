@@ -51,8 +51,8 @@ public class BleAdmeBasicParamConfigFragment extends BaseBleIotCommunicateFragme
     @BindView(R.id.et_decentralization_waiting_time)
     ClearEditText mEtDecentralizationWaitingTime;//下放等待时间(min)
 
-    @BindView(R.id.tv_data_reporting_method)
-    TextView mTvDataReportingMethod;
+    @BindView(R.id.tv_data_settlement_method)
+    TextView mTvDataSettlementMethod;
 
     @BindView(R.id.btn_confirm)
     Button mBtnSave;
@@ -66,7 +66,7 @@ public class BleAdmeBasicParamConfigFragment extends BaseBleIotCommunicateFragme
     private AdmeBasicConfigInfo basicConfigParam;
 
     private int inclinometerTypePos;
-    private int dataReportingMethodPos;
+    private int dataSettlementMethodPos;
 
     private String inclinometerTypeOld;//测斜仪类型
     private String inclinometerType;// 测斜仪类型
@@ -74,8 +74,8 @@ public class BleAdmeBasicParamConfigFragment extends BaseBleIotCommunicateFragme
     private String inclinometerTubeHoleDepth;// 测斜管孔深(m)
     private String decentralizationSpeed;// 下放速度(r/min)
     private String decentralizationWaitingTime;//下放等待时间(min)
-    private String dataReportingMethodOld;//数据上报方式
-    private String dataReportingMethod;// 数据上报方式
+    private String dataSettlementMethodOld;//数据结算方式
+    private String dataSettlementMethod;// 数据结算方式
 
 
     public static BleAdmeBasicParamConfigFragment newInstance() {
@@ -84,7 +84,7 @@ public class BleAdmeBasicParamConfigFragment extends BaseBleIotCommunicateFragme
 
     @Override
     protected int getLayoutId() {
-        return R.layout.ble_adme_basic_param_config_fragment;
+        return R.layout.ble_adme_basic_param_fragment;
     }
 
     @Override
@@ -112,14 +112,14 @@ public class BleAdmeBasicParamConfigFragment extends BaseBleIotCommunicateFragme
         sendCommand(command);
     }
 
-    @OnClick({R.id.ll_inclinometer_type, R.id.ll_data_reporting_method, R.id.btn_confirm})
+    @OnClick({R.id.ll_inclinometer_type, R.id.ll_data_settlement_method, R.id.btn_confirm})
     public void onClick(View view) {
         int id = view.getId();
         if (id == R.id.ll_inclinometer_type) {
             showInclinometerTypeDialog();
 
-        } else if (id == R.id.ll_data_reporting_method) {
-            showDataReportingMethodDialog();
+        } else if (id == R.id.ll_data_settlement_method) {
+            showDataSettlementMethodDialog();
 
         } else if (id == R.id.btn_confirm) {
             KeyBordUtils.hideSoftKeyboard(view);
@@ -165,23 +165,23 @@ public class BleAdmeBasicParamConfigFragment extends BaseBleIotCommunicateFragme
     }
 
     /**
-     * 选择数据上报方式
+     * 选择数据结算方式
      */
-    private void showDataReportingMethodDialog() {
+    private void showDataSettlementMethodDialog() {
         XPopup.setPrimaryColor(getResources().getColor(R.color.blue_52B4F8));
         new XPopup.Builder(mActivity)
                 .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
                 .asBottomList("", new String[]{"顶固定法", "底固定法"},
-                        null, dataReportingMethodPos, true,
+                        null, dataSettlementMethodPos, true,
                         new OnSelectListener() {
                             @Override
                             public void onSelect(int position, String text) {
-                                dataReportingMethodPos = position;
-                                mTvDataReportingMethod.setText(text);
+                                dataSettlementMethodPos = position;
+                                mTvDataSettlementMethod.setText(text);
                                 if (position == 0) {
-                                    dataReportingMethod = "0";
+                                    dataSettlementMethod = "0";
                                 } else {
-                                    dataReportingMethod = "1";
+                                    dataSettlementMethod = "1";
                                 }
                             }
                         }, 0, R.layout.custom_xpopup_adapter_text_match)
@@ -268,7 +268,7 @@ public class BleAdmeBasicParamConfigFragment extends BaseBleIotCommunicateFragme
         entity.setInterdeep(inclinometerTubeHoleDepth);
         entity.setDownspeed(decentralizationSpeed);
         entity.setDownwaitetime(decentralizationWaitingTime);
-        entity.setDatatype(dataReportingMethod);
+        entity.setDatatype(dataSettlementMethod);
 
         errMsg = "发送指令超时,请稍后尝试";
         startProgressRunnable("正在发送配置指令...", DELAY_MILLIS);
@@ -323,7 +323,7 @@ public class BleAdmeBasicParamConfigFragment extends BaseBleIotCommunicateFragme
     private void doAfterSetting() {
         mBtnSave.setEnabled(true);
         inclinometerTypeOld = inclinometerType;
-        dataReportingMethodOld = dataReportingMethod;
+        dataSettlementMethodOld = dataSettlementMethod;
         ToastUtils.show("保存成功");
     }
 
@@ -339,8 +339,8 @@ public class BleAdmeBasicParamConfigFragment extends BaseBleIotCommunicateFragme
         inclinometerTubeHoleDepth = basicConfigParam.getInterdeep().trim();
         decentralizationSpeed = basicConfigParam.getDownspeed().trim();
         decentralizationWaitingTime = basicConfigParam.getDownwaitetime().trim();
-        dataReportingMethodOld = basicConfigParam.getDatatype().trim();
-        dataReportingMethod = basicConfigParam.getDatatype().trim();
+        dataSettlementMethodOld = basicConfigParam.getDatatype().trim();
+        dataSettlementMethod = basicConfigParam.getDatatype().trim();
 
         mEtInclinometerTubeHoleDepth.setText(inclinometerTubeHoleDepth);
         mEtDecentralizationSpeed.setText(decentralizationSpeed);
@@ -361,12 +361,12 @@ public class BleAdmeBasicParamConfigFragment extends BaseBleIotCommunicateFragme
             macAddressLayout.setVisibility(View.VISIBLE);
         }
 
-        if (dataReportingMethodOld.equals("0")) {
-            dataReportingMethodPos = 0;
-            mTvDataReportingMethod.setText("顶固定法");
+        if (dataSettlementMethodOld.equals("0")) {
+            dataSettlementMethodPos = 0;
+            mTvDataSettlementMethod.setText("顶固定法");
         } else {
-            dataReportingMethodPos = 1;
-            mTvDataReportingMethod.setText("底固定法");
+            dataSettlementMethodPos = 1;
+            mTvDataSettlementMethod.setText("底固定法");
         }
     }
 
@@ -409,7 +409,7 @@ public class BleAdmeBasicParamConfigFragment extends BaseBleIotCommunicateFragme
             return true;
         }
 
-        if (dataReportingMethodOld != null && dataReportingMethod != null && !dataReportingMethodOld.equals(dataReportingMethod)) {
+        if (dataSettlementMethodOld != null && dataSettlementMethod != null && !dataSettlementMethodOld.equals(dataSettlementMethod)) {
             return true;
         }
         return false;

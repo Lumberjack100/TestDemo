@@ -5,6 +5,7 @@ import android.text.TextUtils;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandResult;
 import com.shmedo.configlibrary.iot.cmd.parser.adme.AdmeBasicConfigParamParser;
 import com.shmedo.configlibrary.iot.cmd.parser.adme.AdmeBasicInfoParser;
+import com.shmedo.configlibrary.iot.cmd.parser.adme.AdmeExecutiveAgencyInfoParser;
 import com.shmedo.configlibrary.iot.cmd.parser.adme.AdmeInclinometerInfoParser;
 import com.shmedo.configlibrary.iot.cmd.parser.adme.AdmeMeterWheelParamParser;
 import com.shmedo.configlibrary.iot.cmd.parser.adme.AdmeMotionStateParser;
@@ -132,7 +133,8 @@ public class IOTParseManager {
                 AdmeMeterWheelParamParser.class,
                 AdmeInclinometerInfoParser.class,
                 AdmeMotionStateParser.class,
-                AdmeStepperMotorInfoParser.class
+                AdmeStepperMotorInfoParser.class,
+                AdmeExecutiveAgencyInfoParser.class
         });
 
         registerWithClass(clazzes);

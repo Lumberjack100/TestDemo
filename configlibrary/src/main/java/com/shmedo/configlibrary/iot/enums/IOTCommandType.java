@@ -182,6 +182,16 @@ public enum IOTCommandType {
     ADME_MD_SET_STEPPER_MOTOR_PARAMETERS("md_setsteppermotor"),
 
     /**
+     * 获取ADME的执行机构配置参数
+     */
+    ADME_MD_GET_EXECUTIVE_AGENCY_PARAMETERS("md_getactuator"),
+
+    /**
+     * 设置ADME的执行机构配置参数
+     */
+    ADME_MD_SET_EXECUTIVE_AGENCY_PARAMETERS("md_setactuator"),
+
+    /**
      * 自定义心跳包
      */
     HEART_BEAT("HeartBeatData");
