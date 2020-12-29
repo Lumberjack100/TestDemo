@@ -17,7 +17,6 @@ import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.view.recycleviewitemdivider.GridSpacingItemDecoration;
 import com.shmedo.mcloudapp.deviceconfig.adapter.AdmeAdvancedConfigModuleAdapter;
 import com.shmedo.mcloudapp.deviceconfig.model.ConfigModule;
-import com.shmedo.mcloudapp.deviceconfig.ui.activity.adme.AdmeDataCenterHomeActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.adme.AdmeExecutiveAgencyActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.adme.AdmeInclinometerActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.adme.AdmeMeterWheelActivity;
@@ -82,10 +81,6 @@ public class BleAdmeAdvancedConfigFragment extends BaseBleIotCommunicateFragment
 
     private void processItemClick() {
         switch (selectedConfigModule.getName()) {
-            case "数据中心":
-                AdmeDataCenterHomeActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT, AppContants.DataCenterConfigMethod.ADVANCED_CONFIG);
-                break;
-
             case "计米轮":
                 AdmeMeterWheelActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT);
                 break;
@@ -108,10 +103,7 @@ public class BleAdmeAdvancedConfigFragment extends BaseBleIotCommunicateFragment
     private void initConfigModuleData() {
         configModuleList.clear();
 
-        ConfigModule configModule = new ConfigModule(R.drawable.ic_adme_advanced_config, "数据中心", "高级参数配置");
-        configModuleList.add(configModule);
-
-        configModule = new ConfigModule(R.drawable.ic_adme_advanced_config, "计米轮", "参数配置");
+        ConfigModule   configModule = new ConfigModule(R.drawable.ic_adme_advanced_config, "计米轮", "参数配置");
         configModuleList.add(configModule);
 
         configModule = new ConfigModule(R.drawable.ic_adme_advanced_config, "测斜仪", "参数配置");

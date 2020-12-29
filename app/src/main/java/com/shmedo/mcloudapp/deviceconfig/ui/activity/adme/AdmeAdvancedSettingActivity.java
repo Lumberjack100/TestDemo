@@ -8,16 +8,16 @@ import androidx.fragment.app.Fragment;
 
 import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.BaseConfigFragmentContainerActivity;
-import com.shmedo.mcloudapp.deviceconfig.ui.fragment.adme.BleAdmeBasicParamConfigFragment;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.adme.BleAdmeAdvancedSettingFragment;
 /**
  * 创建者:   gonghe <br/>
  * 创建时间:  2020/12/29<br/>
- * 描述：     ADME 基本参数配置页面
+ * 描述：     ADME 设置页面
  */
-public class AdmeBasicParamActivity extends BaseConfigFragmentContainerActivity {
+public class AdmeAdvancedSettingActivity extends BaseConfigFragmentContainerActivity {
 
     public static void startActivity(Context context, int connectWay) {
-        Intent intent = new Intent(context, AdmeBasicParamActivity.class);
+        Intent intent = new Intent(context, AdmeAdvancedSettingActivity.class);
         intent.putExtra(AppContants.Extras.COMMUNICATION_WAY, connectWay);
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         context.startActivity(intent);
@@ -26,7 +26,7 @@ public class AdmeBasicParamActivity extends BaseConfigFragmentContainerActivity 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mToolbarTitle.setText("基础配置");
+        mToolbarTitle.setText("设置");
     }
 
     @Override
@@ -34,7 +34,7 @@ public class AdmeBasicParamActivity extends BaseConfigFragmentContainerActivity 
         if (connectWay == AppContants.CommunicationWay.NET_PLATFORM_CONNECT) {
 
         } else {
-            fragment = BleAdmeBasicParamConfigFragment.newInstance();
+            fragment = BleAdmeAdvancedSettingFragment.newInstance();
         }
 
         return fragment;

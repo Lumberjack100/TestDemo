@@ -10,7 +10,11 @@ import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.BaseConfigFragmentContainerActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.adme.BleAdmeDataCenterAdvancedConfigFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.adme.BleAdmeDataCenterBasicConfigFragment;
-
+/**
+ * 创建者:   gonghe <br/>
+ * 创建时间:  2020/12/29<br/>
+ * 描述：     ADME 数据中心配置页面
+ */
 public class AdmeDataCenterConfigActivity extends BaseConfigFragmentContainerActivity {
     private int configMethod = AppContants.DataCenterConfigMethod.BASIC_CONFIG;
 

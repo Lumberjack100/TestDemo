@@ -9,7 +9,11 @@ import androidx.fragment.app.Fragment;
 import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.BaseConfigFragmentContainerActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.adme.BleAdmeAdvancedConfigFragment;
-
+/**
+ * 创建者:   gonghe <br/>
+ * 创建时间:  2020/12/29<br/>
+ * 描述：     ADME 高级配置页面
+ */
 public class AdmeAdvancedConfigActivity extends BaseConfigFragmentContainerActivity {
 
     public static void startActivity(Context context, int connectWay) {
