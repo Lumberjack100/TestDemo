@@ -29,7 +29,6 @@ import com.shmedo.configlibrary.ble.model.SystemRunStateInfo;
 import com.shmedo.configlibrary.ble.model.VersionMessageInfo;
 import com.shmedo.configlibrary.ble.utils.ResultParserUtil;
 import com.shmedo.configlibrary.ble.utils.StringUtil;
-import com.shmedo.core.MCloudApp;
 import com.shmedo.core.util.DensityUtil;
 import com.shmedo.core.util.GlobalUtil;
 import com.shmedo.mcloudapp.R;
@@ -47,7 +46,6 @@ import timber.log.Timber;
 
 /**
  * 测试通过下发指令查看设备当前运行状态
- * @deprecated
  */
 public class TestBleDasDeviceCurrentStateFragment extends TestBaseBleCommunicateFragment {
     /**
@@ -692,7 +690,7 @@ public class TestBleDasDeviceCurrentStateFragment extends TestBaseBleCommunicate
     @OnClick({R.id.fab_refresh})
     public void onClick(View v) {
         if (v.getId() == R.id.fab_refresh) {//断开/重新连接
-            if (!MCloudApp.isIsBluetoothDeviceConnected()) {
+            if (!isConnected()) {
                 ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
                 return;
             }

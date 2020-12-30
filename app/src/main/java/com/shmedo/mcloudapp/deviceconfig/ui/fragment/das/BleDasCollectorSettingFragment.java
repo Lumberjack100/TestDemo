@@ -22,7 +22,6 @@ import com.shmedo.configlibrary.ble.enums.CommandType;
 import com.shmedo.configlibrary.ble.model.CollectorConfigInfo;
 import com.shmedo.configlibrary.ble.utils.ResultParserUtil;
 import com.shmedo.configlibrary.ble.utils.StringUtil;
-import com.shmedo.core.MCloudApp;
 import com.shmedo.mcloudapp.R;
 
 import butterknife.BindView;
@@ -32,7 +31,7 @@ import timber.log.Timber;
 /**
  * 通过物联网平台蓝牙配置采集器
  */
-public class BleDasCollectorSettingFragment extends BaseBleConnectFragment {
+public class BleDasCollectorSettingFragment extends TestBaseBleCommunicateFragment {
     private static final String COLLECTOR_MODEL = "collector_model";
 
     @BindView(R.id.collectorAddressET)
@@ -109,7 +108,7 @@ public class BleDasCollectorSettingFragment extends BaseBleConnectFragment {
         startProgressRunnable("加载中...", 20000);
         CollectorConfigEntity collectorConfigEntity = new CollectorConfigEntity(collectorModel);
         String command = CommandManager.getInstance().getCommand(CommandType.COLLECTOR_CONFIG, collectorConfigEntity);
-        sendCommonCommandImmediately(command);
+        sendCommand(command);
         Timber.d("查询采集器配置信息===%s", command);
     }
 
@@ -133,7 +132,7 @@ public class BleDasCollectorSettingFragment extends BaseBleConnectFragment {
     @OnClick({R.id.btn_confirm})
     public void onClick(View v) {
         if (v.getId() == R.id.btn_confirm) {
-            if (!MCloudApp.isIsBluetoothDeviceConnected()) {
+            if (!isConnected()) {
                 ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
                 return;
             }
@@ -195,7 +194,7 @@ public class BleDasCollectorSettingFragment extends BaseBleConnectFragment {
 
         errMsg = "发送指令超时,请稍后尝试";
         startProgressRunnable("正在发送配置指令...", CONFIG_PARAMS_DELAY_MILLIS);
-        sendCommonCommandImmediately(cmdCollectorAddress);
+        sendCommand(cmdCollectorAddress);
         Timber.d("设置采集器地址指令===%s", cmdCollectorAddress);
     }
 
@@ -228,7 +227,7 @@ public class BleDasCollectorSettingFragment extends BaseBleConnectFragment {
                     stopProgressRunnable();
                     return;
                 }
-                sendCommonCommandImmediately(cmdCalculatTime);
+                sendCommand(cmdCalculatTime);
                 Timber.d("设置采集器解算频度指令===%s", cmdCalculatTime);
                 break;
 
@@ -238,7 +237,7 @@ public class BleDasCollectorSettingFragment extends BaseBleConnectFragment {
                     stopProgressRunnable();
                     return;
                 }
-                sendCommonCommandImmediately(cmdStandbyTime);
+                sendCommand(cmdStandbyTime);
                 Timber.d("设置采集器待机时长指令===%s", cmdStandbyTime);
                 break;
 
@@ -248,7 +247,7 @@ public class BleDasCollectorSettingFragment extends BaseBleConnectFragment {
                     stopProgressRunnable();
                     return;
                 }
-                sendCommonCommandImmediately(cmdCollectTime);
+                sendCommand(cmdCollectTime);
                 Timber.d("设置采集器采集频度指令===%s", cmdCollectTime);
                 break;
 
@@ -283,7 +282,7 @@ public class BleDasCollectorSettingFragment extends BaseBleConnectFragment {
 
     @Override
     public boolean onBackPressed() {
-        if (MCloudApp.isIsBluetoothDeviceConnected()) {
+        if (isConnected()) {
             if (checkValueIsChange()) {
                 warnNotYetSettingBeforeLeavePage();
                 return true;

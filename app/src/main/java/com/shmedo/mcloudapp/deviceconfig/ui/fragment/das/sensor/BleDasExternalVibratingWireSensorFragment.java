@@ -79,7 +79,7 @@ public class BleDasExternalVibratingWireSensorFragment extends BaseBleDasExterna
 
         errMsg = "发送指令超时,请稍后尝试";
         startProgressRunnable("正在发送配置指令...", CONFIG_PARAMS_LONG_DELAY_MILLIS);
-        sendCommonCommandImmediately(command);
+        sendCommand(command);
         Timber.d("设置 %s 接入的传感器指令===%s", collectorName, command);
     }
 
@@ -100,7 +100,7 @@ public class BleDasExternalVibratingWireSensorFragment extends BaseBleDasExterna
         }
         builderFirst.append("\r\n");
         String command = String.valueOf(builderFirst);
-        sendCommonCommandImmediately(command);
+        sendCommand(command);
         Timber.d("设置传感器触发阈值===%s", command);
     }
 
@@ -222,7 +222,7 @@ public class BleDasExternalVibratingWireSensorFragment extends BaseBleDasExterna
         }
 
         String command = correctValueCmdList.get(0);
-        sendCommonCommandImmediately(command);
+        sendCommand(command);
         Timber.d("设置传感器修正参数===%s", command);
         //移除已发送的指令
         correctValueCmdList.remove(0);

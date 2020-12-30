@@ -65,7 +65,7 @@ public class BleDasExternalDigtalSensorFragment extends BaseBleDasExternalSensor
 
         errMsg = "发送指令超时,请稍后尝试";
         startProgressRunnable("正在发送配置指令...", CONFIG_PARAMS_LONG_DELAY_MILLIS);
-        sendCommonCommandImmediately(command);
+        sendCommand(command);
         Timber.d("设置 %s 接入的传感器指令===%s", collectorName, command);
     }
 
@@ -130,7 +130,7 @@ public class BleDasExternalDigtalSensorFragment extends BaseBleDasExternalSensor
                 break;
         }
 
-        sendCommonCommandImmediately(command);
+        sendCommand(command);
         Timber.d("设置 %s %s 通道号的传感器触发阈值参数===%s", collectorName, StringUtil.formatStringTwo(paramsInfoSub.getSensorAddress()), command);
     }
 
@@ -151,7 +151,7 @@ public class BleDasExternalDigtalSensorFragment extends BaseBleDasExternalSensor
         }
         builderFirst.append("\r\n");
         String command = String.valueOf(builderFirst);
-        sendCommonCommandImmediately(command);
+        sendCommand(command);
         Timber.d("设置传感器触发阈值===%s", command);
     }
 
@@ -215,7 +215,7 @@ public class BleDasExternalDigtalSensorFragment extends BaseBleDasExternalSensor
                         sensorInclinometerInfo.getCorrectionValue() + "\r\n";
                 break;
         }
-        sendCommonCommandImmediately(command);
+        sendCommand(command);
         Timber.d("设置 %s 采集器 %s 地址的传感器修正值参数===%s", collectorModel, StringUtil.formatStringTwo(paramsInfoSub.getSensorAddress()), command);
     }
 
@@ -233,7 +233,7 @@ public class BleDasExternalDigtalSensorFragment extends BaseBleDasExternalSensor
         builderFirst.append("\r\n");
         String command = String.valueOf(builderFirst);
 
-        sendCommonCommandImmediately(command);
+        sendCommand(command);
         Timber.d("设置 %s 的测段长指令===%s", collectorName, command);
     }
 

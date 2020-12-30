@@ -15,7 +15,11 @@ import com.hjq.toast.ToastUtils;
 import com.shmedo.configlibrary.ble.cmd.CommandManager;
 import com.shmedo.configlibrary.ble.cmd.CommandResult;
 import com.shmedo.configlibrary.ble.cmd.entity.AuthenticationConfigEntity;
+import com.shmedo.configlibrary.ble.cmd.entity.LowEnergyModelEntity;
+import com.shmedo.configlibrary.ble.cmd.entity.SaveConfigInfoEntity;
 import com.shmedo.configlibrary.ble.enums.CommandType;
+import com.shmedo.configlibrary.ble.enums.LowEnergyModel;
+import com.shmedo.configlibrary.ble.enums.SaveConfigMode;
 import com.shmedo.configlibrary.ble.utils.DesUtil;
 import com.shmedo.configlibrary.ble.utils.StringUtil;
 import com.shmedo.core.MCloudApp;
@@ -31,9 +35,14 @@ import timber.log.Timber;
  * 创建者:   gonghe <br/>
  * 创建时间:  12/7/20 <br/>
  * 描述：     TODO
- * @deprecated
  */
 public abstract class TestBaseBleCommunicateFragment extends BaseFragment {
+    public static final int AUTHENTICATE_DELAY_MILLIS = 15000;//认证超时时间
+
+    public static final int CONFIG_PARAMS_DELAY_MILLIS = 20000;//发送配置参数指令超时时间
+
+    public static final int CONFIG_PARAMS_LONG_DELAY_MILLIS = 30000;//发送配置参数指令超时时间
+
     protected USRBleViewModel usrBleViewModel;
 
     private String SN = MCloudApp.getCurDeviceToken();
@@ -58,7 +67,7 @@ public abstract class TestBaseBleCommunicateFragment extends BaseFragment {
         public void run() {
             if (isConnected()) {
                 sendHeartData();
-                heartHander.postDelayed(this, 30000);
+                heartHander.postDelayed(this, 40000);
             }
         }
     }
@@ -149,6 +158,10 @@ public abstract class TestBaseBleCommunicateFragment extends BaseFragment {
                 return;
 
             } else {
+                if (cmdStr.startsWith("$$888")) {
+                    return;
+                }
+
                 parseResponseMessage(cmdStr);
             }
 
@@ -191,29 +204,7 @@ public abstract class TestBaseBleCommunicateFragment extends BaseFragment {
      * 解析设备的参数指令
      */
     protected void parseResponseMessage(String cmdStr) {
-        //处理心跳包应答指令，不分发指令
-        if (cmdStr.startsWith("$$888")) {
-            return;
-        }
-    }
 
-    /**
-     * 发送心跳数据(未定义的指令)
-     */
-    protected void sendHeartData() {
-        String command = CommandManager.getInstance().getCommand(CommandType.HEARTBEAT);
-        Timber.d("发送心跳数据：%s", command);
-        sendCommand(command);
-    }
-
-    /**
-     * 查询 DAS 设备的配置参数信息
-     */
-    protected void queryDASConfigInfoCmd() {
-        //获取基础配置信息  ##000
-        String command = CommandManager.getInstance().getCommand(CommandType.BASE_CONFIG);
-        Timber.d("获取基础配置信息指令===%s", command);
-        sendCommand(command);
     }
 
     /**
@@ -253,6 +244,24 @@ public abstract class TestBaseBleCommunicateFragment extends BaseFragment {
         }
     }
 
+    /**
+     * 发送心跳数据(未定义的指令)
+     */
+    protected void sendHeartData() {
+        String command = CommandManager.getInstance().getCommand(CommandType.HEARTBEAT);
+        Timber.d("发送心跳数据：%s", command);
+        sendCommand(command);
+    }
+
+    /**
+     * 查询 DAS 设备的配置参数信息
+     */
+    protected void queryDASConfigInfoCmd() {
+        //获取基础配置信息  ##000
+        String command = CommandManager.getInstance().getCommand(CommandType.BASE_CONFIG);
+        Timber.d("获取基础配置信息指令===%s", command);
+        sendCommand(command);
+    }
 
     protected void queryDeviceVersionInfo() {
         String command = CommandManager.getInstance().getCommand(CommandType.VERSION_MESSAGE);
@@ -260,8 +269,40 @@ public abstract class TestBaseBleCommunicateFragment extends BaseFragment {
         sendCommand(command);
     }
 
-    protected void sendCommand(String cmdStr) {
+    /**
+     * 打开/关闭设备低功耗模式
+     */
+    protected void setLowEnergyModel(boolean isOpen) {
+        LowEnergyModelEntity entity = new LowEnergyModelEntity(isOpen ? LowEnergyModel.ACTIVATE.toInt() : LowEnergyModel.STANDBY.toInt());
+        String command = CommandManager.getInstance().getCommand(CommandType.LOW_ENERGY, entity);
+        sendCommand(command);
+        Timber.d("打开/关闭设备低功耗模式指令===%s", command);
+    }
 
+    /**
+     * 保存配置信息重启设备指令
+     */
+    protected void saveConfigInfo() {
+        SaveConfigInfoEntity saveConfigInfoEntity = new SaveConfigInfoEntity(SaveConfigMode.SAVE_REBOOT.toInt());
+        String command = CommandManager.getInstance().getCommand(CommandType.SAVE_CONFIG_INFO, saveConfigInfoEntity);
+
+        errMsg = "发送指令超时,请稍后尝试";
+        startProgressRunnable("正在发送保存重启指令...", CONFIG_PARAMS_DELAY_MILLIS);
+        sendCommand(command);
+        Timber.d("发送保存配置重启设备指令===%s", command);
+    }
+
+    /**
+     * 保存配置信息，但不会重启设备指令
+     */
+    protected void saveConfigInfoNoReboot() {
+        SaveConfigInfoEntity saveConfigInfoEntity = new SaveConfigInfoEntity(SaveConfigMode.SAVE_NO_REBOOT.toInt());
+        String command = CommandManager.getInstance().getCommand(CommandType.SAVE_CONFIG_INFO, saveConfigInfoEntity);
+        sendCommand(command);
+        Timber.d("发送保存配置不重启设备指令===%s", command);
+    }
+
+    protected void sendCommand(String cmdStr) {
         usrBleViewModel.sendIOTProtocolCommand(cmdStr);
     }
 
@@ -313,5 +354,11 @@ public abstract class TestBaseBleCommunicateFragment extends BaseFragment {
                 });
         MaterialDialog mMaterialDialog = mBuilder.build();
         mMaterialDialog.show();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        stopProgressRunnable();
     }
 }

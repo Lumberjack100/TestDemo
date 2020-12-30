@@ -12,7 +12,7 @@ import androidx.annotation.Nullable;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.fragment.BaseFragment;
 import com.shmedo.mcloudapp.deviceconfig.model.DevcieCurrentState;
-import com.shmedo.mcloudapp.deviceconfig.ui.activity.DeviceCurrentStateActivity;
+import com.shmedo.mcloudapp.deviceconfig.ui.activity.das.DasCurrentStateActivity;
 import com.shmedo.mcloudapp.deviceconfig.util.DeviceCurrentRunStateUtils;
 import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfo;
 
@@ -147,7 +147,7 @@ public class NetDasDeviceCurrentState extends BaseFragment {
      */
 
 
-    private DeviceCurrentStateActivity stateActivity;
+    private DasCurrentStateActivity stateActivity;
     private ProjectDeviceInfo projectDeviceInfo;
     private DevcieCurrentState devcieCurrentState;
 
@@ -178,7 +178,7 @@ public class NetDasDeviceCurrentState extends BaseFragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        stateActivity = (DeviceCurrentStateActivity) mActivity;
+        stateActivity = (DasCurrentStateActivity) mActivity;
 
         if (projectDeviceInfo != null && devcieCurrentState != null) {
             initBasicInfo();

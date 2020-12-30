@@ -45,10 +45,9 @@ import com.shmedo.mcloudapp.deviceconfig.model.DeviceTypeInfo;
 import com.shmedo.mcloudapp.deviceconfig.model.DiscoveredBluetoothDevice;
 import com.shmedo.mcloudapp.deviceconfig.model.FirmWareInfo;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.AdvancedSettingActivity;
-import com.shmedo.mcloudapp.deviceconfig.ui.activity.das.DasCollectorSettingActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.DataCenterActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.DeviceConfigActivity;
-import com.shmedo.mcloudapp.deviceconfig.ui.activity.DeviceCurrentStateActivity;
+import com.shmedo.mcloudapp.deviceconfig.ui.activity.das.DasCollectorSettingActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.das.sensor.DasSensorConfigActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.das.BaseBleConnectFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.BaseDialogFragment;
@@ -282,7 +281,7 @@ public class BleConfigDeviceFragment extends BaseBleConnectFragment {
     private void processItemClick() {
         switch (selectedConfigModule.getName()) {
             case "状态":
-                DeviceCurrentStateActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT);
+//                DeviceCurrentStateActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT);
                 break;
 
             case "时间":

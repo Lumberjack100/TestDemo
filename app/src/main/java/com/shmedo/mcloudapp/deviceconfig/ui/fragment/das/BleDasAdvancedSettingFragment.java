@@ -14,7 +14,6 @@ import com.shmedo.configlibrary.ble.enums.CommandType;
 import com.shmedo.configlibrary.ble.utils.ResultParserUtil;
 import com.shmedo.configlibrary.ble.utils.StringUtil;
 import com.shmedo.core.AppContants;
-import com.shmedo.core.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.CustomCommandLogPrintActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.BaseDialogFragment;
@@ -27,7 +26,7 @@ import timber.log.Timber;
 /**
  * 蓝牙模式高级设置
  */
-public class BleDasAdvancedSettingFragment extends BaseBleConnectFragment {
+public class BleDasAdvancedSettingFragment extends TestBaseBleCommunicateFragment {
     private String installLocation;
 
 
@@ -48,7 +47,7 @@ public class BleDasAdvancedSettingFragment extends BaseBleConnectFragment {
     private void queryInstallLocation() {
         InstallLocationEntity installLocationEntity = new InstallLocationEntity(2);
         String command = CommandManager.getInstance().getCommand(CommandType.INSTALL_LOCATION, installLocationEntity);
-        sendCommonCommandImmediately(command);
+        sendCommand(command);
         Timber.i("查询安装位置：%s", command);
     }
 
@@ -72,7 +71,7 @@ public class BleDasAdvancedSettingFragment extends BaseBleConnectFragment {
                 break;
 
             case R.id.syncInstallLocationLayout:
-                if (!MCloudApp.isIsBluetoothDeviceConnected()) {
+                if (!isConnected()) {
                     ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
                     return;
                 }
@@ -82,7 +81,7 @@ public class BleDasAdvancedSettingFragment extends BaseBleConnectFragment {
                 break;
 
             case R.id.customCommandLogPrintLayout:
-                if (!MCloudApp.isIsBluetoothDeviceConnected()) {
+                if (!isConnected()) {
                     ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
                     return;
                 }
@@ -99,7 +98,7 @@ public class BleDasAdvancedSettingFragment extends BaseBleConnectFragment {
 
                 showProgressDialog("指令下发中...");
                 String command = "##9161" + location + "\r\n";
-                sendCommonCommandImmediately(command);
+                sendCommand(command);
                 Timber.i("同步安装位置指令：%s", command);
             }
 

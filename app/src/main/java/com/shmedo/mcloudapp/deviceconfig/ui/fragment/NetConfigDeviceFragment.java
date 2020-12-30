@@ -36,9 +36,9 @@ import com.shmedo.mcloudapp.deviceconfig.model.params.DispatchCmdParam;
 import com.shmedo.mcloudapp.deviceconfig.model.params.DispatchRawCmdParam;
 import com.shmedo.mcloudapp.deviceconfig.model.params.QueryCmdStateParam;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.AdvancedSettingActivity;
-import com.shmedo.mcloudapp.deviceconfig.ui.activity.das.DasCollectorSettingActivity;
-import com.shmedo.mcloudapp.deviceconfig.ui.activity.DeviceCurrentStateActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.DeviceHistoryDataAnalysisActivity;
+import com.shmedo.mcloudapp.deviceconfig.ui.activity.das.DasCollectorSettingActivity;
+import com.shmedo.mcloudapp.deviceconfig.ui.activity.das.DasCurrentStateActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.BaseDialogFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.FirmWareSelectDialog;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd.BaseDispatchCmdDialog;
@@ -444,7 +444,7 @@ public class NetConfigDeviceFragment extends BaseFragment {
                 ((QueryCurrentStateDialog) newFragment).setOnSeeDetailClickListener(new QueryCurrentStateDialog.OnSeeDetailClickListener() {
                     @Override
                     public void onSeeDetailClick(DevcieCurrentState devcieCurrentState) {
-                        DeviceCurrentStateActivity.startActivity(mActivity, projectDeviceInfo, devcieCurrentState);
+                        DasCurrentStateActivity.startActivity(mActivity, projectDeviceInfo, devcieCurrentState);
                     }
                 });
                 break;

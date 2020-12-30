@@ -32,13 +32,12 @@ import com.shmedo.configlibrary.ble.model.CollectorSensorParamsInfo;
 import com.shmedo.configlibrary.ble.utils.ResultParserUtil;
 import com.shmedo.configlibrary.ble.utils.StringUtil;
 import com.shmedo.core.AppContants;
-import com.shmedo.core.MCloudApp;
 import com.shmedo.core.util.DensityUtil;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.view.recycleviewitemdivider.GridSpacingItemDecoration;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.das.sensor.DasExternalDigitalSensorActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.das.sensor.DasExternalVibratingWireSensorActivity;
-import com.shmedo.mcloudapp.deviceconfig.ui.fragment.das.BaseBleConnectFragment;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.das.TestBaseBleCommunicateFragment;
 import com.shmedo.mcloudapp.projects.adapter.DASSensorAdapter;
 import com.shmedo.mcloudapp.projects.model.DASSensorItem;
 import com.shmedo.mcloudapp.util.bleutil.BlueResultParserUtil;
@@ -46,7 +45,6 @@ import com.shmedo.mcloudapp.util.bleutil.BlueResultParserUtil;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -55,7 +53,7 @@ import timber.log.Timber;
 /**
  * DAS扩展传感器配置页面
  */
-public abstract class BaseBleDasExternalSensorFragment extends BaseBleConnectFragment {
+public abstract class BaseBleDasExternalSensorFragment extends TestBaseBleCommunicateFragment {
     private static final int REQUEST_CODE_SENSOR_CONFIG = 0x0102;
 
     @BindView(R.id.recyclerview_sensor)
@@ -119,7 +117,7 @@ public abstract class BaseBleDasExternalSensorFragment extends BaseBleConnectFra
         sensorAdapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
-                if (!MCloudApp.isIsBluetoothDeviceConnected()) {
+                if (!isConnected()) {
                     ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
                     return;
                 }
@@ -134,7 +132,7 @@ public abstract class BaseBleDasExternalSensorFragment extends BaseBleConnectFra
                     return true;
                 }
 
-                if (!MCloudApp.isIsBluetoothDeviceConnected()) {
+                if (!isConnected()) {
                     ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
                     return true;
                 }
@@ -180,7 +178,7 @@ public abstract class BaseBleDasExternalSensorFragment extends BaseBleConnectFra
     }
 
     private void warnDeleteSensorItem(int position) {
-        MaterialDialog.Builder mBuilder = new MaterialDialog.Builder(Objects.requireNonNull(getContext()))
+        MaterialDialog.Builder mBuilder = new MaterialDialog.Builder(requireContext())
                 .title("温馨提示")
                 .content("确定移除传感器?")
                 .contentColorRes(R.color.title_text_color)
@@ -211,7 +209,7 @@ public abstract class BaseBleDasExternalSensorFragment extends BaseBleConnectFra
         startProgressRunnable("查询数据...", 20000);
         CollectorConfigEntity collectorConfigEntity = new CollectorConfigEntity(collectorModelValue);
         String command = CommandManager.getInstance().getCommand(CommandType.COLLECTOR_CONFIG, collectorConfigEntity);
-        sendCommonCommandImmediately(command);
+        sendCommand(command);
         Timber.d("查询采集器配置信息===%s", command);
     }
 
@@ -222,7 +220,7 @@ public abstract class BaseBleDasExternalSensorFragment extends BaseBleConnectFra
         String address = StringUtil.formatStringTwo(sensorIndex + "");
         CollectorSensorParamsEntity entity = new CollectorSensorParamsEntity(collectorModelValue, address);
         String command = CommandManager.getInstance().getCommand(CommandType.COLLECTOR_CHANNEL_SENSOR_PARAMETER, entity);
-        sendCommonCommand(command);
+        sendCommand(command);
         Timber.d("获取 %s 采集器 %s 通道的传感器参数===%s", collectorName, address, command);
     }
 
@@ -234,14 +232,14 @@ public abstract class BaseBleDasExternalSensorFragment extends BaseBleConnectFra
         String cmdCollectorAddress = CommandManager.getInstance().getCommand(CommandType.SET_COLLECTOR_ADDRESS, collectorAddressEntity);
         errMsg = "发送指令超时,请稍后尝试";
         startProgressRunnable("正在发送配置指令...", CONFIG_PARAMS_DELAY_MILLIS);
-        sendCommonCommandImmediately(cmdCollectorAddress);
+        sendCommand(cmdCollectorAddress);
         Timber.d("设置采集器地址指令===%s", cmdCollectorAddress);
     }
 
     @OnClick({R.id.btn_confirm})
     public void onClick(View v) {
         if (v.getId() == R.id.btn_confirm) {
-            if (!MCloudApp.isIsBluetoothDeviceConnected()) {
+            if (!isConnected()) {
                 ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
                 return;
             }

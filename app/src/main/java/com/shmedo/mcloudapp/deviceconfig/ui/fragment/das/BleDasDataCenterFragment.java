@@ -25,7 +25,6 @@ import com.shmedo.configlibrary.ble.model.BaseConfigInfo;
 import com.shmedo.configlibrary.ble.utils.StringUtil;
 import com.shmedo.configlibrary.ble.utils.ValidateUtil;
 import com.shmedo.core.AppContants;
-import com.shmedo.core.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.das.DataCenterServerConfigActivity;
 
@@ -36,7 +35,7 @@ import timber.log.Timber;
 /**
  * 蓝牙配置数据中心
  */
-public class BleDasDataCenterFragment extends BaseBleConnectFragment {
+public class BleDasDataCenterFragment extends TestBaseBleCommunicateFragment {
     @BindView(R.id.tv_communication_method)
     TextView mTvCommunicationMethod;
 
@@ -80,7 +79,7 @@ public class BleDasDataCenterFragment extends BaseBleConnectFragment {
         startProgressRunnable("正在获取参数...", 25000);
 
         String baseInfoCommand = CommandManager.getInstance().getCommand(CommandType.BASE_CONFIG);
-        sendCommonCommand(baseInfoCommand);
+        sendCommand(baseInfoCommand);
         Timber.d("查询基础配置信息指令===%s", baseInfoCommand);
     }
 
@@ -127,7 +126,7 @@ public class BleDasDataCenterFragment extends BaseBleConnectFragment {
                 break;
 
             case R.id.centerOneLayout:
-                if (!MCloudApp.isIsBluetoothDeviceConnected()) {
+                if (!isConnected()) {
                     ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
                     return;
                 }
@@ -135,7 +134,7 @@ public class BleDasDataCenterFragment extends BaseBleConnectFragment {
                 break;
 
             case R.id.centerTwoLayout:
-                if (!MCloudApp.isIsBluetoothDeviceConnected()) {
+                if (!isConnected()) {
                     ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
                     return;
                 }
@@ -143,7 +142,7 @@ public class BleDasDataCenterFragment extends BaseBleConnectFragment {
                 break;
 
             case R.id.centerThreeLayout:
-                if (!MCloudApp.isIsBluetoothDeviceConnected()) {
+                if (!isConnected()) {
                     ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
                     return;
                 }
@@ -151,7 +150,7 @@ public class BleDasDataCenterFragment extends BaseBleConnectFragment {
                 break;
 
             case R.id.btn_confirm:
-                if (!MCloudApp.isIsBluetoothDeviceConnected()) {
+                if (!isConnected()) {
                     ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
                     return;
                 }
@@ -209,7 +208,7 @@ public class BleDasDataCenterFragment extends BaseBleConnectFragment {
         startProgressRunnable("正在发送配置指令...", CONFIG_PARAMS_DELAY_MILLIS);
         DataCommunicateModeEntity communicateModeEntity = new DataCommunicateModeEntity(Integer.parseInt(dataCommunicationMode));
         String cmd = CommandManager.getInstance().getCommand(CommandType.DATA_MASSAGE_MODEL, communicateModeEntity);
-        sendCommonCommandImmediately(cmd);
+        sendCommand(cmd);
         Timber.d("设置数据通讯模式===%s", cmd);
     }
 
@@ -278,7 +277,7 @@ public class BleDasDataCenterFragment extends BaseBleConnectFragment {
                     stopProgressRunnable();
                     return;
                 }
-                sendCommonCommandImmediately(cmdDataReport);
+                sendCommand(cmdDataReport);
                 Timber.d("设置数据上报间隔===%s", cmdDataReport);
                 break;
 
@@ -289,7 +288,7 @@ public class BleDasDataCenterFragment extends BaseBleConnectFragment {
                     return;
                 }
                 if (dataCommunicationMode.equals("3") || dataCommunicationMode.equals("4")) {
-                    sendCommonCommandImmediately(cmdBDCardNumber);
+                    sendCommand(cmdBDCardNumber);
                     Timber.d("北斗配置参数===%s", cmdBDCardNumber);
                     return;
                 }
@@ -327,7 +326,7 @@ public class BleDasDataCenterFragment extends BaseBleConnectFragment {
 
     @Override
     public boolean onBackPressed() {
-        if (MCloudApp.isIsBluetoothDeviceConnected()) {
+        if (isConnected()) {
             if (checkValueIsChange()) {
                 warnNotYetSettingBeforeLeavePage();
                 return true;

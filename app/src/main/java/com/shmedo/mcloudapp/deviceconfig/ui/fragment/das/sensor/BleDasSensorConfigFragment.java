@@ -37,11 +37,10 @@ import com.shmedo.configlibrary.ble.model.QueryOsmometerParameterInfo;
 import com.shmedo.configlibrary.ble.utils.ResultParserUtil;
 import com.shmedo.configlibrary.ble.utils.StringUtil;
 import com.shmedo.core.AppContants;
-import com.shmedo.core.MCloudApp;
 import com.shmedo.core.util.GlobalUtil;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.das.sensor.DasExternalSensorHomeActivity;
-import com.shmedo.mcloudapp.deviceconfig.ui.fragment.das.BaseBleConnectFragment;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.das.TestBaseBleCommunicateFragment;
 import com.shmedo.mcloudapp.util.KeyBordUtils;
 
 import java.text.DecimalFormat;
@@ -55,7 +54,7 @@ import timber.log.Timber;
 /**
  * DAS 传感器配置页面
  */
-public class BleDasSensorConfigFragment extends BaseBleConnectFragment {
+public class BleDasSensorConfigFragment extends TestBaseBleCommunicateFragment {
 
     @BindView(R.id.radio_close_switch_sensor)
     RadioButton rbCloseSwitchSensor;
@@ -159,7 +158,7 @@ public class BleDasSensorConfigFragment extends BaseBleConnectFragment {
         mSbDigitalOsmometerEnable.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (!MCloudApp.isIsBluetoothDeviceConnected()) {
+                if (!isConnected()) {
                     ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
                     mSbDigitalOsmometerEnable.setCheckedImmediatelyNoEvent(!isChecked);
                     return;
@@ -270,7 +269,7 @@ public class BleDasSensorConfigFragment extends BaseBleConnectFragment {
         errMsg = "查询数据超时,请稍后尝试";
         startProgressRunnable("加载中...", 20000);
         String command = CommandManager.getInstance().getCommand(CommandType.BASE_CONFIG);
-        sendCommonCommandImmediately(command);
+        sendCommand(command);
         Timber.d("获取基础配置信息指令===%s", command);
     }
 
@@ -280,7 +279,7 @@ public class BleDasSensorConfigFragment extends BaseBleConnectFragment {
     private void setSwitchSensorCmd(RainStation rainStation) {
         RainStationEntity entity = new RainStationEntity(rainStation.toInt());
         String command = CommandManager.getInstance().getCommand(CommandType.RAIN_STATION, entity);
-        sendCommonCommandImmediately(command);
+        sendCommand(command);
         Timber.d("设置开关量指令==%s", command);
     }
 
@@ -290,7 +289,7 @@ public class BleDasSensorConfigFragment extends BaseBleConnectFragment {
     private void queryOrSetBreakAlarmCmd(BreakAlarmStatus breakAlarmStatus) {
         BreakAlarmStatusEntity entity = new BreakAlarmStatusEntity(breakAlarmStatus.toInt());
         String command = CommandManager.getInstance().getCommand(CommandType.BREAK_ALARM_STATUS, entity);
-        sendCommonCommandImmediately(command);
+        sendCommand(command);
         Timber.d("设置断线报警器指令==%s", command);
     }
 
@@ -299,7 +298,7 @@ public class BleDasSensorConfigFragment extends BaseBleConnectFragment {
      */
     private void queryDigitalOsmometerCmd() {
         String command = CommandManager.getInstance().getCommand(CommandType.QUERY_OSMOMETER_PARAMETER, null);
-        sendCommonCommandImmediately(command);
+        sendCommand(command);
         Timber.d("查询数字式渗压计配置信息===%s", command);
     }
 
@@ -309,7 +308,7 @@ public class BleDasSensorConfigFragment extends BaseBleConnectFragment {
     private void enableOrDisableDigitalOsmometerCmd(OsmometerStatus status) {
         DigitalOsmometerFunctionEntity entity = new DigitalOsmometerFunctionEntity(status.toInt());
         String command = CommandManager.getInstance().getCommand(CommandType.DIGITAL_OSMOMETER_FUNCTION, entity);
-        sendCommonCommandImmediately(command);
+        sendCommand(command);
         Timber.d("设置数字式渗压计指令==%s", command);
     }
 
@@ -317,7 +316,7 @@ public class BleDasSensorConfigFragment extends BaseBleConnectFragment {
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.extendSensorLayout:
-                if (!MCloudApp.isIsBluetoothDeviceConnected()) {
+                if (!isConnected()) {
                     ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
                     return;
                 }
@@ -327,7 +326,7 @@ public class BleDasSensorConfigFragment extends BaseBleConnectFragment {
             case R.id.btn_confirm:
                 KeyBordUtils.hideSoftKeyboard(view);
 
-                if (!MCloudApp.isIsBluetoothDeviceConnected()) {
+                if (!isConnected()) {
                     ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
                     return;
                 }
@@ -542,7 +541,7 @@ public class BleDasSensorConfigFragment extends BaseBleConnectFragment {
         }
 
         String command = cmdList.get(0);
-        sendCommonCommandImmediately(command);
+        sendCommand(command);
         Timber.d("设置雨量计或渗压计配置参数指令===%s", command);
         //移除已发送的指令
         cmdList.remove(0);
@@ -838,7 +837,7 @@ public class BleDasSensorConfigFragment extends BaseBleConnectFragment {
 
     @Override
     public boolean onBackPressed() {
-        if (MCloudApp.isIsBluetoothDeviceConnected()) {
+        if (isConnected()) {
             if (checkValueIsChange()) {
                 warnNotYetSettingBeforeLeavePage();
                 return true;

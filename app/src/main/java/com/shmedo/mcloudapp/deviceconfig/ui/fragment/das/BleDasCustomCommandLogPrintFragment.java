@@ -37,7 +37,7 @@ import timber.log.Timber;
 /**
  * 自定义蓝牙指令交互输出并保存日志文件
  */
-public class BleDasCustomCommandLogPrintFragment extends BaseBleConnectFragment {
+public class BleDasCustomCommandLogPrintFragment extends TestBaseBleCommunicateFragment {
     private static final String TAG = "BleCustomCommandLogPrintFragment";
 
     @BindView(R.id.tv_debug_mode)
@@ -82,7 +82,7 @@ public class BleDasCustomCommandLogPrintFragment extends BaseBleConnectFragment 
         snNumber = MCloudApp.getCurDeviceToken();
         Log4a.i(TAG, String.format("====开始调试设备：%s", snNumber));
         mTvDebugMode.setText("关闭");
-        bleViewModel.updateLogOutputMode(true);
+//        bleViewModel.updateLogOutputMode(true);
     }
 
     /**
@@ -93,7 +93,7 @@ public class BleDasCustomCommandLogPrintFragment extends BaseBleConnectFragment 
         logSwitchButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, final boolean isChecked) {
-                if (!MCloudApp.isIsBluetoothDeviceConnected()) {
+                if (!isConnected()) {
                     ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
                     logSwitchButton.setCheckedImmediatelyNoEvent(!isChecked);
                     return;
@@ -151,7 +151,7 @@ public class BleDasCustomCommandLogPrintFragment extends BaseBleConnectFragment 
                 break;
 
             case R.id.btn_send:
-                if (!MCloudApp.isIsBluetoothDeviceConnected()) {
+                if (!isConnected()) {
                     ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
                     return;
                 }
@@ -162,7 +162,7 @@ public class BleDasCustomCommandLogPrintFragment extends BaseBleConnectFragment 
                     ToastUtils.show("指令格式不正确，请重新输入");
                     return;
                 }
-                sendCommonCommandImmediately(result);
+                sendCommand(result);
                 logDataList.add(sendCode);
                 cmdAdapter.notifyDataSetChanged();
                 mRecyclerView.scrollToPosition(cmdAdapter.getItemCount() - 1);
@@ -211,7 +211,7 @@ public class BleDasCustomCommandLogPrintFragment extends BaseBleConnectFragment 
     private void  setLogOutputMode(boolean isOpen) {
         LogOutputEntity logOutputEntity = new LogOutputEntity(isOpen ? LogOutputStatus.OPEN.toInt() : LogOutputStatus.CLOSE.toInt());
         String command = CommandManager.getInstance().getCommand(CommandType.LOG_OUTPUT_STATUS, logOutputEntity);
-        sendCommonCommandImmediately(command);
+        sendCommand(command);
         logDataList.add(command.replace("\r\n",""));
         cmdAdapter.notifyDataSetChanged();
         mRecyclerView.scrollToPosition(cmdAdapter.getItemCount() - 1);
@@ -221,7 +221,7 @@ public class BleDasCustomCommandLogPrintFragment extends BaseBleConnectFragment 
     private void setWorkMode(WorkModel workMode) {
         WorkModeEntity workModeEntity = new WorkModeEntity(workMode.toInt());
         String command = CommandManager.getInstance().getCommand(CommandType.WORK_MODE, workModeEntity);
-        sendCommonCommandImmediately(command);
+        sendCommand(command);
         logDataList.add(command.replace("\r\n",""));
         cmdAdapter.notifyDataSetChanged();
         mRecyclerView.scrollToPosition(cmdAdapter.getItemCount() - 1);
@@ -253,7 +253,7 @@ public class BleDasCustomCommandLogPrintFragment extends BaseBleConnectFragment 
 
     @Override
     public void onDestroy() {
-        bleViewModel.updateLogOutputMode(false);
+//        bleViewModel.updateLogOutputMode(false);
         setLogOutputMode(false);
 
         super.onDestroy();

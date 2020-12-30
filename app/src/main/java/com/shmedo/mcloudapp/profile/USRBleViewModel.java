@@ -14,7 +14,6 @@ import com.shmedo.mcloudapp.deviceconfig.data.repository.DeviceRepository;
 import no.nordicsemi.android.ble.livedata.state.ConnectionState;
 import no.nordicsemi.android.log.LogSession;
 import no.nordicsemi.android.log.Logger;
-import timber.log.Timber;
 
 /**
  * 创建者:   gonghe <br/>
@@ -117,7 +116,7 @@ public class USRBleViewModel extends AndroidViewModel {
      * 发送物联网协议指令
      */
     public void sendIOTProtocolCommand(final String command) {
-        Timber.v("准备发送指令：%s", command);
+//        Timber.v("准备发送指令：%s", command);
         usrManager.writeMessage(command);
     }
 

@@ -34,7 +34,6 @@ import com.shmedo.configlibrary.ble.model.MqttConfigInfo;
 import com.shmedo.configlibrary.ble.model.ServerAddressInfo;
 import com.shmedo.configlibrary.ble.utils.ResultParserUtil;
 import com.shmedo.configlibrary.ble.utils.StringUtil;
-import com.shmedo.core.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.view.ClearEditText;
 import com.shmedo.mcloudapp.util.KeyBordUtils;
@@ -46,7 +45,7 @@ import timber.log.Timber;
 /**
  * Das数据中心参数配置页面
  */
-public class BleDasDataCenterServerConfigFragment extends BaseBleConnectFragment {
+public class BleDasDataCenterServerConfigFragment extends TestBaseBleCommunicateFragment {
 
     @BindView(R.id.ll_child_items)
     ViewGroup childItemsLayout;
@@ -194,7 +193,7 @@ public class BleDasDataCenterServerConfigFragment extends BaseBleConnectFragment
         mSbCenterEnable.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (!MCloudApp.isIsBluetoothDeviceConnected()) {
+                if (!isConnected()) {
                     ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
                     mSbCenterEnable.setCheckedImmediatelyNoEvent(!isChecked);
                     return;
@@ -255,7 +254,7 @@ public class BleDasDataCenterServerConfigFragment extends BaseBleConnectFragment
         //获取服务器地址,查询中心开启状态
         ServerNumberEntity serverNumberEntity = new ServerNumberEntity(serverNumber.toInt());
         String command = CommandManager.getInstance().getCommand(CommandType.SERVER_ADDRESS, serverNumberEntity);
-        sendCommonCommandImmediately(command);
+        sendCommand(command);
         Timber.d("查询数据服务器%s的地址指令===%s", serverNumber.toInt(), command);
     }
 
@@ -266,7 +265,7 @@ public class BleDasDataCenterServerConfigFragment extends BaseBleConnectFragment
     private void closeDataServer() {
         ServerNumberEntity serverNumberEntity = new ServerNumberEntity(serverNumber.toInt());
         String command = CommandManager.getInstance().getCommand(CommandType.SET_SERVER_ADDRESS_PORT, serverNumberEntity);
-        sendCommonCommandImmediately(command);//关闭服务器
+        sendCommand(command);//关闭服务器
         Timber.d("关闭数据服务器%s指令===%s", serverNumber.toInt(), command);
     }
 
@@ -276,7 +275,7 @@ public class BleDasDataCenterServerConfigFragment extends BaseBleConnectFragment
     private void queryDataCenterInfo() {
         ServerNumberEntity serverNumberEntity = new ServerNumberEntity(serverNumber.toInt());
         String command = CommandManager.getInstance().getCommand(CommandType.QUERY_DATA_CENTER_PARAM, serverNumberEntity);
-        sendCommonCommandImmediately(command);
+        sendCommand(command);
         Timber.d("查询数据中心%s的参数===%s", serverNumber.toInt(), command);
     }
 
@@ -295,7 +294,7 @@ public class BleDasDataCenterServerConfigFragment extends BaseBleConnectFragment
             case R.id.btn_confirm:
                 KeyBordUtils.hideSoftKeyboard(view);
 
-                if (!MCloudApp.isIsBluetoothDeviceConnected()) {
+                if (!isConnected()) {
                     ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
                     return;
                 }
@@ -594,7 +593,7 @@ public class BleDasDataCenterServerConfigFragment extends BaseBleConnectFragment
 
         errMsg = "发送指令超时,请稍后尝试";
         startProgressRunnable("正在发送配置指令...", CONFIG_PARAMS_DELAY_MILLIS);
-        sendCommonCommandImmediately(cmdCommunicationProtocol);
+        sendCommand(cmdCommunicationProtocol);
         Timber.d("设置网络中心通讯协议===%s", cmdCommunicationProtocol);
     }
 
@@ -647,7 +646,7 @@ public class BleDasDataCenterServerConfigFragment extends BaseBleConnectFragment
                     stopProgressRunnable();
                     return;
                 }
-                sendCommonCommandImmediately(cmdDataServerAddress);
+                sendCommand(cmdDataServerAddress);
                 Timber.d("数据服务器地址、端口配置===%s", cmdDataServerAddress);
                 break;
 
@@ -665,11 +664,11 @@ public class BleDasDataCenterServerConfigFragment extends BaseBleConnectFragment
                 if (communicationProtocol.equals("2")) {//MDM协议
                     doAfterSetting();
                 } else if (communicationProtocol.equals("4")) {//MQTT自动注册
-                    sendCommonCommandImmediately(cmdRegistrationPlatform);
+                    sendCommand(cmdRegistrationPlatform);
                     Timber.d("选择平台配置===%s", cmdRegistrationPlatform);
                     return;
                 } else if (communicationProtocol.equals("5")) {//MQTT手动注册
-                    sendCommonCommandImmediately(cmdKeepAliveValue);
+                    sendCommand(cmdKeepAliveValue);
                     Timber.d("设置KeepAlive===%s", cmdKeepAliveValue);
                     return;
                 }
@@ -681,7 +680,7 @@ public class BleDasDataCenterServerConfigFragment extends BaseBleConnectFragment
                     stopProgressRunnable();
                     return;
                 }
-                sendCommonCommandImmediately(cmdRegistrationPlatformAddress);
+                sendCommand(cmdRegistrationPlatformAddress);
                 Timber.d("自动注册平台地址配置===%s", cmdRegistrationPlatformAddress);
                 break;
 
@@ -691,7 +690,7 @@ public class BleDasDataCenterServerConfigFragment extends BaseBleConnectFragment
                     stopProgressRunnable();
                     return;
                 }
-                sendCommonCommandImmediately(cmdKeepAliveValue);
+                sendCommand(cmdKeepAliveValue);
                 Timber.d("设置KeepAlive===%s", cmdKeepAliveValue);
                 break;
 
@@ -701,7 +700,7 @@ public class BleDasDataCenterServerConfigFragment extends BaseBleConnectFragment
                     stopProgressRunnable();
                     return;
                 }
-                sendCommonCommandImmediately(cmdPlatformParam);
+                sendCommand(cmdPlatformParam);
                 Timber.d("自动/手动注册平台参数===%s", cmdPlatformParam);
                 break;
 
@@ -713,7 +712,7 @@ public class BleDasDataCenterServerConfigFragment extends BaseBleConnectFragment
                 }
                 //米度平台需要额外配置 APPKey
                 if (!TextUtils.isEmpty(registerPlatform) && registerPlatform.equals("2")) {
-                    sendCommonCommandImmediately(cmdAppKey);
+                    sendCommand(cmdAppKey);
                     Timber.d("设置 AppKey===%s", cmdAppKey);
                     return;
                 } else {
@@ -828,7 +827,7 @@ public class BleDasDataCenterServerConfigFragment extends BaseBleConnectFragment
 
     @Override
     public boolean onBackPressed() {
-        if (MCloudApp.isIsBluetoothDeviceConnected()) {
+        if (isConnected()) {
             if (checkValueIsChange()) {
                 warnNotYetSettingBeforeLeavePage();
                 return true;
