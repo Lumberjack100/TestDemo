@@ -5,6 +5,7 @@ import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattService;
 import android.content.Context;
+import android.text.TextUtils;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -16,6 +17,7 @@ import com.shmedo.mcloudapp.profile.callback.IOTCommandDataCallback;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 
 import no.nordicsemi.android.ble.callback.FailCallback;
@@ -108,14 +110,26 @@ public class USRManager extends ObservableBleManager {
     private final IOTCommandDataCallback notifyCallback = new IOTCommandDataCallback() {
         @Override
         public void onResponseReceived(@NonNull BluetoothDevice device, String result) {
-            Timber.d("接收数据(onResponseReceived): length=%s bytes;content: %s", result.getBytes().length, result);
+            Timber.v("接收数据(onResponseReceived): length=%s bytes;content: %s", result.getBytes().length, result);
             log(LogContract.Log.Level.APPLICATION, "接收数据(onResponseReceived): " + result);
-            responseMsg.setValue(result);
+
+            //处理接收的数据中有多条指令拼接的情况(其他指令和心跳包拼接的情况）
+            if (result.startsWith("$$")) {
+                String[] datas = result.split("\r\n");
+                if (datas != null && datas.length > 0) {
+                    for (String data : datas) {
+                        if (!TextUtils.isEmpty(data))
+                            responseMsg.setValue(data);
+                    }
+                }
+            } else {
+                responseMsg.setValue(result);
+            }
         }
 
         @Override
         public void onInvalidDataReceived(@NonNull final BluetoothDevice device, @NonNull final Data data) {
-            Timber.d("接收数据(onInvalidDataReceived): length=%s bytes;content: %s", data.getValue() == null ? 0 : data.getValue().length, data.getValue() == null ? "Null" : data.getStringValue(0));
+            Timber.w("接收数据(onInvalidDataReceived): length=%s bytes;content: %s", data.getValue() == null ? 0 : data.getValue().length, data.getValue() == null ? "Null" : data.getStringValue(0));
             log(Log.WARN, "Invalid data received: " + data);
             responseMsg.setValue("");
         }
@@ -159,9 +173,11 @@ public class USRManager extends ObservableBleManager {
                     .merge(new DataMerger() {
                         @Override
                         public boolean merge(@NonNull DataStream output, @Nullable byte[] lastPacket, int index) {
+                            Timber.e("merge: length=%s bytes;content: %s", lastPacket == null ? 0 : lastPacket.length, lastPacket == null ? "Null" : new String(lastPacket, StandardCharsets.UTF_8));
+
                             output.write(lastPacket);
                             //每条响应命令结尾以&&(物联网指令)或\r\n(##指令)作为分隔符
-                            return lastPacket == null || (lastPacket[lastPacket.length - 1] == 38 && lastPacket[lastPacket.length - 2] == 38)|| (lastPacket[lastPacket.length - 1] == 10 && lastPacket[lastPacket.length - 2] == 13);
+                            return lastPacket == null || (lastPacket[lastPacket.length - 1] == 38 && lastPacket[lastPacket.length - 2] == 38) || (lastPacket[lastPacket.length - 1] == 10 && lastPacket[lastPacket.length - 2] == 13);
                         }
                     });
 
@@ -224,7 +240,7 @@ public class USRManager extends ObservableBleManager {
                 .done(new SuccessCallback() {
                     @Override
                     public void onRequestCompleted(@NonNull BluetoothDevice device) {
-                        Timber.d("已写入数据(writeMessage): length=%s bytes;content: %s", command.getBytes().length, command);
+                        Timber.v("已写入数据(writeMessage): length=%s bytes;content: %s", command.getBytes().length, command);
                         log(LogContract.Log.Level.APPLICATION, "已写入数据(writeMessage): " + command);
                     }
                 })

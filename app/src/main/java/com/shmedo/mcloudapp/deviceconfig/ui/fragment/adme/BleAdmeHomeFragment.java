@@ -104,7 +104,7 @@ public class BleAdmeHomeFragment extends BaseBleIotCommunicateFragment {
     private MotionStateRunnable motionStateRunnable;
 
     /**
-     * 发送心跳包任务
+     * 查询设备运行状态
      */
     private class MotionStateRunnable implements Runnable {
         @Override
