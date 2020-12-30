@@ -10,6 +10,7 @@ import android.widget.TextView;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.Observer;
 
 import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.R;
@@ -58,6 +59,18 @@ public abstract class BaseConfigFragmentContainerActivity extends BaseActivity {
         parseIntent();
         replaceFragment(initFragment());
         configPageViewModel = getActivityScopeViewModel(ConfigPageViewModel.class);
+        configPageViewModel.configPageEditableChanged.observeInActivity(this, new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean isEditable) {
+                if (isEditable) {
+                    mTvAction.setText("取消");
+                    maskLayerLayout.setVisibility(View.GONE);
+                } else {
+                    mTvAction.setText("编辑");
+                    maskLayerLayout.setVisibility(View.VISIBLE);
+                }
+            }
+        });
     }
 
     protected void parseIntent() {
@@ -87,12 +100,12 @@ public abstract class BaseConfigFragmentContainerActivity extends BaseActivity {
         int id = view.getId();
         if (id == R.id.tv_action) {
             if (mTvAction.getText().toString().equals("编辑")) {
-                mTvAction.setText("取消");
-                maskLayerLayout.setVisibility(View.GONE);
+//                mTvAction.setText("取消");
+//                maskLayerLayout.setVisibility(View.GONE);
                 configPageViewModel.configPageEditableChanged.setValue(true);
             } else if (mTvAction.getText().toString().equals("取消")) {
-                mTvAction.setText("编辑");
-                maskLayerLayout.setVisibility(View.VISIBLE);
+//                mTvAction.setText("编辑");
+//                maskLayerLayout.setVisibility(View.VISIBLE);
                 configPageViewModel.configPageEditableChanged.setValue(false);
             }
         }

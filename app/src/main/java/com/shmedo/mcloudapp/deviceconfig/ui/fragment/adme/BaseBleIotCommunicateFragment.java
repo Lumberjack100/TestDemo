@@ -40,6 +40,8 @@ public abstract class BaseBleIotCommunicateFragment extends BaseFragment {
 
     protected ConfigPageViewModel configPageViewModel;
 
+    protected boolean isEditable = false;
+
     public boolean isExitMode = false;
 
     protected String errMsg;
@@ -136,6 +138,7 @@ public abstract class BaseBleIotCommunicateFragment extends BaseFragment {
     }
 
     protected void onEditableChanged(boolean isEditable) {
+        this.isEditable = isEditable;
     }
 
     @Override

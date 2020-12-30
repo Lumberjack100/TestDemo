@@ -326,6 +326,10 @@ public class BleAdmeStepperMotorFragment extends BaseBleIotCommunicateFragment {
     }
 
     private boolean checkValueIsChange() {
+        if (!mSbParamEnable.isChecked()) {
+            return false;
+        }
+
         if (paramEnableInitial != mSbParamEnable.isChecked()) {
             return true;
         }

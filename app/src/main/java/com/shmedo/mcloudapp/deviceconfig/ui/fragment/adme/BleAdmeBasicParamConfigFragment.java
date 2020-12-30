@@ -92,6 +92,7 @@ public class BleAdmeBasicParamConfigFragment extends BaseBleIotCommunicateFragme
         super.onActivityCreated(savedInstanceState);
         setView();
         queryBasicParamConfigInfo();
+        onEditableChanged(false);
     }
 
     private void setView() {
@@ -321,9 +322,16 @@ public class BleAdmeBasicParamConfigFragment extends BaseBleIotCommunicateFragme
     }
 
     private void doAfterSetting() {
+        if (basicConfigParam != null) {
+            basicConfigParam.setInctype(inclinometerType);
+            basicConfigParam.setAddress(address);
+            basicConfigParam.setInterdeep(inclinometerTubeHoleDepth);
+            basicConfigParam.setDownspeed(decentralizationSpeed);
+            basicConfigParam.setDownwaitetime(decentralizationWaitingTime);
+            basicConfigParam.setDatatype(dataSettlementMethod);
+        }
+        configPageViewModel.configPageEditableChanged.setValue(false);
         mBtnSave.setEnabled(true);
-        inclinometerTypeOld = inclinometerType;
-        dataSettlementMethodOld = dataSettlementMethod;
         ToastUtils.show("保存成功");
     }
 
@@ -384,6 +392,9 @@ public class BleAdmeBasicParamConfigFragment extends BaseBleIotCommunicateFragme
     }
 
     private boolean checkValueIsChange() {
+        if (!isEditable)
+            return false;
+
         if (inclinometerTypeOld != null && inclinometerType != null && !inclinometerTypeOld.equals(inclinometerType)) {
             return true;
         }
@@ -413,5 +424,36 @@ public class BleAdmeBasicParamConfigFragment extends BaseBleIotCommunicateFragme
             return true;
         }
         return false;
+    }
+
+    @Override
+    protected void onEditableChanged(boolean isEditable) {
+        super.onEditableChanged(isEditable);
+        if (isEditable) {
+            mTvInclinometerType.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.icon_right, 0);
+            mEtCollectorAddress.setHint("请输入");
+            mEtMacAddress.setHint("请输入");
+            mEtInclinometerTubeHoleDepth.setHint("请输入");
+            mEtDecentralizationSpeed.setHint("请输入");
+            mEtDecentralizationWaitingTime.setHint("请输入");
+            mTvDataSettlementMethod.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.icon_right, 0);
+        } else {
+            mTvInclinometerType.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+            mEtCollectorAddress.setHint("");
+            mEtMacAddress.setHint("");
+            mEtInclinometerTubeHoleDepth.setHint("");
+            mEtDecentralizationSpeed.setHint("");
+            mEtDecentralizationWaitingTime.setHint("");
+            mTvDataSettlementMethod.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+
+            initBasicParamConfigInfo();
+
+            mEtCollectorAddress.clearFocus();
+            mEtMacAddress.clearFocus();
+            mEtInclinometerTubeHoleDepth.clearFocus();
+            mEtDecentralizationSpeed.clearFocus();
+            mEtDecentralizationWaitingTime.clearFocus();
+        }
+        mBtnSave.setVisibility(isEditable ? View.VISIBLE : View.GONE);
     }
 }
