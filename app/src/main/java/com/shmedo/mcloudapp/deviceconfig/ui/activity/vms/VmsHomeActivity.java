@@ -29,7 +29,7 @@ public class VmsHomeActivity extends BaseActivity {
     @BindView(R.id.tv_title)
     TextView mToolbarTitle;
 
-    @BindView(R.id.right_icon)
+    @BindView(R.id.iv_action)
     ImageView mIvRightIcon;
 
     private int connectWay = AppContants.CommunicationWay.NET_PLATFORM_CONNECT;
@@ -78,9 +78,9 @@ public class VmsHomeActivity extends BaseActivity {
         replaceFragment(fragment);
     }
 
-    @OnClick({R.id.right_icon})
+    @OnClick({R.id.iv_action})
     public void onClick(View v) {
-        if (v.getId() == R.id.right_icon) {
+        if (v.getId() == R.id.iv_action) {
             VmsAdvancedSettingsActivity.startActivity(this, AppContants.CommunicationWay.TCP_CONNECT);
         }
     }

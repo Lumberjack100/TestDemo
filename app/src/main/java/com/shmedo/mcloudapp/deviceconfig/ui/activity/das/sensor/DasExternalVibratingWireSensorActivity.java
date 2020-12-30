@@ -53,7 +53,7 @@ public class DasExternalVibratingWireSensorActivity extends BaseActivity {
     @BindView(R.id.tv_title)
     TextView mToolbarTitle;
 
-    @BindView(R.id.right_icon)
+    @BindView(R.id.iv_action)
     ImageView mIvRightIcon;
 
     @BindView(R.id.tv_sensor_aisle)
@@ -194,14 +194,14 @@ public class DasExternalVibratingWireSensorActivity extends BaseActivity {
         }
     }
 
-    @OnClick({R.id.sensorAisleLayout, R.id.sensorTypeLayout, R.id.right_icon, R.id.btn_confirm})
+    @OnClick({R.id.sensorAisleLayout, R.id.sensorTypeLayout, R.id.iv_action, R.id.btn_confirm})
     public void onClick(View view) {
         int id = view.getId();
         if (id == R.id.sensorAisleLayout) {
             showSensorAisleChooseDialog();
         } else if (id == R.id.sensorTypeLayout) {
             showSensorTypeChooseDialog();
-        } else if (id == R.id.right_icon) {
+        } else if (id == R.id.iv_action) {
             PermissionHelper.requestScanPermissions(DasExternalVibratingWireSensorActivity.this);
         } else if (id == R.id.btn_confirm) {
             processSave();

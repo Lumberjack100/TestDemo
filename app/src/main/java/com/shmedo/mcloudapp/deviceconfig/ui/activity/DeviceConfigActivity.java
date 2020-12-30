@@ -16,9 +16,9 @@ import com.shmedo.core.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.activity.BaseActivity;
 import com.shmedo.mcloudapp.deviceconfig.model.DiscoveredBluetoothDevice;
-import com.shmedo.mcloudapp.deviceconfig.ui.fragment.BleConfigDeviceFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.NetConfigDeviceFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.adme.BleAdmeHomeFragment;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.das.TestBleDasHomeFragment;
 import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfo;
 
 import butterknife.BindView;
@@ -35,8 +35,8 @@ public class DeviceConfigActivity extends BaseActivity {
     @BindView(R.id.tv_title)
     TextView mToolbarTitle;
 
-    @BindView(R.id.right_icon)
-    ImageView mIvRightIcon;
+    @BindView(R.id.iv_action)
+    ImageView mIvAction;
 
     private int connectWay = AppContants.CommunicationWay.NET_PLATFORM_CONNECT;
 
@@ -72,8 +72,8 @@ public class DeviceConfigActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setToolBar(R.id.toolbar);
         mToolbarTitle.setText("设备配置");
-        mIvRightIcon.setVisibility(View.VISIBLE);
-        mIvRightIcon.setImageResource(R.drawable.ic_query_device_data);
+        mIvAction.setVisibility(View.VISIBLE);
+        mIvAction.setImageResource(R.drawable.ic_query_device_data);
         parseIntent();
         initFragment();
     }
@@ -100,8 +100,8 @@ public class DeviceConfigActivity extends BaseActivity {
 
         } else {
             if (device.getName().toUpperCase().endsWith("L")) {
-                fragment = BleConfigDeviceFragment.newInstance(device);
-//                            fragment = TestBleDasHomeFragment.newInstance(device);
+//                fragment = BleConfigDeviceFragment.newInstance(device);
+                            fragment = TestBleDasHomeFragment.newInstance(device);
 
             } else if (device.getName().toUpperCase().endsWith("T")) {
                 fragment = BleAdmeHomeFragment.newInstance(device);
@@ -110,9 +110,9 @@ public class DeviceConfigActivity extends BaseActivity {
         replaceFragment(fragment);
     }
 
-    @OnClick({R.id.right_icon})
+    @OnClick({R.id.iv_action})
     public void onClick(View v) {
-        if (v.getId() == R.id.right_icon) {
+        if (v.getId() == R.id.iv_action) {
             String sn;
             if (connectWay == AppContants.CommunicationWay.NET_PLATFORM_CONNECT) {
                 sn = projectDeviceInfo.getToken();

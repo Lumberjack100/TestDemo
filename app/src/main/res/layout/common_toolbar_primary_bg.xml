@@ -32,6 +32,7 @@
         android:textColor="@color/white"
         android:textSize="@dimen/text_size_16"
         android:visibility="invisible"
+        tools:visibility="visible"
         tools:text="切换企业" />
 
 </androidx.appcompat.widget.Toolbar>

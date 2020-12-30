@@ -40,8 +40,6 @@ import butterknife.OnClick;
 import timber.log.Timber;
 
 public class BleAdmeDataCenterAdvancedConfigFragment extends BaseBleIotCommunicateFragment {
-    @BindView(R.id.contentLayout)
-    ViewGroup contentLayout;
 
     @BindView(R.id.maskLayer)
     ViewGroup maskLayerLayout;

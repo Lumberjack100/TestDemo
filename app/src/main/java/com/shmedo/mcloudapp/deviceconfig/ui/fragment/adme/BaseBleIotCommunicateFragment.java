@@ -16,6 +16,7 @@ import com.shmedo.configlibrary.iot.cmd.IOTCommandManager;
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.fragment.BaseFragment;
+import com.shmedo.mcloudapp.deviceconfig.viewmodels.ConfigPageViewModel;
 import com.shmedo.mcloudapp.profile.USRBleViewModel;
 
 import java.util.UUID;
@@ -36,6 +37,8 @@ public abstract class BaseBleIotCommunicateFragment extends BaseFragment {
             + "&msgid=" + UUID.randomUUID().toString().substring(30);
 
     protected USRBleViewModel usrBleViewModel;
+
+    protected ConfigPageViewModel configPageViewModel;
 
     public boolean isExitMode = false;
 
@@ -122,6 +125,17 @@ public abstract class BaseBleIotCommunicateFragment extends BaseFragment {
                 }
             }
         });
+
+        configPageViewModel = getActivityScopeViewModel(ConfigPageViewModel.class);
+        configPageViewModel.configPageEditableChanged.observeInFragment(this, new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean isEditable) {
+                onEditableChanged(isEditable);
+            }
+        });
+    }
+
+    protected void onEditableChanged(boolean isEditable) {
     }
 
     @Override
