@@ -89,7 +89,6 @@ import timber.log.Timber;
 public class BleConfigDeviceFragment extends BaseBleConnectFragment {
     public static final String EXTRA_DEVICE = "com.shmedo.mcloudapp.EXTRA_DEVICE";
 
-
     private static final int LOW_ENERGY_MODEL = 0x0001;
     private static final int REBOOT = 0x0002;
     private static final int SWITCH_TO_NET = 0x0003;
@@ -107,10 +106,10 @@ public class BleConfigDeviceFragment extends BaseBleConnectFragment {
     TextView mTvSubModel;
 
     @BindView(R.id.tv_device_state_flag)
-    TextView mTvDeviceState;//通信状态(在线、离线、已连接、已断开)
+    TextView mTvDeviceState;//蓝牙连接状态(已连接、已断开)
 
     @BindView(R.id.tv_device_connect_operate)
-    TextView mTvDeviceConnectOperate;//蓝牙连接状态(断开连接、重新连接)
+    TextView mTvDeviceConnectOperate;//蓝牙连接操作(断开连接、重新连接)
 
     @BindView(R.id.tv_device_communication_way_switch)
     TextView mTvDeviceCommunicationWaySwitch;//通信方式(网络、蓝牙)
@@ -135,7 +134,6 @@ public class BleConfigDeviceFragment extends BaseBleConnectFragment {
     private BaseConfigInfo baseConfigInfo;
 
     private LocationViewModel locationViewModel;
-
 
 
     public static BleConfigDeviceFragment newInstance(DiscoveredBluetoothDevice device) {

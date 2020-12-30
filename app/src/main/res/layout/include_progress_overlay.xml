@@ -21,7 +21,7 @@
         android:indeterminate="true" />
 
     <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/connection_state"
+        android:id="@+id/tv_progress_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"

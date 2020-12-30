@@ -60,8 +60,8 @@ public class BleAdmeHomeFragment extends BaseBleIotCommunicateFragment {
     @BindView(R.id.progress_overlay)
     View progressOverlay;
 
-    @BindView(R.id.connection_state)
-    TextView mTvConnectState;
+    @BindView(R.id.tv_progress_text)
+    TextView mTvProgressText;
 
     @BindView(R.id.tv_device_name)
     TextView mTvDeviceName;//设备名称
@@ -242,7 +242,7 @@ public class BleAdmeHomeFragment extends BaseBleIotCommunicateFragment {
                 switch (connectionState.getState()) {
                     case CONNECTING://A connection to the device was initiated.
                         showProgressBar();
-                        mTvConnectState.setText(R.string.ble_state_connecting);
+                        mTvProgressText.setText(R.string.ble_state_connecting);
                         break;
 
                     case INITIALIZING://The device has connected and begun service discovery and initialization.
@@ -251,7 +251,7 @@ public class BleAdmeHomeFragment extends BaseBleIotCommunicateFragment {
 
                     case READY://The initialization is complete, and the device is ready to use.
                         onConnectionStateChanged(true);
-                        mTvConnectState.setText("初始化中...");
+                        mTvProgressText.setText("初始化中...");
                         usrBleViewModel.queryDeviceApiKeyBySn(device.getDevice().getName().substring(3));
                         break;
 
