@@ -168,10 +168,12 @@ public class BleDasHomeFragment extends BaseBleCommunicateFragment {
 
     private void setHeadInfo() {
         if (device != null) {
+            searchDeviceTypeInfo("DAS");
             mTvDeviceSn.setText(String.format("设备编号：%s", device.getName().substring(3)));
             mTvProductModel.setText(String.format("产品型号：%s", "DAS"));
-            searchDeviceTypeInfo("DAS");
         }
+        mTvSubModel.setText("采集器型号：--");
+        mTvPlatformCommunicationState.setVisibility(View.GONE);
         mTvDeviceConnectOperate.setVisibility(View.VISIBLE);
         mTvDeviceConnectOperate.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG);
     }
