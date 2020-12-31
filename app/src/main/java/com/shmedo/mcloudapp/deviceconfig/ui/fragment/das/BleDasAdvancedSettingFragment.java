@@ -26,7 +26,7 @@ import timber.log.Timber;
 /**
  * 蓝牙模式高级设置
  */
-public class BleDasAdvancedSettingFragment extends TestBaseBleCommunicateFragment {
+public class BleDasAdvancedSettingFragment extends BaseBleCommunicateFragment {
     private String installLocation;
 
 

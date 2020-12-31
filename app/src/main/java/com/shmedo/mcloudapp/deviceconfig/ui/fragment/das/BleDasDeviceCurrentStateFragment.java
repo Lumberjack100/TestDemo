@@ -47,7 +47,7 @@ import timber.log.Timber;
 /**
  * 测试通过下发指令查看设备当前运行状态
  */
-public class TestBleDasDeviceCurrentStateFragment extends TestBaseBleCommunicateFragment {
+public class BleDasDeviceCurrentStateFragment extends BaseBleCommunicateFragment {
     /**
      * 基本信息
      */
@@ -217,8 +217,8 @@ public class TestBleDasDeviceCurrentStateFragment extends TestBaseBleCommunicate
         return R.layout.test_ble_das_device_current_state_fragment;
     }
 
-    public static TestBleDasDeviceCurrentStateFragment newInstance() {
-        return new TestBleDasDeviceCurrentStateFragment();
+    public static BleDasDeviceCurrentStateFragment newInstance() {
+        return new BleDasDeviceCurrentStateFragment();
     }
 
     @Override

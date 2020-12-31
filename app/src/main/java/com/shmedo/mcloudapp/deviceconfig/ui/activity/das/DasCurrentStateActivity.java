@@ -9,8 +9,8 @@ import androidx.fragment.app.Fragment;
 import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.deviceconfig.model.DevcieCurrentState;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.BaseConfigFragmentContainerActivity;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.das.BleDasDeviceCurrentStateFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.das.NetDasDeviceCurrentState;
-import com.shmedo.mcloudapp.deviceconfig.ui.fragment.das.TestBleDasDeviceCurrentStateFragment;
 import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfo;
 
 /**
@@ -67,7 +67,7 @@ public class DasCurrentStateActivity extends BaseConfigFragmentContainerActivity
             fragment = NetDasDeviceCurrentState.newInstance(projectDeviceInfo, devcieCurrentState);
 
         } else {
-            fragment = TestBleDasDeviceCurrentStateFragment.newInstance();
+            fragment = BleDasDeviceCurrentStateFragment.newInstance();
         }
 
         return fragment;

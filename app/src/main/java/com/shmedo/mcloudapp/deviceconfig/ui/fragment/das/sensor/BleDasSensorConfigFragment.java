@@ -40,7 +40,7 @@ import com.shmedo.core.AppContants;
 import com.shmedo.core.util.GlobalUtil;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.das.sensor.DasExternalSensorHomeActivity;
-import com.shmedo.mcloudapp.deviceconfig.ui.fragment.das.TestBaseBleCommunicateFragment;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.das.BaseBleCommunicateFragment;
 import com.shmedo.mcloudapp.util.KeyBordUtils;
 
 import java.text.DecimalFormat;
@@ -54,7 +54,7 @@ import timber.log.Timber;
 /**
  * DAS 传感器配置页面
  */
-public class BleDasSensorConfigFragment extends TestBaseBleCommunicateFragment {
+public class BleDasSensorConfigFragment extends BaseBleCommunicateFragment {
 
     @BindView(R.id.radio_close_switch_sensor)
     RadioButton rbCloseSwitchSensor;

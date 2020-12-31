@@ -37,7 +37,7 @@ import timber.log.Timber;
 /**
  * 自定义蓝牙指令交互输出并保存日志文件
  */
-public class BleDasCustomCommandLogPrintFragment extends TestBaseBleCommunicateFragment {
+public class BleDasCustomCommandLogPrintFragment extends BaseBleCommunicateFragment {
     private static final String TAG = "BleCustomCommandLogPrintFragment";
 
     @BindView(R.id.tv_debug_mode)
@@ -82,7 +82,7 @@ public class BleDasCustomCommandLogPrintFragment extends TestBaseBleCommunicateF
         snNumber = MCloudApp.getCurDeviceToken();
         Log4a.i(TAG, String.format("====开始调试设备：%s", snNumber));
         mTvDebugMode.setText("关闭");
-//        bleViewModel.updateLogOutputMode(true);
+        usrBleViewModel.updateLogOutputMode(true);
     }
 
     /**
@@ -253,7 +253,7 @@ public class BleDasCustomCommandLogPrintFragment extends TestBaseBleCommunicateF
 
     @Override
     public void onDestroy() {
-//        bleViewModel.updateLogOutputMode(false);
+        usrBleViewModel.updateLogOutputMode(false);
         setLogOutputMode(false);
 
         super.onDestroy();

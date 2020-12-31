@@ -31,7 +31,7 @@ import timber.log.Timber;
 /**
  * 通过物联网平台蓝牙配置采集器
  */
-public class BleDasCollectorSettingFragment extends TestBaseBleCommunicateFragment {
+public class BleDasCollectorSettingFragment extends BaseBleCommunicateFragment {
     private static final String COLLECTOR_MODEL = "collector_model";
 
     @BindView(R.id.collectorAddressET)

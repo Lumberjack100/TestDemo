@@ -35,7 +35,7 @@ import timber.log.Timber;
 /**
  * 蓝牙配置数据中心
  */
-public class BleDasDataCenterFragment extends TestBaseBleCommunicateFragment {
+public class BleDasDataCenterFragment extends BaseBleCommunicateFragment {
     @BindView(R.id.tv_communication_method)
     TextView mTvCommunicationMethod;
 

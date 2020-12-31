@@ -45,7 +45,7 @@ import timber.log.Timber;
 /**
  * Das数据中心参数配置页面
  */
-public class BleDasDataCenterServerConfigFragment extends TestBaseBleCommunicateFragment {
+public class BleDasDataCenterServerConfigFragment extends BaseBleCommunicateFragment {
 
     @BindView(R.id.ll_child_items)
     ViewGroup childItemsLayout;

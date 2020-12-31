@@ -37,7 +37,7 @@ import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.view.recycleviewitemdivider.GridSpacingItemDecoration;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.das.sensor.DasExternalDigitalSensorActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.das.sensor.DasExternalVibratingWireSensorActivity;
-import com.shmedo.mcloudapp.deviceconfig.ui.fragment.das.TestBaseBleCommunicateFragment;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.das.BaseBleCommunicateFragment;
 import com.shmedo.mcloudapp.projects.adapter.DASSensorAdapter;
 import com.shmedo.mcloudapp.projects.model.DASSensorItem;
 import com.shmedo.mcloudapp.util.bleutil.BlueResultParserUtil;
@@ -53,7 +53,7 @@ import timber.log.Timber;
 /**
  * DAS扩展传感器配置页面
  */
-public abstract class BaseBleDasExternalSensorFragment extends TestBaseBleCommunicateFragment {
+public abstract class BaseBleDasExternalSensorFragment extends BaseBleCommunicateFragment {
     private static final int REQUEST_CODE_SENSOR_CONFIG = 0x0102;
 
     @BindView(R.id.recyclerview_sensor)

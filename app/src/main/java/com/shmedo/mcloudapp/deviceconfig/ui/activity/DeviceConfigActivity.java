@@ -18,7 +18,7 @@ import com.shmedo.mcloudapp.common.ui.activity.BaseActivity;
 import com.shmedo.mcloudapp.deviceconfig.model.DiscoveredBluetoothDevice;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.NetConfigDeviceFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.adme.BleAdmeHomeFragment;
-import com.shmedo.mcloudapp.deviceconfig.ui.fragment.das.TestBleDasHomeFragment;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.das.BleDasHomeFragment;
 import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfo;
 
 import butterknife.BindView;
@@ -101,7 +101,7 @@ public class DeviceConfigActivity extends BaseActivity {
         } else {
             if (device.getName().toUpperCase().endsWith("L")) {
 //                fragment = BleConfigDeviceFragment.newInstance(device);
-                fragment = TestBleDasHomeFragment.newInstance(device);
+                fragment = BleDasHomeFragment.newInstance(device);
 
             } else if (device.getName().toUpperCase().endsWith("T")) {
                 fragment = BleAdmeHomeFragment.newInstance(device);

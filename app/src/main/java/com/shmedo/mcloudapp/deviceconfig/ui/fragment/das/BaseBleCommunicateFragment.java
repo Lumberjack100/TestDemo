@@ -36,8 +36,7 @@ import timber.log.Timber;
  * 创建时间:  12/7/20 <br/>
  * 描述：     TODO
  */
-public abstract class TestBaseBleCommunicateFragment extends BaseFragment {
-    public static final int AUTHENTICATE_DELAY_MILLIS = 15000;//认证超时时间
+public abstract class BaseBleCommunicateFragment extends BaseFragment {
 
     public static final int CONFIG_PARAMS_DELAY_MILLIS = 20000;//发送配置参数指令超时时间
 
@@ -118,7 +117,9 @@ public abstract class TestBaseBleCommunicateFragment extends BaseFragment {
             @Override
             public void onChanged(String result) {
                 if (!result.startsWith("$$")) {
-                    return;
+                    if (usrBleViewModel.getLogOutputMode().getValue() == null || !usrBleViewModel.getLogOutputMode().getValue()) {
+                        return;
+                    }
                 }
                 handleResponseMessage(result);
             }

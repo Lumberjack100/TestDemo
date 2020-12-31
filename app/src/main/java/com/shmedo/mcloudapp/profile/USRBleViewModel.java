@@ -62,7 +62,6 @@ public class USRBleViewModel extends AndroidViewModel {
         DeviceRepository.getInstance().queryDeviceApiKeyBySn(sn);
     }
 
-
     /**
      * Connect to the given peripheral.
      *
