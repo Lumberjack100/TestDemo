@@ -148,7 +148,7 @@ public class BleDasSensorConfigFragment extends TestBaseBleCommunicateFragment {
         mEtWaterAlarmValue.setFilters(new InputFilter[]{new InputFilter.LengthFilter(5)});
         mEtWaterRevised.setFilters(new InputFilter[]{new InputFilter.LengthFilter(5)});
         mEtOsmometerCord.setFilters(new InputFilter[]{new InputFilter.LengthFilter(5)});
-        mEtNozzelHeight.setFilters(new InputFilter[]{new InputFilter.LengthFilter(5)});
+        mEtNozzelHeight.setFilters(new InputFilter[]{new InputFilter.LengthFilter(8)});
     }
 
     /**
