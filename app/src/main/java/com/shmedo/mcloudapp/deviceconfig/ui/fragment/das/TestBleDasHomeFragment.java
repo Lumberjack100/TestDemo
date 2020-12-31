@@ -124,6 +124,7 @@ public class TestBleDasHomeFragment extends TestBaseBleCommunicateFragment {
     private int deviceTypeID;
     private String deviceTypeName;
     private BaseConfigInfo baseConfigInfo;
+    private boolean isInitialSensorOpera = false;//是否初始化传感器操作
 
     private LocationViewModel locationViewModel;
 
@@ -251,6 +252,14 @@ public class TestBleDasHomeFragment extends TestBaseBleCommunicateFragment {
                 DasCurrentStateActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT);
                 break;
 
+            case "传感器初始化":
+                isInitialSensorOpera = true;
+                errMsg = "发送指令超时,请稍后尝试";
+                startProgressRunnable("指令下发中...", CONFIG_PARAMS_DELAY_MILLIS);
+                //发送激活DAS命令
+                setLowEnergyModel(true);
+                break;
+
             case "时间":
                 doQueryTimeCmd();
                 break;
@@ -338,7 +347,6 @@ public class TestBleDasHomeFragment extends TestBaseBleCommunicateFragment {
                         onConnectionStateChanged(true);
                         mTvProgressText.setText("初始化中...");
                         setAuthenticateWay();
-                        hideProgressBar();
                         break;
 
                     case DISCONNECTED:
@@ -487,9 +495,18 @@ public class TestBleDasHomeFragment extends TestBaseBleCommunicateFragment {
                 break;
 
             case LOW_ENERGY:
+                stopProgressRunnable();
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
+                    if (isInitialSensorOpera) {
+                        isInitialSensorOpera = false;
+                        ToastUtils.show("传感器初始化失败!");
+                    }
                     Timber.e("激活/待机指令出错!");
                     return;
+                }
+                if (isInitialSensorOpera) {
+                    isInitialSensorOpera = false;
+                    ToastUtils.show("传感器已初始化,设备即将重启!");
                 }
                 break;
 
@@ -552,6 +569,7 @@ public class TestBleDasHomeFragment extends TestBaseBleCommunicateFragment {
                     ToastUtils.show("保存参数指令错误!");
                     return;
                 }
+                ToastUtils.show("设备即将重启!");
                 break;
 
             default:
@@ -610,6 +628,9 @@ public class TestBleDasHomeFragment extends TestBaseBleCommunicateFragment {
     private void initConfigModuleData() {
         configModuleList.clear();
         ConfigModule configModule = new ConfigModule(R.drawable.ic_device_current_state, 5, GlobalUtil.getString(R.string.device_config_module_current_state), "获取当前设备状态");
+        configModuleList.add(configModule);
+
+        configModule = new ConfigModule(R.drawable.ic_device_reboot, "传感器初始化", "传感器初始化");
         configModuleList.add(configModule);
 
         configModule = new ConfigModule(R.drawable.ic_device_current_time, 1, "时间", "获取当前设备时间");

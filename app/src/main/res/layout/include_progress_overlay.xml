@@ -1,33 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/progress_overlay"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:alpha="0.4"
-    android:animateLayoutChanges="true"
-    android:background="@android:color/black"
-    android:clickable="true"
-    android:focusable="true"
-    android:gravity="center"
-    android:orientation="vertical"
+    android:background="@android:color/transparent"
     android:visibility="gone"
     tools:visibility="visible">
 
-    <ProgressBar
-        style="?android:attr/progressBarStyleHorizontal"
-        android:layout_width="250dp"
+    <LinearLayout
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:indeterminate="true" />
+        android:layout_gravity="center"
+        android:animateLayoutChanges="true"
+        android:background="@drawable/bg_progress_overlay"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="25dp">
 
-    <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/tv_progress_text"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:gravity="center_horizontal"
-        android:textColor="@color/white"
-        android:textSize="16sp"
-        tools:text="@string/ble_state_connecting" />
+        <ProgressBar
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:indeterminate="true" />
 
-</LinearLayout>
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/tv_progress_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:gravity="center_horizontal"
+            android:textColor="@color/white"
+            android:textSize="15sp"
+            tools:text="@string/ble_state_connecting" />
+
+    </LinearLayout>
+</FrameLayout>
