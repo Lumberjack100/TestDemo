@@ -109,10 +109,10 @@ public class BleAdmeHomeFragment extends BaseBleIotCommunicateFragment {
     private class MotionStateRunnable implements Runnable {
         @Override
         public void run() {
-//            if (isConnected()) {
-//                queryMotionState();
-//                motionStateHander.postDelayed(this, 2000);
-//            }
+            if (isConnected()) {
+                queryMotionState();
+                motionStateHander.postDelayed(this, 2000);
+            }
         }
     }
 
@@ -152,13 +152,10 @@ public class BleAdmeHomeFragment extends BaseBleIotCommunicateFragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mTvDeviceConnectOperate.setVisibility(View.VISIBLE);
-        mTvDeviceConnectOperate.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG);
+        setHeadInfo();
         initAdapter();
         initConfigModuleData();
-        //观察连接状态变化
         observerConnectionState();
-        //观察获取 ApiKey
         observerApiKey();
         //建立蓝牙连接
         connectDevice(device.getDevice());
@@ -169,6 +166,19 @@ public class BleAdmeHomeFragment extends BaseBleIotCommunicateFragment {
         super.onResume();
         onConnectionStateChanged(isConnected());
         startMotionStateRunnable();
+    }
+
+    private void setHeadInfo() {
+        mTvDeviceName.setText("水平自动监测设备");
+        mTvDeviceSn.setText("设备编号：--");
+        mTvProductModel.setText("产品型号：--");
+        mTvSubModel.setText("运行状态：--");
+        mTvPlatformCommunicationState.setText("平台连接状态：--");
+        mTvDeviceConnectOperate.setVisibility(View.VISIBLE);
+        mTvDeviceConnectOperate.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG);
+
+        equipModellPos = 0;
+        mTvConfigModel.setText("设备配置模式");
     }
 
     private void initAdapter() {
@@ -235,6 +245,9 @@ public class BleAdmeHomeFragment extends BaseBleIotCommunicateFragment {
         }
     }
 
+    /**
+     * 观察连接状态变化
+     */
     private void observerConnectionState() {
         usrBleViewModel.getConnectionState().observe(getViewLifecycleOwner(), new Observer<ConnectionState>() {
             @Override
@@ -277,11 +290,13 @@ public class BleAdmeHomeFragment extends BaseBleIotCommunicateFragment {
         });
     }
 
+    /**
+     * 观察获取 ApiKey
+     */
     private void observerApiKey() {
         usrBleViewModel.getDeviceApiKey().observeInFragment(this, new Observer<String>() {
             @Override
             public void onChanged(String apiKey) {
-                dismissProgressDialog();
                 queryEquipmentBaseInfo();
             }
         });
@@ -435,7 +450,6 @@ public class BleAdmeHomeFragment extends BaseBleIotCommunicateFragment {
                 hideProgressBar();
                 IOTCommandResult<AdmeBaseInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
-                    hideProgressBar();
                     String errMsg = String.format("%s %s", "获取设备的基本信息出错!", commandResult.getMessage());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
@@ -449,10 +463,8 @@ public class BleAdmeHomeFragment extends BaseBleIotCommunicateFragment {
             break;
 
             case ADME_MD_GET_MOTION_STATE: {//获取ADME的运行状态
-                hideProgressBar();
                 IOTCommandResult<AdmeMotionState> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
-                    hideProgressBar();
                     String errMsg = String.format("%s %s", "获取设备的运行状态出错!", commandResult.getMessage());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
@@ -508,6 +520,9 @@ public class BleAdmeHomeFragment extends BaseBleIotCommunicateFragment {
             mTvProductModel.setText("产品型号：--");
             mTvSubModel.setText("运行状态：--");
             mTvPlatformCommunicationState.setText("平台连接状态：--");
+
+            equipModellPos = 0;
+            mTvConfigModel.setText("设备配置模式");
         }
     }
 

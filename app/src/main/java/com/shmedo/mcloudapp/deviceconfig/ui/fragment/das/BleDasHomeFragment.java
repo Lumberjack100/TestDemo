@@ -158,6 +158,7 @@ public class BleDasHomeFragment extends BaseBleCommunicateFragment {
         initConfigModuleData();
         observerConnectionState();
         observerLocation();
+        //建立蓝牙连接
         connectDevice(device.getDevice());
     }
     @Override
@@ -331,6 +332,9 @@ public class BleDasHomeFragment extends BaseBleCommunicateFragment {
         }
     };
 
+    /**
+     * 观察连接状态变化
+     */
     private void observerConnectionState() {
         usrBleViewModel.getConnectionState().observe(getViewLifecycleOwner(), new Observer<ConnectionState>() {
             @Override
@@ -374,6 +378,9 @@ public class BleDasHomeFragment extends BaseBleCommunicateFragment {
         });
     }
 
+    /**
+     * 观察获取定位信息
+     */
     private void observerLocation() {
         locationViewModel = getApplicationScopeViewModel(LocationViewModel.class);
         locationViewModel.getSyncPositionBean().observeInFragment(this, new Observer<SyncPositionBean>() {
