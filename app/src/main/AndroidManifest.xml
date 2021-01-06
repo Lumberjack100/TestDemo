@@ -31,6 +31,8 @@
         android:name="android.permission.READ_LOGS"
         tools:ignore="ProtectedPermissions" />
 
+    <uses-permission android:name="no.nordicsemi.android.LOG"/>
+
     <uses-feature
         android:name="android.hardware.camera"
         android:required="false" />
