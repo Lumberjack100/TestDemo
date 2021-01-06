@@ -25,7 +25,7 @@ ext {
             circleimageview              : '3.0.0',
             banner                       : '2.1.0',
 
-            greendao                     : '3.2.2',
+            greendao                     : '3.3.0',
             eventbus                     : '3.1.1',
 
             butterknife                  : '10.2.1',
