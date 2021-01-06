@@ -30,8 +30,7 @@
     <uses-permission
         android:name="android.permission.READ_LOGS"
         tools:ignore="ProtectedPermissions" />
-
-    <uses-permission android:name="no.nordicsemi.android.LOG"/>
+    <uses-permission android:name="no.nordicsemi.android.LOG" />
 
     <uses-feature
         android:name="android.hardware.camera"
@@ -380,9 +379,14 @@
             android:maxAspectRatio="2.4"
             android:screenOrientation="portrait"
             android:theme="@style/LightStatusBarActivity" />
-
         <activity
             android:name=".deviceconfig.ui.activity.adme.AdmeAdvancedSettingActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:maxAspectRatio="2.4"
+            android:screenOrientation="portrait"
+            android:theme="@style/LightStatusBarActivity" />
+        <activity
+            android:name=".deviceconfig.ui.activity.adme.AdmeMeasuringHoleDepthActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:maxAspectRatio="2.4"
             android:screenOrientation="portrait"

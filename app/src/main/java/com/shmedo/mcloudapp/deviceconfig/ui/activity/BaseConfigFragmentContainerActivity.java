@@ -91,7 +91,7 @@ public abstract class BaseConfigFragmentContainerActivity extends BaseActivity {
 
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
-        transaction.replace(R.id.container, fragment);
+        transaction.replace(R.id.fragment_container_view, fragment);
         transaction.commitAllowingStateLoss();
     }
 
