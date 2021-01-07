@@ -101,7 +101,7 @@
                 android:layout_height="wrap_content"
                 android:drawableStart="@drawable/ic_motor_motion_distance"
                 android:drawablePadding="8dp"
-                android:text="运动距离(mm)"
+                android:text="运动距离(m)"
                 android:textColor="@color/text_color_666666"
                 android:textSize="15sp" />
 

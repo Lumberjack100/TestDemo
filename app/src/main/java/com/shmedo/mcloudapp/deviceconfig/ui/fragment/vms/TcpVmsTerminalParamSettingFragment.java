@@ -179,13 +179,13 @@ public class TcpVmsTerminalParamSettingFragment extends BaseTcpConnectFragment {
             try {
                 int port = Integer.parseInt(reportingInterval);
                 if (port < 60) {
-                    ToastUtils.show("请输入有效的数据上报间隔!");
+                    ToastUtils.show("请输入正确的数据上报间隔!");
                     mEtReportingInterval.requestFocus();
                     return false;
                 }
 
             } catch (Exception ex) {
-                ToastUtils.show("请输入有效的数据上报间隔!");
+                ToastUtils.show("请输入正确的数据上报间隔!");
                 mEtReportingInterval.requestFocus();
                 return false;
             }
@@ -194,13 +194,13 @@ public class TcpVmsTerminalParamSettingFragment extends BaseTcpConnectFragment {
             try {
                 int port = Integer.parseInt(networkNumber);
                 if (port < 1 || port > 65535) {
-                    ToastUtils.show("请输入有效的网络号!");
+                    ToastUtils.show("请输入正确的网络号!");
                     mEtNetworkNumber.requestFocus();
                     return false;
                 }
 
             } catch (Exception ex) {
-                ToastUtils.show("请输入有效的网络号!");
+                ToastUtils.show("请输入正确的网络号!");
                 mEtNetworkNumber.requestFocus();
                 return false;
             }
@@ -210,13 +210,13 @@ public class TcpVmsTerminalParamSettingFragment extends BaseTcpConnectFragment {
             try {
                 int port = Integer.parseInt(channelNumber);
                 if (port < 0 || port > 31) {
-                    ToastUtils.show("请输入有效的信道号!");
+                    ToastUtils.show("请输入正确的信道号!");
                     mEtChannelNumber.requestFocus();
                     return false;
                 }
 
             } catch (Exception ex) {
-                ToastUtils.show("请输入有效的信道号!");
+                ToastUtils.show("请输入正确的信道号!");
                 mEtChannelNumber.requestFocus();
                 return false;
             }
@@ -230,13 +230,13 @@ public class TcpVmsTerminalParamSettingFragment extends BaseTcpConnectFragment {
         try {
             int port = Integer.parseInt(airBaudRate);
             if (port < 1 || port > 6) {
-                ToastUtils.show("请输入有效的空中波特率!");
+                ToastUtils.show("请输入正确的空中波特率!");
                 mEtAirBaudRate.requestFocus();
                 return false;
             }
 
         } catch (Exception ex) {
-            ToastUtils.show("请输入有效的空中波特率!");
+            ToastUtils.show("请输入正确的空中波特率!");
             mEtAirBaudRate.requestFocus();
             return false;
         }

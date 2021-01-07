@@ -63,7 +63,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:button="@drawable/switch_sensor_radio_selector"
-                android:text="运动距离(mm)"
+                android:text="运动距离(m)"
                 android:textColor="@color/text_color_343434"
                 android:textSize="@dimen/text_size_17" />
 
@@ -71,7 +71,7 @@
                 android:id="@+id/motionDistanceEt"
                 style="@style/DataCenter_EditText_Style"
                 android:hint="请输入"
-                android:inputType="number"/>
+                android:inputType="numberDecimal"/>
 
         </LinearLayout>
 

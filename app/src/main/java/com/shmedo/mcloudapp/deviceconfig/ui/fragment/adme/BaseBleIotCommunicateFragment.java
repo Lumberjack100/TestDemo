@@ -204,6 +204,26 @@ public abstract class BaseBleIotCommunicateFragment extends BaseFragment {
         usrBleViewModel.sendIOTProtocolCommand(cmdStr);
     }
 
+    protected void sendCommandDelay(String cmdStr, long delayMillis) {
+        if (!isConnected()) {
+            return;
+        }
+        String apiKey = "b12aac6b-0bd2-4a01-80fd-97fe4f5d4ff9";
+        if (!TextUtils.isEmpty(usrBleViewModel.getDeviceApiKey().getValue())) {
+            apiKey = usrBleViewModel.getDeviceApiKey().getValue();
+        }
+        cmdStr += "&apikey=" + apiKey
+                + "&msgid=" + UUID.randomUUID().toString().substring(30);
+
+        String finalCmdStr = cmdStr;
+        uiHander.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                usrBleViewModel.sendIOTProtocolCommand(finalCmdStr);
+            }
+        }, delayMillis);
+    }
+
     protected void showDisconnectDialog(String content) {
         MaterialDialog.Builder mBuilder = new MaterialDialog.Builder(requireContext())
                 .title("温馨提示：")

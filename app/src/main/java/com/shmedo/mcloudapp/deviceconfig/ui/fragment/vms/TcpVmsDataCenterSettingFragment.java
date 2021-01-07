@@ -315,12 +315,12 @@ public class TcpVmsDataCenterSettingFragment extends BaseTcpConnectFragment {
         try {
             int port = Integer.parseInt(dataServerPort);
             if (port < 0 || port > 65535) {
-                ToastUtils.show("请输入有效的数据中心端口号!");
+                ToastUtils.show("请输入正确的数据中心端口号!");
                 mEtDataServerPort.requestFocus();
                 return false;
             }
         } catch (Exception ex) {
-            ToastUtils.show("请输入有效的数据中心端口号!");
+            ToastUtils.show("请输入正确的数据中心端口号!");
             mEtDataServerPort.requestFocus();
             return false;
         }
@@ -356,12 +356,12 @@ public class TcpVmsDataCenterSettingFragment extends BaseTcpConnectFragment {
 //            try {
 //                int port = Integer.parseInt(registerPort);
 //                if (port < 0 || port > 65535) {
-//                    ToastUtils.show("请输入有效的设备注册端口号!");
+//                    ToastUtils.show("请输入正确的设备注册端口号!");
 //                    mEtDeviceRegisterPort.requestFocus();
 //                    return false;
 //                }
 //            } catch (Exception ex) {
-//                ToastUtils.show("请输入有效的设备注册端口号!");
+//                ToastUtils.show("请输入正确的设备注册端口号!");
 //                mEtDeviceRegisterPort.requestFocus();
 //                return false;
 //            }

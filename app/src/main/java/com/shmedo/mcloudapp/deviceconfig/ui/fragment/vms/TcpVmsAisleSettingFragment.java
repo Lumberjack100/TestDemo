@@ -182,13 +182,13 @@ public class TcpVmsAisleSettingFragment extends BaseTcpConnectFragment {
             try {
                 int port = Integer.parseInt(networkNumber);
                 if (port < 1 || port > 65535) {
-                    ToastUtils.show("请输入有效的网络号!");
+                    ToastUtils.show("请输入正确的网络号!");
                     mEtNetworkNumber.requestFocus();
                     return false;
                 }
 
             } catch (Exception ex) {
-                ToastUtils.show("请输入有效的网络号!");
+                ToastUtils.show("请输入正确的网络号!");
                 mEtNetworkNumber.requestFocus();
                 return false;
             }
@@ -197,13 +197,13 @@ public class TcpVmsAisleSettingFragment extends BaseTcpConnectFragment {
             try {
                 int port = Integer.parseInt(aisleAddress);
                 if (port < 0 || port > 63) {
-                    ToastUtils.show("请输入有效的地址!");
+                    ToastUtils.show("请输入正确的地址!");
                     mEtAisleAddress.requestFocus();
                     return false;
                 }
 
             } catch (Exception ex) {
-                ToastUtils.show("请输入有效的地址!");
+                ToastUtils.show("请输入正确的地址!");
                 mEtAisleAddress.requestFocus();
                 return false;
             }
@@ -212,13 +212,13 @@ public class TcpVmsAisleSettingFragment extends BaseTcpConnectFragment {
             try {
                 int port = Integer.parseInt(channelNumber);
                 if (port < 0 || port > 31) {
-                    ToastUtils.show("请输入有效的信道号!");
+                    ToastUtils.show("请输入正确的信道号!");
                     mEtChannelNumber.requestFocus();
                     return false;
                 }
 
             } catch (Exception ex) {
-                ToastUtils.show("请输入有效的信道号!");
+                ToastUtils.show("请输入正确的信道号!");
                 mEtChannelNumber.requestFocus();
                 return false;
             }
@@ -231,13 +231,13 @@ public class TcpVmsAisleSettingFragment extends BaseTcpConnectFragment {
         try {
             int port = Integer.parseInt(airSpeed);
             if (port < 1 || port > 6) {
-                ToastUtils.show("请输入有效的空中速率!");
+                ToastUtils.show("请输入正确的空中速率!");
                 mEtAirSpeed.requestFocus();
                 return false;
             }
 
         } catch (Exception ex) {
-            ToastUtils.show("请输入有效的空中速率!");
+            ToastUtils.show("请输入正确的空中速率!");
             mEtAirSpeed.requestFocus();
             return false;
         }
@@ -245,13 +245,13 @@ public class TcpVmsAisleSettingFragment extends BaseTcpConnectFragment {
             try {
                 int port = Integer.parseInt(airWakeTime);
                 if (port < 0 || port > 5) {
-                    ToastUtils.show("请输入有效的空中唤醒时间!");
+                    ToastUtils.show("请输入正确的空中唤醒时间!");
                     mEtAirWakeTime.requestFocus();
                     return false;
                 }
 
             } catch (Exception ex) {
-                ToastUtils.show("请输入有效的空中唤醒时间!");
+                ToastUtils.show("请输入正确的空中唤醒时间!");
                 mEtAirWakeTime.requestFocus();
                 return false;
             }
@@ -264,13 +264,13 @@ public class TcpVmsAisleSettingFragment extends BaseTcpConnectFragment {
         try {
             int port = Integer.parseInt(terminalWorkingMode);
             if (port != 0 && port != 1) {
-                ToastUtils.show("请输入有效的终端工作模式!");
+                ToastUtils.show("请输入正确的终端工作模式!");
                 mEtTerminalWorkingMode.requestFocus();
                 return false;
             }
 
         } catch (Exception ex) {
-            ToastUtils.show("请输入有效的终端工作模式!");
+            ToastUtils.show("请输入正确的终端工作模式!");
             mEtTerminalWorkingMode.requestFocus();
             return false;
         }
@@ -278,13 +278,13 @@ public class TcpVmsAisleSettingFragment extends BaseTcpConnectFragment {
             try {
                 int port = Integer.parseInt(dataRequestInterval);
                 if (port < 3) {
-                    ToastUtils.show("请输入有效的数据请求间隔!");
+                    ToastUtils.show("请输入正确的数据请求间隔!");
                     mEtDataRequestInterval.requestFocus();
                     return false;
                 }
 
             } catch (Exception ex) {
-                ToastUtils.show("请输入有效的数据请求间隔!");
+                ToastUtils.show("请输入正确的数据请求间隔!");
                 mEtDataRequestInterval.requestFocus();
                 return false;
             }
@@ -293,13 +293,13 @@ public class TcpVmsAisleSettingFragment extends BaseTcpConnectFragment {
             try {
                 int port = Integer.parseInt(offlineInterval);
                 if (port < 7200) {
-                    ToastUtils.show("请输入有效的离线间隔!");
+                    ToastUtils.show("请输入正确的离线间隔!");
                     mEtOfflineInterval.requestFocus();
                     return false;
                 }
 
             } catch (Exception ex) {
-                ToastUtils.show("请输入有效的离线间隔!");
+                ToastUtils.show("请输入正确的离线间隔!");
                 mEtOfflineInterval.requestFocus();
                 return false;
             }
@@ -308,13 +308,13 @@ public class TcpVmsAisleSettingFragment extends BaseTcpConnectFragment {
             try {
                 int port = Integer.parseInt(terminalSleepTime);
                 if (port < 0 || port > 5) {
-                    ToastUtils.show("请输入有效的终端休眠时间!");
+                    ToastUtils.show("请输入正确的终端休眠时间!");
                     mEtTerminalSleepTime.requestFocus();
                     return false;
                 }
 
             } catch (Exception ex) {
-                ToastUtils.show("请输入有效的终端休眠时间!");
+                ToastUtils.show("请输入正确的终端休眠时间!");
                 mEtTerminalSleepTime.requestFocus();
                 return false;
             }
@@ -323,13 +323,13 @@ public class TcpVmsAisleSettingFragment extends BaseTcpConnectFragment {
             try {
                 int port = Integer.parseInt(terminalWakeTime);
                 if (port < 0 || port > 65535) {
-                    ToastUtils.show("请输入有效的终端唤醒时间!");
+                    ToastUtils.show("请输入正确的终端唤醒时间!");
                     mEtTerminalWakeTime.requestFocus();
                     return false;
                 }
 
             } catch (Exception ex) {
-                ToastUtils.show("请输入有效的终端唤醒时间!");
+                ToastUtils.show("请输入正确的终端唤醒时间!");
                 mEtTerminalWakeTime.requestFocus();
                 return false;
             }

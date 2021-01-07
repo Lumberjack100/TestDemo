@@ -2,6 +2,7 @@ package com.shmedo.mcloudapp.deviceconfig.ui.fragment.adme;
 
 import android.os.Bundle;
 import android.text.InputFilter;
+import android.text.InputType;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,7 +16,6 @@ import androidx.annotation.Nullable;
 import com.hjq.toast.ToastUtils;
 import com.lxj.xpopup.XPopup;
 import com.lxj.xpopup.interfaces.OnSelectListener;
-import com.shmedo.configlibrary.ble.utils.ValidateUtil;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandManager;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandResult;
 import com.shmedo.configlibrary.iot.cmd.entity.adme.AdmeMeasuringHoleDepthEntity;
@@ -95,10 +95,12 @@ public class BleAdmeMeasuringHoleDepthFragment extends BaseBleIotCommunicateFrag
     }
 
     private void setFilter() {
+        mEtMovementSpeed.setInputType(InputType.TYPE_CLASS_NUMBER);
         mEtMovementSpeed.setFilters(new InputFilter[]{new InputFilter.LengthFilter(2)});
-        mEtMotionDistance.setFilters(new InputFilter[]{new InputFilter.LengthFilter(10)});
-
         mEtMovementSpeed.setHint("1-99");
+
+        mEtMotionDistance.setInputType(InputType.TYPE_CLASS_NUMBER);
+        mEtMotionDistance.setFilters(new InputFilter[]{new InputFilter.LengthFilter(6)});
     }
 
     /**
@@ -141,6 +143,7 @@ public class BleAdmeMeasuringHoleDepthFragment extends BaseBleIotCommunicateFrag
         errMsg = "查询数据超时,请稍后尝试";
         startProgressRunnable("加载中...", DELAY_MILLIS);
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_GET_MEASURING_HOLEDEPTH_PARAMETERS);
+//        sendCommandDelay(command,1000);
         sendCommand(command);
     }
 
@@ -150,6 +153,7 @@ public class BleAdmeMeasuringHoleDepthFragment extends BaseBleIotCommunicateFrag
         if (isDoubleClick(view)) {
             return;
         }
+
         if (id == R.id.ll_motion_type) {
             showMotionTypeDialog();
 
@@ -164,17 +168,14 @@ public class BleAdmeMeasuringHoleDepthFragment extends BaseBleIotCommunicateFrag
                 return;
             }
 
+            processSave();
+
         } else if (id == R.id.ll_clear_motion_data) {
             KeyBordUtils.hideSoftKeyboard(view);
             if (!isConnected()) {
                 ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
                 return;
             }
-            if (!checkValueIsValid()) {
-                Timber.w("配置参数错误!");
-                return;
-            }
-            processSave();
         }
     }
 
@@ -189,12 +190,12 @@ public class BleAdmeMeasuringHoleDepthFragment extends BaseBleIotCommunicateFrag
         try {
             int port = Integer.parseInt(movementSpeed);
             if (port < 0 || port > 100) {
-                ToastUtils.show("请输入有效的电机运动速度!");
+                ToastUtils.show("请输入正确的电机运动速度!");
                 mEtMovementSpeed.requestFocus();
                 return false;
             }
         } catch (Exception ex) {
-            ToastUtils.show("请输入有效的电机运动速度!");
+            ToastUtils.show("请输入正确的电机运动速度!");
             mEtMovementSpeed.requestFocus();
             return false;
         }
@@ -204,12 +205,19 @@ public class BleAdmeMeasuringHoleDepthFragment extends BaseBleIotCommunicateFrag
             mEtMotionDistance.requestFocus();
             return false;
         }
-
-        if (!ValidateUtil.isInteger(motionDistance)) {
+        try {
+            double value = Double.parseDouble(motionDistance);
+            if (value < 0) {
+                ToastUtils.show("请输入正确的运动距离!");
+                mEtMotionDistance.requestFocus();
+                return false;
+            }
+        } catch (Exception ex) {
             ToastUtils.show("请输入正确的运动距离!");
             mEtMotionDistance.requestFocus();
             return false;
         }
+
         return true;
     }
 
@@ -277,7 +285,7 @@ public class BleAdmeMeasuringHoleDepthFragment extends BaseBleIotCommunicateFrag
                 stopProgressRunnable();
                 CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
                 if (!cmdResult.isSucceed()) {
-                    String errMsg = String.format("%s %s", "保存基础配置参数出错!", cmdResult.getReason());
+                    String errMsg = String.format("%s %s", "设置测量孔深配置参数出错!", cmdResult.getReason());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
                     mBtnRun.setEnabled(true);
@@ -286,11 +294,6 @@ public class BleAdmeMeasuringHoleDepthFragment extends BaseBleIotCommunicateFrag
                 doAfterSetting();
             }
             break;
-
-            default:
-                stopProgressRunnable();
-                super.parseResponseMessage(cmdStr);
-                break;
         }
     }
 
@@ -313,21 +316,30 @@ public class BleAdmeMeasuringHoleDepthFragment extends BaseBleIotCommunicateFrag
         mEtMovementSpeed.setText(movementSpeed);
         mEtMotionDistance.setText(motionDistance);
 
-        if (measuringHoleDepthInfo.getMorunstate().trim().equals('1'))
+        //电机处于运动状态，弹出底部运行数据展示框
+        if (measuringHoleDepthInfo.getMorunstate().trim().equals('1')) {
             showMotorMotionDialog();
+        }
     }
 
     private void doAfterSetting() {
+        if (motorMotionStateFragment != null && motorMotionStateFragment.isVisible()) {
+            return;
+        }
+
+        mBtnRun.setEnabled(true);
         if (measuringHoleDepthInfo != null) {
             measuringHoleDepthInfo.setMovementway(motionWay);
             measuringHoleDepthInfo.setMotorspeed(movementSpeed);
             measuringHoleDepthInfo.setMovedistance(motionDistance);
         }
-        mBtnRun.setEnabled(true);
         showMotorMotionDialog();
     }
 
     private void showMotorMotionDialog() {
+        if (motorMotionStateFragment != null && motorMotionStateFragment.isVisible())
+            return;
+
         if (measuringHoleDepthInfo != null) {
             motorMotionStateFragment = BleAdmeMotorMotionStateFragment.newInstance(measuringHoleDepthInfo);
             motorMotionStateFragment.show(getChildFragmentManager(), "dialog");

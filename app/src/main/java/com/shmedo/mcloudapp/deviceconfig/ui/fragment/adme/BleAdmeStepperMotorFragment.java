@@ -207,12 +207,12 @@ public class BleAdmeStepperMotorFragment extends BaseBleIotCommunicateFragment {
         try {
             int port = Integer.parseInt(movementSpeed);
             if (port < 0 || port > 100) {
-                ToastUtils.show("请输入有效的电机运动速度!");
+                ToastUtils.show("请输入正确的电机运动速度!");
                 mEtMovementSpeed.requestFocus();
                 return false;
             }
         } catch (Exception ex) {
-            ToastUtils.show("请输入有效的电机运动速度!");
+            ToastUtils.show("请输入正确的电机运动速度!");
             mEtMovementSpeed.requestFocus();
             return false;
         }

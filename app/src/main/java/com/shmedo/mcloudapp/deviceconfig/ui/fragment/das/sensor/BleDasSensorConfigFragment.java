@@ -367,12 +367,12 @@ public class BleDasSensorConfigFragment extends BaseBleCommunicateFragment {
         try {
             double value = Double.parseDouble(rainPrecision);
             if (value >= 1) {
-                ToastUtils.show("请输入有效的雨量计精度!");
+                ToastUtils.show("请输入正确的雨量计精度!");
                 mEtRainPrecision.requestFocus();
                 return false;
             }
         } catch (Exception ex) {
-            ToastUtils.show("请输入有效的雨量计精度!");
+            ToastUtils.show("请输入正确的雨量计精度!");
             mEtRainPrecision.requestFocus();
             return false;
         }
@@ -427,13 +427,13 @@ public class BleDasSensorConfigFragment extends BaseBleCommunicateFragment {
             try {
                 int value = Integer.parseInt(depthTriggerValue);
                 if (value < 1 || value > 65535) {
-                    ToastUtils.show("请输入有效的水位报警值!");
+                    ToastUtils.show("请输入正确的水位报警值!");
                     mEtWaterAlarmValue.requestFocus();
                     return false;
                 }
 
             } catch (Exception ex) {
-                ToastUtils.show("请输入有效的水位报警值!");
+                ToastUtils.show("请输入正确的水位报警值!");
                 mEtWaterAlarmValue.requestFocus();
                 return false;
             }
@@ -452,7 +452,7 @@ public class BleDasSensorConfigFragment extends BaseBleCommunicateFragment {
                 double value = Double.parseDouble(depthCorrection);
 
             } catch (Exception ex) {
-                ToastUtils.show("请输入有效的水深修正值!");
+                ToastUtils.show("请输入正确的水深修正值!");
                 mEtWaterRevised.requestFocus();
                 return false;
             }
@@ -471,7 +471,7 @@ public class BleDasSensorConfigFragment extends BaseBleCommunicateFragment {
                 double value = Double.parseDouble(osmometerLength);
 
             } catch (Exception ex) {
-                ToastUtils.show("请输入有效的渗压计绳长!");
+                ToastUtils.show("请输入正确的渗压计绳长!");
                 mEtOsmometerCord.requestFocus();
                 return false;
             }
@@ -490,7 +490,7 @@ public class BleDasSensorConfigFragment extends BaseBleCommunicateFragment {
                 double value = Double.parseDouble(nozzelHeight);
 
             } catch (Exception ex) {
-                ToastUtils.show("请输入有效的管口高程值!");
+                ToastUtils.show("请输入正确的管口高程值!");
                 mEtNozzelHeight.requestFocus();
                 return false;
             }
