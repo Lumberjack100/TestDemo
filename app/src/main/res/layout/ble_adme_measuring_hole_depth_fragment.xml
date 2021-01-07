@@ -69,19 +69,9 @@
 
             <com.shmedo.mcloudapp.common.view.ClearEditText
                 android:id="@+id/motionDistanceEt"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_marginStart="@dimen/dimen_size_25"
-                android:layout_weight="1"
-                android:background="@null"
-                android:drawablePadding="@dimen/dimen_size_15"
-                android:gravity="center_vertical|right"
+                style="@style/DataCenter_EditText_Style"
                 android:hint="请输入"
-                android:inputType="phone"
-                android:singleLine="true"
-                android:textColor="@color/text_color_666666"
-                android:textColorHint="@color/text_color_cccccc"
-                android:textSize="@dimen/text_size_17" />
+                android:inputType="number"/>
 
         </LinearLayout>
 

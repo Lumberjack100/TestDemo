@@ -17,7 +17,7 @@ import com.shmedo.mcloudapp.profile.callback.IOTCommandDataCallback;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Arrays;
+import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 
 import no.nordicsemi.android.ble.callback.FailCallback;
@@ -182,8 +182,8 @@ public class USRManager extends ObservableBleManager {
                     .merge(new DataMerger() {
                         @Override
                         public boolean merge(@NonNull DataStream output, @Nullable byte[] lastPacket, int index) {
-//                            Timber.e("merge: length=%s bytes;content: %s", lastPacket == null ? 0 : lastPacket.length, lastPacket == null ? "Null" : new String(lastPacket, StandardCharsets.UTF_8));
-                            Timber.e("merge: length=%s bytes;content: %s", lastPacket == null ? 0 : lastPacket.length, lastPacket == null ? "Null" : Arrays.toString(lastPacket));
+                            Timber.e("merge: length=%s bytes;content: %s", lastPacket == null ? 0 : lastPacket.length, lastPacket == null ? "Null" : new String(lastPacket, StandardCharsets.UTF_8));
+//                            Timber.e("merge: length=%s bytes;content: %s", lastPacket == null ? 0 : lastPacket.length, lastPacket == null ? "Null" : Arrays.toString(lastPacket));
 
                             output.write(lastPacket);
                             //每条响应命令结尾以&&(物联网指令)或\r\n(##指令)作为分隔符
