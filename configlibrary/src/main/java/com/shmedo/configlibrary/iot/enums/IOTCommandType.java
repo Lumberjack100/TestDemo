@@ -192,6 +192,31 @@ public enum IOTCommandType {
     ADME_MD_SET_EXECUTIVE_AGENCY_PARAMETERS("md_setactuator"),
 
     /**
+     * 获取ADME的测量孔深配置参数
+     */
+    ADME_MD_GET_MEASURING_HOLEDEPTH_PARAMETERS("md_getmhdmeasth"),
+
+    /**
+     * 设置ADME的测量孔深配置参数
+     */
+    ADME_MD_SET_MEASURING_HOLEDEPTH_PARAMETERS("md_setmhdmeasth"),
+
+    /**
+     * 查询ADME测孔深运动的脉冲数、运动距离
+     */
+    ADME_MD_GET_MEASURING_HOLEDEPTH_PULSE("md_getmhdpulsedistance"),
+
+    /**
+     * ADME测孔深运动停止
+     */
+    ADME_MD_STOP_MEASURING_HOLEDEPTH("md_setmhdmeasthstop"),
+
+    /**
+     * ADME测量孔深清空
+     */
+    ADME_MD_CLEAR_MEASURING_HOLEDEPTH_DATA("md_setmhdempty"),
+
+    /**
      * 自定义心跳包
      */
     HEART_BEAT("HeartBeatData");

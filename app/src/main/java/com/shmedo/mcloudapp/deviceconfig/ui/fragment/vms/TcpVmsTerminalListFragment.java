@@ -29,9 +29,9 @@ import com.shmedo.configlibrary.iot.cmd.parser.IOTParseManager;
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.enums.VmsAisleNumber;
 import com.shmedo.configlibrary.iot.model.CommonSettingCmdResult;
-import com.shmedo.configlibrary.iot.model.vms.VmsTerminalInfo;
 import com.shmedo.configlibrary.iot.model.vms.VmsAisleInfo;
 import com.shmedo.configlibrary.iot.model.vms.VmsAisleTerminalInfo;
+import com.shmedo.configlibrary.iot.model.vms.VmsTerminalInfo;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
 import com.shmedo.core.AppContants;
 import com.shmedo.core.util.DensityUtil;
@@ -45,7 +45,6 @@ import com.shmedo.mcloudapp.deviceconfig.viewmodels.VmsViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.UUID;
 
 import butterknife.BindView;
@@ -244,7 +243,6 @@ public class TcpVmsTerminalListFragment extends BaseBottomSheetDialogFragment {
             vmsTerminalInfo.setChl(vmsAisleTerminalInfo.getChl());
         }
     }
-
 
     private void doAfterSetting() {
         ToastUtils.show("删除成功");
