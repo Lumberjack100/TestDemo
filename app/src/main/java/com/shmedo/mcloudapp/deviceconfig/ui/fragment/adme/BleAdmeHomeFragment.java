@@ -42,6 +42,7 @@ import com.shmedo.mcloudapp.deviceconfig.ui.activity.adme.AdmeAdvancedConfigActi
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.adme.AdmeAdvancedSettingActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.adme.AdmeBasicParamActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.adme.AdmeDataCenterHomeActivity;
+import com.shmedo.mcloudapp.deviceconfig.ui.activity.adme.AdmeMeasuringHoleDepthActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -101,31 +102,30 @@ public class BleAdmeHomeFragment extends BaseBleIotCommunicateFragment {
     private String equipModel;//设备模式
 
     private Handler motionStateHander = new Handler();
-    private MotionStateRunnable motionStateRunnable;
+    private QueryMotorStateRunnable queryMotorStateRunnable;
 
     /**
      * 查询设备运行状态
      */
-    private class MotionStateRunnable implements Runnable {
+    private class QueryMotorStateRunnable implements Runnable {
         @Override
         public void run() {
-            if (isConnected()) {
-                queryMotionState();
-                motionStateHander.postDelayed(this, 2000);
-            }
+            if (!isActive)
+                return;
+
+            queryMotorState();
         }
     }
 
-    private void startMotionStateRunnable() {
-        if (motionStateRunnable == null) {
-            motionStateRunnable = new MotionStateRunnable();
-            motionStateHander.postDelayed(motionStateRunnable, 2000);
+    private void startQueryMotorStateRunnable() {
+        if (queryMotorStateRunnable != null) {
+            motionStateHander.postDelayed(queryMotorStateRunnable, 1000);
         }
     }
 
-    private void stopMotionStateRunnable() {
+    private void stopQueryMotorStateRunnable() {
         motionStateHander.removeCallbacksAndMessages(null);
-        motionStateRunnable = null;
+        queryMotorStateRunnable = null;
     }
 
     public static BleAdmeHomeFragment newInstance(DiscoveredBluetoothDevice device) {
@@ -165,7 +165,7 @@ public class BleAdmeHomeFragment extends BaseBleIotCommunicateFragment {
     public void onResume() {
         super.onResume();
         onConnectionStateChanged(isConnected());
-        startMotionStateRunnable();
+        startQueryMotorStateRunnable();
     }
 
     private void setHeadInfo() {
@@ -220,7 +220,7 @@ public class BleAdmeHomeFragment extends BaseBleIotCommunicateFragment {
                 break;
 
             case "测量孔深":
-
+                AdmeMeasuringHoleDepthActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT);
                 break;
 
             case "导槽校准":
@@ -376,9 +376,9 @@ public class BleAdmeHomeFragment extends BaseBleIotCommunicateFragment {
     }
 
     /**
-     * 获取设备的运行状态
+     * 获取电机的运行状态
      */
-    private void queryMotionState() {
+    private void queryMotorState() {
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_GET_MOTION_STATE);
         sendCommand(command);
     }
@@ -458,7 +458,8 @@ public class BleAdmeHomeFragment extends BaseBleIotCommunicateFragment {
                 admeBaseInfo = commandResult.getResult();
                 updateHeadInfo();
                 //获取设备的运行状态
-                startMotionStateRunnable();
+                queryMotorStateRunnable = new QueryMotorStateRunnable();
+                startQueryMotorStateRunnable();
             }
             break;
 
@@ -471,6 +472,8 @@ public class BleAdmeHomeFragment extends BaseBleIotCommunicateFragment {
                     return;
                 }
                 AdmeMotionState admeMotionState = commandResult.getResult();
+
+                startQueryMotorStateRunnable();
             }
             break;
 
@@ -577,7 +580,7 @@ public class BleAdmeHomeFragment extends BaseBleIotCommunicateFragment {
     @Override
     public void onStop() {
         super.onStop();
-        stopMotionStateRunnable();
+        stopQueryMotorStateRunnable();
     }
 
     @Override
