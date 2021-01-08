@@ -1,0 +1,183 @@
+package com.shmedo.mcloudapp.deviceconfig.ui.fragment.adme;
+
+import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.widget.CompoundButton;
+
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.hjq.toast.ToastUtils;
+import com.kyleduo.switchbutton.SwitchButton;
+import com.shmedo.configlibrary.iot.cmd.IOTCommandManager;
+import com.shmedo.configlibrary.iot.cmd.entity.IotLogOutputEntity;
+import com.shmedo.configlibrary.iot.enums.IOTCommandType;
+import com.shmedo.core.MCloudApp;
+import com.shmedo.mcloudapp.R;
+import com.shmedo.mcloudapp.common.view.ClearEditText;
+import com.shmedo.mcloudapp.util.TimeUtil;
+import com.zhy.adapter.recyclerview.CommonAdapter;
+import com.zhy.adapter.recyclerview.base.CommonViewHolder;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import butterknife.BindView;
+import butterknife.OnClick;
+import me.pqpo.librarylog4a.Log4a;
+
+/**
+ * 创建者:   gonghe <br/>
+ * 创建时间:  1/8/21 <br/>
+ * 描述：   自定义蓝牙指令交互输出并保存日志文件
+ */
+public class BleIotCustomCommandLogPrintFragment extends BaseBleIotCommunicateFragment {
+    private static final String TAG = "BleIotCustomCommandLogPrintFragment";
+
+    @BindView(R.id.logPrintEnableSBtn)
+    SwitchButton logSwitchButton;
+
+    @BindView(R.id.et_custom_command)
+    ClearEditText mEtcommand;
+
+    @BindView(R.id.recyclerView_log)
+    RecyclerView mRecyclerView;
+
+    @BindView(R.id.btn_send)
+    Button btnSend;
+
+    private CommonAdapter cmdAdapter;
+
+    private List<String> logDataList = new ArrayList<>();
+
+    private String snNumber;
+
+
+    public static BleIotCustomCommandLogPrintFragment newInstance() {
+        return new BleIotCustomCommandLogPrintFragment();
+    }
+
+    @Override
+    protected int getLayoutId() {
+        return R.layout.ble_iot_custom_command_log_print_fragment;
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        setView();
+        setSwitchViewListener();
+        initAdapter();
+    }
+
+    private void setView() {
+        snNumber = MCloudApp.getCurDeviceToken();
+        Log4a.i(TAG, String.format("====开始调试设备：%s", snNumber));
+        usrBleViewModel.updateLogOutputMode(true);
+    }
+
+    /**
+     * switch按钮事件
+     */
+    private void setSwitchViewListener() {
+        //日志输出开关
+        logSwitchButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, final boolean isChecked) {
+                if (!isConnected()) {
+                    ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
+                    logSwitchButton.setCheckedImmediatelyNoEvent(!isChecked);
+                    return;
+                }
+
+                if (isChecked) {
+                    setLogOutputMode(true);
+                } else {
+                    setLogOutputMode(false);
+                }
+            }
+        });
+    }
+
+    private void initAdapter() {
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(mActivity));
+        cmdAdapter = new CommonAdapter<String>(mActivity, R.layout.item_log_print, logDataList) {
+            @Override
+            protected void convert(CommonViewHolder holder, String string, int position) {
+                holder.setText(R.id.tv_log, string);
+            }
+        };
+        mRecyclerView.setAdapter(cmdAdapter);
+    }
+
+    @OnClick({R.id.fab_clear_log, R.id.btn_send})
+    public void onViewClicked(View view) {
+        if (isDoubleClick(view)) {
+            return;
+        }
+        int id = view.getId();
+        if (id == R.id.fab_clear_log) {
+            logDataList.clear();
+            cmdAdapter.notifyDataSetChanged();
+        } else if (id == R.id.btn_send) {
+            if (!isConnected()) {
+                ToastUtils.show(getString(R.string.tcp_config_disconnect_warn));
+                return;
+            }
+            //发送指令
+            String command = mEtcommand.getText().toString().trim();
+            if (!command.startsWith("$cmd")) {
+                ToastUtils.show("指令格式不正确，请重新输入");
+                return;
+            }
+            sendCommand(command);
+            btnSend.setEnabled(false);
+            logDataList.add(TimeUtil.getSysTimeStr() + "  " + command + "\r\n");
+            cmdAdapter.notifyDataSetChanged();
+            mRecyclerView.scrollToPosition(cmdAdapter.getItemCount() - 1);
+            Log4a.i(TAG, String.format("发送指令==%s", command));
+        }
+    }
+
+    private void setLogOutputMode(boolean isOpen) {
+        IotLogOutputEntity entity = new IotLogOutputEntity();
+        entity.setLevel(isOpen ? "info" : "off");
+        entity.setType("bt");
+        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.LOG_OUTPUT_MODE_LEVEL, entity);
+        sendCommand(command);
+
+        logDataList.add(TimeUtil.getSysTimeStr() + "  " + command + "\r\n");
+        cmdAdapter.notifyDataSetChanged();
+        mRecyclerView.scrollToPosition(cmdAdapter.getItemCount() - 1);
+    }
+
+    @Override
+    protected void parseResponseMessage(String cmdStr) {
+        if (!isActive) {
+            return;
+        }
+        setResultData(cmdStr);
+    }
+
+    private void setResultData(final String cmdStr) {
+        btnSend.setEnabled(true);
+        Log4a.i(TAG, cmdStr);
+        Log4a.flush();
+        logDataList.add(TimeUtil.getSysTimeStr() + "  " + cmdStr + "\r\n");
+        cmdAdapter.notifyDataSetChanged();
+        mRecyclerView.scrollToPosition(cmdAdapter.getItemCount() - 1);
+    }
+
+    @Override
+    public void onDestroy() {
+        usrBleViewModel.updateLogOutputMode(false);
+        setLogOutputMode(false);
+
+        String content = String.format("====结束调试设备：%s\r\n", snNumber);
+        Log4a.i(TAG, content);
+        Log4a.flush();
+        super.onDestroy();
+    }
+}

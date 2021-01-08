@@ -38,6 +38,7 @@ import com.shmedo.mcloudapp.common.view.recycleviewitemdivider.GridSpacingItemDe
 import com.shmedo.mcloudapp.deviceconfig.adapter.ConfigModuleAdapter;
 import com.shmedo.mcloudapp.deviceconfig.model.ConfigModule;
 import com.shmedo.mcloudapp.deviceconfig.model.DiscoveredBluetoothDevice;
+import com.shmedo.mcloudapp.deviceconfig.ui.activity.CustomCommandLogPrintActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.adme.AdmeAdvancedConfigActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.adme.AdmeAdvancedSettingActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.adme.AdmeBasicParamActivity;
@@ -233,7 +234,7 @@ public class BleAdmeHomeFragment extends BaseBleIotCommunicateFragment {
                 break;
 
             case "指令下发":
-
+                CustomCommandLogPrintActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT, AppContants.CommmandType.IOT_COMMAND);
                 break;
 
             case "高级配置":

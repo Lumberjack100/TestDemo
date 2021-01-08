@@ -22,6 +22,14 @@ public interface AppContants {
     }
 
     /**
+     *  指令类型
+     */
+    interface CommmandType{
+        int  OLD_COMMAND = 0x001;//##指令
+        int IOT_COMMAND = 0x002;// 米度物联网指令
+    }
+
+    /**
      * 通讯方式
      */
     interface CommunicationWay {
@@ -71,6 +79,9 @@ public interface AppContants {
 
         //数据中心状态
         String DATA_SERVER_STATUS = "data_server_status";
+
+        // 设备指令类型  物联网指令、##指令
+        String DEVICE_COMMMAND_TYPE = "device_commmand_type";
     }
 
 }

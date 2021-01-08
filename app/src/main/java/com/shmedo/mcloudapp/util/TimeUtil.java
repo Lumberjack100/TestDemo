@@ -22,6 +22,8 @@ public class TimeUtil {
     private static SimpleDateFormat sdf = null;
     private static SimpleDateFormat sdf_systime_format = new SimpleDateFormat("yyMMddHHmmss");
     private static SimpleDateFormat sdf_systime_format2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    private static SimpleDateFormat sdf_systime_format3 = new SimpleDateFormat("HH:mm:ss.SSS");
+
 
     public static String formatUTC(long l, String strPattern) {
         if (TextUtils.isEmpty(strPattern)) {
@@ -45,7 +47,7 @@ public class TimeUtil {
      */
     public static String getSysTimeStr() {
         try {
-            return sdf_systime_format.format(Calendar.getInstance().getTime());
+            return sdf_systime_format3.format(Calendar.getInstance().getTime());
         } catch (Exception e) {
             Timber.i("DateUtil.getSysTime():" + e.getMessage());
             return "";

@@ -47,6 +47,10 @@ public enum IOTCommandType {
      */
     SET_WORK_MODE("setworkmode"),
 
+    /**
+     * 日志输出等级和输出方式
+     */
+    LOG_OUTPUT_MODE_LEVEL("md_setlogoutput"),
 
     /*　VMS-LoRa网关指令  */
     /**

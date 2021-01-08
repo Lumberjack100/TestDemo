@@ -112,16 +112,14 @@ public abstract class BaseBleIotCommunicateFragment extends BaseFragment {
         usrBleViewModel.getResponseMsg().observeInFragment(this, new Observer<String>() {
             @Override
             public void onChanged(String result) {
-                if (result.startsWith("$$"))
-                    return;
-
-                //跳过心跳包数据的分发处理
-                if (result.contains(heartBeat))
-                    return;
+                if (!result.startsWith("$cmd=")) {
+                    if (usrBleViewModel.getLogOutputMode().getValue() == null || !usrBleViewModel.getLogOutputMode().getValue()) {
+                        return;
+                    }
+                }
 
                 try {
                     parseResponseMessage(result);
-
                 } catch (Exception ex) {
                     Timber.e(ex);
                 }
@@ -192,6 +190,7 @@ public abstract class BaseBleIotCommunicateFragment extends BaseFragment {
 
     protected void sendCommand(String cmdStr) {
         if (!isConnected()) {
+            ToastUtils.show(getString(R.string.tcp_config_disconnect_warn));
             return;
         }
         String apiKey = "b12aac6b-0bd2-4a01-80fd-97fe4f5d4ff9";
