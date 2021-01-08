@@ -11,8 +11,11 @@ import android.widget.CompoundButton;
 import android.widget.RadioButton;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.hjq.toast.ToastUtils;
 import com.lxj.xpopup.XPopup;
 import com.lxj.xpopup.interfaces.OnSelectListener;
@@ -86,21 +89,24 @@ public class BleAdmeMeasuringHoleDepthFragment extends BaseBleIotCommunicateFrag
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        setFilter();
+        setView();
         setRadioButtonListener();
         queryParamInfo();
-
-        rbAutoControl.setChecked(true);
-        rbManualControl.setTextColor(GlobalUtil.getColor(R.color.text_color_cccccc));
     }
 
-    private void setFilter() {
+    private void setView() {
         mEtMovementSpeed.setInputType(InputType.TYPE_CLASS_NUMBER);
         mEtMovementSpeed.setFilters(new InputFilter[]{new InputFilter.LengthFilter(2)});
         mEtMovementSpeed.setHint("1-99");
 
         mEtMotionDistance.setInputType(InputType.TYPE_CLASS_NUMBER);
         mEtMotionDistance.setFilters(new InputFilter[]{new InputFilter.LengthFilter(6)});
+
+        rbAutoControl.setChecked(true);
+        rbManualControl.setTextColor(GlobalUtil.getColor(R.color.text_color_cccccc));
+
+        clearMotionDataLayout.setVisibility(View.VISIBLE);
+        motionDataClearCompleteLayout.setVisibility(View.GONE);
     }
 
     /**
@@ -141,9 +147,18 @@ public class BleAdmeMeasuringHoleDepthFragment extends BaseBleIotCommunicateFrag
      */
     private void queryParamInfo() {
         errMsg = "查询数据超时,请稍后尝试";
-        startProgressRunnable("加载中...", DELAY_MILLIS);
+        startProgressRunnable("加载中...", WRITE_TIME_OUT_SECOND);
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_GET_MEASURING_HOLEDEPTH_PARAMETERS);
-//        sendCommandDelay(command,1000);
+        sendCommand(command);
+    }
+
+    /**
+     * 清空电机运动数据记录指令
+     */
+    private void clearMotorMotionData() {
+        errMsg = "发送指令超时,请稍后尝试";
+        startProgressRunnable("处理中...", WRITE_TIME_OUT_SECOND);
+        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_CLEAR_MEASURING_HOLEDEPTH_DATA);
         sendCommand(command);
     }
 
@@ -176,6 +191,7 @@ public class BleAdmeMeasuringHoleDepthFragment extends BaseBleIotCommunicateFrag
                 ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
                 return;
             }
+            showClearWarnDialog("确认清除设备运动监测数据吗？");
         }
     }
 
@@ -230,7 +246,7 @@ public class BleAdmeMeasuringHoleDepthFragment extends BaseBleIotCommunicateFrag
         mBtnRun.setEnabled(false);
 
         errMsg = "发送指令超时,请稍后尝试";
-        startProgressRunnable("正在发送配置指令...", DELAY_MILLIS);
+        startProgressRunnable("正在发送配置指令...", WRITE_TIME_OUT_SECOND);
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_SET_MEASURING_HOLEDEPTH_PARAMETERS, entity);
         sendCommand(command);
     }
@@ -257,6 +273,33 @@ public class BleAdmeMeasuringHoleDepthFragment extends BaseBleIotCommunicateFrag
                             }
                         }, 0, R.layout.custom_xpopup_adapter_text_match)
                 .show();
+    }
+
+    /**
+     *  情况数据提醒
+     *
+     * @param content
+     */
+    protected void showClearWarnDialog(String content) {
+        MaterialDialog.Builder mBuilder = new MaterialDialog.Builder(requireContext())
+                .title("温馨提示：")
+                .content(content)
+                .contentColorRes(R.color.title_text_color)
+                .canceledOnTouchOutside(false)
+                .positiveText("确定")
+                .negativeText("取消")
+                .positiveColorRes(R.color.blue_52B4F8)
+                .negativeColorRes(R.color.sub_title_text_color)
+                .onPositive(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        dialog.dismiss();
+                        clearMotorMotionData();
+                        clearMotionDataLayout.setEnabled(false);
+                    }
+                });
+        MaterialDialog mMaterialDialog = mBuilder.build();
+        mMaterialDialog.show();
     }
 
     @Override
@@ -292,6 +335,21 @@ public class BleAdmeMeasuringHoleDepthFragment extends BaseBleIotCommunicateFrag
                     return;
                 }
                 doAfterSetting();
+            }
+            break;
+
+            case ADME_MD_CLEAR_MEASURING_HOLEDEPTH_DATA: {//ADME测量孔深清空
+                stopProgressRunnable();
+                CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
+                if (!cmdResult.isSucceed()) {
+                    String errMsg = String.format("%s %s", "清空数据出错!", cmdResult.getReason());
+                    Timber.e(errMsg);
+                    ToastUtils.show(errMsg);
+                    clearMotionDataLayout.setEnabled(true);
+                    return;
+                }
+                clearMotionDataLayout.setVisibility(View.GONE);
+                motionDataClearCompleteLayout.setVisibility(View.VISIBLE);
             }
             break;
         }
@@ -343,6 +401,9 @@ public class BleAdmeMeasuringHoleDepthFragment extends BaseBleIotCommunicateFrag
         if (measuringHoleDepthInfo != null) {
             motorMotionStateFragment = BleAdmeMotorMotionStateFragment.newInstance(measuringHoleDepthInfo);
             motorMotionStateFragment.show(getChildFragmentManager(), "dialog");
+
+            clearMotionDataLayout.setVisibility(View.VISIBLE);
+            motionDataClearCompleteLayout.setVisibility(View.GONE);
         }
     }
 }

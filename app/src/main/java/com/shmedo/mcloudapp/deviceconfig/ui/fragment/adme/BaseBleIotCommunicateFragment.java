@@ -29,7 +29,7 @@ import timber.log.Timber;
  * 描述：     TODO
  */
 public abstract class BaseBleIotCommunicateFragment extends BaseFragment {
-    public static final int DELAY_MILLIS = 10000;//发送指令超时时间
+    public static final int WRITE_TIME_OUT_SECOND = 10000;//发送指令超时时间
 
     //自定义心跳包指令
     private final String heartBeat = IOTCommandManager.getInstance().getCommand(IOTCommandType.HEART_BEAT)
@@ -202,26 +202,6 @@ public abstract class BaseBleIotCommunicateFragment extends BaseFragment {
                 + "&msgid=" + UUID.randomUUID().toString().substring(30);
 
         usrBleViewModel.sendIOTProtocolCommand(cmdStr);
-    }
-
-    protected void sendCommandDelay(String cmdStr, long delayMillis) {
-        if (!isConnected()) {
-            return;
-        }
-        String apiKey = "b12aac6b-0bd2-4a01-80fd-97fe4f5d4ff9";
-        if (!TextUtils.isEmpty(usrBleViewModel.getDeviceApiKey().getValue())) {
-            apiKey = usrBleViewModel.getDeviceApiKey().getValue();
-        }
-        cmdStr += "&apikey=" + apiKey
-                + "&msgid=" + UUID.randomUUID().toString().substring(30);
-
-        String finalCmdStr = cmdStr;
-        uiHander.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                usrBleViewModel.sendIOTProtocolCommand(finalCmdStr);
-            }
-        }, delayMillis);
     }
 
     protected void showDisconnectDialog(String content) {

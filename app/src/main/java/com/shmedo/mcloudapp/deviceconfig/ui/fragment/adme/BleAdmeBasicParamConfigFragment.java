@@ -108,7 +108,7 @@ public class BleAdmeBasicParamConfigFragment extends BaseBleIotCommunicateFragme
      */
     private void queryBasicParamConfigInfo() {
         errMsg = "查询数据超时,请稍后尝试";
-        startProgressRunnable("加载中...", DELAY_MILLIS);
+        startProgressRunnable("加载中...", WRITE_TIME_OUT_SECOND);
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_GET_BASIC_PARAMETERS);
         sendCommand(command);
     }
@@ -272,7 +272,7 @@ public class BleAdmeBasicParamConfigFragment extends BaseBleIotCommunicateFragme
         entity.setDatatype(dataSettlementMethod);
 
         errMsg = "发送指令超时,请稍后尝试";
-        startProgressRunnable("正在发送配置指令...", DELAY_MILLIS);
+        startProgressRunnable("正在发送配置指令...", WRITE_TIME_OUT_SECOND);
         mBtnSave.setEnabled(false);
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_SET_BASIC_PARAMETERS, entity);
         sendCommand(command);

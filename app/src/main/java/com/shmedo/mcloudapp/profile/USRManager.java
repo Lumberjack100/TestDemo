@@ -123,6 +123,7 @@ public class USRManager extends ObservableBleManager {
                             if (index != -1) {
                                 data = data.substring(index);
                             }
+                            Timber.v("接收数据(拆分): length=%s bytes;content: %s", data.getBytes().length, data);
                             responseMsg.setValue(data);
                         }
                     }

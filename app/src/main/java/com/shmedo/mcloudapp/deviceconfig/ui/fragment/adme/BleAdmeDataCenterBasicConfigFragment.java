@@ -173,7 +173,7 @@ public class BleAdmeDataCenterBasicConfigFragment extends BaseBleIotCommunicateF
      */
     private void queryDataCenterInfo() {
         errMsg = "查询数据超时,请稍后尝试";
-        startProgressRunnable("加载中...", DELAY_MILLIS);
+        startProgressRunnable("加载中...", WRITE_TIME_OUT_SECOND);
         ServerNumberEntity serverNumberEntity = new ServerNumberEntity(serverNumber.toInt());
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.MD_GET_DATA_CENTER, serverNumberEntity);
         sendCommand(command);
@@ -255,7 +255,7 @@ public class BleAdmeDataCenterBasicConfigFragment extends BaseBleIotCommunicateF
         mBtnSave.setEnabled(false);
 
         errMsg = "发送指令超时,请稍后尝试";
-        startProgressRunnable("正在发送配置指令...", DELAY_MILLIS);
+        startProgressRunnable("正在发送配置指令...", WRITE_TIME_OUT_SECOND);
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.MD_SET_DATA_CENTER, dataCenterEntity);
         sendCommand(command);
     }
