@@ -114,7 +114,7 @@ public class USRManager extends ObservableBleManager {
             log(LogContract.Log.Level.APPLICATION, "接收数据(onResponseReceived): " + result);
 
             //处理接收的数据中有多条指令拼接的情况(其他指令和心跳包拼接的情况）
-            if (result.startsWith("$$")) {
+            if (result.contains("$$")) {
                 String[] datas = result.split("\r\n");
                 if (datas != null && datas.length > 0) {
                     for (String data : datas) {
