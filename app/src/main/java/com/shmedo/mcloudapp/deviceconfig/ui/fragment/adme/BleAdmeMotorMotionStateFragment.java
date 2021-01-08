@@ -190,6 +190,7 @@ public class BleAdmeMotorMotionStateFragment extends BaseDialogFragment {
      */
     private void continueMotorMotion() {
         if (measuringHoleDepthInfo == null) {
+            ToastUtils.show("无法继续操作!");
             return;
         }
 
@@ -201,6 +202,7 @@ public class BleAdmeMotorMotionStateFragment extends BaseDialogFragment {
             //运动距离无效
             if (motionDistance <= 0) {
                 updateStopState();
+                ToastUtils.show("无法继续操作!");
                 return;
             }
         } catch (Exception ex) {
@@ -254,12 +256,14 @@ public class BleAdmeMotorMotionStateFragment extends BaseDialogFragment {
 
         } else if (id == R.id.btn_stop) {
             isStopClick = true;
+            stopQueryMotorMotionDataRunnable();
             stopMotorMotion();
 
         } else if (id == R.id.btn_pause) {
             isStopClick = false;
             btnPause.setEnabled(false);
             if (btnPause.getText().toString().equals("暂停")) {
+                stopQueryMotorMotionDataRunnable();
                 stopMotorMotion();
 
             } else {
@@ -310,9 +314,6 @@ public class BleAdmeMotorMotionStateFragment extends BaseDialogFragment {
                     if (btnPause.getText().toString().equals("暂停")) {
                         btnPause.setText("继续");
                         btnPause.setBackgroundResource(R.drawable.bg_btn_continue_motor_motion);
-                    } else {
-                        btnPause.setText("暂停");
-                        btnPause.setBackgroundResource(R.drawable.bg_btn_pause_motor_motion);
                     }
                 }
             }
@@ -326,6 +327,12 @@ public class BleAdmeMotorMotionStateFragment extends BaseDialogFragment {
                     ToastUtils.show(errMsg);
                     return;
                 }
+                btnPause.setEnabled(true);
+                if (btnPause.getText().toString().equals("继续")) {
+                    btnPause.setText("暂停");
+                    btnPause.setBackgroundResource(R.drawable.bg_btn_pause_motor_motion);
+                }
+                queryMotorMotionDataRunnable = new QueryMotorMotionDataRunnable();
                 startQueryMotorMotionDataRunnable();
             }
             break;

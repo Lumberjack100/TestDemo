@@ -118,8 +118,8 @@ public class BleAdmeHomeFragment extends BaseBleIotCommunicateFragment {
     }
 
     private void startQueryMotorStateRunnable() {
-        if (queryMotorStateRunnable != null) {
-            motionStateHander.postDelayed(queryMotorStateRunnable, 1000);
+        if (queryMotorStateRunnable != null && isActive) {
+            motionStateHander.postDelayed(queryMotorStateRunnable, 10000);
         }
     }
 
