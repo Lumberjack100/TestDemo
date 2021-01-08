@@ -17,6 +17,7 @@ import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.core.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.view.ClearEditText;
+import com.shmedo.mcloudapp.deviceconfig.model.CmdLogInfo;
 import com.shmedo.mcloudapp.util.TimeUtil;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.base.CommonViewHolder;
@@ -50,7 +51,7 @@ public class BleIotCustomCommandLogPrintFragment extends BaseBleIotCommunicateFr
 
     private CommonAdapter cmdAdapter;
 
-    private List<String> logDataList = new ArrayList<>();
+    private List<CmdLogInfo> logDataList = new ArrayList<>();
 
     private String snNumber;
 
@@ -103,10 +104,11 @@ public class BleIotCustomCommandLogPrintFragment extends BaseBleIotCommunicateFr
 
     private void initAdapter() {
         mRecyclerView.setLayoutManager(new LinearLayoutManager(mActivity));
-        cmdAdapter = new CommonAdapter<String>(mActivity, R.layout.item_log_print, logDataList) {
+        cmdAdapter = new CommonAdapter<CmdLogInfo>(mActivity, R.layout.item_cmd_log_print, logDataList) {
             @Override
-            protected void convert(CommonViewHolder holder, String string, int position) {
-                holder.setText(R.id.tv_log, string);
+            protected void convert(CommonViewHolder holder, CmdLogInfo cmdLogInfo, int position) {
+                holder.setText(R.id.tv_log_time, cmdLogInfo.getLogTime());
+                holder.setText(R.id.tv_log_content, cmdLogInfo.getLogContent());
             }
         };
         mRecyclerView.setAdapter(cmdAdapter);
@@ -134,7 +136,9 @@ public class BleIotCustomCommandLogPrintFragment extends BaseBleIotCommunicateFr
             }
             sendCommand(command);
             btnSend.setEnabled(false);
-            logDataList.add(TimeUtil.getSysTimeStr() + "  " + command + "\r\n");
+
+            CmdLogInfo cmdLogInfo = new CmdLogInfo(TimeUtil.getSysTimeStr(), command);
+            logDataList.add(cmdLogInfo);
             cmdAdapter.notifyDataSetChanged();
             mRecyclerView.scrollToPosition(cmdAdapter.getItemCount() - 1);
             Log4a.i(TAG, String.format("发送指令==%s", command));
@@ -148,7 +152,8 @@ public class BleIotCustomCommandLogPrintFragment extends BaseBleIotCommunicateFr
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.LOG_OUTPUT_MODE_LEVEL, entity);
         sendCommand(command);
 
-        logDataList.add(TimeUtil.getSysTimeStr() + "  " + command + "\r\n");
+        CmdLogInfo cmdLogInfo = new CmdLogInfo(TimeUtil.getSysTimeStr(), command);
+        logDataList.add(cmdLogInfo);
         cmdAdapter.notifyDataSetChanged();
         mRecyclerView.scrollToPosition(cmdAdapter.getItemCount() - 1);
     }
@@ -165,7 +170,9 @@ public class BleIotCustomCommandLogPrintFragment extends BaseBleIotCommunicateFr
         btnSend.setEnabled(true);
         Log4a.i(TAG, cmdStr);
         Log4a.flush();
-        logDataList.add(TimeUtil.getSysTimeStr() + "  " + cmdStr + "\r\n");
+
+        CmdLogInfo cmdLogInfo = new CmdLogInfo(TimeUtil.getSysTimeStr(), cmdStr);
+        logDataList.add(cmdLogInfo);
         cmdAdapter.notifyDataSetChanged();
         mRecyclerView.scrollToPosition(cmdAdapter.getItemCount() - 1);
     }
