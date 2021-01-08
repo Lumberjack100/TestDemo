@@ -4,19 +4,19 @@ import android.text.TextUtils;
 
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.interfaces.IOTResultParser;
-import com.shmedo.configlibrary.iot.model.adme.AdmeMotorMotionStateInfo;
+import com.shmedo.configlibrary.iot.model.adme.AdmeMotorMotionDataInfo;
 
 import java.util.HashMap;
 
 /**
  * 创建者:   gonghe <br/>
  * 创建时间:  1/7/21 <br/>
- * 描述：       解析电机实时运动状态
+ * 描述：       解析电机实时运动数据
  */
-public class AdmeMotorMotionStateInfoParser implements IOTResultParser<AdmeMotorMotionStateInfo> {
+public class AdmeMotorMotionDataInfoParser implements IOTResultParser<AdmeMotorMotionDataInfo> {
     @Override
-    public AdmeMotorMotionStateInfo parse(String result) {
-        AdmeMotorMotionStateInfo info = new AdmeMotorMotionStateInfo();
+    public AdmeMotorMotionDataInfo parse(String result) {
+        AdmeMotorMotionDataInfo info = new AdmeMotorMotionDataInfo();
         try {
             String[] keyValues = result.split("&");
             HashMap<String, String> keyValueMap = new HashMap<>();
@@ -31,6 +31,7 @@ public class AdmeMotorMotionStateInfoParser implements IOTResultParser<AdmeMotor
             }
             info.setPulsenumber(TextUtils.isEmpty(keyValueMap.get("pulsenumber")) ? "" : keyValueMap.get("pulsenumber"));
             info.setRealmovedistance(TextUtils.isEmpty(keyValueMap.get("realmovedistance")) ? "" : keyValueMap.get("realmovedistance"));
+            info.setRealmoveangle(TextUtils.isEmpty(keyValueMap.get("realmoveangle")) ? "" : keyValueMap.get("realmoveangle"));
 
             return info;
         } catch (Exception ex) {

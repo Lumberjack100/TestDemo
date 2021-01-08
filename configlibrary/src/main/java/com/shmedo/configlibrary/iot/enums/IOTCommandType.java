@@ -217,6 +217,31 @@ public enum IOTCommandType {
     ADME_MD_CLEAR_MEASURING_HOLEDEPTH_DATA("md_setmhdempty"),
 
     /**
+     * 获取ADME的导槽校准配置参数
+     */
+    ADME_MD_GET_GUIDE_GROOVE_CALIBRATION_PARAMETERS("md_getmeasth"),
+
+    /**
+     * 设置ADME的导槽校准配置参数
+     */
+    ADME_MD_SET_GUIDE_GROOVE_CALIBRATION_PARAMETERS("md_setmeasth"),
+
+    /**
+     * 查询ADME导槽校准的脉冲数、运动角度
+     */
+    ADME_MD_GET_GUIDE_GROOVE_CALIBRATION_PULSE("md_getpulsedistance"),
+
+    /**
+     * ADME导槽校准动停止
+     */
+    ADME_MD_STOP_GUIDE_GROOVE_CALIBRATION("md_setstop"),
+
+    /**
+     * ADME导槽校准清空
+     */
+    ADME_MD_CLEAR_GUIDE_GROOVE_CALIBRATION_DATA("md_setempty"),
+
+    /**
      * 自定义心跳包
      */
     HEART_BEAT("HeartBeatData");

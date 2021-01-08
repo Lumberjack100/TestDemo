@@ -6,11 +6,12 @@ import com.shmedo.configlibrary.iot.cmd.IOTCommandResult;
 import com.shmedo.configlibrary.iot.cmd.parser.adme.AdmeBasicConfigParamParser;
 import com.shmedo.configlibrary.iot.cmd.parser.adme.AdmeBasicInfoParser;
 import com.shmedo.configlibrary.iot.cmd.parser.adme.AdmeExecutiveAgencyInfoParser;
+import com.shmedo.configlibrary.iot.cmd.parser.adme.AdmeGuideGrooveCalibrationInfoParser;
 import com.shmedo.configlibrary.iot.cmd.parser.adme.AdmeInclinometerInfoParser;
 import com.shmedo.configlibrary.iot.cmd.parser.adme.AdmeMeasuringHoleDepthInfoParser;
 import com.shmedo.configlibrary.iot.cmd.parser.adme.AdmeMeterWheelParamParser;
 import com.shmedo.configlibrary.iot.cmd.parser.adme.AdmeMotionStateParser;
-import com.shmedo.configlibrary.iot.cmd.parser.adme.AdmeMotorMotionStateInfoParser;
+import com.shmedo.configlibrary.iot.cmd.parser.adme.AdmeMotorMotionDataInfoParser;
 import com.shmedo.configlibrary.iot.cmd.parser.adme.AdmeStepperMotorInfoParser;
 import com.shmedo.configlibrary.iot.cmd.parser.vms.VmsAisleInfoParser;
 import com.shmedo.configlibrary.iot.cmd.parser.vms.VmsAisleTerminalInfoParser;
@@ -138,7 +139,8 @@ public class IOTParseManager {
                 AdmeStepperMotorInfoParser.class,
                 AdmeExecutiveAgencyInfoParser.class,
                 AdmeMeasuringHoleDepthInfoParser.class,
-                AdmeMotorMotionStateInfoParser.class
+                AdmeMotorMotionDataInfoParser.class,
+                AdmeGuideGrooveCalibrationInfoParser.class
         });
 
         registerWithClass(clazzes);

@@ -21,7 +21,7 @@ import com.shmedo.configlibrary.iot.cmd.parser.IOTParseManager;
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.model.CommonSettingCmdResult;
 import com.shmedo.configlibrary.iot.model.adme.AdmeMeasuringHoleDepthInfo;
-import com.shmedo.configlibrary.iot.model.adme.AdmeMotorMotionStateInfo;
+import com.shmedo.configlibrary.iot.model.adme.AdmeMotorMotionDataInfo;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.BaseDialogFragment;
@@ -36,9 +36,9 @@ import timber.log.Timber;
 /**
  * 创建者:   gonghe <br/>
  * 创建时间:  1/7/21 <br/>
- * 描述：     ADME 电机运行状态实时展示底部弹窗
+ * 描述：     ADME 电机测量孔深实时数据展示底部弹窗
  */
-public class BleAdmeMotorMotionStateFragment extends BaseDialogFragment {
+public class BleAdmeMotorMotionDistanceFragment extends BaseDialogFragment {
     private static final String MEASURING_HOLE_DEPTH_PARAM = "measuring_hole_depth_param";
 
     @BindView(R.id.tv_title)
@@ -67,14 +67,12 @@ public class BleAdmeMotorMotionStateFragment extends BaseDialogFragment {
 
     private USRBleViewModel usrBleViewModel;
 
-    private BleAdmeMeasuringHoleDepthFragment holeDepthFragment;
-
     private AdmeMeasuringHoleDepthInfo measuringHoleDepthInfo;
 
-    private AdmeMotorMotionStateInfo motionStateInfo;
+    private AdmeMotorMotionDataInfo motorMotionDataInfo;
 
     private String pulseNumber;//脉冲数
-    private String distanceCurrent;
+    private String curDistance;
 
     private boolean isStopClick = false;
     private boolean isExit = false;
@@ -83,12 +81,12 @@ public class BleAdmeMotorMotionStateFragment extends BaseDialogFragment {
     private QueryMotorMotionDataRunnable queryMotorMotionDataRunnable;
 
     /**
-     * 查询设备运行状态
+     * 查询电机运动数据
      */
     private class QueryMotorMotionDataRunnable implements Runnable {
         @Override
         public void run() {
-            getMotorMotionState();
+            getMotorMotionData();
         }
     }
 
@@ -103,8 +101,8 @@ public class BleAdmeMotorMotionStateFragment extends BaseDialogFragment {
         queryMotorMotionDataRunnable = null;
     }
 
-    public static BleAdmeMotorMotionStateFragment newInstance(AdmeMeasuringHoleDepthInfo measuringHoleDepthInfo) {
-        BleAdmeMotorMotionStateFragment fragment = new BleAdmeMotorMotionStateFragment();
+    public static BleAdmeMotorMotionDistanceFragment newInstance(AdmeMeasuringHoleDepthInfo measuringHoleDepthInfo) {
+        BleAdmeMotorMotionDistanceFragment fragment = new BleAdmeMotorMotionDistanceFragment();
         Bundle args = new Bundle();
         args.putParcelable(MEASURING_HOLE_DEPTH_PARAM, measuringHoleDepthInfo);
         fragment.setArguments(args);
@@ -121,7 +119,7 @@ public class BleAdmeMotorMotionStateFragment extends BaseDialogFragment {
 
     @Override
     protected int getLayoutId() {
-        return R.layout.ble_adme_motor_motion_state_fragment;
+        return R.layout.ble_adme_motor_motion_distance_fragment;
     }
 
     @Override
@@ -134,7 +132,6 @@ public class BleAdmeMotorMotionStateFragment extends BaseDialogFragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         initView();
-        holeDepthFragment = (BleAdmeMeasuringHoleDepthFragment) getParentFragment();
         usrBleViewModel = getApplicationScopeViewModel(USRBleViewModel.class);
         usrBleViewModel.getResponseMsg().observeInFragment(this, new Observer<String>() {
             @Override
@@ -172,7 +169,7 @@ public class BleAdmeMotorMotionStateFragment extends BaseDialogFragment {
     /**
      * 查询ADME测孔深运动的脉冲数、运动距离指令
      */
-    private void getMotorMotionState() {
+    private void getMotorMotionData() {
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_GET_MEASURING_HOLEDEPTH_PULSE);
         sendCommand(command);
     }
@@ -196,9 +193,9 @@ public class BleAdmeMotorMotionStateFragment extends BaseDialogFragment {
 
         double motionDistance = 0;
         try {
-            double distanceTotal = Double.parseDouble(measuringHoleDepthInfo.getMovedistance());
-            double distanceCur = Double.parseDouble(distanceCurrent);
-            motionDistance = distanceTotal - distanceCur;
+            double totalDistance = Double.parseDouble(measuringHoleDepthInfo.getMovedistance());
+            double distance = Double.parseDouble(curDistance);
+            motionDistance = totalDistance - distance;
             //运动距离无效
             if (motionDistance <= 0) {
                 updateStopState();
@@ -281,15 +278,15 @@ public class BleAdmeMotorMotionStateFragment extends BaseDialogFragment {
         IOTCommandType type = IOTStringUtil.extractCommandType(cmdStr);
         switch (type) {
             case ADME_MD_GET_MEASURING_HOLEDEPTH_PULSE: {
-                IOTCommandResult<AdmeMotorMotionStateInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
+                IOTCommandResult<AdmeMotorMotionDataInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
                     String errMsg = String.format("%s %s", "获取电机的实时运行状态出错!", commandResult.getMessage());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
                     return;
                 }
-                motionStateInfo = commandResult.getResult();
-                updatePulseAndDistance();
+                motorMotionDataInfo = commandResult.getResult();
+                updateMotionData();
             }
             break;
 
@@ -303,7 +300,7 @@ public class BleAdmeMotorMotionStateFragment extends BaseDialogFragment {
                 }
                 //关闭页面
                 if (isExit) {
-                    BleAdmeMotorMotionStateFragment.this.dismiss();
+                    BleAdmeMotorMotionDistanceFragment.this.dismiss();
                     return;
                 }
 
@@ -342,21 +339,21 @@ public class BleAdmeMotorMotionStateFragment extends BaseDialogFragment {
     /**
      * 实时刷新脉冲和运动距离
      */
-    private void updatePulseAndDistance() {
-        if (motionStateInfo == null) {
-            Timber.e("AdmeMotorMotionStateInfo is Null!");
+    private void updateMotionData() {
+        if (motorMotionDataInfo == null) {
+            Timber.e("AdmeMotorMotionDataInfo is Null!");
             return;
         }
 
         //电机已经停止，不用再轮询电机状态
-        if (!TextUtils.isEmpty(pulseNumber) && motionStateInfo.getPulsenumber().equals(pulseNumber)) {
+        if (!TextUtils.isEmpty(pulseNumber) && motorMotionDataInfo.getPulsenumber().equals(pulseNumber)) {
             updateStopState();
             return;
         }
-        pulseNumber = motionStateInfo.getPulsenumber();
-        distanceCurrent = motionStateInfo.getRealmovedistance();
+        pulseNumber = motorMotionDataInfo.getPulsenumber();
+        curDistance = motorMotionDataInfo.getRealmovedistance();
         mTvMotionPulse.setText(pulseNumber);
-        mTvMotionDistance.setText(distanceCurrent);
+        mTvMotionDistance.setText(curDistance);
 
         startQueryMotorMotionDataRunnable();
     }

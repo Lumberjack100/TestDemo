@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="20dp" />
+
+    <LinearLayout
+        android:id="@+id/ll_motion_type"
+        style="@style/Common_ClickableItem_LayoutStyle">
+
+        <TextView
+            style="@style/Common_ClickableItem_TitleStyle"
+            android:text="运动方式" />
+
+        <TextView
+            android:id="@+id/tv_motion_way"
+            style="@style/Common_ClickableItem_ValueStyle"
+            android:textSize="17sp"
+            tools:text="正转" />
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="14dp" />
+
+    <LinearLayout style="@style/Common_EditItem_LayoutStyle">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="电机速度(r/min)"
+            android:textColor="@color/text_color_343434"
+            android:textSize="@dimen/text_size_17" />
+
+        <com.shmedo.mcloudapp.common.view.ClearEditText
+            android:id="@+id/et_movement_speed"
+            style="@style/DataCenter_EditText_Style"
+            android:hint="请输入"
+            android:inputType="number" />
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:background="@color/divider_line_bg_efefef" />
+
+
+    <LinearLayout style="@style/Common_EditItem_LayoutStyle">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="运动角度(°)"
+            android:textColor="@color/text_color_343434"
+            android:textSize="@dimen/text_size_17" />
+
+        <com.shmedo.mcloudapp.common.view.ClearEditText
+            android:id="@+id/motionAngleEt"
+            style="@style/DataCenter_EditText_Style"
+            android:hint="请输入"
+            android:inputType="numberDecimal" />
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/btn_run"
+        android:layout_width="match_parent"
+        android:layout_height="46dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="34dp"
+        android:layout_marginEnd="18dp"
+        android:layout_marginBottom="20dp"
+        android:background="@drawable/btn_select"
+        android:gravity="center"
+        android:text="运行"
+        android:textColor="@color/white"
+        android:textSize="17sp" />
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="34dp">
+
+        <LinearLayout
+            android:id="@+id/ll_clear_motion_data"
+            android:layout_width="160dp"
+            android:layout_height="44dp"
+            android:layout_gravity="center"
+            android:background="@drawable/bg_clear_motion_data"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:visibility="gone">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawableStart="@drawable/ic_clear_motion_data"
+                android:drawablePadding="10dp"
+                android:text="清空数据"
+                android:textColor="@color/text_color_666666"
+                android:textSize="@dimen/text_size_15" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_motion_data_clear_complete"
+            android:layout_width="160dp"
+            android:layout_height="44dp"
+            android:layout_gravity="center"
+            android:background="@drawable/bg_motion_data_clear_complete"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawableStart="@drawable/ic_motion_data_clear_complete"
+                android:drawablePadding="10dp"
+                android:text="已清空数据"
+                android:textColor="@color/text_color_666666"
+                android:textSize="@dimen/text_size_15" />
+
+        </LinearLayout>
+
+    </FrameLayout>
+
+</LinearLayout>

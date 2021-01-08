@@ -42,6 +42,7 @@ import com.shmedo.mcloudapp.deviceconfig.ui.activity.adme.AdmeAdvancedConfigActi
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.adme.AdmeAdvancedSettingActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.adme.AdmeBasicParamActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.adme.AdmeDataCenterHomeActivity;
+import com.shmedo.mcloudapp.deviceconfig.ui.activity.adme.AdmeGuideGrooveCalibrationActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.adme.AdmeMeasuringHoleDepthActivity;
 
 import java.util.ArrayList;
@@ -224,7 +225,7 @@ public class BleAdmeHomeFragment extends BaseBleIotCommunicateFragment {
                 break;
 
             case "导槽校准":
-
+                AdmeGuideGrooveCalibrationActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT);
                 break;
 
             case "数据中心":
