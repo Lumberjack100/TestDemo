@@ -21,7 +21,7 @@ import com.shmedo.configlibrary.iot.cmd.parser.IOTParseManager;
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.model.CommonSettingCmdResult;
 import com.shmedo.configlibrary.iot.model.adme.AdmeMeasuringHoleDepthInfo;
-import com.shmedo.configlibrary.iot.model.adme.AdmeMotorMotionDataInfo;
+import com.shmedo.configlibrary.iot.model.adme.AdmeMotorMotionDistanceInfo;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.BaseDialogFragment;
@@ -69,7 +69,7 @@ public class BleAdmeMotorMotionDistanceFragment extends BaseDialogFragment {
 
     private AdmeMeasuringHoleDepthInfo measuringHoleDepthInfo;
 
-    private AdmeMotorMotionDataInfo motorMotionDataInfo;
+    private AdmeMotorMotionDistanceInfo motorMotionDistanceInfo;
 
     private String pulseNumber;//脉冲数
     private String curDistance;
@@ -278,14 +278,14 @@ public class BleAdmeMotorMotionDistanceFragment extends BaseDialogFragment {
         IOTCommandType type = IOTStringUtil.extractCommandType(cmdStr);
         switch (type) {
             case ADME_MD_GET_MEASURING_HOLEDEPTH_PULSE: {
-                IOTCommandResult<AdmeMotorMotionDataInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
+                IOTCommandResult<AdmeMotorMotionDistanceInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
                     String errMsg = String.format("%s %s", "获取电机的实时运行状态出错!", commandResult.getMessage());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
                     return;
                 }
-                motorMotionDataInfo = commandResult.getResult();
+                motorMotionDistanceInfo = commandResult.getResult();
                 updateMotionData();
             }
             break;
@@ -340,18 +340,18 @@ public class BleAdmeMotorMotionDistanceFragment extends BaseDialogFragment {
      * 实时刷新脉冲和运动距离
      */
     private void updateMotionData() {
-        if (motorMotionDataInfo == null) {
-            Timber.e("AdmeMotorMotionDataInfo is Null!");
+        if (motorMotionDistanceInfo == null) {
+            Timber.e("AdmeMotorMotionDistanceInfo is Null!");
             return;
         }
 
         //电机已经停止，不用再轮询电机状态
-        if (!TextUtils.isEmpty(pulseNumber) && motorMotionDataInfo.getPulsenumber().equals(pulseNumber)) {
+        if (!TextUtils.isEmpty(pulseNumber) && motorMotionDistanceInfo.getPulsenumber().equals(pulseNumber)) {
             updateStopState();
             return;
         }
-        pulseNumber = motorMotionDataInfo.getPulsenumber();
-        curDistance = motorMotionDataInfo.getRealmovedistance();
+        pulseNumber = motorMotionDistanceInfo.getPulsenumber();
+        curDistance = motorMotionDistanceInfo.getRealmovedistance();
         mTvMotionPulse.setText(pulseNumber);
         mTvMotionDistance.setText(curDistance);
 

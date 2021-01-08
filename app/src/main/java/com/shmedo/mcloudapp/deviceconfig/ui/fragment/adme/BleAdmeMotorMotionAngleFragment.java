@@ -21,7 +21,7 @@ import com.shmedo.configlibrary.iot.cmd.parser.IOTParseManager;
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.model.CommonSettingCmdResult;
 import com.shmedo.configlibrary.iot.model.adme.AdmeGuideGrooveCalibrationInfo;
-import com.shmedo.configlibrary.iot.model.adme.AdmeMotorMotionDataInfo;
+import com.shmedo.configlibrary.iot.model.adme.AdmeMotorMotionAngleInfo;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.BaseDialogFragment;
@@ -69,7 +69,7 @@ public class BleAdmeMotorMotionAngleFragment extends BaseDialogFragment {
     private USRBleViewModel usrBleViewModel;
 
     private AdmeGuideGrooveCalibrationInfo grooveCalibrationInfo;
-    private AdmeMotorMotionDataInfo motorMotionDataInfo;
+    private AdmeMotorMotionAngleInfo motorMotionAngleInfo;
 
     private String pulseNumber;//脉冲数
     private String curAngle;
@@ -278,14 +278,14 @@ public class BleAdmeMotorMotionAngleFragment extends BaseDialogFragment {
         IOTCommandType type = IOTStringUtil.extractCommandType(cmdStr);
         switch (type) {
             case ADME_MD_GET_GUIDE_GROOVE_CALIBRATION_PULSE: {
-                IOTCommandResult<AdmeMotorMotionDataInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
+                IOTCommandResult<AdmeMotorMotionAngleInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
                     String errMsg = String.format("%s %s", "获取电机的实时运行状态出错!", commandResult.getMessage());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
                     return;
                 }
-                motorMotionDataInfo = commandResult.getResult();
+                motorMotionAngleInfo = commandResult.getResult();
                 updateMotionData();
             }
             break;
@@ -340,18 +340,18 @@ public class BleAdmeMotorMotionAngleFragment extends BaseDialogFragment {
      * 实时刷新脉冲和运动角度
      */
     private void updateMotionData() {
-        if (motorMotionDataInfo == null) {
-            Timber.e("AdmeMotorMotionDataInfo is Null!");
+        if (motorMotionAngleInfo == null) {
+            Timber.e("AdmeMotorMotionAngleInfo is Null!");
             return;
         }
 
         //电机已经停止，不用再轮询电机状态
-        if (!TextUtils.isEmpty(pulseNumber) && motorMotionDataInfo.getPulsenumber().equals(pulseNumber)) {
+        if (!TextUtils.isEmpty(pulseNumber) && motorMotionAngleInfo.getPulsenumber().equals(pulseNumber)) {
             updateStopState();
             return;
         }
-        pulseNumber = motorMotionDataInfo.getPulsenumber();
-        curAngle = motorMotionDataInfo.getRealmoveangle();
+        pulseNumber = motorMotionAngleInfo.getPulsenumber();
+        curAngle = motorMotionAngleInfo.getRealmoveangle();
         mTvMotionPulse.setText(pulseNumber);
         mTvMotionAngle.setText(curAngle);
 
