@@ -148,7 +148,6 @@ public class ProjectListFragment extends BaseTranslucentFragment {
         ViewGroup.LayoutParams titleBarParams = mToolbar.getLayoutParams();
         //计算公式=底图高度-toolbar高度-状态栏高度-人为定义的偏差(这里取值30)
         topBgImageTranslucentScrollDistance = bannerParams.height - titleBarParams.height - ImmersionBar.getStatusBarHeight(mActivity) - DensityUtil.Dp2Px(getActivity(), 30);
-        swipeRefresh.setColorSchemeResources(android.R.color.holo_blue_light);
     }
 
     @Override

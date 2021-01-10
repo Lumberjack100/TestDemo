@@ -5,6 +5,7 @@ import android.text.TextUtils;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandResult;
 import com.shmedo.configlibrary.iot.cmd.parser.adme.AdmeBasicConfigParamParser;
 import com.shmedo.configlibrary.iot.cmd.parser.adme.AdmeBasicInfoParser;
+import com.shmedo.configlibrary.iot.cmd.parser.adme.AdmeCurrentStateInfoParser;
 import com.shmedo.configlibrary.iot.cmd.parser.adme.AdmeExecutiveAgencyInfoParser;
 import com.shmedo.configlibrary.iot.cmd.parser.adme.AdmeGuideGrooveCalibrationInfoParser;
 import com.shmedo.configlibrary.iot.cmd.parser.adme.AdmeInclinometerInfoParser;
@@ -142,7 +143,8 @@ public class IOTParseManager {
                 AdmeMeasuringHoleDepthInfoParser.class,
                 AdmeMotorMotionDistanceInfoParser.class,
                 AdmeGuideGrooveCalibrationInfoParser.class,
-                AdmeMotorMotionAngleInfoParser.class
+                AdmeMotorMotionAngleInfoParser.class,
+                AdmeCurrentStateInfoParser.class
         });
 
         registerWithClass(clazzes);

@@ -136,7 +136,12 @@ public enum IOTCommandType {
     ADME_MD_GET_EQUIPMENT_BASIS("md_getequipmentbasis"),
 
     /**
-     * 获取ADME的运行状态
+     * 获取ADME的当前状态
+     */
+    ADME_MD_GET_EQUIPMENT_STATE("md_getequipmentstate"),
+
+    /**
+     * 获取ADME的电机运行状态
      */
     ADME_MD_GET_MOTION_STATE("md_getmotionstate"),
 
