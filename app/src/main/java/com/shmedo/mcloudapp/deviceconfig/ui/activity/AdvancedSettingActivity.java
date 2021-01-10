@@ -49,6 +49,7 @@ public class AdvancedSettingActivity extends BaseConfigFragmentContainerActivity
 
     @Override
     protected void parseIntent() {
+        super.parseIntent();
         if (intent.getExtras() == null)
             return;
 

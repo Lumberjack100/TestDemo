@@ -251,6 +251,17 @@ public enum IOTCommandType {
     ADME_MD_CLEAR_GUIDE_GROOVE_CALIBRATION_DATA("md_setempty"),
 
     /**
+     * 获取ADME的工作模式
+     */
+    ADME_MD_GET_WORK_MODE("md_getworkmode"),
+
+    /**
+     * 设置ADME的工作模式
+     */
+    ADME_MD_SET_WORK_MODE("md_setworkmode"),
+
+
+    /**
      * 自定义心跳包
      */
     HEART_BEAT("HeartBeatData");
