@@ -12,7 +12,6 @@ import androidx.annotation.Nullable;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.fragment.BaseFragment;
 import com.shmedo.mcloudapp.deviceconfig.model.DevcieCurrentState;
-import com.shmedo.mcloudapp.deviceconfig.ui.activity.das.DasCurrentStateActivity;
 import com.shmedo.mcloudapp.deviceconfig.util.DeviceCurrentRunStateUtils;
 import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfo;
 
@@ -22,7 +21,7 @@ import butterknife.BindView;
  * 通过网络下发指令查看设备当前运行状态
  */
 public class NetDasDeviceCurrentState extends BaseFragment {
-    private static final String DEVICE_INFO = "device_info";
+    private static final String PRO_DEVICE_INFO = "com.shmedo.mcloudapp.PRO_DEVICE_INFO";
     private static final String DEVICE_CURRENT_STATE = "device_current_state";
 
     /**
@@ -145,9 +144,6 @@ public class NetDasDeviceCurrentState extends BaseFragment {
     /**
      * 传感器
      */
-
-
-    private DasCurrentStateActivity stateActivity;
     private ProjectDeviceInfo projectDeviceInfo;
     private DevcieCurrentState devcieCurrentState;
 
@@ -155,7 +151,7 @@ public class NetDasDeviceCurrentState extends BaseFragment {
     public static NetDasDeviceCurrentState newInstance(ProjectDeviceInfo projectDeviceInfo, DevcieCurrentState devcieCurrentState) {
         NetDasDeviceCurrentState fragment = new NetDasDeviceCurrentState();
         Bundle args = new Bundle();
-        args.putParcelable(DEVICE_INFO, projectDeviceInfo);
+        args.putParcelable(PRO_DEVICE_INFO, projectDeviceInfo);
         args.putParcelable(DEVICE_CURRENT_STATE, devcieCurrentState);
         fragment.setArguments(args);
         return fragment;
@@ -165,7 +161,7 @@ public class NetDasDeviceCurrentState extends BaseFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            projectDeviceInfo = getArguments().getParcelable(DEVICE_INFO);
+            projectDeviceInfo = getArguments().getParcelable(PRO_DEVICE_INFO);
             devcieCurrentState = getArguments().getParcelable(DEVICE_CURRENT_STATE);
         }
     }
@@ -178,8 +174,6 @@ public class NetDasDeviceCurrentState extends BaseFragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        stateActivity = (DasCurrentStateActivity) mActivity;
-
         if (projectDeviceInfo != null && devcieCurrentState != null) {
             initBasicInfo();
             initDataServer();

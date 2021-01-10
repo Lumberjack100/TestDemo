@@ -44,8 +44,8 @@ import com.shmedo.mcloudapp.deviceconfig.model.DiscoveredBluetoothDevice;
 import com.shmedo.mcloudapp.deviceconfig.model.FirmWareInfo;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.AdvancedSettingActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.DataCenterActivity;
+import com.shmedo.mcloudapp.deviceconfig.ui.activity.DeviceCurrentStateActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.das.DasCollectorSettingActivity;
-import com.shmedo.mcloudapp.deviceconfig.ui.activity.das.DasCurrentStateActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.das.sensor.DasSensorConfigActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.BaseDialogFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.FirmWareSelectDialog;
@@ -161,6 +161,7 @@ public class BleDasHomeFragment extends BaseBleCommunicateFragment {
         //建立蓝牙连接
         connectDevice(device.getDevice());
     }
+
     @Override
     public void onResume() {
         super.onResume();
@@ -252,7 +253,7 @@ public class BleDasHomeFragment extends BaseBleCommunicateFragment {
     private void processItemClick() {
         switch (selectedConfigModule.getName()) {
             case "状态":
-                DasCurrentStateActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT);
+                DeviceCurrentStateActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT, AppContants.DeviceType.DAS);
                 break;
 
             case "传感器初始化":
@@ -294,7 +295,7 @@ public class BleDasHomeFragment extends BaseBleCommunicateFragment {
                 break;
 
             case "设置":
-                AdvancedSettingActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT);
+                AdvancedSettingActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT, AppContants.DeviceType.DAS);
                 break;
         }
     }

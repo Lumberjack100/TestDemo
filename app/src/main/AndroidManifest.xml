@@ -368,19 +368,7 @@
             android:screenOrientation="portrait"
             android:theme="@style/LightStatusBarActivity" />
         <activity
-            android:name=".deviceconfig.ui.activity.das.DasCurrentStateActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:maxAspectRatio="2.4"
-            android:screenOrientation="portrait"
-            android:theme="@style/LightStatusBarActivity" />
-        <activity
             android:name=".deviceconfig.ui.activity.adme.AdmeExecutiveAgencyActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:maxAspectRatio="2.4"
-            android:screenOrientation="portrait"
-            android:theme="@style/LightStatusBarActivity" />
-        <activity
-            android:name=".deviceconfig.ui.activity.adme.AdmeAdvancedSettingActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:maxAspectRatio="2.4"
             android:screenOrientation="portrait"
@@ -393,6 +381,12 @@
             android:theme="@style/LightStatusBarActivity" />
         <activity
             android:name=".deviceconfig.ui.activity.adme.AdmeGuideGrooveCalibrationActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:maxAspectRatio="2.4"
+            android:screenOrientation="portrait"
+            android:theme="@style/LightStatusBarActivity" />
+        <activity
+            android:name=".deviceconfig.ui.activity.DeviceCurrentStateActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:maxAspectRatio="2.4"
             android:screenOrientation="portrait"

@@ -40,7 +40,7 @@ import okhttp3.RequestBody;
  * 描述：     Das 运行数据分析页面
  */
 public class DeviceHistoryDataAnalysisActivity extends BaseActivity {
-    private static final String DEVICE_INFO = "device_info";
+    private static final String PRO_DEVICE_INFO = "com.shmedo.mcloudapp.PRO_DEVICE_INFO";
 
     @BindView(R.id.tv_title)
     TextView mToolbarTitle;
@@ -91,7 +91,7 @@ public class DeviceHistoryDataAnalysisActivity extends BaseActivity {
 
     public static void startActivity(Context context, ProjectDeviceInfo projectDeviceInfo) {
         Intent intent = new Intent(context, DeviceHistoryDataAnalysisActivity.class);
-        intent.putExtra(DEVICE_INFO, projectDeviceInfo);
+        intent.putExtra(PRO_DEVICE_INFO, projectDeviceInfo);
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         context.startActivity(intent);
     }
@@ -131,8 +131,8 @@ public class DeviceHistoryDataAnalysisActivity extends BaseActivity {
         if (intent.getExtras() == null)
             return;
 
-        if (intent.getExtras().containsKey(DEVICE_INFO)) {
-            projectDeviceInfo = intent.getParcelableExtra(DEVICE_INFO);
+        if (intent.getExtras().containsKey(PRO_DEVICE_INFO)) {
+            projectDeviceInfo = intent.getParcelableExtra(PRO_DEVICE_INFO);
         }
     }
 

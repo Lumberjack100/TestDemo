@@ -16,6 +16,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.hjq.toast.ToastUtils;
+import com.shmedo.core.AppContants;
 import com.shmedo.core.MCloudApp;
 import com.shmedo.core.event.DeviceModuleSwitchTabEvent;
 import com.shmedo.core.util.DensityUtil;
@@ -36,9 +37,9 @@ import com.shmedo.mcloudapp.deviceconfig.model.params.DispatchCmdParam;
 import com.shmedo.mcloudapp.deviceconfig.model.params.DispatchRawCmdParam;
 import com.shmedo.mcloudapp.deviceconfig.model.params.QueryCmdStateParam;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.AdvancedSettingActivity;
+import com.shmedo.mcloudapp.deviceconfig.ui.activity.DeviceCurrentStateActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.DeviceHistoryDataAnalysisActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.das.DasCollectorSettingActivity;
-import com.shmedo.mcloudapp.deviceconfig.ui.activity.das.DasCurrentStateActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.BaseDialogFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.FirmWareSelectDialog;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd.BaseDispatchCmdDialog;
@@ -74,7 +75,7 @@ import okhttp3.RequestBody;
  * 网络配置设备主页面
  */
 public class NetConfigDeviceFragment extends BaseFragment {
-    private static final String DEVICE_INFO = "device_info";
+    private static final String PRO_DEVICE_INFO = "com.shmedo.mcloudapp.PRO_DEVICE_INFO";
 
     private static final int REBOOT = 0x0002;
     private static final int SWITCH_TO_BLE = 0x0003;
@@ -115,7 +116,7 @@ public class NetConfigDeviceFragment extends BaseFragment {
     public static NetConfigDeviceFragment newInstance(ProjectDeviceInfo projectDeviceInfo) {
         NetConfigDeviceFragment fragment = new NetConfigDeviceFragment();
         Bundle args = new Bundle();
-        args.putParcelable(DEVICE_INFO, projectDeviceInfo);
+        args.putParcelable(PRO_DEVICE_INFO, projectDeviceInfo);
         fragment.setArguments(args);
         return fragment;
     }
@@ -124,7 +125,7 @@ public class NetConfigDeviceFragment extends BaseFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            projectDeviceInfo = getArguments().getParcelable(DEVICE_INFO);
+            projectDeviceInfo = getArguments().getParcelable(PRO_DEVICE_INFO);
         }
     }
 
@@ -258,7 +259,7 @@ public class NetConfigDeviceFragment extends BaseFragment {
                 break;
 
             case "设置":
-                AdvancedSettingActivity.startActivity(mActivity, projectDeviceInfo);
+                AdvancedSettingActivity.startActivity(mActivity, projectDeviceInfo, AppContants.DeviceType.DAS);
                 break;
 
         }
@@ -444,7 +445,7 @@ public class NetConfigDeviceFragment extends BaseFragment {
                 ((QueryCurrentStateDialog) newFragment).setOnSeeDetailClickListener(new QueryCurrentStateDialog.OnSeeDetailClickListener() {
                     @Override
                     public void onSeeDetailClick(DevcieCurrentState devcieCurrentState) {
-                        DasCurrentStateActivity.startActivity(mActivity, projectDeviceInfo, devcieCurrentState);
+                        DeviceCurrentStateActivity.startActivity(mActivity, projectDeviceInfo, devcieCurrentState, AppContants.DeviceType.DAS);
                     }
                 });
                 break;

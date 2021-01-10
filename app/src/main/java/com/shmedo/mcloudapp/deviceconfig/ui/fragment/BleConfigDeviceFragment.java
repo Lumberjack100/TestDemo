@@ -44,9 +44,7 @@ import com.shmedo.mcloudapp.deviceconfig.model.ConfigModule;
 import com.shmedo.mcloudapp.deviceconfig.model.DeviceTypeInfo;
 import com.shmedo.mcloudapp.deviceconfig.model.DiscoveredBluetoothDevice;
 import com.shmedo.mcloudapp.deviceconfig.model.FirmWareInfo;
-import com.shmedo.mcloudapp.deviceconfig.ui.activity.AdvancedSettingActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.DataCenterActivity;
-import com.shmedo.mcloudapp.deviceconfig.ui.activity.DeviceConfigActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.das.DasCollectorSettingActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.das.sensor.DasSensorConfigActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.das.BaseBleConnectFragment;
@@ -84,6 +82,7 @@ import timber.log.Timber;
 
 /**
  * 蓝牙配置设备主页面
+ * @deprecated
  */
 public class BleConfigDeviceFragment extends BaseBleConnectFragment {
     public static final String EXTRA_DEVICE = "com.shmedo.mcloudapp.EXTRA_DEVICE";
@@ -315,7 +314,7 @@ public class BleConfigDeviceFragment extends BaseBleConnectFragment {
                 break;
 
             case "设置":
-                AdvancedSettingActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT);
+//                AdvancedSettingActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT);
                 break;
         }
     }
@@ -728,7 +727,7 @@ public class BleConfigDeviceFragment extends BaseBleConnectFragment {
     }
 
     private void goToNetConfigDevicePage(ProjectDeviceInfo projectDeviceInfo) {
-        ((DeviceConfigActivity) mActivity).switchToNetConfigPage(projectDeviceInfo);
+//        ((DeviceConfigActivity) mActivity).switchToNetConfigPage(projectDeviceInfo);
         ToastUtils.show("已切换到网络模式");
     }
 

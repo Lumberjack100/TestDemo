@@ -22,10 +22,21 @@ public interface AppContants {
     }
 
     /**
-     *  指令类型
+     * 设备类型
      */
-    interface CommmandType{
-        int  OLD_COMMAND = 0x001;//##指令
+    interface DeviceType {
+        int DAS = 0x001;
+        int ADME = 0x002;
+        int VMS = 0x003;
+        int E40 = 0x004;
+        int M20 = 0x005;
+    }
+
+    /**
+     * 指令类型
+     */
+    interface CommmandType {
+        int OLD_COMMAND = 0x001;//##指令
         int IOT_COMMAND = 0x002;// 米度物联网指令
     }
 
@@ -48,7 +59,6 @@ public interface AppContants {
 
 
     interface Extras {
-
         String CUR_DEVICE_SN = "cur_device_sn";
 
         String COLLECTOR_MODE = "collector_mode";
@@ -82,6 +92,9 @@ public interface AppContants {
 
         // 设备指令类型  物联网指令、##指令
         String DEVICE_COMMMAND_TYPE = "device_commmand_type";
+
+        // 设备类型
+        String DEVICE_TYPE = "device_type";
     }
 
 }

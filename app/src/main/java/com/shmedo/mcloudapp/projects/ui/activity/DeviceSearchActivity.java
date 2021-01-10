@@ -17,6 +17,7 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.chad.library.adapter.base.listener.OnLoadMoreListener;
 import com.hjq.toast.ToastUtils;
+import com.shmedo.core.AppContants;
 import com.shmedo.core.MCloudApp;
 import com.shmedo.core.util.DensityUtil;
 import com.shmedo.core.util.GsonFactory;
@@ -140,7 +141,7 @@ public class DeviceSearchActivity extends BaseActivity {
             @Override
             public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
                 ProjectDeviceInfo deviceInfo = deviceInfoList.get(position);
-                DeviceConfigActivity.startActivity(DeviceSearchActivity.this, deviceInfo);
+                DeviceConfigActivity.startActivity(DeviceSearchActivity.this, deviceInfo, AppContants.DeviceType.DAS);
             }
         });
         mRecyclerView.setAdapter(deviceInfoAdapter);

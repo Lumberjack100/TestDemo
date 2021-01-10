@@ -172,14 +172,14 @@ public class BleDeviceListFragment extends BaseFragment implements TextWatcher, 
                 DiscoveredBluetoothDevice bluetoothDevice = bleDeviceAdapter.getItem(position);
                 String deviceName = bluetoothDevice.getName();
                 MCloudApp.setCurDeviceToken(deviceName.substring(3));
-//
-//                String deviceInfo = "";
-//                if (deviceName.endsWith("T")) {
-//                    deviceInfo = "MEDO," + deviceName.substring(3) + ",ADME";
-//                } else if (deviceName.endsWith("L")) {
-//                    deviceInfo = "MEDO," + deviceName.substring(3) + ",DAS";
-//                }
-                DeviceConfigActivity.startActivity(getActivity(), AppContants.CommunicationWay.BLE_CONNECT, bluetoothDevice);
+
+                int deviceType = AppContants.DeviceType.DAS;
+                if (deviceName.endsWith("T")) {
+                    deviceType = AppContants.DeviceType.ADME;
+                } else if (deviceName.endsWith("L")) {
+                    deviceType = AppContants.DeviceType.DAS;
+                }
+                DeviceConfigActivity.startActivity(getActivity(), AppContants.CommunicationWay.BLE_CONNECT, bluetoothDevice, deviceType);
             }
         });
     }

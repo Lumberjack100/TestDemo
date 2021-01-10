@@ -34,7 +34,7 @@ import butterknife.OnClick;
  * 网络模式高级设置
  */
 public class NetDasAdvancedSettingFragment extends BaseFragment {
-    private static final String DEVICE_INFO = "device_info";
+    private static final String PRO_DEVICE_INFO = "com.shmedo.mcloudapp.PRO_DEVICE_INFO";
 
     private ProjectDeviceInfo projectDeviceInfo;
 
@@ -44,7 +44,7 @@ public class NetDasAdvancedSettingFragment extends BaseFragment {
     public static NetDasAdvancedSettingFragment newInstance(ProjectDeviceInfo projectDeviceInfo) {
         NetDasAdvancedSettingFragment fragment = new NetDasAdvancedSettingFragment();
         Bundle args = new Bundle();
-        args.putParcelable(DEVICE_INFO, projectDeviceInfo);
+        args.putParcelable(PRO_DEVICE_INFO, projectDeviceInfo);
         fragment.setArguments(args);
         return fragment;
     }
@@ -53,7 +53,7 @@ public class NetDasAdvancedSettingFragment extends BaseFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            projectDeviceInfo = getArguments().getParcelable(DEVICE_INFO);
+            projectDeviceInfo = getArguments().getParcelable(PRO_DEVICE_INFO);
         }
     }
 
