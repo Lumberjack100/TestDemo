@@ -354,7 +354,6 @@ public class BleAdmeMeterWheelFragment extends BaseBleIotCommunicateFragment {
             break;
 
             default:
-                stopProgressRunnable();
                 super.parseResponseMessage(cmdStr);
                 break;
         }

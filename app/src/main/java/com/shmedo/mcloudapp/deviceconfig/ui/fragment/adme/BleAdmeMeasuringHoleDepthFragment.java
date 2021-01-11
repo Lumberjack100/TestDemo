@@ -352,6 +352,9 @@ public class BleAdmeMeasuringHoleDepthFragment extends BaseBleIotCommunicateFrag
                 motionDataClearCompleteLayout.setVisibility(View.VISIBLE);
             }
             break;
+            default:
+                super.parseResponseMessage(cmdStr);
+                break;
         }
     }
 

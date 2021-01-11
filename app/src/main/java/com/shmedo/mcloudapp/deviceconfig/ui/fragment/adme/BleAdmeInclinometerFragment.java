@@ -337,7 +337,6 @@ public class BleAdmeInclinometerFragment extends BaseBleIotCommunicateFragment {
             break;
 
             default:
-                stopProgressRunnable();
                 super.parseResponseMessage(cmdStr);
                 break;
         }

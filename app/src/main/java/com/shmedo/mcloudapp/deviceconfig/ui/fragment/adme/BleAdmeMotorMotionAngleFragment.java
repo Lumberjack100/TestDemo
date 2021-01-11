@@ -333,6 +333,9 @@ public class BleAdmeMotorMotionAngleFragment extends BaseDialogFragment {
                 startQueryMotorMotionDataRunnable();
             }
             break;
+
+            default:
+                break;
         }
     }
 

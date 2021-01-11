@@ -179,6 +179,10 @@ public class BleAdmeCurrentStateFragment extends BaseBleIotCommunicateFragment {
                 initParamConfigInfo();
             }
             break;
+
+            default:
+                super.parseResponseMessage(cmdStr);
+                break;
         }
     }
 

@@ -304,6 +304,9 @@ public class BleAdmeGuideGrooveCalibrationFragment extends BaseBleIotCommunicate
                 motionDataClearCompleteLayout.setVisibility(View.VISIBLE);
             }
             break;
+            default:
+                super.parseResponseMessage(cmdStr);
+                break;
         }
     }
 

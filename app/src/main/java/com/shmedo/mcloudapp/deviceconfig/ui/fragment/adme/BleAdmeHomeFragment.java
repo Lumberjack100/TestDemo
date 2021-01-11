@@ -77,7 +77,7 @@ public class BleAdmeHomeFragment extends BaseBleIotCommunicateFragment {
     TextView mTvProductModel;//版本信息
 
     @BindView(R.id.tv_time_or_sub_model)
-    TextView mTvSubModel;//网关电压
+    TextView mTvMotionState;//运行状态
 
     @BindView(R.id.tv_platform_communication_state)
     TextView mTvPlatformCommunicationState;// 与平台通信状态
@@ -122,7 +122,7 @@ public class BleAdmeHomeFragment extends BaseBleIotCommunicateFragment {
 
     private void startQueryMotorStateRunnable() {
         if (queryMotorStateRunnable != null && isActive) {
-            motionStateHander.postDelayed(queryMotorStateRunnable, 10000);
+            motionStateHander.postDelayed(queryMotorStateRunnable, 20000);
         }
     }
 
@@ -175,7 +175,7 @@ public class BleAdmeHomeFragment extends BaseBleIotCommunicateFragment {
         mTvDeviceName.setText("水平自动监测设备");
         mTvDeviceSn.setText("设备编号：--");
         mTvProductModel.setText("产品型号：--");
-        mTvSubModel.setText("运行状态：--");
+        mTvMotionState.setText("运行状态：--");
         mTvPlatformCommunicationState.setText("平台连接状态：--");
         mTvDeviceConnectOperate.setVisibility(View.VISIBLE);
         mTvDeviceConnectOperate.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG);
@@ -475,7 +475,7 @@ public class BleAdmeHomeFragment extends BaseBleIotCommunicateFragment {
                     return;
                 }
                 AdmeMotionState admeMotionState = commandResult.getResult();
-
+                updateMotionState(admeMotionState);
                 startQueryMotorStateRunnable();
             }
             break;
@@ -506,7 +506,7 @@ public class BleAdmeHomeFragment extends BaseBleIotCommunicateFragment {
             mTvDeviceName.setText("水平自动监测设备");
             mTvDeviceSn.setText(String.format("设备编号：%s", admeBaseInfo.getSn()));
             mTvProductModel.setText(String.format("产品型号：%s", admeBaseInfo.getProductid()));
-            mTvSubModel.setText("运行状态：--");
+            mTvMotionState.setText("运行状态：--");
             mTvPlatformCommunicationState.setText("平台连接状态：--");
 
             if (!TextUtils.isEmpty(admeBaseInfo.getEquimodel())) {
@@ -524,11 +524,58 @@ public class BleAdmeHomeFragment extends BaseBleIotCommunicateFragment {
             mTvDeviceName.setText("水平自动监测设备");
             mTvDeviceSn.setText("设备编号：--");
             mTvProductModel.setText("产品型号：--");
-            mTvSubModel.setText("运行状态：--");
+            mTvMotionState.setText("运行状态：--");
             mTvPlatformCommunicationState.setText("平台连接状态：--");
 
             equipModellPos = 0;
             mTvConfigModel.setText("设备配置模式");
+        }
+    }
+
+    /**
+     * 刷新电机运动状态
+     */
+    private void updateMotionState(AdmeMotionState admeMotionState) {
+        if (admeMotionState == null) {
+            Timber.e("AdmeMotionState is Null!");
+            return;
+        }
+
+        switch (admeMotionState.getMotionstate()) {
+            case "0":
+                mTvMotionState.setText("运行状态：管口停止");
+                break;
+
+            case "1":
+                mTvMotionState.setText("运行状态：管底停止");
+                break;
+
+            case "2":
+                mTvMotionState.setText("运行状态：管口测量");
+                break;
+
+            case "3":
+                mTvMotionState.setText("运行状态：管口测试");
+                break;
+
+            case "4":
+                mTvMotionState.setText("运行状态：上拉测量");
+                break;
+
+            case "5":
+                mTvMotionState.setText("运行状态：上拉测试");
+                break;
+
+            case "6":
+                mTvMotionState.setText("运行状态：下放测量");
+                break;
+
+            case "7":
+                mTvMotionState.setText("运行状态：下放测试");
+                break;
+
+            default:
+                break;
         }
     }
 
