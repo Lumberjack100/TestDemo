@@ -344,18 +344,21 @@ public class BleAdmeDataCenterAdvancedConfigFragment extends BaseBleIotCommunica
 //                mEtDeviceRegisterPort.requestFocus();
 //                return false;
 //            }
-//            try {
-//                int port = Integer.parseInt(registerPort);
-//                if (port < 0 || port > 65535) {
-//                    ToastUtils.show("请输入正确的设备注册端口号!");
-//                    mEtDeviceRegisterPort.requestFocus();
-//                    return false;
-//                }
-//            } catch (Exception ex) {
-//                ToastUtils.show("请输入正确的设备注册端口号!");
-//                mEtDeviceRegisterPort.requestFocus();
-//                return false;
-//            }
+
+        if (!TextUtils.isEmpty(registerPort)) {
+            try {
+                int port = Integer.parseInt(registerPort);
+                if (port < 0 || port > 65535) {
+                    ToastUtils.show("请输入正确的设备注册端口号!");
+                    mEtDeviceRegisterPort.requestFocus();
+                    return false;
+                }
+            } catch (Exception ex) {
+                ToastUtils.show("请输入正确的设备注册端口号!");
+                mEtDeviceRegisterPort.requestFocus();
+                return false;
+            }
+        }
 //
 //            if (TextUtils.isEmpty(registerCode)) {
 //                ToastUtils.show("设备注册码不能为空!");

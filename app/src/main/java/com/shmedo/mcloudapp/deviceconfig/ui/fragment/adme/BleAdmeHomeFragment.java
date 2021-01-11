@@ -107,6 +107,9 @@ public class BleAdmeHomeFragment extends BaseBleIotCommunicateFragment {
     private Handler motionStateHander = new Handler();
     private QueryMotorStateRunnable queryMotorStateRunnable;
 
+    private boolean isFirstCreate = false;
+
+
     /**
      * 查询设备运行状态
      */
@@ -155,6 +158,7 @@ public class BleAdmeHomeFragment extends BaseBleIotCommunicateFragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        isFirstCreate = true;
         setHeadInfo();
         initAdapter();
         initConfigModuleData();
@@ -168,7 +172,17 @@ public class BleAdmeHomeFragment extends BaseBleIotCommunicateFragment {
     public void onResume() {
         super.onResume();
         onConnectionStateChanged(isConnected());
-        startQueryMotorStateRunnable();
+        if (!isFirstCreate) {
+            queryMotorStateRunnable = new QueryMotorStateRunnable();
+            startQueryMotorStateRunnable();
+        }
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        isFirstCreate = false;
+        stopQueryMotorStateRunnable();
     }
 
     private void setHeadInfo() {
@@ -625,12 +639,6 @@ public class BleAdmeHomeFragment extends BaseBleIotCommunicateFragment {
         }
 
         return false;
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        stopQueryMotorStateRunnable();
     }
 
     @Override

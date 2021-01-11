@@ -92,7 +92,8 @@ public class BleAdmeBasicParamConfigFragment extends BaseBleIotCommunicateFragme
         super.onActivityCreated(savedInstanceState);
         setView();
         queryBasicParamConfigInfo();
-        onEditableChanged(false);
+        //TODO  打开注释，设置为浏览模式
+//        onEditableChanged(false);
     }
 
     private void setView() {

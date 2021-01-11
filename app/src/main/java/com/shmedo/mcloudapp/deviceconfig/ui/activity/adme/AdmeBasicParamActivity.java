@@ -3,7 +3,6 @@ package com.shmedo.mcloudapp.deviceconfig.ui.activity.adme;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 
 import androidx.fragment.app.Fragment;
 
@@ -29,8 +28,9 @@ public class AdmeBasicParamActivity extends BaseConfigFragmentContainerActivity 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mToolbarTitle.setText("基础配置");
-        mTvAction.setVisibility(View.VISIBLE);
-        maskLayerLayout.setVisibility(View.VISIBLE);
+        //TODO  打开注释，可以在编辑/浏览模式间切换
+//        mTvAction.setVisibility(View.VISIBLE);
+//        maskLayerLayout.setVisibility(View.VISIBLE);
     }
 
     @Override

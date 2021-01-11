@@ -441,7 +441,7 @@ public class BleAdmeExecutiveAgencyFragment extends BaseBleIotCommunicateFragmen
         errMsg = "发送指令超时,请稍后尝试";
         startProgressRunnable("正在发送配置指令...", WRITE_TIME_OUT_SECOND);
         mBtnSave.setEnabled(false);
-        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_SET_BASIC_PARAMETERS, entity);
+        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_SET_EXECUTIVE_AGENCY_PARAMETERS, entity);
         sendCommand(command);
     }
 
