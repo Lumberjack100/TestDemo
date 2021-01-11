@@ -199,6 +199,12 @@ public class FirmWareSelectDialog extends BaseDialogFragment {
                         if (!ResponseHandler.getInstance().handleResponse(errCode)) {
                             if (errCode.getCode() == 0) {
                                 if (data == null || data.getCurrentPageData() == null) {
+                                    if (firmWareInfoList.size() == 0) {
+                                        adpter.setEmptyView(R.layout.empty_view);
+                                    } else {
+                                        //显示没有更多数据布局
+                                        adpter.getLoadMoreModule().loadMoreEnd();
+                                    }
                                     return;
                                 }
 
