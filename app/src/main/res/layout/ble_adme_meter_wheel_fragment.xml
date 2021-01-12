@@ -53,7 +53,7 @@
                 android:id="@+id/et_outer_diameter"
                 style="@style/DataCenter_EditText_Style"
                 android:hint="请输入"
-                android:inputType="numberDecimal" />
+                android:inputType="number" />
 
         </LinearLayout>
 

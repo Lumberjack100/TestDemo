@@ -15,7 +15,6 @@ import com.hjq.toast.ToastUtils;
 import com.kyleduo.switchbutton.SwitchButton;
 import com.lxj.xpopup.XPopup;
 import com.lxj.xpopup.interfaces.OnSelectListener;
-import com.shmedo.configlibrary.ble.utils.ValidateUtil;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandManager;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandResult;
 import com.shmedo.configlibrary.iot.cmd.entity.adme.AdmeExecutiveAgencyEntity;
@@ -29,6 +28,8 @@ import com.shmedo.mcloudapp.common.view.ClearEditText;
 import com.shmedo.mcloudapp.util.KeyBordUtils;
 
 import org.jetbrains.annotations.NotNull;
+
+import java.text.DecimalFormat;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -113,6 +114,8 @@ public class BleAdmeExecutiveAgencyFragment extends BaseBleIotCommunicateFragmen
     private String pulsesPerUnitTime;// 堵转单位时间脉冲数
     private String detectionTime;// 堵转检测判断时间
 
+    private DecimalFormat decimalFormat = new DecimalFormat();
+
 
     public static BleAdmeExecutiveAgencyFragment newInstance() {
         return new BleAdmeExecutiveAgencyFragment();
@@ -132,19 +135,19 @@ public class BleAdmeExecutiveAgencyFragment extends BaseBleIotCommunicateFragmen
     }
 
     private void setView() {
-        mEtWaitingIntervalPerRound.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
+        mEtWaitingIntervalPerRound.setFilters(new InputFilter[]{new InputFilter.LengthFilter(2)});
         mEtDataReadingInterval.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
         mEtMeasurementCompensationTime.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
         mEtMotorDriveAddress.setFilters(new InputFilter[]{new InputFilter.LengthFilter(2)});
-        mEtDecentralizationSpeed.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
-        mEtInclinometerTubeHoleDepth.setFilters(new InputFilter[]{new InputFilter.LengthFilter(8)});
-        mEtDecentralizationWaitingTime.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
-        mEtPullUpSpeed.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
+        mEtDecentralizationSpeed.setFilters(new InputFilter[]{new InputFilter.LengthFilter(2)});
+        mEtInclinometerTubeHoleDepth.setFilters(new InputFilter[]{new InputFilter.LengthFilter(10)});
+        mEtDecentralizationWaitingTime.setFilters(new InputFilter[]{new InputFilter.LengthFilter(2)});
+        mEtPullUpSpeed.setFilters(new InputFilter[]{new InputFilter.LengthFilter(2)});
         mEtMeasuringDistance.setFilters(new InputFilter[]{new InputFilter.LengthFilter(4)});
-        mEtMeasurementIntervalTime.setFilters(new InputFilter[]{new InputFilter.LengthFilter(4)});
+        mEtMeasurementIntervalTime.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
         mEtMeasuringReferenceDepth.setFilters(new InputFilter[]{new InputFilter.LengthFilter(8)});
         mEtPulsesPerUnitTime.setFilters(new InputFilter[]{new InputFilter.LengthFilter(4)});
-        mEtDetectionTime.setFilters(new InputFilter[]{new InputFilter.LengthFilter(6)});
+        mEtDetectionTime.setFilters(new InputFilter[]{new InputFilter.LengthFilter(8)});
     }
 
     private void setSwitchViewListener() {
@@ -264,62 +267,97 @@ public class BleAdmeExecutiveAgencyFragment extends BaseBleIotCommunicateFragmen
         detectionTime = mEtDetectionTime.getText().toString().trim();
 
         if (TextUtils.isEmpty(waitingIntervalPerRound)) {
-            ToastUtils.show("每轮等待时间不能为空!");
+            ToastUtils.show("请输入每轮等待时间!");
             mEtWaitingIntervalPerRound.requestFocus();
             return false;
         }
-        if (!ValidateUtil.isInteger(waitingIntervalPerRound)) {
+        try {
+            int value = Integer.parseInt(waitingIntervalPerRound);
+            if (value < 1 ) {
+                ToastUtils.show("请输入正确的每轮等待时间!");
+                mEtWaitingIntervalPerRound.requestFocus();
+                return false;
+            }
+        } catch (Exception ex) {
             ToastUtils.show("请输入正确的每轮等待时间!");
             mEtWaitingIntervalPerRound.requestFocus();
             return false;
         }
 
         if (TextUtils.isEmpty(dataReadingInterval)) {
-            ToastUtils.show("数据读取间隔不能为空!");
+            ToastUtils.show("请输入数据读取间隔!");
             mEtDataReadingInterval.requestFocus();
             return false;
         }
-        if (!ValidateUtil.isInteger(dataReadingInterval)) {
+        try {
+            int value = Integer.parseInt(dataReadingInterval);
+            if (value < 1 ) {
+                ToastUtils.show("请输入正确的数据读取间隔!");
+                mEtDataReadingInterval.requestFocus();
+                return false;
+            }
+        } catch (Exception ex) {
             ToastUtils.show("请输入正确的数据读取间隔!");
             mEtDataReadingInterval.requestFocus();
             return false;
         }
 
         if (TextUtils.isEmpty(measurementCompensationTime)) {
-            ToastUtils.show("测量补偿时间不能为空!");
+            ToastUtils.show("请输入测量补偿时间!");
             mEtMeasurementCompensationTime.requestFocus();
             return false;
         }
-        if (!ValidateUtil.isInteger(measurementCompensationTime)) {
+        try {
+            int value = Integer.parseInt(measurementCompensationTime);
+            if (value < 1 ) {
+                ToastUtils.show("请输入正确的测量补偿时间!");
+                mEtMeasurementCompensationTime.requestFocus();
+                return false;
+            }
+        } catch (Exception ex) {
             ToastUtils.show("请输入正确的测量补偿时间!");
             mEtMeasurementCompensationTime.requestFocus();
             return false;
         }
 
         if (TextUtils.isEmpty(motorDriveAddress)) {
-            ToastUtils.show("电机驱动器地址不能为空!");
+            ToastUtils.show("请输入电机驱动器地址!");
             mEtMotorDriveAddress.requestFocus();
             return false;
         }
-        if (!ValidateUtil.isInteger(motorDriveAddress)) {
+        try {
+            int value = Integer.parseInt(motorDriveAddress);
+            if (value < 1 ) {
+                ToastUtils.show("请输入正确的电机驱动器地址!");
+                mEtMotorDriveAddress.requestFocus();
+                return false;
+            }
+        } catch (Exception ex) {
             ToastUtils.show("请输入正确的电机驱动器地址!");
             mEtMotorDriveAddress.requestFocus();
             return false;
         }
 
         if (TextUtils.isEmpty(decentralizationSpeed)) {
-            ToastUtils.show("电机下放速度不能为空!");
+            ToastUtils.show("请输入电机下放速度!");
             mEtDecentralizationSpeed.requestFocus();
             return false;
         }
-        if (!ValidateUtil.isInteger(decentralizationSpeed)) {
+        try {
+            int value = Integer.parseInt(decentralizationSpeed);
+            if (value < 1 ) {
+                ToastUtils.show("请输入正确的电机下放速度!");
+                mEtDecentralizationSpeed.requestFocus();
+                return false;
+            }
+        } catch (Exception ex) {
             ToastUtils.show("请输入正确的电机下放速度!");
             mEtDecentralizationSpeed.requestFocus();
             return false;
         }
 
         if (TextUtils.isEmpty(inclinometerTubeHoleDepth)) {
-            ToastUtils.show("测斜管孔深不能为空!");
+            ToastUtils.show("请输入测斜管孔深!");
             mEtInclinometerTubeHoleDepth.requestFocus();
             return false;
         }
@@ -333,51 +371,79 @@ public class BleAdmeExecutiveAgencyFragment extends BaseBleIotCommunicateFragmen
         }
 
         if (TextUtils.isEmpty(decentralizationWaitingTime)) {
-            ToastUtils.show("下放等待时间不能为空!");
+            ToastUtils.show("请输入下放等待时间!");
             mEtDecentralizationWaitingTime.requestFocus();
             return false;
         }
-        if (!ValidateUtil.isInteger(decentralizationWaitingTime)) {
+        try {
+            int value = Integer.parseInt(decentralizationWaitingTime);
+            if (value < 1 ) {
+                ToastUtils.show("请输入正确的下放等待时间!");
+                mEtDecentralizationWaitingTime.requestFocus();
+                return false;
+            }
+        } catch (Exception ex) {
             ToastUtils.show("请输入正确的下放等待时间!");
             mEtDecentralizationWaitingTime.requestFocus();
             return false;
         }
 
         if (TextUtils.isEmpty(pullUpSpeed)) {
-            ToastUtils.show("电机上拉速度不能为空!");
+            ToastUtils.show("请输入电机上拉速度!");
             mEtPullUpSpeed.requestFocus();
             return false;
         }
-        if (!ValidateUtil.isInteger(pullUpSpeed)) {
+        try {
+            int value = Integer.parseInt(pullUpSpeed);
+            if (value < 1 ) {
+                ToastUtils.show("请输入正确的电机上拉速度!");
+                mEtPullUpSpeed.requestFocus();
+                return false;
+            }
+        } catch (Exception ex) {
             ToastUtils.show("请输入正确的电机上拉速度!");
             mEtPullUpSpeed.requestFocus();
             return false;
         }
 
         if (TextUtils.isEmpty(measuringDistance)) {
-            ToastUtils.show("测量间距不能为空!");
+            ToastUtils.show("请输入测量间距!");
             mEtMeasuringDistance.requestFocus();
             return false;
         }
-        if (!ValidateUtil.isInteger(measuringDistance)) {
+        try {
+            int value = Integer.parseInt(measuringDistance);
+            if (value < 1 ) {
+                ToastUtils.show("请输入正确的测量间距!");
+                mEtMeasuringDistance.requestFocus();
+                return false;
+            }
+        } catch (Exception ex) {
             ToastUtils.show("请输入正确的测量间距!");
             mEtMeasuringDistance.requestFocus();
             return false;
         }
 
         if (TextUtils.isEmpty(measurementIntervalTime)) {
-            ToastUtils.show("测量间隔时间不能为空!");
+            ToastUtils.show("请输入测量间隔时间!");
             mEtMeasurementIntervalTime.requestFocus();
             return false;
         }
-        if (!ValidateUtil.isInteger(measurementIntervalTime)) {
+        try {
+            int value = Integer.parseInt(measurementIntervalTime);
+            if (value < 1 ) {
+                ToastUtils.show("请输入正确的测量间隔时间!");
+                mEtMeasurementIntervalTime.requestFocus();
+                return false;
+            }
+        } catch (Exception ex) {
             ToastUtils.show("请输入正确的测量间隔时间!");
             mEtMeasurementIntervalTime.requestFocus();
             return false;
         }
 
         if (TextUtils.isEmpty(measuringReferenceDepth)) {
-            ToastUtils.show("测量基准深度不能为空!");
+            ToastUtils.show("请输入测量基准深度!");
             mEtMeasuringReferenceDepth.requestFocus();
             return false;
         }
@@ -392,18 +458,25 @@ public class BleAdmeExecutiveAgencyFragment extends BaseBleIotCommunicateFragmen
 
         if (mSbDecentralizedPredictionEnable.isChecked()) {
             if (TextUtils.isEmpty(pulsesPerUnitTime)) {
-                ToastUtils.show("堵转单位时间脉冲数不能为空!");
+                ToastUtils.show("请输入堵转单位时间脉冲数!");
                 mEtPulsesPerUnitTime.requestFocus();
                 return false;
             }
-            if (!ValidateUtil.isInteger(pulsesPerUnitTime)) {
+            try {
+                int value = Integer.parseInt(pulsesPerUnitTime);
+                if (value < 1 ) {
+                    ToastUtils.show("请输入正确的堵转单位时间脉冲数!");
+                    mEtPulsesPerUnitTime.requestFocus();
+                    return false;
+                }
+            } catch (Exception ex) {
                 ToastUtils.show("请输入正确的堵转单位时间脉冲数!");
                 mEtPulsesPerUnitTime.requestFocus();
                 return false;
             }
 
             if (TextUtils.isEmpty(detectionTime)) {
-                ToastUtils.show("堵转检测判断时间不能为空!");
+                ToastUtils.show("请输入堵转检测判断时间!");
                 mEtDetectionTime.requestFocus();
                 return false;
             }
@@ -420,29 +493,41 @@ public class BleAdmeExecutiveAgencyFragment extends BaseBleIotCommunicateFragmen
     }
 
     private void processSave() {
-        AdmeExecutiveAgencyEntity entity = new AdmeExecutiveAgencyEntity();
-        entity.setDatatype(dataSettlementMethod);
-        entity.setDatareply(dataResponse);
-        entity.setRoundwaitetime(waitingIntervalPerRound);
-        entity.setDatainval(dataReadingInterval);
-        entity.setCompensatetime(measurementCompensationTime);
-        entity.setDriveaddress(motorDriveAddress);
-        entity.setDownspeed(decentralizationSpeed);
-        entity.setInterdeep(inclinometerTubeHoleDepth);
-        entity.setDownwaitetime(decentralizationWaitingTime);
-        entity.setUpspeed(pullUpSpeed);
-        entity.setMeaspacing(measuringDistance);
-        entity.setMeaintertime(measurementIntervalTime);
-        entity.setMeabaseth(measuringReferenceDepth);
-        entity.setUntimenum(pulsesPerUnitTime);
-        entity.setDetectiontime(detectionTime);
+        try {
+            AdmeExecutiveAgencyEntity entity = new AdmeExecutiveAgencyEntity();
+            entity.setDatatype(dataSettlementMethod);
+            entity.setDatareply(dataResponse);
+            entity.setRoundwaitetime(waitingIntervalPerRound);
+            entity.setDatainval(dataReadingInterval);
+            entity.setCompensatetime(measurementCompensationTime);
+            entity.setDriveaddress(motorDriveAddress);
+            entity.setDownspeed(decentralizationSpeed);
+            decimalFormat.applyPattern("#.##");
+            entity.setInterdeep(decimalFormat.format(Double.parseDouble(inclinometerTubeHoleDepth)));
+            entity.setDownwaitetime(decentralizationWaitingTime);
+            entity.setUpspeed(pullUpSpeed);
+            entity.setMeaspacing(measuringDistance);
+            entity.setMeaintertime(measurementIntervalTime);
+            decimalFormat.applyPattern("#.##");
+            entity.setMeabaseth(decimalFormat.format(Double.parseDouble(measuringReferenceDepth)));
+            entity.setUntimenum(pulsesPerUnitTime);
+            decimalFormat.applyPattern("#.##");
+            entity.setDetectiontime(decimalFormat.format(Double.parseDouble(detectionTime)));
+            
+            errMsg = "发送指令超时,请稍后尝试";
+            startProgressRunnable("正在发送配置指令...", WRITE_TIME_OUT_SECOND);
+            mBtnSave.setEnabled(false);
+            String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_SET_EXECUTIVE_AGENCY_PARAMETERS, entity);
+            sendCommand(command);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
 
-
-        errMsg = "发送指令超时,请稍后尝试";
-        startProgressRunnable("正在发送配置指令...", WRITE_TIME_OUT_SECOND);
-        mBtnSave.setEnabled(false);
-        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_SET_EXECUTIVE_AGENCY_PARAMETERS, entity);
-        sendCommand(command);
+    @Override
+    protected void doProgressRun() {
+        super.doProgressRun();
+        mBtnSave.setEnabled(true);
     }
 
     @Override
@@ -518,7 +603,6 @@ public class BleAdmeExecutiveAgencyFragment extends BaseBleIotCommunicateFragmen
         pulsesPerUnitTime = admeExecutiveAgencyInfo.getUntimenum().trim();
         detectionTime = admeExecutiveAgencyInfo.getDetectiontime().trim();
 
-
         if (dataSettlementMethodOld.equals("0")) {
             dataSettlementMethodPos = 0;
             mTvDataSettlementMethod.setText("顶固定法");
@@ -534,20 +618,33 @@ public class BleAdmeExecutiveAgencyFragment extends BaseBleIotCommunicateFragmen
             dataResponsePos = 1;
             mTvDataResponse.setText("启用");
         }
-        mEtWaitingIntervalPerRound.setText(waitingIntervalPerRound);
-        mEtDataReadingInterval.setText(dataReadingInterval);
-        mEtMeasurementCompensationTime.setText(measurementCompensationTime);
-        mEtMotorDriveAddress.setText(motorDriveAddress);
-        mEtInclinometerTubeHoleDepth.setText(inclinometerTubeHoleDepth);
-        mEtDecentralizationSpeed.setText(decentralizationSpeed);
-        mEtDecentralizationWaitingTime.setText(decentralizationWaitingTime);
+        try {
+            mEtWaitingIntervalPerRound.setText(waitingIntervalPerRound);
+            mEtDataReadingInterval.setText(dataReadingInterval);
+            mEtMeasurementCompensationTime.setText(measurementCompensationTime);
+            mEtMotorDriveAddress.setText(motorDriveAddress);
 
-        mEtPullUpSpeed.setText(pullUpSpeed);
-        mEtMeasuringDistance.setText(measuringDistance);
-        mEtMeasurementIntervalTime.setText(measurementIntervalTime);
-        mEtMeasuringReferenceDepth.setText(measuringReferenceDepth);
-        mEtPulsesPerUnitTime.setText(pulsesPerUnitTime);
-        mEtDetectionTime.setText(detectionTime);
+            decimalFormat.applyPattern("#.##");
+            inclinometerTubeHoleDepth = decimalFormat.format(Double.parseDouble(inclinometerTubeHoleDepth));
+            mEtInclinometerTubeHoleDepth.setText(inclinometerTubeHoleDepth);
+            mEtDecentralizationSpeed.setText(decentralizationSpeed);
+            mEtDecentralizationWaitingTime.setText(decentralizationWaitingTime);
+
+            mEtPullUpSpeed.setText(pullUpSpeed);
+            mEtMeasuringDistance.setText(measuringDistance);
+            mEtMeasurementIntervalTime.setText(measurementIntervalTime);
+
+            decimalFormat.applyPattern("#.##");
+            measuringReferenceDepth = decimalFormat.format(Double.parseDouble(measuringReferenceDepth));
+            mEtMeasuringReferenceDepth.setText(measuringReferenceDepth);
+            mEtPulsesPerUnitTime.setText(pulsesPerUnitTime);
+
+            decimalFormat.applyPattern("#.##");
+            detectionTime = decimalFormat.format(Double.parseDouble(detectionTime));
+            mEtDetectionTime.setText(detectionTime);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
 
         if (admeExecutiveAgencyInfo.getDwonblocked().equals("0")) {
             decentralizedPredictionLayout.setVisibility(View.GONE);

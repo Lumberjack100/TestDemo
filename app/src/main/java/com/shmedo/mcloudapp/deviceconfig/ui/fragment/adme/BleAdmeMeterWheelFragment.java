@@ -23,6 +23,8 @@ import com.shmedo.mcloudapp.util.KeyBordUtils;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.text.DecimalFormat;
+
 import butterknife.BindView;
 import butterknife.OnClick;
 import timber.log.Timber;
@@ -79,6 +81,8 @@ public class BleAdmeMeterWheelFragment extends BaseBleIotCommunicateFragment {
     private String downConstant;//下放常数
     private String downFilterCoefficient;//下放滤波器系数
 
+    private DecimalFormat decimalFormat = new DecimalFormat();
+
 
     public static BleAdmeMeterWheelFragment newInstance() {
         return new BleAdmeMeterWheelFragment();
@@ -98,8 +102,8 @@ public class BleAdmeMeterWheelFragment extends BaseBleIotCommunicateFragment {
     }
 
     private void setView() {
-        mEtEncoderLineNumber.setFilters(new InputFilter[]{new InputFilter.LengthFilter(4)});
-        mEtOuterDiameter.setFilters(new InputFilter[]{new InputFilter.LengthFilter(5)});
+        mEtEncoderLineNumber.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
+        mEtOuterDiameter.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
         mEtUpCorrectionParametersOne.setFilters(new InputFilter[]{new InputFilter.LengthFilter(11)});
         mEtUpCorrectionParametersTwo.setFilters(new InputFilter[]{new InputFilter.LengthFilter(11)});
         mEtUpConstant.setFilters(new InputFilter[]{new InputFilter.LengthFilter(11)});
@@ -154,13 +158,17 @@ public class BleAdmeMeterWheelFragment extends BaseBleIotCommunicateFragment {
         downFilterCoefficient = mEtDownFilterCoefficient.getText().toString().trim();
 
         if (TextUtils.isEmpty(encoderLineNumber)) {
-            ToastUtils.show("编码器线数不能为空!");
+            ToastUtils.show("请输入编码器线数!");
             mEtEncoderLineNumber.requestFocus();
             return false;
         }
         try {
             int value = Integer.parseInt(encoderLineNumber);
-
+            if (value < 1) {
+                ToastUtils.show("请输入正确的编码器线数!");
+                mEtEncoderLineNumber.requestFocus();
+                return false;
+            }
         } catch (Exception ex) {
             ToastUtils.show("请输入正确的编码器线数!");
             mEtEncoderLineNumber.requestFocus();
@@ -168,13 +176,17 @@ public class BleAdmeMeterWheelFragment extends BaseBleIotCommunicateFragment {
         }
 
         if (TextUtils.isEmpty(outerDiameter)) {
-            ToastUtils.show("外径不能为空!");
+            ToastUtils.show("请输入外径!");
             mEtOuterDiameter.requestFocus();
             return false;
         }
         try {
-            double value = Double.parseDouble(outerDiameter);
-
+            int value = Integer.parseInt(outerDiameter);
+            if (value < 1) {
+                ToastUtils.show("请输入正确的外径!");
+                mEtOuterDiameter.requestFocus();
+                return false;
+            }
         } catch (Exception ex) {
             ToastUtils.show("请输入正确的外径!");
             mEtOuterDiameter.requestFocus();
@@ -182,13 +194,12 @@ public class BleAdmeMeterWheelFragment extends BaseBleIotCommunicateFragment {
         }
 
         if (TextUtils.isEmpty(upCorrectionParametersOne)) {
-            ToastUtils.show("上拉一次修正参数不能为空!");
+            ToastUtils.show("请输入上拉一次修正参数!");
             mEtUpCorrectionParametersOne.requestFocus();
             return false;
         }
         try {
             double value = Double.parseDouble(upCorrectionParametersOne);
-
         } catch (Exception ex) {
             ToastUtils.show("请输入正确的上拉一次修正参数!");
             mEtUpCorrectionParametersOne.requestFocus();
@@ -196,13 +207,12 @@ public class BleAdmeMeterWheelFragment extends BaseBleIotCommunicateFragment {
         }
 
         if (TextUtils.isEmpty(upCorrectionParametersTwo)) {
-            ToastUtils.show("上拉二次修正参数不能为空!");
+            ToastUtils.show("请输入上拉二次修正参数");
             mEtUpCorrectionParametersTwo.requestFocus();
             return false;
         }
         try {
             double value = Double.parseDouble(upCorrectionParametersTwo);
-
         } catch (Exception ex) {
             ToastUtils.show("请输入正确的上拉二次修正参数!");
             mEtUpCorrectionParametersTwo.requestFocus();
@@ -210,13 +220,12 @@ public class BleAdmeMeterWheelFragment extends BaseBleIotCommunicateFragment {
         }
 
         if (TextUtils.isEmpty(upConstant)) {
-            ToastUtils.show("上拉常数不能为空!");
+            ToastUtils.show("请输入上拉常数!");
             mEtUpConstant.requestFocus();
             return false;
         }
         try {
             double value = Double.parseDouble(upConstant);
-
         } catch (Exception ex) {
             ToastUtils.show("请输入正确的上拉常数!");
             mEtUpConstant.requestFocus();
@@ -224,28 +233,23 @@ public class BleAdmeMeterWheelFragment extends BaseBleIotCommunicateFragment {
         }
 
         if (TextUtils.isEmpty(upFilterCoefficient)) {
-            ToastUtils.show("上拉滤波器系数不能为空!");
+            ToastUtils.show("请输入上拉滤波器系数!");
             mEtUpFilterCoefficient.requestFocus();
             return false;
         }
-        try {
-            double value = Double.parseDouble(upFilterCoefficient);
-
-        } catch (Exception ex) {
+        String filterCoefficientRule = "[A-F0-9]";
+        if (!upFilterCoefficient.matches(filterCoefficientRule)) {
             ToastUtils.show("请输入正确的上拉滤波器系数!");
             mEtUpFilterCoefficient.requestFocus();
-            return false;
         }
 
-
         if (TextUtils.isEmpty(downCorrectionParametersOne)) {
-            ToastUtils.show("下放一次修正参数不能为空!");
+            ToastUtils.show("请输入下放一次修正参数!");
             mEtDownCorrectionParametersOne.requestFocus();
             return false;
         }
         try {
             double value = Double.parseDouble(downCorrectionParametersOne);
-
         } catch (Exception ex) {
             ToastUtils.show("请输入正确的下放一次修正参数!");
             mEtDownCorrectionParametersOne.requestFocus();
@@ -253,13 +257,12 @@ public class BleAdmeMeterWheelFragment extends BaseBleIotCommunicateFragment {
         }
 
         if (TextUtils.isEmpty(downCorrectionParametersTwo)) {
-            ToastUtils.show("下放二次修正参数不能为空!");
+            ToastUtils.show("请输入下放二次修正参数!");
             mEtDownCorrectionParametersTwo.requestFocus();
             return false;
         }
         try {
             double value = Double.parseDouble(downCorrectionParametersTwo);
-
         } catch (Exception ex) {
             ToastUtils.show("请输入正确的下放二次修正参数!");
             mEtDownCorrectionParametersTwo.requestFocus();
@@ -267,13 +270,12 @@ public class BleAdmeMeterWheelFragment extends BaseBleIotCommunicateFragment {
         }
 
         if (TextUtils.isEmpty(downConstant)) {
-            ToastUtils.show("下放常数不能为空!");
+            ToastUtils.show("请输入下放常数!");
             mEtDownConstant.requestFocus();
             return false;
         }
         try {
             double value = Double.parseDouble(downConstant);
-
         } catch (Exception ex) {
             ToastUtils.show("请输入正确的下放常数!");
             mEtDownConstant.requestFocus();
@@ -281,40 +283,48 @@ public class BleAdmeMeterWheelFragment extends BaseBleIotCommunicateFragment {
         }
 
         if (TextUtils.isEmpty(downFilterCoefficient)) {
-            ToastUtils.show("下放滤波器系数不能为空!");
+            ToastUtils.show("请输入下放滤波器系数!");
             mEtDownFilterCoefficient.requestFocus();
             return false;
         }
-        try {
-            double value = Double.parseDouble(downFilterCoefficient);
-
-        } catch (Exception ex) {
+        if (!downFilterCoefficient.matches(filterCoefficientRule)) {
             ToastUtils.show("请输入正确的下放滤波器系数!");
             mEtDownFilterCoefficient.requestFocus();
-            return false;
         }
 
         return true;
     }
 
     private void processSave() {
-        AdmeMeterWheelEntity entity =new AdmeMeterWheelEntity() ;
-        entity.setEnclinenum(encoderLineNumber);
-        entity.setOutline(outerDiameter);
-        entity.setUptiona(upCorrectionParametersOne);
-        entity.setUptionb(upCorrectionParametersTwo);
-        entity.setUpconstant(upConstant);
-        entity.setUpfilter(upFilterCoefficient);
-        entity.setDowntiona(downCorrectionParametersOne);
-        entity.setDowntionb(downCorrectionParametersTwo);
-        entity.setDownconstant(downConstant);
-        entity.setDownfilter(downFilterCoefficient);
+        try {
+            AdmeMeterWheelEntity entity = new AdmeMeterWheelEntity();
+            entity.setEnclinenum(encoderLineNumber);
+            entity.setOutline(outerDiameter);
 
-        errMsg = "发送指令超时,请稍后尝试";
-        startProgressRunnable("正在发送配置指令...", WRITE_TIME_OUT_SECOND);
-        mBtnSave.setEnabled(false);
-        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_SET_METER_WHEEL_PARAMETERS, entity);
-        sendCommand(command);
+            decimalFormat.applyPattern("#.#####");
+            entity.setUptiona(decimalFormat.format(Double.parseDouble(upCorrectionParametersOne)));
+            entity.setUptionb(decimalFormat.format(Double.parseDouble(upCorrectionParametersTwo)));
+            entity.setUpconstant(decimalFormat.format(Double.parseDouble(upConstant)));
+            entity.setUpfilter(upFilterCoefficient);
+            entity.setDowntiona(decimalFormat.format(Double.parseDouble(downCorrectionParametersOne)));
+            entity.setDowntionb(decimalFormat.format(Double.parseDouble(downCorrectionParametersTwo)));
+            entity.setDownconstant(decimalFormat.format(Double.parseDouble(downConstant)));
+            entity.setDownfilter(downFilterCoefficient);
+
+            errMsg = "发送指令超时,请稍后尝试";
+            startProgressRunnable("处理中...", WRITE_TIME_OUT_SECOND);
+            mBtnSave.setEnabled(false);
+            String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_SET_METER_WHEEL_PARAMETERS, entity);
+            sendCommand(command);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    @Override
+    protected void doProgressRun() {
+        super.doProgressRun();
+        mBtnSave.setEnabled(true);
     }
 
     @Override
@@ -334,7 +344,7 @@ public class BleAdmeMeterWheelFragment extends BaseBleIotCommunicateFragment {
                     ToastUtils.show(errMsg);
                     return;
                 }
-                admeMeterWheelInfo =commandResult.getResult();
+                admeMeterWheelInfo = commandResult.getResult();
                 initParamConfigInfo();
             }
             break;
@@ -370,28 +380,48 @@ public class BleAdmeMeterWheelFragment extends BaseBleIotCommunicateFragment {
             admeMeterWheelInfo = new AdmeMeterWheelInfo();
             return;
         }
+        try {
+            encoderLineNumber = admeMeterWheelInfo.getEnclinenum().trim();
+            outerDiameter = admeMeterWheelInfo.getOutline().trim();
+            upCorrectionParametersOne = admeMeterWheelInfo.getUptiona().trim();
+            upCorrectionParametersTwo = admeMeterWheelInfo.getUptionb().trim();
+            upConstant = admeMeterWheelInfo.getUpconstant().trim();
+            upFilterCoefficient = admeMeterWheelInfo.getUpfilter().trim();
+            downCorrectionParametersOne = admeMeterWheelInfo.getDowntiona().trim();
+            downCorrectionParametersTwo = admeMeterWheelInfo.getDowntionb().trim();
+            downConstant = admeMeterWheelInfo.getDownconstant().trim();
+            downFilterCoefficient = admeMeterWheelInfo.getDownfilter().trim();
 
-        encoderLineNumber = admeMeterWheelInfo.getEnclinenum().trim();
-        outerDiameter = admeMeterWheelInfo.getOutline().trim();
-        upCorrectionParametersOne = admeMeterWheelInfo.getUptiona().trim();
-        upCorrectionParametersTwo = admeMeterWheelInfo.getUptionb().trim();
-        upConstant = admeMeterWheelInfo.getUpconstant().trim();
-        upFilterCoefficient = admeMeterWheelInfo.getUpfilter().trim();
-        downCorrectionParametersOne = admeMeterWheelInfo.getDowntiona().trim();
-        downCorrectionParametersTwo = admeMeterWheelInfo.getDowntionb().trim();
-        downConstant = admeMeterWheelInfo.getDownconstant().trim();
-        downFilterCoefficient = admeMeterWheelInfo.getDownfilter().trim();
+            mEtEncoderLineNumber.setText(encoderLineNumber);
+            decimalFormat.applyPattern("#");
+            outerDiameter = decimalFormat.format(Double.parseDouble(outerDiameter));
+            mEtOuterDiameter.setText(outerDiameter);
 
-        mEtEncoderLineNumber.setText(encoderLineNumber);
-        mEtOuterDiameter.setText(outerDiameter);
-        mEtUpCorrectionParametersOne.setText(upCorrectionParametersOne);
-        mEtUpCorrectionParametersTwo.setText(upCorrectionParametersTwo);
-        mEtUpConstant.setText(upConstant);
-        mEtUpFilterCoefficient.setText(upFilterCoefficient);
-        mEtDownCorrectionParametersOne.setText(downCorrectionParametersOne);
-        mEtDownCorrectionParametersTwo.setText(downCorrectionParametersTwo);
-        mEtDownConstant.setText(downConstant);
-        mEtDownFilterCoefficient.setText(downFilterCoefficient);
+            decimalFormat.applyPattern("#.#####");
+            upCorrectionParametersOne = decimalFormat.format(Double.parseDouble(upCorrectionParametersOne));
+            mEtUpCorrectionParametersOne.setText(upCorrectionParametersOne);
+
+            upCorrectionParametersTwo = decimalFormat.format(Double.parseDouble(upCorrectionParametersTwo));
+            mEtUpCorrectionParametersTwo.setText(upCorrectionParametersTwo);
+
+            upConstant = decimalFormat.format(Double.parseDouble(upConstant));
+            mEtUpConstant.setText(upConstant);
+
+            mEtUpFilterCoefficient.setText(upFilterCoefficient);
+
+            downCorrectionParametersOne = decimalFormat.format(Double.parseDouble(downCorrectionParametersOne));
+            mEtDownCorrectionParametersOne.setText(downCorrectionParametersOne);
+
+            downCorrectionParametersTwo = decimalFormat.format(Double.parseDouble(downCorrectionParametersTwo));
+            mEtDownCorrectionParametersTwo.setText(downCorrectionParametersTwo);
+
+            downConstant = decimalFormat.format(Double.parseDouble(downConstant));
+            mEtDownConstant.setText(downConstant);
+
+            mEtDownFilterCoefficient.setText(downFilterCoefficient);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 
     @Override

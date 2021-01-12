@@ -28,6 +28,8 @@ import com.shmedo.mcloudapp.util.KeyBordUtils;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.text.DecimalFormat;
+
 import butterknife.BindView;
 import butterknife.OnClick;
 import timber.log.Timber;
@@ -86,6 +88,8 @@ public class BleAdmeInclinometerFragment extends BaseBleIotCommunicateFragment {
     private String sleepTime;//休眠时间
     private String correctionValue;//测斜仪修正值
 
+    private DecimalFormat decimalFormat = new DecimalFormat();
+
     public static BleAdmeInclinometerFragment newInstance() {
         return new BleAdmeInclinometerFragment();
     }
@@ -103,8 +107,12 @@ public class BleAdmeInclinometerFragment extends BaseBleIotCommunicateFragment {
     }
 
     private void setView() {
-        mEtCollectorAddress.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
+        mEtCollectorAddress.setFilters(new InputFilter[]{new InputFilter.LengthFilter(2)});
+        mEtCollectorAddress.setHint("0-32");
+
         mEtMacAddress.setFilters(new InputFilter[]{new InputFilter.LengthFilter(17)});
+        mEtMacAddress.setHint("xx:xx:xx:xx:xx:xx");
+
         mEtCollectionInterval.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
         mEtSolvingInterval.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
         mEtSleepTime.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
@@ -140,7 +148,6 @@ public class BleAdmeInclinometerFragment extends BaseBleIotCommunicateFragment {
                 Timber.w("基础配置参数错误!");
                 return;
             }
-
             processSave();
         }
     }
@@ -206,28 +213,22 @@ public class BleAdmeInclinometerFragment extends BaseBleIotCommunicateFragment {
 
         if (inclinometerType.equals("0")) {
             if (TextUtils.isEmpty(address)) {
-                ToastUtils.show("采集器地址不能为空!");
-                mEtCollectorAddress.requestFocus();
+                ToastUtils.show("请输入采集器地址!");
+                mEtMacAddress.requestFocus();
                 return false;
             }
-
-            if (!ValidateUtil.isInteger(address)) {
+            if (Integer.parseInt(address) < 0 || Integer.parseInt(address) > 32) {
                 ToastUtils.show("请输入正确的采集器地址!");
-                mEtCollectorAddress.requestFocus();
-                return false;
-            }
-            if (Integer.parseInt(address) < 0) {
-                ToastUtils.show("采集器地址不能小于0");
                 mEtCollectorAddress.requestFocus();
                 return false;
             }
         } else {
             if (TextUtils.isEmpty(address)) {
-                ToastUtils.show("Mac地址不能为空!");
+                ToastUtils.show("请输入Mac地址!");
                 mEtMacAddress.requestFocus();
                 return false;
             }
-            if (!address.contains(":")) {
+            if (!ValidateUtil.isValidMacAddress(address)) {
                 ToastUtils.show("请输入正确的Mac地址!");
                 mEtMacAddress.requestFocus();
                 return false;
@@ -235,40 +236,61 @@ public class BleAdmeInclinometerFragment extends BaseBleIotCommunicateFragment {
         }
 
         if (TextUtils.isEmpty(collectionInterval)) {
-            ToastUtils.show("采集器采集间隔不能为空!");
+            ToastUtils.show("请输入采集器采集间隔!");
             mEtCollectionInterval.requestFocus();
             return false;
         }
-        if (!ValidateUtil.isInteger(collectionInterval)) {
+        try {
+            int value = Integer.parseInt(collectionInterval);
+            if (value < 1 ) {
+                ToastUtils.show("请输入正确的采集器采集间隔!");
+                mEtCollectionInterval.requestFocus();
+                return false;
+            }
+        } catch (Exception ex) {
             ToastUtils.show("请输入正确的采集器采集间隔!");
             mEtCollectionInterval.requestFocus();
             return false;
         }
 
         if (TextUtils.isEmpty(solvingInterval)) {
-            ToastUtils.show("采集器解算间隔不能为空!");
+            ToastUtils.show("请输入采集器解算间隔!");
             mEtSolvingInterval.requestFocus();
             return false;
         }
-        if (!ValidateUtil.isInteger(solvingInterval)) {
+        try {
+            int value = Integer.parseInt(solvingInterval);
+            if (value < 1 ) {
+                ToastUtils.show("请输入正确的采集器解算间隔!");
+                mEtSolvingInterval.requestFocus();
+                return false;
+            }
+        } catch (Exception ex) {
             ToastUtils.show("请输入正确的采集器解算间隔!");
             mEtSolvingInterval.requestFocus();
             return false;
         }
 
         if (TextUtils.isEmpty(sleepTime)) {
-            ToastUtils.show("休眠时间不能为空!");
+            ToastUtils.show("请输入休眠时间!");
             mEtSleepTime.requestFocus();
             return false;
         }
-        if (!ValidateUtil.isInteger(sleepTime)) {
+        try {
+            int value = Integer.parseInt(sleepTime);
+            if (value < 1 ) {
+                ToastUtils.show("请输入正确的休眠时间!");
+                mEtSleepTime.requestFocus();
+                return false;
+            }
+        } catch (Exception ex) {
             ToastUtils.show("请输入正确的休眠时间!");
             mEtSleepTime.requestFocus();
             return false;
         }
 
         if (TextUtils.isEmpty(correctionValue)) {
-            ToastUtils.show("测斜仪修正值不能为空!");
+            ToastUtils.show("测斜仪修正值!");
             mEtCorrectionValue.requestFocus();
             return false;
         }
@@ -284,20 +306,31 @@ public class BleAdmeInclinometerFragment extends BaseBleIotCommunicateFragment {
     }
 
     private void processSave() {
-        AdmeInclinometerEntity entity = new AdmeInclinometerEntity();
-        entity.setInctype(inclinometerType);
-        entity.setLowpower(lowPowerMode);
-        entity.setAddress(address);
-        entity.setCollinval(collectionInterval);
-        entity.setCalcinval(solvingInterval);
-        entity.setDormancytime(sleepTime);
-        entity.setInterupdate(correctionValue);
+        try {
+            AdmeInclinometerEntity entity = new AdmeInclinometerEntity();
+            entity.setInctype(inclinometerType);
+            entity.setLowpower(lowPowerMode);
+            entity.setAddress(address);
+            entity.setCollinval(collectionInterval);
+            entity.setCalcinval(solvingInterval);
+            entity.setDormancytime(sleepTime);
+            decimalFormat.applyPattern("#.####");
+            entity.setInterupdate(decimalFormat.format(Double.parseDouble(correctionValue)));
 
-        errMsg = "发送指令超时,请稍后尝试";
-        startProgressRunnable("正在发送配置指令...", WRITE_TIME_OUT_SECOND);
-        mBtnSave.setEnabled(false);
-        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_SET_INCLINOMETER_PARAMETERS, entity);
-        sendCommand(command);
+            errMsg = "发送指令超时,请稍后尝试";
+            startProgressRunnable("处理中...", WRITE_TIME_OUT_SECOND);
+            mBtnSave.setEnabled(false);
+            String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_SET_INCLINOMETER_PARAMETERS, entity);
+            sendCommand(command);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    @Override
+    protected void doProgressRun() {
+        super.doProgressRun();
+        mBtnSave.setEnabled(true);
     }
 
     @Override
@@ -355,22 +388,26 @@ public class BleAdmeInclinometerFragment extends BaseBleIotCommunicateFragment {
             admeInclinometerInfo = new AdmeInclinometerInfo();
             return;
         }
+        try {
+            inclinometerTypeOld = admeInclinometerInfo.getInctype().trim();
+            inclinometerType = admeInclinometerInfo.getInctype().trim();
+            lowPowerModeOld = admeInclinometerInfo.getLowpower().trim();
+            lowPowerMode = admeInclinometerInfo.getLowpower().trim();
+            address = admeInclinometerInfo.getAddress().trim();
+            collectionInterval = admeInclinometerInfo.getCollinval().trim();
+            solvingInterval = admeInclinometerInfo.getCalcinval().trim();
+            sleepTime = admeInclinometerInfo.getDormancytime().trim();
+            correctionValue = admeInclinometerInfo.getInterupdate().trim();
 
-        inclinometerTypeOld = admeInclinometerInfo.getInctype().trim();
-        inclinometerType = admeInclinometerInfo.getInctype().trim();
-        lowPowerModeOld = admeInclinometerInfo.getLowpower().trim();
-        lowPowerMode = admeInclinometerInfo.getLowpower().trim();
-        address = admeInclinometerInfo.getAddress().trim();
-        collectionInterval = admeInclinometerInfo.getCollinval().trim();
-        solvingInterval = admeInclinometerInfo.getCalcinval().trim();
-        sleepTime = admeInclinometerInfo.getDormancytime().trim();
-        correctionValue = admeInclinometerInfo.getInterupdate().trim();
-
-        mEtCollectionInterval.setText(collectionInterval);
-        mEtSolvingInterval.setText(solvingInterval);
-        mEtSleepTime.setText(sleepTime);
-        mEtCorrectionValue.setText(correctionValue);
-
+            mEtCollectionInterval.setText(collectionInterval);
+            mEtSolvingInterval.setText(solvingInterval);
+            mEtSleepTime.setText(sleepTime);
+            decimalFormat.applyPattern("#.####");
+            correctionValue = decimalFormat.format(Double.parseDouble(correctionValue));
+            mEtCorrectionValue.setText(correctionValue);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
         if (inclinometerTypeOld.equals("0")) {
             inclinometerTypePos = 0;
             mTvInclinometerType.setText("433测斜仪");

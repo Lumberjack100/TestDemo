@@ -40,7 +40,7 @@ public abstract class BaseBleIotCommunicateFragment extends BaseFragment {
 
     protected ConfigPageViewModel configPageViewModel;
 
-    protected boolean isEditable = false;
+    protected boolean isEditable = true;
 
     public boolean isExitMode = false;
 
@@ -84,10 +84,13 @@ public abstract class BaseBleIotCommunicateFragment extends BaseFragment {
         public void run() {
             dismissProgressDialog();
             progressRunnable = null;
+            doProgressRun();
+        }
+    }
 
-            if (!TextUtils.isEmpty(errMsg)) {
-                ToastUtils.show(errMsg);
-            }
+    protected void doProgressRun() {
+        if (!TextUtils.isEmpty(errMsg)) {
+            ToastUtils.show(errMsg);
         }
     }
 
@@ -99,7 +102,7 @@ public abstract class BaseBleIotCommunicateFragment extends BaseFragment {
         }
     }
 
-    public void stopProgressRunnable() {
+    protected void stopProgressRunnable() {
         dismissProgressDialog();
         uiHander.removeCallbacksAndMessages(null);
         progressRunnable = null;
@@ -117,7 +120,6 @@ public abstract class BaseBleIotCommunicateFragment extends BaseFragment {
                         return;
                     }
                 }
-
                 try {
                     parseResponseMessage(result);
                 } catch (Exception ex) {

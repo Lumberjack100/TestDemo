@@ -29,6 +29,8 @@ import com.shmedo.mcloudapp.util.KeyBordUtils;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.text.DecimalFormat;
+
 import butterknife.BindView;
 import butterknife.OnClick;
 import timber.log.Timber;
@@ -64,6 +66,9 @@ public class BleAdmeStepperMotorFragment extends BaseBleIotCommunicateFragment {
 
     private boolean paramEnableInitial;//开关初始状态，用于判断开关是否有打开后没有设置参数就返回
     private boolean isSaveParamOperation = false;//判断当前是保存参数操作，还是关闭开关操作
+
+    private DecimalFormat decimalFormat = new DecimalFormat();
+
 
     public static BleAdmeStepperMotorFragment newInstance() {
         return new BleAdmeStepperMotorFragment();
@@ -186,7 +191,7 @@ public class BleAdmeStepperMotorFragment extends BaseBleIotCommunicateFragment {
         movementSpeed = mEtMovementSpeed.getText().toString().trim();
 
         if (TextUtils.isEmpty(accuracyCorrectionValue)) {
-            ToastUtils.show("绝对精度修正值不能为空!");
+            ToastUtils.show("请输入绝对精度修正值!");
             mEtAccuracyCorrectionValue.requestFocus();
             return false;
         }
@@ -200,7 +205,7 @@ public class BleAdmeStepperMotorFragment extends BaseBleIotCommunicateFragment {
         }
 
         if (TextUtils.isEmpty(movementSpeed)) {
-            ToastUtils.show("电机运动速度不能为空!");
+            ToastUtils.show("请输入电机运动速度!");
             mEtMovementSpeed.requestFocus();
             return false;
         }
@@ -220,19 +225,30 @@ public class BleAdmeStepperMotorFragment extends BaseBleIotCommunicateFragment {
     }
 
     private void processSave() {
-        AdmeStepperMotorEntity entity = new AdmeStepperMotorEntity();
-        entity.setPosnegtest("1");
-        entity.setAbsprsion(accuracyCorrectionValue);
-        entity.setMovspeed(movementSpeed);
+        try {
+            AdmeStepperMotorEntity entity = new AdmeStepperMotorEntity();
+            entity.setPosnegtest("1");
+            decimalFormat.applyPattern("#.##");
+            entity.setAbsprsion(decimalFormat.format(Double.parseDouble(accuracyCorrectionValue)));
+            entity.setMovspeed(movementSpeed);
 
-        paramEnableInitial = mSbParamEnable.isChecked();
-        isSaveParamOperation = true;
-        mBtnSave.setEnabled(false);
+            paramEnableInitial = mSbParamEnable.isChecked();
+            isSaveParamOperation = true;
+            mBtnSave.setEnabled(false);
 
-        errMsg = "发送指令超时,请稍后尝试";
-        startProgressRunnable("正在发送配置指令...", WRITE_TIME_OUT_SECOND);
-        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_SET_STEPPER_MOTOR_PARAMETERS, entity);
-        sendCommand(command);
+            errMsg = "发送指令超时,请稍后尝试";
+            startProgressRunnable("正在发送配置指令...", WRITE_TIME_OUT_SECOND);
+            String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_SET_STEPPER_MOTOR_PARAMETERS, entity);
+            sendCommand(command);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    @Override
+    protected void doProgressRun() {
+        super.doProgressRun();
+        mBtnSave.setEnabled(true);
     }
 
     @Override
@@ -277,7 +293,6 @@ public class BleAdmeStepperMotorFragment extends BaseBleIotCommunicateFragment {
                 super.parseResponseMessage(cmdStr);
                 break;
         }
-
     }
 
     private void doAfterSetting() {
@@ -295,11 +310,17 @@ public class BleAdmeStepperMotorFragment extends BaseBleIotCommunicateFragment {
             return;
         }
 
-        accuracyCorrectionValue = admeStepperMotorInfo.getAbsprsion().trim();
-        movementSpeed = admeStepperMotorInfo.getMovspeed().trim();
-        mEtAccuracyCorrectionValue.setText(accuracyCorrectionValue);
-        mEtMovementSpeed.setText(movementSpeed);
+        try {
+            accuracyCorrectionValue = admeStepperMotorInfo.getAbsprsion().trim();
+            movementSpeed = admeStepperMotorInfo.getMovspeed().trim();
 
+            decimalFormat.applyPattern("#.##");
+            accuracyCorrectionValue = decimalFormat.format(Double.parseDouble(accuracyCorrectionValue));
+            mEtAccuracyCorrectionValue.setText(accuracyCorrectionValue);
+            mEtMovementSpeed.setText(movementSpeed);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
         if (admeStepperMotorInfo.getPosnegtest().trim().equals("0")) {
             paramEnableInitial = false;
             mSbParamEnable.setCheckedImmediatelyNoEvent(false);

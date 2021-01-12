@@ -10,6 +10,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.regex.Pattern;
 
+import timber.log.Timber;
+
 /**
  * Created by adu on 2017/12/11.
  * 验证
@@ -38,7 +40,7 @@ public class ValidateUtil {
     /**
      * 正则表达式：验证双精度浮点数
      */
-    private static final String REGEX_DOUBLE ="^[-+]?[0-9]*\\.?[0-9]+$";
+    private static final String REGEX_DOUBLE = "^[-+]?[0-9]*\\.?[0-9]+$";
 
     /**
      * 正则表达式：URL
@@ -121,10 +123,11 @@ public class ValidateUtil {
 
     /**
      * 验证邮箱是否正确
+     *
      * @param mail
      * @return
      */
-    public static boolean checkMail(String mail){
+    public static boolean checkMail(String mail) {
         if (TextUtils.isEmpty(mail)) {
             return false;
         }
@@ -145,6 +148,22 @@ public class ValidateUtil {
 
         return Pattern.matches(REGEX_URL, address);
     }
+
+    public static boolean isValidMacAddress(String macStr) {
+        if (macStr == null || macStr.equals("")) {
+            return false;
+        }
+        String macAddressRule = "([A-Fa-f0-9]{2}[-,:]){5}[A-Fa-f0-9]{2}";
+        // 这是真正的MAC地址；正则表达式；
+        if (macStr.matches(macAddressRule)) {
+            Timber.i("it is a valid MAC address");
+            return true;
+        } else {
+            Timber.e("it is not a valid MAC address!!!");
+            return false;
+        }
+    }
+
 
     /**
      * 验证本地时间
