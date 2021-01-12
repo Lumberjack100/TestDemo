@@ -187,7 +187,7 @@ public class BleAdmeHomeFragment extends BaseBleIotCommunicateFragment {
 
     private void setHeadInfo() {
         mTvDeviceName.setText("水平自动监测设备");
-        mTvDeviceSn.setText("设备编号：--");
+        mTvDeviceSn.setText(String.format("设备编号：%s", device.getName().substring(3)));
         mTvProductModel.setText("产品型号：--");
         mTvMotionState.setText("运行状态：--");
         mTvPlatformCommunicationState.setText("平台连接状态：--");
@@ -203,7 +203,7 @@ public class BleAdmeHomeFragment extends BaseBleIotCommunicateFragment {
         int spacing = DensityUtil.Dp2Px(mActivity, 15);//每一个矩形的间距
         mRecyclerView.setLayoutManager(new GridLayoutManager(mActivity, spanCount));
         //设置每个item间距
-        mRecyclerView.addItemDecoration(new GridSpacingItemDecoration(spanCount, spacing, true));
+        mRecyclerView.addItemDecoration(new GridSpacingItemDecoration(spanCount, spacing, false));
         moduleAdapter = new ConfigModuleAdapter(configModuleList);
         moduleAdapter.setAnimationEnable(true);
         moduleAdapter.setAnimationFirstOnly(false);
@@ -518,8 +518,8 @@ public class BleAdmeHomeFragment extends BaseBleIotCommunicateFragment {
     private void updateHeadInfo() {
         if (admeBaseInfo != null) {
             mTvDeviceName.setText("水平自动监测设备");
-            mTvDeviceSn.setText(String.format("设备编号：%s", admeBaseInfo.getSn()));
-            mTvProductModel.setText(String.format("产品型号：%s", admeBaseInfo.getProductid()));
+            mTvDeviceSn.setText(String.format("设备编号：%s", !TextUtils.isEmpty(admeBaseInfo.getSn()) ? admeBaseInfo.getSn() : device.getName().substring(3)));
+            mTvProductModel.setText(String.format("产品型号：%s", !TextUtils.isEmpty(admeBaseInfo.getProductid()) ? admeBaseInfo.getProductid() : "ADME"));
             mTvMotionState.setText("运行状态：--");
             mTvPlatformCommunicationState.setText("平台连接状态：--");
 
@@ -536,8 +536,8 @@ public class BleAdmeHomeFragment extends BaseBleIotCommunicateFragment {
             }
         } else {
             mTvDeviceName.setText("水平自动监测设备");
-            mTvDeviceSn.setText("设备编号：--");
-            mTvProductModel.setText("产品型号：--");
+            mTvDeviceSn.setText(String.format("设备编号：%s", device.getName().substring(3)));
+            mTvProductModel.setText(String.format("产品型号：：%s", "ADME"));
             mTvMotionState.setText("运行状态：--");
             mTvPlatformCommunicationState.setText("平台连接状态：--");
 

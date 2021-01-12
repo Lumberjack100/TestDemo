@@ -2,7 +2,6 @@ package com.shmedo.mcloudapp.deviceconfig.ui.fragment.adme;
 
 import android.os.Bundle;
 import android.text.InputFilter;
-import android.text.InputType;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,6 +32,8 @@ import com.shmedo.mcloudapp.common.view.ClearEditText;
 import com.shmedo.mcloudapp.util.KeyBordUtils;
 
 import org.jetbrains.annotations.NotNull;
+
+import java.text.DecimalFormat;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -77,6 +78,8 @@ public class BleAdmeMeasuringHoleDepthFragment extends BaseBleIotCommunicateFrag
     private AdmeMeasuringHoleDepthInfo measuringHoleDepthInfo;
     private BleAdmeMotorMotionDistanceFragment motorMotionDistanceFragment;
 
+    private DecimalFormat decimalFormat = new DecimalFormat();
+
     public static BleAdmeMeasuringHoleDepthFragment newInstance() {
         return new BleAdmeMeasuringHoleDepthFragment();
     }
@@ -95,12 +98,10 @@ public class BleAdmeMeasuringHoleDepthFragment extends BaseBleIotCommunicateFrag
     }
 
     private void setView() {
-        mEtMovementSpeed.setInputType(InputType.TYPE_CLASS_NUMBER);
-        mEtMovementSpeed.setFilters(new InputFilter[]{new InputFilter.LengthFilter(2)});
-        mEtMovementSpeed.setHint("1-99");
+        mEtMovementSpeed.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
+        mEtMovementSpeed.setHint("1-100");
 
-        mEtMotionDistance.setInputType(InputType.TYPE_CLASS_NUMBER);
-        mEtMotionDistance.setFilters(new InputFilter[]{new InputFilter.LengthFilter(6)});
+        mEtMotionDistance.setFilters(new InputFilter[]{new InputFilter.LengthFilter(11)});
 
         rbAutoControl.setChecked(true);
         rbManualControl.setTextColor(GlobalUtil.getColor(R.color.text_color_cccccc));
@@ -199,13 +200,13 @@ public class BleAdmeMeasuringHoleDepthFragment extends BaseBleIotCommunicateFrag
         movementSpeed = mEtMovementSpeed.getText().toString().trim();
         motionDistance = mEtMotionDistance.getText().toString().trim();
         if (TextUtils.isEmpty(movementSpeed)) {
-            ToastUtils.show("电机运动速度不能为空!");
+            ToastUtils.show("请输入电机运动速度!");
             mEtMovementSpeed.requestFocus();
             return false;
         }
         try {
             int port = Integer.parseInt(movementSpeed);
-            if (port <= 0 || port > 100) {
+            if (port < 1 || port > 100) {
                 ToastUtils.show("请输入正确的电机运动速度!");
                 mEtMovementSpeed.requestFocus();
                 return false;
@@ -216,39 +217,54 @@ public class BleAdmeMeasuringHoleDepthFragment extends BaseBleIotCommunicateFrag
             return false;
         }
 
-        if (TextUtils.isEmpty(motionDistance)) {
-            ToastUtils.show("运动距离不能为空!");
-            mEtMotionDistance.requestFocus();
-            return false;
-        }
-        try {
-            double value = Double.parseDouble(motionDistance);
-            if (value <= 0) {
+        if (rbAutoControl.isChecked()) {
+            if (TextUtils.isEmpty(motionDistance)) {
+                ToastUtils.show("请输入运动距离!");
+                mEtMotionDistance.requestFocus();
+                return false;
+            }
+            try {
+                double value = Double.parseDouble(motionDistance);
+                if (value <= 0) {
+                    ToastUtils.show("请输入正确的运动距离!");
+                    mEtMotionDistance.requestFocus();
+                    return false;
+                }
+            } catch (Exception ex) {
                 ToastUtils.show("请输入正确的运动距离!");
                 mEtMotionDistance.requestFocus();
                 return false;
             }
-        } catch (Exception ex) {
-            ToastUtils.show("请输入正确的运动距离!");
-            mEtMotionDistance.requestFocus();
-            return false;
+        } else {
+            motionDistance = "99999";
         }
 
         return true;
     }
 
     private void processSave() {
-        AdmeMeasuringHoleDepthEntity entity = new AdmeMeasuringHoleDepthEntity();
-        entity.setMovementway(motionWay);
-        entity.setMotorspeed(movementSpeed);
-        entity.setMovedistance(motionDistance);
+        try {
+            AdmeMeasuringHoleDepthEntity entity = new AdmeMeasuringHoleDepthEntity();
+            entity.setMovementway(motionWay);
+            entity.setMotorspeed(movementSpeed);
+            decimalFormat.applyPattern("#.###");
+            motionDistance = decimalFormat.format(Double.parseDouble(motionDistance));
+            entity.setMovedistance(motionDistance);
 
-        mBtnRun.setEnabled(false);
+            mBtnRun.setEnabled(false);
+            errMsg = "发送指令超时,请稍后尝试";
+            startProgressRunnable("处理中...", WRITE_TIME_OUT_SECOND);
+            String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_SET_MEASURING_HOLEDEPTH_PARAMETERS, entity);
+            sendCommand(command);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
 
-        errMsg = "发送指令超时,请稍后尝试";
-        startProgressRunnable("处理中...", WRITE_TIME_OUT_SECOND);
-        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_SET_MEASURING_HOLEDEPTH_PARAMETERS, entity);
-        sendCommand(command);
+    @Override
+    protected void doProgressRun() {
+        super.doProgressRun();
+        mBtnRun.setEnabled(true);
     }
 
     /**
@@ -374,8 +390,15 @@ public class BleAdmeMeasuringHoleDepthFragment extends BaseBleIotCommunicateFrag
             motionWayPos = 1;
             mTvMotionWay.setText("下放");
         }
-        mEtMovementSpeed.setText(movementSpeed);
-        mEtMotionDistance.setText(motionDistance);
+
+        try {
+            mEtMovementSpeed.setText(movementSpeed);
+            decimalFormat.applyPattern("#.###");
+            motionDistance = decimalFormat.format(Double.parseDouble(motionDistance));
+            mEtMotionDistance.setText(motionDistance);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
 
         //电机处于运动状态，弹出底部运行数据展示框
         if (measuringHoleDepthInfo.getMorunstate().trim().equals('1')) {

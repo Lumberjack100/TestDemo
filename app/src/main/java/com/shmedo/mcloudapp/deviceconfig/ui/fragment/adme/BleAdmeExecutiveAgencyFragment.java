@@ -139,10 +139,14 @@ public class BleAdmeExecutiveAgencyFragment extends BaseBleIotCommunicateFragmen
         mEtDataReadingInterval.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
         mEtMeasurementCompensationTime.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
         mEtMotorDriveAddress.setFilters(new InputFilter[]{new InputFilter.LengthFilter(2)});
-        mEtDecentralizationSpeed.setFilters(new InputFilter[]{new InputFilter.LengthFilter(2)});
+        mEtDecentralizationSpeed.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
+        mEtDecentralizationSpeed.setHint("1-100");
+
         mEtInclinometerTubeHoleDepth.setFilters(new InputFilter[]{new InputFilter.LengthFilter(10)});
         mEtDecentralizationWaitingTime.setFilters(new InputFilter[]{new InputFilter.LengthFilter(2)});
-        mEtPullUpSpeed.setFilters(new InputFilter[]{new InputFilter.LengthFilter(2)});
+        mEtPullUpSpeed.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
+        mEtDecentralizationSpeed.setHint("1-100");
+
         mEtMeasuringDistance.setFilters(new InputFilter[]{new InputFilter.LengthFilter(4)});
         mEtMeasurementIntervalTime.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
         mEtMeasuringReferenceDepth.setFilters(new InputFilter[]{new InputFilter.LengthFilter(8)});
@@ -195,7 +199,7 @@ public class BleAdmeExecutiveAgencyFragment extends BaseBleIotCommunicateFragmen
                 return;
             }
             if (!checkValueIsValid()) {
-                Timber.w("基础配置参数错误!");
+                Timber.w("参数存在错误!");
                 return;
             }
 
@@ -273,7 +277,7 @@ public class BleAdmeExecutiveAgencyFragment extends BaseBleIotCommunicateFragmen
         }
         try {
             int value = Integer.parseInt(waitingIntervalPerRound);
-            if (value < 1 ) {
+            if (value < 1) {
                 ToastUtils.show("请输入正确的每轮等待时间!");
                 mEtWaitingIntervalPerRound.requestFocus();
                 return false;
@@ -291,7 +295,7 @@ public class BleAdmeExecutiveAgencyFragment extends BaseBleIotCommunicateFragmen
         }
         try {
             int value = Integer.parseInt(dataReadingInterval);
-            if (value < 1 ) {
+            if (value < 1) {
                 ToastUtils.show("请输入正确的数据读取间隔!");
                 mEtDataReadingInterval.requestFocus();
                 return false;
@@ -309,7 +313,7 @@ public class BleAdmeExecutiveAgencyFragment extends BaseBleIotCommunicateFragmen
         }
         try {
             int value = Integer.parseInt(measurementCompensationTime);
-            if (value < 1 ) {
+            if (value < 1) {
                 ToastUtils.show("请输入正确的测量补偿时间!");
                 mEtMeasurementCompensationTime.requestFocus();
                 return false;
@@ -327,7 +331,7 @@ public class BleAdmeExecutiveAgencyFragment extends BaseBleIotCommunicateFragmen
         }
         try {
             int value = Integer.parseInt(motorDriveAddress);
-            if (value < 1 ) {
+            if (value < 1) {
                 ToastUtils.show("请输入正确的电机驱动器地址!");
                 mEtMotorDriveAddress.requestFocus();
                 return false;
@@ -345,7 +349,7 @@ public class BleAdmeExecutiveAgencyFragment extends BaseBleIotCommunicateFragmen
         }
         try {
             int value = Integer.parseInt(decentralizationSpeed);
-            if (value < 1 ) {
+            if (value < 1 || value > 100) {
                 ToastUtils.show("请输入正确的电机下放速度!");
                 mEtDecentralizationSpeed.requestFocus();
                 return false;
@@ -377,7 +381,7 @@ public class BleAdmeExecutiveAgencyFragment extends BaseBleIotCommunicateFragmen
         }
         try {
             int value = Integer.parseInt(decentralizationWaitingTime);
-            if (value < 1 ) {
+            if (value < 1 || value > 100) {
                 ToastUtils.show("请输入正确的下放等待时间!");
                 mEtDecentralizationWaitingTime.requestFocus();
                 return false;
@@ -395,7 +399,7 @@ public class BleAdmeExecutiveAgencyFragment extends BaseBleIotCommunicateFragmen
         }
         try {
             int value = Integer.parseInt(pullUpSpeed);
-            if (value < 1 ) {
+            if (value < 1) {
                 ToastUtils.show("请输入正确的电机上拉速度!");
                 mEtPullUpSpeed.requestFocus();
                 return false;
@@ -413,7 +417,7 @@ public class BleAdmeExecutiveAgencyFragment extends BaseBleIotCommunicateFragmen
         }
         try {
             int value = Integer.parseInt(measuringDistance);
-            if (value < 1 ) {
+            if (value < 1) {
                 ToastUtils.show("请输入正确的测量间距!");
                 mEtMeasuringDistance.requestFocus();
                 return false;
@@ -431,7 +435,7 @@ public class BleAdmeExecutiveAgencyFragment extends BaseBleIotCommunicateFragmen
         }
         try {
             int value = Integer.parseInt(measurementIntervalTime);
-            if (value < 1 ) {
+            if (value < 1) {
                 ToastUtils.show("请输入正确的测量间隔时间!");
                 mEtMeasurementIntervalTime.requestFocus();
                 return false;
@@ -464,7 +468,7 @@ public class BleAdmeExecutiveAgencyFragment extends BaseBleIotCommunicateFragmen
             }
             try {
                 int value = Integer.parseInt(pulsesPerUnitTime);
-                if (value < 1 ) {
+                if (value < 1) {
                     ToastUtils.show("请输入正确的堵转单位时间脉冲数!");
                     mEtPulsesPerUnitTime.requestFocus();
                     return false;
@@ -510,10 +514,13 @@ public class BleAdmeExecutiveAgencyFragment extends BaseBleIotCommunicateFragmen
             entity.setMeaintertime(measurementIntervalTime);
             decimalFormat.applyPattern("#.##");
             entity.setMeabaseth(decimalFormat.format(Double.parseDouble(measuringReferenceDepth)));
-            entity.setUntimenum(pulsesPerUnitTime);
-            decimalFormat.applyPattern("#.##");
-            entity.setDetectiontime(decimalFormat.format(Double.parseDouble(detectionTime)));
-            
+
+            if (mSbDecentralizedPredictionEnable.isChecked()) {
+                entity.setUntimenum(pulsesPerUnitTime);
+                decimalFormat.applyPattern("#.##");
+                entity.setDetectiontime(decimalFormat.format(Double.parseDouble(detectionTime)));
+            }
+
             errMsg = "发送指令超时,请稍后尝试";
             startProgressRunnable("正在发送配置指令...", WRITE_TIME_OUT_SECOND);
             mBtnSave.setEnabled(false);

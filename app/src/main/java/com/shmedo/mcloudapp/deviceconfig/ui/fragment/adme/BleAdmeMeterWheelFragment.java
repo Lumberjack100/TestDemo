@@ -107,11 +107,11 @@ public class BleAdmeMeterWheelFragment extends BaseBleIotCommunicateFragment {
         mEtUpCorrectionParametersOne.setFilters(new InputFilter[]{new InputFilter.LengthFilter(11)});
         mEtUpCorrectionParametersTwo.setFilters(new InputFilter[]{new InputFilter.LengthFilter(11)});
         mEtUpConstant.setFilters(new InputFilter[]{new InputFilter.LengthFilter(11)});
-        mEtUpFilterCoefficient.setFilters(new InputFilter[]{new InputFilter.LengthFilter(1)});
+        mEtUpFilterCoefficient.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
         mEtDownCorrectionParametersOne.setFilters(new InputFilter[]{new InputFilter.LengthFilter(11)});
         mEtDownCorrectionParametersTwo.setFilters(new InputFilter[]{new InputFilter.LengthFilter(11)});
         mEtDownConstant.setFilters(new InputFilter[]{new InputFilter.LengthFilter(11)});
-        mEtDownFilterCoefficient.setFilters(new InputFilter[]{new InputFilter.LengthFilter(1)});
+        mEtDownFilterCoefficient.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
 
         mEtUpFilterCoefficient.setHint("0-F");
         mEtDownFilterCoefficient.setHint("0-F");
@@ -137,7 +137,7 @@ public class BleAdmeMeterWheelFragment extends BaseBleIotCommunicateFragment {
                 return;
             }
             if (!checkValueIsValid()) {
-                Timber.w("基础配置参数错误!");
+                Timber.w("参数存在错误!");
                 return;
             }
 
@@ -241,6 +241,7 @@ public class BleAdmeMeterWheelFragment extends BaseBleIotCommunicateFragment {
         if (!upFilterCoefficient.matches(filterCoefficientRule)) {
             ToastUtils.show("请输入正确的上拉滤波器系数!");
             mEtUpFilterCoefficient.requestFocus();
+            return false;
         }
 
         if (TextUtils.isEmpty(downCorrectionParametersOne)) {
@@ -290,6 +291,7 @@ public class BleAdmeMeterWheelFragment extends BaseBleIotCommunicateFragment {
         if (!downFilterCoefficient.matches(filterCoefficientRule)) {
             ToastUtils.show("请输入正确的下放滤波器系数!");
             mEtDownFilterCoefficient.requestFocus();
+            return false;
         }
 
         return true;

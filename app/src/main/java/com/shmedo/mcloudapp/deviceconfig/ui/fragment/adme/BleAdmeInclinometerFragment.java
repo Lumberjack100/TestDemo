@@ -145,7 +145,7 @@ public class BleAdmeInclinometerFragment extends BaseBleIotCommunicateFragment {
                 return;
             }
             if (!checkValueIsValid()) {
-                Timber.w("基础配置参数错误!");
+                Timber.w("参数存在错误!");
                 return;
             }
             processSave();

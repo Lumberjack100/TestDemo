@@ -2,7 +2,6 @@ package com.shmedo.mcloudapp.deviceconfig.ui.fragment.adme;
 
 import android.os.Bundle;
 import android.text.InputFilter;
-import android.text.InputType;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,6 +29,8 @@ import com.shmedo.mcloudapp.common.view.ClearEditText;
 import com.shmedo.mcloudapp.util.KeyBordUtils;
 
 import org.jetbrains.annotations.NotNull;
+
+import java.text.DecimalFormat;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -68,6 +69,9 @@ public class BleAdmeGuideGrooveCalibrationFragment extends BaseBleIotCommunicate
     private AdmeGuideGrooveCalibrationInfo grooveCalibrationInfo;
     private BleAdmeMotorMotionAngleFragment motorMotionAngleFragment;
 
+    private DecimalFormat decimalFormat = new DecimalFormat();
+
+
     public static BleAdmeGuideGrooveCalibrationFragment newInstance() {
         return new BleAdmeGuideGrooveCalibrationFragment();
     }
@@ -85,11 +89,10 @@ public class BleAdmeGuideGrooveCalibrationFragment extends BaseBleIotCommunicate
     }
 
     private void setView() {
-        mEtMovementSpeed.setInputType(InputType.TYPE_CLASS_NUMBER);
         mEtMovementSpeed.setFilters(new InputFilter[]{new InputFilter.LengthFilter(2)});
-        mEtMovementSpeed.setHint("1-99");
+        mEtMovementSpeed.setHint("1-100");
 
-        mEtMotionAngle.setFilters(new InputFilter[]{new InputFilter.LengthFilter(6)});
+        mEtMotionAngle.setFilters(new InputFilter[]{new InputFilter.LengthFilter(11)});
 
         clearMotionDataLayout.setVisibility(View.VISIBLE);
         motionDataClearCompleteLayout.setVisibility(View.GONE);
@@ -149,15 +152,15 @@ public class BleAdmeGuideGrooveCalibrationFragment extends BaseBleIotCommunicate
 
     private boolean checkValueIsValid() {
         movementSpeed = mEtMovementSpeed.getText().toString().trim();
-        motionAngle =  mEtMotionAngle.getText().toString().trim();
+        motionAngle = mEtMotionAngle.getText().toString().trim();
         if (TextUtils.isEmpty(movementSpeed)) {
-            ToastUtils.show("电机运动速度不能为空!");
+            ToastUtils.show("请输入电机运动速度!");
             mEtMovementSpeed.requestFocus();
             return false;
         }
         try {
             int port = Integer.parseInt(movementSpeed);
-            if (port <= 0 || port > 100) {
+            if (port < 1 || port > 100) {
                 ToastUtils.show("请输入正确的电机运动速度!");
                 mEtMovementSpeed.requestFocus();
                 return false;
@@ -169,7 +172,7 @@ public class BleAdmeGuideGrooveCalibrationFragment extends BaseBleIotCommunicate
         }
 
         if (TextUtils.isEmpty(motionAngle)) {
-            ToastUtils.show("运动角度不能为空!");
+            ToastUtils.show("请输入运动角度!");
             mEtMotionAngle.requestFocus();
             return false;
         }
@@ -190,17 +193,28 @@ public class BleAdmeGuideGrooveCalibrationFragment extends BaseBleIotCommunicate
     }
 
     private void processSave() {
-        AdmeGuideGrooveCalibrationEntity entity = new AdmeGuideGrooveCalibrationEntity();
-        entity.setMovementway(motionWay);
-        entity.setMotorspeed(movementSpeed);
-        entity.setMoveangle(motionAngle);
+        try {
+            AdmeGuideGrooveCalibrationEntity entity = new AdmeGuideGrooveCalibrationEntity();
+            entity.setMovementway(motionWay);
+            entity.setMotorspeed(movementSpeed);
+            decimalFormat.applyPattern("#.#");
+            motionAngle = decimalFormat.format(Double.parseDouble(motionAngle));
+            entity.setMoveangle(motionAngle);
 
-        mBtnRun.setEnabled(false);
+            mBtnRun.setEnabled(false);
+            errMsg = "发送指令超时,请稍后尝试";
+            startProgressRunnable("处理中...", WRITE_TIME_OUT_SECOND);
+            String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_SET_GUIDE_GROOVE_CALIBRATION_PARAMETERS, entity);
+            sendCommand(command);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
 
-        errMsg = "发送指令超时,请稍后尝试";
-        startProgressRunnable("处理中...", WRITE_TIME_OUT_SECOND);
-        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_SET_GUIDE_GROOVE_CALIBRATION_PARAMETERS, entity);
-        sendCommand(command);
+    @Override
+    protected void doProgressRun() {
+        super.doProgressRun();
+        mBtnRun.setEnabled(true);
     }
 
     /**
@@ -228,7 +242,7 @@ public class BleAdmeGuideGrooveCalibrationFragment extends BaseBleIotCommunicate
     }
 
     /**
-     *  清空数据提醒
+     * 清空数据提醒
      *
      * @param content
      */
@@ -326,8 +340,15 @@ public class BleAdmeGuideGrooveCalibrationFragment extends BaseBleIotCommunicate
             motionWayPos = 1;
             mTvMotionWay.setText("反转");
         }
-        mEtMovementSpeed.setText(movementSpeed);
-        mEtMotionAngle.setText(motionAngle);
+
+        try {
+            mEtMovementSpeed.setText(movementSpeed);
+            decimalFormat.applyPattern("#.#");
+            motionAngle = decimalFormat.format(Double.parseDouble(motionAngle));
+            mEtMotionAngle.setText(motionAngle);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
 
         //电机处于运动状态，弹出底部运行数据展示框
         if (grooveCalibrationInfo.getMorunstate().trim().equals('1')) {
