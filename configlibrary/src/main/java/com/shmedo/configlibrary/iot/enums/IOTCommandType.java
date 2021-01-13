@@ -6,6 +6,7 @@ package com.shmedo.configlibrary.iot.enums;
  * 描述：    米度物联网设备指令
  */
 public enum IOTCommandType {
+
     /**　米度物联网设备通用指令  **/
     /**
      * 获取设备终端时间
@@ -21,6 +22,21 @@ public enum IOTCommandType {
      * 获取设备状态
      */
     QUERY_DEVICE_STATUS("getstatus"),
+
+    /**
+     * 获取Vms数据中心状态
+     */
+    MD_GET_DATA_CENTER_STATUS("md_getdatacenterstatus"),
+
+    /**
+     * 获取数据中心参数
+     */
+    MD_GET_DATA_CENTER("md_getdatacenter"),
+
+    /**
+     * 设置数据中心参数
+     */
+    MD_SET_DATA_CENTER("md_setdatacenter"),
 
     /**
      * 重启设备
@@ -72,21 +88,6 @@ public enum IOTCommandType {
      * 设置网关相关的控制参数
      */
     VMS_MD_SET_GATEWAY_PARAM("md_setgatewayparam"),
-
-    /**
-     * 获取数据中心参数
-     */
-    MD_GET_DATA_CENTER("md_getdatacenter"),
-
-    /**
-     * 设置数据中心参数
-     */
-    MD_SET_DATA_CENTER("md_setdatacenter"),
-
-    /**
-     * 获取Vms数据中心状态
-     */
-    VMS_MD_GET_DATA_CENTER_STATUS("md_getdatacenterstatus"),
 
     /**
      * 删除Vms终端

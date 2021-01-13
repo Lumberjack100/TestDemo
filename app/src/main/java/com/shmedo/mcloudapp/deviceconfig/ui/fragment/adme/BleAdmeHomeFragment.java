@@ -159,6 +159,7 @@ public class BleAdmeHomeFragment extends BaseBleIotCommunicateFragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         isFirstCreate = true;
+        queryMotorStateRunnable = new QueryMotorStateRunnable();
         setHeadInfo();
         initAdapter();
         initConfigModuleData();
@@ -475,8 +476,7 @@ public class BleAdmeHomeFragment extends BaseBleIotCommunicateFragment {
                 admeBaseInfo = commandResult.getResult();
                 updateHeadInfo();
                 //获取设备的运行状态
-                queryMotorStateRunnable = new QueryMotorStateRunnable();
-                startQueryMotorStateRunnable();
+                queryMotorState();
             }
             break;
 

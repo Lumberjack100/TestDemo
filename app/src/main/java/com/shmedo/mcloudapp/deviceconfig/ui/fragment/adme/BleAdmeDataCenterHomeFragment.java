@@ -13,7 +13,7 @@ import com.shmedo.configlibrary.iot.cmd.entity.ServerNumberEntity;
 import com.shmedo.configlibrary.iot.cmd.parser.IOTParseManager;
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.enums.ServerNumber;
-import com.shmedo.configlibrary.iot.model.vms.VmsDataCenterStatus;
+import com.shmedo.configlibrary.iot.model.DataCenterStatus;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
 import com.shmedo.core.AppContants;
 import com.shmedo.core.util.GlobalUtil;
@@ -65,9 +65,8 @@ public class BleAdmeDataCenterHomeFragment extends BaseBleIotCommunicateFragment
     @Override
     public void onStart() {
         super.onStart();
-//        errMsg = "查询数据超时,请稍后尝试";
 //        startProgressRunnable("加载中...", DELAY_MILLIS);
-//        getDataCenterStatus(ServerNumber.NUMBER_ONE);
+        getDataCenterStatus(ServerNumber.NUMBER_ONE);
     }
 
     /**
@@ -75,7 +74,7 @@ public class BleAdmeDataCenterHomeFragment extends BaseBleIotCommunicateFragment
      */
     private void getDataCenterStatus(ServerNumber serverNumber) {
         ServerNumberEntity serverNumberEntity = new ServerNumberEntity(serverNumber.toInt());
-        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.VMS_MD_GET_DATA_CENTER_STATUS, serverNumberEntity);
+        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.MD_GET_DATA_CENTER_STATUS, serverNumberEntity);
         sendCommand(command);
     }
 
@@ -106,8 +105,8 @@ public class BleAdmeDataCenterHomeFragment extends BaseBleIotCommunicateFragment
     private void setResultData(final String cmdStr) {
         IOTCommandType type = IOTStringUtil.extractCommandType(cmdStr);
         switch (type) {
-            case VMS_MD_GET_DATA_CENTER_STATUS: {//获取设备的数据中心状态
-                IOTCommandResult<VmsDataCenterStatus> commandResult = IOTParseManager.getInstance().parse(cmdStr);
+            case MD_GET_DATA_CENTER_STATUS: {//获取设备的数据中心状态
+                IOTCommandResult<DataCenterStatus> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
                     stopProgressRunnable();
                     String errMsg = String.format("%s %s", "查询数据中心状态出错!", commandResult.getMessage());
@@ -115,7 +114,7 @@ public class BleAdmeDataCenterHomeFragment extends BaseBleIotCommunicateFragment
                     ToastUtils.show(errMsg);
                     return;
                 }
-                VmsDataCenterStatus centerStatus = commandResult.getResult();
+                DataCenterStatus centerStatus = commandResult.getResult();
                 if (centerStatus.getCenterid() == 1) {
                     mTvDataCenterOne.setText(getStatusTextById(centerStatus.getStatus()));
                     mTvDataCenterOne.setTextColor(GlobalUtil.getColor(getStatusColorResId(centerStatus.getStatus())));

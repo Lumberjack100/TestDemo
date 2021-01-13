@@ -18,7 +18,7 @@ import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.enums.ServerNumber;
 import com.shmedo.configlibrary.iot.enums.VmsAisleNumber;
 import com.shmedo.configlibrary.iot.model.CommonSettingCmdResult;
-import com.shmedo.configlibrary.iot.model.vms.VmsDataCenterStatus;
+import com.shmedo.configlibrary.iot.model.DataCenterStatus;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
 import com.shmedo.core.AppContants;
 import com.shmedo.core.MCloudApp;
@@ -121,7 +121,7 @@ public class TcpVmsAdvancedSettingsFragment extends BaseTcpConnectFragment {
      */
     private void getDataCenterStatus(ServerNumber serverNumber) {
         ServerNumberEntity serverNumberEntity = new ServerNumberEntity(serverNumber.toInt());
-        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.VMS_MD_GET_DATA_CENTER_STATUS, serverNumberEntity);
+        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.MD_GET_DATA_CENTER_STATUS, serverNumberEntity);
         sendCommand(command);
     }
 
@@ -181,8 +181,8 @@ public class TcpVmsAdvancedSettingsFragment extends BaseTcpConnectFragment {
     private void setResultData(final String cmdStr) {
         IOTCommandType type = IOTStringUtil.extractCommandType(cmdStr);
         switch (type) {
-            case VMS_MD_GET_DATA_CENTER_STATUS: {//获取Vms数据中心状态
-                IOTCommandResult<VmsDataCenterStatus> commandResult = IOTParseManager.getInstance().parse(cmdStr);
+            case MD_GET_DATA_CENTER_STATUS: {//获取Vms数据中心状态
+                IOTCommandResult<DataCenterStatus> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
                     stopProgressRunnable();
                     String errMsg = String.format("%s %s", "查询网关数据中心状态出错!", commandResult.getMessage());
@@ -190,7 +190,7 @@ public class TcpVmsAdvancedSettingsFragment extends BaseTcpConnectFragment {
                     ToastUtils.show(errMsg);
                     return;
                 }
-                VmsDataCenterStatus centerStatus = commandResult.getResult();
+                DataCenterStatus centerStatus = commandResult.getResult();
                 if (centerStatus.getCenterid() == 1) {
                     mTvDataCenterOne.setText(getStatusTextById(centerStatus.getStatus()));
                     mTvDataCenterOne.setTextColor(GlobalUtil.getColor(getStatusColorResId(centerStatus.getStatus())));

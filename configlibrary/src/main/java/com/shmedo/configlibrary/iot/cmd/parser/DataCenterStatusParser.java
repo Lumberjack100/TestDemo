@@ -4,7 +4,7 @@ import android.text.TextUtils;
 
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.interfaces.IOTResultParser;
-import com.shmedo.configlibrary.iot.model.vms.VmsDataCenterStatus;
+import com.shmedo.configlibrary.iot.model.DataCenterStatus;
 
 import java.util.HashMap;
 
@@ -13,10 +13,10 @@ import java.util.HashMap;
  * 创建时间:  11/29/20 <br/>
  * 描述：      解析数据中心状态
  */
-public class DataCenterStatusParser implements IOTResultParser<VmsDataCenterStatus> {
+public class DataCenterStatusParser implements IOTResultParser<DataCenterStatus> {
     @Override
-    public VmsDataCenterStatus parse(String result) {
-        VmsDataCenterStatus info = new VmsDataCenterStatus();
+    public DataCenterStatus parse(String result) {
+        DataCenterStatus info = new DataCenterStatus();
         try {
             String[] keyValues = result.split("&");
             HashMap<String, String> keyValueMap = new HashMap<>();
@@ -46,6 +46,6 @@ public class DataCenterStatusParser implements IOTResultParser<VmsDataCenterStat
 
     @Override
     public IOTCommandType commandType() {
-        return IOTCommandType.VMS_MD_GET_DATA_CENTER_STATUS;
+        return IOTCommandType.MD_GET_DATA_CENTER_STATUS;
     }
 }

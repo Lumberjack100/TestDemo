@@ -1,4 +1,4 @@
-package com.shmedo.configlibrary.iot.model.vms;
+package com.shmedo.configlibrary.iot.model;
 
 import android.text.TextUtils;
 
@@ -7,7 +7,7 @@ import android.text.TextUtils;
  * 创建时间:  11/29/20 <br/>
  * 描述：     数据中心状态
  */
-public class VmsDataCenterStatus {
+public class DataCenterStatus {
     private int centerid;//数据中心编号
     private String status;//0未开启，1已上线，2未上线
 
