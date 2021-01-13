@@ -100,12 +100,8 @@ public abstract class BaseConfigFragmentContainerActivity extends BaseActivity {
         int id = view.getId();
         if (id == R.id.tv_action) {
             if (mTvAction.getText().toString().equals("编辑")) {
-//                mTvAction.setText("取消");
-//                maskLayerLayout.setVisibility(View.GONE);
                 configPageViewModel.configPageEditableChanged.setValue(true);
             } else if (mTvAction.getText().toString().equals("取消")) {
-//                mTvAction.setText("编辑");
-//                maskLayerLayout.setVisibility(View.VISIBLE);
                 configPageViewModel.configPageEditableChanged.setValue(false);
             }
         }

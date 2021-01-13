@@ -11,6 +11,7 @@ import com.kunminx.architecture.ui.callback.UnPeekLiveData;
  */
 public class ConfigPageViewModel extends ViewModel {
 
+    //配置页面可编辑状态布尔值
     public final UnPeekLiveData<Boolean> configPageEditableChanged = new UnPeekLiveData<>();
 
 }

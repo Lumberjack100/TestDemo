@@ -40,19 +40,17 @@ public abstract class BaseBleIotCommunicateFragment extends BaseFragment {
 
     protected ConfigPageViewModel configPageViewModel;
 
-    protected boolean isEditable = true;
-
-    public boolean isExitMode = false;
+    public boolean isExitMode = false;//是否退出页面标志
 
     protected String errMsg;
 
     private Handler uiHander = new Handler();
 
-    private Handler heartHander = new Handler();
+    private Handler heartHander = new Handler();//心跳包处理
 
-    private ProgressRunnable progressRunnable;
+    private ProgressRunnable progressRunnable;//常规任务
 
-    private HeartRunnable heartRunnable;
+    private HeartRunnable heartRunnable;//心跳包任务
 
     /**
      * 发送心跳包任务
@@ -138,7 +136,6 @@ public abstract class BaseBleIotCommunicateFragment extends BaseFragment {
     }
 
     protected void onEditableChanged(boolean isEditable) {
-        this.isEditable = isEditable;
     }
 
     @Override
