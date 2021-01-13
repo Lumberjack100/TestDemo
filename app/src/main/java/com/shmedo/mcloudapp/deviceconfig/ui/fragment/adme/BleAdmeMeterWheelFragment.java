@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.text.InputFilter;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 
 import androidx.annotation.Nullable;
@@ -68,6 +69,9 @@ public class BleAdmeMeterWheelFragment extends BaseBleIotCommunicateFragment {
 
     @BindView(R.id.btn_confirm)
     Button mBtnSave;
+
+    @BindView(R.id.maskLayerLayout)
+    ViewGroup maskLayerLayout;
 
     private AdmeMeterWheelInfo admeMeterWheelInfo;
 
@@ -535,16 +539,18 @@ public class BleAdmeMeterWheelFragment extends BaseBleIotCommunicateFragment {
 
             initParamConfigInfo();
         }
-        mEtEncoderLineNumber.setEnabled(isEditable);
-        mEtOuterDiameter.setEnabled(isEditable);
-        mEtUpCorrectionParametersOne.setEnabled(isEditable);
-        mEtUpCorrectionParametersTwo.setEnabled(isEditable);
-        mEtUpConstant.setEnabled(isEditable);
-        mEtUpFilterCoefficient.setEnabled(isEditable);
-        mEtDownCorrectionParametersOne.setEnabled(isEditable);
-        mEtDownCorrectionParametersTwo.setEnabled(isEditable);
-        mEtDownConstant.setEnabled(isEditable);
-        mEtDownFilterCoefficient.setEnabled(isEditable);
+//        mEtEncoderLineNumber.setEnabled(isEditable);
+//        mEtOuterDiameter.setEnabled(isEditable);
+//        mEtUpCorrectionParametersOne.setEnabled(isEditable);
+//        mEtUpCorrectionParametersTwo.setEnabled(isEditable);
+//        mEtUpConstant.setEnabled(isEditable);
+//        mEtUpFilterCoefficient.setEnabled(isEditable);
+//        mEtDownCorrectionParametersOne.setEnabled(isEditable);
+//        mEtDownCorrectionParametersTwo.setEnabled(isEditable);
+//        mEtDownConstant.setEnabled(isEditable);
+//        mEtDownFilterCoefficient.setEnabled(isEditable);
+
+        maskLayerLayout.setVisibility(isEditable ? View.GONE : View.VISIBLE);
         mBtnSave.setVisibility(isEditable ? View.VISIBLE : View.GONE);
     }
 }

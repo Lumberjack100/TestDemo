@@ -44,9 +44,6 @@ public class BleAdmeStepperMotorFragment extends BaseBleIotCommunicateFragment {
     @BindView(R.id.contentLayout)
     ViewGroup contentLayout;
 
-    @BindView(R.id.maskLayer)
-    ViewGroup maskLayerLayout;
-
     @BindView(R.id.paramEnableSBtn)
     SwitchButton mSbParamEnable;
 
@@ -58,6 +55,12 @@ public class BleAdmeStepperMotorFragment extends BaseBleIotCommunicateFragment {
 
     @BindView(R.id.btn_confirm)
     Button mBtnSave;
+
+    @BindView(R.id.maskLayerChild)
+    ViewGroup maskLayerChild;
+
+    @BindView(R.id.maskLayerLayout)
+    ViewGroup maskLayerLayout;
 
     private AdmeStepperMotorInfo admeStepperMotorInfo;
 
@@ -85,6 +88,12 @@ public class BleAdmeStepperMotorFragment extends BaseBleIotCommunicateFragment {
         setView();
         setSwitchViewListener();
         queryParamInfo();
+        //TODO 设备处于自动监测模式时，不可编辑参数(后期还要考虑点击编辑按钮时的页面状态切换)
+        if (admeViewModel.deviceMode == 0) {
+            configPageViewModel.configPageEditableChanged.setValue(true);
+        } else {
+            configPageViewModel.configPageEditableChanged.setValue(false);
+        }
     }
 
     private void setView() {
@@ -107,7 +116,7 @@ public class BleAdmeStepperMotorFragment extends BaseBleIotCommunicateFragment {
                 if (!isChecked) {
                     showCloseSwitchButtonDialog("确定使参数不生效？");
                 } else {
-                    maskLayerLayout.setVisibility(View.GONE);
+                    maskLayerChild.setVisibility(View.GONE);
                 }
             }
         });
@@ -131,7 +140,7 @@ public class BleAdmeStepperMotorFragment extends BaseBleIotCommunicateFragment {
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                         dialog.dismiss();
                         disableStepperMotorParam();
-                        maskLayerLayout.setVisibility(View.VISIBLE);
+                        maskLayerChild.setVisibility(View.VISIBLE);
                         paramEnableInitial = mSbParamEnable.isChecked();
                     }
                 }).onNegative(new MaterialDialog.SingleButtonCallback() {
@@ -300,7 +309,13 @@ public class BleAdmeStepperMotorFragment extends BaseBleIotCommunicateFragment {
     }
 
     private void doAfterSetting() {
+        //TODO  打开注释，设置为浏览模式
+//        configPageViewModel.configPageEditableChanged.setValue(false);
         if (isSaveParamOperation) {
+            if (admeStepperMotorInfo!= null) {
+                admeStepperMotorInfo.setAbsprsion(accuracyCorrectionValue);
+                admeStepperMotorInfo.setMovspeed(movementSpeed);
+            }
             isSaveParamOperation = false;
             ToastUtils.show("设置成功");
         }
@@ -328,11 +343,11 @@ public class BleAdmeStepperMotorFragment extends BaseBleIotCommunicateFragment {
         if (admeStepperMotorInfo.getPosnegtest().trim().equals("0")) {
             paramEnableInitial = false;
             mSbParamEnable.setCheckedImmediatelyNoEvent(false);
-            maskLayerLayout.setVisibility(View.VISIBLE);
+            maskLayerChild.setVisibility(View.VISIBLE);
         } else {
             paramEnableInitial = true;
             mSbParamEnable.setCheckedImmediatelyNoEvent(true);
-            maskLayerLayout.setVisibility(View.GONE);
+            maskLayerChild.setVisibility(View.GONE);
         }
     }
 
@@ -351,6 +366,9 @@ public class BleAdmeStepperMotorFragment extends BaseBleIotCommunicateFragment {
     }
 
     private boolean checkValueIsChange() {
+        if (!configPageViewModel.configPageEditableChanged.getValue())
+            return false;
+
         if (!mSbParamEnable.isChecked()) {
             return false;
         }
@@ -366,8 +384,24 @@ public class BleAdmeStepperMotorFragment extends BaseBleIotCommunicateFragment {
         if (movementSpeed != null && !movementSpeed.equals(mEtMovementSpeed.getText().toString().trim())) {
             return true;
         }
-
         return false;
     }
 
+    @Override
+    protected void onEditableChanged(boolean isEditable) {
+        if (isEditable) {
+            mEtAccuracyCorrectionValue.setHint("请输入");
+            mEtMovementSpeed.setHint("请输入");
+        } else {
+            mEtAccuracyCorrectionValue.setHint("");
+            mEtMovementSpeed.setHint("");
+
+            mEtAccuracyCorrectionValue.clearFocus();
+            mEtMovementSpeed.clearFocus();
+
+            initParamConfigInfo();
+        }
+        maskLayerLayout.setVisibility(isEditable ? View.GONE : View.VISIBLE);
+        mBtnSave.setVisibility(isEditable ? View.VISIBLE : View.GONE);
+    }
 }

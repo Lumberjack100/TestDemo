@@ -44,7 +44,7 @@ public class BleAdmeDataCenterBasicConfigFragment extends BaseBleIotCommunicateF
     @BindView(R.id.contentLayout)
     ViewGroup contentLayout;
 
-    @BindView(R.id.maskLayer)
+    @BindView(R.id.maskLayerChild)
     ViewGroup maskLayerLayout;
 
     @BindView(R.id.centerEnableSBtn)

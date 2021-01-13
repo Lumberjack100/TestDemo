@@ -50,7 +50,7 @@ import timber.log.Timber;
  * 描述：      Vms终端扩展传感器配置页面
  */
 public class TcpVmsTerminalExternalSensorParamFragment extends BaseTcpConnectFragment {
-    @BindView(R.id.maskLayer)
+    @BindView(R.id.maskLayerChild)
     ViewGroup maskLayerLayout;
 
     @BindView(R.id.sensorEnableSBtn)

@@ -41,7 +41,7 @@ import timber.log.Timber;
 
 public class BleAdmeDataCenterAdvancedConfigFragment extends BaseBleIotCommunicateFragment {
 
-    @BindView(R.id.maskLayer)
+    @BindView(R.id.maskLayerChild)
     ViewGroup maskLayerLayout;
 
     @BindView(R.id.centerEnableSBtn)

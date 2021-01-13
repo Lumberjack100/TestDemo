@@ -1,272 +1,289 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/scrollView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/main_bg_gray">
 
-    <LinearLayout
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_height="wrap_content">
 
-        <View
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="20dp" />
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-        <LinearLayout style="@style/Common_EditItem_LayoutStyle">
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="20dp" />
+
+            <LinearLayout style="@style/Common_EditItem_LayoutStyle">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="编码器线数"
+                    android:textColor="@color/text_color_343434"
+                    android:textSize="@dimen/text_size_17" />
+
+                <com.shmedo.mcloudapp.common.view.ClearEditText
+                    android:id="@+id/et_encoder_line_number"
+                    style="@style/DataCenter_EditText_Style"
+                    android:hint="请输入"
+                    android:inputType="number" />
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:background="@color/divider_line_bg_efefef" />
+
+            <LinearLayout style="@style/Common_EditItem_LayoutStyle">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="外径(mm)"
+                    android:textColor="@color/text_color_343434"
+                    android:textSize="@dimen/text_size_17" />
+
+                <com.shmedo.mcloudapp.common.view.ClearEditText
+                    android:id="@+id/et_outer_diameter"
+                    style="@style/DataCenter_EditText_Style"
+                    android:hint="请输入"
+                    android:inputType="number" />
+
+            </LinearLayout>
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="编码器线数"
-                android:textColor="@color/text_color_343434"
-                android:textSize="@dimen/text_size_17" />
+                android:layout_width="match_parent"
+                android:layout_height="54dp"
+                android:gravity="center_vertical"
+                android:paddingStart="16.5dp"
+                android:text="上拉参数配置"
+                android:textColor="@color/sub_title_text_color"
+                android:textSize="@dimen/text_size_15" />
 
-            <com.shmedo.mcloudapp.common.view.ClearEditText
-                android:id="@+id/et_encoder_line_number"
-                style="@style/DataCenter_EditText_Style"
-                android:hint="请输入"
-                android:inputType="number" />
+            <LinearLayout style="@style/Common_EditItem_LayoutStyle">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="一次修正参数"
+                    android:textColor="@color/text_color_343434"
+                    android:textSize="@dimen/text_size_17" />
+
+                <com.shmedo.mcloudapp.common.view.ClearEditText
+                    android:id="@+id/et_up_correction_parameters_one"
+                    style="@style/DataCenter_EditText_Style"
+                    android:hint="请输入"
+                    android:inputType="numberDecimal" />
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:background="@color/divider_line_bg_efefef" />
+
+            <LinearLayout style="@style/Common_EditItem_LayoutStyle">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="二次修正参数"
+                    android:textColor="@color/text_color_343434"
+                    android:textSize="@dimen/text_size_17" />
+
+                <com.shmedo.mcloudapp.common.view.ClearEditText
+                    android:id="@+id/et_up_correction_parameters_two"
+                    style="@style/DataCenter_EditText_Style"
+                    android:hint="请输入"
+                    android:inputType="numberDecimal" />
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:background="@color/divider_line_bg_efefef" />
+
+            <LinearLayout style="@style/Common_EditItem_LayoutStyle">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="常数"
+                    android:textColor="@color/text_color_343434"
+                    android:textSize="@dimen/text_size_17" />
+
+                <com.shmedo.mcloudapp.common.view.ClearEditText
+                    android:id="@+id/et_up_constant"
+                    style="@style/DataCenter_EditText_Style"
+                    android:hint="请输入"
+                    android:inputType="numberDecimal" />
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:background="@color/divider_line_bg_efefef" />
+
+            <LinearLayout style="@style/Common_EditItem_LayoutStyle">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="滤波器系数"
+                    android:textColor="@color/text_color_343434"
+                    android:textSize="@dimen/text_size_17" />
+
+                <com.shmedo.mcloudapp.common.view.ClearEditText
+                    android:id="@+id/et_up_filter_coefficient"
+                    style="@style/DataCenter_EditText_Style"
+                    android:hint="请输入" />
+
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="54dp"
+                android:gravity="center_vertical"
+                android:paddingStart="16.5dp"
+                android:text="下放参数配置"
+                android:textColor="@color/sub_title_text_color"
+                android:textSize="@dimen/text_size_15" />
+
+            <LinearLayout style="@style/Common_EditItem_LayoutStyle">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="一次修正参数"
+                    android:textColor="@color/text_color_343434"
+                    android:textSize="@dimen/text_size_17" />
+
+                <com.shmedo.mcloudapp.common.view.ClearEditText
+                    android:id="@+id/et_down_correction_parameters_one"
+                    style="@style/DataCenter_EditText_Style"
+                    android:hint="请输入"
+                    android:inputType="numberDecimal" />
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:background="@color/divider_line_bg_efefef" />
+
+            <LinearLayout style="@style/Common_EditItem_LayoutStyle">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="二次修正参数"
+                    android:textColor="@color/text_color_343434"
+                    android:textSize="@dimen/text_size_17" />
+
+                <com.shmedo.mcloudapp.common.view.ClearEditText
+                    android:id="@+id/et_down_correction_parameters_two"
+                    style="@style/DataCenter_EditText_Style"
+                    android:hint="请输入"
+                    android:inputType="numberDecimal" />
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:background="@color/divider_line_bg_efefef" />
+
+            <LinearLayout style="@style/Common_EditItem_LayoutStyle">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="常数"
+                    android:textColor="@color/text_color_343434"
+                    android:textSize="@dimen/text_size_17" />
+
+                <com.shmedo.mcloudapp.common.view.ClearEditText
+                    android:id="@+id/et_down_constant"
+                    style="@style/DataCenter_EditText_Style"
+                    android:hint="请输入"
+                    android:inputType="numberDecimal" />
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:background="@color/divider_line_bg_efefef" />
+
+            <LinearLayout style="@style/Common_EditItem_LayoutStyle">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="滤波器系数"
+                    android:textColor="@color/text_color_343434"
+                    android:textSize="@dimen/text_size_17" />
+
+                <com.shmedo.mcloudapp.common.view.ClearEditText
+                    android:id="@+id/et_down_filter_coefficient"
+                    style="@style/DataCenter_EditText_Style"
+                    android:hint="请输入" />
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="20dp" />
+
+            <Button
+                android:id="@+id/btn_confirm"
+                android:layout_width="match_parent"
+                android:layout_height="46dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="20dp"
+                android:background="@drawable/btn_select"
+                android:gravity="center"
+                android:text="保存"
+                android:textColor="@color/white"
+                android:textSize="17sp" />
 
         </LinearLayout>
 
-        <View
+        <RelativeLayout
+            android:id="@+id/maskLayerLayout"
             android:layout_width="match_parent"
-            android:layout_height="0.5dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
-            android:background="@color/divider_line_bg_efefef" />
+            android:layout_height="match_parent"
+            android:background="@android:color/transparent"
+            android:clickable="true"
+            android:focusable="true"
+            android:visibility="gone"
+            tools:visibility="visible"/>
 
-        <LinearLayout style="@style/Common_EditItem_LayoutStyle">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="外径(mm)"
-                android:textColor="@color/text_color_343434"
-                android:textSize="@dimen/text_size_17" />
-
-            <com.shmedo.mcloudapp.common.view.ClearEditText
-                android:id="@+id/et_outer_diameter"
-                style="@style/DataCenter_EditText_Style"
-                android:hint="请输入"
-                android:inputType="number" />
-
-        </LinearLayout>
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="54dp"
-            android:gravity="center_vertical"
-            android:paddingStart="16.5dp"
-            android:text="上拉参数配置"
-            android:textColor="@color/sub_title_text_color"
-            android:textSize="@dimen/text_size_15" />
-
-        <LinearLayout style="@style/Common_EditItem_LayoutStyle">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="一次修正参数"
-                android:textColor="@color/text_color_343434"
-                android:textSize="@dimen/text_size_17" />
-
-            <com.shmedo.mcloudapp.common.view.ClearEditText
-                android:id="@+id/et_up_correction_parameters_one"
-                style="@style/DataCenter_EditText_Style"
-                android:hint="请输入"
-                android:inputType="numberDecimal" />
-
-        </LinearLayout>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="0.5dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
-            android:background="@color/divider_line_bg_efefef" />
-
-        <LinearLayout style="@style/Common_EditItem_LayoutStyle">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="二次修正参数"
-                android:textColor="@color/text_color_343434"
-                android:textSize="@dimen/text_size_17" />
-
-            <com.shmedo.mcloudapp.common.view.ClearEditText
-                android:id="@+id/et_up_correction_parameters_two"
-                style="@style/DataCenter_EditText_Style"
-                android:hint="请输入"
-                android:inputType="numberDecimal" />
-
-        </LinearLayout>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="0.5dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
-            android:background="@color/divider_line_bg_efefef" />
-
-        <LinearLayout style="@style/Common_EditItem_LayoutStyle">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="常数"
-                android:textColor="@color/text_color_343434"
-                android:textSize="@dimen/text_size_17" />
-
-            <com.shmedo.mcloudapp.common.view.ClearEditText
-                android:id="@+id/et_up_constant"
-                style="@style/DataCenter_EditText_Style"
-                android:hint="请输入"
-                android:inputType="numberDecimal" />
-
-        </LinearLayout>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="0.5dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
-            android:background="@color/divider_line_bg_efefef" />
-
-        <LinearLayout style="@style/Common_EditItem_LayoutStyle">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="滤波器系数"
-                android:textColor="@color/text_color_343434"
-                android:textSize="@dimen/text_size_17" />
-
-            <com.shmedo.mcloudapp.common.view.ClearEditText
-                android:id="@+id/et_up_filter_coefficient"
-                style="@style/DataCenter_EditText_Style"
-                android:hint="请输入" />
-
-        </LinearLayout>
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="54dp"
-            android:gravity="center_vertical"
-            android:paddingStart="16.5dp"
-            android:text="下放参数配置"
-            android:textColor="@color/sub_title_text_color"
-            android:textSize="@dimen/text_size_15" />
-
-        <LinearLayout style="@style/Common_EditItem_LayoutStyle">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="一次修正参数"
-                android:textColor="@color/text_color_343434"
-                android:textSize="@dimen/text_size_17" />
-
-            <com.shmedo.mcloudapp.common.view.ClearEditText
-                android:id="@+id/et_down_correction_parameters_one"
-                style="@style/DataCenter_EditText_Style"
-                android:hint="请输入"
-                android:inputType="numberDecimal" />
-
-        </LinearLayout>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="0.5dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
-            android:background="@color/divider_line_bg_efefef" />
-
-        <LinearLayout style="@style/Common_EditItem_LayoutStyle">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="二次修正参数"
-                android:textColor="@color/text_color_343434"
-                android:textSize="@dimen/text_size_17" />
-
-            <com.shmedo.mcloudapp.common.view.ClearEditText
-                android:id="@+id/et_down_correction_parameters_two"
-                style="@style/DataCenter_EditText_Style"
-                android:hint="请输入"
-                android:inputType="numberDecimal" />
-
-        </LinearLayout>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="0.5dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
-            android:background="@color/divider_line_bg_efefef" />
-
-        <LinearLayout style="@style/Common_EditItem_LayoutStyle">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="常数"
-                android:textColor="@color/text_color_343434"
-                android:textSize="@dimen/text_size_17" />
-
-            <com.shmedo.mcloudapp.common.view.ClearEditText
-                android:id="@+id/et_down_constant"
-                style="@style/DataCenter_EditText_Style"
-                android:hint="请输入"
-                android:inputType="numberDecimal" />
-
-        </LinearLayout>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="0.5dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
-            android:background="@color/divider_line_bg_efefef" />
-
-        <LinearLayout style="@style/Common_EditItem_LayoutStyle">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="滤波器系数"
-                android:textColor="@color/text_color_343434"
-                android:textSize="@dimen/text_size_17" />
-
-            <com.shmedo.mcloudapp.common.view.ClearEditText
-                android:id="@+id/et_down_filter_coefficient"
-                style="@style/DataCenter_EditText_Style"
-                android:hint="请输入" />
-
-        </LinearLayout>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="20dp" />
-
-        <Button
-            android:id="@+id/btn_confirm"
-            android:layout_width="match_parent"
-            android:layout_height="46dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginBottom="20dp"
-            android:background="@drawable/btn_select"
-            android:gravity="center"
-            android:text="保存"
-            android:textColor="@color/white"
-            android:textSize="17sp" />
-
-    </LinearLayout>
+    </FrameLayout>
 
 </androidx.core.widget.NestedScrollView>

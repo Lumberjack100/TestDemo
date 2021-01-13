@@ -37,6 +37,7 @@ import timber.log.Timber;
 
 
 public class BleAdmeExecutiveAgencyFragment extends BaseBleIotCommunicateFragment {
+
     @BindView(R.id.tv_data_settlement_method)
     TextView mTvDataSettlementMethod;
 
@@ -91,6 +92,9 @@ public class BleAdmeExecutiveAgencyFragment extends BaseBleIotCommunicateFragmen
     @BindView(R.id.decentralizedPredictionLayout)
     ViewGroup decentralizedPredictionLayout;
 
+    @BindView(R.id.maskLayerLayout)
+    ViewGroup maskLayerLayout;
+
     private AdmeExecutiveAgencyInfo admeExecutiveAgencyInfo;
 
     private int dataSettlementMethodPos;
@@ -132,6 +136,12 @@ public class BleAdmeExecutiveAgencyFragment extends BaseBleIotCommunicateFragmen
         setView();
         setSwitchViewListener();
         queryParamInfo();
+        //TODO 设备处于自动监测模式时，不可编辑参数(后期还要考虑点击编辑按钮时的页面状态切换)
+        if (admeViewModel.deviceMode == 0) {
+            configPageViewModel.configPageEditableChanged.setValue(true);
+        } else {
+            configPageViewModel.configPageEditableChanged.setValue(false);
+        }
     }
 
     private void setView() {
@@ -580,9 +590,28 @@ public class BleAdmeExecutiveAgencyFragment extends BaseBleIotCommunicateFragmen
     }
 
     private void doAfterSetting() {
-        mBtnSave.setEnabled(true);
+        if (admeExecutiveAgencyInfo != null) {
+            admeExecutiveAgencyInfo.setDatatype(dataSettlementMethod);
+            admeExecutiveAgencyInfo.setDatareply(dataResponse);
+            admeExecutiveAgencyInfo.setRoundwaitetime(waitingIntervalPerRound);
+            admeExecutiveAgencyInfo.setDatainval(dataReadingInterval);
+            admeExecutiveAgencyInfo.setCompensatetime(measurementCompensationTime);
+            admeExecutiveAgencyInfo.setDriveaddress(motorDriveAddress);
+            admeExecutiveAgencyInfo.setDownspeed(decentralizationSpeed);
+            admeExecutiveAgencyInfo.setInterdeep(inclinometerTubeHoleDepth);
+            admeExecutiveAgencyInfo.setDownwaitetime(decentralizationWaitingTime);
+            admeExecutiveAgencyInfo.setUpspeed(pullUpSpeed);
+            admeExecutiveAgencyInfo.setMeaspacing(measuringDistance);
+            admeExecutiveAgencyInfo.setMeaintertime(measurementIntervalTime);
+            admeExecutiveAgencyInfo.setMeabaseth(measuringReferenceDepth);
+            admeExecutiveAgencyInfo.setUntimenum(pulsesPerUnitTime);
+            admeExecutiveAgencyInfo.setDetectiontime(detectionTime);
+        }
+        //TODO  打开注释，设置为浏览模式
+//        configPageViewModel.configPageEditableChanged.setValue(false);
         dataSettlementMethodOld = dataSettlementMethod;
         dataResponseOld = dataResponse;
+        mBtnSave.setEnabled(true);
         ToastUtils.show("保存成功");
     }
 
@@ -674,6 +703,9 @@ public class BleAdmeExecutiveAgencyFragment extends BaseBleIotCommunicateFragmen
     }
 
     private boolean checkValueIsChange() {
+        if (!configPageViewModel.configPageEditableChanged.getValue())
+            return false;
+
         if (dataSettlementMethodOld != null && dataSettlementMethod != null && !dataSettlementMethodOld.equals(dataSettlementMethod)) {
             return true;
         }
@@ -723,5 +755,62 @@ public class BleAdmeExecutiveAgencyFragment extends BaseBleIotCommunicateFragmen
             }
         }
         return false;
+    }
+
+    @Override
+    protected void onEditableChanged(boolean isEditable) {
+        if (isEditable) {
+            mTvDataSettlementMethod.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.icon_right, 0);
+            mTvDataResponse.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.icon_right, 0);
+
+            mEtWaitingIntervalPerRound.setHint("请输入");
+            mEtDataReadingInterval.setHint("请输入");
+            mEtMeasurementCompensationTime.setHint("请输入");
+            mEtMotorDriveAddress.setHint("请输入");
+            mEtDecentralizationSpeed.setHint("请输入");
+            mEtInclinometerTubeHoleDepth.setHint("请输入");
+            mEtDecentralizationWaitingTime.setHint("请输入");
+            mEtPullUpSpeed.setHint("请输入");
+            mEtMeasuringDistance.setHint("请输入");
+            mEtMeasurementIntervalTime.setHint("请输入");
+            mEtMeasuringReferenceDepth.setHint("请输入");
+            mEtPulsesPerUnitTime.setHint("请输入");
+            mEtDetectionTime.setHint("请输入");
+
+        } else {
+            mTvDataSettlementMethod.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+            mTvDataResponse.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+            mEtWaitingIntervalPerRound.setHint("");
+            mEtDataReadingInterval.setHint("");
+            mEtMeasurementCompensationTime.setHint("");
+            mEtMotorDriveAddress.setHint("");
+            mEtDecentralizationSpeed.setHint("");
+            mEtInclinometerTubeHoleDepth.setHint("");
+            mEtDecentralizationWaitingTime.setHint("");
+            mEtPullUpSpeed.setHint("");
+            mEtMeasuringDistance.setHint("");
+            mEtMeasurementIntervalTime.setHint("");
+            mEtMeasuringReferenceDepth.setHint("");
+            mEtPulsesPerUnitTime.setHint("");
+            mEtDetectionTime.setHint("");
+
+            mEtWaitingIntervalPerRound.clearFocus();
+            mEtDataReadingInterval.clearFocus();
+            mEtMeasurementCompensationTime.clearFocus();
+            mEtMotorDriveAddress.clearFocus();
+            mEtDecentralizationSpeed.clearFocus();
+            mEtInclinometerTubeHoleDepth.clearFocus();
+            mEtDecentralizationWaitingTime.clearFocus();
+            mEtPullUpSpeed.clearFocus();
+            mEtMeasuringDistance.clearFocus();
+            mEtMeasurementIntervalTime.clearFocus();
+            mEtMeasuringReferenceDepth.clearFocus();
+            mEtPulsesPerUnitTime.clearFocus();
+            mEtDetectionTime.clearFocus();
+
+            initParamConfigInfo();
+        }
+        maskLayerLayout.setVisibility(isEditable ? View.GONE : View.VISIBLE);
+        mBtnSave.setVisibility(isEditable ? View.VISIBLE : View.GONE);
     }
 }

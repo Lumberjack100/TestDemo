@@ -46,7 +46,7 @@ import timber.log.Timber;
  */
 public class TcpVmsDataCenterSettingFragment extends BaseTcpConnectFragment {
 
-    @BindView(R.id.maskLayer)
+    @BindView(R.id.maskLayerChild)
     ViewGroup maskLayerLayout;
 
     @BindView(R.id.centerEnableSBtn)

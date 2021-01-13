@@ -1,143 +1,164 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/scrollView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/main_bg_gray">
 
-    <LinearLayout
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_height="wrap_content">
 
-        <View
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="20dp" />
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:background="@color/white"
-            android:paddingStart="18dp"
-            android:paddingEnd="16dp">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:layout_centerVertical="true"
-                android:text="参数生效"
-                android:textColor="@color/title_text_color"
-                android:textSize="@dimen/text_size_17" />
-
-
-            <com.kyleduo.switchbutton.SwitchButton
-                android:id="@+id/paramEnableSBtn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_centerVertical="true"
-                app:kswAnimationDuration="100"
-                app:kswBackDrawable="@drawable/sl_switchbutton_back"
-                app:kswThumbDrawable="@drawable/shape_switchbutton_thumb"
-                app:kswThumbHeight="28dp"
-                app:kswThumbRangeRatio="2"
-                app:kswThumbWidth="28dp" />
-
-        </RelativeLayout>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="0.5dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
-            android:background="@color/divider_line_bg_efefef" />
-
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <LinearLayout
-                android:id="@+id/contentLayout"
+            <View
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="14dp" />
-
-                <LinearLayout style="@style/Common_EditItem_LayoutStyle">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="绝对精度修正值(°)"
-                        android:textColor="@color/text_color_343434"
-                        android:textSize="@dimen/text_size_17" />
-
-                    <com.shmedo.mcloudapp.common.view.ClearEditText
-                        android:id="@+id/et_accuracy_correction_value"
-                        style="@style/DataCenter_EditText_Style"
-                        android:hint="请输入"
-                        android:inputType="numberDecimal" />
-
-                </LinearLayout>
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="0.5dp"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginEnd="16dp"
-                    android:background="@color/divider_line_bg_efefef" />
-
-                <LinearLayout style="@style/Common_EditItem_LayoutStyle">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="电机运动速度(r/min)"
-                        android:textColor="@color/text_color_343434"
-                        android:textSize="@dimen/text_size_17" />
-
-                    <com.shmedo.mcloudapp.common.view.ClearEditText
-                        android:id="@+id/et_movement_speed"
-                        style="@style/DataCenter_EditText_Style"
-                        android:hint="请输入"
-                        android:inputType="number" />
-
-                </LinearLayout>
-
-                <Button
-                    android:id="@+id/btn_confirm"
-                    android:layout_width="match_parent"
-                    android:layout_height="46dp"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginTop="34dp"
-                    android:layout_marginEnd="18dp"
-                    android:layout_marginBottom="20dp"
-                    android:background="@drawable/btn_select"
-                    android:gravity="center"
-                    android:text="保存"
-                    android:textColor="@color/white"
-                    android:textSize="17sp" />
-
-            </LinearLayout>
+                android:layout_height="20dp" />
 
             <RelativeLayout
-                android:id="@+id/maskLayer"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="#ccffffff"
-                android:clickable="true"
-                android:focusable="true"
-                android:visibility="gone">
+                android:layout_height="60dp"
+                android:background="@color/white"
+                android:paddingStart="18dp"
+                android:paddingEnd="16dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_centerVertical="true"
+                    android:text="参数生效"
+                    android:textColor="@color/title_text_color"
+                    android:textSize="@dimen/text_size_17" />
+
+
+                <com.kyleduo.switchbutton.SwitchButton
+                    android:id="@+id/paramEnableSBtn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    app:kswAnimationDuration="100"
+                    app:kswBackDrawable="@drawable/sl_switchbutton_back"
+                    app:kswThumbDrawable="@drawable/shape_switchbutton_thumb"
+                    app:kswThumbHeight="28dp"
+                    app:kswThumbRangeRatio="2"
+                    app:kswThumbWidth="28dp" />
 
             </RelativeLayout>
 
-        </FrameLayout>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:background="@color/divider_line_bg_efefef" />
 
-    </LinearLayout>
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <LinearLayout
+                    android:id="@+id/contentLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="14dp" />
+
+                    <LinearLayout style="@style/Common_EditItem_LayoutStyle">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="绝对精度修正值(°)"
+                            android:textColor="@color/text_color_343434"
+                            android:textSize="@dimen/text_size_17" />
+
+                        <com.shmedo.mcloudapp.common.view.ClearEditText
+                            android:id="@+id/et_accuracy_correction_value"
+                            style="@style/DataCenter_EditText_Style"
+                            android:hint="请输入"
+                            android:inputType="numberDecimal" />
+
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="0.5dp"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginEnd="16dp"
+                        android:background="@color/divider_line_bg_efefef" />
+
+                    <LinearLayout style="@style/Common_EditItem_LayoutStyle">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="电机运动速度(r/min)"
+                            android:textColor="@color/text_color_343434"
+                            android:textSize="@dimen/text_size_17" />
+
+                        <com.shmedo.mcloudapp.common.view.ClearEditText
+                            android:id="@+id/et_movement_speed"
+                            style="@style/DataCenter_EditText_Style"
+                            android:hint="请输入"
+                            android:inputType="number" />
+
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="20dp" />
+
+                    <Button
+                        android:id="@+id/btn_confirm"
+                        android:layout_width="match_parent"
+                        android:layout_height="46dp"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginTop="20dp"
+                        android:layout_marginEnd="16dp"
+                        android:layout_marginBottom="20dp"
+                        android:background="@drawable/btn_select"
+                        android:gravity="center"
+                        android:text="保存"
+                        android:textColor="@color/white"
+                        android:textSize="17sp" />
+
+                </LinearLayout>
+
+                <RelativeLayout
+                    android:id="@+id/maskLayerChild"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="#ccffffff"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:visibility="gone">
+
+                </RelativeLayout>
+
+            </FrameLayout>
+
+        </LinearLayout>
+
+        <RelativeLayout
+            android:id="@+id/maskLayerLayout"
+            tools:visibility="visible"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@android:color/transparent"
+            android:clickable="true"
+            android:focusable="true"
+            android:visibility="gone" />
+
+    </FrameLayout>
 
 </androidx.core.widget.NestedScrollView>

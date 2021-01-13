@@ -71,6 +71,9 @@ public class BleAdmeBasicParamConfigFragment extends BaseBleIotCommunicateFragme
     @BindView(R.id.ll_mac_address)
     ViewGroup macAddressLayout;
 
+    @BindView(R.id.maskLayerLayout)
+    ViewGroup maskLayerLayout;
+
     private AdmeBasicConfigInfo basicConfigParam;
 
     private int inclinometerTypePos;
@@ -212,12 +215,13 @@ public class BleAdmeBasicParamConfigFragment extends BaseBleIotCommunicateFragme
     }
 
     private boolean checkValueIsValid() {
-        address = mEtCollectorAddress.getText().toString().trim();
         inclinometerTubeHoleDepth = mEtInclinometerTubeHoleDepth.getText().toString().trim();
         decentralizationSpeed = mEtDecentralizationSpeed.getText().toString().trim();
         decentralizationWaitingTime = mEtDecentralizationWaitingTime.getText().toString().trim();
 
         if (inclinometerType.equals("0")) {
+            address = mEtCollectorAddress.getText().toString().trim();
+
             if (TextUtils.isEmpty(address)) {
                 ToastUtils.show("请输入采集器地址!");
                 mEtMacAddress.requestFocus();
@@ -229,6 +233,8 @@ public class BleAdmeBasicParamConfigFragment extends BaseBleIotCommunicateFragme
                 return false;
             }
         } else {
+            address = mEtMacAddress.getText().toString().trim();
+
             if (TextUtils.isEmpty(address)) {
                 ToastUtils.show("请输入Mac地址!");
                 mEtMacAddress.requestFocus();
@@ -379,6 +385,8 @@ public class BleAdmeBasicParamConfigFragment extends BaseBleIotCommunicateFragme
         }
         //TODO  打开注释，设置为浏览模式
 //        configPageViewModel.configPageEditableChanged.setValue(false);
+        inclinometerTypeOld=inclinometerType;
+        dataSettlementMethodOld = dataSettlementMethod;
         mBtnSave.setEnabled(true);
         ToastUtils.show("保存成功");
     }
@@ -503,17 +511,18 @@ public class BleAdmeBasicParamConfigFragment extends BaseBleIotCommunicateFragme
             mEtInclinometerTubeHoleDepth.clearFocus();
             mEtDecentralizationSpeed.clearFocus();
             mEtDecentralizationWaitingTime.clearFocus();
+            mTvDataSettlementMethod.clearFocus();
 
             initParamConfigInfo();
         }
-        inclinometerTypeLayout.setEnabled(isEditable);
-        mEtCollectorAddress.setEnabled(isEditable);
-        mEtMacAddress.setEnabled(isEditable);
-        mEtInclinometerTubeHoleDepth.setEnabled(isEditable);
-        mEtDecentralizationSpeed.setEnabled(isEditable);
-        mEtDecentralizationWaitingTime.setEnabled(isEditable);
-        dataSettlementMethodLayout.setEnabled(isEditable);
-
+//        inclinometerTypeLayout.setEnabled(isEditable);
+//        mEtCollectorAddress.setEnabled(isEditable);
+//        mEtMacAddress.setEnabled(isEditable);
+//        mEtInclinometerTubeHoleDepth.setEnabled(isEditable);
+//        mEtDecentralizationSpeed.setEnabled(isEditable);
+//        mEtDecentralizationWaitingTime.setEnabled(isEditable);
+//        dataSettlementMethodLayout.setEnabled(isEditable);
+        maskLayerLayout.setVisibility(isEditable ? View.GONE : View.VISIBLE);
         mBtnSave.setVisibility(isEditable ? View.VISIBLE : View.GONE);
     }
 }

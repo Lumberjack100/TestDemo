@@ -73,6 +73,9 @@ public class BleAdmeInclinometerFragment extends BaseBleIotCommunicateFragment {
     @BindView(R.id.ll_mac_address)
     ViewGroup macAddressLayout;
 
+    @BindView(R.id.maskLayerLayout)
+    ViewGroup maskLayerLayout;
+
     private AdmeInclinometerInfo admeInclinometerInfo;
 
     private int inclinometerTypePos;
@@ -104,6 +107,12 @@ public class BleAdmeInclinometerFragment extends BaseBleIotCommunicateFragment {
         super.onActivityCreated(savedInstanceState);
         setView();
         queryParamConfigInfo();
+        //TODO 设备处于自动监测模式时，不可编辑参数(后期还要考虑点击编辑按钮时的页面状态切换)
+        if (admeViewModel.deviceMode == 0) {
+            configPageViewModel.configPageEditableChanged.setValue(true);
+        } else {
+            configPageViewModel.configPageEditableChanged.setValue(false);
+        }
     }
 
     private void setView() {
@@ -376,9 +385,20 @@ public class BleAdmeInclinometerFragment extends BaseBleIotCommunicateFragment {
     }
 
     private void doAfterSetting() {
-        mBtnSave.setEnabled(true);
+        if (admeInclinometerInfo != null) {
+            admeInclinometerInfo.setInctype(inclinometerType);
+            admeInclinometerInfo.setLowpower(lowPowerMode);
+            admeInclinometerInfo.setAddress(address);
+            admeInclinometerInfo.setCollinval(collectionInterval);
+            admeInclinometerInfo.setCalcinval(solvingInterval);
+            admeInclinometerInfo.setDormancytime(sleepTime);
+            admeInclinometerInfo.setInterupdate(correctionValue);
+        }
+        //TODO  打开注释，设置为浏览模式
+//        configPageViewModel.configPageEditableChanged.setValue(false);
         inclinometerTypeOld = inclinometerType;
         lowPowerModeOld = lowPowerMode;
+        mBtnSave.setEnabled(true);
         ToastUtils.show("保存成功");
     }
 
@@ -446,6 +466,9 @@ public class BleAdmeInclinometerFragment extends BaseBleIotCommunicateFragment {
     }
 
     private boolean checkValueIsChange() {
+        if (!configPageViewModel.configPageEditableChanged.getValue())
+            return false;
+
         if (inclinometerTypeOld != null && inclinometerType != null && !inclinometerTypeOld.equals(inclinometerType)) {
             return true;
         }
@@ -479,5 +502,39 @@ public class BleAdmeInclinometerFragment extends BaseBleIotCommunicateFragment {
             return true;
         }
         return false;
+    }
+
+    @Override
+    protected void onEditableChanged(boolean isEditable) {
+        if (isEditable) {
+            mTvInclinometerType.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.icon_right, 0);
+            mTvLowPowerMode.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.icon_right, 0);
+            mEtCollectorAddress.setHint("请输入");
+            mEtMacAddress.setHint("请输入");
+            mEtCollectionInterval.setHint("请输入");
+            mEtSolvingInterval.setHint("请输入");
+            mEtSleepTime.setHint("请输入");
+            mEtCorrectionValue.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.icon_right, 0);
+        } else {
+            mTvInclinometerType.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+            mTvLowPowerMode.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+            mEtCollectorAddress.setHint("");
+            mEtMacAddress.setHint("");
+            mEtCollectionInterval.setHint("");
+            mEtSolvingInterval.setHint("");
+            mEtSleepTime.setHint("");
+            mEtCorrectionValue.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+
+            mEtCollectorAddress.clearFocus();
+            mEtMacAddress.clearFocus();
+            mEtCollectionInterval.clearFocus();
+            mEtSolvingInterval.clearFocus();
+            mEtSleepTime.clearFocus();
+            mEtCorrectionValue.clearFocus();
+
+            initParamConfigInfo();
+        }
+        maskLayerLayout.setVisibility(isEditable ? View.GONE : View.VISIBLE);
+        mBtnSave.setVisibility(isEditable ? View.VISIBLE : View.GONE);
     }
 }
