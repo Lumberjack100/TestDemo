@@ -3,14 +3,12 @@ package com.shmedo.mcloudapp.deviceconfig.ui.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.lifecycle.Observer;
 
 import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.R;
@@ -26,8 +24,6 @@ import butterknife.OnClick;
  * 描述：     TODO
  */
 public abstract class BaseConfigFragmentContainerActivity extends BaseActivity {
-    @BindView(R.id.maskLayerLayout)
-    protected ViewGroup maskLayerLayout;
 
     @BindView(R.id.tv_title)
     protected TextView mToolbarTitle;
@@ -59,18 +55,6 @@ public abstract class BaseConfigFragmentContainerActivity extends BaseActivity {
         parseIntent();
         replaceFragment(initFragment());
         configPageViewModel = getActivityScopeViewModel(ConfigPageViewModel.class);
-        configPageViewModel.configPageEditableChanged.observeInActivity(this, new Observer<Boolean>() {
-            @Override
-            public void onChanged(Boolean isEditable) {
-                if (isEditable) {
-                    mTvAction.setText("取消");
-                    maskLayerLayout.setVisibility(View.GONE);
-                } else {
-                    mTvAction.setText("编辑");
-                    maskLayerLayout.setVisibility(View.VISIBLE);
-                }
-            }
-        });
     }
 
     protected void parseIntent() {
@@ -101,8 +85,10 @@ public abstract class BaseConfigFragmentContainerActivity extends BaseActivity {
         if (id == R.id.tv_action) {
             if (mTvAction.getText().toString().equals("编辑")) {
                 configPageViewModel.configPageEditableChanged.setValue(true);
+                mTvAction.setText("取消");
             } else if (mTvAction.getText().toString().equals("取消")) {
                 configPageViewModel.configPageEditableChanged.setValue(false);
+                mTvAction.setText("编辑");
             }
         }
     }

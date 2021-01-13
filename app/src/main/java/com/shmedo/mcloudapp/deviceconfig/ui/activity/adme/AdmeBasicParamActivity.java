@@ -30,7 +30,6 @@ public class AdmeBasicParamActivity extends BaseConfigFragmentContainerActivity 
         mToolbarTitle.setText("基础配置");
         //TODO  打开注释，可以在编辑/浏览模式间切换
 //        mTvAction.setVisibility(View.VISIBLE);
-//        maskLayerLayout.setVisibility(View.VISIBLE);
     }
 
     @Override

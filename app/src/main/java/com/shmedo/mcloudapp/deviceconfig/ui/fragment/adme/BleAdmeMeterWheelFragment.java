@@ -35,6 +35,7 @@ import timber.log.Timber;
  * 描述：     ADME 计米轮参数配置页面
  */
 public class BleAdmeMeterWheelFragment extends BaseBleIotCommunicateFragment {
+
     @BindView(R.id.et_encoder_line_number)
     ClearEditText mEtEncoderLineNumber;
 
@@ -534,7 +535,16 @@ public class BleAdmeMeterWheelFragment extends BaseBleIotCommunicateFragment {
 
             initParamConfigInfo();
         }
-
+        mEtEncoderLineNumber.setEnabled(isEditable);
+        mEtOuterDiameter.setEnabled(isEditable);
+        mEtUpCorrectionParametersOne.setEnabled(isEditable);
+        mEtUpCorrectionParametersTwo.setEnabled(isEditable);
+        mEtUpConstant.setEnabled(isEditable);
+        mEtUpFilterCoefficient.setEnabled(isEditable);
+        mEtDownCorrectionParametersOne.setEnabled(isEditable);
+        mEtDownCorrectionParametersTwo.setEnabled(isEditable);
+        mEtDownConstant.setEnabled(isEditable);
+        mEtDownFilterCoefficient.setEnabled(isEditable);
         mBtnSave.setVisibility(isEditable ? View.VISIBLE : View.GONE);
     }
 }

@@ -162,19 +162,24 @@
 
         </LinearLayout>
 
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="20dp" />
+
         <Button
             android:id="@+id/btn_confirm"
             android:layout_width="match_parent"
             android:layout_height="46dp"
             android:layout_marginStart="16dp"
-            android:layout_marginTop="34dp"
-            android:layout_marginEnd="18dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="16dp"
             android:layout_marginBottom="20dp"
             android:background="@drawable/btn_select"
             android:gravity="center"
             android:text="保存"
             android:textColor="@color/white"
             android:textSize="17sp" />
+
     </LinearLayout>
 
 </androidx.core.widget.NestedScrollView>

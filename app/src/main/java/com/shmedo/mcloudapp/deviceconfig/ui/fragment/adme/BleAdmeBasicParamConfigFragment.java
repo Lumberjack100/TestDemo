@@ -59,6 +59,12 @@ public class BleAdmeBasicParamConfigFragment extends BaseBleIotCommunicateFragme
     @BindView(R.id.btn_confirm)
     Button mBtnSave;
 
+    @BindView(R.id.ll_inclinometer_type)
+    ViewGroup inclinometerTypeLayout;
+
+    @BindView(R.id.ll_data_settlement_method)
+    ViewGroup dataSettlementMethodLayout;
+
     @BindView(R.id.ll_collector_address)
     ViewGroup collectorAddressLayout;
 
@@ -500,6 +506,14 @@ public class BleAdmeBasicParamConfigFragment extends BaseBleIotCommunicateFragme
 
             initParamConfigInfo();
         }
+        inclinometerTypeLayout.setEnabled(isEditable);
+        mEtCollectorAddress.setEnabled(isEditable);
+        mEtMacAddress.setEnabled(isEditable);
+        mEtInclinometerTubeHoleDepth.setEnabled(isEditable);
+        mEtDecentralizationSpeed.setEnabled(isEditable);
+        mEtDecentralizationWaitingTime.setEnabled(isEditable);
+        dataSettlementMethodLayout.setEnabled(isEditable);
+
         mBtnSave.setVisibility(isEditable ? View.VISIBLE : View.GONE);
     }
 }
