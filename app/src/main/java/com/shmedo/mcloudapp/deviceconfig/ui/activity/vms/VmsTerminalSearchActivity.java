@@ -40,7 +40,7 @@ import com.shmedo.mcloudapp.common.ui.activity.BaseActivity;
 import com.shmedo.mcloudapp.common.view.ClearEditText;
 import com.shmedo.mcloudapp.common.view.recycleviewitemdivider.GridSpacingItemDecoration;
 import com.shmedo.mcloudapp.deviceconfig.adapter.VmsTerminalInfoAdapter;
-import com.shmedo.mcloudapp.deviceconfig.viewmodels.TcpShareViewModel;
+import com.shmedo.mcloudapp.profile.TcpViewModel;
 import com.shmedo.mcloudapp.deviceconfig.viewmodels.VmsViewModel;
 import com.shmedo.mcloudapp.util.KeyBordUtils;
 
@@ -72,7 +72,7 @@ public class VmsTerminalSearchActivity extends BaseActivity implements TextWatch
 
     private VmsTerminalInfo vmsTerminalInfo;
 
-    private TcpShareViewModel tcpShareViewModel;
+    private TcpViewModel tcpViewModel;
     private VmsViewModel vmsViewModel;
 
     public static void startActivity(Context context) {
@@ -93,8 +93,8 @@ public class VmsTerminalSearchActivity extends BaseActivity implements TextWatch
         initAdapter();
 
         vmsViewModel = getApplicationScopeViewModel(VmsViewModel.class);
-        tcpShareViewModel = getApplicationScopeViewModel(TcpShareViewModel.class);
-        tcpShareViewModel.getReceivedMessage().observeInActivity(this, new Observer<String>() {
+        tcpViewModel = getApplicationScopeViewModel(TcpViewModel.class);
+        tcpViewModel.getReceivedMessage().observeInActivity(this, new Observer<String>() {
             @Override
             public void onChanged(String msg) {
                 parseResponseMessage(msg);
@@ -139,7 +139,7 @@ public class VmsTerminalSearchActivity extends BaseActivity implements TextWatch
                 if (isDoubleClick(view)) {
                     return;
                 }
-                if (!tcpShareViewModel.getConnectStatus()) {
+                if (!tcpViewModel.getConnectStatus()) {
                     ToastUtils.show(getString(R.string.tcp_config_disconnect_warn));
                     return;
                 }
@@ -301,7 +301,7 @@ public class VmsTerminalSearchActivity extends BaseActivity implements TextWatch
                 + "&msgid=" + UUID.randomUUID().toString();
 
         Timber.d("发送指令：%s", cmdStr);
-        tcpShareViewModel.sendMsgToServer(cmdStr, new MessageStateListener() {
+        tcpViewModel.sendMsgToServer(cmdStr, new MessageStateListener() {
             @Override
             public void isSendSuccss(boolean isSuccess) {
                 if (!isSuccess) {

@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.deviceconfig.viewmodels;
+package com.shmedo.mcloudapp.profile;
 
 import android.app.Application;
 
@@ -14,10 +14,10 @@ import com.shmedo.mcloudapp.deviceconfig.model.TcpConnectionState;
  * 创建时间:  2020/11/4 <br/>
  * 描述：     TODO
  */
-public class TcpShareViewModel extends AndroidViewModel {
+public class TcpViewModel extends AndroidViewModel {
     private final TcpManager tcpManager;
 
-    public TcpShareViewModel(@NonNull Application application) {
+    public TcpViewModel(@NonNull Application application) {
         super(application);
         tcpManager = new TcpManager();
     }

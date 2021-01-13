@@ -175,7 +175,7 @@ public class TcpVmsTerminalExternalSensorParamFragment extends BaseTcpConnectFra
         mSbSensorEnable.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (!tcpShareViewModel.getConnectStatus()) {
+                if (!tcpViewModel.getConnectStatus()) {
                     ToastUtils.show(getString(R.string.tcp_config_disconnect_warn));
                     mSbSensorEnable.setCheckedImmediatelyNoEvent(!isChecked);
                     return;
@@ -257,7 +257,7 @@ public class TcpVmsTerminalExternalSensorParamFragment extends BaseTcpConnectFra
             showcSensorNameChooseDialog();
         } else if (id == R.id.btn_confirm) {
             KeyBordUtils.hideSoftKeyboard(view);
-            if (!tcpShareViewModel.getConnectStatus()) {
+            if (!tcpViewModel.getConnectStatus()) {
                 ToastUtils.show(getString(R.string.tcp_config_disconnect_warn));
                 return;
             }
@@ -400,7 +400,7 @@ public class TcpVmsTerminalExternalSensorParamFragment extends BaseTcpConnectFra
 
     @Override
     public boolean onBackPressed() {
-        if (tcpShareViewModel.getConnectStatus()) {
+        if (tcpViewModel.getConnectStatus()) {
             if (checkValueIsChange()) {
                 warnNotYetSettingBeforeLeavePage();
                 return true;

@@ -170,7 +170,7 @@ public class TcpVmsDataCenterSettingFragment extends BaseTcpConnectFragment {
         mSbCenterEnable.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (!tcpShareViewModel.getConnectStatus()) {
+                if (!tcpViewModel.getConnectStatus()) {
                     ToastUtils.show(getString(R.string.tcp_config_disconnect_warn));
                     mSbCenterEnable.setCheckedImmediatelyNoEvent(!isChecked);
                     return;
@@ -251,7 +251,7 @@ public class TcpVmsDataCenterSettingFragment extends BaseTcpConnectFragment {
         } else if (id == R.id.btn_confirm) {
             KeyBordUtils.hideSoftKeyboard(view);
 
-            if (!tcpShareViewModel.getConnectStatus()) {
+            if (!tcpViewModel.getConnectStatus()) {
                 ToastUtils.show(getString(R.string.tcp_config_disconnect_warn));
                 return;
             }
@@ -493,7 +493,7 @@ public class TcpVmsDataCenterSettingFragment extends BaseTcpConnectFragment {
 
     @Override
     public boolean onBackPressed() {
-        if (tcpShareViewModel.getConnectStatus()) {
+        if (tcpViewModel.getConnectStatus()) {
             if (checkValueIsChange()) {
                 warnNotYetSettingBeforeLeavePage();
                 return true;

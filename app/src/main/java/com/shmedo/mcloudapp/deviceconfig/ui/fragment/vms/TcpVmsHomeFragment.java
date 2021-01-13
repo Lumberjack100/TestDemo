@@ -159,7 +159,7 @@ public class TcpVmsHomeFragment extends BaseTcpConnectFragment {
     @Override
     public void onResume() {
         super.onResume();
-        updateViewStateByConnectState(tcpShareViewModel.getConnectStatus());
+        updateViewStateByConnectState(tcpViewModel.getConnectStatus());
     }
 
     @Override
@@ -175,7 +175,7 @@ public class TcpVmsHomeFragment extends BaseTcpConnectFragment {
         swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                if (!tcpShareViewModel.getConnectStatus()) {
+                if (!tcpViewModel.getConnectStatus()) {
                     ToastUtils.show("设备已断开连接，刷新失败");
                     swipeRefresh.setRefreshing(false);
                     return;
@@ -204,9 +204,9 @@ public class TcpVmsHomeFragment extends BaseTcpConnectFragment {
      * 建立 Tcp 通讯连接
      */
     private void setupTcpConnect() {
-        tcpShareViewModel.initTcpClient(ipAddress, 10002);
+        tcpViewModel.initTcpClient(ipAddress, 10002);
         startProgressRunnable("建立通讯连接...", TCP_CONNECT_DELAY_MILLIS);
-        tcpShareViewModel.connect();
+        tcpViewModel.connect();
     }
 
     /**
@@ -261,7 +261,7 @@ public class TcpVmsHomeFragment extends BaseTcpConnectFragment {
                 if (isDoubleClick(view)) {
                     return;
                 }
-                if (!tcpShareViewModel.getConnectStatus()) {
+                if (!tcpViewModel.getConnectStatus()) {
                     ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
                     return;
                 }
@@ -282,9 +282,9 @@ public class TcpVmsHomeFragment extends BaseTcpConnectFragment {
         //断开/重新连接
         int id = v.getId();
         if (id == R.id.tv_device_connect_operate) {
-            if (!tcpShareViewModel.getConnectStatus()) {
+            if (!tcpViewModel.getConnectStatus()) {
                 startProgressRunnable("建立通讯连接...", TCP_CONNECT_DELAY_MILLIS);
-                tcpShareViewModel.connect();
+                tcpViewModel.connect();
             } else {
                 isExitMode = false;
                 showDisconnectDialog(getResources().getString(R.string.disconnect_device));
@@ -489,7 +489,7 @@ public class TcpVmsHomeFragment extends BaseTcpConnectFragment {
 
     @Override
     public boolean onBackPressed() {
-        if (tcpShareViewModel.getConnectStatus()) {
+        if (tcpViewModel.getConnectStatus()) {
             isExitMode = true;
             showDisconnectDialog(getResources().getString(R.string.finish_activity_disconnect_tcp_device));
             return true;

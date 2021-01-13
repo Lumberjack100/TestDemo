@@ -40,7 +40,7 @@ import com.shmedo.mcloudapp.common.view.recycleviewitemdivider.GridSpacingItemDe
 import com.shmedo.mcloudapp.deviceconfig.adapter.VmsTerminalInfoAdapter;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.vms.VmsTerminalHomeActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.BaseBottomSheetDialogFragment;
-import com.shmedo.mcloudapp.deviceconfig.viewmodels.TcpShareViewModel;
+import com.shmedo.mcloudapp.profile.TcpViewModel;
 import com.shmedo.mcloudapp.deviceconfig.viewmodels.VmsViewModel;
 
 import java.util.ArrayList;
@@ -70,7 +70,7 @@ public class TcpVmsTerminalListFragment extends BaseBottomSheetDialogFragment {
 
     private VmsAisleInfo vmsAisleInfo;
 
-    private TcpShareViewModel tcpShareViewModel;
+    private TcpViewModel tcpViewModel;
     private VmsViewModel vmsViewModel;
 
 
@@ -99,8 +99,8 @@ public class TcpVmsTerminalListFragment extends BaseBottomSheetDialogFragment {
         super.onActivityCreated(savedInstanceState);
         initAdapter();
         vmsViewModel = getApplicationScopeViewModel(VmsViewModel.class);
-        tcpShareViewModel = getApplicationScopeViewModel(TcpShareViewModel.class);
-        tcpShareViewModel.getReceivedMessage().observeInFragment(this, new Observer<String>() {
+        tcpViewModel = getApplicationScopeViewModel(TcpViewModel.class);
+        tcpViewModel.getReceivedMessage().observeInFragment(this, new Observer<String>() {
             @Override
             public void onChanged(String msg) {
                 parseResponseMessage(msg);
@@ -124,7 +124,7 @@ public class TcpVmsTerminalListFragment extends BaseBottomSheetDialogFragment {
                 if (isDoubleClick(view)) {
                     return;
                 }
-                if (!tcpShareViewModel.getConnectStatus()) {
+                if (!tcpViewModel.getConnectStatus()) {
                     ToastUtils.show(getString(R.string.tcp_config_disconnect_warn));
                     return;
                 }
@@ -314,7 +314,7 @@ public class TcpVmsTerminalListFragment extends BaseBottomSheetDialogFragment {
                 + "&msgid=" + UUID.randomUUID().toString();
 
         Timber.d("发送指令：%s", cmdStr);
-        tcpShareViewModel.sendMsgToServer(cmdStr, new MessageStateListener() {
+        tcpViewModel.sendMsgToServer(cmdStr, new MessageStateListener() {
             @Override
             public void isSendSuccss(boolean isSuccess) {
                 if (!isSuccess) {

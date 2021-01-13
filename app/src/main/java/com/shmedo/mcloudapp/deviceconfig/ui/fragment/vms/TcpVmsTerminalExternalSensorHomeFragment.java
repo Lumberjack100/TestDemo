@@ -115,7 +115,7 @@ public class TcpVmsTerminalExternalSensorHomeFragment extends BaseTcpConnectFrag
                 if (isDoubleClick(view)) {
                     return;
                 }
-                if (!tcpShareViewModel.getConnectStatus()) {
+                if (!tcpViewModel.getConnectStatus()) {
                     ToastUtils.show(getString(R.string.tcp_config_disconnect_warn));
                     return;
                 }

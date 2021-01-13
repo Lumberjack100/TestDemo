@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.util.bleutil;
+package com.shmedo.mcloudapp.util;
 
 import com.shmedo.configlibrary.ble.enums.CollectorModel;
 import com.shmedo.configlibrary.ble.enums.SensorType;

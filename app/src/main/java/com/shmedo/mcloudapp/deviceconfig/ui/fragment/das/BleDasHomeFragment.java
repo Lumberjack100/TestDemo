@@ -57,7 +57,7 @@ import com.shmedo.mcloudapp.entity.DeviceTypeInfoDao;
 import com.shmedo.mcloudapp.entity.SyncPositionBean;
 import com.shmedo.mcloudapp.util.DaoManager;
 import com.shmedo.mcloudapp.util.LocationUtils;
-import com.shmedo.mcloudapp.util.bleutil.BlueResultParserUtil;
+import com.shmedo.mcloudapp.util.BlueResultParserUtil;
 
 import java.util.ArrayList;
 import java.util.List;

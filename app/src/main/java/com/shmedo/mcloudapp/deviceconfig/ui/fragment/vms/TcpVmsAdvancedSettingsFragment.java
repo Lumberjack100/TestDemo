@@ -82,7 +82,7 @@ public class TcpVmsAdvancedSettingsFragment extends BaseTcpConnectFragment {
         if (isDoubleClick(view)) {
             return;
         }
-        if (!tcpShareViewModel.getConnectStatus()) {
+        if (!tcpViewModel.getConnectStatus()) {
             ToastUtils.show(getString(R.string.tcp_config_disconnect_warn));
             return;
         }
@@ -224,7 +224,7 @@ public class TcpVmsAdvancedSettingsFragment extends BaseTcpConnectFragment {
                 MCloudApp.getMainHandler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        tcpShareViewModel.disconnect();
+                        tcpViewModel.disconnect();
                     }
                 }, 3000);
             }
@@ -243,7 +243,7 @@ public class TcpVmsAdvancedSettingsFragment extends BaseTcpConnectFragment {
                 MCloudApp.getMainHandler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        tcpShareViewModel.disconnect();
+                        tcpViewModel.disconnect();
                     }
                 }, 3000);
             }

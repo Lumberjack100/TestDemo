@@ -24,7 +24,7 @@ import com.shmedo.configlibrary.ble.utils.ValidateUtil;
 import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.activity.BaseActivity;
-import com.shmedo.mcloudapp.util.bleutil.BlueResultParserUtil;
+import com.shmedo.mcloudapp.util.BlueResultParserUtil;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;

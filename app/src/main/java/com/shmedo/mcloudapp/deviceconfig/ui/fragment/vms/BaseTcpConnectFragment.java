@@ -15,7 +15,7 @@ import com.littlegreens.netty.client.listener.MessageStateListener;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.fragment.BaseFragment;
 import com.shmedo.mcloudapp.deviceconfig.model.TcpConnectionState;
-import com.shmedo.mcloudapp.deviceconfig.viewmodels.TcpShareViewModel;
+import com.shmedo.mcloudapp.profile.TcpViewModel;
 import com.shmedo.mcloudapp.deviceconfig.viewmodels.VmsViewModel;
 
 import java.util.Objects;
@@ -41,7 +41,7 @@ public abstract class BaseTcpConnectFragment extends BaseFragment {
 
     protected boolean isExitMode = false;
 
-    protected TcpShareViewModel tcpShareViewModel;
+    protected TcpViewModel tcpViewModel;
 
     protected VmsViewModel vmsViewModel;
 
@@ -82,8 +82,8 @@ public abstract class BaseTcpConnectFragment extends BaseFragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         vmsViewModel = getApplicationScopeViewModel(VmsViewModel.class);
-        tcpShareViewModel = getApplicationScopeViewModel(TcpShareViewModel.class);
-        tcpShareViewModel.getTcpConnectionState().observeInFragment(this, new Observer<TcpConnectionState>() {
+        tcpViewModel = getApplicationScopeViewModel(TcpViewModel.class);
+        tcpViewModel.getTcpConnectionState().observeInFragment(this, new Observer<TcpConnectionState>() {
             @Override
             public void onChanged(TcpConnectionState tcpConnectionState) {
                 //只供当前处于Active(即处于onResume状态)的页面观察者消费此事件
@@ -94,7 +94,7 @@ public abstract class BaseTcpConnectFragment extends BaseFragment {
                 onConnectionChange(tcpConnectionState);
             }
         });
-        tcpShareViewModel.getReceivedMessage().observeInFragment(this, new Observer<String>() {
+        tcpViewModel.getReceivedMessage().observeInFragment(this, new Observer<String>() {
             @Override
             public void onChanged(String msg) {
                 //只供当前处于Active(即处于onResume状态)的页面观察者消费此事件
@@ -133,7 +133,7 @@ public abstract class BaseTcpConnectFragment extends BaseFragment {
                 + "&msgid=" + UUID.randomUUID().toString();
 
 //        Timber.d("发送指令: %s", cmdStr);
-        tcpShareViewModel.sendMsgToServer(cmdStr, new MessageStateListener() {
+        tcpViewModel.sendMsgToServer(cmdStr, new MessageStateListener() {
             @Override
             public void isSendSuccss(boolean isSuccess) {
                 if (isSuccess) {
@@ -164,7 +164,7 @@ public abstract class BaseTcpConnectFragment extends BaseFragment {
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                         dialog.dismiss();
-                        tcpShareViewModel.disconnect();
+                        tcpViewModel.disconnect();
                         if (isExitMode) {
                             mActivity.finish();
                         }

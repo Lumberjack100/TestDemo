@@ -40,7 +40,7 @@ import com.shmedo.mcloudapp.deviceconfig.ui.activity.das.sensor.DasExternalVibra
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.das.BaseBleCommunicateFragment;
 import com.shmedo.mcloudapp.projects.adapter.DASSensorAdapter;
 import com.shmedo.mcloudapp.projects.model.DASSensorItem;
-import com.shmedo.mcloudapp.util.bleutil.BlueResultParserUtil;
+import com.shmedo.mcloudapp.util.BlueResultParserUtil;
 
 import java.util.ArrayList;
 import java.util.HashMap;
