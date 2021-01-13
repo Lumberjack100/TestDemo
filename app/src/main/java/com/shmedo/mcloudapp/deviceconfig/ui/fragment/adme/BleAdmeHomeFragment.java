@@ -435,8 +435,10 @@ public class BleAdmeHomeFragment extends BaseBleIotCommunicateFragment {
                                 mTvConfigModel.setText(text);
                                 if (text.equals("设备配置模式")) {
                                     equipModel = "0";
+                                    admeViewModel.deviceMode = 0;
                                 } else {
                                     equipModel = "1";
+                                    admeViewModel.deviceMode = 1;
                                 }
                                 setEquipModel();
                             }
@@ -526,9 +528,11 @@ public class BleAdmeHomeFragment extends BaseBleIotCommunicateFragment {
             if (!TextUtils.isEmpty(admeBaseInfo.getEquimodel())) {
                 equipModel = admeBaseInfo.getEquimodel();
                 if (equipModel.equals("0")) {
+                    admeViewModel.deviceMode = 0;
                     equipModellPos = 0;
                     mTvConfigModel.setText("设备配置模式");
                 } else {
+                    admeViewModel.deviceMode = 1;
                     equipModellPos = 1;
                     mTvConfigModel.setText("自动监测模式");
                 }
@@ -541,6 +545,7 @@ public class BleAdmeHomeFragment extends BaseBleIotCommunicateFragment {
             mTvMotionState.setText("运行状态：--");
             mTvPlatformCommunicationState.setText("平台连接状态：--");
 
+            admeViewModel.deviceMode = 0;
             equipModellPos = 0;
             mTvConfigModel.setText("设备配置模式");
         }
@@ -644,6 +649,7 @@ public class BleAdmeHomeFragment extends BaseBleIotCommunicateFragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        admeViewModel.deviceMode = -1;
         MCloudApp.setCurDeviceToken(null);
     }
 }

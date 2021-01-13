@@ -99,6 +99,12 @@ public class BleAdmeMeterWheelFragment extends BaseBleIotCommunicateFragment {
         super.onActivityCreated(savedInstanceState);
         setView();
         queryParamConfigInfo();
+        //TODO 设备处于自动监测模式时，不可编辑参数(后期还要考虑点击编辑按钮时的页面状态切换)
+        if (admeViewModel.deviceMode == 0) {
+            configPageViewModel.configPageEditableChanged.setValue(true);
+        } else {
+            configPageViewModel.configPageEditableChanged.setValue(false);
+        }
     }
 
     private void setView() {
@@ -372,6 +378,20 @@ public class BleAdmeMeterWheelFragment extends BaseBleIotCommunicateFragment {
     }
 
     private void doAfterSetting() {
+        if (admeMeterWheelInfo != null) {
+            admeMeterWheelInfo.setEnclinenum(encoderLineNumber);
+            admeMeterWheelInfo.setOutline(outerDiameter);
+            admeMeterWheelInfo.setUptiona(upCorrectionParametersOne);
+            admeMeterWheelInfo.setUptionb(upCorrectionParametersTwo);
+            admeMeterWheelInfo.setUpconstant(upConstant);
+            admeMeterWheelInfo.setUpfilter(upFilterCoefficient);
+            admeMeterWheelInfo.setDowntiona(downCorrectionParametersOne);
+            admeMeterWheelInfo.setDowntionb(downCorrectionParametersTwo);
+            admeMeterWheelInfo.setDownconstant(downConstant);
+            admeMeterWheelInfo.setDownfilter(downFilterCoefficient);
+        }
+        //TODO  打开注释，设置为浏览模式
+//        configPageViewModel.configPageEditableChanged.setValue(false);
         mBtnSave.setEnabled(true);
         ToastUtils.show("保存成功");
     }
@@ -440,6 +460,9 @@ public class BleAdmeMeterWheelFragment extends BaseBleIotCommunicateFragment {
     }
 
     private boolean checkValueIsChange() {
+        if (!configPageViewModel.configPageEditableChanged.getValue())
+            return false;
+
         if (encoderLineNumber != null && !encoderLineNumber.equals(mEtEncoderLineNumber.getText().toString().trim())) {
             return true;
         }
@@ -470,7 +493,48 @@ public class BleAdmeMeterWheelFragment extends BaseBleIotCommunicateFragment {
         if (downFilterCoefficient != null && !downFilterCoefficient.equals(mEtDownFilterCoefficient.getText().toString().trim())) {
             return true;
         }
-
         return false;
+    }
+
+    @Override
+    protected void onEditableChanged(boolean isEditable) {
+        if (isEditable) {
+            mEtEncoderLineNumber.setHint("请输入");
+            mEtOuterDiameter.setHint("请输入");
+            mEtUpCorrectionParametersOne.setHint("请输入");
+            mEtUpCorrectionParametersTwo.setHint("请输入");
+            mEtUpConstant.setHint("请输入");
+            mEtUpFilterCoefficient.setHint("请输入");
+            mEtDownCorrectionParametersOne.setHint("请输入");
+            mEtDownCorrectionParametersTwo.setHint("请输入");
+            mEtDownConstant.setHint("请输入");
+            mEtDownFilterCoefficient.setHint("请输入");
+        } else {
+            mEtEncoderLineNumber.setHint("");
+            mEtOuterDiameter.setHint("");
+            mEtUpCorrectionParametersOne.setHint("");
+            mEtUpCorrectionParametersTwo.setHint("");
+            mEtUpConstant.setHint("");
+            mEtUpFilterCoefficient.setHint("");
+            mEtDownCorrectionParametersOne.setHint("");
+            mEtDownCorrectionParametersTwo.setHint("");
+            mEtDownConstant.setHint("");
+            mEtDownFilterCoefficient.setHint("");
+
+            mEtEncoderLineNumber.clearFocus();
+            mEtOuterDiameter.clearFocus();
+            mEtUpCorrectionParametersOne.clearFocus();
+            mEtUpCorrectionParametersTwo.clearFocus();
+            mEtUpConstant.clearFocus();
+            mEtUpFilterCoefficient.clearFocus();
+            mEtDownCorrectionParametersOne.setHint("");
+            mEtDownCorrectionParametersTwo.setHint("");
+            mEtDownConstant.setHint("");
+            mEtDownFilterCoefficient.setHint("");
+
+            initParamConfigInfo();
+        }
+
+        mBtnSave.setVisibility(isEditable ? View.VISIBLE : View.GONE);
     }
 }

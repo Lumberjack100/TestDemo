@@ -96,8 +96,12 @@ public class BleAdmeBasicParamConfigFragment extends BaseBleIotCommunicateFragme
         super.onActivityCreated(savedInstanceState);
         setView();
         queryBasicParamConfigInfo();
-        //TODO  打开注释，设置为浏览模式
-//        onEditableChanged(false);
+        //TODO 设备处于自动监测模式时，不可编辑参数(后期还要考虑点击编辑按钮时的页面状态切换)
+        if (admeViewModel.deviceMode == 0) {
+            configPageViewModel.configPageEditableChanged.setValue(true);
+        } else {
+            configPageViewModel.configPageEditableChanged.setValue(false);
+        }
     }
 
     private void setView() {
@@ -334,7 +338,7 @@ public class BleAdmeBasicParamConfigFragment extends BaseBleIotCommunicateFragme
                     return;
                 }
                 basicConfigParam = commandResult.getResult();
-                initBasicParamConfigInfo();
+                initParamConfigInfo();
             }
             break;
 
@@ -373,13 +377,12 @@ public class BleAdmeBasicParamConfigFragment extends BaseBleIotCommunicateFragme
         ToastUtils.show("保存成功");
     }
 
-    private void initBasicParamConfigInfo() {
+    private void initParamConfigInfo() {
         if (basicConfigParam == null) {
             Timber.e("AdmeBasicConfigParam is Null!");
             basicConfigParam = new AdmeBasicConfigInfo();
             return;
         }
-
         try {
             inclinometerTypeOld = basicConfigParam.getInctype().trim();
             inclinometerType = basicConfigParam.getInctype().trim();
@@ -436,7 +439,7 @@ public class BleAdmeBasicParamConfigFragment extends BaseBleIotCommunicateFragme
     }
 
     private boolean checkValueIsChange() {
-        if (!isEditable)
+        if (!configPageViewModel.configPageEditableChanged.getValue())
             return false;
 
         if (inclinometerTypeOld != null && inclinometerType != null && !inclinometerTypeOld.equals(inclinometerType)) {
@@ -472,7 +475,6 @@ public class BleAdmeBasicParamConfigFragment extends BaseBleIotCommunicateFragme
 
     @Override
     protected void onEditableChanged(boolean isEditable) {
-        super.onEditableChanged(isEditable);
         if (isEditable) {
             mTvInclinometerType.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.icon_right, 0);
             mEtCollectorAddress.setHint("请输入");
@@ -490,13 +492,13 @@ public class BleAdmeBasicParamConfigFragment extends BaseBleIotCommunicateFragme
             mEtDecentralizationWaitingTime.setHint("");
             mTvDataSettlementMethod.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
 
-            initBasicParamConfigInfo();
-
             mEtCollectorAddress.clearFocus();
             mEtMacAddress.clearFocus();
             mEtInclinometerTubeHoleDepth.clearFocus();
             mEtDecentralizationSpeed.clearFocus();
             mEtDecentralizationWaitingTime.clearFocus();
+
+            initParamConfigInfo();
         }
         mBtnSave.setVisibility(isEditable ? View.VISIBLE : View.GONE);
     }
