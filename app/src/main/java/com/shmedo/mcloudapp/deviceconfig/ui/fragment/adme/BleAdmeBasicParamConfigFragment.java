@@ -491,11 +491,11 @@ public class BleAdmeBasicParamConfigFragment extends BaseBleIotCommunicateFragme
     protected void onEditableChanged(boolean isEditable) {
         if (isEditable) {
             mTvInclinometerType.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.icon_right, 0);
-            mEtCollectorAddress.setHint("请输入");
-            mEtMacAddress.setHint("请输入");
+            mEtCollectorAddress.setHint("0-32");
+            mEtMacAddress.setHint("xx:xx:xx:xx:xx:xx");
             mEtInclinometerTubeHoleDepth.setHint("请输入");
-            mEtDecentralizationSpeed.setHint("请输入");
-            mEtDecentralizationWaitingTime.setHint("请输入");
+            mEtDecentralizationSpeed.setHint("1-100");
+            mEtDecentralizationWaitingTime.setHint("1-32");
             mTvDataSettlementMethod.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.icon_right, 0);
         } else {
             mTvInclinometerType.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);

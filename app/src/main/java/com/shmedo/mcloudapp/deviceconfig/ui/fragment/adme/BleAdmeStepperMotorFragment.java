@@ -391,7 +391,7 @@ public class BleAdmeStepperMotorFragment extends BaseBleIotCommunicateFragment {
     protected void onEditableChanged(boolean isEditable) {
         if (isEditable) {
             mEtAccuracyCorrectionValue.setHint("请输入");
-            mEtMovementSpeed.setHint("请输入");
+            mEtMovementSpeed.setHint("1-100");
         } else {
             mEtAccuracyCorrectionValue.setHint("");
             mEtMovementSpeed.setHint("");

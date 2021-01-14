@@ -509,8 +509,8 @@ public class BleAdmeInclinometerFragment extends BaseBleIotCommunicateFragment {
         if (isEditable) {
             mTvInclinometerType.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.icon_right, 0);
             mTvLowPowerMode.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.icon_right, 0);
-            mEtCollectorAddress.setHint("请输入");
-            mEtMacAddress.setHint("请输入");
+            mEtCollectorAddress.setHint("0-32");
+            mEtMacAddress.setHint("xx:xx:xx:xx:xx:xx");
             mEtCollectionInterval.setHint("请输入");
             mEtSolvingInterval.setHint("请输入");
             mEtSleepTime.setHint("请输入");

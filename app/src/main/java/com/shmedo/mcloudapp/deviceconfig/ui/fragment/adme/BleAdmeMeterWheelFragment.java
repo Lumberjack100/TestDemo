@@ -509,11 +509,11 @@ public class BleAdmeMeterWheelFragment extends BaseBleIotCommunicateFragment {
             mEtUpCorrectionParametersOne.setHint("请输入");
             mEtUpCorrectionParametersTwo.setHint("请输入");
             mEtUpConstant.setHint("请输入");
-            mEtUpFilterCoefficient.setHint("请输入");
+            mEtUpFilterCoefficient.setHint("0-F");
             mEtDownCorrectionParametersOne.setHint("请输入");
             mEtDownCorrectionParametersTwo.setHint("请输入");
             mEtDownConstant.setHint("请输入");
-            mEtDownFilterCoefficient.setHint("请输入");
+            mEtDownFilterCoefficient.setHint("0-F");
         } else {
             mEtEncoderLineNumber.setHint("");
             mEtOuterDiameter.setHint("");

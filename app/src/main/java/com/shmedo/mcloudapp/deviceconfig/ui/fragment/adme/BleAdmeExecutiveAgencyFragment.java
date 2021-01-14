@@ -154,8 +154,10 @@ public class BleAdmeExecutiveAgencyFragment extends BaseBleIotCommunicateFragmen
 
         mEtInclinometerTubeHoleDepth.setFilters(new InputFilter[]{new InputFilter.LengthFilter(10)});
         mEtDecentralizationWaitingTime.setFilters(new InputFilter[]{new InputFilter.LengthFilter(2)});
+        mEtDecentralizationWaitingTime.setHint("1-32");
+
         mEtPullUpSpeed.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
-        mEtDecentralizationSpeed.setHint("1-100");
+        mEtPullUpSpeed.setHint("1-100");
 
         mEtMeasuringDistance.setFilters(new InputFilter[]{new InputFilter.LengthFilter(4)});
         mEtMeasurementIntervalTime.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
@@ -341,7 +343,7 @@ public class BleAdmeExecutiveAgencyFragment extends BaseBleIotCommunicateFragmen
         }
         try {
             int value = Integer.parseInt(motorDriveAddress);
-            if (value < 1) {
+            if (value < 0 || value > 99) {
                 ToastUtils.show("请输入正确的电机驱动器地址!");
                 mEtMotorDriveAddress.requestFocus();
                 return false;
@@ -391,7 +393,7 @@ public class BleAdmeExecutiveAgencyFragment extends BaseBleIotCommunicateFragmen
         }
         try {
             int value = Integer.parseInt(decentralizationWaitingTime);
-            if (value < 1 || value > 100) {
+            if (value < 1 || value > 32) {
                 ToastUtils.show("请输入正确的下放等待时间!");
                 mEtDecentralizationWaitingTime.requestFocus();
                 return false;
@@ -409,7 +411,7 @@ public class BleAdmeExecutiveAgencyFragment extends BaseBleIotCommunicateFragmen
         }
         try {
             int value = Integer.parseInt(pullUpSpeed);
-            if (value < 1) {
+            if (value < 1 || value > 100) {
                 ToastUtils.show("请输入正确的电机上拉速度!");
                 mEtPullUpSpeed.requestFocus();
                 return false;
@@ -767,10 +769,10 @@ public class BleAdmeExecutiveAgencyFragment extends BaseBleIotCommunicateFragmen
             mEtDataReadingInterval.setHint("请输入");
             mEtMeasurementCompensationTime.setHint("请输入");
             mEtMotorDriveAddress.setHint("请输入");
-            mEtDecentralizationSpeed.setHint("请输入");
+            mEtDecentralizationSpeed.setHint("1-100");
             mEtInclinometerTubeHoleDepth.setHint("请输入");
-            mEtDecentralizationWaitingTime.setHint("请输入");
-            mEtPullUpSpeed.setHint("请输入");
+            mEtDecentralizationWaitingTime.setHint("1-32");
+            mEtPullUpSpeed.setHint("1-100");
             mEtMeasuringDistance.setHint("请输入");
             mEtMeasurementIntervalTime.setHint("请输入");
             mEtMeasuringReferenceDepth.setHint("请输入");
