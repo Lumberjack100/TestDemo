@@ -39,14 +39,9 @@ android {
         versionName rootProject.android.versionName
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
-//        manifestPlaceholders = ["mapApikey": "31d7ee436c402270e11183ce1b5d01dc",
-//                                "pgyerKey" : "725bb8b9ee91e100e28d6623d8f8c86b"]
-//
-//        buildConfigField "String", "BUGLY_APPKEY", "\"6b0340b2b8\""
-
         ndk {
             //设置支持的SO库架构（开发者可以根据需要，选择一个或多个平台的so）
-            abiFilters "x86", "armeabi", "armeabi-v7a"
+            abiFilters "armeabi", "armeabi-v7a"//"x86", "armeabi", "armeabi-v7a"
         }
     }
 
@@ -99,10 +94,11 @@ android {
             dimension "version"
             applicationId "com.shmedo.mcloudapp"
             resValue "string", "app_name", getAppName()   // 设置默认的app_name
-            manifestPlaceholders = ["mapApikey": "31d7ee436c402270e11183ce1b5d01dc",
-                                    "pgyerKey" : "b0183e481a993ef11d38ac43d8392436"]
+            manifestPlaceholders = ["mapApikey" : "31d7ee436c402270e11183ce1b5d01dc",
+                                    "pgyerKey"  : "b0183e481a993ef11d38ac43d8392436",
+                                    "buglyAppId": "6b0340b2b8"]
 
-            buildConfigField "String", "BUGLY_APPKEY", "\"6b0340b2b8\""
+//            buildConfigField "String", "BUGLY_APPKEY", "\"6b0340b2b8\""
             buildConfigField "String", "Dingding_APP_ID", "\"dingoa6lbfnghbtn0xeju0\""
         }
     }
@@ -148,7 +144,6 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-common-java8:2.2.0"
     implementation 'androidx.lifecycle:lifecycle-viewmodel:2.2.0'
     implementation 'androidx.lifecycle:lifecycle-livedata:2.2.0'
-
     implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.2.0'
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0'
 
@@ -179,8 +174,6 @@ dependencies {
     implementation "com.afollestad.material-dialogs:core:$rootProject.thirdLib.materialDialogsCore"
     implementation "com.lxj:xpopup:$rootProject.thirdLib.xpopup"
 
-    //stetho
-    implementation "com.facebook.stetho:stetho:$rootProject.thirdLib.stetho"
     //fab
     implementation "com.github.clans:fab:$rootProject.thirdLib.fab"
     //This library aims to provide a chat UI view for Android.
@@ -198,6 +191,11 @@ dependencies {
     implementation "com.pgyersdk:sdk:$rootProject.thirdLib.pgyerSdk"
     //异常信息上报组件
     implementation "com.tencent.bugly:crashreport:$rootProject.thirdLib.buglyCrashReport"
+    implementation "com.tencent.bugly:nativecrashreport:$rootProject.thirdLib.buglyNativeCrashReport"
+
+    //xCrash 能为安卓 app 提供捕获 java 崩溃，native 崩溃和 ANR 的能力。
+    implementation 'com.iqiyi.xcrash:xcrash-android-lib:3.0.0'
+
     //AndPermission
     implementation "com.yanzhenjie:permission:$rootProject.thirdLib.AndPermission"
     implementation "com.yanzhenjie.recyclerview:x:$rootProject.thirdLib.SwipeRecyclerView"
@@ -228,7 +226,6 @@ dependencies {
     implementation 'no.nordicsemi.android:log:2.3.0'
     // BLE library
     implementation 'no.nordicsemi.android:ble-livedata:2.2.0'
-
 
     testImplementation "junit:junit:$rootProject.thirdLib.junit"
     androidTestImplementation "androidx.test:runner:$rootProject.thirdLib.runner"

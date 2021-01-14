@@ -30,6 +30,7 @@
     <uses-permission
         android:name="android.permission.READ_LOGS"
         tools:ignore="ProtectedPermissions" />
+
     <uses-permission android:name="no.nordicsemi.android.LOG" />
 
     <uses-feature
@@ -67,6 +68,23 @@
         <meta-data
             android:name="PGYER_APPID"
             android:value="${pgyerKey}" />
+
+        <!-- 配置APP ID -->
+        <meta-data
+            android:name="BUGLY_APPID"
+            android:value="${buglyAppId}" />
+        <!-- 配置APP版本号 -->
+     <!--   <meta-data
+            android:name="BUGLY_APP_VERSION"
+            android:value="<APP_Version>" />-->
+        <!-- 配置APP渠道号 -->
+      <!--  <meta-data
+            android:name="BUGLY_APP_CHANNEL"
+            android:value="<APP_Channel>" />-->
+        <!-- 配置Bugly调试模式（true或者false）测试阶段建议设置成true，发布时设置为false。-->
+        <meta-data
+            android:name="BUGLY_ENABLE_DEBUG"
+            android:value="true" />
 
         <provider
             android:name="com.shmedo.core.provider.GenericFileProvider"

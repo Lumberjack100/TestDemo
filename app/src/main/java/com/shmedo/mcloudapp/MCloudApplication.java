@@ -1,6 +1,7 @@
 package com.shmedo.mcloudapp;
 
 import android.app.Application;
+import android.content.Context;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -30,20 +31,17 @@ public class MCloudApplication extends Application implements ViewModelStoreOwne
     private ViewModelStore mAppViewModelStore;
 
     @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(base);
+        xcrash.XCrash.init(this);
+    }
+
+    @Override
     public void onCreate() {
         super.onCreate();
-
         mAppViewModelStore = new ViewModelStore();
 
         MCloudApp.initialize(this);
-
-        //初始化facebook.stetho
-        //AppInit.init(this);
-
-        //初始化日志输出
-        initTimber();
-        //初始化基于 mmap, 高性能、高可用的 Android 日志收集框架
-        LogInit.init(this);
 
         //初始化蒲公英
         //启动 Pgyer 检测 Crash 功能
@@ -54,9 +52,10 @@ public class MCloudApplication extends Application implements ViewModelStoreOwne
 
         //初始化吐司消息组件
         initToastUtil();
-
-        //初始化蓝牙管理类
-        initMdBluetoothManager();
+        //初始化日志输出
+        initTimber();
+        //初始化基于 mmap, 高性能、高可用的 Android 日志收集框架
+        LogInit.init(this);
     }
 
     @NonNull
@@ -71,9 +70,9 @@ public class MCloudApplication extends Application implements ViewModelStoreOwne
     private void initCrashReport() {
         //自己处理的异常
         AppCrashHandler.getInstance(this);// crash handler
-
         //初始化腾讯Bugly异常上报组件
-        CrashReport.initCrashReport(getApplicationContext(), BuildConfig.BUGLY_APPKEY, false);
+        CrashReport.initCrashReport(getApplicationContext());
+//        CrashReport.initCrashReport(getApplicationContext(), BuildConfig.BUGLY_APPKEY, false);
     }
 
     /**
@@ -108,14 +107,5 @@ public class MCloudApplication extends Application implements ViewModelStoreOwne
         // 初始化吐司工具类
         ToastUtils.init(this, new ToastBlackStyle(this));
     }
-
-    private void initMdBluetoothManager() {
-//        BluetoothManager bluetoothManager = (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
-//        BluetoothAdapter mBluetoothAdapter = Objects.requireNonNull(bluetoothManager).getAdapter();
-//        MdBluetoothManager.init(mBluetoothAdapter, bluetoothManager);
-
-//        NewBleManager.init();
-    }
-
 }
 
