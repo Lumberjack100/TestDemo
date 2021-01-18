@@ -34,7 +34,7 @@ import me.pqpo.librarylog4a.Log4a;
  * 创建时间:  1/8/21 <br/>
  * 描述：   自定义蓝牙指令交互输出并保存日志文件
  */
-public class BleIotCustomCommandLogPrintFragment extends BaseBleIotCommunicateFragment {
+public class USRBleIotCustomCommandLogPrintFragment extends BaseBleIotCommunicateFragment {
     private static final String TAG = "BleIotCustomCommandLogPrintFragment";
 
     @BindView(R.id.logPrintEnableSBtn)
@@ -56,8 +56,8 @@ public class BleIotCustomCommandLogPrintFragment extends BaseBleIotCommunicateFr
     private String snNumber;
 
 
-    public static BleIotCustomCommandLogPrintFragment newInstance() {
-        return new BleIotCustomCommandLogPrintFragment();
+    public static USRBleIotCustomCommandLogPrintFragment newInstance() {
+        return new USRBleIotCustomCommandLogPrintFragment();
     }
 
     @Override

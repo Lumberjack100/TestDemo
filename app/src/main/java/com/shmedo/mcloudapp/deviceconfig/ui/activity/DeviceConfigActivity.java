@@ -14,6 +14,7 @@ import com.shmedo.mcloudapp.deviceconfig.model.DiscoveredBluetoothDevice;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.NetConfigDeviceFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.adme.BleAdmeHomeFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.das.BleDasHomeFragment;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.m20.BleM20HomeFragment;
 import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfo;
 
 import butterknife.OnClick;
@@ -95,6 +96,10 @@ public class DeviceConfigActivity extends BaseConfigFragmentContainerActivity {
 
                 case AppContants.DeviceType.ADME:
                     fragment = BleAdmeHomeFragment.newInstance(device);
+                    break;
+
+                case AppContants.DeviceType.M20:
+                    fragment = BleM20HomeFragment.newInstance(device);
                     break;
             }
         }

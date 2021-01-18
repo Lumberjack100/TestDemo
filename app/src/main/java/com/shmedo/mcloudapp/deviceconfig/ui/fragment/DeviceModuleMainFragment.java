@@ -162,14 +162,17 @@ public class DeviceModuleMainFragment extends BaseTranslucentFragment implements
                     for (DiscoveredBluetoothDevice device : tempDeviceList) {
                         if (!TextUtils.isEmpty(MCloudApp.getCurDeviceToken()) && device.getName().contains(MCloudApp.getCurDeviceToken())) {
                             processStopScan();
+
                             int deviceType = AppContants.DeviceType.DAS;
-                            if (device.getName().endsWith("T")) {
-                                deviceType = AppContants.DeviceType.ADME;
-                            } else if (device.getName().endsWith("L")) {
+                            if (device.getName().endsWith("L")) {
                                 deviceType = AppContants.DeviceType.DAS;
+                            } else if (device.getName().endsWith("T")) {
+                                if (device.getName().startsWith("M20"))
+                                    deviceType = AppContants.DeviceType.M20;
+                                else
+                                    deviceType = AppContants.DeviceType.ADME;
                             }
                             DeviceConfigActivity.startActivity(getActivity(), AppContants.CommunicationWay.BLE_CONNECT, device, deviceType);
-
                             break;
                         }
                     }

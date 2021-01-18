@@ -175,10 +175,13 @@ public class BleScannerListFragment extends BaseFragment implements TextWatcher,
                 }
                 MCloudApp.setCurDeviceToken(deviceName.substring(3));
                 int deviceType = AppContants.DeviceType.DAS;
-                if (deviceName.endsWith("T")) {
-                    deviceType = AppContants.DeviceType.ADME;
-                } else if (deviceName.endsWith("L")) {
+                if (deviceName.endsWith("L")) {
                     deviceType = AppContants.DeviceType.DAS;
+                } else if (deviceName.endsWith("T")) {
+                    if (deviceName.startsWith("M20"))
+                        deviceType = AppContants.DeviceType.M20;
+                    else
+                        deviceType = AppContants.DeviceType.ADME;
                 }
                 DeviceConfigActivity.startActivity(getActivity(), AppContants.CommunicationWay.BLE_CONNECT, bluetoothDevice, deviceType);
             }

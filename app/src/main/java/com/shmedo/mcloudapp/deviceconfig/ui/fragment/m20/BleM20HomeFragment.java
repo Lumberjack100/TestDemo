@@ -1,8 +1,7 @@
-package com.shmedo.mcloudapp.deviceconfig.ui.fragment.adme;
+package com.shmedo.mcloudapp.deviceconfig.ui.fragment.m20;
 
 import android.graphics.Paint;
 import android.os.Bundle;
-import android.os.Handler;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.WindowManager;
@@ -18,34 +17,23 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.hjq.toast.ToastUtils;
-import com.lxj.xpopup.XPopup;
-import com.lxj.xpopup.interfaces.OnSelectListener;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandManager;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandResult;
-import com.shmedo.configlibrary.iot.cmd.entity.adme.AdmeEquipModelEntity;
 import com.shmedo.configlibrary.iot.cmd.parser.IOTParseManager;
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
-import com.shmedo.configlibrary.iot.model.CommonSettingCmdResult;
 import com.shmedo.configlibrary.iot.model.adme.AdmeBaseInfo;
-import com.shmedo.configlibrary.iot.model.adme.AdmeMotionState;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
 import com.shmedo.core.AppContants;
 import com.shmedo.core.MCloudApp;
 import com.shmedo.core.util.DensityUtil;
-import com.shmedo.core.util.GlobalUtil;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.view.recycleviewitemdivider.GridSpacingItemDecoration;
 import com.shmedo.mcloudapp.deviceconfig.adapter.ConfigModuleAdapter;
 import com.shmedo.mcloudapp.deviceconfig.model.ConfigModule;
 import com.shmedo.mcloudapp.deviceconfig.model.DiscoveredBluetoothDevice;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.AdvancedSettingActivity;
-import com.shmedo.mcloudapp.deviceconfig.ui.activity.CustomCommandLogPrintActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.DeviceCurrentStateActivity;
-import com.shmedo.mcloudapp.deviceconfig.ui.activity.adme.AdmeAdvancedConfigActivity;
-import com.shmedo.mcloudapp.deviceconfig.ui.activity.adme.AdmeBasicParamActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.adme.AdmeDataCenterHomeActivity;
-import com.shmedo.mcloudapp.deviceconfig.ui.activity.adme.AdmeGuideGrooveCalibrationActivity;
-import com.shmedo.mcloudapp.deviceconfig.ui.activity.adme.AdmeMeasuringHoleDepthActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -58,9 +46,9 @@ import timber.log.Timber;
 /**
  * 创建者:   gonghe <br/>
  * 创建时间:  1/18/21 <br/>
- * 描述：      ADME 蓝牙配置主页面
+ * 描述：    M20 蓝牙配置主页面
  */
-public class BleAdmeHomeFragment extends BaseBleIotCommunicateFragment {
+public class BleM20HomeFragment extends BaseGOCBleIotCommunicateFragment {
     public static final String EXTRA_DEVICE = "com.shmedo.mcloudapp.EXTRA_DEVICE";
 
     @BindView(R.id.device_container)
@@ -79,22 +67,19 @@ public class BleAdmeHomeFragment extends BaseBleIotCommunicateFragment {
     TextView mTvDeviceSn;//设备SN号
 
     @BindView(R.id.tv_product_model)
-    TextView mTvProductModel;//版本信息
+    TextView mTvProductModel;//产品型号
 
     @BindView(R.id.tv_time_or_sub_model)
-    TextView mTvMotionState;//运行状态
+    TextView mTvFirmwareVersion;//固件版本
 
     @BindView(R.id.tv_platform_communication_state)
-    TextView mTvPlatformCommunicationState;// 与平台通信状态
+    TextView mTvPlatformCommunicationState;//与平台连接状态
 
     @BindView(R.id.tv_device_state_flag)
     TextView mTvDeviceState;//蓝牙连接状态(已连接、已断开)
 
     @BindView(R.id.tv_device_connect_operate)
     TextView mTvDeviceConnectOperate;//蓝牙连接操作(断开连接、重新连接)
-
-    @BindView(R.id.tv_config_model)
-    TextView mTvConfigModel;//设备模式
 
     @BindView(R.id.recyclerview)
     RecyclerView mRecyclerView;
@@ -104,43 +89,11 @@ public class BleAdmeHomeFragment extends BaseBleIotCommunicateFragment {
     private ConfigModule selectedConfigModule;
 
     private DiscoveredBluetoothDevice device;
+
     private AdmeBaseInfo admeBaseInfo;
 
-    private int equipModellPos;
-    private String equipModel;//设备模式
-
-    private Handler motionStateHander = new Handler();
-    private QueryMotorStateRunnable queryMotorStateRunnable;
-
-    private boolean isFirstCreate = false;
-
-
-    /**
-     * 查询设备运行状态
-     */
-    private class QueryMotorStateRunnable implements Runnable {
-        @Override
-        public void run() {
-            if (!isActive)
-                return;
-
-            queryMotorState();
-        }
-    }
-
-    private void startQueryMotorStateRunnable() {
-        if (queryMotorStateRunnable != null && isActive) {
-            motionStateHander.postDelayed(queryMotorStateRunnable, 20000);
-        }
-    }
-
-    private void stopQueryMotorStateRunnable() {
-        motionStateHander.removeCallbacksAndMessages(null);
-        queryMotorStateRunnable = null;
-    }
-
-    public static BleAdmeHomeFragment newInstance(DiscoveredBluetoothDevice device) {
-        BleAdmeHomeFragment fragment = new BleAdmeHomeFragment();
+    public static BleM20HomeFragment newInstance(DiscoveredBluetoothDevice device) {
+        BleM20HomeFragment fragment = new BleM20HomeFragment();
         Bundle args = new Bundle();
         args.putParcelable(EXTRA_DEVICE, device);
         fragment.setArguments(args);
@@ -157,14 +110,12 @@ public class BleAdmeHomeFragment extends BaseBleIotCommunicateFragment {
 
     @Override
     protected int getLayoutId() {
-        return R.layout.ble_adme_home_fragment;
+        return R.layout.ble_m20_home_fragment;
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        isFirstCreate = true;
-        queryMotorStateRunnable = new QueryMotorStateRunnable();
         setHeadInfo();
         initAdapter();
         initConfigModuleData();
@@ -178,30 +129,16 @@ public class BleAdmeHomeFragment extends BaseBleIotCommunicateFragment {
     public void onResume() {
         super.onResume();
         onConnectionStateChanged(isConnected());
-        if (!isFirstCreate) {
-            queryMotorStateRunnable = new QueryMotorStateRunnable();
-            startQueryMotorStateRunnable();
-        }
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        isFirstCreate = false;
-        stopQueryMotorStateRunnable();
     }
 
     private void setHeadInfo() {
-        mTvDeviceName.setText("水平自动监测设备");
+        mTvDeviceName.setText("普适型GNSS一体机");
         mTvDeviceSn.setText(String.format("设备编号：%s", device.getName().substring(3)));
         mTvProductModel.setText("产品型号：--");
-        mTvMotionState.setText("运行状态：--");
+        mTvFirmwareVersion.setText("固件版本：--");
         mTvPlatformCommunicationState.setText("平台连接状态：--");
         mTvDeviceConnectOperate.setVisibility(View.VISIBLE);
         mTvDeviceConnectOperate.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG);
-
-        equipModellPos = 0;
-        mTvConfigModel.setText("设备配置模式");
     }
 
     private void initAdapter() {
@@ -234,36 +171,19 @@ public class BleAdmeHomeFragment extends BaseBleIotCommunicateFragment {
 
     private void processItemClick() {
         switch (selectedConfigModule.getName()) {
+            case "设置向导":
+                break;
+
             case "状态":
-                DeviceCurrentStateActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT, AppContants.DeviceType.ADME);
-                break;
-
-            case "基础配置":
-                AdmeBasicParamActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT);
-                break;
-
-            case "测量孔深":
-                AdmeMeasuringHoleDepthActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT);
-                break;
-
-            case "导槽校准":
-                AdmeGuideGrooveCalibrationActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT);
+                DeviceCurrentStateActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT, AppContants.DeviceType.M20);
                 break;
 
             case "数据中心":
                 AdmeDataCenterHomeActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT, AppContants.DataCenterConfigMethod.BASIC_CONFIG);
                 break;
 
-            case "指令下发":
-                CustomCommandLogPrintActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT, AppContants.DeviceType.ADME);
-                break;
-
-            case "高级配置":
-                AdmeAdvancedConfigActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT);
-                break;
-
             case "设置":
-                AdvancedSettingActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT, AppContants.DeviceType.ADME);
+                AdvancedSettingActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT, AppContants.DeviceType.M20);
                 break;
         }
     }
@@ -272,7 +192,7 @@ public class BleAdmeHomeFragment extends BaseBleIotCommunicateFragment {
      * 观察连接状态变化
      */
     private void observerConnectionState() {
-        usrBleViewModel.getConnectionState().observe(getViewLifecycleOwner(), new Observer<ConnectionState>() {
+        bleViewModel.getConnectionState().observe(getViewLifecycleOwner(), new Observer<ConnectionState>() {
             @Override
             public void onChanged(ConnectionState connectionState) {
                 switch (connectionState.getState()) {
@@ -288,7 +208,8 @@ public class BleAdmeHomeFragment extends BaseBleIotCommunicateFragment {
                     case READY://The initialization is complete, and the device is ready to use.
                         onConnectionStateChanged(true);
                         mTvProgressText.setText("初始化中...");
-                        usrBleViewModel.queryDeviceApiKeyBySn(device.getDevice().getName().substring(3));
+                        //查询设备 ApiKey
+                        bleViewModel.queryDeviceApiKeyBySn(device.getDevice().getName().substring(3));
                         break;
 
                     case DISCONNECTED://The device disconnected or failed to connect.
@@ -319,10 +240,11 @@ public class BleAdmeHomeFragment extends BaseBleIotCommunicateFragment {
      * 观察获取 ApiKey
      */
     private void observerApiKey() {
-        usrBleViewModel.getDeviceApiKey().observeInFragment(this, new Observer<String>() {
+        bleViewModel.getDeviceApiKey().observeInFragment(this, new Observer<String>() {
             @Override
             public void onChanged(String apiKey) {
-                queryEquipmentBaseInfo();
+                hideProgressBar();
+//                queryEquipmentBaseInfo();
             }
         });
     }
@@ -367,25 +289,13 @@ public class BleAdmeHomeFragment extends BaseBleIotCommunicateFragment {
     private void initConfigModuleData() {
         configModuleList.clear();
 
-        ConfigModule configModule = new ConfigModule(R.drawable.ic_device_current_state, GlobalUtil.getString(R.string.device_config_module_current_state), "获取当前设备状态");
+        ConfigModule configModule = new ConfigModule(R.drawable.ic_setup_wizard, "设置向导", "一键配置");
         configModuleList.add(configModule);
 
-        configModule = new ConfigModule(R.drawable.ic_basic_config, "基础配置", "设备基础参数配置");
-        configModuleList.add(configModule);
-
-        configModule = new ConfigModule(R.drawable.ic_measuring_hole_depth, "测量孔深", "测量测斜管深度");
-        configModuleList.add(configModule);
-
-        configModule = new ConfigModule(R.drawable.ic_positive_and_negative_test, "导槽校准", "正反测起点校准");
+        configModule = new ConfigModule(R.drawable.ic_device_current_state, "状态", "获取当前设备状态");
         configModuleList.add(configModule);
 
         configModule = new ConfigModule(R.drawable.ic_device_data_center, "数据中心", "基础参数配置");
-        configModuleList.add(configModule);
-
-        configModule = new ConfigModule(R.drawable.ic_device_instruction_send, "指令下发", "自定义指令下发");
-        configModuleList.add(configModule);
-
-        configModule = new ConfigModule(R.drawable.ic_device_advanced_setting, "高级配置", "设备高级参数配置");
         configModuleList.add(configModule);
 
         configModule = new ConfigModule(R.drawable.ic_device_setting, "设置", "高级设置");
@@ -400,15 +310,7 @@ public class BleAdmeHomeFragment extends BaseBleIotCommunicateFragment {
         sendCommand(command);
     }
 
-    /**
-     * 获取电机的运行状态
-     */
-    private void queryMotorState() {
-        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_GET_MOTION_STATE);
-        sendCommand(command);
-    }
-
-    @OnClick({R.id.tv_device_connect_operate, R.id.ll_switch_config_model})
+    @OnClick({R.id.tv_device_connect_operate})
     public void onClick(View v) {
         if (isDoubleClick(v)) {
             return;
@@ -422,44 +324,7 @@ public class BleAdmeHomeFragment extends BaseBleIotCommunicateFragment {
                     showDisconnectDialog(getResources().getString(R.string.disconnect_device));
                 }
                 break;
-
-            case R.id.ll_switch_config_model://切换设备模式
-                showSwitchConfigModelDialog();
-                break;
         }
-    }
-
-    private void showSwitchConfigModelDialog() {
-        XPopup.setPrimaryColor(getResources().getColor(R.color.blue_52B4F8));
-        new XPopup.Builder(mActivity)
-                .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
-                .asBottomList("", new String[]{"设备配置模式", "自动监测模式"},
-                        null, equipModellPos, true,
-                        new OnSelectListener() {
-                            @Override
-                            public void onSelect(int position, String text) {
-                                equipModellPos = position;
-                                mTvConfigModel.setText(text);
-                                if (text.equals("设备配置模式")) {
-                                    equipModel = "0";
-                                    admeViewModel.deviceMode = 0;
-                                } else {
-                                    equipModel = "1";
-                                    admeViewModel.deviceMode = 1;
-                                }
-                                setEquipModel();
-                            }
-                        }, 0, R.layout.custom_xpopup_adapter_text_match)
-                .show();
-    }
-
-    /**
-     * 设置设备模式
-     */
-    private void setEquipModel() {
-        AdmeEquipModelEntity entity = new AdmeEquipModelEntity(equipModel);
-        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_SET_EQUIPMENT_MODEL, entity);
-        sendCommand(command);
     }
 
     @Override
@@ -484,34 +349,6 @@ public class BleAdmeHomeFragment extends BaseBleIotCommunicateFragment {
                 }
                 admeBaseInfo = commandResult.getResult();
                 updateHeadInfo();
-                //获取设备的运行状态
-                queryMotorState();
-            }
-            break;
-
-            case ADME_MD_GET_MOTION_STATE: {//获取ADME的运行状态
-                IOTCommandResult<AdmeMotionState> commandResult = IOTParseManager.getInstance().parse(cmdStr);
-                if (!commandResult.isSuccess()) {
-                    String errMsg = String.format("%s %s", "获取设备的运行状态出错!", commandResult.getMessage());
-                    Timber.e(errMsg);
-                    ToastUtils.show(errMsg);
-                    return;
-                }
-                AdmeMotionState admeMotionState = commandResult.getResult();
-                updateMotionState(admeMotionState);
-                startQueryMotorStateRunnable();
-            }
-            break;
-
-            case ADME_MD_SET_EQUIPMENT_MODEL: {//设置设备模式
-                CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
-                if (!cmdResult.isSucceed()) {
-                    String errMsg = String.format("%s %s", "设置设备模式出错!", cmdResult.getReason());
-                    Timber.e(errMsg);
-                    ToastUtils.show(errMsg);
-                    return;
-                }
-                updateConfigModuleData();
             }
             break;
 
@@ -526,120 +363,19 @@ public class BleAdmeHomeFragment extends BaseBleIotCommunicateFragment {
      */
     private void updateHeadInfo() {
         if (admeBaseInfo != null) {
-            mTvDeviceName.setText("水平自动监测设备");
+            mTvDeviceName.setText("普适型GNSS一体机");
             mTvDeviceSn.setText(String.format("设备编号：%s", !TextUtils.isEmpty(admeBaseInfo.getSn()) ? admeBaseInfo.getSn() : device.getName().substring(3)));
             mTvProductModel.setText(String.format("产品型号：%s", !TextUtils.isEmpty(admeBaseInfo.getProductid()) ? admeBaseInfo.getProductid() : "ADME"));
-            mTvMotionState.setText("运行状态：--");
+            mTvFirmwareVersion.setText("固件版本：--");
             mTvPlatformCommunicationState.setText("平台连接状态：--");
 
-            if (!TextUtils.isEmpty(admeBaseInfo.getEquimodel())) {
-                equipModel = admeBaseInfo.getEquimodel();
-                if (equipModel.equals("0")) {
-                    admeViewModel.deviceMode = 0;
-                    equipModellPos = 0;
-                    mTvConfigModel.setText("设备配置模式");
-                } else {
-                    admeViewModel.deviceMode = 1;
-                    equipModellPos = 1;
-                    mTvConfigModel.setText("自动监测模式");
-                }
-                updateConfigModuleData();
-            }
         } else {
-            mTvDeviceName.setText("水平自动监测设备");
+            mTvDeviceName.setText("普适型GNSS一体机");
             mTvDeviceSn.setText(String.format("设备编号：%s", device.getName().substring(3)));
             mTvProductModel.setText(String.format("产品型号：：%s", "ADME"));
-            mTvMotionState.setText("运行状态：--");
+            mTvFirmwareVersion.setText("固件版本：--");
             mTvPlatformCommunicationState.setText("平台连接状态：--");
-
-            admeViewModel.deviceMode = 0;
-            equipModellPos = 0;
-            mTvConfigModel.setText("设备配置模式");
         }
-    }
-
-    /**
-     * 刷新电机运动状态
-     */
-    private void updateMotionState(AdmeMotionState admeMotionState) {
-        if (admeMotionState == null) {
-            Timber.e("AdmeMotionState is Null!");
-            return;
-        }
-
-        switch (admeMotionState.getMotionstate()) {
-            case "0":
-                mTvMotionState.setText("运行状态：管口停止");
-                break;
-
-            case "1":
-                mTvMotionState.setText("运行状态：管底停止");
-                break;
-
-            case "2":
-                mTvMotionState.setText("运行状态：管口测量");
-                break;
-
-            case "3":
-                mTvMotionState.setText("运行状态：管口测试");
-                break;
-
-            case "4":
-                mTvMotionState.setText("运行状态：上拉测量");
-                break;
-
-            case "5":
-                mTvMotionState.setText("运行状态：上拉测试");
-                break;
-
-            case "6":
-                mTvMotionState.setText("运行状态：下放测量");
-                break;
-
-            case "7":
-                mTvMotionState.setText("运行状态：下放测试");
-                break;
-
-            default:
-                break;
-        }
-    }
-
-    private void updateConfigModuleData() {
-        if (TextUtils.isEmpty(equipModel))
-            return;
-
-        configModuleList.clear();
-        ConfigModule configModule = new ConfigModule(R.drawable.ic_device_current_state, GlobalUtil.getString(R.string.device_config_module_current_state), "获取当前设备状态");
-        configModuleList.add(configModule);
-
-        configModule = new ConfigModule(R.drawable.ic_basic_config, "基础配置", "设备基础参数配置");
-        configModuleList.add(configModule);
-
-        if (equipModel.equals("0")) {//0：设备配置模式，1：自动监测模式
-            configModule = new ConfigModule(R.drawable.ic_measuring_hole_depth, "测量孔深", "测量测斜管深度");
-            configModuleList.add(configModule);
-
-            configModule = new ConfigModule(R.drawable.ic_positive_and_negative_test, "导槽校准", "正反测起点校准");
-            configModuleList.add(configModule);
-
-            configModule = new ConfigModule(R.drawable.ic_device_data_center, "数据中心", "基础参数配置");
-            configModuleList.add(configModule);
-
-            configModule = new ConfigModule(R.drawable.ic_device_instruction_send, "指令下发", "自定义指令下发");
-            configModuleList.add(configModule);
-
-            configModule = new ConfigModule(R.drawable.ic_device_advanced_setting, "高级配置", "设备高级参数配置");
-            configModuleList.add(configModule);
-
-            configModule = new ConfigModule(R.drawable.ic_device_setting, "设置", "高级设置");
-            configModuleList.add(configModule);
-        } else {
-            configModule = new ConfigModule(R.drawable.ic_device_advanced_setting, "高级配置", "设备高级参数配置");
-            configModuleList.add(configModule);
-        }
-
-        moduleAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -656,7 +392,6 @@ public class BleAdmeHomeFragment extends BaseBleIotCommunicateFragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        admeViewModel.deviceMode = -1;
         MCloudApp.setCurDeviceToken(null);
     }
 }

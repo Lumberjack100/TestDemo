@@ -180,7 +180,15 @@ public class NetDeviceListFragment extends BaseFragment {
             @Override
             public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
                 ProjectDeviceInfo deviceInfo = deviceInfoList.get(position);
-                DeviceConfigActivity.startActivity(mActivity, deviceInfo, AppContants.DeviceType.DAS);
+                int deviceType = AppContants.DeviceType.DAS;
+                if (deviceInfo.getDeviceTypeName().contains("DAS")) {
+                    deviceType = AppContants.DeviceType.DAS;
+                } else if (deviceInfo.getDeviceTypeName().contains("ADME")) {
+                    deviceType = AppContants.DeviceType.ADME;
+                } else if (deviceInfo.getDeviceTypeName().contains("M20")) {
+                    deviceType = AppContants.DeviceType.M20;
+                }
+                DeviceConfigActivity.startActivity(mActivity, deviceInfo, deviceType);
             }
         });
         mRecyclerViewDevice.setAdapter(deviceInfoAdapter);

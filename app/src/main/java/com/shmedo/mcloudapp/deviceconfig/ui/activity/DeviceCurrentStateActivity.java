@@ -89,6 +89,10 @@ public class DeviceCurrentStateActivity extends BaseConfigFragmentContainerActiv
                 case AppContants.DeviceType.ADME:
                     fragment = BleAdmeCurrentStateFragment.newInstance();
                     break;
+
+                case AppContants.DeviceType.M20:
+
+                    break;
             }
         }
 

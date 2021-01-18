@@ -12,8 +12,9 @@ import com.hjq.toast.ToastUtils;
 import com.shmedo.core.AppContants;
 import com.shmedo.core.util.LogFileUtil;
 import com.shmedo.mcloudapp.R;
-import com.shmedo.mcloudapp.deviceconfig.ui.fragment.adme.BleIotCustomCommandLogPrintFragment;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.adme.USRBleIotCustomCommandLogPrintFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.das.BleDasCustomCommandLogPrintFragment;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.m20.BleM20CustomCommandLogPrintFragment;
 import com.shmedo.mcloudapp.util.FileProviderUtils;
 
 import java.io.File;
@@ -26,13 +27,8 @@ import gdut.bsx.share2.ShareContentType;
  * 指令日志调试页面
  */
 public class CustomCommandLogPrintActivity extends BaseConfigFragmentContainerActivity {
-    private int cmdType = AppContants.CommmandType.OLD_COMMAND;
+    private int deviceType = AppContants.DeviceType.DAS;
 
-    public static void startActivity(Context context) {
-        Intent intent = new Intent(context, CustomCommandLogPrintActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        context.startActivity(intent);
-    }
 
     public static void startActivity(Context context, int connectWay) {
         Intent intent = new Intent(context, CustomCommandLogPrintActivity.class);
@@ -41,10 +37,10 @@ public class CustomCommandLogPrintActivity extends BaseConfigFragmentContainerAc
         context.startActivity(intent);
     }
 
-    public static void startActivity(Context context, int connectWay, int cmdType) {
+    public static void startActivity(Context context, int connectWay, int deviceType) {
         Intent intent = new Intent(context, CustomCommandLogPrintActivity.class);
         intent.putExtra(AppContants.Extras.COMMUNICATION_WAY, connectWay);
-        intent.putExtra(AppContants.Extras.DEVICE_COMMMAND_TYPE, cmdType);
+        intent.putExtra(AppContants.Extras.DEVICE_TYPE, deviceType);
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         context.startActivity(intent);
     }
@@ -63,8 +59,8 @@ public class CustomCommandLogPrintActivity extends BaseConfigFragmentContainerAc
         if (intent.getExtras() == null)
             return;
 
-        if (intent.getExtras().containsKey(AppContants.Extras.DEVICE_COMMMAND_TYPE)) {
-            cmdType = intent.getIntExtra(AppContants.Extras.DEVICE_COMMMAND_TYPE, AppContants.CommmandType.OLD_COMMAND);
+        if (intent.getExtras().containsKey(AppContants.Extras.DEVICE_TYPE)) {
+            deviceType = intent.getIntExtra(AppContants.Extras.DEVICE_TYPE, AppContants.DeviceType.DAS);
         }
     }
 
@@ -72,14 +68,22 @@ public class CustomCommandLogPrintActivity extends BaseConfigFragmentContainerAc
     protected Fragment initFragment() {
         if (connectWay == AppContants.CommunicationWay.NET_PLATFORM_CONNECT) {
 
-        } else {
-            if (cmdType == AppContants.CommmandType.OLD_COMMAND) {
-                fragment = new BleDasCustomCommandLogPrintFragment();
-            } else if (cmdType == AppContants.CommmandType.IOT_COMMAND) {
-                fragment = BleIotCustomCommandLogPrintFragment.newInstance();
+        } else if (connectWay == AppContants.CommunicationWay.BLE_CONNECT) {
+
+            switch (deviceType) {
+                case AppContants.DeviceType.DAS:
+                    fragment = new BleDasCustomCommandLogPrintFragment();
+                    break;
+
+                case AppContants.DeviceType.ADME:
+                    fragment = USRBleIotCustomCommandLogPrintFragment.newInstance();
+                    break;
+
+                case AppContants.DeviceType.M20:
+                    fragment = BleM20CustomCommandLogPrintFragment.newInstance();
+                    break;
             }
         }
-
         return fragment;
     }
 

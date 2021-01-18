@@ -92,7 +92,7 @@ public class GOCManager extends ObservableBleManager {
     @NonNull
     @Override
     protected BleManagerGattCallback getGattCallback() {
-        return null;
+        return new GOCBleManagerGattCallback();
     }
 
     /**
@@ -139,7 +139,7 @@ public class GOCManager extends ObservableBleManager {
     /**
      * BluetoothGatt callbacks object.
      */
-    private class USRBleManagerGattCallback extends BleManagerGattCallback {
+    private class GOCBleManagerGattCallback extends BleManagerGattCallback {
         @Override
         protected void initialize() {
             // Increase the MTU
