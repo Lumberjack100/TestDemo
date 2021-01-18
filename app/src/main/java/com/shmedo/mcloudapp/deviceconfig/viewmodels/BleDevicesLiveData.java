@@ -45,7 +45,7 @@ import no.nordicsemi.android.support.v18.scanner.ScanResult;
  */
 @SuppressWarnings("unused")
 public class BleDevicesLiveData extends UnPeekLiveData<List<DiscoveredBluetoothDevice>> {
-    private static final String FILTER_PREFIX = "MD";
+    private static final String FILTER_PREFIX = "M";//"MD"
     private static final ParcelUuid FILTER_UUID = new ParcelUuid(USRManager.USR_SERVICE_UUID);
     private static final int FILTER_RSSI = -50; // [dBm]
 

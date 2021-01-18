@@ -290,8 +290,10 @@ public class BleAdmeHomeFragment extends BaseBleIotCommunicateFragment {
                         if (connectionState instanceof ConnectionState.Disconnected) {
                             final ConnectionState.Disconnected stateWithReason = (ConnectionState.Disconnected) connectionState;
                             if (stateWithReason.isNotSupported()) {
+                                Timber.e("DISCONNECTED: 不支持的设备");
                                 ToastUtils.show("不支持的设备");
                             } else if (stateWithReason.isTimeout()) {
+                                Timber.e("DISCONNECTED: 连接超时");
                                 ToastUtils.show("连接超时");
                             }
                         }

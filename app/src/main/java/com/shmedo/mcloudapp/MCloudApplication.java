@@ -11,7 +11,6 @@ import androidx.lifecycle.ViewModelStoreOwner;
 import com.hjq.toast.ToastInterceptor;
 import com.hjq.toast.ToastUtils;
 import com.hjq.toast.style.ToastBlackStyle;
-import com.pgyersdk.crash.PgyCrashManager;
 import com.shmedo.core.MCloudApp;
 import com.shmedo.core.log.AppCrashHandler;
 import com.shmedo.core.log.CrashReportingTree;
@@ -45,7 +44,7 @@ public class MCloudApplication extends Application implements ViewModelStoreOwne
 
         //初始化蒲公英
         //启动 Pgyer 检测 Crash 功能
-        PgyCrashManager.register();
+//        PgyCrashManager.register();
 
         //异常上报和升级
         initCrashReport();

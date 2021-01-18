@@ -169,8 +169,11 @@ public class BleScannerListFragment extends BaseFragment implements TextWatcher,
                 processStopScan();
                 DiscoveredBluetoothDevice bluetoothDevice = bleDeviceAdapter.getItem(position);
                 String deviceName = bluetoothDevice.getName();
+                if (!(deviceName.endsWith("L") || deviceName.endsWith("T"))) {
+                    ToastUtils.show("不支持此设备类型");
+                    return;
+                }
                 MCloudApp.setCurDeviceToken(deviceName.substring(3));
-
                 int deviceType = AppContants.DeviceType.DAS;
                 if (deviceName.endsWith("T")) {
                     deviceType = AppContants.DeviceType.ADME;
