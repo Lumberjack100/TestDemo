@@ -153,7 +153,7 @@ public abstract class BaseGOCBleIotCommunicateFragment extends BaseFragment {
             apiKey = bleViewModel.getDeviceApiKey().getValue();
         }
         cmdStr += "&apikey=" + apiKey
-                + "&msgid=" + UUID.randomUUID().toString().substring(30);
+                + "&msgid=" + UUID.randomUUID().toString();
 
         bleViewModel.sendIOTProtocolCommand(cmdStr);
     }

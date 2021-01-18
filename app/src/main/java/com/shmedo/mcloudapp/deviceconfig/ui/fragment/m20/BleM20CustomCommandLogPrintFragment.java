@@ -135,7 +135,7 @@ public class BleM20CustomCommandLogPrintFragment extends BaseGOCBleIotCommunicat
                 return;
             }
             sendCommand(command);
-            btnSend.setEnabled(false);
+//            btnSend.setEnabled(false);
 
             CmdLogInfo cmdLogInfo = new CmdLogInfo(TimeUtil.getSysTimeStr(), command);
             logDataList.add(cmdLogInfo);
@@ -167,7 +167,7 @@ public class BleM20CustomCommandLogPrintFragment extends BaseGOCBleIotCommunicat
     }
 
     private void setResultData(final String cmdStr) {
-        btnSend.setEnabled(true);
+//        btnSend.setEnabled(true);
         Log4a.i(TAG, cmdStr);
         Log4a.flush();
 
