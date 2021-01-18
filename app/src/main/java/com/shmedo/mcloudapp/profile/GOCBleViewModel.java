@@ -17,45 +17,37 @@ import no.nordicsemi.android.log.Logger;
 
 /**
  * 创建者:   gonghe <br/>
- * 创建时间:  12/7/20 <br/>
- * 描述：   存储和管理与有人物联网蓝牙模块通讯的数据
+ * 创建时间:  1/18/21 <br/>
+ * 描述：    存储和管理与 深圳市顾凯信息技术有限公司GOC-MD-400蓝牙模块通讯的数据
  */
-public class USRBleViewModel extends AndroidViewModel {
-    private final USRManager usrManager;
+public class GOCBleViewModel extends AndroidViewModel {
+    private final GOCManager gocManager;
     private BluetoothDevice device;
-
-    public USRBleViewModel(@NonNull Application application) {
+    
+    public GOCBleViewModel(@NonNull Application application) {
         super(application);
         // Initialize the manager.
-        usrManager = new USRManager(getApplication());
+        gocManager = new GOCManager(getApplication());
     }
 
     public LiveData<ConnectionState> getConnectionState() {
-        return usrManager.getState();
+        return gocManager.getState();
     }
 
     public ProtectedUnPeekLiveData<String> getResponseMsg() {
-        return usrManager.getResponseMsg();
-    }
-
-    public void clearLastResponseValue() {
-        usrManager.clearLastResponseValue();
+        return gocManager.getResponseMsg();
     }
 
     public UnPeekLiveData<Boolean> getLogOutputMode() {
-        return usrManager.getLogOutputMode();
+        return gocManager.getLogOutputMode();
     }
 
     public void updateLogOutputMode(boolean isLogOutputMode) {
-        usrManager.updateLogOutputMode(isLogOutputMode);
+        gocManager.updateLogOutputMode(isLogOutputMode);
     }
 
     public ProtectedUnPeekLiveData<String> getDeviceApiKey() {
         return DeviceRepository.getInstance().getDeviceApiKeyLiveData();
-    }
-
-    public void clearDeviceApiKey() {
-        DeviceRepository.getInstance().clearDeviceApiKey();
     }
 
     public void queryDeviceApiKeyBySn(String sn) {
@@ -72,7 +64,7 @@ public class USRBleViewModel extends AndroidViewModel {
         if (device == null) {
             device = target;
             final LogSession logSession = Logger.newSession(getApplication(), null, target.getAddress(), target.getName());
-            usrManager.setLogger(logSession);
+            gocManager.setLogger(logSession);
             reconnect();
         }
     }
@@ -84,7 +76,7 @@ public class USRBleViewModel extends AndroidViewModel {
      */
     public void reconnect() {
         if (device != null) {
-            usrManager.connect(device)
+            gocManager.connect(device)
                     .retry(3, 100)
                     .useAutoConnect(false)
                     .enqueue();
@@ -96,7 +88,7 @@ public class USRBleViewModel extends AndroidViewModel {
      */
     public void disconnect() {
         device = null;
-        usrManager.disconnect().enqueue();
+        gocManager.disconnect().enqueue();
     }
 
     /**
@@ -104,7 +96,7 @@ public class USRBleViewModel extends AndroidViewModel {
      * discovered yet.
      */
     public final boolean isConnected() {
-        return usrManager.isConnected();
+        return gocManager.isConnected();
     }
 
     public void clearDevice() {
@@ -116,15 +108,14 @@ public class USRBleViewModel extends AndroidViewModel {
      */
     public void sendIOTProtocolCommand(final String command) {
 //        Timber.v("准备发送指令：%s", command);
-        usrManager.writeMessage(command);
+        gocManager.writeMessage(command);
     }
 
     @Override
     protected void onCleared() {
         super.onCleared();
-        if (usrManager.isConnected()) {
+        if (gocManager.isConnected()) {
             disconnect();
         }
     }
-
 }

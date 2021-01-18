@@ -5,7 +5,6 @@ import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattService;
 import android.content.Context;
-import android.text.TextUtils;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -34,23 +33,22 @@ import timber.log.Timber;
 
 /**
  * 创建者:   gonghe <br/>
- * 创建时间:  12/7/20 <br/>
- * 描述：    济南有人物联网蓝牙模块连接管理类
+ * 创建时间:  1/18/21 <br/>
+ * 描述：    深圳市顾凯信息技术有限公司GOC-MD-400蓝牙模块连接管理类
  */
-public class USRManager extends ObservableBleManager {
+public class GOCManager extends ObservableBleManager {
     /**
      * The service UUID.<br>
-     * 济南有人物联网公司低功耗蓝牙模块服务
      */
-    public static final UUID USR_SERVICE_UUID = UUID.fromString("0003cdd0-0000-1000-8000-00805f9b0131");
+    public static final UUID GOC_SERVICE_UUID = UUID.fromString("0000ff00-0000-1000-8000-00805f9b34fb");
     /**
      * A UUID of a characteristic with notify property.
      */
-    private static final UUID NOTIFY_CHARACTERISTIC_UUID = UUID.fromString("0003cdd1-0000-1000-8000-00805f9b0131");
+    private static final UUID NOTIFY_CHARACTERISTIC_UUID = UUID.fromString("0000ff01-0000-1000-8000-00805f9b34fb");
     /**
      * A UUID of a characteristic with write property.
      */
-    private static final UUID WRITABLE_CHARACTERISTIC_UUID = UUID.fromString("0003cdd2-0000-1000-8000-00805f9b0131");
+    private static final UUID WRITABLE_CHARACTERISTIC_UUID = UUID.fromString("0000ff02-0000-1000-8000-00805f9b34fb");
 
     private final UnPeekLiveData<String> responseMsg = new UnPeekLiveData<>();
     private final UnPeekLiveData<Boolean> logOutputModeLiveData = new UnPeekLiveData<>();
@@ -61,7 +59,7 @@ public class USRManager extends ObservableBleManager {
     private static final int MAX_PACKAGE_SIZE = 512;//最大蓝牙包数据
     private int mtu = MAX_PACKAGE_SIZE;//默认设置最大蓝牙包数据，实际因设备而异
 
-    public USRManager(@NotNull Context context) {
+    public GOCManager(@NotNull Context context) {
         super(context);
     }
 
@@ -81,10 +79,20 @@ public class USRManager extends ObservableBleManager {
         logOutputModeLiveData.postValue(isLogOutputMode);
     }
 
+    /**
+     * This method must return the GATT callback used by the manager.
+     * This method must not create a new gatt callback each time it is being invoked, but rather
+     * return a single object.
+     * The object must exist when this method is called, that is in the BleManager's constructor.
+     * Therefore, it cannot return a local field in the extending manager, as this is created after
+     * the constructor finishes.
+     *
+     * @return The gatt callback object.
+     */
     @NonNull
     @Override
     protected BleManagerGattCallback getGattCallback() {
-        return new USRBleManagerGattCallback();
+        return null;
     }
 
     /**
@@ -113,28 +121,11 @@ public class USRManager extends ObservableBleManager {
             Timber.v("接收数据(onResponseReceived): length=%s bytes;content: %s", result.getBytes().length, result);
             log(LogContract.Log.Level.APPLICATION, "接收数据(onResponseReceived): " + result);
 
-            //处理接收的数据中有多条指令拼接的情况(其他指令和心跳包拼接的情况）
-            if (result.contains("$$")) {
-                String[] datas = result.split("\r\n");
-                if (datas != null && datas.length > 0) {
-                    for (String data : datas) {
-                        if (!TextUtils.isEmpty(data)) {
-                            int index = data.lastIndexOf("$$");
-                            if (index != -1) {
-                                data = data.substring(index);
-                            }
-                            Timber.v("接收数据(拆分): length=%s bytes;content: %s", data.getBytes().length, data);
-                            responseMsg.setValue(data);
-                        }
-                    }
-                }
-            } else {
-                int index = result.lastIndexOf("$cmd");
-                if (index != -1) {
-                    result = result.substring(index);
-                }
-                responseMsg.setValue(result);
+            int index = result.lastIndexOf("$cmd");
+            if (index != -1) {
+                result = result.substring(index);
             }
+            responseMsg.setValue(result);
         }
 
         @Override
@@ -205,7 +196,7 @@ public class USRManager extends ObservableBleManager {
 
         @Override
         protected boolean isRequiredServiceSupported(@NonNull BluetoothGatt gatt) {
-            final BluetoothGattService service = gatt.getService(USR_SERVICE_UUID);
+            final BluetoothGattService service = gatt.getService(GOC_SERVICE_UUID);
             if (service != null) {
                 notifyCharacteristic = service.getCharacteristic(NOTIFY_CHARACTERISTIC_UUID);
                 writeCharacteristic = service.getCharacteristic(WRITABLE_CHARACTERISTIC_UUID);
