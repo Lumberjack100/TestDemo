@@ -2,6 +2,7 @@ package com.shmedo.mcloudapp.deviceconfig.ui.fragment.m20;
 
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
@@ -32,6 +33,8 @@ import timber.log.Timber;
  * 描述：    M20 数据中心主页面
  */
 public class BleM20DataCenterHomeFragment extends BaseGOCBleIotCommunicateFragment {
+    public static final String LEVEL_INITIAL = "com.shmedo.mcloudapp.LEVEL_INITIAL";
+
     @BindView(R.id.tv_data_center_one)
     TextView mTvDataCenterOne;
 
@@ -44,13 +47,18 @@ public class BleM20DataCenterHomeFragment extends BaseGOCBleIotCommunicateFragme
     @BindView(R.id.tv_data_center_four)
     TextView mTvDataCenterFour;
 
+    @BindView(R.id.btn_confirm)
+    Button mBtnComplete;
+
     private int configMethod = AppContants.DataCenterConfigMethod.BASIC_CONFIG;
+    private boolean isLevelInit = false;
 
 
-    public static BleM20DataCenterHomeFragment newInstance(int configMethod) {
+    public static BleM20DataCenterHomeFragment newInstance(int configMethod, boolean isLevelInit) {
         BleM20DataCenterHomeFragment fragment = new BleM20DataCenterHomeFragment();
         Bundle args = new Bundle();
         args.putInt(AppContants.Extras.DATA_CENTER_CONFIG_METHOD, configMethod);
+        args.putBoolean(LEVEL_INITIAL, isLevelInit);
         fragment.setArguments(args);
         return fragment;
     }
@@ -60,6 +68,7 @@ public class BleM20DataCenterHomeFragment extends BaseGOCBleIotCommunicateFragme
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             configMethod = getArguments().getInt(AppContants.Extras.DATA_CENTER_CONFIG_METHOD);
+            isLevelInit = getArguments().getBoolean(LEVEL_INITIAL, false);
         }
     }
 
@@ -72,6 +81,11 @@ public class BleM20DataCenterHomeFragment extends BaseGOCBleIotCommunicateFragme
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        if (isLevelInit) {
+            mBtnComplete.setVisibility(View.VISIBLE);
+        } else {
+            mBtnComplete.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -90,28 +104,43 @@ public class BleM20DataCenterHomeFragment extends BaseGOCBleIotCommunicateFragme
         sendCommand(command);
     }
 
-    @OnClick({R.id.dataCenterOneLayout, R.id.dataCenterTwoLayout, R.id.dataCenterThreeLayout, R.id.dataCenterFourLayout})
+    @OnClick({R.id.dataCenterOneLayout, R.id.dataCenterTwoLayout, R.id.dataCenterThreeLayout, R.id.dataCenterFourLayout, R.id.btn_confirm})
     public void onClick(View view) {
         if (isDoubleClick(view)) {
-            return;
-        }
-        if (!isConnected()) {
-            ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
             return;
         }
 
         int id = view.getId();
         if (id == R.id.dataCenterOneLayout) {
+            if (!isConnected()) {
+                ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
+                return;
+            }
             DataCenterConfigActivity.startActivity(mActivity, AppContants.DeviceType.M20, AppContants.CommunicationWay.BLE_CONNECT, configMethod, ServerNumber.NUMBER_ONE, mTvDataCenterOne.getText().toString());
 
         } else if (id == R.id.dataCenterTwoLayout) {
+            if (!isConnected()) {
+                ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
+                return;
+            }
             DataCenterConfigActivity.startActivity(mActivity, AppContants.DeviceType.M20, AppContants.CommunicationWay.BLE_CONNECT, configMethod, ServerNumber.NUMBER_TWO, mTvDataCenterTwo.getText().toString());
 
-        }else if (id == R.id.dataCenterThreeLayout) {
+        } else if (id == R.id.dataCenterThreeLayout) {
+            if (!isConnected()) {
+                ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
+                return;
+            }
             DataCenterConfigActivity.startActivity(mActivity, AppContants.DeviceType.M20, AppContants.CommunicationWay.BLE_CONNECT, configMethod, ServerNumber.NUMBER_TWO, mTvDataCenterThree.getText().toString());
 
-        }else if (id == R.id.dataCenterFourLayout) {
+        } else if (id == R.id.dataCenterFourLayout) {
+            if (!isConnected()) {
+                ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
+                return;
+            }
             DataCenterConfigActivity.startActivity(mActivity, AppContants.DeviceType.M20, AppContants.CommunicationWay.BLE_CONNECT, configMethod, ServerNumber.NUMBER_TWO, mTvDataCenterFour.getText().toString());
+
+        } else if (id == R.id.btn_confirm) {
+            mActivity.finish();
         }
     }
 

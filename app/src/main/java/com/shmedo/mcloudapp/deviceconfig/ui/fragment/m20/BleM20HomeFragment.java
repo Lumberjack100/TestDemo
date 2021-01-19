@@ -21,6 +21,7 @@ import com.shmedo.configlibrary.iot.cmd.IOTCommandManager;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandResult;
 import com.shmedo.configlibrary.iot.cmd.parser.IOTParseManager;
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
+import com.shmedo.configlibrary.iot.model.CommonSettingCmdResult;
 import com.shmedo.configlibrary.iot.model.adme.AdmeBaseInfo;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
 import com.shmedo.core.AppContants;
@@ -32,8 +33,7 @@ import com.shmedo.mcloudapp.deviceconfig.adapter.ConfigModuleAdapter;
 import com.shmedo.mcloudapp.deviceconfig.model.ConfigModule;
 import com.shmedo.mcloudapp.deviceconfig.model.DiscoveredBluetoothDevice;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.AdvancedSettingActivity;
-import com.shmedo.mcloudapp.deviceconfig.ui.activity.DeviceCurrentStateActivity;
-import com.shmedo.mcloudapp.deviceconfig.ui.activity.adme.AdmeDataCenterHomeActivity;
+import com.shmedo.mcloudapp.deviceconfig.ui.activity.DataCenterHomeActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -91,6 +91,8 @@ public class BleM20HomeFragment extends BaseGOCBleIotCommunicateFragment {
     private DiscoveredBluetoothDevice device;
 
     private AdmeBaseInfo admeBaseInfo;
+
+    private BleM20SetupWizardDialogFragment setupWizardDialogFragment;
 
     public static BleM20HomeFragment newInstance(DiscoveredBluetoothDevice device) {
         BleM20HomeFragment fragment = new BleM20HomeFragment();
@@ -172,14 +174,16 @@ public class BleM20HomeFragment extends BaseGOCBleIotCommunicateFragment {
     private void processItemClick() {
         switch (selectedConfigModule.getName()) {
             case "设置向导":
+                setupWizardDialogFragment = BleM20SetupWizardDialogFragment.newInstance();
+                setupWizardDialogFragment.show(getChildFragmentManager(), "dialog");
                 break;
 
             case "状态":
-                DeviceCurrentStateActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT, AppContants.DeviceType.M20);
+                testStatus();
                 break;
 
             case "数据中心":
-                AdmeDataCenterHomeActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT, AppContants.DataCenterConfigMethod.BASIC_CONFIG);
+                DataCenterHomeActivity.startActivity(mActivity, AppContants.DeviceType.M20, AppContants.CommunicationWay.BLE_CONNECT, AppContants.DataCenterConfigMethod.BASIC_CONFIG);
                 break;
 
             case "设置":
@@ -310,6 +314,12 @@ public class BleM20HomeFragment extends BaseGOCBleIotCommunicateFragment {
         sendCommand(command);
     }
 
+    private void testStatus() {
+        String command = "$cmd=getstatus";
+        sendCommand(command);
+    }
+
+
     @OnClick({R.id.tv_device_connect_operate})
     public void onClick(View v) {
         if (isDoubleClick(v)) {
@@ -351,6 +361,21 @@ public class BleM20HomeFragment extends BaseGOCBleIotCommunicateFragment {
                 updateHeadInfo();
             }
             break;
+
+            case M20_MD_LEVEL_INITIAL:
+                CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
+                if (!cmdResult.isSucceed()) {
+                    String errMsg = String.format("%s %s", "水平初始化出错!", cmdResult.getReason());
+                    Timber.e(errMsg);
+                    if (setupWizardDialogFragment != null && setupWizardDialogFragment.isVisible()) {
+                        setupWizardDialogFragment.updateState(false);
+                    }
+                    return;
+                }
+                if (setupWizardDialogFragment != null && setupWizardDialogFragment.isVisible()) {
+                    setupWizardDialogFragment.updateState(true);
+                }
+                break;
 
             default:
                 super.parseResponseMessage(cmdStr);

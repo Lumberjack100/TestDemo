@@ -72,7 +72,7 @@ public class BleM20AdvancedSettingFragment extends BaseGOCBleIotCommunicateFragm
     }
 
     /**
-     * 重启指令
+     * 水平初始化
      */
     private void setLevelInitial() {
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.M20_MD_LEVEL_INITIAL);

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_corner_5dp_white"
+    android:orientation="vertical">
+
+    <include layout="@layout/cmd_response_dialog_title" />
+
+    <TextView
+        android:id="@+id/tv_content"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="15dp"
+        android:layout_marginBottom="60dp"
+        android:textColor="@color/title_text_color"
+        android:textSize="@dimen/text_size_18"
+        android:visibility="gone"
+        tools:text="是否水平初始化？" />
+
+    <include
+        android:id="@+id/dispatchCmdFailedView"
+        layout="@layout/dispatch_cmd_failed_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="15dp"
+        android:layout_marginBottom="60dp"
+        android:visibility="visible" />
+
+    <include layout="@layout/common_dialog_footer2" />
+
+</LinearLayout>

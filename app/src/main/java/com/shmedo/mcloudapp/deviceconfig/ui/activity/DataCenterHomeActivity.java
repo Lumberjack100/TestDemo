@@ -15,14 +15,27 @@ import com.shmedo.mcloudapp.deviceconfig.ui.fragment.m20.BleM20DataCenterHomeFra
  * 描述：    数据中心主页面
  */
 public class DataCenterHomeActivity extends BaseConfigFragmentContainerActivity {
+    public static final String LEVEL_INITIAL = "com.shmedo.mcloudapp.LEVEL_INITIAL";
+
     private int configMethod = AppContants.DataCenterConfigMethod.BASIC_CONFIG;
     private int deviceType = AppContants.DeviceType.DAS;
+    private boolean isLevelInit = false;
 
     public static void startActivity(Context context, int deviceType, int connectWay, int configMethod) {
         Intent intent = new Intent(context, DataCenterHomeActivity.class);
         intent.putExtra(AppContants.Extras.DEVICE_TYPE, deviceType);
         intent.putExtra(AppContants.Extras.COMMUNICATION_WAY, connectWay);
         intent.putExtra(AppContants.Extras.DATA_CENTER_CONFIG_METHOD, configMethod);
+        intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        context.startActivity(intent);
+    }
+
+    public static void startActivity(Context context, int deviceType, int connectWay, int configMethod, boolean isLevelInit) {
+        Intent intent = new Intent(context, DataCenterHomeActivity.class);
+        intent.putExtra(AppContants.Extras.DEVICE_TYPE, deviceType);
+        intent.putExtra(AppContants.Extras.COMMUNICATION_WAY, connectWay);
+        intent.putExtra(AppContants.Extras.DATA_CENTER_CONFIG_METHOD, configMethod);
+        intent.putExtra(LEVEL_INITIAL, isLevelInit);
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         context.startActivity(intent);
     }
@@ -45,6 +58,10 @@ public class DataCenterHomeActivity extends BaseConfigFragmentContainerActivity 
                 mToolbarTitle.setText("中心高级配置");
             }
         }
+
+        if (intent.getExtras().containsKey(LEVEL_INITIAL)) {
+            isLevelInit = intent.getBooleanExtra(LEVEL_INITIAL, false);
+        }
     }
 
     @Override
@@ -60,17 +77,17 @@ public class DataCenterHomeActivity extends BaseConfigFragmentContainerActivity 
                 case AppContants.DeviceType.M20:
                     break;
             }
-        }else if (connectWay == AppContants.CommunicationWay.BLE_CONNECT) {
+        } else if (connectWay == AppContants.CommunicationWay.BLE_CONNECT) {
             switch (deviceType) {
                 case AppContants.DeviceType.DAS:
                     break;
 
                 case AppContants.DeviceType.ADME:
-                    fragment =  BleAdmeDataCenterHomeFragment.newInstance(configMethod);
+                    fragment = BleAdmeDataCenterHomeFragment.newInstance(configMethod);
                     break;
 
                 case AppContants.DeviceType.M20:
-                    fragment =  BleM20DataCenterHomeFragment.newInstance(configMethod);
+                    fragment = BleM20DataCenterHomeFragment.newInstance(configMethod, isLevelInit);
                     break;
             }
         }

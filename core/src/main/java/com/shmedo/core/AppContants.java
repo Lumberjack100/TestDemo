@@ -90,9 +90,6 @@ public interface AppContants {
         //数据中心状态
         String DATA_SERVER_STATUS = "data_server_status";
 
-        // 设备指令类型  物联网指令、##指令
-        String DEVICE_COMMMAND_TYPE = "device_commmand_type";
-
         // 设备类型
         String DEVICE_TYPE = "device_type";
     }
