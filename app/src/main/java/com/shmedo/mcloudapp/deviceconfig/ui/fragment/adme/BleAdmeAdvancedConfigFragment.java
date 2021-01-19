@@ -27,6 +27,11 @@ import java.util.List;
 
 import butterknife.BindView;
 
+/**
+ * 创建者:   gonghe <br/>
+ * 创建时间:  2020/12/28<br/>
+ * 描述：     ADME 高级配置页面
+ */
 public class BleAdmeAdvancedConfigFragment extends BaseBleIotCommunicateFragment {
     @BindView(R.id.recyclerview)
     RecyclerView mRecyclerView;

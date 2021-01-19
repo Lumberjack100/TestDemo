@@ -20,7 +20,11 @@ import org.jetbrains.annotations.NotNull;
 import butterknife.BindView;
 import timber.log.Timber;
 
-
+/**
+ * 创建者:   gonghe <br/>
+ * 创建时间:  2020/12/28<br/>
+ * 描述：     ADME  查看当前状态页面
+ */
 public class BleAdmeCurrentStateFragment extends BaseBleIotCommunicateFragment {
     @BindView(R.id.swipeLayout)
     SwipeRefreshLayout swipeRefresh;

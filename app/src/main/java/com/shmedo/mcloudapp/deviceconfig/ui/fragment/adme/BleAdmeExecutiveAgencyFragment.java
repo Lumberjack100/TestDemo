@@ -35,7 +35,11 @@ import butterknife.BindView;
 import butterknife.OnClick;
 import timber.log.Timber;
 
-
+/**
+ * 创建者:   gonghe <br/>
+ * 创建时间:  2020/12/28<br/>
+ * 描述：     ADME 执行机构配置页面
+ */
 public class BleAdmeExecutiveAgencyFragment extends BaseBleIotCommunicateFragment {
 
     @BindView(R.id.tv_data_settlement_method)

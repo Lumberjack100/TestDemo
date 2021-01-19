@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.deviceconfig.ui.fragment.adme;
+package com.shmedo.mcloudapp.deviceconfig.ui.fragment.m20;
 
 import android.os.Bundle;
 import android.view.View;
@@ -28,21 +28,27 @@ import timber.log.Timber;
 
 /**
  * 创建者:   gonghe <br/>
- * 创建时间:  2020/12/29<br/>
- * 描述：    ADME 数据中心页面
+ * 创建时间:  1/19/21 <br/>
+ * 描述：    M20 数据中心主页面
  */
-public class BleAdmeDataCenterHomeFragment extends BaseBleIotCommunicateFragment {
+public class BleM20DataCenterHomeFragment extends BaseGOCBleIotCommunicateFragment {
     @BindView(R.id.tv_data_center_one)
     TextView mTvDataCenterOne;
 
     @BindView(R.id.tv_data_center_two)
     TextView mTvDataCenterTwo;
 
+    @BindView(R.id.tv_data_center_three)
+    TextView mTvDataCenterThree;
+
+    @BindView(R.id.tv_data_center_four)
+    TextView mTvDataCenterFour;
+
     private int configMethod = AppContants.DataCenterConfigMethod.BASIC_CONFIG;
 
 
-    public static BleAdmeDataCenterHomeFragment newInstance(int configMethod) {
-        BleAdmeDataCenterHomeFragment fragment = new BleAdmeDataCenterHomeFragment();
+    public static BleM20DataCenterHomeFragment newInstance(int configMethod) {
+        BleM20DataCenterHomeFragment fragment = new BleM20DataCenterHomeFragment();
         Bundle args = new Bundle();
         args.putInt(AppContants.Extras.DATA_CENTER_CONFIG_METHOD, configMethod);
         fragment.setArguments(args);
@@ -59,8 +65,9 @@ public class BleAdmeDataCenterHomeFragment extends BaseBleIotCommunicateFragment
 
     @Override
     protected int getLayoutId() {
-        return R.layout.ble_adme_data_center_home_fragment;
+        return R.layout.ble_m20_data_center_home_fragment;
     }
+
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
@@ -83,7 +90,7 @@ public class BleAdmeDataCenterHomeFragment extends BaseBleIotCommunicateFragment
         sendCommand(command);
     }
 
-    @OnClick({R.id.dataCenterOneLayout, R.id.dataCenterTwoLayout})
+    @OnClick({R.id.dataCenterOneLayout, R.id.dataCenterTwoLayout, R.id.dataCenterThreeLayout, R.id.dataCenterFourLayout})
     public void onClick(View view) {
         if (isDoubleClick(view)) {
             return;
@@ -95,10 +102,16 @@ public class BleAdmeDataCenterHomeFragment extends BaseBleIotCommunicateFragment
 
         int id = view.getId();
         if (id == R.id.dataCenterOneLayout) {
-            DataCenterConfigActivity.startActivity(mActivity, AppContants.DeviceType.ADME, AppContants.CommunicationWay.BLE_CONNECT, configMethod, ServerNumber.NUMBER_ONE, mTvDataCenterOne.getText().toString());
+            DataCenterConfigActivity.startActivity(mActivity, AppContants.DeviceType.M20, AppContants.CommunicationWay.BLE_CONNECT, configMethod, ServerNumber.NUMBER_ONE, mTvDataCenterOne.getText().toString());
 
         } else if (id == R.id.dataCenterTwoLayout) {
-            DataCenterConfigActivity.startActivity(mActivity, AppContants.DeviceType.ADME, AppContants.CommunicationWay.BLE_CONNECT, configMethod, ServerNumber.NUMBER_TWO, mTvDataCenterTwo.getText().toString());
+            DataCenterConfigActivity.startActivity(mActivity, AppContants.DeviceType.M20, AppContants.CommunicationWay.BLE_CONNECT, configMethod, ServerNumber.NUMBER_TWO, mTvDataCenterTwo.getText().toString());
+
+        }else if (id == R.id.dataCenterThreeLayout) {
+            DataCenterConfigActivity.startActivity(mActivity, AppContants.DeviceType.M20, AppContants.CommunicationWay.BLE_CONNECT, configMethod, ServerNumber.NUMBER_TWO, mTvDataCenterThree.getText().toString());
+
+        }else if (id == R.id.dataCenterFourLayout) {
+            DataCenterConfigActivity.startActivity(mActivity, AppContants.DeviceType.M20, AppContants.CommunicationWay.BLE_CONNECT, configMethod, ServerNumber.NUMBER_TWO, mTvDataCenterFour.getText().toString());
         }
     }
 
@@ -125,12 +138,22 @@ public class BleAdmeDataCenterHomeFragment extends BaseBleIotCommunicateFragment
                     mTvDataCenterOne.setTextColor(GlobalUtil.getColor(getStatusColorResId(centerStatus.getStatus())));
                     getDataCenterStatus(ServerNumber.NUMBER_TWO);
                 } else if (centerStatus.getCenterid() == 2) {
-                    stopProgressRunnable();
+//                    stopProgressRunnable();
                     mTvDataCenterTwo.setText(getStatusTextById(centerStatus.getStatus()));
                     mTvDataCenterTwo.setTextColor(GlobalUtil.getColor(getStatusColorResId(centerStatus.getStatus())));
+                    getDataCenterStatus(ServerNumber.NUMBER_THREE);
+                } else if (centerStatus.getCenterid() == 3) {
+                    mTvDataCenterThree.setText(getStatusTextById(centerStatus.getStatus()));
+                    mTvDataCenterThree.setTextColor(GlobalUtil.getColor(getStatusColorResId(centerStatus.getStatus())));
+                    getDataCenterStatus(ServerNumber.NUMBER_FOUR);
+                } else if (centerStatus.getCenterid() == 4) {
+                    stopProgressRunnable();
+                    mTvDataCenterFour.setText(getStatusTextById(centerStatus.getStatus()));
+                    mTvDataCenterFour.setTextColor(GlobalUtil.getColor(getStatusColorResId(centerStatus.getStatus())));
                 }
             }
             break;
+
             default:
                 super.parseResponseMessage(cmdStr);
                 break;
@@ -162,4 +185,5 @@ public class BleAdmeDataCenterHomeFragment extends BaseBleIotCommunicateFragment
 
         return resId;
     }
+
 }

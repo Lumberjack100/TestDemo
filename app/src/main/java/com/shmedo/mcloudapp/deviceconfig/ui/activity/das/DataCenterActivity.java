@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.deviceconfig.ui.activity;
+package com.shmedo.mcloudapp.deviceconfig.ui.activity.das;
 
 import android.content.Context;
 import android.content.Intent;

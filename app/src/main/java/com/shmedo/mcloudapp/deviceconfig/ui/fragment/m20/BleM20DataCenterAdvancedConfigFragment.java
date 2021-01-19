@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.deviceconfig.ui.fragment.adme;
+package com.shmedo.mcloudapp.deviceconfig.ui.fragment.m20;
 
 import android.os.Bundle;
 import android.text.InputFilter;
@@ -41,11 +41,10 @@ import timber.log.Timber;
 
 /**
  * 创建者:   gonghe <br/>
- * 创建时间:  2020/12/28<br/>
- * 描述：     ADME 数据中心高级配置页面
+ * 创建时间:  1/19/21 <br/>
+ * 描述：    M20 数据中心高级参数配置页面
  */
-public class BleAdmeDataCenterAdvancedConfigFragment extends BaseBleIotCommunicateFragment {
-
+public class BleM20DataCenterAdvancedConfigFragment extends BaseGOCBleIotCommunicateFragment {
     @BindView(R.id.maskLayerChild)
     ViewGroup maskLayerLayout;
 
@@ -109,8 +108,8 @@ public class BleAdmeDataCenterAdvancedConfigFragment extends BaseBleIotCommunica
     private boolean centerEnableInitial;//数据中心开关初始状态，用于判断开关是否有打开后没有设置参数就返回
     private boolean isSaveParamOperation = false;//判断当前是保存参数操作，还是关闭数据中心操作
 
-    public static BleAdmeDataCenterAdvancedConfigFragment newInstance(ServerNumber serverNumber, String status) {
-        BleAdmeDataCenterAdvancedConfigFragment fragment = new BleAdmeDataCenterAdvancedConfigFragment();
+    public static BleM20DataCenterAdvancedConfigFragment newInstance(ServerNumber serverNumber, String status) {
+        BleM20DataCenterAdvancedConfigFragment fragment = new BleM20DataCenterAdvancedConfigFragment();
         Bundle args = new Bundle();
         args.putSerializable(AppContants.Extras.DATA_SERVER_NUMBER, serverNumber);
         args.putSerializable(AppContants.Extras.DATA_SERVER_STATUS, status);
@@ -129,7 +128,7 @@ public class BleAdmeDataCenterAdvancedConfigFragment extends BaseBleIotCommunica
 
     @Override
     protected int getLayoutId() {
-        return R.layout.ble_adme_data_center_advanced_config_fragment;
+        return R.layout.ble_m20_data_center_advanced_config_fragment;
     }
 
     @Override

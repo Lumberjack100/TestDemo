@@ -33,7 +33,11 @@ import java.text.DecimalFormat;
 import butterknife.BindView;
 import butterknife.OnClick;
 import timber.log.Timber;
-
+/**
+ * 创建者:   gonghe <br/>
+ * 创建时间:  2020/12/28<br/>
+ * 描述：     ADME 基本参数配置页面
+ */
 public class BleAdmeBasicParamConfigFragment extends BaseBleIotCommunicateFragment {
     @BindView(R.id.tv_inclinometer_type)
     TextView mTvInclinometerType;
