@@ -39,6 +39,7 @@ import timber.log.Timber;
 public class BleM20AdvancedSettingFragment extends BaseGOCBleIotCommunicateFragment {
     private static final int REBOOT = 0x1000;
     private static final int RESET = 0x1001;
+    private static final int LEVEL_INITIAL = 0x1002;
 
     private int deviceTypeID;
 
@@ -68,6 +69,14 @@ public class BleM20AdvancedSettingFragment extends BaseGOCBleIotCommunicateFragm
         } else {
             deviceTypeID = -1;
         }
+    }
+
+    /**
+     * 重启指令
+     */
+    private void setLevelInitial() {
+        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.M20_MD_LEVEL_INITIAL);
+        sendCommand(command);
     }
 
     /**
@@ -109,6 +118,7 @@ public class BleM20AdvancedSettingFragment extends BaseGOCBleIotCommunicateFragm
             newFragment.show(getChildFragmentManager(), "dialog");
 
         } else if (id == R.id.horizontalInitializationLayout) {
+            showWarnDialog("确定进行水平初始化吗？", LEVEL_INITIAL);
 
         } else if (id == R.id.rebootLayout) {//重启
             showWarnDialog("确定重启设备吗？", REBOOT);
@@ -149,6 +159,10 @@ public class BleM20AdvancedSettingFragment extends BaseGOCBleIotCommunicateFragm
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                         dialog.dismiss();
                         switch (operateType) {
+                            case LEVEL_INITIAL:
+                                setLevelInitial();
+                                break;
+
                             case REBOOT:
                                 rebootDevice();
                                 break;
@@ -171,17 +185,29 @@ public class BleM20AdvancedSettingFragment extends BaseGOCBleIotCommunicateFragm
     private void setResultData(final String cmdStr) {
         IOTCommandType type = IOTStringUtil.extractCommandType(cmdStr);
         switch (type) {
+            case M20_MD_LEVEL_INITIAL: {//M20水平初始化设置
+                stopProgressRunnable();
+                CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
+                if (!cmdResult.isSucceed()) {
+                    String errMsg = String.format("%s %s", "水平初始化设置出错!", cmdResult.getReason());
+                    Timber.e(errMsg);
+                    ToastUtils.show(errMsg);
+                    return;
+                }
+                ToastUtils.show("操作完成");
+            }
+            break;
 
             case REBOOT: {//重启
                 stopProgressRunnable();
                 CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
                 if (!cmdResult.isSucceed()) {
-                    String errMsg = String.format("%s %s", "发送重启指令失败!", cmdResult.getReason());
+                    String errMsg = String.format("%s %s", "重启出错!", cmdResult.getReason());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
                     return;
                 }
-                ToastUtils.show("发送指令成功,设备稍后将重启,请等待后重新连接");
+                ToastUtils.show("设备稍后将重启,请等待后重新连接");
                 MCloudApp.getMainHandler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
@@ -195,12 +221,12 @@ public class BleM20AdvancedSettingFragment extends BaseGOCBleIotCommunicateFragm
                 stopProgressRunnable();
                 CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
                 if (!cmdResult.isSucceed()) {
-                    String errMsg = String.format("%s %s", "发送恢复出厂设置指令失败!", cmdResult.getReason());
+                    String errMsg = String.format("%s %s", "恢复出厂设置出错!", cmdResult.getReason());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
                     return;
                 }
-                ToastUtils.show("发送指令成功,设备稍后将重启,请等待后重新连接");
+                ToastUtils.show("设备稍后将重启,请等待后重新连接");
                 MCloudApp.getMainHandler().postDelayed(new Runnable() {
                     @Override
                     public void run() {

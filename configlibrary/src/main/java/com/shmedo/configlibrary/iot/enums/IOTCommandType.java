@@ -261,6 +261,11 @@ public enum IOTCommandType {
      */
     ADME_MD_SET_WORK_MODE("md_setworkmode"),
 
+    /*　 M20 指令  */
+    /**
+     * M20水平初始化设置
+     */
+    M20_MD_LEVEL_INITIAL("md_levelinit"),
 
     /**
      * 自定义心跳包

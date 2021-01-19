@@ -173,7 +173,7 @@ public class BleScannerListFragment extends BaseFragment implements TextWatcher,
                     ToastUtils.show("不支持此设备类型");
                     return;
                 }
-                MCloudApp.setCurDeviceToken(deviceName.substring(3));
+                MCloudApp.setCurDeviceToken(deviceName.replace("MD-", ""));
                 int deviceType = AppContants.DeviceType.DAS;
                 if (deviceName.endsWith("L")) {
                     deviceType = AppContants.DeviceType.DAS;
@@ -182,6 +182,8 @@ public class BleScannerListFragment extends BaseFragment implements TextWatcher,
                         deviceType = AppContants.DeviceType.M20;
                     else
                         deviceType = AppContants.DeviceType.ADME;
+                } else if (deviceName.endsWith("V")) {
+                    deviceType = AppContants.DeviceType.M20;
                 }
                 DeviceConfigActivity.startActivity(getActivity(), AppContants.CommunicationWay.BLE_CONNECT, bluetoothDevice, deviceType);
             }
