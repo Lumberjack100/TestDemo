@@ -1,11 +1,11 @@
-package com.shmedo.configlibrary.iot.model.vms;
+package com.shmedo.configlibrary.iot.model;
 
 /**
  * 创建者:   gonghe <br/>
  * 创建时间:  2020/8/31 <br/>
  * 描述：    设备终端时间实体类
  */
-public class VmsTerminalTimeInfo {
+public class DeviceTimeInfo {
     private String time;
 
     public String getTime() {

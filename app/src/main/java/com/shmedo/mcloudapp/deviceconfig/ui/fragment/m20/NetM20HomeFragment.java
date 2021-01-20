@@ -75,7 +75,6 @@ public class NetM20HomeFragment extends BaseNetIotCommunicateFragment {
     private List<ConfigModule> configModuleList = new ArrayList<>();
     private ConfigModule selectedConfigModule;
 
-    private List<String> msgIDList = new ArrayList<>();
 
     private ProjectDeviceInfo projectDeviceInfo;
 
@@ -166,7 +165,7 @@ public class NetM20HomeFragment extends BaseNetIotCommunicateFragment {
                 break;
 
             case "设置":
-                AdvancedSettingActivity.startActivity(mActivity, projectDeviceInfo, AppContants.DeviceType.DAS);
+                AdvancedSettingActivity.startActivity(mActivity, projectDeviceInfo, AppContants.DeviceType.M20);
                 break;
 
         }

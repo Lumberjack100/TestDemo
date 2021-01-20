@@ -18,7 +18,7 @@ import butterknife.BindView;
 import butterknife.OnClick;
 
 /**
- * 设备重新启动响应弹框
+ * 设备重新启动/恢复出厂设置等响应弹框
  */
 public class CommonCmdDialog extends BaseDispatchCmdDialog {
     @BindView(R.id.tv_title)
@@ -77,8 +77,9 @@ public class CommonCmdDialog extends BaseDispatchCmdDialog {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         initView();
-        showResponseLoadingView();
-        startRunnable(2000);
+        if (msgIDList != null && msgIDList.size() > 0) {
+            startQueryCmdResponse();
+        }
     }
 
     private void initView() {

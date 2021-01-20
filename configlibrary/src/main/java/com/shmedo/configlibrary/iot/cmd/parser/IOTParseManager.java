@@ -22,7 +22,6 @@ import com.shmedo.configlibrary.iot.cmd.parser.vms.VmsBasicInfoParser;
 import com.shmedo.configlibrary.iot.cmd.parser.vms.VmsTerminalCollectorInfoParser;
 import com.shmedo.configlibrary.iot.cmd.parser.vms.VmsTerminalCommInfoParser;
 import com.shmedo.configlibrary.iot.cmd.parser.vms.VmsTerminalSensorInfoParser;
-import com.shmedo.configlibrary.iot.cmd.parser.vms.VmsTerminalTimeParser;
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.interfaces.IOTResultParser;
 import com.shmedo.configlibrary.iot.model.CommonSettingCmdResult;
@@ -123,7 +122,7 @@ public class IOTParseManager {
      */
     private void registerParse() {
         List<Class> clazzes = Arrays.asList(new Class[]{
-                VmsTerminalTimeParser.class,
+                DeviceTimeParser.class,
                 DeviceCurrentStateParser.class,
                 TelemetryParser.class,
                 VmsBasicInfoParser.class,

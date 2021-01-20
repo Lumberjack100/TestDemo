@@ -20,6 +20,7 @@ import com.shmedo.mcloudapp.network.MDRetrofit;
 import com.shmedo.mcloudapp.network.NetworkConst;
 import com.shmedo.mcloudapp.util.ResponseHandler;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -32,8 +33,9 @@ import okhttp3.RequestBody;
  * 描述：     TODO
  */
 public abstract class BaseNetIotCommunicateFragment extends BaseFragment {
-
     protected DeviceNetModelViewModel deviceNetModelViewModel;
+
+    protected List<String> msgIDList = new ArrayList<>();
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {

@@ -145,7 +145,6 @@ public abstract class BaseDispatchCmdDialog extends DialogFragment {
         window.setAttributes(wlp);
     }
 
-
     protected abstract int getLayoutId();
 
     /**
@@ -178,7 +177,6 @@ public abstract class BaseDispatchCmdDialog extends DialogFragment {
         }
     }
 
-
     protected void showResponseLoadingView() {
         hideResponseFailedView();
         if (responseLoadingView != null) {
@@ -192,7 +190,6 @@ public abstract class BaseDispatchCmdDialog extends DialogFragment {
         }
     }
 
-
     protected void hideResponseLoadingView() {
         if (responseLoadingView != null) {
             responseLoadingView.setVisibility(View.GONE);
@@ -200,8 +197,13 @@ public abstract class BaseDispatchCmdDialog extends DialogFragment {
     }
 
     @Override
-    public void onDestroy() {
+    public void onStop() {
+        super.onStop();
         stopRunnable();
+    }
+
+    @Override
+    public void onDestroy() {
         super.onDestroy();
         unbinder.unbind();
     }
@@ -275,5 +277,4 @@ public abstract class BaseDispatchCmdDialog extends DialogFragment {
     protected void onCmdResponeFailed(QueryCmdResult queryCmdResult) {
 
     }
-
 }
