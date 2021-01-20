@@ -103,7 +103,17 @@ public class NetM20AdvancedSettingFragment extends BaseNetIotCommunicateFragment
     private BaseDialogFragment.DialogFragmentClickListener firmWareSelectListener = new BaseDialogFragment.DialogFragmentClickListener<FirmWareInfo>() {
         @Override
         public boolean onPositiveClick(View view, FirmWareInfo firmWareInfo) {
+            StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder.append("$cmd=md_upgrade");
+            stringBuilder.append("&url=");
+            stringBuilder.append(firmWareInfo.getFwPath());
+            stringBuilder.append("&size=");
+            stringBuilder.append(firmWareInfo.getFwSize());
+            stringBuilder.append("&md5=");
+            stringBuilder.append(firmWareInfo.getFwMd5());
 
+            operaType = FIRMWARE_UPGRADE;
+            processDispatchCommonCmd(stringBuilder.toString());
             return true;
         }
 
@@ -153,13 +163,13 @@ public class NetM20AdvancedSettingFragment extends BaseNetIotCommunicateFragment
     }
 
     private void processDispatchCommonCmd(String content) {
-        DispatchRawCmdParam dispatchCmdParam = new DispatchRawCmdParam();
-        dispatchCmdParam.setContent(content);
-        dispatchCmdParam.setCompanyID(MCloudApp.getCompanyID());
-        dispatchCmdParam.setDeviceIDList(Arrays.asList(projectDeviceInfo.getId()));
+        DispatchRawCmdParam rawCmdParam = new DispatchRawCmdParam();
+        rawCmdParam.setContent(content);
+        rawCmdParam.setCompanyID(MCloudApp.getCompanyID());
+        rawCmdParam.setDeviceIDList(Arrays.asList(projectDeviceInfo.getId()));
 
         showProgressDialog("指令下发中...");
-        processDispatchRawCmd(dispatchCmdParam);
+        processDispatchRawCmd(rawCmdParam);
     }
 
     @Override
@@ -182,6 +192,10 @@ public class NetM20AdvancedSettingFragment extends BaseNetIotCommunicateFragment
     private void showDispatchFailedDialog() {
         String title = "";
         switch (operaType) {
+            case FIRMWARE_UPGRADE:
+                title = "固件升级";
+                break;
+
             case LEVEL_INITIAL:
                 title = "水平初始化";
                 break;
@@ -227,6 +241,7 @@ public class NetM20AdvancedSettingFragment extends BaseNetIotCommunicateFragment
             default:
                 break;
         }
-        newFragment.show(getChildFragmentManager(), "dialog");
+        if (newFragment != null)
+            newFragment.show(getChildFragmentManager(), "dialog");
     }
 }

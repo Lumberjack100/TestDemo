@@ -466,7 +466,8 @@ public class NetConfigDeviceFragment extends BaseFragment {
                 newFragment = new CommonCmdDialog("固件升级", "固件升级中...", "此过程耗时较长,请耐心等待", msgIDList);
                 break;
         }
-        newFragment.show(getChildFragmentManager(), "dialog");
+        if (newFragment != null)
+            newFragment.show(getChildFragmentManager(), "dialog");
     }
 
     /**
