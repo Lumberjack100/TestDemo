@@ -50,8 +50,9 @@ public class ProjectDeviceInfo implements Parcelable {
     private String registerCompanyName;
     private String deviceTag;
     private String lastActiveTime;
-    private Object firmwareVersion;
+    private String firmwareVersion;
     private List<DeviceSimListBean> deviceSimList = new ArrayList<>();
+
 
     protected ProjectDeviceInfo(Parcel in) {
         id = in.readInt();
@@ -70,6 +71,7 @@ public class ProjectDeviceInfo implements Parcelable {
         registerCompanyName = in.readString();
         deviceTag = in.readString();
         lastActiveTime = in.readString();
+        firmwareVersion = in.readString();
         deviceSimList = in.createTypedArrayList(DeviceSimListBean.CREATOR);
     }
 
@@ -91,6 +93,7 @@ public class ProjectDeviceInfo implements Parcelable {
         dest.writeString(registerCompanyName);
         dest.writeString(deviceTag);
         dest.writeString(lastActiveTime);
+        dest.writeString(firmwareVersion);
         dest.writeTypedList(deviceSimList);
     }
 
@@ -239,11 +242,11 @@ public class ProjectDeviceInfo implements Parcelable {
         this.lastActiveTime = lastActiveTime;
     }
 
-    public Object getFirmwareVersion() {
+    public String getFirmwareVersion() {
         return firmwareVersion;
     }
 
-    public void setFirmwareVersion(Object firmwareVersion) {
+    public void setFirmwareVersion(String firmwareVersion) {
         this.firmwareVersion = firmwareVersion;
     }
 
@@ -343,7 +346,5 @@ public class ProjectDeviceInfo implements Parcelable {
         public void setVendor(String vendor) {
             this.vendor = vendor;
         }
-
-
     }
 }

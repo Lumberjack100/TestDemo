@@ -51,9 +51,6 @@ import timber.log.Timber;
 public class BleM20HomeFragment extends BaseGOCBleIotCommunicateFragment {
     public static final String EXTRA_DEVICE = "com.shmedo.mcloudapp.EXTRA_DEVICE";
 
-    @BindView(R.id.device_container)
-    View content;
-
     @BindView(R.id.progress_overlay)
     View progressOverlay;
 

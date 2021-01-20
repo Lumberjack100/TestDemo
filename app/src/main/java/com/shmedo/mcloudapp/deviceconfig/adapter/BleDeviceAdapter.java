@@ -36,6 +36,8 @@ public class BleDeviceAdapter extends BaseQuickAdapter<DiscoveredBluetoothDevice
                 else
                     holder.setText(R.id.tv_device_type, "ADME");
 
+            } else if (bluetoothDevice.getName().endsWith("V")) {
+                holder.setText(R.id.tv_device_type, "M20");
             } else {
                 holder.setText(R.id.tv_device_type, "UnKnown");
             }
