@@ -12,6 +12,7 @@ import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.DataCenterConfigActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.BaseNetIotCommunicateFragment;
+import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfo;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -23,6 +24,8 @@ import butterknife.OnClick;
  */
 public class NetM20DataCenterHomeFragment extends BaseNetIotCommunicateFragment {
     public static final String LEVEL_INITIAL = "com.shmedo.mcloudapp.LEVEL_INITIAL";
+    public static final String PRO_DEVICE_INFO = "com.shmedo.mcloudapp.PRO_DEVICE_INFO";
+
 
     @BindView(R.id.tv_data_center_one)
     TextView mTvDataCenterOne;
@@ -41,13 +44,15 @@ public class NetM20DataCenterHomeFragment extends BaseNetIotCommunicateFragment 
 
     private int configMethod = AppContants.DataCenterConfigMethod.BASIC_CONFIG;
     private boolean isLevelInit = false;
+    private ProjectDeviceInfo projectDeviceInfo;
 
 
-    public static NetM20DataCenterHomeFragment newInstance(int configMethod, boolean isLevelInit) {
+    public static NetM20DataCenterHomeFragment newInstance(int configMethod, boolean isLevelInit, ProjectDeviceInfo projectDeviceInfo) {
         NetM20DataCenterHomeFragment fragment = new NetM20DataCenterHomeFragment();
         Bundle args = new Bundle();
         args.putInt(AppContants.Extras.DATA_CENTER_CONFIG_METHOD, configMethod);
         args.putBoolean(LEVEL_INITIAL, isLevelInit);
+        args.putParcelable(PRO_DEVICE_INFO, projectDeviceInfo);
         fragment.setArguments(args);
         return fragment;
     }
@@ -58,6 +63,7 @@ public class NetM20DataCenterHomeFragment extends BaseNetIotCommunicateFragment 
         if (getArguments() != null) {
             configMethod = getArguments().getInt(AppContants.Extras.DATA_CENTER_CONFIG_METHOD);
             isLevelInit = getArguments().getBoolean(LEVEL_INITIAL, false);
+            projectDeviceInfo = getArguments().getParcelable(PRO_DEVICE_INFO);
         }
     }
 
@@ -83,16 +89,16 @@ public class NetM20DataCenterHomeFragment extends BaseNetIotCommunicateFragment 
         }
         int id = view.getId();
         if (id == R.id.dataCenterOneLayout) {
-            DataCenterConfigActivity.startActivity(mActivity, AppContants.DeviceType.M20, AppContants.CommunicationWay.NET_PLATFORM_CONNECT, configMethod, ServerNumber.NUMBER_ONE, mTvDataCenterOne.getText().toString());
+            DataCenterConfigActivity.startActivity(mActivity, AppContants.DeviceType.M20, projectDeviceInfo, configMethod, ServerNumber.NUMBER_ONE, mTvDataCenterOne.getText().toString());
 
         } else if (id == R.id.dataCenterTwoLayout) {
-            DataCenterConfigActivity.startActivity(mActivity, AppContants.DeviceType.M20, AppContants.CommunicationWay.NET_PLATFORM_CONNECT, configMethod, ServerNumber.NUMBER_TWO, mTvDataCenterTwo.getText().toString());
+            DataCenterConfigActivity.startActivity(mActivity, AppContants.DeviceType.M20, projectDeviceInfo, configMethod, ServerNumber.NUMBER_TWO, mTvDataCenterTwo.getText().toString());
 
         } else if (id == R.id.dataCenterThreeLayout) {
-            DataCenterConfigActivity.startActivity(mActivity, AppContants.DeviceType.M20, AppContants.CommunicationWay.NET_PLATFORM_CONNECT, configMethod, ServerNumber.NUMBER_TWO, mTvDataCenterThree.getText().toString());
+            DataCenterConfigActivity.startActivity(mActivity, AppContants.DeviceType.M20, projectDeviceInfo, configMethod, ServerNumber.NUMBER_TWO, mTvDataCenterThree.getText().toString());
 
         } else if (id == R.id.dataCenterFourLayout) {
-            DataCenterConfigActivity.startActivity(mActivity, AppContants.DeviceType.M20, AppContants.CommunicationWay.NET_PLATFORM_CONNECT, configMethod, ServerNumber.NUMBER_TWO, mTvDataCenterFour.getText().toString());
+            DataCenterConfigActivity.startActivity(mActivity, AppContants.DeviceType.M20, projectDeviceInfo, configMethod, ServerNumber.NUMBER_TWO, mTvDataCenterFour.getText().toString());
 
         } else if (id == R.id.btn_confirm) {
             mActivity.finish();

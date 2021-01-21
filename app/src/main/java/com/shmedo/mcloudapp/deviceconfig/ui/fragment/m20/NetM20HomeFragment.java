@@ -76,7 +76,7 @@ public class NetM20HomeFragment extends BaseNetIotCommunicateFragment {
     private List<ConfigModule> configModuleList = new ArrayList<>();
     private ConfigModule selectedConfigModule;
 
-    private ProjectDeviceInfo projectDeviceInfo;
+    public ProjectDeviceInfo projectDeviceInfo;
 
     private NetM20SetupWizardDialogFragment setupWizardDialogFragment;
 
@@ -165,7 +165,7 @@ public class NetM20HomeFragment extends BaseNetIotCommunicateFragment {
                 break;
 
             case "数据中心":
-                DataCenterHomeActivity.startActivity(mActivity, AppContants.DeviceType.M20, AppContants.CommunicationWay.NET_PLATFORM_CONNECT, AppContants.DataCenterConfigMethod.BASIC_CONFIG);
+                DataCenterHomeActivity.startActivity(mActivity, AppContants.DeviceType.M20, projectDeviceInfo, AppContants.DataCenterConfigMethod.BASIC_CONFIG);
                 break;
 
             case "设置":

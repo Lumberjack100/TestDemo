@@ -17,14 +17,25 @@ import com.hjq.toast.ToastUtils;
 import com.kyleduo.switchbutton.SwitchButton;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandManager;
 import com.shmedo.configlibrary.iot.cmd.entity.DataCenterEntity;
+import com.shmedo.configlibrary.iot.cmd.entity.ServerNumberEntity;
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.enums.ServerNumber;
 import com.shmedo.configlibrary.iot.model.DataCenterInfo;
 import com.shmedo.core.AppContants;
+import com.shmedo.core.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.view.ClearEditText;
+import com.shmedo.mcloudapp.deviceconfig.model.DispatchCmdItem;
+import com.shmedo.mcloudapp.deviceconfig.model.params.DispatchRawCmdParam;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.BaseNetIotCommunicateFragment;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd.BaseDispatchCmdDialog;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd.CommonCmdDialog;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd.DispatchCmdFailedDialog;
+import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfo;
 import com.shmedo.mcloudapp.util.KeyBordUtils;
+
+import java.util.Arrays;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -36,6 +47,8 @@ import timber.log.Timber;
  * 描述：    M20网络模式  数据中心基本参数配置页面
  */
 public class NetM20DataCenterBasicConfigFragment extends BaseNetIotCommunicateFragment {
+    public static final String PRO_DEVICE_INFO = "com.shmedo.mcloudapp.PRO_DEVICE_INFO";
+
     @BindView(R.id.maskLayerChild)
     ViewGroup maskLayerLayout;
 
@@ -61,11 +74,19 @@ public class NetM20DataCenterBasicConfigFragment extends BaseNetIotCommunicateFr
     private boolean centerEnableInitial;//数据中心开关初始状态，用于判断开关是否有打开后没有设置参数就返回
     private boolean isSaveParamOperation = false;//判断当前是保存参数操作，还是关闭数据中心操作
 
-    public static NetM20DataCenterBasicConfigFragment newInstance(ServerNumber serverNumber, String status) {
+    private ProjectDeviceInfo projectDeviceInfo;
+
+    private static final int GET_DATA_SENTER = 0x1000;
+    private static final int SET_DATA_SENTER = 0x1001;
+    private int operaType = -1;
+
+
+    public static NetM20DataCenterBasicConfigFragment newInstance(ServerNumber serverNumber, String status, ProjectDeviceInfo projectDeviceInfo) {
         NetM20DataCenterBasicConfigFragment fragment = new NetM20DataCenterBasicConfigFragment();
         Bundle args = new Bundle();
         args.putSerializable(AppContants.Extras.DATA_SERVER_NUMBER, serverNumber);
         args.putSerializable(AppContants.Extras.DATA_SERVER_STATUS, status);
+        args.putParcelable(PRO_DEVICE_INFO, projectDeviceInfo);
         fragment.setArguments(args);
         return fragment;
     }
@@ -76,6 +97,7 @@ public class NetM20DataCenterBasicConfigFragment extends BaseNetIotCommunicateFr
         if (getArguments() != null) {
             serverNumber = (ServerNumber) getArguments().getSerializable(AppContants.Extras.DATA_SERVER_NUMBER);
             serverStatus = getArguments().getString(AppContants.Extras.DATA_SERVER_STATUS);
+            projectDeviceInfo = getArguments().getParcelable(PRO_DEVICE_INFO);
         }
     }
 
@@ -157,11 +179,17 @@ public class NetM20DataCenterBasicConfigFragment extends BaseNetIotCommunicateFr
      * 获取设备的数据中心参数
      */
     private void queryDataCenterInfo() {
-//        errMsg = "查询数据超时,请稍后尝试";
-//        startProgressRunnable("加载中...", WRITE_TIME_OUT_SECOND);
-//        ServerNumberEntity serverNumberEntity = new ServerNumberEntity(serverNumber.toInt());
-//        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.MD_GET_DATA_CENTER, serverNumberEntity);
-//        sendCommand(command);
+        ServerNumberEntity serverNumberEntity = new ServerNumberEntity(serverNumber.toInt());
+        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.MD_GET_DATA_CENTER, serverNumberEntity);
+
+        DispatchRawCmdParam rawCmdParam = new DispatchRawCmdParam();
+        rawCmdParam.setContent(command);
+        rawCmdParam.setCompanyID(MCloudApp.getCompanyID());
+        rawCmdParam.setDeviceIDList(Arrays.asList(projectDeviceInfo.getId()));
+
+        operaType = GET_DATA_SENTER;
+        showProgressDialog("指令下发中...");
+        processDispatchRawCmd(rawCmdParam);
     }
 
     /**
@@ -240,6 +268,39 @@ public class NetM20DataCenterBasicConfigFragment extends BaseNetIotCommunicateFr
 //        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.MD_SET_DATA_CENTER, dataCenterEntity);
 //        sendCommand(command);
     }
+
+    @Override
+    protected void onDispatchCmdItemList(List<DispatchCmdItem> dispatchCmdItemList) {
+        if (dispatchCmdItemList == null || dispatchCmdItemList.size() == 0) {
+            showDispatchFailedDialog();
+            return;
+        }
+
+        msgIDList.clear();
+        for (DispatchCmdItem cmdItem : dispatchCmdItemList) {
+            msgIDList.add(cmdItem.getMsgID());
+        }
+        showDispatchSuccessDialog();
+    }
+
+    /**
+     * 指令下发失败弹框
+     */
+    private void showDispatchFailedDialog() {
+        String title = "数据中心";
+        BaseDispatchCmdDialog newFragment = new DispatchCmdFailedDialog(title);
+        newFragment.show(getChildFragmentManager(), "dialog");
+    }
+
+    /**
+     * 指令下发成功弹框
+     */
+    private void showDispatchSuccessDialog() {
+        BaseDispatchCmdDialog newFragment = new CommonCmdDialog("数据中心", "水平初始化完成", msgIDList);
+        if (newFragment != null)
+            newFragment.show(getChildFragmentManager(), "dialog");
+    }
+
 
     @Override
     public boolean onBackPressed() {

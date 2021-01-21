@@ -11,6 +11,8 @@ import com.shmedo.mcloudapp.deviceconfig.ui.fragment.adme.BleAdmeDataCenterAdvan
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.adme.BleAdmeDataCenterBasicConfigFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.m20.BleM20DataCenterAdvancedConfigFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.m20.BleM20DataCenterBasicConfigFragment;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.m20.NetM20DataCenterBasicConfigFragment;
+import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfo;
 
 /**
  * 创建者:   gonghe <br/>
@@ -18,12 +20,25 @@ import com.shmedo.mcloudapp.deviceconfig.ui.fragment.m20.BleM20DataCenterBasicCo
  * 描述：    数据中心配置页面
  */
 public class DataCenterConfigActivity extends BaseConfigFragmentContainerActivity {
+    private static final String PRO_DEVICE_INFO = "com.shmedo.mcloudapp.PRO_DEVICE_INFO";
+
     private int configMethod = AppContants.DataCenterConfigMethod.BASIC_CONFIG;
     private int deviceType = AppContants.DeviceType.DAS;
 
     private ServerNumber serverNumber;
     private String serverStatus;
+    private ProjectDeviceInfo projectDeviceInfo;
 
+    public static void startActivity(Context context, int deviceType, ProjectDeviceInfo projectDeviceInfo, int configMethod, ServerNumber serverNumber, String status) {
+        Intent intent = new Intent(context, DataCenterConfigActivity.class);
+        intent.putExtra(AppContants.Extras.DEVICE_TYPE, deviceType);
+        intent.putExtra(PRO_DEVICE_INFO, projectDeviceInfo);
+        intent.putExtra(AppContants.Extras.DATA_CENTER_CONFIG_METHOD, configMethod);
+        intent.putExtra(AppContants.Extras.DATA_SERVER_NUMBER, serverNumber);
+        intent.putExtra(AppContants.Extras.DATA_SERVER_STATUS, status);
+        intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        context.startActivity(intent);
+    }
 
     public static void startActivity(Context context, int deviceType, int connectWay, int configMethod, ServerNumber serverNumber, String status) {
         Intent intent = new Intent(context, DataCenterConfigActivity.class);
@@ -44,6 +59,10 @@ public class DataCenterConfigActivity extends BaseConfigFragmentContainerActivit
 
         if (intent.getExtras().containsKey(AppContants.Extras.DEVICE_TYPE)) {
             deviceType = intent.getIntExtra(AppContants.Extras.DEVICE_TYPE, AppContants.DeviceType.DAS);
+        }
+
+        if (intent.getExtras().containsKey(PRO_DEVICE_INFO)) {
+            projectDeviceInfo = intent.getParcelableExtra(PRO_DEVICE_INFO);
         }
 
         if (intent.getExtras().containsKey(AppContants.Extras.DATA_CENTER_CONFIG_METHOD)) {
@@ -96,7 +115,7 @@ public class DataCenterConfigActivity extends BaseConfigFragmentContainerActivit
 
                 case AppContants.DeviceType.M20:
                     if (configMethod == AppContants.DataCenterConfigMethod.BASIC_CONFIG) {
-                        fragment = BleM20DataCenterBasicConfigFragment.newInstance(serverNumber, serverStatus);
+                        fragment = NetM20DataCenterBasicConfigFragment.newInstance(serverNumber, serverStatus, projectDeviceInfo);
                     } else {
                         fragment = BleM20DataCenterAdvancedConfigFragment.newInstance(serverNumber, serverStatus);
                     }

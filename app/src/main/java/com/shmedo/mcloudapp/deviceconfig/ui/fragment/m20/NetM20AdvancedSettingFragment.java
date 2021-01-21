@@ -8,6 +8,8 @@ import androidx.annotation.Nullable;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.shmedo.configlibrary.iot.cmd.IOTCommandManager;
+import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.core.AppContants;
 import com.shmedo.core.MCloudApp;
 import com.shmedo.mcloudapp.R;
@@ -34,7 +36,7 @@ import butterknife.OnClick;
  * 描述：    M20 网络模式高级设置页面
  */
 public class NetM20AdvancedSettingFragment extends BaseNetIotCommunicateFragment {
-    public static final String EXTRA_DEVICE = "com.shmedo.mcloudapp.EXTRA_DEVICE";
+    public static final String PRO_DEVICE_INFO = "com.shmedo.mcloudapp.PRO_DEVICE_INFO";
 
     private static final int FIRMWARE_UPGRADE = 0x1000;
     private static final int LEVEL_INITIAL = 0x1001;
@@ -48,7 +50,7 @@ public class NetM20AdvancedSettingFragment extends BaseNetIotCommunicateFragment
     public static NetM20AdvancedSettingFragment newInstance(ProjectDeviceInfo projectDeviceInfo) {
         NetM20AdvancedSettingFragment fragment = new NetM20AdvancedSettingFragment();
         Bundle args = new Bundle();
-        args.putParcelable(EXTRA_DEVICE, projectDeviceInfo);
+        args.putParcelable(PRO_DEVICE_INFO, projectDeviceInfo);
         fragment.setArguments(args);
         return fragment;
     }
@@ -57,7 +59,7 @@ public class NetM20AdvancedSettingFragment extends BaseNetIotCommunicateFragment
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            projectDeviceInfo = getArguments().getParcelable(EXTRA_DEVICE);
+            projectDeviceInfo = getArguments().getParcelable(PRO_DEVICE_INFO);
         }
     }
 
@@ -81,7 +83,7 @@ public class NetM20AdvancedSettingFragment extends BaseNetIotCommunicateFragment
 
         int id = v.getId();
         if (id == R.id.dataCenterConfigLayout) {
-            DataCenterHomeActivity.startActivity(mActivity, AppContants.DeviceType.M20, AppContants.CommunicationWay.NET_PLATFORM_CONNECT, AppContants.DataCenterConfigMethod.ADVANCED_CONFIG);
+            DataCenterHomeActivity.startActivity(mActivity, AppContants.DeviceType.M20, projectDeviceInfo, AppContants.DataCenterConfigMethod.ADVANCED_CONFIG);
 
         } else if (id == R.id.firmwareUpgradeLayout) {//固件升级
             FirmWareSelectDialog newFragment = new FirmWareSelectDialog(MCloudApp.getCompanyID(), projectDeviceInfo.getDeviceTypeID());
@@ -141,20 +143,26 @@ public class NetM20AdvancedSettingFragment extends BaseNetIotCommunicateFragment
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                         dialog.dismiss();
                         switch (operateType) {
-                            case LEVEL_INITIAL:
+                            case LEVEL_INITIAL: {
                                 operaType = LEVEL_INITIAL;
-                                processDispatchCommonCmd("$cmd=md_levelinit");
-                                break;
+                                String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.M20_MD_LEVEL_INITIAL);
+                                processDispatchCommonCmd(command);
+                            }
+                            break;
 
-                            case REBOOT:
+                            case REBOOT: {
                                 operaType = REBOOT;
-                                processDispatchCommonCmd("$cmd=reboot");
-                                break;
+                                String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.REBOOT);
+                                processDispatchCommonCmd(command);
+                            }
+                            break;
 
-                            case RESET:
+                            case RESET: {
                                 operaType = RESET;
-                                processDispatchCommonCmd("$cmd=md_reset");
-                                break;
+                                String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.REBOOT);
+                                processDispatchCommonCmd(command);
+                            }
+                            break;
                         }
                     }
                 });
