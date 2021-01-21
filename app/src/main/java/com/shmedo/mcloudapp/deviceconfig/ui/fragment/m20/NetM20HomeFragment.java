@@ -23,6 +23,7 @@ import com.shmedo.mcloudapp.deviceconfig.model.ConfigModule;
 import com.shmedo.mcloudapp.deviceconfig.model.DevcieCurrentState;
 import com.shmedo.mcloudapp.deviceconfig.model.DispatchCmdItem;
 import com.shmedo.mcloudapp.deviceconfig.model.params.DispatchCmdParam;
+import com.shmedo.mcloudapp.deviceconfig.model.params.DispatchRawCmdParam;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.AdvancedSettingActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.DeviceCurrentStateActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.das.DasCollectorSettingActivity;
@@ -75,8 +76,9 @@ public class NetM20HomeFragment extends BaseNetIotCommunicateFragment {
     private List<ConfigModule> configModuleList = new ArrayList<>();
     private ConfigModule selectedConfigModule;
 
-
     private ProjectDeviceInfo projectDeviceInfo;
+
+    private NetM20SetupWizardDialogFragment setupWizardDialogFragment;
 
 
     public static NetM20HomeFragment newInstance(ProjectDeviceInfo projectDeviceInfo) {
@@ -154,6 +156,8 @@ public class NetM20HomeFragment extends BaseNetIotCommunicateFragment {
     private void processItemClick() {
         switch (selectedConfigModule.getName()) {
             case "设置向导":
+                setupWizardDialogFragment = NetM20SetupWizardDialogFragment.newInstance();
+                setupWizardDialogFragment.show(getChildFragmentManager(), "dialog");
                 break;
 
             case "状态":
@@ -167,7 +171,6 @@ public class NetM20HomeFragment extends BaseNetIotCommunicateFragment {
             case "设置":
                 AdvancedSettingActivity.startActivity(mActivity, projectDeviceInfo, AppContants.DeviceType.M20);
                 break;
-
         }
     }
 
@@ -181,13 +184,25 @@ public class NetM20HomeFragment extends BaseNetIotCommunicateFragment {
         processDispatchCmd(dispatchCmdParam);
     }
 
+    /**
+     * 水平初始化
+     */
+    public void setLevelInitial() {
+        DispatchRawCmdParam rawCmdParam = new DispatchRawCmdParam();
+        rawCmdParam.setContent("$cmd=md_levelinit");
+        rawCmdParam.setCompanyID(MCloudApp.getCompanyID());
+        rawCmdParam.setDeviceIDList(Arrays.asList(projectDeviceInfo.getId()));
+
+        processDispatchRawCmd(rawCmdParam);
+    }
+
     private void initConfigModuleData() {
         configModuleList.clear();
 
         ConfigModule configModule = new ConfigModule(R.drawable.ic_setup_wizard, "设置向导", "一键配置");
         configModuleList.add(configModule);
 
-        configModule = new ConfigModule(R.drawable.ic_device_current_state, 5,"状态", "获取当前设备状态");
+        configModule = new ConfigModule(R.drawable.ic_device_current_state, 5, "状态", "获取当前设备状态");
         configModuleList.add(configModule);
 
         configModule = new ConfigModule(R.drawable.ic_device_data_center, "数据中心", "基础参数配置");
@@ -203,7 +218,6 @@ public class NetM20HomeFragment extends BaseNetIotCommunicateFragment {
             showDispatchFailedDialog();
             return;
         }
-
         msgIDList.clear();
         for (DispatchCmdItem cmdItem : dispatchCmdItemList) {
             msgIDList.add(cmdItem.getMsgID());
@@ -215,15 +229,23 @@ public class NetM20HomeFragment extends BaseNetIotCommunicateFragment {
      * 指令下发失败弹框
      */
     private void showDispatchFailedDialog() {
-        String title = selectedConfigModule.getName();
+        String title;
+        BaseDispatchCmdDialog newFragment = null;
         switch (selectedConfigModule.getName()) {
             case "状态":
                 title = "运行状态";
+                newFragment = new DispatchCmdFailedDialog(title);
+                break;
+
+            case "设置向导":
+                if (setupWizardDialogFragment != null && setupWizardDialogFragment.isVisible()) {
+                    setupWizardDialogFragment.updateDispatchCmdResult(false, null);
+                }
                 break;
 
         }
-        BaseDispatchCmdDialog newFragment = new DispatchCmdFailedDialog(title);
-        newFragment.show(getChildFragmentManager(), "dialog");
+        if (newFragment != null)
+            newFragment.show(getChildFragmentManager(), "dialog");
     }
 
     /**
@@ -243,7 +265,13 @@ public class NetM20HomeFragment extends BaseNetIotCommunicateFragment {
                 });
                 break;
 
+            case "设置向导":
+                if (setupWizardDialogFragment != null && setupWizardDialogFragment.isVisible()) {
+                    setupWizardDialogFragment.updateDispatchCmdResult(true, msgIDList);
+                }
+                break;
         }
-        newFragment.show(getChildFragmentManager(), "dialog");
+        if (newFragment != null)
+            newFragment.show(getChildFragmentManager(), "dialog");
     }
 }

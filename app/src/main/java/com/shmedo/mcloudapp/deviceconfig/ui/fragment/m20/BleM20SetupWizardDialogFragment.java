@@ -27,7 +27,7 @@ import butterknife.OnClick;
 /**
  * 创建者:   gonghe <br/>
  * 创建时间:  1/19/21 <br/>
- * 描述：    M20 设置向导弹窗
+ * 描述：    蓝牙模式M20 设置向导弹窗
  */
 public class BleM20SetupWizardDialogFragment extends BaseDialogFragment {
     @BindView(R.id.tv_title)
@@ -128,7 +128,6 @@ public class BleM20SetupWizardDialogFragment extends BaseDialogFragment {
             dismiss();
             DataCenterHomeActivity.startActivity(mActivity, AppContants.DeviceType.M20, AppContants.CommunicationWay.BLE_CONNECT, AppContants.DataCenterConfigMethod.BASIC_CONFIG, true);
 
-            ToastUtils.show("跳过");
         } else if (id == R.id.tv_right) {
             if (!baseGOCBleIotCommunicateFragment.isConnected()) {
                 ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
@@ -150,19 +149,12 @@ public class BleM20SetupWizardDialogFragment extends BaseDialogFragment {
     }
 
     private void disableTouch() {
-        //TODO android:clickable="true" 和 android:focusable="true" 已经实现了禁止触摸遮罩层下面的 View,
-        // 防止点击未遮住的ToolBar，添加下面代码禁用窗体触摸
-//        getDialog().getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
-//                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-
         mIvClose.setEnabled(false);
         mTvLeft.setEnabled(false);
         mTvRight.setEnabled(false);
     }
 
     private void enableTouch() {
-        //get user interaction back
-//        getDialog().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
         mIvClose.setEnabled(true);
         mTvLeft.setEnabled(true);
         mTvRight.setEnabled(true);

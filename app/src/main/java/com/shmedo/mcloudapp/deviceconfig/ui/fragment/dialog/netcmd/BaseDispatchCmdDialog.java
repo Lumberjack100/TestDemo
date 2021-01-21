@@ -1,6 +1,7 @@
 package com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd;
 
 import android.app.Dialog;
+import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -16,6 +17,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.DialogFragment;
 
 import com.hjq.toast.ToastUtils;
@@ -47,7 +49,7 @@ import timber.log.Timber;
  */
 public abstract class BaseDispatchCmdDialog extends DialogFragment {
     private Unbinder unbinder;
-
+    protected AppCompatActivity mActivity;
     private View mRootView;
 
     /**
@@ -98,6 +100,12 @@ public abstract class BaseDispatchCmdDialog extends DialogFragment {
         UIHandler.removeCallbacks(mRunnable);
         mRunnable = null;
         repeatNum = 0;
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        mActivity = (AppCompatActivity) context;
     }
 
     @Nullable
