@@ -95,6 +95,11 @@ public class DataCenterConfigActivity extends BaseConfigFragmentContainerActivit
                     break;
 
                 case AppContants.DeviceType.M20:
+                    if (configMethod == AppContants.DataCenterConfigMethod.BASIC_CONFIG) {
+                        fragment = BleM20DataCenterBasicConfigFragment.newInstance(serverNumber, serverStatus);
+                    } else {
+                        fragment = BleM20DataCenterAdvancedConfigFragment.newInstance(serverNumber, serverStatus);
+                    }
                     break;
             }
         } else if (connectWay == AppContants.CommunicationWay.BLE_CONNECT) {

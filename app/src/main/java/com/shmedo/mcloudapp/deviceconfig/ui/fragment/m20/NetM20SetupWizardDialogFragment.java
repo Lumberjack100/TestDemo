@@ -84,7 +84,7 @@ public class NetM20SetupWizardDialogFragment extends BaseDispatchCmdDialog {
 
         } else if (id == R.id.tv_left) {
             dismiss();
-            DataCenterHomeActivity.startActivity(mActivity, AppContants.DeviceType.M20, AppContants.CommunicationWay.BLE_CONNECT, AppContants.DataCenterConfigMethod.BASIC_CONFIG, true);
+            DataCenterHomeActivity.startActivity(mActivity, AppContants.DeviceType.M20, AppContants.CommunicationWay.NET_PLATFORM_CONNECT, AppContants.DataCenterConfigMethod.BASIC_CONFIG, true);
 
         } else if (id == R.id.tv_right) {
             mTvContent.setText("下发水平初始化指令...");
@@ -138,7 +138,7 @@ public class NetM20SetupWizardDialogFragment extends BaseDispatchCmdDialog {
                 @Override
                 public void run() {
                     dismiss();
-                    DataCenterHomeActivity.startActivity(mActivity, AppContants.DeviceType.M20, AppContants.CommunicationWay.BLE_CONNECT, AppContants.DataCenterConfigMethod.BASIC_CONFIG, true);
+                    DataCenterHomeActivity.startActivity(mActivity, AppContants.DeviceType.M20, AppContants.CommunicationWay.NET_PLATFORM_CONNECT, AppContants.DataCenterConfigMethod.BASIC_CONFIG, true);
                 }
             },1500);
         } else {

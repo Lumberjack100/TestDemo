@@ -30,7 +30,7 @@ import timber.log.Timber;
 /**
  * 创建者:   gonghe <br/>
  * 创建时间:  1/19/21 <br/>
- * 描述：    M20 数据中心主页面
+ * 描述：    M20蓝牙模式 数据中心主页面
  */
 public class BleM20DataCenterHomeFragment extends BaseGOCBleIotCommunicateFragment {
     public static final String LEVEL_INITIAL = "com.shmedo.mcloudapp.LEVEL_INITIAL";
@@ -76,7 +76,6 @@ public class BleM20DataCenterHomeFragment extends BaseGOCBleIotCommunicateFragme
     protected int getLayoutId() {
         return R.layout.ble_m20_data_center_home_fragment;
     }
-
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
@@ -198,7 +197,6 @@ public class BleM20DataCenterHomeFragment extends BaseGOCBleIotCommunicateFragme
         } else if (statusId.equals("2")) {
             status = "未上线";
         }
-
         return status;
     }
 
@@ -211,7 +209,6 @@ public class BleM20DataCenterHomeFragment extends BaseGOCBleIotCommunicateFragme
         } else if (statusId.equals("2")) {
             resId = R.color.red;
         }
-
         return resId;
     }
 
