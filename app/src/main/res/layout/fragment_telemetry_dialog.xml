@@ -42,19 +42,19 @@
         </LinearLayout>
 
         <include
-            android:id="@+id/cmdResponseLoadingView"
-            layout="@layout/cmd_response_loading_view"
+            android:id="@+id/queryCmdResponseResultLoadingView"
+            layout="@layout/query_cmd_response_result_loading_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:visibility="gone" />
 
         <ViewStub
-            android:id="@+id/cmdResponseFailedView"
+            android:id="@+id/queryCmdResponseResultTimeOutView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:layout="@layout/cmd_response_failed_view" />
+            android:layout="@layout/query_cmd_result_time_out_view" />
 
     </FrameLayout>
 

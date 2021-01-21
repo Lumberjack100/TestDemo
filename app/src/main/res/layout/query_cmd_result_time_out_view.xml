@@ -12,7 +12,7 @@
         android:src="@drawable/cmd_response_failed" />
 
     <TextView
-        android:id="@+id/tv_response_failed_desc"
+        android:id="@+id/tv_query_cmd_response_result_time_out_desc"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"

@@ -114,7 +114,7 @@ public class QueryTerminalTimeDialog extends BaseDispatchCmdDialog {
     }
 
     @Override
-    protected void onCmdResponeSuccess(QueryCmdResult queryCmdResult) {
+    protected void onQueryCmdResponseResultSuccess(QueryCmdResult queryCmdResult) {
         contentView.setVisibility(View.VISIBLE);
         IOTCommandResult<DeviceTimeInfo> commandResult = IOTParseManager.getInstance().parse(queryCmdResult.getResponseContent());
         if (!commandResult.isSuccess()) {

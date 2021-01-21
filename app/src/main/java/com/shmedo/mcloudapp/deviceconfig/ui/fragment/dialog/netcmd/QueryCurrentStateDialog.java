@@ -110,7 +110,7 @@ public class QueryCurrentStateDialog extends BaseDispatchCmdDialog {
     }
 
     @Override
-    protected void onCmdResponeSuccess(QueryCmdResult queryCmdResult) {
+    protected void onQueryCmdResponseResultSuccess(QueryCmdResult queryCmdResult) {
         contentView.setVisibility(View.VISIBLE);
 
         IOTCommandResult<String> commandResult = IOTParseManager.getInstance().parse(queryCmdResult.getResponseContent());
@@ -143,7 +143,7 @@ public class QueryCurrentStateDialog extends BaseDispatchCmdDialog {
     }
 
     @Override
-    protected void onCmdResponeFailed(QueryCmdResult queryCmdResult) {
+    protected void onQueryCmdResponseResultTimeOut(QueryCmdResult queryCmdResult) {
         mTvConfirm.setText("好的");
         mTvConfirm.setTextColor(GlobalUtil.getColor(R.color.sub_title_text_color));
     }

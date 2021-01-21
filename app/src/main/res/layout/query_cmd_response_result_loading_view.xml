@@ -5,19 +5,13 @@
     android:gravity="center"
     android:orientation="vertical">
 
-<!--    <ProgressBar-->
-<!--        android:id="@+id/progressBar"-->
-<!--        android:layout_width="99dp"-->
-<!--        android:layout_height="99dp"-->
-<!--        android:indeterminate="true" />-->
-
     <ImageView
         android:layout_width="99dp"
         android:layout_height="99dp"
         android:src="@drawable/cmd_response_loading" />
 
     <TextView
-        android:id="@+id/tv_response_loading_desc"
+        android:id="@+id/tv_query_cmd_result_loading_desc"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"

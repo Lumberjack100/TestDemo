@@ -19,7 +19,7 @@ public class DispatchCmdFailedDialog extends BaseDispatchCmdDialog {
     @BindView(R.id.tv_title)
     TextView mTvTitle;
 
-    @BindView(R.id.tv_description)
+    @BindView(R.id.tv_dispatch_cmd_failed_desc)
     TextView mTvDesc;//描述信息
 
     private String desc;

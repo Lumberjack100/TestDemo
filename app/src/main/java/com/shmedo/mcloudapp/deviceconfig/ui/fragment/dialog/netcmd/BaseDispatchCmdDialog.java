@@ -51,22 +51,21 @@ public abstract class BaseDispatchCmdDialog extends DialogFragment {
     private Unbinder unbinder;
     protected AppCompatActivity mActivity;
     private View mRootView;
+    /**
+     * 当指令正在响应时展示的布局。
+     */
+    private View queryCmdResponseResultLoadingView = null;
 
     /**
      * 当指令响应超时展示的布局。
      */
-    private View responseFailedView = null;
-
-    /**
-     * 当指令正在响应时展示的布局。
-     */
-    private View responseLoadingView = null;
+    private View queryCmdResponseResultTimeOutView = null;
 
     protected String title;
 
     protected List<String> msgIDList = new ArrayList<>();
 
-    private Handler UIHandler;
+    protected Handler UIHandler;
 
     private MyRunnable mRunnable;
 
@@ -79,7 +78,7 @@ public abstract class BaseDispatchCmdDialog extends DialogFragment {
             if (repeatNum > 5) {
                 stopRunnable();
                 hideResponseLoadingView();
-                showResponseFailedView("响应超时");
+                showResponseTimeOutView("响应超时");
                 return;
             }
 
@@ -160,47 +159,44 @@ public abstract class BaseDispatchCmdDialog extends DialogFragment {
      *
      * @param tip 界面中的提示信息
      */
-    protected void showResponseFailedView(String tip) {
-        if (responseFailedView != null) {
-            responseFailedView.setVisibility(View.VISIBLE);
+    protected void showResponseTimeOutView(String tip) {
+        if (queryCmdResponseResultTimeOutView != null) {
+            queryCmdResponseResultTimeOutView.setVisibility(View.VISIBLE);
             return;
         }
 
         if (mRootView != null) {
-            ViewStub viewStub = mRootView.findViewById(R.id.cmdResponseFailedView);
+            ViewStub viewStub = mRootView.findViewById(R.id.queryCmdResponseResultTimeOutView);
             if (viewStub != null) {
-                responseFailedView = viewStub.inflate();
-                TextView noContentText = responseFailedView.findViewById(R.id.tv_response_failed_desc);
-                noContentText.setText(tip);
+                queryCmdResponseResultTimeOutView = viewStub.inflate();
+                TextView mTvResponseTimeOutDesc = queryCmdResponseResultTimeOutView.findViewById(R.id.tv_query_cmd_response_result_time_out_desc);
+                mTvResponseTimeOutDesc.setText(tip);
             }
         }
     }
 
-    /**
-     * 将load error view进行隐藏。
-     */
-    protected void hideResponseFailedView() {
-        if (responseFailedView != null) {
-            responseFailedView.setVisibility(View.GONE);
+    protected void hideResponseTimeOutView() {
+        if (queryCmdResponseResultTimeOutView != null) {
+            queryCmdResponseResultTimeOutView.setVisibility(View.GONE);
         }
     }
 
     protected void showResponseLoadingView() {
-        hideResponseFailedView();
-        if (responseLoadingView != null) {
-            responseLoadingView.setVisibility(View.VISIBLE);
+        hideResponseTimeOutView();
+        if (queryCmdResponseResultLoadingView != null) {
+            queryCmdResponseResultLoadingView.setVisibility(View.VISIBLE);
             return;
         }
 
         if (mRootView != null) {
-            responseLoadingView = mRootView.findViewById(R.id.cmdResponseLoadingView);
-            responseLoadingView.setVisibility(View.VISIBLE);
+            queryCmdResponseResultLoadingView = mRootView.findViewById(R.id.queryCmdResponseResultLoadingView);
+            queryCmdResponseResultLoadingView.setVisibility(View.VISIBLE);
         }
     }
 
     protected void hideResponseLoadingView() {
-        if (responseLoadingView != null) {
-            responseLoadingView.setVisibility(View.GONE);
+        if (queryCmdResponseResultLoadingView != null) {
+            queryCmdResponseResultLoadingView.setVisibility(View.GONE);
         }
     }
 
@@ -238,6 +234,7 @@ public abstract class BaseDispatchCmdDialog extends DialogFragment {
                         if (!ResponseHandler.getInstance().handleResponse(errCode)) {
                             if (errCode.getCode() == 0) {
                                 if (data == null || data.size() == 0) {
+                                    onQueryCmdResponseResultError("");
                                     return;
                                 }
 
@@ -246,6 +243,7 @@ public abstract class BaseDispatchCmdDialog extends DialogFragment {
                             }else{
                                 if (!TextUtils.isEmpty(errCode.getErrMessage())) {
                                     ToastUtils.show(errCode.getErrMessage());
+                                    onQueryCmdResponseResultError(errCode.getErrMessage());
                                 }
                             }
                         }
@@ -254,6 +252,7 @@ public abstract class BaseDispatchCmdDialog extends DialogFragment {
                     @Override
                     public void onError(Throwable e) {
                         ResponseHandler.getInstance().handleFailure((Exception) e);
+                        onQueryCmdResponseResultError(e.getMessage());
                     }
                 });
     }
@@ -262,15 +261,15 @@ public abstract class BaseDispatchCmdDialog extends DialogFragment {
         if (queryCmdResult.getCmdStatus() == 2) {//已下发得到响应
             stopRunnable();
             hideResponseLoadingView();
-            onCmdResponeSuccess(queryCmdResult);
+            onQueryCmdResponseResultSuccess(queryCmdResult);
 
         } else {
             if (repeatNum >= 5) {//已经达到设定的10秒超时时间
                 Timber.d("当前时间已查询次数：%s", repeatNum);
                 stopRunnable();
                 hideResponseLoadingView();
-                showResponseFailedView("响应超时");
-                onCmdResponeFailed(queryCmdResult);
+                showResponseTimeOutView("响应超时");
+                onQueryCmdResponseResultTimeOut(queryCmdResult);
                 return;
             }
             //延迟2秒后再次查询响应结果
@@ -278,11 +277,28 @@ public abstract class BaseDispatchCmdDialog extends DialogFragment {
         }
     }
 
-    protected void onCmdResponeSuccess(QueryCmdResult queryCmdResult) {
+    /**
+     * 查询指令响应结果成功
+     * @param queryCmdResult
+     */
+    protected void onQueryCmdResponseResultSuccess(QueryCmdResult queryCmdResult) {
 
     }
 
-    protected void onCmdResponeFailed(QueryCmdResult queryCmdResult) {
+    /**
+     * 查询指令响应结果出错了
+     * @param errMsg
+     */
+    protected void onQueryCmdResponseResultError(String errMsg){
+        stopRunnable();
+        hideResponseLoadingView();
+    }
+
+    /**
+     * 查询指令响应结果超时
+     * @param queryCmdResult
+     */
+    protected void onQueryCmdResponseResultTimeOut(QueryCmdResult queryCmdResult) {
 
     }
 }

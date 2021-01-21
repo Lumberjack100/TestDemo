@@ -10,32 +10,44 @@
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:layout_marginBottom="60dp">
 
-        <include
-            android:id="@+id/contentView"
-            layout="@layout/cmd_response_success_view"
+        <TextView
+            android:id="@+id/tv_content"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal" />
+            android:layout_gravity="center"
+            android:textColor="@color/title_text_color"
+            android:textSize="@dimen/text_size_18"
+            tools:text="是否水平初始化？" />
+
+        <include
+            android:id="@+id/dispatchCmdFailedView"
+            layout="@layout/dispatch_cmd_failed_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:visibility="gone" />
 
         <include
             android:id="@+id/queryCmdResponseResultLoadingView"
             layout="@layout/query_cmd_response_result_loading_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
+            android:layout_gravity="center"
             android:visibility="gone" />
 
         <ViewStub
             android:id="@+id/queryCmdResponseResultTimeOutView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
+            android:layout_gravity="center"
             android:layout="@layout/query_cmd_result_time_out_view" />
 
     </FrameLayout>
 
-    <include layout="@layout/cmd_response_dialog_footer" />
+    <include layout="@layout/common_dialog_footer2" />
 
 </LinearLayout>

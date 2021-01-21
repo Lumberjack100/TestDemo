@@ -42,7 +42,7 @@ public class BleM20SetupWizardDialogFragment extends BaseDialogFragment {
     @BindView(R.id.dispatchCmdFailedView)
     View dispatchCmdFailedView;
 
-    @BindView(R.id.tv_description)
+    @BindView(R.id.tv_dispatch_cmd_failed_desc)
     TextView mTvErrorDesc;//错误描述信息
 
     @BindView(R.id.tv_left)

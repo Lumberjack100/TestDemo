@@ -28,10 +28,10 @@ public class CommonCmdDialog extends BaseDispatchCmdDialog {
     View contentView;
 
     @BindView(R.id.tv_response_success_desc)
-    TextView mTvDesc;//描述信息
+    TextView mTvResponseSuccDesc;//描述信息
 
     @BindView(R.id.tv_response_success_tip)
-    TextView mTvTip;//温馨提示
+    TextView mTvResponseSucTip;//温馨提示
 
     private String desc;
     private String tip;
@@ -102,20 +102,20 @@ public class CommonCmdDialog extends BaseDispatchCmdDialog {
     }
 
     @Override
-    protected void onCmdResponeSuccess(QueryCmdResult queryCmdResult) {
+    protected void onQueryCmdResponseResultSuccess(QueryCmdResult queryCmdResult) {
         contentView.setVisibility(View.VISIBLE);
 
         CommonSettingCmdResult cmdResponseResult = IOTParseManager.getInstance().parseSettingCmd(queryCmdResult.getResponseContent());
         if (cmdResponseResult.isSucceed()) {
-            mTvDesc.setText(desc);
+            mTvResponseSuccDesc.setText(desc);
             if (!TextUtils.isEmpty(tip)) {
-                mTvTip.setVisibility(View.VISIBLE);
-                mTvTip.setText(tip);
+                mTvResponseSucTip.setVisibility(View.VISIBLE);
+                mTvResponseSucTip.setText(tip);
             } else {
-                mTvTip.setVisibility(View.GONE);
+                mTvResponseSucTip.setVisibility(View.GONE);
             }
         } else {
-            mTvDesc.setText(String.format("%s失败! %s", title, cmdResponseResult.getReason()));
+            mTvResponseSuccDesc.setText(String.format("%s失败! %s", title, cmdResponseResult.getReason()));
         }
     }
 }
