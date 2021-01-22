@@ -104,7 +104,6 @@ public interface ApiService {
     @POST("QueryUserInCompany")
     Observable<ResultWrapper<PageResult<CompanySimpleInfo>>> QueryUserInCompany(@Header(NetworkConst.ACCESS_TOKEN) String token, @Body RequestBody parameter);
 
-
     /**
      * 项目模块
      */
@@ -171,6 +170,12 @@ public interface ApiService {
     @POST("QueryFirmwareList")
     Observable<ResultWrapper<PageResult<FirmWareInfo>>> QueryFirmwareList(@Header(NetworkConst.ACCESS_TOKEN) String token, @Body RequestBody parameter);
 
+    //系统接口V2-4  固件升级
+    @Headers({NetworkConst.HEADER_ACCESS_TYPE})
+    @POST("FirmwareUpgrade")
+    Observable<ResultWrapper<String>> FirmwareUpgrade(@Header(NetworkConst.ACCESS_TOKEN) String token, @Body RequestBody parameter);
+
+
     //系统接口V2  查询设备类型列表
     @Headers({NetworkConst.HEADER_ACCESS_TYPE})
     @POST("QueryDeviceType")
@@ -195,12 +200,10 @@ public interface ApiService {
     @POST("QueryCmdResultByMsgID")
     Observable<ResultWrapper<List<QueryCmdResult>>> QueryCmdResultByMsgID(@Header(NetworkConst.ACCESS_TOKEN) String token, @Body RequestBody parameter);
 
-
     //系统接口v2  7.10 查询设备的详情信息
     @Headers({NetworkConst.HEADER_ACCESS_TYPE})
     @POST("GetDeviceDetailInfo")
     Observable<ResultWrapper<DeviceDetailInfo>> GetDeviceDetailInfo(@Header(NetworkConst.ACCESS_TOKEN) String token, @Body RequestBody parameter);
-
 
     //查询数据
     @POST("queryCloudData")

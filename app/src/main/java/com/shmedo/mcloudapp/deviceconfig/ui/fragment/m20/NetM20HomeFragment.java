@@ -213,7 +213,8 @@ public class NetM20HomeFragment extends BaseNetIotCommunicateFragment {
     }
 
     @Override
-    protected void onDispatchCmdItemList(List<DispatchCmdItem> dispatchCmdItemList) {
+    protected void onDispatchCmdResult(List<DispatchCmdItem> dispatchCmdItemList) {
+        dismissProgressDialog();
         if (dispatchCmdItemList == null || dispatchCmdItemList.size() == 0) {
             showDispatchFailedDialog();
             return;

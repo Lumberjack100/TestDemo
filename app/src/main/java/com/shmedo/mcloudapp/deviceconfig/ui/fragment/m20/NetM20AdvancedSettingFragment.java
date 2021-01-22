@@ -12,10 +12,12 @@ import com.shmedo.configlibrary.iot.cmd.IOTCommandManager;
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.core.AppContants;
 import com.shmedo.core.MCloudApp;
+import com.shmedo.core.util.GsonFactory;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.deviceconfig.model.DispatchCmdItem;
 import com.shmedo.mcloudapp.deviceconfig.model.FirmWareInfo;
 import com.shmedo.mcloudapp.deviceconfig.model.params.DispatchRawCmdParam;
+import com.shmedo.mcloudapp.deviceconfig.model.params.FirmwareUpgrade;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.DataCenterHomeActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.BaseNetIotCommunicateFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.BaseDialogFragment;
@@ -23,12 +25,20 @@ import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.FirmWareSelectDialog
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd.BaseDispatchCmdDialog;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd.CommonCmdDialog;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd.DispatchCmdFailedDialog;
+import com.shmedo.mcloudapp.network.BaseObserver;
+import com.shmedo.mcloudapp.network.ErrCode;
+import com.shmedo.mcloudapp.network.MDRetrofit;
+import com.shmedo.mcloudapp.network.NetworkConst;
 import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfo;
+import com.shmedo.mcloudapp.util.ResponseHandler;
 
 import java.util.Arrays;
 import java.util.List;
 
 import butterknife.OnClick;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
+import okhttp3.RequestBody;
 
 /**
  * 创建者:   gonghe <br/>
@@ -105,20 +115,11 @@ public class NetM20AdvancedSettingFragment extends BaseNetIotCommunicateFragment
     private BaseDialogFragment.DialogFragmentClickListener firmWareSelectListener = new BaseDialogFragment.DialogFragmentClickListener<FirmWareInfo>() {
         @Override
         public boolean onPositiveClick(View view, FirmWareInfo firmWareInfo) {
-            StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.append("$cmd=md_upgrade");
-            stringBuilder.append("&url=");
-            stringBuilder.append(firmWareInfo.getFwPath());
-            stringBuilder.append("&size=");
-            stringBuilder.append(firmWareInfo.getFwSize());
-            stringBuilder.append("&md5=");
-            stringBuilder.append(firmWareInfo.getFwMd5());
-
             operaType = FIRMWARE_UPGRADE;
-            processDispatchCommonCmd(stringBuilder.toString());
+//            showProgressDialog("指令下发中...");
+            doFirmwareUpgrade(firmWareInfo.getId());
             return true;
         }
-
         @Override
         public void onNegativeClick(View view) {
 
@@ -146,21 +147,21 @@ public class NetM20AdvancedSettingFragment extends BaseNetIotCommunicateFragment
                             case LEVEL_INITIAL: {
                                 operaType = LEVEL_INITIAL;
                                 String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.M20_MD_LEVEL_INITIAL);
-                                processDispatchCommonCmd(command);
+                                doCommonDispatchRawCmd(command);
                             }
                             break;
 
                             case REBOOT: {
                                 operaType = REBOOT;
                                 String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.REBOOT);
-                                processDispatchCommonCmd(command);
+                                doCommonDispatchRawCmd(command);
                             }
                             break;
 
                             case RESET: {
                                 operaType = RESET;
                                 String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.REBOOT);
-                                processDispatchCommonCmd(command);
+                                doCommonDispatchRawCmd(command);
                             }
                             break;
                         }
@@ -170,7 +171,12 @@ public class NetM20AdvancedSettingFragment extends BaseNetIotCommunicateFragment
         mMaterialDialog.show();
     }
 
-    private void processDispatchCommonCmd(String content) {
+    /**
+     * 调用指令透传接口
+     *
+     * @param content
+     */
+    private void doCommonDispatchRawCmd(String content) {
         DispatchRawCmdParam rawCmdParam = new DispatchRawCmdParam();
         rawCmdParam.setContent(content);
         rawCmdParam.setCompanyID(MCloudApp.getCompanyID());
@@ -180,8 +186,14 @@ public class NetM20AdvancedSettingFragment extends BaseNetIotCommunicateFragment
         processDispatchRawCmd(rawCmdParam);
     }
 
+    /**
+     * 调用指令下发/透传接口结果返回
+     *
+     * @param dispatchCmdItemList
+     */
     @Override
-    protected void onDispatchCmdItemList(List<DispatchCmdItem> dispatchCmdItemList) {
+    protected void onDispatchCmdResult(List<DispatchCmdItem> dispatchCmdItemList) {
+        dismissProgressDialog();
         if (dispatchCmdItemList == null || dispatchCmdItemList.size() == 0) {
             showDispatchFailedDialog();
             return;
@@ -251,5 +263,41 @@ public class NetM20AdvancedSettingFragment extends BaseNetIotCommunicateFragment
         }
         if (newFragment != null)
             newFragment.show(getChildFragmentManager(), "dialog");
+    }
+
+    /**
+     * 固件升级
+     */
+    private void doFirmwareUpgrade(int firmwareID) {
+        FirmwareUpgrade parameter = new FirmwareUpgrade(MCloudApp.getCompanyID(), projectDeviceInfo.getId(), firmwareID);
+        String json = GsonFactory.getGson().toJson(parameter);
+        RequestBody body = RequestBody.create(NetworkConst.JSON_TYPE, json);
+        MDRetrofit.getInstance()
+                .createService()
+                .FirmwareUpgrade(MCloudApp.getAccessToken(), body)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new BaseObserver<String>() {
+                    @Override
+                    protected void onResponse(String msgId, ErrCode errCode) {
+                        dismissProgressDialog();
+                        if (!ResponseHandler.getInstance().handleResponse(errCode)) {
+                            if (errCode.getCode() == 0) {
+                                msgIDList.clear();
+                                msgIDList.add(msgId);
+                                showDispatchSuccessDialog();
+                            } else {
+                                showDispatchFailedDialog();
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        dismissProgressDialog();
+                        showDispatchFailedDialog();
+                        ResponseHandler.getInstance().handleFailure((Exception) e);
+                    }
+                });
     }
 }

@@ -1,6 +1,7 @@
 package com.shmedo.mcloudapp.deviceconfig.ui.fragment;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
@@ -15,6 +16,7 @@ import com.shmedo.core.util.GsonFactory;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.fragment.BaseFragment;
 import com.shmedo.mcloudapp.deviceconfig.model.DispatchCmdItem;
+import com.shmedo.mcloudapp.deviceconfig.model.QueryCmdResult;
 import com.shmedo.mcloudapp.deviceconfig.model.params.DispatchCmdParam;
 import com.shmedo.mcloudapp.deviceconfig.model.params.DispatchRawCmdParam;
 import com.shmedo.mcloudapp.deviceconfig.viewmodels.DeviceNetModelViewModel;
@@ -30,6 +32,7 @@ import java.util.List;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.RequestBody;
+import timber.log.Timber;
 
 /**
  * 创建者:   gonghe <br/>
@@ -41,6 +44,36 @@ public abstract class BaseNetIotCommunicateFragment extends BaseFragment {
 
     protected List<String> msgIDList = new ArrayList<>();
 
+    private Handler uiHander = new Handler();
+
+    private static int repeatNum = 0;//当查询指令结果5次时，判断响应超时
+    private QueryCmdResponseRunnable queryCmdResponseRunnable;//常规任务
+
+    private class QueryCmdResponseRunnable implements Runnable {
+        @Override
+        public void run() {
+            if (repeatNum > 5) {
+                stopQueryCmdResponseRunnable();
+                onQueryCmdResponseResultTimeOut(null);
+                return;
+            }
+            Timber.d("QueryCmdResponseRunnable run();repeatNum=%s", repeatNum);
+            queryCmdResultByMsgID();
+        }
+    }
+
+    protected void startQueryCmdResponseRunnable(long delayMillis) {
+        if (queryCmdResponseRunnable == null) {
+            queryCmdResponseRunnable = new QueryCmdResponseRunnable();
+            uiHander.postDelayed(queryCmdResponseRunnable, delayMillis);
+        }
+    }
+
+    protected void stopQueryCmdResponseRunnable() {
+        uiHander.removeCallbacksAndMessages(null);
+        queryCmdResponseRunnable = null;
+    }
+
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -48,13 +81,11 @@ public abstract class BaseNetIotCommunicateFragment extends BaseFragment {
         deviceNetModelViewModel.getDispatchCmdItemList().observeInFragment(this, new Observer<List<DispatchCmdItem>>() {
             @Override
             public void onChanged(List<DispatchCmdItem> dispatchCmdItems) {
-                dismissProgressDialog();
                 //判断此页面是否处于前台
                 if (!isActive) {
                     return;
                 }
-
-                onDispatchCmdItemList(dispatchCmdItems);
+                onDispatchCmdResult(dispatchCmdItems);
             }
         });
     }
@@ -66,10 +97,9 @@ public abstract class BaseNetIotCommunicateFragment extends BaseFragment {
     }
 
     /**
-     *
+     * 调用指令下发/透传接口结果返回
      */
-    protected void onDispatchCmdItemList(List<DispatchCmdItem> dispatchCmdItems) {
-
+    protected void onDispatchCmdResult(List<DispatchCmdItem> dispatchCmdItems) {
     }
 
     /**
@@ -79,7 +109,6 @@ public abstract class BaseNetIotCommunicateFragment extends BaseFragment {
         if (dispatchCmdParam == null) {
             throw new IllegalArgumentException("dispatchCmdParam 为null");
         }
-
         String json = GsonFactory.getGson().toJson(dispatchCmdParam);
         RequestBody body = RequestBody.create(NetworkConst.JSON_TYPE, json);
         MDRetrofit.getInstance()
@@ -122,7 +151,6 @@ public abstract class BaseNetIotCommunicateFragment extends BaseFragment {
         if (dispatchRawCmdParam == null) {
             throw new IllegalArgumentException("dispatchRawCmdParam 为null");
         }
-
         String json = GsonFactory.getGson().toJson(dispatchRawCmdParam);
         RequestBody body = RequestBody.create(NetworkConst.JSON_TYPE, json);
         MDRetrofit.getInstance()
@@ -156,6 +184,90 @@ public abstract class BaseNetIotCommunicateFragment extends BaseFragment {
                         ResponseHandler.getInstance().handleFailure((Exception) e);
                     }
                 });
+    }
+
+    /**
+     * 查询指令响应
+     */
+    private void queryCmdResultByMsgID() {
+        String json = GsonFactory.getGson().toJson(msgIDList);
+        RequestBody body = RequestBody.create(NetworkConst.JSON_TYPE, json);
+        MDRetrofit.getInstance()
+                .createService()
+                .QueryCmdResultByMsgID(MCloudApp.getAccessToken(), body)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new BaseObserver<List<QueryCmdResult>>() {
+                    @Override
+                    protected void onResponse(List<QueryCmdResult> data, ErrCode errCode) {
+                        if (!ResponseHandler.getInstance().handleResponse(errCode)) {
+                            if (errCode.getCode() == 0) {
+                                if (data == null || data.size() == 0) {
+                                    onQueryCmdResponseResultError("");
+                                    return;
+                                }
+
+                                QueryCmdResult queryCmdResult = data.get(0);
+                                processCmdResult(queryCmdResult);
+                            } else {
+                                if (!TextUtils.isEmpty(errCode.getErrMessage())) {
+                                    ToastUtils.show(errCode.getErrMessage());
+                                    onQueryCmdResponseResultError(errCode.getErrMessage());
+                                }
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        ResponseHandler.getInstance().handleFailure((Exception) e);
+                        onQueryCmdResponseResultError(e.getMessage());
+                    }
+                });
+    }
+
+    private void processCmdResult(QueryCmdResult queryCmdResult) {
+        if (queryCmdResult.getCmdStatus() == 2) {//已下发得到响应
+            stopQueryCmdResponseRunnable();
+            onQueryCmdResponseResultSuccess(queryCmdResult);
+
+        } else {
+            if (repeatNum >= 5) {//已经达到设定的10秒超时时间
+                Timber.d("当前时间已查询次数：%s", repeatNum);
+                stopQueryCmdResponseRunnable();
+                onQueryCmdResponseResultTimeOut(queryCmdResult);
+                return;
+            }
+            //延迟2秒后再次查询响应结果
+            startQueryCmdResponseRunnable(2000);
+        }
+    }
+
+    /**
+     * 查询指令响应结果成功
+     *
+     * @param queryCmdResult
+     */
+    protected void onQueryCmdResponseResultSuccess(QueryCmdResult queryCmdResult) {
+        dismissProgressDialog();
+    }
+
+    /**
+     * 查询指令响应结果出错了
+     *
+     * @param errMsg
+     */
+    protected void onQueryCmdResponseResultError(String errMsg) {
+        stopQueryCmdResponseRunnable();
+    }
+
+    /**
+     * 查询指令响应结果超时
+     *
+     * @param queryCmdResult
+     */
+    protected void onQueryCmdResponseResultTimeOut(QueryCmdResult queryCmdResult) {
+        dismissProgressDialog();
     }
 
     protected void warnNotYetSettingBeforeLeavePage() {

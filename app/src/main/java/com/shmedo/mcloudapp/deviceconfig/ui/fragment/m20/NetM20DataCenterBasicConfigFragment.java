@@ -16,21 +16,23 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.hjq.toast.ToastUtils;
 import com.kyleduo.switchbutton.SwitchButton;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandManager;
+import com.shmedo.configlibrary.iot.cmd.IOTCommandResult;
 import com.shmedo.configlibrary.iot.cmd.entity.DataCenterEntity;
 import com.shmedo.configlibrary.iot.cmd.entity.ServerNumberEntity;
+import com.shmedo.configlibrary.iot.cmd.parser.IOTParseManager;
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.enums.ServerNumber;
+import com.shmedo.configlibrary.iot.model.CommonSettingCmdResult;
 import com.shmedo.configlibrary.iot.model.DataCenterInfo;
+import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
 import com.shmedo.core.AppContants;
 import com.shmedo.core.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.view.ClearEditText;
 import com.shmedo.mcloudapp.deviceconfig.model.DispatchCmdItem;
+import com.shmedo.mcloudapp.deviceconfig.model.QueryCmdResult;
 import com.shmedo.mcloudapp.deviceconfig.model.params.DispatchRawCmdParam;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.BaseNetIotCommunicateFragment;
-import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd.BaseDispatchCmdDialog;
-import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd.CommonCmdDialog;
-import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd.DispatchCmdFailedDialog;
 import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfo;
 import com.shmedo.mcloudapp.util.KeyBordUtils;
 
@@ -188,7 +190,7 @@ public class NetM20DataCenterBasicConfigFragment extends BaseNetIotCommunicateFr
         rawCmdParam.setDeviceIDList(Arrays.asList(projectDeviceInfo.getId()));
 
         operaType = GET_DATA_SENTER;
-        showProgressDialog("指令下发中...");
+        showProgressDialog("加载中...");
         processDispatchRawCmd(rawCmdParam);
     }
 
@@ -270,37 +272,132 @@ public class NetM20DataCenterBasicConfigFragment extends BaseNetIotCommunicateFr
     }
 
     @Override
-    protected void onDispatchCmdItemList(List<DispatchCmdItem> dispatchCmdItemList) {
+    protected void onDispatchCmdResult(List<DispatchCmdItem> dispatchCmdItemList) {
         if (dispatchCmdItemList == null || dispatchCmdItemList.size() == 0) {
+            dismissProgressDialog();
             showDispatchFailedDialog();
             return;
         }
-
         msgIDList.clear();
         for (DispatchCmdItem cmdItem : dispatchCmdItemList) {
             msgIDList.add(cmdItem.getMsgID());
         }
-        showDispatchSuccessDialog();
+
+        if (msgIDList != null && msgIDList.size() > 0) {
+            startQueryCmdResponseRunnable(2000);
+        }
     }
 
     /**
      * 指令下发失败弹框
      */
     private void showDispatchFailedDialog() {
-        String title = "数据中心";
-        BaseDispatchCmdDialog newFragment = new DispatchCmdFailedDialog(title);
-        newFragment.show(getChildFragmentManager(), "dialog");
+        switch (operaType) {
+            case GET_DATA_SENTER:
+                ToastUtils.show("下发指令失败");
+                break;
+
+            case SET_DATA_SENTER:
+                ToastUtils.show("下发指令失败");
+                break;
+
+            default:
+                break;
+        }
     }
 
     /**
-     * 指令下发成功弹框
+     * 查询指令响应结果出错
+     *
+     * @param errMsg
      */
-    private void showDispatchSuccessDialog() {
-        BaseDispatchCmdDialog newFragment = new CommonCmdDialog("数据中心", "水平初始化完成", msgIDList);
-        if (newFragment != null)
-            newFragment.show(getChildFragmentManager(), "dialog");
+    @Override
+    protected void onQueryCmdResponseResultError(String errMsg) {
+        super.onQueryCmdResponseResultError(errMsg);
+        ToastUtils.show("查询指令响应结果错误");
     }
 
+    /**
+     * 查询指令响应结果超时
+     *
+     * @param queryCmdResult
+     */
+    @Override
+    protected void onQueryCmdResponseResultTimeOut(QueryCmdResult queryCmdResult) {
+        super.onQueryCmdResponseResultTimeOut(queryCmdResult);
+        ToastUtils.show("查询指令响应结果超时");
+    }
+
+    /**
+     * 查询指令响应结果成功
+     *
+     * @param queryCmdResult
+     */
+    @Override
+    protected void onQueryCmdResponseResultSuccess(QueryCmdResult queryCmdResult) {
+        super.onQueryCmdResponseResultSuccess(queryCmdResult);
+        setResultData(queryCmdResult);
+    }
+
+    private void setResultData(QueryCmdResult queryCmdResult) {
+        String cmdStr=queryCmdResult.getResponseContent();
+        IOTCommandType type = IOTStringUtil.extractCommandType(queryCmdResult.getCmdEngName());
+        switch (type) {
+            case MD_GET_DATA_CENTER: {//获取设备的数据中心参数
+//                stopProgressRunnable();
+                IOTCommandResult<DataCenterInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
+                if (!commandResult.isSuccess()) {
+                    String errMsg = String.format("%s %s", "查询数据中心参数出错!", commandResult.getMessage());
+                    Timber.e(errMsg);
+                    ToastUtils.show(errMsg);
+                    return;
+                }
+                dataCenterInfo = commandResult.getResult();
+                initDataCenterData();
+            }
+            break;
+
+            case MD_SET_DATA_CENTER: {//设置设备的数据中心参数
+//                stopProgressRunnable();
+                CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
+                if (!cmdResult.isSucceed()) {
+                    String errMsg = String.format("%s %s", "设置数据中心参数出错!", cmdResult.getReason());
+                    Timber.e(errMsg);
+                    ToastUtils.show(errMsg);
+                    mBtnSave.setEnabled(true);
+                    if (isSaveParamOperation)
+                        isSaveParamOperation = false;
+                    return;
+                }
+                doAfterSetting();
+            }
+            break;
+
+            default:
+                break;
+        }
+    }
+
+    private void doAfterSetting() {
+        if (isSaveParamOperation) {
+            isSaveParamOperation = false;
+            ToastUtils.show("设置成功");
+        }
+        mBtnSave.setEnabled(true);
+    }
+
+    private void initDataCenterData() {
+        if (dataCenterInfo == null) {
+            Timber.e("DataCenterInfo 为空!");
+            dataCenterInfo = new DataCenterInfo();
+            return;
+        }
+
+        dataServerAddress = dataCenterInfo.getAddr().trim();
+        dataServerPort = dataCenterInfo.getPort().trim();
+        mEtDataServerAddress.setText(dataServerAddress);
+        mEtDataServerPort.setText(dataServerPort);
+    }
 
     @Override
     public boolean onBackPressed() {
