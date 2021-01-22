@@ -74,7 +74,7 @@ public class TelemetryDialog extends BaseDispatchCmdDialog {
         switch (v.getId()) {
             case R.id.iv_close:
             case R.id.tv_confirm:
-                stopRunnable();
+                stopQueryCmdResponseRunnable();
                 dismiss();
                 break;
 

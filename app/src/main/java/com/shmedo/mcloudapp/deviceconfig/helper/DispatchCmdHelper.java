@@ -7,7 +7,6 @@ import com.shmedo.core.MCloudApp;
 import com.shmedo.core.util.GsonFactory;
 import com.shmedo.mcloudapp.deviceconfig.model.DispatchCmdItem;
 import com.shmedo.mcloudapp.deviceconfig.model.params.DispatchCmdParam;
-import com.shmedo.mcloudapp.deviceconfig.model.params.DispatchRawCmdParam;
 import com.shmedo.mcloudapp.network.BaseObserver;
 import com.shmedo.mcloudapp.network.ErrCode;
 import com.shmedo.mcloudapp.network.MDRetrofit;
@@ -27,6 +26,7 @@ import okhttp3.RequestBody;
  * 创建者:   gonghe <br/>
  * 创建时间:  2020/9/1 <br/>
  * 描述：    调用物联网平台接口下发米度物联网设备指令
+ * @deprecated
  */
 public class DispatchCmdHelper {
     private static final DispatchCmdHelper ourInstance = new DispatchCmdHelper();
@@ -81,46 +81,4 @@ public class DispatchCmdHelper {
                 });
     }
 
-    /**
-     * 指令透传
-     */
-    public void processDispatchRawCmd(DispatchRawCmdParam dispatchRawCmdParam) {
-        if (dispatchRawCmdParam == null) {
-            throw new IllegalArgumentException("dispatchRawCmdParam 为null");
-        }
-
-        String json = GsonFactory.getGson().toJson(dispatchRawCmdParam);
-        RequestBody body = RequestBody.create(NetworkConst.JSON_TYPE, json);
-        MDRetrofit.getInstance()
-                .createService()
-                .DispatchRawCmd(MCloudApp.getAccessToken(), body)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new BaseObserver<List<DispatchCmdItem>>() {
-                    @Override
-                    protected void onResponse(List<DispatchCmdItem> data, ErrCode errCode) {
-                        if (!ResponseHandler.getInstance().handleResponse(errCode)) {
-                            if (errCode.getCode() == 0) {
-                                if (data == null || data.size() == 0) {
-                                    EventBus.getDefault().post(new ArrayList<DispatchCmdItem>());
-                                    return;
-                                }
-
-                                EventBus.getDefault().post(data);
-                            } else {
-                                EventBus.getDefault().post(new ArrayList<DispatchCmdItem>());
-                                if (!TextUtils.isEmpty(errCode.getErrMessage())) {
-                                    ToastUtils.show(errCode.getErrMessage());
-                                }
-                            }
-                        }
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        EventBus.getDefault().post(new ArrayList<DispatchCmdItem>());
-                        ResponseHandler.getInstance().handleFailure((Exception) e);
-                    }
-                });
-    }
 }

@@ -78,11 +78,9 @@ public class NetM20AdvancedSettingFragment extends BaseNetIotCommunicateFragment
         return R.layout.net_m20_advanced_setting_fragment;
     }
 
-
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
     }
 
     @OnClick({R.id.dataCenterConfigLayout, R.id.firmwareUpgradeLayout, R.id.horizontalInitializationLayout, R.id.rebootLayout, R.id.resetLayout})

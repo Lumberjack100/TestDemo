@@ -279,7 +279,6 @@ public class BleDasCollectorSettingFragment extends BaseBleCommunicateFragment {
         saveConfigInfoNoReboot();
     }
 
-
     @Override
     public boolean onBackPressed() {
         if (isConnected()) {

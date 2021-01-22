@@ -24,17 +24,15 @@ import com.shmedo.core.util.GlobalUtil;
 import com.shmedo.core.util.GsonFactory;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.model.PageResult;
-import com.shmedo.mcloudapp.common.ui.fragment.BaseFragment;
 import com.shmedo.mcloudapp.common.view.recycleviewitemdivider.GridSpacingItemDecoration;
 import com.shmedo.mcloudapp.deviceconfig.adapter.ConfigModuleAdapter;
-import com.shmedo.mcloudapp.deviceconfig.helper.DispatchCmdHelper;
 import com.shmedo.mcloudapp.deviceconfig.model.ConfigModule;
 import com.shmedo.mcloudapp.deviceconfig.model.DevcieCurrentState;
 import com.shmedo.mcloudapp.deviceconfig.model.DevcieHistoryState;
 import com.shmedo.mcloudapp.deviceconfig.model.DispatchCmdItem;
 import com.shmedo.mcloudapp.deviceconfig.model.FirmWareInfo;
 import com.shmedo.mcloudapp.deviceconfig.model.params.DispatchCmdParam;
-import com.shmedo.mcloudapp.deviceconfig.model.params.DispatchRawCmdParam;
+import com.shmedo.mcloudapp.deviceconfig.model.params.FirmwareUpgrade;
 import com.shmedo.mcloudapp.deviceconfig.model.params.QueryCmdStateParam;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.AdvancedSettingActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.DeviceCurrentStateActivity;
@@ -57,8 +55,6 @@ import com.shmedo.mcloudapp.util.DateUtil;
 import com.shmedo.mcloudapp.util.ResponseHandler;
 
 import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -74,7 +70,7 @@ import okhttp3.RequestBody;
 /**
  * 网络配置设备主页面
  */
-public class NetConfigDeviceFragment extends BaseFragment {
+public class NetConfigDeviceFragment extends BaseNetIotCommunicateFragment {
     private static final String PRO_DEVICE_INFO = "com.shmedo.mcloudapp.PRO_DEVICE_INFO";
 
     private static final int REBOOT = 0x0002;
@@ -110,7 +106,6 @@ public class NetConfigDeviceFragment extends BaseFragment {
     private ProjectDeviceInfo projectDeviceInfo;
 
     private ConfigModule selectedConfigModule;
-    private List<String> msgIDList = new ArrayList<>();
 
 
     public static NetConfigDeviceFragment newInstance(ProjectDeviceInfo projectDeviceInfo) {
@@ -127,39 +122,6 @@ public class NetConfigDeviceFragment extends BaseFragment {
         if (getArguments() != null) {
             projectDeviceInfo = getArguments().getParcelable(PRO_DEVICE_INFO);
         }
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        EventBus.getDefault().register(this);
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        EventBus.getDefault().unregister(this);
-    }
-
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onMessageEvent(List<DispatchCmdItem> dispatchCmdItemList) {
-        dismissProgressDialog();
-        //判断此页面是否处于前台
-        if (!isActive) {
-            return;
-        }
-
-        if (dispatchCmdItemList == null || dispatchCmdItemList.size() == 0) {
-            showDispatchFailedDialog();
-            return;
-        }
-
-        msgIDList.clear();
-        for (DispatchCmdItem cmdItem : dispatchCmdItemList) {
-            msgIDList.add(cmdItem.getMsgID());
-        }
-        showDispatchSuccessDialog();
     }
 
     @Override
@@ -193,115 +155,9 @@ public class NetConfigDeviceFragment extends BaseFragment {
             }
         }
         mTvDeviceConnectOperate.setVisibility(View.INVISIBLE);
+        mTvDeviceCommunicationWaySwitch.setVisibility(View.GONE);
         mTvDeviceCommunicationWaySwitch.setText("蓝牙");
     }
-
-    private void initAdapter() {
-        int spanCount = 2;//跟布局里面的spanCount属性是一致的
-        int spacing = DensityUtil.Dp2Px(mActivity, 15);//每一个矩形的间距
-        mRecyclerView.setLayoutManager(new GridLayoutManager(mActivity, spanCount));
-        //设置每个item间距
-        mRecyclerView.addItemDecoration(new GridSpacingItemDecoration(spanCount, spacing, true));
-        moduleAdapter = new ConfigModuleAdapter(configModuleList);
-        moduleAdapter.setAnimationEnable(true);
-        moduleAdapter.setAnimationFirstOnly(false);
-        moduleAdapter.setOnItemClickListener(new OnItemClickListener() {
-            @Override
-            public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
-                if (isDoubleClick(view)) {
-                    return;
-                }
-
-                selectedConfigModule = configModuleList.get(position);
-                processItemClick();
-            }
-        });
-        mRecyclerView.setAdapter(moduleAdapter);
-    }
-
-    @OnClick({R.id.tv_device_communication_way_switch, R.id.rl_run_state_analysis})
-    public void onClick(View v) {
-        if (isDoubleClick(v)) {
-            return;
-        }
-
-        switch (v.getId()) {
-            case R.id.tv_device_communication_way_switch://切换连接方式
-                showWarnDialog("连接方式", "确定切换至蓝牙连接？", SWITCH_TO_BLE);
-                break;
-
-            case R.id.rl_run_state_analysis:
-                DeviceHistoryDataAnalysisActivity.startActivity(mActivity, projectDeviceInfo);
-                break;
-        }
-    }
-
-    private void processItemClick() {
-        switch (selectedConfigModule.getName()) {
-            case "状态":
-            case "时间":
-            case "遥测":
-                processDispatchCommonCmd();
-                break;
-
-            case "重启":
-                showWarnDialog("温馨提示", "确定重启设备吗？", REBOOT);
-                break;
-
-            case "固件升级":
-                FirmWareSelectDialog newFragment = new FirmWareSelectDialog(MCloudApp.getCompanyID(), projectDeviceInfo.getDeviceTypeID());
-                newFragment.setDialogFragmentClickListener(listener);
-                newFragment.show(getChildFragmentManager(), "dialog");
-                break;
-
-            case "采集器配置":
-                DasCollectorSettingActivity.startActivity(mActivity, projectDeviceInfo.getId());
-                break;
-
-            case "设置":
-                AdvancedSettingActivity.startActivity(mActivity, projectDeviceInfo, AppContants.DeviceType.DAS);
-                break;
-        }
-    }
-
-    private void processDispatchCommonCmd() {
-        DispatchCmdParam dispatchCmdParam = new DispatchCmdParam();
-        dispatchCmdParam.setCmdID(selectedConfigModule.getCmdID());
-        dispatchCmdParam.setCompanyID(MCloudApp.getCompanyID());
-        dispatchCmdParam.setDeviceIDList(Arrays.asList(projectDeviceInfo.getId()));
-
-        showProgressDialog("指令下发中...");
-        DispatchCmdHelper.getInstance().processDispatchCmd(dispatchCmdParam);
-    }
-
-    private BaseDialogFragment.DialogFragmentClickListener listener = new BaseDialogFragment.DialogFragmentClickListener<FirmWareInfo>() {
-        @Override
-        public boolean onPositiveClick(View view, FirmWareInfo firmWareInfo) {
-            StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.append("$cmd=md_upgrade");
-            stringBuilder.append("&url=");
-            stringBuilder.append(firmWareInfo.getFwPath());
-            stringBuilder.append("&md5=");
-            stringBuilder.append(firmWareInfo.getFwMd5());
-            stringBuilder.append("&size=");
-            stringBuilder.append(firmWareInfo.getFwSize());
-
-            DispatchRawCmdParam param = new DispatchRawCmdParam();
-            param.setContent(stringBuilder.toString());
-            param.setCompanyID(MCloudApp.getCompanyID());
-            param.setDeviceIDList(Arrays.asList(projectDeviceInfo.getId()));
-
-            showProgressDialog("指令下发中...");
-            DispatchCmdHelper.getInstance().processDispatchRawCmd(param);
-            return true;
-        }
-
-
-        @Override
-        public void onNegativeClick(View view) {
-
-        }
-    };
 
     private void initConfigModuleData() {
         configModuleList.clear();
@@ -334,6 +190,81 @@ public class NetConfigDeviceFragment extends BaseFragment {
         configModule = new ConfigModule(R.drawable.ic_device_setting, "设置", "高级设置");
         configModuleList.add(configModule);
     }
+
+    private void initAdapter() {
+        int spanCount = 2;//跟布局里面的spanCount属性是一致的
+        int spacing = DensityUtil.Dp2Px(mActivity, 15);//每一个矩形的间距
+        mRecyclerView.setLayoutManager(new GridLayoutManager(mActivity, spanCount));
+        //设置每个item间距
+        mRecyclerView.addItemDecoration(new GridSpacingItemDecoration(spanCount, spacing, true));
+        moduleAdapter = new ConfigModuleAdapter(configModuleList);
+        moduleAdapter.setAnimationEnable(true);
+        moduleAdapter.setAnimationFirstOnly(false);
+        moduleAdapter.setOnItemClickListener(new OnItemClickListener() {
+            @Override
+            public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
+                if (isDoubleClick(view)) {
+                    return;
+                }
+
+                selectedConfigModule = configModuleList.get(position);
+                processItemClick();
+            }
+        });
+        mRecyclerView.setAdapter(moduleAdapter);
+    }
+
+    @OnClick({R.id.tv_device_communication_way_switch, R.id.rl_run_state_analysis})
+    public void onClick(View v) {
+        if (isDoubleClick(v)) {
+            return;
+        }
+        int id = v.getId();
+        if (id == R.id.tv_device_communication_way_switch) {//切换连接方式
+            showWarnDialog("连接方式", "确定切换至蓝牙连接？", SWITCH_TO_BLE);
+        } else if (id == R.id.rl_run_state_analysis) {
+            DeviceHistoryDataAnalysisActivity.startActivity(mActivity, projectDeviceInfo);
+        }
+    }
+
+    private void processItemClick() {
+        switch (selectedConfigModule.getName()) {
+            case "状态":
+            case "时间":
+            case "遥测":
+                doCommonDispatchCommonCmd();
+                break;
+
+            case "重启":
+                showWarnDialog("温馨提示", "确定重启设备吗？", REBOOT);
+                break;
+
+            case "固件升级":
+                FirmWareSelectDialog newFragment = new FirmWareSelectDialog(MCloudApp.getCompanyID(), projectDeviceInfo.getDeviceTypeID());
+                newFragment.setDialogFragmentClickListener(listener);
+                newFragment.show(getChildFragmentManager(), "dialog");
+                break;
+
+            case "采集器配置":
+                DasCollectorSettingActivity.startActivity(mActivity, projectDeviceInfo.getId());
+                break;
+
+            case "设置":
+                AdvancedSettingActivity.startActivity(mActivity, projectDeviceInfo, AppContants.DeviceType.DAS);
+                break;
+        }
+    }
+
+    private BaseDialogFragment.DialogFragmentClickListener listener = new BaseDialogFragment.DialogFragmentClickListener<FirmWareInfo>() {
+        @Override
+        public boolean onPositiveClick(View view, FirmWareInfo firmWareInfo) {
+            doFirmwareUpgrade(firmWareInfo.getId());
+            return true;
+        }
+        @Override
+        public void onNegativeClick(View view) {
+        }
+    };
 
     /**
      * 查询设备状态历史
@@ -395,7 +326,6 @@ public class NetConfigDeviceFragment extends BaseFragment {
         if (devcieHistoryState == null) {
             return;
         }
-
         String firmwareVersion = TextUtils.isEmpty(devcieHistoryState.getSwVersion()) ? "--" : devcieHistoryState.getSwVersion();
         for (ConfigModule configModule : configModuleList) {
             if (configModule.getName().equals("固件升级")) {
@@ -404,6 +334,75 @@ public class NetConfigDeviceFragment extends BaseFragment {
             }
         }
         moduleAdapter.notifyDataSetChanged();
+    }
+
+    /**
+     * 固件升级
+     */
+    private void doFirmwareUpgrade(int firmwareID) {
+        FirmwareUpgrade parameter = new FirmwareUpgrade(MCloudApp.getCompanyID(), projectDeviceInfo.getId(), firmwareID);
+        String json = GsonFactory.getGson().toJson(parameter);
+        RequestBody body = RequestBody.create(NetworkConst.JSON_TYPE, json);
+        MDRetrofit.getInstance()
+                .createService()
+                .FirmwareUpgrade(MCloudApp.getAccessToken(), body)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new BaseObserver<String>() {
+                    @Override
+                    protected void onResponse(String msgId, ErrCode errCode) {
+                        dismissProgressDialog();
+                        if (!ResponseHandler.getInstance().handleResponse(errCode)) {
+                            if (errCode.getCode() == 0) {
+                                msgIDList.clear();
+                                msgIDList.add(msgId);
+                                showDispatchSuccessDialog();
+                            } else {
+                                showDispatchFailedDialog();
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        dismissProgressDialog();
+                        showDispatchFailedDialog();
+                        ResponseHandler.getInstance().handleFailure((Exception) e);
+                    }
+                });
+    }
+
+    /**
+     * 调用指令下发接口
+     */
+    private void doCommonDispatchCommonCmd() {
+        DispatchCmdParam dispatchCmdParam = new DispatchCmdParam();
+        dispatchCmdParam.setCmdID(selectedConfigModule.getCmdID());
+        dispatchCmdParam.setCompanyID(MCloudApp.getCompanyID());
+        dispatchCmdParam.setDeviceIDList(Arrays.asList(projectDeviceInfo.getId()));
+
+        showProgressDialog("指令下发中...");
+        processDispatchCmd(dispatchCmdParam);
+    }
+
+    /**
+     * 调用指令下发/透传接口结果返回
+     *
+     * @param dispatchCmdItemList
+     */
+    @Override
+    protected void onDispatchCmdResult(List<DispatchCmdItem> dispatchCmdItemList) {
+        dismissProgressDialog();
+        if (dispatchCmdItemList == null || dispatchCmdItemList.size() == 0) {
+            showDispatchFailedDialog();
+            return;
+        }
+
+        msgIDList.clear();
+        for (DispatchCmdItem cmdItem : dispatchCmdItemList) {
+            msgIDList.add(cmdItem.getMsgID());
+        }
+        showDispatchSuccessDialog();
     }
 
     /**
@@ -426,6 +425,10 @@ public class NetConfigDeviceFragment extends BaseFragment {
 
             case "重启":
                 title = "重新启动";
+                break;
+
+            case "固件升级":
+                title = "固件升级";
                 break;
         }
         BaseDispatchCmdDialog newFragment = new DispatchCmdFailedDialog(title);
@@ -488,7 +491,7 @@ public class NetConfigDeviceFragment extends BaseFragment {
                         dialog.dismiss();
                         switch (operateType) {
                             case REBOOT:
-                                processDispatchCommonCmd();
+                                doCommonDispatchCommonCmd();
                                 break;
 
                             case SWITCH_TO_BLE:

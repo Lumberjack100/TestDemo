@@ -67,38 +67,38 @@ public abstract class BaseDispatchCmdDialog extends DialogFragment {
 
     protected Handler UIHandler;
 
-    private MyRunnable mRunnable;
+    private QueryCmdResponseRunnable queryCmdResponseRunnable;
 
-    private static int repeatNum = 0;//当查询指令结果5次时，判断响应超时
+    private static int queryNum = 0;//当查询指令结果5次时，判断响应超时
 
-
-    private class MyRunnable implements Runnable {
+    private class QueryCmdResponseRunnable implements Runnable {
         @Override
         public void run() {
-            if (repeatNum > 5) {
-                stopRunnable();
+            //轮询指令响应结果接口达到5次，判断超时
+            if (queryNum > 5) {
+                stopQueryCmdResponseRunnable();
                 hideResponseLoadingView();
                 showResponseTimeOutView("响应超时");
+                onQueryCmdResponseResultTimeOut(null);
                 return;
             }
-
-            Timber.d("当前时间");
+            Timber.i("QueryCmdResponseRunnable run();queryNum=%s", queryNum);
             queryCmdResultByMsgID();
         }
     }
 
-    protected void startRunnable(long delayMillis) {
-        if (mRunnable == null) {
-            mRunnable = new MyRunnable();
+    protected void startQueryCmdResponseRunnable(long delayMillis) {
+        if (queryCmdResponseRunnable == null) {
+            queryCmdResponseRunnable = new QueryCmdResponseRunnable();
         }
-        repeatNum++;
-        UIHandler.postDelayed(mRunnable, delayMillis);
+        queryNum++;
+        UIHandler.postDelayed(queryCmdResponseRunnable, delayMillis);
     }
 
-    protected void stopRunnable() {
-        UIHandler.removeCallbacks(mRunnable);
-        mRunnable = null;
-        repeatNum = 0;
+    protected void stopQueryCmdResponseRunnable() {
+        UIHandler.removeCallbacks(queryCmdResponseRunnable);
+        queryCmdResponseRunnable = null;
+        queryNum = 0;
     }
 
     @Override
@@ -203,7 +203,7 @@ public abstract class BaseDispatchCmdDialog extends DialogFragment {
     @Override
     public void onStop() {
         super.onStop();
-        stopRunnable();
+        stopQueryCmdResponseRunnable();
     }
 
     @Override
@@ -217,7 +217,7 @@ public abstract class BaseDispatchCmdDialog extends DialogFragment {
      */
     protected void startQueryCmdResponse() {
         showResponseLoadingView();
-        startRunnable(2000);
+        startQueryCmdResponseRunnable(2000);
     }
 
     private void queryCmdResultByMsgID() {
@@ -259,21 +259,13 @@ public abstract class BaseDispatchCmdDialog extends DialogFragment {
 
     private void processCmdResult(QueryCmdResult queryCmdResult) {
         if (queryCmdResult.getCmdStatus() == 2) {//已下发得到响应
-            stopRunnable();
+            stopQueryCmdResponseRunnable();
             hideResponseLoadingView();
             onQueryCmdResponseResultSuccess(queryCmdResult);
 
         } else {
-            if (repeatNum >= 5) {//已经达到设定的10秒超时时间
-                Timber.d("当前时间已查询次数：%s", repeatNum);
-                stopRunnable();
-                hideResponseLoadingView();
-                showResponseTimeOutView("响应超时");
-                onQueryCmdResponseResultTimeOut(queryCmdResult);
-                return;
-            }
             //延迟2秒后再次查询响应结果
-            startRunnable(2000);
+            startQueryCmdResponseRunnable(2000);
         }
     }
 
@@ -290,7 +282,7 @@ public abstract class BaseDispatchCmdDialog extends DialogFragment {
      * @param errMsg
      */
     protected void onQueryCmdResponseResultError(String errMsg){
-        stopRunnable();
+        stopQueryCmdResponseRunnable();
         hideResponseLoadingView();
     }
 

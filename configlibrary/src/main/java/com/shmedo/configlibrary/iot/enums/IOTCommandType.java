@@ -68,6 +68,17 @@ public enum IOTCommandType {
      */
     LOG_OUTPUT_MODE_LEVEL("md_setlogoutput"),
 
+    /*　DAS网关指令  */
+    /**
+     * 获取采集控制相关参数
+     */
+    DAS_MD_GET_COLLECTOR_CONTROL("md_getcollctrl"),
+
+    /**
+     * 设置采集控制相关参数
+     */
+    DAS_MD_SET_COLLECTOR_CONTROL("md_setcollctrl"),
+
     /*　VMS-LoRa网关指令  */
     /**
      * 获取网关的基本信息
