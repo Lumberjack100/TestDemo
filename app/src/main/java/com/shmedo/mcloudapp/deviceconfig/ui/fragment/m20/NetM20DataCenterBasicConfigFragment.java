@@ -184,14 +184,8 @@ public class NetM20DataCenterBasicConfigFragment extends BaseNetIotCommunicateFr
         ServerNumberEntity serverNumberEntity = new ServerNumberEntity(serverNumber.toInt());
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.MD_GET_DATA_CENTER, serverNumberEntity);
 
-        DispatchRawCmdParam rawCmdParam = new DispatchRawCmdParam();
-        rawCmdParam.setContent(command);
-        rawCmdParam.setCompanyID(MCloudApp.getCompanyID());
-        rawCmdParam.setDeviceIDList(Arrays.asList(projectDeviceInfo.getId()));
-
         operaType = GET_DATA_SENTER;
-        showProgressDialog("加载中...");
-        processDispatchRawCmd(rawCmdParam);
+        doCommonDispatchRawCmd(command);
     }
 
     /**
@@ -207,7 +201,8 @@ public class NetM20DataCenterBasicConfigFragment extends BaseNetIotCommunicateFr
         isSaveParamOperation = false;
         mBtnSave.setEnabled(false);
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.MD_SET_DATA_CENTER, dataCenterEntity);
-//        sendCommand(command);
+        operaType = SET_DATA_SENTER;
+        doCommonDispatchRawCmd(command);
     }
 
     @OnClick({R.id.btn_confirm})
@@ -219,7 +214,6 @@ public class NetM20DataCenterBasicConfigFragment extends BaseNetIotCommunicateFr
                 Timber.w("参数存在错误!");
                 return;
             }
-
             processSave();
         }
     }
@@ -265,10 +259,24 @@ public class NetM20DataCenterBasicConfigFragment extends BaseNetIotCommunicateFr
         isSaveParamOperation = true;
         mBtnSave.setEnabled(false);
 
-//        errMsg = "发送指令超时,请稍后尝试";
-//        startProgressRunnable("正在发送配置指令...", WRITE_TIME_OUT_SECOND);
-//        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.MD_SET_DATA_CENTER, dataCenterEntity);
-//        sendCommand(command);
+        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.MD_SET_DATA_CENTER, dataCenterEntity);
+        operaType = SET_DATA_SENTER;
+        doCommonDispatchRawCmd(command);
+    }
+
+    /**
+     * 调用指令透传接口
+     *
+     * @param content
+     */
+    private void doCommonDispatchRawCmd(String content) {
+        DispatchRawCmdParam rawCmdParam = new DispatchRawCmdParam();
+        rawCmdParam.setContent(content);
+        rawCmdParam.setCompanyID(MCloudApp.getCompanyID());
+        rawCmdParam.setDeviceIDList(Arrays.asList(projectDeviceInfo.getId()));
+
+        showProgressDialog("处理中...");
+        processDispatchRawCmd(rawCmdParam);
     }
 
     @Override
@@ -292,11 +300,12 @@ public class NetM20DataCenterBasicConfigFragment extends BaseNetIotCommunicateFr
      * 指令下发失败弹框
      */
     private void showDispatchFailedDialog() {
+        mBtnSave.setEnabled(true);
+        if (isSaveParamOperation)
+            isSaveParamOperation = false;
+
         switch (operaType) {
             case GET_DATA_SENTER:
-                ToastUtils.show("下发指令失败");
-                break;
-
             case SET_DATA_SENTER:
                 ToastUtils.show("下发指令失败");
                 break;
@@ -314,7 +323,10 @@ public class NetM20DataCenterBasicConfigFragment extends BaseNetIotCommunicateFr
     @Override
     protected void onQueryCmdResponseResultError(String errMsg) {
         super.onQueryCmdResponseResultError(errMsg);
-        ToastUtils.show("查询指令响应结果错误");
+        mBtnSave.setEnabled(true);
+        if (isSaveParamOperation)
+            isSaveParamOperation = false;
+        ToastUtils.show("查询设备响应错误");
     }
 
     /**
@@ -325,7 +337,10 @@ public class NetM20DataCenterBasicConfigFragment extends BaseNetIotCommunicateFr
     @Override
     protected void onQueryCmdResponseResultTimeOut(QueryCmdResult queryCmdResult) {
         super.onQueryCmdResponseResultTimeOut(queryCmdResult);
-        ToastUtils.show("查询指令响应结果超时");
+        mBtnSave.setEnabled(true);
+        if (isSaveParamOperation)
+            isSaveParamOperation = false;
+        ToastUtils.show("查询设备响应超时");
     }
 
     /**
@@ -340,11 +355,10 @@ public class NetM20DataCenterBasicConfigFragment extends BaseNetIotCommunicateFr
     }
 
     private void setResultData(QueryCmdResult queryCmdResult) {
-        String cmdStr=queryCmdResult.getResponseContent();
+        String cmdStr = queryCmdResult.getResponseContent();
         IOTCommandType type = IOTStringUtil.extractCommandType(queryCmdResult.getCmdEngName());
         switch (type) {
             case MD_GET_DATA_CENTER: {//获取设备的数据中心参数
-//                stopProgressRunnable();
                 IOTCommandResult<DataCenterInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
                     String errMsg = String.format("%s %s", "查询数据中心参数出错!", commandResult.getMessage());
@@ -381,7 +395,7 @@ public class NetM20DataCenterBasicConfigFragment extends BaseNetIotCommunicateFr
     private void doAfterSetting() {
         if (isSaveParamOperation) {
             isSaveParamOperation = false;
-            ToastUtils.show("设置成功");
+            ToastUtils.show("保存成功");
         }
         mBtnSave.setEnabled(true);
     }
@@ -392,7 +406,6 @@ public class NetM20DataCenterBasicConfigFragment extends BaseNetIotCommunicateFr
             dataCenterInfo = new DataCenterInfo();
             return;
         }
-
         dataServerAddress = dataCenterInfo.getAddr().trim();
         dataServerPort = dataCenterInfo.getPort().trim();
         mEtDataServerAddress.setText(dataServerAddress);

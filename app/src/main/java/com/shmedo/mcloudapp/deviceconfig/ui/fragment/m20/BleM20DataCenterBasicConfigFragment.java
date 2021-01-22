@@ -306,7 +306,7 @@ public class BleM20DataCenterBasicConfigFragment extends BaseGOCBleIotCommunicat
     private void doAfterSetting() {
         if (isSaveParamOperation) {
             isSaveParamOperation = false;
-            ToastUtils.show("设置成功");
+            ToastUtils.show("保存成功");
         }
         mBtnSave.setEnabled(true);
     }

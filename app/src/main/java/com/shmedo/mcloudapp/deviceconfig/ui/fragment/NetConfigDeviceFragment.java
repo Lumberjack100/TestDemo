@@ -261,7 +261,6 @@ public class NetConfigDeviceFragment extends BaseFragment {
             case "设置":
                 AdvancedSettingActivity.startActivity(mActivity, projectDeviceInfo, AppContants.DeviceType.DAS);
                 break;
-
         }
     }
 

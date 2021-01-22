@@ -46,18 +46,19 @@ public abstract class BaseNetIotCommunicateFragment extends BaseFragment {
 
     private Handler uiHander = new Handler();
 
-    private static int repeatNum = 0;//当查询指令结果5次时，判断响应超时
+    private static int queryNum = 0;//当查询指令结果5次时，判断响应超时
     private QueryCmdResponseRunnable queryCmdResponseRunnable;//常规任务
 
     private class QueryCmdResponseRunnable implements Runnable {
         @Override
         public void run() {
-            if (repeatNum > 5) {
+            //轮询指令响应结果接口达到5次，判断超时
+            if (queryNum > 5) {
                 stopQueryCmdResponseRunnable();
                 onQueryCmdResponseResultTimeOut(null);
                 return;
             }
-            Timber.d("QueryCmdResponseRunnable run();repeatNum=%s", repeatNum);
+            Timber.i("QueryCmdResponseRunnable run();queryNum=%s", queryNum);
             queryCmdResultByMsgID();
         }
     }
@@ -65,13 +66,15 @@ public abstract class BaseNetIotCommunicateFragment extends BaseFragment {
     protected void startQueryCmdResponseRunnable(long delayMillis) {
         if (queryCmdResponseRunnable == null) {
             queryCmdResponseRunnable = new QueryCmdResponseRunnable();
-            uiHander.postDelayed(queryCmdResponseRunnable, delayMillis);
         }
+        queryNum++;
+        uiHander.postDelayed(queryCmdResponseRunnable, delayMillis);
     }
 
     protected void stopQueryCmdResponseRunnable() {
         uiHander.removeCallbacksAndMessages(null);
         queryCmdResponseRunnable = null;
+        queryNum = 0;
     }
 
     @Override
@@ -187,7 +190,7 @@ public abstract class BaseNetIotCommunicateFragment extends BaseFragment {
     }
 
     /**
-     * 查询指令响应
+     * 查询设备对下发/透传的指令响应结果
      */
     private void queryCmdResultByMsgID() {
         String json = GsonFactory.getGson().toJson(msgIDList);
@@ -230,14 +233,7 @@ public abstract class BaseNetIotCommunicateFragment extends BaseFragment {
         if (queryCmdResult.getCmdStatus() == 2) {//已下发得到响应
             stopQueryCmdResponseRunnable();
             onQueryCmdResponseResultSuccess(queryCmdResult);
-
         } else {
-            if (repeatNum >= 5) {//已经达到设定的10秒超时时间
-                Timber.d("当前时间已查询次数：%s", repeatNum);
-                stopQueryCmdResponseRunnable();
-                onQueryCmdResponseResultTimeOut(queryCmdResult);
-                return;
-            }
             //延迟2秒后再次查询响应结果
             startQueryCmdResponseRunnable(2000);
         }
@@ -258,6 +254,7 @@ public abstract class BaseNetIotCommunicateFragment extends BaseFragment {
      * @param errMsg
      */
     protected void onQueryCmdResponseResultError(String errMsg) {
+        //停止轮询指令响应结果接口
         stopQueryCmdResponseRunnable();
     }
 

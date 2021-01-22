@@ -29,11 +29,18 @@ import com.shmedo.configlibrary.iot.model.CommonSettingCmdResult;
 import com.shmedo.configlibrary.iot.model.DataCenterInfo;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
 import com.shmedo.core.AppContants;
+import com.shmedo.core.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.view.ClearEditText;
+import com.shmedo.mcloudapp.deviceconfig.model.DispatchCmdItem;
+import com.shmedo.mcloudapp.deviceconfig.model.QueryCmdResult;
+import com.shmedo.mcloudapp.deviceconfig.model.params.DispatchRawCmdParam;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.BaseNetIotCommunicateFragment;
+import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfo;
 import com.shmedo.mcloudapp.util.KeyBordUtils;
 
-import org.jetbrains.annotations.NotNull;
+import java.util.Arrays;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -41,10 +48,12 @@ import timber.log.Timber;
 
 /**
  * 创建者:   gonghe <br/>
- * 创建时间:  1/19/21 <br/>
- * 描述：    M20 数据中心高级参数配置页面
+ * 创建时间:  1/22/21 <br/>
+ * 描述：    M20网络模式  数据中心高级参数配置页面
  */
-public class BleM20DataCenterAdvancedConfigFragment extends BaseGOCBleIotCommunicateFragment {
+public class NetM20DataCenterAdvancedConfigFragment extends BaseNetIotCommunicateFragment {
+    public static final String PRO_DEVICE_INFO = "com.shmedo.mcloudapp.PRO_DEVICE_INFO";
+
     @BindView(R.id.maskLayerChild)
     ViewGroup maskLayerLayout;
 
@@ -108,11 +117,18 @@ public class BleM20DataCenterAdvancedConfigFragment extends BaseGOCBleIotCommuni
     private boolean centerEnableInitial;//数据中心开关初始状态，用于判断开关是否有打开后没有设置参数就返回
     private boolean isSaveParamOperation = false;//判断当前是保存参数操作，还是关闭数据中心操作
 
-    public static BleM20DataCenterAdvancedConfigFragment newInstance(ServerNumber serverNumber, String status) {
-        BleM20DataCenterAdvancedConfigFragment fragment = new BleM20DataCenterAdvancedConfigFragment();
+    private ProjectDeviceInfo projectDeviceInfo;
+
+    private static final int GET_DATA_SENTER = 0x1000;
+    private static final int SET_DATA_SENTER = 0x1001;
+    private int operaType = -1;
+
+    public static NetM20DataCenterAdvancedConfigFragment newInstance(ServerNumber serverNumber, String status, ProjectDeviceInfo projectDeviceInfo) {
+        NetM20DataCenterAdvancedConfigFragment fragment = new NetM20DataCenterAdvancedConfigFragment();
         Bundle args = new Bundle();
         args.putSerializable(AppContants.Extras.DATA_SERVER_NUMBER, serverNumber);
         args.putSerializable(AppContants.Extras.DATA_SERVER_STATUS, status);
+        args.putParcelable(PRO_DEVICE_INFO, projectDeviceInfo);
         fragment.setArguments(args);
         return fragment;
     }
@@ -123,12 +139,13 @@ public class BleM20DataCenterAdvancedConfigFragment extends BaseGOCBleIotCommuni
         if (getArguments() != null) {
             serverNumber = (ServerNumber) getArguments().getSerializable(AppContants.Extras.DATA_SERVER_NUMBER);
             serverStatus = getArguments().getString(AppContants.Extras.DATA_SERVER_STATUS);
+            projectDeviceInfo = getArguments().getParcelable(PRO_DEVICE_INFO);
         }
     }
 
     @Override
     protected int getLayoutId() {
-        return R.layout.ble_m20_data_center_advanced_config_fragment;
+        return R.layout.net_m20_data_center_advanced_config_fragment;
     }
 
     @Override
@@ -165,12 +182,6 @@ public class BleM20DataCenterAdvancedConfigFragment extends BaseGOCBleIotCommuni
         mSbCenterEnable.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (!isConnected()) {
-                    ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
-                    mSbCenterEnable.setCheckedImmediatelyNoEvent(!isChecked);
-                    return;
-                }
-
                 if (!isChecked) {
                     showCloseSwitchButtonDialog("确定要关闭数据中心？");
                 } else {
@@ -216,11 +227,11 @@ public class BleM20DataCenterAdvancedConfigFragment extends BaseGOCBleIotCommuni
      * 获取设备的数据中心参数
      */
     private void queryDataCenterInfo() {
-        errMsg = "查询数据超时,请稍后尝试";
-        startProgressRunnable("加载中...", WRITE_TIME_OUT_SECOND);
         ServerNumberEntity serverNumberEntity = new ServerNumberEntity(serverNumber.toInt());
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.MD_GET_DATA_CENTER, serverNumberEntity);
-        sendCommand(command);
+
+        operaType = GET_DATA_SENTER;
+        doCommonDispatchRawCmd(command);
     }
 
     /**
@@ -236,21 +247,21 @@ public class BleM20DataCenterAdvancedConfigFragment extends BaseGOCBleIotCommuni
         isSaveParamOperation = false;
         mBtnSave.setEnabled(false);
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.MD_SET_DATA_CENTER, dataCenterEntity);
-        sendCommand(command);
+        operaType = SET_DATA_SENTER;
+        doCommonDispatchRawCmd(command);
     }
 
     @OnClick({R.id.ll_transfer_protocol, R.id.btn_confirm})
     public void onClick(View view) {
+        if (isDoubleClick(view)) {
+            return;
+        }
         int id = view.getId();
         if (id == R.id.ll_transfer_protocol) {
             showTransferProtocolDialog();
 
         } else if (id == R.id.btn_confirm) {
             KeyBordUtils.hideSoftKeyboard(view);
-            if (!isConnected()) {
-                ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
-                return;
-            }
             if (!checkValueIsValid()) {
                 Timber.w("参数存在错误!");
                 return;
@@ -392,22 +403,106 @@ public class BleM20DataCenterAdvancedConfigFragment extends BaseGOCBleIotCommuni
         isSaveParamOperation = true;
         mBtnSave.setEnabled(false);
 
-        errMsg = "发送指令超时,请稍后尝试";
-        startProgressRunnable("正在发送配置指令...", WRITE_TIME_OUT_SECOND);
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.MD_SET_DATA_CENTER, dataCenterEntity);
-        sendCommand(command);
+        operaType = SET_DATA_SENTER;
+        doCommonDispatchRawCmd(command);
+    }
+
+    /**
+     * 调用指令透传接口
+     *
+     * @param content
+     */
+    private void doCommonDispatchRawCmd(String content) {
+        DispatchRawCmdParam rawCmdParam = new DispatchRawCmdParam();
+        rawCmdParam.setContent(content);
+        rawCmdParam.setCompanyID(MCloudApp.getCompanyID());
+        rawCmdParam.setDeviceIDList(Arrays.asList(projectDeviceInfo.getId()));
+
+        showProgressDialog("处理中...");
+        processDispatchRawCmd(rawCmdParam);
     }
 
     @Override
-    protected void parseResponseMessage(@NotNull String cmdStr) {
-        setResultData(cmdStr);
+    protected void onDispatchCmdResult(List<DispatchCmdItem> dispatchCmdItemList) {
+        if (dispatchCmdItemList == null || dispatchCmdItemList.size() == 0) {
+            dismissProgressDialog();
+            showDispatchFailedDialog();
+            return;
+        }
+        msgIDList.clear();
+        for (DispatchCmdItem cmdItem : dispatchCmdItemList) {
+            msgIDList.add(cmdItem.getMsgID());
+        }
+
+        if (msgIDList != null && msgIDList.size() > 0) {
+            startQueryCmdResponseRunnable(2000);
+        }
     }
 
-    private void setResultData(final String cmdStr) {
-        IOTCommandType type = IOTStringUtil.extractCommandType(cmdStr);
+    /**
+     * 指令下发失败弹框
+     */
+    private void showDispatchFailedDialog() {
+        mBtnSave.setEnabled(true);
+        if (isSaveParamOperation)
+            isSaveParamOperation = false;
+
+        switch (operaType) {
+            case GET_DATA_SENTER:
+            case SET_DATA_SENTER:
+                ToastUtils.show("下发指令失败");
+                break;
+
+            default:
+                break;
+        }
+    }
+
+    /**
+     * 查询指令响应结果出错
+     *
+     * @param errMsg
+     */
+    @Override
+    protected void onQueryCmdResponseResultError(String errMsg) {
+        super.onQueryCmdResponseResultError(errMsg);
+        mBtnSave.setEnabled(true);
+        if (isSaveParamOperation)
+            isSaveParamOperation = false;
+        ToastUtils.show("查询设备响应错误");
+    }
+
+    /**
+     * 查询指令响应结果超时
+     *
+     * @param queryCmdResult
+     */
+    @Override
+    protected void onQueryCmdResponseResultTimeOut(QueryCmdResult queryCmdResult) {
+        super.onQueryCmdResponseResultTimeOut(queryCmdResult);
+        mBtnSave.setEnabled(true);
+        if (isSaveParamOperation)
+            isSaveParamOperation = false;
+        ToastUtils.show("查询设备响应超时");
+    }
+
+    /**
+     * 查询指令响应结果成功
+     *
+     * @param queryCmdResult
+     */
+    @Override
+    protected void onQueryCmdResponseResultSuccess(QueryCmdResult queryCmdResult) {
+        super.onQueryCmdResponseResultSuccess(queryCmdResult);
+        setResultData(queryCmdResult);
+    }
+
+    private void setResultData(QueryCmdResult queryCmdResult) {
+        String cmdStr = queryCmdResult.getResponseContent();
+        IOTCommandType type = IOTStringUtil.extractCommandType(queryCmdResult.getCmdEngName());
         switch (type) {
             case MD_GET_DATA_CENTER: {//获取设备的数据中心参数
-                stopProgressRunnable();
                 IOTCommandResult<DataCenterInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
                     String errMsg = String.format("%s %s", "查询数据中心参数出错!", commandResult.getMessage());
@@ -421,7 +516,7 @@ public class BleM20DataCenterAdvancedConfigFragment extends BaseGOCBleIotCommuni
             break;
 
             case MD_SET_DATA_CENTER: {//设置设备的数据中心参数
-                stopProgressRunnable();
+//                stopProgressRunnable();
                 CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
                 if (!cmdResult.isSucceed()) {
                     String errMsg = String.format("%s %s", "设置数据中心参数出错!", cmdResult.getReason());
@@ -437,7 +532,6 @@ public class BleM20DataCenterAdvancedConfigFragment extends BaseGOCBleIotCommuni
             break;
 
             default:
-                super.parseResponseMessage(cmdStr);
                 break;
         }
     }
@@ -457,7 +551,6 @@ public class BleM20DataCenterAdvancedConfigFragment extends BaseGOCBleIotCommuni
             dataCenterInfo = new DataCenterInfo();
             return;
         }
-
         transferProtocolOld = dataCenterInfo.getProtocol().trim();
         transferProtocol = dataCenterInfo.getProtocol().trim();
         dataProtocol = dataCenterInfo.getDatatype().trim();
@@ -495,15 +588,12 @@ public class BleM20DataCenterAdvancedConfigFragment extends BaseGOCBleIotCommuni
 
     @Override
     public boolean onBackPressed() {
-        if (isConnected()) {
-            if (checkValueIsChange()) {
-                warnNotYetSettingBeforeLeavePage();
-                return true;
-            } else {
-                return false;
-            }
+        if (checkValueIsChange()) {
+            warnNotYetSettingBeforeLeavePage();
+            return true;
+        } else {
+            return false;
         }
-        return false;
     }
 
     private boolean checkValueIsChange() {
@@ -524,7 +614,6 @@ public class BleM20DataCenterAdvancedConfigFragment extends BaseGOCBleIotCommuni
         }
 
         if (transferProtocol != null && transferProtocol.equals("MQTT")) {//MQTT自动注册
-
             if (deviceId != null && !deviceId.equals(mEtDeviceId.getText().toString().trim())) {
                 return true;
             }
@@ -548,7 +637,6 @@ public class BleM20DataCenterAdvancedConfigFragment extends BaseGOCBleIotCommuni
                 return true;
             }
         }
-
         return false;
     }
 }
