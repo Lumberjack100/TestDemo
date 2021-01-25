@@ -20,7 +20,7 @@ import butterknife.BindView;
 /**
  * 通过网络下发指令查看设备当前运行状态
  */
-public class NetDasDeviceCurrentState extends BaseFragment {
+public class NetDasCurrentStateFragment extends BaseFragment {
     private static final String PRO_DEVICE_INFO = "com.shmedo.mcloudapp.PRO_DEVICE_INFO";
     private static final String DEVICE_CURRENT_STATE = "device_current_state";
 
@@ -148,8 +148,8 @@ public class NetDasDeviceCurrentState extends BaseFragment {
     private DevcieCurrentState devcieCurrentState;
 
 
-    public static NetDasDeviceCurrentState newInstance(ProjectDeviceInfo projectDeviceInfo, DevcieCurrentState devcieCurrentState) {
-        NetDasDeviceCurrentState fragment = new NetDasDeviceCurrentState();
+    public static NetDasCurrentStateFragment newInstance(ProjectDeviceInfo projectDeviceInfo, DevcieCurrentState devcieCurrentState) {
+        NetDasCurrentStateFragment fragment = new NetDasCurrentStateFragment();
         Bundle args = new Bundle();
         args.putParcelable(PRO_DEVICE_INFO, projectDeviceInfo);
         args.putParcelable(DEVICE_CURRENT_STATE, devcieCurrentState);

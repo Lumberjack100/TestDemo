@@ -67,6 +67,9 @@
     <color name="bottom_nav_icon_color_normal">#C4C6CA</color>
     <color name="blue_52B4F8">#52B4F8</color>
 
+    <color name="device_unopened_platform">#BCC0CC</color>
+    <color name="device_not_connected_platform">#F24B4B</color>
+
     <!-- 地图模块 -->
     <color name="map_primary">#5d86fb</color>
     <color name="map_primary_dark">#3a5295</color>

@@ -136,6 +136,8 @@ public class BleAdmeCurrentStateFragment extends BaseBleIotCommunicateFragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         initRefreshLayout();
+        // 进入页面，刷新数据
+        swipeRefresh.setRefreshing(true);
         queryParamInfo();
     }
 
@@ -155,8 +157,7 @@ public class BleAdmeCurrentStateFragment extends BaseBleIotCommunicateFragment {
     private void queryParamInfo() {
 //        errMsg = "查询数据超时,请稍后尝试";
 //        startProgressRunnable("加载中...", WRITE_TIME_OUT_SECOND);
-        // 进入页面，刷新数据
-        swipeRefresh.setRefreshing(true);
+
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_GET_EQUIPMENT_STATE);
         sendCommand(command);
     }
@@ -171,7 +172,7 @@ public class BleAdmeCurrentStateFragment extends BaseBleIotCommunicateFragment {
         switch (type) {
             case ADME_MD_GET_EQUIPMENT_STATE: {
                 swipeRefresh.setRefreshing(false);
-                stopProgressRunnable();
+//                stopProgressRunnable();
                 IOTCommandResult<AdmeCurrentStateInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
                     String errMsg = String.format("%s %s", "查询设备状态出错!", commandResult.getMessage());

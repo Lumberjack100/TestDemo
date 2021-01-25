@@ -171,6 +171,7 @@ public class ProjectListFragment extends BaseTranslucentFragment {
             projectState = ProjectState.ALL;
             mRecyclerView.setVisibility(View.VISIBLE);
             mRecyclerViewGroup.setVisibility(View.GONE);
+            swipeRefresh.setRefreshing(true);
             refreshProjects();
         }
     }
@@ -411,9 +412,6 @@ public class ProjectListFragment extends BaseTranslucentFragment {
 
     private void refreshProjects() {
         startLoading();
-
-        // 进入页面，刷新数据
-        swipeRefresh.setRefreshing(true);
 
         switch (projectGroupViewMode) {
             case SIMPLE_LIST:
@@ -990,6 +988,7 @@ public class ProjectListFragment extends BaseTranslucentFragment {
             showBadNetworkView(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    swipeRefresh.setRefreshing(true);
                     refreshProjects();
                 }
             });

@@ -52,6 +52,7 @@
 
         <LinearLayout
             android:id="@+id/firmwareUpgradeLayout"
+            android:visibility="gone"
             style="@style/Common_ClickableItem_LayoutStyle">
 
             <TextView

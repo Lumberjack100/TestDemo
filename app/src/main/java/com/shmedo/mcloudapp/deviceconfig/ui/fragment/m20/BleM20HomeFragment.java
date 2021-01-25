@@ -34,6 +34,7 @@ import com.shmedo.mcloudapp.deviceconfig.model.ConfigModule;
 import com.shmedo.mcloudapp.deviceconfig.model.DiscoveredBluetoothDevice;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.AdvancedSettingActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.DataCenterHomeActivity;
+import com.shmedo.mcloudapp.deviceconfig.ui.activity.DeviceCurrentStateActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -176,7 +177,7 @@ public class BleM20HomeFragment extends BaseGOCBleIotCommunicateFragment {
                 break;
 
             case "状态":
-                testStatus();
+                DeviceCurrentStateActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT, AppContants.DeviceType.M20);
                 break;
 
             case "数据中心":
@@ -310,12 +311,6 @@ public class BleM20HomeFragment extends BaseGOCBleIotCommunicateFragment {
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_GET_EQUIPMENT_BASIS);
         sendCommand(command);
     }
-
-    private void testStatus() {
-        String command = "$cmd=getstatus";
-        sendCommand(command);
-    }
-
 
     @OnClick({R.id.tv_device_connect_operate})
     public void onClick(View v) {

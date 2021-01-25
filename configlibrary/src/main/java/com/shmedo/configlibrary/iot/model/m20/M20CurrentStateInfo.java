@@ -1,7 +1,10 @@
 package com.shmedo.configlibrary.iot.model.m20;
 
+import android.text.TextUtils;
+
 import com.google.gson.annotations.SerializedName;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -71,7 +74,7 @@ public class M20CurrentStateInfo {
     private List<SensorErrnoBean> sensor_errno;
 
     public String getExt_power_volt() {
-        return ext_power_volt;
+        return TextUtils.isEmpty(ext_power_volt) ? "" : ext_power_volt;
     }
 
     public void setExt_power_volt(String ext_power_volt) {
@@ -79,7 +82,7 @@ public class M20CurrentStateInfo {
     }
 
     public String getInner_power_volt() {
-        return inner_power_volt;
+        return TextUtils.isEmpty(inner_power_volt) ? "" : inner_power_volt;
     }
 
     public void setInner_power_volt(String inner_power_volt) {
@@ -87,7 +90,7 @@ public class M20CurrentStateInfo {
     }
 
     public String getTemp() {
-        return temp;
+        return TextUtils.isEmpty(temp) ? "" : temp;
     }
 
     public void setTemp(String temp) {
@@ -95,7 +98,7 @@ public class M20CurrentStateInfo {
     }
 
     public String getHumidity() {
-        return humidity;
+        return TextUtils.isEmpty(humidity) ? "" : humidity;
     }
 
     public void setHumidity(String humidity) {
@@ -103,7 +106,7 @@ public class M20CurrentStateInfo {
     }
 
     public String getTemp_out() {
-        return temp_out;
+        return TextUtils.isEmpty(temp_out) ? "" : temp_out;
     }
 
     public void setTemp_out(String temp_out) {
@@ -111,7 +114,7 @@ public class M20CurrentStateInfo {
     }
 
     public String getHumidity_out() {
-        return humidity_out;
+        return TextUtils.isEmpty(humidity_out) ? "" : humidity_out;
     }
 
     public void setHumidity_out(String humidity_out) {
@@ -119,7 +122,7 @@ public class M20CurrentStateInfo {
     }
 
     public String get_$4g_signal() {
-        return _$4g_signal;
+        return TextUtils.isEmpty(_$4g_signal) ? "" : _$4g_signal;
     }
 
     public void set_$4g_signal(String _$4g_signal) {
@@ -127,7 +130,7 @@ public class M20CurrentStateInfo {
     }
 
     public String getBd_signal() {
-        return bd_signal;
+        return TextUtils.isEmpty(bd_signal) ? "" : bd_signal;
     }
 
     public void setBd_signal(String bd_signal) {
@@ -135,7 +138,7 @@ public class M20CurrentStateInfo {
     }
 
     public String getSw_version() {
-        return sw_version;
+        return TextUtils.isEmpty(sw_version) ? "" : sw_version;
     }
 
     public void setSw_version(String sw_version) {
@@ -143,7 +146,7 @@ public class M20CurrentStateInfo {
     }
 
     public String getLocation() {
-        return location;
+        return TextUtils.isEmpty(location) ? "" : location;
     }
 
     public void setLocation(String location) {
@@ -151,7 +154,7 @@ public class M20CurrentStateInfo {
     }
 
     public String getIMEI() {
-        return IMEI;
+        return TextUtils.isEmpty(IMEI) ? "" : IMEI;
     }
 
     public void setIMEI(String IMEI) {
@@ -159,7 +162,7 @@ public class M20CurrentStateInfo {
     }
 
     public String getCCID() {
-        return CCID;
+        return TextUtils.isEmpty(CCID) ? "" : CCID;
     }
 
     public void setCCID(String CCID) {
@@ -167,7 +170,7 @@ public class M20CurrentStateInfo {
     }
 
     public String getSolar_volt() {
-        return solar_volt;
+        return TextUtils.isEmpty(solar_volt) ? "" : solar_volt;
     }
 
     public void setSolar_volt(String solar_volt) {
@@ -175,7 +178,7 @@ public class M20CurrentStateInfo {
     }
 
     public String getBattery_volt() {
-        return battery_volt;
+        return TextUtils.isEmpty(battery_volt) ? "" : battery_volt;
     }
 
     public void setBattery_volt(String battery_volt) {
@@ -183,7 +186,7 @@ public class M20CurrentStateInfo {
     }
 
     public String getSupply_power() {
-        return supply_power;
+        return TextUtils.isEmpty(supply_power) ? "" : supply_power;
     }
 
     public void setSupply_power(String supply_power) {
@@ -191,7 +194,7 @@ public class M20CurrentStateInfo {
     }
 
     public String getConsume_power() {
-        return consume_power;
+        return TextUtils.isEmpty(consume_power) ? "" : consume_power;
     }
 
     public void setConsume_power(String consume_power) {
@@ -199,7 +202,7 @@ public class M20CurrentStateInfo {
     }
 
     public String getWork_current() {
-        return work_current;
+        return TextUtils.isEmpty(work_current) ? "" : work_current;
     }
 
     public void setWork_current(String work_current) {
@@ -207,7 +210,7 @@ public class M20CurrentStateInfo {
     }
 
     public String getVolt_percent() {
-        return volt_percent;
+        return TextUtils.isEmpty(volt_percent) ? "" : volt_percent;
     }
 
     public void setVolt_percent(String volt_percent) {
@@ -215,7 +218,7 @@ public class M20CurrentStateInfo {
     }
 
     public String getZ_Angle() {
-        return Z_Angle;
+        return TextUtils.isEmpty(Z_Angle) ? "" : Z_Angle;
     }
 
     public void setZ_Angle(String Z_Angle) {
@@ -223,7 +226,7 @@ public class M20CurrentStateInfo {
     }
 
     public String getSN() {
-        return SN;
+        return TextUtils.isEmpty(SN) ? "" : SN;
     }
 
     public void setSN(String SN) {
@@ -231,7 +234,7 @@ public class M20CurrentStateInfo {
     }
 
     public String getEMMCFree() {
-        return eMMCFree;
+        return TextUtils.isEmpty(eMMCFree) ? "" : eMMCFree;
     }
 
     public void setEMMCFree(String eMMCFree) {
@@ -239,7 +242,7 @@ public class M20CurrentStateInfo {
     }
 
     public String getDataCenter3() {
-        return dataCenter3;
+        return TextUtils.isEmpty(dataCenter3) ? "" : dataCenter3;
     }
 
     public void setDataCenter3(String dataCenter3) {
@@ -247,7 +250,7 @@ public class M20CurrentStateInfo {
     }
 
     public String getDataCenter4() {
-        return dataCenter4;
+        return TextUtils.isEmpty(dataCenter4) ? "" : dataCenter4;
     }
 
     public void setDataCenter4(String dataCenter4) {
@@ -255,7 +258,7 @@ public class M20CurrentStateInfo {
     }
 
     public String getStarNum() {
-        return starNum;
+        return TextUtils.isEmpty(starNum) ? "" : starNum;
     }
 
     public void setStarNum(String starNum) {
@@ -263,7 +266,7 @@ public class M20CurrentStateInfo {
     }
 
     public String getGpsCard() {
-        return gpsCard;
+        return TextUtils.isEmpty(gpsCard) ? "" : gpsCard;
     }
 
     public void setGpsCard(String gpsCard) {
@@ -271,7 +274,7 @@ public class M20CurrentStateInfo {
     }
 
     public String getSelf_check() {
-        return self_check;
+        return TextUtils.isEmpty(self_check) ? "" : self_check;
     }
 
     public void setSelf_check(String self_check) {
@@ -279,7 +282,7 @@ public class M20CurrentStateInfo {
     }
 
     public List<SensorErrnoBean> getSensor_errno() {
-        return sensor_errno;
+        return sensor_errno == null ? new ArrayList<SensorErrnoBean>() : sensor_errno;
     }
 
     public void setSensor_errno(List<SensorErrnoBean> sensor_errno) {
