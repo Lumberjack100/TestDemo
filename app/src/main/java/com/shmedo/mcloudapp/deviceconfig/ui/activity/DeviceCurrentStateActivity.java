@@ -12,6 +12,7 @@ import com.shmedo.mcloudapp.deviceconfig.ui.fragment.adme.BleAdmeCurrentStateFra
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.das.BleDasCurrentStateFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.das.NetDasCurrentStateFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.m20.BleM20CurrentStateFragment;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.m20.NetM20CurrentStateFragment;
 import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfo;
 
 /**
@@ -82,6 +83,7 @@ public class DeviceCurrentStateActivity extends BaseConfigFragmentContainerActiv
                     break;
 
                 case AppContants.DeviceType.M20:
+                    fragment = NetM20CurrentStateFragment.newInstance(projectDeviceInfo);
                     break;
             }
         }else if (connectWay == AppContants.CommunicationWay.BLE_CONNECT) {

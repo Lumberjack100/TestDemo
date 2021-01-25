@@ -100,7 +100,6 @@ public class QueryCurrentStateDialog extends BaseDispatchCmdDialog {
         }
     }
 
-
     public void setOnSeeDetailClickListener(OnSeeDetailClickListener listener) {
         mListener = listener;
     }

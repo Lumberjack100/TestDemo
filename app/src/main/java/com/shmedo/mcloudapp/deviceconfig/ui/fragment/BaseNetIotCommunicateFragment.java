@@ -254,6 +254,7 @@ public abstract class BaseNetIotCommunicateFragment extends BaseFragment {
      * @param errMsg
      */
     protected void onQueryCmdResponseResultError(String errMsg) {
+        dismissProgressDialog();
         //停止轮询指令响应结果接口
         stopQueryCmdResponseRunnable();
     }

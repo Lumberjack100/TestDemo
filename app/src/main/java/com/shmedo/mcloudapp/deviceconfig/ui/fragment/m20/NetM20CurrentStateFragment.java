@@ -13,18 +13,30 @@ import com.shmedo.configlibrary.iot.cmd.parser.IOTParseManager;
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.model.m20.M20CurrentStateInfo;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
+import com.shmedo.core.MCloudApp;
 import com.shmedo.core.util.GlobalUtil;
 import com.shmedo.core.util.GsonFactory;
 import com.shmedo.mcloudapp.R;
+import com.shmedo.mcloudapp.deviceconfig.model.DispatchCmdItem;
+import com.shmedo.mcloudapp.deviceconfig.model.QueryCmdResult;
+import com.shmedo.mcloudapp.deviceconfig.model.params.DispatchRawCmdParam;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.BaseNetIotCommunicateFragment;
+import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfo;
+
+import java.util.Arrays;
+import java.util.List;
 
 import butterknife.BindView;
 import timber.log.Timber;
+
 /**
  * 创建者:   gonghe <br/>
  * 创建时间:  1/18/21 <br/>
- * 描述：    M20蓝牙模式 设备运行状态页面
+ * 描述：    M20网络模式 设备运行状态页面
  */
-public class BleM20CurrentStateFragment extends BaseGOCBleIotCommunicateFragment {
+public class NetM20CurrentStateFragment extends BaseNetIotCommunicateFragment {
+    public static final String PRO_DEVICE_INFO = "com.shmedo.mcloudapp.PRO_DEVICE_INFO";
+
     @BindView(R.id.swipeLayout)
     SwipeRefreshLayout swipeRefresh;
 
@@ -112,15 +124,29 @@ public class BleM20CurrentStateFragment extends BaseGOCBleIotCommunicateFragment
     @BindView(R.id.tv_power_consumption)
     TextView mTvPowerConsumption;
 
+    private ProjectDeviceInfo projectDeviceInfo;
+
     private M20CurrentStateInfo m20CurrentStateInfo;
 
-    public static BleM20CurrentStateFragment newInstance() {
-        return new BleM20CurrentStateFragment();
+    public static NetM20CurrentStateFragment newInstance(ProjectDeviceInfo projectDeviceInfo) {
+        NetM20CurrentStateFragment fragment = new NetM20CurrentStateFragment();
+        Bundle args = new Bundle();
+        args.putParcelable(PRO_DEVICE_INFO, projectDeviceInfo);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            projectDeviceInfo = getArguments().getParcelable(PRO_DEVICE_INFO);
+        }
     }
 
     @Override
     protected int getLayoutId() {
-        return R.layout.ble_m20_current_state_fragment;
+        return R.layout.net_m20_current_state_fragment;
     }
 
     @Override
@@ -147,23 +173,83 @@ public class BleM20CurrentStateFragment extends BaseGOCBleIotCommunicateFragment
      */
     private void queryStateInfo() {
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.QUERY_DEVICE_STATUS);
-        sendCommand(command);
+        doCommonDispatchRawCmd(command);
+    }
+
+    /**
+     * 调用指令透传接口
+     *
+     * @param content
+     */
+    private void doCommonDispatchRawCmd(String content) {
+        DispatchRawCmdParam rawCmdParam = new DispatchRawCmdParam();
+        rawCmdParam.setContent(content);
+        rawCmdParam.setCompanyID(MCloudApp.getCompanyID());
+        rawCmdParam.setDeviceIDList(Arrays.asList(projectDeviceInfo.getId()));
+
+//        showProgressDialog("处理中...");
+        processDispatchRawCmd(rawCmdParam);
     }
 
     @Override
-    protected void parseResponseMessage(String cmdStr) {
-        if (!isActive) {
+    protected void onDispatchCmdResult(List<DispatchCmdItem> dispatchCmdItemList) {
+        if (dispatchCmdItemList == null || dispatchCmdItemList.size() == 0) {
+            swipeRefresh.setRefreshing(false);
+            dismissProgressDialog();
+            ToastUtils.show("下发指令失败");
             return;
         }
-        setResultData(cmdStr);
+        msgIDList.clear();
+        for (DispatchCmdItem cmdItem : dispatchCmdItemList) {
+            msgIDList.add(cmdItem.getMsgID());
+        }
+
+        if (msgIDList != null && msgIDList.size() > 0) {
+            startQueryCmdResponseRunnable(2000);
+        }
     }
 
-    private void setResultData(final String cmdStr) {
+    /**
+     * 查询指令响应结果出错
+     *
+     * @param errMsg
+     */
+    @Override
+    protected void onQueryCmdResponseResultError(String errMsg) {
+        super.onQueryCmdResponseResultError(errMsg);
+        swipeRefresh.setRefreshing(false);
+        ToastUtils.show("查询设备状态响应错误");
+    }
+
+    /**
+     * 查询指令响应结果超时
+     *
+     * @param queryCmdResult
+     */
+    @Override
+    protected void onQueryCmdResponseResultTimeOut(QueryCmdResult queryCmdResult) {
+        super.onQueryCmdResponseResultTimeOut(queryCmdResult);
+        swipeRefresh.setRefreshing(false);
+        ToastUtils.show("查询设备状态响应超时");
+    }
+
+    /**
+     * 查询指令响应结果成功
+     *
+     * @param queryCmdResult
+     */
+    @Override
+    protected void onQueryCmdResponseResultSuccess(QueryCmdResult queryCmdResult) {
+        super.onQueryCmdResponseResultSuccess(queryCmdResult);
+        swipeRefresh.setRefreshing(false);
+        setResultData(queryCmdResult);
+    }
+
+    private void setResultData(QueryCmdResult queryCmdResult) {
+        String cmdStr = queryCmdResult.getResponseContent();
         IOTCommandType type = IOTStringUtil.extractCommandType(cmdStr);
         switch (type) {
             case QUERY_DEVICE_STATUS: {
-                swipeRefresh.setRefreshing(false);
-//                stopProgressRunnable();
                 IOTCommandResult<String> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
                     String errMsg = String.format("%s %s", "查询设备状态出错!", commandResult.getMessage());
@@ -177,7 +263,6 @@ public class BleM20CurrentStateFragment extends BaseGOCBleIotCommunicateFragment
             break;
 
             default:
-                super.parseResponseMessage(cmdStr);
                 break;
         }
     }
@@ -237,5 +322,4 @@ public class BleM20CurrentStateFragment extends BaseGOCBleIotCommunicateFragment
             tvLinkStatus.setTextColor(GlobalUtil.getColor(R.color.device_not_connected_platform));
         }
     }
-
 }
