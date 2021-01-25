@@ -91,7 +91,7 @@ public class BleM20DataCenterHomeFragment extends BaseGOCBleIotCommunicateFragme
     public void onStart() {
         super.onStart();
 //        startProgressRunnable("加载中...", DELAY_MILLIS);
-        getDataCenterStatus(ServerNumber.NUMBER_ONE);
+//        getDataCenterStatus(ServerNumber.NUMBER_ONE);
     }
 
     /**

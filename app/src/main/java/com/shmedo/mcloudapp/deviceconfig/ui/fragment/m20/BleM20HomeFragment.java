@@ -22,11 +22,12 @@ import com.shmedo.configlibrary.iot.cmd.IOTCommandResult;
 import com.shmedo.configlibrary.iot.cmd.parser.IOTParseManager;
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.model.CommonSettingCmdResult;
-import com.shmedo.configlibrary.iot.model.adme.AdmeBaseInfo;
+import com.shmedo.configlibrary.iot.model.m20.M20CurrentStateInfo;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
 import com.shmedo.core.AppContants;
 import com.shmedo.core.MCloudApp;
 import com.shmedo.core.util.DensityUtil;
+import com.shmedo.core.util.GsonFactory;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.view.recycleviewitemdivider.GridSpacingItemDecoration;
 import com.shmedo.mcloudapp.deviceconfig.adapter.ConfigModuleAdapter;
@@ -87,8 +88,6 @@ public class BleM20HomeFragment extends BaseGOCBleIotCommunicateFragment {
     private ConfigModule selectedConfigModule;
 
     private DiscoveredBluetoothDevice device;
-
-    private AdmeBaseInfo admeBaseInfo;
 
     private BleM20SetupWizardDialogFragment setupWizardDialogFragment;
 
@@ -246,7 +245,7 @@ public class BleM20HomeFragment extends BaseGOCBleIotCommunicateFragment {
             @Override
             public void onChanged(String apiKey) {
                 hideProgressBar();
-//                queryEquipmentBaseInfo();
+                queryStateInfo();
             }
         });
     }
@@ -305,10 +304,10 @@ public class BleM20HomeFragment extends BaseGOCBleIotCommunicateFragment {
     }
 
     /**
-     * 获取设备的基本信息
+     * 获取设备的状态信息
      */
-    private void queryEquipmentBaseInfo() {
-        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_GET_EQUIPMENT_BASIS);
+    private void queryStateInfo() {
+        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.QUERY_DEVICE_STATUS);
         sendCommand(command);
     }
 
@@ -340,21 +339,21 @@ public class BleM20HomeFragment extends BaseGOCBleIotCommunicateFragment {
     private void setResultData(final String cmdStr) {
         IOTCommandType type = IOTStringUtil.extractCommandType(cmdStr);
         switch (type) {
-            case ADME_MD_GET_EQUIPMENT_BASIS: {//获取设备的基本信息
+            case QUERY_DEVICE_STATUS: {//获取设备的状态
                 hideProgressBar();
-                IOTCommandResult<AdmeBaseInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
+                IOTCommandResult<String> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
-                    String errMsg = String.format("%s %s", "获取设备的基本信息出错!", commandResult.getMessage());
+                    String errMsg = String.format("%s %s", "查询设备状态出错!", commandResult.getMessage());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
                     return;
                 }
-                admeBaseInfo = commandResult.getResult();
-                updateHeadInfo();
+                String content = commandResult.getResult();
+                updateHeadInfo(content);
             }
             break;
 
-            case M20_MD_LEVEL_INITIAL:
+            case M20_MD_LEVEL_INITIAL://水平初始化
                 CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
                 if (!cmdResult.isSucceed()) {
                     String errMsg = String.format("%s %s", "水平初始化出错!", cmdResult.getReason());
@@ -378,20 +377,22 @@ public class BleM20HomeFragment extends BaseGOCBleIotCommunicateFragment {
     /**
      * 更新头部信息
      */
-    private void updateHeadInfo() {
-        if (admeBaseInfo != null) {
+    private void updateHeadInfo(String content) {
+        try {
+            M20CurrentStateInfo m20CurrentStateInfo = GsonFactory.getGson().fromJson(content, M20CurrentStateInfo.class);
             mTvDeviceName.setText("普适型GNSS一体机");
-            mTvDeviceSn.setText(String.format("设备编号：%s", !TextUtils.isEmpty(admeBaseInfo.getSn()) ? admeBaseInfo.getSn() : device.getName().substring(3)));
-            mTvProductModel.setText(String.format("产品型号：%s", !TextUtils.isEmpty(admeBaseInfo.getProductid()) ? admeBaseInfo.getProductid() : "ADME"));
-            mTvFirmwareVersion.setText("固件版本：--");
+            if (m20CurrentStateInfo != null) {
+                mTvDeviceSn.setText(String.format("设备编号：%s", !TextUtils.isEmpty(m20CurrentStateInfo.getSN()) ? m20CurrentStateInfo.getSN() : device.getName().substring(3)));
+                mTvProductModel.setText(String.format("产品型号：%s", "M20"));
+                mTvFirmwareVersion.setText(String.format("固件版本：%s", m20CurrentStateInfo.getSw_version()));
+            } else {
+                mTvDeviceSn.setText(String.format("设备编号：%s", device.getName().substring(3)));
+                mTvProductModel.setText(String.format("产品型号：：%s", "M20"));
+                mTvFirmwareVersion.setText("固件版本：--");
+            }
             mTvPlatformCommunicationState.setText("平台连接状态：--");
-
-        } else {
-            mTvDeviceName.setText("普适型GNSS一体机");
-            mTvDeviceSn.setText(String.format("设备编号：%s", device.getName().substring(3)));
-            mTvProductModel.setText(String.format("产品型号：：%s", "ADME"));
-            mTvFirmwareVersion.setText("固件版本：--");
-            mTvPlatformCommunicationState.setText("平台连接状态：--");
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
     }
 
