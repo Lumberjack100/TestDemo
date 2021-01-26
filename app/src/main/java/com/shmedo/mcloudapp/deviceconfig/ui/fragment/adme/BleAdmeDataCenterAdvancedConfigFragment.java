@@ -299,13 +299,13 @@ public class BleAdmeDataCenterAdvancedConfigFragment extends BaseBleIotCommunica
         registerCode = mEtDeviceRegisterCode.getText().toString().trim();
 
         if (TextUtils.isEmpty(dataServerAddress)) {
-            ToastUtils.show("数据中心地址不能为空!");
+            ToastUtils.show("请输入数据中心地址!");
             mEtDataServerAddress.requestFocus();
             return false;
         }
 
         if (TextUtils.isEmpty(dataServerPort)) {
-            ToastUtils.show("数据中心端口不能为空!");
+            ToastUtils.show("请输入数据中心端口!");
             mEtDataServerPort.requestFocus();
             return false;
         }
@@ -324,29 +324,29 @@ public class BleAdmeDataCenterAdvancedConfigFragment extends BaseBleIotCommunica
 
 //        if (transferProtocol.equals("MQTT")) {
 //            if (TextUtils.isEmpty(productId)) {
-//                ToastUtils.show("产品ID不能为空!");
+//                ToastUtils.show("产品ID!");
 //                mEtProductId.requestFocus();
 //                return false;
 //            }
 //            if (TextUtils.isEmpty(deviceId)) {
-//                ToastUtils.show("设备ID不能为空!");
+//                ToastUtils.show("设备ID!");
 //                mEtDeviceId.requestFocus();
 //                return false;
 //            }
 //            if (TextUtils.isEmpty(deviceKey)) {
-//                ToastUtils.show("设备Key不能为空!");
+//                ToastUtils.show("设备Key!");
 //                mEtDeviceKey.requestFocus();
 //                return false;
 //            }
 //
 //
 //            if (TextUtils.isEmpty(registerAddress)) {
-//                ToastUtils.show("设备注册地址不能为空!");
+//                ToastUtils.show("设备注册地址!");
 //                mEtDeviceRegisterAddress.requestFocus();
 //                return false;
 //            }
 //            if (TextUtils.isEmpty(registerPort)) {
-//                ToastUtils.show("设备注册端口不能为空!");
+//                ToastUtils.show("设备注册端口!");
 //                mEtDeviceRegisterPort.requestFocus();
 //                return false;
 //            }
@@ -367,7 +367,7 @@ public class BleAdmeDataCenterAdvancedConfigFragment extends BaseBleIotCommunica
         }
 //
 //            if (TextUtils.isEmpty(registerCode)) {
-//                ToastUtils.show("设备注册码不能为空!");
+//                ToastUtils.show("设备注册码!");
 //                mEtDeviceRegisterCode.requestFocus();
 //                return false;
 //            }
@@ -395,7 +395,7 @@ public class BleAdmeDataCenterAdvancedConfigFragment extends BaseBleIotCommunica
         mBtnSave.setEnabled(false);
 
         errMsg = "发送指令超时,请稍后尝试";
-        startProgressRunnable("正在发送配置指令...", WRITE_TIME_OUT_SECOND);
+        startProgressRunnable("处理中...", WRITE_TIME_OUT_SECOND);
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.MD_SET_DATA_CENTER, dataCenterEntity);
         sendCommand(command);
     }
@@ -442,7 +442,6 @@ public class BleAdmeDataCenterAdvancedConfigFragment extends BaseBleIotCommunica
                 super.parseResponseMessage(cmdStr);
                 break;
         }
-
     }
 
     private void doAfterSetting() {
@@ -463,6 +462,7 @@ public class BleAdmeDataCenterAdvancedConfigFragment extends BaseBleIotCommunica
 
         transferProtocolOld = dataCenterInfo.getProtocol().trim();
         transferProtocol = dataCenterInfo.getProtocol().trim();
+
         dataProtocol = dataCenterInfo.getDatatype().trim();
         dataServerAddress = dataCenterInfo.getAddr().trim();
         dataServerPort = dataCenterInfo.getPort().trim();
@@ -474,16 +474,6 @@ public class BleAdmeDataCenterAdvancedConfigFragment extends BaseBleIotCommunica
         registerCode = dataCenterInfo.getRegcode().trim();
 
         mTvTransferProtocol.setText(transferProtocolOld);
-        mTvDataProtocol.setText(dataProtocol);
-        mEtDataServerAddress.setText(dataServerAddress);
-        mEtDataServerPort.setText(dataServerPort);
-        mEtDeviceId.setText(deviceId);
-        mEtDeviceKey.setText(deviceKey);
-        mEtDeviceRegisterAddress.setText(registerAddress);
-        mEtDeviceRegisterPort.setText(registerPort);
-        mEtProductId.setText(productId);
-        mEtDeviceRegisterCode.setText(registerCode);
-
         if (transferProtocolOld.contains("TCP-C")) {
             mqttChildItemsLayout.setVisibility(View.GONE);
             transferProtocolPos = 0;
@@ -494,6 +484,15 @@ public class BleAdmeDataCenterAdvancedConfigFragment extends BaseBleIotCommunica
             mqttChildItemsLayout.setVisibility(View.VISIBLE);
             transferProtocolPos = 2;
         }
+        mTvDataProtocol.setText(dataProtocol);
+        mEtDataServerAddress.setText(dataServerAddress);
+        mEtDataServerPort.setText(dataServerPort);
+        mEtDeviceId.setText(deviceId);
+        mEtDeviceKey.setText(deviceKey);
+        mEtDeviceRegisterAddress.setText(registerAddress);
+        mEtDeviceRegisterPort.setText(registerPort);
+        mEtProductId.setText(productId);
+        mEtDeviceRegisterCode.setText(registerCode);
     }
 
     @Override
@@ -514,45 +513,36 @@ public class BleAdmeDataCenterAdvancedConfigFragment extends BaseBleIotCommunica
         if (centerEnableInitial != mSbCenterEnable.isChecked()) {
             return true;
         }
-
         if (transferProtocolOld != null && transferProtocol != null && !transferProtocolOld.equals(transferProtocol)) {
             return true;
         }
-
         if (dataServerAddress != null && !dataServerAddress.equals(mEtDataServerAddress.getText().toString().trim())) {
             return true;
         }
-
         if (dataServerPort != null && !dataServerPort.equals(mEtDataServerPort.getText().toString().trim())) {
             return true;
         }
 
         if (transferProtocol != null && transferProtocol.equals("MQTT")) {//MQTT自动注册
-
             if (deviceId != null && !deviceId.equals(mEtDeviceId.getText().toString().trim())) {
                 return true;
             }
-
             if (deviceKey != null && !deviceKey.equals(mEtDeviceKey.getText().toString().trim())) {
                 return true;
             }
             if (registerAddress != null && !registerAddress.equals(mEtDeviceRegisterAddress.getText().toString().trim())) {
                 return true;
             }
-
             if (registerPort != null && !registerPort.equals(mEtDeviceRegisterPort.getText().toString().trim())) {
                 return true;
             }
-
             if (productId != null && !productId.equals(mEtProductId.getText().toString().trim())) {
                 return true;
             }
-
             if (registerCode != null && !registerCode.equals(mEtDeviceRegisterCode.getText().toString().trim())) {
                 return true;
             }
         }
-
         return false;
     }
 }

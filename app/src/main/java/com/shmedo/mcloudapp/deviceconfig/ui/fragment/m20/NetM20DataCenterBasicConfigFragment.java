@@ -223,13 +223,13 @@ public class NetM20DataCenterBasicConfigFragment extends BaseNetIotCommunicateFr
         dataServerPort = mEtDataServerPort.getText().toString().trim();
 
         if (TextUtils.isEmpty(dataServerAddress)) {
-            ToastUtils.show("数据中心地址不能为空!");
+            ToastUtils.show("请输入数据中心地址!");
             mEtDataServerAddress.requestFocus();
             return false;
         }
 
         if (TextUtils.isEmpty(dataServerPort)) {
-            ToastUtils.show("数据中心端口不能为空!");
+            ToastUtils.show("请输入数据中心端口!");
             mEtDataServerPort.requestFocus();
             return false;
         }
@@ -372,7 +372,6 @@ public class NetM20DataCenterBasicConfigFragment extends BaseNetIotCommunicateFr
             break;
 
             case MD_SET_DATA_CENTER: {//设置设备的数据中心参数
-//                stopProgressRunnable();
                 CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
                 if (!cmdResult.isSucceed()) {
                     String errMsg = String.format("%s %s", "设置数据中心参数出错!", cmdResult.getReason());
@@ -430,11 +429,9 @@ public class NetM20DataCenterBasicConfigFragment extends BaseNetIotCommunicateFr
         if (dataServerAddress != null && !dataServerAddress.equals(mEtDataServerAddress.getText().toString().trim())) {
             return true;
         }
-
         if (dataServerPort != null && !dataServerPort.equals(mEtDataServerPort.getText().toString().trim())) {
             return true;
         }
-
         return false;
     }
 }

@@ -218,13 +218,13 @@ public class BleAdmeDataCenterBasicConfigFragment extends BaseBleIotCommunicateF
         dataServerPort = mEtDataServerPort.getText().toString().trim();
 
         if (TextUtils.isEmpty(dataServerAddress)) {
-            ToastUtils.show("数据中心地址不能为空!");
+            ToastUtils.show("请输入数据中心地址!");
             mEtDataServerAddress.requestFocus();
             return false;
         }
 
         if (TextUtils.isEmpty(dataServerPort)) {
-            ToastUtils.show("数据中心端口不能为空!");
+            ToastUtils.show("请输入数据中心端口!");
             mEtDataServerPort.requestFocus();
             return false;
         }
@@ -255,7 +255,7 @@ public class BleAdmeDataCenterBasicConfigFragment extends BaseBleIotCommunicateF
         mBtnSave.setEnabled(false);
 
         errMsg = "发送指令超时,请稍后尝试";
-        startProgressRunnable("正在发送配置指令...", WRITE_TIME_OUT_SECOND);
+        startProgressRunnable("处理中...", WRITE_TIME_OUT_SECOND);
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.MD_SET_DATA_CENTER, dataCenterEntity);
         sendCommand(command);
     }
@@ -348,11 +348,9 @@ public class BleAdmeDataCenterBasicConfigFragment extends BaseBleIotCommunicateF
         if (dataServerAddress != null && !dataServerAddress.equals(mEtDataServerAddress.getText().toString().trim())) {
             return true;
         }
-
         if (dataServerPort != null && !dataServerPort.equals(mEtDataServerPort.getText().toString().trim())) {
             return true;
         }
-
         return false;
     }
 }

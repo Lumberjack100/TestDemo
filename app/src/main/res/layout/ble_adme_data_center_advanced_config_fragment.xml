@@ -48,13 +48,6 @@
 
         </RelativeLayout>
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="0.5dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
-            android:background="@color/divider_line_bg_efefef" />
-
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
@@ -64,43 +57,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical">
-
-                <LinearLayout
-                    android:id="@+id/ll_transfer_protocol"
-                    style="@style/Common_ClickableItem_LayoutStyle">
-
-                    <TextView
-                        style="@style/Common_ClickableItem_TitleStyle"
-                        android:text="传输协议" />
-
-                    <TextView
-                        android:id="@+id/tv_transfer_protocol"
-                        style="@style/Common_ClickableItem_ValueStyle"
-                        android:textSize="17sp"
-                        tools:text="MQTT" />
-
-                </LinearLayout>
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="14dp" />
-
-                <LinearLayout
-                    android:id="@+id/ll_data_protocol"
-                    style="@style/Common_ClickableItem_LayoutStyle">
-
-                    <TextView
-                        style="@style/Common_ClickableItem_TitleStyle"
-                        android:text="数据协议" />
-
-                    <TextView
-                        android:id="@+id/tv_data_protocol"
-                        style="@style/Common_ClickableItem_ValueStyle"
-                        android:drawableEnd="@null"
-                        android:textSize="17sp"
-                        tools:text="RES_OUT" />
-
-                </LinearLayout>
 
                 <View
                     android:layout_width="match_parent"
@@ -146,6 +102,47 @@
 
                 </LinearLayout>
 
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="14dp" />
+
+                <LinearLayout
+                    android:id="@+id/ll_transfer_protocol"
+                    style="@style/Common_ClickableItem_LayoutStyle">
+
+                    <TextView
+                        style="@style/Common_ClickableItem_TitleStyle"
+                        android:text="传输协议" />
+
+                    <TextView
+                        android:id="@+id/tv_transfer_protocol"
+                        style="@style/Common_ClickableItem_ValueStyle"
+                        android:textSize="17sp"
+                        tools:text="MQTT" />
+
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="14dp" />
+
+                <LinearLayout
+                    android:id="@+id/ll_data_protocol"
+                    style="@style/Common_ClickableItem_LayoutStyle">
+
+                    <TextView
+                        style="@style/Common_ClickableItem_TitleStyle"
+                        android:text="数据协议" />
+
+                    <TextView
+                        android:id="@+id/tv_data_protocol"
+                        style="@style/Common_ClickableItem_ValueStyle"
+                        android:drawableEnd="@null"
+                        android:textSize="17sp"
+                        tools:text="RES_OUT" />
+
+                </LinearLayout>
+
                 <LinearLayout
                     android:id="@+id/ll_mqtt_child_items"
                     android:layout_width="match_parent"
@@ -180,7 +177,6 @@
                         android:background="@color/divider_line_bg_efefef" />
 
                     <LinearLayout style="@style/Common_EditItem_LayoutStyle">
-
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -217,10 +213,6 @@
                             android:hint="请输入" />
 
                     </LinearLayout>
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="14dp" />
 
                     <LinearLayout style="@style/Common_EditItem_LayoutStyle">
 
@@ -295,6 +287,7 @@
                     android:layout_marginTop="34dp"
                     android:layout_marginEnd="18dp"
                     android:layout_marginBottom="20dp"
+                    android:foreground="?attr/selectableItemBackground"
                     android:background="@drawable/btn_select"
                     android:gravity="center"
                     android:text="保存"
@@ -311,7 +304,7 @@
                 android:clickable="true"
                 android:focusable="true"
                 android:visibility="gone"
-                tools:visibility="visible">
+                tools:visibility="gone">
 
             </RelativeLayout>
 

@@ -94,6 +94,9 @@ public class BleM20DataCenterAdvancedConfigFragment extends BaseGOCBleIotCommuni
     private int transferProtocolPos;
     private String transferProtocolOld;//
 
+    private int dataProtocolPos;
+    private String dataProtocolOld;//
+
     private String transferProtocol;// 传输协议
     private String dataProtocol;//数据协议
     private String dataServerAddress;//数据服务器地址
@@ -239,11 +242,14 @@ public class BleM20DataCenterAdvancedConfigFragment extends BaseGOCBleIotCommuni
         sendCommand(command);
     }
 
-    @OnClick({R.id.ll_transfer_protocol, R.id.btn_confirm})
+    @OnClick({R.id.ll_transfer_protocol, R.id.ll_data_protocol, R.id.btn_confirm})
     public void onClick(View view) {
         int id = view.getId();
         if (id == R.id.ll_transfer_protocol) {
             showTransferProtocolDialog();
+
+        } else if (id == R.id.ll_data_protocol) {
+            showDataProtocolDialog();
 
         } else if (id == R.id.btn_confirm) {
             KeyBordUtils.hideSoftKeyboard(view);
@@ -259,6 +265,9 @@ public class BleM20DataCenterAdvancedConfigFragment extends BaseGOCBleIotCommuni
         }
     }
 
+    /**
+     * 选择传输协议弹框
+     */
     private void showTransferProtocolDialog() {
         XPopup.setPrimaryColor(getResources().getColor(R.color.blue_52B4F8));
         new XPopup.Builder(mActivity)
@@ -286,6 +295,50 @@ public class BleM20DataCenterAdvancedConfigFragment extends BaseGOCBleIotCommuni
         }
     }
 
+    /**
+     * 选择数据协议弹框
+     */
+    private void showDataProtocolDialog() {
+        XPopup.setPrimaryColor(getResources().getColor(R.color.blue_52B4F8));
+        new XPopup.Builder(mActivity)
+                .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
+                .asBottomList("", new String[]{"CMD", "NMEA", "DIFF_IN", "DIFF_OUT", "RAW_OUT", "RES_OUT"},
+                        null, dataProtocolPos, true,
+                        new OnSelectListener() {
+                            @Override
+                            public void onSelect(int position, String text) {
+                                dataProtocolPos = position;
+                                mTvDataProtocol.setText(text);
+                                switch (text) {
+                                    case "CMD":
+                                        dataProtocol = "1";
+                                        break;
+
+                                    case "NMEA":
+                                        dataProtocol = "2";
+                                        break;
+
+                                    case "DIFF_IN":
+                                        dataProtocol = "3";
+                                        break;
+
+                                    case "DIFF_OUT":
+                                        dataProtocol = "4";
+                                        break;
+
+                                    case "RAW_OUT":
+                                        dataProtocol = "5";
+                                        break;
+
+                                    case "RES_OUT":
+                                        dataProtocol = "6";
+                                        break;
+                                }
+                            }
+                        }, 0, R.layout.custom_xpopup_adapter_text_match)
+                .show();
+    }
+
     private boolean checkValueIsValid() {
         dataServerAddress = mEtDataServerAddress.getText().toString().trim();
         dataServerPort = mEtDataServerPort.getText().toString().trim();
@@ -297,13 +350,13 @@ public class BleM20DataCenterAdvancedConfigFragment extends BaseGOCBleIotCommuni
         registerCode = mEtDeviceRegisterCode.getText().toString().trim();
 
         if (TextUtils.isEmpty(dataServerAddress)) {
-            ToastUtils.show("数据中心地址不能为空!");
+            ToastUtils.show("请输入数据中心地址!");
             mEtDataServerAddress.requestFocus();
             return false;
         }
 
         if (TextUtils.isEmpty(dataServerPort)) {
-            ToastUtils.show("数据中心端口不能为空!");
+            ToastUtils.show("请输入数据中心端口!");
             mEtDataServerPort.requestFocus();
             return false;
         }
@@ -322,33 +375,31 @@ public class BleM20DataCenterAdvancedConfigFragment extends BaseGOCBleIotCommuni
 
 //        if (transferProtocol.equals("MQTT")) {
 //            if (TextUtils.isEmpty(productId)) {
-//                ToastUtils.show("产品ID不能为空!");
+//                ToastUtils.show("产品ID!");
 //                mEtProductId.requestFocus();
 //                return false;
 //            }
 //            if (TextUtils.isEmpty(deviceId)) {
-//                ToastUtils.show("设备ID不能为空!");
+//                ToastUtils.show("设备ID!");
 //                mEtDeviceId.requestFocus();
 //                return false;
 //            }
 //            if (TextUtils.isEmpty(deviceKey)) {
-//                ToastUtils.show("设备Key不能为空!");
+//                ToastUtils.show("设备Key!");
 //                mEtDeviceKey.requestFocus();
 //                return false;
 //            }
 //
-//
 //            if (TextUtils.isEmpty(registerAddress)) {
-//                ToastUtils.show("设备注册地址不能为空!");
+//                ToastUtils.show("设备注册地址!");
 //                mEtDeviceRegisterAddress.requestFocus();
 //                return false;
 //            }
 //            if (TextUtils.isEmpty(registerPort)) {
-//                ToastUtils.show("设备注册端口不能为空!");
+//                ToastUtils.show("设备注册端口!");
 //                mEtDeviceRegisterPort.requestFocus();
 //                return false;
 //            }
-
         if (!TextUtils.isEmpty(registerPort)) {
             try {
                 int port = Integer.parseInt(registerPort);
@@ -363,14 +414,12 @@ public class BleM20DataCenterAdvancedConfigFragment extends BaseGOCBleIotCommuni
                 return false;
             }
         }
-//
 //            if (TextUtils.isEmpty(registerCode)) {
-//                ToastUtils.show("设备注册码不能为空!");
+//                ToastUtils.show("设备注册码!");
 //                mEtDeviceRegisterCode.requestFocus();
 //                return false;
 //            }
 //        }
-
         return true;
     }
 
@@ -393,7 +442,7 @@ public class BleM20DataCenterAdvancedConfigFragment extends BaseGOCBleIotCommuni
         mBtnSave.setEnabled(false);
 
         errMsg = "发送指令超时,请稍后尝试";
-        startProgressRunnable("正在发送配置指令...", WRITE_TIME_OUT_SECOND);
+        startProgressRunnable("处理中...", WRITE_TIME_OUT_SECOND);
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.MD_SET_DATA_CENTER, dataCenterEntity);
         sendCommand(command);
     }
@@ -449,6 +498,7 @@ public class BleM20DataCenterAdvancedConfigFragment extends BaseGOCBleIotCommuni
         }
         mBtnSave.setEnabled(true);
         transferProtocolOld = transferProtocol;
+        dataProtocolOld = dataProtocol;
     }
 
     private void initDataCenterData() {
@@ -457,10 +507,12 @@ public class BleM20DataCenterAdvancedConfigFragment extends BaseGOCBleIotCommuni
             dataCenterInfo = new DataCenterInfo();
             return;
         }
-
         transferProtocolOld = dataCenterInfo.getProtocol().trim();
         transferProtocol = dataCenterInfo.getProtocol().trim();
+
+        dataProtocolOld = dataCenterInfo.getDatatype().trim();
         dataProtocol = dataCenterInfo.getDatatype().trim();
+
         dataServerAddress = dataCenterInfo.getAddr().trim();
         dataServerPort = dataCenterInfo.getPort().trim();
         deviceId = dataCenterInfo.getDeviceid().trim();
@@ -471,16 +523,6 @@ public class BleM20DataCenterAdvancedConfigFragment extends BaseGOCBleIotCommuni
         registerCode = dataCenterInfo.getRegcode().trim();
 
         mTvTransferProtocol.setText(transferProtocolOld);
-        mTvDataProtocol.setText(dataProtocol);
-        mEtDataServerAddress.setText(dataServerAddress);
-        mEtDataServerPort.setText(dataServerPort);
-        mEtDeviceId.setText(deviceId);
-        mEtDeviceKey.setText(deviceKey);
-        mEtDeviceRegisterAddress.setText(registerAddress);
-        mEtDeviceRegisterPort.setText(registerPort);
-        mEtProductId.setText(productId);
-        mEtDeviceRegisterCode.setText(registerCode);
-
         if (transferProtocolOld.contains("TCP-C")) {
             mqttChildItemsLayout.setVisibility(View.GONE);
             transferProtocolPos = 0;
@@ -491,6 +533,47 @@ public class BleM20DataCenterAdvancedConfigFragment extends BaseGOCBleIotCommuni
             mqttChildItemsLayout.setVisibility(View.VISIBLE);
             transferProtocolPos = 2;
         }
+
+        //"CMD", "NMEA", "DIFF_IN", "DIFF_OUT", "RAW_OUT", "RES_OUT"
+        switch (dataProtocolOld) {
+            case "1":
+                dataProtocolPos = 0;
+                mTvDataProtocol.setText("CMD");
+                break;
+
+            case "2":
+                dataProtocolPos = 1;
+                mTvDataProtocol.setText("NMEA");
+                break;
+
+            case "3":
+                dataProtocolPos = 2;
+                mTvDataProtocol.setText("DIFF_IN");
+                break;
+
+            case "4":
+                dataProtocolPos = 3;
+                mTvDataProtocol.setText("DIFF_OUT");
+                break;
+
+            case "5":
+                dataProtocolPos = 4;
+                mTvDataProtocol.setText("RAW_OUT");
+                break;
+
+            case "6":
+                dataProtocolPos = 5;
+                mTvDataProtocol.setText("RES_OUT");
+                break;
+        }
+        mEtDataServerAddress.setText(dataServerAddress);
+        mEtDataServerPort.setText(dataServerPort);
+        mEtDeviceId.setText(deviceId);
+        mEtDeviceKey.setText(deviceKey);
+        mEtDeviceRegisterAddress.setText(registerAddress);
+        mEtDeviceRegisterPort.setText(registerPort);
+        mEtProductId.setText(productId);
+        mEtDeviceRegisterCode.setText(registerCode);
     }
 
     @Override
@@ -511,44 +594,39 @@ public class BleM20DataCenterAdvancedConfigFragment extends BaseGOCBleIotCommuni
             return true;
         }
 
-        if (transferProtocolOld != null && transferProtocol != null && !transferProtocolOld.equals(transferProtocol)) {
-            return true;
-        }
-
         if (dataServerAddress != null && !dataServerAddress.equals(mEtDataServerAddress.getText().toString().trim())) {
             return true;
         }
-
         if (dataServerPort != null && !dataServerPort.equals(mEtDataServerPort.getText().toString().trim())) {
+            return true;
+        }
+        if (transferProtocolOld != null && transferProtocol != null && !transferProtocolOld.equals(transferProtocol)) {
+            return true;
+        }
+        if (dataProtocolOld != null && dataProtocol != null && !dataProtocolOld.equals(dataProtocol)) {
             return true;
         }
 
         if (transferProtocol != null && transferProtocol.equals("MQTT")) {//MQTT自动注册
-
             if (deviceId != null && !deviceId.equals(mEtDeviceId.getText().toString().trim())) {
                 return true;
             }
-
             if (deviceKey != null && !deviceKey.equals(mEtDeviceKey.getText().toString().trim())) {
                 return true;
             }
             if (registerAddress != null && !registerAddress.equals(mEtDeviceRegisterAddress.getText().toString().trim())) {
                 return true;
             }
-
             if (registerPort != null && !registerPort.equals(mEtDeviceRegisterPort.getText().toString().trim())) {
                 return true;
             }
-
             if (productId != null && !productId.equals(mEtProductId.getText().toString().trim())) {
                 return true;
             }
-
             if (registerCode != null && !registerCode.equals(mEtDeviceRegisterCode.getText().toString().trim())) {
                 return true;
             }
         }
-
         return false;
     }
 }
