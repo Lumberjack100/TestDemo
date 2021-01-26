@@ -12,6 +12,7 @@ import com.shmedo.configlibrary.iot.cmd.IOTCommandResult;
 import com.shmedo.configlibrary.iot.cmd.parser.IOTParseManager;
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.model.m20.M20CurrentStateInfo;
+import com.shmedo.configlibrary.iot.model.m20.SensorErrnoBean;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
 import com.shmedo.core.util.GlobalUtil;
 import com.shmedo.core.util.GsonFactory;
@@ -198,7 +199,7 @@ public class BleM20CurrentStateFragment extends BaseGOCBleIotCommunicateFragment
                 mTvDeviceStarNum.setText(m20CurrentStateInfo.getStarNum());
                 mTvPhoneStarNum.setText("--");
                 mTvAmsConnectionStatus.setText("--");
-                mTv4gSignalStrength.setText(m20CurrentStateInfo.get_$4g_signal() + "dBm");
+                mTv4gSignalStrength.setText(String.format("%sdBm", m20CurrentStateInfo.get_$4g_signal()));
                 mTvLinkOneStatus.setText("未开启");
                 mTvLinkOneStatus.setTextColor(GlobalUtil.getColor(R.color.device_unopened_platform));
                 mTvLinkTwoStatus.setText("未开启");
@@ -207,7 +208,15 @@ public class BleM20CurrentStateFragment extends BaseGOCBleIotCommunicateFragment
                 initLinkStatus(mTvLinkThreeStatus, m20CurrentStateInfo.getDataCenter3());
                 initLinkStatus(mTvLinkFourStatus, m20CurrentStateInfo.getDataCenter4());
 
-                mTvSensorStatus.setText("--");
+                boolean sensorAbnormal = false;
+                for(SensorErrnoBean errnoBean :m20CurrentStateInfo.getSensor_errno()){
+                    if (errnoBean.getErrno() != 0) {
+                        sensorAbnormal = true;
+                    }
+                }
+                mTvSensorStatus.setText(sensorAbnormal ? "异常" : "正常");
+                mTvSensorStatus.setTextColor(sensorAbnormal ? GlobalUtil.getColor(R.color.red) : GlobalUtil.getColor(R.color.text_color_3AD094));
+
                 mTvInclination.setText(m20CurrentStateInfo.getZ_Angle());
                 mTvInternalVoltage.setText(String.format("%s V", m20CurrentStateInfo.getInner_power_volt()));
                 mTvExternalVoltage.setText(String.format("%s V", m20CurrentStateInfo.getExt_power_volt()));

@@ -12,6 +12,7 @@ import com.shmedo.configlibrary.iot.cmd.IOTCommandResult;
 import com.shmedo.configlibrary.iot.cmd.parser.IOTParseManager;
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.model.m20.M20CurrentStateInfo;
+import com.shmedo.configlibrary.iot.model.m20.SensorErrnoBean;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
 import com.shmedo.core.MCloudApp;
 import com.shmedo.core.util.GlobalUtil;
@@ -292,7 +293,15 @@ public class NetM20CurrentStateFragment extends BaseNetIotCommunicateFragment {
                 initLinkStatus(mTvLinkThreeStatus, m20CurrentStateInfo.getDataCenter3());
                 initLinkStatus(mTvLinkFourStatus, m20CurrentStateInfo.getDataCenter4());
 
-                mTvSensorStatus.setText("--");
+                boolean sensorAbnormal = false;
+                for(SensorErrnoBean errnoBean :m20CurrentStateInfo.getSensor_errno()){
+                    if (errnoBean.getErrno() != 0) {
+                        sensorAbnormal = true;
+                    }
+                }
+                mTvSensorStatus.setText(sensorAbnormal ? "异常" : "正常");
+                mTvSensorStatus.setTextColor(sensorAbnormal ? GlobalUtil.getColor(R.color.red) : GlobalUtil.getColor(R.color.text_color_3AD094));
+
                 mTvInclination.setText(m20CurrentStateInfo.getZ_Angle());
                 mTvInternalVoltage.setText(String.format("%s V", m20CurrentStateInfo.getInner_power_volt()));
                 mTvExternalVoltage.setText(String.format("%s V", m20CurrentStateInfo.getExt_power_volt()));

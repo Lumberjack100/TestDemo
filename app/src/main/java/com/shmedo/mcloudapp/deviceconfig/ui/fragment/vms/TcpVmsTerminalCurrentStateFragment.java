@@ -120,12 +120,12 @@ public class TcpVmsTerminalCurrentStateFragment extends BaseFragment {
                 DecimalFormat df = new DecimalFormat("#.###");//格式化小数
                 String value = df.format(Double.valueOf(errnoBean.getVal()));
                 holder.setText(R.id.tv_sensor_value, value);
-                holder.setText(R.id.tv_sensor_state, IOTSensorUtil.getInstance().getErrorMessageByNo(String.valueOf(errnoBean.getErrno())));
+                holder.setText(R.id.tv_sensor_status, IOTSensorUtil.getInstance().getErrorMessageByNo(String.valueOf(errnoBean.getErrno())));
 
                 if (errnoBean.getErrno() == 0) {
-                    holder.setTextColorRes(R.id.tv_sensor_state, R.color.text_color_3AD094);
+                    holder.setTextColorRes(R.id.tv_sensor_status, R.color.text_color_3AD094);
                 } else {
-                    holder.setTextColorRes(R.id.tv_sensor_state, R.color.red);
+                    holder.setTextColorRes(R.id.tv_sensor_status, R.color.red);
                 }
             }
         };

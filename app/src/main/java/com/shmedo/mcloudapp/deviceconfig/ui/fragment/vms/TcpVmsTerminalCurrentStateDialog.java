@@ -47,8 +47,8 @@ public class TcpVmsTerminalCurrentStateDialog extends BaseDialogFragment {
     @BindView(R.id.tv_receive_data)
     TextView mTvReceiveData;
 
-    @BindView(R.id.tv_sensor_state)
-    TextView mTvSensorState;
+    @BindView(R.id.tv_sensor_status)
+    TextView mTvSensorStatus;
 
     @BindView(R.id.tv_power_volt)
     TextView mTvPowerVolt;
@@ -118,8 +118,8 @@ public class TcpVmsTerminalCurrentStateDialog extends BaseDialogFragment {
                     sensorAbnormal = true;
                 }
             }
-            mTvSensorState.setText(sensorAbnormal ? "异常" : "正常");
-            mTvSensorState.setTextColor(sensorAbnormal ? GlobalUtil.getColor(R.color.red) : GlobalUtil.getColor(R.color.text_color_3AD094));
+            mTvSensorStatus.setText(sensorAbnormal ? "异常" : "正常");
+            mTvSensorStatus.setTextColor(sensorAbnormal ? GlobalUtil.getColor(R.color.red) : GlobalUtil.getColor(R.color.text_color_3AD094));
         }
     }
 
