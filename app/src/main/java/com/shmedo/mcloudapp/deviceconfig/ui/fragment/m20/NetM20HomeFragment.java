@@ -13,6 +13,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
+import com.shmedo.configlibrary.iot.cmd.IOTCommandManager;
+import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.core.AppContants;
 import com.shmedo.core.MCloudApp;
 import com.shmedo.core.util.DensityUtil;
@@ -21,7 +23,6 @@ import com.shmedo.mcloudapp.common.view.recycleviewitemdivider.GridSpacingItemDe
 import com.shmedo.mcloudapp.deviceconfig.adapter.ConfigModuleAdapter;
 import com.shmedo.mcloudapp.deviceconfig.model.ConfigModule;
 import com.shmedo.mcloudapp.deviceconfig.model.DispatchCmdItem;
-import com.shmedo.mcloudapp.deviceconfig.model.params.DispatchCmdParam;
 import com.shmedo.mcloudapp.deviceconfig.model.params.DispatchRawCmdParam;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.AdvancedSettingActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.DataCenterHomeActivity;
@@ -143,7 +144,6 @@ public class NetM20HomeFragment extends BaseNetIotCommunicateFragment {
                 if (isDoubleClick(view)) {
                     return;
                 }
-
                 selectedConfigModule = configModuleList.get(position);
                 processItemClick();
             }
@@ -159,7 +159,9 @@ public class NetM20HomeFragment extends BaseNetIotCommunicateFragment {
                 break;
 
             case "状态":
-                processDispatchCommonCmd();
+                showProgressDialog("处理中...");
+                String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.QUERY_DEVICE_STATUS);
+                doCommonDispatchRawCmd(command);
                 break;
 
             case "数据中心":
@@ -172,26 +174,12 @@ public class NetM20HomeFragment extends BaseNetIotCommunicateFragment {
         }
     }
 
-    private void processDispatchCommonCmd() {
-        DispatchCmdParam dispatchCmdParam = new DispatchCmdParam();
-        dispatchCmdParam.setCmdID(selectedConfigModule.getCmdID());
-        dispatchCmdParam.setCompanyID(MCloudApp.getCompanyID());
-        dispatchCmdParam.setDeviceIDList(Arrays.asList(projectDeviceInfo.getId()));
-
-        showProgressDialog("指令下发中...");
-        processDispatchCmd(dispatchCmdParam);
-    }
-
     /**
      * 水平初始化
      */
     public void setLevelInitial() {
-        DispatchRawCmdParam rawCmdParam = new DispatchRawCmdParam();
-        rawCmdParam.setContent("$cmd=md_levelinit");
-        rawCmdParam.setCompanyID(MCloudApp.getCompanyID());
-        rawCmdParam.setDeviceIDList(Arrays.asList(projectDeviceInfo.getId()));
-
-        processDispatchRawCmd(rawCmdParam);
+        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.M20_MD_LEVEL_INITIAL);
+        doCommonDispatchRawCmd(command);
     }
 
     private void initConfigModuleData() {
@@ -208,6 +196,20 @@ public class NetM20HomeFragment extends BaseNetIotCommunicateFragment {
 
         configModule = new ConfigModule(R.drawable.ic_device_setting, "设置", "高级设置");
         configModuleList.add(configModule);
+    }
+
+    /**
+     * 调用指令透传接口
+     *
+     * @param content
+     */
+    private void doCommonDispatchRawCmd(String content) {
+        DispatchRawCmdParam rawCmdParam = new DispatchRawCmdParam();
+        rawCmdParam.setContent(content);
+        rawCmdParam.setCompanyID(MCloudApp.getCompanyID());
+        rawCmdParam.setDeviceIDList(Arrays.asList(projectDeviceInfo.getId()));
+
+        processDispatchRawCmd(rawCmdParam);
     }
 
     @Override

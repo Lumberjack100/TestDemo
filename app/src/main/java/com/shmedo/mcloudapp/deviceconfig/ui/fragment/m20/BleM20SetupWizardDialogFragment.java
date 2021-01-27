@@ -135,7 +135,7 @@ public class BleM20SetupWizardDialogFragment extends BaseDialogFragment {
             }
             mTvContent.setText("正在水平初始化...");
             setLevelInitial();
-            startProgressRunnable(7000);
+            startProgressRunnable(10000);
             disableTouch();
         }
     }
@@ -161,15 +161,21 @@ public class BleM20SetupWizardDialogFragment extends BaseDialogFragment {
     }
 
     public void updateState(boolean isLevelInitSucc) {
-        if (mTvContent == null)
+        if (mTvContent == null) {
             return;
+        }
         stopProgressRunnable();
         enableTouch();
 
         if (isLevelInitSucc) {
-            dismiss();
-            DataCenterHomeActivity.startActivity(mActivity, AppContants.DeviceType.M20, AppContants.CommunicationWay.BLE_CONNECT, AppContants.DataCenterConfigMethod.BASIC_CONFIG, true);
-
+            mTvContent.setText("初始化完成");
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    dismiss();
+                    DataCenterHomeActivity.startActivity(mActivity, AppContants.DeviceType.M20, AppContants.CommunicationWay.BLE_CONNECT, AppContants.DataCenterConfigMethod.BASIC_CONFIG, true);
+                }
+            }, 1500);
         } else {
             mTvContent.setVisibility(View.GONE);
             dispatchCmdFailedView.setVisibility(View.VISIBLE);

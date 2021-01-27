@@ -46,7 +46,7 @@ public abstract class BaseNetIotCommunicateFragment extends BaseFragment {
 
     private Handler uiHander = new Handler();
 
-    private static int queryNum = 0;//当查询指令结果5次时，判断响应超时
+    private int queryNum = 0;//当查询指令结果5次时，判断响应超时
     private QueryCmdResponseRunnable queryCmdResponseRunnable;//常规任务
 
     private class QueryCmdResponseRunnable implements Runnable {
@@ -54,7 +54,7 @@ public abstract class BaseNetIotCommunicateFragment extends BaseFragment {
         public void run() {
             //轮询指令响应结果接口达到5次，判断超时
             if (queryNum > 5) {
-                stopQueryCmdResponseRunnable();
+//                stopQueryCmdResponseRunnable();
                 onQueryCmdResponseResultTimeOut(null);
                 return;
             }
@@ -64,6 +64,13 @@ public abstract class BaseNetIotCommunicateFragment extends BaseFragment {
     }
 
     protected void startQueryCmdResponseRunnable(long delayMillis) {
+        this.startQueryCmdResponseRunnable(delayMillis, true);
+    }
+
+    protected void startQueryCmdResponseRunnable(long delayMillis, boolean isFirstCall) {
+        if (!isFirstCall && queryCmdResponseRunnable == null) {
+            return;
+        }
         if (queryCmdResponseRunnable == null) {
             queryCmdResponseRunnable = new QueryCmdResponseRunnable();
         }
@@ -97,6 +104,7 @@ public abstract class BaseNetIotCommunicateFragment extends BaseFragment {
     public void onStop() {
         super.onStop();
         dismissProgressDialog();
+        stopQueryCmdResponseRunnable();
     }
 
     /**
@@ -209,7 +217,6 @@ public abstract class BaseNetIotCommunicateFragment extends BaseFragment {
                                     onQueryCmdResponseResultError("");
                                     return;
                                 }
-
                                 QueryCmdResult queryCmdResult = data.get(0);
                                 processCmdResult(queryCmdResult);
                             } else {
@@ -235,7 +242,7 @@ public abstract class BaseNetIotCommunicateFragment extends BaseFragment {
             onQueryCmdResponseResultSuccess(queryCmdResult);
         } else {
             //延迟2秒后再次查询响应结果
-            startQueryCmdResponseRunnable(2000);
+            startQueryCmdResponseRunnable(2000, false);
         }
     }
 
@@ -266,6 +273,8 @@ public abstract class BaseNetIotCommunicateFragment extends BaseFragment {
      */
     protected void onQueryCmdResponseResultTimeOut(QueryCmdResult queryCmdResult) {
         dismissProgressDialog();
+        //停止轮询指令响应结果接口
+        stopQueryCmdResponseRunnable();
     }
 
     protected void warnNotYetSettingBeforeLeavePage() {
