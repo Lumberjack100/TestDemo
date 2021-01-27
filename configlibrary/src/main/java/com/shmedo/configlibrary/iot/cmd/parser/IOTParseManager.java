@@ -3,8 +3,8 @@ package com.shmedo.configlibrary.iot.cmd.parser;
 import android.text.TextUtils;
 
 import com.shmedo.configlibrary.iot.cmd.IOTCommandResult;
+import com.shmedo.configlibrary.iot.cmd.parser.adme.AdmeBaseInfoParser;
 import com.shmedo.configlibrary.iot.cmd.parser.adme.AdmeBasicConfigParamParser;
-import com.shmedo.configlibrary.iot.cmd.parser.adme.AdmeBasicInfoParser;
 import com.shmedo.configlibrary.iot.cmd.parser.adme.AdmeCurrentStateInfoParser;
 import com.shmedo.configlibrary.iot.cmd.parser.adme.AdmeExecutiveAgencyInfoParser;
 import com.shmedo.configlibrary.iot.cmd.parser.adme.AdmeGuideGrooveCalibrationInfoParser;
@@ -16,6 +16,7 @@ import com.shmedo.configlibrary.iot.cmd.parser.adme.AdmeMotorMotionAngleInfoPars
 import com.shmedo.configlibrary.iot.cmd.parser.adme.AdmeMotorMotionDistanceInfoParser;
 import com.shmedo.configlibrary.iot.cmd.parser.adme.AdmeStepperMotorInfoParser;
 import com.shmedo.configlibrary.iot.cmd.parser.adme.AdmeWorkModeParser;
+import com.shmedo.configlibrary.iot.cmd.parser.m20.M20BaseInfoParser;
 import com.shmedo.configlibrary.iot.cmd.parser.vms.VmsAisleInfoParser;
 import com.shmedo.configlibrary.iot.cmd.parser.vms.VmsAisleTerminalInfoParser;
 import com.shmedo.configlibrary.iot.cmd.parser.vms.VmsBasicInfoParser;
@@ -133,7 +134,7 @@ public class IOTParseManager {
                 DataCenterStatusParser.class,
                 VmsTerminalCollectorInfoParser.class,
                 VmsTerminalCommInfoParser.class,
-                AdmeBasicInfoParser.class,
+                AdmeBaseInfoParser.class,
                 AdmeBasicConfigParamParser.class,
                 AdmeMeterWheelParamParser.class,
                 AdmeInclinometerInfoParser.class,
@@ -145,7 +146,8 @@ public class IOTParseManager {
                 AdmeGuideGrooveCalibrationInfoParser.class,
                 AdmeMotorMotionAngleInfoParser.class,
                 AdmeCurrentStateInfoParser.class,
-                AdmeWorkModeParser.class
+                AdmeWorkModeParser.class,
+                M20BaseInfoParser.class
         });
 
         registerWithClass(clazzes);

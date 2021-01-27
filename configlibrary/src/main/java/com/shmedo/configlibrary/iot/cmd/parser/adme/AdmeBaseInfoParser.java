@@ -13,7 +13,7 @@ import java.util.HashMap;
  * 创建时间:  12/23/20 <br/>
  * 描述：      解析ADME基础信息
  */
-public class AdmeBasicInfoParser implements IOTResultParser<AdmeBaseInfo> {
+public class AdmeBaseInfoParser implements IOTResultParser<AdmeBaseInfo> {
     @Override
     public AdmeBaseInfo parse(String result) {
         AdmeBaseInfo info = new AdmeBaseInfo();

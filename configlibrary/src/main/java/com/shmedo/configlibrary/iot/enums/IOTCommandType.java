@@ -274,6 +274,11 @@ public enum IOTCommandType {
 
     /*　 M20 指令  */
     /**
+     * 获取M20的基本信息
+     */
+    M20_MD_GET_BASE_INFO("md_getbaseinfo"),
+
+    /**
      * M20水平初始化设置
      */
     M20_MD_LEVEL_INITIAL("md_levelinit"),

@@ -90,8 +90,8 @@ public class BleM20DataCenterHomeFragment extends BaseGOCBleIotCommunicateFragme
     @Override
     public void onStart() {
         super.onStart();
-//        startProgressRunnable("加载中...", DELAY_MILLIS);
-//        getDataCenterStatus(ServerNumber.NUMBER_ONE);
+        startProgressRunnable("加载中...", WRITE_TIME_OUT_SECOND);
+        getDataCenterStatus(ServerNumber.NUMBER_ONE);
     }
 
     /**
@@ -193,21 +193,21 @@ public class BleM20DataCenterHomeFragment extends BaseGOCBleIotCommunicateFragme
         if (statusId.equals("0")) {
             status = "未开启";
         } else if (statusId.equals("1")) {
-            status = "已上线";
+            status = "已连接";
         } else if (statusId.equals("2")) {
-            status = "未上线";
+            status = "未连接";
         }
         return status;
     }
 
     private int getStatusColorResId(String statusId) {
-        int resId = R.color.text_color_666666;
+        int resId = R.color.device_unopened_platform;
         if (statusId.equals("0")) {
-            resId = R.color.sub_title_text_color;
+            resId = R.color.device_unopened_platform;
         } else if (statusId.equals("1")) {
-            resId = R.color.text_color_3AD094;
+            resId = R.color.title_text_color;
         } else if (statusId.equals("2")) {
-            resId = R.color.red;
+            resId = R.color.device_not_connected_platform;
         }
         return resId;
     }

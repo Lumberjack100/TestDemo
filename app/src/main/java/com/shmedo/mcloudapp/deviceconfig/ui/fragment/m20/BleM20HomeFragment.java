@@ -22,12 +22,11 @@ import com.shmedo.configlibrary.iot.cmd.IOTCommandResult;
 import com.shmedo.configlibrary.iot.cmd.parser.IOTParseManager;
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.model.CommonSettingCmdResult;
-import com.shmedo.configlibrary.iot.model.m20.M20CurrentStateInfo;
+import com.shmedo.configlibrary.iot.model.m20.M20BaseInfo;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
 import com.shmedo.core.AppContants;
 import com.shmedo.core.MCloudApp;
 import com.shmedo.core.util.DensityUtil;
-import com.shmedo.core.util.GsonFactory;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.view.recycleviewitemdivider.GridSpacingItemDecoration;
 import com.shmedo.mcloudapp.deviceconfig.adapter.ConfigModuleAdapter;
@@ -88,6 +87,7 @@ public class BleM20HomeFragment extends BaseGOCBleIotCommunicateFragment {
     private ConfigModule selectedConfigModule;
 
     private DiscoveredBluetoothDevice device;
+    private M20BaseInfo m20BaseInfo;
 
     private BleM20SetupWizardDialogFragment setupWizardDialogFragment;
 
@@ -244,8 +244,7 @@ public class BleM20HomeFragment extends BaseGOCBleIotCommunicateFragment {
         bleViewModel.getDeviceApiKey().observeInFragment(this, new Observer<String>() {
             @Override
             public void onChanged(String apiKey) {
-                hideProgressBar();
-                queryStateInfo();
+                queryBaseInfo();
             }
         });
     }
@@ -304,10 +303,10 @@ public class BleM20HomeFragment extends BaseGOCBleIotCommunicateFragment {
     }
 
     /**
-     * 获取设备的状态信息
+     * 获取设备的基本信息
      */
-    private void queryStateInfo() {
-        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.QUERY_DEVICE_STATUS);
+    private void queryBaseInfo() {
+        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.M20_MD_GET_BASE_INFO);
         sendCommand(command);
     }
 
@@ -339,17 +338,17 @@ public class BleM20HomeFragment extends BaseGOCBleIotCommunicateFragment {
     private void setResultData(final String cmdStr) {
         IOTCommandType type = IOTStringUtil.extractCommandType(cmdStr);
         switch (type) {
-            case QUERY_DEVICE_STATUS: {//获取设备的状态
+            case M20_MD_GET_BASE_INFO: {//获取设备的基本信息
                 hideProgressBar();
-                IOTCommandResult<String> commandResult = IOTParseManager.getInstance().parse(cmdStr);
+                IOTCommandResult<M20BaseInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
-                    String errMsg = String.format("%s %s", "查询设备状态出错!", commandResult.getMessage());
+                    String errMsg = String.format("%s %s", "获取设备的基本信息出错!", commandResult.getMessage());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
                     return;
                 }
-                String content = commandResult.getResult();
-                updateHeadInfo(content);
+                m20BaseInfo = commandResult.getResult();
+                updateHeadInfo();
             }
             break;
 
@@ -377,14 +376,13 @@ public class BleM20HomeFragment extends BaseGOCBleIotCommunicateFragment {
     /**
      * 更新头部信息
      */
-    private void updateHeadInfo(String content) {
+    private void updateHeadInfo() {
         try {
-            M20CurrentStateInfo m20CurrentStateInfo = GsonFactory.getGson().fromJson(content, M20CurrentStateInfo.class);
             mTvDeviceName.setText("普适型GNSS一体机");
-            if (m20CurrentStateInfo != null) {
-                mTvDeviceSn.setText(String.format("设备编号：%s", !TextUtils.isEmpty(m20CurrentStateInfo.getSN()) ? m20CurrentStateInfo.getSN() : device.getName().substring(3)));
-                mTvProductModel.setText(String.format("产品型号：%s", "M20"));
-                mTvFirmwareVersion.setText(String.format("固件版本：%s", m20CurrentStateInfo.getSw_version()));
+            if (m20BaseInfo != null) {
+                mTvDeviceSn.setText(String.format("设备编号：%s", !TextUtils.isEmpty(m20BaseInfo.getSn()) ? m20BaseInfo.getSn() : device.getName().substring(3)));
+                mTvProductModel.setText(String.format("产品型号：%s", !TextUtils.isEmpty(m20BaseInfo.getProductid()) ? m20BaseInfo.getProductid() : "M20"));
+                mTvFirmwareVersion.setText(String.format("固件版本：%s", m20BaseInfo.getFirversion()));
             } else {
                 mTvDeviceSn.setText(String.format("设备编号：%s", device.getName().substring(3)));
                 mTvProductModel.setText(String.format("产品型号：：%s", "M20"));
