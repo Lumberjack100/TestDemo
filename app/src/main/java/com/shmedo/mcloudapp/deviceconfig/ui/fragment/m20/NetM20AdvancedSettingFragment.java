@@ -180,7 +180,7 @@ public class NetM20AdvancedSettingFragment extends BaseNetIotCommunicateFragment
         rawCmdParam.setCompanyID(MCloudApp.getCompanyID());
         rawCmdParam.setDeviceIDList(Arrays.asList(projectDeviceInfo.getId()));
 
-        showProgressDialog("指令下发中...");
+        showProgressDialog("处理中...");
         processDispatchRawCmd(rawCmdParam);
     }
 
