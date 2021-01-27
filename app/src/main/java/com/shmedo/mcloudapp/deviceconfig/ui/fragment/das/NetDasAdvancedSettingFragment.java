@@ -143,7 +143,7 @@ public class NetDasAdvancedSettingFragment extends BaseNetIotCommunicateFragment
      * @param dispatchCmdItemList
      */
     @Override
-    protected void onDispatchCmdResult(List<DispatchCmdItem> dispatchCmdItemList) {
+    protected void onDispatchCmdResult(List<DispatchCmdItem> dispatchCmdItemList, String cmdStr) {
         dismissProgressDialog();
         if (dispatchCmdItemList == null || dispatchCmdItemList.size() == 0) {
             showDispatchFailedDialog();

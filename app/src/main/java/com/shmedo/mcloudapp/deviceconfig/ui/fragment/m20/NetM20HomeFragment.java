@@ -13,8 +13,13 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
+import com.hjq.toast.ToastUtils;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandManager;
+import com.shmedo.configlibrary.iot.cmd.IOTCommandResult;
+import com.shmedo.configlibrary.iot.cmd.parser.IOTParseManager;
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
+import com.shmedo.configlibrary.iot.model.m20.M20BaseInfo;
+import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
 import com.shmedo.core.AppContants;
 import com.shmedo.core.MCloudApp;
 import com.shmedo.core.util.DensityUtil;
@@ -23,6 +28,7 @@ import com.shmedo.mcloudapp.common.view.recycleviewitemdivider.GridSpacingItemDe
 import com.shmedo.mcloudapp.deviceconfig.adapter.ConfigModuleAdapter;
 import com.shmedo.mcloudapp.deviceconfig.model.ConfigModule;
 import com.shmedo.mcloudapp.deviceconfig.model.DispatchCmdItem;
+import com.shmedo.mcloudapp.deviceconfig.model.QueryCmdResult;
 import com.shmedo.mcloudapp.deviceconfig.model.params.DispatchRawCmdParam;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.AdvancedSettingActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.DataCenterHomeActivity;
@@ -37,6 +43,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import butterknife.BindView;
+import timber.log.Timber;
 
 public class NetM20HomeFragment extends BaseNetIotCommunicateFragment {
     public static final String EXTRA_DEVICE = "com.shmedo.mcloudapp.EXTRA_DEVICE";
@@ -76,6 +83,7 @@ public class NetM20HomeFragment extends BaseNetIotCommunicateFragment {
     private ConfigModule selectedConfigModule;
 
     public ProjectDeviceInfo projectDeviceInfo;
+    private M20BaseInfo m20BaseInfo;
 
     private NetM20SetupWizardDialogFragment setupWizardDialogFragment;
 
@@ -107,6 +115,8 @@ public class NetM20HomeFragment extends BaseNetIotCommunicateFragment {
         setHeadInfo();
         initAdapter();
         initConfigModuleData();
+        showProgressDialog("处理中...");
+        queryBaseInfo();
     }
 
     private void setHeadInfo() {
@@ -174,14 +184,6 @@ public class NetM20HomeFragment extends BaseNetIotCommunicateFragment {
         }
     }
 
-    /**
-     * 水平初始化
-     */
-    public void setLevelInitial() {
-        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.M20_MD_LEVEL_INITIAL);
-        doCommonDispatchRawCmd(command);
-    }
-
     private void initConfigModuleData() {
         configModuleList.clear();
 
@@ -199,6 +201,22 @@ public class NetM20HomeFragment extends BaseNetIotCommunicateFragment {
     }
 
     /**
+     * 获取设备的基本信息
+     */
+    private void queryBaseInfo() {
+        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.M20_MD_GET_BASE_INFO);
+        doCommonDispatchRawCmd(command);
+    }
+
+    /**
+     * 水平初始化
+     */
+    public void setLevelInitial() {
+        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.M20_MD_LEVEL_INITIAL);
+        doCommonDispatchRawCmd(command);
+    }
+
+    /**
      * 调用指令透传接口
      *
      * @param content
@@ -213,37 +231,62 @@ public class NetM20HomeFragment extends BaseNetIotCommunicateFragment {
     }
 
     @Override
-    protected void onDispatchCmdResult(List<DispatchCmdItem> dispatchCmdItemList) {
-        dismissProgressDialog();
+    protected void onDispatchCmdResult(List<DispatchCmdItem> dispatchCmdItemList, String cmdStr) {
+//        dismissProgressDialog();
         if (dispatchCmdItemList == null || dispatchCmdItemList.size() == 0) {
-            showDispatchFailedDialog();
+            dismissProgressDialog();
+            showDispatchFailedDialog(cmdStr);
             return;
         }
+
         msgIDList.clear();
         for (DispatchCmdItem cmdItem : dispatchCmdItemList) {
             msgIDList.add(cmdItem.getMsgID());
         }
-        showDispatchSuccessDialog();
+        IOTCommandType type = IOTStringUtil.extractCommandType(cmdStr);
+        switch (type) {
+            case QUERY_DEVICE_STATUS:
+            case M20_MD_LEVEL_INITIAL:
+                dismissProgressDialog();
+                showDispatchSuccessDialog();
+                break;
+
+            case M20_MD_GET_BASE_INFO: {
+                if (msgIDList != null && msgIDList.size() > 0) {
+                    startQueryCmdResponseRunnable(2000);
+                }
+            }
+            break;
+
+            default:
+                break;
+        }
     }
 
     /**
      * 指令下发失败弹框
      */
-    private void showDispatchFailedDialog() {
+    private void showDispatchFailedDialog(String cmdStr) {
         String title;
         BaseDispatchCmdDialog newFragment = null;
-        switch (selectedConfigModule.getName()) {
-            case "状态":
+        IOTCommandType type = IOTStringUtil.extractCommandType(cmdStr);
+        switch (type) {
+            case QUERY_DEVICE_STATUS:
                 title = "运行状态";
                 newFragment = new DispatchCmdFailedDialog(title);
                 break;
 
-            case "设置向导":
+            case M20_MD_LEVEL_INITIAL:
                 if (setupWizardDialogFragment != null && setupWizardDialogFragment.isVisible()) {
                     setupWizardDialogFragment.updateDispatchCmdResult(false, null);
                 }
                 break;
 
+            case M20_MD_GET_BASE_INFO:
+                break;
+
+            default:
+                break;
         }
         if (newFragment != null)
             newFragment.show(getChildFragmentManager(), "dialog");
@@ -275,5 +318,76 @@ public class NetM20HomeFragment extends BaseNetIotCommunicateFragment {
         }
         if (newFragment != null)
             newFragment.show(getChildFragmentManager(), "dialog");
+    }
+
+    /**
+     * 查询指令响应结果出错
+     *
+     * @param errMsg
+     */
+    @Override
+    protected void onQueryCmdResponseResultError(String errMsg) {
+        super.onQueryCmdResponseResultError(errMsg);
+        ToastUtils.show("查询设备响应错误");
+    }
+
+    /**
+     * 查询指令响应结果超时
+     *
+     * @param queryCmdResult
+     */
+    @Override
+    protected void onQueryCmdResponseResultTimeOut(QueryCmdResult queryCmdResult) {
+        super.onQueryCmdResponseResultTimeOut(queryCmdResult);
+        ToastUtils.show("查询设备响应超时");
+    }
+
+    /**
+     * 查询指令响应结果成功
+     *
+     * @param queryCmdResult
+     */
+    @Override
+    protected void onQueryCmdResponseResultSuccess(QueryCmdResult queryCmdResult) {
+        super.onQueryCmdResponseResultSuccess(queryCmdResult);
+        setResultData(queryCmdResult);
+    }
+
+    private void setResultData(QueryCmdResult queryCmdResult) {
+        String cmdStr = queryCmdResult.getResponseContent();
+        IOTCommandType type = IOTStringUtil.extractCommandType(cmdStr);
+        switch (type) {
+            case M20_MD_GET_BASE_INFO: {//获取设备的基本信息
+                IOTCommandResult<M20BaseInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
+                if (!commandResult.isSuccess()) {
+                    String errMsg = String.format("%s %s", "获取设备的基本信息出错!", commandResult.getMessage());
+                    Timber.e(errMsg);
+                    ToastUtils.show(errMsg);
+                    return;
+                }
+                m20BaseInfo = commandResult.getResult();
+                updateHeadInfo();
+            }
+            break;
+
+            default:
+                break;
+        }
+    }
+
+    /**
+     * 更新头部信息
+     */
+    private void updateHeadInfo() {
+        try {
+            if (m20BaseInfo != null) {
+                mTvFirmwareVersion.setText(String.format("固件版本：%s", m20BaseInfo.getFirversion()));
+            } else {
+                mTvFirmwareVersion.setText("固件版本：--");
+            }
+            mTvPlatformCommunicationState.setText("平台连接状态：--");
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 }

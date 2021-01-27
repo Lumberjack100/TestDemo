@@ -16,6 +16,8 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.hjq.toast.ToastUtils;
+import com.shmedo.configlibrary.iot.cmd.IOTCommandManager;
+import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.core.AppContants;
 import com.shmedo.core.MCloudApp;
 import com.shmedo.core.event.DeviceModuleSwitchTabEvent;
@@ -31,7 +33,7 @@ import com.shmedo.mcloudapp.deviceconfig.model.DevcieCurrentState;
 import com.shmedo.mcloudapp.deviceconfig.model.DevcieHistoryState;
 import com.shmedo.mcloudapp.deviceconfig.model.DispatchCmdItem;
 import com.shmedo.mcloudapp.deviceconfig.model.FirmWareInfo;
-import com.shmedo.mcloudapp.deviceconfig.model.params.DispatchCmdParam;
+import com.shmedo.mcloudapp.deviceconfig.model.params.DispatchRawCmdParam;
 import com.shmedo.mcloudapp.deviceconfig.model.params.FirmwareUpgrade;
 import com.shmedo.mcloudapp.deviceconfig.model.params.QueryCmdStateParam;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.AdvancedSettingActivity;
@@ -229,11 +231,23 @@ public class NetConfigDeviceFragment extends BaseNetIotCommunicateFragment {
 
     private void processItemClick() {
         switch (selectedConfigModule.getName()) {
-            case "状态":
-            case "时间":
-            case "遥测":
-                doCommonDispatchCommonCmd();
-                break;
+            case "状态": {
+                String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.QUERY_DEVICE_STATUS);
+                doCommonDispatchRawCmd(command);
+            }
+            break;
+
+            case "时间": {
+                String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.QUERY_TERMINAL_TIME);
+                doCommonDispatchRawCmd(command);
+            }
+            break;
+
+            case "遥测": {
+                String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.QUERY_SAMPLE);
+                doCommonDispatchRawCmd(command);
+            }
+            break;
 
             case "重启":
                 showWarnDialog("温馨提示", "确定重启设备吗？", REBOOT);
@@ -261,6 +275,7 @@ public class NetConfigDeviceFragment extends BaseNetIotCommunicateFragment {
             doFirmwareUpgrade(firmWareInfo.getId());
             return true;
         }
+
         @Override
         public void onNegativeClick(View view) {
         }
@@ -373,16 +388,18 @@ public class NetConfigDeviceFragment extends BaseNetIotCommunicateFragment {
     }
 
     /**
-     * 调用指令下发接口
+     * 调用指令透传接口
+     *
+     * @param content
      */
-    private void doCommonDispatchCommonCmd() {
-        DispatchCmdParam dispatchCmdParam = new DispatchCmdParam();
-        dispatchCmdParam.setCmdID(selectedConfigModule.getCmdID());
-        dispatchCmdParam.setCompanyID(MCloudApp.getCompanyID());
-        dispatchCmdParam.setDeviceIDList(Arrays.asList(projectDeviceInfo.getId()));
+    private void doCommonDispatchRawCmd(String content) {
+        DispatchRawCmdParam rawCmdParam = new DispatchRawCmdParam();
+        rawCmdParam.setContent(content);
+        rawCmdParam.setCompanyID(MCloudApp.getCompanyID());
+        rawCmdParam.setDeviceIDList(Arrays.asList(projectDeviceInfo.getId()));
 
-        showProgressDialog("指令下发中...");
-        processDispatchCmd(dispatchCmdParam);
+        showProgressDialog("处理中...");
+        processDispatchRawCmd(rawCmdParam);
     }
 
     /**
@@ -391,7 +408,7 @@ public class NetConfigDeviceFragment extends BaseNetIotCommunicateFragment {
      * @param dispatchCmdItemList
      */
     @Override
-    protected void onDispatchCmdResult(List<DispatchCmdItem> dispatchCmdItemList) {
+    protected void onDispatchCmdResult(List<DispatchCmdItem> dispatchCmdItemList, String cmdStr) {
         dismissProgressDialog();
         if (dispatchCmdItemList == null || dispatchCmdItemList.size() == 0) {
             showDispatchFailedDialog();
@@ -491,7 +508,8 @@ public class NetConfigDeviceFragment extends BaseNetIotCommunicateFragment {
                         dialog.dismiss();
                         switch (operateType) {
                             case REBOOT:
-                                doCommonDispatchCommonCmd();
+                                String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.REBOOT);
+                                doCommonDispatchRawCmd(command);
                                 break;
 
                             case SWITCH_TO_BLE:

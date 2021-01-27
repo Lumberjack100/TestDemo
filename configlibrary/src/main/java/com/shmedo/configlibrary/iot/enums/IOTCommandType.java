@@ -49,6 +49,11 @@ public enum IOTCommandType {
     RESET("md_reset"),
 
     /**
+     *  固件升级
+     */
+    MD_UPGRADE("md_upgrade"),
+
+    /**
      * 获取接入传感器类型
      */
     QUERY_SENSOR_TYPE("getsensorID"),

@@ -6,7 +6,6 @@ import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.lifecycle.Observer;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -17,9 +16,7 @@ import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.fragment.BaseFragment;
 import com.shmedo.mcloudapp.deviceconfig.model.DispatchCmdItem;
 import com.shmedo.mcloudapp.deviceconfig.model.QueryCmdResult;
-import com.shmedo.mcloudapp.deviceconfig.model.params.DispatchCmdParam;
 import com.shmedo.mcloudapp.deviceconfig.model.params.DispatchRawCmdParam;
-import com.shmedo.mcloudapp.deviceconfig.viewmodels.DeviceNetModelViewModel;
 import com.shmedo.mcloudapp.network.BaseObserver;
 import com.shmedo.mcloudapp.network.ErrCode;
 import com.shmedo.mcloudapp.network.MDRetrofit;
@@ -40,13 +37,14 @@ import timber.log.Timber;
  * 描述：     TODO
  */
 public abstract class BaseNetIotCommunicateFragment extends BaseFragment {
-    protected DeviceNetModelViewModel deviceNetModelViewModel;
+//    private DeviceNetModelViewModel deviceNetModelViewModel;
 
     protected List<String> msgIDList = new ArrayList<>();
 
     private Handler uiHander = new Handler();
 
     private int queryNum = 0;//当查询指令结果5次时，判断响应超时
+
     private QueryCmdResponseRunnable queryCmdResponseRunnable;//常规任务
 
     private class QueryCmdResponseRunnable implements Runnable {
@@ -54,7 +52,6 @@ public abstract class BaseNetIotCommunicateFragment extends BaseFragment {
         public void run() {
             //轮询指令响应结果接口达到5次，判断超时
             if (queryNum > 5) {
-//                stopQueryCmdResponseRunnable();
                 onQueryCmdResponseResultTimeOut(null);
                 return;
             }
@@ -87,17 +84,17 @@ public abstract class BaseNetIotCommunicateFragment extends BaseFragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        deviceNetModelViewModel = getActivityScopeViewModel(DeviceNetModelViewModel.class);
-        deviceNetModelViewModel.getDispatchCmdItemList().observeInFragment(this, new Observer<List<DispatchCmdItem>>() {
-            @Override
-            public void onChanged(List<DispatchCmdItem> dispatchCmdItems) {
-                //判断此页面是否处于前台
-                if (!isActive) {
-                    return;
-                }
-                onDispatchCmdResult(dispatchCmdItems);
-            }
-        });
+//        deviceNetModelViewModel = getActivityScopeViewModel(DeviceNetModelViewModel.class);
+//        deviceNetModelViewModel.getDispatchCmdItemList().observeInFragment(this, new Observer<List<DispatchCmdItem>>() {
+//            @Override
+//            public void onChanged(List<DispatchCmdItem> dispatchCmdItems) {
+//                //判断此页面是否处于前台
+//                if (!isActive) {
+//                    return;
+//                }
+//                onDispatchCmdResult(dispatchCmdItems);
+//            }
+//        });
     }
 
     @Override
@@ -110,12 +107,13 @@ public abstract class BaseNetIotCommunicateFragment extends BaseFragment {
     /**
      * 调用指令下发/透传接口结果返回
      */
-    protected void onDispatchCmdResult(List<DispatchCmdItem> dispatchCmdItems) {
+    protected void onDispatchCmdResult(List<DispatchCmdItem> dispatchCmdItems, String cmdStr) {
     }
 
     /**
      * 指令下发
      */
+/*
     protected void processDispatchCmd(DispatchCmdParam dispatchCmdParam) {
         if (dispatchCmdParam == null) {
             throw new IllegalArgumentException("dispatchCmdParam 为null");
@@ -154,6 +152,7 @@ public abstract class BaseNetIotCommunicateFragment extends BaseFragment {
                     }
                 });
     }
+*/
 
     /**
      * 指令透传
@@ -175,13 +174,12 @@ public abstract class BaseNetIotCommunicateFragment extends BaseFragment {
                         if (!ResponseHandler.getInstance().handleResponse(errCode)) {
                             if (errCode.getCode() == 0) {
                                 if (data == null || data.size() == 0) {
-                                    deviceNetModelViewModel.setDispatchCmdItemList(null);
+                                    onDispatchCmdResult(null,dispatchRawCmdParam.getContent());
                                     return;
                                 }
-                                deviceNetModelViewModel.setDispatchCmdItemList(data);
-
+                                onDispatchCmdResult(data,dispatchRawCmdParam.getContent());
                             } else {
-                                deviceNetModelViewModel.setDispatchCmdItemList(null);
+                                onDispatchCmdResult(null,dispatchRawCmdParam.getContent());
                                 if (!TextUtils.isEmpty(errCode.getErrMessage())) {
                                     ToastUtils.show(errCode.getErrMessage());
                                 }
@@ -191,7 +189,7 @@ public abstract class BaseNetIotCommunicateFragment extends BaseFragment {
 
                     @Override
                     public void onError(Throwable e) {
-                        deviceNetModelViewModel.setDispatchCmdItemList(null);
+                        onDispatchCmdResult(null,dispatchRawCmdParam.getContent());
                         ResponseHandler.getInstance().handleFailure((Exception) e);
                     }
                 });

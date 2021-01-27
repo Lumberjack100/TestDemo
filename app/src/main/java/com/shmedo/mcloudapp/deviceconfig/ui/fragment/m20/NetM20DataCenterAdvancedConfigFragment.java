@@ -122,10 +122,6 @@ public class NetM20DataCenterAdvancedConfigFragment extends BaseNetIotCommunicat
 
     private ProjectDeviceInfo projectDeviceInfo;
 
-    private static final int GET_DATA_SENTER = 0x1000;
-    private static final int SET_DATA_SENTER = 0x1001;
-    private int operaType = -1;
-
     public static NetM20DataCenterAdvancedConfigFragment newInstance(ServerNumber serverNumber, String status, ProjectDeviceInfo projectDeviceInfo) {
         NetM20DataCenterAdvancedConfigFragment fragment = new NetM20DataCenterAdvancedConfigFragment();
         Bundle args = new Bundle();
@@ -232,8 +228,6 @@ public class NetM20DataCenterAdvancedConfigFragment extends BaseNetIotCommunicat
     private void queryDataCenterInfo() {
         ServerNumberEntity serverNumberEntity = new ServerNumberEntity(serverNumber.toInt());
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.MD_GET_DATA_CENTER, serverNumberEntity);
-
-        operaType = GET_DATA_SENTER;
         doCommonDispatchRawCmd(command);
     }
 
@@ -250,7 +244,6 @@ public class NetM20DataCenterAdvancedConfigFragment extends BaseNetIotCommunicat
         isSaveParamOperation = false;
         mBtnSave.setEnabled(false);
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.MD_SET_DATA_CENTER, dataCenterEntity);
-        operaType = SET_DATA_SENTER;
         doCommonDispatchRawCmd(command);
     }
 
@@ -454,7 +447,6 @@ public class NetM20DataCenterAdvancedConfigFragment extends BaseNetIotCommunicat
         mBtnSave.setEnabled(false);
 
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.MD_SET_DATA_CENTER, dataCenterEntity);
-        operaType = SET_DATA_SENTER;
         doCommonDispatchRawCmd(command);
     }
 
@@ -473,18 +465,22 @@ public class NetM20DataCenterAdvancedConfigFragment extends BaseNetIotCommunicat
         processDispatchRawCmd(rawCmdParam);
     }
 
+    /**
+     * 调用指令下发/透传接口结果返回
+     *
+     * @param dispatchCmdItemList
+     */
     @Override
-    protected void onDispatchCmdResult(List<DispatchCmdItem> dispatchCmdItemList) {
+    protected void onDispatchCmdResult(List<DispatchCmdItem> dispatchCmdItemList, String cmdStr) {
         if (dispatchCmdItemList == null || dispatchCmdItemList.size() == 0) {
             dismissProgressDialog();
-            showDispatchFailedDialog();
+            showDispatchFailedDialog(cmdStr);
             return;
         }
         msgIDList.clear();
         for (DispatchCmdItem cmdItem : dispatchCmdItemList) {
             msgIDList.add(cmdItem.getMsgID());
         }
-
         if (msgIDList != null && msgIDList.size() > 0) {
             startQueryCmdResponseRunnable(2000);
         }
@@ -493,14 +489,18 @@ public class NetM20DataCenterAdvancedConfigFragment extends BaseNetIotCommunicat
     /**
      * 指令下发失败弹框
      */
-    private void showDispatchFailedDialog() {
+    private void showDispatchFailedDialog(String cmdStr) {
         mBtnSave.setEnabled(true);
         if (isSaveParamOperation)
             isSaveParamOperation = false;
 
-        switch (operaType) {
-            case GET_DATA_SENTER:
-            case SET_DATA_SENTER:
+        IOTCommandType type = IOTStringUtil.extractCommandType(cmdStr);
+        switch (type) {
+            case MD_GET_DATA_CENTER:
+                ToastUtils.show("下发指令失败");
+                break;
+
+            case MD_SET_DATA_CENTER:
                 ToastUtils.show("下发指令失败");
                 break;
 

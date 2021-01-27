@@ -10,6 +10,7 @@ import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandManager;
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
+import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
 import com.shmedo.core.AppContants;
 import com.shmedo.core.MCloudApp;
 import com.shmedo.core.util.GsonFactory;
@@ -48,12 +49,9 @@ import okhttp3.RequestBody;
 public class NetM20AdvancedSettingFragment extends BaseNetIotCommunicateFragment {
     public static final String PRO_DEVICE_INFO = "com.shmedo.mcloudapp.PRO_DEVICE_INFO";
 
-    private static final int FIRMWARE_UPGRADE = 0x1000;
     private static final int LEVEL_INITIAL = 0x1001;
     private static final int REBOOT = 0x1002;
     private static final int RESET = 0x1003;
-
-    private int operaType = -1;
 
     private ProjectDeviceInfo projectDeviceInfo;
 
@@ -113,7 +111,6 @@ public class NetM20AdvancedSettingFragment extends BaseNetIotCommunicateFragment
     private BaseDialogFragment.DialogFragmentClickListener firmWareSelectListener = new BaseDialogFragment.DialogFragmentClickListener<FirmWareInfo>() {
         @Override
         public boolean onPositiveClick(View view, FirmWareInfo firmWareInfo) {
-            operaType = FIRMWARE_UPGRADE;
 //            showProgressDialog("指令下发中...");
             doFirmwareUpgrade(firmWareInfo.getId());
             return true;
@@ -143,22 +140,19 @@ public class NetM20AdvancedSettingFragment extends BaseNetIotCommunicateFragment
                         dialog.dismiss();
                         switch (operateType) {
                             case LEVEL_INITIAL: {
-                                operaType = LEVEL_INITIAL;
                                 String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.M20_MD_LEVEL_INITIAL);
                                 doCommonDispatchRawCmd(command);
                             }
                             break;
 
                             case REBOOT: {
-                                operaType = REBOOT;
                                 String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.REBOOT);
                                 doCommonDispatchRawCmd(command);
                             }
                             break;
 
                             case RESET: {
-                                operaType = RESET;
-                                String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.REBOOT);
+                                String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.RESET);
                                 doCommonDispatchRawCmd(command);
                             }
                             break;
@@ -190,31 +184,32 @@ public class NetM20AdvancedSettingFragment extends BaseNetIotCommunicateFragment
      * @param dispatchCmdItemList
      */
     @Override
-    protected void onDispatchCmdResult(List<DispatchCmdItem> dispatchCmdItemList) {
+    protected void onDispatchCmdResult(List<DispatchCmdItem> dispatchCmdItemList, String cmdStr) {
         dismissProgressDialog();
         if (dispatchCmdItemList == null || dispatchCmdItemList.size() == 0) {
-            showDispatchFailedDialog();
+            showDispatchFailedDialog(cmdStr);
             return;
         }
-
         msgIDList.clear();
         for (DispatchCmdItem cmdItem : dispatchCmdItemList) {
             msgIDList.add(cmdItem.getMsgID());
         }
-        showDispatchSuccessDialog();
+        showDispatchSuccessDialog(cmdStr);
     }
+
 
     /**
      * 指令下发失败弹框
      */
-    private void showDispatchFailedDialog() {
+    private void showDispatchFailedDialog(String cmdStr) {
         String title = "";
-        switch (operaType) {
-            case FIRMWARE_UPGRADE:
+        IOTCommandType type = IOTStringUtil.extractCommandType(cmdStr);
+        switch (type) {
+            case MD_UPGRADE:
                 title = "固件升级";
                 break;
 
-            case LEVEL_INITIAL:
+            case M20_MD_LEVEL_INITIAL:
                 title = "水平初始化";
                 break;
 
@@ -236,15 +231,16 @@ public class NetM20AdvancedSettingFragment extends BaseNetIotCommunicateFragment
     /**
      * 指令下发成功弹框
      */
-    private void showDispatchSuccessDialog() {
+    private void showDispatchSuccessDialog(String cmdStr) {
         BaseDispatchCmdDialog newFragment = null;
         //下发指令成功，弹出对话框开始轮询查询指令响应
-        switch (operaType) {
-            case FIRMWARE_UPGRADE:
+        IOTCommandType type = IOTStringUtil.extractCommandType(cmdStr);
+        switch (type) {
+            case MD_UPGRADE:
                 newFragment = new CommonCmdDialog("固件升级", "固件升级中...", "此过程耗时较长,请耐心等待", msgIDList);
                 break;
 
-            case LEVEL_INITIAL:
+            case M20_MD_LEVEL_INITIAL:
                 newFragment = new CommonCmdDialog("水平初始化", "水平初始化完成", msgIDList);
                 break;
 
@@ -283,9 +279,9 @@ public class NetM20AdvancedSettingFragment extends BaseNetIotCommunicateFragment
                             if (errCode.getCode() == 0) {
                                 msgIDList.clear();
                                 msgIDList.add(msgId);
-                                showDispatchSuccessDialog();
+                                showDispatchSuccessDialog("$cmd=md_upgrade");
                             } else {
-                                showDispatchFailedDialog();
+                                showDispatchFailedDialog("$cmd=md_upgrade");
                             }
                         }
                     }
@@ -293,7 +289,7 @@ public class NetM20AdvancedSettingFragment extends BaseNetIotCommunicateFragment
                     @Override
                     public void onError(Throwable e) {
                         dismissProgressDialog();
-                        showDispatchFailedDialog();
+                        showDispatchFailedDialog("$cmd=md_upgrade");;
                         ResponseHandler.getInstance().handleFailure((Exception) e);
                     }
                 });

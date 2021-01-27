@@ -192,8 +192,14 @@ public class NetM20CurrentStateFragment extends BaseNetIotCommunicateFragment {
         processDispatchRawCmd(rawCmdParam);
     }
 
+    /**
+     * 调用指令下发/透传接口结果返回
+     *
+     * @param dispatchCmdItemList
+     */
     @Override
-    protected void onDispatchCmdResult(List<DispatchCmdItem> dispatchCmdItemList) {
+    protected void onDispatchCmdResult(List<DispatchCmdItem> dispatchCmdItemList, String cmdStr) {
+        dismissProgressDialog();
         if (dispatchCmdItemList == null || dispatchCmdItemList.size() == 0) {
             swipeRefresh.setRefreshing(false);
             dismissProgressDialog();
@@ -204,7 +210,6 @@ public class NetM20CurrentStateFragment extends BaseNetIotCommunicateFragment {
         for (DispatchCmdItem cmdItem : dispatchCmdItemList) {
             msgIDList.add(cmdItem.getMsgID());
         }
-
         if (msgIDList != null && msgIDList.size() > 0) {
             startQueryCmdResponseRunnable(2000);
         }

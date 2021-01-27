@@ -165,8 +165,6 @@ public class NetCollectorSettingFragment extends BaseNetIotCommunicateFragment {
     }
 
     private void processSave() {
-
-
         mBtnSave.setEnabled(false);
 //        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.DAS_MD_SET_COLLECTOR_CONTROL, dataCenterEntity);
 //        operaType = SET_COLLECTOR_INFO;
@@ -194,7 +192,7 @@ public class NetCollectorSettingFragment extends BaseNetIotCommunicateFragment {
      * @param dispatchCmdItemList
      */
     @Override
-    protected void onDispatchCmdResult(List<DispatchCmdItem> dispatchCmdItemList) {
+    protected void onDispatchCmdResult(List<DispatchCmdItem> dispatchCmdItemList, String cmdStr) {
         dismissProgressDialog();
         if (dispatchCmdItemList == null || dispatchCmdItemList.size() == 0) {
             showDispatchFailedDialog();

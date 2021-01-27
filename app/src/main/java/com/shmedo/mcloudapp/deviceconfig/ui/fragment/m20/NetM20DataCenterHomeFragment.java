@@ -148,8 +148,13 @@ public class NetM20DataCenterHomeFragment extends BaseNetIotCommunicateFragment 
         processDispatchRawCmd(rawCmdParam);
     }
 
+    /**
+     * 调用指令下发/透传接口结果返回
+     *
+     * @param dispatchCmdItemList
+     */
     @Override
-    protected void onDispatchCmdResult(List<DispatchCmdItem> dispatchCmdItemList) {
+    protected void onDispatchCmdResult(List<DispatchCmdItem> dispatchCmdItemList, String cmdStr) {
         if (dispatchCmdItemList == null || dispatchCmdItemList.size() == 0) {
             dismissProgressDialog();
             ToastUtils.show("下发指令失败");
@@ -159,7 +164,6 @@ public class NetM20DataCenterHomeFragment extends BaseNetIotCommunicateFragment 
         for (DispatchCmdItem cmdItem : dispatchCmdItemList) {
             msgIDList.add(cmdItem.getMsgID());
         }
-
         if (msgIDList != null && msgIDList.size() > 0) {
             startQueryCmdResponseRunnable(2000);
         }
