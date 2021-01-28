@@ -7,6 +7,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
 
@@ -293,8 +294,10 @@ public class MapActivity extends CheckMapNeedPermissionsActivity implements AMap
         if (mMapMode != MapMode.CACULATE_DISTANCE) {
             gaoDePoiProcessHelper.destroyPoiMarker();
             //显示底部POI详情
-            gaoDePoiProcessHelper.showPoiDetailBottomView("我的位置", String.format("在%s附近", mPoiName));
-            sharePoi = new PoiItem(null, new LatLonPoint(myLatLng.latitude, myLatLng.longitude), mPoiName, mPoiName);
+            if (!TextUtils.isEmpty(mPoiName))
+                gaoDePoiProcessHelper.showPoiDetailBottomView("我的位置", String.format("在%s附近", mPoiName));
+            if (myLatLng != null)
+                sharePoi = new PoiItem(null, new LatLonPoint(myLatLng.latitude, myLatLng.longitude), mPoiName, mPoiName);
         }
 
         aMap.setMyLocationEnabled(true);
