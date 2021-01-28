@@ -214,6 +214,9 @@ public class WiFiDeviceListFragment extends BaseFragment implements TextWatcher,
         hackWiFiManager.setOnWifiChangeListener(new OnWifiChangeListener() {
             @Override
             public void onWifiChanged(List<IWifi> wifiList) {
+                if (mTvWiFiCount == null) {
+                    return;
+                }
                 tempWiFiList.clear();
                 for (IWifi iWifi : wifiList) {
                     if (iWifi.name() == null || (!iWifi.name().toUpperCase().startsWith("VMS"))) {
@@ -228,6 +231,9 @@ public class WiFiDeviceListFragment extends BaseFragment implements TextWatcher,
         hackWiFiManager.setOnWifiStateChangeListener(new OnWifiStateChangeListener() {
             @Override
             public void onStateChanged(State state) {
+                if (normalView == null) {
+                    return;
+                }
                 if (state == State.DISABLED) {
                     ToastUtils.show("WiFi 未开启");
                     normalView.setVisibility(View.GONE);
@@ -289,7 +295,6 @@ public class WiFiDeviceListFragment extends BaseFragment implements TextWatcher,
                 new XPermissionUtils.OnPermissionListener() {
                     @Override
                     public void onPermissionGranted() {
-//                        checkWiFiIsEnabled();
                         refreshWifi();
                     }
 
@@ -306,17 +311,6 @@ public class WiFiDeviceListFragment extends BaseFragment implements TextWatcher,
                 });
     }
 
-//    /**
-//     * 检测 WiFI 是否开启<br>
-//     * 注意：Android Q 以上无法通过代码 mWifiManager.setWifiEnabled(true) 打开 WiFi
-//     */
-//    private void checkWiFiIsEnabled() {
-//        if (manager.isWifiEnabled()) {
-//            refreshWifi();
-//            return;
-//        }
-//        prrocessEnableWiFi();
-//    }
 
     /**
      * 扫描刷新 WiFi 列表
