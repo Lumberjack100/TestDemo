@@ -1,5 +1,7 @@
 package com.shmedo.mcloudapp.deviceconfig.ui.fragment.m20;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.InputFilter;
 import android.text.TextUtils;
@@ -75,6 +77,7 @@ public class NetM20DataCenterBasicConfigFragment extends BaseNetIotCommunicateFr
 
     private boolean centerEnableInitial;//数据中心开关初始状态，用于判断开关是否有打开后没有设置参数就返回
     private boolean isSaveParamOperation = false;//判断当前是保存参数操作，还是关闭数据中心操作
+    private boolean isResultOK = false;//返回的结果是否是 Activity.RESULT_OK
 
     private ProjectDeviceInfo projectDeviceInfo;
 
@@ -397,6 +400,7 @@ public class NetM20DataCenterBasicConfigFragment extends BaseNetIotCommunicateFr
             ToastUtils.show("保存成功");
         }
         mBtnSave.setEnabled(true);
+        isResultOK = true;
     }
 
     private void initDataCenterData() {
@@ -411,8 +415,14 @@ public class NetM20DataCenterBasicConfigFragment extends BaseNetIotCommunicateFr
         mEtDataServerPort.setText(dataServerPort);
     }
 
+    private void setResult() {
+        Intent intent = new Intent();
+        mActivity.setResult(isResultOK ? Activity.RESULT_OK : Activity.RESULT_CANCELED, intent);
+    }
+
     @Override
     public boolean onBackPressed() {
+        setResult();
         if (checkValueIsChange()) {
             warnNotYetSettingBeforeLeavePage();
             return true;
@@ -425,7 +435,6 @@ public class NetM20DataCenterBasicConfigFragment extends BaseNetIotCommunicateFr
         if (centerEnableInitial != mSbCenterEnable.isChecked()) {
             return true;
         }
-
         if (dataServerAddress != null && !dataServerAddress.equals(mEtDataServerAddress.getText().toString().trim())) {
             return true;
         }

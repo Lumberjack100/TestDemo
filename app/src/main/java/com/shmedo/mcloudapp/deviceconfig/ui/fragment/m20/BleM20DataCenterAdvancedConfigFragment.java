@@ -1,5 +1,7 @@
 package com.shmedo.mcloudapp.deviceconfig.ui.fragment.m20;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.InputFilter;
 import android.text.TextUtils;
@@ -110,6 +112,9 @@ public class BleM20DataCenterAdvancedConfigFragment extends BaseGOCBleIotCommuni
 
     private boolean centerEnableInitial;//数据中心开关初始状态，用于判断开关是否有打开后没有设置参数就返回
     private boolean isSaveParamOperation = false;//判断当前是保存参数操作，还是关闭数据中心操作
+
+    private boolean isResultOK = false;//返回的结果是否是 Activity.RESULT_OK
+
 
     public static BleM20DataCenterAdvancedConfigFragment newInstance(ServerNumber serverNumber, String status) {
         BleM20DataCenterAdvancedConfigFragment fragment = new BleM20DataCenterAdvancedConfigFragment();
@@ -499,6 +504,7 @@ public class BleM20DataCenterAdvancedConfigFragment extends BaseGOCBleIotCommuni
         mBtnSave.setEnabled(true);
         transferProtocolOld = transferProtocol;
         dataProtocolOld = dataProtocol;
+        isResultOK = true;
     }
 
     private void initDataCenterData() {
@@ -576,8 +582,14 @@ public class BleM20DataCenterAdvancedConfigFragment extends BaseGOCBleIotCommuni
         mEtDeviceRegisterCode.setText(registerCode);
     }
 
+    private void setResult() {
+        Intent intent = new Intent();
+        mActivity.setResult(isResultOK ? Activity.RESULT_OK : Activity.RESULT_CANCELED, intent);
+    }
+
     @Override
     public boolean onBackPressed() {
+        setResult();
         if (isConnected()) {
             if (checkValueIsChange()) {
                 warnNotYetSettingBeforeLeavePage();

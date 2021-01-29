@@ -1,10 +1,16 @@
 package com.shmedo.mcloudapp.deviceconfig.ui.fragment.m20;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
 
 import com.hjq.toast.ToastUtils;
@@ -62,6 +68,12 @@ public class NetM20DataCenterHomeFragment extends BaseNetIotCommunicateFragment 
     private boolean isLevelInit = false;
     private ProjectDeviceInfo projectDeviceInfo;
 
+    private static final int SERVER_NUMBER_ONE = 0x1001;
+    private static final int SERVER_NUMBER_TWO = 0x1002;
+    private static final int SERVER_NUMBER_THREE = 0x1003;
+    private static final int SERVER_NUMBER_FOUR = 0x1004;
+    private int serverNumber = -1;
+    private ActivityResultLauncher<Intent> resultLauncher;
 
     public static NetM20DataCenterHomeFragment newInstance(int configMethod, boolean isLevelInit, ProjectDeviceInfo projectDeviceInfo) {
         NetM20DataCenterHomeFragment fragment = new NetM20DataCenterHomeFragment();
@@ -81,7 +93,42 @@ public class NetM20DataCenterHomeFragment extends BaseNetIotCommunicateFragment 
             isLevelInit = getArguments().getBoolean(LEVEL_INITIAL, false);
             projectDeviceInfo = getArguments().getParcelable(PRO_DEVICE_INFO);
         }
+        resultLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                new ActivityResultCallback<ActivityResult>() {
+                    @Override
+                    public void onActivityResult(ActivityResult result) {
+                        if (result.getResultCode() == Activity.RESULT_OK) {
+                            refreshSpecifiedServerStatus();
+                        }
+                    }
+                });
     }
+
+    /**
+     * 刷新指定的数据中心状态
+     */
+    private void refreshSpecifiedServerStatus() {
+        showProgressDialog("加载中...");
+        switch (serverNumber) {
+            case SERVER_NUMBER_ONE:
+                getDataCenterStatus(ServerNumber.NUMBER_ONE);
+                break;
+
+            case SERVER_NUMBER_TWO:
+                getDataCenterStatus(ServerNumber.NUMBER_TWO);
+                break;
+
+            case SERVER_NUMBER_THREE:
+                getDataCenterStatus(ServerNumber.NUMBER_THREE);
+                break;
+
+            case SERVER_NUMBER_FOUR:
+                getDataCenterStatus(ServerNumber.NUMBER_FOUR);
+                break;
+        }
+    }
+
 
     @Override
     protected int getLayoutId() {
@@ -108,16 +155,20 @@ public class NetM20DataCenterHomeFragment extends BaseNetIotCommunicateFragment 
         }
         int id = view.getId();
         if (id == R.id.dataCenterOneLayout) {
-            DataCenterConfigActivity.startActivity(mActivity, AppContants.DeviceType.M20, projectDeviceInfo, configMethod, ServerNumber.NUMBER_ONE, mTvDataCenterOne.getText().toString());
+            serverNumber = SERVER_NUMBER_ONE;
+            DataCenterConfigActivity.startActivity(mActivity, resultLauncher, AppContants.DeviceType.M20, projectDeviceInfo, configMethod, ServerNumber.NUMBER_ONE, mTvDataCenterOne.getText().toString());
 
         } else if (id == R.id.dataCenterTwoLayout) {
-            DataCenterConfigActivity.startActivity(mActivity, AppContants.DeviceType.M20, projectDeviceInfo, configMethod, ServerNumber.NUMBER_TWO, mTvDataCenterTwo.getText().toString());
+            serverNumber = SERVER_NUMBER_TWO;
+            DataCenterConfigActivity.startActivity(mActivity, resultLauncher, AppContants.DeviceType.M20, projectDeviceInfo, configMethod, ServerNumber.NUMBER_TWO, mTvDataCenterTwo.getText().toString());
 
         } else if (id == R.id.dataCenterThreeLayout) {
-            DataCenterConfigActivity.startActivity(mActivity, AppContants.DeviceType.M20, projectDeviceInfo, configMethod, ServerNumber.NUMBER_TWO, mTvDataCenterThree.getText().toString());
+            serverNumber = SERVER_NUMBER_THREE;
+            DataCenterConfigActivity.startActivity(mActivity, resultLauncher, AppContants.DeviceType.M20, projectDeviceInfo, configMethod, ServerNumber.NUMBER_TWO, mTvDataCenterThree.getText().toString());
 
         } else if (id == R.id.dataCenterFourLayout) {
-            DataCenterConfigActivity.startActivity(mActivity, AppContants.DeviceType.M20, projectDeviceInfo, configMethod, ServerNumber.NUMBER_TWO, mTvDataCenterFour.getText().toString());
+            serverNumber = SERVER_NUMBER_FOUR;
+            DataCenterConfigActivity.startActivity(mActivity, resultLauncher, AppContants.DeviceType.M20, projectDeviceInfo, configMethod, ServerNumber.NUMBER_TWO, mTvDataCenterFour.getText().toString());
 
         } else if (id == R.id.btn_confirm) {
             mActivity.finish();
@@ -218,18 +269,33 @@ public class NetM20DataCenterHomeFragment extends BaseNetIotCommunicateFragment 
                 if (centerStatus.getCenterid() == 1) {
                     mTvDataCenterOne.setText(getStatusTextById(centerStatus.getStatus()));
                     mTvDataCenterOne.setTextColor(GlobalUtil.getColor(getStatusColorResId(centerStatus.getStatus())));
-                    getDataCenterStatus(ServerNumber.NUMBER_TWO);
-//                    showProgressDialog("加载中...");
+                    //表示首次进入页面，需要逐个刷新所有的数据中心
+                    if (serverNumber == -1) {
+                        getDataCenterStatus(ServerNumber.NUMBER_TWO);
+                    } else {
+                        //表示刷新指定的数据中心
+                        dismissProgressDialog();
+                    }
                 } else if (centerStatus.getCenterid() == 2) {
                     mTvDataCenterTwo.setText(getStatusTextById(centerStatus.getStatus()));
                     mTvDataCenterTwo.setTextColor(GlobalUtil.getColor(getStatusColorResId(centerStatus.getStatus())));
-                    getDataCenterStatus(ServerNumber.NUMBER_THREE);
-//                    showProgressDialog("加载中...");
+                    //表示首次进入页面，需要逐个刷新所有的数据中心
+                    if (serverNumber == -1) {
+                        getDataCenterStatus(ServerNumber.NUMBER_THREE);
+                    } else {
+                        //表示刷新指定的数据中心
+                        dismissProgressDialog();
+                    }
                 } else if (centerStatus.getCenterid() == 3) {
                     mTvDataCenterThree.setText(getStatusTextById(centerStatus.getStatus()));
                     mTvDataCenterThree.setTextColor(GlobalUtil.getColor(getStatusColorResId(centerStatus.getStatus())));
-                    getDataCenterStatus(ServerNumber.NUMBER_FOUR);
-//                    showProgressDialog("加载中...");
+                    //表示首次进入页面，需要逐个刷新所有的数据中心
+                    if (serverNumber == -1) {
+                        getDataCenterStatus(ServerNumber.NUMBER_FOUR);
+                    } else {
+                        //表示刷新指定的数据中心
+                        dismissProgressDialog();
+                    }
                 } else if (centerStatus.getCenterid() == 4) {
                     dismissProgressDialog();
                     mTvDataCenterFour.setText(getStatusTextById(centerStatus.getStatus()));

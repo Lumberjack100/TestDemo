@@ -1,10 +1,16 @@
 package com.shmedo.mcloudapp.deviceconfig.ui.fragment.m20;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
 
 import com.hjq.toast.ToastUtils;
@@ -53,6 +59,13 @@ public class BleM20DataCenterHomeFragment extends BaseGOCBleIotCommunicateFragme
     private int configMethod = AppContants.DataCenterConfigMethod.BASIC_CONFIG;
     private boolean isLevelInit = false;
 
+    private static final int SERVER_NUMBER_ONE = 0x1001;
+    private static final int SERVER_NUMBER_TWO = 0x1002;
+    private static final int SERVER_NUMBER_THREE = 0x1003;
+    private static final int SERVER_NUMBER_FOUR = 0x1004;
+    private int serverNumber = -1;
+    private ActivityResultLauncher<Intent> resultLauncher;
+
 
     public static BleM20DataCenterHomeFragment newInstance(int configMethod, boolean isLevelInit) {
         BleM20DataCenterHomeFragment fragment = new BleM20DataCenterHomeFragment();
@@ -70,6 +83,40 @@ public class BleM20DataCenterHomeFragment extends BaseGOCBleIotCommunicateFragme
             configMethod = getArguments().getInt(AppContants.Extras.DATA_CENTER_CONFIG_METHOD);
             isLevelInit = getArguments().getBoolean(LEVEL_INITIAL, false);
         }
+        resultLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                new ActivityResultCallback<ActivityResult>() {
+                    @Override
+                    public void onActivityResult(ActivityResult result) {
+                        if (result.getResultCode() == Activity.RESULT_OK) {
+                            refreshSpecifiedServerStatus();
+                        }
+                    }
+                });
+    }
+
+    /**
+     * 刷新指定的数据中心状态
+     */
+    private void refreshSpecifiedServerStatus() {
+        startProgressRunnable("加载中...", WRITE_TIME_OUT_SECOND);
+        switch (serverNumber) {
+            case SERVER_NUMBER_ONE:
+                getDataCenterStatus(ServerNumber.NUMBER_ONE);
+                break;
+
+            case SERVER_NUMBER_TWO:
+                getDataCenterStatus(ServerNumber.NUMBER_TWO);
+                break;
+
+            case SERVER_NUMBER_THREE:
+                getDataCenterStatus(ServerNumber.NUMBER_THREE);
+                break;
+
+            case SERVER_NUMBER_FOUR:
+                getDataCenterStatus(ServerNumber.NUMBER_FOUR);
+                break;
+        }
     }
 
     @Override
@@ -85,11 +132,6 @@ public class BleM20DataCenterHomeFragment extends BaseGOCBleIotCommunicateFragme
         } else {
             mBtnComplete.setVisibility(View.GONE);
         }
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
         startProgressRunnable("加载中...", WRITE_TIME_OUT_SECOND);
         getDataCenterStatus(ServerNumber.NUMBER_ONE);
     }
@@ -115,28 +157,32 @@ public class BleM20DataCenterHomeFragment extends BaseGOCBleIotCommunicateFragme
                 ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
                 return;
             }
-            DataCenterConfigActivity.startActivity(mActivity, AppContants.DeviceType.M20, AppContants.CommunicationWay.BLE_CONNECT, configMethod, ServerNumber.NUMBER_ONE, mTvDataCenterOne.getText().toString());
+            serverNumber = SERVER_NUMBER_ONE;
+            DataCenterConfigActivity.startActivity(mActivity, resultLauncher, AppContants.DeviceType.M20, AppContants.CommunicationWay.BLE_CONNECT, configMethod, ServerNumber.NUMBER_ONE, mTvDataCenterOne.getText().toString());
 
         } else if (id == R.id.dataCenterTwoLayout) {
             if (!isConnected()) {
                 ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
                 return;
             }
-            DataCenterConfigActivity.startActivity(mActivity, AppContants.DeviceType.M20, AppContants.CommunicationWay.BLE_CONNECT, configMethod, ServerNumber.NUMBER_TWO, mTvDataCenterTwo.getText().toString());
+            serverNumber = SERVER_NUMBER_TWO;
+            DataCenterConfigActivity.startActivity(mActivity, resultLauncher, AppContants.DeviceType.M20, AppContants.CommunicationWay.BLE_CONNECT, configMethod, ServerNumber.NUMBER_TWO, mTvDataCenterTwo.getText().toString());
 
         } else if (id == R.id.dataCenterThreeLayout) {
             if (!isConnected()) {
                 ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
                 return;
             }
-            DataCenterConfigActivity.startActivity(mActivity, AppContants.DeviceType.M20, AppContants.CommunicationWay.BLE_CONNECT, configMethod, ServerNumber.NUMBER_TWO, mTvDataCenterThree.getText().toString());
+            serverNumber = SERVER_NUMBER_THREE;
+            DataCenterConfigActivity.startActivity(mActivity, resultLauncher, AppContants.DeviceType.M20, AppContants.CommunicationWay.BLE_CONNECT, configMethod, ServerNumber.NUMBER_TWO, mTvDataCenterThree.getText().toString());
 
         } else if (id == R.id.dataCenterFourLayout) {
             if (!isConnected()) {
                 ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
                 return;
             }
-            DataCenterConfigActivity.startActivity(mActivity, AppContants.DeviceType.M20, AppContants.CommunicationWay.BLE_CONNECT, configMethod, ServerNumber.NUMBER_TWO, mTvDataCenterFour.getText().toString());
+            serverNumber = SERVER_NUMBER_FOUR;
+            DataCenterConfigActivity.startActivity(mActivity, resultLauncher, AppContants.DeviceType.M20, AppContants.CommunicationWay.BLE_CONNECT, configMethod, ServerNumber.NUMBER_TWO, mTvDataCenterFour.getText().toString());
 
         } else if (id == R.id.btn_confirm) {
             mActivity.finish();
@@ -164,16 +210,29 @@ public class BleM20DataCenterHomeFragment extends BaseGOCBleIotCommunicateFragme
                 if (centerStatus.getCenterid() == 1) {
                     mTvDataCenterOne.setText(getStatusTextById(centerStatus.getStatus()));
                     mTvDataCenterOne.setTextColor(GlobalUtil.getColor(getStatusColorResId(centerStatus.getStatus())));
-                    getDataCenterStatus(ServerNumber.NUMBER_TWO);
+                    //表示首次进入页面，需要逐个刷新所有的数据中心
+                    if (serverNumber == -1) {
+                        getDataCenterStatus(ServerNumber.NUMBER_TWO);
+                    } else {
+                        //表示刷新指定的数据中心
+                        stopProgressRunnable();
+                    }
                 } else if (centerStatus.getCenterid() == 2) {
-//                    stopProgressRunnable();
                     mTvDataCenterTwo.setText(getStatusTextById(centerStatus.getStatus()));
                     mTvDataCenterTwo.setTextColor(GlobalUtil.getColor(getStatusColorResId(centerStatus.getStatus())));
-                    getDataCenterStatus(ServerNumber.NUMBER_THREE);
+                    if (serverNumber == -1) {
+                        getDataCenterStatus(ServerNumber.NUMBER_THREE);
+                    } else {
+                        stopProgressRunnable();
+                    }
                 } else if (centerStatus.getCenterid() == 3) {
                     mTvDataCenterThree.setText(getStatusTextById(centerStatus.getStatus()));
                     mTvDataCenterThree.setTextColor(GlobalUtil.getColor(getStatusColorResId(centerStatus.getStatus())));
-                    getDataCenterStatus(ServerNumber.NUMBER_FOUR);
+                    if (serverNumber == -1) {
+                        getDataCenterStatus(ServerNumber.NUMBER_FOUR);
+                    } else {
+                        stopProgressRunnable();
+                    }
                 } else if (centerStatus.getCenterid() == 4) {
                     stopProgressRunnable();
                     mTvDataCenterFour.setText(getStatusTextById(centerStatus.getStatus()));
@@ -183,7 +242,6 @@ public class BleM20DataCenterHomeFragment extends BaseGOCBleIotCommunicateFragme
             break;
 
             default:
-                super.parseResponseMessage(cmdStr);
                 break;
         }
     }
@@ -212,4 +270,10 @@ public class BleM20DataCenterHomeFragment extends BaseGOCBleIotCommunicateFragme
         return resId;
     }
 
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        serverNumber = -1;
+    }
 }

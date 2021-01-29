@@ -3,6 +3,7 @@ package com.shmedo.mcloudapp.deviceconfig.ui.activity;
 import android.content.Context;
 import android.content.Intent;
 
+import androidx.activity.result.ActivityResultLauncher;
 import androidx.fragment.app.Fragment;
 
 import com.shmedo.configlibrary.iot.enums.ServerNumber;
@@ -50,6 +51,28 @@ public class DataCenterConfigActivity extends BaseConfigFragmentContainerActivit
         intent.putExtra(AppContants.Extras.DATA_SERVER_STATUS, status);
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         context.startActivity(intent);
+    }
+
+    public static void startActivity(Context context, ActivityResultLauncher<Intent> launcher, int deviceType, ProjectDeviceInfo projectDeviceInfo, int configMethod, ServerNumber serverNumber, String status) {
+        Intent intent = new Intent(context, DataCenterConfigActivity.class);
+        intent.putExtra(AppContants.Extras.DEVICE_TYPE, deviceType);
+        intent.putExtra(PRO_DEVICE_INFO, projectDeviceInfo);
+        intent.putExtra(AppContants.Extras.DATA_CENTER_CONFIG_METHOD, configMethod);
+        intent.putExtra(AppContants.Extras.DATA_SERVER_NUMBER, serverNumber);
+        intent.putExtra(AppContants.Extras.DATA_SERVER_STATUS, status);
+        intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        launcher.launch(intent);
+    }
+
+    public static void startActivity(Context context, ActivityResultLauncher<Intent> launcher, int deviceType, int connectWay, int configMethod, ServerNumber serverNumber, String status) {
+        Intent intent = new Intent(context, DataCenterConfigActivity.class);
+        intent.putExtra(AppContants.Extras.DEVICE_TYPE, deviceType);
+        intent.putExtra(AppContants.Extras.COMMUNICATION_WAY, connectWay);
+        intent.putExtra(AppContants.Extras.DATA_CENTER_CONFIG_METHOD, configMethod);
+        intent.putExtra(AppContants.Extras.DATA_SERVER_NUMBER, serverNumber);
+        intent.putExtra(AppContants.Extras.DATA_SERVER_STATUS, status);
+        intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        launcher.launch(intent);
     }
 
     @Override
