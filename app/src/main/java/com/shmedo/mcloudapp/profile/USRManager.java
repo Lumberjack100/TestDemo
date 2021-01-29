@@ -110,7 +110,7 @@ public class USRManager extends ObservableBleManager {
     private final IOTCommandDataCallback notifyCallback = new IOTCommandDataCallback() {
         @Override
         public void onResponseReceived(@NonNull BluetoothDevice device, String result) {
-            Timber.v("接收数据(onResponseReceived): length=%s bytes;content: %s", result.getBytes().length, result);
+//            Timber.v("接收数据(onResponseReceived): length=%s bytes;content: %s", result.getBytes().length, result);
             log(LogContract.Log.Level.APPLICATION, "接收数据(onResponseReceived): " + result);
 
             //处理接收的数据中有多条指令拼接的情况(其他指令和心跳包拼接的情况）
@@ -129,6 +129,7 @@ public class USRManager extends ObservableBleManager {
                     }
                 }
             } else {
+                Timber.v("接收数据(onResponseReceived): length=%s bytes;content: %s", result.getBytes().length, result);
                 int index = result.lastIndexOf("$cmd");
                 if (index != -1) {
                     result = result.substring(index);
