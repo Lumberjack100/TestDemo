@@ -1,9 +1,15 @@
 package com.shmedo.mcloudapp.deviceconfig.ui.fragment.vms;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
@@ -54,6 +60,12 @@ public class TcpVmsAdvancedSettingsFragment extends BaseTcpConnectFragment {
     @BindView(R.id.tv_data_center_four)
     TextView mTvDataCenterFour;
 
+    private static final int SERVER_NUMBER_ONE = 0x1001;
+    private static final int SERVER_NUMBER_TWO = 0x1002;
+    private static final int SERVER_NUMBER_THREE = 0x1003;
+    private static final int SERVER_NUMBER_FOUR = 0x1004;
+    private int serverNumber = -1;
+    private ActivityResultLauncher<Intent> resultLauncher;
 
     public static TcpVmsAdvancedSettingsFragment newInstance() {
         return new TcpVmsAdvancedSettingsFragment();
@@ -65,15 +77,48 @@ public class TcpVmsAdvancedSettingsFragment extends BaseTcpConnectFragment {
     }
 
     @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        resultLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                new ActivityResultCallback<ActivityResult>() {
+                    @Override
+                    public void onActivityResult(ActivityResult result) {
+                        if (result.getResultCode() == Activity.RESULT_OK) {
+                            refreshSpecifiedServerStatus();
+                        }
+                    }
+                });
+    }
 
+    /**
+     * 刷新指定的数据中心状态
+     */
+    private void refreshSpecifiedServerStatus() {
+//        startProgressRunnable("加载中...", QUERY_CMD_DELAY_MILLIS);
+        switch (serverNumber) {
+            case SERVER_NUMBER_ONE:
+                getDataCenterStatus(ServerNumber.NUMBER_ONE);
+                break;
+
+            case SERVER_NUMBER_TWO:
+                getDataCenterStatus(ServerNumber.NUMBER_TWO);
+                break;
+
+            case SERVER_NUMBER_THREE:
+                getDataCenterStatus(ServerNumber.NUMBER_THREE);
+                break;
+
+            case SERVER_NUMBER_FOUR:
+                getDataCenterStatus(ServerNumber.NUMBER_FOUR);
+                break;
+        }
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
-//        startProgressRunnable("刷新数据...", QUERY_CMD_DELAY_MILLIS);
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+//        startProgressRunnable("加载中...", QUERY_CMD_DELAY_MILLIS);
         getDataCenterStatus(ServerNumber.NUMBER_ONE);
     }
 
@@ -86,19 +131,22 @@ public class TcpVmsAdvancedSettingsFragment extends BaseTcpConnectFragment {
             ToastUtils.show(getString(R.string.tcp_config_disconnect_warn));
             return;
         }
-
         int id = view.getId();
         if (id == R.id.dataCenterOneLayout) {
-            VmsDataCenterSettingActivity.startActivity(mActivity, AppContants.CommunicationWay.TCP_CONNECT, ServerNumber.NUMBER_ONE, mTvDataCenterOne.getText().toString());
+            serverNumber = SERVER_NUMBER_ONE;
+            VmsDataCenterSettingActivity.startActivity(mActivity, resultLauncher, AppContants.CommunicationWay.TCP_CONNECT, ServerNumber.NUMBER_ONE, mTvDataCenterOne.getText().toString());
 
         } else if (id == R.id.dataCenterTwoLayout) {
-            VmsDataCenterSettingActivity.startActivity(mActivity, AppContants.CommunicationWay.TCP_CONNECT, ServerNumber.NUMBER_TWO, mTvDataCenterTwo.getText().toString());
+            serverNumber = SERVER_NUMBER_TWO;
+            VmsDataCenterSettingActivity.startActivity(mActivity, resultLauncher, AppContants.CommunicationWay.TCP_CONNECT, ServerNumber.NUMBER_TWO, mTvDataCenterTwo.getText().toString());
 
         } else if (id == R.id.dataCenterThreeLayout) {
-            VmsDataCenterSettingActivity.startActivity(mActivity, AppContants.CommunicationWay.TCP_CONNECT, ServerNumber.NUMBER_THREE, mTvDataCenterThree.getText().toString());
+            serverNumber = SERVER_NUMBER_THREE;
+            VmsDataCenterSettingActivity.startActivity(mActivity, resultLauncher, AppContants.CommunicationWay.TCP_CONNECT, ServerNumber.NUMBER_THREE, mTvDataCenterThree.getText().toString());
 
         } else if (id == R.id.dataCenterFourLayout) {
-            VmsDataCenterSettingActivity.startActivity(mActivity, AppContants.CommunicationWay.TCP_CONNECT, ServerNumber.NUMBER_FOUR, mTvDataCenterFour.getText().toString());
+            serverNumber = SERVER_NUMBER_FOUR;
+            VmsDataCenterSettingActivity.startActivity(mActivity, resultLauncher, AppContants.CommunicationWay.TCP_CONNECT, ServerNumber.NUMBER_FOUR, mTvDataCenterFour.getText().toString());
 
         } else if (id == R.id.vmsAisleOneLayout) {
             VmsAisleSettingActivity.startActivity(mActivity, AppContants.CommunicationWay.TCP_CONNECT, VmsAisleNumber.NUMBER_ONE);
@@ -194,15 +242,33 @@ public class TcpVmsAdvancedSettingsFragment extends BaseTcpConnectFragment {
                 if (centerStatus.getCenterid() == 1) {
                     mTvDataCenterOne.setText(getStatusTextById(centerStatus.getStatus()));
                     mTvDataCenterOne.setTextColor(GlobalUtil.getColor(getStatusColorResId(centerStatus.getStatus())));
-                    getDataCenterStatus(ServerNumber.NUMBER_TWO);
+                    //表示首次进入页面，需要逐个刷新所有的数据中心
+                    if (serverNumber == -1) {
+                        getDataCenterStatus(ServerNumber.NUMBER_TWO);
+                    } else {
+                        //表示刷新指定的数据中心
+                        stopProgressRunnable();
+                    }
                 } else if (centerStatus.getCenterid() == 2) {
                     mTvDataCenterTwo.setText(getStatusTextById(centerStatus.getStatus()));
                     mTvDataCenterTwo.setTextColor(GlobalUtil.getColor(getStatusColorResId(centerStatus.getStatus())));
-                    getDataCenterStatus(ServerNumber.NUMBER_THREE);
+                    //表示首次进入页面，需要逐个刷新所有的数据中心
+                    if (serverNumber == -1) {
+                        getDataCenterStatus(ServerNumber.NUMBER_THREE);
+                    } else {
+                        //表示刷新指定的数据中心
+                        stopProgressRunnable();
+                    }
                 } else if (centerStatus.getCenterid() == 3) {
                     mTvDataCenterThree.setText(getStatusTextById(centerStatus.getStatus()));
                     mTvDataCenterThree.setTextColor(GlobalUtil.getColor(getStatusColorResId(centerStatus.getStatus())));
-                    getDataCenterStatus(ServerNumber.NUMBER_FOUR);
+                    //表示首次进入页面，需要逐个刷新所有的数据中心
+                    if (serverNumber == -1) {
+                        getDataCenterStatus(ServerNumber.NUMBER_FOUR);
+                    } else {
+                        //表示刷新指定的数据中心
+                        stopProgressRunnable();
+                    }
                 } else if (centerStatus.getCenterid() == 4) {
                     stopProgressRunnable();
                     mTvDataCenterFour.setText(getStatusTextById(centerStatus.getStatus()));

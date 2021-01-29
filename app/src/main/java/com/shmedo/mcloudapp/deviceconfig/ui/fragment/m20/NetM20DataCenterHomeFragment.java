@@ -164,11 +164,11 @@ public class NetM20DataCenterHomeFragment extends BaseNetIotCommunicateFragment 
 
         } else if (id == R.id.dataCenterThreeLayout) {
             serverNumber = SERVER_NUMBER_THREE;
-            DataCenterConfigActivity.startActivity(mActivity, resultLauncher, AppContants.DeviceType.M20, projectDeviceInfo, configMethod, ServerNumber.NUMBER_TWO, mTvDataCenterThree.getText().toString());
+            DataCenterConfigActivity.startActivity(mActivity, resultLauncher, AppContants.DeviceType.M20, projectDeviceInfo, configMethod, ServerNumber.NUMBER_THREE, mTvDataCenterThree.getText().toString());
 
         } else if (id == R.id.dataCenterFourLayout) {
             serverNumber = SERVER_NUMBER_FOUR;
-            DataCenterConfigActivity.startActivity(mActivity, resultLauncher, AppContants.DeviceType.M20, projectDeviceInfo, configMethod, ServerNumber.NUMBER_TWO, mTvDataCenterFour.getText().toString());
+            DataCenterConfigActivity.startActivity(mActivity, resultLauncher, AppContants.DeviceType.M20, projectDeviceInfo, configMethod, ServerNumber.NUMBER_FOUR, mTvDataCenterFour.getText().toString());
 
         } else if (id == R.id.btn_confirm) {
             mActivity.finish();

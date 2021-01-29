@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.TextView;
 
+import androidx.activity.result.ActivityResultLauncher;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -26,7 +27,6 @@ public class VmsDataCenterSettingActivity extends BaseActivity {
     private static final String DATA_SERVER_NUMBER = "data_server_number";
     private static final String DATA_SERVER_STATUS = "data_server_status";
 
-
     @BindView(R.id.tv_title)
     TextView mToolbarTitle;
 
@@ -35,17 +35,16 @@ public class VmsDataCenterSettingActivity extends BaseActivity {
     private ServerNumber serverNumber;
     private String serverStatus;
 
-
     private Fragment fragment;
 
 
-    public static void startActivity(Context context, int connectWay, ServerNumber serverNumber, String status) {
+    public static void startActivity(Context context, ActivityResultLauncher<Intent> launcher, int connectWay, ServerNumber serverNumber, String status) {
         Intent intent = new Intent(context, VmsDataCenterSettingActivity.class);
         intent.putExtra(AppContants.Extras.COMMUNICATION_WAY, connectWay);
         intent.putExtra(DATA_SERVER_NUMBER, serverNumber);
         intent.putExtra(DATA_SERVER_STATUS, status);
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        context.startActivity(intent);
+        launcher.launch(intent);
     }
 
     @Override

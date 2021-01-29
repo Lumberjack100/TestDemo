@@ -1,9 +1,15 @@
 package com.shmedo.mcloudapp.deviceconfig.ui.fragment.adme;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
 
 import com.hjq.toast.ToastUtils;
@@ -40,6 +46,12 @@ public class BleAdmeDataCenterHomeFragment extends BaseBleIotCommunicateFragment
 
     private int configMethod = AppContants.DataCenterConfigMethod.BASIC_CONFIG;
 
+    private static final int SERVER_NUMBER_ONE = 0x1001;
+    private static final int SERVER_NUMBER_TWO = 0x1002;
+    private static final int SERVER_NUMBER_THREE = 0x1003;
+    private static final int SERVER_NUMBER_FOUR = 0x1004;
+    private int serverNumber = -1;
+    private ActivityResultLauncher<Intent> resultLauncher;
 
     public static BleAdmeDataCenterHomeFragment newInstance(int configMethod) {
         BleAdmeDataCenterHomeFragment fragment = new BleAdmeDataCenterHomeFragment();
@@ -55,6 +67,40 @@ public class BleAdmeDataCenterHomeFragment extends BaseBleIotCommunicateFragment
         if (getArguments() != null) {
             configMethod = getArguments().getInt(AppContants.Extras.DATA_CENTER_CONFIG_METHOD);
         }
+        resultLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                new ActivityResultCallback<ActivityResult>() {
+                    @Override
+                    public void onActivityResult(ActivityResult result) {
+                        if (result.getResultCode() == Activity.RESULT_OK) {
+                            refreshSpecifiedServerStatus();
+                        }
+                    }
+                });
+    }
+
+    /**
+     * 刷新指定的数据中心状态
+     */
+    private void refreshSpecifiedServerStatus() {
+        startProgressRunnable("加载中...", WRITE_TIME_OUT_SECOND);
+        switch (serverNumber) {
+            case SERVER_NUMBER_ONE:
+                getDataCenterStatus(ServerNumber.NUMBER_ONE);
+                break;
+
+            case SERVER_NUMBER_TWO:
+                getDataCenterStatus(ServerNumber.NUMBER_TWO);
+                break;
+
+//            case SERVER_NUMBER_THREE:
+//                getDataCenterStatus(ServerNumber.NUMBER_THREE);
+//                break;
+//
+//            case SERVER_NUMBER_FOUR:
+//                getDataCenterStatus(ServerNumber.NUMBER_FOUR);
+//                break;
+        }
     }
 
     @Override
@@ -65,14 +111,10 @@ public class BleAdmeDataCenterHomeFragment extends BaseBleIotCommunicateFragment
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-//        startProgressRunnable("加载中...", DELAY_MILLIS);
+        startProgressRunnable("加载中...", WRITE_TIME_OUT_SECOND);
         getDataCenterStatus(ServerNumber.NUMBER_ONE);
     }
+
 
     /**
      * 获取数据中心状态
@@ -95,10 +137,12 @@ public class BleAdmeDataCenterHomeFragment extends BaseBleIotCommunicateFragment
 
         int id = view.getId();
         if (id == R.id.dataCenterOneLayout) {
-            DataCenterConfigActivity.startActivity(mActivity, AppContants.DeviceType.ADME, AppContants.CommunicationWay.BLE_CONNECT, configMethod, ServerNumber.NUMBER_ONE, mTvDataCenterOne.getText().toString());
+            serverNumber = SERVER_NUMBER_ONE;
+            DataCenterConfigActivity.startActivity(mActivity, resultLauncher,AppContants.DeviceType.ADME, AppContants.CommunicationWay.BLE_CONNECT, configMethod, ServerNumber.NUMBER_ONE, mTvDataCenterOne.getText().toString());
 
         } else if (id == R.id.dataCenterTwoLayout) {
-            DataCenterConfigActivity.startActivity(mActivity, AppContants.DeviceType.ADME, AppContants.CommunicationWay.BLE_CONNECT, configMethod, ServerNumber.NUMBER_TWO, mTvDataCenterTwo.getText().toString());
+            serverNumber = SERVER_NUMBER_TWO;
+            DataCenterConfigActivity.startActivity(mActivity, resultLauncher,AppContants.DeviceType.ADME, AppContants.CommunicationWay.BLE_CONNECT, configMethod, ServerNumber.NUMBER_TWO, mTvDataCenterTwo.getText().toString());
         }
     }
 
@@ -123,7 +167,13 @@ public class BleAdmeDataCenterHomeFragment extends BaseBleIotCommunicateFragment
                 if (centerStatus.getCenterid() == 1) {
                     mTvDataCenterOne.setText(getStatusTextById(centerStatus.getStatus()));
                     mTvDataCenterOne.setTextColor(GlobalUtil.getColor(getStatusColorResId(centerStatus.getStatus())));
-                    getDataCenterStatus(ServerNumber.NUMBER_TWO);
+                    //表示首次进入页面，需要逐个刷新所有的数据中心
+                    if (serverNumber == -1) {
+                        getDataCenterStatus(ServerNumber.NUMBER_TWO);
+                    } else {
+                        //表示刷新指定的数据中心
+                        stopProgressRunnable();
+                    }
                 } else if (centerStatus.getCenterid() == 2) {
                     stopProgressRunnable();
                     mTvDataCenterTwo.setText(getStatusTextById(centerStatus.getStatus()));
