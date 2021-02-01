@@ -26,7 +26,6 @@ public abstract class CheckMapNeedPermissionsActivity extends BaseActivity {
      * 定位需要进行检测的权限数组
      */
     protected String[] needPermissions = {
-            Manifest.permission.ACCESS_COARSE_LOCATION,
             Manifest.permission.ACCESS_FINE_LOCATION,
             Manifest.permission.WRITE_EXTERNAL_STORAGE,
             Manifest.permission.READ_EXTERNAL_STORAGE,
@@ -42,7 +41,6 @@ public abstract class CheckMapNeedPermissionsActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         if (Build.VERSION.SDK_INT > 28 && getApplicationContext().getApplicationInfo().targetSdkVersion > 28) {
             needPermissions = new String[]{
-                    Manifest.permission.ACCESS_COARSE_LOCATION,
                     Manifest.permission.ACCESS_FINE_LOCATION,
                     Manifest.permission.WRITE_EXTERNAL_STORAGE,
                     Manifest.permission.READ_EXTERNAL_STORAGE,

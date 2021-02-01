@@ -41,7 +41,6 @@ public class LocationUtils {
      * 定位需要进行检测的权限数组
      */
     private String[] locationNeedPermissions = {
-            Manifest.permission.ACCESS_COARSE_LOCATION,
             Manifest.permission.ACCESS_FINE_LOCATION
     };
 
@@ -51,16 +50,13 @@ public class LocationUtils {
 
     private final UnPeekLiveData<SyncPositionBean> syncPositionBeanLiveData = new UnPeekLiveData<>();
 
-
     public static LocationUtils getInstance() {
         return LocationHolder.INSTANCE;
     }
 
-
     public ProtectedUnPeekLiveData<SyncPositionBean> getSyncPositionBean() {
         return syncPositionBeanLiveData;
     }
-
 
     /**
      * 判断GPS是否开启，GPS或者AGPS开启一个就认为是开启的
@@ -73,22 +69,16 @@ public class LocationUtils {
         boolean gps = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
         // 通过WLAN或移动网络(3G/2G)确定的位置（也称作AGPS，辅助GPS定位。主要用于在室内或遮盖物（建筑群或茂密的深林等）密集的地方定位）
         boolean network = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
-        if (gps || network) {
-            return true;
-        }
-
-        return false;
+        return gps || network;
     }
 
     public void getPositionPermission(Activity activity) {
         if (Build.VERSION.SDK_INT > 28 && MCloudApp.getContext().getApplicationInfo().targetSdkVersion > 28) {
             locationNeedPermissions = new String[]{
-                    Manifest.permission.ACCESS_COARSE_LOCATION,
                     Manifest.permission.ACCESS_FINE_LOCATION,
                     Permission.ACCESS_BACKGROUND_LOCATION
             };
         }
-
         XPermissionUtils.requestPermissionsResult(activity, 200, locationNeedPermissions,
                 new XPermissionUtils.OnPermissionListener() {
                     @Override
@@ -118,7 +108,7 @@ public class LocationUtils {
         mLocationClient.setLocationListener(location -> {
             if (null != location) {
                 if (location.getErrorCode() == 0) {
-                    Timber.i("定位成功\n星数: " + location.getSatellites());
+                    Timber.i("定位成功 星数: %s", location.getSatellites());
                     //卫星信号强
                     if (location.getGpsAccuracyStatus() == AMapLocation.GPS_ACCURACY_GOOD) {
                         SyncPositionBean bean = new SyncPositionBean();
@@ -127,11 +117,9 @@ public class LocationUtils {
                         bean.setAddress(location.getAddress());
                         bean.setType("location");
                         syncPositionBeanLiveData.postValue(bean);
-
                     } else {
                         ToastUtils.show("卫星定位信号弱");
                     }
-
                 } else {
                     Timber.i("定位失败\n错误码：" + location.getErrorCode()
                             + "\n错误信息:" + location.getErrorInfo()

@@ -74,9 +74,6 @@ public class NetM20CurrentStateFragment extends BaseNetIotCommunicateFragment {
     @BindView(R.id.tv_device_star_num)
     TextView mTvDeviceStarNum;
 
-    @BindView(R.id.tv_phone_star_num)
-    TextView mTvPhoneStarNum;
-
     @BindView(R.id.tv_ams_connection_status)
     TextView mTvAmsConnectionStatus;
 
@@ -287,7 +284,6 @@ public class NetM20CurrentStateFragment extends BaseNetIotCommunicateFragment {
                 mTvContinuousRunningTime.setText("--");
 
                 mTvDeviceStarNum.setText(m20CurrentStateInfo.getStarNum());
-                mTvPhoneStarNum.setText("--");
                 mTvAmsConnectionStatus.setText("--");
                 mTv4gSignalStrength.setText(m20CurrentStateInfo.get_$4g_signal() + "dBm");
                 mTvLinkOneStatus.setText("未开启");

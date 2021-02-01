@@ -227,7 +227,7 @@ public class BleDeviceListFragment extends BaseFragment implements TextWatcher, 
 
     private void checkPermissionForLocation() {
         XPermissionUtils.requestPermissionsResult(getActivity(), 200, new String[]{
-                        Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION},
+                         Manifest.permission.ACCESS_FINE_LOCATION},
                 new XPermissionUtils.OnPermissionListener() {
                     @Override
                     public void onPermissionGranted() {

@@ -27,6 +27,7 @@ import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.view.recycleviewitemdivider.GridSpacingItemDecoration;
 import com.shmedo.mcloudapp.deviceconfig.adapter.ConfigModuleAdapter;
 import com.shmedo.mcloudapp.deviceconfig.model.ConfigModule;
+import com.shmedo.mcloudapp.deviceconfig.model.DevcieCurrentState;
 import com.shmedo.mcloudapp.deviceconfig.model.DispatchCmdItem;
 import com.shmedo.mcloudapp.deviceconfig.model.QueryCmdResult;
 import com.shmedo.mcloudapp.deviceconfig.model.params.DispatchRawCmdParam;
@@ -36,6 +37,7 @@ import com.shmedo.mcloudapp.deviceconfig.ui.activity.DeviceCurrentStateActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.BaseNetIotCommunicateFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd.BaseDispatchCmdDialog;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd.DispatchCmdFailedDialog;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd.QueryCurrentStateDialog;
 import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfo;
 
 import java.util.ArrayList;
@@ -169,9 +171,10 @@ public class NetM20HomeFragment extends BaseNetIotCommunicateFragment {
                 break;
 
             case "状态":
-                showProgressDialog("处理中...");
-                String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.QUERY_DEVICE_STATUS);
-                doCommonDispatchRawCmd(command);
+//                showProgressDialog("处理中...");
+//                String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.QUERY_DEVICE_STATUS);
+//                doCommonDispatchRawCmd(command);
+                DeviceCurrentStateActivity.startActivity(mActivity, projectDeviceInfo, null, AppContants.DeviceType.M20);
                 break;
 
             case "数据中心":
@@ -232,41 +235,36 @@ public class NetM20HomeFragment extends BaseNetIotCommunicateFragment {
 
     @Override
     protected void onDispatchCmdResult(List<DispatchCmdItem> dispatchCmdItemList, String cmdStr) {
-//        dismissProgressDialog();
         if (dispatchCmdItemList == null || dispatchCmdItemList.size() == 0) {
             dismissProgressDialog();
-            showDispatchFailedDialog(cmdStr);
+            doDispatchFailed(cmdStr);
             return;
         }
-
         msgIDList.clear();
         for (DispatchCmdItem cmdItem : dispatchCmdItemList) {
             msgIDList.add(cmdItem.getMsgID());
         }
         IOTCommandType type = IOTStringUtil.extractCommandType(cmdStr);
         switch (type) {
-            case QUERY_DEVICE_STATUS:
-            case M20_MD_LEVEL_INITIAL:
+            case QUERY_DEVICE_STATUS://查询状态
+            case M20_MD_LEVEL_INITIAL://水平初始化
                 dismissProgressDialog();
-                showDispatchSuccessDialog();
+                doDispatchSuccess();
                 break;
 
-            case M20_MD_GET_BASE_INFO: {
+            case M20_MD_GET_BASE_INFO: {//获取设备基本信息
                 if (msgIDList != null && msgIDList.size() > 0) {
                     startQueryCmdResponseRunnable(2000);
                 }
             }
             break;
-
-            default:
-                break;
         }
     }
 
     /**
-     * 指令下发失败弹框
+     * 指令下发失败处理
      */
-    private void showDispatchFailedDialog(String cmdStr) {
+    private void doDispatchFailed(String cmdStr) {
         String title;
         BaseDispatchCmdDialog newFragment = null;
         IOTCommandType type = IOTStringUtil.extractCommandType(cmdStr);
@@ -293,21 +291,20 @@ public class NetM20HomeFragment extends BaseNetIotCommunicateFragment {
     }
 
     /**
-     * 指令下发成功弹框
+     * 指令下发成功处理
      */
-    private void showDispatchSuccessDialog() {
+    private void doDispatchSuccess() {
         BaseDispatchCmdDialog newFragment = null;
         //下发指令成功，弹出对话框开始轮询查询指令响应
         switch (selectedConfigModule.getName()) {
             case "状态":
-//                newFragment = new QueryCurrentStateDialog("运行状态", msgIDList);
-//                ((QueryCurrentStateDialog) newFragment).setOnSeeDetailClickListener(new QueryCurrentStateDialog.OnSeeDetailClickListener() {
-//                    @Override
-//                    public void onSeeDetailClick(DevcieCurrentState devcieCurrentState) {
-//                        DeviceCurrentStateActivity.startActivity(mActivity, projectDeviceInfo, devcieCurrentState, AppContants.DeviceType.M20);
-//                    }
-//                });
-                DeviceCurrentStateActivity.startActivity(mActivity, projectDeviceInfo, null, AppContants.DeviceType.M20);
+                newFragment = new QueryCurrentStateDialog("运行状态", msgIDList);
+                ((QueryCurrentStateDialog) newFragment).setOnSeeDetailClickListener(new QueryCurrentStateDialog.OnSeeDetailClickListener() {
+                    @Override
+                    public void onSeeDetailClick(DevcieCurrentState devcieCurrentState) {
+                        DeviceCurrentStateActivity.startActivity(mActivity, projectDeviceInfo, devcieCurrentState, AppContants.DeviceType.M20);
+                    }
+                });
                 break;
 
             case "设置向导":
