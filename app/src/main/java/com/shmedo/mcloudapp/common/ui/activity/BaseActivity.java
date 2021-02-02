@@ -3,6 +3,7 @@ package com.shmedo.mcloudapp.common.ui.activity;
 import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.PixelFormat;
 import android.os.Build;
 import android.os.Bundle;
@@ -89,6 +90,12 @@ public abstract class BaseActivity extends AppCompatActivity {
             Timber.i("===api 26 全屏横竖屏切换 crash=");
         }
         super.onCreate(savedInstanceState);
+        //TODO 解决 Android在应用设置里关闭权限，导致APP重启进程造成的无用户数据异常
+        if (null != savedInstanceState) {
+            Intent intent = new Intent(this, WelcomeActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+        }
 
         weakRefActivity = new WeakReference<Activity>(this);
         ActivityCollector.add(weakRefActivity);

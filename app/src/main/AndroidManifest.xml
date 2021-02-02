@@ -100,6 +100,7 @@
         <activity
             android:name=".common.ui.activity.WelcomeActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
+            android:screenOrientation="portrait"
             android:theme="@style/MCloud.WelcomeActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -153,40 +154,49 @@
             android:theme="@style/MCloud.SpeedTestResultActivity" /> <!-- Activity在高德 SDK内部实现 -->
         <activity
             android:name="com.amap.api.maps.offlinemap.OfflineMapActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.amap.api.navi.AmapRouteActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="portrait"
             android:theme="@android:style/Theme.NoTitleBar" />
         <activity
             android:name=".user.ui.activity.UserHomePageActivity"
             android:maxAspectRatio="2.4"
+            android:configChanges="keyboardHidden|orientation|screenSize"
             android:screenOrientation="portrait" />
         <activity
             android:name=".user.ui.activity.CompanyHomePageActivity"
             android:maxAspectRatio="2.4"
+            android:configChanges="keyboardHidden|orientation|screenSize"
             android:screenOrientation="portrait" />
         <activity
             android:name=".user.ui.activity.AboutAppActivity"
             android:maxAspectRatio="2.4"
+            android:configChanges="keyboardHidden|orientation|screenSize"
             android:screenOrientation="portrait" />
         <activity
             android:name=".user.ui.activity.UpdatePasswordActivity"
             android:maxAspectRatio="2.4"
+            android:configChanges="keyboardHidden|orientation|screenSize"
             android:screenOrientation="portrait" />
         <activity
             android:name=".user.ui.activity.UpdatePhoneActivity"
             android:maxAspectRatio="2.4"
+            android:configChanges="keyboardHidden|orientation|screenSize"
             android:screenOrientation="portrait" />
         <activity android:name=".common.ui.activity.WebViewActivity" />
         <activity
             android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
             android:screenOrientation="portrait"
+            android:configChanges="keyboardHidden|orientation|screenSize"
             android:theme="@style/CropImageActivity" />
         <activity
             android:name=".projects.ui.activity.ViewProjectsInMapActivity"
             android:maxAspectRatio="2.4"
             android:screenOrientation="portrait"
+            android:configChanges="keyboardHidden|orientation|screenSize"
             android:theme="@style/LightStatusBarActivity" />
         <activity
             android:name=".projects.ui.activity.ProjectSearchActivity"
