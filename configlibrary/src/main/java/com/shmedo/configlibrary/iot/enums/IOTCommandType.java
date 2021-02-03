@@ -49,7 +49,7 @@ public enum IOTCommandType {
     RESET("md_reset"),
 
     /**
-     *  固件升级
+     * 固件升级
      */
     MD_UPGRADE("md_upgrade"),
 
@@ -72,6 +72,11 @@ public enum IOTCommandType {
      * 日志输出等级和输出方式
      */
     LOG_OUTPUT_MODE_LEVEL("md_setlogoutput"),
+
+    /**
+     * 保存配置参数
+     */
+    MD_SAVE_CONFIG_PARAM("md_saveconfigparam"),
 
     /*　DAS网关指令  */
     /**

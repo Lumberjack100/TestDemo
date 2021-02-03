@@ -169,7 +169,7 @@ public class BleScannerListFragment extends BaseFragment implements TextWatcher,
                 processStopScan();
                 DiscoveredBluetoothDevice bluetoothDevice = bleDeviceAdapter.getItem(position);
                 String deviceName = bluetoothDevice.getName();
-                if (!(deviceName.endsWith("L") || deviceName.endsWith("T")|| deviceName.endsWith("V"))) {
+                if (!(deviceName.endsWith("L") || deviceName.endsWith("T") || deviceName.endsWith("V"))) {
                     ToastUtils.show("不支持此设备类型");
                     return;
                 }
@@ -261,38 +261,39 @@ public class BleScannerListFragment extends BaseFragment implements TextWatcher,
      * BleScannerStateLiveData 实例每次更新值时，回调此方法
      */
     private void startScan(final BleScannerStateLiveData state) {
+        //if (BleScannerUtils.isLocationRequired(mActivity) && !BleScannerUtils.isLocationEnabled(mActivity)) {
         //位置服务开关未开启
-        //        if (BleScannerUtils.isLocationRequired(mActivity) && !BleScannerUtils.isLocationEnabled(mActivity)) {
         if (!BleScannerUtils.isLocationEnabled(mActivity)) {
             PermissionHelper.showGPSSettingDialog(mActivity);
-        } else {
-            //缺少定位权限
-            if (!BleScannerUtils.isLocationPermissionsGranted(mActivity)) {
-                checkPermissionForLocation();
-            } else {
-                // Bluetooth must be enabled.
-                if (state.isBluetoothEnabled()) {
-                    noBluetoothView.setVisibility(View.GONE);
-                    searchLayoutGroup.setVisibility(View.VISIBLE);
-                    refreshLayout.setVisibility(View.VISIBLE);
-                    mRecyclerView.setVisibility(View.VISIBLE);
+            return;
+        }
 
-                    if (enableScan && !scannerViewModel.isScanning()) {
-                        // We are now OK to start scanning.
-                        scannerViewModel.startScan();
-                        updateRefreshView(true);
-                        mHandler.postDelayed(mStopScanRunnable, SCAN_PERIOD);
-                    }
-                } else {
-                    noBluetoothView.setVisibility(View.VISIBLE);
-                    searchLayoutGroup.setVisibility(View.GONE);
-                    refreshLayout.setVisibility(View.GONE);
-                    mRecyclerView.setVisibility(View.GONE);
-//                    emptyView.setVisibility(View.GONE);
-                    if (bleDeviceAdapter.getItemCount() > 0) {
-                        clear();
-                    }
-                }
+        //位置服务开关已经开启, 但缺少定位权限
+        if (!BleScannerUtils.isLocationPermissionsGranted(mActivity)) {
+            checkPermissionForLocation();
+            return;
+        }
+
+        // Bluetooth must be enabled.
+        if (state.isBluetoothEnabled()) {
+            noBluetoothView.setVisibility(View.GONE);
+            searchLayoutGroup.setVisibility(View.VISIBLE);
+            refreshLayout.setVisibility(View.VISIBLE);
+            mRecyclerView.setVisibility(View.VISIBLE);
+            if (enableScan && !scannerViewModel.isScanning()) {
+                // We are now OK to start scanning.
+                scannerViewModel.startScan();
+                updateRefreshView(true);
+                mHandler.postDelayed(mStopScanRunnable, SCAN_PERIOD);
+            }
+        } else {
+            noBluetoothView.setVisibility(View.VISIBLE);
+            searchLayoutGroup.setVisibility(View.GONE);
+            refreshLayout.setVisibility(View.GONE);
+            mRecyclerView.setVisibility(View.GONE);
+            //emptyView.setVisibility(View.GONE);
+            if (bleDeviceAdapter.getItemCount() > 0) {
+                clear();
             }
         }
     }
@@ -303,7 +304,7 @@ public class BleScannerListFragment extends BaseFragment implements TextWatcher,
                 new XPermissionUtils.OnPermissionListener() {
                     @Override
                     public void onPermissionGranted() {
-
+//                        processStartScan();
                     }
 
                     @Override

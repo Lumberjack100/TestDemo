@@ -112,7 +112,8 @@ public abstract class BaseFragment extends Fragment implements HandleBackInterfa
     @Override
     public void onDestroy() {
         super.onDestroy();
-        unbinder.unbind();
+        if (unbinder != null)
+            unbinder.unbind();
     }
 
     /**
