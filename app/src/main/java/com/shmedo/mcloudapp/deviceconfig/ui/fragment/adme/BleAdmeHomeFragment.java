@@ -258,6 +258,10 @@ public class BleAdmeHomeFragment extends BaseBleIotCommunicateFragment {
                 CustomCommandLogPrintActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT, AppContants.DeviceType.ADME);
                 break;
 
+            case "保存配置参数":
+                saveConfigInfo();
+                break;
+
             case "高级配置":
                 AdmeAdvancedConfigActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT);
                 break;
@@ -408,6 +412,14 @@ public class BleAdmeHomeFragment extends BaseBleIotCommunicateFragment {
         sendCommand(command);
     }
 
+    /**
+     * 保存配置信息
+     */
+    private void saveConfigInfo() {
+        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.MD_SAVE_CONFIG_PARAM);
+        sendCommand(command);
+    }
+
     @OnClick({R.id.tv_device_connect_operate, R.id.ll_switch_config_model})
     public void onClick(View v) {
         if (isDoubleClick(v)) {
@@ -513,6 +525,18 @@ public class BleAdmeHomeFragment extends BaseBleIotCommunicateFragment {
                 }
                 updateConfigModuleData();
             }
+            break;
+
+            case MD_SAVE_CONFIG_PARAM:{
+                CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
+                if (!cmdResult.isSucceed()) {
+                    String errMsg = String.format("%s %s", "保存指令出错!", cmdResult.getReason());
+                    Timber.e(errMsg);
+                    ToastUtils.show(errMsg);
+                    return;
+                }
+            }
+            ToastUtils.show("保存指令响应成功");
             break;
 
             default:
@@ -630,6 +654,9 @@ public class BleAdmeHomeFragment extends BaseBleIotCommunicateFragment {
             configModuleList.add(configModule);
 
             configModule = new ConfigModule(R.drawable.ic_device_advanced_setting, "高级配置", "设备高级参数配置");
+            configModuleList.add(configModule);
+
+            configModule = new ConfigModule(R.drawable.ic_device_setting, "保存配置参数", "保存配置参数");
             configModuleList.add(configModule);
 
             configModule = new ConfigModule(R.drawable.ic_device_setting, "设置", "高级设置");
