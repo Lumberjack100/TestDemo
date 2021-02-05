@@ -30,7 +30,6 @@ import java.util.List;
  */
 
 public class XPermissionUtils {
-
     public static final int REQUEST_CODE_OPEN_APPLICATION_SETTING = 0x0010;
     public static final int REQUEST_CODE_SCAN = 0x1008;
 
@@ -83,6 +82,60 @@ public class XPermissionUtils {
     }
 
     /**
+     * 检查所传递对象的正确性
+     *
+     * @param object 必须为 activity or fragment
+     */
+    private static void checkCallingObjectSuitability(Object object) {
+        if (object == null) {
+            throw new NullPointerException("Activity or Fragment should not be null");
+        }
+        boolean isActivity = object instanceof Activity;
+        boolean isFragment = object instanceof Fragment;
+
+        if (!(isActivity || isFragment)) {
+            throw new IllegalArgumentException("Caller must be an Activity or a Fragment");
+        }
+    }
+
+    /**
+     * 获取权限列表中所有需要授权的权限
+     *
+     * @param context     上下文
+     * @param permissions 权限列表
+     * @return
+     */
+    private static List<String> getDeniedPermissions(Context context, String... permissions) {
+        List<String> deniedPermissions = new ArrayList<>();
+        if (!isOverMarshmallow()) {
+            return new ArrayList<>();
+        }
+        for (String permission : permissions) {
+            if (ContextCompat.checkSelfPermission(context, permission) == PackageManager.PERMISSION_DENIED) {
+                deniedPermissions.add(permission);
+            }
+        }
+        return deniedPermissions;
+    }
+
+    /**
+     * 检查所有的权限是否已经被授权
+     *
+     * @param permissions 权限列表
+     * @return
+     */
+    public static boolean checkPermissions(Context context, String... permissions) {
+        if (isOverMarshmallow()) {
+            for (String permission : permissions) {
+                if (ContextCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    /**
      * 获取上下文
      */
     private static Context getContext(Object object) {
@@ -109,7 +162,6 @@ public class XPermissionUtils {
                         deniedPermissions.add(permission);
                     }
                 }
-
                 if (deniedPermissions.isEmpty()) {
                     if (mOnPermissionListener != null)
                         mOnPermissionListener.onPermissionGranted();
@@ -121,63 +173,6 @@ public class XPermissionUtils {
         }
     }
 
-
-    /**
-     * 获取权限列表中所有需要授权的权限
-     *
-     * @param context     上下文
-     * @param permissions 权限列表
-     * @return
-     */
-    private static List<String> getDeniedPermissions(Context context, String... permissions) {
-        List<String> deniedPermissions = new ArrayList<>();
-        if (!isOverMarshmallow()) {
-            return new ArrayList<>();
-        }
-
-        for (String permission : permissions) {
-            if (ContextCompat.checkSelfPermission(context, permission) == PackageManager.PERMISSION_DENIED) {
-                deniedPermissions.add(permission);
-            }
-        }
-        return deniedPermissions;
-    }
-
-    /**
-     * 检查所传递对象的正确性
-     *
-     * @param object 必须为 activity or fragment
-     */
-    private static void checkCallingObjectSuitability(Object object) {
-        if (object == null) {
-            throw new NullPointerException("Activity or Fragment should not be null");
-        }
-
-        boolean isActivity = object instanceof Activity;
-        boolean isFragment = object instanceof Fragment;
-
-        if (!(isActivity || isFragment)) {
-            throw new IllegalArgumentException("Caller must be an Activity or a Fragment");
-        }
-    }
-
-    /**
-     * 检查所有的权限是否已经被授权
-     *
-     * @param permissions 权限列表
-     * @return
-     */
-    public static boolean checkPermissions(Context context, String... permissions) {
-        if (isOverMarshmallow()) {
-            for (String permission : permissions) {
-                if (ContextCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
-
     public static boolean isAllNeverAskAgain(Activity activity, List<String> deniedPermissions) {
         boolean allNeverAskAgain = true;
         for (String deniedPermission : deniedPermissions) {
@@ -186,10 +181,8 @@ public class XPermissionUtils {
                 break;
             }
         }
-
         return allNeverAskAgain;
     }
-
 
     /**
      * 显示提示对话框
@@ -227,7 +220,6 @@ public class XPermissionUtils {
         activity.startActivityForResult(intent, REQUEST_CODE_OPEN_APPLICATION_SETTING);
     }
 
-
     /**
      * 启动当前应用设置页面
      */
@@ -249,5 +241,4 @@ public class XPermissionUtils {
 
         void onPermissionDenied(List<String> deniedPermissions);
     }
-
 }

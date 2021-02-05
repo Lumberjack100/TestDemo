@@ -304,7 +304,7 @@ public class BleScannerListFragment extends BaseFragment implements TextWatcher,
                 new XPermissionUtils.OnPermissionListener() {
                     @Override
                     public void onPermissionGranted() {
-//                        processStartScan();
+                        processStartScan();
                     }
 
                     @Override
