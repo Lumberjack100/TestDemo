@@ -3,7 +3,10 @@ package com.shmedo.mcloudapp.deviceconfig.ui.fragment.adme;
 import android.graphics.Paint;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
+import android.text.style.ForegroundColorSpan;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.TextView;
@@ -40,10 +43,10 @@ import com.shmedo.mcloudapp.deviceconfig.model.ConfigModule;
 import com.shmedo.mcloudapp.deviceconfig.model.DiscoveredBluetoothDevice;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.AdvancedSettingActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.CustomCommandLogPrintActivity;
+import com.shmedo.mcloudapp.deviceconfig.ui.activity.DataCenterHomeActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.DeviceCurrentStateActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.adme.AdmeAdvancedConfigActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.adme.AdmeBasicParamActivity;
-import com.shmedo.mcloudapp.deviceconfig.ui.activity.DataCenterHomeActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.adme.AdmeGuideGrooveCalibrationActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.adme.AdmeMeasuringHoleDepthActivity;
 
@@ -196,7 +199,7 @@ public class BleAdmeHomeFragment extends BaseBleIotCommunicateFragment {
         mTvDeviceSn.setText(String.format("设备编号：%s", device.getName().substring(3)));
         mTvProductModel.setText("产品型号：--");
         mTvMotionState.setText("运行状态：--");
-        mTvPlatformCommunicationState.setText("平台连接状态：--");
+        mTvPlatformCommunicationState.setText("米度平台连接状态：--");
         mTvDeviceConnectOperate.setVisibility(View.VISIBLE);
         mTvDeviceConnectOperate.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG);
 
@@ -554,7 +557,12 @@ public class BleAdmeHomeFragment extends BaseBleIotCommunicateFragment {
             mTvDeviceSn.setText(String.format("设备编号：%s", !TextUtils.isEmpty(admeBaseInfo.getSn()) ? admeBaseInfo.getSn() : device.getName().substring(3)));
             mTvProductModel.setText(String.format("产品型号：%s", !TextUtils.isEmpty(admeBaseInfo.getProductid()) ? admeBaseInfo.getProductid() : "ADME"));
             mTvMotionState.setText("运行状态：--");
-            mTvPlatformCommunicationState.setText("平台连接状态：--");
+            if (!TextUtils.isEmpty(admeBaseInfo.getOnline()) && !admeBaseInfo.getOnline().equals("0")) {
+                mTvPlatformCommunicationState.setText("米度平台连接状态：在线");
+
+            } else if (admeBaseInfo.getOnline().equals("0")) {
+                mTvPlatformCommunicationState.setText(getPlatformAbnormalMessage("离线"));
+            }
 
             if (!TextUtils.isEmpty(admeBaseInfo.getEquimodel())) {
                 equipModel = admeBaseInfo.getEquimodel();
@@ -574,12 +582,21 @@ public class BleAdmeHomeFragment extends BaseBleIotCommunicateFragment {
             mTvDeviceSn.setText(String.format("设备编号：%s", device.getName().substring(3)));
             mTvProductModel.setText(String.format("产品型号：：%s", "ADME"));
             mTvMotionState.setText("运行状态：--");
-            mTvPlatformCommunicationState.setText("平台连接状态：--");
+            mTvPlatformCommunicationState.setText("米度平台连接状态：--");
 
             admeViewModel.deviceMode = 0;
             equipModellPos = 0;
             mTvConfigModel.setText("设备配置模式");
         }
+    }
+
+    private CharSequence getPlatformAbnormalMessage(String state) {
+        SpannableStringBuilder builder = new SpannableStringBuilder(state);
+        ForegroundColorSpan colorSpan = new ForegroundColorSpan(getResources().getColor(R.color.red));
+        builder.setSpan(colorSpan, 0, builder.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        builder.insert(0, "米度平台连接状态：");
+
+        return builder;
     }
 
     /**
@@ -590,7 +607,6 @@ public class BleAdmeHomeFragment extends BaseBleIotCommunicateFragment {
             Timber.e("AdmeMotionState is Null!");
             return;
         }
-
         switch (admeMotionState.getMotionstate()) {
             case "0":
                 mTvMotionState.setText("运行状态：管口停止");

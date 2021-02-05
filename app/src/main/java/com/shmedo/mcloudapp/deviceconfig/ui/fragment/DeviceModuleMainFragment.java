@@ -96,7 +96,7 @@ public class DeviceModuleMainFragment extends BaseTranslucentFragment implements
                 if (position == 0) {
                     View tabView = LayoutInflater.from(mActivity).inflate(R.layout.custom_tab_text, null);
                     TextView textView = tabView.findViewById(R.id.tabText);
-                    textView.setText("网络");
+                    textView.setText("4G");
                     textView.setTextColor(ContextCompat.getColor(mActivity, R.color.title_text_color));
                     textView.setTextSize(18);
                     tab.setCustomView(textView);

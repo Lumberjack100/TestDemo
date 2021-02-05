@@ -32,6 +32,7 @@ public class AdmeBaseInfoParser implements IOTResultParser<AdmeBaseInfo> {
             info.setSn(TextUtils.isEmpty(keyValueMap.get("sn")) ? "" : keyValueMap.get("sn"));
             info.setProductid(TextUtils.isEmpty(keyValueMap.get("productid")) ? "" : keyValueMap.get("productid"));
             info.setEquimodel(TextUtils.isEmpty(keyValueMap.get("equimodel")) ? "" : keyValueMap.get("equimodel"));
+            info.setOnline(TextUtils.isEmpty(keyValueMap.get("online")) ? "" : keyValueMap.get("online"));
 
             return info;
         } catch (Exception ex) {

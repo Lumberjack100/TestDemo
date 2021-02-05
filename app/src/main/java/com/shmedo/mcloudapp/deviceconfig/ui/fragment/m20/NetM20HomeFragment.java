@@ -69,7 +69,7 @@ public class NetM20HomeFragment extends BaseNetIotCommunicateFragment {
     TextView mTvFirmwareVersion;//固件版本
 
     @BindView(R.id.tv_platform_communication_state)
-    TextView mTvPlatformCommunicationState;//与平台连接状态
+    TextView mTvPlatformCommunicationState;//与米度平台连接状态
 
     @BindView(R.id.tv_device_state_flag)
     TextView mTvDeviceState;//(在线、离线)
@@ -382,7 +382,7 @@ public class NetM20HomeFragment extends BaseNetIotCommunicateFragment {
             } else {
                 mTvFirmwareVersion.setText("固件版本：--");
             }
-            mTvPlatformCommunicationState.setText("平台连接状态：--");
+            mTvPlatformCommunicationState.setText("米度平台连接状态：--");
         } catch (Exception ex) {
             ex.printStackTrace();
         }

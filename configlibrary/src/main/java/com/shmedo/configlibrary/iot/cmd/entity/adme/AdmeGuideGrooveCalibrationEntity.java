@@ -12,7 +12,7 @@ import com.shmedo.configlibrary.ble.interfaces.Validater;
 public class AdmeGuideGrooveCalibrationEntity  implements Validater {
     private String movementway;//运动方式（0:正转，1:反转）
     private String motorspeed;//电机速度
-    private String moveangle;//运动距离
+    private String movepulse;//运动脉冲数
 
     public void setMovementway(String movementway) {
         this.movementway = movementway;
@@ -22,8 +22,8 @@ public class AdmeGuideGrooveCalibrationEntity  implements Validater {
         this.motorspeed = motorspeed;
     }
 
-    public void setMoveangle(String moveangle) {
-        this.moveangle = moveangle;
+    public void setMovepulse(String movepulse) {
+        this.movepulse = movepulse;
     }
 
     @Override
@@ -40,8 +40,8 @@ public class AdmeGuideGrooveCalibrationEntity  implements Validater {
             stringBuilder.append("motorspeed=" + motorspeed);
             stringBuilder.append("&");
         }
-        if (!TextUtils.isEmpty(moveangle)) {
-            stringBuilder.append("moveangle=" + moveangle);
+        if (!TextUtils.isEmpty(movepulse)) {
+            stringBuilder.append("movepulse=" + movepulse);
             stringBuilder.append("&");
         }
 

@@ -59,12 +59,12 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="运动角度(°)"
+            android:text="运动脉冲(p)"
             android:textColor="@color/text_color_343434"
             android:textSize="@dimen/text_size_17" />
 
         <com.shmedo.mcloudapp.common.view.ClearEditText
-            android:id="@+id/motionAngleEt"
+            android:id="@+id/motionPulseEt"
             style="@style/DataCenter_EditText_Style"
             android:hint="请输入"
             android:inputType="numberDecimal" />

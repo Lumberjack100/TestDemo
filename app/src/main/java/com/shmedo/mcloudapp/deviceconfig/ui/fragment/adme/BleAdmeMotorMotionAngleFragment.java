@@ -193,7 +193,7 @@ public class BleAdmeMotorMotionAngleFragment extends BaseDialogFragment {
 
         double motionAngle = 0;
         try {
-            double totalAngle = Double.parseDouble(grooveCalibrationInfo.getMoveangle());
+            double totalAngle = Double.parseDouble(grooveCalibrationInfo.getMovePulse());
             double angle = Double.parseDouble(curAngle);
             motionAngle = totalAngle - angle;
             //运动角度无效
@@ -207,7 +207,7 @@ public class BleAdmeMotorMotionAngleFragment extends BaseDialogFragment {
         }
         AdmeGuideGrooveCalibrationEntity entity = new AdmeGuideGrooveCalibrationEntity();
         entity.setMovementway(grooveCalibrationInfo.getMovementway());
-        entity.setMoveangle(String.valueOf(motionAngle));
+        entity.setMovepulse(String.valueOf(motionAngle));
 
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_SET_GUIDE_GROOVE_CALIBRATION_PARAMETERS, entity);
         sendCommand(command);

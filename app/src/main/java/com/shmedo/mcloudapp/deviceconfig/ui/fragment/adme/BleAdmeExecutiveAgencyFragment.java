@@ -85,10 +85,10 @@ public class BleAdmeExecutiveAgencyFragment extends BaseBleIotCommunicateFragmen
     SwitchButton mSbDecentralizedPredictionEnable;
 
     @BindView(R.id.et_pulses_per_unit_time)
-    ClearEditText mEtPulsesPerUnitTime;
+    ClearEditText mEtPulsesPerUnitTime;//单位时间脉冲数
 
     @BindView(R.id.et_detection_time)
-    ClearEditText mEtDetectionTime;
+    ClearEditText mEtDetectionTime;//检测判断时间
 
     @BindView(R.id.btn_confirm)
     Button mBtnSave;

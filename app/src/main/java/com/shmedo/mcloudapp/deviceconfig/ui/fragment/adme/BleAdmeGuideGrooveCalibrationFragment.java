@@ -48,8 +48,8 @@ public class BleAdmeGuideGrooveCalibrationFragment extends BaseBleIotCommunicate
     @BindView(R.id.et_movement_speed)
     ClearEditText mEtMovementSpeed;
 
-    @BindView(R.id.motionAngleEt)
-    ClearEditText mEtMotionAngle;
+    @BindView(R.id.motionPulseEt)
+    ClearEditText mEtMotionPulse;
 
     @BindView(R.id.ll_clear_motion_data)
     ViewGroup clearMotionDataLayout;
@@ -64,7 +64,7 @@ public class BleAdmeGuideGrooveCalibrationFragment extends BaseBleIotCommunicate
 
     private String motionWay;//  运动方式
     private String movementSpeed;// 电机运动速度(r/min)
-    private String motionAngle;//  转动角度
+    private String motionPulse;//  运动脉冲数
 
     private AdmeGuideGrooveCalibrationInfo grooveCalibrationInfo;
     private BleAdmeMotorMotionAngleFragment motorMotionAngleFragment;
@@ -92,7 +92,7 @@ public class BleAdmeGuideGrooveCalibrationFragment extends BaseBleIotCommunicate
         mEtMovementSpeed.setFilters(new InputFilter[]{new InputFilter.LengthFilter(2)});
         mEtMovementSpeed.setHint("1-100");
 
-        mEtMotionAngle.setFilters(new InputFilter[]{new InputFilter.LengthFilter(11)});
+        mEtMotionPulse.setFilters(new InputFilter[]{new InputFilter.LengthFilter(11)});
 
         clearMotionDataLayout.setVisibility(View.VISIBLE);
         motionDataClearCompleteLayout.setVisibility(View.GONE);
@@ -152,7 +152,7 @@ public class BleAdmeGuideGrooveCalibrationFragment extends BaseBleIotCommunicate
 
     private boolean checkValueIsValid() {
         movementSpeed = mEtMovementSpeed.getText().toString().trim();
-        motionAngle = mEtMotionAngle.getText().toString().trim();
+        motionPulse = mEtMotionPulse.getText().toString().trim();
         if (TextUtils.isEmpty(movementSpeed)) {
             ToastUtils.show("请输入电机运动速度!");
             mEtMovementSpeed.requestFocus();
@@ -171,21 +171,21 @@ public class BleAdmeGuideGrooveCalibrationFragment extends BaseBleIotCommunicate
             return false;
         }
 
-        if (TextUtils.isEmpty(motionAngle)) {
-            ToastUtils.show("请输入运动角度!");
-            mEtMotionAngle.requestFocus();
+        if (TextUtils.isEmpty(motionPulse)) {
+            ToastUtils.show("请输入运动脉冲!");
+            mEtMotionPulse.requestFocus();
             return false;
         }
         try {
-            double value = Double.parseDouble(motionAngle);
+            double value = Double.parseDouble(motionPulse);
             if (value <= 0) {
-                ToastUtils.show("请输入正确的运动角度!");
-                mEtMotionAngle.requestFocus();
+                ToastUtils.show("请输入正确的运动脉冲!");
+                mEtMotionPulse.requestFocus();
                 return false;
             }
         } catch (Exception ex) {
-            ToastUtils.show("请输入正确的运动角度!");
-            mEtMotionAngle.requestFocus();
+            ToastUtils.show("请输入正确的运动脉冲!");
+            mEtMotionPulse.requestFocus();
             return false;
         }
 
@@ -198,8 +198,8 @@ public class BleAdmeGuideGrooveCalibrationFragment extends BaseBleIotCommunicate
             entity.setMovementway(motionWay);
             entity.setMotorspeed(movementSpeed);
             decimalFormat.applyPattern("#.#");
-            motionAngle = decimalFormat.format(Double.parseDouble(motionAngle));
-            entity.setMoveangle(motionAngle);
+            motionPulse = decimalFormat.format(Double.parseDouble(motionPulse));
+            entity.setMovepulse(motionPulse);
 
             mBtnRun.setEnabled(false);
             errMsg = "发送指令超时,请稍后尝试";
@@ -332,7 +332,7 @@ public class BleAdmeGuideGrooveCalibrationFragment extends BaseBleIotCommunicate
         }
         motionWay = grooveCalibrationInfo.getMovementway().trim();
         movementSpeed = grooveCalibrationInfo.getMotorspeed().trim();
-        motionAngle = grooveCalibrationInfo.getMoveangle().trim();
+        motionPulse = grooveCalibrationInfo.getMovePulse().trim();
         if (motionWay.equals("0")) {
             motionWayPos = 0;
             mTvMotionWay.setText("正转");
@@ -344,8 +344,8 @@ public class BleAdmeGuideGrooveCalibrationFragment extends BaseBleIotCommunicate
         try {
             mEtMovementSpeed.setText(movementSpeed);
             decimalFormat.applyPattern("#.#");
-            motionAngle = decimalFormat.format(Double.parseDouble(motionAngle));
-            mEtMotionAngle.setText(motionAngle);
+            motionPulse = decimalFormat.format(Double.parseDouble(motionPulse));
+            mEtMotionPulse.setText(motionPulse);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -364,7 +364,7 @@ public class BleAdmeGuideGrooveCalibrationFragment extends BaseBleIotCommunicate
         if (grooveCalibrationInfo != null) {
             grooveCalibrationInfo.setMovementway(motionWay);
             grooveCalibrationInfo.setMotorspeed(movementSpeed);
-            grooveCalibrationInfo.setMoveangle(motionAngle);
+            grooveCalibrationInfo.setMovePulse(motionPulse);
         }
         showMotorMotionDialog();
     }

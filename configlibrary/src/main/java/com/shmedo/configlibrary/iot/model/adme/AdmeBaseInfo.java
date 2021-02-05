@@ -11,6 +11,7 @@ public class AdmeBaseInfo {
     private String sn;
     private String productid;//产品型号
     private String equimodel;//设备模式（0：设备配置模式，1：自动检测模式）
+    private String online;//在线状态（0：离线，非0:在线)
 
     public String getSn() {
         return TextUtils.isEmpty(sn) ? "" : sn;
@@ -34,5 +35,13 @@ public class AdmeBaseInfo {
 
     public void setEquimodel(String equimodel) {
         this.equimodel = equimodel;
+    }
+
+    public String getOnline() {
+        return online;
+    }
+
+    public void setOnline(String online) {
+        this.online = online;
     }
 }

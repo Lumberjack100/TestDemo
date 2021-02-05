@@ -32,7 +32,7 @@ public class AdmeGuideGrooveCalibrationInfoParser implements IOTResultParser<Adm
             info.setMorunstate(TextUtils.isEmpty(keyValueMap.get("morunstate")) ? "" : keyValueMap.get("morunstate"));
             info.setMovementway(TextUtils.isEmpty(keyValueMap.get("movementway")) ? "" : keyValueMap.get("movementway"));
             info.setMotorspeed(TextUtils.isEmpty(keyValueMap.get("motorspeed")) ? "" : keyValueMap.get("motorspeed"));
-            info.setMoveangle(TextUtils.isEmpty(keyValueMap.get("moveangle")) ? "" : keyValueMap.get("moveangle"));
+            info.setMovePulse(TextUtils.isEmpty(keyValueMap.get("movepulse")) ? "" : keyValueMap.get("movepulse"));
 
             return info;
         } catch (Exception ex) {

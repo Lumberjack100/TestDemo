@@ -23,10 +23,13 @@ public class BleDeviceAdapter extends BaseQuickAdapter<DiscoveredBluetoothDevice
     @Override
     protected void convert(@NotNull BaseViewHolder holder, DiscoveredBluetoothDevice bluetoothDevice) {
         holder.setText(R.id.tv_dev_name, TextUtils.isEmpty(bluetoothDevice.getName()) ? "Unknown device" : bluetoothDevice.getName());
+        holder.setText(R.id.tv_mac_address, bluetoothDevice.getAddress());
+
         if (TextUtils.isEmpty(bluetoothDevice.getName())) {
             holder.setGone(R.id.tv_device_type, true);
         } else {
             holder.setGone(R.id.tv_device_type, false);
+
             if (bluetoothDevice.getName().endsWith("L")) {
                 holder.setText(R.id.tv_device_type, "DAS");
 

@@ -14,7 +14,7 @@ public class AdmeGuideGrooveCalibrationInfo implements Parcelable {
     private String morunstate;//电机运行状态(0:停止，1:运动)
     private String movementway;//运动方式（0:正转，1:反转）
     private String motorspeed;//电机速度
-    private String moveangle;// 运动角度
+    private String movepulse;// 运动脉冲
 
     public AdmeGuideGrooveCalibrationInfo() {
     }
@@ -24,7 +24,7 @@ public class AdmeGuideGrooveCalibrationInfo implements Parcelable {
         morunstate = in.readString();
         movementway = in.readString();
         motorspeed = in.readString();
-        moveangle = in.readString();
+        movepulse = in.readString();
     }
 
     @Override
@@ -32,7 +32,7 @@ public class AdmeGuideGrooveCalibrationInfo implements Parcelable {
         dest.writeString(morunstate);
         dest.writeString(movementway);
         dest.writeString(motorspeed);
-        dest.writeString(moveangle);
+        dest.writeString(movepulse);
     }
 
     @Override
@@ -76,11 +76,11 @@ public class AdmeGuideGrooveCalibrationInfo implements Parcelable {
         this.motorspeed = motorspeed;
     }
 
-    public String getMoveangle() {
-        return TextUtils.isEmpty(moveangle) ? "" : moveangle;
+    public String getMovePulse() {
+        return TextUtils.isEmpty(movepulse) ? "" : movepulse;
     }
 
-    public void setMoveangle(String moveangle) {
-        this.moveangle = moveangle;
+    public void setMovePulse(String moveangle) {
+        this.movepulse = moveangle;
     }
 }

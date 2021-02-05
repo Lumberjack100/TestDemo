@@ -71,7 +71,7 @@ public class BleM20HomeFragment extends BaseGOCBleIotCommunicateFragment {
     TextView mTvFirmwareVersion;//固件版本
 
     @BindView(R.id.tv_platform_communication_state)
-    TextView mTvPlatformCommunicationState;//与平台连接状态
+    TextView mTvPlatformCommunicationState;//与米度平台连接状态
 
     @BindView(R.id.tv_device_state_flag)
     TextView mTvDeviceState;//蓝牙连接状态(已连接、已断开)
@@ -135,7 +135,7 @@ public class BleM20HomeFragment extends BaseGOCBleIotCommunicateFragment {
         mTvDeviceSn.setText(String.format("设备编号：%s", device.getName().substring(3)));
         mTvProductModel.setText("产品型号：--");
         mTvFirmwareVersion.setText("固件版本：--");
-        mTvPlatformCommunicationState.setText("平台连接状态：--");
+        mTvPlatformCommunicationState.setText("米度平台连接状态：--");
         mTvDeviceConnectOperate.setVisibility(View.VISIBLE);
         mTvDeviceConnectOperate.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG);
     }
@@ -388,7 +388,7 @@ public class BleM20HomeFragment extends BaseGOCBleIotCommunicateFragment {
                 mTvProductModel.setText(String.format("产品型号：：%s", "M20"));
                 mTvFirmwareVersion.setText("固件版本：--");
             }
-            mTvPlatformCommunicationState.setText("平台连接状态：--");
+            mTvPlatformCommunicationState.setText("米度平台连接状态：--");
         } catch (Exception ex) {
             ex.printStackTrace();
         }

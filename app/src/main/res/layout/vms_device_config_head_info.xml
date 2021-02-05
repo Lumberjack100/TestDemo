@@ -96,7 +96,7 @@
                 android:singleLine="true"
                 android:textColor="@color/sub_title_text_color"
                 android:textSize="@dimen/text_size_13"
-                tools:text="平台连接状态：在线" />
+                tools:text="米度平台连接状态：在线" />
 
         </LinearLayout>
 

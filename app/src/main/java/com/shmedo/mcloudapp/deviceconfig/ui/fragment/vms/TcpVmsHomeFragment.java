@@ -425,7 +425,7 @@ public class TcpVmsHomeFragment extends BaseTcpConnectFragment {
             mTvProductModel.setText(String.format("版本信息：%s", vmsBasicInfo.getSwVersion()));
             mTvSubModel.setText(String.format("网关电压：%s", vmsBasicInfo.getVolt() + "V"));
             if (!TextUtils.isEmpty(vmsBasicInfo.getOnline()) && !vmsBasicInfo.getOnline().equals("0")) {
-                mTvPlatformCommunicationState.setText("平台连接状态：在线");
+                mTvPlatformCommunicationState.setText("米度平台连接状态：在线");
 
             } else if (vmsBasicInfo.getOnline().equals("0")) {
                 mTvPlatformCommunicationState.setText(getPlatformAbnormalMessage("离线"));
@@ -435,7 +435,7 @@ public class TcpVmsHomeFragment extends BaseTcpConnectFragment {
             mTvDeviceSn.setText("设备SN号：--");
             mTvProductModel.setText("版本信息：--");
             mTvSubModel.setText("网关电压：--");
-            mTvPlatformCommunicationState.setText("平台连接状态：--");
+            mTvPlatformCommunicationState.setText("米度平台连接状态：--");
         }
     }
 
@@ -443,7 +443,7 @@ public class TcpVmsHomeFragment extends BaseTcpConnectFragment {
         SpannableStringBuilder builder = new SpannableStringBuilder(state);
         ForegroundColorSpan colorSpan = new ForegroundColorSpan(getResources().getColor(R.color.red));
         builder.setSpan(colorSpan, 0, builder.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-        builder.insert(0, "平台连接状态：");
+        builder.insert(0, "米度平台连接状态：");
 
         return builder;
     }
@@ -468,10 +468,8 @@ public class TcpVmsHomeFragment extends BaseTcpConnectFragment {
     private void modifyAisleTerminalInfo(VmsAisleTerminalInfo vmsAisleTerminalInfo) {
         if (vmsAisleTerminalInfo == null)
             return;
-
         if (vmsAisleTerminalInfo.getTerminal() == null)
             return;
-
         for (VmsTerminalInfo vmsTerminalInfo : vmsAisleTerminalInfo.getTerminal()) {
             vmsTerminalInfo.setNetid(vmsAisleTerminalInfo.getNetid());
             vmsTerminalInfo.setChl(vmsAisleTerminalInfo.getChl());

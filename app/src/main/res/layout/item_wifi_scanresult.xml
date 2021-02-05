@@ -18,7 +18,8 @@
 
     <LinearLayout
         android:layout_width="0dp"
-        android:layout_height="70dp"
+        android:layout_height="wrap_content"
+        android:minHeight="60dp"
         android:layout_marginStart="14dp"
         android:layout_weight="1"
         android:gravity="center_vertical"
@@ -31,6 +32,7 @@
             android:singleLine="true"
             android:textColor="@color/title_text_color"
             android:textSize="17sp"
+            android:textStyle="bold"
             tools:text="WIFI" />
 
         <TextView
