@@ -32,6 +32,7 @@ public class AdmeStepperMotorInfoParser implements IOTResultParser<AdmeStepperMo
             info.setPosnegtest(TextUtils.isEmpty(keyValueMap.get("posnegtest")) ? "" : keyValueMap.get("posnegtest"));
             info.setAbsprsion(TextUtils.isEmpty(keyValueMap.get("absprsion")) ? "" : keyValueMap.get("absprsion"));
             info.setMovspeed(TextUtils.isEmpty(keyValueMap.get("movspeed")) ? "" : keyValueMap.get("movspeed"));
+            info.setMovesm(TextUtils.isEmpty(keyValueMap.get("movesm")) ? "" : keyValueMap.get("movesm"));
 
             return info;
         } catch (Exception ex) {

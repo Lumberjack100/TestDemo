@@ -400,6 +400,54 @@
 
                 </LinearLayout>
 
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.5dp"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:background="@color/divider_line_bg_efefef" />
+
+                <LinearLayout style="@style/Common_EditItem_LayoutStyle">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="堵转检测起点(%)"
+                        android:textColor="@color/text_color_343434"
+                        android:textSize="@dimen/text_size_17" />
+
+                    <com.shmedo.mcloudapp.common.view.ClearEditText
+                        android:id="@+id/et_detection_start"
+                        style="@style/DataCenter_EditText_Style"
+                        android:hint="请输入"
+                        android:inputType="number" />
+
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.5dp"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:background="@color/divider_line_bg_efefef" />
+
+                <LinearLayout style="@style/Common_EditItem_LayoutStyle">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="堵转检测终点(%)"
+                        android:textColor="@color/text_color_343434"
+                        android:textSize="@dimen/text_size_17" />
+
+                    <com.shmedo.mcloudapp.common.view.ClearEditText
+                        android:id="@+id/et_detection_end"
+                        style="@style/DataCenter_EditText_Style"
+                        android:hint="请输入"
+                        android:inputType="number" />
+
+                </LinearLayout>
+
             </LinearLayout>
 
             <View

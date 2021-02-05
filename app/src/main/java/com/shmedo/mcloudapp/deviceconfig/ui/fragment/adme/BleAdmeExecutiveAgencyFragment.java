@@ -90,6 +90,12 @@ public class BleAdmeExecutiveAgencyFragment extends BaseBleIotCommunicateFragmen
     @BindView(R.id.et_detection_time)
     ClearEditText mEtDetectionTime;//检测判断时间
 
+    @BindView(R.id.et_detection_start)
+    ClearEditText mEtDetectionStart;//堵转检测起点
+
+    @BindView(R.id.et_detection_end)
+    ClearEditText mEtDetectionEnd;//堵转检测终点
+
     @BindView(R.id.btn_confirm)
     Button mBtnSave;
 
@@ -119,8 +125,10 @@ public class BleAdmeExecutiveAgencyFragment extends BaseBleIotCommunicateFragmen
     private String measuringDistance;// 测量间距
     private String measurementIntervalTime;// 测量间隔时间
     private String measuringReferenceDepth;// 测量基准深度
-    private String pulsesPerUnitTime;// 堵转单位时间脉冲数
-    private String detectionTime;// 堵转检测判断时间
+    private String pulsesPerUnitTime;//堵转单位时间脉冲数
+    private String detectionTime;//堵转检测判断时间
+    private String detectionStart;//堵转检测起点
+    private String detectionEnd;//堵转检测终点
 
     private DecimalFormat decimalFormat = new DecimalFormat();
 
@@ -168,6 +176,10 @@ public class BleAdmeExecutiveAgencyFragment extends BaseBleIotCommunicateFragmen
         mEtMeasuringReferenceDepth.setFilters(new InputFilter[]{new InputFilter.LengthFilter(8)});
         mEtPulsesPerUnitTime.setFilters(new InputFilter[]{new InputFilter.LengthFilter(4)});
         mEtDetectionTime.setFilters(new InputFilter[]{new InputFilter.LengthFilter(8)});
+        mEtDetectionStart.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
+        mEtDetectionStart.setHint("0-50");
+        mEtDetectionEnd.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
+        mEtDetectionEnd.setHint("50-100");
     }
 
     private void setSwitchViewListener() {
@@ -285,6 +297,8 @@ public class BleAdmeExecutiveAgencyFragment extends BaseBleIotCommunicateFragmen
         measuringReferenceDepth = mEtMeasuringReferenceDepth.getText().toString().trim();
         pulsesPerUnitTime = mEtPulsesPerUnitTime.getText().toString().trim();
         detectionTime = mEtDetectionTime.getText().toString().trim();
+        detectionStart = mEtDetectionStart.getText().toString().trim();
+        detectionEnd = mEtDetectionEnd.getText().toString().trim();
 
         if (TextUtils.isEmpty(waitingIntervalPerRound)) {
             ToastUtils.show("请输入每轮等待时间!");
@@ -508,6 +522,42 @@ public class BleAdmeExecutiveAgencyFragment extends BaseBleIotCommunicateFragmen
                 mEtDetectionTime.requestFocus();
                 return false;
             }
+
+            if (TextUtils.isEmpty(detectionStart)) {
+                ToastUtils.show("请输入堵转检测起点!");
+                mEtDetectionStart.requestFocus();
+                return false;
+            }
+            try {
+                int value = Integer.parseInt(detectionStart);
+                if (value < 0 || value > 50) {
+                    ToastUtils.show("请输入正确的堵转检测起点!");
+                    mEtDetectionStart.requestFocus();
+                    return false;
+                }
+            } catch (Exception ex) {
+                ToastUtils.show("请输入正确的堵转检测起点!");
+                mEtDetectionStart.requestFocus();
+                return false;
+            }
+
+            if (TextUtils.isEmpty(detectionEnd)) {
+                ToastUtils.show("请输入堵转检测终点!");
+                mEtDetectionEnd.requestFocus();
+                return false;
+            }
+            try {
+                int value = Integer.parseInt(detectionEnd);
+                if (value < 50 || value > 100) {
+                    ToastUtils.show("请输入正确的堵转检测终点!");
+                    mEtDetectionEnd.requestFocus();
+                    return false;
+                }
+            } catch (Exception ex) {
+                ToastUtils.show("请输入正确的堵转检测终点!");
+                mEtDetectionEnd.requestFocus();
+                return false;
+            }
         }
         return true;
     }
@@ -535,6 +585,8 @@ public class BleAdmeExecutiveAgencyFragment extends BaseBleIotCommunicateFragmen
                 entity.setUntimenum(pulsesPerUnitTime);
                 decimalFormat.applyPattern("#.##");
                 entity.setDetectiontime(decimalFormat.format(Double.parseDouble(detectionTime)));
+                entity.setDetectionstart(detectionStart);
+                entity.setDetectionend(detectionEnd);
             }
 
             errMsg = "发送指令超时,请稍后尝试";
@@ -612,6 +664,8 @@ public class BleAdmeExecutiveAgencyFragment extends BaseBleIotCommunicateFragmen
             admeExecutiveAgencyInfo.setMeabaseth(measuringReferenceDepth);
             admeExecutiveAgencyInfo.setUntimenum(pulsesPerUnitTime);
             admeExecutiveAgencyInfo.setDetectiontime(detectionTime);
+            admeExecutiveAgencyInfo.setDetectionstart(detectionStart);
+            admeExecutiveAgencyInfo.setDetectionend(detectionEnd);
         }
         //TODO  打开注释，设置为浏览模式
 //        configPageViewModel.configPageEditableChanged.setValue(false);
@@ -644,6 +698,8 @@ public class BleAdmeExecutiveAgencyFragment extends BaseBleIotCommunicateFragmen
         measuringReferenceDepth = admeExecutiveAgencyInfo.getMeabaseth().trim();
         pulsesPerUnitTime = admeExecutiveAgencyInfo.getUntimenum().trim();
         detectionTime = admeExecutiveAgencyInfo.getDetectiontime().trim();
+        detectionStart = admeExecutiveAgencyInfo.getDetectionstart().trim();
+        detectionEnd = admeExecutiveAgencyInfo.getDetectionend().trim();
 
         if (dataSettlementMethodOld.equals("0")) {
             dataSettlementMethodPos = 0;
@@ -684,6 +740,9 @@ public class BleAdmeExecutiveAgencyFragment extends BaseBleIotCommunicateFragmen
             decimalFormat.applyPattern("#.##");
             detectionTime = decimalFormat.format(Double.parseDouble(detectionTime));
             mEtDetectionTime.setText(detectionTime);
+            mEtDetectionStart.setText(detectionStart);
+            mEtDetectionEnd.setText(detectionEnd);
+
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -757,6 +816,12 @@ public class BleAdmeExecutiveAgencyFragment extends BaseBleIotCommunicateFragmen
                 return true;
             }
             if (detectionTime != null && !detectionTime.equals(mEtDetectionTime.getText().toString().trim())) {
+                return true;
+            }
+            if (detectionStart != null && !detectionStart.equals(mEtDetectionStart.getText().toString().trim())) {
+                return true;
+            }
+            if (detectionEnd != null && !detectionEnd.equals(mEtDetectionEnd.getText().toString().trim())) {
                 return true;
             }
         }

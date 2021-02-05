@@ -45,7 +45,7 @@ public class BleAdmeGuideGrooveCalibrationFragment extends BaseBleIotCommunicate
     @BindView(R.id.tv_motion_way)
     TextView mTvMotionWay;
 
-    @BindView(R.id.et_movement_speed)
+    @BindView(R.id.et_motor_movement_speed)
     ClearEditText mEtMovementSpeed;
 
     @BindView(R.id.motionPulseEt)

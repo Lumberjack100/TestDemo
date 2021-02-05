@@ -12,7 +12,8 @@ import com.shmedo.configlibrary.ble.interfaces.Validater;
 public class AdmeStepperMotorEntity implements Validater {
     private String posnegtest;//正反测（0:关闭，1:开启）
     private String absprsion;//绝对精度修正值
-    private String movspeed;//电机运动速度
+    private String movspeed;//步进电机运动速度
+    private String movesm;//步进电机力矩
 
     public void setPosnegtest(String posnegtest) {
         this.posnegtest = posnegtest;
@@ -24,6 +25,10 @@ public class AdmeStepperMotorEntity implements Validater {
 
     public void setMovspeed(String movspeed) {
         this.movspeed = movspeed;
+    }
+
+    public void setMovesm(String movesm) {
+        this.movesm = movesm;
     }
 
     @Override
@@ -42,6 +47,10 @@ public class AdmeStepperMotorEntity implements Validater {
         }
         if (!TextUtils.isEmpty(movspeed)) {
             stringBuilder.append("movspeed=" + movspeed);
+            stringBuilder.append("&");
+        }
+        if (!TextUtils.isEmpty(movesm)) {
+            stringBuilder.append("movesm=" + movesm);
             stringBuilder.append("&");
         }
 

@@ -10,7 +10,9 @@ import android.text.TextUtils;
 public class AdmeStepperMotorInfo {
     private String posnegtest;//正反测（0:关闭，1:开启）
     private String absprsion;//绝对精度修正值
-    private String movspeed;//电机运动速度
+    private String movspeed;//步进电机运动速度
+    private String movesm;//步进电机力矩
+
 
     public String getPosnegtest() {
         return TextUtils.isEmpty(posnegtest) ? "" : posnegtest;
@@ -34,5 +36,13 @@ public class AdmeStepperMotorInfo {
 
     public void setMovspeed(String movspeed) {
         this.movspeed = movspeed;
+    }
+
+    public String getMovesm() {
+        return TextUtils.isEmpty(movesm) ? "" : movesm;
+    }
+
+    public void setMovesm(String movesm) {
+        this.movesm = movesm;
     }
 }

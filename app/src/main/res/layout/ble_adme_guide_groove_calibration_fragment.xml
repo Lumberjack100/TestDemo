@@ -39,7 +39,7 @@
             android:textSize="@dimen/text_size_17" />
 
         <com.shmedo.mcloudapp.common.view.ClearEditText
-            android:id="@+id/et_movement_speed"
+            android:id="@+id/et_motor_movement_speed"
             style="@style/DataCenter_EditText_Style"
             android:hint="请输入"
             android:inputType="number" />

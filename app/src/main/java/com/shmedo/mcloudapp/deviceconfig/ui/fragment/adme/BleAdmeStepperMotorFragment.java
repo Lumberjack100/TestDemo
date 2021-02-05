@@ -50,8 +50,11 @@ public class BleAdmeStepperMotorFragment extends BaseBleIotCommunicateFragment {
     @BindView(R.id.et_accuracy_correction_value)
     ClearEditText mEtAccuracyCorrectionValue;
 
-    @BindView(R.id.et_movement_speed)
+    @BindView(R.id.et_motor_movement_speed)
     ClearEditText mEtMovementSpeed;
+
+    @BindView(R.id.et_motor_torque)
+    ClearEditText mEtMotorTorque;
 
     @BindView(R.id.btn_confirm)
     Button mBtnSave;
@@ -65,7 +68,8 @@ public class BleAdmeStepperMotorFragment extends BaseBleIotCommunicateFragment {
     private AdmeStepperMotorInfo admeStepperMotorInfo;
 
     private String accuracyCorrectionValue;//绝对精度修正值
-    private String movementSpeed;//电机运动速度(r/min)
+    private String movementSpeed;//步进电机运动速度(r/min)
+    private String motorTorque;//步进电机力矩
 
     private boolean paramEnableInitial;//开关初始状态，用于判断开关是否有打开后没有设置参数就返回
     private boolean isSaveParamOperation = false;//判断当前是保存参数操作，还是关闭开关操作
@@ -99,6 +103,7 @@ public class BleAdmeStepperMotorFragment extends BaseBleIotCommunicateFragment {
     private void setView() {
         mEtAccuracyCorrectionValue.setFilters(new InputFilter[]{new InputFilter.LengthFilter(8)});
         mEtMovementSpeed.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
+        mEtMotorTorque.setFilters(new InputFilter[]{new InputFilter.LengthFilter(4)});
 
         mEtMovementSpeed.setHint("1-100");
     }
@@ -198,6 +203,7 @@ public class BleAdmeStepperMotorFragment extends BaseBleIotCommunicateFragment {
     private boolean checkValueIsValid() {
         accuracyCorrectionValue = mEtAccuracyCorrectionValue.getText().toString().trim();
         movementSpeed = mEtMovementSpeed.getText().toString().trim();
+        motorTorque = mEtMotorTorque.getText().toString().trim();
 
         if (TextUtils.isEmpty(accuracyCorrectionValue)) {
             ToastUtils.show("请输入绝对精度修正值!");
@@ -218,20 +224,38 @@ public class BleAdmeStepperMotorFragment extends BaseBleIotCommunicateFragment {
         }
 
         if (TextUtils.isEmpty(movementSpeed)) {
-            ToastUtils.show("请输入电机运动速度!");
+            ToastUtils.show("请输入步进电机运动速度!");
             mEtMovementSpeed.requestFocus();
             return false;
         }
         try {
             int port = Integer.parseInt(movementSpeed);
             if (port < 1 || port > 100) {
-                ToastUtils.show("请输入正确的电机运动速度!");
+                ToastUtils.show("请输入正确的步进电机运动速度!");
                 mEtMovementSpeed.requestFocus();
                 return false;
             }
         } catch (Exception ex) {
-            ToastUtils.show("请输入正确的电机运动速度!");
+            ToastUtils.show("请输入正确的步进电机运动速度!");
             mEtMovementSpeed.requestFocus();
+            return false;
+        }
+
+        if (TextUtils.isEmpty(motorTorque)) {
+            ToastUtils.show("请输入步进电机力矩!");
+            mEtMotorTorque.requestFocus();
+            return false;
+        }
+        try {
+            int port = Integer.parseInt(motorTorque);
+            if (port < 0) {
+                ToastUtils.show("请输入正确的步进电机力矩!");
+                mEtMotorTorque.requestFocus();
+                return false;
+            }
+        } catch (Exception ex) {
+            ToastUtils.show("请输入正确的步进电机力矩!");
+            mEtMotorTorque.requestFocus();
             return false;
         }
         return true;
@@ -244,6 +268,7 @@ public class BleAdmeStepperMotorFragment extends BaseBleIotCommunicateFragment {
             decimalFormat.applyPattern("#.##");
             entity.setAbsprsion(decimalFormat.format(Double.parseDouble(accuracyCorrectionValue)));
             entity.setMovspeed(movementSpeed);
+            entity.setMovesm(motorTorque);
 
             paramEnableInitial = mSbParamEnable.isChecked();
             isSaveParamOperation = true;
@@ -312,9 +337,10 @@ public class BleAdmeStepperMotorFragment extends BaseBleIotCommunicateFragment {
         //TODO  打开注释，设置为浏览模式
 //        configPageViewModel.configPageEditableChanged.setValue(false);
         if (isSaveParamOperation) {
-            if (admeStepperMotorInfo!= null) {
+            if (admeStepperMotorInfo != null) {
                 admeStepperMotorInfo.setAbsprsion(accuracyCorrectionValue);
                 admeStepperMotorInfo.setMovspeed(movementSpeed);
+                admeStepperMotorInfo.setMovesm(motorTorque);
             }
             isSaveParamOperation = false;
             ToastUtils.show("设置成功");
@@ -329,17 +355,6 @@ public class BleAdmeStepperMotorFragment extends BaseBleIotCommunicateFragment {
             return;
         }
 
-        try {
-            accuracyCorrectionValue = admeStepperMotorInfo.getAbsprsion().trim();
-            movementSpeed = admeStepperMotorInfo.getMovspeed().trim();
-
-            decimalFormat.applyPattern("#.##");
-            accuracyCorrectionValue = decimalFormat.format(Double.parseDouble(accuracyCorrectionValue));
-            mEtAccuracyCorrectionValue.setText(accuracyCorrectionValue);
-            mEtMovementSpeed.setText(movementSpeed);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
         if (admeStepperMotorInfo.getPosnegtest().trim().equals("0")) {
             paramEnableInitial = false;
             mSbParamEnable.setCheckedImmediatelyNoEvent(false);
@@ -348,6 +363,20 @@ public class BleAdmeStepperMotorFragment extends BaseBleIotCommunicateFragment {
             paramEnableInitial = true;
             mSbParamEnable.setCheckedImmediatelyNoEvent(true);
             maskLayerChild.setVisibility(View.GONE);
+        }
+
+        try {
+            accuracyCorrectionValue = admeStepperMotorInfo.getAbsprsion().trim();
+            movementSpeed = admeStepperMotorInfo.getMovspeed().trim();
+            motorTorque = admeStepperMotorInfo.getMovesm().trim();
+
+            decimalFormat.applyPattern("#.##");
+            accuracyCorrectionValue = decimalFormat.format(Double.parseDouble(accuracyCorrectionValue));
+            mEtAccuracyCorrectionValue.setText(accuracyCorrectionValue);
+            mEtMovementSpeed.setText(movementSpeed);
+            mEtMotorTorque.setText(motorTorque);
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
     }
 
@@ -372,16 +401,16 @@ public class BleAdmeStepperMotorFragment extends BaseBleIotCommunicateFragment {
         if (!mSbParamEnable.isChecked()) {
             return false;
         }
-
         if (paramEnableInitial != mSbParamEnable.isChecked()) {
             return true;
         }
-
         if (accuracyCorrectionValue != null && !accuracyCorrectionValue.equals(mEtAccuracyCorrectionValue.getText().toString().trim())) {
             return true;
         }
-
         if (movementSpeed != null && !movementSpeed.equals(mEtMovementSpeed.getText().toString().trim())) {
+            return true;
+        }
+        if (motorTorque != null && !motorTorque.equals(mEtMotorTorque.getText().toString().trim())) {
             return true;
         }
         return false;

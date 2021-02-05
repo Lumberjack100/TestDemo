@@ -45,6 +45,8 @@ public class AdmeExecutiveAgencyInfoParser implements IOTResultParser<AdmeExecut
             info.setDwonblocked(TextUtils.isEmpty(keyValueMap.get("dwonblocked")) ? "" : keyValueMap.get("dwonblocked"));
             info.setUntimenum(TextUtils.isEmpty(keyValueMap.get("untimenum")) ? "" : keyValueMap.get("untimenum"));
             info.setDetectiontime(TextUtils.isEmpty(keyValueMap.get("detectiontime")) ? "" : keyValueMap.get("detectiontime"));
+            info.setDetectionstart(TextUtils.isEmpty(keyValueMap.get("detectionstart")) ? "" : keyValueMap.get("detectionstart"));
+            info.setDetectionend(TextUtils.isEmpty(keyValueMap.get("detectionend")) ? "" : keyValueMap.get("detectionend"));
 
             return info;
         } catch (Exception ex) {

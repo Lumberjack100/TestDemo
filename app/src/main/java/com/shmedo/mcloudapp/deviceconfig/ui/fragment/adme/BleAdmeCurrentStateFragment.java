@@ -204,17 +204,17 @@ public class BleAdmeCurrentStateFragment extends BaseBleIotCommunicateFragment {
         mTvFirmwareVersion.setText(currentStateInfo.getFirversion());
 
         mTvWorkMode.setText(currentStateInfo.getTestway());
-        mTvCTRInputVoltage.setText(currentStateInfo.getCtrinputv());
-        mTvDriverInputVoltage.setText(currentStateInfo.getDriveinputv());
-        mTvDeviceTemperature.setText(currentStateInfo.getTemperature());
-        mTvDeviceHumidity.setText(currentStateInfo.getHumidity());
+        mTvCTRInputVoltage.setText(String.format("%s V", currentStateInfo.getCtrinputv()));
+        mTvDriverInputVoltage.setText(String.format("%s V", currentStateInfo.getDriveinputv()));
+        mTvDeviceTemperature.setText(String.format("%s ℃", currentStateInfo.getTemperature()));
+        mTvDeviceHumidity.setText(String.format("%s %%", currentStateInfo.getHumidity()));
         mTvDeviceAbnormalDiagnosis.setText(currentStateInfo.getAbndiasis());
         mTvDeviceDropNumber.setText(currentStateInfo.getDownnum());
 
         mTvInclinometerType.setText(currentStateInfo.getInctype());
         mTvInclinometerChannelNumber.setText(currentStateInfo.getIncnum());
         mTvInclinometerLocationInfo.setText(currentStateInfo.getIncloc());
-        mTvInclinometerVoltage.setText(currentStateInfo.getIncvoltage());
-        mTvInclinometerTemperature.setText(currentStateInfo.getIntertempe());
+        mTvInclinometerVoltage.setText(String.format("%s V", currentStateInfo.getIncvoltage()));
+        mTvInclinometerTemperature.setText(String.format("%s ℃", currentStateInfo.getIntertempe()));
     }
 }

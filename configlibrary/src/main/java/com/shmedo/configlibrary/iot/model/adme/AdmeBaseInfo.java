@@ -38,7 +38,7 @@ public class AdmeBaseInfo {
     }
 
     public String getOnline() {
-        return online;
+        return TextUtils.isEmpty(online) ? "" : online;
     }
 
     public void setOnline(String online) {

@@ -24,6 +24,9 @@ public class AdmeExecutiveAgencyInfo {
     private String dwonblocked;//下放堵转预判（0:关闭，1:开启）
     private String untimenum;//堵转单位时间脉冲数
     private String detectiontime;//堵转检测判断时间
+    private String detectionstart;//堵转检测起点
+    private String detectionend;//堵转检测终点
+
 
     public String getDatatype() {
         return TextUtils.isEmpty(datatype) ? "" : datatype;
@@ -151,5 +154,21 @@ public class AdmeExecutiveAgencyInfo {
 
     public void setDetectiontime(String detectiontime) {
         this.detectiontime = detectiontime;
+    }
+
+    public String getDetectionstart() {
+        return TextUtils.isEmpty(detectionstart) ? "" : detectionstart;
+    }
+
+    public void setDetectionstart(String detectionstart) {
+        this.detectionstart = detectionstart;
+    }
+
+    public String getDetectionend() {
+        return TextUtils.isEmpty(detectionend) ? "" : detectionend;
+    }
+
+    public void setDetectionend(String detectionend) {
+        this.detectionend = detectionend;
     }
 }
