@@ -729,6 +729,7 @@ public class BleAdmeExecutiveAgencyFragment extends BaseBleIotCommunicateFragmen
             mEtDecentralizationWaitingTime.setText(decentralizationWaitingTime);
 
             mEtPullUpSpeed.setText(pullUpSpeed);
+            measuringDistance = decimalFormat.format(Double.parseDouble(measuringDistance));
             mEtMeasuringDistance.setText(measuringDistance);
             mEtMeasurementIntervalTime.setText(measurementIntervalTime);
 
