@@ -37,6 +37,7 @@ import com.shmedo.mcloudapp.util.KeyBordUtils;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -76,8 +77,10 @@ public class TcpVmsTerminalExternalSensorParamFragment extends BaseTcpConnectFra
 
     private VmsTerminalSensorInfo sensorInfo;
 
-    private List<String> calculationList = Arrays.asList("直线式", "多项式");
-    private List<String> sensorNameList = Arrays.asList("墙裂缝计", "轴力", "水压力", "地下水水位", "渗压计");
+    private List<String> calculationList = Arrays.asList("直线式", "多项式", "MEMS");
+    private List<String> sensorNameList = new ArrayList<>();
+    private List<String> vibratingWireSensorNameList = Arrays.asList("裂缝计", "轴力计", "水压力计", "水位计", "渗压计");
+    private List<String> digitalSensorNameList = Arrays.asList("加速度计");
 
     private VmsSensorCalculation sensorCalculation;
     private String sensorName;
@@ -128,10 +131,9 @@ public class TcpVmsTerminalExternalSensorParamFragment extends BaseTcpConnectFra
             sensorInfo = new VmsTerminalSensorInfo();
             return;
         }
-
-        //处理传感器计算方式
+        //根据传感器计算方式展示不同视图
         sensorCalculation = VmsSensorCalculation.value(sensorInfo.getType());
-        if (sensorCalculation == VmsSensorCalculation.LINEAR) {
+        if (sensorCalculation == VmsSensorCalculation.LINEAR) {//直线式(振弦式传感器一种)
             calculationPosOld = 0;
             calculationPos = 0;
             mTvSensorCalculation.setText(calculationList.get(0));
@@ -139,15 +141,28 @@ public class TcpVmsTerminalExternalSensorParamFragment extends BaseTcpConnectFra
             polynomialParamView.setVisibility(View.GONE);
             linearParamView.initData(sensorInfo);
 
-        } else if (sensorCalculation == VmsSensorCalculation.POLYNOMIAL) {
+            sensorNameList.clear();
+            sensorNameList.addAll(vibratingWireSensorNameList);
+        } else if (sensorCalculation == VmsSensorCalculation.POLYNOMIAL) {//多项式(振弦式传感器一种)
             calculationPosOld = 1;
             calculationPos = 1;
             mTvSensorCalculation.setText(calculationList.get(1));
             linearParamView.setVisibility(View.GONE);
             polynomialParamView.setVisibility(View.VISIBLE);
             polynomialParamView.initData(sensorInfo);
-        }
 
+            sensorNameList.clear();
+            sensorNameList.addAll(vibratingWireSensorNameList);
+        } else if (sensorCalculation == VmsSensorCalculation.MEMS) {//数字式
+            calculationPosOld = 2;
+            calculationPos = 2;
+            mTvSensorCalculation.setText(calculationList.get(2));
+            linearParamView.setVisibility(View.GONE);
+            polynomialParamView.setVisibility(View.GONE);
+
+            sensorNameList.clear();
+            sensorNameList.addAll(digitalSensorNameList);
+        }
         //解析出传感器名称
         sensorName = IOTSensorUtil.getInstance().getSensorNameByTypeCode(sensorInfo.getName());
         sensorNamePosOld = sensorNameList.indexOf(sensorName);
@@ -180,7 +195,6 @@ public class TcpVmsTerminalExternalSensorParamFragment extends BaseTcpConnectFra
                     mSbSensorEnable.setCheckedImmediatelyNoEvent(!isChecked);
                     return;
                 }
-
                 if (!isChecked) {
                     showCloseSwitchButtonDialog("确定不接入此通道传感器吗？");
                 } else {
@@ -222,6 +236,9 @@ public class TcpVmsTerminalExternalSensorParamFragment extends BaseTcpConnectFra
         mMaterialDialog.show();
     }
 
+    /**
+     * 接入传感器</br>
+     */
     private void enableSensor() {
         SetVmsTerminalSensorParamsEntity entity = new SetVmsTerminalSensorParamsEntity();
         entity.setSn(sensorInfo.getSn());
@@ -262,14 +279,16 @@ public class TcpVmsTerminalExternalSensorParamFragment extends BaseTcpConnectFra
                 return;
             }
             if (!checkValueIsValid()) {
-                Timber.w("通道参数存在错误!");
+                Timber.w("传感器参数存在错误!");
                 return;
             }
-
             processSave();
         }
     }
 
+    /**
+     * 选择计算方式
+     */
     private void showcCalculationChooseDialog() {
         XPopup.setPrimaryColor(getResources().getColor(R.color.blue_52B4F8));
         new XPopup.Builder(mActivity)
@@ -285,17 +304,37 @@ public class TcpVmsTerminalExternalSensorParamFragment extends BaseTcpConnectFra
                                     sensorCalculation = VmsSensorCalculation.LINEAR;
                                     linearParamView.setVisibility(View.VISIBLE);
                                     polynomialParamView.setVisibility(View.GONE);
-
+                                    sensorNameList.clear();
+                                    sensorNameList.addAll(vibratingWireSensorNameList);
                                 } else if (text.contains("多项式")) {
                                     sensorCalculation = VmsSensorCalculation.POLYNOMIAL;
                                     linearParamView.setVisibility(View.GONE);
                                     polynomialParamView.setVisibility(View.VISIBLE);
+                                    sensorNameList.clear();
+                                    sensorNameList.addAll(vibratingWireSensorNameList);
+                                } else if (text.contains("MEMS")) {
+                                    sensorCalculation = VmsSensorCalculation.POLYNOMIAL;
+                                    linearParamView.setVisibility(View.GONE);
+                                    polynomialParamView.setVisibility(View.GONE);
+                                    sensorNameList.clear();
+                                    sensorNameList.addAll(digitalSensorNameList);
+                                }
+
+                                //如果传感器类型不支持选中的计算方式，则重置等待重新选择
+                                if (!sensorNameList.contains(mTvSensorName.getText().toString())) {
+                                    sensorNamePosOld = 0;
+                                    sensorNamePos = sensorNamePosOld;
+                                    sensorName = sensorNameList.get(0);
+                                    mTvSensorName.setText(sensorName);
                                 }
                             }
                         }, 0, R.layout.custom_xpopup_adapter_text_match)
                 .show();
     }
 
+    /**
+     * 选择传感器类型
+     */
     private void showcSensorNameChooseDialog() {
         XPopup.setPrimaryColor(getResources().getColor(R.color.blue_52B4F8));
         new XPopup.Builder(mActivity)
@@ -308,6 +347,13 @@ public class TcpVmsTerminalExternalSensorParamFragment extends BaseTcpConnectFra
                                 sensorNamePos = position;
                                 sensorName = text;
                                 mTvSensorName.setText(text);
+//                                if (text.contains("加速度")) {
+//                                    //如果计算方式不是 MEMS，则重置等待重新选择
+//                                    if (!mTvSensorCalculation.getText().toString().contains("MEMS")) {
+//                                        calculationPos = -1;
+//                                        mTvSensorCalculation.setText("");
+//                                    }
+//                                }
                             }
                         }, 0, R.layout.custom_xpopup_adapter_text_match)
                 .show();
@@ -315,12 +361,16 @@ public class TcpVmsTerminalExternalSensorParamFragment extends BaseTcpConnectFra
 
     private boolean checkValueIsValid() {
         sensorSerialNumber = mEtSensorSerialNumber.getText().toString().trim();
+
+        if (TextUtils.isEmpty(mTvSensorName.getText())) {
+            ToastUtils.show("请选择监测类型!");
+            return false;
+        }
         if (TextUtils.isEmpty(sensorSerialNumber)) {
-            ToastUtils.show("传感器序号不能为空!");
+            ToastUtils.show("请输入传感器序号!");
             mEtSensorSerialNumber.requestFocus();
             return false;
         }
-
         if (!ValidateUtil.isInteger(sensorSerialNumber) || Integer.parseInt(sensorSerialNumber) <= 0) {
             ToastUtils.show("请输入正确的传感器序号!");
             mEtSensorSerialNumber.requestFocus();
@@ -341,12 +391,10 @@ public class TcpVmsTerminalExternalSensorParamFragment extends BaseTcpConnectFra
                 updateDataSuccess = polynomialParamView.updateSensorData(sensorParamsEntity);
                 break;
         }
-
         if (!updateDataSuccess) {
             Timber.w("传感器参数存在错误!");
             return;
         }
-
         sensorParamsEntity.setSn(sensorInfo.getSn());
         sensorParamsEntity.setChannel(sensorInfo.getChannel());
         sensorParamsEntity.setType(sensorCalculation.toString());
@@ -408,7 +456,6 @@ public class TcpVmsTerminalExternalSensorParamFragment extends BaseTcpConnectFra
                 return false;
             }
         }
-
         return false;
     }
 
@@ -420,11 +467,9 @@ public class TcpVmsTerminalExternalSensorParamFragment extends BaseTcpConnectFra
         if (calculationPosOld != calculationPos) {
             return true;
         }
-
         if (sensorNamePosOld != sensorNamePos) {
             return true;
         }
-
         if (sensorSerialNumber != null && !sensorSerialNumber.equals(mEtSensorSerialNumber.getText().toString().trim())) {
             return true;
         }
@@ -434,8 +479,6 @@ public class TcpVmsTerminalExternalSensorParamFragment extends BaseTcpConnectFra
         } else if (sensorCalculation == VmsSensorCalculation.POLYNOMIAL) {
             return polynomialParamView.checkValueIsChange();
         }
-
         return false;
     }
-
 }

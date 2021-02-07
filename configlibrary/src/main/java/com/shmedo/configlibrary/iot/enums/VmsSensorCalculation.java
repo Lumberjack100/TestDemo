@@ -7,13 +7,19 @@ package com.shmedo.configlibrary.iot.enums;
  */
 public enum VmsSensorCalculation {
     /**
-     * 直线式
+     * 直线式(振弦式传感器)
      */
     LINEAR("58"),
+
     /**
-     * 多项式
+     * 多项式(振弦式传感器)
      */
-    POLYNOMIAL("55");
+    POLYNOMIAL("55"),
+
+    /**
+     * 数字式
+     */
+    MEMS("80");
 
     private String type;
 
@@ -32,6 +38,9 @@ public enum VmsSensorCalculation {
 
             case "55":
                 return POLYNOMIAL;
+
+            case "80":
+                return MEMS;
 
             default:
                 return null;
