@@ -245,7 +245,7 @@ public class TcpVmsTerminalExternalSensorParamFragment extends BaseTcpConnectFra
         entity.setChannel(sensorInfo.getChannel());
         entity.setInsert("1");
 
-        mBtnSave.setEnabled(false);
+//        mBtnSave.setEnabled(false);
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.VMS_MD_SET_TERMINAL_CHL, entity);
         sendCommand(command);
     }
@@ -260,7 +260,7 @@ public class TcpVmsTerminalExternalSensorParamFragment extends BaseTcpConnectFra
         entity.setInsert("0");
 
         isSaveParamOperation = false;
-        mBtnSave.setEnabled(false);
+//        mBtnSave.setEnabled(false);
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.VMS_MD_SET_TERMINAL_CHL, entity);
         sendCommand(command);
     }
@@ -313,7 +313,7 @@ public class TcpVmsTerminalExternalSensorParamFragment extends BaseTcpConnectFra
                                     sensorNameList.clear();
                                     sensorNameList.addAll(vibratingWireSensorNameList);
                                 } else if (text.contains("MEMS")) {
-                                    sensorCalculation = VmsSensorCalculation.POLYNOMIAL;
+                                    sensorCalculation = VmsSensorCalculation.MEMS;
                                     linearParamView.setVisibility(View.GONE);
                                     polynomialParamView.setVisibility(View.GONE);
                                     sensorNameList.clear();
@@ -347,13 +347,6 @@ public class TcpVmsTerminalExternalSensorParamFragment extends BaseTcpConnectFra
                                 sensorNamePos = position;
                                 sensorName = text;
                                 mTvSensorName.setText(text);
-//                                if (text.contains("加速度")) {
-//                                    //如果计算方式不是 MEMS，则重置等待重新选择
-//                                    if (!mTvSensorCalculation.getText().toString().contains("MEMS")) {
-//                                        calculationPos = -1;
-//                                        mTvSensorCalculation.setText("");
-//                                    }
-//                                }
                             }
                         }, 0, R.layout.custom_xpopup_adapter_text_match)
                 .show();
@@ -381,7 +374,7 @@ public class TcpVmsTerminalExternalSensorParamFragment extends BaseTcpConnectFra
 
     private void processSave() {
         SetVmsTerminalSensorParamsEntity sensorParamsEntity = new SetVmsTerminalSensorParamsEntity();
-        boolean updateDataSuccess = false;
+        boolean updateDataSuccess = true;
         switch (sensorCalculation) {
             case LINEAR:
                 updateDataSuccess = linearParamView.updateSensorData(sensorParamsEntity);
@@ -402,7 +395,7 @@ public class TcpVmsTerminalExternalSensorParamFragment extends BaseTcpConnectFra
         sensorParamsEntity.setName(sensorNameNo);
 
         isSaveParamOperation = true;
-        mBtnSave.setEnabled(false);
+//        mBtnSave.setEnabled(false);
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.VMS_MD_SET_TERMINAL_CHL, sensorParamsEntity);
         sendCommand(command);
     }

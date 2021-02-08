@@ -156,6 +156,7 @@
                     android:id="@+id/btn_confirm"
                     android:layout_width="match_parent"
                     android:layout_height="46dp"
+                    android:foreground="?attr/selectableItemBackground"
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="34dp"
                     android:layout_marginEnd="18dp"
@@ -175,7 +176,7 @@
                 android:clickable="true"
                 android:focusable="true"
                 android:visibility="gone"
-                tools:visibility="visible">
+                tools:visibility="gone">
 
             </RelativeLayout>
 
