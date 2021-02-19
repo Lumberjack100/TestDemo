@@ -5,7 +5,7 @@ import com.amap.api.location.AMapLocationClientOption;
 /**
  * 创建者:   gonghe <br/>
  * 创建时间:  2020/6/17 <br/>
- * 描述：    TODO
+ * 描述：    TODO #gh#
  */
 public class AMapLocationUtil {
     private static class InstanceHolder {

@@ -178,14 +178,14 @@ public class NetConfigDeviceFragment extends BaseNetIotCommunicateFragment {
         configModule = new ConfigModule(R.drawable.ic_device_firmware_upgrade, 24, "固件升级", "版本:--");
         configModuleList.add(configModule);
 
-        // TODO(设备暂不支持网络配置)
+        // TODO #gh#(设备暂不支持网络配置)
         //DAS具有采集器配置项
 //        if (projectDeviceInfo.getDeviceTypeID() == 4) {
 //            configModule = new ConfigModule(R.drawable.ic_device_collector_config, "采集器配置", "采集器参数配置");
 //            configModuleList.add(configModule);
 //        }
 
-        // TODO(下次版本迭代再开发)
+        // TODO #gh#(下次版本迭代再开发)
 //        configModule = new ConfigModule(R.drawable.ic_device_instruction_send, "指令下发", "服务端代码指令下发");
 //        configModuleList.add(configModule);
 

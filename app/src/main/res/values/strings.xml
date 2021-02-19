@@ -229,7 +229,7 @@
     <string name="bluetooth_disabled_info">The Bluetooth adapter is turned off. Click the button below to enable it.</string>
     <string name="bluetooth_disabled_action">Enable</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
+    <!-- TODO #gh#: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

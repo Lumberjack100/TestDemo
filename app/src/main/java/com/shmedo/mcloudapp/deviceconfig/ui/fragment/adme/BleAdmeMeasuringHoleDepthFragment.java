@@ -99,7 +99,7 @@ public class BleAdmeMeasuringHoleDepthFragment extends BaseBleIotCommunicateFrag
 
     private void setView() {
         mEtMovementSpeed.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
-        mEtMovementSpeed.setHint("1-100");
+        mEtMovementSpeed.setHint("1-180");
 
         mEtMotionDistance.setFilters(new InputFilter[]{new InputFilter.LengthFilter(11)});
 
@@ -206,7 +206,7 @@ public class BleAdmeMeasuringHoleDepthFragment extends BaseBleIotCommunicateFrag
         }
         try {
             int port = Integer.parseInt(movementSpeed);
-            if (port < 1 || port > 100) {
+            if (port < 1 || port > 180) {
                 ToastUtils.show("请输入正确的电机运动速度!");
                 mEtMovementSpeed.requestFocus();
                 return false;

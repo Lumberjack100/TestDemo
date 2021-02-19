@@ -89,8 +89,8 @@ public class BleAdmeGuideGrooveCalibrationFragment extends BaseBleIotCommunicate
     }
 
     private void setView() {
-        mEtMovementSpeed.setFilters(new InputFilter[]{new InputFilter.LengthFilter(2)});
-        mEtMovementSpeed.setHint("1-100");
+        mEtMovementSpeed.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
+        mEtMovementSpeed.setHint("1-180");
 
         mEtMotionPulse.setFilters(new InputFilter[]{new InputFilter.LengthFilter(11)});
 
@@ -160,7 +160,7 @@ public class BleAdmeGuideGrooveCalibrationFragment extends BaseBleIotCommunicate
         }
         try {
             int port = Integer.parseInt(movementSpeed);
-            if (port < 1 || port > 100) {
+            if (port < 1 || port > 180) {
                 ToastUtils.show("请输入正确的电机运动速度!");
                 mEtMovementSpeed.requestFocus();
                 return false;

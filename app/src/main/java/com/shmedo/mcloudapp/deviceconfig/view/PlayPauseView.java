@@ -78,7 +78,7 @@ public class PlayPauseView extends View {
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        //TODO  宫贺：下面注释的代码，mHeight设置的是具体的 dp 值，不知为什么heightMode是MeasureSpec.AT_MOST
+        //TODO #gh#  宫贺：下面注释的代码，mHeight设置的是具体的 dp 值，不知为什么heightMode是MeasureSpec.AT_MOST
 //        mWidth = MeasureSpec.getSize(widthMeasureSpec);
 //        mHeight = MeasureSpec.getSize(heightMeasureSpec);
 //        int widthMode = MeasureSpec.getMode(widthMeasureSpec);

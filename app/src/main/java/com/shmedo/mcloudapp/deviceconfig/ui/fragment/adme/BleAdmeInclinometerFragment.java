@@ -107,7 +107,7 @@ public class BleAdmeInclinometerFragment extends BaseBleIotCommunicateFragment {
         super.onActivityCreated(savedInstanceState);
         setView();
         queryParamConfigInfo();
-        //TODO 设备处于自动监测模式时，不可编辑参数(后期还要考虑点击编辑按钮时的页面状态切换)
+        //TODO #gh# 设备处于自动监测模式时，不可编辑参数(后期还要考虑点击编辑按钮时的页面状态切换)
         if (admeViewModel.deviceMode == 0) {
             configPageViewModel.configPageEditableChanged.setValue(true);
         } else {
@@ -119,8 +119,8 @@ public class BleAdmeInclinometerFragment extends BaseBleIotCommunicateFragment {
         mEtCollectorAddress.setFilters(new InputFilter[]{new InputFilter.LengthFilter(2)});
         mEtCollectorAddress.setHint("0-32");
 
-        mEtMacAddress.setFilters(new InputFilter[]{new InputFilter.LengthFilter(17)});
-        mEtMacAddress.setHint("xx:xx:xx:xx:xx:xx");
+        mEtMacAddress.setFilters(new InputFilter[]{new InputFilter.LengthFilter(12)});
+        mEtMacAddress.setHint("XXXXXXXXXXXX");
 
         mEtCollectionInterval.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
         mEtSolvingInterval.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
@@ -237,7 +237,7 @@ public class BleAdmeInclinometerFragment extends BaseBleIotCommunicateFragment {
                 mEtMacAddress.requestFocus();
                 return false;
             }
-            if (!ValidateUtil.isValidMacAddress(address)) {
+            if (!ValidateUtil.isValidMacAddressNoColon(address)) {
                 ToastUtils.show("请输入正确的Mac地址!");
                 mEtMacAddress.requestFocus();
                 return false;
@@ -394,7 +394,7 @@ public class BleAdmeInclinometerFragment extends BaseBleIotCommunicateFragment {
             admeInclinometerInfo.setDormancytime(sleepTime);
             admeInclinometerInfo.setInterupdate(correctionValue);
         }
-        //TODO  打开注释，设置为浏览模式
+        //TODO #gh#  打开注释，设置为浏览模式
 //        configPageViewModel.configPageEditableChanged.setValue(false);
         inclinometerTypeOld = inclinometerType;
         lowPowerModeOld = lowPowerMode;
@@ -510,7 +510,7 @@ public class BleAdmeInclinometerFragment extends BaseBleIotCommunicateFragment {
             mTvInclinometerType.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.icon_right, 0);
             mTvLowPowerMode.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.icon_right, 0);
             mEtCollectorAddress.setHint("0-32");
-            mEtMacAddress.setHint("xx:xx:xx:xx:xx:xx");
+            mEtMacAddress.setHint("XXXXXXXXXXXX");
             mEtCollectionInterval.setHint("请输入");
             mEtSolvingInterval.setHint("请输入");
             mEtSleepTime.setHint("请输入");

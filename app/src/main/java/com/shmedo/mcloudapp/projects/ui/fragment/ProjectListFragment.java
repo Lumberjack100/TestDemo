@@ -640,7 +640,7 @@ public class ProjectListFragment extends BaseTranslucentFragment {
                                     return;
                                 }
 
-                                //TODO 按照tempBaseInfoList列表顺序对data排序
+                                //TODO #gh# 按照tempBaseInfoList列表顺序对data排序
                                 List<ProjectDetailInfo> tempDetailInfoList = new ArrayList<>();
                                 detailInfoMap.clear();
                                 for (ProjectBaseInfo baseInfo : baseInfoList) {

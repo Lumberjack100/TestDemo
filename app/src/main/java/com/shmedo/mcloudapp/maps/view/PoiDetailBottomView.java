@@ -18,7 +18,7 @@ import butterknife.OnClick;
 /**
  * 创建者:   gonghe <br/>
  * 创建时间:  2020/6/17 <br/>
- * 描述：    TODO
+ * 描述：    TODO #gh#
  */
 public class PoiDetailBottomView extends LinearLayout {
     @BindView(R.id.tv_poi_title)

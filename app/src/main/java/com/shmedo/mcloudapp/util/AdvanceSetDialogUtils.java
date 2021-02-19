@@ -32,7 +32,7 @@ import com.shmedo.mcloudapp.R;
  * 包名：    com.shmedo.mcloudapp.util
  * 创建者:   dpc
  * 创建时间:  2019-12-24
- * 描述：    TODO
+ * 描述：    TODO #gh#
  */
 public class AdvanceSetDialogUtils {
     private static boolean isShowPrompt = true;
@@ -169,7 +169,7 @@ public class AdvanceSetDialogUtils {
                     return;
                 }
 
-                //TODO 调用修改授权码接口
+                //TODO #gh# 调用修改授权码接口
                 ToastUtils.show("功能开发中...");
                 mMaterialDialog.dismiss();
             }

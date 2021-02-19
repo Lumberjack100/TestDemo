@@ -6,7 +6,7 @@ package com.shmedo.configlibrary.ble.model;
  * 文件名:   SetCordLengthInfo
  * 创建者:   dpc
  * 创建时间:  2018/4/14 15:00
- * 描述：    TODO
+ * 描述：    TODO #gh#
  */
 
 public class SetCordLengthInfo {

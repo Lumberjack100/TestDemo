@@ -26,7 +26,7 @@ import timber.log.Timber;
 /**
  * 创建者:   gonghe <br/>
  * 创建时间:  2020/11/11 <br/>
- * 描述：     TODO
+ * 描述：     TODO #gh#
  */
 public abstract class BaseTcpConnectFragment extends BaseFragment {
     public static final int TCP_CONNECT_DELAY_MILLIS = 5000;//Tcp 连接超时时间
@@ -87,7 +87,7 @@ public abstract class BaseTcpConnectFragment extends BaseFragment {
             @Override
             public void onChanged(TcpConnectionState tcpConnectionState) {
                 //只供当前处于Active(即处于onResume状态)的页面观察者消费此事件
-                // TODO 返到上一级页面时，LiveData事件会早于上一级页面的onResume()方法分发，即上级页面处于isActive前事件就来了
+                // TODO #gh# 返到上一级页面时，LiveData事件会早于上一级页面的onResume()方法分发，即上级页面处于isActive前事件就来了
                 if (!isActive) {
                     return;
                 }
@@ -98,7 +98,7 @@ public abstract class BaseTcpConnectFragment extends BaseFragment {
             @Override
             public void onChanged(String msg) {
                 //只供当前处于Active(即处于onResume状态)的页面观察者消费此事件
-                // TODO 返到上一级页面时，LiveData事件会早于上一级页面的onResume()方法分发，即上级页面处于isActive前事件就来了
+                // TODO #gh# 返到上一级页面时，LiveData事件会早于上一级页面的onResume()方法分发，即上级页面处于isActive前事件就来了
                 if (!isActive) {
                     return;
                 }

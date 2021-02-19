@@ -17,7 +17,7 @@ import timber.log.Timber;
 /**
  * 创建者:   gonghe <br/>
  * 创建时间:  2020/11/4 <br/>
- * 描述：     TODO
+ * 描述：     TODO #gh#
  */
 public class TcpManager implements NettyClientListener<String> {
     private final int maxPacketLong = 1024 * 60;//设置一次发送数据的最大长度 60K

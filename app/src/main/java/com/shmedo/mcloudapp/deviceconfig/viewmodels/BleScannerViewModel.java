@@ -23,7 +23,7 @@ import no.nordicsemi.android.support.v18.scanner.ScanSettings;
 /**
  * 创建者:   gonghe <br/>
  * 创建时间:  12/8/20 <br/>
- * 描述：     TODO
+ * 描述：     TODO #gh#
  */
 public class BleScannerViewModel extends AndroidViewModel {
     /**
@@ -171,7 +171,7 @@ public class BleScannerViewModel extends AndroidViewModel {
 
         @Override
         public void onScanFailed(final int errorCode) {
-            // TODO This should be handled
+            // TODO #gh# This should be handled
             bleScannerStateLiveData.scanningStopped();
         }
     };

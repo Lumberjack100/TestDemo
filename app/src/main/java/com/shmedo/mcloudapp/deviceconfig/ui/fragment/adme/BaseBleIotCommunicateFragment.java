@@ -27,7 +27,7 @@ import timber.log.Timber;
 /**
  * 创建者:   gonghe <br/>
  * 创建时间:  12/7/20 <br/>
- * 描述：     TODO
+ * 描述：     TODO #gh#
  */
 public abstract class BaseBleIotCommunicateFragment extends BaseFragment {
     public static final int WRITE_TIME_OUT_SECOND = 10000;//发送指令超时时间

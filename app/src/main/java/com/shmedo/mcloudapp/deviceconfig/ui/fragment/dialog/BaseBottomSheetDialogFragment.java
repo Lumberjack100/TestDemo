@@ -31,7 +31,7 @@ import butterknife.Unbinder;
 /**
  * 创建者:   gonghe <br/>
  * 创建时间:  11/19/20 <br/>
- * 描述：     TODO
+ * 描述：     TODO #gh#
  */
 public abstract class BaseBottomSheetDialogFragment extends BottomSheetDialogFragment {
     //防止按钮重复点击设置的时间间隔

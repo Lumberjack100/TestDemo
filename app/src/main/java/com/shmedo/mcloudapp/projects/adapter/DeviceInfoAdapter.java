@@ -14,7 +14,7 @@ import java.util.List;
 /**
  * 创建者:   gonghe <br/>
  * 创建时间:  2020/8/18 <br/>
- * 描述：     TODO
+ * 描述：     TODO #gh#
  */
 public class DeviceInfoAdapter extends BaseQuickAdapter<ProjectDeviceInfo, BaseViewHolder> implements LoadMoreModule {
     public DeviceInfoAdapter(@Nullable List<ProjectDeviceInfo> data) {

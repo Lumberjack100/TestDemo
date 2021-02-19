@@ -6,7 +6,7 @@ package com.shmedo.configlibrary.ble.enums;
  * 文件名:   DeviceLockStatusInfo
  * 创建者:   dpc
  * 创建时间:  2019/4/26 09:01
- * 描述：    TODO
+ * 描述：    TODO #gh#
  */
 
 public enum DeviceLockStatus {

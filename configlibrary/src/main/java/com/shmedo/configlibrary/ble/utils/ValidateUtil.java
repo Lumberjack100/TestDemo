@@ -164,6 +164,26 @@ public class ValidateUtil {
         }
     }
 
+    /**
+     * 没有冒号的 MAC 地址校验
+     * @param macStr
+     * @return
+     */
+    public static boolean isValidMacAddressNoColon(String macStr) {
+        if (macStr == null || macStr.equals("")) {
+            return false;
+        }
+        String macAddressRule = "[A-F0-9]{12}";
+        // 这是真正的MAC地址；正则表达式；
+        if (macStr.matches(macAddressRule)) {
+            Timber.i("it is a valid MAC address");
+            return true;
+        } else {
+            Timber.e("it is not a valid MAC address!!!");
+            return false;
+        }
+    }
+
 
     /**
      * 验证本地时间

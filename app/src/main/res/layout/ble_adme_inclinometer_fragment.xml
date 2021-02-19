@@ -93,7 +93,8 @@
                 <com.shmedo.mcloudapp.common.view.ClearEditText
                     android:id="@+id/et_mac_address"
                     style="@style/DataCenter_EditText_Style"
-                    android:hint="请输入" />
+                    android:hint="请输入"
+                    android:inputType="textCapCharacters" />
 
             </LinearLayout>
 

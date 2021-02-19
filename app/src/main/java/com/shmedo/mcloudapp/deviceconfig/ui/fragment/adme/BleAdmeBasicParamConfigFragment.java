@@ -109,7 +109,7 @@ public class BleAdmeBasicParamConfigFragment extends BaseBleIotCommunicateFragme
         super.onActivityCreated(savedInstanceState);
         setView();
         queryBasicParamConfigInfo();
-        //TODO 设备处于自动监测模式时，不可编辑参数(后期还要考虑点击编辑按钮时的页面状态切换)
+        //TODO #gh# 设备处于自动监测模式时，不可编辑参数(后期还要考虑点击编辑按钮时的页面状态切换)
         if (admeViewModel.deviceMode == 0) {
             configPageViewModel.configPageEditableChanged.setValue(true);
         } else {
@@ -121,13 +121,13 @@ public class BleAdmeBasicParamConfigFragment extends BaseBleIotCommunicateFragme
         mEtCollectorAddress.setFilters(new InputFilter[]{new InputFilter.LengthFilter(2)});
         mEtCollectorAddress.setHint("0-32");
 
-        mEtMacAddress.setFilters(new InputFilter[]{new InputFilter.LengthFilter(17)});
-        mEtMacAddress.setHint("xx:xx:xx:xx:xx:xx");
+        mEtMacAddress.setFilters(new InputFilter[]{new InputFilter.LengthFilter(12)});
+        mEtMacAddress.setHint("XXXXXXXXXXXX");
 
         mEtInclinometerTubeHoleDepth.setFilters(new InputFilter[]{new InputFilter.LengthFilter(6)});
 
         mEtDecentralizationSpeed.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
-        mEtDecentralizationSpeed.setHint("1-100");
+        mEtDecentralizationSpeed.setHint("1-180");
 
         mEtDecentralizationWaitingTime.setFilters(new InputFilter[]{new InputFilter.LengthFilter(2)});
         mEtDecentralizationWaitingTime.setHint("1-32");
@@ -244,7 +244,7 @@ public class BleAdmeBasicParamConfigFragment extends BaseBleIotCommunicateFragme
                 mEtMacAddress.requestFocus();
                 return false;
             }
-            if (!ValidateUtil.isValidMacAddress(address)) {
+            if (!ValidateUtil.isValidMacAddressNoColon(address)) {
                 ToastUtils.show("请输入正确的Mac地址!");
                 mEtMacAddress.requestFocus();
                 return false;
@@ -276,7 +276,7 @@ public class BleAdmeBasicParamConfigFragment extends BaseBleIotCommunicateFragme
         }
         try {
             int port = Integer.parseInt(decentralizationSpeed);
-            if (port < 1 || port > 100) {
+            if (port < 1 || port > 180) {
                 ToastUtils.show("请输入正确的下放速度!");
                 mEtDecentralizationSpeed.requestFocus();
                 return false;
@@ -387,7 +387,7 @@ public class BleAdmeBasicParamConfigFragment extends BaseBleIotCommunicateFragme
             basicConfigParam.setDownwaitetime(decentralizationWaitingTime);
             basicConfigParam.setDatatype(dataSettlementMethod);
         }
-        //TODO  打开注释，设置为浏览模式
+        //TODO #gh#  打开注释，设置为浏览模式
 //        configPageViewModel.configPageEditableChanged.setValue(false);
         inclinometerTypeOld=inclinometerType;
         dataSettlementMethodOld = dataSettlementMethod;
@@ -496,9 +496,9 @@ public class BleAdmeBasicParamConfigFragment extends BaseBleIotCommunicateFragme
         if (isEditable) {
             mTvInclinometerType.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.icon_right, 0);
             mEtCollectorAddress.setHint("0-32");
-            mEtMacAddress.setHint("xx:xx:xx:xx:xx:xx");
+            mEtMacAddress.setHint("XXXXXXXXXXXX");
             mEtInclinometerTubeHoleDepth.setHint("请输入");
-            mEtDecentralizationSpeed.setHint("1-100");
+            mEtDecentralizationSpeed.setHint("1-180");
             mEtDecentralizationWaitingTime.setHint("1-32");
             mTvDataSettlementMethod.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.icon_right, 0);
         } else {

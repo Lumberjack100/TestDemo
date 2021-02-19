@@ -407,7 +407,7 @@ public class BleDasHomeFragment extends BaseBleCommunicateFragment {
 
     private void showProgressBar() {
         progressOverlay.setVisibility(View.VISIBLE);
-        //TODO android:clickable="true" 和 android:focusable="true" 已经实现了禁止触摸遮罩层下面的 View,
+        //TODO #gh# android:clickable="true" 和 android:focusable="true" 已经实现了禁止触摸遮罩层下面的 View,
         // 防止点击未遮住的ToolBar，添加下面代码禁用窗体触摸
         mActivity.getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
                 WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
@@ -652,7 +652,7 @@ public class BleDasHomeFragment extends BaseBleCommunicateFragment {
         configModule = new ConfigModule(R.drawable.ic_device_reboot, 7, "重启", "重新启动当前设备");
         configModuleList.add(configModule);
 
-//        TODO 后期换成物联网协议再开放
+//        TODO #gh# 后期换成物联网协议再开放
 //        configModule = new ConfigModule(R.drawable.ic_device_firmware_upgrade, 24, "固件升级", "版本:--");
 //        configModuleList.add(configModule);
 

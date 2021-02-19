@@ -12,7 +12,7 @@ import com.shmedo.core.util.DeviceInfo;
  * 包名：    com.shmedo.mcloudapp.views
  * 创建者:   gonghe
  * 创建时间:  2019-12-27
- * 描述：    TODO
+ * 描述：    TODO #gh#
  */
 public class MaxHeightRecyclerView extends RecyclerView {
     public MaxHeightRecyclerView(Context context) {

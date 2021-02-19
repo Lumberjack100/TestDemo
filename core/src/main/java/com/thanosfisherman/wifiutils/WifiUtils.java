@@ -109,7 +109,7 @@ public final class WifiUtils implements WifiConnectorBuilder,
                 if (mWifiManager.startScan()) {
                     registerReceiver(mContext, mWifiScanReceiver, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
                 } else {
-                    //TODO 2020-12-03 gh 添加此处代码避免因调用startScan()返回 false时，无法连接 WiFi的问题
+                    //TODO #gh# 2020-12-03 gh 添加此处代码避免因调用startScan()返回 false时，无法连接 WiFi的问题
                     if (mWifiManager.getScanResults() != null) {
                         registerReceiver(mContext, mWifiScanReceiver, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
                     } else {

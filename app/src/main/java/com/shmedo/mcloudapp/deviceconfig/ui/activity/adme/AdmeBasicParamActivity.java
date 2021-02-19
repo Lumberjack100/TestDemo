@@ -28,7 +28,7 @@ public class AdmeBasicParamActivity extends BaseConfigFragmentContainerActivity 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mToolbarTitle.setText("基础配置");
-        //TODO  打开注释，可以在编辑/浏览模式间切换
+        //TODO #gh#  打开注释，可以在编辑/浏览模式间切换
 //        mTvAction.setVisibility(View.VISIBLE);
     }
 
