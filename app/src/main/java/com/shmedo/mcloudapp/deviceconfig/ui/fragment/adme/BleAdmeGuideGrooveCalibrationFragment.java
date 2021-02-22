@@ -311,9 +311,9 @@ public class BleAdmeGuideGrooveCalibrationFragment extends BaseBleIotCommunicate
                     String errMsg = String.format("%s %s", "清空数据出错!", cmdResult.getReason());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
-                    clearMotionDataLayout.setEnabled(true);
                     return;
                 }
+                clearMotionDataLayout.setEnabled(true);
                 clearMotionDataLayout.setVisibility(View.GONE);
                 motionDataClearCompleteLayout.setVisibility(View.VISIBLE);
             }

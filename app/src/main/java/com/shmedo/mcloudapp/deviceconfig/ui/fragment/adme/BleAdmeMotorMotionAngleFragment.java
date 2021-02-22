@@ -237,10 +237,6 @@ public class BleAdmeMotorMotionAngleFragment extends BaseDialogFragment {
         if (isDoubleClick(view)) {
             return;
         }
-        if (!usrBleViewModel.isConnected()) {
-            ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
-            return;
-        }
 
         if (id == R.id.iv_close) {
             if (btnExit.getVisibility() == View.VISIBLE) {
@@ -249,14 +245,26 @@ public class BleAdmeMotorMotionAngleFragment extends BaseDialogFragment {
                 showExitWarnDialog("确认退出数据运行？");
             }
         } else if (id == R.id.tv_clear_data) {
+            if (!usrBleViewModel.isConnected()) {
+                ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
+                return;
+            }
             clearMotorMotionData();
 
         } else if (id == R.id.btn_stop) {
+            if (!usrBleViewModel.isConnected()) {
+                ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
+                return;
+            }
             isStopClick = true;
             stopQueryMotorMotionDataRunnable();
             stopMotorMotion();
 
         } else if (id == R.id.btn_pause) {
+            if (!usrBleViewModel.isConnected()) {
+                ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
+                return;
+            }
             isStopClick = false;
             btnPause.setEnabled(false);
             if (btnPause.getText().toString().equals("暂停")) {
