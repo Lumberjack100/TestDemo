@@ -103,7 +103,7 @@
             android:layout_height="38dp"
             android:layout_weight="1"
             android:background="@drawable/bg_search_project_gray"
-            android:hint="请输入指令($cmd=开头)"
+            android:hint="$cmd= 或 ##开头"
             android:paddingStart="15dp"
             android:paddingEnd="10dp"
             android:singleLine="true"

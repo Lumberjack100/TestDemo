@@ -115,14 +115,14 @@ public class BleAdmeMeterWheelFragment extends BaseBleIotCommunicateFragment {
     private void setView() {
         mEtEncoderLineNumber.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
         mEtOuterDiameter.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
-        mEtUpCorrectionParametersOne.setFilters(new InputFilter[]{new InputFilter.LengthFilter(11)});
-        mEtUpCorrectionParametersTwo.setFilters(new InputFilter[]{new InputFilter.LengthFilter(11)});
-        mEtUpConstant.setFilters(new InputFilter[]{new InputFilter.LengthFilter(11)});
-        mEtUpFilterCoefficient.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
-        mEtDownCorrectionParametersOne.setFilters(new InputFilter[]{new InputFilter.LengthFilter(11)});
-        mEtDownCorrectionParametersTwo.setFilters(new InputFilter[]{new InputFilter.LengthFilter(11)});
-        mEtDownConstant.setFilters(new InputFilter[]{new InputFilter.LengthFilter(11)});
-        mEtDownFilterCoefficient.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
+        mEtUpCorrectionParametersOne.setFilters(new InputFilter[]{new InputFilter.LengthFilter(15)});
+        mEtUpCorrectionParametersTwo.setFilters(new InputFilter[]{new InputFilter.LengthFilter(15)});
+        mEtUpConstant.setFilters(new InputFilter[]{new InputFilter.LengthFilter(15)});
+        mEtUpFilterCoefficient.setFilters(new InputFilter[]{new InputFilter.LengthFilter(1)});
+        mEtDownCorrectionParametersOne.setFilters(new InputFilter[]{new InputFilter.LengthFilter(15)});
+        mEtDownCorrectionParametersTwo.setFilters(new InputFilter[]{new InputFilter.LengthFilter(15)});
+        mEtDownConstant.setFilters(new InputFilter[]{new InputFilter.LengthFilter(15)});
+        mEtDownFilterCoefficient.setFilters(new InputFilter[]{new InputFilter.LengthFilter(1)});
 
         mEtUpFilterCoefficient.setHint("0-F");
         mEtDownFilterCoefficient.setHint("0-F");
@@ -314,7 +314,7 @@ public class BleAdmeMeterWheelFragment extends BaseBleIotCommunicateFragment {
             entity.setEnclinenum(encoderLineNumber);
             entity.setOutline(outerDiameter);
 
-            decimalFormat.applyPattern("#.#####");
+            decimalFormat.applyPattern("#.######");
             entity.setUptiona(decimalFormat.format(Double.parseDouble(upCorrectionParametersOne)));
             entity.setUptionb(decimalFormat.format(Double.parseDouble(upCorrectionParametersTwo)));
             entity.setUpconstant(decimalFormat.format(Double.parseDouble(upConstant)));
@@ -424,7 +424,7 @@ public class BleAdmeMeterWheelFragment extends BaseBleIotCommunicateFragment {
             outerDiameter = decimalFormat.format(Double.parseDouble(outerDiameter));
             mEtOuterDiameter.setText(outerDiameter);
 
-            decimalFormat.applyPattern("#.#####");
+            decimalFormat.applyPattern("#.######");
             upCorrectionParametersOne = decimalFormat.format(Double.parseDouble(upCorrectionParametersOne));
             mEtUpCorrectionParametersOne.setText(upCorrectionParametersOne);
 

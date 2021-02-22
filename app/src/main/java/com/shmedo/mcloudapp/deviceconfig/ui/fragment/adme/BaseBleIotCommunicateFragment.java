@@ -199,8 +199,10 @@ public abstract class BaseBleIotCommunicateFragment extends BaseFragment {
         if (!TextUtils.isEmpty(usrBleViewModel.getDeviceApiKey().getValue())) {
             apiKey = usrBleViewModel.getDeviceApiKey().getValue();
         }
-        cmdStr += "&apikey=" + apiKey
-                + "&msgid=" + UUID.randomUUID().toString().substring(30);
+        if (!cmdStr.contains("&apikey")) {
+            cmdStr += "&apikey=" + apiKey
+                    + "&msgid=" + UUID.randomUUID().toString().substring(30);
+        }
 
         usrBleViewModel.sendIOTProtocolCommand(cmdStr);
     }

@@ -105,7 +105,7 @@ public class BleAdmeStepperMotorFragment extends BaseBleIotCommunicateFragment {
         mEtMovementSpeed.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
         mEtMotorTorque.setFilters(new InputFilter[]{new InputFilter.LengthFilter(4)});
 
-        mEtMovementSpeed.setHint("1-100");
+        mEtMovementSpeed.setHint("1-600");
     }
 
     private void setSwitchViewListener() {
@@ -230,7 +230,7 @@ public class BleAdmeStepperMotorFragment extends BaseBleIotCommunicateFragment {
         }
         try {
             int port = Integer.parseInt(movementSpeed);
-            if (port < 1 || port > 100) {
+            if (port < 1 || port > 600) {
                 ToastUtils.show("请输入正确的步进电机运动速度!");
                 mEtMovementSpeed.requestFocus();
                 return false;
@@ -420,7 +420,7 @@ public class BleAdmeStepperMotorFragment extends BaseBleIotCommunicateFragment {
     protected void onEditableChanged(boolean isEditable) {
         if (isEditable) {
             mEtAccuracyCorrectionValue.setHint("请输入");
-            mEtMovementSpeed.setHint("1-100");
+            mEtMovementSpeed.setHint("1-600");
         } else {
             mEtAccuracyCorrectionValue.setHint("");
             mEtMovementSpeed.setHint("");

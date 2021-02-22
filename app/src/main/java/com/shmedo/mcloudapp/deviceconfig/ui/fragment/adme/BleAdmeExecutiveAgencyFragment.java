@@ -617,7 +617,7 @@ public class BleAdmeExecutiveAgencyFragment extends BaseBleIotCommunicateFragmen
                 stopProgressRunnable();
                 IOTCommandResult<AdmeExecutiveAgencyInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
-                    String errMsg = String.format("%s %s", "查询步进电机参数出错!", commandResult.getMessage());
+                    String errMsg = String.format("%s %s", "查询执行机构参数出错!", commandResult.getMessage());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
                     return;
@@ -631,7 +631,7 @@ public class BleAdmeExecutiveAgencyFragment extends BaseBleIotCommunicateFragmen
                 stopProgressRunnable();
                 CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
                 if (!cmdResult.isSucceed()) {
-                    String errMsg = String.format("%s %s", "设置步进电机参数出错!", cmdResult.getReason());
+                    String errMsg = String.format("%s %s", "设置执行机构参数出错!", cmdResult.getReason());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
                     mBtnSave.setEnabled(true);

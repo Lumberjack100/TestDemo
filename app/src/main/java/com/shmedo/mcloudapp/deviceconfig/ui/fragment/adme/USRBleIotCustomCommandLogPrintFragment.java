@@ -1,6 +1,7 @@
 package com.shmedo.mcloudapp.deviceconfig.ui.fragment.adme;
 
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
@@ -24,6 +25,7 @@ import com.zhy.adapter.recyclerview.base.CommonViewHolder;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -130,9 +132,21 @@ public class USRBleIotCustomCommandLogPrintFragment extends BaseBleIotCommunicat
             }
             //发送指令
             String command = mEtcommand.getText().toString().trim();
+            if (command.startsWith("##")) {
+                command = String.format("$cmd=md_raw&content={%s}", command);
+            }
             if (!command.startsWith("$cmd")) {
                 ToastUtils.show("指令格式不正确，请重新输入");
                 return;
+            }
+
+            String apiKey = "b12aac6b-0bd2-4a01-80fd-97fe4f5d4ff9";
+            if (!TextUtils.isEmpty(usrBleViewModel.getDeviceApiKey().getValue())) {
+                apiKey = usrBleViewModel.getDeviceApiKey().getValue();
+            }
+            if (!command.contains("&apikey")) {
+                command += "&apikey=" + apiKey
+                        + "&msgid=" + UUID.randomUUID().toString().substring(30);
             }
             sendCommand(command);
             btnSend.setEnabled(false);
@@ -150,6 +164,14 @@ public class USRBleIotCustomCommandLogPrintFragment extends BaseBleIotCommunicat
         entity.setLevel(isOpen ? "info" : "off");
         entity.setType("bt");
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.LOG_OUTPUT_MODE_LEVEL, entity);
+        String apiKey = "b12aac6b-0bd2-4a01-80fd-97fe4f5d4ff9";
+        if (!TextUtils.isEmpty(usrBleViewModel.getDeviceApiKey().getValue())) {
+            apiKey = usrBleViewModel.getDeviceApiKey().getValue();
+        }
+        if (!command.contains("&apikey")) {
+            command += "&apikey=" + apiKey
+                    + "&msgid=" + UUID.randomUUID().toString().substring(30);
+        }
         sendCommand(command);
 
         CmdLogInfo cmdLogInfo = new CmdLogInfo(TimeUtil.getSysTimeStr(), command);
