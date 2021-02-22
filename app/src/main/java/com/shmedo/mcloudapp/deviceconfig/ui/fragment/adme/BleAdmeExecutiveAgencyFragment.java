@@ -162,14 +162,14 @@ public class BleAdmeExecutiveAgencyFragment extends BaseBleIotCommunicateFragmen
         mEtMeasurementCompensationTime.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
         mEtMotorDriveAddress.setFilters(new InputFilter[]{new InputFilter.LengthFilter(2)});
         mEtDecentralizationSpeed.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
-        mEtDecentralizationSpeed.setHint("1-100");
+        mEtDecentralizationSpeed.setHint("1-180");
 
         mEtInclinometerTubeHoleDepth.setFilters(new InputFilter[]{new InputFilter.LengthFilter(10)});
         mEtDecentralizationWaitingTime.setFilters(new InputFilter[]{new InputFilter.LengthFilter(2)});
         mEtDecentralizationWaitingTime.setHint("1-32");
 
         mEtPullUpSpeed.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
-        mEtPullUpSpeed.setHint("1-100");
+        mEtPullUpSpeed.setHint("1-180");
 
         mEtMeasuringDistance.setFilters(new InputFilter[]{new InputFilter.LengthFilter(4)});
         mEtMeasurementIntervalTime.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
@@ -379,7 +379,7 @@ public class BleAdmeExecutiveAgencyFragment extends BaseBleIotCommunicateFragmen
         }
         try {
             int value = Integer.parseInt(decentralizationSpeed);
-            if (value < 1 || value > 100) {
+            if (value < 1 || value > 180) {
                 ToastUtils.show("请输入正确的电机下放速度!");
                 mEtDecentralizationSpeed.requestFocus();
                 return false;
@@ -429,7 +429,7 @@ public class BleAdmeExecutiveAgencyFragment extends BaseBleIotCommunicateFragmen
         }
         try {
             int value = Integer.parseInt(pullUpSpeed);
-            if (value < 1 || value > 100) {
+            if (value < 1 || value > 180) {
                 ToastUtils.show("请输入正确的电机上拉速度!");
                 mEtPullUpSpeed.requestFocus();
                 return false;
@@ -839,10 +839,10 @@ public class BleAdmeExecutiveAgencyFragment extends BaseBleIotCommunicateFragmen
             mEtDataReadingInterval.setHint("请输入");
             mEtMeasurementCompensationTime.setHint("请输入");
             mEtMotorDriveAddress.setHint("请输入");
-            mEtDecentralizationSpeed.setHint("1-100");
+            mEtDecentralizationSpeed.setHint("1-180");
             mEtInclinometerTubeHoleDepth.setHint("请输入");
             mEtDecentralizationWaitingTime.setHint("1-32");
-            mEtPullUpSpeed.setHint("1-100");
+            mEtPullUpSpeed.setHint("1-180");
             mEtMeasuringDistance.setHint("请输入");
             mEtMeasurementIntervalTime.setHint("请输入");
             mEtMeasuringReferenceDepth.setHint("请输入");

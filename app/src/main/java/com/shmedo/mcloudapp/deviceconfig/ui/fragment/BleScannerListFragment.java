@@ -137,7 +137,7 @@ public class BleScannerListFragment extends BaseFragment implements TextWatcher,
                 if (newDevices != null) {
                     tempDeviceList.addAll(newDevices);
                 }
-                bleDeviceAdapter.setNewInstance(tempDeviceList);
+                bleDeviceAdapter.setList(tempDeviceList);
                 result.dispatchUpdatesTo(bleDeviceAdapter);
 
                 mTvDeviceCount.setText(String.format(Locale.getDefault(), "(%d)", tempDeviceList.size()));
@@ -229,7 +229,7 @@ public class BleScannerListFragment extends BaseFragment implements TextWatcher,
             searchPlaceholder.setVisibility(View.VISIBLE);
             searchContainer.setVisibility(View.GONE);
             refreshLayout.setVisibility(View.VISIBLE);
-            bleDeviceAdapter.setNewInstance(tempDeviceList);
+            bleDeviceAdapter.setList(tempDeviceList);
 
         } else if (id == R.id.ll_scan_refresh) {
             if (scannerViewModel.isScanning()) {
@@ -347,7 +347,7 @@ public class BleScannerListFragment extends BaseFragment implements TextWatcher,
             searchProcess(text.toString().trim());
         } else {
             KeyBordUtils.popSoftKeyboard(mEtKeyWords, true);
-            bleDeviceAdapter.setNewInstance(tempDeviceList);
+            bleDeviceAdapter.setList(tempDeviceList);
         }
     }
 
@@ -373,7 +373,7 @@ public class BleScannerListFragment extends BaseFragment implements TextWatcher,
     }
 
     private void searchProcess(String queryText) {
-        bleDeviceAdapter.setNewInstance(new ArrayList<>());
+        bleDeviceAdapter.setList(new ArrayList<>());
         for (DiscoveredBluetoothDevice device : tempDeviceList) {
             if (!TextUtils.isEmpty(device.getName()) && device.getName().contains(queryText)) {
                 bleDeviceAdapter.addData(device);
