@@ -363,9 +363,9 @@ public class BleAdmeMeterWheelFragment extends BaseBleIotCommunicateFragment {
             break;
 
             case ADME_MD_SET_METER_WHEEL_PARAMETERS: {//设置ADME的计米轮配置参数
-                stopProgressRunnable();
                 CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
                 if (!cmdResult.isSucceed()) {
+                    stopProgressRunnable();
                     String errMsg = String.format("%s %s", "保存计米轮配置参数出错!", cmdResult.getReason());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
@@ -374,6 +374,19 @@ public class BleAdmeMeterWheelFragment extends BaseBleIotCommunicateFragment {
                 }
                 doAfterSetting();
             }
+            break;
+
+            case MD_SAVE_CONFIG_PARAM: {
+                stopProgressRunnable();
+                CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
+                if (!cmdResult.isSucceed()) {
+                    String errMsg = String.format("%s %s", "保存指令出错!", cmdResult.getReason());
+                    Timber.e(errMsg);
+                    ToastUtils.show(errMsg);
+                    return;
+                }
+            }
+            ToastUtils.show("保存成功");
             break;
 
             default:
@@ -398,7 +411,8 @@ public class BleAdmeMeterWheelFragment extends BaseBleIotCommunicateFragment {
         //TODO  打开注释，设置为浏览模式
 //        configPageViewModel.configPageEditableChanged.setValue(false);
         mBtnSave.setEnabled(true);
-        ToastUtils.show("保存成功");
+
+        saveConfigInfo();
     }
 
     private void initParamConfigInfo() {

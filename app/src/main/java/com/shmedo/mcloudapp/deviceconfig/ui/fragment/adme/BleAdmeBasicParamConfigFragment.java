@@ -33,6 +33,7 @@ import java.text.DecimalFormat;
 import butterknife.BindView;
 import butterknife.OnClick;
 import timber.log.Timber;
+
 /**
  * 创建者:   gonghe <br/>
  * 创建时间:  2020/12/28<br/>
@@ -359,9 +360,9 @@ public class BleAdmeBasicParamConfigFragment extends BaseBleIotCommunicateFragme
             break;
 
             case ADME_MD_SET_BASIC_PARAMETERS: {//设置设备的基础配置参数
-                stopProgressRunnable();
                 CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
                 if (!cmdResult.isSucceed()) {
+                    stopProgressRunnable();
                     String errMsg = String.format("%s %s", "保存基础配置参数出错!", cmdResult.getReason());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
@@ -370,6 +371,19 @@ public class BleAdmeBasicParamConfigFragment extends BaseBleIotCommunicateFragme
                 }
                 doAfterSetting();
             }
+            break;
+
+            case MD_SAVE_CONFIG_PARAM: {
+                stopProgressRunnable();
+                CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
+                if (!cmdResult.isSucceed()) {
+                    String errMsg = String.format("%s %s", "保存指令出错!", cmdResult.getReason());
+                    Timber.e(errMsg);
+                    ToastUtils.show(errMsg);
+                    return;
+                }
+            }
+            ToastUtils.show("保存成功");
             break;
 
             default:
@@ -389,10 +403,11 @@ public class BleAdmeBasicParamConfigFragment extends BaseBleIotCommunicateFragme
         }
         //TODO #gh#  打开注释，设置为浏览模式
 //        configPageViewModel.configPageEditableChanged.setValue(false);
-        inclinometerTypeOld=inclinometerType;
+        inclinometerTypeOld = inclinometerType;
         dataSettlementMethodOld = dataSettlementMethod;
         mBtnSave.setEnabled(true);
-        ToastUtils.show("保存成功");
+
+        saveConfigInfo();
     }
 
     private void initParamConfigInfo() {
@@ -519,13 +534,7 @@ public class BleAdmeBasicParamConfigFragment extends BaseBleIotCommunicateFragme
 
             initParamConfigInfo();
         }
-//        inclinometerTypeLayout.setEnabled(isEditable);
-//        mEtCollectorAddress.setEnabled(isEditable);
-//        mEtMacAddress.setEnabled(isEditable);
-//        mEtInclinometerTubeHoleDepth.setEnabled(isEditable);
-//        mEtDecentralizationSpeed.setEnabled(isEditable);
-//        mEtDecentralizationWaitingTime.setEnabled(isEditable);
-//        dataSettlementMethodLayout.setEnabled(isEditable);
+
         maskLayerLayout.setVisibility(isEditable ? View.GONE : View.VISIBLE);
         mBtnSave.setVisibility(isEditable ? View.VISIBLE : View.GONE);
     }

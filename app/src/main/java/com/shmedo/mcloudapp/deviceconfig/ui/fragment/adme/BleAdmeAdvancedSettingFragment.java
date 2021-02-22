@@ -243,7 +243,7 @@ public class BleAdmeAdvancedSettingFragment extends BaseBleIotCommunicateFragmen
                     ToastUtils.show(errMsg);
                     return;
                 }
-                ToastUtils.show("已设置");
+                saveConfigInfo();
             }
             break;
 
@@ -283,6 +283,19 @@ public class BleAdmeAdvancedSettingFragment extends BaseBleIotCommunicateFragmen
                     }
                 }, 3000);
             }
+            break;
+
+            case MD_SAVE_CONFIG_PARAM: {
+                stopProgressRunnable();
+                CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
+                if (!cmdResult.isSucceed()) {
+                    String errMsg = String.format("%s %s", "保存指令出错!", cmdResult.getReason());
+                    Timber.e(errMsg);
+                    ToastUtils.show(errMsg);
+                    return;
+                }
+            }
+            ToastUtils.show("已设置");
             break;
 
             default:

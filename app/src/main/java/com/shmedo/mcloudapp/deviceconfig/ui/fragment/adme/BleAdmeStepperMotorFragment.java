@@ -312,9 +312,9 @@ public class BleAdmeStepperMotorFragment extends BaseBleIotCommunicateFragment {
             break;
 
             case ADME_MD_SET_STEPPER_MOTOR_PARAMETERS: {//设置ADME的步进电机配置参数
-                stopProgressRunnable();
                 CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
                 if (!cmdResult.isSucceed()) {
+                    stopProgressRunnable();
                     String errMsg = String.format("%s %s", "设置步进电机参数出错!", cmdResult.getReason());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
@@ -327,6 +327,22 @@ public class BleAdmeStepperMotorFragment extends BaseBleIotCommunicateFragment {
             }
             break;
 
+            case MD_SAVE_CONFIG_PARAM: {
+                stopProgressRunnable();
+                CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
+                if (!cmdResult.isSucceed()) {
+                    String errMsg = String.format("%s %s", "保存指令出错!", cmdResult.getReason());
+                    Timber.e(errMsg);
+                    ToastUtils.show(errMsg);
+                    return;
+                }
+            }
+            if (isSaveParamOperation) {
+                isSaveParamOperation = false;
+                ToastUtils.show("保存成功");
+            }
+            break;
+
             default:
                 super.parseResponseMessage(cmdStr);
                 break;
@@ -334,18 +350,18 @@ public class BleAdmeStepperMotorFragment extends BaseBleIotCommunicateFragment {
     }
 
     private void doAfterSetting() {
-        //TODO  打开注释，设置为浏览模式
-//        configPageViewModel.configPageEditableChanged.setValue(false);
         if (isSaveParamOperation) {
             if (admeStepperMotorInfo != null) {
                 admeStepperMotorInfo.setAbsprsion(accuracyCorrectionValue);
                 admeStepperMotorInfo.setMovspeed(movementSpeed);
                 admeStepperMotorInfo.setMovesm(motorTorque);
             }
-            isSaveParamOperation = false;
-            ToastUtils.show("设置成功");
         }
+        //TODO  打开注释，设置为浏览模式
+//        configPageViewModel.configPageEditableChanged.setValue(false);
         mBtnSave.setEnabled(true);
+
+        saveConfigInfo();
     }
 
     private void initParamConfigInfo() {

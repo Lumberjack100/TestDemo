@@ -251,7 +251,7 @@ public class BleAdmeInclinometerFragment extends BaseBleIotCommunicateFragment {
         }
         try {
             int value = Integer.parseInt(collectionInterval);
-            if (value < 1 ) {
+            if (value < 1) {
                 ToastUtils.show("请输入正确的采集器采集间隔!");
                 mEtCollectionInterval.requestFocus();
                 return false;
@@ -269,7 +269,7 @@ public class BleAdmeInclinometerFragment extends BaseBleIotCommunicateFragment {
         }
         try {
             int value = Integer.parseInt(solvingInterval);
-            if (value < 1 ) {
+            if (value < 1) {
                 ToastUtils.show("请输入正确的采集器解算间隔!");
                 mEtSolvingInterval.requestFocus();
                 return false;
@@ -287,7 +287,7 @@ public class BleAdmeInclinometerFragment extends BaseBleIotCommunicateFragment {
         }
         try {
             int value = Integer.parseInt(sleepTime);
-            if (value < 1 ) {
+            if (value < 1) {
                 ToastUtils.show("请输入正确的休眠时间!");
                 mEtSleepTime.requestFocus();
                 return false;
@@ -365,9 +365,9 @@ public class BleAdmeInclinometerFragment extends BaseBleIotCommunicateFragment {
             break;
 
             case ADME_MD_SET_INCLINOMETER_PARAMETERS: {//设置ADME的测斜仪配置参数
-                stopProgressRunnable();
                 CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
                 if (!cmdResult.isSucceed()) {
+                    stopProgressRunnable();
                     String errMsg = String.format("%s %s", "保存测斜仪参数出错!", cmdResult.getReason());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
@@ -376,6 +376,19 @@ public class BleAdmeInclinometerFragment extends BaseBleIotCommunicateFragment {
                 }
                 doAfterSetting();
             }
+            break;
+
+            case MD_SAVE_CONFIG_PARAM: {
+                stopProgressRunnable();
+                CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
+                if (!cmdResult.isSucceed()) {
+                    String errMsg = String.format("%s %s", "保存指令出错!", cmdResult.getReason());
+                    Timber.e(errMsg);
+                    ToastUtils.show(errMsg);
+                    return;
+                }
+            }
+            ToastUtils.show("保存成功");
             break;
 
             default:
@@ -399,7 +412,8 @@ public class BleAdmeInclinometerFragment extends BaseBleIotCommunicateFragment {
         inclinometerTypeOld = inclinometerType;
         lowPowerModeOld = lowPowerMode;
         mBtnSave.setEnabled(true);
-        ToastUtils.show("保存成功");
+
+        saveConfigInfo();
     }
 
     private void initParamConfigInfo() {

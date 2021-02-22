@@ -426,9 +426,9 @@ public class BleAdmeDataCenterAdvancedConfigFragment extends BaseBleIotCommunica
             break;
 
             case MD_SET_DATA_CENTER: {//设置设备的数据中心参数
-                stopProgressRunnable();
                 CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
                 if (!cmdResult.isSucceed()) {
+                    stopProgressRunnable();
                     String errMsg = String.format("%s %s", "设置数据中心参数出错!", cmdResult.getReason());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
@@ -441,6 +441,22 @@ public class BleAdmeDataCenterAdvancedConfigFragment extends BaseBleIotCommunica
             }
             break;
 
+            case MD_SAVE_CONFIG_PARAM: {
+                stopProgressRunnable();
+                CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
+                if (!cmdResult.isSucceed()) {
+                    String errMsg = String.format("%s %s", "保存指令出错!", cmdResult.getReason());
+                    Timber.e(errMsg);
+                    ToastUtils.show(errMsg);
+                    return;
+                }
+            }
+            if (isSaveParamOperation) {
+                isSaveParamOperation = false;
+                ToastUtils.show("保存成功");
+            }
+            break;
+
             default:
                 super.parseResponseMessage(cmdStr);
                 break;
@@ -448,13 +464,11 @@ public class BleAdmeDataCenterAdvancedConfigFragment extends BaseBleIotCommunica
     }
 
     private void doAfterSetting() {
-        if (isSaveParamOperation) {
-            isSaveParamOperation = false;
-            ToastUtils.show("设置成功");
-        }
         mBtnSave.setEnabled(true);
         transferProtocolOld = transferProtocol;
         isResultOK = true;
+
+        saveConfigInfo();
     }
 
     private void initDataCenterData() {

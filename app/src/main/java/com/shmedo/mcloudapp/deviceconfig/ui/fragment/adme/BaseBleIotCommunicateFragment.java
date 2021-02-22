@@ -190,6 +190,14 @@ public abstract class BaseBleIotCommunicateFragment extends BaseFragment {
         sendCommand(command);
     }
 
+    /**
+     * 保存配置信息
+     */
+    protected void saveConfigInfo() {
+        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.MD_SAVE_CONFIG_PARAM);
+        sendCommand(command);
+    }
+
     protected void sendCommand(String cmdStr) {
         if (!isConnected()) {
             ToastUtils.show(getString(R.string.tcp_config_disconnect_warn));

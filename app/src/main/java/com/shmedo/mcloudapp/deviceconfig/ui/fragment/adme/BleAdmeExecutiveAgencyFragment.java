@@ -628,9 +628,9 @@ public class BleAdmeExecutiveAgencyFragment extends BaseBleIotCommunicateFragmen
             break;
 
             case ADME_MD_SET_EXECUTIVE_AGENCY_PARAMETERS: {//设置ADME的执行机构配置参数
-                stopProgressRunnable();
                 CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
                 if (!cmdResult.isSucceed()) {
+                    stopProgressRunnable();
                     String errMsg = String.format("%s %s", "设置执行机构参数出错!", cmdResult.getReason());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
@@ -639,6 +639,19 @@ public class BleAdmeExecutiveAgencyFragment extends BaseBleIotCommunicateFragmen
                 }
                 doAfterSetting();
             }
+            break;
+
+            case MD_SAVE_CONFIG_PARAM: {
+                stopProgressRunnable();
+                CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
+                if (!cmdResult.isSucceed()) {
+                    String errMsg = String.format("%s %s", "保存指令出错!", cmdResult.getReason());
+                    Timber.e(errMsg);
+                    ToastUtils.show(errMsg);
+                    return;
+                }
+            }
+            ToastUtils.show("保存成功");
             break;
 
             default:
@@ -672,7 +685,8 @@ public class BleAdmeExecutiveAgencyFragment extends BaseBleIotCommunicateFragmen
         dataSettlementMethodOld = dataSettlementMethod;
         dataResponseOld = dataResponse;
         mBtnSave.setEnabled(true);
-        ToastUtils.show("保存成功");
+
+        saveConfigInfo();
     }
 
     private void initParamConfigInfo() {
