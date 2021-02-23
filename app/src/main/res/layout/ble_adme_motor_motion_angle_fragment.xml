@@ -22,17 +22,6 @@
             android:src="@drawable/ic_dispatch_cmd_dialog_close" />
 
         <TextView
-            android:id="@+id/tv_clear_data"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_centerVertical="true"
-            android:text="清除数据"
-            android:textColor="@color/text_color_51B4F8"
-            android:textSize="@dimen/text_size_17"
-            android:visibility="gone" />
-
-        <TextView
             android:id="@+id/tv_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

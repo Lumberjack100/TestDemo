@@ -244,19 +244,21 @@ public class USRManager extends ObservableBleManager {
         if (writeCharacteristic == null)
             return;
 
-        //判断当前是否可以写入数据，false 时延迟一定时间再次调用callWriteCharacteristic(command)，防止同时调用 writeMessage(final String command)多次，造成蓝牙设备处理不过来
-        if (!isWritable) {
-            handler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    isWritable = false;
-                    callWriteCharacteristic(command);
-                }
-            }, 350);
-        } else {
-            isWritable = false;
-            callWriteCharacteristic(command);
-        }
+//        //判断当前是否可以写入数据，false 时延迟一定时间再次调用callWriteCharacteristic(command)，防止同时调用 writeMessage(final String command)多次，造成蓝牙设备处理不过来
+//        if (!isWritable) {
+//            handler.postDelayed(new Runnable() {
+//                @Override
+//                public void run() {
+//                    isWritable = false;
+//                    callWriteCharacteristic(command);
+//                }
+//            }, 350);
+//        } else {
+//            isWritable = false;
+//            callWriteCharacteristic(command);
+//        }
+
+        callWriteCharacteristic(command);
     }
 
     private void callWriteCharacteristic(final String command) {
@@ -288,5 +290,7 @@ public class USRManager extends ObservableBleManager {
                     }
                 })
                 .enqueue();
+
+        sleep(350).enqueue();
     }
 }

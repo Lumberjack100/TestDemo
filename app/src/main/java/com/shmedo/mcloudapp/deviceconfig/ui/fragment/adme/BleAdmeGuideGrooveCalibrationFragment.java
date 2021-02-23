@@ -23,6 +23,7 @@ import com.shmedo.configlibrary.iot.cmd.parser.IOTParseManager;
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.model.CommonSettingCmdResult;
 import com.shmedo.configlibrary.iot.model.adme.AdmeGuideGrooveCalibrationInfo;
+import com.shmedo.configlibrary.iot.model.adme.AdmeMotorMotionAngleInfo;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.view.ClearEditText;
@@ -66,6 +67,9 @@ public class BleAdmeGuideGrooveCalibrationFragment extends BaseBleIotCommunicate
     private String movementSpeed;// 电机运动速度(r/min)
     private String motionPulse;//  运动脉冲数
 
+    private String totalPulse;//总脉冲数
+    private String curPulse;// 当前脉冲数
+
     private AdmeGuideGrooveCalibrationInfo grooveCalibrationInfo;
     private BleAdmeMotorMotionAngleFragment motorMotionAngleFragment;
 
@@ -99,12 +103,20 @@ public class BleAdmeGuideGrooveCalibrationFragment extends BaseBleIotCommunicate
     }
 
     /**
-     * 获取运动状态参数
+     * 获取导槽校准配置参数
      */
     private void queryParamInfo() {
         errMsg = "查询数据超时,请稍后尝试";
         startProgressRunnable("加载中...", WRITE_TIME_OUT_SECOND);
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_GET_GUIDE_GROOVE_CALIBRATION_PARAMETERS);
+        sendCommand(command);
+    }
+
+    /**
+     * 查询ADME导槽校准的脉冲数、运动角度
+     */
+    private void getMotorMotionData() {
+        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_GET_GUIDE_GROOVE_CALIBRATION_PULSE);
         sendCommand(command);
     }
 
@@ -125,10 +137,10 @@ public class BleAdmeGuideGrooveCalibrationFragment extends BaseBleIotCommunicate
             return;
         }
 
-        if (id == R.id.ll_motion_type) {
+        if (id == R.id.ll_motion_type) {//选择运动方式
             showMotionTypeDialog();
 
-        } else if (id == R.id.btn_run) {
+        } else if (id == R.id.btn_run) {//运行
             KeyBordUtils.hideSoftKeyboard(view);
             if (!isConnected()) {
                 ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
@@ -140,7 +152,7 @@ public class BleAdmeGuideGrooveCalibrationFragment extends BaseBleIotCommunicate
             }
             processSave();
 
-        } else if (id == R.id.ll_clear_motion_data) {
+        } else if (id == R.id.ll_clear_motion_data) {//清空数据
             KeyBordUtils.hideSoftKeyboard(view);
             if (!isConnected()) {
                 ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
@@ -261,7 +273,6 @@ public class BleAdmeGuideGrooveCalibrationFragment extends BaseBleIotCommunicate
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                         dialog.dismiss();
                         clearMotorMotionData();
-                        clearMotionDataLayout.setEnabled(false);
                     }
                 });
         MaterialDialog mMaterialDialog = mBuilder.build();
@@ -280,13 +291,29 @@ public class BleAdmeGuideGrooveCalibrationFragment extends BaseBleIotCommunicate
                 stopProgressRunnable();
                 IOTCommandResult<AdmeGuideGrooveCalibrationInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
-                    String errMsg = String.format("%s %s", "获取设备的导槽校准配置参数出错!", commandResult.getMessage());
+                    String errMsg = String.format("%s %s", "获取导槽校准配置参数出错!", commandResult.getMessage());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
                     return;
                 }
                 grooveCalibrationInfo = commandResult.getResult();
                 initParamConfigInfo();
+                getMotorMotionData();
+            }
+            break;
+
+            case ADME_MD_GET_GUIDE_GROOVE_CALIBRATION_PULSE: {//查询电机运动状态
+                IOTCommandResult<AdmeMotorMotionAngleInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
+                if (!commandResult.isSuccess()) {
+                    String errMsg = String.format("%s %s", "获取电机的实时运行状态出错!", commandResult.getMessage());
+                    Timber.e(errMsg);
+                    ToastUtils.show(errMsg);
+                    return;
+                }
+                AdmeMotorMotionAngleInfo motorMotionAngleInfo = commandResult.getResult();
+                if (motorMotionAngleInfo != null) {
+                    curPulse = motorMotionAngleInfo.getPulsenumber();
+                }
             }
             break;
 
@@ -313,11 +340,12 @@ public class BleAdmeGuideGrooveCalibrationFragment extends BaseBleIotCommunicate
                     ToastUtils.show(errMsg);
                     return;
                 }
-                clearMotionDataLayout.setEnabled(true);
                 clearMotionDataLayout.setVisibility(View.GONE);
                 motionDataClearCompleteLayout.setVisibility(View.VISIBLE);
+                getMotorMotionData();
             }
             break;
+
             default:
                 super.parseResponseMessage(cmdStr);
                 break;
@@ -351,21 +379,13 @@ public class BleAdmeGuideGrooveCalibrationFragment extends BaseBleIotCommunicate
         }
 
         //电机处于运动状态，弹出底部运行数据展示框
-        if (grooveCalibrationInfo.getMorunstate().trim().equals('1')) {
+        if (grooveCalibrationInfo.getMorunstate().trim().equals("1")) {
             showMotorMotionDialog();
         }
     }
 
     private void doAfterSetting() {
-        if (motorMotionAngleFragment != null && motorMotionAngleFragment.isVisible()) {
-            return;
-        }
         mBtnRun.setEnabled(true);
-        if (grooveCalibrationInfo != null) {
-            grooveCalibrationInfo.setMovementway(motionWay);
-            grooveCalibrationInfo.setMotorspeed(movementSpeed);
-            grooveCalibrationInfo.setMovePulse(motionPulse);
-        }
         showMotorMotionDialog();
     }
 
@@ -373,12 +393,20 @@ public class BleAdmeGuideGrooveCalibrationFragment extends BaseBleIotCommunicate
         if (motorMotionAngleFragment != null && motorMotionAngleFragment.isVisible())
             return;
 
-        if (grooveCalibrationInfo != null) {
-            motorMotionAngleFragment = BleAdmeMotorMotionAngleFragment.newInstance(grooveCalibrationInfo);
-            motorMotionAngleFragment.show(getChildFragmentManager(), "dialog");
+        try {
+            double pulseCurrent = Math.abs(Double.parseDouble(curPulse));
+            double pulseGoal = Double.parseDouble(motionPulse);
+            totalPulse = String.valueOf(pulseCurrent + pulseGoal);
 
-            clearMotionDataLayout.setVisibility(View.VISIBLE);
-            motionDataClearCompleteLayout.setVisibility(View.GONE);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            totalPulse = motionPulse;
         }
+        Timber.d("start Motion: totalPulse=%s,curPulse=%s", totalPulse, curPulse);
+        motorMotionAngleFragment = BleAdmeMotorMotionAngleFragment.newInstance(motionWay, totalPulse);
+        motorMotionAngleFragment.show(getChildFragmentManager(), "dialog");
+
+        clearMotionDataLayout.setVisibility(View.VISIBLE);
+        motionDataClearCompleteLayout.setVisibility(View.GONE);
     }
 }
