@@ -5,6 +5,7 @@ import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattService;
 import android.content.Context;
+import android.os.Handler;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -60,6 +61,9 @@ public class USRManager extends ObservableBleManager {
     private boolean supported;
     private static final int MAX_PACKAGE_SIZE = 512;//最大蓝牙包数据
     private int mtu = MAX_PACKAGE_SIZE;//默认设置最大蓝牙包数据，实际因设备而异
+
+    private Handler handler = new Handler();
+    private boolean isWritable = true;//判断是否可以写入数据
 
     public USRManager(@NotNull Context context) {
         super(context);
@@ -239,6 +243,23 @@ public class USRManager extends ObservableBleManager {
     public void writeMessage(final String command) {
         if (writeCharacteristic == null)
             return;
+
+        //判断当前是否可以写入数据，false 时延迟一定时间再次调用callWriteCharacteristic(command)，防止同时调用 writeMessage(final String command)多次，造成蓝牙设备处理不过来
+        if (!isWritable) {
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    isWritable = false;
+                    callWriteCharacteristic(command);
+                }
+            }, 350);
+        } else {
+            isWritable = false;
+            callWriteCharacteristic(command);
+        }
+    }
+
+    private void callWriteCharacteristic(final String command) {
         // Write some data to the characteristic.
         writeCharacteristic(writeCharacteristic, Data.from(command))
                 // If data are longer than MTU-3, they will be chunked into multiple packets.
@@ -252,6 +273,7 @@ public class USRManager extends ObservableBleManager {
                 .done(new SuccessCallback() {
                     @Override
                     public void onRequestCompleted(@NonNull BluetoothDevice device) {
+                        isWritable = true;
                         Timber.v("已写入数据(writeMessage): length=%s bytes;content: %s", command.getBytes().length, command);
                         log(LogContract.Log.Level.APPLICATION, "已写入数据(writeMessage): " + command);
                     }
@@ -260,6 +282,7 @@ public class USRManager extends ObservableBleManager {
                 .fail(new FailCallback() {
                     @Override
                     public void onRequestFailed(@NonNull BluetoothDevice device, int status) {
+                        isWritable = true;
                         Timber.w("未写入数据(writeMessage): length=%s bytes;content: %s", command.getBytes().length, command);
                         log(Log.WARN, "未写入数据(writeMessage): " + command);
                     }
