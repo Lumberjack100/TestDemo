@@ -133,7 +133,7 @@ public class USRBleIotCustomCommandLogPrintFragment extends BaseBleIotCommunicat
             //发送指令
             String command = mEtcommand.getText().toString().trim();
             if (command.startsWith("##")) {
-                command = String.format("$cmd=md_raw&content={%s}", command);
+                command = String.format("$cmd=md_raw&content=%s", command);
             }
             if (!command.startsWith("$cmd")) {
                 ToastUtils.show("指令格式不正确，请重新输入");
