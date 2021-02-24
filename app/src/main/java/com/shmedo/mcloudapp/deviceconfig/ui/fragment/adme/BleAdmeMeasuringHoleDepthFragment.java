@@ -74,10 +74,9 @@ public class BleAdmeMeasuringHoleDepthFragment extends BaseBleIotCommunicateFrag
 
     private String motionWay;//  运动方式
     private String movementSpeed;// 电机运动速度(r/min)
-    private String motionDistance;//  运动距离
+    private String totalDistanceGoal;//  运动距离
 
-    private String totalDistance;//总距离
-    private String curDistance;//当前距离
+    private String lastDistance;//当前距离
 
     private AdmeMeasuringHoleDepthInfo measuringHoleDepthInfo;
     private BleAdmeMotorMotionDistanceFragment motorMotionDistanceFragment;
@@ -98,7 +97,7 @@ public class BleAdmeMeasuringHoleDepthFragment extends BaseBleIotCommunicateFrag
         super.onActivityCreated(savedInstanceState);
         setView();
         setRadioButtonListener();
-        queryParamInfo();
+        queryMotorMotionConfig();
     }
 
     private void setView() {
@@ -148,9 +147,9 @@ public class BleAdmeMeasuringHoleDepthFragment extends BaseBleIotCommunicateFrag
     }
 
     /**
-     * 获取电机测孔深配置参数
+     * 获取电机运动配置参数
      */
-    private void queryParamInfo() {
+    private void queryMotorMotionConfig() {
         errMsg = "查询数据超时,请稍后尝试";
         startProgressRunnable("加载中...", WRITE_TIME_OUT_SECOND);
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_GET_MEASURING_HOLEDEPTH_PARAMETERS);
@@ -209,7 +208,7 @@ public class BleAdmeMeasuringHoleDepthFragment extends BaseBleIotCommunicateFrag
 
     private boolean checkValueIsValid() {
         movementSpeed = mEtMovementSpeed.getText().toString().trim();
-        motionDistance = mEtMotionDistance.getText().toString().trim();
+        totalDistanceGoal = mEtMotionDistance.getText().toString().trim();
         if (TextUtils.isEmpty(movementSpeed)) {
             ToastUtils.show("请输入电机运动速度!");
             mEtMovementSpeed.requestFocus();
@@ -229,13 +228,13 @@ public class BleAdmeMeasuringHoleDepthFragment extends BaseBleIotCommunicateFrag
         }
 
         if (rbAutoControl.isChecked()) {
-            if (TextUtils.isEmpty(motionDistance)) {
+            if (TextUtils.isEmpty(totalDistanceGoal)) {
                 ToastUtils.show("请输入运动距离!");
                 mEtMotionDistance.requestFocus();
                 return false;
             }
             try {
-                double value = Double.parseDouble(motionDistance);
+                double value = Double.parseDouble(totalDistanceGoal);
                 if (value <= 0) {
                     ToastUtils.show("请输入正确的运动距离!");
                     mEtMotionDistance.requestFocus();
@@ -247,7 +246,7 @@ public class BleAdmeMeasuringHoleDepthFragment extends BaseBleIotCommunicateFrag
                 return false;
             }
         } else {
-            motionDistance = "99999";
+            totalDistanceGoal = "99999";
         }
 
         return true;
@@ -259,8 +258,8 @@ public class BleAdmeMeasuringHoleDepthFragment extends BaseBleIotCommunicateFrag
             entity.setMovementway(motionWay);
             entity.setMotorspeed(movementSpeed);
             decimalFormat.applyPattern("#.###");
-            motionDistance = decimalFormat.format(Double.parseDouble(motionDistance));
-            entity.setMovedistance(motionDistance);
+            totalDistanceGoal = decimalFormat.format(Double.parseDouble(totalDistanceGoal));
+            entity.setMovedistance(totalDistanceGoal);
 
             mBtnRun.setEnabled(false);
             errMsg = "发送指令超时,请稍后尝试";
@@ -346,22 +345,26 @@ public class BleAdmeMeasuringHoleDepthFragment extends BaseBleIotCommunicateFrag
                     return;
                 }
                 measuringHoleDepthInfo = commandResult.getResult();
-                initParamConfigInfo();
-                getMotorMotionData();
+                if (motorMotionDistanceFragment != null && motorMotionDistanceFragment.isVisible()) {
+                    motorMotionDistanceFragment.processMotorMotionState(measuringHoleDepthInfo);
+                } else {
+                    initParamConfigInfo();
+                    getMotorMotionData();
+                }
             }
             break;
 
-            case ADME_MD_GET_MEASURING_HOLEDEPTH_PULSE: {//查询电机运动状态
+            case ADME_MD_GET_MEASURING_HOLEDEPTH_PULSE: {//查询电机实时运动数据
                 IOTCommandResult<AdmeMotorMotionDistanceInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
-                    String errMsg = String.format("%s %s", "获取电机的实时运行状态出错!", commandResult.getMessage());
+                    String errMsg = String.format("%s %s", "获取电机的实时运动数据出错!", commandResult.getMessage());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
                     return;
                 }
                 AdmeMotorMotionDistanceInfo motorMotionDistanceInfo = commandResult.getResult();
                 if (motorMotionDistanceInfo != null) {
-                    curDistance = motorMotionDistanceInfo.getRealmovedistance();
+                    lastDistance = motorMotionDistanceInfo.getRealmovedistance();
                 }
                 if (motorMotionDistanceFragment != null && motorMotionDistanceFragment.isVisible()) {
                     motorMotionDistanceFragment.updateMotionData(motorMotionDistanceInfo);
@@ -413,7 +416,7 @@ public class BleAdmeMeasuringHoleDepthFragment extends BaseBleIotCommunicateFrag
         }
         motionWay = measuringHoleDepthInfo.getMovementway().trim();
         movementSpeed = measuringHoleDepthInfo.getMotorspeed().trim();
-        motionDistance = measuringHoleDepthInfo.getMovedistance().trim();
+        totalDistanceGoal = measuringHoleDepthInfo.getMovedistance().trim();
         if (motionWay.equals("0")) {
             motionWayPos = 0;
             mTvMotionWay.setText("上拉");
@@ -425,12 +428,13 @@ public class BleAdmeMeasuringHoleDepthFragment extends BaseBleIotCommunicateFrag
         try {
             mEtMovementSpeed.setText(movementSpeed);
             decimalFormat.applyPattern("#.###");
-            motionDistance = decimalFormat.format(Double.parseDouble(motionDistance));
-            mEtMotionDistance.setText(motionDistance);
+            totalDistanceGoal = decimalFormat.format(Double.parseDouble(totalDistanceGoal));
+            mEtMotionDistance.setText(totalDistanceGoal);
         } catch (Exception ex) {
             ex.printStackTrace();
+            totalDistanceGoal = "0";
+            mEtMotionDistance.setText(totalDistanceGoal);
         }
-
         //电机处于运动状态，弹出底部运行数据展示框
         if (measuringHoleDepthInfo.getMorunstate().trim().equals("1")) {
             showMotorMotionDialog();
@@ -451,19 +455,8 @@ public class BleAdmeMeasuringHoleDepthFragment extends BaseBleIotCommunicateFrag
             motorMotionDistanceFragment.processContinueMotorMotion();
             return;
         }
-
-        try {
-            double distanceCurrent = Math.abs(Double.parseDouble(curDistance));
-            double distanceGoal = Math.abs(Double.parseDouble(motionDistance));
-            totalDistance = String.valueOf(distanceCurrent + distanceGoal);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            return;
-        }
-
-        Timber.d("start Motion: totalDistance=%s,curDistance=%s,motionDistance=%s", totalDistance, curDistance, motionDistance);
-
-        motorMotionDistanceFragment = BleAdmeMotorMotionDistanceFragment.newInstance(motionWay, totalDistance);
+        Timber.d("start Motion: lastDistance=%s,totalDistanceGoal=%s", lastDistance, totalDistanceGoal);
+        motorMotionDistanceFragment = BleAdmeMotorMotionDistanceFragment.newInstance(motionWay, lastDistance, totalDistanceGoal);
         motorMotionDistanceFragment.show(getChildFragmentManager(), "dialog");
 
         clearMotionDataLayout.setVisibility(View.VISIBLE);

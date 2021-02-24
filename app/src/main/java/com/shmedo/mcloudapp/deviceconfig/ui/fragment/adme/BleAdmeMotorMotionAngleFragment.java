@@ -99,12 +99,12 @@ public class BleAdmeMotorMotionAngleFragment extends BaseDialogFragment {
         queryMotorMotionDataRunnable = null;
     }
 
-    public static BleAdmeMotorMotionAngleFragment newInstance(String motionWay, String lastPulse, String motionPulse) {
+    public static BleAdmeMotorMotionAngleFragment newInstance(String motionWay, String lastPulse, String totalPulseGoal) {
         BleAdmeMotorMotionAngleFragment fragment = new BleAdmeMotorMotionAngleFragment();
         Bundle args = new Bundle();
         args.putString(MOTION_WAY, motionWay);
         args.putString(LAST_PULSE, lastPulse);
-        args.putString(MOTION_PULSE, motionPulse);
+        args.putString(MOTION_PULSE, totalPulseGoal);
         fragment.setArguments(args);
         return fragment;
     }
@@ -197,9 +197,9 @@ public class BleAdmeMotorMotionAngleFragment extends BaseDialogFragment {
     private void continueMotorMotion() {
         int pulseGoal;
         try {
-            int pulseMotion = Integer.parseInt(totalPulseGoal);
+            int pulseTotalGoal = Integer.parseInt(totalPulseGoal);
             int pulseDiff = Math.abs(Integer.parseInt(curPulse) - Integer.parseInt(lastPulse));
-            pulseGoal = pulseMotion - pulseDiff;
+            pulseGoal = pulseTotalGoal - pulseDiff;
             //已达到设定运动目标
             if (pulseGoal <= 0) {
                 updateStopState();
@@ -317,7 +317,7 @@ public class BleAdmeMotorMotionAngleFragment extends BaseDialogFragment {
             Timber.d("updateMotionData: lastPulse=%s,curPulse=%s,repeatNum=%s", lastPulse, curPulse, repeatNum);
             //轮询五次电机脉冲数据不变化时，查询电机运动状态，判断电机是否停止运动
             if (repeatNum >= 5) {
-                stopQueryMotorMotionDataRunnable();
+//                stopQueryMotorMotionDataRunnable();
                 queryMotorMotionConfig();
                 return;
             }
@@ -346,9 +346,9 @@ public class BleAdmeMotorMotionAngleFragment extends BaseDialogFragment {
             startQueryMotorMotionDataRunnable();
         } else {//电机状态表示停止运动
             try {
-                int pulseMotion = Integer.parseInt(totalPulseGoal);
+                int pulseTotalGoal = Integer.parseInt(totalPulseGoal);
                 int pulseDiff = Math.abs(Integer.parseInt(curPulse) - Integer.parseInt(lastPulse));
-                if (pulseDiff >= pulseMotion) {
+                if (pulseTotalGoal - pulseDiff <= 0) {
                     updateStopState();
                 } else {
                     //暂停状态处理

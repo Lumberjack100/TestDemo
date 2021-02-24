@@ -63,11 +63,11 @@ public class BleAdmeGuideGrooveCalibrationFragment extends BaseBleIotCommunicate
 
     private int motionWayPos;
 
-    private String motionWay;//  运动方式
-    private String movementSpeed;// 电机运动速度(r/min)
-    private String totalPulseGoal;//  运动脉冲数
+    private String motionWay;//运动方式
+    private String movementSpeed;//电机运动速度(r/min)
+    private String totalPulseGoal;//运动脉冲数
 
-    private String lastPulse;// 上次停止时脉冲数
+    private String lastPulse;//上次停止时脉冲数
 
     private AdmeGuideGrooveCalibrationInfo grooveCalibrationInfo;
     private BleAdmeMotorMotionAngleFragment motorMotionAngleFragment;
