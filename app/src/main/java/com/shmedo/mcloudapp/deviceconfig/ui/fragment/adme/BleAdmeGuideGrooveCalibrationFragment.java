@@ -314,6 +314,10 @@ public class BleAdmeGuideGrooveCalibrationFragment extends BaseBleIotCommunicate
                 if (motorMotionAngleInfo != null) {
                     curPulse = motorMotionAngleInfo.getPulsenumber();
                 }
+                if (motorMotionAngleFragment != null && motorMotionAngleFragment.isVisible()) {
+                    motorMotionAngleFragment.updateMotionData(motorMotionAngleInfo);
+                    return;
+                }
             }
             break;
 
@@ -389,20 +393,25 @@ public class BleAdmeGuideGrooveCalibrationFragment extends BaseBleIotCommunicate
         showMotorMotionDialog();
     }
 
+    /**
+     * 打开数据运行弹框
+     */
     private void showMotorMotionDialog() {
-        if (motorMotionAngleFragment != null && motorMotionAngleFragment.isVisible())
+        //数据运行弹框已经显示了
+        if (motorMotionAngleFragment != null && motorMotionAngleFragment.isVisible()) {
+            motorMotionAngleFragment.processContinueMotorMotion();
             return;
-
+        }
         try {
             double pulseCurrent = Math.abs(Double.parseDouble(curPulse));
-            double pulseGoal = Double.parseDouble(motionPulse);
+            double pulseGoal = Math.abs(Double.parseDouble(motionPulse));
             totalPulse = String.valueOf(pulseCurrent + pulseGoal);
-
         } catch (Exception ex) {
             ex.printStackTrace();
-            totalPulse = motionPulse;
+           return;
         }
-        Timber.d("start Motion: totalPulse=%s,curPulse=%s", totalPulse, curPulse);
+
+        Timber.d("start Motion: totalPulse=%s,curPulse=%s,motionPulse=%s", totalPulse, curPulse, motionPulse);
         motorMotionAngleFragment = BleAdmeMotorMotionAngleFragment.newInstance(motionWay, totalPulse);
         motorMotionAngleFragment.show(getChildFragmentManager(), "dialog");
 
