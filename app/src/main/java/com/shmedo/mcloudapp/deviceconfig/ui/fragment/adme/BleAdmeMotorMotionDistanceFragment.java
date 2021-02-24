@@ -199,7 +199,7 @@ public class BleAdmeMotorMotionDistanceFragment extends BaseDialogFragment {
         double distanceGoal;
         try {
             double distanceTotalGoal = Math.abs(Double.parseDouble(totalDistanceGoal));
-            double distanceDiff = Math.abs(Integer.parseInt(curDistance) - Integer.parseInt(lastDistance));
+            double distanceDiff = Math.abs(Double.parseDouble(curDistance) - Double.parseDouble(lastDistance));
             distanceGoal = distanceTotalGoal - distanceDiff;
             //已达到设定运动目标
             if (distanceGoal <= 0) {
@@ -348,7 +348,7 @@ public class BleAdmeMotorMotionDistanceFragment extends BaseDialogFragment {
         } else {//电机状态表示停止运动
             try {
                 double distanceTotalGoal = Math.abs(Double.parseDouble(totalDistanceGoal));
-                double distanceDiff = Math.abs(Integer.parseInt(curDistance) - Integer.parseInt(lastDistance));
+                double distanceDiff = Math.abs(Double.parseDouble(curDistance) - Double.parseDouble(lastDistance));
                 if (distanceTotalGoal - distanceDiff <= 0) {
                     updateStopState();
                 } else {
@@ -424,6 +424,7 @@ public class BleAdmeMotorMotionDistanceFragment extends BaseDialogFragment {
                         if (usrBleViewModel.isConnected()) {
                             //蓝牙未断开时先发送停止电机指令，再关闭运行页面
                             stopMotorMotion();
+                            BleAdmeMotorMotionDistanceFragment.this.dismiss();
                         } else {
                             //直接关闭运行页面
                             BleAdmeMotorMotionDistanceFragment.this.dismiss();

@@ -423,6 +423,7 @@ public class BleAdmeMotorMotionAngleFragment extends BaseDialogFragment {
                         if (usrBleViewModel.isConnected()) {
                             //蓝牙未断开时先发送停止电机指令，再关闭运行页面
                             stopMotorMotion();
+                            BleAdmeMotorMotionAngleFragment.this.dismiss();
                         } else {
                             //直接关闭运行页面
                             BleAdmeMotorMotionAngleFragment.this.dismiss();
