@@ -38,8 +38,9 @@ import timber.log.Timber;
  * 描述：     ADME 电机导槽校准实时数据展示底部弹窗
  */
 public class BleAdmeMotorMotionAngleFragment extends BaseDialogFragment {
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    private static final String MOTION_WAY = "motion_way";
+    private static final String LAST_PULSE = "last_pulse";
+    private static final String MOTION_PULSE = "motion_pulse";
 
     @BindView(R.id.tv_title)
     TextView mTvTitle;
@@ -65,10 +66,10 @@ public class BleAdmeMotorMotionAngleFragment extends BaseDialogFragment {
     private USRBleViewModel usrBleViewModel;
 
     private String motionWay;//运动方式
-    private String lastTotalPulse;//上次停止时总脉冲数
+    private String lastPulse;//上次停止时脉冲数
     private String curPulse;// 当前脉冲数
-    private String motionPulse;//  运动脉冲数
-
+    private String totalPulseGoal;//总运动脉冲目标数
+    private String continuePulseGoal;//继续运动脉冲目标数
 
     private static int repeatNum = 0;//当查询电机脉冲数重复超过一定次数时，判定电机停止
     private boolean isStopClick = false;//是否是点击停止按钮操作
@@ -98,11 +99,12 @@ public class BleAdmeMotorMotionAngleFragment extends BaseDialogFragment {
         queryMotorMotionDataRunnable = null;
     }
 
-    public static BleAdmeMotorMotionAngleFragment newInstance(String motionWay, String totalPulse) {
+    public static BleAdmeMotorMotionAngleFragment newInstance(String motionWay, String lastPulse, String motionPulse) {
         BleAdmeMotorMotionAngleFragment fragment = new BleAdmeMotorMotionAngleFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, motionWay);
-        args.putString(ARG_PARAM2, totalPulse);
+        args.putString(MOTION_WAY, motionWay);
+        args.putString(LAST_PULSE, lastPulse);
+        args.putString(MOTION_PULSE, motionPulse);
         fragment.setArguments(args);
         return fragment;
     }
@@ -111,8 +113,9 @@ public class BleAdmeMotorMotionAngleFragment extends BaseDialogFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            motionWay = getArguments().getString(ARG_PARAM1);
-            lastTotalPulse = getArguments().getString(ARG_PARAM2);
+            motionWay = getArguments().getString(MOTION_WAY);
+            lastPulse = getArguments().getString(LAST_PULSE);
+            totalPulseGoal = getArguments().getString(MOTION_PULSE);
         }
     }
 
@@ -192,12 +195,12 @@ public class BleAdmeMotorMotionAngleFragment extends BaseDialogFragment {
      * 继续电机运动
      */
     private void continueMotorMotion() {
-        int pulseGoal = 0;
+        int pulseGoal;
         try {
-            int pulseTotal = Math.abs(Integer.parseInt(lastTotalPulse));
-            int pulseCurrent = Math.abs(Integer.parseInt(curPulse));
-            pulseGoal = pulseTotal - pulseCurrent;
-            //运动脉冲数无效
+            int pulseMotion = Integer.parseInt(totalPulseGoal);
+            int pulseDiff = Math.abs(Integer.parseInt(curPulse) - Integer.parseInt(lastPulse));
+            pulseGoal = pulseMotion - pulseDiff;
+            //已达到设定运动目标
             if (pulseGoal <= 0) {
                 updateStopState();
                 ToastUtils.show("无法继续电机运动操作!");
@@ -207,11 +210,10 @@ public class BleAdmeMotorMotionAngleFragment extends BaseDialogFragment {
             ex.printStackTrace();
             return;
         }
-
-        motionPulse = String.valueOf(pulseGoal);
+        continuePulseGoal = String.valueOf(pulseGoal);
         AdmeGuideGrooveCalibrationEntity entity = new AdmeGuideGrooveCalibrationEntity();
         entity.setMovementway(motionWay);
-        entity.setMovepulse(motionPulse);
+        entity.setMovepulse(continuePulseGoal);
 
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_SET_GUIDE_GROOVE_CALIBRATION_PARAMETERS, entity);
         sendCommand(command);
@@ -312,7 +314,7 @@ public class BleAdmeMotorMotionAngleFragment extends BaseDialogFragment {
         }
         if (!TextUtils.isEmpty(curPulse) && motorMotionAngleInfo.getPulsenumber().equals(curPulse)) {
             repeatNum++;
-            Timber.d("updateMotionData: totalPulse=%s,curPulse=%s,repeatNum=%s", lastTotalPulse, curPulse, repeatNum);
+            Timber.d("updateMotionData: lastPulse=%s,curPulse=%s,repeatNum=%s", lastPulse, curPulse, repeatNum);
             //轮询五次电机脉冲数据不变化时，查询电机运动状态，判断电机是否停止运动
             if (repeatNum >= 5) {
                 stopQueryMotorMotionDataRunnable();
@@ -342,11 +344,11 @@ public class BleAdmeMotorMotionAngleFragment extends BaseDialogFragment {
         if (grooveCalibrationInfo.getMorunstate().trim().equals("1")) {
             repeatNum = 0;
             startQueryMotorMotionDataRunnable();
-        }else {//电机状态表示停止运动
+        } else {//电机状态表示停止运动
             try {
-                int pulseCurrent = Math.abs(Integer.parseInt(curPulse));
-                int pulseTotal = Math.abs(Integer.parseInt(lastTotalPulse));
-                if (pulseCurrent >= pulseTotal) {
+                int pulseMotion = Integer.parseInt(totalPulseGoal);
+                int pulseDiff = Math.abs(Integer.parseInt(curPulse) - Integer.parseInt(lastPulse));
+                if (pulseDiff >= pulseMotion) {
                     updateStopState();
                 } else {
                     //暂停状态处理
@@ -375,7 +377,7 @@ public class BleAdmeMotorMotionAngleFragment extends BaseDialogFragment {
     }
 
     public void processContinueMotorMotion() {
-        Timber.d("start Motion: totalPulse=%s,curPulse=%s,motionPulse=%s", lastTotalPulse, curPulse, motionPulse);
+        Timber.d("start Motion: lastPulse=%s,curPulse=%s,continuePulseGoal=%s", lastPulse, curPulse, continuePulseGoal);
 
         if (btnPause.getText().toString().equals("继续")) {
             btnPause.setText("暂停");

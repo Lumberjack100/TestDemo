@@ -31,6 +31,8 @@ import com.shmedo.mcloudapp.util.KeyBordUtils;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.text.DecimalFormat;
+
 import butterknife.BindView;
 import butterknife.OnClick;
 import timber.log.Timber;
@@ -63,10 +65,9 @@ public class BleAdmeGuideGrooveCalibrationFragment extends BaseBleIotCommunicate
 
     private String motionWay;//  运动方式
     private String movementSpeed;// 电机运动速度(r/min)
-    private String motionPulse;//  运动脉冲数
+    private String totalPulseGoal;//  运动脉冲数
 
-    private String totalPulse;//总脉冲数
-    private String curPulse;// 当前脉冲数
+    private String lastPulse;// 上次停止时脉冲数
 
     private AdmeGuideGrooveCalibrationInfo grooveCalibrationInfo;
     private BleAdmeMotorMotionAngleFragment motorMotionAngleFragment;
@@ -159,7 +160,7 @@ public class BleAdmeGuideGrooveCalibrationFragment extends BaseBleIotCommunicate
 
     private boolean checkValueIsValid() {
         movementSpeed = mEtMovementSpeed.getText().toString().trim();
-        motionPulse = mEtMotionPulse.getText().toString().trim();
+        totalPulseGoal = mEtMotionPulse.getText().toString().trim();
         if (TextUtils.isEmpty(movementSpeed)) {
             ToastUtils.show("请输入电机运动速度!");
             mEtMovementSpeed.requestFocus();
@@ -178,13 +179,13 @@ public class BleAdmeGuideGrooveCalibrationFragment extends BaseBleIotCommunicate
             return false;
         }
 
-        if (TextUtils.isEmpty(motionPulse)) {
+        if (TextUtils.isEmpty(totalPulseGoal)) {
             ToastUtils.show("请输入运动脉冲!");
             mEtMotionPulse.requestFocus();
             return false;
         }
         try {
-            int value = Integer.parseInt(motionPulse);
+            int value = Integer.parseInt(totalPulseGoal);
             if (value <= 0) {
                 ToastUtils.show("请输入正确的运动脉冲!");
                 mEtMotionPulse.requestFocus();
@@ -204,8 +205,7 @@ public class BleAdmeGuideGrooveCalibrationFragment extends BaseBleIotCommunicate
             AdmeGuideGrooveCalibrationEntity entity = new AdmeGuideGrooveCalibrationEntity();
             entity.setMovementway(motionWay);
             entity.setMotorspeed(movementSpeed);
-            motionPulse = String.valueOf(Integer.parseInt(motionPulse));
-            entity.setMovepulse(motionPulse);
+            entity.setMovepulse(totalPulseGoal);
 
             mBtnRun.setEnabled(false);
             errMsg = "发送指令超时,请稍后尝试";
@@ -310,7 +310,7 @@ public class BleAdmeGuideGrooveCalibrationFragment extends BaseBleIotCommunicate
                 }
                 AdmeMotorMotionAngleInfo motorMotionAngleInfo = commandResult.getResult();
                 if (motorMotionAngleInfo != null) {
-                    curPulse = motorMotionAngleInfo.getPulsenumber();
+                    lastPulse = motorMotionAngleInfo.getPulsenumber();
                 }
                 if (motorMotionAngleFragment != null && motorMotionAngleFragment.isVisible()) {
                     motorMotionAngleFragment.updateMotionData(motorMotionAngleInfo);
@@ -362,7 +362,7 @@ public class BleAdmeGuideGrooveCalibrationFragment extends BaseBleIotCommunicate
         }
         motionWay = grooveCalibrationInfo.getMovementway().trim();
         movementSpeed = grooveCalibrationInfo.getMotorspeed().trim();
-        motionPulse = grooveCalibrationInfo.getMovePulse().trim();
+        totalPulseGoal = grooveCalibrationInfo.getMovePulse().trim();
         if (motionWay.equals("0")) {
             motionWayPos = 0;
             mTvMotionWay.setText("正转");
@@ -371,16 +371,17 @@ public class BleAdmeGuideGrooveCalibrationFragment extends BaseBleIotCommunicate
             mTvMotionWay.setText("反转");
         }
 
+        DecimalFormat decimalFormat = new DecimalFormat();
+        decimalFormat.applyPattern("#");
         try {
             mEtMovementSpeed.setText(movementSpeed);
-            motionPulse = String.valueOf(Integer.parseInt(motionPulse));
-            mEtMotionPulse.setText(motionPulse);
+            totalPulseGoal = decimalFormat.format(Double.parseDouble(totalPulseGoal));
+            mEtMotionPulse.setText(totalPulseGoal);
         } catch (Exception ex) {
             ex.printStackTrace();
-            motionPulse = "0";
-            mEtMotionPulse.setText(motionPulse);
+            totalPulseGoal = "0";
+            mEtMotionPulse.setText(totalPulseGoal);
         }
-
         //电机处于运动状态，弹出底部运行数据展示框
         if (grooveCalibrationInfo.getMorunstate().trim().equals("1")) {
             showMotorMotionDialog();
@@ -401,17 +402,8 @@ public class BleAdmeGuideGrooveCalibrationFragment extends BaseBleIotCommunicate
             motorMotionAngleFragment.processContinueMotorMotion();
             return;
         }
-        try {
-            int pulseCurrent = Math.abs(Integer.parseInt(curPulse));
-            int pulseGoal = Math.abs(Integer.parseInt(motionPulse));
-            totalPulse = String.valueOf(pulseCurrent + pulseGoal);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            return;
-        }
-
-        Timber.d("start Motion: totalPulse=%s,curPulse=%s,motionPulse=%s", totalPulse, curPulse, motionPulse);
-        motorMotionAngleFragment = BleAdmeMotorMotionAngleFragment.newInstance(motionWay, totalPulse);
+        Timber.d("start Motion: lastPulse=%s,totalPulseGoal=%s", lastPulse, totalPulseGoal);
+        motorMotionAngleFragment = BleAdmeMotorMotionAngleFragment.newInstance(motionWay, lastPulse, totalPulseGoal);
         motorMotionAngleFragment.show(getChildFragmentManager(), "dialog");
 
         clearMotionDataLayout.setVisibility(View.VISIBLE);
