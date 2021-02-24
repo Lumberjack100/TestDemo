@@ -226,17 +226,17 @@ public class BleAdmeMotorMotionAngleFragment extends BaseDialogFragment {
         }
 
         if (id == R.id.iv_close) {
-            if (btnExit.getVisibility() == View.VISIBLE) {
+            if (!usrBleViewModel.isConnected() || btnExit.getVisibility() == View.VISIBLE) {
                 dismiss();
             } else {
                 showExitWarnDialog("确认退出数据运行？");
             }
         } else if (id == R.id.btn_stop) {
+            isStopClick = true;
             if (!usrBleViewModel.isConnected()) {
                 ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
                 return;
             }
-            isStopClick = true;
             stopQueryMotorMotionDataRunnable();
             stopMotorMotion();
 

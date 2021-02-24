@@ -158,7 +158,7 @@ public class BleAdmeGuideGrooveCalibrationFragment extends BaseBleIotCommunicate
                 ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
                 return;
             }
-            showClearWarnDialog("确认清除设备运动监测数据吗？");
+            showClearWarnDialog("确认清除设备运动记录数据吗？");
         }
     }
 
