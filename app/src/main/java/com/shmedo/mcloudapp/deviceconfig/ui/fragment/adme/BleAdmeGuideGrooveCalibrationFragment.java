@@ -84,7 +84,7 @@ public class BleAdmeGuideGrooveCalibrationFragment extends BaseBleIotCommunicate
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         setView();
-        queryParamInfo();
+        queryMotorMotionConfig();
     }
 
     private void setView() {
@@ -100,7 +100,7 @@ public class BleAdmeGuideGrooveCalibrationFragment extends BaseBleIotCommunicate
     /**
      * 获取导槽校准配置参数
      */
-    private void queryParamInfo() {
+    private void queryMotorMotionConfig() {
         errMsg = "查询数据超时,请稍后尝试";
         startProgressRunnable("加载中...", WRITE_TIME_OUT_SECOND);
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_GET_GUIDE_GROOVE_CALIBRATION_PARAMETERS);
@@ -291,15 +291,19 @@ public class BleAdmeGuideGrooveCalibrationFragment extends BaseBleIotCommunicate
                     return;
                 }
                 grooveCalibrationInfo = commandResult.getResult();
-                initParamConfigInfo();
-                getMotorMotionData();
+                if (motorMotionAngleFragment != null && motorMotionAngleFragment.isVisible()) {
+                    motorMotionAngleFragment.processMotorMotionState(grooveCalibrationInfo);
+                } else {
+                    initParamConfigInfo();
+                    getMotorMotionData();
+                }
             }
             break;
 
-            case ADME_MD_GET_GUIDE_GROOVE_CALIBRATION_PULSE: {//查询电机运动状态
+            case ADME_MD_GET_GUIDE_GROOVE_CALIBRATION_PULSE: {//查询电机实时运动数据
                 IOTCommandResult<AdmeMotorMotionAngleInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
-                    String errMsg = String.format("%s %s", "获取电机的实时运行状态出错!", commandResult.getMessage());
+                    String errMsg = String.format("%s %s", "获取电机的实时运动数据出错!", commandResult.getMessage());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
                     return;
@@ -373,6 +377,8 @@ public class BleAdmeGuideGrooveCalibrationFragment extends BaseBleIotCommunicate
             mEtMotionPulse.setText(motionPulse);
         } catch (Exception ex) {
             ex.printStackTrace();
+            motionPulse = "0";
+            mEtMotionPulse.setText(motionPulse);
         }
 
         //电机处于运动状态，弹出底部运行数据展示框
@@ -401,7 +407,7 @@ public class BleAdmeGuideGrooveCalibrationFragment extends BaseBleIotCommunicate
             totalPulse = String.valueOf(pulseCurrent + pulseGoal);
         } catch (Exception ex) {
             ex.printStackTrace();
-           return;
+            return;
         }
 
         Timber.d("start Motion: totalPulse=%s,curPulse=%s,motionPulse=%s", totalPulse, curPulse, motionPulse);

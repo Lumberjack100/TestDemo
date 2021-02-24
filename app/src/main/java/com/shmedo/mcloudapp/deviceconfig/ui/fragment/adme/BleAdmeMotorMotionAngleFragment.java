@@ -19,6 +19,7 @@ import com.shmedo.configlibrary.iot.cmd.entity.adme.AdmeGuideGrooveCalibrationEn
 import com.shmedo.configlibrary.iot.cmd.parser.IOTParseManager;
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.model.CommonSettingCmdResult;
+import com.shmedo.configlibrary.iot.model.adme.AdmeGuideGrooveCalibrationInfo;
 import com.shmedo.configlibrary.iot.model.adme.AdmeMotorMotionAngleInfo;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
 import com.shmedo.mcloudapp.R;
@@ -64,7 +65,7 @@ public class BleAdmeMotorMotionAngleFragment extends BaseDialogFragment {
     private USRBleViewModel usrBleViewModel;
 
     private String motionWay;//运动方式
-    private String totalPulse;//总脉冲数
+    private String lastTotalPulse;//上次停止时总脉冲数
     private String curPulse;// 当前脉冲数
     private String motionPulse;//  运动脉冲数
 
@@ -111,7 +112,7 @@ public class BleAdmeMotorMotionAngleFragment extends BaseDialogFragment {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             motionWay = getArguments().getString(ARG_PARAM1);
-            totalPulse = getArguments().getString(ARG_PARAM2);
+            lastTotalPulse = getArguments().getString(ARG_PARAM2);
         }
     }
 
@@ -164,6 +165,14 @@ public class BleAdmeMotorMotionAngleFragment extends BaseDialogFragment {
     }
 
     /**
+     * 获取电机运动配置参数
+     */
+    private void queryMotorMotionConfig() {
+        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_GET_GUIDE_GROOVE_CALIBRATION_PARAMETERS);
+        sendCommand(command);
+    }
+
+    /**
      * 查询ADME导槽校准的脉冲数、运动角度
      */
     private void getMotorMotionData() {
@@ -185,7 +194,7 @@ public class BleAdmeMotorMotionAngleFragment extends BaseDialogFragment {
     private void continueMotorMotion() {
         int pulseGoal = 0;
         try {
-            int pulseTotal = Math.abs(Integer.parseInt(totalPulse));
+            int pulseTotal = Math.abs(Integer.parseInt(lastTotalPulse));
             int pulseCurrent = Math.abs(Integer.parseInt(curPulse));
             pulseGoal = pulseTotal - pulseCurrent;
             //运动脉冲数无效
@@ -263,19 +272,6 @@ public class BleAdmeMotorMotionAngleFragment extends BaseDialogFragment {
     private void parseResponseMessage(String cmdStr) {
         IOTCommandType type = IOTStringUtil.extractCommandType(cmdStr);
         switch (type) {
-//            case ADME_MD_GET_GUIDE_GROOVE_CALIBRATION_PULSE: {//查询电机运动状态
-//                IOTCommandResult<AdmeMotorMotionAngleInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
-//                if (!commandResult.isSuccess()) {
-//                    String errMsg = String.format("%s %s", "获取电机的实时运行状态出错!", commandResult.getMessage());
-//                    Timber.e(errMsg);
-//                    ToastUtils.show(errMsg);
-//                    return;
-//                }
-//                AdmeMotorMotionAngleInfo  motorMotionAngleInfo = commandResult.getResult();
-//                updateMotionData(motorMotionAngleInfo);
-//            }
-//            break;
-
             case ADME_MD_STOP_GUIDE_GROOVE_CALIBRATION: {//停止电机运动
                 CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
                 if (!cmdResult.isSucceed()) {
@@ -301,23 +297,6 @@ public class BleAdmeMotorMotionAngleFragment extends BaseDialogFragment {
             }
             break;
 
-//            case ADME_MD_SET_GUIDE_GROOVE_CALIBRATION_PARAMETERS: {//设置ADME的导槽校准配置参数
-//                CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
-//                if (!cmdResult.isSucceed()) {
-//                    String errMsg = String.format("%s %s", "设置导槽校准配置参数出错!", cmdResult.getReason());
-//                    Timber.e(errMsg);
-//                    ToastUtils.show(errMsg);
-//                    return;
-//                }
-//                if (btnPause.getText().toString().equals("继续")) {
-//                    btnPause.setText("暂停");
-//                    btnPause.setBackgroundResource(R.drawable.bg_btn_pause_motor_motion);
-//                }
-//                queryMotorMotionDataRunnable = new QueryMotorMotionDataRunnable();
-//                startQueryMotorMotionDataRunnable();
-//            }
-//            break;
-
             default:
                 break;
         }
@@ -333,29 +312,14 @@ public class BleAdmeMotorMotionAngleFragment extends BaseDialogFragment {
         }
         if (!TextUtils.isEmpty(curPulse) && motorMotionAngleInfo.getPulsenumber().equals(curPulse)) {
             repeatNum++;
-            Timber.d("updateMotionData: totalPulse=%s,curPulse=%s,repeatNum=%s", totalPulse, curPulse, repeatNum);
-            //轮询五次电机脉冲数据不变化时，判断电机已经停止运动
+            Timber.d("updateMotionData: totalPulse=%s,curPulse=%s,repeatNum=%s", lastTotalPulse, curPulse, repeatNum);
+            //轮询五次电机脉冲数据不变化时，查询电机运动状态，判断电机是否停止运动
             if (repeatNum >= 5) {
-                try {
-                    int pulseCurrent = Math.abs(Integer.parseInt(curPulse));
-                    int pulseTotal = Math.abs(Integer.parseInt(totalPulse));
-                    if (pulseCurrent >= pulseTotal) {
-                        updateStopState();
-                    } else {
-                        //暂停状态处理
-                        repeatNum = 0;
-                        btnPause.setText("继续");
-                        btnPause.setBackgroundResource(R.drawable.bg_btn_continue_motor_motion);
-                        stopQueryMotorMotionDataRunnable();
-                    }
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                    updateStopState();
-                }
+                stopQueryMotorMotionDataRunnable();
+                queryMotorMotionConfig();
                 return;
             }
         }
-
         if (!TextUtils.isEmpty(curPulse) && !motorMotionAngleInfo.getPulsenumber().equals(curPulse) && repeatNum != 0) {
             repeatNum = 0;
         }
@@ -364,6 +328,38 @@ public class BleAdmeMotorMotionAngleFragment extends BaseDialogFragment {
         mTvMotionAngle.setText(motorMotionAngleInfo.getRealmoveangle());
 
         startQueryMotorMotionDataRunnable();
+    }
+
+    /**
+     * 处理电机运动状态变化
+     */
+    public void processMotorMotionState(AdmeGuideGrooveCalibrationInfo grooveCalibrationInfo) {
+        if (grooveCalibrationInfo == null) {
+            return;
+        }
+
+        //轮询五次电机脉冲数据不变化，但是电机状态表示还在运动，清空计数，继续轮询电机脉冲数据
+        if (grooveCalibrationInfo.getMorunstate().trim().equals("1")) {
+            repeatNum = 0;
+            startQueryMotorMotionDataRunnable();
+        }else {//电机状态表示停止运动
+            try {
+                int pulseCurrent = Math.abs(Integer.parseInt(curPulse));
+                int pulseTotal = Math.abs(Integer.parseInt(lastTotalPulse));
+                if (pulseCurrent >= pulseTotal) {
+                    updateStopState();
+                } else {
+                    //暂停状态处理
+                    repeatNum = 0;
+                    btnPause.setText("继续");
+                    btnPause.setBackgroundResource(R.drawable.bg_btn_continue_motor_motion);
+                    stopQueryMotorMotionDataRunnable();
+                }
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                updateStopState();
+            }
+        }
     }
 
     /**
@@ -379,7 +375,7 @@ public class BleAdmeMotorMotionAngleFragment extends BaseDialogFragment {
     }
 
     public void processContinueMotorMotion() {
-        Timber.d("start Motion: totalPulse=%s,curPulse=%s,motionPulse=%s", totalPulse, curPulse, motionPulse);
+        Timber.d("start Motion: totalPulse=%s,curPulse=%s,motionPulse=%s", lastTotalPulse, curPulse, motionPulse);
 
         if (btnPause.getText().toString().equals("继续")) {
             btnPause.setText("暂停");
