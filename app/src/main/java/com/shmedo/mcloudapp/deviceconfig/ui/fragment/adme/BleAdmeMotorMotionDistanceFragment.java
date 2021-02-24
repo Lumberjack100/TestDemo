@@ -15,12 +15,10 @@ import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.hjq.toast.ToastUtils;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandManager;
-import com.shmedo.configlibrary.iot.cmd.IOTCommandResult;
 import com.shmedo.configlibrary.iot.cmd.entity.adme.AdmeMeasuringHoleDepthEntity;
 import com.shmedo.configlibrary.iot.cmd.parser.IOTParseManager;
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.model.CommonSettingCmdResult;
-import com.shmedo.configlibrary.iot.model.adme.AdmeMeasuringHoleDepthInfo;
 import com.shmedo.configlibrary.iot.model.adme.AdmeMotorMotionDistanceInfo;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
 import com.shmedo.mcloudapp.R;
@@ -39,16 +37,14 @@ import timber.log.Timber;
  * 描述：     ADME 电机测量孔深实时数据展示底部弹窗
  */
 public class BleAdmeMotorMotionDistanceFragment extends BaseDialogFragment {
-    private static final String MEASURING_HOLE_DEPTH_PARAM = "measuring_hole_depth_param";
+    private static final String ARG_PARAM1 = "param1";
+    private static final String ARG_PARAM2 = "param2";
 
     @BindView(R.id.tv_title)
     TextView mTvTitle;
 
     @BindView(R.id.iv_close)
     ImageView mIvClose;
-
-    @BindView(R.id.tv_clear_data)
-    TextView mTvClearData;
 
     @BindView(R.id.tv_motion_pulse)
     TextView mTvMotionPulse;
@@ -67,14 +63,15 @@ public class BleAdmeMotorMotionDistanceFragment extends BaseDialogFragment {
 
     private USRBleViewModel usrBleViewModel;
 
-    private AdmeMeasuringHoleDepthInfo measuringHoleDepthInfo;
+    private String motionWay;//运动方式
+    private String totalDistance;//总距离
+    private String curDistance;//当前距离
+    private String motionDistance;//运动距离
+    private String curPulse;//脉冲数
 
-    private AdmeMotorMotionDistanceInfo motorMotionDistanceInfo;
 
-    private String pulseNumber;//脉冲数
-    private String curDistance;
-
-    private boolean isStopClick = false;
+    private static int repeatNum = 0;//当查询电机脉冲数重复超过一定次数时，判定电机停止
+    private boolean isStopClick = false;//是否是点击停止按钮操作
     private boolean isExit = false;
 
     private Handler motionDataHander = new Handler();
@@ -101,10 +98,11 @@ public class BleAdmeMotorMotionDistanceFragment extends BaseDialogFragment {
         queryMotorMotionDataRunnable = null;
     }
 
-    public static BleAdmeMotorMotionDistanceFragment newInstance(AdmeMeasuringHoleDepthInfo measuringHoleDepthInfo) {
+    public static BleAdmeMotorMotionDistanceFragment newInstance(String motionWay, String totalDistance) {
         BleAdmeMotorMotionDistanceFragment fragment = new BleAdmeMotorMotionDistanceFragment();
         Bundle args = new Bundle();
-        args.putParcelable(MEASURING_HOLE_DEPTH_PARAM, measuringHoleDepthInfo);
+        args.putString(ARG_PARAM1, motionWay);
+        args.putString(ARG_PARAM2, totalDistance);
         fragment.setArguments(args);
         return fragment;
     }
@@ -113,7 +111,8 @@ public class BleAdmeMotorMotionDistanceFragment extends BaseDialogFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            measuringHoleDepthInfo = (AdmeMeasuringHoleDepthInfo) getArguments().getParcelable(MEASURING_HOLE_DEPTH_PARAM);
+            motionWay = getArguments().getString(ARG_PARAM1);
+            totalDistance = getArguments().getString(ARG_PARAM2);
         }
     }
 
@@ -157,7 +156,6 @@ public class BleAdmeMotorMotionDistanceFragment extends BaseDialogFragment {
 
     private void initView() {
         mIvClose.setVisibility(View.VISIBLE);
-        mTvClearData.setVisibility(View.GONE);
         btnStop.setVisibility(View.VISIBLE);
         btnPause.setVisibility(View.VISIBLE);
         btnExit.setVisibility(View.GONE);
@@ -186,38 +184,27 @@ public class BleAdmeMotorMotionDistanceFragment extends BaseDialogFragment {
      * 继续电机运动指令
      */
     private void continueMotorMotion() {
-        if (measuringHoleDepthInfo == null) {
-            ToastUtils.show("无法继续操作!");
-            return;
-        }
-
-        double motionDistance = 0;
+        double distanceGoal = 0;
         try {
-            double totalDistance = Double.parseDouble(measuringHoleDepthInfo.getMovedistance());
-            double distance = Double.parseDouble(curDistance);
-            motionDistance = totalDistance - distance;
+            double distanceTotal = Math.abs(Double.parseDouble(totalDistance));
+            double distanceCurrent = Math.abs(Double.parseDouble(curDistance));
+            distanceGoal = distanceTotal - distanceCurrent;
             //运动距离无效
-            if (motionDistance <= 0) {
+            if (distanceGoal <= 0) {
                 updateStopState();
-                ToastUtils.show("无法继续操作!");
+                ToastUtils.show("无法继续电机运动操作!");
                 return;
             }
         } catch (Exception ex) {
             ex.printStackTrace();
+            return;
         }
+        motionDistance = String.valueOf(distanceGoal);
         AdmeMeasuringHoleDepthEntity entity = new AdmeMeasuringHoleDepthEntity();
-        entity.setMovementway(measuringHoleDepthInfo.getMovementway());
-        entity.setMovedistance(String.valueOf(motionDistance));
+        entity.setMovementway(motionWay);
+        entity.setMovedistance(motionDistance);
 
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_SET_MEASURING_HOLEDEPTH_PARAMETERS, entity);
-        sendCommand(command);
-    }
-
-    /**
-     * 清空电机运动数据记录指令
-     */
-    private void clearMotorMotionData() {
-        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_CLEAR_MEASURING_HOLEDEPTH_DATA);
         sendCommand(command);
     }
 
@@ -231,25 +218,18 @@ public class BleAdmeMotorMotionDistanceFragment extends BaseDialogFragment {
         usrBleViewModel.sendIOTProtocolCommand(cmdStr);
     }
 
-    @OnClick({R.id.iv_close, R.id.tv_clear_data, R.id.btn_stop, R.id.btn_pause, R.id.btn_exit})
+    @OnClick({R.id.iv_close, R.id.btn_stop, R.id.btn_pause, R.id.btn_exit})
     public void onClick(View view) {
         int id = view.getId();
         if (isDoubleClick(view)) {
             return;
         }
         if (id == R.id.iv_close) {
-            if (btnExit.getVisibility() == View.VISIBLE) {
+            if (!usrBleViewModel.isConnected() || btnExit.getVisibility() == View.VISIBLE) {
                 dismiss();
             } else {
                 showExitWarnDialog("确认退出数据运行？");
             }
-        } else if (id == R.id.tv_clear_data) {
-            if (!usrBleViewModel.isConnected()) {
-                ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
-                return;
-            }
-            clearMotorMotionData();
-
         } else if (id == R.id.btn_stop) {
             if (!usrBleViewModel.isConnected()) {
                 ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
@@ -265,11 +245,9 @@ public class BleAdmeMotorMotionDistanceFragment extends BaseDialogFragment {
                 return;
             }
             isStopClick = false;
-            btnPause.setEnabled(false);
             if (btnPause.getText().toString().equals("暂停")) {
-                stopQueryMotorMotionDataRunnable();
+//                stopQueryMotorMotionDataRunnable();
                 stopMotorMotion();
-
             } else {
                 continueMotorMotion();
             }
@@ -284,18 +262,18 @@ public class BleAdmeMotorMotionDistanceFragment extends BaseDialogFragment {
     private void parseResponseMessage(String cmdStr) {
         IOTCommandType type = IOTStringUtil.extractCommandType(cmdStr);
         switch (type) {
-            case ADME_MD_GET_MEASURING_HOLEDEPTH_PULSE: {
-                IOTCommandResult<AdmeMotorMotionDistanceInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
-                if (!commandResult.isSuccess()) {
-                    String errMsg = String.format("%s %s", "获取电机的实时运行状态出错!", commandResult.getMessage());
-                    Timber.e(errMsg);
-                    ToastUtils.show(errMsg);
-                    return;
-                }
-                motorMotionDistanceInfo = commandResult.getResult();
-                updateMotionData();
-            }
-            break;
+//            case ADME_MD_GET_MEASURING_HOLEDEPTH_PULSE: {
+//                IOTCommandResult<AdmeMotorMotionDistanceInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
+//                if (!commandResult.isSuccess()) {
+//                    String errMsg = String.format("%s %s", "获取电机的实时运行状态出错!", commandResult.getMessage());
+//                    Timber.e(errMsg);
+//                    ToastUtils.show(errMsg);
+//                    return;
+//                }
+//                AdmeMotorMotionDistanceInfo motorMotionDistanceInfo = commandResult.getResult();
+//                updateMotionData(motorMotionDistanceInfo);
+//            }
+//            break;
 
             case ADME_MD_STOP_MEASURING_HOLEDEPTH: {
                 CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
@@ -311,10 +289,9 @@ public class BleAdmeMotorMotionDistanceFragment extends BaseDialogFragment {
                     return;
                 }
 
-                if (isStopClick) {
+                if (isStopClick) {//停止按钮操作
                     updateStopState();
-                } else {
-                    btnPause.setEnabled(true);
+                } else {//暂停按钮操作
                     if (btnPause.getText().toString().equals("暂停")) {
                         btnPause.setText("继续");
                         btnPause.setBackgroundResource(R.drawable.bg_btn_continue_motor_motion);
@@ -323,23 +300,22 @@ public class BleAdmeMotorMotionDistanceFragment extends BaseDialogFragment {
             }
             break;
 
-            case ADME_MD_SET_MEASURING_HOLEDEPTH_PARAMETERS: {//设置ADME的测量孔深配置参数
-                CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
-                if (!cmdResult.isSucceed()) {
-                    String errMsg = String.format("%s %s", "设置测量孔深配置参数出错!", cmdResult.getReason());
-                    Timber.e(errMsg);
-                    ToastUtils.show(errMsg);
-                    return;
-                }
-                btnPause.setEnabled(true);
-                if (btnPause.getText().toString().equals("继续")) {
-                    btnPause.setText("暂停");
-                    btnPause.setBackgroundResource(R.drawable.bg_btn_pause_motor_motion);
-                }
-                queryMotorMotionDataRunnable = new QueryMotorMotionDataRunnable();
-                startQueryMotorMotionDataRunnable();
-            }
-            break;
+//            case ADME_MD_SET_MEASURING_HOLEDEPTH_PARAMETERS: {//设置ADME的测量孔深配置参数
+//                CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
+//                if (!cmdResult.isSucceed()) {
+//                    String errMsg = String.format("%s %s", "设置测量孔深配置参数出错!", cmdResult.getReason());
+//                    Timber.e(errMsg);
+//                    ToastUtils.show(errMsg);
+//                    return;
+//                }
+//                if (btnPause.getText().toString().equals("继续")) {
+//                    btnPause.setText("暂停");
+//                    btnPause.setBackgroundResource(R.drawable.bg_btn_pause_motor_motion);
+//                }
+//                queryMotorMotionDataRunnable = new QueryMotorMotionDataRunnable();
+//                startQueryMotorMotionDataRunnable();
+//            }
+//            break;
 
             default:
                 break;
@@ -349,20 +325,42 @@ public class BleAdmeMotorMotionDistanceFragment extends BaseDialogFragment {
     /**
      * 实时刷新脉冲和运动距离
      */
-    private void updateMotionData() {
+    public void updateMotionData(AdmeMotorMotionDistanceInfo motorMotionDistanceInfo) {
         if (motorMotionDistanceInfo == null) {
             Timber.e("AdmeMotorMotionDistanceInfo is Null!");
             return;
         }
-
-        //电机已经停止，不用再轮询电机状态
-        if (!TextUtils.isEmpty(pulseNumber) && motorMotionDistanceInfo.getPulsenumber().equals(pulseNumber)) {
-            updateStopState();
-            return;
+        if (!TextUtils.isEmpty(curPulse) && motorMotionDistanceInfo.getPulsenumber().equals(curPulse)) {
+            repeatNum++;
+            Timber.d("updateMotionData: totalDistance=%s,curDistance=%s,curPulse=%s,repeatNum=%s", totalDistance, curDistance, curPulse, repeatNum);
+            //轮询五次电机脉冲数据不变化时，判断电机已经停止运动
+            if (repeatNum >= 5) {
+                try {
+                    double distanceCurrent = Math.abs(Double.parseDouble(curDistance));
+                    double distanceTotal = Math.abs(Double.parseDouble(totalDistance));
+                    if (distanceCurrent >= distanceTotal) {
+                        updateStopState();
+                    } else {
+                        //暂停状态处理
+                        repeatNum = 0;
+                        btnPause.setText("继续");
+                        btnPause.setBackgroundResource(R.drawable.bg_btn_continue_motor_motion);
+                        stopQueryMotorMotionDataRunnable();
+                    }
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                    updateStopState();
+                }
+                return;
+            }
         }
-        pulseNumber = motorMotionDistanceInfo.getPulsenumber();
+
+        if (!TextUtils.isEmpty(curPulse) && !motorMotionDistanceInfo.getPulsenumber().equals(curPulse) && repeatNum != 0) {
+            repeatNum = 0;
+        }
+        curPulse = motorMotionDistanceInfo.getPulsenumber();
         curDistance = motorMotionDistanceInfo.getRealmovedistance();
-        mTvMotionPulse.setText(pulseNumber);
+        mTvMotionPulse.setText(curPulse);
         mTvMotionDistance.setText(curDistance);
 
         startQueryMotorMotionDataRunnable();
@@ -372,18 +370,36 @@ public class BleAdmeMotorMotionDistanceFragment extends BaseDialogFragment {
      * 更新电机停止运动状态页面
      */
     private void updateStopState() {
+        repeatNum = 0;
         mIvClose.setVisibility(View.VISIBLE);
-        mTvClearData.setVisibility(View.GONE);
         btnStop.setVisibility(View.GONE);
         btnPause.setVisibility(View.GONE);
         btnExit.setVisibility(View.VISIBLE);
         stopQueryMotorMotionDataRunnable();
     }
 
+    public void processContinueMotorMotion() {
+        Timber.d("start Motion: totalDistance=%s,curDistance=%s,motionDistance=%s,curPulse=%s", totalDistance, curDistance, motionDistance, curPulse);
+
+        if (btnPause.getText().toString().equals("继续")) {
+            btnPause.setText("暂停");
+            btnPause.setBackgroundResource(R.drawable.bg_btn_pause_motor_motion);
+        }
+        queryMotorMotionDataRunnable = new QueryMotorMotionDataRunnable();
+        startQueryMotorMotionDataRunnable();
+    }
+
     @Override
     public void onStop() {
-        stopQueryMotorMotionDataRunnable();
+        //TODO #gh# 屏幕熄灭时触发此回调，会造成未正确刷新电机运行状态,stopQueryMotorMotionDataRunnable()放在onDestroy()中调用
+//        stopQueryMotorMotionDataRunnable();
         super.onStop();
+    }
+
+    @Override
+    public void onDestroy() {
+        stopQueryMotorMotionDataRunnable();
+        super.onDestroy();
     }
 
     /**
@@ -406,7 +422,13 @@ public class BleAdmeMotorMotionDistanceFragment extends BaseDialogFragment {
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                         dialog.dismiss();
                         isExit = true;
-                        stopMotorMotion();
+                        if (usrBleViewModel.isConnected()) {
+                            //蓝牙未断开时先发送停止电机指令，再关闭运行页面
+                            stopMotorMotion();
+                        } else {
+                            //直接关闭运行页面
+                            BleAdmeMotorMotionDistanceFragment.this.dismiss();
+                        }
                     }
                 });
         MaterialDialog mMaterialDialog = mBuilder.build();

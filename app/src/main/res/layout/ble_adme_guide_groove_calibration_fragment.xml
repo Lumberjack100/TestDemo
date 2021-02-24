@@ -67,7 +67,7 @@
             android:id="@+id/motionPulseEt"
             style="@style/DataCenter_EditText_Style"
             android:hint="请输入"
-            android:inputType="numberDecimal" />
+            android:inputType="number" />
 
     </LinearLayout>
 

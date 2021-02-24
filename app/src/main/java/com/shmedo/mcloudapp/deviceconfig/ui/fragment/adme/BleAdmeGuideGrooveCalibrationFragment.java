@@ -31,8 +31,6 @@ import com.shmedo.mcloudapp.util.KeyBordUtils;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.text.DecimalFormat;
-
 import butterknife.BindView;
 import butterknife.OnClick;
 import timber.log.Timber;
@@ -72,9 +70,6 @@ public class BleAdmeGuideGrooveCalibrationFragment extends BaseBleIotCommunicate
 
     private AdmeGuideGrooveCalibrationInfo grooveCalibrationInfo;
     private BleAdmeMotorMotionAngleFragment motorMotionAngleFragment;
-
-    private DecimalFormat decimalFormat = new DecimalFormat();
-
 
     public static BleAdmeGuideGrooveCalibrationFragment newInstance() {
         return new BleAdmeGuideGrooveCalibrationFragment();
@@ -189,7 +184,7 @@ public class BleAdmeGuideGrooveCalibrationFragment extends BaseBleIotCommunicate
             return false;
         }
         try {
-            double value = Double.parseDouble(motionPulse);
+            int value = Integer.parseInt(motionPulse);
             if (value <= 0) {
                 ToastUtils.show("请输入正确的运动脉冲!");
                 mEtMotionPulse.requestFocus();
@@ -209,8 +204,7 @@ public class BleAdmeGuideGrooveCalibrationFragment extends BaseBleIotCommunicate
             AdmeGuideGrooveCalibrationEntity entity = new AdmeGuideGrooveCalibrationEntity();
             entity.setMovementway(motionWay);
             entity.setMotorspeed(movementSpeed);
-            decimalFormat.applyPattern("#.#");
-            motionPulse = decimalFormat.format(Double.parseDouble(motionPulse));
+            motionPulse = String.valueOf(Integer.parseInt(motionPulse));
             entity.setMovepulse(motionPulse);
 
             mBtnRun.setEnabled(false);
@@ -375,8 +369,7 @@ public class BleAdmeGuideGrooveCalibrationFragment extends BaseBleIotCommunicate
 
         try {
             mEtMovementSpeed.setText(movementSpeed);
-            decimalFormat.applyPattern("#.#");
-            motionPulse = decimalFormat.format(Double.parseDouble(motionPulse));
+            motionPulse = String.valueOf(Integer.parseInt(motionPulse));
             mEtMotionPulse.setText(motionPulse);
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -403,8 +396,8 @@ public class BleAdmeGuideGrooveCalibrationFragment extends BaseBleIotCommunicate
             return;
         }
         try {
-            double pulseCurrent = Math.abs(Double.parseDouble(curPulse));
-            double pulseGoal = Math.abs(Double.parseDouble(motionPulse));
+            int pulseCurrent = Math.abs(Integer.parseInt(curPulse));
+            int pulseGoal = Math.abs(Integer.parseInt(motionPulse));
             totalPulse = String.valueOf(pulseCurrent + pulseGoal);
         } catch (Exception ex) {
             ex.printStackTrace();

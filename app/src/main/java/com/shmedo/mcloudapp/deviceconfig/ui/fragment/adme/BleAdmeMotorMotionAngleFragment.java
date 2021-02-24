@@ -70,7 +70,7 @@ public class BleAdmeMotorMotionAngleFragment extends BaseDialogFragment {
 
 
     private static int repeatNum = 0;//当查询电机脉冲数重复超过一定次数时，判定电机停止
-    private boolean isStopClick = false;
+    private boolean isStopClick = false;//是否是点击停止按钮操作
     private boolean isExit = false;
 
     private Handler motionDataHander = new Handler();
@@ -183,10 +183,10 @@ public class BleAdmeMotorMotionAngleFragment extends BaseDialogFragment {
      * 继续电机运动
      */
     private void continueMotorMotion() {
-        double pulseGoal = 0;
+        int pulseGoal = 0;
         try {
-            double pulseTotal = Math.abs(Double.parseDouble(totalPulse));
-            double pulseCurrent = Math.abs(Double.parseDouble(curPulse));
+            int pulseTotal = Math.abs(Integer.parseInt(totalPulse));
+            int pulseCurrent = Math.abs(Integer.parseInt(curPulse));
             pulseGoal = pulseTotal - pulseCurrent;
             //运动脉冲数无效
             if (pulseGoal <= 0) {
@@ -331,14 +331,14 @@ public class BleAdmeMotorMotionAngleFragment extends BaseDialogFragment {
             Timber.e("AdmeMotorMotionAngleInfo is Null!");
             return;
         }
-        //电机已经停止，不用再轮询电机脉冲数据
         if (!TextUtils.isEmpty(curPulse) && motorMotionAngleInfo.getPulsenumber().equals(curPulse)) {
             repeatNum++;
             Timber.d("updateMotionData: totalPulse=%s,curPulse=%s,repeatNum=%s", totalPulse, curPulse, repeatNum);
+            //轮询五次电机脉冲数据不变化时，判断电机已经停止运动
             if (repeatNum >= 5) {
                 try {
-                    double pulseCurrent = Math.abs(Double.parseDouble(curPulse));
-                    double pulseTotal = Double.parseDouble(totalPulse);
+                    int pulseCurrent = Math.abs(Integer.parseInt(curPulse));
+                    int pulseTotal = Math.abs(Integer.parseInt(totalPulse));
                     if (pulseCurrent >= pulseTotal) {
                         updateStopState();
                     } else {
