@@ -85,7 +85,7 @@ public class AdmeExecutiveAgencyInfo {
     }
 
     public String getInterdeep() {
-        return TextUtils.isEmpty(interdeep) ? "" : interdeep;
+        return TextUtils.isEmpty(interdeep) ? "0" : interdeep;
     }
 
     public void setInterdeep(String interdeep) {
@@ -125,7 +125,7 @@ public class AdmeExecutiveAgencyInfo {
     }
 
     public String getMeabaseth() {
-        return TextUtils.isEmpty(meabaseth) ? "" : meabaseth;
+        return TextUtils.isEmpty(meabaseth) ? "0" : meabaseth;
     }
 
     public void setMeabaseth(String meabaseth) {
@@ -149,7 +149,7 @@ public class AdmeExecutiveAgencyInfo {
     }
 
     public String getDetectiontime() {
-        return TextUtils.isEmpty(detectiontime) ? "" : detectiontime;
+        return TextUtils.isEmpty(detectiontime) ? "0" : detectiontime;
     }
 
     public void setDetectiontime(String detectiontime) {

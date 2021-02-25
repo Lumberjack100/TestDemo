@@ -174,7 +174,7 @@ public class BleAdmeExecutiveAgencyFragment extends BaseBleIotCommunicateFragmen
         mEtMeasuringDistance.setFilters(new InputFilter[]{new InputFilter.LengthFilter(4)});
         mEtMeasurementIntervalTime.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
         mEtMeasuringReferenceDepth.setFilters(new InputFilter[]{new InputFilter.LengthFilter(8)});
-        mEtPulsesPerUnitTime.setFilters(new InputFilter[]{new InputFilter.LengthFilter(4)});
+        mEtPulsesPerUnitTime.setFilters(new InputFilter[]{new InputFilter.LengthFilter(6)});
         mEtDetectionTime.setFilters(new InputFilter[]{new InputFilter.LengthFilter(8)});
         mEtDetectionStart.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
         mEtDetectionStart.setHint("0-50");
@@ -766,8 +766,10 @@ public class BleAdmeExecutiveAgencyFragment extends BaseBleIotCommunicateFragmen
         }
 
         if (admeExecutiveAgencyInfo.getDwonblocked().equals("0")) {
+            mSbDecentralizedPredictionEnable.setCheckedImmediatelyNoEvent(false);
             decentralizedPredictionLayout.setVisibility(View.GONE);
         } else if (admeExecutiveAgencyInfo.getDwonblocked().equals("1")) {
+            mSbDecentralizedPredictionEnable.setCheckedImmediatelyNoEvent(true);
             decentralizedPredictionLayout.setVisibility(View.VISIBLE);
         }
     }

@@ -128,7 +128,7 @@ public class BleAdmeBasicParamConfigFragment extends BaseBleIotCommunicateFragme
         mEtInclinometerTubeHoleDepth.setFilters(new InputFilter[]{new InputFilter.LengthFilter(6)});
 
         mEtDecentralizationSpeed.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
-        mEtDecentralizationSpeed.setHint("1-180");
+        mEtDecentralizationSpeed.setHint("1-600");
 
         mEtDecentralizationWaitingTime.setFilters(new InputFilter[]{new InputFilter.LengthFilter(2)});
         mEtDecentralizationWaitingTime.setHint("1-32");
@@ -277,7 +277,7 @@ public class BleAdmeBasicParamConfigFragment extends BaseBleIotCommunicateFragme
         }
         try {
             int port = Integer.parseInt(decentralizationSpeed);
-            if (port < 1 || port > 180) {
+            if (port < 1 || port > 600) {
                 ToastUtils.show("请输入正确的下放速度!");
                 mEtDecentralizationSpeed.requestFocus();
                 return false;
@@ -513,7 +513,7 @@ public class BleAdmeBasicParamConfigFragment extends BaseBleIotCommunicateFragme
             mEtCollectorAddress.setHint("0-32");
             mEtMacAddress.setHint("XXXXXXXXXXXX");
             mEtInclinometerTubeHoleDepth.setHint("请输入");
-            mEtDecentralizationSpeed.setHint("1-180");
+            mEtDecentralizationSpeed.setHint("1-600");
             mEtDecentralizationWaitingTime.setHint("1-32");
             mTvDataSettlementMethod.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.icon_right, 0);
         } else {

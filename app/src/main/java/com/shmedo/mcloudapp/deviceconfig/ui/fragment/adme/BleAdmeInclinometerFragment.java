@@ -214,16 +214,17 @@ public class BleAdmeInclinometerFragment extends BaseBleIotCommunicateFragment {
     }
 
     private boolean checkValueIsValid() {
-        address = mEtCollectorAddress.getText().toString().trim();
         collectionInterval = mEtCollectionInterval.getText().toString().trim();
         solvingInterval = mEtSolvingInterval.getText().toString().trim();
         sleepTime = mEtSleepTime.getText().toString().trim();
         correctionValue = mEtCorrectionValue.getText().toString().trim();
 
         if (inclinometerType.equals("0")) {
+            address = mEtCollectorAddress.getText().toString().trim();
+
             if (TextUtils.isEmpty(address)) {
                 ToastUtils.show("请输入采集器地址!");
-                mEtMacAddress.requestFocus();
+                mEtCollectorAddress.requestFocus();
                 return false;
             }
             if (Integer.parseInt(address) < 0 || Integer.parseInt(address) > 32) {
@@ -232,6 +233,8 @@ public class BleAdmeInclinometerFragment extends BaseBleIotCommunicateFragment {
                 return false;
             }
         } else {
+            address = mEtMacAddress.getText().toString().trim();
+
             if (TextUtils.isEmpty(address)) {
                 ToastUtils.show("请输入Mac地址!");
                 mEtMacAddress.requestFocus();
@@ -528,7 +531,7 @@ public class BleAdmeInclinometerFragment extends BaseBleIotCommunicateFragment {
             mEtCollectionInterval.setHint("请输入");
             mEtSolvingInterval.setHint("请输入");
             mEtSleepTime.setHint("请输入");
-            mEtCorrectionValue.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.icon_right, 0);
+            mEtCorrectionValue.setHint("请输入");
         } else {
             mTvInclinometerType.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
             mTvLowPowerMode.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
@@ -537,7 +540,7 @@ public class BleAdmeInclinometerFragment extends BaseBleIotCommunicateFragment {
             mEtCollectionInterval.setHint("");
             mEtSolvingInterval.setHint("");
             mEtSleepTime.setHint("");
-            mEtCorrectionValue.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+            mEtCorrectionValue.setHint("");
 
             mEtCollectorAddress.clearFocus();
             mEtMacAddress.clearFocus();
