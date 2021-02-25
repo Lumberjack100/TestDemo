@@ -37,8 +37,6 @@ import timber.log.Timber;
  * 描述：     TODO #gh#
  */
 public abstract class BaseNetIotCommunicateFragment extends BaseFragment {
-//    private DeviceNetModelViewModel deviceNetModelViewModel;
-
     protected List<String> msgIDList = new ArrayList<>();
 
     private Handler uiHander = new Handler();
@@ -84,17 +82,6 @@ public abstract class BaseNetIotCommunicateFragment extends BaseFragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-//        deviceNetModelViewModel = getActivityScopeViewModel(DeviceNetModelViewModel.class);
-//        deviceNetModelViewModel.getDispatchCmdItemList().observeInFragment(this, new Observer<List<DispatchCmdItem>>() {
-//            @Override
-//            public void onChanged(List<DispatchCmdItem> dispatchCmdItems) {
-//                //判断此页面是否处于前台
-//                if (!isActive) {
-//                    return;
-//                }
-//                onDispatchCmdResult(dispatchCmdItems);
-//            }
-//        });
     }
 
     @Override

@@ -14,6 +14,7 @@ import com.shmedo.mcloudapp.deviceconfig.model.DiscoveredBluetoothDevice;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.NetConfigDeviceFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.adme.BleAdmeHomeFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.das.BleDasHomeFragment;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.e40.NetE40HomeFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.m20.BleM20HomeFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.m20.NetM20HomeFragment;
 import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfo;
@@ -90,7 +91,11 @@ public class DeviceConfigActivity extends BaseConfigFragmentContainerActivity {
                     break;
 
                 case AppContants.DeviceType.M20:
-                    fragment = NetM20HomeFragment.newInstance(projectDeviceInfo);
+                    fragment = NetM20HomeFragment.newInstance(projectDeviceInfo, deviceType);
+                    break;
+
+                case AppContants.DeviceType.E40:
+                    fragment = NetE40HomeFragment.newInstance(projectDeviceInfo, deviceType);
                     break;
             }
         } else if (connectWay == AppContants.CommunicationWay.BLE_CONNECT) {

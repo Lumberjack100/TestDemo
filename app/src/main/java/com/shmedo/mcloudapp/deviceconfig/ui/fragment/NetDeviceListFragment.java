@@ -187,6 +187,8 @@ public class NetDeviceListFragment extends BaseFragment {
                     deviceType = AppContants.DeviceType.ADME;
                 } else if (deviceInfo.getDeviceTypeName().contains("M20")) {
                     deviceType = AppContants.DeviceType.M20;
+                } else if (deviceInfo.getDeviceTypeName().contains("E40") || deviceInfo.getDeviceTypeName().contains("E60")) {
+                    deviceType = AppContants.DeviceType.E40;
                 }
                 DeviceConfigActivity.startActivity(mActivity, deviceInfo, deviceType);
             }

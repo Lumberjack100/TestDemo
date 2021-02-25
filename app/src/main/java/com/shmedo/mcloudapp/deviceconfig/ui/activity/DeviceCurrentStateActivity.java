@@ -83,6 +83,7 @@ public class DeviceCurrentStateActivity extends BaseConfigFragmentContainerActiv
                     break;
 
                 case AppContants.DeviceType.M20:
+                case AppContants.DeviceType.E40:
                     fragment = NetM20CurrentStateFragment.newInstance(projectDeviceInfo);
                     break;
             }

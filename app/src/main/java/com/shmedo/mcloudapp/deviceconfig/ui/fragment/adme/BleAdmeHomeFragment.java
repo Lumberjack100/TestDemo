@@ -325,6 +325,7 @@ public class BleAdmeHomeFragment extends BaseBleIotCommunicateFragment {
         usrBleViewModel.getDeviceApiKey().observeInFragment(this, new Observer<String>() {
             @Override
             public void onChanged(String apiKey) {
+                hideProgressBar();
                 queryEquipmentBaseInfo();
             }
         });

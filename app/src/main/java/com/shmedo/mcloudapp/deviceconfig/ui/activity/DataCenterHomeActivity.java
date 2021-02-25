@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment;
 
 import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.adme.BleAdmeDataCenterHomeFragment;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.e40.NetE40DataCenterHomeFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.m20.BleM20DataCenterHomeFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.m20.NetM20DataCenterHomeFragment;
 import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfo;
@@ -104,6 +105,10 @@ public class DataCenterHomeActivity extends BaseConfigFragmentContainerActivity 
 
                 case AppContants.DeviceType.M20:
                     fragment = NetM20DataCenterHomeFragment.newInstance(configMethod, isLevelInit, projectDeviceInfo);
+                    break;
+
+                case AppContants.DeviceType.E40:
+                    fragment = NetE40DataCenterHomeFragment.newInstance(configMethod, projectDeviceInfo);
                     break;
             }
         } else if (connectWay == AppContants.CommunicationWay.BLE_CONNECT) {

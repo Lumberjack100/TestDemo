@@ -293,6 +293,17 @@ public enum IOTCommandType {
      */
     M20_MD_LEVEL_INITIAL("md_levelinit"),
 
+    /*　 GNSS 指令  */
+    /**
+     * 获取GNSS 的 RTK
+     */
+    GNSS_MD_GET_RTK("md_getrtk"),
+
+    /**
+     * 设置GNSS 的 RTK
+     */
+    GNSS_MD_SET_RTK("md_setrtk"),
+
     /**
      * 自定义心跳包
      */

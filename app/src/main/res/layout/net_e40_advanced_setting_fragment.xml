@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/scrollView"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:scrollbars="none">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <Space
+            android:layout_width="wrap_content"
+            android:layout_height="20dp" />
+
+        <LinearLayout
+            android:id="@+id/dataCenterConfigLayout"
+            style="@style/Common_ClickableItem_LayoutStyle">
+
+            <TextView
+                style="@style/Common_ClickableItem_TitleStyle"
+                android:text="数据中心高级配置" />
+
+            <TextView style="@style/Common_ClickableItem_ValueStyle" />
+
+        </LinearLayout>
+
+        <Space
+            android:layout_width="wrap_content"
+            android:layout_height="14dp" />
+
+        <LinearLayout
+            android:id="@+id/firmwareUpgradeLayout"
+            style="@style/Common_ClickableItem_LayoutStyle">
+
+            <TextView
+                style="@style/Common_ClickableItem_TitleStyle"
+                android:text="固件升级" />
+
+            <TextView style="@style/Common_ClickableItem_ValueStyle" />
+
+        </LinearLayout>
+
+        <Space
+            android:layout_width="wrap_content"
+            android:layout_height="14dp" />
+
+        <LinearLayout
+            android:id="@+id/rebootLayout"
+            style="@style/Common_ClickableItem_LayoutStyle">
+
+            <TextView
+                style="@style/Common_ClickableItem_TitleStyle"
+                android:text="设备重启" />
+
+        </LinearLayout>
+
+        <Space
+            android:layout_width="wrap_content"
+            android:layout_height="14dp" />
+
+        <LinearLayout
+            android:id="@+id/resetLayout"
+            style="@style/Common_ClickableItem_LayoutStyle">
+
+            <TextView
+                style="@style/Common_ClickableItem_TitleStyle"
+                android:text="恢复出厂设置" />
+
+        </LinearLayout>
+
+        <Space
+            android:layout_width="wrap_content"
+            android:layout_height="14dp" />
+
+        <LinearLayout
+            android:id="@+id/rtkModeLayout"
+            style="@style/Common_ClickableItem_LayoutStyle">
+
+            <TextView
+                style="@style/Common_ClickableItem_TitleStyle"
+                android:text="RTK模式" />
+
+            <TextView
+                android:id="@+id/tv_rtk_mode"
+                style="@style/Common_ClickableItem_ValueStyle"
+                android:textSize="17sp"
+                tools:text="基站" />
+
+        </LinearLayout>
+
+        <Space
+            android:layout_width="wrap_content"
+            android:layout_height="14dp" />
+
+        <LinearLayout
+            android:id="@+id/corsServiceLayout"
+            style="@style/Common_ClickableItem_LayoutStyle">
+
+            <TextView
+                style="@style/Common_ClickableItem_TitleStyle"
+                android:text="CORS服务设置" />
+
+            <TextView style="@style/Common_ClickableItem_ValueStyle" />
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="18dp"
+            android:background="@color/divider_line_bg_efefef" />
+
+        <LinearLayout
+            android:id="@+id/boardSolveLayout"
+            style="@style/Common_ClickableItem_LayoutStyle">
+
+            <TextView
+                style="@style/Common_ClickableItem_TitleStyle"
+                android:text="板卡解算" />
+
+            <TextView style="@style/Common_ClickableItem_ValueStyle" />
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="18dp"
+            android:background="@color/divider_line_bg_efefef" />
+
+        <LinearLayout
+            android:id="@+id/sensorSettingLayout"
+            style="@style/Common_ClickableItem_LayoutStyle">
+
+            <TextView
+                style="@style/Common_ClickableItem_TitleStyle"
+                android:text="传感器设置" />
+
+            <TextView style="@style/Common_ClickableItem_ValueStyle" />
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="18dp"
+            android:background="@color/divider_line_bg_efefef" />
+
+        <LinearLayout
+            android:id="@+id/wiredNetworkSettingLayout"
+            style="@style/Common_ClickableItem_LayoutStyle">
+
+            <TextView
+                style="@style/Common_ClickableItem_TitleStyle"
+                android:text="有线网络设置" />
+
+            <TextView style="@style/Common_ClickableItem_ValueStyle" />
+
+        </LinearLayout>
+
+        <Space
+            android:layout_width="wrap_content"
+            android:layout_height="14dp" />
+
+        <LinearLayout
+            android:id="@+id/fileDownloadLayout"
+            style="@style/Common_ClickableItem_LayoutStyle"
+            android:visibility="gone">
+
+            <TextView
+                style="@style/Common_ClickableItem_TitleStyle"
+                android:text="文件下载" />
+
+            <TextView style="@style/Common_ClickableItem_ValueStyle" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</ScrollView>

@@ -12,8 +12,8 @@ import com.shmedo.mcloudapp.deviceconfig.ui.fragment.adme.BleAdmeDataCenterAdvan
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.adme.BleAdmeDataCenterBasicConfigFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.m20.BleM20DataCenterAdvancedConfigFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.m20.BleM20DataCenterBasicConfigFragment;
-import com.shmedo.mcloudapp.deviceconfig.ui.fragment.m20.NetM20DataCenterAdvancedConfigFragment;
-import com.shmedo.mcloudapp.deviceconfig.ui.fragment.m20.NetM20DataCenterBasicConfigFragment;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.netcommon.UniversalNetDataCenterAdvancedConfigFragment;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.netcommon.UniversalNetDataCenterBasicConfigFragment;
 import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfo;
 
 /**
@@ -116,10 +116,11 @@ public class DataCenterConfigActivity extends BaseConfigFragmentContainerActivit
                     break;
 
                 case AppContants.DeviceType.M20:
+                case AppContants.DeviceType.E40:
                     if (configMethod == AppContants.DataCenterConfigMethod.BASIC_CONFIG) {
-                        fragment = NetM20DataCenterBasicConfigFragment.newInstance(serverNumber, serverStatus, projectDeviceInfo);
+                        fragment = UniversalNetDataCenterBasicConfigFragment.newInstance(serverNumber, serverStatus, projectDeviceInfo);
                     } else {
-                        fragment = NetM20DataCenterAdvancedConfigFragment.newInstance(serverNumber, serverStatus, projectDeviceInfo);
+                        fragment = UniversalNetDataCenterAdvancedConfigFragment.newInstance(serverNumber, serverStatus, projectDeviceInfo);
                     }
                     break;
             }
