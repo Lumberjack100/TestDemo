@@ -11,20 +11,36 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.hjq.toast.ToastUtils;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandManager;
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
+import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
+import com.shmedo.core.AppContants;
 import com.shmedo.core.MCloudApp;
+import com.shmedo.core.util.GsonFactory;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.deviceconfig.model.DispatchCmdItem;
+import com.shmedo.mcloudapp.deviceconfig.model.FirmWareInfo;
 import com.shmedo.mcloudapp.deviceconfig.model.params.DispatchRawCmdParam;
-import com.shmedo.mcloudapp.deviceconfig.ui.fragment.BaseNetIotCommunicateFragment;
+import com.shmedo.mcloudapp.deviceconfig.model.params.FirmwareUpgrade;
+import com.shmedo.mcloudapp.deviceconfig.ui.activity.DataCenterHomeActivity;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.BaseDialogFragment;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.FirmWareSelectDialog;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd.BaseDispatchCmdDialog;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd.CommonCmdDialog;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd.DispatchCmdFailedDialog;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.netcommon.BaseNetIotCommunicateFragment;
+import com.shmedo.mcloudapp.network.BaseObserver;
+import com.shmedo.mcloudapp.network.ErrCode;
+import com.shmedo.mcloudapp.network.MDRetrofit;
+import com.shmedo.mcloudapp.network.NetworkConst;
 import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfo;
+import com.shmedo.mcloudapp.util.ResponseHandler;
 
 import java.util.Arrays;
 import java.util.List;
 
 import butterknife.OnClick;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
+import okhttp3.RequestBody;
 
 /**
  * 网络模式高级设置
@@ -32,8 +48,6 @@ import butterknife.OnClick;
 public class NetDasAdvancedSettingFragment extends BaseNetIotCommunicateFragment {
     private static final String PRO_DEVICE_INFO = "com.shmedo.mcloudapp.PRO_DEVICE_INFO";
 
-    private static final int FIRMWARE_UPGRADE = 0x1000;
-    private static final int LEVEL_INITIAL = 0x1001;
     private static final int REBOOT = 0x1002;
     private static final int RESET = 0x1003;
 
@@ -68,13 +82,24 @@ public class NetDasAdvancedSettingFragment extends BaseNetIotCommunicateFragment
         super.onActivityCreated(savedInstanceState);
     }
 
-    @OnClick({R.id.resetLayout, R.id.workModeLayout, R.id.productRegisterLayout, R.id.modifyAuthCodeLayout, R.id.syncInstallLocationLayout})
+    @OnClick({R.id.dataCenterConfigLayout, R.id.firmwareUpgradeLayout, R.id.rebootLayout, R.id.resetLayout, R.id.workModeLayout, R.id.productRegisterLayout, R.id.modifyAuthCodeLayout, R.id.syncInstallLocationLayout})
     public void onClick(View v) {
         if (isDoubleClick(v)) {
             return;
         }
         int id = v.getId();
-        if (id == R.id.resetLayout) {//恢复出厂设置
+        if (id == R.id.dataCenterConfigLayout) {
+            DataCenterHomeActivity.startActivity(mActivity, AppContants.DeviceType.DAS, projectDeviceInfo, AppContants.DataCenterConfigMethod.ADVANCED_CONFIG);
+
+        } else if (id == R.id.firmwareUpgradeLayout) {//固件升级
+            FirmWareSelectDialog newFragment = new FirmWareSelectDialog(MCloudApp.getCompanyID(), projectDeviceInfo.getDeviceTypeID());
+            newFragment.setDialogFragmentClickListener(firmWareSelectListener);
+            newFragment.show(getChildFragmentManager(), "dialog");
+
+        } else if (id == R.id.rebootLayout) {//重启
+            showWarnDialog("确定重启设备吗？", REBOOT);
+
+        } else if (id == R.id.resetLayout) {//恢复出厂设置
             showWarnDialog("确定恢复出厂设置吗？", RESET);
 
         } else if (id == R.id.workModeLayout) {
@@ -90,6 +115,19 @@ public class NetDasAdvancedSettingFragment extends BaseNetIotCommunicateFragment
             ToastUtils.show("正在研发中,敬请期待...");
         }
     }
+
+    private BaseDialogFragment.DialogFragmentClickListener firmWareSelectListener = new BaseDialogFragment.DialogFragmentClickListener<FirmWareInfo>() {
+        @Override
+        public boolean onPositiveClick(View view, FirmWareInfo firmWareInfo) {
+            doFirmwareUpgrade(firmWareInfo.getId());
+            return true;
+        }
+
+        @Override
+        public void onNegativeClick(View view) {
+
+        }
+    };
 
     /**
      * 危险操作前弹框提醒
@@ -109,9 +147,14 @@ public class NetDasAdvancedSettingFragment extends BaseNetIotCommunicateFragment
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                         dialog.dismiss();
                         switch (operateType) {
-                            case RESET: {
-                                operaType = RESET;
+                            case REBOOT: {
                                 String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.REBOOT);
+                                doCommonDispatchRawCmd(command);
+                            }
+                            break;
+
+                            case RESET: {
+                                String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.RESET);
                                 doCommonDispatchRawCmd(command);
                             }
                             break;
@@ -121,6 +164,7 @@ public class NetDasAdvancedSettingFragment extends BaseNetIotCommunicateFragment
         MaterialDialog mMaterialDialog = mBuilder.build();
         mMaterialDialog.show();
     }
+
 
     /**
      * 调用指令透传接口
@@ -133,7 +177,7 @@ public class NetDasAdvancedSettingFragment extends BaseNetIotCommunicateFragment
         rawCmdParam.setCompanyID(MCloudApp.getCompanyID());
         rawCmdParam.setDeviceIDList(Arrays.asList(projectDeviceInfo.getId()));
 
-        showProgressDialog("指令下发中...");
+        showProgressDialog("处理中...");
         processDispatchRawCmd(rawCmdParam);
     }
 
@@ -146,23 +190,32 @@ public class NetDasAdvancedSettingFragment extends BaseNetIotCommunicateFragment
     protected void onDispatchCmdResult(List<DispatchCmdItem> dispatchCmdItemList, String cmdStr) {
         dismissProgressDialog();
         if (dispatchCmdItemList == null || dispatchCmdItemList.size() == 0) {
-            showDispatchFailedDialog();
+            doDispatchFailed(cmdStr);
             return;
         }
-
         msgIDList.clear();
         for (DispatchCmdItem cmdItem : dispatchCmdItemList) {
             msgIDList.add(cmdItem.getMsgID());
         }
-        showDispatchSuccessDialog();
+        doDispatchSuccess(cmdStr);
     }
+
 
     /**
      * 指令下发失败弹框
      */
-    private void showDispatchFailedDialog() {
+    private void doDispatchFailed(String cmdStr) {
         String title = "";
-        switch (operaType) {
+        IOTCommandType type = IOTStringUtil.extractCommandType(cmdStr);
+        switch (type) {
+            case MD_UPGRADE:
+                title = "固件升级";
+                break;
+
+            case REBOOT:
+                title = "重新启动";
+                break;
+
             case RESET:
                 title = "恢复出厂设置";
                 break;
@@ -177,10 +230,19 @@ public class NetDasAdvancedSettingFragment extends BaseNetIotCommunicateFragment
     /**
      * 指令下发成功弹框
      */
-    private void showDispatchSuccessDialog() {
+    private void doDispatchSuccess(String cmdStr) {
         BaseDispatchCmdDialog newFragment = null;
         //下发指令成功，弹出对话框开始轮询查询指令响应
-        switch (operaType) {
+        IOTCommandType type = IOTStringUtil.extractCommandType(cmdStr);
+        switch (type) {
+            case MD_UPGRADE:
+                newFragment = new CommonCmdDialog("固件升级", "固件升级中...", "此过程耗时较长,请耐心等待", msgIDList);
+                break;
+
+            case REBOOT:
+                newFragment = new CommonCmdDialog("重新启动", "正在重启中...", "预计耗时三分钟,请耐心等待", msgIDList);
+                break;
+
             case RESET:
                 newFragment = new CommonCmdDialog("恢复出厂设置", "设备开始恢复出厂设置...", "此过程耗时较长,请耐心等待", msgIDList);
                 break;
@@ -190,5 +252,41 @@ public class NetDasAdvancedSettingFragment extends BaseNetIotCommunicateFragment
         }
         if (newFragment != null)
             newFragment.show(getChildFragmentManager(), "dialog");
+    }
+
+    /**
+     * 固件升级
+     */
+    private void doFirmwareUpgrade(int firmwareID) {
+        FirmwareUpgrade parameter = new FirmwareUpgrade(MCloudApp.getCompanyID(), projectDeviceInfo.getId(), firmwareID);
+        String json = GsonFactory.getGson().toJson(parameter);
+        RequestBody body = RequestBody.create(NetworkConst.JSON_TYPE, json);
+        MDRetrofit.getInstance()
+                .createService()
+                .FirmwareUpgrade(MCloudApp.getAccessToken(), body)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new BaseObserver<String>() {
+                    @Override
+                    protected void onResponse(String msgId, ErrCode errCode) {
+                        dismissProgressDialog();
+                        if (!ResponseHandler.getInstance().handleResponse(errCode)) {
+                            if (errCode.getCode() == 0) {
+                                msgIDList.clear();
+                                msgIDList.add(msgId);
+                                doDispatchSuccess("$cmd=md_upgrade");
+                            } else {
+                                doDispatchFailed("$cmd=md_upgrade");
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        dismissProgressDialog();
+                        doDispatchFailed("$cmd=md_upgrade");
+                        ResponseHandler.getInstance().handleFailure((Exception) e);
+                    }
+                });
     }
 }

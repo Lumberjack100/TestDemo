@@ -47,6 +47,23 @@ public class NetM20HomeFragment extends UniversalNetConfigHomeFragment {
 
 
     @Override
+    protected void initConfigModuleData() {
+        configModuleList.clear();
+
+        ConfigModule configModule = new ConfigModule(R.drawable.ic_setup_wizard, "设置向导", "一键配置");
+        configModuleList.add(configModule);
+
+        configModule = new ConfigModule(R.drawable.ic_device_current_state, "状态", "获取当前设备状态");
+        configModuleList.add(configModule);
+
+        configModule = new ConfigModule(R.drawable.ic_device_data_center, "数据中心", "基础参数配置");
+        configModuleList.add(configModule);
+
+        configModule = new ConfigModule(R.drawable.ic_device_setting, "设置", "高级设置");
+        configModuleList.add(configModule);
+    }
+
+    @Override
     protected void processItemClick() {
         switch (selectedConfigModule.getName()) {
             case "设置向导":
@@ -69,23 +86,6 @@ public class NetM20HomeFragment extends UniversalNetConfigHomeFragment {
                 AdvancedSettingActivity.startActivity(mActivity, projectDeviceInfo, AppContants.DeviceType.M20);
                 break;
         }
-    }
-
-    @Override
-    protected void initConfigModuleData() {
-        configModuleList.clear();
-
-        ConfigModule configModule = new ConfigModule(R.drawable.ic_setup_wizard, "设置向导", "一键配置");
-        configModuleList.add(configModule);
-
-        configModule = new ConfigModule(R.drawable.ic_device_current_state, "状态", "获取当前设备状态");
-        configModuleList.add(configModule);
-
-        configModule = new ConfigModule(R.drawable.ic_device_data_center, "数据中心", "基础参数配置");
-        configModuleList.add(configModule);
-
-        configModule = new ConfigModule(R.drawable.ic_device_setting, "设置", "高级设置");
-        configModuleList.add(configModule);
     }
 
     /**
@@ -126,7 +126,7 @@ public class NetM20HomeFragment extends UniversalNetConfigHomeFragment {
             case QUERY_DEVICE_STATUS://查询状态
             case M20_MD_LEVEL_INITIAL://水平初始化
                 dismissProgressDialog();
-                doDispatchSuccess();
+                doDispatchSuccess(cmdStr);
                 break;
 
             case M20_MD_GET_BASE_INFO: {//获取设备基本信息
@@ -172,7 +172,7 @@ public class NetM20HomeFragment extends UniversalNetConfigHomeFragment {
      * 指令下发成功处理
      */
     @Override
-    protected void doDispatchSuccess() {
+    protected void doDispatchSuccess(String cmdStr) {
         BaseDispatchCmdDialog newFragment = null;
         //下发指令成功，弹出对话框开始轮询查询指令响应
         switch (selectedConfigModule.getName()) {

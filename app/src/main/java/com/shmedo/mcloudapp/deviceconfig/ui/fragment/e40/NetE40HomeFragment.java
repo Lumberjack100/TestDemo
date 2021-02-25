@@ -38,6 +38,20 @@ public class NetE40HomeFragment extends UniversalNetConfigHomeFragment {
     }
 
     @Override
+    protected void initConfigModuleData() {
+        configModuleList.clear();
+
+        ConfigModule configModule = new ConfigModule(R.drawable.ic_device_current_state, "状态", "获取当前设备状态");
+        configModuleList.add(configModule);
+
+        configModule = new ConfigModule(R.drawable.ic_device_data_center, "数据中心", "基础参数配置");
+        configModuleList.add(configModule);
+
+        configModule = new ConfigModule(R.drawable.ic_device_setting, "设置", "高级设置");
+        configModuleList.add(configModule);
+    }
+
+    @Override
     protected void processItemClick() {
         switch (selectedConfigModule.getName()) {
             case "状态":
@@ -55,20 +69,6 @@ public class NetE40HomeFragment extends UniversalNetConfigHomeFragment {
                 AdvancedSettingActivity.startActivity(mActivity, projectDeviceInfo, AppContants.DeviceType.E40);
                 break;
         }
-    }
-
-    @Override
-    protected void initConfigModuleData() {
-        configModuleList.clear();
-
-        ConfigModule configModule = new ConfigModule(R.drawable.ic_device_current_state, "状态", "获取当前设备状态");
-        configModuleList.add(configModule);
-
-        configModule = new ConfigModule(R.drawable.ic_device_data_center, "数据中心", "基础参数配置");
-        configModuleList.add(configModule);
-
-        configModule = new ConfigModule(R.drawable.ic_device_setting, "设置", "高级设置");
-        configModuleList.add(configModule);
     }
 
     /**
@@ -92,7 +92,7 @@ public class NetE40HomeFragment extends UniversalNetConfigHomeFragment {
         switch (type) {
             case QUERY_DEVICE_STATUS://查询状态
                 dismissProgressDialog();
-                doDispatchSuccess();
+                doDispatchSuccess(cmdStr);
                 break;
         }
     }
@@ -122,7 +122,7 @@ public class NetE40HomeFragment extends UniversalNetConfigHomeFragment {
      * 指令下发成功处理
      */
     @Override
-    protected void doDispatchSuccess() {
+    protected void doDispatchSuccess(String cmdStr) {
         BaseDispatchCmdDialog newFragment = null;
         //下发指令成功，弹出对话框开始轮询查询指令响应
         if ("状态".equals(selectedConfigModule.getName())) {

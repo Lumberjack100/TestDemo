@@ -23,7 +23,6 @@ import com.shmedo.mcloudapp.deviceconfig.adapter.ConfigModuleAdapter;
 import com.shmedo.mcloudapp.deviceconfig.model.ConfigModule;
 import com.shmedo.mcloudapp.deviceconfig.model.QueryCmdResult;
 import com.shmedo.mcloudapp.deviceconfig.model.params.DispatchRawCmdParam;
-import com.shmedo.mcloudapp.deviceconfig.ui.fragment.BaseNetIotCommunicateFragment;
 import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfo;
 
 import java.util.ArrayList;
@@ -98,13 +97,12 @@ public abstract class UniversalNetConfigHomeFragment extends BaseNetIotCommunica
         setHeadInfo();
         initAdapter();
         initConfigModuleData();
-//        showProgressDialog("处理中...");
-//        queryBaseInfo();
     }
 
     private void setHeadInfo() {
         switch (deviceType) {
             case AppContants.DeviceType.DAS:
+                mTvDeviceName.setText("物联网数据采集器");
                 break;
 
             case AppContants.DeviceType.ADME:
@@ -184,7 +182,7 @@ public abstract class UniversalNetConfigHomeFragment extends BaseNetIotCommunica
     /**
      * 指令下发成功处理
      */
-    protected abstract void doDispatchSuccess();
+    protected abstract void doDispatchSuccess(String cmdStr);
 
     /**
      * 查询指令响应结果出错
