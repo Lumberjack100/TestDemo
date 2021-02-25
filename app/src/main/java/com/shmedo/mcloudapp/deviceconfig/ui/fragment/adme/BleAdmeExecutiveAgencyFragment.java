@@ -582,11 +582,14 @@ public class BleAdmeExecutiveAgencyFragment extends BaseBleIotCommunicateFragmen
             entity.setMeabaseth(decimalFormat.format(Double.parseDouble(measuringReferenceDepth)));
 
             if (mSbDecentralizedPredictionEnable.isChecked()) {
+                entity.setDwonblocked("1");
                 entity.setUntimenum(pulsesPerUnitTime);
                 decimalFormat.applyPattern("#.##");
                 entity.setDetectiontime(decimalFormat.format(Double.parseDouble(detectionTime)));
                 entity.setDetectionstart(detectionStart);
                 entity.setDetectionend(detectionEnd);
+            } else {
+                entity.setDwonblocked("0");
             }
 
             errMsg = "发送指令超时,请稍后尝试";
