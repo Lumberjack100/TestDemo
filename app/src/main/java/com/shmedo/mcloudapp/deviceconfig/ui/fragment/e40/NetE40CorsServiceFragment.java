@@ -39,7 +39,11 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.OnClick;
 import timber.log.Timber;
-
+/**
+ * 创建者:   gonghe <br/>
+ * 创建时间:  2/26/21 <br/>
+ * 描述：    E40网络模式 CORS 服务配置页面
+ */
 public class NetE40CorsServiceFragment extends BaseNetIotCommunicateFragment {
     public static final String PRO_DEVICE_INFO = "com.shmedo.mcloudapp.PRO_DEVICE_INFO";
 
@@ -147,7 +151,7 @@ public class NetE40CorsServiceFragment extends BaseNetIotCommunicateFragment {
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                         dialog.dismiss();
-                        closeDataServer();//关闭服务器
+                        closeServer();//关闭服务器
                         contentLayout.setVisibility(View.GONE);
                         enableButtonOriginalState = enableBtn.isChecked();
                     }
@@ -173,7 +177,7 @@ public class NetE40CorsServiceFragment extends BaseNetIotCommunicateFragment {
     /**
      * 关闭CORS 服务</br>
      */
-    private void closeDataServer() {
+    private void closeServer() {
         E40CORSEntity entity = new E40CORSEntity();
         entity.setSw("0");
 

@@ -30,6 +30,7 @@ import com.shmedo.mcloudapp.deviceconfig.model.QueryCmdResult;
 import com.shmedo.mcloudapp.deviceconfig.model.params.DispatchRawCmdParam;
 import com.shmedo.mcloudapp.deviceconfig.model.params.FirmwareUpgrade;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.DataCenterHomeActivity;
+import com.shmedo.mcloudapp.deviceconfig.ui.activity.e40.E40CORSServiceActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.netcommon.BaseNetIotCommunicateFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.BaseDialogFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.FirmWareSelectDialog;
@@ -142,6 +143,7 @@ public class NetE40AdvancedSettingFragment extends BaseNetIotCommunicateFragment
             showRTKModeDialog();
 
         } else if (id == R.id.corsServiceLayout) {//CORS 服务设置
+            E40CORSServiceActivity.startActivity(mActivity, projectDeviceInfo);
 
         } else if (id == R.id.boardSolveLayout) {//板卡解算设置
 
