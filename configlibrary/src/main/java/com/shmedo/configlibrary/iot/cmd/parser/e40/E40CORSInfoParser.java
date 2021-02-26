@@ -4,19 +4,19 @@ import android.text.TextUtils;
 
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.interfaces.IOTResultParser;
-import com.shmedo.configlibrary.iot.model.e40.E40RTKModeInfo;
+import com.shmedo.configlibrary.iot.model.e40.E40CORSInfo;
 
 import java.util.HashMap;
 
 /**
  * 创建者:   gonghe <br/>
- * 创建时间:  2/25/21 <br/>
- * 描述：      解析RTK模式
+ * 创建时间:  2/26/21 <br/>
+ * 描述：     解析 CORS 服务参数
  */
-public class E40RTKModeInfoParser implements IOTResultParser<E40RTKModeInfo> {
+public class E40CORSInfoParser implements IOTResultParser<E40CORSInfo> {
     @Override
-    public E40RTKModeInfo parse(String result) {
-        E40RTKModeInfo info = new E40RTKModeInfo();
+    public E40CORSInfo parse(String result) {
+        E40CORSInfo info = new E40CORSInfo();
         try {
             String[] keyValues = result.split("&");
             HashMap<String, String> keyValueMap = new HashMap<>();
@@ -29,7 +29,12 @@ public class E40RTKModeInfoParser implements IOTResultParser<E40RTKModeInfo> {
                     keyValueMap.put(strs[0], strs[1]);
                 }
             }
-            info.setMode(TextUtils.isEmpty(keyValueMap.get("mode")) ? "0" : keyValueMap.get("mode"));
+            info.setSw(TextUtils.isEmpty(keyValueMap.get("sw")) ? "0" : keyValueMap.get("sw"));
+            info.setAddr(TextUtils.isEmpty(keyValueMap.get("addr")) ? "" : keyValueMap.get("addr"));
+            info.setPort(TextUtils.isEmpty(keyValueMap.get("port")) ? "" : keyValueMap.get("port"));
+            info.setUser(TextUtils.isEmpty(keyValueMap.get("user")) ? "" : keyValueMap.get("user"));
+            info.setPswd(TextUtils.isEmpty(keyValueMap.get("pswd")) ? "" : keyValueMap.get("pswd"));
+            info.setSta(TextUtils.isEmpty(keyValueMap.get("sta")) ? "" : keyValueMap.get("sta"));
 
             return info;
         } catch (Exception ex) {
@@ -45,6 +50,6 @@ public class E40RTKModeInfoParser implements IOTResultParser<E40RTKModeInfo> {
 
     @Override
     public IOTCommandType commandType() {
-        return IOTCommandType.E40_MD_GET_RTK;
+        return IOTCommandType.E40_MD_GET_CORS;
     }
 }

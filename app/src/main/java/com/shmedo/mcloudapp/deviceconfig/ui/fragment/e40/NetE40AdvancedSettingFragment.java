@@ -104,7 +104,7 @@ public class NetE40AdvancedSettingFragment extends BaseNetIotCommunicateFragment
      * 获取RTK模式
      */
     private void getRTKMode() {
-        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.GNSS_MD_GET_RTK);
+        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.E40_MD_GET_RTK);
         doCommonDispatchRawCmd(command);
     }
 
@@ -114,7 +114,7 @@ public class NetE40AdvancedSettingFragment extends BaseNetIotCommunicateFragment
     private void setRTKMode() {
         E40RTKModeEntity entity = new E40RTKModeEntity();
         entity.setMode(rtkMode);
-        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.GNSS_MD_SET_RTK, entity);
+        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.E40_MD_SET_RTK, entity);
         doCommonDispatchRawCmd(command);
     }
 
@@ -280,7 +280,7 @@ public class NetE40AdvancedSettingFragment extends BaseNetIotCommunicateFragment
                 title = "恢复出厂设置";
                 break;
 
-            case GNSS_MD_GET_RTK:
+            case E40_MD_GET_RTK:
                 title = "获取RTK模式";
                 break;
 
@@ -314,8 +314,8 @@ public class NetE40AdvancedSettingFragment extends BaseNetIotCommunicateFragment
                 newFragment = new CommonCmdDialog("恢复出厂设置", "设备开始恢复出厂设置...", "此过程耗时较长,请耐心等待", msgIDList);
                 break;
 
-            case GNSS_MD_GET_RTK:
-            case GNSS_MD_SET_RTK:
+            case E40_MD_GET_RTK:
+            case E40_MD_SET_RTK:
                 if (msgIDList != null && msgIDList.size() > 0) {
                     startQueryCmdResponseRunnable(2000);
                 }
@@ -365,7 +365,7 @@ public class NetE40AdvancedSettingFragment extends BaseNetIotCommunicateFragment
         String cmdStr = queryCmdResult.getResponseContent();
         IOTCommandType type = IOTStringUtil.extractCommandType(cmdStr);
         switch (type) {
-            case GNSS_MD_GET_RTK: {//获取RTK
+            case E40_MD_GET_RTK: {//获取RTK
                 IOTCommandResult<E40RTKModeInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
                     String errMsg = String.format("%s %s", "获取RTK模式出错!", commandResult.getMessage());
@@ -378,7 +378,7 @@ public class NetE40AdvancedSettingFragment extends BaseNetIotCommunicateFragment
             }
             break;
 
-            case GNSS_MD_SET_RTK: {
+            case E40_MD_SET_RTK: {
                 CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
                 if (!cmdResult.isSucceed()) {
                     String errMsg = String.format("%s %s", "设置RTK模式出错!", cmdResult.getReason());

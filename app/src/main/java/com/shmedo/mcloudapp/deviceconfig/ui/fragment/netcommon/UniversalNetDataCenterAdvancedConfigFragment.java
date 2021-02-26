@@ -118,7 +118,7 @@ public class UniversalNetDataCenterAdvancedConfigFragment extends BaseNetIotComm
     private String productId;//产品 Id
     private String registerCode;//注册码
 
-    private boolean centerEnableInitial;//数据中心开关初始状态，用于判断开关是否有打开后没有设置参数就返回
+    private boolean enableButtonOriginalState;//数据中心开关初始状态，用于判断开关是否有打开后没有设置参数就返回
     private boolean isSaveParamOperation = false;//判断当前是保存参数操作，还是关闭数据中心操作
     private boolean isResultOK = false;//返回的结果是否是 Activity.RESULT_OK
 
@@ -169,11 +169,11 @@ public class UniversalNetDataCenterAdvancedConfigFragment extends BaseNetIotComm
 
         //数据中心地址为空表示数据中心未启用
         if (!TextUtils.isEmpty(serverStatus) && serverStatus.contains("未开启")) {
-            centerEnableInitial = false;
+            enableButtonOriginalState = false;
             mSbCenterEnable.setCheckedImmediatelyNoEvent(false);
             maskLayerLayout.setVisibility(View.VISIBLE);
         } else {
-            centerEnableInitial = true;
+            enableButtonOriginalState = true;
             mSbCenterEnable.setCheckedImmediatelyNoEvent(true);
             maskLayerLayout.setVisibility(View.GONE);
         }
@@ -211,7 +211,7 @@ public class UniversalNetDataCenterAdvancedConfigFragment extends BaseNetIotComm
                         dialog.dismiss();
                         closeDataServer();//关闭服务器
                         maskLayerLayout.setVisibility(View.VISIBLE);
-                        centerEnableInitial = mSbCenterEnable.isChecked();
+                        enableButtonOriginalState = mSbCenterEnable.isChecked();
                     }
                 }).onNegative(new MaterialDialog.SingleButtonCallback() {
                     @Override
@@ -244,7 +244,6 @@ public class UniversalNetDataCenterAdvancedConfigFragment extends BaseNetIotComm
         dataCenterEntity.setPort("");
 
         isSaveParamOperation = false;
-        mBtnSave.setEnabled(false);
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.MD_SET_DATA_CENTER, dataCenterEntity);
         doCommonDispatchRawCmd(command);
     }
@@ -444,9 +443,8 @@ public class UniversalNetDataCenterAdvancedConfigFragment extends BaseNetIotComm
         dataCenterEntity.setProjid(productId);
         dataCenterEntity.setRegcode(registerCode);
 
-        centerEnableInitial = mSbCenterEnable.isChecked();
+        enableButtonOriginalState = mSbCenterEnable.isChecked();
         isSaveParamOperation = true;
-        mBtnSave.setEnabled(false);
 
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.MD_SET_DATA_CENTER, dataCenterEntity);
         doCommonDispatchRawCmd(command);
@@ -492,10 +490,6 @@ public class UniversalNetDataCenterAdvancedConfigFragment extends BaseNetIotComm
      * 指令下发失败弹框
      */
     private void showDispatchFailedDialog(String cmdStr) {
-        mBtnSave.setEnabled(true);
-        if (isSaveParamOperation)
-            isSaveParamOperation = false;
-
         IOTCommandType type = IOTStringUtil.extractCommandType(cmdStr);
         switch (type) {
             case MD_GET_DATA_CENTER:
@@ -519,9 +513,6 @@ public class UniversalNetDataCenterAdvancedConfigFragment extends BaseNetIotComm
     @Override
     protected void onQueryCmdResponseResultError(String errMsg) {
         super.onQueryCmdResponseResultError(errMsg);
-        mBtnSave.setEnabled(true);
-        if (isSaveParamOperation)
-            isSaveParamOperation = false;
         ToastUtils.show("指令响应错误");
     }
 
@@ -533,9 +524,6 @@ public class UniversalNetDataCenterAdvancedConfigFragment extends BaseNetIotComm
     @Override
     protected void onQueryCmdResponseResultTimeOut(QueryCmdResult queryCmdResult) {
         super.onQueryCmdResponseResultTimeOut(queryCmdResult);
-        mBtnSave.setEnabled(true);
-        if (isSaveParamOperation)
-            isSaveParamOperation = false;
         ToastUtils.show("指令响应超时");
     }
 
@@ -573,9 +561,6 @@ public class UniversalNetDataCenterAdvancedConfigFragment extends BaseNetIotComm
                     String errMsg = String.format("%s %s", "设置数据中心参数出错!", cmdResult.getReason());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
-                    mBtnSave.setEnabled(true);
-                    if (isSaveParamOperation)
-                        isSaveParamOperation = false;
                     return;
                 }
                 doAfterSetting();
@@ -589,10 +574,8 @@ public class UniversalNetDataCenterAdvancedConfigFragment extends BaseNetIotComm
 
     private void doAfterSetting() {
         if (isSaveParamOperation) {
-            isSaveParamOperation = false;
             ToastUtils.show("保存成功");
         }
-        mBtnSave.setEnabled(true);
         transferProtocolOld = transferProtocol;
         dataProtocolOld = dataProtocol;
         isResultOK = true;
@@ -690,7 +673,10 @@ public class UniversalNetDataCenterAdvancedConfigFragment extends BaseNetIotComm
     }
 
     private boolean checkValueIsChange() {
-        if (centerEnableInitial != mSbCenterEnable.isChecked()) {
+        if (!mSbCenterEnable.isChecked()) {
+            return false;
+        }
+        if (enableButtonOriginalState != mSbCenterEnable.isChecked()) {
             return true;
         }
 

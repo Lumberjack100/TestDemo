@@ -177,13 +177,15 @@ public class BleAdmeStepperMotorFragment extends BaseBleIotCommunicateFragment {
         entity.setPosnegtest("0");
 
         isSaveParamOperation = false;
-        mBtnSave.setEnabled(false);
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_SET_STEPPER_MOTOR_PARAMETERS, entity);
         sendCommand(command);
     }
 
     @OnClick({R.id.btn_confirm})
     public void onClick(View view) {
+        if (isDoubleClick(view)) {
+            return;
+        }
         int id = view.getId();
         if (id == R.id.btn_confirm) {
             KeyBordUtils.hideSoftKeyboard(view);
@@ -272,7 +274,6 @@ public class BleAdmeStepperMotorFragment extends BaseBleIotCommunicateFragment {
 
             paramEnableInitial = mSbParamEnable.isChecked();
             isSaveParamOperation = true;
-            mBtnSave.setEnabled(false);
 
             errMsg = "发送指令超时,请稍后尝试";
             startProgressRunnable("正在发送配置指令...", WRITE_TIME_OUT_SECOND);
@@ -318,9 +319,6 @@ public class BleAdmeStepperMotorFragment extends BaseBleIotCommunicateFragment {
                     String errMsg = String.format("%s %s", "设置步进电机参数出错!", cmdResult.getReason());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
-                    mBtnSave.setEnabled(true);
-                    if (isSaveParamOperation)
-                        isSaveParamOperation = false;
                     return;
                 }
                 doAfterSetting();
@@ -338,7 +336,6 @@ public class BleAdmeStepperMotorFragment extends BaseBleIotCommunicateFragment {
                 }
             }
             if (isSaveParamOperation) {
-                isSaveParamOperation = false;
                 ToastUtils.show("保存成功");
             }
             break;
@@ -359,7 +356,6 @@ public class BleAdmeStepperMotorFragment extends BaseBleIotCommunicateFragment {
         }
         //TODO  打开注释，设置为浏览模式
 //        configPageViewModel.configPageEditableChanged.setValue(false);
-        mBtnSave.setEnabled(true);
 
         saveConfigInfo();
     }
@@ -370,7 +366,6 @@ public class BleAdmeStepperMotorFragment extends BaseBleIotCommunicateFragment {
             admeStepperMotorInfo = new AdmeStepperMotorInfo();
             return;
         }
-
         if (admeStepperMotorInfo.getPosnegtest().trim().equals("0")) {
             paramEnableInitial = false;
             mSbParamEnable.setCheckedImmediatelyNoEvent(false);
@@ -380,7 +375,6 @@ public class BleAdmeStepperMotorFragment extends BaseBleIotCommunicateFragment {
             mSbParamEnable.setCheckedImmediatelyNoEvent(true);
             maskLayerChild.setVisibility(View.GONE);
         }
-
         try {
             accuracyCorrectionValue = admeStepperMotorInfo.getAbsprsion().trim();
             movementSpeed = admeStepperMotorInfo.getMovspeed().trim();

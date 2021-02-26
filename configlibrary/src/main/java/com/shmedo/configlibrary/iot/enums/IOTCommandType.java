@@ -293,16 +293,26 @@ public enum IOTCommandType {
      */
     M20_MD_LEVEL_INITIAL("md_levelinit"),
 
-    /*　 GNSS 指令  */
+    /*　 E40 指令  */
     /**
-     * 获取GNSS 的 RTK
+     * 获取E40 的 RTK
      */
-    GNSS_MD_GET_RTK("md_getrtk"),
+    E40_MD_GET_RTK("md_getrtk"),
 
     /**
-     * 设置GNSS 的 RTK
+     * 设置E40 的 RTK
      */
-    GNSS_MD_SET_RTK("md_setrtk"),
+    E40_MD_SET_RTK("md_setrtk"),
+
+    /**
+     * 获取E40 的 CORS 服务参数
+     */
+    E40_MD_GET_CORS("md_getntrip"),
+
+    /**
+     * 设置E40 的 CORS 服务参数
+     */
+    E40_MD_SET_CORS("md_setntrip"),
 
     /**
      * 自定义心跳包
