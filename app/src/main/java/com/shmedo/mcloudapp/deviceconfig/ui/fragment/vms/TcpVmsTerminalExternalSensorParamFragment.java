@@ -245,7 +245,6 @@ public class TcpVmsTerminalExternalSensorParamFragment extends BaseTcpConnectFra
         entity.setChannel(sensorInfo.getChannel());
         entity.setInsert("1");
 
-//        mBtnSave.setEnabled(false);
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.VMS_MD_SET_TERMINAL_CHL, entity);
         sendCommand(command);
     }
@@ -260,7 +259,6 @@ public class TcpVmsTerminalExternalSensorParamFragment extends BaseTcpConnectFra
         entity.setInsert("0");
 
         isSaveParamOperation = false;
-//        mBtnSave.setEnabled(false);
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.VMS_MD_SET_TERMINAL_CHL, entity);
         sendCommand(command);
     }
@@ -395,7 +393,6 @@ public class TcpVmsTerminalExternalSensorParamFragment extends BaseTcpConnectFra
         sensorParamsEntity.setName(sensorNameNo);
 
         isSaveParamOperation = true;
-//        mBtnSave.setEnabled(false);
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.VMS_MD_SET_TERMINAL_CHL, sensorParamsEntity);
         sendCommand(command);
     }
@@ -414,9 +411,6 @@ public class TcpVmsTerminalExternalSensorParamFragment extends BaseTcpConnectFra
                     String errMsg = String.format("%s %s", "设置参数失败!", cmdResult.getReason());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
-                    mBtnSave.setEnabled(true);
-                    if (isSaveParamOperation)
-                        isSaveParamOperation = false;
                     return;
                 }
                 doAfterSetting();
@@ -431,10 +425,8 @@ public class TcpVmsTerminalExternalSensorParamFragment extends BaseTcpConnectFra
 
     private void doAfterSetting() {
         if (isSaveParamOperation) {
-            isSaveParamOperation = false;
             ToastUtils.show("设置成功");
         }
-        mBtnSave.setEnabled(true);
         calculationPosOld = calculationPos;
         sensorNamePosOld = sensorNamePos;
     }

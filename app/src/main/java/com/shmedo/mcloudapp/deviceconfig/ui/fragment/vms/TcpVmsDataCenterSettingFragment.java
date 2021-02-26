@@ -240,7 +240,6 @@ public class TcpVmsDataCenterSettingFragment extends BaseTcpConnectFragment {
         dataCenterEntity.setPort("");
 
         isSaveParamOperation = false;
-        mBtnSave.setEnabled(false);
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.MD_SET_DATA_CENTER, dataCenterEntity);
         sendCommand(command);
     }
@@ -395,7 +394,6 @@ public class TcpVmsDataCenterSettingFragment extends BaseTcpConnectFragment {
 
         centerEnableInitial = mSbCenterEnable.isChecked();
         isSaveParamOperation = true;
-        mBtnSave.setEnabled(false);
 
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.MD_SET_DATA_CENTER, dataCenterEntity);
         sendCommand(command);
@@ -428,9 +426,6 @@ public class TcpVmsDataCenterSettingFragment extends BaseTcpConnectFragment {
                     String errMsg = String.format("%s %s", "设置参数失败!", cmdResult.getReason());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
-                    mBtnSave.setEnabled(true);
-                    if (isSaveParamOperation)
-                        isSaveParamOperation = false;
                     return;
                 }
                 doAfterSetting();
@@ -446,10 +441,8 @@ public class TcpVmsDataCenterSettingFragment extends BaseTcpConnectFragment {
 
     private void doAfterSetting() {
         if (isSaveParamOperation) {
-            isSaveParamOperation = false;
             ToastUtils.show("设置成功");
         }
-        mBtnSave.setEnabled(true);
         transferProtocolOld = transferProtocol;
         isResultOK = true;
     }
@@ -517,6 +510,9 @@ public class TcpVmsDataCenterSettingFragment extends BaseTcpConnectFragment {
     }
 
     private boolean checkValueIsChange() {
+        if (!mSbCenterEnable.isChecked()) {
+            return false;
+        }
         if (centerEnableInitial != mSbCenterEnable.isChecked()) {
             return true;
         }

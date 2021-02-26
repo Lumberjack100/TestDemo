@@ -193,7 +193,6 @@ public class BleAdmeDataCenterBasicConfigFragment extends BaseBleIotCommunicateF
         dataCenterEntity.setPort("");
 
         isSaveParamOperation = false;
-        mBtnSave.setEnabled(false);
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.MD_SET_DATA_CENTER, dataCenterEntity);
         sendCommand(command);
     }
@@ -255,7 +254,6 @@ public class BleAdmeDataCenterBasicConfigFragment extends BaseBleIotCommunicateF
 
         centerEnableInitial = mSbCenterEnable.isChecked();
         isSaveParamOperation = true;
-        mBtnSave.setEnabled(false);
 
         errMsg = "发送指令超时,请稍后尝试";
         startProgressRunnable("处理中...", WRITE_TIME_OUT_SECOND);
@@ -292,9 +290,6 @@ public class BleAdmeDataCenterBasicConfigFragment extends BaseBleIotCommunicateF
                     String errMsg = String.format("%s %s", "设置数据中心参数出错!", cmdResult.getReason());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
-                    mBtnSave.setEnabled(true);
-                    if (isSaveParamOperation)
-                        isSaveParamOperation = false;
                     return;
                 }
                 doAfterSetting();
@@ -312,7 +307,6 @@ public class BleAdmeDataCenterBasicConfigFragment extends BaseBleIotCommunicateF
                 }
             }
             if (isSaveParamOperation) {
-                isSaveParamOperation = false;
                 ToastUtils.show("保存成功");
             }
             break;
@@ -324,7 +318,6 @@ public class BleAdmeDataCenterBasicConfigFragment extends BaseBleIotCommunicateF
     }
 
     private void doAfterSetting() {
-        mBtnSave.setEnabled(true);
         isResultOK = true;
         saveConfigInfo();
     }
@@ -362,6 +355,9 @@ public class BleAdmeDataCenterBasicConfigFragment extends BaseBleIotCommunicateF
     }
 
     private boolean checkValueIsChange() {
+        if (!mSbCenterEnable.isChecked()) {
+            return false;
+        }
         if (centerEnableInitial != mSbCenterEnable.isChecked()) {
             return true;
         }

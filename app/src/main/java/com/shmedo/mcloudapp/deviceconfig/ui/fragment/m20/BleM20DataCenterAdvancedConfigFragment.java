@@ -242,7 +242,6 @@ public class BleM20DataCenterAdvancedConfigFragment extends BaseGOCBleIotCommuni
         dataCenterEntity.setPort("");
 
         isSaveParamOperation = false;
-        mBtnSave.setEnabled(false);
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.MD_SET_DATA_CENTER, dataCenterEntity);
         sendCommand(command);
     }
@@ -444,7 +443,6 @@ public class BleM20DataCenterAdvancedConfigFragment extends BaseGOCBleIotCommuni
 
         centerEnableInitial = mSbCenterEnable.isChecked();
         isSaveParamOperation = true;
-        mBtnSave.setEnabled(false);
 
         errMsg = "发送指令超时,请稍后尝试";
         startProgressRunnable("处理中...", WRITE_TIME_OUT_SECOND);
@@ -481,9 +479,6 @@ public class BleM20DataCenterAdvancedConfigFragment extends BaseGOCBleIotCommuni
                     String errMsg = String.format("%s %s", "设置数据中心参数出错!", cmdResult.getReason());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
-                    mBtnSave.setEnabled(true);
-                    if (isSaveParamOperation)
-                        isSaveParamOperation = false;
                     return;
                 }
                 doAfterSetting();
@@ -498,10 +493,8 @@ public class BleM20DataCenterAdvancedConfigFragment extends BaseGOCBleIotCommuni
 
     private void doAfterSetting() {
         if (isSaveParamOperation) {
-            isSaveParamOperation = false;
             ToastUtils.show("保存成功");
         }
-        mBtnSave.setEnabled(true);
         transferProtocolOld = transferProtocol;
         dataProtocolOld = dataProtocol;
         isResultOK = true;
@@ -602,6 +595,9 @@ public class BleM20DataCenterAdvancedConfigFragment extends BaseGOCBleIotCommuni
     }
 
     private boolean checkValueIsChange() {
+        if (!mSbCenterEnable.isChecked()) {
+            return false;
+        }
         if (centerEnableInitial != mSbCenterEnable.isChecked()) {
             return true;
         }
