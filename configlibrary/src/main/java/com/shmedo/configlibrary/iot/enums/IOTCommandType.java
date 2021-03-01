@@ -315,6 +315,26 @@ public enum IOTCommandType {
     E40_MD_SET_CORS("md_setntrip"),
 
     /**
+     * 获取E40 的板卡解算参数
+     */
+    E40_MD_GET_BOARDSOLUTION("md_getembedams"),
+
+    /**
+     * 设置E40 的板卡解算参数
+     */
+    E40_MD_SET_BOARDSOLUTION("md_setembedams"),
+
+    /**
+     * 获取E40 的有线网络配置置参数
+     */
+    E40_MD_GET_ETHERNET("md_geteth0"),
+
+    /**
+     * 设置E40 的有线网络配置置参数
+     */
+    E40_MD_SET_ETHERNET("md_seteth0"),
+
+    /**
      * 自定义心跳包
      */
     HEART_BEAT("HeartBeatData");

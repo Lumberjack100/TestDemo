@@ -30,13 +30,15 @@ import com.shmedo.mcloudapp.deviceconfig.model.QueryCmdResult;
 import com.shmedo.mcloudapp.deviceconfig.model.params.DispatchRawCmdParam;
 import com.shmedo.mcloudapp.deviceconfig.model.params.FirmwareUpgrade;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.DataCenterHomeActivity;
+import com.shmedo.mcloudapp.deviceconfig.ui.activity.e40.E40BoardSolutionActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.e40.E40CORSServiceActivity;
-import com.shmedo.mcloudapp.deviceconfig.ui.fragment.netcommon.BaseNetIotCommunicateFragment;
+import com.shmedo.mcloudapp.deviceconfig.ui.activity.e40.E40EthernetActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.BaseDialogFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.FirmWareSelectDialog;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd.BaseDispatchCmdDialog;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd.CommonCmdDialog;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd.DispatchCmdFailedDialog;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.netcommon.BaseNetIotCommunicateFragment;
 import com.shmedo.mcloudapp.network.BaseObserver;
 import com.shmedo.mcloudapp.network.ErrCode;
 import com.shmedo.mcloudapp.network.MDRetrofit;
@@ -146,11 +148,12 @@ public class NetE40AdvancedSettingFragment extends BaseNetIotCommunicateFragment
             E40CORSServiceActivity.startActivity(mActivity, projectDeviceInfo);
 
         } else if (id == R.id.boardSolveLayout) {//板卡解算设置
+            E40BoardSolutionActivity.startActivity(mActivity, projectDeviceInfo);
 
         } else if (id == R.id.sensorSettingLayout) {//传感器设置
 
         } else if (id == R.id.wiredNetworkSettingLayout) {//有线网络设置
-
+            E40EthernetActivity.startActivity(mActivity, projectDeviceInfo);
         } else if (id == R.id.fileDownloadLayout) {//下载文件
 
         }

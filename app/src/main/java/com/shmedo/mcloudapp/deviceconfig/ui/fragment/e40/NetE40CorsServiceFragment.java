@@ -118,7 +118,6 @@ public class NetE40CorsServiceFragment extends BaseNetIotCommunicateFragment {
         mEtTargetSiteName.setFilters(new InputFilter[]{new InputFilter.LengthFilter(30)});
         mEtUserName.setFilters(new InputFilter[]{new InputFilter.LengthFilter(30)});
         mEtPassword.setFilters(new InputFilter[]{new InputFilter.LengthFilter(30)});
-
     }
 
     private void setSwitchViewListener() {

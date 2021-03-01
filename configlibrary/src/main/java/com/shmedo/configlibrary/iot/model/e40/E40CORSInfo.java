@@ -1,5 +1,7 @@
 package com.shmedo.configlibrary.iot.model.e40;
 
+import android.text.TextUtils;
+
 /**
  * 创建者:   gonghe <br/>
  * 创建时间:  2/26/21 <br/>
@@ -14,7 +16,7 @@ public class E40CORSInfo {
     private String sta;//站点名
 
     public String getSw() {
-        return sw;
+        return TextUtils.isEmpty(sw) ? "" : sw;
     }
 
     public void setSw(String sw) {
@@ -22,7 +24,7 @@ public class E40CORSInfo {
     }
 
     public String getAddr() {
-        return addr;
+        return TextUtils.isEmpty(addr) ? "" : addr;
     }
 
     public void setAddr(String addr) {
@@ -30,7 +32,7 @@ public class E40CORSInfo {
     }
 
     public String getPort() {
-        return port;
+        return TextUtils.isEmpty(port) ? "" : port;
     }
 
     public void setPort(String port) {
@@ -38,7 +40,7 @@ public class E40CORSInfo {
     }
 
     public String getUser() {
-        return user;
+        return TextUtils.isEmpty(user) ? "" : user;
     }
 
     public void setUser(String user) {
@@ -46,7 +48,7 @@ public class E40CORSInfo {
     }
 
     public String getPswd() {
-        return pswd;
+        return TextUtils.isEmpty(pswd) ? "" : pswd;
     }
 
     public void setPswd(String pswd) {
@@ -54,7 +56,7 @@ public class E40CORSInfo {
     }
 
     public String getSta() {
-        return sta;
+        return TextUtils.isEmpty(sta) ? "" : sta;
     }
 
     public void setSta(String sta) {

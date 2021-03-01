@@ -146,6 +146,9 @@ public class BleAdmeBasicParamConfigFragment extends BaseBleIotCommunicateFragme
 
     @OnClick({R.id.ll_inclinometer_type, R.id.ll_data_settlement_method, R.id.btn_confirm})
     public void onClick(View view) {
+        if (isDoubleClick(view)) {
+            return;
+        }
         int id = view.getId();
         if (id == R.id.ll_inclinometer_type) {
             showInclinometerTypeDialog();
