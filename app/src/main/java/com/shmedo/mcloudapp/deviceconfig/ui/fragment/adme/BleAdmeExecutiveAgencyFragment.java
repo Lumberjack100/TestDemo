@@ -207,7 +207,7 @@ public class BleAdmeExecutiveAgencyFragment extends BaseBleIotCommunicateFragmen
     private void queryParamInfo() {
         errMsg = "查询数据超时,请稍后尝试";
         startProgressRunnable("加载中...", WRITE_TIME_OUT_SECOND);
-        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_GET_EXECUTIVE_AGENCY_PARAMETERS);
+        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_GET_EXECUTIVE_AGENCY);
         sendCommand(command);
     }
 
@@ -595,7 +595,7 @@ public class BleAdmeExecutiveAgencyFragment extends BaseBleIotCommunicateFragmen
             errMsg = "发送指令超时,请稍后尝试";
             startProgressRunnable("正在发送配置指令...", WRITE_TIME_OUT_SECOND);
             mBtnSave.setEnabled(false);
-            String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_SET_EXECUTIVE_AGENCY_PARAMETERS, entity);
+            String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_SET_EXECUTIVE_AGENCY, entity);
             sendCommand(command);
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -616,7 +616,7 @@ public class BleAdmeExecutiveAgencyFragment extends BaseBleIotCommunicateFragmen
     private void setResultData(final String cmdStr) {
         IOTCommandType type = IOTStringUtil.extractCommandType(cmdStr);
         switch (type) {
-            case ADME_MD_GET_EXECUTIVE_AGENCY_PARAMETERS: {//获取ADME的执行机构配置参数
+            case ADME_MD_GET_EXECUTIVE_AGENCY: {//获取ADME的执行机构配置参数
                 stopProgressRunnable();
                 IOTCommandResult<AdmeExecutiveAgencyInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
@@ -630,7 +630,7 @@ public class BleAdmeExecutiveAgencyFragment extends BaseBleIotCommunicateFragmen
             }
             break;
 
-            case ADME_MD_SET_EXECUTIVE_AGENCY_PARAMETERS: {//设置ADME的执行机构配置参数
+            case ADME_MD_SET_EXECUTIVE_AGENCY: {//设置ADME的执行机构配置参数
                 CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
                 if (!cmdResult.isSucceed()) {
                     stopProgressRunnable();

@@ -152,7 +152,7 @@ public class BleAdmeMeasuringHoleDepthFragment extends BaseBleIotCommunicateFrag
     private void queryMotorMotionConfig() {
         errMsg = "查询数据超时,请稍后尝试";
         startProgressRunnable("加载中...", WRITE_TIME_OUT_SECOND);
-        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_GET_MEASURING_HOLEDEPTH_PARAMETERS);
+        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_GET_MEASURING_HOLEDEPTH);
         sendCommand(command);
     }
 
@@ -264,7 +264,7 @@ public class BleAdmeMeasuringHoleDepthFragment extends BaseBleIotCommunicateFrag
             mBtnRun.setEnabled(false);
             errMsg = "发送指令超时,请稍后尝试";
             startProgressRunnable("处理中...", WRITE_TIME_OUT_SECOND);
-            String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_SET_MEASURING_HOLEDEPTH_PARAMETERS, entity);
+            String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_SET_MEASURING_HOLEDEPTH, entity);
             sendCommand(command);
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -335,7 +335,7 @@ public class BleAdmeMeasuringHoleDepthFragment extends BaseBleIotCommunicateFrag
     private void setResultData(final String cmdStr) {
         IOTCommandType type = IOTStringUtil.extractCommandType(cmdStr);
         switch (type) {
-            case ADME_MD_GET_MEASURING_HOLEDEPTH_PARAMETERS: {//获取ADME的测量孔深配置参数
+            case ADME_MD_GET_MEASURING_HOLEDEPTH: {//获取ADME的测量孔深配置参数
                 stopProgressRunnable();
                 IOTCommandResult<AdmeMeasuringHoleDepthInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
@@ -373,7 +373,7 @@ public class BleAdmeMeasuringHoleDepthFragment extends BaseBleIotCommunicateFrag
             }
             break;
 
-            case ADME_MD_SET_MEASURING_HOLEDEPTH_PARAMETERS: {//设置ADME的测量孔深配置参数
+            case ADME_MD_SET_MEASURING_HOLEDEPTH: {//设置ADME的测量孔深配置参数
                 stopProgressRunnable();
                 CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
                 if (!cmdResult.isSucceed()) {

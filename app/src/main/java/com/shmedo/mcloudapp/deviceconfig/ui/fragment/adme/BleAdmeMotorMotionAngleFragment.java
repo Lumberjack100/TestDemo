@@ -171,7 +171,7 @@ public class BleAdmeMotorMotionAngleFragment extends BaseDialogFragment {
      * 获取电机运动配置参数
      */
     private void queryMotorMotionConfig() {
-        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_GET_GUIDE_GROOVE_CALIBRATION_PARAMETERS);
+        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_GET_GUIDE_GROOVE_CALIBRATION);
         sendCommand(command);
     }
 
@@ -215,7 +215,7 @@ public class BleAdmeMotorMotionAngleFragment extends BaseDialogFragment {
         entity.setMovementway(motionWay);
         entity.setMovepulse(continuePulseGoal);
 
-        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_SET_GUIDE_GROOVE_CALIBRATION_PARAMETERS, entity);
+        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_SET_GUIDE_GROOVE_CALIBRATION, entity);
         sendCommand(command);
     }
 

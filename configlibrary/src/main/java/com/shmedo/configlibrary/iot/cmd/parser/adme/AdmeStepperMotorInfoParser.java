@@ -48,6 +48,6 @@ public class AdmeStepperMotorInfoParser implements IOTResultParser<AdmeStepperMo
 
     @Override
     public IOTCommandType commandType() {
-        return IOTCommandType.ADME_MD_GET_STEPPER_MOTOR_PARAMETERS;
+        return IOTCommandType.ADME_MD_GET_STEPPER_MOTOR;
     }
 }

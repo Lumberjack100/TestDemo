@@ -48,6 +48,6 @@ public class AdmeMeasuringHoleDepthInfoParser implements IOTResultParser<AdmeMea
 
     @Override
     public IOTCommandType commandType() {
-        return IOTCommandType.ADME_MD_GET_MEASURING_HOLEDEPTH_PARAMETERS;
+        return IOTCommandType.ADME_MD_GET_MEASURING_HOLEDEPTH;
     }
 }

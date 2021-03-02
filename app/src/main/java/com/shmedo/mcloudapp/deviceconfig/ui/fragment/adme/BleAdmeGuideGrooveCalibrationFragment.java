@@ -104,7 +104,7 @@ public class BleAdmeGuideGrooveCalibrationFragment extends BaseBleIotCommunicate
     private void queryMotorMotionConfig() {
         errMsg = "查询数据超时,请稍后尝试";
         startProgressRunnable("加载中...", WRITE_TIME_OUT_SECOND);
-        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_GET_GUIDE_GROOVE_CALIBRATION_PARAMETERS);
+        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_GET_GUIDE_GROOVE_CALIBRATION);
         sendCommand(command);
     }
 
@@ -210,7 +210,7 @@ public class BleAdmeGuideGrooveCalibrationFragment extends BaseBleIotCommunicate
             mBtnRun.setEnabled(false);
             errMsg = "发送指令超时,请稍后尝试";
             startProgressRunnable("处理中...", WRITE_TIME_OUT_SECOND);
-            String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_SET_GUIDE_GROOVE_CALIBRATION_PARAMETERS, entity);
+            String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_SET_GUIDE_GROOVE_CALIBRATION, entity);
             sendCommand(command);
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -281,7 +281,7 @@ public class BleAdmeGuideGrooveCalibrationFragment extends BaseBleIotCommunicate
     private void setResultData(final String cmdStr) {
         IOTCommandType type = IOTStringUtil.extractCommandType(cmdStr);
         switch (type) {
-            case ADME_MD_GET_GUIDE_GROOVE_CALIBRATION_PARAMETERS: {//获取ADME的导槽校准配置参数
+            case ADME_MD_GET_GUIDE_GROOVE_CALIBRATION: {//获取ADME的导槽校准配置参数
                 stopProgressRunnable();
                 IOTCommandResult<AdmeGuideGrooveCalibrationInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
@@ -319,7 +319,7 @@ public class BleAdmeGuideGrooveCalibrationFragment extends BaseBleIotCommunicate
             }
             break;
 
-            case ADME_MD_SET_GUIDE_GROOVE_CALIBRATION_PARAMETERS: {//设置ADME的导槽校准配置参数
+            case ADME_MD_SET_GUIDE_GROOVE_CALIBRATION: {//设置ADME的导槽校准配置参数
                 stopProgressRunnable();
                 CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
                 if (!cmdResult.isSucceed()) {

@@ -51,6 +51,6 @@ public class AdmeInclinometerInfoParser implements IOTResultParser<AdmeInclinome
 
     @Override
     public IOTCommandType commandType() {
-        return IOTCommandType.ADME_MD_GET_INCLINOMETER_PARAMETERS;
+        return IOTCommandType.ADME_MD_GET_INCLINOMETER;
     }
 }

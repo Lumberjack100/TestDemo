@@ -134,7 +134,7 @@ public class BleAdmeInclinometerFragment extends BaseBleIotCommunicateFragment {
     private void queryParamConfigInfo() {
         errMsg = "查询数据超时,请稍后尝试";
         startProgressRunnable("加载中...", WRITE_TIME_OUT_SECOND);
-        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_GET_INCLINOMETER_PARAMETERS);
+        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_GET_INCLINOMETER);
         sendCommand(command);
     }
 
@@ -332,7 +332,7 @@ public class BleAdmeInclinometerFragment extends BaseBleIotCommunicateFragment {
             errMsg = "发送指令超时,请稍后尝试";
             startProgressRunnable("处理中...", WRITE_TIME_OUT_SECOND);
             mBtnSave.setEnabled(false);
-            String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_SET_INCLINOMETER_PARAMETERS, entity);
+            String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_SET_INCLINOMETER, entity);
             sendCommand(command);
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -353,7 +353,7 @@ public class BleAdmeInclinometerFragment extends BaseBleIotCommunicateFragment {
     private void setResultData(final String cmdStr) {
         IOTCommandType type = IOTStringUtil.extractCommandType(cmdStr);
         switch (type) {
-            case ADME_MD_GET_INCLINOMETER_PARAMETERS: {//获取ADME的测斜仪配置参数
+            case ADME_MD_GET_INCLINOMETER: {//获取ADME的测斜仪配置参数
                 stopProgressRunnable();
                 IOTCommandResult<AdmeInclinometerInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
@@ -367,7 +367,7 @@ public class BleAdmeInclinometerFragment extends BaseBleIotCommunicateFragment {
             }
             break;
 
-            case ADME_MD_SET_INCLINOMETER_PARAMETERS: {//设置ADME的测斜仪配置参数
+            case ADME_MD_SET_INCLINOMETER: {//设置ADME的测斜仪配置参数
                 CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
                 if (!cmdResult.isSucceed()) {
                     stopProgressRunnable();

@@ -50,6 +50,6 @@ public class AdmeBasicConfigParamParser implements IOTResultParser<AdmeBasicConf
 
     @Override
     public IOTCommandType commandType() {
-        return IOTCommandType.ADME_MD_GET_BASIC_PARAMETERS;
+        return IOTCommandType.ADME_MD_GET_BASIC;
     }
 }

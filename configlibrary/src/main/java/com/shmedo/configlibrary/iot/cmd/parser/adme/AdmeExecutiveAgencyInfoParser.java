@@ -62,6 +62,6 @@ public class AdmeExecutiveAgencyInfoParser implements IOTResultParser<AdmeExecut
 
     @Override
     public IOTCommandType commandType() {
-        return IOTCommandType.ADME_MD_GET_EXECUTIVE_AGENCY_PARAMETERS;
+        return IOTCommandType.ADME_MD_GET_EXECUTIVE_AGENCY;
     }
 }

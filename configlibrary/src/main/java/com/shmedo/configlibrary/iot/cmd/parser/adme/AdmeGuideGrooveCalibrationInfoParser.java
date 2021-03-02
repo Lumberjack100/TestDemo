@@ -48,6 +48,6 @@ public class AdmeGuideGrooveCalibrationInfoParser implements IOTResultParser<Adm
 
     @Override
     public IOTCommandType commandType() {
-        return IOTCommandType.ADME_MD_GET_GUIDE_GROOVE_CALIBRATION_PARAMETERS;
+        return IOTCommandType.ADME_MD_GET_GUIDE_GROOVE_CALIBRATION;
     }
 }

@@ -175,62 +175,72 @@ public enum IOTCommandType {
     /**
      * 获取ADME的基础配置参数
      */
-    ADME_MD_GET_BASIC_PARAMETERS("md_getbasicparameters"),
+    ADME_MD_GET_BASIC("md_getbasicparameters"),
 
     /**
      * 设置ADME的基础配置参数
      */
-    ADME_MD_SET_BASIC_PARAMETERS("md_setbasicparameters"),
+    ADME_MD_SET_BASIC("md_setbasicparameters"),
 
     /**
      * 获取ADME的计米轮配置参数
      */
-    ADME_MD_GET_METER_WHEEL_PARAMETERS("md_getjmqparameter"),
+    ADME_MD_GET_METER_WHEEL("md_getjmqparameter"),
 
     /**
      * 设置ADME的计米轮配置参数
      */
-    ADME_MD_SET_METER_WHEEL_PARAMETERS("md_setjmqparameter"),
+    ADME_MD_SET_METER_WHEEL("md_setjmqparameter"),
 
     /**
      * 获取ADME的测斜仪配置参数
      */
-    ADME_MD_GET_INCLINOMETER_PARAMETERS("md_getinter"),
+    ADME_MD_GET_INCLINOMETER("md_getinter"),
 
     /**
      * 设置ADME的测斜仪配置参数
      */
-    ADME_MD_SET_INCLINOMETER_PARAMETERS("md_setinter"),
+    ADME_MD_SET_INCLINOMETER("md_setinter"),
 
     /**
      * 获取ADME的步进电机配置参数
      */
-    ADME_MD_GET_STEPPER_MOTOR_PARAMETERS("md_getsteppermotor"),
+    ADME_MD_GET_STEPPER_MOTOR("md_getsteppermotor"),
 
     /**
      * 设置ADME的步进电机配置参数
      */
-    ADME_MD_SET_STEPPER_MOTOR_PARAMETERS("md_setsteppermotor"),
+    ADME_MD_SET_STEPPER_MOTOR("md_setsteppermotor"),
 
     /**
      * 获取ADME的执行机构配置参数
      */
-    ADME_MD_GET_EXECUTIVE_AGENCY_PARAMETERS("md_getactuator"),
+    ADME_MD_GET_EXECUTIVE_AGENCY("md_getactuator"),
 
     /**
      * 设置ADME的执行机构配置参数
      */
-    ADME_MD_SET_EXECUTIVE_AGENCY_PARAMETERS("md_setactuator"),
+    ADME_MD_SET_EXECUTIVE_AGENCY("md_setactuator"),
+
+    /**
+     * 获取ADME的电机运动堵转缓停参数
+     */
+    ADME_MD_GET_LOCKED_ROTOR_DETECTION("md_getlocros"),
+
+    /**
+     * 设置ADME的电机运动堵转缓停参数
+     */
+    ADME_MD_SET_LOCKED_ROTOR_DETECTION("md_setlocros"),
 
     /**
      * 获取ADME的测量孔深配置参数
      */
-    ADME_MD_GET_MEASURING_HOLEDEPTH_PARAMETERS("md_getmhdmeasth"),
+    ADME_MD_GET_MEASURING_HOLEDEPTH("md_getmhdmeasth"),
 
     /**
      * 设置ADME的测量孔深配置参数
      */
-    ADME_MD_SET_MEASURING_HOLEDEPTH_PARAMETERS("md_setmhdmeasth"),
+    ADME_MD_SET_MEASURING_HOLEDEPTH("md_setmhdmeasth"),
 
     /**
      * 查询ADME测孔深运动的脉冲数、运动距离
@@ -250,12 +260,12 @@ public enum IOTCommandType {
     /**
      * 获取ADME的导槽校准配置参数
      */
-    ADME_MD_GET_GUIDE_GROOVE_CALIBRATION_PARAMETERS("md_getmeasth"),
+    ADME_MD_GET_GUIDE_GROOVE_CALIBRATION("md_getmeasth"),
 
     /**
      * 设置ADME的导槽校准配置参数
      */
-    ADME_MD_SET_GUIDE_GROOVE_CALIBRATION_PARAMETERS("md_setmeasth"),
+    ADME_MD_SET_GUIDE_GROOVE_CALIBRATION("md_setmeasth"),
 
     /**
      * 查询ADME导槽校准的脉冲数、运动角度

@@ -165,7 +165,7 @@ public class BleAdmeStepperMotorFragment extends BaseBleIotCommunicateFragment {
     private void queryParamInfo() {
         errMsg = "查询数据超时,请稍后尝试";
         startProgressRunnable("加载中...", WRITE_TIME_OUT_SECOND);
-        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_GET_STEPPER_MOTOR_PARAMETERS);
+        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_GET_STEPPER_MOTOR);
         sendCommand(command);
     }
 
@@ -177,7 +177,7 @@ public class BleAdmeStepperMotorFragment extends BaseBleIotCommunicateFragment {
         entity.setPosnegtest("0");
 
         isSaveParamOperation = false;
-        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_SET_STEPPER_MOTOR_PARAMETERS, entity);
+        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_SET_STEPPER_MOTOR, entity);
         sendCommand(command);
     }
 
@@ -277,7 +277,7 @@ public class BleAdmeStepperMotorFragment extends BaseBleIotCommunicateFragment {
 
             errMsg = "发送指令超时,请稍后尝试";
             startProgressRunnable("正在发送配置指令...", WRITE_TIME_OUT_SECOND);
-            String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_SET_STEPPER_MOTOR_PARAMETERS, entity);
+            String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_SET_STEPPER_MOTOR, entity);
             sendCommand(command);
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -298,7 +298,7 @@ public class BleAdmeStepperMotorFragment extends BaseBleIotCommunicateFragment {
     private void setResultData(final String cmdStr) {
         IOTCommandType type = IOTStringUtil.extractCommandType(cmdStr);
         switch (type) {
-            case ADME_MD_GET_STEPPER_MOTOR_PARAMETERS: {//获取ADME的步进电机配置参数
+            case ADME_MD_GET_STEPPER_MOTOR: {//获取ADME的步进电机配置参数
                 stopProgressRunnable();
                 IOTCommandResult<AdmeStepperMotorInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
@@ -312,7 +312,7 @@ public class BleAdmeStepperMotorFragment extends BaseBleIotCommunicateFragment {
             }
             break;
 
-            case ADME_MD_SET_STEPPER_MOTOR_PARAMETERS: {//设置ADME的步进电机配置参数
+            case ADME_MD_SET_STEPPER_MOTOR: {//设置ADME的步进电机配置参数
                 CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
                 if (!cmdResult.isSucceed()) {
                     stopProgressRunnable();

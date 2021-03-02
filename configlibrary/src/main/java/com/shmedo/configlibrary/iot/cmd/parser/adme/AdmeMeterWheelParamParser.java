@@ -54,6 +54,6 @@ public class AdmeMeterWheelParamParser implements IOTResultParser<AdmeMeterWheel
 
     @Override
     public IOTCommandType commandType() {
-        return IOTCommandType.ADME_MD_GET_METER_WHEEL_PARAMETERS;
+        return IOTCommandType.ADME_MD_GET_METER_WHEEL;
     }
 }

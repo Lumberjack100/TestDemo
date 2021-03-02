@@ -134,7 +134,7 @@ public class BleAdmeMeterWheelFragment extends BaseBleIotCommunicateFragment {
     private void queryParamConfigInfo() {
         errMsg = "查询数据超时,请稍后尝试";
         startProgressRunnable("加载中...", WRITE_TIME_OUT_SECOND);
-        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_GET_METER_WHEEL_PARAMETERS);
+        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_GET_METER_WHEEL);
         sendCommand(command);
     }
 
@@ -327,7 +327,7 @@ public class BleAdmeMeterWheelFragment extends BaseBleIotCommunicateFragment {
             errMsg = "发送指令超时,请稍后尝试";
             startProgressRunnable("处理中...", WRITE_TIME_OUT_SECOND);
             mBtnSave.setEnabled(false);
-            String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_SET_METER_WHEEL_PARAMETERS, entity);
+            String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_SET_METER_WHEEL, entity);
             sendCommand(command);
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -348,7 +348,7 @@ public class BleAdmeMeterWheelFragment extends BaseBleIotCommunicateFragment {
     private void setResultData(final String cmdStr) {
         IOTCommandType type = IOTStringUtil.extractCommandType(cmdStr);
         switch (type) {
-            case ADME_MD_GET_METER_WHEEL_PARAMETERS: {//获取ADME的计米轮配置参数
+            case ADME_MD_GET_METER_WHEEL: {//获取ADME的计米轮配置参数
                 stopProgressRunnable();
                 IOTCommandResult<AdmeMeterWheelInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
@@ -362,7 +362,7 @@ public class BleAdmeMeterWheelFragment extends BaseBleIotCommunicateFragment {
             }
             break;
 
-            case ADME_MD_SET_METER_WHEEL_PARAMETERS: {//设置ADME的计米轮配置参数
+            case ADME_MD_SET_METER_WHEEL: {//设置ADME的计米轮配置参数
                 CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
                 if (!cmdResult.isSucceed()) {
                     stopProgressRunnable();

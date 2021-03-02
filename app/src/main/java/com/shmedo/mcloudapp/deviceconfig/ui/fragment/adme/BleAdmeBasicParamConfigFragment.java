@@ -140,7 +140,7 @@ public class BleAdmeBasicParamConfigFragment extends BaseBleIotCommunicateFragme
     private void queryBasicParamConfigInfo() {
         errMsg = "查询数据超时,请稍后尝试";
         startProgressRunnable("加载中...", WRITE_TIME_OUT_SECOND);
-        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_GET_BASIC_PARAMETERS);
+        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_GET_BASIC);
         sendCommand(command);
     }
 
@@ -327,7 +327,7 @@ public class BleAdmeBasicParamConfigFragment extends BaseBleIotCommunicateFragme
             errMsg = "发送指令超时,请稍后尝试";
             startProgressRunnable("处理中...", WRITE_TIME_OUT_SECOND);
             mBtnSave.setEnabled(false);
-            String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_SET_BASIC_PARAMETERS, entity);
+            String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_SET_BASIC, entity);
             sendCommand(command);
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -348,7 +348,7 @@ public class BleAdmeBasicParamConfigFragment extends BaseBleIotCommunicateFragme
     private void setResultData(final String cmdStr) {
         IOTCommandType type = IOTStringUtil.extractCommandType(cmdStr);
         switch (type) {
-            case ADME_MD_GET_BASIC_PARAMETERS: {//获取设备的基础配置参数
+            case ADME_MD_GET_BASIC: {//获取设备的基础配置参数
                 stopProgressRunnable();
                 IOTCommandResult<AdmeBasicConfigInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
@@ -362,7 +362,7 @@ public class BleAdmeBasicParamConfigFragment extends BaseBleIotCommunicateFragme
             }
             break;
 
-            case ADME_MD_SET_BASIC_PARAMETERS: {//设置设备的基础配置参数
+            case ADME_MD_SET_BASIC: {//设置设备的基础配置参数
                 CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
                 if (!cmdResult.isSucceed()) {
                     stopProgressRunnable();
