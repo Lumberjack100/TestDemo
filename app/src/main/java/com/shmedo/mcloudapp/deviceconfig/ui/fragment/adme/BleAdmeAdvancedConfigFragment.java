@@ -21,6 +21,7 @@ import com.shmedo.mcloudapp.deviceconfig.ui.activity.adme.AdmeExecutiveAgencyAct
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.adme.AdmeInclinometerActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.adme.AdmeMeterWheelActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.adme.AdmeStepperMotorActivity;
+import com.shmedo.mcloudapp.deviceconfig.ui.activity.adme.BleAdmeLockedRotorDetectionActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -101,6 +102,10 @@ public class BleAdmeAdvancedConfigFragment extends BaseBleIotCommunicateFragment
             case "步进电机":
                 AdmeStepperMotorActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT);
                 break;
+
+            case "堵转缓停":
+                BleAdmeLockedRotorDetectionActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT);
+                break;
         }
     }
 
@@ -120,6 +125,8 @@ public class BleAdmeAdvancedConfigFragment extends BaseBleIotCommunicateFragment
         configModule = new ConfigModule(R.drawable.ic_adme_advanced_config, "步进电机", "参数配置");
         configModuleList.add(configModule);
 
+        configModule = new ConfigModule(R.drawable.ic_adme_advanced_config, "堵转缓停", "参数配置");
+        configModuleList.add(configModule);
     }
 
 }

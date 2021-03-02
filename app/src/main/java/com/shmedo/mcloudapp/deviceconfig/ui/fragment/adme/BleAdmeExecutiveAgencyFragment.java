@@ -213,6 +213,9 @@ public class BleAdmeExecutiveAgencyFragment extends BaseBleIotCommunicateFragmen
 
     @OnClick({R.id.ll_data_settlement_method, R.id.ll_data_response, R.id.btn_confirm})
     public void onClick(View view) {
+        if (isDoubleClick(view)) {
+            return;
+        }
         int id = view.getId();
         if (id == R.id.ll_data_settlement_method) {
             showDataSettlementMethodDialog();
