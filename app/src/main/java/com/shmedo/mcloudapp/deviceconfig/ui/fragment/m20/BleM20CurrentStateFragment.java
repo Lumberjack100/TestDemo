@@ -17,6 +17,7 @@ import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
 import com.shmedo.core.util.GlobalUtil;
 import com.shmedo.core.util.GsonFactory;
 import com.shmedo.mcloudapp.R;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.blecommon.BaseGOCBleIotCommunicateFragment;
 
 import butterknife.BindView;
 import timber.log.Timber;

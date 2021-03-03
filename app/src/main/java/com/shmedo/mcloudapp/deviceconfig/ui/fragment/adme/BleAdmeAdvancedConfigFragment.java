@@ -22,6 +22,7 @@ import com.shmedo.mcloudapp.deviceconfig.ui.activity.adme.AdmeInclinometerActivi
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.adme.AdmeMeterWheelActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.adme.AdmeStepperMotorActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.adme.BleAdmeLockedRotorDetectionActivity;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.blecommon.BaseUSRBleIotCommunicateFragment;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.deviceconfig.ui.fragment.m20;
+package com.shmedo.mcloudapp.deviceconfig.ui.fragment.blecommon;
 
 import android.bluetooth.BluetoothDevice;
 import android.os.Bundle;
@@ -132,7 +132,7 @@ public abstract class BaseGOCBleIotCommunicateFragment extends BaseFragment {
      * This method returns true if the device is connected. Services could have not been
      * discovered yet.
      */
-    protected final boolean isConnected() {
+    public final boolean isConnected() {
         return bleViewModel.isConnected();
     }
 
@@ -147,7 +147,7 @@ public abstract class BaseGOCBleIotCommunicateFragment extends BaseFragment {
 
     }
 
-    protected void sendCommand(String cmdStr) {
+    public void sendCommand(String cmdStr) {
         if (!isConnected()) {
             ToastUtils.show(getString(R.string.tcp_config_disconnect_warn));
             return;

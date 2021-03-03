@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.deviceconfig.ui.fragment.adme;
+package com.shmedo.mcloudapp.deviceconfig.ui.fragment.blecommon;
 
 import android.bluetooth.BluetoothDevice;
 import android.os.Bundle;
