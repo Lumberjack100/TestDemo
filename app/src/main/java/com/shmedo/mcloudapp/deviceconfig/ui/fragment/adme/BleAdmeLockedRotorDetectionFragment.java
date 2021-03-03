@@ -39,7 +39,7 @@ import timber.log.Timber;
  * 创建时间:  3/2/21 <br/>
  * 描述：    ADME 蓝牙模式下电机运动堵转缓停参数配置页面
  */
-public class BleAdmeLockedRotorDetectionFragment extends BaseBleIotCommunicateFragment {
+public class BleAdmeLockedRotorDetectionFragment extends BaseUSRBleIotCommunicateFragment {
     @BindView(R.id.decentralizedEnableSBtn)
     SwitchButton mSbDecentralizedEnable;
 

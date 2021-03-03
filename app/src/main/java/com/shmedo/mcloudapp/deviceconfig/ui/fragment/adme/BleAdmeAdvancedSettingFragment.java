@@ -42,7 +42,7 @@ import timber.log.Timber;
  * 创建时间:  2020/12/29<br/>
  * 描述：     ADME 设置页面
  */
-public class BleAdmeAdvancedSettingFragment extends BaseBleIotCommunicateFragment {
+public class BleAdmeAdvancedSettingFragment extends BaseUSRBleIotCommunicateFragment {
     private static final int REBOOT = 0x1000;
     private static final int RESET = 0x1001;
 

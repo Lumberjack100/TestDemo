@@ -37,7 +37,7 @@ import timber.log.Timber;
  * 创建时间:  2020/12/29<br/>
  * 描述：    ADME 数据中心页面
  */
-public class BleAdmeDataCenterHomeFragment extends BaseBleIotCommunicateFragment {
+public class BleAdmeDataCenterHomeFragment extends BaseUSRBleIotCommunicateFragment {
     @BindView(R.id.tv_data_center_one)
     TextView mTvDataCenterOne;
 

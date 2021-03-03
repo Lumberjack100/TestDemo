@@ -35,7 +35,7 @@ import timber.log.Timber;
  * 创建时间:  2020/12/27<br/>
  * 描述：     ADME 计米轮参数配置页面
  */
-public class BleAdmeMeterWheelFragment extends BaseBleIotCommunicateFragment {
+public class BleAdmeMeterWheelFragment extends BaseUSRBleIotCommunicateFragment {
 
     @BindView(R.id.et_encoder_line_number)
     ClearEditText mEtEncoderLineNumber;

@@ -63,7 +63,7 @@ import timber.log.Timber;
  * 创建时间:  1/18/21 <br/>
  * 描述：      ADME 蓝牙配置主页面
  */
-public class BleAdmeHomeFragment extends BaseBleIotCommunicateFragment {
+public class BleAdmeHomeFragment extends BaseUSRBleIotCommunicateFragment {
     public static final String EXTRA_DEVICE = "com.shmedo.mcloudapp.EXTRA_DEVICE";
 
     @BindView(R.id.device_container)

@@ -42,7 +42,7 @@ import timber.log.Timber;
  * 创建时间:  1/8/21 <br/>
  * 描述：     ADME 导槽校准
  */
-public class BleAdmeGuideGrooveCalibrationFragment extends BaseBleIotCommunicateFragment {
+public class BleAdmeGuideGrooveCalibrationFragment extends BaseUSRBleIotCommunicateFragment {
     @BindView(R.id.tv_motion_way)
     TextView mTvMotionWay;
 

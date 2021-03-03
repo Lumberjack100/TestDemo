@@ -25,7 +25,7 @@ import timber.log.Timber;
 /**
  * 创建者:   gonghe <br/>
  * 创建时间:  1/20/21 <br/>
- * 描述：     TODO #gh#
+ * 描述：    与深圳市顾凯信息技术有限公司GOC-MD-400蓝牙模块通讯的页面基类
  */
 public abstract class BaseGOCBleIotCommunicateFragment extends BaseFragment {
     public static final int WRITE_TIME_OUT_SECOND = 10000;//发送指令超时时间

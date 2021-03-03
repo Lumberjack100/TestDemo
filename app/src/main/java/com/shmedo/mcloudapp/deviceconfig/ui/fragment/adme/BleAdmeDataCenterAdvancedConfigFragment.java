@@ -46,7 +46,7 @@ import timber.log.Timber;
  * 创建时间:  2020/12/28<br/>
  * 描述：     ADME 数据中心高级配置页面
  */
-public class BleAdmeDataCenterAdvancedConfigFragment extends BaseBleIotCommunicateFragment {
+public class BleAdmeDataCenterAdvancedConfigFragment extends BaseUSRBleIotCommunicateFragment {
 
     @BindView(R.id.maskLayerChild)
     ViewGroup maskLayerLayout;

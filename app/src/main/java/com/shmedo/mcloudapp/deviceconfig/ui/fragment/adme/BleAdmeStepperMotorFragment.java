@@ -40,7 +40,7 @@ import timber.log.Timber;
  * 创建时间:  2020/12/28<br/>
  * 描述：     ADME 步进电机参数配置页面
  */
-public class BleAdmeStepperMotorFragment extends BaseBleIotCommunicateFragment {
+public class BleAdmeStepperMotorFragment extends BaseUSRBleIotCommunicateFragment {
     @BindView(R.id.contentLayout)
     ViewGroup contentLayout;
 

@@ -39,7 +39,7 @@ import timber.log.Timber;
  * 创建时间:  2020/12/28<br/>
  * 描述：     ADME 基本参数配置页面
  */
-public class BleAdmeBasicParamConfigFragment extends BaseBleIotCommunicateFragment {
+public class BleAdmeBasicParamConfigFragment extends BaseUSRBleIotCommunicateFragment {
     @BindView(R.id.tv_inclinometer_type)
     TextView mTvInclinometerType;
 
