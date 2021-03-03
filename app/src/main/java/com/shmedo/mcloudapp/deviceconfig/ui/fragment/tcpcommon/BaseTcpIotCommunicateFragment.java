@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.deviceconfig.ui.fragment.vms;
+package com.shmedo.mcloudapp.deviceconfig.ui.fragment.tcpcommon;
 
 import android.os.Bundle;
 import android.os.Handler;
@@ -15,8 +15,8 @@ import com.littlegreens.netty.client.listener.MessageStateListener;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.fragment.BaseFragment;
 import com.shmedo.mcloudapp.deviceconfig.model.TcpConnectionState;
+import com.shmedo.mcloudapp.deviceconfig.viewmodels.DeviceApiKeyViewModel;
 import com.shmedo.mcloudapp.profile.TcpViewModel;
-import com.shmedo.mcloudapp.deviceconfig.viewmodels.VmsViewModel;
 
 import java.util.Objects;
 import java.util.UUID;
@@ -25,10 +25,10 @@ import timber.log.Timber;
 
 /**
  * 创建者:   gonghe <br/>
- * 创建时间:  2020/11/11 <br/>
- * 描述：     TODO #gh#
+ * 创建时间:  3/3/21 <br/>
+ * 描述：    与支持通过Tcp进行物联网指令通讯的设备的页面基类
  */
-public abstract class BaseTcpConnectFragment extends BaseFragment {
+public abstract class BaseTcpIotCommunicateFragment extends BaseFragment {
     public static final int TCP_CONNECT_DELAY_MILLIS = 5000;//Tcp 连接超时时间
 
     public static final int QUERY_CMD_DELAY_MILLIS = 1500;//查询配置参数指令超时时间
@@ -43,7 +43,8 @@ public abstract class BaseTcpConnectFragment extends BaseFragment {
 
     protected TcpViewModel tcpViewModel;
 
-    protected VmsViewModel vmsViewModel;
+    protected DeviceApiKeyViewModel deviceApiKeyViewModel;
+
 
     private static ProgressRunnable progressRunnable;
 
@@ -81,7 +82,6 @@ public abstract class BaseTcpConnectFragment extends BaseFragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        vmsViewModel = getApplicationScopeViewModel(VmsViewModel.class);
         tcpViewModel = getApplicationScopeViewModel(TcpViewModel.class);
         tcpViewModel.getTcpConnectionState().observeInFragment(this, new Observer<TcpConnectionState>() {
             @Override
@@ -105,6 +105,7 @@ public abstract class BaseTcpConnectFragment extends BaseFragment {
                 parseResponseMessage(msg);
             }
         });
+        deviceApiKeyViewModel = getApplicationScopeViewModel(DeviceApiKeyViewModel.class);
     }
 
     /**
@@ -126,13 +127,12 @@ public abstract class BaseTcpConnectFragment extends BaseFragment {
 
     protected void sendCommand(String cmdStr) {
         String apiKey = "b12aac6b-0bd2-4a01-80fd-97fe4f5d4ff9";
-        if (!TextUtils.isEmpty(vmsViewModel.getDeviceApiKey().getValue())) {
-            apiKey = vmsViewModel.getDeviceApiKey().getValue();
+        if (!TextUtils.isEmpty(deviceApiKeyViewModel.getDeviceApiKey().getValue())) {
+            apiKey = deviceApiKeyViewModel.getDeviceApiKey().getValue();
         }
         cmdStr += "&apikey=" + apiKey
                 + "&msgid=" + UUID.randomUUID().toString();
 
-//        Timber.d("发送指令: %s", cmdStr);
         tcpViewModel.sendMsgToServer(cmdStr, new MessageStateListener() {
             @Override
             public void isSendSuccss(boolean isSuccess) {
@@ -202,5 +202,4 @@ public abstract class BaseTcpConnectFragment extends BaseFragment {
         MaterialDialog mMaterialDialog = mBuilder.build();
         mMaterialDialog.show();
     }
-
 }

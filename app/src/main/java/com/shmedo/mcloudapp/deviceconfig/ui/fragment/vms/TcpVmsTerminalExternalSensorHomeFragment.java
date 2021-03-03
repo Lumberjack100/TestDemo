@@ -39,7 +39,7 @@ import timber.log.Timber;
  * 创建时间:  2020/11/23 <br/>
  * 描述：      Vms终端扩展传感器主页面
  */
-public class TcpVmsTerminalExternalSensorHomeFragment extends BaseTcpConnectFragment {
+public class TcpVmsTerminalExternalSensorHomeFragment extends BaseVmsTcpCommunicateFragment {
 
     @BindView(R.id.recyclerview_sensor)
     RecyclerView mRecyclerViewSensor;

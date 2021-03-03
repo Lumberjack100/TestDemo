@@ -34,7 +34,7 @@ import butterknife.BindView;
 import butterknife.OnClick;
 import timber.log.Timber;
 
-public class TcpVmsTerminalParamSettingFragment extends BaseTcpConnectFragment {
+public class TcpVmsTerminalParamSettingFragment extends BaseVmsTcpCommunicateFragment {
     private static final String DEVICE_INFO = "device_info";
 
     @BindView(R.id.tv_reporting_method)

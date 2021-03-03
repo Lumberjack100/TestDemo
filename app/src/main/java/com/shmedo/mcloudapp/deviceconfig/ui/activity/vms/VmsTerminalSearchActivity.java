@@ -40,8 +40,9 @@ import com.shmedo.mcloudapp.common.ui.activity.BaseActivity;
 import com.shmedo.mcloudapp.common.view.ClearEditText;
 import com.shmedo.mcloudapp.common.view.recycleviewitemdivider.GridSpacingItemDecoration;
 import com.shmedo.mcloudapp.deviceconfig.adapter.VmsTerminalInfoAdapter;
-import com.shmedo.mcloudapp.profile.TcpViewModel;
+import com.shmedo.mcloudapp.deviceconfig.viewmodels.DeviceApiKeyViewModel;
 import com.shmedo.mcloudapp.deviceconfig.viewmodels.VmsViewModel;
+import com.shmedo.mcloudapp.profile.TcpViewModel;
 import com.shmedo.mcloudapp.util.KeyBordUtils;
 
 import java.util.ArrayList;
@@ -74,6 +75,8 @@ public class VmsTerminalSearchActivity extends BaseActivity implements TextWatch
 
     private TcpViewModel tcpViewModel;
     private VmsViewModel vmsViewModel;
+    private DeviceApiKeyViewModel deviceApiKeyViewModel;
+
 
     public static void startActivity(Context context) {
         Intent intent = new Intent(context, VmsTerminalSearchActivity.class);
@@ -93,6 +96,7 @@ public class VmsTerminalSearchActivity extends BaseActivity implements TextWatch
         initAdapter();
 
         vmsViewModel = getApplicationScopeViewModel(VmsViewModel.class);
+        deviceApiKeyViewModel = getApplicationScopeViewModel(DeviceApiKeyViewModel.class);
         tcpViewModel = getApplicationScopeViewModel(TcpViewModel.class);
         tcpViewModel.getReceivedMessage().observeInActivity(this, new Observer<String>() {
             @Override
@@ -294,8 +298,8 @@ public class VmsTerminalSearchActivity extends BaseActivity implements TextWatch
 
     private void sendCommand(String cmdStr) {
         String apiKey = "b12aac6b-0bd2-4a01-80fd-97fe4f5d4ff9";
-        if (!TextUtils.isEmpty(vmsViewModel.getDeviceApiKey().getValue())) {
-            apiKey = vmsViewModel.getDeviceApiKey().getValue();
+        if (!TextUtils.isEmpty(deviceApiKeyViewModel.getDeviceApiKey().getValue())) {
+            apiKey = deviceApiKeyViewModel.getDeviceApiKey().getValue();
         }
         cmdStr += "&apikey=" + apiKey
                 + "&msgid=" + UUID.randomUUID().toString();

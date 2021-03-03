@@ -35,7 +35,7 @@ import timber.log.Timber;
  * 创建时间:  2020/11/20 <br/>
  * 描述：     Vms 网关通道控制参数配置
  */
-public class TcpVmsAisleSettingFragment extends BaseTcpConnectFragment {
+public class TcpVmsAisleSettingFragment extends BaseVmsTcpCommunicateFragment {
     @BindView(R.id.et_network_number)
     ClearEditText mEtNetworkNumber;
 

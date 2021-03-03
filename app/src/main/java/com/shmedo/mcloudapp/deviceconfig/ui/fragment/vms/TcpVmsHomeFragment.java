@@ -60,7 +60,7 @@ import timber.log.Timber;
  * 创建时间:  2020/11/20 <br/>
  * 描述：     Vms 网关主页面
  */
-public class TcpVmsHomeFragment extends BaseTcpConnectFragment {
+public class TcpVmsHomeFragment extends BaseVmsTcpCommunicateFragment {
     @BindView(R.id.swipeLayout)
     SwipeRefreshLayout swipeRefresh;
 

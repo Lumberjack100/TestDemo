@@ -40,8 +40,9 @@ import com.shmedo.mcloudapp.common.view.recycleviewitemdivider.GridSpacingItemDe
 import com.shmedo.mcloudapp.deviceconfig.adapter.VmsTerminalInfoAdapter;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.vms.VmsTerminalHomeActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.BaseBottomSheetDialogFragment;
-import com.shmedo.mcloudapp.profile.TcpViewModel;
+import com.shmedo.mcloudapp.deviceconfig.viewmodels.DeviceApiKeyViewModel;
 import com.shmedo.mcloudapp.deviceconfig.viewmodels.VmsViewModel;
+import com.shmedo.mcloudapp.profile.TcpViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -72,6 +73,7 @@ public class TcpVmsTerminalListFragment extends BaseBottomSheetDialogFragment {
 
     private TcpViewModel tcpViewModel;
     private VmsViewModel vmsViewModel;
+    private DeviceApiKeyViewModel deviceApiKeyViewModel;
 
 
     public TcpVmsTerminalListFragment(VmsAisleInfo vmsAisleInfo) {
@@ -99,6 +101,7 @@ public class TcpVmsTerminalListFragment extends BaseBottomSheetDialogFragment {
         super.onActivityCreated(savedInstanceState);
         initAdapter();
         vmsViewModel = getApplicationScopeViewModel(VmsViewModel.class);
+        deviceApiKeyViewModel = getApplicationScopeViewModel(DeviceApiKeyViewModel.class);
         tcpViewModel = getApplicationScopeViewModel(TcpViewModel.class);
         tcpViewModel.getReceivedMessage().observeInFragment(this, new Observer<String>() {
             @Override
@@ -307,8 +310,8 @@ public class TcpVmsTerminalListFragment extends BaseBottomSheetDialogFragment {
 
     private void sendCommand(String cmdStr) {
         String apiKey = "b12aac6b-0bd2-4a01-80fd-97fe4f5d4ff9";
-        if (!TextUtils.isEmpty(vmsViewModel.getDeviceApiKey().getValue())) {
-            apiKey = vmsViewModel.getDeviceApiKey().getValue();
+        if (!TextUtils.isEmpty(deviceApiKeyViewModel.getDeviceApiKey().getValue())) {
+            apiKey = deviceApiKeyViewModel.getDeviceApiKey().getValue();
         }
         cmdStr += "&apikey=" + apiKey
                 + "&msgid=" + UUID.randomUUID().toString();

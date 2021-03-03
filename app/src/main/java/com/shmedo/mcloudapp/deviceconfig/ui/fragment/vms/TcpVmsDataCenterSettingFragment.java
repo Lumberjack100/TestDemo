@@ -46,7 +46,7 @@ import timber.log.Timber;
  * 创建时间:  2020/11/20 <br/>
  * 描述：     Vms 网关数据中心参数配置
  */
-public class TcpVmsDataCenterSettingFragment extends BaseTcpConnectFragment {
+public class TcpVmsDataCenterSettingFragment extends BaseVmsTcpCommunicateFragment {
 
     @BindView(R.id.maskLayerChild)
     ViewGroup maskLayerLayout;

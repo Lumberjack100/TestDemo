@@ -44,7 +44,7 @@ import timber.log.Timber;
  * 创建时间:  2020/11/20 <br/>
  * 描述：     Vms 网关高级设置页面
  */
-public class TcpVmsAdvancedSettingsFragment extends BaseTcpConnectFragment {
+public class TcpVmsAdvancedSettingsFragment extends BaseVmsTcpCommunicateFragment {
     private static final int VMS_REBOOT = 0x1000;
     private static final int VMS_RESET = 0x1001;
 

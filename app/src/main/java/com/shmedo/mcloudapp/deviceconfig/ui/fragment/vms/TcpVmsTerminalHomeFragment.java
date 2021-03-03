@@ -46,7 +46,7 @@ import timber.log.Timber;
  * 创建时间:  2020/11/19 <br/>
  * 描述：     Vms 网关挂载的终端设备主页面
  */
-public class TcpVmsTerminalHomeFragment extends BaseTcpConnectFragment {
+public class TcpVmsTerminalHomeFragment extends BaseVmsTcpCommunicateFragment {
     private static final String DEVICE_INFO = "device_info";
     private static final int REBOOT = 0x0002;
 

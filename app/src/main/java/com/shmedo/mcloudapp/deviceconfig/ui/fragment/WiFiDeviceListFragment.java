@@ -44,7 +44,7 @@ import com.shmedo.mcloudapp.common.ui.fragment.BaseFragment;
 import com.shmedo.mcloudapp.common.view.ClearEditText;
 import com.shmedo.mcloudapp.deviceconfig.adapter.WiFiAdapter;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.vms.VmsHomeActivity;
-import com.shmedo.mcloudapp.deviceconfig.viewmodels.VmsViewModel;
+import com.shmedo.mcloudapp.deviceconfig.viewmodels.DeviceApiKeyViewModel;
 import com.shmedo.mcloudapp.util.KeyBordUtils;
 import com.shmedo.mcloudapp.util.permission.XPermissionUtils;
 import com.thanosfisherman.wifiutils.WifiUtils;
@@ -108,7 +108,7 @@ public class WiFiDeviceListFragment extends BaseFragment implements TextWatcher,
 
     private IWifi curWiFi;
 
-    private VmsViewModel vmsViewModel;
+    private DeviceApiKeyViewModel deviceApiKeyViewModel;
 
 
     @Override
@@ -119,8 +119,8 @@ public class WiFiDeviceListFragment extends BaseFragment implements TextWatcher,
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        vmsViewModel = getApplicationScopeViewModel(VmsViewModel.class);
-        vmsViewModel.getDeviceApiKey().observeInFragment(this, new Observer<String>() {
+        deviceApiKeyViewModel = getApplicationScopeViewModel(DeviceApiKeyViewModel.class);
+        deviceApiKeyViewModel.getDeviceApiKey().observeInFragment(this, new Observer<String>() {
             @Override
             public void onChanged(String apiKey) {
                 if (WiFiDeviceListFragment.this.isVisible() && curWiFi != null) {
@@ -148,7 +148,7 @@ public class WiFiDeviceListFragment extends BaseFragment implements TextWatcher,
                 String[] strs = curWiFi.name().split("-");
                 if (strs != null) {
                     showProgressDialog("处理中...");
-                    vmsViewModel.queryDeviceApiKeyBySn(strs[strs.length - 1]);
+                    deviceApiKeyViewModel.queryDeviceApiKeyBySn(strs[strs.length - 1]);
                 }
             }
         });
@@ -404,7 +404,7 @@ public class WiFiDeviceListFragment extends BaseFragment implements TextWatcher,
 
     @Override
     public void onDestroy() {
-        vmsViewModel.clearDeviceApiKey();
+        deviceApiKeyViewModel.clearDeviceApiKey();
         super.onDestroy();
     }
 
