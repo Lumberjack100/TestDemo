@@ -138,11 +138,11 @@ public class BleAdmeLockedRotorDetectionFragment extends BaseBleIotCommunicateFr
 
     private void setView() {
         mEtDecentralizedPulsesPerUnitTime.setFilters(new InputFilter[]{new InputFilter.LengthFilter(6)});
-        mEtDecentralizedPulseDetectionTime.setFilters(new InputFilter[]{new InputFilter.LengthFilter(8)});
-        mEtDecentralizedTorqueStallThreshold.setFilters(new InputFilter[]{new InputFilter.LengthFilter(8)});
-        mEtDecentralizedTorqueDetectionTime.setFilters(new InputFilter[]{new InputFilter.LengthFilter(8)});
-        mEtPullUpTorqueStallThreshold.setFilters(new InputFilter[]{new InputFilter.LengthFilter(8)});
-        mEtPullUpTorqueDetectionTime.setFilters(new InputFilter[]{new InputFilter.LengthFilter(8)});
+        mEtDecentralizedPulseDetectionTime.setFilters(new InputFilter[]{new InputFilter.LengthFilter(6)});
+        mEtDecentralizedTorqueStallThreshold.setFilters(new InputFilter[]{new InputFilter.LengthFilter(5)});
+        mEtDecentralizedTorqueDetectionTime.setFilters(new InputFilter[]{new InputFilter.LengthFilter(6)});
+        mEtPullUpTorqueStallThreshold.setFilters(new InputFilter[]{new InputFilter.LengthFilter(5)});
+        mEtPullUpTorqueDetectionTime.setFilters(new InputFilter[]{new InputFilter.LengthFilter(6)});
     }
 
     private void setSwitchViewListener() {
@@ -264,7 +264,11 @@ public class BleAdmeLockedRotorDetectionFragment extends BaseBleIotCommunicateFr
             }
             try {
                 double value = Double.parseDouble(decentralizedPulseDetectionTime);
-
+                if (value > 1) {
+                    ToastUtils.show("请输入正确的下放脉冲检测判断时间!");
+                    mEtDecentralizedPulseDetectionTime.requestFocus();
+                    return false;
+                }
             } catch (Exception ex) {
                 ToastUtils.show("请输入正确的下放脉冲检测判断时间!");
                 mEtDecentralizedPulseDetectionTime.requestFocus();
@@ -277,7 +281,7 @@ public class BleAdmeLockedRotorDetectionFragment extends BaseBleIotCommunicateFr
                 return false;
             }
             try {
-                double value = Double.parseDouble(decentralizedTorqueStallThreshold);
+                int value = Integer.parseInt(decentralizedTorqueStallThreshold);
 
             } catch (Exception ex) {
                 ToastUtils.show("请输入正确的下放力矩堵转阈值!");
@@ -307,7 +311,7 @@ public class BleAdmeLockedRotorDetectionFragment extends BaseBleIotCommunicateFr
                 return false;
             }
             try {
-                double value = Double.parseDouble(pullUpTorqueStallThreshold);
+                int value = Integer.parseInt(pullUpTorqueStallThreshold);
 
             } catch (Exception ex) {
                 ToastUtils.show("请输入正确的上拉力矩堵转阈值!");
@@ -387,7 +391,7 @@ public class BleAdmeLockedRotorDetectionFragment extends BaseBleIotCommunicateFr
                 stopProgressRunnable();
                 IOTCommandResult<AdmeLockedRotorDetectionInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
-                    String errMsg = String.format("%s %s", "查询执行机构参数出错!", commandResult.getMessage());
+                    String errMsg = String.format("%s %s", "查询堵转参数出错!", commandResult.getMessage());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
                     return;
@@ -401,7 +405,7 @@ public class BleAdmeLockedRotorDetectionFragment extends BaseBleIotCommunicateFr
                 CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
                 if (!cmdResult.isSucceed()) {
                     stopProgressRunnable();
-                    String errMsg = String.format("%s %s", "设置执行机构参数出错!", cmdResult.getReason());
+                    String errMsg = String.format("%s %s", "设置堵转参数出错!", cmdResult.getReason());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
                     mBtnSave.setEnabled(true);
@@ -415,7 +419,7 @@ public class BleAdmeLockedRotorDetectionFragment extends BaseBleIotCommunicateFr
                 stopProgressRunnable();
                 CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
                 if (!cmdResult.isSucceed()) {
-                    String errMsg = String.format("%s %s", "保存指令出错!", cmdResult.getReason());
+                    String errMsg = String.format("%s %s", "发送保存指令出错!", cmdResult.getReason());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
                     return;
@@ -490,13 +494,36 @@ public class BleAdmeLockedRotorDetectionFragment extends BaseBleIotCommunicateFr
             decentralizedChildLayout.setVisibility(View.VISIBLE);
         }
 
-
         if (lockedRotorDetectionInfo.getUptbtss().equals("0")) {
             mSbPullUpEnable.setCheckedImmediatelyNoEvent(false);
             pullUpChildLayout.setVisibility(View.GONE);
         } else {
             mSbPullUpEnable.setCheckedImmediatelyNoEvent(true);
             pullUpChildLayout.setVisibility(View.VISIBLE);
+        }
+
+        try {
+            mEtDecentralizedPulsesPerUnitTime.setText(decentralizedPulsesPerUnitTime);
+            decimalFormat.applyPattern("#.#");
+            decentralizedPulseDetectionTime = decimalFormat.format(Double.parseDouble(decentralizedPulseDetectionTime));
+            mEtDecentralizedPulseDetectionTime.setText(decentralizedPulseDetectionTime);
+
+            decimalFormat.applyPattern("#");
+            decentralizedTorqueStallThreshold = decimalFormat.format(Double.parseDouble(decentralizedTorqueStallThreshold));
+            mEtDecentralizedTorqueStallThreshold.setText(decentralizedTorqueStallThreshold);
+            decimalFormat.applyPattern("#.#");
+            decentralizedTorqueDetectionTime = decimalFormat.format(Double.parseDouble(decentralizedTorqueDetectionTime));
+            mEtDecentralizedTorqueDetectionTime.setText(decentralizedTorqueDetectionTime);
+
+            decimalFormat.applyPattern("#");
+            pullUpTorqueStallThreshold = decimalFormat.format(Double.parseDouble(pullUpTorqueStallThreshold));
+            mEtPullUpTorqueStallThreshold.setText(pullUpTorqueStallThreshold);
+            decimalFormat.applyPattern("#.#");
+            pullUpTorqueDetectionTime = decimalFormat.format(Double.parseDouble(pullUpTorqueDetectionTime));
+            mEtPullUpTorqueDetectionTime.setText(pullUpTorqueDetectionTime);
+
+        }catch (Exception ex) {
+            ex.printStackTrace();
         }
     }
 

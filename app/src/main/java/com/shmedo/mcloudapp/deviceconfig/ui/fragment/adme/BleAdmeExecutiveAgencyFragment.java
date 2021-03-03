@@ -6,13 +6,11 @@ import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 
 import com.hjq.toast.ToastUtils;
-import com.kyleduo.switchbutton.SwitchButton;
 import com.lxj.xpopup.XPopup;
 import com.lxj.xpopup.interfaces.OnSelectListener;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandManager;
@@ -81,26 +79,8 @@ public class BleAdmeExecutiveAgencyFragment extends BaseBleIotCommunicateFragmen
     @BindView(R.id.et_measuring_reference_depth)
     ClearEditText mEtMeasuringReferenceDepth;
 
-    @BindView(R.id.decentralizedPredictionEnableSBtn)
-    SwitchButton mSbDecentralizedPredictionEnable;
-
-    @BindView(R.id.et_pulses_per_unit_time)
-    ClearEditText mEtPulsesPerUnitTime;//单位时间脉冲数
-
-    @BindView(R.id.et_detection_time)
-    ClearEditText mEtDetectionTime;//检测判断时间
-
-    @BindView(R.id.et_detection_start)
-    ClearEditText mEtDetectionStart;//堵转检测起点
-
-    @BindView(R.id.et_detection_end)
-    ClearEditText mEtDetectionEnd;//堵转检测终点
-
     @BindView(R.id.btn_confirm)
     Button mBtnSave;
-
-    @BindView(R.id.decentralizedPredictionLayout)
-    ViewGroup decentralizedPredictionLayout;
 
     @BindView(R.id.maskLayerLayout)
     ViewGroup maskLayerLayout;
@@ -125,10 +105,6 @@ public class BleAdmeExecutiveAgencyFragment extends BaseBleIotCommunicateFragmen
     private String measuringDistance;// 测量间距
     private String measurementIntervalTime;// 测量间隔时间
     private String measuringReferenceDepth;// 测量基准深度
-    private String pulsesPerUnitTime;//堵转单位时间脉冲数
-    private String detectionTime;//堵转检测判断时间
-    private String detectionStart;//堵转检测起点
-    private String detectionEnd;//堵转检测终点
 
     private DecimalFormat decimalFormat = new DecimalFormat();
 
@@ -146,7 +122,6 @@ public class BleAdmeExecutiveAgencyFragment extends BaseBleIotCommunicateFragmen
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         setView();
-        setSwitchViewListener();
         queryParamInfo();
         //TODO 设备处于自动监测模式时，不可编辑参数(后期还要考虑点击编辑按钮时的页面状态切换)
         if (admeViewModel.deviceMode == 0) {
@@ -174,31 +149,6 @@ public class BleAdmeExecutiveAgencyFragment extends BaseBleIotCommunicateFragmen
         mEtMeasuringDistance.setFilters(new InputFilter[]{new InputFilter.LengthFilter(4)});
         mEtMeasurementIntervalTime.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
         mEtMeasuringReferenceDepth.setFilters(new InputFilter[]{new InputFilter.LengthFilter(8)});
-        mEtPulsesPerUnitTime.setFilters(new InputFilter[]{new InputFilter.LengthFilter(6)});
-        mEtDetectionTime.setFilters(new InputFilter[]{new InputFilter.LengthFilter(8)});
-        mEtDetectionStart.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
-        mEtDetectionStart.setHint("0-50");
-        mEtDetectionEnd.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
-        mEtDetectionEnd.setHint("50-100");
-    }
-
-    private void setSwitchViewListener() {
-        mSbDecentralizedPredictionEnable.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (!isConnected()) {
-                    ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
-                    mSbDecentralizedPredictionEnable.setCheckedImmediatelyNoEvent(!isChecked);
-                    return;
-                }
-
-                if (!isChecked) {
-                    decentralizedPredictionLayout.setVisibility(View.GONE);
-                } else {
-                    decentralizedPredictionLayout.setVisibility(View.VISIBLE);
-                }
-            }
-        });
     }
 
     /**
@@ -298,10 +248,6 @@ public class BleAdmeExecutiveAgencyFragment extends BaseBleIotCommunicateFragmen
         measuringDistance = mEtMeasuringDistance.getText().toString().trim();
         measurementIntervalTime = mEtMeasurementIntervalTime.getText().toString().trim();
         measuringReferenceDepth = mEtMeasuringReferenceDepth.getText().toString().trim();
-        pulsesPerUnitTime = mEtPulsesPerUnitTime.getText().toString().trim();
-        detectionTime = mEtDetectionTime.getText().toString().trim();
-        detectionStart = mEtDetectionStart.getText().toString().trim();
-        detectionEnd = mEtDetectionEnd.getText().toString().trim();
 
         if (TextUtils.isEmpty(waitingIntervalPerRound)) {
             ToastUtils.show("请输入每轮等待时间!");
@@ -492,76 +438,6 @@ public class BleAdmeExecutiveAgencyFragment extends BaseBleIotCommunicateFragmen
             mEtMeasuringReferenceDepth.requestFocus();
             return false;
         }
-
-        if (mSbDecentralizedPredictionEnable.isChecked()) {
-            if (TextUtils.isEmpty(pulsesPerUnitTime)) {
-                ToastUtils.show("请输入堵转单位时间脉冲数!");
-                mEtPulsesPerUnitTime.requestFocus();
-                return false;
-            }
-            try {
-                int value = Integer.parseInt(pulsesPerUnitTime);
-                if (value < 1) {
-                    ToastUtils.show("请输入正确的堵转单位时间脉冲数!");
-                    mEtPulsesPerUnitTime.requestFocus();
-                    return false;
-                }
-            } catch (Exception ex) {
-                ToastUtils.show("请输入正确的堵转单位时间脉冲数!");
-                mEtPulsesPerUnitTime.requestFocus();
-                return false;
-            }
-
-            if (TextUtils.isEmpty(detectionTime)) {
-                ToastUtils.show("请输入堵转检测判断时间!");
-                mEtDetectionTime.requestFocus();
-                return false;
-            }
-            try {
-                double value = Double.parseDouble(detectionTime);
-
-            } catch (Exception ex) {
-                ToastUtils.show("请输入正确的堵转检测判断时间!");
-                mEtDetectionTime.requestFocus();
-                return false;
-            }
-
-            if (TextUtils.isEmpty(detectionStart)) {
-                ToastUtils.show("请输入堵转检测起点!");
-                mEtDetectionStart.requestFocus();
-                return false;
-            }
-            try {
-                int value = Integer.parseInt(detectionStart);
-                if (value < 0 || value > 50) {
-                    ToastUtils.show("请输入正确的堵转检测起点!");
-                    mEtDetectionStart.requestFocus();
-                    return false;
-                }
-            } catch (Exception ex) {
-                ToastUtils.show("请输入正确的堵转检测起点!");
-                mEtDetectionStart.requestFocus();
-                return false;
-            }
-
-            if (TextUtils.isEmpty(detectionEnd)) {
-                ToastUtils.show("请输入堵转检测终点!");
-                mEtDetectionEnd.requestFocus();
-                return false;
-            }
-            try {
-                int value = Integer.parseInt(detectionEnd);
-                if (value < 50 || value > 100) {
-                    ToastUtils.show("请输入正确的堵转检测终点!");
-                    mEtDetectionEnd.requestFocus();
-                    return false;
-                }
-            } catch (Exception ex) {
-                ToastUtils.show("请输入正确的堵转检测终点!");
-                mEtDetectionEnd.requestFocus();
-                return false;
-            }
-        }
         return true;
     }
 
@@ -583,17 +459,6 @@ public class BleAdmeExecutiveAgencyFragment extends BaseBleIotCommunicateFragmen
             entity.setMeaintertime(measurementIntervalTime);
             decimalFormat.applyPattern("#.##");
             entity.setMeabaseth(decimalFormat.format(Double.parseDouble(measuringReferenceDepth)));
-
-            if (mSbDecentralizedPredictionEnable.isChecked()) {
-                entity.setDwonblocked("1");
-                entity.setUntimenum(pulsesPerUnitTime);
-                decimalFormat.applyPattern("#.##");
-                entity.setDetectiontime(decimalFormat.format(Double.parseDouble(detectionTime)));
-                entity.setDetectionstart(detectionStart);
-                entity.setDetectionend(detectionEnd);
-            } else {
-                entity.setDwonblocked("0");
-            }
 
             errMsg = "发送指令超时,请稍后尝试";
             startProgressRunnable("正在发送配置指令...", WRITE_TIME_OUT_SECOND);
@@ -681,10 +546,6 @@ public class BleAdmeExecutiveAgencyFragment extends BaseBleIotCommunicateFragmen
             admeExecutiveAgencyInfo.setMeaspacing(measuringDistance);
             admeExecutiveAgencyInfo.setMeaintertime(measurementIntervalTime);
             admeExecutiveAgencyInfo.setMeabaseth(measuringReferenceDepth);
-            admeExecutiveAgencyInfo.setUntimenum(pulsesPerUnitTime);
-            admeExecutiveAgencyInfo.setDetectiontime(detectionTime);
-            admeExecutiveAgencyInfo.setDetectionstart(detectionStart);
-            admeExecutiveAgencyInfo.setDetectionend(detectionEnd);
         }
         //TODO  打开注释，设置为浏览模式
 //        configPageViewModel.configPageEditableChanged.setValue(false);
@@ -716,10 +577,6 @@ public class BleAdmeExecutiveAgencyFragment extends BaseBleIotCommunicateFragmen
         measuringDistance = admeExecutiveAgencyInfo.getMeaspacing().trim();
         measurementIntervalTime = admeExecutiveAgencyInfo.getMeaintertime().trim();
         measuringReferenceDepth = admeExecutiveAgencyInfo.getMeabaseth().trim();
-        pulsesPerUnitTime = admeExecutiveAgencyInfo.getUntimenum().trim();
-        detectionTime = admeExecutiveAgencyInfo.getDetectiontime().trim();
-        detectionStart = admeExecutiveAgencyInfo.getDetectionstart().trim();
-        detectionEnd = admeExecutiveAgencyInfo.getDetectionend().trim();
 
         if (dataSettlementMethodOld.equals("0")) {
             dataSettlementMethodPos = 0;
@@ -756,24 +613,9 @@ public class BleAdmeExecutiveAgencyFragment extends BaseBleIotCommunicateFragmen
             decimalFormat.applyPattern("#.##");
             measuringReferenceDepth = decimalFormat.format(Double.parseDouble(measuringReferenceDepth));
             mEtMeasuringReferenceDepth.setText(measuringReferenceDepth);
-            mEtPulsesPerUnitTime.setText(pulsesPerUnitTime);
-
-            decimalFormat.applyPattern("#.##");
-            detectionTime = decimalFormat.format(Double.parseDouble(detectionTime));
-            mEtDetectionTime.setText(detectionTime);
-            mEtDetectionStart.setText(detectionStart);
-            mEtDetectionEnd.setText(detectionEnd);
 
         } catch (Exception ex) {
             ex.printStackTrace();
-        }
-
-        if (admeExecutiveAgencyInfo.getDwonblocked().equals("0")) {
-            mSbDecentralizedPredictionEnable.setCheckedImmediatelyNoEvent(false);
-            decentralizedPredictionLayout.setVisibility(View.GONE);
-        } else if (admeExecutiveAgencyInfo.getDwonblocked().equals("1")) {
-            mSbDecentralizedPredictionEnable.setCheckedImmediatelyNoEvent(true);
-            decentralizedPredictionLayout.setVisibility(View.VISIBLE);
         }
     }
 
@@ -834,20 +676,6 @@ public class BleAdmeExecutiveAgencyFragment extends BaseBleIotCommunicateFragmen
             return true;
         }
 
-        if (mSbDecentralizedPredictionEnable.isChecked()) {
-            if (pulsesPerUnitTime != null && !pulsesPerUnitTime.equals(mEtPulsesPerUnitTime.getText().toString().trim())) {
-                return true;
-            }
-            if (detectionTime != null && !detectionTime.equals(mEtDetectionTime.getText().toString().trim())) {
-                return true;
-            }
-            if (detectionStart != null && !detectionStart.equals(mEtDetectionStart.getText().toString().trim())) {
-                return true;
-            }
-            if (detectionEnd != null && !detectionEnd.equals(mEtDetectionEnd.getText().toString().trim())) {
-                return true;
-            }
-        }
         return false;
     }
 
@@ -868,8 +696,6 @@ public class BleAdmeExecutiveAgencyFragment extends BaseBleIotCommunicateFragmen
             mEtMeasuringDistance.setHint("请输入");
             mEtMeasurementIntervalTime.setHint("请输入");
             mEtMeasuringReferenceDepth.setHint("请输入");
-            mEtPulsesPerUnitTime.setHint("请输入");
-            mEtDetectionTime.setHint("请输入");
 
         } else {
             mTvDataSettlementMethod.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
@@ -885,8 +711,6 @@ public class BleAdmeExecutiveAgencyFragment extends BaseBleIotCommunicateFragmen
             mEtMeasuringDistance.setHint("");
             mEtMeasurementIntervalTime.setHint("");
             mEtMeasuringReferenceDepth.setHint("");
-            mEtPulsesPerUnitTime.setHint("");
-            mEtDetectionTime.setHint("");
 
             mEtWaitingIntervalPerRound.clearFocus();
             mEtDataReadingInterval.clearFocus();
@@ -899,8 +723,6 @@ public class BleAdmeExecutiveAgencyFragment extends BaseBleIotCommunicateFragmen
             mEtMeasuringDistance.clearFocus();
             mEtMeasurementIntervalTime.clearFocus();
             mEtMeasuringReferenceDepth.clearFocus();
-            mEtPulsesPerUnitTime.clearFocus();
-            mEtDetectionTime.clearFocus();
 
             initParamConfigInfo();
         }

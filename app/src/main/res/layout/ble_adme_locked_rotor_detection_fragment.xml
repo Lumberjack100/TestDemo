@@ -32,6 +32,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentStart="true"
                     android:layout_centerVertical="true"
+                    android:textStyle="bold"
                     android:text="下放堵转缓停"
                     android:textColor="@color/title_text_color"
                     android:textSize="@dimen/text_size_17" />
@@ -163,7 +164,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="力矩堵转阈值"
+                        android:text="力矩堵转阈值(mA)"
                         android:textColor="@color/text_color_343434"
                         android:textSize="@dimen/text_size_17" />
 
@@ -171,7 +172,7 @@
                         android:id="@+id/et_decentralized_torque_stall_threshold"
                         style="@style/DataCenter_EditText_Style"
                         android:hint="请输入"
-                        android:inputType="numberDecimal" />
+                        android:inputType="number" />
 
                 </LinearLayout>
 
@@ -270,6 +271,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentStart="true"
                     android:layout_centerVertical="true"
+                    android:textStyle="bold"
                     android:text="上拉堵转缓停"
                     android:textColor="@color/title_text_color"
                     android:textSize="@dimen/text_size_17" />
@@ -307,7 +309,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="力矩堵转阈值"
+                        android:text="力矩堵转阈值(mA)"
                         android:textColor="@color/text_color_343434"
                         android:textSize="@dimen/text_size_17" />
 
@@ -315,7 +317,7 @@
                         android:id="@+id/et_pull_up_torque_stall_threshold"
                         style="@style/DataCenter_EditText_Style"
                         android:hint="请输入"
-                        android:inputType="numberDecimal" />
+                        android:inputType="number" />
 
                 </LinearLayout>
 
