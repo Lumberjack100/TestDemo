@@ -23,7 +23,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
-        <include layout="@layout/vms_device_config_head_info" />
+        <include layout="@layout/device_config_head_info" />
 
         <androidx.core.widget.NestedScrollView
             android:id="@+id/scrollView"

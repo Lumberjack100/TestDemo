@@ -146,7 +146,7 @@ public class BleDasHomeFragment extends BaseBleCommunicateFragment {
 
     @Override
     protected int getLayoutId() {
-        return R.layout.test_ble_das_home_fragment;
+        return R.layout.ble_das_home_fragment;
     }
 
     @Override

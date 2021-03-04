@@ -92,14 +92,14 @@ public class NetConfigDeviceFragment extends BaseNetIotCommunicateFragment {
     @BindView(R.id.tv_time_or_sub_model)
     TextView mTvTime;
 
+    @BindView(R.id.tv_platform_communication_state)
+    TextView mTvPlatformCommunicationState;//与米度平台连接状态
+
     @BindView(R.id.tv_device_state_flag)
     TextView mTvDeviceState;//通信状态(在线、离线)
 
     @BindView(R.id.tv_device_connect_operate)
     TextView mTvDeviceConnectOperate;//蓝牙连接状态(断开连接、重新连接)
-
-    @BindView(R.id.tv_device_communication_way_switch)
-    TextView mTvDeviceCommunicationWaySwitch;//通信方式(网络、蓝牙)
 
     @BindView(R.id.recyclerview)
     RecyclerView mRecyclerView;
@@ -158,9 +158,8 @@ public class NetConfigDeviceFragment extends BaseNetIotCommunicateFragment {
                 mTvDeviceState.setBackgroundResource(R.drawable.bg_device_offline_state_flag);
             }
         }
-        mTvDeviceConnectOperate.setVisibility(View.INVISIBLE);
-        mTvDeviceCommunicationWaySwitch.setVisibility(View.GONE);
-        mTvDeviceCommunicationWaySwitch.setText("蓝牙");
+        mTvPlatformCommunicationState.setVisibility(View.GONE);
+        mTvDeviceConnectOperate.setVisibility(View.GONE);
     }
 
     private void initConfigModuleData() {

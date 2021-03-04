@@ -14,7 +14,7 @@
         android:visibility="visible"
         tools:visibility="visible">
 
-        <include layout="@layout/vms_device_config_head_info" />
+        <include layout="@layout/device_config_head_info" />
 
         <RelativeLayout
             android:layout_width="match_parent"

@@ -52,8 +52,8 @@
                     android:paddingStart="7dp"
                     android:paddingEnd="7dp"
                     android:singleLine="true"
-                    tools:text="已连接"
-                    tools:textColor="@color/text_color_50E9B9"
+                    android:text="已连接"
+                    android:textColor="@color/text_color_50E9B9"
                     android:textSize="@dimen/text_size_11" />
 
             </LinearLayout>
@@ -88,28 +88,41 @@
                 android:textSize="@dimen/text_size_13"
                 tools:text="采集器型号：裂缝采集器凤飞飞方法旺旺sss" />
 
-            <TextView
-                android:id="@+id/tv_platform_communication_state"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="3dp"
-                android:singleLine="true"
-                android:textColor="@color/sub_title_text_color"
-                android:textSize="@dimen/text_size_13"
-                tools:text="米度平台连接状态：在线" />
-
         </LinearLayout>
 
-        <TextView
-            android:id="@+id/tv_device_connect_operate"
+        <RelativeLayout
+            android:id="@+id/rl_device_connect_state"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:singleLine="true"
-            android:visibility="invisible"
-            android:textColor="@color/text_color_b3b3b3"
-            android:textSize="@dimen/text_size_13"
-            tools:text="@string/device_connect_state" />
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/tv_device_communication_way_switch"
+                android:layout_width="wrap_content"
+                android:layout_height="27dp"
+                android:layout_alignParentBottom="true"
+                android:background="@drawable/bg_device_connect_way"
+                android:drawableLeft="@drawable/ic_switch_device_connect_mode"
+                android:gravity="center"
+                android:paddingStart="9dp"
+                android:paddingEnd="9dp"
+                android:singleLine="true"
+                android:text="蓝牙"
+                android:textColor="@color/text_color_b3b3b3"
+                android:textSize="@dimen/text_size_13" />
+
+            <TextView
+                android:id="@+id/tv_device_connect_operate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignEnd="@+id/tv_device_communication_way_switch"
+                android:layout_marginTop="5dp"
+                android:singleLine="true"
+                android:textColor="@color/text_color_b3b3b3"
+                android:textSize="@dimen/text_size_13"
+                android:visibility="invisible"
+                tools:text="@string/device_connect_state" />
+
+        </RelativeLayout>
 
     </LinearLayout>
 

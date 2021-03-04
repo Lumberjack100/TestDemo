@@ -17,7 +17,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <include layout="@layout/vms_device_config_head_info" />
+        <include layout="@layout/device_config_head_info" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerview"

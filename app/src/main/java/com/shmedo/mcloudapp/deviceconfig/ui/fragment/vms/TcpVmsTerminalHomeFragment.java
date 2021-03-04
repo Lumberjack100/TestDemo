@@ -62,14 +62,14 @@ public class TcpVmsTerminalHomeFragment extends BaseVmsTcpCommunicateFragment {
     @BindView(R.id.tv_time_or_sub_model)
     TextView mTvTime;//接入网关时间
 
+    @BindView(R.id.tv_platform_communication_state)
+    TextView mTvPlatformCommunicationState;//与米度平台连接状态
+
     @BindView(R.id.tv_device_state_flag)
     TextView mTvDeviceState;//通信状态(在线、离线)
 
     @BindView(R.id.tv_device_connect_operate)
     TextView mTvDeviceConnectOperate;
-
-    @BindView(R.id.tv_device_communication_way_switch)
-    TextView mTvDeviceCommunicationWaySwitch;//通信方式切换
 
     @BindView(R.id.recyclerview)
     RecyclerView mRecyclerView;
@@ -111,9 +111,7 @@ public class TcpVmsTerminalHomeFragment extends BaseVmsTcpCommunicateFragment {
 
     @Override
     protected void initView() {
-        mTvDeviceState.setVisibility(View.INVISIBLE);
-        mTvDeviceConnectOperate.setVisibility(View.INVISIBLE);
-        mTvDeviceCommunicationWaySwitch.setVisibility(View.INVISIBLE);
+//        mTvDeviceState.setVisibility(View.INVISIBLE);
     }
 
     private void setHeadInfo() {
@@ -122,18 +120,19 @@ public class TcpVmsTerminalHomeFragment extends BaseVmsTcpCommunicateFragment {
             mTvDeviceSn.setText(String.format("设备编号：%s", vmsTerminalInfo.getSn()));
             mTvProductModel.setText(String.format("固件版本：%s", ""));
             mTvTime.setText(String.format("接入时间：%s", vmsTerminalInfo.getLogintime()));
+            mTvDeviceState.setVisibility(View.VISIBLE);
             if (vmsTerminalInfo.getStatus() != 0) {
-                mTvDeviceState.setVisibility(View.VISIBLE);
                 mTvDeviceState.setText("在线");
                 mTvDeviceState.setTextColor(ContextCompat.getColor(mActivity, R.color.text_color_50E9B9));
                 mTvDeviceState.setBackgroundResource(R.drawable.bg_device_online_state_flag);
             } else {
-                mTvDeviceState.setVisibility(View.VISIBLE);
                 mTvDeviceState.setText("离线");
                 mTvDeviceState.setTextColor(ContextCompat.getColor(mActivity, R.color.sub_title_text_color));
                 mTvDeviceState.setBackgroundResource(R.drawable.bg_device_offline_state_flag);
             }
         }
+        mTvPlatformCommunicationState.setVisibility(View.GONE);
+        mTvDeviceConnectOperate.setVisibility(View.GONE);
     }
 
     private void initAdapter() {
@@ -268,9 +267,6 @@ public class TcpVmsTerminalHomeFragment extends BaseVmsTcpCommunicateFragment {
             default:
                 super.parseResponseMessage(cmdStr);
                 break;
-
         }
     }
-
-
 }
