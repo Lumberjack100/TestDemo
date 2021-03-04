@@ -14,6 +14,8 @@ import com.shmedo.mcloudapp.deviceconfig.ui.fragment.m20.BleM20DataCenterAdvance
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.m20.BleM20DataCenterBasicConfigFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.netcommon.UniversalNetDataCenterAdvancedConfigFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.netcommon.UniversalNetDataCenterBasicConfigFragment;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.tcpcommon.UniversalTcpDataCenterAdvancedConfigFragment;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.tcpcommon.UniversalTcpDataCenterBasicConfigFragment;
 import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfo;
 
 /**
@@ -145,8 +147,17 @@ public class DataCenterConfigActivity extends BaseConfigFragmentContainerActivit
                     }
                     break;
             }
+        }else if (connectWay == AppContants.CommunicationWay.TCP_CONNECT) {
+            switch (deviceType) {
+                case AppContants.DeviceType.E40:
+                    if (configMethod == AppContants.DataCenterConfigMethod.BASIC_CONFIG) {
+                        fragment = UniversalTcpDataCenterBasicConfigFragment.newInstance(serverNumber, serverStatus);
+                    } else {
+                        fragment = UniversalTcpDataCenterAdvancedConfigFragment.newInstance(serverNumber, serverStatus);
+                    }
+                    break;
+            }
         }
-
         return fragment;
     }
 }

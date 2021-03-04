@@ -28,12 +28,15 @@ import com.shmedo.configlibrary.iot.cmd.parser.IOTParseManager;
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.model.vms.VmsBasicInfo;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
+import com.shmedo.core.AppContants;
 import com.shmedo.core.util.DensityUtil;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.view.recycleviewitemdivider.GridSpacingItemDecoration;
 import com.shmedo.mcloudapp.deviceconfig.adapter.ConfigModuleAdapter;
 import com.shmedo.mcloudapp.deviceconfig.model.ConfigModule;
 import com.shmedo.mcloudapp.deviceconfig.model.TcpConnectionState;
+import com.shmedo.mcloudapp.deviceconfig.ui.activity.AdvancedSettingActivity;
+import com.shmedo.mcloudapp.deviceconfig.ui.activity.DataCenterHomeActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.tcpcommon.BaseTcpIotCommunicateFragment;
 import com.thanosfisherman.wifiutils.WifiUtils;
 import com.thanosfisherman.wifiutils.wifiRemove.RemoveErrorCode;
@@ -256,14 +259,16 @@ public class TcpE40HomeFragment extends BaseTcpIotCommunicateFragment {
                 break;
 
             case "数据中心":
+                DataCenterHomeActivity.startActivity(mActivity, AppContants.DeviceType.E40, AppContants.CommunicationWay.TCP_CONNECT, AppContants.DataCenterConfigMethod.BASIC_CONFIG);
                 break;
 
             case "设置":
+                AdvancedSettingActivity.startActivity(mActivity, AppContants.CommunicationWay.TCP_CONNECT, AppContants.DeviceType.E40);
                 break;
         }
     }
 
-    @OnClick({ R.id.tv_device_connect_operate})
+    @OnClick({R.id.tv_device_connect_operate})
     public void onClick(View v) {
         if (isDoubleClick(v)) {
             return;
