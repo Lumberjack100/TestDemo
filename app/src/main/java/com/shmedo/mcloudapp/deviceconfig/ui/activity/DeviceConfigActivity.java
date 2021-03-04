@@ -15,6 +15,7 @@ import com.shmedo.mcloudapp.deviceconfig.ui.fragment.adme.BleAdmeHomeFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.das.BleDasHomeFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.das.NetDasHomeFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.e40.NetE40HomeFragment;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.e40.TcpE40HomeFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.m20.BleM20HomeFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.m20.NetM20HomeFragment;
 import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfo;
@@ -58,7 +59,7 @@ public class DeviceConfigActivity extends BaseConfigFragmentContainerActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mToolbarTitle.setText("设备配置");
-        mIvAction.setVisibility(View.VISIBLE);
+        mIvAction.setVisibility(connectWay == AppContants.CommunicationWay.TCP_CONNECT ? View.GONE : View.VISIBLE);
         mIvAction.setImageResource(R.drawable.ic_query_device_data);
     }
 
@@ -108,6 +109,12 @@ public class DeviceConfigActivity extends BaseConfigFragmentContainerActivity {
 
                 case AppContants.DeviceType.M20:
                     fragment = BleM20HomeFragment.newInstance(device);
+                    break;
+            }
+        } else if (connectWay == AppContants.CommunicationWay.TCP_CONNECT) {
+            switch (deviceType) {
+                case AppContants.DeviceType.E40:
+                    fragment = TcpE40HomeFragment.newInstance();
                     break;
             }
         }

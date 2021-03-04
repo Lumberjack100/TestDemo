@@ -187,14 +187,14 @@ public class TcpVmsHomeFragment extends BaseVmsTcpCommunicateFragment {
 
     /**
      * 观察终端设备刷新<br>
-     * 因为终端列表页面移除了设备，所有网关主页面需要刷新数据
+     * 因为终端列表页面移除了设备，网关主页面需要刷新数据
      */
     private void observerRefreshTerminal() {
         vmsViewModel.getVmsRefreshTerminal().observeInFragment(this, new Observer<Boolean>() {
             @Override
             public void onChanged(Boolean isRefresh) {
                 if (isRefresh) {
-                    getGatewayStatus(VmsAisleNumber.NUMBER_ONE);
+                    getGatewayStatus(VmsAisleNumber.NUMBER_TWO);
                 }
             }
         });
@@ -262,7 +262,7 @@ public class TcpVmsHomeFragment extends BaseVmsTcpCommunicateFragment {
                     return;
                 }
                 if (!tcpViewModel.getConnectStatus()) {
-                    ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
+                    ToastUtils.show(getString(R.string.tcp_config_disconnect_warn));
                     return;
                 }
 
@@ -372,13 +372,13 @@ public class TcpVmsHomeFragment extends BaseVmsTcpCommunicateFragment {
                     vmsAisleInfoList.add(vmsAisleInfo);
                     vmsAisleAdapter.notifyDataSetChanged();
                     scrollToEnd();
-                    //获取网关的状态
+                    //获取网关不同通道下挂载终端的状态
                     getGatewayStatus(VmsAisleNumber.NUMBER_TWO);
                 }
             }
             break;
 
-            case VMS_MD_GET_GATEWAY_STATUS: {//获取网关的状态
+            case VMS_MD_GET_GATEWAY_STATUS: {//查询网关通道下的挂载终端信息
                 //Bug修复，TcpVmsTerminalListFragment 查询观察终端数据时，会触发这里的回调
                 if (tcpVmsTerminalListFragment != null && tcpVmsTerminalListFragment.isAdded()) {
                     return;
@@ -386,7 +386,7 @@ public class TcpVmsHomeFragment extends BaseVmsTcpCommunicateFragment {
                 IOTCommandResult<VmsAisleTerminalInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
                     stopRefreshRunnable();
-                    String errMsg = String.format("%s %s", "查询网关基本信息出错!", commandResult.getMessage());
+                    String errMsg = String.format("%s %s", "查询网关通道下的挂载终端信息出错!", commandResult.getMessage());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
                     return;
@@ -400,6 +400,7 @@ public class TcpVmsHomeFragment extends BaseVmsTcpCommunicateFragment {
                 if (vmsAisleTerminalInfo.getChannel() == 1) {
                     vmsViewModel.clearCacheTerminalList();
                     vmsViewModel.addCacheTerminalList(vmsAisleTerminalInfo.getTerminal());
+                    //获取网关不同通道下挂载终端的状态
                     getGatewayStatus(VmsAisleNumber.NUMBER_THREE);
 
                 } else if (vmsAisleTerminalInfo.getChannel() == 2) {
