@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment;
 import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.BaseConfigFragmentContainerActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.e40.NetE40CorsServiceFragment;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.e40.TcpE40CorsServiceFragment;
 import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfo;
 
 /**
@@ -58,6 +59,7 @@ public class E40CORSServiceActivity extends BaseConfigFragmentContainerActivity 
             fragment = NetE40CorsServiceFragment.newInstance(projectDeviceInfo);
 
         } else if (connectWay == AppContants.CommunicationWay.TCP_CONNECT) {
+            fragment = TcpE40CorsServiceFragment.newInstance();
         }
 
         return fragment;
