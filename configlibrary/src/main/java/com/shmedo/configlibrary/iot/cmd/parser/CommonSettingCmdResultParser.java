@@ -26,15 +26,6 @@ public class CommonSettingCmdResultParser implements IOTResultParser<CommonSetti
         String[] strs = result.split("&");
 
         for (String ss : strs) {
-//            if (ss.startsWith("result=")) {
-//                if (ss.endsWith("=succ")) {
-//                    commonSettingCmdResult.setSucceed(true);
-//                } else {
-//                    commonSettingCmdResult.setSucceed(false);
-//                }
-//                continue;
-//            }
-
             if (ss.endsWith("=succ")) {
                 commonSettingCmdResult.setSucceed(true);
                 continue;
@@ -42,6 +33,7 @@ public class CommonSettingCmdResultParser implements IOTResultParser<CommonSetti
 
             if (ss.endsWith("=fail")) {
                 commonSettingCmdResult.setSucceed(false);
+                continue;
             }
 
             if (ss.startsWith("reason=")) {

@@ -64,9 +64,9 @@ public class IOTParseManager {
         String temp = result.replace("&&", "");
         //失败的指令处理
         if (temp.contains(IOTCommandResult.ERROR_FLAG)) {
-            CommonSettingCmdResult cmdResult = CommonSettingCmdResultParser.getInstance().parse(result);
+            CommonSettingCmdResult settingCmdResult = CommonSettingCmdResultParser.getInstance().parse(result);
             commandResult.setSuccess(false);
-            commandResult.setMessage(cmdResult.getReason());
+            commandResult.setMessage(settingCmdResult.getReason());
             return commandResult;
         }
 
@@ -100,11 +100,9 @@ public class IOTParseManager {
         if (!result.startsWith(IOTCommandResult.COMMAND_HEADER)) {
             return null;
         }
-
         CommonSettingCmdResultParser.getInstance().validate(result);
-        CommonSettingCmdResult data = CommonSettingCmdResultParser.getInstance().parse(result);
-
-        return data;
+        CommonSettingCmdResult settingCmdResult = CommonSettingCmdResultParser.getInstance().parse(result);
+        return settingCmdResult;
     }
 
     /**
@@ -120,7 +118,6 @@ public class IOTParseManager {
         if (!result.startsWith(IOTCommandResult.COMMAND_HEADER))
             throw new IllegalArgumentException("result格式错误:" + result);
     }
-
 
     /**
      * 将本包下的Parse注册到parserMap中

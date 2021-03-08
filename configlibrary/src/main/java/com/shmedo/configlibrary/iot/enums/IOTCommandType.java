@@ -347,17 +347,22 @@ public enum IOTCommandType {
     /**
      * 自定义心跳包
      */
-    HEART_BEAT("HeartBeatData");
+    HEART_BEAT("HeartBeatData"),
+
+    /**
+     * 位置命令类型
+     */
+    UNKNOWN_TYPE("unknown_type");
 
 
-    private String commandCode;
+    private String value;
 
-    IOTCommandType(String commandCode) {
-        this.commandCode = commandCode;
+    IOTCommandType(String value) {
+        this.value = value;
     }
 
     @Override
     public String toString() {
-        return this.commandCode;
+        return this.value;
     }
 }

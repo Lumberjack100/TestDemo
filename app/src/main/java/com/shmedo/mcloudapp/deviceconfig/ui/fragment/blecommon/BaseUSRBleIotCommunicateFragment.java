@@ -14,6 +14,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.hjq.toast.ToastUtils;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandManager;
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
+import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.fragment.BaseFragment;
 import com.shmedo.mcloudapp.deviceconfig.viewmodels.AdmeViewModel;
@@ -178,7 +179,12 @@ public abstract class BaseUSRBleIotCommunicateFragment extends BaseFragment {
      * 解析设备的参数指令
      */
     protected void parseResponseMessage(String cmdStr) {
-
+        stopProgressRunnable();
+        IOTCommandType type = IOTStringUtil.extractCommandType(cmdStr);
+        if (type == IOTCommandType.UNKNOWN_TYPE) {
+            Timber.e("未知的命令:%s", cmdStr);
+            ToastUtils.show("未知的命令:" + cmdStr);
+        }
     }
 
     /**

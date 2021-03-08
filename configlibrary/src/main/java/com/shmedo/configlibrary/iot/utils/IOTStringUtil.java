@@ -20,8 +20,10 @@ public class IOTStringUtil {
      * @return 从DAS返回结果中提取指令类型
      */
     public static IOTCommandType extractCommandType(String result) {
-        if (TextUtils.isEmpty(result) || result.length() < IOTCommandResult.RESULT_MIN_LENGTH)
-            throw new IllegalArgumentException("指令结果格式错误:" + result);
+        if (TextUtils.isEmpty(result) || result.length() < IOTCommandResult.RESULT_MIN_LENGTH) {
+//            throw new IllegalArgumentException("指令结果格式错误:" + result);
+            return IOTCommandType.UNKNOWN_TYPE;
+        }
 
         String[] strs = result.split("&");
         String cmd = strs[0].replace(IOTCommandResult.COMMAND_HEADER, "").trim();
@@ -33,8 +35,10 @@ public class IOTStringUtil {
         }
 
         IOTCommandType cmdType = cmdTypeHolder.getData();
-        if (cmdType == null)
-            throw new IllegalArgumentException("未找到命令:" + result);
+        if (cmdType == null) {
+            return IOTCommandType.UNKNOWN_TYPE;
+//            throw new IllegalArgumentException("未找到命令:" + result);
+        }
 
         return cmdType;
     }
