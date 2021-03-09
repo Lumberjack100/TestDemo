@@ -10,11 +10,11 @@ import androidx.lifecycle.ViewModelStoreOwner;
 
 import com.hjq.toast.ToastInterceptor;
 import com.hjq.toast.ToastUtils;
-import com.hjq.toast.style.ToastBlackStyle;
 import com.shmedo.core.MCloudApp;
 import com.shmedo.core.log.AppCrashHandler;
 import com.shmedo.core.log.CrashReportingTree;
 import com.shmedo.core.log.log4a.LogInit;
+import com.shmedo.mcloudapp.util.MyToastBlackStyle;
 import com.tencent.bugly.crashreport.CrashReport;
 
 import timber.log.Timber;
@@ -104,7 +104,7 @@ public class MCloudApplication extends Application implements ViewModelStoreOwne
             }
         });
         // 初始化吐司工具类
-        ToastUtils.init(this, new ToastBlackStyle(this));
+        ToastUtils.init(this, new MyToastBlackStyle(this));
     }
 }
 

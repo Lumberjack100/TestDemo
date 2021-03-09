@@ -72,8 +72,13 @@ public class IOTParseManager {
 
         IOTCommandType cmdType = IOTStringUtil.extractCommandType(temp);
         IOTResultParser parser = parserMap.get(cmdType);
-        if (parser == null)
-            throw new RuntimeException("未找到命令：" + cmdType + "的解析器");
+        if (parser == null) {
+//            throw new RuntimeException("未找到命令：" + cmdType + "的解析器");
+            commandResult.setSuccess(false);
+            commandResult.setMessage("无法解析命令： " + temp );
+            commandResult.setCommandType(cmdType);
+            return commandResult;
+        }
 
         parser.validate(temp);
         T data = (T) parser.parse(temp);

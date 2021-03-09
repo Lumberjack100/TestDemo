@@ -350,7 +350,7 @@ public enum IOTCommandType {
     HEART_BEAT("HeartBeatData"),
 
     /**
-     * 位置命令类型
+     * 未知的命令类型
      */
     UNKNOWN_TYPE("unknown_type");
 

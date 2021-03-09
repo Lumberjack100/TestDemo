@@ -11,7 +11,6 @@ public class IOTCommandResult<T> {
     public static final String COMMAND_HEADER = "$cmd=";
     public static final int RESULT_MIN_LENGTH = 5;
     public static final String ERROR_FLAG = "result=fail";
-
     /**
      * 命令执行是否成功
      */
@@ -20,7 +19,6 @@ public class IOTCommandResult<T> {
      * 执行失败的错误信息
      */
     private String message;
-
     /**
      * 命令类型
      */
@@ -29,6 +27,8 @@ public class IOTCommandResult<T> {
      * 解析结果数据
      */
     private T result;
+
+
 
     public boolean isSuccess() {
         return success;
