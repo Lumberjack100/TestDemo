@@ -139,6 +139,11 @@ public class BleM20CurrentStateFragment extends BaseGOCBleIotCommunicateFragment
         swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
+                if (!isConnected()) {
+                    ToastUtils.show(getString(R.string.refresh_failed_while_device_disconnected));
+                    swipeRefresh.setRefreshing(false);
+                    return;
+                }
                 queryStateInfo();
             }
         });

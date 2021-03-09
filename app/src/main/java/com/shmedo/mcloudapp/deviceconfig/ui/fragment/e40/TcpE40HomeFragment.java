@@ -158,7 +158,7 @@ public class TcpE40HomeFragment extends BaseTcpIotCommunicateFragment {
             @Override
             public void onRefresh() {
                 if (!tcpViewModel.getConnectStatus()) {
-                    ToastUtils.show("设备已断开连接，刷新失败");
+                    ToastUtils.show(getString(R.string.refresh_failed_while_device_disconnected));
                     swipeRefresh.setRefreshing(false);
                     return;
                 }

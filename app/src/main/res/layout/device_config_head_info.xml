@@ -109,7 +109,7 @@
             android:textColor="@color/text_color_b3b3b3"
             android:textSize="@dimen/text_size_13"
             android:visibility="invisible"
-            tools:text="@string/device_connect_state"
+            tools:text="断开连接"
             tools:visibility="visible" />
 
     </LinearLayout>

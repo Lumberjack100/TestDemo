@@ -121,7 +121,6 @@ public class BleAdmeCurrentStateFragment extends BaseUSRBleIotCommunicateFragmen
     @BindView(R.id.tv_inclinometer_temperature)
     TextView mTvInclinometerTemperature;
 
-
     private AdmeCurrentStateInfo currentStateInfo;
 
     public static BleAdmeCurrentStateFragment newInstance() {
@@ -147,6 +146,11 @@ public class BleAdmeCurrentStateFragment extends BaseUSRBleIotCommunicateFragmen
         swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
+                if (!isConnected()) {
+                    ToastUtils.show(getString(R.string.refresh_failed_while_device_disconnected));
+                    swipeRefresh.setRefreshing(false);
+                    return;
+                }
                 queryParamInfo();
             }
         });

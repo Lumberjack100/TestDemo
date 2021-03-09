@@ -12,6 +12,7 @@ import android.widget.TextView;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.hjq.toast.ToastUtils;
 import com.shmedo.configlibrary.ble.cmd.CommandManager;
@@ -41,13 +42,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
-import butterknife.OnClick;
 import timber.log.Timber;
 
 /**
  * 测试通过下发指令查看设备当前运行状态
  */
 public class BleDasCurrentStateFragment extends BaseBleCommunicateFragment {
+    @BindView(R.id.swipeLayout)
+    SwipeRefreshLayout swipeRefresh;
+
     /**
      * 基本信息
      */
@@ -112,7 +115,6 @@ public class BleDasCurrentStateFragment extends BaseBleCommunicateFragment {
 
     @BindView(R.id.tv_link_three_online_rate)
     TextView mTvLinkThreeOnlineRate;
-
 
     /**
      * 太阳能控制器
@@ -224,8 +226,26 @@ public class BleDasCurrentStateFragment extends BaseBleCommunicateFragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        initRefreshLayout();
         initAdapter();
-        initData();
+        // 进入页面，刷新数据
+        swipeRefresh.setRefreshing(true);
+        queryStatusOne();
+    }
+
+    private void initRefreshLayout() {
+        swipeRefresh.setColorSchemeResources(android.R.color.holo_blue_light);
+        swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                if (!isConnected()) {
+                    ToastUtils.show(getString(R.string.refresh_failed_while_device_disconnected));
+                    swipeRefresh.setRefreshing(false);
+                    return;
+                }
+                queryStatusOne();
+            }
+        });
     }
 
     private void initAdapter() {
@@ -259,9 +279,9 @@ public class BleDasCurrentStateFragment extends BaseBleCommunicateFragment {
         sensorRecyclerView.setAdapter(sensorAdapter);
     }
 
-    private void initData() {
-        errMsg = "查询数据超时,请稍后尝试";
-        startProgressRunnable("加载中...", 20000);
+    private void queryStatusOne() {
+//        errMsg = "查询数据超时,请稍后尝试";
+//        startProgressRunnable("加载中...", 20000);
         String command = CommandManager.getInstance().getCommand(CommandType.QUERY_DAS_STATUS_1);
         sendCommand(command);
         Timber.i("查询设备状态1：%s", command);
@@ -283,6 +303,7 @@ public class BleDasCurrentStateFragment extends BaseBleCommunicateFragment {
         switch (type) {
             case QUERY_DAS_STATUS_1:
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
+                    swipeRefresh.setRefreshing(false);
                     stopProgressRunnable();
                     Timber.e("查询设备状态1指令出错!");
                     ToastUtils.show("查询设备状态1出错!");
@@ -298,6 +319,7 @@ public class BleDasCurrentStateFragment extends BaseBleCommunicateFragment {
 
             case VERSION_MESSAGE:
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
+                    swipeRefresh.setRefreshing(false);
                     stopProgressRunnable();
                     Timber.e("查询设备版本信息出错!");
                     ToastUtils.show("查询设备版本信息出错!");
@@ -316,6 +338,7 @@ public class BleDasCurrentStateFragment extends BaseBleCommunicateFragment {
 
             case INSTALL_LOCATION:
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
+                    swipeRefresh.setRefreshing(false);
                     stopProgressRunnable();
                     Timber.e("查询安装位置出错!");
                     ToastUtils.show("查询安装位置出错!");
@@ -333,6 +356,7 @@ public class BleDasCurrentStateFragment extends BaseBleCommunicateFragment {
 
             case SYSTEM_RUN_STATE:
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
+                    swipeRefresh.setRefreshing(false);
                     stopProgressRunnable();
                     Timber.e("查询运行状态出错!");
                     ToastUtils.show("查询运行状态出错!");
@@ -349,6 +373,7 @@ public class BleDasCurrentStateFragment extends BaseBleCommunicateFragment {
 
             case QUERY_NETWORK_STATUS://数据中心网络状态
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
+                    swipeRefresh.setRefreshing(false);
                     stopProgressRunnable();
                     Timber.e("查询数据中心网络状态出错!");
                     ToastUtils.show("查询数据中心网络状态出错!");
@@ -390,6 +415,7 @@ public class BleDasCurrentStateFragment extends BaseBleCommunicateFragment {
 
             case QUERY_DAS_STATUS_2:
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
+                    swipeRefresh.setRefreshing(false);
                     stopProgressRunnable();
                     Timber.e("查询设备状态2出错!");
                     ToastUtils.show("查询设备状态2出错!");
@@ -405,31 +431,34 @@ public class BleDasCurrentStateFragment extends BaseBleCommunicateFragment {
 
             case QUERY_DAS_STATUS_3:
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
+                    swipeRefresh.setRefreshing(false);
                     stopProgressRunnable();
                     Timber.e("查询设备状态3出错!");
                     ToastUtils.show("查询设备状态3出错!");
                     return;
                 }
-                stopProgressRunnable();
                 DeviceStatusInfoThree statusThree = ResultParserUtil.getEntityObject(cmdStr);
                 if (statusThree != null) {
                     collectorModel = statusThree.getCollectorModel();
                     setDeviceStatusThree(statusThree);
-                }
 
-                //裂缝计采集器，查询倾角计信息
-                if (collectorModel.trim().equals("2")) {
-                    processQueryInclinometerInfo();
+                    //裂缝计采集器，查询倾角计信息
+                    if (collectorModel.trim().equals("2")) {
+                        processQueryInclinometerInfo();
+                    }else{
+                        swipeRefresh.setRefreshing(false);
+                        stopProgressRunnable();
+                    }
                 }
                 break;
 
             case QUERY_INCLINOMETER_INFO:
+                swipeRefresh.setRefreshing(false);
+                stopProgressRunnable();
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
-                    stopProgressRunnable();
                     Timber.e("查询倾角计信息出错!");
                     return;
                 }
-                stopProgressRunnable();
                 InclinometerInfo inclinometerInfo = ResultParserUtil.getEntityObject(cmdStr);
                 setInclinometerInfo(inclinometerInfo);
                 break;
@@ -687,20 +716,8 @@ public class BleDasCurrentStateFragment extends BaseBleCommunicateFragment {
         mTvInclinometerZaxis.setText(inclinometerInfo.getzAxis());
     }
 
-    @OnClick({R.id.fab_refresh})
-    public void onClick(View v) {
-        if (v.getId() == R.id.fab_refresh) {//断开/重新连接
-            if (!isConnected()) {
-                ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
-                return;
-            }
-            initData();
-        }
-    }
-
     @Override
     public boolean onBackPressed() {
         return false;
     }
-
 }

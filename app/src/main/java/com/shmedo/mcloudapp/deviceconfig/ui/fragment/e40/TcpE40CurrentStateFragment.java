@@ -142,6 +142,11 @@ public class TcpE40CurrentStateFragment extends BaseTcpIotCommunicateFragment {
         swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
+                if (!tcpViewModel.getConnectStatus()) {
+                    ToastUtils.show(getString(R.string.refresh_failed_while_device_disconnected));
+                    swipeRefresh.setRefreshing(false);
+                    return;
+                }
                 queryStateInfo();
             }
         });

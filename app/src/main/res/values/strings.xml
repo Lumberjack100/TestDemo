@@ -199,24 +199,17 @@
     <string name="project_desc_test">宽甸是辽宁省矿产资源大县，地质成矿条件十分优越。经过数十年国家专业地勘单位地质勘查和群众性找矿报矿，县内共发现54个矿种，现已查明地质储量的有13种。其中勘查工作程度较高并被列入储量表的有硼镁矿石矿产地12处。2006年以来，通过地质勘查和老矿山深部找矿相继发现了硼海镇大人沟硼矿床，大川头镇新丰钼矿床和振江万宝钼矿床。其中振江万宝钼矿床新增钼矿矿石储量3600多万吨，由万宝源钼矿正在开发利用。硼海镇大人沟硼矿床和大川头镇新丰钼矿床正在进一步勘探之中，储量报告尚未提交。</string>
 
     <!-- 设备模块 -->
-    <string name="device_connect_state">断开连接</string>
-    <string name="network_config_offline_warn">设备已离线，暂无法进行操作</string>
     <string name="ble_config_disconnect_warn">设备已断开连接，暂无法进行操作</string>
     <string name="disconnect_device">确定要断开连接？</string>
     <string name="finish_activity_disconnect_bluetooth_device">确定要退出该页面，并断开蓝牙连接吗？</string>
     <string name="finish_activity_disconnect_tcp_device">确定要退出该页面，并断开连接吗？</string>
-    <string name="disconnect_bluetooth_device_save_param_warn">您还没有保存设备的配置信息，是否保存？</string>
     <string name="device_enable_state_close_warn">关闭系统激活状态，将导致设备自动关机进入休眠状态。请确认是否关闭【激活状态】？</string>
     <string name="device_config_module_current_state">状态</string>
-    <string name="dispatch_cmd_failed_tip">响应超时</string>
     <string name="cmd_response_loading_tip">等待设备响应...</string>
-    <string name="cmd_response_failed_tip">响应超时</string>
-    <string name="reboot_device_save_param_warn">设备参数已配置，需要重启生效，是否现在重启？</string>
     <string name="tcp_config_disconnect_warn">设备已断开连接，暂无法进行操作</string>
-
-
     <string name="ble_state_connecting">连接中…</string>
     <string name="ble_state_initializing">初始化中…</string>
+    <string name="refresh_failed_while_device_disconnected">设备已断开连接，刷新失败</string>
 
 
     <string name="location_permission_title">LOCATION PERMISSION REQUIRED</string>
@@ -228,8 +221,5 @@
     <string name="bluetooth_disabled_title">BLUETOOTH DISABLED</string>
     <string name="bluetooth_disabled_info">The Bluetooth adapter is turned off. Click the button below to enable it.</string>
     <string name="bluetooth_disabled_action">Enable</string>
-
-    <!-- TODO #gh#: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>
