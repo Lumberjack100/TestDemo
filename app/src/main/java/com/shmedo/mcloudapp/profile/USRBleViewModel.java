@@ -54,12 +54,12 @@ public class USRBleViewModel extends AndroidViewModel {
         return DeviceRepository.getInstance().getDeviceApiKeyLiveData();
     }
 
-    public void clearDeviceApiKey() {
-        DeviceRepository.getInstance().clearDeviceApiKey();
-    }
-
     public void queryDeviceApiKeyBySn(String sn) {
         DeviceRepository.getInstance().queryDeviceApiKeyBySn(sn);
+    }
+
+    public void clearDeviceApiKey() {
+        DeviceRepository.getInstance().clearDeviceApiKey();
     }
 
     /**
@@ -109,13 +109,16 @@ public class USRBleViewModel extends AndroidViewModel {
 
     public void clearDevice() {
         device = null;
+        clearDeviceApiKey();
     }
 
     /**
      * 发送物联网协议指令
      */
     public void sendIOTProtocolCommand(final String command) {
-//        Timber.v("准备发送指令：%s", command);
+        if (!isConnected()) {
+            return;
+        }
         usrManager.writeMessage(command);
     }
 
@@ -126,5 +129,4 @@ public class USRBleViewModel extends AndroidViewModel {
             disconnect();
         }
     }
-
 }

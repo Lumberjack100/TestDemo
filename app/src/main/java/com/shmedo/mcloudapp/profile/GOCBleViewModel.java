@@ -54,6 +54,10 @@ public class GOCBleViewModel extends AndroidViewModel {
         DeviceRepository.getInstance().queryDeviceApiKeyBySn(sn);
     }
 
+    public void clearDeviceApiKey() {
+        DeviceRepository.getInstance().clearDeviceApiKey();
+    }
+
     /**
      * Connect to the given peripheral.
      *
@@ -101,13 +105,16 @@ public class GOCBleViewModel extends AndroidViewModel {
 
     public void clearDevice() {
         device = null;
+        clearDeviceApiKey();
     }
 
     /**
      * 发送物联网协议指令
      */
     public void sendIOTProtocolCommand(final String command) {
-//        Timber.v("准备发送指令：%s", command);
+        if (!isConnected()) {
+            return;
+        }
         gocManager.writeMessage(command);
     }
 

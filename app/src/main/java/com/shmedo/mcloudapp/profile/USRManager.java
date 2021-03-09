@@ -5,7 +5,6 @@ import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattService;
 import android.content.Context;
-import android.os.Handler;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -62,8 +61,6 @@ public class USRManager extends ObservableBleManager {
     private static final int MAX_PACKAGE_SIZE = 512;//最大蓝牙包数据
     private int mtu = MAX_PACKAGE_SIZE;//默认设置最大蓝牙包数据，实际因设备而异
 
-    private Handler handler = new Handler();
-    private boolean isWritable = true;//判断是否可以写入数据
 
     public USRManager(@NotNull Context context) {
         super(context);
@@ -114,13 +111,12 @@ public class USRManager extends ObservableBleManager {
     private final IOTCommandDataCallback notifyCallback = new IOTCommandDataCallback() {
         @Override
         public void onResponseReceived(@NonNull BluetoothDevice device, String result) {
-//            Timber.v("接收数据(onResponseReceived): length=%s bytes;content: %s", result.getBytes().length, result);
             log(LogContract.Log.Level.APPLICATION, "接收数据(onResponseReceived): " + result);
 
             //处理接收的数据中有多条指令拼接的情况(其他指令和心跳包拼接的情况）
             if (result.contains("$$")) {
                 String[] datas = result.split("\r\n");
-                if (datas != null && datas.length > 0) {
+                if (datas.length > 0) {
                     for (String data : datas) {
                         if (!TextUtils.isEmpty(data)) {
                             int index = data.lastIndexOf("$$");
@@ -215,7 +211,6 @@ public class USRManager extends ObservableBleManager {
                 notifyCharacteristic = service.getCharacteristic(NOTIFY_CHARACTERISTIC_UUID);
                 writeCharacteristic = service.getCharacteristic(WRITABLE_CHARACTERISTIC_UUID);
             }
-
             boolean writeRequest = false;
             boolean writeCommand = false;
             if (writeCharacteristic != null) {
@@ -244,20 +239,6 @@ public class USRManager extends ObservableBleManager {
         if (writeCharacteristic == null)
             return;
 
-//        //判断当前是否可以写入数据，false 时延迟一定时间再次调用callWriteCharacteristic(command)，防止同时调用 writeMessage(final String command)多次，造成蓝牙设备处理不过来
-//        if (!isWritable) {
-//            handler.postDelayed(new Runnable() {
-//                @Override
-//                public void run() {
-//                    isWritable = false;
-//                    callWriteCharacteristic(command);
-//                }
-//            }, 350);
-//        } else {
-//            isWritable = false;
-//            callWriteCharacteristic(command);
-//        }
-
         callWriteCharacteristic(command);
     }
 
@@ -275,7 +256,6 @@ public class USRManager extends ObservableBleManager {
                 .done(new SuccessCallback() {
                     @Override
                     public void onRequestCompleted(@NonNull BluetoothDevice device) {
-                        isWritable = true;
                         Timber.v("已写入数据(writeMessage): length=%s bytes;content: %s", command.getBytes().length, command);
                         log(LogContract.Log.Level.APPLICATION, "已写入数据(writeMessage): " + command);
                     }
@@ -284,7 +264,6 @@ public class USRManager extends ObservableBleManager {
                 .fail(new FailCallback() {
                     @Override
                     public void onRequestFailed(@NonNull BluetoothDevice device, int status) {
-                        isWritable = true;
                         Timber.w("未写入数据(writeMessage): length=%s bytes;content: %s", command.getBytes().length, command);
                         log(Log.WARN, "未写入数据(writeMessage): " + command);
                     }
