@@ -42,10 +42,6 @@ public class DeviceRepository {
         return deviceApiKey;
     }
 
-    public void updateDeviceApiKey(String apiKey) {
-        deviceApiKey.postValue(apiKey);
-    }
-
     public void clearDeviceApiKey() {
         deviceApiKey.postValue(null);
     }

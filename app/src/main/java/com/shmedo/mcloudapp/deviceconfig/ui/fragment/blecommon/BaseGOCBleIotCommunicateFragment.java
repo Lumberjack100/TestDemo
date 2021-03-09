@@ -149,7 +149,6 @@ public abstract class BaseGOCBleIotCommunicateFragment extends BaseFragment {
 
     public void sendCommand(String cmdStr) {
         if (!isConnected()) {
-            ToastUtils.show(getString(R.string.tcp_config_disconnect_warn));
             return;
         }
         String apiKey = "b12aac6b-0bd2-4a01-80fd-97fe4f5d4ff9";

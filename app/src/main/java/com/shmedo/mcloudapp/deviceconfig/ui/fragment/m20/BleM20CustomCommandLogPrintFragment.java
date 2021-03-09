@@ -126,7 +126,7 @@ public class BleM20CustomCommandLogPrintFragment extends BaseGOCBleIotCommunicat
             cmdAdapter.notifyDataSetChanged();
         } else if (id == R.id.btn_send) {
             if (!isConnected()) {
-                ToastUtils.show(getString(R.string.tcp_config_disconnect_warn));
+                ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
                 return;
             }
             //发送指令
