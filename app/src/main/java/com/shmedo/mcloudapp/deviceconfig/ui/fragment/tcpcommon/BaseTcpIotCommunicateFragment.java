@@ -18,7 +18,6 @@ import com.shmedo.mcloudapp.deviceconfig.model.TcpConnectionState;
 import com.shmedo.mcloudapp.deviceconfig.viewmodels.DeviceApiKeyViewModel;
 import com.shmedo.mcloudapp.profile.TcpViewModel;
 
-import java.util.Objects;
 import java.util.UUID;
 
 import timber.log.Timber;
@@ -154,7 +153,7 @@ public abstract class BaseTcpIotCommunicateFragment extends BaseFragment {
      * @param content
      */
     protected void showDisconnectDialog(String content) {
-        MaterialDialog.Builder mBuilder = new MaterialDialog.Builder(Objects.requireNonNull(getContext()))
+        MaterialDialog.Builder mBuilder = new MaterialDialog.Builder(requireContext())
                 .title("温馨提示：")
                 .content(content)
                 .contentColorRes(R.color.title_text_color)
@@ -181,7 +180,7 @@ public abstract class BaseTcpIotCommunicateFragment extends BaseFragment {
      * 页面数据修改未保存警告
      */
     protected void warnNotYetSettingBeforeLeavePage() {
-        MaterialDialog.Builder mBuilder = new MaterialDialog.Builder(Objects.requireNonNull(getContext()))
+        MaterialDialog.Builder mBuilder = new MaterialDialog.Builder(requireContext())
                 .title("温馨提示：")
                 .content("您已经修改了参数，还未配置到设备，确定离开页面吗？")
                 .contentColorRes(R.color.title_text_color)

@@ -33,14 +33,6 @@ public interface AppContants {
     }
 
     /**
-     * 指令类型
-     */
-    interface CommmandType {
-        int OLD_COMMAND = 0x001;//##指令
-        int IOT_COMMAND = 0x002;// 米度物联网指令
-    }
-
-    /**
      * 通讯方式
      */
     interface CommunicationWay {

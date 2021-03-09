@@ -79,8 +79,11 @@ public abstract class BaseConfigFragmentContainerActivity extends BaseActivity {
         transaction.commitAllowingStateLoss();
     }
 
-    @OnClick({R.id.tv_action})
+    @OnClick({R.id.tv_action, R.id.iv_action})
     public void onClick(View view) {
+        if (isDoubleClick(view)) {
+            return;
+        }
         int id = view.getId();
         if (id == R.id.tv_action) {
             if (mTvAction.getText().toString().equals("编辑")) {
@@ -90,6 +93,17 @@ public abstract class BaseConfigFragmentContainerActivity extends BaseActivity {
                 configPageViewModel.configPageEditableChanged.setValue(false);
                 mTvAction.setText("编辑");
             }
+            onTextActionClick();
+        } else if (id == R.id.iv_action) {
+            onIconActionClick();
         }
+    }
+
+    protected void onTextActionClick() {
+
+    }
+
+    protected void onIconActionClick() {
+
     }
 }
