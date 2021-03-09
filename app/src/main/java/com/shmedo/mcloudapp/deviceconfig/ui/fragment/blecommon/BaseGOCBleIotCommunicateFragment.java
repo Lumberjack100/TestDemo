@@ -63,7 +63,9 @@ public abstract class BaseGOCBleIotCommunicateFragment extends BaseFragment {
     }
 
     protected void startProgressRunnable(String dialogContent, long delayMillis) {
-        showProgressDialog(dialogContent, null, null);
+        if (!TextUtils.isEmpty(dialogContent)) {
+            showProgressDialog(dialogContent, null, null);
+        }
         if (progressRunnable == null) {
             progressRunnable = new ProgressRunnable();
             uiHander.postDelayed(progressRunnable, delayMillis);

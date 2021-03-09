@@ -280,13 +280,18 @@ public class BleDasCurrentStateFragment extends BaseBleCommunicateFragment {
     }
 
     private void queryStatusOne() {
-//        errMsg = "查询数据超时,请稍后尝试";
-//        startProgressRunnable("加载中...", 20000);
+        errMsg = "查询数据超时,请稍后尝试";
+        startProgressRunnable(null, CONFIG_PARAMS_DELAY_MILLIS);
         String command = CommandManager.getInstance().getCommand(CommandType.QUERY_DAS_STATUS_1);
         sendCommand(command);
         Timber.i("查询设备状态1：%s", command);
     }
 
+    @Override
+    protected void doProgressRun() {
+        super.doProgressRun();
+        swipeRefresh.setRefreshing(false);
+    }
 
     @Override
     protected void parseResponseMessage(String cmdStr) {

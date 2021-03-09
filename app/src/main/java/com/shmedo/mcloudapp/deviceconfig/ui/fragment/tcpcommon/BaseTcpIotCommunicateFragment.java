@@ -31,9 +31,7 @@ import timber.log.Timber;
 public abstract class BaseTcpIotCommunicateFragment extends BaseFragment {
     public static final int TCP_CONNECT_DELAY_MILLIS = 5000;//Tcp 连接超时时间
 
-    public static final int QUERY_CMD_DELAY_MILLIS = 1500;//查询配置参数指令超时时间
-
-    public static final int SEND_CMD_DELAY_MILLIS = 5000;//发送配置参数指令超时时间
+    public static final int WRITE_TIME_OUT_SECOND = 5000;//发送指令超时时间
 
     private static Handler uiHander = new Handler();
 
@@ -45,7 +43,6 @@ public abstract class BaseTcpIotCommunicateFragment extends BaseFragment {
 
     protected DeviceApiKeyViewModel deviceApiKeyViewModel;
 
-
     private static ProgressRunnable progressRunnable;
 
     private class ProgressRunnable implements Runnable {
@@ -53,14 +50,20 @@ public abstract class BaseTcpIotCommunicateFragment extends BaseFragment {
         public void run() {
             dismissProgressDialog();
             progressRunnable = null;
-            if (!TextUtils.isEmpty(errMsg)) {
-                ToastUtils.show(errMsg);
-            }
+            doProgressRun();
+        }
+    }
+
+    protected void doProgressRun() {
+        if (!TextUtils.isEmpty(errMsg)) {
+            ToastUtils.show(errMsg);
         }
     }
 
     protected void startProgressRunnable(String dialogContent, long delayMillis) {
-        showProgressDialog(dialogContent, null, null);
+        if (!TextUtils.isEmpty(dialogContent)) {
+            showProgressDialog(dialogContent, null, null);
+        }
         if (progressRunnable == null) {
             progressRunnable = new ProgressRunnable();
             uiHander.postDelayed(progressRunnable, delayMillis);

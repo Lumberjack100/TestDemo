@@ -88,15 +88,20 @@ public abstract class BaseBleCommunicateFragment extends BaseFragment {
         public void run() {
             dismissProgressDialog();
             progressRunnable = null;
+            doProgressRun();
+        }
+    }
 
-            if (!TextUtils.isEmpty(errMsg)) {
-                ToastUtils.show(errMsg);
-            }
+    protected void doProgressRun() {
+        if (!TextUtils.isEmpty(errMsg)) {
+            ToastUtils.show(errMsg);
         }
     }
 
     protected void startProgressRunnable(String dialogContent, long delayMillis) {
-        showProgressDialog(dialogContent, null, null);
+        if (!TextUtils.isEmpty(dialogContent)) {
+            showProgressDialog(dialogContent, null, null);
+        }
         if (progressRunnable == null) {
             progressRunnable = new ProgressRunnable();
             uiHander.postDelayed(progressRunnable, delayMillis);

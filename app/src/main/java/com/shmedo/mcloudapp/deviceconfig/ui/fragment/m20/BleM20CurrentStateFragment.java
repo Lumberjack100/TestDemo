@@ -153,8 +153,16 @@ public class BleM20CurrentStateFragment extends BaseGOCBleIotCommunicateFragment
      * 获取设备的当前状态
      */
     private void queryStateInfo() {
+        errMsg = "查询数据超时,请稍后尝试";
+        startProgressRunnable("", WRITE_TIME_OUT_SECOND);
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.QUERY_DEVICE_STATUS);
         sendCommand(command);
+    }
+
+    @Override
+    protected void doProgressRun() {
+        super.doProgressRun();
+        swipeRefresh.setRefreshing(false);
     }
 
     @Override
@@ -170,7 +178,7 @@ public class BleM20CurrentStateFragment extends BaseGOCBleIotCommunicateFragment
         switch (type) {
             case QUERY_DEVICE_STATUS: {
                 swipeRefresh.setRefreshing(false);
-//                stopProgressRunnable();
+                stopProgressRunnable();
                 IOTCommandResult<String> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
                     String errMsg = String.format("%s %s", "查询设备状态出错!", commandResult.getMessage());
