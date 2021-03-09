@@ -445,11 +445,9 @@ public class BleDasHomeFragment extends BaseBleCommunicateFragment {
      */
     @Override
     protected void onAuthenticateResult(boolean isSuccess) {
+        hideProgressBar();
         if (isSuccess) {
             queryDASConfigInfoCmd();
-
-        } else {
-            hideProgressBar();
         }
     }
 
@@ -481,9 +479,8 @@ public class BleDasHomeFragment extends BaseBleCommunicateFragment {
         CommandType type = StringUtil.extractCommandType(cmdStr);
         switch (type) {
             case BASE_CONFIG://基础配置信息 000
+                hideProgressBar();
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
-//                    stopProgressRunnable();
-                    hideProgressBar();
                     Timber.e("查询基础配置信息指令出错!");
                     return;
                 }
@@ -493,7 +490,6 @@ public class BleDasHomeFragment extends BaseBleCommunicateFragment {
                 break;
 
             case VERSION_MESSAGE:
-                hideProgressBar();
                 startHeartRunnable();
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
                     Timber.e("查询版本信息指令出错!");

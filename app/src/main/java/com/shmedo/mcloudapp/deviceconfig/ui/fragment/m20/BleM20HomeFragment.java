@@ -156,12 +156,10 @@ public class BleM20HomeFragment extends BaseGOCBleIotCommunicateFragment {
                 if (isDoubleClick(view)) {
                     return;
                 }
-
                 if (!isConnected()) {
                     ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
                     return;
                 }
-
                 selectedConfigModule = (ConfigModule) configModuleList.get(position);
                 processItemClick();
             }
@@ -245,6 +243,7 @@ public class BleM20HomeFragment extends BaseGOCBleIotCommunicateFragment {
         bleViewModel.getDeviceApiKey().observeInFragment(this, new Observer<String>() {
             @Override
             public void onChanged(String apiKey) {
+                hideProgressBar();
                 queryBaseInfo();
             }
         });

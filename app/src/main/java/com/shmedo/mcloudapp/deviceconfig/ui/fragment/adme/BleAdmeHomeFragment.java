@@ -223,12 +223,10 @@ public class BleAdmeHomeFragment extends BaseUSRBleIotCommunicateFragment {
                 if (isDoubleClick(view)) {
                     return;
                 }
-
                 if (!isConnected()) {
                     ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
                     return;
                 }
-
                 selectedConfigModule = (ConfigModule) configModuleList.get(position);
                 processItemClick();
             }
