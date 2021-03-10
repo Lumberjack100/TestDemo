@@ -46,8 +46,6 @@ import timber.log.Timber;
  */
 public class NetE40DataCenterHomeFragment extends BaseNetIotCommunicateFragment {
 
-    public static final String PRO_DEVICE_INFO = "com.shmedo.mcloudapp.PRO_DEVICE_INFO";
-
     @BindView(R.id.tv_data_center_one)
     TextView mTvDataCenterOne;
 
@@ -61,7 +59,6 @@ public class NetE40DataCenterHomeFragment extends BaseNetIotCommunicateFragment 
     TextView mTvDataCenterFour;
 
     private int configMethod = AppContants.DataCenterConfigMethod.BASIC_CONFIG;
-    private ProjectDeviceInfo projectDeviceInfo;
 
     private static final int SERVER_NUMBER_ONE = 0x1001;
     private static final int SERVER_NUMBER_TWO = 0x1002;

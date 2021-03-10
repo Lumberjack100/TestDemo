@@ -44,8 +44,6 @@ import timber.log.Timber;
  * 描述：    E40网络模式板卡解算配置页面
  */
 public class NetE40BoardSolutionFragment extends BaseNetIotCommunicateFragment {
-    public static final String PRO_DEVICE_INFO = "com.shmedo.mcloudapp.PRO_DEVICE_INFO";
-
     @BindView(R.id.et_init_time)
     ClearEditText mEtInitTime;
 
@@ -87,7 +85,6 @@ public class NetE40BoardSolutionFragment extends BaseNetIotCommunicateFragment {
 
     private DecimalFormat decimalFormat = new DecimalFormat();
 
-    private ProjectDeviceInfo projectDeviceInfo;
     private E40BoardSolutionInfo e40BoardSolutionInfo;
 
 

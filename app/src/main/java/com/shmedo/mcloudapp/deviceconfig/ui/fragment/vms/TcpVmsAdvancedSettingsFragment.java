@@ -73,7 +73,7 @@ public class TcpVmsAdvancedSettingsFragment extends BaseVmsTcpCommunicateFragmen
 
     @Override
     protected int getLayoutId() {
-        return R.layout.tcp_vms_advanced_settings_fragment;
+        return R.layout.vms_advanced_settings_fragment;
     }
 
     @Override

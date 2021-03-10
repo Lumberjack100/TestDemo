@@ -50,7 +50,6 @@ import timber.log.Timber;
  * 描述：     通用网络模式数据中心基本参数配置页面
  */
 public class UniversalNetDataCenterBasicConfigFragment extends BaseNetIotCommunicateFragment {
-    public static final String PRO_DEVICE_INFO = "com.shmedo.mcloudapp.PRO_DEVICE_INFO";
 
     @BindView(R.id.maskLayerChild)
     ViewGroup maskLayerLayout;
@@ -77,8 +76,6 @@ public class UniversalNetDataCenterBasicConfigFragment extends BaseNetIotCommuni
     private boolean enableButtonOriginalState;//数据中心开关初始状态，用于判断开关是否有打开后没有设置参数就返回
     private boolean isSaveParamOperation = false;//判断当前是保存参数操作，还是关闭数据中心操作
     private boolean isResultOK = false;//返回的结果是否是 Activity.RESULT_OK
-
-    private ProjectDeviceInfo projectDeviceInfo;
 
 
     public static UniversalNetDataCenterBasicConfigFragment newInstance(ServerNumber serverNumber, String status, ProjectDeviceInfo projectDeviceInfo) {

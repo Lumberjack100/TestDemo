@@ -53,7 +53,6 @@ import timber.log.Timber;
  * 描述：    通用网络模式数据中心高级参数配置页面
  */
 public class UniversalNetDataCenterAdvancedConfigFragment extends BaseNetIotCommunicateFragment {
-    public static final String PRO_DEVICE_INFO = "com.shmedo.mcloudapp.PRO_DEVICE_INFO";
 
     @BindView(R.id.maskLayerChild)
     ViewGroup maskLayerLayout;
@@ -122,7 +121,6 @@ public class UniversalNetDataCenterAdvancedConfigFragment extends BaseNetIotComm
     private boolean isSaveParamOperation = false;//判断当前是保存参数操作，还是关闭数据中心操作
     private boolean isResultOK = false;//返回的结果是否是 Activity.RESULT_OK
 
-    private ProjectDeviceInfo projectDeviceInfo;
 
     public static UniversalNetDataCenterAdvancedConfigFragment newInstance(ServerNumber serverNumber, String status, ProjectDeviceInfo projectDeviceInfo) {
         UniversalNetDataCenterAdvancedConfigFragment fragment = new UniversalNetDataCenterAdvancedConfigFragment();

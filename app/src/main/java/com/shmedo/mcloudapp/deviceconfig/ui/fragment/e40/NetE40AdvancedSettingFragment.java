@@ -61,8 +61,6 @@ import timber.log.Timber;
  * 描述：    E40网络模式设置页面
  */
 public class NetE40AdvancedSettingFragment extends BaseNetIotCommunicateFragment {
-    public static final String PRO_DEVICE_INFO = "com.shmedo.mcloudapp.PRO_DEVICE_INFO";
-
     private static final int REBOOT = 0x1002;
     private static final int RESET = 0x1003;
 
@@ -73,7 +71,6 @@ public class NetE40AdvancedSettingFragment extends BaseNetIotCommunicateFragment
     private String rtkMode;//0表示基站，1表示移动站
     private E40RTKModeInfo rtkModeInfo;
 
-    private ProjectDeviceInfo projectDeviceInfo;
 
     public static NetE40AdvancedSettingFragment newInstance(ProjectDeviceInfo projectDeviceInfo) {
         NetE40AdvancedSettingFragment fragment = new NetE40AdvancedSettingFragment();

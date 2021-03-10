@@ -45,7 +45,6 @@ import timber.log.Timber;
  */
 public class NetM20DataCenterHomeFragment extends BaseNetIotCommunicateFragment {
     public static final String LEVEL_INITIAL = "com.shmedo.mcloudapp.LEVEL_INITIAL";
-    public static final String PRO_DEVICE_INFO = "com.shmedo.mcloudapp.PRO_DEVICE_INFO";
 
     @BindView(R.id.tv_data_center_one)
     TextView mTvDataCenterOne;
@@ -64,7 +63,6 @@ public class NetM20DataCenterHomeFragment extends BaseNetIotCommunicateFragment 
 
     private int configMethod = AppContants.DataCenterConfigMethod.BASIC_CONFIG;
     private boolean isLevelInit = false;
-    private ProjectDeviceInfo projectDeviceInfo;
 
     private static final int SERVER_NUMBER_ONE = 0x1001;
     private static final int SERVER_NUMBER_TWO = 0x1002;

@@ -36,8 +36,6 @@ import timber.log.Timber;
  * 描述：    M20网络模式 设备运行状态页面
  */
 public class NetM20CurrentStateFragment extends BaseNetIotCommunicateFragment {
-    public static final String PRO_DEVICE_INFO = "com.shmedo.mcloudapp.PRO_DEVICE_INFO";
-
     @BindView(R.id.swipeLayout)
     SwipeRefreshLayout swipeRefresh;
 
@@ -121,8 +119,6 @@ public class NetM20CurrentStateFragment extends BaseNetIotCommunicateFragment {
 
     @BindView(R.id.tv_power_consumption)
     TextView mTvPowerConsumption;
-
-    private ProjectDeviceInfo projectDeviceInfo;
 
     private M20CurrentStateInfo m20CurrentStateInfo;
 

@@ -21,7 +21,6 @@ import com.shmedo.mcloudapp.common.view.recycleviewitemdivider.GridSpacingItemDe
 import com.shmedo.mcloudapp.deviceconfig.adapter.ConfigModuleAdapter;
 import com.shmedo.mcloudapp.deviceconfig.model.ConfigModule;
 import com.shmedo.mcloudapp.deviceconfig.model.QueryCmdResult;
-import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -70,7 +69,6 @@ public abstract class UniversalNetConfigHomeFragment extends BaseNetIotCommunica
     protected List<ConfigModule> configModuleList = new ArrayList<>();
     protected ConfigModule selectedConfigModule;
 
-    public ProjectDeviceInfo projectDeviceInfo;
     private int deviceType = AppContants.DeviceType.DAS;
 
 

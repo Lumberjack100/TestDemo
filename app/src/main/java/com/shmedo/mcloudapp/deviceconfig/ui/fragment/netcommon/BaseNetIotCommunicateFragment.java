@@ -19,6 +19,7 @@ import com.shmedo.mcloudapp.network.BaseObserver;
 import com.shmedo.mcloudapp.network.ErrCode;
 import com.shmedo.mcloudapp.network.MDRetrofit;
 import com.shmedo.mcloudapp.network.NetworkConst;
+import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfo;
 import com.shmedo.mcloudapp.util.ResponseHandler;
 
 import java.util.ArrayList;
@@ -35,6 +36,9 @@ import timber.log.Timber;
  * 描述：     TODO #gh#
  */
 public abstract class BaseNetIotCommunicateFragment extends BaseFragment {
+    protected static final String PRO_DEVICE_INFO = "com.shmedo.mcloudapp.PRO_DEVICE_INFO";
+    public ProjectDeviceInfo projectDeviceInfo;
+
     protected List<String> msgIDList = new ArrayList<>();
 
     private Handler uiHander = new Handler();

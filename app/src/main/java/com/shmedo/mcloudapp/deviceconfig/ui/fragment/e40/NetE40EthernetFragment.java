@@ -43,7 +43,6 @@ import timber.log.Timber;
  * 描述：    E40网络模式有线网络配置页面
  */
 public class NetE40EthernetFragment extends BaseNetIotCommunicateFragment {
-    public static final String PRO_DEVICE_INFO = "com.shmedo.mcloudapp.PRO_DEVICE_INFO";
 
     @BindView(R.id.tv_dhcp)
     TextView mTvDhcp;
@@ -68,7 +67,6 @@ public class NetE40EthernetFragment extends BaseNetIotCommunicateFragment {
     private String gateway;//
     private String dns;//
 
-    private ProjectDeviceInfo projectDeviceInfo;
     private E40EthernetInfo e40EthernetInfo;
 
 

@@ -45,8 +45,6 @@ import timber.log.Timber;
  * 描述：    E40网络模式 CORS 服务配置页面
  */
 public class NetE40CorsServiceFragment extends BaseNetIotCommunicateFragment {
-    public static final String PRO_DEVICE_INFO = "com.shmedo.mcloudapp.PRO_DEVICE_INFO";
-
     @BindView(R.id.contentLayout)
     ViewGroup contentLayout;
 
@@ -79,8 +77,6 @@ public class NetE40CorsServiceFragment extends BaseNetIotCommunicateFragment {
 
     private boolean enableButtonOriginalState;//使能开关初始状态，用于判断开关是否打开后没有设置参数就返回
     private boolean isSaveParamOperation = false;//判断当前是保存参数操作，还是关闭使能开关操作
-
-    private ProjectDeviceInfo projectDeviceInfo;
 
 
     public static NetE40CorsServiceFragment newInstance(ProjectDeviceInfo projectDeviceInfo) {

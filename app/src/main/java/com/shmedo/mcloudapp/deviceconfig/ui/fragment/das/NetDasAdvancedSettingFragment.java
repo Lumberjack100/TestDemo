@@ -46,14 +46,8 @@ import okhttp3.RequestBody;
  * 网络模式高级设置
  */
 public class NetDasAdvancedSettingFragment extends BaseNetIotCommunicateFragment {
-    private static final String PRO_DEVICE_INFO = "com.shmedo.mcloudapp.PRO_DEVICE_INFO";
-
     private static final int REBOOT = 0x1002;
     private static final int RESET = 0x1003;
-
-    private int operaType = -1;
-
-    private ProjectDeviceInfo projectDeviceInfo;
 
 
     public static NetDasAdvancedSettingFragment newInstance(ProjectDeviceInfo projectDeviceInfo) {

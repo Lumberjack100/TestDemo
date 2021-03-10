@@ -46,13 +46,9 @@ import okhttp3.RequestBody;
  * 描述：    M20 网络模式高级设置页面
  */
 public class NetM20AdvancedSettingFragment extends BaseNetIotCommunicateFragment {
-    public static final String PRO_DEVICE_INFO = "com.shmedo.mcloudapp.PRO_DEVICE_INFO";
-
     private static final int LEVEL_INITIAL = 0x1001;
     private static final int REBOOT = 0x1002;
     private static final int RESET = 0x1003;
-
-    private ProjectDeviceInfo projectDeviceInfo;
 
     public static NetM20AdvancedSettingFragment newInstance(ProjectDeviceInfo projectDeviceInfo) {
         NetM20AdvancedSettingFragment fragment = new NetM20AdvancedSettingFragment();
