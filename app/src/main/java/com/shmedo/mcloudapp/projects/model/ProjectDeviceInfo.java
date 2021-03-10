@@ -2,6 +2,7 @@ package com.shmedo.mcloudapp.projects.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.text.TextUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -123,7 +124,7 @@ public class ProjectDeviceInfo implements Parcelable {
     }
 
     public String getToken() {
-        return token;
+        return TextUtils.isEmpty(token) ? "" : token;
     }
 
     public void setToken(String token) {
@@ -131,7 +132,7 @@ public class ProjectDeviceInfo implements Parcelable {
     }
 
     public String getName() {
-        return name;
+        return TextUtils.isEmpty(name) ? "" : name;
     }
 
     public void setName(String name) {
@@ -147,7 +148,7 @@ public class ProjectDeviceInfo implements Parcelable {
     }
 
     public String getDeviceTypeName() {
-        return deviceTypeName;
+        return TextUtils.isEmpty(deviceTypeName) ? "" : deviceTypeName;
     }
 
     public void setDeviceTypeName(String deviceTypeName) {
@@ -155,7 +156,7 @@ public class ProjectDeviceInfo implements Parcelable {
     }
 
     public String getGpsLocation() {
-        return gpsLocation;
+        return TextUtils.isEmpty(gpsLocation) ? "" : gpsLocation;
     }
 
     public void setGpsLocation(String gpsLocation) {
@@ -163,7 +164,7 @@ public class ProjectDeviceInfo implements Parcelable {
     }
 
     public String getInstallLocation() {
-        return installLocation;
+        return TextUtils.isEmpty(installLocation) ? "" : installLocation;
     }
 
     public void setInstallLocation(String installLocation) {
@@ -171,7 +172,7 @@ public class ProjectDeviceInfo implements Parcelable {
     }
 
     public String getDeviceStatus() {
-        return deviceStatus;
+        return TextUtils.isEmpty(deviceStatus) ? "" : deviceStatus;
     }
 
     public void setDeviceStatus(String deviceStatus) {
@@ -179,7 +180,7 @@ public class ProjectDeviceInfo implements Parcelable {
     }
 
     public String getDesc() {
-        return desc;
+        return TextUtils.isEmpty(desc) ? "" : desc;
     }
 
     public void setDesc(String desc) {
@@ -195,7 +196,7 @@ public class ProjectDeviceInfo implements Parcelable {
     }
 
     public String getProjectName() {
-        return projectName;
+        return TextUtils.isEmpty(projectName) ? "" : projectName;
     }
 
     public void setProjectName(String projectName) {
@@ -219,7 +220,7 @@ public class ProjectDeviceInfo implements Parcelable {
     }
 
     public String getRegisterCompanyName() {
-        return registerCompanyName;
+        return TextUtils.isEmpty(registerCompanyName) ? "" : registerCompanyName;
     }
 
     public void setRegisterCompanyName(String registerCompanyName) {
@@ -227,7 +228,7 @@ public class ProjectDeviceInfo implements Parcelable {
     }
 
     public String getDeviceTag() {
-        return deviceTag;
+        return TextUtils.isEmpty(deviceTag) ? "" : deviceTag;
     }
 
     public void setDeviceTag(String deviceTag) {
@@ -235,7 +236,7 @@ public class ProjectDeviceInfo implements Parcelable {
     }
 
     public String getLastActiveTime() {
-        return lastActiveTime;
+        return TextUtils.isEmpty(lastActiveTime) ? "" : lastActiveTime;
     }
 
     public void setLastActiveTime(String lastActiveTime) {
@@ -243,7 +244,7 @@ public class ProjectDeviceInfo implements Parcelable {
     }
 
     public String getFirmwareVersion() {
-        return firmwareVersion;
+        return TextUtils.isEmpty(firmwareVersion) ? "" : firmwareVersion;
     }
 
     public void setFirmwareVersion(String firmwareVersion) {
@@ -251,7 +252,7 @@ public class ProjectDeviceInfo implements Parcelable {
     }
 
     public List<DeviceSimListBean> getDeviceSimList() {
-        return deviceSimList;
+        return deviceSimList == null ? new ArrayList<>() : deviceSimList;
     }
 
     public void setDeviceSimList(List<DeviceSimListBean> deviceSimList) {
@@ -316,7 +317,7 @@ public class ProjectDeviceInfo implements Parcelable {
         }
 
         public String getCcid() {
-            return ccid;
+            return TextUtils.isEmpty(ccid) ? "" : ccid;
         }
 
         public void setCcid(String ccid) {
@@ -324,7 +325,7 @@ public class ProjectDeviceInfo implements Parcelable {
         }
 
         public String getSimNO() {
-            return simNO;
+            return TextUtils.isEmpty(simNO) ? "" : simNO;
         }
 
         public void setSimNO(String simNO) {
@@ -332,7 +333,7 @@ public class ProjectDeviceInfo implements Parcelable {
         }
 
         public String getSimIsp() {
-            return simIsp;
+            return TextUtils.isEmpty(simIsp) ? "" : simIsp;
         }
 
         public void setSimIsp(String simIsp) {
@@ -340,7 +341,7 @@ public class ProjectDeviceInfo implements Parcelable {
         }
 
         public String getVendor() {
-            return vendor;
+            return TextUtils.isEmpty(vendor) ? "" : vendor;
         }
 
         public void setVendor(String vendor) {

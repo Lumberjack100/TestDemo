@@ -27,7 +27,6 @@ import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.deviceconfig.model.DispatchCmdItem;
 import com.shmedo.mcloudapp.deviceconfig.model.FirmWareInfo;
 import com.shmedo.mcloudapp.deviceconfig.model.QueryCmdResult;
-import com.shmedo.mcloudapp.deviceconfig.model.params.DispatchRawCmdParam;
 import com.shmedo.mcloudapp.deviceconfig.model.params.FirmwareUpgrade;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.DataCenterHomeActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.e40.E40BoardSolutionActivity;
@@ -108,7 +107,8 @@ public class NetE40AdvancedSettingFragment extends BaseNetIotCommunicateFragment
      */
     private void getRTKMode() {
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.E40_MD_GET_RTK);
-        doCommonDispatchRawCmd(command);
+        showProgressDialog("处理中...");
+        doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
     }
 
     /**
@@ -118,7 +118,8 @@ public class NetE40AdvancedSettingFragment extends BaseNetIotCommunicateFragment
         E40RTKModeEntity entity = new E40RTKModeEntity();
         entity.setMode(rtkMode);
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.E40_MD_SET_RTK, entity);
-        doCommonDispatchRawCmd(command);
+        showProgressDialog("处理中...");
+        doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
     }
 
     @OnClick({R.id.dataCenterConfigLayout, R.id.firmwareUpgradeLayout, R.id.rebootLayout, R.id.resetLayout, R.id.rtkModeLayout, R.id.corsServiceLayout, R.id.boardSolveLayout, R.id.sensorSettingLayout, R.id.wiredNetworkSettingLayout, R.id.fileDownloadLayout})
@@ -214,13 +215,15 @@ public class NetE40AdvancedSettingFragment extends BaseNetIotCommunicateFragment
                         switch (operateType) {
                             case REBOOT: {
                                 String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.REBOOT);
-                                doCommonDispatchRawCmd(command);
+                                showProgressDialog("处理中...");
+                                doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
                             }
                             break;
 
                             case RESET: {
                                 String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.RESET);
-                                doCommonDispatchRawCmd(command);
+                                showProgressDialog("处理中...");
+                                doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
                             }
                             break;
                         }
@@ -228,21 +231,6 @@ public class NetE40AdvancedSettingFragment extends BaseNetIotCommunicateFragment
                 });
         MaterialDialog mMaterialDialog = mBuilder.build();
         mMaterialDialog.show();
-    }
-
-    /**
-     * 调用指令透传接口
-     *
-     * @param content
-     */
-    private void doCommonDispatchRawCmd(String content) {
-        DispatchRawCmdParam rawCmdParam = new DispatchRawCmdParam();
-        rawCmdParam.setContent(content);
-        rawCmdParam.setCompanyID(MCloudApp.getCompanyID());
-        rawCmdParam.setDeviceIDList(Arrays.asList(projectDeviceInfo.getId()));
-
-        showProgressDialog("处理中...");
-        processDispatchRawCmd(rawCmdParam);
     }
 
     /**

@@ -24,9 +24,11 @@ import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd.QueryCurrentS
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.netcommon.UniversalNetConfigHomeFragment;
 import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfo;
 
+import java.util.Arrays;
 import java.util.List;
 
 import timber.log.Timber;
+
 /**
  * 创建者:   gonghe <br/>
  * 创建时间:  2/25/21 <br/>
@@ -93,7 +95,7 @@ public class NetM20HomeFragment extends UniversalNetConfigHomeFragment {
      */
     private void queryBaseInfo() {
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.M20_MD_GET_BASE_INFO);
-        doCommonDispatchRawCmd(command);
+        doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
     }
 
     /**
@@ -101,7 +103,7 @@ public class NetM20HomeFragment extends UniversalNetConfigHomeFragment {
      */
     public void setLevelInitial() {
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.M20_MD_LEVEL_INITIAL);
-        doCommonDispatchRawCmd(command);
+        doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
     }
 
     /**

@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.view.View;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -20,12 +19,12 @@ import com.shmedo.mcloudapp.deviceconfig.model.FirmWareInfo;
 import com.shmedo.mcloudapp.deviceconfig.model.params.DispatchRawCmdParam;
 import com.shmedo.mcloudapp.deviceconfig.model.params.FirmwareUpgrade;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.DataCenterHomeActivity;
-import com.shmedo.mcloudapp.deviceconfig.ui.fragment.netcommon.BaseNetIotCommunicateFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.BaseDialogFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.FirmWareSelectDialog;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd.BaseDispatchCmdDialog;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd.CommonCmdDialog;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd.DispatchCmdFailedDialog;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.netcommon.BaseNetIotCommunicateFragment;
 import com.shmedo.mcloudapp.network.BaseObserver;
 import com.shmedo.mcloudapp.network.ErrCode;
 import com.shmedo.mcloudapp.network.MDRetrofit;
@@ -76,10 +75,6 @@ public class NetM20AdvancedSettingFragment extends BaseNetIotCommunicateFragment
         return R.layout.net_m20_advanced_setting_fragment;
     }
 
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-    }
 
     @OnClick({R.id.dataCenterConfigLayout, R.id.firmwareUpgradeLayout, R.id.horizontalInitializationLayout, R.id.rebootLayout, R.id.resetLayout})
     public void onClick(View v) {

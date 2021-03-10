@@ -1,11 +1,9 @@
 package com.shmedo.mcloudapp.deviceconfig.ui.fragment.netcommon;
 
-import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -79,10 +77,6 @@ public abstract class BaseNetIotCommunicateFragment extends BaseFragment {
         queryNum = 0;
     }
 
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-    }
 
     @Override
     public void onStop() {
@@ -92,54 +86,18 @@ public abstract class BaseNetIotCommunicateFragment extends BaseFragment {
     }
 
     /**
-     * 调用指令下发/透传接口结果返回
+     * 调用指令透传接口
+     *
+     * @param content
      */
-    protected void onDispatchCmdResult(List<DispatchCmdItem> dispatchCmdItems, String cmdStr) {
+    protected void doCommonDispatchRawCmd(String content, List<Integer> deviceIDList) {
+        DispatchRawCmdParam rawCmdParam = new DispatchRawCmdParam();
+        rawCmdParam.setContent(content);
+        rawCmdParam.setCompanyID(MCloudApp.getCompanyID());
+        rawCmdParam.setDeviceIDList(deviceIDList);
+
+        processDispatchRawCmd(rawCmdParam);
     }
-
-    /**
-     * 指令下发
-     */
-/*
-    protected void processDispatchCmd(DispatchCmdParam dispatchCmdParam) {
-        if (dispatchCmdParam == null) {
-            throw new IllegalArgumentException("dispatchCmdParam 为null");
-        }
-        String json = GsonFactory.getGson().toJson(dispatchCmdParam);
-        RequestBody body = RequestBody.create(NetworkConst.JSON_TYPE, json);
-        MDRetrofit.getInstance()
-                .createService()
-                .DispatchCmd(MCloudApp.getAccessToken(), body)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new BaseObserver<List<DispatchCmdItem>>() {
-                    @Override
-                    protected void onResponse(List<DispatchCmdItem> data, ErrCode errCode) {
-                        if (!ResponseHandler.getInstance().handleResponse(errCode)) {
-                            if (errCode.getCode() == 0) {
-                                if (data == null || data.size() == 0) {
-                                    deviceNetModelViewModel.setDispatchCmdItemList(null);
-                                    return;
-                                }
-                                deviceNetModelViewModel.setDispatchCmdItemList(data);
-
-                            } else {
-                                deviceNetModelViewModel.setDispatchCmdItemList(null);
-                                if (!TextUtils.isEmpty(errCode.getErrMessage())) {
-                                    ToastUtils.show(errCode.getErrMessage());
-                                }
-                            }
-                        }
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        deviceNetModelViewModel.setDispatchCmdItemList(null);
-                        ResponseHandler.getInstance().handleFailure((Exception) e);
-                    }
-                });
-    }
-*/
 
     /**
      * 指令透传
@@ -161,12 +119,12 @@ public abstract class BaseNetIotCommunicateFragment extends BaseFragment {
                         if (!ResponseHandler.getInstance().handleResponse(errCode)) {
                             if (errCode.getCode() == 0) {
                                 if (data == null || data.size() == 0) {
-                                    onDispatchCmdResult(null,dispatchRawCmdParam.getContent());
+                                    onDispatchCmdResult(null, dispatchRawCmdParam.getContent());
                                     return;
                                 }
-                                onDispatchCmdResult(data,dispatchRawCmdParam.getContent());
+                                onDispatchCmdResult(data, dispatchRawCmdParam.getContent());
                             } else {
-                                onDispatchCmdResult(null,dispatchRawCmdParam.getContent());
+                                onDispatchCmdResult(null, dispatchRawCmdParam.getContent());
                                 if (!TextUtils.isEmpty(errCode.getErrMessage())) {
                                     ToastUtils.show(errCode.getErrMessage());
                                 }
@@ -176,11 +134,16 @@ public abstract class BaseNetIotCommunicateFragment extends BaseFragment {
 
                     @Override
                     public void onError(Throwable e) {
-                        onDispatchCmdResult(null,dispatchRawCmdParam.getContent());
+                        onDispatchCmdResult(null, dispatchRawCmdParam.getContent());
                         ResponseHandler.getInstance().handleFailure((Exception) e);
                     }
                 });
     }
+
+    /**
+     * 调用指令下发/透传接口结果返回
+     */
+    protected abstract void onDispatchCmdResult(List<DispatchCmdItem> dispatchCmdItems, String cmdStr);
 
     /**
      * 查询设备对下发/透传的指令响应结果

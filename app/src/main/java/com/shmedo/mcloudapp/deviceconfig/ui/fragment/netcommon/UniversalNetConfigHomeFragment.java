@@ -15,18 +15,15 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.hjq.toast.ToastUtils;
 import com.shmedo.core.AppContants;
-import com.shmedo.core.MCloudApp;
 import com.shmedo.core.util.DensityUtil;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.view.recycleviewitemdivider.GridSpacingItemDecoration;
 import com.shmedo.mcloudapp.deviceconfig.adapter.ConfigModuleAdapter;
 import com.shmedo.mcloudapp.deviceconfig.model.ConfigModule;
 import com.shmedo.mcloudapp.deviceconfig.model.QueryCmdResult;
-import com.shmedo.mcloudapp.deviceconfig.model.params.DispatchRawCmdParam;
 import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfo;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import butterknife.BindView;
@@ -159,20 +156,6 @@ public abstract class UniversalNetConfigHomeFragment extends BaseNetIotCommunica
     protected abstract void processItemClick();
 
     protected abstract void initConfigModuleData();
-
-    /**
-     * 调用指令透传接口
-     *
-     * @param content
-     */
-    protected void doCommonDispatchRawCmd(String content) {
-        DispatchRawCmdParam rawCmdParam = new DispatchRawCmdParam();
-        rawCmdParam.setContent(content);
-        rawCmdParam.setCompanyID(MCloudApp.getCompanyID());
-        rawCmdParam.setDeviceIDList(Arrays.asList(projectDeviceInfo.getId()));
-
-        processDispatchRawCmd(rawCmdParam);
-    }
 
     /**
      * 指令下发失败处理

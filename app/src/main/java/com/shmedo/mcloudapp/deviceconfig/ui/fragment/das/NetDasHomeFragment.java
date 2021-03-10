@@ -23,6 +23,7 @@ import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd.TelemetryDial
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.netcommon.UniversalNetConfigHomeFragment;
 import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfo;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -74,7 +75,7 @@ public class NetDasHomeFragment extends UniversalNetConfigHomeFragment {
             case "状态": {
                 showProgressDialog("处理中...");
                 String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.QUERY_DEVICE_STATUS);
-                doCommonDispatchRawCmd(command);
+                doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
 //                DeviceCurrentStateActivity.startActivity(mActivity, projectDeviceInfo, null, AppContants.DeviceType.E40);
             }
             break;
@@ -82,14 +83,14 @@ public class NetDasHomeFragment extends UniversalNetConfigHomeFragment {
             case "时间": {
                 showProgressDialog("处理中...");
                 String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.QUERY_TERMINAL_TIME);
-                doCommonDispatchRawCmd(command);
+                doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
             }
             break;
 
             case "遥测": {
                 showProgressDialog("处理中...");
                 String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.QUERY_SAMPLE);
-                doCommonDispatchRawCmd(command);
+                doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
             }
             break;
 

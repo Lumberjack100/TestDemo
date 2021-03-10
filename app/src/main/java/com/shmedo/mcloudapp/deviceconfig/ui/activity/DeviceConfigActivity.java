@@ -143,8 +143,11 @@ public class DeviceConfigActivity extends BaseConfigFragmentContainerActivity {
                 VmsAdvancedSettingsActivity.startActivity(this, AppContants.CommunicationWay.TCP_CONNECT);
             }
         } else if (connectWay == AppContants.CommunicationWay.NET_PLATFORM_CONNECT) {
-            QueryDeviceDataActivity.startActivity(DeviceConfigActivity.this, projectDeviceInfo.getToken());
-
+            if (deviceType == AppContants.DeviceType.VMS) {
+                VmsAdvancedSettingsActivity.startActivity(this, AppContants.CommunicationWay.NET_PLATFORM_CONNECT);
+            } else {
+                QueryDeviceDataActivity.startActivity(DeviceConfigActivity.this, projectDeviceInfo.getToken());
+            }
         } else if (connectWay == AppContants.CommunicationWay.BLE_CONNECT) {
             QueryDeviceDataActivity.startActivity(DeviceConfigActivity.this, MCloudApp.getCurDeviceToken());
         }

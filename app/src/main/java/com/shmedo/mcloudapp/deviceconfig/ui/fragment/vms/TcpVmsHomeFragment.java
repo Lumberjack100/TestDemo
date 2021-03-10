@@ -58,7 +58,7 @@ import timber.log.Timber;
 /**
  * 创建者:   gonghe <br/>
  * 创建时间:  2020/11/20 <br/>
- * 描述：     Vms 网关主页面
+ * 描述：     Vms 网关 TCP 配置主页面
  */
 public class TcpVmsHomeFragment extends BaseVmsTcpCommunicateFragment {
     @BindView(R.id.swipeLayout)
@@ -145,7 +145,7 @@ public class TcpVmsHomeFragment extends BaseVmsTcpCommunicateFragment {
 
     @Override
     protected int getLayoutId() {
-        return R.layout.tcp_vms_home_fragment;
+        return R.layout.vms_home_fragment;
     }
 
     @Override
@@ -298,7 +298,7 @@ public class TcpVmsHomeFragment extends BaseVmsTcpCommunicateFragment {
      * 获取网关的基本信息
      */
     private void getGatewayBaseInfo() {
-        startRefreshRunnable(10000);
+        startRefreshRunnable(WRITE_TIME_OUT_SECOND);
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.VMS_MD_GET_GATEWAY_BASE);
         sendCommand(command);
     }
