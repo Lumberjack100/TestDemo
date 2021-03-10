@@ -21,21 +21,25 @@ import com.shmedo.configlibrary.iot.model.vms.VmsAisleInfo;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.view.ClearEditText;
+import com.shmedo.mcloudapp.deviceconfig.model.DispatchCmdItem;
+import com.shmedo.mcloudapp.deviceconfig.model.QueryCmdResult;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.netcommon.BaseNetIotCommunicateFragment;
+import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfo;
 import com.shmedo.mcloudapp.util.KeyBordUtils;
 
-import org.jetbrains.annotations.NotNull;
+import java.util.Arrays;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
 import timber.log.Timber;
 
-
 /**
  * 创建者:   gonghe <br/>
- * 创建时间:  2020/11/20 <br/>
- * 描述：     Vms 网关通道控制参数配置
+ * 创建时间:  3/10/21 <br/>
+ * 描述：  Vms 网关 4g 模式通道控制参数配置
  */
-public class TcpVmsAisleSettingFragment extends BaseVmsTcpCommunicateFragment {
+public class NetVmsAisleSettingFragment extends BaseNetIotCommunicateFragment {
     @BindView(R.id.et_network_number)
     ClearEditText mEtNetworkNumber;
 
@@ -84,9 +88,10 @@ public class TcpVmsAisleSettingFragment extends BaseVmsTcpCommunicateFragment {
     private String terminalSleepTime;//终端休眠时间
     private String terminalWakeTime;//终端唤醒时间
 
-    public static TcpVmsAisleSettingFragment newInstance(VmsAisleNumber vmsAisleNumber) {
-        TcpVmsAisleSettingFragment fragment = new TcpVmsAisleSettingFragment();
+    public static NetVmsAisleSettingFragment newInstance(ProjectDeviceInfo projectDeviceInfo, VmsAisleNumber vmsAisleNumber) {
+        NetVmsAisleSettingFragment fragment = new NetVmsAisleSettingFragment();
         Bundle args = new Bundle();
+        args.putParcelable(PRO_DEVICE_INFO, projectDeviceInfo);
         args.putSerializable(VMS_AISLE_NUMBER, vmsAisleNumber);
         fragment.setArguments(args);
         return fragment;
@@ -140,11 +145,10 @@ public class TcpVmsAisleSettingFragment extends BaseVmsTcpCommunicateFragment {
      * 获取网关不同通道下的控制参数
      */
     private void queryVmsAisleInfo() {
-//        startProgressRunnable("加载数据...", QUERY_CMD_DELAY_MILLIS);
-
         VmsAisleNumberEntity vmsAisleNumberEntity = new VmsAisleNumberEntity(vmsAisleNumber.toInt());
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.VMS_MD_GET_GATEWAY_PARAM, vmsAisleNumberEntity);
-        sendCommand(command);
+        showProgressDialog("处理中...");
+        doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
     }
 
     @OnClick({R.id.btn_confirm})
@@ -154,12 +158,6 @@ public class TcpVmsAisleSettingFragment extends BaseVmsTcpCommunicateFragment {
                 return;
             }
             KeyBordUtils.hideSoftKeyboard(view);
-
-            if (!tcpViewModel.getConnectStatus()) {
-                ToastUtils.show(getString(R.string.tcp_config_disconnect_warn));
-                return;
-            }
-
             if (!checkValueIsValid()) {
                 Timber.w("通道参数存在错误!");
                 return;
@@ -168,6 +166,7 @@ public class TcpVmsAisleSettingFragment extends BaseVmsTcpCommunicateFragment {
             processSave();
         }
     }
+
 
     private boolean checkValueIsValid() {
         networkNumber = mEtNetworkNumber.getText().toString().trim();
@@ -355,22 +354,90 @@ public class TcpVmsAisleSettingFragment extends BaseVmsTcpCommunicateFragment {
         vmsAisleParamEntity.setWakeupgap(terminalWakeTime);
         vmsAisleParamEntity.setAirbaud(airSpeed);
 
-        mBtnSave.setEnabled(false);
-//        startProgressRunnable("正在发送配置指令...", SEND_CMD_DELAY_MILLIS);
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.VMS_MD_SET_GATEWAY_PARAM, vmsAisleParamEntity);
-        sendCommand(command);
+        showProgressDialog("处理中...");
+        doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
     }
 
+
+    /**
+     * 调用指令下发/透传接口结果返回
+     *
+     * @param dispatchCmdItemList
+     */
     @Override
-    protected void parseResponseMessage(@NotNull String cmdStr) {
-        setResultData(cmdStr);
+    protected void onDispatchCmdResult(List<DispatchCmdItem> dispatchCmdItemList, String cmdStr) {
+        if (dispatchCmdItemList == null || dispatchCmdItemList.size() == 0) {
+            dismissProgressDialog();
+            showDispatchFailedDialog(cmdStr);
+            return;
+        }
+        msgIDList.clear();
+        for (DispatchCmdItem cmdItem : dispatchCmdItemList) {
+            msgIDList.add(cmdItem.getMsgID());
+        }
+        if (msgIDList != null && msgIDList.size() > 0) {
+            startQueryCmdResponseRunnable(2000);
+        }
     }
 
-    private void setResultData(final String cmdStr) {
+    /**
+     * 指令下发失败弹框
+     */
+    private void showDispatchFailedDialog(String cmdStr) {
         IOTCommandType type = IOTStringUtil.extractCommandType(cmdStr);
         switch (type) {
+            case VMS_MD_GET_GATEWAY_PARAM:
+                ToastUtils.show("下发指令失败");
+                break;
+
+            case VMS_MD_SET_GATEWAY_PARAM:
+                ToastUtils.show("下发指令失败");
+                break;
+
+            default:
+                break;
+        }
+    }
+
+    /**
+     * 查询指令响应结果出错
+     *
+     * @param errMsg
+     */
+    @Override
+    protected void onQueryCmdResponseResultError(String errMsg) {
+        super.onQueryCmdResponseResultError(errMsg);
+        ToastUtils.show("指令响应错误");
+    }
+
+    /**
+     * 查询指令响应结果超时
+     *
+     * @param queryCmdResult
+     */
+    @Override
+    protected void onQueryCmdResponseResultTimeOut(QueryCmdResult queryCmdResult) {
+        super.onQueryCmdResponseResultTimeOut(queryCmdResult);
+        ToastUtils.show("指令响应超时");
+    }
+
+    /**
+     * 查询指令响应结果成功
+     *
+     * @param queryCmdResult
+     */
+    @Override
+    protected void onQueryCmdResponseResultSuccess(QueryCmdResult queryCmdResult) {
+        super.onQueryCmdResponseResultSuccess(queryCmdResult);
+        setResultData(queryCmdResult);
+    }
+
+    private void setResultData(QueryCmdResult queryCmdResult) {
+        String cmdStr = queryCmdResult.getResponseContent();
+        IOTCommandType type = IOTStringUtil.extractCommandType(queryCmdResult.getCmdEngName());
+        switch (type) {
             case VMS_MD_GET_GATEWAY_PARAM: {//获取网关通道的控制参数
-//                stopProgressRunnable();
                 IOTCommandResult<VmsAisleInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
                     String errMsg = String.format("%s %s", "查询网关通道的控制参数出错!", commandResult.getMessage());
@@ -384,13 +451,11 @@ public class TcpVmsAisleSettingFragment extends BaseVmsTcpCommunicateFragment {
             break;
 
             case VMS_MD_SET_GATEWAY_PARAM: {//设置网关通道的控制参数
-//                stopProgressRunnable();
                 CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
                 if (!cmdResult.isSucceed()) {
                     String errMsg = String.format("%s %s", "设置参数失败!", cmdResult.getReason());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
-                    mBtnSave.setEnabled(true);
                     return;
                 }
                 doAfterSetting();
@@ -398,7 +463,6 @@ public class TcpVmsAisleSettingFragment extends BaseVmsTcpCommunicateFragment {
             break;
 
             default:
-                super.parseResponseMessage(cmdStr);
                 break;
         }
     }
@@ -406,7 +470,6 @@ public class TcpVmsAisleSettingFragment extends BaseVmsTcpCommunicateFragment {
 
     private void doAfterSetting() {
         ToastUtils.show("设置成功");
-        mBtnSave.setEnabled(true);
     }
 
     private void initViewData() {
@@ -441,16 +504,12 @@ public class TcpVmsAisleSettingFragment extends BaseVmsTcpCommunicateFragment {
 
     @Override
     public boolean onBackPressed() {
-        if (tcpViewModel.getConnectStatus()) {
-            if (checkValueIsChange()) {
-                warnNotYetSettingBeforeLeavePage();
-                return true;
-            } else {
-                return false;
-            }
+        if (checkValueIsChange()) {
+            warnNotYetSettingBeforeLeavePage();
+            return true;
+        } else {
+            return false;
         }
-
-        return false;
     }
 
     private boolean checkValueIsChange() {
@@ -484,9 +543,6 @@ public class TcpVmsAisleSettingFragment extends BaseVmsTcpCommunicateFragment {
         if (terminalWakeTime != null && !terminalWakeTime.equals(mEtTerminalWakeTime.getText().toString().trim())) {
             return true;
         }
-
         return false;
     }
-
-
 }

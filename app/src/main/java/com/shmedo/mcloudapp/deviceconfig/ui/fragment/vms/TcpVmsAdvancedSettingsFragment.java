@@ -30,8 +30,8 @@ import com.shmedo.core.AppContants;
 import com.shmedo.core.MCloudApp;
 import com.shmedo.core.util.GlobalUtil;
 import com.shmedo.mcloudapp.R;
+import com.shmedo.mcloudapp.deviceconfig.ui.activity.DataCenterConfigActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.vms.VmsAisleSettingActivity;
-import com.shmedo.mcloudapp.deviceconfig.ui.activity.vms.VmsDataCenterSettingActivity;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -134,19 +134,19 @@ public class TcpVmsAdvancedSettingsFragment extends BaseVmsTcpCommunicateFragmen
         int id = view.getId();
         if (id == R.id.dataCenterOneLayout) {
             serverNumber = SERVER_NUMBER_ONE;
-            VmsDataCenterSettingActivity.startActivity(mActivity, resultLauncher, AppContants.CommunicationWay.TCP_CONNECT, ServerNumber.NUMBER_ONE, mTvDataCenterOne.getText().toString());
+            DataCenterConfigActivity.startActivity(mActivity, resultLauncher, AppContants.DeviceType.VMS, AppContants.CommunicationWay.TCP_CONNECT, AppContants.DataCenterConfigMethod.ADVANCED_CONFIG, ServerNumber.NUMBER_ONE, mTvDataCenterOne.getText().toString());
 
         } else if (id == R.id.dataCenterTwoLayout) {
             serverNumber = SERVER_NUMBER_TWO;
-            VmsDataCenterSettingActivity.startActivity(mActivity, resultLauncher, AppContants.CommunicationWay.TCP_CONNECT, ServerNumber.NUMBER_TWO, mTvDataCenterTwo.getText().toString());
+            DataCenterConfigActivity.startActivity(mActivity, resultLauncher, AppContants.DeviceType.VMS, AppContants.CommunicationWay.TCP_CONNECT, AppContants.DataCenterConfigMethod.ADVANCED_CONFIG, ServerNumber.NUMBER_TWO, mTvDataCenterTwo.getText().toString());
 
         } else if (id == R.id.dataCenterThreeLayout) {
             serverNumber = SERVER_NUMBER_THREE;
-            VmsDataCenterSettingActivity.startActivity(mActivity, resultLauncher, AppContants.CommunicationWay.TCP_CONNECT, ServerNumber.NUMBER_THREE, mTvDataCenterThree.getText().toString());
+            DataCenterConfigActivity.startActivity(mActivity, resultLauncher, AppContants.DeviceType.VMS, AppContants.CommunicationWay.TCP_CONNECT, AppContants.DataCenterConfigMethod.ADVANCED_CONFIG, ServerNumber.NUMBER_THREE, mTvDataCenterThree.getText().toString());
 
         } else if (id == R.id.dataCenterFourLayout) {
             serverNumber = SERVER_NUMBER_FOUR;
-            VmsDataCenterSettingActivity.startActivity(mActivity, resultLauncher, AppContants.CommunicationWay.TCP_CONNECT, ServerNumber.NUMBER_FOUR, mTvDataCenterFour.getText().toString());
+            DataCenterConfigActivity.startActivity(mActivity, resultLauncher, AppContants.DeviceType.VMS, AppContants.CommunicationWay.TCP_CONNECT, AppContants.DataCenterConfigMethod.ADVANCED_CONFIG, ServerNumber.NUMBER_FOUR, mTvDataCenterFour.getText().toString());
 
         } else if (id == R.id.vmsAisleOneLayout) {
             VmsAisleSettingActivity.startActivity(mActivity, AppContants.CommunicationWay.TCP_CONNECT, VmsAisleNumber.NUMBER_ONE);

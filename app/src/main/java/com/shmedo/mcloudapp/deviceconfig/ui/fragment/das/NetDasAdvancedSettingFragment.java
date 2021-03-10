@@ -18,7 +18,6 @@ import com.shmedo.core.util.GsonFactory;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.deviceconfig.model.DispatchCmdItem;
 import com.shmedo.mcloudapp.deviceconfig.model.FirmWareInfo;
-import com.shmedo.mcloudapp.deviceconfig.model.params.DispatchRawCmdParam;
 import com.shmedo.mcloudapp.deviceconfig.model.params.FirmwareUpgrade;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.DataCenterHomeActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.BaseDialogFragment;
@@ -56,14 +55,6 @@ public class NetDasAdvancedSettingFragment extends BaseNetIotCommunicateFragment
         args.putParcelable(PRO_DEVICE_INFO, projectDeviceInfo);
         fragment.setArguments(args);
         return fragment;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            projectDeviceInfo = getArguments().getParcelable(PRO_DEVICE_INFO);
-        }
     }
 
     @Override
@@ -143,13 +134,15 @@ public class NetDasAdvancedSettingFragment extends BaseNetIotCommunicateFragment
                         switch (operateType) {
                             case REBOOT: {
                                 String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.REBOOT);
-                                doCommonDispatchRawCmd(command);
+                                showProgressDialog("处理中...");
+                                doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
                             }
                             break;
 
                             case RESET: {
                                 String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.RESET);
-                                doCommonDispatchRawCmd(command);
+                                showProgressDialog("处理中...");
+                                doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
                             }
                             break;
                         }
@@ -157,22 +150,6 @@ public class NetDasAdvancedSettingFragment extends BaseNetIotCommunicateFragment
                 });
         MaterialDialog mMaterialDialog = mBuilder.build();
         mMaterialDialog.show();
-    }
-
-
-    /**
-     * 调用指令透传接口
-     *
-     * @param content
-     */
-    private void doCommonDispatchRawCmd(String content) {
-        DispatchRawCmdParam rawCmdParam = new DispatchRawCmdParam();
-        rawCmdParam.setContent(content);
-        rawCmdParam.setCompanyID(MCloudApp.getCompanyID());
-        rawCmdParam.setDeviceIDList(Arrays.asList(projectDeviceInfo.getId()));
-
-        showProgressDialog("处理中...");
-        processDispatchRawCmd(rawCmdParam);
     }
 
     /**

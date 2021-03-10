@@ -20,12 +20,10 @@ import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.model.CommonSettingCmdResult;
 import com.shmedo.configlibrary.iot.model.e40.E40EthernetInfo;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
-import com.shmedo.core.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.view.ClearEditText;
 import com.shmedo.mcloudapp.deviceconfig.model.DispatchCmdItem;
 import com.shmedo.mcloudapp.deviceconfig.model.QueryCmdResult;
-import com.shmedo.mcloudapp.deviceconfig.model.params.DispatchRawCmdParam;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.netcommon.BaseNetIotCommunicateFragment;
 import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfo;
 import com.shmedo.mcloudapp.util.KeyBordUtils;
@@ -78,13 +76,6 @@ public class NetE40EthernetFragment extends BaseNetIotCommunicateFragment {
         return fragment;
     }
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            projectDeviceInfo = getArguments().getParcelable(PRO_DEVICE_INFO);
-        }
-    }
 
     @Override
     protected int getLayoutId() {
@@ -109,7 +100,8 @@ public class NetE40EthernetFragment extends BaseNetIotCommunicateFragment {
      */
     private void queryParamInfo() {
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.E40_MD_GET_ETHERNET);
-        doCommonDispatchRawCmd(command);
+        showProgressDialog("处理中...");
+        doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
     }
 
     @OnClick({R.id.ll_dhcp, R.id.btn_confirm})
@@ -187,22 +179,8 @@ public class NetE40EthernetFragment extends BaseNetIotCommunicateFragment {
         entity.setDns(dns);
 
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.E40_MD_SET_CORS, entity);
-        doCommonDispatchRawCmd(command);
-    }
-
-    /**
-     * 调用指令透传接口
-     *
-     * @param content
-     */
-    private void doCommonDispatchRawCmd(String content) {
-        DispatchRawCmdParam rawCmdParam = new DispatchRawCmdParam();
-        rawCmdParam.setContent(content);
-        rawCmdParam.setCompanyID(MCloudApp.getCompanyID());
-        rawCmdParam.setDeviceIDList(Arrays.asList(projectDeviceInfo.getId()));
-
         showProgressDialog("处理中...");
-        processDispatchRawCmd(rawCmdParam);
+        doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
     }
 
     /**

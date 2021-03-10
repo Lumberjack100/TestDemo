@@ -33,7 +33,6 @@ import com.shmedo.mcloudapp.deviceconfig.model.DevcieCurrentState;
 import com.shmedo.mcloudapp.deviceconfig.model.DevcieHistoryState;
 import com.shmedo.mcloudapp.deviceconfig.model.DispatchCmdItem;
 import com.shmedo.mcloudapp.deviceconfig.model.FirmWareInfo;
-import com.shmedo.mcloudapp.deviceconfig.model.params.DispatchRawCmdParam;
 import com.shmedo.mcloudapp.deviceconfig.model.params.FirmwareUpgrade;
 import com.shmedo.mcloudapp.deviceconfig.model.params.QueryCmdStateParam;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.AdvancedSettingActivity;
@@ -234,19 +233,22 @@ public class NetConfigDeviceFragment extends BaseNetIotCommunicateFragment {
         switch (selectedConfigModule.getName()) {
             case "状态": {
                 String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.QUERY_DEVICE_STATUS);
-                doCommonDispatchRawCmd(command);
+                showProgressDialog("处理中...");
+                doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
             }
             break;
 
             case "时间": {
                 String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.QUERY_TERMINAL_TIME);
-                doCommonDispatchRawCmd(command);
+                showProgressDialog("处理中...");
+                doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
             }
             break;
 
             case "遥测": {
                 String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.QUERY_SAMPLE);
-                doCommonDispatchRawCmd(command);
+                showProgressDialog("处理中...");
+                doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
             }
             break;
 
@@ -389,21 +391,6 @@ public class NetConfigDeviceFragment extends BaseNetIotCommunicateFragment {
     }
 
     /**
-     * 调用指令透传接口
-     *
-     * @param content
-     */
-    private void doCommonDispatchRawCmd(String content) {
-        DispatchRawCmdParam rawCmdParam = new DispatchRawCmdParam();
-        rawCmdParam.setContent(content);
-        rawCmdParam.setCompanyID(MCloudApp.getCompanyID());
-        rawCmdParam.setDeviceIDList(Arrays.asList(projectDeviceInfo.getId()));
-
-        showProgressDialog("处理中...");
-        processDispatchRawCmd(rawCmdParam);
-    }
-
-    /**
      * 调用指令下发/透传接口结果返回
      *
      * @param dispatchCmdItemList
@@ -510,7 +497,8 @@ public class NetConfigDeviceFragment extends BaseNetIotCommunicateFragment {
                         switch (operateType) {
                             case REBOOT:
                                 String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.REBOOT);
-                                doCommonDispatchRawCmd(command);
+                                showProgressDialog("处理中...");
+                                doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
                                 break;
 
                             case SWITCH_TO_BLE:

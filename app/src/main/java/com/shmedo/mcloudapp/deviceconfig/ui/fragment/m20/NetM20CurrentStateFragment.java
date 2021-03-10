@@ -14,13 +14,11 @@ import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.model.m20.M20CurrentStateInfo;
 import com.shmedo.configlibrary.iot.model.m20.SensorErrnoBean;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
-import com.shmedo.core.MCloudApp;
 import com.shmedo.core.util.GlobalUtil;
 import com.shmedo.core.util.GsonFactory;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.deviceconfig.model.DispatchCmdItem;
 import com.shmedo.mcloudapp.deviceconfig.model.QueryCmdResult;
-import com.shmedo.mcloudapp.deviceconfig.model.params.DispatchRawCmdParam;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.netcommon.BaseNetIotCommunicateFragment;
 import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfo;
 
@@ -130,13 +128,6 @@ public class NetM20CurrentStateFragment extends BaseNetIotCommunicateFragment {
         return fragment;
     }
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            projectDeviceInfo = getArguments().getParcelable(PRO_DEVICE_INFO);
-        }
-    }
 
     @Override
     protected int getLayoutId() {
@@ -167,22 +158,7 @@ public class NetM20CurrentStateFragment extends BaseNetIotCommunicateFragment {
      */
     private void queryStateInfo() {
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.QUERY_DEVICE_STATUS);
-        doCommonDispatchRawCmd(command);
-    }
-
-    /**
-     * 调用指令透传接口
-     *
-     * @param content
-     */
-    private void doCommonDispatchRawCmd(String content) {
-        DispatchRawCmdParam rawCmdParam = new DispatchRawCmdParam();
-        rawCmdParam.setContent(content);
-        rawCmdParam.setCompanyID(MCloudApp.getCompanyID());
-        rawCmdParam.setDeviceIDList(Arrays.asList(projectDeviceInfo.getId()));
-
-//        showProgressDialog("处理中...");
-        processDispatchRawCmd(rawCmdParam);
+        doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
     }
 
     /**

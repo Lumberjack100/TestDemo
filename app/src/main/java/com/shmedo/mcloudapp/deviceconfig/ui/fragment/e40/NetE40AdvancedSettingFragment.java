@@ -80,13 +80,6 @@ public class NetE40AdvancedSettingFragment extends BaseNetIotCommunicateFragment
         return fragment;
     }
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            projectDeviceInfo = getArguments().getParcelable(PRO_DEVICE_INFO);
-        }
-    }
 
     @Override
     protected int getLayoutId() {
@@ -237,7 +230,6 @@ public class NetE40AdvancedSettingFragment extends BaseNetIotCommunicateFragment
      */
     @Override
     protected void onDispatchCmdResult(List<DispatchCmdItem> dispatchCmdItemList, String cmdStr) {
-//        dismissProgressDialog();
         if (dispatchCmdItemList == null || dispatchCmdItemList.size() == 0) {
             dismissProgressDialog();
             doDispatchFailed(cmdStr);

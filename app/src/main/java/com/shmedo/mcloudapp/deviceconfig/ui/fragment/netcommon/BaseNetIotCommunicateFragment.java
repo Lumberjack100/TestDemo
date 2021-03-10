@@ -1,5 +1,6 @@
 package com.shmedo.mcloudapp.deviceconfig.ui.fragment.netcommon;
 
+import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
 
@@ -81,6 +82,13 @@ public abstract class BaseNetIotCommunicateFragment extends BaseFragment {
         queryNum = 0;
     }
 
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getArguments() != null && getArguments().containsKey(PRO_DEVICE_INFO)) {
+            projectDeviceInfo = getArguments().getParcelable(PRO_DEVICE_INFO);
+        }
+    }
 
     @Override
     public void onStop() {
@@ -106,7 +114,7 @@ public abstract class BaseNetIotCommunicateFragment extends BaseFragment {
     /**
      * 指令透传
      */
-    protected void processDispatchRawCmd(DispatchRawCmdParam dispatchRawCmdParam) {
+    private void processDispatchRawCmd(DispatchRawCmdParam dispatchRawCmdParam) {
         if (dispatchRawCmdParam == null) {
             throw new IllegalArgumentException("dispatchRawCmdParam 为null");
         }

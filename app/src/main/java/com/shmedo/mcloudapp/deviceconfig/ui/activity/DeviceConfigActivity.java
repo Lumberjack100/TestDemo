@@ -11,7 +11,6 @@ import com.shmedo.core.AppContants;
 import com.shmedo.core.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.deviceconfig.model.DiscoveredBluetoothDevice;
-import com.shmedo.mcloudapp.deviceconfig.ui.activity.vms.VmsAdvancedSettingsActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.adme.BleAdmeHomeFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.das.BleDasHomeFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.das.NetDasHomeFragment;
@@ -147,11 +146,11 @@ public class DeviceConfigActivity extends BaseConfigFragmentContainerActivity {
     protected void onIconActionClick() {
         if (connectWay == AppContants.CommunicationWay.TCP_CONNECT) {
             if (deviceType == AppContants.DeviceType.VMS) {
-                VmsAdvancedSettingsActivity.startActivity(this, AppContants.CommunicationWay.TCP_CONNECT);
+                AdvancedSettingActivity.startActivity(this, AppContants.CommunicationWay.TCP_CONNECT, AppContants.DeviceType.VMS);
             }
         } else if (connectWay == AppContants.CommunicationWay.NET_PLATFORM_CONNECT) {
             if (deviceType == AppContants.DeviceType.VMS) {
-                VmsAdvancedSettingsActivity.startActivity(this, AppContants.CommunicationWay.NET_PLATFORM_CONNECT);
+                AdvancedSettingActivity.startActivity(this, projectDeviceInfo, AppContants.DeviceType.VMS);
             } else {
                 QueryDeviceDataActivity.startActivity(DeviceConfigActivity.this, projectDeviceInfo.getToken());
             }

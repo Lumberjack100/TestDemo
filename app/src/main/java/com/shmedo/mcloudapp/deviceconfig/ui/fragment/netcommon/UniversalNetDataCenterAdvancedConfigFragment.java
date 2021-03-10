@@ -31,12 +31,10 @@ import com.shmedo.configlibrary.iot.model.CommonSettingCmdResult;
 import com.shmedo.configlibrary.iot.model.DataCenterInfo;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
 import com.shmedo.core.AppContants;
-import com.shmedo.core.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.view.ClearEditText;
 import com.shmedo.mcloudapp.deviceconfig.model.DispatchCmdItem;
 import com.shmedo.mcloudapp.deviceconfig.model.QueryCmdResult;
-import com.shmedo.mcloudapp.deviceconfig.model.params.DispatchRawCmdParam;
 import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfo;
 import com.shmedo.mcloudapp.util.KeyBordUtils;
 
@@ -138,7 +136,6 @@ public class UniversalNetDataCenterAdvancedConfigFragment extends BaseNetIotComm
         if (getArguments() != null) {
             serverNumber = (ServerNumber) getArguments().getSerializable(AppContants.Extras.DATA_SERVER_NUMBER);
             serverStatus = getArguments().getString(AppContants.Extras.DATA_SERVER_STATUS);
-            projectDeviceInfo = getArguments().getParcelable(PRO_DEVICE_INFO);
         }
     }
 
@@ -228,7 +225,8 @@ public class UniversalNetDataCenterAdvancedConfigFragment extends BaseNetIotComm
     private void queryDataCenterInfo() {
         ServerNumberEntity serverNumberEntity = new ServerNumberEntity(serverNumber.toInt());
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.MD_GET_DATA_CENTER, serverNumberEntity);
-        doCommonDispatchRawCmd(command);
+        showProgressDialog("处理中...");
+        doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
     }
 
     /**
@@ -243,7 +241,8 @@ public class UniversalNetDataCenterAdvancedConfigFragment extends BaseNetIotComm
 
         isSaveParamOperation = false;
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.MD_SET_DATA_CENTER, dataCenterEntity);
-        doCommonDispatchRawCmd(command);
+        showProgressDialog("处理中...");
+        doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
     }
 
     @OnClick({R.id.ll_transfer_protocol, R.id.ll_data_protocol, R.id.btn_confirm})
@@ -445,22 +444,8 @@ public class UniversalNetDataCenterAdvancedConfigFragment extends BaseNetIotComm
         isSaveParamOperation = true;
 
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.MD_SET_DATA_CENTER, dataCenterEntity);
-        doCommonDispatchRawCmd(command);
-    }
-
-    /**
-     * 调用指令透传接口
-     *
-     * @param content
-     */
-    private void doCommonDispatchRawCmd(String content) {
-        DispatchRawCmdParam rawCmdParam = new DispatchRawCmdParam();
-        rawCmdParam.setContent(content);
-        rawCmdParam.setCompanyID(MCloudApp.getCompanyID());
-        rawCmdParam.setDeviceIDList(Arrays.asList(projectDeviceInfo.getId()));
-
         showProgressDialog("处理中...");
-        processDispatchRawCmd(rawCmdParam);
+        doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
     }
 
     /**

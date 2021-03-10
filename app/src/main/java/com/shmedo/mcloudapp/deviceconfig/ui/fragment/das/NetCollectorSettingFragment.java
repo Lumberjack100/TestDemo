@@ -17,11 +17,9 @@ import com.shmedo.configlibrary.iot.cmd.parser.IOTParseManager;
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.model.CommonSettingCmdResult;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
-import com.shmedo.core.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.deviceconfig.model.DispatchCmdItem;
 import com.shmedo.mcloudapp.deviceconfig.model.QueryCmdResult;
-import com.shmedo.mcloudapp.deviceconfig.model.params.DispatchRawCmdParam;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.netcommon.BaseNetIotCommunicateFragment;
 import com.shmedo.mcloudapp.util.KeyBordUtils;
 
@@ -103,7 +101,8 @@ public class NetCollectorSettingFragment extends BaseNetIotCommunicateFragment {
     private void queryCollectorInfo() {
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.DAS_MD_GET_COLLECTOR_CONTROL);
         operaType = GET_COLLECTOR_INFO;
-        doCommonDispatchRawCmd(command);
+        showProgressDialog("处理中...");
+        doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
     }
 
     @OnClick({R.id.btn_confirm})
@@ -171,20 +170,6 @@ public class NetCollectorSettingFragment extends BaseNetIotCommunicateFragment {
 //        doCommonDispatchRawCmd(command);
     }
 
-    /**
-     * 调用指令透传接口
-     *
-     * @param content
-     */
-    private void doCommonDispatchRawCmd(String content) {
-        DispatchRawCmdParam rawCmdParam = new DispatchRawCmdParam();
-        rawCmdParam.setContent(content);
-        rawCmdParam.setCompanyID(MCloudApp.getCompanyID());
-        rawCmdParam.setDeviceIDList(Arrays.asList(deviceid));
-
-        showProgressDialog("处理中...");
-        processDispatchRawCmd(rawCmdParam);
-    }
 
     /**
      * 调用指令下发/透传接口结果返回

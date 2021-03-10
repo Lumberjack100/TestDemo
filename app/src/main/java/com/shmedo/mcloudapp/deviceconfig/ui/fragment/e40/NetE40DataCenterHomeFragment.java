@@ -22,12 +22,10 @@ import com.shmedo.configlibrary.iot.enums.ServerNumber;
 import com.shmedo.configlibrary.iot.model.DataCenterStatus;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
 import com.shmedo.core.AppContants;
-import com.shmedo.core.MCloudApp;
 import com.shmedo.core.util.GlobalUtil;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.deviceconfig.model.DispatchCmdItem;
 import com.shmedo.mcloudapp.deviceconfig.model.QueryCmdResult;
-import com.shmedo.mcloudapp.deviceconfig.model.params.DispatchRawCmdParam;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.DataCenterConfigActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.netcommon.BaseNetIotCommunicateFragment;
 import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfo;
@@ -83,7 +81,6 @@ public class NetE40DataCenterHomeFragment extends BaseNetIotCommunicateFragment 
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             configMethod = getArguments().getInt(AppContants.Extras.DATA_CENTER_CONFIG_METHOD);
-            projectDeviceInfo = getArguments().getParcelable(PRO_DEVICE_INFO);
         }
         resultLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
@@ -163,22 +160,7 @@ public class NetE40DataCenterHomeFragment extends BaseNetIotCommunicateFragment 
     private void getDataCenterStatus(ServerNumber serverNumber) {
         ServerNumberEntity serverNumberEntity = new ServerNumberEntity(serverNumber.toInt());
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.MD_GET_DATA_CENTER_STATUS, serverNumberEntity);
-        doCommonDispatchRawCmd(command);
-    }
-
-    /**
-     * 调用指令透传接口
-     *
-     * @param content
-     */
-    private void doCommonDispatchRawCmd(String content) {
-        DispatchRawCmdParam rawCmdParam = new DispatchRawCmdParam();
-        rawCmdParam.setContent(content);
-        rawCmdParam.setCompanyID(MCloudApp.getCompanyID());
-        rawCmdParam.setDeviceIDList(Arrays.asList(projectDeviceInfo.getId()));
-
-//        showProgressDialog("处理中...");
-        processDispatchRawCmd(rawCmdParam);
+        doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
     }
 
     /**
@@ -231,7 +213,6 @@ public class NetE40DataCenterHomeFragment extends BaseNetIotCommunicateFragment 
      */
     @Override
     protected void onQueryCmdResponseResultSuccess(QueryCmdResult queryCmdResult) {
-//        super.onQueryCmdResponseResultSuccess(queryCmdResult);
         setResultData(queryCmdResult);
     }
 
@@ -242,6 +223,7 @@ public class NetE40DataCenterHomeFragment extends BaseNetIotCommunicateFragment 
             case MD_GET_DATA_CENTER_STATUS: {//获取设备的数据中心状态
                 IOTCommandResult<DataCenterStatus> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
+                    dismissProgressDialog();
                     String errMsg = String.format("%s %s", "查询数据中心状态出错!", commandResult.getMessage());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);

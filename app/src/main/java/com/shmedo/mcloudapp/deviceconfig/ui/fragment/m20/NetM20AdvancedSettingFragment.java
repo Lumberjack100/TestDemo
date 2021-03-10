@@ -16,7 +16,6 @@ import com.shmedo.core.util.GsonFactory;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.deviceconfig.model.DispatchCmdItem;
 import com.shmedo.mcloudapp.deviceconfig.model.FirmWareInfo;
-import com.shmedo.mcloudapp.deviceconfig.model.params.DispatchRawCmdParam;
 import com.shmedo.mcloudapp.deviceconfig.model.params.FirmwareUpgrade;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.DataCenterHomeActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.BaseDialogFragment;
@@ -59,14 +58,6 @@ public class NetM20AdvancedSettingFragment extends BaseNetIotCommunicateFragment
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            projectDeviceInfo = getArguments().getParcelable(PRO_DEVICE_INFO);
-        }
-    }
-
-    @Override
     protected int getLayoutId() {
         return R.layout.net_m20_advanced_setting_fragment;
     }
@@ -97,7 +88,6 @@ public class NetM20AdvancedSettingFragment extends BaseNetIotCommunicateFragment
             showWarnDialog("确定恢复出厂设置吗？", RESET);
         }
     }
-
 
     private BaseDialogFragment.DialogFragmentClickListener firmWareSelectListener = new BaseDialogFragment.DialogFragmentClickListener<FirmWareInfo>() {
         @Override
@@ -132,19 +122,22 @@ public class NetM20AdvancedSettingFragment extends BaseNetIotCommunicateFragment
                         switch (operateType) {
                             case LEVEL_INITIAL: {
                                 String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.M20_MD_LEVEL_INITIAL);
-                                doCommonDispatchRawCmd(command);
+                                showProgressDialog("处理中...");
+                                doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
                             }
                             break;
 
                             case REBOOT: {
                                 String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.REBOOT);
-                                doCommonDispatchRawCmd(command);
+                                showProgressDialog("处理中...");
+                                doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
                             }
                             break;
 
                             case RESET: {
                                 String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.RESET);
-                                doCommonDispatchRawCmd(command);
+                                showProgressDialog("处理中...");
+                                doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
                             }
                             break;
                         }
@@ -152,21 +145,6 @@ public class NetM20AdvancedSettingFragment extends BaseNetIotCommunicateFragment
                 });
         MaterialDialog mMaterialDialog = mBuilder.build();
         mMaterialDialog.show();
-    }
-
-    /**
-     * 调用指令透传接口
-     *
-     * @param content
-     */
-    private void doCommonDispatchRawCmd(String content) {
-        DispatchRawCmdParam rawCmdParam = new DispatchRawCmdParam();
-        rawCmdParam.setContent(content);
-        rawCmdParam.setCompanyID(MCloudApp.getCompanyID());
-        rawCmdParam.setDeviceIDList(Arrays.asList(projectDeviceInfo.getId()));
-
-        showProgressDialog("处理中...");
-        processDispatchRawCmd(rawCmdParam);
     }
 
     /**
