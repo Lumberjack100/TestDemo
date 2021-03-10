@@ -35,4 +35,5 @@
             tools:text="@string/ble_state_connecting" />
 
     </LinearLayout>
+
 </FrameLayout>

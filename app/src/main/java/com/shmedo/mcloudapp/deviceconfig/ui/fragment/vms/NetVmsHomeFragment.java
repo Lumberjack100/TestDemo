@@ -106,7 +106,7 @@ public class NetVmsHomeFragment extends BaseNetIotCommunicateFragment {
     private VmsViewModel vmsViewModel;
     private VmsBasicInfo vmsBasicInfo;
 
-    private TcpVmsTerminalListFragment tcpVmsTerminalListFragment;
+    private NetVmsTerminalListFragment vmsTerminalListFragment;
     private static Handler myHander = new Handler();
     private static RefreshRunnable refreshRunnable;
 
@@ -248,8 +248,8 @@ public class NetVmsHomeFragment extends BaseNetIotCommunicateFragment {
                     return;
                 }
                 VmsAisleInfo vmsAisleInfo = vmsAisleInfoList.get(position);
-                tcpVmsTerminalListFragment = new TcpVmsTerminalListFragment(vmsAisleInfo);
-                tcpVmsTerminalListFragment.show(getChildFragmentManager(), "dialog");
+                vmsTerminalListFragment = new NetVmsTerminalListFragment(projectDeviceInfo, vmsAisleInfo);
+                vmsTerminalListFragment.show(getChildFragmentManager(), "dialog");
             }
         });
         mRecyclerView.setAdapter(vmsAisleAdapter);
@@ -405,7 +405,7 @@ public class NetVmsHomeFragment extends BaseNetIotCommunicateFragment {
 
             case VMS_MD_GET_GATEWAY_STATUS: {//查询网关通道下的挂载终端信息
                 //Bug修复，TcpVmsTerminalListFragment 查询观察终端数据时，会触发这里的回调
-                if (tcpVmsTerminalListFragment != null && tcpVmsTerminalListFragment.isAdded()) {
+                if (vmsTerminalListFragment != null && vmsTerminalListFragment.isAdded()) {
                     return;
                 }
                 IOTCommandResult<VmsAisleTerminalInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
@@ -468,7 +468,7 @@ public class NetVmsHomeFragment extends BaseNetIotCommunicateFragment {
         }
     }
 
-    private void scrollToEnd(){
+    private void scrollToEnd() {
         nestedScrollView.post(new Runnable() {
             @Override
             public void run() {

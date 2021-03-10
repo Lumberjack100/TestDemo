@@ -3,14 +3,13 @@ package com.shmedo.mcloudapp.deviceconfig.ui.fragment.vms;
 import android.os.Bundle;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
-import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -20,7 +19,6 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.chad.library.adapter.base.listener.OnItemLongClickListener;
 import com.hjq.toast.ToastUtils;
-import com.littlegreens.netty.client.listener.MessageStateListener;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandManager;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandResult;
 import com.shmedo.configlibrary.iot.cmd.entity.TerminalSNEntity;
@@ -38,15 +36,16 @@ import com.shmedo.core.util.DensityUtil;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.view.recycleviewitemdivider.GridSpacingItemDecoration;
 import com.shmedo.mcloudapp.deviceconfig.adapter.VmsTerminalInfoAdapter;
+import com.shmedo.mcloudapp.deviceconfig.model.DispatchCmdItem;
+import com.shmedo.mcloudapp.deviceconfig.model.QueryCmdResult;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.vms.VmsTerminalHomeActivity;
-import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.BaseBottomSheetDialogFragment;
-import com.shmedo.mcloudapp.deviceconfig.viewmodels.DeviceApiKeyViewModel;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.netcommon.BaseNetIotCommunicateSheetDialogFragment;
 import com.shmedo.mcloudapp.deviceconfig.viewmodels.VmsViewModel;
-import com.shmedo.mcloudapp.profile.TcpViewModel;
+import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfo;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-import java.util.UUID;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -54,10 +53,16 @@ import timber.log.Timber;
 
 /**
  * 创建者:   gonghe <br/>
- * 创建时间:  2020/11/19 <br/>
- * 描述：     Vms 网关挂载的终端设备列表页面
+ * 创建时间:  3/10/21 <br/>
+ * 描述：     Vms 网关 4g 模式挂载的终端设备列表页面
  */
-public class TcpVmsTerminalListFragment extends BaseBottomSheetDialogFragment {
+public class NetVmsTerminalListFragment extends BaseNetIotCommunicateSheetDialogFragment {
+    @BindView(R.id.progress_overlay)
+    View progressOverlay;
+
+    @BindView(R.id.tv_progress_text)
+    TextView mTvProgressText;
+
     @BindView(R.id.tv_title)
     TextView mTvTitle;
 
@@ -71,12 +76,10 @@ public class TcpVmsTerminalListFragment extends BaseBottomSheetDialogFragment {
 
     private VmsAisleInfo vmsAisleInfo;
 
-    private TcpViewModel tcpViewModel;
     private VmsViewModel vmsViewModel;
-    private DeviceApiKeyViewModel deviceApiKeyViewModel;
 
-
-    public TcpVmsTerminalListFragment(VmsAisleInfo vmsAisleInfo) {
+    public NetVmsTerminalListFragment(ProjectDeviceInfo projectDeviceInfo, VmsAisleInfo vmsAisleInfo) {
+        this.projectDeviceInfo = projectDeviceInfo;
         this.vmsAisleInfo = vmsAisleInfo;
     }
 
@@ -101,14 +104,7 @@ public class TcpVmsTerminalListFragment extends BaseBottomSheetDialogFragment {
         super.onActivityCreated(savedInstanceState);
         initAdapter();
         vmsViewModel = getApplicationScopeViewModel(VmsViewModel.class);
-        deviceApiKeyViewModel = getApplicationScopeViewModel(DeviceApiKeyViewModel.class);
-        tcpViewModel = getApplicationScopeViewModel(TcpViewModel.class);
-        tcpViewModel.getReceivedMessage().observeInFragment(this, new Observer<String>() {
-            @Override
-            public void onChanged(String msg) {
-                parseResponseMessage(msg);
-            }
-        });
+        adapter.setEmptyView(R.layout.empty_view);
         initData();
     }
 
@@ -125,10 +121,6 @@ public class TcpVmsTerminalListFragment extends BaseBottomSheetDialogFragment {
             @Override
             public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
                 if (isDoubleClick(view)) {
-                    return;
-                }
-                if (!tcpViewModel.getConnectStatus()) {
-                    ToastUtils.show(getString(R.string.tcp_config_disconnect_warn));
                     return;
                 }
                 vmsTerminalInfo = vmsTerminalInfoList.get(position);
@@ -174,7 +166,20 @@ public class TcpVmsTerminalListFragment extends BaseBottomSheetDialogFragment {
     private void getGatewayStatus(VmsAisleNumber vmsAisleNumber) {
         VmsAisleNumberEntity vmsAisleNumberEntity = new VmsAisleNumberEntity(vmsAisleNumber.toInt());
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.VMS_MD_GET_GATEWAY_STATUS, vmsAisleNumberEntity);
-        sendCommand(command);
+        showProgressBar();
+        mTvProgressText.setText("处理中...");
+        doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
+    }
+
+    /**
+     * 移除网关挂载的终端
+     */
+    private void removeTerminal() {
+        TerminalSNEntity entity = new TerminalSNEntity(vmsTerminalInfo.getSn());
+        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.VMS_MD_DELETE_TERMINAL, entity);
+        showProgressBar();
+        mTvProgressText.setText("处理中...");
+        doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
     }
 
     @OnClick({R.id.iv_close})
@@ -185,10 +190,78 @@ public class TcpVmsTerminalListFragment extends BaseBottomSheetDialogFragment {
     }
 
     /**
-     * 解析设备的参数指令
+     * 调用指令下发/透传接口结果返回
+     *
+     * @param dispatchCmdItemList
      */
-    private void parseResponseMessage(String cmdStr) {
+    @Override
+    protected void onDispatchCmdResult(List<DispatchCmdItem> dispatchCmdItemList, String cmdStr) {
+        if (dispatchCmdItemList == null || dispatchCmdItemList.size() == 0) {
+            hideProgressBar();
+            showDispatchFailedDialog(cmdStr);
+            return;
+        }
+        msgIDList.clear();
+        for (DispatchCmdItem cmdItem : dispatchCmdItemList) {
+            msgIDList.add(cmdItem.getMsgID());
+        }
+        if (msgIDList != null && msgIDList.size() > 0) {
+            startQueryCmdResponseRunnable(2000);
+        }
+    }
+
+    /**
+     * 指令下发失败弹框
+     */
+    private void showDispatchFailedDialog(String cmdStr) {
         IOTCommandType type = IOTStringUtil.extractCommandType(cmdStr);
+        switch (type) {
+            case VMS_MD_GET_GATEWAY_STATUS:
+            case VMS_MD_DELETE_TERMINAL:
+                ToastUtils.show("下发指令失败");
+                break;
+        }
+    }
+
+    /**
+     * 查询指令响应结果出错
+     *
+     * @param errMsg
+     */
+    @Override
+    protected void onQueryCmdResponseResultError(String errMsg) {
+        super.onQueryCmdResponseResultError(errMsg);
+        hideProgressBar();
+        ToastUtils.show("指令响应错误");
+    }
+
+    /**
+     * 查询指令响应结果超时
+     *
+     * @param queryCmdResult
+     */
+    @Override
+    protected void onQueryCmdResponseResultTimeOut(QueryCmdResult queryCmdResult) {
+        super.onQueryCmdResponseResultTimeOut(queryCmdResult);
+        hideProgressBar();
+        ToastUtils.show("指令响应超时");
+    }
+
+    /**
+     * 查询指令响应结果成功
+     *
+     * @param queryCmdResult
+     */
+    @Override
+    protected void onQueryCmdResponseResultSuccess(QueryCmdResult queryCmdResult) {
+        super.onQueryCmdResponseResultSuccess(queryCmdResult);
+        hideProgressBar();
+        setResultData(queryCmdResult);
+    }
+
+    private void setResultData(QueryCmdResult queryCmdResult) {
+        String cmdStr = queryCmdResult.getResponseContent();
+        IOTCommandType type = IOTStringUtil.extractCommandType(queryCmdResult.getCmdEngName());
         switch (type) {
             case VMS_MD_DELETE_TERMINAL: {//删除终端设备
                 CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
@@ -295,31 +368,17 @@ public class TcpVmsTerminalListFragment extends BaseBottomSheetDialogFragment {
         mMaterialDialog.show();
     }
 
-    /**
-     * 移除网关挂载的终端
-     */
-    private void removeTerminal() {
-        TerminalSNEntity entity = new TerminalSNEntity(vmsTerminalInfo.getSn());
-        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.VMS_MD_DELETE_TERMINAL, entity);
-        sendCommand(command);
+    private void showProgressBar() {
+        progressOverlay.setVisibility(View.VISIBLE);
+        //TODO #gh# android:clickable="true" 和 android:focusable="true" 已经实现了禁止触摸遮罩层下面的 View,
+        // 防止点击未遮住的ToolBar，添加下面代码禁用窗体触摸
+        mActivity.getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
     }
 
-    private void sendCommand(String cmdStr) {
-        String apiKey = "b12aac6b-0bd2-4a01-80fd-97fe4f5d4ff9";
-        if (!TextUtils.isEmpty(deviceApiKeyViewModel.getDeviceApiKey().getValue())) {
-            apiKey = deviceApiKeyViewModel.getDeviceApiKey().getValue();
-        }
-        cmdStr += "&apikey=" + apiKey
-                + "&msgid=" + UUID.randomUUID().toString();
-
-        Timber.d("发送指令：%s", cmdStr);
-        tcpViewModel.sendMsgToServer(cmdStr, new MessageStateListener() {
-            @Override
-            public void isSendSuccss(boolean isSuccess) {
-                if (!isSuccess) {
-                    Timber.e("发送指令失败");
-                }
-            }
-        });
+    private void hideProgressBar() {
+        progressOverlay.setVisibility(View.GONE);
+        //get user interaction back
+        mActivity.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
     }
 }

@@ -167,7 +167,6 @@ public class NetVmsAisleSettingFragment extends BaseNetIotCommunicateFragment {
         }
     }
 
-
     private boolean checkValueIsValid() {
         networkNumber = mEtNetworkNumber.getText().toString().trim();
         aisleAddress = mEtAisleAddress.getText().toString().trim();
@@ -359,7 +358,6 @@ public class NetVmsAisleSettingFragment extends BaseNetIotCommunicateFragment {
         doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
     }
 
-
     /**
      * 调用指令下发/透传接口结果返回
      *
@@ -466,7 +464,6 @@ public class NetVmsAisleSettingFragment extends BaseNetIotCommunicateFragment {
                 break;
         }
     }
-
 
     private void doAfterSetting() {
         ToastUtils.show("设置成功");
