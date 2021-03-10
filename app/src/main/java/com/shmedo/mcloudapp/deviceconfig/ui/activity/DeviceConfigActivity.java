@@ -19,6 +19,7 @@ import com.shmedo.mcloudapp.deviceconfig.ui.fragment.e40.NetE40HomeFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.e40.TcpE40HomeFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.m20.BleM20HomeFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.m20.NetM20HomeFragment;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.vms.NetVmsHomeFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.vms.TcpVmsHomeFragment;
 import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfo;
 
@@ -31,8 +32,6 @@ public class DeviceConfigActivity extends BaseConfigFragmentContainerActivity {
     public static final String EXTRA_DEVICE = "com.shmedo.mcloudapp.EXTRA_DEVICE";
 
     private int deviceType = AppContants.DeviceType.DAS;
-
-    private ProjectDeviceInfo projectDeviceInfo;
 
     private DiscoveredBluetoothDevice device;
 
@@ -68,7 +67,11 @@ public class DeviceConfigActivity extends BaseConfigFragmentContainerActivity {
             }
         } else {
             mIvAction.setVisibility(View.VISIBLE);
-            mIvAction.setImageResource(R.drawable.ic_query_device_data);
+            if (deviceType == AppContants.DeviceType.VMS) {
+                mIvAction.setImageResource(R.drawable.ic_vms_advanced_settings);
+            } else {
+                mIvAction.setImageResource(R.drawable.ic_query_device_data);
+            }
         }
     }
 
@@ -106,6 +109,10 @@ public class DeviceConfigActivity extends BaseConfigFragmentContainerActivity {
 
                 case AppContants.DeviceType.E40:
                     fragment = NetE40HomeFragment.newInstance(projectDeviceInfo, deviceType);
+                    break;
+
+                case AppContants.DeviceType.VMS:
+                    fragment = NetVmsHomeFragment.newInstance(projectDeviceInfo);
                     break;
             }
         } else if (connectWay == AppContants.CommunicationWay.BLE_CONNECT) {

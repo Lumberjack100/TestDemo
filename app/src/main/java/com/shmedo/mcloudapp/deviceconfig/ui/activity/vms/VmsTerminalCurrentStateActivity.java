@@ -82,6 +82,8 @@ public class VmsTerminalCurrentStateActivity extends BaseActivity {
     }
 
     private void replaceFragment(Fragment fragment) {
+        if (fragment == null)
+            return;
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         transaction.replace(R.id.container, fragment);

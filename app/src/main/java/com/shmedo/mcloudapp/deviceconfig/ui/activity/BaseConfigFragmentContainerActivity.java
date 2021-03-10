@@ -14,6 +14,7 @@ import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.activity.BaseActivity;
 import com.shmedo.mcloudapp.deviceconfig.viewmodels.ConfigPageViewModel;
+import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfo;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -24,6 +25,7 @@ import butterknife.OnClick;
  * 描述：     TODO #gh#
  */
 public abstract class BaseConfigFragmentContainerActivity extends BaseActivity {
+    protected static final String PRO_DEVICE_INFO = "com.shmedo.mcloudapp.PRO_DEVICE_INFO";
 
     @BindView(R.id.tv_title)
     protected TextView mToolbarTitle;
@@ -41,6 +43,8 @@ public abstract class BaseConfigFragmentContainerActivity extends BaseActivity {
     protected Intent intent;
 
     protected ConfigPageViewModel configPageViewModel;
+
+    protected ProjectDeviceInfo projectDeviceInfo;
 
 
     @Override
@@ -64,6 +68,10 @@ public abstract class BaseConfigFragmentContainerActivity extends BaseActivity {
 
         if (intent.getExtras().containsKey(AppContants.Extras.COMMUNICATION_WAY)) {
             connectWay = intent.getIntExtra(AppContants.Extras.COMMUNICATION_WAY, AppContants.CommunicationWay.NET_PLATFORM_CONNECT);
+        }
+
+        if (intent.getExtras().containsKey(PRO_DEVICE_INFO)) {
+            projectDeviceInfo = intent.getParcelableExtra(PRO_DEVICE_INFO);
         }
     }
 

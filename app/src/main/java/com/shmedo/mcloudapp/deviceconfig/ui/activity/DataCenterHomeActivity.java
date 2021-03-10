@@ -19,13 +19,11 @@ import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfo;
  * 描述：    数据中心主页面
  */
 public class DataCenterHomeActivity extends BaseConfigFragmentContainerActivity {
-    public static final String LEVEL_INITIAL = "com.shmedo.mcloudapp.LEVEL_INITIAL";
-    public static final String PRO_DEVICE_INFO = "com.shmedo.mcloudapp.PRO_DEVICE_INFO";
+    private static final String LEVEL_INITIAL = "com.shmedo.mcloudapp.LEVEL_INITIAL";
 
     private int configMethod = AppContants.DataCenterConfigMethod.BASIC_CONFIG;
     private int deviceType = AppContants.DeviceType.DAS;
     private boolean isLevelInit = false;
-    private ProjectDeviceInfo projectDeviceInfo;
 
 
     public static void startActivity(Context context, int deviceType, ProjectDeviceInfo projectDeviceInfo, int configMethod) {
@@ -74,10 +72,6 @@ public class DataCenterHomeActivity extends BaseConfigFragmentContainerActivity 
 
         if (intent.getExtras().containsKey(AppContants.Extras.DEVICE_TYPE)) {
             deviceType = intent.getIntExtra(AppContants.Extras.DEVICE_TYPE, AppContants.DeviceType.DAS);
-        }
-
-        if (intent.getExtras().containsKey(PRO_DEVICE_INFO)) {
-            projectDeviceInfo = intent.getParcelableExtra(PRO_DEVICE_INFO);
         }
 
         if (intent.getExtras().containsKey(AppContants.Extras.DATA_CENTER_CONFIG_METHOD)) {

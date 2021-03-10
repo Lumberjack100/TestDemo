@@ -18,9 +18,6 @@ import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfo;
  * 描述：     E40 有线网络接口参数配置页面
  */
 public class E40EthernetActivity extends BaseConfigFragmentContainerActivity {
-    private static final String PRO_DEVICE_INFO = "com.shmedo.mcloudapp.PRO_DEVICE_INFO";
-
-    private ProjectDeviceInfo projectDeviceInfo;
 
     public static void startActivity(Context context, ProjectDeviceInfo projectDeviceInfo) {
         Intent intent = new Intent(context, E40EthernetActivity.class);
@@ -40,17 +37,6 @@ public class E40EthernetActivity extends BaseConfigFragmentContainerActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mToolbarTitle.setText("有线网络设置");
-    }
-
-    @Override
-    protected void parseIntent() {
-        super.parseIntent();
-        if (intent.getExtras() == null)
-            return;
-
-        if (intent.getExtras().containsKey(PRO_DEVICE_INFO)) {
-            projectDeviceInfo = intent.getParcelableExtra(PRO_DEVICE_INFO);
-        }
     }
 
     @Override

@@ -22,11 +22,9 @@ import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfo;
  * 描述：   设备运行状态
  */
 public class DeviceCurrentStateActivity extends BaseConfigFragmentContainerActivity {
-    private static final String PRO_DEVICE_INFO = "com.shmedo.mcloudapp.PRO_DEVICE_INFO";
     private static final String DEVICE_CURRENT_STATE = "device_current_state";
     private int deviceType = AppContants.DeviceType.DAS;
 
-    private ProjectDeviceInfo projectDeviceInfo;
     private DevcieCurrentState devcieCurrentState;
 
     public static void startActivity(Context context, int connectWay, int deviceType) {
@@ -58,10 +56,6 @@ public class DeviceCurrentStateActivity extends BaseConfigFragmentContainerActiv
         super.parseIntent();
         if (intent.getExtras() == null)
             return;
-
-        if (intent.getExtras().containsKey(PRO_DEVICE_INFO)) {
-            projectDeviceInfo = intent.getParcelableExtra(PRO_DEVICE_INFO);
-        }
 
         if (intent.getExtras().containsKey(DEVICE_CURRENT_STATE)) {
             devcieCurrentState = intent.getParcelableExtra(DEVICE_CURRENT_STATE);

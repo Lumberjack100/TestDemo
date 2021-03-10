@@ -19,14 +19,10 @@ import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfo;
 /**
  * 创建者:   gonghe <br/>
  * 创建时间:  2020/11/20<br/>
- * 描述：     Das高级设置页面
+ * 描述：     设备设置页面
  */
 public class AdvancedSettingActivity extends BaseConfigFragmentContainerActivity {
-    private static final String PRO_DEVICE_INFO = "com.shmedo.mcloudapp.PRO_DEVICE_INFO";
-
     private int deviceType = AppContants.DeviceType.DAS;
-
-    private ProjectDeviceInfo projectDeviceInfo;
 
 
     public static void startActivity(Context context, ProjectDeviceInfo projectDeviceInfo, int deviceType) {
@@ -57,9 +53,6 @@ public class AdvancedSettingActivity extends BaseConfigFragmentContainerActivity
         if (intent.getExtras() == null)
             return;
 
-        if (intent.getExtras().containsKey(PRO_DEVICE_INFO)) {
-            projectDeviceInfo = intent.getParcelableExtra(PRO_DEVICE_INFO);
-        }
         if (intent.getExtras().containsKey(AppContants.Extras.DEVICE_TYPE)) {
             deviceType = intent.getIntExtra(AppContants.Extras.DEVICE_TYPE, AppContants.DeviceType.DAS);
         }

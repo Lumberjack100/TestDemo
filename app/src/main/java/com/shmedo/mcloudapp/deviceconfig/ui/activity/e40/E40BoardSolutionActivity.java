@@ -18,9 +18,6 @@ import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfo;
  * 描述：    E40 板卡解算参数配置页面
  */
 public class E40BoardSolutionActivity extends BaseConfigFragmentContainerActivity {
-    private static final String PRO_DEVICE_INFO = "com.shmedo.mcloudapp.PRO_DEVICE_INFO";
-
-    private ProjectDeviceInfo projectDeviceInfo;
 
     public static void startActivity(Context context, ProjectDeviceInfo projectDeviceInfo) {
         Intent intent = new Intent(context, E40BoardSolutionActivity.class);
@@ -43,17 +40,6 @@ public class E40BoardSolutionActivity extends BaseConfigFragmentContainerActivit
     }
 
     @Override
-    protected void parseIntent() {
-        super.parseIntent();
-        if (intent.getExtras() == null)
-            return;
-
-        if (intent.getExtras().containsKey(PRO_DEVICE_INFO)) {
-            projectDeviceInfo = intent.getParcelableExtra(PRO_DEVICE_INFO);
-        }
-    }
-
-    @Override
     protected Fragment initFragment() {
         if (connectWay == AppContants.CommunicationWay.NET_PLATFORM_CONNECT) {
             fragment = NetE40BoardSolutionFragment.newInstance(projectDeviceInfo);
@@ -61,7 +47,6 @@ public class E40BoardSolutionActivity extends BaseConfigFragmentContainerActivit
         } else if (connectWay == AppContants.CommunicationWay.TCP_CONNECT) {
             fragment = TcpE40BoardSolutionFragment.newInstance();
         }
-
         return fragment;
     }
 }
