@@ -44,7 +44,6 @@ import com.shmedo.mcloudapp.common.ui.fragment.BaseFragment;
 import com.shmedo.mcloudapp.common.view.ClearEditText;
 import com.shmedo.mcloudapp.deviceconfig.adapter.WiFiAdapter;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.DeviceConfigActivity;
-import com.shmedo.mcloudapp.deviceconfig.ui.activity.vms.VmsHomeActivity;
 import com.shmedo.mcloudapp.deviceconfig.viewmodels.DeviceApiKeyViewModel;
 import com.shmedo.mcloudapp.util.KeyBordUtils;
 import com.shmedo.mcloudapp.util.permission.XPermissionUtils;
@@ -159,7 +158,9 @@ public class WiFiDeviceListFragment extends BaseFragment implements TextWatcher,
         if (curWiFi.isConnected()) {//已连接
             dismissProgressDialog();
             if (curWiFi.name().contains("VMS")) {
-                VmsHomeActivity.startActivity(getContext(), AppContants.CommunicationWay.TCP_CONNECT);
+//                VmsHomeActivity.startActivity(getContext(), AppContants.CommunicationWay.TCP_CONNECT);
+                DeviceConfigActivity.startActivity(getActivity(), AppContants.CommunicationWay.TCP_CONNECT, null, AppContants.DeviceType.VMS);
+
 
             } else if (curWiFi.name().contains("E40")) {
                 DeviceConfigActivity.startActivity(getActivity(), AppContants.CommunicationWay.TCP_CONNECT, null, AppContants.DeviceType.E40);
@@ -191,7 +192,8 @@ public class WiFiDeviceListFragment extends BaseFragment implements TextWatcher,
         public void success() {
             dismissProgressDialog();
             if (curWiFi.name().contains("VMS")) {
-                VmsHomeActivity.startActivity(getContext(), AppContants.CommunicationWay.TCP_CONNECT);
+//                VmsHomeActivity.startActivity(getContext(), AppContants.CommunicationWay.TCP_CONNECT);
+                DeviceConfigActivity.startActivity(getActivity(), AppContants.CommunicationWay.TCP_CONNECT, null, AppContants.DeviceType.VMS);
 
             }else if (curWiFi.name().contains("E40")) {
                 DeviceConfigActivity.startActivity(getActivity(), AppContants.CommunicationWay.TCP_CONNECT, null, AppContants.DeviceType.E40);

@@ -11,6 +11,7 @@ import com.shmedo.core.AppContants;
 import com.shmedo.core.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.deviceconfig.model.DiscoveredBluetoothDevice;
+import com.shmedo.mcloudapp.deviceconfig.ui.activity.vms.VmsAdvancedSettingsActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.adme.BleAdmeHomeFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.das.BleDasHomeFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.das.NetDasHomeFragment;
@@ -18,9 +19,8 @@ import com.shmedo.mcloudapp.deviceconfig.ui.fragment.e40.NetE40HomeFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.e40.TcpE40HomeFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.m20.BleM20HomeFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.m20.NetM20HomeFragment;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.vms.TcpVmsHomeFragment;
 import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfo;
-
-import butterknife.OnClick;
 
 /**
  * 创建者:   gonghe <br/>
@@ -59,8 +59,17 @@ public class DeviceConfigActivity extends BaseConfigFragmentContainerActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mToolbarTitle.setText("设备配置");
-        mIvAction.setVisibility(connectWay == AppContants.CommunicationWay.TCP_CONNECT ? View.GONE : View.VISIBLE);
-        mIvAction.setImageResource(R.drawable.ic_query_device_data);
+        if (connectWay == AppContants.CommunicationWay.TCP_CONNECT) {
+            if (deviceType == AppContants.DeviceType.VMS) {
+                mIvAction.setVisibility(View.VISIBLE);
+                mIvAction.setImageResource(R.drawable.ic_vms_advanced_settings);
+            } else {
+                mIvAction.setVisibility(View.GONE);
+            }
+        } else {
+            mIvAction.setVisibility(View.VISIBLE);
+            mIvAction.setImageResource(R.drawable.ic_query_device_data);
+        }
     }
 
     @Override
@@ -85,8 +94,10 @@ public class DeviceConfigActivity extends BaseConfigFragmentContainerActivity {
         if (connectWay == AppContants.CommunicationWay.NET_PLATFORM_CONNECT) {
             switch (deviceType) {
                 case AppContants.DeviceType.DAS:
-                case AppContants.DeviceType.ADME:
                     fragment = NetDasHomeFragment.newInstance(projectDeviceInfo, deviceType);
+                    break;
+
+                case AppContants.DeviceType.ADME:
                     break;
 
                 case AppContants.DeviceType.M20:
@@ -116,23 +127,26 @@ public class DeviceConfigActivity extends BaseConfigFragmentContainerActivity {
                 case AppContants.DeviceType.E40:
                     fragment = TcpE40HomeFragment.newInstance();
                     break;
+
+                case AppContants.DeviceType.VMS:
+                    fragment = TcpVmsHomeFragment.newInstance();
+                    break;
             }
         }
-
         return fragment;
     }
 
-    @OnClick({R.id.iv_action})
-    public void onClick(View v) {
-        if (v.getId() == R.id.iv_action) {
-            String sn;
-            if (connectWay == AppContants.CommunicationWay.NET_PLATFORM_CONNECT) {
-                sn = projectDeviceInfo.getToken();
-            } else {
-                sn = MCloudApp.getCurDeviceToken();
+    @Override
+    protected void onIconActionClick() {
+        if (connectWay == AppContants.CommunicationWay.TCP_CONNECT) {
+            if (deviceType == AppContants.DeviceType.VMS) {
+                VmsAdvancedSettingsActivity.startActivity(this, AppContants.CommunicationWay.TCP_CONNECT);
             }
-            QueryDeviceDataActivity.startActivity(DeviceConfigActivity.this, sn);
+        } else if (connectWay == AppContants.CommunicationWay.NET_PLATFORM_CONNECT) {
+            QueryDeviceDataActivity.startActivity(DeviceConfigActivity.this, projectDeviceInfo.getToken());
+
+        } else if (connectWay == AppContants.CommunicationWay.BLE_CONNECT) {
+            QueryDeviceDataActivity.startActivity(DeviceConfigActivity.this, MCloudApp.getCurDeviceToken());
         }
     }
-
 }
