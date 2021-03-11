@@ -26,15 +26,25 @@ import com.shmedo.configlibrary.iot.model.vms.VmsTerminalInfo;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.view.ClearEditText;
+import com.shmedo.mcloudapp.deviceconfig.model.DispatchCmdItem;
+import com.shmedo.mcloudapp.deviceconfig.model.QueryCmdResult;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.netcommon.BaseNetIotCommunicateFragment;
+import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfo;
 import com.shmedo.mcloudapp.util.KeyBordUtils;
 
-import org.jetbrains.annotations.NotNull;
+import java.util.Arrays;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
 import timber.log.Timber;
 
-public class TcpVmsTerminalParamSettingFragment extends BaseVmsTcpCommunicateFragment {
+/**
+ * 创建者:   gonghe <br/>
+ * 创建时间:  3/11/21 <br/>
+ * 描述：     TODO
+ */
+public class NetVmsTerminalParamSettingFragment extends BaseNetIotCommunicateFragment {
     private static final String TERMINAL_INFO = "terminal_info";
 
     @BindView(R.id.tv_reporting_method)
@@ -67,10 +77,10 @@ public class TcpVmsTerminalParamSettingFragment extends BaseVmsTcpCommunicateFra
     private String channelNumber;//通信信道
     private String airBaudRate;//空中波特率
 
-
-    public static TcpVmsTerminalParamSettingFragment newInstance(VmsTerminalInfo vmsTerminalInfo) {
-        TcpVmsTerminalParamSettingFragment fragment = new TcpVmsTerminalParamSettingFragment();
+    public static NetVmsTerminalParamSettingFragment newInstance(ProjectDeviceInfo projectDeviceInfo, VmsTerminalInfo vmsTerminalInfo) {
+        NetVmsTerminalParamSettingFragment fragment = new NetVmsTerminalParamSettingFragment();
         Bundle args = new Bundle();
+        args.putParcelable(PRO_DEVICE_INFO, projectDeviceInfo);
         args.putParcelable(TERMINAL_INFO, vmsTerminalInfo);
         fragment.setArguments(args);
         return fragment;
@@ -114,7 +124,8 @@ public class TcpVmsTerminalParamSettingFragment extends BaseVmsTcpCommunicateFra
     private void queryTerminalCollecotrInfo() {
         TerminalSNEntity entity = new TerminalSNEntity(vmsTerminalInfo.getSn());
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.VMS_MD_GET_TERMINAL_COLLECTOR, entity);
-        sendCommand(command);
+        showProgressDialog("处理中...");
+        doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
     }
 
     /**
@@ -123,7 +134,7 @@ public class TcpVmsTerminalParamSettingFragment extends BaseVmsTcpCommunicateFra
     private void queryTerminalCommunicationInfo() {
         TerminalSNEntity entity = new TerminalSNEntity(vmsTerminalInfo.getSn());
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.VMS_MD_GET_TERMINAL_COMMUNICATE, entity);
-        sendCommand(command);
+        doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
     }
 
     @OnClick({R.id.ll_reporting_method, R.id.btn_confirm})
@@ -134,11 +145,6 @@ public class TcpVmsTerminalParamSettingFragment extends BaseVmsTcpCommunicateFra
 
         } else if (id == R.id.btn_confirm) {
             KeyBordUtils.hideSoftKeyboard(view);
-
-            if (!tcpViewModel.getConnectStatus()) {
-                ToastUtils.show(getString(R.string.tcp_config_disconnect_warn));
-                return;
-            }
             if (!checkValueIsValid()) {
                 Timber.w("通道参数存在错误!");
                 return;
@@ -254,7 +260,8 @@ public class TcpVmsTerminalParamSettingFragment extends BaseVmsTcpCommunicateFra
         entity.setReptgap(reportingInterval);
 
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.VMS_MD_SET_TERMINAL_COLLECTOR, entity);
-        sendCommand(command);
+        showProgressDialog("处理中...");
+        doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
     }
 
     /**
@@ -268,21 +275,78 @@ public class TcpVmsTerminalParamSettingFragment extends BaseVmsTcpCommunicateFra
         entity.setAirbaud(airBaudRate);
 
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.VMS_MD_SET_TERMINAL_COMMUNICATE, entity);
-        sendCommand(command);
+        doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
     }
 
-
+    /**
+     * 调用指令下发/透传接口结果返回
+     *
+     * @param dispatchCmdItemList
+     */
     @Override
-    protected void parseResponseMessage(@NotNull String cmdStr) {
-        setResultData(cmdStr);
+    protected void onDispatchCmdResult(List<DispatchCmdItem> dispatchCmdItemList, String cmdStr) {
+        if (dispatchCmdItemList == null || dispatchCmdItemList.size() == 0) {
+            dismissProgressDialog();
+            showDispatchFailedDialog(cmdStr);
+            return;
+        }
+        msgIDList.clear();
+        for (DispatchCmdItem cmdItem : dispatchCmdItemList) {
+            msgIDList.add(cmdItem.getMsgID());
+        }
+        if (msgIDList != null && msgIDList.size() > 0) {
+            startQueryCmdResponseRunnable(2000);
+        }
     }
 
-    private void setResultData(final String cmdStr) {
-        IOTCommandType type = IOTStringUtil.extractCommandType(cmdStr);
+    /**
+     * 指令下发失败弹框
+     */
+    private void showDispatchFailedDialog(String cmdStr) {
+        ToastUtils.show("下发指令失败");
+    }
+
+    /**
+     * 查询指令响应结果出错
+     *
+     * @param errMsg
+     */
+    @Override
+    protected void onQueryCmdResponseResultError(String errMsg) {
+        super.onQueryCmdResponseResultError(errMsg);
+        ToastUtils.show("指令响应错误");
+    }
+
+    /**
+     * 查询指令响应结果超时
+     *
+     * @param queryCmdResult
+     */
+    @Override
+    protected void onQueryCmdResponseResultTimeOut(QueryCmdResult queryCmdResult) {
+        super.onQueryCmdResponseResultTimeOut(queryCmdResult);
+        ToastUtils.show("指令响应超时");
+    }
+
+    /**
+     * 查询指令响应结果成功
+     *
+     * @param queryCmdResult
+     */
+    @Override
+    protected void onQueryCmdResponseResultSuccess(QueryCmdResult queryCmdResult) {
+//        super.onQueryCmdResponseResultSuccess(queryCmdResult);
+        setResultData(queryCmdResult);
+    }
+
+    private void setResultData(QueryCmdResult queryCmdResult) {
+        String cmdStr = queryCmdResult.getResponseContent();
+        IOTCommandType type = IOTStringUtil.extractCommandType(queryCmdResult.getCmdEngName());
         switch (type) {
             case VMS_MD_GET_TERMINAL_COLLECTOR: {//获取Vms终端采集参数
                 IOTCommandResult<VmsTerminalCollectorInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
+                    dismissProgressDialog();
                     String errMsg = String.format("%s %s", "查询终端采集参数出错!", commandResult.getMessage());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
@@ -295,6 +359,7 @@ public class TcpVmsTerminalParamSettingFragment extends BaseVmsTcpCommunicateFra
             break;
 
             case VMS_MD_GET_TERMINAL_COMMUNICATE: {//获取Vms终端通信参数
+                dismissProgressDialog();
                 IOTCommandResult<VmsTerminalCommInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
                     String errMsg = String.format("%s %s", "查询终端通信参数出错!", commandResult.getMessage());
@@ -310,6 +375,7 @@ public class TcpVmsTerminalParamSettingFragment extends BaseVmsTcpCommunicateFra
             case VMS_MD_SET_TERMINAL_COLLECTOR: {//设置Vms终端采集参数
                 CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
                 if (!cmdResult.isSucceed()) {
+                    dismissProgressDialog();
                     String errMsg = String.format("%s %s", "设置参数失败!", cmdResult.getReason());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
@@ -320,6 +386,7 @@ public class TcpVmsTerminalParamSettingFragment extends BaseVmsTcpCommunicateFra
             break;
 
             case VMS_MD_SET_TERMINAL_COMMUNICATE: {//设置Vms终端通信参数
+                dismissProgressDialog();
                 CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
                 if (!cmdResult.isSucceed()) {
                     String errMsg = String.format("%s %s", "设置参数失败!", cmdResult.getReason());
@@ -332,7 +399,6 @@ public class TcpVmsTerminalParamSettingFragment extends BaseVmsTcpCommunicateFra
             break;
 
             default:
-                super.parseResponseMessage(cmdStr);
                 break;
         }
     }
@@ -380,16 +446,12 @@ public class TcpVmsTerminalParamSettingFragment extends BaseVmsTcpCommunicateFra
 
     @Override
     public boolean onBackPressed() {
-        if (tcpViewModel.getConnectStatus()) {
-            if (checkValueIsChange()) {
-                warnNotYetSettingBeforeLeavePage();
-                return true;
-            } else {
-                return false;
-            }
+        if (checkValueIsChange()) {
+            warnNotYetSettingBeforeLeavePage();
+            return true;
+        } else {
+            return false;
         }
-
-        return false;
     }
 
     private boolean checkValueIsChange() {

@@ -51,7 +51,7 @@ public class VmsTerminalHomeActivity extends BaseConfigFragmentContainerActivity
         if (connectWay == AppContants.CommunicationWay.TCP_CONNECT) {
             mIvAction.setVisibility(View.GONE);
         } else {
-            mIvAction.setVisibility(View.VISIBLE);
+            mIvAction.setVisibility(View.GONE);
             mIvAction.setImageResource(R.drawable.ic_query_device_data);
         }
     }

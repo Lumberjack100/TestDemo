@@ -19,7 +19,6 @@ import com.shmedo.mcloudapp.deviceconfig.ui.activity.AdvancedSettingActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.DataCenterHomeActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.DeviceCurrentStateActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd.BaseDispatchCmdDialog;
-import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd.DispatchCmdFailedDialog;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd.QueryCurrentStateDialog;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.netcommon.UniversalNetConfigHomeFragment;
 import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfo;
@@ -123,21 +122,7 @@ public class NetM20HomeFragment extends UniversalNetConfigHomeFragment {
         for (DispatchCmdItem cmdItem : dispatchCmdItemList) {
             msgIDList.add(cmdItem.getMsgID());
         }
-        IOTCommandType type = IOTStringUtil.extractCommandType(cmdStr);
-        switch (type) {
-            case QUERY_DEVICE_STATUS://查询状态
-            case M20_MD_LEVEL_INITIAL://水平初始化
-                dismissProgressDialog();
-                doDispatchSuccess(cmdStr);
-                break;
-
-            case M20_MD_GET_BASE_INFO: {//获取设备基本信息
-                if (msgIDList != null && msgIDList.size() > 0) {
-                    startQueryCmdResponseRunnable(2000);
-                }
-            }
-            break;
-        }
+        doDispatchSuccess(cmdStr);
     }
 
     /**
@@ -145,13 +130,10 @@ public class NetM20HomeFragment extends UniversalNetConfigHomeFragment {
      */
     @Override
     protected void doDispatchFailed(String cmdStr) {
-        String title;
-        BaseDispatchCmdDialog newFragment = null;
         IOTCommandType type = IOTStringUtil.extractCommandType(cmdStr);
         switch (type) {
             case QUERY_DEVICE_STATUS:
-                title = "运行状态";
-                newFragment = new DispatchCmdFailedDialog(title);
+                ToastUtils.show("下发指令失败");
                 break;
 
             case M20_MD_LEVEL_INITIAL:
@@ -161,13 +143,9 @@ public class NetM20HomeFragment extends UniversalNetConfigHomeFragment {
                 break;
 
             case M20_MD_GET_BASE_INFO:
-                break;
-
-            default:
+                ToastUtils.show("下发指令失败");
                 break;
         }
-        if (newFragment != null)
-            newFragment.show(getChildFragmentManager(), "dialog");
     }
 
     /**
@@ -177,8 +155,10 @@ public class NetM20HomeFragment extends UniversalNetConfigHomeFragment {
     protected void doDispatchSuccess(String cmdStr) {
         BaseDispatchCmdDialog newFragment = null;
         //下发指令成功，弹出对话框开始轮询查询指令响应
-        switch (selectedConfigModule.getName()) {
-            case "状态":
+        IOTCommandType type = IOTStringUtil.extractCommandType(cmdStr);
+        switch (type) {
+            case QUERY_DEVICE_STATUS:
+                dismissProgressDialog();
                 newFragment = new QueryCurrentStateDialog("运行状态", msgIDList);
                 ((QueryCurrentStateDialog) newFragment).setOnSeeDetailClickListener(new QueryCurrentStateDialog.OnSeeDetailClickListener() {
                     @Override
@@ -188,11 +168,19 @@ public class NetM20HomeFragment extends UniversalNetConfigHomeFragment {
                 });
                 break;
 
-            case "设置向导":
+            case M20_MD_LEVEL_INITIAL:
+                dismissProgressDialog();
                 if (setupWizardDialogFragment != null && setupWizardDialogFragment.isVisible()) {
                     setupWizardDialogFragment.updateDispatchCmdResult(true, msgIDList);
                 }
                 break;
+
+            case M20_MD_GET_BASE_INFO: {//获取设备基本信息
+                if (msgIDList != null && msgIDList.size() > 0) {
+                    startQueryCmdResponseRunnable(2000);
+                }
+            }
+            break;
         }
         if (newFragment != null)
             newFragment.show(getChildFragmentManager(), "dialog");

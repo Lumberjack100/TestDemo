@@ -168,10 +168,8 @@ public class NetM20CurrentStateFragment extends BaseNetIotCommunicateFragment {
      */
     @Override
     protected void onDispatchCmdResult(List<DispatchCmdItem> dispatchCmdItemList, String cmdStr) {
-        dismissProgressDialog();
         if (dispatchCmdItemList == null || dispatchCmdItemList.size() == 0) {
             swipeRefresh.setRefreshing(false);
-            dismissProgressDialog();
             ToastUtils.show("下发指令失败");
             return;
         }

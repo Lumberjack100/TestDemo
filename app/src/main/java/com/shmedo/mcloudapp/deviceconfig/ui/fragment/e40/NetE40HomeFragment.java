@@ -2,6 +2,7 @@ package com.shmedo.mcloudapp.deviceconfig.ui.fragment.e40;
 
 import android.os.Bundle;
 
+import com.hjq.toast.ToastUtils;
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
 import com.shmedo.core.AppContants;
@@ -14,7 +15,6 @@ import com.shmedo.mcloudapp.deviceconfig.ui.activity.AdvancedSettingActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.DataCenterHomeActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.DeviceCurrentStateActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd.BaseDispatchCmdDialog;
-import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd.DispatchCmdFailedDialog;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd.QueryCurrentStateDialog;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.netcommon.UniversalNetConfigHomeFragment;
 import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfo;
@@ -96,20 +96,12 @@ public class NetE40HomeFragment extends UniversalNetConfigHomeFragment {
      */
     @Override
     protected void doDispatchFailed(String cmdStr) {
-        String title;
-        BaseDispatchCmdDialog newFragment = null;
         IOTCommandType type = IOTStringUtil.extractCommandType(cmdStr);
         switch (type) {
             case QUERY_DEVICE_STATUS:
-                title = "运行状态";
-                newFragment = new DispatchCmdFailedDialog(title);
-                break;
-
-            default:
+                ToastUtils.show("下发指令失败");
                 break;
         }
-        if (newFragment != null)
-            newFragment.show(getChildFragmentManager(), "dialog");
     }
 
     /**

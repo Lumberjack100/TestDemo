@@ -29,7 +29,7 @@ import butterknife.BindView;
  * 描述：     Vms 网关终端运行状态详情页面
  */
 public class TcpVmsTerminalCurrentStateFragment extends BaseFragment {
-    private static final String DEVICE_INFO = "device_info";
+    private static final String TERMINAL_INFO = "terminal_info";
     /**
      * 基本信息
      */
@@ -80,7 +80,7 @@ public class TcpVmsTerminalCurrentStateFragment extends BaseFragment {
     public static TcpVmsTerminalCurrentStateFragment newInstance(VmsTerminalInfo vmsTerminalInfo) {
         TcpVmsTerminalCurrentStateFragment fragment = new TcpVmsTerminalCurrentStateFragment();
         Bundle args = new Bundle();
-        args.putParcelable(DEVICE_INFO, vmsTerminalInfo);
+        args.putParcelable(TERMINAL_INFO, vmsTerminalInfo);
         fragment.setArguments(args);
         return fragment;
     }
@@ -89,7 +89,7 @@ public class TcpVmsTerminalCurrentStateFragment extends BaseFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            vmsTerminalInfo = getArguments().getParcelable(DEVICE_INFO);
+            vmsTerminalInfo = getArguments().getParcelable(TERMINAL_INFO);
         }
     }
 

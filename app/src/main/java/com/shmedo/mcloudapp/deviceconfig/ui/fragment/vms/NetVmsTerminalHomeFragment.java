@@ -37,7 +37,7 @@ import java.util.List;
  */
 public class NetVmsTerminalHomeFragment extends UniversalNetConfigHomeFragment {
     private static final String TERMINAL_INFO = "terminal_info";
-    private static final int REBOOT = 0x0002;
+    private static final int REBOOT_TERMINAL = 0x0002;
 
     private VmsTerminalInfo vmsTerminalInfo;
 
@@ -114,7 +114,7 @@ public class NetVmsTerminalHomeFragment extends UniversalNetConfigHomeFragment {
                 break;
 
             case "重启":
-                showWarnDialog("温馨提示", "确定重启终端设备吗？", REBOOT);
+                showWarnDialog("温馨提示", "确定重启终端设备吗？", REBOOT_TERMINAL);
                 break;
 
             case "传感器配置":
@@ -122,7 +122,7 @@ public class NetVmsTerminalHomeFragment extends UniversalNetConfigHomeFragment {
                 break;
 
             case "终端配置":
-                VmsTerminalParamSettingActivity.startActivity(mActivity, AppContants.CommunicationWay.TCP_CONNECT, vmsTerminalInfo);
+                VmsTerminalParamSettingActivity.startActivity(mActivity, projectDeviceInfo, vmsTerminalInfo);
                 break;
         }
     }
@@ -155,7 +155,7 @@ public class NetVmsTerminalHomeFragment extends UniversalNetConfigHomeFragment {
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                         dialog.dismiss();
                         switch (operateType) {
-                            case REBOOT:
+                            case REBOOT_TERMINAL:
                                 rebootTerminal();
                                 break;
                         }
@@ -195,9 +195,6 @@ public class NetVmsTerminalHomeFragment extends UniversalNetConfigHomeFragment {
             case VMS_MD_REBOOT_TERMINAL:
                 ToastUtils.show("下发指令失败");
                 break;
-
-            default:
-                break;
         }
     }
 
@@ -210,13 +207,9 @@ public class NetVmsTerminalHomeFragment extends UniversalNetConfigHomeFragment {
         //下发指令成功，弹出对话框开始轮询查询指令响应
         IOTCommandType type = IOTStringUtil.extractCommandType(cmdStr);
         switch (type) {
-            case REBOOT:
+            case VMS_MD_REBOOT_TERMINAL:
                 dismissProgressDialog();
                 newFragment = new CommonCmdDialog("重新启动", "正在重启中...", "预计耗时三分钟,请耐心等待", msgIDList);
-                break;
-
-            default:
-                dismissProgressDialog();
                 break;
         }
         if (newFragment != null)
