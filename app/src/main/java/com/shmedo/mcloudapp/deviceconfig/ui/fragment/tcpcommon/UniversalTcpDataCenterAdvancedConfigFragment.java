@@ -579,12 +579,15 @@ public class UniversalTcpDataCenterAdvancedConfigFragment extends BaseTcpIotComm
     @Override
     public boolean onBackPressed() {
         setResult();
-        if (checkValueIsChange()) {
-            warnNotYetSettingBeforeLeavePage();
-            return true;
-        } else {
-            return false;
+        if (tcpViewModel.getConnectStatus()) {
+            if (checkValueIsChange()) {
+                warnNotYetSettingBeforeLeavePage();
+                return true;
+            } else {
+                return false;
+            }
         }
+        return false;
     }
 
     private boolean checkValueIsChange() {
