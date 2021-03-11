@@ -24,7 +24,6 @@ import com.shmedo.configlibrary.iot.model.vms.VmsTerminalInfo;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
 import com.shmedo.core.AppContants;
 import com.shmedo.core.util.DensityUtil;
-import com.shmedo.core.util.GlobalUtil;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.view.recycleviewitemdivider.GridSpacingItemDecoration;
 import com.shmedo.mcloudapp.deviceconfig.adapter.ConfigModuleAdapter;
@@ -47,7 +46,7 @@ import timber.log.Timber;
  * 描述：     Vms 网关挂载的终端设备主页面
  */
 public class TcpVmsTerminalHomeFragment extends BaseVmsTcpCommunicateFragment {
-    private static final String DEVICE_INFO = "device_info";
+    private static final String TERMINAL_INFO = "terminal_info";
     private static final int REBOOT = 0x0002;
 
     @BindView(R.id.tv_device_name)
@@ -83,7 +82,7 @@ public class TcpVmsTerminalHomeFragment extends BaseVmsTcpCommunicateFragment {
     public static TcpVmsTerminalHomeFragment newInstance(VmsTerminalInfo vmsTerminalInfo) {
         TcpVmsTerminalHomeFragment fragment = new TcpVmsTerminalHomeFragment();
         Bundle args = new Bundle();
-        args.putParcelable(DEVICE_INFO, vmsTerminalInfo);
+        args.putParcelable(TERMINAL_INFO, vmsTerminalInfo);
         fragment.setArguments(args);
         return fragment;
     }
@@ -92,13 +91,13 @@ public class TcpVmsTerminalHomeFragment extends BaseVmsTcpCommunicateFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            vmsTerminalInfo = getArguments().getParcelable(DEVICE_INFO);
+            vmsTerminalInfo = getArguments().getParcelable(TERMINAL_INFO);
         }
     }
 
     @Override
     protected int getLayoutId() {
-        return R.layout.tcp_vms_terminal_home_fragment;
+        return R.layout.universal_config_home_fragment;
     }
 
     @Override
@@ -107,11 +106,6 @@ public class TcpVmsTerminalHomeFragment extends BaseVmsTcpCommunicateFragment {
         setHeadInfo();
         initAdapter();
         initConfigModuleData();
-    }
-
-    @Override
-    protected void initView() {
-//        mTvDeviceState.setVisibility(View.INVISIBLE);
     }
 
     private void setHeadInfo() {
@@ -150,7 +144,6 @@ public class TcpVmsTerminalHomeFragment extends BaseVmsTcpCommunicateFragment {
                 if (isDoubleClick(view)) {
                     return;
                 }
-
                 if (!tcpViewModel.getConnectStatus()) {
                     ToastUtils.show(getString(R.string.tcp_config_disconnect_warn));
                     return;
@@ -166,7 +159,7 @@ public class TcpVmsTerminalHomeFragment extends BaseVmsTcpCommunicateFragment {
         BaseDialogFragment newFragment = null;
         switch (selectedConfigModule.getName()) {
             case "状态":
-                newFragment = TcpVmsTerminalCurrentStateDialog.newInstance(vmsTerminalInfo);
+                newFragment = VmsTerminalCurrentStateDialog.newInstance(vmsTerminalInfo);
                 newFragment.show(getChildFragmentManager(), "dialog");
                 break;
 
@@ -227,13 +220,13 @@ public class TcpVmsTerminalHomeFragment extends BaseVmsTcpCommunicateFragment {
 
     private void initConfigModuleData() {
         configModuleList.clear();
-        ConfigModule configModule = new ConfigModule(R.drawable.ic_device_current_state, 5, GlobalUtil.getString(R.string.device_config_module_current_state), "获取当前设备状态");
+        ConfigModule configModule = new ConfigModule(R.drawable.ic_device_current_state, "状态", "获取当前设备状态");
         configModuleList.add(configModule);
 
-        configModule = new ConfigModule(R.drawable.ic_device_telemetry, 6, "遥测", "远距离测量");
+        configModule = new ConfigModule(R.drawable.ic_device_telemetry, "遥测", "远距离测量");
         configModuleList.add(configModule);
 
-        configModule = new ConfigModule(R.drawable.ic_device_reboot, 7, "重启", "重新启动当前设备");
+        configModule = new ConfigModule(R.drawable.ic_device_reboot, "重启", "重新启动当前设备");
         configModuleList.add(configModule);
 
         configModule = new ConfigModule(R.drawable.ic_device_sensor_config, "传感器配置", "传感器参数配置");

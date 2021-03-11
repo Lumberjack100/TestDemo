@@ -30,8 +30,8 @@ import butterknife.OnClick;
  * 创建时间:  2020/11/20 <br/>
  * 描述：     Vms 网关终端运行状态弹框
  */
-public class TcpVmsTerminalCurrentStateDialog extends BaseDialogFragment {
-    private static final String DEVICE_INFO = "device_info";
+public class VmsTerminalCurrentStateDialog extends BaseDialogFragment {
+    private static final String TERMINAL_INFO = "terminal_info";
     @BindView(R.id.tv_title)
     TextView mTvTitle;
 
@@ -59,10 +59,10 @@ public class TcpVmsTerminalCurrentStateDialog extends BaseDialogFragment {
     private VmsTerminalInfo vmsTerminalInfo;
 
 
-    public static TcpVmsTerminalCurrentStateDialog newInstance(VmsTerminalInfo vmsTerminalInfo) {
-        TcpVmsTerminalCurrentStateDialog fragment = new TcpVmsTerminalCurrentStateDialog();
+    public static VmsTerminalCurrentStateDialog newInstance(VmsTerminalInfo vmsTerminalInfo) {
+        VmsTerminalCurrentStateDialog fragment = new VmsTerminalCurrentStateDialog();
         Bundle args = new Bundle();
-        args.putParcelable(DEVICE_INFO, vmsTerminalInfo);
+        args.putParcelable(TERMINAL_INFO, vmsTerminalInfo);
         fragment.setArguments(args);
         return fragment;
     }
@@ -71,13 +71,13 @@ public class TcpVmsTerminalCurrentStateDialog extends BaseDialogFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            vmsTerminalInfo = getArguments().getParcelable(DEVICE_INFO);
+            vmsTerminalInfo = getArguments().getParcelable(TERMINAL_INFO);
         }
     }
 
     @Override
     protected int getLayoutId() {
-        return R.layout.tcp_vms_terminal_current_state_dialog;
+        return R.layout.vms_terminal_current_state_dialog;
     }
 
     @Override
@@ -101,7 +101,6 @@ public class TcpVmsTerminalCurrentStateDialog extends BaseDialogFragment {
         mTvTitle.setText("设备状态");
         mTvConfirm.setText("查看详情");
         mTvConfirm.setTextColor(GlobalUtil.getColor(R.color.blue_52B4F8));
-
         mTvUplinkSignalStrength.setText(String.valueOf(vmsTerminalInfo.getUprssi()));
         mTvDownlinkSignalStrength.setText(String.valueOf(vmsTerminalInfo.getDownrssi()));
         mTvSendData.setText(String.valueOf(vmsTerminalInfo.getTx()));
@@ -132,7 +131,7 @@ public class TcpVmsTerminalCurrentStateDialog extends BaseDialogFragment {
 
             case R.id.tv_confirm:
                 dismiss();
-                VmsTerminalCurrentStateActivity.startActivity(mActivity, AppContants.CommunicationWay.TCP_CONNECT, vmsTerminalInfo);
+                VmsTerminalCurrentStateActivity.startActivity(mActivity, vmsTerminalInfo);
                 break;
         }
     }

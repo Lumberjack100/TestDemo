@@ -31,7 +31,6 @@ import com.shmedo.configlibrary.iot.model.vms.VmsAisleInfo;
 import com.shmedo.configlibrary.iot.model.vms.VmsAisleTerminalInfo;
 import com.shmedo.configlibrary.iot.model.vms.VmsTerminalInfo;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
-import com.shmedo.core.AppContants;
 import com.shmedo.core.util.DensityUtil;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.view.recycleviewitemdivider.GridSpacingItemDecoration;
@@ -124,7 +123,7 @@ public class NetVmsTerminalListFragment extends BaseNetIotCommunicateSheetDialog
                     return;
                 }
                 vmsTerminalInfo = vmsTerminalInfoList.get(position);
-                VmsTerminalHomeActivity.startActivity(mActivity, AppContants.CommunicationWay.TCP_CONNECT, vmsTerminalInfo);
+                VmsTerminalHomeActivity.startActivity(mActivity, projectDeviceInfo, vmsTerminalInfo);
             }
         });
         adapter.setOnItemLongClickListener(new OnItemLongClickListener() {

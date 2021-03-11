@@ -36,34 +36,34 @@ public abstract class UniversalNetConfigHomeFragment extends BaseNetIotCommunica
     public static final String EXTRA_DEVICE = "com.shmedo.mcloudapp.EXTRA_DEVICE";
 
     @BindView(R.id.progress_overlay)
-    View progressOverlay;
+    protected View progressOverlay;
 
     @BindView(R.id.tv_progress_text)
-    TextView mTvProgressText;
+    protected TextView mTvProgressText;
 
     @BindView(R.id.tv_device_name)
-    TextView mTvDeviceName;//设备名称
+    protected TextView mTvDeviceName;//设备名称
 
     @BindView(R.id.tv_device_sn)
-    TextView mTvDeviceSn;//设备SN号
+    protected TextView mTvDeviceSn;//设备SN号
 
     @BindView(R.id.tv_product_model)
-    TextView mTvProductModel;//产品型号
+    protected TextView mTvProductModel;//产品型号
 
     @BindView(R.id.tv_time_or_sub_model)
-    TextView mTvFirmwareVersion;//固件版本
+    protected TextView mTvFirmwareVersion;//固件版本
 
     @BindView(R.id.tv_platform_communication_state)
-    TextView mTvPlatformCommunicationState;//与米度平台连接状态
+    protected TextView mTvPlatformCommunicationState;//与米度平台连接状态
 
     @BindView(R.id.tv_device_state_flag)
-    TextView mTvDeviceState;//(在线、离线)
+    protected TextView mTvDeviceState;//(在线、离线)
 
     @BindView(R.id.tv_device_connect_operate)
-    TextView mTvDeviceConnectOperate;//蓝牙连接操作(断开连接、重新连接)
+    protected TextView mTvDeviceConnectOperate;//蓝牙连接操作(断开连接、重新连接)
 
     @BindView(R.id.recyclerview)
-    RecyclerView mRecyclerView;
+    protected RecyclerView mRecyclerView;
 
     private ConfigModuleAdapter moduleAdapter;
     protected List<ConfigModule> configModuleList = new ArrayList<>();
@@ -76,14 +76,18 @@ public abstract class UniversalNetConfigHomeFragment extends BaseNetIotCommunica
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            projectDeviceInfo = getArguments().getParcelable(EXTRA_DEVICE);
-            deviceType = getArguments().getInt(AppContants.Extras.DEVICE_TYPE);
+            if (getArguments().containsKey(EXTRA_DEVICE)) {
+                projectDeviceInfo = getArguments().getParcelable(EXTRA_DEVICE);
+            }
+            if (getArguments().containsKey(AppContants.Extras.DEVICE_TYPE)) {
+                deviceType = getArguments().getInt(AppContants.Extras.DEVICE_TYPE);
+            }
         }
     }
 
     @Override
     protected int getLayoutId() {
-        return R.layout.universal_net_config_home_fragment;
+        return R.layout.universal_config_home_fragment;
     }
 
     @Override
@@ -94,7 +98,7 @@ public abstract class UniversalNetConfigHomeFragment extends BaseNetIotCommunica
         initConfigModuleData();
     }
 
-    private void setHeadInfo() {
+    protected void setHeadInfo() {
         switch (deviceType) {
             case AppContants.DeviceType.DAS:
                 mTvDeviceName.setText("物联网数据采集器");

@@ -4,108 +4,84 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 
 import com.shmedo.configlibrary.iot.model.vms.VmsTerminalInfo;
 import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.R;
-import com.shmedo.mcloudapp.common.ui.activity.BaseActivity;
+import com.shmedo.mcloudapp.deviceconfig.ui.activity.BaseConfigFragmentContainerActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.QueryDeviceDataActivity;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.vms.NetVmsTerminalHomeFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.vms.TcpVmsTerminalHomeFragment;
-
-import butterknife.BindView;
-import butterknife.OnClick;
+import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfo;
 
 /**
  * 创建者:   gonghe <br/>
  * 创建时间:  2020/11/19 <br/>
  * 描述：     Vms 网关挂载的终端设备主页面
  */
-public class VmsTerminalHomeActivity extends BaseActivity {
-    private static final String DEVICE_INFO = "device_info";
-
-    @BindView(R.id.tv_title)
-    TextView mToolbarTitle;
-
-    @BindView(R.id.iv_action)
-    ImageView mIvRightIcon;
-
-    private int connectWay = AppContants.CommunicationWay.NET_PLATFORM_CONNECT;
-
-    private Fragment fragment;
+public class VmsTerminalHomeActivity extends BaseConfigFragmentContainerActivity {
+    private static final String TERMINAL_INFO = "terminal_info";
 
     private VmsTerminalInfo vmsTerminalInfo;
 
 
+    public static void startActivity(Context context, ProjectDeviceInfo projectDeviceInfo, VmsTerminalInfo vmsTerminalInfo) {
+        Intent intent = new Intent(context, VmsTerminalHomeActivity.class);
+        intent.putExtra(PRO_DEVICE_INFO, projectDeviceInfo);
+        intent.putExtra(TERMINAL_INFO, vmsTerminalInfo);
+        intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        context.startActivity(intent);
+    }
+
     public static void startActivity(Context context, int connectWay, VmsTerminalInfo vmsTerminalInfo) {
         Intent intent = new Intent(context, VmsTerminalHomeActivity.class);
         intent.putExtra(AppContants.Extras.COMMUNICATION_WAY, connectWay);
-        intent.putExtra(DEVICE_INFO, vmsTerminalInfo);
+        intent.putExtra(TERMINAL_INFO, vmsTerminalInfo);
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         context.startActivity(intent);
     }
 
 
     @Override
-    protected int getLayoutId() {
-        return R.layout.activity_vms_terminal_home;
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mToolbarTitle.setText("设备配置");
+        if (connectWay == AppContants.CommunicationWay.TCP_CONNECT) {
+            mIvAction.setVisibility(View.GONE);
+        } else {
+            mIvAction.setVisibility(View.VISIBLE);
+            mIvAction.setImageResource(R.drawable.ic_query_device_data);
+        }
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setToolBar(R.id.toolbar);
-        mToolbarTitle.setText("设备配置");
-        mIvRightIcon.setVisibility(View.INVISIBLE);
-        mIvRightIcon.setImageResource(R.drawable.ic_query_device_data);
-        parseIntent();
-        initFragment();
-    }
-
-    private void parseIntent() {
-        Intent intent = getIntent();
+    protected void parseIntent() {
+        super.parseIntent();
         if (intent.getExtras() == null)
             return;
 
-        if (intent.getExtras().containsKey(AppContants.Extras.COMMUNICATION_WAY)) {
-            connectWay = intent.getIntExtra(AppContants.Extras.COMMUNICATION_WAY, AppContants.CommunicationWay.NET_PLATFORM_CONNECT);
-        }
-
-        if (intent.getExtras().containsKey(DEVICE_INFO)) {
-            vmsTerminalInfo = intent.getParcelableExtra(DEVICE_INFO);
+        if (intent.getExtras().containsKey(TERMINAL_INFO)) {
+            vmsTerminalInfo = intent.getParcelableExtra(TERMINAL_INFO);
         }
     }
 
-    private void initFragment() {
+    @Override
+    protected Fragment initFragment() {
         if (connectWay == AppContants.CommunicationWay.NET_PLATFORM_CONNECT) {
+            fragment = NetVmsTerminalHomeFragment.newInstance(projectDeviceInfo, vmsTerminalInfo);
 
         } else if (connectWay == AppContants.CommunicationWay.TCP_CONNECT) {
             fragment = TcpVmsTerminalHomeFragment.newInstance(vmsTerminalInfo);
         }
-        replaceFragment(fragment);
+        return fragment;
     }
 
-    @OnClick({R.id.iv_action})
-    public void onClick(View v) {
-        if (v.getId() == R.id.iv_action) {
-            if (connectWay == AppContants.CommunicationWay.TCP_CONNECT) {
-                QueryDeviceDataActivity.startActivity(VmsTerminalHomeActivity.this, vmsTerminalInfo.getSn());
-            }
+    @Override
+    protected void onIconActionClick() {
+        if (connectWay == AppContants.CommunicationWay.NET_PLATFORM_CONNECT) {
+            QueryDeviceDataActivity.startActivity(VmsTerminalHomeActivity.this, vmsTerminalInfo.getSn());
         }
     }
-
-    private void replaceFragment(Fragment fragment) {
-        if (fragment == null)
-            return;
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentTransaction transaction = fragmentManager.beginTransaction();
-        transaction.replace(R.id.container, fragment);
-        transaction.commitAllowingStateLoss();
-    }
-
 }

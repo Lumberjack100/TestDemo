@@ -110,7 +110,7 @@ public class BleM20HomeFragment extends BaseGOCBleIotCommunicateFragment {
 
     @Override
     protected int getLayoutId() {
-        return R.layout.ble_m20_home_fragment;
+        return R.layout.universal_config_home_fragment;
     }
 
     @Override
