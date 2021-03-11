@@ -55,9 +55,9 @@ public class NetE40HomeFragment extends UniversalNetConfigHomeFragment {
     protected void processItemClick() {
         switch (selectedConfigModule.getName()) {
             case "状态":
-//                showProgressDialog("处理中...");
 //                String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.QUERY_DEVICE_STATUS);
-//                doCommonDispatchRawCmd(command);
+//                showProgressDialog("处理中...");
+//                doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
                 DeviceCurrentStateActivity.startActivity(mActivity, projectDeviceInfo, null, AppContants.DeviceType.E40);
                 break;
 
@@ -88,13 +88,7 @@ public class NetE40HomeFragment extends UniversalNetConfigHomeFragment {
         for (DispatchCmdItem cmdItem : dispatchCmdItemList) {
             msgIDList.add(cmdItem.getMsgID());
         }
-        IOTCommandType type = IOTStringUtil.extractCommandType(cmdStr);
-        switch (type) {
-            case QUERY_DEVICE_STATUS://查询状态
-                dismissProgressDialog();
-                doDispatchSuccess(cmdStr);
-                break;
-        }
+        doDispatchSuccess(cmdStr);
     }
 
     /**
@@ -125,14 +119,21 @@ public class NetE40HomeFragment extends UniversalNetConfigHomeFragment {
     protected void doDispatchSuccess(String cmdStr) {
         BaseDispatchCmdDialog newFragment = null;
         //下发指令成功，弹出对话框开始轮询查询指令响应
-        if ("状态".equals(selectedConfigModule.getName())) {
-            newFragment = new QueryCurrentStateDialog("运行状态", msgIDList);
-            ((QueryCurrentStateDialog) newFragment).setOnSeeDetailClickListener(new QueryCurrentStateDialog.OnSeeDetailClickListener() {
-                @Override
-                public void onSeeDetailClick(DevcieCurrentState devcieCurrentState) {
-                    DeviceCurrentStateActivity.startActivity(mActivity, projectDeviceInfo, devcieCurrentState, AppContants.DeviceType.E40);
-                }
-            });
+        IOTCommandType type = IOTStringUtil.extractCommandType(cmdStr);
+        switch (type) {
+            case QUERY_DEVICE_STATUS:
+                dismissProgressDialog();
+                newFragment = new QueryCurrentStateDialog("运行状态", msgIDList);
+                ((QueryCurrentStateDialog) newFragment).setOnSeeDetailClickListener(new QueryCurrentStateDialog.OnSeeDetailClickListener() {
+                    @Override
+                    public void onSeeDetailClick(DevcieCurrentState devcieCurrentState) {
+                        DeviceCurrentStateActivity.startActivity(mActivity, projectDeviceInfo, devcieCurrentState, AppContants.DeviceType.E40);
+                    }
+                });
+                break;
+
+            default:
+                break;
         }
         if (newFragment != null)
             newFragment.show(getChildFragmentManager(), "dialog");

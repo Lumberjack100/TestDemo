@@ -404,10 +404,6 @@ public class NetVmsHomeFragment extends BaseNetIotCommunicateFragment {
             break;
 
             case VMS_MD_GET_GATEWAY_STATUS: {//查询网关通道下的挂载终端信息
-                //Bug修复，TcpVmsTerminalListFragment 查询观察终端数据时，会触发这里的回调
-                if (vmsTerminalListFragment != null && vmsTerminalListFragment.isAdded()) {
-                    return;
-                }
                 IOTCommandResult<VmsAisleTerminalInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
                     stopRefreshRunnable();
@@ -460,8 +456,10 @@ public class NetVmsHomeFragment extends BaseNetIotCommunicateFragment {
     private void modifyAisleTerminalInfo(VmsAisleTerminalInfo vmsAisleTerminalInfo) {
         if (vmsAisleTerminalInfo == null)
             return;
+
         if (vmsAisleTerminalInfo.getTerminal() == null)
             return;
+
         for (VmsTerminalInfo vmsTerminalInfo : vmsAisleTerminalInfo.getTerminal()) {
             vmsTerminalInfo.setNetid(vmsAisleTerminalInfo.getNetid());
             vmsTerminalInfo.setChl(vmsAisleTerminalInfo.getChl());
