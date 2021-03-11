@@ -194,7 +194,7 @@ public class TcpVmsHomeFragment extends BaseVmsTcpCommunicateFragment {
             @Override
             public void onChanged(Boolean isRefresh) {
                 if (isRefresh) {
-                    getGatewayStatus(VmsAisleNumber.NUMBER_TWO);
+                    getGatewayAisleInfo(VmsAisleNumber.NUMBER_TWO);
                 }
             }
         });

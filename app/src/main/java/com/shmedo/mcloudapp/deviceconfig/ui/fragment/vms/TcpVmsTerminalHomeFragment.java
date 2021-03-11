@@ -16,6 +16,7 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.hjq.toast.ToastUtils;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandManager;
+import com.shmedo.configlibrary.iot.cmd.IOTCommandResult;
 import com.shmedo.configlibrary.iot.cmd.entity.TerminalSNEntity;
 import com.shmedo.configlibrary.iot.cmd.parser.IOTParseManager;
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
@@ -31,6 +32,8 @@ import com.shmedo.mcloudapp.deviceconfig.model.ConfigModule;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.vms.VmsTerminalExternalSensorHomeActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.vms.VmsTerminalParamSettingActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.BaseDialogFragment;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd.BaseDispatchCmdDialog;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd.TelemetryDialog;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -134,7 +137,7 @@ public class TcpVmsTerminalHomeFragment extends BaseVmsTcpCommunicateFragment {
         int spacing = DensityUtil.Dp2Px(mActivity, 15);//每一个矩形的间距
         mRecyclerView.setLayoutManager(new GridLayoutManager(mActivity, spanCount));
         //设置每个item间距
-        mRecyclerView.addItemDecoration(new GridSpacingItemDecoration(spanCount, spacing, true));
+        mRecyclerView.addItemDecoration(new GridSpacingItemDecoration(spanCount, spacing, false));
         moduleAdapter = new ConfigModuleAdapter(configModuleList);
         moduleAdapter.setAnimationEnable(true);
         moduleAdapter.setAnimationFirstOnly(false);
@@ -164,7 +167,7 @@ public class TcpVmsTerminalHomeFragment extends BaseVmsTcpCommunicateFragment {
                 break;
 
             case "遥测":
-                ToastUtils.show("正在研发中,敬请期待...");
+                sampleTerminal();
                 break;
 
             case "重启":
@@ -179,6 +182,15 @@ public class TcpVmsTerminalHomeFragment extends BaseVmsTcpCommunicateFragment {
                 VmsTerminalParamSettingActivity.startActivity(mActivity, AppContants.CommunicationWay.TCP_CONNECT, vmsTerminalInfo);
                 break;
         }
+    }
+
+    /**
+     * 遥测终端
+     */
+    private void sampleTerminal() {
+        TerminalSNEntity entity = new TerminalSNEntity(vmsTerminalInfo.getSn());
+        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.VMS_TERMINAL_QUERY_SAMPLE, entity);
+        sendCommand(command);
     }
 
     /**
@@ -244,6 +256,20 @@ public class TcpVmsTerminalHomeFragment extends BaseVmsTcpCommunicateFragment {
     private void setResultData(final String cmdStr) {
         IOTCommandType type = IOTStringUtil.extractCommandType(cmdStr);
         switch (type) {
+            case VMS_TERMINAL_QUERY_SAMPLE: {//Vms终端遥测
+                stopProgressRunnable();
+                IOTCommandResult<String> commandResult = IOTParseManager.getInstance().parse(cmdStr);
+                if (!commandResult.isSuccess()) {
+                    String errMsg = String.format("%s %s", "遥测出错!", commandResult.getMessage());
+                    Timber.e(errMsg);
+                    ToastUtils.show(errMsg);
+                    return;
+                }
+                BaseDispatchCmdDialog newFragment = new TelemetryDialog("遥测", commandResult.getResult());
+                newFragment.show(getChildFragmentManager(), "dialog");
+            }
+            break;
+
             case VMS_MD_REBOOT_TERMINAL: {//重启Vms终端
                 stopProgressRunnable();
                 CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);

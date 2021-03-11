@@ -22,7 +22,9 @@
             style="?android:attr/progressBarStyleHorizontal"
             android:layout_width="150dp"
             android:layout_height="wrap_content"
-            android:indeterminate="true" />
+            android:indeterminate="true"
+            android:indeterminateTint="@color/text_color_51B4F8"
+            android:indeterminateTintMode="src_atop"/>
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tv_progress_text"

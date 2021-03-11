@@ -24,6 +24,7 @@ import com.shmedo.mcloudapp.deviceconfig.ui.activity.vms.VmsTerminalParamSetting
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.BaseDialogFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd.BaseDispatchCmdDialog;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd.CommonCmdDialog;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd.TelemetryDialog;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.netcommon.UniversalNetConfigHomeFragment;
 import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfo;
 
@@ -110,7 +111,7 @@ public class NetVmsTerminalHomeFragment extends UniversalNetConfigHomeFragment {
                 break;
 
             case "遥测":
-                ToastUtils.show("正在研发中,敬请期待...");
+                sampleTerminal();
                 break;
 
             case "重启":
@@ -125,6 +126,16 @@ public class NetVmsTerminalHomeFragment extends UniversalNetConfigHomeFragment {
                 VmsTerminalParamSettingActivity.startActivity(mActivity, projectDeviceInfo, vmsTerminalInfo);
                 break;
         }
+    }
+
+    /**
+     * 遥测终端
+     */
+    private void sampleTerminal() {
+        TerminalSNEntity entity = new TerminalSNEntity(vmsTerminalInfo.getSn());
+        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.VMS_TERMINAL_QUERY_SAMPLE, entity);
+        showProgressDialog("处理中...");
+        doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
     }
 
     /**
@@ -192,6 +203,7 @@ public class NetVmsTerminalHomeFragment extends UniversalNetConfigHomeFragment {
     protected void doDispatchFailed(String cmdStr) {
         IOTCommandType type = IOTStringUtil.extractCommandType(cmdStr);
         switch (type) {
+            case VMS_TERMINAL_QUERY_SAMPLE:
             case VMS_MD_REBOOT_TERMINAL:
                 ToastUtils.show("下发指令失败");
                 break;
@@ -207,6 +219,11 @@ public class NetVmsTerminalHomeFragment extends UniversalNetConfigHomeFragment {
         //下发指令成功，弹出对话框开始轮询查询指令响应
         IOTCommandType type = IOTStringUtil.extractCommandType(cmdStr);
         switch (type) {
+            case VMS_TERMINAL_QUERY_SAMPLE:
+                dismissProgressDialog();
+                newFragment = new TelemetryDialog("遥测", msgIDList);
+                break;
+
             case VMS_MD_REBOOT_TERMINAL:
                 dismissProgressDialog();
                 newFragment = new CommonCmdDialog("重新启动", "正在重启中...", "预计耗时三分钟,请耐心等待", msgIDList);

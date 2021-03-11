@@ -150,6 +150,10 @@ public enum IOTCommandType {
      */
     VMS_MD_SET_TERMINAL_COMMUNICATE("md_setterminalcom"),
 
+    /**
+     * Vms终端遥测
+     */
+    VMS_TERMINAL_QUERY_SAMPLE("md_sampleterminal"),
 
     /*　 ADME 指令  */
     /**

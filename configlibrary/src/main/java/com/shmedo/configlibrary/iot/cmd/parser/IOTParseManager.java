@@ -21,6 +21,7 @@ import com.shmedo.configlibrary.iot.cmd.parser.e40.E40BoardSolutionInfoParser;
 import com.shmedo.configlibrary.iot.cmd.parser.e40.E40CORSInfoParser;
 import com.shmedo.configlibrary.iot.cmd.parser.e40.E40RTKModeInfoParser;
 import com.shmedo.configlibrary.iot.cmd.parser.m20.M20BaseInfoParser;
+import com.shmedo.configlibrary.iot.cmd.parser.vms.TerminalTelemetryParser;
 import com.shmedo.configlibrary.iot.cmd.parser.vms.VmsAisleInfoParser;
 import com.shmedo.configlibrary.iot.cmd.parser.vms.VmsAisleTerminalInfoParser;
 import com.shmedo.configlibrary.iot.cmd.parser.vms.VmsBasicInfoParser;
@@ -75,7 +76,7 @@ public class IOTParseManager {
         if (parser == null) {
 //            throw new RuntimeException("未找到命令：" + cmdType + "的解析器");
             commandResult.setSuccess(false);
-            commandResult.setMessage("无法解析命令： " + temp );
+            commandResult.setMessage("无法解析命令： " + temp);
             commandResult.setCommandType(cmdType);
             return commandResult;
         }
@@ -132,14 +133,15 @@ public class IOTParseManager {
                 DeviceTimeParser.class,
                 DeviceCurrentStateParser.class,
                 TelemetryParser.class,
+                DataCenterStatusParser.class,
+                DataCenterInfoParser.class,
                 VmsBasicInfoParser.class,
                 VmsAisleTerminalInfoParser.class,
                 VmsAisleInfoParser.class,
-                DataCenterInfoParser.class,
                 VmsTerminalSensorInfoParser.class,
-                DataCenterStatusParser.class,
                 VmsTerminalCollectorInfoParser.class,
                 VmsTerminalCommInfoParser.class,
+                TerminalTelemetryParser.class,
                 AdmeBaseInfoParser.class,
                 AdmeBasicConfigParamParser.class,
                 AdmeMeterWheelParamParser.class,

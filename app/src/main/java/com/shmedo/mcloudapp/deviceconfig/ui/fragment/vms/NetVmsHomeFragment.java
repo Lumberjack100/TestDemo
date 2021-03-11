@@ -226,7 +226,7 @@ public class NetVmsHomeFragment extends BaseNetIotCommunicateFragment {
             @Override
             public void onChanged(Boolean isRefresh) {
                 if (isRefresh) {
-                    getGatewayStatus(VmsAisleNumber.NUMBER_TWO);
+                    getGatewayAisleInfo(VmsAisleNumber.NUMBER_TWO);
                 }
             }
         });
