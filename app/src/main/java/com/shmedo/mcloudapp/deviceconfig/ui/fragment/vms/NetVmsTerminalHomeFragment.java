@@ -17,16 +17,13 @@ import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
 import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.deviceconfig.model.ConfigModule;
-import com.shmedo.mcloudapp.deviceconfig.model.DevcieCurrentState;
 import com.shmedo.mcloudapp.deviceconfig.model.DispatchCmdItem;
 import com.shmedo.mcloudapp.deviceconfig.model.QueryCmdResult;
-import com.shmedo.mcloudapp.deviceconfig.ui.activity.DeviceCurrentStateActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.vms.VmsTerminalExternalSensorHomeActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.vms.VmsTerminalParamSettingActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.BaseDialogFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd.BaseDispatchCmdDialog;
-import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd.DispatchCmdFailedDialog;
-import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd.QueryCurrentStateDialog;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd.CommonCmdDialog;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.netcommon.UniversalNetConfigHomeFragment;
 import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfo;
 
@@ -185,13 +182,7 @@ public class NetVmsTerminalHomeFragment extends UniversalNetConfigHomeFragment {
         for (DispatchCmdItem cmdItem : dispatchCmdItemList) {
             msgIDList.add(cmdItem.getMsgID());
         }
-        IOTCommandType type = IOTStringUtil.extractCommandType(cmdStr);
-        switch (type) {
-            case QUERY_DEVICE_STATUS://查询状态
-                dismissProgressDialog();
-                doDispatchSuccess(cmdStr);
-                break;
-        }
+        doDispatchSuccess(cmdStr);
     }
 
     /**
@@ -199,20 +190,15 @@ public class NetVmsTerminalHomeFragment extends UniversalNetConfigHomeFragment {
      */
     @Override
     protected void doDispatchFailed(String cmdStr) {
-        String title;
-        BaseDispatchCmdDialog newFragment = null;
         IOTCommandType type = IOTStringUtil.extractCommandType(cmdStr);
         switch (type) {
-            case QUERY_DEVICE_STATUS:
-                title = "运行状态";
-                newFragment = new DispatchCmdFailedDialog(title);
+            case VMS_MD_REBOOT_TERMINAL:
+                ToastUtils.show("下发指令失败");
                 break;
 
             default:
                 break;
         }
-        if (newFragment != null)
-            newFragment.show(getChildFragmentManager(), "dialog");
     }
 
     /**
@@ -222,14 +208,16 @@ public class NetVmsTerminalHomeFragment extends UniversalNetConfigHomeFragment {
     protected void doDispatchSuccess(String cmdStr) {
         BaseDispatchCmdDialog newFragment = null;
         //下发指令成功，弹出对话框开始轮询查询指令响应
-        if ("状态".equals(selectedConfigModule.getName())) {
-            newFragment = new QueryCurrentStateDialog("运行状态", msgIDList);
-            ((QueryCurrentStateDialog) newFragment).setOnSeeDetailClickListener(new QueryCurrentStateDialog.OnSeeDetailClickListener() {
-                @Override
-                public void onSeeDetailClick(DevcieCurrentState devcieCurrentState) {
-                    DeviceCurrentStateActivity.startActivity(mActivity, projectDeviceInfo, devcieCurrentState, AppContants.DeviceType.E40);
-                }
-            });
+        IOTCommandType type = IOTStringUtil.extractCommandType(cmdStr);
+        switch (type) {
+            case REBOOT:
+                dismissProgressDialog();
+                newFragment = new CommonCmdDialog("重新启动", "正在重启中...", "预计耗时三分钟,请耐心等待", msgIDList);
+                break;
+
+            default:
+                dismissProgressDialog();
+                break;
         }
         if (newFragment != null)
             newFragment.show(getChildFragmentManager(), "dialog");

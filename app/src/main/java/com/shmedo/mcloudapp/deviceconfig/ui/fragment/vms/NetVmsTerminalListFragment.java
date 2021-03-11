@@ -262,18 +262,6 @@ public class NetVmsTerminalListFragment extends BaseNetIotCommunicateSheetDialog
         String cmdStr = queryCmdResult.getResponseContent();
         IOTCommandType type = IOTStringUtil.extractCommandType(queryCmdResult.getCmdEngName());
         switch (type) {
-            case VMS_MD_DELETE_TERMINAL: {//删除终端设备
-                CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
-                if (!cmdResult.isSucceed()) {
-                    String errMsg = String.format("%s %s", "删除终端出错!", cmdResult.getReason());
-                    Timber.e(errMsg);
-                    ToastUtils.show(errMsg);
-                    return;
-                }
-                doAfterSetting();
-            }
-            break;
-
             case VMS_MD_GET_GATEWAY_STATUS: {//获取网关的状态
                 IOTCommandResult<VmsAisleTerminalInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
@@ -285,13 +273,25 @@ public class NetVmsTerminalListFragment extends BaseNetIotCommunicateSheetDialog
                 VmsAisleTerminalInfo vmsAisleTerminalInfo = commandResult.getResult();
                 modifyAisleTerminalInfo(vmsAisleTerminalInfo);
 
-                if (vmsAisleTerminalInfo.getTerminal().size() == 0) {
+                if (vmsAisleTerminalInfo == null || vmsAisleTerminalInfo.getTerminal() == null || vmsAisleTerminalInfo.getTerminal().size() == 0) {
                     adapter.setEmptyView(R.layout.empty_view);
                     return;
                 }
                 vmsTerminalInfoList.clear();
                 vmsTerminalInfoList.addAll(vmsAisleTerminalInfo.getTerminal());
                 adapter.notifyDataSetChanged();
+            }
+            break;
+
+            case VMS_MD_DELETE_TERMINAL: {//删除终端设备
+                CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
+                if (!cmdResult.isSucceed()) {
+                    String errMsg = String.format("%s %s", "删除终端出错!", cmdResult.getReason());
+                    Timber.e(errMsg);
+                    ToastUtils.show(errMsg);
+                    return;
+                }
+                doAfterSetting();
             }
             break;
         }

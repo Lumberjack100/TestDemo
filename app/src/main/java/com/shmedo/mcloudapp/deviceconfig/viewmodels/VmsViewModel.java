@@ -22,6 +22,10 @@ public class VmsViewModel extends ViewModel {
         return cacheVmsTerminalListLiveData;
     }
 
+    /**
+     * 添加 Vms 挂载的终端设备到缓存列表中
+     * @param tempList
+     */
     public void addCacheTerminalList(List<VmsTerminalInfo> tempList) {
         if (tempList == null || tempList.size() == 0)
             return;
