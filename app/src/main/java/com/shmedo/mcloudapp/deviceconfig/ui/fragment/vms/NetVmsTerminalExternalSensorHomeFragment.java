@@ -19,15 +19,18 @@ import com.shmedo.core.AppContants;
 import com.shmedo.core.util.DensityUtil;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.view.recycleviewitemdivider.GridSpacingItemDecoration;
+import com.shmedo.mcloudapp.deviceconfig.model.DispatchCmdItem;
+import com.shmedo.mcloudapp.deviceconfig.model.QueryCmdResult;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.vms.VmsTerminalExternalSensorConfigActivity;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.netcommon.BaseNetIotCommunicateFragment;
+import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfo;
 import com.shmedo.mcloudapp.projects.model.VmsTerminalSensorItem;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 import com.zhy.adapter.recyclerview.base.CommonViewHolder;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -36,10 +39,10 @@ import timber.log.Timber;
 
 /**
  * 创建者:   gonghe <br/>
- * 创建时间:  2020/11/23 <br/>
- * 描述：      Vms终端扩展传感器主页面
+ * 创建时间:  3/11/21 <br/>
+ * 描述：      Vms终端4g 模式扩展传感器主页面
  */
-public class TcpVmsTerminalExternalSensorHomeFragment extends BaseVmsTcpCommunicateFragment {
+public class NetVmsTerminalExternalSensorHomeFragment extends BaseNetIotCommunicateFragment {
 
     @BindView(R.id.recyclerview_sensor)
     RecyclerView mRecyclerViewSensor;
@@ -55,9 +58,10 @@ public class TcpVmsTerminalExternalSensorHomeFragment extends BaseVmsTcpCommunic
     private int sensorIndex = 0;//接入的传感器索引号
 
 
-    public static TcpVmsTerminalExternalSensorHomeFragment newInstance(String sn) {
-        TcpVmsTerminalExternalSensorHomeFragment fragment = new TcpVmsTerminalExternalSensorHomeFragment();
+    public static NetVmsTerminalExternalSensorHomeFragment newInstance(ProjectDeviceInfo projectDeviceInfo, String sn) {
+        NetVmsTerminalExternalSensorHomeFragment fragment = new NetVmsTerminalExternalSensorHomeFragment();
         Bundle args = new Bundle();
+        args.putParcelable(PRO_DEVICE_INFO, projectDeviceInfo);
         args.putString(AppContants.Extras.CUR_DEVICE_SN, sn);
         fragment.setArguments(args);
         return fragment;
@@ -88,7 +92,7 @@ public class TcpVmsTerminalExternalSensorHomeFragment extends BaseVmsTcpCommunic
         sensorIndex = 0;
         sensorHashMap.clear();
         sensorItemList.clear();
-//        startProgressRunnable("刷新数据...", QUERY_CMD_DELAY_MILLIS);
+        showProgressDialog("处理中...");
         queryTerminalAisleParamInfo();
     }
 
@@ -115,13 +119,9 @@ public class TcpVmsTerminalExternalSensorHomeFragment extends BaseVmsTcpCommunic
                 if (isDoubleClick(view)) {
                     return;
                 }
-                if (!tcpViewModel.getConnectStatus()) {
-                    ToastUtils.show(getString(R.string.tcp_config_disconnect_warn));
-                    return;
-                }
                 VmsTerminalSensorItem sensorItem = sensorItemList.get(position);
                 VmsTerminalSensorInfo sensorInfo = sensorHashMap.get(sensorItem.getChannel());
-                VmsTerminalExternalSensorConfigActivity.startActivity(mActivity, AppContants.CommunicationWay.TCP_CONNECT, sensorInfo);
+                VmsTerminalExternalSensorConfigActivity.startActivity(mActivity, projectDeviceInfo, sensorInfo);
             }
 
             @Override
@@ -138,21 +138,78 @@ public class TcpVmsTerminalExternalSensorHomeFragment extends BaseVmsTcpCommunic
     private void queryTerminalAisleParamInfo() {
         GetVmsTerminalSensorParamsEntity entity = new GetVmsTerminalSensorParamsEntity(sn, sensorIndex);
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.VMS_MD_GET_TERMINAL_CHL, entity);
-        sendCommand(command);
+        doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
     }
 
+    /**
+     * 调用指令下发/透传接口结果返回
+     *
+     * @param dispatchCmdItemList
+     */
     @Override
-    protected void parseResponseMessage(@NotNull String cmdStr) {
-        setResultData(cmdStr);
+    protected void onDispatchCmdResult(List<DispatchCmdItem> dispatchCmdItemList, String cmdStr) {
+        if (dispatchCmdItemList == null || dispatchCmdItemList.size() == 0) {
+            dismissProgressDialog();
+            showDispatchFailedDialog(cmdStr);
+            return;
+        }
+        msgIDList.clear();
+        for (DispatchCmdItem cmdItem : dispatchCmdItemList) {
+            msgIDList.add(cmdItem.getMsgID());
+        }
+        if (msgIDList != null && msgIDList.size() > 0) {
+            startQueryCmdResponseRunnable(2000);
+        }
     }
 
-    private void setResultData(final String cmdStr) {
-        IOTCommandType type = IOTStringUtil.extractCommandType(cmdStr);
+    /**
+     * 指令下发失败弹框
+     */
+    private void showDispatchFailedDialog(String cmdStr) {
+        ToastUtils.show("下发指令失败");
+    }
+
+    /**
+     * 查询指令响应结果出错
+     *
+     * @param errMsg
+     */
+    @Override
+    protected void onQueryCmdResponseResultError(String errMsg) {
+        super.onQueryCmdResponseResultError(errMsg);
+        ToastUtils.show("指令响应错误");
+    }
+
+    /**
+     * 查询指令响应结果超时
+     *
+     * @param queryCmdResult
+     */
+    @Override
+    protected void onQueryCmdResponseResultTimeOut(QueryCmdResult queryCmdResult) {
+        super.onQueryCmdResponseResultTimeOut(queryCmdResult);
+        ToastUtils.show("指令响应超时");
+    }
+
+    /**
+     * 查询指令响应结果成功
+     *
+     * @param queryCmdResult
+     */
+    @Override
+    protected void onQueryCmdResponseResultSuccess(QueryCmdResult queryCmdResult) {
+//        super.onQueryCmdResponseResultSuccess(queryCmdResult);
+        setResultData(queryCmdResult);
+    }
+
+    private void setResultData(QueryCmdResult queryCmdResult) {
+        String cmdStr = queryCmdResult.getResponseContent();
+        IOTCommandType type = IOTStringUtil.extractCommandType(queryCmdResult.getCmdEngName());
         switch (type) {
             case VMS_MD_GET_TERMINAL_CHL: {//获取终端传感器的参数
                 IOTCommandResult<VmsTerminalSensorInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
-                    stopProgressRunnable();
+                    dismissProgressDialog();
                     String errMsg = String.format("%s %s", "查询获取终端传感器参数出错!", commandResult.getMessage());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
@@ -166,13 +223,11 @@ public class TcpVmsTerminalExternalSensorHomeFragment extends BaseVmsTcpCommunic
                 if (sensorIndex < accessSum) {
                     queryTerminalAisleParamInfo();
                 } else {//所有通道的传感器参数都查询了
-                    stopProgressRunnable();
+                    dismissProgressDialog();
                     sensorAdapter.notifyDataSetChanged();
                 }
             }
-
             default:
-                super.parseResponseMessage(cmdStr);
                 break;
         }
     }

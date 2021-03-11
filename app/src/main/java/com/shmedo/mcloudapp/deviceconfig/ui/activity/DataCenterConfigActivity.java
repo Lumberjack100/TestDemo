@@ -16,7 +16,6 @@ import com.shmedo.mcloudapp.deviceconfig.ui.fragment.netcommon.UniversalNetDataC
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.netcommon.UniversalNetDataCenterBasicConfigFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.tcpcommon.UniversalTcpDataCenterAdvancedConfigFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.tcpcommon.UniversalTcpDataCenterBasicConfigFragment;
-import com.shmedo.mcloudapp.deviceconfig.ui.fragment.vms.TcpVmsDataCenterSettingFragment;
 import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfo;
 
 /**
@@ -155,7 +154,7 @@ public class DataCenterConfigActivity extends BaseConfigFragmentContainerActivit
                 case AppContants.DeviceType.VMS:
                     if (configMethod == AppContants.DataCenterConfigMethod.BASIC_CONFIG) {
                     } else {
-                        fragment = TcpVmsDataCenterSettingFragment.newInstance(serverNumber, serverStatus);
+                        fragment = UniversalTcpDataCenterAdvancedConfigFragment.newInstance(serverNumber, serverStatus);
                     }
                     break;
             }

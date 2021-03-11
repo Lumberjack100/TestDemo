@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment;
 
 import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.BaseConfigFragmentContainerActivity;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.vms.NetVmsTerminalExternalSensorHomeFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.vms.TcpVmsTerminalExternalSensorHomeFragment;
 import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfo;
 
@@ -56,7 +57,7 @@ public class VmsTerminalExternalSensorHomeActivity extends BaseConfigFragmentCon
     @Override
     protected Fragment initFragment() {
         if (connectWay == AppContants.CommunicationWay.NET_PLATFORM_CONNECT) {
-//            fragment = NetVmsTerminalParamSettingFragment.newInstance(projectDeviceInfo, vmsTerminalInfo);
+            fragment = NetVmsTerminalExternalSensorHomeFragment.newInstance(projectDeviceInfo, sn);
 
         } else if (connectWay == AppContants.CommunicationWay.TCP_CONNECT) {
             fragment = TcpVmsTerminalExternalSensorHomeFragment.newInstance(sn);

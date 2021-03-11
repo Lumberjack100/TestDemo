@@ -31,11 +31,13 @@ import com.shmedo.configlibrary.iot.utils.IOTSensorUtil;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
 import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.R;
+import com.shmedo.mcloudapp.deviceconfig.model.DispatchCmdItem;
+import com.shmedo.mcloudapp.deviceconfig.model.QueryCmdResult;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.netcommon.BaseNetIotCommunicateFragment;
 import com.shmedo.mcloudapp.deviceconfig.view.sensor.vms.LinearParamView;
 import com.shmedo.mcloudapp.deviceconfig.view.sensor.vms.PolynomialParamView;
+import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfo;
 import com.shmedo.mcloudapp.util.KeyBordUtils;
-
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -47,10 +49,10 @@ import timber.log.Timber;
 
 /**
  * 创建者:   gonghe <br/>
- * 创建时间:  2020/11/27 <br/>
- * 描述：      Vms终端扩展传感器配置页面
+ * 创建时间:  3/11/21 <br/>
+ * 描述：     Vms终端4g 模式扩展传感器配置页面
  */
-public class TcpVmsTerminalExternalSensorParamFragment extends BaseVmsTcpCommunicateFragment {
+public class NetVmsTerminalExternalSensorParamFragment extends BaseNetIotCommunicateFragment {
     @BindView(R.id.contentLayout)
     ViewGroup contentLayout;
 
@@ -92,10 +94,10 @@ public class TcpVmsTerminalExternalSensorParamFragment extends BaseVmsTcpCommuni
 
     private boolean isSaveParamOperation = false;//判断当前是保存参数操作，还是关闭传感器开关操作
 
-
-    public static TcpVmsTerminalExternalSensorParamFragment newInstance(VmsTerminalSensorInfo sensorInfo) {
-        TcpVmsTerminalExternalSensorParamFragment fragment = new TcpVmsTerminalExternalSensorParamFragment();
+    public static NetVmsTerminalExternalSensorParamFragment newInstance(ProjectDeviceInfo projectDeviceInfo, VmsTerminalSensorInfo sensorInfo) {
+        NetVmsTerminalExternalSensorParamFragment fragment = new NetVmsTerminalExternalSensorParamFragment();
         Bundle args = new Bundle();
+        args.putParcelable(PRO_DEVICE_INFO, projectDeviceInfo);
         args.putParcelable(AppContants.Extras.SENSOR_PARAM, sensorInfo);
         fragment.setArguments(args);
         return fragment;
@@ -108,6 +110,7 @@ public class TcpVmsTerminalExternalSensorParamFragment extends BaseVmsTcpCommuni
             sensorInfo = getArguments().getParcelable(AppContants.Extras.SENSOR_PARAM);
         }
     }
+
 
     @Override
     protected int getLayoutId() {
@@ -190,11 +193,6 @@ public class TcpVmsTerminalExternalSensorParamFragment extends BaseVmsTcpCommuni
         mSbSensorEnable.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (!tcpViewModel.getConnectStatus()) {
-                    ToastUtils.show(getString(R.string.tcp_config_disconnect_warn));
-                    mSbSensorEnable.setCheckedImmediatelyNoEvent(!isChecked);
-                    return;
-                }
                 if (!isChecked) {
                     showCloseSwitchButtonDialog("确定不接入此通道传感器吗？");
                 } else {
@@ -246,7 +244,8 @@ public class TcpVmsTerminalExternalSensorParamFragment extends BaseVmsTcpCommuni
         entity.setInsert("1");
 
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.VMS_MD_SET_TERMINAL_CHL, entity);
-        sendCommand(command);
+        showProgressDialog("处理中...");
+        doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
     }
 
     /**
@@ -260,7 +259,8 @@ public class TcpVmsTerminalExternalSensorParamFragment extends BaseVmsTcpCommuni
 
         isSaveParamOperation = false;
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.VMS_MD_SET_TERMINAL_CHL, entity);
-        sendCommand(command);
+        showProgressDialog("处理中...");
+        doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
     }
 
     @OnClick({R.id.calculationLayout, R.id.sensorNameLayout, R.id.btn_confirm})
@@ -272,10 +272,6 @@ public class TcpVmsTerminalExternalSensorParamFragment extends BaseVmsTcpCommuni
             showcSensorNameChooseDialog();
         } else if (id == R.id.btn_confirm) {
             KeyBordUtils.hideSoftKeyboard(view);
-            if (!tcpViewModel.getConnectStatus()) {
-                ToastUtils.show(getString(R.string.tcp_config_disconnect_warn));
-                return;
-            }
             if (!checkValueIsValid()) {
                 Timber.w("传感器参数存在错误!");
                 return;
@@ -394,18 +390,77 @@ public class TcpVmsTerminalExternalSensorParamFragment extends BaseVmsTcpCommuni
 
         isSaveParamOperation = true;
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.VMS_MD_SET_TERMINAL_CHL, sensorParamsEntity);
-        sendCommand(command);
+        showProgressDialog("处理中...");
+        doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
     }
 
+    /**
+     * 调用指令下发/透传接口结果返回
+     *
+     * @param dispatchCmdItemList
+     */
     @Override
-    protected void parseResponseMessage(@NotNull String cmdStr) {
-        setResultData(cmdStr);
+    protected void onDispatchCmdResult(List<DispatchCmdItem> dispatchCmdItemList, String cmdStr) {
+        if (dispatchCmdItemList == null || dispatchCmdItemList.size() == 0) {
+            dismissProgressDialog();
+            showDispatchFailedDialog(cmdStr);
+            return;
+        }
+        msgIDList.clear();
+        for (DispatchCmdItem cmdItem : dispatchCmdItemList) {
+            msgIDList.add(cmdItem.getMsgID());
+        }
+        if (msgIDList != null && msgIDList.size() > 0) {
+            startQueryCmdResponseRunnable(2000);
+        }
     }
 
-    private void setResultData(final String cmdStr) {
-        IOTCommandType type = IOTStringUtil.extractCommandType(cmdStr);
+    /**
+     * 指令下发失败弹框
+     */
+    private void showDispatchFailedDialog(String cmdStr) {
+        ToastUtils.show("下发指令失败");
+    }
+
+    /**
+     * 查询指令响应结果出错
+     *
+     * @param errMsg
+     */
+    @Override
+    protected void onQueryCmdResponseResultError(String errMsg) {
+        super.onQueryCmdResponseResultError(errMsg);
+        ToastUtils.show("指令响应错误");
+    }
+
+    /**
+     * 查询指令响应结果超时
+     *
+     * @param queryCmdResult
+     */
+    @Override
+    protected void onQueryCmdResponseResultTimeOut(QueryCmdResult queryCmdResult) {
+        super.onQueryCmdResponseResultTimeOut(queryCmdResult);
+        ToastUtils.show("指令响应超时");
+    }
+
+    /**
+     * 查询指令响应结果成功
+     *
+     * @param queryCmdResult
+     */
+    @Override
+    protected void onQueryCmdResponseResultSuccess(QueryCmdResult queryCmdResult) {
+//        super.onQueryCmdResponseResultSuccess(queryCmdResult);
+        setResultData(queryCmdResult);
+    }
+
+    private void setResultData(QueryCmdResult queryCmdResult) {
+        String cmdStr = queryCmdResult.getResponseContent();
+        IOTCommandType type = IOTStringUtil.extractCommandType(queryCmdResult.getCmdEngName());
         switch (type) {
             case VMS_MD_SET_TERMINAL_CHL: {//设置Vms终端某个通道下传感器参数
+                dismissProgressDialog();
                 CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
                 if (!cmdResult.isSucceed()) {
                     String errMsg = String.format("%s %s", "设置参数失败!", cmdResult.getReason());
@@ -418,7 +473,6 @@ public class TcpVmsTerminalExternalSensorParamFragment extends BaseVmsTcpCommuni
             break;
 
             default:
-                super.parseResponseMessage(cmdStr);
                 break;
         }
     }
@@ -433,15 +487,12 @@ public class TcpVmsTerminalExternalSensorParamFragment extends BaseVmsTcpCommuni
 
     @Override
     public boolean onBackPressed() {
-        if (tcpViewModel.getConnectStatus()) {
-            if (checkValueIsChange()) {
-                warnNotYetSettingBeforeLeavePage();
-                return true;
-            } else {
-                return false;
-            }
+        if (checkValueIsChange()) {
+            warnNotYetSettingBeforeLeavePage();
+            return true;
+        } else {
+            return false;
         }
-        return false;
     }
 
     private boolean checkValueIsChange() {
