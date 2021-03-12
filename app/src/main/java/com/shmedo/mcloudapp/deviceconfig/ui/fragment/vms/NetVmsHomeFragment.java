@@ -131,6 +131,7 @@ public class NetVmsHomeFragment extends BaseNetIotCommunicateFragment {
 
     private void startRefreshRunnable(long delayMillis) {
         if (refreshRunnable == null) {
+            swipeRefresh.setRefreshing(true);
             refreshRunnable = new RefreshRunnable();
             myHander.postDelayed(refreshRunnable, delayMillis);
         }
@@ -164,7 +165,6 @@ public class NetVmsHomeFragment extends BaseNetIotCommunicateFragment {
         vmsViewModel = getApplicationScopeViewModel(VmsViewModel.class);
         observerRefreshTerminal();
 
-        swipeRefresh.setRefreshing(true);
         //查询网关基本信息
         getGatewayBaseInfo();
     }
@@ -226,6 +226,7 @@ public class NetVmsHomeFragment extends BaseNetIotCommunicateFragment {
             @Override
             public void onChanged(Boolean isRefresh) {
                 if (isRefresh) {
+                    startRefreshRunnable(40000);
                     getGatewayAisleInfo(VmsAisleNumber.NUMBER_TWO);
                 }
             }
@@ -248,6 +249,10 @@ public class NetVmsHomeFragment extends BaseNetIotCommunicateFragment {
                     return;
                 }
                 VmsAisleInfo vmsAisleInfo = vmsAisleInfoList.get(position);
+                if (vmsAisleInfo.getTerminalnum().trim().equals("0")) {
+                    ToastUtils.show("此通道下没有接入终端设备");
+                    return;
+                }
                 vmsTerminalListFragment = new NetVmsTerminalListFragment(projectDeviceInfo, vmsAisleInfo);
                 vmsTerminalListFragment.show(getChildFragmentManager(), "dialog");
             }
@@ -263,7 +268,7 @@ public class NetVmsHomeFragment extends BaseNetIotCommunicateFragment {
         //断开/重新连接
         int id = v.getId();
         if (id == R.id.search_placeholder) {
-            VmsTerminalSearchActivity.startActivity(mActivity);
+            VmsTerminalSearchActivity.startActivity(mActivity, projectDeviceInfo);
         }
     }
 

@@ -35,6 +35,7 @@ import com.shmedo.configlibrary.iot.model.vms.VmsAisleTerminalInfo;
 import com.shmedo.configlibrary.iot.model.vms.VmsBasicInfo;
 import com.shmedo.configlibrary.iot.model.vms.VmsTerminalInfo;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
+import com.shmedo.core.AppContants;
 import com.shmedo.core.util.DensityUtil;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.view.recycleviewitemdivider.GridSpacingItemDecoration;
@@ -132,6 +133,7 @@ public class TcpVmsHomeFragment extends BaseVmsTcpCommunicateFragment {
 
     private void startRefreshRunnable(long delayMillis) {
         if (refreshRunnable == null) {
+            swipeRefresh.setRefreshing(true);
             refreshRunnable = new RefreshRunnable();
             myHander.postDelayed(refreshRunnable, delayMillis);
         }
@@ -194,6 +196,7 @@ public class TcpVmsHomeFragment extends BaseVmsTcpCommunicateFragment {
             @Override
             public void onChanged(Boolean isRefresh) {
                 if (isRefresh) {
+                    startRefreshRunnable(WRITE_TIME_OUT_SECOND);
                     getGatewayAisleInfo(VmsAisleNumber.NUMBER_TWO);
                 }
             }
@@ -218,7 +221,6 @@ public class TcpVmsHomeFragment extends BaseVmsTcpCommunicateFragment {
         updateViewStateByConnectState(tcpConnectionState == TcpConnectionState.CONNECT_SUCCESS);
 
         if (tcpConnectionState == TcpConnectionState.CONNECT_SUCCESS) {
-            swipeRefresh.setRefreshing(true);
             //建立通讯连接后，查询网关基本信息
             getGatewayBaseInfo();
 
@@ -265,8 +267,11 @@ public class TcpVmsHomeFragment extends BaseVmsTcpCommunicateFragment {
                     ToastUtils.show(getString(R.string.tcp_config_disconnect_warn));
                     return;
                 }
-
                 VmsAisleInfo vmsAisleInfo = vmsAisleInfoList.get(position);
+                if (vmsAisleInfo.getTerminalnum().trim().equals("0")) {
+                    ToastUtils.show("此通道下没有接入终端设备");
+                    return;
+                }
                 tcpVmsTerminalListFragment = new TcpVmsTerminalListFragment(vmsAisleInfo);
                 tcpVmsTerminalListFragment.show(getChildFragmentManager(), "dialog");
             }
@@ -290,7 +295,7 @@ public class TcpVmsHomeFragment extends BaseVmsTcpCommunicateFragment {
                 showDisconnectDialog(getResources().getString(R.string.disconnect_device));
             }
         } else if (id == R.id.search_placeholder) {
-            VmsTerminalSearchActivity.startActivity(mActivity);
+            VmsTerminalSearchActivity.startActivity(mActivity, AppContants.CommunicationWay.TCP_CONNECT);
         }
     }
 
@@ -477,7 +482,7 @@ public class TcpVmsHomeFragment extends BaseVmsTcpCommunicateFragment {
         }
     }
 
-    private void scrollToEnd(){
+    private void scrollToEnd() {
         nestedScrollView.post(new Runnable() {
             @Override
             public void run() {

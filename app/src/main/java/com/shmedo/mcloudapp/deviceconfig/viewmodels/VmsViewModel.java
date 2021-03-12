@@ -24,6 +24,7 @@ public class VmsViewModel extends ViewModel {
 
     /**
      * 添加 Vms 挂载的终端设备到缓存列表中
+     *
      * @param tempList
      */
     public void addCacheTerminalList(List<VmsTerminalInfo> tempList) {
@@ -50,7 +51,9 @@ public class VmsViewModel extends ViewModel {
     }
 
     public void clearCacheTerminalList() {
-        cacheVmsTerminalListLiveData.postValue(null);
+        List<VmsTerminalInfo> cacheList = cacheVmsTerminalListLiveData.getValue();
+        if (cacheList != null)
+            cacheList.clear();
     }
 
     public ProtectedUnPeekLiveData<Boolean> getVmsRefreshTerminal() {
