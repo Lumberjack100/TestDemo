@@ -48,8 +48,8 @@ import timber.log.Timber;
  * 描述：    M20 数据中心高级参数配置页面
  */
 public class BleM20DataCenterAdvancedConfigFragment extends BaseGOCBleIotCommunicateFragment {
-    @BindView(R.id.maskLayerChild)
-    ViewGroup maskLayerLayout;
+    @BindView(R.id.contentLayout)
+    ViewGroup contentLayout;
 
     @BindView(R.id.centerEnableSBtn)
     SwitchButton mSbCenterEnable;
@@ -111,9 +111,8 @@ public class BleM20DataCenterAdvancedConfigFragment extends BaseGOCBleIotCommuni
     private String productId;//产品 Id
     private String registerCode;//注册码
 
-    private boolean centerEnableInitial;//数据中心开关初始状态，用于判断开关是否有打开后没有设置参数就返回
+    private boolean enableButtonOriginalState;//数据中心开关初始状态，用于判断开关是否有打开后没有设置参数就返回
     private boolean isSaveParamOperation = false;//判断当前是保存参数操作，还是关闭数据中心操作
-
     private boolean isResultOK = false;//返回的结果是否是 Activity.RESULT_OK
 
 
@@ -160,13 +159,13 @@ public class BleM20DataCenterAdvancedConfigFragment extends BaseGOCBleIotCommuni
 
         //数据中心地址为空表示数据中心未启用
         if (!TextUtils.isEmpty(serverStatus) && serverStatus.contains("未开启")) {
-            centerEnableInitial = false;
+            enableButtonOriginalState = false;
             mSbCenterEnable.setCheckedImmediatelyNoEvent(false);
-            maskLayerLayout.setVisibility(View.VISIBLE);
+            contentLayout.setVisibility(View.GONE);
         } else {
-            centerEnableInitial = true;
+            enableButtonOriginalState = true;
             mSbCenterEnable.setCheckedImmediatelyNoEvent(true);
-            maskLayerLayout.setVisibility(View.GONE);
+            contentLayout.setVisibility(View.VISIBLE);
         }
     }
 
@@ -183,7 +182,7 @@ public class BleM20DataCenterAdvancedConfigFragment extends BaseGOCBleIotCommuni
                 if (!isChecked) {
                     showCloseSwitchButtonDialog("确定要关闭数据中心？");
                 } else {
-                    maskLayerLayout.setVisibility(View.GONE);
+                    contentLayout.setVisibility(View.VISIBLE);
                 }
             }
         });
@@ -207,8 +206,8 @@ public class BleM20DataCenterAdvancedConfigFragment extends BaseGOCBleIotCommuni
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                         dialog.dismiss();
                         closeDataServer();//关闭服务器
-                        maskLayerLayout.setVisibility(View.VISIBLE);
-                        centerEnableInitial = mSbCenterEnable.isChecked();
+                        contentLayout.setVisibility(View.GONE);
+                        enableButtonOriginalState = mSbCenterEnable.isChecked();
                     }
                 }).onNegative(new MaterialDialog.SingleButtonCallback() {
                     @Override
@@ -442,7 +441,7 @@ public class BleM20DataCenterAdvancedConfigFragment extends BaseGOCBleIotCommuni
         dataCenterEntity.setProjid(productId);
         dataCenterEntity.setRegcode(registerCode);
 
-        centerEnableInitial = mSbCenterEnable.isChecked();
+        enableButtonOriginalState = mSbCenterEnable.isChecked();
         isSaveParamOperation = true;
 
         errMsg = "发送指令超时,请稍后尝试";
@@ -599,7 +598,7 @@ public class BleM20DataCenterAdvancedConfigFragment extends BaseGOCBleIotCommuni
         if (!mSbCenterEnable.isChecked()) {
             return false;
         }
-        if (centerEnableInitial != mSbCenterEnable.isChecked()) {
+        if (enableButtonOriginalState != mSbCenterEnable.isChecked()) {
             return true;
         }
 

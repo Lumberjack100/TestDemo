@@ -52,8 +52,8 @@ import timber.log.Timber;
  */
 public class UniversalNetDataCenterAdvancedConfigFragment extends BaseNetIotCommunicateFragment {
 
-    @BindView(R.id.maskLayerChild)
-    ViewGroup maskLayerLayout;
+    @BindView(R.id.contentLayout)
+    ViewGroup contentLayout;
 
     @BindView(R.id.centerEnableSBtn)
     SwitchButton mSbCenterEnable;
@@ -141,7 +141,7 @@ public class UniversalNetDataCenterAdvancedConfigFragment extends BaseNetIotComm
 
     @Override
     protected int getLayoutId() {
-        return R.layout.universal_net_data_center_advanced_config_fragment;
+        return R.layout.universal_data_center_advanced_config_fragment;
     }
 
     @Override
@@ -166,11 +166,11 @@ public class UniversalNetDataCenterAdvancedConfigFragment extends BaseNetIotComm
         if (!TextUtils.isEmpty(serverStatus) && serverStatus.contains("未开启")) {
             enableButtonOriginalState = false;
             mSbCenterEnable.setCheckedImmediatelyNoEvent(false);
-            maskLayerLayout.setVisibility(View.VISIBLE);
+            contentLayout.setVisibility(View.GONE);
         } else {
             enableButtonOriginalState = true;
             mSbCenterEnable.setCheckedImmediatelyNoEvent(true);
-            maskLayerLayout.setVisibility(View.GONE);
+            contentLayout.setVisibility(View.VISIBLE);
         }
     }
 
@@ -181,7 +181,7 @@ public class UniversalNetDataCenterAdvancedConfigFragment extends BaseNetIotComm
                 if (!isChecked) {
                     showCloseSwitchButtonDialog("确定要关闭数据中心？");
                 } else {
-                    maskLayerLayout.setVisibility(View.GONE);
+                    contentLayout.setVisibility(View.VISIBLE);
                 }
             }
         });
@@ -205,7 +205,7 @@ public class UniversalNetDataCenterAdvancedConfigFragment extends BaseNetIotComm
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                         dialog.dismiss();
                         closeDataServer();//关闭服务器
-                        maskLayerLayout.setVisibility(View.VISIBLE);
+                        contentLayout.setVisibility(View.GONE);
                         enableButtonOriginalState = mSbCenterEnable.isChecked();
                     }
                 }).onNegative(new MaterialDialog.SingleButtonCallback() {

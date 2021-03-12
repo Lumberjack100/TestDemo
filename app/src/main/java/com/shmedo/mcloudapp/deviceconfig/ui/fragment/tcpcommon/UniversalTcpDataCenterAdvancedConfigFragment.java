@@ -134,7 +134,7 @@ public class UniversalTcpDataCenterAdvancedConfigFragment extends BaseTcpIotComm
 
     @Override
     protected int getLayoutId() {
-        return R.layout.universal_net_data_center_advanced_config_fragment;
+        return R.layout.universal_data_center_advanced_config_fragment;
     }
 
     @Override

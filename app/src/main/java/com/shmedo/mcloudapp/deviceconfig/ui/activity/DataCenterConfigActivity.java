@@ -105,11 +105,7 @@ public class DataCenterConfigActivity extends BaseConfigFragmentContainerActivit
         if (connectWay == AppContants.CommunicationWay.NET_PLATFORM_CONNECT) {
             switch (deviceType) {
                 case AppContants.DeviceType.DAS:
-                    break;
-
                 case AppContants.DeviceType.ADME:
-                    break;
-
                 case AppContants.DeviceType.M20:
                 case AppContants.DeviceType.E40:
                 case AppContants.DeviceType.VMS:
@@ -143,16 +139,10 @@ public class DataCenterConfigActivity extends BaseConfigFragmentContainerActivit
             }
         }else if (connectWay == AppContants.CommunicationWay.TCP_CONNECT) {
             switch (deviceType) {
+                case AppContants.DeviceType.VMS:
                 case AppContants.DeviceType.E40:
                     if (configMethod == AppContants.DataCenterConfigMethod.BASIC_CONFIG) {
                         fragment = UniversalTcpDataCenterBasicConfigFragment.newInstance(serverNumber, serverStatus);
-                    } else {
-                        fragment = UniversalTcpDataCenterAdvancedConfigFragment.newInstance(serverNumber, serverStatus);
-                    }
-                    break;
-
-                case AppContants.DeviceType.VMS:
-                    if (configMethod == AppContants.DataCenterConfigMethod.BASIC_CONFIG) {
                     } else {
                         fragment = UniversalTcpDataCenterAdvancedConfigFragment.newInstance(serverNumber, serverStatus);
                     }

@@ -47,9 +47,6 @@ public class BleAdmeDataCenterBasicConfigFragment extends BaseUSRBleIotCommunica
     @BindView(R.id.contentLayout)
     ViewGroup contentLayout;
 
-    @BindView(R.id.maskLayerChild)
-    ViewGroup maskLayerLayout;
-
     @BindView(R.id.centerEnableSBtn)
     SwitchButton mSbCenterEnable;
 
@@ -69,7 +66,7 @@ public class BleAdmeDataCenterBasicConfigFragment extends BaseUSRBleIotCommunica
     private String dataServerAddress;//数据服务器地址
     private String dataServerPort;//数据服务器端口
 
-    private boolean centerEnableInitial;//数据中心开关初始状态，用于判断开关是否有打开后没有设置参数就返回
+    private boolean enableButtonOriginalState;//数据中心开关初始状态，用于判断开关是否有打开后没有设置参数就返回
     private boolean isSaveParamOperation = false;//判断当前是保存参数操作，还是关闭数据中心操作
     private boolean isResultOK = false;//返回的结果是否是 Activity.RESULT_OK
 
@@ -93,7 +90,7 @@ public class BleAdmeDataCenterBasicConfigFragment extends BaseUSRBleIotCommunica
 
     @Override
     protected int getLayoutId() {
-        return R.layout.ble_adme_data_center_basic_config_fragment;
+        return R.layout.universal_data_center_basic_config_fragment;
     }
 
 
@@ -111,13 +108,13 @@ public class BleAdmeDataCenterBasicConfigFragment extends BaseUSRBleIotCommunica
 
         //数据中心地址为空表示数据中心未启用
         if (!TextUtils.isEmpty(serverStatus) && serverStatus.contains("未开启")) {
-            centerEnableInitial = false;
+            enableButtonOriginalState = false;
             mSbCenterEnable.setCheckedImmediatelyNoEvent(false);
-            maskLayerLayout.setVisibility(View.VISIBLE);
+            contentLayout.setVisibility(View.GONE);
         } else {
-            centerEnableInitial = true;
+            enableButtonOriginalState = true;
             mSbCenterEnable.setCheckedImmediatelyNoEvent(true);
-            maskLayerLayout.setVisibility(View.GONE);
+            contentLayout.setVisibility(View.VISIBLE);
         }
     }
 
@@ -130,11 +127,10 @@ public class BleAdmeDataCenterBasicConfigFragment extends BaseUSRBleIotCommunica
                     mSbCenterEnable.setCheckedImmediatelyNoEvent(!isChecked);
                     return;
                 }
-
                 if (!isChecked) {
                     showCloseSwitchButtonDialog("确定要关闭数据中心？");
                 } else {
-                    maskLayerLayout.setVisibility(View.GONE);
+                    contentLayout.setVisibility(View.VISIBLE);
                 }
             }
         });
@@ -158,8 +154,8 @@ public class BleAdmeDataCenterBasicConfigFragment extends BaseUSRBleIotCommunica
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                         dialog.dismiss();
                         closeDataServer();//关闭服务器
-                        maskLayerLayout.setVisibility(View.VISIBLE);
-                        centerEnableInitial = mSbCenterEnable.isChecked();
+                        contentLayout.setVisibility(View.GONE);
+                        enableButtonOriginalState = mSbCenterEnable.isChecked();
                     }
                 }).onNegative(new MaterialDialog.SingleButtonCallback() {
                     @Override
@@ -200,6 +196,9 @@ public class BleAdmeDataCenterBasicConfigFragment extends BaseUSRBleIotCommunica
 
     @OnClick({R.id.btn_confirm})
     public void onClick(View view) {
+        if (isDoubleClick(view)) {
+            return;
+        }
         int id = view.getId();
         if (id == R.id.btn_confirm) {
             KeyBordUtils.hideSoftKeyboard(view);
@@ -211,7 +210,6 @@ public class BleAdmeDataCenterBasicConfigFragment extends BaseUSRBleIotCommunica
                 Timber.w("参数存在错误!");
                 return;
             }
-
             processSave();
         }
     }
@@ -253,7 +251,7 @@ public class BleAdmeDataCenterBasicConfigFragment extends BaseUSRBleIotCommunica
         dataCenterEntity.setAddr(dataServerAddress);
         dataCenterEntity.setPort(dataServerPort);
 
-        centerEnableInitial = mSbCenterEnable.isChecked();
+        enableButtonOriginalState = mSbCenterEnable.isChecked();
         isSaveParamOperation = true;
 
         errMsg = "发送指令超时,请稍后尝试";
@@ -359,7 +357,7 @@ public class BleAdmeDataCenterBasicConfigFragment extends BaseUSRBleIotCommunica
         if (!mSbCenterEnable.isChecked()) {
             return false;
         }
-        if (centerEnableInitial != mSbCenterEnable.isChecked()) {
+        if (enableButtonOriginalState != mSbCenterEnable.isChecked()) {
             return true;
         }
 
