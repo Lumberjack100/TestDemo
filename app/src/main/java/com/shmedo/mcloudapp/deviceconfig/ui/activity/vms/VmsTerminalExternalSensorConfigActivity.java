@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.activity.result.ActivityResultLauncher;
 import androidx.fragment.app.Fragment;
 
 import com.shmedo.configlibrary.iot.model.vms.VmsTerminalSensorInfo;
@@ -21,20 +22,20 @@ import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfo;
 public class VmsTerminalExternalSensorConfigActivity extends BaseConfigFragmentContainerActivity {
     private VmsTerminalSensorInfo sensorInfo;
 
-    public static void startActivity(Context context, ProjectDeviceInfo projectDeviceInfo, VmsTerminalSensorInfo sensorInfo) {
+    public static void startActivity(Context context, ActivityResultLauncher<Intent> launcher, ProjectDeviceInfo projectDeviceInfo, VmsTerminalSensorInfo sensorInfo) {
         Intent intent = new Intent(context, VmsTerminalExternalSensorConfigActivity.class);
         intent.putExtra(PRO_DEVICE_INFO, projectDeviceInfo);
         intent.putExtra(AppContants.Extras.SENSOR_PARAM, sensorInfo);
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        context.startActivity(intent);
+        launcher.launch(intent);
     }
 
-    public static void startActivity(Context context, int connectWay, VmsTerminalSensorInfo sensorInfo) {
+    public static void startActivity(Context context, ActivityResultLauncher<Intent> launcher, int connectWay, VmsTerminalSensorInfo sensorInfo) {
         Intent intent = new Intent(context, VmsTerminalExternalSensorConfigActivity.class);
         intent.putExtra(AppContants.Extras.COMMUNICATION_WAY, connectWay);
         intent.putExtra(AppContants.Extras.SENSOR_PARAM, sensorInfo);
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        context.startActivity(intent);
+        launcher.launch(intent);
     }
 
 

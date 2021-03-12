@@ -47,88 +47,71 @@
 
         </RelativeLayout>
 
-        <FrameLayout
+        <LinearLayout
+            android:id="@+id/contentLayout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-            <LinearLayout
-                android:id="@+id/contentLayout"
+            <View
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
+                android:layout_height="14dp" />
 
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="14dp" />
+            <LinearLayout style="@style/Common_EditItem_LayoutStyle">
 
-                <LinearLayout style="@style/Common_EditItem_LayoutStyle">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="数据中心地址"
+                    android:textColor="@color/text_color_343434"
+                    android:textSize="@dimen/text_size_17" />
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="数据中心地址"
-                        android:textColor="@color/text_color_343434"
-                        android:textSize="@dimen/text_size_17" />
-
-                    <com.shmedo.mcloudapp.common.view.ClearEditText
-                        android:id="@+id/et_data_server_address"
-                        style="@style/DataCenter_EditText_Style"
-                        android:hint="请输入" />
-
-                </LinearLayout>
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="0.5dp"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginEnd="16dp"
-                    android:background="@color/divider_line_bg_efefef" />
-
-                <LinearLayout style="@style/Common_EditItem_LayoutStyle">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="数据中心端口"
-                        android:textColor="@color/text_color_343434"
-                        android:textSize="@dimen/text_size_17" />
-
-                    <com.shmedo.mcloudapp.common.view.ClearEditText
-                        android:id="@+id/et_data_server_port"
-                        style="@style/DataCenter_EditText_Style"
-                        android:hint="请输入"
-                        android:inputType="number" />
-
-                </LinearLayout>
-
-                <Button
-                    android:id="@+id/btn_confirm"
-                    android:layout_width="match_parent"
-                    android:layout_height="46dp"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginTop="34dp"
-                    android:layout_marginEnd="18dp"
-                    android:layout_marginBottom="20dp"
-                    android:background="@drawable/btn_select"
-                    android:gravity="center"
-                    android:text="保存"
-                    android:textColor="@color/white"
-                    android:textSize="17sp" />
+                <com.shmedo.mcloudapp.common.view.ClearEditText
+                    android:id="@+id/et_data_server_address"
+                    style="@style/DataCenter_EditText_Style"
+                    android:hint="请输入" />
 
             </LinearLayout>
 
-            <RelativeLayout
-                android:id="@+id/maskLayerChild"
+            <View
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="#ccffffff"
-                android:clickable="true"
-                android:focusable="true"
-                android:visibility="gone">
+                android:layout_height="0.5dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:background="@color/divider_line_bg_efefef" />
 
-            </RelativeLayout>
+            <LinearLayout style="@style/Common_EditItem_LayoutStyle">
 
-        </FrameLayout>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="数据中心端口"
+                    android:textColor="@color/text_color_343434"
+                    android:textSize="@dimen/text_size_17" />
+
+                <com.shmedo.mcloudapp.common.view.ClearEditText
+                    android:id="@+id/et_data_server_port"
+                    style="@style/DataCenter_EditText_Style"
+                    android:hint="请输入"
+                    android:inputType="number" />
+
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/btn_confirm"
+                android:layout_width="match_parent"
+                android:layout_height="46dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="34dp"
+                android:layout_marginEnd="18dp"
+                android:layout_marginBottom="20dp"
+                android:background="@drawable/btn_select"
+                android:gravity="center"
+                android:text="保存"
+                android:textColor="@color/white"
+                android:textSize="17sp" />
+
+        </LinearLayout>
 
     </LinearLayout>
 

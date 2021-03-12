@@ -1,8 +1,14 @@
 package com.shmedo.mcloudapp.deviceconfig.ui.fragment.vms;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -54,9 +60,11 @@ public class NetVmsTerminalExternalSensorHomeFragment extends BaseNetIotCommunic
     protected HashMap<String, VmsTerminalSensorInfo> sensorHashMap = new HashMap<>();
 
     private String sn;
-    private int accessSum = 4;              //接入扩展传感器总数
+    private final int accessSum = 4;  //接入扩展传感器总数
     private int sensorIndex = 0;//接入的传感器索引号
 
+    private int curSensorIndex = -1;
+    private ActivityResultLauncher<Intent> resultLauncher;
 
     public static NetVmsTerminalExternalSensorHomeFragment newInstance(ProjectDeviceInfo projectDeviceInfo, String sn) {
         NetVmsTerminalExternalSensorHomeFragment fragment = new NetVmsTerminalExternalSensorHomeFragment();
@@ -73,6 +81,20 @@ public class NetVmsTerminalExternalSensorHomeFragment extends BaseNetIotCommunic
         if (getArguments() != null) {
             sn = getArguments().getString(AppContants.Extras.CUR_DEVICE_SN);
         }
+        resultLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                new ActivityResultCallback<ActivityResult>() {
+                    @Override
+                    public void onActivityResult(ActivityResult result) {
+                        if (result.getResultCode() == Activity.RESULT_OK) {
+                            if (curSensorIndex != -1) {
+                                sensorIndex = curSensorIndex;
+                                showProgressDialog("处理中...");
+                                queryTerminalAisleParamInfo();
+                            }
+                        }
+                    }
+                });
     }
 
     @Override
@@ -84,11 +106,6 @@ public class NetVmsTerminalExternalSensorHomeFragment extends BaseNetIotCommunic
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         initSensorAdapter();
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
         sensorIndex = 0;
         sensorHashMap.clear();
         sensorItemList.clear();
@@ -105,12 +122,7 @@ public class NetVmsTerminalExternalSensorHomeFragment extends BaseNetIotCommunic
         sensorAdapter = new CommonAdapter<VmsTerminalSensorItem>(mActivity, R.layout.item_vms_terminal_sensor, sensorItemList) {
             @Override
             protected void convert(CommonViewHolder holder, VmsTerminalSensorItem sensorItem, int position) {
-                if (sensorItem.isInsert()) {
-                    holder.setImageResource(R.id.iv_vms_terminal_sensor, R.drawable.ic_sensor_holder_bright);
-
-                } else {
-                    holder.setImageResource(R.id.iv_vms_terminal_sensor, R.drawable.ic_sensor_holder_gray);
-                }
+                holder.setImageResource(R.id.iv_vms_terminal_sensor, sensorItem.isInsert() ? R.drawable.ic_sensor_holder_bright : R.drawable.ic_sensor_holder_gray);
             }
         };
         sensorAdapter.setOnItemClickListener(new MultiItemTypeAdapter.OnItemClickListener() {
@@ -119,9 +131,10 @@ public class NetVmsTerminalExternalSensorHomeFragment extends BaseNetIotCommunic
                 if (isDoubleClick(view)) {
                     return;
                 }
+                curSensorIndex = position;
                 VmsTerminalSensorItem sensorItem = sensorItemList.get(position);
                 VmsTerminalSensorInfo sensorInfo = sensorHashMap.get(sensorItem.getChannel());
-                VmsTerminalExternalSensorConfigActivity.startActivity(mActivity, projectDeviceInfo, sensorInfo);
+                VmsTerminalExternalSensorConfigActivity.startActivity(mActivity, resultLauncher, projectDeviceInfo, sensorInfo);
             }
 
             @Override
@@ -218,11 +231,17 @@ public class NetVmsTerminalExternalSensorHomeFragment extends BaseNetIotCommunic
                 VmsTerminalSensorInfo sensorInfo = commandResult.getResult();
                 //处理此通道的传感器配置参数
                 processSensorParamsInfo(sensorInfo);
-                sensorIndex++;
-                //还有待查询通道的传感器
-                if (sensorIndex < accessSum) {
-                    queryTerminalAisleParamInfo();
-                } else {//所有通道的传感器参数都查询了
+
+                if (curSensorIndex == -1) {
+                    sensorIndex++;
+                    //还有待查询通道的传感器
+                    if (sensorIndex < accessSum) {
+                        queryTerminalAisleParamInfo();
+                    } else {//所有通道的传感器参数都查询了
+                        dismissProgressDialog();
+                        sensorAdapter.notifyDataSetChanged();
+                    }
+                } else {//只刷新单个通道的传感器数据
                     dismissProgressDialog();
                     sensorAdapter.notifyDataSetChanged();
                 }
@@ -236,15 +255,26 @@ public class NetVmsTerminalExternalSensorHomeFragment extends BaseNetIotCommunic
         if (sensorInfo == null)
             return;
 
-        sensorHashMap.put(sensorInfo.getChannel(), sensorInfo);
-        addSensorItem(sensorInfo);
+        if (curSensorIndex == -1) {
+            sensorHashMap.put(sensorInfo.getChannel(), sensorInfo);
+
+            VmsTerminalSensorItem sensorItem = new VmsTerminalSensorItem();
+            sensorItem.setChannel(sensorInfo.getChannel());
+            sensorItem.setInsert(sensorInfo.getInsert().trim().equals("1"));
+            sensorItemList.add(sensorItem);
+        } else {
+            sensorHashMap.remove(sensorInfo.getChannel());
+            sensorHashMap.put(sensorInfo.getChannel(), sensorInfo);
+
+            VmsTerminalSensorItem sensorItem = sensorItemList.get(curSensorIndex);
+            sensorItem.setChannel(sensorInfo.getChannel());
+            sensorItem.setInsert(sensorInfo.getInsert().trim().equals("1"));
+        }
     }
 
-    private void addSensorItem(VmsTerminalSensorInfo sensorInfo) {
-        VmsTerminalSensorItem sensorItem = new VmsTerminalSensorItem();
-        sensorItem.setChannel(sensorInfo.getChannel());
-        sensorItem.setInsert(sensorInfo.getInsert().trim().equals("1"));
-        sensorItem.setResId(R.drawable.ic_sensor_holder_bright);
-        sensorItemList.add(sensorItem);
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        curSensorIndex = -1;
     }
 }

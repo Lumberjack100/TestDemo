@@ -1,8 +1,14 @@
 package com.shmedo.mcloudapp.deviceconfig.ui.fragment.vms;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -54,6 +60,8 @@ public class TcpVmsTerminalExternalSensorHomeFragment extends BaseVmsTcpCommunic
     private int accessSum = 4;              //接入扩展传感器总数
     private int sensorIndex = 0;//接入的传感器索引号
 
+    private int curSensorIndex = -1;
+    private ActivityResultLauncher<Intent> resultLauncher;
 
     public static TcpVmsTerminalExternalSensorHomeFragment newInstance(String sn) {
         TcpVmsTerminalExternalSensorHomeFragment fragment = new TcpVmsTerminalExternalSensorHomeFragment();
@@ -69,6 +77,19 @@ public class TcpVmsTerminalExternalSensorHomeFragment extends BaseVmsTcpCommunic
         if (getArguments() != null) {
             sn = getArguments().getString(AppContants.Extras.CUR_DEVICE_SN);
         }
+        resultLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                new ActivityResultCallback<ActivityResult>() {
+                    @Override
+                    public void onActivityResult(ActivityResult result) {
+                        if (result.getResultCode() == Activity.RESULT_OK) {
+                            if (curSensorIndex != -1) {
+                                sensorIndex = curSensorIndex;
+                                queryTerminalAisleParamInfo();
+                            }
+                        }
+                    }
+                });
     }
 
     @Override
@@ -80,15 +101,9 @@ public class TcpVmsTerminalExternalSensorHomeFragment extends BaseVmsTcpCommunic
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         initSensorAdapter();
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
         sensorIndex = 0;
         sensorHashMap.clear();
         sensorItemList.clear();
-//        startProgressRunnable("刷新数据...", QUERY_CMD_DELAY_MILLIS);
         queryTerminalAisleParamInfo();
     }
 
@@ -101,12 +116,7 @@ public class TcpVmsTerminalExternalSensorHomeFragment extends BaseVmsTcpCommunic
         sensorAdapter = new CommonAdapter<VmsTerminalSensorItem>(mActivity, R.layout.item_vms_terminal_sensor, sensorItemList) {
             @Override
             protected void convert(CommonViewHolder holder, VmsTerminalSensorItem sensorItem, int position) {
-                if (sensorItem.isInsert()) {
-                    holder.setImageResource(R.id.iv_vms_terminal_sensor, R.drawable.ic_sensor_holder_bright);
-
-                } else {
-                    holder.setImageResource(R.id.iv_vms_terminal_sensor, R.drawable.ic_sensor_holder_gray);
-                }
+                holder.setImageResource(R.id.iv_vms_terminal_sensor, sensorItem.isInsert() ? R.drawable.ic_sensor_holder_bright : R.drawable.ic_sensor_holder_gray);
             }
         };
         sensorAdapter.setOnItemClickListener(new MultiItemTypeAdapter.OnItemClickListener() {
@@ -119,9 +129,10 @@ public class TcpVmsTerminalExternalSensorHomeFragment extends BaseVmsTcpCommunic
                     ToastUtils.show(getString(R.string.tcp_config_disconnect_warn));
                     return;
                 }
+                curSensorIndex = position;
                 VmsTerminalSensorItem sensorItem = sensorItemList.get(position);
                 VmsTerminalSensorInfo sensorInfo = sensorHashMap.get(sensorItem.getChannel());
-                VmsTerminalExternalSensorConfigActivity.startActivity(mActivity, AppContants.CommunicationWay.TCP_CONNECT, sensorInfo);
+                VmsTerminalExternalSensorConfigActivity.startActivity(mActivity, resultLauncher, AppContants.CommunicationWay.TCP_CONNECT, sensorInfo);
             }
 
             @Override
@@ -161,11 +172,17 @@ public class TcpVmsTerminalExternalSensorHomeFragment extends BaseVmsTcpCommunic
                 VmsTerminalSensorInfo sensorInfo = commandResult.getResult();
                 //处理此通道的传感器配置参数
                 processSensorParamsInfo(sensorInfo);
-                sensorIndex++;
-                //还有待查询通道的传感器
-                if (sensorIndex < accessSum) {
-                    queryTerminalAisleParamInfo();
-                } else {//所有通道的传感器参数都查询了
+
+                if (curSensorIndex == -1) {
+                    sensorIndex++;
+                    //还有待查询通道的传感器
+                    if (sensorIndex < accessSum) {
+                        queryTerminalAisleParamInfo();
+                    } else {//所有通道的传感器参数都查询了
+                        stopProgressRunnable();
+                        sensorAdapter.notifyDataSetChanged();
+                    }
+                } else {//只刷新单个通道的传感器数据
                     stopProgressRunnable();
                     sensorAdapter.notifyDataSetChanged();
                 }
@@ -181,15 +198,26 @@ public class TcpVmsTerminalExternalSensorHomeFragment extends BaseVmsTcpCommunic
         if (sensorInfo == null)
             return;
 
-        sensorHashMap.put(sensorInfo.getChannel(), sensorInfo);
-        addSensorItem(sensorInfo);
+        if (curSensorIndex == -1) {
+            sensorHashMap.put(sensorInfo.getChannel(), sensorInfo);
+
+            VmsTerminalSensorItem sensorItem = new VmsTerminalSensorItem();
+            sensorItem.setChannel(sensorInfo.getChannel());
+            sensorItem.setInsert(sensorInfo.getInsert().trim().equals("1"));
+            sensorItemList.add(sensorItem);
+        } else {
+            sensorHashMap.remove(sensorInfo.getChannel());
+            sensorHashMap.put(sensorInfo.getChannel(), sensorInfo);
+
+            VmsTerminalSensorItem sensorItem = sensorItemList.get(curSensorIndex);
+            sensorItem.setChannel(sensorInfo.getChannel());
+            sensorItem.setInsert(sensorInfo.getInsert().trim().equals("1"));
+        }
     }
 
-    private void addSensorItem(VmsTerminalSensorInfo sensorInfo) {
-        VmsTerminalSensorItem sensorItem = new VmsTerminalSensorItem();
-        sensorItem.setChannel(sensorInfo.getChannel());
-        sensorItem.setInsert(sensorInfo.getInsert().trim().equals("1"));
-        sensorItem.setResId(R.drawable.ic_sensor_holder_bright);
-        sensorItemList.add(sensorItem);
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        curSensorIndex = -1;
     }
 }

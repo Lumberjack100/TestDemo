@@ -1,5 +1,7 @@
 package com.shmedo.mcloudapp.deviceconfig.ui.fragment.vms;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.InputFilter;
 import android.text.TextUtils;
@@ -90,7 +92,9 @@ public class TcpVmsTerminalExternalSensorParamFragment extends BaseVmsTcpCommuni
     private int calculationPosOld;//计算方式索引
     private int sensorNamePosOld;// 传感器名称索引
 
-    private boolean isSaveParamOperation = false;//判断当前是保存参数操作，还是关闭传感器开关操作
+    private boolean enableButtonOriginalState;//数据中心开关初始状态，用于判断开关是否有打开后没有设置参数就返回
+    private boolean isSaveParamOperation = false;//判断当前是保存参数操作，还是关闭数据中心操作
+    private boolean isResultOK = false;//返回的结果是否是 Activity.RESULT_OK
 
 
     public static TcpVmsTerminalExternalSensorParamFragment newInstance(VmsTerminalSensorInfo sensorInfo) {
@@ -178,9 +182,11 @@ public class TcpVmsTerminalExternalSensorParamFragment extends BaseVmsTcpCommuni
 
         //为0表示未接入传感器
         if (sensorInfo.getInsert().trim().equals("0")) {
+            enableButtonOriginalState = false;
             mSbSensorEnable.setCheckedImmediatelyNoEvent(false);
             contentLayout.setVisibility(View.GONE);
         } else {
+            enableButtonOriginalState = true;
             mSbSensorEnable.setCheckedImmediatelyNoEvent(true);
             contentLayout.setVisibility(View.VISIBLE);
         }
@@ -198,7 +204,7 @@ public class TcpVmsTerminalExternalSensorParamFragment extends BaseVmsTcpCommuni
                 if (!isChecked) {
                     showCloseSwitchButtonDialog("确定不接入此通道传感器吗？");
                 } else {
-                    enableSensor();
+//                    enableSensor();
                     contentLayout.setVisibility(View.VISIBLE);
                 }
             }
@@ -224,6 +230,7 @@ public class TcpVmsTerminalExternalSensorParamFragment extends BaseVmsTcpCommuni
                         dialog.dismiss();
                         disableSensor();
                         contentLayout.setVisibility(View.GONE);
+                        enableButtonOriginalState = mSbSensorEnable.isChecked();
                     }
                 }).onNegative(new MaterialDialog.SingleButtonCallback() {
                     @Override
@@ -392,6 +399,7 @@ public class TcpVmsTerminalExternalSensorParamFragment extends BaseVmsTcpCommuni
         String sensorNameNo = IOTSensorUtil.getInstance().getSensorTypeCodeByName(sensorName) + "_" + sensorSerialNumber;
         sensorParamsEntity.setName(sensorNameNo);
 
+        enableButtonOriginalState = mSbSensorEnable.isChecked();
         isSaveParamOperation = true;
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.VMS_MD_SET_TERMINAL_CHL, sensorParamsEntity);
         sendCommand(command);
@@ -429,10 +437,17 @@ public class TcpVmsTerminalExternalSensorParamFragment extends BaseVmsTcpCommuni
         }
         calculationPosOld = calculationPos;
         sensorNamePosOld = sensorNamePos;
+        isResultOK = true;
+    }
+
+    private void setResult() {
+        Intent intent = new Intent();
+        mActivity.setResult(isResultOK ? Activity.RESULT_OK : Activity.RESULT_CANCELED, intent);
     }
 
     @Override
     public boolean onBackPressed() {
+        setResult();
         if (tcpViewModel.getConnectStatus()) {
             if (checkValueIsChange()) {
                 warnNotYetSettingBeforeLeavePage();
@@ -448,7 +463,9 @@ public class TcpVmsTerminalExternalSensorParamFragment extends BaseVmsTcpCommuni
         if (!mSbSensorEnable.isChecked()) {
             return false;
         }
-
+        if (enableButtonOriginalState != mSbSensorEnable.isChecked()) {
+            return true;
+        }
         if (calculationPosOld != calculationPos) {
             return true;
         }
