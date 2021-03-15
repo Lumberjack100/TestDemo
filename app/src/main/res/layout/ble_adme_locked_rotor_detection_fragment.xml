@@ -32,10 +32,10 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentStart="true"
                     android:layout_centerVertical="true"
-                    android:textStyle="bold"
                     android:text="下放堵转缓停"
                     android:textColor="@color/title_text_color"
-                    android:textSize="@dimen/text_size_17" />
+                    android:textSize="@dimen/text_size_17"
+                    android:textStyle="bold" />
 
                 <com.kyleduo.switchbutton.SwitchButton
                     android:id="@+id/decentralizedEnableSBtn"
@@ -56,6 +56,7 @@
                 android:id="@+id/decentralizedChildLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="@color/white"
                 android:orientation="vertical">
 
                 <LinearLayout style="@style/Common_EditItem_LayoutStyle">
@@ -124,33 +125,20 @@
 
                 </LinearLayout>
 
-                <LinearLayout
+                <com.jaygoo.widget.RangeSeekBar
+                    android:id="@+id/seekBar_decentralized_stall_detection_interval"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@color/white"
-                    android:gravity="center_vertical"
-                    android:paddingStart="16dp"
-                    android:paddingTop="15dp"
-                    android:paddingRight="16dp"
-                    android:paddingBottom="15dp">
-
-                    <com.guyj.BidirectionalSeekBar
-                        android:id="@+id/bSeekBar_decentralized_stall_detection_interval"
-                        android:layout_width="match_parent"
-                        android:layout_height="30dp"
-                        app:ball_left_solid_color="@android:color/white"
-                        app:ball_left_stroke_color="@color/text_color_51B4F8"
-                        app:ball_radius_size="13dp"
-                        app:ball_right_solid_color="@android:color/white"
-                        app:ball_right_stroke_color="@color/text_color_51B4F8"
-                        app:ball_stroke_size="4dp"
-                        app:pb_within_color="@color/text_color_51B4F8"
-                        app:pb_without_color="#EDEDED"
-                        app:text_left_num="0"
-                        app:text_min_unit="1"
-                        app:text_right_num="100" />
-
-                </LinearLayout>
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    app:rsb_gravity="center"
+                    app:rsb_max="100"
+                    app:rsb_min="0"
+                    app:rsb_mode="range"
+                    app:rsb_min_interval="10"
+                    app:rsb_progress_color="@color/text_color_51B4F8"
+                    app:rsb_progress_default_color="#EDEDED"
+                    app:rsb_thumb_drawable="@drawable/rsb_thumb_blue_stroke" />
 
                 <View
                     android:layout_width="match_parent"
@@ -164,7 +152,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="力矩堵转阈值(mA)"
+                        android:text="力矩堵转阈值(A)"
                         android:textColor="@color/text_color_343434"
                         android:textSize="@dimen/text_size_17" />
 
@@ -172,7 +160,7 @@
                         android:id="@+id/et_decentralized_torque_stall_threshold"
                         style="@style/DataCenter_EditText_Style"
                         android:hint="请输入"
-                        android:inputType="number" />
+                        android:inputType="numberDecimal" />
 
                 </LinearLayout>
 
@@ -188,7 +176,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="力矩检测判断时间"
+                        android:text="力矩检测判断时间(s)"
                         android:textColor="@color/text_color_343434"
                         android:textSize="@dimen/text_size_17" />
 
@@ -219,39 +207,25 @@
                     <TextView
                         android:id="@+id/tv_decentralized_slow_stop_interval"
                         style="@style/DataCenter_EditText_Style"
-                        android:textColor="@color/text_color_51B4F8"
                         android:hint=""
+                        android:textColor="@color/text_color_51B4F8"
                         tools:text="17%-55%" />
 
                 </LinearLayout>
 
-                <LinearLayout
+                <com.jaygoo.widget.RangeSeekBar
+                    android:id="@+id/seekBar_decentralized_slow_stop_interval"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@color/white"
-                    android:gravity="center_vertical"
-                    android:paddingStart="16dp"
-                    android:paddingTop="15dp"
-                    android:paddingRight="16dp"
-                    android:paddingBottom="15dp">
-
-                    <com.guyj.BidirectionalSeekBar
-                        android:id="@+id/bSeekBar_decentralized_slow_stop_interval"
-                        android:layout_width="match_parent"
-                        android:layout_height="30dp"
-                        app:ball_left_solid_color="@android:color/white"
-                        app:ball_left_stroke_color="@color/text_color_51B4F8"
-                        app:ball_radius_size="13dp"
-                        app:ball_right_solid_color="@android:color/white"
-                        app:ball_right_stroke_color="@color/text_color_51B4F8"
-                        app:ball_stroke_size="4dp"
-                        app:pb_within_color="@color/text_color_51B4F8"
-                        app:pb_without_color="#EDEDED"
-                        app:text_left_num="0"
-                        app:text_min_unit="1"
-                        app:text_right_num="100" />
-
-                </LinearLayout>
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    app:rsb_gravity="center"
+                    app:rsb_max="100"
+                    app:rsb_min="0"
+                    app:rsb_mode="single"
+                    app:rsb_progress_color="#EDEDED"
+                    app:rsb_progress_default_color="@color/text_color_51B4F8"
+                    app:rsb_thumb_drawable="@drawable/rsb_thumb_blue_stroke" />
 
             </LinearLayout>
 
@@ -271,10 +245,10 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentStart="true"
                     android:layout_centerVertical="true"
-                    android:textStyle="bold"
                     android:text="上拉堵转缓停"
                     android:textColor="@color/title_text_color"
-                    android:textSize="@dimen/text_size_17" />
+                    android:textSize="@dimen/text_size_17"
+                    android:textStyle="bold" />
 
                 <com.kyleduo.switchbutton.SwitchButton
                     android:id="@+id/pullUpEnableSBtn"
@@ -295,6 +269,7 @@
                 android:id="@+id/pullUpChildLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="@color/white"
                 android:orientation="vertical">
 
                 <View
@@ -309,7 +284,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="力矩堵转阈值(mA)"
+                        android:text="力矩堵转阈值(A)"
                         android:textColor="@color/text_color_343434"
                         android:textSize="@dimen/text_size_17" />
 
@@ -317,7 +292,7 @@
                         android:id="@+id/et_pull_up_torque_stall_threshold"
                         style="@style/DataCenter_EditText_Style"
                         android:hint="请输入"
-                        android:inputType="number" />
+                        android:inputType="numberDecimal" />
 
                 </LinearLayout>
 
@@ -333,7 +308,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="力矩检测判断时间"
+                        android:text="力矩检测判断时间(s)"
                         android:textColor="@color/text_color_343434"
                         android:textSize="@dimen/text_size_17" />
 
@@ -370,33 +345,19 @@
 
                 </LinearLayout>
 
-                <LinearLayout
+                <com.jaygoo.widget.RangeSeekBar
+                    android:id="@+id/seekBar_pull_up_slow_stop_interval"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@color/white"
-                    android:gravity="center_vertical"
-                    android:paddingStart="16dp"
-                    android:paddingTop="15dp"
-                    android:paddingRight="16dp"
-                    android:paddingBottom="15dp">
-
-                    <com.guyj.BidirectionalSeekBar
-                        android:id="@+id/bSeekBar_pull_up_slow_stop_interval"
-                        android:layout_width="match_parent"
-                        android:layout_height="30dp"
-                        app:ball_left_solid_color="@android:color/white"
-                        app:ball_left_stroke_color="@color/text_color_51B4F8"
-                        app:ball_radius_size="13dp"
-                        app:ball_right_solid_color="@android:color/white"
-                        app:ball_right_stroke_color="@color/text_color_51B4F8"
-                        app:ball_stroke_size="4dp"
-                        app:pb_within_color="@color/text_color_51B4F8"
-                        app:pb_without_color="#EDEDED"
-                        app:text_left_num="0"
-                        app:text_min_unit="1"
-                        app:text_right_num="100" />
-
-                </LinearLayout>
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    app:rsb_gravity="center"
+                    app:rsb_max="100"
+                    app:rsb_min="0"
+                    app:rsb_mode="single"
+                    app:rsb_progress_color="#EDEDED"
+                    app:rsb_progress_default_color="@color/text_color_51B4F8"
+                    app:rsb_thumb_drawable="@drawable/rsb_thumb_blue_stroke" />
 
             </LinearLayout>
 

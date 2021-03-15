@@ -177,7 +177,6 @@ dependencies {
     implementation "com.github.clans:fab:$rootProject.thirdLib.fab"
     //This library aims to provide a chat UI view for Android.
     implementation "com.github.bassaer:chatmessageview:$rootProject.thirdLib.chatmessageview"
-
     //开关 Button
     implementation "com.kyleduo.switchbutton:library:$rootProject.thirdLib.switchbutton"
     //新的zxing 扫码
@@ -186,12 +185,12 @@ dependencies {
     implementation "cn.bingoogolapple:bga-baseadapter:$rootProject.thirdLib.bgaBaseAdapter"
     //Toast 吐司
     implementation "com.hjq:toast:$rootProject.thirdLib.hjqToast"
+
     //蒲公英SDk
     implementation "com.pgyersdk:sdk:$rootProject.thirdLib.pgyerSdk"
     //异常信息上报组件
     implementation "com.tencent.bugly:crashreport:$rootProject.thirdLib.buglyCrashReport"
     implementation "com.tencent.bugly:nativecrashreport:$rootProject.thirdLib.buglyNativeCrashReport"
-
     //xCrash 能为安卓 app 提供捕获 java 崩溃，native 崩溃和 ANR 的能力。
     implementation 'com.iqiyi.xcrash:xcrash-android-lib:3.0.0'
 
@@ -206,6 +205,9 @@ dependencies {
     implementation "gdut.bsx:share2:$rootProject.thirdLib.bsxShare"
     //钉钉官方分享 SDK
     implementation "com.alibaba.android:ddsharesdk:$rootProject.thirdLib.ddsharesdk"
+
+    // 一款美观强大的支持单向、双向范围选择、分步、垂直、高度自定义的SeekBar
+    implementation 'com.github.Jay-Goo:RangeSeekBar:v3.0.0'
 
     //高德地图导航
     implementation "com.amap.api:navi-3dmap:$rootProject.thirdLib.amapNavi"

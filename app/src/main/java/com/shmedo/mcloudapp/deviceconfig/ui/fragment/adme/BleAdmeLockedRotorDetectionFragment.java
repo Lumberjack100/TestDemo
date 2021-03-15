@@ -11,8 +11,9 @@ import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 
-import com.guyj.BidirectionalSeekBar;
 import com.hjq.toast.ToastUtils;
+import com.jaygoo.widget.OnRangeChangedListener;
+import com.jaygoo.widget.RangeSeekBar;
 import com.kyleduo.switchbutton.SwitchButton;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandManager;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandResult;
@@ -53,8 +54,8 @@ public class BleAdmeLockedRotorDetectionFragment extends BaseUSRBleIotCommunicat
     @BindView(R.id.tv_decentralized_stall_detection_interval)
     TextView mTvDecentralizedStallDetectionInterval;
 
-    @BindView(R.id.bSeekBar_decentralized_stall_detection_interval)
-    BidirectionalSeekBar seekBarDecentralizedStallDetectionInterval;
+    @BindView(R.id.seekBar_decentralized_stall_detection_interval)
+    RangeSeekBar seekBarDecentralizedStallDetectionInterval;
 
     @BindView(R.id.et_decentralized_torque_stall_threshold)
     ClearEditText mEtDecentralizedTorqueStallThreshold;
@@ -65,8 +66,8 @@ public class BleAdmeLockedRotorDetectionFragment extends BaseUSRBleIotCommunicat
     @BindView(R.id.tv_decentralized_slow_stop_interval)
     TextView mTvDecentralizedSlowStopInterval;
 
-    @BindView(R.id.bSeekBar_decentralized_slow_stop_interval)
-    BidirectionalSeekBar seekBarDecentralizedSlowStopInterval;
+    @BindView(R.id.seekBar_decentralized_slow_stop_interval)
+    RangeSeekBar seekBarDecentralizedSlowStopInterval;
 
     @BindView(R.id.pullUpEnableSBtn)
     SwitchButton mSbPullUpEnable;
@@ -80,8 +81,8 @@ public class BleAdmeLockedRotorDetectionFragment extends BaseUSRBleIotCommunicat
     @BindView(R.id.tv_pull_up_slow_stop_interval)
     TextView mTvPullUpSlowStopInterval;
 
-    @BindView(R.id.bSeekBar_pull_up_slow_stop_interval)
-    BidirectionalSeekBar seekBarPullUpSlowStopInterval;
+    @BindView(R.id.seekBar_pull_up_slow_stop_interval)
+    RangeSeekBar seekBarPullUpSlowStopInterval;
 
     @BindView(R.id.btn_confirm)
     Button mBtnSave;
@@ -138,12 +139,23 @@ public class BleAdmeLockedRotorDetectionFragment extends BaseUSRBleIotCommunicat
     }
 
     private void setView() {
-        mEtDecentralizedPulsesPerUnitTime.setFilters(new InputFilter[]{new InputFilter.LengthFilter(6)});
+        mEtDecentralizedPulsesPerUnitTime.setFilters(new InputFilter[]{new InputFilter.LengthFilter(5)});
+        mEtDecentralizedPulsesPerUnitTime.setHint("[1,10000]");
+
         mEtDecentralizedPulseDetectionTime.setFilters(new InputFilter[]{new InputFilter.LengthFilter(6)});
+        mEtDecentralizedPulseDetectionTime.setHint("[0.1,10.0]");
+
         mEtDecentralizedTorqueStallThreshold.setFilters(new InputFilter[]{new InputFilter.LengthFilter(5)});
+        mEtDecentralizedTorqueStallThreshold.setHint("[0.00,2.00]");
+
         mEtDecentralizedTorqueDetectionTime.setFilters(new InputFilter[]{new InputFilter.LengthFilter(6)});
+        mEtDecentralizedTorqueDetectionTime.setHint("[0.01,5.00]");
+
         mEtPullUpTorqueStallThreshold.setFilters(new InputFilter[]{new InputFilter.LengthFilter(5)});
+        mEtPullUpTorqueStallThreshold.setHint("[1.00,6.00]");
+
         mEtPullUpTorqueDetectionTime.setFilters(new InputFilter[]{new InputFilter.LengthFilter(6)});
+        mEtPullUpTorqueDetectionTime.setHint("[0.01,5.00]");
     }
 
     private void setSwitchViewListener() {
@@ -170,33 +182,63 @@ public class BleAdmeLockedRotorDetectionFragment extends BaseUSRBleIotCommunicat
     }
 
     private void setSeekBarListener() {
-        seekBarDecentralizedStallDetectionInterval.setOnSeekBarChangeListener(new BidirectionalSeekBar.OnSeekBarChangeListener() {
+        seekBarDecentralizedStallDetectionInterval.setOnRangeChangedListener(new OnRangeChangedListener() {
             @Override
-            public void onProgressChanged(int leftProgress, int rightProgress) {
-                decentralizedPulseDetectionStart = String.valueOf(leftProgress);
-                decentralizedPulseDetectionEnd = String.valueOf(rightProgress);
+            public void onRangeChanged(RangeSeekBar view, float leftValue, float rightValue, boolean isFromUser) {
+                DecimalFormat indicatorTextDecimalFormat = new DecimalFormat("0");
+                decentralizedPulseDetectionStart = indicatorTextDecimalFormat.format(leftValue);
+                decentralizedPulseDetectionEnd = indicatorTextDecimalFormat.format(rightValue);
+                mTvDecentralizedStallDetectionInterval.setText(String.format("%s%%-%s%%", indicatorTextDecimalFormat.format(leftValue), indicatorTextDecimalFormat.format(rightValue)));
+            }
 
-                mTvDecentralizedStallDetectionInterval.setText(leftProgress + "%-" + rightProgress + "%");
+            @Override
+            public void onStartTrackingTouch(RangeSeekBar view, boolean isLeft) {
+                //start tracking touch
+            }
+
+            @Override
+            public void onStopTrackingTouch(RangeSeekBar view, boolean isLeft) {
+                //stop tracking touch
             }
         });
 
-        seekBarDecentralizedSlowStopInterval.setOnSeekBarChangeListener(new BidirectionalSeekBar.OnSeekBarChangeListener() {
+        seekBarDecentralizedSlowStopInterval.setOnRangeChangedListener(new OnRangeChangedListener() {
             @Override
-            public void onProgressChanged(int leftProgress, int rightProgress) {
-                decentralizedTorqueDetectionStart = String.valueOf(leftProgress);
-                decentralizedTorqueDetectionEnd = String.valueOf(rightProgress);
+            public void onRangeChanged(RangeSeekBar view, float leftValue, float rightValue, boolean isFromUser) {
+                DecimalFormat indicatorTextDecimalFormat = new DecimalFormat("0");
+                decentralizedTorqueDetectionStart = indicatorTextDecimalFormat.format(leftValue);
+                decentralizedTorqueDetectionEnd = "100";
+                mTvDecentralizedSlowStopInterval.setText(String.format("%s%%-100%%", indicatorTextDecimalFormat.format(leftValue)));
+            }
 
-                mTvDecentralizedSlowStopInterval.setText(leftProgress + "%-" + rightProgress + "%");
+            @Override
+            public void onStartTrackingTouch(RangeSeekBar view, boolean isLeft) {
+                //start tracking touch
+            }
+
+            @Override
+            public void onStopTrackingTouch(RangeSeekBar view, boolean isLeft) {
+                //stop tracking touch
             }
         });
 
-        seekBarPullUpSlowStopInterval.setOnSeekBarChangeListener(new BidirectionalSeekBar.OnSeekBarChangeListener() {
+        seekBarPullUpSlowStopInterval.setOnRangeChangedListener(new OnRangeChangedListener() {
             @Override
-            public void onProgressChanged(int leftProgress, int rightProgress) {
-                pullUpTorqueDetectionStart = String.valueOf(leftProgress);
-                pullUpTorqueDetectionEnd = String.valueOf(rightProgress);
+            public void onRangeChanged(RangeSeekBar view, float leftValue, float rightValue, boolean isFromUser) {
+                DecimalFormat indicatorTextDecimalFormat = new DecimalFormat("0");
+                pullUpTorqueDetectionStart = indicatorTextDecimalFormat.format(leftValue);
+                pullUpTorqueDetectionEnd = String.valueOf(100);
+                mTvPullUpSlowStopInterval.setText(String.format("%s%%-100%%", indicatorTextDecimalFormat.format(leftValue)));
+            }
 
-                mTvPullUpSlowStopInterval.setText(leftProgress + "%-" + rightProgress + "%");
+            @Override
+            public void onStartTrackingTouch(RangeSeekBar view, boolean isLeft) {
+                //start tracking touch
+            }
+
+            @Override
+            public void onStopTrackingTouch(RangeSeekBar view, boolean isLeft) {
+                //stop tracking touch
             }
         });
     }
@@ -247,7 +289,7 @@ public class BleAdmeLockedRotorDetectionFragment extends BaseUSRBleIotCommunicat
             }
             try {
                 int value = Integer.parseInt(decentralizedPulsesPerUnitTime);
-                if (value < 1) {
+                if (value < 1 || value > 10000) {
                     ToastUtils.show("请输入正确的下放单位时间脉冲数!");
                     mEtDecentralizedPulsesPerUnitTime.requestFocus();
                     return false;
@@ -265,7 +307,7 @@ public class BleAdmeLockedRotorDetectionFragment extends BaseUSRBleIotCommunicat
             }
             try {
                 double value = Double.parseDouble(decentralizedPulseDetectionTime);
-                if (value > 1) {
+                if (value < 0.1 || value > 10.0) {
                     ToastUtils.show("请输入正确的下放脉冲检测判断时间!");
                     mEtDecentralizedPulseDetectionTime.requestFocus();
                     return false;
@@ -276,14 +318,30 @@ public class BleAdmeLockedRotorDetectionFragment extends BaseUSRBleIotCommunicat
                 return false;
             }
 
+            float leftValue = seekBarDecentralizedStallDetectionInterval.getLeftSeekBar().getProgress();
+            if (leftValue > 50) {
+                ToastUtils.show("下放堵转检测区间起始值不能大于50%!");
+                return false;
+            }
+
+            float rightValue = seekBarDecentralizedStallDetectionInterval.getRightSeekBar().getProgress();
+            if (rightValue <= 50) {
+                ToastUtils.show("下放堵转检测区间终值不能小于50%!");
+                return false;
+            }
+
             if (TextUtils.isEmpty(decentralizedTorqueStallThreshold)) {
                 ToastUtils.show("请输入下放力矩堵转阈值!");
                 mEtDecentralizedTorqueStallThreshold.requestFocus();
                 return false;
             }
             try {
-                int value = Integer.parseInt(decentralizedTorqueStallThreshold);
-
+                double value = Double.parseDouble(decentralizedTorqueStallThreshold);
+                if (value < 0.00 || value > 2.00) {
+                    ToastUtils.show("请输入正确的下放力矩堵转阈值!");
+                    mEtDecentralizedTorqueStallThreshold.requestFocus();
+                    return false;
+                }
             } catch (Exception ex) {
                 ToastUtils.show("请输入正确的下放力矩堵转阈值!");
                 mEtDecentralizedTorqueStallThreshold.requestFocus();
@@ -297,10 +355,20 @@ public class BleAdmeLockedRotorDetectionFragment extends BaseUSRBleIotCommunicat
             }
             try {
                 double value = Double.parseDouble(decentralizedTorqueDetectionTime);
-
+                if (value < 0.01 || value > 5.00) {
+                    ToastUtils.show("请输入正确的下放力矩检测判断时间!");
+                    mEtDecentralizedTorqueDetectionTime.requestFocus();
+                    return false;
+                }
             } catch (Exception ex) {
                 ToastUtils.show("请输入正确的下放力矩检测判断时间!");
                 mEtDecentralizedTorqueDetectionTime.requestFocus();
+                return false;
+            }
+
+            float torqueLeftValue = seekBarDecentralizedSlowStopInterval.getLeftSeekBar().getProgress();
+            if (torqueLeftValue < rightValue) {
+                ToastUtils.show("下放缓停区间起始值不能小于堵转检测区间终值！");
                 return false;
             }
         }
@@ -312,8 +380,12 @@ public class BleAdmeLockedRotorDetectionFragment extends BaseUSRBleIotCommunicat
                 return false;
             }
             try {
-                int value = Integer.parseInt(pullUpTorqueStallThreshold);
-
+                double value = Double.parseDouble(pullUpTorqueStallThreshold);
+                if (value < 1.00 || value > 6.00) {
+                    ToastUtils.show("请输入正确的上拉力矩堵转阈值!");
+                    mEtPullUpTorqueStallThreshold.requestFocus();
+                    return false;
+                }
             } catch (Exception ex) {
                 ToastUtils.show("请输入正确的上拉力矩堵转阈值!");
                 mEtPullUpTorqueStallThreshold.requestFocus();
@@ -327,7 +399,11 @@ public class BleAdmeLockedRotorDetectionFragment extends BaseUSRBleIotCommunicat
             }
             try {
                 double value = Double.parseDouble(pullUpTorqueDetectionTime);
-
+                if (value < 0.01 || value > 5.00) {
+                    ToastUtils.show("请输入正确的上拉力矩检测判断时间!");
+                    mEtPullUpTorqueDetectionTime.requestFocus();
+                    return false;
+                }
             } catch (Exception ex) {
                 ToastUtils.show("请输入正确的上拉力矩检测判断时间!");
                 mEtPullUpTorqueDetectionTime.requestFocus();
@@ -478,10 +554,12 @@ public class BleAdmeLockedRotorDetectionFragment extends BaseUSRBleIotCommunicat
         decentralizedPulseDetectionTime = lockedRotorDetectionInfo.getPdajtime().trim();
         decentralizedPulseDetectionStart = lockedRotorDetectionInfo.getDetintiona().trim();
         decentralizedPulseDetectionEnd = lockedRotorDetectionInfo.getDetintionb().trim();
+
         decentralizedTorqueStallThreshold = lockedRotorDetectionInfo.getLowtorblothr().trim();
         decentralizedTorqueDetectionTime = lockedRotorDetectionInfo.getLowtordetime().trim();
         decentralizedTorqueDetectionStart = lockedRotorDetectionInfo.getLowsusrana().trim();
         decentralizedTorqueDetectionEnd = lockedRotorDetectionInfo.getLowsusranb().trim();
+
         pullUpTorqueStallThreshold = lockedRotorDetectionInfo.getUptorblothr().trim();
         pullUpTorqueDetectionTime = lockedRotorDetectionInfo.getUptordetime().trim();
         pullUpTorqueDetectionStart = lockedRotorDetectionInfo.getUpsusrana().trim();
@@ -505,25 +583,32 @@ public class BleAdmeLockedRotorDetectionFragment extends BaseUSRBleIotCommunicat
 
         try {
             mEtDecentralizedPulsesPerUnitTime.setText(decentralizedPulsesPerUnitTime);
+
             decimalFormat.applyPattern("#.#");
             decentralizedPulseDetectionTime = decimalFormat.format(Double.parseDouble(decentralizedPulseDetectionTime));
             mEtDecentralizedPulseDetectionTime.setText(decentralizedPulseDetectionTime);
 
-            decimalFormat.applyPattern("#");
+            decimalFormat.applyPattern("#.##");
             decentralizedTorqueStallThreshold = decimalFormat.format(Double.parseDouble(decentralizedTorqueStallThreshold));
             mEtDecentralizedTorqueStallThreshold.setText(decentralizedTorqueStallThreshold);
-            decimalFormat.applyPattern("#.#");
+
+            decimalFormat.applyPattern("#.##");
             decentralizedTorqueDetectionTime = decimalFormat.format(Double.parseDouble(decentralizedTorqueDetectionTime));
             mEtDecentralizedTorqueDetectionTime.setText(decentralizedTorqueDetectionTime);
 
-            decimalFormat.applyPattern("#");
+            decimalFormat.applyPattern("#.##");
             pullUpTorqueStallThreshold = decimalFormat.format(Double.parseDouble(pullUpTorqueStallThreshold));
             mEtPullUpTorqueStallThreshold.setText(pullUpTorqueStallThreshold);
-            decimalFormat.applyPattern("#.#");
+
+            decimalFormat.applyPattern("#.##");
             pullUpTorqueDetectionTime = decimalFormat.format(Double.parseDouble(pullUpTorqueDetectionTime));
             mEtPullUpTorqueDetectionTime.setText(pullUpTorqueDetectionTime);
 
-        }catch (Exception ex) {
+            seekBarDecentralizedStallDetectionInterval.setProgress(Integer.parseInt(decentralizedPulseDetectionStart), Integer.parseInt(decentralizedPulseDetectionEnd));
+            seekBarDecentralizedSlowStopInterval.setProgress(Integer.parseInt(decentralizedTorqueDetectionStart));
+            seekBarPullUpSlowStopInterval.setProgress(Integer.parseInt(pullUpTorqueDetectionStart));
+
+        } catch (Exception ex) {
             ex.printStackTrace();
         }
     }
