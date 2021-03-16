@@ -204,7 +204,6 @@ public class TcpVmsTerminalExternalSensorParamFragment extends BaseVmsTcpCommuni
                 if (!isChecked) {
                     showCloseSwitchButtonDialog("确定不接入此通道传感器吗？");
                 } else {
-//                    enableSensor();
                     contentLayout.setVisibility(View.VISIBLE);
                 }
             }
@@ -244,19 +243,6 @@ public class TcpVmsTerminalExternalSensorParamFragment extends BaseVmsTcpCommuni
     }
 
     /**
-     * 接入传感器</br>
-     */
-    private void enableSensor() {
-        SetVmsTerminalSensorParamsEntity entity = new SetVmsTerminalSensorParamsEntity();
-        entity.setSn(sensorInfo.getSn());
-        entity.setChannel(sensorInfo.getChannel());
-        entity.setInsert("1");
-
-        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.VMS_MD_SET_TERMINAL_CHL, entity);
-        sendCommand(command);
-    }
-
-    /**
      * 不接入传感器</br>
      */
     private void disableSensor() {
@@ -272,6 +258,9 @@ public class TcpVmsTerminalExternalSensorParamFragment extends BaseVmsTcpCommuni
 
     @OnClick({R.id.calculationLayout, R.id.sensorNameLayout, R.id.btn_confirm})
     public void onClick(View view) {
+        if (isDoubleClick(view)) {
+            return;
+        }
         int id = view.getId();
         if (id == R.id.calculationLayout) {
             showcCalculationChooseDialog();
@@ -378,30 +367,31 @@ public class TcpVmsTerminalExternalSensorParamFragment extends BaseVmsTcpCommuni
     }
 
     private void processSave() {
-        SetVmsTerminalSensorParamsEntity sensorParamsEntity = new SetVmsTerminalSensorParamsEntity();
+        SetVmsTerminalSensorParamsEntity entity = new SetVmsTerminalSensorParamsEntity();
         boolean updateDataSuccess = true;
         switch (sensorCalculation) {
             case LINEAR:
-                updateDataSuccess = linearParamView.updateSensorData(sensorParamsEntity);
+                updateDataSuccess = linearParamView.updateSensorData(entity);
                 break;
 
             case POLYNOMIAL:
-                updateDataSuccess = polynomialParamView.updateSensorData(sensorParamsEntity);
+                updateDataSuccess = polynomialParamView.updateSensorData(entity);
                 break;
         }
         if (!updateDataSuccess) {
             Timber.w("传感器参数存在错误!");
             return;
         }
-        sensorParamsEntity.setSn(sensorInfo.getSn());
-        sensorParamsEntity.setChannel(sensorInfo.getChannel());
-        sensorParamsEntity.setType(sensorCalculation.toString());
+        entity.setSn(sensorInfo.getSn());
+        entity.setChannel(sensorInfo.getChannel());
+        entity.setInsert("1");
+        entity.setType(sensorCalculation.toString());
         String sensorNameNo = IOTSensorUtil.getInstance().getSensorTypeCodeByName(sensorName) + "_" + sensorSerialNumber;
-        sensorParamsEntity.setName(sensorNameNo);
+        entity.setName(sensorNameNo);
 
         enableButtonOriginalState = mSbSensorEnable.isChecked();
         isSaveParamOperation = true;
-        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.VMS_MD_SET_TERMINAL_CHL, sensorParamsEntity);
+        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.VMS_MD_SET_TERMINAL_CHL, entity);
         sendCommand(command);
     }
 

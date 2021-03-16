@@ -202,7 +202,6 @@ public class NetVmsTerminalExternalSensorParamFragment extends BaseNetIotCommuni
                 if (!isChecked) {
                     showCloseSwitchButtonDialog("确定不接入此通道传感器吗？");
                 } else {
-//                    enableSensor();
                     contentLayout.setVisibility(View.VISIBLE);
                 }
             }
@@ -242,20 +241,6 @@ public class NetVmsTerminalExternalSensorParamFragment extends BaseNetIotCommuni
     }
 
     /**
-     * 接入传感器</br>
-     */
-    private void enableSensor() {
-        SetVmsTerminalSensorParamsEntity entity = new SetVmsTerminalSensorParamsEntity();
-        entity.setSn(sensorInfo.getSn());
-        entity.setChannel(sensorInfo.getChannel());
-        entity.setInsert("1");
-
-        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.VMS_MD_SET_TERMINAL_CHL, entity);
-        showProgressDialog("处理中...");
-        doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
-    }
-
-    /**
      * 不接入传感器</br>
      */
     private void disableSensor() {
@@ -272,6 +257,9 @@ public class NetVmsTerminalExternalSensorParamFragment extends BaseNetIotCommuni
 
     @OnClick({R.id.calculationLayout, R.id.sensorNameLayout, R.id.btn_confirm})
     public void onClick(View view) {
+        if (isDoubleClick(view)) {
+            return;
+        }
         int id = view.getId();
         if (id == R.id.calculationLayout) {
             showcCalculationChooseDialog();
