@@ -135,7 +135,6 @@
                     app:rsb_max="100"
                     app:rsb_min="0"
                     app:rsb_mode="range"
-                    app:rsb_min_interval="10"
                     app:rsb_progress_color="@color/text_color_51B4F8"
                     app:rsb_progress_default_color="#EDEDED"
                     app:rsb_thumb_drawable="@drawable/rsb_thumb_blue_stroke" />

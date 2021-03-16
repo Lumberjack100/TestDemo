@@ -199,6 +199,11 @@ public class BleAdmeLockedRotorDetectionFragment extends BaseUSRBleIotCommunicat
             @Override
             public void onStopTrackingTouch(RangeSeekBar view, boolean isLeft) {
                 //stop tracking touch
+                float rightValue = view.getRightSeekBar().getProgress();
+                float torqueLeftValue = seekBarDecentralizedSlowStopInterval.getLeftSeekBar().getProgress();
+                if (rightValue >= torqueLeftValue) {
+                    seekBarDecentralizedSlowStopInterval.setProgress(rightValue + 1);
+                }
             }
         });
 
@@ -219,6 +224,16 @@ public class BleAdmeLockedRotorDetectionFragment extends BaseUSRBleIotCommunicat
             @Override
             public void onStopTrackingTouch(RangeSeekBar view, boolean isLeft) {
                 //stop tracking touch
+                float torqueLeftValue = view.getLeftSeekBar().getProgress();
+                float leftValue = seekBarDecentralizedStallDetectionInterval.getLeftSeekBar().getProgress();
+                float rightValue = seekBarDecentralizedStallDetectionInterval.getRightSeekBar().getProgress();
+                if (torqueLeftValue <= rightValue) {
+                    if (torqueLeftValue <= 1) {
+                        seekBarDecentralizedStallDetectionInterval.setProgress(0, 0);
+                    } else {
+                        seekBarDecentralizedStallDetectionInterval.setProgress(0, torqueLeftValue - 1);
+                    }
+                }
             }
         });
 
