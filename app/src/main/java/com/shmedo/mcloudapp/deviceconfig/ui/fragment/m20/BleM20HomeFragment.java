@@ -202,11 +202,11 @@ public class BleM20HomeFragment extends BaseGOCBleIotCommunicateFragment {
                         break;
 
                     case INITIALIZING://The device has connected and begun service discovery and initialization.
-//                        mTvConnectState.setText(R.string.ble_state_initializing);
                         break;
 
                     case READY://The initialization is complete, and the device is ready to use.
                         onConnectionStateChanged(true);
+                        showProgressBar();
                         mTvProgressText.setText("初始化中...");
                         //查询设备 ApiKey
                         bleViewModel.queryDeviceApiKeyBySn(device.getDevice().getName().substring(3));

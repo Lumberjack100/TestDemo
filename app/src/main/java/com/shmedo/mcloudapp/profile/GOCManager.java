@@ -17,6 +17,7 @@ import com.shmedo.mcloudapp.profile.callback.IOTCommandDataCallback;
 import org.jetbrains.annotations.NotNull;
 
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 import java.util.UUID;
 
 import no.nordicsemi.android.ble.callback.FailCallback;
@@ -34,21 +35,22 @@ import timber.log.Timber;
 /**
  * 创建者:   gonghe <br/>
  * 创建时间:  1/18/21 <br/>
- * 描述：    深圳市顾凯信息技术有限公司GOC-MD-400蓝牙模块连接管理类
+ * 描述：    深圳市顾凯信息技术有限公司GOC-MD-400/GOC-W91200蓝牙模块连接管理类
  */
 public class GOCManager extends ObservableBleManager {
     /**
      * The service UUID.<br>
      */
-    public static final UUID GOC_SERVICE_UUID = UUID.fromString("0000ff00-0000-1000-8000-00805f9b34fb");
+    public static final UUID SERVICE_UUID_GOC_400 = UUID.fromString("0000ff00-0000-1000-8000-00805f9b34fb");
+    private static final UUID NOTIFY_CHARACTERISTIC_UUID_GOC_400 = UUID.fromString("0000ff01-0000-1000-8000-00805f9b34fb");
+    private static final UUID WRITABLE_CHARACTERISTIC_UUID_GOC_400 = UUID.fromString("0000ff02-0000-1000-8000-00805f9b34fb");
+
     /**
-     * A UUID of a characteristic with notify property.
+     * The service UUID.<br>
      */
-    private static final UUID NOTIFY_CHARACTERISTIC_UUID = UUID.fromString("0000ff01-0000-1000-8000-00805f9b34fb");
-    /**
-     * A UUID of a characteristic with write property.
-     */
-    private static final UUID WRITABLE_CHARACTERISTIC_UUID = UUID.fromString("0000ff02-0000-1000-8000-00805f9b34fb");
+    public static final UUID SERVICE_UUID_GOC_W91200 = UUID.fromString("00001910-0000-1000-8000-00805f9b34fb");
+    private static final UUID NOTIFY_CHARACTERISTIC_UUID_GOC_W91200 = UUID.fromString("0000fff5-0000-1000-8000-00805f9b34fb");
+    private static final UUID WRITABLE_CHARACTERISTIC_UUID_GOC_W91200 = UUID.fromString("0000fff4-0000-1000-8000-00805f9b34fb");
 
     private final UnPeekLiveData<String> responseMsg = new UnPeekLiveData<>();
     private final UnPeekLiveData<Boolean> logOutputModeLiveData = new UnPeekLiveData<>();
@@ -196,12 +198,24 @@ public class GOCManager extends ObservableBleManager {
 
         @Override
         protected boolean isRequiredServiceSupported(@NonNull BluetoothGatt gatt) {
-            final BluetoothGattService service = gatt.getService(GOC_SERVICE_UUID);
-            if (service != null) {
-                notifyCharacteristic = service.getCharacteristic(NOTIFY_CHARACTERISTIC_UUID);
-                writeCharacteristic = service.getCharacteristic(WRITABLE_CHARACTERISTIC_UUID);
-            }
+            final BluetoothGattService serviceGoc400 = gatt.getService(SERVICE_UUID_GOC_400);
+            //GOC-MD-400蓝牙模块
+            if (serviceGoc400 != null) {
+                notifyCharacteristic = serviceGoc400.getCharacteristic(NOTIFY_CHARACTERISTIC_UUID_GOC_400);
+                writeCharacteristic = serviceGoc400.getCharacteristic(WRITABLE_CHARACTERISTIC_UUID_GOC_400);
+            } else { //GOC-W91200蓝牙模块
+                List<BluetoothGattService> serviceList = gatt.getServices();
+                for (BluetoothGattService service : serviceList) {
+                    if (!service.getUuid().equals(SERVICE_UUID_GOC_W91200))
+                        continue;
 
+                    if (service.getCharacteristics() != null && service.getCharacteristics().size() >= 2) {
+                        notifyCharacteristic = service.getCharacteristic(NOTIFY_CHARACTERISTIC_UUID_GOC_W91200);
+                        writeCharacteristic = service.getCharacteristic(WRITABLE_CHARACTERISTIC_UUID_GOC_W91200);
+                        break;
+                    }
+                }
+            }
             boolean writeRequest = false;
             boolean writeCommand = false;
             if (writeCharacteristic != null) {
