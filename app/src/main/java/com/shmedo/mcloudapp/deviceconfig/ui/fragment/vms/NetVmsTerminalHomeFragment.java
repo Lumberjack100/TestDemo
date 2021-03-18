@@ -122,7 +122,7 @@ public class NetVmsTerminalHomeFragment extends UniversalNetConfigHomeFragment {
                 break;
 
             case "传感器配置":
-                VmsTerminalExternalSensorHomeActivity.startActivity(mActivity, projectDeviceInfo, vmsTerminalInfo.getSn());
+                VmsTerminalExternalSensorHomeActivity.startActivity(mActivity, projectDeviceInfo, vmsTerminalInfo);
                 break;
 
             case "终端配置":

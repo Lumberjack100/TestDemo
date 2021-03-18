@@ -6,6 +6,7 @@ import android.text.TextUtils;
 
 import com.shmedo.configlibrary.iot.model.SensorErrnoInfo;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -191,7 +192,7 @@ public class VmsTerminalInfo implements Parcelable {
     }
 
     public List<SensorErrnoInfo> getSensor() {
-        return sensor;
+        return sensor == null ? new ArrayList<SensorErrnoInfo>() : sensor;
     }
 
     public void setSensor(List<SensorErrnoInfo> sensor) {

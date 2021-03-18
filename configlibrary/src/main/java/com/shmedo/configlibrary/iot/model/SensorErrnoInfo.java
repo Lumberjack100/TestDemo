@@ -9,25 +9,27 @@ import android.os.Parcelable;
  * 描述：    传感器错误码实体
  */
 public class SensorErrnoInfo implements Parcelable {
-
     /**
      * id : 0
      * name : 10005_1
      * errno : -4
      * val : 14213
      */
-
     private int id;//传感器通道号
     private String name;//传感器名称
     private int errno;//错误码
     private String val;//值
+    private String in;//接入状态，0:未接入，1接入
+    private String num;//编号
 
 
-    protected SensorErrnoInfo(Parcel in) {
-        id = in.readInt();
-        name = in.readString();
-        errno = in.readInt();
-        val = in.readString();
+    protected SensorErrnoInfo(Parcel parcel) {
+        id = parcel.readInt();
+        name = parcel.readString();
+        errno = parcel.readInt();
+        val = parcel.readString();
+        in = parcel.readString();
+        num = parcel.readString();
     }
 
     @Override
@@ -36,6 +38,8 @@ public class SensorErrnoInfo implements Parcelable {
         dest.writeString(name);
         dest.writeInt(errno);
         dest.writeString(val);
+        dest.writeString(in);
+        dest.writeString(num);
     }
 
     @Override
@@ -85,5 +89,21 @@ public class SensorErrnoInfo implements Parcelable {
 
     public void setVal(String val) {
         this.val = val;
+    }
+
+    public String getIn() {
+        return in;
+    }
+
+    public void setIn(String in) {
+        this.in = in;
+    }
+
+    public String getNum() {
+        return num;
+    }
+
+    public void setNum(String num) {
+        this.num = num;
     }
 }

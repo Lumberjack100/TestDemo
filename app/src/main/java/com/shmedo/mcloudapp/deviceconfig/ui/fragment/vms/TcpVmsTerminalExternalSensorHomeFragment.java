@@ -19,6 +19,7 @@ import com.shmedo.configlibrary.iot.cmd.IOTCommandResult;
 import com.shmedo.configlibrary.iot.cmd.entity.vms.GetVmsTerminalSensorParamsEntity;
 import com.shmedo.configlibrary.iot.cmd.parser.IOTParseManager;
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
+import com.shmedo.configlibrary.iot.model.vms.VmsTerminalInfo;
 import com.shmedo.configlibrary.iot.model.vms.VmsTerminalSensorInfo;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
 import com.shmedo.core.AppContants;
@@ -46,6 +47,7 @@ import timber.log.Timber;
  * 描述：      Vms终端扩展传感器主页面
  */
 public class TcpVmsTerminalExternalSensorHomeFragment extends BaseVmsTcpCommunicateFragment {
+    private static final String TERMINAL_INFO = "terminal_info";
 
     @BindView(R.id.recyclerview_sensor)
     RecyclerView mRecyclerViewSensor;
@@ -56,17 +58,17 @@ public class TcpVmsTerminalExternalSensorHomeFragment extends BaseVmsTcpCommunic
     //以传感器的通道号为 Key,TerminalSensorInfo 对象为 Value
     protected HashMap<String, VmsTerminalSensorInfo> sensorHashMap = new HashMap<>();
 
-    private String sn;
+    private VmsTerminalInfo vmsTerminalInfo;
     private int accessSum = 4;              //接入扩展传感器总数
     private int sensorIndex = 0;//接入的传感器索引号
 
     private int curSensorIndex = -1;
     private ActivityResultLauncher<Intent> resultLauncher;
 
-    public static TcpVmsTerminalExternalSensorHomeFragment newInstance(String sn) {
+    public static TcpVmsTerminalExternalSensorHomeFragment newInstance(VmsTerminalInfo vmsTerminalInfo) {
         TcpVmsTerminalExternalSensorHomeFragment fragment = new TcpVmsTerminalExternalSensorHomeFragment();
         Bundle args = new Bundle();
-        args.putString(AppContants.Extras.CUR_DEVICE_SN, sn);
+        args.putParcelable(TERMINAL_INFO, vmsTerminalInfo);
         fragment.setArguments(args);
         return fragment;
     }
@@ -75,7 +77,8 @@ public class TcpVmsTerminalExternalSensorHomeFragment extends BaseVmsTcpCommunic
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            sn = getArguments().getString(AppContants.Extras.CUR_DEVICE_SN);
+            vmsTerminalInfo = getArguments().getParcelable(TERMINAL_INFO);
+            accessSum = vmsTerminalInfo.getSensor().size();
         }
         resultLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
@@ -147,7 +150,7 @@ public class TcpVmsTerminalExternalSensorHomeFragment extends BaseVmsTcpCommunic
      * 获取Vms终端某个通道下传感器参数
      */
     private void queryTerminalAisleParamInfo() {
-        GetVmsTerminalSensorParamsEntity entity = new GetVmsTerminalSensorParamsEntity(sn, sensorIndex);
+        GetVmsTerminalSensorParamsEntity entity = new GetVmsTerminalSensorParamsEntity(vmsTerminalInfo.getSn(), sensorIndex);
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.VMS_MD_GET_TERMINAL_CHL, entity);
         sendCommand(command);
     }

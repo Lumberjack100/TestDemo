@@ -19,9 +19,9 @@ import com.shmedo.configlibrary.iot.cmd.IOTCommandResult;
 import com.shmedo.configlibrary.iot.cmd.entity.vms.GetVmsTerminalSensorParamsEntity;
 import com.shmedo.configlibrary.iot.cmd.parser.IOTParseManager;
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
+import com.shmedo.configlibrary.iot.model.vms.VmsTerminalInfo;
 import com.shmedo.configlibrary.iot.model.vms.VmsTerminalSensorInfo;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
-import com.shmedo.core.AppContants;
 import com.shmedo.core.util.DensityUtil;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.view.recycleviewitemdivider.GridSpacingItemDecoration;
@@ -49,6 +49,7 @@ import timber.log.Timber;
  * 描述：      Vms终端4g 模式扩展传感器主页面
  */
 public class NetVmsTerminalExternalSensorHomeFragment extends BaseNetIotCommunicateFragment {
+    private static final String TERMINAL_INFO = "terminal_info";
 
     @BindView(R.id.recyclerview_sensor)
     RecyclerView mRecyclerViewSensor;
@@ -59,18 +60,18 @@ public class NetVmsTerminalExternalSensorHomeFragment extends BaseNetIotCommunic
     //以传感器的通道号为 Key,TerminalSensorInfo 对象为 Value
     protected HashMap<String, VmsTerminalSensorInfo> sensorHashMap = new HashMap<>();
 
-    private String sn;
-    private final int accessSum = 4;  //接入扩展传感器总数
+    private VmsTerminalInfo vmsTerminalInfo;
+    private static int accessSum = 4;  //接入扩展传感器总数
     private int sensorIndex = 0;//接入的传感器索引号
 
     private int curSensorIndex = -1;
     private ActivityResultLauncher<Intent> resultLauncher;
 
-    public static NetVmsTerminalExternalSensorHomeFragment newInstance(ProjectDeviceInfo projectDeviceInfo, String sn) {
+    public static NetVmsTerminalExternalSensorHomeFragment newInstance(ProjectDeviceInfo projectDeviceInfo, VmsTerminalInfo vmsTerminalInfo) {
         NetVmsTerminalExternalSensorHomeFragment fragment = new NetVmsTerminalExternalSensorHomeFragment();
         Bundle args = new Bundle();
         args.putParcelable(PRO_DEVICE_INFO, projectDeviceInfo);
-        args.putString(AppContants.Extras.CUR_DEVICE_SN, sn);
+        args.putParcelable(TERMINAL_INFO, vmsTerminalInfo);
         fragment.setArguments(args);
         return fragment;
     }
@@ -79,7 +80,8 @@ public class NetVmsTerminalExternalSensorHomeFragment extends BaseNetIotCommunic
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            sn = getArguments().getString(AppContants.Extras.CUR_DEVICE_SN);
+            vmsTerminalInfo = getArguments().getParcelable(TERMINAL_INFO);
+            accessSum = vmsTerminalInfo.getSensor().size();
         }
         resultLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
@@ -149,7 +151,7 @@ public class NetVmsTerminalExternalSensorHomeFragment extends BaseNetIotCommunic
      * 获取Vms终端某个通道下传感器参数
      */
     private void queryTerminalAisleParamInfo() {
-        GetVmsTerminalSensorParamsEntity entity = new GetVmsTerminalSensorParamsEntity(sn, sensorIndex);
+        GetVmsTerminalSensorParamsEntity entity = new GetVmsTerminalSensorParamsEntity(vmsTerminalInfo.getSn(), sensorIndex);
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.VMS_MD_GET_TERMINAL_CHL, entity);
         doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
     }

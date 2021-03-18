@@ -6,6 +6,7 @@ import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
+import com.shmedo.configlibrary.iot.model.vms.VmsTerminalInfo;
 import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.BaseConfigFragmentContainerActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.vms.NetVmsTerminalExternalSensorHomeFragment;
@@ -18,20 +19,22 @@ import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfo;
  * 描述：     Vms终端扩展传感器主页面
  */
 public class VmsTerminalExternalSensorHomeActivity extends BaseConfigFragmentContainerActivity {
-    private String sn;
+    private static final String TERMINAL_INFO = "terminal_info";
 
-    public static void startActivity(Context context, ProjectDeviceInfo projectDeviceInfo, String sn) {
+    private VmsTerminalInfo vmsTerminalInfo;
+
+    public static void startActivity(Context context, ProjectDeviceInfo projectDeviceInfo, VmsTerminalInfo vmsTerminalInfo) {
         Intent intent = new Intent(context, VmsTerminalExternalSensorHomeActivity.class);
         intent.putExtra(PRO_DEVICE_INFO, projectDeviceInfo);
-        intent.putExtra(AppContants.Extras.CUR_DEVICE_SN, sn);
+        intent.putExtra(TERMINAL_INFO, vmsTerminalInfo);
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         context.startActivity(intent);
     }
 
-    public static void startActivity(Context context, int connectWay, String sn) {
+    public static void startActivity(Context context, int connectWay, VmsTerminalInfo vmsTerminalInfo) {
         Intent intent = new Intent(context, VmsTerminalExternalSensorHomeActivity.class);
         intent.putExtra(AppContants.Extras.COMMUNICATION_WAY, connectWay);
-        intent.putExtra(AppContants.Extras.CUR_DEVICE_SN, sn);
+        intent.putExtra(TERMINAL_INFO, vmsTerminalInfo);
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         context.startActivity(intent);
     }
@@ -49,18 +52,18 @@ public class VmsTerminalExternalSensorHomeActivity extends BaseConfigFragmentCon
         if (intent.getExtras() == null)
             return;
 
-        if (intent.getExtras().containsKey(AppContants.Extras.CUR_DEVICE_SN)) {
-            sn = intent.getStringExtra(AppContants.Extras.CUR_DEVICE_SN);
+        if (intent.getExtras().containsKey(TERMINAL_INFO)) {
+            vmsTerminalInfo = intent.getParcelableExtra(TERMINAL_INFO);
         }
     }
 
     @Override
     protected Fragment initFragment() {
         if (connectWay == AppContants.CommunicationWay.NET_PLATFORM_CONNECT) {
-            fragment = NetVmsTerminalExternalSensorHomeFragment.newInstance(projectDeviceInfo, sn);
+            fragment = NetVmsTerminalExternalSensorHomeFragment.newInstance(projectDeviceInfo, vmsTerminalInfo);
 
         } else if (connectWay == AppContants.CommunicationWay.TCP_CONNECT) {
-            fragment = TcpVmsTerminalExternalSensorHomeFragment.newInstance(sn);
+            fragment = TcpVmsTerminalExternalSensorHomeFragment.newInstance(vmsTerminalInfo);
         }
         return fragment;
     }

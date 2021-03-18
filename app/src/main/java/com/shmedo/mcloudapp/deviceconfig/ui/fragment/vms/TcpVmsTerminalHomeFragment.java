@@ -179,7 +179,7 @@ public class TcpVmsTerminalHomeFragment extends BaseVmsTcpCommunicateFragment {
                 break;
 
             case "传感器配置":
-                VmsTerminalExternalSensorHomeActivity.startActivity(mActivity, AppContants.CommunicationWay.TCP_CONNECT, vmsTerminalInfo.getSn());
+                VmsTerminalExternalSensorHomeActivity.startActivity(mActivity, AppContants.CommunicationWay.TCP_CONNECT, vmsTerminalInfo);
                 break;
 
             case "终端配置":
