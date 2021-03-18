@@ -30,7 +30,7 @@ import timber.log.Timber;
 public abstract class BaseTcpIotCommunicateFragment extends BaseFragment {
     public static final int TCP_CONNECT_DELAY_MILLIS = 5000;//Tcp 连接超时时间
 
-    public static final int WRITE_TIME_OUT_SECOND = 10000;//发送指令超时时间
+    public static final int WRITE_TIME_OUT_SECOND = 15000;//发送指令超时时间
 
     private static Handler uiHander = new Handler();
 

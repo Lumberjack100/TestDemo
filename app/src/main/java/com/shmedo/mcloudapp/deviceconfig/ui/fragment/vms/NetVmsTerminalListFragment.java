@@ -282,7 +282,7 @@ public class NetVmsTerminalListFragment extends BaseNetIotCommunicateSheetDialog
             case VMS_MD_GET_GATEWAY_STATUS: {//获取网关的状态
                 IOTCommandResult<VmsAisleTerminalInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
-                    String errMsg = String.format("%s %s", "查询网关基本信息出错!", commandResult.getMessage());
+                    String errMsg = String.format("%s %s", "查询网关通道下的挂载终端信息出错!", commandResult.getMessage());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
                     return;
