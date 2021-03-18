@@ -40,6 +40,7 @@
                 android:layout_height="13dp"
                 android:layout_marginStart="10dp"
                 android:visibility="gone"
+                tools:visibility="visible"
                 tools:src="@drawable/ic_signal_default" />
 
         </LinearLayout>

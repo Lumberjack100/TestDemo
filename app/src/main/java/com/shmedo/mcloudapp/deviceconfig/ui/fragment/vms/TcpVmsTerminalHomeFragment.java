@@ -113,7 +113,11 @@ public class TcpVmsTerminalHomeFragment extends BaseVmsTcpCommunicateFragment {
 
     private void setHeadInfo() {
         if (vmsTerminalInfo != null) {
-            mTvDeviceName.setText("VMS终端");
+            if (vmsTerminalInfo.getSn().toUpperCase().endsWith("D")) {
+                mTvDeviceName.setText("VMS终端");
+            } else if (vmsTerminalInfo.getSn().toUpperCase().endsWith("W")) {
+                mTvDeviceName.setText("崩滑仪");
+            }
             mTvDeviceSn.setText(String.format("设备编号：%s", vmsTerminalInfo.getSn()));
             mTvProductModel.setText(String.format("固件版本：%s", ""));
             mTvTime.setText(String.format("接入时间：%s", vmsTerminalInfo.getLogintime()));

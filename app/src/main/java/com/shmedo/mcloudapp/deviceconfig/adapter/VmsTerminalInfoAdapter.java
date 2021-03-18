@@ -26,7 +26,6 @@ public class VmsTerminalInfoAdapter extends BaseQuickAdapter<VmsTerminalInfo, Ba
     protected void convert(@NotNull BaseViewHolder holder, VmsTerminalInfo vmsTerminalInfo) {
         holder.setText(R.id.tv_terminal_sn, vmsTerminalInfo.getSn());
         holder.setText(R.id.tv_signal_strength, vmsTerminalInfo.getUprssi() + "dBm");
-//        holder.setText(R.id.tv_battery_value, terminalInfo.getVolt() + "%");
         holder.setText(R.id.tv_last_data_time, vmsTerminalInfo.getLastpackagetime());
 
         DecimalFormat df = new DecimalFormat("#");//格式化小数
@@ -37,15 +36,12 @@ public class VmsTerminalInfoAdapter extends BaseQuickAdapter<VmsTerminalInfo, Ba
             holder.setTextColorRes(R.id.tv_terminal_sn, R.color.title_text_color);
 //            holder.setImageResource(R.id.iv_signal, R.drawable.ic_device_signal_three);
             holder.setImageResource(R.id.iv_battery, R.drawable.ic_battery_full_online);
-
             holder.setText(R.id.tv_terminal_state, "在线");
         } else {
             holder.setTextColorRes(R.id.tv_terminal_sn, R.color.text_color_b3b3b3);
 //            holder.setImageResource(R.id.iv_signal, R.drawable.ic_device_signal_offline);
             holder.setImageResource(R.id.iv_battery, R.drawable.ic_battery_full_offline);
-
             holder.setText(R.id.tv_terminal_state, "离线");
         }
-
     }
 }
