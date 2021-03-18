@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -103,6 +104,7 @@ public class NetVmsTerminalListFragment extends BaseNetIotCommunicateSheetDialog
         super.onActivityCreated(savedInstanceState);
         initAdapter();
         vmsViewModel = getApplicationScopeViewModel(VmsViewModel.class);
+        observerRefreshTerminal();
         adapter.setEmptyView(R.layout.empty_view);
         initData();
     }
@@ -155,6 +157,21 @@ public class NetVmsTerminalListFragment extends BaseNetIotCommunicateSheetDialog
         mTvTitle.setText(title);
 
         getGatewayStatus(vmsAisleNumber);
+    }
+
+    /**
+     * 观察终端设备刷新<br>
+     * 因为终端列表页面移除了设备，网关主页面需要刷新数据
+     */
+    private void observerRefreshTerminal() {
+        vmsViewModel.getVmsRefreshTerminal().observeInFragment(this, new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean isRefresh) {
+                if (isRefresh) {
+                    initData();
+                }
+            }
+        });
     }
 
     /**

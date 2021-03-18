@@ -38,6 +38,7 @@ import com.shmedo.mcloudapp.deviceconfig.model.QueryCmdResult;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.netcommon.BaseNetIotCommunicateFragment;
 import com.shmedo.mcloudapp.deviceconfig.view.sensor.vms.LinearParamView;
 import com.shmedo.mcloudapp.deviceconfig.view.sensor.vms.PolynomialParamView;
+import com.shmedo.mcloudapp.deviceconfig.viewmodels.VmsViewModel;
 import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfo;
 import com.shmedo.mcloudapp.util.KeyBordUtils;
 
@@ -98,6 +99,8 @@ public class NetVmsTerminalExternalSensorParamFragment extends BaseNetIotCommuni
     private boolean isSaveParamOperation = false;//判断当前是保存参数操作，还是关闭数据中心操作
     private boolean isResultOK = false;//返回的结果是否是 Activity.RESULT_OK
 
+    private VmsViewModel vmsViewModel;
+
     public static NetVmsTerminalExternalSensorParamFragment newInstance(ProjectDeviceInfo projectDeviceInfo, VmsTerminalSensorInfo sensorInfo) {
         NetVmsTerminalExternalSensorParamFragment fragment = new NetVmsTerminalExternalSensorParamFragment();
         Bundle args = new Bundle();
@@ -124,6 +127,7 @@ public class NetVmsTerminalExternalSensorParamFragment extends BaseNetIotCommuni
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        vmsViewModel = getApplicationScopeViewModel(VmsViewModel.class);
         setView();
         initData();
         setSwitchViewListener();
@@ -481,6 +485,7 @@ public class NetVmsTerminalExternalSensorParamFragment extends BaseNetIotCommuni
         calculationPosOld = calculationPos;
         sensorNamePosOld = sensorNamePos;
         isResultOK = true;
+        vmsViewModel.setVmsRefreshTerminal(true);
     }
 
     private void setResult() {

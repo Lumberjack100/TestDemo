@@ -101,6 +101,7 @@ public class TcpVmsTerminalListFragment extends BaseBottomSheetDialogFragment {
         super.onActivityCreated(savedInstanceState);
         initAdapter();
         vmsViewModel = getApplicationScopeViewModel(VmsViewModel.class);
+        observerRefreshTerminal();
         deviceApiKeyViewModel = getApplicationScopeViewModel(DeviceApiKeyViewModel.class);
         tcpViewModel = getApplicationScopeViewModel(TcpViewModel.class);
         tcpViewModel.getReceivedMessage().observeInFragment(this, new Observer<String>() {
@@ -164,6 +165,21 @@ public class TcpVmsTerminalListFragment extends BaseBottomSheetDialogFragment {
         mTvTitle.setText(title);
 
         getGatewayStatus(vmsAisleNumber);
+    }
+
+    /**
+     * 观察终端设备刷新<br>
+     * 因为终端列表页面移除了设备，网关主页面需要刷新数据
+     */
+    private void observerRefreshTerminal() {
+        vmsViewModel.getVmsRefreshTerminal().observeInFragment(this, new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean isRefresh) {
+                if (isRefresh) {
+                    initData();
+                }
+            }
+        });
     }
 
     /**

@@ -428,6 +428,7 @@ public class TcpVmsTerminalExternalSensorParamFragment extends BaseVmsTcpCommuni
         calculationPosOld = calculationPos;
         sensorNamePosOld = sensorNamePos;
         isResultOK = true;
+        vmsViewModel.setVmsRefreshTerminal(true);
     }
 
     private void setResult() {
