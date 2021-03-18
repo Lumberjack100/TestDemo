@@ -40,8 +40,8 @@
                 android:layout_height="13dp"
                 android:layout_marginStart="10dp"
                 android:visibility="gone"
-                tools:visibility="visible"
-                tools:src="@drawable/ic_signal_default" />
+                tools:src="@drawable/ic_signal_default"
+                tools:visibility="visible" />
 
         </LinearLayout>
 
@@ -58,6 +58,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
+            android:layout_marginEnd="15dp"
             android:gravity="center_vertical">
 
             <ImageView
@@ -75,6 +76,20 @@
                 android:textSize="16sp"
                 tools:text="67%" />
 
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
+            <TextView
+                android:id="@+id/tv_terminal_state"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:singleLine="true"
+                android:textColor="@color/text_color_54DA99"
+                android:textSize="14sp"
+                tools:text="正常" />
+
         </LinearLayout>
 
         <View
@@ -84,15 +99,15 @@
             android:layout_marginBottom="13dp"
             android:background="@color/divider_line_bg" />
 
-        <TextView
-            android:id="@+id/tv_terminal_state"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:id="@+id/ll_sensor_container"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:singleLine="true"
-            android:textColor="@color/title_text_color"
-            android:textSize="15sp"
-            android:textStyle="bold"
-            tools:text="正常" />
+            android:layout_marginEnd="13dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+        </LinearLayout>
 
         <TextView
             android:id="@+id/tv_last_data_time"

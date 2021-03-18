@@ -1,8 +1,16 @@
 package com.shmedo.mcloudapp.deviceconfig.adapter;
 
+import android.view.LayoutInflater;
+import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;
+import com.shmedo.configlibrary.iot.model.SensorErrnoInfo;
 import com.shmedo.configlibrary.iot.model.vms.VmsTerminalInfo;
+import com.shmedo.core.MCloudApp;
+import com.shmedo.core.util.DensityUtil;
 import com.shmedo.mcloudapp.R;
 
 import org.jetbrains.annotations.NotNull;
@@ -37,11 +45,38 @@ public class VmsTerminalInfoAdapter extends BaseQuickAdapter<VmsTerminalInfo, Ba
 //            holder.setImageResource(R.id.iv_signal, R.drawable.ic_device_signal_three);
             holder.setImageResource(R.id.iv_battery, R.drawable.ic_battery_full_online);
             holder.setText(R.id.tv_terminal_state, "在线");
+            holder.setTextColorRes(R.id.tv_terminal_state, R.color.text_color_54DA99);
         } else {
             holder.setTextColorRes(R.id.tv_terminal_sn, R.color.text_color_b3b3b3);
 //            holder.setImageResource(R.id.iv_signal, R.drawable.ic_device_signal_offline);
             holder.setImageResource(R.id.iv_battery, R.drawable.ic_battery_full_offline);
             holder.setText(R.id.tv_terminal_state, "离线");
+            holder.setTextColorRes(R.id.tv_terminal_state, R.color.text_color_b3b3b3);
+        }
+
+        processSensorInsertState(holder, vmsTerminalInfo.getSensor());
+    }
+
+    private void processSensorInsertState(BaseViewHolder holder, List<SensorErrnoInfo> errnoInfoList) {
+        if (errnoInfoList == null || errnoInfoList.size() == 0) {
+            holder.setGone(R.id.ll_sensor_container, true);
+            return;
+        }
+        holder.setGone(R.id.ll_sensor_container, false);
+
+        LayoutInflater inflater = LayoutInflater.from(MCloudApp.getContext());
+        LinearLayout sensorContainer = holder.getView(R.id.ll_sensor_container);
+        sensorContainer.removeAllViews();
+        for (SensorErrnoInfo errnoInfo : errnoInfoList) {
+            TextView tvSensor = (TextView) inflater.inflate(R.layout.item_sensor_insert_state, null);
+            tvSensor.setText(errnoInfo.getNum().equals("0") ? "" : errnoInfo.getNum());
+            tvSensor.setBackgroundResource(errnoInfo.getIn().equals("0") ? R.drawable.bg_sensor_uninsert : R.drawable.bg_sensor_insert);
+            // 定义LayoutParam
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(DensityUtil.Dp2Px(MCloudApp.getContext(), 28), ViewGroup.LayoutParams.WRAP_CONTENT);
+            params.leftMargin = sensorContainer.getChildCount() > 0 ? DensityUtil.Dp2Px(MCloudApp.getContext(), 5) : 0;
+            tvSensor.setLayoutParams(params);
+
+            sensorContainer.addView(tvSensor);
         }
     }
 }
