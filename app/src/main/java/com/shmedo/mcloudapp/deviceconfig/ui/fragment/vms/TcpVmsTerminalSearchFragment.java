@@ -24,10 +24,14 @@ import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.chad.library.adapter.base.listener.OnItemLongClickListener;
 import com.hjq.toast.ToastUtils;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandManager;
+import com.shmedo.configlibrary.iot.cmd.IOTCommandResult;
 import com.shmedo.configlibrary.iot.cmd.entity.TerminalSNEntity;
+import com.shmedo.configlibrary.iot.cmd.entity.vms.VmsAisleNumberEntity;
 import com.shmedo.configlibrary.iot.cmd.parser.IOTParseManager;
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
+import com.shmedo.configlibrary.iot.enums.VmsAisleNumber;
 import com.shmedo.configlibrary.iot.model.CommonSettingCmdResult;
+import com.shmedo.configlibrary.iot.model.vms.VmsAisleTerminalInfo;
 import com.shmedo.configlibrary.iot.model.vms.VmsTerminalInfo;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
 import com.shmedo.core.AppContants;
@@ -77,6 +81,8 @@ public class TcpVmsTerminalSearchFragment extends BaseVmsTcpCommunicateFragment 
         super.onActivityCreated(savedInstanceState);
         setView();
         initAdapter();
+        //获取网关不同通道下挂载终端的状态
+        getGatewayStatus(VmsAisleNumber.NUMBER_TWO);
     }
 
     private void setView() {
@@ -133,6 +139,17 @@ public class TcpVmsTerminalSearchFragment extends BaseVmsTcpCommunicateFragment 
             }
         });
         mRecyclerView.setAdapter(adapter);
+    }
+
+    /**
+     * 获取网关不同通道下，挂载终端的运行情况
+     *
+     * @param vmsAisleNumber
+     */
+    private void getGatewayStatus(VmsAisleNumber vmsAisleNumber) {
+        VmsAisleNumberEntity vmsAisleNumberEntity = new VmsAisleNumberEntity(vmsAisleNumber.toInt());
+        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.VMS_MD_GET_GATEWAY_STATUS, vmsAisleNumberEntity);
+        sendCommand(command);
     }
 
     @OnClick({R.id.iv_back, R.id.tv_search})
@@ -253,6 +270,31 @@ public class TcpVmsTerminalSearchFragment extends BaseVmsTcpCommunicateFragment 
     private void setResultData(final String cmdStr) {
         IOTCommandType type = IOTStringUtil.extractCommandType(cmdStr);
         switch (type) {
+            case VMS_MD_GET_GATEWAY_STATUS: {//查询网关通道下的挂载终端信息
+                IOTCommandResult<VmsAisleTerminalInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
+                if (!commandResult.isSuccess()) {
+                    String errMsg = String.format("%s %s", "查询网关通道下的挂载终端信息出错!", commandResult.getMessage());
+                    Timber.e(errMsg);
+                    ToastUtils.show(errMsg);
+                    return;
+                }
+                VmsAisleTerminalInfo vmsAisleTerminalInfo = commandResult.getResult();
+                if (vmsAisleTerminalInfo == null) {
+                    return;
+                }
+                modifyAisleTerminalInfo(vmsAisleTerminalInfo);
+                if (vmsAisleTerminalInfo.getChannel() == 1) {
+                    vmsViewModel.clearCacheTerminalList();
+                    vmsViewModel.addCacheTerminalList(vmsAisleTerminalInfo.getTerminal());
+                    //获取网关不同通道下挂载终端的状态
+                    getGatewayStatus(VmsAisleNumber.NUMBER_THREE);
+
+                } else if (vmsAisleTerminalInfo.getChannel() == 2) {
+                    vmsViewModel.addCacheTerminalList(vmsAisleTerminalInfo.getTerminal());
+                }
+            }
+            break;
+
             case VMS_MD_DELETE_TERMINAL: {//获取网关的基本信息
                 CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
                 if (!cmdResult.isSucceed()) {
@@ -264,6 +306,22 @@ public class TcpVmsTerminalSearchFragment extends BaseVmsTcpCommunicateFragment 
                 doAfterSetting();
             }
             break;
+        }
+    }
+
+    /**
+     * 修改某个通道下接入的的终端信息，设置终端的网络号、信道号与所属通道一致
+     *
+     * @param vmsAisleTerminalInfo
+     */
+    private void modifyAisleTerminalInfo(VmsAisleTerminalInfo vmsAisleTerminalInfo) {
+        if (vmsAisleTerminalInfo == null)
+            return;
+        if (vmsAisleTerminalInfo.getTerminal() == null)
+            return;
+        for (VmsTerminalInfo vmsTerminalInfo : vmsAisleTerminalInfo.getTerminal()) {
+            vmsTerminalInfo.setNetid(vmsAisleTerminalInfo.getNetid());
+            vmsTerminalInfo.setChl(vmsAisleTerminalInfo.getChl());
         }
     }
 

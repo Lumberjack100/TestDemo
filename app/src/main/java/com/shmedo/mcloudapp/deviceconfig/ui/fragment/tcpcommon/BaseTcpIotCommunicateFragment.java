@@ -32,7 +32,7 @@ public abstract class BaseTcpIotCommunicateFragment extends BaseFragment {
 
     public static final int WRITE_TIME_OUT_SECOND = 15000;//发送指令超时时间
 
-    private static Handler uiHander = new Handler();
+    private Handler uiHander = new Handler();
 
     protected String errMsg = "";
 
@@ -42,7 +42,7 @@ public abstract class BaseTcpIotCommunicateFragment extends BaseFragment {
 
     protected DeviceApiKeyViewModel deviceApiKeyViewModel;
 
-    private static ProgressRunnable progressRunnable;
+    private ProgressRunnable progressRunnable;
 
     private class ProgressRunnable implements Runnable {
         @Override

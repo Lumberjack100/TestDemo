@@ -196,8 +196,7 @@ public class TcpVmsHomeFragment extends BaseVmsTcpCommunicateFragment {
             @Override
             public void onChanged(Boolean isRefresh) {
                 if (isRefresh) {
-                    startRefreshRunnable(WRITE_TIME_OUT_SECOND);
-                    getGatewayAisleInfo(VmsAisleNumber.NUMBER_TWO);
+                    getGatewayBaseInfo();
                 }
             }
         });
@@ -374,48 +373,50 @@ public class TcpVmsHomeFragment extends BaseVmsTcpCommunicateFragment {
                     getGatewayAisleInfo(VmsAisleNumber.NUMBER_THREE);
 
                 } else if (vmsAisleInfo.getChannel() == 2) {
+                    stopRefreshRunnable();
                     vmsAisleInfoList.add(vmsAisleInfo);
                     vmsAisleAdapter.notifyDataSetChanged();
                     scrollToEnd();
                     //获取网关不同通道下挂载终端的状态
-                    getGatewayStatus(VmsAisleNumber.NUMBER_TWO);
+//                    getGatewayStatus(VmsAisleNumber.NUMBER_TWO);
                 }
             }
             break;
 
-            case VMS_MD_GET_GATEWAY_STATUS: {//查询网关通道下的挂载终端信息
-                //Bug修复，TcpVmsTerminalListFragment 查询观察终端数据时，会触发这里的回调
-                if (tcpVmsTerminalListFragment != null && tcpVmsTerminalListFragment.isAdded()) {
-                    return;
-                }
-                IOTCommandResult<VmsAisleTerminalInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
-                if (!commandResult.isSuccess()) {
-                    stopRefreshRunnable();
-                    String errMsg = String.format("%s %s", "查询网关通道下的挂载终端信息出错!", commandResult.getMessage());
-                    Timber.e(errMsg);
-                    ToastUtils.show(errMsg);
-                    return;
-                }
-                VmsAisleTerminalInfo vmsAisleTerminalInfo = commandResult.getResult();
-                if (vmsAisleTerminalInfo == null) {
-                    stopRefreshRunnable();
-                    return;
-                }
-                modifyAisleTerminalInfo(vmsAisleTerminalInfo);
-                if (vmsAisleTerminalInfo.getChannel() == 1) {
-                    vmsViewModel.clearCacheTerminalList();
-                    vmsViewModel.addCacheTerminalList(vmsAisleTerminalInfo.getTerminal());
-                    //获取网关不同通道下挂载终端的状态
-                    getGatewayStatus(VmsAisleNumber.NUMBER_THREE);
-
-                } else if (vmsAisleTerminalInfo.getChannel() == 2) {
-                    stopRefreshRunnable();
-                    vmsViewModel.addCacheTerminalList(vmsAisleTerminalInfo.getTerminal());
-                }
-            }
-            break;
+//            case VMS_MD_GET_GATEWAY_STATUS: {//查询网关通道下的挂载终端信息
+//                //Bug修复，TcpVmsTerminalListFragment 查询观察终端数据时，会触发这里的回调
+//                if (tcpVmsTerminalListFragment != null && tcpVmsTerminalListFragment.isAdded()) {
+//                    return;
+//                }
+//                IOTCommandResult<VmsAisleTerminalInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
+//                if (!commandResult.isSuccess()) {
+//                    stopRefreshRunnable();
+//                    String errMsg = String.format("%s %s", "查询网关通道下的挂载终端信息出错!", commandResult.getMessage());
+//                    Timber.e(errMsg);
+//                    ToastUtils.show(errMsg);
+//                    return;
+//                }
+//                VmsAisleTerminalInfo vmsAisleTerminalInfo = commandResult.getResult();
+//                if (vmsAisleTerminalInfo == null) {
+//                    stopRefreshRunnable();
+//                    return;
+//                }
+//                modifyAisleTerminalInfo(vmsAisleTerminalInfo);
+//                if (vmsAisleTerminalInfo.getChannel() == 1) {
+//                    vmsViewModel.clearCacheTerminalList();
+//                    vmsViewModel.addCacheTerminalList(vmsAisleTerminalInfo.getTerminal());
+//                    //获取网关不同通道下挂载终端的状态
+//                    getGatewayStatus(VmsAisleNumber.NUMBER_THREE);
+//
+//                } else if (vmsAisleTerminalInfo.getChannel() == 2) {
+//                    stopRefreshRunnable();
+//                    vmsViewModel.addCacheTerminalList(vmsAisleTerminalInfo.getTerminal());
+//                }
+//            }
+//            break;
 
             default:
+                stopRefreshRunnable();
                 super.parseResponseMessage(cmdStr);
                 break;
         }
