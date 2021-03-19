@@ -243,6 +243,7 @@ public class BleM20DataCenterHomeFragment extends BaseGOCBleIotCommunicateFragme
             break;
 
             default:
+                super.parseResponseMessage(cmdStr);
                 break;
         }
     }
