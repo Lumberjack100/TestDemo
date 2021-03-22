@@ -9,9 +9,9 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
+        android:layout_marginStart="14dp"
         android:layout_marginTop="28dp"
-        android:layout_marginEnd="16dp"
+        android:layout_marginEnd="14dp"
         android:layout_marginBottom="25dp">
 
         <ImageView
@@ -23,7 +23,7 @@
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
+            android:layout_marginStart="7dp"
             android:layout_weight="1"
             android:orientation="vertical">
 
@@ -39,20 +39,20 @@
                     android:maxEms="8"
                     android:singleLine="true"
                     android:textColor="@color/text_color_1f1f1f"
-                    android:textSize="@dimen/text_size_17"
+                    android:textSize="@dimen/text_size_16"
                     tools:text="物联网数据采集器凤飞飞方法旺旺sss" />
 
                 <TextView
                     android:id="@+id/tv_device_state_flag"
                     android:layout_width="wrap_content"
                     android:layout_height="16dp"
-                    android:layout_marginStart="8dp"
+                    android:layout_marginStart="5dp"
                     android:background="@drawable/bg_device_online_state_flag"
                     android:gravity="center"
-                    android:paddingStart="7dp"
-                    android:paddingEnd="7dp"
+                    android:paddingStart="5dp"
+                    android:paddingEnd="5dp"
                     android:singleLine="true"
-                    android:textSize="@dimen/text_size_11"
+                    android:textSize="@dimen/text_size_10"
                     tools:text="已连接"
                     tools:textColor="@color/text_color_50E9B9" />
 
