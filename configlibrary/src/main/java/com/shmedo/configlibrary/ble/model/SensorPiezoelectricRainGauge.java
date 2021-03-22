@@ -1,6 +1,5 @@
 package com.shmedo.configlibrary.ble.model;
 
-
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -8,19 +7,18 @@ import com.shmedo.configlibrary.ble.enums.SensorType;
 import com.shmedo.configlibrary.ble.interfaces.SensorParameter;
 
 /**
- * Created by adu on 2017/12/14.
- * 传感器拉线位移计 02
+ * 创建者:   gonghe <br/>
+ * 创建时间:  3/22/21 <br/>
+ * 描述：     压电式雨量计 01
  */
-public class SensorWireShiftInfo implements SensorParameter, Parcelable {
+public class SensorPiezoelectricRainGauge implements SensorParameter, Parcelable {
     private String triggerThreshold;    //触发阈值
     private String correctionValue;     //修正值
 
-    public SensorWireShiftInfo() {
-
+    public SensorPiezoelectricRainGauge() {
     }
 
-
-    protected SensorWireShiftInfo(Parcel in) {
+    protected SensorPiezoelectricRainGauge(Parcel in) {
         triggerThreshold = in.readString();
         correctionValue = in.readString();
     }
@@ -36,15 +34,15 @@ public class SensorWireShiftInfo implements SensorParameter, Parcelable {
         return 0;
     }
 
-    public static final Creator<SensorWireShiftInfo> CREATOR = new Creator<SensorWireShiftInfo>() {
+    public static final Creator<SensorPiezoelectricRainGauge> CREATOR = new Creator<SensorPiezoelectricRainGauge>() {
         @Override
-        public SensorWireShiftInfo createFromParcel(Parcel in) {
-            return new SensorWireShiftInfo(in);
+        public SensorPiezoelectricRainGauge createFromParcel(Parcel in) {
+            return new SensorPiezoelectricRainGauge(in);
         }
 
         @Override
-        public SensorWireShiftInfo[] newArray(int size) {
-            return new SensorWireShiftInfo[size];
+        public SensorPiezoelectricRainGauge[] newArray(int size) {
+            return new SensorPiezoelectricRainGauge[size];
         }
     };
 
@@ -64,16 +62,17 @@ public class SensorWireShiftInfo implements SensorParameter, Parcelable {
         this.correctionValue = correctionValue;
     }
 
+
     @Override
     public SensorType getSensorType() {
-        return SensorType.WIRE_SHIFT;
+        return SensorType.RAIN_GAUGE;
     }
 
     @Override
     public String toString() {
-        return "SensorWireShiftInfo{" +
-                "triggerThreshold=" + triggerThreshold +
-                ", correctionValue=" + correctionValue +
+        return "SensorPiezoelectricRainGauge{" +
+                "triggerThreshold='" + triggerThreshold + '\'' +
+                ", correctionValue='" + correctionValue + '\'' +
                 '}';
     }
 }

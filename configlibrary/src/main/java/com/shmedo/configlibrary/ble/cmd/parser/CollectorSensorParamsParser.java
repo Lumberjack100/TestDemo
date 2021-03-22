@@ -8,23 +8,24 @@ import com.shmedo.configlibrary.ble.enums.CommandType;
 import com.shmedo.configlibrary.ble.enums.SensorType;
 import com.shmedo.configlibrary.ble.interfaces.ResultParser;
 import com.shmedo.configlibrary.ble.model.CollectorSensorParamsInfo;
+import com.shmedo.configlibrary.ble.model.SensorGudanDisplacementInfo;
+import com.shmedo.configlibrary.ble.model.SensorGudanNotStressInfo;
 import com.shmedo.configlibrary.ble.model.SensorGudanPercolateInfo;
 import com.shmedo.configlibrary.ble.model.SensorGudanSoilPressureInfo;
 import com.shmedo.configlibrary.ble.model.SensorGudanStressInfo;
 import com.shmedo.configlibrary.ble.model.SensorInclinometerInfo;
+import com.shmedo.configlibrary.ble.model.SensorInfrasoundInfo;
 import com.shmedo.configlibrary.ble.model.SensorJunXingZljInfo;
+import com.shmedo.configlibrary.ble.model.SensorKangPercolateInfo;
 import com.shmedo.configlibrary.ble.model.SensorMoistureMeterInfo;
+import com.shmedo.configlibrary.ble.model.SensorPiezoelectricRainGauge;
+import com.shmedo.configlibrary.ble.model.SensorRadarLevelInfo;
 import com.shmedo.configlibrary.ble.model.SensorSoilMoistureInfo;
 import com.shmedo.configlibrary.ble.model.SensorTemperHumidityInfo;
 import com.shmedo.configlibrary.ble.model.SensorUltrasonicLevelInfo;
-import com.shmedo.configlibrary.ble.utils.StringUtil;
-import com.shmedo.configlibrary.ble.model.SensorGudanDisplacementInfo;
-import com.shmedo.configlibrary.ble.model.SensorGudanNotStressInfo;
-import com.shmedo.configlibrary.ble.model.SensorInfrasoundInfo;
-import com.shmedo.configlibrary.ble.model.SensorKangPercolateInfo;
-import com.shmedo.configlibrary.ble.model.SensorRadarLevelInfo;
 import com.shmedo.configlibrary.ble.model.SensorUpliftPressureInfo;
 import com.shmedo.configlibrary.ble.model.SensorWireShiftInfo;
+import com.shmedo.configlibrary.ble.utils.StringUtil;
 
 
 /**
@@ -39,6 +40,8 @@ public class CollectorSensorParamsParser implements ResultParser<CollectorSensor
         String[] strs = result.split(",");
         String collectorType = StringUtil.formatStringTwo(strs[2]);
         switch (collectorType) {
+            case "01"://压电式雨量计
+                return parserSensorPiezoelectricRainGauge(strs);
             case "02"://拉线位移计 MPS-M-2000
                 return parserWireShift(strs);
             case "03"://土壤含水率 TR-3000
@@ -86,6 +89,24 @@ public class CollectorSensorParamsParser implements ResultParser<CollectorSensor
         return CommandType.COLLECTOR_CHANNEL_SENSOR_PARAMETER;
     }
 
+    /**
+     * 解析压电式雨量计 2个参数   01
+     *
+     * @param strs 返回雨量计数据
+     * @return 返回具体的传感器压电式雨量计实体类
+     */
+    public static CollectorSensorParamsInfo<SensorPiezoelectricRainGauge> parserSensorPiezoelectricRainGauge(String[] strs) {
+        CollectorSensorParamsInfo bean = new CollectorSensorParamsInfo();
+        SensorPiezoelectricRainGauge info = new SensorPiezoelectricRainGauge();
+        bean.setCollectorModel(CollectorModel.value(strs[0].substring(5, 7)));
+        bean.setChannelNumber(strs[0].substring(7, 9));
+        bean.setSensorAddress(strs[1]);
+        bean.setSensorType(SensorType.RAIN_GAUGE);
+        info.setTriggerThreshold((TextUtils.isEmpty(strs[3]) || strs[3].contains("nan")) ? "0" : strs[3]);
+        info.setCorrectionValue((TextUtils.isEmpty(strs[4]) || strs[4].contains("nan")) ? "0" : strs[4]);
+        bean.setSensorData(info);
+        return bean;
+    }
 
     /**
      * 解析拉线位移计 2个参数   02

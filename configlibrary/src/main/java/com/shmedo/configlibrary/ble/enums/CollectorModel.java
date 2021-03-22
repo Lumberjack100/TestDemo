@@ -16,6 +16,10 @@ public enum CollectorModel {
      */
     VW08("00"),
     /**
+     * 雨量采集器
+     */
+    RAIN08("01"),
+    /**
      * 裂缝计采集器
      */
     DS08("02"),
@@ -76,6 +80,8 @@ public enum CollectorModel {
         switch (model) {
             case "00":
                 return VW08;
+            case "01":
+                return RAIN08;
             case "02":
                 return DS08;
             case "03":

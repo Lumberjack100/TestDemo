@@ -10,6 +10,7 @@ import com.shmedo.configlibrary.ble.enums.SensorType;
 import com.shmedo.configlibrary.ble.model.CollectorSensorParamsInfo;
 import com.shmedo.configlibrary.ble.model.SensorInclinometerInfo;
 import com.shmedo.configlibrary.ble.model.SensorInfrasoundInfo;
+import com.shmedo.configlibrary.ble.model.SensorPiezoelectricRainGauge;
 import com.shmedo.configlibrary.ble.model.SensorRadarLevelInfo;
 import com.shmedo.configlibrary.ble.model.SensorSoilMoistureInfo;
 import com.shmedo.configlibrary.ble.model.SensorUltrasonicLevelInfo;
@@ -81,6 +82,14 @@ public class BleDasExternalDigtalSensorFragment extends BaseBleDasExternalSensor
         CollectorSensorParamsInfo paramsInfoSub = collectorSensorParamsInfoSubs.get(sensorIndex);
         CollectorModel collectorModel = paramsInfoSub.getCollectorModel();
         switch (collectorModel) {
+            case RAIN08://雨量采集器
+                SensorPiezoelectricRainGauge sensorPiezoelectricRainGauge = (SensorPiezoelectricRainGauge) paramsInfoSub.getSensorData();
+                command = "##168" +
+                        StringUtil.formatStringTwo(paramsInfoSub.getCollectorModel().toString()) +
+                        StringUtil.formatStringTwo(paramsInfoSub.getSensorAddress()) +
+                        sensorPiezoelectricRainGauge.getTriggerThreshold() + "\r\n";
+                break;
+
             case DS08://裂缝计采集器
                 SensorWireShiftInfo sensorWireShiftInfo = (SensorWireShiftInfo) paramsInfoSub.getSensorData();
                 command = "##168" +
@@ -167,6 +176,14 @@ public class BleDasExternalDigtalSensorFragment extends BaseBleDasExternalSensor
         CollectorSensorParamsInfo paramsInfoSub = collectorSensorParamsInfoSubs.get(sensorIndex);
         CollectorModel collectorModel = paramsInfoSub.getCollectorModel();
         switch (collectorModel) {
+            case RAIN08://雨量采集器
+                SensorPiezoelectricRainGauge sensorPiezoelectricRainGauge = (SensorPiezoelectricRainGauge) paramsInfoSub.getSensorData();
+                command = "##165" +
+                        StringUtil.formatStringTwo(paramsInfoSub.getCollectorModel().toString()) +
+                        StringUtil.formatStringTwo(paramsInfoSub.getSensorAddress()) +
+                        sensorPiezoelectricRainGauge.getCorrectionValue() + "\r\n";
+                break;
+
             case DS08://裂缝计采集器
                 SensorWireShiftInfo sensorWireShiftInfo = (SensorWireShiftInfo) paramsInfoSub.getSensorData();
                 command = "##165" +

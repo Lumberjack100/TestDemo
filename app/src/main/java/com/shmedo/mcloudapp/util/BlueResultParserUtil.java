@@ -26,6 +26,10 @@ public class BlueResultParserUtil {
                 collectorName = "振弦式采集器";
                 break;
 
+            case RAIN08:
+                collectorName = "雨量采集器";
+                break;
+
             case DS08:
                 collectorName = "裂缝计采集器";
                 break;
@@ -87,6 +91,10 @@ public class BlueResultParserUtil {
     public static String getSensorName(SensorType sensorType) {
         String sensorName = "";
         switch (sensorType) {
+            case RAIN_GAUGE:
+                sensorName = "压电式雨量计";
+                break;
+
             case WIRE_SHIFT:
                 sensorName = "拉线位移计";
                 break;

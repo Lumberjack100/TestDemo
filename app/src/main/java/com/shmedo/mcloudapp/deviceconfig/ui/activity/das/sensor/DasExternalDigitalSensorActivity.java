@@ -16,6 +16,7 @@ import com.hjq.toast.ToastUtils;
 import com.shmedo.configlibrary.ble.enums.SensorType;
 import com.shmedo.configlibrary.ble.model.SensorInclinometerInfo;
 import com.shmedo.configlibrary.ble.model.SensorInfrasoundInfo;
+import com.shmedo.configlibrary.ble.model.SensorPiezoelectricRainGauge;
 import com.shmedo.configlibrary.ble.model.SensorRadarLevelInfo;
 import com.shmedo.configlibrary.ble.model.SensorSoilMoistureInfo;
 import com.shmedo.configlibrary.ble.model.SensorUltrasonicLevelInfo;
@@ -141,6 +142,16 @@ public class DasExternalDigitalSensorActivity extends BaseActivity {
     private void initValue() {
         mEtModbusAddress.setText(sensorAddress);
         switch (sensorType) {
+            case RAIN_GAUGE://压电式雨量计
+                mTvAlarmValue.setText("报警值(单位:mm)");
+                mTvCorrectValue.setText("修正值(单位:m)");
+                if (parcelableData != null) {
+                    SensorPiezoelectricRainGauge sensorPiezoelectricRainGauge = (SensorPiezoelectricRainGauge) parcelableData;
+                    triggerThreshold = sensorPiezoelectricRainGauge.getTriggerThreshold();
+                    correctValue = sensorPiezoelectricRainGauge.getCorrectionValue();
+                }
+                break;
+
             case WIRE_SHIFT://拉线位移计
                 mTvAlarmValue.setText("报警值(单位:mm)");
                 mTvCorrectValue.setText("修正值(单位:m)");
@@ -239,48 +250,62 @@ public class DasExternalDigitalSensorActivity extends BaseActivity {
         intent.putExtra(AppContants.Extras.SENSOR_ADDRESS, sensorAddress);
         intent.putExtra(AppContants.Extras.SENSOR_TYPE, sensorType);
         switch (sensorType) {
-            case WIRE_SHIFT://拉线位移计
+            case RAIN_GAUGE: {//压电式雨量计
+                SensorPiezoelectricRainGauge sensorPiezoelectricRainGauge = new SensorPiezoelectricRainGauge();
+                sensorPiezoelectricRainGauge.setTriggerThreshold(triggerThreshold);
+                sensorPiezoelectricRainGauge.setCorrectionValue(correctValue);
+                intent.putExtra(AppContants.Extras.SENSOR_PARAM, sensorPiezoelectricRainGauge);
+            }
+            break;
+
+            case WIRE_SHIFT: {//拉线位移计
                 SensorWireShiftInfo sensorWireShiftInfo = new SensorWireShiftInfo();
                 sensorWireShiftInfo.setTriggerThreshold(triggerThreshold);
                 sensorWireShiftInfo.setCorrectionValue(correctValue);
                 intent.putExtra(AppContants.Extras.SENSOR_PARAM, sensorWireShiftInfo);
-                break;
+            }
+            break;
 
-            case SOIL_MOISTURE://土壤含水率
+            case SOIL_MOISTURE: {//土壤含水率
                 SensorSoilMoistureInfo sensorSoilMoistureInfo = new SensorSoilMoistureInfo();
                 sensorSoilMoistureInfo.setTriggerThreshold(triggerThreshold);
                 sensorSoilMoistureInfo.setCorrectionValue(correctValue);
                 intent.putExtra(AppContants.Extras.SENSOR_PARAM, sensorSoilMoistureInfo);
-                break;
+            }
+            break;
 
-            case INCLINOMETER://测斜仪
+            case INCLINOMETER: {//测斜仪
                 SensorInclinometerInfo sensorInclinometerInfo = new SensorInclinometerInfo();
                 sensorInclinometerInfo.setTriggerThreshold(triggerThreshold);
                 sensorInclinometerInfo.setCorrectionValue(correctValue);
                 sensorInclinometerInfo.setMeasureLength(measureLong);
                 intent.putExtra(AppContants.Extras.SENSOR_PARAM, sensorInclinometerInfo);
-                break;
+            }
+            break;
 
-            case ULTRASONIC_LEVEL_GAUGE://超声波物位计
+            case ULTRASONIC_LEVEL_GAUGE: {//超声波物位计
                 SensorUltrasonicLevelInfo sensorUltrasonicLevelInfo = new SensorUltrasonicLevelInfo();
                 sensorUltrasonicLevelInfo.setTriggerThreshold(triggerThreshold);
                 sensorUltrasonicLevelInfo.setCorrectionValue(correctValue);
                 intent.putExtra(AppContants.Extras.SENSOR_PARAM, sensorUltrasonicLevelInfo);
-                break;
+            }
+            break;
 
-            case RADAR_LEVEL_GAUGE://雷达物位计
+            case RADAR_LEVEL_GAUGE: {//雷达物位计
                 SensorRadarLevelInfo sensorRadarLevelInfo = new SensorRadarLevelInfo();
                 sensorRadarLevelInfo.setTriggerThreshold(triggerThreshold);
                 sensorRadarLevelInfo.setCorrectionValue(correctValue);
                 intent.putExtra(AppContants.Extras.SENSOR_PARAM, sensorRadarLevelInfo);
-                break;
+            }
+            break;
 
-            case INFRASOUND_SENSOR://次声
+            case INFRASOUND_SENSOR: {//次声
                 SensorInfrasoundInfo sensorInfrasoundInfo = new SensorInfrasoundInfo();
                 sensorInfrasoundInfo.setTriggerThreshold(triggerThreshold);
                 sensorInfrasoundInfo.setCorrectionValue(correctValue);
                 intent.putExtra(AppContants.Extras.SENSOR_PARAM, sensorInfrasoundInfo);
-                break;
+            }
+            break;
         }
 
         setResult(RESULT_OK, intent);

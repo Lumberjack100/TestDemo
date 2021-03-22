@@ -353,6 +353,10 @@ public abstract class BaseBleDasExternalSensorFragment extends BaseBleCommunicat
                 defaultCollectorSensorParamsInfo.setSensorType(SensorType.KANG_PERCOLATE);
                 break;
 
+            case RAIN08:
+                defaultCollectorSensorParamsInfo.setSensorType(SensorType.RAIN_GAUGE);
+                break;
+
             case DS08:
                 defaultCollectorSensorParamsInfo.setSensorType(SensorType.WIRE_SHIFT);
                 break;
@@ -391,7 +395,7 @@ public abstract class BaseBleDasExternalSensorFragment extends BaseBleCommunicat
             Timber.e("%s 采集器 %s 通道的传感器参数为空!", collectorModelValue, StringUtil.formatStringTwo(sensorIndex + ""));
             return;
         }
-        Timber.d("%s 采集器 %s 通道的传感器参数-------%s", collectorModelValue, mCollectorParamsInfoSub.getSensorAddress(), mCollectorParamsInfoSub.toString());
+        Timber.d("%s 采集器 %s 通道的传感器参数-------%s", collectorModelValue, StringUtil.formatStringTwo(sensorIndex + ""), mCollectorParamsInfoSub.toString());
         collectorSensorHashMap.put(mCollectorParamsInfoSub.getSensorAddress(), mCollectorParamsInfoSub);
         addSensorItem(mCollectorParamsInfoSub.getSensorAddress());
     }

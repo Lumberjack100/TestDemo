@@ -12,6 +12,10 @@ import java.util.List;
  */
 public enum SensorType {
     /**
+     * 压电式雨量计
+     */
+    RAIN_GAUGE("01"),
+    /**
      * 拉线位移计 MPS-M-2000
      */
     WIRE_SHIFT("02"),
@@ -92,6 +96,8 @@ public enum SensorType {
 
     public static SensorType value(String type) {
         switch (type) {
+            case "01":
+                return RAIN_GAUGE;
             case "02":
                 return WIRE_SHIFT;
             case "03":
