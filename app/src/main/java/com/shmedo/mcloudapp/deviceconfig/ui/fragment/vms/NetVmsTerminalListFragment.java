@@ -384,6 +384,12 @@ public class NetVmsTerminalListFragment extends BaseNetIotCommunicateSheetDialog
         mMaterialDialog.show();
     }
 
+    @Override
+    public void onStop() {
+        super.onStop();
+        hideProgressBar();
+    }
+
     private void showProgressBar() {
         progressOverlay.setVisibility(View.VISIBLE);
         //TODO #gh# android:clickable="true" 和 android:focusable="true" 已经实现了禁止触摸遮罩层下面的 View,
