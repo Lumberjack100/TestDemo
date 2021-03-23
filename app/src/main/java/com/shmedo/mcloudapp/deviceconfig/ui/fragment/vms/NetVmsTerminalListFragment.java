@@ -23,10 +23,9 @@ import com.hjq.toast.ToastUtils;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandManager;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandResult;
 import com.shmedo.configlibrary.iot.cmd.entity.TerminalSNEntity;
-import com.shmedo.configlibrary.iot.cmd.entity.vms.VmsAisleNumberEntity;
+import com.shmedo.configlibrary.iot.cmd.entity.vms.VmsTerminalStatusEntity;
 import com.shmedo.configlibrary.iot.cmd.parser.IOTParseManager;
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
-import com.shmedo.configlibrary.iot.enums.VmsAisleNumber;
 import com.shmedo.configlibrary.iot.model.CommonSettingCmdResult;
 import com.shmedo.configlibrary.iot.model.vms.VmsAisleInfo;
 import com.shmedo.configlibrary.iot.model.vms.VmsAisleTerminalInfo;
@@ -77,6 +76,9 @@ public class NetVmsTerminalListFragment extends BaseNetIotCommunicateSheetDialog
     private VmsAisleInfo vmsAisleInfo;
 
     private VmsViewModel vmsViewModel;
+
+    private int terminalIndex = 0;//终端索引号
+
 
     public NetVmsTerminalListFragment(ProjectDeviceInfo projectDeviceInfo, VmsAisleInfo vmsAisleInfo) {
         this.projectDeviceInfo = projectDeviceInfo;
@@ -144,19 +146,20 @@ public class NetVmsTerminalListFragment extends BaseNetIotCommunicateSheetDialog
             return;
         }
 
-        VmsAisleNumber vmsAisleNumber;
         String title;
         if (vmsAisleInfo.getChannel() == 1) {
             title = "数据通道1-设备(";
-            vmsAisleNumber = VmsAisleNumber.value(1);
         } else {
             title = "数据通道2-设备(";
-            vmsAisleNumber = VmsAisleNumber.value(2);
         }
         title += vmsAisleInfo.getTerminalnum() + ")";
         mTvTitle.setText(title);
 
-        getGatewayStatus(vmsAisleNumber);
+        showProgressBar();
+        mTvProgressText.setText("处理中...");
+        terminalIndex = 0;
+        vmsTerminalInfoList.clear();
+        getTerminalStatus();
     }
 
     /**
@@ -176,14 +179,10 @@ public class NetVmsTerminalListFragment extends BaseNetIotCommunicateSheetDialog
 
     /**
      * 获取网关不同通道下，挂载终端的运行情况
-     *
-     * @param vmsAisleNumber
      */
-    private void getGatewayStatus(VmsAisleNumber vmsAisleNumber) {
-        VmsAisleNumberEntity vmsAisleNumberEntity = new VmsAisleNumberEntity(vmsAisleNumber.toInt());
-        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.VMS_MD_GET_GATEWAY_STATUS, vmsAisleNumberEntity);
-        showProgressBar();
-        mTvProgressText.setText("处理中...");
+    private void getTerminalStatus() {
+        VmsTerminalStatusEntity entity = new VmsTerminalStatusEntity(vmsAisleInfo.getChannel(), terminalIndex);
+        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.VMS_MD_GET_TERMINAL_STATUS, entity);
         doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
     }
 
@@ -232,7 +231,7 @@ public class NetVmsTerminalListFragment extends BaseNetIotCommunicateSheetDialog
     private void showDispatchFailedDialog(String cmdStr) {
         IOTCommandType type = IOTStringUtil.extractCommandType(cmdStr);
         switch (type) {
-            case VMS_MD_GET_GATEWAY_STATUS:
+            case VMS_MD_GET_TERMINAL_STATUS:
             case VMS_MD_DELETE_TERMINAL:
                 ToastUtils.show("下发指令失败");
                 break;
@@ -271,7 +270,6 @@ public class NetVmsTerminalListFragment extends BaseNetIotCommunicateSheetDialog
     @Override
     protected void onQueryCmdResponseResultSuccess(QueryCmdResult queryCmdResult) {
         super.onQueryCmdResponseResultSuccess(queryCmdResult);
-        hideProgressBar();
         setResultData(queryCmdResult);
     }
 
@@ -279,9 +277,10 @@ public class NetVmsTerminalListFragment extends BaseNetIotCommunicateSheetDialog
         String cmdStr = queryCmdResult.getResponseContent();
         IOTCommandType type = IOTStringUtil.extractCommandType(queryCmdResult.getCmdEngName());
         switch (type) {
-            case VMS_MD_GET_GATEWAY_STATUS: {//获取网关的状态
+            case VMS_MD_GET_TERMINAL_STATUS: {//获取挂载终端的状态
                 IOTCommandResult<VmsAisleTerminalInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
+                    hideProgressBar();
                     String errMsg = String.format("%s %s", "查询网关通道下的挂载终端信息出错!", commandResult.getMessage());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
@@ -291,12 +290,21 @@ public class NetVmsTerminalListFragment extends BaseNetIotCommunicateSheetDialog
                 modifyAisleTerminalInfo(vmsAisleTerminalInfo);
 
                 if (vmsAisleTerminalInfo == null || vmsAisleTerminalInfo.getTerminal() == null || vmsAisleTerminalInfo.getTerminal().size() == 0) {
-                    adapter.setEmptyView(R.layout.empty_view);
+                    hideProgressBar();
+                    if (vmsTerminalInfoList.size() == 0) {
+                        adapter.setEmptyView(R.layout.empty_view);
+                    }
                     return;
                 }
-                vmsTerminalInfoList.clear();
                 vmsTerminalInfoList.addAll(vmsAisleTerminalInfo.getTerminal());
-                adapter.notifyDataSetChanged();
+
+                terminalIndex++;
+                if (terminalIndex < Integer.parseInt(vmsAisleInfo.getTerminalnum())) {
+                    getTerminalStatus();
+                } else {
+                    hideProgressBar();
+                    adapter.notifyDataSetChanged();
+                }
             }
             break;
 
@@ -339,12 +347,10 @@ public class NetVmsTerminalListFragment extends BaseNetIotCommunicateSheetDialog
         vmsViewModel.setVmsRefreshTerminal(true);
 
         String title;
-        if (vmsAisleInfo.getChannel() == 0) {
-            title = "通道01-设备(";
-        } else if (vmsAisleInfo.getChannel() == 1) {
-            title = "通道02-设备(";
+        if (vmsAisleInfo.getChannel() == 1) {
+            title = "数据通道1-设备(";
         } else {
-            title = "通道03-设备(";
+            title = "数据通道2-设备(";
         }
         title += vmsTerminalInfoList.size() + ")";
         mTvTitle.setText(title);

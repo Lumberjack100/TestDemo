@@ -15,6 +15,7 @@ import com.shmedo.mcloudapp.R;
 import butterknife.BindView;
 import butterknife.OnClick;
 import cn.bingoogolapple.photopicker.activity.BGAPhotoPickerActivity;
+import cn.bingoogolapple.qrcode.core.BarcodeType;
 import cn.bingoogolapple.qrcode.core.QRCodeView;
 import cn.bingoogolapple.qrcode.zxing.ZXingView;
 import timber.log.Timber;
@@ -57,6 +58,8 @@ public class ScanActivity extends BaseActivity implements QRCodeView.Delegate {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mZXingView.setDelegate(this);
+        //#gh# 设置只扫描识别二维码
+        mZXingView.setType(BarcodeType.ONLY_QR_CODE, null);
     }
 
     @Override

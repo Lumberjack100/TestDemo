@@ -61,7 +61,7 @@ public class NetVmsTerminalExternalSensorHomeFragment extends BaseNetIotCommunic
     protected HashMap<String, VmsTerminalSensorInfo> sensorHashMap = new HashMap<>();
 
     private VmsTerminalInfo vmsTerminalInfo;
-    private static int accessSum = 4;  //接入扩展传感器总数
+    private int accessSum = 4;  //接入扩展传感器总数
     private int sensorIndex = 0;//接入的传感器索引号
 
     private int curSensorIndex = -1;
@@ -241,11 +241,9 @@ public class NetVmsTerminalExternalSensorHomeFragment extends BaseNetIotCommunic
                         queryTerminalAisleParamInfo();
                     } else {//所有通道的传感器参数都查询了
                         dismissProgressDialog();
-                        sensorAdapter.notifyDataSetChanged();
                     }
                 } else {//只刷新单个通道的传感器数据
                     dismissProgressDialog();
-                    sensorAdapter.notifyDataSetChanged();
                 }
             }
             default:
@@ -264,6 +262,7 @@ public class NetVmsTerminalExternalSensorHomeFragment extends BaseNetIotCommunic
             sensorItem.setChannel(sensorInfo.getChannel());
             sensorItem.setInsert(sensorInfo.getInsert().trim().equals("1"));
             sensorItemList.add(sensorItem);
+            sensorAdapter.notifyDataSetChanged();
         } else {
             sensorHashMap.remove(sensorInfo.getChannel());
             sensorHashMap.put(sensorInfo.getChannel(), sensorInfo);
@@ -271,6 +270,7 @@ public class NetVmsTerminalExternalSensorHomeFragment extends BaseNetIotCommunic
             VmsTerminalSensorItem sensorItem = sensorItemList.get(curSensorIndex);
             sensorItem.setChannel(sensorInfo.getChannel());
             sensorItem.setInsert(sensorInfo.getInsert().trim().equals("1"));
+            sensorAdapter.notifyDataSetChanged();
         }
     }
 

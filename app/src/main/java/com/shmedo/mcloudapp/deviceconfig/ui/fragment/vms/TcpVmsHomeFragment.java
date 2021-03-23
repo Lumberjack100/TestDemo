@@ -31,9 +31,7 @@ import com.shmedo.configlibrary.iot.cmd.parser.IOTParseManager;
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.enums.VmsAisleNumber;
 import com.shmedo.configlibrary.iot.model.vms.VmsAisleInfo;
-import com.shmedo.configlibrary.iot.model.vms.VmsAisleTerminalInfo;
 import com.shmedo.configlibrary.iot.model.vms.VmsBasicInfo;
-import com.shmedo.configlibrary.iot.model.vms.VmsTerminalInfo;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
 import com.shmedo.core.AppContants;
 import com.shmedo.core.util.DensityUtil;
@@ -316,17 +314,6 @@ public class TcpVmsHomeFragment extends BaseVmsTcpCommunicateFragment {
         sendCommand(command);
     }
 
-    /**
-     * 获取网关不同通道下，挂载终端的运行情况
-     *
-     * @param vmsAisleNumber
-     */
-    private void getGatewayStatus(VmsAisleNumber vmsAisleNumber) {
-        VmsAisleNumberEntity vmsAisleNumberEntity = new VmsAisleNumberEntity(vmsAisleNumber.toInt());
-        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.VMS_MD_GET_GATEWAY_STATUS, vmsAisleNumberEntity);
-        sendCommand(command);
-    }
-
     @Override
     protected void parseResponseMessage(@NotNull String cmdStr) {
         setResultData(cmdStr);
@@ -377,43 +364,9 @@ public class TcpVmsHomeFragment extends BaseVmsTcpCommunicateFragment {
                     vmsAisleInfoList.add(vmsAisleInfo);
                     vmsAisleAdapter.notifyDataSetChanged();
                     scrollToEnd();
-                    //获取网关不同通道下挂载终端的状态
-//                    getGatewayStatus(VmsAisleNumber.NUMBER_TWO);
                 }
             }
             break;
-
-//            case VMS_MD_GET_GATEWAY_STATUS: {//查询网关通道下的挂载终端信息
-//                //Bug修复，TcpVmsTerminalListFragment 查询观察终端数据时，会触发这里的回调
-//                if (tcpVmsTerminalListFragment != null && tcpVmsTerminalListFragment.isAdded()) {
-//                    return;
-//                }
-//                IOTCommandResult<VmsAisleTerminalInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
-//                if (!commandResult.isSuccess()) {
-//                    stopRefreshRunnable();
-//                    String errMsg = String.format("%s %s", "查询网关通道下的挂载终端信息出错!", commandResult.getMessage());
-//                    Timber.e(errMsg);
-//                    ToastUtils.show(errMsg);
-//                    return;
-//                }
-//                VmsAisleTerminalInfo vmsAisleTerminalInfo = commandResult.getResult();
-//                if (vmsAisleTerminalInfo == null) {
-//                    stopRefreshRunnable();
-//                    return;
-//                }
-//                modifyAisleTerminalInfo(vmsAisleTerminalInfo);
-//                if (vmsAisleTerminalInfo.getChannel() == 1) {
-//                    vmsViewModel.clearCacheTerminalList();
-//                    vmsViewModel.addCacheTerminalList(vmsAisleTerminalInfo.getTerminal());
-//                    //获取网关不同通道下挂载终端的状态
-//                    getGatewayStatus(VmsAisleNumber.NUMBER_THREE);
-//
-//                } else if (vmsAisleTerminalInfo.getChannel() == 2) {
-//                    stopRefreshRunnable();
-//                    vmsViewModel.addCacheTerminalList(vmsAisleTerminalInfo.getTerminal());
-//                }
-//            }
-//            break;
 
             default:
                 stopRefreshRunnable();
@@ -467,22 +420,6 @@ public class TcpVmsHomeFragment extends BaseVmsTcpCommunicateFragment {
         mTvAisleOneSignalStrength.setText(vmsAisleInfo.getRssi() + "dBm");
     }
 
-    /**
-     * 修改某个通道下接入的的终端信息，设置终端的网络号、信道号与所属通道一致
-     *
-     * @param vmsAisleTerminalInfo
-     */
-    private void modifyAisleTerminalInfo(VmsAisleTerminalInfo vmsAisleTerminalInfo) {
-        if (vmsAisleTerminalInfo == null)
-            return;
-        if (vmsAisleTerminalInfo.getTerminal() == null)
-            return;
-        for (VmsTerminalInfo vmsTerminalInfo : vmsAisleTerminalInfo.getTerminal()) {
-            vmsTerminalInfo.setNetid(vmsAisleTerminalInfo.getNetid());
-            vmsTerminalInfo.setChl(vmsAisleTerminalInfo.getChl());
-        }
-    }
-
     private void scrollToEnd() {
         nestedScrollView.post(new Runnable() {
             @Override
@@ -490,6 +427,12 @@ public class TcpVmsHomeFragment extends BaseVmsTcpCommunicateFragment {
                 nestedScrollView.fullScroll(View.FOCUS_DOWN);
             }
         });
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        stopRefreshRunnable();
     }
 
     @Override
@@ -501,12 +444,6 @@ public class TcpVmsHomeFragment extends BaseVmsTcpCommunicateFragment {
         }
 
         return false;
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        stopRefreshRunnable();
     }
 
     @Override

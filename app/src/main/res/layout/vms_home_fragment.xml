@@ -15,13 +15,15 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="14dp"
-            android:background="@color/white" />
+            android:background="@color/white"
+            android:visibility="gone"/>
 
         <include
             android:id="@+id/search_placeholder"
             layout="@layout/search_device_placeholder_layout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:visibility="gone"/>
 
         <include layout="@layout/device_config_head_info" />
 

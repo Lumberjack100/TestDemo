@@ -51,7 +51,9 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.OnClick;
 import timber.log.Timber;
-
+/**
+ * @deprecated
+ */
 public class TcpVmsTerminalSearchFragment extends BaseVmsTcpCommunicateFragment implements TextWatcher {
     @BindView(R.id.et_keywords)
     ClearEditText mEtKeyWords;
@@ -148,7 +150,7 @@ public class TcpVmsTerminalSearchFragment extends BaseVmsTcpCommunicateFragment 
      */
     private void getGatewayStatus(VmsAisleNumber vmsAisleNumber) {
         VmsAisleNumberEntity vmsAisleNumberEntity = new VmsAisleNumberEntity(vmsAisleNumber.toInt());
-        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.VMS_MD_GET_GATEWAY_STATUS, vmsAisleNumberEntity);
+        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.VMS_MD_GET_TERMINAL_STATUS, vmsAisleNumberEntity);
         sendCommand(command);
     }
 
@@ -270,7 +272,7 @@ public class TcpVmsTerminalSearchFragment extends BaseVmsTcpCommunicateFragment 
     private void setResultData(final String cmdStr) {
         IOTCommandType type = IOTStringUtil.extractCommandType(cmdStr);
         switch (type) {
-            case VMS_MD_GET_GATEWAY_STATUS: {//查询网关通道下的挂载终端信息
+            case VMS_MD_GET_TERMINAL_STATUS: {//查询网关通道下的挂载终端信息
                 IOTCommandResult<VmsAisleTerminalInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
                     String errMsg = String.format("%s %s", "查询网关通道下的挂载终端信息出错!", commandResult.getMessage());

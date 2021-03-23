@@ -183,11 +183,9 @@ public class TcpVmsTerminalExternalSensorHomeFragment extends BaseVmsTcpCommunic
                         queryTerminalAisleParamInfo();
                     } else {//所有通道的传感器参数都查询了
                         stopProgressRunnable();
-                        sensorAdapter.notifyDataSetChanged();
                     }
                 } else {//只刷新单个通道的传感器数据
                     stopProgressRunnable();
-                    sensorAdapter.notifyDataSetChanged();
                 }
             }
 
@@ -208,6 +206,7 @@ public class TcpVmsTerminalExternalSensorHomeFragment extends BaseVmsTcpCommunic
             sensorItem.setChannel(sensorInfo.getChannel());
             sensorItem.setInsert(sensorInfo.getInsert().trim().equals("1"));
             sensorItemList.add(sensorItem);
+            sensorAdapter.notifyDataSetChanged();
         } else {
             sensorHashMap.remove(sensorInfo.getChannel());
             sensorHashMap.put(sensorInfo.getChannel(), sensorInfo);
@@ -215,6 +214,7 @@ public class TcpVmsTerminalExternalSensorHomeFragment extends BaseVmsTcpCommunic
             VmsTerminalSensorItem sensorItem = sensorItemList.get(curSensorIndex);
             sensorItem.setChannel(sensorInfo.getChannel());
             sensorItem.setInsert(sensorInfo.getInsert().trim().equals("1"));
+            sensorAdapter.notifyDataSetChanged();
         }
     }
 

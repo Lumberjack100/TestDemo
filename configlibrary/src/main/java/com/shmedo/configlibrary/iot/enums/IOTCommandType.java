@@ -96,11 +96,6 @@ public enum IOTCommandType {
     VMS_MD_GET_GATEWAY_BASE("md_getgatewaybase"),
 
     /**
-     * 获取网关不同通道下，挂载终端的运行情况
-     */
-    VMS_MD_GET_GATEWAY_STATUS("md_getgatewaystatus"),
-
-    /**
      * 获取网关相关的控制参数
      */
     VMS_MD_GET_GATEWAY_PARAM("md_getgatewayparam"),
@@ -109,6 +104,11 @@ public enum IOTCommandType {
      * 设置网关相关的控制参数
      */
     VMS_MD_SET_GATEWAY_PARAM("md_setgatewayparam"),
+
+    /**
+     * 获取网关不同通道下，挂载终端的运行情况
+     */
+    VMS_MD_GET_TERMINAL_STATUS("md_getterminalstatus"),
 
     /**
      * 删除Vms终端

@@ -48,6 +48,6 @@ public class VmsAisleTerminalInfoParser implements IOTResultParser<VmsAisleTermi
 
     @Override
     public IOTCommandType commandType() {
-        return IOTCommandType.VMS_MD_GET_GATEWAY_STATUS;
+        return IOTCommandType.VMS_MD_GET_TERMINAL_STATUS;
     }
 }

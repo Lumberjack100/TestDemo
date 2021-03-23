@@ -24,10 +24,9 @@ import com.littlegreens.netty.client.listener.MessageStateListener;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandManager;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandResult;
 import com.shmedo.configlibrary.iot.cmd.entity.TerminalSNEntity;
-import com.shmedo.configlibrary.iot.cmd.entity.vms.VmsAisleNumberEntity;
+import com.shmedo.configlibrary.iot.cmd.entity.vms.VmsTerminalStatusEntity;
 import com.shmedo.configlibrary.iot.cmd.parser.IOTParseManager;
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
-import com.shmedo.configlibrary.iot.enums.VmsAisleNumber;
 import com.shmedo.configlibrary.iot.model.CommonSettingCmdResult;
 import com.shmedo.configlibrary.iot.model.vms.VmsAisleInfo;
 import com.shmedo.configlibrary.iot.model.vms.VmsAisleTerminalInfo;
@@ -74,6 +73,8 @@ public class TcpVmsTerminalListFragment extends BaseBottomSheetDialogFragment {
     private TcpViewModel tcpViewModel;
     private VmsViewModel vmsViewModel;
     private DeviceApiKeyViewModel deviceApiKeyViewModel;
+
+    private int terminalIndex = 0;//终端索引号
 
 
     public TcpVmsTerminalListFragment(VmsAisleInfo vmsAisleInfo) {
@@ -152,19 +153,18 @@ public class TcpVmsTerminalListFragment extends BaseBottomSheetDialogFragment {
             return;
         }
 
-        VmsAisleNumber vmsAisleNumber;
         String title;
         if (vmsAisleInfo.getChannel() == 1) {
             title = "数据通道1-设备(";
-            vmsAisleNumber = VmsAisleNumber.value(1);
         } else {
             title = "数据通道2-设备(";
-            vmsAisleNumber = VmsAisleNumber.value(2);
         }
         title += vmsAisleInfo.getTerminalnum() + ")";
         mTvTitle.setText(title);
 
-        getGatewayStatus(vmsAisleNumber);
+        terminalIndex = 0;
+        vmsTerminalInfoList.clear();
+        getTerminalStatus();
     }
 
     /**
@@ -184,12 +184,10 @@ public class TcpVmsTerminalListFragment extends BaseBottomSheetDialogFragment {
 
     /**
      * 获取网关不同通道下，挂载终端的运行情况
-     *
-     * @param vmsAisleNumber
      */
-    private void getGatewayStatus(VmsAisleNumber vmsAisleNumber) {
-        VmsAisleNumberEntity vmsAisleNumberEntity = new VmsAisleNumberEntity(vmsAisleNumber.toInt());
-        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.VMS_MD_GET_GATEWAY_STATUS, vmsAisleNumberEntity);
+    private void getTerminalStatus() {
+        VmsTerminalStatusEntity entity = new VmsTerminalStatusEntity(vmsAisleInfo.getChannel(), terminalIndex);
+        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.VMS_MD_GET_TERMINAL_STATUS, entity);
         sendCommand(command);
     }
 
@@ -206,7 +204,7 @@ public class TcpVmsTerminalListFragment extends BaseBottomSheetDialogFragment {
     private void parseResponseMessage(String cmdStr) {
         IOTCommandType type = IOTStringUtil.extractCommandType(cmdStr);
         switch (type) {
-            case VMS_MD_GET_GATEWAY_STATUS: {
+            case VMS_MD_GET_TERMINAL_STATUS: {
                 IOTCommandResult<VmsAisleTerminalInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
                     String errMsg = String.format("%s %s", "查询网关通道下的挂载终端信息出错!", commandResult.getMessage());
@@ -217,13 +215,19 @@ public class TcpVmsTerminalListFragment extends BaseBottomSheetDialogFragment {
                 VmsAisleTerminalInfo vmsAisleTerminalInfo = commandResult.getResult();
                 modifyAisleTerminalInfo(vmsAisleTerminalInfo);
 
-                if (vmsAisleTerminalInfo.getTerminal().size() == 0) {
-                    adapter.setEmptyView(R.layout.empty_view);
+                if (vmsAisleTerminalInfo == null || vmsAisleTerminalInfo.getTerminal() == null || vmsAisleTerminalInfo.getTerminal().size() == 0) {
+                    if (vmsTerminalInfoList.size() == 0) {
+                        adapter.setEmptyView(R.layout.empty_view);
+                    }
                     return;
                 }
-                vmsTerminalInfoList.clear();
                 vmsTerminalInfoList.addAll(vmsAisleTerminalInfo.getTerminal());
-                adapter.notifyDataSetChanged();
+                terminalIndex++;
+                if (terminalIndex < Integer.parseInt(vmsAisleInfo.getTerminalnum())) {
+                    getTerminalStatus();
+                } else {
+                    adapter.notifyDataSetChanged();
+                }
             }
             break;
 
@@ -266,12 +270,10 @@ public class TcpVmsTerminalListFragment extends BaseBottomSheetDialogFragment {
         vmsViewModel.setVmsRefreshTerminal(true);
 
         String title;
-        if (vmsAisleInfo.getChannel() == 0) {
-            title = "通道01-设备(";
-        } else if (vmsAisleInfo.getChannel() == 1) {
-            title = "通道02-设备(";
+        if (vmsAisleInfo.getChannel() == 1) {
+            title = "数据通道1-设备(";
         } else {
-            title = "通道03-设备(";
+            title = "数据通道2-设备(";
         }
         title += vmsTerminalInfoList.size() + ")";
         mTvTitle.setText(title);

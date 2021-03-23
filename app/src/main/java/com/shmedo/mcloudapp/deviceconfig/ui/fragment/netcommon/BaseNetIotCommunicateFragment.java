@@ -38,6 +38,8 @@ import timber.log.Timber;
  */
 public abstract class BaseNetIotCommunicateFragment extends BaseFragment {
     protected static final String PRO_DEVICE_INFO = "com.shmedo.mcloudapp.PRO_DEVICE_INFO";
+    public static final int DELAY_MILLIS = 60000;//超时时间
+
     public ProjectDeviceInfo projectDeviceInfo;
 
     protected List<String> msgIDList = new ArrayList<>();
