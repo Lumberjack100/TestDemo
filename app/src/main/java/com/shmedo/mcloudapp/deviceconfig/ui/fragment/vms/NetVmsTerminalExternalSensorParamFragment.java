@@ -85,7 +85,7 @@ public class NetVmsTerminalExternalSensorParamFragment extends BaseNetIotCommuni
     private List<String> calculationList = Arrays.asList("直线式", "多项式", "MEMS");
     private List<String> sensorNameList = new ArrayList<>();
     private List<String> vibratingWireSensorNameList = Arrays.asList("裂缝计", "轴力计", "水压力计", "水位计", "渗压计");
-    private List<String> digitalSensorNameList = Arrays.asList("加速度计");
+    private List<String> digitalSensorNameList = Arrays.asList("加速度计", "倾角计");
 
     private VmsSensorCalculation sensorCalculation;
     private String sensorName;
