@@ -268,7 +268,7 @@ public class NetVmsAdvancedSettingsFragment extends BaseNetIotCommunicateFragmen
 
             case MD_GET_DATA_CENTER_STATUS:
                 if (msgIDList != null && msgIDList.size() > 0) {
-                    startQueryCmdResponseRunnable(2000);
+                    startQueryCmdResponseRunnable(0);
                 }
                 break;
 

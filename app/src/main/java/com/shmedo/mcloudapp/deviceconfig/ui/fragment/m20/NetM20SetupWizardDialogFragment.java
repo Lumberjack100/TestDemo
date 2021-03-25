@@ -164,6 +164,7 @@ public class NetM20SetupWizardDialogFragment extends BaseDispatchCmdDialog {
      */
     @Override
     protected void onQueryCmdResponseResultTimeOut(QueryCmdResult queryCmdResult) {
+        super.onQueryCmdResponseResultTimeOut(queryCmdResult);
         enableTouch();
     }
 

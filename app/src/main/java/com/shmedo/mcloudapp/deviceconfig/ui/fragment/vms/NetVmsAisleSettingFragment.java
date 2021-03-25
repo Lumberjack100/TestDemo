@@ -375,7 +375,7 @@ public class NetVmsAisleSettingFragment extends BaseNetIotCommunicateFragment {
             msgIDList.add(cmdItem.getMsgID());
         }
         if (msgIDList != null && msgIDList.size() > 0) {
-            startQueryCmdResponseRunnable(2000);
+            startQueryCmdResponseRunnable(0);
         }
     }
 

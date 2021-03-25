@@ -160,7 +160,6 @@ public abstract class BaseBleDasExternalSensorFragment extends BaseBleCommunicat
         if (curSensorItem.isAddButton()) {
             isEnableNewSensor = true;
             sensorType = defaultCollectorSensorParamsInfo.getSensorType();
-//            parcelableData = defaultCollectorSensorParamsInfo.getSensorData() == null ? null : (Parcelable) defaultCollectorSensorParamsInfo.getSensorData();
             parcelableData = null;
         } else {
             isEnableNewSensor = false;
@@ -416,6 +415,7 @@ public abstract class BaseBleDasExternalSensorFragment extends BaseBleCommunicat
         DASSensorItem sensorItem = new DASSensorItem(R.drawable.ic_sensor_holder_bright);
         sensorItem.setSensorAddress(address);
         sensorItemList.add(sensorItem);
+        sensorAdapter.notifyDataSetChanged();
     }
 
     protected void doAfterSetting() {

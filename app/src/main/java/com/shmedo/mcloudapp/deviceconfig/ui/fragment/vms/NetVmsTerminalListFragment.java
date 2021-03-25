@@ -118,7 +118,7 @@ public class NetVmsTerminalListFragment extends BaseNetIotCommunicateSheetDialog
         //设置每个item间距
         mRecyclerView.addItemDecoration(new GridSpacingItemDecoration(spanCount, spacing, true));
         adapter = new VmsTerminalInfoAdapter(vmsTerminalInfoList);
-        adapter.setAnimationEnable(true);
+        adapter.setAnimationEnable(false);
         adapter.setAnimationFirstOnly(false);
         adapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
@@ -221,7 +221,7 @@ public class NetVmsTerminalListFragment extends BaseNetIotCommunicateSheetDialog
             msgIDList.add(cmdItem.getMsgID());
         }
         if (msgIDList != null && msgIDList.size() > 0) {
-            startQueryCmdResponseRunnable(2000);
+            startQueryCmdResponseRunnable(0);
         }
     }
 
@@ -297,6 +297,7 @@ public class NetVmsTerminalListFragment extends BaseNetIotCommunicateSheetDialog
                     return;
                 }
                 vmsTerminalInfoList.addAll(vmsAisleTerminalInfo.getTerminal());
+                adapter.notifyDataSetChanged();
 
                 terminalIndex++;
                 if (terminalIndex < Integer.parseInt(vmsAisleInfo.getTerminalnum())) {

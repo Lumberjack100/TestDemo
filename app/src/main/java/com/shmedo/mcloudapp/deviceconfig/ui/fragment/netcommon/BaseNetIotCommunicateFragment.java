@@ -46,15 +46,15 @@ public abstract class BaseNetIotCommunicateFragment extends BaseFragment {
 
     private Handler uiHander = new Handler();
 
-    private int queryNum = 0;//当查询指令结果5次时，判断响应超时
+    private int queryNum = 0;//当查询指令结果10次时，判断响应超时
 
     private QueryCmdResponseRunnable queryCmdResponseRunnable;//常规任务
 
     private class QueryCmdResponseRunnable implements Runnable {
         @Override
         public void run() {
-            //轮询指令响应结果接口达到5次，判断超时
-            if (queryNum > 5) {
+            //轮询指令响应结果接口达到10次，判断超时
+            if (queryNum > 10) {
                 onQueryCmdResponseResultTimeOut(null);
                 return;
             }
@@ -204,7 +204,7 @@ public abstract class BaseNetIotCommunicateFragment extends BaseFragment {
             onQueryCmdResponseResultSuccess(queryCmdResult);
         } else {
             //延迟2秒后再次查询响应结果
-            startQueryCmdResponseRunnable(2000, false);
+            startQueryCmdResponseRunnable(1000, false);
         }
     }
 

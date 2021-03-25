@@ -299,7 +299,7 @@ public class NetE40AdvancedSettingFragment extends BaseNetIotCommunicateFragment
             case E40_MD_GET_RTK:
             case E40_MD_SET_RTK:
                 if (msgIDList != null && msgIDList.size() > 0) {
-                    startQueryCmdResponseRunnable(2000);
+                    startQueryCmdResponseRunnable(0);
                 }
                 break;
 

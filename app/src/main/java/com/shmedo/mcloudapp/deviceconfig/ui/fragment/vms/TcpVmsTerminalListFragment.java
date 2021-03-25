@@ -222,6 +222,8 @@ public class TcpVmsTerminalListFragment extends BaseBottomSheetDialogFragment {
                     return;
                 }
                 vmsTerminalInfoList.addAll(vmsAisleTerminalInfo.getTerminal());
+                adapter.notifyDataSetChanged();
+
                 terminalIndex++;
                 if (terminalIndex < Integer.parseInt(vmsAisleInfo.getTerminalnum())) {
                     getTerminalStatus();

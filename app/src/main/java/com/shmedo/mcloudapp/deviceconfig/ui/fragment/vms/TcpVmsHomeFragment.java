@@ -356,6 +356,8 @@ public class TcpVmsHomeFragment extends BaseVmsTcpCommunicateFragment {
                 } else if (vmsAisleInfo.getChannel() == 1) {
                     vmsAisleInfoList.clear();
                     vmsAisleInfoList.add(vmsAisleInfo);
+                    vmsAisleAdapter.notifyDataSetChanged();
+
                     //获取网关通道3的控制参数
                     getGatewayAisleInfo(VmsAisleNumber.NUMBER_THREE);
 

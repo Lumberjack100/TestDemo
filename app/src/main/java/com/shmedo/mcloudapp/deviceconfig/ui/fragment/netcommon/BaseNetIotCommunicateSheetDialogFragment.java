@@ -47,7 +47,7 @@ public abstract class BaseNetIotCommunicateSheetDialogFragment extends BaseBotto
         @Override
         public void run() {
             //轮询指令响应结果接口达到5次，判断超时
-            if (queryNum > 5) {
+            if (queryNum > 10) {
                 onQueryCmdResponseResultTimeOut(null);
                 return;
             }
@@ -196,7 +196,7 @@ public abstract class BaseNetIotCommunicateSheetDialogFragment extends BaseBotto
             onQueryCmdResponseResultSuccess(queryCmdResult);
         } else {
             //延迟2秒后再次查询响应结果
-            startQueryCmdResponseRunnable(2000, false);
+            startQueryCmdResponseRunnable(1000, false);
         }
     }
 

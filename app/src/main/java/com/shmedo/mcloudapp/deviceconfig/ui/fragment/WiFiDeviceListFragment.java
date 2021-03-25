@@ -146,10 +146,8 @@ public class WiFiDeviceListFragment extends BaseFragment implements TextWatcher,
             public void onItemClick(@NonNull BaseQuickAdapter adapter, @NonNull View view, int position) {
                 curWiFi = wiFiAdapter.getItem(position);
                 String[] strs = curWiFi.name().split("-");
-                if (strs != null) {
-                    showProgressDialog("处理中...");
-                    deviceApiKeyViewModel.queryDeviceApiKeyBySn(strs[strs.length - 1]);
-                }
+                showProgressDialog("处理中...");
+                deviceApiKeyViewModel.queryDeviceApiKeyBySn(strs[strs.length - 1]);
             }
         });
     }

@@ -237,7 +237,7 @@ public class NetVmsHomeFragment extends BaseNetIotCommunicateFragment {
         //设置每个item间距
         mRecyclerView.addItemDecoration(new GridSpacingItemDecoration(spanCount, spacing, true));
         vmsAisleAdapter = new VmsAisleAdapter(vmsAisleInfoList);
-        vmsAisleAdapter.setAnimationEnable(true);
+        vmsAisleAdapter.setAnimationEnable(false);
         vmsAisleAdapter.setAnimationFirstOnly(false);
         vmsAisleAdapter.setOnItemChildClickListener(new OnItemChildClickListener() {
             @Override
@@ -304,7 +304,7 @@ public class NetVmsHomeFragment extends BaseNetIotCommunicateFragment {
             msgIDList.add(cmdItem.getMsgID());
         }
         if (msgIDList != null && msgIDList.size() > 0) {
-            startQueryCmdResponseRunnable(2000);
+            startQueryCmdResponseRunnable(0);
         }
     }
 
@@ -381,14 +381,17 @@ public class NetVmsHomeFragment extends BaseNetIotCommunicateFragment {
                 } else if (vmsAisleInfo.getChannel() == 1) {
                     vmsAisleInfoList.clear();
                     vmsAisleInfoList.add(vmsAisleInfo);
+                    vmsAisleAdapter.notifyDataSetChanged();
+
                     //获取网关通道3的控制参数
                     getGatewayAisleInfo(VmsAisleNumber.NUMBER_THREE);
 
                 } else if (vmsAisleInfo.getChannel() == 2) {
+                    stopRefreshRunnable();
                     vmsAisleInfoList.add(vmsAisleInfo);
+//                    vmsAisleAdapter.notifyItemInserted(vmsAisleInfoList.size() - 1);
                     vmsAisleAdapter.notifyDataSetChanged();
                     scrollToEnd();
-                    stopRefreshRunnable();
                 }
             }
             break;

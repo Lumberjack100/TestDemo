@@ -68,7 +68,7 @@ public class QueryCurrentStateDialog extends BaseDispatchCmdDialog {
         super.onActivityCreated(savedInstanceState);
         initView();
         showResponseLoadingView();
-        startQueryCmdResponseRunnable(2000);
+        startQueryCmdResponseRunnable(0);
     }
 
     private void initView() {
@@ -143,6 +143,7 @@ public class QueryCurrentStateDialog extends BaseDispatchCmdDialog {
 
     @Override
     protected void onQueryCmdResponseResultTimeOut(QueryCmdResult queryCmdResult) {
+        super.onQueryCmdResponseResultTimeOut(queryCmdResult);
         mTvConfirm.setText("好的");
         mTvConfirm.setTextColor(GlobalUtil.getColor(R.color.sub_title_text_color));
     }
