@@ -114,44 +114,62 @@ public class SensorZLJ300tView extends FrameLayout {
 
     private boolean checkValue() {
         triggerThreshold = mEtTriggerThreshold.getText().toString().trim();
+        correctValue = mEtCorrectValue.getText().toString().trim();
         coefficientA = mEtCoefficientA.getText().toString().trim();
         coefficientB = mEtTemperatureCoefficient.getText().toString().trim();
         referenceValue = mEtReferenceValue.getText().toString().trim();
         initialTemperature = mEtInitialTemperature.getText().toString().trim();
-        correctValue = mEtCorrectValue.getText().toString().trim();
 
         if (TextUtils.isEmpty(triggerThreshold)) {
             ToastUtils.show("报警值不能为空!");
+            mEtTriggerThreshold.requestFocus();
             return false;
         }
-
         if (!ValidateUtil.isInteger(triggerThreshold)) {
             ToastUtils.show("请输入正确的报警值!");
+            mEtTriggerThreshold.requestFocus();
             return false;
         }
 
         if (!TextUtils.isEmpty(correctValue) && !ValidateUtil.isDouble(correctValue)) {
             ToastUtils.show("请输入正确的修正值!");
+            mEtCorrectValue.requestFocus();
             return false;
         }
 
         if (TextUtils.isEmpty(coefficientA)) {
             ToastUtils.show("标定系数A不能为空!");
+            mEtCoefficientA.requestFocus();
+            return false;
+        } else {
+            try {
+                double value = Double.parseDouble(coefficientA);
+            } catch (Exception ex) {
+                ToastUtils.show("请输入正确的标定系数!");
+                mEtCoefficientA.requestFocus();
+                return false;
+            }
+        }
+
+        if (!TextUtils.isEmpty(coefficientB)) {
+            try {
+                double value = Double.parseDouble(coefficientB);
+            } catch (Exception ex) {
+                ToastUtils.show("请输入正确的温修系数!");
+                mEtTemperatureCoefficient.requestFocus();
+                return false;
+            }
+        }
+
+        if (!TextUtils.isEmpty(referenceValue) && !ValidateUtil.isDouble(referenceValue)) {
+            ToastUtils.show("请输入正确的基准值!");
+            mEtReferenceValue.requestFocus();
             return false;
         }
 
-//        if (TextUtils.isEmpty(coefficientB)) {
-//            ToastUtils.show("温修系数不能为空!");
-//            return false;
-//        }
-
-//        if (TextUtils.isEmpty(referenceValue)) {
-//            ToastUtils.show("基准值不能为空!");
-//            return false;
-//        }
-
         if (!TextUtils.isEmpty(initialTemperature) && !ValidateUtil.isDouble(initialTemperature)) {
             ToastUtils.show("请输入正确的初始温度!");
+            mEtInitialTemperature.requestFocus();
             return false;
         }
 

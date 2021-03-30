@@ -2,6 +2,7 @@ package com.shmedo.mcloudapp.deviceconfig.view.sensor.vms;
 
 import android.content.Context;
 import android.text.InputFilter;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.widget.EditText;
@@ -10,6 +11,7 @@ import android.widget.FrameLayout;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.hjq.toast.ToastUtils;
 import com.shmedo.configlibrary.iot.cmd.entity.vms.SetVmsTerminalSensorParamsEntity;
 import com.shmedo.configlibrary.iot.model.vms.VmsTerminalSensorInfo;
 import com.shmedo.mcloudapp.R;
@@ -105,6 +107,51 @@ public class LinearParamView extends FrameLayout {
         initialModulus = mEtInitModulus.getText().toString().trim();
         correctValue = mEtCorrectValue.getText().toString().trim();
 
+        if (!TextUtils.isEmpty(temperatureCoefficient)) {
+            try {
+                double value = Double.parseDouble(temperatureCoefficient);
+            } catch (Exception ex) {
+                ToastUtils.show("请输入正确的温度修正系数B!");
+                mEtTemperatureCoefficient.requestFocus();
+                return false;
+            }
+        }
+        if (!TextUtils.isEmpty(sensitivityCoefficient)) {
+            try {
+                double value = Double.parseDouble(sensitivityCoefficient);
+            } catch (Exception ex) {
+                ToastUtils.show("请输入正确的灵敏度K!");
+                mEtSensitivityCoefficient.requestFocus();
+                return false;
+            }
+        }
+        if (!TextUtils.isEmpty(initialTemperature)) {
+            try {
+                double value = Double.parseDouble(initialTemperature);
+            } catch (Exception ex) {
+                ToastUtils.show("请输入正确的初始温度T!");
+                mEtInitialTemperature.requestFocus();
+                return false;
+            }
+        }
+        if (!TextUtils.isEmpty(initialModulus)) {
+            try {
+                double value = Double.parseDouble(initialModulus);
+            } catch (Exception ex) {
+                ToastUtils.show("请输入正确的初始模数F!");
+                mEtInitModulus.requestFocus();
+                return false;
+            }
+        }
+        if (!TextUtils.isEmpty(correctValue)) {
+            try {
+                double value = Double.parseDouble(correctValue);
+            } catch (Exception ex) {
+                ToastUtils.show("请输入正确的修正值M!");
+                mEtCorrectValue.requestFocus();
+                return false;
+            }
+        }
         return true;
     }
 

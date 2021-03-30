@@ -2,6 +2,7 @@ package com.shmedo.mcloudapp.deviceconfig.view.sensor.vms;
 
 import android.content.Context;
 import android.text.InputFilter;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.widget.EditText;
@@ -10,6 +11,7 @@ import android.widget.FrameLayout;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.hjq.toast.ToastUtils;
 import com.shmedo.configlibrary.iot.cmd.entity.vms.SetVmsTerminalSensorParamsEntity;
 import com.shmedo.configlibrary.iot.model.vms.VmsTerminalSensorInfo;
 import com.shmedo.mcloudapp.R;
@@ -115,6 +117,61 @@ public class PolynomialParamView extends FrameLayout {
         temperatureCoefficient = mEtTemperatureCoefficient.getText().toString().trim();
         initialTemperature = mEtInitialTemperature.getText().toString().trim();
         correctValue = mEtCorrectValue.getText().toString().trim();
+
+        if (!TextUtils.isEmpty(polynomialRatioA)) {
+            try {
+                double value = Double.parseDouble(polynomialRatioA);
+            } catch (Exception ex) {
+                ToastUtils.show("请输入正确的多项式系数A!");
+                mEtPolynomialRatioA.requestFocus();
+                return false;
+            }
+        }
+        if (!TextUtils.isEmpty(polynomialRatioB)) {
+            try {
+                double value = Double.parseDouble(polynomialRatioB);
+            } catch (Exception ex) {
+                ToastUtils.show("请输入正确的多项式系数B!");
+                mEtPolynomialRatioB.requestFocus();
+                return false;
+            }
+        }
+        if (!TextUtils.isEmpty(polynomialRatioC)) {
+            try {
+                double value = Double.parseDouble(polynomialRatioC);
+            } catch (Exception ex) {
+                ToastUtils.show("请输入正确的多项式系数C!");
+                mEtPolynomialRatioC.requestFocus();
+                return false;
+            }
+        }
+        if (!TextUtils.isEmpty(temperatureCoefficient)) {
+            try {
+                double value = Double.parseDouble(temperatureCoefficient);
+            } catch (Exception ex) {
+                ToastUtils.show("请输入正确的温度修正系数K!");
+                mEtTemperatureCoefficient.requestFocus();
+                return false;
+            }
+        }
+        if (!TextUtils.isEmpty(initialTemperature)) {
+            try {
+                double value = Double.parseDouble(initialTemperature);
+            } catch (Exception ex) {
+                ToastUtils.show("请输入正确的初始温度T!");
+                mEtInitialTemperature.requestFocus();
+                return false;
+            }
+        }
+        if (!TextUtils.isEmpty(correctValue)) {
+            try {
+                double value = Double.parseDouble(correctValue);
+            } catch (Exception ex) {
+                ToastUtils.show("请输入正确的修正值M!");
+                mEtCorrectValue.requestFocus();
+                return false;
+            }
+        }
 
         return true;
     }
