@@ -133,12 +133,11 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation project(path: ':configlibrary')
     implementation project(path: ':core')
-
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     //AppCompat 依赖 androidx.fragment:fragment:1.3.0-alpha08 和 androidx.activity:activity:1.2.0-alpha08
-    implementation 'androidx.appcompat:appcompat:1.3.0-alpha02'
-    implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
+    implementation "androidx.appcompat:appcompat:$rootProject.thirdLib.appcompat"
     implementation "com.google.android.material:material:$rootProject.thirdLib.material"
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
     implementation "androidx.lifecycle:lifecycle-runtime:2.2.0"
     implementation "androidx.lifecycle:lifecycle-common-java8:2.2.0"
     implementation 'androidx.lifecycle:lifecycle-viewmodel:2.2.0'
@@ -159,33 +158,23 @@ dependencies {
     implementation "com.squareup.retrofit2:converter-gson:$rootProject.thirdLib.converterGson"
     implementation "com.squareup.okhttp3:logging-interceptor:$rootProject.thirdLib.loggingInterceptor"
 
-    // debugImplementation because LeakCanary should only run in debug builds.
-//    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.5'
-
     // Glide
     implementation "com.github.bumptech.glide:glide:$rootProject.thirdLib.glideVersion"
     //annotationProcessor "com.github.bumptech.glide:compiler:$rootProject.thirdLib.glideCompilerVersion"
-    //CircleImageView
     implementation "de.hdodenhof:circleimageview:$rootProject.thirdLib.circleimageview"
     implementation "com.youth.banner:banner:$rootProject.thirdLib.banner"
 
     //Material Dialog
     implementation "com.afollestad.material-dialogs:core:$rootProject.thirdLib.materialDialogsCore"
+    //Toast 吐司
+    implementation "com.hjq:toast:$rootProject.thirdLib.hjqToast"
     implementation "com.lxj:xpopup:$rootProject.thirdLib.xpopup"
-
-    //fab
-    implementation "com.github.clans:fab:$rootProject.thirdLib.fab"
-    //This library aims to provide a chat UI view for Android.
-    implementation "com.github.bassaer:chatmessageview:$rootProject.thirdLib.chatmessageview"
     //开关 Button
     implementation "com.kyleduo.switchbutton:library:$rootProject.thirdLib.switchbutton"
     //新的zxing 扫码
     implementation "cn.bingoogolapple:bga-qrcode-zxing:$rootProject.thirdLib.bgaQrcodeZxing"
     implementation "cn.bingoogolapple:bga-photopicker:$rootProject.thirdLib.bgaPhotoPicker"
     implementation "cn.bingoogolapple:bga-baseadapter:$rootProject.thirdLib.bgaBaseAdapter"
-    //Toast 吐司
-    implementation "com.hjq:toast:$rootProject.thirdLib.hjqToast"
-
     //蒲公英SDk
     implementation "com.pgyersdk:sdk:$rootProject.thirdLib.pgyerSdk"
     //异常信息上报组件
@@ -194,12 +183,9 @@ dependencies {
     //xCrash 能为安卓 app 提供捕获 java 崩溃，native 崩溃和 ANR 的能力。
     implementation 'com.iqiyi.xcrash:xcrash-android-lib:3.0.0'
 
-    //AndPermission
-    implementation "com.yanzhenjie:permission:$rootProject.thirdLib.AndPermission"
     implementation "com.yanzhenjie.recyclerview:x:$rootProject.thirdLib.SwipeRecyclerView"
-
     //下拉刷新
-    implementation "com.scwang.smartrefresh:SmartRefreshLayout:$rootProject.thirdLib.SmartRefreshLayout"
+//    implementation "com.scwang.smartrefresh:SmartRefreshLayout:$rootProject.thirdLib.SmartRefreshLayout"
     //一个强大并且灵活的RecyclerViewAdapter
     implementation "com.github.CymChad:BaseRecyclerViewAdapterHelper:$rootProject.thirdLib.BaseRecyclerViewAdapterHelper"
     implementation "gdut.bsx:share2:$rootProject.thirdLib.bsxShare"
@@ -227,6 +213,10 @@ dependencies {
     implementation 'no.nordicsemi.android:log:2.3.0'
     // BLE library
     implementation 'no.nordicsemi.android:ble-livedata:2.2.0'
+
+
+    // debugImplementation because LeakCanary should only run in debug builds.
+//    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.5'
 
     testImplementation "junit:junit:$rootProject.thirdLib.junit"
     androidTestImplementation "androidx.test:runner:$rootProject.thirdLib.runner"

@@ -7,19 +7,10 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.hjq.toast.ToastUtils;
-import com.pgyersdk.crash.PgyCrashManager;
-import com.pgyersdk.feedback.PgyerFeedbackManager;
 import com.shmedo.core.util.GlobalUtil;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.activity.BaseActivity;
 import com.shmedo.mcloudapp.common.ui.activity.WebViewActivity;
-import com.shmedo.mcloudapp.util.permission.RuntimeRationale;
-import com.yanzhenjie.permission.Action;
-import com.yanzhenjie.permission.AndPermission;
-import com.yanzhenjie.permission.runtime.Permission;
-
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -92,7 +83,7 @@ public class AboutAppActivity extends BaseActivity {
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.ll_userAdvice:
-                showFeedbackDialog();
+//                showFeedbackDialog();
                 break;
 
             case R.id.userProtocolLayout: {
@@ -142,43 +133,43 @@ public class AboutAppActivity extends BaseActivity {
     /**
      * 弹出反馈dialog
      */
-    private void showFeedbackDialog() {
-        AndPermission.with(this)
-                .runtime()
-                .permission(Permission.Group.STORAGE, Permission.Group.MICROPHONE)
-                .rationale(new RuntimeRationale())
-                .onGranted(new Action<List<String>>() {
-                    @Override
-                    public void onAction(List<String> data) {
-                        try {
-                            new PgyerFeedbackManager.PgyerFeedbackBuilder()
-                                    .setShakeInvoke(false)       //fasle 则不触发摇一摇，最后需要调用 invoke 方法
-                                    // true 设置需要调用 register 方法使摇一摇生效
-                                    .setDisplayType(PgyerFeedbackManager.TYPE.DIALOG_TYPE)   //设置以Dialog 的方式打开
-                                    .setColorDialogTitle("#FFFFFF")    //设置Dialog 标题的字体颜色，默认为颜色为#ffffff
-                                    .setColorTitleBg("#13a0ff")        //设置Dialog 标题栏的背景色，默认为颜色为#2E2D2D
-                                    .setBarBackgroundColor("#FF0000")      // 设置顶部按钮和底部背景色，默认颜色为 #2E2D2D
-                                    .setBarButtonPressedColor("#FF0000")        //设置顶部按钮和底部按钮按下时的反馈色 默认颜色为 #383737
-                                    .setColorPickerBackgroundColor("#FF0000")   //设置颜色选择器的背景色,默认颜色为 #272828
-                                    //.setMoreParam("KEY1","VALUE1") //自定义的反馈数据
-                                    //.setMoreParam("KEY2","VALUE2") //自定义的反馈数据
-                                    .builder()
-                                    .invoke();
-                            //PgyFeedbackShakeManager.register(AboutAppActivity.this);
-                            //PgyerDialog.setDialogTitleBackgroundColor("#03A9F4");
-                            //PgyFeedback.getInstance().showDialog(AboutAppActivity.this);
-                        } catch (Exception ex) {
-                            PgyCrashManager.reportCaughtException(ex);
-                        }
-                    }
-                })
-                .onDenied(new Action<List<String>>() {
-                    @Override
-                    public void onAction(List<String> data) {
-                        ToastUtils.show("请同意申请权限进行有效反馈");
-                    }
-                }).start();
-
-    }
+//    private void showFeedbackDialog() {
+//        AndPermission.with(this)
+//                .runtime()
+//                .permission(Permission.Group.STORAGE, Permission.Group.MICROPHONE)
+//                .rationale(new RuntimeRationale())
+//                .onGranted(new Action<List<String>>() {
+//                    @Override
+//                    public void onAction(List<String> data) {
+//                        try {
+//                            new PgyerFeedbackManager.PgyerFeedbackBuilder()
+//                                    .setShakeInvoke(false)       //fasle 则不触发摇一摇，最后需要调用 invoke 方法
+//                                    // true 设置需要调用 register 方法使摇一摇生效
+//                                    .setDisplayType(PgyerFeedbackManager.TYPE.DIALOG_TYPE)   //设置以Dialog 的方式打开
+//                                    .setColorDialogTitle("#FFFFFF")    //设置Dialog 标题的字体颜色，默认为颜色为#ffffff
+//                                    .setColorTitleBg("#13a0ff")        //设置Dialog 标题栏的背景色，默认为颜色为#2E2D2D
+//                                    .setBarBackgroundColor("#FF0000")      // 设置顶部按钮和底部背景色，默认颜色为 #2E2D2D
+//                                    .setBarButtonPressedColor("#FF0000")        //设置顶部按钮和底部按钮按下时的反馈色 默认颜色为 #383737
+//                                    .setColorPickerBackgroundColor("#FF0000")   //设置颜色选择器的背景色,默认颜色为 #272828
+//                                    //.setMoreParam("KEY1","VALUE1") //自定义的反馈数据
+//                                    //.setMoreParam("KEY2","VALUE2") //自定义的反馈数据
+//                                    .builder()
+//                                    .invoke();
+//                            //PgyFeedbackShakeManager.register(AboutAppActivity.this);
+//                            //PgyerDialog.setDialogTitleBackgroundColor("#03A9F4");
+//                            //PgyFeedback.getInstance().showDialog(AboutAppActivity.this);
+//                        } catch (Exception ex) {
+//                            PgyCrashManager.reportCaughtException(ex);
+//                        }
+//                    }
+//                })
+//                .onDenied(new Action<List<String>>() {
+//                    @Override
+//                    public void onAction(List<String> data) {
+//                        ToastUtils.show("请同意申请权限进行有效反馈");
+//                    }
+//                }).start();
+//
+//    }
 
 }

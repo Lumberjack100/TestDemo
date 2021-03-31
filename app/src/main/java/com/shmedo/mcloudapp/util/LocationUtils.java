@@ -18,7 +18,6 @@ import com.shmedo.core.util.GlobalUtil;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.entity.SyncPositionBean;
 import com.shmedo.mcloudapp.util.permission.XPermissionUtils;
-import com.yanzhenjie.permission.runtime.Permission;
 
 import java.util.List;
 
@@ -76,7 +75,7 @@ public class LocationUtils {
         if (Build.VERSION.SDK_INT > 28 && MCloudApp.getContext().getApplicationInfo().targetSdkVersion > 28) {
             locationNeedPermissions = new String[]{
                     Manifest.permission.ACCESS_FINE_LOCATION,
-                    Permission.ACCESS_BACKGROUND_LOCATION
+                    Manifest.permission.ACCESS_BACKGROUND_LOCATION
             };
         }
         XPermissionUtils.requestPermissionsResult(activity, 200, locationNeedPermissions,
