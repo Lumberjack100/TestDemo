@@ -95,7 +95,7 @@ public class NetVmsTerminalSearchFragment extends BaseNetIotCommunicateFragment 
     }
 
     private void setView() {
-        mEtKeyWords.setHint("项目名称搜索");
+        mEtKeyWords.setHint("设备SN搜索");
         mEtKeyWords.requestFocus();
         mEtKeyWords.addTextChangedListener(this);
         mEtKeyWords.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -193,7 +193,7 @@ public class NetVmsTerminalSearchFragment extends BaseNetIotCommunicateFragment 
      * 开始进行搜索
      */
     private void doSearchQuery() {
-        List<VmsTerminalInfo> allTerminals = vmsViewModel.getCacheVmsTerminalList().getValue();
+        List<VmsTerminalInfo> allTerminals = vmsViewModel.getCacheVmsTerminalList();
         if (allTerminals == null) {
             adapter.setEmptyView(R.layout.empty_view);
             adapter.notifyDataSetChanged();

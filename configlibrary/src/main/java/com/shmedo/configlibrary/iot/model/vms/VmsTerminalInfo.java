@@ -29,6 +29,7 @@ public class VmsTerminalInfo implements Parcelable {
      * lastpackagetime : 2020/09/28 11:23:24
      */
 
+    private int asileNumber;//通道号
     private int netid;//网络号
     private int chl;//信道
 
@@ -46,6 +47,7 @@ public class VmsTerminalInfo implements Parcelable {
 
 
     protected VmsTerminalInfo(Parcel in) {
+        asileNumber = in.readInt();
         netid = in.readInt();
         chl = in.readInt();
         sn = in.readString();
@@ -63,6 +65,7 @@ public class VmsTerminalInfo implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(asileNumber);
         dest.writeInt(netid);
         dest.writeInt(chl);
         dest.writeString(sn);
@@ -94,6 +97,14 @@ public class VmsTerminalInfo implements Parcelable {
             return new VmsTerminalInfo[size];
         }
     };
+
+    public int getAsileNumber() {
+        return asileNumber;
+    }
+
+    public void setAsileNumber(int asileNumber) {
+        this.asileNumber = asileNumber;
+    }
 
     public int getNetid() {
         return netid;

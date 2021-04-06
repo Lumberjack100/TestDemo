@@ -15,11 +15,11 @@ import java.util.List;
  * 描述：     TODO #gh#
  */
 public class VmsViewModel extends ViewModel {
-    private final UnPeekLiveData<List<VmsTerminalInfo>> cacheVmsTerminalListLiveData = new UnPeekLiveData<>();
     private UnPeekLiveData<Boolean> vmsRefreshTerminal;
+    private List<VmsTerminalInfo> cacheVmsTerminalList;
 
-    public ProtectedUnPeekLiveData<List<VmsTerminalInfo>> getCacheVmsTerminalList() {
-        return cacheVmsTerminalListLiveData;
+    public List<VmsTerminalInfo> getCacheVmsTerminalList() {
+        return cacheVmsTerminalList;
     }
 
     /**
@@ -31,29 +31,38 @@ public class VmsViewModel extends ViewModel {
         if (tempList == null || tempList.size() == 0)
             return;
 
-        List<VmsTerminalInfo> cacheList = cacheVmsTerminalListLiveData.getValue();
-        if (cacheList == null)
-            cacheList = new ArrayList<>();
+        if (cacheVmsTerminalList == null)
+            cacheVmsTerminalList = new ArrayList<>();
 
         for (VmsTerminalInfo tempInfo : tempList) {
             boolean isExist = false;
-            for (VmsTerminalInfo cacheInfo : cacheList) {
+            for (VmsTerminalInfo cacheInfo : cacheVmsTerminalList) {
                 if (cacheInfo.getSn().equals(tempInfo.getSn())) {
                     isExist = true;
                     break;
                 }
             }
             if (!isExist) {
-                cacheList.add(tempInfo);
+                cacheVmsTerminalList.add(tempInfo);
             }
         }
-        cacheVmsTerminalListLiveData.postValue(cacheList);
+    }
+
+    public void removeTerminal(String sn) {
+        VmsTerminalInfo cacheInfo = null;
+        for (VmsTerminalInfo terminalInfo : cacheVmsTerminalList) {
+            if (terminalInfo.getSn().equals(sn)) {
+                cacheInfo = terminalInfo;
+                break;
+            }
+        }
+        if (cacheInfo != null)
+            cacheVmsTerminalList.remove(cacheInfo);
     }
 
     public void clearCacheTerminalList() {
-        List<VmsTerminalInfo> cacheList = cacheVmsTerminalListLiveData.getValue();
-        if (cacheList != null)
-            cacheList.clear();
+        if (cacheVmsTerminalList != null)
+            cacheVmsTerminalList.clear();
     }
 
     public ProtectedUnPeekLiveData<Boolean> getVmsRefreshTerminal() {

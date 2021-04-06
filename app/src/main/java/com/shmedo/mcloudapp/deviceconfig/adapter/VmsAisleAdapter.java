@@ -20,19 +20,21 @@ public class VmsAisleAdapter extends BaseQuickAdapter<VmsAisleInfo, BaseViewHold
 
     public VmsAisleAdapter(@Nullable List<VmsAisleInfo> data) {
         super(R.layout.item_vms_aisle_info, data);
-        addChildClickViewIds(R.id.tv_terminal_equipment_count);
+//        addChildClickViewIds(R.id.tv_terminal_equipment_count);
     }
 
     @Override
     protected void convert(@NotNull BaseViewHolder holder, VmsAisleInfo vmsAisleInfo) {
-        if (vmsAisleInfo.getChannel() == 1) {
+        if (vmsAisleInfo.getChannel() == 0) {
+            holder.setText(R.id.tv_aisle_name, "注册通道");
+        } else if (vmsAisleInfo.getChannel() == 1) {
             holder.setText(R.id.tv_aisle_name, "数据通道1");
-        } else if (vmsAisleInfo.getChannel() == 2) {
+        }else if (vmsAisleInfo.getChannel() == 2) {
             holder.setText(R.id.tv_aisle_name, "数据通道2");
         }
 
-        String terminalCount = String.format("设备(%s)", vmsAisleInfo.getTerminalnum());
-        holder.setText(R.id.tv_terminal_equipment_count, terminalCount);
+//        String terminalCount = String.format("设备(%s)", vmsAisleInfo.getTerminalnum());
+//        holder.setText(R.id.tv_terminal_equipment_count, terminalCount);
 
         holder.setText(R.id.tv_network_number, String.valueOf(vmsAisleInfo.getNetid()));
         holder.setText(R.id.tv_address, String.valueOf(vmsAisleInfo.getAddr()));

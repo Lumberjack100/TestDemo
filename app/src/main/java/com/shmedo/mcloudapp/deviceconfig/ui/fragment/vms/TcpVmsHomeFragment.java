@@ -21,8 +21,6 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.chad.library.adapter.base.BaseQuickAdapter;
-import com.chad.library.adapter.base.listener.OnItemChildClickListener;
 import com.hjq.toast.ToastUtils;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandManager;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandResult;
@@ -87,18 +85,6 @@ public class TcpVmsHomeFragment extends BaseVmsTcpCommunicateFragment {
     @BindView(R.id.tv_device_connect_operate)
     TextView mTvDeviceConnectOperate;//Tcp连接操作(断开连接、重新连接)
 
-    @BindView(R.id.tv_aisle_one_network_number)
-    TextView mTvAisleOneNetworkNumber;//通道1网络号
-
-    @BindView(R.id.tv_aisle_one_address)
-    TextView mTvAisleOneAddress;//通道1地址
-
-    @BindView(R.id.tv_aisle_one_communication_chl)
-    TextView mTvAisleOneCommuChl;//通道1通信信道
-
-    @BindView(R.id.tv_aisle_one_signal_strength)
-    TextView mTvAisleOneSignalStrength;//通道1信号强度
-
     @BindView(R.id.recyclerview)
     RecyclerView mRecyclerView;
 
@@ -110,7 +96,6 @@ public class TcpVmsHomeFragment extends BaseVmsTcpCommunicateFragment {
 
     private VmsBasicInfo vmsBasicInfo;
 
-    private TcpVmsTerminalListFragment tcpVmsTerminalListFragment;
     private static Handler myHander = new Handler();
     private static RefreshRunnable refreshRunnable;
 
@@ -254,25 +239,6 @@ public class TcpVmsHomeFragment extends BaseVmsTcpCommunicateFragment {
         vmsAisleAdapter = new VmsAisleAdapter(vmsAisleInfoList);
         vmsAisleAdapter.setAnimationEnable(true);
         vmsAisleAdapter.setAnimationFirstOnly(false);
-        vmsAisleAdapter.setOnItemChildClickListener(new OnItemChildClickListener() {
-            @Override
-            public void onItemChildClick(@NonNull BaseQuickAdapter adapter, @NonNull View view, int position) {
-                if (isDoubleClick(view)) {
-                    return;
-                }
-                if (!tcpViewModel.getConnectStatus()) {
-                    ToastUtils.show(getString(R.string.tcp_config_disconnect_warn));
-                    return;
-                }
-                VmsAisleInfo vmsAisleInfo = vmsAisleInfoList.get(position);
-                if (vmsAisleInfo.getTerminalnum().trim().equals("0")) {
-                    ToastUtils.show("此通道下没有接入终端设备");
-                    return;
-                }
-                tcpVmsTerminalListFragment = new TcpVmsTerminalListFragment(vmsAisleInfo);
-                tcpVmsTerminalListFragment.show(getChildFragmentManager(), "dialog");
-            }
-        });
         mRecyclerView.setAdapter(vmsAisleAdapter);
     }
 
@@ -349,12 +315,14 @@ public class TcpVmsHomeFragment extends BaseVmsTcpCommunicateFragment {
                 }
                 VmsAisleInfo vmsAisleInfo = commandResult.getResult();
                 if (vmsAisleInfo.getChannel() == 0) {
-                    updateAisleOneInfo(vmsAisleInfo);
+                    vmsAisleInfoList.clear();
+                    vmsAisleInfoList.add(vmsAisleInfo);
+                    vmsAisleAdapter.notifyDataSetChanged();
+
                     //获取网关通道2的控制参数
                     getGatewayAisleInfo(VmsAisleNumber.NUMBER_TWO);
 
                 } else if (vmsAisleInfo.getChannel() == 1) {
-                    vmsAisleInfoList.clear();
                     vmsAisleInfoList.add(vmsAisleInfo);
                     vmsAisleAdapter.notifyDataSetChanged();
 
@@ -408,18 +376,6 @@ public class TcpVmsHomeFragment extends BaseVmsTcpCommunicateFragment {
         builder.insert(0, "米度平台连接状态：");
 
         return builder;
-    }
-
-    /**
-     * 更新注册通道的信息
-     *
-     * @param vmsAisleInfo
-     */
-    private void updateAisleOneInfo(VmsAisleInfo vmsAisleInfo) {
-        mTvAisleOneNetworkNumber.setText(String.valueOf(vmsAisleInfo.getNetid()));
-        mTvAisleOneAddress.setText(String.valueOf(vmsAisleInfo.getAddr()));
-        mTvAisleOneCommuChl.setText(String.valueOf(vmsAisleInfo.getChl()));
-        mTvAisleOneSignalStrength.setText(vmsAisleInfo.getRssi() + "dBm");
     }
 
     private void scrollToEnd() {
