@@ -159,6 +159,7 @@ public class NetVmsHomeFragment extends BaseNetIotCommunicateFragment implements
         mFragments.add(vmsTerminalListFragmentTest);
         pagerAdapter = new ProjectPageAdapter((FragmentActivity) mActivity, mFragments);
         viewPager.setAdapter(pagerAdapter);
+        viewPager.setOffscreenPageLimit(1);
         tabLayoutMediator = new TabLayoutMediator(tabLayout, viewPager, new TabLayoutMediator.TabConfigurationStrategy() {
             @Override
             public void onConfigureTab(@NonNull TabLayout.Tab tab, int position) {
@@ -416,14 +417,11 @@ public class NetVmsHomeFragment extends BaseNetIotCommunicateFragment implements
 //                    textView.setText("设备(" + totalCount + ")");
 ////                    tabLayout.getTabAt(1).select();
 
-                    if (vmsTerminalListFragmentTest.isResumed()) {
-                        terminalIndex1 = 0;
-                        vmsTerminalListFragmentTest.clearTerminalList();
-                        vmsViewModel.clearCacheTerminalList();
-                        getTerminalStatus(vmsAisleInfo1.getChannel(), terminalIndex1);
-                    } else {
-                        stopRefreshRunnable();
-                    }
+
+                    terminalIndex1 = 0;
+                    vmsTerminalListFragmentTest.clearTerminalList();
+                    vmsViewModel.clearCacheTerminalList();
+                    getTerminalStatus(vmsAisleInfo1.getChannel(), terminalIndex1);
                 }
             }
             break;
@@ -532,14 +530,5 @@ public class NetVmsHomeFragment extends BaseNetIotCommunicateFragment implements
 
     @Override
     public void onTabReselected(TabLayout.Tab tab) {
-    }
-
-    public void refreshTerminalList() {
-        if (vmsAisleInfo1 != null) {
-            startRefreshRunnable(DELAY_MILLIS);
-            terminalIndex1 = 0;
-            vmsViewModel.clearCacheTerminalList();
-            getTerminalStatus(vmsAisleInfo1.getChannel(), terminalIndex1);
-        }
     }
 }

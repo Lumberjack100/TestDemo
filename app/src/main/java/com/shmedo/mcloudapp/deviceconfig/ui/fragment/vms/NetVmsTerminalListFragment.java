@@ -72,7 +72,6 @@ public class NetVmsTerminalListFragment extends BaseFragment {
         vmsViewModel = getApplicationScopeViewModel(VmsViewModel.class);
         initAdapter();
         vmsHomeFragment = (NetVmsHomeFragment) mActivity.getSupportFragmentManager().findFragmentById(R.id.fragment_container_view);
-        vmsHomeFragment.refreshTerminalList();
     }
 
     private void initAdapter() {
