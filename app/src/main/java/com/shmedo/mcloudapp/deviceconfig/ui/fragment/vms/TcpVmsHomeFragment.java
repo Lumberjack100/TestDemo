@@ -207,6 +207,7 @@ public class TcpVmsHomeFragment extends BaseVmsTcpCommunicateFragment implements
                     swipeRefresh.setRefreshing(false);
                     return;
                 }
+                //查询网关基本信息
                 getGatewayBaseInfo();
             }
         });
@@ -221,6 +222,7 @@ public class TcpVmsHomeFragment extends BaseVmsTcpCommunicateFragment implements
             @Override
             public void onChanged(Boolean isRefresh) {
                 if (isRefresh) {
+                    //查询网关基本信息
                     getGatewayBaseInfo();
                 }
             }
@@ -348,6 +350,7 @@ public class TcpVmsHomeFragment extends BaseVmsTcpCommunicateFragment implements
                 }
                 vmsBasicInfo = commandResult.getResult();
                 updateHeadInfo();
+                vmsAisleListFragment.clearAisleListInfo();
                 //获取网关通道1的控制参数
                 getGatewayAisleInfo(VmsAisleNumber.NUMBER_ONE);
             }
@@ -526,6 +529,7 @@ public class TcpVmsHomeFragment extends BaseVmsTcpCommunicateFragment implements
     public void onStop() {
         super.onStop();
         stopRefreshRunnable();
+        dismissProgressDialog();
     }
 
     @Override
