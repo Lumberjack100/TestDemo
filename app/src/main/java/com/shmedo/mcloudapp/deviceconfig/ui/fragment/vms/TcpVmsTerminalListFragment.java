@@ -3,14 +3,11 @@ package com.shmedo.mcloudapp.deviceconfig.ui.fragment.vms;
 import android.os.Bundle;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
-import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
 import android.view.View;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -19,67 +16,36 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.chad.library.adapter.base.listener.OnItemLongClickListener;
-import com.hjq.toast.ToastUtils;
-import com.littlegreens.netty.client.listener.MessageStateListener;
-import com.shmedo.configlibrary.iot.cmd.IOTCommandManager;
-import com.shmedo.configlibrary.iot.cmd.IOTCommandResult;
-import com.shmedo.configlibrary.iot.cmd.entity.TerminalSNEntity;
-import com.shmedo.configlibrary.iot.cmd.entity.vms.VmsTerminalStatusEntity;
-import com.shmedo.configlibrary.iot.cmd.parser.IOTParseManager;
-import com.shmedo.configlibrary.iot.enums.IOTCommandType;
-import com.shmedo.configlibrary.iot.model.CommonSettingCmdResult;
-import com.shmedo.configlibrary.iot.model.vms.VmsAisleInfo;
-import com.shmedo.configlibrary.iot.model.vms.VmsAisleTerminalInfo;
 import com.shmedo.configlibrary.iot.model.vms.VmsTerminalInfo;
-import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
 import com.shmedo.core.AppContants;
 import com.shmedo.core.util.DensityUtil;
 import com.shmedo.mcloudapp.R;
+import com.shmedo.mcloudapp.common.ui.fragment.BaseFragment;
 import com.shmedo.mcloudapp.common.view.recycleviewitemdivider.GridSpacingItemDecoration;
 import com.shmedo.mcloudapp.deviceconfig.adapter.VmsTerminalInfoAdapter;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.vms.VmsTerminalHomeActivity;
-import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.BaseBottomSheetDialogFragment;
-import com.shmedo.mcloudapp.deviceconfig.viewmodels.DeviceApiKeyViewModel;
 import com.shmedo.mcloudapp.deviceconfig.viewmodels.VmsViewModel;
-import com.shmedo.mcloudapp.profile.TcpViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 import butterknife.BindView;
-import butterknife.OnClick;
-import timber.log.Timber;
 
 /**
  * 创建者:   gonghe <br/>
  * 创建时间:  2020/11/19 <br/>
  * 描述：     Vms 网关挂载的终端设备列表页面
  */
-public class TcpVmsTerminalListFragment extends BaseBottomSheetDialogFragment {
-    @BindView(R.id.tv_title)
-    TextView mTvTitle;
-
+public class TcpVmsTerminalListFragment extends BaseFragment {
     @BindView(R.id.recyclerview)
     RecyclerView mRecyclerView;
 
     private VmsTerminalInfoAdapter adapter;
-
     private List<VmsTerminalInfo> vmsTerminalInfoList = new ArrayList<>();
     private VmsTerminalInfo vmsTerminalInfo;
 
-    private VmsAisleInfo vmsAisleInfo;
-
-    private TcpViewModel tcpViewModel;
+    private TcpVmsHomeFragment vmsHomeFragment;
     private VmsViewModel vmsViewModel;
-    private DeviceApiKeyViewModel deviceApiKeyViewModel;
-
-    private int terminalIndex = 0;//终端索引号
-
-
-    public TcpVmsTerminalListFragment(VmsAisleInfo vmsAisleInfo) {
-        this.vmsAisleInfo = vmsAisleInfo;
-    }
 
 
     @Override
@@ -87,31 +53,12 @@ public class TcpVmsTerminalListFragment extends BaseBottomSheetDialogFragment {
         return R.layout.vms_terminal_list_fragment;
     }
 
-    /**
-     * 设置弹窗高度，默认为屏幕高度的四分之三
-     */
-    @Override
-    protected int getPeekHeight() {
-        int peekHeight = getResources().getDisplayMetrics().heightPixels;
-        //设置弹窗高度为屏幕高度的4/5
-        return peekHeight - peekHeight / 5;
-    }
-
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        initAdapter();
         vmsViewModel = getApplicationScopeViewModel(VmsViewModel.class);
-        observerRefreshTerminal();
-        deviceApiKeyViewModel = getApplicationScopeViewModel(DeviceApiKeyViewModel.class);
-        tcpViewModel = getApplicationScopeViewModel(TcpViewModel.class);
-        tcpViewModel.getReceivedMessage().observeInFragment(this, new Observer<String>() {
-            @Override
-            public void onChanged(String msg) {
-                parseResponseMessage(msg);
-            }
-        });
-        initData();
+        initAdapter();
+        vmsHomeFragment = (TcpVmsHomeFragment) mActivity.getSupportFragmentManager().findFragmentById(R.id.fragment_container_view);
     }
 
     private void initAdapter() {
@@ -129,10 +76,6 @@ public class TcpVmsTerminalListFragment extends BaseBottomSheetDialogFragment {
                 if (isDoubleClick(view)) {
                     return;
                 }
-                if (!tcpViewModel.getConnectStatus()) {
-                    ToastUtils.show(getString(R.string.tcp_config_disconnect_warn));
-                    return;
-                }
                 vmsTerminalInfo = vmsTerminalInfoList.get(position);
                 VmsTerminalHomeActivity.startActivity(mActivity, AppContants.CommunicationWay.TCP_CONNECT, vmsTerminalInfo);
             }
@@ -146,149 +89,6 @@ public class TcpVmsTerminalListFragment extends BaseBottomSheetDialogFragment {
             }
         });
         mRecyclerView.setAdapter(adapter);
-    }
-
-    private void initData() {
-        if (vmsAisleInfo == null) {
-            return;
-        }
-
-        String title;
-        if (vmsAisleInfo.getChannel() == 1) {
-            title = "数据通道1-设备(";
-        } else {
-            title = "数据通道2-设备(";
-        }
-        title += vmsAisleInfo.getTerminalnum() + ")";
-        mTvTitle.setText(title);
-
-        terminalIndex = 0;
-        vmsTerminalInfoList.clear();
-        getTerminalStatus();
-    }
-
-    /**
-     * 观察终端设备刷新<br>
-     * 因为终端列表页面移除了设备，网关主页面需要刷新数据
-     */
-    private void observerRefreshTerminal() {
-        vmsViewModel.getVmsRefreshTerminal().observeInFragment(this, new Observer<Boolean>() {
-            @Override
-            public void onChanged(Boolean isRefresh) {
-                if (isRefresh) {
-                    initData();
-                }
-            }
-        });
-    }
-
-    /**
-     * 获取网关不同通道下，挂载终端的运行情况
-     */
-    private void getTerminalStatus() {
-        VmsTerminalStatusEntity entity = new VmsTerminalStatusEntity(vmsAisleInfo.getChannel(), terminalIndex);
-        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.VMS_MD_GET_TERMINAL_STATUS, entity);
-        sendCommand(command);
-    }
-
-    @OnClick({R.id.iv_close})
-    public void onClick(View view) {
-        if (view.getId() == R.id.iv_close) {
-            dismiss();
-        }
-    }
-
-    /**
-     * 解析设备的参数指令
-     */
-    private void parseResponseMessage(String cmdStr) {
-        IOTCommandType type = IOTStringUtil.extractCommandType(cmdStr);
-        switch (type) {
-            case VMS_MD_GET_TERMINAL_STATUS: {
-                IOTCommandResult<VmsAisleTerminalInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
-                if (!commandResult.isSuccess()) {
-                    String errMsg = String.format("%s %s", "查询网关通道下的挂载终端信息出错!", commandResult.getMessage());
-                    Timber.e(errMsg);
-                    ToastUtils.show(errMsg);
-                    return;
-                }
-                VmsAisleTerminalInfo vmsAisleTerminalInfo = commandResult.getResult();
-                modifyAisleTerminalInfo(vmsAisleTerminalInfo);
-
-                if (vmsAisleTerminalInfo == null || vmsAisleTerminalInfo.getTerminal() == null || vmsAisleTerminalInfo.getTerminal().size() == 0) {
-                    if (vmsTerminalInfoList.size() == 0) {
-                        adapter.setEmptyView(R.layout.empty_view);
-                    }
-                    return;
-                }
-                vmsTerminalInfoList.addAll(vmsAisleTerminalInfo.getTerminal());
-                adapter.notifyDataSetChanged();
-
-                terminalIndex++;
-                if (terminalIndex < Integer.parseInt(vmsAisleInfo.getTerminalnum())) {
-                    getTerminalStatus();
-                } else {
-                    adapter.notifyDataSetChanged();
-                }
-            }
-            break;
-
-            case VMS_MD_DELETE_TERMINAL: {//删除终端设备
-                CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
-                if (!cmdResult.isSucceed()) {
-                    String errMsg = String.format("%s %s", "删除终端出错!", cmdResult.getReason());
-                    Timber.e(errMsg);
-                    ToastUtils.show(errMsg);
-                    return;
-                }
-                doAfterSetting();
-            }
-            break;
-        }
-    }
-
-    /**
-     * 修改某个通道下接入的的终端信息，设置终端的网络号、信道号与所属通道一致
-     *
-     * @param vmsAisleTerminalInfo
-     */
-    private void modifyAisleTerminalInfo(VmsAisleTerminalInfo vmsAisleTerminalInfo) {
-        if (vmsAisleTerminalInfo == null)
-            return;
-
-        if (vmsAisleTerminalInfo.getTerminal() == null)
-            return;
-
-        for (VmsTerminalInfo vmsTerminalInfo : vmsAisleTerminalInfo.getTerminal()) {
-            vmsTerminalInfo.setNetid(vmsAisleTerminalInfo.getNetid());
-            vmsTerminalInfo.setChl(vmsAisleTerminalInfo.getChl());
-        }
-    }
-
-    private void doAfterSetting() {
-        ToastUtils.show("删除成功");
-        vmsTerminalInfoList.remove(vmsTerminalInfo);
-        adapter.notifyDataSetChanged();
-        vmsViewModel.setVmsRefreshTerminal(true);
-
-        String title;
-        if (vmsAisleInfo.getChannel() == 1) {
-            title = "数据通道1-设备(";
-        } else {
-            title = "数据通道2-设备(";
-        }
-        title += vmsTerminalInfoList.size() + ")";
-        mTvTitle.setText(title);
-    }
-
-    private CharSequence getWarnMessage() {
-        SpannableStringBuilder builder = new SpannableStringBuilder(vmsTerminalInfo.getSn());
-        ForegroundColorSpan colorSpan = new ForegroundColorSpan(getContext().getResources().getColor(R.color.blue_52B4F8));
-        builder.setSpan(colorSpan, 0, builder.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-        builder.insert(0, "确认移除 ");
-        builder.append(" 设备?");
-
-        return builder;
     }
 
     /**
@@ -308,38 +108,32 @@ public class TcpVmsTerminalListFragment extends BaseBottomSheetDialogFragment {
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                         dialog.dismiss();
-                        removeTerminal();
+                        vmsTerminalInfoList.remove(vmsTerminalInfo);
+                        vmsViewModel.removeTerminal(vmsTerminalInfo.getSn());
+                        adapter.notifyDataSetChanged();
+                        vmsHomeFragment.removeTerminal(vmsTerminalInfo.getSn());
                     }
                 });
         MaterialDialog mMaterialDialog = mBuilder.build();
         mMaterialDialog.show();
     }
 
-    /**
-     * 移除网关挂载的终端
-     */
-    private void removeTerminal() {
-        TerminalSNEntity entity = new TerminalSNEntity(vmsTerminalInfo.getSn());
-        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.VMS_MD_DELETE_TERMINAL, entity);
-        sendCommand(command);
+    private CharSequence getWarnMessage() {
+        SpannableStringBuilder builder = new SpannableStringBuilder(vmsTerminalInfo.getSn());
+        ForegroundColorSpan colorSpan = new ForegroundColorSpan(getContext().getResources().getColor(R.color.blue_52B4F8));
+        builder.setSpan(colorSpan, 0, builder.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        builder.insert(0, "确认移除 ");
+        builder.append(" 设备?");
+
+        return builder;
     }
 
-    private void sendCommand(String cmdStr) {
-        String apiKey = "b12aac6b-0bd2-4a01-80fd-97fe4f5d4ff9";
-        if (!TextUtils.isEmpty(deviceApiKeyViewModel.getDeviceApiKey().getValue())) {
-            apiKey = deviceApiKeyViewModel.getDeviceApiKey().getValue();
-        }
-        cmdStr += "&apikey=" + apiKey
-                + "&msgid=" + UUID.randomUUID().toString();
+    public void clearTerminalList() {
+        vmsTerminalInfoList.clear();
+    }
 
-        Timber.d("发送指令：%s", cmdStr);
-        tcpViewModel.sendMsgToServer(cmdStr, new MessageStateListener() {
-            @Override
-            public void isSendSuccss(boolean isSuccess) {
-                if (!isSuccess) {
-                    Timber.e("发送指令失败");
-                }
-            }
-        });
+    public void updateTerminalList(List<VmsTerminalInfo> dataList) {
+        vmsTerminalInfoList.addAll(dataList);
+        adapter.notifyDataSetChanged();
     }
 }

@@ -146,7 +146,7 @@ public class NetVmsHomeFragment extends BaseNetIotCommunicateFragment implements
 
     @Override
     protected int getLayoutId() {
-        return R.layout.vms_home_fragment_test;
+        return R.layout.vms_home_fragment;
     }
 
     @Override
@@ -412,11 +412,6 @@ public class NetVmsHomeFragment extends BaseNetIotCommunicateFragment implements
 
                 } else if (vmsAisleInfo.getChannel() == 2) {
                     vmsAisleInfo2 = vmsAisleInfo;
-//                    int totalCount = Integer.parseInt(vmsAisleInfo1.getTerminalnum()) + Integer.parseInt(vmsAisleInfo2.getTerminalnum());
-//                    TextView textView = (TextView) tabLayout.getTabAt(1).getCustomView();
-//                    textView.setText("设备(" + totalCount + ")");
-////                    tabLayout.getTabAt(1).select();
-
 
                     terminalIndex1 = 0;
                     vmsTerminalListFragmentTest.clearTerminalList();

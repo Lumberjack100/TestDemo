@@ -237,12 +237,10 @@ public class BleDasHomeFragment extends BaseBleCommunicateFragment {
                 if (isDoubleClick(view)) {
                     return;
                 }
-
                 if (!isConnected()) {
                     ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
                     return;
                 }
-
                 selectedConfigModule = (ConfigModule) configModuleList.get(position);
                 processItemClick();
             }
@@ -352,7 +350,7 @@ public class BleDasHomeFragment extends BaseBleCommunicateFragment {
 
                     case READY:
                         onConnectionStateChanged(true);
-                        mTvProgressText.setText("初始化中...");
+                        mTvProgressText.setText("认证中...");
                         setAuthenticateWay();
                         break;
 

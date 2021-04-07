@@ -30,7 +30,7 @@ public class NetVmsAisleListFragment extends BaseFragment {
 
     @Override
     protected int getLayoutId() {
-        return R.layout.net_vms_aisle_list_fragment;
+        return R.layout.vms_aisle_list_fragment;
     }
 
     @Override

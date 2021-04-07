@@ -63,7 +63,7 @@ public class NetVmsTerminalListFragment extends BaseFragment {
 
     @Override
     protected int getLayoutId() {
-        return R.layout.net_vms_terminal_list_fragment_test;
+        return R.layout.vms_terminal_list_fragment;
     }
 
     @Override
