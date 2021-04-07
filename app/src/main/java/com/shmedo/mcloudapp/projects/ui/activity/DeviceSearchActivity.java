@@ -145,9 +145,14 @@ public class DeviceSearchActivity extends BaseActivity {
                 if (deviceInfo.getDeviceTypeName().contains("DAS")) {
                     deviceType = AppContants.DeviceType.DAS;
                 } else if (deviceInfo.getDeviceTypeName().contains("ADME")) {
-                    deviceType = AppContants.DeviceType.ADME;
+                    ToastUtils.show("此设备暂不支持网络配置");
+                    return;
                 } else if (deviceInfo.getDeviceTypeName().contains("M20")) {
                     deviceType = AppContants.DeviceType.M20;
+                } else if (deviceInfo.getDeviceTypeName().contains("E40") || deviceInfo.getDeviceTypeName().contains("E60")) {
+                    deviceType = AppContants.DeviceType.E40;
+                } else if (deviceInfo.getDeviceTypeName().contains("VMS")) {
+                    deviceType = AppContants.DeviceType.VMS;
                 }
                 DeviceConfigActivity.startActivity(DeviceSearchActivity.this, deviceInfo, deviceType);
             }
