@@ -67,6 +67,7 @@ public class IOTSensorUtil {
         typeNameMap.put("10004", "湿度");
         typeNameMap.put("10005", "轴力计");
         typeNameMap.put("10006", "PH");
+        typeNameMap.put("10008", "崩滑仪");
         typeNameMap.put("20001", "设备日志");
         typeNameMap.put("20002", "设备报警");
     }
