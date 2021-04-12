@@ -110,7 +110,7 @@ public class NetDasHomeFragment extends UniversalNetConfigHomeFragment {
                 break;
 
             case "采集器配置":
-                DasCollectorSettingActivity.startActivity(mActivity, projectDeviceInfo.getId());
+                DasCollectorSettingActivity.startActivity(mActivity, projectDeviceInfo);
                 break;
 
             case "数据中心":

@@ -17,6 +17,7 @@ import com.shmedo.configlibrary.iot.cmd.parser.adme.AdmeMotorMotionAngleInfoPars
 import com.shmedo.configlibrary.iot.cmd.parser.adme.AdmeMotorMotionDistanceInfoParser;
 import com.shmedo.configlibrary.iot.cmd.parser.adme.AdmeStepperMotorInfoParser;
 import com.shmedo.configlibrary.iot.cmd.parser.adme.AdmeWorkModeParser;
+import com.shmedo.configlibrary.iot.cmd.parser.das.CollectorInfoParser;
 import com.shmedo.configlibrary.iot.cmd.parser.e40.E40BoardSolutionInfoParser;
 import com.shmedo.configlibrary.iot.cmd.parser.e40.E40CORSInfoParser;
 import com.shmedo.configlibrary.iot.cmd.parser.e40.E40RTKModeInfoParser;
@@ -155,11 +156,12 @@ public class IOTParseManager {
                 AdmeMotorMotionAngleInfoParser.class,
                 AdmeCurrentStateInfoParser.class,
                 AdmeWorkModeParser.class,
+                AdmeLockedRotorDetectionInfoParser.class,
                 M20BaseInfoParser.class,
                 E40RTKModeInfoParser.class,
                 E40CORSInfoParser.class,
                 E40BoardSolutionInfoParser.class,
-                AdmeLockedRotorDetectionInfoParser.class
+                CollectorInfoParser.class
         });
 
         registerWithClass(clazzes);

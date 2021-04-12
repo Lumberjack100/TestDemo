@@ -10,17 +10,19 @@ import android.widget.EditText;
 import androidx.annotation.Nullable;
 
 import com.hjq.toast.ToastUtils;
-import com.shmedo.configlibrary.ble.model.CollectorConfigInfo;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandManager;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandResult;
+import com.shmedo.configlibrary.iot.cmd.entity.das.DasCollectorEntity;
 import com.shmedo.configlibrary.iot.cmd.parser.IOTParseManager;
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.model.CommonSettingCmdResult;
+import com.shmedo.configlibrary.iot.model.das.DasCollectorInfo;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.deviceconfig.model.DispatchCmdItem;
 import com.shmedo.mcloudapp.deviceconfig.model.QueryCmdResult;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.netcommon.BaseNetIotCommunicateFragment;
+import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfo;
 import com.shmedo.mcloudapp.util.KeyBordUtils;
 
 import java.util.Arrays;
@@ -34,7 +36,6 @@ import timber.log.Timber;
  * 通过物联网平台配置采集器
  */
 public class NetCollectorSettingFragment extends BaseNetIotCommunicateFragment {
-    private static final String DEVICE_ID = "device_id";
 
     @BindView(R.id.collectorAddressET)
     EditText mEtCollectorAddress;
@@ -51,37 +52,24 @@ public class NetCollectorSettingFragment extends BaseNetIotCommunicateFragment {
     @BindView(R.id.btn_confirm)
     Button mBtnSave;
 
-    private CollectorConfigInfo collectorConfigInfo = new CollectorConfigInfo();
     private String collectorAddress;//采集器地址
     private String calculatTime;//解算时间频度
     private String standbyTime;//待机时间
     private String collectTime;//采集时间频度
 
-    private int deviceid;
+    private DasCollectorInfo collectorInfo;
 
-    private static final int GET_COLLECTOR_INFO = 0x1000;
-    private static final int SET_COLLECTOR_INFO = 0x1001;
-    private int operaType = -1;
-
-    public static NetCollectorSettingFragment newInstance(int deviceid) {
+    public static NetCollectorSettingFragment newInstance(ProjectDeviceInfo projectDeviceInfo) {
         NetCollectorSettingFragment fragment = new NetCollectorSettingFragment();
         Bundle args = new Bundle();
-        args.putInt(DEVICE_ID, deviceid);
+        args.putParcelable(PRO_DEVICE_INFO, projectDeviceInfo);
         fragment.setArguments(args);
         return fragment;
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            deviceid = getArguments().getInt(DEVICE_ID, -1);
-        }
-    }
-
-    @Override
     protected int getLayoutId() {
-        return R.layout.fragment_net_collector_setting;
+        return R.layout.net_collector_setting;
     }
 
     @Override
@@ -100,7 +88,6 @@ public class NetCollectorSettingFragment extends BaseNetIotCommunicateFragment {
 
     private void queryCollectorInfo() {
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.DAS_MD_GET_COLLECTOR_CONTROL);
-        operaType = GET_COLLECTOR_INFO;
         showProgressDialog("处理中...");
         doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
     }
@@ -125,7 +112,7 @@ public class NetCollectorSettingFragment extends BaseNetIotCommunicateFragment {
         collectTime = mEtCollectTime.getText().toString().trim();
 
         if (TextUtils.isEmpty(collectorAddress)) {
-            ToastUtils.show("采集器地址不能为空");
+            ToastUtils.show("请输入采集器地址!");
             mEtCollectorAddress.requestFocus();
             return false;
         }
@@ -143,20 +130,41 @@ public class NetCollectorSettingFragment extends BaseNetIotCommunicateFragment {
         }
 
         if (TextUtils.isEmpty(calculatTime)) {
-            ToastUtils.show("解算频度不能为空");
+            ToastUtils.show("请输入解算时间!");
+            mEtCalculatingTime.requestFocus();
+            return false;
+        }
+        try {
+            int value = Integer.parseInt(calculatTime);
+        } catch (Exception ex) {
+            ToastUtils.show("请输入正确的解算时间!");
             mEtCalculatingTime.requestFocus();
             return false;
         }
 
         if (TextUtils.isEmpty(standbyTime)) {
-            ToastUtils.show("待机时长不能为空");
+            ToastUtils.show("请输入待机时间!");
+            mEtStandbyTime.requestFocus();
+            return false;
+        }
+        try {
+            int value = Integer.parseInt(standbyTime);
+        } catch (Exception ex) {
+            ToastUtils.show("请输入正确的待机时间!");
             mEtStandbyTime.requestFocus();
             return false;
         }
 
         if (TextUtils.isEmpty(collectTime)) {
-            ToastUtils.show("采集频度不能为空");
+            ToastUtils.show("请输入采集时间!");
             mEtCollectTime.requestFocus();
+            return false;
+        }
+        try {
+            int value = Integer.parseInt(collectTime);
+        } catch (Exception ex) {
+            ToastUtils.show("请输入正确的采集时间!");
+            mEtStandbyTime.requestFocus();
             return false;
         }
 
@@ -164,12 +172,17 @@ public class NetCollectorSettingFragment extends BaseNetIotCommunicateFragment {
     }
 
     private void processSave() {
-        mBtnSave.setEnabled(false);
-//        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.DAS_MD_SET_COLLECTOR_CONTROL, dataCenterEntity);
-//        operaType = SET_COLLECTOR_INFO;
-//        doCommonDispatchRawCmd(command);
-    }
+        DasCollectorEntity entity = new DasCollectorEntity();
+        entity.setType(collectorInfo.getType());
+        entity.setAddr(collectorAddress);
+        entity.setCalcgap(calculatTime);
+        entity.setStandbygap(standbyTime);
+        entity.setCollgap(collectTime);
 
+        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.DAS_MD_SET_COLLECTOR_CONTROL, entity);
+        showProgressDialog("处理中...");
+        doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
+    }
 
     /**
      * 调用指令下发/透传接口结果返回
@@ -178,12 +191,11 @@ public class NetCollectorSettingFragment extends BaseNetIotCommunicateFragment {
      */
     @Override
     protected void onDispatchCmdResult(List<DispatchCmdItem> dispatchCmdItemList, String cmdStr) {
-        dismissProgressDialog();
         if (dispatchCmdItemList == null || dispatchCmdItemList.size() == 0) {
+            dismissProgressDialog();
             showDispatchFailedDialog();
             return;
         }
-
         msgIDList.clear();
         for (DispatchCmdItem cmdItem : dispatchCmdItemList) {
             msgIDList.add(cmdItem.getMsgID());
@@ -210,7 +222,7 @@ public class NetCollectorSettingFragment extends BaseNetIotCommunicateFragment {
     protected void onQueryCmdResponseResultError(String errMsg) {
         super.onQueryCmdResponseResultError(errMsg);
         mBtnSave.setEnabled(true);
-        ToastUtils.show("查询设备响应错误");
+        ToastUtils.show("指令响应错误");
     }
 
     /**
@@ -222,7 +234,7 @@ public class NetCollectorSettingFragment extends BaseNetIotCommunicateFragment {
     protected void onQueryCmdResponseResultTimeOut(QueryCmdResult queryCmdResult) {
         super.onQueryCmdResponseResultTimeOut(queryCmdResult);
         mBtnSave.setEnabled(true);
-        ToastUtils.show("查询设备响应超时");
+        ToastUtils.show("指令响应超时");
     }
 
     /**
@@ -241,23 +253,22 @@ public class NetCollectorSettingFragment extends BaseNetIotCommunicateFragment {
         IOTCommandType type = IOTStringUtil.extractCommandType(queryCmdResult.getCmdEngName());
         switch (type) {
             case DAS_MD_GET_COLLECTOR_CONTROL: {//
-                IOTCommandResult<CollectorConfigInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
+                IOTCommandResult<DasCollectorInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
-                    String errMsg = String.format("%s %s", "查询数据中心参数出错!", commandResult.getMessage());
+                    String errMsg = String.format("%s %s", "查询采集器参数出错!", commandResult.getMessage());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
                     return;
                 }
-                collectorConfigInfo = commandResult.getResult();
+                collectorInfo = commandResult.getResult();
                 initCollectorInfo();
             }
             break;
 
             case DAS_MD_SET_COLLECTOR_CONTROL: {//
-//                stopProgressRunnable();
                 CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
                 if (!cmdResult.isSucceed()) {
-                    String errMsg = String.format("%s %s", "设置数据中心参数出错!", cmdResult.getReason());
+                    String errMsg = String.format("%s %s", "设置采集器参数出错!", cmdResult.getReason());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
                     mBtnSave.setEnabled(true);
@@ -277,17 +288,16 @@ public class NetCollectorSettingFragment extends BaseNetIotCommunicateFragment {
         ToastUtils.show("保存成功");
     }
 
-    private void initCollectorInfo(){
-        if (collectorConfigInfo == null) {
-            Timber.e("CollectorConfigInfo 为空!");
-            collectorConfigInfo = new CollectorConfigInfo();
+    private void initCollectorInfo() {
+        if (collectorInfo == null) {
+            Timber.e("DasCollectorInfo 为空!");
+            collectorInfo = new DasCollectorInfo();
             return;
         }
-
-        collectorAddress = collectorConfigInfo.getCollectorAddress();
-        calculatTime = collectorConfigInfo.getWorkTime();
-        standbyTime = collectorConfigInfo.getStandbyTime();
-        collectTime = collectorConfigInfo.getCollectorInterval();
+        collectorAddress = collectorInfo.getAddr();
+        calculatTime = collectorInfo.getCalcgap();
+        standbyTime = collectorInfo.getStandbygap();
+        collectTime = collectorInfo.getCollgap();
 
         mEtCollectorAddress.setText(collectorAddress);
         mEtCalculatingTime.setText(calculatTime);
@@ -309,19 +319,15 @@ public class NetCollectorSettingFragment extends BaseNetIotCommunicateFragment {
         if (collectorAddress != null && !collectorAddress.equals(mEtCollectorAddress.getText().toString().trim())) {
             return true;
         }
-
         if (calculatTime != null && !calculatTime.equals(mEtCalculatingTime.getText().toString().trim())) {
             return true;
         }
-
         if (standbyTime != null && !standbyTime.equals(mEtStandbyTime.getText().toString().trim())) {
             return true;
         }
-
         if (collectTime != null && !collectTime.equals(mEtCollectTime.getText().toString().trim())) {
             return true;
         }
-
         return false;
     }
 }
