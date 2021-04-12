@@ -159,8 +159,8 @@ public class NetDasAdvancedSettingFragment extends BaseNetIotCommunicateFragment
      */
     @Override
     protected void onDispatchCmdResult(List<DispatchCmdItem> dispatchCmdItemList, String cmdStr) {
-        dismissProgressDialog();
         if (dispatchCmdItemList == null || dispatchCmdItemList.size() == 0) {
+            dismissProgressDialog();
             doDispatchFailed(cmdStr);
             return;
         }
@@ -207,14 +207,17 @@ public class NetDasAdvancedSettingFragment extends BaseNetIotCommunicateFragment
         IOTCommandType type = IOTStringUtil.extractCommandType(cmdStr);
         switch (type) {
             case MD_UPGRADE:
+                dismissProgressDialog();
                 newFragment = new CommonCmdDialog("固件升级", "固件升级中...", "此过程耗时较长,请耐心等待", msgIDList);
                 break;
 
             case REBOOT:
+                dismissProgressDialog();
                 newFragment = new CommonCmdDialog("重新启动", "正在重启中...", "预计耗时三分钟,请耐心等待", msgIDList);
                 break;
 
             case RESET:
+                dismissProgressDialog();
                 newFragment = new CommonCmdDialog("恢复出厂设置", "设备开始恢复出厂设置...", "此过程耗时较长,请耐心等待", msgIDList);
                 break;
 

@@ -11,11 +11,13 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
+        <Space
+            android:layout_width="wrap_content"
+            android:layout_height="20dp" />
+
         <LinearLayout
             android:id="@+id/dataCenterConfigLayout"
-            style="@style/Common_ClickableItem_LayoutStyle"
-            android:visibility="gone"
-            tools:visibility="visible">
+            style="@style/Common_ClickableItem_LayoutStyle">
 
             <TextView
                 style="@style/Common_ClickableItem_TitleStyle"
@@ -94,7 +96,8 @@
 
         <LinearLayout
             android:id="@+id/productRegisterLayout"
-            style="@style/Common_ClickableItem_LayoutStyle">
+            style="@style/Common_ClickableItem_LayoutStyle"
+            android:visibility="gone">
 
             <TextView
                 style="@style/Common_ClickableItem_TitleStyle"
@@ -109,11 +112,13 @@
             android:layout_height="0.5dp"
             android:layout_marginStart="16dp"
             android:layout_marginEnd="18dp"
-            android:background="@color/divider_line_bg_efefef" />
+            android:background="@color/divider_line_bg_efefef"
+            android:visibility="gone" />
 
         <LinearLayout
             android:id="@+id/modifyAuthCodeLayout"
-            style="@style/Common_ClickableItem_LayoutStyle">
+            style="@style/Common_ClickableItem_LayoutStyle"
+            android:visibility="gone">
 
             <TextView
                 style="@style/Common_ClickableItem_TitleStyle"
