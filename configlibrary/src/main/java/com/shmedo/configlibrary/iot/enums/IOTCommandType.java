@@ -78,7 +78,7 @@ public enum IOTCommandType {
      */
     MD_SAVE_CONFIG_PARAM("md_saveconfig"),
 
-    /*　DAS网关指令  */
+    /*　DAS 指令  */
     /**
      * 获取采集控制相关参数
      */
