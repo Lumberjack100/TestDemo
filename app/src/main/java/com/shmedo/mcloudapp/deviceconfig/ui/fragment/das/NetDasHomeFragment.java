@@ -6,8 +6,12 @@ import androidx.annotation.NonNull;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.hjq.toast.ToastUtils;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandManager;
+import com.shmedo.configlibrary.iot.cmd.entity.das.DasActiveEntity;
+import com.shmedo.configlibrary.iot.cmd.parser.IOTParseManager;
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
+import com.shmedo.configlibrary.iot.model.CommonSettingCmdResult;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
 import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.R;
@@ -30,6 +34,8 @@ import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfo;
 
 import java.util.Arrays;
 import java.util.List;
+
+import timber.log.Timber;
 
 /**
  * 创建者:   gonghe <br/>
@@ -56,8 +62,9 @@ public class NetDasHomeFragment extends UniversalNetConfigHomeFragment {
         ConfigModule configModule = new ConfigModule(R.drawable.ic_device_current_state, "状态", "获取当前设备状态");
         configModuleList.add(configModule);
 
-        configModule = new ConfigModule(R.drawable.ic_device_reboot, "传感器初始化", "传感器初始化");
-        configModuleList.add(configModule);
+        // TODO #gh# 定制需求，暂时屏蔽
+//        configModule = new ConfigModule(R.drawable.ic_device_reboot, "传感器初始化", "传感器初始化");
+//        configModuleList.add(configModule);
 
         configModule = new ConfigModule(R.drawable.ic_device_current_time, "时间", "获取当前设备时间");
         configModuleList.add(configModule);
@@ -90,6 +97,14 @@ public class NetDasHomeFragment extends UniversalNetConfigHomeFragment {
                 doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
             }
             break;
+
+            case "传感器初始化": {
+                DasActiveEntity entity = new DasActiveEntity();
+                entity.setMode("1");
+                showProgressDialog("处理中...");
+                String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.DAS_MD_SET_ACTIVE, entity);
+                doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
+            }
 
             case "时间": {
                 showProgressDialog("处理中...");
@@ -187,6 +202,10 @@ public class NetDasHomeFragment extends UniversalNetConfigHomeFragment {
                 title = "运行状态";
                 break;
 
+            case DAS_MD_SET_ACTIVE:
+                title = "传感器初始化";
+                break;
+
             case QUERY_TERMINAL_TIME:
                 title = "时间";
                 break;
@@ -221,9 +240,15 @@ public class NetDasHomeFragment extends UniversalNetConfigHomeFragment {
                 ((QueryCurrentStateDialog) newFragment).setOnSeeDetailClickListener(new QueryCurrentStateDialog.OnSeeDetailClickListener() {
                     @Override
                     public void onSeeDetailClick(DevcieCurrentState devcieCurrentState) {
-                        DeviceCurrentStateActivity.startActivity(mActivity, projectDeviceInfo, devcieCurrentState, AppContants.DeviceType.DAS);
+                        DeviceCurrentStateActivity.startActivity(mActivity, projectDeviceInfo, AppContants.DeviceType.DAS);
                     }
                 });
+                break;
+
+            case DAS_MD_SET_ACTIVE:
+                if (msgIDList != null && msgIDList.size() > 0) {
+                    startQueryCmdResponseRunnable(0);
+                }
                 break;
 
             case QUERY_TERMINAL_TIME:
@@ -250,7 +275,24 @@ public class NetDasHomeFragment extends UniversalNetConfigHomeFragment {
 
     @Override
     protected void setResultData(QueryCmdResult queryCmdResult) {
+        String cmdStr = queryCmdResult.getResponseContent();
+        IOTCommandType type = IOTStringUtil.extractCommandType(cmdStr);
+        switch (type) {
+            case M20_MD_GET_BASE_INFO: {//获取设备的基本信息
+                CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
+                if (!cmdResult.isSucceed()) {
+                    String errMsg = String.format("%s %s", "传感器初始化失败!", cmdResult.getReason());
+                    Timber.e(errMsg);
+                    ToastUtils.show(errMsg);
+                    return;
+                }
+                ToastUtils.show("传感器已初始化,设备即将重启!");
+            }
+            break;
 
+            default:
+                break;
+        }
     }
 
 }

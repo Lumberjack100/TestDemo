@@ -177,7 +177,7 @@ public abstract class UniversalNetConfigHomeFragment extends BaseNetIotCommunica
     @Override
     protected void onQueryCmdResponseResultError(String errMsg) {
         super.onQueryCmdResponseResultError(errMsg);
-        ToastUtils.show("查询设备响应错误");
+        ToastUtils.show("指令响应错误");
     }
 
     /**
@@ -188,7 +188,7 @@ public abstract class UniversalNetConfigHomeFragment extends BaseNetIotCommunica
     @Override
     protected void onQueryCmdResponseResultTimeOut(QueryCmdResult queryCmdResult) {
         super.onQueryCmdResponseResultTimeOut(queryCmdResult);
-        ToastUtils.show("查询设备响应超时");
+        ToastUtils.show("指令响应超时");
     }
 
     /**

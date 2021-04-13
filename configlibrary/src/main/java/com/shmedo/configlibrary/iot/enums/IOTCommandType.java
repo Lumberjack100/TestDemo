@@ -80,6 +80,16 @@ public enum IOTCommandType {
 
     /*　DAS 指令  */
     /**
+     * 获取激活模式
+     */
+    DAS_MD_GET_ACTIVE("md_getactive"),
+
+    /**
+     * 设置激活模式
+     */
+    DAS_MD_SET_ACTIVE("md_setactive"),
+
+    /**
      * 获取采集控制相关参数
      */
     DAS_MD_GET_COLLECTOR_CONTROL("md_getcollctrl"),

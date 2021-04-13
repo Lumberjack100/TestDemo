@@ -58,7 +58,7 @@ public class NetE40HomeFragment extends UniversalNetConfigHomeFragment {
 //                String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.QUERY_DEVICE_STATUS);
 //                showProgressDialog("处理中...");
 //                doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
-                DeviceCurrentStateActivity.startActivity(mActivity, projectDeviceInfo, null, AppContants.DeviceType.E40);
+                DeviceCurrentStateActivity.startActivity(mActivity, projectDeviceInfo, AppContants.DeviceType.E40);
                 break;
 
             case "数据中心":
@@ -119,7 +119,7 @@ public class NetE40HomeFragment extends UniversalNetConfigHomeFragment {
                 ((QueryCurrentStateDialog) newFragment).setOnSeeDetailClickListener(new QueryCurrentStateDialog.OnSeeDetailClickListener() {
                     @Override
                     public void onSeeDetailClick(DevcieCurrentState devcieCurrentState) {
-                        DeviceCurrentStateActivity.startActivity(mActivity, projectDeviceInfo, null, AppContants.DeviceType.E40);
+                        DeviceCurrentStateActivity.startActivity(mActivity, projectDeviceInfo, AppContants.DeviceType.E40);
                     }
                 });
                 break;

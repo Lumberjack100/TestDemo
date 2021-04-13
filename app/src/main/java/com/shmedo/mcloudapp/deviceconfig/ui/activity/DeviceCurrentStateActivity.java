@@ -7,7 +7,6 @@ import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 
 import com.shmedo.core.AppContants;
-import com.shmedo.mcloudapp.deviceconfig.model.DevcieCurrentState;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.adme.BleAdmeCurrentStateFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.das.BleDasCurrentStateFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.das.NetDasCurrentStateFragment;
@@ -22,10 +21,7 @@ import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfo;
  * 描述：   设备运行状态
  */
 public class DeviceCurrentStateActivity extends BaseConfigFragmentContainerActivity {
-    private static final String DEVICE_CURRENT_STATE = "device_current_state";
     private int deviceType = AppContants.DeviceType.DAS;
-
-    private DevcieCurrentState devcieCurrentState;
 
     public static void startActivity(Context context, int connectWay, int deviceType) {
         Intent intent = new Intent(context, DeviceCurrentStateActivity.class);
@@ -35,10 +31,9 @@ public class DeviceCurrentStateActivity extends BaseConfigFragmentContainerActiv
         context.startActivity(intent);
     }
 
-    public static void startActivity(Context context, ProjectDeviceInfo projectDeviceInfo, DevcieCurrentState devcieCurrentState, int deviceType) {
+    public static void startActivity(Context context, ProjectDeviceInfo projectDeviceInfo, int deviceType) {
         Intent intent = new Intent(context, DeviceCurrentStateActivity.class);
         intent.putExtra(PRO_DEVICE_INFO, projectDeviceInfo);
-        intent.putExtra(DEVICE_CURRENT_STATE, devcieCurrentState);
         intent.putExtra(AppContants.Extras.DEVICE_TYPE, deviceType);
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         context.startActivity(intent);
@@ -57,10 +52,6 @@ public class DeviceCurrentStateActivity extends BaseConfigFragmentContainerActiv
         if (intent.getExtras() == null)
             return;
 
-        if (intent.getExtras().containsKey(DEVICE_CURRENT_STATE)) {
-            devcieCurrentState = intent.getParcelableExtra(DEVICE_CURRENT_STATE);
-        }
-
         if (intent.getExtras().containsKey(AppContants.Extras.DEVICE_TYPE)) {
             deviceType = intent.getIntExtra(AppContants.Extras.DEVICE_TYPE, AppContants.DeviceType.DAS);
         }
@@ -71,7 +62,7 @@ public class DeviceCurrentStateActivity extends BaseConfigFragmentContainerActiv
         if (connectWay == AppContants.CommunicationWay.NET_PLATFORM_CONNECT) {
             switch (deviceType) {
                 case AppContants.DeviceType.DAS:
-                    fragment = NetDasCurrentStateFragment.newInstance(projectDeviceInfo, devcieCurrentState);
+                    fragment = NetDasCurrentStateFragment.newInstance(projectDeviceInfo);
                     break;
 
                 case AppContants.DeviceType.ADME:

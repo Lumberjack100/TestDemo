@@ -216,7 +216,7 @@ public class BleDasCurrentStateFragment extends BaseBleCommunicateFragment {
 
     @Override
     protected int getLayoutId() {
-        return R.layout.ble_das_current_state_fragment;
+        return R.layout.das_current_state_fragment;
     }
 
     public static BleDasCurrentStateFragment newInstance() {
