@@ -8,8 +8,8 @@ import androidx.fragment.app.Fragment;
 
 import com.shmedo.configlibrary.iot.enums.ServerNumber;
 import com.shmedo.core.AppContants;
-import com.shmedo.mcloudapp.deviceconfig.ui.fragment.adme.BleAdmeDataCenterAdvancedConfigFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.adme.BleAdmeDataCenterBasicConfigFragment;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.blecommon.UniversalUSRBleDataCenterAdvancedConfigFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.m20.BleM20DataCenterAdvancedConfigFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.m20.BleM20DataCenterBasicConfigFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.netcommon.UniversalNetDataCenterAdvancedConfigFragment;
@@ -119,13 +119,14 @@ public class DataCenterConfigActivity extends BaseConfigFragmentContainerActivit
         } else if (connectWay == AppContants.CommunicationWay.BLE_CONNECT) {
             switch (deviceType) {
                 case AppContants.DeviceType.DAS:
+                    fragment = UniversalUSRBleDataCenterAdvancedConfigFragment.newInstance(serverNumber, serverStatus);
                     break;
 
                 case AppContants.DeviceType.ADME:
                     if (configMethod == AppContants.DataCenterConfigMethod.BASIC_CONFIG) {
                         fragment = BleAdmeDataCenterBasicConfigFragment.newInstance(serverNumber, serverStatus);
                     } else {
-                        fragment = BleAdmeDataCenterAdvancedConfigFragment.newInstance(serverNumber, serverStatus);
+                        fragment = UniversalUSRBleDataCenterAdvancedConfigFragment.newInstance(serverNumber, serverStatus);
                     }
                     break;
 

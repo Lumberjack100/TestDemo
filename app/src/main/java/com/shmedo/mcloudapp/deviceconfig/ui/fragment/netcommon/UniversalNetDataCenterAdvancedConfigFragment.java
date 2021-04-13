@@ -51,7 +51,6 @@ import timber.log.Timber;
  * 描述：    通用网络模式数据中心高级参数配置页面
  */
 public class UniversalNetDataCenterAdvancedConfigFragment extends BaseNetIotCommunicateFragment {
-
     @BindView(R.id.contentLayout)
     ViewGroup contentLayout;
 
@@ -63,6 +62,9 @@ public class UniversalNetDataCenterAdvancedConfigFragment extends BaseNetIotComm
 
     @BindView(R.id.tv_data_protocol)
     TextView mTvDataProtocol;
+
+    @BindView(R.id.tv_platform_type)
+    TextView mTvPlatformType;
 
     @BindView(R.id.et_data_server_address)
     ClearEditText mEtDataServerAddress;
@@ -103,9 +105,13 @@ public class UniversalNetDataCenterAdvancedConfigFragment extends BaseNetIotComm
 
     private int dataProtocolPos;
     private String dataProtocolOld;//
-    
+
+    private int platformTypePos;
+    private String platformTypeOld;//
+
     private String transferProtocol;// 传输协议
     private String dataProtocol;//数据协议
+    private String platformType;//平台类型
     private String dataServerAddress;//数据服务器地址
     private String dataServerPort;//数据服务器端口
     private String deviceId;//设备 Id
@@ -245,7 +251,7 @@ public class UniversalNetDataCenterAdvancedConfigFragment extends BaseNetIotComm
         doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
     }
 
-    @OnClick({R.id.ll_transfer_protocol, R.id.ll_data_protocol, R.id.btn_confirm})
+    @OnClick({R.id.ll_transfer_protocol, R.id.ll_data_protocol, R.id.ll_platform_type, R.id.btn_confirm})
     public void onClick(View view) {
         if (isDoubleClick(view)) {
             return;
@@ -257,7 +263,10 @@ public class UniversalNetDataCenterAdvancedConfigFragment extends BaseNetIotComm
         } else if (id == R.id.ll_data_protocol) {
             showDataProtocolDialog();
 
-        }else if (id == R.id.btn_confirm) {
+        } else if (id == R.id.ll_platform_type) {
+            showPlatformTypeDialog();
+
+        } else if (id == R.id.btn_confirm) {
             KeyBordUtils.hideSoftKeyboard(view);
             if (!checkValueIsValid()) {
                 Timber.w("参数存在错误!");
@@ -331,6 +340,42 @@ public class UniversalNetDataCenterAdvancedConfigFragment extends BaseNetIotComm
 
                                     case "RES_OUT":
                                         dataProtocol = "6";
+                                        break;
+                                }
+                            }
+                        }, 0, R.layout.custom_xpopup_adapter_text_match)
+                .show();
+    }
+
+    /**
+     * 选择平台类型弹框
+     */
+    private void showPlatformTypeDialog() {
+        XPopup.setPrimaryColor(getResources().getColor(R.color.blue_52B4F8));
+        new XPopup.Builder(mActivity)
+                .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
+                .asBottomList("", new String[]{"地灾一期", "成都理工平台", "MDNET", "地灾二期"},
+                        null, platformTypePos, true,
+                        new OnSelectListener() {
+                            @Override
+                            public void onSelect(int position, String text) {
+                                platformTypePos = position;
+                                mTvPlatformType.setText(text);
+                                switch (text) {
+                                    case "地灾一期":
+                                        platformType = "0";
+                                        break;
+
+                                    case "成都理工平台":
+                                        platformType = "1";
+                                        break;
+
+                                    case "MDNET":
+                                        platformType = "2";
+                                        break;
+
+                                    case "地灾二期":
+                                        platformType = "3";
                                         break;
                                 }
                             }
@@ -431,6 +476,7 @@ public class UniversalNetDataCenterAdvancedConfigFragment extends BaseNetIotComm
         dataCenterEntity.setServerNumber(serverNumber);
         dataCenterEntity.setProtocol(transferProtocol);
         dataCenterEntity.setDatatype(dataProtocol);
+        dataCenterEntity.setPlattype(platformType);
         dataCenterEntity.setAddr(dataServerAddress);
         dataCenterEntity.setPort(dataServerPort);
         dataCenterEntity.setDeviceid(deviceId);
@@ -476,14 +522,8 @@ public class UniversalNetDataCenterAdvancedConfigFragment extends BaseNetIotComm
         IOTCommandType type = IOTStringUtil.extractCommandType(cmdStr);
         switch (type) {
             case MD_GET_DATA_CENTER:
-                ToastUtils.show("下发指令失败");
-                break;
-
             case MD_SET_DATA_CENTER:
                 ToastUtils.show("下发指令失败");
-                break;
-
-            default:
                 break;
         }
     }
@@ -561,6 +601,7 @@ public class UniversalNetDataCenterAdvancedConfigFragment extends BaseNetIotComm
         }
         transferProtocolOld = transferProtocol;
         dataProtocolOld = dataProtocol;
+        platformTypeOld = platformType;
         isResultOK = true;
     }
 
@@ -575,6 +616,9 @@ public class UniversalNetDataCenterAdvancedConfigFragment extends BaseNetIotComm
 
         dataProtocolOld = dataCenterInfo.getDatatype().trim();
         dataProtocol = dataCenterInfo.getDatatype().trim();
+
+        platformTypeOld = dataCenterInfo.getPlattype().trim();
+        platformType = dataCenterInfo.getPlattype().trim();
 
         dataServerAddress = dataCenterInfo.getAddr().trim();
         dataServerPort = dataCenterInfo.getPort().trim();
@@ -629,6 +673,27 @@ public class UniversalNetDataCenterAdvancedConfigFragment extends BaseNetIotComm
                 mTvDataProtocol.setText("RES_OUT");
                 break;
         }
+
+        switch (platformTypeOld) {
+            case "0":
+                platformTypePos = 0;
+                mTvPlatformType.setText("地灾一期");
+                break;
+            case "1":
+                platformTypePos = 1;
+                mTvPlatformType.setText("成都理工平台");
+                break;
+
+            case "2":
+                platformTypePos = 2;
+                mTvPlatformType.setText("MDNET");
+                break;
+
+            case "3":
+                platformTypePos = 3;
+                mTvPlatformType.setText("地灾二期");
+                break;
+        }
         mEtDataServerAddress.setText(dataServerAddress);
         mEtDataServerPort.setText(dataServerPort);
         mEtDeviceId.setText(deviceId);
@@ -673,6 +738,9 @@ public class UniversalNetDataCenterAdvancedConfigFragment extends BaseNetIotComm
             return true;
         }
         if (dataProtocolOld != null && dataProtocol != null && !dataProtocolOld.equals(dataProtocol)) {
+            return true;
+        }
+        if (platformTypeOld != null && platformType != null && !platformTypeOld.equals(platformType)) {
             return true;
         }
 

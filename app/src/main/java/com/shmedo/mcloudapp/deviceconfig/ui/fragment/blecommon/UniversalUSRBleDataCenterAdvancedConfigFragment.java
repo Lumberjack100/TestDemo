@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.deviceconfig.ui.fragment.adme;
+package com.shmedo.mcloudapp.deviceconfig.ui.fragment.blecommon;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -33,7 +33,6 @@ import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
 import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.view.ClearEditText;
-import com.shmedo.mcloudapp.deviceconfig.ui.fragment.blecommon.BaseUSRBleIotCommunicateFragment;
 import com.shmedo.mcloudapp.util.KeyBordUtils;
 
 import org.jetbrains.annotations.NotNull;
@@ -44,10 +43,10 @@ import timber.log.Timber;
 
 /**
  * 创建者:   gonghe <br/>
- * 创建时间:  2020/12/28<br/>
- * 描述：     ADME 数据中心高级配置页面
+ * 创建时间:  4/13/21 <br/>
+ * 描述：     通用蓝牙模式数据中心高级参数配置页面
  */
-public class BleAdmeDataCenterAdvancedConfigFragment extends BaseUSRBleIotCommunicateFragment {
+public class UniversalUSRBleDataCenterAdvancedConfigFragment extends BaseUSRBleIotCommunicateFragment {
     @BindView(R.id.contentLayout)
     ViewGroup contentLayout;
 
@@ -59,6 +58,9 @@ public class BleAdmeDataCenterAdvancedConfigFragment extends BaseUSRBleIotCommun
 
     @BindView(R.id.tv_data_protocol)
     TextView mTvDataProtocol;
+
+    @BindView(R.id.tv_platform_type)
+    TextView mTvPlatformType;
 
     @BindView(R.id.et_data_server_address)
     ClearEditText mEtDataServerAddress;
@@ -97,8 +99,12 @@ public class BleAdmeDataCenterAdvancedConfigFragment extends BaseUSRBleIotCommun
     private int transferProtocolPos;
     private String transferProtocolOld;//
 
+    private int platformTypePos;
+    private String platformTypeOld;//
+
     private String transferProtocol;// 传输协议
     private String dataProtocol;//数据协议
+    private String platformType;//平台类型
     private String dataServerAddress;//数据服务器地址
     private String dataServerPort;//数据服务器端口
     private String deviceId;//设备 Id
@@ -112,8 +118,8 @@ public class BleAdmeDataCenterAdvancedConfigFragment extends BaseUSRBleIotCommun
     private boolean isSaveParamOperation = false;//判断当前是保存参数操作，还是关闭数据中心操作
     private boolean isResultOK = false;//返回的结果是否是 Activity.RESULT_OK
 
-    public static BleAdmeDataCenterAdvancedConfigFragment newInstance(ServerNumber serverNumber, String status) {
-        BleAdmeDataCenterAdvancedConfigFragment fragment = new BleAdmeDataCenterAdvancedConfigFragment();
+    public static UniversalUSRBleDataCenterAdvancedConfigFragment newInstance(ServerNumber serverNumber, String status) {
+        UniversalUSRBleDataCenterAdvancedConfigFragment fragment = new UniversalUSRBleDataCenterAdvancedConfigFragment();
         Bundle args = new Bundle();
         args.putSerializable(AppContants.Extras.DATA_SERVER_NUMBER, serverNumber);
         args.putSerializable(AppContants.Extras.DATA_SERVER_STATUS, status);
@@ -132,7 +138,7 @@ public class BleAdmeDataCenterAdvancedConfigFragment extends BaseUSRBleIotCommun
 
     @Override
     protected int getLayoutId() {
-        return R.layout.ble_adme_data_center_advanced_config_fragment;
+        return R.layout.universal_data_center_advanced_config_fragment;
     }
 
     @Override
@@ -241,11 +247,17 @@ public class BleAdmeDataCenterAdvancedConfigFragment extends BaseUSRBleIotCommun
         sendCommand(command);
     }
 
-    @OnClick({R.id.ll_transfer_protocol, R.id.btn_confirm})
+    @OnClick({R.id.ll_transfer_protocol, R.id.ll_platform_type, R.id.btn_confirm})
     public void onClick(View view) {
+        if (isDoubleClick(view)) {
+            return;
+        }
         int id = view.getId();
         if (id == R.id.ll_transfer_protocol) {
             showTransferProtocolDialog();
+
+        } else if (id == R.id.ll_platform_type) {
+            showPlatformTypeDialog();
 
         } else if (id == R.id.btn_confirm) {
             KeyBordUtils.hideSoftKeyboard(view);
@@ -254,10 +266,9 @@ public class BleAdmeDataCenterAdvancedConfigFragment extends BaseUSRBleIotCommun
                 return;
             }
             if (!checkValueIsValid()) {
-                Timber.w("通道参数存在错误!");
+                Timber.w("参数存在错误!");
                 return;
             }
-
             processSave();
         }
     }
@@ -287,6 +298,42 @@ public class BleAdmeDataCenterAdvancedConfigFragment extends BaseUSRBleIotCommun
         } else {
             mqttChildItemsLayout.setVisibility(View.VISIBLE);
         }
+    }
+
+    /**
+     * 选择平台类型弹框
+     */
+    private void showPlatformTypeDialog() {
+        XPopup.setPrimaryColor(getResources().getColor(R.color.blue_52B4F8));
+        new XPopup.Builder(mActivity)
+                .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
+                .asBottomList("", new String[]{"地灾一期", "成都理工平台", "MDNET", "地灾二期"},
+                        null, platformTypePos, true,
+                        new OnSelectListener() {
+                            @Override
+                            public void onSelect(int position, String text) {
+                                platformTypePos = position;
+                                mTvPlatformType.setText(text);
+                                switch (text) {
+                                    case "地灾一期":
+                                        platformType = "0";
+                                        break;
+
+                                    case "成都理工平台":
+                                        platformType = "1";
+                                        break;
+
+                                    case "MDNET":
+                                        platformType = "2";
+                                        break;
+
+                                    case "地灾二期":
+                                        platformType = "3";
+                                        break;
+                                }
+                            }
+                        }, 0, R.layout.custom_xpopup_adapter_text_match)
+                .show();
     }
 
     private boolean checkValueIsValid() {
@@ -382,6 +429,7 @@ public class BleAdmeDataCenterAdvancedConfigFragment extends BaseUSRBleIotCommun
         dataCenterEntity.setServerNumber(serverNumber);
         dataCenterEntity.setProtocol(transferProtocol);
         dataCenterEntity.setDatatype(dataProtocol);
+        dataCenterEntity.setPlattype(platformType);
         dataCenterEntity.setAddr(dataServerAddress);
         dataCenterEntity.setPort(dataServerPort);
         dataCenterEntity.setDeviceid(deviceId);
@@ -458,8 +506,8 @@ public class BleAdmeDataCenterAdvancedConfigFragment extends BaseUSRBleIotCommun
 
     private void doAfterSetting() {
         transferProtocolOld = transferProtocol;
+        platformTypeOld = platformType;
         isResultOK = true;
-
         saveConfigInfo();
     }
 
@@ -469,11 +517,14 @@ public class BleAdmeDataCenterAdvancedConfigFragment extends BaseUSRBleIotCommun
             dataCenterInfo = new DataCenterInfo();
             return;
         }
-
         transferProtocolOld = dataCenterInfo.getProtocol().trim();
         transferProtocol = dataCenterInfo.getProtocol().trim();
 
         dataProtocol = dataCenterInfo.getDatatype().trim();
+
+        platformTypeOld = dataCenterInfo.getPlattype().trim();
+        platformType = dataCenterInfo.getPlattype().trim();
+
         dataServerAddress = dataCenterInfo.getAddr().trim();
         dataServerPort = dataCenterInfo.getPort().trim();
         deviceId = dataCenterInfo.getDeviceid().trim();
@@ -494,7 +545,29 @@ public class BleAdmeDataCenterAdvancedConfigFragment extends BaseUSRBleIotCommun
             mqttChildItemsLayout.setVisibility(View.VISIBLE);
             transferProtocolPos = 2;
         }
+
         mTvDataProtocol.setText(dataProtocol);
+
+        switch (platformTypeOld) {
+            case "0":
+                platformTypePos = 0;
+                mTvPlatformType.setText("地灾一期");
+                break;
+            case "1":
+                platformTypePos = 1;
+                mTvPlatformType.setText("成都理工平台");
+                break;
+
+            case "2":
+                platformTypePos = 2;
+                mTvPlatformType.setText("MDNET");
+                break;
+
+            case "3":
+                platformTypePos = 3;
+                mTvPlatformType.setText("地灾二期");
+                break;
+        }
         mEtDataServerAddress.setText(dataServerAddress);
         mEtDataServerPort.setText(dataServerPort);
         mEtDeviceId.setText(deviceId);
@@ -532,13 +605,16 @@ public class BleAdmeDataCenterAdvancedConfigFragment extends BaseUSRBleIotCommun
         if (enableButtonOriginalState != mSbCenterEnable.isChecked()) {
             return true;
         }
-        if (transferProtocolOld != null && transferProtocol != null && !transferProtocolOld.equals(transferProtocol)) {
-            return true;
-        }
         if (dataServerAddress != null && !dataServerAddress.equals(mEtDataServerAddress.getText().toString().trim())) {
             return true;
         }
         if (dataServerPort != null && !dataServerPort.equals(mEtDataServerPort.getText().toString().trim())) {
+            return true;
+        }
+        if (transferProtocolOld != null && transferProtocol != null && !transferProtocolOld.equals(transferProtocol)) {
+            return true;
+        }
+        if (platformTypeOld != null && platformType != null && !platformTypeOld.equals(platformType)) {
             return true;
         }
 

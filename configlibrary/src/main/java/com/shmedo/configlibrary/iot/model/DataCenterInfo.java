@@ -10,6 +10,7 @@ import android.text.TextUtils;
 public class DataCenterInfo {
     private String protocol;//传输协议;TCP-C/TCP-S/MQTT
     private String datatype;//数据协议,由设备类型决定
+    private String plattype;//平台类型
     private String addr;//数据中心地址,addr和port设置为空时，关闭该数据中心
     private String port;//数据中心端口
     private String deviceid;//设备id（MQTT参数）,设备id、key设置为空时，设备通过自动注册的方式获取id、key
@@ -34,6 +35,14 @@ public class DataCenterInfo {
 
     public void setDatatype(String datatype) {
         this.datatype = datatype;
+    }
+
+    public String getPlattype() {
+        return TextUtils.isEmpty(plattype) ? "" : plattype;
+    }
+
+    public void setPlattype(String plattype) {
+        this.plattype = plattype;
     }
 
     public String getAddr() {

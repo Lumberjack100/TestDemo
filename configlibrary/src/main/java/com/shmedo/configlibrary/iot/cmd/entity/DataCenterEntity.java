@@ -14,6 +14,7 @@ public class DataCenterEntity implements Validater {
     private ServerNumber serverNumber;
     private String protocol;//传输协议;TCP-C/TCP-S/MQTT
     private String datatype;//数据协议,由设备类型决定
+    private String plattype;//平台类型
     private String addr;//数据中心地址,addr和port设置为空时，关闭该数据中心
     private String port;//数据中心端口
     private String deviceid;//设备id（MQTT参数）,设备id、key设置为空时，设备通过自动注册的方式获取id、key
@@ -33,6 +34,10 @@ public class DataCenterEntity implements Validater {
 
     public void setDatatype(String datatype) {
         this.datatype = datatype;
+    }
+
+    public void setPlattype(String plattype) {
+        this.plattype = plattype;
     }
 
     public void setAddr(String addr) {
@@ -83,6 +88,10 @@ public class DataCenterEntity implements Validater {
         }
         if (!TextUtils.isEmpty(datatype)) {
             stringBuilder.append("datatype=" + datatype);
+            stringBuilder.append("&");
+        }
+        if (!TextUtils.isEmpty(plattype)) {
+            stringBuilder.append("plattype=" + plattype);
             stringBuilder.append("&");
         }
         stringBuilder.append("addr=" + addr);
