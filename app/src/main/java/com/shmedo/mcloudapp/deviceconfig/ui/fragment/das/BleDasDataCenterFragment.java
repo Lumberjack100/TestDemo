@@ -59,7 +59,7 @@ public class BleDasDataCenterFragment extends BaseBleCommunicateFragment {
 
     @Override
     protected int getLayoutId() {
-        return R.layout.fragment_ble_das_data_center;
+        return R.layout.fragment_das_data_center_home;
     }
 
     @Override
@@ -84,7 +84,7 @@ public class BleDasDataCenterFragment extends BaseBleCommunicateFragment {
     }
 
 
-    @OnClick({R.id.communicationMethodLayout, R.id.centerOneLayout, R.id.centerTwoLayout, R.id.centerThreeLayout, R.id.btn_confirm})
+    @OnClick({R.id.communicationMethodLayout, R.id.dataCenterOneLayout, R.id.dataCenterTwoLayout, R.id.dataCenterThreeLayout, R.id.btn_confirm})
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.communicationMethodLayout:
@@ -125,7 +125,7 @@ public class BleDasDataCenterFragment extends BaseBleCommunicateFragment {
                         .show();
                 break;
 
-            case R.id.centerOneLayout:
+            case R.id.dataCenterOneLayout:
                 if (!isConnected()) {
                     ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
                     return;
@@ -133,7 +133,7 @@ public class BleDasDataCenterFragment extends BaseBleCommunicateFragment {
                 DataCenterServerConfigActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT, ServerNumber.NUMBER_ONE);
                 break;
 
-            case R.id.centerTwoLayout:
+            case R.id.dataCenterTwoLayout:
                 if (!isConnected()) {
                     ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
                     return;
@@ -141,7 +141,7 @@ public class BleDasDataCenterFragment extends BaseBleCommunicateFragment {
                 DataCenterServerConfigActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT, ServerNumber.NUMBER_TWO);
                 break;
 
-            case R.id.centerThreeLayout:
+            case R.id.dataCenterThreeLayout:
                 if (!isConnected()) {
                     ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
                     return;

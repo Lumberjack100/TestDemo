@@ -120,7 +120,7 @@ public class NetE40DataCenterHomeFragment extends BaseNetIotCommunicateFragment 
 
     @Override
     protected int getLayoutId() {
-        return R.layout.fragment_net_e40_data_center_home;
+        return R.layout.fragment_e40_data_center_home;
     }
 
     @Override
@@ -290,7 +290,7 @@ public class NetE40DataCenterHomeFragment extends BaseNetIotCommunicateFragment 
         if (statusId.equals("0")) {
             resId = R.color.device_unopened_platform;
         } else if (statusId.equals("1")) {
-            resId = R.color.title_text_color;
+            resId = R.color.text_color_3AD094;
         } else if (statusId.equals("2")) {
             resId = R.color.device_not_connected_platform;
         }
